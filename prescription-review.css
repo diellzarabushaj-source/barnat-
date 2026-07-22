@@ -1,3 +1,30 @@
+.patient-identity-grid{
+  display:grid;
+  grid-template-columns:1.4fr 1fr 1fr;
+  gap:12px;
+  margin-top:14px;
+  padding-top:14px;
+  border-top:1px solid var(--line);
+}
+.patient-identity-grid .full{grid-column:1/-1}
+.patient-identity-grid input{
+  width:100%;
+  min-height:44px;
+  padding:9px 11px;
+  border:1.5px solid var(--line);
+  border-radius:9px;
+  background:var(--paper);
+  color:var(--ink);
+  font:inherit;
+}
+.patient-identity-grid input:focus{outline:none;border-color:var(--teal)}
+.patient-identity-grid label{
+  display:block;
+  margin-bottom:5px;
+  color:#68777b;
+  font-size:.72rem;
+  font-weight:750;
+}
 .rx-review{
   position:relative;
   margin:14px 0;
@@ -143,6 +170,8 @@
 }
 .saved-review.reviewed{background:#dcecea;color:#0d3d40}
 .saved-review.stale{background:#f9dddd;color:#862d2d}
+html[data-theme=dark] .patient-identity-grid input{background:#152124;color:#e8efed;border-color:#3a4d50}
+html[data-theme=dark] .patient-identity-grid label{color:#a4b4b6}
 html[data-theme=dark] .rx-review{
   background:linear-gradient(135deg,#182629,#142124);
   border-color:#35484a;
@@ -155,6 +184,8 @@ html[data-theme=dark] .rx-review-check{background:#111d20;color:#dce6e3;border-c
 html[data-theme=dark] .rx-review-list li.issue{background:#321f21;color:#f1caca}
 html[data-theme=dark] .rx-review-list li.warning{background:#302617;color:#e8c895}
 @media(max-width:700px){
+  .patient-identity-grid{grid-template-columns:1fr}
+  .patient-identity-grid .full{grid-column:auto}
   .rx-review-head{align-items:flex-start}
   .rx-review-title small{max-width:230px}
   .rx-review-badge{font-size:.58rem}
