@@ -163,7 +163,7 @@
 
   function applyRegimen(article, regimen) {
     const values = patientContext().type === 'pediatric' ? pediatricValues(regimen) : adultValues(regimen);
-    if (values.error) { window.showProtocolToast?.(values.error) || alert(values.error); return; }
+    if (values.error) { if (window.showProtocolToast) window.showProtocolToast(values.error); else alert(values.error); return; }
     article.dataset.applyingDosage = '1';
     ['dose', 'route', 'frequency', 'duration', 'quantity', 'instructions', 'clinicalNotes'].forEach(name => setField(article, name, values[name] || '', true));
     setField(article, 'regimenId', regimen.regimenId, true);
@@ -172,7 +172,7 @@
     setField(article, 'doseCalculation', values.calculation || '', true);
     delete article.dataset.applyingDosage;
     decorateArticle(article, true);
-    window.showProtocolToast?.('Skema u aplikua. Kontrolloje dhe ndryshoje vetëm sipas pacientit.');
+    if (window.showProtocolToast) window.showProtocolToast('Skema u aplikua. Kontrolloje dhe ndryshoje vetëm sipas pacientit.');
   }
 
   function applyFormDefaults(article) {
@@ -236,7 +236,7 @@
         const clinicalFields = ['dose', 'route', 'frequency', 'duration', 'quantity', 'instructions', 'clinicalNotes'];
         if (!article.dataset.applyingDosage && clinicalFields.includes(input.dataset.itemField) && fieldValue(article, 'regimenId')) {
           const statusInput = field(article, 'dosageStatus');
-          if (statusInput && !statusInput.value.includes('EDITUAR')) statusInput.value = 'VERIFIKUAR — EDITUAR NGA PËRDORUESJA';
+          if (statusInput && !statusInput.value.includes('EDITUAR')) setField(article, 'dosageStatus', 'VERIFIKUAR — EDITUAR NGA PËRDORUESJA', true);
         }
       });
     });
