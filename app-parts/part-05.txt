@@ -51,9 +51,17 @@ function currentPageRows(){
   return filtered.slice(start, start + state.pageSize);
 }
 
+function isPrescriptionSelectable(row){
+  return row && String(row.__qualityStatus || '').trim() !== 'blocked';
+}
+
 function toggleCurrentPageSelection(checked){
   currentPageRows().forEach(r => {
     const key = drugKey(r);
+    if(!isPrescriptionSelectable(r)){
+      selectedDrugKeys.delete(key);
+      return;
+    }
     if(checked) selectedDrugKeys.add(key); else selectedDrugKeys.delete(key);
   });
   syncDraftFromSelection();
@@ -61,10 +69,11 @@ function toggleCurrentPageSelection(checked){
 }
 
 function selectedRows(){
-  return RAW.filter(r => selectedDrugKeys.has(drugKey(r)));
+  return RAW.filter(r => isPrescriptionSelectable(r) && selectedDrugKeys.has(drugKey(r)));
 }
 
 function itemFromDrug(r){
+  if(!isPrescriptionSelectable(r)) return null;
   return {
     drugKey: drugKey(r),
     tradeName: String(r['Emri tregtar'] || ''),
@@ -72,6 +81,8 @@ function itemFromDrug(r){
     strength: String(r['Fortësia'] || ''),
     form: String(r['Forma farmaceutike'] || ''),
     atc: String(r['ATC Code'] || ''),
+    qualityStatus: String(r.__qualityStatus || 'verified'),
+    qualityMessage: String(r.__qualityMessage || ''),
     prefix: '',
     dose: '',
     route: '',
@@ -90,7 +101,7 @@ function itemFromDrug(r){
 function syncDraftFromSelection(){
   if(editingProtocolId) return;
   const currentByKey = new Map(draftItems.map(i => [i.drugKey, i]));
-  draftItems = selectedRows().map(r => currentByKey.get(drugKey(r)) || itemFromDrug(r));
+  draftItems = selectedRows().map(r => currentByKey.get(drugKey(r)) || itemFromDrug(r)).filter(Boolean);
   renderProtocolDrugList();
 }
 
@@ -105,18 +116,24 @@ function renderProtocolDrugList(){
     return;
   }
 
-  list.innerHTML = draftItems.map((item, idx) => `
+  list.innerHTML = draftItems.map((item, idx) => {
+    const genericName = String(item.substance || item.tradeName || 'Bar pa emër');
+    const brandReference = item.tradeName && item.tradeName.toLocaleLowerCase('sq') !== genericName.toLocaleLowerCase('sq')
+      ? 'Produkt në regjistër: ' + item.tradeName + ' · '
+      : '';
+    return `
     <article class="protocol-drug" data-item-index="${idx}"
       data-drug-key="${escapeHtml(item.drugKey || '')}"
       data-trade-name="${escapeHtml(item.tradeName || '')}"
       data-substance="${escapeHtml(item.substance || '')}"
       data-strength="${escapeHtml(item.strength || '')}"
       data-form="${escapeHtml(item.form || '')}"
-      data-atc="${escapeHtml(item.atc || '')}">
+      data-atc="${escapeHtml(item.atc || '')}"
+      data-quality-status="${escapeHtml(item.qualityStatus || '')}">
       <div class="protocol-drug-head">
         <div>
-          <div class="protocol-drug-title">${escapeHtml(item.tradeName)}</div>
-          <div class="protocol-drug-meta">${escapeHtml(item.substance)} · ${escapeHtml(item.strength)} · ${escapeHtml(item.form)}${item.atc ? ' · ATC ' + escapeHtml(item.atc) : ''}</div>
+          <div class="protocol-drug-title">${escapeHtml(genericName)}</div>
+          <div class="protocol-drug-meta">${escapeHtml(brandReference + item.strength + ' · ' + item.form + (item.atc ? ' · ATC ' + item.atc : ''))}</div>
         </div>
         <button class="protocol-remove" type="button" data-remove-index="${idx}">Hiqe</button>
       </div>
@@ -126,7 +143,7 @@ function renderProtocolDrugList(){
           <input data-item-field="prefix" value="${escapeHtml(item.prefix || '')}" placeholder="p.sh. Tab., Caps., Syr.">
         </div>
         <div class="protocol-field">
-          <label>Dispenso / sasia</label>
+          <label>D. No / sasia</label>
           <input data-item-field="quantity" value="${escapeHtml(item.quantity || '')}" placeholder="p.sh. Nr. 12 tableta">
         </div>
         <div class="protocol-field">
@@ -146,7 +163,7 @@ function renderProtocolDrugList(){
           <input data-item-field="duration" value="${escapeHtml(item.duration || '')}" placeholder="p.sh. 5 ditë">
         </div>
         <div class="protocol-field full">
-          <label>Signatura / udhëzimi për pacientin</label>
+          <label>S. / Signatura — udhëzimi për pacientin</label>
           <textarea data-item-field="instructions" placeholder="p.sh. Merr 1 tabletë nga goja çdo 8 orë për 5 ditë.">${escapeHtml(item.instructions || '')}</textarea>
         </div>
         <div class="protocol-field full">
@@ -158,8 +175,8 @@ function renderProtocolDrugList(){
         <input type="hidden" data-item-field="dosageStatus" value="${escapeHtml(item.dosageStatus || '')}">
         <input type="hidden" data-item-field="doseCalculation" value="${escapeHtml(item.doseCalculation || '')}">
       </div>
-    </article>
-  `).join('');
+    </article>`;
+  }).join('');
 
   list.querySelectorAll('[data-item-field]').forEach(input => {
     const article = input.closest('[data-item-index]');
