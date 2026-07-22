@@ -1,5 +1,6 @@
 const XLSX = require('xlsx');
 const zlib = require('zlib');
+const registryQuality = require('../data/registry-quality.js');
 
 const DRIVE_FILE_ID = '1SY2rb2Eqo3fVkRhgQ8ltJHCRrWyAUDvd';
 const SOURCE_URLS = [
@@ -24,7 +25,7 @@ async function downloadWorkbook() {
       const response = await fetch(url, {
         redirect: 'follow',
         headers: {
-          'User-Agent': 'Mozilla/5.0 (compatible; BarnatRegistry/1.0)',
+          'User-Agent': 'Mozilla/5.0 (compatible; MedIndexRegistry/2.0)',
         },
       });
 
@@ -108,15 +109,29 @@ function workbookToRows(buffer) {
 
 async function buildPayload() {
   const workbookBuffer = await downloadWorkbook();
-  const rows = workbookToRows(workbookBuffer);
-  const json = JSON.stringify(rows);
+  const sourceRows = workbookToRows(workbookBuffer);
+  const quality = registryQuality.applyRows(sourceRows);
+  const json = JSON.stringify(quality.rows);
   const encoded = zlib.gzipSync(Buffer.from(json, 'utf8'), { level: 9 }).toString('base64');
+  const meta = {
+    version: quality.version,
+    summary: quality.summary,
+    sourceRows: sourceRows.length,
+  };
 
-  return `window.DRUG_DATA_PARTS = [${JSON.stringify(encoded)}];\n`;
+  return (
+    `window.DRUG_DATA_PARTS = [${JSON.stringify(encoded)}];\n` +
+    `window.REGISTRY_QUALITY_META = ${JSON.stringify(meta)};\n`
+  );
 }
 
 module.exports = async function handler(req, res) {
   try {
+    if (req.method !== 'GET') {
+      res.setHeader('Allow', 'GET');
+      return res.status(405).send('Method Not Allowed');
+    }
+
     const now = Date.now();
 
     if (!memoryCache || now - memoryCacheTime > MEMORY_CACHE_MS) {
