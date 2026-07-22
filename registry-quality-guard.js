@@ -26,4 +26,12 @@
     event.stopImmediatePropagation();
     notify('Ky rresht është bllokuar nga kontrolli i cilësisë.');
   }, true);
+
+  if (!document.querySelector('script[data-dosage-autoapply]')) {
+    const script = document.createElement('script');
+    script.src = './dosage-autoapply.js?v=20260722-1';
+    script.dataset.dosageAutoapply = '1';
+    script.defer = true;
+    document.head.appendChild(script);
+  }
 })();
