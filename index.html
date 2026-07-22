@@ -108,7 +108,7 @@
     <div class="protocol-content">
       <section class="protocol-pane active" id="protocolPaneBuilder">
         <div class="protocol-info">
-          MedIndex plotëson parashtesat e formave të verifikuara. Skema klinike shfaqet vetëm kur është publikuar dhe aplikohet vetëm pasi ta zgjedhësh e të shtypësh <strong>Apliko skemën</strong>. Signatura, alarmet klinike dhe çdo ndryshim ruhen veçmas për auditim.
+          MedIndex i plotëson automatikisht fushat e recetës kur ekziston vetëm një skemë e verifikuar që përputhet saktë me barin. Kur ka më shumë se një skemë, paraqitet lista për ta zgjedhur skemën e duhur. Të gjitha fushat mbeten të editueshme dhe çdo ndryshim regjistrohet për rishikim.
         </div>
 
         <div class="protocol-card">
@@ -223,8 +223,9 @@
           <button class="btn-secondary" id="newProtocolBtn" type="button">Recetë e re</button>
           <button class="btn-secondary" id="copyProtocolBtn" type="button">Kopjo si tekst</button>
           <button class="btn-secondary" id="printProtocolBtn" type="button">Printo</button>
-          <button class="deleteButton" id="clearSelectionBtn" type="button" data-label="Pastro" aria-label="Pastro barnat e zgjedhura">
-            <svg viewBox="0 0 448 512" class="deleteIcon" aria-hidden="true"><path d="M135.2 17.7L128 32H32C14.3 32 0 46.3 0 64S14.3 96 32 96H416c17.7 0 32-14.3 32-32s-14.3-32-32-32H320l-7.2-14.3C307.4 6.8 296.3 0 284.2 0H163.8c-12.1 0-23.2 6.8-28.6 17.7zM416 128H32L53.2 467c1.6 25.3 22.6 45 47.9 45H346.9c25.3 0 46.3-19.7 47.9-45L416 128z"></path></svg>
+          <button class="deleteButton" id="clearSelectionBtn" type="button" aria-label="Pastroje recetën">
+            <svg viewBox="0 0 448 512" class="deleteIcon" aria-hidden="true"><path d="M135.2 17.7 128 32H32C14.3 32 0 46.3 0 64s14.3 32 32 32h384c17.7 0 32-14.3 32-32s-14.3-32-32-32h-96l-7.2-14.3C307.4 6.8 296.3 0 284.2 0H163.8c-12.1 0-23.2 6.8-28.6 17.7ZM416 128H32l21.2 339c1.6 25.3 22.6 45 47.9 45h245.8c25.3 0 46.3-19.7 47.9-45L416 128Z"></path></svg>
+            <span>Pastro</span>
           </button>
         </div>
       </section>
@@ -243,7 +244,8 @@
 <script src="app.js?v=20260722-11"></script>
 <script src="ui-enhancements.js?v=20260722-7"></script>
 <script src="name-display.js?v=20260722-1"></script>
-<script src="dosage-integration.js?v=20260722-3"></script>
+<script src="dosage-integration.js?v=20260722-4"></script>
+<script src="dosage-auto-apply.js?v=20260722-2"></script>
 <script src="prescription-review.js?v=20260722-2"></script>
 <script src="medindex-view.js?v=20260722-14"></script>
 </body>
