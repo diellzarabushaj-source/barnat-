@@ -78,11 +78,26 @@ function escapeHtml(s){
   return String(s ?? '').replace(/[&<>"']/g, m => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]));
 }
 
+function qualityRowClass(row){
+  const status = String(row.__qualityStatus || '').trim();
+  return status && status !== 'verified' ? 'quality-' + status : '';
+}
+
+function qualityBadge(row){
+  const status = String(row.__qualityStatus || '').trim();
+  if(status === 'corrected') return '<span class="data-quality-badge corrected" title="' + escapeHtml(row.__qualityMessage || '') + '">✓ Korrigjuar</span>';
+  if(status === 'blocked') return '<span class="data-quality-badge blocked" title="' + escapeHtml(row.__qualityMessage || '') + '">! Verifiko</span>';
+  if(status === 'warning') return '<span class="data-quality-badge warning" title="' + escapeHtml(row.__qualityMessage || '') + '">Kontrollo</span>';
+  return '';
+}
+
 function render(){
   buildHeader();
   const filtered = sortRows(getFiltered());
   const total = filtered.length;
-  document.getElementById('countBadge').textContent = total + ' / ' + RAW.length + ' barna';
+  const quality = window.MEDINDEX_REGISTRY_QUALITY?.summary || {};
+  const qualityNote = quality.blocked ? ` · ${quality.blocked} të bllokuara për verifikim` : '';
+  document.getElementById('countBadge').textContent = total + ' / ' + RAW.length + ' barna' + qualityNote;
 
   const pageSize = state.pageSize;
   const totalPages = Math.max(1, Math.ceil(total / pageSize));
@@ -97,15 +112,22 @@ function render(){
   } else {
     tbody.innerHTML = pageRows.map(r => {
       const key = drugKey(r);
-      const checked = selectedDrugKeys.has(key);
-      return '<tr class="' + (checked ? 'row-selected' : '') + '">' +
-        '<td class="select-col"><input class="drug-select" type="checkbox" aria-label="Zgjidh ' + escapeHtml(r['Emri tregtar']) + '" data-drug-key="' + escapeHtml(key) + '" ' + (checked ? 'checked' : '') + '></td>' + cols.map(col => {
+      const blocked = r.__qualityStatus === 'blocked';
+      if(blocked) selectedDrugKeys.delete(key);
+      const checked = !blocked && selectedDrugKeys.has(key);
+      const rowClasses = [checked ? 'row-selected' : '', qualityRowClass(r)].filter(Boolean).join(' ');
+      const qualityTitle = String(r.__qualityMessage || '').trim();
+      return '<tr class="' + rowClasses + '"' + (qualityTitle ? ' title="' + escapeHtml(qualityTitle) + '"' : '') + '>' +
+        '<td class="select-col"><input class="drug-select" type="checkbox" aria-label="' + (blocked ? 'Nuk lejohet në recetë pa verifikim: ' : 'Zgjidh ') + escapeHtml(r['Emri tregtar']) + '" data-drug-key="' + escapeHtml(key) + '" ' + (checked ? 'checked ' : '') + (blocked ? 'disabled title="Rreshti është bllokuar nga kontrolli i cilësisë"' : '') + '></td>' + cols.map(col => {
         let val = r[col.key];
         if(col.key === 'Statusi'){
           const s = String(val ?? '').trim();
           const cls = s === 'Gjenerik' ? 'gjenerik' : (s === 'Origjinator' ? 'origjinator' : '');
           val = s ? '<span class="badge ' + cls + '">' + escapeHtml(s) + '</span>' : '';
           return '<td class="' + col.cls + '">' + val + '</td>';
+        }
+        if(col.key === 'Substanca aktive'){
+          return '<td class="' + col.cls + ' quality-substance" title="' + escapeHtml(qualityTitle || val) + '"><span>' + escapeHtml(val) + '</span>' + qualityBadge(r) + '</td>';
         }
         if(col.key === 'Forma farmaceutike'){
           const cat = categoryOf(val);
