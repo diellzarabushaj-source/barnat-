@@ -1,0 +1,137 @@
+arzh&euml;', type:'num', cls:'price', visible:false },
+  { key:'TVSH', label:'TVSH', type:'str', cls:'', visible:false },
+  { key:'Çmimi me pakicë', label:'&Ccedil;m. Pakic&euml;', type:'num', cls:'price', visible:true },
+  { key:'Afati i vlefshmërisë', label:'Afati', type:'str', cls:'wrap', visible:false },
+];
+
+let state = {
+  search: '',
+  status: '',
+  formType: null,   // null | 'category' | 'form'
+  formValue: null,  // category name or exact forma string
+  sortKey: 'Nr rendor',
+  sortDir: 1,
+  page: 1,
+  pageSize: 50,
+};
+
+const PROTOCOL_STORAGE_KEY = 'regjistriBarnave_protokollet_v1';
+let protocolMemoryStore = [];
+const selectedDrugKeys = new Set();
+let editingProtocolId = null;
+let draftItems = [];
+
+function drugKey(r){
+  return String(r['PDID'] || '') + '|' + String(r['Emri tregtar'] || '') + '|' + String(r['Fortësia'] || '');
+}
+
+function getSavedProtocols(){
+  try{
+    const data = JSON.parse(localStorage.getItem(PROTOCOL_STORAGE_KEY) || '[]');
+    if(Array.isArray(data)) protocolMemoryStore = data;
+    return Array.isArray(data) ? data : protocolMemoryStore;
+  }catch(e){ return protocolMemoryStore; }
+}
+
+function setSavedProtocols(protocols){
+  protocolMemoryStore = protocols.map(p => ({...p, items:(p.items || []).map(i => ({...i}))}));
+  try{ localStorage.setItem(PROTOCOL_STORAGE_KEY, JSON.stringify(protocols)); }catch(e){}
+  updateProtocolCounters();
+}
+
+function updateProtocolCounters(){
+  const selected = selectedDrugKeys.size;
+  const saved = getSavedProtocols().length;
+  const sc = document.getElementById('selectedCount');
+  const pc = document.getElementById('savedProtocolCount');
+  const tc = document.getElementById('savedTabCount');
+  if(sc) sc.textContent = selected;
+  if(pc) pc.textContent = saved;
+  if(tc) tc.textContent = '(' + saved + ')';
+}
+
+
+function visibleColumns(){
+  return COLUMNS.filter(c => c.visible);
+}
+
+function buildHeader(){
+  const row = document.getElementById('headerRow');
+  row.innerHTML = '';
+
+  const selectTh = document.createElement('th');
+  selectTh.className = 'select-col';
+  selectTh.title = 'Zgjidhi të gjitha barnat në këtë faqe';
+  const selectAll = document.createElement('input');
+  selectAll.type = 'checkbox';
+  selectAll.setAttribute('aria-label', 'Zgjidhi të gjitha barnat në këtë faqe');
+  selectAll.addEventListener('click', e => e.stopPropagation());
+  selectAll.addEventListener('change', () => toggleCurrentPageSelection(selectAll.checked));
+  selectTh.appendChild(selectAll);
+  row.appendChild(selectTh);
+
+  visibleColumns().forEach(col => {
+    const th = document.createElement('th');
+    th.innerHTML = col.label + '<span class="arrow">' + (state.sortKey===col.key ? (state.sortDir===1?'▲':'▼') : '↕') + '</span>';
+    if(state.sortKey===col.key) th.classList.add('sorted');
+    th.addEventListener('click', () => {
+      if(state.sortKey === col.key){ state.sortDir *= -1; }
+      else { state.sortKey = col.key; state.sortDir = 1; }
+      state.page = 1;
+      render();
+    });
+    row.appendChild(th);
+  });
+}
+
+const SEARCH_FIELDS = ['Emri tregtar','Substanca aktive','ATC Code','Klasa / Çka është','Përdorimi (fjalë kyçe)','PDID','ProtocolNo','Prodhuesi','Bartësi i Autorizim Marketingut','Forma farmaceutike','Madhësia e paketimit'];
+
+// Fjalët shqip -> terma anglisht që përdoren në regjistër (forma farmaceutike është në anglisht)
+const FORM_ALIASES = {
+  'kapsul': ['capsule'],
+  'tablet': ['tablet'],
+  'tabletë': ['tablet'],
+  'shurup': ['syrup'],
+  'sirup': ['syrup'],
+  'injeksion': ['injection'],
+  'infuzion': ['infusion'],
+  'kremë': ['cream'],
+  'kreme': ['cream'],
+  'pika': ['drops'],
+  'pikë': ['drops'],
+  'supozitor': ['suppository'],
+  'pomad': ['ointment'],
+  'pomadë': ['ointment'],
+  'xhel': ['gel'],
+  'zhel': ['gel'],
+  'pluhur': ['powder'],
+  'granula': ['granules'],
+  'granulë': ['granules'],
+  'inhalim': ['inhalation'],
+  'inhalator': ['inhalation'],
+  'spraj': ['spray'],
+  'sprej': ['spray'],
+  'losion': ['lotion'],
+  'shampo': ['shampoo'],
+  'fliter': ['patch'],
+  'leng': ['solution','liquid'],
+  'lëng': ['solution','liquid'],
+  'tretësirë': ['solution'],
+  'tretesire': ['solution'],
+  'suspension': ['suspension'],
+  'suspensioni': ['suspension'],
+  'shpujzë': ['effervescent'],
+  'efervishente': ['effervescent'],
+  'efervishent': ['effervescent'],
+  'pilul': ['tablet','pill'],
+  'implant': ['implant'],
+  'ampul': ['ampoule'],
+  'ampulë': ['ampoule'],
+};
+
+// Format farmaceutike të grupuara në kategori kryesore, për filtrim e highlight më të lehtë
+const FORM_CATEGORIES = {
+  'Tableta & pilula': ['Chewable tablet','Coated tablet','Compressed lozenge','Dispersible tablet','Effervescent tablet','Film coated tablet','Gastro-resistant coated tablet','Gastro-resistant tablet','Lozenge','Modified-release film-coated tablet','Modified-release tablet','Orodispersible tablet','Pastille','Prolonged-release tablet','Soluble tablet','Sublingual tablet','Tablet'],
+  'Kapsula': ['Capsule','Capsule, hard','Capsule, soft','Gastro-resistant capsule','Gastro-resistant capsule, hard','Inhalation powder, hard capsule','Modified release capsule, hard','Prolonged release capsule, hard','Prolonged-release capsule','Vaginal capsule','Vaginal capsule, soft'],
+  'Shurupe & solucione orale': ['Granules for oral solution','Granules for oral suspension','Granules for syrup','Oral drops','Oral drops, solution','Oral drops, suspension','Oral emulsion','Oral gel','Oral jelly','Oral lyophilisate','Oral powder','Oral solution','Oral suspension','Powder for oral solution','Powder for oral suspension','Syrup'],
+  'Injeksione & Infuzione': ['Ampoule','Concentrate for solution for infusion','Concentrate for solution for injection','Concentrate for solution for injection/infusion','Emulsion for infusion','Emulsion for injection/infusion','Injection','Lyophilisate for solution for infusion','Lyophilisate for solution for injection','Lyophilisate for suspension for injection','Powder and solvent for solution for infusion','Powder and solvent for solution for injection',
