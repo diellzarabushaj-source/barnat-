@@ -41,7 +41,7 @@
 
   <span class="selection-badge" title="Barnat e zgjedhura për protokoll">Të zgjedhura: <strong id="selectedCount">0</strong></span>
   <button class="protocol-toolbar-btn" id="protocolsBtn" type="button">Protokollet e mia <span class="mini-count" id="savedProtocolCount">0</span></button>
-  <span class="count-badge" id="countBadge">4006 barna</span>
+  <span class="count-badge" id="countBadge">Duke u ngarkuar...</span>
 </div>
 
 <div class="table-wrap">
@@ -49,7 +49,9 @@
     <thead>
       <tr id="headerRow"></tr>
     </thead>
-    <tbody id="tbody"></tbody>
+    <tbody id="tbody">
+      <tr><td class="empty-state">Duke i ngarkuar barnat...</td></tr>
+    </tbody>
   </table>
 </div>
 
@@ -126,18 +128,6 @@
 
 <script id="drug-data" type="application/json">[]</script>
 <script>window.DRUG_DATA_PARTS = [];</script>
-<script src="data/part-01.js"></script>
-<script src="data/part-02.js"></script>
-<script src="data/part-03.js"></script>
-<script src="data/part-04.js"></script>
-<script src="data/part-05.js"></script>
-<script src="data/part-06.js"></script>
-<script src="data/part-07.js"></script>
-<script src="data/part-08.js"></script>
-<script src="data/part-09.js"></script>
-<script src="data/part-10.js"></script>
-<script src="data/part-11.js"></script>
-<script src="data/part-12.js"></script>
-<script src="app.js"></script>
+<script src="app.js?v=20260722-3"></script>
 </body>
 </html>
