@@ -1,0 +1,8 @@
+{
+  "rewrites": [
+    {
+      "source": "/data/registry-data.js",
+      "destination": "/api/registry-data"
+    }
+  ]
+}
