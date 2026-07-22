@@ -6,9 +6,26 @@
 <title>Regjistri i Barnave — Kosovë 2025</title>
 <link rel="stylesheet" href="styles.css">
 <link rel="stylesheet" href="protocols.css">
+<link rel="stylesheet" href="ui-controls.css?v=20260722-7">
 <link rel="stylesheet" href="loader.css?v=20260722-6">
 </head>
 <body>
+
+<!-- Sign-in UI: aktivizohet kur të lidhet verifikimi server-side me ACCESS_CODE. -->
+<section class="access-screen" id="accessScreen" hidden aria-labelledby="accessHeading">
+  <div class="access-form-container">
+    <form class="access-form" id="accessForm" autocomplete="off">
+      <h1 class="access-heading" id="accessHeading">Regjistri i Barnave</h1>
+      <p class="access-subtitle">Shkruaje kodin personal për të vazhduar.</p>
+      <div class="access-input-group">
+        <input required type="password" id="accessCode" name="accessCode" autocomplete="current-password" placeholder=" ">
+        <label for="accessCode">Kodi i qasjes</label>
+      </div>
+      <button class="access-submit" id="accessSubmit" type="submit">Hyr</button>
+      <p class="access-message" id="accessMessage" role="alert"></p>
+    </form>
+  </div>
+</section>
 
 <div class="page-loader" id="pageLoader" role="status" aria-live="polite" aria-label="Duke i ngarkuar barnat">
   <div class="loader-content">
@@ -96,25 +113,30 @@
         <div class="protocol-card">
           <h3>Të dhënat e protokollit</h3>
           <div class="protocol-grid">
-            <div class="protocol-field">
+            <div class="protocol-field floating-field">
+              <input id="protocolName" type="text" placeholder=" ">
               <label for="protocolName">Emri i protokollit *</label>
-              <input id="protocolName" type="text" placeholder="p.sh. Menaxhimi fillestar i migrenës">
+              <span class="floating-hint">p.sh. Menaxhimi fillestar i migrenës</span>
             </div>
-            <div class="protocol-field">
+            <div class="protocol-field floating-field">
+              <input id="protocolIndication" type="text" placeholder=" ">
               <label for="protocolIndication">Indikacioni / diagnoza</label>
-              <input id="protocolIndication" type="text" placeholder="p.sh. Migrenë pa aura">
+              <span class="floating-hint">p.sh. Migrenë pa aura</span>
             </div>
-            <div class="protocol-field">
+            <div class="protocol-field floating-field">
+              <input id="protocolPopulation" type="text" placeholder=" ">
               <label for="protocolPopulation">Grupi i pacientëve</label>
-              <input id="protocolPopulation" type="text" placeholder="p.sh. Të rritur, pa shtatzëni">
+              <span class="floating-hint">p.sh. Të rritur, pa shtatzëni</span>
             </div>
-            <div class="protocol-field">
+            <div class="protocol-field floating-field">
+              <input id="protocolVersion" type="text" placeholder=" ">
               <label for="protocolVersion">Versioni / data</label>
-              <input id="protocolVersion" type="text" placeholder="p.sh. v1 — 22.07.2026">
+              <span class="floating-hint">p.sh. v1 — 22.07.2026</span>
             </div>
-            <div class="protocol-field full">
+            <div class="protocol-field floating-field full">
+              <textarea id="protocolNotes" placeholder=" "></textarea>
               <label for="protocolNotes">Vërejtje, kundërindikacione, monitorim</label>
-              <textarea id="protocolNotes" placeholder="Shëno kriteret, alarmet, monitorimin, alternativat ose referimin..."></textarea>
+              <span class="floating-hint">Shëno kriteret, alarmet, monitorimin, alternativat ose referimin.</span>
             </div>
           </div>
         </div>
@@ -125,11 +147,18 @@
         </div>
 
         <div class="protocol-actions">
-          <button class="btn-primary" id="saveProtocolBtn" type="button">Ruaje protokollin</button>
+          <button class="bookmarkBtn" id="saveProtocolBtn" type="button" aria-label="Ruaje protokollin">
+            <span class="IconContainer">
+              <svg viewBox="0 0 384 512" class="icon" aria-hidden="true"><path d="M0 48V487.7C0 501.1 10.9 512 24.3 512c5 0 9.9-1.5 14-4.4L192 400 345.7 507.6c4.1 2.9 9 4.4 14 4.4c13.4 0 24.3-10.9 24.3-24.3V48c0-26.5-21.5-48-48-48H48C21.5 0 0 21.5 0 48z"></path></svg>
+            </span>
+            <span class="text">Ruaje</span>
+          </button>
           <button class="btn-secondary" id="newProtocolBtn" type="button">Protokoll i ri</button>
           <button class="btn-secondary" id="copyProtocolBtn" type="button">Kopjo si tekst</button>
           <button class="btn-secondary" id="printProtocolBtn" type="button">Printo</button>
-          <button class="btn-danger" id="clearSelectionBtn" type="button">Pastro barnat e zgjedhura</button>
+          <button class="deleteButton" id="clearSelectionBtn" type="button" data-label="Pastro" aria-label="Pastro barnat e zgjedhura">
+            <svg viewBox="0 0 448 512" class="deleteIcon" aria-hidden="true"><path d="M135.2 17.7L128 32H32C14.3 32 0 46.3 0 64S14.3 96 32 96H416c17.7 0 32-14.3 32-32s-14.3-32-32-32H320l-7.2-14.3C307.4 6.8 296.3 0 284.2 0H163.8c-12.1 0-23.2 6.8-28.6 17.7zM416 128H32L53.2 467c1.6 25.3 22.6 45 47.9 45H346.9c25.3 0 46.3-19.7 47.9-45L416 128z"></path></svg>
+          </button>
         </div>
       </section>
 
@@ -143,7 +172,7 @@
 
 <script id="drug-data" type="application/json">[]</script>
 <script>window.DRUG_DATA_PARTS = [];</script>
-<script src="data/registry-data.js?v=20260722-6"></script>
-<script src="app.js?v=20260722-6"></script>
+<script src="data/registry-data.js?v=20260722-7"></script>
+<script src="app.js?v=20260722-7"></script>
 </body>
 </html>
