@@ -1,5 +1,6 @@
 (() => {
   let scheduled = false;
+  let hashHandled = false;
 
   function ensureStyles() {
     if (document.getElementById('nameDisplayStyles')) return;
@@ -36,9 +37,7 @@
         outline-offset: 3px;
         border-radius: 3px;
       }
-      td.name.name-expanded {
-        max-width: 470px;
-      }
+      td.name.name-expanded { max-width: 470px; }
       td.name.name-expanded .drug-name-layout {
         min-width: 390px;
         max-width: 470px;
@@ -50,10 +49,7 @@
         text-overflow: clip;
         cursor: zoom-out;
       }
-      .app-menu-link[data-nav="classification"] .app-menu-icon svg {
-        width: 27px;
-        height: 27px;
-      }
+      .app-menu-link[data-nav="classification"] .app-menu-icon svg { width: 27px; height: 27px; }
       @media (max-width: 720px) {
         td.name { min-width: 255px; max-width: 285px; }
         td.name.name-expanded,
@@ -99,7 +95,6 @@
     else {
       const spacer = document.createElement('span');
       spacer.className = 'favorite-marker';
-      spacer.hidden = true;
       spacer.textContent = '★';
       layout.appendChild(spacer);
     }
@@ -135,11 +130,26 @@
     if (protocols) protocols.before(item); else menu.appendChild(item);
   }
 
+  function handleIncomingHash() {
+    if (hashHandled || !document.getElementById('appMenu')) return;
+    const hash = location.hash.toLocaleLowerCase('sq');
+    const target = hash === '#recetat' ? 'protocols' : hash === '#favoritet' ? 'favorites' : hash === '#kerko' ? 'search' : '';
+    if (!target) { hashHandled = true; return; }
+    const button = document.querySelector(`.app-menu-link[data-nav="${target}"]`);
+    if (!button) return;
+    hashHandled = true;
+    setTimeout(() => {
+      button.click();
+      history.replaceState(null, '', location.pathname + location.search);
+    }, 80);
+  }
+
   function decorate() {
     scheduled = false;
     ensureStyles();
     addClassificationNav();
     decorateNames();
+    handleIncomingHash();
   }
 
   function schedule() {
