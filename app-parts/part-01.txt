@@ -87,6 +87,46 @@ function normalizeDrugRow(row, index){
   return result;
 }
 
+async function ensureRegistryQuality(){
+  if(window.MedIndexRegistryQuality) return window.MedIndexRegistryQuality;
+  try {
+    await new Promise((resolve, reject) => {
+      const existing = document.querySelector('script[data-registry-quality]');
+      if(existing){
+        existing.addEventListener('load', resolve, { once:true });
+        existing.addEventListener('error', reject, { once:true });
+        return;
+      }
+      const script = document.createElement('script');
+      script.src = './data/registry-quality.js?v=20260722-1';
+      script.dataset.registryQuality = '1';
+      script.onload = resolve;
+      script.onerror = () => reject(new Error('Nuk u ngarkua shtresa e kontrollit të regjistrit.'));
+      document.head.appendChild(script);
+    });
+  } catch(error) {
+    console.error('Kontrolli i cilësisë së regjistrit nuk u ngarkua:', error);
+  }
+  return window.MedIndexRegistryQuality || null;
+}
+
+function emergencyRegistryCorrection(rows){
+  let corrected = 0;
+  const output = rows.map(row => {
+    if(String(row.ProtocolNo ?? '').trim() !== 'PD1339/051225' || String(row.PDID ?? '').trim() !== '42') return row;
+    corrected += 1;
+    return {
+      ...row,
+      'Substanca aktive':'Metamizole sodium',
+      __qualityStatus:'corrected',
+      __qualityMessage:'REG-2026-001: burimi e kishte substancën gabimisht si Metronidazole micronised; u korrigjua në Metamizole sodium.',
+      __qualitySourceUrl:'https://lekovi.zdravstvo.gov.mk/drugsregister/detailview/51155',
+      __qualityVersion:'emergency-2026-07-22'
+    };
+  });
+  return { rows:output, summary:{ total:output.length, corrected, blocked:0, warning:0, verified:Math.max(0, output.length-corrected) }, version:'emergency-2026-07-22' };
+}
+
 let parsedDrugData = [];
 try {
   if(Array.isArray(window.DRUG_DATA_PARTS) && window.DRUG_DATA_PARTS.length){
@@ -100,7 +140,18 @@ try {
 } catch(error) {
   console.error('Të dhënat e barnave nuk u lexuan:', error);
 }
-const RAW = unwrapDrugRows(parsedDrugData).map(normalizeDrugRow);
+
+const normalizedRows = unwrapDrugRows(parsedDrugData).map(normalizeDrugRow);
+const registryQuality = await ensureRegistryQuality();
+let registryQualityResult;
+try {
+  registryQualityResult = registryQuality?.applyRows?.(normalizedRows) || emergencyRegistryCorrection(normalizedRows);
+} catch(error) {
+  console.error('Auditimi i regjistrit dështoi; po aplikohet korrigjimi emergjent:', error);
+  registryQualityResult = emergencyRegistryCorrection(normalizedRows);
+}
+const RAW = registryQualityResult.rows;
+window.MEDINDEX_REGISTRY_QUALITY = registryQualityResult;
 if(!RAW.length){
   console.error('Nuk u gjet asnjë rresht i vlefshëm në regjistër.');
 }
