@@ -26,6 +26,10 @@ function isVerified(value) {
   return String(value ?? '').trim().toUpperCase() === 'VERIFIKUAR';
 }
 
+function environmentFlag(name) {
+  return ['TRUE', '1', 'YES', 'PO'].includes(String(process.env[name] ?? '').trim().toUpperCase());
+}
+
 function isXlsxBuffer(buffer) {
   return buffer.length > 4 && buffer[0] === 0x50 && buffer[1] === 0x4b;
 }
@@ -92,13 +96,6 @@ function configFromRows(rows) {
     if (key) config[key] = row['Vlera'];
   });
   return config;
-}
-
-function pick(row, ...keys) {
-  for (const key of keys) {
-    if (row[key] !== undefined && row[key] !== null && String(row[key]).trim() !== '') return row[key];
-  }
-  return '';
 }
 
 function numberOrNull(value) {
@@ -200,6 +197,7 @@ function isPublishedForm(row) {
 
 async function buildPayload() {
   const fileId = process.env.DOSAGE_SHEET_ID || DEFAULT_DOSAGE_FILE_ID;
+  const clinicalAutoFillEnabled = environmentFlag('ENABLE_DOSAGE_AUTOFILL');
   const workbookBuffer = await downloadWorkbook(fileId);
   const workbook = XLSX.read(workbookBuffer, { type: 'buffer', cellDates: false });
 
@@ -214,8 +212,10 @@ async function buildPayload() {
   const pediatricRows = sheetToRecords(workbook, pediatricSheet);
 
   const forms = formRows.filter(isPublishedForm).map(mapForm);
-  const adult = adultRows.filter(isPublishedDosage).map(mapAdult);
-  const pediatric = pediatricRows.filter(isPublishedDosage).map(mapPediatric);
+  const verifiedAdult = adultRows.filter(isPublishedDosage).map(mapAdult);
+  const verifiedPediatric = pediatricRows.filter(isPublishedDosage).map(mapPediatric);
+  const adult = clinicalAutoFillEnabled ? verifiedAdult : [];
+  const pediatric = clinicalAutoFillEnabled ? verifiedPediatric : [];
 
   return {
     schemaVersion: normalizeHeader(config.SCHEMA_VERSION) || '1.0.0',
@@ -228,9 +228,12 @@ async function buildPayload() {
     meta: {
       sourceFileId: fileId,
       cacheSeconds: numberOrNull(config.CACHE_SECONDS) || 300,
+      clinicalAutoFillEnabled,
       publishedForms: forms.length,
       publishedAdultRegimens: adult.length,
       publishedPediatricRegimens: pediatric.length,
+      eligibleAdultRegimens: verifiedAdult.length,
+      eligiblePediatricRegimens: verifiedPediatric.length,
       draftAdultRegimens: adultRows.filter(row => !isPublishedDosage(row)).length,
       draftPediatricRegimens: pediatricRows.filter(row => !isPublishedDosage(row)).length,
       geminiForDosage: false,
@@ -259,7 +262,7 @@ module.exports = async function handler(req, res) {
       forms: [],
       adult: [],
       pediatric: [],
-      meta: { geminiForDosage: false },
+      meta: { clinicalAutoFillEnabled: false, geminiForDosage: false },
     });
   }
 };
