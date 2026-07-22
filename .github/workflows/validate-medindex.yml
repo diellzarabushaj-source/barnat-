@@ -48,10 +48,15 @@ jobs:
 
       - name: Verify prescription safety gates
         run: |
+          grep -q 'protocolPatientName' index.html
+          grep -q 'protocolAllergies' index.html
           grep -q 'protocolClinicalReview' index.html
           grep -q 'validateForPrint' prescription-review.js
+          grep -q 'reviewedAt' prescription-review.js
           grep -q 'DRAFT — JO PËR PËRDORIM FINAL' medindex-view.js
+          grep -q 'mi-signature-grid' medindex-view.js
           grep -q 'clinicalReview' app-parts/part-06.txt
+          grep -q 'dosageDatasetVersion' app-parts/part-06.txt
           grep -q 'MedIndexPrescriptionView' app-parts/part-07.txt
           grep -q 'ENABLE_DOSAGE_AUTOFILL' api/dosage.js
           grep -q 'Cache-Control.*no-store' api/dosage.js
