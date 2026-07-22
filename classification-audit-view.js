@@ -30,13 +30,15 @@
       workspace.prepend(panel);
     }
 
-    const invalidIds = number(summary.invalidProtocolNo) + number(summary.invalidPdid);
+    const invalidProtocolNo = number(summary.invalidProtocolNo);
+    const invalidPdid = number(summary.invalidPdid);
+    const affectedIdentifierRows = Math.max(invalidProtocolNo, invalidPdid);
     const missingClinical = number(summary.missingSubstance) + number(summary.missingClass) + number(summary.missingUse) + number(summary.missingForm) + number(summary.missingStrength);
     panel.innerHTML = `
       <div class="ok"><strong>${number(summary.total)}</strong><span>Rreshta të audituar</span></div>
       <div class="ok"><strong>${number(summary.productLevelAtc)}</strong><span>ATC nivel produkti</span></div>
       <div class="${number(summary.atypicalAtc) ? 'warn' : 'ok'}"><strong>${number(summary.atypicalAtc)}</strong><span>ATC jo-standard</span></div>
-      <div class="${invalidIds ? 'warn' : 'ok'}"><strong>${invalidIds}</strong><span>ID jo-standard</span></div>
+      <div class="${affectedIdentifierRows ? 'warn' : 'ok'}"><strong>${affectedIdentifierRows}</strong><span>Rreshta me ID jo-standard</span></div>
       <div class="${number(summary.corrected) ? 'warn' : 'ok'}"><strong>${number(summary.corrected)}</strong><span>Rreshta të korrigjuar</span></div>
       <div class="${number(summary.warning) ? 'warn' : 'ok'}"><strong>${number(summary.warning)}</strong><span>Për verifikim</span></div>
       <div class="${number(summary.blocked) ? 'danger' : 'ok'}"><strong>${number(summary.blocked)}</strong><span>Të bllokuar</span></div>
@@ -44,7 +46,7 @@
 
     const note = document.getElementById('sourceNote');
     if (note) {
-      note.textContent = `${number(summary.total)} rreshta u audituan në ngarkim. ${number(summary.productLevelAtc)} kanë ATC të plotë në nivel produkti; ${number(summary.atypicalAtc)} kode janë jo-standard/placeholder; ${invalidIds} fusha identifikuese janë jo-standard; ${missingClinical} boshllëqe u gjetën në fushat klinike kryesore. ${number(summary.blocked)} rreshta janë bllokuar nga receta derisa të verifikohen.`;
+      note.textContent = `${number(summary.total)} rreshta u audituan në ngarkim. ${number(summary.productLevelAtc)} kanë ATC të plotë në nivel produkti; ${number(summary.atypicalAtc)} kode janë jo-standard/placeholder; ${affectedIdentifierRows} rreshta kanë identifikues jo-standard (${invalidProtocolNo} ProtocolNo dhe ${invalidPdid} PDID); ${missingClinical} boshllëqe u gjetën në fushat klinike kryesore. ${number(summary.blocked)} rreshta janë bllokuar nga receta derisa të verifikohen.`;
     }
   }
 
