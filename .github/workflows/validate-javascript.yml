@@ -1,0 +1,47 @@
+name: Validate MedIndex JavaScript
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+permissions:
+  contents: read
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Use Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Build browser editor bundle
+        run: cat app-parts/part-01.txt app-parts/part-02.txt app-parts/part-03.txt app-parts/part-04.txt app-parts/part-05.txt app-parts/part-06.txt app-parts/part-07.txt > /tmp/medindex-app.js
+
+      - name: Check JavaScript syntax
+        run: |
+          node --check /tmp/medindex-app.js
+          node --check app.js
+          node --check dosage-integration.js
+          node --check medindex-view.js
+          node --check name-display.js
+          node --check ui-enhancements.js
+          node --check classification.js
+          node --check classification-info.js
+          node --check classification-icons.js
+          node --check api/registry.js
+          node --check api/dosage.js
+
+      - name: Verify required prescription fields
+        run: |
+          grep -q 'data-item-field="clinicalNotes"' app-parts/part-05.txt
+          grep -q 'data-item-field="doseCalculation"' app-parts/part-05.txt
+          grep -q 'ENABLE_DOSAGE_AUTOFILL' api/dosage.js
+          grep -q 'Cache-Control.*no-store' api/dosage.js
+          grep -q 'Apliko skemën' dosage-integration.js
