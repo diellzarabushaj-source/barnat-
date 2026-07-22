@@ -1,5 +1,5 @@
 (() => {
-  const REVIEW_VERSION = '1.0';
+  const REVIEW_VERSION = '1.1';
   let reviewedAt = '';
   let scheduled = false;
   let restoring = false;
@@ -7,6 +7,7 @@
   const $ = selector => document.querySelector(selector);
   const text = value => String(value ?? '').trim();
   const normalize = value => text(value).normalize('NFD').replace(/[\u0300-\u036f]/g, '').toUpperCase();
+  const esc = value => String(value ?? '').replace(/[&<>"']/g, char => ({ '&':'&amp;', '<':'&lt;', '>':'&gt;', '"':'&quot;', "'":'&#39;' }[char]));
   const fieldValue = (article, name) => text(article.querySelector(`[data-item-field="${name}"]`)?.value);
 
   function itemFromArticle(article) {
@@ -39,6 +40,7 @@
       weightKg: text($('#protocolWeightKg')?.value),
       clinicalReview: Boolean(checkbox?.checked),
       reviewedAt,
+      dosageDatasetVersion: text(window.MEDINDEX_DOSAGE?.datasetVersion),
       items: [...document.querySelectorAll('#protocolDrugList .protocol-drug')].map(itemFromArticle),
     };
   }
@@ -75,6 +77,11 @@
         issue(`${label}: pesha është e detyrueshme për llogaritjen pediatrike.`, 'weight');
       }
     });
+
+    const currentDataset = text(window.MEDINDEX_DOSAGE?.datasetVersion);
+    if (text(protocol?.dosageDatasetVersion) && currentDataset && text(protocol.dosageDatasetVersion) !== currentDataset) {
+      warning(`Receta është krijuar me dataset-in ${protocol.dosageDatasetVersion}; versioni aktual është ${currentDataset}.`, 'dataset');
+    }
 
     if (requireReview && !protocol?.clinicalReview) {
       issue('Receta nuk është shënuar si e kontrolluar klinikisht.', 'review');
@@ -140,8 +147,8 @@
     if (result.issues.length) {
       card.classList.add('is-blocked');
       badge.classList.add('blocked');
-      badge.textContent = 'Jo gati';
-      summary.textContent = `${result.issues.length} çështje duhet të rregullohen para printimit.`;
+      badge.textContent = 'Draft i paplotë';
+      summary.textContent = `${result.issues.length} çështje bllokojnë finalizimin dhe printimin; drafti mund të ruhet.`;
     } else if (checkbox.checked) {
       card.classList.add('is-ready');
       badge.classList.add('ready');
@@ -156,7 +163,7 @@
 
     const rows = [...result.issues.map(entry => ({ ...entry, type: 'issue' })), ...result.warnings.map(entry => ({ ...entry, type: 'warning' }))];
     list.innerHTML = rows.length
-      ? rows.slice(0, 8).map(entry => `<li class="${entry.type}" data-review-key="${entry.key}">${entry.message}</li>`).join('')
+      ? rows.slice(0, 8).map(entry => `<li class="${entry.type}" data-review-key="${esc(entry.key)}">${esc(entry.message)}</li>`).join('')
       : '<li>Të gjitha fushat kritike janë plotësuar.</li>';
 
     reviewedNode.textContent = checkbox.checked && reviewedAt
@@ -195,12 +202,14 @@
 
   function validateForSave() {
     const result = evaluateProtocol(protocolFromDom());
+    const hardIssues = result.issues.filter(entry => ['name', 'items'].includes(entry.key));
     render();
-    if (!result.ok) {
-      notify(result.issues[0].message);
-      focusKey(result.issues[0].key);
+    if (hardIssues.length) {
+      notify(hardIssues[0].message);
+      focusKey(hardIssues[0].key);
+      return { ...result, ok:false, issues:hardIssues };
     }
-    return result;
+    return { ...result, ok:true };
   }
 
   function validateForPrint() {
