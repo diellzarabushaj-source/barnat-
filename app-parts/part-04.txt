@@ -1,0 +1,160 @@
+9';
+          return '<td class="' + col.cls + '" title="' + escapeHtml(cat || '') + '"><span class="cat-dot" style="background:' + color + '"></span>' + escapeHtml(val) + '</td>';
+        }
+        if(col.type === 'num' && (col.cls === 'price')){
+          const numericValue = Number(val);
+          val = (val === '' || val == null || !Number.isFinite(numericValue)) ? '' : numericValue.toLocaleString('de-DE', {minimumFractionDigits:2, maximumFractionDigits:2}) + ' &euro;';
+        } else {
+          val = escapeHtml(val);
+        }
+        return '<td class="' + col.cls + '" title="' + escapeHtml(r[col.key]) + '">' + val + '</td>';
+      }).join('') + '</tr>';
+    }).join('');
+
+    tbody.querySelectorAll('.drug-select').forEach(cb => {
+      cb.addEventListener('change', () => {
+        const key = cb.dataset.drugKey;
+        if(cb.checked) selectedDrugKeys.add(key); else selectedDrugKeys.delete(key);
+        cb.closest('tr').classList.toggle('row-selected', cb.checked);
+        updateProtocolCounters();
+        syncDraftFromSelection();
+      });
+    });
+  }
+
+  updateProtocolCounters();
+  renderPagination(totalPages);
+}
+
+function renderPagination(totalPages){
+  const pag = document.getElementById('pagination');
+  pag.innerHTML = '';
+  if(state.pageSize >= 4006){ pag.innerHTML = '<span style="color:#777;font-size:.82rem;">Duke shfaqur t&euml; gjitha rreshtat</span>'; return; }
+
+  const mkBtn = (label, page, disabled, active) => {
+    const b = document.createElement('button');
+    b.textContent = label;
+    if(disabled) b.disabled = true;
+    if(active) b.classList.add('active');
+    b.addEventListener('click', () => { state.page = page; render(); });
+    return b;
+  };
+
+  pag.appendChild(mkBtn('« Para', state.page - 1, state.page === 1, false));
+
+  // simple range of page numbers
+  const cur = state.page;
+  let pages = [];
+  for(let p=1;p<=totalPages;p++){
+    if(p===1 || p===totalPages || Math.abs(p-cur)<=2) pages.push(p);
+  }
+  let last = 0;
+  pages.forEach(p => {
+    if(last && p - last > 1){
+      const dots = document.createElement('span');
+      dots.textContent = '…';
+      dots.style.padding = '0 4px';
+      dots.style.color = '#999';
+      pag.appendChild(dots);
+    }
+    pag.appendChild(mkBtn(String(p), p, false, p===cur));
+    last = p;
+  });
+
+  pag.appendChild(mkBtn('Pas »', state.page+1, state.page===totalPages, false));
+}
+
+function buildColPanel(){
+  const panel = document.getElementById('colPanel');
+  panel.innerHTML = '';
+
+  const actions = document.createElement('div');
+  actions.className = 'col-panel-actions';
+  const btnAll = document.createElement('button');
+  btnAll.type = 'button'; btnAll.textContent = 'Shfaqi t\u00EB gjitha';
+  btnAll.addEventListener('click', () => { COLUMNS.forEach(c => c.visible = true); buildColPanel(); render(); });
+  const btnNone = document.createElement('button');
+  btnNone.type = 'button'; btnNone.textContent = 'Fshihi t\u00EB gjitha';
+  btnNone.addEventListener('click', () => {
+    COLUMNS.forEach((c,i) => c.visible = i === 0);
+    buildColPanel(); render();
+  });
+  actions.appendChild(btnAll); actions.appendChild(btnNone);
+  panel.appendChild(actions);
+
+  COLUMNS.forEach(col => {
+    const label = document.createElement('label');
+    const cb = document.createElement('input');
+    cb.type = 'checkbox';
+    cb.checked = col.visible;
+    cb.addEventListener('change', () => {
+      col.visible = cb.checked;
+      render();
+    });
+    label.appendChild(cb);
+    const span = document.createElement('span');
+    span.innerHTML = col.label;
+    label.appendChild(span);
+    panel.appendChild(label);
+  });
+}
+
+const colPanel = document.getElementById('colPanel');
+const colPickerBtn = document.getElementById('colPickerBtn');
+colPickerBtn.addEventListener('click', (e) => {
+  e.stopPropagation();
+  colPanel.classList.toggle('open');
+});
+document.addEventListener('click', (e) => {
+  if(!colPanel.contains(e.target) && e.target !== colPickerBtn){
+    colPanel.classList.remove('open');
+  }
+});
+
+let allForms = [];
+
+function textMatches(text, q){
+  const tl = text.toLowerCase();
+  if(tl.includes(q)) return true;
+  return Object.keys(FORM_ALIASES).some(k => q.includes(k) && FORM_ALIASES[k].some(t => tl.includes(t)));
+}
+
+function buildFormPanel(filterText){
+  const list = document.getElementById('formList');
+  list.innerHTML = '';
+  const q = (filterText || '').trim().toLowerCase();
+
+  // "Të gjitha format" gjithmonë në krye
+  const allItem = document.createElement('div');
+  allItem.className = 'form-item form-item-all' + (state.formType === null ? ' active' : '');
+  allItem.textContent = 'Të gjitha format';
+  allItem.addEventListener('click', () => selectForm(null, null));
+  list.appendChild(allItem);
+
+  let anyRendered = false;
+
+  CATEGORY_ORDER.forEach(cat => {
+    const forms = FORM_CATEGORIES[cat];
+    const catMatches = !q || textMatches(cat, q);
+    const matchingForms = forms.filter(f => !q || catMatches || textMatches(f, q));
+    if(q && !catMatches && matchingForms.length === 0) return;
+
+    anyRendered = true;
+    const color = CATEGORY_COLORS[cat];
+
+    const header = document.createElement('div');
+    header.className = 'form-cat-header' + (state.formType === 'category' && state.formValue === cat ? ' active' : '');
+    header.innerHTML = '<span class="cat-dot" style="background:' + color + '"></span>' + escapeHtml(cat) + ' <span class="cat-count">(' + forms.length + ')</span>';
+    header.addEventListener('click', () => selectForm('category', cat));
+    list.appendChild(header);
+
+    (q && !catMatches ? matchingForms : forms).forEach(f => {
+      const item = document.createElement('div');
+      item.className = 'form-item form-item-sub' + (state.formType === 'form' && state.formValue === f ? ' active' : '');
+      item.innerHTML = '<span class="cat-dot" style="background:' + color + '"></span>' + escapeHtml(f);
+      item.addEventListener('click', () => selectForm('form', f));
+      list.appendChild(item);
+    });
+  });
+
+  if(q && !anyRender
