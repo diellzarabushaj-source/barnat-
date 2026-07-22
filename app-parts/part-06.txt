@@ -1,0 +1,139 @@
+');
+}
+
+function switchProtocolTab(tab){
+  document.querySelectorAll('.protocol-tab').forEach(btn => btn.classList.toggle('active', btn.dataset.tab === tab));
+  document.getElementById('protocolPaneBuilder').classList.toggle('active', tab === 'builder');
+  document.getElementById('protocolPaneSaved').classList.toggle('active', tab === 'saved');
+}
+
+function protocolFormData(){
+  return {
+    id: editingProtocolId || ('p_' + Date.now()),
+    name: document.getElementById('protocolName').value.trim(),
+    indication: document.getElementById('protocolIndication').value.trim(),
+    population: document.getElementById('protocolPopulation').value.trim(),
+    version: document.getElementById('protocolVersion').value.trim(),
+    notes: document.getElementById('protocolNotes').value.trim(),
+    updatedAt: new Date().toISOString(),
+    items: draftItems.map(i => ({...i}))
+  };
+}
+
+function saveProtocol(){
+  const protocol = protocolFormData();
+  if(!protocol.name){
+    showProtocolToast('Shkruaje emrin e protokollit.');
+    document.getElementById('protocolName').focus();
+    return;
+  }
+  if(!protocol.items.length){
+    showProtocolToast('Zgjidhe së paku një bar.');
+    return;
+  }
+  const all = getSavedProtocols();
+  const index = all.findIndex(p => p.id === protocol.id);
+  if(index >= 0) all[index] = protocol; else all.unshift(protocol);
+  setSavedProtocols(all);
+  editingProtocolId = protocol.id;
+  renderSavedProtocols();
+  showProtocolToast('Protokolli u ruajt në këtë shfletues.');
+}
+
+function resetProtocolBuilder(clearSelection=false){
+  editingProtocolId = null;
+  ['protocolName','protocolIndication','protocolPopulation','protocolVersion','protocolNotes'].forEach(id => document.getElementById(id).value = '');
+  if(clearSelection) selectedDrugKeys.clear();
+  draftItems = clearSelection ? [] : selectedRows().map(itemFromDrug);
+  renderProtocolDrugList();
+  updateProtocolCounters();
+  render();
+}
+
+function loadProtocol(id){
+  const p = getSavedProtocols().find(x => x.id === id);
+  if(!p) return;
+  editingProtocolId = p.id;
+  document.getElementById('protocolName').value = p.name || '';
+  document.getElementById('protocolIndication').value = p.indication || '';
+  document.getElementById('protocolPopulation').value = p.population || '';
+  document.getElementById('protocolVersion').value = p.version || '';
+  document.getElementById('protocolNotes').value = p.notes || '';
+  draftItems = (p.items || []).map(i => ({...i}));
+  renderProtocolDrugList();
+  switchProtocolTab('builder');
+}
+
+function deleteProtocol(id){
+  const all = getSavedProtocols().filter(p => p.id !== id);
+  setSavedProtocols(all);
+  if(editingProtocolId === id) resetProtocolBuilder(false);
+  renderSavedProtocols();
+  showProtocolToast('Protokolli u fshi.');
+}
+
+function duplicateProtocol(id){
+  const p = getSavedProtocols().find(x => x.id === id);
+  if(!p) return;
+  const copy = {...p, id:'p_' + Date.now(), name:(p.name || 'Protokoll') + ' — kopje', updatedAt:new Date().toISOString(), items:(p.items || []).map(i => ({...i}))};
+  const all = getSavedProtocols();
+  all.unshift(copy);
+  setSavedProtocols(all);
+  renderSavedProtocols();
+  showProtocolToast('U krijua një kopje.');
+}
+
+function renderSavedProtocols(){
+  const list = document.getElementById('savedProtocolsList');
+  if(!list) return;
+  const all = getSavedProtocols();
+  if(!all.length){
+    list.innerHTML = '<div class="protocol-empty">Ende nuk ke protokolle të ruajtura.</div>';
+    return;
+  }
+  list.innerHTML = all.map(p => {
+    const date = p.updatedAt ? new Date(p.updatedAt).toLocaleString('sq-AL') : '';
+    return `<article class="saved-protocol">
+      <h3>${escapeHtml(p.name || 'Pa emër')}</h3>
+      <div class="saved-meta">${escapeHtml(p.indication || 'Pa indikacion')} · ${(p.items || []).length} barna${date ? ' · ' + escapeHtml(date) : ''}</div>
+      <div class="saved-actions">
+        <button class="btn-primary" type="button" data-load-protocol="${escapeHtml(p.id)}">Hape</button>
+        <button class="btn-secondary" type="button" data-copy-saved="${escapeHtml(p.id)}">Kopjo tekstin</button>
+        <button class="btn-secondary" type="button" data-duplicate-protocol="${escapeHtml(p.id)}">Dupliko</button>
+        <button class="btn-danger" type="button" data-delete-protocol="${escapeHtml(p.id)}">Fshije</button>
+      </div>
+    </article>`;
+  }).join('');
+
+  list.querySelectorAll('[data-load-protocol]').forEach(b => b.addEventListener('click', () => loadProtocol(b.dataset.loadProtocol)));
+  list.querySelectorAll('[data-copy-saved]').forEach(b => b.addEventListener('click', () => {
+    const p = getSavedProtocols().find(x => x.id === b.dataset.copySaved);
+    if(p) copyProtocolText(p);
+  }));
+  list.querySelectorAll('[data-duplicate-protocol]').forEach(b => b.addEventListener('click', () => duplicateProtocol(b.dataset.duplicateProtocol)));
+  list.querySelectorAll('[data-delete-protocol]').forEach(b => b.addEventListener('click', () => deleteProtocol(b.dataset.deleteProtocol)));
+}
+
+function protocolToText(p){
+  const lines = [];
+  lines.push(p.name || 'PROTOKOLL');
+  if(p.indication) lines.push('Indikacioni: ' + p.indication);
+  if(p.population) lines.push('Grupi: ' + p.population);
+  if(p.version) lines.push('Versioni/Data: ' + p.version);
+  lines.push('');
+  (p.items || []).forEach((i, n) => {
+    lines.push((n+1) + '. ' + i.tradeName + ' — ' + i.substance + ' ' + i.strength + ' (' + i.form + ')');
+    const regimen = [i.dose, i.route, i.frequency, i.duration].filter(Boolean).join(' · ');
+    if(regimen) lines.push('   ' + regimen);
+    if(i.instructions) lines.push('   Udhëzime: ' + i.instructions);
+  });
+  if(p.notes){ lines.push(''); lines.push('Vërejtje/monitorim: ' + p.notes); }
+  lines.push('');
+  lines.push('Shënim: Model personal pune; kërkon verifikim klinik për pacientin individual.');
+  return lines.join('\n');
+}
+
+async function copyProtocolText(p=protocolFormData()){
+  try{
+    await navigator.clipboard.writeText(protocolToText(p));
+    showProtocolToast('
