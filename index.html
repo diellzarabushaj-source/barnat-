@@ -107,7 +107,7 @@
     <div class="protocol-content">
       <section class="protocol-pane active" id="protocolPaneBuilder">
         <div class="protocol-info">
-          Regjistri identifikon produktet, por nuk plotëson automatikisht dozën, rrugën, frekuencën ose kohëzgjatjen. Këto fusha duhet të verifikohen dhe të shkruhen nga profesionisti sipas pacientit dhe udhëzimeve klinike.
+          MedIndex plotëson vetëm parashtesat dhe skemat me status <strong>VERIFIKUAR</strong>. Çdo vlerë është pikënisje e editueshme dhe duhet verifikuar për indikacionin, pacientin, alergjitë, shtatzëninë dhe funksionin renal/hepatik.
         </div>
 
         <div class="protocol-card">
@@ -125,8 +125,8 @@
             </div>
             <div class="protocol-field floating-field">
               <input id="protocolPopulation" type="text" placeholder=" ">
-              <label for="protocolPopulation">Grupi i pacientëve</label>
-              <span class="floating-hint">p.sh. Të rritur, pa shtatzëni</span>
+              <label for="protocolPopulation">Grupi / kushtet klinike</label>
+              <span class="floating-hint">p.sh. Pa shtatzëni, pa insuficiencë renale</span>
             </div>
             <div class="protocol-field floating-field">
               <input id="protocolVersion" type="text" placeholder=" ">
@@ -137,6 +137,32 @@
               <textarea id="protocolNotes" placeholder=" "></textarea>
               <label for="protocolNotes">Vërejtje, kundërindikacione, monitorim</label>
               <span class="floating-hint">Shëno kriteret, alarmet, monitorimin, alternativat ose referimin.</span>
+            </div>
+          </div>
+
+          <div class="dosage-patient-grid" aria-label="Të dhënat për dozologjinë">
+            <div class="protocol-field" data-patient-main>
+              <label for="protocolPatientType">Lloji i pacientit</label>
+              <select id="protocolPatientType">
+                <option value="adult">I rritur</option>
+                <option value="pediatric">Fëmijë / pediatrik</option>
+                <option value="manual">Plotësim krejt manual</option>
+              </select>
+            </div>
+            <div class="protocol-field" data-pediatric-only hidden>
+              <label for="protocolAgeValue">Mosha</label>
+              <input id="protocolAgeValue" type="number" min="0" step="0.1" inputmode="decimal" placeholder="p.sh. 5">
+            </div>
+            <div class="protocol-field" data-pediatric-only hidden>
+              <label for="protocolAgeUnit">Njësia e moshës</label>
+              <select id="protocolAgeUnit">
+                <option value="years">Vjeç</option>
+                <option value="months">Muaj</option>
+              </select>
+            </div>
+            <div class="protocol-field" data-pediatric-only hidden>
+              <label for="protocolWeightKg">Pesha (kg)</label>
+              <input id="protocolWeightKg" type="number" min="0" step="0.1" inputmode="decimal" placeholder="p.sh. 18.5">
             </div>
           </div>
         </div>
@@ -173,9 +199,10 @@
 <script id="drug-data" type="application/json">[]</script>
 <script>window.DRUG_DATA_PARTS = [];</script>
 <script src="data/registry-data.js?v=20260722-7"></script>
-<script src="app.js?v=20260722-7"></script>
+<script src="app.js?v=20260722-8"></script>
 <script src="ui-enhancements.js?v=20260722-7"></script>
-<script src="medindex-view.js?v=20260722-10"></script>
+<script src="medindex-view.js?v=20260722-11"></script>
 <script src="name-display.js?v=20260722-1"></script>
+<script src="dosage-integration.js?v=20260722-1"></script>
 </body>
 </html>
