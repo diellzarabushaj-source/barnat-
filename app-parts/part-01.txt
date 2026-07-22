@@ -1,0 +1,125 @@
+(async () => {
+const CANONICAL_FIELDS = [
+  'Nr rendor','PDID','ProtocolNo','Emri tregtar','Substanca aktive','ATC Code',
+  'Klasa / Çka është','Përdorimi (fjalë kyçe)','Fortësia','Forma farmaceutike',
+  'Madhësia e paketimit','Bartësi i Autorizim Marketingut','Prodhuesi',
+  'MA certifikata','Statusi','Çmimi me shumicë','Çmimi me marzhë','TVSH',
+  'Çmimi me pakicë','Afati i vlefshmërisë'
+];
+
+function normalizeFieldToken(value){
+  return String(value ?? '')
+    .normalize('NFD').replace(/[\u0300-\u036f]/g, '')
+    .toLowerCase()
+    .replace(/&[a-z]+;/g, '')
+    .replace(/[^a-z0-9]+/g, '');
+}
+
+const FIELD_ALIASES = {
+  'Nr rendor': ['nrrendor','nr','number','index','rendor'],
+  'PDID': ['pdid','productid','drugid','id'],
+  'ProtocolNo': ['protocolno','protocol','protokolli','protokollno'],
+  'Emri tregtar': ['emritregtar','tradename','brandname','emri','name'],
+  'Substanca aktive': ['substancaaktive','activesubstance','activeingredient','genericname','substanca'],
+  'ATC Code': ['atccode','atc','kodiatc'],
+  'Klasa / Çka është': ['klasackaeshte','klasa','class','drugclass','ckaeshte'],
+  'Përdorimi (fjalë kyçe)': ['perdorimifjalekyce','perdorimi','indication','indications','uses','keywords'],
+  'Fortësia': ['fortesia','strength','doseStrength'],
+  'Forma farmaceutike': ['formafarmaceutike','forma','dosageform','pharmaceuticalform'],
+  'Madhësia e paketimit': ['madhesiaepaketimit','paketimi','packsize','packagesize'],
+  'Bartësi i Autorizim Marketingut': ['bartesiiAutorizimMarketingut','bartesiiAutorizimit','marketingauthorisationholder','mah'],
+  'Prodhuesi': ['prodhuesi','manufacturer','producer'],
+  'MA certifikata': ['macertifikata','macertificate','certificate'],
+  'Statusi': ['statusi','status','type'],
+  'Çmimi me shumicë': ['cmimimeshumice','wholesaleprice'],
+  'Çmimi me marzhë': ['cmimimemarzhe','marginprice'],
+  'TVSH': ['tvsh','vat'],
+  'Çmimi me pakicë': ['cmimimepakice','retailprice','price'],
+  'Afati i vlefshmërisë': ['afatiivlefshmerise','validity','validuntil','expiry']
+};
+
+const FIELD_LOOKUP = {};
+CANONICAL_FIELDS.forEach(field => {
+  FIELD_LOOKUP[normalizeFieldToken(field)] = field;
+  (FIELD_ALIASES[field] || []).forEach(alias => {
+    FIELD_LOOKUP[normalizeFieldToken(alias)] = field;
+  });
+});
+
+function unwrapDrugRows(value){
+  let current = value;
+  for(let depth = 0; depth < 5; depth++){
+    if(Array.isArray(current)) return current;
+    if(typeof current === 'string'){
+      try { current = JSON.parse(current); continue; } catch(e) { return []; }
+    }
+    if(current && typeof current === 'object'){
+      const preferred = ['data','rows','records','items','drugs','barnat','Sheet1','sheet1'];
+      const preferredKey = preferred.find(k => Array.isArray(current[k]) || typeof current[k] === 'string');
+      if(preferredKey){ current = current[preferredKey]; continue; }
+      const arrayValue = Object.values(current).find(v => Array.isArray(v));
+      if(arrayValue){ current = arrayValue; continue; }
+    }
+    break;
+  }
+  return [];
+}
+
+function normalizeDrugRow(row, index){
+  if(typeof row === 'string'){
+    try { row = JSON.parse(row); } catch(e) { row = { 'Emri tregtar': row }; }
+  }
+
+  const result = {};
+  CANONICAL_FIELDS.forEach(field => { result[field] = ''; });
+
+  if(Array.isArray(row)){
+    CANONICAL_FIELDS.forEach((field, i) => { result[field] = row[i] ?? ''; });
+  } else if(row && typeof row === 'object'){
+    const source = (row.data && typeof row.data === 'object' && !Array.isArray(row.data)) ? row.data : row;
+    Object.entries(source).forEach(([key, value]) => {
+      const canonical = FIELD_LOOKUP[normalizeFieldToken(key)];
+      if(canonical) result[canonical] = value ?? '';
+    });
+  }
+
+  if(result['Nr rendor'] === '' || result['Nr rendor'] == null) result['Nr rendor'] = index + 1;
+  return result;
+}
+
+let parsedDrugData = [];
+try {
+  if(Array.isArray(window.DRUG_DATA_PARTS) && window.DRUG_DATA_PARTS.length){
+    const encoded = window.DRUG_DATA_PARTS.join('');
+    const bytes = Uint8Array.from(atob(encoded), c => c.charCodeAt(0));
+    const stream = new Blob([bytes]).stream().pipeThrough(new DecompressionStream('gzip'));
+    parsedDrugData = JSON.parse(await new Response(stream).text());
+  } else {
+    parsedDrugData = JSON.parse(document.getElementById('drug-data')?.textContent || '[]');
+  }
+} catch(error) {
+  console.error('Të dhënat e barnave nuk u lexuan:', error);
+}
+const RAW = unwrapDrugRows(parsedDrugData).map(normalizeDrugRow);
+if(!RAW.length){
+  console.error('Nuk u gjet asnjë rresht i vlefshëm në regjistër.');
+}
+
+const COLUMNS = [
+  { key:'Nr rendor', label:'Nr', type:'num', cls:'code', visible:true },
+  { key:'Emri tregtar', label:'Emri Tregtar', type:'str', cls:'name', visible:true },
+  { key:'Substanca aktive', label:'Substanca Aktive', type:'str', cls:'', visible:true },
+  { key:'ATC Code', label:'ATC', type:'str', cls:'code', visible:true },
+  { key:'Klasa / Çka është', label:'Klasa / Çka është', type:'str', cls:'wrap', visible:true },
+  { key:'Përdorimi (fjalë kyçe)', label:'Përdorimi / fjalë kyçe', type:'str', cls:'wrap', visible:true },
+  { key:'PDID', label:'PDID', type:'str', cls:'code', visible:true },
+  { key:'ProtocolNo', label:'Protokolli', type:'str', cls:'code', visible:false },
+  { key:'Fortësia', label:'Fort&euml;sia', type:'str', cls:'', visible:true },
+  { key:'Forma farmaceutike', label:'Forma', type:'str', cls:'wrap', visible:true },
+  { key:'Madhësia e paketimit', label:'Paketimi', type:'str', cls:'wrap', visible:true },
+  { key:'Bartësi i Autorizim Marketingut', label:'Bartësi i Autorizimit', type:'str', cls:'wrap', visible:false },
+  { key:'Prodhuesi', label:'Prodhuesi', type:'str', cls:'wrap', visible:false },
+  { key:'MA certifikata', label:'Certifikata MA', type:'str', cls:'code', visible:false },
+  { key:'Statusi', label:'Statusi', type:'str', cls:'', visible:true },
+  { key:'Çmimi me shumicë', label:'&Ccedil;m. Shumic&euml;', type:'num', cls:'price', visible:false },
+  { key:'Çmimi me marzhë', label:'&Ccedil;m. M
