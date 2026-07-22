@@ -1,5 +1,5 @@
 (() => {
-  const REVIEW_VERSION = '1.1';
+  const REVIEW_VERSION = '1.2';
   let reviewedAt = '';
   let scheduled = false;
   let restoring = false;
@@ -34,6 +34,10 @@
       name: text($('#protocolName')?.value),
       indication: text($('#protocolIndication')?.value),
       population: text($('#protocolPopulation')?.value),
+      patientName: text($('#protocolPatientName')?.value),
+      birthDate: text($('#protocolBirthDate')?.value),
+      patientId: text($('#protocolPatientId')?.value),
+      allergies: text($('#protocolAllergies')?.value),
       patientType: $('#protocolPatientType')?.value || 'adult',
       ageValue: text($('#protocolAgeValue')?.value),
       ageUnit: $('#protocolAgeUnit')?.value || 'years',
@@ -54,6 +58,9 @@
 
     if (!text(protocol?.name)) issue('Mungon emri i recetës / protokollit.', 'name');
     if (!items.length) issue('Nuk është zgjedhur asnjë bar.', 'items');
+    if (!text(protocol?.patientName)) issue('Mungon emri dhe mbiemri i pacientit.', 'patientName');
+    if (!text(protocol?.birthDate)) warning('Datëlindja e pacientit nuk është plotësuar.', 'birthDate');
+    if (!text(protocol?.allergies)) warning('Alergjitë nuk janë shënuar; shkruaj “Nuk dihen” kur nuk ka të dhëna.', 'allergies');
     if (!text(protocol?.indication)) warning('Diagnoza ose indikacioni nuk është plotësuar.', 'indication');
 
     if (protocol?.patientType === 'pediatric' && !text(protocol?.ageValue)) {
@@ -83,15 +90,15 @@
       warning(`Receta është krijuar me dataset-in ${protocol.dosageDatasetVersion}; versioni aktual është ${currentDataset}.`, 'dataset');
     }
 
-    if (requireReview && !protocol?.clinicalReview) {
-      issue('Receta nuk është shënuar si e kontrolluar klinikisht.', 'review');
+    if (requireReview && (!protocol?.clinicalReview || !text(protocol?.reviewedAt))) {
+      issue('Receta nuk është shënuar dhe datuar si e kontrolluar klinikisht.', 'review');
     }
 
     return {
       issues,
       warnings,
       ok: issues.length === 0,
-      printable: issues.length === 0 && Boolean(protocol?.clinicalReview),
+      printable: issues.length === 0 && Boolean(protocol?.clinicalReview) && Boolean(text(protocol?.reviewedAt)),
     };
   }
 
@@ -99,6 +106,9 @@
     const map = {
       name: '#protocolName',
       indication: '#protocolIndication',
+      patientName: '#protocolPatientName',
+      birthDate: '#protocolBirthDate',
+      allergies: '#protocolAllergies',
       age: '#protocolAgeValue',
       weight: '#protocolWeightKg',
       review: '#protocolClinicalReview',
