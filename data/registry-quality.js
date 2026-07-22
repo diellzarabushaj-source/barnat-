@@ -120,7 +120,7 @@
     }
 
     const atc = text(row['ATC Code']).toUpperCase().replace(/\s+/g, '');
-    if (atc && !/^[A-Z](?:\d{2}(?:[A-Z]{1,2}(?:\d{2})?)?)?)?$/.test(atc)) {
+    if (atc && !/^[A-Z](?:\d{2}(?:[A-Z](?:[A-Z](?:\d{2})?)?)?)?$/.test(atc)) {
       addIssue(row, 'warning', 'ATC_FORMAT', 'Kodi ATC ka format jo të zakonshëm dhe duhet kontrolluar.');
     }
   }
