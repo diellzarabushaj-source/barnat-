@@ -1,0 +1,41 @@
+<!doctype html>
+<html lang="sq">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+  <meta name="robots" content="noindex,nofollow,noarchive">
+  <meta name="theme-color" content="#0d3d40">
+  <title>Hyr në MedIndex</title>
+  <link rel="stylesheet" href="login.css?v=20260723-1">
+</head>
+<body>
+  <main class="login-shell">
+    <section class="login-card" aria-labelledby="loginTitle">
+      <div class="login-brand" aria-hidden="true">M<span>+</span></div>
+      <p class="login-kicker">Qasje private</p>
+      <h1 id="loginTitle">Hyr në MedIndex</h1>
+      <p class="login-copy">Shkruaje password-in personal për të hapur regjistrin, recetat, ICD-në dhe analizat.</p>
+
+      <form id="loginForm" autocomplete="off" novalidate>
+        <label for="password">Password-i</label>
+        <div class="password-row">
+          <input id="password" name="password" type="password" inputmode="text" autocomplete="current-password" required minlength="6" autofocus>
+          <button id="togglePassword" type="button" aria-label="Shfaq password-in" aria-pressed="false">Shfaq</button>
+        </div>
+        <button class="login-submit" id="loginSubmit" type="submit">
+          <span>Hyr</span>
+          <span aria-hidden="true">→</span>
+        </button>
+        <p class="login-message" id="loginMessage" role="alert" aria-live="polite"></p>
+      </form>
+
+      <div class="login-meta">
+        <span>Sesioni zgjat 8 orë</span>
+        <span>Cookie HttpOnly</span>
+        <span>5 tentativa / 15 min</span>
+      </div>
+    </section>
+  </main>
+  <script src="login.js?v=20260723-1" defer></script>
+</body>
+</html>
