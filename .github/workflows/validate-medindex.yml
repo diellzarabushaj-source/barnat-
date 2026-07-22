@@ -11,7 +11,7 @@ permissions:
 jobs:
   syntax:
     runs-on: ubuntu-latest
-    timeout-minutes: 5
+    timeout-minutes: 7
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
@@ -20,6 +20,14 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: 20
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: Install registry sync dependency
+        run: python -m pip install --disable-pip-version-check openpyxl==3.1.5
 
       - name: Validate standalone JavaScript
         run: |
@@ -31,6 +39,7 @@ jobs:
           node --check name-display.js
           node --check dosage-integration.js
           node --check prescription-review.js
+          node --check data/registry-quality.js
           node --check classification.js
           node --check classification-info.js
           node --check classification-icons.js
@@ -45,6 +54,31 @@ jobs:
               app-parts/part-06.txt \
               app-parts/part-07.txt > /tmp/medindex-app-bundle.js
           node --check /tmp/medindex-app-bundle.js
+
+      - name: Validate registry quality rules
+        run: |
+          python -m py_compile scripts/sync_sheet.py
+          python - <<'PY'
+          from scripts.sync_sheet import apply_quality_corrections, assert_critical_registry_rules
+
+          sample = [{
+              'ProtocolNo': 'PD1339/051225',
+              'PDID': 42,
+              'Emri tregtar': 'ANALGIN ®',
+              'Substanca aktive': 'Metronidazole micronised',
+              'ATC Code': 'N02BB02',
+              'Fortësia': '1 g/2 ml',
+              'Forma farmaceutike': 'Solution for injection',
+          }]
+          corrected, applied = apply_quality_corrections(sample)
+          assert len(applied) == 1, applied
+          assert corrected[0]['Substanca aktive'] == 'Metamizole sodium', corrected[0]
+          assert_critical_registry_rules(corrected)
+          PY
+          grep -q 'REG-2026-001' data/registry-quality.js
+          grep -q 'PD1339/051225' data/registry-quality.js
+          grep -q 'Metamizole sodium' scripts/sync_sheet.py
+          grep -q 'registryQuality.applyRows' api/registry.js
 
       - name: Verify prescription safety gates
         run: |
