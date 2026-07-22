@@ -307,3 +307,32 @@
   }
   ::-webkit-scrollbar{ height:10px; width:10px; }
   ::-webkit-scrollbar-thumb{ background:#c3c9c1; border-radius:6px; }
+
+
+  /* ===== Protokollet e mia ===== */
+  .protocol-toolbar-btn{
+    border:1.5px solid var(--teal);
+    background:var(--teal-dark);
+    color:#fff;
+    padding:9px 13px;
+    border-radius:6px;
+    font-size:.86rem;
+    font-weight:650;
+    cursor:pointer;
+    white-space:nowrap;
+  }
+  .protocol-toolbar-btn:hover{ background:var(--teal); }
+  .protocol-toolbar-btn .mini-count{
+    display:inline-flex;
+    align-items:center;
+    justify-content:center;
+    min-width:22px;
+    height:22px;
+    padding:0 6px;
+    margin-left:6px;
+    border-radius:12px;
+    background:var(--amber);
+    color:#fff;
+    font-family:var(--mono);
+    font-size:.72rem;
+  }
