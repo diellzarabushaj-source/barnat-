@@ -1,0 +1,162 @@
+ed){
+    const empty = document.createElement('div');
+    empty.className = 'form-empty';
+    empty.textContent = 'Asnjë formë nuk u gjet';
+    list.appendChild(empty);
+  }
+}
+
+function selectForm(type, value){
+  state.formType = type;
+  state.formValue = value;
+  state.page = 1;
+  const btn = document.getElementById('formPickerBtn');
+  if(type === null){
+    btn.textContent = 'Forma: Të gjitha ▾';
+  } else if(type === 'category'){
+    btn.innerHTML = '<span class="cat-dot" style="background:' + CATEGORY_COLORS[value] + '"></span>' + escapeHtml(value) + ' ▾';
+  } else {
+    btn.innerHTML = '<span class="cat-dot" style="background:' + CATEGORY_COLORS[categoryOf(value)] + '"></span>' + escapeHtml(value) + ' ▾';
+  }
+  document.getElementById('formPanel').classList.remove('open');
+  render();
+}
+
+function initFormPicker(){
+  allForms = Array.from(new Set(RAW.map(r => String(r['Forma farmaceutike'] ?? '').trim()).filter(Boolean)))
+    .sort((a,b) => a.localeCompare(b, 'sq'));
+  buildFormPanel('');
+
+  const btn = document.getElementById('formPickerBtn');
+  const panel = document.getElementById('formPanel');
+  const searchInput = document.getElementById('formSearch');
+
+  btn.addEventListener('click', (e) => {
+    e.stopPropagation();
+    panel.classList.toggle('open');
+    if(panel.classList.contains('open')) searchInput.focus();
+  });
+  searchInput.addEventListener('input', (e) => buildFormPanel(e.target.value));
+  panel.addEventListener('click', (e) => e.stopPropagation());
+  document.addEventListener('click', (e) => {
+    if(!panel.contains(e.target) && e.target !== btn){
+      panel.classList.remove('open');
+    }
+  });
+}
+
+
+function currentPageRows(){
+  const filtered = sortRows(getFiltered());
+  const start = (state.page - 1) * state.pageSize;
+  return filtered.slice(start, start + state.pageSize);
+}
+
+function toggleCurrentPageSelection(checked){
+  currentPageRows().forEach(r => {
+    const key = drugKey(r);
+    if(checked) selectedDrugKeys.add(key); else selectedDrugKeys.delete(key);
+  });
+  syncDraftFromSelection();
+  render();
+}
+
+function selectedRows(){
+  return RAW.filter(r => selectedDrugKeys.has(drugKey(r)));
+}
+
+function itemFromDrug(r){
+  return {
+    drugKey: drugKey(r),
+    tradeName: String(r['Emri tregtar'] || ''),
+    substance: String(r['Substanca aktive'] || ''),
+    strength: String(r['Fortësia'] || ''),
+    form: String(r['Forma farmaceutike'] || ''),
+    atc: String(r['ATC Code'] || ''),
+    dose: '', route: '', frequency: '', duration: '', instructions: ''
+  };
+}
+
+function syncDraftFromSelection(){
+  if(editingProtocolId) return;
+  const currentByKey = new Map(draftItems.map(i => [i.drugKey, i]));
+  draftItems = selectedRows().map(r => currentByKey.get(drugKey(r)) || itemFromDrug(r));
+  renderProtocolDrugList();
+}
+
+function renderProtocolDrugList(){
+  const list = document.getElementById('protocolDrugList');
+  const count = document.getElementById('builderDrugCount');
+  if(!list) return;
+  count.textContent = '(' + draftItems.length + ')';
+
+  if(!draftItems.length){
+    list.innerHTML = '<div class="protocol-empty">Zgjidhi barnat nga tabela me kutinë në kolonën e parë, pastaj hape këtë panel.</div>';
+    return;
+  }
+
+  list.innerHTML = draftItems.map((item, idx) => `
+    <article class="protocol-drug" data-item-index="${idx}">
+      <div class="protocol-drug-head">
+        <div>
+          <div class="protocol-drug-title">${escapeHtml(item.tradeName)}</div>
+          <div class="protocol-drug-meta">${escapeHtml(item.substance)} · ${escapeHtml(item.strength)} · ${escapeHtml(item.form)}${item.atc ? ' · ATC ' + escapeHtml(item.atc) : ''}</div>
+        </div>
+        <button class="protocol-remove" type="button" data-remove-index="${idx}">Hiqe</button>
+      </div>
+      <div class="protocol-drug-fields">
+        <div class="protocol-field">
+          <label>Doza</label>
+          <input data-item-field="dose" value="${escapeHtml(item.dose)}" placeholder="p.sh. 500 mg">
+        </div>
+        <div class="protocol-field">
+          <label>Rruga</label>
+          <input data-item-field="route" value="${escapeHtml(item.route)}" placeholder="p.sh. PO, IV, IM">
+        </div>
+        <div class="protocol-field">
+          <label>Frekuenca</label>
+          <input data-item-field="frequency" value="${escapeHtml(item.frequency)}" placeholder="p.sh. çdo 8 orë">
+        </div>
+        <div class="protocol-field">
+          <label>Kohëzgjatja</label>
+          <input data-item-field="duration" value="${escapeHtml(item.duration)}" placeholder="p.sh. 5 ditë">
+        </div>
+        <div class="protocol-field full">
+          <label>Udhëzime / kushte</label>
+          <textarea data-item-field="instructions" placeholder="p.sh. vetëm pas vlerësimit të funksionit renal">${escapeHtml(item.instructions)}</textarea>
+        </div>
+      </div>
+    </article>
+  `).join('');
+
+  list.querySelectorAll('[data-item-field]').forEach(input => {
+    const article = input.closest('[data-item-index]');
+    const idx = Number(article.dataset.itemIndex);
+    input.addEventListener('input', () => { draftItems[idx][input.dataset.itemField] = input.value; });
+  });
+  list.querySelectorAll('[data-remove-index]').forEach(btn => {
+    btn.addEventListener('click', () => {
+      const idx = Number(btn.dataset.removeIndex);
+      const removed = draftItems[idx];
+      draftItems.splice(idx, 1);
+      if(!editingProtocolId && removed) selectedDrugKeys.delete(removed.drugKey);
+      renderProtocolDrugList();
+      updateProtocolCounters();
+      render();
+    });
+  });
+}
+
+function openProtocols(tab='builder'){
+  const overlay = document.getElementById('protocolOverlay');
+  overlay.classList.add('open');
+  overlay.setAttribute('aria-hidden','false');
+  if(!editingProtocolId) syncDraftFromSelection();
+  switchProtocolTab(tab);
+  renderSavedProtocols();
+}
+
+function closeProtocols(){
+  const overlay = document.getElementById('protocolOverlay');
+  overlay.classList.remove('open');
+  overlay.setAttribute('aria-hidden','true
