@@ -1,0 +1,79 @@
+name: Validate Medical Hub
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Check JavaScript syntax
+        run: |
+          node --check classification-registry-bridge.js
+          node --check classification-v3.js
+          node --check classification-audit-view.js
+          node --check classification-info-v3.js
+          node --check icd-data.js
+          node --check icd.js
+          node --check lab-data.js
+          node --check analizat.js
+          node --check main-navigation-extension.js
+
+      - name: Validate ICD dataset
+        run: |
+          node <<'NODE'
+          global.window = {};
+          require('./icd-data.js');
+          const data = window.MEDINDEX_ICD10;
+          if (!data || !Array.isArray(data.entries) || data.entries.length < 8) throw new Error('ICD dataset is incomplete');
+          const required = ['code', 'title', 'level', 'parent', 'summary'];
+          const codes = new Set();
+          for (const entry of data.entries) {
+            for (const field of required) if (!String(entry[field] || '').trim()) throw new Error(`ICD ${entry.code || '?'} missing ${field}`);
+            if (codes.has(entry.code)) throw new Error(`Duplicate ICD code ${entry.code}`);
+            codes.add(entry.code);
+          }
+          for (const code of ['J85','J85.0','J85.1','J85.2','J85.3','J86','J86.0','J86.9']) {
+            if (!codes.has(code)) throw new Error(`Required ICD code missing: ${code}`);
+          }
+          if (!/^https:\/\//.test(data.sourceUrl || '')) throw new Error('ICD source must be HTTPS');
+          console.log(`Validated ${data.entries.length} ICD entries.`);
+          NODE
+
+      - name: Validate laboratory dataset
+        run: |
+          node <<'NODE'
+          global.window = {};
+          require('./lab-data.js');
+          const data = window.MEDINDEX_LABS;
+          if (!data || !Array.isArray(data.systems) || data.systems.length < 8) throw new Error('Laboratory systems are incomplete');
+          if (!Array.isArray(data.tests) || data.tests.length < 30) throw new Error('Laboratory tests are incomplete');
+          const systems = new Set(data.systems.map(item => item.id));
+          const ids = new Set();
+          const required = ['id','system','name','abbr','specimen','reference','unit','why','high','low','preparation','sourceUrl'];
+          for (const test of data.tests) {
+            for (const field of required) if (!String(test[field] || '').trim()) throw new Error(`Lab ${test.id || '?'} missing ${field}`);
+            if (!systems.has(test.system)) throw new Error(`Lab ${test.id} has unknown system ${test.system}`);
+            if (ids.has(test.id)) throw new Error(`Duplicate lab id ${test.id}`);
+            if (!/^https:\/\//.test(test.sourceUrl)) throw new Error(`Lab ${test.id} source is not HTTPS`);
+            ids.add(test.id);
+          }
+          console.log(`Validated ${data.tests.length} laboratory tests across ${data.systems.length} systems.`);
+          NODE
+
+      - name: Verify page wiring
+        run: |
+          grep -q 'classification-registry-bridge.js' klasifikimi.html
+          grep -q 'classification-v3.js' klasifikimi.html
+          grep -q 'classification-info-v3.js' klasifikimi.html
+          grep -q 'classification-audit-view.js' klasifikimi.html
+          grep -q 'icd-data.js' icd.html
+          grep -q 'icd.js' icd.html
+          grep -q 'lab-data.js' analizat.html
+          grep -q 'analizat.js' analizat.html
+          grep -q 'href="icd.html"' klasifikimi.html
+          grep -q 'href="analizat.html"' klasifikimi.html
