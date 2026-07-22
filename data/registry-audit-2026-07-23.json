@@ -1,0 +1,119 @@
+{
+  "auditVersion": "2026-07-23.2",
+  "generatedAt": "2026-07-23",
+  "source": {
+    "fileName": "Regjistri-i-Barnave-me-Klase-dhe-Perdorime.xlsx",
+    "googleDriveFileId": "1SY2rb2Eqo3fVkRhgQ8ltJHCRrWyAUDvd",
+    "dataRows": 4006
+  },
+  "completeness": {
+    "missingTradeName": 0,
+    "missingActiveSubstance": 0,
+    "missingAtc": 0,
+    "missingClass": 0,
+    "missingUseKeywords": 0,
+    "missingStrength": 0,
+    "missingPharmaceuticalForm": 0,
+    "missingRegistryStatus": 2,
+    "missingRegistryStatusProducts": [
+      { "orderNumber": 3777, "tradeName": "AMOSOL" },
+      { "orderNumber": 3781, "tradeName": "QUIMOX" }
+    ]
+  },
+  "atc": {
+    "readableHierarchyCodes": 4001,
+    "fullProductLevelCodes": 3919,
+    "atypicalOrPlaceholderCodes": 5,
+    "atypicalValues": {
+      "R02AAXX": 3,
+      "R05CAXX": 2
+    }
+  },
+  "administrativeIdentifiers": {
+    "affectedRows": 90,
+    "invalidProtocolNoFields": 90,
+    "invalidPdidFields": 90,
+    "protocolNoPatterns": {
+      "Deklarim": 87,
+      "d.fizike": 3
+    },
+    "pdidPatterns": {
+      "protocolNumberStoredInPdid": 87,
+      "d.fizike": 3
+    }
+  },
+  "qualityResultAfterTraceableCorrections": {
+    "verifiedRows": 3886,
+    "warningRows": 96,
+    "correctedRows": 17,
+    "blockedRows": 7,
+    "totalIssues": 195,
+    "correctionApplications": 20,
+    "issueCounts": {
+      "INVALID_PROTOCOL_NUMBER": 90,
+      "INVALID_PDID": 90,
+      "INFUSION_WITH_IRRIGATION_ATC": 6,
+      "ATC_FORMAT": 5,
+      "MISSING_REGISTRY_STATUS": 2,
+      "PARENTERAL_WITH_TOPICAL_ATC": 1,
+      "PARENTERAL_CLASSIFIED_AS_TOPICAL": 1
+    }
+  },
+  "blockedRows": [
+    {
+      "orderNumber": 501,
+      "tradeName": "5% w/v Glucose injection G-5%",
+      "atc": "B05CX01",
+      "form": "Solution for infusion",
+      "reason": "Forma e infuzionit nuk përputhet me ATC/klasifikimin e solucionit për irrigim."
+    },
+    {
+      "orderNumber": 502,
+      "tradeName": "Sodium Chloride 0,9% w/v B.Braun",
+      "atc": "B05CB01",
+      "form": "Solution for infusion",
+      "reason": "Forma e infuzionit nuk përputhet me ATC/klasifikimin e solucionit për irrigim."
+    },
+    {
+      "orderNumber": 503,
+      "tradeName": "Sodium Chloride 0,9% w/v B.Braun",
+      "atc": "B05CB01",
+      "form": "Solution for infusion",
+      "reason": "Forma e infuzionit nuk përputhet me ATC/klasifikimin e solucionit për irrigim."
+    },
+    {
+      "orderNumber": 2185,
+      "tradeName": "KETONAL ®",
+      "atc": "M02AA10",
+      "form": "Solution for injection",
+      "reason": "Preparati injektabil është regjistruar me ATC dhe klasë topike."
+    },
+    {
+      "orderNumber": 3652,
+      "tradeName": "Ringer Lactate",
+      "atc": "B05CB10",
+      "form": "Solution for infusion",
+      "reason": "Forma e infuzionit nuk përputhet me ATC/klasifikimin e solucionit për irrigim."
+    },
+    {
+      "orderNumber": 3674,
+      "tradeName": "Glukoze",
+      "atc": "B05CX01",
+      "form": "Solution for infusion",
+      "reason": "Forma e infuzionit nuk përputhet me ATC/klasifikimin e solucionit për irrigim."
+    },
+    {
+      "orderNumber": 3675,
+      "tradeName": "Glukoze",
+      "atc": "B05CX01",
+      "form": "Solution for infusion",
+      "reason": "Forma e infuzionit nuk përputhet me ATC/klasifikimin e solucionit për irrigim."
+    }
+  ],
+  "policy": {
+    "correctOnlyWhenSourceVerified": true,
+    "blockClinicalMismatchFromPrescription": true,
+    "preserveOriginalValuesInCorrectionAudit": true,
+    "doNotInferUnknownAtc": true
+  }
+}
