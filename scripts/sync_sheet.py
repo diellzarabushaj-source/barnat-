@@ -10,7 +10,7 @@ import math
 import sys
 from datetime import date, datetime
 from pathlib import Path
-from typing import Any
+from typing import Any, Iterable
 
 from openpyxl import load_workbook
 
@@ -35,6 +35,29 @@ def normalize(value: Any) -> Any:
     return value
 
 
+def clean_headers(row: Iterable[Any]) -> list[str]:
+    return [str(value).strip() if value is not None else "" for value in row]
+
+
+def find_header_row(sheet) -> tuple[list[str], int]:
+    """Find the real header row within the first 15 rows.
+
+    This keeps the sync working even if a title or blank line is added above the table.
+    """
+    for row_number, row in enumerate(
+        sheet.iter_rows(min_row=1, max_row=15, values_only=True),
+        start=1,
+    ):
+        headers = clean_headers(row)
+        if REQUIRED_HEADERS.issubset(set(headers)):
+            return headers, row_number
+
+    raise SystemExit(
+        "Could not find the registry header row. Required columns: "
+        + ", ".join(sorted(REQUIRED_HEADERS))
+    )
+
+
 def main() -> None:
     if len(sys.argv) != 3:
         raise SystemExit("Usage: sync_sheet.py SOURCE.xlsx OUTPUT.js")
@@ -44,29 +67,22 @@ def main() -> None:
 
     workbook = load_workbook(source, read_only=True, data_only=True)
     sheet = workbook.active
-    row_iter = sheet.iter_rows(values_only=True)
-
-    try:
-        first_row = next(row_iter)
-    except StopIteration as exc:
-        raise SystemExit("Spreadsheet is empty") from exc
-
-    headers = [str(value).strip() if value is not None else "" for value in first_row]
-    missing = REQUIRED_HEADERS.difference(headers)
-    if missing:
-        raise SystemExit(f"Missing required columns: {', '.join(sorted(missing))}")
+    headers, header_row_number = find_header_row(sheet)
 
     records: list[dict[str, Any]] = []
-    for row in row_iter:
+    for row in sheet.iter_rows(min_row=header_row_number + 1, values_only=True):
         if not any(value is not None and str(value).strip() for value in row):
             continue
 
         record = {
-            header: normalize(value)
+            header.strip(): normalize(value)
             for header, value in zip(headers, row)
-            if header
+            if header.strip()
         }
         records.append(record)
+
+    if not records:
+        raise SystemExit("No medicine rows were found below the header.")
 
     raw_json = json.dumps(
         records,
@@ -77,11 +93,17 @@ def main() -> None:
 
     output.parent.mkdir(parents=True, exist_ok=True)
     output.write_text(
-        "window.DRUG_DATA_PARTS = [\"" + packed + "\"];\n",
+        "window.DRUG_DATA_PARTS = [\"" + packed + "\"];\n"
+        + "window.REGISTRY_STATIC_META = {count:"
+        + str(len(records))
+        + ",generatedAt:"
+        + json.dumps(datetime.utcnow().isoformat(timespec="seconds") + "Z")
+        + "};\n",
         encoding="utf-8",
     )
 
     print(f"Synced {len(records)} medicines from sheet '{sheet.title}'.")
+    print(f"Header row: {header_row_number}.")
     print(f"Generated {output} ({output.stat().st_size} bytes).")
 
 
