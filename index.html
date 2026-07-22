@@ -1,12 +1,14 @@
 <!DOCTYPE html>
 <html lang="sq">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Regjistri i Barnave — Kosovë 2025</title>
-  <link rel="stylesheet" href="styles.css">
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Regjistri i Barnave — Kosovë 2025</title>
+<link rel="stylesheet" href="styles.css">
+<link rel="stylesheet" href="protocols.css">
 </head>
 <body>
+
 <header>
   <h1>Regjistri i Barnave &mdash; Lista Zyrtare e &Ccedil;mimeve</h1>
   <div class="sub">Versioni 1.1 &middot; Afati i vlefshm&euml;risë: 01.05.2026 &ndash; 31.12.2026 &middot; Fjal&euml;t kyçe jan&euml; orientuese p&euml;r k&euml;rkim</div>
@@ -36,7 +38,10 @@
     <button id="colPickerBtn" type="button">Kolonat &#9662;</button>
     <div class="col-panel" id="colPanel"></div>
   </div>
-  <span class="count-badge" id="countBadge">Duke u ngarkuar...</span>
+
+  <span class="selection-badge" title="Barnat e zgjedhura për protokoll">Të zgjedhura: <strong id="selectedCount">0</strong></span>
+  <button class="protocol-toolbar-btn" id="protocolsBtn" type="button">Protokollet e mia <span class="mini-count" id="savedProtocolCount">0</span></button>
+  <span class="count-badge" id="countBadge">4006 barna</span>
 </div>
 
 <div class="table-wrap">
@@ -44,14 +49,95 @@
     <thead>
       <tr id="headerRow"></tr>
     </thead>
-    <tbody id="tbody">
-      <tr><td class="empty-state">Duke i ngarkuar barnat...</td></tr>
-    </tbody>
+    <tbody id="tbody"></tbody>
   </table>
 </div>
 
 <div class="pagination" id="pagination"></div>
-<script src="data/registry-data.js"></script>
+
+<div class="protocol-overlay" id="protocolOverlay" aria-hidden="true">
+  <aside class="protocol-drawer" role="dialog" aria-modal="true" aria-labelledby="protocolDrawerTitle">
+    <div class="protocol-drawer-header">
+      <div>
+        <h2 id="protocolDrawerTitle">Protokollet e mia</h2>
+        <p>Modele personale pune — të dhënat ruhen vetëm në këtë shfletues.</p>
+      </div>
+      <button class="protocol-close" id="protocolClose" type="button" aria-label="Mbyll">×</button>
+    </div>
+
+    <div class="protocol-tabs" role="tablist">
+      <button class="protocol-tab active" type="button" data-tab="builder">Krijo / përpuno</button>
+      <button class="protocol-tab" type="button" data-tab="saved">Të ruajtura <span id="savedTabCount">(0)</span></button>
+    </div>
+
+    <div class="protocol-content">
+      <section class="protocol-pane active" id="protocolPaneBuilder">
+        <div class="protocol-info">
+          Regjistri identifikon produktet, por nuk plotëson automatikisht dozën, rrugën, frekuencën ose kohëzgjatjen. Këto fusha duhet të verifikohen dhe të shkruhen nga profesionisti sipas pacientit dhe udhëzimeve klinike.
+        </div>
+
+        <div class="protocol-card">
+          <h3>Të dhënat e protokollit</h3>
+          <div class="protocol-grid">
+            <div class="protocol-field">
+              <label for="protocolName">Emri i protokollit *</label>
+              <input id="protocolName" type="text" placeholder="p.sh. Menaxhimi fillestar i migrenës">
+            </div>
+            <div class="protocol-field">
+              <label for="protocolIndication">Indikacioni / diagnoza</label>
+              <input id="protocolIndication" type="text" placeholder="p.sh. Migrenë pa aura">
+            </div>
+            <div class="protocol-field">
+              <label for="protocolPopulation">Grupi i pacientëve</label>
+              <input id="protocolPopulation" type="text" placeholder="p.sh. Të rritur, pa shtatzëni">
+            </div>
+            <div class="protocol-field">
+              <label for="protocolVersion">Versioni / data</label>
+              <input id="protocolVersion" type="text" placeholder="p.sh. v1 — 22.07.2026">
+            </div>
+            <div class="protocol-field full">
+              <label for="protocolNotes">Vërejtje, kundërindikacione, monitorim</label>
+              <textarea id="protocolNotes" placeholder="Shëno kriteret, alarmet, monitorimin, alternativat ose referimin..."></textarea>
+            </div>
+          </div>
+        </div>
+
+        <div class="protocol-card">
+          <h3>Barnat e protokollit <span id="builderDrugCount" style="font-family:var(--mono);font-size:.78rem;color:#6d797c"></span></h3>
+          <div id="protocolDrugList"></div>
+        </div>
+
+        <div class="protocol-actions">
+          <button class="btn-primary" id="saveProtocolBtn" type="button">Ruaje protokollin</button>
+          <button class="btn-secondary" id="newProtocolBtn" type="button">Protokoll i ri</button>
+          <button class="btn-secondary" id="copyProtocolBtn" type="button">Kopjo si tekst</button>
+          <button class="btn-secondary" id="printProtocolBtn" type="button">Printo</button>
+          <button class="btn-danger" id="clearSelectionBtn" type="button">Pastro barnat e zgjedhura</button>
+        </div>
+      </section>
+
+      <section class="protocol-pane" id="protocolPaneSaved">
+        <div id="savedProtocolsList"></div>
+      </section>
+    </div>
+  </aside>
+</div>
+<div class="protocol-toast" id="protocolToast" role="status"></div>
+
+<script id="drug-data" type="application/json">[]</script>
+<script>window.DRUG_DATA_PARTS = [];</script>
+<script src="data/part-01.js"></script>
+<script src="data/part-02.js"></script>
+<script src="data/part-03.js"></script>
+<script src="data/part-04.js"></script>
+<script src="data/part-05.js"></script>
+<script src="data/part-06.js"></script>
+<script src="data/part-07.js"></script>
+<script src="data/part-08.js"></script>
+<script src="data/part-09.js"></script>
+<script src="data/part-10.js"></script>
+<script src="data/part-11.js"></script>
+<script src="data/part-12.js"></script>
 <script src="app.js"></script>
 </body>
 </html>
