@@ -7,6 +7,12 @@ Teksti u kopjua.');
 }
 
 function printProtocol(p=protocolFormData()){
+  const reviewGate = window.MedIndexPrescriptionReview?.validateForPrint?.();
+  if(reviewGate && !reviewGate.ok) return;
+  if(window.MedIndexPrescriptionView?.print){
+    window.MedIndexPrescriptionView.print(p);
+    return;
+  }
   const body = protocolToText(p).split('\n').map(line => '<div>' + (line ? escapeHtml(line) : '&nbsp;') + '</div>').join('');
   const w = window.open('', '_blank', 'width=850,height=700');
   if(!w){ showProtocolToast('Shfletuesi e bllokoi dritaren e printimit.'); return; }
