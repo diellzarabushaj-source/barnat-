@@ -1,0 +1,54 @@
+<!doctype html>
+<html lang="sq">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="description" content="MedIndex — ICD-10 në shqip, i organizuar për përdorim klinik.">
+  <title>MedIndex | Sëmundjet ICD-10 — Dr. Diellza Rabushaj</title>
+  <link rel="stylesheet" href="medical-hub.css?v=20260723-1">
+</head>
+<body>
+  <div class="med-shell">
+    <nav class="med-nav" aria-label="Navigimi kryesor">
+      <a class="med-nav-link" href="index.html"><span class="med-nav-icon"><svg fill="none" viewBox="0 0 256 256"><path d="M213 110 133 37a8 8 0 0 0-11 0l-79 73a8 8 0 0 0-3 6v92a8 8 0 0 0 8 8h160a8 8 0 0 0 8-8v-92a8 8 0 0 0-3-6Z" stroke="currentColor" stroke-width="16"/></svg></span><span class="med-nav-title">Barnat</span></a>
+      <a class="med-nav-link" href="klasifikimi.html"><span class="med-nav-icon"><svg fill="none" viewBox="0 0 256 256"><rect x="36" y="36" width="76" height="76" rx="14" stroke="currentColor" stroke-width="16"/><rect x="144" y="36" width="76" height="76" rx="14" stroke="currentColor" stroke-width="16"/><rect x="36" y="144" width="76" height="76" rx="14" stroke="currentColor" stroke-width="16"/><rect x="144" y="144" width="76" height="76" rx="14" stroke="currentColor" stroke-width="16"/></svg></span><span class="med-nav-title">Klasifikimi</span></a>
+      <a class="med-nav-link active" href="icd.html" aria-current="page"><span class="med-nav-icon"><svg fill="none" viewBox="0 0 256 256"><path d="M48 32h112l48 48v144H48V32Z" stroke="currentColor" stroke-width="16"/><path d="M160 32v48h48M80 120h96M80 160h96M80 200h64" stroke="currentColor" stroke-width="16" stroke-linecap="round"/></svg></span><span class="med-nav-title">ICD</span></a>
+      <a class="med-nav-link" href="analizat.html"><span class="med-nav-icon"><svg fill="none" viewBox="0 0 256 256"><path d="M96 24h64M112 24v64l-56 96a32 32 0 0 0 28 48h88a32 32 0 0 0 28-48l-56-96V24" stroke="currentColor" stroke-width="16"/><path d="M78 176h100" stroke="currentColor" stroke-width="16"/></svg></span><span class="med-nav-title">Analizat</span></a>
+      <a class="med-nav-link" href="index.html#recetat"><span class="med-nav-icon"><svg fill="none" viewBox="0 0 256 256"><path d="M64 40h128a16 16 0 0 1 16 16v160H48V56a16 16 0 0 1 16-16Z" stroke="currentColor" stroke-width="16"/><path d="M80 88h96M80 128h96M80 168h64" stroke="currentColor" stroke-width="16"/></svg></span><span class="med-nav-title">Recetat</span></a>
+      <div class="med-theme"><span>Tema</span><button id="themeButton" type="button" aria-label="Ndërro temën">☾</button></div>
+    </nav>
+
+    <main class="med-main">
+      <header class="med-hero">
+        <p class="med-kicker">MedIndex · Sëmundjet ICD në shqip</p>
+        <h1 id="blockTitle">J85–J86</h1>
+        <p id="chapterTitle"></p>
+      </header>
+
+      <div class="med-notice"><strong>Faza aktuale:</strong> seksioni është ndërtuar që të zgjerohet kapitull pas kapitulli. Mbulesa e parë është blloku WHO ICD‑10 2019 <strong>J85–J86</strong>. Titujt dhe shënimet e kodimit janë në shqip, ndërsa kodet mbeten identike me WHO.</div>
+
+      <div class="med-toolbar">
+        <input class="med-search" id="icdSearch" type="search" placeholder="Kërko kodin, diagnozën ose fjalë kyçe…" autocomplete="off">
+        <select class="med-filter" id="icdLevel" aria-label="Filtro nivelin"><option value="">Të gjitha nivelet</option><option value="kategori">Kategori</option><option value="kod">Kode të plota</option></select>
+        <span class="med-count" id="icdCount">0 kode</span>
+      </div>
+
+      <section>
+        <div class="med-section-head"><div><h2>Kodet ICD-10 në shqip</h2><p>Hape secilin kod për përfshirjet, përjashtimet dhe shënimet e kodimit.</p></div></div>
+        <div class="med-grid" id="icdGrid"></div>
+      </section>
+    </main>
+  </div>
+
+  <div class="med-panel-overlay" id="detailOverlay" hidden>
+    <section class="med-panel" role="dialog" aria-modal="true" aria-labelledby="detailTitle">
+      <header class="med-panel-head"><div><small id="detailKicker">WHO ICD-10</small><h2 id="detailTitle">Kodi ICD</h2></div><button class="med-panel-close" id="detailClose" type="button" aria-label="Mbyll">×</button></header>
+      <div class="med-panel-body" id="detailBody"></div>
+      <footer class="med-panel-foot"><button id="detailDone" type="button">Mbyll</button></footer>
+    </section>
+  </div>
+
+  <script src="icd-data.js?v=20260723-1"></script>
+  <script src="icd.js?v=20260723-1"></script>
+</body>
+</html>
