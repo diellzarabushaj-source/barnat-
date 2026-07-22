@@ -45,7 +45,6 @@ function initFormPicker(){
   });
 }
 
-
 function currentPageRows(){
   const filtered = sortRows(getFiltered());
   const start = (state.page - 1) * state.pageSize;
@@ -73,7 +72,17 @@ function itemFromDrug(r){
     strength: String(r['Fortësia'] || ''),
     form: String(r['Forma farmaceutike'] || ''),
     atc: String(r['ATC Code'] || ''),
-    dose: '', route: '', frequency: '', duration: '', instructions: ''
+    prefix: '',
+    dose: '',
+    route: '',
+    frequency: '',
+    duration: '',
+    quantity: '',
+    instructions: '',
+    regimenId: '',
+    dosageSource: '',
+    dosageStatus: '',
+    doseCalculation: ''
   };
 }
 
@@ -96,7 +105,13 @@ function renderProtocolDrugList(){
   }
 
   list.innerHTML = draftItems.map((item, idx) => `
-    <article class="protocol-drug" data-item-index="${idx}">
+    <article class="protocol-drug" data-item-index="${idx}"
+      data-drug-key="${escapeHtml(item.drugKey || '')}"
+      data-trade-name="${escapeHtml(item.tradeName || '')}"
+      data-substance="${escapeHtml(item.substance || '')}"
+      data-strength="${escapeHtml(item.strength || '')}"
+      data-form="${escapeHtml(item.form || '')}"
+      data-atc="${escapeHtml(item.atc || '')}">
       <div class="protocol-drug-head">
         <div>
           <div class="protocol-drug-title">${escapeHtml(item.tradeName)}</div>
@@ -106,25 +121,37 @@ function renderProtocolDrugList(){
       </div>
       <div class="protocol-drug-fields">
         <div class="protocol-field">
-          <label>Doza</label>
-          <input data-item-field="dose" value="${escapeHtml(item.dose)}" placeholder="p.sh. 500 mg">
+          <label>Parashtesa Rp.</label>
+          <input data-item-field="prefix" value="${escapeHtml(item.prefix || '')}" placeholder="p.sh. Tab., Caps., Syr.">
+        </div>
+        <div class="protocol-field">
+          <label>Dispenso / sasia</label>
+          <input data-item-field="quantity" value="${escapeHtml(item.quantity || '')}" placeholder="p.sh. Nr. 12 tableta">
+        </div>
+        <div class="protocol-field">
+          <label>Doza për marrje</label>
+          <input data-item-field="dose" value="${escapeHtml(item.dose || '')}" placeholder="p.sh. 500 mg ose 1 tabletë">
         </div>
         <div class="protocol-field">
           <label>Rruga</label>
-          <input data-item-field="route" value="${escapeHtml(item.route)}" placeholder="p.sh. PO, IV, IM">
+          <input data-item-field="route" value="${escapeHtml(item.route || '')}" placeholder="p.sh. PO, IV, IM">
         </div>
         <div class="protocol-field">
           <label>Frekuenca</label>
-          <input data-item-field="frequency" value="${escapeHtml(item.frequency)}" placeholder="p.sh. çdo 8 orë">
+          <input data-item-field="frequency" value="${escapeHtml(item.frequency || '')}" placeholder="p.sh. çdo 8 orë">
         </div>
         <div class="protocol-field">
           <label>Kohëzgjatja</label>
-          <input data-item-field="duration" value="${escapeHtml(item.duration)}" placeholder="p.sh. 5 ditë">
+          <input data-item-field="duration" value="${escapeHtml(item.duration || '')}" placeholder="p.sh. 5 ditë">
         </div>
         <div class="protocol-field full">
-          <label>Udhëzime / kushte</label>
-          <textarea data-item-field="instructions" placeholder="p.sh. vetëm pas vlerësimit të funksionit renal">${escapeHtml(item.instructions)}</textarea>
+          <label>Signatura / udhëzime / kushte</label>
+          <textarea data-item-field="instructions" placeholder="p.sh. Merr 1 tabletë nga goja çdo 8 orë për 5 ditë.">${escapeHtml(item.instructions || '')}</textarea>
         </div>
+        <input type="hidden" data-item-field="regimenId" value="${escapeHtml(item.regimenId || '')}">
+        <input type="hidden" data-item-field="dosageSource" value="${escapeHtml(item.dosageSource || '')}">
+        <input type="hidden" data-item-field="dosageStatus" value="${escapeHtml(item.dosageStatus || '')}">
+        <input type="hidden" data-item-field="doseCalculation" value="${escapeHtml(item.doseCalculation || '')}">
       </div>
     </article>
   `).join('');
@@ -159,4 +186,4 @@ function openProtocols(tab='builder'){
 function closeProtocols(){
   const overlay = document.getElementById('protocolOverlay');
   overlay.classList.remove('open');
-  overlay.setAttribute('aria-hidden','true
+  overlay.setAttribute('aria-hidden','true');
