@@ -1,0 +1,355 @@
+/* Komponentë të përshtatur nga shembujt Uiverse të dërguar nga përdoruesja. */
+
+/* ===== Sign-in card — bazuar në Uiverse.io by jack0237 ===== */
+.access-screen{
+  position:fixed;
+  inset:0;
+  z-index:10000;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  padding:24px;
+  background:
+    radial-gradient(circle at 20% 20%, rgba(28,176,255,.13), transparent 35%),
+    radial-gradient(circle at 80% 75%, rgba(64,255,153,.1), transparent 32%),
+    #0a1719;
+}
+.access-screen[hidden]{ display:none; }
+.access-form-container{
+  width:min(390px,100%);
+  background:linear-gradient(#212121,#212121) padding-box,
+    linear-gradient(120deg,transparent 25%,#1cb0ff,#40ff99) border-box;
+  border:2px solid transparent;
+  padding:32px 24px;
+  color:#fff;
+  border-radius:16px;
+  box-shadow:0 24px 70px rgba(0,0,0,.45);
+}
+.access-form{
+  display:flex;
+  flex-direction:column;
+  align-items:stretch;
+  gap:20px;
+}
+.access-heading{
+  margin:0;
+  text-align:center;
+  font-family:var(--serif,Georgia,serif);
+  font-size:1.42rem;
+  font-weight:650;
+}
+.access-subtitle{
+  margin:-10px 0 2px;
+  color:#aeb9ba;
+  text-align:center;
+  font-size:.8rem;
+  line-height:1.45;
+}
+.access-message{
+  min-height:20px;
+  margin:0;
+  color:#ffadad;
+  text-align:center;
+  font-size:.78rem;
+}
+.access-submit{
+  border-radius:8px;
+  padding:11px 14px;
+  background:#ffffff14;
+  color:#e6eded;
+  border:1px solid #4c5658;
+  font-weight:700;
+  cursor:pointer;
+  transition:.2s ease;
+}
+.access-submit:hover{
+  background:#173b3e;
+  border-color:#40ff99;
+}
+.access-submit:disabled{ opacity:.55; cursor:wait; }
+
+/* ===== Floating inputs — bazuar në Uiverse.io by alexruix ===== */
+.floating-field,
+.access-input-group{
+  position:relative;
+  padding-top:7px;
+}
+.floating-field input,
+.floating-field textarea,
+.access-input-group input{
+  width:100%;
+  border:solid 1.5px #9e9e9e;
+  border-radius:1rem;
+  background:none;
+  padding:1rem;
+  font:inherit;
+  color:var(--ink,#12222a);
+  transition:border-color 150ms cubic-bezier(.4,0,.2,1), box-shadow 150ms cubic-bezier(.4,0,.2,1);
+}
+.floating-field textarea{ min-height:92px; resize:vertical; }
+.access-input-group input{
+  color:#f5f5f5;
+  border-color:#616b6d;
+}
+.floating-field label,
+.access-input-group label{
+  position:absolute;
+  left:15px;
+  top:calc(50% + 3px);
+  color:#6f797c;
+  pointer-events:none;
+  transform:translateY(-50%);
+  transform-origin:left center;
+  transition:150ms cubic-bezier(.4,0,.2,1);
+  font-size:.9rem;
+  text-transform:none;
+  letter-spacing:0;
+  font-weight:500;
+}
+.floating-field:has(textarea) label{
+  top:31px;
+  transform:translateY(0);
+}
+.access-input-group label{ color:#d1d7d8; }
+.floating-field input:focus,
+.floating-field textarea:focus,
+.access-input-group input:focus{
+  outline:none;
+  border-color:var(--teal,#155e63);
+  box-shadow:0 0 0 3px rgba(21,94,99,.12);
+}
+.access-input-group input:focus{
+  border-color:#1a73e8;
+  box-shadow:0 0 0 3px rgba(26,115,232,.18);
+}
+.floating-field input:focus ~ label,
+.floating-field input:not(:placeholder-shown) ~ label,
+.floating-field textarea:focus ~ label,
+.floating-field textarea:not(:placeholder-shown) ~ label,
+.access-input-group input:focus ~ label,
+.access-input-group input:not(:placeholder-shown) ~ label{
+  top:7px;
+  transform:translateY(-50%) scale(.8);
+  padding:0 .28em;
+  background:var(--paper,#f7f8f6);
+  color:var(--teal,#155e63);
+}
+.protocol-card .floating-field input:focus ~ label,
+.protocol-card .floating-field input:not(:placeholder-shown) ~ label,
+.protocol-card .floating-field textarea:focus ~ label,
+.protocol-card .floating-field textarea:not(:placeholder-shown) ~ label,
+.protocol-drug .floating-field input:focus ~ label,
+.protocol-drug .floating-field input:not(:placeholder-shown) ~ label,
+.protocol-drug .floating-field textarea:focus ~ label,
+.protocol-drug .floating-field textarea:not(:placeholder-shown) ~ label{
+  background:#fff;
+}
+.access-input-group input:focus ~ label,
+.access-input-group input:not(:placeholder-shown) ~ label{
+  background:#212121;
+  color:#2196f3;
+}
+.floating-hint{
+  margin:2px 8px 0;
+  color:#7a878a;
+  font-size:.7rem;
+}
+
+/* ===== Save button — bazuar në Uiverse.io by vinodjangid07 ===== */
+.bookmarkBtn{
+  width:112px;
+  height:42px;
+  padding:0;
+  border-radius:40px;
+  border:1px solid rgba(255,255,255,.28);
+  background:#0c0c0c;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  cursor:pointer;
+  transition-duration:.3s;
+  overflow:hidden;
+}
+.bookmarkBtn .IconContainer{
+  width:32px;
+  height:32px;
+  flex:0 0 32px;
+  background:linear-gradient(to bottom,var(--amber,#c77d1f),var(--teal,#155e63));
+  border-radius:50px;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  overflow:hidden;
+  z-index:2;
+  transition-duration:.3s;
+}
+.bookmarkBtn .icon{ width:.82em; fill:#fff; }
+.bookmarkBtn .text{
+  height:100%;
+  width:67px;
+  margin:0;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  color:#fff;
+  z-index:1;
+  transition-duration:.3s;
+  font-size:.9rem;
+  font-weight:700;
+}
+.bookmarkBtn:hover .IconContainer{ width:100px; flex-basis:100px; }
+.bookmarkBtn:hover .text{
+  transform:translateX(10px);
+  width:0;
+  font-size:0;
+  overflow:hidden;
+}
+.bookmarkBtn:active{ transform:scale(.95); }
+
+/* ===== Delete button — bazuar në Uiverse.io by vinodjangid07 ===== */
+.deleteButton{
+  width:40px;
+  height:40px;
+  flex:0 0 40px;
+  padding:0;
+  border-radius:50%;
+  background:#141414;
+  border:0;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  box-shadow:0 0 20px rgba(0,0,0,.12);
+  cursor:pointer;
+  transition-duration:.3s;
+  overflow:hidden;
+  position:relative;
+  color:#fff;
+}
+.deleteButton .deleteIcon{
+  width:12px;
+  transition-duration:.3s;
+}
+.deleteButton .deleteIcon path{ fill:#fff; }
+.deleteButton:hover{
+  width:118px;
+  border-radius:50px;
+  background:#ff4545;
+}
+.deleteButton:hover .deleteIcon{
+  width:42px;
+  transform:translateY(60%);
+}
+.deleteButton::before{
+  position:absolute;
+  top:-20px;
+  content:attr(data-label);
+  color:#fff;
+  transition-duration:.3s;
+  font-size:2px;
+  white-space:nowrap;
+}
+.deleteButton:hover::before{
+  top:50%;
+  font-size:13px;
+  opacity:1;
+  transform:translateY(-50%);
+}
+.deleteButton:active{ transform:scale(.95); }
+
+/* ===== Animated checkbox — bazuar në Uiverse.io by vishnupprajapat ===== */
+.checkbox-wrapper-46{
+  display:inline-flex;
+  align-items:center;
+  justify-content:center;
+}
+.checkbox-wrapper-46 input[type="checkbox"]{
+  position:absolute;
+  width:1px;
+  height:1px;
+  opacity:0;
+  pointer-events:none;
+}
+.checkbox-wrapper-46 .cbx{
+  margin:0;
+  display:inline-flex;
+  align-items:center;
+  -webkit-user-select:none;
+  user-select:none;
+  cursor:pointer;
+}
+.checkbox-wrapper-46 .cbx > span{
+  display:inline-block;
+  vertical-align:middle;
+  transform:translate3d(0,0,0);
+}
+.checkbox-wrapper-46 .cbx > span:first-child{
+  position:relative;
+  width:18px;
+  height:18px;
+  border-radius:3px;
+  transform:scale(1);
+  border:1px solid #9098a9;
+  transition:all .2s ease;
+}
+.checkbox-wrapper-46 .cbx > span:first-child svg{
+  position:absolute;
+  top:3px;
+  left:2px;
+  fill:none;
+  stroke:#fff;
+  stroke-width:2;
+  stroke-linecap:round;
+  stroke-linejoin:round;
+  stroke-dasharray:16px;
+  stroke-dashoffset:16px;
+  transition:all .3s ease .1s;
+}
+.checkbox-wrapper-46 .cbx > span:first-child::before{
+  content:"";
+  width:100%;
+  height:100%;
+  background:var(--teal,#155e63);
+  display:block;
+  transform:scale(0);
+  opacity:1;
+  border-radius:50%;
+}
+.checkbox-wrapper-46 .cbx .cbx-text{
+  padding-left:8px;
+  font-size:.84rem;
+}
+.checkbox-wrapper-46 .cbx:hover > span:first-child{ border-color:var(--teal,#155e63); }
+.checkbox-wrapper-46 .inp-cbx:focus-visible + .cbx > span:first-child{
+  outline:3px solid rgba(21,94,99,.2);
+  outline-offset:2px;
+}
+.checkbox-wrapper-46 .inp-cbx:checked + .cbx > span:first-child{
+  background:var(--teal,#155e63);
+  border-color:var(--teal,#155e63);
+  animation:wave-46 .4s ease;
+}
+.checkbox-wrapper-46 .inp-cbx:checked + .cbx > span:first-child svg{ stroke-dashoffset:0; }
+.checkbox-wrapper-46 .inp-cbx:checked + .cbx > span:first-child::before{
+  transform:scale(3.5);
+  opacity:0;
+  transition:all .6s ease;
+}
+@keyframes wave-46{ 50%{ transform:scale(.9); } }
+
+.visually-hidden{
+  position:absolute!important;
+  width:1px!important;
+  height:1px!important;
+  padding:0!important;
+  margin:-1px!important;
+  overflow:hidden!important;
+  clip:rect(0,0,0,0)!important;
+  white-space:nowrap!important;
+  border:0!important;
+}
+
+@media (hover:none){
+  .deleteButton:hover{ width:40px; border-radius:50%; background:#141414; }
+  .deleteButton:hover .deleteIcon{ width:12px; transform:none; }
+  .deleteButton:hover::before{ font-size:0; opacity:0; }
+}
