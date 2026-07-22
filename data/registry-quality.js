@@ -3,7 +3,7 @@
   if (typeof module === 'object' && module.exports) module.exports = api;
   if (root) {
     root.MedIndexRegistryQuality = api;
-    if (root.document) api.installStyles(root.document);
+    if (root.document) api.installBrowserAssets(root.document);
   }
 })(typeof globalThis !== 'undefined' ? globalThis : this, function () {
   'use strict';
@@ -23,13 +23,21 @@
 
   const REQUIRED_IDENTITY_FIELDS = ['Emri tregtar', 'Substanca aktive', 'ATC Code', 'Fortësia', 'Forma farmaceutike'];
 
-  function installStyles(documentRef) {
-    if (!documentRef || documentRef.getElementById('registryQualityStyles')) return;
-    const link = documentRef.createElement('link');
-    link.id = 'registryQualityStyles';
-    link.rel = 'stylesheet';
-    link.href = './registry-quality.css?v=20260722-1';
-    documentRef.head.appendChild(link);
+  function installBrowserAssets(documentRef) {
+    if (!documentRef) return;
+    if (!documentRef.getElementById('registryQualityStyles')) {
+      const link = documentRef.createElement('link');
+      link.id = 'registryQualityStyles';
+      link.rel = 'stylesheet';
+      link.href = './registry-quality.css?v=20260722-1';
+      documentRef.head.appendChild(link);
+    }
+    if (!documentRef.querySelector('script[data-registry-quality-guard]')) {
+      const script = documentRef.createElement('script');
+      script.src = './registry-quality-guard.js?v=20260722-1';
+      script.dataset.registryQualityGuard = '1';
+      documentRef.head.appendChild(script);
+    }
   }
 
   function text(value) {
@@ -193,7 +201,7 @@
   return {
     version: VERSION,
     corrections: CORRECTIONS,
-    installStyles,
+    installBrowserAssets,
     applyRows
   };
 });
