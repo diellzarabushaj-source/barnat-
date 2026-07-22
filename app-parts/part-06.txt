@@ -13,6 +13,10 @@ function protocolFormData(){
     name: document.getElementById('protocolName').value.trim(),
     indication: document.getElementById('protocolIndication').value.trim(),
     population: document.getElementById('protocolPopulation').value.trim(),
+    patientType: document.getElementById('protocolPatientType')?.value || 'adult',
+    ageValue: document.getElementById('protocolAgeValue')?.value || '',
+    ageUnit: document.getElementById('protocolAgeUnit')?.value || 'years',
+    weightKg: document.getElementById('protocolWeightKg')?.value || '',
     version: document.getElementById('protocolVersion').value.trim(),
     notes: document.getElementById('protocolNotes').value.trim(),
     updatedAt: new Date().toISOString(),
@@ -23,7 +27,7 @@ function protocolFormData(){
 function saveProtocol(){
   const protocol = protocolFormData();
   if(!protocol.name){
-    showProtocolToast('Shkruaje emrin e protokollit.');
+    showProtocolToast('Shkruaje emrin e recetës / protokollit.');
     document.getElementById('protocolName').focus();
     return;
   }
@@ -37,17 +41,25 @@ function saveProtocol(){
   setSavedProtocols(all);
   editingProtocolId = protocol.id;
   renderSavedProtocols();
-  showProtocolToast('Protokolli u ruajt në këtë shfletues.');
+  showProtocolToast('Receta u ruajt në këtë shfletues.');
 }
 
 function resetProtocolBuilder(clearSelection=false){
   editingProtocolId = null;
-  ['protocolName','protocolIndication','protocolPopulation','protocolVersion','protocolNotes'].forEach(id => document.getElementById(id).value = '');
+  ['protocolName','protocolIndication','protocolPopulation','protocolVersion','protocolNotes','protocolAgeValue','protocolWeightKg'].forEach(id => {
+    const field = document.getElementById(id);
+    if(field) field.value = '';
+  });
+  const patientType = document.getElementById('protocolPatientType');
+  const ageUnit = document.getElementById('protocolAgeUnit');
+  if(patientType) patientType.value = 'adult';
+  if(ageUnit) ageUnit.value = 'years';
   if(clearSelection) selectedDrugKeys.clear();
   draftItems = clearSelection ? [] : selectedRows().map(itemFromDrug);
   renderProtocolDrugList();
   updateProtocolCounters();
   render();
+  patientType?.dispatchEvent(new Event('change', {bubbles:true}));
 }
 
 function loadProtocol(id){
@@ -59,9 +71,18 @@ function loadProtocol(id){
   document.getElementById('protocolPopulation').value = p.population || '';
   document.getElementById('protocolVersion').value = p.version || '';
   document.getElementById('protocolNotes').value = p.notes || '';
+  const patientType = document.getElementById('protocolPatientType');
+  const ageValue = document.getElementById('protocolAgeValue');
+  const ageUnit = document.getElementById('protocolAgeUnit');
+  const weight = document.getElementById('protocolWeightKg');
+  if(patientType) patientType.value = p.patientType || 'adult';
+  if(ageValue) ageValue.value = p.ageValue || '';
+  if(ageUnit) ageUnit.value = p.ageUnit || 'years';
+  if(weight) weight.value = p.weightKg || '';
   draftItems = (p.items || []).map(i => ({...i}));
   renderProtocolDrugList();
   switchProtocolTab('builder');
+  patientType?.dispatchEvent(new Event('change', {bubbles:true}));
 }
 
 function deleteProtocol(id){
@@ -69,13 +90,13 @@ function deleteProtocol(id){
   setSavedProtocols(all);
   if(editingProtocolId === id) resetProtocolBuilder(false);
   renderSavedProtocols();
-  showProtocolToast('Protokolli u fshi.');
+  showProtocolToast('Receta u fshi.');
 }
 
 function duplicateProtocol(id){
   const p = getSavedProtocols().find(x => x.id === id);
   if(!p) return;
-  const copy = {...p, id:'p_' + Date.now(), name:(p.name || 'Protokoll') + ' — kopje', updatedAt:new Date().toISOString(), items:(p.items || []).map(i => ({...i}))};
+  const copy = {...p, id:'p_' + Date.now(), name:(p.name || 'Recetë') + ' — kopje', updatedAt:new Date().toISOString(), items:(p.items || []).map(i => ({...i}))};
   const all = getSavedProtocols();
   all.unshift(copy);
   setSavedProtocols(all);
@@ -88,7 +109,7 @@ function renderSavedProtocols(){
   if(!list) return;
   const all = getSavedProtocols();
   if(!all.length){
-    list.innerHTML = '<div class="protocol-empty">Ende nuk ke protokolle të ruajtura.</div>';
+    list.innerHTML = '<div class="protocol-empty">Ende nuk ke receta të ruajtura.</div>';
     return;
   }
   list.innerHTML = all.map(p => {
@@ -114,22 +135,38 @@ function renderSavedProtocols(){
   list.querySelectorAll('[data-delete-protocol]').forEach(b => b.addEventListener('click', () => deleteProtocol(b.dataset.deleteProtocol)));
 }
 
+function patientSummary(p){
+  const parts = [];
+  if(p.patientType === 'pediatric') parts.push('Pediatrik');
+  else if(p.patientType === 'manual') parts.push('Manual');
+  else parts.push('I rritur');
+  if(p.ageValue) parts.push('Mosha: ' + p.ageValue + (p.ageUnit === 'months' ? ' muaj' : ' vjeç'));
+  if(p.weightKg) parts.push('Pesha: ' + p.weightKg + ' kg');
+  return parts.join(' · ');
+}
+
 function protocolToText(p){
   const lines = [];
-  lines.push(p.name || 'PROTOKOLL');
-  if(p.indication) lines.push('Indikacioni: ' + p.indication);
+  lines.push(p.name || 'RECETË');
+  if(p.indication) lines.push('Diagnoza / indikacioni: ' + p.indication);
   if(p.population) lines.push('Grupi: ' + p.population);
+  const patient = patientSummary(p);
+  if(patient) lines.push('Pacienti: ' + patient);
   if(p.version) lines.push('Versioni/Data: ' + p.version);
   lines.push('');
   (p.items || []).forEach((i, n) => {
-    lines.push((n+1) + '. ' + i.tradeName + ' — ' + i.substance + ' ' + i.strength + ' (' + i.form + ')');
+    lines.push((n+1) + '. Rp. ' + [i.prefix, i.tradeName || i.substance, i.strength].filter(Boolean).join(' '));
+    if(i.substance && i.tradeName) lines.push('   Substanca: ' + i.substance + (i.form ? ' · ' + i.form : ''));
+    if(i.quantity) lines.push('   Dispenso: ' + i.quantity);
     const regimen = [i.dose, i.route, i.frequency, i.duration].filter(Boolean).join(' · ');
-    if(regimen) lines.push('   ' + regimen);
-    if(i.instructions) lines.push('   Udhëzime: ' + i.instructions);
+    lines.push('   Signatura: ' + (regimen || i.instructions || 'Nuk është plotësuar.'));
+    if(i.instructions && regimen) lines.push('   Udhëzime: ' + i.instructions);
+    if(i.doseCalculation) lines.push('   Llogaritja: ' + i.doseCalculation);
+    if(i.regimenId) lines.push('   Skema: ' + i.regimenId + (i.dosageStatus ? ' · ' + i.dosageStatus : ''));
   });
   if(p.notes){ lines.push(''); lines.push('Vërejtje/monitorim: ' + p.notes); }
   lines.push('');
-  lines.push('Shënim: Model personal pune; kërkon verifikim klinik për pacientin individual.');
+  lines.push('Shënim: Auto-fill është pikënisje e editueshme; kërkon verifikim klinik për pacientin individual.');
   return lines.join('\n');
 }
 
