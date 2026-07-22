@@ -44,7 +44,7 @@ const hidePageLoader = () => {
     const previousParts = window.DRUG_DATA_PARTS;
 
     try {
-      const registryResponse = await fetch('/api/registry?fallback=1&version=20260722-9', {
+      const registryResponse = await fetch('/api/registry?fallback=1&version=20260722-10', {
         cache: 'no-store',
       });
 
@@ -76,9 +76,6 @@ const hidePageLoader = () => {
     }
   }
 
-  // 1. Primare: databaza statike nga Vercel CDN, e ngarkuar në index.html.
-  // 2. Rezervë e shpejtë: kopja e fundit në browser.
-  // 3. Fallback final: Excel-i i editueshëm në Google Drive përmes API-së.
   if(hasRegistryData()){
     window.REGISTRY_DATA_SOURCE = 'static-cdn';
     saveBrowserCache();
@@ -88,13 +85,13 @@ const hidePageLoader = () => {
   }
 
   const files = [
-    './app-parts/part-01.txt?v=20260722-9',
-    './app-parts/part-02.txt?v=20260722-9',
-    './app-parts/part-03.txt?v=20260722-9',
-    './app-parts/part-04.txt?v=20260722-9',
-    './app-parts/part-05.txt?v=20260722-9',
-    './app-parts/part-06.txt?v=20260722-9',
-    './app-parts/part-07.txt?v=20260722-9',
+    './app-parts/part-01.txt?v=20260722-10',
+    './app-parts/part-02.txt?v=20260722-10',
+    './app-parts/part-03.txt?v=20260722-10',
+    './app-parts/part-04.txt?v=20260722-10',
+    './app-parts/part-05.txt?v=20260722-10',
+    './app-parts/part-06.txt?v=20260722-10',
+    './app-parts/part-07.txt?v=20260722-10',
   ];
 
   const responses = await Promise.all(files.map(file => fetch(file, { cache: 'force-cache' })));
