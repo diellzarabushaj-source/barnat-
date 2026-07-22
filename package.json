@@ -1,8 +1,16 @@
 {
   "name": "barnat-kosove",
-  "version": "1.0.0",
+  "version": "1.2.0",
   "private": true,
+  "scripts": {
+    "test": "node tests/run-tests.js",
+    "build": "npm test"
+  },
   "dependencies": {
+    "@vercel/functions": "^2.2.12",
     "xlsx": "0.18.5"
+  },
+  "engines": {
+    "node": ">=20"
   }
 }
