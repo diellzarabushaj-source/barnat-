@@ -44,7 +44,7 @@ const hidePageLoader = () => {
     const previousParts = window.DRUG_DATA_PARTS;
 
     try {
-      const registryResponse = await fetch('/api/registry?fallback=1&version=20260722-10', {
+      const registryResponse = await fetch('/api/registry?fallback=1&version=20260722-11', {
         cache: 'no-store',
       });
 
@@ -85,13 +85,13 @@ const hidePageLoader = () => {
   }
 
   const files = [
-    './app-parts/part-01.txt?v=20260722-10',
-    './app-parts/part-02.txt?v=20260722-10',
-    './app-parts/part-03.txt?v=20260722-10',
-    './app-parts/part-04.txt?v=20260722-10',
-    './app-parts/part-05.txt?v=20260722-10',
-    './app-parts/part-06.txt?v=20260722-10',
-    './app-parts/part-07.txt?v=20260722-10',
+    './app-parts/part-01.txt?v=20260722-11',
+    './app-parts/part-02.txt?v=20260722-11',
+    './app-parts/part-03.txt?v=20260722-11',
+    './app-parts/part-04.txt?v=20260722-11',
+    './app-parts/part-05.txt?v=20260722-11',
+    './app-parts/part-06.txt?v=20260722-11',
+    './app-parts/part-07.txt?v=20260722-11',
   ];
 
   const responses = await Promise.all(files.map(file => fetch(file, { cache: 'force-cache' })));
