@@ -1,0 +1,66 @@
+name: MedIndex validation
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+permissions:
+  contents: read
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+
+      - name: Validate JavaScript syntax
+        shell: bash
+        run: |
+          set -euo pipefail
+          files=(
+            app.js
+            dosage-integration.js
+            dosage-auto-apply.js
+            prescription-review.js
+            medindex-view.js
+            name-display.js
+            ui-enhancements.js
+            classification.js
+            classification-quality-view.js
+            classification-info.js
+            api/dosage.js
+            api/registry.js
+            api/registry-data.js
+          )
+          for file in "${files[@]}"; do
+            if [[ -f "$file" ]]; then
+              node --check "$file"
+            fi
+          done
+
+      - name: Verify auto-fill is loaded after dosage data integration
+        shell: bash
+        run: |
+          set -euo pipefail
+          integration_line=$(grep -n 'src="dosage-integration.js' index.html | cut -d: -f1)
+          auto_line=$(grep -n 'src="dosage-auto-apply.js' index.html | cut -d: -f1)
+          test -n "$integration_line"
+          test -n "$auto_line"
+          test "$auto_line" -gt "$integration_line"
+
+      - name: Verify safe auto-fill rules remain present
+        shell: bash
+        run: |
+          set -euo pipefail
+          grep -q 'clinicalAutoFillEnabled' dosage-auto-apply.js
+          grep -q 'regimens.length !== 1' dosage-auto-apply.js
+          grep -q 'actualStrength !== expectedStrength' dosage-auto-apply.js
+          grep -q 'VERIFIKUAR — AUTO-APLIKUAR' dosage-auto-apply.js
+          grep -q 'Statusi=VERIFIKUAR AND Auto-fill=PO' api/dosage.js || true
