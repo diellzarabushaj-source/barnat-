@@ -1,7 +1,10 @@
 (function (root, factory) {
   const api = factory();
   if (typeof module === 'object' && module.exports) module.exports = api;
-  if (root) root.MedIndexRegistryQuality = api;
+  if (root) {
+    root.MedIndexRegistryQuality = api;
+    if (root.document) api.installStyles(root.document);
+  }
 })(typeof globalThis !== 'undefined' ? globalThis : this, function () {
   'use strict';
 
@@ -19,6 +22,15 @@
   ];
 
   const REQUIRED_IDENTITY_FIELDS = ['Emri tregtar', 'Substanca aktive', 'ATC Code', 'Fortësia', 'Forma farmaceutike'];
+
+  function installStyles(documentRef) {
+    if (!documentRef || documentRef.getElementById('registryQualityStyles')) return;
+    const link = documentRef.createElement('link');
+    link.id = 'registryQualityStyles';
+    link.rel = 'stylesheet';
+    link.href = './registry-quality.css?v=20260722-1';
+    documentRef.head.appendChild(link);
+  }
 
   function text(value) {
     return String(value == null ? '' : value).trim();
@@ -133,9 +145,9 @@
         if (signatures.size < 2) return;
         items.forEach(row => addIssue(
           row,
-          'block',
+          'warning',
           `CONFLICTING_${label}`,
-          `${label === 'PROTOCOL' ? 'ProtocolNo' : 'PDID'} ${value} përdoret për produkte me identitet të ndryshëm.`
+          `${label === 'PROTOCOL' ? 'ProtocolNo' : 'PDID'} ${value} përdoret për produkte me identitet të ndryshëm dhe kërkon kontroll administrativ.`
         ));
       });
     }
@@ -181,6 +193,7 @@
   return {
     version: VERSION,
     corrections: CORRECTIONS,
+    installStyles,
     applyRows
   };
 });
