@@ -4,6 +4,7 @@
   const CACHE_MS = 6 * 60 * 60 * 1000;
   let dosageData = { forms: [], adult: [], pediatric: [], meta: {} };
   let scheduled = false;
+  let scheduledForce = false;
 
   const $ = selector => document.querySelector(selector);
   const normalize = value => String(value ?? '')
@@ -15,6 +16,7 @@
   const escapeHtml = value => String(value ?? '').replace(/[&<>"']/g, char => ({
     '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;'
   }[char]));
+  const safeSourceUrl = value => /^https:\/\//i.test(text(value)) ? text(value) : '';
 
   function addStyles() {
     if ($('#dosageIntegrationStyles')) return;
@@ -60,7 +62,7 @@
     const cached = loadCache();
     if (cached) dosageData = cached;
     try {
-      const response = await fetch('/api/dosage?v=20260722-1', { cache: 'no-store' });
+      const response = await fetch('/api/dosage?v=20260722-2', { cache: 'no-store' });
       if (!response.ok) throw new Error(`status ${response.status}`);
       const fresh = await response.json();
       if (fresh && Array.isArray(fresh.forms)) {
@@ -88,7 +90,7 @@
   function updatePatientFields() {
     const pediatric = patientContext().type === 'pediatric';
     document.querySelectorAll('[data-pediatric-only]').forEach(node => { node.hidden = !pediatric; });
-    scheduleDecorate();
+    scheduleDecorate(true);
   }
 
   function setField(article, field, value, overwrite = true) {
@@ -124,10 +126,12 @@
 
   function eligiblePediatric(regimen, context) {
     if (!regimenMatchesArticle(regimen, context.article)) return false;
-    if (context.ageMonths != null) {
-      if (regimen.minAgeMonths != null && context.ageMonths < regimen.minAgeMonths) return false;
-      if (regimen.maxAgeMonths != null && context.ageMonths > regimen.maxAgeMonths) return false;
-    }
+    if (context.ageMonths == null) return false;
+    if (regimen.minAgeMonths != null && context.ageMonths < regimen.minAgeMonths) return false;
+    if (regimen.maxAgeMonths != null && context.ageMonths > regimen.maxAgeMonths) return false;
+
+    const requiresWeight = regimen.mgPerKg != null || regimen.minWeightKg != null || regimen.maxWeightKg != null;
+    if (requiresWeight && context.weightKg == null) return false;
     if (context.weightKg != null) {
       if (regimen.minWeightKg != null && context.weightKg < regimen.minWeightKg) return false;
       if (regimen.maxWeightKg != null && context.weightKg > regimen.maxWeightKg) return false;
@@ -138,6 +142,7 @@
   function matchingRegimens(article) {
     const patient = patientContext();
     if (patient.type === 'pediatric') {
+      if (patient.ageMonths == null) return [];
       return dosageData.pediatric.filter(regimen => eligiblePediatric(regimen, { ...patient, article }));
     }
     if (patient.type === 'manual') return [];
@@ -146,11 +151,11 @@
 
   function parseConcentration(value) {
     const source = String(value || '').replace(',', '.');
-    let match = source.match(/([\d.]+)\s*mg\s*\/\s*([\d.]+)\s*mL/i);
-    if (match) return Number(match[1]) / Number(match[2]);
-    match = source.match(/([\d.]+)\s*mg\s*\/\s*1\s*mL/i);
-    if (match) return Number(match[1]);
-    return null;
+    const match = source.match(/([\d.]+)\s*mg\s*\/\s*([\d.]+)\s*mL/i);
+    if (!match) return null;
+    const numerator = Number(match[1]);
+    const denominator = Number(match[2]);
+    return Number.isFinite(numerator) && Number.isFinite(denominator) && denominator > 0 ? numerator / denominator : null;
   }
 
   function roundClinical(value) {
@@ -193,7 +198,7 @@
       calculation = `${weight} kg × ${regimen.mgPerKg} mg/kg${perDay ? '/ditë ÷ ' + (regimen.dosesPerDay || 1) : '/dozë'} = ${roundClinical(doseMg)} mg/dozë`;
     }
 
-    const mgPerMl = parseConcentration(regimen.concentration || articleStrengthFallback(regimen));
+    const mgPerMl = parseConcentration(regimen.concentration);
     if (volumeMl == null && doseMg != null && mgPerMl) volumeMl = doseMg / mgPerMl;
     doseMg = roundClinical(doseMg);
     volumeMl = roundClinical(volumeMl);
@@ -211,10 +216,6 @@
       instructions: [signatura, regimen.warnings].filter(Boolean).join('\n'),
       calculation,
     };
-  }
-
-  function articleStrengthFallback(regimen) {
-    return regimen.concentration || '';
   }
 
   function regimenLabel(regimen) {
@@ -237,7 +238,7 @@
     setField(article, 'quantity', values.quantity, true);
     setField(article, 'instructions', values.instructions, true);
     setField(article, 'regimenId', regimen.regimenId, true);
-    setField(article, 'dosageSource', regimen.sourceUrl || '', true);
+    setField(article, 'dosageSource', safeSourceUrl(regimen.sourceUrl), true);
     setField(article, 'dosageStatus', 'VERIFIKUAR', true);
     setField(article, 'doseCalculation', values.calculation || '', true);
     article.dataset.dosageApplied = regimen.regimenId;
@@ -274,12 +275,14 @@
     } else if (regimens.length) {
       statusText = `${regimens.length} skema`;
       subtitle = patient.type === 'pediatric' ? 'Zgjidhe skemën që përputhet me moshën, peshën dhe indikacionin.' : 'Zgjidhe skemën sipas indikacionit.';
-    } else if (patient.type === 'pediatric' && (!patient.ageMonths || !patient.weightKg)) {
-      subtitle = 'Plotëso moshën dhe peshën për kërkimin pediatrik.';
+    } else if (patient.type === 'pediatric' && patient.ageMonths == null) {
+      subtitle = 'Shkruaje moshën për të kërkuar skemat pediatrike.';
+    } else if (patient.type === 'pediatric' && patient.weightKg == null) {
+      subtitle = 'Pesha kërkohet për skemat pediatrike që varen nga kg.';
     }
 
     const options = regimens.map(regimen => `<option value="${escapeHtml(regimen.regimenId)}"${regimen.regimenId === regimenId ? ' selected' : ''}>${escapeHtml(regimenLabel(regimen))}</option>`).join('');
-    const source = applied?.sourceUrl || fieldValue(article, 'dosageSource');
+    const source = safeSourceUrl(applied?.sourceUrl || fieldValue(article, 'dosageSource'));
     const calculation = fieldValue(article, 'doseCalculation');
 
     assist.innerHTML = `
@@ -347,20 +350,27 @@
     node.id = 'dosageApiState';
     node.className = 'dosage-api-state';
     const meta = dosageData.meta || {};
-    node.innerHTML = `<strong>Dozologjia e lidhur:</strong> ${meta.publishedAdultRegimens || 0} skema për të rritur · ${meta.publishedPediatricRegimens || 0} pediatrike · ${meta.publishedForms || dosageData.forms.length || 0} forma. Draft-et nuk publikohen.`;
+    node.innerHTML = dosageData.error
+      ? '<strong>Dozologjia:</strong> burimi online nuk u ngarkua; fushat mbeten manuale.'
+      : `<strong>Dozologjia e lidhur:</strong> ${meta.publishedAdultRegimens || 0} skema për të rritur · ${meta.publishedPediatricRegimens || 0} pediatrike · ${meta.publishedForms || dosageData.forms.length || 0} forma. Draft-et nuk publikohen.`;
     list.before(node);
   }
 
   function decorateAll(force = false) {
     scheduled = false;
-    addApiState();
     document.querySelectorAll('#protocolDrugList .protocol-drug').forEach(article => decorateArticle(article, force));
+    addApiState();
   }
 
   function scheduleDecorate(force = true) {
+    scheduledForce = scheduledForce || force;
     if (scheduled) return;
     scheduled = true;
-    requestAnimationFrame(() => decorateAll(force));
+    requestAnimationFrame(() => {
+      const forceThisRun = scheduledForce;
+      scheduledForce = false;
+      decorateAll(forceThisRun);
+    });
   }
 
   function initPatientControls() {
