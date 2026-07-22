@@ -8,7 +8,7 @@
 <link rel="stylesheet" href="protocols.css">
 <link rel="stylesheet" href="ui-controls.css?v=20260722-7">
 <link rel="stylesheet" href="loader.css?v=20260722-6">
-<link rel="stylesheet" href="prescription-review.css?v=20260722-1">
+<link rel="stylesheet" href="prescription-review.css?v=20260722-2">
 </head>
 <body>
 
@@ -141,6 +141,25 @@
             </div>
           </div>
 
+          <div class="patient-identity-grid" aria-label="Identiteti i pacientit">
+            <div class="protocol-field">
+              <label for="protocolPatientName">Emri dhe mbiemri i pacientit</label>
+              <input id="protocolPatientName" type="text" autocomplete="name" placeholder="p.sh. Emri Mbiemri">
+            </div>
+            <div class="protocol-field">
+              <label for="protocolBirthDate">Datëlindja</label>
+              <input id="protocolBirthDate" type="date" autocomplete="bday">
+            </div>
+            <div class="protocol-field">
+              <label for="protocolPatientId">Nr. personal / identifikuesi</label>
+              <input id="protocolPatientId" type="text" autocomplete="off" placeholder="Opsionale">
+            </div>
+            <div class="protocol-field full">
+              <label for="protocolAllergies">Alergjitë / reaksionet e njohura</label>
+              <input id="protocolAllergies" type="text" autocomplete="off" placeholder="p.sh. Penicilinë — urtikarie; ose Nuk dihen">
+            </div>
+          </div>
+
           <div class="dosage-patient-grid" aria-label="Të dhënat për dozologjinë">
             <div class="protocol-field" data-patient-main>
               <label for="protocolPatientType">Lloji i pacientit</label>
@@ -189,7 +208,7 @@
           </ul>
           <label class="rx-review-check" for="protocolClinicalReview">
             <input id="protocolClinicalReview" type="checkbox">
-            <span>Kam kontrolluar diagnozën, dozën, rrugën, frekuencën, kohëzgjatjen, alergjitë, shtatzëninë dhe funksionin renal/hepatik. Printimi final lejohet vetëm pas këtij kontrolli.</span>
+            <span>Kam kontrolluar identitetin e pacientit, diagnozën, dozën, rrugën, frekuencën, kohëzgjatjen, alergjitë, shtatzëninë dhe funksionin renal/hepatik. Printimi final lejohet vetëm pas këtij kontrolli.</span>
           </label>
           <small class="rx-reviewed-at" id="protocolReviewedAt">Statusi: Draft</small>
         </section>
@@ -221,11 +240,11 @@
 <script id="drug-data" type="application/json">[]</script>
 <script>window.DRUG_DATA_PARTS = [];</script>
 <script src="data/registry-data.js?v=20260722-7"></script>
-<script src="app.js?v=20260722-10"></script>
+<script src="app.js?v=20260722-11"></script>
 <script src="ui-enhancements.js?v=20260722-7"></script>
 <script src="name-display.js?v=20260722-1"></script>
 <script src="dosage-integration.js?v=20260722-3"></script>
-<script src="prescription-review.js?v=20260722-1"></script>
-<script src="medindex-view.js?v=20260722-13"></script>
+<script src="prescription-review.js?v=20260722-2"></script>
+<script src="medindex-view.js?v=20260722-14"></script>
 </body>
 </html>
