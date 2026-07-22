@@ -29,7 +29,7 @@ function protocolFormData(){
     clinicalReview: Boolean(review.reviewed),
     reviewedAt: review.reviewedAt || '',
     reviewedBy: review.reviewed ? 'Dr. Diellza Rabushaj' : '',
-    reviewVersion: review.reviewVersion || '1.2',
+    reviewVersion: review.reviewVersion || '1.3',
     dosageDatasetVersion: dosage.datasetVersion || '',
     dosageGeneratedAt: dosage.generatedAt || '',
     createdAt: existing?.createdAt || now,
@@ -52,6 +52,10 @@ function saveProtocol(){
     showProtocolToast('Zgjidhe së paku një bar.');
     return;
   }
+  if(protocol.items.some(item => item.qualityStatus === 'blocked')){
+    showProtocolToast('Receta përmban rresht të bllokuar nga kontrolli i cilësisë.');
+    return;
+  }
   const all = getSavedProtocols();
   const index = all.findIndex(p => p.id === protocol.id);
   if(index >= 0) all[index] = protocol; else all.unshift(protocol);
@@ -72,7 +76,7 @@ function resetProtocolBuilder(clearSelection=false){
   if(patientType) patientType.value = 'adult';
   if(ageUnit) ageUnit.value = 'years';
   if(clearSelection) selectedDrugKeys.clear();
-  draftItems = clearSelection ? [] : selectedRows().map(itemFromDrug);
+  draftItems = clearSelection ? [] : selectedRows().map(itemFromDrug).filter(Boolean);
   renderProtocolDrugList();
   updateProtocolCounters();
   render();
@@ -105,7 +109,7 @@ function loadProtocol(id){
   if(ageValue) ageValue.value = p.ageValue || '';
   if(ageUnit) ageUnit.value = p.ageUnit || 'years';
   if(weight) weight.value = p.weightKg || '';
-  draftItems = (p.items || []).map(i => ({ clinicalNotes:'', ...i }));
+  draftItems = (p.items || []).map(i => ({ clinicalNotes:'', qualityStatus:'verified', qualityMessage:'', ...i }));
   renderProtocolDrugList();
   switchProtocolTab('builder');
   patientType?.dispatchEvent(new Event('change', {bubbles:true}));
@@ -131,7 +135,7 @@ function duplicateProtocol(id){
     clinicalReview:false,
     reviewedAt:'',
     reviewedBy:'',
-    reviewVersion:'1.2',
+    reviewVersion:'1.3',
     createdAt:now,
     updatedAt:now,
     items:(p.items || []).map(i => ({...i}))
@@ -153,7 +157,7 @@ function renderSavedProtocols(){
   }
   list.innerHTML = all.map(p => {
     const date = p.updatedAt ? new Date(p.updatedAt).toLocaleString('sq-AL') : '';
-    const stale = (p.items || []).some(item => String(item.dosageStatus || '').includes('KËRKON RISHIKIM'));
+    const stale = (p.items || []).some(item => String(item.dosageStatus || '').includes('KËRKON RISHIKIM') || item.qualityStatus === 'blocked');
     const reviewClass = stale ? 'stale' : p.clinicalReview ? 'reviewed' : '';
     const reviewLabel = stale ? 'Rishiko' : p.clinicalReview ? 'Kontrolluar' : 'Draft';
     const patient = p.patientName ? ' · ' + escapeHtml(p.patientName) : '';
@@ -188,6 +192,10 @@ function patientSummary(p){
   return parts.join(' · ');
 }
 
+function genericPrescriptionName(item){
+  return String(item?.substance || item?.tradeName || 'Bar pa emër').trim();
+}
+
 function protocolToText(p){
   const lines = [];
   lines.push(p.name || 'RECETË');
@@ -206,11 +214,11 @@ function protocolToText(p){
   if(p.dosageDatasetVersion) lines.push('Dataset dozologjie: ' + p.dosageDatasetVersion);
   lines.push('');
   (p.items || []).forEach((i, n) => {
-    lines.push((n+1) + '. Rp. ' + [i.prefix, i.tradeName || i.substance, i.strength].filter(Boolean).join(' '));
-    if(i.substance && i.tradeName) lines.push('   Substanca: ' + i.substance + (i.form ? ' · ' + i.form : ''));
-    if(i.quantity) lines.push('   Dispenso: ' + i.quantity);
+    const generic = genericPrescriptionName(i);
+    lines.push((n+1) + '. Rp. ' + [i.prefix, generic, i.strength].filter(Boolean).join(' '));
+    if(i.quantity) lines.push('   D. No: ' + i.quantity);
     const regimen = [i.dose, i.route, i.frequency, i.duration].filter(Boolean).join(' · ');
-    lines.push('   Signatura: ' + (i.instructions || regimen || 'Nuk është plotësuar.'));
+    lines.push('   S. ' + (i.instructions || regimen || 'Nuk është plotësuar.'));
     if(i.instructions && regimen) lines.push('   Skema e strukturuar: ' + regimen);
     if(i.clinicalNotes) lines.push('   Vërejtje klinike: ' + i.clinicalNotes.replace(/\n+/g, ' | '));
     if(i.doseCalculation) lines.push('   Llogaritja: ' + i.doseCalculation);
