@@ -1,3 +1,11 @@
+const hidePageLoader = () => {
+  const loader = document.getElementById('pageLoader');
+  if(!loader) return;
+
+  loader.classList.add('is-hidden');
+  window.setTimeout(() => loader.remove(), 350);
+};
+
 (async () => {
   const CACHE_KEY = 'barnat-registry-parts-v1';
   const CACHE_TIME_KEY = 'barnat-registry-cached-at-v1';
@@ -36,7 +44,7 @@
     const previousParts = window.DRUG_DATA_PARTS;
 
     try {
-      const registryResponse = await fetch('/api/registry?fallback=1&version=20260722-5', {
+      const registryResponse = await fetch('/api/registry?fallback=1&version=20260722-6', {
         cache: 'no-store',
       });
 
@@ -80,13 +88,13 @@
   }
 
   const files = [
-    './app-parts/part-01.txt?v=20260722-5',
-    './app-parts/part-02.txt?v=20260722-5',
-    './app-parts/part-03.txt?v=20260722-5',
-    './app-parts/part-04.txt?v=20260722-5',
-    './app-parts/part-05.txt?v=20260722-5',
-    './app-parts/part-06.txt?v=20260722-5',
-    './app-parts/part-07.txt?v=20260722-5',
+    './app-parts/part-01.txt?v=20260722-6',
+    './app-parts/part-02.txt?v=20260722-6',
+    './app-parts/part-03.txt?v=20260722-6',
+    './app-parts/part-04.txt?v=20260722-6',
+    './app-parts/part-05.txt?v=20260722-6',
+    './app-parts/part-06.txt?v=20260722-6',
+    './app-parts/part-07.txt?v=20260722-6',
   ];
 
   const responses = await Promise.all(files.map(file => fetch(file, { cache: 'force-cache' })));
@@ -102,6 +110,8 @@
     countBadge.title = 'Burimi i të dhënave: ' + window.REGISTRY_DATA_SOURCE;
   }
 
+  requestAnimationFrame(() => requestAnimationFrame(hidePageLoader));
+
   // Kur faqja u hap nga cache-i lokal, kontrollo Drive-in pa e bllokuar pamjen.
   const cachedAt = Number(localStorage.getItem(CACHE_TIME_KEY) || 0);
   if(
@@ -112,6 +122,7 @@
   }
 })().catch(error => {
   console.error(error);
+  hidePageLoader();
   const count = document.getElementById('countBadge');
   if(count) count.textContent = 'Gabim në databazë';
   const body = document.getElementById('tbody');
