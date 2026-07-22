@@ -8,6 +8,7 @@
 <link rel="stylesheet" href="protocols.css">
 <link rel="stylesheet" href="ui-controls.css?v=20260722-7">
 <link rel="stylesheet" href="loader.css?v=20260722-6">
+<link rel="stylesheet" href="prescription-review.css?v=20260722-1">
 </head>
 <body>
 
@@ -172,6 +173,27 @@
           <div id="protocolDrugList"></div>
         </div>
 
+        <section class="rx-review is-blocked" id="prescriptionReview" aria-labelledby="prescriptionReviewTitle" aria-live="polite">
+          <div class="rx-review-head">
+            <div class="rx-review-title">
+              <span class="rx-review-icon" aria-hidden="true">Rx</span>
+              <div>
+                <strong id="prescriptionReviewTitle">Kontrolli para përdorimit</strong>
+                <small id="prescriptionReviewSummary">Plotëso fushat kritike dhe kryeje kontrollin klinik.</small>
+              </div>
+            </div>
+            <span class="rx-review-badge blocked" id="prescriptionReviewBadge">Jo gati</span>
+          </div>
+          <ul class="rx-review-list" id="prescriptionReviewList">
+            <li class="issue">Nuk është zgjedhur asnjë bar.</li>
+          </ul>
+          <label class="rx-review-check" for="protocolClinicalReview">
+            <input id="protocolClinicalReview" type="checkbox">
+            <span>Kam kontrolluar diagnozën, dozën, rrugën, frekuencën, kohëzgjatjen, alergjitë, shtatzëninë dhe funksionin renal/hepatik. Printimi final lejohet vetëm pas këtij kontrolli.</span>
+          </label>
+          <small class="rx-reviewed-at" id="protocolReviewedAt">Statusi: Draft</small>
+        </section>
+
         <div class="protocol-actions">
           <button class="bookmarkBtn" id="saveProtocolBtn" type="button" aria-label="Ruaje recetën">
             <span class="IconContainer">
@@ -199,10 +221,11 @@
 <script id="drug-data" type="application/json">[]</script>
 <script>window.DRUG_DATA_PARTS = [];</script>
 <script src="data/registry-data.js?v=20260722-7"></script>
-<script src="app.js?v=20260722-9"></script>
+<script src="app.js?v=20260722-10"></script>
 <script src="ui-enhancements.js?v=20260722-7"></script>
-<script src="medindex-view.js?v=20260722-12"></script>
 <script src="name-display.js?v=20260722-1"></script>
 <script src="dosage-integration.js?v=20260722-3"></script>
+<script src="prescription-review.js?v=20260722-1"></script>
+<script src="medindex-view.js?v=20260722-13"></script>
 </body>
 </html>
