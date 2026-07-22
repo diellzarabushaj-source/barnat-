@@ -79,6 +79,7 @@ function itemFromDrug(r){
     duration: '',
     quantity: '',
     instructions: '',
+    clinicalNotes: '',
     regimenId: '',
     dosageSource: '',
     dosageStatus: '',
@@ -145,8 +146,12 @@ function renderProtocolDrugList(){
           <input data-item-field="duration" value="${escapeHtml(item.duration || '')}" placeholder="p.sh. 5 ditë">
         </div>
         <div class="protocol-field full">
-          <label>Signatura / udhëzime / kushte</label>
+          <label>Signatura / udhëzimi për pacientin</label>
           <textarea data-item-field="instructions" placeholder="p.sh. Merr 1 tabletë nga goja çdo 8 orë për 5 ditë.">${escapeHtml(item.instructions || '')}</textarea>
+        </div>
+        <div class="protocol-field full">
+          <label>Vërejtje klinike / alarme</label>
+          <textarea data-item-field="clinicalNotes" placeholder="Nuk futen brenda Signaturës; shërbejnë për kontroll klinik.">${escapeHtml(item.clinicalNotes || '')}</textarea>
         </div>
         <input type="hidden" data-item-field="regimenId" value="${escapeHtml(item.regimenId || '')}">
         <input type="hidden" data-item-field="dosageSource" value="${escapeHtml(item.dosageSource || '')}">
