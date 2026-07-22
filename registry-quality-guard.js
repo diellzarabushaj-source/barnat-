@@ -27,11 +27,32 @@
     notify('Ky rresht është bllokuar nga kontrolli i cilësisë.');
   }, true);
 
+  function updateAutoApplyCopy() {
+    const info = document.querySelector('.protocol-info');
+    if (info && info.dataset.autoApplyCopy !== '1') {
+      info.dataset.autoApplyCopy = '1';
+      info.innerHTML = 'MedIndex plotëson parashtesën dhe, kur ekziston vetëm <strong>një skemë e verifikuar që përputhet saktë</strong> me substancën, ATC-në, formën dhe fortësinë, plotëson vetë dozën, rrugën, frekuencën, kohëzgjatjen, <strong>D. No</strong> dhe <strong>S.</strong> Kur ka disa skema, ti e zgjedh manualisht. Çdo fushë mbetet e editueshme.';
+    }
+
+    const state = document.getElementById('dosageApiState');
+    if (state && state.textContent.includes('Skema aplikohet vetëm pas konfirmimit tënd.')) {
+      state.innerHTML = state.innerHTML.replace(
+        'Skema aplikohet vetëm pas konfirmimit tënd.',
+        'Përputhja e vetme dhe e saktë aplikohet automatikisht; kur ka disa skema, zgjedhja mbetet manuale.'
+      );
+    }
+  }
+
   if (!document.querySelector('script[data-dosage-autoapply]')) {
     const script = document.createElement('script');
-    script.src = './dosage-autoapply.js?v=20260722-1';
+    script.src = './dosage-autoapply.js?v=20260722-2';
     script.dataset.dosageAutoapply = '1';
     script.defer = true;
     document.head.appendChild(script);
   }
+
+  const observer = new MutationObserver(updateAutoApplyCopy);
+  observer.observe(document.documentElement, { childList: true, subtree: true });
+  if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', updateAutoApplyCopy, { once: true });
+  else updateAutoApplyCopy();
 })();
