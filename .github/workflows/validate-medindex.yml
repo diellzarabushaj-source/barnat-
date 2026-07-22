@@ -11,6 +11,7 @@ permissions:
 jobs:
   syntax:
     runs-on: ubuntu-latest
+    timeout-minutes: 5
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
@@ -29,6 +30,7 @@ jobs:
           node --check medindex-view.js
           node --check name-display.js
           node --check dosage-integration.js
+          node --check prescription-review.js
           node --check classification.js
           node --check classification-info.js
           node --check classification-icons.js
@@ -43,3 +45,13 @@ jobs:
               app-parts/part-06.txt \
               app-parts/part-07.txt > /tmp/medindex-app-bundle.js
           node --check /tmp/medindex-app-bundle.js
+
+      - name: Verify prescription safety gates
+        run: |
+          grep -q 'protocolClinicalReview' index.html
+          grep -q 'validateForPrint' prescription-review.js
+          grep -q 'DRAFT — JO PËR PËRDORIM FINAL' medindex-view.js
+          grep -q 'clinicalReview' app-parts/part-06.txt
+          grep -q 'MedIndexPrescriptionView' app-parts/part-07.txt
+          grep -q 'ENABLE_DOSAGE_AUTOFILL' api/dosage.js
+          grep -q 'Cache-Control.*no-store' api/dosage.js
