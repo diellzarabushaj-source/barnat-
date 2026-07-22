@@ -71,7 +71,7 @@
   }
 
   async function fetchParts() {
-    const response = await fetch('/api/registry?fallback=1&classification=1&bridge=3', { cache: 'no-store' });
+    const response = await fetch('/api/registry?fallback=1&classification=1&bridge=4', { cache: 'no-store' });
     if (!response.ok) throw new Error(`Databaza nuk u ngarkua (${response.status}).`);
     window.DRUG_DATA_PARTS = [];
     (0, eval)(await response.text());
@@ -79,30 +79,53 @@
 
   function auditRows(rows) {
     const empty = field => rows.filter(row => !String(row[field] ?? '').trim()).length;
+    const cleanAtc = row => String(row['ATC Code'] || '').toUpperCase().replace(/\s+/g, '');
+    const validAtcPattern = /^[A-Z](?:\d{2}(?:[A-Z](?:[A-Z](?:\d{2})?)?)?)?$/;
+    const productAtcPattern = /^[A-Z]\d{2}[A-Z]{2}\d{2}$/;
+    const protocolPattern = /^PD\d+\/\d+$/i;
+    const pdidPattern = /^\d+$/;
     const pdids = new Map();
+
     rows.forEach(row => {
       const pdid = String(row.PDID ?? '').trim();
       if (pdid) pdids.set(pdid, (pdids.get(pdid) || 0) + 1);
     });
+
     const quality = window.MedIndexRegistryQuality?.applyRows
       ? window.MedIndexRegistryQuality.applyRows(rows)
-      : { rows, summary: { total: rows.length, corrected: 0, blocked: 0, warning: 0, verified: rows.length } };
+      : { rows, summary: { total: rows.length, corrected: 0, blocked: 0, warning: 0, verified: rows.length, issueCount: 0, correctionCount: 0 } };
     const auditedRows = quality.rows || rows;
+    const issueCodeCounts = {};
+    auditedRows.forEach(row => {
+      (row.__qualityIssues || []).forEach(issue => {
+        issueCodeCounts[issue.code] = (issueCodeCounts[issue.code] || 0) + 1;
+      });
+    });
+
     return {
       rows: auditedRows,
       summary: {
         total: auditedRows.length,
-        validAtc: auditedRows.filter(row => /^[A-Z]\d{2}(?:[A-Z0-9]{0,4})$/.test(String(row['ATC Code'] || '').toUpperCase().replace(/\s+/g, ''))).length,
+        validAtc: auditedRows.filter(row => validAtcPattern.test(cleanAtc(row))).length,
+        productLevelAtc: auditedRows.filter(row => productAtcPattern.test(cleanAtc(row))).length,
+        atypicalAtc: auditedRows.filter(row => cleanAtc(row) && !validAtcPattern.test(cleanAtc(row))).length,
         missingAtc: empty('ATC Code'),
         missingSubstance: empty('Substanca aktive'),
         missingClass: empty('Klasa / Çka është'),
         missingUse: empty('Përdorimi (fjalë kyçe)'),
         missingForm: empty('Forma farmaceutike'),
         missingStrength: empty('Fortësia'),
+        missingStatus: empty('Statusi'),
+        invalidProtocolNo: auditedRows.filter(row => !protocolPattern.test(String(row.ProtocolNo ?? '').trim())).length,
+        invalidPdid: auditedRows.filter(row => !pdidPattern.test(String(row.PDID ?? '').trim())).length,
         duplicatePdidValues: [...pdids.values()].filter(count => count > 1).length,
         corrected: quality.summary?.corrected || 0,
+        correctionCount: quality.summary?.correctionCount || 0,
         blocked: quality.summary?.blocked || 0,
-        warning: quality.summary?.warning || 0
+        warning: quality.summary?.warning || 0,
+        verified: quality.summary?.verified || 0,
+        issueCount: quality.summary?.issueCount || 0,
+        issueCodeCounts
       },
       quality
     };
