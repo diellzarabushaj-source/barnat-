@@ -1,0 +1,45 @@
+name: Validate MedIndex
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  syntax:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+
+      - name: Validate standalone JavaScript
+        run: |
+          node --check api/registry.js
+          node --check api/dosage.js
+          node --check app.js
+          node --check ui-enhancements.js
+          node --check medindex-view.js
+          node --check name-display.js
+          node --check dosage-integration.js
+          node --check classification.js
+          node --check classification-info.js
+          node --check classification-icons.js
+
+      - name: Validate concatenated application bundle
+        run: |
+          cat app-parts/part-01.txt \
+              app-parts/part-02.txt \
+              app-parts/part-03.txt \
+              app-parts/part-04.txt \
+              app-parts/part-05.txt \
+              app-parts/part-06.txt \
+              app-parts/part-07.txt > /tmp/medindex-app-bundle.js
+          node --check /tmp/medindex-app-bundle.js
