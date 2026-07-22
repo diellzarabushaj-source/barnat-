@@ -75,5 +75,8 @@ jobs:
           grep -q 'icd.js' icd.html
           grep -q 'lab-data.js' analizat.html
           grep -q 'analizat.js' analizat.html
+          grep -q 'main-navigation-extension.js' index.html
           grep -q 'href="icd.html"' klasifikimi.html
           grep -q 'href="analizat.html"' klasifikimi.html
+          grep -q 'href="icd.html"' analizat.html
+          grep -q 'href="analizat.html"' icd.html
