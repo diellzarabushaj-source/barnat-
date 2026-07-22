@@ -1,5 +1,6 @@
 const XLSX = require('xlsx');
 const zlib = require('zlib');
+const crypto = require('node:crypto');
 const registryQuality = require('../data/registry-quality.js');
 
 const DRIVE_FILE_ID = '1SY2rb2Eqo3fVkRhgQ8ltJHCRrWyAUDvd';
@@ -8,49 +9,54 @@ const SOURCE_URLS = [
   `https://drive.google.com/uc?export=download&id=${DRIVE_FILE_ID}&confirm=t`,
   `https://docs.google.com/spreadsheets/d/${DRIVE_FILE_ID}/export?format=xlsx`,
 ];
+const MEMORY_CACHE_MS = 6 * 60 * 60 * 1000;
+const FETCH_TIMEOUT_MS = 12000;
+const MAX_WORKBOOK_BYTES = 12 * 1024 * 1024;
+const MIN_EXPECTED_ROWS = 3500;
 
 let memoryCache = null;
 let memoryCacheTime = 0;
-const MEMORY_CACHE_MS = 5 * 60 * 1000;
+let pendingBuild = null;
 
 function isXlsxBuffer(buffer) {
   return buffer.length > 4 && buffer[0] === 0x50 && buffer[1] === 0x4b;
 }
 
+async function fetchBuffer(url) {
+  const controller = new AbortController();
+  const timer = setTimeout(() => controller.abort(), FETCH_TIMEOUT_MS);
+  try {
+    const response = await fetch(url, {
+      redirect: 'follow',
+      signal: controller.signal,
+      headers: { 'User-Agent': 'Mozilla/5.0 (compatible; MedIndexRegistry/3.0)' },
+    });
+    if (!response.ok) throw new Error(`status ${response.status}`);
+    const declaredLength = Number(response.headers.get('content-length') || 0);
+    if (declaredLength > MAX_WORKBOOK_BYTES) throw new Error('skedari tejkalon kufirin e madhësisë');
+    const buffer = Buffer.from(await response.arrayBuffer());
+    if (buffer.length > MAX_WORKBOOK_BYTES) throw new Error('skedari tejkalon kufirin e madhësisë');
+    if (!isXlsxBuffer(buffer)) throw new Error('përgjigjja nuk ishte skedar Excel');
+    return buffer;
+  } finally {
+    clearTimeout(timer);
+  }
+}
+
 async function downloadWorkbook() {
   let lastError = null;
-
   for (const url of SOURCE_URLS) {
     try {
-      const response = await fetch(url, {
-        redirect: 'follow',
-        headers: {
-          'User-Agent': 'Mozilla/5.0 (compatible; MedIndexRegistry/2.0)',
-        },
-      });
-
-      if (!response.ok) {
-        throw new Error(`status ${response.status}`);
-      }
-
-      const buffer = Buffer.from(await response.arrayBuffer());
-      if (!isXlsxBuffer(buffer)) {
-        throw new Error('përgjigjja nuk ishte skedar Excel');
-      }
-
-      return buffer;
+      return await fetchBuffer(url);
     } catch (error) {
       lastError = error;
     }
   }
-
   throw new Error(`Google Drive nuk e dha skedarin Excel: ${lastError?.message || 'gabim i panjohur'}.`);
 }
 
 function normalizeHeader(value) {
-  return String(value ?? '')
-    .replace(/\s+/g, ' ')
-    .trim();
+  return String(value ?? '').replace(/\s+/g, ' ').trim();
 }
 
 function rowHasData(row) {
@@ -59,7 +65,6 @@ function rowHasData(row) {
 
 function workbookToRows(buffer) {
   const workbook = XLSX.read(buffer, { type: 'buffer', cellDates: false });
-
   for (const sheetName of workbook.SheetNames) {
     const worksheet = workbook.Sheets[sheetName];
     const grid = XLSX.utils.sheet_to_json(worksheet, {
@@ -71,43 +76,30 @@ function workbookToRows(buffer) {
 
     const headerIndex = grid.findIndex(row => {
       const headers = row.map(normalizeHeader);
-      return (
-        headers.includes('Emri tregtar') &&
+      return headers.includes('Emri tregtar') &&
         headers.includes('Substanca aktive') &&
         headers.includes('ATC Code') &&
-        (headers.includes('Nr rendor') || headers.includes('PDID'))
-      );
+        (headers.includes('Nr rendor') || headers.includes('PDID'));
     });
-
     if (headerIndex === -1) continue;
 
     const headers = grid[headerIndex].map(normalizeHeader);
-    const rows = grid
-      .slice(headerIndex + 1)
-      .filter(rowHasData)
-      .map(row => {
-        const record = {};
+    const rows = grid.slice(headerIndex + 1).filter(rowHasData).map(row => {
+      const record = {};
+      headers.forEach((header, index) => {
+        if (header) record[header] = row[index] ?? '';
+      });
+      return record;
+    }).filter(record => record['Emri tregtar'] !== '' || record['Substanca aktive'] !== '' || record.PDID !== '');
 
-        headers.forEach((header, index) => {
-          if (!header) return;
-          record[header] = row[index] ?? '';
-        });
-
-        return record;
-      })
-      .filter(record =>
-        record['Emri tregtar'] !== '' ||
-        record['Substanca aktive'] !== '' ||
-        record.PDID !== ''
-      );
-
-    if (rows.length > 0) return rows;
+    if (rows.length >= MIN_EXPECTED_ROWS) return rows;
+    if (rows.length) throw new Error(`Regjistri ktheu vetëm ${rows.length} rreshta; pritej së paku ${MIN_EXPECTED_ROWS}.`);
   }
-
   throw new Error('Excel-i nuk përmban tabelë të vlefshme me kolonat e regjistrit.');
 }
 
 async function buildPayload() {
+  const startedAt = Date.now();
   const workbookBuffer = await downloadWorkbook();
   const sourceRows = workbookToRows(workbookBuffer);
   const quality = registryQuality.applyRows(sourceRows);
@@ -117,37 +109,55 @@ async function buildPayload() {
     version: quality.version,
     summary: quality.summary,
     sourceRows: sourceRows.length,
+    generatedAt: new Date().toISOString(),
+    buildMs: Date.now() - startedAt,
   };
+  const body = `window.DRUG_DATA_PARTS = [${JSON.stringify(encoded)}];\nwindow.REGISTRY_QUALITY_META = ${JSON.stringify(meta)};\n`;
+  return {
+    body,
+    etag: `"${crypto.createHash('sha256').update(body).digest('base64url')}"`,
+    meta,
+  };
+}
 
-  return (
-    `window.DRUG_DATA_PARTS = [${JSON.stringify(encoded)}];\n` +
-    `window.REGISTRY_QUALITY_META = ${JSON.stringify(meta)};\n`
-  );
+async function getPayload() {
+  const now = Date.now();
+  if (memoryCache && now - memoryCacheTime < MEMORY_CACHE_MS) return memoryCache;
+  if (!pendingBuild) {
+    pendingBuild = buildPayload().then(payload => {
+      memoryCache = payload;
+      memoryCacheTime = Date.now();
+      return payload;
+    }).finally(() => { pendingBuild = null; });
+  }
+  return pendingBuild;
 }
 
 module.exports = async function handler(req, res) {
+  const startedAt = Date.now();
   try {
-    if (req.method !== 'GET') {
-      res.setHeader('Allow', 'GET');
+    if (!['GET', 'HEAD'].includes(req.method)) {
+      res.setHeader('Allow', 'GET, HEAD');
       return res.status(405).send('Method Not Allowed');
     }
 
-    const now = Date.now();
-
-    if (!memoryCache || now - memoryCacheTime > MEMORY_CACHE_MS) {
-      memoryCache = await buildPayload();
-      memoryCacheTime = now;
-    }
-
+    const payload = await getPayload();
     res.setHeader('Content-Type', 'application/javascript; charset=utf-8');
-    res.setHeader('Cache-Control', 'public, s-maxage=300, stale-while-revalidate=3600');
+    res.setHeader('Cache-Control', 'public, s-maxage=21600, stale-while-revalidate=86400');
     res.setHeader('X-Content-Type-Options', 'nosniff');
-    res.status(200).send(memoryCache);
+    res.setHeader('ETag', payload.etag);
+    res.setHeader('Server-Timing', `registry;dur=${Date.now() - startedAt}`);
+    res.setHeader('X-MedIndex-Rows', String(payload.meta.sourceRows));
+
+    if (req.headers['if-none-match'] === payload.etag) return res.status(304).end();
+    if (req.method === 'HEAD') return res.status(200).end();
+    return res.status(200).send(payload.body);
   } catch (error) {
     console.error('Registry data error:', error);
     res.setHeader('Content-Type', 'application/javascript; charset=utf-8');
     res.setHeader('Cache-Control', 'no-store');
-    res.status(500).send(
+    res.setHeader('X-Content-Type-Options', 'nosniff');
+    return res.status(500).send(
       `window.REGISTRY_LOAD_ERROR = ${JSON.stringify(error.message || 'Gabim gjatë ngarkimit të regjistrit.')};\n` +
       'window.DRUG_DATA_PARTS = [];\n'
     );
