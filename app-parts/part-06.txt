@@ -7,6 +7,8 @@ function switchProtocolTab(tab){
 }
 
 function protocolFormData(){
+  const review = window.MedIndexPrescriptionReview?.state?.() || {};
+  const dosage = window.MEDINDEX_DOSAGE || {};
   return {
     id: editingProtocolId || ('p_' + Date.now()),
     name: document.getElementById('protocolName').value.trim(),
@@ -18,12 +20,20 @@ function protocolFormData(){
     weightKg: document.getElementById('protocolWeightKg')?.value || '',
     version: document.getElementById('protocolVersion').value.trim(),
     notes: document.getElementById('protocolNotes').value.trim(),
+    clinicalReview: Boolean(review.reviewed),
+    reviewedAt: review.reviewedAt || '',
+    reviewVersion: review.reviewVersion || '1.0',
+    dosageDatasetVersion: dosage.datasetVersion || '',
+    dosageGeneratedAt: dosage.generatedAt || '',
     updatedAt: new Date().toISOString(),
     items: draftItems.map(i => ({...i}))
   };
 }
 
 function saveProtocol(){
+  const reviewGate = window.MedIndexPrescriptionReview?.validateForSave?.();
+  if(reviewGate && !reviewGate.ok) return;
+
   const protocol = protocolFormData();
   if(!protocol.name){
     showProtocolToast('Shkruaje emrin e recetës / protokollit.');
@@ -50,7 +60,7 @@ function saveProtocol(){
   setSavedProtocols(all);
   editingProtocolId = protocol.id;
   renderSavedProtocols();
-  showProtocolToast('Receta u ruajt në këtë shfletues.');
+  showProtocolToast(protocol.clinicalReview ? 'Receta e kontrolluar u ruajt.' : 'Drafti i recetës u ruajt në këtë shfletues.');
 }
 
 function resetProtocolBuilder(clearSelection=false){
@@ -69,6 +79,7 @@ function resetProtocolBuilder(clearSelection=false){
   updateProtocolCounters();
   render();
   patientType?.dispatchEvent(new Event('change', {bubbles:true}));
+  window.MedIndexPrescriptionReview?.reset?.();
 }
 
 function loadProtocol(id){
@@ -92,6 +103,7 @@ function loadProtocol(id){
   renderProtocolDrugList();
   switchProtocolTab('builder');
   patientType?.dispatchEvent(new Event('change', {bubbles:true}));
+  requestAnimationFrame(() => window.MedIndexPrescriptionReview?.restore?.(p));
 }
 
 function deleteProtocol(id){
@@ -105,12 +117,21 @@ function deleteProtocol(id){
 function duplicateProtocol(id){
   const p = getSavedProtocols().find(x => x.id === id);
   if(!p) return;
-  const copy = {...p, id:'p_' + Date.now(), name:(p.name || 'Recetë') + ' — kopje', updatedAt:new Date().toISOString(), items:(p.items || []).map(i => ({...i}))};
+  const copy = {
+    ...p,
+    id:'p_' + Date.now(),
+    name:(p.name || 'Recetë') + ' — kopje',
+    clinicalReview:false,
+    reviewedAt:'',
+    reviewVersion:'1.0',
+    updatedAt:new Date().toISOString(),
+    items:(p.items || []).map(i => ({...i}))
+  };
   const all = getSavedProtocols();
   all.unshift(copy);
   setSavedProtocols(all);
   renderSavedProtocols();
-  showProtocolToast('U krijua një kopje.');
+  showProtocolToast('U krijua një kopje si draft.');
 }
 
 function renderSavedProtocols(){
@@ -123,8 +144,11 @@ function renderSavedProtocols(){
   }
   list.innerHTML = all.map(p => {
     const date = p.updatedAt ? new Date(p.updatedAt).toLocaleString('sq-AL') : '';
+    const stale = (p.items || []).some(item => String(item.dosageStatus || '').includes('KËRKON RISHIKIM'));
+    const reviewClass = stale ? 'stale' : p.clinicalReview ? 'reviewed' : '';
+    const reviewLabel = stale ? 'Rishiko' : p.clinicalReview ? 'Kontrolluar' : 'Draft';
     return `<article class="saved-protocol">
-      <h3>${escapeHtml(p.name || 'Pa emër')}</h3>
+      <h3>${escapeHtml(p.name || 'Pa emër')} <span class="saved-review ${reviewClass}">${reviewLabel}</span></h3>
       <div class="saved-meta">${escapeHtml(p.indication || 'Pa indikacion')} · ${(p.items || []).length} barna${date ? ' · ' + escapeHtml(date) : ''}</div>
       <div class="saved-actions">
         <button class="btn-primary" type="button" data-load-protocol="${escapeHtml(p.id)}">Hape</button>
@@ -157,11 +181,14 @@ function patientSummary(p){
 function protocolToText(p){
   const lines = [];
   lines.push(p.name || 'RECETË');
+  lines.push('Statusi: ' + (p.clinicalReview ? 'E KONTROLLUAR KLINIKISHT' : 'DRAFT'));
+  if(p.reviewedAt) lines.push('Kontrolluar më: ' + new Date(p.reviewedAt).toLocaleString('sq-AL'));
   if(p.indication) lines.push('Diagnoza / indikacioni: ' + p.indication);
   if(p.population) lines.push('Grupi: ' + p.population);
   const patient = patientSummary(p);
   if(patient) lines.push('Pacienti: ' + patient);
   if(p.version) lines.push('Versioni/Data: ' + p.version);
+  if(p.dosageDatasetVersion) lines.push('Dataset dozologjie: ' + p.dosageDatasetVersion);
   lines.push('');
   (p.items || []).forEach((i, n) => {
     lines.push((n+1) + '. Rp. ' + [i.prefix, i.tradeName || i.substance, i.strength].filter(Boolean).join(' '));
