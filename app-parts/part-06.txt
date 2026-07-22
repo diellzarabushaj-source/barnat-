@@ -22,7 +22,7 @@ function protocolFormData(){
     notes: document.getElementById('protocolNotes').value.trim(),
     clinicalReview: Boolean(review.reviewed),
     reviewedAt: review.reviewedAt || '',
-    reviewVersion: review.reviewVersion || '1.0',
+    reviewVersion: review.reviewVersion || '1.1',
     dosageDatasetVersion: dosage.datasetVersion || '',
     dosageGeneratedAt: dosage.generatedAt || '',
     updatedAt: new Date().toISOString(),
@@ -42,16 +42,6 @@ function saveProtocol(){
   }
   if(!protocol.items.length){
     showProtocolToast('Zgjidhe së paku një bar.');
-    return;
-  }
-  if(protocol.patientType === 'pediatric' && !protocol.ageValue){
-    showProtocolToast('Për recetë pediatrike shkruaje moshën.');
-    document.getElementById('protocolAgeValue')?.focus();
-    return;
-  }
-  if(protocol.patientType === 'pediatric' && protocol.items.some(i => i.doseCalculation) && !protocol.weightKg){
-    showProtocolToast('Pesha është e detyrueshme për skemat pediatrike të llogaritura.');
-    document.getElementById('protocolWeightKg')?.focus();
     return;
   }
   const all = getSavedProtocols();
@@ -123,7 +113,7 @@ function duplicateProtocol(id){
     name:(p.name || 'Recetë') + ' — kopje',
     clinicalReview:false,
     reviewedAt:'',
-    reviewVersion:'1.0',
+    reviewVersion:'1.1',
     updatedAt:new Date().toISOString(),
     items:(p.items || []).map(i => ({...i}))
   };
