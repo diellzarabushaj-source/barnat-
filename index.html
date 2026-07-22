@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Regjistri i Barnave — Kosovë 2025</title>
+<title>MedIndex | Regjistri i Barnave DHE DIAGNOZAVE ICD - Dr. Diellza Rabushaj</title>
 <link rel="stylesheet" href="styles.css">
 <link rel="stylesheet" href="protocols.css">
 <link rel="stylesheet" href="ui-controls.css?v=20260722-7">
@@ -15,8 +15,8 @@
 <section class="access-screen" id="accessScreen" hidden aria-labelledby="accessHeading">
   <div class="access-form-container">
     <form class="access-form" id="accessForm" autocomplete="off">
-      <h1 class="access-heading" id="accessHeading">Regjistri i Barnave</h1>
-      <p class="access-subtitle">Shkruaje kodin personal për të vazhduar.</p>
+      <h1 class="access-heading" id="accessHeading">MedIndex</h1>
+      <p class="access-subtitle">Dr. Diellza Rabushaj · Shkruaje kodin personal për të vazhduar.</p>
       <div class="access-input-group">
         <input required type="password" id="accessCode" name="accessCode" autocomplete="current-password" placeholder=" ">
         <label for="accessCode">Kodi i qasjes</label>
@@ -42,8 +42,8 @@
 </div>
 
 <header>
-  <h1>Regjistri i Barnave &mdash; Lista Zyrtare e &Ccedil;mimeve</h1>
-  <div class="sub">Versioni 1.1 &middot; Afati i vlefshm&euml;risë: 01.05.2026 &ndash; 31.12.2026 &middot; Fjal&euml;t kyçe jan&euml; orientuese p&euml;r k&euml;rkim</div>
+  <h1>MedIndex | Regjistri i Barnave dhe Diagnozave ICD</h1>
+  <div class="sub">Dr. Diellza Rabushaj · Versioni 1.1 · Afati i vlefshmërisë: 01.05.2026 – 31.12.2026</div>
 </header>
 
 <div class="toolbar">
@@ -71,8 +71,8 @@
     <div class="col-panel" id="colPanel"></div>
   </div>
 
-  <span class="selection-badge" title="Barnat e zgjedhura për protokoll">Të zgjedhura: <strong id="selectedCount">0</strong></span>
-  <button class="protocol-toolbar-btn" id="protocolsBtn" type="button">Protokollet e mia <span class="mini-count" id="savedProtocolCount">0</span></button>
+  <span class="selection-badge" title="Barnat e zgjedhura për recetë">Të zgjedhura: <strong id="selectedCount">0</strong></span>
+  <button class="protocol-toolbar-btn" id="protocolsBtn" type="button">Recetat e mia <span class="mini-count" id="savedProtocolCount">0</span></button>
   <span class="count-badge" id="countBadge">Duke u ngarkuar...</span>
 </div>
 
@@ -93,15 +93,15 @@
   <aside class="protocol-drawer" role="dialog" aria-modal="true" aria-labelledby="protocolDrawerTitle">
     <div class="protocol-drawer-header">
       <div>
-        <h2 id="protocolDrawerTitle">Protokollet e mia</h2>
-        <p>Modele personale pune — të dhënat ruhen vetëm në këtë shfletues.</p>
+        <h2 id="protocolDrawerTitle">Recetat dhe protokollet e mia</h2>
+        <p>Receta hapet vetëm për lexim; editori aktivizohet vetëm me “Edito recetën”.</p>
       </div>
       <button class="protocol-close" id="protocolClose" type="button" aria-label="Mbyll">×</button>
     </div>
 
     <div class="protocol-tabs" role="tablist">
-      <button class="protocol-tab active" type="button" data-tab="builder">Krijo / përpuno</button>
-      <button class="protocol-tab" type="button" data-tab="saved">Të ruajtura <span id="savedTabCount">(0)</span></button>
+      <button class="protocol-tab active" type="button" data-tab="builder">Krijo / edito</button>
+      <button class="protocol-tab" type="button" data-tab="saved">Recetat e ruajtura <span id="savedTabCount">(0)</span></button>
     </div>
 
     <div class="protocol-content">
@@ -111,11 +111,11 @@
         </div>
 
         <div class="protocol-card">
-          <h3>Të dhënat e protokollit</h3>
+          <h3>Të dhënat e recetës / protokollit</h3>
           <div class="protocol-grid">
             <div class="protocol-field floating-field">
               <input id="protocolName" type="text" placeholder=" ">
-              <label for="protocolName">Emri i protokollit *</label>
+              <label for="protocolName">Emri i recetës / protokollit *</label>
               <span class="floating-hint">p.sh. Menaxhimi fillestar i migrenës</span>
             </div>
             <div class="protocol-field floating-field">
@@ -142,18 +142,18 @@
         </div>
 
         <div class="protocol-card">
-          <h3>Barnat e protokollit <span id="builderDrugCount" style="font-family:var(--mono);font-size:.78rem;color:#6d797c"></span></h3>
+          <h3>Barnat e recetës <span id="builderDrugCount" style="font-family:var(--mono);font-size:.78rem;color:#6d797c"></span></h3>
           <div id="protocolDrugList"></div>
         </div>
 
         <div class="protocol-actions">
-          <button class="bookmarkBtn" id="saveProtocolBtn" type="button" aria-label="Ruaje protokollin">
+          <button class="bookmarkBtn" id="saveProtocolBtn" type="button" aria-label="Ruaje recetën">
             <span class="IconContainer">
               <svg viewBox="0 0 384 512" class="icon" aria-hidden="true"><path d="M0 48V487.7C0 501.1 10.9 512 24.3 512c5 0 9.9-1.5 14-4.4L192 400 345.7 507.6c4.1 2.9 9 4.4 14 4.4c13.4 0 24.3-10.9 24.3-24.3V48c0-26.5-21.5-48-48-48H48C21.5 0 0 21.5 0 48z"></path></svg>
             </span>
             <span class="text">Ruaje</span>
           </button>
-          <button class="btn-secondary" id="newProtocolBtn" type="button">Protokoll i ri</button>
+          <button class="btn-secondary" id="newProtocolBtn" type="button">Recetë e re</button>
           <button class="btn-secondary" id="copyProtocolBtn" type="button">Kopjo si tekst</button>
           <button class="btn-secondary" id="printProtocolBtn" type="button">Printo</button>
           <button class="deleteButton" id="clearSelectionBtn" type="button" data-label="Pastro" aria-label="Pastro barnat e zgjedhura">
@@ -175,5 +175,6 @@
 <script src="data/registry-data.js?v=20260722-7"></script>
 <script src="app.js?v=20260722-7"></script>
 <script src="ui-enhancements.js?v=20260722-7"></script>
+<script src="medindex-view.js?v=20260722-10"></script>
 </body>
 </html>
