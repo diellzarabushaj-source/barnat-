@@ -41,10 +41,15 @@
 
     const protocolButton = menu.querySelector('[data-nav="protocols"]');
     ITEMS.forEach(item => {
-      if (menu.querySelector(`[data-medical-nav="${item.id}"]`)) return;
+      const existing = menu.querySelector(`[data-nav="${item.id}"], [data-medical-nav="${item.id}"]`);
+      if (existing) {
+        existing.dataset.medicalNav = item.id;
+        return;
+      }
       const link = document.createElement('a');
       link.className = 'app-menu-link';
       link.href = item.href;
+      link.dataset.nav = item.id;
       link.dataset.medicalNav = item.id;
       link.innerHTML = `<span class="app-menu-icon">${item.icon}</span><span class="app-menu-title">${item.title}</span>`;
       menu.insertBefore(link, protocolButton || menu.querySelector('.theme-control'));
