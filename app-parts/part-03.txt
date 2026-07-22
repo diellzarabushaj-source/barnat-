@@ -1,0 +1,112 @@
+'Powder and solvent for solution for injection/infusion','Powder and solvent for suspension for injection','Powder for concentrate for solution for infusion','Powder for injection','Powder for solution for infusion','Powder for solution for injection','Powder for solution for injection or infusion','Powder for suspension for injection','Solution for infusion','Solution for infusion and oral solution','Solution for injection','Solution for injection/infusion','Suspension for injection'],
+  'Kremra, xhel & pomada': ['Cream','Cutaneous emulsion','Cutaneous liquid','Cutaneous paste','Cutaneous powder','Cutaneous solution','Gel','Nasal ointment','Ointment'],
+  'Pika (sy, veshë, hundë)': ['Ear drops, emulsion','Ear drops, solution','Ear/eye drops, solution','Eye drops','Eye drops, solution','Eye drops, suspension','Eye gel','Eye ointment','Nasal drops, solution'],
+  'Sprej & Inhalim': ['Cutaneous spray','Cutaneous spray, solution','Inhalation powder','Inhalation vapour, liquid','Inhalation vapour, solution','Medicinal gas, compressed','Medicinal gas, liquefied','Nasal spray','Nasal spray, solution','Nasal spray, suspension','Nebuliser solution','Nebuliser suspension','Oral solution/concentrate for nebuliser solution','Oromucosal spray','Powder for nebuliser solution','Pressurised inhalation, solution','Pressurised inhalation, suspension','Sublingual spray'],
+  'Pluhur & granula': ['Effervescent granules','Effervescent powder','Granules','Oromucosal gel','Oromucosal solution'],
+  'Supozitorë & forma vaginale': ['Endocervical gel','Pessary','Rectal cream','Rectal ointment','Rectal solution','Rectal suspension','Suppository','Vaginal cream','Vaginal gel','Vaginal solution','Vaginal tablet'],
+  'Forma të tjera speciale': ['Applicator','Bladder irrigation','Dental solution','Gargle','Gargle/mouth wash','Implant','Impregnated dressing','Intraarticular use','Medicated chewing-gum','Medicated nail laquer','Mouth wash','Shampoo','Solution for peritonel dialysis','Solvent for parenteral use','Transdermal patch'],
+};
+
+const CATEGORY_ORDER = Object.keys(FORM_CATEGORIES);
+
+const CATEGORY_COLORS = {
+  'Tableta & pilula': '#2f7d5c',
+  'Kapsula': '#b1502f',
+  'Shurupe & solucione orale': '#2f6f9e',
+  'Injeksione & Infuzione': '#8a3e6b',
+  'Kremra, xhel & pomada': '#b98a1e',
+  'Pika (sy, veshë, hundë)': '#3f9a8f',
+  'Sprej & Inhalim': '#6d5aa6',
+  'Pluhur & granula': '#9c6b3f',
+  'Supozitorë & forma vaginale': '#c2547e',
+  'Forma të tjera speciale': '#6b6f76',
+};
+
+const FORM_TO_CATEGORY = {};
+CATEGORY_ORDER.forEach(cat => {
+  FORM_CATEGORIES[cat].forEach(f => { FORM_TO_CATEGORY[f] = cat; });
+});
+
+function categoryOf(forma){
+  return FORM_TO_CATEGORY[String(forma ?? '').trim()] || null;
+}
+
+function fieldMatchesTerm(fieldLower, term){
+  if(fieldLower.includes(term)) return true;
+  const aliasTargets = FORM_ALIASES[term];
+  if(aliasTargets) return aliasTargets.some(t => fieldLower.includes(t));
+  return false;
+}
+
+function rowMatchesSearch(r, terms){
+  return terms.every(term => SEARCH_FIELDS.some(f => fieldMatchesTerm(String(r[f] ?? '').toLowerCase(), term)));
+}
+
+function getFiltered(){
+  let rows = RAW;
+  const q = state.search.trim().toLowerCase();
+  if(q){
+    const terms = q.split(/\s+/).filter(Boolean);
+    rows = rows.filter(r => rowMatchesSearch(r, terms));
+  }
+  if(state.status){
+    rows = rows.filter(r => String(r['Statusi'] ?? '').trim() === state.status);
+  }
+  if(state.formType === 'form'){
+    rows = rows.filter(r => String(r['Forma farmaceutike'] ?? '').trim() === state.formValue);
+  } else if(state.formType === 'category'){
+    rows = rows.filter(r => categoryOf(r['Forma farmaceutike']) === state.formValue);
+  }
+  return rows;
+}
+
+function sortRows(rows){
+  const col = COLUMNS.find(c => c.key === state.sortKey);
+  const dir = state.sortDir;
+  return [...rows].sort((a,b) => {
+    let av = a[state.sortKey], bv = b[state.sortKey];
+    if(col.type === 'num'){
+      av = Number(av) || 0; bv = Number(bv) || 0;
+      return (av - bv) * dir;
+    }
+    av = String(av ?? '').toLowerCase(); bv = String(bv ?? '').toLowerCase();
+    return av.localeCompare(bv, 'sq') * dir;
+  });
+}
+
+function escapeHtml(s){
+  return String(s ?? '').replace(/[&<>"']/g, m => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]));
+}
+
+function render(){
+  buildHeader();
+  const filtered = sortRows(getFiltered());
+  const total = filtered.length;
+  document.getElementById('countBadge').textContent = total + ' / ' + RAW.length + ' barna';
+
+  const pageSize = state.pageSize;
+  const totalPages = Math.max(1, Math.ceil(total / pageSize));
+  if(state.page > totalPages) state.page = totalPages;
+  const start = (state.page - 1) * pageSize;
+  const pageRows = filtered.slice(start, start + pageSize);
+
+  const cols = visibleColumns();
+  const tbody = document.getElementById('tbody');
+  if(pageRows.length === 0){
+    tbody.innerHTML = '<tr><td colspan="' + Math.max(cols.length + 1,1) + '"><div class="empty-state">Asnj&euml; barn&euml; nuk u gjet p&euml;r k&euml;t&euml; k&euml;rkim.</div></td></tr>';
+  } else {
+    tbody.innerHTML = pageRows.map(r => {
+      const key = drugKey(r);
+      const checked = selectedDrugKeys.has(key);
+      return '<tr class="' + (checked ? 'row-selected' : '') + '">' +
+        '<td class="select-col"><input class="drug-select" type="checkbox" aria-label="Zgjidh ' + escapeHtml(r['Emri tregtar']) + '" data-drug-key="' + escapeHtml(key) + '" ' + (checked ? 'checked' : '') + '></td>' + cols.map(col => {
+        let val = r[col.key];
+        if(col.key === 'Statusi'){
+          const s = String(val ?? '').trim();
+          const cls = s === 'Gjenerik' ? 'gjenerik' : (s === 'Origjinator' ? 'origjinator' : '');
+          val = s ? '<span class="badge ' + cls + '">' + escapeHtml(s) + '</span>' : '';
+          return '<td class="' + col.cls + '">' + val + '</td>';
+        }
+        if(col.key === 'Forma farmaceutike'){
+          const cat = categoryOf(val);
+          const color = cat ? CATEGORY_COLORS[cat] : '#99
