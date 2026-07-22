@@ -1,0 +1,60 @@
+Teksti u kopjua.');
+  }catch(e){
+    const ta = document.createElement('textarea');
+    ta.value = protocolToText(p); document.body.appendChild(ta); ta.select(); document.execCommand('copy'); ta.remove();
+    showProtocolToast('Teksti u kopjua.');
+  }
+}
+
+function printProtocol(p=protocolFormData()){
+  const body = protocolToText(p).split('\n').map(line => '<div>' + (line ? escapeHtml(line) : '&nbsp;') + '</div>').join('');
+  const w = window.open('', '_blank', 'width=850,height=700');
+  if(!w){ showProtocolToast('Shfletuesi e bllokoi dritaren e printimit.'); return; }
+  w.document.write(`<!doctype html><html><head><meta charset="utf-8"><title>${escapeHtml(p.name || 'Protokoll')}</title><style>body{font-family:Arial,sans-serif;max-width:850px;margin:35px auto;padding:0 24px;color:#17252a;line-height:1.5}div:first-child{font-size:24px;font-weight:700;margin-bottom:10px}div{white-space:pre-wrap} @media print{body{margin:0}}</style></head><body>${body}<script>window.onload=()=>window.print()<\/script></body></html>`);
+  w.document.close();
+}
+
+function showProtocolToast(message){
+  const toast = document.getElementById('protocolToast');
+  toast.textContent = message;
+  toast.classList.add('show');
+  clearTimeout(showProtocolToast.t);
+  showProtocolToast.t = setTimeout(() => toast.classList.remove('show'), 2400);
+}
+
+function initProtocols(){
+  document.getElementById('protocolsBtn').addEventListener('click', () => openProtocols('builder'));
+  document.getElementById('protocolClose').addEventListener('click', closeProtocols);
+  document.getElementById('protocolOverlay').addEventListener('click', e => { if(e.target.id === 'protocolOverlay') closeProtocols(); });
+  document.addEventListener('keydown', e => { if(e.key === 'Escape') closeProtocols(); });
+  document.querySelectorAll('.protocol-tab').forEach(btn => btn.addEventListener('click', () => { switchProtocolTab(btn.dataset.tab); if(btn.dataset.tab === 'saved') renderSavedProtocols(); }));
+  document.getElementById('saveProtocolBtn').addEventListener('click', saveProtocol);
+  document.getElementById('newProtocolBtn').addEventListener('click', () => resetProtocolBuilder(false));
+  document.getElementById('clearSelectionBtn').addEventListener('click', () => resetProtocolBuilder(true));
+  document.getElementById('copyProtocolBtn').addEventListener('click', () => copyProtocolText());
+  document.getElementById('printProtocolBtn').addEventListener('click', () => printProtocol());
+  updateProtocolCounters();
+  renderProtocolDrugList();
+  renderSavedProtocols();
+}
+
+document.getElementById('search').addEventListener('input', e => {
+  state.search = e.target.value; state.page = 1; render();
+});
+document.getElementById('statusFilter').addEventListener('change', e => {
+  state.status = e.target.value; state.page = 1; render();
+});
+document.getElementById('pageSize').addEventListener('change', e => {
+  state.pageSize = Number(e.target.value); state.page = 1; render();
+});
+
+initFormPicker();
+buildColPanel();
+initProtocols();
+render();
+
+})().catch(error => {
+ console.error(error);
+ const body=document.getElementById("tbody");
+ if(body) body.innerHTML = `<tr><td colspan="30" class="empty-state">Gabim gjatë ngarkimit të të dhënave.</td></tr>`;
+});
