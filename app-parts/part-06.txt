@@ -34,6 +34,16 @@ function saveProtocol(){
     showProtocolToast('Zgjidhe së paku një bar.');
     return;
   }
+  if(protocol.patientType === 'pediatric' && !protocol.ageValue){
+    showProtocolToast('Për recetë pediatrike shkruaje moshën.');
+    document.getElementById('protocolAgeValue')?.focus();
+    return;
+  }
+  if(protocol.patientType === 'pediatric' && protocol.items.some(i => i.doseCalculation) && !protocol.weightKg){
+    showProtocolToast('Pesha është e detyrueshme për skemat pediatrike të llogaritura.');
+    document.getElementById('protocolWeightKg')?.focus();
+    return;
+  }
   const all = getSavedProtocols();
   const index = all.findIndex(p => p.id === protocol.id);
   if(index >= 0) all[index] = protocol; else all.unshift(protocol);
@@ -78,7 +88,7 @@ function loadProtocol(id){
   if(ageValue) ageValue.value = p.ageValue || '';
   if(ageUnit) ageUnit.value = p.ageUnit || 'years';
   if(weight) weight.value = p.weightKg || '';
-  draftItems = (p.items || []).map(i => ({...i}));
+  draftItems = (p.items || []).map(i => ({ clinicalNotes:'', ...i }));
   renderProtocolDrugList();
   switchProtocolTab('builder');
   patientType?.dispatchEvent(new Event('change', {bubbles:true}));
@@ -158,10 +168,11 @@ function protocolToText(p){
     if(i.substance && i.tradeName) lines.push('   Substanca: ' + i.substance + (i.form ? ' · ' + i.form : ''));
     if(i.quantity) lines.push('   Dispenso: ' + i.quantity);
     const regimen = [i.dose, i.route, i.frequency, i.duration].filter(Boolean).join(' · ');
-    lines.push('   Signatura: ' + (regimen || i.instructions || 'Nuk është plotësuar.'));
-    if(i.instructions && regimen) lines.push('   Udhëzime: ' + i.instructions);
+    lines.push('   Signatura: ' + (i.instructions || regimen || 'Nuk është plotësuar.'));
+    if(i.instructions && regimen) lines.push('   Skema e strukturuar: ' + regimen);
+    if(i.clinicalNotes) lines.push('   Vërejtje klinike: ' + i.clinicalNotes.replace(/\n+/g, ' | '));
     if(i.doseCalculation) lines.push('   Llogaritja: ' + i.doseCalculation);
-    if(i.regimenId) lines.push('   Skema: ' + i.regimenId + (i.dosageStatus ? ' · ' + i.dosageStatus : ''));
+    if(i.regimenId) lines.push('   Gjurmë: ' + i.regimenId + (i.dosageStatus ? ' · ' + i.dosageStatus : ''));
   });
   if(p.notes){ lines.push(''); lines.push('Vërejtje/monitorim: ' + p.notes); }
   lines.push('');
