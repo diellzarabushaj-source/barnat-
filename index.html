@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="sq">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Regjistri i Barnave — Kosovë 2025</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+<header>
+  <h1>Regjistri i Barnave &mdash; Lista Zyrtare e &Ccedil;mimeve</h1>
+  <div class="sub">Versioni 1.1 &middot; Afati i vlefshm&euml;risë: 01.05.2026 &ndash; 31.12.2026 &middot; Fjal&euml;t kyçe jan&euml; orientuese p&euml;r k&euml;rkim</div>
+</header>
+
+<div class="toolbar">
+  <input type="text" id="search" placeholder="K&euml;rko emrin, substanc&euml;n, klas&euml;n, p&euml;rdorimin, ATC...">
+  <select id="statusFilter">
+    <option value="">T&euml; gjitha statuset</option>
+    <option value="Gjenerik">Gjenerik</option>
+    <option value="Origjinator">Origjinator</option>
+  </select>
+  <div class="form-picker">
+    <button id="formPickerBtn" type="button">Forma: T&euml; gjitha &#9662;</button>
+    <div class="form-panel" id="formPanel">
+      <input type="text" id="formSearch" placeholder="K&euml;rko formën (p.sh. kapsul, tablet)...">
+      <div id="formList"></div>
+    </div>
+  </div>
+  <select id="pageSize">
+    <option value="50">50 / faqe</option>
+    <option value="100">100 / faqe</option>
+    <option value="250">250 / faqe</option>
+    <option value="4006">Shfaq t&euml; gjitha</option>
+  </select>
+  <div class="col-picker">
+    <button id="colPickerBtn" type="button">Kolonat &#9662;</button>
+    <div class="col-panel" id="colPanel"></div>
+  </div>
+  <span class="count-badge" id="countBadge">4006 barna</span>
+</div>
+
+<div class="table-wrap">
+  <table id="dataTable">
+    <thead>
+      <tr id="headerRow"></tr>
+    </thead>
+    <tbody id="tbody"></tbody>
+  </table>
+</div>
+
+<div class="pagination" id="pagination"></div>
+  <script>window.DRUG_DATA_PARTS = [];</script>
+  <script src="data/part-01.js"></script>
+  <script src="data/part-02.js"></script>
+  <script src="data/part-03.js"></script>
+  <script src="data/part-04.js"></script>
+  <script src="data/part-05.js"></script>
+  <script src="data/part-06.js"></script>
+  <script src="data/part-07.js"></script>
+  <script src="data/part-08.js"></script>
+  <script src="data/part-09.js"></script>
+  <script src="data/part-10.js"></script>
+  <script src="data/part-11.js"></script>
+  <script src="data/part-12.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>
