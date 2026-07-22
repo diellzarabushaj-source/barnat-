@@ -9,11 +9,17 @@ function switchProtocolTab(tab){
 function protocolFormData(){
   const review = window.MedIndexPrescriptionReview?.state?.() || {};
   const dosage = window.MEDINDEX_DOSAGE || {};
+  const now = new Date().toISOString();
+  const existing = editingProtocolId ? getSavedProtocols().find(item => item.id === editingProtocolId) : null;
   return {
     id: editingProtocolId || ('p_' + Date.now()),
     name: document.getElementById('protocolName').value.trim(),
     indication: document.getElementById('protocolIndication').value.trim(),
     population: document.getElementById('protocolPopulation').value.trim(),
+    patientName: document.getElementById('protocolPatientName')?.value.trim() || '',
+    birthDate: document.getElementById('protocolBirthDate')?.value || '',
+    patientId: document.getElementById('protocolPatientId')?.value.trim() || '',
+    allergies: document.getElementById('protocolAllergies')?.value.trim() || '',
     patientType: document.getElementById('protocolPatientType')?.value || 'adult',
     ageValue: document.getElementById('protocolAgeValue')?.value || '',
     ageUnit: document.getElementById('protocolAgeUnit')?.value || 'years',
@@ -22,10 +28,12 @@ function protocolFormData(){
     notes: document.getElementById('protocolNotes').value.trim(),
     clinicalReview: Boolean(review.reviewed),
     reviewedAt: review.reviewedAt || '',
-    reviewVersion: review.reviewVersion || '1.1',
+    reviewedBy: review.reviewed ? 'Dr. Diellza Rabushaj' : '',
+    reviewVersion: review.reviewVersion || '1.2',
     dosageDatasetVersion: dosage.datasetVersion || '',
     dosageGeneratedAt: dosage.generatedAt || '',
-    updatedAt: new Date().toISOString(),
+    createdAt: existing?.createdAt || now,
+    updatedAt: now,
     items: draftItems.map(i => ({...i}))
   };
 }
@@ -55,7 +63,7 @@ function saveProtocol(){
 
 function resetProtocolBuilder(clearSelection=false){
   editingProtocolId = null;
-  ['protocolName','protocolIndication','protocolPopulation','protocolVersion','protocolNotes','protocolAgeValue','protocolWeightKg'].forEach(id => {
+  ['protocolName','protocolIndication','protocolPopulation','protocolVersion','protocolNotes','protocolPatientName','protocolBirthDate','protocolPatientId','protocolAllergies','protocolAgeValue','protocolWeightKg'].forEach(id => {
     const field = document.getElementById(id);
     if(field) field.value = '';
   });
@@ -81,10 +89,18 @@ function loadProtocol(id){
   document.getElementById('protocolPopulation').value = p.population || '';
   document.getElementById('protocolVersion').value = p.version || '';
   document.getElementById('protocolNotes').value = p.notes || '';
+  const patientName = document.getElementById('protocolPatientName');
+  const birthDate = document.getElementById('protocolBirthDate');
+  const patientId = document.getElementById('protocolPatientId');
+  const allergies = document.getElementById('protocolAllergies');
   const patientType = document.getElementById('protocolPatientType');
   const ageValue = document.getElementById('protocolAgeValue');
   const ageUnit = document.getElementById('protocolAgeUnit');
   const weight = document.getElementById('protocolWeightKg');
+  if(patientName) patientName.value = p.patientName || '';
+  if(birthDate) birthDate.value = p.birthDate || '';
+  if(patientId) patientId.value = p.patientId || '';
+  if(allergies) allergies.value = p.allergies || '';
   if(patientType) patientType.value = p.patientType || 'adult';
   if(ageValue) ageValue.value = p.ageValue || '';
   if(ageUnit) ageUnit.value = p.ageUnit || 'years';
@@ -107,14 +123,17 @@ function deleteProtocol(id){
 function duplicateProtocol(id){
   const p = getSavedProtocols().find(x => x.id === id);
   if(!p) return;
+  const now = new Date().toISOString();
   const copy = {
     ...p,
     id:'p_' + Date.now(),
     name:(p.name || 'Recetë') + ' — kopje',
     clinicalReview:false,
     reviewedAt:'',
-    reviewVersion:'1.1',
-    updatedAt:new Date().toISOString(),
+    reviewedBy:'',
+    reviewVersion:'1.2',
+    createdAt:now,
+    updatedAt:now,
     items:(p.items || []).map(i => ({...i}))
   };
   const all = getSavedProtocols();
@@ -137,9 +156,10 @@ function renderSavedProtocols(){
     const stale = (p.items || []).some(item => String(item.dosageStatus || '').includes('KËRKON RISHIKIM'));
     const reviewClass = stale ? 'stale' : p.clinicalReview ? 'reviewed' : '';
     const reviewLabel = stale ? 'Rishiko' : p.clinicalReview ? 'Kontrolluar' : 'Draft';
+    const patient = p.patientName ? ' · ' + escapeHtml(p.patientName) : '';
     return `<article class="saved-protocol">
       <h3>${escapeHtml(p.name || 'Pa emër')} <span class="saved-review ${reviewClass}">${reviewLabel}</span></h3>
-      <div class="saved-meta">${escapeHtml(p.indication || 'Pa indikacion')} · ${(p.items || []).length} barna${date ? ' · ' + escapeHtml(date) : ''}</div>
+      <div class="saved-meta">${escapeHtml(p.indication || 'Pa indikacion')}${patient} · ${(p.items || []).length} barna${date ? ' · ' + escapeHtml(date) : ''}</div>
       <div class="saved-actions">
         <button class="btn-primary" type="button" data-load-protocol="${escapeHtml(p.id)}">Hape</button>
         <button class="btn-secondary" type="button" data-copy-saved="${escapeHtml(p.id)}">Kopjo tekstin</button>
@@ -173,10 +193,15 @@ function protocolToText(p){
   lines.push(p.name || 'RECETË');
   lines.push('Statusi: ' + (p.clinicalReview ? 'E KONTROLLUAR KLINIKISHT' : 'DRAFT'));
   if(p.reviewedAt) lines.push('Kontrolluar më: ' + new Date(p.reviewedAt).toLocaleString('sq-AL'));
+  if(p.reviewedBy) lines.push('Kontrolluar nga: ' + p.reviewedBy);
+  if(p.patientName) lines.push('Pacienti: ' + p.patientName);
+  if(p.birthDate) lines.push('Datëlindja: ' + p.birthDate);
+  if(p.patientId) lines.push('Nr. personal / ID: ' + p.patientId);
+  if(p.allergies) lines.push('Alergjitë: ' + p.allergies);
   if(p.indication) lines.push('Diagnoza / indikacioni: ' + p.indication);
   if(p.population) lines.push('Grupi: ' + p.population);
   const patient = patientSummary(p);
-  if(patient) lines.push('Pacienti: ' + patient);
+  if(patient) lines.push('Profili: ' + patient);
   if(p.version) lines.push('Versioni/Data: ' + p.version);
   if(p.dosageDatasetVersion) lines.push('Dataset dozologjie: ' + p.dosageDatasetVersion);
   lines.push('');
