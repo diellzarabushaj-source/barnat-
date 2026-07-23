@@ -26,42 +26,52 @@ jobs:
           set -euo pipefail
           files=(
             app.js
-            dosage-integration.js
-            dosage-auto-apply.js
-            prescription-review.js
-            medindex-view.js
-            name-display.js
-            ui-enhancements.js
-            classification.js
-            classification-quality-view.js
-            classification-info.js
-            api/dosage.js
+            app-stability.js
+            main-navigation-extension.js
+            navigation-consistency.js
+            medical-icons.js
+            section-icons.js
+            classification-icons.js
+            recetat.js
+            api/gemini-prescription.js
+            api/drug-search.js
             api/registry.js
             api/registry-data.js
+            api/dosage.js
           )
           for file in "${files[@]}"; do
-            if [[ -f "$file" ]]; then
-              node --check "$file"
-            fi
+            test -f "$file"
+            node --check "$file"
           done
+          cat app-parts/part-01.txt app-parts/part-02.txt app-parts/part-03.txt app-parts/part-04.txt app-parts/core-tail.txt > /tmp/medindex-registry-bundle.js
+          node --check /tmp/medindex-registry-bundle.js
 
-      - name: Verify auto-fill is loaded after dosage data integration
+      - name: Verify the dedicated prescription dashboard
         shell: bash
         run: |
           set -euo pipefail
-          integration_line=$(grep -n 'src="dosage-integration.js' index.html | cut -d: -f1)
-          auto_line=$(grep -n 'src="dosage-auto-apply.js' index.html | cut -d: -f1)
-          test -n "$integration_line"
-          test -n "$auto_line"
-          test "$auto_line" -gt "$integration_line"
+          grep -q 'href="recetat.html"' index.html
+          grep -q 'id="rxComposer"' recetat.html
+          grep -q '@forma' recetat.html
+          grep -q '@bari' recetat.html
+          grep -q '@doza' recetat.html
+          grep -q '@tjetër' recetat.html
+          grep -q '@signatura' recetat.html
+          grep -q '/api/gemini-prescription' recetat.js
+          grep -q '/api/drug-search' recetat.js
+          grep -q 'sharedSignature' recetat.js
+          ! grep -q 'protocolOverlay' index.html
+          ! grep -q 'dosage-auto-apply.js' index.html
+          ! grep -q 'prescription-review.js' index.html
 
-      - name: Verify safe auto-fill rules remain present
+      - name: Verify Gemini formatting guardrails
         shell: bash
         run: |
           set -euo pipefail
-          grep -q 'clinicalAutoFillEnabled' dosage-auto-apply.js
-          grep -q 'regimens.length !== 1' dosage-auto-apply.js
-          grep -q 'function exactStrengthMatch' dosage-auto-apply.js
-          grep -q 'exactStrengthMatch(article.dataset.strength' dosage-auto-apply.js
-          grep -q 'VERIFIKUAR — AUTO-APLIKUAR' dosage-auto-apply.js
-          grep -q 'Statusi=VERIFIKUAR AND Auto-fill=PO' api/dosage.js || true
+          grep -q 'GEMINI_API_KEY' api/gemini-prescription.js
+          grep -q "responseMimeType: 'application/json'" api/gemini-prescription.js
+          grep -q 'responseSchema' api/gemini-prescription.js
+          grep -q 'thinkingBudget: 0' api/gemini-prescription.js
+          grep -q 'Mos shto asnjë bar, dozë, frekuencë, kohëzgjatje, rrugë' api/gemini-prescription.js
+          grep -q 'sharedSignature' api/gemini-prescription.js
+          grep -q 'fushën bosh' api/gemini-prescription.js
