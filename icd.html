@@ -3,13 +3,13 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-  <meta name="description" content="MedIndex — ICD-10 Versioni 2019 në shqip, me 22 kapituj dhe kërkim të zgjuar.">
+  <meta name="description" content="MedIndex — ICD-10-WHO 2019 në shqip, me 22 kapituj dhe kodet kryesore për mjekësi familjare dhe urgjencë.">
   <meta name="robots" content="noindex,nofollow,noarchive">
   <meta name="theme-color" content="#0d3d40">
-  <title>MedIndex | ICD-10 Versioni 2019 në shqip — Dr. Diellza Rabushaj</title>
+  <title>MedIndex | ICD-10-WHO 2019 në shqip — Dr. Diellza Rabushaj</title>
   <link rel="stylesheet" href="medical-hub.css?v=20260723-1">
   <link rel="stylesheet" href="app-polish.css?v=20260723-2">
-  <link rel="stylesheet" href="icd.css?v=20260723-1">
+  <link rel="stylesheet" href="icd.css?v=20260723-3">
 </head>
 <body>
   <div class="med-shell">
@@ -25,46 +25,47 @@
     <main class="med-main">
       <header class="med-hero">
         <p class="med-kicker">MedIndex · Klasifikimi Ndërkombëtar i Sëmundjeve</p>
-        <h1>ICD-10 Versioni 2019 në shqip</h1>
-        <p>Shfleto të 22 kapitujt, kërko me kod, interval, diagnozë ose fjalë kyçe dhe hape klasifikimin zyrtar të WHO-së.</p>
+        <h1>ICD-10-WHO 2019 në shqip</h1>
+        <p>Shfleto 22 kapitujt dhe kodet kryesore për mjekësi familjare e urgjencë; kërko me kod, diagnozë, grup klinik ose fjalë kyçe.</p>
       </header>
 
-      <div class="med-notice"><strong>Mbulesa:</strong> lista e 22 kapitujve të ICD-10 Versioni 2019 është paraqitur në shqip. Përmbajtja e detajuar brenda MedIndex aktualisht përfshin bllokun <strong>J85–J86</strong>; kapitujt e tjerë hapen drejtpërdrejt në shfletuesin zyrtar të WHO-së.</div>
+      <div class="med-notice" id="icdSourceNotice"><strong>Burimi:</strong> po ngarkohen të dhënat identike nga Google Sheet-i i aprovuar për ICD-10.</div>
 
-      <div class="med-toolbar icd-toolbar" role="search" aria-label="Kërkimi i kapitujve dhe kodeve ICD-10">
+      <div class="med-toolbar icd-toolbar" role="search" aria-label="Kërkimi dhe filtrat ICD-10">
         <div class="icd-smart-wrap">
-          <input class="med-search" id="icdSmartSearch" type="search" list="icdSuggestions" placeholder="Kërko p.sh. diabet, mushkëri, J85, shtatzëni, A00–B99…" autocomplete="off" enterkeyhint="search" aria-label="Kërko kapitullin, kodin, diagnozën ose fjalë kyçe">
+          <input class="med-search" id="icdSmartSearch" type="search" list="icdSuggestions" placeholder="Kërko p.sh. diabet, pneumoni, J85, dhimbje gjoksi…" autocomplete="off" enterkeyhint="search" aria-label="Kërko kodin, diagnozën, grupin klinik ose fjalë kyçe">
           <button class="icd-clear" id="icdClear" type="button" aria-label="Pastro kërkimin" hidden>×</button>
           <datalist id="icdSuggestions"></datalist>
         </div>
-        <select class="med-filter" id="icdLevel" aria-label="Filtro nivelin e kodeve të detajuara"><option value="">Të gjitha nivelet</option><option value="kategori">Kategori</option><option value="kod">Kode të plota</option></select>
-        <a class="icd-who-link" id="whoBrowserLink" href="https://icd.who.int/browse10/2019/en" target="_blank" rel="noopener noreferrer">Kërkimi zyrtar WHO ↗</a>
-        <span class="med-count" id="smartCount" aria-live="polite">22 kapituj · 8 kode</span>
+        <select class="med-filter" id="icdLevel" aria-label="Filtro nivelin e kodit"><option value="">Të gjitha nivelet</option><option value="kategori">Kategori kryesore</option><option value="kod">Kode të tjera</option></select>
+        <select class="med-filter" id="icdContext" aria-label="Filtro përdorimin klinik"><option value="">Të gjitha kodet</option><option value="family">Mjekësi familjare</option><option value="emergency">Mjekësi urgjente</option><option value="critical">Kodet kritike</option></select>
+        <a class="icd-who-link" id="whoBrowserLink" href="https://icd.who.int/browse10/2019/en" target="_blank" rel="noopener noreferrer">WHO ICD-10 ↗</a>
+        <span class="med-count" id="smartCount" aria-live="polite">Duke u ngarkuar…</span>
       </div>
 
       <section id="chapterSection" class="icd-section" aria-labelledby="chaptersTitle">
-        <div class="med-section-head"><div><h2 id="chaptersTitle">22 kapitujt e ICD-10</h2><p>Titujt janë përkthyer në shqip; intervalet dhe numrat romakë ruhen sipas WHO ICD-10 Versioni 2019.</p></div><span class="med-count" id="chapterCount" aria-live="polite">22 kapituj</span></div>
+        <div class="med-section-head"><div><h2 id="chaptersTitle">22 kapitujt e ICD-10</h2><p>Titujt, intervalet dhe numrat romakë ruhen sipas materialit të aprovuar.</p></div><span class="med-count" id="chapterCount" aria-live="polite">22 kapituj</span></div>
         <div class="med-grid icd-chapter-grid" id="chapterGrid"></div>
       </section>
 
       <section id="codeSection" class="icd-section" aria-labelledby="blockTitle">
-        <div class="med-section-head"><div><h2 id="blockTitle">J85–J86</h2><p id="chapterTitle"></p></div><span class="med-count" id="icdCount" aria-live="polite">0 kode</span></div>
-        <div class="med-grid" id="icdGrid"></div>
+        <div class="med-section-head"><div><h2 id="blockTitle">Kodet kryesore të përzgjedhura</h2><p id="chapterTitle">Mjekësi familjare dhe mjekësi urgjente · ICD-10-WHO 2019</p></div><span class="med-count" id="icdCount" aria-live="polite">0 kode</span></div>
+        <div class="med-grid icd-code-grid" id="icdGrid"></div>
       </section>
     </main>
   </div>
 
   <div class="med-panel-overlay" id="detailOverlay" hidden aria-hidden="true">
     <section class="med-panel" role="dialog" aria-modal="true" aria-labelledby="detailTitle">
-      <header class="med-panel-head"><div><small id="detailKicker">WHO ICD-10</small><h2 id="detailTitle">Kodi ICD</h2></div><button class="med-panel-close" id="detailClose" type="button" aria-label="Mbyll">×</button></header>
+      <header class="med-panel-head"><div><small id="detailKicker">ICD-10-WHO 2019</small><h2 id="detailTitle">Kodi ICD</h2></div><button class="med-panel-close" id="detailClose" type="button" aria-label="Mbyll">×</button></header>
       <div class="med-panel-body" id="detailBody"></div>
       <footer class="med-panel-foot"><button id="detailDone" type="button">Mbyll</button></footer>
     </section>
   </div>
 
   <script src="icd-data.js?v=20260723-2"></script>
-  <script src="icd.js?v=20260723-2"></script>
+  <script src="icd.js?v=20260723-4"></script>
   <script src="auth-client.js?v=20260723-2"></script>
-  <script src="app-stability.js?v=20260723-1"></script>
+  <script src="app-stability.js?v=20260723-2"></script>
 </body>
 </html>
