@@ -2,17 +2,18 @@ const hidePageLoader = () => {
   const loader = document.getElementById('pageLoader');
   if(!loader) return;
   loader.classList.add('is-hidden');
-  window.setTimeout(() => loader.remove(), 250);
+  window.setTimeout(() => loader.remove(), 180);
 };
 
 (async () => {
-  const APP_VERSION = '20260723-3';
+  const APP_VERSION = '20260723-4';
   const CACHE_KEY = 'barnat-registry-parts-v3';
   const CACHE_TIME_KEY = 'barnat-registry-cached-at-v3';
   const LEGACY_CACHE_KEYS = ['barnat-registry-parts-v2', 'barnat-registry-cached-at-v2'];
   const BACKGROUND_REFRESH_MS = 6 * 60 * 60 * 1000;
   const REQUEST_TIMEOUT_MS = 12000;
 
+  performance.mark?.('medindex-app-start');
   const hasRegistryData = () => Array.isArray(window.DRUG_DATA_PARTS) && window.DRUG_DATA_PARTS.length > 0;
 
   async function timedFetch(url, options = {}, timeoutMs = REQUEST_TIMEOUT_MS) {
@@ -89,26 +90,33 @@ const hidePageLoader = () => {
     await loadGoogleDriveFallback();
   }
 
-  const files = Array.from({ length: 7 }, (_, index) => `./app-parts/part-${String(index + 1).padStart(2, '0')}.txt?v=${APP_VERSION}`);
+  const files = [
+    './app-parts/part-01.txt',
+    './app-parts/part-02.txt',
+    './app-parts/part-03.txt',
+    './app-parts/part-04.txt',
+    './app-parts/core-tail.txt',
+  ].map(file => `${file}?v=${APP_VERSION}`);
   const responses = await Promise.all(files.map(file => timedFetch(file, { cache: 'force-cache', credentials: 'same-origin' })));
   responses.forEach((response, index) => {
     if(!response.ok) throw new Error('Nuk u ngarkua ' + files[index] + ' (' + response.status + ')');
   });
 
   const codeParts = await Promise.all(responses.map(response => response.text()));
-  const code = codeParts.join('');
-  (0, eval)(`${code}\n//# sourceURL=medindex-app-bundle-${APP_VERSION}.js`);
+  (0, eval)(`${codeParts.join('')}\n//# sourceURL=medindex-registry-${APP_VERSION}.js`);
 
   const countBadge = document.getElementById('countBadge');
   if(countBadge) countBadge.title = 'Burimi i të dhënave: ' + window.REGISTRY_DATA_SOURCE;
   window.MEDINDEX_APP_VERSION = APP_VERSION;
+  performance.mark?.('medindex-app-ready');
+  performance.measure?.('medindex-app-load', 'medindex-app-start', 'medindex-app-ready');
   requestAnimationFrame(() => requestAnimationFrame(hidePageLoader));
 
   const cachedAt = Number(localStorage.getItem(CACHE_TIME_KEY) || 0);
   if(window.REGISTRY_DATA_SOURCE === 'browser-cache' && Date.now() - cachedAt > BACKGROUND_REFRESH_MS) {
     const refresh = () => loadGoogleDriveFallback({ background: true });
-    if('requestIdleCallback' in window) requestIdleCallback(refresh, { timeout: 2500 });
-    else setTimeout(refresh, 750);
+    if('requestIdleCallback' in window) requestIdleCallback(refresh, { timeout: 3000 });
+    else setTimeout(refresh, 900);
   }
 })().catch(error => {
   console.error(error);
