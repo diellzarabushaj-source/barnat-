@@ -122,6 +122,14 @@
       const line = text(raw).replace(/^Rp\s*:\s*/i, '');
       if (!line) return;
 
+      const doseMatch = line.match(/^Doza\s*:\s*(.*)$/i);
+      if (doseMatch) {
+        if (medications.length) medications.at(-1).dose = text(doseMatch[1]);
+        else missing.push(`Grupi ${index + 1}: Doza nuk është lidhur me asnjë bar.`);
+        activeSignature = null;
+        return;
+      }
+
       const quantityMatch = line.match(/^Sasia\s*:\s*(.*)$/i);
       if (quantityMatch) {
         if (medications.length) medications.at(-1).dispenseQuantity = text(quantityMatch[1]);
@@ -157,9 +165,18 @@
 
     if (!medications.length) return null;
 
+    const allSignatureText = signatureEvents.map(event => event.value).filter(Boolean).join(' ');
+    const preliminaryType = inferType(medications, allSignatureText);
+    const onlySignature = signatureEvents[0];
+    const explicitlyShared = /përzi|perzi|së bashku|se bashku|bashkë|bashke|njëjt(?:in|ën) infuzion|njejt(?:in|en) infuzion/i.test(onlySignature?.value || '');
+    const canUseSharedSignature = signatureEvents.length === 1
+      && medications.length > 1
+      && onlySignature.afterMedicationCount === medications.length
+      && (preliminaryType === 'infusion' || preliminaryType === 'injection' || explicitlyShared);
+
     let sharedSignature = '';
-    if (signatureEvents.length === 1 && medications.length > 1 && signatureEvents[0].afterMedicationCount === medications.length) {
-      sharedSignature = signatureEvents[0].value;
+    if (canUseSharedSignature) {
+      sharedSignature = onlySignature.value;
     } else {
       signatureEvents.forEach(event => {
         const target = medications[Math.max(0, event.afterMedicationCount - 1)];
@@ -261,7 +278,7 @@
     normalized.sections.forEach((section, sectionIndex) => {
       if (sectionIndex) lines.push('');
       section.medications.forEach((item, itemIndex) => {
-        if (itemIndex) lines.push('');
+        if (itemIndex && !section.sharedSignature) lines.push('');
         lines.push(medicationLine(item));
         if (item.dispenseQuantity) lines.push(`Sasia: ${item.dispenseQuantity}`);
         if (item.other) lines.push(`Tjetër: ${item.other}`);
