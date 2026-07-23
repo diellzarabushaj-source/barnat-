@@ -1,11 +1,16 @@
 (() => {
   'use strict';
 
+  const RETURN_KEY = 'medindex_return_after_login';
+  const originalFetch = window.fetch.bind(window);
+  document.documentElement.classList.add('auth-checking');
+
   function installStyles() {
     if (document.getElementById('authClientStyles')) return;
     const style = document.createElement('style');
     style.id = 'authClientStyles';
     style.textContent = `
+      html.auth-checking body{visibility:hidden}
       .auth-logout{flex:0 0 auto;min-width:0;border:0;background:transparent;color:inherit;cursor:pointer}
       .auth-logout:hover{background:rgba(255,255,255,.13)!important;color:#fff!important}
       .auth-logout svg{fill:none;stroke:currentColor;stroke-width:16;stroke-linecap:round;stroke-linejoin:round}
@@ -14,13 +19,38 @@
     document.head.appendChild(style);
   }
 
+  function safeReturnPath() {
+    const path = location.pathname + location.search + location.hash;
+    return path.startsWith('/') && !path.startsWith('//') && !path.startsWith('/api/') ? path : '/index.html';
+  }
+
+  async function authRequest(options = {}) {
+    const controller = new AbortController();
+    const timer = setTimeout(() => controller.abort(), 8000);
+    try {
+      return await originalFetch('/api/auth', {
+        cache: 'no-store',
+        credentials: 'same-origin',
+        headers: { Accept: 'application/json', ...(options.headers || {}) },
+        ...options,
+        signal: controller.signal,
+      });
+    } finally {
+      clearTimeout(timer);
+    }
+  }
+
+  function goToLogin() {
+    try { sessionStorage.setItem(RETURN_KEY, safeReturnPath()); } catch {}
+    location.replace('/login.html');
+  }
+
   async function logout() {
     const buttons = document.querySelectorAll('.auth-logout');
     buttons.forEach(button => { button.disabled = true; button.setAttribute('aria-busy', 'true'); });
-    try {
-      await fetch('/api/auth', { method: 'DELETE', cache: 'no-store', credentials: 'same-origin' });
-    } catch {}
-    location.href = '/login.html';
+    try { await authRequest({ method: 'DELETE' }); } catch {}
+    try { sessionStorage.removeItem(RETURN_KEY); } catch {}
+    location.replace('/login.html');
   }
 
   function buttonMarkup(className) {
@@ -40,13 +70,11 @@
       const theme = appMenu.querySelector('.theme-control');
       appMenu.insertBefore(buttonMarkup('app-menu-link'), theme || null);
     }
-
     const atcNav = document.querySelector('.atc-nav');
     if (atcNav && !atcNav.querySelector('.auth-logout')) {
       const theme = atcNav.querySelector('.atc-theme');
       atcNav.insertBefore(buttonMarkup('atc-nav-link'), theme || null);
     }
-
     const medNav = document.querySelector('.med-nav');
     if (medNav && !medNav.querySelector('.auth-logout')) {
       const theme = medNav.querySelector('.med-theme');
@@ -61,10 +89,9 @@
     banner.setAttribute('role', 'alert');
     banner.textContent = 'Sesioni ka skaduar. Po kthehesh te hyrja…';
     document.body.appendChild(banner);
-    setTimeout(() => { location.href = '/login.html'; }, 850);
+    setTimeout(goToLogin, 700);
   }
 
-  const originalFetch = window.fetch.bind(window);
   window.fetch = async (...args) => {
     const response = await originalFetch(...args);
     const target = typeof args[0] === 'string' ? args[0] : args[0]?.url || '';
@@ -72,11 +99,19 @@
     return response;
   };
 
-  function init() {
+  async function init() {
     installStyles();
-    installLogout();
-    const observer = new MutationObserver(installLogout);
-    observer.observe(document.documentElement, { childList: true, subtree: true });
+    try {
+      const response = await authRequest();
+      const payload = await response.json().catch(() => ({}));
+      if (!response.ok || !payload.authenticated) return goToLogin();
+      document.documentElement.classList.remove('auth-checking');
+      installLogout();
+      const observer = new MutationObserver(installLogout);
+      observer.observe(document.documentElement, { childList: true, subtree: true });
+    } catch {
+      goToLogin();
+    }
   }
 
   if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', init, { once: true });
