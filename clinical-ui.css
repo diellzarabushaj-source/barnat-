@@ -1,0 +1,185 @@
+/*
+ * MedIndex Clinical UI — unified visual system for physicians.
+ * Presentation only: no content, data, labels, or application behavior is changed.
+ */
+:root{
+  --mi-bg:#f2f6f5;
+  --mi-surface:#ffffff;
+  --mi-surface-soft:#f7faf9;
+  --mi-surface-strong:#edf4f2;
+  --mi-border:#d8e2df;
+  --mi-border-strong:#c2d0cc;
+  --mi-text:#17282d;
+  --mi-muted:#607277;
+  --mi-primary:#0d474b;
+  --mi-primary-2:#155f64;
+  --mi-primary-soft:#e8f2f0;
+  --mi-accent:#b87318;
+  --mi-accent-soft:#f8ead6;
+  --mi-success:#25704f;
+  --mi-warning:#996017;
+  --mi-danger:#9b3b40;
+  --mi-info:#356e91;
+  --mi-radius-xs:7px;
+  --mi-radius-sm:10px;
+  --mi-radius-md:14px;
+  --mi-radius-lg:19px;
+  --mi-shadow-xs:0 1px 2px rgba(13,55,58,.05);
+  --mi-shadow-sm:0 5px 16px rgba(13,55,58,.065);
+  --mi-shadow-md:0 13px 34px rgba(13,55,58,.10);
+  --mi-shadow-lg:0 28px 80px rgba(5,24,26,.24);
+  --mi-nav-width:84px;
+  --mi-control-height:42px;
+  --mi-font:Inter,ui-sans-serif,-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+  --mi-heading:Georgia,"Times New Roman",serif;
+  --mi-mono:"SFMono-Regular",Consolas,"Liberation Mono",monospace;
+  --ink:var(--mi-text);
+  --muted:var(--mi-muted);
+  --paper:var(--mi-surface);
+  --panel:var(--mi-surface);
+  --surface:var(--mi-bg);
+  --line:var(--mi-border);
+  --teal:var(--mi-primary-2);
+  --teal-dark:var(--mi-primary);
+  --amber:var(--mi-accent);
+  --amber-soft:var(--mi-accent-soft);
+  --sans:var(--mi-font);
+  --serif:var(--mi-heading);
+  --mono:var(--mi-mono);
+  --shadow:var(--mi-shadow-md);
+  color-scheme:light;
+}
+*{box-sizing:border-box}
+html{background:var(--mi-bg);scroll-padding-top:84px}
+body{background:radial-gradient(circle at 92% 0,rgba(21,95,100,.055),transparent 28rem),linear-gradient(180deg,#f8fbfa 0,var(--mi-bg) 22rem);color:var(--mi-text);font-family:var(--mi-font);font-size:14px;line-height:1.45}
+::selection{background:rgba(21,95,100,.18);color:var(--mi-text)}
+a{color:var(--mi-primary-2)}
+button,input,select,textarea{font-family:inherit}
+button{letter-spacing:0}
+input::placeholder,textarea::placeholder{color:#839196;opacity:1}
+input,select,textarea{accent-color:var(--mi-primary-2)}
+:is(button,a,input,select,textarea,[tabindex]):focus-visible{outline:3px solid rgba(184,115,24,.34)!important;outline-offset:2px!important}
+*{scrollbar-width:thin;scrollbar-color:#a8bab6 transparent}
+*::-webkit-scrollbar{width:10px;height:10px}
+*::-webkit-scrollbar-thumb{background:#a8bab6;border:3px solid transparent;border-radius:999px;background-clip:padding-box}
+*::-webkit-scrollbar-track{background:transparent}
+html body.has-app-nav{padding-left:var(--mi-nav-width)!important}
+html body.has-app-nav .app-menu,html .med-nav,html .atc-nav{width:var(--mi-nav-width)!important;padding:14px 9px!important;gap:6px!important;background:linear-gradient(180deg,rgba(255,255,255,.035),transparent 25%),var(--mi-primary)!important;border:0!important;border-right:1px solid rgba(255,255,255,.09)!important;box-shadow:8px 0 26px rgba(4,29,31,.10)!important}
+html .atc-shell{grid-template-columns:var(--mi-nav-width) minmax(0,1fr)!important}
+html .med-shell{padding-left:var(--mi-nav-width)!important}
+html body.has-app-nav .app-menu-link,html .med-nav-link,html .atc-nav-link{position:relative!important;min-height:58px!important;padding:8px 4px!important;gap:4px!important;border-radius:11px!important;color:#cfe0dc!important;text-decoration:none!important;transform:none!important;transition:background .15s ease,color .15s ease!important}
+html body.has-app-nav .app-menu-link::before,html .med-nav-link::before,html .atc-nav-link::before{content:"";position:absolute;left:-9px;top:11px;bottom:11px;width:3px;border-radius:0 4px 4px 0;background:transparent}
+html body.has-app-nav .app-menu-link:hover,html body.has-app-nav .app-menu-link.active,html .med-nav-link:hover,html .med-nav-link.active,html .atc-nav-link:hover,html .atc-nav-link.active{background:rgba(255,255,255,.10)!important;color:#fff!important}
+html body.has-app-nav .app-menu-link.active::before,html .med-nav-link.active::before,html .atc-nav-link.active::before{background:#e4aa55}
+html body.has-app-nav .app-menu-icon,html .med-nav-icon,html .atc-nav-icon{width:29px!important;height:29px!important}
+html body.has-app-nav .app-menu-icon svg,html .med-nav-icon svg,html .atc-nav-icon svg{width:22px!important;height:22px!important;stroke-width:15px}
+html body.has-app-nav .app-menu-title,html .med-nav-title,html .atc-nav-title{font-size:.61rem!important;font-weight:760!important;line-height:1.1!important}
+html body.has-app-nav .theme-control,html .med-theme,html .atc-theme{margin-top:auto!important;color:#cfe0dc!important;font-size:.61rem!important}
+html .med-theme button,html .atc-theme button{width:36px!important;height:36px!important;margin-top:5px!important;border:1px solid rgba(255,255,255,.18)!important;border-radius:10px!important;background:rgba(255,255,255,.08)!important;color:#fff!important}
+body.has-app-nav > header{position:relative;padding:20px 26px 18px!important;border:0!important;border-bottom:1px solid rgba(255,255,255,.10)!important;background:radial-gradient(circle at 90% -70%,rgba(184,115,24,.28),transparent 18rem),linear-gradient(118deg,var(--mi-primary),#12555a)!important;box-shadow:0 6px 22px rgba(13,71,75,.10)}
+body.has-app-nav > header h1{max-width:1100px;margin:0 0 4px!important;font:650 clamp(1.25rem,2vw,1.62rem)/1.2 var(--mi-heading)!important;letter-spacing:0!important}
+body.has-app-nav > header .sub{color:#c8dad6!important;font:600 .72rem/1.4 var(--mi-font)!important;opacity:1!important}
+body.has-app-nav > .toolbar{position:sticky!important;top:0!important;z-index:35!important;display:grid!important;grid-template-columns:minmax(260px,1fr) repeat(4,auto)!important;gap:8px!important;padding:9px 14px!important;border:0!important;border-bottom:1px solid var(--mi-border)!important;background:rgba(255,255,255,.96)!important;box-shadow:0 8px 22px rgba(13,55,58,.07)!important;backdrop-filter:blur(16px)!important}
+body.has-app-nav > .toolbar > input[type="search"],body.has-app-nav > .toolbar > input[type="text"],body.has-app-nav > .toolbar select,body.has-app-nav > .toolbar .form-picker>button,body.has-app-nav > .toolbar .col-picker>button,body.has-app-nav > .toolbar .protocol-toolbar-btn{height:var(--mi-control-height)!important;min-height:var(--mi-control-height)!important;padding:0 11px!important;border:1px solid var(--mi-border)!important;border-radius:9px!important;background:var(--mi-surface-soft)!important;color:var(--mi-text)!important;font-size:.76rem!important;box-shadow:none!important}
+body.has-app-nav > .toolbar > input[type="search"],body.has-app-nav > .toolbar > input[type="text"]{width:100%!important;min-width:220px!important;padding-left:13px!important}
+body.has-app-nav > .toolbar :is(input,select,button):hover{border-color:var(--mi-border-strong)!important}
+body.has-app-nav > .toolbar :is(input,select):focus{border-color:var(--mi-primary-2)!important;box-shadow:0 0 0 3px rgba(21,95,100,.11)!important;outline:0!important}
+body.has-app-nav .selection-badge,body.has-app-nav .count-badge{min-height:34px!important;padding:6px 9px!important;border:1px solid var(--mi-border)!important;border-radius:999px!important;background:var(--mi-surface)!important;color:var(--mi-muted)!important;font-size:.67rem!important}
+body.has-app-nav .count-badge{background:var(--mi-accent-soft)!important;border-color:rgba(184,115,24,.2)!important;color:#70430d!important}
+body.has-app-nav .table-wrap{max-height:calc(100dvh - 142px)!important;margin:12px 14px 0!important;border:1px solid var(--mi-border)!important;border-radius:13px!important;background:var(--mi-surface)!important;box-shadow:var(--mi-shadow-sm)!important}
+body.has-app-nav table{background:var(--mi-surface)!important;font-size:.76rem!important}
+body.has-app-nav thead th{top:0!important;padding:9px 10px!important;border-right:1px solid rgba(255,255,255,.10)!important;background:#175b60!important;color:#fff!important;font-size:.64rem!important;font-weight:780!important;letter-spacing:.035em!important}
+body.has-app-nav thead th:hover{background:#124d52!important}
+body.has-app-nav tbody td{padding:8px 10px!important;border-bottom:1px solid #e4ebe8!important;max-width:300px!important;line-height:1.35!important}
+body.has-app-nav tbody tr:nth-child(even){background:#fbfdfc!important}
+body.has-app-nav tbody tr:hover{background:#f2f7f5!important}
+body.has-app-nav tbody tr.row-selected{background:#e7f2ef!important}
+body.has-app-nav td.name{color:var(--mi-primary)!important;font-weight:760!important}
+body.has-app-nav .badge{padding:3px 7px!important;border-radius:999px!important;font-size:.62rem!important}
+body.has-app-nav .pagination{margin:0 14px 16px!important;padding:11px!important;border:1px solid var(--mi-border)!important;border-top:0!important;border-radius:0 0 13px 13px!important;background:var(--mi-surface)!important}
+body.has-app-nav .pagination button{min-width:34px!important;min-height:34px!important;padding:5px 9px!important;border:1px solid var(--mi-border)!important;border-radius:8px!important;background:var(--mi-surface)!important;font-size:.72rem!important}
+body.has-app-nav .pagination button.active{background:var(--mi-primary-2)!important;border-color:var(--mi-primary-2)!important;color:#fff!important}
+body.has-app-nav .form-panel,body.has-app-nav .col-panel{border:1px solid var(--mi-border)!important;border-radius:12px!important;background:var(--mi-surface)!important;box-shadow:var(--mi-shadow-md)!important}
+html .protocol-overlay{background:rgba(5,24,26,.62)!important;backdrop-filter:blur(5px)}
+html .protocol-drawer{width:min(820px,100vw)!important;background:var(--mi-bg)!important;box-shadow:-24px 0 70px rgba(0,0,0,.28)!important}
+html .protocol-drawer-header{padding:17px 19px 14px!important;border-bottom:1px solid rgba(255,255,255,.12)!important;background:linear-gradient(118deg,var(--mi-primary),#12555a)!important}
+html .protocol-tabs{gap:2px!important;padding:7px 14px 0!important;border-bottom:1px solid var(--mi-border)!important;background:var(--mi-surface)!important}
+html .protocol-tab{padding:9px 11px!important;border-radius:8px 8px 0 0!important;font-size:.76rem!important}
+html .protocol-content{padding:13px!important}
+html .protocol-info,html .med-notice,html .atc-source-note{border-left:3px solid var(--mi-accent)!important;border-radius:9px!important;background:#fff8ec!important;color:#684818!important}
+html .protocol-card,html .protocol-drug,html .saved-protocol,html .rx-review{border:1px solid var(--mi-border)!important;border-radius:12px!important;background:var(--mi-surface)!important;box-shadow:var(--mi-shadow-xs)!important}
+html .protocol-card{padding:14px!important;margin-bottom:10px!important}
+html .protocol-card h3{font-size:.98rem!important}
+html .protocol-field input,html .protocol-field textarea,html .protocol-field select{border:1px solid var(--mi-border)!important;border-radius:9px!important;background:var(--mi-surface-soft)!important}
+html .btn-secondary,html .btn-primary,html .btn-danger,html .protocol-close{min-height:38px!important;border-radius:9px!important;font-size:.75rem!important;box-shadow:none!important}
+html .btn-primary{background:var(--mi-primary-2)!important;border-color:var(--mi-primary-2)!important}
+html .bookmarkBtn{width:106px!important;height:38px!important;border:0!important;border-radius:9px!important;background:var(--mi-primary-2)!important;box-shadow:none!important}
+html .bookmarkBtn .IconContainer{width:30px!important;height:30px!important;flex-basis:30px!important;background:rgba(255,255,255,.14)!important}
+html .bookmarkBtn .text{width:68px!important;font-size:.78rem!important}
+html .bookmarkBtn:hover .IconContainer{width:30px!important;flex-basis:30px!important}
+html .bookmarkBtn:hover .text{width:68px!important;font-size:.78rem!important;transform:none!important}
+html .deleteButton{width:38px!important;height:38px!important;flex-basis:38px!important;border-radius:9px!important;background:#8f3539!important;box-shadow:none!important}
+html .deleteButton:hover{width:38px!important;border-radius:9px!important;background:#7c292e!important}
+html .deleteButton:hover .deleteIcon{width:12px!important;transform:none!important}
+html .deleteButton::before{display:none!important}
+html .med-main{width:min(1420px,calc(100% - 34px))!important;padding:24px 0 52px!important}
+html .med-hero,html .atc-header{border:0!important;border-radius:18px!important;background:radial-gradient(circle at 91% -80%,rgba(184,115,24,.30),transparent 19rem),linear-gradient(120deg,var(--mi-primary),#145a5f)!important;box-shadow:var(--mi-shadow-md)!important}
+html .med-hero{padding:22px 25px!important}
+html .atc-header{margin:18px 22px 0!important;padding:22px 25px!important}
+html .med-kicker,html .atc-kicker{margin-bottom:5px!important;color:#e1b56f!important;font-size:.64rem!important;font-weight:850!important;letter-spacing:.09em!important}
+html .med-hero h1,html .atc-header h1{font:650 clamp(1.5rem,3vw,2.15rem)/1.12 var(--mi-heading)!important}
+html .med-hero p,html .atc-header p{max-width:900px!important;margin-top:8px!important;color:#d6e5e2!important;font-size:.79rem!important;line-height:1.5!important}
+html .med-toolbar,html .atc-toolbar,html .lab-quickbar{position:sticky!important;top:7px!important;z-index:30!important;gap:8px!important;margin:12px 0!important;padding:8px!important;border:1px solid var(--mi-border)!important;border-radius:13px!important;background:rgba(255,255,255,.95)!important;box-shadow:0 8px 24px rgba(13,55,58,.075)!important;backdrop-filter:blur(15px)!important}
+html .atc-toolbar{margin:12px 22px!important;padding:8px!important}
+html .med-search,html .med-filter,html .atc-search,html .atc-back,html .atc-reset,html .lab-search-wrap input,html .lab-quickbar select{min-height:40px!important;height:40px!important;border:1px solid var(--mi-border)!important;border-radius:9px!important;background:var(--mi-surface-soft)!important;color:var(--mi-text)!important;font-size:.76rem!important}
+html :is(.med-search,.atc-search,.lab-search-wrap input):focus{border-color:var(--mi-primary-2)!important;box-shadow:0 0 0 3px rgba(21,95,100,.11)!important}
+html .med-count,html .atc-count{padding:6px 9px!important;border-radius:999px!important;background:var(--mi-accent-soft)!important;color:#70430d!important;font-size:.65rem!important;font-weight:820!important}
+html .atc-content{padding:14px 22px 42px!important}
+html .med-section-head,html .atc-section-head{margin:17px 0 9px!important;align-items:center!important}
+html .med-section-head h2,html .atc-section-head h2{color:var(--mi-primary)!important;font:650 1.2rem/1.22 var(--mi-heading)!important}
+html .med-section-head p,html .atc-section-head p{color:var(--mi-muted)!important;font-size:.73rem!important}
+html .med-grid,html .atc-grid{gap:10px!important}
+html .med-card,html .atc-card,html .lab-card{border:1px solid var(--mi-border)!important;border-radius:12px!important;background:var(--mi-surface)!important;box-shadow:var(--mi-shadow-xs)!important;transform:none!important;transition:border-color .14s ease,box-shadow .14s ease,transform .14s ease!important}
+html .med-card:hover,html .atc-card:hover,html .lab-card:hover{border-color:#a9c1bc!important;box-shadow:var(--mi-shadow-sm)!important;transform:translateY(-1px)!important}
+html .med-card h3,html .atc-card h3,html .lab-card h3{color:var(--mi-primary)!important}
+html .med-card p,html .atc-card p,html .lab-card p{color:var(--mi-muted)!important}
+html .med-card button,html .icd-card-link,html .icd-who-link{border:0!important;border-radius:9px!important;background:var(--mi-primary-2)!important;color:#fff!important;box-shadow:none!important}
+html .med-card button:hover,html .icd-card-link:hover,html .icd-who-link:hover{background:var(--mi-primary)!important}
+html .atc-card-arrow{background:var(--mi-primary-2)!important}
+html .atc-card:hover .atc-card-arrow{background:var(--mi-primary)!important}
+html .atc-table-wrap{border:1px solid var(--mi-border)!important;border-radius:12px!important;box-shadow:var(--mi-shadow-sm)!important}
+html .atc-table th{background:#175b60!important;font-size:.64rem!important}
+html .atc-table td{padding:8px 10px!important;border-color:#e4ebe8!important}
+html .atc-table tbody tr:hover{background:#f2f7f5!important}
+html .med-notice{margin:11px 0!important;padding:10px 13px!important;font-size:.74rem!important}
+html .med-panel-overlay,html .atc-info-overlay{background:rgba(5,24,26,.68)!important;backdrop-filter:blur(6px)!important}
+html .med-panel,html .atc-info-dialog{border:1px solid rgba(255,255,255,.10)!important;border-radius:17px!important;box-shadow:var(--mi-shadow-lg)!important}
+html .med-panel-head{padding:15px 17px!important;background:linear-gradient(118deg,var(--mi-primary),#12555a)!important}
+html .med-panel-head h2{font-size:1.2rem!important}
+html .med-panel-body{padding:15px 17px!important}
+html .med-panel-foot{padding:10px 17px!important}
+html .med-panel-foot button{min-height:37px!important;border-radius:9px!important;background:var(--mi-primary-2)!important}
+html .med-detail,html .lab-detail-block{border:1px solid var(--mi-border)!important;border-radius:9px!important;background:var(--mi-surface-soft)!important}
+html .icd-chapter-grid{grid-template-columns:repeat(auto-fill,minmax(270px,1fr))!important}
+html .icd-chapter-card{min-height:196px!important}
+html .icd-roman{border:1px solid rgba(184,115,24,.18)!important;background:var(--mi-accent-soft)!important;color:#70430d!important}
+html .lab-category-nav button{border-color:var(--mi-border)!important;background:var(--mi-surface)!important}
+html .lab-category-nav button.is-active{border-color:var(--mi-primary-2)!important;background:var(--mi-primary-soft)!important;color:var(--mi-primary)!important}
+html .lab-category-head{border-color:var(--mi-border)!important;background:var(--mi-surface)!important}
+html .lab-category-number{background:var(--mi-primary)!important}
+html .lab-card-open{min-height:176px!important}
+html .lab-detail-block.is-high{border-left-color:#b06b23!important}
+html .lab-detail-block.is-low{border-left-color:#41789e!important}
+html[data-theme="dark"]{--mi-bg:#0d1719;--mi-surface:#142326;--mi-surface-soft:#101d20;--mi-surface-strong:#1a2d30;--mi-border:#304347;--mi-border-strong:#42595d;--mi-text:#e8f0ee;--mi-muted:#a7b7b5;--mi-primary:#123f43;--mi-primary-2:#27747a;--mi-primary-soft:#19383b;--mi-accent-soft:#3a2c1b;--mi-shadow-xs:0 1px 2px rgba(0,0,0,.24);--mi-shadow-sm:0 8px 22px rgba(0,0,0,.25);--mi-shadow-md:0 16px 38px rgba(0,0,0,.30);color-scheme:dark}
+html[data-theme="dark"] body{background:radial-gradient(circle at 92% 0,rgba(39,116,122,.08),transparent 28rem),linear-gradient(180deg,#111d20,var(--mi-bg) 22rem)!important}
+html[data-theme="dark"] body.has-app-nav > .toolbar,html[data-theme="dark"] .med-toolbar,html[data-theme="dark"] .atc-toolbar,html[data-theme="dark"] .lab-quickbar{background:rgba(20,35,38,.95)!important}
+html[data-theme="dark"] body.has-app-nav tbody tr:nth-child(even){background:#122124!important}
+html[data-theme="dark"] body.has-app-nav tbody tr:hover,html[data-theme="dark"] .atc-table tbody tr:hover{background:#1b2e31!important}
+html[data-theme="dark"] body.has-app-nav tbody td{border-color:#293b3e!important}
+html[data-theme="dark"] .protocol-info,html[data-theme="dark"] .med-notice,html[data-theme="dark"] .atc-source-note{background:#302719!important;color:#ead0a5!important}
+html[data-theme="dark"] .med-card button,html[data-theme="dark"] .icd-card-link,html[data-theme="dark"] .icd-who-link,html[data-theme="dark"] .med-panel-foot button{background:#2b757b!important}
+@media(max-width:1180px){body.has-app-nav > .toolbar{grid-template-columns:minmax(240px,1fr) repeat(3,auto)!important}body.has-app-nav > .toolbar .selection-badge{display:none!important}html .lab-grid{grid-template-columns:repeat(3,minmax(0,1fr))!important}}
+@media(max-width:920px){body.has-app-nav > .toolbar{display:flex!important;flex-wrap:wrap!important}body.has-app-nav > .toolbar > input[type="search"],body.has-app-nav > .toolbar > input[type="text"]{flex:1 1 100%!important}body.has-app-nav .table-wrap{max-height:none!important}html .lab-grid{grid-template-columns:repeat(2,minmax(0,1fr))!important}}
+@media(max-width:780px){html{scroll-padding-top:12px}html body.has-app-nav{padding-left:0!important;padding-bottom:calc(70px + env(safe-area-inset-bottom))!important}html .med-shell{padding-left:0!important;padding-bottom:calc(70px + env(safe-area-inset-bottom))!important}html .atc-shell{display:block!important;padding-bottom:calc(70px + env(safe-area-inset-bottom))!important}html body.has-app-nav .app-menu,html .med-nav,html .atc-nav{position:fixed!important;inset:auto 0 0 0!important;width:100%!important;height:calc(66px + env(safe-area-inset-bottom))!important;padding:5px 7px calc(5px + env(safe-area-inset-bottom))!important;display:flex!important;flex-direction:row!important;justify-content:flex-start!important;gap:3px!important;overflow-x:auto!important;overflow-y:hidden!important;border:0!important;border-top:1px solid rgba(255,255,255,.12)!important;box-shadow:0 -8px 28px rgba(4,29,31,.20)!important}html body.has-app-nav .app-menu-link,html .med-nav-link,html .atc-nav-link{flex:1 0 62px!important;min-width:62px!important;min-height:54px!important;padding:5px 3px!important}html body.has-app-nav .app-menu-link::before,html .med-nav-link::before,html .atc-nav-link::before{left:12px!important;right:12px!important;top:-5px!important;bottom:auto!important;width:auto!important;height:3px!important;border-radius:0 0 4px 4px!important}html body.has-app-nav .theme-control,html .med-theme,html .atc-theme{display:none!important}body.has-app-nav > header{padding:17px 15px 15px!important}body.has-app-nav > .toolbar{padding:8px!important}body.has-app-nav .table-wrap{margin:9px 8px 0!important;border-radius:11px!important}body.has-app-nav .pagination{margin:0 8px 10px!important}html .med-main{width:min(100% - 20px,1420px)!important;padding-top:10px!important}html .atc-header{margin:10px 10px 0!important}html .atc-toolbar{margin:9px 10px!important}html .atc-content{padding:9px 10px 34px!important}html .med-hero,html .atc-header{padding:18px!important;border-radius:15px!important}html .med-toolbar,html .atc-toolbar,html .lab-quickbar{top:5px!important}html .protocol-drawer{width:100vw!important}html .protocol-grid,html .protocol-drug-fields{grid-template-columns:1fr!important}}
+@media(max-width:590px){body.has-app-nav > .toolbar > *{flex:1 1 calc(50% - 6px)!important}body.has-app-nav > .toolbar > input[type="search"],body.has-app-nav > .toolbar > input[type="text"]{flex-basis:100%!important}body.has-app-nav > .toolbar .count-badge{flex-basis:100%!important;text-align:center!important}html .med-hero h1,html .atc-header h1{font-size:1.48rem!important}html .med-hero p,html .atc-header p{font-size:.75rem!important}html .lab-grid{grid-template-columns:1fr!important}html .icd-chapter-grid{grid-template-columns:1fr!important}html .lab-name-grid,html .lab-interpret-grid{grid-template-columns:1fr!important}html .med-section-head{align-items:flex-start!important}}
+@media(prefers-reduced-motion:reduce){html .med-card,html .atc-card,html .lab-card{transition:none!important}}
