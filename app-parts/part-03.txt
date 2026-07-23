@@ -32,6 +32,12 @@ function categoryOf(forma){
 }
 
 const SEARCH_INDEX = new WeakMap();
+let filteredCacheKey = '';
+let filteredCacheRows = RAW;
+let sortedCacheKey = '';
+let sortedCacheInput = null;
+let sortedCacheRows = RAW;
+let headerCacheKey = '';
 
 function normalizeSearchText(value){
   return String(value ?? '')
@@ -68,7 +74,13 @@ function rowMatchesSearch(row, terms){
   return terms.every(term => fieldMatchesTerm(indexed, term));
 }
 
+function currentFilterKey(){
+  return [normalizeSearchText(state.search), state.status, state.formType || '', state.formValue || ''].join('|');
+}
+
 function getFiltered(){
+  const key = currentFilterKey();
+  if(key === filteredCacheKey) return filteredCacheRows;
   let rows = RAW;
   const q = normalizeSearchText(state.search);
   if(q){
@@ -83,13 +95,17 @@ function getFiltered(){
   } else if(state.formType === 'category'){
     rows = rows.filter(r => categoryOf(r['Forma farmaceutike']) === state.formValue);
   }
+  filteredCacheKey = key;
+  filteredCacheRows = rows;
   return rows;
 }
 
 function sortRows(rows){
+  const cacheKey = `${state.sortKey}|${state.sortDir}`;
+  if(sortedCacheInput === rows && sortedCacheKey === cacheKey) return sortedCacheRows;
   const col = COLUMNS.find(c => c.key === state.sortKey);
   const dir = state.sortDir;
-  return [...rows].sort((a,b) => {
+  const sorted = [...rows].sort((a,b) => {
     let av = a[state.sortKey], bv = b[state.sortKey];
     if(col.type === 'num'){
       av = Number(av) || 0; bv = Number(bv) || 0;
@@ -98,6 +114,17 @@ function sortRows(rows){
     av = String(av ?? '').toLowerCase(); bv = String(bv ?? '').toLowerCase();
     return av.localeCompare(bv, 'sq') * dir;
   });
+  sortedCacheInput = rows;
+  sortedCacheKey = cacheKey;
+  sortedCacheRows = sorted;
+  return sorted;
+}
+
+function ensureHeader(){
+  const key = `${state.sortKey}|${state.sortDir}|${COLUMNS.map(column => column.visible ? '1' : '0').join('')}`;
+  if(key === headerCacheKey) return;
+  headerCacheKey = key;
+  buildHeader();
 }
 
 function escapeHtml(s){
@@ -118,7 +145,7 @@ function qualityBadge(row){
 }
 
 function render(){
-  buildHeader();
+  ensureHeader();
   const filtered = sortRows(getFiltered());
   const total = filtered.length;
   const quality = window.MEDINDEX_REGISTRY_QUALITY?.summary || {};
