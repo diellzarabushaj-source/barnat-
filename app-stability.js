@@ -1,9 +1,19 @@
 (() => {
   'use strict';
 
+  const CLINICAL_UI_VERSION = '20260723-1';
   let lastFocused = null;
   let errorBannerTimer = 0;
   let dialogFrame = 0;
+
+  function installClinicalUi() {
+    if (document.querySelector('link[data-medindex-clinical-ui]')) return;
+    const link = document.createElement('link');
+    link.rel = 'stylesheet';
+    link.href = `clinical-ui.css?v=${CLINICAL_UI_VERSION}`;
+    link.dataset.medindexClinicalUi = '1';
+    document.head.appendChild(link);
+  }
 
   function banner(className, message, persistent = false) {
     let node = document.querySelector(`.${className}`);
@@ -146,9 +156,10 @@
     window.addEventListener('unhandledrejection', event => reportRuntimeProblem(event.reason || event));
     document.addEventListener('keydown', trapFocus, true);
     document.addEventListener('keydown', closeTransientUi, true);
-    window.MEDINDEX_RUNTIME = { version: '2026-07-23.2', online: () => navigator.onLine };
+    window.MEDINDEX_RUNTIME = { version: '2026-07-23.3', online: () => navigator.onLine };
   }
 
+  installClinicalUi();
   if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', init, { once: true });
   else init();
 })();
