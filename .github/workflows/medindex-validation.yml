@@ -32,7 +32,7 @@ jobs:
             medical-icons.js
             section-icons.js
             classification-icons.js
-            recetat.js
+            recetat-v2.js
             api/gemini-prescription.js
             api/drug-search.js
             api/registry.js
@@ -52,31 +52,37 @@ jobs:
           set -euo pipefail
           test -f recetat.html
           test -f recetat.css
-          test -f recetat.js
+          test -f recetat-v2.js
           grep -q 'id="protocolsBtn"' index.html
           grep -q "href = 'recetat.html'" main-navigation-extension.js
           grep -q 'id="rxComposer"' recetat.html
           grep -q '@forma' recetat.html
           grep -q '@bari' recetat.html
           grep -q '@doza' recetat.html
+          grep -q '@sasia' recetat.html
           grep -q '@tjetër' recetat.html
           grep -q '@signatura' recetat.html
-          grep -q '/api/gemini-prescription' recetat.js
-          grep -q '/api/drug-search' recetat.js
-          grep -q 'sharedSignature' recetat.js
-          grep -q 'medindexPrescriptionSelection' recetat.js
+          grep -q '/api/gemini-prescription' recetat-v2.js
+          grep -q '/api/drug-search' recetat-v2.js
+          grep -q 'dispenseQuantity' recetat-v2.js
+          grep -q 'S (Signatura):' recetat-v2.js
+          grep -q 'sharedSignature' recetat-v2.js
+          grep -q 'medindexPrescriptionSelection' recetat-v2.js
           ! grep -q 'protocolOverlay' index.html
           ! grep -q 'dosage-auto-apply.js' index.html
           ! grep -q 'prescription-review.js' index.html
 
-      - name: Verify Gemini formatting guardrails
+      - name: Verify Gemini signature guardrails
         shell: bash
         run: |
           set -euo pipefail
           grep -q 'GEMINI_API_KEY' api/gemini-prescription.js
+          grep -q 'GOOGLE_API_KEY' api/gemini-prescription.js
           grep -q "responseMimeType: 'application/json'" api/gemini-prescription.js
           grep -q 'responseSchema' api/gemini-prescription.js
           grep -q 'thinkingBudget: 0' api/gemini-prescription.js
-          grep -q 'Mos shto asnjë bar, dozë, frekuencë, kohëzgjatje, rrugë' api/gemini-prescription.js
+          grep -q 'Mos shto dhe mos hiq barna' api/gemini-prescription.js
+          grep -q 'generateMissingSignatures' api/gemini-prescription.js
+          grep -q 'dispenseQuantity' api/gemini-prescription.js
+          grep -q 'signatureGenerated' api/gemini-prescription.js
           grep -q 'sharedSignature' api/gemini-prescription.js
-          grep -q 'fushën bosh' api/gemini-prescription.js
