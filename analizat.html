@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-  <meta name="description" content="MedIndex — analizat laboratorike sipas sistemeve, me intervale referente dhe interpretim praktik.">
+  <meta name="description" content="MedIndex — vetëm analizat dhe vlerat referente nga formularët laboratorikë të dërguar nga përdoruesja.">
   <meta name="robots" content="noindex,nofollow,noarchive">
   <meta name="theme-color" content="#0d3d40">
   <title>MedIndex | Analizat laboratorike — Dr. Diellza Rabushaj</title>
@@ -22,20 +22,20 @@
     </nav>
 
     <main class="med-main">
-      <header class="med-hero"><p class="med-kicker">MedIndex · Ndihmuesi laboratorik</p><h1>Analizat sipas sistemeve</h1><p>Vlerat referente orientuese, arsyeja pse kërkohet analiza, interpretimi i rezultateve të larta ose të ulëta dhe përgatitja e pacientit.</p></header>
-      <div class="med-notice"><strong>Rregulli kryesor:</strong> intervali referent i shtypur në raportin e laboratorit ka përparësi. Vlerat ndryshojnë sipas metodës, aparaturës, moshës, gjinisë, shtatzënisë dhe laboratorit. Rezultati nuk interpretohet i vetëm, por me simptomat, historinë, barnat dhe trendin.</div>
+      <header class="med-hero"><p class="med-kicker">MedIndex · Formularët laboratorikë të Kosovës</p><h1>Analizat nga formularët e dërguar</h1><p>Këtu shfaqen vetëm analizat, intervalet dhe njësitë që lexohen në katër fotografitë e dërguara. Nuk janë shtuar analiza nga lista ose burime të tjera.</p></header>
+      <div class="med-notice"><strong>Transkriptim besnik:</strong> njësitë dhe intervalet janë ruajtur siç janë shtypur në formular. Kur formulari dhe printimi i aparatit japin intervale të ndryshme, paraqiten të dyja pa i bashkuar ose korrigjuar.</div>
       <div class="lab-source-strip" aria-label="Baza e seksionit">
-        <div><strong>Bazë lokale</strong><span>Analizat bazë që ofrohen në kujdesin parësor në Prishtinë janë shënuar “Bazë në QKMF”.</span></div>
-        <div><strong>Njësi</strong><span>Përdoren kryesisht njësitë SI, si mmol/L, µmol/L, g/L dhe ×10⁹/L.</span></div>
-        <div><strong>Interpretim</strong><span>Përshkrimi orienton, por nuk zëvendëson diagnozën dhe protokollin e laboratorit.</span></div>
+        <div><strong>Burimi</strong><span>Formularë laboratorikë të Ministrisë së Shëndetësisë së Kosovës, © 2008, dhe një printim i analizatorit hematologjik.</span></div>
+        <div><strong>Privatësia</strong><span>Rezultatet dhe identiteti i pacientes nga fotografia nuk ruhen në dataset; përdoren vetëm emrat e analizave dhe intervalet.</span></div>
+        <div><strong>Kufiri</strong><span>Kur vlera ose njësia nuk lexohet apo nuk është dhënë në formular, shënohet qartë pa u plotësuar nga burim tjetër.</span></div>
       </div>
       <div class="med-toolbar" role="search">
-        <input class="med-search" id="labSearch" type="search" placeholder="Kërko analizën, shkurtesën, sistemin ose interpretimin…" autocomplete="off" enterkeyhint="search">
-        <select class="med-filter" id="labSystem" aria-label="Filtro sistemin"><option value="">Të gjitha sistemet</option></select>
-        <select class="med-filter" id="labScope" aria-label="Filtro mbulimin lokal"><option value="">Të gjitha analizat</option><option value="kosovo-core">Bazë në QKMF / kujdes parësor</option></select>
+        <input class="med-search" id="labSearch" type="search" placeholder="Kërko analizën, shkurtesën, mostrën ose vlerën referente…" autocomplete="off" enterkeyhint="search">
+        <select class="med-filter" id="labSystem" aria-label="Filtro seksionin"><option value="">Të gjitha seksionet</option></select>
+        <select class="med-filter" id="labScope" aria-label="Filtro vlerat referente"><option value="">Të gjitha analizat</option><option value="with-reference">Me vlerë referente të shënuar</option><option value="without-reference">Pa vlerë referente të shënuar</option></select>
         <span class="med-count" id="labCount" aria-live="polite">0 analiza</span>
       </div>
-      <section><div class="med-section-head"><div><h2 id="labSectionTitle">Analizat sipas sistemeve</h2><p id="labSectionSubtitle">Kërko analizën ose zgjidhe sistemin për ta parë panelin e plotë.</p></div></div><div class="med-grid" id="labGrid"></div></section>
+      <section><div class="med-section-head"><div><h2 id="labSectionTitle">Analizat nga formularët e dërguar</h2><p id="labSectionSubtitle">Vetëm përmbajtja që shihet në fotografitë e dërguara.</p></div></div><div class="med-grid" id="labGrid"></div></section>
     </main>
   </div>
 
@@ -47,8 +47,8 @@
     </section>
   </div>
 
-  <script src="lab-data.js?v=20260723-1"></script>
-  <script src="analizat.js?v=20260723-1"></script>
+  <script src="lab-data.js?v=20260723-2"></script>
+  <script src="analizat.js?v=20260723-2"></script>
   <script src="auth-client.js?v=20260723-2"></script>
   <script src="app-stability.js?v=20260723-1"></script>
 </body>
