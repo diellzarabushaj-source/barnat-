@@ -7,11 +7,13 @@
   const submit = document.getElementById('loginSubmit');
   const message = document.getElementById('loginMessage');
   const toggle = document.getElementById('togglePassword');
+  const capsHint = document.getElementById('capsLockHint');
   let busy = false;
+  let redirecting = false;
 
   function safeReturnPath(value) {
     const path = String(value || '');
-    if (!path.startsWith('/') || path.startsWith('//') || path.startsWith('/api/')) return '/index.html';
+    if (!path.startsWith('/') || path.startsWith('//') || path.startsWith('/api/') || path.startsWith('/login')) return '/index.html';
     return path;
   }
 
@@ -29,6 +31,8 @@
   function setBusy(value) {
     busy = value;
     submit.disabled = value;
+    password.disabled = value;
+    toggle.disabled = value;
     submit.classList.toggle('is-loading', value);
     submit.querySelector('span:first-child').textContent = value ? 'Duke verifikuar…' : 'Hyr';
     form.setAttribute('aria-busy', String(value));
@@ -40,6 +44,14 @@
     try { return await fetch(url, { ...options, signal: controller.signal }); }
     finally { clearTimeout(timeout); }
   }
+
+  function updateCapsLock(event) {
+    const active = Boolean(event?.getModifierState?.('CapsLock'));
+    capsHint.hidden = !active;
+  }
+
+  ['keydown', 'keyup'].forEach(type => password.addEventListener(type, updateCapsLock));
+  password.addEventListener('blur', () => { capsHint.hidden = true; });
 
   toggle.addEventListener('click', () => {
     const visible = password.type === 'text';
@@ -71,19 +83,24 @@
         credentials: 'same-origin',
       }, 10000);
       const payload = await response.json().catch(() => ({}));
-      if (!response.ok) throw new Error(payload.error || 'Hyrja dështoi.');
+      if (!response.ok) {
+        const retryAfter = Number(response.headers.get('retry-after') || 0);
+        const suffix = response.status === 429 && retryAfter ? ` Provo pas rreth ${Math.ceil(retryAfter / 60)} minutash.` : '';
+        throw new Error((payload.error || 'Hyrja dështoi.') + suffix);
+      }
+      redirecting = true;
       setMessage('U verifikua. Po hapet MedIndex…', true);
       password.value = '';
       try { sessionStorage.removeItem(RETURN_KEY); } catch {}
-      window.setTimeout(() => location.replace(destination()), 120);
+      window.setTimeout(() => location.replace(destination()), 100);
     } catch (error) {
       const text = error?.name === 'AbortError'
-        ? 'Serveri nuk u përgjigj me kohë. Provo përsëri.'
+        ? 'Serveri nuk u përgjigj me kohë. Kontrollo lidhjen dhe provo përsëri.'
         : error.message || 'Hyrja dështoi.';
       setMessage(text);
       password.select();
     } finally {
-      setBusy(false);
+      if (!redirecting) setBusy(false);
     }
   });
 
@@ -93,6 +110,7 @@
       const response = await timedFetch('/api/auth', { cache: 'no-store', credentials: 'same-origin' });
       const payload = await response.json().catch(() => ({}));
       if (response.ok && payload.authenticated) {
+        redirecting = true;
         location.replace(destination());
         return;
       }
@@ -101,8 +119,6 @@
     password.focus();
   }
 
-  window.addEventListener('pageshow', () => {
-    if (!busy) password.focus();
-  });
+  window.addEventListener('pageshow', () => { if (!busy) password.focus(); });
   init();
 })();
