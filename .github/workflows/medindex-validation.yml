@@ -50,7 +50,11 @@ jobs:
         shell: bash
         run: |
           set -euo pipefail
-          grep -q 'href="recetat.html"' index.html
+          test -f recetat.html
+          test -f recetat.css
+          test -f recetat.js
+          grep -q 'id="protocolsBtn"' index.html
+          grep -q "href = 'recetat.html'" main-navigation-extension.js
           grep -q 'id="rxComposer"' recetat.html
           grep -q '@forma' recetat.html
           grep -q '@bari' recetat.html
@@ -60,6 +64,7 @@ jobs:
           grep -q '/api/gemini-prescription' recetat.js
           grep -q '/api/drug-search' recetat.js
           grep -q 'sharedSignature' recetat.js
+          grep -q 'medindexPrescriptionSelection' recetat.js
           ! grep -q 'protocolOverlay' index.html
           ! grep -q 'dosage-auto-apply.js' index.html
           ! grep -q 'prescription-review.js' index.html
