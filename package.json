@@ -7,7 +7,7 @@
     "build": "npm test"
   },
   "dependencies": {
-    "@vercel/functions": "^2.2.12",
+    "@vercel/functions": "^3.7.5",
     "xlsx": "0.18.5"
   },
   "engines": {
