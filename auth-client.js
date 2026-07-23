@@ -3,20 +3,18 @@
 
   const RETURN_KEY = 'medindex_return_after_login';
   const originalFetch = window.fetch.bind(window);
-  document.documentElement.classList.add('auth-checking');
+  let logoutObserver = null;
+  let logoutObserverTimer = 0;
 
   function installStyles() {
     if (document.getElementById('authClientStyles')) return;
     const style = document.createElement('style');
     style.id = 'authClientStyles';
     style.textContent = `
-      html.auth-checking body{visibility:hidden!important;opacity:0!important}
-      html:not(.auth-checking) body{opacity:1;transition:opacity .12s ease}
       .auth-logout{flex:0 0 auto;min-width:0;border:0;background:transparent;color:inherit;cursor:pointer}
       .auth-logout:hover{background:rgba(255,255,255,.13)!important;color:#fff!important}
       .auth-logout svg{fill:none;stroke:currentColor;stroke-width:16;stroke-linecap:round;stroke-linejoin:round}
       .session-expired-banner{position:fixed;left:50%;bottom:22px;z-index:2000;max-width:min(520px,calc(100vw - 28px));padding:11px 15px;border-radius:11px;background:#8e2f32;color:#fff;box-shadow:0 16px 45px rgba(0,0,0,.32);font-size:.78rem;font-weight:750;transform:translateX(-50%)}
-      @media(prefers-reduced-motion:reduce){html:not(.auth-checking) body{transition:none}}
     `;
     document.head.appendChild(style);
   }
@@ -24,7 +22,9 @@
 
   function safeReturnPath() {
     const path = location.pathname + location.search + location.hash;
-    return path.startsWith('/') && !path.startsWith('//') && !path.startsWith('/api/') ? path : '/index.html';
+    return path.startsWith('/') && !path.startsWith('//') && !path.startsWith('/api/') && !path.startsWith('/login')
+      ? path
+      : '/index.html';
   }
 
   async function authRequest(options = {}) {
@@ -32,21 +32,31 @@
     const timer = setTimeout(() => controller.abort(), 8000);
     try {
       return await originalFetch('/api/auth', {
-        cache: 'no-store', credentials: 'same-origin',
+        cache: 'no-store',
+        credentials: 'same-origin',
         headers: { Accept: 'application/json', ...(options.headers || {}) },
-        ...options, signal: controller.signal,
+        ...options,
+        signal: controller.signal,
       });
-    } finally { clearTimeout(timer); }
+    } finally {
+      clearTimeout(timer);
+    }
   }
 
   function goToLogin() {
-    try { sessionStorage.setItem(RETURN_KEY, safeReturnPath()); } catch {}
-    location.replace('/login.html');
+    const returnPath = safeReturnPath();
+    try { sessionStorage.setItem(RETURN_KEY, returnPath); } catch {}
+    const loginUrl = new URL('/login.html', location.origin);
+    loginUrl.searchParams.set('return', returnPath);
+    location.replace(loginUrl.pathname + loginUrl.search);
   }
 
   async function logout() {
     const buttons = document.querySelectorAll('.auth-logout');
-    buttons.forEach(button => { button.disabled = true; button.setAttribute('aria-busy', 'true'); });
+    buttons.forEach(button => {
+      button.disabled = true;
+      button.setAttribute('aria-busy', 'true');
+    });
     try { await authRequest({ method: 'DELETE' }); } catch {}
     try {
       sessionStorage.removeItem(RETURN_KEY);
@@ -68,12 +78,48 @@
   }
 
   function installLogout() {
+    let navigationFound = false;
     const appMenu = document.getElementById('appMenu');
-    if (appMenu && !appMenu.querySelector('.auth-logout')) appMenu.insertBefore(buttonMarkup('app-menu-link'), appMenu.querySelector('.theme-control') || null);
+    if (appMenu) {
+      navigationFound = true;
+      if (!appMenu.querySelector('.auth-logout')) {
+        appMenu.insertBefore(buttonMarkup('app-menu-link'), appMenu.querySelector('.theme-control') || null);
+      }
+    }
+
     const atcNav = document.querySelector('.atc-nav');
-    if (atcNav && !atcNav.querySelector('.auth-logout')) atcNav.insertBefore(buttonMarkup('atc-nav-link'), atcNav.querySelector('.atc-theme') || null);
+    if (atcNav) {
+      navigationFound = true;
+      if (!atcNav.querySelector('.auth-logout')) {
+        atcNav.insertBefore(buttonMarkup('atc-nav-link'), atcNav.querySelector('.atc-theme') || null);
+      }
+    }
+
     const medNav = document.querySelector('.med-nav');
-    if (medNav && !medNav.querySelector('.auth-logout')) medNav.insertBefore(buttonMarkup('med-nav-link'), medNav.querySelector('.med-theme') || null);
+    if (medNav) {
+      navigationFound = true;
+      if (!medNav.querySelector('.auth-logout')) {
+        medNav.insertBefore(buttonMarkup('med-nav-link'), medNav.querySelector('.med-theme') || null);
+      }
+    }
+    return navigationFound;
+  }
+
+  function stopLogoutObserver() {
+    if (logoutObserver) logoutObserver.disconnect();
+    logoutObserver = null;
+    clearTimeout(logoutObserverTimer);
+    logoutObserverTimer = 0;
+  }
+
+  function installLogoutWhenReady() {
+    if (installLogout()) return;
+    stopLogoutObserver();
+    logoutObserver = new MutationObserver(() => {
+      if (installLogout()) stopLogoutObserver();
+    });
+    logoutObserver.observe(document.body || document.documentElement, { childList: true, subtree: true });
+    logoutObserverTimer = window.setTimeout(stopLogoutObserver, 10000);
   }
 
   function showExpired() {
@@ -98,11 +144,12 @@
       const response = await authRequest();
       const payload = await response.json().catch(() => ({}));
       if (!response.ok || !payload.authenticated) return goToLogin();
+      document.documentElement.classList.add('auth-ready');
       document.documentElement.classList.remove('auth-checking');
-      installLogout();
-      const observer = new MutationObserver(installLogout);
-      observer.observe(document.documentElement, { childList: true, subtree: true });
-    } catch { goToLogin(); }
+      installLogoutWhenReady();
+    } catch {
+      goToLogin();
+    }
   }
 
   if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', init, { once: true });
