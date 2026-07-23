@@ -126,22 +126,33 @@ async function main() {
   });
   ['J85','J85.0','J85.1','J85.2','J85.3','J86','J86.0','J86.9'].forEach(code => assert.ok(icdCodes.has(code), `Missing ICD ${code}`));
 
-  console.log('8/9 Laboratory dataset');
+  console.log('8/9 Laboratory dataset from user-provided forms only');
   global.window = {};
   delete require.cache[require.resolve(path.join(ROOT, 'lab-data.js'))];
   require(path.join(ROOT, 'lab-data.js'));
   const labs = global.window.MEDINDEX_LABS;
-  assert.ok(Array.isArray(labs.systems) && labs.systems.length >= 8);
-  assert.ok(Array.isArray(labs.tests) && labs.tests.length >= 30);
+  assert.equal(labs.version, '2026-07-23.2');
+  assert.match(labs.sourcePolicy, /Vetëm analizat/);
+  assert.ok(Array.isArray(labs.systems) && labs.systems.length === 12);
+  assert.ok(Array.isArray(labs.tests) && labs.tests.length === 110);
   const systems = new Set(labs.systems.map(item => item.id));
   const labIds = new Set();
   labs.tests.forEach(test => {
-    ['id','system','name','abbr','specimen','reference','unit','why','high','low','preparation','sourceUrl'].forEach(key => assert.ok(String(test[key] || '').trim(), `Lab ${test.id || '?'} missing ${key}`));
+    ['id','system','name','specimen','reference','sourceLabel'].forEach(key => assert.ok(String(test[key] || '').trim(), `Lab ${test.id || '?'} missing ${key}`));
     assert.ok(systems.has(test.system), `Unknown system ${test.system}`);
     assert.equal(labIds.has(test.id), false, `Duplicate lab ${test.id}`);
-    assert.match(test.sourceUrl, /^https:\/\//);
+    assert.equal('sourceUrl' in test, false, `External source URL must not be added to ${test.id}`);
     labIds.add(test.id);
   });
+  const byId = id => labs.tests.find(test => test.id === id);
+  assert.equal(byId('crp').reference, 'Deri 6');
+  assert.equal(byId('crp').unit, 'mg/L');
+  assert.equal(byId('sodium').reference, '136–146');
+  assert.match(byId('wbc').alternateReference, /3\.5–10\.0/);
+  assert.equal(byId('urine-appearance').reference, 'Nuk është shënuar në formular');
+  ['ferritin','b12','egfr','hba1c','tsh','ft4'].forEach(id => assert.equal(labIds.has(id), false, `Unapproved laboratory test returned: ${id}`));
+  assert.match(file('analizat.html'), /Vetëm analizat/);
+  assert.match(file('analizat.js'), /Nga formulari/);
 
   console.log('9/9 Security and performance invariants');
   assert.match(file('middleware.ts'), /auth-edge\.mjs/);
