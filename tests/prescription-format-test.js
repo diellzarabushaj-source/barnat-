@@ -37,6 +37,22 @@ assert.equal(infusion.sections[0].medications.filter(item => item.individualSign
 const infusionText = Core.formatText(infusion);
 assert.equal((infusionText.match(/S \(Signatura\):/g) || []).length, 1, 'Shared signature must appear once');
 assert.match(infusionText, /Sodium Chloride 0\.9 % a 250 ml \(Infuzion\)/);
+assert.doesNotMatch(infusionText, /Ketoprofen 100 mg\/2 ml\n\nAmpulë/, 'A shared infusion must remain one compact block');
+
+const taggedDose = Core.parse(`Rp:
+Paracetamol (Tableta)
+Doza: 500 mg
+Sasia: Scat. No I (Një kuti)
+S (Signatura): Nga 1 tabletë sipas nevojës.`, 'Dhimbje');
+assert.equal(taggedDose.sections[0].medications[0].dose, '500 mg', '@doza must attach to the previous medication');
+
+const oneOralSignature = Core.parse(`Rp:
+Amoxicillin 500 mg (Tableta)
+Paracetamol 500 mg (Tableta)
+S (Signatura): Nga 1 tabletë sipas nevojës.`, 'Test');
+assert.equal(oneOralSignature.sections[0].sharedSignature, '', 'One oral signature must not silently apply to every oral drug');
+assert.equal(oneOralSignature.sections[0].medications[0].individualSignature, '');
+assert.equal(oneOralSignature.sections[0].medications[1].individualSignature, 'Nga 1 tabletë sipas nevojës.');
 
 assert.equal(Core.selectedDrugLine({
   substance: 'Paracetamol',
