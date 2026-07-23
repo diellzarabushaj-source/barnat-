@@ -1,17 +1,21 @@
 (() => {
   'use strict';
 
-  const VERSION = '2026-07-23.2';
+  const VERSION = '2026-07-23.3';
   let scheduled = false;
   let notified = false;
   let waitAttempts = 0;
 
-  const text = value => String(value ?? '').trim();
+  const text = value => String(value ?? '').replace(/\s+/g, ' ').trim();
   const normalize = value => text(value)
     .normalize('NFD')
     .replace(/[\u0300-\u036f]/g, '')
     .toLowerCase()
-    .replace(/[^a-z0-9]+/g, '');
+    .replace(/\b(?:as|equivalent\s+to|eq\.?\s+to)\b/g, ' ')
+    .replace(/[^a-z0-9]+/g, ' ')
+    .replace(/\s+/g, ' ')
+    .trim();
+  const token = value => normalize(value).replace(/\s+/g, '');
   const esc = value => String(value ?? '').replace(/[&<>"']/g, char => ({
     '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;'
   }[char]));
@@ -38,36 +42,41 @@
     };
   }
 
-  function splitFormPatterns(value) {
+  function substanceComponents(value) {
     return text(value)
-      .split(/\s*\/\s*|\s*;\s*/)
+      .split(/\s*(?:;|\+)\s*/)
       .map(normalize)
-      .filter(Boolean);
+      .filter(Boolean)
+      .sort();
+  }
+
+  function sameSubstanceComponents(left, right) {
+    const a = substanceComponents(left);
+    const b = substanceComponents(right);
+    return a.length > 0 && a.length === b.length && a.every((value, index) => value === b[index]);
+  }
+
+  function formPatterns(value) {
+    return text(value).split(/\s*;\s*/).map(token).filter(Boolean);
+  }
+
+  function exactFormMatch(actual, expected) {
+    const actualToken = token(actual);
+    const patterns = formPatterns(expected);
+    return Boolean(actualToken && patterns.length && patterns.includes(actualToken));
+  }
+
+  function exactStrengthMatch(actual, expected) {
+    return Boolean(token(actual) && token(expected) && token(actual) === token(expected));
   }
 
   function exactRegimenMatch(regimen, article) {
-    const articleAtc = normalize(article.dataset.atc);
-    const regimenAtc = normalize(regimen.atc);
+    const articleAtc = token(article.dataset.atc);
+    const regimenAtc = token(regimen.atc);
     if (!articleAtc || !regimenAtc || articleAtc !== regimenAtc) return false;
-
-    const articleSubstance = normalize(article.dataset.substance);
-    const regimenSubstance = normalize(regimen.substance);
-    if (!articleSubstance || !regimenSubstance) return false;
-    const substanceMatch = articleSubstance === regimenSubstance ||
-      articleSubstance.includes(regimenSubstance) ||
-      regimenSubstance.includes(articleSubstance);
-    if (!substanceMatch) return false;
-
-    const articleForm = normalize(article.dataset.form);
-    const patterns = splitFormPatterns(regimen.form);
-    if (!articleForm || !patterns.length || !patterns.some(pattern =>
-      articleForm === pattern || articleForm.includes(pattern) || pattern.includes(articleForm)
-    )) return false;
-
-    const actualStrength = normalize(article.dataset.strength);
-    const expectedStrength = normalize(regimen.referenceStrength || regimen.concentration);
-    if (!actualStrength || !expectedStrength || actualStrength !== expectedStrength) return false;
-
+    if (!sameSubstanceComponents(article.dataset.substance, regimen.substance)) return false;
+    if (!exactFormMatch(article.dataset.form, regimen.form)) return false;
+    if (!exactStrengthMatch(article.dataset.strength, regimen.referenceStrength || regimen.concentration)) return false;
     return true;
   }
 
@@ -86,25 +95,19 @@
     const dosage = window.MEDINDEX_DOSAGE;
     const patient = patientContext();
     if (!dosage || dosage.meta?.clinicalAutoFillEnabled !== true || patient.type === 'manual') return [];
-    if (patient.type === 'pediatric') {
-      return (dosage.pediatric || []).filter(regimen => pediatricEligible(regimen, patient, article));
-    }
-    return (dosage.adult || []).filter(regimen => exactRegimenMatch(regimen, article));
+    return patient.type === 'pediatric'
+      ? (dosage.pediatric || []).filter(regimen => pediatricEligible(regimen, patient, article))
+      : (dosage.adult || []).filter(regimen => exactRegimenMatch(regimen, article));
   }
 
   function regimenLabel(regimen) {
-    return [
-      regimen.indication || regimen.regimenId,
-      regimen.route,
-      regimen.frequency,
-      regimen.duration,
-    ].filter(Boolean).join(' · ');
+    return [regimen.indication || regimen.regimenId, regimen.route, regimen.frequency, regimen.duration]
+      .filter(Boolean).join(' · ');
   }
 
   function syncStrictChooser(article, regimens) {
     const assist = article.querySelector('.dosage-assist');
     if (!assist) return;
-
     const subtitle = assist.querySelector('.dosage-assist-title small');
     const badge = assist.querySelector('.dosage-badge');
     const select = assist.querySelector('.dosage-controls select');
@@ -112,29 +115,20 @@
     const appliedId = fieldValue(article, 'regimenId');
 
     assist.classList.toggle('requires-choice', regimens.length > 1 && !appliedId);
-
     if (regimens.length > 1 && !appliedId) {
-      if (subtitle) subtitle.textContent = `U gjetën ${regimens.length} skema të verifikuara. Zgjidhe indikacionin/skemen e duhur.`;
-      if (badge) {
-        badge.textContent = 'Zgjidh skemën';
-        badge.className = 'dosage-badge edited';
-      }
+      if (subtitle) subtitle.textContent = `U gjetën ${regimens.length} skema të verifikuara. Zgjidhe indikacionin e duhur.`;
+      if (badge) { badge.textContent = 'Zgjidh skemën'; badge.className = 'dosage-badge edited'; }
     } else if (regimens.length === 1 && !appliedId) {
       if (subtitle) subtitle.textContent = 'U gjet një skemë e vetme e saktë; po plotësohet automatikisht.';
-      if (badge) {
-        badge.textContent = 'Auto-fill';
-        badge.className = 'dosage-badge ready';
-      }
+      if (badge) { badge.textContent = 'Auto-fill'; badge.className = 'dosage-badge ready'; }
     }
 
-    if (!select || !button || !regimens.length) return;
-
+    if (!select || !button) return;
     const current = select.value;
     const allowedIds = new Set(regimens.map(item => item.regimenId));
     select.innerHTML = '<option value="">Zgjidh skemën…</option>' + regimens.map(regimen =>
       `<option value="${esc(regimen.regimenId)}">${esc(regimenLabel(regimen))}</option>`
     ).join('');
-
     if (appliedId && allowedIds.has(appliedId)) select.value = appliedId;
     else if (current && allowedIds.has(current)) select.value = current;
     else select.value = '';
@@ -153,20 +147,20 @@
     if (!match) return null;
     const numerator = Number(match[1]);
     const denominator = Number(match[2]);
-    return Number.isFinite(numerator) && Number.isFinite(denominator) && denominator > 0
-      ? numerator / denominator
-      : null;
+    return Number.isFinite(numerator) && Number.isFinite(denominator) && denominator > 0 ? numerator / denominator : null;
+  }
+
+  function doseWithUnit(value) {
+    const raw = text(value);
+    if (!raw) return '';
+    return /\b(?:mg|g|mcg|µg|mL|IU|NJ)\b/i.test(raw) ? raw : `${raw} mg`;
   }
 
   function adultValues(regimen) {
-    const practicalDose = regimen.unitCount && regimen.practicalUnit
-      ? `${regimen.unitCount} ${regimen.practicalUnit}`
-      : '';
-    const dose = regimen.doseMg
-      ? `${regimen.doseMg} mg${practicalDose ? ` (${practicalDose})` : ''}`
-      : practicalDose;
+    const practicalDose = regimen.unitCount && regimen.practicalUnit ? `${regimen.unitCount} ${regimen.practicalUnit}` : '';
+    const medicinalDose = doseWithUnit(regimen.doseMg);
     return {
-      dose,
+      dose: [medicinalDose, practicalDose ? `(${practicalDose})` : ''].filter(Boolean).join(' '),
       route: regimen.route || '',
       frequency: regimen.frequency || '',
       duration: regimen.duration || '',
@@ -197,17 +191,14 @@
     if (volumeMl == null && doseMg != null && mgPerMl) volumeMl = doseMg / mgPerMl;
     doseMg = round(doseMg);
     volumeMl = round(volumeMl);
-
-    const dose = [
-      doseMg != null ? `${doseMg} mg` : '',
-      volumeMl != null ? `(${volumeMl} mL)` : '',
-    ].filter(Boolean).join(' ');
+    const dose = [doseMg != null ? `${doseMg} mg` : '', volumeMl != null ? `(${volumeMl} mL)` : ''].filter(Boolean).join(' ');
 
     let instructions = regimen.signatura || '';
     if (regimen.mgPerKg != null && dose) {
-      instructions = `Jep ${volumeMl != null ? `${volumeMl} mL` : `${doseMg} mg`} ${regimen.route ? `${regimen.route} ` : ''}${regimen.frequency || ''}.`
-        .replace(/\s+/g, ' ')
-        .trim();
+      instructions = [
+        `Jep ${volumeMl != null ? `${volumeMl} mL` : `${doseMg} mg`}`,
+        regimen.route || '', regimen.frequency || '', regimen.duration ? `për ${regimen.duration}` : ''
+      ].filter(Boolean).join(' ').replace(/\s+/g, ' ').trim() + '.';
     }
 
     return {
@@ -229,8 +220,7 @@
   }
 
   function refreshPrescriptionUi() {
-    const patientType = document.getElementById('protocolPatientType');
-    if (patientType) patientType.dispatchEvent(new Event('change', { bubbles: true }));
+    document.getElementById('protocolPatientType')?.dispatchEvent(new Event('change', { bubbles: true }));
   }
 
   function notify(message) {
@@ -240,8 +230,7 @@
 
   function applyAutomatically(article, regimen) {
     const values = patientContext().type === 'pediatric' ? pediatricValues(regimen) : adultValues(regimen);
-    if (values.error) return;
-
+    if (values.error) { notify(values.error); return; }
     article.dataset.applyingDosage = '1';
     ['dose', 'route', 'frequency', 'duration', 'quantity', 'instructions', 'clinicalNotes']
       .forEach(name => setField(article, name, values[name] || ''));
@@ -252,25 +241,15 @@
     article.dataset.autoAppliedRegimen = regimen.regimenId || '';
     article.dataset.autoApplyVersion = VERSION;
     delete article.dataset.applyingDosage;
-
-    const generic = text(article.dataset.substance || article.dataset.tradeName);
-    const prefix = fieldValue(article, 'prefix');
-    const strength = text(article.dataset.strength);
-    const preview = article.querySelector('.protocol-drug-rp');
-    if (preview) preview.innerHTML = `<b>Rp.</b>${esc([prefix, generic, strength].filter(Boolean).join(' '))}`;
-
     refreshPrescriptionUi();
     notify(`Skema ${regimen.regimenId} u plotësua automatikisht. Mund ta ndryshosh çdo fushë.`);
   }
 
   function maybeAutoApply(article) {
     if (!article || article.dataset.qualityStatus === 'blocked') return;
-
     const regimens = matchingRegimens(article);
     syncStrictChooser(article, regimens);
-
     if (hasManualClinicalContent(article) || regimens.length !== 1) return;
-
     const regimen = regimens[0];
     const patient = patientContext();
     const applicationKey = [regimen.regimenId, patient.type, patient.ageMonths, patient.weightKg].join('|');
@@ -287,7 +266,6 @@
       if (waitAttempts < 100) window.setTimeout(schedule, 150);
       return;
     }
-
     document.querySelectorAll('#protocolDrugList .protocol-drug').forEach(maybeAutoApply);
     if (!notified && dosage.meta?.clinicalAutoFillEnabled === true) {
       notified = true;
@@ -303,13 +281,13 @@
 
   const target = document.getElementById('protocolDrugList') || document.documentElement;
   new MutationObserver(schedule).observe(target, { childList: true, subtree: true });
-  ['protocolPatientType', 'protocolAgeValue', 'protocolAgeUnit', 'protocolWeightKg']
-    .forEach(id => {
-      const node = document.getElementById(id);
-      node?.addEventListener('input', schedule);
-      node?.addEventListener('change', schedule);
-    });
+  ['protocolPatientType', 'protocolAgeValue', 'protocolAgeUnit', 'protocolWeightKg'].forEach(id => {
+    const node = document.getElementById(id);
+    node?.addEventListener('input', schedule);
+    node?.addEventListener('change', schedule);
+  });
 
+  window.MEDINDEX_DOSAGE_MATCHING = { sameSubstanceComponents, exactFormMatch, exactStrengthMatch };
   if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', schedule, { once: true });
   else schedule();
 })();
