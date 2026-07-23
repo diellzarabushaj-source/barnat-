@@ -12,7 +12,7 @@ const requiredFiles = [
   'index.html','klasifikimi.html','icd.html','analizat.html','recetat.html','login.html',
   'login.css','login.js','auth-client.js','app-stability.js','app-polish.css','performance.css',
   'medical-hub.css','analizat-polish.css','lab-sheet-data.js','medical-icons.js','section-icons.js',
-  'recetat.css','recetat.js','app-parts/core-tail.txt',
+  'recetat.css','recetat-audit.css','prescription-format-core.js','recetat.js','app-parts/core-tail.txt',
   'middleware.ts','lib/auth.mjs','lib/auth-edge.mjs','api/auth.js','api/registry.js','api/drug-search.js',
   'api/gemini-prescription.js','api/dosage.js','api/health.js','api/labs.js',
   'data/registry-quality.js','icd-data.js','vercel.json','robots.txt',
@@ -41,7 +41,7 @@ async function main() {
   assert.equal(vercel.rewrites?.[0]?.destination, '/api/registry');
   [
     'app.js','login.js','auth-client.js','app-stability.js','main-navigation-extension.js',
-    'medical-icons.js','section-icons.js','recetat.js','classification-icons.js',
+    'medical-icons.js','section-icons.js','prescription-format-core.js','recetat.js','classification-icons.js',
     'api/auth.js','api/registry.js','api/drug-search.js','api/gemini-prescription.js','api/registry-data.js',
     'api/dosage.js','api/health.js','api/labs.js','data/registry-quality.js',
     'classification-registry-bridge.js','classification-v3.js','classification-audit-view.js','classification-info-v3.js',
@@ -100,7 +100,7 @@ async function main() {
 
   console.log('5/11 Laboratory source and title integrity');
   const labsHtml = file('analizat.html');
-  assert.match(labsHtml, /class="auth-checking"/);
+  assert.match(labsHtml, /class="[^"]*\bauth-checking\b[^"]*"/);
   assert.match(labsHtml, /analizat-polish\.css/);
   assert.match(labsHtml, /lab-sheet-data\.js/);
   assert.match(labsHtml, /medical-icons\.js/);
@@ -110,7 +110,7 @@ async function main() {
   assert.ok(labsHtml.indexOf('lab-sheet-data.js') < labsHtml.indexOf('analizat.js'), 'Sheet data must load before laboratory UI');
 
   console.log('6/11 No password leakage to browser assets');
-  const browserFiles = ['index.html','analizat.html','recetat.html','login.html','login.js','login.css','auth-client.js','app-stability.js','app.js','analizat.js','recetat.js','lab-sheet-data.js'];
+  const browserFiles = ['index.html','analizat.html','recetat.html','login.html','login.js','login.css','auth-client.js','app-stability.js','app.js','analizat.js','prescription-format-core.js','recetat.js','lab-sheet-data.js'];
   const forbiddenPassword = ['diellza', '123'].join('');
   browserFiles.forEach(relativePath => assert.equal(file(relativePath).includes(forbiddenPassword), false, `Password leaked in ${relativePath}`));
 
@@ -176,19 +176,31 @@ async function main() {
   console.log('10/11 Simple prescription dashboard and Gemini guardrails');
   const rxHtml = file('recetat.html');
   const rxJs = file('recetat.js');
+  const rxCore = file('prescription-format-core.js');
   const gemini = file('api/gemini-prescription.js');
-  ['@forma','@bari','@doza','@tjetër','@signatura'].forEach(tag => assert.ok(rxHtml.includes(tag), `Missing ${tag}`));
+  ['@forma','@bari','@doza','@sasia','@tjetër','@signatura'].forEach(tag => assert.ok(rxHtml.includes(tag), `Missing ${tag}`));
   assert.doesNotMatch(rxHtml, /protocolPatientName|protocolBirthDate|protocolPatientId/);
-  assert.match(rxJs, /sharedSignature/);
+  assert.match(rxHtml, /prescription-format-core\.js/);
+  assert.match(rxHtml, /recetat\.js/);
+  assert.doesNotMatch(rxHtml, /recetat-v2\.js/);
+  assert.match(rxHtml, /id="rxGeneratedReview"/);
+  assert.match(rxJs, /generatedReviewConfirmed/);
   assert.match(rxJs, /api\/gemini-prescription/);
   assert.match(rxJs, /api\/drug-search/);
   assert.match(rxJs, /medindexPrescriptionSelection/);
+  assert.match(rxCore, /dispenseQuantity/);
+  assert.match(rxCore, /S \(Signatura\):/);
+  assert.match(rxCore, /sharedSignature/);
   assert.match(gemini, /GEMINI_API_KEY/);
+  assert.match(gemini, /GOOGLE_API_KEY/);
   assert.match(gemini, /responseMimeType:\s*'application\/json'/);
   assert.match(gemini, /responseSchema/);
   assert.match(gemini, /thinkingBudget:\s*0/);
-  assert.match(gemini, /Mos shto asnjë bar, dozë, frekuencë, kohëzgjatje, rrugë/);
-  assert.match(gemini, /vetëm sharedSignature/);
+  assert.match(gemini, /Mos shto dhe mos hiq barna/);
+  assert.match(gemini, /generateMissingSignatures/);
+  assert.match(gemini, /dispenseQuantity/);
+  assert.match(gemini, /signatureGenerated/);
+  assert.match(gemini, /sharedSignature/);
 
   console.log('11/11 Security and performance invariants');
   assert.match(file('middleware.ts'), /auth-edge\.mjs/);
