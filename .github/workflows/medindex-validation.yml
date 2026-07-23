@@ -19,6 +19,10 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: 22
+          cache: npm
+
+      - name: Install dependencies
+        run: npm ci --ignore-scripts --no-audit --no-fund
 
       - name: Validate JavaScript syntax
         shell: bash
@@ -32,7 +36,8 @@ jobs:
             medical-icons.js
             section-icons.js
             classification-icons.js
-            recetat-v2.js
+            prescription-format-core.js
+            recetat.js
             api/gemini-prescription.js
             api/drug-search.js
             api/registry.js
@@ -46,13 +51,18 @@ jobs:
           cat app-parts/part-01.txt app-parts/part-02.txt app-parts/part-03.txt app-parts/part-04.txt app-parts/core-tail.txt > /tmp/medindex-registry-bundle.js
           node --check /tmp/medindex-registry-bundle.js
 
+      - name: Run complete test suite
+        run: npm test
+
       - name: Verify the dedicated prescription dashboard
         shell: bash
         run: |
           set -euo pipefail
           test -f recetat.html
           test -f recetat.css
-          test -f recetat-v2.js
+          test -f recetat-audit.css
+          test -f prescription-format-core.js
+          test -f recetat.js
           grep -q 'id="protocolsBtn"' index.html
           grep -q "href = 'recetat.html'" main-navigation-extension.js
           grep -q 'id="rxComposer"' recetat.html
@@ -62,12 +72,17 @@ jobs:
           grep -q '@sasia' recetat.html
           grep -q '@tjetër' recetat.html
           grep -q '@signatura' recetat.html
-          grep -q '/api/gemini-prescription' recetat-v2.js
-          grep -q '/api/drug-search' recetat-v2.js
-          grep -q 'dispenseQuantity' recetat-v2.js
-          grep -q 'S (Signatura):' recetat-v2.js
-          grep -q 'sharedSignature' recetat-v2.js
-          grep -q 'medindexPrescriptionSelection' recetat-v2.js
+          grep -q 'prescription-format-core.js' recetat.html
+          grep -q 'recetat.js' recetat.html
+          grep -q 'id="rxGeneratedReview"' recetat.html
+          ! grep -q 'recetat-v2.js' recetat.html
+          grep -q '/api/gemini-prescription' recetat.js
+          grep -q '/api/drug-search' recetat.js
+          grep -q 'dispenseQuantity' prescription-format-core.js
+          grep -q 'S (Signatura):' prescription-format-core.js
+          grep -q 'sharedSignature' prescription-format-core.js
+          grep -q 'generatedReviewConfirmed' recetat.js
+          grep -q 'medindexPrescriptionSelection' recetat.js
           ! grep -q 'protocolOverlay' index.html
           ! grep -q 'dosage-auto-apply.js' index.html
           ! grep -q 'prescription-review.js' index.html
