@@ -3,6 +3,7 @@
 
   const CLINICAL_UI_VERSION = '20260723-1';
   const NAVIGATION_UI_VERSION = '20260723-1';
+  const MIXTURE_UI_VERSION = '20260723-1';
   let lastFocused = null;
   let errorBannerTimer = 0;
   let dialogFrame = 0;
@@ -21,6 +22,14 @@
     const script = document.createElement('script');
     script.src = `navigation-consistency.js?v=${NAVIGATION_UI_VERSION}`;
     script.dataset.medindexNavigationUi = '1';
+    document.head.appendChild(script);
+  }
+
+  function installMixtureUi() {
+    if (document.querySelector('script[data-medindex-mixture-ui]')) return;
+    const script = document.createElement('script');
+    script.src = `prescription-mixtures.js?v=${MIXTURE_UI_VERSION}`;
+    script.dataset.medindexMixtureUi = '1';
     document.head.appendChild(script);
   }
 
@@ -165,11 +174,12 @@
     window.addEventListener('unhandledrejection', event => reportRuntimeProblem(event.reason || event));
     document.addEventListener('keydown', trapFocus, true);
     document.addEventListener('keydown', closeTransientUi, true);
-    window.MEDINDEX_RUNTIME = { version: '2026-07-23.4', online: () => navigator.onLine };
+    window.MEDINDEX_RUNTIME = { version: '2026-07-23.5', online: () => navigator.onLine };
   }
 
   installClinicalUi();
   installNavigationUi();
+  installMixtureUi();
   if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', init, { once: true });
   else init();
 })();
