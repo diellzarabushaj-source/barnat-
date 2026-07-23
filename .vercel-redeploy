@@ -1,0 +1,3 @@
+Redeploy trigger for current main build.
+Date: 2026-07-23
+Reason: previous Vercel deployment attempts were blocked by the Hobby build-rate limit.
