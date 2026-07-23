@@ -8,7 +8,7 @@ module.exports = async function handler(req, res) {
   const payload = {
     ok: true,
     service: 'MedIndex',
-    version: '2026-07-23.2',
+    version: '2026-07-23.3',
     node: process.version,
     auth: {
       sessionHours: auth.SESSION_TTL_SECONDS / 3600,
@@ -18,6 +18,14 @@ module.exports = async function handler(req, res) {
       sourceConfigured: true,
       dosageSourceConfigured: Boolean(process.env.DOSAGE_SHEET_ID || 'default'),
       autoFillFlag: ['TRUE', '1', 'YES', 'PO'].includes(String(process.env.ENABLE_DOSAGE_AUTOFILL || '').toUpperCase()),
+    },
+    laboratory: {
+      protectedEndpoint: '/api/labs',
+      authenticationRequired: true,
+      sourceDatasetTests: 110,
+      sourceDatasetSystems: 12,
+      clinicalLayerVersion: '2026-07-23.1',
+      sessionCacheHours: 8,
     },
     timestamp: new Date().toISOString(),
   };
