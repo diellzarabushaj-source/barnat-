@@ -50,7 +50,11 @@ function normalized(value) {
 
 function tableFromCsv(csv) {
   const rows = parseCsv(csv);
-  const headerIndex = rows.findIndex(row => row.some(cell => normalized(cell) === 'kodi icd 10') && row.some(cell => normalized(cell) === 'emri ne shqip'));
+  const headerIndex = rows.findIndex(row => {
+    const normalizedCells = row.map(normalized);
+    const hasCode = normalizedCells.includes('kodi icd 10') || normalizedCells.includes('kodi');
+    return hasCode && normalizedCells.includes('emri ne shqip');
+  });
   if (headerIndex < 0) throw new Error('Nuk u gjet rreshti i kolonave ICD-10 në Google Sheet.');
   const headers = rows[headerIndex].map(clean);
   return rows.slice(headerIndex + 1)
@@ -73,8 +77,12 @@ async function fetchCsv(gid) {
   }
 }
 
+function codeValue(row) {
+  return clean(row['Kodi ICD-10'] || row.Kodi);
+}
+
 function codeSet(rows) {
-  return new Set(rows.map(row => clean(row['Kodi ICD-10'])).filter(Boolean));
+  return new Set(rows.map(codeValue).filter(Boolean));
 }
 
 function keywords(value) {
@@ -83,12 +91,12 @@ function keywords(value) {
 
 function level(value) {
   const token = normalized(value);
-  if (token.includes('kategori')) return 'kategori';
+  if (token === 'kategori kryesore') return 'kategori';
   return 'kod';
 }
 
 function mapEntry(row, urgentCodes, criticalCodes) {
-  const code = clean(row['Kodi ICD-10']);
+  const code = codeValue(row);
   const sourceUrl = clean(row['Burimi WHO']) || `https://icd.who.int/browse10/2019/en#/${encodeURIComponent(code)}`;
   return {
     number: clean(row['Nr.']),
@@ -133,7 +141,7 @@ async function loadDataset() {
   const entries = allRows.map(row => mapEntry(row, urgentCodes, criticalCodes)).filter(entry => entry.code && entry.title);
   const unique = new Set(entries.map(entry => entry.code));
   if (unique.size !== entries.length) throw new Error('Google Sheet përmban kode ICD-10 të dyfishta.');
-  if (!entries.length) throw new Error('Google Sheet nuk ktheu kode ICD-10.');
+  if (!entries.length || !urgentCodes.size || !criticalCodes.size) throw new Error('Google Sheet nuk ktheu setet e plota ICD-10.');
 
   const data = {
     source: 'Google Sheet i dhënë nga përdoruesi',
