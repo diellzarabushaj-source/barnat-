@@ -3,7 +3,7 @@
 
   const CLINICAL_UI_VERSION = '20260723-1';
   const NAVIGATION_UI_VERSION = '20260723-1';
-  const MIXTURE_UI_VERSION = '20260723-1';
+  const MIXTURE_UI_VERSION = '20260723-2';
   let lastFocused = null;
   let errorBannerTimer = 0;
   let dialogFrame = 0;
@@ -174,7 +174,7 @@
     window.addEventListener('unhandledrejection', event => reportRuntimeProblem(event.reason || event));
     document.addEventListener('keydown', trapFocus, true);
     document.addEventListener('keydown', closeTransientUi, true);
-    window.MEDINDEX_RUNTIME = { version: '2026-07-23.5', online: () => navigator.onLine };
+    window.MEDINDEX_RUNTIME = { version: '2026-07-23.6', online: () => navigator.onLine };
   }
 
   installClinicalUi();
