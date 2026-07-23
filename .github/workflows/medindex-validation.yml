@@ -61,6 +61,7 @@ jobs:
           set -euo pipefail
           grep -q 'clinicalAutoFillEnabled' dosage-auto-apply.js
           grep -q 'regimens.length !== 1' dosage-auto-apply.js
-          grep -q 'actualStrength !== expectedStrength' dosage-auto-apply.js
+          grep -q 'function exactStrengthMatch' dosage-auto-apply.js
+          grep -q 'exactStrengthMatch(article.dataset.strength' dosage-auto-apply.js
           grep -q 'VERIFIKUAR — AUTO-APLIKUAR' dosage-auto-apply.js
           grep -q 'Statusi=VERIFIKUAR AND Auto-fill=PO' api/dosage.js || true
