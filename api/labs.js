@@ -24,16 +24,9 @@ function loadDataset() {
     throw new Error('Dataset-i laboratorik nuk është i kyçur vetëm te fotografitë e aprovuara.');
   }
 
-  const tests = source.tests.map(test => {
-    if (test.id === 'uric-acid') {
-      return {
-        ...test,
-        unit: 'mmol/L',
-        referenceNote: 'Njësia mmol/L është transkriptuar nga formulari i fotografuar.',
-      };
-    }
-    return { ...test };
-  });
+  // Ruaj të gjitha vlerat dhe njësitë pikërisht siç janë transkriptuar nga burimi.
+  // Pa plotësime automatike ose korrigjime të heshtura në API.
+  const tests = source.tests.map(test => ({ ...test }));
 
   if (tests.length !== EXPECTED_PHOTO_TESTS) {
     throw new Error(`Dataset-i duhet të ketë saktësisht ${EXPECTED_PHOTO_TESTS} analiza nga fotografitë; u gjetën ${tests.length}.`);
@@ -63,6 +56,7 @@ function loadDataset() {
     tests,
     sourceLocked: true,
     sourceTestCount: EXPECTED_PHOTO_TESTS,
+    sourceUnitPolicy: 'preserve-exact-transcription',
   };
 
   return Object.freeze({
@@ -73,6 +67,7 @@ function loadDataset() {
       withReference: tests.filter(test => String(test.reference || '').trim() && !/^nuk është shënuar/i.test(String(test.reference).trim())).length,
       withoutReference: tests.filter(test => !String(test.reference || '').trim() || /^nuk është shënuar/i.test(String(test.reference).trim())).length,
       sourceLocked: true,
+      sourceUnitPolicy: data.sourceUnitPolicy,
     },
   });
 }
@@ -106,6 +101,7 @@ module.exports = async function handler(req, res) {
   res.setHeader('Content-Type', 'application/json; charset=utf-8');
   res.setHeader('X-MedIndex-Lab-Tests', String(DATASET.tests.length));
   res.setHeader('X-MedIndex-Lab-Source', 'user-provided-kosovo-forms');
+  res.setHeader('X-MedIndex-Lab-Unit-Policy', DATASET.sourceUnitPolicy);
   if (req.method === 'HEAD') return res.status(200).end();
   return res.status(200).send(BODY);
 };
