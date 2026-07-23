@@ -5,6 +5,20 @@
   const originalFetch = window.fetch.bind(window);
   let logoutObserver = null;
   let logoutObserverTimer = 0;
+  let authSettled = false;
+  let resolveAuthReady;
+
+  document.documentElement.classList.add('auth-checking');
+  window.MEDINDEX_AUTH_READY = new Promise(resolve => { resolveAuthReady = resolve; });
+
+  function settleAuth(authenticated, payload = {}) {
+    if (authSettled) return;
+    authSettled = true;
+    resolveAuthReady?.({ authenticated, ...payload });
+    window.dispatchEvent(new CustomEvent(authenticated ? 'medindex:auth-ready' : 'medindex:auth-failed', {
+      detail: { authenticated, ...payload }
+    }));
+  }
 
   function installStyles() {
     if (document.getElementById('authClientStyles')) return;
@@ -43,7 +57,8 @@
     }
   }
 
-  function goToLogin() {
+  function goToLogin(reason = 'unauthenticated') {
+    settleAuth(false, { reason });
     const returnPath = safeReturnPath();
     try { sessionStorage.setItem(RETURN_KEY, returnPath); } catch {}
     const loginUrl = new URL('/login.html', location.origin);
@@ -60,6 +75,7 @@
     try { await authRequest({ method: 'DELETE' }); } catch {}
     try {
       sessionStorage.removeItem(RETURN_KEY);
+      sessionStorage.removeItem('medindex_labs_cache_v3');
       localStorage.removeItem('barnat-registry-parts-v2');
       localStorage.removeItem('barnat-registry-cached-at-v2');
     } catch {}
@@ -79,34 +95,24 @@
 
   function installLogout() {
     let navigationFound = false;
-    const appMenu = document.getElementById('appMenu');
-    if (appMenu) {
+    const targets = [
+      ['#appMenu', 'app-menu-link', '.theme-control'],
+      ['.atc-nav', 'atc-nav-link', '.atc-theme'],
+      ['.med-nav', 'med-nav-link', '.med-theme']
+    ];
+    targets.forEach(([selector, className, beforeSelector]) => {
+      const navigation = document.querySelector(selector);
+      if (!navigation) return;
       navigationFound = true;
-      if (!appMenu.querySelector('.auth-logout')) {
-        appMenu.insertBefore(buttonMarkup('app-menu-link'), appMenu.querySelector('.theme-control') || null);
+      if (!navigation.querySelector('.auth-logout')) {
+        navigation.insertBefore(buttonMarkup(className), navigation.querySelector(beforeSelector) || null);
       }
-    }
-
-    const atcNav = document.querySelector('.atc-nav');
-    if (atcNav) {
-      navigationFound = true;
-      if (!atcNav.querySelector('.auth-logout')) {
-        atcNav.insertBefore(buttonMarkup('atc-nav-link'), atcNav.querySelector('.atc-theme') || null);
-      }
-    }
-
-    const medNav = document.querySelector('.med-nav');
-    if (medNav) {
-      navigationFound = true;
-      if (!medNav.querySelector('.auth-logout')) {
-        medNav.insertBefore(buttonMarkup('med-nav-link'), medNav.querySelector('.med-theme') || null);
-      }
-    }
+    });
     return navigationFound;
   }
 
   function stopLogoutObserver() {
-    if (logoutObserver) logoutObserver.disconnect();
+    logoutObserver?.disconnect();
     logoutObserver = null;
     clearTimeout(logoutObserverTimer);
     logoutObserverTimer = 0;
@@ -129,7 +135,8 @@
     banner.setAttribute('role', 'alert');
     banner.textContent = 'Sesioni ka skaduar. Po kthehesh te hyrja…';
     document.body.appendChild(banner);
-    setTimeout(goToLogin, 700);
+    settleAuth(false, { reason: 'expired' });
+    setTimeout(() => goToLogin('expired'), 700);
   }
 
   window.fetch = async (...args) => {
@@ -143,12 +150,13 @@
     try {
       const response = await authRequest();
       const payload = await response.json().catch(() => ({}));
-      if (!response.ok || !payload.authenticated) return goToLogin();
+      if (!response.ok || !payload.authenticated) return goToLogin('unauthenticated');
       document.documentElement.classList.add('auth-ready');
       document.documentElement.classList.remove('auth-checking');
+      settleAuth(true, payload);
       installLogoutWhenReady();
-    } catch {
-      goToLogin();
+    } catch (error) {
+      goToLogin(error?.name === 'AbortError' ? 'timeout' : 'network');
     }
   }
 
