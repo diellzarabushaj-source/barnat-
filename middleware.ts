@@ -1,5 +1,5 @@
 import { next, rewrite } from '@vercel/functions';
-import { sessionFromRequest, verifySessionToken } from './lib/auth.mjs';
+import { sessionFromRequest, verifySessionToken } from './lib/auth-edge.mjs';
 
 const PUBLIC_PATHS = new Set([
   '/login.html',
@@ -10,7 +10,6 @@ const PUBLIC_PATHS = new Set([
 ]);
 
 export const config = {
-  runtime: 'nodejs',
   matcher: '/:path*',
 };
 
@@ -18,10 +17,10 @@ function isPublicPath(pathname) {
   return PUBLIC_PATHS.has(pathname) || pathname === '/api/auth';
 }
 
-export default function middleware(request) {
+export default async function middleware(request) {
   const url = new URL(request.url);
   const pathname = url.pathname;
-  const authenticated = verifySessionToken(sessionFromRequest(request));
+  const authenticated = await verifySessionToken(sessionFromRequest(request));
 
   if (isPublicPath(pathname)) {
     if (pathname === '/login.html' && authenticated) {
