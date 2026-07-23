@@ -2,41 +2,23 @@
 <html lang="sq">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>MedIndex | Regjistri i Barnave DHE DIAGNOZAVE ICD - Dr. Diellza Rabushaj</title>
-<link rel="stylesheet" href="styles.css">
-<link rel="stylesheet" href="protocols.css">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="robots" content="noindex,nofollow,noarchive">
+<meta name="theme-color" content="#0d3d40">
+<title>MedIndex | Regjistri i Barnave — Dr. Diellza Rabushaj</title>
+<link rel="stylesheet" href="styles.css?v=20260723-2">
+<link rel="stylesheet" href="protocols.css?v=20260723-1">
 <link rel="stylesheet" href="ui-controls.css?v=20260722-7">
 <link rel="stylesheet" href="loader.css?v=20260722-6">
 <link rel="stylesheet" href="prescription-review.css?v=20260722-2">
+<link rel="stylesheet" href="app-polish.css?v=20260723-1">
 </head>
 <body>
-
-<!-- Sign-in UI: aktivizohet kur të lidhet verifikimi server-side me ACCESS_CODE. -->
-<section class="access-screen" id="accessScreen" hidden aria-labelledby="accessHeading">
-  <div class="access-form-container">
-    <form class="access-form" id="accessForm" autocomplete="off">
-      <h1 class="access-heading" id="accessHeading">MedIndex</h1>
-      <p class="access-subtitle">Dr. Diellza Rabushaj · Shkruaje kodin personal për të vazhduar.</p>
-      <div class="access-input-group">
-        <input required type="password" id="accessCode" name="accessCode" autocomplete="current-password" placeholder=" ">
-        <label for="accessCode">Kodi i qasjes</label>
-      </div>
-      <button class="access-submit" id="accessSubmit" type="submit">Hyr</button>
-      <p class="access-message" id="accessMessage" role="alert"></p>
-    </form>
-  </div>
-</section>
-
 <div class="page-loader" id="pageLoader" role="status" aria-live="polite" aria-label="Duke i ngarkuar barnat">
   <div class="loader-content">
     <div class="wrapper" aria-hidden="true">
-      <div class="circle"></div>
-      <div class="circle"></div>
-      <div class="circle"></div>
-      <div class="shadow"></div>
-      <div class="shadow"></div>
-      <div class="shadow"></div>
+      <div class="circle"></div><div class="circle"></div><div class="circle"></div>
+      <div class="shadow"></div><div class="shadow"></div><div class="shadow"></div>
     </div>
     <p>Duke i ngarkuar barnat...</p>
   </div>
@@ -44,51 +26,46 @@
 
 <header>
   <h1>MedIndex | Regjistri i Barnave dhe Diagnozave ICD</h1>
-  <div class="sub">Dr. Diellza Rabushaj · Versioni 1.1 · Afati i vlefshmërisë: 01.05.2026 – 31.12.2026</div>
+  <div class="sub">Dr. Diellza Rabushaj · Versioni 1.2 · Afati i vlefshmërisë: 01.05.2026 – 31.12.2026</div>
 </header>
 
-<div class="toolbar">
-  <input type="text" id="search" placeholder="K&euml;rko emrin, substanc&euml;n, klas&euml;n, p&euml;rdorimin, ATC...">
-  <select id="statusFilter">
-    <option value="">T&euml; gjitha statuset</option>
+<div class="toolbar" role="search" aria-label="Kërkimi dhe filtrat e regjistrit">
+  <input type="search" id="search" placeholder="Kërko emrin, substancën, klasën, përdorimin, ATC..." autocomplete="off" enterkeyhint="search" aria-label="Kërko në regjistrin e barnave">
+  <select id="statusFilter" aria-label="Filtro statusin">
+    <option value="">Të gjitha statuset</option>
     <option value="Gjenerik">Gjenerik</option>
     <option value="Origjinator">Origjinator</option>
   </select>
   <div class="form-picker">
-    <button id="formPickerBtn" type="button">Forma: T&euml; gjitha &#9662;</button>
+    <button id="formPickerBtn" type="button" aria-haspopup="listbox" aria-expanded="false">Forma: Të gjitha ▾</button>
     <div class="form-panel" id="formPanel">
-      <input type="text" id="formSearch" placeholder="K&euml;rko formën (p.sh. kapsul, tablet)...">
-      <div id="formList"></div>
+      <input type="search" id="formSearch" placeholder="Kërko formën (p.sh. kapsul, tablet)..." autocomplete="off" aria-label="Kërko formën farmaceutike">
+      <div id="formList" role="listbox"></div>
     </div>
   </div>
-  <select id="pageSize">
+  <select id="pageSize" aria-label="Numri i barnave për faqe">
     <option value="50">50 / faqe</option>
     <option value="100">100 / faqe</option>
     <option value="250">250 / faqe</option>
-    <option value="4006">Shfaq t&euml; gjitha</option>
+    <option value="500">500 / faqe</option>
+    <option value="4006" hidden>Favoritet</option>
   </select>
   <div class="col-picker">
-    <button id="colPickerBtn" type="button">Kolonat &#9662;</button>
+    <button id="colPickerBtn" type="button" aria-haspopup="true" aria-expanded="false">Kolonat ▾</button>
     <div class="col-panel" id="colPanel"></div>
   </div>
-
   <span class="selection-badge" title="Barnat e zgjedhura për recetë">Të zgjedhura: <strong id="selectedCount">0</strong></span>
   <button class="protocol-toolbar-btn" id="protocolsBtn" type="button">Recetat e mia <span class="mini-count" id="savedProtocolCount">0</span></button>
-  <span class="count-badge" id="countBadge">Duke u ngarkuar...</span>
+  <span class="count-badge" id="countBadge" aria-live="polite">Duke u ngarkuar...</span>
 </div>
 
-<div class="table-wrap">
+<div class="table-wrap" tabindex="0" aria-label="Tabela e regjistrit të barnave">
   <table id="dataTable">
-    <thead>
-      <tr id="headerRow"></tr>
-    </thead>
-    <tbody id="tbody">
-      <tr><td class="empty-state">Duke i ngarkuar barnat...</td></tr>
-    </tbody>
+    <thead><tr id="headerRow"></tr></thead>
+    <tbody id="tbody"><tr><td class="empty-state">Duke i ngarkuar barnat...</td></tr></tbody>
   </table>
 </div>
-
-<div class="pagination" id="pagination"></div>
+<div class="pagination" id="pagination" aria-label="Faqet e rezultateve"></div>
 
 <div class="protocol-overlay" id="protocolOverlay" aria-hidden="true">
   <aside class="protocol-drawer" role="dialog" aria-modal="true" aria-labelledby="protocolDrawerTitle">
@@ -101,153 +78,74 @@
     </div>
 
     <div class="protocol-tabs" role="tablist">
-      <button class="protocol-tab active" type="button" data-tab="builder">Krijo / edito</button>
-      <button class="protocol-tab" type="button" data-tab="saved">Recetat e ruajtura <span id="savedTabCount">(0)</span></button>
+      <button class="protocol-tab active" type="button" data-tab="builder" role="tab" aria-selected="true">Krijo / edito</button>
+      <button class="protocol-tab" type="button" data-tab="saved" role="tab" aria-selected="false">Recetat e ruajtura <span id="savedTabCount">(0)</span></button>
     </div>
 
     <div class="protocol-content">
       <section class="protocol-pane active" id="protocolPaneBuilder">
-        <div class="protocol-info">
-          MedIndex i plotëson automatikisht fushat e recetës kur ekziston vetëm një skemë e verifikuar që përputhet saktë me barin. Kur ka më shumë se një skemë, paraqitet lista për ta zgjedhur skemën e duhur. Të gjitha fushat mbeten të editueshme dhe çdo ndryshim regjistrohet për rishikim.
-        </div>
+        <div class="protocol-info">MedIndex i plotëson automatikisht fushat e recetës kur ekziston vetëm një skemë e verifikuar që përputhet saktë me barin. Kur ka më shumë se një skemë, paraqitet lista për ta zgjedhur skemën e duhur. Të gjitha fushat mbeten të editueshme dhe çdo ndryshim regjistrohet për rishikim.</div>
 
         <div class="protocol-card">
           <h3>Të dhënat e recetës / protokollit</h3>
           <div class="protocol-grid">
-            <div class="protocol-field floating-field">
-              <input id="protocolName" type="text" placeholder=" ">
-              <label for="protocolName">Emri i recetës / protokollit *</label>
-              <span class="floating-hint">p.sh. Menaxhimi fillestar i migrenës</span>
-            </div>
-            <div class="protocol-field floating-field">
-              <input id="protocolIndication" type="text" placeholder=" ">
-              <label for="protocolIndication">Indikacioni / diagnoza</label>
-              <span class="floating-hint">p.sh. Migrenë pa aura</span>
-            </div>
-            <div class="protocol-field floating-field">
-              <input id="protocolPopulation" type="text" placeholder=" ">
-              <label for="protocolPopulation">Grupi / kushtet klinike</label>
-              <span class="floating-hint">p.sh. Pa shtatzëni, pa insuficiencë renale</span>
-            </div>
-            <div class="protocol-field floating-field">
-              <input id="protocolVersion" type="text" placeholder=" ">
-              <label for="protocolVersion">Versioni / data</label>
-              <span class="floating-hint">p.sh. v1 — 22.07.2026</span>
-            </div>
-            <div class="protocol-field floating-field full">
-              <textarea id="protocolNotes" placeholder=" "></textarea>
-              <label for="protocolNotes">Vërejtje, kundërindikacione, monitorim</label>
-              <span class="floating-hint">Shëno kriteret, alarmet, monitorimin, alternativat ose referimin.</span>
-            </div>
+            <div class="protocol-field floating-field"><input id="protocolName" type="text" placeholder=" "><label for="protocolName">Emri i recetës / protokollit *</label><span class="floating-hint">p.sh. Menaxhimi fillestar i migrenës</span></div>
+            <div class="protocol-field floating-field"><input id="protocolIndication" type="text" placeholder=" "><label for="protocolIndication">Indikacioni / diagnoza</label><span class="floating-hint">p.sh. Migrenë pa aura</span></div>
+            <div class="protocol-field floating-field"><input id="protocolPopulation" type="text" placeholder=" "><label for="protocolPopulation">Grupi / kushtet klinike</label><span class="floating-hint">p.sh. Pa shtatzëni, pa insuficiencë renale</span></div>
+            <div class="protocol-field floating-field"><input id="protocolVersion" type="text" placeholder=" "><label for="protocolVersion">Versioni / data</label><span class="floating-hint">p.sh. v1 — 23.07.2026</span></div>
+            <div class="protocol-field floating-field full"><textarea id="protocolNotes" placeholder=" "></textarea><label for="protocolNotes">Vërejtje, kundërindikacione, monitorim</label><span class="floating-hint">Shëno kriteret, alarmet, monitorimin, alternativat ose referimin.</span></div>
           </div>
 
           <div class="patient-identity-grid" aria-label="Identiteti i pacientit">
-            <div class="protocol-field">
-              <label for="protocolPatientName">Emri dhe mbiemri i pacientit</label>
-              <input id="protocolPatientName" type="text" autocomplete="name" placeholder="p.sh. Emri Mbiemri">
-            </div>
-            <div class="protocol-field">
-              <label for="protocolBirthDate">Datëlindja</label>
-              <input id="protocolBirthDate" type="date" autocomplete="bday">
-            </div>
-            <div class="protocol-field">
-              <label for="protocolPatientId">Nr. personal / identifikuesi</label>
-              <input id="protocolPatientId" type="text" autocomplete="off" placeholder="Opsionale">
-            </div>
-            <div class="protocol-field full">
-              <label for="protocolAllergies">Alergjitë / reaksionet e njohura</label>
-              <input id="protocolAllergies" type="text" autocomplete="off" placeholder="p.sh. Penicilinë — urtikarie; ose Nuk dihen">
-            </div>
+            <div class="protocol-field"><label for="protocolPatientName">Emri dhe mbiemri i pacientit</label><input id="protocolPatientName" type="text" autocomplete="name" placeholder="p.sh. Emri Mbiemri"></div>
+            <div class="protocol-field"><label for="protocolBirthDate">Datëlindja</label><input id="protocolBirthDate" type="date" autocomplete="bday"></div>
+            <div class="protocol-field"><label for="protocolPatientId">Nr. personal / identifikuesi</label><input id="protocolPatientId" type="text" autocomplete="off" placeholder="Opsionale"></div>
+            <div class="protocol-field full"><label for="protocolAllergies">Alergjitë / reaksionet e njohura</label><input id="protocolAllergies" type="text" autocomplete="off" placeholder="p.sh. Penicilinë — urtikarie; ose Nuk dihen"></div>
           </div>
 
           <div class="dosage-patient-grid" aria-label="Të dhënat për dozologjinë">
-            <div class="protocol-field" data-patient-main>
-              <label for="protocolPatientType">Lloji i pacientit</label>
-              <select id="protocolPatientType">
-                <option value="adult">I rritur</option>
-                <option value="pediatric">Fëmijë / pediatrik</option>
-                <option value="manual">Plotësim krejt manual</option>
-              </select>
-            </div>
-            <div class="protocol-field" data-pediatric-only hidden>
-              <label for="protocolAgeValue">Mosha</label>
-              <input id="protocolAgeValue" type="number" min="0" step="0.1" inputmode="decimal" placeholder="p.sh. 5">
-            </div>
-            <div class="protocol-field" data-pediatric-only hidden>
-              <label for="protocolAgeUnit">Njësia e moshës</label>
-              <select id="protocolAgeUnit">
-                <option value="years">Vjeç</option>
-                <option value="months">Muaj</option>
-              </select>
-            </div>
-            <div class="protocol-field" data-pediatric-only hidden>
-              <label for="protocolWeightKg">Pesha (kg)</label>
-              <input id="protocolWeightKg" type="number" min="0" step="0.1" inputmode="decimal" placeholder="p.sh. 18.5">
-            </div>
+            <div class="protocol-field" data-patient-main><label for="protocolPatientType">Lloji i pacientit</label><select id="protocolPatientType"><option value="adult">I rritur</option><option value="pediatric">Fëmijë / pediatrik</option><option value="manual">Plotësim krejt manual</option></select></div>
+            <div class="protocol-field" data-pediatric-only hidden><label for="protocolAgeValue">Mosha</label><input id="protocolAgeValue" type="number" min="0" step="0.1" inputmode="decimal" placeholder="p.sh. 5"></div>
+            <div class="protocol-field" data-pediatric-only hidden><label for="protocolAgeUnit">Njësia e moshës</label><select id="protocolAgeUnit"><option value="years">Vjeç</option><option value="months">Muaj</option></select></div>
+            <div class="protocol-field" data-pediatric-only hidden><label for="protocolWeightKg">Pesha (kg)</label><input id="protocolWeightKg" type="number" min="0" step="0.1" inputmode="decimal" placeholder="p.sh. 18.5"></div>
           </div>
         </div>
 
-        <div class="protocol-card">
-          <h3>Barnat e recetës <span id="builderDrugCount" style="font-family:var(--mono);font-size:.78rem;color:#6d797c"></span></h3>
-          <div id="protocolDrugList"></div>
-        </div>
+        <div class="protocol-card"><h3>Barnat e recetës <span id="builderDrugCount" style="font-family:var(--mono);font-size:.78rem;color:#6d797c"></span></h3><div id="protocolDrugList"></div></div>
 
         <section class="rx-review is-blocked" id="prescriptionReview" aria-labelledby="prescriptionReviewTitle" aria-live="polite">
-          <div class="rx-review-head">
-            <div class="rx-review-title">
-              <span class="rx-review-icon" aria-hidden="true">Rx</span>
-              <div>
-                <strong id="prescriptionReviewTitle">Kontrolli para përdorimit</strong>
-                <small id="prescriptionReviewSummary">Plotëso fushat kritike dhe kryeje kontrollin klinik.</small>
-              </div>
-            </div>
-            <span class="rx-review-badge blocked" id="prescriptionReviewBadge">Jo gati</span>
-          </div>
-          <ul class="rx-review-list" id="prescriptionReviewList">
-            <li class="issue">Nuk është zgjedhur asnjë bar.</li>
-          </ul>
-          <label class="rx-review-check" for="protocolClinicalReview">
-            <input id="protocolClinicalReview" type="checkbox">
-            <span>Kam kontrolluar identitetin e pacientit, diagnozën, dozën, rrugën, frekuencën, kohëzgjatjen, alergjitë, shtatzëninë dhe funksionin renal/hepatik. Printimi final lejohet vetëm pas këtij kontrolli.</span>
-          </label>
+          <div class="rx-review-head"><div class="rx-review-title"><span class="rx-review-icon" aria-hidden="true">Rx</span><div><strong id="prescriptionReviewTitle">Kontrolli para përdorimit</strong><small id="prescriptionReviewSummary">Plotëso fushat kritike dhe kryeje kontrollin klinik.</small></div></div><span class="rx-review-badge blocked" id="prescriptionReviewBadge">Jo gati</span></div>
+          <ul class="rx-review-list" id="prescriptionReviewList"><li class="issue">Nuk është zgjedhur asnjë bar.</li></ul>
+          <label class="rx-review-check" for="protocolClinicalReview"><input id="protocolClinicalReview" type="checkbox"><span>Kam kontrolluar identitetin e pacientit, diagnozën, dozën, rrugën, frekuencën, kohëzgjatjen, alergjitë, shtatzëninë dhe funksionin renal/hepatik. Printimi final lejohet vetëm pas këtij kontrolli.</span></label>
           <small class="rx-reviewed-at" id="protocolReviewedAt">Statusi: Draft</small>
         </section>
 
         <div class="protocol-actions">
-          <button class="bookmarkBtn" id="saveProtocolBtn" type="button" aria-label="Ruaje recetën">
-            <span class="IconContainer">
-              <svg viewBox="0 0 384 512" class="icon" aria-hidden="true"><path d="M0 48V487.7C0 501.1 10.9 512 24.3 512c5 0 9.9-1.5 14-4.4L192 400 345.7 507.6c4.1 2.9 9 4.4 14 4.4c13.4 0 24.3-10.9 24.3-24.3V48c0-26.5-21.5-48-48-48H48C21.5 0 0 21.5 0 48z"></path></svg>
-            </span>
-            <span class="text">Ruaje</span>
-          </button>
+          <button class="bookmarkBtn" id="saveProtocolBtn" type="button" aria-label="Ruaje recetën"><span class="IconContainer"><svg viewBox="0 0 384 512" class="icon" aria-hidden="true"><path d="M0 48V487.7C0 501.1 10.9 512 24.3 512c5 0 9.9-1.5 14-4.4L192 400 345.7 507.6c4.1 2.9 9 4.4 14 4.4c13.4 0 24.3-10.9 24.3-24.3V48c0-26.5-21.5-48-48-48H48C21.5 0 0 21.5 0 48z"></path></svg></span><span class="text">Ruaje</span></button>
           <button class="btn-secondary" id="newProtocolBtn" type="button">Recetë e re</button>
           <button class="btn-secondary" id="copyProtocolBtn" type="button">Kopjo si tekst</button>
           <button class="btn-secondary" id="printProtocolBtn" type="button">Printo</button>
-          <button class="deleteButton" id="clearSelectionBtn" type="button" aria-label="Pastroje recetën">
-            <svg viewBox="0 0 448 512" class="deleteIcon" aria-hidden="true"><path d="M135.2 17.7 128 32H32C14.3 32 0 46.3 0 64s14.3 32 32 32h384c17.7 0 32-14.3 32-32s-14.3-32-32-32h-96l-7.2-14.3C307.4 6.8 296.3 0 284.2 0H163.8c-12.1 0-23.2 6.8-28.6 17.7ZM416 128H32l21.2 339c1.6 25.3 22.6 45 47.9 45h245.8c25.3 0 46.3-19.7 47.9-45L416 128Z"></path></svg>
-            <span>Pastro</span>
-          </button>
+          <button class="deleteButton" id="clearSelectionBtn" type="button" aria-label="Pastroje recetën"><svg viewBox="0 0 448 512" class="deleteIcon" aria-hidden="true"><path d="M135.2 17.7 128 32H32C14.3 32 0 46.3 0 64s14.3 32 32 32h384c17.7 0 32-14.3 32-32s-14.3-32-32-32h-96l-7.2-14.3C307.4 6.8 296.3 0 284.2 0H163.8c-12.1 0-23.2 6.8-28.6 17.7ZM416 128H32l21.2 339c1.6 25.3 22.6 45 47.9 45h245.8c25.3 0 46.3-19.7 47.9-45L416 128Z"></path></svg><span>Pastro</span></button>
         </div>
       </section>
-
-      <section class="protocol-pane" id="protocolPaneSaved">
-        <div id="savedProtocolsList"></div>
-      </section>
+      <section class="protocol-pane" id="protocolPaneSaved"><div id="savedProtocolsList"></div></section>
     </div>
   </aside>
 </div>
-<div class="protocol-toast" id="protocolToast" role="status"></div>
+<div class="protocol-toast" id="protocolToast" role="status" aria-live="polite"></div>
 
 <script id="drug-data" type="application/json">[]</script>
 <script>window.DRUG_DATA_PARTS = [];</script>
-<script src="data/registry-data.js?v=20260722-7"></script>
-<script src="app.js?v=20260722-11"></script>
+<script src="data/registry-data.js?v=20260723-2"></script>
+<script src="app.js?v=20260723-2"></script>
 <script src="ui-enhancements.js?v=20260722-7"></script>
 <script src="main-navigation-extension.js?v=20260723-1"></script>
 <script src="name-display.js?v=20260722-1"></script>
-<script src="dosage-integration.js?v=20260722-4"></script>
-<script src="dosage-auto-apply.js?v=20260722-2"></script>
+<script src="dosage-integration.js?v=20260723-1"></script>
+<script src="dosage-auto-apply.js?v=20260723-2"></script>
 <script src="prescription-review.js?v=20260722-2"></script>
 <script src="medindex-view.js?v=20260722-14"></script>
+<script src="auth-client.js?v=20260723-1"></script>
+<script src="app-stability.js?v=20260723-1"></script>
 </body>
 </html>
