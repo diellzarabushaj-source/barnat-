@@ -3,6 +3,7 @@
 
   let lastFocused = null;
   let errorBannerTimer = 0;
+  let dialogFrame = 0;
 
   function banner(className, message, persistent = false) {
     let node = document.querySelector(`.${className}`);
@@ -36,7 +37,14 @@
     }
   }
 
-  function reportRuntimeProblem() {
+  function isIgnorableProblem(value) {
+    const name = String(value?.name || value?.reason?.name || '');
+    const message = String(value?.message || value?.reason?.message || value || '');
+    return name === 'AbortError' || /ResizeObserver loop|Sesioni nuk është aktiv|Kërkohet autentikim/i.test(message);
+  }
+
+  function reportRuntimeProblem(event) {
+    if (isIgnorableProblem(event)) return;
     banner('app-error-banner', 'Ndodhi një gabim i papritur. Të dhënat e ruajtura nuk janë fshirë; provo veprimin përsëri.');
   }
 
@@ -77,26 +85,44 @@
     document.querySelectorAll('.col-panel.open,.form-panel.open').forEach(node => node.classList.remove('open'));
   }
 
+  function overlayIsOpen(overlay) {
+    if (!overlay) return false;
+    if (overlay.classList.contains('protocol-overlay') || overlay.classList.contains('atc-info-overlay')) {
+      return overlay.classList.contains('open') && overlay.getAttribute('aria-hidden') !== 'true';
+    }
+    return !overlay.hidden && !overlay.hasAttribute('hidden');
+  }
+
+  function reconcileDialogs() {
+    dialogFrame = 0;
+    const dialog = visibleDialog();
+    if (dialog && !dialog.dataset.stabilityFocus) {
+      lastFocused = document.activeElement;
+      dialog.dataset.stabilityFocus = '1';
+      const target = focusable(dialog)[0];
+      requestAnimationFrame(() => target?.focus());
+    }
+
+    document.querySelectorAll('[data-stability-focus="1"]').forEach(node => {
+      const overlay = node.closest('.protocol-overlay,.atc-info-overlay,.med-panel-overlay,#miOverlay');
+      if (overlayIsOpen(overlay)) return;
+      delete node.dataset.stabilityFocus;
+      if (lastFocused?.isConnected) lastFocused.focus({ preventScroll: true });
+      lastFocused = null;
+    });
+  }
+
   function watchDialogs() {
     const observer = new MutationObserver(() => {
-      const dialog = visibleDialog();
-      if (dialog && !dialog.dataset.stabilityFocus) {
-        lastFocused = document.activeElement;
-        dialog.dataset.stabilityFocus = '1';
-        const target = focusable(dialog)[0];
-        requestAnimationFrame(() => target?.focus());
-      }
-      document.querySelectorAll('[data-stability-focus="1"]').forEach(node => {
-        const overlay = node.closest('.protocol-overlay,.atc-info-overlay,.med-panel-overlay,#miOverlay');
-        const open = overlay?.classList.contains('open') || (overlay && !overlay.hidden && !overlay.hasAttribute('hidden'));
-        if (!open) {
-          delete node.dataset.stabilityFocus;
-          if (lastFocused?.isConnected) lastFocused.focus({ preventScroll: true });
-          lastFocused = null;
-        }
-      });
+      if (dialogFrame) return;
+      dialogFrame = requestAnimationFrame(reconcileDialogs);
     });
-    observer.observe(document.documentElement, { childList: true, subtree: true, attributes: true, attributeFilter: ['class', 'hidden', 'aria-hidden'] });
+    observer.observe(document.documentElement, {
+      childList: true,
+      subtree: true,
+      attributes: true,
+      attributeFilter: ['class', 'hidden', 'aria-hidden'],
+    });
   }
 
   function installPerformanceHints() {
@@ -105,7 +131,6 @@
       input.setAttribute('autocapitalize', 'none');
       input.setAttribute('spellcheck', 'false');
     });
-    document.querySelectorAll('[role="dialog"]').forEach(dialog => dialog.setAttribute('aria-describedby', dialog.getAttribute('aria-describedby') || ''));
   }
 
   function init() {
@@ -116,12 +141,12 @@
     window.addEventListener('offline', updateConnectivity);
     window.addEventListener('error', event => {
       if (event?.target && event.target !== window) return;
-      reportRuntimeProblem();
+      reportRuntimeProblem(event.error || event);
     });
-    window.addEventListener('unhandledrejection', reportRuntimeProblem);
+    window.addEventListener('unhandledrejection', event => reportRuntimeProblem(event.reason || event));
     document.addEventListener('keydown', trapFocus, true);
     document.addEventListener('keydown', closeTransientUi, true);
-    window.MEDINDEX_RUNTIME = { version: '2026-07-23.1', online: () => navigator.onLine };
+    window.MEDINDEX_RUNTIME = { version: '2026-07-23.2', online: () => navigator.onLine };
   }
 
   if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', init, { once: true });
