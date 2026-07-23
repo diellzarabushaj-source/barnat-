@@ -1,3 +1,3 @@
 Redeploy trigger for current main build.
 Date: 2026-07-23
-Reason: previous Vercel deployment attempts were blocked by the Hobby build-rate limit.
+Reason: deploy the completed Albanian ICD-10 2019 chapter index and smart search after the Vercel build-rate window reset.
