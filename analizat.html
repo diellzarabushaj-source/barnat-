@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-  <meta name="description" content="MedIndex — 112 analiza laboratorike të organizuara në 14 kategori sipas formularëve të dërguar.">
+  <meta name="description" content="MedIndex — 111 analiza laboratorike të organizuara në 14 kategori, sipas emrit në formular.">
   <meta name="robots" content="noindex,nofollow,noarchive">
   <meta name="theme-color" content="#0d3d40">
   <title>MedIndex | Analizat laboratorike — Dr. Diellza Rabushaj</title>
@@ -26,50 +26,33 @@
     <main class="med-main" id="labContent" tabindex="-1">
       <header class="med-hero lab-hero">
         <div>
-          <p class="med-kicker">MedIndex · Udhëzues laboratorik në shqip</p>
+          <p class="med-kicker">MedIndex · Qasje e shpejtë klinike</p>
           <h1>Analizat laboratorike</h1>
-          <p>Çdo analizë paraqitet me <strong>emrin e saktë në formular</strong> si titull kryesor, emrin e plotë në shqip dhe anglisht, vlerën referente të transkriptuar dhe interpretimin klinik.</p>
+          <p>Titulli kryesor i çdo analize është identik me kolonën <strong>“Emri në formular”</strong>. Seksioni përmban vetëm analizat dhe të dhënat nga Google Sheet-i i aprovuar.</p>
         </div>
-        <div class="lab-hero-stat" aria-label="Përmbledhje"><strong>14</strong><span>kategori</span><strong>112</strong><span>analiza dhe panele</span></div>
+        <div class="lab-hero-stat" aria-label="Përmbledhje"><strong id="heroTestCount">111</strong><span>analiza</span><strong id="heroCategoryCount">14</strong><span>kategori</span></div>
       </header>
 
-      <div class="med-notice"><strong>Kujdes:</strong> vlerat referuese varen nga metoda, laboratori, mosha, gjinia, shtatzënia, barnat dhe gjendja klinike. Intervali në raportin aktual të laboratorit ka gjithmonë përparësi.</div>
+      <div class="med-notice lab-sheet-note" id="sheetNote">Duke e ngarkuar shënimin e burimit…</div>
 
-      <div class="lab-source-strip" aria-label="Baza e seksionit">
-        <div><strong>Emërtimet</strong><span>“Emri në formular” ruhet si titulli kryesor i çdo kartele dhe i panelit të detajeve.</span></div>
-        <div><strong>Organizimi</strong><span>112 analiza dhe panele janë ndarë në 14 kategori klinike sipas materialit të dërguar.</span></div>
-        <div><strong>Referencat</strong><span>Intervalet lokale mbeten të ndara nga interpretimi dhe nga burimet klinike të jashtme.</span></div>
-      </div>
-
-      <section class="lab-audit" id="labAudit" aria-label="Përmbledhja e analizave">
-        <div class="lab-audit-card"><strong>—</strong><span>Analiza dhe panele</span></div>
-        <div class="lab-audit-card"><strong>—</strong><span>Kategori klinike</span></div>
-        <div class="lab-audit-card"><strong>—</strong><span>Me interval të formularit</span></div>
-        <div class="lab-audit-card"><strong>—</strong><span>Kërkojnë verifikim</span></div>
+      <section class="lab-quickbar" aria-label="Kërkimi i shpejtë">
+        <div class="lab-search-wrap">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="m21 21-4.35-4.35m2.35-5.65a8 8 0 1 1-16 0 8 8 0 0 1 16 0Z" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+          <input id="labSearch" type="search" placeholder="Kërko emrin në formular, shkurtesën, organin ose diagnozën…" autocomplete="off" enterkeyhint="search" aria-label="Kërko analizën">
+          <kbd>/</kbd>
+          <button id="labClear" type="button" aria-label="Pastro kërkimin" hidden>×</button>
+        </div>
+        <select id="labCategory" aria-label="Filtro kategorinë"><option value="">Të gjitha kategoritë</option></select>
+        <span class="med-count" id="labCount" aria-live="polite">111 analiza</span>
       </section>
 
-      <div class="med-toolbar lab-toolbar" role="search" aria-label="Kërkimi dhe filtrimi i analizave">
-        <div class="lab-toolbar-search">
-          <input class="med-search" id="labSearch" type="search" placeholder="Kërko emrin në formular, Hb, kreatininë, mëlçi, diabet…" autocomplete="off" enterkeyhint="search" aria-label="Kërko analizën">
-          <button class="lab-clear" id="labClear" type="button" aria-label="Pastro kërkimin" hidden>×</button>
-        </div>
-        <select class="med-filter" id="labSystem" aria-label="Filtro kategorinë"><option value="">Të gjitha kategoritë</option></select>
-        <select class="med-filter" id="labScope" aria-label="Filtro analizat">
-          <option value="">Të gjitha</option>
-          <option value="with-reference">Me vlerë referente</option>
-          <option value="without-reference">Pa vlerë referente</option>
-          <option value="overview">Panelet përmbledhëse</option>
-          <option value="flagged">Kërkojnë verifikim</option>
-        </select>
-        <span class="med-count" id="labCount" aria-live="polite">Duke u ngarkuar…</span>
-      </div>
-
-      <nav class="lab-category-nav" id="labCategoryNav" aria-label="Kalo te kategoria"></nav>
+      <nav class="lab-category-nav" id="labCategoryNav" aria-label="Kalo shpejt te kategoria"></nav>
       <p class="lab-status" id="labStatus" role="status" aria-live="polite"></p>
 
       <section aria-labelledby="labSectionTitle">
         <div class="med-section-head lab-main-head">
-          <div><h2 id="labSectionTitle">Të gjitha kategoritë</h2><p id="labSectionSubtitle">Duke e ngarkuar udhëzuesin laboratorik…</p></div>
+          <div><h2 id="labSectionTitle">Të gjitha kategoritë</h2><p id="labSectionSubtitle">111 analiza të renditura sipas kategorive të Google Sheet-it.</p></div>
+          <a class="lab-sheet-link" id="sheetLink" href="https://docs.google.com/spreadsheets/d/1sGEWsDYnVE1VThLUpfSs2Q0UIjXZZRzxXTHXDvn7p8I/edit?usp=sharing" target="_blank" rel="noopener noreferrer">Hape Sheet-in ↗</a>
         </div>
         <div id="labSections" aria-live="polite" aria-busy="true"></div>
       </section>
@@ -85,16 +68,7 @@
   </div>
 
   <script src="auth-client.js?v=20260723-3" defer></script>
-  <script src="lab-guide-chunk-01.js?v=20260723-1" defer></script>
-  <script src="lab-guide-chunk-02.js?v=20260723-1" defer></script>
-  <script src="lab-guide-chunk-03.js?v=20260723-1" defer></script>
-  <script src="lab-guide-chunk-04.js?v=20260723-1" defer></script>
-  <script src="lab-guide-data.js?v=20260723-1" defer></script>
-  <script src="lab-clinical.js?v=20260723-1" defer></script>
-  <script src="analizat-runtime-chunk-01.js?v=20260723-1" defer></script>
-  <script src="analizat-runtime-chunk-02.js?v=20260723-1" defer></script>
-  <script src="analizat-runtime-chunk-03.js?v=20260723-1" defer></script>
-  <script src="analizat-runtime-chunk-04.js?v=20260723-1" defer></script>
+  <script src="lab-sheet-data.js?v=20260723-1" defer></script>
   <script src="analizat.js?v=20260723-4" defer></script>
   <script src="app-stability.js?v=20260723-2" defer></script>
 </body>
