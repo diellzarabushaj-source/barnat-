@@ -2,10 +2,13 @@
 <html lang="sq">
 <head>
   <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
   <meta name="description" content="MedIndex — ICD-10 në shqip, i organizuar për përdorim klinik.">
+  <meta name="robots" content="noindex,nofollow,noarchive">
+  <meta name="theme-color" content="#0d3d40">
   <title>MedIndex | Sëmundjet ICD-10 — Dr. Diellza Rabushaj</title>
   <link rel="stylesheet" href="medical-hub.css?v=20260723-1">
+  <link rel="stylesheet" href="app-polish.css?v=20260723-1">
 </head>
 <body>
   <div class="med-shell">
@@ -19,24 +22,14 @@
     </nav>
 
     <main class="med-main">
-      <header class="med-hero">
-        <p class="med-kicker">MedIndex · Sëmundjet ICD në shqip</p>
-        <h1 id="blockTitle">J85–J86</h1>
-        <p id="chapterTitle"></p>
-      </header>
-
+      <header class="med-hero"><p class="med-kicker">MedIndex · Sëmundjet ICD në shqip</p><h1 id="blockTitle">J85–J86</h1><p id="chapterTitle"></p></header>
       <div class="med-notice"><strong>Faza aktuale:</strong> seksioni është ndërtuar që të zgjerohet kapitull pas kapitulli. Mbulesa e parë është blloku WHO ICD‑10 2019 <strong>J85–J86</strong>. Titujt dhe shënimet e kodimit janë në shqip, ndërsa kodet mbeten identike me WHO.</div>
-
-      <div class="med-toolbar">
-        <input class="med-search" id="icdSearch" type="search" placeholder="Kërko kodin, diagnozën ose fjalë kyçe…" autocomplete="off">
+      <div class="med-toolbar" role="search">
+        <input class="med-search" id="icdSearch" type="search" placeholder="Kërko kodin, diagnozën ose fjalë kyçe…" autocomplete="off" enterkeyhint="search">
         <select class="med-filter" id="icdLevel" aria-label="Filtro nivelin"><option value="">Të gjitha nivelet</option><option value="kategori">Kategori</option><option value="kod">Kode të plota</option></select>
-        <span class="med-count" id="icdCount">0 kode</span>
+        <span class="med-count" id="icdCount" aria-live="polite">0 kode</span>
       </div>
-
-      <section>
-        <div class="med-section-head"><div><h2>Kodet ICD-10 në shqip</h2><p>Hape secilin kod për përfshirjet, përjashtimet dhe shënimet e kodimit.</p></div></div>
-        <div class="med-grid" id="icdGrid"></div>
-      </section>
+      <section><div class="med-section-head"><div><h2>Kodet ICD-10 në shqip</h2><p>Hape secilin kod për përfshirjet, përjashtimet dhe shënimet e kodimit.</p></div></div><div class="med-grid" id="icdGrid"></div></section>
     </main>
   </div>
 
@@ -50,5 +43,7 @@
 
   <script src="icd-data.js?v=20260723-1"></script>
   <script src="icd.js?v=20260723-1"></script>
+  <script src="auth-client.js?v=20260723-1"></script>
+  <script src="app-stability.js?v=20260723-1"></script>
 </body>
 </html>
