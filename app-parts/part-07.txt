@@ -53,19 +53,23 @@ function initProtocols(){
 
 const registrySearchInput = document.getElementById('search');
 let registrySearchTimer = 0;
+let registrySearchFrame = 0;
 let registrySearchComposing = false;
 function applyRegistrySearch(){
   clearTimeout(registrySearchTimer);
-  state.search = registrySearchInput.value;
-  state.page = 1;
-  render();
+  cancelAnimationFrame(registrySearchFrame);
+  registrySearchFrame = requestAnimationFrame(() => {
+    state.search = registrySearchInput.value;
+    state.page = 1;
+    render();
+  });
 }
 registrySearchInput.addEventListener('compositionstart', () => { registrySearchComposing = true; });
 registrySearchInput.addEventListener('compositionend', () => { registrySearchComposing = false; applyRegistrySearch(); });
 registrySearchInput.addEventListener('input', () => {
   if(registrySearchComposing) return;
   clearTimeout(registrySearchTimer);
-  registrySearchTimer = setTimeout(applyRegistrySearch, 70);
+  registrySearchTimer = setTimeout(applyRegistrySearch, 35);
 });
 registrySearchInput.addEventListener('search', applyRegistrySearch);
 
@@ -73,7 +77,10 @@ document.getElementById('statusFilter').addEventListener('change', e => {
   state.status = e.target.value; state.page = 1; render();
 });
 document.getElementById('pageSize').addEventListener('change', e => {
-  state.pageSize = Math.min(Number(e.target.value) || 50, 4006); state.page = 1; render();
+  const requested = Number(e.target.value) || 50;
+  state.pageSize = Math.min(requested, Math.max(50, RAW.length));
+  state.page = 1;
+  render();
 });
 
 initFormPicker();
