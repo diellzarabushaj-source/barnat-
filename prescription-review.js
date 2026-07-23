@@ -1,5 +1,7 @@
 (() => {
-  const REVIEW_VERSION = '1.2';
+  'use strict';
+
+  const REVIEW_VERSION = '1.3';
   let reviewedAt = '';
   let scheduled = false;
   let restoring = false;
@@ -12,40 +14,37 @@
 
   function itemFromArticle(article) {
     return {
-      tradeName: text(article.dataset.tradeName),
-      substance: text(article.dataset.substance),
-      prefix: fieldValue(article, 'prefix'),
-      dose: fieldValue(article, 'dose'),
-      route: fieldValue(article, 'route'),
-      frequency: fieldValue(article, 'frequency'),
-      duration: fieldValue(article, 'duration'),
-      quantity: fieldValue(article, 'quantity'),
-      instructions: fieldValue(article, 'instructions'),
-      clinicalNotes: fieldValue(article, 'clinicalNotes'),
-      regimenId: fieldValue(article, 'regimenId'),
-      dosageStatus: fieldValue(article, 'dosageStatus'),
-      doseCalculation: fieldValue(article, 'doseCalculation'),
+      tradeName:text(article.dataset.tradeName),
+      substance:text(article.dataset.substance),
+      prefix:fieldValue(article, 'prefix'),
+      dose:fieldValue(article, 'dose'),
+      route:fieldValue(article, 'route'),
+      frequency:fieldValue(article, 'frequency'),
+      duration:fieldValue(article, 'duration'),
+      quantity:fieldValue(article, 'quantity'),
+      instructions:fieldValue(article, 'instructions'),
+      clinicalNotes:fieldValue(article, 'clinicalNotes'),
+      regimenId:fieldValue(article, 'regimenId'),
+      dosageStatus:fieldValue(article, 'dosageStatus'),
+      doseCalculation:fieldValue(article, 'doseCalculation'),
     };
   }
 
   function protocolFromDom() {
     const checkbox = $('#protocolClinicalReview');
     return {
-      name: text($('#protocolName')?.value),
-      indication: text($('#protocolIndication')?.value),
-      population: text($('#protocolPopulation')?.value),
-      patientName: text($('#protocolPatientName')?.value),
-      birthDate: text($('#protocolBirthDate')?.value),
-      patientId: text($('#protocolPatientId')?.value),
-      allergies: text($('#protocolAllergies')?.value),
-      patientType: $('#protocolPatientType')?.value || 'adult',
-      ageValue: text($('#protocolAgeValue')?.value),
-      ageUnit: $('#protocolAgeUnit')?.value || 'years',
-      weightKg: text($('#protocolWeightKg')?.value),
-      clinicalReview: Boolean(checkbox?.checked),
+      name:text($('#protocolName')?.value),
+      indication:text($('#protocolIndication')?.value),
+      population:text($('#protocolPopulation')?.value),
+      allergies:text($('#protocolAllergies')?.value),
+      patientType:$('#protocolPatientType')?.value || 'adult',
+      ageValue:text($('#protocolAgeValue')?.value),
+      ageUnit:$('#protocolAgeUnit')?.value || 'years',
+      weightKg:text($('#protocolWeightKg')?.value),
+      clinicalReview:Boolean(checkbox?.checked),
       reviewedAt,
-      dosageDatasetVersion: text(window.MEDINDEX_DOSAGE?.datasetVersion),
-      items: [...document.querySelectorAll('#protocolDrugList .protocol-drug')].map(itemFromArticle),
+      dosageDatasetVersion:text(window.MEDINDEX_DOSAGE?.datasetVersion),
+      items:[...document.querySelectorAll('#protocolDrugList .protocol-drug')].map(itemFromArticle),
     };
   }
 
@@ -56,10 +55,8 @@
     const issue = (message, key = '') => issues.push({ message, key });
     const warning = (message, key = '') => warnings.push({ message, key });
 
-    if (!text(protocol?.name)) issue('Mungon emri i recetës / protokollit.', 'name');
+    if (!text(protocol?.name)) issue('Mungon emri i recetës.', 'name');
     if (!items.length) issue('Nuk është zgjedhur asnjë bar.', 'items');
-    if (!text(protocol?.patientName)) issue('Mungon emri dhe mbiemri i pacientit.', 'patientName');
-    if (!text(protocol?.birthDate)) warning('Datëlindja e pacientit nuk është plotësuar.', 'birthDate');
     if (!text(protocol?.allergies)) warning('Alergjitë nuk janë shënuar; shkruaj “Nuk dihen” kur nuk ka të dhëna.', 'allergies');
     if (!text(protocol?.indication)) warning('Diagnoza ose indikacioni nuk është plotësuar.', 'indication');
 
@@ -97,21 +94,19 @@
     return {
       issues,
       warnings,
-      ok: issues.length === 0,
-      printable: issues.length === 0 && Boolean(protocol?.clinicalReview) && Boolean(text(protocol?.reviewedAt)),
+      ok:issues.length === 0,
+      printable:issues.length === 0 && Boolean(protocol?.clinicalReview) && Boolean(text(protocol?.reviewedAt)),
     };
   }
 
   function focusKey(key) {
     const map = {
-      name: '#protocolName',
-      indication: '#protocolIndication',
-      patientName: '#protocolPatientName',
-      birthDate: '#protocolBirthDate',
-      allergies: '#protocolAllergies',
-      age: '#protocolAgeValue',
-      weight: '#protocolWeightKg',
-      review: '#protocolClinicalReview',
+      name:'#protocolName',
+      indication:'#protocolIndication',
+      allergies:'#protocolAllergies',
+      age:'#protocolAgeValue',
+      weight:'#protocolWeightKg',
+      review:'#protocolClinicalReview',
     };
     let node = map[key] ? $(map[key]) : null;
     const itemMatch = /^item-(\d+)-(.+)$/.exec(key || '');
@@ -120,12 +115,12 @@
       node = article?.querySelector(`[data-item-field="${itemMatch[2]}"]`) || article;
     }
     if (!node) node = $('#prescriptionReview');
-    node?.scrollIntoView({ behavior: 'smooth', block: 'center' });
-    if (typeof node?.focus === 'function') setTimeout(() => node.focus({ preventScroll: true }), 250);
+    node?.scrollIntoView({ behavior:'smooth', block:'center' });
+    if (typeof node?.focus === 'function') setTimeout(() => node.focus({ preventScroll:true }), 250);
   }
 
   function notify(message) {
-    if (window.showProtocolToast) window.showProtocolToast(message);
+    window.showProtocolToast?.(message);
   }
 
   function render() {
@@ -136,11 +131,10 @@
     const list = $('#prescriptionReviewList');
     const checkbox = $('#protocolClinicalReview');
     const reviewedNode = $('#protocolReviewedAt');
-    if (!card || !badge || !summary || !list || !checkbox) return;
+    if (!card || !badge || !summary || !list || !checkbox || !reviewedNode) return;
 
     let protocol = protocolFromDom();
     let result = evaluateProtocol(protocol);
-
     if (result.issues.length && checkbox.checked) {
       restoring = true;
       checkbox.checked = false;
@@ -171,7 +165,10 @@
       summary.textContent = result.warnings.length ? `${result.warnings.length} vërejtje jo-bllokuese kërkojnë kontroll.` : 'Plotëso kontrollin klinik për ta finalizuar recetën.';
     }
 
-    const rows = [...result.issues.map(entry => ({ ...entry, type: 'issue' })), ...result.warnings.map(entry => ({ ...entry, type: 'warning' }))];
+    const rows = [
+      ...result.issues.map(entry => ({ ...entry, type:'issue' })),
+      ...result.warnings.map(entry => ({ ...entry, type:'warning' })),
+    ];
     list.innerHTML = rows.length
       ? rows.slice(0, 8).map(entry => `<li class="${entry.type}" data-review-key="${esc(entry.key)}">${esc(entry.message)}</li>`).join('')
       : '<li>Të gjitha fushat kritike janë plotësuar.</li>';
@@ -202,11 +199,11 @@
     const checkbox = $('#protocolClinicalReview');
     const result = evaluateProtocol(protocolFromDom());
     return {
-      reviewed: Boolean(checkbox?.checked),
-      reviewedAt: checkbox?.checked ? reviewedAt : '',
-      reviewVersion: REVIEW_VERSION,
-      issues: result.issues.length,
-      warnings: result.warnings.length,
+      reviewed:Boolean(checkbox?.checked),
+      reviewedAt:checkbox?.checked ? reviewedAt : '',
+      reviewVersion:REVIEW_VERSION,
+      issues:result.issues.length,
+      warnings:result.warnings.length,
     };
   }
 
@@ -223,7 +220,7 @@
   }
 
   function validateForPrint() {
-    const result = evaluateProtocol(protocolFromDom(), { requireReview: true });
+    const result = evaluateProtocol(protocolFromDom(), { requireReview:true });
     render();
     if (!result.ok) {
       notify(result.issues[0].message);
@@ -289,7 +286,7 @@
     });
 
     const list = $('#protocolDrugList');
-    if (list) new MutationObserver(schedule).observe(list, { childList: true, subtree: true });
+    if (list) new MutationObserver(schedule).observe(list, { childList:true, subtree:true });
     render();
   }
 
@@ -300,9 +297,9 @@
     render,
     validateForSave,
     validateForPrint,
-    validateProtocol: evaluateProtocol,
+    validateProtocol:evaluateProtocol,
   };
 
-  if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', init, { once: true });
+  if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', init, { once:true });
   else init();
 })();
