@@ -2,10 +2,7 @@
   "$schema": "https://openapi.vercel.sh/vercel.json",
   "framework": null,
   "rewrites": [
-    {
-      "source": "/data/registry-data.js",
-      "destination": "/api/registry"
-    }
+    { "source": "/data/registry-data.js", "destination": "/api/registry" }
   ],
   "headers": [
     {
@@ -23,22 +20,34 @@
       ]
     },
     {
-      "source": "/",
+      "source": "/api/(.*)",
       "headers": [
-        { "key": "Cache-Control", "value": "private, no-cache, no-store, must-revalidate" }
+        { "key": "Cache-Control", "value": "private, no-store, max-age=0" },
+        { "key": "Vary", "value": "Cookie" }
       ]
+    },
+    {
+      "source": "/data/registry-data.js",
+      "headers": [
+        { "key": "Cache-Control", "value": "private, no-store, max-age=0" },
+        { "key": "Vary", "value": "Cookie" }
+      ]
+    },
+    {
+      "source": "/login.html",
+      "headers": [{ "key": "Cache-Control", "value": "private, no-cache, no-store, must-revalidate" }]
+    },
+    {
+      "source": "/",
+      "headers": [{ "key": "Cache-Control", "value": "private, no-cache, no-store, must-revalidate" }]
     },
     {
       "source": "/(.*)\\.html",
-      "headers": [
-        { "key": "Cache-Control", "value": "private, no-cache, no-store, must-revalidate" }
-      ]
+      "headers": [{ "key": "Cache-Control", "value": "private, no-cache, no-store, must-revalidate" }]
     },
     {
       "source": "/(.*)\\.(css|js|svg|png|jpg|jpeg|webp|ico)",
-      "headers": [
-        { "key": "Cache-Control", "value": "public, max-age=31536000, immutable" }
-      ]
+      "headers": [{ "key": "Cache-Control", "value": "public, max-age=31536000, immutable" }]
     }
   ]
 }
