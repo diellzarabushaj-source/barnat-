@@ -12,6 +12,7 @@
   <link rel="stylesheet" href="performance.css?v=20260723-1">
   <link rel="stylesheet" href="recetat.css?v=20260723-1">
   <link rel="stylesheet" href="recetat-audit.css?v=20260723-1">
+  <link rel="stylesheet" href="signature-templates.css?v=20260723-1">
 </head>
 <body>
   <a class="skip-link" href="#rxContent">Kalo te krijimi i recetës</a>
@@ -44,7 +45,7 @@
             <button type="button" data-rx-command="dose">@doza</button>
             <button type="button" data-rx-command="quantity">@sasia</button>
             <button type="button" data-rx-command="other">@tjetër</button>
-            <button type="button" data-rx-command="signature">@signatura</button>
+            <button type="button" data-rx-command="signature" aria-haspopup="dialog" aria-expanded="false">@signatura</button>
           </div>
 
           <div class="rx-editor-wrap">
@@ -108,6 +109,7 @@ S (Signatura): Nga 1 tabletë çdo 8 orë sipas nevojës."></textarea>
   <script src="auth-client.js?v=20260723-3" defer></script>
   <script src="medical-icons.js?v=20260723-1" defer></script>
   <script src="prescription-format-core.js?v=20260723-1" defer></script>
+  <script src="signature-templates.js?v=20260723-1" defer></script>
   <script src="recetat.js?v=20260723-4" defer></script>
   <script src="app-stability.js?v=20260723-3" defer></script>
 </body>

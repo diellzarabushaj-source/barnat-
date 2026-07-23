@@ -36,6 +36,7 @@ jobs:
             section-icons.js
             classification-icons.js
             prescription-format-core.js
+            signature-templates.js
             recetat.js
             api/gemini-prescription.js
             api/drug-search.js
@@ -60,6 +61,9 @@ jobs:
           test -f recetat.html
           test -f recetat.css
           test -f recetat-audit.css
+          test -f signature-templates.css
+          test -f signature-templates.js
+          test -f tests/signature-templates-test.js
           test -f prescription-format-core.js
           test -f recetat.js
           grep -q 'id="protocolsBtn"' index.html
@@ -71,6 +75,10 @@ jobs:
           grep -q '@sasia' recetat.html
           grep -q '@tjetër' recetat.html
           grep -q '@signatura' recetat.html
+          grep -q 'signature-templates.css' recetat.html
+          grep -q 'signature-templates.js' recetat.html
+          grep -q 'Unguentum / krem' signature-templates.js
+          grep -q 'Administrohet IV si infuzion' signature-templates.js
           grep -q 'prescription-format-core.js' recetat.html
           grep -q 'recetat.js' recetat.html
           grep -q 'id="rxGeneratedReview"' recetat.html
