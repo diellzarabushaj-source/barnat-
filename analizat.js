@@ -13,8 +13,23 @@
     '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;'
   }[character]));
 
+  const systems = new Map((DATA.systems || []).map(system => [system.id, system]));
+  const tests = Array.isArray(DATA.tests) ? DATA.tests : [];
+  const searchable = tests.map(test => ({
+    test,
+    index: normalize([
+      test.name, test.abbr, test.reference, test.unit, test.specimen,
+      test.alternateReference, test.referenceNote, test.sourceLabel,
+      systems.get(test.system)?.title
+    ].join(' '))
+  }));
+
   function systemById(id) {
-    return DATA.systems.find(system => system.id === id) || { title: id, description: '' };
+    return systems.get(id) || { title: id, description: '' };
+  }
+
+  function hasPrintedReference(test) {
+    return text(test.reference) && !normalize(test.reference).startsWith('nuk eshte shenuar');
   }
 
   function applyTheme(theme) {
@@ -36,18 +51,29 @@
     });
   }
 
+  function rangeMarkup(test, compact = false) {
+    const primary = `<div class="med-range${hasPrintedReference(test) ? '' : ' is-missing'}">
+      ${esc(test.reference || 'Nuk është shënuar në formular')}
+      ${test.unit ? `<span>${esc(test.unit)}</span>` : ''}
+      ${compact ? `<small>${esc(test.specimen || 'Mostra nuk është shënuar')}</small>` : ''}
+    </div>`;
+    const alternate = test.alternateReference
+      ? `<div class="lab-alt-range"><strong>Intervali i aparatit:</strong> ${esc(test.alternateReference)}</div>`
+      : '';
+    return primary + alternate;
+  }
+
   function testCard(test) {
     const system = systemById(test.system);
     return `<article class="med-card lab-card" data-test-id="${esc(test.id)}">
       <div class="lab-card-head">
         <span class="med-card-code">${esc(test.abbr || test.name)}</span>
-        ${test.kosovoCore ? '<span class="med-chip lab-local">Bazë në QKMF</span>' : ''}
+        <span class="med-chip lab-local">Nga formulari</span>
       </div>
       <h3>${esc(test.name)}</h3>
-      <p>${esc(test.why)}</p>
-      <div class="med-range">${esc(test.reference)} ${test.unit ? `<span>${esc(test.unit)}</span>` : ''}<small>${esc(test.specimen)}</small></div>
+      ${rangeMarkup(test, true)}
       <div class="med-card-meta"><span class="med-chip">${esc(system.title)}</span></div>
-      <button type="button" data-open-test="${esc(test.id)}">Shiko interpretimin</button>
+      <button type="button" data-open-test="${esc(test.id)}">Shiko detajet</button>
     </article>`;
   }
 
@@ -55,47 +81,52 @@
     const query = normalize($('#labSearch')?.value);
     const system = $('#labSystem')?.value || '';
     const scope = $('#labScope')?.value || '';
-    return DATA.tests.filter(test => {
-      const haystack = normalize([
-        test.name, test.abbr, test.reference, test.unit, test.specimen,
-        test.why, test.high, test.low, test.preparation,
-        systemById(test.system).title
-      ].join(' '));
-      return (!query || haystack.includes(query))
+    return searchable
+      .filter(({ test, index }) =>
+        (!query || index.includes(query))
         && (!system || test.system === system)
-        && (scope !== 'kosovo-core' || test.kosovoCore === true);
-    });
+        && (scope !== 'with-reference' || hasPrintedReference(test))
+        && (scope !== 'without-reference' || !hasPrintedReference(test))
+      )
+      .map(item => item.test);
   }
 
   function renderSystems() {
     const select = $('#labSystem');
     if (!select) return;
-    select.innerHTML = '<option value="">Të gjitha sistemet</option>' + DATA.systems.map(system =>
+    select.innerHTML = '<option value="">Të gjitha seksionet</option>' + (DATA.systems || []).map(system =>
       `<option value="${esc(system.id)}">${esc(system.title)}</option>`
     ).join('');
   }
 
   function render() {
-    const tests = selectedTests();
+    const visible = selectedTests();
     const grid = $('#labGrid');
     if (!grid) return;
-    grid.innerHTML = tests.length
-      ? tests.map(testCard).join('')
-      : '<div class="med-empty">Nuk u gjet asnjë analizë për këtë kërkim ose filtër.</div>';
-    $('#labCount').textContent = `${tests.length} / ${DATA.tests.length} analiza`;
+    grid.innerHTML = visible.length
+      ? visible.map(testCard).join('')
+      : '<div class="med-empty">Nuk u gjet asnjë analizë në formularët e dërguar për këtë kërkim.</div>';
+    $('#labCount').textContent = `${visible.length} / ${tests.length} analiza`;
 
     const systemId = $('#labSystem')?.value || '';
     const heading = systemId ? systemById(systemId) : null;
-    $('#labSectionTitle').textContent = heading?.title || 'Analizat sipas sistemeve';
-    $('#labSectionSubtitle').textContent = heading?.description || 'Kërko analizën ose zgjidhe sistemin për ta parë panelin e plotë.';
+    $('#labSectionTitle').textContent = heading?.title || 'Analizat nga formularët e dërguar';
+    $('#labSectionSubtitle').textContent = heading?.description || DATA.sourcePolicy || '';
+  }
+
+  let renderTimer = 0;
+  function scheduleRender() {
+    clearTimeout(renderTimer);
+    renderTimer = setTimeout(render, 45);
   }
 
   function detail(label, body, full = false) {
-    return `<section class="med-detail${full ? ' full' : ''}"><strong>${esc(label)}</strong><p>${esc(body || 'Nuk ka shënim të veçantë.')}</p></section>`;
+    if (!text(body)) return '';
+    return `<section class="med-detail${full ? ' full' : ''}"><strong>${esc(label)}</strong><p>${esc(body)}</p></section>`;
   }
 
   function openTest(id) {
-    const test = DATA.tests.find(item => item.id === id);
+    const test = tests.find(item => item.id === id);
     if (!test) return;
     const system = systemById(test.system);
     $('#detailKicker').textContent = `${system.title} · ${test.abbr || test.name}`;
@@ -103,17 +134,16 @@
     $('#detailBody').innerHTML = `
       <div class="med-detail-grid">
         <section class="med-detail full">
-          <strong>Vlera referente orientuese</strong>
-          <div class="med-range">${esc(test.reference)} ${test.unit ? `<span>${esc(test.unit)}</span>` : ''}<small>Mostra: ${esc(test.specimen)}</small></div>
+          <strong>Vlera referente e transkriptuar</strong>
+          ${rangeMarkup(test)}
         </section>
-        ${detail('Pse bëhet', test.why, true)}
-        ${detail('Kur është e rritur / pozitive', test.high)}
-        ${detail('Kur është e ulët / negative', test.low)}
-        ${detail('Përgatitja dhe kujdesi', test.preparation, true)}
+        ${detail('Mostra', test.specimen)}
+        ${detail('Interval alternativ', test.alternateReference)}
+        ${detail('Shënim i transkriptimit', test.referenceNote, true)}
+        ${detail('Burimi', test.sourceLabel, true)}
       </div>
       <div class="med-source">
-        <strong>Kujdes:</strong> ${esc(DATA.disclaimer)}
-        ${test.sourceUrl ? `<br><a href="${esc(test.sourceUrl)}" target="_blank" rel="noopener noreferrer">Hape burimin e intervalit/interpretimit</a>` : ''}
+        <strong>Kujdes:</strong> ${esc(DATA.disclaimer || '')}
       </div>`;
     $('#detailOverlay').hidden = false;
     document.body.style.overflow = 'hidden';
@@ -130,8 +160,19 @@
     const style = document.createElement('style');
     style.id = 'labLocalStyles';
     style.textContent = `
-      .lab-card-head{display:flex;align-items:center;justify-content:space-between;gap:8px}.lab-local{background:#fff0d8;color:#7b4c0b}.med-range>span{margin-left:4px;font-family:inherit;font-weight:700}.lab-source-strip{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:9px;margin:16px 0}.lab-source-strip div{padding:12px;border:1px solid var(--line);border-radius:12px;background:var(--paper)}.lab-source-strip strong{display:block;color:var(--teal-dark);font-size:.78rem}.lab-source-strip span{display:block;margin-top:4px;color:var(--muted);font-size:.7rem;line-height:1.4}
+      .lab-card-head{display:flex;align-items:center;justify-content:space-between;gap:8px}
+      .lab-local{background:#fff0d8;color:#7b4c0b}
+      .med-range>span{margin-left:4px;font-family:inherit;font-weight:700}
+      .med-range.is-missing{font-size:.88rem;color:var(--muted)}
+      .lab-alt-range{margin-top:7px;padding:7px 9px;border-left:3px solid var(--amber);border-radius:6px;background:rgba(199,125,31,.09);font-size:.7rem;line-height:1.4;color:var(--muted)}
+      .lab-alt-range strong{color:var(--ink)}
+      .lab-source-strip{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:9px;margin:16px 0}
+      .lab-source-strip div{padding:12px;border:1px solid var(--line);border-radius:12px;background:var(--paper)}
+      .lab-source-strip strong{display:block;color:var(--teal-dark);font-size:.78rem}
+      .lab-source-strip span{display:block;margin-top:4px;color:var(--muted);font-size:.7rem;line-height:1.4}
       html[data-theme=dark] .lab-local{background:#44331e;color:#efcf99}
+      html[data-theme=dark] .lab-alt-range{background:#33291c}
+      html[data-theme=dark] .lab-alt-range strong{color:#f2e8d7}
       @media(max-width:650px){.lab-source-strip{grid-template-columns:1fr}}
     `;
     document.head.appendChild(style);
@@ -141,7 +182,7 @@
     addLocalStyles();
     initTheme();
     renderSystems();
-    $('#labSearch')?.addEventListener('input', render);
+    $('#labSearch')?.addEventListener('input', scheduleRender);
     $('#labSystem')?.addEventListener('change', render);
     $('#labScope')?.addEventListener('change', render);
     $('#labGrid')?.addEventListener('click', event => {
