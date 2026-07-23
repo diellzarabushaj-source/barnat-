@@ -14,19 +14,12 @@ const requiredFiles = [
   ...Array.from({ length: 7 }, (_, index) => `app-parts/part-${String(index + 1).padStart(2, '0')}.txt`),
 ];
 
-function file(relativePath) {
-  return fs.readFileSync(path.join(ROOT, relativePath), 'utf8');
-}
-
-function checkSyntax(relativePath) {
-  execFileSync(process.execPath, ['--check', path.join(ROOT, relativePath)], { stdio: 'pipe' });
-}
-
+function file(relativePath) { return fs.readFileSync(path.join(ROOT, relativePath), 'utf8'); }
+function checkSyntax(relativePath) { execFileSync(process.execPath, ['--check', path.join(ROOT, relativePath)], { stdio: 'pipe' }); }
 function duplicateIds(html) {
   const ids = [...html.matchAll(/\bid\s*=\s*["']([^"']+)["']/gi)].map(match => match[1]);
   return ids.filter((id, index) => ids.indexOf(id) !== index);
 }
-
 function localReferences(html) {
   return [...html.matchAll(/\b(?:src|href)\s*=\s*["']([^"']+)["']/gi)]
     .map(match => match[1].split(/[?#]/)[0])
@@ -155,9 +148,13 @@ async function main() {
   assert.doesNotMatch(file('middleware.ts'), /runtime:\s*'nodejs'/);
   assert.match(file('middleware.ts'), /pathname\.startsWith\('\/api\/'\)/);
   assert.match(file('api/registry.js'), /MIN_EXPECTED_ROWS\s*=\s*3500/);
-  assert.match(file('api/registry.js'), /stale-while-revalidate=86400/);
+  assert.match(file('api/registry.js'), /authorized\(req\)/);
+  assert.match(file('api/dosage.js'), /authorized\(req\)/);
+  assert.match(file('api/dosage.js'), /Cache-Control', 'private, no-cache/);
+  assert.match(file('vercel.json'), /\/api\/\(\.\*\)/);
   assert.match(file('app-parts/part-03.txt'), /const SEARCH_INDEX = new WeakMap/);
-  assert.match(file('app-parts/part-07.txt'), /setTimeout\(applyRegistrySearch, 70\)/);
+  assert.match(file('app-parts/part-07.txt'), /setTimeout\(applyRegistrySearch, 35\)/);
+  assert.match(file('app-parts/part-07.txt'), /requestAnimationFrame/);
   assert.equal(file('robots.txt').trim(), 'User-agent: *\nDisallow: /');
 
   fs.rmSync(tempDir, { recursive: true, force: true });
