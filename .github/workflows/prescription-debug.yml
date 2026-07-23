@@ -1,0 +1,29 @@
+name: Prescription debug
+
+on:
+  pull_request:
+
+permissions:
+  contents: read
+
+jobs:
+  debug:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - name: Capture prescription test
+        shell: bash
+        run: |
+          set +e
+          node tests/prescription-format-test.js > prescription-test-output.txt 2>&1
+          status=$?
+          echo "exit_code=$status" >> prescription-test-output.txt
+          exit 0
+      - name: Upload output
+        uses: actions/upload-artifact@v4
+        with:
+          name: prescription-test-output
+          path: prescription-test-output.txt
