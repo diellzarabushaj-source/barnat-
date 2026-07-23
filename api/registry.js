@@ -14,9 +14,11 @@ const FETCH_TIMEOUT_MS = 12000;
 const MAX_WORKBOOK_BYTES = 12 * 1024 * 1024;
 const MIN_EXPECTED_ROWS = 3500;
 
-let memoryCache = null;
-let memoryCacheTime = 0;
-let pendingBuild = null;
+let datasetCache = null;
+let datasetCacheTime = 0;
+let pendingDataset = null;
+let payloadCache = null;
+let payloadCacheTime = 0;
 
 function isXlsxBuffer(buffer) {
   return buffer.length > 4 && buffer[0] === 0x50 && buffer[1] === 0x4b;
@@ -29,7 +31,7 @@ async function fetchBuffer(url) {
     const response = await fetch(url, {
       redirect: 'follow',
       signal: controller.signal,
-      headers: { 'User-Agent': 'Mozilla/5.0 (compatible; MedIndexRegistry/3.1)' },
+      headers: { 'User-Agent': 'Mozilla/5.0 (compatible; MedIndexRegistry/3.2)' },
     });
     if (!response.ok) throw new Error(`status ${response.status}`);
     const declaredLength = Number(response.headers.get('content-length') || 0);
@@ -95,39 +97,51 @@ function workbookToRows(buffer) {
   throw new Error('Excel-i nuk përmban tabelë të vlefshme me kolonat e regjistrit.');
 }
 
-async function buildPayload() {
+async function buildDataset() {
   const startedAt = Date.now();
   const workbookBuffer = await downloadWorkbook();
   const sourceRows = workbookToRows(workbookBuffer);
   const quality = registryQuality.applyRows(sourceRows);
-  const json = JSON.stringify(quality.rows);
-  const encoded = zlib.gzipSync(Buffer.from(json, 'utf8'), { level: 9 }).toString('base64');
-  const meta = {
-    version: quality.version,
-    summary: quality.summary,
-    sourceRows: sourceRows.length,
-    generatedAt: new Date().toISOString(),
-    buildMs: Date.now() - startedAt,
-  };
-  const body = `window.DRUG_DATA_PARTS = [${JSON.stringify(encoded)}];\nwindow.REGISTRY_QUALITY_META = ${JSON.stringify(meta)};\n`;
   return {
-    body,
-    etag: `"${crypto.createHash('sha256').update(body).digest('base64url')}"`,
-    meta,
+    rows: quality.rows,
+    meta: {
+      version: quality.version,
+      summary: quality.summary,
+      sourceRows: sourceRows.length,
+      generatedAt: new Date().toISOString(),
+      buildMs: Date.now() - startedAt,
+    },
   };
+}
+
+async function getRegistryDataset() {
+  const now = Date.now();
+  if (datasetCache && now - datasetCacheTime < MEMORY_CACHE_MS) return datasetCache;
+  if (!pendingDataset) {
+    pendingDataset = buildDataset().then(dataset => {
+      datasetCache = dataset;
+      datasetCacheTime = Date.now();
+      payloadCache = null;
+      return dataset;
+    }).finally(() => { pendingDataset = null; });
+  }
+  return pendingDataset;
 }
 
 async function getPayload() {
   const now = Date.now();
-  if (memoryCache && now - memoryCacheTime < MEMORY_CACHE_MS) return memoryCache;
-  if (!pendingBuild) {
-    pendingBuild = buildPayload().then(payload => {
-      memoryCache = payload;
-      memoryCacheTime = Date.now();
-      return payload;
-    }).finally(() => { pendingBuild = null; });
-  }
-  return pendingBuild;
+  if (payloadCache && now - payloadCacheTime < MEMORY_CACHE_MS) return payloadCache;
+  const dataset = await getRegistryDataset();
+  const json = JSON.stringify(dataset.rows);
+  const encoded = zlib.gzipSync(Buffer.from(json, 'utf8'), { level: 9 }).toString('base64');
+  const body = `window.DRUG_DATA_PARTS = [${JSON.stringify(encoded)}];\nwindow.REGISTRY_QUALITY_META = ${JSON.stringify(dataset.meta)};\n`;
+  payloadCache = {
+    body,
+    etag: `"${crypto.createHash('sha256').update(body).digest('base64url')}"`,
+    meta: dataset.meta,
+  };
+  payloadCacheTime = Date.now();
+  return payloadCache;
 }
 
 async function authorized(req) {
@@ -135,7 +149,7 @@ async function authorized(req) {
   return auth.verifySessionToken(auth.sessionFromRequest(req));
 }
 
-module.exports = async function handler(req, res) {
+async function handler(req, res) {
   const startedAt = Date.now();
   try {
     if (!['GET', 'HEAD'].includes(req.method)) {
@@ -169,4 +183,8 @@ module.exports = async function handler(req, res) {
       'window.DRUG_DATA_PARTS = [];\n'
     );
   }
-};
+}
+
+handler.getRegistryDataset = getRegistryDataset;
+handler.authorized = authorized;
+module.exports = handler;
