@@ -1,156 +1,32 @@
-name: Validate Medical Hub
+name: Validate MedIndex
 
 on:
   push:
     branches: [main]
   pull_request:
 
+permissions:
+  contents: read
+
+concurrency:
+  group: medindex-validation-${{ github.ref }}
+  cancel-in-progress: true
+
 jobs:
   validate:
     runs-on: ubuntu-latest
+    timeout-minutes: 10
     steps:
       - uses: actions/checkout@v4
 
-      - name: Check JavaScript syntax
-        run: |
-          node --check data/registry-quality.js
-          node --check classification-registry-bridge.js
-          node --check classification-v3.js
-          node --check classification-audit-view.js
-          node --check classification-info-v3.js
-          node --check icd-data.js
-          node --check icd.js
-          node --check lab-data.js
-          node --check analizat.js
-          node --check main-navigation-extension.js
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+          cache-dependency-path: package.json
 
-      - name: Validate registry quality rules
-        run: |
-          node <<'NODE'
-          const quality = require('./data/registry-quality.js');
-          const base = {
-            'Emri tregtar': 'Produkt testues',
-            'Substanca aktive': 'Substancë testuese',
-            'ATC Code': 'A01AA01',
-            'Klasa / Çka është': 'Klasë testuese',
-            'Përdorimi (fjalë kyçe)': 'përdorim testues',
-            'Fortësia': '1 mg',
-            'Forma farmaceutike': 'Tablet',
-            ProtocolNo: 'PD0001/010126',
-            PDID: '999999',
-            Statusi: 'Gjenerik'
-          };
-          const rows = [
-            {
-              ...base,
-              ProtocolNo: 'PD1339/051225',
-              PDID: '42',
-              'Emri tregtar': 'ANALGIN',
-              'Substanca aktive': 'Metronidazole micronised',
-              'ATC Code': 'N02BB02',
-              'Fortësia': '1 g/2 ml',
-              'Forma farmaceutike': 'Solution for injection'
-            },
-            {
-              ...base,
-              ProtocolNo: 'PD0002/010126',
-              PDID: '43',
-              'Emri tregtar': 'MANNITOL',
-              'Substanca aktive': 'Manitol',
-              'ATC Code': 'B05BC01',
-              'Klasa / Çka është': 'Solucion intravenoz',
-              'Përdorimi (fjalë kyçe)': 'rehidratim; elektrolite; glukozë; infuzion',
-              'Fortësia': '20 %',
-              'Forma farmaceutike': 'Solution for infusion'
-            },
-            {
-              ...base,
-              ProtocolNo: 'PD0003/010126',
-              PDID: '44',
-              'Emri tregtar': 'KETOPROFEN INJ',
-              'Substanca aktive': 'Ketoprofen',
-              'ATC Code': 'M02AA10',
-              'Klasa / Çka është': 'NSAID topik',
-              'Përdorimi (fjalë kyçe)': 'dhimbje; inflamacion',
-              'Fortësia': '100 mg/2 ml',
-              'Forma farmaceutike': 'Solution for injection'
-            },
-            {
-              ...base,
-              ProtocolNo: 'Deklarim',
-              PDID: 'd.fizike'
-            }
-          ];
-          const result = quality.applyRows(rows);
-          const analgin = result.rows[0];
-          const mannitol = result.rows[1];
-          const ketoprofen = result.rows[2];
-          const placeholder = result.rows[3];
-          if (analgin['Substanca aktive'] !== 'Metamizole sodium' || analgin.__qualityStatus !== 'corrected') {
-            throw new Error('ANALGIN correction failed');
-          }
-          if (mannitol['Substanca aktive'] !== 'Mannitol' || !mannitol['Klasa / Çka është'].includes('osmotik')) {
-            throw new Error('Mannitol correction failed');
-          }
-          if (ketoprofen.__qualityStatus !== 'blocked') throw new Error('Parenteral/topical mismatch was not blocked');
-          if (placeholder.__qualityStatus !== 'warning') throw new Error('Placeholder identifiers were not flagged');
-          console.log(`Registry quality ${quality.version} passed correction and blocking tests.`);
-          NODE
+      - name: Install dependencies
+        run: npm install --no-audit --no-fund
 
-      - name: Validate ICD dataset
-        run: |
-          node <<'NODE'
-          global.window = {};
-          require('./icd-data.js');
-          const data = window.MEDINDEX_ICD10;
-          if (!data || !Array.isArray(data.entries) || data.entries.length < 8) throw new Error('ICD dataset is incomplete');
-          const required = ['code', 'title', 'level', 'parent', 'summary'];
-          const codes = new Set();
-          for (const entry of data.entries) {
-            for (const field of required) if (!String(entry[field] || '').trim()) throw new Error(`ICD ${entry.code || '?'} missing ${field}`);
-            if (codes.has(entry.code)) throw new Error(`Duplicate ICD code ${entry.code}`);
-            codes.add(entry.code);
-          }
-          for (const code of ['J85','J85.0','J85.1','J85.2','J85.3','J86','J86.0','J86.9']) {
-            if (!codes.has(code)) throw new Error(`Required ICD code missing: ${code}`);
-          }
-          if (!/^https:\/\//.test(data.sourceUrl || '')) throw new Error('ICD source must be HTTPS');
-          console.log(`Validated ${data.entries.length} ICD entries.`);
-          NODE
-
-      - name: Validate laboratory dataset
-        run: |
-          node <<'NODE'
-          global.window = {};
-          require('./lab-data.js');
-          const data = window.MEDINDEX_LABS;
-          if (!data || !Array.isArray(data.systems) || data.systems.length < 8) throw new Error('Laboratory systems are incomplete');
-          if (!Array.isArray(data.tests) || data.tests.length < 30) throw new Error('Laboratory tests are incomplete');
-          const systems = new Set(data.systems.map(item => item.id));
-          const ids = new Set();
-          const required = ['id','system','name','abbr','specimen','reference','unit','why','high','low','preparation','sourceUrl'];
-          for (const test of data.tests) {
-            for (const field of required) if (!String(test[field] || '').trim()) throw new Error(`Lab ${test.id || '?'} missing ${field}`);
-            if (!systems.has(test.system)) throw new Error(`Lab ${test.id} has unknown system ${test.system}`);
-            if (ids.has(test.id)) throw new Error(`Duplicate lab id ${test.id}`);
-            if (!/^https:\/\//.test(test.sourceUrl)) throw new Error(`Lab ${test.id} source is not HTTPS`);
-            ids.add(test.id);
-          }
-          console.log(`Validated ${data.tests.length} laboratory tests across ${data.systems.length} systems.`);
-          NODE
-
-      - name: Verify page wiring
-        run: |
-          grep -q 'classification-registry-bridge.js' klasifikimi.html
-          grep -q 'classification-v3.js' klasifikimi.html
-          grep -q 'classification-info-v3.js' klasifikimi.html
-          grep -q 'classification-audit-view.js' klasifikimi.html
-          grep -q 'icd-data.js' icd.html
-          grep -q 'icd.js' icd.html
-          grep -q 'lab-data.js' analizat.html
-          grep -q 'analizat.js' analizat.html
-          grep -q 'main-navigation-extension.js' index.html
-          grep -q 'href="icd.html"' klasifikimi.html
-          grep -q 'href="analizat.html"' klasifikimi.html
-          grep -q 'href="icd.html"' analizat.html
-          grep -q 'href="analizat.html"' icd.html
+      - name: Run full backend, frontend, security and data tests
+        run: npm test
