@@ -6,9 +6,10 @@ const hidePageLoader = () => {
 };
 
 (async () => {
-  const APP_VERSION = '20260723-2';
-  const CACHE_KEY = 'barnat-registry-parts-v2';
-  const CACHE_TIME_KEY = 'barnat-registry-cached-at-v2';
+  const APP_VERSION = '20260723-3';
+  const CACHE_KEY = 'barnat-registry-parts-v3';
+  const CACHE_TIME_KEY = 'barnat-registry-cached-at-v3';
+  const LEGACY_CACHE_KEYS = ['barnat-registry-parts-v2', 'barnat-registry-cached-at-v2'];
   const BACKGROUND_REFRESH_MS = 6 * 60 * 60 * 1000;
   const REQUEST_TIMEOUT_MS = 12000;
 
@@ -24,11 +25,16 @@ const hidePageLoader = () => {
     }
   }
 
+  function removeLegacyCache() {
+    try { LEGACY_CACHE_KEYS.forEach(key => localStorage.removeItem(key)); } catch {}
+  }
+
   function saveBrowserCache() {
     if(!hasRegistryData()) return;
     try {
       localStorage.setItem(CACHE_KEY, JSON.stringify(window.DRUG_DATA_PARTS));
       localStorage.setItem(CACHE_TIME_KEY, String(Date.now()));
+      removeLegacyCache();
     } catch(error) {
       console.warn('Nuk u ruajt cache-i lokal i regjistrit:', error);
     }
@@ -75,11 +81,11 @@ const hidePageLoader = () => {
     }
   }
 
+  removeLegacyCache();
   if(hasRegistryData()){
     window.REGISTRY_DATA_SOURCE = 'edge-cache';
     saveBrowserCache();
   } else if(!loadBrowserCache()) {
-    console.warn('Databaza e edge/cache mungon; po përdoret API-ja e regjistrit.');
     await loadGoogleDriveFallback();
   }
 
