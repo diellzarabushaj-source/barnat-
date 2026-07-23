@@ -3,13 +3,13 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-  <meta name="description" content="MedIndex — analizat laboratorike, intervalet lokale dhe interpretimi klinik i verifikuar.">
+  <meta name="description" content="MedIndex — 112 analiza laboratorike të organizuara në 14 kategori sipas formularëve të dërguar.">
   <meta name="robots" content="noindex,nofollow,noarchive">
   <meta name="theme-color" content="#0d3d40">
   <title>MedIndex | Analizat laboratorike — Dr. Diellza Rabushaj</title>
   <link rel="stylesheet" href="medical-hub.css?v=20260723-1">
   <link rel="stylesheet" href="app-polish.css?v=20260723-2">
-  <link rel="stylesheet" href="analizat-polish.css?v=20260723-1">
+  <link rel="stylesheet" href="analizat-polish.css?v=20260723-4">
 </head>
 <body>
   <a class="skip-link" href="#labContent">Kalo te analizat</a>
@@ -24,62 +24,74 @@
     </nav>
 
     <main class="med-main" id="labContent" tabindex="-1">
-      <header class="med-hero">
-        <p class="med-kicker">MedIndex · Ndihmës laboratorik për praktikën në Kosovë</p>
-        <h1>Analizat laboratorike</h1>
-        <p>Intervalet e formularëve lokalë ruhen siç janë transkriptuar. Interpretimi klinik paraqitet veçmas vetëm kur është lidhur me burim të verifikuar.</p>
+      <header class="med-hero lab-hero">
+        <div>
+          <p class="med-kicker">MedIndex · Udhëzues laboratorik në shqip</p>
+          <h1>Analizat laboratorike</h1>
+          <p>Çdo analizë paraqitet me <strong>emrin e saktë në formular</strong> si titull kryesor, emrin e plotë në shqip dhe anglisht, vlerën referente të transkriptuar dhe interpretimin klinik.</p>
+        </div>
+        <div class="lab-hero-stat" aria-label="Përmbledhje"><strong>14</strong><span>kategori</span><strong>112</strong><span>analiza dhe panele</span></div>
       </header>
 
-      <div class="med-notice"><strong>Rregulli kryesor:</strong> intervali dhe njësia në raportin aktual të laboratorit kanë përparësi. Shenja “Verifiko” do të thotë se formulari i vjetër ka një njësi, interval ose metodë që nuk duhet përdorur pa kontroll.</div>
+      <div class="med-notice"><strong>Kujdes:</strong> vlerat referuese varen nga metoda, laboratori, mosha, gjinia, shtatzënia, barnat dhe gjendja klinike. Intervali në raportin aktual të laboratorit ka gjithmonë përparësi.</div>
 
       <div class="lab-source-strip" aria-label="Baza e seksionit">
-        <div><strong>Burimi lokal</strong><span>Formularë laboratorikë të Ministrisë së Shëndetësisë së Kosovës, © 2008, dhe një printim i analizatorit hematologjik.</span></div>
-        <div><strong>Interpretimi</strong><span>“Pse bëhet”, vlerat e rritura/ulëta dhe përgatitja shfaqen vetëm kur kanë burim klinik të verifikuar.</span></div>
-        <div><strong>Siguria</strong><span>Dataset-i ngarkohet pas hyrjes me password dhe ruhet vetëm në cache-in e sesionit aktiv.</span></div>
+        <div><strong>Emërtimet</strong><span>“Emri në formular” ruhet si titulli kryesor i çdo kartele dhe i panelit të detajeve.</span></div>
+        <div><strong>Organizimi</strong><span>112 analiza dhe panele janë ndarë në 14 kategori klinike sipas materialit të dërguar.</span></div>
+        <div><strong>Referencat</strong><span>Intervalet lokale mbeten të ndara nga interpretimi dhe nga burimet klinike të jashtme.</span></div>
       </div>
 
-      <section class="lab-audit" id="labAudit" aria-label="Përmbledhja e dataset-it laboratorik">
-        <div class="lab-audit-card"><strong>—</strong><span>Analiza gjithsej</span></div>
-        <div class="lab-audit-card"><strong>—</strong><span>Me interval të transkriptuar</span></div>
-        <div class="lab-audit-card"><strong>—</strong><span>Me interpretim të verifikuar</span></div>
-        <div class="lab-audit-card"><strong>—</strong><span>Për verifikim</span></div>
+      <section class="lab-audit" id="labAudit" aria-label="Përmbledhja e analizave">
+        <div class="lab-audit-card"><strong>—</strong><span>Analiza dhe panele</span></div>
+        <div class="lab-audit-card"><strong>—</strong><span>Kategori klinike</span></div>
+        <div class="lab-audit-card"><strong>—</strong><span>Me interval të formularit</span></div>
+        <div class="lab-audit-card"><strong>—</strong><span>Kërkojnë verifikim</span></div>
       </section>
 
-      <div class="med-toolbar" role="search" aria-label="Kërkimi dhe filtrimi i analizave">
+      <div class="med-toolbar lab-toolbar" role="search" aria-label="Kërkimi dhe filtrimi i analizave">
         <div class="lab-toolbar-search">
-          <input class="med-search" id="labSearch" type="search" placeholder="Kërko Hb, kreatininë, mëlçi, diabet, interval…" autocomplete="off" enterkeyhint="search" aria-label="Kërko analizën">
+          <input class="med-search" id="labSearch" type="search" placeholder="Kërko emrin në formular, Hb, kreatininë, mëlçi, diabet…" autocomplete="off" enterkeyhint="search" aria-label="Kërko analizën">
           <button class="lab-clear" id="labClear" type="button" aria-label="Pastro kërkimin" hidden>×</button>
         </div>
-        <select class="med-filter" id="labSystem" aria-label="Filtro seksionin"><option value="">Të gjitha seksionet</option></select>
+        <select class="med-filter" id="labSystem" aria-label="Filtro kategorinë"><option value="">Të gjitha kategoritë</option></select>
         <select class="med-filter" id="labScope" aria-label="Filtro analizat">
-          <option value="">Të gjitha analizat</option>
+          <option value="">Të gjitha</option>
           <option value="with-reference">Me vlerë referente</option>
           <option value="without-reference">Pa vlerë referente</option>
-          <option value="verified">Me interpretim të verifikuar</option>
+          <option value="overview">Panelet përmbledhëse</option>
           <option value="flagged">Kërkojnë verifikim</option>
         </select>
         <span class="med-count" id="labCount" aria-live="polite">Duke u ngarkuar…</span>
       </div>
+
+      <nav class="lab-category-nav" id="labCategoryNav" aria-label="Kalo te kategoria"></nav>
       <p class="lab-status" id="labStatus" role="status" aria-live="polite"></p>
 
       <section aria-labelledby="labSectionTitle">
-        <div class="med-section-head"><div><h2 id="labSectionTitle">Analizat laboratorike</h2><p id="labSectionSubtitle">Duke e ngarkuar dataset-in e mbrojtur…</p></div></div>
-        <div class="med-grid" id="labGrid" aria-live="polite" aria-busy="true"></div>
+        <div class="med-section-head lab-main-head">
+          <div><h2 id="labSectionTitle">Të gjitha kategoritë</h2><p id="labSectionSubtitle">Duke e ngarkuar udhëzuesin laboratorik…</p></div>
+        </div>
+        <div id="labSections" aria-live="polite" aria-busy="true"></div>
       </section>
     </main>
   </div>
 
   <div class="med-panel-overlay" id="detailOverlay" hidden aria-hidden="true">
-    <section class="med-panel" role="dialog" aria-modal="true" aria-labelledby="detailTitle" aria-describedby="detailBody">
-      <header class="med-panel-head"><div><small id="detailKicker">Analiza laboratorike</small><h2 id="detailTitle">Analiza</h2></div><button class="med-panel-close" id="detailClose" type="button" aria-label="Mbyll">×</button></header>
+    <section class="med-panel lab-panel" role="dialog" aria-modal="true" aria-labelledby="detailTitle" aria-describedby="detailBody">
+      <header class="med-panel-head"><div><small id="detailKicker">Emri në formular</small><h2 id="detailTitle">Analiza</h2></div><button class="med-panel-close" id="detailClose" type="button" aria-label="Mbyll">×</button></header>
       <div class="med-panel-body" id="detailBody"></div>
       <footer class="med-panel-foot"><button id="detailDone" type="button">Mbyll</button></footer>
     </section>
   </div>
 
   <script src="auth-client.js?v=20260723-3" defer></script>
+  <script src="lab-guide-chunk-01.js?v=20260723-1" defer></script>
+  <script src="lab-guide-chunk-02.js?v=20260723-1" defer></script>
+  <script src="lab-guide-chunk-03.js?v=20260723-1" defer></script>
+  <script src="lab-guide-chunk-04.js?v=20260723-1" defer></script>
+  <script src="lab-guide-data.js?v=20260723-1" defer></script>
   <script src="lab-clinical.js?v=20260723-1" defer></script>
-  <script src="analizat.js?v=20260723-3" defer></script>
+  <script src="analizat.js?v=20260723-4" defer></script>
   <script src="app-stability.js?v=20260723-2" defer></script>
 </body>
 </html>
