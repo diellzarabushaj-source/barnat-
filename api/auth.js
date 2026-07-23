@@ -1,6 +1,7 @@
 const attempts = new Map();
 const WINDOW_MS = 15 * 60 * 1000;
 const MAX_ATTEMPTS = 5;
+const MAX_TRACKED_CLIENTS = 2000;
 
 function securityHeaders(res) {
   res.setHeader('Cache-Control', 'no-store, max-age=0');
@@ -14,7 +15,16 @@ function clientIp(req) {
   return forwarded || String(req.headers['x-real-ip'] || req.socket?.remoteAddress || 'unknown');
 }
 
+function pruneAttempts(now = Date.now()) {
+  if (attempts.size < MAX_TRACKED_CLIENTS) return;
+  attempts.forEach((state, ip) => {
+    if (!state || now - state.startedAt > WINDOW_MS) attempts.delete(ip);
+  });
+  while (attempts.size > MAX_TRACKED_CLIENTS) attempts.delete(attempts.keys().next().value);
+}
+
 function activeAttemptState(ip, now = Date.now()) {
+  pruneAttempts(now);
   const state = attempts.get(ip);
   if (!state || now - state.startedAt > WINDOW_MS) {
     const fresh = { count: 0, startedAt: now };
@@ -78,16 +88,23 @@ module.exports = async function handler(req, res) {
       return res.status(401).json({ error: 'Password-i nuk është i saktë.' });
     }
 
+    if (!auth.secureConfigurationEnabled()) {
+      return res.status(503).json({ error: 'Konfigurimi privat i sesionit mungon në server.' });
+    }
+
     attempts.delete(ip);
     const sessionToken = auth.createSessionToken();
     res.setHeader('Set-Cookie', auth.sessionCookie(sessionToken));
     return res.status(200).json({
       ok: true,
       expiresIn: auth.SESSION_TTL_SECONDS,
-      hardened: auth.secureConfigurationEnabled(),
+      hardened: true,
     });
   } catch (error) {
     console.error('Auth error:', error);
-    return res.status(400).json({ error: 'Kërkesa e hyrjes nuk u lexua.' });
+    const configurationError = /SESSION_SECRET|sesionit/i.test(String(error?.message || ''));
+    return res.status(configurationError ? 503 : 400).json({
+      error: configurationError ? 'Konfigurimi privat i sesionit mungon në server.' : 'Kërkesa e hyrjes nuk u lexua.',
+    });
   }
 };
