@@ -29,7 +29,7 @@ async function fetchBuffer(url) {
     const response = await fetch(url, {
       redirect: 'follow',
       signal: controller.signal,
-      headers: { 'User-Agent': 'Mozilla/5.0 (compatible; MedIndexRegistry/3.0)' },
+      headers: { 'User-Agent': 'Mozilla/5.0 (compatible; MedIndexRegistry/3.1)' },
     });
     if (!response.ok) throw new Error(`status ${response.status}`);
     const declaredLength = Number(response.headers.get('content-length') || 0);
@@ -46,11 +46,8 @@ async function fetchBuffer(url) {
 async function downloadWorkbook() {
   let lastError = null;
   for (const url of SOURCE_URLS) {
-    try {
-      return await fetchBuffer(url);
-    } catch (error) {
-      lastError = error;
-    }
+    try { return await fetchBuffer(url); }
+    catch (error) { lastError = error; }
   }
   throw new Error(`Google Drive nuk e dha skedarin Excel: ${lastError?.message || 'gabim i panjohur'}.`);
 }
@@ -133,6 +130,11 @@ async function getPayload() {
   return pendingBuild;
 }
 
+async function authorized(req) {
+  const auth = await import('../lib/auth.mjs');
+  return auth.verifySessionToken(auth.sessionFromRequest(req));
+}
+
 module.exports = async function handler(req, res) {
   const startedAt = Date.now();
   try {
@@ -140,10 +142,15 @@ module.exports = async function handler(req, res) {
       res.setHeader('Allow', 'GET, HEAD');
       return res.status(405).send('Method Not Allowed');
     }
+    if (!(await authorized(req))) {
+      res.setHeader('Cache-Control', 'no-store');
+      res.setHeader('X-Content-Type-Options', 'nosniff');
+      return res.status(401).send('window.REGISTRY_LOAD_ERROR="Sesioni nuk është aktiv.";window.DRUG_DATA_PARTS=[];');
+    }
 
     const payload = await getPayload();
     res.setHeader('Content-Type', 'application/javascript; charset=utf-8');
-    res.setHeader('Cache-Control', 'public, s-maxage=21600, stale-while-revalidate=86400');
+    res.setHeader('Cache-Control', 'private, no-cache, max-age=0');
     res.setHeader('X-Content-Type-Options', 'nosniff');
     res.setHeader('ETag', payload.etag);
     res.setHeader('Server-Timing', `registry;dur=${Date.now() - startedAt}`);
