@@ -14,11 +14,11 @@ export const config = {
   matcher: '/:path*',
 };
 
-function isPublicPath(pathname: string): boolean {
+function isPublicPath(pathname) {
   return PUBLIC_PATHS.has(pathname) || pathname === '/api/auth';
 }
 
-export default function middleware(request: Request): Response {
+export default function middleware(request) {
   const url = new URL(request.url);
   const pathname = url.pathname;
   const authenticated = verifySessionToken(sessionFromRequest(request));
