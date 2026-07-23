@@ -6,7 +6,7 @@
   <meta name="robots" content="noindex,nofollow,noarchive">
   <meta name="theme-color" content="#0d3d40">
   <title>Hyr në MedIndex</title>
-  <link rel="stylesheet" href="login.css?v=20260723-1">
+  <link rel="stylesheet" href="login.css?v=20260723-2">
 </head>
 <body>
   <main class="login-shell">
@@ -16,12 +16,13 @@
       <h1 id="loginTitle">Hyr në MedIndex</h1>
       <p class="login-copy">Shkruaje password-in personal për të hapur regjistrin, recetat, ICD-në dhe analizat.</p>
 
-      <form id="loginForm" autocomplete="off" novalidate>
+      <form id="loginForm" autocomplete="on" novalidate>
         <label for="password">Password-i</label>
         <div class="password-row">
-          <input id="password" name="password" type="password" inputmode="text" autocomplete="current-password" required minlength="6" autofocus>
+          <input id="password" name="password" type="password" autocomplete="current-password" required minlength="6" maxlength="128" autofocus aria-describedby="capsLockHint loginMessage">
           <button id="togglePassword" type="button" aria-label="Shfaq password-in" aria-pressed="false">Shfaq</button>
         </div>
+        <p class="caps-lock-hint" id="capsLockHint" hidden>Caps Lock është aktiv.</p>
         <button class="login-submit" id="loginSubmit" type="submit">
           <span>Hyr</span>
           <span aria-hidden="true">→</span>
@@ -29,13 +30,13 @@
         <p class="login-message" id="loginMessage" role="alert" aria-live="polite"></p>
       </form>
 
-      <div class="login-meta">
-        <span>Sesioni zgjat 8 orë</span>
+      <div class="login-meta" aria-label="Siguria e sesionit">
+        <span>Sesioni 8 orë</span>
         <span>Cookie HttpOnly</span>
         <span>5 tentativa / 15 min</span>
       </div>
     </section>
   </main>
-  <script src="login.js?v=20260723-1" defer></script>
+  <script src="login.js?v=20260723-2" defer></script>
 </body>
 </html>
