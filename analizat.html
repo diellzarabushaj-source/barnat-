@@ -1,55 +1,85 @@
 <!doctype html>
-<html lang="sq">
+<html lang="sq" class="auth-checking">
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-  <meta name="description" content="MedIndex — vetëm analizat dhe vlerat referente nga formularët laboratorikë të dërguar nga përdoruesja.">
+  <meta name="description" content="MedIndex — analizat laboratorike, intervalet lokale dhe interpretimi klinik i verifikuar.">
   <meta name="robots" content="noindex,nofollow,noarchive">
   <meta name="theme-color" content="#0d3d40">
   <title>MedIndex | Analizat laboratorike — Dr. Diellza Rabushaj</title>
   <link rel="stylesheet" href="medical-hub.css?v=20260723-1">
   <link rel="stylesheet" href="app-polish.css?v=20260723-2">
+  <link rel="stylesheet" href="analizat-polish.css?v=20260723-1">
 </head>
 <body>
+  <a class="skip-link" href="#labContent">Kalo te analizat</a>
   <div class="med-shell">
     <nav class="med-nav" aria-label="Navigimi kryesor">
-      <a class="med-nav-link" href="index.html"><span class="med-nav-icon"><svg fill="none" viewBox="0 0 256 256"><path d="M213 110 133 37a8 8 0 0 0-11 0l-79 73a8 8 0 0 0-3 6v92a8 8 0 0 0 8 8h160a8 8 0 0 0 8-8v-92a8 8 0 0 0-3-6Z" stroke="currentColor" stroke-width="16"/></svg></span><span class="med-nav-title">Barnat</span></a>
-      <a class="med-nav-link" href="klasifikimi.html"><span class="med-nav-icon"><svg fill="none" viewBox="0 0 256 256"><rect x="36" y="36" width="76" height="76" rx="14" stroke="currentColor" stroke-width="16"/><rect x="144" y="36" width="76" height="76" rx="14" stroke="currentColor" stroke-width="16"/><rect x="36" y="144" width="76" height="76" rx="14" stroke="currentColor" stroke-width="16"/><rect x="144" y="144" width="76" height="76" rx="14" stroke="currentColor" stroke-width="16"/></svg></span><span class="med-nav-title">Klasifikimi</span></a>
-      <a class="med-nav-link" href="icd.html"><span class="med-nav-icon"><svg fill="none" viewBox="0 0 256 256"><path d="M48 32h112l48 48v144H48V32Z" stroke="currentColor" stroke-width="16"/><path d="M160 32v48h48M80 120h96M80 160h96M80 200h64" stroke="currentColor" stroke-width="16" stroke-linecap="round"/></svg></span><span class="med-nav-title">ICD</span></a>
-      <a class="med-nav-link active" href="analizat.html" aria-current="page"><span class="med-nav-icon"><svg fill="none" viewBox="0 0 256 256"><path d="M96 24h64M112 24v64l-56 96a32 32 0 0 0 28 48h88a32 32 0 0 0 28-48l-56-96V24" stroke="currentColor" stroke-width="16"/><path d="M78 176h100" stroke="currentColor" stroke-width="16"/></svg></span><span class="med-nav-title">Analizat</span></a>
-      <a class="med-nav-link" href="index.html#recetat"><span class="med-nav-icon"><svg fill="none" viewBox="0 0 256 256"><path d="M64 40h128a16 16 0 0 1 16 16v160H48V56a16 16 0 0 1 16-16Z" stroke="currentColor" stroke-width="16"/><path d="M80 88h96M80 128h96M80 168h64" stroke="currentColor" stroke-width="16"/></svg></span><span class="med-nav-title">Recetat</span></a>
+      <a class="med-nav-link" href="index.html"><span class="med-nav-icon"><svg fill="none" viewBox="0 0 256 256" aria-hidden="true"><path d="M213 110 133 37a8 8 0 0 0-11 0l-79 73a8 8 0 0 0-3 6v92a8 8 0 0 0 8 8h160a8 8 0 0 0 8-8v-92a8 8 0 0 0-3-6Z" stroke="currentColor" stroke-width="16"/></svg></span><span class="med-nav-title">Barnat</span></a>
+      <a class="med-nav-link" href="klasifikimi.html"><span class="med-nav-icon"><svg fill="none" viewBox="0 0 256 256" aria-hidden="true"><rect x="36" y="36" width="76" height="76" rx="14" stroke="currentColor" stroke-width="16"/><rect x="144" y="36" width="76" height="76" rx="14" stroke="currentColor" stroke-width="16"/><rect x="36" y="144" width="76" height="76" rx="14" stroke="currentColor" stroke-width="16"/><rect x="144" y="144" width="76" height="76" rx="14" stroke="currentColor" stroke-width="16"/></svg></span><span class="med-nav-title">Klasifikimi</span></a>
+      <a class="med-nav-link" href="icd.html"><span class="med-nav-icon"><svg fill="none" viewBox="0 0 256 256" aria-hidden="true"><path d="M48 32h112l48 48v144H48V32Z" stroke="currentColor" stroke-width="16"/><path d="M160 32v48h48M80 120h96M80 160h96M80 200h64" stroke="currentColor" stroke-width="16" stroke-linecap="round"/></svg></span><span class="med-nav-title">ICD</span></a>
+      <a class="med-nav-link active" href="analizat.html" aria-current="page"><span class="med-nav-icon"><svg fill="none" viewBox="0 0 256 256" aria-hidden="true"><path d="M96 24h64M112 24v64l-56 96a32 32 0 0 0 28 48h88a32 32 0 0 0 28-48l-56-96V24" stroke="currentColor" stroke-width="16"/><path d="M78 176h100" stroke="currentColor" stroke-width="16"/></svg></span><span class="med-nav-title">Analizat</span></a>
+      <a class="med-nav-link" href="index.html#recetat"><span class="med-nav-icon"><svg fill="none" viewBox="0 0 256 256" aria-hidden="true"><path d="M64 40h128a16 16 0 0 1 16 16v160H48V56a16 16 0 0 1 16-16Z" stroke="currentColor" stroke-width="16"/><path d="M80 88h96M80 128h96M80 168h64" stroke="currentColor" stroke-width="16" stroke-linecap="round"/></svg></span><span class="med-nav-title">Recetat</span></a>
       <div class="med-theme"><span>Tema</span><button id="themeButton" type="button" aria-label="Ndërro temën">☾</button></div>
     </nav>
 
-    <main class="med-main">
-      <header class="med-hero"><p class="med-kicker">MedIndex · Formularët laboratorikë të Kosovës</p><h1>Analizat nga formularët e dërguar</h1><p>Këtu shfaqen vetëm analizat, intervalet dhe njësitë që lexohen në katër fotografitë e dërguara. Nuk janë shtuar analiza nga lista ose burime të tjera.</p></header>
-      <div class="med-notice"><strong>Transkriptim besnik:</strong> njësitë dhe intervalet janë ruajtur siç janë shtypur në formular. Kur formulari dhe printimi i aparatit japin intervale të ndryshme, paraqiten të dyja pa i bashkuar ose korrigjuar.</div>
+    <main class="med-main" id="labContent" tabindex="-1">
+      <header class="med-hero">
+        <p class="med-kicker">MedIndex · Ndihmës laboratorik për praktikën në Kosovë</p>
+        <h1>Analizat laboratorike</h1>
+        <p>Intervalet e formularëve lokalë ruhen siç janë transkriptuar. Interpretimi klinik paraqitet veçmas vetëm kur është lidhur me burim të verifikuar.</p>
+      </header>
+
+      <div class="med-notice"><strong>Rregulli kryesor:</strong> intervali dhe njësia në raportin aktual të laboratorit kanë përparësi. Shenja “Verifiko” do të thotë se formulari i vjetër ka një njësi, interval ose metodë që nuk duhet përdorur pa kontroll.</div>
+
       <div class="lab-source-strip" aria-label="Baza e seksionit">
-        <div><strong>Burimi</strong><span>Formularë laboratorikë të Ministrisë së Shëndetësisë së Kosovës, © 2008, dhe një printim i analizatorit hematologjik.</span></div>
-        <div><strong>Privatësia</strong><span>Rezultatet dhe identiteti i pacientes nga fotografia nuk ruhen në dataset; përdoren vetëm emrat e analizave dhe intervalet.</span></div>
-        <div><strong>Kufiri</strong><span>Kur vlera ose njësia nuk lexohet apo nuk është dhënë në formular, shënohet qartë pa u plotësuar nga burim tjetër.</span></div>
+        <div><strong>Burimi lokal</strong><span>Formularë laboratorikë të Ministrisë së Shëndetësisë së Kosovës, © 2008, dhe një printim i analizatorit hematologjik.</span></div>
+        <div><strong>Interpretimi</strong><span>“Pse bëhet”, vlerat e rritura/ulëta dhe përgatitja shfaqen vetëm kur kanë burim klinik të verifikuar.</span></div>
+        <div><strong>Siguria</strong><span>Dataset-i ngarkohet pas hyrjes me password dhe ruhet vetëm në cache-in e sesionit aktiv.</span></div>
       </div>
-      <div class="med-toolbar" role="search">
-        <input class="med-search" id="labSearch" type="search" placeholder="Kërko analizën, shkurtesën, mostrën ose vlerën referente…" autocomplete="off" enterkeyhint="search">
+
+      <section class="lab-audit" id="labAudit" aria-label="Përmbledhja e dataset-it laboratorik">
+        <div class="lab-audit-card"><strong>—</strong><span>Analiza gjithsej</span></div>
+        <div class="lab-audit-card"><strong>—</strong><span>Me interval të transkriptuar</span></div>
+        <div class="lab-audit-card"><strong>—</strong><span>Me interpretim të verifikuar</span></div>
+        <div class="lab-audit-card"><strong>—</strong><span>Për verifikim</span></div>
+      </section>
+
+      <div class="med-toolbar" role="search" aria-label="Kërkimi dhe filtrimi i analizave">
+        <div class="lab-toolbar-search">
+          <input class="med-search" id="labSearch" type="search" placeholder="Kërko Hb, kreatininë, mëlçi, diabet, interval…" autocomplete="off" enterkeyhint="search" aria-label="Kërko analizën">
+          <button class="lab-clear" id="labClear" type="button" aria-label="Pastro kërkimin" hidden>×</button>
+        </div>
         <select class="med-filter" id="labSystem" aria-label="Filtro seksionin"><option value="">Të gjitha seksionet</option></select>
-        <select class="med-filter" id="labScope" aria-label="Filtro vlerat referente"><option value="">Të gjitha analizat</option><option value="with-reference">Me vlerë referente të shënuar</option><option value="without-reference">Pa vlerë referente të shënuar</option></select>
-        <span class="med-count" id="labCount" aria-live="polite">0 analiza</span>
+        <select class="med-filter" id="labScope" aria-label="Filtro analizat">
+          <option value="">Të gjitha analizat</option>
+          <option value="with-reference">Me vlerë referente</option>
+          <option value="without-reference">Pa vlerë referente</option>
+          <option value="verified">Me interpretim të verifikuar</option>
+          <option value="flagged">Kërkojnë verifikim</option>
+        </select>
+        <span class="med-count" id="labCount" aria-live="polite">Duke u ngarkuar…</span>
       </div>
-      <section><div class="med-section-head"><div><h2 id="labSectionTitle">Analizat nga formularët e dërguar</h2><p id="labSectionSubtitle">Vetëm përmbajtja që shihet në fotografitë e dërguara.</p></div></div><div class="med-grid" id="labGrid"></div></section>
+      <p class="lab-status" id="labStatus" role="status" aria-live="polite"></p>
+
+      <section aria-labelledby="labSectionTitle">
+        <div class="med-section-head"><div><h2 id="labSectionTitle">Analizat laboratorike</h2><p id="labSectionSubtitle">Duke e ngarkuar dataset-in e mbrojtur…</p></div></div>
+        <div class="med-grid" id="labGrid" aria-live="polite" aria-busy="true"></div>
+      </section>
     </main>
   </div>
 
-  <div class="med-panel-overlay" id="detailOverlay" hidden>
-    <section class="med-panel" role="dialog" aria-modal="true" aria-labelledby="detailTitle">
+  <div class="med-panel-overlay" id="detailOverlay" hidden aria-hidden="true">
+    <section class="med-panel" role="dialog" aria-modal="true" aria-labelledby="detailTitle" aria-describedby="detailBody">
       <header class="med-panel-head"><div><small id="detailKicker">Analiza laboratorike</small><h2 id="detailTitle">Analiza</h2></div><button class="med-panel-close" id="detailClose" type="button" aria-label="Mbyll">×</button></header>
       <div class="med-panel-body" id="detailBody"></div>
       <footer class="med-panel-foot"><button id="detailDone" type="button">Mbyll</button></footer>
     </section>
   </div>
 
-  <script src="lab-data.js?v=20260723-2"></script>
-  <script src="analizat.js?v=20260723-2"></script>
-  <script src="auth-client.js?v=20260723-2"></script>
-  <script src="app-stability.js?v=20260723-1"></script>
+  <script src="auth-client.js?v=20260723-3" defer></script>
+  <script src="lab-clinical.js?v=20260723-1" defer></script>
+  <script src="analizat.js?v=20260723-3" defer></script>
+  <script src="app-stability.js?v=20260723-2" defer></script>
 </body>
 </html>
