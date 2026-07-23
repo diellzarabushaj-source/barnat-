@@ -27,7 +27,7 @@
     <main class="med-main rx-main" id="rxContent" tabindex="-1">
       <header class="rx-hero">
         <div class="rx-hero-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M9 5h6M9 3h6v4H9V3ZM6 5H4v16h16V5h-2M8 12h8M8 16h6"/></svg></div>
-        <div><p class="med-kicker">MedIndex · Recetë e strukturuar</p><h1>Krijo recetën</h1><p>Një kuti e vetme: shkruaje siç e mendon, zgjidh barnat kur të duhet dhe MedIndex e kthen në format të pastër me grupime dhe Signaturë të përbashkët.</p></div>
+        <div><p class="med-kicker">MedIndex · Recetë e strukturuar</p><h1>Krijo recetën</h1><p>Zgjidh barin dhe ai vendoset vetë me fortësinë dhe formën. Signaturën mund ta shkruash vetë; kur mungon, Gemini mund ta propozojë nga diagnoza dhe barnat e zgjedhura.</p></div>
         <div class="rx-hero-count"><strong id="rxSavedCount">0</strong><span>të ruajtura</span></div>
       </header>
 
@@ -35,42 +35,45 @@
         <article class="rx-compose-card">
           <header class="rx-card-head"><div><span class="rx-step">1</span><h2>Shkruaje recetën</h2></div><button class="rx-text-button" id="rxNew" type="button">Recetë e re</button></header>
 
-          <label class="rx-diagnosis"><span>Diagnoza / indikacioni <small>opsionale</small></span><input id="rxDiagnosis" type="text" autocomplete="off" placeholder="p.sh. Dhimbje akute me nauze"></label>
+          <label class="rx-diagnosis"><span>Diagnoza / indikacioni <small>opsionale për formatim; e nevojshme kur Gemini propozon Signaturën</small></span><input id="rxDiagnosis" type="text" autocomplete="off" placeholder="p.sh. Infeksion bakterial i traktit respirator"></label>
 
           <div class="rx-command-bar" aria-label="Fusha të shpejta">
-            <button type="button" data-rx-command="form">@forma</button>
+            <button type="button" data-rx-command="form">@forma <small>opsionale</small></button>
             <button type="button" data-rx-command="drug">@bari</button>
             <button type="button" data-rx-command="dose">@doza</button>
+            <button type="button" data-rx-command="quantity">@sasia</button>
             <button type="button" data-rx-command="other">@tjetër</button>
             <button type="button" data-rx-command="signature">@signatura</button>
           </div>
 
           <div class="rx-editor-wrap">
             <textarea id="rxComposer" rows="12" spellcheck="false" placeholder="Rp:
-Inf. Sodium Chloride 0.9 % a 250 ml
-Amp. Ketoprofen 100 mg/2 ml
-Amp. Ondansetron 4 mg/2 ml
-Amp. Pantoprazol sodium 40 mg
-S: Përzihen dhe administrohen së bashku në të njëjtin infuzion."></textarea>
-            <span class="rx-editor-hint"><kbd>Ctrl</kbd> + <kbd>Enter</kbd> për ta strukturuar</span>
+Amoxicillin / Clavulanic acid 875 mg / 125 mg (Tableta)
+Sasia: Scat. No I (Një kuti)
+S (Signatura): Nga 1 tabletë çdo 12 orë pas ushqimit, për 7 ditë.
+
+Paracetamol 500 mg (Tableta)
+Sasia: Scat. No I (Një kuti)
+S (Signatura): Nga 1 tabletë çdo 8 orë sipas nevojës."></textarea>
+            <span class="rx-editor-hint"><kbd>Ctrl</kbd> + <kbd>Enter</kbd> për ta përgatitur me Gemini</span>
           </div>
 
           <div class="rx-selected" id="rxSelectedDrugs" hidden aria-label="Barnat e zgjedhura"></div>
 
           <div class="rx-popover" id="rxFormPopover" hidden>
-            <strong>Zgjidh formën</strong>
+            <strong>Zgjidh formën <small>opsionale</small></strong>
             <div class="rx-form-options">
               <button type="button" data-form-value="Tab.">Tab.</button><button type="button" data-form-value="Caps.">Caps.</button><button type="button" data-form-value="Amp.">Amp.</button><button type="button" data-form-value="Inf.">Inf.</button><button type="button" data-form-value="Ung.">Ung.</button><button type="button" data-form-value="Sol.">Sol.</button><button type="button" data-form-value="Sir.">Sir.</button><button type="button" data-form-value="Sup.">Sup.</button><button type="button" data-form-value="Gtt.">Gtt.</button><button type="button" data-form-value="Inh.">Inh.</button>
             </div>
           </div>
 
           <div class="rx-popover rx-drug-popover" id="rxDrugPopover" hidden>
-            <label><span>Kërko substancën aktive ose emrin tregtar</span><input id="rxDrugSearch" type="search" autocomplete="off" placeholder="p.sh. ondansetron"></label>
+            <label><span>Kërko substancën aktive ose emrin tregtar</span><input id="rxDrugSearch" type="search" autocomplete="off" placeholder="p.sh. amoxicillin ose paracetamol"></label>
             <div class="rx-drug-results" id="rxDrugResults"><p>Shkruaj së paku 2 shkronja.</p></div>
           </div>
 
           <div class="rx-compose-actions">
-            <button class="rx-primary" id="rxGenerate" type="button"><span class="rx-ai-mark" aria-hidden="true">✦</span><span>Strukturo me Gemini</span></button>
+            <button class="rx-primary" id="rxGenerate" type="button"><span class="rx-ai-mark" aria-hidden="true">✦</span><span>Përgatit me Gemini</span></button>
             <button class="rx-secondary" id="rxFormatLocal" type="button">Formato pa AI</button>
             <button class="rx-ghost" id="rxClear" type="button">Pastro</button>
           </div>
@@ -80,7 +83,7 @@ S: Përzihen dhe administrohen së bashku në të njëjtin infuzion."></textarea
         <article class="rx-preview-card">
           <header class="rx-card-head"><div><span class="rx-step">2</span><h2>Parapamja</h2></div><span class="rx-state is-draft" id="rxState">Draft</span></header>
           <div class="rx-preview" id="rxPreview">
-            <div class="rx-preview-empty"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" aria-hidden="true"><path d="M9 5h6M9 3h6v4H9V3ZM6 5H4v16h16V5h-2M8 12h8M8 16h6"/></svg><strong>Parapamja shfaqet këtu</strong><span>Shkruaje ose ngjite recetën dhe kliko “Strukturo me Gemini”.</span></div>
+            <div class="rx-preview-empty"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" aria-hidden="true"><path d="M9 5h6M9 3h6v4H9V3ZM6 5H4v16h16V5h-2M8 12h8M8 16h6"/></svg><strong>Parapamja shfaqet këtu</strong><span>Zgjidh barnat ose shkruaje recetën. Signaturën mund ta shkruash vetë ose ta propozosh me Gemini.</span></div>
           </div>
           <div class="rx-preview-actions">
             <button class="rx-primary" id="rxSave" type="button" disabled>Ruaje recetën</button>
@@ -90,7 +93,7 @@ S: Përzihen dhe administrohen së bashku në të njëjtin infuzion."></textarea
         </article>
       </section>
 
-      <aside class="rx-safety"><strong>Kontroll klinik i detyrueshëm:</strong> Gemini përdoret vetëm për strukturim dhe formatim. Nuk duhet të shtojë barna, doza, rrugë ose skema që nuk i ka shkruar mjeku. Kompatibiliteti i infuzioneve, përzierja në shiringë dhe dozimi individual verifikohen para përdorimit.</aside>
+      <aside class="rx-safety"><strong>Kontroll klinik i detyrueshëm:</strong> Signatura e shkruar nga mjeku ruhet dhe ka përparësi. Kur mungon, Gemini mund ta propozojë vetëm në bazë të diagnozës dhe barit të zgjedhur; çdo propozim duhet të verifikohet para përdorimit. Kompatibiliteti i infuzioneve dhe përzierjeve verifikohet veçmas.</aside>
 
       <section class="rx-saved-section" aria-labelledby="rxSavedTitle">
         <div class="med-section-head"><div><p class="med-kicker">Biblioteka personale</p><h2 id="rxSavedTitle">Recetat e ruajtura</h2><p>Hapi, duplikoji ose përdori si pikënisje pa e komplikuar krijimin e recetës së re.</p></div><label class="rx-saved-search"><span class="sr-only">Kërko recetat</span><input id="rxSavedSearch" type="search" autocomplete="off" placeholder="Kërko recetën…"></label></div>
@@ -102,7 +105,7 @@ S: Përzihen dhe administrohen së bashku në të njëjtin infuzion."></textarea
   <div class="rx-toast" id="rxToast" role="status" aria-live="polite"></div>
   <script src="auth-client.js?v=20260723-3" defer></script>
   <script src="medical-icons.js?v=20260723-1" defer></script>
-  <script src="recetat.js?v=20260723-1" defer></script>
+  <script src="recetat-v2.js?v=20260723-1" defer></script>
   <script src="app-stability.js?v=20260723-3" defer></script>
 </body>
 </html>
