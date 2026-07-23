@@ -132,32 +132,43 @@
       const fields = card.querySelector('.protocol-drug-fields');
       card.insertBefore(config, fields || null);
     }
-    config.innerHTML = `
-      <label>Lloji i administrimit<select data-mixture-field="type">
-        ${option('', 'Veçmas', record.type)}
-        ${option('infusion', 'Infuzion i përzier', record.type)}
-        ${option('injectionSession', 'Injeksione në të njëjtën seancë', record.type)}
-      </select></label>
-      <label>Emri i grupit<input data-mixture-field="group" value="${esc(record.group)}" placeholder="p.sh. Infuzion 1"></label>
-      <label>Roli në grup<select data-mixture-field="role">
-        ${option('base', 'Tretës / bazë', record.role)}
-        ${option('additive', 'Bar shtesë', record.role)}
-      </select></label>`;
 
-    config.querySelectorAll('[data-mixture-field]').forEach(control => {
-      control.disabled = !record.type && control.dataset.mixtureField !== 'type';
-      control.addEventListener('change', () => {
-        const field = control.dataset.mixtureField;
-        record[field] = control.value;
-        if (field === 'type' && control.value && !record.group) record.group = nextGroupLabel(control.value);
-        if (field === 'type' && !control.value) {
-          record.group = '';
-          record.role = 'additive';
+    const signature = JSON.stringify(record);
+    if (config.dataset.signature !== signature) {
+      config.dataset.signature = signature;
+      config.innerHTML = `
+        <label>Lloji i administrimit<select data-mixture-field="type">
+          ${option('', 'Veçmas', record.type)}
+          ${option('infusion', 'Infuzion i përzier', record.type)}
+          ${option('injectionSession', 'Injeksione në të njëjtën seancë', record.type)}
+        </select></label>
+        <label>Emri i grupit<input data-mixture-field="group" value="${esc(record.group)}" placeholder="p.sh. Infuzion 1"></label>
+        <label>Roli në grup<select data-mixture-field="role">
+          ${option('base', 'Tretës / bazë', record.role)}
+          ${option('additive', 'Bar shtesë', record.role)}
+        </select></label>`;
+
+      config.querySelectorAll('[data-mixture-field]').forEach(control => {
+        control.disabled = !record.type && control.dataset.mixtureField !== 'type';
+        control.addEventListener('change', () => {
+          const field = control.dataset.mixtureField;
+          record[field] = control.value;
+          if (field === 'type' && control.value && !record.group) record.group = nextGroupLabel(control.value);
+          if (field === 'type' && !control.value) {
+            record.group = '';
+            record.role = 'additive';
+          }
+          decorate();
+        });
+        if (control.tagName === 'INPUT') {
+          control.addEventListener('input', () => {
+            record[control.dataset.mixtureField] = control.value;
+            config.dataset.signature = JSON.stringify(record);
+            updateCardState(card, record);
+          });
         }
-        decorate();
       });
-      if (control.tagName === 'INPUT') control.addEventListener('input', () => { record[control.dataset.mixtureField] = control.value; updateCardState(card, record); });
-    });
+    }
 
     const fields = card.querySelector('.protocol-drug-fields');
     const dose = [...(fields?.children || [])].find(node => /Doza për marrje/i.test(node.querySelector('label')?.textContent || ''));
@@ -166,13 +177,19 @@
   }
 
   function updateCardState(card, record) {
-    card.classList.toggle('is-mixture-member', Boolean(record.type && record.group));
-    card.querySelector('.mixture-group-badge')?.remove();
-    if (!record.type || !record.group) return;
-    const badge = document.createElement('span');
+    const active = Boolean(record.type && record.group);
+    card.classList.toggle('is-mixture-member', active);
+    const existing = card.querySelector('.mixture-group-badge');
+    if (!active) {
+      existing?.remove();
+      return;
+    }
+    const label = `${record.group} · ${MIX_TYPES[record.type] || 'Grup'}`;
+    if (existing?.textContent === label) return;
+    const badge = existing || document.createElement('span');
     badge.className = 'mixture-group-badge';
-    badge.textContent = `${record.group} · ${MIX_TYPES[record.type] || 'Grup'}`;
-    card.querySelector('.protocol-drug-head>div')?.prepend(badge);
+    badge.textContent = label;
+    if (!existing) card.querySelector('.protocol-drug-head>div')?.prepend(badge);
   }
 
   function decorate() {
@@ -233,17 +250,17 @@
     };
   }
 
-  function patchSavedProtocol() {
+  function patchSavedProtocol(startedAt, expectedName) {
     const protocols = getProtocols();
     if (!protocols.length) return;
     let index = activeProtocolId ? protocols.findIndex(protocol => protocol.id === activeProtocolId) : -1;
-    if (index < 0) index = protocols.reduce((latest, protocol, current) => {
-      const latestTime = Date.parse(protocols[latest]?.updatedAt || 0) || 0;
-      const currentTime = Date.parse(protocol?.updatedAt || 0) || 0;
-      return currentTime > latestTime ? current : latest;
-    }, 0);
+    const isRecentMatch = protocol => {
+      const updated = Date.parse(protocol?.updatedAt || 0) || 0;
+      return updated >= startedAt - 1000 && (!expectedName || protocol?.name === expectedName);
+    };
+    if (index < 0 || !isRecentMatch(protocols[index])) index = protocols.findIndex(isRecentMatch);
+    if (index < 0) return;
     const protocol = protocols[index];
-    if (!protocol) return;
     const byKey = new Map(currentCards().map(card => [cardKey(card), state.get(cardKey(card)) || {}]));
     protocol.items = (protocol.items || []).map(item => {
       const mixture = byKey.get(String(item.drugKey || '')) || {};
@@ -346,11 +363,12 @@
     const body = document.getElementById('miBody');
     const protocol = getProtocols().find(item => String(item.id) === String(previewProtocolId));
     const article = body?.querySelector('.mi-rx');
-    if (!article || !protocol) return;
+    if (!article || !protocol || article.querySelector('.mi-rx-mixture')) return;
     const entries = groupedEntries(protocol.items);
     if (!entries.some(entry => entry.type === 'mixture')) return;
     article.querySelectorAll('.mi-rx-item').forEach(node => node.remove());
     const meta = article.querySelector('.mi-rx-meta');
+    if (!meta) return;
     let anchor = meta;
     entries.forEach((entry, index) => {
       const wrapper = document.createElement('div');
@@ -365,9 +383,24 @@
     });
   }
 
-  function printProtocol(protocol) {
+  function canPrint(protocol, currentDraft = false) {
+    const result = currentDraft
+      ? window.MedIndexPrescriptionReview?.validateForPrint?.()
+      : window.MedIndexPrescriptionReview?.validateProtocol?.(protocol, { requireReview:true });
+    if (result && !result.ok) {
+      window.showProtocolToast?.(result.issues?.[0]?.message || 'Receta nuk është gati për printim.');
+      return false;
+    }
+    return true;
+  }
+
+  function printProtocol(protocol, currentDraft = false) {
+    if (!canPrint(protocol, currentDraft)) return false;
     const popup = window.open('', '_blank', 'width=900,height=760');
-    if (!popup) return false;
+    if (!popup) {
+      window.showProtocolToast?.('Shfletuesi e bllokoi dritaren e printimit.');
+      return false;
+    }
     const content = protocolToText(protocol).split('\n').map(line => `<div>${line ? esc(line) : '&nbsp;'}</div>`).join('');
     popup.document.write(`<!doctype html><html lang="sq"><head><meta charset="utf-8"><title>${esc(protocol.name || 'Recetë')}</title><style>body{font-family:Arial,sans-serif;max-width:850px;margin:35px auto;padding:0 24px;color:#17252a;line-height:1.55}div{white-space:pre-wrap}div:first-child{font-size:24px;font-weight:700;margin-bottom:8px}@media print{body{margin:0}}</style></head><body>${content}<script>window.onload=()=>window.print()<\/script></body></html>`);
     popup.document.close();
@@ -390,7 +423,11 @@
         queueDecorate();
       }
 
-      if (event.target.closest?.('#saveProtocolBtn')) setTimeout(patchSavedProtocol, 0);
+      if (event.target.closest?.('#saveProtocolBtn')) {
+        const startedAt = Date.now();
+        const expectedName = document.getElementById('protocolName')?.value.trim() || '';
+        setTimeout(() => patchSavedProtocol(startedAt, expectedName), 0);
+      }
 
       if (event.target.closest?.('#copyProtocolBtn')) {
         event.preventDefault();
@@ -405,7 +442,7 @@
         event.preventDefault();
         event.stopPropagation();
         event.stopImmediatePropagation();
-        printProtocol(currentProtocol());
+        printProtocol(currentProtocol(), true);
       }
 
       const previewAction = event.target.closest?.('#miOverlay [data-a]')?.dataset.a;
@@ -414,7 +451,7 @@
         event.stopPropagation();
         event.stopImmediatePropagation();
         const protocol = getProtocols().find(item => String(item.id) === String(previewProtocolId));
-        if (protocol) printProtocol(protocol);
+        if (protocol) printProtocol(protocol, false);
       }
     }, true);
   }
