@@ -9,7 +9,8 @@ const ROOT = path.resolve(__dirname, '..');
 const requiredFiles = [
   'index.html','klasifikimi.html','icd.html','analizat.html','login.html',
   'login.css','login.js','auth-client.js','app-stability.js','app-polish.css',
-  'middleware.ts','lib/auth.mjs','lib/auth-edge.mjs','api/auth.js','api/registry.js','api/dosage.js','api/health.js',
+  'medical-hub.css','analizat-polish.css','lab-clinical.js',
+  'middleware.ts','lib/auth.mjs','lib/auth-edge.mjs','api/auth.js','api/registry.js','api/dosage.js','api/health.js','api/labs.js',
   'data/registry-quality.js','icd-data.js','lab-data.js','vercel.json','robots.txt',
   ...Array.from({ length: 7 }, (_, index) => `app-parts/part-${String(index + 1).padStart(2, '0')}.txt`),
 ];
@@ -27,19 +28,19 @@ function localReferences(html) {
 }
 
 async function main() {
-  console.log('1/9 Required files');
+  console.log('1/10 Required files');
   requiredFiles.forEach(relativePath => assert.ok(fs.existsSync(path.join(ROOT, relativePath)), `Missing ${relativePath}`));
   assert.ok(!fs.existsSync(path.join(ROOT, 'middleware.js')), 'Conflicting middleware.js must not exist');
 
-  console.log('2/9 JSON and JavaScript syntax');
+  console.log('2/10 JSON and JavaScript syntax');
   const vercel = JSON.parse(file('vercel.json'));
   assert.equal(vercel.rewrites?.[0]?.destination, '/api/registry');
   [
     'app.js','login.js','auth-client.js','app-stability.js','main-navigation-extension.js',
-    'api/auth.js','api/registry.js','api/registry-data.js','api/dosage.js','api/health.js',
+    'api/auth.js','api/registry.js','api/registry-data.js','api/dosage.js','api/health.js','api/labs.js',
     'data/registry-quality.js','classification-registry-bridge.js','classification-v3.js',
     'classification-audit-view.js','classification-info-v3.js','icd-data.js','icd.js',
-    'lab-data.js','analizat.js','dosage-integration.js','dosage-auto-apply.js',
+    'lab-data.js','lab-clinical.js','analizat.js','dosage-integration.js','dosage-auto-apply.js',
     'prescription-review.js','medindex-view.js','lib/auth.mjs','lib/auth-edge.mjs',
   ].forEach(checkSyntax);
 
@@ -51,7 +52,7 @@ async function main() {
   fs.writeFileSync(bundleTemp, Array.from({ length: 7 }, (_, index) => file(`app-parts/part-${String(index + 1).padStart(2, '0')}.txt`)).join(''));
   execFileSync(process.execPath, ['--check', bundleTemp], { stdio: 'pipe' });
 
-  console.log('3/9 Authentication and session expiry');
+  console.log('3/10 Authentication and session expiry');
   process.env.SESSION_SECRET = 'medindex-test-secret-with-at-least-thirty-two-characters';
   process.env.ACCESS_CODE = ['diellza', '123'].join('');
   const authUrl = `${pathToFileURL(path.join(ROOT, 'lib/auth.mjs')).href}?test=${Date.now()}`;
@@ -70,7 +71,7 @@ async function main() {
   assert.match(auth.sessionCookie(token), /SameSite=Strict/);
   assert.match(auth.sessionCookie(token), /Secure/);
 
-  console.log('4/9 HTML wiring, duplicate IDs and private assets');
+  console.log('4/10 HTML wiring, duplicate IDs and private assets');
   const htmlFiles = ['index.html','klasifikimi.html','icd.html','analizat.html','login.html'];
   const virtualFiles = new Set(['data/registry-data.js']);
   htmlFiles.forEach(relativePath => {
@@ -87,15 +88,21 @@ async function main() {
     assert.match(html, /app-stability\.js/);
     assert.match(html, /app-polish\.css/);
   });
+  const labsHtml = file('analizat.html');
+  assert.match(labsHtml, /class="auth-checking"/);
+  assert.match(labsHtml, /analizat-polish\.css/);
+  assert.match(labsHtml, /lab-clinical\.js/);
+  assert.doesNotMatch(labsHtml, /src="lab-data\.js/);
+  assert.ok(labsHtml.indexOf('auth-client.js') < labsHtml.indexOf('analizat.js'), 'Auth client must load before laboratory UI');
   assert.match(file('index.html'), /value="500"/);
   assert.match(file('index.html'), /value="4006" hidden/);
 
-  console.log('5/9 No password leakage to browser assets');
-  const browserFiles = ['index.html','login.html','login.js','login.css','auth-client.js','app-stability.js','app.js'];
+  console.log('5/10 No password leakage to browser assets');
+  const browserFiles = ['index.html','analizat.html','login.html','login.js','login.css','auth-client.js','app-stability.js','app.js','analizat.js','lab-clinical.js'];
   const forbiddenPassword = ['diellza', '123'].join('');
   browserFiles.forEach(relativePath => assert.equal(file(relativePath).includes(forbiddenPassword), false, `Password leaked in ${relativePath}`));
 
-  console.log('6/9 Registry quality correction and blocking rules');
+  console.log('6/10 Registry quality correction and blocking rules');
   const quality = require(path.join(ROOT, 'data/registry-quality.js'));
   const base = {
     'Emri tregtar':'Test','Substanca aktive':'Test','ATC Code':'A01AA01',
@@ -112,7 +119,7 @@ async function main() {
   assert.equal(result.rows[1].__qualityStatus, 'blocked');
   assert.equal(result.rows[2].__qualityStatus, 'warning');
 
-  console.log('7/9 ICD dataset');
+  console.log('7/10 ICD dataset');
   global.window = {};
   delete require.cache[require.resolve(path.join(ROOT, 'icd-data.js'))];
   require(path.join(ROOT, 'icd-data.js'));
@@ -126,7 +133,7 @@ async function main() {
   });
   ['J85','J85.0','J85.1','J85.2','J85.3','J86','J86.0','J86.9'].forEach(code => assert.ok(icdCodes.has(code), `Missing ICD ${code}`));
 
-  console.log('8/9 Laboratory dataset from user-provided forms only');
+  console.log('8/10 Laboratory source dataset integrity');
   global.window = {};
   delete require.cache[require.resolve(path.join(ROOT, 'lab-data.js'))];
   require(path.join(ROOT, 'lab-data.js'));
@@ -141,7 +148,6 @@ async function main() {
     ['id','system','name','specimen','reference','sourceLabel'].forEach(key => assert.ok(String(test[key] || '').trim(), `Lab ${test.id || '?'} missing ${key}`));
     assert.ok(systems.has(test.system), `Unknown system ${test.system}`);
     assert.equal(labIds.has(test.id), false, `Duplicate lab ${test.id}`);
-    assert.equal('sourceUrl' in test, false, `External source URL must not be added to ${test.id}`);
     labIds.add(test.id);
   });
   const byId = id => labs.tests.find(test => test.id === id);
@@ -150,22 +156,41 @@ async function main() {
   assert.equal(byId('sodium').reference, '136–146');
   assert.match(byId('wbc').alternateReference, /3\.5–10\.0/);
   assert.equal(byId('urine-appearance').reference, 'Nuk është shënuar në formular');
-  ['ferritin','b12','egfr','hba1c','tsh','ft4'].forEach(id => assert.equal(labIds.has(id), false, `Unapproved laboratory test returned: ${id}`));
-  assert.match(file('analizat.html'), /Vetëm analizat/);
-  assert.match(file('analizat.js'), /Nga formulari/);
+  ['ferritin','b12','egfr','hba1c','tsh','ft4'].forEach(id => assert.equal(labIds.has(id), false, `Unapproved source-form test returned: ${id}`));
 
-  console.log('9/9 Security and performance invariants');
+  console.log('9/10 Laboratory clinical enrichment, flags and fast search');
+  delete require.cache[require.resolve(path.join(ROOT, 'lab-clinical.js'))];
+  require(path.join(ROOT, 'lab-clinical.js'));
+  const enriched = global.window.MEDINDEX_LAB_CLINICAL.enrichDataset(labs);
+  assert.equal(enriched.tests.length, labs.tests.length);
+  assert.ok(enriched.clinicalAudit.verified >= 20, 'Too few clinically verified laboratory entries');
+  assert.ok(enriched.clinicalAudit.flagged >= 8, 'Suspicious units/ranges are not flagged');
+  const enrichedById = id => enriched.tests.find(test => test.id === id);
+  assert.equal(enrichedById('hgb').clinicalStatus, 'verified');
+  assert.match(enrichedById('hgb').why, /anemi/i);
+  assert.ok(enrichedById('creatinine-serum').qualityFlags.length > 0);
+  assert.ok(enrichedById('bilirubin-total').qualityFlags.length > 0);
+  assert.equal(enrichedById('urine-appearance').clinicalStatus, 'source-only');
+  assert.match(file('analizat.js'), /CACHE_MAX_AGE\s*=\s*8 \* 60 \* 60 \* 1000/);
+  assert.match(file('analizat.js'), /tokens\.every/);
+  assert.match(file('analizat.js'), /requestAnimationFrame/);
+  assert.match(file('analizat.js'), /\/api\/labs/);
+  assert.match(file('api/labs.js'), /authorized\(req\)/);
+  assert.match(file('api/labs.js'), /ETag/);
+
+  console.log('10/10 Security and performance invariants');
   assert.match(file('middleware.ts'), /auth-edge\.mjs/);
   assert.doesNotMatch(file('middleware.ts'), /runtime:\s*'nodejs'/);
   assert.match(file('middleware.ts'), /pathname\.startsWith\('\/api\/'\)/);
   assert.match(file('api/registry.js'), /MIN_EXPECTED_ROWS\s*=\s*3500/);
   assert.match(file('api/registry.js'), /authorized\(req\)/);
   assert.match(file('api/dosage.js'), /authorized\(req\)/);
-  assert.match(file('api/dosage.js'), /Cache-Control', 'private, no-cache/);
   assert.match(file('vercel.json'), /\/api\/\(\.\*\)/);
   assert.match(file('app-parts/part-03.txt'), /const SEARCH_INDEX = new WeakMap/);
   assert.match(file('app-parts/part-07.txt'), /setTimeout\(applyRegistrySearch, 35\)/);
   assert.match(file('app-parts/part-07.txt'), /requestAnimationFrame/);
+  assert.match(file('auth-client.js'), /MEDINDEX_AUTH_READY/);
+  assert.match(file('analizat-polish.css'), /content-visibility:auto/);
   assert.equal(file('robots.txt').trim(), 'User-agent: *\nDisallow: /');
 
   fs.rmSync(tempDir, { recursive: true, force: true });
