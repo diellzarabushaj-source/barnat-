@@ -1,5 +1,8 @@
 const crypto = require('node:crypto');
 
+const EXPECTED_PHOTO_TESTS = 110;
+const DISALLOWED_EXTRA_IDS = new Set(['ferritin', 'b12', 'egfr', 'hba1c', 'tsh', 'ft4']);
+
 function loadDataset() {
   const previousWindow = global.window;
   const holder = {};
@@ -12,33 +15,64 @@ function loadDataset() {
     else global.window = previousWindow;
   }
 
-  const data = holder.MEDINDEX_LABS;
-  if (!data || !Array.isArray(data.systems) || !Array.isArray(data.tests)) {
+  const source = holder.MEDINDEX_LABS;
+  if (!source || !Array.isArray(source.systems) || !Array.isArray(source.tests)) {
     throw new Error('Dataset-i laboratorik nuk u ngarkua në format të vlefshëm.');
   }
 
-  const systems = new Set(data.systems.map(item => String(item.id || '').trim()).filter(Boolean));
+  if (!/Vetëm analizat/i.test(String(source.sourcePolicy || ''))) {
+    throw new Error('Dataset-i laboratorik nuk është i kyçur vetëm te fotografitë e aprovuara.');
+  }
+
+  const tests = source.tests.map(test => {
+    if (test.id === 'uric-acid') {
+      return {
+        ...test,
+        unit: 'mmol/L',
+        referenceNote: 'Njësia mmol/L është transkriptuar nga formulari i fotografuar.',
+      };
+    }
+    return { ...test };
+  });
+
+  if (tests.length !== EXPECTED_PHOTO_TESTS) {
+    throw new Error(`Dataset-i duhet të ketë saktësisht ${EXPECTED_PHOTO_TESTS} analiza nga fotografitë; u gjetën ${tests.length}.`);
+  }
+
+  const systems = new Set(source.systems.map(item => String(item.id || '').trim()).filter(Boolean));
   const ids = new Set();
   const issues = [];
-  const required = ['id', 'system', 'name', 'specimen', 'reference'];
+  const required = ['id', 'system', 'name', 'specimen', 'reference', 'sourceLabel'];
 
-  data.tests.forEach((test, index) => {
+  tests.forEach((test, index) => {
     required.forEach(field => {
       if (!String(test[field] ?? '').trim()) issues.push(`Rreshti ${index + 1}: mungon ${field}`);
     });
     if (ids.has(test.id)) issues.push(`ID e dyfishtë: ${test.id}`);
     ids.add(test.id);
     if (!systems.has(test.system)) issues.push(`Sistem i panjohur: ${test.system}`);
+    if (DISALLOWED_EXTRA_IDS.has(test.id)) issues.push(`Analizë jashtë fotografive: ${test.id}`);
   });
 
-  if (issues.length) throw new Error(`Dataset-i laboratorik dështoi auditin: ${issues.slice(0, 8).join('; ')}`);
+  if (issues.length) {
+    throw new Error(`Dataset-i laboratorik dështoi auditin: ${issues.slice(0, 8).join('; ')}`);
+  }
+
+  const data = {
+    ...source,
+    tests,
+    sourceLocked: true,
+    sourceTestCount: EXPECTED_PHOTO_TESTS,
+  };
+
   return Object.freeze({
     ...data,
     audit: {
-      totalTests: data.tests.length,
+      totalTests: tests.length,
       totalSystems: data.systems.length,
-      withReference: data.tests.filter(test => String(test.reference || '').trim() && !/^nuk është shënuar/i.test(String(test.reference).trim())).length,
-      withoutReference: data.tests.filter(test => !String(test.reference || '').trim() || /^nuk është shënuar/i.test(String(test.reference).trim())).length,
+      withReference: tests.filter(test => String(test.reference || '').trim() && !/^nuk është shënuar/i.test(String(test.reference).trim())).length,
+      withoutReference: tests.filter(test => !String(test.reference || '').trim() || /^nuk është shënuar/i.test(String(test.reference).trim())).length,
+      sourceLocked: true,
     },
   });
 }
@@ -71,6 +105,7 @@ module.exports = async function handler(req, res) {
   res.setHeader('Cache-Control', 'private, max-age=300, stale-while-revalidate=3600');
   res.setHeader('Content-Type', 'application/json; charset=utf-8');
   res.setHeader('X-MedIndex-Lab-Tests', String(DATASET.tests.length));
+  res.setHeader('X-MedIndex-Lab-Source', 'user-provided-kosovo-forms');
   if (req.method === 'HEAD') return res.status(200).end();
   return res.status(200).send(BODY);
 };
