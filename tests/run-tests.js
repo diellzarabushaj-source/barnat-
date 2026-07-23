@@ -9,7 +9,7 @@ const ROOT = path.resolve(__dirname, '..');
 const requiredFiles = [
   'index.html','klasifikimi.html','icd.html','analizat.html','login.html',
   'login.css','login.js','auth-client.js','app-stability.js','app-polish.css',
-  'middleware.ts','lib/auth.mjs','api/auth.js','api/registry.js','api/dosage.js','api/health.js',
+  'middleware.ts','lib/auth.mjs','lib/auth-edge.mjs','api/auth.js','api/registry.js','api/dosage.js','api/health.js',
   'data/registry-quality.js','icd-data.js','lab-data.js','vercel.json','robots.txt',
   ...Array.from({ length: 7 }, (_, index) => `app-parts/part-${String(index + 1).padStart(2, '0')}.txt`),
 ];
@@ -47,7 +47,7 @@ async function main() {
     'data/registry-quality.js','classification-registry-bridge.js','classification-v3.js',
     'classification-audit-view.js','classification-info-v3.js','icd-data.js','icd.js',
     'lab-data.js','analizat.js','dosage-integration.js','dosage-auto-apply.js',
-    'prescription-review.js','medindex-view.js','lib/auth.mjs',
+    'prescription-review.js','medindex-view.js','lib/auth.mjs','lib/auth-edge.mjs',
   ].forEach(checkSyntax);
 
   const tempDir = fs.mkdtempSync(path.join(os.tmpdir(), 'medindex-test-'));
@@ -62,13 +62,17 @@ async function main() {
   process.env.SESSION_SECRET = 'medindex-test-secret-with-at-least-thirty-two-characters';
   process.env.ACCESS_CODE = ['diellza', '123'].join('');
   const authUrl = `${pathToFileURL(path.join(ROOT, 'lib/auth.mjs')).href}?test=${Date.now()}`;
+  const edgeAuthUrl = `${pathToFileURL(path.join(ROOT, 'lib/auth-edge.mjs')).href}?test=${Date.now()}`;
   const auth = await import(authUrl);
+  const edgeAuth = await import(edgeAuthUrl);
   assert.equal(auth.verifyAccessCode(['diellza', '123'].join('')), true);
   assert.equal(auth.verifyAccessCode('wrong-password'), false);
   const now = Date.now();
   const token = auth.createSessionToken(now);
   assert.equal(auth.verifySessionToken(token, now + 1000), true);
+  assert.equal(await edgeAuth.verifySessionToken(token, now + 1000), true, 'Edge could not verify Node session');
   assert.equal(auth.verifySessionToken(token, now + (8 * 60 * 60 * 1000) + 1000), false);
+  assert.equal(await edgeAuth.verifySessionToken(token, now + (8 * 60 * 60 * 1000) + 1000), false);
   assert.match(auth.sessionCookie(token), /HttpOnly/);
   assert.match(auth.sessionCookie(token), /SameSite=Strict/);
   assert.match(auth.sessionCookie(token), /Secure/);
@@ -147,7 +151,8 @@ async function main() {
   });
 
   console.log('9/9 Security and performance invariants');
-  assert.match(file('middleware.ts'), /runtime:\s*'nodejs'/);
+  assert.match(file('middleware.ts'), /auth-edge\.mjs/);
+  assert.doesNotMatch(file('middleware.ts'), /runtime:\s*'nodejs'/);
   assert.match(file('middleware.ts'), /pathname\.startsWith\('\/api\/'\)/);
   assert.match(file('api/registry.js'), /MIN_EXPECTED_ROWS\s*=\s*3500/);
   assert.match(file('api/registry.js'), /stale-while-revalidate=86400/);
