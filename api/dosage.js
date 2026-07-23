@@ -1,10 +1,16 @@
 const XLSX = require('xlsx');
+const crypto = require('node:crypto');
 
 const DEFAULT_DOSAGE_FILE_ID = '1T7XsfkXLQfEomFL4DmXoA8PheiR6s3Qmu36hTqklOMo';
-const MEMORY_CACHE_MS = 5 * 60 * 1000;
+const MEMORY_CACHE_MS = 6 * 60 * 60 * 1000;
+const FETCH_TIMEOUT_MS = 12000;
+const MAX_WORKBOOK_BYTES = 10 * 1024 * 1024;
+
 let memoryCache = null;
 let memoryCacheTime = 0;
 let memoryCacheKey = '';
+let pendingBuild = null;
+let pendingBuildKey = '';
 
 const clean = value => String(value ?? '').replace(/\s+/g, ' ').trim();
 const token = value => clean(value).normalize('NFD').replace(/[\u0300-\u036f]/g, '').toLowerCase().replace(/[^a-z0-9]+/g, '');
@@ -13,8 +19,9 @@ const verified = value => clean(value).toUpperCase() === 'VERIFIKUAR';
 const envFlag = name => ['TRUE', '1', 'YES', 'PO'].includes(clean(process.env[name]).toUpperCase());
 const httpsUrl = value => /^https:\/\/[^\s]+$/i.test(clean(value)) ? clean(value) : '';
 const numberOrNull = value => {
-  const parsed = Number(clean(value).replace(',', '.'));
-  return clean(value) && Number.isFinite(parsed) ? parsed : null;
+  const raw = clean(value);
+  const parsed = Number(raw.replace(',', '.'));
+  return raw && Number.isFinite(parsed) ? parsed : null;
 };
 
 function sourceUrls(fileId) {
@@ -25,18 +32,32 @@ function sourceUrls(fileId) {
   ];
 }
 
+async function fetchWorkbook(url) {
+  const controller = new AbortController();
+  const timer = setTimeout(() => controller.abort(), FETCH_TIMEOUT_MS);
+  try {
+    const response = await fetch(url, {
+      redirect: 'follow',
+      signal: controller.signal,
+      headers: { 'User-Agent': 'Mozilla/5.0 (compatible; MedIndexDosage/2.0)' },
+    });
+    if (!response.ok) throw new Error(`status ${response.status}`);
+    const declaredSize = Number(response.headers.get('content-length') || 0);
+    if (declaredSize > MAX_WORKBOOK_BYTES) throw new Error('workbook-u është tepër i madh');
+    const buffer = Buffer.from(await response.arrayBuffer());
+    if (buffer.length > MAX_WORKBOOK_BYTES) throw new Error('workbook-u është tepër i madh');
+    if (!(buffer.length > 4 && buffer[0] === 0x50 && buffer[1] === 0x4b)) throw new Error('përgjigjja nuk ishte Excel');
+    return buffer;
+  } finally {
+    clearTimeout(timer);
+  }
+}
+
 async function downloadWorkbook(fileId) {
   let lastError;
   for (const url of sourceUrls(fileId)) {
     try {
-      const response = await fetch(url, {
-        redirect: 'follow',
-        headers: { 'User-Agent': 'Mozilla/5.0 (compatible; MedIndexDosage/1.2)' },
-      });
-      if (!response.ok) throw new Error(`status ${response.status}`);
-      const buffer = Buffer.from(await response.arrayBuffer());
-      if (!(buffer.length > 4 && buffer[0] === 0x50 && buffer[1] === 0x4b)) throw new Error('përgjigjja nuk ishte Excel');
-      return buffer;
+      return await fetchWorkbook(url);
     } catch (error) {
       lastError = error;
     }
@@ -150,6 +171,7 @@ function mapPediatric(row) {
     max24hMg: numberOrNull(row['Maks. 24h (mg)']),
     maxDoses24h: numberOrNull(row['Maks. nr. dozave/24h']),
     duration: clean(row['Kohëzgjatja default']),
+    dispense: clean(row['Dispenso default']),
     formula: clean(row['Formula e llogaritjes']),
     signatura: clean(row['Signatura draft']),
     warnings: clean(row['Udhëzime / alarme']),
@@ -189,8 +211,8 @@ function uniqueBy(items, keyName) {
   return { output, duplicates };
 }
 
-async function buildPayload() {
-  const fileId = process.env.DOSAGE_SHEET_ID || DEFAULT_DOSAGE_FILE_ID;
+async function buildPayload(fileId) {
+  const startedAt = Date.now();
   const workbook = XLSX.read(await downloadWorkbook(fileId), { type: 'buffer', cellDates: false });
   const config = configFromRows(sheetToRecords(workbook, 'CONFIG'));
   const clinicalAutoFillEnabled = envFlag('ENABLE_DOSAGE_AUTOFILL') || yes(config.CLINICAL_AUTOFILL_ENABLED);
@@ -204,7 +226,7 @@ async function buildPayload() {
   const adult = clinicalAutoFillEnabled ? eligibleAdultResult.output : [];
   const pediatric = clinicalAutoFillEnabled ? eligiblePediatricResult.output : [];
 
-  return {
+  const payload = {
     schemaVersion: clean(config.SCHEMA_VERSION) || '1.0.0',
     datasetVersion: clean(config.DATASET_VERSION),
     mode: clean(config.WEBSITE_MODE) || 'SAFE_VERIFIED_ONLY',
@@ -229,35 +251,60 @@ async function buildPayload() {
       duplicatePediatricRegimens: eligiblePediatricResult.duplicates,
       draftAdultRegimens: adultRows.filter(row => !requestedDosage(row)).length,
       draftPediatricRegimens: pediatricRows.filter(row => !requestedDosage(row)).length,
+      buildMs: Date.now() - startedAt,
       geminiForDosage: false,
     },
   };
+  const body = JSON.stringify(payload);
+  return {
+    payload,
+    body,
+    etag: `"${crypto.createHash('sha256').update(body).digest('base64url')}"`,
+  };
+}
+
+async function getPayload() {
+  const fileId = process.env.DOSAGE_SHEET_ID || DEFAULT_DOSAGE_FILE_ID;
+  const key = `${fileId}:${envFlag('ENABLE_DOSAGE_AUTOFILL')}:config-v3`;
+  const now = Date.now();
+  if (memoryCache && memoryCacheKey === key && now - memoryCacheTime < MEMORY_CACHE_MS) return memoryCache;
+  if (!pendingBuild || pendingBuildKey !== key) {
+    pendingBuildKey = key;
+    pendingBuild = buildPayload(fileId).then(result => {
+      memoryCache = result;
+      memoryCacheTime = Date.now();
+      memoryCacheKey = key;
+      return result;
+    }).finally(() => {
+      pendingBuild = null;
+      pendingBuildKey = '';
+    });
+  }
+  return pendingBuild;
 }
 
 module.exports = async function handler(req, res) {
+  const startedAt = Date.now();
   try {
-    if (req.method !== 'GET') {
-      res.setHeader('Allow', 'GET');
-      return res.status(405).json({ error: 'Lejohet vetëm GET.' });
+    if (!['GET', 'HEAD'].includes(req.method)) {
+      res.setHeader('Allow', 'GET, HEAD');
+      return res.status(405).json({ error: 'Lejohet vetëm GET/HEAD.' });
     }
 
-    const key = `${process.env.DOSAGE_SHEET_ID || DEFAULT_DOSAGE_FILE_ID}:${envFlag('ENABLE_DOSAGE_AUTOFILL')}:config-v2`;
-    const now = Date.now();
-    if (!memoryCache || memoryCacheKey !== key || now - memoryCacheTime > MEMORY_CACHE_MS) {
-      memoryCache = await buildPayload();
-      memoryCacheTime = now;
-      memoryCacheKey = key;
-    }
-
+    const result = await getPayload();
     res.setHeader('Content-Type', 'application/json; charset=utf-8');
-    res.setHeader('Cache-Control', 'no-store, max-age=0');
+    res.setHeader('Cache-Control', 'public, s-maxage=3600, stale-while-revalidate=21600');
     res.setHeader('X-Content-Type-Options', 'nosniff');
-    res.status(200).json(memoryCache);
+    res.setHeader('ETag', result.etag);
+    res.setHeader('Server-Timing', `dosage;dur=${Date.now() - startedAt}`);
+    if (req.headers['if-none-match'] === result.etag) return res.status(304).end();
+    if (req.method === 'HEAD') return res.status(200).end();
+    return res.status(200).send(result.body);
   } catch (error) {
     console.error('Dosage data error:', error);
     res.setHeader('Content-Type', 'application/json; charset=utf-8');
     res.setHeader('Cache-Control', 'no-store');
-    res.status(500).json({
+    return res.status(500).json({
       error: error.message || 'Gabim gjatë ngarkimit të dozologjisë.',
       forms: [],
       adult: [],
