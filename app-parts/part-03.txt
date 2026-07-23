@@ -31,23 +31,49 @@ function categoryOf(forma){
   return FORM_TO_CATEGORY[String(forma ?? '').trim()] || null;
 }
 
-function fieldMatchesTerm(fieldLower, term){
-  if(fieldLower.includes(term)) return true;
-  const aliasTargets = FORM_ALIASES[term];
-  if(aliasTargets) return aliasTargets.some(t => fieldLower.includes(t));
-  return false;
+const SEARCH_INDEX = new WeakMap();
+
+function normalizeSearchText(value){
+  return String(value ?? '')
+    .normalize('NFD')
+    .replace(/[\u0300-\u036f]/g, '')
+    .toLocaleLowerCase('sq')
+    .replace(/\s+/g, ' ')
+    .trim();
 }
 
-function rowMatchesSearch(r, terms){
-  return terms.every(term => SEARCH_FIELDS.some(f => fieldMatchesTerm(String(r[f] ?? '').toLowerCase(), term)));
+function indexedSearchText(row){
+  const cached = SEARCH_INDEX.get(row);
+  if(cached) return cached;
+  const value = normalizeSearchText(SEARCH_FIELDS.map(field => row[field] ?? '').join(' '));
+  SEARCH_INDEX.set(row, value);
+  return value;
+}
+
+const NORMALIZED_FORM_ALIASES = Object.fromEntries(
+  Object.entries(FORM_ALIASES).map(([key, values]) => [
+    normalizeSearchText(key),
+    values.map(normalizeSearchText),
+  ])
+);
+
+function fieldMatchesTerm(fieldLower, term){
+  if(fieldLower.includes(term)) return true;
+  const aliasTargets = NORMALIZED_FORM_ALIASES[term];
+  return aliasTargets ? aliasTargets.some(target => fieldLower.includes(target)) : false;
+}
+
+function rowMatchesSearch(row, terms){
+  const indexed = indexedSearchText(row);
+  return terms.every(term => fieldMatchesTerm(indexed, term));
 }
 
 function getFiltered(){
   let rows = RAW;
-  const q = state.search.trim().toLowerCase();
+  const q = normalizeSearchText(state.search);
   if(q){
     const terms = q.split(/\s+/).filter(Boolean);
-    rows = rows.filter(r => rowMatchesSearch(r, terms));
+    rows = rows.filter(row => rowMatchesSearch(row, terms));
   }
   if(state.status){
     rows = rows.filter(r => String(r['Statusi'] ?? '').trim() === state.status);
