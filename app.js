@@ -1,22 +1,31 @@
 const hidePageLoader = () => {
   const loader = document.getElementById('pageLoader');
   if(!loader) return;
-
   loader.classList.add('is-hidden');
-  window.setTimeout(() => loader.remove(), 350);
+  window.setTimeout(() => loader.remove(), 250);
 };
 
 (async () => {
-  const CACHE_KEY = 'barnat-registry-parts-v1';
-  const CACHE_TIME_KEY = 'barnat-registry-cached-at-v1';
+  const APP_VERSION = '20260723-2';
+  const CACHE_KEY = 'barnat-registry-parts-v2';
+  const CACHE_TIME_KEY = 'barnat-registry-cached-at-v2';
   const BACKGROUND_REFRESH_MS = 6 * 60 * 60 * 1000;
+  const REQUEST_TIMEOUT_MS = 12000;
 
-  const hasRegistryData = () =>
-    Array.isArray(window.DRUG_DATA_PARTS) && window.DRUG_DATA_PARTS.length > 0;
+  const hasRegistryData = () => Array.isArray(window.DRUG_DATA_PARTS) && window.DRUG_DATA_PARTS.length > 0;
+
+  async function timedFetch(url, options = {}, timeoutMs = REQUEST_TIMEOUT_MS) {
+    const controller = new AbortController();
+    const timer = window.setTimeout(() => controller.abort(), timeoutMs);
+    try {
+      return await fetch(url, { ...options, signal: controller.signal });
+    } finally {
+      window.clearTimeout(timer);
+    }
+  }
 
   function saveBrowserCache() {
     if(!hasRegistryData()) return;
-
     try {
       localStorage.setItem(CACHE_KEY, JSON.stringify(window.DRUG_DATA_PARTS));
       localStorage.setItem(CACHE_TIME_KEY, String(Date.now()));
@@ -29,7 +38,6 @@ const hidePageLoader = () => {
     try {
       const saved = JSON.parse(localStorage.getItem(CACHE_KEY) || 'null');
       if(!Array.isArray(saved) || saved.length === 0) return false;
-
       window.DRUG_DATA_PARTS = saved;
       window.REGISTRY_DATA_SOURCE = 'browser-cache';
       return true;
@@ -42,28 +50,19 @@ const hidePageLoader = () => {
 
   async function loadGoogleDriveFallback({ background = false } = {}) {
     const previousParts = window.DRUG_DATA_PARTS;
-
     try {
-      const registryResponse = await fetch('/api/registry?fallback=1&version=20260722-12', {
-        cache: 'no-store',
+      const registryResponse = await timedFetch(`/api/registry?version=${APP_VERSION}`, {
+        cache: background ? 'no-cache' : 'no-store',
+        credentials: 'same-origin',
       });
-
-      if(!registryResponse.ok){
-        throw new Error('Fallback-i i Google Drive dështoi (' + registryResponse.status + ')');
-      }
-
+      if(registryResponse.status === 401) throw new Error('Sesioni ka skaduar.');
+      if(!registryResponse.ok) throw new Error('Fallback-i i Google Drive dështoi (' + registryResponse.status + ')');
       const registryCode = await registryResponse.text();
       window.DRUG_DATA_PARTS = [];
       window.REGISTRY_LOAD_ERROR = '';
       (0, eval)(registryCode);
-
-      if(!hasRegistryData()){
-        throw new Error(window.REGISTRY_LOAD_ERROR || 'Google Drive nuk ktheu të dhënat e barnave.');
-      }
-
-      window.REGISTRY_DATA_SOURCE = background
-        ? 'google-drive-background-refresh'
-        : 'google-drive-fallback';
+      if(!hasRegistryData()) throw new Error(window.REGISTRY_LOAD_ERROR || 'Google Drive nuk ktheu të dhënat e barnave.');
+      window.REGISTRY_DATA_SOURCE = background ? 'google-drive-background-refresh' : 'google-drive-fallback';
       saveBrowserCache();
       return true;
     } catch(error) {
@@ -77,50 +76,39 @@ const hidePageLoader = () => {
   }
 
   if(hasRegistryData()){
-    window.REGISTRY_DATA_SOURCE = 'static-cdn';
+    window.REGISTRY_DATA_SOURCE = 'edge-cache';
     saveBrowserCache();
   } else if(!loadBrowserCache()) {
-    console.warn('Databaza statike/cache mungon; po përdoret Google Drive si fallback.');
+    console.warn('Databaza e edge/cache mungon; po përdoret API-ja e regjistrit.');
     await loadGoogleDriveFallback();
   }
 
-  const files = [
-    './app-parts/part-01.txt?v=20260722-12',
-    './app-parts/part-02.txt?v=20260722-12',
-    './app-parts/part-03.txt?v=20260722-12',
-    './app-parts/part-04.txt?v=20260722-12',
-    './app-parts/part-05.txt?v=20260722-12',
-    './app-parts/part-06.txt?v=20260722-12',
-    './app-parts/part-07.txt?v=20260722-12',
-  ];
-
-  const responses = await Promise.all(files.map(file => fetch(file, { cache: 'force-cache' })));
+  const files = Array.from({ length: 7 }, (_, index) => `./app-parts/part-${String(index + 1).padStart(2, '0')}.txt?v=${APP_VERSION}`);
+  const responses = await Promise.all(files.map(file => timedFetch(file, { cache: 'force-cache', credentials: 'same-origin' })));
   responses.forEach((response, index) => {
     if(!response.ok) throw new Error('Nuk u ngarkua ' + files[index] + ' (' + response.status + ')');
   });
 
-  const code = (await Promise.all(responses.map(response => response.text()))).join('');
-  (0, eval)(code);
+  const codeParts = await Promise.all(responses.map(response => response.text()));
+  const code = codeParts.join('');
+  (0, eval)(`${code}\n//# sourceURL=medindex-app-bundle-${APP_VERSION}.js`);
 
   const countBadge = document.getElementById('countBadge');
-  if(countBadge) {
-    countBadge.title = 'Burimi i të dhënave: ' + window.REGISTRY_DATA_SOURCE;
-  }
-
+  if(countBadge) countBadge.title = 'Burimi i të dhënave: ' + window.REGISTRY_DATA_SOURCE;
+  window.MEDINDEX_APP_VERSION = APP_VERSION;
   requestAnimationFrame(() => requestAnimationFrame(hidePageLoader));
 
   const cachedAt = Number(localStorage.getItem(CACHE_TIME_KEY) || 0);
-  if(
-    window.REGISTRY_DATA_SOURCE === 'browser-cache' &&
-    Date.now() - cachedAt > BACKGROUND_REFRESH_MS
-  ) {
-    loadGoogleDriveFallback({ background: true });
+  if(window.REGISTRY_DATA_SOURCE === 'browser-cache' && Date.now() - cachedAt > BACKGROUND_REFRESH_MS) {
+    const refresh = () => loadGoogleDriveFallback({ background: true });
+    if('requestIdleCallback' in window) requestIdleCallback(refresh, { timeout: 2500 });
+    else setTimeout(refresh, 750);
   }
 })().catch(error => {
   console.error(error);
   hidePageLoader();
   const count = document.getElementById('countBadge');
-  if(count) count.textContent = 'Gabim në databazë';
+  if(count) count.textContent = error?.name === 'AbortError' ? 'Ngarkimi zgjati tepër' : 'Gabim në databazë';
   const body = document.getElementById('tbody');
-  if(body) body.innerHTML = '<tr><td colspan="30" class="empty-state">Databaza e barnave nuk u ngarkua. Provo rifreskimin e faqes pas pak.</td></tr>';
+  if(body) body.innerHTML = '<tr><td colspan="30" class="empty-state">Databaza e barnave nuk u ngarkua. Kontrollo lidhjen dhe provo rifreskimin.</td></tr>';
 });
