@@ -55,7 +55,7 @@
     <div class="col-panel" id="colPanel"></div>
   </div>
   <span class="selection-badge" title="Barnat e zgjedhura për recetë">Të zgjedhura: <strong id="selectedCount">0</strong></span>
-  <button class="protocol-toolbar-btn" id="protocolsBtn" type="button">Recetat e mia <span class="mini-count" id="savedProtocolCount">0</span></button>
+  <button class="protocol-toolbar-btn" id="protocolsBtn" type="button">Krijo recetën <span class="mini-count" id="savedProtocolCount">0</span></button>
   <span class="count-badge" id="countBadge" aria-live="polite">Duke u ngarkuar...</span>
 </div>
 
@@ -71,36 +71,30 @@
   <aside class="protocol-drawer" role="dialog" aria-modal="true" aria-labelledby="protocolDrawerTitle">
     <div class="protocol-drawer-header">
       <div>
-        <h2 id="protocolDrawerTitle">Recetat dhe protokollet e mia</h2>
-        <p>Receta hapet vetëm për lexim; editori aktivizohet vetëm me “Edito recetën”.</p>
+        <h2 id="protocolDrawerTitle">Krijo recetën</h2>
+        <p>Zgjidh barnat, grupoji sipas mënyrës së administrimit dhe përdor një Signaturë të përbashkët kur merren bashkë.</p>
       </div>
       <button class="protocol-close" id="protocolClose" type="button" aria-label="Mbyll">×</button>
     </div>
 
     <div class="protocol-tabs" role="tablist">
-      <button class="protocol-tab active" type="button" data-tab="builder" role="tab" aria-selected="true">Krijo / edito</button>
+      <button class="protocol-tab active" type="button" data-tab="builder" role="tab" aria-selected="true">Krijo recetën</button>
       <button class="protocol-tab" type="button" data-tab="saved" role="tab" aria-selected="false">Recetat e ruajtura <span id="savedTabCount">(0)</span></button>
     </div>
 
     <div class="protocol-content">
       <section class="protocol-pane active" id="protocolPaneBuilder">
-        <div class="protocol-info">MedIndex i plotëson automatikisht fushat e recetës kur ekziston vetëm një skemë e verifikuar që përputhet saktë me barin. Kur ka më shumë se një skemë, paraqitet lista për ta zgjedhur skemën e duhur. Të gjitha fushat mbeten të editueshme dhe çdo ndryshim regjistrohet për rishikim.</div>
+        <div class="protocol-info">Doza dhe të dhënat e verifikuara mund të paraplotësohen. Barnat që merren bashkë vendosen në një grup dhe përdorin vetëm një Signaturë të përbashkët.</div>
 
         <div class="protocol-card">
           <h3>Të dhënat e recetës / protokollit</h3>
           <div class="protocol-grid">
-            <div class="protocol-field floating-field"><input id="protocolName" type="text" placeholder=" "><label for="protocolName">Emri i recetës / protokollit *</label><span class="floating-hint">p.sh. Menaxhimi fillestar i migrenës</span></div>
+            <div class="protocol-field floating-field"><input id="protocolName" type="text" placeholder=" "><label for="protocolName">Emri i recetës / protokollit *</label><span class="floating-hint">Plotësohet automatikisht dhe mund të ndryshohet.</span></div>
             <div class="protocol-field floating-field"><input id="protocolIndication" type="text" placeholder=" "><label for="protocolIndication">Indikacioni / diagnoza</label><span class="floating-hint">p.sh. Migrenë pa aura</span></div>
+            <div class="protocol-field floating-field full"><input id="protocolAllergies" type="text" autocomplete="off" placeholder=" "><label for="protocolAllergies">Alergjitë / reaksionet e njohura</label><span class="floating-hint">p.sh. Penicilinë — urtikarie; ose Nuk dihen</span></div>
             <div class="protocol-field floating-field"><input id="protocolPopulation" type="text" placeholder=" "><label for="protocolPopulation">Grupi / kushtet klinike</label><span class="floating-hint">p.sh. Pa shtatzëni, pa insuficiencë renale</span></div>
             <div class="protocol-field floating-field"><input id="protocolVersion" type="text" placeholder=" "><label for="protocolVersion">Versioni / data</label><span class="floating-hint">p.sh. v1 — 23.07.2026</span></div>
             <div class="protocol-field floating-field full"><textarea id="protocolNotes" placeholder=" "></textarea><label for="protocolNotes">Vërejtje, kundërindikacione, monitorim</label><span class="floating-hint">Shëno kriteret, alarmet, monitorimin, alternativat ose referimin.</span></div>
-          </div>
-
-          <div class="patient-identity-grid" aria-label="Identiteti i pacientit">
-            <div class="protocol-field"><label for="protocolPatientName">Emri dhe mbiemri i pacientit</label><input id="protocolPatientName" type="text" autocomplete="name" placeholder="p.sh. Emri Mbiemri"></div>
-            <div class="protocol-field"><label for="protocolBirthDate">Datëlindja</label><input id="protocolBirthDate" type="date" autocomplete="bday"></div>
-            <div class="protocol-field"><label for="protocolPatientId">Nr. personal / identifikuesi</label><input id="protocolPatientId" type="text" autocomplete="off" placeholder="Opsionale"></div>
-            <div class="protocol-field full"><label for="protocolAllergies">Alergjitë / reaksionet e njohura</label><input id="protocolAllergies" type="text" autocomplete="off" placeholder="p.sh. Penicilinë — urtikarie; ose Nuk dihen"></div>
           </div>
 
           <div class="dosage-patient-grid" aria-label="Të dhënat për dozologjinë">
@@ -116,7 +110,7 @@
         <section class="rx-review is-blocked" id="prescriptionReview" aria-labelledby="prescriptionReviewTitle" aria-live="polite">
           <div class="rx-review-head"><div class="rx-review-title"><span class="rx-review-icon" aria-hidden="true">Rx</span><div><strong id="prescriptionReviewTitle">Kontrolli para përdorimit</strong><small id="prescriptionReviewSummary">Plotëso fushat kritike dhe kryeje kontrollin klinik.</small></div></div><span class="rx-review-badge blocked" id="prescriptionReviewBadge">Jo gati</span></div>
           <ul class="rx-review-list" id="prescriptionReviewList"><li class="issue">Nuk është zgjedhur asnjë bar.</li></ul>
-          <label class="rx-review-check" for="protocolClinicalReview"><input id="protocolClinicalReview" type="checkbox"><span>Kam kontrolluar identitetin e pacientit, diagnozën, dozën, rrugën, frekuencën, kohëzgjatjen, alergjitë, shtatzëninë dhe funksionin renal/hepatik. Printimi final lejohet vetëm pas këtij kontrolli.</span></label>
+          <label class="rx-review-check" for="protocolClinicalReview"><input id="protocolClinicalReview" type="checkbox"><span>Kam kontrolluar diagnozën, dozën, rrugën, frekuencën, kohëzgjatjen, alergjitë, shtatzëninë, funksionin renal/hepatik dhe kompatibilitetin e përzierjeve. Printimi final lejohet vetëm pas këtij kontrolli.</span></label>
           <small class="rx-reviewed-at" id="protocolReviewedAt">Statusi: Draft</small>
         </section>
 
@@ -142,9 +136,9 @@
 <script src="name-display.js?v=20260722-1"></script>
 <script src="dosage-integration.js?v=20260723-1"></script>
 <script src="dosage-auto-apply.js?v=20260723-2"></script>
-<script src="prescription-review.js?v=20260722-2"></script>
+<script src="prescription-review.js?v=20260723-3"></script>
 <script src="medindex-view.js?v=20260722-14"></script>
 <script src="auth-client.js?v=20260723-2"></script>
-<script src="app-stability.js?v=20260723-1"></script>
+<script src="app-stability.js?v=20260723-2"></script>
 </body>
 </html>
