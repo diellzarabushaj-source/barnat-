@@ -86,17 +86,24 @@ jobs:
           ! grep -q 'dosage-auto-apply.js' index.html
           ! grep -q 'prescription-review.js' index.html
 
-      - name: Verify Gemini signature guardrails
+      - name: Verify Gemini 3.6 clinical guardrails
         shell: bash
         run: |
           set -euo pipefail
+          test -f tests/gemini-prescription-audit-test.js
+          grep -q "DEFAULT_MODEL = 'gemini-3.6-flash'" api/gemini-prescription.js
+          grep -q "DEFAULT_FALLBACK_MODEL = 'gemini-3.5-flash'" api/gemini-prescription.js
           grep -q 'GEMINI_API_KEY' api/gemini-prescription.js
           grep -q 'GOOGLE_API_KEY' api/gemini-prescription.js
-          grep -q "responseMimeType: 'application/json'" api/gemini-prescription.js
-          grep -q 'responseSchema' api/gemini-prescription.js
-          grep -q 'thinkingBudget: 0' api/gemini-prescription.js
-          grep -q 'Mos shto dhe mos hiq barna' api/gemini-prescription.js
-          grep -q 'generateMissingSignatures' api/gemini-prescription.js
-          grep -q 'dispenseQuantity' api/gemini-prescription.js
-          grep -q 'signatureGenerated' api/gemini-prescription.js
-          grep -q 'sharedSignature' api/gemini-prescription.js
+          grep -q 'v1/interactions' api/gemini-prescription.js
+          grep -q 'response_format' api/gemini-prescription.js
+          grep -q "mime_type: 'application/json'" api/gemini-prescription.js
+          grep -q 'thinking_level: THINKING_LEVEL' api/gemini-prescription.js
+          grep -q "thinking_summaries: 'none'" api/gemini-prescription.js
+          grep -q 'store: false' api/gemini-prescription.js
+          grep -q 'buildBaseline' api/gemini-prescription.js
+          grep -q 'buildTargets' api/gemini-prescription.js
+          grep -q 'mergeSuggestions' api/gemini-prescription.js
+          grep -q 'Mos shto, mos hiq, mos zëvendëso' api/gemini-prescription.js
+          ! grep -q 'temperature:' api/gemini-prescription.js
+          ! grep -q 'thinkingBudget' api/gemini-prescription.js
