@@ -1,0 +1,152 @@
+ed){
+    const empty = document.createElement('div');
+    empty.className = 'form-empty';
+    empty.textContent = 'Asnjë formë nuk u gjet';
+    list.appendChild(empty);
+  }
+}
+
+function selectForm(type, value){
+  state.formType = type;
+  state.formValue = value;
+  state.page = 1;
+  const btn = document.getElementById('formPickerBtn');
+  if(type === null){
+    btn.textContent = 'Forma: Të gjitha ▾';
+  } else if(type === 'category'){
+    btn.innerHTML = '<span class="cat-dot" style="background:' + CATEGORY_COLORS[value] + '"></span>' + escapeHtml(value) + ' ▾';
+  } else {
+    btn.innerHTML = '<span class="cat-dot" style="background:' + CATEGORY_COLORS[categoryOf(value)] + '"></span>' + escapeHtml(value) + ' ▾';
+  }
+  document.getElementById('formPanel').classList.remove('open');
+  render();
+}
+
+function initFormPicker(){
+  allForms = Array.from(new Set(RAW.map(r => String(r['Forma farmaceutike'] ?? '').trim()).filter(Boolean)))
+    .sort((a,b) => a.localeCompare(b, 'sq'));
+  buildFormPanel('');
+
+  const btn = document.getElementById('formPickerBtn');
+  const panel = document.getElementById('formPanel');
+  const searchInput = document.getElementById('formSearch');
+
+  btn.addEventListener('click', (e) => {
+    e.stopPropagation();
+    panel.classList.toggle('open');
+    if(panel.classList.contains('open')) searchInput.focus();
+  });
+  searchInput.addEventListener('input', (e) => buildFormPanel(e.target.value));
+  panel.addEventListener('click', (e) => e.stopPropagation());
+  document.addEventListener('click', (e) => {
+    if(!panel.contains(e.target) && e.target !== btn) panel.classList.remove('open');
+  });
+}
+
+function currentPageRows(){
+  const filtered = sortRows(getFiltered());
+  const start = (state.page - 1) * state.pageSize;
+  return filtered.slice(start, start + state.pageSize);
+}
+
+function isPrescriptionSelectable(row){
+  return row && String(row.__qualityStatus || '').trim() !== 'blocked';
+}
+
+function toggleCurrentPageSelection(checked){
+  currentPageRows().forEach(r => {
+    const key = drugKey(r);
+    if(!isPrescriptionSelectable(r)){
+      selectedDrugKeys.delete(key);
+      return;
+    }
+    if(checked) selectedDrugKeys.add(key); else selectedDrugKeys.delete(key);
+  });
+  syncDraftFromSelection();
+  render();
+}
+
+function selectedRows(){
+  return RAW.filter(r => isPrescriptionSelectable(r) && selectedDrugKeys.has(drugKey(r)));
+}
+
+function itemFromDrug(r){
+  if(!isPrescriptionSelectable(r)) return null;
+  return {
+    drugKey: drugKey(r),
+    key: drugKey(r),
+    tradeName: String(r['Emri tregtar'] || ''),
+    substance: String(r['Substanca aktive'] || ''),
+    strength: String(r['Fortësia'] || ''),
+    form: String(r['Forma farmaceutike'] || ''),
+    atc: String(r['ATC Code'] || ''),
+    pdid: String(r.PDID || ''),
+    qualityStatus: String(r.__qualityStatus || 'verified')
+  };
+}
+
+function syncDraftFromSelection(){
+  const items = selectedRows().map(itemFromDrug).filter(Boolean);
+  try{ sessionStorage.setItem('medindexPrescriptionSelection', JSON.stringify(items)); }catch(e){}
+  updateProtocolCounters();
+}
+
+function openPrescriptionDashboard(){
+  syncDraftFromSelection();
+  window.location.href = 'recetat.html';
+}
+
+function initPrescriptionBridge(){
+  const button = document.getElementById('protocolsBtn');
+  if(button) button.addEventListener('click', openPrescriptionDashboard);
+  document.addEventListener('click', event => {
+    const nav = event.target.closest?.('[data-nav="protocols"]');
+    if(!nav) return;
+    event.preventDefault();
+    openPrescriptionDashboard();
+  });
+  updateProtocolCounters();
+}
+
+const registrySearchInput = document.getElementById('search');
+let registrySearchTimer = 0;
+let registrySearchFrame = 0;
+let registrySearchComposing = false;
+function applyRegistrySearch(){
+  clearTimeout(registrySearchTimer);
+  cancelAnimationFrame(registrySearchFrame);
+  registrySearchFrame = requestAnimationFrame(() => {
+    state.search = registrySearchInput.value;
+    state.page = 1;
+    render();
+  });
+}
+registrySearchInput.addEventListener('compositionstart', () => { registrySearchComposing = true; });
+registrySearchInput.addEventListener('compositionend', () => { registrySearchComposing = false; applyRegistrySearch(); });
+registrySearchInput.addEventListener('input', () => {
+  if(registrySearchComposing) return;
+  clearTimeout(registrySearchTimer);
+  registrySearchTimer = setTimeout(applyRegistrySearch, 45);
+});
+registrySearchInput.addEventListener('search', applyRegistrySearch);
+
+document.getElementById('statusFilter').addEventListener('change', e => {
+  state.status = e.target.value; state.page = 1; render();
+});
+document.getElementById('pageSize').addEventListener('change', e => {
+  const requested = Number(e.target.value) || 50;
+  state.pageSize = Math.min(requested, Math.max(50, RAW.length));
+  state.page = 1;
+  render();
+});
+
+initFormPicker();
+buildColPanel();
+initPrescriptionBridge();
+render();
+
+})().catch(error => {
+  console.error(error);
+  const body = document.getElementById('tbody');
+  if(body) body.innerHTML = '<tr><td colspan="30" class="empty-state">Gabim gjatë ngarkimit të të dhënave.</td></tr>';
+});
