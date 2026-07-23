@@ -1,9 +1,9 @@
 {
   "name": "barnat-kosove",
-  "version": "1.2.0",
+  "version": "1.2.1",
   "private": true,
   "scripts": {
-    "test": "node tests/run-tests.js && node tests/auth-default-test.js",
+    "test": "node tests/run-tests.js && node tests/auth-default-test.js && node tests/lab-photo-source-test.js",
     "build": "npm test"
   },
   "dependencies": {
