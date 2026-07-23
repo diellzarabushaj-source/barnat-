@@ -1,0 +1,108 @@
+<!doctype html>
+<html lang="sq" class="auth-checking">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+  <meta name="description" content="MedIndex — krijim i shpejtë dhe i strukturuar i recetave klinike.">
+  <meta name="robots" content="noindex,nofollow,noarchive">
+  <meta name="theme-color" content="#0d3d40">
+  <title>MedIndex | Recetat — Dr. Diellza Rabushaj</title>
+  <link rel="stylesheet" href="medical-hub.css?v=20260723-1">
+  <link rel="stylesheet" href="app-polish.css?v=20260723-2">
+  <link rel="stylesheet" href="performance.css?v=20260723-1">
+  <link rel="stylesheet" href="recetat.css?v=20260723-1">
+</head>
+<body>
+  <a class="skip-link" href="#rxContent">Kalo te krijimi i recetës</a>
+  <div class="med-shell">
+    <nav class="med-nav" aria-label="Navigimi kryesor">
+      <a class="med-nav-link" href="index.html"><span class="med-nav-icon"><svg fill="none" viewBox="0 0 256 256" aria-hidden="true"><path d="M213 110 133 37a8 8 0 0 0-11 0l-79 73a8 8 0 0 0-3 6v92a8 8 0 0 0 8 8h160a8 8 0 0 0 8-8v-92a8 8 0 0 0-3-6Z" stroke="currentColor" stroke-width="16"/></svg></span><span class="med-nav-title">Barnat</span></a>
+      <a class="med-nav-link" href="klasifikimi.html"><span class="med-nav-icon"><svg fill="none" viewBox="0 0 256 256" aria-hidden="true"><rect x="36" y="36" width="76" height="76" rx="14" stroke="currentColor" stroke-width="16"/><rect x="144" y="36" width="76" height="76" rx="14" stroke="currentColor" stroke-width="16"/><rect x="36" y="144" width="76" height="76" rx="14" stroke="currentColor" stroke-width="16"/><rect x="144" y="144" width="76" height="76" rx="14" stroke="currentColor" stroke-width="16"/></svg></span><span class="med-nav-title">Klasifikimi</span></a>
+      <a class="med-nav-link" href="icd.html"><span class="med-nav-icon"><svg fill="none" viewBox="0 0 256 256" aria-hidden="true"><path d="M48 32h112l48 48v144H48V32Z" stroke="currentColor" stroke-width="16"/><path d="M160 32v48h48M80 120h96M80 160h96M80 200h64" stroke="currentColor" stroke-width="16" stroke-linecap="round"/></svg></span><span class="med-nav-title">ICD</span></a>
+      <a class="med-nav-link" href="analizat.html"><span class="med-nav-icon"><svg fill="none" viewBox="0 0 256 256" aria-hidden="true"><path d="M96 24h64M112 24v64l-56 96a32 32 0 0 0 28 48h88a32 32 0 0 0 28-48l-56-96V24" stroke="currentColor" stroke-width="16"/><path d="M78 176h100" stroke="currentColor" stroke-width="16"/></svg></span><span class="med-nav-title">Analizat</span></a>
+      <a class="med-nav-link active" href="recetat.html" aria-current="page"><span class="med-nav-icon"><svg fill="none" viewBox="0 0 256 256" aria-hidden="true"><path d="M64 40h128a16 16 0 0 1 16 16v160H48V56a16 16 0 0 1 16-16Z" stroke="currentColor" stroke-width="16"/><path d="M80 88h96M80 128h96M80 168h64" stroke="currentColor" stroke-width="16" stroke-linecap="round"/></svg></span><span class="med-nav-title">Recetat</span></a>
+      <div class="med-theme"><span>Tema</span><button id="themeButton" type="button" aria-label="Ndërro temën">☾</button></div>
+    </nav>
+
+    <main class="med-main rx-main" id="rxContent" tabindex="-1">
+      <header class="rx-hero">
+        <div class="rx-hero-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M9 5h6M9 3h6v4H9V3ZM6 5H4v16h16V5h-2M8 12h8M8 16h6"/></svg></div>
+        <div><p class="med-kicker">MedIndex · Recetë e strukturuar</p><h1>Krijo recetën</h1><p>Një kuti e vetme: shkruaje siç e mendon, zgjidh barnat kur të duhet dhe MedIndex e kthen në format të pastër me grupime dhe Signaturë të përbashkët.</p></div>
+        <div class="rx-hero-count"><strong id="rxSavedCount">0</strong><span>të ruajtura</span></div>
+      </header>
+
+      <section class="rx-dashboard" aria-label="Krijuesi i recetës">
+        <article class="rx-compose-card">
+          <header class="rx-card-head"><div><span class="rx-step">1</span><h2>Shkruaje recetën</h2></div><button class="rx-text-button" id="rxNew" type="button">Recetë e re</button></header>
+
+          <label class="rx-diagnosis"><span>Diagnoza / indikacioni <small>opsionale</small></span><input id="rxDiagnosis" type="text" autocomplete="off" placeholder="p.sh. Dhimbje akute me nauze"></label>
+
+          <div class="rx-command-bar" aria-label="Fusha të shpejta">
+            <button type="button" data-rx-command="form">@forma</button>
+            <button type="button" data-rx-command="drug">@bari</button>
+            <button type="button" data-rx-command="dose">@doza</button>
+            <button type="button" data-rx-command="other">@tjetër</button>
+            <button type="button" data-rx-command="signature">@signatura</button>
+          </div>
+
+          <div class="rx-editor-wrap">
+            <textarea id="rxComposer" rows="12" spellcheck="false" placeholder="Rp:
+Inf. Sodium Chloride 0.9 % a 250 ml
+Amp. Ketoprofen 100 mg/2 ml
+Amp. Ondansetron 4 mg/2 ml
+Amp. Pantoprazol sodium 40 mg
+S: Përzihen dhe administrohen së bashku në të njëjtin infuzion."></textarea>
+            <span class="rx-editor-hint"><kbd>Ctrl</kbd> + <kbd>Enter</kbd> për ta strukturuar</span>
+          </div>
+
+          <div class="rx-selected" id="rxSelectedDrugs" hidden aria-label="Barnat e zgjedhura"></div>
+
+          <div class="rx-popover" id="rxFormPopover" hidden>
+            <strong>Zgjidh formën</strong>
+            <div class="rx-form-options">
+              <button type="button" data-form-value="Tab.">Tab.</button><button type="button" data-form-value="Caps.">Caps.</button><button type="button" data-form-value="Amp.">Amp.</button><button type="button" data-form-value="Inf.">Inf.</button><button type="button" data-form-value="Ung.">Ung.</button><button type="button" data-form-value="Sol.">Sol.</button><button type="button" data-form-value="Sir.">Sir.</button><button type="button" data-form-value="Sup.">Sup.</button><button type="button" data-form-value="Gtt.">Gtt.</button><button type="button" data-form-value="Inh.">Inh.</button>
+            </div>
+          </div>
+
+          <div class="rx-popover rx-drug-popover" id="rxDrugPopover" hidden>
+            <label><span>Kërko substancën aktive ose emrin tregtar</span><input id="rxDrugSearch" type="search" autocomplete="off" placeholder="p.sh. ondansetron"></label>
+            <div class="rx-drug-results" id="rxDrugResults"><p>Shkruaj së paku 2 shkronja.</p></div>
+          </div>
+
+          <div class="rx-compose-actions">
+            <button class="rx-primary" id="rxGenerate" type="button"><span class="rx-ai-mark" aria-hidden="true">✦</span><span>Strukturo me Gemini</span></button>
+            <button class="rx-secondary" id="rxFormatLocal" type="button">Formato pa AI</button>
+            <button class="rx-ghost" id="rxClear" type="button">Pastro</button>
+          </div>
+          <p class="rx-status" id="rxStatus" role="status" aria-live="polite"></p>
+        </article>
+
+        <article class="rx-preview-card">
+          <header class="rx-card-head"><div><span class="rx-step">2</span><h2>Parapamja</h2></div><span class="rx-state is-draft" id="rxState">Draft</span></header>
+          <div class="rx-preview" id="rxPreview">
+            <div class="rx-preview-empty"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" aria-hidden="true"><path d="M9 5h6M9 3h6v4H9V3ZM6 5H4v16h16V5h-2M8 12h8M8 16h6"/></svg><strong>Parapamja shfaqet këtu</strong><span>Shkruaje ose ngjite recetën dhe kliko “Strukturo me Gemini”.</span></div>
+          </div>
+          <div class="rx-preview-actions">
+            <button class="rx-primary" id="rxSave" type="button" disabled>Ruaje recetën</button>
+            <button class="rx-secondary" id="rxCopy" type="button" disabled>Kopjo</button>
+            <button class="rx-secondary" id="rxPrint" type="button" disabled>Printo</button>
+          </div>
+        </article>
+      </section>
+
+      <aside class="rx-safety"><strong>Kontroll klinik i detyrueshëm:</strong> Gemini përdoret vetëm për strukturim dhe formatim. Nuk duhet të shtojë barna, doza, rrugë ose skema që nuk i ka shkruar mjeku. Kompatibiliteti i infuzioneve, përzierja në shiringë dhe dozimi individual verifikohen para përdorimit.</aside>
+
+      <section class="rx-saved-section" aria-labelledby="rxSavedTitle">
+        <div class="med-section-head"><div><p class="med-kicker">Biblioteka personale</p><h2 id="rxSavedTitle">Recetat e ruajtura</h2><p>Hapi, duplikoji ose përdori si pikënisje pa e komplikuar krijimin e recetës së re.</p></div><label class="rx-saved-search"><span class="sr-only">Kërko recetat</span><input id="rxSavedSearch" type="search" autocomplete="off" placeholder="Kërko recetën…"></label></div>
+        <div class="rx-saved-grid" id="rxSavedList"></div>
+      </section>
+    </main>
+  </div>
+
+  <div class="rx-toast" id="rxToast" role="status" aria-live="polite"></div>
+  <script src="auth-client.js?v=20260723-3" defer></script>
+  <script src="medical-icons.js?v=20260723-1" defer></script>
+  <script src="recetat.js?v=20260723-1" defer></script>
+  <script src="app-stability.js?v=20260723-3" defer></script>
+</body>
+</html>

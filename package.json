@@ -1,6 +1,6 @@
 {
   "name": "barnat-kosove",
-  "version": "1.2.1",
+  "version": "1.3.0",
   "private": true,
   "scripts": {
     "test": "node tests/run-tests.js && node tests/auth-default-test.js && node tests/lab-photo-source-test.js && node tests/lab-photo-coverage-test.js",
