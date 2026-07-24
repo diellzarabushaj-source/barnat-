@@ -1,5 +1,6 @@
 const XLSX = require('xlsx');
 const crypto = require('node:crypto');
+const DosageEngine = require('../dosage-engine.js');
 
 const DEFAULT_DOSAGE_FILE_ID = '1T7XsfkXLQfEomFL4DmXoA8PheiR6s3Qmu36hTqklOMo';
 const MEMORY_CACHE_MS = 6 * 60 * 60 * 1000;
@@ -98,7 +99,7 @@ function mapForm(row) {
 }
 
 function mapAdult(row) {
-  return {
+  const result = {
     regimenId: clean(row.RegimenID), substance: clean(row['Substanca aktive']), atc: clean(row.ATC), form: clean(row.Forma),
     referenceStrength: clean(row['Fortësia referencë']), indication: clean(row.Indikacioni), icd: clean(row['Kodi ICD (opsional)']),
     population: clean(row.Popullata), doseMg: clean(row['Doza për marrje (mg)']), practicalUnit: clean(row['Njësia praktike']),
@@ -110,10 +111,18 @@ function mapAdult(row) {
     renalHepatic: clean(row['Renal / hepatik']), sourceUrl: httpsUrl(row['Burimi URL']), sourceDate: clean(row['Data e burimit']),
     status: 'VERIFIKUAR',
   };
+  result.matchKey = DosageEngine.buildMatchKey(result);
+  result.normalized = {
+    atc: DosageEngine.normalizeAtc(result.atc),
+    substance: DosageEngine.normalizeSubstance(result.substance),
+    form: DosageEngine.normalizeForm(result.form),
+    strength: DosageEngine.normalizeStrength(result.referenceStrength),
+  };
+  return result;
 }
 
 function mapPediatric(row) {
-  return {
+  const result = {
     regimenId: clean(row.RegimenID), substance: clean(row['Substanca aktive']), atc: clean(row.ATC), form: clean(row.Forma),
     concentration: clean(row.Përqendrimi), indication: clean(row.Indikacioni), icd: clean(row['ICD (opsional)']),
     minAgeMonths: numberOrNull(row['Mosha min (muaj)']), maxAgeMonths: numberOrNull(row['Mosha max (muaj)']),
@@ -127,6 +136,14 @@ function mapPediatric(row) {
     signatura: clean(row['Signatura draft']), warnings: clean(row['Udhëzime / alarme']), sourceUrl: httpsUrl(row['Burimi URL']),
     status: 'VERIFIKUAR',
   };
+  result.matchKey = DosageEngine.buildMatchKey(result);
+  result.normalized = {
+    atc: DosageEngine.normalizeAtc(result.atc),
+    substance: DosageEngine.normalizeSubstance(result.substance),
+    form: DosageEngine.normalizeForm(result.form),
+    strength: DosageEngine.normalizeStrength(result.concentration),
+  };
+  return result;
 }
 
 const publishedForm = row => verified(row.Statusi) && yes(row['Publiko parashtesën?']) && clean(row['Forma në databazë']) && clean(row['Parashtesa MedIndex']);
@@ -173,7 +190,7 @@ async function buildPayload(fileId) {
   const pediatric = clinicalAutoFillEnabled ? eligiblePediatricResult.output : [];
 
   const payload = {
-    schemaVersion: clean(config.SCHEMA_VERSION) || '1.0.0', datasetVersion: clean(config.DATASET_VERSION),
+    schemaVersion: clean(config.SCHEMA_VERSION) || '1.0.0', matchVersion: 'exact-v1', datasetVersion: clean(config.DATASET_VERSION),
     mode: clean(config.WEBSITE_MODE) || 'SAFE_VERIFIED_ONLY', generatedAt: new Date().toISOString(),
     forms: formsResult.output, adult, pediatric,
     meta: {
@@ -197,7 +214,7 @@ async function buildPayload(fileId) {
 
 async function getPayload() {
   const fileId = process.env.DOSAGE_SHEET_ID || DEFAULT_DOSAGE_FILE_ID;
-  const key = `${fileId}:${envFlag('ENABLE_DOSAGE_AUTOFILL')}:config-v4`;
+  const key = `${fileId}:${envFlag('ENABLE_DOSAGE_AUTOFILL')}:config-v5`;
   const now = Date.now();
   if (memoryCache && memoryCacheKey === key && now - memoryCacheTime < MEMORY_CACHE_MS) return memoryCache;
   if (!pendingBuild || pendingBuildKey !== key) {

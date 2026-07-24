@@ -2,11 +2,11 @@ const assert = require('node:assert/strict');
 const Core = require('../prescription-format-core.js');
 
 const oralInput = `Rp:
-Amoxicillin / Clavulanic acid 875 mg / 125 mg (Tableta)
+Tab. Amoxicillin / Clavulanic acid 875 mg / 125 mg (Tableta)
 Sasia: Scat. No I (Një kuti)
 S (Signatura): Nga 1 tabletë çdo 12 orë (2 herë në ditë) pas ushqimit, për 7 ditë rresht.
 
-Paracetamol 500 mg (Tableta)
+Tab. Paracetamol 500 mg (Tableta)
 Sasia: Scat. No I (Një kuti)
 S (Signatura): Nga 1 tabletë çdo 8 orë sipas nevojës (nëse ka temperaturë mbi 38.5°C ose dhimbje).`;
 
@@ -18,6 +18,7 @@ assert.equal(oral.sections[0].medications[0].dose, '875 mg / 125 mg');
 assert.equal(oral.sections[0].medications[0].form, 'Tableta');
 assert.equal(oral.sections[0].medications[0].dispenseQuantity, 'Scat. No I (Një kuti)');
 assert.equal(Core.formatText(oral), oralInput);
+assert.equal((Core.formatText(oral).match(/^Rp:$/gm) || []).length, 1, 'canonical serializer must emit one Rp header');
 
 const infusionInput = `Rp:
 Inf. Sodium Chloride 0.9 % a 250ml
@@ -58,7 +59,23 @@ assert.equal(Core.selectedDrugLine({
   substance: 'Paracetamol',
   strength: '500 mg',
   form: 'Tablet',
-}), 'Paracetamol 500 mg (Tableta)');
+}), 'Tab. Paracetamol 500 mg (Tableta)');
+assert.equal(Core.selectedDrugLine({
+  tradeName:'Panadol',
+  strength:'500 mg',
+  form:'Tablet',
+}), '', 'the final prescription must never fall back to the trade name');
+assert.equal(Core.prefixForForm('unknown form'), '', 'unknown forms must not be guessed');
+
+const canonicalExample = `Rp:
+Tab. Amoxicillin / Clavulanic acid 875 mg / 125 mg (Tableta)
+Sasia: Scat. No I (Një kuti)
+S (Signatura): Nga 1 tabletë çdo 12 orë (2 herë në ditë) pas ushqimit, për 7 ditë rresht.
+
+Tab. Paracetamol 500 mg (Tableta)
+Sasia: Scat. No I (Një kuti)
+S (Signatura): Nga 1 tabletë çdo 8 orë sipas nevojës (nëse ka temperaturë mbi 38.5°C ose dhimbje).`;
+assert.equal(Core.formatText(Core.parse(canonicalExample)), canonicalExample, 'the exact canonical example must round-trip');
 
 const generated = Core.normalizeResult({
   title: 'Recetë', diagnosis: 'Test', notes: [], missing: [],

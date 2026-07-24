@@ -11,6 +11,8 @@ const pages = [
   ['klasifikimi.html', 'atcContent', 'Klasifikimi'],
   ['icd.html', 'icdContent', 'ICD'],
   ['analizat.html', 'labContent', 'Analizat'],
+  ['dozologjia.html', 'dosageContent', 'Dozologjia'],
+  ['protokollet.html', 'protocolContent', 'Protokollet'],
   ['recetat.html', 'rxContent', 'Recetat'],
 ];
 const coreLabels = ['Barnat', 'Klasifikimi', 'ICD', 'Analizat', 'Recetat'];
@@ -52,6 +54,8 @@ assert.match(recetat, /data-rx-command="signature"[^>]+aria-controls="rxSignatur
 assert.match(recetat, /id="rxComposer"[^>]+aria-label="Përmbajtja e recetës"/);
 assert.match(recetat, /id="rxPreview"[^>]+aria-live="polite"/);
 assert.match(recetat, /id="rxSavedList"[^>]+aria-live="polite"/);
+assert.match(recetat, /id="rxDosageReview"/);
+assert.match(recetat, /id="rxDosageChooser"/);
 
 const shell = read('navigation-shell.css');
 [
@@ -92,11 +96,18 @@ assert.match(navigation, /popstate/);
 assert.match(navigation, /hashchange/);
 assert.match(navigation, /orientationchange/);
 assert.match(navigation, /scrollIntoView/);
+assert.match(navigation, /\['\/dozologjia\.html', 'dosage'\]/);
+assert.match(navigation, /\['\/protokollet\.html', 'clinical-protocols'\]/);
+assert.match(navigation, /\['\/recetat\.html', 'prescriptions'\]/);
+assert.match(navigation, /medindex-more-button/);
+assert.match(navigation, /Më shumë/);
 
 const bridge = read('main-navigation-extension.js');
 assert.match(bridge, /delete link\.dataset\.nav/);
 assert.match(bridge, /document\.getElementById\('protocolsBtn'\)/);
 assert.match(bridge, /window\.location\.href = '\/recetat\.html'/);
+assert.match(bridge, /id:'dosage'/);
+assert.match(bridge, /id:'clinical-protocols'/);
 
 const stability = read('app-stability.js');
 assert.doesNotMatch(stability, /clinical-ui\.css|installClinicalUi|installNavigationUi/, 'stability layer must not inject competing visual systems');

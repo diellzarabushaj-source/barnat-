@@ -38,23 +38,17 @@
     $('#themeButton')?.addEventListener('click', () => applyTheme(document.documentElement.dataset.theme === 'dark' ? 'light' : 'dark'));
   }
 
-  function chapterUrl(chapter) {
-    const base = DATA.browserUrl || 'https://icd.who.int/browse10/2019/en';
-    return `${base}#/${encodeURIComponent(chapter.whoPath || chapter.range || '')}`;
-  }
-
   function chapterCount(chapter) {
     return (DATA.entries || []).filter(entry => entry.chapter === chapter.number).length;
   }
 
   function chapterCard(chapter) {
     const count = chapterCount(chapter);
-    return `<article class="med-card icd-chapter-card">
+    return `<button class="med-card icd-chapter-card" type="button" data-chapter-filter="${esc(chapter.range)}" aria-label="Filtro kapitullin ${esc(chapter.number)}">
       <div class="icd-chapter-head"><span class="icd-roman">${esc(chapter.number)}</span><span class="med-card-code">${esc(chapter.range)}</span></div>
       <h3>${esc(chapter.title)}</h3>
       <div class="med-card-meta"><span class="med-chip">Kapitulli ${esc(chapter.number)}</span><span class="med-chip">${count} kode</span></div>
-      <a class="icd-card-link" href="${esc(chapterUrl(chapter))}" target="_blank" rel="noopener noreferrer" aria-label="Hape kapitullin ${esc(chapter.number)} në WHO ICD-10">Hape në WHO ↗</a>
-    </article>`;
+    </button>`;
   }
 
   function contextChips(entry) {
@@ -168,7 +162,6 @@
     lastFocused = document.activeElement;
     $('#detailKicker').textContent = `${DATA.version || 'ICD-10-WHO 2019'} · ${entry.code}`;
     $('#detailTitle').textContent = entry.title;
-    const source = entry.sourceUrl || DATA.browserUrl || 'https://icd.who.int/browse10/2019/en';
     $('#detailBody').innerHTML = `<div class="med-detail-grid">
       ${detailField('Emri në anglisht', entry.englishTitle)}
       ${detailField('Kapitulli', [entry.chapter, entry.chapterRange, entry.chapterTitle].filter(Boolean).join(' · '))}
@@ -181,7 +174,7 @@
       ${detailField('Shenja alarmi / kujdes', entry.warning, true)}
       <section class="med-detail full"><strong>Shënim kodimi</strong>${list(entry.codingNotes)}</section>
       <section class="med-detail full"><strong>Fjalë kyçe për kërkim</strong><p class="icd-keyword-list">${(entry.keywords || []).map(item => `<span class="med-chip">${esc(item)}</span>`).join(' ') || 'Nuk janë shënuar.'}</p></section>
-    </div><div class="med-source"><strong>Burimi:</strong> Google Sheet-i ICD-10 i dhënë nga përdoruesi; lidhja WHO ruhet për secilin kod. <a href="${esc(source)}" target="_blank" rel="noopener noreferrer">Hape kodin në WHO ICD-10 ↗</a></div>`;
+    </div><div class="med-source"><strong>Burimi:</strong> Google Sheet-i ICD-10 i aprovuar për MedIndex.</div>`;
     const overlay = $('#detailOverlay');
     overlay.hidden = false;
     overlay.setAttribute('aria-hidden', 'false');
@@ -247,7 +240,6 @@
 
   function init() {
     initTheme();
-    $('#whoBrowserLink').href = DATA.browserUrl || 'https://icd.who.int/browse10/2019/en';
     $('#icdSmartSearch')?.addEventListener('input', () => filterAll());
     $('#icdLevel')?.addEventListener('change', () => filterAll());
     $('#icdContext')?.addEventListener('change', () => filterAll());
@@ -263,6 +255,13 @@
         visibleLimit += PAGE_STEP;
         filterAll({ preserveLimit:true });
       }
+    });
+    $('#chapterGrid')?.addEventListener('click', event => {
+      const filter = event.target.closest('[data-chapter-filter]');
+      if (!filter) return;
+      $('#icdSmartSearch').value = filter.dataset.chapterFilter;
+      filterAll();
+      $('#codeSection')?.scrollIntoView({ behavior:matchMedia('(prefers-reduced-motion:reduce)').matches ? 'auto' : 'smooth' });
     });
     $('#detailClose')?.addEventListener('click', closeEntry);
     $('#detailDone')?.addEventListener('click', closeEntry);

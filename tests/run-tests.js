@@ -9,12 +9,13 @@ const vm = require('node:vm');
 
 const ROOT = path.resolve(__dirname, '..');
 const requiredFiles = [
-  'index.html','klasifikimi.html','icd.html','analizat.html','recetat.html','login.html',
+  'index.html','klasifikimi.html','icd.html','analizat.html','dozologjia.html','protokollet.html','recetat.html','login.html',
   'login.css','login.js','auth-client.js','app-stability.js','app-polish.css','performance.css',
   'medical-hub.css','analizat-polish.css','lab-sheet-data.js','medical-icons.js','section-icons.js',
   'recetat.css','recetat-audit.css','prescription-format-core.js','recetat.js','app-parts/core-tail.txt',
   'middleware.ts','lib/auth.mjs','lib/auth-edge.mjs','api/auth.js','api/registry.js','api/drug-search.js',
-  'api/gemini-prescription.js','api/dosage.js','api/health.js','api/labs.js',
+  'api/gemini-prescription.js','api/dosage.js','api/protocol-document.js','api/health.js','api/labs.js',
+  'dosage-engine.js','dozologjia.js','protokollet.js','clinical-reference.css','clinical-density.css','clinical-dialog.js','data/protocols.json',
   'data/registry-quality.js','icd-data.js','vercel.json','robots.txt',
   ...Array.from({ length: 7 }, (_, index) => `app-parts/part-${String(index + 1).padStart(2, '0')}.txt`),
 ];
@@ -41,9 +42,9 @@ async function main() {
   assert.equal(vercel.rewrites?.[0]?.destination, '/api/registry');
   [
     'app.js','login.js','auth-client.js','app-stability.js','main-navigation-extension.js',
-    'medical-icons.js','section-icons.js','prescription-format-core.js','recetat.js','classification-icons.js',
+    'medical-icons.js','section-icons.js','prescription-format-core.js','recetat.js','dosage-engine.js','dozologjia.js','protokollet.js','clinical-dialog.js','classification-icons.js',
     'api/auth.js','api/registry.js','api/drug-search.js','api/gemini-prescription.js','api/registry-data.js',
-    'api/dosage.js','api/health.js','api/labs.js','data/registry-quality.js',
+    'api/dosage.js','api/protocol-document.js','scripts/sync-protocols.js','api/health.js','api/labs.js','data/registry-quality.js',
     'classification-registry-bridge.js','classification-v3.js','classification-audit-view.js','classification-info-v3.js',
     'icd-data.js','icd.js','lab-sheet-data.js','analizat.js','lib/auth.mjs','lib/auth-edge.mjs',
   ].forEach(checkSyntax);
@@ -78,7 +79,7 @@ async function main() {
   assert.match(auth.sessionCookie(token), /Secure/);
 
   console.log('4/11 HTML wiring, duplicate IDs and private assets');
-  const htmlFiles = ['index.html','klasifikimi.html','icd.html','analizat.html','recetat.html','login.html'];
+  const htmlFiles = ['index.html','klasifikimi.html','icd.html','analizat.html','dozologjia.html','protokollet.html','recetat.html','login.html'];
   const virtualFiles = new Set(['data/registry-data.js']);
   htmlFiles.forEach(relativePath => {
     const html = file(relativePath);
@@ -88,11 +89,11 @@ async function main() {
       assert.ok(virtualFiles.has(normalized) || fs.existsSync(path.join(ROOT, normalized)), `${relativePath} references missing ${reference}`);
     });
   });
-  ['index.html','klasifikimi.html','icd.html','analizat.html','recetat.html'].forEach(relativePath => {
+  ['index.html','klasifikimi.html','icd.html','analizat.html','dozologjia.html','protokollet.html','recetat.html'].forEach(relativePath => {
     const html = file(relativePath);
     assert.match(html, /auth-client\.js/);
     assert.match(html, /app-stability\.js/);
-    assert.match(html, /app-polish\.css/);
+    if (!['dozologjia.html', 'protokollet.html'].includes(relativePath)) assert.match(html, /app-polish\.css/);
   });
   assert.match(file('index.html'), /value="500"/);
   assert.match(file('index.html'), /value="4006" hidden/);
@@ -146,6 +147,7 @@ async function main() {
   ['J85','J85.0','J85.1','J85.2','J85.3','J86','J86.0','J86.9'].forEach(code => assert.ok(icdCodes.has(code), `Missing ICD ${code}`));
   assert.match(file('icd.html'), /medical-icons\.js/);
   assert.match(file('icd.html'), /section-icons\.js/);
+  assert.doesNotMatch(file('icd.js'), /Hape (?:kapitullin|kodin) në WHO|whoBrowserLink/);
   assert.doesNotMatch(file('classification-icons.js'), /flaticon|cdn-icons-png|<img/);
 
   console.log('9/11 Google Sheet laboratory dataset integrity');
@@ -184,10 +186,14 @@ async function main() {
   assert.match(rxHtml, /recetat\.js/);
   assert.doesNotMatch(rxHtml, /recetat-v2\.js/);
   assert.match(rxHtml, /id="rxGeneratedReview"/);
+  assert.match(rxHtml, /id="rxDosageReview"/);
   assert.match(rxJs, /generatedReviewConfirmed/);
   assert.match(rxJs, /api\/gemini-prescription/);
   assert.match(rxJs, /api\/drug-search/);
   assert.match(rxJs, /medindexPrescriptionSelection/);
+  assert.match(rxJs, /dosageReviewConfirmed/);
+  assert.match(rxJs, /resultToText\(state\.result\)/);
+  assert.doesNotMatch(rxJs, /<div class="head"><div><b>MedIndex/);
   assert.match(rxCore, /dispenseQuantity/);
   assert.match(rxCore, /S \(Signatura\):/);
   assert.match(rxCore, /sharedSignature/);
@@ -215,6 +221,8 @@ async function main() {
   assert.match(file('api/registry.js'), /getRegistryDataset/);
   assert.match(file('api/drug-search.js'), /MAX_RESULTS\s*=\s*12/);
   assert.match(file('api/dosage.js'), /authorized\(req\)/);
+  assert.match(file('api/dosage.js'), /matchKey/);
+  assert.match(file('api/protocol-document.js'), /authorized\(req\)/);
   assert.match(file('vercel.json'), /\/api\/\(\.\*\)/);
   assert.match(file('app-parts/part-03.txt'), /const SEARCH_INDEX = new WeakMap/);
   assert.match(file('app.js'), /app-parts\/core-tail\.txt/);

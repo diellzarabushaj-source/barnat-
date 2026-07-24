@@ -89,6 +89,7 @@ S (Signatura): Nga 1 tabletë çdo 8 orë sipas nevojës."></textarea>
             <div class="rx-preview-empty"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" aria-hidden="true"><path d="M9 5h6M9 3h6v4H9V3ZM6 5H4v16h16V5h-2M8 12h8M8 16h6"/></svg><strong>Parapamja shfaqet këtu</strong><span>Zgjidh barnat ose shkruaje recetën. Signaturën mund ta shkruash vetë ose ta propozosh me Gemini.</span></div>
           </div>
           <label class="rx-generated-review" id="rxGeneratedReview" hidden><input type="checkbox"><span>Kam kontrolluar klinikisht çdo Signaturë të propozuar nga Gemini.</span></label>
+          <label class="rx-generated-review" id="rxDosageReview" hidden><input type="checkbox"><span>Kam verifikuar klinikisht dozën, rrugën, shpeshtësinë, kohëzgjatjen dhe kufijtë e skemës së auto-plotësuar.</span></label>
           <div class="rx-preview-actions">
             <button class="rx-primary" id="rxSave" type="button" disabled>Ruaje recetën</button>
             <button class="rx-secondary" id="rxCopy" type="button" disabled>Kopjo</button>
@@ -106,10 +107,19 @@ S (Signatura): Nga 1 tabletë çdo 8 orë sipas nevojës."></textarea>
     </main>
   </div>
 
+  <div class="rx-dialog-overlay" id="rxDosageChooser" hidden aria-hidden="true">
+    <section class="rx-dialog" role="dialog" aria-modal="true" aria-labelledby="rxDosageChooserTitle">
+      <h2 id="rxDosageChooserTitle">Zgjidh indikacionin</h2>
+      <p>U gjetën disa skema me të njëjtën ATC, substancë, formë dhe fortësi. Doza nuk aplikohet pa zgjedhjen tënde.</p>
+      <label><span>Skema e verifikuar</span><select id="rxDosageChoice"></select></label>
+      <div><button class="rx-secondary" id="rxDosageCancel" type="button">Pa dozë</button><button class="rx-primary" id="rxDosageApply" type="button">Apliko skemën</button></div>
+    </section>
+  </div>
   <div class="rx-toast" id="rxToast" role="status" aria-live="polite"></div>
   <script src="navigation-consistency.js?v=20260724-3" defer></script>
   <script src="auth-client.js?v=20260723-3" defer></script>
   <script src="medical-icons.js?v=20260723-1" defer></script>
+  <script src="dosage-engine.js?v=20260724-1" defer></script>
   <script src="prescription-format-core.js?v=20260723-1" defer></script>
   <script src="signature-templates.js?v=20260723-1" defer></script>
   <script src="recetat.js?v=20260723-4" defer></script>
