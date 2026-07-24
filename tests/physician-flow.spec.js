@@ -16,9 +16,9 @@ test('mjeku gjen shërbimin, krijon recetë dhe vazhdon offline', async ({ page,
   await page.waitForURL(/recetat\.html/);
   await page.waitForFunction(() => document.documentElement.classList.contains('auth-ready'));
 
-  await page.locator('[data-rx-command="drug"]').click();
   const drugSearch = page.locator('#rxDrugSearch');
-  await drugSearch.fill('paracetamol');
+  await expect(drugSearch).toBeVisible();
+  await expect(drugSearch).toHaveValue('paracetamol');
   await expect(page.locator('#rxDrugResults .rx-drug-result').first()).toContainText('Paracetamol', { timeout:10000 });
   await page.locator('#rxDrugResults .rx-drug-result').first().click();
   await expect(page.locator('#rxComposer')).toHaveValue(/Paracetamol/i);
@@ -43,7 +43,7 @@ test('mjeku gjen shërbimin, krijon recetë dhe vazhdon offline', async ({ page,
   await expect(restoredPage.locator('#rxDiagnosis')).not.toHaveValue('');
 
   await restoredPage.goto('http://127.0.0.1:4173/index.html', { waitUntil:'domcontentloaded' });
-  await restoredPage.waitForFunction(() => navigator.serviceWorker?.ready);
+  await restoredPage.evaluate(() => navigator.serviceWorker.ready);
   await restoredPage.waitForFunction(() => Boolean(navigator.serviceWorker?.controller), null, { timeout:15000 });
   await context.setOffline(true);
   await restoredPage.goto('http://127.0.0.1:4173/analizat.html', { waitUntil:'domcontentloaded', timeout:15000 });
