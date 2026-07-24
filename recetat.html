@@ -33,7 +33,7 @@
     <main class="med-main rx-main" id="rxContent" tabindex="-1">
       <header class="rx-hero">
         <div class="rx-hero-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M9 5h6M9 3h6v4H9V3ZM6 5H4v16h16V5h-2M8 12h8M8 16h6"/></svg></div>
-        <div><p class="med-kicker">MedIndex · Recetë e strukturuar</p><h1>Krijo recetën</h1><p>Zgjidh barin dhe ai vendoset vetë me fortësinë dhe formën. Signaturën mund ta shkruash vetë; kur mungon, Gemini mund ta propozojë nga diagnoza dhe barnat e zgjedhura.</p></div>
+        <div><p class="med-kicker">MedIndex · Recetë e strukturuar</p><h1>Krijo recetën</h1><p>Zgjidh barin dhe ai vendoset vetë me formën, substancën aktive, fortësinë dhe paketimin. Signaturën mund ta shkruash vetë; kur mungon, Gemini mund ta propozojë nga diagnoza dhe barnat e zgjedhura.</p></div>
         <div class="rx-hero-count" aria-label="Numri i recetave të ruajtura"><strong id="rxSavedCount">0</strong><span>të ruajtura</span></div>
       </header>
 
@@ -54,12 +54,12 @@
 
           <div class="rx-editor-wrap">
             <textarea id="rxComposer" rows="12" spellcheck="false" aria-label="Përmbajtja e recetës" placeholder="Rp:
-Amoxicillin / Clavulanic acid 875 mg / 125 mg (Tableta)
-Sasia: Scat. No I (Një kuti)
+Tab. Amoxicillin / Clavulanic acid 875 mg / 125 mg
+Sasia: Scat. No I (Një kuti = 14 tableta)
 S (Signatura): Nga 1 tabletë çdo 12 orë pas ushqimit, për 7 ditë.
 
-Paracetamol 500 mg (Tableta)
-Sasia: Scat. No I (Një kuti)
+Tab. Paracetamol 500 mg
+Sasia: Scat. No I (Një kuti = 20 tableta)
 S (Signatura): Nga 1 tabletë çdo 8 orë sipas nevojës."></textarea>
             <span class="rx-editor-hint"><kbd>Ctrl</kbd> + <kbd>Enter</kbd> për ta përgatitur me Gemini</span>
           </div>
@@ -101,7 +101,7 @@ S (Signatura): Nga 1 tabletë çdo 8 orë sipas nevojës."></textarea>
         </article>
       </section>
 
-      <aside class="rx-safety"><strong>Kontroll klinik i detyrueshëm:</strong> Signatura e shkruar nga mjeku ruhet dhe ka përparësi. Kur mungon, Gemini mund ta propozojë vetëm në bazë të diagnozës dhe barit të zgjedhur; çdo propozim duhet të verifikohet para përdorimit. Kompatibiliteti i infuzioneve dhe përzierjeve verifikohet veçmas.</aside>
+      <aside class="rx-safety"><strong>Kontroll klinik i detyrueshëm:</strong> Forma, substanca aktive, fortësia dhe paketimi merren nga regjistri. IV/IM shfaqet vetëm kur burimi e përcakton qartë. Signatura e shkruar nga mjeku ruhet dhe ka përparësi; propozimet e Gemini duhet të verifikohen para përdorimit. Kompatibiliteti i infuzioneve dhe përzierjeve verifikohet veçmas.</aside>
 
       <section class="rx-saved-section" aria-labelledby="rxSavedTitle">
         <div class="med-section-head"><div><p class="med-kicker">Biblioteka personale</p><h2 id="rxSavedTitle">Recetat e ruajtura</h2><p>Hapi, duplikoji ose përdori si pikënisje pa e komplikuar krijimin e recetës së re.</p></div><label class="rx-saved-search"><span class="sr-only">Kërko recetat</span><input id="rxSavedSearch" type="search" autocomplete="off" placeholder="Kërko recetën…"></label></div>
@@ -121,10 +121,11 @@ S (Signatura): Nga 1 tabletë çdo 8 orë sipas nevojës."></textarea>
   <div class="rx-toast" id="rxToast" role="status" aria-live="polite"></div>
   <script src="auth-client.js?v=20260723-3" defer></script>
   <script src="medical-icons.js?v=20260723-1" defer></script>
-  <script src="dosage-engine.js?v=20260724-1" defer></script>
+  <script src="dosage-engine.js?v=20260724-2" defer></script>
   <script src="prescription-format-core.js?v=20260723-1" defer></script>
+  <script src="prescription-registry-bridge.js?v=20260724-1" defer></script>
   <script src="signature-templates.js?v=20260723-1" defer></script>
-  <script src="recetat.js?v=20260723-4" defer></script>
+  <script src="recetat.js?v=20260724-1" defer></script>
   <script src="app-stability.js?v=20260724-2" defer></script>
 </body>
 </html>
