@@ -2,6 +2,26 @@ const { test, expect } = require('@playwright/test');
 
 test.use({ serviceWorkers:'allow', viewport:{ width:1440, height:900 } });
 
+const geometryOf = async (page, selectors) => page.evaluate(selectors => {
+  const toObject = rect => rect ? { x:rect.x, y:rect.y, top:rect.top, right:rect.right, bottom:rect.bottom, left:rect.left, width:rect.width, height:rect.height } : null;
+  return Object.fromEntries(Object.entries(selectors).map(([key, selector]) => {
+    const node = document.querySelector(selector);
+    return [key, {
+      rect:toObject(node?.getBoundingClientRect()),
+      parent:node?.parentElement?.tagName || null,
+      position:node ? getComputedStyle(node).position : null,
+      hidden:Boolean(node?.hidden),
+    }];
+  }).concat([['viewport', { width:innerWidth, height:innerHeight }], ['professionalVersion', document.documentElement.dataset.miProfessionalVersion || null]]));
+}, selectors);
+
+function expectInsideViewport(item, viewport) {
+  expect(item.rect.left).toBeGreaterThanOrEqual(0);
+  expect(item.rect.right).toBeLessThanOrEqual(viewport.width);
+  expect(item.rect.top).toBeGreaterThanOrEqual(0);
+  expect(item.rect.bottom).toBeLessThanOrEqual(viewport.height);
+}
+
 test('mjeku gjen shërbimin, krijon recetë dhe vazhdon offline', async ({ page, context }) => {
   await page.goto('http://127.0.0.1:4173/index.html', { waitUntil:'domcontentloaded' });
   await page.waitForFunction(() => document.documentElement.classList.contains('auth-ready'));
@@ -13,35 +33,15 @@ test('mjeku gjen shërbimin, krijon recetë dhe vazhdon offline', async ({ page,
   await expect(page.locator('#miCommandPalette')).toBeVisible();
   await expect(page.locator('#miCommandPalette')).toContainText('Shto barin');
   const option = page.getByRole('option', { name:/Shto barin “paracetamol” në recetë/i });
-  const geometry = await page.evaluate(() => {
-    const input = document.getElementById('miGlobalSearch');
-    const palette = document.getElementById('miCommandPalette');
-    const optionNode = document.querySelector('[data-command-index="2"]');
-    const toObject = rect => rect ? { x:rect.x, y:rect.y, top:rect.top, right:rect.right, bottom:rect.bottom, left:rect.left, width:rect.width, height:rect.height } : null;
-    const style = palette ? getComputedStyle(palette) : null;
-    return {
-      viewport:{ width:innerWidth, height:innerHeight },
-      input:toObject(input?.getBoundingClientRect()),
-      palette:toObject(palette?.getBoundingClientRect()),
-      option:toObject(optionNode?.getBoundingClientRect()),
-      paletteParent:palette?.parentElement?.tagName || null,
-      position:style?.position || null,
-      top:style?.top || null,
-      left:style?.left || null,
-      width:style?.width || null,
-      overflow:style?.overflow || null,
-      professionalVersion:document.documentElement.dataset.miProfessionalVersion || null,
-      portalBound:palette?.dataset.miPortalBound || null,
-      viewportBound:palette?.dataset.miViewportBound || null,
-    };
+  const paletteGeometry = await geometryOf(page, {
+    input:'#miGlobalSearch',
+    palette:'#miCommandPalette',
+    option:'[data-command-index="2"]',
   });
-  console.log(`PALETTE_GEOMETRY ${JSON.stringify(geometry)}`);
-  expect(geometry.paletteParent).toBe('BODY');
-  expect(geometry.position).toBe('fixed');
-  expect(geometry.option.left).toBeGreaterThanOrEqual(0);
-  expect(geometry.option.right).toBeLessThanOrEqual(geometry.viewport.width);
-  expect(geometry.option.top).toBeGreaterThanOrEqual(0);
-  expect(geometry.option.bottom).toBeLessThanOrEqual(geometry.viewport.height);
+  console.log(`PALETTE_GEOMETRY ${JSON.stringify(paletteGeometry)}`);
+  expect(paletteGeometry.palette.parent).toBe('BODY');
+  expect(paletteGeometry.palette.position).toBe('fixed');
+  expectInsideViewport(paletteGeometry.option, paletteGeometry.viewport);
   await option.click();
   await page.waitForURL(/recetat\.html/);
   await page.waitForFunction(() => document.documentElement.classList.contains('auth-ready'));
@@ -49,8 +49,19 @@ test('mjeku gjen shërbimin, krijon recetë dhe vazhdon offline', async ({ page,
   const drugSearch = page.locator('#rxDrugSearch');
   await expect(drugSearch).toBeVisible();
   await expect(drugSearch).toHaveValue('paracetamol');
-  await expect(page.locator('#rxDrugResults .rx-drug-result').first()).toContainText('Paracetamol', { timeout:10000 });
-  await page.locator('#rxDrugResults .rx-drug-result').first().click();
+  const firstDrug = page.locator('#rxDrugResults .rx-drug-result').first();
+  await expect(firstDrug).toContainText('Paracetamol', { timeout:10000 });
+  const drugGeometry = await geometryOf(page, {
+    picker:'#rxDrugPopover',
+    search:'#rxDrugSearch',
+    result:'#rxDrugResults .rx-drug-result',
+  });
+  console.log(`DRUG_PICKER_GEOMETRY ${JSON.stringify(drugGeometry)}`);
+  expect(drugGeometry.picker.parent).toBe('BODY');
+  expect(drugGeometry.picker.position).toBe('fixed');
+  expectInsideViewport(drugGeometry.search, drugGeometry.viewport);
+  expectInsideViewport(drugGeometry.result, drugGeometry.viewport);
+  await firstDrug.click();
   await expect(page.locator('#rxComposer')).toHaveValue(/Paracetamol/i);
   await page.locator('#rxDiagnosis').fill('R51 — Dhimbje koke');
   await page.waitForTimeout(600);
