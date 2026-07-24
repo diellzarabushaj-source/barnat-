@@ -13,6 +13,14 @@
     {
       id:'labs', href:'analizat.html', title:'Analizat',
       icon:'<svg fill="none" viewBox="0 0 256 256" aria-hidden="true"><path d="M96 24h64M112 24v64l-56 96a32 32 0 0 0 28 48h88a32 32 0 0 0 28-48l-56-96V24" stroke="currentColor" stroke-width="16"/><path d="M78 176h100" stroke="currentColor" stroke-width="16"/></svg>'
+    },
+    {
+      id:'dosage', href:'dozologjia.html', title:'Dozologjia',
+      icon:'<svg fill="none" viewBox="0 0 256 256" aria-hidden="true"><path d="M64 52h128v152H64zM96 84h64M96 124h64M96 164h36" stroke="currentColor" stroke-width="16" stroke-linecap="round"/></svg>'
+    },
+    {
+      id:'clinical-protocols', href:'protokollet.html', title:'Protokollet',
+      icon:'<svg fill="none" viewBox="0 0 256 256" aria-hidden="true"><path d="M56 36h144v184H56zM88 80h80M88 120h80M88 160h56" stroke="currentColor" stroke-width="16" stroke-linecap="round"/></svg>'
     }
   ];
 
@@ -32,7 +40,7 @@
   }
 
   function prescriptionLink(menu) {
-    const existing = menu.querySelector('[data-nav="protocols"],[data-medical-nav="protocols"]');
+    const existing = menu.querySelector('[data-nav="protocols"],[data-medical-nav="protocols"],[data-medical-nav="prescriptions"]');
     if (!existing) return null;
 
     let link = existing;
@@ -45,7 +53,7 @@
 
     link.href = '/recetat.html';
     delete link.dataset.nav;
-    link.dataset.medicalNav = 'protocols';
+    link.dataset.medicalNav = 'prescriptions';
     link.setAttribute('aria-label', 'Recetat');
     const title = link.querySelector('.app-menu-title');
     if (title) title.textContent = 'Recetat';

@@ -1,0 +1,54 @@
+<!doctype html>
+<html lang="sq" class="auth-checking medindex-clean-ui">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+  <meta name="robots" content="noindex,nofollow,noarchive">
+  <meta name="theme-color" content="#0d3d40">
+  <title>MedIndex | Dozologjia</title>
+  <link rel="stylesheet" href="medical-hub.css?v=20260723-1">
+  <link rel="stylesheet" href="clinical-reference.css?v=20260724-1">
+  <link rel="stylesheet" href="navigation-shell.css?v=20260724-4" data-medindex-navigation-css>
+</head>
+<body>
+  <a class="skip-link" href="#dosageContent">Kalo te dozologjia</a>
+  <div class="med-shell">
+    <nav class="med-nav" aria-label="Navigimi kryesor">
+      <a class="med-nav-link" href="index.html"><span class="med-nav-icon">⌂</span><span class="med-nav-title">Barnat</span></a>
+      <a class="med-nav-link" href="klasifikimi.html"><span class="med-nav-icon">▦</span><span class="med-nav-title">Klasifikimi</span></a>
+      <a class="med-nav-link" href="icd.html"><span class="med-nav-icon">ICD</span><span class="med-nav-title">ICD</span></a>
+      <a class="med-nav-link" href="analizat.html"><span class="med-nav-icon">⌁</span><span class="med-nav-title">Analizat</span></a>
+      <a class="med-nav-link active" href="dozologjia.html" aria-current="page"><span class="med-nav-icon">mg</span><span class="med-nav-title">Dozologjia</span></a>
+      <a class="med-nav-link" href="protokollet.html"><span class="med-nav-icon">▤</span><span class="med-nav-title">Protokollet</span></a>
+      <a class="med-nav-link" href="recetat.html"><span class="med-nav-icon">Rx</span><span class="med-nav-title">Recetat</span></a>
+      <div class="med-theme"><span>Tema</span><button id="themeButton" type="button" aria-label="Ndërro temën">☾</button></div>
+    </nav>
+    <main class="med-main clinical-main" id="dosageContent" tabindex="-1">
+      <header class="clinical-hero">
+        <div><p class="clinical-kicker">MedIndex · të dhëna të verifikuara</p><h1>Dozologjia</h1><p>Kërko skemat e publikuara nga Google Sheets. Auto-plotësimi kërkon përputhje të saktë të ATC-së, substancës aktive, formës dhe fortësisë.</p></div>
+        <div class="clinical-summary"><strong id="dosageCount">0</strong><span>skema</span></div>
+      </header>
+      <div class="clinical-toolbar" role="search" aria-label="Kërkimi dhe filtrat e dozologjisë">
+        <input id="dosageSearch" type="search" autocomplete="off" placeholder="Kërko substancën, indikacionin ose ATC…">
+        <select id="dosagePopulation" aria-label="Popullata"><option value="adult">Të rritur</option><option value="pediatric">Pediatri</option></select>
+        <select id="dosageForm" aria-label="Forma"><option value="">Të gjitha format</option></select>
+        <select id="dosageAtc" aria-label="ATC"><option value="">Të gjitha ATC-të</option></select>
+      </div>
+      <div class="clinical-patient" id="pediatricInputs" hidden>
+        <strong>Të dhënat pediatrike</strong>
+        <label>Mosha (muaj)<input id="patientAgeMonths" type="number" min="0" step="1" inputmode="numeric"></label>
+        <label>Pesha (kg)<input id="patientWeightKg" type="number" min="0.1" step="0.1" inputmode="decimal"></label>
+      </div>
+      <p class="clinical-status" id="dosageStatus" role="status" aria-live="polite">Duke ngarkuar skemat…</p>
+      <div class="clinical-list" id="dosageList" aria-live="polite"></div>
+      <aside class="clinical-note"><strong>Kontroll klinik i detyrueshëm:</strong> këto të dhëna ndihmojnë shkrimin e recetës, por nuk zëvendësojnë vlerësimin e pacientit, kundërindikacionet, funksionin renal/hepatik ose burimin zyrtar.</aside>
+    </main>
+  </div>
+  <div class="rx-toast" id="dosageToast" role="status" aria-live="polite"></div>
+  <script src="dosage-engine.js?v=20260724-1" defer></script>
+  <script src="navigation-consistency.js?v=20260724-4" defer></script>
+  <script src="auth-client.js?v=20260723-3" defer></script>
+  <script src="dozologjia.js?v=20260724-1" defer></script>
+  <script src="app-stability.js?v=20260724-2" defer></script>
+</body>
+</html>
