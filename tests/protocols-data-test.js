@@ -36,6 +36,13 @@ manifest.documents.forEach((document, index) => {
 });
 
 assert.deepEqual(manifest.documents.filter(document => document.archived).map(document => document.id), ['upk-53', 'upk-54', 'upk-55']);
+assert.deepEqual(
+  manifest.documents.filter(document => document.registryException).map(document => document.id),
+  ['upk-29'],
+  'only the official direct Demenca PDF may use the documented registry exception',
+);
+assert.equal(manifest.documents[28].registryException.kind, 'official-direct-unlisted');
+assert.equal(manifest.documents[28].registryException.documentMetadataDate, '2025-02-18');
 
 const registryFixture = `
   <h2>Protokolli Klinik - Menaxhimi i Osteoporoz&#xEB;s</h2>
@@ -57,6 +64,10 @@ const registryVerified = verifyRegistryDocument(manifest.documents[0], registryE
 assert.equal(registryVerified.registryTitle, 'Protokolli Klinik - Menaxhimi i Osteoporozës');
 assert.equal(registryVerified.publishedAt, '2026-07-21');
 assert.match(registryVerified.registryVerifiedAt, /^\d{4}-\d{2}-\d{2}T/);
+const unlistedVerified = verifyRegistryDocument(manifest.documents[28], registryEntries);
+assert.equal(unlistedVerified.registryStatus, 'official-direct-unlisted');
+assert.equal(unlistedVerified.registryVerifiedAt, null);
+assert.equal(unlistedVerified.publishedAt, null);
 assert.throws(() => validateRegistryUrl('https://example.com/Documents/Index/273'), /Regjistër jozyrtar/);
 assert.throws(() => verifyRegistryDocument(manifest.documents[1], registryEntries), /nuk u gjet/);
 console.log('Protocol manifest tests passed.');

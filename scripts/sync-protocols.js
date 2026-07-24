@@ -77,10 +77,30 @@ async function fetchRegistryEntries(registryUrl) {
 
 function verifyRegistryDocument(document, registryEntries) {
   const registry = registryEntries.get(officialUrlKey(document.officialUrl));
+  const exception = document.registryException;
+  if (!registry && exception?.kind === 'official-direct-unlisted') {
+    if (!/^\d{4}-\d{2}-\d{2}$/.test(exception.reviewedAt || '')
+      || !/^\d{4}-\d{2}-\d{2}$/.test(exception.documentMetadataDate || '')
+      || !String(exception.reason || '').trim()) {
+      throw new Error(`${document.id} ka përjashtim regjistri të paplotë.`);
+    }
+    return {
+      ...document,
+      registryTitle:null,
+      publishedAt:null,
+      registryStatus:'official-direct-unlisted',
+      registryVerifiedAt:null,
+    };
+  }
   if (!registry?.registryTitle || !/^\d{4}-\d{2}-\d{2}$/.test(registry.publishedAt || '')) {
     throw new Error(`${document.id} nuk u gjet me titull dhe datë në regjistrin zyrtar.`);
   }
-  return { ...document, ...registry, registryVerifiedAt:new Date().toISOString() };
+  return {
+    ...document,
+    ...registry,
+    registryStatus:'indexed',
+    registryVerifiedAt:new Date().toISOString(),
+  };
 }
 
 function validateOfficialUrl(value) {

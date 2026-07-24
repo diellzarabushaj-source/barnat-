@@ -81,7 +81,7 @@ async function handle(req, res, dependencies = {}) {
   if (!result) return res.status(404).json({ error:'Dokumenti privat nuk u gjet.' });
   setPrivateHeaders(res, document, result.headers);
   if (result.statusCode === 304) return res.status(304).end();
-  const status = result.statusCode === 206 ? 206 : 200;
+  const status = result.statusCode === 206 || result.headers?.get?.('content-range') ? 206 : 200;
   if (req.method === 'HEAD') return res.status(status).end();
   res.status(status);
   if (!result.stream) return res.end();

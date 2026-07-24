@@ -34,7 +34,20 @@ function response() {
   assert.equal(res.statusCode, 404);
 
   res = response();
-  await route.handle({ method:'GET', headers:{}, query:{ id:'upk-01' } }, res, { authorized:async () => true });
+  await route.handle(
+    { method:'GET', headers:{}, query:{ id:'upk-unsynced' } },
+    res,
+    {
+      authorized:async () => true,
+      safeDocument:() => ({
+        id:'upk-unsynced',
+        type:'pdf',
+        officialUrl:'https://msh.rks-gov.net/Documents/DownloadDocument?fileName=unsynced.pdf',
+        blobUrl:null,
+        contentSha256:null,
+      }),
+    },
+  );
   assert.equal(res.statusCode, 503, 'unsynchronized manifest entries must not bypass private storage');
 
   const document = {
@@ -62,7 +75,7 @@ function response() {
         seen.url = url;
         seen.options = options;
         return {
-          statusCode:206,
+          statusCode:200,
           stream:new ReadableStream({ start(controller) { controller.enqueue(new Uint8Array([37, 80, 68, 70])); controller.close(); } }),
           headers:new Headers({ 'content-range':'bytes 0-3/10', 'content-length':'4' }),
         };
