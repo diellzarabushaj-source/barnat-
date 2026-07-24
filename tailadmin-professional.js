@@ -2,6 +2,7 @@
   'use strict';
 
   const ROOT = document.documentElement;
+  const PROFESSIONAL_VERSION = 'clinical-audit-v2';
   const MOBILE_BREAKPOINT = 1024;
   const PAGE_KEYS = {
     '/': 'barnat',
@@ -19,6 +20,7 @@
   const pageKey = PAGE_KEYS[normalizedPath()] || 'medindex';
 
   ROOT.dataset.miPage = pageKey;
+  ROOT.dataset.miProfessionalVersion = PROFESSIONAL_VERSION;
   ROOT.classList.add('medindex-professional');
 
   let headFrame = 0;
@@ -36,10 +38,7 @@
     const base = document.querySelector('link[data-tailadmin-medindex-css]');
     const professional = document.querySelector('link[data-tailadmin-professional-css]');
     if (!base || !professional) return;
-
-    if (base.nextElementSibling !== professional || document.head.lastElementChild !== professional) {
-      document.head.append(base, professional);
-    }
+    if (base.nextElementSibling !== professional || document.head.lastElementChild !== professional) document.head.append(base, professional);
   }
 
   function scheduleStylesheetOrder() {
@@ -49,7 +48,7 @@
 
   function resetRootHorizontalOffset() {
     try {
-      if (window.scrollX) window.scrollTo({ left: 0, top: window.scrollY, behavior: 'auto' });
+      if (window.scrollX) window.scrollTo({ left:0, top:window.scrollY, behavior:'auto' });
     } catch {
       window.scrollTo(0, window.scrollY || 0);
     }
@@ -75,7 +74,6 @@
     navFrame = 0;
     const nav = document.getElementById('appMenu');
     if (!nav) return;
-
     nav.id = 'appMenu';
     nav.className = 'mi-sidebar-nav';
     nav.setAttribute('aria-label', 'Navigimi kryesor');
@@ -83,7 +81,6 @@
     const tools = nav.querySelector('.mi-menu-group-tools');
     const logout = nav.querySelector('.auth-logout');
     if (tools && logout && logout.parentElement !== tools) tools.appendChild(logout);
-
     if (logout) {
       logout.classList.add('mi-menu-item');
       logout.removeAttribute('style');
@@ -101,9 +98,7 @@
     links.forEach(link => {
       link.removeAttribute('style');
       link.classList.add('mi-menu-item');
-      const label = link.querySelector('.app-menu-title,.mi-menu-label')?.textContent?.trim()
-        || link.getAttribute('aria-label')
-        || '';
+      const label = link.querySelector('.app-menu-title,.mi-menu-label')?.textContent?.trim() || link.getAttribute('aria-label') || '';
       if (label) link.title = label;
     });
 
@@ -129,15 +124,7 @@
 
   function markScrollableContainers() {
     layoutFrame = 0;
-    const selectors = [
-      '.table-wrap',
-      '.atc-table-wrap',
-      '.med-table-wrap',
-      '.lab-category-nav',
-      '.atc-audit',
-      '.rx-command-bar',
-    ];
-
+    const selectors = ['.table-wrap', '.atc-table-wrap', '.med-table-wrap', '.lab-category-nav', '.atc-audit', '.rx-command-bar'];
     document.querySelectorAll(selectors.join(',')).forEach(node => {
       const horizontallyScrollable = node.scrollWidth > node.clientWidth + 2;
       node.toggleAttribute('data-mi-horizontal-scroll', horizontallyScrollable);
@@ -177,18 +164,25 @@
 
     const rect = input.getBoundingClientRect();
     const gutter = 12;
+    const inputVisible = rect.bottom > gutter && rect.top < window.innerHeight - gutter && rect.right > gutter && rect.left < window.innerWidth - gutter;
     const availableWidth = Math.max(280, window.innerWidth - gutter * 2);
-    const width = Math.min(Math.max(280, rect.width), availableWidth);
-    const left = Math.min(Math.max(gutter, rect.left), Math.max(gutter, window.innerWidth - width - gutter));
+    const width = inputVisible
+      ? Math.min(Math.max(280, rect.width), availableWidth)
+      : Math.min(520, availableWidth);
+    const left = inputVisible
+      ? Math.min(Math.max(gutter, rect.left), Math.max(gutter, window.innerWidth - width - gutter))
+      : Math.max(gutter, Math.round((window.innerWidth - width) / 2));
     const estimatedHeight = Math.min(430, Math.max(180, window.innerHeight * 0.7));
     const roomBelow = window.innerHeight - rect.bottom - 8;
-    const top = roomBelow >= 180
-      ? rect.bottom + 8
-      : Math.max(gutter, rect.top - estimatedHeight - 8);
+    const anchoredTop = roomBelow >= 180 ? rect.bottom + 8 : rect.top - estimatedHeight - 8;
+    const top = inputVisible
+      ? Math.min(Math.max(gutter, anchoredTop), Math.max(gutter, window.innerHeight - 180))
+      : Math.min(84, Math.max(gutter, window.innerHeight - 180));
 
     palette.style.setProperty('--mi-command-left', `${Math.round(left)}px`);
     palette.style.setProperty('--mi-command-top', `${Math.round(top)}px`);
     palette.style.setProperty('--mi-command-width', `${Math.round(width)}px`);
+    palette.dataset.miAnchor = inputVisible ? 'input' : 'viewport';
   }
 
   function schedulePalettePosition() {
@@ -210,22 +204,21 @@
     const input = document.getElementById('miGlobalSearch');
     const palette = document.getElementById('miCommandPalette');
     if (!input || !palette) return false;
-
     portalCommandPalette(palette);
 
     if (!palette.dataset.miViewportBound) {
       palette.dataset.miViewportBound = '1';
       paletteObserver?.disconnect();
       paletteObserver = new MutationObserver(schedulePalettePosition);
-      paletteObserver.observe(palette, { attributes: true, attributeFilter: ['hidden'], childList: true, subtree: true });
-      input.addEventListener('focus', schedulePalettePosition, { passive: true });
-      input.addEventListener('input', schedulePalettePosition, { passive: true });
+      paletteObserver.observe(palette, { attributes:true, attributeFilter:['hidden'], childList:true, subtree:true });
+      input.addEventListener('focus', schedulePalettePosition, { passive:true });
+      input.addEventListener('input', schedulePalettePosition, { passive:true });
     }
 
     if (!paletteListenersInstalled) {
       paletteListenersInstalled = true;
-      window.addEventListener('resize', schedulePalettePosition, { passive: true });
-      document.addEventListener('scroll', schedulePalettePosition, { passive: true, capture: true });
+      window.addEventListener('resize', schedulePalettePosition, { passive:true });
+      document.addEventListener('scroll', schedulePalettePosition, { passive:true, capture:true });
     }
 
     schedulePalettePosition();
@@ -235,10 +228,8 @@
   function syncResponsiveState() {
     const body = document.body;
     if (!body) return;
-
     if (innerWidth < MOBILE_BREAKPOINT) body.classList.remove('mi-sidebar-collapsed');
     else body.classList.remove('mi-sidebar-open');
-
     resetRootHorizontalOffset();
     scheduleLayoutAudit();
     scheduleNavigation();
@@ -249,12 +240,12 @@
     const nav = document.getElementById('appMenu');
     if (nav && !navObserver) {
       navObserver = new MutationObserver(scheduleNavigation);
-      navObserver.observe(nav, { childList: true, subtree: true, attributes: true, attributeFilter: ['class', 'style', 'aria-current'] });
+      navObserver.observe(nav, { childList:true, subtree:true, attributes:true, attributeFilter:['class', 'style', 'aria-current'] });
     }
 
     if (!headObserver) {
       headObserver = new MutationObserver(scheduleStylesheetOrder);
-      headObserver.observe(document.head, { childList: true });
+      headObserver.observe(document.head, { childList:true });
     }
 
     if ('ResizeObserver' in window && !resizeObserver) {
@@ -275,7 +266,7 @@
         scheduleLayoutAudit();
         bindCommandPaletteViewport();
       });
-      observer.observe(pageSlot, { childList: true, subtree: true });
+      observer.observe(pageSlot, { childList:true, subtree:true });
     }
   }
 
@@ -288,10 +279,10 @@
     installObservers();
     bindCommandPaletteViewport();
     syncResponsiveState();
-    window.dispatchEvent(new CustomEvent('medindex:professional-ui-ready', { detail: { page: pageKey } }));
+    window.dispatchEvent(new CustomEvent('medindex:professional-ui-ready', { detail:{ page:pageKey, version:PROFESSIONAL_VERSION } }));
   }
 
-  window.addEventListener('medindex:tailadmin-ready', stabilize, { once: true });
+  window.addEventListener('medindex:tailadmin-ready', stabilize, { once:true });
   window.addEventListener('medindex:auth-ready', scheduleNavigation);
   window.addEventListener('medindex:clinical-workflow-ready', bindCommandPaletteViewport);
   window.addEventListener('pageshow', () => {
@@ -299,14 +290,14 @@
     scheduleNavigation();
     scheduleLayoutAudit();
     bindCommandPaletteViewport();
-  }, { passive: true });
-  window.addEventListener('resize', () => requestAnimationFrame(syncResponsiveState), { passive: true });
-  window.addEventListener('orientationchange', () => setTimeout(syncResponsiveState, 80), { passive: true });
+  }, { passive:true });
+  window.addEventListener('resize', () => requestAnimationFrame(syncResponsiveState), { passive:true });
+  window.addEventListener('orientationchange', () => setTimeout(syncResponsiveState, 80), { passive:true });
 
   if (document.readyState === 'loading') {
     document.addEventListener('DOMContentLoaded', () => {
       if (document.body?.dataset.tailadminReady === '1') stabilize();
-    }, { once: true });
+    }, { once:true });
   } else if (document.body?.dataset.tailadminReady === '1') {
     stabilize();
   }
