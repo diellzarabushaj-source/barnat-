@@ -4,6 +4,7 @@ on:
   push:
     branches:
       - feat/tailadmin-ui-rebuild
+  workflow_dispatch:
 
 permissions:
   contents: write
