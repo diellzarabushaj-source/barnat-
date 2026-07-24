@@ -4,6 +4,8 @@
   const RETURN_KEY = 'medindex_return_after_login';
   const OFFLINE_LEASE_KEY = 'medindex_offline_lease_v1';
   const OFFLINE_RUNTIME_SRC = '/offline-runtime.js?v=clinical-audit-v2';
+  const PROFESSIONAL_RUNTIME_SRC = '/tailadmin-professional.js?v=clinical-audit-v2';
+  const PROFESSIONAL_VERSION = 'clinical-audit-v2';
   const MAX_OFFLINE_LEASE_MS = 12 * 60 * 60 * 1000;
   const AUTH_TIMEOUT_MS = 3200;
   const originalFetch = window.fetch.bind(window);
@@ -68,6 +70,16 @@
 
   function clearOfflineLease() {
     try { localStorage.removeItem(OFFLINE_LEASE_KEY); } catch {}
+  }
+
+  function ensureProfessionalRuntime() {
+    if (document.documentElement.dataset.miProfessionalVersion === PROFESSIONAL_VERSION) return;
+    if (document.querySelector('script[data-medindex-professional-runtime]')) return;
+    const script = document.createElement('script');
+    script.src = PROFESSIONAL_RUNTIME_SRC;
+    script.defer = true;
+    script.dataset.medindexProfessionalRuntime = '1';
+    document.head.appendChild(script);
   }
 
   function startOfflineRuntime() {
@@ -207,6 +219,7 @@
     document.documentElement.classList.remove('auth-checking');
     settleAuth(true, { offline:true, reason, expiresAt:lease.expiresAt });
     installLogoutWhenReady();
+    ensureProfessionalRuntime();
     startOfflineRuntime();
     installOnlineRevalidation();
     return true;
@@ -258,6 +271,7 @@
       document.documentElement.classList.remove('auth-checking', 'auth-offline');
       settleAuth(true, { ...payload, offline:false, expiresAt:lease.expiresAt });
       installLogoutWhenReady();
+      ensureProfessionalRuntime();
       startOfflineRuntime();
     } catch (error) {
       if (activateOfflineLease(error?.name === 'AbortError' ? 'timeout' : 'network')) return;
