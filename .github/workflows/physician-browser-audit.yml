@@ -24,9 +24,12 @@ jobs:
         run: npm install --ignore-scripts --no-audit --no-fund
 
       - name: Install Playwright Chromium
+        shell: bash
         run: |
-          npm install --no-save --ignore-scripts --no-audit --no-fund @playwright/test@1.54.1
-          npx playwright install --with-deps chromium
+          set -euo pipefail
+          npm install --no-save --ignore-scripts --no-audit --no-fund @playwright/test@1.54.1 > /tmp/playwright-install.log 2>&1 || { tail -200 /tmp/playwright-install.log; exit 1; }
+          npx playwright install --with-deps chromium >> /tmp/playwright-install.log 2>&1 || { tail -200 /tmp/playwright-install.log; exit 1; }
+          echo "Playwright Chromium installed."
 
       - name: Run physician workflow
         shell: bash
@@ -39,4 +42,5 @@ jobs:
             if curl -fsS http://127.0.0.1:4173/index.html >/dev/null; then break; fi
             sleep 1
           done
-          npx playwright test tests/physician-flow.spec.js --reporter=line --workers=1
+          npx playwright test tests/physician-flow.spec.js --reporter=line --workers=1 > /tmp/physician-flow.log 2>&1 || { cat /tmp/physician-flow.log; exit 1; }
+          cat /tmp/physician-flow.log
