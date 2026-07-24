@@ -7,9 +7,9 @@ const ROOT = path.resolve(__dirname, '..');
 const read = relative => fs.readFileSync(path.join(ROOT, relative), 'utf8');
 const exists = relative => fs.existsSync(path.join(ROOT, relative));
 
-['sw.js', 'offline-runtime.js', 'auth-client.js', 'app.js'].forEach(file => {
+['sw.js', 'offline-runtime.js', 'auth-client.js', 'app.js', 'clinical-workflow.js', 'local-registry.js'].forEach(file => {
   assert.ok(exists(file), `${file} is missing`);
-  execFileSync(process.execPath, ['--check', path.join(ROOT, file)], { stdio: 'pipe' });
+  execFileSync(process.execPath, ['--check', path.join(ROOT, file)], { stdio:'pipe' });
 });
 
 assert.ok(exists('manifest.webmanifest'), 'PWA manifest is missing');
@@ -22,32 +22,40 @@ assert.ok(Array.isArray(manifest.shortcuts) && manifest.shortcuts.length >= 3);
 
 const worker = read('sw.js');
 [
-  /5a3e284e-offline-v1/,
+  /clinical-audit-v2/,
   /skipWaiting\(\)/,
   /clients\.claim\(\)/,
   /WARM_PRIVATE_DATA/,
   /CLEAR_PRIVATE_DATA/,
+  /GET_CACHE_STATUS/,
   /\/api\/registry/,
   /\/api\/dosage/,
+  /\/api\/icd/,
+  /\/api\/drug-search/,
   /\/data\/protocols\.json/,
   /\/api\/protocol-document/,
-  /X-MedIndex-Offline/,
   /Content-Range/,
   /medindex-private-/,
   /medindex-documents-/,
+  /page-hit/,
+  /private-hit/,
+  /event\.waitUntil/,
 ].forEach(pattern => assert.match(worker, pattern, `sw.js missing ${pattern}`));
 assert.match(worker, /url\.pathname === '\/api\/auth'[\s\S]*fetch\(request\)/, 'auth must remain network-only');
 assert.match(worker, /url\.pathname === '\/api\/gemini-prescription'/, 'Gemini must have an explicit online-only route');
 assert.doesNotMatch(worker, /cache\.put\([^\n]*api\/auth/, 'auth responses must never be cached');
+assert.doesNotMatch(worker, /self\.waitUntil/, 'waitUntil must be called on the fetch event');
 
 const runtime = read('offline-runtime.js');
 [
   /serviceWorker\.register/,
-  /updateViaCache:\s*'none'/,
+  /updateViaCache:'none'/,
   /navigator\.storage\.persist/,
   /WARM_PRIVATE_DATA/,
   /beforeinstallprompt/,
   /medindex:offline-runtime-ready/,
+  /clinical-workflow\.js/,
+  /Përditësim gati/,
   /Pa internet/,
 ].forEach(pattern => assert.match(runtime, pattern, `offline-runtime.js missing ${pattern}`));
 assert.doesNotMatch(runtime, /\/api\/gemini-prescription|password/i, 'offline runtime must not call AI or handle passwords');
@@ -56,14 +64,17 @@ const auth = read('auth-client.js');
 [
   /medindex_offline_lease_v1/,
   /MAX_OFFLINE_LEASE_MS/,
+  /AUTH_TIMEOUT_MS = 3200/,
   /activateOfflineLease/,
   /auth-offline/,
   /CLEAR_PRIVATE_DATA/,
-  /indexedDB\.deleteDatabase\('medindex-registry-v1'\)/,
+  /deleteDatabase\('medindex-registry-v1'\)/,
   /offline-runtime\.js/,
   /revalidateOnlineSession/,
+  /medindex:offline-auth-invalid/,
 ].forEach(pattern => assert.match(auth, pattern, `auth-client.js missing ${pattern}`));
 assert.match(auth, /response\.status === 401 \|\| response\.status === 403[\s\S]*goToLogin/, '401/403 must never use an offline lease');
+assert.match(auth, /if \(!navigator\.onLine\)[\s\S]*activateOfflineLease/, 'offline lease must be attempted without waiting for a timeout');
 
 const app = read('app.js');
 [
