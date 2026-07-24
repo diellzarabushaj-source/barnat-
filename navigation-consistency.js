@@ -22,16 +22,17 @@
   let bodyObserver = null;
   let scheduled = false;
   let hashAttempts = 0;
+  let centerFrame = 0;
 
   function ensureStylesheetLast() {
     let link = document.querySelector('link[data-medindex-navigation-css]');
     if (!link) {
       link = document.createElement('link');
       link.rel = 'stylesheet';
-      link.href = 'navigation-shell.css?v=20260724-2';
+      link.href = 'navigation-shell.css?v=20260724-3';
       link.dataset.medindexNavigationCss = '1';
     }
-    document.head.appendChild(link);
+    if (document.head.lastElementChild !== link) document.head.appendChild(link);
   }
 
   function favoriteCount() {
@@ -51,12 +52,8 @@
   }
 
   function classesFor(nav) {
-    if (nav.classList.contains('atc-nav')) {
-      return { link:'atc-nav-link', icon:'atc-nav-icon', title:'atc-nav-title', theme:'atc-theme' };
-    }
-    if (nav.classList.contains('med-nav')) {
-      return { link:'med-nav-link', icon:'med-nav-icon', title:'med-nav-title', theme:'med-theme' };
-    }
+    if (nav.classList.contains('atc-nav')) return { link:'atc-nav-link', icon:'atc-nav-icon', title:'atc-nav-title', theme:'atc-theme' };
+    if (nav.classList.contains('med-nav')) return { link:'med-nav-link', icon:'med-nav-icon', title:'med-nav-title', theme:'med-theme' };
     return { link:'app-menu-link', icon:'app-menu-icon', title:'app-menu-title', theme:'theme-control' };
   }
 
@@ -88,25 +85,38 @@
     if (item.matches('button') && !item.type) item.type = 'button';
   }
 
+  function normalizedPath() {
+    const path = location.pathname.replace(/\/{2,}/g, '/').replace(/\/+$/, '') || '/';
+    return path.endsWith('/index') ? `${path}.html` : path;
+  }
+
   function currentTarget() {
-    const path = location.pathname.replace(/\/+$/, '') || '/';
-    return PATH_TARGETS.get(path) || '';
+    return PATH_TARGETS.get(normalizedPath()) || '';
+  }
+
+  function currentHashTarget() {
+    if (!['/', '/index.html'].includes(normalizedPath())) return '';
+    const hash = location.hash.toLocaleLowerCase('sq');
+    if (hash === '#favoritet') return 'favorites';
+    if (hash === '#kerko') return 'search';
+    return '';
   }
 
   function markActive(nav) {
     if (!nav) return;
-    const target = currentTarget();
+    const pageTarget = currentTarget();
     const override = nav.id === 'appMenu' ? nav.dataset.medindexActiveOverride || '' : '';
-    const hashTarget = location.pathname.endsWith('index.html') || location.pathname === '/'
-      ? location.hash.toLocaleLowerCase('sq')
-      : '';
+    const hashTarget = currentHashTarget();
+    const hasHashTarget = Boolean(hashTarget);
 
     nav.querySelectorAll(ITEM_SELECTOR).forEach(item => {
       if (item.classList.contains('auth-logout')) return;
       const itemId = item.dataset.nav || item.dataset.medicalNav || item.dataset.medindexNav || '';
-      const isHashActive = (hashTarget === '#favoritet' && itemId === 'favorites')
-        || (hashTarget === '#kerko' && itemId === 'search');
-      const active = override ? itemId === override : (isHashActive || (!isHashActive && itemId === target));
+      const active = override
+        ? itemId === override
+        : hasHashTarget
+          ? itemId === hashTarget
+          : itemId === pageTarget;
       item.classList.toggle('active', active);
       if (item.matches('a[href]')) {
         if (active && ['home', 'classification', 'icd', 'labs', 'protocols'].includes(itemId)) item.setAttribute('aria-current', 'page');
@@ -129,12 +139,8 @@
   function normalizeStaticNav(nav) {
     const classes = classesFor(nav);
     const before = nav.querySelector('.auth-logout') || nav.querySelector(`.${classes.theme}`) || null;
-    if (!nav.querySelector('[data-medindex-nav="favorites"]')) {
-      nav.insertBefore(makeStaticLink(nav, 'favorites', 'Favoritet', '/index.html#favoritet'), before);
-    }
-    if (!nav.querySelector('[data-medindex-nav="search"]')) {
-      nav.insertBefore(makeStaticLink(nav, 'search', 'Kërko', '/index.html#kerko'), before);
-    }
+    if (!nav.querySelector('[data-medindex-nav="favorites"]')) nav.insertBefore(makeStaticLink(nav, 'favorites', 'Favoritet', '/index.html#favoritet'), before);
+    if (!nav.querySelector('[data-medindex-nav="search"]')) nav.insertBefore(makeStaticLink(nav, 'search', 'Kërko', '/index.html#kerko'), before);
 
     const pathMap = [
       [/Barnat/i, '/index.html', 'home'],
@@ -208,21 +214,23 @@
 
   function centerActiveItem() {
     if (!matchMedia('(max-width: 780px)').matches) return;
-    document.querySelectorAll(NAV_SELECTOR).forEach(nav => {
-      const active = nav.querySelector(ACTIVE_SELECTOR);
-      if (!active) return;
-      const target = Math.max(0, active.offsetLeft - ((nav.clientWidth - active.offsetWidth) / 2));
-      const reduced = matchMedia('(prefers-reduced-motion: reduce)').matches;
-      nav.scrollTo({ left:target, behavior:reduced ? 'auto' : 'smooth' });
+    cancelAnimationFrame(centerFrame);
+    centerFrame = requestAnimationFrame(() => {
+      document.querySelectorAll(NAV_SELECTOR).forEach(nav => {
+        const active = nav.querySelector(ACTIVE_SELECTOR);
+        if (!active) return;
+        const target = Math.max(0, active.offsetLeft - ((nav.clientWidth - active.offsetWidth) / 2));
+        const reduced = matchMedia('(prefers-reduced-motion: reduce)').matches;
+        nav.scrollTo({ left:target, behavior:reduced ? 'auto' : 'smooth' });
+      });
     });
   }
 
   function activateHashTarget() {
-    const hash = location.hash.toLocaleLowerCase('sq');
-    const target = hash === '#favoritet' ? 'favorites' : hash === '#kerko' ? 'search' : '';
-    if (!target || !['/', '/index.html'].includes(location.pathname)) return;
+    const target = currentHashTarget();
+    if (!target) return;
     const menu = document.getElementById('appMenu');
-    const button = menu?.querySelector(`[data-nav="${target}"]`);
+    const button = menu?.querySelector(`[data-nav="${target}"],[data-medical-nav="${target}"]`);
     if (button) {
       menu.dataset.medindexActiveOverride = target;
       button.click();
@@ -250,6 +258,7 @@
   }
 
   function keyboardNavigation(event) {
+    if (event.altKey || event.ctrlKey || event.metaKey || event.shiftKey) return;
     if (!['ArrowDown', 'ArrowRight', 'ArrowUp', 'ArrowLeft', 'Home', 'End'].includes(event.key)) return;
     const nav = event.target.closest(NAV_SELECTOR);
     if (!nav) return;
@@ -263,7 +272,15 @@
     else if (['ArrowDown', 'ArrowRight'].includes(event.key)) next = (current + 1) % items.length;
     else next = (current - 1 + items.length) % items.length;
     event.preventDefault();
-    items[next]?.focus();
+    items[next]?.focus({ preventScroll:true });
+    items[next]?.scrollIntoView({ block:'nearest', inline:'nearest' });
+  }
+
+  function syncLocationState() {
+    hashAttempts = 0;
+    document.querySelectorAll('#appMenu').forEach(menu => delete menu.dataset.medindexActiveOverride);
+    scheduleNormalize();
+    activateHashTarget();
   }
 
   function init() {
@@ -278,8 +295,15 @@
     });
     window.addEventListener('focus', updateFavoriteCounts, { passive:true });
     window.addEventListener('resize', centerActiveItem, { passive:true });
+    window.addEventListener('orientationchange', centerActiveItem, { passive:true });
+    window.addEventListener('pageshow', syncLocationState, { passive:true });
+    window.addEventListener('popstate', syncLocationState, { passive:true });
+    window.addEventListener('hashchange', syncLocationState, { passive:true });
     document.addEventListener('visibilitychange', () => {
-      if (!document.hidden) updateFavoriteCounts();
+      if (!document.hidden) {
+        updateFavoriteCounts();
+        scheduleNormalize();
+      }
     });
   }
 
