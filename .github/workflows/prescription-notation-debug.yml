@@ -1,0 +1,31 @@
+name: Prescription notation debug
+
+on:
+  pull_request:
+
+permissions:
+  contents: read
+
+jobs:
+  notation:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Run notation test and capture output
+        shell: bash
+        run: |
+          set +e
+          node tests/prescription-notation-test.js > prescription-test.log 2>&1
+          echo $? > prescription-test.status
+          set -e
+      - name: Upload notation output
+        uses: actions/upload-artifact@v4
+        with:
+          name: prescription-notation-debug
+          path: |
+            prescription-test.log
+            prescription-test.status
+          retention-days: 1
+      - name: Fail when notation test failed
+        shell: bash
+        run: test "$(cat prescription-test.status)" = "0"
