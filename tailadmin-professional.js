@@ -196,11 +196,22 @@
     paletteFrame = requestAnimationFrame(positionCommandPalette);
   }
 
+  function portalCommandPalette(palette) {
+    if (!document.body || !palette) return;
+    if (palette.parentElement !== document.body) document.body.appendChild(palette);
+    if (palette.dataset.miPortalBound === '1') return;
+    palette.dataset.miPortalBound = '1';
+    palette.addEventListener('mousedown', event => event.stopPropagation());
+    palette.addEventListener('click', event => event.stopPropagation());
+  }
+
   function bindCommandPaletteViewport() {
     ensurePaletteViewportStyles();
     const input = document.getElementById('miGlobalSearch');
     const palette = document.getElementById('miCommandPalette');
     if (!input || !palette) return false;
+
+    portalCommandPalette(palette);
 
     if (!palette.dataset.miViewportBound) {
       palette.dataset.miViewportBound = '1';
