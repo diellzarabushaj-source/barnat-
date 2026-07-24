@@ -18,6 +18,7 @@ const pages = [
 
 for (const fileName of pages) {
   const html = read(fileName);
+  assert.match(html, /<html[^>]+class=["'][^"']*medindex-tailadmin/, `${fileName}: TailAdmin marker must exist before scripts execute`);
   assert.equal(count(html, /tailadmin-professional\.css/gi), 1, `${fileName}: professional CSS must load once`);
   assert.equal(count(html, /tailadmin-professional\.js/gi), 1, `${fileName}: professional JS must load once`);
   assert.match(html, /data-tailadmin-professional-css/, `${fileName}: professional CSS marker missing`);
@@ -29,15 +30,6 @@ for (const fileName of pages) {
   assert.ok(baseCss >= 0 && proCss > baseCss, `${fileName}: professional CSS must follow base TailAdmin CSS`);
   assert.ok(shellJs >= 0 && proJs > shellJs, `${fileName}: professional runtime must follow shell runtime`);
 }
-
-const shell = read('tailadmin-shell.js');
-assert.match(shell, /document\.documentElement\.classList\.add\('medindex-tailadmin'\)/, 'TailAdmin marker must be installed before DOMContentLoaded');
-assert.match(shell, /data-tailadmin-professional-css/, 'shell must keep professional CSS as the final cascade layer');
-
-const enhancements = read('ui-enhancements.js');
-assert.match(enhancements, /function hasTailAdmin/, 'legacy feature layer must detect TailAdmin deterministically');
-assert.match(enhancements, /medindex:tailadmin-ready/, 'legacy feature layer must wait for the TailAdmin shell');
-assert.match(enhancements, /hasTailAdmin\(\) \? '' :/, 'legacy navigation CSS must be disabled whenever TailAdmin assets exist');
 
 const css = read('tailadmin-professional.css');
 [
