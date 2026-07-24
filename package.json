@@ -3,7 +3,7 @@
   "version": "1.3.4",
   "private": true,
   "scripts": {
-    "test": "node tests/run-tests.js && node tests/auth-default-test.js && node tests/lab-photo-source-test.js && node tests/lab-photo-coverage-test.js && node tests/prescription-format-test.js && node tests/gemini-prescription-audit-test.js && node tests/signature-templates-test.js && node tests/dosage-matching-test.js && node tests/protocols-data-test.js && node tests/protocol-document-test.js && node tests/ui-navigation-audit-test.js",
+    "test": "node tests/run-tests.js && node tests/auth-default-test.js && node tests/lab-photo-source-test.js && node tests/lab-photo-coverage-test.js && node tests/prescription-format-test.js && node tests/gemini-prescription-audit-test.js && node tests/signature-templates-test.js && node tests/dosage-matching-test.js && node tests/protocols-data-test.js && node tests/protocol-document-test.js && node tests/ui-navigation-audit-test.js && node tests/professional-ui-audit-test.js",
     "sync:protocols": "node scripts/sync-protocols.js",
     "build": "npm test"
   },

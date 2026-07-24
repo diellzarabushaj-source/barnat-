@@ -21,15 +21,20 @@ for (const [fileName, skipTarget] of pages) {
   const styles = [...html.matchAll(/<link\b[^>]*rel=["']stylesheet["'][^>]*href=["']([^"']+)["'][^>]*>/gi)].map(match => match[1]);
   const scripts = [...html.matchAll(/<script\b[^>]*src=["']([^"']+)["'][^>]*>/gi)].map(match => match[1]);
 
+  assert.match(html, /<html[^>]+class=["'][^"']*medindex-tailadmin/, `${fileName}: TailAdmin marker must be available before deferred scripts`);
   assert.equal(count(html, /tailadmin-medindex\.css/gi), 1, `${fileName}: TailAdmin CSS must load exactly once`);
+  assert.equal(count(html, /tailadmin-professional\.css/gi), 1, `${fileName}: professional TailAdmin CSS must load exactly once`);
   assert.equal(count(html, /tailadmin-shell\.js/gi), 1, `${fileName}: TailAdmin shell must load exactly once`);
-  assert.match(styles.at(-1) || '', /tailadmin-medindex\.css/, `${fileName}: TailAdmin CSS must be the final static stylesheet`);
+  assert.equal(count(html, /tailadmin-professional\.js/gi), 1, `${fileName}: professional TailAdmin runtime must load exactly once`);
+  assert.match(styles.at(-1) || '', /tailadmin-professional\.css/, `${fileName}: professional TailAdmin CSS must be the final static stylesheet`);
   assert.doesNotMatch(html, /navigation-shell\.css|navigation-consistency\.js|main-navigation-extension\.js/, `${fileName}: legacy navigation layer must not load`);
 
   const shellIndex = scripts.findIndex(item => item.includes('tailadmin-shell.js'));
+  const professionalIndex = scripts.findIndex(item => item.includes('tailadmin-professional.js'));
   const authIndex = scripts.findIndex(item => item.includes('auth-client.js'));
   const stabilityIndex = scripts.findIndex(item => item.includes('app-stability.js'));
-  assert.ok(shellIndex >= 0 && authIndex > shellIndex, `${fileName}: TailAdmin shell must initialize before auth adds logout`);
+  assert.ok(shellIndex >= 0 && professionalIndex > shellIndex, `${fileName}: professional runtime must initialize after TailAdmin shell`);
+  assert.ok(authIndex > professionalIndex, `${fileName}: TailAdmin runtimes must initialize before auth adds logout`);
   assert.ok(stabilityIndex > authIndex, `${fileName}: stability layer must load after auth`);
 
   assert.match(html, new RegExp(`<a[^>]+class=["'][^"']*skip-link[^"']*["'][^>]+href=["']#${skipTarget}["']`, 'i'), `${fileName}: missing usable skip link`);
@@ -52,6 +57,7 @@ assert.match(recetat, /id="rxDosageReview"/);
 assert.match(recetat, /id="rxDosageChooser"/);
 
 const shell = read('tailadmin-shell.js');
+const professional = read('tailadmin-professional.js');
 const authClient = read('auth-client.js');
 const uiEnhancements = read('ui-enhancements.js');
 [
@@ -76,15 +82,25 @@ const uiEnhancements = read('ui-enhancements.js');
   /favoriteNavCount/,
 ].forEach(pattern => assert.match(shell, pattern, `tailadmin-shell.js missing ${pattern}`));
 assert.match(shell, /document\.addEventListener\('DOMContentLoaded', init/);
-assert.match(shell, /MutationObserver\(\(\) => queueMicrotask\(ensureStylesheetLast\)\)/, 'TailAdmin CSS must remain the final cascade layer');
+assert.match(shell, /MutationObserver\(\(\) => queueMicrotask\(ensureStylesheetLast\)\)/, 'TailAdmin base cascade guard must not expire');
 assert.doesNotMatch(shell, /headObserver\.disconnect|12000/, 'TailAdmin cascade guard must not expire after a timeout');
 assert.match(shell, /MOBILE_BREAKPOINT = 1024/, 'TailAdmin desktop/mobile breakpoint is missing');
+[
+  /ROOT\.dataset\.miPage/,
+  /orderStylesheets/,
+  /normalizeNavigation/,
+  /resetRootHorizontalOffset/,
+  /MutationObserver/,
+  /ResizeObserver/,
+  /medindex:professional-ui-ready/,
+].forEach(pattern => assert.match(professional, pattern, `tailadmin-professional.js missing ${pattern}`));
 assert.match(authClient, /installLogout/);
 assert.match(authClient, /\.auth-logout/);
 assert.match(uiEnhancements, /legacyNavigationStyles[\s\S]*contains\('medindex-tailadmin'\) \? ''/, 'legacy registry navigation styles must be disabled inside TailAdmin');
 assert.match(uiEnhancements, /\$\{legacyNavigationStyles\}/, 'shared registry enhancements must keep legacy navigation isolated');
 
 const css = read('tailadmin-medindex.css');
+const professionalCss = read('tailadmin-professional.css');
 [
   /--mi-brand-500:\s*#465fff/,
   /--mi-gray-900:\s*#101828/,
@@ -110,6 +126,20 @@ const css = read('tailadmin-medindex.css');
   /html\[data-theme="dark"\]/,
   /\.login-side-panel/,
 ].forEach(pattern => assert.match(css, pattern, `tailadmin-medindex.css missing ${pattern}`));
+[
+  /#appMenu \.app-menu-link/,
+  /flex-direction:\s*row\s*!important/,
+  /overflow-x:\s*hidden\s*!important/,
+  /data-mi-page="barnat"/,
+  /data-mi-page="klasifikimi"/,
+  /data-mi-page="icd"/,
+  /data-mi-page="analizat"/,
+  /data-mi-page="dozologjia"/,
+  /data-mi-page="protokollet"/,
+  /data-mi-page="recetat"/,
+  /@media \(max-width: 1023px\)/,
+  /@media \(max-height: 760px\)/,
+].forEach(pattern => assert.match(professionalCss, pattern, `tailadmin-professional.css missing ${pattern}`));
 assert.doesNotMatch(css, /--medindex-nav-width|bottom navigation/i, 'TailAdmin shell must not retain the legacy bottom-navigation geometry');
 
 const login = read('login.html');

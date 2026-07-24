@@ -33,6 +33,7 @@ jobs:
             main-navigation-extension.js
             navigation-consistency.js
             tailadmin-shell.js
+            tailadmin-professional.js
             medical-icons.js
             section-icons.js
             classification-icons.js
@@ -101,12 +102,18 @@ jobs:
           set -euo pipefail
           test -f tailadmin-medindex.css
           test -f tailadmin-shell.js
+          test -f tailadmin-professional.css
+          test -f tailadmin-professional.js
           test -f TAILADMIN-LICENSE
           test -f THIRD_PARTY_NOTICES.md
           test -f tests/ui-navigation-audit-test.js
+          test -f tests/professional-ui-audit-test.js
           for page in index.html klasifikimi.html icd.html analizat.html dozologjia.html protokollet.html recetat.html; do
+            grep -q 'medindex-tailadmin' "$page"
             grep -q 'tailadmin-medindex.css' "$page"
+            grep -q 'tailadmin-professional.css' "$page"
             grep -q 'tailadmin-shell.js' "$page"
+            grep -q 'tailadmin-professional.js' "$page"
             grep -q 'skip-link' "$page"
           done
           grep -q 'tailadmin-medindex.css' login.html
