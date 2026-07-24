@@ -32,6 +32,7 @@ jobs:
             app-stability.js
             main-navigation-extension.js
             navigation-consistency.js
+            tailadmin-shell.js
             medical-icons.js
             section-icons.js
             classification-icons.js
@@ -94,23 +95,31 @@ jobs:
           ! grep -q 'dosage-auto-apply.js' index.html
           ! grep -q 'prescription-review.js' index.html
 
-      - name: Verify canonical UI and navigation
+      - name: Verify TailAdmin UI and navigation
         shell: bash
         run: |
           set -euo pipefail
-          test -f navigation-shell.css
-          test -f navigation-consistency.js
+          test -f tailadmin-medindex.css
+          test -f tailadmin-shell.js
+          test -f TAILADMIN-LICENSE
+          test -f THIRD_PARTY_NOTICES.md
           test -f tests/ui-navigation-audit-test.js
-          for page in index.html klasifikimi.html icd.html analizat.html recetat.html; do
-            grep -q 'navigation-shell.css' "$page"
-            grep -q 'navigation-consistency.js' "$page"
+          for page in index.html klasifikimi.html icd.html analizat.html dozologjia.html protokollet.html recetat.html; do
+            grep -q 'tailadmin-medindex.css' "$page"
+            grep -q 'tailadmin-shell.js' "$page"
             grep -q 'skip-link' "$page"
           done
-          grep -q 'safe-area-inset-bottom' navigation-shell.css
-          grep -q 'prefers-reduced-motion' navigation-shell.css
-          grep -q 'forced-colors:active' navigation-shell.css
-          grep -q 'keyboardNavigation' navigation-consistency.js
-          grep -q 'bodyObserver.observe(document.body, { childList:true })' navigation-consistency.js
+          grep -q 'tailadmin-medindex.css' login.html
+          grep -q -- '--mi-sidebar-width: 290px' tailadmin-medindex.css
+          grep -q -- '--mi-brand-500: #465fff' tailadmin-medindex.css
+          grep -q 'html\[data-theme="dark"\]' tailadmin-medindex.css
+          grep -q 'prefers-reduced-motion' tailadmin-medindex.css
+          grep -q 'MOBILE_BREAKPOINT = 1024' tailadmin-shell.js
+          grep -q 'data-mi-sidebar-toggle' tailadmin-shell.js
+          grep -q 'aria-current="page"' tailadmin-shell.js
+          grep -q 'MutationObserver' tailadmin-shell.js
+          grep -q 'regjistriBarnave_theme_v1' tailadmin-shell.js
+          grep -q 'TailAdmin Free Tailwind Dashboard Template' THIRD_PARTY_NOTICES.md
           ! grep -q 'installClinicalUi' app-stability.js
           ! grep -q 'clinical-ui.css' app-stability.js
 
