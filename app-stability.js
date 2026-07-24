@@ -1,29 +1,9 @@
 (() => {
   'use strict';
 
-  const CLINICAL_UI_VERSION = '20260723-1';
-  const NAVIGATION_UI_VERSION = '20260723-2';
   let lastFocused = null;
   let errorBannerTimer = 0;
   let dialogFrame = 0;
-
-  function installClinicalUi() {
-    if (document.querySelector('link[data-medindex-clinical-ui]')) return;
-    const link = document.createElement('link');
-    link.rel = 'stylesheet';
-    link.href = `clinical-ui.css?v=${CLINICAL_UI_VERSION}`;
-    link.dataset.medindexClinicalUi = '1';
-    document.head.appendChild(link);
-  }
-
-  function installNavigationUi() {
-    if (document.querySelector('script[data-medindex-navigation-ui]')) return;
-    const script = document.createElement('script');
-    script.src = `navigation-consistency.js?v=${NAVIGATION_UI_VERSION}`;
-    script.defer = true;
-    script.dataset.medindexNavigationUi = '1';
-    document.head.appendChild(script);
-  }
 
   function banner(className, message, persistent = false) {
     let node = document.querySelector(`.${className}`);
@@ -102,6 +82,8 @@
   function closeTransientUi(event) {
     if (event.key !== 'Escape') return;
     document.querySelectorAll('.col-panel.open,.form-panel.open').forEach(node => node.classList.remove('open'));
+    document.querySelectorAll('.rx-popover:not([hidden]),.drug-action-card:not([hidden])').forEach(node => { node.hidden = true; });
+    document.querySelectorAll('[aria-expanded="true"]').forEach(node => node.setAttribute('aria-expanded', 'false'));
   }
 
   function overlayIsOpen(overlay) {
@@ -141,6 +123,7 @@
       input.setAttribute('autocapitalize', 'none');
       input.setAttribute('spellcheck', 'false');
     });
+    document.querySelectorAll('button:not([type])').forEach(button => { button.type = 'button'; });
   }
 
   function init() {
@@ -156,11 +139,9 @@
     window.addEventListener('unhandledrejection', event => reportRuntimeProblem(event.reason || event));
     document.addEventListener('keydown', trapFocus, true);
     document.addEventListener('keydown', closeTransientUi, true);
-    window.MEDINDEX_RUNTIME = { version:'2026-07-23.8', online:() => navigator.onLine };
+    window.MEDINDEX_RUNTIME = { version:'2026-07-24.1', online:() => navigator.onLine };
   }
 
-  installClinicalUi();
-  installNavigationUi();
   if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', init, { once:true });
   else init();
 })();
