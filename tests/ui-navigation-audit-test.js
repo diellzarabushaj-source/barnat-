@@ -65,6 +65,7 @@ const shell = read('navigation-shell.css');
   /forced-colors:active/,
   /@media print/,
   /height:100dvh/,
+  /touch-action:manipulation/,
 ].forEach(pattern => assert.match(shell, pattern, `navigation-shell.css missing ${pattern}`));
 assert.match(shell, /rgba\(210,154,67,\.72\)[\s\S]*color-mix/, 'navigation CSS must include a fallback before color-mix');
 assert.match(shell, /html\.medindex-clean-ui body\.has-app-nav\{padding-left:var\(--medindex-nav-width\)!important\}/, 'clean pages need an explicit shell-width override');
@@ -75,6 +76,8 @@ assert.match(shell, /@media\(max-width:780px\)[\s\S]*html :is\(#appMenu,\.med-na
 
 const navigation = read('navigation-consistency.js');
 assert.match(navigation, /ACTIVE_SELECTOR/);
+assert.match(navigation, /hasHashTarget/);
+assert.match(navigation, /currentHashTarget/);
 assert.match(navigation, /ArrowDown/);
 assert.match(navigation, /ArrowRight/);
 assert.match(navigation, /Home/);
@@ -84,6 +87,11 @@ assert.match(navigation, /className = `\$\{classes\.link\} medindex-common-nav`/
 assert.match(navigation, /bodyObserver\.observe\(document\.body, \{ childList:true \}\)/);
 assert.doesNotMatch(navigation, /observe\(document\.body, \{ childList:true, subtree:true \}\)/, 'navigation must not observe the full application subtree');
 assert.match(navigation, /observer\.observe\(nav, \{ childList:true, subtree:true \}\)/, 'only navigation subtrees should be observed');
+assert.match(navigation, /pageshow/);
+assert.match(navigation, /popstate/);
+assert.match(navigation, /hashchange/);
+assert.match(navigation, /orientationchange/);
+assert.match(navigation, /scrollIntoView/);
 
 const bridge = read('main-navigation-extension.js');
 assert.match(bridge, /delete link\.dataset\.nav/);
