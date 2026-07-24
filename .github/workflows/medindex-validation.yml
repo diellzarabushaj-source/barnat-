@@ -67,7 +67,7 @@ jobs:
           test -f prescription-format-core.js
           test -f recetat.js
           grep -q 'id="protocolsBtn"' index.html
-          grep -q "href = 'recetat.html'" main-navigation-extension.js
+          grep -q "href = '/recetat.html'" main-navigation-extension.js
           grep -q 'id="rxComposer"' recetat.html
           grep -q '@forma' recetat.html
           grep -q '@bari' recetat.html
@@ -93,6 +93,26 @@ jobs:
           ! grep -q 'protocolOverlay' index.html
           ! grep -q 'dosage-auto-apply.js' index.html
           ! grep -q 'prescription-review.js' index.html
+
+      - name: Verify canonical UI and navigation
+        shell: bash
+        run: |
+          set -euo pipefail
+          test -f navigation-shell.css
+          test -f navigation-consistency.js
+          test -f tests/ui-navigation-audit-test.js
+          for page in index.html klasifikimi.html icd.html analizat.html recetat.html; do
+            grep -q 'navigation-shell.css' "$page"
+            grep -q 'navigation-consistency.js' "$page"
+            grep -q 'skip-link' "$page"
+          done
+          grep -q 'safe-area-inset-bottom' navigation-shell.css
+          grep -q 'prefers-reduced-motion' navigation-shell.css
+          grep -q 'forced-colors:active' navigation-shell.css
+          grep -q 'keyboardNavigation' navigation-consistency.js
+          grep -q 'bodyObserver.observe(document.body, { childList:true })' navigation-consistency.js
+          ! grep -q 'installClinicalUi' app-stability.js
+          ! grep -q 'clinical-ui.css' app-stability.js
 
       - name: Verify Gemini 3.6 clinical guardrails
         shell: bash
