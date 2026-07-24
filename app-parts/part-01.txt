@@ -2,7 +2,7 @@
 const CANONICAL_FIELDS = [
   'Nr rendor','PDID','ProtocolNo','Emri tregtar','Substanca aktive','ATC Code',
   'Klasa / Çka është','Përdorimi (fjalë kyçe)','Fortësia','Forma farmaceutike',
-  'Madhësia e paketimit','Bartësi i Autorizim Marketingut','Prodhuesi',
+  'Madhësia e paketimit','Si të shënohet në recetë','Bartësi i Autorizim Marketingut','Prodhuesi',
   'MA certifikata','Statusi','Çmimi me shumicë','Çmimi me marzhë','TVSH',
   'Çmimi me pakicë','Afati i vlefshmërisë'
 ];
@@ -27,6 +27,7 @@ const FIELD_ALIASES = {
   'Fortësia': ['fortesia','strength','doseStrength'],
   'Forma farmaceutike': ['formafarmaceutike','forma','dosageform','pharmaceuticalform'],
   'Madhësia e paketimit': ['madhesiaepaketimit','paketimi','packsize','packagesize'],
+  'Si të shënohet në recetë': ['siteshenohetnerecete','sitetshenohetnerecete','prescriptionnotation','prescriptionline','receta'],
   'Bartësi i Autorizim Marketingut': ['bartesiiAutorizimMarketingut','bartesiiAutorizimit','marketingauthorisationholder','mah'],
   'Prodhuesi': ['prodhuesi','manufacturer','producer'],
   'MA certifikata': ['macertifikata','macertificate','certificate'],
@@ -167,7 +168,8 @@ const COLUMNS = [
   { key:'ProtocolNo', label:'Protokolli', type:'str', cls:'code', visible:false },
   { key:'Fortësia', label:'Fort&euml;sia', type:'str', cls:'', visible:true },
   { key:'Forma farmaceutike', label:'Forma', type:'str', cls:'wrap', visible:true },
-  { key:'Madhësia e paketimit', label:'Paketimi', type:'str', cls:'wrap', visible:true },
+  { key:'Si të shënohet në recetë', label:'Si shënohet në recetë', type:'str', cls:'wrap', visible:true },
+  { key:'Madhësia e paketimit', label:'Paketimi', type:'str', cls:'wrap', visible:false },
   { key:'Bartësi i Autorizim Marketingut', label:'Bartësi i Autorizimit', type:'str', cls:'wrap', visible:false },
   { key:'Prodhuesi', label:'Prodhuesi', type:'str', cls:'wrap', visible:false },
   { key:'MA certifikata', label:'Certifikata MA', type:'str', cls:'code', visible:false },
