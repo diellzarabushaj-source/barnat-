@@ -88,7 +88,7 @@ async function expectDrawerCycle(page) {
   expect(await page.locator('.mi-workspace').evaluate(node => node.inert)).toBe(true);
   await page.locator('[data-mi-sidebar-overlay]').click({ position:{ x:Math.max(1, (await page.viewportSize()).width - 8), y:80 } });
   await expect(page.locator('body')).not.toHaveClass(/mi-sidebar-open/);
-  await expect.poll(async () => (await sidebar.boundingBox())?.right ?? 999, { timeout:2000 }).toBeLessThanOrEqual(1);
+  await expect.poll(async () => (await sidebar.boundingBox())?.right ?? -999, { timeout:2000 }).toBeLessThanOrEqual(1);
   expect(await page.locator('.mi-workspace').evaluate(node => node.inert)).toBe(false);
 }
 
