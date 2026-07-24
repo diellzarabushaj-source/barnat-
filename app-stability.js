@@ -138,6 +138,13 @@
     document.querySelectorAll('button:not([type])').forEach(button => { button.type = 'button'; });
   }
 
+  function clearPrescriptionRegistryCacheOnLogout(event) {
+    if (!event.target?.closest?.('.auth-logout')) return;
+    try {
+      ['barnat-registry-parts-v4', 'barnat-registry-cached-at-v4'].forEach(key => localStorage.removeItem(key));
+    } catch {}
+  }
+
   function init() {
     updateConnectivity();
     installPerformanceHints();
@@ -151,7 +158,8 @@
     window.addEventListener('unhandledrejection', event => reportRuntimeProblem(event.reason || event));
     document.addEventListener('keydown', trapFocus, true);
     document.addEventListener('keydown', closeTransientUi, true);
-    window.MEDINDEX_RUNTIME = { version:'2026-07-24.2', online:() => navigator.onLine };
+    document.addEventListener('click', clearPrescriptionRegistryCacheOnLogout, true);
+    window.MEDINDEX_RUNTIME = { version:'2026-07-24.3', online:() => navigator.onLine };
   }
 
   if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', init, { once:true });
