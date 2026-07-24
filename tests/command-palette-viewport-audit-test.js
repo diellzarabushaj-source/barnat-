@@ -15,4 +15,12 @@ assert.match(source, /document\.addEventListener\('scroll', schedulePalettePosit
 assert.match(source, /MutationObserver\(schedulePalettePosition\)/, 'Command palette must reposition when opened or rerendered');
 assert.match(source, /medindex:clinical-workflow-ready/, 'Professional shell must bind after the clinical workflow creates the palette');
 assert.match(source, /bindCommandPaletteViewport\(\)/, 'Palette viewport guard must be activated during stabilization');
-console.log('Command palette viewport audit passed.');
+
+assert.match(source, /#rxDrugPopover\[data-mi-viewport-picker/, 'Prescription drug picker must have viewport-owned styling');
+assert.match(source, /position:fixed!important;[\s\S]*width:min\(640px/, 'Prescription drug picker must be fixed and width-constrained');
+assert.match(source, /document\.body\.appendChild\(picker\)/, 'Prescription drug picker must be portaled outside the composer');
+assert.match(source, /aria-modal/, 'Prescription drug picker must expose modal semantics while open');
+assert.match(source, /closePrescriptionDrugPicker/, 'Prescription drug picker must support an explicit close path');
+assert.match(source, /event\.key !== 'Escape'/, 'Prescription drug picker must close with Escape');
+assert.match(source, /rxDrugSearch/, 'Prescription drug picker must return focus to its search field when opened');
+console.log('Clinical command surfaces viewport audit passed.');
