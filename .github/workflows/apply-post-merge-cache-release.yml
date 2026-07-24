@@ -1,22 +1,21 @@
 name: Apply post-merge cache coherence
 
 on:
-  push:
-    branches: [audit/post-merge-cache-coherence]
+  pull_request:
 
 permissions:
   contents: write
 
 jobs:
   migrate:
-    if: github.actor != 'github-actions[bot]'
+    if: github.actor != 'github-actions[bot]' && github.head_ref == 'audit/post-merge-cache-coherence'
     runs-on: ubuntu-latest
     timeout-minutes: 15
     steps:
       - name: Checkout audit branch
         uses: actions/checkout@v4
         with:
-          ref: audit/post-merge-cache-coherence
+          ref: ${{ github.event.pull_request.head.ref }}
           fetch-depth: 0
 
       - name: Setup Node
@@ -43,4 +42,4 @@ jobs:
           git add -A
           git diff --cached --quiet && { echo "No validated changes to commit."; exit 1; }
           git commit -m "Fix post-merge cache coherence and continuous browser audit [skip ci]"
-          git push origin HEAD:audit/post-merge-cache-coherence
+          git push origin HEAD:${{ github.event.pull_request.head.ref }}
