@@ -6,15 +6,15 @@ const hidePageLoader = () => {
 };
 
 (async () => {
-  const APP_VERSION = '5a3e284e-offline-v1';
+  const APP_VERSION = '20260724-prescription-notation-v1';
   const DB_NAME = 'medindex-registry-v1';
   const DB_STORE = 'datasets';
-  const DB_KEY = 'registry-parts';
-  const CACHE_KEY = 'barnat-registry-parts-v3';
-  const CACHE_TIME_KEY = 'barnat-registry-cached-at-v3';
+  const DB_KEY = 'registry-parts-prescription-v1';
+  const CACHE_KEY = 'barnat-registry-parts-v4';
+  const CACHE_TIME_KEY = 'barnat-registry-cached-at-v4';
   const LEGACY_CACHE_KEYS = [
     'barnat-registry-parts-v2', 'barnat-registry-cached-at-v2',
-    CACHE_KEY
+    'barnat-registry-parts-v3', 'barnat-registry-cached-at-v3',
   ];
   const BACKGROUND_REFRESH_MS = 6 * 60 * 60 * 1000;
   const REQUEST_TIMEOUT_MS = 12000;
@@ -79,16 +79,16 @@ const hidePageLoader = () => {
   async function saveBrowserCache() {
     if (!hasRegistryData()) return false;
     const record = {
-      version: APP_VERSION,
-      savedAt: Date.now(),
-      parts: window.DRUG_DATA_PARTS,
-      quality: window.REGISTRY_QUALITY_META || null
+      version:APP_VERSION,
+      savedAt:Date.now(),
+      parts:window.DRUG_DATA_PARTS,
+      quality:window.REGISTRY_QUALITY_META || null,
     };
     try {
       await databasePut(DB_KEY, record);
       localStorage.setItem(CACHE_TIME_KEY, String(record.savedAt));
       removeLegacyCache();
-      window.dispatchEvent(new CustomEvent('medindex:registry-cache-ready', { detail: { savedAt: record.savedAt } }));
+      window.dispatchEvent(new CustomEvent('medindex:registry-cache-ready', { detail:{ savedAt:record.savedAt } }));
       return true;
     } catch (error) {
       console.warn('IndexedDB nuk e ruajti regjistrin; po provohet fallback-i:', error);
@@ -106,7 +106,7 @@ const hidePageLoader = () => {
   async function loadBrowserCache() {
     try {
       const record = await databaseGet(DB_KEY);
-      if (record && Array.isArray(record.parts) && record.parts.length) {
+      if (record?.version === APP_VERSION && Array.isArray(record.parts) && record.parts.length) {
         window.DRUG_DATA_PARTS = record.parts;
         if (record.quality) window.REGISTRY_QUALITY_META = record.quality;
         window.REGISTRY_DATA_SOURCE = 'indexeddb-offline-cache';
@@ -137,8 +137,8 @@ const hidePageLoader = () => {
     const previousParts = window.DRUG_DATA_PARTS;
     try {
       const registryResponse = await timedFetch(`/api/registry?version=${APP_VERSION}`, {
-        cache: background ? 'no-cache' : 'no-store',
-        credentials: 'same-origin',
+        cache:background ? 'no-cache' : 'no-store',
+        credentials:'same-origin',
       });
       if (registryResponse.status === 401) throw new Error('Sesioni ka skaduar.');
       if (!registryResponse.ok) throw new Error('Regjistri nuk u ngarkua (' + registryResponse.status + ')');
@@ -177,7 +177,7 @@ const hidePageLoader = () => {
     './app-parts/part-04.txt',
     './app-parts/core-tail.txt',
   ].map(file => `${file}?v=${APP_VERSION}`);
-  const responses = await Promise.all(files.map(file => timedFetch(file, { cache: 'force-cache', credentials: 'same-origin' })));
+  const responses = await Promise.all(files.map(file => timedFetch(file, { cache:'force-cache', credentials:'same-origin' })));
   responses.forEach((response, index) => {
     if (!response.ok) throw new Error('Nuk u ngarkua ' + files[index] + ' (' + response.status + ')');
   });
@@ -195,8 +195,8 @@ const hidePageLoader = () => {
   const cachedAt = Number(localStorage.getItem(CACHE_TIME_KEY) || 0);
   const localSource = /cache|indexeddb/i.test(window.REGISTRY_DATA_SOURCE || '');
   if (navigator.onLine && localSource && Date.now() - cachedAt > BACKGROUND_REFRESH_MS) {
-    const refresh = () => loadGoogleDriveFallback({ background: true });
-    if ('requestIdleCallback' in window) requestIdleCallback(refresh, { timeout: 3000 });
+    const refresh = () => loadGoogleDriveFallback({ background:true });
+    if ('requestIdleCallback' in window) requestIdleCallback(refresh, { timeout:3000 });
     else setTimeout(refresh, 900);
   }
 })().catch(error => {
