@@ -18,6 +18,11 @@
     inh: 'Inhalacion', inhalation: 'Inhalacion', inhalacion: 'Inhalacion', spray: 'Spray',
     fl: 'Flakon', vial: 'Flakon', flakon: 'Flakon'
   };
+  const FORM_PREFIXES = {
+    Tableta: 'Tab.', Kapsula: 'Caps.', Ampulë: 'Amp.', Infuzion: 'Inf.',
+    Unguentum: 'Ung.', Krem: 'Ung.', Solucion: 'Sol.', Sirup: 'Sir.',
+    Supozitor: 'Sup.', Pika: 'Gtt.', Inhalacion: 'Inh.', Spray: 'Inh.', Flakon: 'Fl.',
+  };
 
   const text = value => String(value ?? '').trim();
 
@@ -39,15 +44,34 @@
       form: text(item?.form),
       atc: text(item?.atc),
       pdid: text(item?.pdid),
+      regimenId: text(item?.regimenId),
+      dosageStatus: text(item?.dosageStatus),
+      dosagePopulation: text(item?.dosagePopulation),
+      indication: text(item?.indication),
+      route: text(item?.route),
+      frequency: text(item?.frequency),
+      duration: text(item?.duration),
+      dispense: text(item?.dispense),
+      signatura: text(item?.signatura),
+      warnings: text(item?.warnings),
+      sourceUrl: text(item?.sourceUrl),
+      matchKey: text(item?.matchKey),
+      verificationStatus: text(item?.verificationStatus),
     };
+  }
+
+  function prefixForForm(value) {
+    return FORM_PREFIXES[formLabel(value)] || '';
   }
 
   function selectedDrugLine(item) {
     const drug = normalizeDrug(item);
-    const name = drug.substance || drug.tradeName;
+    const name = drug.substance;
+    if (!name) return '';
     const main = [name, drug.strength].filter(Boolean).join(' ');
     const form = formLabel(drug.form);
-    return `${main}${form ? ` (${form})` : ''}`.trim();
+    const prefix = prefixForForm(form);
+    return `${prefix ? `${prefix} ` : ''}${main}${form ? ` (${form})` : ''}`.trim();
   }
 
   function parseMedicationLine(rawLine) {
@@ -268,7 +292,8 @@
     const main = [text(item?.name), text(item?.dose)].filter(Boolean).join(' ');
     const inline = text(item?.quantity) ? ` ${text(item.quantity)}` : '';
     const form = formLabel(item?.form);
-    return `${main}${inline}${form ? ` (${form})` : ''}`.trim();
+    const prefix = prefixForForm(form);
+    return `${prefix ? `${prefix} ` : ''}${main}${inline}${form ? ` (${form})` : ''}`.trim();
   }
 
   function formatText(result) {
@@ -300,6 +325,7 @@
 
   return {
     formLabel,
+    prefixForForm,
     normalizeDrug,
     selectedDrugLine,
     parseMedicationLine,

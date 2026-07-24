@@ -55,6 +55,7 @@
       preview: 'Vendoset vetëm fusha bosh e Signaturës.',
     },
   ];
+  const placeholderSessions = new WeakMap();
 
   const escapeHtml = value => String(value ?? '').replace(/[&<>"']/g, character => ({
     '&':'&amp;', '<':'&lt;', '>':'&gt;', '"':'&quot;', "'":'&#39;'
@@ -76,16 +77,29 @@
 
   function renderTemplate(template) {
     const source = String(template || '');
-    const match = /\{\{([^{}]+)\}\}/.exec(source);
-    if (!match) return { text: source, selectionStart: source.length, selectionEnd: source.length };
-    const before = source.slice(0, match.index);
-    const selected = match[1];
-    const after = source.slice(match.index + match[0].length).replace(/\{\{([^{}]+)\}\}/g, '$1');
+    const placeholders = [];
+    let output = '';
+    let cursor = 0;
+    for (const match of source.matchAll(/\{\{([^{}]+)\}\}/g)) {
+      output += source.slice(cursor, match.index);
+      const start = output.length;
+      output += match[1];
+      placeholders.push({ start, end:output.length });
+      cursor = match.index + match[0].length;
+    }
+    output += source.slice(cursor);
+    if (!placeholders.length) return { text:source, selectionStart:source.length, selectionEnd:source.length, placeholders:[] };
     return {
-      text: `${before}${selected}${after}`,
-      selectionStart: before.length,
-      selectionEnd: before.length + selected.length,
+      text:output,
+      selectionStart:placeholders[0].start,
+      selectionEnd:placeholders[0].end,
+      placeholders,
     };
+  }
+
+  function nextPlaceholderIndex(current, count, reverse = false) {
+    if (!count) return -1;
+    return (current + (reverse ? -1 : 1) + count) % count;
   }
 
   function insertionFor(value, selectionStart, selectionEnd, signatureText) {
@@ -196,6 +210,19 @@
     const contentStart = insertion.insertionStart + 'S (Signatura): '.length;
     const selectionStart = contentStart + rendered.selectionStart;
     const selectionEnd = contentStart + rendered.selectionEnd;
+    const placeholders = (rendered.placeholders || []).map(range => ({
+      start:contentStart + range.start,
+      end:contentStart + range.end,
+    }));
+    if (placeholders.length) {
+      placeholderSessions.set(composer, {
+        ranges:placeholders,
+        active:0,
+        lastLength:insertion.value.length,
+      });
+    } else {
+      placeholderSessions.delete(composer);
+    }
     composer.focus();
     composer.setSelectionRange(selectionStart, selectionEnd);
     composer.dispatchEvent(new Event('input', { bubbles:true }));
@@ -208,6 +235,32 @@
   function init(documentRef = document) {
     if (!documentRef.querySelector('[data-rx-command="signature"]')) return;
     createPopover(documentRef);
+    const composer = documentRef.getElementById('rxComposer');
+    composer?.addEventListener('input', () => {
+      const session = placeholderSessions.get(composer);
+      if (!session) return;
+      const delta = composer.value.length - session.lastLength;
+      const cursor = composer.selectionStart ?? session.ranges[session.active].end;
+      session.ranges[session.active].end = cursor;
+      if (delta) {
+        session.ranges.forEach((range, index) => {
+          if (index > session.active) {
+            range.start += delta;
+            range.end += delta;
+          }
+        });
+      }
+      session.lastLength = composer.value.length;
+    });
+    composer?.addEventListener('keydown', event => {
+      if (event.key !== 'Tab' || event.altKey || event.ctrlKey || event.metaKey) return;
+      const session = placeholderSessions.get(composer);
+      if (!session?.ranges?.length) return;
+      event.preventDefault();
+      session.active = nextPlaceholderIndex(session.active, session.ranges.length, event.shiftKey);
+      const range = session.ranges[session.active];
+      composer.setSelectionRange(range.start, range.end);
+    });
 
     documentRef.addEventListener('click', event => {
       const trigger = event.target.closest?.('[data-rx-command="signature"]');
@@ -250,6 +303,7 @@
     detectForm,
     contextAtCursor,
     renderTemplate,
+    nextPlaceholderIndex,
     insertionFor,
     init,
   };
