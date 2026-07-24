@@ -68,6 +68,12 @@ test('mjeku gjen shërbimin, krijon recetë dhe vazhdon offline', async ({ page,
   await expect(restoredPage.locator('#rxComposer')).toHaveValue(/Paracetamol/i);
   await expect(restoredPage.locator('#rxDiagnosis')).toHaveValue(/Dhimbje koke/i);
 
+  const restoredDiagnosis = restoredPage.locator('#rxDiagnosis');
+  await restoredDiagnosis.focus();
+  await restoredDiagnosis.press('End');
+  await restoredDiagnosis.press(' ');
+  await restoredDiagnosis.press('Backspace');
+
   const dialogPromise = restoredPage.waitForEvent('dialog');
   const navigationPromise = restoredPage.goto('http://127.0.0.1:4173/icd.html', { waitUntil:'domcontentloaded' });
   const dialog = await dialogPromise;
@@ -86,7 +92,7 @@ test('mjeku gjen shërbimin, krijon recetë dhe vazhdon offline', async ({ page,
   await expect(restoredPage.locator('#rxDiagnosis')).toHaveValue(/J85/i);
   await expect(restoredPage.locator('#rxComposer')).toHaveValue(/Paracetamol/i);
 
-  restoredPage.once('dialog', dialog => dialog.accept());
+  restoredPage.once('dialog', pending => pending.accept());
   await restoredPage.goto('http://127.0.0.1:4173/index.html', { waitUntil:'domcontentloaded' });
   await restoredPage.evaluate(() => navigator.serviceWorker.ready);
   await restoredPage.waitForFunction(() => Boolean(navigator.serviceWorker?.controller), null, { timeout:15000 });
