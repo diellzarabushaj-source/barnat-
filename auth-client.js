@@ -3,8 +3,11 @@
 
   const RETURN_KEY = 'medindex_return_after_login';
   const OFFLINE_LEASE_KEY = 'medindex_offline_lease_v1';
-  const OFFLINE_RUNTIME_SRC = '/offline-runtime.js?v=5a3e284e-offline-v1';
+  const OFFLINE_RUNTIME_SRC = '/offline-runtime.js?v=clinical-audit-v2';
+  const PROFESSIONAL_RUNTIME_SRC = '/tailadmin-professional.js?v=clinical-audit-v2';
+  const PROFESSIONAL_VERSION = 'clinical-audit-v2';
   const MAX_OFFLINE_LEASE_MS = 12 * 60 * 60 * 1000;
+  const AUTH_TIMEOUT_MS = 3200;
   const originalFetch = window.fetch.bind(window);
   let logoutObserver = null;
   let logoutObserverTimer = 0;
@@ -20,7 +23,7 @@
     authSettled = true;
     resolveAuthReady?.({ authenticated, ...payload });
     window.dispatchEvent(new CustomEvent(authenticated ? 'medindex:auth-ready' : 'medindex:auth-failed', {
-      detail: { authenticated, ...payload }
+      detail:{ authenticated, ...payload },
     }));
   }
 
@@ -54,21 +57,29 @@
       if (lease.verifiedAt > now + 5 * 60 * 1000) return null;
       if (lease.expiresAt <= now || lease.expiresAt - lease.verifiedAt > MAX_OFFLINE_LEASE_MS) return null;
       return lease;
-    } catch {
-      return null;
-    }
+    } catch { return null; }
   }
 
   function saveOfflineLease(payload = {}) {
     const sessionHours = Math.min(12, Math.max(1, Number(payload.sessionHours || 8)));
     const verifiedAt = Date.now();
-    const lease = { version: 1, verifiedAt, expiresAt: verifiedAt + sessionHours * 60 * 60 * 1000 };
+    const lease = { version:1, verifiedAt, expiresAt:verifiedAt + sessionHours * 60 * 60 * 1000 };
     try { localStorage.setItem(OFFLINE_LEASE_KEY, JSON.stringify(lease)); } catch {}
     return lease;
   }
 
   function clearOfflineLease() {
     try { localStorage.removeItem(OFFLINE_LEASE_KEY); } catch {}
+  }
+
+  function ensureProfessionalRuntime() {
+    if (document.documentElement.dataset.miProfessionalVersion === PROFESSIONAL_VERSION) return;
+    if (document.querySelector('script[data-medindex-professional-runtime]')) return;
+    const script = document.createElement('script');
+    script.src = PROFESSIONAL_RUNTIME_SRC;
+    script.defer = true;
+    script.dataset.medindexProfessionalRuntime = '1';
+    document.head.appendChild(script);
   }
 
   function startOfflineRuntime() {
@@ -82,14 +93,14 @@
 
   async function authRequest(options = {}) {
     const controller = new AbortController();
-    const timer = setTimeout(() => controller.abort(), 8000);
+    const timer = setTimeout(() => controller.abort(), AUTH_TIMEOUT_MS);
     try {
       return await originalFetch('/api/auth', {
-        cache: 'no-store',
-        credentials: 'same-origin',
-        headers: { Accept: 'application/json', ...(options.headers || {}) },
+        cache:'no-store',
+        credentials:'same-origin',
+        headers:{ Accept:'application/json', ...(options.headers || {}) },
         ...options,
-        signal: controller.signal,
+        signal:controller.signal,
       });
     } finally {
       clearTimeout(timer);
@@ -106,6 +117,15 @@
     location.replace(loginUrl.pathname + loginUrl.search);
   }
 
+  function deleteDatabase(name) {
+    return new Promise(resolve => {
+      try {
+        const request = indexedDB.deleteDatabase(name);
+        request.onsuccess = request.onerror = request.onblocked = () => resolve();
+      } catch { resolve(); }
+    });
+  }
+
   async function clearPrivateBrowserData() {
     clearOfflineLease();
     try {
@@ -114,9 +134,10 @@
       ['barnat-registry-parts-v2', 'barnat-registry-cached-at-v2', 'barnat-registry-parts-v3', 'barnat-registry-cached-at-v3']
         .forEach(key => localStorage.removeItem(key));
     } catch {}
-    try { indexedDB.deleteDatabase('medindex-registry-v1'); } catch {}
+    await deleteDatabase('medindex-registry-v1');
+    window.MedIndexLocalRegistry?.resetMemory?.();
     try {
-      navigator.serviceWorker?.controller?.postMessage({ type: 'CLEAR_PRIVATE_DATA' });
+      navigator.serviceWorker?.controller?.postMessage({ type:'CLEAR_PRIVATE_DATA' });
       const names = await caches.keys();
       await Promise.all(names
         .filter(name => name.startsWith('medindex-private-') || name.startsWith('medindex-documents-'))
@@ -130,7 +151,7 @@
       button.disabled = true;
       button.setAttribute('aria-busy', 'true');
     });
-    try { await authRequest({ method: 'DELETE' }); } catch {}
+    try { await authRequest({ method:'DELETE' }); } catch {}
     await clearPrivateBrowserData();
     location.replace('/login.html');
   }
@@ -151,15 +172,13 @@
     const targets = [
       ['#appMenu', 'app-menu-link', '.theme-control'],
       ['.atc-nav', 'atc-nav-link', '.atc-theme'],
-      ['.med-nav', 'med-nav-link', '.med-theme']
+      ['.med-nav', 'med-nav-link', '.med-theme'],
     ];
     targets.forEach(([selector, className, beforeSelector]) => {
       const navigation = document.querySelector(selector);
       if (!navigation) return;
       navigationFound = true;
-      if (!navigation.querySelector('.auth-logout')) {
-        navigation.insertBefore(buttonMarkup(className), navigation.querySelector(beforeSelector) || null);
-      }
+      if (!navigation.querySelector('.auth-logout')) navigation.insertBefore(buttonMarkup(className), navigation.querySelector(beforeSelector) || null);
     });
     return navigationFound;
   }
@@ -177,7 +196,7 @@
     logoutObserver = new MutationObserver(() => {
       if (installLogout()) stopLogoutObserver();
     });
-    logoutObserver.observe(document.body || document.documentElement, { childList: true, subtree: true });
+    logoutObserver.observe(document.body || document.documentElement, { childList:true, subtree:true });
     logoutObserverTimer = window.setTimeout(stopLogoutObserver, 10000);
   }
 
@@ -189,7 +208,7 @@
     banner.textContent = 'Sesioni ka skaduar. Po kthehesh te hyrja…';
     document.body.appendChild(banner);
     clearOfflineLease();
-    settleAuth(false, { reason: 'expired' });
+    settleAuth(false, { reason:'expired' });
     setTimeout(() => goToLogin('expired'), 700);
   }
 
@@ -198,8 +217,9 @@
     if (!lease) return false;
     document.documentElement.classList.add('auth-ready', 'auth-offline');
     document.documentElement.classList.remove('auth-checking');
-    settleAuth(true, { offline: true, reason, expiresAt: lease.expiresAt });
+    settleAuth(true, { offline:true, reason, expiresAt:lease.expiresAt });
     installLogoutWhenReady();
+    ensureProfessionalRuntime();
     startOfflineRuntime();
     installOnlineRevalidation();
     return true;
@@ -210,10 +230,10 @@
     try {
       const response = await authRequest();
       const payload = await response.json().catch(() => ({}));
-      if (!response.ok || !payload.authenticated) return showExpired();
+      if (response.status === 401 || response.status === 403 || !response.ok || !payload.authenticated) return showExpired();
       saveOfflineLease(payload);
       document.documentElement.classList.remove('auth-offline');
-      window.dispatchEvent(new CustomEvent('medindex:auth-revalidated', { detail: { authenticated: true } }));
+      window.dispatchEvent(new CustomEvent('medindex:auth-revalidated', { detail:{ authenticated:true } }));
       window.MedIndexOffline?.warm?.();
     } catch {}
   }
@@ -227,11 +247,17 @@
   window.fetch = async (...args) => {
     const response = await originalFetch(...args);
     const target = typeof args[0] === 'string' ? args[0] : args[0]?.url || '';
-    if (response.status === 401 && !String(target).includes('/api/auth')) showExpired();
+    if ((response.status === 401 || response.status === 403) && !String(target).includes('/api/auth')) showExpired();
     return response;
   };
 
+  window.addEventListener('medindex:offline-auth-invalid', showExpired);
+
   async function init() {
+    if (!navigator.onLine) {
+      if (activateOfflineLease('offline')) return;
+      return goToLogin('offline-no-lease');
+    }
     try {
       const response = await authRequest();
       const payload = await response.json().catch(() => ({}));
@@ -243,8 +269,9 @@
       const lease = saveOfflineLease(payload);
       document.documentElement.classList.add('auth-ready');
       document.documentElement.classList.remove('auth-checking', 'auth-offline');
-      settleAuth(true, { ...payload, offline: false, expiresAt: lease.expiresAt });
+      settleAuth(true, { ...payload, offline:false, expiresAt:lease.expiresAt });
       installLogoutWhenReady();
+      ensureProfessionalRuntime();
       startOfflineRuntime();
     } catch (error) {
       if (activateOfflineLease(error?.name === 'AbortError' ? 'timeout' : 'network')) return;
@@ -252,6 +279,6 @@
     }
   }
 
-  if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', init, { once: true });
+  if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', init, { once:true });
   else init();
 })();
