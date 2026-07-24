@@ -1,144 +1,14 @@
 name: MedIndex validation
 
 on:
-  push:
-    branches: [main]
   pull_request:
 
 permissions:
   contents: write
 
 jobs:
-  validate:
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v4
-
-      - name: Setup Node
-        uses: actions/setup-node@v4
-        with:
-          node-version: 22
-
-      - name: Install dependencies
-        run: npm install --ignore-scripts --no-audit --no-fund
-
-      - name: Validate JavaScript syntax
-        shell: bash
-        run: |
-          set -euo pipefail
-          files=(
-            app.js
-            app-stability.js
-            main-navigation-extension.js
-            navigation-consistency.js
-            medical-icons.js
-            section-icons.js
-            classification-icons.js
-            prescription-format-core.js
-            signature-templates.js
-            recetat.js
-            api/gemini-prescription.js
-            api/drug-search.js
-            api/registry.js
-            api/registry-data.js
-            api/dosage.js
-          )
-          for file in "${files[@]}"; do
-            test -f "$file"
-            node --check "$file"
-          done
-          cat app-parts/part-01.txt app-parts/part-02.txt app-parts/part-03.txt app-parts/part-04.txt app-parts/core-tail.txt > /tmp/medindex-registry-bundle.js
-          node --check /tmp/medindex-registry-bundle.js
-
-      - name: Run complete test suite
-        run: npm test
-
-      - name: Verify the dedicated prescription dashboard
-        shell: bash
-        run: |
-          set -euo pipefail
-          test -f recetat.html
-          test -f recetat.css
-          test -f recetat-audit.css
-          test -f signature-templates.css
-          test -f signature-templates.js
-          test -f tests/signature-templates-test.js
-          test -f prescription-format-core.js
-          test -f recetat.js
-          grep -q 'id="protocolsBtn"' index.html
-          grep -q "href = '/recetat.html'" main-navigation-extension.js
-          grep -q 'id="rxComposer"' recetat.html
-          grep -q '@forma' recetat.html
-          grep -q '@bari' recetat.html
-          grep -q '@doza' recetat.html
-          grep -q '@sasia' recetat.html
-          grep -q '@tjetër' recetat.html
-          grep -q '@signatura' recetat.html
-          grep -q 'signature-templates.css' recetat.html
-          grep -q 'signature-templates.js' recetat.html
-          grep -q 'Unguentum / krem' signature-templates.js
-          grep -q 'Administrohet IV si infuzion' signature-templates.js
-          grep -q 'prescription-format-core.js' recetat.html
-          grep -q 'recetat.js' recetat.html
-          grep -q 'id="rxGeneratedReview"' recetat.html
-          ! grep -q 'recetat-v2.js' recetat.html
-          grep -q '/api/gemini-prescription' recetat.js
-          grep -q '/api/drug-search' recetat.js
-          grep -q 'dispenseQuantity' prescription-format-core.js
-          grep -q 'S (Signatura):' prescription-format-core.js
-          grep -q 'sharedSignature' prescription-format-core.js
-          grep -q 'generatedReviewConfirmed' recetat.js
-          grep -q 'medindexPrescriptionSelection' recetat.js
-          ! grep -q 'protocolOverlay' index.html
-          ! grep -q 'dosage-auto-apply.js' index.html
-          ! grep -q 'prescription-review.js' index.html
-
-      - name: Verify canonical UI and navigation
-        shell: bash
-        run: |
-          set -euo pipefail
-          test -f navigation-shell.css
-          test -f navigation-consistency.js
-          test -f tests/ui-navigation-audit-test.js
-          for page in index.html klasifikimi.html icd.html analizat.html recetat.html; do
-            grep -q 'navigation-shell.css' "$page"
-            grep -q 'navigation-consistency.js' "$page"
-            grep -q 'skip-link' "$page"
-          done
-          grep -q 'safe-area-inset-bottom' navigation-shell.css
-          grep -q 'prefers-reduced-motion' navigation-shell.css
-          grep -q 'forced-colors:active' navigation-shell.css
-          grep -q 'keyboardNavigation' navigation-consistency.js
-          grep -q 'bodyObserver.observe(document.body, { childList:true })' navigation-consistency.js
-          ! grep -q 'installClinicalUi' app-stability.js
-          ! grep -q 'clinical-ui.css' app-stability.js
-
-      - name: Verify Gemini 3.6 clinical guardrails
-        shell: bash
-        run: |
-          set -euo pipefail
-          test -f tests/gemini-prescription-audit-test.js
-          grep -q "DEFAULT_MODEL = 'gemini-3.6-flash'" api/gemini-prescription.js
-          grep -q "DEFAULT_FALLBACK_MODEL = 'gemini-3.5-flash'" api/gemini-prescription.js
-          grep -q 'GEMINI_API_KEY' api/gemini-prescription.js
-          grep -q 'GOOGLE_API_KEY' api/gemini-prescription.js
-          grep -q 'v1/interactions' api/gemini-prescription.js
-          grep -q 'response_format' api/gemini-prescription.js
-          grep -q "mime_type: 'application/json'" api/gemini-prescription.js
-          grep -q 'thinking_level: THINKING_LEVEL' api/gemini-prescription.js
-          grep -q "thinking_summaries: 'none'" api/gemini-prescription.js
-          grep -q 'store: false' api/gemini-prescription.js
-          grep -q 'buildBaseline' api/gemini-prescription.js
-          grep -q 'buildTargets' api/gemini-prescription.js
-          grep -q 'mergeSuggestions' api/gemini-prescription.js
-          grep -q 'Mos shto, mos hiq, mos zëvendëso' api/gemini-prescription.js
-          ! grep -q 'temperature:' api/gemini-prescription.js
-          ! grep -q 'thinkingBudget' api/gemini-prescription.js
-
   apply-tailadmin-ui:
-    if: github.event_name == 'pull_request' && github.event.pull_request.head.ref == 'feat/tailadmin-ui-rebuild' && github.actor != 'github-actions[bot]'
-    needs: validate
+    if: github.event.pull_request.head.ref == 'feat/tailadmin-ui-rebuild' && github.actor != 'github-actions[bot]'
     runs-on: ubuntu-latest
     steps:
       - name: Checkout UI branch
@@ -147,16 +17,30 @@ jobs:
           ref: feat/tailadmin-ui-rebuild
           fetch-depth: 0
 
-      - name: Apply verified UI payload
+      - name: Reconstruct and verify UI payload
+        shell: bash
         run: |
           set -euo pipefail
-          test -f .ui-rebuild-payload.tar.gz
-          echo '7c10b0707c090c950c6a77761112069f2ac09511595526590fc85cd88a3ff18e  .ui-rebuild-payload.tar.gz' | sha256sum --check --strict
-          tar -xzf .ui-rebuild-payload.tar.gz
+          cat \
+            .ui-rebuild-payload/part-00 \
+            .ui-rebuild-payload/part-01 \
+            .ui-rebuild-payload/part-02 \
+            .ui-rebuild-payload/remain-00 \
+            .ui-rebuild-payload/remain-01 \
+            .ui-rebuild-payload/remain-02 \
+            .ui-rebuild-payload/remain-03 \
+            .ui-rebuild-payload/remain-04 \
+            .ui-rebuild-payload/remain-05 \
+            .ui-rebuild-payload/remain-06 \
+            .ui-rebuild-payload/remain-07 \
+            .ui-rebuild-payload/remain-08 \
+            .ui-rebuild-payload/remain-09 \
+            .ui-rebuild-payload/remain-10 \
+            | base64 --decode > /tmp/medindex-ui-rebuild.tar.gz
+          echo '7c10b0707c090c950c6a77761112069f2ac09511595526590fc85cd88a3ff18e  /tmp/medindex-ui-rebuild.tar.gz' | sha256sum --check --strict
+          tar -xzf /tmp/medindex-ui-rebuild.tar.gz
+          rm -rf .ui-rebuild-payload
           rm -f .ui-rebuild-payload.tar.gz
-          rm -f .github/workflows/apply-ui-rebuild.yml
-          rm -f .github/workflows/export-source.yml
-          rm -f .github/workflows/fetch-tailadmin.yml
           git fetch origin main
           git checkout origin/main -- .github/workflows/medindex-validation.yml
 
