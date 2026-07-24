@@ -1,0 +1,27 @@
+name: Export source for UI rebuild
+
+on:
+  push:
+    branches:
+      - feat/tailadmin-ui-rebuild
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  export-source:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+      - name: Upload source snapshot
+        uses: actions/upload-artifact@v4
+        with:
+          name: medindex-source
+          path: |
+            .
+            !.git/**
+            !node_modules/**
+          include-hidden-files: true
+          retention-days: 1
