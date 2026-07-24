@@ -1,5 +1,5 @@
 <!doctype html>
-<html lang="sq">
+<html lang="sq" class="medindex-tailadmin-login">
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
@@ -7,6 +7,8 @@
   <meta name="theme-color" content="#0d3d40">
   <title>Hyr në MedIndex</title>
   <link rel="stylesheet" href="login.css?v=20260723-2">
+<link rel="stylesheet" href="tailadmin-medindex.css?v=20260724-1" data-tailadmin-medindex-css>
+<script>try{const t=localStorage.getItem("regjistriBarnave_theme_v1");document.documentElement.dataset.theme=t==="dark"?"dark":"light"}catch{}</script>
 </head>
 <body>
   <main class="login-shell">
@@ -36,6 +38,14 @@
         <span>5 tentativa / 15 min</span>
       </div>
     </section>
+    <aside class="login-side-panel" aria-label="MedIndex">
+      <div class="login-side-inner">
+        <div class="login-side-mark">M<span>+</span></div>
+        <h2>MedIndex</h2>
+        <p>Një hapësirë e unifikuar për barnat, klasifikimin ATC, ICD-në, analizat, dozologjinë, protokollet dhe recetat.</p>
+        <div class="login-side-grid" aria-hidden="true"><span>Të dhëna klinike</span><span>Dokumente zyrtare</span><span>Qasje private</span></div>
+      </div>
+    </aside>
   </main>
   <script src="login.js?v=20260723-2" defer></script>
 </body>
