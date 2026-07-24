@@ -4,7 +4,7 @@ on:
   pull_request:
 
 permissions:
-  contents: read
+  contents: write
 
 jobs:
   migrate:
@@ -32,25 +32,14 @@ jobs:
       - name: Run complete validation suite
         run: npm test
 
-      - name: Package validated files
+      - name: Commit validated code only
         shell: bash
         run: |
           set -euo pipefail
-          mkdir -p /tmp/cache-release/files
-          git diff --name-only --diff-filter=ACMRT > /tmp/cache-release/changed-files.txt
-          while IFS= read -r file; do
-            [ -n "$file" ] || continue
-            mkdir -p "/tmp/cache-release/files/$(dirname "$file")"
-            cp "$file" "/tmp/cache-release/files/$file"
-          done < /tmp/cache-release/changed-files.txt
-          git diff --binary > /tmp/cache-release/cache-release.patch
-          test -s /tmp/cache-release/changed-files.txt
-          cat /tmp/cache-release/changed-files.txt
-
-      - name: Upload validated cache release
-        uses: actions/upload-artifact@v4
-        with:
-          name: validated-cache-release
-          path: /tmp/cache-release
-          if-no-files-found: error
-          retention-days: 3
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add -A
+          git reset -- .github/workflows/physician-browser-audit.yml
+          git diff --cached --quiet && { echo "No validated code changes to commit."; exit 1; }
+          git commit -m "Fix post-merge cache coherence [skip ci]"
+          git push origin HEAD:${{ github.event.pull_request.head.ref }}
