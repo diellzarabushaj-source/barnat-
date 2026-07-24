@@ -20,24 +20,39 @@
     if (document.getElementById('mainNavigationExtensionStyles')) return;
     const style = document.createElement('style');
     style.id = 'mainNavigationExtensionStyles';
-    style.textContent = '.app-menu{overflow-y:auto;scrollbar-width:none}.app-menu::-webkit-scrollbar{display:none}.app-menu-link[href]{text-decoration:none}@media(max-width:720px){.app-menu{justify-content:flex-start;overflow-x:auto;overflow-y:hidden;scroll-snap-type:x proximity}.app-menu-link{flex:0 0 62px;min-width:62px;scroll-snap-align:start}.theme-control{display:none}}';
+    style.textContent = '.app-menu{overflow-y:auto;scrollbar-width:none}.app-menu::-webkit-scrollbar{display:none}.app-menu-link[href]{text-decoration:none}@media(max-width:780px){.app-menu{justify-content:flex-start;overflow-x:auto;overflow-y:hidden;scroll-snap-type:x proximity}.app-menu-link{scroll-snap-align:center}.theme-control{display:none}}';
     document.head.appendChild(style);
   }
 
+  function openPrescriptionDashboard(event) {
+    event?.preventDefault();
+    const button = document.getElementById('protocolsBtn');
+    if (button) button.click();
+    else window.location.href = '/recetat.html';
+  }
+
   function prescriptionLink(menu) {
-    const existing = menu.querySelector('[data-nav="protocols"]');
-    if (!existing || existing.tagName === 'A') {
-      if (existing) existing.href = 'recetat.html';
-      return existing;
+    const existing = menu.querySelector('[data-nav="protocols"],[data-medical-nav="protocols"]');
+    if (!existing) return null;
+
+    let link = existing;
+    if (!existing.matches('a')) {
+      link = document.createElement('a');
+      link.className = existing.className || 'app-menu-link';
+      link.innerHTML = existing.innerHTML;
+      existing.replaceWith(link);
     }
-    const link = document.createElement('a');
-    link.className = existing.className || 'app-menu-link';
-    link.href = 'recetat.html';
-    link.dataset.nav = 'protocols';
-    link.innerHTML = existing.innerHTML;
+
+    link.href = '/recetat.html';
+    delete link.dataset.nav;
+    link.dataset.medicalNav = 'protocols';
+    link.setAttribute('aria-label', 'Recetat');
     const title = link.querySelector('.app-menu-title');
     if (title) title.textContent = 'Recetat';
-    existing.replaceWith(link);
+    if (link.dataset.prescriptionBridge !== '1') {
+      link.dataset.prescriptionBridge = '1';
+      link.addEventListener('click', openPrescriptionDashboard);
+    }
     return link;
   }
 
@@ -57,8 +72,8 @@
       const link = document.createElement('a');
       link.className = 'app-menu-link';
       link.href = item.href;
-      link.dataset.nav = item.id;
       link.dataset.medicalNav = item.id;
+      link.setAttribute('aria-label', item.title);
       link.innerHTML = `<span class="app-menu-icon">${item.icon}</span><span class="app-menu-title">${item.title}</span>`;
       menu.insertBefore(link, protocol || menu.querySelector('.theme-control'));
     });
