@@ -3,9 +3,9 @@
 
   const RETURN_KEY = 'medindex_return_after_login';
   const OFFLINE_LEASE_KEY = 'medindex_offline_lease_v1';
-  const OFFLINE_RUNTIME_SRC = '/offline-runtime.js?v=clinical-audit-v2';
-  const PROFESSIONAL_RUNTIME_SRC = '/tailadmin-professional.js?v=clinical-audit-v2';
-  const PROFESSIONAL_VERSION = 'clinical-audit-v2';
+  const OFFLINE_RUNTIME_SRC = '/offline-runtime.js?v=production-audit-v1';
+  const PROFESSIONAL_RUNTIME_SRC = '/tailadmin-professional.js?v=production-audit-v1';
+  const PROFESSIONAL_VERSION = 'production-audit-v1';
   const MAX_OFFLINE_LEASE_MS = 12 * 60 * 60 * 1000;
   const AUTH_TIMEOUT_MS = 3200;
   const originalFetch = window.fetch.bind(window);

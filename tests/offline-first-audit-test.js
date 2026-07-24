@@ -22,7 +22,7 @@ assert.ok(Array.isArray(manifest.shortcuts) && manifest.shortcuts.length >= 3);
 
 const worker = read('sw.js');
 [
-  /clinical-audit-v2/,
+  /production-audit-v1/,
   /skipWaiting\(\)/,
   /clients\.claim\(\)/,
   /WARM_PRIVATE_DATA/,

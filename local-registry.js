@@ -96,7 +96,7 @@
       if (!response.ok) throw new Error(`Regjistri ${response.status}`);
       const payload = extractPayload(await response.text());
       const record = {
-        version: 'clinical-audit-v2',
+        version: 'production-audit-v1',
         savedAt: Date.now(),
         parts: payload.DRUG_DATA_PARTS,
         quality: payload.REGISTRY_QUALITY_META || null,

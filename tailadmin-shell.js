@@ -8,9 +8,9 @@
     '/protokollet.html': ['Protokollet'],
     '/recetat.html': ['Recetat'],
   };
-  const LEGACY_SRC = '/tailadmin-shell-legacy.js?v=clinical-audit-v3';
-  const MOBILE_SRC = '/mobile-experience.js?v=mobile-audit-v1';
-  const SHELL_VERSION = 'clinical-audit-v4';
+  const LEGACY_SRC = '/tailadmin-shell-legacy.js?v=production-audit-v1';
+  const MOBILE_SRC = '/mobile-experience.js?v=production-audit-v1';
+  const SHELL_VERSION = 'production-audit-v1';
   const id = 'appMenu';
 
   // Static compatibility contract retained for the navigation safety gates:

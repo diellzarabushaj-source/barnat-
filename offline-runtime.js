@@ -1,7 +1,7 @@
 (() => {
   'use strict';
 
-  const VERSION = 'clinical-audit-v2';
+  const VERSION = 'production-audit-v1';
   const MANIFEST_URL = `/manifest.webmanifest?v=${VERSION}`;
   const SERVICE_WORKER_URL = `/sw.js?v=${VERSION}`;
   const CLINICAL_WORKFLOW_URL = `/clinical-workflow.js?v=${VERSION}`;
