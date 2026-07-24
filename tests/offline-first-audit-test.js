@@ -75,7 +75,9 @@ const app = read('app.js');
   /service-worker-offline-cache/,
   /requestIdleCallback/,
 ].forEach(pattern => assert.match(app, pattern, `app.js missing ${pattern}`));
-assert.ok(app.indexOf('await loadBrowserCache()') < app.indexOf('loadGoogleDriveFallback()'), 'local registry must be attempted before the network');
+const startup = app.slice(app.indexOf('if (hasRegistryData())'));
+assert.ok(startup.indexOf('await loadBrowserCache()') >= 0, 'startup must attempt the local registry');
+assert.ok(startup.indexOf('await loadBrowserCache()') < startup.indexOf('await loadGoogleDriveFallback()'), 'local registry must be attempted before the network');
 
 const vercel = JSON.parse(read('vercel.json'));
 const serializedHeaders = JSON.stringify(vercel.headers);
