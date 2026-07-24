@@ -82,9 +82,10 @@ jobs:
 
       - name: Verify prescription safety gates
         run: |
-          grep -q 'protocolPatientName' index.html
-          grep -q 'protocolAllergies' index.html
-          grep -q 'protocolClinicalReview' index.html
+          grep -q 'id="rxComposer"' recetat.html
+          grep -q 'id="rxGeneratedReview"' recetat.html
+          grep -q 'id="rxDosageReview"' recetat.html
+          ! grep -q 'protocolOverlay' index.html
           grep -q 'validateForPrint' prescription-review.js
           grep -q 'reviewedAt' prescription-review.js
           grep -q 'DRAFT — JO PËR PËRDORIM FINAL' medindex-view.js
