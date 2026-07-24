@@ -2,7 +2,7 @@
   'use strict';
 
   const ROOT = document.documentElement;
-  const PROFESSIONAL_VERSION = 'clinical-audit-v2';
+  const PROFESSIONAL_VERSION = 'production-audit-v1';
   const MOBILE_BREAKPOINT = 1024;
   const PAGE_KEYS = {
     '/': 'barnat',

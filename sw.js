@@ -1,7 +1,7 @@
 /* MedIndex physician-first offline service worker */
 'use strict';
 
-const VERSION = 'clinical-audit-v2';
+const VERSION = 'production-audit-v1';
 const STATIC_CACHE = `medindex-static-${VERSION}`;
 const PAGE_CACHE = `medindex-pages-${VERSION}`;
 const PRIVATE_CACHE = `medindex-private-${VERSION}`;
@@ -21,7 +21,7 @@ const APP_SHELL = [
   '/classification.css', '/classification-nav-fix.css', '/registry-quality.css',
   '/clinical-reference.css', '/analizat-polish.css', '/recetat.css',
   '/recetat-audit.css', '/signature-templates.css', '/login.css',
-  '/tailadmin-shell.js', '/tailadmin-professional.js', '/offline-runtime.js',
+  '/tailadmin-shell.js', '/tailadmin-shell-legacy.js', '/tailadmin-professional.js', '/mobile-experience.js', '/offline-runtime.js',
   '/clinical-workflow.js', '/local-registry.js', '/auth-client.js',
   '/app-stability.js', '/app.js', '/ui-enhancements.js', '/name-display.js',
   '/medical-icons.js', '/section-icons.js', '/classification-icons.js',

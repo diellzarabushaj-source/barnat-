@@ -1,7 +1,7 @@
 (() => {
   'use strict';
 
-  const VERSION = 'clinical-audit-v2';
+  const VERSION = 'production-audit-v1';
   const QUERY_KEY = 'medindex_global_query_v1';
   const DIAGNOSIS_KEY = 'medindex_rx_diagnosis_v1';
   const DRAFT_KEY = 'medindex_rx_autodraft_v1';
