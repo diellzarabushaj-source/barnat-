@@ -12,8 +12,10 @@
 <link rel="stylesheet" href="app-polish.css?v=20260723-2">
 <link rel="stylesheet" href="performance.css?v=20260723-1">
 <link rel="stylesheet" href="clean-medindex-ui.css?v=20260723-1">
+<link rel="stylesheet" href="navigation-shell.css?v=20260724-1" data-medindex-navigation-css>
 </head>
 <body>
+<a class="skip-link" href="#registryContent">Kalo te regjistri i barnave</a>
 <div class="page-loader" id="pageLoader" role="status" aria-live="polite" aria-label="Duke i ngarkuar barnat">
   <div class="loader-content">
     <div class="wrapper" aria-hidden="true">
@@ -37,7 +39,7 @@
     <option value="Origjinator">Origjinator</option>
   </select>
   <div class="form-picker">
-    <button id="formPickerBtn" type="button" aria-haspopup="listbox" aria-expanded="false">Forma: Të gjitha ▾</button>
+    <button id="formPickerBtn" type="button" aria-haspopup="listbox" aria-controls="formPanel" aria-expanded="false">Forma: Të gjitha ▾</button>
     <div class="form-panel" id="formPanel">
       <input type="search" id="formSearch" placeholder="Kërko formën (p.sh. kapsul, tablet)..." autocomplete="off" aria-label="Kërko formën farmaceutike">
       <div id="formList" role="listbox"></div>
@@ -51,7 +53,7 @@
     <option value="4006" hidden>Favoritet</option>
   </select>
   <div class="col-picker">
-    <button id="colPickerBtn" type="button" aria-haspopup="true" aria-expanded="false">Kolonat ▾</button>
+    <button id="colPickerBtn" type="button" aria-haspopup="menu" aria-controls="colPanel" aria-expanded="false">Kolonat ▾</button>
     <div class="col-panel" id="colPanel"></div>
   </div>
   <span class="selection-badge" title="Barnat e zgjedhura për recetë">Të zgjedhura: <strong id="selectedCount">0</strong></span>
@@ -59,7 +61,7 @@
   <span class="count-badge" id="countBadge" aria-live="polite">Duke u ngarkuar...</span>
 </div>
 
-<div class="table-wrap" tabindex="0" aria-label="Tabela e regjistrit të barnave">
+<div class="table-wrap" id="registryContent" tabindex="-1" aria-label="Tabela e regjistrit të barnave">
   <table id="dataTable">
     <thead><tr id="headerRow"></tr></thead>
     <tbody id="tbody"><tr><td class="empty-state">Duke i ngarkuar barnat...</td></tr></tbody>
@@ -73,8 +75,9 @@
 <script src="app.js?v=20260723-4" defer></script>
 <script src="ui-enhancements.js?v=20260722-7" defer></script>
 <script src="main-navigation-extension.js?v=20260723-2" defer></script>
+<script src="navigation-consistency.js?v=20260724-1" defer></script>
 <script src="name-display.js?v=20260722-1" defer></script>
 <script src="auth-client.js?v=20260723-3" defer></script>
-<script src="app-stability.js?v=20260723-3" defer></script>
+<script src="app-stability.js?v=20260724-1" defer></script>
 </body>
 </html>
