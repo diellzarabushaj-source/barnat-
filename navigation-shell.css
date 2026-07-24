@@ -1,1 +1,217 @@
-noop
+/* Canonical navigation shell shared by Barnat, Klasifikimi, ICD, Analizat and Recetat. */
+:root{
+  --medindex-nav-width:88px;
+  --medindex-nav-bg:#0d474b;
+  --medindex-nav-bg-2:#0a3c40;
+  --medindex-nav-text:#d5e5e1;
+  --medindex-nav-active:#ffffff;
+  --medindex-nav-accent:#d29a43;
+  --medindex-nav-focus:#f1c36f;
+  --medindex-nav-mobile-height:68px;
+}
+
+body.has-app-nav{padding-left:var(--medindex-nav-width)!important}
+.med-shell{padding-left:var(--medindex-nav-width)!important}
+.atc-shell{grid-template-columns:var(--medindex-nav-width) minmax(0,1fr)!important}
+
+.app-menu,.med-nav,.atc-nav{
+  position:fixed!important;
+  inset:0 auto 0 0!important;
+  z-index:80!important;
+  width:var(--medindex-nav-width)!important;
+  height:100dvh!important;
+  padding:12px 8px!important;
+  display:flex!important;
+  flex-direction:column!important;
+  align-items:stretch!important;
+  gap:4px!important;
+  overflow-x:hidden!important;
+  overflow-y:auto!important;
+  overscroll-behavior:contain!important;
+  scrollbar-width:none!important;
+  background:linear-gradient(180deg,var(--medindex-nav-bg),var(--medindex-nav-bg-2))!important;
+  border:0!important;
+  border-right:1px solid color-mix(in srgb,var(--medindex-nav-accent) 72%,transparent)!important;
+  box-shadow:7px 0 22px rgba(4,29,31,.12)!important;
+}
+.app-menu::-webkit-scrollbar,.med-nav::-webkit-scrollbar,.atc-nav::-webkit-scrollbar{display:none!important}
+
+.app-menu-link,.med-nav-link,.atc-nav-link{
+  position:relative!important;
+  flex:0 0 auto!important;
+  width:100%!important;
+  min-width:0!important;
+  min-height:58px!important;
+  margin:0!important;
+  padding:7px 3px!important;
+  display:flex!important;
+  flex-direction:column!important;
+  align-items:center!important;
+  justify-content:center!important;
+  gap:4px!important;
+  border:1px solid transparent!important;
+  border-radius:10px!important;
+  background:transparent!important;
+  color:var(--medindex-nav-text)!important;
+  text-decoration:none!important;
+  text-align:center!important;
+  cursor:pointer!important;
+  user-select:none!important;
+  touch-action:manipulation!important;
+  transform:none!important;
+  transition:background-color .15s ease,border-color .15s ease,color .15s ease!important;
+  -webkit-tap-highlight-color:transparent;
+}
+.app-menu-link::before,.med-nav-link::before,.atc-nav-link::before{display:none!important}
+.app-menu-link::after,.med-nav-link::after,.atc-nav-link::after{
+  content:"";
+  position:absolute;
+  left:-8px;
+  top:15px;
+  bottom:15px;
+  width:3px;
+  border-radius:0 4px 4px 0;
+  background:transparent;
+}
+.app-menu-link:is(.active,[aria-current="page"]),
+.med-nav-link:is(.active,[aria-current="page"]),
+.atc-nav-link:is(.active,[aria-current="page"]){
+  background:rgba(255,255,255,.13)!important;
+  border-color:rgba(255,255,255,.08)!important;
+  color:var(--medindex-nav-active)!important;
+  box-shadow:none!important;
+}
+.app-menu-link:is(.active,[aria-current="page"])::after,
+.med-nav-link:is(.active,[aria-current="page"])::after,
+.atc-nav-link:is(.active,[aria-current="page"])::after{background:var(--medindex-nav-accent)}
+@media(hover:hover){
+  .app-menu-link:hover,.med-nav-link:hover,.atc-nav-link:hover{
+    background:rgba(255,255,255,.075)!important;
+    color:var(--medindex-nav-active)!important;
+  }
+}
+.app-menu-link:focus-visible,.med-nav-link:focus-visible,.atc-nav-link:focus-visible,
+.auth-logout:focus-visible,.theme-control :focus-visible,.med-theme :focus-visible,.atc-theme :focus-visible{
+  outline:3px solid color-mix(in srgb,var(--medindex-nav-focus) 72%,transparent)!important;
+  outline-offset:-2px!important;
+}
+
+.app-menu-icon,.med-nav-icon,.atc-nav-icon{width:28px!important;height:28px!important;display:grid!important;place-items:center!important;flex:0 0 auto!important}
+.app-menu-icon svg,.med-nav-icon svg,.atc-nav-icon svg{width:22px!important;height:22px!important;display:block!important;stroke-width:15px}
+.app-menu-title,.med-nav-title,.atc-nav-title{
+  max-width:100%!important;
+  font-family:Inter,ui-sans-serif,-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Arial,sans-serif!important;
+  font-size:.61rem!important;
+  font-weight:720!important;
+  line-height:1.08!important;
+  letter-spacing:0!important;
+  overflow-wrap:anywhere!important;
+}
+
+.nav-mini-count,.medindex-nav-count{
+  position:absolute!important;
+  top:5px!important;
+  right:6px!important;
+  min-width:18px!important;
+  height:18px!important;
+  padding:0 5px!important;
+  display:grid!important;
+  place-items:center!important;
+  border:1px solid rgba(255,255,255,.22)!important;
+  border-radius:999px!important;
+  background:#c9821f!important;
+  color:#fff!important;
+  font:800 .56rem/1 ui-monospace,SFMono-Regular,Consolas,monospace!important;
+  pointer-events:none!important;
+}
+.auth-logout{margin-top:auto!important;color:var(--medindex-nav-text)!important}
+.auth-logout:disabled{opacity:.55!important;cursor:wait!important}
+.theme-control,.med-theme,.atc-theme{
+  flex:0 0 auto!important;
+  margin-top:2px!important;
+  color:var(--medindex-nav-text)!important;
+  text-align:center!important;
+  font-size:.58rem!important;
+  font-weight:720!important;
+}
+.theme-control-title,.med-theme>span,.atc-theme>span{display:block!important;margin-bottom:5px!important}
+.med-theme button,.atc-theme button{
+  width:34px!important;
+  height:34px!important;
+  margin:0 auto!important;
+  display:grid!important;
+  place-items:center!important;
+  border:1px solid rgba(255,255,255,.15)!important;
+  border-radius:9px!important;
+  background:rgba(255,255,255,.07)!important;
+  color:#fff!important;
+  cursor:pointer!important;
+}
+.theme-switch{transform:scale(.78)!important;transform-origin:center top!important;margin-bottom:-6px!important}
+
+.med-main,.atc-main{min-width:0!important}
+
+@media(max-width:780px){
+  :root{--medindex-nav-width:0px}
+  body.has-app-nav,.med-shell,.atc-shell{
+    padding-left:0!important;
+    padding-bottom:calc(var(--medindex-nav-mobile-height) + env(safe-area-inset-bottom))!important;
+  }
+  .atc-shell{display:block!important}
+  .app-menu,.med-nav,.atc-nav{
+    inset:auto 0 0 0!important;
+    width:100%!important;
+    height:calc(var(--medindex-nav-mobile-height) + env(safe-area-inset-bottom))!important;
+    padding:5px 6px calc(5px + env(safe-area-inset-bottom))!important;
+    flex-direction:row!important;
+    align-items:stretch!important;
+    justify-content:flex-start!important;
+    gap:3px!important;
+    overflow-x:auto!important;
+    overflow-y:hidden!important;
+    scroll-snap-type:x proximity!important;
+    scroll-padding-inline:6px!important;
+    overscroll-behavior-x:contain!important;
+    border-right:0!important;
+    border-top:1px solid color-mix(in srgb,var(--medindex-nav-accent) 78%,transparent)!important;
+    box-shadow:0 -7px 22px rgba(4,29,31,.17)!important;
+  }
+  .app-menu-link,.med-nav-link,.atc-nav-link{
+    flex:0 0 62px!important;
+    width:62px!important;
+    min-width:62px!important;
+    min-height:54px!important;
+    padding:4px 2px!important;
+    border-radius:9px!important;
+    scroll-snap-align:center!important;
+  }
+  .app-menu-link::after,.med-nav-link::after,.atc-nav-link::after{
+    left:15px!important;
+    right:15px!important;
+    top:-5px!important;
+    bottom:auto!important;
+    width:auto!important;
+    height:3px!important;
+    border-radius:0 0 4px 4px!important;
+  }
+  .app-menu-icon,.med-nav-icon,.atc-nav-icon{width:26px!important;height:26px!important}
+  .app-menu-icon svg,.med-nav-icon svg,.atc-nav-icon svg{width:21px!important;height:21px!important}
+  .app-menu-title,.med-nav-title,.atc-nav-title{font-size:.57rem!important}
+  .auth-logout{margin-top:0!important}
+  .theme-control,.med-theme,.atc-theme{display:none!important}
+  .nav-mini-count,.medindex-nav-count{top:1px!important;right:4px!important}
+}
+
+@media(max-width:420px){
+  .app-menu-link,.med-nav-link,.atc-nav-link{flex-basis:59px!important;width:59px!important;min-width:59px!important}
+}
+
+@media(prefers-reduced-motion:reduce){
+  .app-menu-link,.med-nav-link,.atc-nav-link{transition:none!important}
+  .app-menu,.med-nav,.atc-nav{scroll-behavior:auto!important}
+}
+
+@media(forced-colors:active){
+  .app-menu,.med-nav,.atc-nav{border-color:CanvasText!important}
+  .app-menu-link:is(.active,[aria-current="page"]),.med-nav-link:is(.active,[aria-current="page"]),.atc-nav-link:is(.active,[aria-current="page"]){outline:2px solid Highlight!important}
+}
