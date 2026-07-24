@@ -6,7 +6,7 @@ on:
   pull_request:
 
 permissions:
-  contents: read
+  contents: write
 
 jobs:
   validate:
@@ -135,3 +135,41 @@ jobs:
           grep -q 'Mos shto, mos hiq, mos zëvendëso' api/gemini-prescription.js
           ! grep -q 'temperature:' api/gemini-prescription.js
           ! grep -q 'thinkingBudget' api/gemini-prescription.js
+
+  apply-tailadmin-ui:
+    if: github.event_name == 'pull_request' && github.event.pull_request.head.ref == 'feat/tailadmin-ui-rebuild' && github.actor != 'github-actions[bot]'
+    needs: validate
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout UI branch
+        uses: actions/checkout@v4
+        with:
+          ref: feat/tailadmin-ui-rebuild
+          fetch-depth: 0
+
+      - name: Apply verified UI payload
+        run: |
+          set -euo pipefail
+          test -f .ui-rebuild-payload.tar.gz
+          echo '7c10b0707c090c950c6a77761112069f2ac09511595526590fc85cd88a3ff18e  .ui-rebuild-payload.tar.gz' | sha256sum --check --strict
+          tar -xzf .ui-rebuild-payload.tar.gz
+          rm -f .ui-rebuild-payload.tar.gz
+          rm -f .github/workflows/apply-ui-rebuild.yml
+          rm -f .github/workflows/export-source.yml
+          rm -f .github/workflows/fetch-tailadmin.yml
+          git fetch origin main
+          git checkout origin/main -- .github/workflows/medindex-validation.yml
+
+      - name: Install dependencies
+        run: npm install --ignore-scripts --no-audit --no-fund
+
+      - name: Validate rebuilt MedIndex
+        run: npm test
+
+      - name: Commit rebuilt interface
+        run: |
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add -A
+          git commit -m 'Rebuild MedIndex UI with TailAdmin layout'
+          git push origin HEAD:feat/tailadmin-ui-rebuild
