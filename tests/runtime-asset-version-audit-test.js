@@ -17,6 +17,14 @@ assert.match(index, /app\.js\?v=clinical-audit-v2/, 'index.html: registry bootst
 
 const auth = read('auth-client.js');
 assert.match(auth, /offline-runtime\.js\?v=clinical-audit-v2/, 'auth client must load the current offline runtime');
+assert.match(auth, /tailadmin-professional\.js\?v=clinical-audit-v2/, 'auth client must migrate a stale professional runtime');
+assert.match(auth, /ensureProfessionalRuntime/, 'professional runtime migration guard is missing');
+assert.match(auth, /miProfessionalVersion/, 'professional runtime version must be checked before migration');
+
+const professional = read('tailadmin-professional.js');
+assert.match(professional, /PROFESSIONAL_VERSION = 'clinical-audit-v2'/, 'professional runtime version is stale');
+assert.match(professional, /dataset\.miProfessionalVersion = PROFESSIONAL_VERSION/, 'professional runtime must expose its active version');
+
 const runtime = read('offline-runtime.js');
 assert.match(runtime, /VERSION = 'clinical-audit-v2'/, 'offline runtime version is stale');
 assert.match(runtime, /CLINICAL_WORKFLOW_URL = `\/clinical-workflow\.js\?v=\$\{VERSION\}`/, 'offline runtime must version the clinical workflow');
