@@ -135,25 +135,6 @@ function packagingSummary(row) {
     return `1 kuti = ${count} ${unitForCount(count, unit)}${suffix}`;
   }
 
-  if ((match = source.match(/(?:\b(?:blisters?|strips?)\s*)?(\d+)\s*×\s*(\d+)\s*(?:film[- ]?coated\s*)?(tablets?|capsules?|suppositories?|pessaries?|ovules?)?\b/i))) {
-    const followedByVolume = new RegExp(`${match[0].replace(/[.*+?^${}()|[\]\\]/g, '\\$&')}\s*(?:mL|L)\b`, 'i').test(source);
-    if (!followedByVolume && (match[3] || ['tableta', 'kapsula', 'supozitorë', 'ovula'].includes(unit))) {
-      const a = Number(match[1]);
-      const b = Number(match[2]);
-      const count = a * b;
-      const plural = /caps/i.test(match[3] || '') ? 'kapsula'
-        : /supp/i.test(match[3] || '') ? 'supozitorë'
-          : /pessar|ovul/i.test(match[3] || '') ? 'ovula'
-            : unit;
-      return `1 kuti = ${count} ${unitForCount(count, plural)} (${a} blistera × ${b})`;
-    }
-  }
-
-  if ((match = source.match(/(\d+)\s*(?:blisters?|strips?)\D{0,20}(\d+)\s*(?:tablets?|capsules?)/i))) {
-    const a = Number(match[1]); const b = Number(match[2]); const count = a * b;
-    const plural = /caps/i.test(match[0]) ? 'kapsula' : 'tableta';
-    return `1 kuti = ${count} ${unitForCount(count, plural)} (${a} blistera × ${b})`;
-  }
   if ((match = source.match(/(\d+)\s*×\s*([\d.,]+)\s*(mL|L)\b/i))) {
     const count = Number(match[1]);
     const container = kind === 'injection' ? 'ampula' : kind === 'infusion' ? 'flakona infuzioni' : 'shishe';
@@ -163,6 +144,24 @@ function packagingSummary(row) {
     const count = Number(match[2]);
     const container = /periton|dialysis/.test(form) ? 'qese' : kind === 'injection' ? 'ampula' : kind === 'infusion' ? 'flakona infuzioni' : 'njësi';
     return `1 kuti = ${count} ${container} × ${match[1]} mL`;
+  }
+
+  if ((match = source.match(/(?:\b(?:blisters?|strips?)\s*)?(\d+)\s*×\s*(\d+)\s*(?:film[- ]?coated\s*)?(tablets?|capsules?|suppositories?|pessaries?|ovules?)?\b/i)) &&
+      (match[3] || ['tableta', 'kapsula', 'supozitorë', 'ovula'].includes(unit))) {
+    const a = Number(match[1]);
+    const b = Number(match[2]);
+    const count = a * b;
+    const plural = /caps/i.test(match[3] || '') ? 'kapsula'
+      : /supp/i.test(match[3] || '') ? 'supozitorë'
+        : /pessar|ovul/i.test(match[3] || '') ? 'ovula'
+          : unit;
+    return `1 kuti = ${count} ${unitForCount(count, plural)} (${a} blistera × ${b})`;
+  }
+
+  if ((match = source.match(/(\d+)\s*(?:blisters?|strips?)\D{0,20}(\d+)\s*(?:tablets?|capsules?)/i))) {
+    const a = Number(match[1]); const b = Number(match[2]); const count = a * b;
+    const plural = /caps/i.test(match[0]) ? 'kapsula' : 'tableta';
+    return `1 kuti = ${count} ${unitForCount(count, plural)} (${a} blistera × ${b})`;
   }
   if ((match = source.match(/(\d+)[^0-9]{0,70}(film[- ]?coated\s*)?table(?:t|te)s?/i))) {
     const count = Number(match[1]); return `1 kuti = ${count} ${unitForCount(count, 'tableta')}`;
