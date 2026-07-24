@@ -53,10 +53,15 @@ assert.match(recetat, /id="rxDosageChooser"/);
 
 const shell = read('tailadmin-shell.js');
 const authClient = read('auth-client.js');
+const uiEnhancements = read('ui-enhancements.js');
 [
   /PAGE_META/,
   /id = 'appMenu'/,
   /data-mi-sidebar-toggle/,
+  /aria-controls="miSidebar"/,
+  /syncResponsiveSidebar/,
+  /resetSidebarPosition/,
+  /pageshow/,
   /data-mi-sidebar-overlay/,
   /data-mi-theme-toggle/,
   /aria-current="page"/,
@@ -71,10 +76,13 @@ const authClient = read('auth-client.js');
   /favoriteNavCount/,
 ].forEach(pattern => assert.match(shell, pattern, `tailadmin-shell.js missing ${pattern}`));
 assert.match(shell, /document\.addEventListener\('DOMContentLoaded', init/);
-assert.match(shell, /MutationObserver\(ensureStylesheetLast\)/, 'TailAdmin CSS must remain the final cascade layer');
+assert.match(shell, /MutationObserver\(\(\) => queueMicrotask\(ensureStylesheetLast\)\)/, 'TailAdmin CSS must remain the final cascade layer');
+assert.doesNotMatch(shell, /headObserver\.disconnect|12000/, 'TailAdmin cascade guard must not expire after a timeout');
 assert.match(shell, /MOBILE_BREAKPOINT = 1024/, 'TailAdmin desktop/mobile breakpoint is missing');
 assert.match(authClient, /installLogout/);
 assert.match(authClient, /\.auth-logout/);
+assert.match(uiEnhancements, /legacyNavigationStyles[\s\S]*contains\('medindex-tailadmin'\) \? ''/, 'legacy registry navigation styles must be disabled inside TailAdmin');
+assert.match(uiEnhancements, /\$\{legacyNavigationStyles\}/, 'shared registry enhancements must keep legacy navigation isolated');
 
 const css = read('tailadmin-medindex.css');
 [
@@ -87,6 +95,11 @@ const css = read('tailadmin-medindex.css');
   /\.mi-topbar/,
   /\.mi-global-search/,
   /#appMenu\.mi-sidebar-nav/,
+  /#appMenu \.app-menu-link,[\s\S]*flex-direction:\s*row !important/,
+  /#appMenu\.mi-sidebar-nav[\s\S]*min-height:\s*0 !important/,
+  /\.mi-theme-control[\s\S]*display:\s*block !important/,
+  /overflow-anchor:\s*none/,
+  /max-height:\s*820px/,
   /body\.mi-sidebar-collapsed/,
   /body\.mi-sidebar-open/,
   /@media \(max-width: 1023px\)/,
