@@ -6,7 +6,7 @@ const { execFileSync } = require('node:child_process');
 const ROOT = path.resolve(__dirname, '..');
 const read = file => fs.readFileSync(path.join(ROOT, file), 'utf8');
 
-['clinical-workflow.js', 'local-registry.js', 'sw.js', 'offline-runtime.js', 'auth-client.js'].forEach(file => {
+['clinical-workflow.js', 'local-registry.js', 'sw.js', 'offline-runtime.js', 'auth-client.js', 'prescription-bridge.js'].forEach(file => {
   assert.ok(fs.existsSync(path.join(ROOT, file)), `${file} mungon`);
   execFileSync(process.execPath, ['--check', path.join(ROOT, file)], { stdio:'pipe' });
 });
@@ -32,6 +32,24 @@ const workflow = read('clinical-workflow.js');
   /stopImmediatePropagation/,
   /rxDosageChooser/,
 ].forEach(pattern => assert.match(workflow, pattern, `Rrjedha klinike mungon ${pattern}`));
+
+const bridge = read('prescription-bridge.js');
+[
+  /medindex_rx_autodraft_v1/,
+  /medindex_rx_diagnosis_v1/,
+  /DRAFT_MAX_AGE/,
+  /rxComposer/,
+  /rxDiagnosis/,
+  /pendingDiagnosis/,
+  /dispatchEvent\(new Event\('input'/,
+  /medindex:clinical-workflow-ready/,
+  /medindex:prescription-context-ready/,
+].forEach(pattern => assert.match(bridge, pattern, `Ura ICD→Recetë mungon ${pattern}`));
+const prescriptionHtml = read('recetat.html');
+assert.equal((prescriptionHtml.match(/prescription-bridge\.js/gi) || []).length, 1, 'Ura ICD→Recetë duhet të ngarkohet vetëm një herë');
+assert.match(prescriptionHtml, /prescription-bridge\.js\?v=clinical-audit-v2/, 'Versioni i cache-it të urës ICD→Recetë është i vjetër');
+assert.ok(prescriptionHtml.indexOf('auth-client.js') < prescriptionHtml.indexOf('prescription-bridge.js'), 'Auth duhet të ngarkohet para urës ICD→Recetë');
+assert.ok(prescriptionHtml.indexOf('prescription-bridge.js') < prescriptionHtml.indexOf('recetat.js'), 'Ura ICD→Recetë duhet të dëgjojë para inicializimit të recetës');
 
 const localRegistry = read('local-registry.js');
 [
