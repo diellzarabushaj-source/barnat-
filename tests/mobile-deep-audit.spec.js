@@ -43,10 +43,15 @@ async function viewportReport(page) {
 }
 
 function expectInsideViewport(rect, viewport, tolerance = 1) {
-  expect(rect.left).toBeGreaterThanOrEqual(-tolerance);
-  expect(rect.right).toBeLessThanOrEqual(viewport.width + tolerance);
-  expect(rect.top).toBeGreaterThanOrEqual(-tolerance);
-  expect(rect.bottom).toBeLessThanOrEqual(viewport.height + tolerance);
+  expect(rect).not.toBeNull();
+  const left = rect.left ?? rect.x;
+  const top = rect.top ?? rect.y;
+  const right = rect.right ?? (left + rect.width);
+  const bottom = rect.bottom ?? (top + rect.height);
+  expect(left).toBeGreaterThanOrEqual(-tolerance);
+  expect(right).toBeLessThanOrEqual(viewport.width + tolerance);
+  expect(top).toBeGreaterThanOrEqual(-tolerance);
+  expect(bottom).toBeLessThanOrEqual(viewport.height + tolerance);
 }
 
 async function expectNoDocumentOverflow(page) {
