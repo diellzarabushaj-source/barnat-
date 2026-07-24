@@ -13,6 +13,10 @@ assert.equal(SignatureTemplates.detectForm('Inf. Sodium Chloride 0.9% a 250 ml')
 const tablet = SignatureTemplates.renderTemplate('Nga {{1}} tabletë çdo 8 orë, për 5 ditë.');
 assert.equal(tablet.text, 'Nga 1 tabletë çdo 8 orë, për 5 ditë.');
 assert.equal(tablet.text.slice(tablet.selectionStart, tablet.selectionEnd), '1');
+const multiple = SignatureTemplates.renderTemplate('Nga {{1}} tabletë çdo {{8}} orë për {{5}} ditë.');
+assert.deepEqual(multiple.placeholders.map(range => multiple.text.slice(range.start, range.end)), ['1', '8', '5']);
+assert.equal(SignatureTemplates.nextPlaceholderIndex(0, 3, false), 1);
+assert.equal(SignatureTemplates.nextPlaceholderIndex(0, 3, true), 2);
 
 const medication = 'Amoxicillin 1000 mg (Tableta)';
 const inserted = SignatureTemplates.insertionFor(
@@ -32,6 +36,7 @@ const replaced = SignatureTemplates.insertionFor(
   'Nga 1 tabletë çdo 8 orë sipas nevojës.',
 );
 assert.equal(replaced.value, 'Paracetamol 500 mg (Tableta)\nS (Signatura): Nga 1 tabletë çdo 8 orë sipas nevojës.');
+assert.equal((replaced.value.match(/S \(Signatura\):/g) || []).length, 1, 'replacing a signature must not create duplicate lines');
 
 const manual = SignatureTemplates.renderTemplate('');
 assert.equal(manual.text, '');
