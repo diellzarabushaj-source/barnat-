@@ -12,7 +12,37 @@ test('mjeku gjen shërbimin, krijon recetë dhe vazhdon offline', async ({ page,
   await globalSearch.fill('paracetamol');
   await expect(page.locator('#miCommandPalette')).toBeVisible();
   await expect(page.locator('#miCommandPalette')).toContainText('Shto barin');
-  await page.getByRole('option', { name:/Shto barin “paracetamol” në recetë/i }).click();
+  const option = page.getByRole('option', { name:/Shto barin “paracetamol” në recetë/i });
+  const geometry = await page.evaluate(() => {
+    const input = document.getElementById('miGlobalSearch');
+    const palette = document.getElementById('miCommandPalette');
+    const optionNode = document.querySelector('[data-command-index="2"]');
+    const toObject = rect => rect ? { x:rect.x, y:rect.y, top:rect.top, right:rect.right, bottom:rect.bottom, left:rect.left, width:rect.width, height:rect.height } : null;
+    const style = palette ? getComputedStyle(palette) : null;
+    return {
+      viewport:{ width:innerWidth, height:innerHeight },
+      input:toObject(input?.getBoundingClientRect()),
+      palette:toObject(palette?.getBoundingClientRect()),
+      option:toObject(optionNode?.getBoundingClientRect()),
+      paletteParent:palette?.parentElement?.tagName || null,
+      position:style?.position || null,
+      top:style?.top || null,
+      left:style?.left || null,
+      width:style?.width || null,
+      overflow:style?.overflow || null,
+      professionalVersion:document.documentElement.dataset.miProfessionalVersion || null,
+      portalBound:palette?.dataset.miPortalBound || null,
+      viewportBound:palette?.dataset.miViewportBound || null,
+    };
+  });
+  console.log(`PALETTE_GEOMETRY ${JSON.stringify(geometry)}`);
+  expect(geometry.paletteParent).toBe('BODY');
+  expect(geometry.position).toBe('fixed');
+  expect(geometry.option.left).toBeGreaterThanOrEqual(0);
+  expect(geometry.option.right).toBeLessThanOrEqual(geometry.viewport.width);
+  expect(geometry.option.top).toBeGreaterThanOrEqual(0);
+  expect(geometry.option.bottom).toBeLessThanOrEqual(geometry.viewport.height);
+  await option.click();
   await page.waitForURL(/recetat\.html/);
   await page.waitForFunction(() => document.documentElement.classList.contains('auth-ready'));
 
