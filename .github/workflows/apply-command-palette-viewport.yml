@@ -1,16 +1,14 @@
 name: Apply command palette viewport repair
 
 on:
-  push:
-    branches:
-      - audit/physician-product-hardening
+  pull_request:
 
 permissions:
   contents: write
 
 jobs:
   apply:
-    if: ${{ !contains(github.event.head_commit.message, '[palette-viewport-applied]') }}
+    if: ${{ github.head_ref == 'audit/physician-product-hardening' }}
     runs-on: ubuntu-latest
     steps:
       - name: Checkout branch
