@@ -1,0 +1,74 @@
+name: Apply runtime cache version
+
+on:
+  push:
+    branches:
+      - audit/physician-product-hardening
+
+permissions:
+  contents: write
+
+jobs:
+  apply:
+    if: ${{ !contains(github.event.head_commit.message, '[runtime-cache-version-applied]') }}
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout branch
+        uses: actions/checkout@v4
+        with:
+          ref: audit/physician-product-hardening
+          fetch-depth: 0
+
+      - name: Version browser runtime assets
+        shell: bash
+        run: |
+          python3 - <<'PY'
+          from pathlib import Path
+          import re
+
+          pages = [
+              'index.html', 'klasifikimi.html', 'icd.html', 'analizat.html',
+              'dozologjia.html', 'protokollet.html', 'recetat.html'
+          ]
+          for page in pages:
+              path = Path(page)
+              html = path.read_text()
+              updated, count = re.subn(
+                  r'auth-client\.js\?v=[^"\']+',
+                  'auth-client.js?v=clinical-audit-v2',
+                  html,
+                  count=1,
+              )
+              if count != 1:
+                  raise SystemExit(f'{page}: auth-client runtime marker mismatch')
+              path.write_text(updated)
+
+          index = Path('index.html')
+          html = index.read_text()
+          html, count = re.subn(
+              r'app\.js\?v=[^"\']+',
+              'app.js?v=clinical-audit-v2',
+              html,
+              count=1,
+          )
+          if count != 1:
+              raise SystemExit('index.html: app runtime marker mismatch')
+          index.write_text(html)
+          PY
+
+      - name: Validate complete product
+        run: |
+          npm install --ignore-scripts --no-audit --no-fund
+          npm test
+
+      - name: Commit deterministic runtime versions
+        shell: bash
+        run: |
+          set -euo pipefail
+          rm -f .github/workflows/apply-runtime-cache-version.yml .runtime-cache-version-trigger
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add -A
+          if git diff --cached --quiet; then exit 0; fi
+          git commit -m "Version clinical browser runtimes [runtime-cache-version-applied]"
+          git push origin HEAD:audit/physician-product-hardening
