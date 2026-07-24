@@ -124,6 +124,31 @@ function packagingSummary(row) {
     const plural = /caps/i.test(match[2]) ? 'kapsula' : /supp/i.test(match[2]) ? 'supozitorë' : 'tableta';
     return `1 kuti = ${count} ${unitForCount(count, plural)}`;
   }
+
+  const pieces = source.match(/\b(\d+)\s*(?:pcs?|pieces?|units?)\b/i);
+  const blisterMatrix = source.match(/\b(?:blisters?|strips?)?\s*(\d+)\s*×\s*(\d+)\b/i);
+  if (pieces && ['tableta', 'kapsula', 'supozitorë', 'ovula'].includes(unit)) {
+    const count = Number(pieces[1]);
+    const suffix = blisterMatrix && Number(blisterMatrix[1]) * Number(blisterMatrix[2]) === count
+      ? ` (${Number(blisterMatrix[1])} blistera × ${Number(blisterMatrix[2])})`
+      : '';
+    return `1 kuti = ${count} ${unitForCount(count, unit)}${suffix}`;
+  }
+
+  if ((match = source.match(/(?:\b(?:blisters?|strips?)\s*)?(\d+)\s*×\s*(\d+)\s*(?:film[- ]?coated\s*)?(tablets?|capsules?|suppositories?|pessaries?|ovules?)?\b/i))) {
+    const followedByVolume = new RegExp(`${match[0].replace(/[.*+?^${}()|[\]\\]/g, '\\$&')}\s*(?:mL|L)\b`, 'i').test(source);
+    if (!followedByVolume && (match[3] || ['tableta', 'kapsula', 'supozitorë', 'ovula'].includes(unit))) {
+      const a = Number(match[1]);
+      const b = Number(match[2]);
+      const count = a * b;
+      const plural = /caps/i.test(match[3] || '') ? 'kapsula'
+        : /supp/i.test(match[3] || '') ? 'supozitorë'
+          : /pessar|ovul/i.test(match[3] || '') ? 'ovula'
+            : unit;
+      return `1 kuti = ${count} ${unitForCount(count, plural)} (${a} blistera × ${b})`;
+    }
+  }
+
   if ((match = source.match(/(\d+)\s*(?:blisters?|strips?)\D{0,20}(\d+)\s*(?:tablets?|capsules?)/i))) {
     const a = Number(match[1]); const b = Number(match[2]); const count = a * b;
     const plural = /caps/i.test(match[0]) ? 'kapsula' : 'tableta';
