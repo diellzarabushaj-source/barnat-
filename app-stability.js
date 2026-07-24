@@ -3,7 +3,7 @@
 
   let lastFocused = null;
   let errorBannerTimer = 0;
-  let dialogFrame = 0;
+  let uiFrame = 0;
 
   function banner(className, message, persistent = false) {
     let node = document.querySelector(`.${className}`);
@@ -92,8 +92,20 @@
     return !overlay.hidden && !overlay.hasAttribute('hidden');
   }
 
-  function reconcileDialogs() {
-    dialogFrame = 0;
+  function syncControlledDisclosures() {
+    document.querySelectorAll('[aria-controls]').forEach(trigger => {
+      const target = document.getElementById(trigger.getAttribute('aria-controls'));
+      if (!target) return;
+      let expanded;
+      if (target.classList.contains('form-panel') || target.classList.contains('col-panel')) expanded = target.classList.contains('open');
+      else expanded = !target.hidden && !target.hasAttribute('hidden');
+      trigger.setAttribute('aria-expanded', String(expanded));
+    });
+  }
+
+  function reconcileUi() {
+    uiFrame = 0;
+    syncControlledDisclosures();
     const dialog = visibleDialog();
     if (dialog && !dialog.dataset.stabilityFocus) {
       lastFocused = document.activeElement;
@@ -109,12 +121,12 @@
     });
   }
 
-  function watchDialogs() {
-    if (!document.querySelector('.atc-info-overlay,.med-panel-overlay,#miOverlay')) return;
+  function watchUi() {
     const observer = new MutationObserver(() => {
-      if (!dialogFrame) dialogFrame = requestAnimationFrame(reconcileDialogs);
+      if (!uiFrame) uiFrame = requestAnimationFrame(reconcileUi);
     });
     observer.observe(document.body, { childList:true, subtree:true, attributes:true, attributeFilter:['class', 'hidden', 'aria-hidden'] });
+    reconcileUi();
   }
 
   function installPerformanceHints() {
@@ -129,7 +141,7 @@
   function init() {
     updateConnectivity();
     installPerformanceHints();
-    watchDialogs();
+    watchUi();
     window.addEventListener('online', updateConnectivity, { passive:true });
     window.addEventListener('offline', updateConnectivity, { passive:true });
     window.addEventListener('error', event => {
@@ -139,7 +151,7 @@
     window.addEventListener('unhandledrejection', event => reportRuntimeProblem(event.reason || event));
     document.addEventListener('keydown', trapFocus, true);
     document.addEventListener('keydown', closeTransientUi, true);
-    window.MEDINDEX_RUNTIME = { version:'2026-07-24.1', online:() => navigator.onLine };
+    window.MEDINDEX_RUNTIME = { version:'2026-07-24.2', online:() => navigator.onLine };
   }
 
   if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', init, { once:true });
