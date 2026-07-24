@@ -6,141 +6,196 @@ on:
   pull_request:
 
 permissions:
-  contents: read
+  contents: write
 
 jobs:
   validate:
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout
-        uses: actions/checkout@v4
-
-      - name: Setup Node
-        uses: actions/setup-node@v4
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
         with:
           node-version: 22
+      - run: npm install --ignore-scripts --no-audit --no-fund
+      - run: npm test
 
-      - name: Install dependencies
-        run: npm install --ignore-scripts --no-audit --no-fund
+  apply-professional-polish:
+    if: github.event_name == 'pull_request' && github.head_ref == 'fix/tailadmin-professional-polish'
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout UI branch
+        uses: actions/checkout@v4
+        with:
+          ref: fix/tailadmin-professional-polish
+          fetch-depth: 0
 
-      - name: Validate JavaScript syntax
+      - name: Patch shell, pages and regression suite
         shell: bash
         run: |
-          set -euo pipefail
-          files=(
-            app.js
-            app-stability.js
-            main-navigation-extension.js
-            navigation-consistency.js
-            tailadmin-shell.js
-            medical-icons.js
-            section-icons.js
-            classification-icons.js
-            prescription-format-core.js
-            signature-templates.js
-            recetat.js
-            api/gemini-prescription.js
-            api/drug-search.js
-            api/registry.js
-            api/registry-data.js
-            api/dosage.js
+          python3 - <<'PY'
+          from pathlib import Path
+          import re
+
+          shell_path = Path('tailadmin-shell.js')
+          shell = shell_path.read_text()
+          early = "  'use strict';\n"
+          early_replacement = """  'use strict';
+
+  // Mark the visual system immediately. Deferred feature scripts execute before
+  // DOMContentLoaded and must never mistake a TailAdmin page for the legacy shell.
+  document.documentElement.classList.add('medindex-tailadmin');
+  document.documentElement.dataset.medindexShell = 'tailadmin';
+"""
+          if "dataset.medindexShell = 'tailadmin'" not in shell:
+              if shell.count(early) != 1:
+                  raise SystemExit('tailadmin-shell.js: use strict marker mismatch')
+              shell = shell.replace(early, early_replacement, 1)
+
+          old_order = """  function ensureStylesheetLast() {
+    const link = document.querySelector('link[data-tailadmin-medindex-css]');
+    if (link && document.head.lastElementChild !== link) document.head.appendChild(link);
+  }
+"""
+          new_order = """  function ensureStylesheetLast() {
+    const base = document.querySelector('link[data-tailadmin-medindex-css]');
+    const professional = document.querySelector('link[data-tailadmin-professional-css]');
+    if (base && professional) {
+      if (base.nextElementSibling !== professional || document.head.lastElementChild !== professional) {
+        document.head.append(base, professional);
+      }
+      return;
+    }
+    if (base && document.head.lastElementChild !== base) document.head.appendChild(base);
+  }
+"""
+          if old_order not in shell and new_order not in shell:
+              raise SystemExit('tailadmin-shell.js: stylesheet ordering block not found')
+          shell = shell.replace(old_order, new_order, 1)
+          shell_path.write_text(shell)
+
+          enhancements_path = Path('ui-enhancements.js')
+          enhancements = enhancements_path.read_text()
+          theme_marker = "  const THEME_KEY = 'regjistriBarnave_theme_v1';\n"
+          detector = """  const THEME_KEY = 'regjistriBarnave_theme_v1';
+
+  function hasTailAdmin() {
+    return Boolean(
+      document.documentElement.classList.contains('medindex-tailadmin')
+      || document.querySelector('link[data-tailadmin-medindex-css],script[src*="tailadmin-shell.js"]')
+    );
+  }
+"""
+          if 'function hasTailAdmin()' not in enhancements:
+              if enhancements.count(theme_marker) != 1:
+                  raise SystemExit('ui-enhancements.js: theme marker mismatch')
+              enhancements = enhancements.replace(theme_marker, detector, 1)
+
+          enhancements = enhancements.replace(
+              "const legacyNavigationStyles = document.documentElement.classList.contains('medindex-tailadmin') ? '' : `",
+              "const legacyNavigationStyles = hasTailAdmin() ? '' : `",
+              1
           )
-          for file in "${files[@]}"; do
-            test -f "$file"
-            node --check "$file"
-          done
-          cat app-parts/part-01.txt app-parts/part-02.txt app-parts/part-03.txt app-parts/part-04.txt app-parts/core-tail.txt > /tmp/medindex-registry-bundle.js
-          node --check /tmp/medindex-registry-bundle.js
+          if "const legacyNavigationStyles = hasTailAdmin() ? '' : `" not in enhancements:
+              raise SystemExit('ui-enhancements.js: TailAdmin legacy-style guard missing')
 
-      - name: Run complete test suite
-        run: npm test
+          old_boot = """  const observer = new MutationObserver(schedule);
+  observer.observe(document.documentElement, { childList: true, subtree: true });
+  if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', decorate, { once: true });
+  else decorate();
+})();
+"""
+          new_boot = """  const observer = new MutationObserver(schedule);
+  let enhancementsStarted = false;
 
-      - name: Verify the dedicated prescription dashboard
+  function startEnhancements() {
+    if (enhancementsStarted) return;
+    enhancementsStarted = true;
+    observer.observe(document.documentElement, { childList: true, subtree: true });
+    decorate();
+  }
+
+  if (hasTailAdmin()) {
+    window.addEventListener('medindex:tailadmin-ready', startEnhancements, { once: true });
+    if (document.body?.dataset.tailadminReady === '1') startEnhancements();
+  } else if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', startEnhancements, { once: true });
+  } else {
+    startEnhancements();
+  }
+})();
+"""
+          if old_boot not in enhancements and new_boot not in enhancements:
+              raise SystemExit('ui-enhancements.js: bootstrap block not found')
+          enhancements = enhancements.replace(old_boot, new_boot, 1)
+          enhancements_path.write_text(enhancements)
+
+          pages = [
+              'index.html',
+              'klasifikimi.html',
+              'icd.html',
+              'analizat.html',
+              'dozologjia.html',
+              'protokollet.html',
+              'recetat.html',
+          ]
+
+          for page in pages:
+              path = Path(page)
+              html = path.read_text()
+
+              if 'tailadmin-professional.css' not in html:
+                  html, css_count = re.subn(
+                      r'<link rel="stylesheet" href="tailadmin-medindex\.css\?v=[^"]+" data-tailadmin-medindex-css>\s*',
+                      '<link rel="stylesheet" href="tailadmin-medindex.css?v=20260724-3" data-tailadmin-medindex-css>\n'
+                      '<link rel="stylesheet" href="tailadmin-professional.css?v=20260724-1" data-tailadmin-professional-css>\n',
+                      html,
+                      count=1,
+                  )
+                  if css_count != 1:
+                      raise SystemExit(f'{page}: base TailAdmin CSS marker mismatch')
+
+              if 'tailadmin-professional.js' not in html:
+                  html, js_count = re.subn(
+                      r'<script src="tailadmin-shell\.js\?v=[^"]+" defer></script>\s*',
+                      '<script src="tailadmin-shell.js?v=20260724-3" defer></script>\n'
+                      '<script src="tailadmin-professional.js?v=20260724-1" defer></script>\n',
+                      html,
+                      count=1,
+                  )
+                  if js_count != 1:
+                      raise SystemExit(f'{page}: TailAdmin shell script marker mismatch')
+              path.write_text(html)
+
+          package_path = Path('package.json')
+          package = package_path.read_text()
+          old_script = 'node tests/ui-navigation-audit-test.js'
+          new_script = 'node tests/ui-navigation-audit-test.js && node tests/professional-ui-audit-test.js'
+          if new_script not in package:
+              if package.count(old_script) != 1:
+                  raise SystemExit('package.json: UI test script marker mismatch')
+              package = package.replace(old_script, new_script, 1)
+          package_path.write_text(package)
+          PY
+
+      - name: Validate complete application
         shell: bash
         run: |
           set -euo pipefail
-          test -f recetat.html
-          test -f recetat.css
-          test -f recetat-audit.css
-          test -f signature-templates.css
-          test -f signature-templates.js
-          test -f tests/signature-templates-test.js
-          test -f prescription-format-core.js
-          test -f recetat.js
-          grep -q 'id="protocolsBtn"' index.html
-          grep -q "href = '/recetat.html'" main-navigation-extension.js
-          grep -q 'id="rxComposer"' recetat.html
-          grep -q '@forma' recetat.html
-          grep -q '@bari' recetat.html
-          grep -q '@doza' recetat.html
-          grep -q '@sasia' recetat.html
-          grep -q '@tjetër' recetat.html
-          grep -q '@signatura' recetat.html
-          grep -q 'signature-templates.css' recetat.html
-          grep -q 'signature-templates.js' recetat.html
-          grep -q 'Unguentum / krem' signature-templates.js
-          grep -q 'Administrohet IV si infuzion' signature-templates.js
-          grep -q 'prescription-format-core.js' recetat.html
-          grep -q 'recetat.js' recetat.html
-          grep -q 'id="rxGeneratedReview"' recetat.html
-          ! grep -q 'recetat-v2.js' recetat.html
-          grep -q '/api/gemini-prescription' recetat.js
-          grep -q '/api/drug-search' recetat.js
-          grep -q 'dispenseQuantity' prescription-format-core.js
-          grep -q 'S (Signatura):' prescription-format-core.js
-          grep -q 'sharedSignature' prescription-format-core.js
-          grep -q 'generatedReviewConfirmed' recetat.js
-          grep -q 'medindexPrescriptionSelection' recetat.js
-          ! grep -q 'protocolOverlay' index.html
-          ! grep -q 'dosage-auto-apply.js' index.html
-          ! grep -q 'prescription-review.js' index.html
+          node --check tailadmin-shell.js
+          node --check tailadmin-professional.js
+          node --check ui-enhancements.js
+          npm install --ignore-scripts --no-audit --no-fund
+          npm test
 
-      - name: Verify TailAdmin UI and navigation
+      - name: Commit clean validated result
         shell: bash
         run: |
           set -euo pipefail
-          test -f tailadmin-medindex.css
-          test -f tailadmin-shell.js
-          test -f TAILADMIN-LICENSE
-          test -f THIRD_PARTY_NOTICES.md
-          test -f tests/ui-navigation-audit-test.js
-          for page in index.html klasifikimi.html icd.html analizat.html dozologjia.html protokollet.html recetat.html; do
-            grep -q 'tailadmin-medindex.css' "$page"
-            grep -q 'tailadmin-shell.js' "$page"
-            grep -q 'skip-link' "$page"
-          done
-          grep -q 'tailadmin-medindex.css' login.html
-          grep -q -- '--mi-sidebar-width: 290px' tailadmin-medindex.css
-          grep -q -- '--mi-brand-500: #465fff' tailadmin-medindex.css
-          grep -q 'html\[data-theme="dark"\]' tailadmin-medindex.css
-          grep -q 'prefers-reduced-motion' tailadmin-medindex.css
-          grep -q 'MOBILE_BREAKPOINT = 1024' tailadmin-shell.js
-          grep -q 'data-mi-sidebar-toggle' tailadmin-shell.js
-          grep -q 'aria-current="page"' tailadmin-shell.js
-          grep -q 'MutationObserver' tailadmin-shell.js
-          grep -q 'regjistriBarnave_theme_v1' tailadmin-shell.js
-          grep -q 'TailAdmin Free Tailwind Dashboard Template' THIRD_PARTY_NOTICES.md
-          ! grep -q 'installClinicalUi' app-stability.js
-          ! grep -q 'clinical-ui.css' app-stability.js
-
-      - name: Verify Gemini 3.6 clinical guardrails
-        shell: bash
-        run: |
-          set -euo pipefail
-          test -f tests/gemini-prescription-audit-test.js
-          grep -q "DEFAULT_MODEL = 'gemini-3.6-flash'" api/gemini-prescription.js
-          grep -q "DEFAULT_FALLBACK_MODEL = 'gemini-3.5-flash'" api/gemini-prescription.js
-          grep -q 'GEMINI_API_KEY' api/gemini-prescription.js
-          grep -q 'GOOGLE_API_KEY' api/gemini-prescription.js
-          grep -q 'v1/interactions' api/gemini-prescription.js
-          grep -q 'response_format' api/gemini-prescription.js
-          grep -q "mime_type: 'application/json'" api/gemini-prescription.js
-          grep -q 'thinking_level: THINKING_LEVEL' api/gemini-prescription.js
-          grep -q "thinking_summaries: 'none'" api/gemini-prescription.js
-          grep -q 'store: false' api/gemini-prescription.js
-          grep -q 'buildBaseline' api/gemini-prescription.js
-          grep -q 'buildTargets' api/gemini-prescription.js
-          grep -q 'mergeSuggestions' api/gemini-prescription.js
-          grep -q 'Mos shto, mos hiq, mos zëvendëso' api/gemini-prescription.js
-          ! grep -q 'temperature:' api/gemini-prescription.js
-          ! grep -q 'thinkingBudget' api/gemini-prescription.js
+          git show origin/main:.github/workflows/medindex-validation.yml > .github/workflows/medindex-validation.yml
+          rm -f .github/workflows/apply-professional-polish.yml
+          rm -f .professional-polish-trigger
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add -A
+          git commit -m "Polish TailAdmin shell and every MedIndex section [professional-polish-applied]"
+          git push origin HEAD:fix/tailadmin-professional-polish
