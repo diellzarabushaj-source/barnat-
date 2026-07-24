@@ -6,15 +6,15 @@ const hidePageLoader = () => {
 };
 
 (async () => {
-  const APP_VERSION = '5a3e284e-offline-v1';
+  const APP_VERSION = 'clinical-audit-v2-prescription-v1';
   const DB_NAME = 'medindex-registry-v1';
   const DB_STORE = 'datasets';
-  const DB_KEY = 'registry-parts';
-  const CACHE_KEY = 'barnat-registry-parts-v3';
-  const CACHE_TIME_KEY = 'barnat-registry-cached-at-v3';
+  const DB_KEY = 'registry-parts-prescription-v1';
+  const CACHE_KEY = 'barnat-registry-parts-v4';
+  const CACHE_TIME_KEY = 'barnat-registry-cached-at-v4';
   const LEGACY_CACHE_KEYS = [
     'barnat-registry-parts-v2', 'barnat-registry-cached-at-v2',
-    CACHE_KEY
+    'barnat-registry-parts-v3', 'barnat-registry-cached-at-v3'
   ];
   const BACKGROUND_REFRESH_MS = 6 * 60 * 60 * 1000;
   const REQUEST_TIMEOUT_MS = 12000;
