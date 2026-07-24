@@ -2,11 +2,15 @@
   'use strict';
 
   const RETURN_KEY = 'medindex_return_after_login';
+  const OFFLINE_LEASE_KEY = 'medindex_offline_lease_v1';
+  const OFFLINE_RUNTIME_SRC = '/offline-runtime.js?v=5a3e284e-offline-v1';
+  const MAX_OFFLINE_LEASE_MS = 12 * 60 * 60 * 1000;
   const originalFetch = window.fetch.bind(window);
   let logoutObserver = null;
   let logoutObserverTimer = 0;
   let authSettled = false;
   let resolveAuthReady;
+  let onlineRevalidationInstalled = false;
 
   document.documentElement.classList.add('auth-checking');
   window.MEDINDEX_AUTH_READY = new Promise(resolve => { resolveAuthReady = resolve; });
@@ -41,6 +45,41 @@
       : '/index.html';
   }
 
+  function readOfflineLease() {
+    try {
+      const lease = JSON.parse(localStorage.getItem(OFFLINE_LEASE_KEY) || 'null');
+      const now = Date.now();
+      if (!lease || lease.version !== 1) return null;
+      if (!Number.isFinite(lease.verifiedAt) || !Number.isFinite(lease.expiresAt)) return null;
+      if (lease.verifiedAt > now + 5 * 60 * 1000) return null;
+      if (lease.expiresAt <= now || lease.expiresAt - lease.verifiedAt > MAX_OFFLINE_LEASE_MS) return null;
+      return lease;
+    } catch {
+      return null;
+    }
+  }
+
+  function saveOfflineLease(payload = {}) {
+    const sessionHours = Math.min(12, Math.max(1, Number(payload.sessionHours || 8)));
+    const verifiedAt = Date.now();
+    const lease = { version: 1, verifiedAt, expiresAt: verifiedAt + sessionHours * 60 * 60 * 1000 };
+    try { localStorage.setItem(OFFLINE_LEASE_KEY, JSON.stringify(lease)); } catch {}
+    return lease;
+  }
+
+  function clearOfflineLease() {
+    try { localStorage.removeItem(OFFLINE_LEASE_KEY); } catch {}
+  }
+
+  function startOfflineRuntime() {
+    if (document.querySelector('script[data-medindex-offline-runtime]') || window.MedIndexOffline) return;
+    const script = document.createElement('script');
+    script.src = OFFLINE_RUNTIME_SRC;
+    script.defer = true;
+    script.dataset.medindexOfflineRuntime = '1';
+    document.head.appendChild(script);
+  }
+
   async function authRequest(options = {}) {
     const controller = new AbortController();
     const timer = setTimeout(() => controller.abort(), 8000);
@@ -58,12 +97,31 @@
   }
 
   function goToLogin(reason = 'unauthenticated') {
+    clearOfflineLease();
     settleAuth(false, { reason });
     const returnPath = safeReturnPath();
     try { sessionStorage.setItem(RETURN_KEY, returnPath); } catch {}
     const loginUrl = new URL('/login.html', location.origin);
     loginUrl.searchParams.set('return', returnPath);
     location.replace(loginUrl.pathname + loginUrl.search);
+  }
+
+  async function clearPrivateBrowserData() {
+    clearOfflineLease();
+    try {
+      sessionStorage.removeItem(RETURN_KEY);
+      sessionStorage.removeItem('medindex_labs_cache_v3');
+      ['barnat-registry-parts-v2', 'barnat-registry-cached-at-v2', 'barnat-registry-parts-v3', 'barnat-registry-cached-at-v3']
+        .forEach(key => localStorage.removeItem(key));
+    } catch {}
+    try { indexedDB.deleteDatabase('medindex-registry-v1'); } catch {}
+    try {
+      navigator.serviceWorker?.controller?.postMessage({ type: 'CLEAR_PRIVATE_DATA' });
+      const names = await caches.keys();
+      await Promise.all(names
+        .filter(name => name.startsWith('medindex-private-') || name.startsWith('medindex-documents-'))
+        .map(name => caches.delete(name)));
+    } catch {}
   }
 
   async function logout() {
@@ -73,12 +131,7 @@
       button.setAttribute('aria-busy', 'true');
     });
     try { await authRequest({ method: 'DELETE' }); } catch {}
-    try {
-      sessionStorage.removeItem(RETURN_KEY);
-      sessionStorage.removeItem('medindex_labs_cache_v3');
-      localStorage.removeItem('barnat-registry-parts-v2');
-      localStorage.removeItem('barnat-registry-cached-at-v2');
-    } catch {}
+    await clearPrivateBrowserData();
     location.replace('/login.html');
   }
 
@@ -135,8 +188,40 @@
     banner.setAttribute('role', 'alert');
     banner.textContent = 'Sesioni ka skaduar. Po kthehesh te hyrja…';
     document.body.appendChild(banner);
+    clearOfflineLease();
     settleAuth(false, { reason: 'expired' });
     setTimeout(() => goToLogin('expired'), 700);
+  }
+
+  function activateOfflineLease(reason) {
+    const lease = readOfflineLease();
+    if (!lease) return false;
+    document.documentElement.classList.add('auth-ready', 'auth-offline');
+    document.documentElement.classList.remove('auth-checking');
+    settleAuth(true, { offline: true, reason, expiresAt: lease.expiresAt });
+    installLogoutWhenReady();
+    startOfflineRuntime();
+    installOnlineRevalidation();
+    return true;
+  }
+
+  async function revalidateOnlineSession() {
+    if (!document.documentElement.classList.contains('auth-offline') || !navigator.onLine) return;
+    try {
+      const response = await authRequest();
+      const payload = await response.json().catch(() => ({}));
+      if (!response.ok || !payload.authenticated) return showExpired();
+      saveOfflineLease(payload);
+      document.documentElement.classList.remove('auth-offline');
+      window.dispatchEvent(new CustomEvent('medindex:auth-revalidated', { detail: { authenticated: true } }));
+      window.MedIndexOffline?.warm?.();
+    } catch {}
+  }
+
+  function installOnlineRevalidation() {
+    if (onlineRevalidationInstalled) return;
+    onlineRevalidationInstalled = true;
+    window.addEventListener('online', revalidateOnlineSession);
   }
 
   window.fetch = async (...args) => {
@@ -150,12 +235,19 @@
     try {
       const response = await authRequest();
       const payload = await response.json().catch(() => ({}));
-      if (!response.ok || !payload.authenticated) return goToLogin('unauthenticated');
+      if (response.status === 401 || response.status === 403) return goToLogin('unauthenticated');
+      if (!response.ok || !payload.authenticated) {
+        if (response.status >= 500 && activateOfflineLease('server-unavailable')) return;
+        return goToLogin('unauthenticated');
+      }
+      const lease = saveOfflineLease(payload);
       document.documentElement.classList.add('auth-ready');
-      document.documentElement.classList.remove('auth-checking');
-      settleAuth(true, payload);
+      document.documentElement.classList.remove('auth-checking', 'auth-offline');
+      settleAuth(true, { ...payload, offline: false, expiresAt: lease.expiresAt });
       installLogoutWhenReady();
+      startOfflineRuntime();
     } catch (error) {
+      if (activateOfflineLease(error?.name === 'AbortError' ? 'timeout' : 'network')) return;
       goToLogin(error?.name === 'AbortError' ? 'timeout' : 'network');
     }
   }
