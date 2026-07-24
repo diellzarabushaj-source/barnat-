@@ -13,8 +13,10 @@
   <link rel="stylesheet" href="app-polish.css?v=20260723-2">
   <link rel="stylesheet" href="performance.css?v=20260723-1">
   <link rel="stylesheet" href="clean-medindex-ui.css?v=20260723-1">
+  <link rel="stylesheet" href="navigation-shell.css?v=20260724-2" data-medindex-navigation-css>
 </head>
 <body>
+  <a class="skip-link" href="#atcContent">Kalo te klasifikimi ATC</a>
   <div class="atc-shell">
     <nav class="atc-nav" aria-label="Navigimi kryesor">
       <a class="atc-nav-link" href="index.html"><span class="atc-nav-icon"><svg fill="none" viewBox="0 0 256 256" aria-hidden="true"><path d="M213 110 133 37a8 8 0 0 0-11 0l-79 73a8 8 0 0 0-3 6v92a8 8 0 0 0 8 8h160a8 8 0 0 0 8-8v-92a8 8 0 0 0-3-6Z" stroke="currentColor" stroke-width="16" stroke-linecap="round" stroke-linejoin="round"/></svg></span><span class="atc-nav-title">Barnat</span></a>
@@ -25,11 +27,11 @@
       <div class="atc-theme"><span>Tema</span><button id="themeButton" type="button" aria-label="Ndërro temën">☾</button></div>
     </nav>
 
-    <main class="atc-main">
+    <main class="atc-main" id="atcContent" tabindex="-1">
       <header class="atc-header"><p class="atc-kicker">MedIndex · Dr. Diellza Rabushaj</p><h1>Barnat sipas klasifikimit ATC</h1><p>Shfleto grupet, nën-grupet dhe barnat e regjistrit. Kartat, tabelat, modali dhe auditi përdorin të njëjtin dataset të kontrolluar.</p></header>
-      <div class="atc-toolbar" role="search">
+      <div class="atc-toolbar" role="search" aria-label="Kërkimi në klasifikimin ATC">
         <button class="atc-back" id="backButton" type="button" hidden>← Kthehu</button>
-        <div class="atc-search-wrap"><svg fill="none" viewBox="0 0 24 24" aria-hidden="true"><circle cx="10.5" cy="10.5" r="6.5" stroke="currentColor" stroke-width="2"/><path d="m15.5 15.5 5 5" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg><input class="atc-search" id="atcSearch" type="search" placeholder="Kërko barin, substancën, klasën ose kodin ATC..." autocomplete="off" enterkeyhint="search"></div>
+        <div class="atc-search-wrap"><svg fill="none" viewBox="0 0 24 24" aria-hidden="true"><circle cx="10.5" cy="10.5" r="6.5" stroke="currentColor" stroke-width="2"/><path d="m15.5 15.5 5 5" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg><input class="atc-search" id="atcSearch" type="search" placeholder="Kërko barin, substancën, klasën ose kodin ATC..." autocomplete="off" enterkeyhint="search" aria-label="Kërko në klasifikimin ATC"></div>
         <button class="atc-reset" id="resetButton" type="button">Grupet kryesore</button>
         <span class="atc-count" id="atcCount" aria-live="polite">Duke u ngarkuar...</span>
       </div>
@@ -38,7 +40,7 @@
         <div id="atcWorkspace" hidden>
           <div class="atc-section-head"><div><div class="atc-breadcrumb" id="breadcrumb"></div><h2 id="sectionTitle">Grupet kryesore ATC</h2><p id="sectionSubtitle"></p></div></div>
           <div class="atc-grid" id="cardGrid"></div>
-          <section class="atc-results" id="drugResults" hidden><div class="atc-table-wrap" tabindex="0"><table class="atc-table"><thead><tr><th>Emri tregtar</th><th>Substanca aktive</th><th>ATC</th><th>Klasa / Çka është</th><th>Fortësia</th><th>Forma</th></tr></thead><tbody id="drugTableBody"></tbody></table></div></section>
+          <section class="atc-results" id="drugResults" hidden><div class="atc-table-wrap" tabindex="0" aria-label="Barnat e grupit ATC"><table class="atc-table"><thead><tr><th>Emri tregtar</th><th>Substanca aktive</th><th>ATC</th><th>Klasa / Çka është</th><th>Fortësia</th><th>Forma</th></tr></thead><tbody id="drugTableBody"></tbody></table></div></section>
           <div class="atc-source-note" id="sourceNote"></div>
         </div>
       </section>
@@ -54,7 +56,8 @@
   <script src="classification-audit-view.js?v=20260723-2" defer></script>
   <script src="classification-info-v3.js?v=20260723-1" defer></script>
   <script src="classification-icons.js?v=20260723-2" defer></script>
+  <script src="navigation-consistency.js?v=20260724-2" defer></script>
   <script src="auth-client.js?v=20260723-3" defer></script>
-  <script src="app-stability.js?v=20260723-3" defer></script>
+  <script src="app-stability.js?v=20260724-2" defer></script>
 </body>
 </html>
