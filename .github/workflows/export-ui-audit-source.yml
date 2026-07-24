@@ -25,3 +25,4 @@ jobs:
             !node_modules/**
           include-hidden-files: true
           retention-days: 1
+      # Temporary audit export; removed before pull request.
