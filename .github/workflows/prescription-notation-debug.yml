@@ -11,21 +11,26 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      - name: Run notation test and capture output
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - name: Install dependencies
+        run: npm install --ignore-scripts --no-audit --no-fund
+      - name: Run complete tests and capture output
         shell: bash
         run: |
           set +e
-          node tests/prescription-notation-test.js > prescription-test.log 2>&1
-          echo $? > prescription-test.status
+          npm test > full-test.log 2>&1
+          echo $? > full-test.status
           set -e
-      - name: Upload notation output
+      - name: Upload complete output
         uses: actions/upload-artifact@v4
         with:
-          name: prescription-notation-debug
+          name: prescription-notation-full-debug
           path: |
-            prescription-test.log
-            prescription-test.status
+            full-test.log
+            full-test.status
           retention-days: 1
-      - name: Fail when notation test failed
+      - name: Fail when tests failed
         shell: bash
-        run: test "$(cat prescription-test.status)" = "0"
+        run: test "$(cat full-test.status)" = "0"
