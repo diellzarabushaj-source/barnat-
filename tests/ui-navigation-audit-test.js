@@ -67,6 +67,11 @@ const shell = read('navigation-shell.css');
   /height:100dvh/,
 ].forEach(pattern => assert.match(shell, pattern, `navigation-shell.css missing ${pattern}`));
 assert.match(shell, /rgba\(210,154,67,\.72\)[\s\S]*color-mix/, 'navigation CSS must include a fallback before color-mix');
+assert.match(shell, /html\.medindex-clean-ui body\.has-app-nav\{padding-left:var\(--medindex-nav-width\)!important\}/, 'clean pages need an explicit shell-width override');
+assert.match(shell, /html :is\(#appMenu,\.med-nav,\.atc-nav\)\{/, 'canonical navigation needs an ID-level specificity firewall');
+assert.match(shell, /html :is\(#appMenu,\.med-nav,\.atc-nav\) :is\(\.app-menu-link,\.med-nav-link,\.atc-nav-link\)\{/, 'navigation items need an ID-level specificity firewall');
+assert.match(shell, /html :is\(#appMenu,\.med-nav,\.atc-nav\)[\s\S]*width:var\(--medindex-nav-width\)!important/, 'specificity firewall must enforce the canonical width');
+assert.match(shell, /@media\(max-width:780px\)[\s\S]*html :is\(#appMenu,\.med-nav,\.atc-nav\)[\s\S]*flex-direction:row!important/, 'specificity firewall must protect the mobile bottom navigation');
 
 const navigation = read('navigation-consistency.js');
 assert.match(navigation, /ACTIVE_SELECTOR/);

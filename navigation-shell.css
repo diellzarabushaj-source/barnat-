@@ -231,3 +231,101 @@ body.has-app-nav{padding-left:var(--medindex-nav-width)!important}
   body.has-app-nav,.med-shell,.atc-shell{padding-left:0!important;padding-bottom:0!important}
   .atc-shell{display:block!important}
 }
+
+/* Specificity firewall: the legacy page styles also use !important with html/body qualifiers.
+   This final layer intentionally wins so every section gets the exact same navigation geometry. */
+html.medindex-clean-ui body.has-app-nav{padding-left:var(--medindex-nav-width)!important}
+html.medindex-clean-ui .med-shell{padding-left:var(--medindex-nav-width)!important}
+html.medindex-clean-ui .atc-shell{grid-template-columns:var(--medindex-nav-width) minmax(0,1fr)!important}
+
+html :is(#appMenu,.med-nav,.atc-nav){
+  position:fixed!important;
+  inset:0 auto 0 0!important;
+  z-index:80!important;
+  width:var(--medindex-nav-width)!important;
+  height:100vh!important;
+  height:100dvh!important;
+  padding:12px 8px!important;
+  display:flex!important;
+  flex-direction:column!important;
+  align-items:stretch!important;
+  gap:4px!important;
+  overflow-x:hidden!important;
+  overflow-y:auto!important;
+  background:linear-gradient(180deg,var(--medindex-nav-bg),var(--medindex-nav-bg-2))!important;
+  border:0!important;
+  border-right:1px solid rgba(210,154,67,.72)!important;
+  border-right:1px solid color-mix(in srgb,var(--medindex-nav-accent) 72%,transparent)!important;
+  box-shadow:7px 0 22px rgba(4,29,31,.12)!important;
+}
+html :is(#appMenu,.med-nav,.atc-nav) :is(.app-menu-link,.med-nav-link,.atc-nav-link){
+  flex:0 0 auto!important;
+  width:100%!important;
+  min-width:0!important;
+  min-height:58px!important;
+  margin:0!important;
+  padding:7px 3px!important;
+  gap:4px!important;
+  border:1px solid transparent!important;
+  border-radius:10px!important;
+  background:transparent!important;
+  color:var(--medindex-nav-text)!important;
+  transform:none!important;
+}
+html :is(#appMenu,.med-nav,.atc-nav) :is(.app-menu-link,.med-nav-link,.atc-nav-link):is(.active,[aria-current="page"]){
+  background:rgba(255,255,255,.13)!important;
+  border-color:rgba(255,255,255,.08)!important;
+  color:var(--medindex-nav-active)!important;
+  box-shadow:none!important;
+}
+html :is(#appMenu,.med-nav,.atc-nav) :is(.app-menu-icon,.med-nav-icon,.atc-nav-icon){width:28px!important;height:28px!important}
+html :is(#appMenu,.med-nav,.atc-nav) :is(.app-menu-icon,.med-nav-icon,.atc-nav-icon) svg{width:22px!important;height:22px!important}
+html :is(#appMenu,.med-nav,.atc-nav) :is(.app-menu-title,.med-nav-title,.atc-nav-title){font-size:.61rem!important;font-weight:720!important;line-height:1.08!important}
+html :is(#appMenu,.med-nav,.atc-nav) .auth-logout{margin-top:auto!important}
+html :is(#appMenu,.med-nav,.atc-nav) :is(.theme-control,.med-theme,.atc-theme){margin-top:2px!important}
+
+@media(max-width:780px){
+  html.medindex-clean-ui body.has-app-nav,html.medindex-clean-ui .med-shell,html.medindex-clean-ui .atc-shell{
+    padding-left:0!important;
+    padding-bottom:calc(var(--medindex-nav-mobile-height) + env(safe-area-inset-bottom))!important;
+  }
+  html.medindex-clean-ui .atc-shell{display:block!important}
+  html :is(#appMenu,.med-nav,.atc-nav){
+    inset:auto 0 0 0!important;
+    width:100%!important;
+    height:var(--medindex-nav-mobile-height)!important;
+    height:calc(var(--medindex-nav-mobile-height) + env(safe-area-inset-bottom))!important;
+    padding:5px 6px calc(5px + env(safe-area-inset-bottom))!important;
+    flex-direction:row!important;
+    align-items:stretch!important;
+    justify-content:flex-start!important;
+    gap:3px!important;
+    overflow-x:auto!important;
+    overflow-y:hidden!important;
+    border-right:0!important;
+    border-top:1px solid rgba(210,154,67,.78)!important;
+    border-top:1px solid color-mix(in srgb,var(--medindex-nav-accent) 78%,transparent)!important;
+  }
+  html :is(#appMenu,.med-nav,.atc-nav) :is(.app-menu-link,.med-nav-link,.atc-nav-link){
+    flex:0 0 62px!important;
+    width:62px!important;
+    min-width:62px!important;
+    min-height:54px!important;
+    padding:4px 2px!important;
+    border-radius:9px!important;
+  }
+  html :is(#appMenu,.med-nav,.atc-nav) :is(.app-menu-icon,.med-nav-icon,.atc-nav-icon){width:26px!important;height:26px!important}
+  html :is(#appMenu,.med-nav,.atc-nav) :is(.app-menu-icon,.med-nav-icon,.atc-nav-icon) svg{width:21px!important;height:21px!important}
+  html :is(#appMenu,.med-nav,.atc-nav) :is(.app-menu-title,.med-nav-title,.atc-nav-title){font-size:.57rem!important}
+  html :is(#appMenu,.med-nav,.atc-nav) .auth-logout{margin-top:0!important}
+  html :is(#appMenu,.med-nav,.atc-nav) :is(.theme-control,.med-theme,.atc-theme){display:none!important}
+}
+
+@media(max-width:420px){
+  html :is(#appMenu,.med-nav,.atc-nav) :is(.app-menu-link,.med-nav-link,.atc-nav-link){flex-basis:59px!important;width:59px!important;min-width:59px!important}
+}
+
+@media print{
+  html :is(#appMenu,.med-nav,.atc-nav){display:none!important}
+  html.medindex-clean-ui body.has-app-nav,html.medindex-clean-ui .med-shell,html.medindex-clean-ui .atc-shell{padding-left:0!important;padding-bottom:0!important}
+}
