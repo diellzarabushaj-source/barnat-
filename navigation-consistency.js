@@ -4,6 +4,7 @@
   const FAVORITES_KEY = 'regjistriBarnave_favoritet_v1';
   const NAV_SELECTOR = '#appMenu,.med-nav,.atc-nav';
   const ITEM_SELECTOR = '.app-menu-link,.med-nav-link,.atc-nav-link,.auth-logout';
+  const ACTIVE_SELECTOR = '.app-menu-link.active,.med-nav-link.active,.atc-nav-link.active,[aria-current="page"]';
   const PATH_TARGETS = new Map([
     ['/', 'home'],
     ['/index.html', 'home'],
@@ -87,7 +88,9 @@
   }
 
   function markActive(nav) {
+    if (!nav) return;
     const target = currentTarget();
+    const override = nav.id === 'appMenu' ? nav.dataset.medindexActiveOverride || '' : '';
     const hashTarget = location.pathname.endsWith('index.html') || location.pathname === '/'
       ? location.hash.toLocaleLowerCase('sq')
       : '';
@@ -97,8 +100,7 @@
       const itemId = item.dataset.nav || item.dataset.medicalNav || item.dataset.medindexNav || '';
       const isHashActive = hashTarget === '#favoritet' && itemId === 'favorites'
         || hashTarget === '#kerko' && itemId === 'search';
-      const isPageActive = !isHashActive && itemId === target;
-      const active = isHashActive || isPageActive;
+      const active = override ? itemId === override : (isHashActive || (!isHashActive && itemId === target));
       item.classList.toggle('active', active);
       if (item.matches('a[href]')) {
         if (active && ['home', 'classification', 'icd', 'labs', 'protocols'].includes(itemId)) item.setAttribute('aria-current', 'page');
@@ -108,7 +110,7 @@
   }
 
   function normalizeAppMenu(menu) {
-    const protocol = menu.querySelector('[data-nav="protocols"]');
+    const protocol = menu.querySelector('[data-nav="protocols"],[data-medical-nav="protocols"]');
     if (protocol) {
       const label = protocol.querySelector('.app-menu-title');
       if (label) label.textContent = 'Recetat';
@@ -173,7 +175,7 @@
   function centerActiveItem() {
     if (!matchMedia('(max-width: 780px)').matches) return;
     document.querySelectorAll(NAV_SELECTOR).forEach(nav => {
-      const active = nav.querySelector(`${ITEM_SELECTOR}.active,[aria-current="page"]`);
+      const active = nav.querySelector(ACTIVE_SELECTOR);
       if (!active) return;
       const target = Math.max(0, active.offsetLeft - ((nav.clientWidth - active.offsetWidth) / 2));
       const reduced = matchMedia('(prefers-reduced-motion: reduce)').matches;
@@ -185,15 +187,32 @@
     const hash = location.hash.toLocaleLowerCase('sq');
     const target = hash === '#favoritet' ? 'favorites' : hash === '#kerko' ? 'search' : '';
     if (!target || !['/', '/index.html'].includes(location.pathname)) return;
-    const button = document.querySelector(`#appMenu [data-nav="${target}"]`);
+    const menu = document.getElementById('appMenu');
+    const button = menu?.querySelector(`[data-nav="${target}"]`);
     if (button) {
+      menu.dataset.medindexActiveOverride = target;
       button.click();
       history.replaceState(null, '', `${location.pathname}${location.search}`);
-      markActive(document.getElementById('appMenu'));
-      centerActiveItem();
+      requestAnimationFrame(() => {
+        markActive(menu);
+        centerActiveItem();
+      });
       return;
     }
     if (hashAttempts++ < 80) setTimeout(activateHashTarget, 50);
+  }
+
+  function trackAppMenuState(event) {
+    const item = event.target.closest?.('#appMenu .app-menu-link');
+    if (!item) return;
+    const menu = item.closest('#appMenu');
+    const id = item.dataset.nav || item.dataset.medicalNav || '';
+    if (['favorites', 'search'].includes(id)) menu.dataset.medindexActiveOverride = id;
+    else delete menu.dataset.medindexActiveOverride;
+    requestAnimationFrame(() => {
+      markActive(menu);
+      centerActiveItem();
+    });
   }
 
   function keyboardNavigation(event) {
@@ -202,7 +221,8 @@
     if (!nav) return;
     const items = [...nav.querySelectorAll(ITEM_SELECTOR)].filter(item => !item.hidden && !item.disabled && item.offsetParent !== null);
     if (!items.length) return;
-    const current = Math.max(0, items.indexOf(document.activeElement));
+    const focusedIndex = items.indexOf(document.activeElement);
+    const current = focusedIndex >= 0 ? focusedIndex : 0;
     let next = current;
     if (event.key === 'Home') next = 0;
     else if (event.key === 'End') next = items.length - 1;
@@ -215,6 +235,7 @@
   function init() {
     normalizeNavigation();
     activateHashTarget();
+    document.addEventListener('click', trackAppMenuState);
     document.addEventListener('keydown', keyboardNavigation);
     window.addEventListener('storage', event => {
       if (event.key === FAVORITES_KEY) updateFavoriteCounts();
