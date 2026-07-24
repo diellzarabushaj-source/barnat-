@@ -76,16 +76,19 @@ async function expectTouchTarget(locator, minimum = 44) {
 
 async function expectDrawerCycle(page) {
   const toggle = page.locator('[data-mi-sidebar-toggle]').first();
+  const sidebar = page.locator('.mi-sidebar');
   await expectTouchTarget(toggle);
   await toggle.click();
   await expect(page.locator('body')).toHaveClass(/mi-sidebar-open/);
-  await expect(page.locator('.mi-sidebar')).toHaveAttribute('aria-hidden', 'false');
-  const drawer = await page.locator('.mi-sidebar').boundingBox();
+  await expect(sidebar).toHaveAttribute('aria-hidden', 'false');
+  await expect.poll(async () => (await sidebar.boundingBox())?.x ?? -999, { timeout:2000 }).toBeGreaterThanOrEqual(-1);
+  const drawer = await sidebar.boundingBox();
   expectInsideViewport(drawer, { width:(await page.viewportSize()).width, height:(await page.viewportSize()).height });
   expect(drawer.width).toBeLessThanOrEqual((await page.viewportSize()).width - 43);
   expect(await page.locator('.mi-workspace').evaluate(node => node.inert)).toBe(true);
   await page.locator('[data-mi-sidebar-overlay]').click({ position:{ x:Math.max(1, (await page.viewportSize()).width - 8), y:80 } });
   await expect(page.locator('body')).not.toHaveClass(/mi-sidebar-open/);
+  await expect.poll(async () => (await sidebar.boundingBox())?.right ?? 999, { timeout:2000 }).toBeLessThanOrEqual(1);
   expect(await page.locator('.mi-workspace').evaluate(node => node.inert)).toBe(false);
 }
 
