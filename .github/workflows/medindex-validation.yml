@@ -38,6 +38,9 @@ jobs:
             section-icons.js
             classification-icons.js
             prescription-format-core.js
+            prescription-notation.js
+            prescription-registry-bridge.js
+            dosage-engine.js
             signature-templates.js
             recetat.js
             api/gemini-prescription.js
@@ -66,7 +69,10 @@ jobs:
           test -f signature-templates.css
           test -f signature-templates.js
           test -f tests/signature-templates-test.js
+          test -f tests/prescription-notation-test.js
           test -f prescription-format-core.js
+          test -f prescription-notation.js
+          test -f prescription-registry-bridge.js
           test -f recetat.js
           grep -q 'id="protocolsBtn"' index.html
           grep -q "href = '/recetat.html'" main-navigation-extension.js
@@ -79,6 +85,7 @@ jobs:
           grep -q '@signatura' recetat.html
           grep -q 'signature-templates.css' recetat.html
           grep -q 'signature-templates.js' recetat.html
+          grep -q 'prescription-registry-bridge.js' recetat.html
           grep -q 'Unguentum / krem' signature-templates.js
           grep -q 'Administrohet IV si infuzion' signature-templates.js
           grep -q 'prescription-format-core.js' recetat.html
@@ -92,6 +99,11 @@ jobs:
           grep -q 'sharedSignature' prescription-format-core.js
           grep -q 'generatedReviewConfirmed' recetat.js
           grep -q 'medindexPrescriptionSelection' recetat.js
+          grep -q 'Si të shënohet në recetë' app-parts/part-01.txt
+          grep -q 'PRESCRIPTION_SHEET_ID' api/registry.js
+          grep -q 'export?format=csv' api/registry.js
+          grep -q 'packagingSummary' api/drug-search.js
+          grep -q 'prescriptionLine' api/drug-search.js
           ! grep -q 'protocolOverlay' index.html
           ! grep -q 'dosage-auto-apply.js' index.html
           ! grep -q 'prescription-review.js' index.html
