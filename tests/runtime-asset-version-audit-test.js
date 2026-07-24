@@ -18,7 +18,8 @@ assert.match(index, /app\.js\?v=clinical-audit-v2/, 'index.html: registry bootst
 const auth = read('auth-client.js');
 assert.match(auth, /offline-runtime\.js\?v=clinical-audit-v2/, 'auth client must load the current offline runtime');
 const runtime = read('offline-runtime.js');
-assert.match(runtime, /clinical-workflow\.js\?v=clinical-audit-v2/, 'offline runtime must load the current clinical workflow');
-assert.match(runtime, /sw\.js\?v=clinical-audit-v2/, 'offline runtime must register the current service worker');
+assert.match(runtime, /VERSION = 'clinical-audit-v2'/, 'offline runtime version is stale');
+assert.match(runtime, /CLINICAL_WORKFLOW_URL = `\/clinical-workflow\.js\?v=\$\{VERSION\}`/, 'offline runtime must version the clinical workflow');
+assert.match(runtime, /SERVICE_WORKER_URL = `\/sw\.js\?v=\$\{VERSION\}`/, 'offline runtime must version the service worker');
 
 console.log('Clinical runtime cache-version audit passed.');
