@@ -1,0 +1,29 @@
+{
+  "id": "/index.html",
+  "name": "MedIndex — Clinical Workspace",
+  "short_name": "MedIndex",
+  "description": "Regjistri klinik offline-first për barnat, ATC, ICD, analizat, dozologjinë, protokollet dhe recetat.",
+  "lang": "sq",
+  "dir": "ltr",
+  "start_url": "/index.html?source=pwa",
+  "scope": "/",
+  "display": "standalone",
+  "display_override": ["window-controls-overlay", "standalone", "minimal-ui"],
+  "background_color": "#f8fafc",
+  "theme_color": "#465fff",
+  "categories": ["medical", "productivity", "utilities"],
+  "icons": [
+    {
+      "src": "/medindex-icon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    }
+  ],
+  "shortcuts": [
+    { "name": "Barnat", "short_name": "Barnat", "url": "/index.html", "icons": [{ "src": "/medindex-icon.svg", "sizes": "any", "type": "image/svg+xml" }] },
+    { "name": "ICD", "short_name": "ICD", "url": "/icd.html", "icons": [{ "src": "/medindex-icon.svg", "sizes": "any", "type": "image/svg+xml" }] },
+    { "name": "Dozologjia", "short_name": "Doza", "url": "/dozologjia.html", "icons": [{ "src": "/medindex-icon.svg", "sizes": "any", "type": "image/svg+xml" }] },
+    { "name": "Recetë e re", "short_name": "Recetë", "url": "/recetat.html", "icons": [{ "src": "/medindex-icon.svg", "sizes": "any", "type": "image/svg+xml" }] }
+  ]
+}
