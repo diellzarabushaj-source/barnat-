@@ -31,7 +31,9 @@
   let headObserver = null;
   let resizeObserver = null;
   let paletteObserver = null;
+  let drugPickerObserver = null;
   let paletteListenersInstalled = false;
+  let drugPickerListenersInstalled = false;
 
   function orderStylesheets() {
     headFrame = 0;
@@ -137,10 +139,10 @@
     layoutFrame = requestAnimationFrame(markScrollableContainers);
   }
 
-  function ensurePaletteViewportStyles() {
-    if (document.getElementById('miCommandPaletteViewportStyles')) return;
+  function ensureViewportStyles() {
+    if (document.getElementById('miClinicalViewportStyles')) return;
     const style = document.createElement('style');
-    style.id = 'miCommandPaletteViewportStyles';
+    style.id = 'miClinicalViewportStyles';
     style.textContent = `
       .mi-command-palette{
         position:fixed!important;
@@ -151,6 +153,35 @@
         max-width:calc(100vw - 24px)!important;
         max-height:min(430px,calc(100dvh - 24px))!important;
         contain:layout paint;
+      }
+      #rxDrugPopover[data-mi-viewport-picker="1"]{
+        position:fixed!important;
+        z-index:2200!important;
+        top:50%!important;
+        left:50%!important;
+        right:auto!important;
+        bottom:auto!important;
+        width:min(640px,calc(100vw - 24px))!important;
+        max-width:calc(100vw - 24px)!important;
+        max-height:calc(100dvh - 24px)!important;
+        margin:0!important;
+        padding:16px!important;
+        transform:translate(-50%,-50%)!important;
+        display:flex;
+        flex-direction:column;
+        overflow:hidden!important;
+        border-radius:16px!important;
+        box-shadow:0 26px 80px rgba(16,24,40,.28)!important;
+      }
+      #rxDrugPopover[data-mi-viewport-picker="1"][hidden]{display:none!important}
+      #rxDrugPopover[data-mi-viewport-picker="1"] .rx-drug-results{
+        min-height:0;
+        max-height:min(480px,calc(100dvh - 150px))!important;
+        overflow:auto!important;
+        overscroll-behavior:contain;
+      }
+      @media(max-width:760px){
+        #rxDrugPopover[data-mi-viewport-picker="1"]{top:12px!important;transform:translateX(-50%)!important;max-height:calc(100dvh - 24px)!important}
       }
     `;
     document.head.appendChild(style);
@@ -166,9 +197,7 @@
     const gutter = 12;
     const inputVisible = rect.bottom > gutter && rect.top < window.innerHeight - gutter && rect.right > gutter && rect.left < window.innerWidth - gutter;
     const availableWidth = Math.max(280, window.innerWidth - gutter * 2);
-    const width = inputVisible
-      ? Math.min(Math.max(280, rect.width), availableWidth)
-      : Math.min(520, availableWidth);
+    const width = inputVisible ? Math.min(Math.max(280, rect.width), availableWidth) : Math.min(520, availableWidth);
     const left = inputVisible
       ? Math.min(Math.max(gutter, rect.left), Math.max(gutter, window.innerWidth - width - gutter))
       : Math.max(gutter, Math.round((window.innerWidth - width) / 2));
@@ -200,7 +229,7 @@
   }
 
   function bindCommandPaletteViewport() {
-    ensurePaletteViewportStyles();
+    ensureViewportStyles();
     const input = document.getElementById('miGlobalSearch');
     const palette = document.getElementById('miCommandPalette');
     if (!input || !palette) return false;
@@ -225,6 +254,50 @@
     return true;
   }
 
+  function closePrescriptionDrugPicker({ restoreFocus = false } = {}) {
+    const picker = document.getElementById('rxDrugPopover');
+    if (!picker || picker.hidden) return;
+    picker.hidden = true;
+    picker.setAttribute('aria-hidden', 'true');
+    picker.setAttribute('aria-modal', 'false');
+    if (restoreFocus) document.querySelector('[data-rx-command="drug"]')?.focus({ preventScroll:true });
+  }
+
+  function syncPrescriptionDrugPicker() {
+    const picker = document.getElementById('rxDrugPopover');
+    if (!picker || !document.body) return false;
+    if (picker.parentElement !== document.body) document.body.appendChild(picker);
+    picker.dataset.miViewportPicker = '1';
+    if (picker.hidden) {
+      picker.setAttribute('aria-hidden', 'true');
+      picker.setAttribute('aria-modal', 'false');
+    } else {
+      picker.setAttribute('aria-hidden', 'false');
+      picker.setAttribute('aria-modal', 'true');
+      requestAnimationFrame(() => document.getElementById('rxDrugSearch')?.focus({ preventScroll:true }));
+    }
+
+    if (picker.dataset.miPickerBound !== '1') {
+      picker.dataset.miPickerBound = '1';
+      drugPickerObserver?.disconnect();
+      drugPickerObserver = new MutationObserver(syncPrescriptionDrugPicker);
+      drugPickerObserver.observe(picker, { attributes:true, attributeFilter:['hidden'] });
+    }
+
+    if (!drugPickerListenersInstalled) {
+      drugPickerListenersInstalled = true;
+      document.addEventListener('keydown', event => {
+        if (event.key !== 'Escape') return;
+        const openPicker = document.getElementById('rxDrugPopover');
+        if (!openPicker || openPicker.hidden) return;
+        event.preventDefault();
+        event.stopImmediatePropagation();
+        closePrescriptionDrugPicker({ restoreFocus:true });
+      }, true);
+    }
+    return true;
+  }
+
   function syncResponsiveState() {
     const body = document.body;
     if (!body) return;
@@ -234,6 +307,7 @@
     scheduleLayoutAudit();
     scheduleNavigation();
     schedulePalettePosition();
+    syncPrescriptionDrugPicker();
   }
 
   function installObservers() {
@@ -242,12 +316,10 @@
       navObserver = new MutationObserver(scheduleNavigation);
       navObserver.observe(nav, { childList:true, subtree:true, attributes:true, attributeFilter:['class', 'style', 'aria-current'] });
     }
-
     if (!headObserver) {
       headObserver = new MutationObserver(scheduleStylesheetOrder);
       headObserver.observe(document.head, { childList:true });
     }
-
     if ('ResizeObserver' in window && !resizeObserver) {
       resizeObserver = new ResizeObserver(() => {
         scheduleLayoutAudit();
@@ -258,13 +330,13 @@
       if (main) resizeObserver.observe(main);
       if (slot) resizeObserver.observe(slot);
     }
-
     const pageSlot = document.querySelector('.mi-page-slot');
     if (pageSlot && !pageSlot.dataset.miProfessionalObserved) {
       pageSlot.dataset.miProfessionalObserved = '1';
       const observer = new MutationObserver(() => {
         scheduleLayoutAudit();
         bindCommandPaletteViewport();
+        syncPrescriptionDrugPicker();
       });
       observer.observe(pageSlot, { childList:true, subtree:true });
     }
@@ -276,20 +348,26 @@
     normalizeNavigation();
     resetRootHorizontalOffset();
     markScrollableContainers();
+    ensureViewportStyles();
     installObservers();
     bindCommandPaletteViewport();
+    syncPrescriptionDrugPicker();
     syncResponsiveState();
     window.dispatchEvent(new CustomEvent('medindex:professional-ui-ready', { detail:{ page:pageKey, version:PROFESSIONAL_VERSION } }));
   }
 
   window.addEventListener('medindex:tailadmin-ready', stabilize, { once:true });
   window.addEventListener('medindex:auth-ready', scheduleNavigation);
-  window.addEventListener('medindex:clinical-workflow-ready', bindCommandPaletteViewport);
+  window.addEventListener('medindex:clinical-workflow-ready', () => {
+    bindCommandPaletteViewport();
+    syncPrescriptionDrugPicker();
+  });
   window.addEventListener('pageshow', () => {
     resetRootHorizontalOffset();
     scheduleNavigation();
     scheduleLayoutAudit();
     bindCommandPaletteViewport();
+    syncPrescriptionDrugPicker();
   }, { passive:true });
   window.addEventListener('resize', () => requestAnimationFrame(syncResponsiveState), { passive:true });
   window.addEventListener('orientationchange', () => setTimeout(syncResponsiveState, 80), { passive:true });
