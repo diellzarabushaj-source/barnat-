@@ -17,7 +17,7 @@ function unitForCount(count, plural) {
 
 function normalizeStrength(value) {
   return clean(value)
-    .replace(/(\d)\s*(mg|mcg|µg|ug|g|ml|mL|l|L|IU|UI|NJ|%)(?=\b|\/)/gi, '$1 $2')
+    .replace(/(\d)\s*(mg|mcg|µg|ug|g|ml|mL|l|L|IU|UI|NJ|%)(?=\b|\/|$)/gi, '$1 $2')
     .replace(/\bml\b/gi, 'mL')
     .replace(/\s*\/\s*/g, '/')
     .replace(/\s*\+\s*/g, ' + ')
