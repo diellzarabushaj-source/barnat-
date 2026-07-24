@@ -1,6 +1,7 @@
 (() => {
   'use strict';
 
+  const THEME_KEY = 'regjistriBarnave_theme_v1';
   const MOBILE_BREAKPOINT = 1024;
   const PAGE_META = {
     '/dozologjia.html': ['Dozologjia'],
@@ -82,6 +83,7 @@
     script.dataset.medindexTailadminLegacy = '1';
     script.addEventListener('load', () => {
       document.documentElement.dataset.miShellVersion = SHELL_VERSION;
+      document.documentElement.dataset.miThemeKey = THEME_KEY;
       ensureStylesheetLast();
       queueMicrotask(ensureStylesheetLast);
       warmLegacyAsset();
