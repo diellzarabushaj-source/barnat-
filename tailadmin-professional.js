@@ -24,9 +24,12 @@
   let headFrame = 0;
   let navFrame = 0;
   let layoutFrame = 0;
+  let paletteFrame = 0;
   let navObserver = null;
   let headObserver = null;
   let resizeObserver = null;
+  let paletteObserver = null;
+  let paletteListenersInstalled = false;
 
   function orderStylesheets() {
     headFrame = 0;
@@ -147,6 +150,77 @@
     layoutFrame = requestAnimationFrame(markScrollableContainers);
   }
 
+  function ensurePaletteViewportStyles() {
+    if (document.getElementById('miCommandPaletteViewportStyles')) return;
+    const style = document.createElement('style');
+    style.id = 'miCommandPaletteViewportStyles';
+    style.textContent = `
+      .mi-command-palette{
+        position:fixed!important;
+        top:var(--mi-command-top,74px)!important;
+        left:var(--mi-command-left,12px)!important;
+        right:auto!important;
+        width:var(--mi-command-width,min(430px,calc(100vw - 24px)))!important;
+        max-width:calc(100vw - 24px)!important;
+        max-height:min(430px,calc(100dvh - 24px))!important;
+        contain:layout paint;
+      }
+    `;
+    document.head.appendChild(style);
+  }
+
+  function positionCommandPalette() {
+    paletteFrame = 0;
+    const input = document.getElementById('miGlobalSearch');
+    const palette = document.getElementById('miCommandPalette');
+    if (!input || !palette || palette.hidden) return;
+
+    const rect = input.getBoundingClientRect();
+    const gutter = 12;
+    const availableWidth = Math.max(280, window.innerWidth - gutter * 2);
+    const width = Math.min(Math.max(280, rect.width), availableWidth);
+    const left = Math.min(Math.max(gutter, rect.left), Math.max(gutter, window.innerWidth - width - gutter));
+    const estimatedHeight = Math.min(430, Math.max(180, window.innerHeight * 0.7));
+    const roomBelow = window.innerHeight - rect.bottom - 8;
+    const top = roomBelow >= 180
+      ? rect.bottom + 8
+      : Math.max(gutter, rect.top - estimatedHeight - 8);
+
+    palette.style.setProperty('--mi-command-left', `${Math.round(left)}px`);
+    palette.style.setProperty('--mi-command-top', `${Math.round(top)}px`);
+    palette.style.setProperty('--mi-command-width', `${Math.round(width)}px`);
+  }
+
+  function schedulePalettePosition() {
+    if (paletteFrame) return;
+    paletteFrame = requestAnimationFrame(positionCommandPalette);
+  }
+
+  function bindCommandPaletteViewport() {
+    ensurePaletteViewportStyles();
+    const input = document.getElementById('miGlobalSearch');
+    const palette = document.getElementById('miCommandPalette');
+    if (!input || !palette) return false;
+
+    if (!palette.dataset.miViewportBound) {
+      palette.dataset.miViewportBound = '1';
+      paletteObserver?.disconnect();
+      paletteObserver = new MutationObserver(schedulePalettePosition);
+      paletteObserver.observe(palette, { attributes: true, attributeFilter: ['hidden'], childList: true, subtree: true });
+      input.addEventListener('focus', schedulePalettePosition, { passive: true });
+      input.addEventListener('input', schedulePalettePosition, { passive: true });
+    }
+
+    if (!paletteListenersInstalled) {
+      paletteListenersInstalled = true;
+      window.addEventListener('resize', schedulePalettePosition, { passive: true });
+      document.addEventListener('scroll', schedulePalettePosition, { passive: true, capture: true });
+    }
+
+    schedulePalettePosition();
+    return true;
+  }
+
   function syncResponsiveState() {
     const body = document.body;
     if (!body) return;
@@ -157,6 +231,7 @@
     resetRootHorizontalOffset();
     scheduleLayoutAudit();
     scheduleNavigation();
+    schedulePalettePosition();
   }
 
   function installObservers() {
@@ -172,7 +247,10 @@
     }
 
     if ('ResizeObserver' in window && !resizeObserver) {
-      resizeObserver = new ResizeObserver(scheduleLayoutAudit);
+      resizeObserver = new ResizeObserver(() => {
+        scheduleLayoutAudit();
+        schedulePalettePosition();
+      });
       const main = document.querySelector('.mi-main');
       const slot = document.querySelector('.mi-page-slot');
       if (main) resizeObserver.observe(main);
@@ -182,7 +260,10 @@
     const pageSlot = document.querySelector('.mi-page-slot');
     if (pageSlot && !pageSlot.dataset.miProfessionalObserved) {
       pageSlot.dataset.miProfessionalObserved = '1';
-      const observer = new MutationObserver(scheduleLayoutAudit);
+      const observer = new MutationObserver(() => {
+        scheduleLayoutAudit();
+        bindCommandPaletteViewport();
+      });
       observer.observe(pageSlot, { childList: true, subtree: true });
     }
   }
@@ -194,16 +275,19 @@
     resetRootHorizontalOffset();
     markScrollableContainers();
     installObservers();
+    bindCommandPaletteViewport();
     syncResponsiveState();
     window.dispatchEvent(new CustomEvent('medindex:professional-ui-ready', { detail: { page: pageKey } }));
   }
 
   window.addEventListener('medindex:tailadmin-ready', stabilize, { once: true });
   window.addEventListener('medindex:auth-ready', scheduleNavigation);
+  window.addEventListener('medindex:clinical-workflow-ready', bindCommandPaletteViewport);
   window.addEventListener('pageshow', () => {
     resetRootHorizontalOffset();
     scheduleNavigation();
     scheduleLayoutAudit();
+    bindCommandPaletteViewport();
   }, { passive: true });
   window.addEventListener('resize', () => requestAnimationFrame(syncResponsiveState), { passive: true });
   window.addEventListener('orientationchange', () => setTimeout(syncResponsiveState, 80), { passive: true });
