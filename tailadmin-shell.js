@@ -179,7 +179,7 @@
       <section class="mi-workspace">
         <header class="mi-topbar">
           <div class="mi-topbar-leading">
-            <button class="mi-icon-button mi-sidebar-toggle" type="button" data-mi-sidebar-toggle aria-label="Hap ose mbyll menynë">${ICONS.menu}</button>
+            <button class="mi-icon-button mi-sidebar-toggle" type="button" data-mi-sidebar-toggle aria-controls="miSidebar" aria-expanded="true" aria-label="Hap ose mbyll menynë">${ICONS.menu}</button>
             <a class="mi-mobile-brand" href="/index.html"><span class="mi-brand-mark">M<span>+</span></span><strong>MedIndex</strong></a>
             <div class="mi-global-search">
               <span>${ICONS.search}</span>
@@ -264,21 +264,69 @@
 
   function installInteractions(app) {
     const body = document.body;
-    const collapsed = readBoolean(COLLAPSE_KEY, false);
-    body.classList.toggle('mi-sidebar-collapsed', collapsed && innerWidth >= MOBILE_BREAKPOINT);
+    const sidebar = app.querySelector('#miSidebar');
+    const sidebarScroll = app.querySelector('.mi-sidebar-scroll');
+    const sidebarToggles = [...app.querySelectorAll('[data-mi-sidebar-toggle]')];
+    const sidebarClose = app.querySelector('[data-mi-sidebar-close]');
+    let resizeFrame = 0;
+    let lastMobileToggle = null;
 
-    const closeMobile = () => body.classList.remove('mi-sidebar-open');
-    app.querySelectorAll('[data-mi-sidebar-toggle]').forEach(button => button.addEventListener('click', () => {
-      if (innerWidth < MOBILE_BREAKPOINT) body.classList.toggle('mi-sidebar-open');
-      else {
-        const next = !body.classList.contains('mi-sidebar-collapsed');
-        body.classList.toggle('mi-sidebar-collapsed', next);
-        try { localStorage.setItem(COLLAPSE_KEY, String(next)); } catch {}
+    const isMobile = () => innerWidth < MOBILE_BREAKPOINT;
+
+    const updateSidebarA11y = () => {
+      const mobile = isMobile();
+      const open = body.classList.contains('mi-sidebar-open');
+      const collapsed = body.classList.contains('mi-sidebar-collapsed');
+      sidebarToggles.forEach(button => button.setAttribute('aria-expanded', String(mobile ? open : !collapsed)));
+      if (sidebar) sidebar.setAttribute('aria-hidden', String(mobile && !open));
+    };
+
+    const setMobileOpen = (open, returnFocus = false) => {
+      body.classList.toggle('mi-sidebar-open', Boolean(open));
+      updateSidebarA11y();
+      if (open) requestAnimationFrame(() => sidebarClose?.focus({ preventScroll: true }));
+      else if (returnFocus && lastMobileToggle?.isConnected) lastMobileToggle.focus({ preventScroll: true });
+    };
+
+    const resetSidebarPosition = () => {
+      if (!sidebarScroll) return;
+      sidebarScroll.scrollTop = 0;
+      requestAnimationFrame(() => {
+        const active = sidebarScroll.querySelector('.mi-menu-item[aria-current="page"]');
+        if (!active) return;
+        const viewport = sidebarScroll.getBoundingClientRect();
+        const item = active.getBoundingClientRect();
+        if (item.top < viewport.top || item.bottom > viewport.bottom) active.scrollIntoView({ block: 'nearest' });
+      });
+    };
+
+    const syncResponsiveSidebar = () => {
+      if (isMobile()) {
+        body.classList.remove('mi-sidebar-collapsed');
+        setMobileOpen(false);
+      } else {
+        body.classList.remove('mi-sidebar-open');
+        body.classList.toggle('mi-sidebar-collapsed', readBoolean(COLLAPSE_KEY, false));
+        updateSidebarA11y();
       }
+      resetSidebarPosition();
+    };
+
+    sidebarToggles.forEach(button => button.addEventListener('click', () => {
+      if (isMobile()) {
+        lastMobileToggle = button;
+        setMobileOpen(!body.classList.contains('mi-sidebar-open'));
+        return;
+      }
+      const next = !body.classList.contains('mi-sidebar-collapsed');
+      body.classList.toggle('mi-sidebar-collapsed', next);
+      try { localStorage.setItem(COLLAPSE_KEY, String(next)); } catch {}
+      updateSidebarA11y();
+      resetSidebarPosition();
     }));
-    app.querySelector('[data-mi-sidebar-close]')?.addEventListener('click', closeMobile);
-    app.querySelector('[data-mi-sidebar-overlay]')?.addEventListener('click', closeMobile);
-    app.querySelectorAll('.mi-menu-item[href]').forEach(link => link.addEventListener('click', closeMobile));
+    sidebarClose?.addEventListener('click', () => setMobileOpen(false, true));
+    app.querySelector('[data-mi-sidebar-overlay]')?.addEventListener('click', () => setMobileOpen(false, true));
+    app.querySelectorAll('.mi-menu-item[href]').forEach(link => link.addEventListener('click', () => setMobileOpen(false)));
 
     app.querySelectorAll('[data-mi-theme-toggle]').forEach(button => button.addEventListener('click', () => {
       applyTheme(document.documentElement.dataset.theme === 'dark' ? 'light' : 'dark');
@@ -301,14 +349,16 @@
       } else if (!typing && event.key === '/') {
         event.preventDefault();
         globalSearch?.focus();
-      } else if (event.key === 'Escape') {
-        closeMobile();
+      } else if (event.key === 'Escape' && body.classList.contains('mi-sidebar-open')) {
+        setMobileOpen(false, true);
       }
     });
 
     addEventListener('resize', () => {
-      if (innerWidth >= MOBILE_BREAKPOINT) closeMobile();
+      if (resizeFrame) cancelAnimationFrame(resizeFrame);
+      resizeFrame = requestAnimationFrame(syncResponsiveSidebar);
     }, { passive: true });
+    addEventListener('pageshow', resetSidebarPosition, { passive: true });
 
     window.addEventListener('storage', event => {
       if (event.key === 'regjistriBarnave_favoritet_v1') {
@@ -316,7 +366,10 @@
         if (badge) badge.textContent = String(favoriteCount());
       }
       if (event.key === THEME_KEY && ['dark', 'light'].includes(event.newValue)) applyTheme(event.newValue, false);
+      if (event.key === COLLAPSE_KEY && !isMobile()) syncResponsiveSidebar();
     });
+
+    syncResponsiveSidebar();
   }
 
   function ensureStylesheetLast() {
@@ -344,9 +397,8 @@
     installInteractions(app);
 
     ensureStylesheetLast();
-    const headObserver = new MutationObserver(ensureStylesheetLast);
+    const headObserver = new MutationObserver(() => queueMicrotask(ensureStylesheetLast));
     headObserver.observe(document.head, { childList: true });
-    setTimeout(() => headObserver.disconnect(), 12000);
 
     document.querySelector('.skip-link')?.setAttribute('href', '#miMain');
     window.dispatchEvent(new CustomEvent('medindex:tailadmin-ready'));
