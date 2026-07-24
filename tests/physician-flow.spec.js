@@ -34,9 +34,7 @@ test('mjeku gjen shërbimin, krijon recetë dhe vazhdon offline', async ({ page,
   await expect(page.locator('#miCommandPalette')).toContainText('Shto barin');
   const option = page.getByRole('option', { name:/Shto barin “paracetamol” në recetë/i });
   const paletteGeometry = await geometryOf(page, {
-    input:'#miGlobalSearch',
-    palette:'#miCommandPalette',
-    option:'[data-command-index="2"]',
+    input:'#miGlobalSearch', palette:'#miCommandPalette', option:'[data-command-index="2"]',
   });
   console.log(`PALETTE_GEOMETRY ${JSON.stringify(paletteGeometry)}`);
   expect(paletteGeometry.palette.parent).toBe('BODY');
@@ -52,9 +50,7 @@ test('mjeku gjen shërbimin, krijon recetë dhe vazhdon offline', async ({ page,
   const firstDrug = page.locator('#rxDrugResults .rx-drug-result').first();
   await expect(firstDrug).toContainText('Paracetamol', { timeout:10000 });
   const drugGeometry = await geometryOf(page, {
-    picker:'#rxDrugPopover',
-    search:'#rxDrugSearch',
-    result:'#rxDrugResults .rx-drug-result',
+    picker:'#rxDrugPopover', search:'#rxDrugSearch', result:'#rxDrugResults .rx-drug-result',
   });
   console.log(`DRUG_PICKER_GEOMETRY ${JSON.stringify(drugGeometry)}`);
   expect(drugGeometry.picker.parent).toBe('BODY');
@@ -72,8 +68,14 @@ test('mjeku gjen shërbimin, krijon recetë dhe vazhdon offline', async ({ page,
   await expect(restoredPage.locator('#rxComposer')).toHaveValue(/Paracetamol/i);
   await expect(restoredPage.locator('#rxDiagnosis')).toHaveValue(/Dhimbje koke/i);
 
-  await restoredPage.goto('http://127.0.0.1:4173/icd.html', { waitUntil:'domcontentloaded' });
+  const dialogPromise = restoredPage.waitForEvent('dialog');
+  const navigationPromise = restoredPage.goto('http://127.0.0.1:4173/icd.html', { waitUntil:'domcontentloaded' });
+  const dialog = await dialogPromise;
+  expect(dialog.type()).toBe('beforeunload');
+  await dialog.accept();
+  await navigationPromise;
   await restoredPage.waitForFunction(() => document.documentElement.classList.contains('auth-ready'));
+  await expect(restoredPage.locator('.mi-page-heading h1')).toHaveText('ICD');
   await restoredPage.locator('[data-open-code]').first().click();
   await expect(restoredPage.locator('#detailOverlay')).toBeVisible();
   const useDiagnosis = restoredPage.getByRole('button', { name:'Përdore në recetë' });
@@ -81,8 +83,10 @@ test('mjeku gjen shërbimin, krijon recetë dhe vazhdon offline', async ({ page,
   await useDiagnosis.click();
   await restoredPage.waitForURL(/recetat\.html/);
   await restoredPage.waitForFunction(() => document.documentElement.classList.contains('auth-ready'));
-  await expect(restoredPage.locator('#rxDiagnosis')).not.toHaveValue('');
+  await expect(restoredPage.locator('#rxDiagnosis')).toHaveValue(/J85/i);
+  await expect(restoredPage.locator('#rxComposer')).toHaveValue(/Paracetamol/i);
 
+  restoredPage.once('dialog', dialog => dialog.accept());
   await restoredPage.goto('http://127.0.0.1:4173/index.html', { waitUntil:'domcontentloaded' });
   await restoredPage.evaluate(() => navigator.serviceWorker.ready);
   await restoredPage.waitForFunction(() => Boolean(navigator.serviceWorker?.controller), null, { timeout:15000 });
