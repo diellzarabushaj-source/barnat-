@@ -18,6 +18,8 @@
     search:'<svg fill="none" viewBox="0 0 256 256" aria-hidden="true"><circle cx="116" cy="116" r="76" stroke="currentColor" stroke-width="16"/><path d="m171 171 53 53" stroke="currentColor" stroke-width="16" stroke-linecap="round"/></svg>',
   };
 
+  const navObservers = new Map();
+  let bodyObserver = null;
   let scheduled = false;
   let hashAttempts = 0;
 
@@ -26,7 +28,7 @@
     if (!link) {
       link = document.createElement('link');
       link.rel = 'stylesheet';
-      link.href = 'navigation-shell.css?v=20260724-1';
+      link.href = 'navigation-shell.css?v=20260724-2';
       link.dataset.medindexNavigationCss = '1';
     }
     document.head.appendChild(link);
@@ -48,20 +50,24 @@
     });
   }
 
-  function navPrefix(nav) {
-    if (nav.classList.contains('atc-nav')) return 'atc';
-    if (nav.classList.contains('med-nav')) return 'med';
-    return 'app-menu';
+  function classesFor(nav) {
+    if (nav.classList.contains('atc-nav')) {
+      return { link:'atc-nav-link', icon:'atc-nav-icon', title:'atc-nav-title', theme:'atc-theme' };
+    }
+    if (nav.classList.contains('med-nav')) {
+      return { link:'med-nav-link', icon:'med-nav-icon', title:'med-nav-title', theme:'med-theme' };
+    }
+    return { link:'app-menu-link', icon:'app-menu-icon', title:'app-menu-title', theme:'theme-control' };
   }
 
   function makeStaticLink(nav, id, title, href) {
-    const prefix = navPrefix(nav);
+    const classes = classesFor(nav);
     const link = document.createElement('a');
-    link.className = `${prefix}-link medindex-common-nav`;
+    link.className = `${classes.link} medindex-common-nav`;
     link.href = href;
     link.dataset.medindexNav = id;
     link.setAttribute('aria-label', title);
-    link.innerHTML = `<span class="${prefix}-icon">${ICONS[id]}</span><span class="${prefix}-title">${title}</span>`;
+    link.innerHTML = `<span class="${classes.icon}">${ICONS[id]}</span><span class="${classes.title}">${title}</span>`;
     if (id === 'favorites') {
       const count = document.createElement('span');
       count.className = 'medindex-nav-count';
@@ -98,8 +104,8 @@
     nav.querySelectorAll(ITEM_SELECTOR).forEach(item => {
       if (item.classList.contains('auth-logout')) return;
       const itemId = item.dataset.nav || item.dataset.medicalNav || item.dataset.medindexNav || '';
-      const isHashActive = hashTarget === '#favoritet' && itemId === 'favorites'
-        || hashTarget === '#kerko' && itemId === 'search';
+      const isHashActive = (hashTarget === '#favoritet' && itemId === 'favorites')
+        || (hashTarget === '#kerko' && itemId === 'search');
       const active = override ? itemId === override : (isHashActive || (!isHashActive && itemId === target));
       item.classList.toggle('active', active);
       if (item.matches('a[href]')) {
@@ -121,8 +127,8 @@
   }
 
   function normalizeStaticNav(nav) {
-    const prefix = navPrefix(nav);
-    const before = nav.querySelector('.auth-logout') || nav.querySelector(`.${prefix}-theme`) || null;
+    const classes = classesFor(nav);
+    const before = nav.querySelector('.auth-logout') || nav.querySelector(`.${classes.theme}`) || null;
     if (!nav.querySelector('[data-medindex-nav="favorites"]')) {
       nav.insertBefore(makeStaticLink(nav, 'favorites', 'Favoritet', '/index.html#favoritet'), before);
     }
@@ -143,7 +149,7 @@
       if (match) {
         link.href = match[1];
         link.dataset.medicalNav = match[2];
-        const title = link.querySelector(`.${prefix}-title`);
+        const title = link.querySelector(`.${classes.title}`);
         if (match[2] === 'protocols' && title) title.textContent = 'Recetat';
       }
       normalizeItem(link);
@@ -152,12 +158,24 @@
     markActive(nav);
   }
 
+  function observeNavigation(nav) {
+    if (navObservers.has(nav)) return;
+    const observer = new MutationObserver(scheduleNormalize);
+    observer.observe(nav, { childList:true, subtree:true });
+    navObservers.set(nav, observer);
+  }
+
+  function observeKnownNavigations() {
+    document.querySelectorAll(NAV_SELECTOR).forEach(observeNavigation);
+  }
+
   function normalizeNavigation() {
     ensureStylesheetLast();
     document.querySelectorAll(NAV_SELECTOR).forEach(nav => {
       if (nav.id === 'appMenu') normalizeAppMenu(nav);
       else normalizeStaticNav(nav);
       nav.dataset.medindexNavigationReady = '1';
+      observeNavigation(nav);
     });
     updateFavoriteCounts();
     centerActiveItem();
@@ -170,6 +188,22 @@
       scheduled = false;
       normalizeNavigation();
     });
+  }
+
+  function watchForDynamicMenu() {
+    if (document.getElementById('appMenu') || bodyObserver) return;
+    bodyObserver = new MutationObserver(() => {
+      const menu = document.getElementById('appMenu');
+      if (!menu) return;
+      bodyObserver.disconnect();
+      bodyObserver = null;
+      scheduleNormalize();
+    });
+    bodyObserver.observe(document.body, { childList:true });
+    setTimeout(() => {
+      bodyObserver?.disconnect();
+      bodyObserver = null;
+    }, 12000);
   }
 
   function centerActiveItem() {
@@ -234,6 +268,8 @@
 
   function init() {
     normalizeNavigation();
+    observeKnownNavigations();
+    watchForDynamicMenu();
     activateHashTarget();
     document.addEventListener('click', trackAppMenuState);
     document.addEventListener('keydown', keyboardNavigation);
@@ -245,10 +281,6 @@
     document.addEventListener('visibilitychange', () => {
       if (!document.hidden) updateFavoriteCounts();
     });
-
-    const observer = new MutationObserver(scheduleNormalize);
-    observer.observe(document.body, { childList:true, subtree:true });
-    window.setTimeout(() => observer.disconnect(), 12000);
   }
 
   if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', init, { once:true });
