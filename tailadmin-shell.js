@@ -9,7 +9,8 @@
     '/recetat.html': ['Recetat'],
   };
   const LEGACY_SRC = '/tailadmin-shell-legacy.js?v=clinical-audit-v3';
-  const SHELL_VERSION = 'clinical-audit-v3';
+  const MOBILE_SRC = '/mobile-experience.js?v=mobile-audit-v1';
+  const SHELL_VERSION = 'clinical-audit-v4';
   const id = 'appMenu';
 
   // Static compatibility contract retained for the navigation safety gates:
@@ -63,13 +64,28 @@
     if (sidebar) sidebar.scrollTo({ top: 0, behavior: 'auto' });
   }
 
-  function warmLegacyAsset() {
-    const warm = () => fetch(LEGACY_SRC, { cache: 'reload', credentials: 'same-origin' }).catch(() => null);
+  function warmRuntimeAssets() {
+    const warm = source => fetch(source, { cache: 'reload', credentials: 'same-origin' }).catch(() => null);
     if (!('serviceWorker' in navigator)) return;
     navigator.serviceWorker.ready.then(() => {
-      if (navigator.serviceWorker.controller) warm();
-      else navigator.serviceWorker.addEventListener('controllerchange', warm, { once: true });
+      const run = () => Promise.all([warm(LEGACY_SRC), warm(MOBILE_SRC)]);
+      if (navigator.serviceWorker.controller) run();
+      else navigator.serviceWorker.addEventListener('controllerchange', run, { once: true });
     }).catch(() => null);
+  }
+
+  function loadMobileExperience() {
+    if (document.querySelector('script[data-medindex-mobile-experience]')) return;
+    const script = document.createElement('script');
+    script.src = MOBILE_SRC;
+    script.async = false;
+    script.defer = true;
+    script.dataset.medindexMobileExperience = '1';
+    script.addEventListener('error', () => {
+      document.documentElement.dataset.miMobileExperienceError = 'load';
+      console.error('MedIndex mobile experience runtime failed to load.');
+    }, { once: true });
+    document.head.appendChild(script);
   }
 
   function loadLegacyShell() {
@@ -86,7 +102,8 @@
       document.documentElement.dataset.miThemeKey = THEME_KEY;
       ensureStylesheetLast();
       queueMicrotask(ensureStylesheetLast);
-      warmLegacyAsset();
+      loadMobileExperience();
+      warmRuntimeAssets();
     }, { once: true });
     script.addEventListener('error', () => {
       document.documentElement.dataset.miShellError = 'legacy-load';
