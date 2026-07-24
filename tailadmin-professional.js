@@ -58,6 +58,21 @@
     if (document.body) document.body.scrollLeft = 0;
   }
 
+  function navigationType() {
+    return performance.getEntriesByType?.('navigation')?.[0]?.type || '';
+  }
+
+  function normalizeContentScroll({ force = false } = {}) {
+    const main = document.querySelector('.mi-main');
+    if (!main) return;
+    main.style.scrollBehavior = 'auto';
+    if (!force && navigationType() === 'back_forward') return;
+    main.scrollTop = 0;
+    requestAnimationFrame(() => {
+      if (main.scrollTop) main.scrollTop = 0;
+    });
+  }
+
   function expectedActivePath(link) {
     const href = link.getAttribute('href');
     if (!href) return false;
@@ -144,6 +159,8 @@
     const style = document.createElement('style');
     style.id = 'miClinicalViewportStyles';
     style.textContent = `
+      .mi-main{scroll-behavior:auto!important;overflow-anchor:none!important}
+      [data-open-code]{scroll-margin-block:96px}
       .mi-command-palette{
         position:fixed!important;
         top:var(--mi-command-top,74px)!important;
@@ -347,6 +364,7 @@
     orderStylesheets();
     normalizeNavigation();
     resetRootHorizontalOffset();
+    normalizeContentScroll();
     markScrollableContainers();
     ensureViewportStyles();
     installObservers();
@@ -364,6 +382,7 @@
   });
   window.addEventListener('pageshow', () => {
     resetRootHorizontalOffset();
+    normalizeContentScroll();
     scheduleNavigation();
     scheduleLayoutAudit();
     bindCommandPaletteViewport();
