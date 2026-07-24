@@ -8,6 +8,8 @@ assert.match(source, /getBoundingClientRect\(\)/, 'Command palette must anchor t
 assert.match(source, /--mi-command-left/, 'Command palette left position must be explicit');
 assert.match(source, /--mi-command-top/, 'Command palette top position must be explicit');
 assert.match(source, /--mi-command-width/, 'Command palette width must be constrained');
+assert.match(source, /document\.body\.appendChild\(palette\)/, 'Command palette must be portaled outside the clipped workspace');
+assert.match(source, /miPortalBound/, 'Command palette portal listeners must be idempotent');
 assert.match(source, /window\.addEventListener\('resize', schedulePalettePosition/, 'Command palette must reposition on resize');
 assert.match(source, /document\.addEventListener\('scroll', schedulePalettePosition/, 'Command palette must reposition on scrolling containers');
 assert.match(source, /MutationObserver\(schedulePalettePosition\)/, 'Command palette must reposition when opened or rerendered');
