@@ -44,3 +44,16 @@ jobs:
           done
           npx playwright test tests/physician-flow.spec.js --reporter=line --workers=1 > /tmp/physician-flow.log 2>&1 || { cat /tmp/physician-flow.log; exit 1; }
           cat /tmp/physician-flow.log
+
+      - name: Upload physician diagnostics
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: physician-browser-diagnostics
+          path: |
+            /tmp/physician-flow.log
+            /tmp/medindex-clinical-server.log
+            test-results
+            playwright-report
+          if-no-files-found: warn
+          retention-days: 3
