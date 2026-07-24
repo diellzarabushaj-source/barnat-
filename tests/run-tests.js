@@ -10,7 +10,7 @@ const vm = require('node:vm');
 const ROOT = path.resolve(__dirname, '..');
 const requiredFiles = [
   'index.html','klasifikimi.html','icd.html','analizat.html','dozologjia.html','protokollet.html','recetat.html','login.html',
-  'login.css','login.js','auth-client.js','app-stability.js','app-polish.css','performance.css',
+  'login.css','login.js','auth-client.js','app-stability.js','app-polish.css','performance.css','tailadmin-medindex.css','tailadmin-shell.js','TAILADMIN-LICENSE','THIRD_PARTY_NOTICES.md',
   'medical-hub.css','analizat-polish.css','lab-sheet-data.js','medical-icons.js','section-icons.js',
   'recetat.css','recetat-audit.css','prescription-format-core.js','recetat.js','app-parts/core-tail.txt',
   'middleware.ts','lib/auth.mjs','lib/auth-edge.mjs','api/auth.js','api/registry.js','api/drug-search.js',
@@ -41,7 +41,7 @@ async function main() {
   const vercel = JSON.parse(file('vercel.json'));
   assert.equal(vercel.rewrites?.[0]?.destination, '/api/registry');
   [
-    'app.js','login.js','auth-client.js','app-stability.js','main-navigation-extension.js',
+    'app.js','login.js','auth-client.js','app-stability.js','tailadmin-shell.js','main-navigation-extension.js',
     'medical-icons.js','section-icons.js','prescription-format-core.js','recetat.js','dosage-engine.js','dozologjia.js','protokollet.js','clinical-dialog.js','classification-icons.js',
     'api/auth.js','api/registry.js','api/drug-search.js','api/gemini-prescription.js','api/registry-data.js',
     'api/dosage.js','api/protocol-document.js','scripts/sync-protocols.js','api/health.js','api/labs.js','data/registry-quality.js',
@@ -111,7 +111,7 @@ async function main() {
   assert.ok(labsHtml.indexOf('lab-sheet-data.js') < labsHtml.indexOf('analizat.js'), 'Sheet data must load before laboratory UI');
 
   console.log('6/11 No password leakage to browser assets');
-  const browserFiles = ['index.html','analizat.html','recetat.html','login.html','login.js','login.css','auth-client.js','app-stability.js','app.js','analizat.js','prescription-format-core.js','recetat.js','lab-sheet-data.js'];
+  const browserFiles = ['index.html','analizat.html','recetat.html','login.html','login.js','login.css','tailadmin-medindex.css','tailadmin-shell.js','auth-client.js','app-stability.js','app.js','analizat.js','prescription-format-core.js','recetat.js','lab-sheet-data.js'];
   const forbiddenPassword = ['diellza', '123'].join('');
   browserFiles.forEach(relativePath => assert.equal(file(relativePath).includes(forbiddenPassword), false, `Password leaked in ${relativePath}`));
 

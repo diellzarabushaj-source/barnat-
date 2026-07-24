@@ -1,0 +1,937 @@
+@import url("https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700&display=swap");
+
+:root {
+  --mi-font: "Outfit", Inter, ui-sans-serif, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  --mi-brand-25: #f2f7ff;
+  --mi-brand-50: #ecf3ff;
+  --mi-brand-100: #dde9ff;
+  --mi-brand-200: #c2d6ff;
+  --mi-brand-300: #9cb9ff;
+  --mi-brand-400: #7592ff;
+  --mi-brand-500: #465fff;
+  --mi-brand-600: #3641f5;
+  --mi-brand-700: #2a31d8;
+  --mi-gray-25: #fcfcfd;
+  --mi-gray-50: #f9fafb;
+  --mi-gray-100: #f2f4f7;
+  --mi-gray-200: #e4e7ec;
+  --mi-gray-300: #d0d5dd;
+  --mi-gray-400: #98a2b3;
+  --mi-gray-500: #667085;
+  --mi-gray-600: #475467;
+  --mi-gray-700: #344054;
+  --mi-gray-800: #1d2939;
+  --mi-gray-900: #101828;
+  --mi-gray-950: #0c111d;
+  --mi-success-50: #ecfdf3;
+  --mi-success-500: #12b76a;
+  --mi-success-700: #027a48;
+  --mi-warning-50: #fffaeb;
+  --mi-warning-500: #f79009;
+  --mi-warning-700: #b54708;
+  --mi-error-50: #fef3f2;
+  --mi-error-500: #f04438;
+  --mi-error-700: #b42318;
+  --mi-surface: #ffffff;
+  --mi-surface-soft: #f9fafb;
+  --mi-page: #f9fafb;
+  --mi-text: #101828;
+  --mi-muted: #667085;
+  --mi-border: #e4e7ec;
+  --mi-sidebar-width: 290px;
+  --mi-sidebar-collapsed: 90px;
+  --mi-topbar-height: 80px;
+  --mi-radius-sm: 8px;
+  --mi-radius: 12px;
+  --mi-radius-lg: 16px;
+  --mi-shadow-xs: 0 1px 2px rgba(16, 24, 40, .05);
+  --mi-shadow-sm: 0 1px 3px rgba(16, 24, 40, .10), 0 1px 2px rgba(16, 24, 40, .06);
+  --mi-shadow-md: 0 4px 8px -2px rgba(16, 24, 40, .10), 0 2px 4px -2px rgba(16, 24, 40, .06);
+  --mi-shadow-lg: 0 12px 16px -4px rgba(16, 24, 40, .08), 0 4px 6px -2px rgba(16, 24, 40, .03);
+  --mi-focus: 0 0 0 4px rgba(70, 95, 255, .12);
+}
+
+html[data-theme="dark"] {
+  color-scheme: dark;
+  --mi-surface: #101828;
+  --mi-surface-soft: #1d2939;
+  --mi-page: #101828;
+  --mi-text: #f9fafb;
+  --mi-muted: #98a2b3;
+  --mi-border: #344054;
+  --ink: #f9fafb;
+  --paper: #101828;
+  --panel: #1d2939;
+  --line: #344054;
+  --muted: #98a2b3;
+  --teal: #7592ff;
+  --teal-dark: #f9fafb;
+  --amber: #9cb9ff;
+  --amber-soft: rgba(70,95,255,.14);
+  --surface: #1d2939;
+  --surface-soft: #101828;
+  --text: #f9fafb;
+}
+
+html.medindex-tailadmin,
+html.medindex-tailadmin body {
+  min-height: 100%;
+  margin: 0 !important;
+  background: var(--mi-page) !important;
+  color: var(--mi-text) !important;
+  font-family: var(--mi-font) !important;
+  font-feature-settings: "liga" 1, "kern" 1;
+  -webkit-font-smoothing: antialiased;
+}
+
+html.medindex-tailadmin * { box-sizing: border-box; }
+html.medindex-tailadmin button,
+html.medindex-tailadmin input,
+html.medindex-tailadmin select,
+html.medindex-tailadmin textarea { font: inherit; }
+html.medindex-tailadmin a { color: inherit; }
+html.medindex-tailadmin svg { display: block; }
+html.medindex-tailadmin [hidden] { display: none !important; }
+html.medindex-tailadmin body.has-app-nav { padding: 0 !important; }
+html.medindex-tailadmin body.mi-body { overflow: hidden !important; }
+html.medindex-tailadmin .skip-link { z-index: 1000000 !important; }
+
+.mi-app-shell {
+  display: flex;
+  width: 100%;
+  height: 100vh;
+  height: 100dvh;
+  overflow: hidden;
+  background: var(--mi-page);
+}
+
+.mi-sidebar {
+  position: relative;
+  z-index: 100;
+  display: flex;
+  width: var(--mi-sidebar-width);
+  min-width: var(--mi-sidebar-width);
+  height: 100%;
+  flex-direction: column;
+  overflow: hidden;
+  border-right: 1px solid var(--mi-border);
+  background: var(--mi-surface);
+  transition: width .2s ease, min-width .2s ease, transform .25s ease;
+}
+
+.mi-sidebar-header {
+  display: flex;
+  min-height: 102px;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 24px 20px 20px;
+}
+
+.mi-brand {
+  display: inline-flex;
+  min-width: 0;
+  align-items: center;
+  gap: 12px;
+  text-decoration: none;
+}
+
+.mi-brand-mark {
+  display: grid;
+  width: 44px;
+  height: 44px;
+  flex: 0 0 44px;
+  place-items: center;
+  border-radius: 12px;
+  background: linear-gradient(145deg, var(--mi-brand-600), var(--mi-brand-500));
+  color: #fff;
+  box-shadow: 0 8px 20px rgba(70, 95, 255, .22);
+  font-size: 18px;
+  font-weight: 700;
+  letter-spacing: -.03em;
+}
+.mi-brand-mark span { color: #b9e6fe; }
+.mi-brand-copy { display: grid; min-width: 0; line-height: 1.1; }
+.mi-brand-copy strong { color: var(--mi-text); font-size: 20px; font-weight: 650; letter-spacing: -.025em; }
+.mi-brand-copy small { margin-top: 4px; color: var(--mi-muted); font-size: 11px; font-weight: 500; }
+
+.mi-sidebar-close {
+  display: none;
+  width: 40px;
+  height: 40px;
+  place-items: center;
+  border: 1px solid var(--mi-border);
+  border-radius: 10px;
+  background: var(--mi-surface);
+  color: var(--mi-muted);
+}
+.mi-sidebar-close svg { width: 20px; height: 20px; fill: none; stroke: currentColor; stroke-width: 1.8; }
+
+.mi-sidebar-scroll {
+  min-height: 0;
+  flex: 1;
+  overflow-x: hidden;
+  overflow-y: auto;
+  padding: 0 20px 20px;
+  scrollbar-width: none;
+}
+.mi-sidebar-scroll::-webkit-scrollbar { display: none; }
+
+#appMenu.mi-sidebar-nav {
+  position: static !important;
+  inset: auto !important;
+  display: flex !important;
+  width: 100% !important;
+  height: auto !important;
+  min-height: 100% !important;
+  flex-direction: column !important;
+  gap: 22px !important;
+  overflow: visible !important;
+  padding: 0 !important;
+  border: 0 !important;
+  background: transparent !important;
+  box-shadow: none !important;
+}
+
+.mi-menu-group { display: flex; flex-direction: column; gap: 4px; }
+.mi-menu-group-tools { margin-top: auto; }
+.mi-menu-heading {
+  margin: 0 0 8px;
+  color: var(--mi-gray-400);
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: .08em;
+  line-height: 20px;
+}
+
+#appMenu .app-menu-link,
+#appMenu .auth-logout {
+  position: relative !important;
+  display: flex !important;
+  width: 100% !important;
+  min-width: 0 !important;
+  min-height: 44px !important;
+  flex: 0 0 auto !important;
+  align-items: center !important;
+  justify-content: flex-start !important;
+  gap: 12px !important;
+  margin: 0 !important;
+  padding: 10px 12px !important;
+  border: 0 !important;
+  border-radius: 8px !important;
+  background: transparent !important;
+  color: var(--mi-gray-700) !important;
+  box-shadow: none !important;
+  cursor: pointer !important;
+  text-align: left !important;
+  text-decoration: none !important;
+  transform: none !important;
+  transition: background .15s ease, color .15s ease !important;
+}
+html[data-theme="dark"] #appMenu .app-menu-link,
+html[data-theme="dark"] #appMenu .auth-logout { color: var(--mi-gray-300) !important; }
+#appMenu .app-menu-link:hover,
+#appMenu .auth-logout:hover {
+  background: var(--mi-gray-100) !important;
+  color: var(--mi-gray-700) !important;
+}
+html[data-theme="dark"] #appMenu .app-menu-link:hover,
+html[data-theme="dark"] #appMenu .auth-logout:hover { background: rgba(255,255,255,.05) !important; color: var(--mi-gray-300) !important; }
+#appMenu .app-menu-link.active,
+#appMenu .app-menu-link[aria-current="page"] {
+  background: var(--mi-brand-50) !important;
+  color: var(--mi-brand-500) !important;
+}
+html[data-theme="dark"] #appMenu .app-menu-link.active,
+html[data-theme="dark"] #appMenu .app-menu-link[aria-current="page"] {
+  background: rgba(70,95,255,.12) !important;
+  color: var(--mi-brand-400) !important;
+}
+#appMenu .app-menu-link:focus-visible,
+#appMenu .auth-logout:focus-visible { outline: none !important; box-shadow: var(--mi-focus) !important; }
+
+#appMenu .app-menu-icon,
+#appMenu .mi-menu-icon {
+  display: grid !important;
+  width: 24px !important;
+  height: 24px !important;
+  flex: 0 0 24px !important;
+  place-items: center !important;
+}
+#appMenu .app-menu-icon svg,
+#appMenu .mi-menu-icon svg,
+#appMenu .auth-logout svg {
+  width: 22px !important;
+  height: 22px !important;
+  fill: none !important;
+  stroke: currentColor !important;
+  stroke-width: 1.7 !important;
+  stroke-linecap: round !important;
+  stroke-linejoin: round !important;
+}
+#appMenu .app-menu-title,
+#appMenu .mi-menu-label {
+  display: block !important;
+  min-width: 0 !important;
+  max-width: none !important;
+  color: inherit !important;
+  font-family: var(--mi-font) !important;
+  font-size: 14px !important;
+  font-weight: 500 !important;
+  letter-spacing: 0 !important;
+  line-height: 20px !important;
+  text-align: left !important;
+}
+#appMenu .mi-menu-badge,
+#appMenu .nav-mini-count {
+  position: static !important;
+  display: grid !important;
+  min-width: 22px !important;
+  height: 22px !important;
+  margin-left: auto !important;
+  padding: 0 6px !important;
+  place-items: center !important;
+  border: 0 !important;
+  border-radius: 999px !important;
+  background: var(--mi-brand-100) !important;
+  color: var(--mi-brand-600) !important;
+  font-size: 11px !important;
+  font-weight: 600 !important;
+}
+
+.mi-theme-control { margin-top: 0 !important; }
+.mi-theme-row {
+  display: flex;
+  width: 100%;
+  min-height: 44px;
+  align-items: center;
+  gap: 12px;
+  padding: 10px 12px;
+  border: 0;
+  border-radius: 8px;
+  background: transparent;
+  color: var(--mi-gray-700);
+}
+html[data-theme="dark"] .mi-theme-row { color: var(--mi-gray-300); }
+.mi-theme-row:hover { background: var(--mi-gray-100); }
+html[data-theme="dark"] .mi-theme-row:hover { background: rgba(255,255,255,.05); }
+.mi-theme-row-icon { display: grid; width: 24px; height: 24px; place-items: center; }
+.mi-theme-row-icon svg { width: 22px; height: 22px; fill: none; stroke: currentColor; stroke-width: 1.7; stroke-linecap: round; }
+.mi-theme-row-text { font-size: 14px; font-weight: 500; }
+
+.mi-sidebar-footer { padding: 18px 20px 24px; border-top: 1px solid var(--mi-border); }
+.mi-user-card,
+.mi-profile-chip {
+  display: flex;
+  min-width: 0;
+  align-items: center;
+  gap: 10px;
+}
+.mi-user-avatar {
+  display: grid;
+  width: 40px;
+  height: 40px;
+  flex: 0 0 40px;
+  place-items: center;
+  border-radius: 50%;
+  background: linear-gradient(145deg, var(--mi-brand-100), var(--mi-brand-200));
+  color: var(--mi-brand-700);
+  font-size: 12px;
+  font-weight: 700;
+}
+.mi-user-copy,
+.mi-profile-chip > span:last-child { display: grid; min-width: 0; }
+.mi-user-copy strong,
+.mi-profile-chip strong { overflow: hidden; color: var(--mi-text); font-size: 13px; font-weight: 600; text-overflow: ellipsis; white-space: nowrap; }
+.mi-user-copy small,
+.mi-profile-chip small { margin-top: 2px; color: var(--mi-muted); font-size: 11px; }
+.mi-user-arrow { margin-left: auto; color: var(--mi-gray-400); }
+.mi-user-arrow svg { width: 17px; height: 17px; fill: none; stroke: currentColor; stroke-width: 1.8; }
+
+.mi-workspace {
+  position: relative;
+  display: flex;
+  min-width: 0;
+  flex: 1;
+  flex-direction: column;
+  overflow: hidden;
+  background: var(--mi-page);
+}
+
+.mi-topbar {
+  position: relative;
+  z-index: 70;
+  display: flex;
+  min-height: var(--mi-topbar-height);
+  flex: 0 0 var(--mi-topbar-height);
+  align-items: center;
+  justify-content: space-between;
+  gap: 20px;
+  padding: 16px 24px;
+  border-bottom: 1px solid var(--mi-border);
+  background: var(--mi-surface);
+}
+.mi-topbar-leading,
+.mi-topbar-actions { display: flex; min-width: 0; align-items: center; gap: 12px; }
+.mi-topbar-leading { flex: 1; }
+.mi-icon-button {
+  display: grid;
+  width: 44px;
+  height: 44px;
+  flex: 0 0 44px;
+  place-items: center;
+  border: 1px solid var(--mi-border);
+  border-radius: 10px;
+  background: var(--mi-surface);
+  color: var(--mi-gray-500);
+  transition: background .15s ease, color .15s ease, border-color .15s ease;
+}
+.mi-icon-button:hover { border-color: var(--mi-gray-300); background: var(--mi-gray-50); color: var(--mi-gray-700); }
+html[data-theme="dark"] .mi-icon-button:hover { background: var(--mi-gray-800); color: #fff; }
+.mi-icon-button:focus-visible { outline: none; box-shadow: var(--mi-focus); }
+.mi-icon-button svg { width: 20px; height: 20px; fill: none; stroke: currentColor; stroke-width: 1.8; stroke-linecap: round; stroke-linejoin: round; }
+.mi-global-search { position: relative; width: min(430px, 100%); }
+.mi-global-search > span { position: absolute; top: 50%; left: 16px; color: var(--mi-gray-500); transform: translateY(-50%); pointer-events: none; }
+.mi-global-search > span svg { width: 20px; height: 20px; fill: none; stroke: currentColor; stroke-width: 1.7; }
+.mi-global-search input {
+  width: 100%;
+  height: 44px;
+  padding: 10px 58px 10px 46px;
+  border: 1px solid var(--mi-border);
+  border-radius: 10px;
+  background: transparent;
+  color: var(--mi-text);
+  font-size: 14px;
+  outline: none;
+  box-shadow: var(--mi-shadow-xs);
+}
+.mi-global-search input::placeholder { color: var(--mi-gray-400); }
+.mi-global-search input:focus { border-color: var(--mi-brand-300); box-shadow: var(--mi-focus); }
+.mi-global-search kbd {
+  position: absolute;
+  top: 50%;
+  right: 10px;
+  padding: 4px 7px;
+  border: 1px solid var(--mi-border);
+  border-radius: 6px;
+  background: var(--mi-gray-50);
+  color: var(--mi-gray-500);
+  font-family: var(--mi-font);
+  font-size: 11px;
+  transform: translateY(-50%);
+}
+html[data-theme="dark"] .mi-global-search kbd { background: rgba(255,255,255,.03); }
+.mi-primary-action {
+  display: inline-flex;
+  min-height: 44px;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 10px 16px;
+  border-radius: 9px;
+  background: var(--mi-brand-500);
+  color: #fff;
+  box-shadow: var(--mi-shadow-xs);
+  font-size: 14px;
+  font-weight: 500;
+  text-decoration: none;
+}
+.mi-primary-action:hover { background: var(--mi-brand-600); }
+.mi-primary-action:focus-visible { outline: none; box-shadow: var(--mi-focus); }
+.mi-primary-action svg { width: 18px; height: 18px; fill: none; stroke: currentColor; stroke-width: 1.8; stroke-linecap: round; }
+.mi-profile-chip { padding-left: 4px; }
+.mi-mobile-brand { display: none; align-items: center; gap: 8px; text-decoration: none; }
+.mi-mobile-brand .mi-brand-mark { width: 36px; height: 36px; flex-basis: 36px; border-radius: 10px; font-size: 15px; }
+.mi-mobile-brand strong { color: var(--mi-text); font-size: 16px; font-weight: 650; }
+
+.mi-main { min-width: 0; flex: 1; overflow-x: hidden; overflow-y: auto; scroll-behavior: smooth; }
+.mi-content-container { width: 100%; max-width: 1536px; margin: 0 auto; padding: 28px 24px 52px; }
+.mi-page-heading { display: flex; align-items: flex-end; justify-content: space-between; gap: 20px; margin-bottom: 24px; }
+.mi-breadcrumb { display: flex; align-items: center; gap: 8px; margin-bottom: 7px; color: var(--mi-gray-500); font-size: 13px; }
+.mi-breadcrumb a { color: var(--mi-gray-500); text-decoration: none; }
+.mi-breadcrumb a:hover { color: var(--mi-brand-500); }
+.mi-breadcrumb span { color: var(--mi-gray-300); }
+.mi-breadcrumb strong { color: var(--mi-gray-700); font-weight: 500; }
+html[data-theme="dark"] .mi-breadcrumb strong { color: var(--mi-gray-300); }
+.mi-page-heading h1 { margin: 0; color: var(--mi-text); font-family: var(--mi-font); font-size: clamp(24px, 2.4vw, 30px); font-weight: 600; letter-spacing: -.025em; line-height: 1.25; }
+.mi-page-heading p { margin: 5px 0 0; color: var(--mi-muted); font-size: 14px; line-height: 1.5; }
+.mi-heading-badge { display: inline-flex; align-items: center; gap: 8px; padding: 7px 10px; border: 1px solid #abefc6; border-radius: 999px; background: var(--mi-success-50); color: var(--mi-success-700); font-size: 12px; font-weight: 500; white-space: nowrap; }
+html[data-theme="dark"] .mi-heading-badge { border-color: rgba(18,183,106,.35); background: rgba(18,183,106,.12); color: #6ce9a6; }
+.mi-status-dot { width: 7px; height: 7px; border-radius: 50%; background: var(--mi-success-500); box-shadow: 0 0 0 3px rgba(18,183,106,.12); }
+.mi-page-slot { min-width: 0; }
+.mi-mobile-overlay { display: none; }
+
+body.mi-sidebar-collapsed .mi-sidebar { width: var(--mi-sidebar-collapsed); min-width: var(--mi-sidebar-collapsed); }
+body.mi-sidebar-collapsed .mi-sidebar-header { justify-content: center; padding-inline: 14px; }
+body.mi-sidebar-collapsed .mi-brand-copy,
+body.mi-sidebar-collapsed .mi-menu-heading,
+body.mi-sidebar-collapsed #appMenu .app-menu-title,
+body.mi-sidebar-collapsed #appMenu .mi-menu-label,
+body.mi-sidebar-collapsed .mi-theme-row-text,
+body.mi-sidebar-collapsed .mi-user-copy,
+body.mi-sidebar-collapsed .mi-user-arrow { display: none !important; }
+body.mi-sidebar-collapsed .mi-sidebar-scroll { padding-inline: 14px; }
+body.mi-sidebar-collapsed #appMenu .app-menu-link,
+body.mi-sidebar-collapsed #appMenu .auth-logout,
+body.mi-sidebar-collapsed .mi-theme-row { justify-content: center !important; padding-inline: 10px !important; }
+body.mi-sidebar-collapsed .mi-sidebar-footer { padding-inline: 14px; }
+body.mi-sidebar-collapsed .mi-user-card { justify-content: center; }
+body.mi-sidebar-collapsed #appMenu .mi-menu-badge { position: absolute !important; top: 3px !important; right: 2px !important; }
+
+/* Legacy layout reset */
+html.medindex-tailadmin .mi-legacy-shell { display: none !important; }
+html.medindex-tailadmin #miLegacyNavigation,
+html.medindex-tailadmin .mi-legacy-navigation { display: none !important; }
+html.medindex-tailadmin .mi-legacy-main,
+html.medindex-tailadmin .atc-main.mi-legacy-main,
+html.medindex-tailadmin .med-main.mi-legacy-main {
+  display: block !important;
+  width: 100% !important;
+  min-width: 0 !important;
+  max-width: none !important;
+  margin: 0 !important;
+  padding: 0 !important;
+  background: transparent !important;
+  color: var(--mi-text) !important;
+}
+html.medindex-tailadmin .mi-index-content { display: block; min-width: 0; }
+
+/* Shared TailAdmin page surfaces */
+html.medindex-tailadmin :where(.atc-header,.med-hero,.clinical-hero,.rx-hero,.mi-index-content > header) {
+  position: relative !important;
+  display: flex !important;
+  min-height: 0 !important;
+  align-items: center !important;
+  gap: 18px !important;
+  margin: 0 0 20px !important;
+  padding: 20px 22px !important;
+  border: 1px solid var(--mi-border) !important;
+  border-radius: 14px !important;
+  background: var(--mi-surface) !important;
+  color: var(--mi-text) !important;
+  box-shadow: var(--mi-shadow-xs) !important;
+}
+html.medindex-tailadmin :where(.atc-header,.med-hero,.clinical-hero,.rx-hero,.mi-index-content > header)::before { display: none !important; }
+html.medindex-tailadmin :where(.atc-header,.med-hero,.clinical-hero,.rx-hero,.mi-index-content > header) h1 {
+  margin: 0 !important;
+  color: var(--mi-text) !important;
+  font-family: var(--mi-font) !important;
+  font-size: 20px !important;
+  font-weight: 600 !important;
+  letter-spacing: -.015em !important;
+  line-height: 1.35 !important;
+}
+html.medindex-tailadmin :where(.atc-header,.med-hero,.clinical-hero,.rx-hero,.mi-index-content > header) p,
+html.medindex-tailadmin .mi-index-content > header .sub {
+  max-width: 980px !important;
+  margin: 5px 0 0 !important;
+  color: var(--mi-muted) !important;
+  font-family: var(--mi-font) !important;
+  font-size: 13px !important;
+  line-height: 1.55 !important;
+  opacity: 1 !important;
+}
+html.medindex-tailadmin :where(.atc-kicker,.med-kicker,.clinical-kicker) { color: var(--mi-brand-500) !important; font-family: var(--mi-font) !important; font-size: 11px !important; font-weight: 600 !important; letter-spacing: .08em !important; }
+html.medindex-tailadmin :where(.rx-hero-icon,.lab-hero-stat,.rx-hero-count,.clinical-summary) {
+  border: 1px solid var(--mi-border) !important;
+  border-radius: 12px !important;
+  background: var(--mi-gray-50) !important;
+  color: var(--mi-text) !important;
+  box-shadow: none !important;
+}
+html[data-theme="dark"] :where(.rx-hero-icon,.lab-hero-stat,.rx-hero-count,.clinical-summary) { background: rgba(255,255,255,.03) !important; }
+
+html.medindex-tailadmin :where(.toolbar,.atc-toolbar,.med-toolbar,.clinical-toolbar,.lab-quickbar) {
+  position: relative !important;
+  top: auto !important;
+  z-index: 20 !important;
+  display: flex !important;
+  align-items: center !important;
+  gap: 10px !important;
+  flex-wrap: wrap !important;
+  margin: 0 0 20px !important;
+  padding: 16px !important;
+  border: 1px solid var(--mi-border) !important;
+  border-radius: 14px !important;
+  background: var(--mi-surface) !important;
+  box-shadow: var(--mi-shadow-xs) !important;
+  backdrop-filter: none !important;
+}
+html.medindex-tailadmin :where(.toolbar,.atc-toolbar,.med-toolbar,.clinical-toolbar,.lab-quickbar) > * { min-width: 0; }
+
+html.medindex-tailadmin :where(input[type="text"],input[type="search"],input[type="password"],input[type="number"],select,textarea) {
+  min-height: 44px;
+  border: 1px solid var(--mi-border) !important;
+  border-radius: 9px !important;
+  background: var(--mi-surface) !important;
+  color: var(--mi-text) !important;
+  outline: none !important;
+  box-shadow: var(--mi-shadow-xs) !important;
+  font-family: var(--mi-font) !important;
+  font-size: 14px !important;
+  transition: border-color .15s ease, box-shadow .15s ease, background .15s ease;
+}
+html.medindex-tailadmin :where(input[type="text"],input[type="search"],input[type="password"],input[type="number"],select) { height: 44px; padding: 10px 12px !important; }
+html.medindex-tailadmin textarea { padding: 12px !important; line-height: 1.55 !important; }
+html.medindex-tailadmin :where(input,textarea)::placeholder { color: var(--mi-gray-400) !important; }
+html.medindex-tailadmin :where(input,select,textarea):focus { border-color: var(--mi-brand-300) !important; box-shadow: var(--mi-focus) !important; }
+
+html.medindex-tailadmin :where(button,.atc-back,.atc-reset,.icd-clear,.rx-secondary,.rx-ghost,.rx-text-button) { font-family: var(--mi-font) !important; }
+html.medindex-tailadmin :where(.atc-back,.atc-reset,.icd-clear,.rx-secondary,.rx-ghost,.rx-text-button,.pagination button,.col-picker > button,.form-picker > button) {
+  min-height: 40px !important;
+  padding: 9px 13px !important;
+  border: 1px solid var(--mi-border) !important;
+  border-radius: 8px !important;
+  background: var(--mi-surface) !important;
+  color: var(--mi-gray-700) !important;
+  box-shadow: var(--mi-shadow-xs) !important;
+  font-size: 13px !important;
+  font-weight: 500 !important;
+  transform: none !important;
+}
+html[data-theme="dark"] :where(.atc-back,.atc-reset,.icd-clear,.rx-secondary,.rx-ghost,.rx-text-button,.pagination button,.col-picker > button,.form-picker > button) { color: var(--mi-gray-300) !important; }
+html.medindex-tailadmin :where(.atc-back,.atc-reset,.icd-clear,.rx-secondary,.rx-ghost,.rx-text-button,.pagination button,.col-picker > button,.form-picker > button):hover { border-color: var(--mi-gray-300) !important; background: var(--mi-gray-50) !important; color: var(--mi-gray-900) !important; }
+html[data-theme="dark"] :where(.atc-back,.atc-reset,.icd-clear,.rx-secondary,.rx-ghost,.rx-text-button,.pagination button,.col-picker > button,.form-picker > button):hover { background: var(--mi-gray-800) !important; color: #fff !important; }
+
+html.medindex-tailadmin :where(.rx-primary,.protocol-toolbar-btn,.clinical-toolbar .primary,.lab-sheet-link,.icd-who-link) {
+  min-height: 42px !important;
+  padding: 10px 15px !important;
+  border: 1px solid var(--mi-brand-500) !important;
+  border-radius: 8px !important;
+  background: var(--mi-brand-500) !important;
+  color: #fff !important;
+  box-shadow: var(--mi-shadow-xs) !important;
+  font-family: var(--mi-font) !important;
+  font-size: 13px !important;
+  font-weight: 500 !important;
+  text-decoration: none !important;
+  transform: none !important;
+}
+html.medindex-tailadmin :where(.rx-primary,.protocol-toolbar-btn,.clinical-toolbar .primary,.lab-sheet-link,.icd-who-link):hover { background: var(--mi-brand-600) !important; border-color: var(--mi-brand-600) !important; }
+html.medindex-tailadmin button:focus-visible,
+html.medindex-tailadmin a:focus-visible { outline: none !important; box-shadow: var(--mi-focus) !important; }
+
+html.medindex-tailadmin :where(.count-badge,.selection-badge,.atc-count,.med-count,.clinical-status,.lab-status,.rx-state,.badge,.atc-card-code,.icd-code-badge) {
+  display: inline-flex !important;
+  min-height: 28px !important;
+  align-items: center !important;
+  justify-content: center !important;
+  padding: 5px 9px !important;
+  border: 1px solid var(--mi-brand-100) !important;
+  border-radius: 999px !important;
+  background: var(--mi-brand-50) !important;
+  color: var(--mi-brand-600) !important;
+  font-family: var(--mi-font) !important;
+  font-size: 12px !important;
+  font-weight: 500 !important;
+  line-height: 18px !important;
+  white-space: nowrap !important;
+}
+html[data-theme="dark"] :where(.count-badge,.selection-badge,.atc-count,.med-count,.clinical-status,.lab-status,.rx-state,.badge,.atc-card-code,.icd-code-badge) { border-color: rgba(70,95,255,.25) !important; background: rgba(70,95,255,.12) !important; color: var(--mi-brand-300) !important; }
+
+/* Tables */
+html.medindex-tailadmin :where(.table-wrap,.atc-table-wrap,.med-table-wrap,.clinical-table-wrap) {
+  max-height: none !important;
+  overflow: auto !important;
+  margin: 0 !important;
+  border: 1px solid var(--mi-border) !important;
+  border-radius: 14px !important;
+  background: var(--mi-surface) !important;
+  box-shadow: var(--mi-shadow-xs) !important;
+}
+html.medindex-tailadmin :where(table,.atc-table,.med-table) {
+  width: 100% !important;
+  border-collapse: separate !important;
+  border-spacing: 0 !important;
+  background: var(--mi-surface) !important;
+  color: var(--mi-text) !important;
+  font-family: var(--mi-font) !important;
+  font-size: 13px !important;
+}
+html.medindex-tailadmin :where(thead th,.atc-table th,.med-table th) {
+  position: sticky !important;
+  top: 0 !important;
+  z-index: 4 !important;
+  padding: 12px 16px !important;
+  border-right: 0 !important;
+  border-bottom: 1px solid var(--mi-border) !important;
+  background: var(--mi-gray-50) !important;
+  color: var(--mi-gray-500) !important;
+  font-family: var(--mi-font) !important;
+  font-size: 12px !important;
+  font-weight: 500 !important;
+  letter-spacing: 0 !important;
+  line-height: 18px !important;
+  text-align: left !important;
+  text-transform: none !important;
+}
+html[data-theme="dark"] :where(thead th,.atc-table th,.med-table th) { background: var(--mi-gray-900) !important; color: var(--mi-gray-400) !important; }
+html.medindex-tailadmin :where(tbody td,.atc-table td,.med-table td) {
+  padding: 13px 16px !important;
+  border-bottom: 1px solid var(--mi-border) !important;
+  background: transparent !important;
+  color: var(--mi-gray-600) !important;
+  font-family: var(--mi-font) !important;
+  font-size: 13px !important;
+  line-height: 19px !important;
+}
+html[data-theme="dark"] :where(tbody td,.atc-table td,.med-table td) { color: var(--mi-gray-300) !important; }
+html.medindex-tailadmin :where(tbody tr:nth-child(even),tbody tr:hover,.atc-table tbody tr:hover) { background: transparent !important; }
+html.medindex-tailadmin :where(tbody tr:hover,.atc-table tbody tr:hover) td { background: var(--mi-gray-50) !important; }
+html[data-theme="dark"] :where(tbody tr:hover,.atc-table tbody tr:hover) td { background: rgba(255,255,255,.025) !important; }
+html.medindex-tailadmin :where(td.name,.drug-title,.atc-table .drug-title) { color: var(--mi-gray-900) !important; font-weight: 500 !important; }
+html[data-theme="dark"] :where(td.name,.drug-title,.atc-table .drug-title) { color: #fff !important; }
+html.medindex-tailadmin :where(td.code,.atc-table .code) { color: var(--mi-gray-500) !important; font-family: ui-monospace, SFMono-Regular, Consolas, monospace !important; }
+
+html.medindex-tailadmin .pagination {
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  gap: 6px !important;
+  margin-top: 14px !important;
+  padding: 14px !important;
+  border: 1px solid var(--mi-border) !important;
+  border-radius: 12px !important;
+  background: var(--mi-surface) !important;
+  box-shadow: var(--mi-shadow-xs) !important;
+}
+html.medindex-tailadmin .pagination button.active { border-color: var(--mi-brand-500) !important; background: var(--mi-brand-500) !important; color: #fff !important; }
+
+/* Menus and popovers */
+html.medindex-tailadmin :where(.col-panel,.form-panel,.rx-popover,.drug-action-card) {
+  border: 1px solid var(--mi-border) !important;
+  border-radius: 12px !important;
+  background: var(--mi-surface) !important;
+  color: var(--mi-text) !important;
+  box-shadow: var(--mi-shadow-lg) !important;
+}
+html.medindex-tailadmin :where(.col-panel,.form-panel) { padding: 10px !important; }
+html.medindex-tailadmin :where(.col-panel label,#formList .form-item,.drug-action-item) { border-radius: 7px !important; color: var(--mi-gray-700) !important; }
+html[data-theme="dark"] :where(.col-panel label,#formList .form-item,.drug-action-item) { color: var(--mi-gray-300) !important; }
+html.medindex-tailadmin :where(.col-panel label,#formList .form-item,.drug-action-item):hover { background: var(--mi-gray-50) !important; }
+html[data-theme="dark"] :where(.col-panel label,#formList .form-item,.drug-action-item):hover { background: rgba(255,255,255,.05) !important; }
+
+/* Cards and grids */
+html.medindex-tailadmin :where(.atc-grid,.med-grid,.clinical-list,.rx-saved-grid) { gap: 16px !important; }
+html.medindex-tailadmin :where(.atc-card,.icd-chapter-card,.icd-code-card,.lab-card,.clinical-card,.protocol-card,.rx-saved-card,.saved-protocol,.protocol-dashboard-card) {
+  border: 1px solid var(--mi-border) !important;
+  border-radius: 14px !important;
+  background: var(--mi-surface) !important;
+  color: var(--mi-text) !important;
+  box-shadow: var(--mi-shadow-xs) !important;
+  transform: none !important;
+  transition: border-color .15s ease, box-shadow .15s ease, transform .15s ease !important;
+}
+html.medindex-tailadmin :where(.atc-card,.icd-chapter-card,.icd-code-card,.lab-card,.clinical-card,.protocol-card,.rx-saved-card,.saved-protocol,.protocol-dashboard-card):hover {
+  border-color: var(--mi-brand-200) !important;
+  box-shadow: var(--mi-shadow-md) !important;
+  transform: translateY(-1px) !important;
+}
+html.medindex-tailadmin :where(.atc-card h3,.icd-chapter-card h3,.icd-code-card h3,.lab-card h3,.clinical-card h3,.protocol-card h3,.rx-saved-card h3,.saved-protocol h3) { color: var(--mi-gray-900) !important; font-family: var(--mi-font) !important; font-weight: 600 !important; }
+html[data-theme="dark"] :where(.atc-card h3,.icd-chapter-card h3,.icd-code-card h3,.lab-card h3,.clinical-card h3,.protocol-card h3,.rx-saved-card h3,.saved-protocol h3) { color: #fff !important; }
+html.medindex-tailadmin :where(.atc-card p,.icd-chapter-card p,.icd-code-card p,.lab-card p,.clinical-card p,.protocol-card p,.rx-saved-card p,.saved-protocol p) { color: var(--mi-muted) !important; font-family: var(--mi-font) !important; }
+html.medindex-tailadmin :where(.atc-card-arrow,.protocol-card-arrow) { background: var(--mi-brand-500) !important; }
+html.medindex-tailadmin :where(.atc-card-arrow,.protocol-card-arrow):hover { background: var(--mi-brand-600) !important; }
+
+/* Section headings */
+html.medindex-tailadmin :where(.atc-section-head,.med-section-head,.lab-main-head) { margin-bottom: 16px !important; }
+html.medindex-tailadmin :where(.atc-section-head h2,.med-section-head h2,.lab-main-head h2) { margin: 0 !important; color: var(--mi-text) !important; font-family: var(--mi-font) !important; font-size: 18px !important; font-weight: 600 !important; letter-spacing: -.015em !important; }
+html.medindex-tailadmin :where(.atc-section-head p,.med-section-head p,.lab-main-head p,.atc-breadcrumb) { color: var(--mi-muted) !important; font-family: var(--mi-font) !important; font-size: 13px !important; }
+
+/* Page spacing resets */
+html.medindex-tailadmin :where(.atc-content,.clinical-main,.rx-main) { width: 100% !important; max-width: none !important; margin: 0 !important; padding: 0 !important; }
+html.medindex-tailadmin :where(.icd-section,.lab-section,.rx-saved-section) { margin-top: 24px !important; }
+html.medindex-tailadmin .atc-source-note,
+html.medindex-tailadmin :where(.med-notice,.clinical-note,.rx-safety,.lab-sheet-note) {
+  margin: 16px 0 !important;
+  padding: 12px 14px !important;
+  border: 1px solid var(--mi-warning-500) !important;
+  border-left-width: 4px !important;
+  border-radius: 9px !important;
+  background: var(--mi-warning-50) !important;
+  color: var(--mi-warning-700) !important;
+  font-family: var(--mi-font) !important;
+  font-size: 13px !important;
+  line-height: 1.5 !important;
+}
+html[data-theme="dark"] .atc-source-note,
+html[data-theme="dark"] :where(.med-notice,.clinical-note,.rx-safety,.lab-sheet-note) { background: rgba(247,144,9,.1) !important; color: #fec84b !important; }
+
+/* Prescription page */
+html.medindex-tailadmin .rx-dashboard { gap: 18px !important; }
+html.medindex-tailadmin :where(.rx-compose-card,.rx-preview-card,.rx-saved-section) {
+  border: 1px solid var(--mi-border) !important;
+  border-radius: 14px !important;
+  background: var(--mi-surface) !important;
+  box-shadow: var(--mi-shadow-xs) !important;
+}
+html.medindex-tailadmin .rx-compose-card { padding: 20px !important; }
+html.medindex-tailadmin .rx-preview-card { overflow: hidden !important; }
+html.medindex-tailadmin .rx-card-head h2 { color: var(--mi-text) !important; font-family: var(--mi-font) !important; font-size: 16px !important; font-weight: 600 !important; }
+html.medindex-tailadmin .rx-step { background: var(--mi-brand-50) !important; color: var(--mi-brand-600) !important; }
+html[data-theme="dark"] .rx-step { background: rgba(70,95,255,.12) !important; color: var(--mi-brand-300) !important; }
+html.medindex-tailadmin .rx-command-bar { border: 1px solid var(--mi-border) !important; border-radius: 10px !important; background: var(--mi-gray-50) !important; }
+html[data-theme="dark"] .rx-command-bar { background: rgba(255,255,255,.03) !important; }
+html.medindex-tailadmin .rx-command-bar button { border: 1px solid var(--mi-border) !important; border-radius: 7px !important; background: var(--mi-surface) !important; color: var(--mi-brand-600) !important; }
+html.medindex-tailadmin .rx-editor-wrap textarea { min-height: 330px !important; border-radius: 10px !important; background: var(--mi-surface) !important; font-family: ui-monospace, SFMono-Regular, Consolas, monospace !important; font-size: 13px !important; }
+html.medindex-tailadmin .rx-preview { background: var(--mi-surface) !important; }
+html.medindex-tailadmin .rx-preview-empty { border: 1px dashed var(--mi-gray-300) !important; border-radius: 12px !important; color: var(--mi-muted) !important; }
+html.medindex-tailadmin .rx-generated-review { border: 1px solid var(--mi-border) !important; border-radius: 9px !important; background: var(--mi-gray-50) !important; }
+html[data-theme="dark"] .rx-generated-review { background: rgba(255,255,255,.03) !important; }
+html.medindex-tailadmin .rx-saved-section { padding: 20px !important; }
+
+/* Panels and dialogs */
+html.medindex-tailadmin :where(.med-panel,.rx-dialog) {
+  border: 1px solid var(--mi-border) !important;
+  border-radius: 16px !important;
+  background: var(--mi-surface) !important;
+  color: var(--mi-text) !important;
+  box-shadow: 0 24px 64px rgba(16,24,40,.22) !important;
+}
+html.medindex-tailadmin :where(.med-panel-head,.med-panel-foot) { border-color: var(--mi-border) !important; background: var(--mi-surface) !important; }
+html.medindex-tailadmin .med-panel-overlay,
+html.medindex-tailadmin .rx-dialog-overlay { background: rgba(16,24,40,.55) !important; backdrop-filter: blur(4px); }
+html.medindex-tailadmin .med-panel-close { border: 1px solid var(--mi-border) !important; border-radius: 9px !important; background: var(--mi-surface) !important; color: var(--mi-muted) !important; }
+
+/* Loaders and empty states */
+html.medindex-tailadmin :where(.atc-loader,.clinical-loader,.empty-state,.atc-empty,.rx-saved-empty) { color: var(--mi-muted) !important; }
+html.medindex-tailadmin .atc-loader-dots span { background: var(--mi-brand-500) !important; }
+html.medindex-tailadmin .page-loader { background: rgba(249,250,251,.94) !important; }
+html[data-theme="dark"] .page-loader { background: rgba(16,24,40,.94) !important; }
+html.medindex-tailadmin .loader-content { color: var(--mi-brand-500) !important; }
+
+/* Login — TailAdmin authentication layout */
+html.medindex-tailadmin-login,
+html.medindex-tailadmin-login body { min-height: 100%; margin: 0; background: var(--mi-surface); color: var(--mi-text); font-family: var(--mi-font); }
+html.medindex-tailadmin-login * { box-sizing: border-box; }
+html.medindex-tailadmin-login .login-shell {
+  display: grid;
+  min-height: 100vh;
+  min-height: 100dvh;
+  grid-template-columns: minmax(0, 1fr) minmax(420px, .9fr);
+  padding: 0 !important;
+  background: var(--mi-surface) !important;
+}
+html.medindex-tailadmin-login .login-card {
+  position: relative;
+  display: flex;
+  width: min(520px, calc(100% - 48px));
+  align-self: center;
+  justify-self: center;
+  flex-direction: column;
+  padding: 42px 38px !important;
+  border: 0 !important;
+  border-radius: 0 !important;
+  background: transparent !important;
+  box-shadow: none !important;
+}
+html.medindex-tailadmin-login .login-brand { display: grid; width: 48px !important; height: 48px !important; margin-bottom: 26px !important; place-items: center; border: 0 !important; border-radius: 12px !important; background: var(--mi-brand-500) !important; color: #fff !important; box-shadow: var(--mi-shadow-md) !important; }
+html.medindex-tailadmin-login .login-kicker { margin: 0 0 6px !important; color: var(--mi-brand-500) !important; font-size: 12px !important; font-weight: 600 !important; letter-spacing: .06em !important; }
+html.medindex-tailadmin-login .login-card h1 { margin: 0 !important; color: var(--mi-text) !important; font-family: var(--mi-font) !important; font-size: 30px !important; font-weight: 600 !important; letter-spacing: -.025em !important; }
+html.medindex-tailadmin-login .login-copy { margin: 10px 0 28px !important; color: var(--mi-muted) !important; font-size: 14px !important; line-height: 1.55 !important; }
+html.medindex-tailadmin-login .login-card label { margin-bottom: 7px !important; color: var(--mi-gray-700) !important; font-size: 13px !important; font-weight: 500 !important; }
+html[data-theme="dark"].medindex-tailadmin-login .login-card label { color: var(--mi-gray-300) !important; }
+html.medindex-tailadmin-login .password-row { gap: 10px !important; }
+html.medindex-tailadmin-login .password-row input { height: 46px !important; border-radius: 9px !important; }
+html.medindex-tailadmin-login .password-row button { min-width: 76px !important; height: 46px !important; border: 1px solid var(--mi-border) !important; border-radius: 9px !important; background: var(--mi-surface) !important; color: var(--mi-gray-700) !important; }
+html.medindex-tailadmin-login .login-submit { height: 46px !important; margin-top: 16px !important; border-radius: 9px !important; background: var(--mi-brand-500) !important; box-shadow: var(--mi-shadow-xs) !important; font-size: 14px !important; font-weight: 500 !important; }
+html.medindex-tailadmin-login .login-submit:hover { background: var(--mi-brand-600) !important; transform: none !important; }
+html.medindex-tailadmin-login .login-meta { margin-top: 22px !important; padding-top: 18px !important; border-color: var(--mi-border) !important; }
+html.medindex-tailadmin-login .login-meta span { background: var(--mi-gray-50) !important; color: var(--mi-gray-500) !important; }
+html[data-theme="dark"].medindex-tailadmin-login .login-meta span { background: rgba(255,255,255,.03) !important; }
+.login-side-panel {
+  position: relative;
+  display: flex;
+  min-height: 100%;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  padding: 48px;
+  background: #101828;
+  color: #fff;
+}
+.login-side-panel::before,
+.login-side-panel::after { content: ""; position: absolute; border-radius: 50%; filter: blur(1px); }
+.login-side-panel::before { width: 420px; height: 420px; top: -180px; right: -130px; background: rgba(70,95,255,.35); }
+.login-side-panel::after { width: 360px; height: 360px; bottom: -170px; left: -130px; background: rgba(11,165,236,.22); }
+.login-side-inner { position: relative; z-index: 1; width: min(430px, 100%); text-align: center; }
+.login-side-mark { display: grid; width: 72px; height: 72px; margin: 0 auto 24px; place-items: center; border: 1px solid rgba(255,255,255,.16); border-radius: 18px; background: rgba(255,255,255,.08); font-size: 25px; font-weight: 700; backdrop-filter: blur(8px); }
+.login-side-mark span { color: #9cb9ff; }
+.login-side-inner h2 { margin: 0; font-size: 30px; font-weight: 600; letter-spacing: -.025em; }
+.login-side-inner p { margin: 12px auto 0; color: #98a2b3; font-size: 14px; line-height: 1.6; }
+.login-side-grid { display: grid; grid-template-columns: repeat(3,1fr); gap: 10px; margin-top: 30px; }
+.login-side-grid span { padding: 12px 8px; border: 1px solid rgba(255,255,255,.1); border-radius: 10px; background: rgba(255,255,255,.04); color: #d0d5dd; font-size: 11px; }
+
+@media (max-width: 1279px) {
+  .mi-profile-chip > span:last-child { display: none; }
+  .mi-content-container { padding-inline: 20px; }
+}
+
+@media (max-width: 1023px) {
+  .mi-sidebar {
+    position: fixed;
+    inset: 0 auto 0 0;
+    width: var(--mi-sidebar-width) !important;
+    min-width: var(--mi-sidebar-width) !important;
+    transform: translateX(-100%);
+    box-shadow: 20px 0 40px rgba(16,24,40,.15);
+  }
+  body.mi-sidebar-open .mi-sidebar { transform: translateX(0); }
+  .mi-sidebar-close { display: grid; }
+  .mi-mobile-overlay {
+    position: fixed;
+    inset: 0;
+    z-index: 90;
+    display: block;
+    background: rgba(16,24,40,.46);
+    opacity: 0;
+    visibility: hidden;
+    transition: opacity .2s ease, visibility .2s ease;
+    backdrop-filter: blur(2px);
+  }
+  body.mi-sidebar-open .mi-mobile-overlay { opacity: 1; visibility: visible; }
+  .mi-topbar { padding-inline: 16px; }
+  .mi-mobile-brand { display: inline-flex; }
+  .mi-global-search { display: none; }
+  .mi-heading-badge { display: none; }
+  .mi-page-heading { align-items: flex-start; }
+}
+
+@media (max-width: 767px) {
+  .mi-topbar { min-height: 70px; flex-basis: 70px; padding: 12px; }
+  .mi-topbar-actions { gap: 8px; }
+  .mi-topbar-actions .mi-icon-button { display: none; }
+  .mi-primary-action { width: 44px; height: 44px; padding: 0; }
+  .mi-primary-action span { display: none; }
+  .mi-profile-chip { display: none; }
+  .mi-content-container { padding: 20px 12px 36px; }
+  .mi-page-heading { margin-bottom: 18px; }
+  .mi-page-heading h1 { font-size: 24px; }
+  .mi-page-heading p { font-size: 13px; }
+  html.medindex-tailadmin :where(.atc-header,.med-hero,.clinical-hero,.rx-hero,.mi-index-content > header) { align-items: flex-start !important; flex-direction: column !important; padding: 16px !important; border-radius: 12px !important; }
+  html.medindex-tailadmin :where(.toolbar,.atc-toolbar,.med-toolbar,.clinical-toolbar,.lab-quickbar) { align-items: stretch !important; padding: 12px !important; border-radius: 12px !important; }
+  html.medindex-tailadmin :where(.toolbar,.atc-toolbar,.med-toolbar,.clinical-toolbar,.lab-quickbar) :where(input,select,.form-picker,.col-picker) { width: 100% !important; flex: 1 1 100% !important; }
+  html.medindex-tailadmin :where(.table-wrap,.atc-table-wrap,.med-table-wrap) { border-radius: 10px !important; }
+  html.medindex-tailadmin :where(thead th,.atc-table th,.med-table th) { padding: 11px 12px !important; }
+  html.medindex-tailadmin :where(tbody td,.atc-table td,.med-table td) { padding: 12px !important; }
+  html.medindex-tailadmin-login .login-shell { grid-template-columns: 1fr; }
+  html.medindex-tailadmin-login .login-card { width: min(100% - 24px, 520px); padding: 32px 18px !important; }
+  .login-side-panel { display: none; }
+}
+
+@media (max-width: 479px) {
+  .mi-mobile-brand strong { display: none; }
+  .mi-page-heading p { max-width: 300px; }
+  html.medindex-tailadmin .rx-compose-actions { display: grid !important; grid-template-columns: 1fr !important; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after { scroll-behavior: auto !important; transition-duration: .01ms !important; animation-duration: .01ms !important; animation-iteration-count: 1 !important; }
+}
+
+@media print {
+  .mi-sidebar,.mi-topbar,.mi-mobile-overlay,.mi-page-heading { display: none !important; }
+  .mi-app-shell,.mi-workspace,.mi-main { display: block !important; height: auto !important; overflow: visible !important; }
+  .mi-content-container { max-width: none !important; padding: 0 !important; }
+  html.medindex-tailadmin body { background: #fff !important; color: #000 !important; }
+}
