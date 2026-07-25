@@ -19,6 +19,10 @@ const yes = value => ['PO', 'YES', 'TRUE', '1'].includes(clean(value).toUpperCas
 const verified = value => clean(value).toUpperCase() === 'VERIFIKUAR';
 const envFlag = name => ['TRUE', '1', 'YES', 'PO'].includes(clean(process.env[name]).toUpperCase());
 const httpsUrl = value => /^https:\/\/[^\s]+$/i.test(clean(value)) ? clean(value) : '';
+const sourceList = value => clean(value)
+  .split(/\s*;\s*/)
+  .map(httpsUrl)
+  .filter(Boolean);
 const numberOrNull = value => {
   const raw = clean(value);
   const parsed = Number(raw.replace(',', '.'));
@@ -40,7 +44,7 @@ async function fetchWorkbook(url) {
     const response = await fetch(url, {
       redirect: 'follow',
       signal: controller.signal,
-      headers: { 'User-Agent': 'Mozilla/5.0 (compatible; MedIndexDosage/2.1)' },
+      headers: { 'User-Agent': 'Mozilla/5.0 (compatible; MedIndexDosage/2.2)' },
     });
     if (!response.ok) throw new Error(`status ${response.status}`);
     const declaredSize = Number(response.headers.get('content-length') || 0);
@@ -146,8 +150,35 @@ function mapPediatric(row) {
   return result;
 }
 
+function mapCard(row) {
+  const pdid = clean(row.PDID);
+  const tradeName = clean(row['Emri tregtar']);
+  const strength = clean(row['Fortësia']);
+  return {
+    cardKey: [pdid, tradeName, strength].join('|'),
+    nr: clean(row['Nr rendor']),
+    pdid,
+    tradeName,
+    substance: clean(row['Substanca aktive']),
+    atc: clean(row.ATC),
+    form: clean(row.Forma),
+    strength,
+    drugClass: clean(row['Klasa / Çka është']),
+    use: clean(row.Përdorimi),
+    adultDose: clean(row['Doza e plotë — Të rritur']),
+    adultRoute: clean(row['Rruga — Të rritur']),
+    pediatricDose: clean(row['Doza e plotë — Fëmijë']),
+    pediatricRoute: clean(row['Rruga — Fëmijë']),
+    sourceUrls: sourceList(row['Burimi URL']),
+    auditedAt: clean(row['Data e auditimit']),
+    auditNote: clean(row['Shënim auditimi']),
+    status: 'VERIFIKUAR',
+  };
+}
+
 const publishedForm = row => verified(row.Statusi) && yes(row['Publiko parashtesën?']) && clean(row['Forma në databazë']) && clean(row['Parashtesa MedIndex']);
 const requestedDosage = row => verified(row.Statusi) && yes(row['Auto-fill']);
+const publishedCard = row => verified(row.Statusi) && yes(row['Publiko?']) && clean(row.PDID) && clean(row['Doza e plotë — Të rritur']) && clean(row['Rruga — Të rritur']);
 
 function validAdult(row) {
   return requestedDosage(row) && clean(row.RegimenID) && clean(row['Substanca aktive']) && clean(row.ATC) && clean(row.Forma) &&
@@ -182,29 +213,35 @@ async function buildPayload(fileId) {
   const formRows = sheetToRecords(workbook, clean(config.FORMS_SHEET) || 'FORMA_DHE_SHKURTESA');
   const adultRows = sheetToRecords(workbook, clean(config.ADULT_SHEET) || 'DOZA_TE_RRITUR');
   const pediatricRows = sheetToRecords(workbook, clean(config.PEDIATRIC_SHEET) || 'DOZA_PEDIATRIKE');
+  const cardRows = sheetToRecords(workbook, clean(config.CARD_SHEET) || 'KARTELA_BARNAVE');
 
   const formsResult = uniqueBy(formRows.filter(publishedForm).map(mapForm), 'formKey');
   const eligibleAdultResult = uniqueBy(adultRows.filter(validAdult).map(mapAdult), 'regimenId');
   const eligiblePediatricResult = uniqueBy(pediatricRows.filter(validPediatric).map(mapPediatric), 'regimenId');
+  const cardsResult = uniqueBy(cardRows.filter(publishedCard).map(mapCard), 'cardKey');
   const adult = clinicalAutoFillEnabled ? eligibleAdultResult.output : [];
   const pediatric = clinicalAutoFillEnabled ? eligiblePediatricResult.output : [];
+  const cards = clinicalAutoFillEnabled ? cardsResult.output : [];
 
   const payload = {
     schemaVersion: clean(config.SCHEMA_VERSION) || '1.0.0', matchVersion: 'exact-v1', datasetVersion: clean(config.DATASET_VERSION),
     mode: clean(config.WEBSITE_MODE) || 'SAFE_VERIFIED_ONLY', generatedAt: new Date().toISOString(),
-    forms: formsResult.output, adult, pediatric,
+    forms, adult, pediatric, cards,
     meta: {
       sourceFileId: fileId, clinicalAutoFillEnabled,
       activationSource: envFlag('ENABLE_DOSAGE_AUTOFILL') ? 'vercel-env' : clinicalAutoFillEnabled ? 'sheet-config' : 'disabled',
       autoApplyPolicy: clean(config.AUTO_APPLY_POLICY) || 'UNIQUE_EXACT_MATCH_AUTO_APPLY',
       publishedForms: formsResult.output.length, publishedAdultRegimens: adult.length, publishedPediatricRegimens: pediatric.length,
+      publishedCards: cards.length,
       eligibleAdultRegimens: eligibleAdultResult.output.length, eligiblePediatricRegimens: eligiblePediatricResult.output.length,
+      eligibleCards: cardsResult.output.length,
       rejectedAdultRegimens: adultRows.filter(requestedDosage).length - eligibleAdultResult.output.length,
       rejectedPediatricRegimens: pediatricRows.filter(requestedDosage).length - eligiblePediatricResult.output.length,
       duplicateForms: formsResult.duplicates, duplicateAdultRegimens: eligibleAdultResult.duplicates,
-      duplicatePediatricRegimens: eligiblePediatricResult.duplicates,
+      duplicatePediatricRegimens: eligiblePediatricResult.duplicates, duplicateCards: cardsResult.duplicates,
       draftAdultRegimens: adultRows.filter(row => !requestedDosage(row)).length,
       draftPediatricRegimens: pediatricRows.filter(row => !requestedDosage(row)).length,
+      draftCards: cardRows.filter(row => !publishedCard(row)).length,
       buildMs: Date.now() - startedAt, geminiForDosage: false,
     },
   };
@@ -214,7 +251,7 @@ async function buildPayload(fileId) {
 
 async function getPayload() {
   const fileId = process.env.DOSAGE_SHEET_ID || DEFAULT_DOSAGE_FILE_ID;
-  const key = `${fileId}:${envFlag('ENABLE_DOSAGE_AUTOFILL')}:config-v5`;
+  const key = `${fileId}:${envFlag('ENABLE_DOSAGE_AUTOFILL')}:config-v6-cards`;
   const now = Date.now();
   if (memoryCache && memoryCacheKey === key && now - memoryCacheTime < MEMORY_CACHE_MS) return memoryCache;
   if (!pendingBuild || pendingBuildKey !== key) {
@@ -241,7 +278,7 @@ module.exports = async function handler(req, res) {
     if (!(await authorized(req))) {
       res.setHeader('Cache-Control', 'no-store');
       res.setHeader('Vary', 'Cookie');
-      return res.status(401).json({ error: 'Sesioni nuk është aktiv.', forms: [], adult: [], pediatric: [] });
+      return res.status(401).json({ error: 'Sesioni nuk është aktiv.', forms: [], adult: [], pediatric: [], cards: [] });
     }
 
     const result = await getPayload();
@@ -259,7 +296,7 @@ module.exports = async function handler(req, res) {
     res.setHeader('Content-Type', 'application/json; charset=utf-8');
     res.setHeader('Cache-Control', 'no-store');
     return res.status(500).json({
-      error: error.message || 'Gabim gjatë ngarkimit të dozologjisë.', forms: [], adult: [], pediatric: [],
+      error: error.message || 'Gabim gjatë ngarkimit të dozologjisë.', forms: [], adult: [], pediatric: [], cards: [],
       meta: { clinicalAutoFillEnabled: false, geminiForDosage: false },
     });
   }
