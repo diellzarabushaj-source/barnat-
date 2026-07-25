@@ -59,6 +59,7 @@ test('mjeku gjen shërbimin, krijon recetë dhe vazhdon offline', async ({ page,
   expectInsideViewport(drugGeometry.result, drugGeometry.viewport);
   await firstDrug.click();
   await expect(page.locator('#rxComposer')).toHaveValue(/Paracetamol/i);
+  await expect(page.locator('#rxComposer')).toHaveValue(/Sasia:\s*Scat\. No I/i);
   await page.locator('#rxDiagnosis').fill('R51 — Dhimbje koke');
   await page.waitForTimeout(600);
 
@@ -66,6 +67,7 @@ test('mjeku gjen shërbimin, krijon recetë dhe vazhdon offline', async ({ page,
   await restoredPage.goto('http://127.0.0.1:4173/recetat.html', { waitUntil:'domcontentloaded' });
   await restoredPage.waitForFunction(() => document.documentElement.classList.contains('auth-ready'));
   await expect(restoredPage.locator('#rxComposer')).toHaveValue(/Paracetamol/i);
+  await expect(restoredPage.locator('#rxComposer')).toHaveValue(/Sasia:\s*Scat\. No I/i);
   await expect(restoredPage.locator('#rxDiagnosis')).toHaveValue(/Dhimbje koke/i);
 
   const restoredDiagnosis = restoredPage.locator('#rxDiagnosis');
@@ -91,6 +93,7 @@ test('mjeku gjen shërbimin, krijon recetë dhe vazhdon offline', async ({ page,
   await restoredPage.waitForFunction(() => document.documentElement.classList.contains('auth-ready'));
   await expect(restoredPage.locator('#rxDiagnosis')).toHaveValue(/J85/i);
   await expect(restoredPage.locator('#rxComposer')).toHaveValue(/Paracetamol/i);
+  await expect(restoredPage.locator('#rxComposer')).toHaveValue(/Sasia:\s*Scat\. No I/i);
 
   restoredPage.once('dialog', pending => pending.accept());
   await restoredPage.goto('http://127.0.0.1:4173/index.html', { waitUntil:'domcontentloaded' });
