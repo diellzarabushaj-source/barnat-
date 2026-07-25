@@ -16,7 +16,9 @@ assert.ok(html.indexOf('icd.js?v=20260723-4') < html.indexOf('icd-premium-cards.
 new Function(js);
 assert.match(js, /const THEMES = \[/);
 assert.match(js, /const ICONS = \[/);
-assert.match(js, /ICONS\[index % ICONS\.length\]/);
+assert.match(js, /romanToNumber/);
+assert.match(js, /ICONS\[chapterIndex % ICONS\.length\]/);
+assert.match(js, /themeStyle\(chapterIndex\)/);
 assert.match(js, /MutationObserver/);
 assert.match(js, /Hap kapitullin/);
 assert.match(js, /data\[DECORATED\]/);
