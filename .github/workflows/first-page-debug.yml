@@ -1,0 +1,29 @@
+name: First-page audit debug
+
+on:
+  pull_request:
+
+permissions:
+  contents: read
+
+jobs:
+  debug:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - run: npm install --ignore-scripts --no-audit --no-fund
+      - name: Capture tests
+        shell: bash
+        run: |
+          set +e
+          npm test > first-page-test-output.txt 2>&1
+          echo "exit_code=$?" >> first-page-test-output.txt
+          tail -160 first-page-test-output.txt
+          exit 0
+      - uses: actions/upload-artifact@v4
+        with:
+          name: first-page-test-output
+          path: first-page-test-output.txt
