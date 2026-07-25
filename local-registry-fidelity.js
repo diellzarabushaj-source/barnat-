@@ -125,7 +125,8 @@
     const packaging = clean(row['Madhësia e paketimit']);
     const pdid = clean(row.PDID);
     const protocolNo = clean(row.ProtocolNo);
-    const sheetPrescriptionNotation = clean(row.__sheetPrescriptionNotation || row['Si të shënohet në recetë']);
+    const prescriptionLine = clean(row.__prescriptionLine);
+    const packagingSummary = clean(row.__packagingSummary);
     return {
       key: `${pdid}|${protocolNo}|${tradeName}|${strength}`,
       tradeName,
@@ -133,12 +134,12 @@
       strength,
       form,
       packaging,
-      prescriptionLine:clean(row.__prescriptionLine),
-      prescriptionNotation:clean(row['Si të shënohet në recetë']),
-      packagingSummary:clean(row.__packagingSummary),
+      prescriptionLine,
+      prescriptionNotation:[prescriptionLine, packagingSummary].filter(Boolean).join(' — '),
+      packagingSummary,
       dispense:clean(row.__dispense),
       route:clean(row.__prescriptionRoute),
-      sheetPrescriptionNotation,
+      sheetPrescriptionNotation:clean(row.__sheetPrescriptionNotation),
       atc:clean(row['ATC Code']),
       pdid,
       protocolNo,
@@ -163,6 +164,7 @@
     if (trade === query) score += 100;
     else if (trade.startsWith(query)) score += 75;
     else if (trade.includes(query)) score += 50;
+    if (prescription.startsWith(query)) score += 40;
     if (atc.startsWith(query)) score += 35;
     if (strength.includes(query)) score += 12;
     return score;
