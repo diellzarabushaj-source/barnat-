@@ -1,0 +1,30 @@
+name: ICD audit debug
+
+on:
+  pull_request:
+
+permissions:
+  contents: read
+
+jobs:
+  debug:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - name: Install dependencies
+        run: npm install --ignore-scripts --no-audit --no-fund
+      - name: Capture test output
+        shell: bash
+        run: |
+          set +e
+          npm test > icd-audit-output.txt 2>&1
+          status=$?
+          echo "exit_code=$status" >> icd-audit-output.txt
+          exit 0
+      - uses: actions/upload-artifact@v4
+        with:
+          name: icd-audit-output
+          path: icd-audit-output.txt
