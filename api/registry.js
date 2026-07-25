@@ -69,6 +69,14 @@ function normalizeHeader(value) {
   return String(value ?? '').replace(/\s+/g, ' ').trim();
 }
 
+function normalizeCellValue(value) {
+  if (value === null || value === undefined) return '';
+  if (typeof value !== 'string') return value;
+  return value
+    .replace(/[ \t]*_x000D_[ \t]*(?:\r?\n)?/gi, '\n')
+    .replace(/\r\n?/g, '\n');
+}
+
 function rowHasData(row) {
   return row.some(value => value !== '' && value !== null && value !== undefined);
 }
@@ -89,7 +97,7 @@ function bufferToRows(buffer, { minRows = MIN_EXPECTED_ROWS } = {}) {
     const headers = grid[headerIndex].map(normalizeHeader);
     const rows = grid.slice(headerIndex + 1).filter(rowHasData).map(row => {
       const record = {};
-      headers.forEach((header, index) => { if (header) record[header] = row[index] ?? ''; });
+      headers.forEach((header, index) => { if (header) record[header] = normalizeCellValue(row[index]); });
       return record;
     }).filter(record => record['Emri tregtar'] !== '' || record['Substanca aktive'] !== '' || record.PDID !== '');
 
@@ -289,4 +297,5 @@ async function handler(req, res) {
 handler.getRegistryDataset = getRegistryDataset;
 handler.authorized = authorized;
 handler.attachPrescriptionNotation = attachPrescriptionNotation;
+handler.normalizeCellValue = normalizeCellValue;
 module.exports = handler;
