@@ -15,10 +15,11 @@
   <link rel="stylesheet" href="clean-medindex-ui.css?v=20260723-1">
   <link rel="stylesheet" href="clinical-density.css?v=20260724-1">
   <link rel="stylesheet" href="tailadmin-medindex.css?v=20260724-3" data-tailadmin-medindex-css>
+  <link rel="preload" href="icd-clinical-workspace.css?v=20260725-1" as="style">
   <link rel="stylesheet" href="tailadmin-professional.css?v=20260724-1" data-tailadmin-professional-css>
-  <link rel="stylesheet" href="icd-clinical-workspace.css?v=20260725-1">
   <script src="tailadmin-shell.js?v=production-audit-v1" defer></script>
   <script src="tailadmin-professional.js?v=production-audit-v1" defer></script>
+  <script src="icd-clinical-style-loader.js?v=20260725-1" defer></script>
 </head>
 <body>
   <a class="skip-link" href="#icdContent">Kalo te kodet ICD-10</a>
@@ -62,8 +63,8 @@
         <p class="sr-only" id="icdSearchHelp">Shtyp Alt dhe I për t’u fokusuar te kërkimi. Escape pastron filtrat kur fusha e kërkimit është aktive.</p>
         <nav class="icd-quick-nav" aria-label="Qasje e shpejtë ICD-10">
           <button class="icd-quick-button" type="button" data-icd-quick="all" aria-pressed="true">Të gjitha</button>
-          <button class="icd-quick-button" type="button" data-icd-quick="chapters" aria-pressed="false">22 kapitujt</button>
-          <button class="icd-quick-button" type="button" data-icd-quick="codes" aria-pressed="false">Kodet kryesore</button>
+          <button class="icd-quick-button" type="button" data-icd-quick="chapters">22 kapitujt</button>
+          <button class="icd-quick-button" type="button" data-icd-quick="codes">Kodet kryesore</button>
           <button class="icd-quick-button" type="button" data-icd-quick="family" aria-pressed="false">Mjekësi familjare</button>
           <button class="icd-quick-button" type="button" data-icd-quick="emergency" aria-pressed="false">Urgjencë</button>
           <button class="icd-quick-button" type="button" data-icd-quick="critical" aria-pressed="false">Kritike</button>
