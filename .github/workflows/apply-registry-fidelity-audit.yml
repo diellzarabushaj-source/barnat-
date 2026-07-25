@@ -1,0 +1,45 @@
+name: Apply registry source fidelity audit
+
+on:
+  pull_request:
+
+permissions:
+  contents: write
+
+jobs:
+  apply:
+    if: github.actor != 'github-actions[bot]' && github.head_ref == 'audit/registry-source-fidelity'
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - name: Checkout audit branch
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.pull_request.head.ref }}
+          fetch-depth: 0
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+
+      - name: Apply registry fidelity fixes
+        run: node scripts/apply-registry-fidelity-audit.js
+
+      - name: Install dependencies
+        run: npm install --ignore-scripts --no-audit --no-fund
+
+      - name: Run complete validation suite
+        run: npm test
+
+      - name: Commit validated product changes
+        shell: bash
+        run: |
+          set -euo pipefail
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add -A
+          git reset -- .github/workflows/apply-registry-fidelity-audit.yml scripts/apply-registry-fidelity-audit.js
+          git diff --cached --quiet && { echo "No validated changes to commit."; exit 1; }
+          git commit -m "Fix registry source fidelity and offline prescription parity [skip ci]"
+          git push origin HEAD:${{ github.event.pull_request.head.ref }}
