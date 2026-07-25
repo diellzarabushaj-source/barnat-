@@ -103,32 +103,71 @@ function rowKey(row) {
   return `${normalizeHeader(row.PDID)}|${normalizeHeader(row.ProtocolNo)}`;
 }
 
-function buildPrescriptionMap(rows) {
-  const exact = new Map();
-  const byPdid = new Map();
+function ordinalKey(row) {
+  return normalizeHeader(row['Nr rendor']);
+}
+
+function identityKey(row) {
+  return [
+    row['Emri tregtar'], row['Substanca aktive'], row['ATC Code'],
+    row['Fortësia'], row['Forma farmaceutike'], row['Madhësia e paketimit'],
+  ].map(normalizeHeader).join('|');
+}
+
+function buildUniqueMap(rows, keyForRow) {
+  const values = new Map();
+  const ambiguous = new Set();
   rows.forEach(row => {
     const notation = normalizeHeader(row['Si të shënohet në recetë']);
-    if (!notation) return;
-    exact.set(rowKey(row), notation);
-    const pdid = normalizeHeader(row.PDID);
-    if (pdid && !byPdid.has(pdid)) byPdid.set(pdid, notation);
+    const key = keyForRow(row);
+    if (!notation || !key || ambiguous.has(key)) return;
+    if (values.has(key) && values.get(key) !== notation) {
+      values.delete(key);
+      ambiguous.add(key);
+      return;
+    }
+    values.set(key, notation);
   });
-  return { exact, byPdid };
+  return { values, ambiguous };
+}
+
+function buildPrescriptionMap(rows) {
+  return {
+    byOrdinal:buildUniqueMap(rows, ordinalKey),
+    byIdentity:buildUniqueMap(rows, identityKey),
+    exact:buildUniqueMap(rows, rowKey),
+    byPdid:buildUniqueMap(rows, row => normalizeHeader(row.PDID)),
+  };
 }
 
 function attachPrescriptionNotation(rows, prescriptionRows = []) {
   const maps = buildPrescriptionMap(prescriptionRows);
-  let matched = 0;
-  let generated = 0;
+  const stats = { matched:0, generated:0, matchedByOrdinal:0, matchedByIdentity:0, matchedByExact:0, matchedByPdid:0 };
   const output = rows.map(row => {
-    const pdid = normalizeHeader(row.PDID);
-    const fromSheet = maps.exact.get(rowKey(row)) || maps.byPdid.get(pdid) || '';
+    const candidates = [
+      ['matchedByOrdinal', maps.byOrdinal.values.get(ordinalKey(row))],
+      ['matchedByIdentity', maps.byIdentity.values.get(identityKey(row))],
+      ['matchedByExact', maps.exact.values.get(rowKey(row))],
+      ['matchedByPdid', maps.byPdid.values.get(normalizeHeader(row.PDID))],
+    ];
+    const match = candidates.find(([, value]) => value);
+    const fromSheet = match?.[1] || '';
     const notation = fromSheet || PrescriptionNotation.build(row).full;
-    if (fromSheet) matched += 1;
-    else generated += 1;
-    return { ...row, 'Si të shënohet në recetë':notation };
+    if (fromSheet) {
+      stats.matched += 1;
+      stats[match[0]] += 1;
+    } else stats.generated += 1;
+    return { ...row, 'Si të shënohet në recetë':notation, __sheetPrescriptionNotation:fromSheet };
   });
-  return { rows:output, matched, generated, sheetRows:prescriptionRows.length };
+  return {
+    rows:output,
+    ...stats,
+    sheetRows:prescriptionRows.length,
+    ambiguousOrdinal:maps.byOrdinal.ambiguous.size,
+    ambiguousIdentity:maps.byIdentity.ambiguous.size,
+    ambiguousExact:maps.exact.ambiguous.size,
+    ambiguousPdid:maps.byPdid.ambiguous.size,
+  };
 }
 
 async function buildDataset() {
@@ -140,8 +179,18 @@ async function buildDataset() {
   const sourceRows = bufferToRows(workbookBuffer);
   const enriched = attachPrescriptionNotation(sourceRows, prescriptionResult.rows);
   const quality = registryQuality.applyRows(enriched.rows);
+  const rows = quality.rows.map(row => {
+    const generated = PrescriptionNotation.build(row);
+    return {
+      ...row,
+      __prescriptionLine:generated.line,
+      __packagingSummary:generated.packaging,
+      __dispense:generated.dispense,
+      __prescriptionRoute:generated.route,
+    };
+  });
   return {
-    rows:quality.rows,
+    rows,
     meta:{
       version:quality.version,
       summary:quality.summary,
@@ -150,6 +199,14 @@ async function buildDataset() {
       prescriptionSheetRows:enriched.sheetRows,
       prescriptionMatched:enriched.matched,
       prescriptionGeneratedFallback:enriched.generated,
+      prescriptionMatchedByOrdinal:enriched.matchedByOrdinal,
+      prescriptionMatchedByIdentity:enriched.matchedByIdentity,
+      prescriptionMatchedByExact:enriched.matchedByExact,
+      prescriptionMatchedByPdid:enriched.matchedByPdid,
+      prescriptionAmbiguousOrdinal:enriched.ambiguousOrdinal,
+      prescriptionAmbiguousIdentity:enriched.ambiguousIdentity,
+      prescriptionAmbiguousExact:enriched.ambiguousExact,
+      prescriptionAmbiguousPdid:enriched.ambiguousPdid,
       prescriptionSheetError:prescriptionResult.error || '',
       generatedAt:new Date().toISOString(),
       buildMs:Date.now() - startedAt,
