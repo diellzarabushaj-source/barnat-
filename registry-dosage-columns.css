@@ -1,0 +1,88 @@
+.registry-dosage-column {
+  min-width: 340px;
+  width: 340px;
+  vertical-align: top;
+  white-space: normal;
+}
+
+#headerRow .registry-dosage-column {
+  min-width: 340px;
+  line-height: 1.25;
+}
+
+.registry-dosage-subhead {
+  display: block;
+  margin-top: 5px;
+  font-size: 0.72rem;
+  font-weight: 600;
+  opacity: 0.8;
+  text-transform: none;
+  letter-spacing: 0;
+}
+
+.registry-dosage-grid {
+  display: grid;
+  grid-template-columns: minmax(220px, 1fr) 72px;
+  gap: 10px;
+  align-items: start;
+}
+
+.registry-dosage-regimen {
+  padding: 7px 0;
+  border-bottom: 1px solid rgba(13, 61, 64, 0.12);
+  font-size: 0.82rem;
+  line-height: 1.45;
+}
+
+.registry-dosage-regimen:last-child {
+  border-bottom: 0;
+}
+
+.registry-dosage-indication {
+  display: block;
+  margin-bottom: 3px;
+  font-size: 0.72rem;
+  font-weight: 700;
+  color: #0d5f63;
+}
+
+.registry-dosage-route {
+  font-weight: 700;
+  text-align: center;
+  overflow-wrap: anywhere;
+}
+
+.registry-dosage-muted {
+  display: block;
+  color: #68737a;
+  font-size: 0.8rem;
+  line-height: 1.4;
+}
+
+.registry-dosage-details summary {
+  cursor: pointer;
+  color: #0d5f63;
+  font-size: 0.82rem;
+  font-weight: 700;
+}
+
+.registry-dosage-details[open] summary {
+  margin-bottom: 4px;
+}
+
+.hide-registry-dosage-adult .registry-dosage-adult,
+.hide-registry-dosage-pediatric .registry-dosage-pediatric {
+  display: none !important;
+}
+
+@media (max-width: 760px) {
+  .registry-dosage-column,
+  #headerRow .registry-dosage-column {
+    min-width: 300px;
+    width: 300px;
+  }
+
+  .registry-dosage-grid {
+    grid-template-columns: minmax(190px, 1fr) 64px;
+  }
+}
