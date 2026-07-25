@@ -12,19 +12,37 @@ const prescriptionRows = sourceRows.map((row, index) => ({ ...row, 'Si të shën
 const result = registry.attachPrescriptionNotation(sourceRows, prescriptionRows);
 assert.equal(result.rows.length, 3);
 assert.deepEqual(result.rows.map(row => row['Si të shënohet në recetë']), ['NOTATION-1', 'NOTATION-2', 'NOTATION-3']);
+assert.deepEqual(result.rows.map(row => row.__sheetPrescriptionNotation), ['NOTATION-1', 'NOTATION-2', 'NOTATION-3']);
 assert.equal(result.matched, 3);
 assert.equal(result.generated, 0);
 assert.equal(result.matchedByOrdinal, 3);
 assert.equal(result.ambiguousExact, 1);
 assert.equal(result.ambiguousPdid, 1);
 
+const fallback = registry.attachPrescriptionNotation([sourceRows[0]], []);
+assert.equal(fallback.matched, 0);
+assert.equal(fallback.generated, 1);
+assert.equal(fallback.rows[0].__sheetPrescriptionNotation, '');
+assert.match(fallback.rows[0]['Si të shënohet në recetë'], /Paracetamol/i);
+
 const root = path.resolve(__dirname, '..');
 const local = fs.readFileSync(path.join(root, 'local-registry-fidelity.js'), 'utf8');
-for (const marker of ['REGISTRY_SCHEMA_VERSION', 'packagingSummary', 'prescriptionLine', 'sheetPrescriptionNotation', 'record.version !== REGISTRY_SCHEMA_VERSION']) {
+for (const marker of [
+  'REGISTRY_SCHEMA_VERSION', 'packagingSummary', 'prescriptionLine',
+  'sheetPrescriptionNotation:clean(row.__sheetPrescriptionNotation)',
+  "prescriptionNotation:[prescriptionLine, packagingSummary]",
+  'record.version !== REGISTRY_SCHEMA_VERSION',
+]) {
   assert.ok(local.includes(marker), `local registry missing ${marker}`);
 }
+const online = fs.readFileSync(path.join(root, 'api/drug-search.js'), 'utf8');
+assert.match(online, /sheetPrescriptionNotation:clean\(row\.__sheetPrescriptionNotation\)/);
+assert.match(online, /const protocolNo = clean\(row\.ProtocolNo\)/);
+assert.match(online, /\$\{pdid\}\|\$\{protocolNo\}\|\$\{tradeName\}\|\$\{strength\}/);
+assert.match(online, /const packaging = normalize\(row\['Madhësia e paketimit'\]\)/);
+
 const html = fs.readFileSync(path.join(root, 'recetat.html'), 'utf8');
 assert.match(html, /local-registry-fidelity\.js\?v=registry-fidelity-v1/);
 const worker = fs.readFileSync(path.join(root, 'sw.js'), 'utf8');
 assert.match(worker, /local-registry-fidelity\.js/);
-console.log('Registry source fidelity and collision audit passed.');
+console.log('Registry source fidelity, provenance and collision audit passed.');
