@@ -32,6 +32,19 @@
     '&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'
   }[character]));
 
+  function romanToNumber(value) {
+    const map = { I:1, V:5, X:10, L:50, C:100 };
+    const roman = text(value).toUpperCase().replace(/[^IVXLC]/g, '');
+    let total = 0;
+    let previous = 0;
+    for (let index = roman.length - 1; index >= 0; index -= 1) {
+      const current = map[roman[index]] || 0;
+      total += current < previous ? -current : current;
+      previous = Math.max(previous, current);
+    }
+    return total || Number.parseInt(value, 10) || 1;
+  }
+
   function iconSvg(name) {
     if (CUSTOM_ICONS[name]) {
       return `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${CUSTOM_ICONS[name]}</svg>`;
@@ -54,17 +67,19 @@
     return { roman, range, title, count };
   }
 
-  function decorateCard(card, index) {
+  function decorateCard(card, visualIndex) {
     if (!(card instanceof HTMLElement) || card.dataset[DECORATED] === '1') return;
-    const data = parseCard(card, index);
+    const data = parseCard(card, visualIndex);
     if (!data.title) return;
 
+    const chapterIndex = Math.max(0, romanToNumber(data.roman) - 1);
     card.dataset[DECORATED] = '1';
+    card.dataset.chapterNumber = String(chapterIndex + 1);
     card.classList.add('icd-aura-card');
-    card.style.cssText += `;${themeStyle(index)}`;
+    card.style.cssText += `;${themeStyle(chapterIndex)}`;
     card.setAttribute('aria-label', `Hap kapitullin ${data.roman}: ${data.title}${data.range ? `, ${data.range}` : ''}`);
 
-    const icon = ICONS[index % ICONS.length];
+    const icon = ICONS[chapterIndex % ICONS.length];
     card.innerHTML = `
       <span class="icd-aura-light" aria-hidden="true"></span>
       <span class="icd-aura-orb icd-aura-orb-one" aria-hidden="true"></span>
