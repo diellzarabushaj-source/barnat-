@@ -6,6 +6,7 @@ const root = path.join(__dirname, '..');
 const index = fs.readFileSync(path.join(root, 'index.html'), 'utf8');
 const script = fs.readFileSync(path.join(root, 'registry-dosage-columns.js'), 'utf8');
 const css = fs.readFileSync(path.join(root, 'registry-dosage-columns.css'), 'utf8');
+const api = fs.readFileSync(path.join(root, 'api', 'dosage.js'), 'utf8');
 
 assert.match(index, /dosage-engine\.js/);
 assert.match(index, /registry-dosage-columns\.js/);
@@ -17,7 +18,16 @@ assert.match(script, /Rruga/);
 assert.match(script, /MedIndexDosageEngine/);
 assert.match(script, /\/api\/dosage/);
 assert.match(script, /Nuk ka dozë pediatrike të verifikuar/);
-assert.doesNotMatch(script, /update|delete|patch/i, 'dosage columns must not mutate the official registry source');
+assert.match(script, /cardsByKey/);
+assert.match(script, /applyCardOverlay/);
+assert.match(script, /Klasa \/ Çka është/);
+assert.match(script, /Përdorimi \/ fjalë kyçe/);
+assert.doesNotMatch(script, /fetch\([^)]*method\s*:\s*['"](?:POST|PUT|PATCH|DELETE)/i, 'registry card integration must be read-only');
+assert.match(api, /KARTELA_BARNAVE/);
+assert.match(api, /publishedCard/);
+assert.match(api, /cards: \[\]/);
+assert.match(api, /Doza e plotë — Të rritur/);
+assert.match(api, /Rruga — Fëmijë/);
 assert.match(css, /hide-registry-dosage-adult/);
 assert.match(css, /hide-registry-dosage-pediatric/);
 
