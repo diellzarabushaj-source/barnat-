@@ -1,0 +1,28 @@
+name: ICD premium debug
+
+on:
+  pull_request:
+
+permissions:
+  contents: read
+
+jobs:
+  debug:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - run: npm install --ignore-scripts --no-audit --no-fund
+      - name: Capture test output
+        shell: bash
+        run: |
+          set +e
+          npm test > icd-premium-test-output.txt 2>&1
+          echo "exit_code=$?" >> icd-premium-test-output.txt
+          exit 0
+      - uses: actions/upload-artifact@v4
+        with:
+          name: icd-premium-test-output
+          path: icd-premium-test-output.txt
