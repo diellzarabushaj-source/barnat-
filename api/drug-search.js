@@ -24,9 +24,10 @@ function resultFromRow(row) {
   const form = clean(row['Forma farmaceutike']);
   const packaging = clean(row['Madhësia e paketimit']);
   const pdid = clean(row.PDID);
+  const protocolNo = clean(row.ProtocolNo);
   const notation = PrescriptionNotation.build(row);
   return {
-    key:`${pdid}|${tradeName}|${strength}`,
+    key:`${pdid}|${protocolNo}|${tradeName}|${strength}`,
     tradeName,
     substance,
     strength,
@@ -37,9 +38,10 @@ function resultFromRow(row) {
     packagingSummary:notation.packaging,
     dispense:notation.dispense,
     route:notation.route,
-    sheetPrescriptionNotation:clean(row['Si të shënohet në recetë']),
+    sheetPrescriptionNotation:clean(row.__sheetPrescriptionNotation),
     atc:clean(row['ATC Code']),
     pdid,
+    protocolNo,
     qualityStatus:clean(row.__qualityStatus || 'verified'),
   };
 }
@@ -51,7 +53,8 @@ function rank(row, query, tokens) {
   const form = normalize(row['Forma farmaceutike']);
   const atc = normalize(row['ATC Code']);
   const prescription = normalize(row['Si të shënohet në recetë']);
-  const haystack = `${substance} ${trade} ${strength} ${form} ${atc} ${prescription}`;
+  const packaging = normalize(row['Madhësia e paketimit']);
+  const haystack = `${substance} ${trade} ${strength} ${form} ${atc} ${prescription} ${packaging}`;
   if (!tokens.every(token => haystack.includes(token))) return -1;
   let score = 0;
   if (substance === query) score += 120;
@@ -62,6 +65,7 @@ function rank(row, query, tokens) {
   else if (trade.includes(query)) score += 50;
   if (prescription.startsWith(query)) score += 40;
   if (atc.startsWith(query)) score += 35;
+  if (strength.includes(query)) score += 12;
   if (String(row.__qualityStatus || '') === 'blocked') score -= 1000;
   return score;
 }
