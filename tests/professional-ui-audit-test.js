@@ -60,4 +60,31 @@ const runtime = read('tailadmin-professional.js');
 
 assert.doesNotMatch(runtime, /fetch\(|\/api\//, 'professional runtime must not touch backend APIs');
 
-console.log('Professional TailAdmin shell and section audit passed.');
+const labHtml = read('analizat.html');
+const labRuntime = read('analizat.js');
+const labCss = read('analizat-polish.css');
+assert.match(labHtml, /analizat-polish\.css\?v=20260725-1/);
+assert.match(labHtml, /analizat\.js\?v=20260725-1/);
+[
+  /CATEGORY_THEMES/,
+  /CATEGORY_ICONS/,
+  /lab-category-tile/,
+  /lab-category-symbol/,
+  /lab-test-icon/,
+  /iconForTest/,
+  /data-category-open/,
+  /aria-pressed/,
+].forEach(pattern => assert.match(labRuntime, pattern, `laboratory runtime missing ${pattern}`));
+[
+  /\.lab-category-tile/,
+  /\.lab-category-head \.lab-category-symbol/,
+  /\.lab-test-icon/,
+  /\.lab-card-arrow/,
+  /--lab-accent/,
+  /html\[data-theme=dark\]\.medindex-tailadmin/,
+  /@media\(max-width:640px\)/,
+].forEach(pattern => assert.match(labCss, pattern, `laboratory CSS missing ${pattern}`));
+assert.ok((labRuntime.match(/accent:'#/g) || []).length >= 14, 'Every laboratory category must have its own colour theme');
+assert.ok((labRuntime.match(/\d+:'(?:blood|microscope|platelet|coagulation|kidney|liver|glucose|lipid|pancreas|inflammation|endocrine|bacteria|urine|flask)'/g) || []).length >= 14, 'Every laboratory category must have a medical icon');
+
+console.log('Professional TailAdmin shell, laboratory cards and section audit passed.');
