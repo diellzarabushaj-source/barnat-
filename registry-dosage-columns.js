@@ -25,7 +25,14 @@
     }
   })();
 
-  let dosageState = { status: 'loading', adult: new Map(), pediatric: new Map(), error: '' };
+  let dosageState = {
+    status: 'loading',
+    adult: new Map(),
+    pediatric: new Map(),
+    cardsByKey: new Map(),
+    cardsByPdid: new Map(),
+    error: '',
+  };
   let registryState = { status: 'loading', byNumber: new Map(), byDrugKey: new Map(), error: '' };
   let enhanceTimer = 0;
   let enhancing = false;
@@ -137,20 +144,39 @@
     return grouped;
   }
 
+  function indexCards(cards) {
+    const byKey = new Map();
+    const byPdid = new Map();
+    (Array.isArray(cards) ? cards : []).forEach(card => {
+      const key = clean(card.cardKey);
+      const pdid = clean(card.pdid);
+      if (key) byKey.set(key, card);
+      if (pdid) addUniqueIndex(byPdid, pdid, card);
+    });
+    return { byKey, byPdid };
+  }
+
   async function loadDosageData() {
     try {
       const response = await fetch(DOSAGE_ENDPOINT, { cache: 'no-store', credentials: 'same-origin' });
       if (!response.ok) throw new Error(`Dozologjia nuk u ngarkua (${response.status}).`);
       const payload = await response.json();
+      const cards = indexCards(payload.cards);
       dosageState = {
         status: 'ready',
         adult: groupRegimens(payload.adult),
         pediatric: groupRegimens(payload.pediatric),
+        cardsByKey: cards.byKey,
+        cardsByPdid: cards.byPdid,
         error: '',
       };
     } catch (error) {
       console.error('Dozologjia nuk u ngarkua:', error);
-      dosageState = { status: 'error', adult: new Map(), pediatric: new Map(), error: error.message || 'Gabim në dozologji.' };
+      dosageState = {
+        status: 'error', adult: new Map(), pediatric: new Map(),
+        cardsByKey: new Map(), cardsByPdid: new Map(),
+        error: error.message || 'Gabim në dozologji.',
+      };
     }
     invalidateDosageCells();
     scheduleEnhance();
@@ -165,6 +191,12 @@
       form: row['Forma farmaceutike'],
       strength: row['Fortësia'],
     });
+  }
+
+  function cardForRegistryRow(row) {
+    if (!row) return null;
+    const key = [row.PDID, row['Emri tregtar'], row['Fortësia']].map(clean).join('|');
+    return dosageState.cardsByKey.get(key) || dosageState.cardsByPdid.get(clean(row.PDID)) || null;
   }
 
   function formatAge(months) {
@@ -227,7 +259,19 @@
     return `<details class="registry-dosage-details"><summary>${regimens.length} skema sipas indikacionit</summary>${regimens.map(item => regimenRow(item, population)).join('')}</details>`;
   }
 
-  function createDosageCell(column, row) {
+  function cardDosageContent(card, population, emptyText) {
+    const dose = clean(population === 'adult' ? card?.adultDose : card?.pediatricDose);
+    const route = clean(population === 'adult' ? card?.adultRoute : card?.pediatricRoute);
+    if (!dose) return `<span class="registry-dosage-muted">${escapeHtml(emptyText)}</span>`;
+    const sources = (Array.isArray(card?.sourceUrls) ? card.sourceUrls : []).map(clean).filter(Boolean);
+    const title = sources.length ? ` title="Burimet e verifikuara: ${escapeHtml(sources.join(' · '))}"` : '';
+    return `<div class="registry-dosage-grid registry-dosage-regimen registry-card-dose"${title}>` +
+      `<div>${escapeHtml(dose)}</div>` +
+      `<div class="registry-dosage-route">${escapeHtml(route || '—')}</div>` +
+      `</div>`;
+  }
+
+  function createDosageCell(column, row, card) {
     const cell = document.createElement('td');
     cell.className = columnClass(column.key);
     cell.dataset.registryDosageColumn = column.key;
@@ -238,6 +282,11 @@
     }
     if (!row) {
       cell.innerHTML = '<span class="registry-dosage-muted">Bari nuk u identifikua në mënyrë unike.</span>';
+      return cell;
+    }
+
+    if (card) {
+      cell.innerHTML = cardDosageContent(card, column.key, column.empty);
       return cell;
     }
 
@@ -263,6 +312,22 @@
     return drugKey ? registryState.byDrugKey.get(drugKey) || null : null;
   }
 
+  function overlayCell(tableRow, label, value, card) {
+    if (!clean(value)) return;
+    const index = headerIndex(label);
+    const cell = index >= 0 ? tableRow.children[index] : null;
+    if (!cell) return;
+    cell.textContent = clean(value);
+    cell.title = clean(value);
+    cell.dataset.registryCardOverlay = clean(card?.pdid || 'verified');
+  }
+
+  function applyCardOverlay(tableRow, card) {
+    if (!card) return;
+    overlayCell(tableRow, 'Klasa / Çka është', card.drugClass, card);
+    overlayCell(tableRow, 'Përdorimi / fjalë kyçe', card.use, card);
+  }
+
   function enhanceHeader() {
     const header = document.getElementById('headerRow');
     if (!header) return;
@@ -285,9 +350,11 @@
         return;
       }
       const registryRow = registryRowForTableRow(tableRow);
+      const card = cardForRegistryRow(registryRow);
+      applyCardOverlay(tableRow, card);
       COLUMN_DEFS.forEach(column => {
         const existing = tableRow.querySelector(`[data-registry-dosage-column="${column.key}"]`);
-        if (!existing) tableRow.appendChild(createDosageCell(column, registryRow));
+        if (!existing) tableRow.appendChild(createDosageCell(column, registryRow, card));
       });
     });
   }
