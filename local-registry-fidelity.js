@@ -6,7 +6,7 @@
   const DB_KEY = 'registry-parts';
   const REGISTRY_URL = '/api/registry';
   const MAX_QUERY_LENGTH = 90;
-  const REGISTRY_SCHEMA_VERSION = 'registry-fidelity-v1';
+  const REGISTRY_SCHEMA_VERSION = 'registry-prescription-master-v2';
   let rowsPromise = null;
 
   const clean = value => String(value ?? '').replace(/\s+/g, ' ').trim();
