@@ -16,6 +16,7 @@
   <link rel="stylesheet" href="clinical-density.css?v=20260724-1">
   <link rel="stylesheet" href="tailadmin-medindex.css?v=20260724-3" data-tailadmin-medindex-css>
   <link rel="stylesheet" href="tailadmin-professional.css?v=20260724-1" data-tailadmin-professional-css>
+  <link rel="stylesheet" href="icd-clinical-workspace.css?v=20260725-1">
   <script src="tailadmin-shell.js?v=production-audit-v1" defer></script>
   <script src="tailadmin-professional.js?v=production-audit-v1" defer></script>
 </head>
@@ -31,28 +32,46 @@
       <div class="med-theme"><span>Tema</span><button id="themeButton" type="button" aria-label="Ndërro temën">☾</button></div>
     </nav>
 
-    <main class="med-main" id="icdContent" tabindex="-1">
-      <header class="med-hero">
-        <p class="med-kicker">MedIndex · Klasifikimi Ndërkombëtar i Sëmundjeve</p>
-        <h1>ICD-10-WHO 2019 në shqip</h1>
-        <p>Shfleto 22 kapitujt dhe kodet kryesore për mjekësi familjare e urgjencë; kërko me kod, diagnozë, grup klinik ose fjalë kyçe.</p>
+    <main class="med-main icd-clinical-main" id="icdContent" tabindex="-1">
+      <header class="med-hero icd-clinical-hero">
+        <div class="icd-hero-copy">
+          <p class="med-kicker">MedIndex · ICD-10-WHO 2019</p>
+          <h1>ICD-10 në shqip</h1>
+          <p>Kërko me kod, diagnozë, kapitull ose fjalë kyçe. Përdor filtrat klinikë për mjekësi familjare, urgjencë dhe kodet kritike.</p>
+        </div>
+        <div class="icd-hero-stats" aria-label="Përmbledhje e të dhënave ICD">
+          <span class="icd-hero-stat"><strong id="icdHeroChapterCount">22</strong><span>kapituj</span></span>
+          <span class="icd-hero-stat"><strong id="icdHeroCodeCount">701</strong><span>kode</span></span>
+          <span class="icd-hero-stat"><strong id="icdHeroCriticalCount">244</strong><span>kritike</span></span>
+        </div>
       </header>
 
-      <div class="med-notice" id="icdSourceNotice"><strong>Burimi:</strong> po ngarkohen të dhënat identike nga Google Sheet-i i aprovuar për ICD-10.</div>
+      <div class="med-notice icd-source-bar" id="icdSourceNotice"><span class="icd-source-icon" aria-hidden="true">i</span><span><strong>Burimi:</strong> po ngarkohen të dhënat identike nga Google Sheet-i i aprovuar për ICD-10.</span></div>
 
-      <div class="med-toolbar icd-toolbar" role="search" aria-label="Kërkimi dhe filtrat ICD-10">
-        <div class="icd-smart-wrap">
-          <input class="med-search" id="icdSmartSearch" type="search" list="icdSuggestions" placeholder="Kërko p.sh. diabet, pneumoni, J85, dhimbje gjoksi…" autocomplete="off" enterkeyhint="search" aria-label="Kërko kodin, diagnozën, grupin klinik ose fjalë kyçe">
-          <button class="icd-clear" id="icdClear" type="button" aria-label="Pastro kërkimin" hidden>×</button>
-          <datalist id="icdSuggestions"></datalist>
+      <section class="icd-workbench" aria-label="Mjetet e kërkimit ICD-10">
+        <div class="med-toolbar icd-toolbar" role="search" aria-label="Kërkimi dhe filtrat ICD-10">
+          <div class="icd-smart-wrap">
+            <input class="med-search" id="icdSmartSearch" type="search" list="icdSuggestions" placeholder="Kërko diagnozë, kod ICD, kapitull ose fjalë kyçe…" autocomplete="off" enterkeyhint="search" aria-label="Kërko kodin, diagnozën, grupin klinik ose fjalë kyçe">
+            <button class="icd-clear" id="icdClear" type="button" aria-label="Pastro kërkimin" hidden>×</button>
+            <datalist id="icdSuggestions"></datalist>
+          </div>
+          <select class="med-filter" id="icdLevel" aria-label="Filtro nivelin e kodit"><option value="">Të gjitha nivelet</option><option value="kategori">Kategori kryesore</option><option value="kod">Kode të tjera</option></select>
+          <select class="med-filter" id="icdContext" aria-label="Filtro përdorimin klinik"><option value="">Të gjitha kodet</option><option value="family">Mjekësi familjare</option><option value="emergency">Mjekësi urgjente</option><option value="critical">Kodet kritike</option></select>
+          <span class="med-count" id="smartCount" aria-live="polite">Duke u ngarkuar…</span>
         </div>
-        <select class="med-filter" id="icdLevel" aria-label="Filtro nivelin e kodit"><option value="">Të gjitha nivelet</option><option value="kategori">Kategori kryesore</option><option value="kod">Kode të tjera</option></select>
-        <select class="med-filter" id="icdContext" aria-label="Filtro përdorimin klinik"><option value="">Të gjitha kodet</option><option value="family">Mjekësi familjare</option><option value="emergency">Mjekësi urgjente</option><option value="critical">Kodet kritike</option></select>
-        <span class="med-count" id="smartCount" aria-live="polite">Duke u ngarkuar…</span>
-      </div>
+        <p class="sr-only" id="icdSearchHelp">Shtyp Alt dhe I për t’u fokusuar te kërkimi. Escape pastron filtrat kur fusha e kërkimit është aktive.</p>
+        <nav class="icd-quick-nav" aria-label="Qasje e shpejtë ICD-10">
+          <button class="icd-quick-button" type="button" data-icd-quick="all" aria-pressed="true">Të gjitha</button>
+          <button class="icd-quick-button" type="button" data-icd-quick="chapters" aria-pressed="false">22 kapitujt</button>
+          <button class="icd-quick-button" type="button" data-icd-quick="codes" aria-pressed="false">Kodet kryesore</button>
+          <button class="icd-quick-button" type="button" data-icd-quick="family" aria-pressed="false">Mjekësi familjare</button>
+          <button class="icd-quick-button" type="button" data-icd-quick="emergency" aria-pressed="false">Urgjencë</button>
+          <button class="icd-quick-button" type="button" data-icd-quick="critical" aria-pressed="false">Kritike</button>
+        </nav>
+      </section>
 
       <section id="chapterSection" class="icd-section" aria-labelledby="chaptersTitle">
-        <div class="med-section-head"><div><h2 id="chaptersTitle">22 kapitujt e ICD-10</h2><p>Titujt, intervalet dhe numrat romakë ruhen sipas materialit të aprovuar.</p></div><span class="med-count" id="chapterCount" aria-live="polite">22 kapituj</span></div>
+        <div class="med-section-head"><div><h2 id="chaptersTitle">22 kapitujt e ICD-10</h2><p>Zgjidh kapitullin për të filtruar menjëherë kodet përkatëse.</p></div><span class="med-count" id="chapterCount" aria-live="polite">22 kapituj</span></div>
         <div class="med-grid icd-chapter-grid" id="chapterGrid"></div>
       </section>
 
@@ -75,6 +94,7 @@
   <script src="icd-data.js?v=20260723-2" defer></script>
   <script src="icd.js?v=20260723-4" defer></script>
   <script src="icd-premium-cards.js?v=20260725-1" defer></script>
+  <script src="icd-clinical-workspace.js?v=20260725-1" defer></script>
   <script src="section-icons.js?v=20260723-1" defer></script>
   <script src="auth-client.js?v=production-audit-v1" defer></script>
   <script src="clinical-dialog.js?v=20260724-1" defer></script>
