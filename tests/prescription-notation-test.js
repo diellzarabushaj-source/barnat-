@@ -1,4 +1,6 @@
 const assert = require('node:assert/strict');
+const fs = require('node:fs');
+const path = require('node:path');
 const Notation = require('../prescription-notation.js');
 const Dosage = require('../dosage-engine.js');
 
@@ -75,12 +77,16 @@ assert.equal(transferred.prescriptionLine, paracetamol.line);
 assert.equal(transferred.packagingSummary, paracetamol.packaging);
 assert.equal(transferred.dispense, paracetamol.dispense, 'Registry package must survive dosage auto-fill when regimen dispense is blank');
 
-const registrySource = require('node:fs').readFileSync(require('node:path').join(__dirname, '..', 'api', 'registry.js'), 'utf8');
-assert.match(registrySource, /1gGQjnJboj8W7txs0fhG15PXO06rdB9aetLQgFmmPHz8/);
+const root = path.resolve(__dirname, '..');
+const registrySource = fs.readFileSync(path.join(root, 'api', 'registry.js'), 'utf8');
+assert.match(registrySource, /PRESCRIPTION_SHEET_ID/);
 assert.match(registrySource, /export\?format=csv/);
 assert.match(registrySource, /Si të shënohet në recetë/);
+const vercel = JSON.parse(fs.readFileSync(path.join(root, 'vercel.json'), 'utf8'));
+assert.equal(vercel.env.PRESCRIPTION_SHEET_ID, '1o-TT-Oqlsw4aUo5DW3XZT6T9eD_IeEBCFQyjBSYM4-Q');
+assert.equal(vercel.env.PRESCRIPTION_SHEET_GID, '407106508');
 
-const drugSearch = require('node:fs').readFileSync(require('node:path').join(__dirname, '..', 'api', 'drug-search.js'), 'utf8');
+const drugSearch = fs.readFileSync(path.join(root, 'api', 'drug-search.js'), 'utf8');
 assert.match(drugSearch, /packagingSummary/);
 assert.match(drugSearch, /prescriptionLine/);
 assert.match(drugSearch, /dispense/);
