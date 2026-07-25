@@ -1,1 +1,590 @@
-/* placeholder */
+/* First-page deep audit: a focused, doctor-style registry workspace without changing backend or clinical data. */
+html.medindex-tailadmin.mi-first-page-audited{
+  --registry-surface:#ffffff;
+  --registry-soft:#f6f9f8;
+  --registry-soft-2:#eef5f2;
+  --registry-line:#dce6e2;
+  --registry-line-strong:#c6d6d0;
+  --registry-ink:#172b2f;
+  --registry-muted:#687a7d;
+  --registry-teal:#155f63;
+  --registry-teal-dark:#0d4145;
+  --registry-teal-soft:#eaf4f1;
+  --registry-gold:#c88a2b;
+  --registry-gold-soft:#fbf1df;
+  --registry-danger:#b84343;
+  --registry-radius:14px;
+  --registry-shadow:0 10px 30px rgba(17,65,67,.07);
+}
+
+html.medindex-tailadmin.mi-first-page-audited .registry-page-workspace{
+  display:flex;
+  min-width:0;
+  flex-direction:column;
+  gap:14px;
+}
+
+html.medindex-tailadmin.mi-first-page-audited .registry-overview{
+  position:relative!important;
+  display:grid!important;
+  grid-template-columns:52px minmax(0,1fr) auto!important;
+  align-items:center!important;
+  gap:14px!important;
+  min-height:94px!important;
+  margin:0!important;
+  padding:16px 18px!important;
+  overflow:hidden!important;
+  border:1px solid var(--registry-line)!important;
+  border-radius:var(--registry-radius)!important;
+  background:linear-gradient(110deg,#fff 0%,#fbfdfc 72%,#f0f7f4 100%)!important;
+  color:var(--registry-ink)!important;
+  box-shadow:none!important;
+}
+html.medindex-tailadmin.mi-first-page-audited .registry-overview::before{
+  content:"";
+  position:absolute;
+  inset:0 auto 0 0;
+  width:4px;
+  background:linear-gradient(180deg,var(--registry-teal),#2b8580);
+}
+html.medindex-tailadmin.mi-first-page-audited .registry-overview-icon{
+  display:grid;
+  width:52px;
+  height:52px;
+  place-items:center;
+  border:1px solid #cfe0db;
+  border-radius:14px;
+  background:var(--registry-teal-soft);
+  color:var(--registry-teal);
+}
+html.medindex-tailadmin.mi-first-page-audited .registry-overview-icon svg{width:28px;height:28px}
+html.medindex-tailadmin.mi-first-page-audited .registry-overview-copy{min-width:0}
+html.medindex-tailadmin.mi-first-page-audited .registry-eyebrow{
+  display:block;
+  margin-bottom:3px;
+  color:var(--registry-teal);
+  font-size:.62rem;
+  font-weight:850;
+  letter-spacing:.1em;
+}
+html.medindex-tailadmin.mi-first-page-audited .registry-overview h2{
+  margin:0!important;
+  color:var(--registry-ink)!important;
+  font-size:1.15rem!important;
+  font-weight:780!important;
+  line-height:1.2!important;
+}
+html.medindex-tailadmin.mi-first-page-audited .registry-overview p{
+  margin:4px 0 0!important;
+  color:var(--registry-muted)!important;
+  font-size:.74rem!important;
+  line-height:1.45!important;
+}
+html.medindex-tailadmin.mi-first-page-audited .registry-overview-meta{
+  display:flex;
+  align-items:stretch;
+  gap:7px;
+}
+html.medindex-tailadmin.mi-first-page-audited .registry-overview-meta>span{
+  display:flex;
+  min-width:88px;
+  min-height:52px;
+  flex-direction:column;
+  align-items:flex-start;
+  justify-content:center;
+  padding:8px 11px;
+  border:1px solid var(--registry-line);
+  border-radius:11px;
+  background:rgba(255,255,255,.82);
+}
+html.medindex-tailadmin.mi-first-page-audited .registry-overview-meta strong{
+  color:var(--registry-teal-dark);
+  font-family:var(--mi-mono,"DM Mono",monospace);
+  font-size:.75rem;
+  line-height:1.15;
+}
+html.medindex-tailadmin.mi-first-page-audited .registry-overview-meta small{
+  margin-top:3px;
+  color:var(--registry-muted);
+  font-size:.56rem;
+  font-weight:680;
+  letter-spacing:.02em;
+}
+
+html.medindex-tailadmin.mi-first-page-audited .registry-toolbar{
+  position:relative!important;
+  inset:auto!important;
+  z-index:11!important;
+  display:grid!important;
+  grid-template-columns:minmax(0,1fr)!important;
+  gap:12px!important;
+  margin:0!important;
+  padding:14px!important;
+  border:1px solid var(--registry-line)!important;
+  border-radius:var(--registry-radius)!important;
+  background:var(--registry-surface)!important;
+  box-shadow:0 1px 2px rgba(17,65,67,.03)!important;
+  backdrop-filter:none!important;
+}
+html.medindex-tailadmin.mi-first-page-audited .registry-search-block{
+  display:grid;
+  grid-template-columns:220px minmax(0,1fr);
+  align-items:center;
+  gap:14px;
+}
+html.medindex-tailadmin.mi-first-page-audited .registry-search-heading{
+  display:flex;
+  min-width:0;
+  flex-direction:column;
+  gap:2px;
+}
+html.medindex-tailadmin.mi-first-page-audited .registry-search-heading strong{
+  color:var(--registry-ink);
+  font-size:.76rem;
+  font-weight:800;
+}
+html.medindex-tailadmin.mi-first-page-audited .registry-search-heading span,
+html.medindex-tailadmin.mi-first-page-audited .registry-search-help{
+  color:var(--registry-muted);
+  font-size:.61rem;
+  line-height:1.35;
+}
+html.medindex-tailadmin.mi-first-page-audited .registry-search-help{display:none}
+html.medindex-tailadmin.mi-first-page-audited .registry-search-shell{
+  position:relative;
+  display:flex;
+  min-width:0;
+  align-items:center;
+}
+html.medindex-tailadmin.mi-first-page-audited .registry-search-icon{
+  position:absolute;
+  left:14px;
+  z-index:2;
+  display:grid;
+  width:20px;
+  height:20px;
+  place-items:center;
+  color:#617572;
+  pointer-events:none;
+}
+html.medindex-tailadmin.mi-first-page-audited .registry-search-icon svg{width:20px;height:20px}
+html.medindex-tailadmin.mi-first-page-audited .registry-toolbar #search{
+  width:100%!important;
+  min-width:0!important;
+  min-height:48px!important;
+  flex:1 1 auto!important;
+  padding:0 84px 0 44px!important;
+  border:1px solid var(--registry-line-strong)!important;
+  border-radius:11px!important;
+  background:#fbfcfc!important;
+  color:var(--registry-ink)!important;
+  box-shadow:none!important;
+  font-size:.8rem!important;
+}
+html.medindex-tailadmin.mi-first-page-audited .registry-toolbar #search::placeholder{color:#83918f}
+html.medindex-tailadmin.mi-first-page-audited .registry-toolbar #search:focus{
+  outline:0!important;
+  border-color:var(--registry-teal)!important;
+  background:#fff!important;
+  box-shadow:0 0 0 3px rgba(21,95,99,.12)!important;
+}
+html.medindex-tailadmin.mi-first-page-audited .registry-search-shortcut{
+  position:absolute;
+  right:10px;
+  display:inline-flex;
+  min-height:24px;
+  align-items:center;
+  padding:0 7px;
+  border:1px solid var(--registry-line);
+  border-radius:7px;
+  background:#fff;
+  color:#72817f;
+  font-family:var(--mi-mono,"DM Mono",monospace);
+  font-size:.55rem;
+  font-weight:700;
+  pointer-events:none;
+}
+
+html.medindex-tailadmin.mi-first-page-audited .registry-toolbar-secondary{
+  display:grid;
+  grid-template-columns:minmax(280px,1fr) minmax(220px,.72fr) minmax(260px,.86fr);
+  gap:10px;
+}
+html.medindex-tailadmin.mi-first-page-audited .registry-control-group{
+  min-width:0;
+  padding:9px 10px;
+  border:1px solid var(--registry-line);
+  border-radius:11px;
+  background:var(--registry-soft);
+}
+html.medindex-tailadmin.mi-first-page-audited .registry-control-label{
+  display:flex;
+  align-items:center;
+  gap:6px;
+  margin-bottom:7px;
+  color:#667875;
+  font-size:.58rem;
+  font-weight:800;
+  letter-spacing:.055em;
+  text-transform:uppercase;
+}
+html.medindex-tailadmin.mi-first-page-audited .registry-control-label svg{width:14px;height:14px}
+html.medindex-tailadmin.mi-first-page-audited .registry-control-row{
+  display:flex;
+  min-width:0;
+  align-items:center;
+  gap:7px;
+}
+html.medindex-tailadmin.mi-first-page-audited .registry-control-row>select,
+html.medindex-tailadmin.mi-first-page-audited .registry-control-row>.form-picker,
+html.medindex-tailadmin.mi-first-page-audited .registry-control-row>.col-picker{min-width:0;flex:1 1 auto}
+html.medindex-tailadmin.mi-first-page-audited .registry-control-row select,
+html.medindex-tailadmin.mi-first-page-audited .registry-control-row .form-picker>button,
+html.medindex-tailadmin.mi-first-page-audited .registry-control-row .col-picker>button{
+  width:100%!important;
+  min-width:0!important;
+  min-height:40px!important;
+  padding:0 10px!important;
+  border:1px solid var(--registry-line-strong)!important;
+  border-radius:9px!important;
+  background:#fff!important;
+  color:var(--registry-ink)!important;
+  box-shadow:none!important;
+  font-size:.7rem!important;
+  font-weight:680!important;
+  text-overflow:ellipsis;
+}
+html.medindex-tailadmin.mi-first-page-audited .registry-control-row select:hover,
+html.medindex-tailadmin.mi-first-page-audited .registry-control-row button:hover,
+html.medindex-tailadmin.mi-first-page-audited .registry-control-row button[aria-expanded=true]{
+  border-color:#9fbdb5!important;
+  background:#fff!important;
+}
+html.medindex-tailadmin.mi-first-page-audited .registry-action-group .registry-control-row{justify-content:flex-end}
+html.medindex-tailadmin.mi-first-page-audited .registry-action-group .selection-badge{
+  min-height:40px!important;
+  flex:0 0 auto!important;
+  padding:0 10px!important;
+  border:1px solid var(--registry-line)!important;
+  border-radius:9px!important;
+  background:#fff!important;
+  color:#61726f!important;
+  font-family:var(--mi-font)!important;
+  font-size:.65rem!important;
+}
+html.medindex-tailadmin.mi-first-page-audited .registry-action-group .selection-badge.has-selection{
+  border-color:#add0c3!important;
+  background:var(--registry-teal-soft)!important;
+  color:var(--registry-teal-dark)!important;
+}
+html.medindex-tailadmin.mi-first-page-audited .registry-action-group .protocol-toolbar-btn{
+  min-height:40px!important;
+  flex:1 1 auto!important;
+  padding:0 13px!important;
+  border:1px solid var(--registry-teal-dark)!important;
+  border-radius:9px!important;
+  background:var(--registry-teal-dark)!important;
+  color:#fff!important;
+  box-shadow:none!important;
+  font-size:.7rem!important;
+  font-weight:780!important;
+}
+html.medindex-tailadmin.mi-first-page-audited .registry-action-group .protocol-toolbar-btn:hover{background:var(--registry-teal)!important}
+html.medindex-tailadmin.mi-first-page-audited .registry-action-group .mini-count{
+  min-width:21px!important;
+  height:21px!important;
+  margin-left:6px!important;
+  padding:0 5px!important;
+  background:rgba(255,255,255,.17)!important;
+  color:#fff!important;
+  font-size:.57rem!important;
+}
+
+html.medindex-tailadmin.mi-first-page-audited .registry-table-bar{
+  display:flex;
+  min-width:0;
+  align-items:center;
+  justify-content:space-between;
+  gap:14px;
+  padding:2px 2px 0;
+}
+html.medindex-tailadmin.mi-first-page-audited .registry-table-title{
+  display:flex;
+  min-width:0;
+  align-items:center;
+  gap:10px;
+}
+html.medindex-tailadmin.mi-first-page-audited .registry-table-title>svg{
+  width:34px;
+  height:34px;
+  padding:7px;
+  border:1px solid #d3e0dc;
+  border-radius:10px;
+  background:var(--registry-teal-soft);
+  color:var(--registry-teal);
+}
+html.medindex-tailadmin.mi-first-page-audited .registry-table-title h2{
+  margin:0;
+  color:var(--registry-ink);
+  font-size:.94rem;
+  font-weight:780;
+  line-height:1.2;
+}
+html.medindex-tailadmin.mi-first-page-audited .registry-table-title p{
+  margin:3px 0 0;
+  color:var(--registry-muted);
+  font-size:.63rem;
+  line-height:1.35;
+}
+html.medindex-tailadmin.mi-first-page-audited .registry-table-actions{
+  display:flex;
+  min-width:0;
+  align-items:center;
+  justify-content:flex-end;
+  gap:7px;
+}
+html.medindex-tailadmin.mi-first-page-audited .registry-filter-state{
+  display:inline-flex;
+  min-height:31px;
+  align-items:center;
+  padding:0 9px;
+  border:1px solid var(--registry-line);
+  border-radius:999px;
+  background:#fff;
+  color:#697a77;
+  font-size:.6rem;
+  font-weight:720;
+  white-space:nowrap;
+}
+html.medindex-tailadmin.mi-first-page-audited .registry-filter-state.is-active{
+  border-color:#acd0c2;
+  background:var(--registry-teal-soft);
+  color:var(--registry-teal-dark);
+}
+html.medindex-tailadmin.mi-first-page-audited .registry-reset-filters{
+  display:inline-flex;
+  min-height:31px;
+  align-items:center;
+  gap:5px;
+  padding:0 9px;
+  border:1px solid var(--registry-line-strong);
+  border-radius:8px;
+  background:#fff;
+  color:#516360;
+  cursor:pointer;
+  font-size:.6rem;
+  font-weight:720;
+}
+html.medindex-tailadmin.mi-first-page-audited .registry-reset-filters[hidden]{display:none!important}
+html.medindex-tailadmin.mi-first-page-audited .registry-reset-filters:hover{border-color:#9ebbb3;background:#f8fbfa;color:var(--registry-teal-dark)}
+html.medindex-tailadmin.mi-first-page-audited .registry-reset-filters svg{width:13px;height:13px}
+html.medindex-tailadmin.mi-first-page-audited .registry-result-count{
+  min-height:31px!important;
+  margin:0!important;
+  padding:0 10px!important;
+  border:1px solid #ead7b7!important;
+  border-radius:999px!important;
+  background:var(--registry-gold-soft)!important;
+  color:#7b541e!important;
+  font-family:var(--mi-mono,"DM Mono",monospace)!important;
+  font-size:.59rem!important;
+  font-weight:760!important;
+}
+
+html.medindex-tailadmin.mi-first-page-audited .table-wrap{
+  position:relative!important;
+  margin:0!important;
+  max-height:min(680px,calc(100dvh - 360px))!important;
+  overflow:auto!important;
+  border:1px solid var(--registry-line)!important;
+  border-radius:var(--registry-radius) var(--registry-radius) 0 0!important;
+  background:var(--registry-surface)!important;
+  box-shadow:var(--registry-shadow)!important;
+  scrollbar-color:#b8c6c2 transparent;
+  scrollbar-width:thin;
+  overscroll-behavior:contain;
+}
+html.medindex-tailadmin.mi-first-page-audited .table-wrap.is-scrolled-x{box-shadow:inset 12px 0 16px -17px rgba(13,65,69,.55),var(--registry-shadow)!important}
+html.medindex-tailadmin.mi-first-page-audited .table-wrap::-webkit-scrollbar{width:10px;height:10px}
+html.medindex-tailadmin.mi-first-page-audited .table-wrap::-webkit-scrollbar-thumb{border:2px solid transparent;border-radius:999px;background:#b8c6c2;background-clip:padding-box}
+html.medindex-tailadmin.mi-first-page-audited #dataTable{
+  min-width:1260px;
+  border-collapse:separate!important;
+  border-spacing:0!important;
+  background:#fff!important;
+  font-size:.78rem!important;
+}
+html.medindex-tailadmin.mi-first-page-audited #dataTable thead th{
+  position:sticky!important;
+  top:0!important;
+  z-index:5!important;
+  height:44px!important;
+  padding:0 12px!important;
+  border-right:1px solid rgba(255,255,255,.11)!important;
+  border-bottom:0!important;
+  background:var(--registry-teal)!important;
+  color:#fff!important;
+  font-size:.62rem!important;
+  font-weight:790!important;
+  letter-spacing:.045em!important;
+  line-height:1.2!important;
+  text-transform:uppercase!important;
+  white-space:nowrap!important;
+}
+html.medindex-tailadmin.mi-first-page-audited #dataTable thead th:hover{background:var(--registry-teal-dark)!important}
+html.medindex-tailadmin.mi-first-page-audited #dataTable tbody tr{--registry-row-bg:#fff;background:var(--registry-row-bg)!important;transition:background .13s ease}
+html.medindex-tailadmin.mi-first-page-audited #dataTable tbody tr:nth-child(even){--registry-row-bg:#fafcfb}
+html.medindex-tailadmin.mi-first-page-audited #dataTable tbody tr:hover{--registry-row-bg:#f0f7f4}
+html.medindex-tailadmin.mi-first-page-audited #dataTable tbody tr.row-selected{--registry-row-bg:#eaf5f1}
+html.medindex-tailadmin.mi-first-page-audited #dataTable tbody td{
+  min-height:52px!important;
+  padding:11px 12px!important;
+  border-bottom:1px solid #e3ebe8!important;
+  background:var(--registry-row-bg)!important;
+  color:#314347!important;
+  font-size:.75rem!important;
+  line-height:1.42!important;
+  vertical-align:middle!important;
+}
+html.medindex-tailadmin.mi-first-page-audited #dataTable tbody td.wrap{max-width:310px!important;white-space:normal!important}
+html.medindex-tailadmin.mi-first-page-audited #dataTable td.name{
+  min-width:285px!important;
+  max-width:330px!important;
+  color:var(--registry-teal-dark)!important;
+  font-size:.77rem!important;
+  font-weight:760!important;
+}
+html.medindex-tailadmin.mi-first-page-audited #dataTable td.code{color:#5e6d6f!important;font-size:.69rem!important}
+html.medindex-tailadmin.mi-first-page-audited #dataTable input[type=checkbox]{width:18px;height:18px;accent-color:var(--registry-teal);cursor:pointer}
+html.medindex-tailadmin.mi-first-page-audited #dataTable .drug-actions-trigger{
+  width:29px!important;
+  height:29px!important;
+  border:1px solid var(--registry-line-strong)!important;
+  border-radius:8px!important;
+  background:#fff!important;
+  color:var(--registry-teal-dark)!important;
+}
+html.medindex-tailadmin.mi-first-page-audited #dataTable .drug-actions-trigger:hover,
+html.medindex-tailadmin.mi-first-page-audited #dataTable .drug-actions-trigger[aria-expanded=true]{border-color:var(--registry-teal)!important;background:var(--registry-teal)!important;color:#fff!important}
+
+/* Pin the identifying columns so the medicine remains visible while reviewing clinical fields. */
+html.medindex-tailadmin.mi-first-page-audited #dataTable :is(th,td):nth-child(1){position:sticky!important;left:0!important;width:48px!important;min-width:48px!important;max-width:48px!important;text-align:center;z-index:4}
+html.medindex-tailadmin.mi-first-page-audited #dataTable :is(th,td):nth-child(2){position:sticky!important;left:48px!important;width:56px!important;min-width:56px!important;max-width:56px!important;z-index:4}
+html.medindex-tailadmin.mi-first-page-audited #dataTable :is(th,td):nth-child(3){position:sticky!important;left:104px!important;z-index:4;box-shadow:10px 0 16px -16px rgba(13,65,69,.48)}
+html.medindex-tailadmin.mi-first-page-audited #dataTable thead :is(th):nth-child(-n+3){z-index:8!important;background:var(--registry-teal)!important}
+html.medindex-tailadmin.mi-first-page-audited #dataTable tbody tr.row-selected td:first-child{box-shadow:inset 3px 0 var(--registry-teal)}
+
+html.medindex-tailadmin.mi-first-page-audited .pagination{
+  margin:0!important;
+  padding:10px 12px!important;
+  border:1px solid var(--registry-line)!important;
+  border-top:0!important;
+  border-radius:0 0 var(--registry-radius) var(--registry-radius)!important;
+  background:#fff!important;
+  box-shadow:0 10px 30px rgba(17,65,67,.05)!important;
+}
+html.medindex-tailadmin.mi-first-page-audited .pagination button{
+  min-width:34px!important;
+  min-height:34px!important;
+  padding:0 10px!important;
+  border:1px solid var(--registry-line)!important;
+  border-radius:8px!important;
+  background:#fff!important;
+  color:#445653!important;
+  font-size:.67rem!important;
+  font-weight:700!important;
+}
+html.medindex-tailadmin.mi-first-page-audited .pagination button:hover:not(:disabled){border-color:#aac5bc!important;background:#f2f7f5!important;color:var(--registry-teal-dark)!important}
+html.medindex-tailadmin.mi-first-page-audited .pagination button.active{border-color:var(--registry-teal)!important;background:var(--registry-teal)!important;color:#fff!important}
+
+html[data-theme=dark].medindex-tailadmin.mi-first-page-audited{
+  --registry-surface:#132326;
+  --registry-soft:#17292c;
+  --registry-soft-2:#1b3033;
+  --registry-line:#304649;
+  --registry-line-strong:#3b5457;
+  --registry-ink:#edf5f3;
+  --registry-muted:#a7b7b4;
+  --registry-teal-soft:#17383a;
+  --registry-shadow:0 14px 32px rgba(0,0,0,.25);
+}
+html[data-theme=dark].medindex-tailadmin.mi-first-page-audited .registry-overview{background:linear-gradient(110deg,#142629,#172c2f)!important}
+html[data-theme=dark].medindex-tailadmin.mi-first-page-audited .registry-overview-meta>span,
+html[data-theme=dark].medindex-tailadmin.mi-first-page-audited .registry-search-shortcut,
+html[data-theme=dark].medindex-tailadmin.mi-first-page-audited .registry-toolbar,
+html[data-theme=dark].medindex-tailadmin.mi-first-page-audited .registry-control-row select,
+html[data-theme=dark].medindex-tailadmin.mi-first-page-audited .registry-control-row .form-picker>button,
+html[data-theme=dark].medindex-tailadmin.mi-first-page-audited .registry-control-row .col-picker>button,
+html[data-theme=dark].medindex-tailadmin.mi-first-page-audited .registry-action-group .selection-badge,
+html[data-theme=dark].medindex-tailadmin.mi-first-page-audited .registry-filter-state,
+html[data-theme=dark].medindex-tailadmin.mi-first-page-audited .registry-reset-filters,
+html[data-theme=dark].medindex-tailadmin.mi-first-page-audited .pagination,
+html[data-theme=dark].medindex-tailadmin.mi-first-page-audited .pagination button{background:#132326!important;color:#e8f1ef!important}
+html[data-theme=dark].medindex-tailadmin.mi-first-page-audited .registry-toolbar #search{background:#102023!important;color:#eef5f3!important}
+html[data-theme=dark].medindex-tailadmin.mi-first-page-audited #dataTable{background:#132326!important}
+html[data-theme=dark].medindex-tailadmin.mi-first-page-audited #dataTable tbody tr{--registry-row-bg:#132326}
+html[data-theme=dark].medindex-tailadmin.mi-first-page-audited #dataTable tbody tr:nth-child(even){--registry-row-bg:#16282b}
+html[data-theme=dark].medindex-tailadmin.mi-first-page-audited #dataTable tbody tr:hover{--registry-row-bg:#1a3234}
+html[data-theme=dark].medindex-tailadmin.mi-first-page-audited #dataTable tbody tr.row-selected{--registry-row-bg:#19393a}
+html[data-theme=dark].medindex-tailadmin.mi-first-page-audited #dataTable tbody td{color:#cedbd8!important;border-bottom-color:#2b4144!important}
+html[data-theme=dark].medindex-tailadmin.mi-first-page-audited #dataTable td.name{color:#f0f8f6!important}
+
+@media(max-width:1280px){
+  html.medindex-tailadmin.mi-first-page-audited .registry-toolbar-secondary{grid-template-columns:1fr 1fr}
+  html.medindex-tailadmin.mi-first-page-audited .registry-action-group{grid-column:1/-1}
+  html.medindex-tailadmin.mi-first-page-audited .registry-action-group .registry-control-row{justify-content:flex-start}
+  html.medindex-tailadmin.mi-first-page-audited .registry-action-group .protocol-toolbar-btn{flex:0 1 240px!important}
+}
+@media(max-width:900px){
+  html.medindex-tailadmin.mi-first-page-audited .registry-overview{grid-template-columns:46px minmax(0,1fr)!important}
+  html.medindex-tailadmin.mi-first-page-audited .registry-overview-icon{width:46px;height:46px}
+  html.medindex-tailadmin.mi-first-page-audited .registry-overview-meta{grid-column:1/-1;display:grid;grid-template-columns:repeat(3,1fr)}
+  html.medindex-tailadmin.mi-first-page-audited .registry-overview-meta>span{min-width:0}
+  html.medindex-tailadmin.mi-first-page-audited .registry-search-block{grid-template-columns:1fr}
+  html.medindex-tailadmin.mi-first-page-audited .registry-search-heading{display:none}
+  html.medindex-tailadmin.mi-first-page-audited .registry-toolbar-secondary{grid-template-columns:1fr}
+  html.medindex-tailadmin.mi-first-page-audited .registry-action-group{grid-column:auto}
+  html.medindex-tailadmin.mi-first-page-audited .registry-table-bar{align-items:flex-start;flex-direction:column}
+  html.medindex-tailadmin.mi-first-page-audited .registry-table-actions{width:100%;justify-content:flex-start;flex-wrap:wrap}
+}
+@media(max-width:720px){
+  html.medindex-tailadmin.mi-first-page-audited .registry-page-workspace{gap:11px}
+  html.medindex-tailadmin.mi-first-page-audited .registry-overview{padding:13px!important}
+  html.medindex-tailadmin.mi-first-page-audited .registry-overview p{display:none}
+  html.medindex-tailadmin.mi-first-page-audited .registry-overview-meta>span{min-height:45px;padding:7px 9px}
+  html.medindex-tailadmin.mi-first-page-audited .registry-toolbar{padding:10px!important}
+  html.medindex-tailadmin.mi-first-page-audited .registry-search-shortcut{display:none}
+  html.medindex-tailadmin.mi-first-page-audited .registry-toolbar #search{padding-right:12px!important}
+  html.medindex-tailadmin.mi-first-page-audited .registry-control-row{flex-wrap:wrap}
+  html.medindex-tailadmin.mi-first-page-audited .registry-control-row>select,
+  html.medindex-tailadmin.mi-first-page-audited .registry-control-row>.form-picker,
+  html.medindex-tailadmin.mi-first-page-audited .registry-control-row>.col-picker{flex:1 1 150px}
+  html.medindex-tailadmin.mi-first-page-audited .registry-action-group .selection-badge{flex:1 1 auto!important}
+  html.medindex-tailadmin.mi-first-page-audited .registry-action-group .protocol-toolbar-btn{flex:1 1 170px!important}
+  html.medindex-tailadmin.mi-first-page-audited .registry-table-title p{display:none}
+  html.medindex-tailadmin.mi-first-page-audited .registry-reset-filters span{display:none}
+  html.medindex-tailadmin.mi-first-page-audited .table-wrap{max-height:58dvh!important}
+  html.medindex-tailadmin.mi-first-page-audited #dataTable :is(th,td):nth-child(2),
+  html.medindex-tailadmin.mi-first-page-audited #dataTable :is(th,td):nth-child(3){position:static!important;left:auto!important;box-shadow:none!important}
+  html.medindex-tailadmin.mi-first-page-audited #dataTable thead :is(th):nth-child(2),
+  html.medindex-tailadmin.mi-first-page-audited #dataTable thead :is(th):nth-child(3){z-index:5!important}
+}
+@media(max-width:430px){
+  html.medindex-tailadmin.mi-first-page-audited .registry-overview-meta{grid-template-columns:1fr 1fr}
+  html.medindex-tailadmin.mi-first-page-audited .registry-overview-meta>span:last-child{grid-column:1/-1}
+  html.medindex-tailadmin.mi-first-page-audited .registry-filter-state{max-width:135px;overflow:hidden;text-overflow:ellipsis}
+  html.medindex-tailadmin.mi-first-page-audited .registry-result-count{max-width:160px;overflow:hidden;text-overflow:ellipsis}
+}
+@media(prefers-reduced-motion:reduce){
+  html.medindex-tailadmin.mi-first-page-audited .registry-page-workspace *,
+  html.medindex-tailadmin.mi-first-page-audited .registry-page-workspace *::before,
+  html.medindex-tailadmin.mi-first-page-audited .registry-page-workspace *::after{transition:none!important;scroll-behavior:auto!important}
+}
+@media(forced-colors:active){
+  html.medindex-tailadmin.mi-first-page-audited .registry-overview,
+  html.medindex-tailadmin.mi-first-page-audited .registry-toolbar,
+  html.medindex-tailadmin.mi-first-page-audited .registry-control-group,
+  html.medindex-tailadmin.mi-first-page-audited .registry-table-bar,
+  html.medindex-tailadmin.mi-first-page-audited .table-wrap,
+  html.medindex-tailadmin.mi-first-page-audited .pagination{border:1px solid CanvasText!important;background:Canvas!important;color:CanvasText!important}
+}
