@@ -15,19 +15,22 @@
 
   function updateHeroStats() {
     const counts = dataCounts();
-    const chapterText = $('#chapterCount')?.textContent || '';
-    const codeText = $('#icdCount')?.textContent || '';
-    const currentChapters = Number.parseInt(chapterText, 10) || counts.chapters;
-    const currentCodes = Number.parseInt(codeText, 10) || counts.entries;
     const values = {
-      icdHeroChapterCount: currentChapters,
-      icdHeroCodeCount: currentCodes,
+      icdHeroChapterCount: counts.chapters,
+      icdHeroCodeCount: counts.entries,
       icdHeroCriticalCount: counts.critical,
     };
     Object.entries(values).forEach(([id, value]) => {
       const node = document.getElementById(id);
       if (node) node.textContent = String(value);
     });
+  }
+
+  function ensureSourceNoticeIcon() {
+    const notice = $('#icdSourceNotice');
+    if (!notice || notice.querySelector('.icd-source-icon')) return;
+    const content = notice.innerHTML;
+    notice.innerHTML = `<span class="icd-source-icon" aria-hidden="true">i</span><span>${content}</span>`;
   }
 
   function scrollToSection(id) {
@@ -67,11 +70,14 @@
 
   function syncQuickButtons() {
     const context = $('#icdContext')?.value || '';
+    const level = $('#icdLevel')?.value || '';
     const query = ($('#icdSmartSearch')?.value || '').trim();
     $$('[data-icd-quick]').forEach(button => {
       const action = button.dataset.icdQuick;
-      const pressed = action === context || (action === 'all' && !context && !query);
-      button.setAttribute('aria-pressed', String(pressed));
+      const filterAction = ['all', 'family', 'emergency', 'critical'].includes(action);
+      const pressed = action === context || (action === 'all' && !context && !level && !query);
+      if (filterAction) button.setAttribute('aria-pressed', String(pressed));
+      else button.removeAttribute('aria-pressed');
     });
   }
 
@@ -139,6 +145,7 @@
   function installObservers() {
     const chapterGrid = $('#chapterGrid');
     const countNodes = [$('#chapterCount'), $('#icdCount'), $('#smartCount')].filter(Boolean);
+    const sourceNotice = $('#icdSourceNotice');
     if (chapterGrid) {
       const observer = new MutationObserver(() => requestAnimationFrame(() => {
         syncSelectedChapter();
@@ -149,18 +156,23 @@
     countNodes.forEach(node => {
       new MutationObserver(updateHeroStats).observe(node, { childList:true, characterData:true, subtree:true });
     });
+    if (sourceNotice) {
+      new MutationObserver(() => queueMicrotask(ensureSourceNoticeIcon)).observe(sourceNotice, { childList:true });
+    }
   }
 
   function init() {
     const main = $('#icdContent');
     main?.classList.add('icd-clinical-main');
     updateHeroStats();
+    ensureSourceNoticeIcon();
     installToolbar();
     installObservers();
     syncQuickButtons();
     syncSelectedChapter();
     window.addEventListener('pageshow', () => {
       updateHeroStats();
+      ensureSourceNoticeIcon();
       syncQuickButtons();
       syncSelectedChapter();
     }, { passive:true });
