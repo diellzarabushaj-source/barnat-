@@ -22,7 +22,7 @@ const APP_SHELL = [
   '/clinical-reference.css', '/analizat-polish.css', '/recetat.css',
   '/recetat-audit.css', '/signature-templates.css', '/login.css',
   '/tailadmin-shell.js', '/tailadmin-shell-legacy.js', '/tailadmin-professional.js', '/mobile-experience.js', '/offline-runtime.js',
-  '/clinical-workflow.js', '/local-registry.js', '/auth-client.js',
+  '/clinical-workflow.js', '/local-registry.js', '/local-registry-fidelity.js', '/auth-client.js',
   '/app-stability.js', '/app.js', '/ui-enhancements.js', '/name-display.js',
   '/medical-icons.js', '/section-icons.js', '/classification-icons.js',
   '/classification-data.js', '/classification-registry-bridge.js',

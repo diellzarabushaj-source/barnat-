@@ -11,12 +11,20 @@ const rows = [
     'Substanca aktive':'Paracetamol', 'ATC Code':'N02BE01', 'Klasa / Çka është':'Analgesic',
     'Përdorimi (fjalë kyçe)':'dhimbje temperaturë', 'Fortësia':'500 mg',
     'Forma farmaceutike':'Tabletë', 'Madhësia e paketimit':'20', Statusi:'Gjenerik', __qualityStatus:'verified',
+    'Si të shënohet në recetë':'Tab. Paracetamol 500 mg — Paketimi: 20',
+    __sheetPrescriptionNotation:'Tab. Paracetamol 500 mg — Paketimi: 20',
+    __prescriptionLine:'Tab. Paracetamol 500 mg', __packagingSummary:'1 kuti = 20 tableta',
+    __dispense:'Scat. No I (Një kuti = 20 tableta)', __prescriptionRoute:'',
   },
   {
     'Nr rendor':2, PDID:'1002', ProtocolNo:'TEST-2', 'Emri tregtar':'AMOXICILLIN TEST',
     'Substanca aktive':'Amoxicillin', 'ATC Code':'J01CA04', 'Klasa / Çka është':'Antibiotic',
     'Përdorimi (fjalë kyçe)':'infeksion bakterial', 'Fortësia':'500 mg',
     'Forma farmaceutike':'Kapsulë', 'Madhësia e paketimit':'20', Statusi:'Gjenerik', __qualityStatus:'verified',
+    'Si të shënohet në recetë':'Caps. Amoxicillin 500 mg — Paketimi: 20',
+    __sheetPrescriptionNotation:'Caps. Amoxicillin 500 mg — Paketimi: 20',
+    __prescriptionLine:'Caps. Amoxicillin 500 mg', __packagingSummary:'1 kuti = 20 kapsula',
+    __dispense:'Scat. No I (Një kuti = 20 kapsula)', __prescriptionRoute:'',
   },
 ];
 const encodedRegistry = zlib.gzipSync(Buffer.from(JSON.stringify(rows))).toString('base64');
@@ -69,9 +77,13 @@ const server = http.createServer((req, res) => {
   if (url.pathname === '/api/drug-search') {
     const q = String(url.searchParams.get('q') || '').toLowerCase();
     const results = rows.filter(row => `${row['Substanca aktive']} ${row['Emri tregtar']}`.toLowerCase().includes(q)).map(row => ({
-      key:`${row.PDID}|${row['Emri tregtar']}|${row['Fortësia']}`,
+      key:`${row.PDID}|${row.ProtocolNo}|${row['Emri tregtar']}|${row['Fortësia']}`,
       tradeName:row['Emri tregtar'], substance:row['Substanca aktive'], strength:row['Fortësia'],
-      form:row['Forma farmaceutike'], atc:row['ATC Code'], pdid:row.PDID, qualityStatus:'verified',
+      form:row['Forma farmaceutike'], packaging:row['Madhësia e paketimit'], atc:row['ATC Code'],
+      pdid:row.PDID, protocolNo:row.ProtocolNo, qualityStatus:'verified',
+      prescriptionLine:row.__prescriptionLine, prescriptionNotation:`${row.__prescriptionLine} — ${row.__packagingSummary}`,
+      packagingSummary:row.__packagingSummary, dispense:row.__dispense, route:row.__prescriptionRoute,
+      sheetPrescriptionNotation:row.__sheetPrescriptionNotation,
     }));
     return send(res, 200, JSON.stringify({ ok:true, results }), 'application/json; charset=utf-8');
   }

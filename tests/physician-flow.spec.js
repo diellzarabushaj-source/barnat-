@@ -59,6 +59,16 @@ test('mjeku gjen shërbimin, krijon recetë dhe vazhdon offline', async ({ page,
   expectInsideViewport(drugGeometry.result, drugGeometry.viewport);
   await firstDrug.click();
   await expect(page.locator('#rxComposer')).toHaveValue(/Paracetamol/i);
+
+  await page.locator('[data-rx-command="drug"]').click();
+  await expect(drugSearch).toBeVisible();
+  await drugSearch.fill('amoxicillin');
+  const amoxicillin = page.locator('#rxDrugResults .rx-drug-result').first();
+  await expect(amoxicillin).toContainText('Amoxicillin', { timeout:10000 });
+  await amoxicillin.click();
+  await expect(page.locator('#rxComposer')).toHaveValue(/Caps\. Amoxicillin 500 mg/i);
+  await expect(page.locator('#rxComposer')).toHaveValue(/Sasia:\s*Scat\. No I \(Një kuti = 20 kapsula\)/i);
+
   await page.locator('#rxDiagnosis').fill('R51 — Dhimbje koke');
   await page.waitForTimeout(600);
 
@@ -66,6 +76,8 @@ test('mjeku gjen shërbimin, krijon recetë dhe vazhdon offline', async ({ page,
   await restoredPage.goto('http://127.0.0.1:4173/recetat.html', { waitUntil:'domcontentloaded' });
   await restoredPage.waitForFunction(() => document.documentElement.classList.contains('auth-ready'));
   await expect(restoredPage.locator('#rxComposer')).toHaveValue(/Paracetamol/i);
+  await expect(restoredPage.locator('#rxComposer')).toHaveValue(/Amoxicillin/i);
+  await expect(restoredPage.locator('#rxComposer')).toHaveValue(/Një kuti = 20 kapsula/i);
   await expect(restoredPage.locator('#rxDiagnosis')).toHaveValue(/Dhimbje koke/i);
 
   const restoredDiagnosis = restoredPage.locator('#rxDiagnosis');
@@ -91,6 +103,8 @@ test('mjeku gjen shërbimin, krijon recetë dhe vazhdon offline', async ({ page,
   await restoredPage.waitForFunction(() => document.documentElement.classList.contains('auth-ready'));
   await expect(restoredPage.locator('#rxDiagnosis')).toHaveValue(/J85/i);
   await expect(restoredPage.locator('#rxComposer')).toHaveValue(/Paracetamol/i);
+  await expect(restoredPage.locator('#rxComposer')).toHaveValue(/Amoxicillin/i);
+  await expect(restoredPage.locator('#rxComposer')).toHaveValue(/Një kuti = 20 kapsula/i);
 
   restoredPage.once('dialog', pending => pending.accept());
   await restoredPage.goto('http://127.0.0.1:4173/index.html', { waitUntil:'domcontentloaded' });

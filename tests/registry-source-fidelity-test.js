@@ -1,0 +1,54 @@
+const assert = require('node:assert/strict');
+const fs = require('node:fs');
+const path = require('node:path');
+const registry = require('../api/registry.js');
+
+assert.equal(
+  registry.normalizeCellValue('ESSETI Industria _x000D_\nChimico-Farmaceutica'),
+  'ESSETI Industria\nChimico-Farmaceutica'
+);
+assert.equal(registry.normalizeCellValue(1131), 1131);
+
+const sourceRows = [
+  { 'Nr rendor':3844, ProtocolNo:'d.fizike', PDID:'d.fizike', 'Emri tregtar':'Parcoten', 'Substanca aktive':'Paracetamol & Codeine Phosphate', 'ATC Code':'N02AJ06', 'Fortësia':'500mg/10mg', 'Forma farmaceutike':'Tablet', 'Madhësia e paketimit':'20 tablets' },
+  { 'Nr rendor':3845, ProtocolNo:'d.fizike', PDID:'d.fizike', 'Emri tregtar':'Bortezomib STADA', 'Substanca aktive':'Bortezomib', 'ATC Code':'L01XG01', 'Fortësia':'2.5 mg/ml', 'Forma farmaceutike':'Solution for injection', 'Madhësia e paketimit':'One 1.4 ml vial' },
+  { 'Nr rendor':3846, ProtocolNo:'d.fizike', PDID:'d.fizike', 'Emri tregtar':'Amoxicillin Stada', 'Substanca aktive':'Amoxicillin', 'ATC Code':'J01CA04', 'Fortësia':'1000 mg', 'Forma farmaceutike':'Film coated tablet', 'Madhësia e paketimit':'10 tablets' },
+];
+const prescriptionRows = sourceRows.map((row, index) => ({ ...row, 'Si të shënohet në recetë':`NOTATION-${index + 1}` }));
+const result = registry.attachPrescriptionNotation(sourceRows, prescriptionRows);
+assert.equal(result.rows.length, 3);
+assert.deepEqual(result.rows.map(row => row['Si të shënohet në recetë']), ['NOTATION-1', 'NOTATION-2', 'NOTATION-3']);
+assert.deepEqual(result.rows.map(row => row.__sheetPrescriptionNotation), ['NOTATION-1', 'NOTATION-2', 'NOTATION-3']);
+assert.equal(result.matched, 3);
+assert.equal(result.generated, 0);
+assert.equal(result.matchedByOrdinal, 3);
+assert.equal(result.ambiguousExact, 1);
+assert.equal(result.ambiguousPdid, 1);
+
+const fallback = registry.attachPrescriptionNotation([sourceRows[0]], []);
+assert.equal(fallback.matched, 0);
+assert.equal(fallback.generated, 1);
+assert.equal(fallback.rows[0].__sheetPrescriptionNotation, '');
+assert.match(fallback.rows[0]['Si të shënohet në recetë'], /Paracetamol/i);
+
+const root = path.resolve(__dirname, '..');
+const local = fs.readFileSync(path.join(root, 'local-registry-fidelity.js'), 'utf8');
+for (const marker of [
+  'REGISTRY_SCHEMA_VERSION', 'packagingSummary', 'prescriptionLine',
+  'sheetPrescriptionNotation:clean(row.__sheetPrescriptionNotation)',
+  "prescriptionNotation:[prescriptionLine, packagingSummary]",
+  'record.version !== REGISTRY_SCHEMA_VERSION',
+]) {
+  assert.ok(local.includes(marker), `local registry missing ${marker}`);
+}
+const online = fs.readFileSync(path.join(root, 'api/drug-search.js'), 'utf8');
+assert.match(online, /sheetPrescriptionNotation:clean\(row\.__sheetPrescriptionNotation\)/);
+assert.match(online, /const protocolNo = clean\(row\.ProtocolNo\)/);
+assert.match(online, /\$\{pdid\}\|\$\{protocolNo\}\|\$\{tradeName\}\|\$\{strength\}/);
+assert.match(online, /const packaging = normalize\(row\['Madhësia e paketimit'\]\)/);
+
+const html = fs.readFileSync(path.join(root, 'recetat.html'), 'utf8');
+assert.match(html, /local-registry-fidelity\.js\?v=registry-fidelity-v1/);
+const worker = fs.readFileSync(path.join(root, 'sw.js'), 'utf8');
+assert.match(worker, /local-registry-fidelity\.js/);
+console.log('Registry source fidelity, provenance and collision audit passed.');
