@@ -30,7 +30,7 @@ for (const marker of [
 
 for (const marker of [
   'medindex:icd-workspace-ready', 'updateHeroStats', 'ensureSourceNoticeIcon',
-  'clearAllFilters', 'syncQuickButtons', 'syncSelectedChapter', 'Alt',
+  'clearAllFilters', 'syncQuickButtons', 'syncSelectedChapter', 'event.altKey',
   'MutationObserver', 'aria-pressed',
 ]) assert.ok(js.includes(marker), `ICD workspace JS missing ${marker}`);
 
