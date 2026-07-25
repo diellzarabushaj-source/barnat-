@@ -21,7 +21,7 @@ assert.match(js, /ICONS\[chapterIndex % ICONS\.length\]/);
 assert.match(js, /themeStyle\(chapterIndex\)/);
 assert.match(js, /MutationObserver/);
 assert.match(js, /Hap kapitullin/);
-assert.match(js, /data\[DECORATED\]/);
+assert.match(js, /dataset\[DECORATED\]/);
 assert.equal((js.match(/\['#[0-9a-f]{6}','#[0-9a-f]{6}','#[0-9a-f]{6}'\]/gi) || []).length, 22, 'Every ICD chapter must have a distinct gradient theme');
 
 for (const marker of [
