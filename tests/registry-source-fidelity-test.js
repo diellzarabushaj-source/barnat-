@@ -34,7 +34,7 @@ assert.match(fallback.rows[0]['Si të shënohet në recetë'], /Paracetamol/i);
 const root = path.resolve(__dirname, '..');
 const local = fs.readFileSync(path.join(root, 'local-registry-fidelity.js'), 'utf8');
 for (const marker of [
-  'REGISTRY_SCHEMA_VERSION', 'packagingSummary', 'prescriptionLine',
+  'REGISTRY_SCHEMA_VERSION', 'registry-prescription-master-v2', 'packagingSummary', 'prescriptionLine',
   'sheetPrescriptionNotation:clean(row.__sheetPrescriptionNotation)',
   "prescriptionNotation:[prescriptionLine, packagingSummary]",
   'record.version !== REGISTRY_SCHEMA_VERSION',
@@ -48,7 +48,7 @@ assert.match(online, /\$\{pdid\}\|\$\{protocolNo\}\|\$\{tradeName\}\|\$\{strengt
 assert.match(online, /const packaging = normalize\(row\['Madhësia e paketimit'\]\)/);
 
 const html = fs.readFileSync(path.join(root, 'recetat.html'), 'utf8');
-assert.match(html, /local-registry-fidelity\.js\?v=registry-fidelity-v1/);
+assert.match(html, /local-registry-fidelity\.js\?v=registry-prescription-master-v2/);
 const worker = fs.readFileSync(path.join(root, 'sw.js'), 'utf8');
 assert.match(worker, /local-registry-fidelity\.js/);
 console.log('Registry source fidelity, provenance and collision audit passed.');
