@@ -3,6 +3,12 @@ const fs = require('node:fs');
 const path = require('node:path');
 const registry = require('../api/registry.js');
 
+assert.equal(
+  registry.normalizeCellValue('ESSETI Industria _x000D_\nChimico-Farmaceutica'),
+  'ESSETI Industria\nChimico-Farmaceutica'
+);
+assert.equal(registry.normalizeCellValue(1131), 1131);
+
 const sourceRows = [
   { 'Nr rendor':3844, ProtocolNo:'d.fizike', PDID:'d.fizike', 'Emri tregtar':'Parcoten', 'Substanca aktive':'Paracetamol & Codeine Phosphate', 'ATC Code':'N02AJ06', 'Fortësia':'500mg/10mg', 'Forma farmaceutike':'Tablet', 'Madhësia e paketimit':'20 tablets' },
   { 'Nr rendor':3845, ProtocolNo:'d.fizike', PDID:'d.fizike', 'Emri tregtar':'Bortezomib STADA', 'Substanca aktive':'Bortezomib', 'ATC Code':'L01XG01', 'Fortësia':'2.5 mg/ml', 'Forma farmaceutike':'Solution for injection', 'Madhësia e paketimit':'One 1.4 ml vial' },
