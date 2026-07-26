@@ -6,7 +6,7 @@
   const DB_KEY = 'registry-parts';
   const REGISTRY_URL = '/api/registry';
   const MAX_QUERY_LENGTH = 90;
-  const REGISTRY_SCHEMA_VERSION = 'registry-prescription-master-v2';
+  const REGISTRY_SCHEMA_VERSION = 'registry-prescription-master-v3-no-dynamic-code';
   let rowsPromise = null;
 
   const clean = value => String(value ?? '').replace(/\s+/g, ' ').trim();
@@ -75,13 +75,26 @@
     return [];
   }
 
-  function extractPayload(code) {
-    const sandbox = { DRUG_DATA_PARTS: [], REGISTRY_QUALITY_META: null, REGISTRY_LOAD_ERROR: '' };
-    Function('window', `'use strict';\n${code}`)(sandbox);
-    if (!Array.isArray(sandbox.DRUG_DATA_PARTS) || !sandbox.DRUG_DATA_PARTS.length) {
-      throw new Error(sandbox.REGISTRY_LOAD_ERROR || 'Regjistri nuk ktheu të dhëna.');
+  function parseAssignment(source, name, fallback = null) {
+    const prefix = `window.${name}`;
+    const line = String(source || '').split(/\r?\n/).find(item => item.trim().startsWith(prefix));
+    if (!line) return fallback;
+    const equals = line.indexOf('=');
+    if (equals < 0) return fallback;
+    const serialized = line.slice(equals + 1).trim().replace(/;+\s*$/, '');
+    try { return JSON.parse(serialized); }
+    catch { throw new Error(`Payload-i i regjistrit ka fushë të pavlefshme: ${name}.`); }
+  }
+
+  function parsePayload(source) {
+    const parts = parseAssignment(source, 'DRUG_DATA_PARTS', []);
+    if (!Array.isArray(parts) || !parts.length) {
+      throw new Error(parseAssignment(source, 'REGISTRY_LOAD_ERROR', 'Regjistri nuk ktheu të dhëna.'));
     }
-    return sandbox;
+    return {
+      parts,
+      quality:parseAssignment(source, 'REGISTRY_QUALITY_META', null),
+    };
   }
 
   async function fetchAndStoreParts() {
@@ -95,12 +108,12 @@
         signal: controller.signal,
       });
       if (!response.ok) throw new Error(`Regjistri ${response.status}`);
-      const payload = extractPayload(await response.text());
+      const payload = parsePayload(await response.text());
       const record = {
         version: REGISTRY_SCHEMA_VERSION,
         savedAt: Date.now(),
-        parts: payload.DRUG_DATA_PARTS,
-        quality: payload.REGISTRY_QUALITY_META || null,
+        parts: payload.parts,
+        quality: payload.quality,
       };
       await databasePut(DB_KEY, record).catch(() => null);
       return record;
