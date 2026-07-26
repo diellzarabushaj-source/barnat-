@@ -2,7 +2,7 @@
   'use strict';
 
   const ID = 'analizatClinicalCardsStyles';
-  const HREF = '/analizat-clinical-cards.css?v=20260726-1';
+  const HREF = '/analizat-clinical-cards.css?v=20260726-2';
 
   function ensure() {
     let link = document.getElementById(ID);
@@ -10,9 +10,9 @@
       link = document.createElement('link');
       link.id = ID;
       link.rel = 'stylesheet';
-      link.href = HREF;
       link.dataset.analizatClinicalCards = '1';
     }
+    if (link.getAttribute('href') !== HREF) link.href = HREF;
     if (document.head.lastElementChild !== link) document.head.appendChild(link);
   }
 
