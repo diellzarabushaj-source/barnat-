@@ -201,7 +201,69 @@
     };
   }
 
-  function prescriptionTransfer(drug, regimen = null, population = 'adult') {
+  function formatNumber(value) {
+    return Number.isFinite(Number(value))
+      ? new Intl.NumberFormat('sq-AL', { maximumFractionDigits:2 }).format(Number(value))
+      : '';
+  }
+
+  function routePhrase(value) {
+    const raw = text(value);
+    const route = fold(raw);
+    if (!raw) return '';
+    if (/oral|orale|nga goja|\bp\.?o\.?\b/.test(route)) return 'nga goja';
+    if (/okular|ocular|ne sy|në sy/.test(route)) return 'në sy';
+    if (/otik|otic|ne vesh|në vesh/.test(route)) return 'në vesh';
+    if (/nazal|nasal|ne hund|në hund/.test(route)) return 'në hundë';
+    if (/topik|topical|kutan|cutaneous|lekure|lëkurë/.test(route)) return 'në lëkurë';
+    if (/inhal/.test(route)) return 'me inhalim';
+    if (/rektal|rectal/.test(route)) return 'rektalisht';
+    if (/intramusk|\bi\.?m\.?\b/.test(route)) return 'intramuskularisht';
+    if (/intraven|\bi\.?v\.?\b/.test(route)) return 'intravenoz';
+    if (/subkutan|subcutaneous|nenlekure|nënlëkurë|\bs\.?c\.?\b/.test(route)) return 'nënlëkurë';
+    return raw;
+  }
+
+  function durationPhrase(value) {
+    const raw = text(value);
+    if (!raw) return '';
+    const normalized = fold(raw);
+    return /^(per|për|deri|gjate|gjatë|sipas)\b/.test(normalized) ? raw : `për ${raw}`;
+  }
+
+  function signatureAmount(regimen, population, calculation) {
+    if (population === 'pediatric' && calculation?.status === 'calculated') {
+      if (Number.isFinite(calculation.perDoseMl)) return `${formatNumber(calculation.perDoseMl)} mL`;
+      if (Number.isFinite(calculation.perDoseMg)) return `${formatNumber(calculation.perDoseMg)} mg`;
+    }
+    const unitCount = text(regimen?.unitCount);
+    const practicalUnit = text(regimen?.practicalUnit);
+    if (unitCount && practicalUnit) return `${unitCount} ${practicalUnit}`;
+    if (practicalUnit) return practicalUnit;
+    if (Number.isFinite(Number(regimen?.fixedVolumeMl)) && Number(regimen.fixedVolumeMl) > 0) return `${formatNumber(regimen.fixedVolumeMl)} mL`;
+    if (Number.isFinite(Number(regimen?.fixedDoseMg)) && Number(regimen.fixedDoseMg) > 0) return `${formatNumber(regimen.fixedDoseMg)} mg`;
+    const doseMg = text(regimen?.doseMg);
+    if (doseMg) return /mg\b/i.test(doseMg) ? doseMg : `${doseMg} mg`;
+    return '';
+  }
+
+  function buildSignature(regimen, population = 'adult', calculation = null) {
+    const existing = text(regimen?.signatura);
+    const calculatedPediatric = population === 'pediatric' && calculation?.status === 'calculated';
+    if (!calculatedPediatric && existing) return existing;
+
+    const amount = signatureAmount(regimen, population, calculation);
+    if (!amount) return existing;
+    const verb = population === 'pediatric' ? 'Jepen' : 'Merret';
+    const route = routePhrase(regimen?.route);
+    const frequency = text(regimen?.frequency)
+      || (Number.isFinite(Number(regimen?.intervalHours)) && Number(regimen.intervalHours) > 0 ? `çdo ${formatNumber(regimen.intervalHours)} orë` : '');
+    const duration = durationPhrase(regimen?.duration);
+    const sentence = [`${verb} ${amount}`, route, frequency, duration].filter(Boolean).join(' ').replace(/\s+/g, ' ').trim();
+    return sentence ? `${sentence.replace(/[.]+$/, '')}.` : existing;
+  }
+
+  function prescriptionTransfer(drug, regimen = null, population = 'adult', calculation = null) {
     const base = {
       key:text(drug?.key || drug?.drugKey),
       tradeName:text(drug?.tradeName),
@@ -229,7 +291,7 @@
       frequency:text(regimen.frequency),
       duration:text(regimen.duration),
       dispense:text(regimen.dispense || base.dispense),
-      signatura:text(regimen.signatura),
+      signatura:buildSignature(regimen, population, calculation),
       warnings:text(regimen.warnings),
       sourceUrl:text(regimen.sourceUrl),
       matchKey:text(regimen.matchKey || buildMatchKey(regimen)),
@@ -248,6 +310,7 @@
     exactMatches,
     decideMatch,
     calculatePediatricDose,
+    buildSignature,
     prescriptionTransfer,
   };
 });
