@@ -36,7 +36,7 @@ jobs:
           npx playwright install --with-deps chromium >> /tmp/playwright-install.log 2>&1 || { tail -200 /tmp/playwright-install.log; exit 1; }
           echo "Playwright Chromium installed."
 
-      - name: Run desktop, mobile and tablet physician workflows
+      - name: Run desktop, mobile, tablet and CSP browser audits
         shell: bash
         run: |
           set -euo pipefail
@@ -48,7 +48,7 @@ jobs:
             if curl -fsS http://127.0.0.1:4173/index.html >/dev/null; then break; fi
             sleep 1
           done
-          npx playwright test tests/physician-flow.spec.js tests/mobile-deep-audit.spec.js --reporter=line --workers=1 > /tmp/physician-flow.log 2>&1 || { cat /tmp/physician-flow.log; exit 1; }
+          npx playwright test tests/csp-browser-audit.spec.js tests/physician-flow.spec.js tests/mobile-deep-audit.spec.js --reporter=line --workers=1 > /tmp/physician-flow.log 2>&1 || { cat /tmp/physician-flow.log; exit 1; }
           cat /tmp/physician-flow.log
 
       - name: Upload physician diagnostics
