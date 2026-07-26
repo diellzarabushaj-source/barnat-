@@ -28,7 +28,8 @@ const rows = [
   },
 ];
 const encodedRegistry = zlib.gzipSync(Buffer.from(JSON.stringify(rows))).toString('base64');
-const registryBody = `window.DRUG_DATA_PARTS=[${JSON.stringify(encodedRegistry)}];window.REGISTRY_QUALITY_META={version:'browser-test',summary:{total:2,verified:2,blocked:0}};`;
+const registryMeta = { version:'browser-test', summary:{ total:2, verified:2, blocked:0 } };
+const registryBody = `window.DRUG_DATA_PARTS = [${JSON.stringify(encodedRegistry)}];\nwindow.REGISTRY_QUALITY_META = ${JSON.stringify(registryMeta)};\n`;
 
 const dosage = {
   schemaVersion:'1.0.0', matchVersion:'exact-v1', datasetVersion:'browser-test', mode:'SAFE_VERIFIED_ONLY',
@@ -41,7 +42,7 @@ const dosage = {
     sourceUrl:'https://example.test/paracetamol', status:'VERIFIKUAR', matchKey:'N02BE01|paracetamol|tablete|500mg',
     normalized:{ atc:'N02BE01', substance:'paracetamol', form:'tablete', strength:'500mg' },
   }],
-  pediatric:[],
+  pediatric:[], cards:[],
   meta:{ clinicalAutoFillEnabled:true, publishedForms:1, publishedAdultRegimens:1, publishedPediatricRegimens:0, geminiForDosage:false },
 };
 
@@ -51,8 +52,16 @@ const TYPES = {
   '.webmanifest':'application/manifest+json; charset=utf-8', '.png':'image/png', '.jpg':'image/jpeg', '.jpeg':'image/jpeg',
 };
 
+const SECURITY_HEADERS = {
+  'X-Content-Type-Options':'nosniff',
+  'X-Frame-Options':'DENY',
+  'Referrer-Policy':'no-referrer',
+  'Permissions-Policy':'camera=(), microphone=(), geolocation=(), payment=(), usb=(), browsing-topics=()',
+  'Content-Security-Policy':"default-src 'self'; base-uri 'self'; frame-ancestors 'none'; frame-src 'none'; form-action 'self'; object-src 'none'; script-src 'self'; script-src-attr 'none'; style-src 'self' 'unsafe-inline'; img-src 'self' data:; connect-src 'self'; font-src 'self' data:; media-src 'self'; worker-src 'self'; manifest-src 'self'",
+};
+
 function send(res, status, body, type = 'text/plain; charset=utf-8', headers = {}) {
-  res.writeHead(status, { 'Content-Type':type, 'Cache-Control':'no-store', ...headers });
+  res.writeHead(status, { ...SECURITY_HEADERS, 'Content-Type':type, 'Cache-Control':'no-store', ...headers });
   res.end(body);
 }
 
@@ -92,7 +101,7 @@ const server = http.createServer((req, res) => {
   const file = safeFile(url.pathname);
   if (!file || !fs.existsSync(file) || fs.statSync(file).isDirectory()) return send(res, 404, 'Not found');
   const type = TYPES[path.extname(file).toLowerCase()] || 'application/octet-stream';
-  res.writeHead(200, { 'Content-Type':type, 'Cache-Control':'no-cache', 'Service-Worker-Allowed':'/' });
+  res.writeHead(200, { ...SECURITY_HEADERS, 'Content-Type':type, 'Cache-Control':'no-cache', 'Service-Worker-Allowed':'/' });
   fs.createReadStream(file).pipe(res);
 });
 
