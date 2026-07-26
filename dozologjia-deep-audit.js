@@ -13,6 +13,44 @@
   let calculableOnly = false;
   let frame = 0;
 
+  function ensureStyles() {
+    const styles = [
+      ['dozologjiaSafetyStyles', '/dozologjia-safety-enhancements.css?v=20260726-1'],
+      ['dozologjiaReadinessStyles', '/dozologjia-clinical-readiness.css?v=20260726-1'],
+    ];
+    styles.forEach(([id, href]) => {
+      let link = document.getElementById(id);
+      if (!link) {
+        link = document.createElement('link');
+        link.id = id;
+        link.rel = 'stylesheet';
+        link.href = href;
+      }
+      if (document.head.lastElementChild !== link) document.head.appendChild(link);
+    });
+  }
+
+  function installDosageFetchDeduper() {
+    if (window.__medindexDosageFetchDeduped) return;
+    window.__medindexDosageFetchDeduped = true;
+    const nativeFetch = window.fetch.bind(window);
+    let sharedResponse = null;
+    let resetTimer = 0;
+    window.fetch = (input, init = {}) => {
+      let url;
+      try { url = new URL(typeof input === 'string' ? input : input.url, location.href); }
+      catch { return nativeFetch(input, init); }
+      const method = String(init.method || (typeof input !== 'string' && input.method) || 'GET').toUpperCase();
+      if (method !== 'GET' || url.origin !== location.origin || url.pathname !== '/api/dosage') return nativeFetch(input, init);
+      if (!sharedResponse) {
+        sharedResponse = nativeFetch(input, init).then(response => response.clone());
+        clearTimeout(resetTimer);
+        resetTimer = setTimeout(() => { sharedResponse = null; }, 1500);
+      }
+      return sharedResponse.then(response => response.clone());
+    };
+  }
+
   function cardAsDrug(card, population = 'adult') {
     return {
       key:card.cardKey,
@@ -49,8 +87,7 @@
 
   function sourceDomain(url) {
     try { return new URL(url).hostname.replace(/^www\./, ''); }
-    catch { return '';
-    }
+    catch { return ''; }
   }
 
   function rangeText(min, max, unit) {
@@ -268,6 +305,7 @@
   }
 
   function init() {
+    ensureStyles();
     setupControls();
     const list = $('#dosageList');
     if (list) new MutationObserver(enhanceAll).observe(list, { childList:true });
@@ -277,6 +315,8 @@
     loadPayload();
   }
 
+  ensureStyles();
+  installDosageFetchDeduper();
   if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', init, { once:true });
   else init();
 })();
