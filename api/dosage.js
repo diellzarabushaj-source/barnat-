@@ -19,10 +19,7 @@ const yes = value => ['PO', 'YES', 'TRUE', '1'].includes(clean(value).toUpperCas
 const verified = value => clean(value).toUpperCase() === 'VERIFIKUAR';
 const envFlag = name => ['TRUE', '1', 'YES', 'PO'].includes(clean(process.env[name]).toUpperCase());
 const httpsUrl = value => /^https:\/\/[^\s]+$/i.test(clean(value)) ? clean(value) : '';
-const sourceList = value => clean(value)
-  .split(/\s*;\s*/)
-  .map(httpsUrl)
-  .filter(Boolean);
+const sourceList = value => clean(value).split(/\s*;\s*/).map(httpsUrl).filter(Boolean);
 const numberOrNull = value => {
   const raw = clean(value);
   const parsed = Number(raw.replace(',', '.'));
@@ -42,9 +39,8 @@ async function fetchWorkbook(url) {
   const timer = setTimeout(() => controller.abort(), FETCH_TIMEOUT_MS);
   try {
     const response = await fetch(url, {
-      redirect: 'follow',
-      signal: controller.signal,
-      headers: { 'User-Agent': 'Mozilla/5.0 (compatible; MedIndexDosage/2.2)' },
+      redirect: 'follow', signal: controller.signal,
+      headers: { 'User-Agent': 'Mozilla/5.0 (compatible; MedIndexDosage/2.3)' },
     });
     if (!response.ok) throw new Error(`status ${response.status}`);
     const declaredSize = Number(response.headers.get('content-length') || 0);
@@ -53,9 +49,7 @@ async function fetchWorkbook(url) {
     if (buffer.length > MAX_WORKBOOK_BYTES) throw new Error('workbook-u është tepër i madh');
     if (!(buffer.length > 4 && buffer[0] === 0x50 && buffer[1] === 0x4b)) throw new Error('përgjigjja nuk ishte Excel');
     return buffer;
-  } finally {
-    clearTimeout(timer);
-  }
+  } finally { clearTimeout(timer); }
 }
 
 async function downloadWorkbook(fileId) {
@@ -70,7 +64,7 @@ async function downloadWorkbook(fileId) {
 function sheetToRecords(workbook, sheetName) {
   const worksheet = workbook.Sheets[sheetName];
   if (!worksheet) throw new Error(`Mungon tab-i ${sheetName}.`);
-  const grid = XLSX.utils.sheet_to_json(worksheet, { header: 1, defval: '', raw: false, blankrows: false });
+  const grid = XLSX.utils.sheet_to_json(worksheet, { header:1, defval:'', raw:false, blankrows:false });
   if (!grid.length) return [];
   const headers = grid[0].map(clean);
   const nonEmptyHeaders = headers.filter(Boolean);
@@ -82,9 +76,7 @@ function sheetToRecords(workbook, sheetName) {
   }).filter(record => Object.values(record).some(value => clean(value)));
 }
 
-function configFromRows(rows) {
-  return Object.fromEntries(rows.map(row => [clean(row['Çelësi']), row['Vlera']]).filter(([key]) => key));
-}
+const configFromRows = rows => Object.fromEntries(rows.map(row => [clean(row['Çelësi']), row['Vlera']]).filter(([key]) => key));
 
 function safeSingleRoute(value) {
   const route = clean(value);
@@ -95,57 +87,53 @@ function safeSingleRoute(value) {
 function mapForm(row) {
   const route = yes(row['Publiko rrugën?']) ? safeSingleRoute(row['Rruga default']) : '';
   return {
-    form: clean(row['Forma në databazë']), formKey: clean(row.FormaKey) || token(row['Forma në databazë']),
-    category: clean(row.Kategoria), prefix: clean(row['Parashtesa MedIndex']), route,
-    routeSuggested: Boolean(route), unit: clean(row['Njësia e dozës']), safetyNote: clean(row['Vërejtje sigurie']),
-    version: clean(row.Versioni), reviewedAt: clean(row['Kontrolluar më']),
+    form:clean(row['Forma në databazë']), formKey:clean(row.FormaKey) || token(row['Forma në databazë']),
+    category:clean(row.Kategoria), prefix:clean(row['Parashtesa MedIndex']), route,
+    routeSuggested:Boolean(route), unit:clean(row['Njësia e dozës']), safetyNote:clean(row['Vërejtje sigurie']),
+    version:clean(row.Versioni), reviewedAt:clean(row['Kontrolluar më']),
   };
 }
 
 function mapAdult(row) {
   const result = {
-    regimenId: clean(row.RegimenID), substance: clean(row['Substanca aktive']), atc: clean(row.ATC), form: clean(row.Forma),
-    referenceStrength: clean(row['Fortësia referencë']), indication: clean(row.Indikacioni), icd: clean(row['Kodi ICD (opsional)']),
-    population: clean(row.Popullata), doseMg: clean(row['Doza për marrje (mg)']), practicalUnit: clean(row['Njësia praktike']),
-    unitCount: clean(row['Numri i njësive']), route: clean(row.Rruga), frequency: clean(row.Shpeshtësia),
-    intervalHours: clean(row['Intervali (orë)']), duration: clean(row['Kohëzgjatja default']), prn: yes(row['PRN?']),
-    prnIndication: clean(row['Indikacioni PRN']), maxSingleMg: numberOrNull(row['Maks. për marrje (mg)']),
-    max24hMg: numberOrNull(row['Maks. 24h (mg)']), maxUnits24h: clean(row['Maks. njësi/24h']),
-    dispense: clean(row['Dispenso default']), signatura: clean(row['Signatura draft']), warnings: clean(row['Udhëzime / alarme']),
-    renalHepatic: clean(row['Renal / hepatik']), sourceUrl: httpsUrl(row['Burimi URL']), sourceDate: clean(row['Data e burimit']),
-    status: 'VERIFIKUAR',
+    regimenId:clean(row.RegimenID), substance:clean(row['Substanca aktive']), atc:clean(row.ATC), form:clean(row.Forma),
+    referenceStrength:clean(row['Fortësia referencë']), indication:clean(row.Indikacioni), icd:clean(row['Kodi ICD (opsional)']),
+    population:clean(row.Popullata), doseMg:clean(row['Doza për marrje (mg)']), practicalUnit:clean(row['Njësia praktike']),
+    unitCount:clean(row['Numri i njësive']), route:clean(row.Rruga), frequency:clean(row.Shpeshtësia),
+    intervalHours:clean(row['Intervali (orë)']), duration:clean(row['Kohëzgjatja default']), prn:yes(row['PRN?']),
+    prnIndication:clean(row['Indikacioni PRN']), maxSingleMg:numberOrNull(row['Maks. për marrje (mg)']),
+    max24hMg:numberOrNull(row['Maks. 24h (mg)']), maxUnits24h:clean(row['Maks. njësi/24h']),
+    dispense:clean(row['Dispenso default']), signatura:clean(row['Signatura draft']), warnings:clean(row['Udhëzime / alarme']),
+    renalHepatic:clean(row['Renal / hepatik']), sourceUrl:httpsUrl(row['Burimi URL']), sourceDate:clean(row['Data e burimit']),
+    status:'VERIFIKUAR',
   };
   result.matchKey = DosageEngine.buildMatchKey(result);
   result.normalized = {
-    atc: DosageEngine.normalizeAtc(result.atc),
-    substance: DosageEngine.normalizeSubstance(result.substance),
-    form: DosageEngine.normalizeForm(result.form),
-    strength: DosageEngine.normalizeStrength(result.referenceStrength),
+    atc:DosageEngine.normalizeAtc(result.atc), substance:DosageEngine.normalizeSubstance(result.substance),
+    form:DosageEngine.normalizeForm(result.form), strength:DosageEngine.normalizeStrength(result.referenceStrength),
   };
   return result;
 }
 
 function mapPediatric(row) {
   const result = {
-    regimenId: clean(row.RegimenID), substance: clean(row['Substanca aktive']), atc: clean(row.ATC), form: clean(row.Forma),
-    concentration: clean(row.Përqendrimi), indication: clean(row.Indikacioni), icd: clean(row['ICD (opsional)']),
-    minAgeMonths: numberOrNull(row['Mosha min (muaj)']), maxAgeMonths: numberOrNull(row['Mosha max (muaj)']),
-    minWeightKg: numberOrNull(row['Pesha min (kg)']), maxWeightKg: numberOrNull(row['Pesha max (kg)']),
-    regimenType: clean(row['Lloji i skemës']), mgPerKg: numberOrNull(row['Vlera mg/kg']), basis: clean(row['Baza (dozë/ditë)']),
-    dosesPerDay: numberOrNull(row['Nr. dozave/ditë']), fixedDoseMg: numberOrNull(row['Doza fikse (mg)']),
-    fixedVolumeMl: numberOrNull(row['Vëllimi fikse (mL)']), route: clean(row.Rruga), frequency: clean(row.Shpeshtësia),
-    intervalHours: clean(row['Intervali (orë)']), maxSingleMg: numberOrNull(row['Maks. për marrje (mg)']),
-    max24hMg: numberOrNull(row['Maks. 24h (mg)']), maxDoses24h: numberOrNull(row['Maks. nr. dozave/24h']),
-    duration: clean(row['Kohëzgjatja default']), dispense: clean(row['Dispenso default']), formula: clean(row['Formula e llogaritjes']),
-    signatura: clean(row['Signatura draft']), warnings: clean(row['Udhëzime / alarme']), sourceUrl: httpsUrl(row['Burimi URL']),
-    status: 'VERIFIKUAR',
+    regimenId:clean(row.RegimenID), substance:clean(row['Substanca aktive']), atc:clean(row.ATC), form:clean(row.Forma),
+    concentration:clean(row.Përqendrimi), indication:clean(row.Indikacioni), icd:clean(row['ICD (opsional)']),
+    minAgeMonths:numberOrNull(row['Mosha min (muaj)']), maxAgeMonths:numberOrNull(row['Mosha max (muaj)']),
+    minWeightKg:numberOrNull(row['Pesha min (kg)']), maxWeightKg:numberOrNull(row['Pesha max (kg)']),
+    regimenType:clean(row['Lloji i skemës']), mgPerKg:numberOrNull(row['Vlera mg/kg']), basis:clean(row['Baza (dozë/ditë)']),
+    dosesPerDay:numberOrNull(row['Nr. dozave/ditë']), fixedDoseMg:numberOrNull(row['Doza fikse (mg)']),
+    fixedVolumeMl:numberOrNull(row['Vëllimi fikse (mL)']), route:clean(row.Rruga), frequency:clean(row.Shpeshtësia),
+    intervalHours:clean(row['Intervali (orë)']), maxSingleMg:numberOrNull(row['Maks. për marrje (mg)']),
+    max24hMg:numberOrNull(row['Maks. 24h (mg)']), maxDoses24h:numberOrNull(row['Maks. nr. dozave/24h']),
+    duration:clean(row['Kohëzgjatja default']), dispense:clean(row['Dispenso default']), formula:clean(row['Formula e llogaritjes']),
+    signatura:clean(row['Signatura draft']), warnings:clean(row['Udhëzime / alarme']),
+    sourceUrl:httpsUrl(row['Burimi URL']), sourceDate:clean(row['Data e burimit']), status:'VERIFIKUAR',
   };
   result.matchKey = DosageEngine.buildMatchKey(result);
   result.normalized = {
-    atc: DosageEngine.normalizeAtc(result.atc),
-    substance: DosageEngine.normalizeSubstance(result.substance),
-    form: DosageEngine.normalizeForm(result.form),
-    strength: DosageEngine.normalizeStrength(result.concentration),
+    atc:DosageEngine.normalizeAtc(result.atc), substance:DosageEngine.normalizeSubstance(result.substance),
+    form:DosageEngine.normalizeForm(result.form), strength:DosageEngine.normalizeStrength(result.concentration),
   };
   return result;
 }
@@ -155,24 +143,13 @@ function mapCard(row) {
   const tradeName = clean(row['Emri tregtar']);
   const strength = clean(row['Fortësia']);
   return {
-    cardKey: [pdid, tradeName, strength].join('|'),
-    nr: clean(row['Nr rendor']),
-    pdid,
-    tradeName,
-    substance: clean(row['Substanca aktive']),
-    atc: clean(row.ATC),
-    form: clean(row.Forma),
-    strength,
-    drugClass: clean(row['Klasa / Çka është']),
-    use: clean(row.Përdorimi),
-    adultDose: clean(row['Doza e plotë — Të rritur']),
-    adultRoute: clean(row['Rruga — Të rritur']),
-    pediatricDose: clean(row['Doza e plotë — Fëmijë']),
-    pediatricRoute: clean(row['Rruga — Fëmijë']),
-    sourceUrls: sourceList(row['Burimi URL']),
-    auditedAt: clean(row['Data e auditimit']),
-    auditNote: clean(row['Shënim auditimi']),
-    status: 'VERIFIKUAR',
+    cardKey:[pdid, tradeName, strength].join('|'), nr:clean(row['Nr rendor']), pdid, tradeName,
+    substance:clean(row['Substanca aktive']), atc:clean(row.ATC), form:clean(row.Forma), strength,
+    drugClass:clean(row['Klasa / Çka është']), use:clean(row.Përdorimi),
+    adultDose:clean(row['Doza e plotë — Të rritur']), adultRoute:clean(row['Rruga — Të rritur']),
+    pediatricDose:clean(row['Doza e plotë — Fëmijë']), pediatricRoute:clean(row['Rruga — Fëmijë']),
+    sourceUrls:sourceList(row['Burimi URL']), auditedAt:clean(row['Data e auditimit']),
+    auditNote:clean(row['Shënim auditimi']), status:'VERIFIKUAR',
   };
 }
 
@@ -207,7 +184,7 @@ function uniqueBy(items, keyName) {
 
 async function buildPayload(fileId) {
   const startedAt = Date.now();
-  const workbook = XLSX.read(await downloadWorkbook(fileId), { type: 'buffer', cellDates: false });
+  const workbook = XLSX.read(await downloadWorkbook(fileId), { type:'buffer', cellDates:false });
   const config = configFromRows(sheetToRecords(workbook, 'CONFIG'));
   const clinicalAutoFillEnabled = envFlag('ENABLE_DOSAGE_AUTOFILL') || yes(config.CLINICAL_AUTOFILL_ENABLED);
   const formRows = sheetToRecords(workbook, clean(config.FORMS_SHEET) || 'FORMA_DHE_SHKURTESA');
@@ -221,37 +198,39 @@ async function buildPayload(fileId) {
   const cardsResult = uniqueBy(cardRows.filter(publishedCard).map(mapCard), 'cardKey');
   const adult = clinicalAutoFillEnabled ? eligibleAdultResult.output : [];
   const pediatric = clinicalAutoFillEnabled ? eligiblePediatricResult.output : [];
-  const cards = clinicalAutoFillEnabled ? cardsResult.output : [];
+  // Verified read-only cards remain visible even when automatic prescription transfer is disabled.
+  const cards = cardsResult.output;
 
   const payload = {
-    schemaVersion: clean(config.SCHEMA_VERSION) || '1.0.0', matchVersion: 'exact-v1', datasetVersion: clean(config.DATASET_VERSION),
-    mode: clean(config.WEBSITE_MODE) || 'SAFE_VERIFIED_ONLY', generatedAt: new Date().toISOString(),
-    forms: formsResult.output, adult, pediatric, cards,
-    meta: {
-      sourceFileId: fileId, clinicalAutoFillEnabled,
-      activationSource: envFlag('ENABLE_DOSAGE_AUTOFILL') ? 'vercel-env' : clinicalAutoFillEnabled ? 'sheet-config' : 'disabled',
-      autoApplyPolicy: clean(config.AUTO_APPLY_POLICY) || 'UNIQUE_EXACT_MATCH_AUTO_APPLY',
-      publishedForms: formsResult.output.length, publishedAdultRegimens: adult.length, publishedPediatricRegimens: pediatric.length,
-      publishedCards: cards.length,
-      eligibleAdultRegimens: eligibleAdultResult.output.length, eligiblePediatricRegimens: eligiblePediatricResult.output.length,
-      eligibleCards: cardsResult.output.length,
-      rejectedAdultRegimens: adultRows.filter(requestedDosage).length - eligibleAdultResult.output.length,
-      rejectedPediatricRegimens: pediatricRows.filter(requestedDosage).length - eligiblePediatricResult.output.length,
-      duplicateForms: formsResult.duplicates, duplicateAdultRegimens: eligibleAdultResult.duplicates,
-      duplicatePediatricRegimens: eligiblePediatricResult.duplicates, duplicateCards: cardsResult.duplicates,
-      draftAdultRegimens: adultRows.filter(row => !requestedDosage(row)).length,
-      draftPediatricRegimens: pediatricRows.filter(row => !requestedDosage(row)).length,
-      draftCards: cardRows.filter(row => !publishedCard(row)).length,
-      buildMs: Date.now() - startedAt, geminiForDosage: false,
+    schemaVersion:clean(config.SCHEMA_VERSION) || '1.0.0', matchVersion:'exact-v1', datasetVersion:clean(config.DATASET_VERSION),
+    mode:clean(config.WEBSITE_MODE) || 'SAFE_VERIFIED_ONLY', generatedAt:new Date().toISOString(),
+    forms:formsResult.output, adult, pediatric, cards,
+    meta:{
+      sourceFileId:fileId, clinicalAutoFillEnabled,
+      activationSource:envFlag('ENABLE_DOSAGE_AUTOFILL') ? 'vercel-env' : clinicalAutoFillEnabled ? 'sheet-config' : 'disabled',
+      autoApplyPolicy:clean(config.AUTO_APPLY_POLICY) || 'UNIQUE_EXACT_MATCH_AUTO_APPLY',
+      publishedForms:formsResult.output.length, publishedAdultRegimens:adult.length,
+      publishedPediatricRegimens:pediatric.length, publishedCards:cards.length,
+      eligibleAdultRegimens:eligibleAdultResult.output.length, eligiblePediatricRegimens:eligiblePediatricResult.output.length,
+      eligibleCards:cardsResult.output.length,
+      rejectedAdultRegimens:adultRows.filter(requestedDosage).length - eligibleAdultResult.output.length,
+      rejectedPediatricRegimens:pediatricRows.filter(requestedDosage).length - eligiblePediatricResult.output.length,
+      duplicateForms:formsResult.duplicates, duplicateAdultRegimens:eligibleAdultResult.duplicates,
+      duplicatePediatricRegimens:eligiblePediatricResult.duplicates, duplicateCards:cardsResult.duplicates,
+      draftAdultRegimens:adultRows.filter(row => !requestedDosage(row)).length,
+      draftPediatricRegimens:pediatricRows.filter(row => !requestedDosage(row)).length,
+      draftCards:cardRows.filter(row => !publishedCard(row)).length,
+      cardsReadOnlyWhenAutoFillDisabled:!clinicalAutoFillEnabled,
+      buildMs:Date.now() - startedAt, geminiForDosage:false,
     },
   };
   const body = JSON.stringify(payload);
-  return { payload, body, etag: `"${crypto.createHash('sha256').update(body).digest('base64url')}"` };
+  return { payload, body, etag:`"${crypto.createHash('sha256').update(body).digest('base64url')}"` };
 }
 
 async function getPayload() {
   const fileId = process.env.DOSAGE_SHEET_ID || DEFAULT_DOSAGE_FILE_ID;
-  const key = `${fileId}:${envFlag('ENABLE_DOSAGE_AUTOFILL')}:config-v7-cards`;
+  const key = `${fileId}:${envFlag('ENABLE_DOSAGE_AUTOFILL')}:config-v8-cards-readonly`;
   const now = Date.now();
   if (memoryCache && memoryCacheKey === key && now - memoryCacheTime < MEMORY_CACHE_MS) return memoryCache;
   if (!pendingBuild || pendingBuildKey !== key) {
@@ -273,12 +252,12 @@ module.exports = async function handler(req, res) {
   try {
     if (!['GET', 'HEAD'].includes(req.method)) {
       res.setHeader('Allow', 'GET, HEAD');
-      return res.status(405).json({ error: 'Lejohet vetëm GET/HEAD.' });
+      return res.status(405).json({ error:'Lejohet vetëm GET/HEAD.' });
     }
     if (!(await authorized(req))) {
       res.setHeader('Cache-Control', 'no-store');
       res.setHeader('Vary', 'Cookie');
-      return res.status(401).json({ error: 'Sesioni nuk është aktiv.', forms: [], adult: [], pediatric: [], cards: [] });
+      return res.status(401).json({ error:'Sesioni nuk është aktiv.', forms:[], adult:[], pediatric:[], cards:[] });
     }
 
     const result = await getPayload();
@@ -288,6 +267,8 @@ module.exports = async function handler(req, res) {
     res.setHeader('X-Content-Type-Options', 'nosniff');
     res.setHeader('ETag', result.etag);
     res.setHeader('Server-Timing', `dosage;dur=${Date.now() - startedAt}`);
+    res.setHeader('X-MedIndex-Dosage-Cards', String(result.payload.cards.length));
+    res.setHeader('X-MedIndex-Autofill', result.payload.meta.clinicalAutoFillEnabled ? 'enabled' : 'disabled');
     if (req.headers['if-none-match'] === result.etag) return res.status(304).end();
     if (req.method === 'HEAD') return res.status(200).end();
     return res.status(200).send(result.body);
@@ -296,8 +277,8 @@ module.exports = async function handler(req, res) {
     res.setHeader('Content-Type', 'application/json; charset=utf-8');
     res.setHeader('Cache-Control', 'no-store');
     return res.status(500).json({
-      error: error.message || 'Gabim gjatë ngarkimit të dozologjisë.', forms: [], adult: [], pediatric: [], cards: [],
-      meta: { clinicalAutoFillEnabled: false, geminiForDosage: false },
+      error:error.message || 'Gabim gjatë ngarkimit të dozologjisë.', forms:[], adult:[], pediatric:[], cards:[],
+      meta:{ clinicalAutoFillEnabled:false, geminiForDosage:false },
     });
   }
 };
