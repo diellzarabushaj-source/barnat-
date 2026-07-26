@@ -53,6 +53,17 @@ assert.ok(fs.existsSync(path.join(root, 'app-runtime.js')), 'generated app-runti
 execFileSync(process.execPath, ['--check', path.join(root, 'app-runtime.js')], { stdio:'pipe' });
 assert.match(read('app-runtime.js'), /window\.MEDINDEX_REGISTRY_UI_READY = \(async \(\) => \{/, 'generated runtime must expose an awaitable readiness promise');
 
+const tailadminCss = read('tailadmin-medindex.css');
+assert.ok(tailadminCss.length > 25000, 'TailAdmin CSS appears truncated');
+assert.match(tailadminCss, /\.mi-sidebar-header/, 'TailAdmin sidebar styles are missing');
+assert.match(tailadminCss, /\.mi-content-container/, 'TailAdmin content styles are missing');
+assert.match(tailadminCss, /@media/, 'TailAdmin responsive styles are missing');
+assert.doesNotMatch(tailadminCss, /fonts\.(?:googleapis|gstatic)\.com/i, 'TailAdmin must not request third-party fonts');
+assert.match(tailadminCss, /--mi-font:\s*Inter, ui-sans-serif/, 'TailAdmin must use the local system font stack');
+const builder = read('scripts/build-static-runtime.js');
+assert.match(builder, /tailadmin-medindex\.css duket i cunguar/, 'build must stop if TailAdmin CSS is truncated');
+assert.match(builder, /hardenTailAdminCss/, 'build must remove third-party font imports');
+
 const rxHtml = read('recetat.html');
 assert.ok(rxHtml.indexOf('recetat.js') < rxHtml.indexOf('recetat-safe-print.js'), 'safe print must load after the legacy composer');
 const safePrint = read('recetat-safe-print.js');
