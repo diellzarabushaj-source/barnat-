@@ -1,12 +1,12 @@
 .registry-dosage-column {
-  min-width: 340px;
-  width: 340px;
+  min-width: 320px;
+  width: 320px;
   vertical-align: top;
   white-space: normal;
 }
 
 #headerRow .registry-dosage-column {
-  min-width: 340px;
+  min-width: 320px;
   line-height: 1.25;
 }
 
@@ -22,13 +22,13 @@
 
 .registry-dosage-grid {
   display: grid;
-  grid-template-columns: minmax(220px, 1fr) 72px;
+  grid-template-columns: minmax(205px, 1fr) 70px;
   gap: 10px;
   align-items: start;
 }
 
 .registry-dosage-regimen {
-  padding: 7px 0;
+  padding: 6px 0;
   border-bottom: 1px solid rgba(13, 61, 64, 0.12);
   font-size: 0.82rem;
   line-height: 1.45;
@@ -47,6 +47,16 @@
 }
 
 .registry-dosage-route {
+  display: inline-flex;
+  min-height: 24px;
+  align-items: center;
+  justify-content: center;
+  padding: 2px 7px;
+  border: 1px solid rgba(13, 95, 99, 0.18);
+  border-radius: 999px;
+  background: rgba(13, 95, 99, 0.07);
+  color: #0d5f63;
+  font-size: 0.74rem;
   font-weight: 700;
   text-align: center;
   overflow-wrap: anywhere;
@@ -75,14 +85,75 @@
   display: none !important;
 }
 
+/* Any dosage controls appended directly by an older script instance stay hidden.
+   The controlled group below is the only dosage section shown in the picker. */
+#colPanel > [data-registry-dosage-picker] {
+  display: none !important;
+}
+
+.registry-dosage-picker-group {
+  display: grid;
+  gap: 2px;
+  margin: 8px 0 4px;
+  padding: 9px 6px 7px;
+  border-top: 1px solid rgba(13, 61, 64, 0.14);
+  border-bottom: 1px solid rgba(13, 61, 64, 0.1);
+  background: rgba(13, 95, 99, 0.035);
+}
+
+.registry-dosage-picker-title {
+  padding: 0 7px 5px;
+  color: #52626a;
+  font-size: 0.7rem;
+  font-weight: 800;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+
+#colPanel .registry-dosage-picker-option {
+  display: grid;
+  grid-template-columns: 24px minmax(0, 1fr);
+  gap: 8px;
+  align-items: center;
+  min-height: 36px;
+  margin: 0;
+  padding: 5px 7px;
+  border-radius: 8px;
+  cursor: pointer;
+}
+
+#colPanel .registry-dosage-picker-option:hover {
+  background: rgba(13, 95, 99, 0.08);
+}
+
+#colPanel .registry-dosage-picker-option input {
+  margin: 0;
+}
+
+#colPanel .registry-dosage-picker-option span {
+  min-width: 0;
+  line-height: 1.25;
+}
+
+[data-theme="dark"] .registry-dosage-route {
+  border-color: rgba(128, 214, 216, 0.26);
+  background: rgba(128, 214, 216, 0.1);
+  color: #9bd9db;
+}
+
+[data-theme="dark"] .registry-dosage-picker-group {
+  border-color: rgba(255, 255, 255, 0.11);
+  background: rgba(255, 255, 255, 0.035);
+}
+
 @media (max-width: 760px) {
   .registry-dosage-column,
   #headerRow .registry-dosage-column {
-    min-width: 300px;
-    width: 300px;
+    min-width: 285px;
+    width: 285px;
   }
 
   .registry-dosage-grid {
-    grid-template-columns: minmax(190px, 1fr) 64px;
+    grid-template-columns: minmax(180px, 1fr) 62px;
   }
 }
