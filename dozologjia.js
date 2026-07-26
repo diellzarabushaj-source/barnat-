@@ -4,7 +4,7 @@
   const SELECTION_KEY = 'medindexPrescriptionSelection';
   const THEME_KEY = 'regjistriBarnave_theme_v1';
   const Engine = window.MedIndexDosageEngine;
-  const state = { payload:{ forms:[], adult:[], pediatric:[] }, population:'adult' };
+  const state = { payload:{ forms:[], adult:[], pediatric:[], cards:[] }, population:'all' };
   const $ = selector => document.querySelector(selector);
   const text = value => String(value ?? '').trim();
   const fold = value => text(value).normalize('NFD').replace(/[\u0300-\u036f]/g, '').toLocaleLowerCase('sq');
@@ -24,75 +24,200 @@
     $('#themeButton')?.addEventListener('click', () => applyTheme(document.documentElement.dataset.theme === 'dark' ? 'light' : 'dark'));
   }
 
-  function activeRows() {
-    return state.population === 'pediatric' ? state.payload.pediatric : state.payload.adult;
+  function cards() {
+    return Array.isArray(state.payload.cards) ? state.payload.cards : [];
   }
 
   function setOptions(selector, values, placeholder) {
     const node = $(selector);
+    if (!node) return;
     const current = node.value;
     node.innerHTML = `<option value="">${placeholder}</option>${values.map(value => `<option value="${esc(value)}">${esc(value)}</option>`).join('')}`;
     if (values.includes(current)) node.value = current;
   }
 
   function refreshFilters() {
-    const rows = activeRows();
+    const rows = cards();
     setOptions('#dosageForm', [...new Set(rows.map(item => item.form).filter(Boolean))].sort((a, b) => a.localeCompare(b, 'sq')), 'Të gjitha format');
     setOptions('#dosageAtc', [...new Set(rows.map(item => item.atc).filter(Boolean))].sort(), 'Të gjitha ATC-të');
   }
 
-  function patient() {
-    return { ageMonths:Number($('#patientAgeMonths')?.value), weightKg:Number($('#patientWeightKg')?.value) };
+  function numericInput(selector) {
+    const raw = text($(selector)?.value);
+    if (!raw) return NaN;
+    const value = Number(raw.replace(',', '.'));
+    return Number.isFinite(value) ? value : NaN;
   }
 
-  function rowMarkup(item) {
-    const strength = item.referenceStrength || item.concentration;
-    const limits = [
-      item.maxSingleMg != null ? `Maks. dozë ${item.maxSingleMg} mg` : '',
-      item.max24hMg != null ? `Maks. 24h ${item.max24hMg} mg` : '',
-      item.maxUnits24h ? `Maks. ${item.maxUnits24h}/24h` : '',
-    ].filter(Boolean).join(' · ');
-    return `<article class="clinical-row">
-      <div>
-        <h2>${esc(item.substance)} ${esc(strength)}</h2>
-        <p>${esc(item.indication || 'Pa indikacion të shënuar')}</p>
-        <div class="clinical-row-meta"><span class="clinical-chip">${esc(item.atc)}</span><span class="clinical-chip">${esc(item.form)}</span><span class="clinical-chip">VERIFIKUAR</span>${item.prn ? '<span class="clinical-chip is-warning">PRN</span>' : ''}</div>
-        <div class="clinical-details">
-          <div class="clinical-detail"><b>Doza</b>${esc(item.practicalUnit || (item.mgPerKg ? `${item.mgPerKg} mg/kg` : item.doseMg ? `${item.doseMg} mg` : 'Sipas skemës'))}</div>
-          <div class="clinical-detail"><b>Rruga / shpeshtësia</b>${esc([item.route, item.frequency].filter(Boolean).join(' · '))}</div>
-          <div class="clinical-detail"><b>Kohëzgjatja</b>${esc(item.duration || 'Sipas vlerësimit')}</div>
-          <div class="clinical-detail"><b>Kufijtë</b>${esc(limits || 'Kontrollo burimin')}</div>
+  function patient() {
+    return { ageMonths:numericInput('#patientAgeMonths'), weightKg:numericInput('#patientWeightKg') };
+  }
+
+  function cardAsDrug(card) {
+    return {
+      key:card.cardKey,
+      drugKey:card.cardKey,
+      tradeName:card.tradeName,
+      substance:card.substance,
+      strength:card.strength,
+      form:card.form,
+      atc:card.atc,
+      pdid:card.pdid,
+      route:card.adultRoute,
+    };
+  }
+
+  function exactRegimens(card, population) {
+    const source = population === 'pediatric' ? state.payload.pediatric : state.payload.adult;
+    return Engine?.exactMatches ? Engine.exactMatches(cardAsDrug(card), source || []) : [];
+  }
+
+  function formatDose(value, unit) {
+    if (!Number.isFinite(value)) return '';
+    return `${new Intl.NumberFormat('sq-AL', { maximumFractionDigits:2 }).format(value)} ${unit}`;
+  }
+
+  function calculationMarkup(card) {
+    if (!text(card.pediatricDose)) return '';
+    const matches = exactRegimens(card, 'pediatric');
+    if (!matches.length) {
+      return '<div class="dosage-calculation"><strong>Kalkulatori sipas kg</strong><p class="dosage-calculation-note">Doza pediatrike është e publikuar si tekst, por nuk ka ende formulë të strukturuar për llogaritje automatike.</p></div>';
+    }
+    if (matches.length > 1) {
+      return '<div class="dosage-calculation"><strong>Kalkulatori sipas kg</strong><p class="dosage-calculation-note">Ekzistojnë disa skema sipas indikacionit. Llogaritja automatike kërkon zgjedhjen klinike të skemës.</p></div>';
+    }
+
+    const regimen = matches[0];
+    const result = Engine.calculatePediatricDose?.(regimen, patient());
+    if (!result || result.status === 'manual') {
+      return '<div class="dosage-calculation"><strong>Kalkulatori sipas kg</strong><p class="dosage-calculation-note">Kjo skemë kërkon llogaritje ose rishikim klinik manual.</p></div>';
+    }
+    if (result.status === 'needs-patient-data') {
+      const needs = [];
+      if (result.missing?.includes('weightKg')) needs.push('peshën');
+      if (result.missing?.includes('ageMonths')) needs.push('moshën');
+      return `<div class="dosage-calculation"><strong>Kalkulatori sipas kg</strong><p class="dosage-calculation-note">Shëno ${esc(needs.join(' dhe ') || 'të dhënat e pacientit')} sipër për ta llogaritur këtë skemë.</p></div>`;
+    }
+    if (result.status === 'out-of-range') {
+      return '<div class="dosage-calculation"><strong>Kërkohet rishikim klinik</strong><p class="dosage-calculation-note">Mosha ose pesha është jashtë kufijve të verifikuar të kësaj skeme.</p></div>';
+    }
+
+    const items = [
+      result.perDoseMg != null ? ['Për një dozë', formatDose(result.perDoseMg, 'mg')] : null,
+      result.perDoseMl != null ? ['Vëllimi për dozë', formatDose(result.perDoseMl, 'mL')] : null,
+      result.dailyTotalMg != null ? ['Totali në 24 orë', formatDose(result.dailyTotalMg, 'mg')] : null,
+      result.dosesPerDay != null ? ['Marrje në ditë', `${result.dosesPerDay}`] : null,
+    ].filter(Boolean);
+    if (!items.length) return '';
+    const capped = result.cappedBy?.length ? ' Është zbatuar kufiri maksimal i publikuar.' : '';
+    return `<div class="dosage-calculation">
+      <strong>Rezultati për ${esc(formatDose(patient().weightKg, 'kg'))}</strong>
+      <div class="dosage-calculation-grid">${items.map(([label, value]) => `<div class="dosage-calculation-item"><b>${esc(label)}</b>${esc(value)}</div>`).join('')}</div>
+      <p class="dosage-calculation-note">Llogaritur nga formula e strukturuar e verifikuar.${esc(capped)}</p>
+    </div>`;
+  }
+
+  function populationMarkup(card, population) {
+    const pediatric = population === 'pediatric';
+    const dose = pediatric ? text(card.pediatricDose) : text(card.adultDose);
+    const route = pediatric ? text(card.pediatricRoute) : text(card.adultRoute);
+    const label = pediatric ? 'Doza për fëmijë' : 'Doza për të rritur';
+    if (!dose && pediatric) {
+      return `<section class="dosage-population is-pediatric is-empty">
+        <div class="dosage-population-head"><h3 class="dosage-population-title">${label}</h3><span class="dosage-population-badge">Jo e publikuar</span></div>
+        <p class="dosage-empty-text">Nuk ka dozë pediatrike të verifikuar dhe të publikuar për këtë kartelë.</p>
+      </section>`;
+    }
+    return `<section class="dosage-population ${pediatric ? 'is-pediatric' : 'is-adult'}">
+      <div class="dosage-population-head"><h3 class="dosage-population-title">${label}</h3><span class="dosage-population-badge">VERIFIKUAR</span></div>
+      <div class="dosage-dose-grid">
+        <div class="dosage-dose-field"><b>Doza e plotë</b>${esc(dose || 'Nuk është shënuar')}</div>
+        <div class="dosage-dose-field"><b>Rruga</b>${esc(route || 'Kontrollo burimin')}</div>
+      </div>
+      ${pediatric ? calculationMarkup(card) : ''}
+    </section>`;
+  }
+
+  function sourceMarkup(card) {
+    const sources = Array.isArray(card.sourceUrls) ? card.sourceUrls.filter(url => /^https:\/\//i.test(url)) : [];
+    if (!sources.length) return '<span class="dosage-card-chip">Burimi nuk është lidhur</span>';
+    return sources.slice(0, 3).map((url, index) => `<a href="${esc(url)}" target="_blank" rel="noopener noreferrer">Burimi${sources.length > 1 ? ` ${index + 1}` : ''}</a>`).join('');
+  }
+
+  function actionMarkup(card) {
+    const buttons = [];
+    const adult = exactRegimens(card, 'adult');
+    const pediatric = exactRegimens(card, 'pediatric');
+    if (adult.length === 1) buttons.push(`<button class="is-primary" type="button" data-add-regimen="${esc(adult[0].regimenId)}" data-population="adult" data-card-key="${esc(card.cardKey)}">Shto dozën e të rriturit</button>`);
+    if (text(card.pediatricDose) && pediatric.length === 1) buttons.push(`<button class="is-child" type="button" data-add-regimen="${esc(pediatric[0].regimenId)}" data-population="pediatric" data-card-key="${esc(card.cardKey)}">Shto dozën pediatrike</button>`);
+    return buttons.join('');
+  }
+
+  function cardMarkup(card) {
+    const title = [card.tradeName, card.strength].filter(Boolean).join(' ');
+    const showAdult = state.population !== 'pediatric';
+    const showPediatric = state.population !== 'adult';
+    return `<article class="dosage-card" data-card-key="${esc(card.cardKey)}">
+      <header class="dosage-card-head">
+        <div>
+          <h2 class="dosage-card-title">${esc(title || card.substance || 'Bar pa emërtim')}</h2>
+          <p class="dosage-card-substance">${esc(card.substance || 'Substanca aktive nuk është shënuar')}</p>
+          <div class="dosage-card-meta">
+            ${card.atc ? `<span class="dosage-card-chip">${esc(card.atc)}</span>` : ''}
+            ${card.form ? `<span class="dosage-card-chip">${esc(card.form)}</span>` : ''}
+            ${card.pdid ? `<span class="dosage-card-chip">PDID ${esc(card.pdid)}</span>` : ''}
+            <span class="dosage-card-chip is-verified">VERIFIKUAR</span>
+          </div>
         </div>
-        ${item.warnings ? `<p><strong>Kujdes:</strong> ${esc(item.warnings)}</p>` : ''}
+        <span class="dosage-card-number">Nr. ${esc(card.nr || '—')}</span>
+      </header>
+      ${(card.drugClass || card.use) ? `<div class="dosage-card-context">
+        ${card.drugClass ? `<div class="dosage-context-item"><b>Klasa / Çka është</b>${esc(card.drugClass)}</div>` : ''}
+        ${card.use ? `<div class="dosage-context-item"><b>Përdorimi</b>${esc(card.use)}</div>` : ''}
+      </div>` : ''}
+      <div class="dosage-populations">
+        ${showAdult ? populationMarkup(card, 'adult') : ''}
+        ${showPediatric ? populationMarkup(card, 'pediatric') : ''}
       </div>
-      <div class="clinical-actions">
-        <a href="${esc(item.sourceUrl)}" target="_blank" rel="noopener noreferrer">Burimi</a>
-        <button class="primary" type="button" data-add-regimen="${esc(item.regimenId)}">Shto në recetë</button>
-      </div>
+      ${card.auditNote ? `<div class="dosage-card-context"><div class="dosage-context-item"><b>Shënim auditimi</b>${esc(card.auditNote)}</div>${card.auditedAt ? `<div class="dosage-context-item"><b>Kontrolluar më</b>${esc(card.auditedAt)}</div>` : ''}</div>` : ''}
+      <footer class="dosage-card-footer">
+        <div class="dosage-card-sources">${sourceMarkup(card)}</div>
+        <div class="dosage-card-actions">${actionMarkup(card)}</div>
+      </footer>
     </article>`;
   }
 
-  function render() {
+  function filteredCards() {
     const query = fold($('#dosageSearch')?.value);
     const form = $('#dosageForm')?.value || '';
     const atc = $('#dosageAtc')?.value || '';
-    const rows = activeRows().filter(item => {
-      const haystack = fold([item.substance, item.indication, item.atc, item.form, item.frequency, item.route].join(' '));
-      return (!query || haystack.includes(query)) && (!form || item.form === form) && (!atc || item.atc === atc);
+    return cards().filter(card => {
+      const haystack = fold([card.nr, card.tradeName, card.substance, card.strength, card.atc, card.form, card.drugClass, card.use, card.adultDose, card.pediatricDose].join(' '));
+      const populationMatch = state.population !== 'pediatric' || Boolean(text(card.pediatricDose));
+      return populationMatch && (!query || haystack.includes(query)) && (!form || card.form === form) && (!atc || card.atc === atc);
     });
-    $('#dosageCount').textContent = rows.length;
-    $('#dosageStatus').textContent = `${rows.length} nga ${activeRows().length} skema të verifikuara · ${state.population === 'pediatric' ? 'Pediatri' : 'Të rritur'}`;
-    $('#dosageList').innerHTML = rows.length ? rows.map(rowMarkup).join('') : '<div class="clinical-empty">Nuk u gjet asnjë skemë për këta filtra.</div>';
   }
 
-  function addToPrescription(regimenId) {
-    const regimen = activeRows().find(item => item.regimenId === regimenId);
-    if (!regimen) return;
-    if (state.population === 'pediatric') {
+  function render() {
+    const rows = filteredCards();
+    const total = cards().length;
+    const pediatricCount = cards().filter(card => text(card.pediatricDose)).length;
+    $('#dosageCount').textContent = total;
+    $('#dosageStatus').textContent = `${rows.length} nga ${total} kartela të verifikuara · ${pediatricCount} me dozë pediatrike të publikuar`;
+    $('#dosageList').innerHTML = rows.length ? rows.map(cardMarkup).join('') : '<div class="clinical-empty">Nuk u gjet asnjë kartelë për këta filtra.</div>';
+  }
+
+  function addToPrescription(regimenId, population, cardKey) {
+    const collection = population === 'pediatric' ? state.payload.pediatric : state.payload.adult;
+    const regimen = (collection || []).find(item => item.regimenId === regimenId);
+    const card = cards().find(item => item.cardKey === cardKey);
+    if (!regimen || !card) return;
+
+    if (population === 'pediatric') {
       const eligibility = Engine.pediatricEligibility(regimen, patient());
       if (eligibility.missing.length) {
-        $('#dosageStatus').textContent = 'Plotëso moshën dhe peshën para bartjes së kësaj skeme pediatrike.';
-        (eligibility.missing.includes('ageMonths') ? $('#patientAgeMonths') : $('#patientWeightKg'))?.focus();
+        $('#dosageStatus').textContent = 'Plotëso peshën dhe, kur kërkohet, moshën para bartjes së skemës pediatrike.';
+        (eligibility.missing.includes('weightKg') ? $('#patientWeightKg') : $('#patientAgeMonths'))?.focus();
         return;
       }
       if (!eligibility.eligible) {
@@ -100,10 +225,11 @@
         return;
       }
     }
-    const drug = { substance:regimen.substance, strength:regimen.referenceStrength || regimen.concentration, form:regimen.form, atc:regimen.atc };
-    const transfer = Engine.prescriptionTransfer(drug, regimen, state.population);
-    if (state.population === 'pediatric' && Engine.needsPediatricInputs(regimen)) {
+
+    const transfer = Engine.prescriptionTransfer(cardAsDrug(card), regimen, population);
+    if (population === 'pediatric') {
       transfer.patient = patient();
+      transfer.calculation = Engine.calculatePediatricDose?.(regimen, patient()) || null;
       transfer.dosageStatus = 'requires-review';
     }
     sessionStorage.setItem(SELECTION_KEY, JSON.stringify([transfer]));
@@ -112,10 +238,10 @@
 
   async function load() {
     try {
-      const response = await fetch('/api/dosage', { credentials:'same-origin', headers:{ Accept:'application/json' } });
+      const response = await fetch('/api/dosage', { credentials:'same-origin', headers:{ Accept:'application/json' }, cache:'no-store' });
       const payload = await response.json();
       if (!response.ok) throw new Error(payload.error || `API ${response.status}`);
-      state.payload = payload;
+      state.payload = { forms:[], adult:[], pediatric:[], cards:[], ...payload };
       refreshFilters();
       render();
     } catch (error) {
@@ -128,16 +254,16 @@
     initTheme();
     $('#dosageSearch')?.addEventListener('input', render);
     $('#dosagePopulation')?.addEventListener('change', event => {
-      state.population = event.target.value;
-      $('#pediatricInputs').hidden = state.population !== 'pediatric';
-      refreshFilters();
+      state.population = event.target.value || 'all';
       render();
     });
     $('#dosageForm')?.addEventListener('change', render);
     $('#dosageAtc')?.addEventListener('change', render);
+    $('#patientWeightKg')?.addEventListener('input', render);
+    $('#patientAgeMonths')?.addEventListener('input', render);
     $('#dosageList')?.addEventListener('click', event => {
       const button = event.target.closest('[data-add-regimen]');
-      if (button) addToPrescription(button.dataset.addRegimen);
+      if (button) addToPrescription(button.dataset.addRegimen, button.dataset.population, button.dataset.cardKey);
     });
     load();
   }
