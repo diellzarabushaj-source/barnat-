@@ -6,10 +6,14 @@
   const SERVICE_WORKER_URL = `/sw.js?v=${VERSION}`;
   const CLINICAL_WORKFLOW_URL = `/clinical-workflow.js?v=${VERSION}`;
   const STATUS_ID = 'miOfflineStatus';
+  const LAST_WARM_KEY = 'medindex_private_cache_warmed_at_v1';
+  const WARM_TTL_MS = 6 * 60 * 60 * 1000;
+  const WARM_IDLE_DELAY_MS = 8000;
   let registration = null;
   let deferredInstallPrompt = null;
   let warmRequested = false;
   let warmDeadline = 0;
+  let warmSchedule = 0;
   let updateActivated = false;
 
   function ensureHeadMetadata() {
@@ -102,7 +106,7 @@
       }
       if (navigator.onLine) {
         warmRequested = false;
-        await warmPrivateData();
+        await warmPrivateData({ force:true });
       }
     });
     const host = statusHost();
@@ -124,7 +128,27 @@
 
   function currentStatus() {
     if (!navigator.onLine) return ['offline', 'Pa internet · po përdoret kopja lokale'];
-    return ['syncing', 'Online · po kontrollohet kopja lokale'];
+    return cacheIsFresh() ? ['ready', 'Gati për përdorim offline'] : ['syncing', 'Online · po kontrollohet kopja lokale'];
+  }
+
+  function lastWarmAt() {
+    try { return Number(localStorage.getItem(LAST_WARM_KEY) || 0); }
+    catch { return 0; }
+  }
+
+  function cacheIsFresh(now = Date.now()) {
+    const value = lastWarmAt();
+    return Number.isFinite(value) && value > 0 && now - value < WARM_TTL_MS;
+  }
+
+  function rememberWarm(value = Date.now()) {
+    try { localStorage.setItem(LAST_WARM_KEY, String(value)); } catch {}
+  }
+
+  function connectionAllowsBackgroundWarm() {
+    const connection = navigator.connection || navigator.mozConnection || navigator.webkitConnection;
+    if (connection?.saveData) return false;
+    return !/^(slow-2g|2g)$/i.test(String(connection?.effectiveType || ''));
   }
 
   async function requestPersistentStorage() {
@@ -140,8 +164,12 @@
     worker?.postMessage(message);
   }
 
-  async function warmPrivateData() {
+  async function warmPrivateData({ force = false } = {}) {
     if (warmRequested || !navigator.onLine) return;
+    if (!force && cacheIsFresh()) {
+      postToWorker({ type:'GET_CACHE_STATUS' });
+      return;
+    }
     warmRequested = true;
     clearTimeout(warmDeadline);
     setStatus('syncing', 'Po sinkronizohet databaza lokale');
@@ -152,6 +180,20 @@
         warmRequested = false;
       }
     }, 15000);
+  }
+
+  function scheduleBackgroundWarm() {
+    if (warmSchedule || cacheIsFresh() || !navigator.onLine || !connectionAllowsBackgroundWarm()) {
+      postToWorker({ type:'GET_CACHE_STATUS' });
+      return;
+    }
+    const run = () => {
+      warmSchedule = 0;
+      if (document.visibilityState === 'hidden') return;
+      warmPrivateData();
+    };
+    if ('requestIdleCallback' in window) warmSchedule = requestIdleCallback(run, { timeout:WARM_IDLE_DELAY_MS });
+    else warmSchedule = setTimeout(run, WARM_IDLE_DELAY_MS);
   }
 
   function observeWorkerUpdates() {
@@ -175,8 +217,9 @@
       registration = await navigator.serviceWorker.register(SERVICE_WORKER_URL, { scope:'/', updateViaCache:'none' });
       observeWorkerUpdates();
       await navigator.serviceWorker.ready;
-      await requestPersistentStorage();
-      await warmPrivateData();
+      requestPersistentStorage();
+      postToWorker({ type:'GET_CACHE_STATUS' });
+      scheduleBackgroundWarm();
       if (!navigator.onLine) setStatus('offline', 'Pa internet · po përdoret kopja lokale');
       return registration;
     } catch (error) {
@@ -189,9 +232,9 @@
   function installListeners() {
     window.addEventListener('online', () => {
       warmRequested = false;
-      setStatus('syncing', 'Lidhja u rikthye · po sinkronizohet');
+      setStatus('syncing', 'Lidhja u rikthye · po kontrollohet cache-i');
       registration?.update().catch(() => null);
-      warmPrivateData();
+      scheduleBackgroundWarm();
     });
     window.addEventListener('offline', () => setStatus('offline', 'Pa internet · po përdoret kopja lokale'));
     window.addEventListener('beforeinstallprompt', event => {
@@ -213,6 +256,7 @@
       if (message.state === 'ready' || message.state === 'shell-ready') {
         clearTimeout(warmDeadline);
         warmRequested = true;
+        if (message.state === 'ready') rememberWarm(message.syncedAt || Date.now());
         setStatus('ready', 'Gati për përdorim offline', message);
       }
       if (message.state === 'shell-limited') setStatus('limited', 'Disa skedarë do të ruhen gjatë përdorimit', message);
@@ -221,7 +265,10 @@
         warmRequested = false;
         setStatus('limited', 'Disa të dhëna kërkojnë internet · kliko për sinkronizim', message);
       }
-      if (message.state === 'cleared') setStatus('limited', 'Të dhënat private lokale u pastruan');
+      if (message.state === 'cleared') {
+        try { localStorage.removeItem(LAST_WARM_KEY); } catch {}
+        setStatus('limited', 'Të dhënat private lokale u pastruan');
+      }
     });
     navigator.serviceWorker?.addEventListener('controllerchange', () => {
       updateActivated = true;
@@ -240,7 +287,7 @@
     await registerServiceWorker();
     window.MedIndexOffline = {
       version:VERSION,
-      warm:() => { warmRequested = false; return warmPrivateData(); },
+      warm:() => { warmRequested = false; return warmPrivateData({ force:true }); },
       clearPrivateData:() => postToWorker({ type:'CLEAR_PRIVATE_DATA' }),
       registration:() => registration,
       status:() => document.getElementById(STATUS_ID)?.dataset.state || 'unknown',
