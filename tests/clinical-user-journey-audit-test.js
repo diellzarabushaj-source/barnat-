@@ -35,14 +35,16 @@ assert.ok(prescriptionHtml.indexOf('prescription-bridge.js') < prescriptionHtml.
 const localRegistry = read('local-registry.js');
 [
   /medindex-registry-v1/, /indexedDB\.open/, /DecompressionStream\('gzip'\)/,
-  /\/api\/registry/, /qualityStatus/, /blocked/, /async function search/,
+  /\/api\/registry/, /qualityStatus/, /blocked/, /async function search/, /parsePayload/,
 ].forEach(pattern => assert.match(localRegistry, pattern, `Kërkimi lokal mungon ${pattern}`));
 assert.doesNotMatch(localRegistry, /\/api\/drug-search/, 'Kërkimi lokal nuk duhet të varet nga endpoint-i i kërkimit');
+assert.doesNotMatch(localRegistry, /Function\s*\(|eval\s*\(/, 'Kërkimi lokal nuk duhet të ekzekutojë payload si kod');
 
 const worker = read('sw.js');
 assert.match(worker, /production-audit-v1/);
 assert.match(worker, /clinical-workflow\.js/);
 assert.match(worker, /local-registry\.js/);
+assert.match(worker, /app-runtime\.js/);
 assert.match(worker, /page-network/);
 assert.match(worker, /page-hit/);
 assert.match(worker, /async function navigationResponse/);
@@ -51,9 +53,14 @@ assert.match(worker, /event\.waitUntil\(putIfCacheable\(PAGE_CACHE/, 'fresh navi
 assert.doesNotMatch(worker, /self\.waitUntil/, 'Service worker nuk duhet të thërrasë self.waitUntil');
 assert.match(worker, /MEDINDEX_AUTH_INVALID/);
 assert.match(worker, /\/api\/drug-search/);
+assert.match(worker, /privateCacheStatus/);
 
 const auth = read('auth-client.js');
 assert.match(auth, /AUTH_TIMEOUT_MS = 3200/);
+assert.match(auth, /medindex_offline_lease_v2/);
+assert.match(auth, /lease\.hardened !== true/);
+assert.match(auth, /payload\.hardened !== true/);
+assert.match(auth, /configurationUnavailable/);
 assert.match(auth, /if \(!navigator\.onLine\)/);
 assert.match(auth, /offline-no-lease/);
 assert.match(auth, /response\.status === 401 \|\| response\.status === 403/);
