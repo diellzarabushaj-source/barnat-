@@ -4,7 +4,11 @@
   const SELECTION_KEY = 'medindexPrescriptionSelection';
   const THEME_KEY = 'regjistriBarnave_theme_v1';
   const Engine = window.MedIndexDosageEngine;
-  const state = { payload:{ forms:[], adult:[], pediatric:[], cards:[] }, population:'all' };
+  const state = {
+    payload:{ forms:[], adult:[], pediatric:[], cards:[] },
+    population:'all',
+    selectedRegimens:{},
+  };
   const $ = selector => document.querySelector(selector);
   const text = value => String(value ?? '').trim();
   const fold = value => text(value).normalize('NFD').replace(/[\u0300-\u036f]/g, '').toLocaleLowerCase('sq');
@@ -72,31 +76,58 @@
     return Engine?.exactMatches ? Engine.exactMatches(cardAsDrug(card), source || []) : [];
   }
 
+  function selectionKey(cardKey, population) {
+    return `${cardKey}::${population}`;
+  }
+
+  function selectedRegimen(card, population, matches = exactRegimens(card, population)) {
+    if (matches.length === 1) return matches[0];
+    const selectedId = state.selectedRegimens[selectionKey(card.cardKey, population)] || '';
+    return matches.find(item => item.regimenId === selectedId) || null;
+  }
+
   function formatDose(value, unit) {
     if (!Number.isFinite(value)) return '';
     return `${new Intl.NumberFormat('sq-AL', { maximumFractionDigits:2 }).format(value)} ${unit}`;
   }
 
-  function calculationMarkup(card) {
-    if (!text(card.pediatricDose)) return '';
-    const matches = exactRegimens(card, 'pediatric');
-    if (!matches.length) {
-      return '<div class="dosage-calculation"><strong>Kalkulatori sipas kg</strong><p class="dosage-calculation-note">Doza pediatrike është e publikuar si tekst, por nuk ka ende formulë të strukturuar për llogaritje automatike.</p></div>';
+  function indicationMarkup(card, population, matches, regimen) {
+    if (!matches.length) return '';
+    const label = population === 'pediatric' ? 'Indikacioni pediatrik' : 'Indikacioni';
+    if (matches.length === 1) {
+      return `<div class="dosage-indication is-fixed"><b>${label}</b><span>${esc(regimen?.indication || 'Skema e vetme e verifikuar')}</span></div>`;
     }
-    if (matches.length > 1) {
-      return '<div class="dosage-calculation"><strong>Kalkulatori sipas kg</strong><p class="dosage-calculation-note">Ekzistojnë disa skema sipas indikacionit. Llogaritja automatike kërkon zgjedhjen klinike të skemës.</p></div>';
+    return `<label class="dosage-indication">
+      <b>${label}</b>
+      <select data-indication-card="${esc(card.cardKey)}" data-indication-population="${esc(population)}" aria-label="${esc(label)} për ${esc(card.tradeName || card.substance)}">
+        <option value="">Zgjidh indikacionin…</option>
+        ${matches.map(item => `<option value="${esc(item.regimenId)}" ${regimen?.regimenId === item.regimenId ? 'selected' : ''}>${esc(item.indication || 'Indikacion pa emër')}</option>`).join('')}
+      </select>
+    </label>`;
+  }
+
+  function pediatricCalculation(regimen) {
+    return regimen && Engine?.calculatePediatricDose ? Engine.calculatePediatricDose(regimen, patient()) : null;
+  }
+
+  function calculationMarkup(card, matches, regimen) {
+    if (!text(card.pediatricDose)) return '';
+    if (!matches.length) {
+      return '<div class="dosage-calculation"><strong>Dozë pediatrike e verifikuar</strong><p class="dosage-calculation-note">Doza është publikuar si tekst. Kalkulatori aktivizohet pasi formula të strukturohet dhe verifikohet.</p></div>';
+    }
+    if (matches.length > 1 && !regimen) {
+      return '<div class="dosage-calculation"><strong>Kalkulatori sipas kg</strong><p class="dosage-calculation-note">Zgjidh indikacionin për ta përdorur skemën e saktë.</p></div>';
     }
 
-    const regimen = matches[0];
-    const result = Engine.calculatePediatricDose?.(regimen, patient());
+    const result = pediatricCalculation(regimen);
     if (!result || result.status === 'manual') {
-      return '<div class="dosage-calculation"><strong>Kalkulatori sipas kg</strong><p class="dosage-calculation-note">Kjo skemë kërkon llogaritje ose rishikim klinik manual.</p></div>';
+      return '<div class="dosage-calculation"><strong>Rishikim manual</strong><p class="dosage-calculation-note">Kjo skemë nuk mund të llogaritet automatikisht pa interpretim klinik.</p></div>';
     }
     if (result.status === 'needs-patient-data') {
       const needs = [];
       if (result.missing?.includes('weightKg')) needs.push('peshën');
       if (result.missing?.includes('ageMonths')) needs.push('moshën');
-      return `<div class="dosage-calculation"><strong>Kalkulatori sipas kg</strong><p class="dosage-calculation-note">Shëno ${esc(needs.join(' dhe ') || 'të dhënat e pacientit')} sipër për ta llogaritur këtë skemë.</p></div>`;
+      return `<div class="dosage-calculation"><strong>Kalkulatori sipas kg</strong><p class="dosage-calculation-note">Shëno ${esc(needs.join(' dhe ') || 'të dhënat e pacientit')} sipër.</p></div>`;
     }
     if (result.status === 'out-of-range') {
       return '<div class="dosage-calculation"><strong>Kërkohet rishikim klinik</strong><p class="dosage-calculation-note">Mosha ose pesha është jashtë kufijve të verifikuar të kësaj skeme.</p></div>';
@@ -117,6 +148,43 @@
     </div>`;
   }
 
+  function signatureMarkup(population, matches, regimen) {
+    if (!matches.length) {
+      return '<div class="dosage-signature is-pending"><b>Signatura automatike</b><p>Në pritje të lidhjes me një skemë të strukturuar.</p></div>';
+    }
+    if (matches.length > 1 && !regimen) {
+      return '<div class="dosage-signature is-pending"><b>Signatura automatike</b><p>Zgjidh indikacionin dhe signatura plotësohet vetë.</p></div>';
+    }
+
+    let calculation = null;
+    if (population === 'pediatric') {
+      calculation = pediatricCalculation(regimen);
+      if (calculation?.status === 'needs-patient-data') {
+        return '<div class="dosage-signature is-pending"><b>Signatura automatike</b><p>Shëno peshën dhe, vetëm kur kërkohet, moshën.</p></div>';
+      }
+      if (calculation?.status === 'out-of-range') {
+        return '<div class="dosage-signature is-warning"><b>Signatura nuk u krijua</b><p>Pacienti është jashtë kufijve të verifikuar.</p></div>';
+      }
+    }
+
+    const signature = Engine?.buildSignature?.(regimen, population, calculation) || text(regimen?.signatura);
+    if (!signature) {
+      return '<div class="dosage-signature is-pending"><b>Signatura automatike</b><p>Skema kërkon plotësim manual të signaturës.</p></div>';
+    }
+    return `<div class="dosage-signature"><b>Signatura automatike</b><p>${esc(signature)}</p><span>Bartet automatikisht në recetë dhe mund të redaktohet aty.</span></div>`;
+  }
+
+  function statusLabel(population, matches, regimen) {
+    if (!matches.length) return 'Dozë e verifikuar';
+    if (matches.length > 1 && !regimen) return 'Zgjidh indikacionin';
+    if (population === 'pediatric' && (
+      Number.isFinite(regimen?.mgPerKg)
+      || Number.isFinite(regimen?.fixedDoseMg)
+      || Number.isFinite(regimen?.fixedVolumeMl)
+    )) return 'Kalkulim sipas kg';
+    return 'E verifikuar';
+  }
+
   function populationMarkup(card, population) {
     const pediatric = population === 'pediatric';
     const dose = pediatric ? text(card.pediatricDose) : text(card.adultDose);
@@ -124,17 +192,22 @@
     const label = pediatric ? 'Doza për fëmijë' : 'Doza për të rritur';
     if (!dose && pediatric) {
       return `<section class="dosage-population is-pediatric is-empty">
-        <div class="dosage-population-head"><h3 class="dosage-population-title">${label}</h3><span class="dosage-population-badge">Jo e publikuar</span></div>
+        <div class="dosage-population-head"><h3 class="dosage-population-title">${label}</h3><span class="dosage-population-badge">Në pritje të plotësimit</span></div>
         <p class="dosage-empty-text">Nuk ka dozë pediatrike të verifikuar dhe të publikuar për këtë kartelë.</p>
       </section>`;
     }
+
+    const matches = exactRegimens(card, population);
+    const regimen = selectedRegimen(card, population, matches);
     return `<section class="dosage-population ${pediatric ? 'is-pediatric' : 'is-adult'}">
-      <div class="dosage-population-head"><h3 class="dosage-population-title">${label}</h3><span class="dosage-population-badge">VERIFIKUAR</span></div>
+      <div class="dosage-population-head"><h3 class="dosage-population-title">${label}</h3><span class="dosage-population-badge">${esc(statusLabel(population, matches, regimen))}</span></div>
+      ${indicationMarkup(card, population, matches, regimen)}
       <div class="dosage-dose-grid">
         <div class="dosage-dose-field"><b>Doza e plotë</b>${esc(dose || 'Nuk është shënuar')}</div>
         <div class="dosage-dose-field"><b>Rruga</b>${esc(route || 'Kontrollo burimin')}</div>
       </div>
-      ${pediatric ? calculationMarkup(card) : ''}
+      ${pediatric ? calculationMarkup(card, matches, regimen) : ''}
+      ${signatureMarkup(population, matches, regimen)}
     </section>`;
   }
 
@@ -144,13 +217,19 @@
     return sources.slice(0, 3).map((url, index) => `<a href="${esc(url)}" target="_blank" rel="noopener noreferrer">Burimi${sources.length > 1 ? ` ${index + 1}` : ''}</a>`).join('');
   }
 
+  function actionButton(card, population, label, className) {
+    const matches = exactRegimens(card, population);
+    const regimen = selectedRegimen(card, population, matches);
+    if (!matches.length) return '';
+    if (!regimen) return '<button type="button" disabled>Zgjidh indikacionin</button>';
+    return `<button class="${className}" type="button" data-add-regimen="${esc(regimen.regimenId)}" data-population="${esc(population)}" data-card-key="${esc(card.cardKey)}">${esc(label)}</button>`;
+  }
+
   function actionMarkup(card) {
     const buttons = [];
-    const adult = exactRegimens(card, 'adult');
-    const pediatric = exactRegimens(card, 'pediatric');
-    if (adult.length === 1) buttons.push(`<button class="is-primary" type="button" data-add-regimen="${esc(adult[0].regimenId)}" data-population="adult" data-card-key="${esc(card.cardKey)}">Shto dozën e të rriturit</button>`);
-    if (text(card.pediatricDose) && pediatric.length === 1) buttons.push(`<button class="is-child" type="button" data-add-regimen="${esc(pediatric[0].regimenId)}" data-population="pediatric" data-card-key="${esc(card.cardKey)}">Shto dozën pediatrike</button>`);
-    return buttons.join('');
+    buttons.push(actionButton(card, 'adult', 'Shto dozën e të rriturit', 'is-primary'));
+    if (text(card.pediatricDose)) buttons.push(actionButton(card, 'pediatric', 'Shto në recetë për rishikim', 'is-child'));
+    return buttons.filter(Boolean).join('');
   }
 
   function cardMarkup(card) {
@@ -166,7 +245,7 @@
             ${card.atc ? `<span class="dosage-card-chip">${esc(card.atc)}</span>` : ''}
             ${card.form ? `<span class="dosage-card-chip">${esc(card.form)}</span>` : ''}
             ${card.pdid ? `<span class="dosage-card-chip">PDID ${esc(card.pdid)}</span>` : ''}
-            <span class="dosage-card-chip is-verified">VERIFIKUAR</span>
+            <span class="dosage-card-chip is-verified">E VERIFIKUAR</span>
           </div>
         </div>
         <span class="dosage-card-number">Nr. ${esc(card.nr || '—')}</span>
@@ -213,10 +292,11 @@
     const card = cards().find(item => item.cardKey === cardKey);
     if (!regimen || !card) return;
 
+    let calculation = null;
     if (population === 'pediatric') {
       const eligibility = Engine.pediatricEligibility(regimen, patient());
       if (eligibility.missing.length) {
-        $('#dosageStatus').textContent = 'Plotëso peshën dhe, kur kërkohet, moshën para bartjes së skemës pediatrike.';
+        $('#dosageStatus').textContent = 'Plotëso peshën dhe, vetëm kur kërkohet, moshën para bartjes së skemës pediatrike.';
         (eligibility.missing.includes('weightKg') ? $('#patientWeightKg') : $('#patientAgeMonths'))?.focus();
         return;
       }
@@ -224,12 +304,21 @@
         $('#dosageStatus').textContent = 'Pacienti është jashtë kufijve të verifikuar të kësaj skeme. Kërkohet rishikim klinik.';
         return;
       }
+      calculation = Engine.calculatePediatricDose?.(regimen, patient()) || null;
+      if (calculation?.status === 'manual' && !text(regimen.signatura)) {
+        $('#dosageStatus').textContent = 'Kjo skemë nuk ka signaturë të sigurt për bartje automatike. Plotësoje manualisht në recetë.';
+        return;
+      }
     }
 
-    const transfer = Engine.prescriptionTransfer(cardAsDrug(card), regimen, population);
+    const transfer = Engine.prescriptionTransfer(cardAsDrug(card), regimen, population, calculation);
+    if (!text(transfer.signatura)) {
+      $('#dosageStatus').textContent = 'Signatura nuk mund të krijohet automatikisht për këtë skemë.';
+      return;
+    }
     if (population === 'pediatric') {
       transfer.patient = patient();
-      transfer.calculation = Engine.calculatePediatricDose?.(regimen, patient()) || null;
+      transfer.calculation = calculation;
       transfer.dosageStatus = 'requires-review';
     }
     sessionStorage.setItem(SELECTION_KEY, JSON.stringify([transfer]));
@@ -261,6 +350,12 @@
     $('#dosageAtc')?.addEventListener('change', render);
     $('#patientWeightKg')?.addEventListener('input', render);
     $('#patientAgeMonths')?.addEventListener('input', render);
+    $('#dosageList')?.addEventListener('change', event => {
+      const select = event.target.closest('[data-indication-card]');
+      if (!select) return;
+      state.selectedRegimens[selectionKey(select.dataset.indicationCard, select.dataset.indicationPopulation)] = select.value;
+      render();
+    });
     $('#dosageList')?.addEventListener('click', event => {
       const button = event.target.closest('[data-add-regimen]');
       if (button) addToPrescription(button.dataset.addRegimen, button.dataset.population, button.dataset.cardKey);
