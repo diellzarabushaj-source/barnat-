@@ -57,7 +57,19 @@ const rxHtml = read('recetat.html');
 assert.ok(rxHtml.indexOf('recetat.js') < rxHtml.indexOf('recetat-safe-print.js'), 'safe print must load after the legacy composer');
 const safePrint = read('recetat-safe-print.js');
 assert.match(safePrint, /cloneNode\(true\)/, 'safe print must remove the legacy listener');
+assert.match(safePrint, /popup\.opener = null/, 'print popup must sever its opener');
 assert.doesNotMatch(safePrint, /<script\b/i, 'print output must not inject scripts');
-assert.match(read('login.html'), /theme-preload\.js/, 'login theme preload must be external');
+
+const loginHtml = read('login.html');
+assert.match(loginHtml, /theme-preload\.js/, 'login theme preload must be external');
+const middleware = read('middleware.ts');
+for (const asset of ['/login.html', '/login.css', '/login.js', '/theme-preload.js', '/tailadmin-medindex.css']) {
+  assert.ok(middleware.includes(`'${asset}'`), `middleware must allow the required login asset ${asset}`);
+}
+assert.doesNotMatch(middleware, /pathname\.startsWith\('\/(?:data|app-parts|api\/registry)'\)/, 'clinical datasets must not be public before authentication');
+
+const smoke = read('tests/clinical-smoke-server.js');
+assert.match(smoke, /Content-Security-Policy/, 'browser smoke server must enforce CSP');
+assert.match(smoke, /JSON\.stringify\(registryMeta\)/, 'browser registry metadata must use valid JSON');
 
 console.log('CSP and dynamic-code hardening audit passed.');
