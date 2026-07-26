@@ -4,7 +4,7 @@ const { neonRequest, exactCount } = require('../lib/neon-data-api');
 
 (async () => {
   if (!process.env.VERCEL) {
-    console.log('MedIndex Neon verification skipped outside Vercel.');
+    console.log('MedIndex Neon health check skipped outside Vercel.');
     return;
   }
 
@@ -13,8 +13,8 @@ const { neonRequest, exactCount } = require('../lib/neon-data-api');
       headers:{ Range:'0-0', 'Range-Unit':'items' },
       prefer:'count=exact',
     });
-    console.log(`MedIndex Neon verified. Lab tests: ${exactCount(response) ?? 'unknown'}.`);
+    console.log(`MedIndex Neon healthy. Lab tests: ${exactCount(response) ?? 'unknown'}.`);
   } catch (error) {
-    console.warn(`MedIndex Neon verification limited: ${error.message}`);
+    console.warn(`MedIndex Neon health check limited: ${error.message}`);
   }
 })();
