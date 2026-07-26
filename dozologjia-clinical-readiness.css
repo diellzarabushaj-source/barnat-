@@ -1,0 +1,155 @@
+/* Dozologjia phase 3: provenance, readiness, calculable-only filter and large-list rendering. */
+html.medindex-tailadmin[data-mi-page="dozologjia"] .dosage-card {
+  content-visibility:auto;
+  contain-intrinsic-size:720px;
+}
+html.medindex-tailadmin[data-mi-page="dozologjia"] .dosage-calculable-filter {
+  display:inline-flex;
+  min-height:36px;
+  align-items:center;
+  gap:7px;
+  margin:-4px 0 12px;
+  padding:0 11px;
+  border:1px solid #d0d5dd;
+  border-radius:999px;
+  background:#fff;
+  color:#475467;
+  font:650 10px/1 var(--mi-font,Inter,sans-serif);
+  cursor:pointer;
+}
+html.medindex-tailadmin[data-mi-page="dozologjia"] .dosage-calculable-filter span:first-child {
+  display:grid;
+  width:21px;
+  height:21px;
+  place-items:center;
+  border-radius:50%;
+  background:#f4f0ff;
+  color:var(--dose-child);
+  font-size:12px;
+}
+html.medindex-tailadmin[data-mi-page="dozologjia"] .dosage-calculable-filter.is-active,
+html.medindex-tailadmin[data-mi-page="dozologjia"] .dosage-calculable-filter[aria-pressed="true"] {
+  border-color:#b9a8ed;
+  background:#f5f2ff;
+  color:#53389e;
+}
+html.medindex-tailadmin[data-mi-page="dozologjia"] .dosage-patient-clear {
+  align-self:end;
+  min-height:40px;
+  padding:0 11px;
+  border:1px solid #d0d5dd;
+  border-radius:9px;
+  background:#fff;
+  color:#475467;
+  font:650 10px/1 var(--mi-font,Inter,sans-serif);
+  cursor:pointer;
+}
+html.medindex-tailadmin[data-mi-page="dozologjia"] .dosage-regimen-provenance {
+  margin-top:10px;
+  padding:10px 11px;
+  border:1px solid #d9e2ec;
+  border-radius:10px;
+  background:rgba(255,255,255,.72);
+}
+html.medindex-tailadmin[data-mi-page="dozologjia"] .dosage-regimen-provenance>b {
+  display:block;
+  margin-bottom:6px;
+  color:#667085;
+  font-size:8px;
+  font-weight:800;
+  letter-spacing:.06em;
+  text-transform:uppercase;
+}
+html.medindex-tailadmin[data-mi-page="dozologjia"] .dosage-regimen-provenance>div {
+  display:flex;
+  flex-wrap:wrap;
+  gap:6px;
+}
+html.medindex-tailadmin[data-mi-page="dozologjia"] .dosage-regimen-provenance :is(a,span) {
+  display:inline-flex;
+  min-height:25px;
+  align-items:center;
+  padding:0 8px;
+  border-radius:999px;
+  background:#f2f4f7;
+  color:#475467;
+  font-size:9px;
+  font-weight:650;
+  text-decoration:none;
+}
+html.medindex-tailadmin[data-mi-page="dozologjia"] .dosage-regimen-provenance a {
+  background:#eef4ff;
+  color:#3538cd;
+}
+html.medindex-tailadmin[data-mi-page="dozologjia"] .dosage-readiness {
+  margin-top:10px;
+  padding:10px 11px;
+  border:1px solid #d0d5dd;
+  border-radius:10px;
+  background:#fff;
+}
+html.medindex-tailadmin[data-mi-page="dozologjia"] .dosage-readiness.is-ready {
+  border-color:#abefc6;
+  background:#f6fef9;
+}
+html.medindex-tailadmin[data-mi-page="dozologjia"] .dosage-readiness.is-review {
+  border-color:#fedf89;
+  background:#fffcf5;
+}
+html.medindex-tailadmin[data-mi-page="dozologjia"] .dosage-readiness-head {
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:10px;
+}
+html.medindex-tailadmin[data-mi-page="dozologjia"] .dosage-readiness-head b {
+  color:#344054;
+  font-size:10px;
+  font-weight:750;
+}
+html.medindex-tailadmin[data-mi-page="dozologjia"] .dosage-readiness-head span {
+  color:#667085;
+  font-size:8px;
+}
+html.medindex-tailadmin[data-mi-page="dozologjia"] .dosage-readiness-checks {
+  display:flex;
+  flex-wrap:wrap;
+  gap:5px;
+  margin-top:8px;
+}
+html.medindex-tailadmin[data-mi-page="dozologjia"] .dosage-readiness-checks span {
+  display:inline-flex;
+  min-height:23px;
+  align-items:center;
+  padding:0 7px;
+  border-radius:999px;
+  font-size:8px;
+  font-weight:700;
+}
+html.medindex-tailadmin[data-mi-page="dozologjia"] .dosage-readiness-checks .is-ok {
+  background:#dcfae6;
+  color:#067647;
+}
+html.medindex-tailadmin[data-mi-page="dozologjia"] .dosage-readiness-checks .is-missing {
+  background:#fef0c7;
+  color:#b54708;
+}
+html.medindex-tailadmin[data-mi-page="dozologjia"] .dosage-population.is-empty .dosage-empty-text strong {
+  color:#344054;
+}
+html[data-theme="dark"].medindex-tailadmin[data-mi-page="dozologjia"] :is(.dosage-calculable-filter,.dosage-patient-clear,.dosage-regimen-provenance,.dosage-readiness) {
+  border-color:#344054;
+  background:#182838;
+  color:#e4e7ec;
+}
+html[data-theme="dark"].medindex-tailadmin[data-mi-page="dozologjia"] .dosage-readiness.is-ready {background:#123127;border-color:#187d52}
+html[data-theme="dark"].medindex-tailadmin[data-mi-page="dozologjia"] .dosage-readiness.is-review {background:#342813;border-color:#a66a17}
+html[data-theme="dark"].medindex-tailadmin[data-mi-page="dozologjia"] .dosage-readiness-head b {color:#f2f4f7}
+@media(max-width:900px){
+  html.medindex-tailadmin[data-mi-page="dozologjia"] .clinical-patient {grid-template-columns:1fr 1fr!important}
+  html.medindex-tailadmin[data-mi-page="dozologjia"] .dosage-calculator-copy {grid-column:1/-1}
+}
+@media(max-width:640px){
+  html.medindex-tailadmin[data-mi-page="dozologjia"] .clinical-patient {grid-template-columns:1fr!important}
+  html.medindex-tailadmin[data-mi-page="dozologjia"] .dosage-readiness-head {align-items:flex-start;flex-direction:column;gap:3px}
+}
