@@ -25,6 +25,9 @@ jobs:
       - name: Install app dependencies
         run: npm install --ignore-scripts --no-audit --no-fund
 
+      - name: Run static and clinical audit gates
+        run: npm test
+
       - name: Install Playwright Chromium
         shell: bash
         run: |
@@ -37,6 +40,7 @@ jobs:
         shell: bash
         run: |
           set -euo pipefail
+          test -s app-runtime.js || { echo "Generated app-runtime.js is missing."; exit 1; }
           node tests/clinical-smoke-server.js > /tmp/medindex-clinical-server.log 2>&1 &
           SERVER_PID=$!
           trap 'kill "$SERVER_PID" 2>/dev/null || true; cat /tmp/medindex-clinical-server.log' EXIT
