@@ -11,6 +11,7 @@
   <link rel="stylesheet" href="tailadmin-medindex.css?v=20260724-3" data-tailadmin-medindex-css>
   <link rel="preload" href="dozologjia-verified-cards.css?v=20260726-1" as="style">
   <link rel="preload" href="dozologjia-simple-workflow.css?v=20260726-1" as="style">
+  <link rel="preload" href="dozologjia-safety-enhancements.css?v=20260726-1" as="style">
   <link rel="stylesheet" href="tailadmin-professional.css?v=20260724-1" data-tailadmin-professional-css>
   <script src="tailadmin-shell.js?v=production-audit-v1" defer></script>
   <script src="tailadmin-professional.js?v=production-audit-v1" defer></script>
@@ -35,7 +36,7 @@
         <div>
           <p class="clinical-kicker">MedIndex · kartelat e verifikuara</p>
           <h1>Dozologjia</h1>
-          <p>Për secilin bar shfaqen qartë doza dhe rruga për të rritur, si dhe doza pediatrike kur është publikuar në dataset-in e verifikuar.</p>
+          <p>Për secilin bar shfaqen qartë regjimi dhe rruga për të rritur, si dhe doza pediatrike kur është publikuar në dataset-in e verifikuar.</p>
         </div>
         <div class="clinical-summary"><strong id="dosageCount">0</strong><span>kartela</span></div>
       </header>
@@ -62,13 +63,17 @@
 
       <p class="clinical-status" id="dosageStatus" role="status" aria-live="polite">Duke ngarkuar kartelat e verifikuara…</p>
       <div class="clinical-list dosage-card-list" id="dosageList" aria-live="polite"></div>
-      <aside class="clinical-note"><strong>Kontroll klinik i detyrueshëm:</strong> kalkulatori zbatohet vetëm mbi formulën e strukturuar të publikuar. Rezultati duhet kontrolluar ndaj burimit, moshës, indikacionit, kufirit maksimal, funksionit renal/hepatik dhe gjendjes së pacientit.</aside>
+      <aside class="clinical-note"><strong>Kontroll klinik i detyrueshëm:</strong> çdo skemë lidhet me indikacionin e zgjedhur. Kalkulatori zbatohet vetëm mbi formulën e strukturuar të publikuar dhe rezultati bartet në recetë vetëm për rishikim.</aside>
     </main>
   </div>
   <div class="rx-toast" id="dosageToast" role="status" aria-live="polite"></div>
   <script src="dosage-engine.js?v=20260726-3" defer></script>
   <script src="auth-client.js?v=production-audit-v1" defer></script>
   <script src="dozologjia.js?v=20260726-3" defer></script>
+  <script src="dozologjia-safety-enhancements.js?v=20260726-1" defer></script>
   <script src="app-stability.js?v=20260724-2" defer></script>
+  <script>
+    (()=>{const id='dozologjiaSafetyStyles';let link=document.getElementById(id);if(!link){link=document.createElement('link');link.id=id;link.rel='stylesheet';link.href='/dozologjia-safety-enhancements.css?v=20260726-1';document.head.appendChild(link)}})();
+  </script>
 </body>
 </html>
