@@ -13,6 +13,7 @@ const runtimeSources = [
 ];
 const runtimeOutput = path.join(root, 'app-runtime.js');
 const tailadminCss = path.join(root, 'tailadmin-medindex.css');
+const ignoredDirectories = new Set(['.git', '.vercel', 'node_modules', 'test-results', 'playwright-report']);
 
 function buildRegistryRuntime() {
   const missing = runtimeSources.filter(file => !fs.existsSync(path.join(root, file)));
@@ -61,5 +62,31 @@ function hardenTailAdminCss() {
   console.log('Hardened TailAdmin CSS without third-party font requests.');
 }
 
+function listCssFiles(directory = root) {
+  return fs.readdirSync(directory, { withFileTypes:true }).flatMap(entry => {
+    if (entry.isDirectory() && ignoredDirectories.has(entry.name)) return [];
+    const absolute = path.join(directory, entry.name);
+    if (entry.isDirectory()) return listCssFiles(absolute);
+    return entry.isFile() && entry.name.endsWith('.css') ? [absolute] : [];
+  });
+}
+
+function auditStylesheetOrigins() {
+  const violations = [];
+  for (const file of listCssFiles()) {
+    const source = fs.readFileSync(file, 'utf8');
+    const imports = [...source.matchAll(/@import\s+(?:url\()?\s*["']?https?:\/\/[^;\s)"']+/gi)].map(match => match[0]);
+    const urls = [...source.matchAll(/url\(\s*["']?https?:\/\/[^)"']+/gi)].map(match => match[0]);
+    if (imports.length || urls.length) {
+      violations.push(`${path.relative(root, file)}: ${[...imports, ...urls].slice(0, 3).join(', ')}`);
+    }
+  }
+  if (violations.length) {
+    throw new Error(`Stylesheet-et përmbajnë burime të jashtme të palejuara:\n${violations.join('\n')}`);
+  }
+  console.log(`Audited ${listCssFiles().length} stylesheets: no third-party origins.`);
+}
+
 buildRegistryRuntime();
 hardenTailAdminCss();
+auditStylesheetOrigins();
