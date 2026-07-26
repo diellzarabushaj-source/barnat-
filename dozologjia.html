@@ -9,9 +9,11 @@
   <link rel="stylesheet" href="medical-hub.css?v=20260723-1">
   <link rel="stylesheet" href="clinical-reference.css?v=20260724-1">
   <link rel="stylesheet" href="tailadmin-medindex.css?v=20260724-3" data-tailadmin-medindex-css>
+  <link rel="preload" href="dozologjia-verified-cards.css?v=20260726-1" as="style">
   <link rel="stylesheet" href="tailadmin-professional.css?v=20260724-1" data-tailadmin-professional-css>
   <script src="tailadmin-shell.js?v=production-audit-v1" defer></script>
   <script src="tailadmin-professional.js?v=production-audit-v1" defer></script>
+  <script src="dozologjia-card-style-loader.js?v=20260726-1" defer></script>
 </head>
 <body>
   <a class="skip-link" href="#dosageContent">Kalo te dozologjia</a>
@@ -28,29 +30,43 @@
     </nav>
     <main class="med-main clinical-main" id="dosageContent" tabindex="-1">
       <header class="clinical-hero">
-        <div><p class="clinical-kicker">MedIndex · të dhëna të verifikuara</p><h1>Dozologjia</h1><p>Kërko skemat e publikuara nga Google Sheets. Auto-plotësimi kërkon përputhje të saktë të ATC-së, substancës aktive, formës dhe fortësisë.</p></div>
-        <div class="clinical-summary"><strong id="dosageCount">0</strong><span>skema</span></div>
+        <div>
+          <p class="clinical-kicker">MedIndex · kartelat e verifikuara</p>
+          <h1>Dozologjia</h1>
+          <p>Për secilin bar shfaqen qartë doza dhe rruga për të rritur, si dhe doza pediatrike kur është publikuar në dataset-in e verifikuar.</p>
+        </div>
+        <div class="clinical-summary"><strong id="dosageCount">0</strong><span>kartela</span></div>
       </header>
+
       <div class="clinical-toolbar" role="search" aria-label="Kërkimi dhe filtrat e dozologjisë">
-        <input id="dosageSearch" type="search" autocomplete="off" placeholder="Kërko substancën, indikacionin ose ATC…">
-        <select id="dosagePopulation" aria-label="Popullata"><option value="adult">Të rritur</option><option value="pediatric">Pediatri</option></select>
+        <input id="dosageSearch" type="search" autocomplete="off" placeholder="Kërko barin, substancën, përdorimin ose ATC…">
+        <select id="dosagePopulation" aria-label="Doza e publikuar">
+          <option value="all">Të gjitha dozat</option>
+          <option value="adult">Doza për të rritur</option>
+          <option value="pediatric">Me dozë për fëmijë</option>
+        </select>
         <select id="dosageForm" aria-label="Forma"><option value="">Të gjitha format</option></select>
         <select id="dosageAtc" aria-label="ATC"><option value="">Të gjitha ATC-të</option></select>
       </div>
-      <div class="clinical-patient" id="pediatricInputs" hidden>
-        <strong>Të dhënat pediatrike</strong>
-        <label>Mosha (muaj)<input id="patientAgeMonths" type="number" min="0" step="1" inputmode="numeric"></label>
-        <label>Pesha (kg)<input id="patientWeightKg" type="number" min="0.1" step="0.1" inputmode="decimal"></label>
+
+      <div class="clinical-patient" id="pediatricInputs">
+        <div class="dosage-calculator-copy">
+          <strong>Kalkulatori pediatrik sipas peshës</strong>
+          <span>Shëno peshën. Rezultati shfaqet vetëm kur ekziston formulë pediatrike e strukturuar dhe e verifikuar; teksti origjinal i dozës mbetet gjithmonë i dukshëm.</span>
+        </div>
+        <label>Pesha e fëmijës (kg)<input id="patientWeightKg" type="number" min="0.1" step="0.1" inputmode="decimal" placeholder="p.sh. 18"></label>
+        <label>Mosha (muaj, kur kërkohet)<input id="patientAgeMonths" type="number" min="0" step="1" inputmode="numeric" placeholder="p.sh. 48"></label>
       </div>
-      <p class="clinical-status" id="dosageStatus" role="status" aria-live="polite">Duke ngarkuar skemat…</p>
-      <div class="clinical-list" id="dosageList" aria-live="polite"></div>
-      <aside class="clinical-note"><strong>Kontroll klinik i detyrueshëm:</strong> këto të dhëna ndihmojnë shkrimin e recetës, por nuk zëvendësojnë vlerësimin e pacientit, kundërindikacionet, funksionin renal/hepatik ose burimin zyrtar.</aside>
+
+      <p class="clinical-status" id="dosageStatus" role="status" aria-live="polite">Duke ngarkuar kartelat e verifikuara…</p>
+      <div class="clinical-list dosage-card-list" id="dosageList" aria-live="polite"></div>
+      <aside class="clinical-note"><strong>Kontroll klinik i detyrueshëm:</strong> kalkulatori zbatohet vetëm mbi formulën e strukturuar të publikuar. Rezultati duhet kontrolluar ndaj burimit, moshës, indikacionit, kufirit maksimal, funksionit renal/hepatik dhe gjendjes së pacientit.</aside>
     </main>
   </div>
   <div class="rx-toast" id="dosageToast" role="status" aria-live="polite"></div>
-  <script src="dosage-engine.js?v=20260724-1" defer></script>
+  <script src="dosage-engine.js?v=20260726-2" defer></script>
   <script src="auth-client.js?v=production-audit-v1" defer></script>
-  <script src="dozologjia.js?v=20260724-1" defer></script>
+  <script src="dozologjia.js?v=20260726-2" defer></script>
   <script src="app-stability.js?v=20260724-2" defer></script>
 </body>
 </html>
