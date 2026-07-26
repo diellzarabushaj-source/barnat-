@@ -1,5 +1,5 @@
 const assert = require('node:assert/strict');
-const handler = require('../api/gemini-prescription.js');
+const handler = require('../lib/gemini-prescription.js');
 
 const T = handler._test;
 
