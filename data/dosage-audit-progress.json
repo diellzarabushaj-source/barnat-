@@ -1,0 +1,23 @@
+{
+  "schemaVersion": 1,
+  "sourceSheetId": "1T7XsfkXLQfEomFL4DmXoA8PheiR6s3Qmu36hTqklOMo",
+  "sourceTab": "KARTELA_BARNAVE",
+  "completedThroughRegistryNumber": 60,
+  "lastCompletedBatch": {
+    "from": 37,
+    "to": 60,
+    "updatedAt": "2026-07-26",
+    "scope": [
+      "Doza e plotë — Të rritur",
+      "Rruga — Të rritur",
+      "Doza e plotë — Fëmijë",
+      "Rruga — Fëmijë"
+    ]
+  },
+  "rules": {
+    "preserveExistingRegistryFields": true,
+    "publishOnlyVerifiedRows": true,
+    "stateWhenPediatricUseIsNotEstablished": true,
+    "requireProductSpecificOrRegulatorySource": true
+  }
+}
