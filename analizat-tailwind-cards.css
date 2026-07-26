@@ -1,0 +1,588 @@
+/* MedIndex Analizat — TailAdmin-consistent card refinement.
+   This layer deliberately does not change the application shell, sidebar,
+   topbar, search, filters, data, or detail-dialog behaviour. */
+
+html.medindex-tailadmin {
+  --lab-card-surface: #ffffff;
+  --lab-card-border: #e4e7ec;
+  --lab-card-ink: #101828;
+  --lab-card-muted: #667085;
+  --lab-card-subtle: #98a2b3;
+  --lab-card-shadow: 0 1px 2px rgba(16, 24, 40, .035);
+  --lab-card-shadow-hover: 0 10px 24px rgba(16, 24, 40, .075);
+}
+
+/* Keep the native TailAdmin page structure and all search/filter controls. */
+html.medindex-tailadmin .mi-page-slot > .med-main#labContent {
+  width: 100% !important;
+  max-width: none !important;
+  margin: 0 !important;
+  padding: 0 !important;
+}
+
+html.medindex-tailadmin .lab-hero {
+  margin-bottom: 12px !important;
+  padding: 20px 22px !important;
+  border-radius: 14px !important;
+}
+
+html.medindex-tailadmin .lab-sheet-note {
+  margin: 0 0 12px !important;
+  padding: 10px 13px !important;
+  border-radius: 10px !important;
+  font-size: 12px !important;
+  line-height: 1.5 !important;
+}
+
+html.medindex-tailadmin .lab-quickbar {
+  position: sticky !important;
+  top: 8px !important;
+  z-index: 25 !important;
+  margin: 0 0 14px !important;
+  padding: 9px !important;
+  gap: 9px !important;
+  border-radius: 12px !important;
+  box-shadow: 0 8px 20px rgba(16, 24, 40, .055) !important;
+}
+
+html.medindex-tailadmin .lab-search-wrap {
+  min-width: min(420px, 100%) !important;
+  flex: 1 1 420px !important;
+}
+
+html.medindex-tailadmin .lab-search-wrap input,
+html.medindex-tailadmin #labCategory {
+  min-height: 42px !important;
+  height: 42px !important;
+  font-size: 13px !important;
+}
+
+html.medindex-tailadmin .lab-category-nav {
+  grid-auto-columns: minmax(210px, 250px) !important;
+  gap: 9px !important;
+  margin: 0 0 18px !important;
+  padding: 2px 1px 9px !important;
+}
+
+html.medindex-tailadmin .lab-category-nav .lab-category-tile {
+  grid-template-columns: 38px minmax(0, 1fr) auto !important;
+  gap: 10px !important;
+  min-height: 66px !important;
+  padding: 10px 11px !important;
+  border: 1px solid color-mix(in srgb, var(--lab-accent) 18%, #e4e7ec) !important;
+  border-radius: 11px !important;
+  background: #fff !important;
+  box-shadow: var(--lab-card-shadow) !important;
+}
+
+html.medindex-tailadmin .lab-category-tile-icon {
+  width: 38px !important;
+  height: 38px !important;
+  border-radius: 9px !important;
+  background: color-mix(in srgb, var(--lab-soft) 88%, #fff) !important;
+}
+
+html.medindex-tailadmin .lab-category-tile-icon svg {
+  width: 19px !important;
+  height: 19px !important;
+  stroke-width: 1.9 !important;
+}
+
+html.medindex-tailadmin .lab-category-tile-copy small {
+  font-size: 8px !important;
+  font-weight: 700 !important;
+  line-height: 1.2 !important;
+  letter-spacing: .07em !important;
+}
+
+html.medindex-tailadmin .lab-category-tile-copy strong {
+  font-size: 11px !important;
+  font-weight: 650 !important;
+  line-height: 1.25 !important;
+}
+
+html.medindex-tailadmin .lab-category-tile-count {
+  padding: 4px 7px !important;
+  border-radius: 999px !important;
+  font-size: 9px !important;
+  font-weight: 650 !important;
+}
+
+html.medindex-tailadmin .lab-main-head {
+  margin: 18px 0 12px !important;
+}
+
+html.medindex-tailadmin .lab-main-head h2 {
+  color: var(--lab-card-ink) !important;
+  font-size: 22px !important;
+  font-weight: 650 !important;
+  letter-spacing: -.025em !important;
+}
+
+html.medindex-tailadmin .lab-main-head p {
+  margin-top: 4px !important;
+  color: var(--lab-card-muted) !important;
+  font-size: 13px !important;
+  line-height: 1.45 !important;
+}
+
+/* Category chapter */
+html.medindex-tailadmin .lab-category-section {
+  margin: 0 0 26px !important;
+  scroll-margin-top: 88px !important;
+  contain-intrinsic-size: 500px !important;
+}
+
+html.medindex-tailadmin .lab-category-head {
+  display: grid !important;
+  grid-template-columns: 42px minmax(0, 1fr) auto !important;
+  align-items: center !important;
+  gap: 12px !important;
+  min-height: 68px !important;
+  margin: 0 0 12px !important;
+  padding: 11px 14px !important;
+  border: 1px solid color-mix(in srgb, var(--lab-accent) 22%, #e4e7ec) !important;
+  border-left: 4px solid var(--lab-accent) !important;
+  border-radius: 12px !important;
+  background: color-mix(in srgb, var(--lab-soft) 58%, #fff) !important;
+  box-shadow: none !important;
+  overflow: hidden !important;
+}
+
+html.medindex-tailadmin .lab-category-head::after,
+html.medindex-tailadmin .lab-category-head-accent,
+html.medindex-tailadmin .lab-category-head .lab-category-number {
+  display: none !important;
+}
+
+html.medindex-tailadmin .lab-category-head .lab-category-symbol {
+  display: grid !important;
+  width: 40px !important;
+  height: 40px !important;
+  margin: 0 !important;
+  place-items: center !important;
+  border: 0 !important;
+  border-radius: 10px !important;
+  background: var(--lab-accent) !important;
+  color: #fff !important;
+  box-shadow: 0 6px 14px color-mix(in srgb, var(--lab-accent) 18%, transparent) !important;
+}
+
+html.medindex-tailadmin .lab-category-head .lab-category-symbol svg {
+  width: 19px !important;
+  height: 19px !important;
+  stroke-width: 1.9 !important;
+}
+
+html.medindex-tailadmin .lab-category-copy {
+  min-width: 0 !important;
+}
+
+html.medindex-tailadmin .lab-category-copy > p {
+  margin: 0 0 4px !important;
+  color: color-mix(in srgb, var(--lab-accent) 78%, #344054) !important;
+  font-family: var(--mi-font) !important;
+  font-size: 9px !important;
+  font-weight: 650 !important;
+  line-height: 1.25 !important;
+  letter-spacing: .065em !important;
+  text-transform: uppercase !important;
+  white-space: nowrap !important;
+  overflow: hidden !important;
+  text-overflow: ellipsis !important;
+}
+
+html.medindex-tailadmin .lab-category-copy > h2 {
+  margin: 0 !important;
+  color: var(--lab-card-ink) !important;
+  font-family: var(--mi-font) !important;
+  font-size: 16px !important;
+  font-weight: 650 !important;
+  line-height: 1.25 !important;
+  letter-spacing: -.015em !important;
+}
+
+html.medindex-tailadmin .lab-category-highlights,
+html.medindex-tailadmin .lab-category-open {
+  display: none !important;
+}
+
+html.medindex-tailadmin .lab-category-meta {
+  display: block !important;
+  min-width: 0 !important;
+}
+
+html.medindex-tailadmin .lab-category-count {
+  display: inline-flex !important;
+  min-height: 28px !important;
+  align-items: center !important;
+  gap: 6px !important;
+  padding: 0 10px !important;
+  border: 1px solid color-mix(in srgb, var(--lab-accent) 25%, #e4e7ec) !important;
+  border-radius: 999px !important;
+  background: #fff !important;
+  color: var(--lab-accent) !important;
+  font-family: var(--mi-font) !important;
+  font-size: 10px !important;
+  font-weight: 650 !important;
+  white-space: nowrap !important;
+}
+
+html.medindex-tailadmin .lab-category-count::before {
+  content: "";
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: currentColor;
+}
+
+/* Laboratory card grid */
+html.medindex-tailadmin .lab-grid {
+  counter-reset: lab-card;
+  display: grid !important;
+  grid-template-columns: repeat(4, minmax(0, 1fr)) !important;
+  gap: 14px !important;
+  align-items: stretch !important;
+}
+
+html.medindex-tailadmin .lab-grid > .lab-card:last-child:nth-child(n) {
+  grid-column: auto !important;
+}
+
+html.medindex-tailadmin .lab-card {
+  counter-increment: lab-card;
+  position: relative !important;
+  min-width: 0 !important;
+  border: 1px solid var(--lab-card-border) !important;
+  border-radius: 14px !important;
+  background: var(--lab-card-surface) !important;
+  box-shadow: var(--lab-card-shadow) !important;
+  overflow: hidden !important;
+  transition: border-color .16s ease, box-shadow .16s ease, transform .16s ease !important;
+}
+
+html.medindex-tailadmin .lab-card-open {
+  position: relative !important;
+  display: flex !important;
+  width: 100% !important;
+  min-height: 218px !important;
+  height: 100% !important;
+  flex-direction: column !important;
+  align-items: flex-start !important;
+  padding: 16px 16px 14px !important;
+  border: 0 !important;
+  background: #fff !important;
+  color: var(--lab-card-ink) !important;
+  text-align: left !important;
+  overflow: hidden !important;
+}
+
+html.medindex-tailadmin .lab-card-accent {
+  display: none !important;
+}
+
+html.medindex-tailadmin .lab-card-topline {
+  display: flex !important;
+  width: 100% !important;
+  align-items: flex-start !important;
+  justify-content: space-between !important;
+  margin: 0 0 14px !important;
+}
+
+html.medindex-tailadmin .lab-test-icon {
+  display: grid !important;
+  width: 38px !important;
+  height: 38px !important;
+  flex: 0 0 38px !important;
+  place-items: center !important;
+  border: 0 !important;
+  border-radius: 10px !important;
+  background: color-mix(in srgb, var(--lab-soft) 90%, #fff) !important;
+  color: var(--lab-accent) !important;
+  box-shadow: none !important;
+}
+
+html.medindex-tailadmin .lab-test-icon svg {
+  width: 18px !important;
+  height: 18px !important;
+  stroke-width: 1.9 !important;
+}
+
+html.medindex-tailadmin .lab-card-order {
+  display: inline-grid !important;
+  min-width: 27px !important;
+  height: 23px !important;
+  margin: 0 !important;
+  padding: 0 6px !important;
+  place-items: center !important;
+  border: 1px solid color-mix(in srgb, var(--lab-accent) 13%, #e4e7ec) !important;
+  border-radius: 7px !important;
+  background: color-mix(in srgb, var(--lab-soft) 70%, #fff) !important;
+  color: transparent !important;
+  font-size: 0 !important;
+  overflow: visible !important;
+}
+
+html.medindex-tailadmin .lab-card-order::after {
+  content: counter(lab-card, decimal-leading-zero);
+  color: color-mix(in srgb, var(--lab-accent) 70%, #667085) !important;
+  font-family: var(--mi-font) !important;
+  font-size: 9px !important;
+  font-weight: 700 !important;
+  line-height: 1 !important;
+}
+
+html.medindex-tailadmin .lab-card h3 {
+  display: -webkit-box !important;
+  margin: 0 !important;
+  color: var(--lab-card-ink) !important;
+  font-family: var(--mi-font) !important;
+  font-size: 15px !important;
+  font-weight: 650 !important;
+  line-height: 1.3 !important;
+  letter-spacing: -.012em !important;
+  -webkit-box-orient: vertical !important;
+  -webkit-line-clamp: 2 !important;
+  overflow: hidden !important;
+}
+
+html.medindex-tailadmin .lab-card-sq {
+  display: block !important;
+  max-width: 100% !important;
+  margin-top: 7px !important;
+  color: color-mix(in srgb, var(--lab-accent) 72%, #344054) !important;
+  font-family: var(--mi-font) !important;
+  font-size: 9px !important;
+  font-weight: 650 !important;
+  line-height: 1.3 !important;
+  letter-spacing: .035em !important;
+  text-transform: uppercase !important;
+  white-space: nowrap !important;
+  overflow: hidden !important;
+  text-overflow: ellipsis !important;
+}
+
+html.medindex-tailadmin .lab-card-en {
+  display: block !important;
+  max-width: 100% !important;
+  margin-top: 3px !important;
+  color: var(--lab-card-subtle) !important;
+  font-family: var(--mi-font) !important;
+  font-size: 9px !important;
+  font-style: normal !important;
+  font-weight: 500 !important;
+  line-height: 1.3 !important;
+  letter-spacing: .025em !important;
+  text-transform: uppercase !important;
+  white-space: nowrap !important;
+  overflow: hidden !important;
+  text-overflow: ellipsis !important;
+}
+
+html.medindex-tailadmin .lab-card p {
+  display: -webkit-box !important;
+  margin: 11px 0 13px !important;
+  color: var(--lab-card-muted) !important;
+  font-family: var(--mi-font) !important;
+  font-size: 12px !important;
+  font-weight: 400 !important;
+  line-height: 1.5 !important;
+  -webkit-box-orient: vertical !important;
+  -webkit-line-clamp: 3 !important;
+  overflow: hidden !important;
+}
+
+html.medindex-tailadmin .lab-card-action {
+  display: flex !important;
+  width: 100% !important;
+  align-items: center !important;
+  justify-content: flex-start !important;
+  gap: 6px !important;
+  margin-top: auto !important;
+  padding: 11px 31px 0 0 !important;
+  border-top: 1px solid #eef0f3 !important;
+  color: color-mix(in srgb, var(--lab-accent) 78%, #344054) !important;
+  font-family: var(--mi-font) !important;
+  font-size: 10px !important;
+  font-weight: 650 !important;
+}
+
+html.medindex-tailadmin .lab-card-arrow {
+  display: inline !important;
+  width: auto !important;
+  height: auto !important;
+  border-radius: 0 !important;
+  background: transparent !important;
+  color: currentColor !important;
+  font-size: 12px !important;
+  transition: transform .15s ease !important;
+}
+
+html.medindex-tailadmin .lab-card-open::after {
+  content: "☆";
+  position: absolute;
+  right: 15px;
+  bottom: 13px;
+  color: #b1b7c2;
+  font: 400 16px/1 system-ui, sans-serif;
+}
+
+html.medindex-tailadmin .lab-card-open:focus-visible {
+  outline: 3px solid color-mix(in srgb, var(--lab-accent) 23%, transparent) !important;
+  outline-offset: -3px !important;
+}
+
+@media (hover: hover) and (pointer: fine) {
+  html.medindex-tailadmin .lab-card:hover {
+    transform: translateY(-2px) !important;
+    border-color: color-mix(in srgb, var(--lab-accent) 35%, #d0d5dd) !important;
+    box-shadow: var(--lab-card-shadow-hover) !important;
+  }
+
+  html.medindex-tailadmin .lab-card:hover .lab-card-arrow {
+    transform: translateX(3px) !important;
+  }
+
+  html.medindex-tailadmin .lab-card:hover .lab-test-icon {
+    background: color-mix(in srgb, var(--lab-soft) 98%, #fff) !important;
+  }
+}
+
+/* Dark mode, still using the shared TailAdmin theme. */
+html[data-theme="dark"].medindex-tailadmin {
+  --lab-card-surface: #142230;
+  --lab-card-border: #2b3b4c;
+  --lab-card-ink: #f2f4f7;
+  --lab-card-muted: #b3bdca;
+  --lab-card-subtle: #8e9bad;
+  --lab-card-shadow: 0 1px 2px rgba(0, 0, 0, .14);
+  --lab-card-shadow-hover: 0 12px 26px rgba(0, 0, 0, .26);
+}
+
+html[data-theme="dark"].medindex-tailadmin .lab-category-nav .lab-category-tile,
+html[data-theme="dark"].medindex-tailadmin .lab-category-head,
+html[data-theme="dark"].medindex-tailadmin .lab-card,
+html[data-theme="dark"].medindex-tailadmin .lab-card-open {
+  border-color: color-mix(in srgb, var(--lab-accent) 19%, #344054) !important;
+  background: #142230 !important;
+}
+
+html[data-theme="dark"].medindex-tailadmin .lab-category-head {
+  background: color-mix(in srgb, var(--lab-accent) 10%, #142230) !important;
+}
+
+html[data-theme="dark"].medindex-tailadmin .lab-category-copy > h2,
+html[data-theme="dark"].medindex-tailadmin .lab-card h3 {
+  color: var(--lab-card-ink) !important;
+}
+
+html[data-theme="dark"].medindex-tailadmin .lab-category-count {
+  background: #182838 !important;
+}
+
+html[data-theme="dark"].medindex-tailadmin .lab-test-icon,
+html[data-theme="dark"].medindex-tailadmin .lab-card-order {
+  background: color-mix(in srgb, var(--lab-accent) 11%, #172634) !important;
+}
+
+html[data-theme="dark"].medindex-tailadmin .lab-card-action {
+  border-color: #2b3b4c !important;
+}
+
+@media (max-width: 1320px) {
+  html.medindex-tailadmin .lab-grid {
+    grid-template-columns: repeat(3, minmax(0, 1fr)) !important;
+  }
+}
+
+@media (max-width: 940px) {
+  html.medindex-tailadmin .lab-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+  }
+
+  html.medindex-tailadmin .lab-card-open {
+    min-height: 205px !important;
+  }
+}
+
+@media (max-width: 640px) {
+  html.medindex-tailadmin .lab-hero {
+    padding: 16px !important;
+  }
+
+  html.medindex-tailadmin .lab-quickbar {
+    position: relative !important;
+    top: auto !important;
+    padding: 8px !important;
+  }
+
+  html.medindex-tailadmin .lab-search-wrap {
+    min-width: 100% !important;
+    flex-basis: 100% !important;
+  }
+
+  html.medindex-tailadmin #labCategory {
+    width: 100% !important;
+  }
+
+  html.medindex-tailadmin .lab-category-nav {
+    grid-auto-columns: minmax(205px, 82vw) !important;
+  }
+
+  html.medindex-tailadmin .lab-category-head {
+    grid-template-columns: 38px minmax(0, 1fr) auto !important;
+    gap: 9px !important;
+    padding: 10px !important;
+  }
+
+  html.medindex-tailadmin .lab-category-head .lab-category-symbol {
+    width: 36px !important;
+    height: 36px !important;
+  }
+
+  html.medindex-tailadmin .lab-category-copy > p {
+    font-size: 8px !important;
+  }
+
+  html.medindex-tailadmin .lab-category-copy > h2 {
+    font-size: 13px !important;
+  }
+
+  html.medindex-tailadmin .lab-category-count {
+    min-height: 24px !important;
+    padding: 0 7px !important;
+    font-size: 8px !important;
+  }
+
+  html.medindex-tailadmin .lab-grid {
+    grid-template-columns: 1fr !important;
+    gap: 10px !important;
+  }
+
+  html.medindex-tailadmin .lab-card-open {
+    min-height: 190px !important;
+    padding: 14px !important;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html.medindex-tailadmin .lab-card,
+  html.medindex-tailadmin .lab-card-arrow {
+    transition: none !important;
+  }
+
+  html.medindex-tailadmin .lab-card:hover {
+    transform: none !important;
+  }
+}
+
+@media (forced-colors: active) {
+  html.medindex-tailadmin .lab-category-head,
+  html.medindex-tailadmin .lab-card,
+  html.medindex-tailadmin .lab-category-tile {
+    border: 2px solid ButtonText !important;
+    background: Canvas !important;
+    color: CanvasText !important;
+    box-shadow: none !important;
+  }
+}
