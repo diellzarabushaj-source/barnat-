@@ -1,0 +1,29 @@
+@import url('/analizat-tailwind-cards.css?v=20260726-1');
+
+/* Cascade lock: TailAdmin remains the shell owner; these rules own only the
+   laboratory card density after TailAdmin's page-specific defaults. */
+html.medindex-tailadmin[data-mi-page="analizat"] #labContent .lab-grid {
+  gap: 14px !important;
+}
+
+html.medindex-tailadmin[data-mi-page="analizat"] #labContent .lab-card-open {
+  min-height: 218px !important;
+  padding: 16px 16px 14px !important;
+}
+
+@media (max-width: 940px) {
+  html.medindex-tailadmin[data-mi-page="analizat"] #labContent .lab-card-open {
+    min-height: 205px !important;
+  }
+}
+
+@media (max-width: 640px) {
+  html.medindex-tailadmin[data-mi-page="analizat"] #labContent .lab-grid {
+    gap: 10px !important;
+  }
+
+  html.medindex-tailadmin[data-mi-page="analizat"] #labContent .lab-card-open {
+    min-height: 190px !important;
+    padding: 14px !important;
+  }
+}
