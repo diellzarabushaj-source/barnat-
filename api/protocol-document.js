@@ -3,6 +3,7 @@ const { Readable } = require('node:stream');
 const manifest = require(path.join('..', 'data', 'protocols.json'));
 
 const DOCUMENTS = new Map(manifest.documents.map(document => [document.id, document]));
+const MAX_RANGE_HEADER_LENGTH = 96;
 
 function safeDocument(id) {
   return DOCUMENTS.get(String(id || '').trim()) || null;
@@ -12,6 +13,13 @@ function requestId(req) {
   if (req.query?.id) return Array.isArray(req.query.id) ? req.query.id[0] : req.query.id;
   try { return new URL(req.url, 'https://medindex.local').searchParams.get('id'); }
   catch { return ''; }
+}
+
+function safeRange(value) {
+  const range = String(value || '').trim();
+  if (!range) return '';
+  if (range.length > MAX_RANGE_HEADER_LENGTH) return null;
+  return /^bytes=(?:\d+-\d*|\d*-\d+)$/.test(range) ? range : null;
 }
 
 async function authorized(req) {
@@ -44,6 +52,7 @@ async function handle(req, res, dependencies = {}) {
     const { get } = require('@vercel/blob');
     return get(...args);
   });
+
   if (!['GET', 'HEAD'].includes(req.method)) {
     res.setHeader('Allow', 'GET, HEAD');
     return res.status(405).json({ error:'Lejohet vetëm GET/HEAD.' });
@@ -64,28 +73,46 @@ async function handle(req, res, dependencies = {}) {
     });
   }
 
+  const range = safeRange(req.headers.range);
+  if (range === null) {
+    res.setHeader('Content-Range', 'bytes */*');
+    return res.status(416).json({ error:'Range header nuk është i vlefshëm.' });
+  }
+
   const etag = `"${document.contentSha256}"`;
-  if (req.headers['if-none-match'] === etag) {
+  if (req.headers['if-none-match'] === etag && !range) {
     setPrivateHeaders(res, document);
     return res.status(304).end();
   }
 
   const headers = {};
-  if (req.headers.range) headers.Range = req.headers.range;
-  const result = await readBlob(document.blobUrl, {
-    access:'private',
-    token:process.env.BLOB_READ_WRITE_TOKEN,
-    headers,
-    ifNoneMatch:req.headers['if-none-match'],
-  });
-  if (!result) return res.status(404).json({ error:'Dokumenti privat nuk u gjet.' });
-  setPrivateHeaders(res, document, result.headers);
-  if (result.statusCode === 304) return res.status(304).end();
-  const status = result.statusCode === 206 || result.headers?.get?.('content-range') ? 206 : 200;
-  if (req.method === 'HEAD') return res.status(status).end();
-  res.status(status);
-  if (!result.stream) return res.end();
-  return Readable.fromWeb(result.stream).pipe(res);
+  if (range) headers.Range = range;
+
+  try {
+    const result = await readBlob(document.blobUrl, {
+      access:'private',
+      token:process.env.BLOB_READ_WRITE_TOKEN,
+      headers,
+      ifNoneMatch:req.headers['if-none-match'],
+    });
+    if (!result) return res.status(404).json({ error:'Dokumenti privat nuk u gjet.' });
+    setPrivateHeaders(res, document, result.headers);
+    if (result.statusCode === 304) return res.status(304).end();
+    if (result.statusCode === 416) return res.status(416).json({ error:'Intervali i kërkuar nuk ekziston në dokument.' });
+    const status = result.statusCode === 206 || result.headers?.get?.('content-range') ? 206 : 200;
+    if (req.method === 'HEAD') return res.status(status).end();
+    res.status(status);
+    if (!result.stream) return res.end();
+    return Readable.fromWeb(result.stream).on('error', error => {
+      console.error('Protocol document stream error:', error?.message || error);
+      if (!res.headersSent) res.status(502).end();
+      else res.destroy(error);
+    }).pipe(res);
+  } catch (error) {
+    console.error('Protocol document upstream error:', error?.message || error);
+    if (res.headersSent) return res.destroy(error);
+    return res.status(502).json({ error:'Dokumenti nuk mund të ngarkohet tani.' });
+  }
 }
 
 async function handler(req, res) {
@@ -96,4 +123,5 @@ module.exports = handler;
 module.exports.handle = handle;
 module.exports.safeDocument = safeDocument;
 module.exports.requestId = requestId;
+module.exports.safeRange = safeRange;
 module.exports.setPrivateHeaders = setPrivateHeaders;
