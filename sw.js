@@ -232,7 +232,13 @@ async function navigationResponse(event) {
   const key = navigationKey(url);
   const cache = await caches.open(PAGE_CACHE);
 
-  const fresh = await refreshPage(request, key);
+  let resolveFresh;
+  const freshResult = new Promise(resolve => { resolveFresh = resolve; });
+  event.waitUntil(refreshPage(request, key).then(response => {
+    resolveFresh(response);
+    return response;
+  }));
+  const fresh = await freshResult;
   if (fresh) return cloneWithHeader(fresh, 'X-MedIndex-Cache', 'page-network');
 
   const cached = await cache.match(key) || await caches.match(key, { ignoreSearch: true });
