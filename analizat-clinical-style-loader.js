@@ -2,7 +2,7 @@
   'use strict';
 
   const ID = 'analizatClinicalCardsStyles';
-  const HREF = '/analizat-clinical-cards.css?v=20260726-2';
+  const HREF = '/analizat-tailwind-cards.css?v=20260726-1';
 
   function ensure() {
     let link = document.getElementById(ID);
