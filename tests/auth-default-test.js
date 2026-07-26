@@ -1,4 +1,5 @@
 const assert = require('node:assert/strict');
+const fs = require('node:fs');
 const path = require('node:path');
 const { pathToFileURL } = require('node:url');
 
@@ -30,6 +31,14 @@ const { pathToFileURL } = require('node:url');
   process.env.GEMINI_API_KEY = 'g'.repeat(40);
   const noSecretReuse = await import(`${baseUrl}?no-secret-reuse=${Date.now()}`);
   assert.equal(noSecretReuse.sessionConfigurationEnabled(), false, 'Gemini API keys must never be reused as session secrets');
+
+  const authSource = fs.readFileSync(path.resolve(__dirname, '../api/auth.js'), 'utf8');
+  assert.match(authSource, /AUTH_NOT_CONFIGURED/, 'auth endpoint must expose a configuration failure code');
+  assert.match(authSource, /status\(415\)/, 'auth endpoint must reject non-JSON bodies');
+  assert.match(authSource, /status\(413\)/, 'auth endpoint must reject oversized bodies');
+  assert.match(authSource, /RateLimit-Limit/, 'auth endpoint must publish rate-limit metadata');
+  assert.match(authSource, /accessConfigurationEnabled\(\)/, 'auth endpoint must verify the access configuration before passwords');
+  assert.match(fs.readFileSync(path.resolve(__dirname, '../.env.example'), 'utf8'), /SESSION_SECRET[\s\S]*ACCESS_CODE/, 'required auth environment variables must be documented');
 
   console.log('Fail-closed authentication configuration passed.');
 })().catch(error => {
