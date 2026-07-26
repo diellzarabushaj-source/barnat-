@@ -29,7 +29,7 @@ assert.doesNotMatch(script, /appendColumnPickerItems/);
 assert.doesNotMatch(script, /fetch\([^)]*method\s*:\s*['"](?:POST|PUT|PATCH|DELETE)/i, 'registry card integration must be read-only');
 assert.match(api, /KARTELA_BARNAVE/);
 assert.match(api, /publishedCard/);
-assert.match(api, /cards: \[\]/);
+assert.match(api, /cards\s*:\s*\[\]/, 'dosage API error and unauthenticated responses must preserve the cards array');
 assert.match(api, /Doza e plotë — Të rritur/);
 assert.match(api, /Rruga — Fëmijë/);
 assert.match(css, /hide-registry-dosage-adult/);
