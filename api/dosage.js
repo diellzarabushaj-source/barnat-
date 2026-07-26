@@ -3,7 +3,7 @@ const crypto = require('node:crypto');
 const DosageEngine = require('../dosage-engine.js');
 
 const DEFAULT_DOSAGE_FILE_ID = '1T7XsfkXLQfEomFL4DmXoA8PheiR6s3Qmu36hTqklOMo';
-const MEMORY_CACHE_MS = 6 * 60 * 60 * 1000;
+const MEMORY_CACHE_MS = 5 * 60 * 1000;
 const FETCH_TIMEOUT_MS = 12000;
 const MAX_WORKBOOK_BYTES = 10 * 1024 * 1024;
 
@@ -226,7 +226,7 @@ async function buildPayload(fileId) {
   const payload = {
     schemaVersion: clean(config.SCHEMA_VERSION) || '1.0.0', matchVersion: 'exact-v1', datasetVersion: clean(config.DATASET_VERSION),
     mode: clean(config.WEBSITE_MODE) || 'SAFE_VERIFIED_ONLY', generatedAt: new Date().toISOString(),
-    forms, adult, pediatric, cards,
+    forms: formsResult.output, adult, pediatric, cards,
     meta: {
       sourceFileId: fileId, clinicalAutoFillEnabled,
       activationSource: envFlag('ENABLE_DOSAGE_AUTOFILL') ? 'vercel-env' : clinicalAutoFillEnabled ? 'sheet-config' : 'disabled',
@@ -251,7 +251,7 @@ async function buildPayload(fileId) {
 
 async function getPayload() {
   const fileId = process.env.DOSAGE_SHEET_ID || DEFAULT_DOSAGE_FILE_ID;
-  const key = `${fileId}:${envFlag('ENABLE_DOSAGE_AUTOFILL')}:config-v6-cards`;
+  const key = `${fileId}:${envFlag('ENABLE_DOSAGE_AUTOFILL')}:config-v7-cards`;
   const now = Date.now();
   if (memoryCache && memoryCacheKey === key && now - memoryCacheTime < MEMORY_CACHE_MS) return memoryCache;
   if (!pendingBuild || pendingBuildKey !== key) {
