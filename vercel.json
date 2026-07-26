@@ -7,7 +7,8 @@
     "PRESCRIPTION_SHEET_GID": "407106508"
   },
   "rewrites": [
-    { "source": "/data/registry-data.js", "destination": "/api/registry" }
+    { "source": "/data/registry-data.js", "destination": "/api/registry" },
+    { "source": "/api/gemini-prescription", "destination": "/api/gemini-prescription-secure" }
   ],
   "headers": [
     {
