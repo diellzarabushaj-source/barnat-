@@ -152,11 +152,13 @@
       'barnat-registry-parts-v3', 'barnat-registry-cached-at-v3',
       'barnat-registry-parts-v4', 'barnat-registry-cached-at-v4',
       'regjistriBarnave_protokollet_v1',
+      'medindex_rx_autodraft_v1',
     ];
     const sessionKeys = [
       RETURN_KEY,
       'medindex_labs_cache_v3',
       'medindexPrescriptionSelection',
+      'medindex_rx_diagnosis_v1',
     ];
     try { localKeys.forEach(key => localStorage.removeItem(key)); } catch {}
     try { sessionKeys.forEach(key => sessionStorage.removeItem(key)); } catch {}
