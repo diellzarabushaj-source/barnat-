@@ -18,7 +18,9 @@ assert.match(gatewaySource, /status\(415\)/);
 assert.match(gatewaySource, /status\(429\)/);
 assert.match(gatewaySource, /Retry-After/);
 assert.match(gatewaySource, /RateLimit-Limit/);
-assert.match(gatewaySource, /require\('\.\/gemini-prescription\.js'\)/);
+assert.match(gatewaySource, /require\('\.\.\/lib\/gemini-prescription\.js'\)/);
+assert.ok(!fs.existsSync(path.join(ROOT, 'api/gemini-prescription.js')), 'Gemini core must not consume a separate Serverless Function');
+assert.ok(fs.existsSync(path.join(ROOT, 'lib/gemini-prescription.js')), 'Gemini core library is missing');
 
 const vercel = JSON.parse(read('vercel.json'));
 assert.ok(vercel.rewrites.some(item => item.source === '/api/gemini-prescription' && item.destination === '/api/gemini-prescription-secure'), 'Gemini route must pass through the secure gateway');
