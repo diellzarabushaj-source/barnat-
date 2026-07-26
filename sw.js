@@ -2,7 +2,7 @@
 'use strict';
 
 const VERSION = 'production-audit-v1';
-const CACHE_EPOCH = 'site-deep-audit-20260726-1';
+const CACHE_EPOCH = 'csp-static-runtime-20260727-1';
 const CACHE_NAMESPACE = `${VERSION}-${CACHE_EPOCH}`;
 const STATIC_CACHE = `medindex-static-${CACHE_NAMESPACE}`;
 const PAGE_CACHE = `medindex-pages-${CACHE_NAMESPACE}`;
@@ -30,7 +30,8 @@ const APP_SHELL = [
   '/tailadmin-shell.js', '/tailadmin-shell-legacy.js', '/tailadmin-professional.js',
   '/mobile-experience.js', '/offline-runtime.js', '/clinical-workflow.js',
   '/local-registry.js', '/local-registry-fidelity.js', '/auth-client.js',
-  '/app-stability.js', '/app.js', '/ui-enhancements.js', '/name-display.js',
+  '/app-stability.js', '/app.js', '/app-runtime.js', '/theme-preload.js',
+  '/recetat-safe-print.js', '/ui-enhancements.js', '/name-display.js',
   '/medical-icons.js', '/section-icons.js', '/classification-icons.js',
   '/classification-data.js', '/classification-registry-bridge.js',
   '/classification-v3.js', '/classification-audit-view.js',
@@ -42,9 +43,7 @@ const APP_SHELL = [
   '/dozologjia-deep-audit.js', '/protokollet.js',
   '/prescription-format-core.js', '/signature-templates.js',
   '/recetat.js', '/login.js', '/data/registry-quality.js',
-  '/data/protocols.json', '/app-parts/part-01.txt',
-  '/app-parts/part-02.txt', '/app-parts/part-03.txt',
-  '/app-parts/part-04.txt', '/app-parts/core-tail.txt'
+  '/data/protocols.json'
 ];
 
 const PRIVATE_DATA_PATHS = new Set([
@@ -52,6 +51,7 @@ const PRIVATE_DATA_PATHS = new Set([
 ]);
 const QUERY_DATA_PATHS = new Set(['/api/drug-search']);
 const SAFE_AUTO_REFRESH_PATHS = new Set(['/icd.html', '/analizat.html']);
+const REQUIRED_PRIVATE_PATHS = ['/api/registry', '/api/dosage', '/data/protocols.json'];
 
 function sameOrigin(url) {
   return url.origin === self.location.origin;
@@ -80,6 +80,10 @@ function normalizedPrivateKey(url) {
   const path = url.pathname === '/data/registry-data.js' ? '/api/registry' : url.pathname;
   const accept = path === '/api/registry' ? 'application/javascript' : 'application/json';
   return requestFor(path, { headers:{ Accept:accept } });
+}
+
+function manifestKey() {
+  return requestFor('/data/protocols.json', { headers:{ Accept:'application/json' } });
 }
 
 function queryKey(url) {
@@ -133,28 +137,40 @@ async function precacheShell() {
   };
 }
 
+async function privateCacheStatus() {
+  const cache = await caches.open(PRIVATE_CACHE);
+  const checks = await Promise.all([
+    cache.match(normalizedPrivateKey(new URL('/api/registry', self.location.origin))),
+    cache.match(normalizedPrivateKey(new URL('/api/dosage', self.location.origin))),
+    cache.match(manifestKey(), { ignoreSearch:true }),
+  ]);
+  const cached = checks.filter(Boolean).length;
+  return { state:cached === REQUIRED_PRIVATE_PATHS.length ? 'ready' : 'limited', cached, required:REQUIRED_PRIVATE_PATHS.length };
+}
+
 async function warmPrivateData() {
   await broadcast({ type:'MEDINDEX_CACHE_STATUS', state:'syncing' });
   const cache = await caches.open(PRIVATE_CACHE);
-  const required = ['/api/registry', '/api/dosage', '/data/protocols.json'];
+  const required = REQUIRED_PRIVATE_PATHS;
   const optional = ['/api/icd'];
   let cached = 0;
   for (const path of [...required, ...optional]) {
     try {
-      const request = requestFor(path, { headers:{ Accept:path.includes('registry') ? 'application/javascript' : 'application/json' } });
+      const isRegistry = path === '/api/registry';
+      const request = requestFor(path, { headers:{ Accept:isRegistry ? 'application/javascript' : 'application/json' } });
       const response = await fetch(new Request(request, { cache:'no-store' }));
       if ([401, 403].includes(response.status)) {
         await broadcast({ type:'MEDINDEX_AUTH_INVALID' });
         break;
       }
       if (!response.ok) continue;
-      const key = path === '/data/protocols.json' ? request : normalizedPrivateKey(new URL(request.url));
+      const key = path === '/data/protocols.json' ? manifestKey() : normalizedPrivateKey(new URL(request.url));
       await cache.put(key, response.clone());
       cached += 1;
     } catch {}
   }
-  const state = cached >= required.length ? 'ready' : 'limited';
-  await broadcast({ type:'MEDINDEX_CACHE_STATUS', state, cached, required:required.length, syncedAt:Date.now() });
+  const status = await privateCacheStatus();
+  await broadcast({ type:'MEDINDEX_CACHE_STATUS', ...status, syncedAt:Date.now() });
   return cached;
 }
 
@@ -203,11 +219,9 @@ self.addEventListener('message', event => {
   if (type === 'CLEAR_PRIVATE_DATA') event.waitUntil(clearPrivateData());
   if (type === 'SKIP_WAITING') event.waitUntil(self.skipWaiting());
   if (type === 'GET_CACHE_STATUS') {
-    event.waitUntil((async () => {
-      const cache = await caches.open(PRIVATE_CACHE);
-      const keys = await cache.keys();
-      event.source?.postMessage({ type:'MEDINDEX_CACHE_STATUS', state:keys.length >= 3 ? 'ready' : 'limited', cached:keys.length });
-    })());
+    event.waitUntil(privateCacheStatus().then(status => {
+      event.source?.postMessage({ type:'MEDINDEX_CACHE_STATUS', ...status });
+    }));
   }
 });
 
@@ -254,7 +268,7 @@ async function refreshPrivate(request, key) {
 
 function privateFallback(url) {
   if (['/api/registry', '/data/registry-data.js'].includes(url.pathname)) {
-    return new Response('window.REGISTRY_LOAD_ERROR="Nuk ka kopje lokale të regjistrit.";window.DRUG_DATA_PARTS=[];', {
+    return new Response('window.REGISTRY_LOAD_ERROR="Nuk ka kopje lokale të regjistrit.";\nwindow.DRUG_DATA_PARTS=[];\n', {
       status:503,
       headers:{ 'Content-Type':'application/javascript; charset=utf-8', 'X-MedIndex-Offline':'1' },
     });
@@ -283,15 +297,16 @@ async function privateDataResponse(event, url) {
 
 async function manifestResponse(event) {
   const request = event.request;
+  const key = manifestKey();
   const cache = await caches.open(PRIVATE_CACHE);
-  const cached = await cache.match(request, { ignoreSearch:true }) || await caches.match(request, { ignoreSearch:true });
+  const cached = await cache.match(key, { ignoreSearch:true }) || await caches.match(request, { ignoreSearch:true });
   if (cached) {
-    event.waitUntil(fetch(new Request(request, { cache:'no-store' })).then(response => response.ok ? cache.put(request, response.clone()) : null).catch(() => null));
+    event.waitUntil(fetch(new Request(request, { cache:'no-store' })).then(response => response.ok ? cache.put(key, response.clone()) : null).catch(() => null));
     return cloneWithHeader(cached, 'X-MedIndex-Cache', 'manifest-hit');
   }
   try {
     const response = await timeoutFetch(request);
-    if (response.ok) event.waitUntil(cache.put(request, response.clone()));
+    if (response.ok) event.waitUntil(cache.put(key, response.clone()));
     return response;
   } catch {
     return Response.error();
@@ -392,12 +407,13 @@ async function geminiResponse(request) {
 
 self.addEventListener('fetch', event => {
   const request = event.request;
-  if (request.method !== 'GET') return;
   const url = new URL(request.url);
   if (!sameOrigin(url)) return;
 
   if (url.pathname === '/api/auth') return event.respondWith(fetch(request));
   if (url.pathname === '/api/gemini-prescription') return event.respondWith(geminiResponse(request));
+  if (request.method !== 'GET') return;
+
   if (url.pathname === '/api/protocol-document') return event.respondWith(protocolDocumentResponse(event));
   if (PRIVATE_DATA_PATHS.has(url.pathname)) return event.respondWith(privateDataResponse(event, url));
   if (QUERY_DATA_PATHS.has(url.pathname)) return event.respondWith(queryDataResponse(event, url));
