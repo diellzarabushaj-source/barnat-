@@ -98,9 +98,7 @@
     if (event.key !== 'Escape' || visibleDialog()) return;
     document.querySelectorAll('.col-panel.open,.form-panel.open').forEach(node => node.classList.remove('open'));
     document.querySelectorAll('.rx-popover:not([hidden]),.drug-action-card:not([hidden])').forEach(node => { node.hidden = true; });
-    document.querySelectorAll('[aria-expanded="true"]').forEach(node => {
-      if (node.getAttribute('aria-expanded') !== 'false') node.setAttribute('aria-expanded', 'false');
-    });
+    document.querySelectorAll('[aria-expanded="true"]').forEach(node => node.setAttribute('aria-expanded', 'false'));
   }
 
   function overlayIsOpen(overlay) {
@@ -143,18 +141,8 @@
     if (!uiFrame) uiFrame = requestAnimationFrame(reconcileUi);
   }
 
-  function watchUi() {
-    const observer = new MutationObserver(scheduleReconcile);
-    observer.observe(document.body, {
-      childList:true,
-      subtree:true,
-      attributes:true,
-      attributeFilter:['class', 'hidden', 'aria-hidden'],
-    });
-    reconcileUi();
-  }
-
   function installPerformanceHints(root = document) {
+    if (!root.querySelectorAll) return;
     root.querySelectorAll('input[type="search"]:not([data-stability-ready])').forEach(input => {
       input.dataset.stabilityReady = '1';
       input.setAttribute('enterkeyhint', 'search');
@@ -164,17 +152,32 @@
     root.querySelectorAll('button:not([type])').forEach(button => { button.type = 'button'; });
     root.querySelectorAll('img:not([loading])').forEach(image => {
       if (!image.closest('.mi-brand,.clinical-hero,.med-hero')) image.loading = 'lazy';
-      image.decoding ||= 'async';
+      if (!image.decoding) image.decoding = 'async';
     });
+  }
+
+  function watchUi() {
+    const observer = new MutationObserver(records => {
+      records.forEach(record => record.addedNodes.forEach(node => {
+        if (node.nodeType === Node.ELEMENT_NODE) {
+          installPerformanceHints(node);
+          if (node.matches?.('input[type="search"],button:not([type]),img:not([loading])')) installPerformanceHints(node.parentElement || node);
+        }
+      }));
+      scheduleReconcile();
+    });
+    observer.observe(document.body, {
+      childList:true,
+      subtree:true,
+      attributes:true,
+      attributeFilter:['class', 'hidden', 'aria-hidden'],
+    });
+    reconcileUi();
   }
 
   function clearPrivateClientCaches() {
     try {
-      [
-        'barnat-registry-parts-v4',
-        'barnat-registry-cached-at-v4',
-        'medindexPrescriptionSelection',
-      ].forEach(key => {
+      ['barnat-registry-parts-v4', 'barnat-registry-cached-at-v4', 'medindexPrescriptionSelection'].forEach(key => {
         localStorage.removeItem(key);
         sessionStorage.removeItem(key);
       });
@@ -182,20 +185,13 @@
   }
 
   function clearPrescriptionRegistryCacheOnLogout(event) {
-    if (!event.target?.closest?.('.auth-logout')) return;
-    clearPrivateClientCaches();
+    if (event.target?.closest?.('.auth-logout')) clearPrivateClientCaches();
   }
 
   function init() {
     updateConnectivity();
     installPerformanceHints();
     watchUi();
-    const bodyObserver = new MutationObserver(records => {
-      records.forEach(record => record.addedNodes.forEach(node => {
-        if (node.nodeType === Node.ELEMENT_NODE) installPerformanceHints(node);
-      }));
-    });
-    bodyObserver.observe(document.body, { childList:true, subtree:true });
     window.addEventListener('online', updateConnectivity, { passive:true });
     window.addEventListener('offline', updateConnectivity, { passive:true });
     window.addEventListener('error', event => {
@@ -206,7 +202,7 @@
     document.addEventListener('keydown', trapFocus, true);
     document.addEventListener('keydown', closeTransientUi, true);
     document.addEventListener('click', clearPrescriptionRegistryCacheOnLogout, true);
-    window.MEDINDEX_RUNTIME = { version:'2026-07-26.1', online:() => navigator.onLine, clearPrivateClientCaches };
+    window.MEDINDEX_RUNTIME = { version:'2026-07-26.2', online:() => navigator.onLine, clearPrivateClientCaches };
   }
 
   if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', init, { once:true });
