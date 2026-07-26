@@ -10,6 +10,7 @@
   const capsHint = document.getElementById('capsLockHint');
   let busy = false;
   let redirecting = false;
+  let configurationBlocked = false;
 
   function safeReturnPath(value) {
     const path = String(value || '');
@@ -30,18 +31,24 @@
 
   function setBusy(value) {
     busy = value;
-    submit.disabled = value;
-    password.disabled = value;
-    toggle.disabled = value;
+    submit.disabled = value || configurationBlocked;
+    password.disabled = value || configurationBlocked;
+    toggle.disabled = value || configurationBlocked;
     submit.classList.toggle('is-loading', value);
     submit.querySelector('span:first-child').textContent = value ? 'Duke verifikuar…' : 'Hyr';
     form.setAttribute('aria-busy', String(value));
   }
 
+  function blockForConfiguration() {
+    configurationBlocked = true;
+    setBusy(false);
+    setMessage('Hyrja private nuk është konfiguruar në server. Vendos SESSION_SECRET dhe ACCESS_CODE ose ACCESS_CODE_SCRYPT në Vercel, pastaj bëj redeploy.');
+  }
+
   async function timedFetch(url, options = {}, timeoutMs = 8000) {
     const controller = new AbortController();
     const timeout = setTimeout(() => controller.abort(), timeoutMs);
-    try { return await fetch(url, { ...options, signal: controller.signal }); }
+    try { return await fetch(url, { ...options, signal:controller.signal }); }
     finally { clearTimeout(timeout); }
   }
 
@@ -64,7 +71,7 @@
 
   form.addEventListener('submit', async event => {
     event.preventDefault();
-    if (busy) return;
+    if (busy || configurationBlocked) return;
     const value = password.value;
     if (value.length < 6) {
       setMessage('Shkruaje password-in e plotë.');
@@ -76,14 +83,18 @@
     setMessage('');
     try {
       const response = await timedFetch('/api/auth', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json', Accept: 'application/json' },
-        body: JSON.stringify({ password: value }),
-        cache: 'no-store',
-        credentials: 'same-origin',
+        method:'POST',
+        headers:{ 'Content-Type':'application/json', Accept:'application/json' },
+        body:JSON.stringify({ password:value }),
+        cache:'no-store',
+        credentials:'same-origin',
       }, 10000);
       const payload = await response.json().catch(() => ({}));
       if (!response.ok) {
+        if (response.status === 503 && payload.code === 'AUTH_NOT_CONFIGURED') {
+          blockForConfiguration();
+          return;
+        }
         const retryAfter = Number(response.headers.get('retry-after') || 0);
         const suffix = response.status === 429 && retryAfter ? ` Provo pas rreth ${Math.ceil(retryAfter / 60)} minutash.` : '';
         throw new Error((payload.error || 'Hyrja dështoi.') + suffix);
@@ -94,31 +105,38 @@
       try { sessionStorage.removeItem(RETURN_KEY); } catch {}
       window.setTimeout(() => location.replace(destination()), 100);
     } catch (error) {
+      if (configurationBlocked) return;
       const text = error?.name === 'AbortError'
         ? 'Serveri nuk u përgjigj me kohë. Kontrollo lidhjen dhe provo përsëri.'
         : error.message || 'Hyrja dështoi.';
       setMessage(text);
       password.select();
     } finally {
-      if (!redirecting) setBusy(false);
+      if (!redirecting && !configurationBlocked) setBusy(false);
     }
   });
 
   async function init() {
     setBusy(true);
     try {
-      const response = await timedFetch('/api/auth', { cache: 'no-store', credentials: 'same-origin' });
+      const response = await timedFetch('/api/auth', { cache:'no-store', credentials:'same-origin' });
       const payload = await response.json().catch(() => ({}));
       if (response.ok && payload.authenticated) {
         redirecting = true;
         location.replace(destination());
         return;
       }
+      if (response.ok && (payload.hardened === false || payload.accessConfigured === false || payload.sessionConfigured === false)) {
+        blockForConfiguration();
+        return;
+      }
     } catch {}
-    setBusy(false);
-    password.focus();
+    if (!configurationBlocked) {
+      setBusy(false);
+      password.focus();
+    }
   }
 
-  window.addEventListener('pageshow', () => { if (!busy) password.focus(); });
+  window.addEventListener('pageshow', () => { if (!busy && !configurationBlocked) password.focus(); });
   init();
 })();
