@@ -10,13 +10,13 @@ const vm = require('node:vm');
 const ROOT = path.resolve(__dirname, '..');
 const requiredFiles = [
   'index.html','klasifikimi.html','icd.html','analizat.html','dozologjia.html','protokollet.html','recetat.html','login.html',
-  'login.css','login.js','auth-client.js','app-stability.js','app-polish.css','performance.css','tailadmin-medindex.css','tailadmin-shell.js','TAILADMIN-LICENSE','THIRD_PARTY_NOTICES.md',
+  'login.css','login.js','theme-preload.js','auth-client.js','app-stability.js','app-polish.css','performance.css','tailadmin-medindex.css','tailadmin-shell.js','TAILADMIN-LICENSE','THIRD_PARTY_NOTICES.md',
   'medical-hub.css','analizat-polish.css','lab-sheet-data.js','medical-icons.js','section-icons.js',
-  'recetat.css','recetat-audit.css','prescription-format-core.js','recetat.js','app-parts/core-tail.txt',
-  'middleware.ts','lib/auth.mjs','lib/auth-edge.mjs','api/auth.js','api/registry.js','api/drug-search.js',
-  'api/gemini-prescription.js','api/dosage.js','api/protocol-document.js','api/labs.js',
+  'recetat.css','recetat-audit.css','prescription-format-core.js','recetat.js','recetat-safe-print.js','app-runtime.js','app-parts/core-tail.txt',
+  'middleware.ts','lib/auth.mjs','lib/auth-edge.mjs','lib/gemini-prescription.js','api/auth.js','api/registry.js','api/drug-search.js',
+  'api/gemini-prescription-secure.js','api/dosage.js','api/protocol-document.js','api/labs.js',
   'dosage-engine.js','dozologjia.js','protokollet.js','clinical-reference.css','clinical-density.css','clinical-dialog.js','data/protocols.json',
-  'data/registry-quality.js','icd-data.js','vercel.json','robots.txt',
+  'data/registry-quality.js','icd-data.js','vercel.json','robots.txt','scripts/build-static-runtime.js',
   ...Array.from({ length: 7 }, (_, index) => `app-parts/part-${String(index + 1).padStart(2, '0')}.txt`),
 ];
 
@@ -38,17 +38,20 @@ async function main() {
   assert.ok(!fs.existsSync(path.join(ROOT, 'middleware.js')), 'Conflicting middleware.js must not exist');
   assert.ok(!fs.existsSync(path.join(ROOT, 'api/registry-data.js')), 'Redundant registry-data serverless function must not return');
   assert.ok(!fs.existsSync(path.join(ROOT, 'api/health.js')), 'Unused health serverless function must not return');
+  assert.ok(!fs.existsSync(path.join(ROOT, 'api/gemini-prescription.js')), 'Gemini core must not consume a second serverless function');
 
   console.log('2/11 JSON and JavaScript syntax');
   const vercel = JSON.parse(file('vercel.json'));
   assert.equal(vercel.rewrites?.[0]?.destination, '/api/registry');
+  assert.ok(vercel.rewrites.some(item => item.source === '/api/gemini-prescription' && item.destination === '/api/gemini-prescription-secure'));
   [
-    'app.js','login.js','auth-client.js','app-stability.js','tailadmin-shell.js','main-navigation-extension.js',
-    'medical-icons.js','section-icons.js','prescription-format-core.js','recetat.js','dosage-engine.js','dozologjia.js','protokollet.js','clinical-dialog.js','classification-icons.js',
-    'api/auth.js','api/registry.js','api/drug-search.js','api/gemini-prescription.js',
-    'api/dosage.js','api/protocol-document.js','scripts/sync-protocols.js','api/labs.js','data/registry-quality.js',
+    'app.js','app-runtime.js','login.js','theme-preload.js','auth-client.js','app-stability.js','tailadmin-shell.js','main-navigation-extension.js',
+    'medical-icons.js','section-icons.js','prescription-format-core.js','recetat.js','recetat-safe-print.js','dosage-engine.js','dozologjia.js','protokollet.js','clinical-dialog.js','classification-icons.js',
+    'api/auth.js','api/registry.js','api/drug-search.js','api/gemini-prescription-secure.js',
+    'api/dosage.js','api/protocol-document.js','scripts/sync-protocols.js','scripts/build-static-runtime.js','api/labs.js','data/registry-quality.js',
     'classification-registry-bridge.js','classification-v3.js','classification-audit-view.js','classification-info-v3.js',
-    'icd-data.js','icd.js','lab-sheet-data.js','analizat.js','lib/auth.mjs','lib/auth-edge.mjs',
+    'icd-data.js','icd.js','lab-sheet-data.js','analizat.js','local-registry.js','local-registry-fidelity.js',
+    'lib/gemini-prescription.js','lib/auth.mjs','lib/auth-edge.mjs','sw.js','offline-runtime.js',
   ].forEach(checkSyntax);
 
   const tempDir = fs.mkdtempSync(path.join(os.tmpdir(), 'medindex-test-'));
@@ -113,7 +116,7 @@ async function main() {
   assert.ok(labsHtml.indexOf('lab-sheet-data.js') < labsHtml.indexOf('analizat.js'), 'Sheet data must load before laboratory UI');
 
   console.log('6/11 No password leakage to browser assets');
-  const browserFiles = ['index.html','analizat.html','recetat.html','login.html','login.js','login.css','tailadmin-medindex.css','tailadmin-shell.js','auth-client.js','app-stability.js','app.js','analizat.js','prescription-format-core.js','recetat.js','lab-sheet-data.js'];
+  const browserFiles = ['index.html','analizat.html','recetat.html','login.html','login.js','login.css','tailadmin-medindex.css','tailadmin-shell.js','auth-client.js','app-stability.js','app.js','app-runtime.js','analizat.js','prescription-format-core.js','recetat.js','lab-sheet-data.js'];
   const forbiddenPassword = ['diellza', '123'].join('');
   browserFiles.forEach(relativePath => assert.equal(file(relativePath).includes(forbiddenPassword), false, `Password leaked in ${relativePath}`));
 
