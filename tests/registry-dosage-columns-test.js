@@ -22,6 +22,10 @@ assert.match(script, /cardsByKey/);
 assert.match(script, /applyCardOverlay/);
 assert.match(script, /Klasa \/ Çka është/);
 assert.match(script, /Përdorimi \/ fjalë kyçe/);
+assert.match(script, /registryDosageColumnControls/);
+assert.match(script, /groups\.slice\(1\).*remove/s);
+assert.match(script, /matches\.slice\(1\).*remove/s);
+assert.doesNotMatch(script, /appendColumnPickerItems/);
 assert.doesNotMatch(script, /fetch\([^)]*method\s*:\s*['"](?:POST|PUT|PATCH|DELETE)/i, 'registry card integration must be read-only');
 assert.match(api, /KARTELA_BARNAVE/);
 assert.match(api, /publishedCard/);
@@ -30,5 +34,6 @@ assert.match(api, /Doza e plotë — Të rritur/);
 assert.match(api, /Rruga — Fëmijë/);
 assert.match(css, /hide-registry-dosage-adult/);
 assert.match(css, /hide-registry-dosage-pediatric/);
+assert.match(css, /registry-dosage-picker-heading/);
 
 console.log('Registry dosage columns test passed.');
