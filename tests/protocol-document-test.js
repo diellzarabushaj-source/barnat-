@@ -7,11 +7,13 @@ function response() {
   return {
     statusCode:200,
     body:null,
+    headersSent:false,
     setHeader(name, value) { headers.set(name.toLowerCase(), String(value)); },
     getHeader(name) { return headers.get(name.toLowerCase()); },
     status(code) { this.statusCode = code; return this; },
     json(value) { this.body = value; return this; },
     end(value) { this.body = value ?? this.body; return this; },
+    destroy(error) { this.destroyed = true; this.error = error; return this; },
     on() {},
     once() {},
     emit() {},
@@ -20,6 +22,12 @@ function response() {
 }
 
 (async () => {
+  assert.equal(route.safeRange('bytes=0-3'), 'bytes=0-3');
+  assert.equal(route.safeRange('bytes=4-'), 'bytes=4-');
+  assert.equal(route.safeRange('bytes=-4'), 'bytes=-4');
+  assert.equal(route.safeRange('bytes=0-3,8-9'), null);
+  assert.equal(route.safeRange('items=0-3'), null);
+
   let res = response();
   await route.handle({ method:'POST', headers:{}, query:{} }, res, { authorized:async () => true });
   assert.equal(res.statusCode, 405);
@@ -54,6 +62,15 @@ function response() {
     id:'upk-test', type:'pdf', blobUrl:'https://store.private.blob.vercel-storage.com/test.pdf',
     contentSha256:'a'.repeat(64), bytes:4,
   };
+
+  res = response();
+  await route.handle(
+    { method:'GET', headers:{ range:'bytes=0-3,8-9' }, query:{ id:'upk-test' } },
+    res,
+    { authorized:async () => true, safeDocument:() => document },
+  );
+  assert.equal(res.statusCode, 416);
+
   res = response();
   await route.handle(
     { method:'GET', headers:{ 'if-none-match':`"${'a'.repeat(64)}"` }, query:{ id:'upk-test' } },
@@ -87,6 +104,19 @@ function response() {
   assert.equal(seen.options.access, 'private');
   assert.equal(res.getHeader('content-range'), 'bytes 0-3/10');
   assert.equal(res.getHeader('cache-control'), 'private, no-cache, max-age=0');
+
+  res = response();
+  await route.handle(
+    { method:'GET', headers:{}, query:{ id:'upk-test' } },
+    res,
+    {
+      authorized:async () => true,
+      safeDocument:() => document,
+      getBlob:async () => { throw new Error('upstream unavailable'); },
+    },
+  );
+  assert.equal(res.statusCode, 502);
+
   console.log('Protocol document route tests passed.');
 })().catch(error => {
   console.error(error);
