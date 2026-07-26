@@ -1,6 +1,8 @@
 (() => {
   'use strict';
 
+  window.DRUG_DATA_PARTS = Array.isArray(window.DRUG_DATA_PARTS) ? window.DRUG_DATA_PARTS : [];
+
   const FIELDS = [
     'Nr rendor','PDID','ProtocolNo','Emri tregtar','Substanca aktive','ATC Code',
     'Klasa / Çka është','Përdorimi (fjalë kyçe)','Fortësia','Forma farmaceutike',
@@ -61,6 +63,17 @@
     return result;
   }
 
+  function parseAssignment(source, name, fallback = null) {
+    const prefix = `window.${name}`;
+    const line = String(source || '').split(/\r?\n/).find(item => item.trim().startsWith(prefix));
+    if (!line) return fallback;
+    const equals = line.indexOf('=');
+    if (equals < 0) return fallback;
+    const serialized = line.slice(equals + 1).trim().replace(/;+\s*$/, '');
+    try { return JSON.parse(serialized); }
+    catch { throw new Error(`Payload-i i regjistrit ka fushë të pavlefshme: ${name}.`); }
+  }
+
   async function decodeParts() {
     if (!Array.isArray(window.DRUG_DATA_PARTS) || !window.DRUG_DATA_PARTS.length) return [];
     const encoded = window.DRUG_DATA_PARTS.join('');
@@ -71,10 +84,17 @@
   }
 
   async function fetchParts() {
-    const response = await fetch('/api/registry?fallback=1&classification=1&bridge=4', { cache: 'no-store' });
+    const response = await fetch('/api/registry?fallback=1&classification=1&bridge=5', {
+      cache:'no-store',
+      credentials:'same-origin',
+      headers:{ Accept:'application/javascript' },
+    });
     if (!response.ok) throw new Error(`Databaza nuk u ngarkua (${response.status}).`);
-    window.DRUG_DATA_PARTS = [];
-    (0, eval)(await response.text());
+    const source = await response.text();
+    const parts = parseAssignment(source, 'DRUG_DATA_PARTS', []);
+    if (!Array.isArray(parts) || !parts.length) throw new Error('Regjistri nuk ktheu pjesë të lexueshme.');
+    window.DRUG_DATA_PARTS = parts;
+    window.REGISTRY_QUALITY_META = parseAssignment(source, 'REGISTRY_QUALITY_META', null);
   }
 
   function auditRows(rows) {
