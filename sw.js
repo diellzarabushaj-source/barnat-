@@ -2,12 +2,15 @@
 'use strict';
 
 const VERSION = 'production-audit-v1';
-const STATIC_CACHE = `medindex-static-${VERSION}`;
-const PAGE_CACHE = `medindex-pages-${VERSION}`;
-const PRIVATE_CACHE = `medindex-private-${VERSION}`;
-const DOCUMENT_CACHE = `medindex-documents-${VERSION}`;
+const CACHE_EPOCH = 'fresh-navigation-20260726-1';
+const CACHE_NAMESPACE = `${VERSION}-${CACHE_EPOCH}`;
+const STATIC_CACHE = `medindex-static-${CACHE_NAMESPACE}`;
+const PAGE_CACHE = `medindex-pages-${CACHE_NAMESPACE}`;
+const PRIVATE_CACHE = `medindex-private-${CACHE_NAMESPACE}`;
+const DOCUMENT_CACHE = `medindex-documents-${CACHE_NAMESPACE}`;
 const ALL_CACHES = [STATIC_CACHE, PAGE_CACHE, PRIVATE_CACHE, DOCUMENT_CACHE];
 const NETWORK_TIMEOUT_MS = 4200;
+const STATIC_NETWORK_TIMEOUT_MS = 3000;
 const MAX_DOCUMENTS = 16;
 const MAX_QUERY_RESPONSES = 40;
 
@@ -19,17 +22,21 @@ const APP_SHELL = [
   '/performance.css', '/clean-medindex-ui.css', '/tailadmin-medindex.css',
   '/tailadmin-professional.css', '/medical-hub.css', '/clinical-density.css',
   '/classification.css', '/classification-nav-fix.css', '/registry-quality.css',
-  '/clinical-reference.css', '/analizat-polish.css', '/recetat.css',
-  '/recetat-audit.css', '/signature-templates.css', '/login.css',
-  '/tailadmin-shell.js', '/tailadmin-shell-legacy.js', '/tailadmin-professional.js', '/mobile-experience.js', '/offline-runtime.js',
-  '/clinical-workflow.js', '/local-registry.js', '/local-registry-fidelity.js', '/auth-client.js',
+  '/clinical-reference.css', '/analizat-polish.css', '/analizat-tailwind-cards-v2.css',
+  '/icd-premium-cards.css', '/icd-clinical-workspace.css', '/icd-tailadmin-cards-v2.css',
+  '/recetat.css', '/recetat-audit.css', '/signature-templates.css', '/login.css',
+  '/tailadmin-shell.js', '/tailadmin-shell-legacy.js', '/tailadmin-professional.js',
+  '/mobile-experience.js', '/offline-runtime.js', '/clinical-workflow.js',
+  '/local-registry.js', '/local-registry-fidelity.js', '/auth-client.js',
   '/app-stability.js', '/app.js', '/ui-enhancements.js', '/name-display.js',
   '/medical-icons.js', '/section-icons.js', '/classification-icons.js',
   '/classification-data.js', '/classification-registry-bridge.js',
   '/classification-v3.js', '/classification-audit-view.js',
   '/classification-info-v3.js', '/icd-data.js', '/icd.js',
-  '/lab-sheet-data.js', '/analizat.js', '/clinical-dialog.js',
-  '/dosage-engine.js', '/dozologjia.js', '/protokollet.js',
+  '/icd-premium-cards.js', '/icd-clinical-workspace.js',
+  '/icd-clinical-style-loader.js', '/icd-tailadmin-card-style-loader.js',
+  '/lab-sheet-data.js', '/analizat.js', '/analizat-clinical-style-loader.js',
+  '/clinical-dialog.js', '/dosage-engine.js', '/dozologjia.js', '/protokollet.js',
   '/prescription-format-core.js', '/signature-templates.js',
   '/recetat.js', '/login.js', '/data/registry-quality.js',
   '/data/protocols.json', '/app-parts/part-01.txt',
@@ -41,6 +48,7 @@ const PRIVATE_DATA_PATHS = new Set([
   '/api/registry', '/data/registry-data.js', '/api/dosage', '/api/icd'
 ]);
 const QUERY_DATA_PATHS = new Set(['/api/drug-search']);
+const SAFE_AUTO_REFRESH_PATHS = new Set(['/icd.html', '/analizat.html']);
 
 function sameOrigin(url) {
   return url.origin === self.location.origin;
@@ -157,6 +165,17 @@ async function clearPrivateData() {
   await broadcast({ type: 'MEDINDEX_CACHE_STATUS', state: 'cleared' });
 }
 
+async function refreshSafeClinicalPages() {
+  const windows = await self.clients.matchAll({ type: 'window', includeUncontrolled: true });
+  await Promise.all(windows.map(async client => {
+    try {
+      const url = new URL(client.url);
+      if (url.origin !== self.location.origin || !SAFE_AUTO_REFRESH_PATHS.has(url.pathname)) return;
+      await client.navigate(client.url);
+    } catch {}
+  }));
+}
+
 self.addEventListener('install', event => {
   event.waitUntil((async () => {
     const result = await precacheShell();
@@ -166,6 +185,7 @@ self.addEventListener('install', event => {
       state: result.failed.length ? 'shell-limited' : 'shell-ready',
       cached: result.cached,
       failed: result.failed.length,
+      cacheEpoch: CACHE_EPOCH,
     });
   })());
 });
@@ -177,6 +197,8 @@ self.addEventListener('activate', event => {
       .filter(name => name.startsWith('medindex-') && !ALL_CACHES.includes(name))
       .map(name => caches.delete(name)));
     await self.clients.claim();
+    await broadcast({ type: 'MEDINDEX_SHELL_UPDATED', cacheEpoch: CACHE_EPOCH });
+    await refreshSafeClinicalPages();
   })());
 });
 
@@ -209,31 +231,28 @@ async function navigationResponse(event) {
   const url = new URL(request.url);
   const key = navigationKey(url);
   const cache = await caches.open(PAGE_CACHE);
+
+  const fresh = await refreshPage(request, key);
+  if (fresh) return cloneWithHeader(fresh, 'X-MedIndex-Cache', 'page-network');
+
   const cached = await cache.match(key) || await caches.match(key, { ignoreSearch: true });
-  if (cached) {
-    event.waitUntil(refreshPage(request, key));
-    return cloneWithHeader(cached, 'X-MedIndex-Cache', 'page-hit');
-  }
-  try {
-    const response = await timeoutFetch(request);
-    if (response.ok) await cache.put(key, response.clone());
-    return response;
-  } catch {
-    return await caches.match('/index.html') || await caches.match('/login.html') || Response.error();
-  }
+  if (cached) return cloneWithHeader(cached, 'X-MedIndex-Cache', 'page-hit');
+
+  return await caches.match('/index.html') || await caches.match('/login.html') || Response.error();
 }
 
 async function staticResponse(event) {
   const request = event.request;
-  const cached = await caches.match(request, { ignoreSearch: true });
-  if (cached) {
-    event.waitUntil(fetch(request)
-      .then(response => putIfCacheable(STATIC_CACHE, request, response))
-      .catch(() => null));
-    return cloneWithHeader(cached, 'X-MedIndex-Cache', 'static-hit');
+  try {
+    const fresh = await timeoutFetch(new Request(request, { cache: 'no-cache' }), STATIC_NETWORK_TIMEOUT_MS);
+    if (fresh.ok) await putIfCacheable(STATIC_CACHE, request, fresh);
+    return cloneWithHeader(fresh, 'X-MedIndex-Cache', 'static-network');
+  } catch {
+    const exact = await caches.match(request);
+    if (exact) return cloneWithHeader(exact, 'X-MedIndex-Cache', 'static-hit');
+    const pathFallback = await caches.match(requestFor(new URL(request.url).pathname));
+    return pathFallback ? cloneWithHeader(pathFallback, 'X-MedIndex-Cache', 'static-hit') : Response.error();
   }
-  const response = await fetch(request);
-  return putIfCacheable(STATIC_CACHE, request, response);
 }
 
 async function refreshPrivate(request, key) {
