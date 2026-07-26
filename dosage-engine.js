@@ -84,9 +84,12 @@
     const ageMonths = Number(patient.ageMonths);
     const weightKg = Number(patient.weightKg);
     const missing = [];
-    if (!Number.isFinite(ageMonths) || ageMonths < 0) missing.push('ageMonths');
-    if ((Number.isFinite(regimen?.mgPerKg) || Number.isFinite(regimen?.minWeightKg) || Number.isFinite(regimen?.maxWeightKg))
-      && (!Number.isFinite(weightKg) || weightKg <= 0)) missing.push('weightKg');
+    const ageRequired = Number.isFinite(regimen?.minAgeMonths) || Number.isFinite(regimen?.maxAgeMonths);
+    const weightRequired = Number.isFinite(regimen?.mgPerKg)
+      || Number.isFinite(regimen?.minWeightKg)
+      || Number.isFinite(regimen?.maxWeightKg);
+    if (ageRequired && (!Number.isFinite(ageMonths) || ageMonths < 0)) missing.push('ageMonths');
+    if (weightRequired && (!Number.isFinite(weightKg) || weightKg <= 0)) missing.push('weightKg');
     if (missing.length) return { eligible:false, missing };
     const withinAge = (!Number.isFinite(regimen.minAgeMonths) || ageMonths >= regimen.minAgeMonths)
       && (!Number.isFinite(regimen.maxAgeMonths) || ageMonths <= regimen.maxAgeMonths);
@@ -115,6 +118,87 @@
     }
     if (matches.length === 1) return { status:'auto', matchKey:buildMatchKey(drug), regimen:matches[0], matches };
     return { status:'choose-indication', matchKey:buildMatchKey(drug), matches };
+  }
+
+  function decimal(value, digits = 2) {
+    if (!Number.isFinite(value)) return null;
+    return Number(value.toFixed(digits));
+  }
+
+  function concentrationMgPerMl(value) {
+    const match = text(value).replace(/,/g, '.').match(/(\d+(?:\.\d+)?)\s*mg\s*\/\s*(\d+(?:\.\d+)?)\s*m[lL]\b/);
+    if (!match) return null;
+    const mg = Number(match[1]);
+    const ml = Number(match[2]);
+    return Number.isFinite(mg) && Number.isFinite(ml) && mg > 0 && ml > 0 ? mg / ml : null;
+  }
+
+  function calculatePediatricDose(regimen, patient = {}) {
+    const eligibility = pediatricEligibility(regimen, patient);
+    if (eligibility.missing?.length) return { status:'needs-patient-data', missing:eligibility.missing };
+    if (!eligibility.eligible) return { status:'out-of-range' };
+
+    const weightKg = Number(patient.weightKg);
+    const mgPerKg = Number(regimen?.mgPerKg);
+    const fixedDoseMg = Number(regimen?.fixedDoseMg);
+    const fixedVolumeMl = Number(regimen?.fixedVolumeMl);
+    const dosesPerDay = Number(regimen?.dosesPerDay);
+    const maxSingleMg = Number(regimen?.maxSingleMg);
+    const max24hMg = Number(regimen?.max24hMg);
+    const basis = fold(regimen?.basis);
+    const caps = [];
+    let perDoseMg = null;
+    let dailyTotalMg = null;
+    let perDoseMl = null;
+
+    if (Number.isFinite(fixedDoseMg) && fixedDoseMg > 0) {
+      perDoseMg = fixedDoseMg;
+    } else if (Number.isFinite(mgPerKg) && mgPerKg > 0 && Number.isFinite(weightKg) && weightKg > 0) {
+      if (/dit/.test(basis)) {
+        dailyTotalMg = weightKg * mgPerKg;
+        if (Number.isFinite(max24hMg) && max24hMg > 0 && dailyTotalMg > max24hMg) {
+          dailyTotalMg = max24hMg;
+          caps.push('max24h');
+        }
+        if (Number.isFinite(dosesPerDay) && dosesPerDay > 0) perDoseMg = dailyTotalMg / dosesPerDay;
+      } else if (/doz|marr/.test(basis)) {
+        perDoseMg = weightKg * mgPerKg;
+      } else {
+        return { status:'manual', reason:'ambiguous-basis' };
+      }
+    } else if (Number.isFinite(fixedVolumeMl) && fixedVolumeMl > 0) {
+      perDoseMl = fixedVolumeMl;
+    } else {
+      return { status:'manual', reason:'no-structured-rule' };
+    }
+
+    if (Number.isFinite(perDoseMg) && Number.isFinite(maxSingleMg) && maxSingleMg > 0 && perDoseMg > maxSingleMg) {
+      perDoseMg = maxSingleMg;
+      caps.push('maxSingle');
+    }
+
+    if (Number.isFinite(perDoseMg) && !Number.isFinite(dailyTotalMg) && Number.isFinite(dosesPerDay) && dosesPerDay > 0) {
+      dailyTotalMg = perDoseMg * dosesPerDay;
+    }
+    if (Number.isFinite(dailyTotalMg) && Number.isFinite(max24hMg) && max24hMg > 0 && dailyTotalMg > max24hMg) {
+      dailyTotalMg = max24hMg;
+      caps.push('max24h');
+      if (Number.isFinite(dosesPerDay) && dosesPerDay > 0) perDoseMg = Math.min(perDoseMg, max24hMg / dosesPerDay);
+    }
+
+    if (!Number.isFinite(perDoseMl) && Number.isFinite(perDoseMg)) {
+      const mgPerMl = concentrationMgPerMl(regimen?.concentration);
+      if (Number.isFinite(mgPerMl) && mgPerMl > 0) perDoseMl = perDoseMg / mgPerMl;
+    }
+
+    return {
+      status:'calculated',
+      perDoseMg:decimal(perDoseMg),
+      dailyTotalMg:decimal(dailyTotalMg),
+      perDoseMl:decimal(perDoseMl),
+      dosesPerDay:Number.isFinite(dosesPerDay) && dosesPerDay > 0 ? dosesPerDay : null,
+      cappedBy:[...new Set(caps)],
+    };
   }
 
   function prescriptionTransfer(drug, regimen = null, population = 'adult') {
@@ -163,6 +247,7 @@
     pediatricEligibility,
     exactMatches,
     decideMatch,
+    calculatePediatricDose,
     prescriptionTransfer,
   };
 });
