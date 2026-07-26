@@ -12,6 +12,7 @@
   <link rel="preload" href="dozologjia-verified-cards.css?v=20260726-1" as="style">
   <link rel="preload" href="dozologjia-simple-workflow.css?v=20260726-1" as="style">
   <link rel="preload" href="dozologjia-safety-enhancements.css?v=20260726-1" as="style">
+  <link rel="preload" href="dozologjia-clinical-readiness.css?v=20260726-1" as="style">
   <link rel="stylesheet" href="tailadmin-professional.css?v=20260724-1" data-tailadmin-professional-css>
   <script src="tailadmin-shell.js?v=production-audit-v1" defer></script>
   <script src="tailadmin-professional.js?v=production-audit-v1" defer></script>
@@ -71,9 +72,16 @@
   <script src="auth-client.js?v=production-audit-v1" defer></script>
   <script src="dozologjia.js?v=20260726-3" defer></script>
   <script src="dozologjia-safety-enhancements.js?v=20260726-1" defer></script>
+  <script src="dozologjia-clinical-readiness.js?v=20260726-1" defer></script>
   <script src="app-stability.js?v=20260724-2" defer></script>
   <script>
-    (()=>{const id='dozologjiaSafetyStyles';let link=document.getElementById(id);if(!link){link=document.createElement('link');link.id=id;link.rel='stylesheet';link.href='/dozologjia-safety-enhancements.css?v=20260726-1';document.head.appendChild(link)}})();
+    (()=>{
+      const styles=[
+        ['dozologjiaSafetyStyles','/dozologjia-safety-enhancements.css?v=20260726-1'],
+        ['dozologjiaReadinessStyles','/dozologjia-clinical-readiness.css?v=20260726-1']
+      ];
+      styles.forEach(([id,href])=>{let link=document.getElementById(id);if(!link){link=document.createElement('link');link.id=id;link.rel='stylesheet';link.href=href;document.head.appendChild(link)}});
+    })();
   </script>
 </body>
 </html>
