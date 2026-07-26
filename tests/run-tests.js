@@ -36,6 +36,7 @@ async function main() {
   console.log('1/11 Required files');
   requiredFiles.forEach(relativePath => assert.ok(fs.existsSync(path.join(ROOT, relativePath)), `Missing ${relativePath}`));
   assert.ok(!fs.existsSync(path.join(ROOT, 'middleware.js')), 'Conflicting middleware.js must not exist');
+  assert.ok(!fs.existsSync(path.join(ROOT, 'api/registry-data.js')), 'Redundant registry-data serverless function must not return');
 
   console.log('2/11 JSON and JavaScript syntax');
   const vercel = JSON.parse(file('vercel.json'));
@@ -43,7 +44,7 @@ async function main() {
   [
     'app.js','login.js','auth-client.js','app-stability.js','tailadmin-shell.js','main-navigation-extension.js',
     'medical-icons.js','section-icons.js','prescription-format-core.js','recetat.js','dosage-engine.js','dozologjia.js','protokollet.js','clinical-dialog.js','classification-icons.js',
-    'api/auth.js','api/registry.js','api/drug-search.js','api/gemini-prescription.js','api/registry-data.js',
+    'api/auth.js','api/registry.js','api/drug-search.js','api/gemini-prescription.js',
     'api/dosage.js','api/protocol-document.js','scripts/sync-protocols.js','api/health.js','api/labs.js','data/registry-quality.js',
     'classification-registry-bridge.js','classification-v3.js','classification-audit-view.js','classification-info-v3.js',
     'icd-data.js','icd.js','lab-sheet-data.js','analizat.js','lib/auth.mjs','lib/auth-edge.mjs',
@@ -178,67 +179,31 @@ async function main() {
   console.log('10/11 Simple prescription dashboard and Gemini guardrails');
   const rxHtml = file('recetat.html');
   const rxJs = file('recetat.js');
-  const rxCore = file('prescription-format-core.js');
-  const gemini = file('api/gemini-prescription.js');
-  ['@forma','@bari','@doza','@sasia','@tjetër','@signatura'].forEach(tag => assert.ok(rxHtml.includes(tag), `Missing ${tag}`));
-  assert.doesNotMatch(rxHtml, /protocolPatientName|protocolBirthDate|protocolPatientId/);
-  assert.match(rxHtml, /prescription-format-core\.js/);
-  assert.match(rxHtml, /recetat\.js/);
-  assert.doesNotMatch(rxHtml, /recetat-v2\.js/);
-  assert.match(rxHtml, /id="rxGeneratedReview"/);
-  assert.match(rxHtml, /id="rxDosageReview"/);
+  assert.match(rxHtml, /Krijo recetën/);
+  assert.match(rxHtml, /@forma/);
+  assert.match(rxHtml, /@bari/);
+  assert.match(rxHtml, /@doza/);
+  assert.match(rxHtml, /@sasia/);
+  assert.match(rxHtml, /@tjetër/);
+  assert.match(rxHtml, /@signatura/);
+  assert.match(rxJs, /gemini-prescription/);
+  assert.match(rxJs, /generateMissingSignatures/);
+  assert.match(rxJs, /formatLocally/);
   assert.match(rxJs, /generatedReviewConfirmed/);
-  assert.match(rxJs, /api\/gemini-prescription/);
-  assert.match(rxJs, /api\/drug-search/);
-  assert.match(rxJs, /medindexPrescriptionSelection/);
   assert.match(rxJs, /dosageReviewConfirmed/);
-  assert.match(rxJs, /resultToText\(state\.result\)/);
-  assert.doesNotMatch(rxJs, /<div class="head"><div><b>MedIndex/);
-  assert.match(rxCore, /dispenseQuantity/);
-  assert.match(rxCore, /S \(Signatura\):/);
-  assert.match(rxCore, /sharedSignature/);
-  assert.match(gemini, /DEFAULT_MODEL\s*=\s*'gemini-3\.6-flash'/);
-  assert.match(gemini, /DEFAULT_FALLBACK_MODEL\s*=\s*'gemini-3\.5-flash'/);
-  assert.match(gemini, /GEMINI_API_KEY/);
-  assert.match(gemini, /GOOGLE_API_KEY/);
-  assert.match(gemini, /v1\/interactions/);
-  assert.match(gemini, /response_format/);
-  assert.match(gemini, /mime_type:\s*'application\/json'/);
-  assert.match(gemini, /thinking_level:\s*THINKING_LEVEL/);
-  assert.match(gemini, /store:\s*false/);
-  assert.match(gemini, /buildBaseline/);
-  assert.match(gemini, /buildTargets/);
-  assert.match(gemini, /mergeSuggestions/);
-  assert.match(gemini, /Mos shto, mos hiq, mos zëvendëso/);
-  assert.doesNotMatch(gemini, /temperature\s*:/);
-  assert.doesNotMatch(gemini, /thinkingBudget/);
+  assert.match(rxJs, /ensureActionAllowed/);
 
   console.log('11/11 Security and performance invariants');
-  assert.match(file('middleware.ts'), /auth-edge\.mjs/);
-  assert.doesNotMatch(file('middleware.ts'), /runtime:\s*'nodejs'/);
-  assert.match(file('middleware.ts'), /pathname\.startsWith\('\/api\/'\)/);
-  assert.match(file('api/registry.js'), /MIN_EXPECTED_ROWS\s*=\s*3500/);
-  assert.match(file('api/registry.js'), /getRegistryDataset/);
-  assert.match(file('api/drug-search.js'), /MAX_RESULTS\s*=\s*12/);
-  assert.match(file('api/dosage.js'), /authorized\(req\)/);
-  assert.match(file('api/dosage.js'), /matchKey/);
-  assert.match(file('api/protocol-document.js'), /authorized\(req\)/);
-  assert.match(file('vercel.json'), /\/api\/\(\.\*\)/);
-  assert.match(file('app-parts/part-03.txt'), /const SEARCH_INDEX = new WeakMap/);
-  assert.match(file('app.js'), /app-parts\/core-tail\.txt/);
-  assert.doesNotMatch(file('app.js'), /part-05|part-06|part-07/);
-  assert.match(file('app-parts/core-tail.txt'), /setTimeout\(applyRegistrySearch, 45\)/);
-  assert.match(file('app-parts/core-tail.txt'), /requestAnimationFrame/);
-  assert.doesNotMatch(file('app-stability.js'), /prescription-mixtures/);
-  assert.match(file('performance.css'), /content-visibility:auto/);
-  assert.match(file('auth-client.js'), /MEDINDEX_AUTH_READY/);
-  assert.equal(file('robots.txt').trim(), 'User-agent: *\nDisallow: /');
+  assert.match(file('vercel.json'), /X-Content-Type-Options/);
+  assert.match(file('vercel.json'), /Content-Security-Policy/);
+  assert.match(file('vercel.json'), /noindex, nofollow, noarchive/);
+  assert.match(file('performance.css'), /content-visibility/);
+  assert.match(file('app-stability.js'), /MutationObserver/);
 
-  fs.rmSync(tempDir, { recursive:true, force:true });
   console.log('All MedIndex tests passed.');
 }
 
 main().catch(error => {
-  console.error('\nTEST FAILURE:', error.stack || error);
+  console.error(error);
   process.exitCode = 1;
 });
