@@ -2,10 +2,10 @@
   "schemaVersion": 1,
   "sourceSheetId": "1T7XsfkXLQfEomFL4DmXoA8PheiR6s3Qmu36hTqklOMo",
   "sourceTab": "KARTELA_BARNAVE",
-  "completedThroughRegistryNumber": 500,
+  "completedThroughRegistryNumber": 600,
   "lastCompletedBatch": {
-    "from": 461,
-    "to": 500,
+    "from": 501,
+    "to": 600,
     "updatedAt": "2026-07-26",
     "scope": [
       "Doza e plotë — Të rritur",
@@ -13,7 +13,7 @@
       "Doza e plotë — Fëmijë",
       "Rruga — Fëmijë"
     ],
-    "verifiedForPublication": 40,
+    "verifiedForPublication": 100,
     "heldForAdditionalReview": 0
   },
   "rules": {
