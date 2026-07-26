@@ -42,6 +42,18 @@ assert.match(stability, /getAttribute\('aria-expanded'\) !== value/, 'aria discl
 assert.match(stability, /#rxDosageChooser/, 'dosage chooser must participate in focus management');
 assert.match(stability, /clearPrivateClientCaches/, 'private client caches must clear on logout');
 assert.doesNotMatch(stability, /let errorBannerTimer/, 'single shared banner timer must not return');
+assert.equal((stability.match(/new MutationObserver/g) || []).length, 1, 'global runtime must use one consolidated DOM observer');
+
+const auth = read('auth-client.js');
+[
+  'barnat-registry-parts-v4',
+  'barnat-registry-cached-at-v4',
+  'regjistriBarnave_protokollet_v1',
+  'medindexPrescriptionSelection',
+  'medindex-prescriptions-v1',
+].forEach(key => assert.ok(auth.includes(key), `logout cleanup is missing ${key}`));
+assert.match(auth, /CLEAR_PRIVATE_DATA/, 'logout must clear service-worker private caches');
+assert.match(auth, /clearSensitiveWebStorage/, 'logout storage cleanup must remain centralized');
 
 const worker = read('sw.js');
 assert.match(worker, /site-deep-audit-20260726-1/, 'service-worker cache epoch is stale');
