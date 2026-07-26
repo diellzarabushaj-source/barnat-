@@ -2,11 +2,12 @@
   'use strict';
 
   const RETURN_KEY = 'medindex_return_after_login';
-  const OFFLINE_LEASE_KEY = 'medindex_offline_lease_v1';
+  const OFFLINE_LEASE_KEY = 'medindex_offline_lease_v2';
+  const LEGACY_OFFLINE_LEASE_KEYS = ['medindex_offline_lease_v1'];
   const OFFLINE_RUNTIME_SRC = '/offline-runtime.js?v=production-audit-v1';
   const PROFESSIONAL_RUNTIME_SRC = '/tailadmin-professional.js?v=production-audit-v1';
   const PROFESSIONAL_VERSION = 'production-audit-v1';
-  const MAX_OFFLINE_LEASE_MS = 12 * 60 * 60 * 1000;
+  const MAX_OFFLINE_LEASE_MS = 8 * 60 * 60 * 1000;
   const AUTH_TIMEOUT_MS = 3200;
   const originalFetch = window.fetch.bind(window);
   let logoutObserver = null;
@@ -48,11 +49,16 @@
       : '/index.html';
   }
 
+  function removeLegacyOfflineLeases() {
+    try { LEGACY_OFFLINE_LEASE_KEYS.forEach(key => localStorage.removeItem(key)); } catch {}
+  }
+
   function readOfflineLease() {
+    removeLegacyOfflineLeases();
     try {
       const lease = JSON.parse(localStorage.getItem(OFFLINE_LEASE_KEY) || 'null');
       const now = Date.now();
-      if (!lease || lease.version !== 1) return null;
+      if (!lease || lease.version !== 2 || lease.hardened !== true) return null;
       if (!Number.isFinite(lease.verifiedAt) || !Number.isFinite(lease.expiresAt)) return null;
       if (lease.verifiedAt > now + 5 * 60 * 1000) return null;
       if (lease.expiresAt <= now || lease.expiresAt - lease.verifiedAt > MAX_OFFLINE_LEASE_MS) return null;
@@ -61,15 +67,27 @@
   }
 
   function saveOfflineLease(payload = {}) {
-    const sessionHours = Math.min(12, Math.max(1, Number(payload.sessionHours || 8)));
+    if (payload.authenticated !== true || payload.hardened !== true) return null;
+    const sessionHours = Math.min(8, Math.max(1, Number(payload.sessionHours || 8)));
     const verifiedAt = Date.now();
-    const lease = { version:1, verifiedAt, expiresAt:verifiedAt + sessionHours * 60 * 60 * 1000 };
-    try { localStorage.setItem(OFFLINE_LEASE_KEY, JSON.stringify(lease)); } catch {}
+    const lease = {
+      version:2,
+      hardened:true,
+      verifiedAt,
+      expiresAt:verifiedAt + sessionHours * 60 * 60 * 1000,
+    };
+    try {
+      localStorage.setItem(OFFLINE_LEASE_KEY, JSON.stringify(lease));
+      removeLegacyOfflineLeases();
+    } catch {}
     return lease;
   }
 
   function clearOfflineLease() {
-    try { localStorage.removeItem(OFFLINE_LEASE_KEY); } catch {}
+    try {
+      localStorage.removeItem(OFFLINE_LEASE_KEY);
+      LEGACY_OFFLINE_LEASE_KEYS.forEach(key => localStorage.removeItem(key));
+    } catch {}
   }
 
   function ensureProfessionalRuntime() {
@@ -129,6 +147,7 @@
   function clearSensitiveWebStorage() {
     const localKeys = [
       OFFLINE_LEASE_KEY,
+      ...LEGACY_OFFLINE_LEASE_KEYS,
       'barnat-registry-parts-v2', 'barnat-registry-cached-at-v2',
       'barnat-registry-parts-v3', 'barnat-registry-cached-at-v3',
       'barnat-registry-parts-v4', 'barnat-registry-cached-at-v4',
@@ -232,7 +251,7 @@
     if (!lease) return false;
     document.documentElement.classList.add('auth-ready', 'auth-offline');
     document.documentElement.classList.remove('auth-checking');
-    settleAuth(true, { offline:true, reason, expiresAt:lease.expiresAt });
+    settleAuth(true, { offline:true, hardened:true, reason, expiresAt:lease.expiresAt });
     installLogoutWhenReady();
     ensureProfessionalRuntime();
     startOfflineRuntime();
@@ -240,15 +259,24 @@
     return true;
   }
 
+  function configurationUnavailable(response, payload) {
+    return response.status === 503 && (payload.code === 'AUTH_NOT_CONFIGURED'
+      || payload.hardened === false
+      || payload.accessConfigured === false
+      || payload.sessionConfigured === false);
+  }
+
   async function revalidateOnlineSession() {
     if (!document.documentElement.classList.contains('auth-offline') || !navigator.onLine) return;
     try {
       const response = await authRequest();
       const payload = await response.json().catch(() => ({}));
-      if (response.status === 401 || response.status === 403 || !response.ok || !payload.authenticated) return showExpired();
-      saveOfflineLease(payload);
+      if (configurationUnavailable(response, payload)) return goToLogin('auth-not-configured');
+      if (response.status === 401 || response.status === 403 || !response.ok || !payload.authenticated || payload.hardened !== true) return showExpired();
+      const lease = saveOfflineLease(payload);
+      if (!lease) return showExpired();
       document.documentElement.classList.remove('auth-offline');
-      window.dispatchEvent(new CustomEvent('medindex:auth-revalidated', { detail:{ authenticated:true } }));
+      window.dispatchEvent(new CustomEvent('medindex:auth-revalidated', { detail:{ authenticated:true, hardened:true } }));
       window.MedIndexOffline?.warm?.();
     } catch {}
   }
@@ -276,15 +304,17 @@
     try {
       const response = await authRequest();
       const payload = await response.json().catch(() => ({}));
+      if (configurationUnavailable(response, payload)) return goToLogin('auth-not-configured');
       if (response.status === 401 || response.status === 403) return goToLogin('unauthenticated');
-      if (!response.ok || !payload.authenticated) {
+      if (!response.ok || !payload.authenticated || payload.hardened !== true) {
         if (response.status >= 500 && activateOfflineLease('server-unavailable')) return;
         return goToLogin('unauthenticated');
       }
       const lease = saveOfflineLease(payload);
+      if (!lease) return goToLogin('unhardened-session');
       document.documentElement.classList.add('auth-ready');
       document.documentElement.classList.remove('auth-checking', 'auth-offline');
-      settleAuth(true, { ...payload, offline:false, expiresAt:lease.expiresAt });
+      settleAuth(true, { ...payload, hardened:true, offline:false, expiresAt:lease.expiresAt });
       installLogoutWhenReady();
       ensureProfessionalRuntime();
       startOfflineRuntime();
