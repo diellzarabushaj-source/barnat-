@@ -23,9 +23,9 @@ assert.equal(byId('inr').reference, 'Pacient pa terapi: 0.8–1.3; Pacient me te
 assert.equal(byId('syphilis-rpr').reference, 'Negative');
 assert.equal(byId('urine-appearance').reference, 'Nuk është shënuar në formular');
 
-const apiSource = fs.readFileSync(path.join(ROOT, 'api/labs.js'), 'utf8');
-assert.doesNotMatch(apiSource, /test\.id === ['"]uric-acid['"]/);
-assert.match(apiSource, /preserve-exact-transcription/);
-assert.match(apiSource, /X-MedIndex-Lab-Unit-Policy/);
+assert.ok(!fs.existsSync(path.join(ROOT, 'api/labs.js')), 'stale laboratory API must not expose a second contradictory dataset');
+const labsHtml = fs.readFileSync(path.join(ROOT, 'analizat.html'), 'utf8');
+assert.match(labsHtml, /lab-sheet-data\.js/, 'current laboratory UI must use the audited Sheet dataset');
+assert.doesNotMatch(labsHtml, /api\/labs|lab-data\.js/, 'current laboratory UI must not load the archived photo dataset');
 
 console.log('Kosovo laboratory photo-source preservation test passed.');
