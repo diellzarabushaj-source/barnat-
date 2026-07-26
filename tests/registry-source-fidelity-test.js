@@ -34,13 +34,15 @@ assert.match(fallback.rows[0]['Si të shënohet në recetë'], /Paracetamol/i);
 const root = path.resolve(__dirname, '..');
 const local = fs.readFileSync(path.join(root, 'local-registry-fidelity.js'), 'utf8');
 for (const marker of [
-  'REGISTRY_SCHEMA_VERSION', 'registry-prescription-master-v2', 'packagingSummary', 'prescriptionLine',
+  'REGISTRY_SCHEMA_VERSION', 'registry-prescription-master-v3-no-dynamic-code', 'packagingSummary', 'prescriptionLine',
   'sheetPrescriptionNotation:clean(row.__sheetPrescriptionNotation)',
   "prescriptionNotation:[prescriptionLine, packagingSummary]",
   'record.version !== REGISTRY_SCHEMA_VERSION',
+  'parsePayload',
 ]) {
   assert.ok(local.includes(marker), `local registry missing ${marker}`);
 }
+assert.doesNotMatch(local, /Function\s*\(|eval\s*\(/, 'local registry must parse payloads without dynamic code execution');
 const online = fs.readFileSync(path.join(root, 'api/drug-search.js'), 'utf8');
 assert.match(online, /sheetPrescriptionNotation:clean\(row\.__sheetPrescriptionNotation\)/);
 assert.match(online, /const protocolNo = clean\(row\.ProtocolNo\)/);
@@ -48,7 +50,7 @@ assert.match(online, /\$\{pdid\}\|\$\{protocolNo\}\|\$\{tradeName\}\|\$\{strengt
 assert.match(online, /const packaging = normalize\(row\['Madhësia e paketimit'\]\)/);
 
 const html = fs.readFileSync(path.join(root, 'recetat.html'), 'utf8');
-assert.match(html, /local-registry-fidelity\.js\?v=registry-prescription-master-v2/);
+assert.match(html, /local-registry-fidelity\.js\?v=registry-prescription-master-v3/);
 const worker = fs.readFileSync(path.join(root, 'sw.js'), 'utf8');
 assert.match(worker, /local-registry-fidelity\.js/);
 console.log('Registry source fidelity, provenance and collision audit passed.');
