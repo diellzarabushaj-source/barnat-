@@ -29,6 +29,7 @@ assert.match(protocols, /seenIds\.has\(id\)/, 'duplicate protocol document ids m
 assert.match(protocols, /\['pdf', 'docx', 'html', 'txt'\]/, 'protocol document types must be allowlisted');
 assert.match(protocols, /contentSha256.*\{64\}/s, 'mirrored protocol documents must validate SHA-256');
 assert.match(protocols, /protocolRetry/, 'protocol manifest failures must offer an explicit retry');
-assert.doesNotMatch(protocols, /href="\$\{esc\(document\.officialUrl\)\}"(?![\s\S]*safeHttpsUrl)/, 'unvalidated protocol URLs must not be rendered');
+assert.match(protocols, /officialUrl:safeHttpsUrl\(document\?\.officialUrl\)/, 'official protocol URLs must be normalized through the HTTPS allowlist');
+assert.match(protocols, /document\.officialUrl\s*\?\s*`<a href="\$\{esc\(document\.officialUrl\)\}"/, 'only the normalized protocol URL may be rendered');
 
 console.log('Clinical cross-page workflow integrity audit passed.');
