@@ -5,6 +5,8 @@ const PUBLIC_PATHS = new Set([
   '/login.html',
   '/login.css',
   '/login.js',
+  '/theme-preload.js',
+  '/tailadmin-medindex.css',
   '/favicon.ico',
   '/robots.txt',
 ]);
