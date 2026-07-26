@@ -28,6 +28,7 @@ for (const page of pages.filter(page => page !== 'login.html')) {
 const jsFiles = [
   'app-stability.js', 'sw.js', 'tailadmin-shell.js', 'tailadmin-shell-legacy.js',
   'mobile-experience.js', 'auth-client.js', 'offline-runtime.js', 'app.js',
+  'theme-preload.js', 'recetat-safe-print.js',
   'icd.js', 'analizat.js', 'dozologjia.js', 'dozologjia-deep-audit.js',
   'protokollet.js', 'recetat.js',
 ];
@@ -56,18 +57,24 @@ assert.match(auth, /CLEAR_PRIVATE_DATA/, 'logout must clear service-worker priva
 assert.match(auth, /clearSensitiveWebStorage/, 'logout storage cleanup must remain centralized');
 
 const worker = read('sw.js');
-assert.match(worker, /site-deep-audit-20260726-1/, 'service-worker cache epoch is stale');
+assert.match(worker, /csp-static-runtime-20260727-1/, 'service-worker cache epoch is stale');
 [
+  'app-runtime.js', 'theme-preload.js', 'recetat-safe-print.js',
   'dozologjia-deep-audit.js', 'dozologjia-clinical-readiness.css',
   'analizat-tailwind-cards-v2.css', 'icd-tailadmin-cards-v2.css',
 ].forEach(asset => assert.ok(worker.includes(asset), `sw.js: ${asset} is missing from the offline shell`));
+assert.doesNotMatch(worker, /app-parts\/part-0[1-4]\.txt|app-parts\/core-tail\.txt/, 'source fragments must not be served as offline runtime assets');
 assert.match(worker, /forms:\[\], adult:\[\], pediatric:\[\], cards:\[\]/, 'offline dosage fallback must preserve the API shape');
 assert.match(worker, /page-network/, 'navigation must remain network-first');
 assert.match(worker, /page-hit/, 'navigation must retain an offline fallback');
+assert.match(worker, /privateCacheStatus/, 'offline readiness must validate exact clinical datasets');
+assert.match(worker, /url\.pathname === '\/api\/gemini-prescription'[\s\S]*geminiResponse/, 'Gemini POST must retain an explicit offline fallback');
 
 const vercel = JSON.parse(read('vercel.json'));
 const headers = JSON.stringify(vercel.headers);
 assert.doesNotMatch(headers, /unsafe-eval/, 'CSP must not allow unsafe-eval');
+assert.match(headers, /script-src 'self'/, 'CSP must restrict scripts to self');
+assert.match(headers, /script-src-attr 'none'/, 'CSP must block inline event handlers');
 assert.match(headers, /Origin-Agent-Cluster/, 'origin isolation header is missing');
 assert.match(headers, /browsing-topics=\(\)/, 'privacy permissions policy is incomplete');
 const scriptStyleHeader = vercel.headers.find(entry => String(entry.source).includes('(css|js)'));
@@ -77,6 +84,7 @@ assert.doesNotMatch(JSON.stringify(scriptStyleHeader.headers), /immutable/, 'non
 
 const pkg = JSON.parse(read('package.json'));
 assert.ok(!pkg.scripts.postbuild, 'production build must not mutate Neon or external datasets');
+assert.match(pkg.scripts['build:runtime'] || '', /build-static-runtime/, 'static registry runtime generation must run explicitly');
 assert.match(pkg.scripts['sync:neon'] || '', /sync-neon-from-sheets/, 'manual Neon sync command must remain available');
 
 console.log('Site-wide deep audit passed.');
