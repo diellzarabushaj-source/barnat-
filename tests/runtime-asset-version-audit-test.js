@@ -13,7 +13,8 @@ for (const page of pages) {
 }
 
 const index = read('index.html');
-assert.match(index, /app\.js\?v=production-audit-v1/, 'index.html: registry bootstrap cache version is stale');
+assert.match(index, /app\.js\?v=production-audit-v2/, 'index.html: hardened registry bootstrap cache version is stale');
+assert.match(index, /<script id="drug-data" type="application\/json">\[\]<\/script>/, 'registry JSON fallback must remain inert');
 
 const auth = read('auth-client.js');
 assert.match(auth, /offline-runtime\.js\?v=production-audit-v1/, 'auth client must load the current offline runtime');
