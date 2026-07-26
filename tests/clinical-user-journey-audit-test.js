@@ -13,37 +13,18 @@ const read = file => fs.readFileSync(path.join(ROOT, file), 'utf8');
 
 const workflow = read('clinical-workflow.js');
 [
-  /miCommandPalette/,
-  /Kërko bar/,
-  /Kërko diagnozën/,
-  /Kërko analizën/,
-  /Kërko dozologjinë/,
-  /medindex_rx_diagnosis_v1/,
-  /Përdore në recetë/,
-  /medindex_rx_autodraft_v1/,
-  /Drafti ruhet automatikisht/,
-  /Eksporto kopjen/,
-  /Importo kopjen/,
-  /Zhbëje/,
-  /beforeunload/,
-  /data-delete-saved/,
-  /data-rx-command="drug"/,
-  /MedIndexLocalRegistry/,
-  /stopImmediatePropagation/,
-  /rxDosageChooser/,
+  /miCommandPalette/, /Kërko bar/, /Kërko diagnozën/, /Kërko analizën/, /Kërko dozologjinë/,
+  /medindex_rx_diagnosis_v1/, /Përdore në recetë/, /medindex_rx_autodraft_v1/,
+  /Drafti ruhet automatikisht/, /Eksporto kopjen/, /Importo kopjen/, /Zhbëje/,
+  /beforeunload/, /data-delete-saved/, /data-rx-command="drug"/, /MedIndexLocalRegistry/,
+  /stopImmediatePropagation/, /rxDosageChooser/,
 ].forEach(pattern => assert.match(workflow, pattern, `Rrjedha klinike mungon ${pattern}`));
 
 const bridge = read('prescription-bridge.js');
 [
-  /medindex_rx_autodraft_v1/,
-  /medindex_rx_diagnosis_v1/,
-  /DRAFT_MAX_AGE/,
-  /rxComposer/,
-  /rxDiagnosis/,
-  /pendingDiagnosis/,
-  /dispatchEvent\(new Event\('input'/,
-  /medindex:clinical-workflow-ready/,
-  /medindex:prescription-context-ready/,
+  /medindex_rx_autodraft_v1/, /medindex_rx_diagnosis_v1/, /DRAFT_MAX_AGE/, /rxComposer/,
+  /rxDiagnosis/, /pendingDiagnosis/, /dispatchEvent\(new Event\('input'/,
+  /medindex:clinical-workflow-ready/, /medindex:prescription-context-ready/,
 ].forEach(pattern => assert.match(bridge, pattern, `Ura ICD→Recetë mungon ${pattern}`));
 const prescriptionHtml = read('recetat.html');
 assert.equal((prescriptionHtml.match(/prescription-bridge\.js/gi) || []).length, 1, 'Ura ICD→Recetë duhet të ngarkohet vetëm një herë');
@@ -53,13 +34,8 @@ assert.ok(prescriptionHtml.indexOf('prescription-bridge.js') < prescriptionHtml.
 
 const localRegistry = read('local-registry.js');
 [
-  /medindex-registry-v1/,
-  /indexedDB\.open/,
-  /DecompressionStream\('gzip'\)/,
-  /\/api\/registry/,
-  /qualityStatus/,
-  /blocked/,
-  /async function search/,
+  /medindex-registry-v1/, /indexedDB\.open/, /DecompressionStream\('gzip'\)/,
+  /\/api\/registry/, /qualityStatus/, /blocked/, /async function search/,
 ].forEach(pattern => assert.match(localRegistry, pattern, `Kërkimi lokal mungon ${pattern}`));
 assert.doesNotMatch(localRegistry, /\/api\/drug-search/, 'Kërkimi lokal nuk duhet të varet nga endpoint-i i kërkimit');
 
@@ -67,9 +43,11 @@ const worker = read('sw.js');
 assert.match(worker, /production-audit-v1/);
 assert.match(worker, /clinical-workflow\.js/);
 assert.match(worker, /local-registry\.js/);
+assert.match(worker, /page-network/);
 assert.match(worker, /page-hit/);
-assert.match(worker, /private-hit/);
-assert.match(worker, /event\.waitUntil\(refreshPage/);
+assert.match(worker, /async function navigationResponse/);
+assert.match(worker, /new Request\(request, \{ cache:'no-store' \}\)/, 'navigation must remain network-first');
+assert.match(worker, /event\.waitUntil\(putIfCacheable\(PAGE_CACHE/, 'fresh navigation responses must be persisted through the fetch event lifetime');
 assert.doesNotMatch(worker, /self\.waitUntil/, 'Service worker nuk duhet të thërrasë self.waitUntil');
 assert.match(worker, /MEDINDEX_AUTH_INVALID/);
 assert.match(worker, /\/api\/drug-search/);
