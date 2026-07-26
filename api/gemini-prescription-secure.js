@@ -1,4 +1,4 @@
-const handler = require('./gemini-prescription.js');
+const handler = require('../lib/gemini-prescription.js');
 
 const WINDOW_MS = 60 * 1000;
 const MAX_REQUESTS = 8;
