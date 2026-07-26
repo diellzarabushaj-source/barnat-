@@ -126,15 +126,30 @@
     });
   }
 
+  function clearSensitiveWebStorage() {
+    const localKeys = [
+      OFFLINE_LEASE_KEY,
+      'barnat-registry-parts-v2', 'barnat-registry-cached-at-v2',
+      'barnat-registry-parts-v3', 'barnat-registry-cached-at-v3',
+      'barnat-registry-parts-v4', 'barnat-registry-cached-at-v4',
+      'regjistriBarnave_protokollet_v1',
+    ];
+    const sessionKeys = [
+      RETURN_KEY,
+      'medindex_labs_cache_v3',
+      'medindexPrescriptionSelection',
+    ];
+    try { localKeys.forEach(key => localStorage.removeItem(key)); } catch {}
+    try { sessionKeys.forEach(key => sessionStorage.removeItem(key)); } catch {}
+    window.MEDINDEX_RUNTIME?.clearPrivateClientCaches?.();
+  }
+
   async function clearPrivateBrowserData() {
-    clearOfflineLease();
-    try {
-      sessionStorage.removeItem(RETURN_KEY);
-      sessionStorage.removeItem('medindex_labs_cache_v3');
-      ['barnat-registry-parts-v2', 'barnat-registry-cached-at-v2', 'barnat-registry-parts-v3', 'barnat-registry-cached-at-v3']
-        .forEach(key => localStorage.removeItem(key));
-    } catch {}
-    await deleteDatabase('medindex-registry-v1');
+    clearSensitiveWebStorage();
+    await Promise.all([
+      deleteDatabase('medindex-registry-v1'),
+      deleteDatabase('medindex-prescriptions-v1'),
+    ]);
     window.MedIndexLocalRegistry?.resetMemory?.();
     try {
       navigator.serviceWorker?.controller?.postMessage({ type:'CLEAR_PRIVATE_DATA' });
