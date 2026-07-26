@@ -2,15 +2,15 @@
 'use strict';
 
 const VERSION = 'production-audit-v1';
-const CACHE_EPOCH = 'fresh-navigation-20260726-1';
+const CACHE_EPOCH = 'site-deep-audit-20260726-1';
 const CACHE_NAMESPACE = `${VERSION}-${CACHE_EPOCH}`;
 const STATIC_CACHE = `medindex-static-${CACHE_NAMESPACE}`;
 const PAGE_CACHE = `medindex-pages-${CACHE_NAMESPACE}`;
 const PRIVATE_CACHE = `medindex-private-${CACHE_NAMESPACE}`;
 const DOCUMENT_CACHE = `medindex-documents-${CACHE_NAMESPACE}`;
 const ALL_CACHES = [STATIC_CACHE, PAGE_CACHE, PRIVATE_CACHE, DOCUMENT_CACHE];
-const NETWORK_TIMEOUT_MS = 4200;
-const STATIC_NETWORK_TIMEOUT_MS = 3000;
+const NETWORK_TIMEOUT_MS = 4500;
+const STATIC_NETWORK_TIMEOUT_MS = 3200;
 const MAX_DOCUMENTS = 16;
 const MAX_QUERY_RESPONSES = 40;
 
@@ -24,6 +24,8 @@ const APP_SHELL = [
   '/classification.css', '/classification-nav-fix.css', '/registry-quality.css',
   '/clinical-reference.css', '/analizat-polish.css', '/analizat-tailwind-cards-v2.css',
   '/icd-premium-cards.css', '/icd-clinical-workspace.css', '/icd-tailadmin-cards-v2.css',
+  '/dozologjia-verified-cards.css', '/dozologjia-simple-workflow.css',
+  '/dozologjia-safety-enhancements.css', '/dozologjia-clinical-readiness.css',
   '/recetat.css', '/recetat-audit.css', '/signature-templates.css', '/login.css',
   '/tailadmin-shell.js', '/tailadmin-shell-legacy.js', '/tailadmin-professional.js',
   '/mobile-experience.js', '/offline-runtime.js', '/clinical-workflow.js',
@@ -36,7 +38,8 @@ const APP_SHELL = [
   '/icd-premium-cards.js', '/icd-clinical-workspace.js',
   '/icd-clinical-style-loader.js', '/icd-tailadmin-card-style-loader.js',
   '/lab-sheet-data.js', '/analizat.js', '/analizat-clinical-style-loader.js',
-  '/clinical-dialog.js', '/dosage-engine.js', '/dozologjia.js', '/protokollet.js',
+  '/clinical-dialog.js', '/dosage-engine.js', '/dozologjia.js',
+  '/dozologjia-deep-audit.js', '/protokollet.js',
   '/prescription-format-core.js', '/signature-templates.js',
   '/recetat.js', '/login.js', '/data/registry-quality.js',
   '/data/protocols.json', '/app-parts/part-01.txt',
@@ -57,42 +60,41 @@ function sameOrigin(url) {
 function timeoutFetch(request, timeoutMs = NETWORK_TIMEOUT_MS) {
   const controller = new AbortController();
   const timer = setTimeout(() => controller.abort(), timeoutMs);
-  return fetch(request, { signal: controller.signal }).finally(() => clearTimeout(timer));
+  return fetch(request, { signal:controller.signal }).finally(() => clearTimeout(timer));
 }
 
 function requestFor(pathOrUrl, options = {}) {
   const url = new URL(pathOrUrl, self.location.origin);
   return new Request(url.href, {
-    method: 'GET',
-    credentials: 'same-origin',
-    headers: options.headers || undefined,
+    method:'GET',
+    credentials:'same-origin',
+    headers:options.headers || undefined,
   });
 }
 
 function navigationKey(url) {
-  const path = url.pathname === '/' ? '/index.html' : url.pathname;
-  return requestFor(path);
+  return requestFor(url.pathname === '/' ? '/index.html' : url.pathname);
 }
 
 function normalizedPrivateKey(url) {
   const path = url.pathname === '/data/registry-data.js' ? '/api/registry' : url.pathname;
   const accept = path === '/api/registry' ? 'application/javascript' : 'application/json';
-  return requestFor(path, { headers: { Accept: accept } });
+  return requestFor(path, { headers:{ Accept:accept } });
 }
 
 function queryKey(url) {
   const normalized = new URL(url.href);
   normalized.hash = '';
   normalized.searchParams.sort();
-  return requestFor(normalized.href, { headers: { Accept: 'application/json' } });
+  return requestFor(normalized.href, { headers:{ Accept:'application/json' } });
 }
 
 function cloneWithHeader(response, name, value) {
   const headers = new Headers(response.headers);
   headers.set(name, value);
   return new Response(response.clone().body, {
-    status: response.status,
-    statusText: response.statusText,
+    status:response.status,
+    statusText:response.statusText,
     headers,
   });
 }
@@ -103,8 +105,8 @@ async function trimCache(cache, limit) {
 }
 
 async function putIfCacheable(cacheName, request, response, options = {}) {
-  if (!response || !response.ok || response.status === 206) return response;
-  if (response.type !== 'basic' && response.type !== 'default') return response;
+  if (!response?.ok || response.status === 206) return response;
+  if (!['basic', 'default'].includes(response.type)) return response;
   const cache = await caches.open(cacheName);
   await cache.put(options.key || request, response.clone());
   if (options.limit) await trimCache(cache, options.limit);
@@ -112,41 +114,37 @@ async function putIfCacheable(cacheName, request, response, options = {}) {
 }
 
 async function broadcast(message) {
-  const clients = await self.clients.matchAll({ type: 'window', includeUncontrolled: true });
+  const clients = await self.clients.matchAll({ type:'window', includeUncontrolled:true });
   clients.forEach(client => client.postMessage(message));
 }
 
 async function precacheShell() {
   const cache = await caches.open(STATIC_CACHE);
-  let cached = 0;
-  const failed = [];
-  await Promise.all(APP_SHELL.map(async path => {
-    try {
-      const request = requestFor(path);
-      const response = await fetch(new Request(request, { cache: 'reload' }));
-      if (!response.ok) throw new Error(String(response.status));
-      await cache.put(request, response.clone());
-      cached += 1;
-    } catch {
-      failed.push(path);
-    }
+  const results = await Promise.allSettled(APP_SHELL.map(async path => {
+    const request = requestFor(path);
+    const response = await fetch(new Request(request, { cache:'reload' }));
+    if (!response.ok) throw new Error(`${path}: ${response.status}`);
+    await cache.put(request, response.clone());
+    return path;
   }));
-  return { cached, failed };
+  return {
+    cached:results.filter(result => result.status === 'fulfilled').length,
+    failed:results.filter(result => result.status === 'rejected').length,
+  };
 }
 
 async function warmPrivateData() {
-  await broadcast({ type: 'MEDINDEX_CACHE_STATUS', state: 'syncing' });
+  await broadcast({ type:'MEDINDEX_CACHE_STATUS', state:'syncing' });
   const cache = await caches.open(PRIVATE_CACHE);
   const required = ['/api/registry', '/api/dosage', '/data/protocols.json'];
   const optional = ['/api/icd'];
   let cached = 0;
   for (const path of [...required, ...optional]) {
     try {
-      const isRegistry = path.includes('registry');
-      const request = requestFor(path, { headers: { Accept: isRegistry ? 'application/javascript' : 'application/json' } });
-      const response = await fetch(new Request(request, { cache: 'no-store' }));
-      if (response.status === 401 || response.status === 403) {
-        await broadcast({ type: 'MEDINDEX_AUTH_INVALID' });
+      const request = requestFor(path, { headers:{ Accept:path.includes('registry') ? 'application/javascript' : 'application/json' } });
+      const response = await fetch(new Request(request, { cache:'no-store' }));
+      if ([401, 403].includes(response.status)) {
+        await broadcast({ type:'MEDINDEX_AUTH_INVALID' });
         break;
       }
       if (!response.ok) continue;
@@ -156,22 +154,21 @@ async function warmPrivateData() {
     } catch {}
   }
   const state = cached >= required.length ? 'ready' : 'limited';
-  await broadcast({ type: 'MEDINDEX_CACHE_STATUS', state, cached, required: required.length, syncedAt: Date.now() });
+  await broadcast({ type:'MEDINDEX_CACHE_STATUS', state, cached, required:required.length, syncedAt:Date.now() });
   return cached;
 }
 
 async function clearPrivateData() {
   await Promise.all([caches.delete(PRIVATE_CACHE), caches.delete(DOCUMENT_CACHE)]);
-  await broadcast({ type: 'MEDINDEX_CACHE_STATUS', state: 'cleared' });
+  await broadcast({ type:'MEDINDEX_CACHE_STATUS', state:'cleared' });
 }
 
 async function refreshSafeClinicalPages() {
-  const windows = await self.clients.matchAll({ type: 'window', includeUncontrolled: true });
-  await Promise.all(windows.map(async client => {
+  const clients = await self.clients.matchAll({ type:'window', includeUncontrolled:true });
+  await Promise.all(clients.map(async client => {
     try {
       const url = new URL(client.url);
-      if (url.origin !== self.location.origin || !SAFE_AUTO_REFRESH_PATHS.has(url.pathname)) return;
-      await client.navigate(client.url);
+      if (url.origin === self.location.origin && SAFE_AUTO_REFRESH_PATHS.has(url.pathname)) await client.navigate(client.url);
     } catch {}
   }));
 }
@@ -181,11 +178,11 @@ self.addEventListener('install', event => {
     const result = await precacheShell();
     await self.skipWaiting();
     await broadcast({
-      type: 'MEDINDEX_CACHE_STATUS',
-      state: result.failed.length ? 'shell-limited' : 'shell-ready',
-      cached: result.cached,
-      failed: result.failed.length,
-      cacheEpoch: CACHE_EPOCH,
+      type:'MEDINDEX_CACHE_STATUS',
+      state:result.failed ? 'shell-limited' : 'shell-ready',
+      cached:result.cached,
+      failed:result.failed,
+      cacheEpoch:CACHE_EPOCH,
     });
   })());
 });
@@ -193,17 +190,15 @@ self.addEventListener('install', event => {
 self.addEventListener('activate', event => {
   event.waitUntil((async () => {
     const names = await caches.keys();
-    await Promise.all(names
-      .filter(name => name.startsWith('medindex-') && !ALL_CACHES.includes(name))
-      .map(name => caches.delete(name)));
+    await Promise.all(names.filter(name => name.startsWith('medindex-') && !ALL_CACHES.includes(name)).map(name => caches.delete(name)));
     await self.clients.claim();
-    await broadcast({ type: 'MEDINDEX_SHELL_UPDATED', cacheEpoch: CACHE_EPOCH });
+    await broadcast({ type:'MEDINDEX_SHELL_UPDATED', cacheEpoch:CACHE_EPOCH });
     await refreshSafeClinicalPages();
   })());
 });
 
 self.addEventListener('message', event => {
-  const type = event.data && event.data.type;
+  const type = event.data?.type;
   if (type === 'WARM_PRIVATE_DATA') event.waitUntil(warmPrivateData());
   if (type === 'CLEAR_PRIVATE_DATA') event.waitUntil(clearPrivateData());
   if (type === 'SKIP_WAITING') event.waitUntil(self.skipWaiting());
@@ -211,61 +206,43 @@ self.addEventListener('message', event => {
     event.waitUntil((async () => {
       const cache = await caches.open(PRIVATE_CACHE);
       const keys = await cache.keys();
-      event.source?.postMessage({ type: 'MEDINDEX_CACHE_STATUS', state: keys.length >= 3 ? 'ready' : 'limited', cached: keys.length });
+      event.source?.postMessage({ type:'MEDINDEX_CACHE_STATUS', state:keys.length >= 3 ? 'ready' : 'limited', cached:keys.length });
     })());
   }
 });
 
-async function refreshPage(request, key) {
-  try {
-    const response = await timeoutFetch(new Request(request, { cache: 'no-store' }));
-    if (response.ok) await putIfCacheable(PAGE_CACHE, key, response, { key });
-    return response;
-  } catch {
-    return null;
-  }
-}
-
 async function navigationResponse(event) {
   const request = event.request;
-  const url = new URL(request.url);
-  const key = navigationKey(url);
-  const cache = await caches.open(PAGE_CACHE);
-
-  let resolveFresh;
-  const freshResult = new Promise(resolve => { resolveFresh = resolve; });
-  event.waitUntil(refreshPage(request, key).then(response => {
-    resolveFresh(response);
-    return response;
-  }));
-  const fresh = await freshResult;
-  if (fresh) return cloneWithHeader(fresh, 'X-MedIndex-Cache', 'page-network');
-
-  const cached = await cache.match(key) || await caches.match(key, { ignoreSearch: true });
-  if (cached) return cloneWithHeader(cached, 'X-MedIndex-Cache', 'page-hit');
-
-  return await caches.match('/index.html') || await caches.match('/login.html') || Response.error();
+  const key = navigationKey(new URL(request.url));
+  try {
+    const response = await timeoutFetch(new Request(request, { cache:'no-store' }));
+    if (response.ok) event.waitUntil(putIfCacheable(PAGE_CACHE, key, response, { key }));
+    return cloneWithHeader(response, 'X-MedIndex-Cache', 'page-network');
+  } catch {
+    const cache = await caches.open(PAGE_CACHE);
+    const cached = await cache.match(key) || await caches.match(key, { ignoreSearch:true });
+    if (cached) return cloneWithHeader(cached, 'X-MedIndex-Cache', 'page-hit');
+    return await caches.match('/index.html') || await caches.match('/login.html') || Response.error();
+  }
 }
 
 async function staticResponse(event) {
   const request = event.request;
   try {
-    const fresh = await timeoutFetch(new Request(request, { cache: 'no-cache' }), STATIC_NETWORK_TIMEOUT_MS);
-    if (fresh.ok) await putIfCacheable(STATIC_CACHE, request, fresh);
-    return cloneWithHeader(fresh, 'X-MedIndex-Cache', 'static-network');
+    const response = await timeoutFetch(new Request(request, { cache:'no-cache' }), STATIC_NETWORK_TIMEOUT_MS);
+    if (response.ok) event.waitUntil(putIfCacheable(STATIC_CACHE, request, response));
+    return cloneWithHeader(response, 'X-MedIndex-Cache', 'static-network');
   } catch {
-    const exact = await caches.match(request);
-    if (exact) return cloneWithHeader(exact, 'X-MedIndex-Cache', 'static-hit');
-    const pathFallback = await caches.match(requestFor(new URL(request.url).pathname));
-    return pathFallback ? cloneWithHeader(pathFallback, 'X-MedIndex-Cache', 'static-hit') : Response.error();
+    const cached = await caches.match(request) || await caches.match(requestFor(new URL(request.url).pathname));
+    return cached ? cloneWithHeader(cached, 'X-MedIndex-Cache', 'static-hit') : Response.error();
   }
 }
 
 async function refreshPrivate(request, key) {
   try {
-    const response = await timeoutFetch(new Request(request, { cache: 'no-store' }));
-    if (response.status === 401 || response.status === 403) {
-      await broadcast({ type: 'MEDINDEX_AUTH_INVALID' });
+    const response = await timeoutFetch(new Request(request, { cache:'no-store' }));
+    if ([401, 403].includes(response.status)) {
+      await broadcast({ type:'MEDINDEX_AUTH_INVALID' });
       return response;
     }
     if (response.ok) await putIfCacheable(PRIVATE_CACHE, key, response, { key });
@@ -276,18 +253,18 @@ async function refreshPrivate(request, key) {
 }
 
 function privateFallback(url) {
-  if (url.pathname === '/api/registry' || url.pathname === '/data/registry-data.js') {
+  if (['/api/registry', '/data/registry-data.js'].includes(url.pathname)) {
     return new Response('window.REGISTRY_LOAD_ERROR="Nuk ka kopje lokale të regjistrit.";window.DRUG_DATA_PARTS=[];', {
-      status: 503,
-      headers: { 'Content-Type': 'application/javascript; charset=utf-8', 'X-MedIndex-Offline': '1' },
+      status:503,
+      headers:{ 'Content-Type':'application/javascript; charset=utf-8', 'X-MedIndex-Offline':'1' },
     });
   }
   return new Response(JSON.stringify({
-    error: 'Këto të dhëna nuk janë sinkronizuar ende për përdorim offline.',
-    forms: [], adult: [], pediatric: [], offline: true,
+    error:'Këto të dhëna nuk janë sinkronizuar ende për përdorim offline.',
+    forms:[], adult:[], pediatric:[], cards:[], results:[], offline:true,
   }), {
-    status: 503,
-    headers: { 'Content-Type': 'application/json; charset=utf-8', 'X-MedIndex-Offline': '1' },
+    status:503,
+    headers:{ 'Content-Type':'application/json; charset=utf-8', 'X-MedIndex-Offline':'1' },
   });
 }
 
@@ -307,16 +284,14 @@ async function privateDataResponse(event, url) {
 async function manifestResponse(event) {
   const request = event.request;
   const cache = await caches.open(PRIVATE_CACHE);
-  const cached = await cache.match(request, { ignoreSearch: true }) || await caches.match(request, { ignoreSearch: true });
+  const cached = await cache.match(request, { ignoreSearch:true }) || await caches.match(request, { ignoreSearch:true });
   if (cached) {
-    event.waitUntil(fetch(new Request(request, { cache: 'no-store' }))
-      .then(response => response.ok ? cache.put(request, response.clone()) : null)
-      .catch(() => null));
+    event.waitUntil(fetch(new Request(request, { cache:'no-store' })).then(response => response.ok ? cache.put(request, response.clone()) : null).catch(() => null));
     return cloneWithHeader(cached, 'X-MedIndex-Cache', 'manifest-hit');
   }
   try {
     const response = await timeoutFetch(request);
-    if (response.ok) await cache.put(request, response.clone());
+    if (response.ok) event.waitUntil(cache.put(request, response.clone()));
     return response;
   } catch {
     return Response.error();
@@ -329,14 +304,12 @@ async function queryDataResponse(event, url) {
   const cache = await caches.open(PRIVATE_CACHE);
   const cached = await cache.match(key);
   if (cached) {
-    event.waitUntil(fetch(request)
-      .then(response => putIfCacheable(PRIVATE_CACHE, key, response, { key, limit: MAX_QUERY_RESPONSES }))
-      .catch(() => null));
+    event.waitUntil(fetch(request).then(response => putIfCacheable(PRIVATE_CACHE, key, response, { key, limit:MAX_QUERY_RESPONSES })).catch(() => null));
     return cloneWithHeader(cached, 'X-MedIndex-Cache', 'query-hit');
   }
   try {
     const response = await timeoutFetch(request);
-    return putIfCacheable(PRIVATE_CACHE, key, response, { key, limit: MAX_QUERY_RESPONSES });
+    return putIfCacheable(PRIVATE_CACHE, key, response, { key, limit:MAX_QUERY_RESPONSES });
   } catch {
     return new Response(JSON.stringify({ error:'Kërkimi online nuk është i disponueshëm.', results:[], offline:true }), {
       status:503,
@@ -356,7 +329,7 @@ function parseRange(header, size) {
     end = size - 1;
   }
   if (!Number.isFinite(start) || !Number.isFinite(end) || start > end || start >= size) return null;
-  return { start, end: Math.min(end, size - 1) };
+  return { start, end:Math.min(end, size - 1) };
 }
 
 async function rangedResponse(response, rangeHeader) {
@@ -410,10 +383,7 @@ async function geminiResponse(request) {
   try {
     return await fetch(request);
   } catch {
-    return new Response(JSON.stringify({
-      error:'Gemini kërkon internet. Receta mund të formatohet lokalisht pa AI.',
-      offline:true,
-    }), {
+    return new Response(JSON.stringify({ error:'Gemini kërkon internet. Receta mund të formatohet lokalisht pa AI.', offline:true }), {
       status:503,
       headers:{ 'Content-Type':'application/json; charset=utf-8', 'X-MedIndex-Offline':'1' },
     });
@@ -433,7 +403,5 @@ self.addEventListener('fetch', event => {
   if (QUERY_DATA_PATHS.has(url.pathname)) return event.respondWith(queryDataResponse(event, url));
   if (url.pathname === '/data/protocols.json') return event.respondWith(manifestResponse(event));
   if (request.mode === 'navigate') return event.respondWith(navigationResponse(event));
-  if (/\.(?:css|js|json|txt|svg|png|jpe?g|webp|ico|webmanifest)$/i.test(url.pathname)) {
-    event.respondWith(staticResponse(event));
-  }
+  if (/\.(?:css|js|json|txt|svg|png|jpe?g|webp|ico|webmanifest)$/i.test(url.pathname)) event.respondWith(staticResponse(event));
 });
