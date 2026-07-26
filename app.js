@@ -1,3 +1,5 @@
+window.DRUG_DATA_PARTS = Array.isArray(window.DRUG_DATA_PARTS) ? window.DRUG_DATA_PARTS : [];
+
 const hidePageLoader = () => {
   const loader = document.getElementById('pageLoader');
   if (!loader) return;
@@ -6,7 +8,7 @@ const hidePageLoader = () => {
 };
 
 (async () => {
-  const APP_VERSION = 'clinical-audit-v2-prescription-v1';
+  const APP_VERSION = 'clinical-audit-v3-static-runtime';
   const DB_NAME = 'medindex-registry-v1';
   const DB_STORE = 'datasets';
   const DB_KEY = 'registry-parts-prescription-v1';
@@ -30,6 +32,27 @@ const hidePageLoader = () => {
     } finally {
       window.clearTimeout(timer);
     }
+  }
+
+  function parseAssignment(source, name, fallback = null) {
+    const prefix = `window.${name}`;
+    const line = String(source || '').split(/\r?\n/).find(item => item.trim().startsWith(prefix));
+    if (!line) return fallback;
+    const equals = line.indexOf('=');
+    if (equals < 0) return fallback;
+    const serialized = line.slice(equals + 1).trim().replace(/;+\s*$/, '');
+    try { return JSON.parse(serialized); }
+    catch { throw new Error(`Payload-i i regjistrit ka fushë të pavlefshme: ${name}.`); }
+  }
+
+  function parseRegistryPayload(source) {
+    const parts = parseAssignment(source, 'DRUG_DATA_PARTS', []);
+    const quality = parseAssignment(source, 'REGISTRY_QUALITY_META', null);
+    if (!Array.isArray(parts) || !parts.length) {
+      const message = parseAssignment(source, 'REGISTRY_LOAD_ERROR', 'Burimi nuk ktheu të dhënat e barnave.');
+      throw new Error(message || 'Burimi nuk ktheu të dhënat e barnave.');
+    }
+    return { parts, quality };
   }
 
   function openDatabase() {
@@ -135,18 +158,19 @@ const hidePageLoader = () => {
 
   async function loadGoogleDriveFallback({ background = false } = {}) {
     const previousParts = window.DRUG_DATA_PARTS;
+    const previousQuality = window.REGISTRY_QUALITY_META;
     try {
-      const registryResponse = await timedFetch(`/api/registry?version=${APP_VERSION}`, {
+      const registryResponse = await timedFetch(`/api/registry?version=${encodeURIComponent(APP_VERSION)}`, {
         cache: background ? 'no-cache' : 'no-store',
         credentials: 'same-origin',
+        headers: { Accept:'application/javascript' },
       });
       if (registryResponse.status === 401) throw new Error('Sesioni ka skaduar.');
       if (!registryResponse.ok) throw new Error('Regjistri nuk u ngarkua (' + registryResponse.status + ')');
-      const registryCode = await registryResponse.text();
-      window.DRUG_DATA_PARTS = [];
+      const payload = parseRegistryPayload(await registryResponse.text());
+      window.DRUG_DATA_PARTS = payload.parts;
+      window.REGISTRY_QUALITY_META = payload.quality;
       window.REGISTRY_LOAD_ERROR = '';
-      (0, eval)(registryCode);
-      if (!hasRegistryData()) throw new Error(window.REGISTRY_LOAD_ERROR || 'Burimi nuk ktheu të dhënat e barnave.');
       const offlineHeader = registryResponse.headers.get('X-MedIndex-Offline') === '1';
       window.REGISTRY_DATA_SOURCE = offlineHeader
         ? 'service-worker-offline-cache'
@@ -155,12 +179,37 @@ const hidePageLoader = () => {
       return true;
     } catch (error) {
       window.DRUG_DATA_PARTS = previousParts;
+      window.REGISTRY_QUALITY_META = previousQuality;
       if (background) {
         console.warn('Rifreskimi në prapavijë dështoi:', error);
         return false;
       }
       throw error;
     }
+  }
+
+  async function loadRegistryRuntime() {
+    if (!window.MEDINDEX_REGISTRY_UI_READY) {
+      await new Promise((resolve, reject) => {
+        const existing = document.querySelector('script[data-medindex-registry-runtime]');
+        if (existing) {
+          existing.addEventListener('load', resolve, { once:true });
+          existing.addEventListener('error', () => reject(new Error('Runtime-i i regjistrit nuk u ngarkua.')), { once:true });
+          return;
+        }
+        const script = document.createElement('script');
+        script.src = `/app-runtime.js?v=${encodeURIComponent(APP_VERSION)}`;
+        script.defer = true;
+        script.dataset.medindexRegistryRuntime = '1';
+        script.addEventListener('load', resolve, { once:true });
+        script.addEventListener('error', () => reject(new Error('Runtime-i i regjistrit nuk u ngarkua.')), { once:true });
+        document.head.appendChild(script);
+      });
+    }
+    if (!window.MEDINDEX_REGISTRY_UI_READY || typeof window.MEDINDEX_REGISTRY_UI_READY.then !== 'function') {
+      throw new Error('Runtime-i i regjistrit nuk ekspozoi gjendjen e inicializimit.');
+    }
+    await window.MEDINDEX_REGISTRY_UI_READY;
   }
 
   if (hasRegistryData()) {
@@ -170,20 +219,7 @@ const hidePageLoader = () => {
     await loadGoogleDriveFallback();
   }
 
-  const files = [
-    './app-parts/part-01.txt',
-    './app-parts/part-02.txt',
-    './app-parts/part-03.txt',
-    './app-parts/part-04.txt',
-    './app-parts/core-tail.txt',
-  ].map(file => `${file}?v=${APP_VERSION}`);
-  const responses = await Promise.all(files.map(file => timedFetch(file, { cache: 'force-cache', credentials: 'same-origin' })));
-  responses.forEach((response, index) => {
-    if (!response.ok) throw new Error('Nuk u ngarkua ' + files[index] + ' (' + response.status + ')');
-  });
-
-  const codeParts = await Promise.all(responses.map(response => response.text()));
-  (0, eval)(`${codeParts.join('')}\n//# sourceURL=medindex-registry-${APP_VERSION}.js`);
+  await loadRegistryRuntime();
 
   const countBadge = document.getElementById('countBadge');
   if (countBadge) countBadge.title = 'Burimi i të dhënave: ' + window.REGISTRY_DATA_SOURCE;
