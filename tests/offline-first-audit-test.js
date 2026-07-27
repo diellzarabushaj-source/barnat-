@@ -49,9 +49,10 @@ const runtime = read('offline-runtime-performance.js');
   /serviceWorker\.register/, /updateViaCache:'none'/, /navigator\.storage\.persist/,
   /WARM_PRIVATE_DATA/, /beforeinstallprompt/, /medindex:offline-runtime-ready/,
   /clinical-workflow\.js/, /Përditësim gati/, /Pa internet/, /sw-resilient-v3\.js/,
-  /verifyNetworkReachability/, /offline_probe=1/, /networkReachable/,
+  /verifyNetworkReachability/, /offline_probe=1/, /networkReachable/, /Promise\.race/,
 ].forEach(pattern => assert.match(runtime, pattern, `offline-runtime-performance.js missing ${pattern}`));
-assert.match(runtime, /installListeners\(\);\s*verifyNetworkReachability\(\);\s*window\.MedIndexOffline/, 'network reachability probe must run during offline runtime start');
+assert.match(runtime, /installListeners\(\);\s*verifyNetworkReachability\(\);\s*setTimeout\(verifyNetworkReachability, 900\);\s*window\.MedIndexOffline/, 'network reachability probe and retry must run during offline runtime start');
+assert.match(runtime, /network-probe-timeout/, 'network probe must have a deterministic timeout failure');
 assert.match(runtime, /message\.type === 'MEDINDEX_NETWORK_STATUS'[\s\S]*setStatus\('offline'/, 'worker network-loss messages must immediately update the UI');
 assert.match(runtime, /message\.online === false \|\| !networkReachable \|\| !navigator\.onLine[\s\S]*setStatus\('offline'/, 'cache-ready messages must not overwrite a confirmed offline state');
 assert.match(runtime, /fetch\('\/api\/auth\?offline_probe=1',[\s\S]*cache:'no-store'/, 'network reachability must use a network-only endpoint');
@@ -91,4 +92,4 @@ assert.match(serializedHeaders, /Service-Worker-Allowed/, 'service worker scope 
 assert.match(serializedHeaders, /worker-src/, 'CSP worker-src is missing');
 assert.match(serializedHeaders, /manifest-src/, 'CSP manifest-src is missing');
 
-console.log('Offline-first, verified clinical page precache, invoked network reachability, private-cache and PWA audit passed.');
+console.log('Offline-first, verified clinical page precache, deterministic network reachability, private-cache and PWA audit passed.');
