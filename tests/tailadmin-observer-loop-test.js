@@ -29,4 +29,13 @@ const shellMarkerRemoval = shell.indexOf("base.removeAttribute('data-tailadmin-m
 const legacyLoad = shell.indexOf('loadLegacyShell();');
 assert.ok(shellMarkerRemoval >= 0 && legacyLoad >= 0 && shellMarkerRemoval < legacyLoad, 'stylesheet marker isolation must occur before the legacy shell can mount');
 
-console.log('TailAdmin stylesheet observer loop regression test passed.');
+assert.match(professional, /NAV_OBSERVER_OPTIONS/);
+assert.match(professional, /navObserver\.disconnect\(\)/, 'professional navigation observer must disconnect while normalizing its own target');
+assert.match(professional, /finally\s*\{[\s\S]*observeNavigation\(nav\)/, 'professional navigation observer must reconnect after normalization');
+assert.match(professional, /setAttributeIfChanged/);
+assert.match(professional, /removeAttributeIfPresent/);
+assert.match(professional, /setClassState/);
+assert.match(professional, /if \(stabilized\) return;/, 'professional runtime must stabilize only once');
+assert.doesNotMatch(professional, /nav\.setAttribute\('aria-label',[\s\S]*navObserver\.observe\(nav,[\s\S]*normalizeNavigation\(\)/, 'navigation writes must not remain under an active observer');
+
+console.log('TailAdmin stylesheet and navigation observer loop regression test passed.');
