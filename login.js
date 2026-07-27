@@ -14,7 +14,11 @@
 
   function safeReturnPath(value) {
     const path = String(value || '');
-    if (!path.startsWith('/') || path.startsWith('//') || path.startsWith('/api/') || path.startsWith('/login')) return '/index.html';
+    if (!path.startsWith('/')
+      || path.startsWith('//')
+      || path.startsWith('/api/')
+      || path.startsWith('/login')
+      || path.startsWith('/recovery')) return '/index.html';
     return path;
   }
 
@@ -43,6 +47,30 @@
     configurationBlocked = true;
     setBusy(false);
     setMessage('Hyrja private nuk është konfiguruar në server. Vendos SESSION_SECRET dhe ACCESS_CODE ose ACCESS_CODE_SCRYPT në Vercel, pastaj bëj redeploy.');
+  }
+
+  async function releaseStaleBrowserShell() {
+    try {
+      if ('serviceWorker' in navigator) {
+        const registrations = await navigator.serviceWorker.getRegistrations();
+        const localRegistrations = registrations.filter(registration => {
+          try { return new URL(registration.scope).origin === location.origin; }
+          catch { return false; }
+        });
+        await Promise.allSettled(localRegistrations.map(async registration => {
+          try { await registration.update(); } catch {}
+          return registration.unregister();
+        }));
+      }
+    } catch {}
+
+    try {
+      if ('caches' in window) {
+        const names = await caches.keys();
+        const staleShellCaches = names.filter(name => name.startsWith('medindex-pages-') || name.startsWith('medindex-static-'));
+        await Promise.allSettled(staleShellCaches.map(name => caches.delete(name)));
+      }
+    } catch {}
   }
 
   async function timedFetch(url, options = {}, timeoutMs = 8000) {
@@ -118,6 +146,7 @@
 
   async function init() {
     setBusy(true);
+    await releaseStaleBrowserShell();
     try {
       const response = await timedFetch('/api/auth', { cache:'no-store', credentials:'same-origin' });
       const payload = await response.json().catch(() => ({}));
