@@ -1,0 +1,34 @@
+name: Registry debug artifact
+
+on:
+  pull_request:
+
+permissions:
+  contents: read
+
+jobs:
+  registry-debug:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - run: npm install --ignore-scripts --no-audit --no-fund
+      - name: Capture full test output
+        shell: bash
+        run: |
+          set +e
+          npm test > registry-debug.log 2>&1
+          code=$?
+          echo "$code" > registry-debug-exit-code.txt
+          tail -n 120 registry-debug.log
+          exit 0
+      - name: Upload debug log
+        uses: actions/upload-artifact@v4
+        with:
+          name: registry-debug-log
+          path: |
+            registry-debug.log
+            registry-debug-exit-code.txt
+          if-no-files-found: error
