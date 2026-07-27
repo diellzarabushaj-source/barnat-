@@ -67,12 +67,22 @@ function buildCacheIsolatedOfflineRuntime() {
     .replace(
       '      await cache.put(request, response.clone());',
       "      const expectedPath = canonicalPagePath(new URL(request.url).pathname);\n      const privatePage = PRIVATE_PAGES.has(expectedPath);\n      if (privatePage && !validHtmlResponse(response, expectedPath)) throw new Error(`${path}: përgjigjja private nuk ishte faqja e pritur`);\n      const cache = await caches.open(privatePage ? PAGE_CACHE : STATIC_CACHE);\n      await cache.put(request, response.clone());"
+    )
+    .replace(
+      '  } catch { return null; }\n}\n\nasync function navigationResponse',
+      "  } catch {\n    networkProfile.online = false;\n    await broadcast({ type:'MEDINDEX_NETWORK_STATUS', online:false });\n    return null;\n  }\n}\n\nasync function navigationResponse"
+    )
+    .replace(
+      "  return { state:cached === REQUIRED_PRIVATE_PATHS.length ? 'ready' : 'limited', cached, required:REQUIRED_PRIVATE_PATHS.length };",
+      "  return { state:cached === REQUIRED_PRIVATE_PATHS.length ? 'ready' : 'limited', cached, required:REQUIRED_PRIVATE_PATHS.length, online:networkProfile.online };"
     );
   if (workerGenerated === workerSource
       || !workerGenerated.includes("const VERSION = 'low-bandwidth-v3';")
       || !workerGenerated.includes('privatePage ? PAGE_CACHE : STATIC_CACHE')
-      || !workerGenerated.includes("'/analizat.html',")) {
-    throw new Error('Versioni i cache-isolated service worker-it ose precache-i klinik nuk u gjenerua.');
+      || !workerGenerated.includes("'/analizat.html',")
+      || !workerGenerated.includes("MEDINDEX_NETWORK_STATUS")
+      || !workerGenerated.includes('online:networkProfile.online')) {
+    throw new Error('Versioni i cache-isolated service worker-it, precache-i klinik ose sinjali i rrjetit nuk u gjenerua.');
   }
   checkGeneratedSyntax(workerOutput, workerGenerated);
   fs.writeFileSync(workerOutput, workerGenerated, 'utf8');
@@ -81,19 +91,43 @@ function buildCacheIsolatedOfflineRuntime() {
   const runtimeGenerated = runtimeSource
     .replace("const RESILIENCE_VERSION = 'low-bandwidth-v2';", "const RESILIENCE_VERSION = 'low-bandwidth-v3';")
     .replace('const SERVICE_WORKER_URL = `/sw-resilient.js?v=${RESILIENCE_VERSION}`;', 'const SERVICE_WORKER_URL = `/sw-resilient-v3.js?v=${RESILIENCE_VERSION}`;')
+    .replace('  let updateActivated = false;', '  let updateActivated = false;\n  let networkReachable = navigator.onLine;')
+    .replace('      online:navigator.onLine,', '      online:networkReachable && navigator.onLine,')
+    .replace(
+      '  function installListeners() {',
+      "  async function verifyNetworkReachability() {\n    const controller = new AbortController();\n    const timer = setTimeout(() => controller.abort(), 1500);\n    try {\n      await fetch('/api/auth?offline_probe=1', { cache:'no-store', credentials:'same-origin', signal:controller.signal });\n      networkReachable = true;\n    } catch {\n      networkReachable = false;\n      sendNetworkProfile();\n      setStatus('offline', 'Pa internet · po përdoret kopja lokale');\n    } finally {\n      clearTimeout(timer);\n    }\n  }\n\n  function installListeners() {"
+    )
+    .replace(
+      "      if (message.type === 'MEDINDEX_AUTH_INVALID') {",
+      "      if (message.type === 'MEDINDEX_NETWORK_STATUS') {\n        networkReachable = message.online !== false;\n        if (!networkReachable) setStatus('offline', 'Pa internet · po përdoret kopja lokale');\n        return;\n      }\n      if (message.type === 'MEDINDEX_AUTH_INVALID') {"
+    )
     .replace(
       "      if (message.type !== 'MEDINDEX_CACHE_STATUS') return;",
-      "      if (message.type !== 'MEDINDEX_CACHE_STATUS') return;\n      if (!navigator.onLine) {\n        setStatus('offline', 'Pa internet · po përdoret kopja lokale');\n        return;\n      }"
+      "      if (message.type !== 'MEDINDEX_CACHE_STATUS') return;\n      if (message.online === false || !networkReachable || !navigator.onLine) {\n        networkReachable = false;\n        setStatus('offline', 'Pa internet · po përdoret kopja lokale');\n        return;\n      }"
+    )
+    .replace(
+      "    window.addEventListener('online', () => {\n      warmRequested = false;",
+      "    window.addEventListener('online', () => {\n      networkReachable = true;\n      warmRequested = false;"
+    )
+    .replace(
+      "    window.addEventListener('offline', () => {\n      sendNetworkProfile();",
+      "    window.addEventListener('offline', () => {\n      networkReachable = false;\n      sendNetworkProfile();"
+    )
+    .replace(
+      '    installListeners();\n    window.MedIndexOffline = {',
+      '    installListeners();\n    verifyNetworkReachability();\n    window.MedIndexOffline = {'
     );
   if (runtimeGenerated === runtimeSource
       || !runtimeGenerated.includes("const RESILIENCE_VERSION = 'low-bandwidth-v3';")
       || !runtimeGenerated.includes('/sw-resilient-v3.js')
-      || !runtimeGenerated.includes("if (!navigator.onLine) {\n        setStatus('offline'")) {
-    throw new Error('Cache-isolated offline runtime ose ruajtja e statusit offline nuk u gjenerua.');
+      || !runtimeGenerated.includes('verifyNetworkReachability')
+      || !runtimeGenerated.includes("message.online === false || !networkReachable || !navigator.onLine")
+      || !runtimeGenerated.includes("networkReachable = false;\n      sendNetworkProfile();")) {
+    throw new Error('Cache-isolated offline runtime ose konfirmimi real i rrjetit nuk u gjenerua.');
   }
   checkGeneratedSyntax(runtimeOutput, runtimeGenerated);
   fs.writeFileSync(runtimeOutput, runtimeGenerated, 'utf8');
-  console.log('Generated cache-isolated offline runtime, verified clinical page precache and resilient service worker v3.');
+  console.log('Generated cache-isolated offline runtime, verified clinical page precache, network probe and resilient service worker v3.');
 }
 
 function hardenTailAdminCss() {
