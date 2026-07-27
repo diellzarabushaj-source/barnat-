@@ -28,7 +28,8 @@ assert.match(professional, /dataset\.miProfessionalVersion = PROFESSIONAL_VERSIO
 
 const runtime = read('offline-runtime.js');
 assert.match(runtime, /VERSION = 'production-audit-v1'/, 'offline runtime version is stale');
+assert.match(runtime, /RESILIENCE_VERSION = 'low-bandwidth-v2'/, 'low-bandwidth runtime version is stale');
 assert.match(runtime, /CLINICAL_WORKFLOW_URL = `\/clinical-workflow\.js\?v=\$\{VERSION\}`/, 'offline runtime must version the clinical workflow');
-assert.match(runtime, /SERVICE_WORKER_URL = `\/sw\.js\?v=\$\{VERSION\}`/, 'offline runtime must version the service worker');
+assert.match(runtime, /SERVICE_WORKER_URL = `\/sw-resilient\.js\?v=\$\{RESILIENCE_VERSION\}`/, 'offline runtime must load the resilient service worker');
 
 console.log('Clinical runtime cache-version audit passed.');
