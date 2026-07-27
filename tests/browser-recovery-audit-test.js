@@ -27,7 +27,11 @@ assert.match(login, /releaseStaleBrowserShell/);
 assert.match(login, /medindex-pages-/);
 assert.match(login, /medindex-static-/);
 assert.match(login, /registration\.unregister\(\)/);
-assert.ok(login.indexOf('await releaseStaleBrowserShell()') < login.indexOf("timedFetch('/api/auth'"), 'Login must release stale browser shell before auth validation');
+const initStart = login.indexOf('async function init()');
+const initEnd = login.indexOf("window.addEventListener('pageshow'", initStart);
+const initSource = login.slice(initStart, initEnd);
+assert.ok(initSource.indexOf('await releaseStaleBrowserShell()') >= 0, 'Login init must release the stale browser shell');
+assert.ok(initSource.indexOf('await releaseStaleBrowserShell()') < initSource.indexOf("timedFetch('/api/auth'"), 'Login must release stale browser shell before auth validation');
 
 const middleware = read('middleware.ts');
 assert.match(middleware, /'\/recovery\.html'/);
