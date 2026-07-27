@@ -17,6 +17,7 @@ assert.match(index, /app-performance\.js/, 'index.html: cache-isolated registry 
 assert.doesNotMatch(index, /src="app\.js/, 'index.html: legacy registry bootstrap must not be loaded');
 assert.match(index, /app-runtime-performance\.js\?v=clinical-audit-v5-performance-runtime/, 'index.html: cache-isolated generated registry runtime preload is stale');
 assert.match(index, /registry-dosage-columns-v2\.js/, 'index.html: single-pass dosage runtime is missing');
+assert.match(index, /offline-runtime-performance\.js[^>]+data-medindex-offline-runtime/, 'index.html: cache-isolated offline runtime must be loaded explicitly');
 assert.match(index, /registry-fast-start\.js\?v=registry-fast-start-v2/, 'index.html: fast-start guard version is stale');
 assert.match(index, /<script id="drug-data" type="application\/json">\[\]<\/script>/, 'registry JSON fallback must remain inert');
 
@@ -25,7 +26,7 @@ assert.match(app, /clinical-audit-v5-performance-runtime/);
 assert.match(app, /app-runtime-performance\.js/);
 
 const auth = read('auth-client.js');
-assert.match(auth, /offline-runtime\.js\?v=production-audit-v1/, 'auth client must load the current offline runtime');
+assert.match(auth, /offline-runtime\.js\?v=production-audit-v1/, 'auth client fallback must remain available on other pages');
 assert.match(auth, /tailadmin-professional\.js\?v=production-audit-v1/, 'auth client must migrate a stale professional runtime');
 assert.match(auth, /ensureProfessionalRuntime/, 'professional runtime migration guard is missing');
 assert.match(auth, /miProfessionalVersion/, 'professional runtime version must be checked before migration');
@@ -34,10 +35,13 @@ const professional = read('tailadmin-professional.js');
 assert.match(professional, /PROFESSIONAL_VERSION = 'production-audit-v1'/, 'professional runtime version is stale');
 assert.match(professional, /dataset\.miProfessionalVersion = PROFESSIONAL_VERSION/, 'professional runtime must expose its active version');
 
-const runtime = read('offline-runtime.js');
-assert.match(runtime, /VERSION = 'production-audit-v1'/, 'offline runtime version is stale');
-assert.match(runtime, /RESILIENCE_VERSION = 'low-bandwidth-v2'/, 'low-bandwidth runtime version is stale');
-assert.match(runtime, /CLINICAL_WORKFLOW_URL = `\/clinical-workflow\.js\?v=\$\{VERSION\}`/, 'offline runtime must version the clinical workflow');
-assert.match(runtime, /SERVICE_WORKER_URL = `\/sw-resilient\.js\?v=\$\{RESILIENCE_VERSION\}`/, 'offline runtime must load the resilient service worker');
+const sourceRuntime = read('offline-runtime.js');
+assert.match(sourceRuntime, /VERSION = 'production-audit-v1'/, 'offline runtime source version is stale');
+const performanceRuntime = read('offline-runtime-performance.js');
+const performanceWorker = read('sw-resilient-v3.js');
+assert.match(performanceRuntime, /RESILIENCE_VERSION = 'low-bandwidth-v3'/, 'cache-isolated offline runtime version is stale');
+assert.match(performanceRuntime, /SERVICE_WORKER_URL = `\/sw-resilient-v3\.js\?v=\$\{RESILIENCE_VERSION\}`/, 'cache-isolated offline runtime must load the v3 worker');
+assert.match(performanceWorker, /VERSION = 'low-bandwidth-v3'/, 'cache-isolated service worker version is stale');
+assert.match(performanceRuntime, /CLINICAL_WORKFLOW_URL = `\/clinical-workflow\.js\?v=\$\{VERSION\}`/, 'offline runtime must version the clinical workflow');
 
 console.log('Clinical runtime cache-version audit passed.');
