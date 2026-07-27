@@ -11,6 +11,7 @@ const PUBLIC_PATHS = new Set([
   '/recovery.js',
   '/sw.js',
   '/sw-resilient.js',
+  '/registry-parser-worker.js',
   '/manifest.webmanifest',
   '/medindex-icon.svg',
   '/favicon.ico',
