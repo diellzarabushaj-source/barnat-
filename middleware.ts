@@ -7,6 +7,8 @@ const PUBLIC_PATHS = new Set([
   '/login.js',
   '/theme-preload.js',
   '/tailadmin-medindex.css',
+  '/recovery.html',
+  '/recovery.js',
   '/favicon.ico',
   '/robots.txt',
 ]);
@@ -21,7 +23,11 @@ function isPublicPath(pathname) {
 
 function safeReturnPath(url) {
   const value = `${url.pathname}${url.search}`;
-  return value.startsWith('/') && !value.startsWith('//') && !value.startsWith('/api/') && !value.startsWith('/login')
+  return value.startsWith('/')
+    && !value.startsWith('//')
+    && !value.startsWith('/api/')
+    && !value.startsWith('/login')
+    && !value.startsWith('/recovery')
     ? value
     : '/index.html';
 }
@@ -34,7 +40,10 @@ export default async function middleware(request) {
   if (isPublicPath(pathname)) {
     if (pathname === '/login.html' && authenticated) {
       const target = new URL(url.searchParams.get('return') || '/', request.url);
-      if (target.origin !== url.origin || target.pathname.startsWith('/api/') || target.pathname.startsWith('/login')) {
+      if (target.origin !== url.origin
+        || target.pathname.startsWith('/api/')
+        || target.pathname.startsWith('/login')
+        || target.pathname.startsWith('/recovery')) {
         return Response.redirect(new URL('/', request.url), 302);
       }
       return Response.redirect(target, 302);
