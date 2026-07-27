@@ -13,7 +13,7 @@
   const LEGACY_SRC = '/tailadmin-shell-legacy.js?v=production-audit-v1';
   const MOBILE_SRC = '/mobile-experience.js?v=production-audit-v1';
   const MOBILE_A11Y_SRC = '/mobile-accessibility-hardening.js?v=mobile-a11y-deep-audit-v1';
-  const SHELL_VERSION = 'production-audit-v2';
+  const SHELL_VERSION = 'production-audit-v1';
   const id = 'appMenu';
   const SHELL_RETRY_MS = 3500;
   let shellReady = false;
