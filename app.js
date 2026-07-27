@@ -4,11 +4,25 @@ const hidePageLoader = () => {
   const loader = document.getElementById('pageLoader');
   if (!loader) return;
   loader.classList.add('is-hidden');
+  loader.setAttribute('aria-hidden', 'true');
   window.setTimeout(() => loader.remove(), 180);
 };
 
+const releaseStaleInteractionLock = () => {
+  document.documentElement.classList.remove('is-loading', 'loading', 'app-loading');
+  document.documentElement.removeAttribute('inert');
+  document.body?.removeAttribute('inert');
+  if (document.body) {
+    document.body.style.pointerEvents = '';
+    document.body.style.overflow = '';
+  }
+  ['registryContent', 'dataTable', 'search'].forEach(id => document.getElementById(id)?.removeAttribute('inert'));
+};
+
+releaseStaleInteractionLock();
+
 (async () => {
-  const APP_VERSION = 'clinical-audit-v3-static-runtime';
+  const APP_VERSION = 'clinical-audit-v4-worker-runtime';
   const DB_NAME = 'medindex-registry-v1';
   const DB_STORE = 'datasets';
   const DB_KEY = 'registry-parts-prescription-v1';
@@ -20,6 +34,8 @@ const hidePageLoader = () => {
   ];
   const BACKGROUND_REFRESH_MS = 6 * 60 * 60 * 1000;
   const REQUEST_TIMEOUT_MS = 12000;
+  const DATABASE_TIMEOUT_MS = 3000;
+  const RUNTIME_TIMEOUT_MS = 25000;
 
   performance.mark?.('medindex-app-start');
   const hasRegistryData = () => Array.isArray(window.DRUG_DATA_PARTS) && window.DRUG_DATA_PARTS.length > 0;
@@ -32,6 +48,13 @@ const hidePageLoader = () => {
     } finally {
       window.clearTimeout(timer);
     }
+  }
+
+  function withTimeout(promise, timeoutMs, message) {
+    return Promise.race([
+      promise,
+      new Promise((_, reject) => window.setTimeout(() => reject(new Error(message)), timeoutMs)),
+    ]);
   }
 
   function parseAssignment(source, name, fallback = null) {
@@ -56,7 +79,7 @@ const hidePageLoader = () => {
   }
 
   function openDatabase() {
-    return new Promise((resolve, reject) => {
+    return withTimeout(new Promise((resolve, reject) => {
       if (!('indexedDB' in window)) return reject(new Error('IndexedDB nuk mbështetet.'));
       const request = indexedDB.open(DB_NAME, 1);
       request.onupgradeneeded = () => {
@@ -66,17 +89,17 @@ const hidePageLoader = () => {
       request.onsuccess = () => resolve(request.result);
       request.onerror = () => reject(request.error || new Error('IndexedDB nuk u hap.'));
       request.onblocked = () => reject(new Error('IndexedDB është bllokuar.'));
-    });
+    }), DATABASE_TIMEOUT_MS, 'IndexedDB nuk u përgjigj me kohë.');
   }
 
   async function databaseGet(key) {
     const database = await openDatabase();
     try {
-      return await new Promise((resolve, reject) => {
+      return await withTimeout(new Promise((resolve, reject) => {
         const request = database.transaction(DB_STORE, 'readonly').objectStore(DB_STORE).get(key);
         request.onsuccess = () => resolve(request.result);
         request.onerror = () => reject(request.error);
-      });
+      }), DATABASE_TIMEOUT_MS, 'Leximi i cache-it lokal zgjati tepër.');
     } finally {
       database.close();
     }
@@ -85,11 +108,11 @@ const hidePageLoader = () => {
   async function databasePut(key, value) {
     const database = await openDatabase();
     try {
-      await new Promise((resolve, reject) => {
+      await withTimeout(new Promise((resolve, reject) => {
         const request = database.transaction(DB_STORE, 'readwrite').objectStore(DB_STORE).put(value, key);
         request.onsuccess = () => resolve();
         request.onerror = () => reject(request.error);
-      });
+      }), DATABASE_TIMEOUT_MS, 'Ruajtja e cache-it lokal zgjati tepër.');
     } finally {
       database.close();
     }
@@ -145,7 +168,7 @@ const hidePageLoader = () => {
       if (!Array.isArray(saved) || saved.length === 0) return false;
       window.DRUG_DATA_PARTS = saved;
       window.REGISTRY_DATA_SOURCE = 'localstorage-migration-cache';
-      await saveBrowserCache();
+      void saveBrowserCache();
       return true;
     } catch {
       try {
@@ -175,7 +198,7 @@ const hidePageLoader = () => {
       window.REGISTRY_DATA_SOURCE = offlineHeader
         ? 'service-worker-offline-cache'
         : background ? 'online-background-refresh' : 'online-registry';
-      await saveBrowserCache();
+      void saveBrowserCache();
       return true;
     } catch (error) {
       window.DRUG_DATA_PARTS = previousParts;
@@ -190,26 +213,27 @@ const hidePageLoader = () => {
 
   async function loadRegistryRuntime() {
     if (!window.MEDINDEX_REGISTRY_UI_READY) {
-      await new Promise((resolve, reject) => {
+      await withTimeout(new Promise((resolve, reject) => {
         const existing = document.querySelector('script[data-medindex-registry-runtime]');
         if (existing) {
+          if (window.MEDINDEX_REGISTRY_UI_READY) return resolve();
           existing.addEventListener('load', resolve, { once:true });
           existing.addEventListener('error', () => reject(new Error('Runtime-i i regjistrit nuk u ngarkua.')), { once:true });
           return;
         }
         const script = document.createElement('script');
         script.src = `/app-runtime.js?v=${encodeURIComponent(APP_VERSION)}`;
-        script.defer = true;
+        script.async = true;
         script.dataset.medindexRegistryRuntime = '1';
         script.addEventListener('load', resolve, { once:true });
         script.addEventListener('error', () => reject(new Error('Runtime-i i regjistrit nuk u ngarkua.')), { once:true });
         document.head.appendChild(script);
-      });
+      }), RUNTIME_TIMEOUT_MS, 'Runtime-i i regjistrit zgjati tepër.');
     }
     if (!window.MEDINDEX_REGISTRY_UI_READY || typeof window.MEDINDEX_REGISTRY_UI_READY.then !== 'function') {
       throw new Error('Runtime-i i regjistrit nuk ekspozoi gjendjen e inicializimit.');
     }
-    await window.MEDINDEX_REGISTRY_UI_READY;
+    await withTimeout(window.MEDINDEX_REGISTRY_UI_READY, RUNTIME_TIMEOUT_MS, 'Përgatitja e tabelës zgjati tepër.');
   }
 
   if (hasRegistryData()) {
@@ -221,11 +245,13 @@ const hidePageLoader = () => {
 
   await loadRegistryRuntime();
 
+  releaseStaleInteractionLock();
   const countBadge = document.getElementById('countBadge');
   if (countBadge) countBadge.title = 'Burimi i të dhënave: ' + window.REGISTRY_DATA_SOURCE;
   window.MEDINDEX_APP_VERSION = APP_VERSION;
   performance.mark?.('medindex-app-ready');
   performance.measure?.('medindex-app-load', 'medindex-app-start', 'medindex-app-ready');
+  window.dispatchEvent(new CustomEvent('medindex:registry-ready', { detail:{ source:window.REGISTRY_DATA_SOURCE } }));
   requestAnimationFrame(() => requestAnimationFrame(hidePageLoader));
 
   const cachedAt = Number(localStorage.getItem(CACHE_TIME_KEY) || 0);
@@ -237,6 +263,7 @@ const hidePageLoader = () => {
   }
 })().catch(error => {
   console.error(error);
+  releaseStaleInteractionLock();
   hidePageLoader();
   const count = document.getElementById('countBadge');
   if (count) count.textContent = error?.name === 'AbortError' ? 'Ngarkimi zgjati tepër' : 'Gabim në databazë';
