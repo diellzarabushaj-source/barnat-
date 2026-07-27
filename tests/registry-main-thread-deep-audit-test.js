@@ -51,11 +51,10 @@ assert.match(part, /window\.MEDINDEX_REGISTRY_ROWS = RAW/);
 assert.match(part, /medindex:registry-data-ready/);
 assert.match(part, /registry-parser-worker-v2\.js/);
 
-assert.match(loader, /medindex:registry-ready/);
-assert.match(loader, /requestIdleCallback\(run, \{ timeout:5000 \}\)/);
+assert.match(loader, /function schedule\(\)[\s\S]*requestIdleCallback\(run, \{ timeout:5000 \}\)/);
+assert.match(loader, /addEventListener\('medindex:registry-ready', schedule, \{ once:true \}\)/);
 assert.match(loader, /registry-dosage-columns-v2\.js/);
 assert.match(loader, /dataset\.registryDosageRuntime/);
-assert.ok(loader.indexOf('medindex:registry-ready') < loader.indexOf('requestIdleCallback'), 'dosage loading must be gated by registry readiness before idle scheduling');
 
 assert.match(dosage, /waitForRegistryRows/);
 assert.match(dosage, /window\.MEDINDEX_REGISTRY_ROWS/);
