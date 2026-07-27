@@ -7,6 +7,18 @@ const CANONICAL_FIELDS = [
   'Çmimi me pakicë','Afati i vlefshmërisë'
 ];
 
+const REGISTRY_WORKER_URL = './registry-parser-worker.js?v=registry-worker-v1';
+const REGISTRY_WORKER_TIMEOUT_MS = 20000;
+const BASE64_CHUNK = 256 * 1024;
+const NORMALIZE_BATCH = 120;
+
+function yieldToBrowser(){
+  return new Promise(resolve => {
+    if(typeof requestAnimationFrame === 'function') requestAnimationFrame(() => resolve());
+    else setTimeout(resolve, 0);
+  });
+}
+
 function normalizeFieldToken(value){
   return String(value ?? '')
     .normalize('NFD').replace(/[\u0300-\u036f]/g, '')
@@ -88,6 +100,77 @@ function normalizeDrugRow(row, index){
   return result;
 }
 
+async function normalizeDrugRows(value){
+  const rows = unwrapDrugRows(value);
+  const output = new Array(rows.length);
+  for(let start = 0; start < rows.length; start += NORMALIZE_BATCH){
+    const end = Math.min(rows.length, start + NORMALIZE_BATCH);
+    for(let index = start; index < end; index++) output[index] = normalizeDrugRow(rows[index], index);
+    if(end < rows.length) await yieldToBrowser();
+  }
+  return output;
+}
+
+function parseRegistryInWorker(parts){
+  return new Promise((resolve, reject) => {
+    if(typeof Worker !== 'function') return reject(new Error('Web Worker nuk mbështetet.'));
+    let settled = false;
+    const worker = new Worker(REGISTRY_WORKER_URL);
+    const finish = (callback, value) => {
+      if(settled) return;
+      settled = true;
+      clearTimeout(timeout);
+      worker.terminate();
+      callback(value);
+    };
+    const timeout = setTimeout(() => finish(reject, new Error('Përpunimi i regjistrit zgjati tepër.')), REGISTRY_WORKER_TIMEOUT_MS);
+    worker.addEventListener('message', event => {
+      if(event.data?.type !== 'REGISTRY_PARSED') return;
+      if(event.data.ok) finish(resolve, event.data.data);
+      else finish(reject, new Error(event.data.error || 'Worker-i nuk e lexoi regjistrin.'));
+    });
+    worker.addEventListener('error', () => finish(reject, new Error('Worker-i i regjistrit dështoi.')));
+    worker.postMessage({ type:'PARSE_REGISTRY', parts });
+  });
+}
+
+async function parseRegistryCooperatively(parts){
+  const encoded = Array.isArray(parts) ? parts.join('') : '';
+  if(!encoded) return [];
+  const chunks = [];
+  let total = 0;
+  let offset = 0;
+  while(offset < encoded.length){
+    let end = Math.min(encoded.length, offset + BASE64_CHUNK);
+    if(end < encoded.length) end -= (end - offset) % 4;
+    const binary = atob(encoded.slice(offset, end));
+    const bytes = new Uint8Array(binary.length);
+    for(let index = 0; index < binary.length; index++) bytes[index] = binary.charCodeAt(index);
+    chunks.push(bytes);
+    total += bytes.length;
+    offset = end;
+    await yieldToBrowser();
+  }
+  const compressed = new Uint8Array(total);
+  let cursor = 0;
+  for(const chunk of chunks){ compressed.set(chunk, cursor); cursor += chunk.length; }
+  if(typeof DecompressionStream !== 'function') throw new Error('Browser-i nuk e mbështet dekompresimin e regjistrit.');
+  const stream = new Blob([compressed]).stream().pipeThrough(new DecompressionStream('gzip'));
+  return JSON.parse(await new Response(stream).text());
+}
+
+async function parseDrugData(){
+  if(!(Array.isArray(window.DRUG_DATA_PARTS) && window.DRUG_DATA_PARTS.length)){
+    return JSON.parse(document.getElementById('drug-data')?.textContent || '[]');
+  }
+  try {
+    return await parseRegistryInWorker(window.DRUG_DATA_PARTS);
+  } catch(error) {
+    console.warn('Worker-i nuk ishte i disponueshëm; po përdoret përpunimi gradual:', error);
+    return parseRegistryCooperatively(window.DRUG_DATA_PARTS);
+  }
+}
+
 async function ensureRegistryQuality(){
   if(window.MedIndexRegistryQuality) return window.MedIndexRegistryQuality;
   try {
@@ -140,19 +223,13 @@ function emergencyRegistryCorrection(rows){
 
 let parsedDrugData = [];
 try {
-  if(Array.isArray(window.DRUG_DATA_PARTS) && window.DRUG_DATA_PARTS.length){
-    const encoded = window.DRUG_DATA_PARTS.join('');
-    const bytes = Uint8Array.from(atob(encoded), c => c.charCodeAt(0));
-    const stream = new Blob([bytes]).stream().pipeThrough(new DecompressionStream('gzip'));
-    parsedDrugData = JSON.parse(await new Response(stream).text());
-  } else {
-    parsedDrugData = JSON.parse(document.getElementById('drug-data')?.textContent || '[]');
-  }
+  parsedDrugData = await parseDrugData();
 } catch(error) {
   console.error('Të dhënat e barnave nuk u lexuan:', error);
 }
 
-const normalizedRows = unwrapDrugRows(parsedDrugData).map(normalizeDrugRow);
+const normalizedRows = await normalizeDrugRows(parsedDrugData);
+await yieldToBrowser();
 const registryQuality = await ensureRegistryQuality();
 let registryQualityResult;
 try {
@@ -167,22 +244,3 @@ if(!RAW.length){
   console.error('Nuk u gjet asnjë rresht i vlefshëm në regjistër.');
 }
 
-const COLUMNS = [
-  { key:'Nr rendor', label:'Nr', type:'num', cls:'code', visible:true },
-  { key:'Emri tregtar', label:'Emri Tregtar', type:'str', cls:'name', visible:true },
-  { key:'Substanca aktive', label:'Substanca Aktive', type:'str', cls:'', visible:true },
-  { key:'ATC Code', label:'ATC', type:'str', cls:'code', visible:true },
-  { key:'Klasa / Çka është', label:'Klasa / Çka është', type:'str', cls:'wrap', visible:true },
-  { key:'Përdorimi (fjalë kyçe)', label:'Përdorimi / fjalë kyçe', type:'str', cls:'wrap', visible:true },
-  { key:'PDID', label:'PDID', type:'str', cls:'code', visible:true },
-  { key:'ProtocolNo', label:'Protokolli', type:'str', cls:'code', visible:false },
-  { key:'Fortësia', label:'Fort&euml;sia', type:'str', cls:'', visible:true },
-  { key:'Forma farmaceutike', label:'Forma', type:'str', cls:'wrap', visible:true },
-  { key:'Si të shënohet në recetë', label:'Si shënohet në recetë', type:'str', cls:'wrap', visible:true },
-  { key:'Madhësia e paketimit', label:'Paketimi', type:'str', cls:'wrap', visible:false },
-  { key:'Bartësi i Autorizim Marketingut', label:'Bartësi i Autorizimit', type:'str', cls:'wrap', visible:false },
-  { key:'Prodhuesi', label:'Prodhuesi', type:'str', cls:'wrap', visible:false },
-  { key:'MA certifikata', label:'Certifikata MA', type:'str', cls:'code', visible:false },
-  { key:'Statusi', label:'Statusi', type:'str', cls:'', visible:true },
-  { key:'Çmimi me shumicë', label:'&Ccedil;m. Shumic&euml;', type:'num', cls:'price', visible:false },
-  { key:'Çmimi me marzhë', label:'&Ccedil;m. M
