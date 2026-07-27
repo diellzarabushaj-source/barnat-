@@ -5,15 +5,21 @@
   const PROFESSIONAL_VERSION = 'production-audit-v1';
   const MOBILE_BREAKPOINT = 1024;
   const PAGE_KEYS = {
-    '/': 'barnat',
-    '/index.html': 'barnat',
-    '/klasifikimi.html': 'klasifikimi',
-    '/icd.html': 'icd',
-    '/analizat.html': 'analizat',
-    '/dozologjia.html': 'dozologjia',
-    '/protokollet.html': 'protokollet',
-    '/recetat.html': 'recetat',
-    '/login.html': 'login',
+    '/':'barnat',
+    '/index.html':'barnat',
+    '/klasifikimi.html':'klasifikimi',
+    '/icd.html':'icd',
+    '/analizat.html':'analizat',
+    '/dozologjia.html':'dozologjia',
+    '/protokollet.html':'protokollet',
+    '/recetat.html':'recetat',
+    '/login.html':'login',
+  };
+  const NAV_OBSERVER_OPTIONS = {
+    childList:true,
+    subtree:true,
+    attributes:true,
+    attributeFilter:['class', 'style', 'aria-current'],
   };
 
   const normalizedPath = () => location.pathname.replace(/\/{2,}/g, '/').replace(/\/+$/, '') || '/';
@@ -32,15 +38,36 @@
   let resizeObserver = null;
   let paletteObserver = null;
   let drugPickerObserver = null;
+  let pageSlotObserver = null;
   let paletteListenersInstalled = false;
   let drugPickerListenersInstalled = false;
+  let stabilized = false;
+
+  function setAttributeIfChanged(node, name, value) {
+    if (node && node.getAttribute(name) !== value) node.setAttribute(name, value);
+  }
+
+  function removeAttributeIfPresent(node, name) {
+    if (node?.hasAttribute(name)) node.removeAttribute(name);
+  }
+
+  function setClassState(node, className, enabled) {
+    if (!node || node.classList.contains(className) === Boolean(enabled)) return;
+    node.classList.toggle(className, Boolean(enabled));
+  }
+
+  function setTitleIfChanged(node, value) {
+    if (node && value && node.title !== value) node.title = value;
+  }
 
   function orderStylesheets() {
     headFrame = 0;
     const base = document.querySelector('link[data-tailadmin-medindex-css]');
     const professional = document.querySelector('link[data-tailadmin-professional-css]');
     if (!base || !professional) return;
-    if (base.nextElementSibling !== professional || document.head.lastElementChild !== professional) document.head.append(base, professional);
+    if (base.nextElementSibling !== professional || document.head.lastElementChild !== professional) {
+      document.head.append(base, professional);
+    }
   }
 
   function scheduleStylesheetOrder() {
@@ -65,9 +92,9 @@
   function normalizeContentScroll({ force = false } = {}) {
     const main = document.querySelector('.mi-main');
     if (!main) return;
-    main.style.scrollBehavior = 'auto';
+    if (main.style.scrollBehavior !== 'auto') main.style.scrollBehavior = 'auto';
     if (!force && navigationType() === 'back_forward') return;
-    main.scrollTop = 0;
+    if (main.scrollTop) main.scrollTop = 0;
     requestAnimationFrame(() => {
       if (main.scrollTop) main.scrollTop = 0;
     });
@@ -87,51 +114,65 @@
     }
   }
 
+  function observeNavigation(nav = document.getElementById('appMenu')) {
+    if (!nav) return;
+    if (!navObserver) navObserver = new MutationObserver(scheduleNavigation);
+    navObserver.observe(nav, NAV_OBSERVER_OPTIONS);
+  }
+
   function normalizeNavigation() {
     navFrame = 0;
     const nav = document.getElementById('appMenu');
     if (!nav) return;
-    nav.id = 'appMenu';
-    nav.className = 'mi-sidebar-nav';
-    nav.setAttribute('aria-label', 'Navigimi kryesor');
 
-    const tools = nav.querySelector('.mi-menu-group-tools');
-    const logout = nav.querySelector('.auth-logout');
-    if (tools && logout && logout.parentElement !== tools) tools.appendChild(logout);
-    if (logout) {
-      logout.classList.add('mi-menu-item');
-      logout.removeAttribute('style');
-      const text = logout.querySelector('.app-menu-title,.mi-menu-label')?.textContent?.trim() || 'Dil';
-      logout.title = text;
-    }
+    const reconnectObserver = Boolean(navObserver);
+    if (reconnectObserver) navObserver.disconnect();
 
-    const themeControl = nav.querySelector('.mi-theme-control,.theme-control');
-    if (themeControl) {
-      themeControl.hidden = true;
-      themeControl.setAttribute('aria-hidden', 'true');
-    }
+    try {
+      if (nav.id !== 'appMenu') nav.id = 'appMenu';
+      if (nav.className !== 'mi-sidebar-nav') nav.className = 'mi-sidebar-nav';
+      setAttributeIfChanged(nav, 'aria-label', 'Navigimi kryesor');
 
-    const links = [...nav.querySelectorAll('.app-menu-link,.auth-logout')];
-    links.forEach(link => {
-      link.removeAttribute('style');
-      link.classList.add('mi-menu-item');
-      const label = link.querySelector('.app-menu-title,.mi-menu-label')?.textContent?.trim() || link.getAttribute('aria-label') || '';
-      if (label) link.title = label;
-    });
+      const tools = nav.querySelector('.mi-menu-group-tools');
+      const logout = nav.querySelector('.auth-logout');
+      if (tools && logout && logout.parentElement !== tools) tools.appendChild(logout);
+      if (logout) {
+        setClassState(logout, 'mi-menu-item', true);
+        removeAttributeIfPresent(logout, 'style');
+        const text = logout.querySelector('.app-menu-title,.mi-menu-label')?.textContent?.trim() || 'Dil';
+        setTitleIfChanged(logout, text);
+      }
 
-    const navigational = links.filter(link => link.matches('a[href]'));
-    const matches = navigational.filter(expectedActivePath);
-    if (matches.length) {
-      navigational.forEach(link => {
-        const active = link === matches[0];
-        link.classList.toggle('active', active);
-        if (active) link.setAttribute('aria-current', 'page');
-        else link.removeAttribute('aria-current');
+      const themeControl = nav.querySelector('.mi-theme-control,.theme-control');
+      if (themeControl) {
+        if (!themeControl.hidden) themeControl.hidden = true;
+        setAttributeIfChanged(themeControl, 'aria-hidden', 'true');
+      }
+
+      const links = [...nav.querySelectorAll('.app-menu-link,.auth-logout')];
+      links.forEach(link => {
+        removeAttributeIfPresent(link, 'style');
+        setClassState(link, 'mi-menu-item', true);
+        const label = link.querySelector('.app-menu-title,.mi-menu-label')?.textContent?.trim() || link.getAttribute('aria-label') || '';
+        setTitleIfChanged(link, label);
       });
-    }
 
-    const sidebarScroll = document.querySelector('.mi-sidebar-scroll');
-    if (sidebarScroll) sidebarScroll.setAttribute('tabindex', '-1');
+      const navigational = links.filter(link => link.matches('a[href]'));
+      const matches = navigational.filter(expectedActivePath);
+      if (matches.length) {
+        navigational.forEach(link => {
+          const active = link === matches[0];
+          setClassState(link, 'active', active);
+          if (active) setAttributeIfChanged(link, 'aria-current', 'page');
+          else removeAttributeIfPresent(link, 'aria-current');
+        });
+      }
+
+      const sidebarScroll = document.querySelector('.mi-sidebar-scroll');
+      setAttributeIfChanged(sidebarScroll, 'tabindex', '-1');
+    } finally {
+      if (reconnectObserver && nav.isConnected) observeNavigation(nav);
+    }
   }
 
   function scheduleNavigation() {
@@ -144,7 +185,9 @@
     const selectors = ['.table-wrap', '.atc-table-wrap', '.med-table-wrap', '.lab-category-nav', '.atc-audit', '.rx-command-bar'];
     document.querySelectorAll(selectors.join(',')).forEach(node => {
       const horizontallyScrollable = node.scrollWidth > node.clientWidth + 2;
-      node.toggleAttribute('data-mi-horizontal-scroll', horizontallyScrollable);
+      if (node.hasAttribute('data-mi-horizontal-scroll') !== horizontallyScrollable) {
+        node.toggleAttribute('data-mi-horizontal-scroll', horizontallyScrollable);
+      }
       if (horizontallyScrollable && !node.hasAttribute('tabindex')) node.tabIndex = 0;
     });
   }
@@ -225,10 +268,14 @@
       ? Math.min(Math.max(gutter, anchoredTop), Math.max(gutter, window.innerHeight - 180))
       : Math.min(84, Math.max(gutter, window.innerHeight - 180));
 
-    palette.style.setProperty('--mi-command-left', `${Math.round(left)}px`);
-    palette.style.setProperty('--mi-command-top', `${Math.round(top)}px`);
-    palette.style.setProperty('--mi-command-width', `${Math.round(width)}px`);
-    palette.dataset.miAnchor = inputVisible ? 'input' : 'viewport';
+    const nextLeft = `${Math.round(left)}px`;
+    const nextTop = `${Math.round(top)}px`;
+    const nextWidth = `${Math.round(width)}px`;
+    if (palette.style.getPropertyValue('--mi-command-left') !== nextLeft) palette.style.setProperty('--mi-command-left', nextLeft);
+    if (palette.style.getPropertyValue('--mi-command-top') !== nextTop) palette.style.setProperty('--mi-command-top', nextTop);
+    if (palette.style.getPropertyValue('--mi-command-width') !== nextWidth) palette.style.setProperty('--mi-command-width', nextWidth);
+    const anchor = inputVisible ? 'input' : 'viewport';
+    if (palette.dataset.miAnchor !== anchor) palette.dataset.miAnchor = anchor;
   }
 
   function schedulePalettePosition() {
@@ -252,7 +299,7 @@
     if (!input || !palette) return false;
     portalCommandPalette(palette);
 
-    if (!palette.dataset.miViewportBound) {
+    if (palette.dataset.miViewportBound !== '1') {
       palette.dataset.miViewportBound = '1';
       paletteObserver?.disconnect();
       paletteObserver = new MutationObserver(schedulePalettePosition);
@@ -275,8 +322,8 @@
     const picker = document.getElementById('rxDrugPopover');
     if (!picker || picker.hidden) return;
     picker.hidden = true;
-    picker.setAttribute('aria-hidden', 'true');
-    picker.setAttribute('aria-modal', 'false');
+    setAttributeIfChanged(picker, 'aria-hidden', 'true');
+    setAttributeIfChanged(picker, 'aria-modal', 'false');
     if (restoreFocus) document.querySelector('[data-rx-command="drug"]')?.focus({ preventScroll:true });
   }
 
@@ -284,13 +331,13 @@
     const picker = document.getElementById('rxDrugPopover');
     if (!picker || !document.body) return false;
     if (picker.parentElement !== document.body) document.body.appendChild(picker);
-    picker.dataset.miViewportPicker = '1';
+    if (picker.dataset.miViewportPicker !== '1') picker.dataset.miViewportPicker = '1';
     if (picker.hidden) {
-      picker.setAttribute('aria-hidden', 'true');
-      picker.setAttribute('aria-modal', 'false');
+      setAttributeIfChanged(picker, 'aria-hidden', 'true');
+      setAttributeIfChanged(picker, 'aria-modal', 'false');
     } else {
-      picker.setAttribute('aria-hidden', 'false');
-      picker.setAttribute('aria-modal', 'true');
+      setAttributeIfChanged(picker, 'aria-hidden', 'false');
+      setAttributeIfChanged(picker, 'aria-modal', 'true');
       requestAnimationFrame(() => document.getElementById('rxDrugSearch')?.focus({ preventScroll:true }));
     }
 
@@ -328,15 +375,13 @@
   }
 
   function installObservers() {
-    const nav = document.getElementById('appMenu');
-    if (nav && !navObserver) {
-      navObserver = new MutationObserver(scheduleNavigation);
-      navObserver.observe(nav, { childList:true, subtree:true, attributes:true, attributeFilter:['class', 'style', 'aria-current'] });
-    }
+    observeNavigation();
+
     if (!headObserver) {
       headObserver = new MutationObserver(scheduleStylesheetOrder);
       headObserver.observe(document.head, { childList:true });
     }
+
     if ('ResizeObserver' in window && !resizeObserver) {
       resizeObserver = new ResizeObserver(() => {
         scheduleLayoutAudit();
@@ -347,19 +392,22 @@
       if (main) resizeObserver.observe(main);
       if (slot) resizeObserver.observe(slot);
     }
+
     const pageSlot = document.querySelector('.mi-page-slot');
-    if (pageSlot && !pageSlot.dataset.miProfessionalObserved) {
+    if (pageSlot && !pageSlotObserver) {
       pageSlot.dataset.miProfessionalObserved = '1';
-      const observer = new MutationObserver(() => {
+      pageSlotObserver = new MutationObserver(() => {
         scheduleLayoutAudit();
         bindCommandPaletteViewport();
         syncPrescriptionDrugPicker();
       });
-      observer.observe(pageSlot, { childList:true, subtree:true });
+      pageSlotObserver.observe(pageSlot, { childList:true, subtree:true });
     }
   }
 
   function stabilize() {
+    if (stabilized) return;
+    stabilized = true;
     document.body?.classList.add('mi-professional-ready');
     orderStylesheets();
     normalizeNavigation();
