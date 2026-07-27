@@ -13,6 +13,7 @@
   const LEGACY_SRC = '/tailadmin-shell-legacy.js?v=production-audit-v1';
   const MOBILE_SRC = '/mobile-experience.js?v=production-audit-v1';
   const MOBILE_A11Y_SRC = '/mobile-accessibility-hardening.js?v=mobile-a11y-deep-audit-v1';
+  const OFFLINE_RUNTIME_SRC = '/offline-runtime-performance.js?v=low-bandwidth-v3';
   const SHELL_VERSION = 'production-audit-v1';
   const id = 'appMenu';
   const SHELL_RETRY_MS = 3500;
@@ -66,6 +67,10 @@
     return document.querySelector('link[data-tailadmin-professional-css],link[href*="tailadmin-professional.css"]');
   }
 
+  function criticalMobileStylesheet() {
+    return document.getElementById('miCriticalMobileTouchStyles');
+  }
+
   function ensureStylesheetLast() {
     const base = baseStylesheet();
     const professional = professionalStylesheet();
@@ -73,14 +78,32 @@
     base.removeAttribute('data-tailadmin-medindex-css');
     base.dataset.miBaseStylesheet = '1';
     if (base.nextElementSibling !== professional) base.after(professional);
+    const critical = criticalMobileStylesheet();
+    if (critical && professional.nextElementSibling !== critical) professional.after(critical);
   }
 
   function ensureCriticalMobileStyles() {
-    if (document.getElementById('miCriticalMobileTouchStyles')) return;
-    const style = document.createElement('style');
-    style.id = 'miCriticalMobileTouchStyles';
-    style.textContent = '@media(max-width:1023px){html.medindex-tailadmin :where(input:not([type]),input[type="search"],input[type="text"],select){min-height:44px!important;box-sizing:border-box!important}}';
-    document.head.appendChild(style);
+    let style = criticalMobileStylesheet();
+    if (!style) {
+      style = document.createElement('style');
+      style.id = 'miCriticalMobileTouchStyles';
+      style.textContent = '@media(max-width:1023px){html.medindex-tailadmin :where(input:not([type]),input[type="search"],input[type="text"],select){min-height:44px!important;height:auto!important;box-sizing:border-box!important}}';
+      document.head.appendChild(style);
+    }
+    ensureStylesheetLast();
+  }
+
+  function ensureOfflineRuntime() {
+    if (document.querySelector('script[data-medindex-offline-runtime]') || window.MedIndexOffline) return;
+    const script = document.createElement('script');
+    script.src = OFFLINE_RUNTIME_SRC;
+    script.async = true;
+    script.dataset.medindexOfflineRuntime = 'performance-v3';
+    script.addEventListener('error', () => {
+      document.documentElement.dataset.miOfflineRuntimeError = 'load';
+      console.error('MedIndex performance offline runtime failed to load.');
+    }, { once:true });
+    document.head.appendChild(script);
   }
 
   const headObserver = new MutationObserver(() => queueMicrotask(ensureStylesheetLast));
@@ -128,7 +151,7 @@
     if (profile.slow || profile.saveData || !('serviceWorker' in navigator)) return;
     const warm = source => fetch(source, { cache:'no-cache', credentials:'same-origin' }).catch(() => null);
     navigator.serviceWorker.ready.then(() => {
-      const run = () => Promise.all([warm(LEGACY_SRC), warm(MOBILE_SRC), warm(MOBILE_A11Y_SRC)]);
+      const run = () => Promise.all([warm(LEGACY_SRC), warm(MOBILE_SRC), warm(MOBILE_A11Y_SRC), warm(OFFLINE_RUNTIME_SRC)]);
       if (navigator.serviceWorker.controller) run();
       else navigator.serviceWorker.addEventListener('controllerchange', run, { once:true });
     }).catch(() => null);
@@ -155,7 +178,7 @@
     document.documentElement.dataset.miShellVersion = SHELL_VERSION;
     document.documentElement.dataset.miThemeKey = THEME_KEY;
     delete document.documentElement.dataset.miShellError;
-    ensureStylesheetLast();
+    ensureCriticalMobileStyles();
     queueMicrotask(ensureStylesheetLast);
     loadMobileExperience();
     warmRuntimeAssets();
@@ -198,8 +221,8 @@
   }
 
   function init() {
-    ensureStylesheetLast();
     ensureCriticalMobileStyles();
+    ensureOfflineRuntime();
     loadLegacyShell();
     setTimeout(revealCachedShellOnWeakConnection, 0);
     shellRetry = setTimeout(() => {
@@ -209,8 +232,8 @@
 
   window.addEventListener('medindex:tailadmin-ready', finalizeShellReady);
   window.addEventListener('pageshow', () => {
-    ensureStylesheetLast();
     ensureCriticalMobileStyles();
+    ensureOfflineRuntime();
     resetSidebarPosition();
     syncResponsiveSidebar();
     revealCachedShellOnWeakConnection();
