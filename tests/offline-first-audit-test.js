@@ -7,7 +7,10 @@ const ROOT = path.resolve(__dirname, '..');
 const read = relative => fs.readFileSync(path.join(ROOT, relative), 'utf8');
 const exists = relative => fs.existsSync(path.join(ROOT, relative));
 
-['sw.js', 'offline-runtime.js', 'auth-client.js', 'app.js', 'clinical-workflow.js', 'local-registry.js'].forEach(file => {
+[
+  'sw.js', 'sw-resilient-v3.js', 'offline-runtime-performance.js',
+  'auth-client.js', 'app-performance.js', 'clinical-workflow.js', 'local-registry.js'
+].forEach(file => {
   assert.ok(exists(file), `${file} is missing`);
   execFileSync(process.execPath, ['--check', path.join(ROOT, file)], { stdio:'pipe' });
 });
@@ -20,26 +23,26 @@ assert.equal(manifest.scope, '/');
 assert.match(manifest.display, /standalone/);
 assert.ok(Array.isArray(manifest.shortcuts) && manifest.shortcuts.length >= 3);
 
-const worker = read('sw.js');
+const worker = read('sw-resilient-v3.js');
 [
-  /production-audit-v1/, /skipWaiting\(\)/, /clients\.claim\(\)/,
+  /low-bandwidth-v3/, /skipWaiting\(\)/, /clients\.claim\(\)/,
   /WARM_PRIVATE_DATA/, /CLEAR_PRIVATE_DATA/, /GET_CACHE_STATUS/,
   /\/api\/registry/, /\/api\/dosage/, /\/api\/icd/, /\/api\/drug-search/,
   /\/data\/protocols\.json/, /\/api\/protocol-document/, /Content-Range/,
-  /medindex-private-/, /medindex-documents-/, /page-hit/, /private-hit/, /event\.waitUntil/,
-].forEach(pattern => assert.match(worker, pattern, `sw.js missing ${pattern}`));
+  /medindex-private-/, /medindex-documents-/, /page-fast-hit/, /private-fast-hit/, /event\.waitUntil/,
+].forEach(pattern => assert.match(worker, pattern, `sw-resilient-v3.js missing ${pattern}`));
 assert.match(worker, /url\.pathname === '\/api\/auth'[\s\S]*fetch\(request\)/, 'auth must remain network-only');
 assert.match(worker, /url\.pathname === '\/api\/gemini-prescription'[\s\S]*geminiResponse/, 'Gemini POST must have an explicit offline route');
 assert.match(worker, /privateCacheStatus/, 'offline readiness must validate the exact required datasets');
 assert.doesNotMatch(worker, /cache\.put\([^\n]*api\/auth/, 'auth responses must never be cached');
 assert.doesNotMatch(worker, /self\.waitUntil/, 'waitUntil must be called on the fetch event');
 
-const runtime = read('offline-runtime.js');
+const runtime = read('offline-runtime-performance.js');
 [
   /serviceWorker\.register/, /updateViaCache:'none'/, /navigator\.storage\.persist/,
   /WARM_PRIVATE_DATA/, /beforeinstallprompt/, /medindex:offline-runtime-ready/,
-  /clinical-workflow\.js/, /Përditësim gati/, /Pa internet/,
-].forEach(pattern => assert.match(runtime, pattern, `offline-runtime.js missing ${pattern}`));
+  /clinical-workflow\.js/, /Përditësim gati/, /Pa internet/, /sw-resilient-v3\.js/,
+].forEach(pattern => assert.match(runtime, pattern, `offline-runtime-performance.js missing ${pattern}`));
 assert.doesNotMatch(runtime, /\/api\/gemini-prescription|password/i, 'offline runtime must not call AI or handle passwords');
 
 const auth = read('auth-client.js');
@@ -55,21 +58,25 @@ assert.match(auth, /configurationUnavailable\(response, payload\)[\s\S]*goToLogi
 assert.match(auth, /if \(!navigator\.onLine\)[\s\S]*activateOfflineLease/, 'offline lease must be attempted without waiting for a timeout');
 assert.doesNotMatch(auth, /lease\.version !== 1/, 'legacy offline lease version must not remain active');
 
-const app = read('app.js');
+const app = read('app-performance.js');
 [
   /medindex-registry-v1/, /indexedDB\.open/, /databaseGet/, /databasePut/,
   /indexeddb-offline-cache/, /service-worker-offline-cache/, /requestIdleCallback/,
-  /app-runtime\.js/, /parseRegistryPayload/,
-].forEach(pattern => assert.match(app, pattern, `app.js missing ${pattern}`));
+  /app-runtime-performance\.js/, /parseRegistryPayload/, /scheduleBrowserCacheSave/,
+].forEach(pattern => assert.match(app, pattern, `app-performance.js missing ${pattern}`));
 const startup = app.slice(app.indexOf('if (hasRegistryData())'));
 assert.ok(startup.indexOf('await loadBrowserCache()') >= 0, 'startup must attempt the local registry');
-assert.ok(startup.indexOf('await loadBrowserCache()') < startup.indexOf('await loadGoogleDriveFallback()'), 'local registry must be attempted before the network');
+assert.ok(startup.indexOf('await loadBrowserCache()') < startup.indexOf('await loadRegistrySource()'), 'local registry must be attempted before the network');
+assert.doesNotMatch(app, /JSON\.stringify\(window\.DRUG_DATA_PARTS\)/, 'large localStorage registry fallback must not block startup');
+
+const index = read('index.html');
+assert.match(index, /offline-runtime-performance\.js[^>]+data-medindex-offline-runtime/);
 
 const vercel = JSON.parse(read('vercel.json'));
 const serializedHeaders = JSON.stringify(vercel.headers);
-assert.match(serializedHeaders, /sw\\\.js|sw\.js/, 'service worker cache policy is missing');
+assert.match(serializedHeaders, /sw-resilient-v3\.js/, 'cache-isolated service worker cache policy is missing');
 assert.match(serializedHeaders, /Service-Worker-Allowed/, 'service worker scope header is missing');
 assert.match(serializedHeaders, /worker-src/, 'CSP worker-src is missing');
 assert.match(serializedHeaders, /manifest-src/, 'CSP manifest-src is missing');
 
-console.log('Offline-first, private-cache and PWA audit passed.');
+console.log('Offline-first, private-cache and PWA performance audit passed.');
