@@ -2,6 +2,8 @@
   'use strict';
 
   const RETURN_KEY = 'medindex_return_after_login';
+  const OFFLINE_LEASE_KEY = 'medindex_offline_lease_v2';
+  const MAX_OFFLINE_LEASE_MS = 8 * 60 * 60 * 1000;
   const form = document.getElementById('loginForm');
   const password = document.getElementById('password');
   const submit = document.getElementById('loginSubmit');
@@ -11,6 +13,15 @@
   let busy = false;
   let redirecting = false;
   let configurationBlocked = false;
+
+  function connectionProfile() {
+    const connection = navigator.connection || navigator.mozConnection || navigator.webkitConnection;
+    const type = String(connection?.effectiveType || '');
+    return {
+      slow:/^(slow-2g|2g)$/i.test(type) || Number(connection?.downlink || 10) < 0.8 || Number(connection?.rtt || 0) > 900,
+      saveData:Boolean(connection?.saveData),
+    };
+  }
 
   function safeReturnPath(value) {
     const path = String(value || '');
@@ -46,36 +57,50 @@
   function blockForConfiguration() {
     configurationBlocked = true;
     setBusy(false);
-    setMessage('Hyrja private nuk është konfiguruar në server. Vendos SESSION_SECRET dhe ACCESS_CODE ose ACCESS_CODE_SCRYPT në Vercel, pastaj bëj redeploy.');
+    setMessage('Hyrja private nuk është konfiguruar në server. Kontrollo SESSION_SECRET dhe ACCESS_CODE në Vercel.');
   }
 
-  async function releaseStaleBrowserShell() {
+  function saveBootstrapLease(payload = {}) {
+    if (payload.hardened !== true) return;
+    const duration = Math.min(MAX_OFFLINE_LEASE_MS, Math.max(60 * 60 * 1000, Number(payload.expiresIn || 8 * 60 * 60) * 1000));
+    const verifiedAt = Date.now();
     try {
-      if ('serviceWorker' in navigator) {
-        const registrations = await navigator.serviceWorker.getRegistrations();
-        const localRegistrations = registrations.filter(registration => {
-          try { return new URL(registration.scope).origin === location.origin; }
-          catch { return false; }
-        });
-        await Promise.allSettled(localRegistrations.map(async registration => {
-          try { await registration.update(); } catch {}
-          return registration.unregister();
+      localStorage.setItem(OFFLINE_LEASE_KEY, JSON.stringify({
+        version:2,
+        hardened:true,
+        bootstrap:true,
+        verifiedAt,
+        expiresAt:verifiedAt + duration,
+      }));
+    } catch {}
+  }
+
+  async function refreshWorkerInBackground() {
+    try {
+      if (!('serviceWorker' in navigator)) return;
+      const registrations = await navigator.serviceWorker.getRegistrations();
+      registrations.forEach(registration => registration.update().catch(() => null));
+    } catch {}
+  }
+
+  async function purgeOnlyStaleRuntimeEntries() {
+    try {
+      if (!('caches' in window)) return;
+      const names = await caches.keys();
+      const targets = ['/offline-runtime.js', '/auth-client.js', '/tailadmin-shell.js'];
+      await Promise.allSettled(names
+        .filter(name => name.startsWith('medindex-static-'))
+        .map(async name => {
+          const cache = await caches.open(name);
+          await Promise.allSettled(targets.map(target => cache.delete(target, { ignoreSearch:true })));
         }));
-      }
-    } catch {}
-
-    try {
-      if ('caches' in window) {
-        const names = await caches.keys();
-        const staleShellCaches = names.filter(name => name.startsWith('medindex-pages-') || name.startsWith('medindex-static-'));
-        await Promise.allSettled(staleShellCaches.map(name => caches.delete(name)));
-      }
     } catch {}
   }
 
-  async function timedFetch(url, options = {}, timeoutMs = 8000) {
+  async function timedFetch(url, options = {}, normalTimeoutMs = 16000, slowTimeoutMs = 42000) {
+    const profile = connectionProfile();
     const controller = new AbortController();
-    const timeout = setTimeout(() => controller.abort(), timeoutMs);
+    const timeout = setTimeout(() => controller.abort(), profile.slow || profile.saveData ? slowTimeoutMs : normalTimeoutMs);
     try { return await fetch(url, { ...options, signal:controller.signal }); }
     finally { clearTimeout(timeout); }
   }
@@ -108,7 +133,7 @@
     }
 
     setBusy(true);
-    setMessage('');
+    setMessage(connectionProfile().slow ? 'Lidhja është e dobët; verifikimi mund të zgjasë pak…' : '');
     try {
       const response = await timedFetch('/api/auth', {
         method:'POST',
@@ -116,7 +141,7 @@
         body:JSON.stringify({ password:value }),
         cache:'no-store',
         credentials:'same-origin',
-      }, 10000);
+      }, 20000, 45000);
       const payload = await response.json().catch(() => ({}));
       if (!response.ok) {
         if (response.status === 503 && payload.code === 'AUTH_NOT_CONFIGURED') {
@@ -127,15 +152,20 @@
         const suffix = response.status === 429 && retryAfter ? ` Provo pas rreth ${Math.ceil(retryAfter / 60)} minutash.` : '';
         throw new Error((payload.error || 'Hyrja dështoi.') + suffix);
       }
+      saveBootstrapLease(payload);
       redirecting = true;
       setMessage('U verifikua. Po hapet MedIndex…', true);
       password.value = '';
       try { sessionStorage.removeItem(RETURN_KEY); } catch {}
-      window.setTimeout(() => location.replace(destination()), 100);
+      await Promise.race([
+        purgeOnlyStaleRuntimeEntries(),
+        new Promise(resolve => setTimeout(resolve, 1200)),
+      ]);
+      location.replace(destination());
     } catch (error) {
       if (configurationBlocked) return;
       const text = error?.name === 'AbortError'
-        ? 'Serveri nuk u përgjigj me kohë. Kontrollo lidhjen dhe provo përsëri.'
+        ? 'Lidhja është shumë e ngadalshme. Password-i nuk u refuzua; provo përsëri kur sinjali të jetë pak më i mirë.'
         : error.message || 'Hyrja dështoi.';
       setMessage(text);
       password.select();
@@ -144,26 +174,24 @@
     }
   });
 
-  async function init() {
-    setBusy(true);
-    await releaseStaleBrowserShell();
+  async function checkExistingSession() {
     try {
-      const response = await timedFetch('/api/auth', { cache:'no-store', credentials:'same-origin' });
+      const response = await timedFetch('/api/auth', { cache:'no-store', credentials:'same-origin' }, 10000, 24000);
       const payload = await response.json().catch(() => ({}));
       if (response.ok && payload.authenticated) {
         redirecting = true;
         location.replace(destination());
         return;
       }
-      if (response.ok && (payload.hardened === false || payload.accessConfigured === false || payload.sessionConfigured === false)) {
-        blockForConfiguration();
-        return;
-      }
+      if (response.ok && (payload.hardened === false || payload.accessConfigured === false || payload.sessionConfigured === false)) blockForConfiguration();
     } catch {}
-    if (!configurationBlocked) {
-      setBusy(false);
-      password.focus();
-    }
+  }
+
+  function init() {
+    setBusy(false);
+    password.focus();
+    refreshWorkerInBackground();
+    checkExistingSession();
   }
 
   window.addEventListener('pageshow', () => { if (!busy && !configurationBlocked) password.focus(); });
