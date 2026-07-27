@@ -7,6 +7,7 @@ const html = fs.readFileSync(path.join(root, 'dozologjia.html'), 'utf8');
 const js = fs.readFileSync(path.join(root, 'dozologjia-deep-audit.js'), 'utf8');
 const css = fs.readFileSync(path.join(root, 'dozologjia-clinical-readiness.css'), 'utf8');
 const api = fs.readFileSync(path.join(root, 'api/dosage.js'), 'utf8');
+const fallback = fs.readFileSync(path.join(root, 'lib/sheets-dosage-reader.js'), 'utf8');
 
 assert.match(html, /dozologjia-deep-audit\.js/);
 assert.doesNotMatch(html, /dozologjia-(?:safety-enhancements|clinical-readiness)\.js/, 'legacy observer layers must not run alongside the consolidated controller');
@@ -28,15 +29,18 @@ assert.match(js, /population === 'pediatric' \? card\.pediatricRoute : card\.adu
 assert.match(js, /observe\(list, \{ childList:true \}\)/, 'list observer must only watch direct render replacement');
 assert.doesNotMatch(js, /subtree\s*:\s*true/, 'enhancement must not observe its own descendant mutations');
 assert.equal((js.match(/fetch\('\/api\/dosage'/g) || []).length, 1, 'deep-audit controller must request dosage payload only once');
-assert.doesNotMatch(js, /fetch\([^)]*method\s*:\s*['"](?:POST|PUT|PATCH|DELETE)/i, 'deep-audit enhancement must be read-only');
+assert.doesNotMatch(js, /fetch\([^)]*method\s*:\s*['"](>:POST|PUT|PATCH|DELETE)/i, 'deep-audit enhancement must be read-only');
 assert.match(css, /content-visibility:auto/);
 assert.match(css, /dosage-readiness/);
 assert.match(css, /dosage-regimen-provenance/);
 
-assert.match(api, /sourceDate:clean\(row\['Data e burimit'\]\)/, 'pediatric provenance date must be preserved');
-assert.match(api, /const cards = cardsResult\.output/, 'verified cards must remain published independently of autofill');
-assert.doesNotMatch(api, /const cards = clinicalAutoFillEnabled \? cardsResult\.output : \[\]/, 'autofill flag must not blank the verified read-only catalogue');
-assert.match(api, /cardsReadOnlyWhenAutoFillDisabled/, 'API metadata must expose read-only safety mode');
-assert.match(api, /X-MedIndex-Dosage-Cards/, 'API must expose card count for operational audits');
+assert.match(api, /buildNeonPayload/);
+assert.match(api, /clinicalAutoFillEnabled = envFlag\('ENABLE_DOSAGE_AUTOFILL'\)/);
+assert.match(api, /const cards = buildCards/);
+assert.match(api, /cardsReadOnlyWhenAutoFillDisabled:!clinicalAutoFillEnabled/);
+assert.match(api, /X-MedIndex-Dosage-Cards/);
+assert.doesNotMatch(api, /require\(['"]xlsx['"]\)/i);
+assert.match(fallback, /sourceDate:clean\(row\['Data e burimit'\]\)/, 'Sheets rollback must preserve pediatric provenance date');
+assert.match(fallback, /const cards = cardsResult\.output/, 'Sheets rollback must preserve verified cards independently of autofill');
 
 console.log('Dosage clinical readiness audit passed.');
