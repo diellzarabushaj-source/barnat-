@@ -14,7 +14,7 @@ const requiredFiles = [
   'medical-hub.css','analizat-polish.css','lab-sheet-data.js','medical-icons.js','section-icons.js',
   'recetat.css','recetat-audit.css','prescription-format-core.js','recetat.js','recetat-safe-print.js','app-runtime.js','app-parts/core-tail.txt',
   'middleware.ts','lib/auth.mjs','lib/auth-edge.mjs','lib/gemini-prescription.js','api/auth.js','api/registry.js','api/drug-search.js',
-  'api/gemini-prescription-secure.js','api/dosage.js','api/protocol-document.js','api/labs.js',
+  'api/gemini-prescription-secure.js','api/dosage.js','api/protocol-document.js',
   'dosage-engine.js','dozologjia.js','protokollet.js','clinical-reference.css','clinical-density.css','clinical-dialog.js','data/protocols.json',
   'data/registry-quality.js','icd-data.js','vercel.json','robots.txt','scripts/build-static-runtime.js',
   ...Array.from({ length: 7 }, (_, index) => `app-parts/part-${String(index + 1).padStart(2, '0')}.txt`),
@@ -39,6 +39,7 @@ async function main() {
   assert.ok(!fs.existsSync(path.join(ROOT, 'api/registry-data.js')), 'Redundant registry-data serverless function must not return');
   assert.ok(!fs.existsSync(path.join(ROOT, 'api/health.js')), 'Unused health serverless function must not return');
   assert.ok(!fs.existsSync(path.join(ROOT, 'api/gemini-prescription.js')), 'Gemini core must not consume a second serverless function');
+  assert.ok(!fs.existsSync(path.join(ROOT, 'api/labs.js')), 'Stale laboratory API must not expose a second dataset');
 
   console.log('2/11 JSON and JavaScript syntax');
   const vercel = JSON.parse(file('vercel.json'));
@@ -48,7 +49,7 @@ async function main() {
     'app.js','app-runtime.js','login.js','theme-preload.js','auth-client.js','app-stability.js','tailadmin-shell.js','main-navigation-extension.js',
     'medical-icons.js','section-icons.js','prescription-format-core.js','recetat.js','recetat-safe-print.js','dosage-engine.js','dozologjia.js','protokollet.js','clinical-dialog.js','classification-icons.js',
     'api/auth.js','api/registry.js','api/drug-search.js','api/gemini-prescription-secure.js',
-    'api/dosage.js','api/protocol-document.js','scripts/sync-protocols.js','scripts/build-static-runtime.js','api/labs.js','data/registry-quality.js',
+    'api/dosage.js','api/protocol-document.js','scripts/sync-protocols.js','scripts/build-static-runtime.js','data/registry-quality.js',
     'classification-registry-bridge.js','classification-v3.js','classification-audit-view.js','classification-info-v3.js',
     'icd-data.js','icd.js','lab-sheet-data.js','analizat.js','local-registry.js','local-registry-fidelity.js',
     'lib/gemini-prescription.js','lib/auth.mjs','lib/auth-edge.mjs','sw.js','offline-runtime.js',
@@ -111,7 +112,7 @@ async function main() {
   assert.match(labsHtml, /lab-sheet-data\.js/);
   assert.match(labsHtml, /medical-icons\.js/);
   assert.match(labsHtml, /section-icons\.js/);
-  assert.doesNotMatch(labsHtml, /lab-data\.js|lab-clinical\.js|lab-guide-chunk/);
+  assert.doesNotMatch(labsHtml, /lab-data\.js|lab-clinical\.js|lab-guide-chunk|api\/labs/);
   assert.ok(labsHtml.indexOf('auth-client.js') < labsHtml.indexOf('analizat.js'), 'Auth client must load before laboratory UI');
   assert.ok(labsHtml.indexOf('lab-sheet-data.js') < labsHtml.indexOf('analizat.js'), 'Sheet data must load before laboratory UI');
 
