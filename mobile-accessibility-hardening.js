@@ -12,6 +12,14 @@
   const focusable = root => [...root.querySelectorAll('button:not([disabled]),a[href],input:not([disabled]),select:not([disabled]),textarea:not([disabled]),[tabindex]:not([tabindex="-1"])')]
     .filter(node => visible(node));
 
+  function setAttributeIfChanged(node, name, value) {
+    if (node && node.getAttribute(name) !== value) node.setAttribute(name, value);
+  }
+
+  function removeAttributeIfPresent(node, name) {
+    if (node?.hasAttribute(name)) node.removeAttribute(name);
+  }
+
   function installStyles() {
     if (document.getElementById('miMobileA11yStyles')) return;
     const style = document.createElement('style');
@@ -36,22 +44,22 @@
   function hardenScrollableRegions(root = document) {
     root.querySelectorAll('.table-wrap,.atc-table-wrap,.med-table-wrap').forEach(region => {
       if (!region.hasAttribute('tabindex')) region.tabIndex = 0;
-      if (!region.hasAttribute('role')) region.setAttribute('role', 'region');
-      if (!region.hasAttribute('aria-label')) region.setAttribute('aria-label', 'Tabelë me lëvizje horizontale');
-      region.dataset.mobileScrollRegion = '1';
+      setAttributeIfChanged(region, 'role', region.getAttribute('role') || 'region');
+      setAttributeIfChanged(region, 'aria-label', region.getAttribute('aria-label') || 'Tabelë me lëvizje horizontale');
+      if (region.dataset.mobileScrollRegion !== '1') region.dataset.mobileScrollRegion = '1';
     });
   }
 
   function hardenDialogs(root = document) {
     root.querySelectorAll('[role="dialog"]').forEach(dialog => {
-      dialog.setAttribute('aria-modal', 'true');
+      setAttributeIfChanged(dialog, 'aria-modal', 'true');
       if (!dialog.hasAttribute('tabindex')) dialog.tabIndex = -1;
       if (!dialog.hasAttribute('aria-labelledby') && !dialog.hasAttribute('aria-label')) {
         const heading = dialog.querySelector('h1,h2,h3');
         if (heading) {
           if (!heading.id) heading.id = `miDialogTitle_${Math.random().toString(36).slice(2, 9)}`;
-          dialog.setAttribute('aria-labelledby', heading.id);
-        } else dialog.setAttribute('aria-label', 'Dritare dialogu');
+          setAttributeIfChanged(dialog, 'aria-labelledby', heading.id);
+        } else setAttributeIfChanged(dialog, 'aria-label', 'Dritare dialogu');
       }
     });
   }
@@ -73,10 +81,10 @@
         body.style.overflow = 'hidden';
         body.dataset.miA11yScrollLocked = '1';
       }
-      root.setAttribute('role', 'dialog');
-      root.setAttribute('aria-modal', 'true');
-      root.setAttribute('aria-label', 'Kërkimi në MedIndex');
-      if (backdrop) backdrop.setAttribute('aria-hidden', 'false');
+      setAttributeIfChanged(root, 'role', 'dialog');
+      setAttributeIfChanged(root, 'aria-modal', 'true');
+      setAttributeIfChanged(root, 'aria-label', 'Kërkimi në MedIndex');
+      setAttributeIfChanged(backdrop, 'aria-hidden', 'false');
       return;
     }
 
@@ -84,10 +92,10 @@
       body.style.overflow = bodyOverflow;
       delete body.dataset.miA11yScrollLocked;
     }
-    root?.removeAttribute('role');
-    root?.removeAttribute('aria-modal');
-    root?.removeAttribute('aria-label');
-    if (backdrop) backdrop.setAttribute('aria-hidden', 'true');
+    removeAttributeIfPresent(root, 'role');
+    removeAttributeIfPresent(root, 'aria-modal');
+    removeAttributeIfPresent(root, 'aria-label');
+    setAttributeIfChanged(backdrop, 'aria-hidden', 'true');
     if (previousFocus?.isConnected && document.activeElement === document.body) previousFocus.focus({ preventScroll:true });
     previousFocus = null;
   }
@@ -123,12 +131,15 @@
     initialized = true;
     reconcile();
     const observer = new MutationObserver(records => {
-      records.forEach(record => record.addedNodes.forEach(node => {
-        if (node.nodeType === 1) reconcile(node.matches?.('.table-wrap,.atc-table-wrap,.med-table-wrap,[role="dialog"]') ? node.parentElement || node : node);
-      }));
+      records.forEach(record => {
+        if (record.type !== 'childList') return;
+        record.addedNodes.forEach(node => {
+          if (node.nodeType === 1) reconcile(node.matches?.('.table-wrap,.atc-table-wrap,.med-table-wrap,[role="dialog"]') ? node.parentElement || node : node);
+        });
+      });
       syncMobileSearch();
     });
-    observer.observe(document.body, { childList:true, subtree:true, attributes:true, attributeFilter:['class','hidden','aria-hidden'] });
+    observer.observe(document.body, { childList:true, subtree:true, attributes:true, attributeFilter:['class', 'hidden'] });
     document.addEventListener('keydown', trapMobileSearch, true);
     window.addEventListener('resize', syncMobileSearch, { passive:true });
     window.addEventListener('pageshow', () => reconcile(), { passive:true });
