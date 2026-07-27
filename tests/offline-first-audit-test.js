@@ -34,6 +34,10 @@ const worker = read('sw-resilient-v3.js');
 assert.match(worker, /url\.pathname === '\/api\/auth'[\s\S]*fetch\(request\)/, 'auth must remain network-only');
 assert.match(worker, /url\.pathname === '\/api\/gemini-prescription'[\s\S]*geminiResponse/, 'Gemini POST must have an explicit offline route');
 assert.match(worker, /privateCacheStatus/, 'offline readiness must validate the exact required datasets');
+assert.match(worker, /'\/index\.html',[\s\S]*'\/analizat\.html',[\s\S]*'\/recetat\.html'/, 'clinical pages must be part of the install-time offline shell');
+assert.match(worker, /const privatePage = PRIVATE_PAGES\.has\(expectedPath\)/, 'clinical page precache must be classified separately');
+assert.match(worker, /privatePage && !validHtmlResponse\(response, expectedPath\)/, 'redirected or invalid private HTML must never be cached');
+assert.match(worker, /privatePage \? PAGE_CACHE : STATIC_CACHE/, 'clinical HTML must use PAGE_CACHE rather than the static asset cache');
 assert.doesNotMatch(worker, /cache\.put\([^\n]*api\/auth/, 'auth responses must never be cached');
 assert.doesNotMatch(worker, /self\.waitUntil/, 'waitUntil must be called on the fetch event');
 
@@ -43,6 +47,7 @@ const runtime = read('offline-runtime-performance.js');
   /WARM_PRIVATE_DATA/, /beforeinstallprompt/, /medindex:offline-runtime-ready/,
   /clinical-workflow\.js/, /Përditësim gati/, /Pa internet/, /sw-resilient-v3\.js/,
 ].forEach(pattern => assert.match(runtime, pattern, `offline-runtime-performance.js missing ${pattern}`));
+assert.match(runtime, /message\.type !== 'MEDINDEX_CACHE_STATUS'[\s\S]*if \(!navigator\.onLine\)[\s\S]*setStatus\('offline'/, 'cache-ready messages must not overwrite the true offline state');
 assert.doesNotMatch(runtime, /\/api\/gemini-prescription|password/i, 'offline runtime must not call AI or handle passwords');
 
 const auth = read('auth-client.js');
@@ -79,4 +84,4 @@ assert.match(serializedHeaders, /Service-Worker-Allowed/, 'service worker scope 
 assert.match(serializedHeaders, /worker-src/, 'CSP worker-src is missing');
 assert.match(serializedHeaders, /manifest-src/, 'CSP manifest-src is missing');
 
-console.log('Offline-first, private-cache and PWA performance audit passed.');
+console.log('Offline-first, verified clinical page precache, private-cache and PWA performance audit passed.');
