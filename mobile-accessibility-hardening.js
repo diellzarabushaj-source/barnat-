@@ -29,6 +29,7 @@
         html.medindex-tailadmin body{overscroll-behavior-y:none}
         html.medindex-tailadmin :where(.table-wrap,.atc-table-wrap,.med-table-wrap,[data-mobile-scroll-region]){overscroll-behavior-inline:contain;scroll-snap-stop:normal}
         html.medindex-tailadmin :where(button,a,input,select,textarea):focus-visible{outline:3px solid currentColor!important;outline-offset:3px!important}
+        html.medindex-tailadmin :where(input[type="search"],input[type="text"],select){min-height:44px!important;box-sizing:border-box!important}
         html.medindex-tailadmin :where(.rx-dialog,.med-panel,.mi-command-palette){scrollbar-gutter:stable}
       }
       @media(prefers-reduced-motion:reduce){
