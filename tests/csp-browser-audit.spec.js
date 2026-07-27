@@ -11,7 +11,7 @@ const pages = [
   '/recetat.html',
 ];
 
-test.use({ serviceWorkers:'allow', viewport:{ width:1280, height:800 } });
+test.use({ serviceWorkers:'block', viewport:{ width:1280, height:800 } });
 
 test('all clinical pages run without CSP violations or blocked runtime assets', async ({ page }) => {
   const failures = [];
