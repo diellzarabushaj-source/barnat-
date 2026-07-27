@@ -1,0 +1,276 @@
+window.DRUG_DATA_PARTS = Array.isArray(window.DRUG_DATA_PARTS) ? window.DRUG_DATA_PARTS : [];
+
+const hidePageLoader = () => {
+  const loader = document.getElementById('pageLoader');
+  if (!loader) return;
+  loader.classList.add('is-hidden');
+  loader.setAttribute('aria-hidden', 'true');
+  window.setTimeout(() => loader.remove(), 180);
+};
+
+const releaseStaleInteractionLock = () => {
+  document.documentElement.classList.remove('is-loading', 'loading', 'app-loading');
+  document.documentElement.removeAttribute('inert');
+  document.body?.removeAttribute('inert');
+  if (document.body) {
+    document.body.style.pointerEvents = '';
+    document.body.style.overflow = '';
+  }
+  ['registryContent', 'dataTable', 'search'].forEach(id => document.getElementById(id)?.removeAttribute('inert'));
+};
+
+releaseStaleInteractionLock();
+
+(async () => {
+  const APP_VERSION = 'clinical-audit-v5-performance-runtime';
+  const RUNTIME_URL = `/app-runtime-performance.js?v=${encodeURIComponent(APP_VERSION)}`;
+  const DB_NAME = 'medindex-registry-v1';
+  const DB_STORE = 'datasets';
+  const DB_KEY = 'registry-parts-prescription-v1';
+  const CACHE_TIME_KEY = 'barnat-registry-cached-at-v4';
+  const LEGACY_CACHE_KEYS = [
+    'barnat-registry-parts-v2', 'barnat-registry-cached-at-v2',
+    'barnat-registry-parts-v3', 'barnat-registry-cached-at-v3',
+    'barnat-registry-parts-v4'
+  ];
+  const BACKGROUND_REFRESH_MS = 6 * 60 * 60 * 1000;
+  const REQUEST_TIMEOUT_MS = 15000;
+  const DATABASE_TIMEOUT_MS = 3500;
+  const RUNTIME_TIMEOUT_MS = 40000;
+  let cacheSaveNeeded = false;
+  let cacheSaveScheduled = false;
+
+  performance.mark?.('medindex-app-start');
+  const hasRegistryData = () => Array.isArray(window.DRUG_DATA_PARTS) && window.DRUG_DATA_PARTS.length > 0;
+
+  async function timedFetch(url, options = {}, timeoutMs = REQUEST_TIMEOUT_MS) {
+    const controller = new AbortController();
+    const timer = window.setTimeout(() => controller.abort(), timeoutMs);
+    try {
+      return await fetch(url, { ...options, signal:controller.signal });
+    } finally {
+      window.clearTimeout(timer);
+    }
+  }
+
+  function withTimeout(promise, timeoutMs, message) {
+    let timer = 0;
+    return Promise.race([
+      promise.finally(() => window.clearTimeout(timer)),
+      new Promise((_, reject) => {
+        timer = window.setTimeout(() => reject(new Error(message)), timeoutMs);
+      }),
+    ]);
+  }
+
+  function parseAssignment(source, name, fallback = null) {
+    const text = String(source || '');
+    const prefix = `window.${name}`;
+    const start = text.indexOf(prefix);
+    if (start < 0) return fallback;
+    const equals = text.indexOf('=', start + prefix.length);
+    if (equals < 0) return fallback;
+    const lineEnd = text.indexOf('\n', equals + 1);
+    const serialized = text.slice(equals + 1, lineEnd < 0 ? text.length : lineEnd).trim().replace(/;+\s*$/, '');
+    try { return JSON.parse(serialized); }
+    catch { throw new Error(`Payload-i i regjistrit ka fushë të pavlefshme: ${name}.`); }
+  }
+
+  function parseRegistryPayload(source) {
+    const parts = parseAssignment(source, 'DRUG_DATA_PARTS', []);
+    const quality = parseAssignment(source, 'REGISTRY_QUALITY_META', null);
+    if (!Array.isArray(parts) || !parts.length) {
+      const message = parseAssignment(source, 'REGISTRY_LOAD_ERROR', 'Burimi nuk ktheu të dhënat e barnave.');
+      throw new Error(message || 'Burimi nuk ktheu të dhënat e barnave.');
+    }
+    return { parts, quality };
+  }
+
+  function openDatabase() {
+    return withTimeout(new Promise((resolve, reject) => {
+      if (!('indexedDB' in window)) return reject(new Error('IndexedDB nuk mbështetet.'));
+      const request = indexedDB.open(DB_NAME, 1);
+      request.onupgradeneeded = () => {
+        const database = request.result;
+        if (!database.objectStoreNames.contains(DB_STORE)) database.createObjectStore(DB_STORE);
+      };
+      request.onsuccess = () => resolve(request.result);
+      request.onerror = () => reject(request.error || new Error('IndexedDB nuk u hap.'));
+      request.onblocked = () => reject(new Error('IndexedDB është bllokuar.'));
+    }), DATABASE_TIMEOUT_MS, 'IndexedDB nuk u përgjigj me kohë.');
+  }
+
+  async function databaseGet(key) {
+    const database = await openDatabase();
+    try {
+      return await withTimeout(new Promise((resolve, reject) => {
+        const request = database.transaction(DB_STORE, 'readonly').objectStore(DB_STORE).get(key);
+        request.onsuccess = () => resolve(request.result);
+        request.onerror = () => reject(request.error);
+      }), DATABASE_TIMEOUT_MS, 'Leximi i cache-it lokal zgjati tepër.');
+    } finally {
+      database.close();
+    }
+  }
+
+  async function databasePut(key, value) {
+    const database = await openDatabase();
+    try {
+      await withTimeout(new Promise((resolve, reject) => {
+        const request = database.transaction(DB_STORE, 'readwrite').objectStore(DB_STORE).put(value, key);
+        request.onsuccess = () => resolve();
+        request.onerror = () => reject(request.error);
+      }), DATABASE_TIMEOUT_MS, 'Ruajtja e cache-it lokal zgjati tepër.');
+    } finally {
+      database.close();
+    }
+  }
+
+  function removeLegacyCache() {
+    try { LEGACY_CACHE_KEYS.forEach(key => localStorage.removeItem(key)); } catch {}
+  }
+
+  async function saveBrowserCache() {
+    if (!hasRegistryData()) return false;
+    const record = {
+      version:APP_VERSION,
+      savedAt:Date.now(),
+      parts:window.DRUG_DATA_PARTS,
+      quality:window.REGISTRY_QUALITY_META || null,
+    };
+    try {
+      await databasePut(DB_KEY, record);
+      localStorage.setItem(CACHE_TIME_KEY, String(record.savedAt));
+      removeLegacyCache();
+      window.dispatchEvent(new CustomEvent('medindex:registry-cache-ready', { detail:{ savedAt:record.savedAt } }));
+      return true;
+    } catch (error) {
+      console.warn('IndexedDB nuk e ruajti regjistrin; UI-ja vazhdon pa bllokim:', error);
+      return false;
+    }
+  }
+
+  function scheduleBrowserCacheSave() {
+    cacheSaveNeeded = true;
+    if (cacheSaveScheduled) return;
+    cacheSaveScheduled = true;
+    const run = async () => {
+      cacheSaveScheduled = false;
+      if (!cacheSaveNeeded || document.visibilityState === 'hidden') return;
+      const saved = await saveBrowserCache();
+      if (saved) cacheSaveNeeded = false;
+    };
+    if ('requestIdleCallback' in window) requestIdleCallback(run, { timeout:8000 });
+    else window.setTimeout(run, 1800);
+  }
+
+  async function loadBrowserCache() {
+    try {
+      const record = await databaseGet(DB_KEY);
+      if (record && Array.isArray(record.parts) && record.parts.length) {
+        window.DRUG_DATA_PARTS = record.parts;
+        if (record.quality) window.REGISTRY_QUALITY_META = record.quality;
+        window.REGISTRY_DATA_SOURCE = 'indexeddb-offline-cache';
+        localStorage.setItem(CACHE_TIME_KEY, String(record.savedAt || Date.now()));
+        removeLegacyCache();
+        return true;
+      }
+    } catch (error) {
+      console.warn('IndexedDB nuk u lexua:', error);
+    }
+    removeLegacyCache();
+    return false;
+  }
+
+  async function loadRegistrySource({ background = false } = {}) {
+    const previousParts = window.DRUG_DATA_PARTS;
+    const previousQuality = window.REGISTRY_QUALITY_META;
+    try {
+      const registryResponse = await timedFetch(`/api/registry?version=${encodeURIComponent(APP_VERSION)}`, {
+        cache:background ? 'no-cache' : 'no-store',
+        credentials:'same-origin',
+        headers:{ Accept:'application/javascript' },
+      }, background ? 25000 : REQUEST_TIMEOUT_MS);
+      if (registryResponse.status === 401) throw new Error('Sesioni ka skaduar.');
+      if (!registryResponse.ok) throw new Error(`Regjistri nuk u ngarkua (${registryResponse.status})`);
+      const payload = parseRegistryPayload(await registryResponse.text());
+      window.DRUG_DATA_PARTS = payload.parts;
+      window.REGISTRY_QUALITY_META = payload.quality;
+      window.REGISTRY_LOAD_ERROR = '';
+      const offlineHeader = registryResponse.headers.get('X-MedIndex-Offline') === '1';
+      window.REGISTRY_DATA_SOURCE = offlineHeader
+        ? 'service-worker-offline-cache'
+        : background ? 'online-background-refresh' : 'online-registry';
+      scheduleBrowserCacheSave();
+      return true;
+    } catch (error) {
+      window.DRUG_DATA_PARTS = previousParts;
+      window.REGISTRY_QUALITY_META = previousQuality;
+      if (background) {
+        console.warn('Rifreskimi në prapavijë dështoi:', error);
+        return false;
+      }
+      throw error;
+    }
+  }
+
+  async function loadRegistryRuntime() {
+    if (!window.MEDINDEX_REGISTRY_UI_READY) {
+      await withTimeout(new Promise((resolve, reject) => {
+        const existing = document.querySelector('script[data-medindex-registry-runtime]');
+        if (existing) {
+          if (window.MEDINDEX_REGISTRY_UI_READY) return resolve();
+          existing.addEventListener('load', resolve, { once:true });
+          existing.addEventListener('error', () => reject(new Error('Runtime-i i regjistrit nuk u ngarkua.')), { once:true });
+          return;
+        }
+        const script = document.createElement('script');
+        script.src = RUNTIME_URL;
+        script.async = true;
+        script.dataset.medindexRegistryRuntime = '1';
+        script.addEventListener('load', resolve, { once:true });
+        script.addEventListener('error', () => reject(new Error('Runtime-i i regjistrit nuk u ngarkua.')), { once:true });
+        document.head.appendChild(script);
+      }), RUNTIME_TIMEOUT_MS, 'Runtime-i i regjistrit zgjati tepër.');
+    }
+    if (!window.MEDINDEX_REGISTRY_UI_READY || typeof window.MEDINDEX_REGISTRY_UI_READY.then !== 'function') {
+      throw new Error('Runtime-i i regjistrit nuk ekspozoi gjendjen e inicializimit.');
+    }
+    await withTimeout(window.MEDINDEX_REGISTRY_UI_READY, RUNTIME_TIMEOUT_MS, 'Përgatitja e tabelës zgjati tepër.');
+  }
+
+  if (hasRegistryData()) {
+    window.REGISTRY_DATA_SOURCE = 'embedded-cache';
+    scheduleBrowserCacheSave();
+  } else if (!(await loadBrowserCache())) {
+    await loadRegistrySource();
+  }
+
+  await loadRegistryRuntime();
+
+  releaseStaleInteractionLock();
+  const countBadge = document.getElementById('countBadge');
+  if (countBadge) countBadge.title = `Burimi i të dhënave: ${window.REGISTRY_DATA_SOURCE}`;
+  window.MEDINDEX_APP_VERSION = APP_VERSION;
+  performance.mark?.('medindex-app-ready');
+  performance.measure?.('medindex-app-load', 'medindex-app-start', 'medindex-app-ready');
+  window.dispatchEvent(new CustomEvent('medindex:registry-ready', { detail:{ source:window.REGISTRY_DATA_SOURCE } }));
+  requestAnimationFrame(() => requestAnimationFrame(hidePageLoader));
+  if (cacheSaveNeeded) scheduleBrowserCacheSave();
+
+  const cachedAt = Number(localStorage.getItem(CACHE_TIME_KEY) || 0);
+  const localSource = /cache|indexeddb/i.test(window.REGISTRY_DATA_SOURCE || '');
+  if (navigator.onLine && localSource && Date.now() - cachedAt > BACKGROUND_REFRESH_MS) {
+    const refresh = () => loadRegistrySource({ background:true });
+    if ('requestIdleCallback' in window) requestIdleCallback(refresh, { timeout:6000 });
+    else window.setTimeout(refresh, 2200);
+  }
+})().catch(error => {
+  console.error(error);
+  releaseStaleInteractionLock();
+  hidePageLoader();
+  const count = document.getElementById('countBadge');
+  if (count) count.textContent = error?.name === 'AbortError' ? 'Ngarkimi zgjati tepër' : 'Gabim në databazë';
+  const body = document.getElementById('tbody');
+  if (body) body.innerHTML = `<tr><td colspan="30" class="empty-state">${navigator.onLine ? 'Databaza e barnave nuk u ngarkua. Provo rifreskimin.' : 'Nuk ka ende kopje lokale. Lidhu një herë me internet që MedIndex ta ruajë databazën.'}</td></tr>`;
+});
