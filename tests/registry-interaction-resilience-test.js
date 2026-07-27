@@ -6,13 +6,14 @@ const { execFileSync } = require('node:child_process');
 const ROOT = path.resolve(__dirname, '..');
 const read = file => fs.readFileSync(path.join(ROOT, file), 'utf8');
 
-for (const file of ['app-performance.js', 'registry-parser-worker-v2.js', 'registry-dosage-columns-v2.js']) {
+for (const file of ['app-performance.js', 'registry-parser-worker-v2.js', 'registry-dosage-loader.js', 'registry-dosage-columns-v2.js']) {
   execFileSync(process.execPath, ['--check', path.join(ROOT, file)], { stdio:'pipe' });
 }
 
 const app = read('app-performance.js');
 const part = read('app-parts/part-01.txt');
 const worker = read('registry-parser-worker-v2.js');
+const dosageLoader = read('registry-dosage-loader.js');
 const dosage = read('registry-dosage-columns-v2.js');
 const middleware = read('middleware.ts');
 const index = read('index.html');
@@ -44,6 +45,9 @@ assert.match(worker, /importScripts\(QUALITY_URL\)/, 'worker must load the regis
 assert.match(worker, /MedIndexRegistryQuality\?\.applyRows/, 'worker must apply clinical quality rules');
 assert.doesNotMatch(worker, /fetch\(/, 'parser worker must not perform independent network requests');
 
+assert.match(dosageLoader, /medindex:registry-ready/, 'dosage enrichment must wait for an interactive registry');
+assert.match(dosageLoader, /requestIdleCallback\(run, \{ timeout:5000 \}\)/, 'dosage enrichment must start during idle time');
+assert.match(dosageLoader, /registry-dosage-columns-v2\.js/, 'idle loader must inject the single-pass dosage runtime');
 assert.match(dosage, /MEDINDEX_REGISTRY_ROWS/, 'dosage columns must reuse the shared registry');
 assert.doesNotMatch(dosage, /DRUG_DATA_PARTS|\batob\s*\(|DecompressionStream|Uint8Array/, 'dosage columns must never parse the registry again');
 assert.doesNotMatch(dosage, /subtree\s*:\s*true/, 'dosage observers must not watch their own subtree mutations');
@@ -51,7 +55,8 @@ assert.doesNotMatch(dosage, /subtree\s*:\s*true/, 'dosage observers must not wat
 assert.match(middleware, /'\/registry-parser-worker-v2\.js'/, 'v2 parser worker must pass through auth middleware');
 assert.match(index, /app-performance\.js/, 'index must request the interaction-safe bootstrap');
 assert.match(index, /app-runtime-performance\.js\?v=clinical-audit-v5-performance-runtime/, 'index must preload the cache-isolated generated runtime');
-assert.match(index, /registry-dosage-columns-v2\.js/, 'index must load the single-pass dosage integration');
+assert.match(index, /registry-dosage-loader\.js/, 'index must load the idle dosage loader');
+assert.doesNotMatch(index, /src="registry-dosage-columns-v2\.js/, 'heavy dosage integration must not be in the critical parser path');
 assert.match(builder, /app-runtime-performance\.js/, 'build must generate the cache-isolated runtime artifact');
 
-console.log('Registry interaction resilience and single-pass worker audit passed.');
+console.log('Registry interaction resilience, idle dosage and single-pass worker audit passed.');
