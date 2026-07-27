@@ -48,7 +48,9 @@ assert.match(packageJson.scripts['sync:neon'], /publish-neon-registry\.js/, 'reg
 assert.match(packageJson.scripts['build:runtime'], /patch-neon-offline\.js/, 'Neon offline cache isolation must run during build');
 
 assert.match(serviceWorker, /QUERY_DATA_PATHS = new Set\(\['\/api\/drug-search', '\/api\/icd'\]\)/, 'ICD and labs query caches are not isolated');
-assert.doesNotMatch(serviceWorker, /PRIVATE_DATA_PATHS[\s\S]{0,160}'\/api\/icd'/, 'ICD query route must not use the query-blind private key');
+const privateSet = serviceWorker.match(/const PRIVATE_DATA_PATHS = new Set\(\[([\s\S]*?)\]\);/)?.[1] || '';
+assert.ok(privateSet, 'PRIVATE_DATA_PATHS set is missing');
+assert.doesNotMatch(privateSet, /'\/api\/icd'/, 'ICD query route must not use the query-blind private key');
 
 for (const browserFile of ['analizat.js', 'icd.js', 'dozologjia.js', 'app.js']) {
   const source = read(browserFile);
