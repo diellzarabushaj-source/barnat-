@@ -54,7 +54,7 @@ assert.match(part, /registry-parser-worker-v2\.js/);
 assert.match(loader, /medindex:registry-ready/);
 assert.match(loader, /requestIdleCallback\(run, \{ timeout:5000 \}\)/);
 assert.match(loader, /registry-dosage-columns-v2\.js/);
-assert.match(loader, /data-registry-dosage-runtime/);
+assert.match(loader, /dataset\.registryDosageRuntime/);
 assert.ok(loader.indexOf('medindex:registry-ready') < loader.indexOf('requestIdleCallback'), 'dosage loading must be gated by registry readiness before idle scheduling');
 
 assert.match(dosage, /waitForRegistryRows/);
