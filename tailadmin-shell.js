@@ -59,7 +59,7 @@
   }
 
   function baseStylesheet() {
-    return document.querySelector('link[href*="tailadmin-medindex.css"]');
+    return document.querySelector('link[data-mi-base-stylesheet],link[data-tailadmin-medindex-css],link[href*="tailadmin-medindex.css"]');
   }
 
   function professionalStylesheet() {
@@ -70,6 +70,7 @@
     const base = baseStylesheet();
     const professional = professionalStylesheet();
     if (!base || !professional) return;
+    base.removeAttribute('data-tailadmin-medindex-css');
     base.dataset.miBaseStylesheet = '1';
     if (base.nextElementSibling !== professional) base.after(professional);
   }
