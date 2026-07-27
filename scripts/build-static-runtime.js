@@ -57,9 +57,22 @@ function buildCacheIsolatedOfflineRuntime() {
   }
 
   const workerSource = fs.readFileSync(workerInput, 'utf8');
-  const workerGenerated = workerSource.replace("const VERSION = 'low-bandwidth-v2';", "const VERSION = 'low-bandwidth-v3';");
-  if (workerGenerated === workerSource || !workerGenerated.includes("const VERSION = 'low-bandwidth-v3';")) {
-    throw new Error('Versioni i cache-isolated service worker-it nuk u gjenerua.');
+  const workerGenerated = workerSource
+    .replace("const VERSION = 'low-bandwidth-v2';", "const VERSION = 'low-bandwidth-v3';")
+    .replace(
+      "  '/auth-client.js', '/offline-runtime.js', '/manifest.webmanifest', '/medindex-icon.svg',\n];",
+      "  '/auth-client.js', '/offline-runtime.js', '/manifest.webmanifest', '/medindex-icon.svg',\n  '/index.html', '/klasifikimi.html', '/icd.html', '/analizat.html',\n  '/dozologjia.html', '/protokollet.html', '/recetat.html',\n];"
+    )
+    .replace('async function cacheCoreShell() {\n  const cache = await caches.open(STATIC_CACHE);', 'async function cacheCoreShell() {')
+    .replace(
+      '      await cache.put(request, response.clone());',
+      "      const expectedPath = canonicalPagePath(new URL(request.url).pathname);\n      const privatePage = PRIVATE_PAGES.has(expectedPath);\n      if (privatePage && !validHtmlResponse(response, expectedPath)) throw new Error(`${path}: përgjigjja private nuk ishte faqja e pritur`);\n      const cache = await caches.open(privatePage ? PAGE_CACHE : STATIC_CACHE);\n      await cache.put(request, response.clone());"
+    );
+  if (workerGenerated === workerSource
+      || !workerGenerated.includes("const VERSION = 'low-bandwidth-v3';")
+      || !workerGenerated.includes('privatePage ? PAGE_CACHE : STATIC_CACHE')
+      || !workerGenerated.includes("'/analizat.html',")) {
+    throw new Error('Versioni i cache-isolated service worker-it ose precache-i klinik nuk u gjenerua.');
   }
   checkGeneratedSyntax(workerOutput, workerGenerated);
   fs.writeFileSync(workerOutput, workerGenerated, 'utf8');
@@ -67,15 +80,20 @@ function buildCacheIsolatedOfflineRuntime() {
   const runtimeSource = fs.readFileSync(runtimeInput, 'utf8');
   const runtimeGenerated = runtimeSource
     .replace("const RESILIENCE_VERSION = 'low-bandwidth-v2';", "const RESILIENCE_VERSION = 'low-bandwidth-v3';")
-    .replace('const SERVICE_WORKER_URL = `/sw-resilient.js?v=${RESILIENCE_VERSION}`;', 'const SERVICE_WORKER_URL = `/sw-resilient-v3.js?v=${RESILIENCE_VERSION}`;');
+    .replace('const SERVICE_WORKER_URL = `/sw-resilient.js?v=${RESILIENCE_VERSION}`;', 'const SERVICE_WORKER_URL = `/sw-resilient-v3.js?v=${RESILIENCE_VERSION}`;')
+    .replace(
+      "      if (message.type !== 'MEDINDEX_CACHE_STATUS') return;",
+      "      if (message.type !== 'MEDINDEX_CACHE_STATUS') return;\n      if (!navigator.onLine) {\n        setStatus('offline', 'Pa internet · po përdoret kopja lokale');\n        return;\n      }"
+    );
   if (runtimeGenerated === runtimeSource
       || !runtimeGenerated.includes("const RESILIENCE_VERSION = 'low-bandwidth-v3';")
-      || !runtimeGenerated.includes('/sw-resilient-v3.js')) {
-    throw new Error('Cache-isolated offline runtime nuk u gjenerua.');
+      || !runtimeGenerated.includes('/sw-resilient-v3.js')
+      || !runtimeGenerated.includes("if (!navigator.onLine) {\n        setStatus('offline'")) {
+    throw new Error('Cache-isolated offline runtime ose ruajtja e statusit offline nuk u gjenerua.');
   }
   checkGeneratedSyntax(runtimeOutput, runtimeGenerated);
   fs.writeFileSync(runtimeOutput, runtimeGenerated, 'utf8');
-  console.log('Generated cache-isolated offline runtime and resilient service worker v3.');
+  console.log('Generated cache-isolated offline runtime, verified clinical page precache and resilient service worker v3.');
 }
 
 function hardenTailAdminCss() {
