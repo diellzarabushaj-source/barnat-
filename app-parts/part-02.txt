@@ -1,14 +1,8 @@
-arzh&euml;', type:'num', cls:'price', visible:false },
-  { key:'TVSH', label:'TVSH', type:'str', cls:'', visible:false },
-  { key:'Çmimi me pakicë', label:'&Ccedil;m. Pakic&euml;', type:'num', cls:'price', visible:true },
-  { key:'Afati i vlefshmërisë', label:'Afati', type:'str', cls:'wrap', visible:false },
-];
-
 let state = {
   search: '',
   status: '',
-  formType: null,   // null | 'category' | 'form'
-  formValue: null,  // category name or exact forma string
+  formType: null,
+  formValue: null,
   sortKey: 'Nr rendor',
   sortDir: 1,
   page: 1,
@@ -50,7 +44,6 @@ function updateProtocolCounters(){
   if(tc) tc.textContent = '(' + saved + ')';
 }
 
-
 function visibleColumns(){
   return COLUMNS.filter(c => c.visible);
 }
@@ -86,7 +79,6 @@ function buildHeader(){
 
 const SEARCH_FIELDS = ['Emri tregtar','Substanca aktive','ATC Code','Klasa / Çka është','Përdorimi (fjalë kyçe)','PDID','ProtocolNo','Prodhuesi','Bartësi i Autorizim Marketingut','Forma farmaceutike','Madhësia e paketimit'];
 
-// Fjalët shqip -> terma anglisht që përdoren në regjistër (forma farmaceutike është në anglisht)
 const FORM_ALIASES = {
   'kapsul': ['capsule'],
   'tablet': ['tablet'],
@@ -129,7 +121,6 @@ const FORM_ALIASES = {
   'ampulë': ['ampoule'],
 };
 
-// Format farmaceutike të grupuara në kategori kryesore, për filtrim e highlight më të lehtë
 const FORM_CATEGORIES = {
   'Tableta & pilula': ['Chewable tablet','Coated tablet','Compressed lozenge','Dispersible tablet','Effervescent tablet','Film coated tablet','Gastro-resistant coated tablet','Gastro-resistant tablet','Lozenge','Modified-release film-coated tablet','Modified-release tablet','Orodispersible tablet','Pastille','Prolonged-release tablet','Soluble tablet','Sublingual tablet','Tablet'],
   'Kapsula': ['Capsule','Capsule, hard','Capsule, soft','Gastro-resistant capsule','Gastro-resistant capsule, hard','Inhalation powder, hard capsule','Modified release capsule, hard','Prolonged release capsule, hard','Prolonged-release capsule','Vaginal capsule','Vaginal capsule, soft'],
