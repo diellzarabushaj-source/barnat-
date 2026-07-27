@@ -23,15 +23,14 @@ assert.match(recovery, /name\.startsWith\('medindex-'\)/);
 assert.match(recovery, /location\.replace/);
 
 const login = read('login.js');
-assert.match(login, /releaseStaleBrowserShell/);
-assert.match(login, /medindex-pages-/);
+assert.match(login, /refreshWorkerInBackground/);
+assert.match(login, /purgeOnlyStaleRuntimeEntries/);
 assert.match(login, /medindex-static-/);
-assert.match(login, /registration\.unregister\(\)/);
-const initStart = login.indexOf('async function init()');
-const initEnd = login.indexOf("window.addEventListener('pageshow'", initStart);
-const initSource = login.slice(initStart, initEnd);
-assert.ok(initSource.indexOf('await releaseStaleBrowserShell()') >= 0, 'Login init must release the stale browser shell');
-assert.ok(initSource.indexOf('await releaseStaleBrowserShell()') < initSource.indexOf("timedFetch('/api/auth'"), 'Login must release stale browser shell before auth validation');
+assert.match(login, /saveBootstrapLease/);
+assert.match(login, /medindex_offline_lease_v2/);
+assert.doesNotMatch(login, /registration\.unregister\(\)/, 'Normal login must not unregister the offline worker');
+assert.doesNotMatch(login, /caches\.delete\(name\)/, 'Normal login must not delete complete MedIndex caches');
+assert.doesNotMatch(login, /setBusy\(true\);\s*await .*BrowserShell/, 'Login form must not wait for browser cleanup');
 
 const middleware = read('middleware.ts');
 assert.match(middleware, /'\/recovery\.html'/);
@@ -45,4 +44,4 @@ for (const source of ['/recovery.html', '/recovery.js']) {
   assert.match(JSON.stringify(entry.headers), /no-store/, `${source} must be non-cacheable`);
 }
 
-console.log('Browser cache and Service Worker recovery audit passed.');
+console.log('Browser cache and explicit recovery audit passed.');
