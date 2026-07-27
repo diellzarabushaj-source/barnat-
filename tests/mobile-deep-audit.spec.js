@@ -14,10 +14,14 @@ const sections = [
   { path:'/recetat.html', heading:'Recetat', key:'#rxComposer' },
 ];
 
+async function waitForPageFlag(page, reader, expected = true, timeout = 10000) {
+  await expect.poll(() => page.evaluate(reader), { timeout }).toBe(expected);
+}
+
 async function openReady(page, path) {
   await page.goto(`${BASE}${path}`, { waitUntil:'domcontentloaded' });
-  await page.waitForFunction(() => document.documentElement.classList.contains('auth-ready'));
-  await page.waitForFunction(() => document.documentElement.dataset.miMobileExperience === 'production-audit-v1');
+  await waitForPageFlag(page, () => document.documentElement.classList.contains('auth-ready'));
+  await waitForPageFlag(page, () => document.documentElement.dataset.miMobileExperience === 'production-audit-v1');
   await expect(page.locator('.mi-app-shell')).toBeVisible();
 }
 
@@ -111,8 +115,8 @@ test.describe('mobile physician experience', () => {
       await key.scrollIntoViewIfNeeded();
       await expect(key).toBeVisible();
       const keyBox = await key.boundingBox();
-      expect(keyBox.width).toBeGreaterThan(120);
-      expect(keyBox.height).toBeGreaterThanOrEqual(section.key === '#rxComposer' ? 180 : 43.5);
+      expect(keyBox.width, `${section.path} ${section.key}: width`).toBeGreaterThan(120);
+      expect(keyBox.height, `${section.path} ${section.key}: height`).toBeGreaterThanOrEqual(section.key === '#rxComposer' ? 180 : 43.5);
       await expectNoDocumentOverflow(page);
 
       if (section.path === '/index.html') {
@@ -172,7 +176,7 @@ test.describe('mobile physician experience', () => {
     await expect(addDrug).toBeVisible();
     await addDrug.click();
     await page.waitForURL(/recetat\.html/);
-    await page.waitForFunction(() => document.documentElement.dataset.miMobileExperience === 'production-audit-v1');
+    await waitForPageFlag(page, () => document.documentElement.dataset.miMobileExperience === 'production-audit-v1');
 
     const picker = page.locator('#rxDrugPopover');
     await expect(picker).toBeVisible();
@@ -187,7 +191,7 @@ test.describe('mobile physician experience', () => {
 
     page.once('dialog', dialog => dialog.accept());
     await page.goto(`${BASE}/icd.html`, { waitUntil:'domcontentloaded' });
-    await page.waitForFunction(() => document.documentElement.classList.contains('auth-ready'));
+    await waitForPageFlag(page, () => document.documentElement.classList.contains('auth-ready'));
     await page.locator('[data-open-code]').first().click();
     const overlay = page.locator('#detailOverlay');
     await expect(overlay).toBeVisible();
@@ -204,10 +208,10 @@ test.describe('mobile physician experience', () => {
     page.once('dialog', dialog => dialog.accept());
     await page.goto(`${BASE}/index.html`, { waitUntil:'domcontentloaded' });
     await page.evaluate(() => navigator.serviceWorker.ready);
-    await page.waitForFunction(() => Boolean(navigator.serviceWorker?.controller), null, { timeout:15000 });
+    await waitForPageFlag(page, () => Boolean(navigator.serviceWorker?.controller), true, 15000);
     await context.setOffline(true);
     await page.goto(`${BASE}/analizat.html`, { waitUntil:'domcontentloaded', timeout:15000 });
-    await page.waitForFunction(() => document.documentElement.classList.contains('auth-ready'));
+    await waitForPageFlag(page, () => document.documentElement.classList.contains('auth-ready'));
     await expect(page.locator('.mi-page-heading h1')).toHaveText('Analizat laboratorike');
     await expect(page.locator('#miOfflineStatus')).toHaveAttribute('data-state', 'offline');
     await expectNoDocumentOverflow(page);
