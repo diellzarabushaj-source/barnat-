@@ -29,6 +29,7 @@ jobs:
           set -euo pipefail
           files=(
             app.js
+            registry-parser-worker.js
             app-stability.js
             main-navigation-extension.js
             navigation-consistency.js
@@ -44,16 +45,20 @@ jobs:
             dosage-engine.js
             signature-templates.js
             recetat.js
-            api/gemini-prescription.js
+            api/auth.js
+            api/gemini-prescription-secure.js
             api/drug-search.js
             api/registry.js
-            api/registry-data.js
             api/dosage.js
+            api/protocol-document.js
+            lib/gemini-prescription.js
           )
           for file in "${files[@]}"; do
             test -f "$file"
             node --check "$file"
           done
+          test ! -e api/gemini-prescription.js
+          test ! -e api/registry-data.js
           cat app-parts/part-01.txt app-parts/part-02.txt app-parts/part-03.txt app-parts/part-04.txt app-parts/core-tail.txt > /tmp/medindex-registry-bundle.js
           node --check /tmp/medindex-registry-bundle.js
 
@@ -156,19 +161,23 @@ jobs:
         run: |
           set -euo pipefail
           test -f tests/gemini-prescription-audit-test.js
-          grep -q "DEFAULT_MODEL = 'gemini-3.6-flash'" api/gemini-prescription.js
-          grep -q "DEFAULT_FALLBACK_MODEL = 'gemini-3.5-flash'" api/gemini-prescription.js
-          grep -q 'GEMINI_API_KEY' api/gemini-prescription.js
-          grep -q 'GOOGLE_API_KEY' api/gemini-prescription.js
-          grep -q 'v1/interactions' api/gemini-prescription.js
-          grep -q 'response_format' api/gemini-prescription.js
-          grep -q "mime_type: 'application/json'" api/gemini-prescription.js
-          grep -q 'thinking_level: THINKING_LEVEL' api/gemini-prescription.js
-          grep -q "thinking_summaries: 'none'" api/gemini-prescription.js
-          grep -q 'store: false' api/gemini-prescription.js
-          grep -q 'buildBaseline' api/gemini-prescription.js
-          grep -q 'buildTargets' api/gemini-prescription.js
-          grep -q 'mergeSuggestions' api/gemini-prescription.js
-          grep -q 'Mos shto, mos hiq, mos zëvendëso' api/gemini-prescription.js
-          ! grep -q 'temperature:' api/gemini-prescription.js
-          ! grep -q 'thinkingBudget' api/gemini-prescription.js
+          test -f lib/gemini-prescription.js
+          test -f api/gemini-prescription-secure.js
+          test ! -e api/gemini-prescription.js
+          grep -q "require('../lib/gemini-prescription.js')" api/gemini-prescription-secure.js
+          grep -q "DEFAULT_MODEL = 'gemini-3.6-flash'" lib/gemini-prescription.js
+          grep -q "DEFAULT_FALLBACK_MODEL = 'gemini-3.5-flash'" lib/gemini-prescription.js
+          grep -q 'GEMINI_API_KEY' lib/gemini-prescription.js
+          grep -q 'GOOGLE_API_KEY' lib/gemini-prescription.js
+          grep -q 'v1/interactions' lib/gemini-prescription.js
+          grep -q 'response_format' lib/gemini-prescription.js
+          grep -q "mime_type: 'application/json'" lib/gemini-prescription.js
+          grep -q 'thinking_level: THINKING_LEVEL' lib/gemini-prescription.js
+          grep -q "thinking_summaries: 'none'" lib/gemini-prescription.js
+          grep -q 'store: false' lib/gemini-prescription.js
+          grep -q 'buildBaseline' lib/gemini-prescription.js
+          grep -q 'buildTargets' lib/gemini-prescription.js
+          grep -q 'mergeSuggestions' lib/gemini-prescription.js
+          grep -q 'Mos shto, mos hiq, mos zëvendëso' lib/gemini-prescription.js
+          ! grep -q 'temperature:' lib/gemini-prescription.js
+          ! grep -q 'thinkingBudget' lib/gemini-prescription.js
