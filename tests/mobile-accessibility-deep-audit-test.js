@@ -29,6 +29,7 @@ assert.match(mobile, /body\.style\.overflow = 'hidden'/);
 assert.match(mobile, /previousFocus/);
 assert.match(mobile, /tabIndex = 0/);
 assert.match(mobile, /'role', region\.getAttribute\('role'\) \|\| 'region'/);
+assert.match(mobile, /min-height:44px!important/, 'mobile form controls must remain at least 44px high');
 assert.match(mobile, /setAttributeIfChanged/);
 assert.match(mobile, /removeAttributeIfPresent/);
 assert.match(mobile, /attributeFilter:\['class', 'hidden'\]/, 'mobile observer must watch only external state changes');
