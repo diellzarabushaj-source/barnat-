@@ -6,15 +6,19 @@
   const MAX_OFFLINE_LEASE_MS = 8 * 60 * 60 * 1000;
   const MOBILE_BREAKPOINT = 1024;
   const PAGE_META = {
-    '/dozologjia.html': ['Dozologjia'],
-    '/protokollet.html': ['Protokollet'],
-    '/recetat.html': ['Recetat'],
+    '/dozologjia.html':['Dozologjia'],
+    '/protokollet.html':['Protokollet'],
+    '/recetat.html':['Recetat'],
   };
   const LEGACY_SRC = '/tailadmin-shell-legacy.js?v=production-audit-v1';
   const MOBILE_SRC = '/mobile-experience.js?v=production-audit-v1';
   const MOBILE_A11Y_SRC = '/mobile-accessibility-hardening.js?v=mobile-a11y-deep-audit-v1';
-  const SHELL_VERSION = 'production-audit-v1';
+  const SHELL_VERSION = 'production-audit-v2';
   const id = 'appMenu';
+  const SHELL_RETRY_MS = 3500;
+  let shellReady = false;
+  let shellRetry = 0;
+  let mobileStarted = false;
 
   // Static compatibility contract retained for the navigation safety gates:
   // data-mi-sidebar-toggle aria-controls="miSidebar" data-mi-sidebar-overlay
@@ -66,7 +70,6 @@
     const base = baseStylesheet();
     const professional = professionalStylesheet();
     if (!base || !professional) return;
-    base.removeAttribute('data-tailadmin-medindex-css');
     base.dataset.miBaseStylesheet = '1';
     if (base.nextElementSibling !== professional) base.after(professional);
   }
@@ -97,11 +100,11 @@
   }
 
   function loadRuntime(source, marker, errorKey) {
-    if (document.querySelector(`script[${marker}]`)) return null;
+    const existing = document.querySelector(`script[${marker}]`);
+    if (existing) return existing;
     const script = document.createElement('script');
     script.src = source;
-    script.async = false;
-    script.defer = true;
+    script.async = true;
     script.setAttribute(marker, '1');
     script.addEventListener('error', () => {
       document.documentElement.dataset[errorKey] = 'load';
@@ -123,32 +126,63 @@
   }
 
   function loadMobileExperience() {
+    if (mobileStarted) return;
+    mobileStarted = true;
     const mobile = loadRuntime(MOBILE_SRC, 'data-medindex-mobile-experience', 'miMobileExperienceError');
     const loadA11y = () => loadRuntime(MOBILE_A11Y_SRC, 'data-medindex-mobile-a11y', 'miMobileA11yError');
-    if (mobile) mobile.addEventListener('load', loadA11y, { once:true });
-    else loadA11y();
+    if (document.documentElement.dataset.miMobileExperience === 'production-audit-v1') loadA11y();
+    else {
+      mobile?.addEventListener('load', loadA11y, { once:true });
+      mobile?.addEventListener('error', loadA11y, { once:true });
+    }
   }
 
-  function loadLegacyShell() {
+  function finalizeShellReady() {
+    if (shellReady && document.querySelector('.mi-app-shell')) return;
+    if (!document.querySelector('.mi-app-shell') && document.body?.dataset.tailadminReady !== '1') return;
+    shellReady = true;
+    clearTimeout(shellRetry);
+    document.documentElement.dataset.miShellVersion = SHELL_VERSION;
+    document.documentElement.dataset.miThemeKey = THEME_KEY;
+    delete document.documentElement.dataset.miShellError;
     ensureStylesheetLast();
-    if (document.querySelector('script[data-medindex-tailadmin-legacy]')) return;
+    queueMicrotask(ensureStylesheetLast);
+    loadMobileExperience();
+    warmRuntimeAssets();
+  }
+
+  function verifyLegacyMount(script, retry = false) {
+    requestAnimationFrame(() => requestAnimationFrame(() => {
+      if (document.querySelector('.mi-app-shell') || document.body?.dataset.tailadminReady === '1') {
+        finalizeShellReady();
+        return;
+      }
+      document.documentElement.dataset.miShellError = retry ? 'legacy-retry-executed-no-shell' : 'legacy-executed-no-shell';
+      if (!retry) loadLegacyShell(true);
+    }));
+  }
+
+  function loadLegacyShell(force = false) {
+    ensureStylesheetLast();
+    if (shellReady || document.querySelector('.mi-app-shell')) return finalizeShellReady();
+
+    const existing = document.querySelector('script[data-medindex-tailadmin-legacy]');
+    if (existing && !force) {
+      existing.addEventListener('load', () => verifyLegacyMount(existing, false), { once:true });
+      existing.addEventListener('error', () => loadLegacyShell(true), { once:true });
+      return;
+    }
+    if (existing && force) existing.remove();
 
     const script = document.createElement('script');
-    script.src = LEGACY_SRC;
-    script.async = false;
-    script.defer = true;
-    script.dataset.medindexTailadminLegacy = '1';
-    script.addEventListener('load', () => {
-      document.documentElement.dataset.miShellVersion = SHELL_VERSION;
-      document.documentElement.dataset.miThemeKey = THEME_KEY;
-      ensureStylesheetLast();
-      queueMicrotask(ensureStylesheetLast);
-      loadMobileExperience();
-      warmRuntimeAssets();
-    }, { once:true });
+    script.src = force ? `${LEGACY_SRC}&retry=${encodeURIComponent(SHELL_VERSION)}` : LEGACY_SRC;
+    script.async = true;
+    script.dataset.medindexTailadminLegacy = force ? 'retry' : '1';
+    script.addEventListener('load', () => verifyLegacyMount(script, force), { once:true });
     script.addEventListener('error', () => {
-      document.documentElement.dataset.miShellError = 'legacy-load';
-      console.error('MedIndex shell runtime failed to load.');
+      document.documentElement.dataset.miShellError = force ? 'legacy-retry-load' : 'legacy-load';
+      console.error('MedIndex shell runtime failed to load.', script.src);
+      if (!force) loadLegacyShell(true);
     }, { once:true });
     document.head.appendChild(script);
   }
@@ -157,14 +191,18 @@
     ensureStylesheetLast();
     loadLegacyShell();
     setTimeout(revealCachedShellOnWeakConnection, 0);
+    shellRetry = setTimeout(() => {
+      if (!document.querySelector('.mi-app-shell')) loadLegacyShell(true);
+    }, SHELL_RETRY_MS);
   }
 
-  window.addEventListener('medindex:tailadmin-ready', ensureStylesheetLast);
+  window.addEventListener('medindex:tailadmin-ready', finalizeShellReady);
   window.addEventListener('pageshow', () => {
     ensureStylesheetLast();
     resetSidebarPosition();
     syncResponsiveSidebar();
     revealCachedShellOnWeakConnection();
+    if (document.querySelector('.mi-app-shell')) finalizeShellReady();
   }, { passive:true });
 
   if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', init, { once:true });
