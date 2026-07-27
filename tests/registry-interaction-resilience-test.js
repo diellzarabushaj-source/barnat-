@@ -6,35 +6,52 @@ const { execFileSync } = require('node:child_process');
 const ROOT = path.resolve(__dirname, '..');
 const read = file => fs.readFileSync(path.join(ROOT, file), 'utf8');
 
-for (const file of ['app.js', 'registry-parser-worker.js']) {
+for (const file of ['app-performance.js', 'registry-parser-worker-v2.js', 'registry-dosage-columns-v2.js']) {
   execFileSync(process.execPath, ['--check', path.join(ROOT, file)], { stdio:'pipe' });
 }
 
-const app = read('app.js');
+const app = read('app-performance.js');
 const part = read('app-parts/part-01.txt');
-const worker = read('registry-parser-worker.js');
+const worker = read('registry-parser-worker-v2.js');
+const dosage = read('registry-dosage-columns-v2.js');
 const middleware = read('middleware.ts');
 const index = read('index.html');
+const builder = read('scripts/build-static-runtime.js');
 
-assert.match(app, /clinical-audit-v4-worker-runtime/, 'registry bootstrap version must bust stale runtime cache');
+assert.match(app, /clinical-audit-v5-performance-runtime/, 'registry bootstrap version must isolate the performance runtime');
 assert.match(app, /releaseStaleInteractionLock/, 'stale interaction locks must be removed');
 assert.match(app, /document\.body\.style\.pointerEvents = ''/, 'body pointer events must be restored');
-assert.match(app, /DATABASE_TIMEOUT_MS = 3000/, 'IndexedDB access must be bounded');
-assert.match(app, /RUNTIME_TIMEOUT_MS = 25000/, 'runtime startup must be bounded');
+assert.match(app, /DATABASE_TIMEOUT_MS = 3500/, 'IndexedDB access must be bounded');
+assert.match(app, /RUNTIME_TIMEOUT_MS = 40000/, 'runtime startup must be bounded');
+assert.match(app, /requestIdleCallback\(run, \{ timeout:8000 \}\)/, 'registry cache writes must wait for idle time');
+assert.doesNotMatch(app, /localStorage\.setItem\(CACHE_KEY,\s*JSON\.stringify/, 'full registry serialization must not block the UI thread');
 assert.match(app, /medindex:registry-ready/, 'registry ready event must be dispatched');
+assert.match(app, /app-runtime-performance\.js/, 'bootstrap must request the cache-isolated runtime path');
 
-assert.match(part, /new Worker\(REGISTRY_WORKER_URL\)/, 'large registry parsing must use a Web Worker');
-assert.match(part, /NORMALIZE_BATCH = 120/, 'row normalization must be split into bounded batches');
-assert.match(part, /await yieldToBrowser\(\)/, 'registry processing must yield to the browser');
-assert.match(part, /parseRegistryCooperatively/, 'worker failure must have a cooperative fallback');
-assert.doesNotMatch(part, /Uint8Array\.from\(atob\(/, 'registry must not decode the full payload synchronously');
+assert.match(part, /new Worker\(REGISTRY_WORKER_URL\)/, 'large registry processing must use a Web Worker');
+assert.match(part, /registry-parser-worker-v2\.js/, 'the v2 worker path must be used');
+assert.match(part, /NORMALIZE_BATCH = 120/, 'cooperative fallback normalization must remain bounded');
+assert.match(part, /await yieldToBrowser\(\)/, 'fallback registry processing must yield to the browser');
+assert.match(part, /parseRegistryCooperatively/, 'worker failure must retain a cooperative fallback');
+assert.match(part, /MEDINDEX_REGISTRY_ROWS = RAW/, 'audited rows must be shared with dependent modules');
+assert.match(part, /medindex:registry-data-ready/, 'shared rows must publish a readiness event');
+assert.doesNotMatch(part, /Uint8Array\.from\(atob\(/, 'fallback must not decode the full payload synchronously');
 
 assert.match(worker, /DecompressionStream\('gzip'\)/, 'worker must decompress the registry off the UI thread');
 assert.match(worker, /BASE64_CHUNK = 256 \* 1024/, 'worker decoding must be chunked');
+assert.match(worker, /normalizeDrugRow/, 'worker must normalize registry rows');
+assert.match(worker, /importScripts\(QUALITY_URL\)/, 'worker must load the registry quality audit');
+assert.match(worker, /MedIndexRegistryQuality\?\.applyRows/, 'worker must apply clinical quality rules');
 assert.doesNotMatch(worker, /fetch\(/, 'parser worker must not perform independent network requests');
 
-assert.match(middleware, /'\/registry-parser-worker\.js'/, 'parser worker must pass through auth middleware');
-assert.match(index, /app\.js\?v=production-audit-v3-worker/, 'index must request the interaction-safe bootstrap');
-assert.match(index, /app-runtime\.js\?v=clinical-audit-v4-worker-runtime/, 'index must preload the current generated runtime');
+assert.match(dosage, /MEDINDEX_REGISTRY_ROWS/, 'dosage columns must reuse the shared registry');
+assert.doesNotMatch(dosage, /DRUG_DATA_PARTS|\batob\s*\(|DecompressionStream|Uint8Array/, 'dosage columns must never parse the registry again');
+assert.doesNotMatch(dosage, /subtree\s*:\s*true/, 'dosage observers must not watch their own subtree mutations');
 
-console.log('Registry interaction resilience audit passed.');
+assert.match(middleware, /'\/registry-parser-worker-v2\.js'/, 'v2 parser worker must pass through auth middleware');
+assert.match(index, /app-performance\.js/, 'index must request the interaction-safe bootstrap');
+assert.match(index, /app-runtime-performance\.js\?v=clinical-audit-v5-performance-runtime/, 'index must preload the cache-isolated generated runtime');
+assert.match(index, /registry-dosage-columns-v2\.js/, 'index must load the single-pass dosage integration');
+assert.match(builder, /app-runtime-performance\.js/, 'build must generate the cache-isolated runtime artifact');
+
+console.log('Registry interaction resilience and single-pass worker audit passed.');
