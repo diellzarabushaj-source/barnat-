@@ -19,9 +19,9 @@ assert.match(fast, /MutationObserver/, 'fast-start must detect the first rendere
 assert.doesNotMatch(fast, /location\.reload|caches\.delete|unregister\(/, 'fast-start must not reset the browser or force a reload');
 
 const index = read('index.html');
-assert.match(index, /registry-fast-start\.js\?v=registry-fast-start-v1/);
+assert.match(index, /registry-fast-start\.js\?v=registry-fast-start-v2/);
 assert.ok(index.indexOf('registry-fast-start.js') < index.indexOf('app.js'), 'fast-start must execute before the registry application');
-assert.match(index, /app-runtime\.js\?v=clinical-audit-v3-static-runtime[^>]+as="script"/, 'registry runtime must be preloaded');
+assert.match(index, /app-runtime\.js\?v=clinical-audit-v4-worker-runtime[^>]+as="script"/, 'worker-based registry runtime must be preloaded');
 assert.match(index, /registry-quality\.js\?v=20260722-1[^>]+as="script"/, 'quality layer must be preloaded');
 
 const part = read('app-parts/part-01.txt');
