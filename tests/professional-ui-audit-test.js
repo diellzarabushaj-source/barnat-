@@ -67,13 +67,14 @@ assert.match(labHtml, /analizat-polish\.css\?v=20260725-1/);
 assert.match(labHtml, /analizat\.js\?v=20260725-1/);
 [
   /CATEGORY_THEMES/,
-  /CATEGORY_ICONS/,
+  /function iconFor\(/,
   /lab-category-tile/,
   /lab-category-symbol/,
   /lab-test-icon/,
-  /iconForTest/,
   /data-category-open/,
   /aria-pressed/,
+  /\/api\/icd\?dataset=labs/,
+  /loadLocalDataset/,
 ].forEach(pattern => assert.match(labRuntime, pattern, `laboratory runtime missing ${pattern}`));
 [
   /\.lab-category-tile/,
@@ -85,6 +86,21 @@ assert.match(labHtml, /analizat\.js\?v=20260725-1/);
   /@media\(max-width:640px\)/,
 ].forEach(pattern => assert.match(labCss, pattern, `laboratory CSS missing ${pattern}`));
 assert.ok((labRuntime.match(/accent:'#/g) || []).length >= 14, 'Every laboratory category must have its own colour theme');
-assert.ok((labRuntime.match(/\d+:'(?:blood|microscope|platelet|coagulation|kidney|liver|glucose|lipid|pancreas|inflammation|endocrine|bacteria|urine|flask)'/g) || []).length >= 14, 'Every laboratory category must have a medical icon');
+[
+  /return 'blood'/,
+  /return 'microscope'/,
+  /return 'platelet'/,
+  /return 'coagulation'/,
+  /return 'kidney'/,
+  /return 'liver'/,
+  /return 'glucose'/,
+  /return 'lipid'/,
+  /return 'pancreas'/,
+  /return 'inflammation'/,
+  /return 'endocrine'/,
+  /return 'urine'/,
+  /return 'bacteria'/,
+  /return 'flask'/,
+].forEach(pattern => assert.match(labRuntime, pattern, `laboratory medical icon mapping missing ${pattern}`));
 
-console.log('Professional TailAdmin shell, laboratory cards and section audit passed.');
+console.log('Professional TailAdmin shell, Neon-aware laboratory cards and section audit passed.');
