@@ -19,6 +19,7 @@ assert.match(shell, /data-medindex-mobile-a11y/);
 assert.match(shell, /warm\(MOBILE_A11Y_SRC\)/);
 assert.match(shell, /ensureCriticalMobileStyles/);
 assert.match(shell, /miCriticalMobileTouchStyles/);
+assert.match(shell, /input:not\(\[type\]\)/, 'critical styles must cover inputs whose text type is implicit');
 assert.match(shell, /min-height:44px!important/, 'critical 44px touch styles must exist before mobile runtime readiness');
 assert.ok(shell.indexOf('ensureCriticalMobileStyles();') < shell.indexOf("loadRuntime(MOBILE_SRC"), 'critical touch styles must be injected before mobile experience starts');
 
@@ -46,4 +47,4 @@ assert.match(experience, /visualViewport/);
 assert.match(experience, /orientationchange/);
 assert.match(experience, /--mi-touch-target:44px/);
 
-console.log('Mobile accessibility and critical touch-target audit passed.');
+console.log('Mobile accessibility and critical implicit-input touch-target audit passed.');
