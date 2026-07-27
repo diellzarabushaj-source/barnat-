@@ -37,7 +37,7 @@
         <div>
           <p class="med-kicker">MedIndex · Qasje e shpejtë klinike</p>
           <h1>Analizat laboratorike</h1>
-          <p>Titulli kryesor i çdo analize është identik me kolonën <strong>“Emri në formular”</strong>. Seksioni përmban vetëm analizat dhe të dhënat nga Google Sheet-i i aprovuar.</p>
+          <p>Titulli kryesor i çdo analize është identik me kolonën <strong>“Emri në formular”</strong>. Të dhënat runtime lexohen nga Neon Postgres dhe sinkronizohen nga Google Sheet-i i aprovuar.</p>
         </div>
         <div class="lab-hero-stat" aria-label="Përmbledhje"><strong id="heroTestCount">111</strong><span>analiza</span><strong id="heroCategoryCount">14</strong><span>kategori</span></div>
       </header>
@@ -60,7 +60,7 @@
 
       <section aria-labelledby="labSectionTitle">
         <div class="med-section-head lab-main-head">
-          <div><h2 id="labSectionTitle">Të gjitha kategoritë</h2><p id="labSectionSubtitle">111 analiza të renditura sipas kategorive të Google Sheet-it.</p></div>
+          <div><h2 id="labSectionTitle">Të gjitha kategoritë</h2><p id="labSectionSubtitle">111 analiza të renditura sipas kategorive të burimit editorial.</p></div>
           <a class="lab-sheet-link" id="sheetLink" href="https://docs.google.com/spreadsheets/d/1sGEWsDYnVE1VThLUpfSs2Q0UIjXZZRzxXTHXDvn7p8I/edit?usp=sharing" target="_blank" rel="noopener noreferrer">Hape Sheet-in ↗</a>
         </div>
         <div id="labSections" aria-live="polite" aria-busy="true"></div>
@@ -78,7 +78,7 @@
   <script src="auth-client.js?v=production-audit-v1" defer></script>
   <script src="medical-icons.js?v=20260723-1" defer></script>
   <script src="lab-sheet-data.js?v=20260723-1" defer></script>
-  <script src="analizat.js?v=20260725-1" defer></script>
+  <script src="analizat.js?v=20260727-neon1" defer></script>
   <script src="section-icons.js?v=20260723-1" defer></script>
   <script src="clinical-dialog.js?v=20260724-1" defer></script>
   <script src="app-stability.js?v=20260724-2" defer></script>
