@@ -5,7 +5,7 @@ const { execFileSync } = require('node:child_process');
 
 const ROOT = path.resolve(__dirname, '..');
 const read = file => fs.readFileSync(path.join(ROOT, file), 'utf8');
-const files = ['sw-resilient.js', 'offline-runtime.js', 'login.js', 'tailadmin-shell.js', 'vercel.json'];
+const files = ['sw-resilient.js', 'offline-runtime.js', 'login.js', 'tailadmin-shell.js', 'middleware.ts', 'vercel.json'];
 for (const file of files) assert.ok(fs.existsSync(path.join(ROOT, file)), `${file} is missing`);
 for (const file of files.filter(file => file.endsWith('.js'))) execFileSync(process.execPath, ['--check', path.join(ROOT, file)], { stdio:'pipe' });
 
@@ -52,6 +52,11 @@ assert.match(shell, /revealCachedShellOnWeakConnection/);
 assert.match(shell, /recentBootstrap/);
 assert.match(shell, /auth-optimistic/);
 assert.match(shell, /profile\.slow \|\| profile\.saveData/, 'runtime prefetch must stop on constrained connections');
+
+const middleware = read('middleware.ts');
+assert.match(middleware, /'\/sw-resilient\.js'/, 'middleware must deliver the resilient worker without authentication');
+assert.match(middleware, /'\/manifest\.webmanifest'/, 'PWA manifest must remain public');
+assert.match(middleware, /'\/medindex-icon\.svg'/, 'PWA icon must remain public');
 
 const vercel = JSON.parse(read('vercel.json'));
 const resilientHeader = vercel.headers.find(item => item.source === '/sw-resilient.js');
