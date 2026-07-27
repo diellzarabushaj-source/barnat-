@@ -13,7 +13,9 @@ for (const page of pages) {
 }
 
 const index = read('index.html');
-assert.match(index, /app\.js\?v=production-audit-v2/, 'index.html: hardened registry bootstrap cache version is stale');
+assert.match(index, /app\.js\?v=production-audit-v3-worker/, 'index.html: worker-based registry bootstrap cache version is stale');
+assert.match(index, /app-runtime\.js\?v=clinical-audit-v4-worker-runtime/, 'index.html: generated registry runtime preload is stale');
+assert.match(index, /registry-fast-start\.js\?v=registry-fast-start-v2/, 'index.html: fast-start guard version is stale');
 assert.match(index, /<script id="drug-data" type="application\/json">\[\]<\/script>/, 'registry JSON fallback must remain inert');
 
 const auth = read('auth-client.js');
