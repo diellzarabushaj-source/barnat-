@@ -11,7 +11,10 @@ const runtimeSources = [
   'app-parts/part-04.txt',
   'app-parts/core-tail.txt',
 ];
-const runtimeOutput = path.join(root, 'app-runtime.js');
+const runtimeOutputs = [
+  path.join(root, 'app-runtime.js'),
+  path.join(root, 'app-runtime-performance.js'),
+];
 const tailadminCss = path.join(root, 'tailadmin-medindex.css');
 const ignoredDirectories = new Set(['.git', '.vercel', 'node_modules', 'test-results', 'playwright-report']);
 
@@ -33,11 +36,11 @@ function buildRegistryRuntime() {
   try {
     fs.writeFileSync(tempFile, generated, 'utf8');
     execFileSync(process.execPath, ['--check', tempFile], { stdio:'pipe' });
-    fs.writeFileSync(runtimeOutput, generated, 'utf8');
+    runtimeOutputs.forEach(output => fs.writeFileSync(output, generated, 'utf8'));
   } finally {
     fs.rmSync(tempDirectory, { recursive:true, force:true });
   }
-  console.log(`Generated app-runtime.js from ${runtimeSources.length} audited fragments.`);
+  console.log(`Generated ${runtimeOutputs.length} registry runtime artifacts from ${runtimeSources.length} audited fragments.`);
 }
 
 function hardenTailAdminCss() {
