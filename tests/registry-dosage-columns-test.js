@@ -1,15 +1,20 @@
 const assert = require('node:assert/strict');
 const fs = require('node:fs');
 const path = require('node:path');
+const { execFileSync } = require('node:child_process');
 
 const root = path.join(__dirname, '..');
 const index = fs.readFileSync(path.join(root, 'index.html'), 'utf8');
-const script = fs.readFileSync(path.join(root, 'registry-dosage-columns.js'), 'utf8');
+const scriptPath = path.join(root, 'registry-dosage-columns-v2.js');
+const script = fs.readFileSync(scriptPath, 'utf8');
 const css = fs.readFileSync(path.join(root, 'registry-dosage-columns.css'), 'utf8');
 const api = fs.readFileSync(path.join(root, 'api', 'dosage.js'), 'utf8');
 
+execFileSync(process.execPath, ['--check', scriptPath], { stdio:'pipe' });
+
 assert.match(index, /dosage-engine\.js/);
-assert.match(index, /registry-dosage-columns\.js/);
+assert.match(index, /registry-dosage-columns-v2\.js/);
+assert.doesNotMatch(index, /src="registry-dosage-columns\.js/);
 assert.match(index, /registry-dosage-columns\.css/);
 assert.match(script, /1\. Dozimi për të rritur/);
 assert.match(script, /2\. Dozimi për fëmijë/);
@@ -25,6 +30,17 @@ assert.match(script, /Përdorimi \/ fjalë kyçe/);
 assert.match(script, /registryDosageColumnControls/);
 assert.match(script, /groups\.slice\(1\).*remove/s);
 assert.match(script, /matches\.slice\(1\).*remove/s);
+assert.match(script, /MEDINDEX_REGISTRY_ROWS/);
+assert.match(script, /medindex:registry-data-ready/);
+assert.match(script, /disconnectTableObservers/);
+assert.match(script, /tbodyObserver\.observe\(tbody, \{ childList:true \}\)/);
+assert.match(script, /headerObserver\.observe\(header, \{ childList:true \}\)/);
+assert.match(script, /existing\.innerHTML !== desired\.innerHTML/);
+assert.doesNotMatch(script, /DRUG_DATA_PARTS/);
+assert.doesNotMatch(script, /\batob\s*\(/);
+assert.doesNotMatch(script, /DecompressionStream/);
+assert.doesNotMatch(script, /Uint8Array/);
+assert.doesNotMatch(script, /subtree\s*:\s*true/);
 assert.doesNotMatch(script, /appendColumnPickerItems/);
 assert.doesNotMatch(script, /fetch\([^)]*method\s*:\s*['"](?:POST|PUT|PATCH|DELETE)/i, 'registry card integration must be read-only');
 assert.match(api, /KARTELA_BARNAVE/);
@@ -36,4 +52,4 @@ assert.match(css, /hide-registry-dosage-adult/);
 assert.match(css, /hide-registry-dosage-pediatric/);
 assert.match(css, /registry-dosage-picker-heading/);
 
-console.log('Registry dosage columns test passed.');
+console.log('Registry dosage columns performance test passed.');
