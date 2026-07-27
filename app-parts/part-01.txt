@@ -244,3 +244,22 @@ if(!RAW.length){
   console.error('Nuk u gjet asnjë rresht i vlefshëm në regjistër.');
 }
 
+const COLUMNS = [
+  { key:'Nr rendor', label:'Nr', type:'num', cls:'code', visible:true },
+  { key:'Emri tregtar', label:'Emri Tregtar', type:'str', cls:'name', visible:true },
+  { key:'Substanca aktive', label:'Substanca Aktive', type:'str', cls:'', visible:true },
+  { key:'ATC Code', label:'ATC', type:'str', cls:'code', visible:true },
+  { key:'Klasa / Çka është', label:'Klasa / Çka është', type:'str', cls:'wrap', visible:true },
+  { key:'Përdorimi (fjalë kyçe)', label:'Përdorimi / fjalë kyçe', type:'str', cls:'wrap', visible:true },
+  { key:'PDID', label:'PDID', type:'str', cls:'code', visible:true },
+  { key:'ProtocolNo', label:'Protokolli', type:'str', cls:'code', visible:false },
+  { key:'Fortësia', label:'Fort&euml;sia', type:'str', cls:'', visible:true },
+  { key:'Forma farmaceutike', label:'Forma', type:'str', cls:'wrap', visible:true },
+  { key:'Si të shënohet në recetë', label:'Si shënohet në recetë', type:'str', cls:'wrap', visible:true },
+  { key:'Madhësia e paketimit', label:'Paketimi', type:'str', cls:'wrap', visible:false },
+  { key:'Bartësi i Autorizim Marketingut', label:'Bartësi i Autorizimit', type:'str', cls:'wrap', visible:false },
+  { key:'Prodhuesi', label:'Prodhuesi', type:'str', cls:'wrap', visible:false },
+  { key:'MA certifikata', label:'Certifikata MA', type:'str', cls:'code', visible:false },
+  { key:'Statusi', label:'Statusi', type:'str', cls:'', visible:true },
+  { key:'Çmimi me shumicë', label:'&Ccedil;m. Shumic&euml;', type:'num', cls:'price', visible:false },
+  { key:'Çmimi me marzhë', label:'&Ccedil;m. M
