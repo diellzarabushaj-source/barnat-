@@ -69,8 +69,51 @@ async function readBody(req) {
   try { return JSON.parse(body || '{}'); } catch { return {}; }
 }
 
+function resetRequested(req) {
+  if (req.method !== 'GET') return false;
+  try {
+    return new URL(req.url || '/api/auth', 'https://medindex.local').searchParams.get('reset') === '1';
+  } catch {
+    return false;
+  }
+}
+
+function browserResetPage() {
+  return `<!doctype html>
+<html lang="sq">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+  <meta name="robots" content="noindex,nofollow,noarchive">
+  <meta http-equiv="refresh" content="3;url=/login.html?reset-complete=1">
+  <title>Po pastrohet MedIndex</title>
+  <style>
+    *{box-sizing:border-box}html,body{min-height:100%;margin:0}body{display:grid;place-items:center;padding:20px;background:#eef4f2;color:#173238;font-family:Arial,sans-serif}.card{width:min(440px,100%);padding:28px;border:1px solid #d8e2df;border-radius:18px;background:#fff;box-shadow:0 20px 60px rgba(13,71,75,.18)}.mark{width:54px;height:54px;display:grid;place-items:center;margin-bottom:18px;border-radius:14px;background:#0d474b;color:#fff;font-size:24px;font-weight:800}.mark span{color:#efb660}h1{margin:0 0 10px;font-size:25px;line-height:1.2;color:#0d474b}p{margin:0 0 16px;color:#607277;line-height:1.55}.bar{height:8px;overflow:hidden;border-radius:999px;background:#e4efec}.bar::after{content:"";display:block;width:55%;height:100%;border-radius:inherit;background:#155f64;animation:move 1s ease-in-out infinite alternate}a{display:inline-block;margin-top:18px;color:#0d474b;font-weight:700}@keyframes move{to{transform:translateX(82%)}}@media(prefers-reduced-motion:reduce){.bar::after{animation:none;width:100%}}
+  </style>
+</head>
+<body>
+  <main class="card">
+    <div class="mark">M<span>+</span></div>
+    <h1>Po pastrohet cache-i i dëmtuar</h1>
+    <p>MedIndex po heq Service Worker-in, cache-in, sesionin dhe ruajtjen lokale të vjetër. Pas pak do të hapet hyrja e pastër.</p>
+    <div class="bar" aria-hidden="true"></div>
+    <a href="/login.html?reset-complete=1">Hape hyrjen tani</a>
+  </main>
+</body>
+</html>`;
+}
+
 module.exports = async function handler(req, res) {
   securityHeaders(res);
+
+  if (resetRequested(req)) {
+    res.setHeader('Clear-Site-Data', '"cache", "cookies", "storage"');
+    res.setHeader('Content-Type', 'text/html; charset=utf-8');
+    res.setHeader('Content-Security-Policy', "default-src 'none'; style-src 'unsafe-inline'; base-uri 'none'; form-action 'none'; frame-ancestors 'none'");
+    res.setHeader('Refresh', '3; url=/login.html?reset-complete=1');
+    return res.status(200).end(browserResetPage());
+  }
+
   const auth = await import('../lib/auth.mjs');
   const token = auth.sessionFromRequest(req);
 
@@ -146,6 +189,8 @@ module.exports = async function handler(req, res) {
 module.exports._test = {
   clientIp,
   declaredBodySize,
+  resetRequested,
+  browserResetPage,
   MAX_ATTEMPTS,
   MAX_BODY_BYTES,
   MAX_PASSWORD_CHARS,
