@@ -48,9 +48,15 @@ test('all clinical pages run without CSP violations or blocked runtime assets', 
     expect(csp, `${path}: inline script attributes are not blocked`).toContain("script-src-attr 'none'");
     expect(csp, `${path}: unsafe script policy returned`).not.toMatch(/script-src[^;]*(?:unsafe-inline|unsafe-eval)/);
 
-    await page.waitForFunction(() => document.documentElement.classList.contains('auth-ready'));
+    await expect.poll(
+      () => page.evaluate(() => document.documentElement.classList.contains('auth-ready')),
+      { timeout:10000, message:`${path}: auth-ready was not reached` }
+    ).toBe(true);
     if (path === '/index.html') {
-      await page.waitForFunction(() => window.MEDINDEX_REGISTRY_UI_READY && typeof window.MEDINDEX_REGISTRY_UI_READY.then === 'function');
+      await expect.poll(
+        () => page.evaluate(() => Boolean(window.MEDINDEX_REGISTRY_UI_READY && typeof window.MEDINDEX_REGISTRY_UI_READY.then === 'function')),
+        { timeout:10000, message:'registry UI promise was not exposed' }
+      ).toBe(true);
       await page.evaluate(() => window.MEDINDEX_REGISTRY_UI_READY);
       await expect(page.locator('#countBadge')).not.toHaveText(/Gabim|Duke u ngarkuar/i);
     }
