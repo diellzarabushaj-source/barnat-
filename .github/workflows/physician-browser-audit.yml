@@ -12,7 +12,7 @@ permissions:
 jobs:
   physician-flow:
     runs-on: ubuntu-latest
-    timeout-minutes: 25
+    timeout-minutes: 30
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -36,19 +36,26 @@ jobs:
           npx playwright install --with-deps chromium >> /tmp/playwright-install.log 2>&1 || { tail -200 /tmp/playwright-install.log; exit 1; }
           echo "Playwright Chromium installed."
 
-      - name: Run desktop, mobile, tablet and CSP browser audits
+      - name: Run desktop, mobile, tablet, CSP and 4006-row performance audits
         shell: bash
         run: |
           set -euo pipefail
           test -s app-runtime.js || { echo "Generated app-runtime.js is missing."; exit 1; }
+          test -s app-runtime-performance.js || { echo "Generated app-runtime-performance.js is missing."; exit 1; }
           node tests/clinical-smoke-server.js > /tmp/medindex-clinical-server.log 2>&1 &
-          SERVER_PID=$!
-          trap 'kill "$SERVER_PID" 2>/dev/null || true; cat /tmp/medindex-clinical-server.log' EXIT
+          CLINICAL_SERVER_PID=$!
+          node tests/registry-performance-server.js > /tmp/medindex-registry-performance-server.log 2>&1 &
+          PERFORMANCE_SERVER_PID=$!
+          trap 'kill "$CLINICAL_SERVER_PID" "$PERFORMANCE_SERVER_PID" 2>/dev/null || true; cat /tmp/medindex-clinical-server.log; cat /tmp/medindex-registry-performance-server.log' EXIT
           for attempt in {1..30}; do
             if curl -fsS http://127.0.0.1:4173/index.html >/dev/null; then break; fi
             sleep 1
           done
-          npx playwright test tests/csp-browser-audit.spec.js tests/physician-flow.spec.js tests/mobile-deep-audit.spec.js --reporter=line --workers=1 > /tmp/physician-flow.log 2>&1 || { cat /tmp/physician-flow.log; exit 1; }
+          for attempt in {1..30}; do
+            if curl -fsS http://127.0.0.1:4174/index.html >/dev/null; then break; fi
+            sleep 1
+          done
+          npx playwright test tests/csp-browser-audit.spec.js tests/physician-flow.spec.js tests/mobile-deep-audit.spec.js tests/registry-main-thread-performance.spec.js --reporter=line --workers=1 > /tmp/physician-flow.log 2>&1 || { cat /tmp/physician-flow.log; exit 1; }
           cat /tmp/physician-flow.log
 
       - name: Upload physician diagnostics
@@ -59,6 +66,7 @@ jobs:
           path: |
             /tmp/physician-flow.log
             /tmp/medindex-clinical-server.log
+            /tmp/medindex-registry-performance-server.log
             test-results
             playwright-report
           if-no-files-found: warn
