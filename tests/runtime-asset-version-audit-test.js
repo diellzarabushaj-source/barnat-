@@ -16,7 +16,8 @@ const index = read('index.html');
 assert.match(index, /app-performance\.js/, 'index.html: cache-isolated registry bootstrap is missing');
 assert.doesNotMatch(index, /src="app\.js/, 'index.html: legacy registry bootstrap must not be loaded');
 assert.match(index, /app-runtime-performance\.js\?v=clinical-audit-v5-performance-runtime/, 'index.html: cache-isolated generated registry runtime preload is stale');
-assert.match(index, /registry-dosage-columns-v2\.js/, 'index.html: single-pass dosage runtime is missing');
+assert.match(index, /registry-dosage-loader\.js/, 'index.html: idle dosage loader is missing');
+assert.doesNotMatch(index, /src="registry-dosage-columns-v2\.js/, 'index.html: dosage enrichment must not block initial parsing');
 assert.match(index, /offline-runtime-performance\.js[^>]+data-medindex-offline-runtime/, 'index.html: cache-isolated offline runtime must be loaded explicitly');
 assert.match(index, /registry-fast-start\.js\?v=registry-fast-start-v2/, 'index.html: fast-start guard version is stale');
 assert.match(index, /<script id="drug-data" type="application\/json">\[\]<\/script>/, 'registry JSON fallback must remain inert');
@@ -24,6 +25,11 @@ assert.match(index, /<script id="drug-data" type="application\/json">\[\]<\/scri
 const app = read('app-performance.js');
 assert.match(app, /clinical-audit-v5-performance-runtime/);
 assert.match(app, /app-runtime-performance\.js/);
+
+const dosageLoader = read('registry-dosage-loader.js');
+assert.match(dosageLoader, /medindex:registry-ready/);
+assert.match(dosageLoader, /requestIdleCallback\(run, \{ timeout:5000 \}\)/);
+assert.match(dosageLoader, /registry-dosage-columns-v2\.js/);
 
 const auth = read('auth-client.js');
 assert.match(auth, /offline-runtime\.js\?v=production-audit-v1/, 'auth client fallback must remain available on other pages');
@@ -44,4 +50,4 @@ assert.match(performanceRuntime, /SERVICE_WORKER_URL = `\/sw-resilient-v3\.js\?v
 assert.match(performanceWorker, /VERSION = 'low-bandwidth-v3'/, 'cache-isolated service worker version is stale');
 assert.match(performanceRuntime, /CLINICAL_WORKFLOW_URL = `\/clinical-workflow\.js\?v=\$\{VERSION\}`/, 'offline runtime must version the clinical workflow');
 
-console.log('Clinical runtime cache-version audit passed.');
+console.log('Clinical runtime cache-version and idle dosage asset audit passed.');
