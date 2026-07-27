@@ -1,0 +1,3 @@
+CI-only verification marker.
+Final confirmation after CSP-safe readiness polling; all functional browser flows already passed in the previous run.
+Do not merge this marker file.
