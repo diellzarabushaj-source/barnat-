@@ -3,6 +3,7 @@ const zlib = require('zlib');
 const crypto = require('node:crypto');
 const registryQuality = require('../data/registry-quality.js');
 const PrescriptionNotation = require('../prescription-notation.js');
+const NeonClinical = require('../lib/neon-clinical-reader.js');
 
 const DRIVE_FILE_ID = '1SY2rb2Eqo3fVkRhgQ8ltJHCRrWyAUDvd';
 const PRESCRIPTION_SHEET_ID = process.env.PRESCRIPTION_SHEET_ID || '1gGQjnJboj8W7txs0fhG15PXO06rdB9aetLQgFmmPHz8';
@@ -23,9 +24,12 @@ const MIN_EXPECTED_ROWS = 3500;
 
 let datasetCache = null;
 let datasetCacheTime = 0;
+let datasetCacheKey = '';
 let pendingDataset = null;
+let pendingDatasetKey = '';
 let payloadCache = null;
 let payloadCacheTime = 0;
+let payloadCacheKey = '';
 
 function isXlsxBuffer(buffer) {
   return buffer.length > 4 && buffer[0] === 0x50 && buffer[1] === 0x4b;
@@ -36,9 +40,9 @@ async function fetchBuffer(url, { requireXlsx = false } = {}) {
   const timer = setTimeout(() => controller.abort(), FETCH_TIMEOUT_MS);
   try {
     const response = await fetch(url, {
-      redirect: 'follow',
-      signal: controller.signal,
-      headers: { 'User-Agent': 'Mozilla/5.0 (compatible; MedIndexRegistry/3.3)' },
+      redirect:'follow',
+      signal:controller.signal,
+      headers:{ 'User-Agent':'Mozilla/5.0 (compatible; MedIndexRegistry/4.0)' },
     });
     if (!response.ok) throw new Error(`status ${response.status}`);
     const declaredLength = Number(response.headers.get('content-length') || 0);
@@ -72,9 +76,7 @@ function normalizeHeader(value) {
 function normalizeCellValue(value) {
   if (value === null || value === undefined) return '';
   if (typeof value !== 'string') return value;
-  return value
-    .replace(/[ \t]*_x000D_[ \t]*(?:\r?\n)?/gi, '\n')
-    .replace(/\r\n?/g, '\n');
+  return value.replace(/[ \t]*_x000D_[ \t]*(?:\r?\n)?/gi, '\n').replace(/\r\n?/g, '\n');
 }
 
 function rowHasData(row) {
@@ -88,9 +90,9 @@ function bufferToRows(buffer, { minRows = MIN_EXPECTED_ROWS } = {}) {
     const grid = XLSX.utils.sheet_to_json(worksheet, { header:1, defval:'', raw:true, blankrows:false });
     const headerIndex = grid.findIndex(row => {
       const headers = row.map(normalizeHeader);
-      return headers.includes('Substanca aktive') &&
-        (headers.includes('Emri tregtar') || headers.includes('Si të shënohet në recetë')) &&
-        (headers.includes('Nr rendor') || headers.includes('PDID'));
+      return headers.includes('Substanca aktive')
+        && (headers.includes('Emri tregtar') || headers.includes('Si të shënohet në recetë'))
+        && (headers.includes('Nr rendor') || headers.includes('PDID'));
     });
     if (headerIndex === -1) continue;
 
@@ -118,7 +120,7 @@ function ordinalKey(row) {
 function identityKey(row) {
   return [
     row['Emri tregtar'], row['Substanca aktive'], row['ATC Code'],
-    row['Fortësia'], row['Forma farmaceutike'], row['Madhësia e paketimit'],
+    row.Fortësia, row['Forma farmaceutike'], row['Madhësia e paketimit'],
   ].map(normalizeHeader).join('|');
 }
 
@@ -150,8 +152,9 @@ function buildPrescriptionMap(rows) {
 
 function attachPrescriptionNotation(rows, prescriptionRows = []) {
   const maps = buildPrescriptionMap(prescriptionRows);
-  const stats = { matched:0, generated:0, matchedByOrdinal:0, matchedByIdentity:0, matchedByExact:0, matchedByPdid:0 };
+  const stats = { matched:0, generated:0, matchedByOrdinal:0, matchedByIdentity:0, matchedByExact:0, matchedByPdid:0, matchedFromNeon:0 };
   const output = rows.map(row => {
+    const existing = normalizeHeader(row['Si të shënohet në recetë']);
     const candidates = [
       ['matchedByOrdinal', maps.byOrdinal.values.get(ordinalKey(row))],
       ['matchedByIdentity', maps.byIdentity.values.get(identityKey(row))],
@@ -159,11 +162,12 @@ function attachPrescriptionNotation(rows, prescriptionRows = []) {
       ['matchedByPdid', maps.byPdid.values.get(normalizeHeader(row.PDID))],
     ];
     const match = candidates.find(([, value]) => value);
-    const fromSheet = match?.[1] || '';
+    const fromSheet = match?.[1] || existing || '';
     const notation = fromSheet || PrescriptionNotation.build(row).full;
     if (fromSheet) {
       stats.matched += 1;
-      stats[match[0]] += 1;
+      if (match) stats[match[0]] += 1;
+      else stats.matchedFromNeon += 1;
     } else stats.generated += 1;
     return { ...row, 'Si të shënohet në recetë':notation, __sheetPrescriptionNotation:fromSheet };
   });
@@ -178,14 +182,7 @@ function attachPrescriptionNotation(rows, prescriptionRows = []) {
   };
 }
 
-async function buildDataset() {
-  const startedAt = Date.now();
-  const [workbookBuffer, prescriptionResult] = await Promise.all([
-    downloadWorkbook(),
-    downloadPrescriptionSheet().then(buffer => ({ rows:bufferToRows(buffer) })).catch(error => ({ rows:[], error:error.message })),
-  ]);
-  const sourceRows = bufferToRows(workbookBuffer);
-  const enriched = attachPrescriptionNotation(sourceRows, prescriptionResult.rows);
+function finishDataset(sourceRows, enriched, startedAt, dataSource, extraMeta = {}) {
   const quality = registryQuality.applyRows(enriched.rows);
   const rows = quality.rows.map(row => {
     const generated = PrescriptionNotation.build(row);
@@ -203,10 +200,12 @@ async function buildDataset() {
       version:quality.version,
       summary:quality.summary,
       sourceRows:sourceRows.length,
+      dataSource,
       prescriptionSheetId:PRESCRIPTION_SHEET_ID,
       prescriptionSheetRows:enriched.sheetRows,
       prescriptionMatched:enriched.matched,
       prescriptionGeneratedFallback:enriched.generated,
+      prescriptionMatchedFromNeon:enriched.matchedFromNeon,
       prescriptionMatchedByOrdinal:enriched.matchedByOrdinal,
       prescriptionMatchedByIdentity:enriched.matchedByIdentity,
       prescriptionMatchedByExact:enriched.matchedByExact,
@@ -215,30 +214,71 @@ async function buildDataset() {
       prescriptionAmbiguousIdentity:enriched.ambiguousIdentity,
       prescriptionAmbiguousExact:enriched.ambiguousExact,
       prescriptionAmbiguousPdid:enriched.ambiguousPdid,
-      prescriptionSheetError:prescriptionResult.error || '',
       generatedAt:new Date().toISOString(),
       buildMs:Date.now() - startedAt,
+      ...extraMeta,
     },
   };
 }
 
+async function buildSheetsDataset() {
+  const startedAt = Date.now();
+  const [workbookBuffer, prescriptionResult] = await Promise.all([
+    downloadWorkbook(),
+    downloadPrescriptionSheet().then(buffer => ({ rows:bufferToRows(buffer) })).catch(error => ({ rows:[], error:error.message })),
+  ]);
+  const sourceRows = bufferToRows(workbookBuffer);
+  const enriched = attachPrescriptionNotation(sourceRows, prescriptionResult.rows);
+  return finishDataset(sourceRows, enriched, startedAt, 'sheets', { prescriptionSheetError:prescriptionResult.error || '' });
+}
+
+async function buildNeonDataset() {
+  const startedAt = Date.now();
+  const sourceRows = await NeonClinical.getPublishedDrugs();
+  const enriched = attachPrescriptionNotation(sourceRows, []);
+  return finishDataset(sourceRows, enriched, startedAt, 'neon', { neonQueryMs:Date.now() - startedAt, prescriptionSheetError:'' });
+}
+
+async function buildDataset() {
+  const mode = NeonClinical.dataSourceMode();
+  if (mode === 'sheets') return buildSheetsDataset();
+  try {
+    return await buildNeonDataset();
+  } catch (error) {
+    if (!NeonClinical.allowsSheetsFallback()) throw error;
+    const fallback = await buildSheetsDataset();
+    fallback.meta.dataSource = 'sheets-fallback';
+    fallback.meta.neonError = String(error?.message || error).slice(0, 500);
+    return fallback;
+  }
+}
+
 async function getRegistryDataset() {
+  const key = NeonClinical.dataSourceMode();
   const now = Date.now();
-  if (datasetCache && now - datasetCacheTime < MEMORY_CACHE_MS) return datasetCache;
-  if (!pendingDataset) {
+  if (datasetCache && datasetCacheKey === key && now - datasetCacheTime < MEMORY_CACHE_MS) return datasetCache;
+  if (!pendingDataset || pendingDatasetKey !== key) {
+    pendingDatasetKey = key;
     pendingDataset = buildDataset().then(dataset => {
       datasetCache = dataset;
       datasetCacheTime = Date.now();
+      datasetCacheKey = key;
       payloadCache = null;
       return dataset;
-    }).finally(() => { pendingDataset = null; });
+    }).catch(error => {
+      if (datasetCache && datasetCacheKey === key) {
+        return { ...datasetCache, meta:{ ...datasetCache.meta, stale:true, staleReason:String(error?.message || error).slice(0, 500) } };
+      }
+      throw error;
+    }).finally(() => { pendingDataset = null; pendingDatasetKey = ''; });
   }
   return pendingDataset;
 }
 
 async function getPayload() {
+  const key = NeonClinical.dataSourceMode();
   const now = Date.now();
-  if (payloadCache && now - payloadCacheTime < MEMORY_CACHE_MS) return payloadCache;
+  if (payloadCache && payloadCacheKey === key && now - payloadCacheTime < MEMORY_CACHE_MS) return payloadCache;
   const dataset = await getRegistryDataset();
   const json = JSON.stringify(dataset.rows);
   const encoded = zlib.gzipSync(Buffer.from(json, 'utf8'), { level:9 }).toString('base64');
@@ -249,6 +289,7 @@ async function getPayload() {
     meta:dataset.meta,
   };
   payloadCacheTime = Date.now();
+  payloadCacheKey = key;
   return payloadCache;
 }
 
@@ -275,9 +316,11 @@ async function handler(req, res) {
     res.setHeader('Cache-Control', 'private, no-cache, max-age=0');
     res.setHeader('X-Content-Type-Options', 'nosniff');
     res.setHeader('ETag', payload.etag);
-    res.setHeader('Server-Timing', `registry;dur=${Date.now() - startedAt}`);
+    res.setHeader('Server-Timing', `registry;dur=${Date.now() - startedAt}${Number.isFinite(payload.meta.neonQueryMs) ? `, neon;dur=${payload.meta.neonQueryMs}` : ''}`);
     res.setHeader('X-MedIndex-Rows', String(payload.meta.sourceRows));
     res.setHeader('X-MedIndex-Prescription-Rows', String(payload.meta.prescriptionMatched));
+    res.setHeader('X-MedIndex-Data-Source', payload.meta.dataSource || 'unknown');
+    if (payload.meta.stale) res.setHeader('Warning', '110 - "Response is stale"');
 
     if (req.headers['if-none-match'] === payload.etag) return res.status(304).end();
     if (req.method === 'HEAD') return res.status(200).end();
@@ -288,8 +331,8 @@ async function handler(req, res) {
     res.setHeader('Cache-Control', 'no-store');
     res.setHeader('X-Content-Type-Options', 'nosniff');
     return res.status(500).send(
-      `window.REGISTRY_LOAD_ERROR = ${JSON.stringify(error.message || 'Gabim gjatë ngarkimit të regjistrit.')};\n` +
-      'window.DRUG_DATA_PARTS = [];\n'
+      `window.REGISTRY_LOAD_ERROR = ${JSON.stringify(error.message || 'Gabim gjatë ngarkimit të regjistrit.')};\n`
+      + 'window.DRUG_DATA_PARTS = [];\n'
     );
   }
 }
@@ -298,4 +341,6 @@ handler.getRegistryDataset = getRegistryDataset;
 handler.authorized = authorized;
 handler.attachPrescriptionNotation = attachPrescriptionNotation;
 handler.normalizeCellValue = normalizeCellValue;
+handler.buildNeonDataset = buildNeonDataset;
+handler.buildSheetsDataset = buildSheetsDataset;
 module.exports = handler;
