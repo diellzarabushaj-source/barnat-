@@ -79,7 +79,7 @@
     if (document.getElementById('miCriticalMobileTouchStyles')) return;
     const style = document.createElement('style');
     style.id = 'miCriticalMobileTouchStyles';
-    style.textContent = '@media(max-width:1023px){html.medindex-tailadmin :where(input[type="search"],input[type="text"],select){min-height:44px!important;box-sizing:border-box!important}}';
+    style.textContent = '@media(max-width:1023px){html.medindex-tailadmin :where(input:not([type]),input[type="search"],input[type="text"],select){min-height:44px!important;box-sizing:border-box!important}}';
     document.head.appendChild(style);
   }
 
