@@ -75,6 +75,14 @@
     if (base.nextElementSibling !== professional) base.after(professional);
   }
 
+  function ensureCriticalMobileStyles() {
+    if (document.getElementById('miCriticalMobileTouchStyles')) return;
+    const style = document.createElement('style');
+    style.id = 'miCriticalMobileTouchStyles';
+    style.textContent = '@media(max-width:1023px){html.medindex-tailadmin :where(input[type="search"],input[type="text"],select){min-height:44px!important;box-sizing:border-box!important}}';
+    document.head.appendChild(style);
+  }
+
   const headObserver = new MutationObserver(() => queueMicrotask(ensureStylesheetLast));
   headObserver.observe(document.head, { childList:true });
 
@@ -129,6 +137,7 @@
   function loadMobileExperience() {
     if (mobileStarted) return;
     mobileStarted = true;
+    ensureCriticalMobileStyles();
     const mobile = loadRuntime(MOBILE_SRC, 'data-medindex-mobile-experience', 'miMobileExperienceError');
     const loadA11y = () => loadRuntime(MOBILE_A11Y_SRC, 'data-medindex-mobile-a11y', 'miMobileA11yError');
     if (document.documentElement.dataset.miMobileExperience === 'production-audit-v1') loadA11y();
@@ -190,6 +199,7 @@
 
   function init() {
     ensureStylesheetLast();
+    ensureCriticalMobileStyles();
     loadLegacyShell();
     setTimeout(revealCachedShellOnWeakConnection, 0);
     shellRetry = setTimeout(() => {
@@ -200,6 +210,7 @@
   window.addEventListener('medindex:tailadmin-ready', finalizeShellReady);
   window.addEventListener('pageshow', () => {
     ensureStylesheetLast();
+    ensureCriticalMobileStyles();
     resetSidebarPosition();
     syncResponsiveSidebar();
     revealCachedShellOnWeakConnection();
