@@ -87,7 +87,7 @@
     if (!style) {
       style = document.createElement('style');
       style.id = 'miCriticalMobileTouchStyles';
-      style.textContent = '@media(max-width:1023px){html.medindex-tailadmin :where(input:not([type]),input[type="search"],input[type="text"],select){min-height:44px!important;height:auto!important;box-sizing:border-box!important}}';
+      style.textContent = '@media(max-width:1023px){html.medindex-tailadmin :where(input:not([type]),input[type="search"],input[type="text"],select){min-height:44px!important;box-sizing:border-box!important}html.medindex-tailadmin :is(#search,#atcSearch,#icdSmartSearch,#labSearch,#dosageSearch,#protocolSearch,#rxDrugSearch){min-height:44px!important;height:44px!important;box-sizing:border-box!important}}';
       document.head.appendChild(style);
     }
     ensureStylesheetLast();
