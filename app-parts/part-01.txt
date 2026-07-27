@@ -91,18 +91,28 @@ function normalizeDrugRow(row, index){
 async function ensureRegistryQuality(){
   if(window.MedIndexRegistryQuality) return window.MedIndexRegistryQuality;
   try {
-    await new Promise((resolve, reject) => {
+    await new Promise(resolve => {
+      let settled = false;
+      const finish = () => {
+        if(settled) return;
+        settled = true;
+        clearTimeout(timeout);
+        resolve();
+      };
+      const timeout = setTimeout(finish, 2600);
       const existing = document.querySelector('script[data-registry-quality]');
       if(existing){
-        existing.addEventListener('load', resolve, { once:true });
-        existing.addEventListener('error', reject, { once:true });
+        if(window.MedIndexRegistryQuality) return finish();
+        existing.addEventListener('load', finish, { once:true });
+        existing.addEventListener('error', finish, { once:true });
         return;
       }
       const script = document.createElement('script');
       script.src = './data/registry-quality.js?v=20260722-1';
       script.dataset.registryQuality = '1';
-      script.onload = resolve;
-      script.onerror = () => reject(new Error('Nuk u ngarkua shtresa e kontrollit të regjistrit.'));
+      script.async = true;
+      script.onload = finish;
+      script.onerror = finish;
       document.head.appendChild(script);
     });
   } catch(error) {
