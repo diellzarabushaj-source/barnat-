@@ -1,6 +1,7 @@
 const XLSX = require('xlsx');
 const crypto = require('node:crypto');
 const DosageEngine = require('../dosage-engine.js');
+const NeonClinical = require('../lib/neon-clinical-reader.js');
 
 const DEFAULT_DOSAGE_FILE_ID = '1T7XsfkXLQfEomFL4DmXoA8PheiR6s3Qmu36hTqklOMo';
 const MEMORY_CACHE_MS = 5 * 60 * 1000;
@@ -39,8 +40,8 @@ async function fetchWorkbook(url) {
   const timer = setTimeout(() => controller.abort(), FETCH_TIMEOUT_MS);
   try {
     const response = await fetch(url, {
-      redirect: 'follow', signal: controller.signal,
-      headers: { 'User-Agent': 'Mozilla/5.0 (compatible; MedIndexDosage/2.3)' },
+      redirect:'follow', signal:controller.signal,
+      headers:{ 'User-Agent':'Mozilla/5.0 (compatible; MedIndexDosage/3.0)' },
     });
     if (!response.ok) throw new Error(`status ${response.status}`);
     const declaredSize = Number(response.headers.get('content-length') || 0);
@@ -76,7 +77,7 @@ function sheetToRecords(workbook, sheetName) {
   }).filter(record => Object.values(record).some(value => clean(value)));
 }
 
-const configFromRows = rows => Object.fromEntries(rows.map(row => [clean(row['Çelësi']), row['Vlera']]).filter(([key]) => key));
+const configFromRows = rows => Object.fromEntries(rows.map(row => [clean(row['Çelësi']), row.Vlera]).filter(([key]) => key));
 
 function safeSingleRoute(value) {
   const route = clean(value);
@@ -141,7 +142,7 @@ function mapPediatric(row) {
 function mapCard(row) {
   const pdid = clean(row.PDID);
   const tradeName = clean(row['Emri tregtar']);
-  const strength = clean(row['Fortësia']);
+  const strength = clean(row.Fortësia);
   return {
     cardKey:[pdid, tradeName, strength].join('|'), nr:clean(row['Nr rendor']), pdid, tradeName,
     substance:clean(row['Substanca aktive']), atc:clean(row.ATC), form:clean(row.Forma), strength,
@@ -158,15 +159,15 @@ const requestedDosage = row => verified(row.Statusi) && yes(row['Auto-fill']);
 const publishedCard = row => verified(row.Statusi) && yes(row['Publiko?']) && clean(row.PDID) && clean(row['Doza e plotë — Të rritur']) && clean(row['Rruga — Të rritur']);
 
 function validAdult(row) {
-  return requestedDosage(row) && clean(row.RegimenID) && clean(row['Substanca aktive']) && clean(row.ATC) && clean(row.Forma) &&
-    clean(row['Fortësia referencë']) && clean(row.Indikacioni) && clean(row.Rruga) && clean(row.Shpeshtësia) &&
-    clean(row['Signatura draft']) && httpsUrl(row['Burimi URL']);
+  return requestedDosage(row) && clean(row.RegimenID) && clean(row['Substanca aktive']) && clean(row.ATC) && clean(row.Forma)
+    && clean(row['Fortësia referencë']) && clean(row.Indikacioni) && clean(row.Rruga) && clean(row.Shpeshtësia)
+    && clean(row['Signatura draft']) && httpsUrl(row['Burimi URL']);
 }
 
 function validPediatric(row) {
   const hasDoseRule = numberOrNull(row['Vlera mg/kg']) != null || numberOrNull(row['Doza fikse (mg)']) != null || numberOrNull(row['Vëllimi fikse (mL)']) != null;
-  return requestedDosage(row) && clean(row.RegimenID) && clean(row['Substanca aktive']) && clean(row.ATC) && clean(row.Forma) &&
-    clean(row.Përqendrimi) && clean(row.Indikacioni) && clean(row.Rruga) && clean(row.Shpeshtësia) && hasDoseRule && httpsUrl(row['Burimi URL']);
+  return requestedDosage(row) && clean(row.RegimenID) && clean(row['Substanca aktive']) && clean(row.ATC) && clean(row.Forma)
+    && clean(row.Përqendrimi) && clean(row.Indikacioni) && clean(row.Rruga) && clean(row.Shpeshtësia) && hasDoseRule && httpsUrl(row['Burimi URL']);
 }
 
 function uniqueBy(items, keyName) {
@@ -182,7 +183,12 @@ function uniqueBy(items, keyName) {
   return { output, duplicates };
 }
 
-async function buildPayload(fileId) {
+function finalize(payload) {
+  const body = JSON.stringify(payload);
+  return { payload, body, etag:`"${crypto.createHash('sha256').update(body).digest('base64url')}"` };
+}
+
+async function buildSheetsPayload(fileId) {
   const startedAt = Date.now();
   const workbook = XLSX.read(await downloadWorkbook(fileId), { type:'buffer', cellDates:false });
   const config = configFromRows(sheetToRecords(workbook, 'CONFIG'));
@@ -198,15 +204,14 @@ async function buildPayload(fileId) {
   const cardsResult = uniqueBy(cardRows.filter(publishedCard).map(mapCard), 'cardKey');
   const adult = clinicalAutoFillEnabled ? eligibleAdultResult.output : [];
   const pediatric = clinicalAutoFillEnabled ? eligiblePediatricResult.output : [];
-  // Verified read-only cards remain visible even when automatic prescription transfer is disabled.
   const cards = cardsResult.output;
 
-  const payload = {
+  return finalize({
     schemaVersion:clean(config.SCHEMA_VERSION) || '1.0.0', matchVersion:'exact-v1', datasetVersion:clean(config.DATASET_VERSION),
     mode:clean(config.WEBSITE_MODE) || 'SAFE_VERIFIED_ONLY', generatedAt:new Date().toISOString(),
     forms:formsResult.output, adult, pediatric, cards,
     meta:{
-      sourceFileId:fileId, clinicalAutoFillEnabled,
+      dataSource:'sheets', sourceFileId:fileId, clinicalAutoFillEnabled,
       activationSource:envFlag('ENABLE_DOSAGE_AUTOFILL') ? 'vercel-env' : clinicalAutoFillEnabled ? 'sheet-config' : 'disabled',
       autoApplyPolicy:clean(config.AUTO_APPLY_POLICY) || 'UNIQUE_EXACT_MATCH_AUTO_APPLY',
       publishedForms:formsResult.output.length, publishedAdultRegimens:adult.length,
@@ -223,20 +228,84 @@ async function buildPayload(fileId) {
       cardsReadOnlyWhenAutoFillDisabled:!clinicalAutoFillEnabled,
       buildMs:Date.now() - startedAt, geminiForDosage:false,
     },
-  };
-  const body = JSON.stringify(payload);
-  return { payload, body, etag:`"${crypto.createHash('sha256').update(body).digest('base64url')}"` };
+  });
+}
+
+async function buildNeonPayload() {
+  const startedAt = Date.now();
+  const dataset = await NeonClinical.getPublishedDosageRegimens();
+  const clinicalAutoFillEnabled = envFlag('ENABLE_DOSAGE_AUTOFILL');
+  const adultResult = uniqueBy(dataset.adult, 'regimenId');
+  const pediatricResult = uniqueBy(dataset.pediatric, 'regimenId');
+  const cardResult = uniqueBy(dataset.cards, 'cardKey');
+  const formResult = uniqueBy(dataset.forms, 'formKey');
+  return finalize({
+    schemaVersion:'neon-1.0.0', matchVersion:'exact-v1', datasetVersion:'neon-published-v1',
+    mode:'SAFE_VERIFIED_ONLY', generatedAt:new Date().toISOString(),
+    forms:formResult.output,
+    adult:clinicalAutoFillEnabled ? adultResult.output : [],
+    pediatric:clinicalAutoFillEnabled ? pediatricResult.output : [],
+    cards:cardResult.output,
+    meta:{
+      dataSource:'neon', clinicalAutoFillEnabled,
+      activationSource:clinicalAutoFillEnabled ? 'vercel-env' : 'disabled',
+      autoApplyPolicy:'UNIQUE_EXACT_MATCH_AUTO_APPLY',
+      publishedForms:formResult.output.length,
+      publishedAdultRegimens:clinicalAutoFillEnabled ? adultResult.output.length : 0,
+      publishedPediatricRegimens:clinicalAutoFillEnabled ? pediatricResult.output.length : 0,
+      publishedCards:cardResult.output.length,
+      eligibleAdultRegimens:adultResult.output.length,
+      eligiblePediatricRegimens:pediatricResult.output.length,
+      eligibleCards:cardResult.output.length,
+      rawPublishedRegimens:dataset.rawCount,
+      draftAdultRegimens:0,
+      draftPediatricRegimens:0,
+      draftCards:0,
+      duplicateForms:formResult.duplicates,
+      duplicateAdultRegimens:adultResult.duplicates,
+      duplicatePediatricRegimens:pediatricResult.duplicates,
+      duplicateCards:cardResult.duplicates,
+      cardsReadOnlyWhenAutoFillDisabled:!clinicalAutoFillEnabled,
+      buildMs:Date.now() - startedAt,
+      neonQueryMs:Date.now() - startedAt,
+      geminiForDosage:false,
+    },
+  });
+}
+
+async function buildPayload(fileId) {
+  const mode = NeonClinical.dataSourceMode();
+  if (mode === 'sheets') return buildSheetsPayload(fileId);
+  try {
+    return await buildNeonPayload();
+  } catch (error) {
+    if (!NeonClinical.allowsSheetsFallback()) throw error;
+    const fallback = await buildSheetsPayload(fileId);
+    fallback.payload.meta.dataSource = 'sheets-fallback';
+    fallback.payload.meta.neonError = String(error?.message || error).slice(0, 500);
+    return finalize(fallback.payload);
+  }
 }
 
 async function getPayload() {
   const fileId = process.env.DOSAGE_SHEET_ID || DEFAULT_DOSAGE_FILE_ID;
-  const key = `${fileId}:${envFlag('ENABLE_DOSAGE_AUTOFILL')}:config-v8-cards-readonly`;
+  const key = `${NeonClinical.dataSourceMode()}:${fileId}:${envFlag('ENABLE_DOSAGE_AUTOFILL')}:neon-v1`;
   const now = Date.now();
   if (memoryCache && memoryCacheKey === key && now - memoryCacheTime < MEMORY_CACHE_MS) return memoryCache;
   if (!pendingBuild || pendingBuildKey !== key) {
     pendingBuildKey = key;
     pendingBuild = buildPayload(fileId).then(result => {
-      memoryCache = result; memoryCacheTime = Date.now(); memoryCacheKey = key; return result;
+      memoryCache = result;
+      memoryCacheTime = Date.now();
+      memoryCacheKey = key;
+      return result;
+    }).catch(error => {
+      if (memoryCache && memoryCacheKey === key) {
+        memoryCache.payload.meta.stale = true;
+        memoryCache.payload.meta.staleReason = String(error?.message || error).slice(0, 500);
+        return finalize(memoryCache.payload);
+      }
+      throw error;
     }).finally(() => { pendingBuild = null; pendingBuildKey = ''; });
   }
   return pendingBuild;
@@ -247,7 +316,7 @@ async function authorized(req) {
   return auth.verifySessionToken(auth.sessionFromRequest(req));
 }
 
-module.exports = async function handler(req, res) {
+async function handler(req, res) {
   const startedAt = Date.now();
   try {
     if (!['GET', 'HEAD'].includes(req.method)) {
@@ -266,9 +335,11 @@ module.exports = async function handler(req, res) {
     res.setHeader('Vary', 'Cookie');
     res.setHeader('X-Content-Type-Options', 'nosniff');
     res.setHeader('ETag', result.etag);
-    res.setHeader('Server-Timing', `dosage;dur=${Date.now() - startedAt}`);
+    res.setHeader('Server-Timing', `dosage;dur=${Date.now() - startedAt}${Number.isFinite(result.payload.meta.neonQueryMs) ? `, neon;dur=${result.payload.meta.neonQueryMs}` : ''}`);
     res.setHeader('X-MedIndex-Dosage-Cards', String(result.payload.cards.length));
     res.setHeader('X-MedIndex-Autofill', result.payload.meta.clinicalAutoFillEnabled ? 'enabled' : 'disabled');
+    res.setHeader('X-MedIndex-Data-Source', result.payload.meta.dataSource || 'unknown');
+    if (result.payload.meta.stale) res.setHeader('Warning', '110 - "Response is stale"');
     if (req.headers['if-none-match'] === result.etag) return res.status(304).end();
     if (req.method === 'HEAD') return res.status(200).end();
     return res.status(200).send(result.body);
@@ -278,7 +349,12 @@ module.exports = async function handler(req, res) {
     res.setHeader('Cache-Control', 'no-store');
     return res.status(500).json({
       error:error.message || 'Gabim gjatë ngarkimit të dozologjisë.', forms:[], adult:[], pediatric:[], cards:[],
-      meta:{ clinicalAutoFillEnabled:false, geminiForDosage:false },
+      meta:{ clinicalAutoFillEnabled:false, geminiForDosage:false, dataSource:'error' },
     });
   }
-};
+}
+
+handler.getPayload = getPayload;
+handler.buildNeonPayload = buildNeonPayload;
+handler.buildSheetsPayload = buildSheetsPayload;
+module.exports = handler;
