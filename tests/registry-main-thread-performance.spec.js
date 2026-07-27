@@ -101,8 +101,14 @@ test.describe('registry main-thread performance', () => {
     await expect(page.locator('#tbody')).toContainText('STRESS DRUG 3999');
 
     await page.evaluate(() => window.__resetMedIndexPerfProbe?.());
-    await page.waitForFunction(() => window.MedIndexRegistryDosageLoader?.loaded?.() === true, null, { timeout:15000 });
-    await page.waitForFunction(() => window.MedIndexRegistryDosage?.clinicalStatus?.() === 'ready', null, { timeout:30000 });
+    await expect.poll(
+      () => page.evaluate(() => window.MedIndexRegistryDosageLoader?.loaded?.() === true),
+      { timeout:15000, message:'dosage loader did not finish after registry readiness' }
+    ).toBe(true);
+    await expect.poll(
+      () => page.evaluate(() => window.MedIndexRegistryDosage?.clinicalStatus?.() || 'pending'),
+      { timeout:30000, message:'dosage clinical integration did not become ready' }
+    ).toBe('ready');
     await page.locator('#search').fill('');
     await expect(page.locator('#tbody > tr')).toHaveCount(50);
     await expect(page.locator('#headerRow [data-registry-dosage-column]')).toHaveCount(2);
