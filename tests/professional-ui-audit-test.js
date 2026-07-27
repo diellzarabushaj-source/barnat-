@@ -64,7 +64,7 @@ const labHtml = read('analizat.html');
 const labRuntime = read('analizat.js');
 const labCss = read('analizat-polish.css');
 assert.match(labHtml, /analizat-polish\.css\?v=20260725-1/);
-assert.match(labHtml, /analizat\.js\?v=20260725-1/);
+assert.match(labHtml, /analizat\.js\?v=20260727-neon1/);
 [
   /CATEGORY_THEMES/,
   /function iconFor\(/,
