@@ -13,10 +13,16 @@ for (const page of pages) {
 }
 
 const index = read('index.html');
-assert.match(index, /app\.js\?v=production-audit-v3-worker/, 'index.html: worker-based registry bootstrap cache version is stale');
-assert.match(index, /app-runtime\.js\?v=clinical-audit-v4-worker-runtime/, 'index.html: generated registry runtime preload is stale');
+assert.match(index, /app-performance\.js/, 'index.html: cache-isolated registry bootstrap is missing');
+assert.doesNotMatch(index, /src="app\.js/, 'index.html: legacy registry bootstrap must not be loaded');
+assert.match(index, /app-runtime-performance\.js\?v=clinical-audit-v5-performance-runtime/, 'index.html: cache-isolated generated registry runtime preload is stale');
+assert.match(index, /registry-dosage-columns-v2\.js/, 'index.html: single-pass dosage runtime is missing');
 assert.match(index, /registry-fast-start\.js\?v=registry-fast-start-v2/, 'index.html: fast-start guard version is stale');
 assert.match(index, /<script id="drug-data" type="application\/json">\[\]<\/script>/, 'registry JSON fallback must remain inert');
+
+const app = read('app-performance.js');
+assert.match(app, /clinical-audit-v5-performance-runtime/);
+assert.match(app, /app-runtime-performance\.js/);
 
 const auth = read('auth-client.js');
 assert.match(auth, /offline-runtime\.js\?v=production-audit-v1/, 'auth client must load the current offline runtime');
