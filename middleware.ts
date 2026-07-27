@@ -12,6 +12,7 @@ const PUBLIC_PATHS = new Set([
   '/sw.js',
   '/sw-resilient.js',
   '/registry-parser-worker.js',
+  '/registry-parser-worker-v2.js',
   '/manifest.webmanifest',
   '/medindex-icon.svg',
   '/favicon.ico',
@@ -59,13 +60,13 @@ export default async function middleware(request) {
   if (authenticated) return next();
 
   if (pathname.startsWith('/api/')) {
-    return new Response(JSON.stringify({ error: 'Kërkohet autentikim.' }), {
-      status: 401,
+    return new Response(JSON.stringify({ error:'Kërkohet autentikim.' }), {
+      status:401,
       headers: {
-        'Content-Type': 'application/json; charset=utf-8',
-        'Cache-Control': 'no-store',
-        'X-Content-Type-Options': 'nosniff',
-        'Vary': 'Cookie',
+        'Content-Type':'application/json; charset=utf-8',
+        'Cache-Control':'no-store',
+        'X-Content-Type-Options':'nosniff',
+        'Vary':'Cookie',
       },
     });
   }
