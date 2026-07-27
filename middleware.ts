@@ -9,6 +9,10 @@ const PUBLIC_PATHS = new Set([
   '/tailadmin-medindex.css',
   '/recovery.html',
   '/recovery.js',
+  '/sw.js',
+  '/sw-resilient.js',
+  '/manifest.webmanifest',
+  '/medindex-icon.svg',
   '/favicon.ico',
   '/robots.txt',
 ]);
