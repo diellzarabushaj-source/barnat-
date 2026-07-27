@@ -17,6 +17,10 @@ assert.match(shell, /MOBILE_A11Y_SRC/);
 assert.match(shell, /mobile-accessibility-hardening\.js\?v=mobile-a11y-deep-audit-v1/);
 assert.match(shell, /data-medindex-mobile-a11y/);
 assert.match(shell, /warm\(MOBILE_A11Y_SRC\)/);
+assert.match(shell, /ensureCriticalMobileStyles/);
+assert.match(shell, /miCriticalMobileTouchStyles/);
+assert.match(shell, /min-height:44px!important/, 'critical 44px touch styles must exist before mobile runtime readiness');
+assert.ok(shell.indexOf('ensureCriticalMobileStyles();') < shell.indexOf("loadRuntime(MOBILE_SRC"), 'critical touch styles must be injected before mobile experience starts');
 
 assert.match(mobile, /prefers-reduced-motion:reduce/);
 assert.match(mobile, /forced-colors:active/);
@@ -42,4 +46,4 @@ assert.match(experience, /visualViewport/);
 assert.match(experience, /orientationchange/);
 assert.match(experience, /--mi-touch-target:44px/);
 
-console.log('Mobile accessibility deep audit passed.');
+console.log('Mobile accessibility and critical touch-target audit passed.');
