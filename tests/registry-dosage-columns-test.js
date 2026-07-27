@@ -5,17 +5,25 @@ const { execFileSync } = require('node:child_process');
 
 const root = path.join(__dirname, '..');
 const index = fs.readFileSync(path.join(root, 'index.html'), 'utf8');
+const loaderPath = path.join(root, 'registry-dosage-loader.js');
+const loader = fs.readFileSync(loaderPath, 'utf8');
 const scriptPath = path.join(root, 'registry-dosage-columns-v2.js');
 const script = fs.readFileSync(scriptPath, 'utf8');
 const css = fs.readFileSync(path.join(root, 'registry-dosage-columns.css'), 'utf8');
 const api = fs.readFileSync(path.join(root, 'api', 'dosage.js'), 'utf8');
 
+execFileSync(process.execPath, ['--check', loaderPath], { stdio:'pipe' });
 execFileSync(process.execPath, ['--check', scriptPath], { stdio:'pipe' });
 
 assert.match(index, /dosage-engine\.js/);
-assert.match(index, /registry-dosage-columns-v2\.js/);
-assert.doesNotMatch(index, /src="registry-dosage-columns\.js/);
+assert.match(index, /registry-dosage-loader\.js/);
+assert.doesNotMatch(index, /src="registry-dosage-columns(?:-v2)?\.js/);
 assert.match(index, /registry-dosage-columns\.css/);
+assert.match(loader, /medindex:registry-ready/);
+assert.match(loader, /requestIdleCallback\(run, \{ timeout:5000 \}\)/);
+assert.match(loader, /SRC = '\/registry-dosage-columns-v2\.js'/);
+assert.match(loader, /dataset\.registryDosageRuntime/);
+assert.match(loader, /Shtresa e dozimit nuk u ngarkua; regjistri mbetet funksional/);
 assert.match(script, /1\. Dozimi për të rritur/);
 assert.match(script, /2\. Dozimi për fëmijë/);
 assert.match(script, /Doza e plotë/);
@@ -52,4 +60,4 @@ assert.match(css, /hide-registry-dosage-adult/);
 assert.match(css, /hide-registry-dosage-pediatric/);
 assert.match(css, /registry-dosage-picker-heading/);
 
-console.log('Registry dosage columns performance test passed.');
+console.log('Registry dosage columns idle-loader performance test passed.');
