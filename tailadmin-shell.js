@@ -2,6 +2,8 @@
   'use strict';
 
   const THEME_KEY = 'regjistriBarnave_theme_v1';
+  const OFFLINE_LEASE_KEY = 'medindex_offline_lease_v2';
+  const MAX_OFFLINE_LEASE_MS = 8 * 60 * 60 * 1000;
   const MOBILE_BREAKPOINT = 1024;
   const PAGE_META = {
     '/dozologjia.html': ['Dozologjia'],
@@ -18,6 +20,39 @@
   // data-mi-sidebar-toggle aria-controls="miSidebar" data-mi-sidebar-overlay
   // data-mi-theme-toggle aria-current="page" favoriteNavCount
   // Keyboard contract: Ctrl / ctrlKey, metaKey and Escape.
+
+  function connectionProfile() {
+    const connection = navigator.connection || navigator.mozConnection || navigator.webkitConnection;
+    const effectiveType = String(connection?.effectiveType || '');
+    return {
+      slow:/^(slow-2g|2g)$/i.test(effectiveType) || Number(connection?.downlink || 10) < 0.8 || Number(connection?.rtt || 0) > 900,
+      saveData:Boolean(connection?.saveData),
+    };
+  }
+
+  function validOfflineLease() {
+    try {
+      const lease = JSON.parse(localStorage.getItem(OFFLINE_LEASE_KEY) || 'null');
+      const now = Date.now();
+      if (!lease || lease.version !== 2 || lease.hardened !== true) return null;
+      if (!Number.isFinite(lease.verifiedAt) || !Number.isFinite(lease.expiresAt)) return null;
+      if (lease.expiresAt <= now || lease.expiresAt - lease.verifiedAt > MAX_OFFLINE_LEASE_MS) return null;
+      return lease;
+    } catch { return null; }
+  }
+
+  function revealCachedShellOnWeakConnection() {
+    const lease = validOfflineLease();
+    if (!lease) return;
+    const profile = connectionProfile();
+    const recentBootstrap = lease.bootstrap === true && Date.now() - lease.verifiedAt < 2 * 60 * 1000;
+    if (!profile.slow && !profile.saveData && navigator.onLine && !recentBootstrap) return;
+    document.documentElement.classList.remove('auth-checking');
+    document.documentElement.classList.add('auth-ready', 'auth-offline', 'mi-low-bandwidth');
+    window.dispatchEvent(new CustomEvent('medindex:auth-optimistic', {
+      detail:{ offline:true, hardened:true, reason:recentBootstrap ? 'post-login-bootstrap' : 'constrained-network' },
+    }));
+  }
 
   function baseStylesheet() {
     return document.querySelector('link[href*="tailadmin-medindex.css"]');
@@ -77,8 +112,9 @@
   }
 
   function warmRuntimeAssets() {
-    const warm = source => fetch(source, { cache:'reload', credentials:'same-origin' }).catch(() => null);
-    if (!('serviceWorker' in navigator)) return;
+    const profile = connectionProfile();
+    if (profile.slow || profile.saveData || !('serviceWorker' in navigator)) return;
+    const warm = source => fetch(source, { cache:'no-cache', credentials:'same-origin' }).catch(() => null);
     navigator.serviceWorker.ready.then(() => {
       const run = () => Promise.all([warm(LEGACY_SRC), warm(MOBILE_SRC), warm(MOBILE_A11Y_SRC)]);
       if (navigator.serviceWorker.controller) run();
@@ -120,6 +156,7 @@
   function init() {
     ensureStylesheetLast();
     loadLegacyShell();
+    setTimeout(revealCachedShellOnWeakConnection, 0);
   }
 
   window.addEventListener('medindex:tailadmin-ready', ensureStylesheetLast);
@@ -127,6 +164,7 @@
     ensureStylesheetLast();
     resetSidebarPosition();
     syncResponsiveSidebar();
+    revealCachedShellOnWeakConnection();
   }, { passive:true });
 
   if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', init, { once:true });
