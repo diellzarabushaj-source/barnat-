@@ -93,7 +93,7 @@ test('mjeku gjen shërbimin, krijon recetë dhe vazhdon offline', async ({ page,
   await dialog.accept();
   await navigationPromise;
   await restoredPage.waitForFunction(() => document.documentElement.classList.contains('auth-ready'));
-  await expect(restoredPage.locator('.mi-page-heading h1')).toHaveText('ICD');
+  await expect(restoredPage.locator('.mi-page-heading-title')).toHaveText('ICD');
   await restoredPage.locator('[data-open-code]').first().click();
   await expect(restoredPage.locator('#detailOverlay')).toBeVisible();
   const useDiagnosis = restoredPage.getByRole('button', { name:'Përdore në recetë' });
@@ -113,7 +113,7 @@ test('mjeku gjen shërbimin, krijon recetë dhe vazhdon offline', async ({ page,
   await context.setOffline(true);
   await restoredPage.goto('http://127.0.0.1:4173/analizat.html', { waitUntil:'domcontentloaded', timeout:15000 });
   await restoredPage.waitForFunction(() => document.documentElement.classList.contains('auth-ready'));
-  await expect(restoredPage.locator('.mi-page-heading h1')).toHaveText('Analizat laboratorike');
+  await expect(restoredPage.locator('.mi-page-heading-title')).toHaveText('Analizat laboratorike');
   await expect(restoredPage.locator('#miOfflineStatus')).toHaveAttribute('data-state', 'offline');
   await context.setOffline(false);
 });

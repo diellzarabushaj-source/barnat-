@@ -102,7 +102,10 @@ test.describe('mobile physician experience', () => {
   test('all clinical sections fit the phone viewport and expose usable controls', async ({ page }) => {
     for (const section of sections) {
       await openReady(page, section.path);
-      await expect(page.locator('.mi-page-heading h1')).toHaveText(section.heading);
+      const shellHeading = section.path === '/index.html'
+        ? page.locator('.mi-page-heading h1')
+        : page.locator('.mi-page-heading-title');
+      await expect(shellHeading).toHaveText(section.heading);
       await expectNoDocumentOverflow(page);
 
       await expectTouchTarget(page.locator('[data-mi-sidebar-toggle]').first());
@@ -122,11 +125,22 @@ test.describe('mobile physician experience', () => {
       if (section.path === '/index.html') {
         const wrapper = page.locator('.table-wrap');
         await expect(wrapper).toBeVisible();
-        const scrollability = await wrapper.evaluate(node => ({ scrollWidth:node.scrollWidth, clientWidth:node.clientWidth, overflowX:getComputedStyle(node).overflowX }));
-        expect(scrollability.scrollWidth).toBeGreaterThan(scrollability.clientWidth);
-        expect(scrollability.overflowX).toMatch(/auto|scroll/);
-        await wrapper.evaluate(node => { node.scrollLeft = 180; });
-        expect(await wrapper.evaluate(node => node.scrollLeft)).toBeGreaterThan(0);
+        const cardLayout = await page.evaluate(() => {
+          const wrapperNode = document.querySelector('.table-wrap');
+          const tableNode = document.querySelector('#dataTable');
+          const rowNode = document.querySelector('#dataTable tbody tr');
+          return {
+            scrollWidth:wrapperNode.scrollWidth,
+            clientWidth:wrapperNode.clientWidth,
+            overflowX:getComputedStyle(wrapperNode).overflowX,
+            tableDisplay:getComputedStyle(tableNode).display,
+            rowDisplay:getComputedStyle(rowNode).display,
+          };
+        });
+        expect(cardLayout.scrollWidth).toBeLessThanOrEqual(cardLayout.clientWidth + 1);
+        expect(cardLayout.overflowX).toMatch(/visible|clip/);
+        expect(cardLayout.tableDisplay).toBe('block');
+        expect(cardLayout.rowDisplay).toBe('block');
       }
     }
   });
@@ -212,7 +226,7 @@ test.describe('mobile physician experience', () => {
     await context.setOffline(true);
     await page.goto(`${BASE}/analizat.html`, { waitUntil:'domcontentloaded', timeout:15000 });
     await waitForPageFlag(page, () => document.documentElement.classList.contains('auth-ready'));
-    await expect(page.locator('.mi-page-heading h1')).toHaveText('Analizat laboratorike');
+    await expect(page.locator('.mi-page-heading-title')).toHaveText('Analizat laboratorike');
     await expect(page.locator('#miOfflineStatus')).toHaveAttribute('data-state', 'offline');
     await expectNoDocumentOverflow(page);
     await context.setOffline(false);

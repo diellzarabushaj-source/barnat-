@@ -12,12 +12,12 @@ const requiredFiles = [
   'index.html','klasifikimi.html','icd.html','analizat.html','dozologjia.html','protokollet.html','recetat.html','login.html',
   'login.css','login.js','theme-preload.js','auth-client.js','app-stability.js','app-polish.css','performance.css','tailadmin-medindex.css','tailadmin-shell.js','TAILADMIN-LICENSE','THIRD_PARTY_NOTICES.md',
   'medical-hub.css','analizat-polish.css','lab-sheet-data.js','medical-icons.js','section-icons.js',
-  'recetat.css','recetat-audit.css','prescription-format-core.js','recetat.js','recetat-safe-print.js','app-runtime.js','app-parts/core-tail.txt',
+  'recetat.css','recetat-audit.css','prescription-format-core.js','recetat.js','recetat-safe-print.js','app-runtime.js',
+  'app-parts/part-01.txt','app-parts/part-02.txt','app-parts/part-03.txt','app-parts/part-04.txt','app-parts/core-tail.txt',
   'middleware.ts','lib/auth.mjs','lib/auth-edge.mjs','lib/gemini-prescription.js','api/auth.js','api/registry.js','api/drug-search.js',
   'api/gemini-prescription-secure.js','api/dosage.js','api/protocol-document.js',
   'dosage-engine.js','dozologjia.js','protokollet.js','clinical-reference.css','clinical-density.css','clinical-dialog.js','data/protocols.json',
   'data/registry-quality.js','icd-data.js','vercel.json','robots.txt','scripts/build-static-runtime.js',
-  ...Array.from({ length: 7 }, (_, index) => `app-parts/part-${String(index + 1).padStart(2, '0')}.txt`),
 ];
 
 function file(relativePath) { return fs.readFileSync(path.join(ROOT, relativePath), 'utf8'); }
@@ -40,6 +40,9 @@ async function main() {
   assert.ok(!fs.existsSync(path.join(ROOT, 'api/health.js')), 'Unused health serverless function must not return');
   assert.ok(!fs.existsSync(path.join(ROOT, 'api/gemini-prescription.js')), 'Gemini core must not consume a second serverless function');
   assert.ok(!fs.existsSync(path.join(ROOT, 'api/labs.js')), 'Stale laboratory API must not expose a second dataset');
+  ['part-05.txt','part-06.txt','part-07.txt'].forEach(name => {
+    assert.ok(!fs.existsSync(path.join(ROOT, 'app-parts', name)), `Legacy registry fragment ${name} must not return`);
+  });
 
   console.log('2/11 JSON and JavaScript syntax');
   const vercel = JSON.parse(file('vercel.json'));
