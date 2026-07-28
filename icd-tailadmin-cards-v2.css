@@ -448,7 +448,7 @@ html[data-theme="dark"].medindex-tailadmin[data-mi-page="icd"] #icdGrid .icd-cod
 }
 
 html[data-theme="dark"].medindex-tailadmin[data-mi-page="icd"] .icd-code-head .med-card-code {
-  background: rgba(70,95,255,.14) !important;
+  background: rgba(31,119,121,.14) !important;
   color: var(--mi-brand-300) !important;
 }
 

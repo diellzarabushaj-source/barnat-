@@ -1,5 +1,4 @@
-9';
-          return '<td class="' + col.cls + '" title="' + escapeHtml(cat || '') + '"><span class="cat-dot" style="background:' + color + '"></span>' + escapeHtml(val) + '</td>';
+          return '<td class="' + col.cls + '" data-label="' + mobileLabel + '" title="' + escapeHtml(cat || '') + '"><span class="cat-dot" style="background:' + color + '"></span>' + escapeHtml(val) + '</td>';
         }
         if(col.type === 'num' && (col.cls === 'price')){
           const numericValue = Number(val);
@@ -7,7 +6,7 @@
         } else {
           val = escapeHtml(val);
         }
-        return '<td class="' + col.cls + '" title="' + escapeHtml(r[col.key]) + '">' + val + '</td>';
+        return '<td class="' + col.cls + '" data-label="' + mobileLabel + '" title="' + escapeHtml(r[col.key]) + '">' + val + '</td>';
       }).join('') + '</tr>';
     }).join('');
 
@@ -157,4 +156,4 @@ function buildFormPanel(filterText){
     });
   });
 
-  if(q && !anyRender
+  if(q && !anyRendered){

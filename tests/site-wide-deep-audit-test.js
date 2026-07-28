@@ -21,7 +21,7 @@ for (const page of pages) {
 
 for (const page of pages.filter(page => page !== 'login.html')) {
   const html = read(page);
-  assert.match(html, /auth-client\.js\?v=production-audit-v1/, `${page}: auth guard is missing or stale`);
+  assert.match(html, /auth-client\.js\?v=production-audit-v2/, `${page}: auth guard is missing or stale`);
   assert.match(html, /app-stability\.js\?v=/, `${page}: global stability runtime is missing`);
 }
 

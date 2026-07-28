@@ -23,6 +23,26 @@ assert.match(dosage, /const cards = cardsResult\.output/);
 assert.match(dosage, /cardsReadOnlyWhenAutoFillDisabled/);
 assert.match(dosage, /X-MedIndex-Dosage-Cards/);
 assert.doesNotMatch(dosage, /const cards = clinicalAutoFillEnabled \? cardsResult\.output : \[\]/);
+assert.doesNotMatch(dosage, /error:error\.message/, 'dosage endpoint must not return raw upstream errors');
+assert.doesNotMatch(dosage, /staleReason:String/, 'stale dosage payload must expose a stable reason code');
+assert.doesNotMatch(dosage, /neonError = String/, 'Neon fallback metadata must expose a stable reason code');
+
+const dosageHandler = require('../api/dosage.js');
+const cachedDosage = dosageHandler._test.finalize({
+  forms:[], adult:[], pediatric:[], cards:[],
+  meta:{ dataSource:'neon', clinicalAutoFillEnabled:false },
+});
+const staleDosage = dosageHandler._test.staleResultFromCache(cachedDosage);
+assert.notStrictEqual(staleDosage.payload, cachedDosage.payload, 'stale fallback must clone the cached payload');
+assert.notStrictEqual(staleDosage.payload.meta, cachedDosage.payload.meta, 'stale fallback must clone cached metadata');
+assert.equal(cachedDosage.payload.meta.stale, undefined, 'stale fallback mutated the last-good cache');
+assert.equal(staleDosage.payload.meta.stale, true);
+assert.equal(staleDosage.payload.meta.staleReason, 'UPSTREAM_REFRESH_FAILED');
+assert.deepEqual(JSON.parse(staleDosage.body), staleDosage.payload, 'stale body and payload metadata diverged');
+assert.notEqual(staleDosage.etag, cachedDosage.etag, 'stale response ETag must describe its stale body');
+const publicDosageError = dosageHandler._test.publicLoadError(new Error('private upstream detail'));
+assert.equal(publicDosageError.code, 'DOSAGE_UNAVAILABLE');
+assert.doesNotMatch(JSON.stringify(publicDosageError), /private upstream detail/);
 
 const icd = read('api/icd.js');
 assert.match(icd, /MAX_CSV_BYTES/);

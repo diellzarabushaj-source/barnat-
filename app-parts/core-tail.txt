@@ -1,4 +1,3 @@
-ed){
     const empty = document.createElement('div');
     empty.className = 'form-empty';
     empty.textContent = 'Asnjë formë nuk u gjet';

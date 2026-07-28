@@ -49,13 +49,16 @@ const runtime = read('offline-runtime-performance.js');
   /serviceWorker\.register/, /updateViaCache:'none'/, /navigator\.storage\.persist/,
   /WARM_PRIVATE_DATA/, /beforeinstallprompt/, /medindex:offline-runtime-ready/,
   /clinical-workflow\.js/, /Përditësim gati/, /Pa internet/, /sw-resilient-v3\.js/,
-  /verifyNetworkReachability/, /offline_probe=1/, /networkReachable/, /Promise\.race/,
+  /verifyNetworkReachability/, /offline_probe=1/, /networkReachable/, /window\.MEDINDEX_AUTH_READY/,
+  /authConnectivitySignal/, /fallbackNetworkProbe/, /reachabilityPromise/,
 ].forEach(pattern => assert.match(runtime, pattern, `offline-runtime-performance.js missing ${pattern}`));
-assert.match(runtime, /installListeners\(\);\s*verifyNetworkReachability\(\);\s*setTimeout\(verifyNetworkReachability, 900\);\s*window\.MedIndexOffline/, 'network reachability probe and retry must run during offline runtime start');
-assert.match(runtime, /network-probe-timeout/, 'network probe must have a deterministic timeout failure');
+assert.match(runtime, /installListeners\(\);\s*void verifyNetworkReachability\(\);\s*window\.MedIndexOffline/, 'one coordinated reachability check must run during offline runtime start');
+assert.match(runtime, /NETWORK_PROBE_TIMEOUT_MS = 6000[\s\S]*AbortController/, 'the standalone fallback probe must have a deterministic timeout');
 assert.match(runtime, /message\.type === 'MEDINDEX_NETWORK_STATUS'[\s\S]*setStatus\('offline'/, 'worker network-loss messages must immediately update the UI');
 assert.match(runtime, /message\.online === false \|\| !networkReachable \|\| !navigator\.onLine[\s\S]*setStatus\('offline'/, 'cache-ready messages must not overwrite a confirmed offline state');
 assert.match(runtime, /fetch\('\/api\/auth\?offline_probe=1',[\s\S]*cache:'no-store'/, 'network reachability must use a network-only endpoint');
+assert.equal((runtime.match(/fetch\('\/api\/auth\?offline_probe=1'/g) || []).length, 1, 'offline runtime must define exactly one fallback network probe');
+assert.doesNotMatch(runtime, /setTimeout\(verifyNetworkReachability,\s*900\)/, 'duplicate delayed network probes must not return');
 assert.doesNotMatch(runtime, /\/api\/gemini-prescription|password/i, 'offline runtime must not call AI or handle passwords');
 
 const auth = read('auth-client.js');
@@ -63,7 +66,7 @@ const auth = read('auth-client.js');
   /medindex_offline_lease_v2/, /LEGACY_OFFLINE_LEASE_KEYS/, /MAX_OFFLINE_LEASE_MS = 8 \* 60 \* 60 \* 1000/,
   /lease\.version !== 2/, /lease\.hardened !== true/, /payload\.hardened !== true/,
   /AUTH_TIMEOUT_MS = 3200/, /activateOfflineLease/, /auth-offline/, /CLEAR_PRIVATE_DATA/,
-  /deleteDatabase\('medindex-registry-v1'\)/, /offline-runtime\.js/, /revalidateOnlineSession/,
+  /deleteDatabase\('medindex-registry-v1'\)/, /offline-runtime-performance\.js/, /revalidateOnlineSession/,
   /medindex:offline-auth-invalid/, /AUTH_NOT_CONFIGURED/, /configurationUnavailable/,
 ].forEach(pattern => assert.match(auth, pattern, `auth-client.js missing ${pattern}`));
 assert.match(auth, /response\.status === 401 \|\| response\.status === 403[\s\S]*goToLogin/, '401/403 must never use an offline lease');

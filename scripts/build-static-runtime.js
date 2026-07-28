@@ -17,6 +17,111 @@ const runtimeOutputs = [
 ];
 const tailadminCss = path.join(root, 'tailadmin-medindex.css');
 const ignoredDirectories = new Set(['.git', '.vercel', 'node_modules', 'test-results', 'playwright-report']);
+const clinicalPages = [
+  '/index.html',
+  '/klasifikimi.html',
+  '/icd.html',
+  '/analizat.html',
+  '/dozologjia.html',
+  '/protokollet.html',
+  '/recetat.html',
+];
+const generatedStaticSources = new Map([
+  ['/offline-runtime-performance.js', 'offline-runtime.js'],
+  ['/app-runtime-performance.js', 'app-runtime-performance.js'],
+  ['/app-runtime.js', 'app-runtime.js'],
+]);
+
+function readSource(file) {
+  return fs.readFileSync(file, 'utf8').replace(/\r\n?/g, '\n');
+}
+
+function normalizeShellUrl(rawValue) {
+  const value = String(rawValue || '').trim().replace(/&amp;/g, '&');
+  if (!value || /^(?:data:|https?:|mailto:|tel:|#)/i.test(value)) return null;
+  const interpolated = value.includes('${');
+  const candidate = interpolated ? value.split('?')[0] : value;
+  let url;
+  try { url = new URL(candidate, 'https://medindex.local/'); }
+  catch { return null; }
+  if (url.origin !== 'https://medindex.local') return null;
+
+  const relative = decodeURIComponent(url.pathname).replace(/^\/+/, '');
+  if (!relative || relative.split('/').includes('..')) return null;
+  const absolute = path.resolve(root, relative);
+  if (!absolute.startsWith(root + path.sep)) return null;
+  const generatedSource = generatedStaticSources.get(url.pathname);
+  const exists = fs.existsSync(absolute) && fs.statSync(absolute).isFile();
+  if (!exists && !generatedSource) return null;
+  return `${url.pathname}${interpolated ? '' : url.search}`;
+}
+
+function coreShellSeed(workerSource) {
+  const match = workerSource.match(/const CORE_SHELL = \[([\s\S]*?)\n\];/);
+  if (!match) throw new Error('CORE_SHELL nuk u gjet në service worker.');
+  return [...match[1].matchAll(/['"]([^'"]+)['"]/g)].map(item => item[1]);
+}
+
+function htmlAssetReferences(relativePage) {
+  const html = readSource(path.join(root, relativePage.replace(/^\/+/, '')));
+  return [...html.matchAll(/<(?:script|link)\b[^>]*?\b(?:src|href)\s*=\s*["']([^"']+)["'][^>]*>/gi)]
+    .map(match => match[1]);
+}
+
+function scriptAssetReferences(source) {
+  return [...source.matchAll(/["'`]((?:\/|\.\/)?[^"'`\s]+?\.(?:css|js|svg|png|jpe?g|webp|ico|webmanifest)(?:\?[^"'`]*)?)["'`]/gi)]
+    .map(match => match[1]);
+}
+
+function stylesheetAssetReferences(source) {
+  return [...source.matchAll(/url\(\s*["']?([^"')\s]+)["']?\s*\)/gi)].map(match => match[1]);
+}
+
+function buildOfflineShell(workerSource) {
+  const assets = [];
+  const exact = new Set();
+  const byPath = new Set();
+  const scanQueue = [];
+  const scanned = new Set();
+
+  const add = rawValue => {
+    const value = normalizeShellUrl(rawValue);
+    if (!value) return;
+    const pathname = new URL(value, 'https://medindex.local/').pathname;
+    if (!value.includes('?') && byPath.has(pathname)) return;
+    if (!exact.has(value)) {
+      exact.add(value);
+      byPath.add(pathname);
+      assets.push(value);
+    }
+    if (/\.(?:css|js)$/i.test(pathname) && !scanned.has(pathname)) scanQueue.push(pathname);
+  };
+
+  coreShellSeed(workerSource).forEach(add);
+  clinicalPages.forEach(add);
+  clinicalPages.flatMap(htmlAssetReferences).forEach(add);
+
+  while (scanQueue.length) {
+    const pathname = scanQueue.shift();
+    if (scanned.has(pathname)) continue;
+    scanned.add(pathname);
+    const relative = generatedStaticSources.get(pathname) || pathname.replace(/^\/+/, '');
+    const absolute = path.join(root, relative);
+    if (!fs.existsSync(absolute)) continue;
+    const source = readSource(absolute);
+    const references = pathname.endsWith('.css')
+      ? stylesheetAssetReferences(source)
+      : scriptAssetReferences(source);
+    references.forEach(add);
+  }
+
+  return assets;
+}
+
+function renderCoreShell(assets) {
+  const values = assets.map(value => `  '${value.replace(/\\/g, '\\\\').replace(/'/g, "\\'")}',`);
+  return `const CORE_SHELL = [\n${values.join('\n')}\n];`;
+}
 
 function checkGeneratedSyntax(file, source) {
   const tempDirectory = fs.mkdtempSync(path.join(os.tmpdir(), 'medindex-generated-'));
@@ -33,7 +138,7 @@ function buildRegistryRuntime() {
   const missing = runtimeSources.filter(file => !fs.existsSync(path.join(root, file)));
   if (missing.length) throw new Error(`Mungojnë fragmentet e runtime-it: ${missing.join(', ')}`);
 
-  let source = runtimeSources.map(file => fs.readFileSync(path.join(root, file), 'utf8')).join('');
+  let source = runtimeSources.map(file => readSource(path.join(root, file))).join('');
   const opener = '(async () => {';
   if (!source.startsWith(opener)) {
     throw new Error('Fragmentet e runtime-it nuk fillojnë me wrapper-in e pritur async.');
@@ -56,13 +161,11 @@ function buildCacheIsolatedOfflineRuntime() {
     throw new Error('Mungon burimi i offline runtime-it ose resilient service worker-it.');
   }
 
-  const workerSource = fs.readFileSync(workerInput, 'utf8');
+  const workerSource = readSource(workerInput);
+  const offlineShell = buildOfflineShell(workerSource);
   const workerGenerated = workerSource
     .replace("const VERSION = 'low-bandwidth-v2';", "const VERSION = 'low-bandwidth-v3';")
-    .replace(
-      "  '/auth-client.js', '/offline-runtime.js', '/manifest.webmanifest', '/medindex-icon.svg',\n];",
-      "  '/auth-client.js', '/offline-runtime.js', '/manifest.webmanifest', '/medindex-icon.svg',\n  '/index.html', '/klasifikimi.html', '/icd.html', '/analizat.html',\n  '/dozologjia.html', '/protokollet.html', '/recetat.html',\n];"
-    )
+    .replace(/const CORE_SHELL = \[[\s\S]*?\n\];/, renderCoreShell(offlineShell))
     .replace('async function cacheCoreShell() {\n  const cache = await caches.open(STATIC_CACHE);', 'async function cacheCoreShell() {')
     .replace(
       '      await cache.put(request, response.clone());',
@@ -81,49 +184,25 @@ function buildCacheIsolatedOfflineRuntime() {
       || !workerGenerated.includes('privatePage ? PAGE_CACHE : STATIC_CACHE')
       || !workerGenerated.includes("'/analizat.html',")
       || !workerGenerated.includes('MEDINDEX_NETWORK_STATUS')
-      || !workerGenerated.includes('online:networkProfile.online')) {
+      || !workerGenerated.includes('online:networkProfile.online')
+      || offlineShell.some(asset => !workerGenerated.includes(`'${asset.replace(/'/g, "\\'")}',`))) {
     throw new Error('Versioni i cache-isolated service worker-it, precache-i klinik ose sinjali i rrjetit nuk u gjenerua.');
   }
   checkGeneratedSyntax(workerOutput, workerGenerated);
   fs.writeFileSync(workerOutput, workerGenerated, 'utf8');
 
-  const runtimeSource = fs.readFileSync(runtimeInput, 'utf8');
+  const runtimeSource = readSource(runtimeInput);
   const runtimeGenerated = runtimeSource
     .replace("const RESILIENCE_VERSION = 'low-bandwidth-v2';", "const RESILIENCE_VERSION = 'low-bandwidth-v3';")
-    .replace('const SERVICE_WORKER_URL = `/sw-resilient.js?v=${RESILIENCE_VERSION}`;', 'const SERVICE_WORKER_URL = `/sw-resilient-v3.js?v=${RESILIENCE_VERSION}`;')
-    .replace('  let updateActivated = false;', '  let updateActivated = false;\n  let networkReachable = navigator.onLine;')
-    .replace('      online:navigator.onLine,', '      online:networkReachable && navigator.onLine,')
-    .replace(
-      '  function installListeners() {',
-      "  async function verifyNetworkReachability() {\n    const controller = new AbortController();\n    let timer = 0;\n    const timeout = new Promise((_, reject) => {\n      timer = setTimeout(() => {\n        controller.abort();\n        reject(new Error('network-probe-timeout'));\n      }, 1500);\n    });\n    try {\n      await Promise.race([\n        fetch('/api/auth?offline_probe=1', { cache:'no-store', credentials:'same-origin', signal:controller.signal }),\n        timeout,\n      ]);\n      networkReachable = true;\n    } catch {\n      networkReachable = false;\n      sendNetworkProfile();\n      setStatus('offline', 'Pa internet · po përdoret kopja lokale');\n    } finally {\n      clearTimeout(timer);\n    }\n  }\n\n  function installListeners() {"
-    )
-    .replace(
-      "      if (message.type === 'MEDINDEX_AUTH_INVALID') {",
-      "      if (message.type === 'MEDINDEX_NETWORK_STATUS') {\n        networkReachable = message.online !== false;\n        if (!networkReachable) setStatus('offline', 'Pa internet · po përdoret kopja lokale');\n        return;\n      }\n      if (message.type === 'MEDINDEX_AUTH_INVALID') {"
-    )
-    .replace(
-      "      if (message.type !== 'MEDINDEX_CACHE_STATUS') return;",
-      "      if (message.type !== 'MEDINDEX_CACHE_STATUS') return;\n      if (message.online === false || !networkReachable || !navigator.onLine) {\n        networkReachable = false;\n        setStatus('offline', 'Pa internet · po përdoret kopja lokale');\n        return;\n      }"
-    )
-    .replace(
-      "    window.addEventListener('online', () => {\n      warmRequested = false;",
-      "    window.addEventListener('online', () => {\n      networkReachable = true;\n      warmRequested = false;"
-    )
-    .replace(
-      "    window.addEventListener('offline', () => {\n      sendNetworkProfile();",
-      "    window.addEventListener('offline', () => {\n      networkReachable = false;\n      sendNetworkProfile();"
-    )
-    .replace(
-      '    installListeners();\n    window.MedIndexOffline = {',
-      '    installListeners();\n    verifyNetworkReachability();\n    setTimeout(verifyNetworkReachability, 900);\n    window.MedIndexOffline = {'
-    );
+    .replace('const SERVICE_WORKER_URL = `/sw-resilient.js?v=${RESILIENCE_VERSION}`;', 'const SERVICE_WORKER_URL = `/sw-resilient-v3.js?v=${RESILIENCE_VERSION}`;');
   if (runtimeGenerated === runtimeSource
       || !runtimeGenerated.includes("const RESILIENCE_VERSION = 'low-bandwidth-v3';")
       || !runtimeGenerated.includes('/sw-resilient-v3.js')
-      || !runtimeGenerated.includes('Promise.race([')
-      || !runtimeGenerated.includes('setTimeout(verifyNetworkReachability, 900)')
+      || !runtimeGenerated.includes('window.MEDINDEX_AUTH_READY')
+      || !runtimeGenerated.includes('reachabilityPromise')
+      || !runtimeGenerated.includes('void verifyNetworkReachability()')
       || !runtimeGenerated.includes("message.online === false || !networkReachable || !navigator.onLine")
-      || !runtimeGenerated.includes("networkReachable = false;\n      sendNetworkProfile();")) {
+      || (runtimeGenerated.match(/fetch\('\/api\/auth\?offline_probe=1'/g) || []).length !== 1) {
     throw new Error('Cache-isolated offline runtime ose konfirmimi determinist i rrjetit nuk u gjenerua.');
   }
   checkGeneratedSyntax(runtimeOutput, runtimeGenerated);

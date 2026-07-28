@@ -21,7 +21,7 @@ async function waitForPageFlag(page, reader, expected = true, timeout = 10000) {
 async function openReady(page, path) {
   await page.goto(`${BASE}${path}`, { waitUntil:'domcontentloaded' });
   await waitForPageFlag(page, () => document.documentElement.classList.contains('auth-ready'));
-  await waitForPageFlag(page, () => document.documentElement.dataset.miMobileExperience === 'production-audit-v1');
+  await waitForPageFlag(page, () => document.documentElement.dataset.miMobileExperience === 'production-audit-v2');
   await expect(page.locator('.mi-app-shell')).toBeVisible();
 }
 
@@ -60,7 +60,7 @@ function expectInsideViewport(rect, viewport, tolerance = 1) {
 
 async function expectNoDocumentOverflow(page) {
   const report = await viewportReport(page);
-  expect(report.mobileVersion).toBe('production-audit-v1');
+  expect(report.mobileVersion).toBe('production-audit-v2');
   expect(report.htmlScrollWidth).toBeLessThanOrEqual(report.width + 1);
   expect(report.bodyScrollWidth).toBeLessThanOrEqual(report.width + 1);
   expectInsideViewport(report.shell, report);
@@ -176,7 +176,7 @@ test.describe('mobile physician experience', () => {
     await expect(addDrug).toBeVisible();
     await addDrug.click();
     await page.waitForURL(/recetat\.html/);
-    await waitForPageFlag(page, () => document.documentElement.dataset.miMobileExperience === 'production-audit-v1');
+    await waitForPageFlag(page, () => document.documentElement.dataset.miMobileExperience === 'production-audit-v2');
 
     const picker = page.locator('#rxDrugPopover');
     await expect(picker).toBeVisible();

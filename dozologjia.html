@@ -5,17 +5,18 @@
   <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
   <meta name="robots" content="noindex,nofollow,noarchive">
   <meta name="theme-color" content="#0d3d40">
+  <link rel="manifest" href="manifest.webmanifest">
   <title>MedIndex | Dozologjia</title>
   <link rel="stylesheet" href="medical-hub.css?v=20260723-1">
   <link rel="stylesheet" href="clinical-reference.css?v=20260724-1">
-  <link rel="stylesheet" href="tailadmin-medindex.css?v=20260724-3" data-tailadmin-medindex-css>
-  <link rel="preload" href="dozologjia-verified-cards.css?v=20260726-1" as="style">
+  <link rel="stylesheet" href="tailadmin-medindex.css?v=20260728-1" data-tailadmin-medindex-css>
+  <link rel="preload" href="dozologjia-verified-cards.css?v=20260728-1" as="style">
   <link rel="preload" href="dozologjia-simple-workflow.css?v=20260726-1" as="style">
   <link rel="preload" href="dozologjia-safety-enhancements.css?v=20260726-1" as="style">
   <link rel="preload" href="dozologjia-clinical-readiness.css?v=20260726-1" as="style">
-  <link rel="stylesheet" href="tailadmin-professional.css?v=20260724-1" data-tailadmin-professional-css>
-  <script src="tailadmin-shell.js?v=production-audit-v1" defer></script>
-  <script src="tailadmin-professional.js?v=production-audit-v1" defer></script>
+  <link rel="stylesheet" href="tailadmin-professional.css?v=20260728-1" data-tailadmin-professional-css>
+  <script src="tailadmin-shell.js?v=production-audit-v2" defer></script>
+  <script src="tailadmin-professional.js?v=production-audit-v2" defer></script>
   <script src="dozologjia-card-style-loader.js?v=20260726-1" defer></script>
   <script src="dozologjia-simple-workflow-style-loader.js?v=20260726-1" defer></script>
 </head>
@@ -35,9 +36,9 @@
     <main class="med-main clinical-main" id="dosageContent" tabindex="-1">
       <header class="clinical-hero">
         <div>
-          <p class="clinical-kicker">MedIndex · kartelat e verifikuara</p>
+          <p class="clinical-kicker">MedIndex · kartela klinike</p>
           <h1>Dozologjia</h1>
-          <p>Për secilin bar shfaqen qartë regjimi dhe rruga për të rritur, si dhe doza pediatrike kur është publikuar në dataset-in e verifikuar.</p>
+          <p>Për secilin bar shfaqen qartë regjimi dhe rruga për të rritur, si dhe doza pediatrike kur është publikuar në dataset-in klinik.</p>
         </div>
         <div class="clinical-summary"><strong id="dosageCount">0</strong><span>kartela</span></div>
       </header>
@@ -56,22 +57,22 @@
       <div class="clinical-patient" id="pediatricInputs">
         <div class="dosage-calculator-copy">
           <strong>Kalkulatori pediatrik sipas peshës</strong>
-          <span>Shëno peshën. Rezultati shfaqet vetëm kur ekziston formulë pediatrike e strukturuar dhe e verifikuar; teksti origjinal i dozës mbetet gjithmonë i dukshëm.</span>
+          <span>Shëno peshën. Rezultati shfaqet vetëm kur ekziston formulë pediatrike e strukturuar me burim të lidhur; teksti origjinal i dozës mbetet gjithmonë i dukshëm.</span>
         </div>
         <label>Pesha e fëmijës (kg)<input id="patientWeightKg" type="number" min="0.1" step="0.1" inputmode="decimal" placeholder="p.sh. 18"></label>
         <label>Mosha (muaj, kur kërkohet)<input id="patientAgeMonths" type="number" min="0" step="1" inputmode="numeric" placeholder="p.sh. 48"></label>
       </div>
 
-      <p class="clinical-status" id="dosageStatus" role="status" aria-live="polite">Duke ngarkuar kartelat e verifikuara…</p>
+      <p class="clinical-status" id="dosageStatus" role="status" aria-live="polite">Duke ngarkuar kartelat klinike…</p>
       <div class="clinical-list dosage-card-list" id="dosageList" aria-live="polite"></div>
       <aside class="clinical-note"><strong>Kontroll klinik i detyrueshëm:</strong> çdo skemë lidhet me indikacionin e zgjedhur. Kalkulatori zbatohet vetëm mbi formulën e strukturuar të publikuar dhe rezultati bartet në recetë vetëm për rishikim.</aside>
     </main>
   </div>
   <div class="rx-toast" id="dosageToast" role="status" aria-live="polite"></div>
   <script src="dosage-engine.js?v=20260726-3" defer></script>
-  <script src="auth-client.js?v=production-audit-v1" defer></script>
+  <script src="auth-client.js?v=production-audit-v2" defer></script>
   <script src="dozologjia-deep-audit.js?v=20260726-2" defer></script>
-  <script src="dozologjia.js?v=20260726-3" defer></script>
+  <script src="dozologjia.js?v=20260728-1" defer></script>
   <script src="app-stability.js?v=20260724-2" defer></script>
 </body>
 </html>

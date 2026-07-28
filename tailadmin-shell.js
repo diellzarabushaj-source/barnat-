@@ -10,11 +10,11 @@
     '/protokollet.html':['Protokollet'],
     '/recetat.html':['Recetat'],
   };
-  const LEGACY_SRC = '/tailadmin-shell-legacy.js?v=production-audit-v1';
-  const MOBILE_SRC = '/mobile-experience.js?v=production-audit-v1';
+  const LEGACY_SRC = '/tailadmin-shell-legacy.js?v=production-audit-v2';
+  const MOBILE_SRC = '/mobile-experience.js?v=production-audit-v2';
   const MOBILE_A11Y_SRC = '/mobile-accessibility-hardening.js?v=mobile-a11y-deep-audit-v1';
   const OFFLINE_RUNTIME_SRC = '/offline-runtime-performance.js?v=low-bandwidth-v3';
-  const SHELL_VERSION = 'production-audit-v1';
+  const SHELL_VERSION = 'production-audit-v2';
   const id = 'appMenu';
   const SHELL_RETRY_MS = 3500;
   let shellReady = false;
@@ -163,7 +163,7 @@
     ensureCriticalMobileStyles();
     const mobile = loadRuntime(MOBILE_SRC, 'data-medindex-mobile-experience', 'miMobileExperienceError');
     const loadA11y = () => loadRuntime(MOBILE_A11Y_SRC, 'data-medindex-mobile-a11y', 'miMobileA11yError');
-    if (document.documentElement.dataset.miMobileExperience === 'production-audit-v1') loadA11y();
+    if (document.documentElement.dataset.miMobileExperience === 'production-audit-v2') loadA11y();
     else {
       mobile?.addEventListener('load', loadA11y, { once:true });
       mobile?.addEventListener('error', loadA11y, { once:true });

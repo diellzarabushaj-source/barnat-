@@ -8,7 +8,7 @@ const pages = ['index.html', 'klasifikimi.html', 'icd.html', 'analizat.html', 'd
 
 for (const page of pages) {
   const html = read(page);
-  assert.match(html, /auth-client\.js\?v=production-audit-v1/, `${page}: auth runtime cache version is stale`);
+  assert.match(html, /auth-client\.js\?v=production-audit-v2/, `${page}: auth runtime cache version is stale`);
   assert.equal((html.match(/auth-client\.js/gi) || []).length, 1, `${page}: auth runtime must load once`);
 }
 
@@ -32,17 +32,17 @@ assert.match(dosageLoader, /requestIdleCallback\(run, \{ timeout:5000 \}\)/);
 assert.match(dosageLoader, /registry-dosage-columns-v2\.js/);
 
 const auth = read('auth-client.js');
-assert.match(auth, /offline-runtime\.js\?v=production-audit-v1/, 'auth client fallback must remain available on other pages');
-assert.match(auth, /tailadmin-professional\.js\?v=production-audit-v1/, 'auth client must migrate a stale professional runtime');
+assert.match(auth, /offline-runtime-performance\.js\?v=low-bandwidth-v3/, 'every private page must use the same cache-isolated offline runtime');
+assert.match(auth, /tailadmin-professional\.js\?v=production-audit-v2/, 'auth client must migrate a stale professional runtime');
 assert.match(auth, /ensureProfessionalRuntime/, 'professional runtime migration guard is missing');
 assert.match(auth, /miProfessionalVersion/, 'professional runtime version must be checked before migration');
 
 const professional = read('tailadmin-professional.js');
-assert.match(professional, /PROFESSIONAL_VERSION = 'production-audit-v1'/, 'professional runtime version is stale');
+assert.match(professional, /PROFESSIONAL_VERSION = 'production-audit-v2'/, 'professional runtime version is stale');
 assert.match(professional, /dataset\.miProfessionalVersion = PROFESSIONAL_VERSION/, 'professional runtime must expose its active version');
 
 const sourceRuntime = read('offline-runtime.js');
-assert.match(sourceRuntime, /VERSION = 'production-audit-v1'/, 'offline runtime source version is stale');
+assert.match(sourceRuntime, /VERSION = 'production-audit-v2'/, 'offline runtime source version is stale');
 const performanceRuntime = read('offline-runtime-performance.js');
 const performanceWorker = read('sw-resilient-v3.js');
 assert.match(performanceRuntime, /RESILIENCE_VERSION = 'low-bandwidth-v3'/, 'cache-isolated offline runtime version is stale');

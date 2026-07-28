@@ -45,6 +45,19 @@ function setPrivateHeaders(res, document, upstreamHeaders = null) {
   return etag;
 }
 
+function setPrivateErrorHeaders(res) {
+  res.setHeader('Cache-Control', 'private, no-store, max-age=0');
+  res.setHeader('Vary', 'Cookie');
+  res.setHeader('X-Content-Type-Options', 'nosniff');
+}
+
+function publicBlobStatus(statusCode) {
+  const status = Number(statusCode);
+  if ([200, 206, 304, 404, 416].includes(status)) return status;
+  if (status === 429) return 503;
+  return 502;
+}
+
 async function handle(req, res, dependencies = {}) {
   const authorizeRequest = dependencies.authorized || authorized;
   const resolveDocument = dependencies.safeDocument || safeDocument;
@@ -95,13 +108,36 @@ async function handle(req, res, dependencies = {}) {
       headers,
       ifNoneMatch:req.headers['if-none-match'],
     });
-    if (!result) return res.status(404).json({ error:'Dokumenti privat nuk u gjet.' });
+    if (!result) {
+      setPrivateErrorHeaders(res);
+      return res.status(404).json({ error:'Dokumenti privat nuk u gjet.' });
+    }
+
+    const status = publicBlobStatus(result.statusCode);
+    if (status === 304) {
+      setPrivateHeaders(res, document, result.headers);
+      return res.status(304).end();
+    }
+    if (status === 404) {
+      setPrivateErrorHeaders(res);
+      return res.status(404).json({ error:'Dokumenti privat nuk u gjet.' });
+    }
+    if (status === 416) {
+      setPrivateErrorHeaders(res);
+      const contentRange = result.headers?.get?.('content-range');
+      if (contentRange) res.setHeader('Content-Range', contentRange);
+      return res.status(416).json({ error:'Intervali i kërkuar nuk ekziston në dokument.' });
+    }
+    if (![200, 206].includes(status)) {
+      console.error('Protocol document unexpected Blob status:', result.statusCode);
+      setPrivateErrorHeaders(res);
+      return res.status(status).json({ error:'Dokumenti nuk mund të ngarkohet tani.' });
+    }
+
     setPrivateHeaders(res, document, result.headers);
-    if (result.statusCode === 304) return res.status(304).end();
-    if (result.statusCode === 416) return res.status(416).json({ error:'Intervali i kërkuar nuk ekziston në dokument.' });
-    const status = result.statusCode === 206 || result.headers?.get?.('content-range') ? 206 : 200;
-    if (req.method === 'HEAD') return res.status(status).end();
-    res.status(status);
+    const responseStatus = status === 206 || result.headers?.get?.('content-range') ? 206 : 200;
+    if (req.method === 'HEAD') return res.status(responseStatus).end();
+    res.status(responseStatus);
     if (!result.stream) return res.end();
     return Readable.fromWeb(result.stream).on('error', error => {
       console.error('Protocol document stream error:', error?.message || error);
@@ -111,6 +147,7 @@ async function handle(req, res, dependencies = {}) {
   } catch (error) {
     console.error('Protocol document upstream error:', error?.message || error);
     if (res.headersSent) return res.destroy(error);
+    setPrivateErrorHeaders(res);
     return res.status(502).json({ error:'Dokumenti nuk mund të ngarkohet tani.' });
   }
 }
@@ -125,3 +162,4 @@ module.exports.safeDocument = safeDocument;
 module.exports.requestId = requestId;
 module.exports.safeRange = safeRange;
 module.exports.setPrivateHeaders = setPrivateHeaders;
+module.exports.publicBlobStatus = publicBlobStatus;

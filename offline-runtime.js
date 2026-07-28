@@ -1,7 +1,7 @@
 (() => {
   'use strict';
 
-  const VERSION = 'production-audit-v1';
+  const VERSION = 'production-audit-v2';
   const RESILIENCE_VERSION = 'low-bandwidth-v2';
   const MANIFEST_URL = `/manifest.webmanifest?v=${VERSION}`;
   const SERVICE_WORKER_URL = `/sw-resilient.js?v=${RESILIENCE_VERSION}`;
@@ -11,6 +11,8 @@
   const WARM_TTL_MS = 6 * 60 * 60 * 1000;
   const WARM_IDLE_DELAY_MS = 8000;
   const REGISTER_IDLE_DELAY_MS = 1200;
+  const NETWORK_PROBE_TIMEOUT_MS = 6000;
+  const NETWORK_FAILURE_REASONS = new Set(['network', 'timeout', 'offline', 'offline-no-lease', 'server-unavailable']);
   let registration = null;
   let deferredInstallPrompt = null;
   let warmRequested = false;
@@ -18,12 +20,14 @@
   let warmSchedule = 0;
   let registerSchedule = 0;
   let updateActivated = false;
+  let networkReachable = navigator.onLine;
+  let reachabilityPromise = null;
 
   function connectionInfo() {
     const connection = navigator.connection || navigator.mozConnection || navigator.webkitConnection;
     const effectiveType = String(connection?.effectiveType || '');
     return {
-      online:navigator.onLine,
+      online:networkReachable && navigator.onLine,
       slow:/^(slow-2g|2g)$/i.test(effectiveType) || Number(connection?.downlink || 10) < 0.8 || Number(connection?.rtt || 0) > 900,
       saveData:Boolean(connection?.saveData),
       effectiveType,
@@ -44,7 +48,7 @@
       document.head.appendChild(manifest);
     }
     const metadata = [
-      ['theme-color', '#465fff'],
+      ['theme-color', '#155f63'],
       ['mobile-web-app-capable', 'yes'],
       ['apple-mobile-web-app-capable', 'yes'],
       ['apple-mobile-web-app-status-bar-style', 'default'],
@@ -78,8 +82,8 @@
       .mi-offline-status[data-state="ready"]{border-color:#abefc6;background:#ecfdf3;color:#067647}.mi-offline-status[data-state="offline"]{border-color:#fedf89;background:#fffaeb;color:#b54708}.mi-offline-status[data-state="syncing"]{border-color:#b2ccff;background:#eff4ff;color:#3538cd}.mi-offline-status[data-state="limited"]{border-color:#fecdc9;background:#fef3f2;color:#b42318}.mi-offline-status[data-state="update"]{border-color:#b2ccff;background:#eff4ff;color:#3538cd}
       .mi-offline-dot{width:7px;height:7px;border-radius:50%;background:currentColor;box-shadow:0 0 0 3px color-mix(in srgb,currentColor 14%,transparent)}.mi-offline-status[data-state="syncing"] .mi-offline-dot{animation:miOfflinePulse 1s ease-in-out infinite}
       @keyframes miOfflinePulse{50%{opacity:.35;transform:scale(.72)}}
-      @media(max-width:1180px){.mi-offline-status span:last-child{display:none}.mi-offline-status{width:38px;padding:0;justify-content:center}}
-      @media(max-width:760px){.mi-offline-status{display:inline-flex;width:36px;min-height:36px;padding:0;justify-content:center}.mi-offline-status span:last-child{display:none}}
+      @media(max-width:1180px){.mi-offline-status span:last-child{display:none}.mi-offline-status{width:44px;min-width:44px;min-height:44px;padding:0;justify-content:center}}
+      @media(max-width:760px){.mi-offline-status{display:inline-flex;width:44px;min-width:44px;min-height:44px;padding:0;justify-content:center}.mi-offline-status span:last-child{display:none}}
       @media(prefers-reduced-motion:reduce){.mi-offline-dot{animation:none!important}}
     `;
     document.head.appendChild(style);
@@ -154,6 +158,55 @@
 
   function sendNetworkProfile() {
     postToWorker({ type:'SET_NETWORK_PROFILE', profile:connectionInfo() });
+  }
+
+  function reachabilityFromAuth(detail) {
+    if (!detail || typeof detail !== 'object') return null;
+    if (detail.offline === true || NETWORK_FAILURE_REASONS.has(String(detail.reason || ''))) return false;
+    if (detail.authenticated === true) return true;
+    if (['unauthenticated', 'auth-not-configured', 'unhardened-session'].includes(String(detail.reason || ''))) return true;
+    return null;
+  }
+
+  function applyNetworkReachability(reachable) {
+    networkReachable = Boolean(reachable && navigator.onLine);
+    sendNetworkProfile();
+    if (!networkReachable) setStatus('offline', 'Pa internet · po përdoret kopja lokale');
+    return networkReachable;
+  }
+
+  async function authConnectivitySignal() {
+    const authReady = window.MEDINDEX_AUTH_READY;
+    if (!authReady || typeof authReady.then !== 'function') return null;
+    try { return reachabilityFromAuth(await authReady); }
+    catch { return null; }
+  }
+
+  async function fallbackNetworkProbe() {
+    const controller = new AbortController();
+    const timer = setTimeout(() => controller.abort(), NETWORK_PROBE_TIMEOUT_MS);
+    try {
+      await fetch('/api/auth?offline_probe=1', {
+        cache:'no-store',
+        credentials:'same-origin',
+        signal:controller.signal,
+      });
+      return true;
+    } catch {
+      return false;
+    } finally {
+      clearTimeout(timer);
+    }
+  }
+
+  function verifyNetworkReachability() {
+    if (reachabilityPromise) return reachabilityPromise;
+    reachabilityPromise = (async () => {
+      const authReachable = await authConnectivitySignal();
+      const reachable = authReachable === null ? await fallbackNetworkProbe() : authReachable;
+      return applyNetworkReachability(reachable);
+    })().finally(() => { reachabilityPromise = null; });
+    return reachabilityPromise;
   }
 
   async function requestPersistentStorage() {
@@ -250,6 +303,7 @@
 
   function installListeners() {
     window.addEventListener('online', () => {
+      networkReachable = true;
       warmRequested = false;
       sendNetworkProfile();
       setStatus('syncing', 'Lidhja u rikthye · po kontrollohet cache-i');
@@ -257,8 +311,23 @@
       scheduleBackgroundWarm();
     });
     window.addEventListener('offline', () => {
+      networkReachable = false;
       sendNetworkProfile();
       setStatus('offline', 'Pa internet · po përdoret kopja lokale');
+    });
+    const applyAuthSignal = event => {
+      const reachable = reachabilityFromAuth(event.detail);
+      if (reachable === null) return;
+      applyNetworkReachability(reachable);
+      if (reachable && document.getElementById(STATUS_ID)?.dataset.state === 'offline') {
+        setStatus('syncing', 'Lidhja u konfirmua · po kontrollohet cache-i');
+      }
+    };
+    window.addEventListener('medindex:auth-ready', applyAuthSignal);
+    window.addEventListener('medindex:auth-failed', applyAuthSignal);
+    window.addEventListener('medindex:auth-revalidated', () => {
+      applyNetworkReachability(true);
+      scheduleBackgroundWarm();
     });
     const connection = navigator.connection || navigator.mozConnection || navigator.webkitConnection;
     connection?.addEventListener?.('change', () => {
@@ -275,11 +344,21 @@
     });
     navigator.serviceWorker?.addEventListener('message', event => {
       const message = event.data || {};
+      if (message.type === 'MEDINDEX_NETWORK_STATUS') {
+        networkReachable = message.online !== false;
+        if (!networkReachable) setStatus('offline', 'Pa internet · po përdoret kopja lokale');
+        return;
+      }
       if (message.type === 'MEDINDEX_AUTH_INVALID') {
         window.dispatchEvent(new CustomEvent('medindex:offline-auth-invalid'));
         return;
       }
       if (message.type !== 'MEDINDEX_CACHE_STATUS') return;
+      if (message.online === false || !networkReachable || !navigator.onLine) {
+        networkReachable = false;
+        setStatus('offline', 'Pa internet · po përdoret kopja lokale');
+        return;
+      }
       if (message.state === 'syncing') setStatus('syncing', 'Po sinkronizohet databaza lokale');
       if (message.state === 'ready' || message.state === 'shell-ready') {
         clearTimeout(warmDeadline);
@@ -313,6 +392,7 @@
     setStatus(!profile.online ? 'offline' : profile.slow || profile.saveData ? 'limited' : cacheIsFresh() ? 'ready' : 'syncing',
       !profile.online ? 'Pa internet · po përdoret kopja lokale' : profile.slow || profile.saveData ? 'Lidhje e dobët · përdoret cache-i lokal' : cacheIsFresh() ? 'Gati për përdorim offline' : 'Online · po kontrollohet kopja lokale');
     installListeners();
+    void verifyNetworkReachability();
     window.MedIndexOffline = {
       version:RESILIENCE_VERSION,
       warm:() => { warmRequested = false; return warmPrivateData({ force:true }); },

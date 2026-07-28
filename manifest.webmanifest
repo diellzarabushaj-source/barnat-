@@ -1,6 +1,6 @@
 {
   "id": "/index.html",
-  "name": "MedIndex — Clinical Workspace",
+  "name": "MedIndex — Hapësira klinike",
   "short_name": "MedIndex",
   "description": "Regjistri klinik offline-first për barnat, ATC, ICD, analizat, dozologjinë, protokollet dhe recetat.",
   "lang": "sq",
@@ -9,8 +9,8 @@
   "scope": "/",
   "display": "standalone",
   "display_override": ["window-controls-overlay", "standalone", "minimal-ui"],
-  "background_color": "#f8fafc",
-  "theme_color": "#465fff",
+  "background_color": "#f6f9f8",
+  "theme_color": "#155f63",
   "categories": ["medical", "productivity", "utilities"],
   "icons": [
     {

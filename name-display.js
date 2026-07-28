@@ -129,7 +129,7 @@
 
   function addClassificationNav() {
     const menu = document.getElementById('appMenu');
-    if (!menu || menu.querySelector('[data-nav="classification"]')) return;
+    if (!menu || menu.querySelector('[data-nav="classification"],[data-medical-nav="classification"]')) return;
     const item = document.createElement('button');
     item.type = 'button';
     item.className = 'app-menu-link';

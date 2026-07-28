@@ -40,7 +40,7 @@ function updateProtocolCounters(){
   const pc = document.getElementById('savedProtocolCount');
   const tc = document.getElementById('savedTabCount');
   if(sc) sc.textContent = selected;
-  if(pc) pc.textContent = saved;
+  if(pc) pc.textContent = selected;
   if(tc) tc.textContent = '(' + saved + ')';
 }
 

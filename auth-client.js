@@ -4,9 +4,9 @@
   const RETURN_KEY = 'medindex_return_after_login';
   const OFFLINE_LEASE_KEY = 'medindex_offline_lease_v2';
   const LEGACY_OFFLINE_LEASE_KEYS = ['medindex_offline_lease_v1'];
-  const OFFLINE_RUNTIME_SRC = '/offline-runtime.js?v=production-audit-v1';
-  const PROFESSIONAL_RUNTIME_SRC = '/tailadmin-professional.js?v=production-audit-v1';
-  const PROFESSIONAL_VERSION = 'production-audit-v1';
+  const OFFLINE_RUNTIME_SRC = '/offline-runtime-performance.js?v=low-bandwidth-v3';
+  const PROFESSIONAL_RUNTIME_SRC = '/tailadmin-professional.js?v=production-audit-v2';
+  const PROFESSIONAL_VERSION = 'production-audit-v2';
   const MAX_OFFLINE_LEASE_MS = 8 * 60 * 60 * 1000;
   const AUTH_TIMEOUT_MS = 3200;
   const originalFetch = window.fetch.bind(window);
@@ -15,13 +15,35 @@
   let authSettled = false;
   let resolveAuthReady;
   let onlineRevalidationInstalled = false;
+  let authBootstrap = null;
 
   document.documentElement.classList.add('auth-checking');
   window.MEDINDEX_AUTH_READY = new Promise(resolve => { resolveAuthReady = resolve; });
 
+  function ensureAuthBootstrap() {
+    if (authBootstrap?.isConnected) return authBootstrap;
+    authBootstrap = document.getElementById('miAuthBootstrap') || document.createElement('div');
+    authBootstrap.id = 'miAuthBootstrap';
+    authBootstrap.setAttribute('role', 'status');
+    authBootstrap.setAttribute('aria-live', 'polite');
+    authBootstrap.innerHTML = '<strong>MedIndex</strong><span>Po verifikohet sesioni…</span>';
+    if (!authBootstrap.isConnected) (document.body || document.documentElement).appendChild(authBootstrap);
+    return authBootstrap;
+  }
+
+  function setAuthBootstrapMessage(message) {
+    ensureAuthBootstrap().querySelector('span').textContent = message;
+  }
+
+  function removeAuthBootstrap() {
+    authBootstrap?.remove();
+    authBootstrap = null;
+  }
+
   function settleAuth(authenticated, payload = {}) {
     if (authSettled) return;
     authSettled = true;
+    if (authenticated) removeAuthBootstrap();
     resolveAuthReady?.({ authenticated, ...payload });
     window.dispatchEvent(new CustomEvent(authenticated ? 'medindex:auth-ready' : 'medindex:auth-failed', {
       detail:{ authenticated, ...payload },
@@ -37,10 +59,15 @@
       .auth-logout:hover{background:rgba(255,255,255,.13)!important;color:#fff!important}
       .auth-logout svg{fill:none;stroke:currentColor;stroke-width:16;stroke-linecap:round;stroke-linejoin:round}
       .session-expired-banner{position:fixed;left:50%;bottom:22px;z-index:2000;max-width:min(520px,calc(100vw - 28px));padding:11px 15px;border-radius:11px;background:#8e2f32;color:#fff;box-shadow:0 16px 45px rgba(0,0,0,.32);font-size:.78rem;font-weight:750;transform:translateX(-50%)}
+      #miAuthBootstrap{position:fixed;inset:0;z-index:3999;display:grid;place-content:center;gap:6px;padding:24px;background:#f6f9f8;color:#566a6d;text-align:center;font:500 14px/1.5 Inter,ui-sans-serif,system-ui,sans-serif;visibility:visible!important;opacity:1!important}
+      #miAuthBootstrap strong{color:#155f63;font-size:20px;letter-spacing:-.02em}
+      html[data-theme="dark"] #miAuthBootstrap{background:#101d20;color:#aebfbc}
+      html[data-theme="dark"] #miAuthBootstrap strong{color:#d9ece8}
     `;
     document.head.appendChild(style);
   }
   installStyles();
+  ensureAuthBootstrap();
 
   function safeReturnPath() {
     const path = location.pathname + location.search + location.hash;
@@ -127,6 +154,7 @@
 
   function goToLogin(reason = 'unauthenticated') {
     clearOfflineLease();
+    setAuthBootstrapMessage('Po hapet faqja e hyrjes…');
     settleAuth(false, { reason });
     const returnPath = safeReturnPath();
     try { sessionStorage.setItem(RETURN_KEY, returnPath); } catch {}
@@ -242,6 +270,7 @@
     banner.className = 'session-expired-banner';
     banner.setAttribute('role', 'alert');
     banner.textContent = 'Sesioni ka skaduar. Po kthehesh te hyrja…';
+    setAuthBootstrapMessage('Sesioni ka skaduar. Po hapet faqja e hyrjes…');
     document.body.appendChild(banner);
     clearOfflineLease();
     settleAuth(false, { reason:'expired' });

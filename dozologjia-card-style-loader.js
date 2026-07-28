@@ -1,7 +1,7 @@
 (() => {
   'use strict';
   const ID = 'dozologjiaVerifiedCardStyles';
-  const HREF = '/dozologjia-verified-cards.css?v=20260726-1';
+  const HREF = '/dozologjia-verified-cards.css?v=20260728-1';
 
   function ensure() {
     let link = document.getElementById(ID);

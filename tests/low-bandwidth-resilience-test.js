@@ -28,6 +28,47 @@ assert.doesNotMatch(worker, /Promise\.allSettled\(APP_SHELL\.map/, 'large concur
 assert.match(worker, /migratePrivateCaches/, 'existing private offline data must be migrated');
 assert.doesNotMatch(worker, /refreshSafeClinicalPages|client\.navigate/, 'worker activation must not force page reloads');
 assert.match(worker, /url\.pathname === '\/api\/auth'[\s\S]*fetch\(request\)/, 'auth must remain network-only');
+assert.match(worker, /caches\.match\(request, \{ ignoreSearch:true \}\)/, 'cached static assets must survive version-query changes offline');
+
+const shellMatch = worker.match(/const CORE_SHELL = \[([\s\S]*?)\n\];/);
+assert.ok(shellMatch, 'generated worker must contain the install-time core shell');
+const coreShell = new Set([...shellMatch[1].matchAll(/['"]([^'"]+)['"]/g)].map(match => match[1]));
+const coreShellPaths = new Set([...coreShell].map(value => new URL(value, 'https://medindex.local/').pathname));
+const clinicalPages = [
+  '/index.html', '/klasifikimi.html', '/icd.html', '/analizat.html',
+  '/dozologjia.html', '/protokollet.html', '/recetat.html',
+];
+const localAsset = rawValue => {
+  const value = String(rawValue || '').trim().replace(/&amp;/g, '&');
+  if (!value || /^(?:data:|mailto:|tel:|#)/i.test(value)) return null;
+  const url = new URL(value, 'https://medindex.local/');
+  if (url.origin !== 'https://medindex.local') return null;
+  return `${url.pathname}${url.search}`;
+};
+for (const page of clinicalPages) {
+  assert.ok(coreShell.has(page), `${page} must be available before its first offline visit`);
+  const html = read(page.slice(1));
+  const references = [...html.matchAll(/<(?:script|link)\b[^>]*?\b(?:src|href)\s*=\s*["']([^"']+)["'][^>]*>/gi)]
+    .map(match => localAsset(match[1]))
+    .filter(Boolean);
+  for (const asset of references) {
+    assert.ok(coreShell.has(asset), `${page} direct dependency ${asset} must be installed with the page`);
+  }
+}
+[
+  '/tailadmin-shell-legacy.js',
+  '/mobile-experience.js',
+  '/mobile-accessibility-hardening.js',
+  '/offline-runtime-performance.js',
+  '/first-page-clinical.css',
+  '/registry-dosage-columns-v2.js',
+  '/app-runtime-performance.js',
+  '/registry-parser-worker-v2.js',
+  '/data/registry-quality.js',
+  '/local-registry.js',
+].forEach(asset => {
+  assert.ok(coreShellPaths.has(asset), `transitive offline dependency ${asset} must be installed before first visit`);
+});
 
 const runtime = read('offline-runtime-performance.js');
 assert.match(runtime, /sw-resilient-v3\.js/);
@@ -39,6 +80,12 @@ assert.match(runtime, /Lidhje e dobët · përdoret cache-i lokal/);
 assert.match(runtime, /SET_NETWORK_PROFILE/);
 assert.match(runtime, /saveData/);
 assert.match(runtime, /slow-2g\|2g/);
+assert.match(runtime, /window\.MEDINDEX_AUTH_READY/, "offline runtime must reuse the auth client's connectivity result");
+assert.match(runtime, /authConnectivitySignal/, 'auth connectivity must be coordinated before any fallback probe');
+assert.match(runtime, /reachabilityPromise/, 'concurrent reachability checks must share one in-flight promise');
+assert.match(runtime, /fallbackNetworkProbe/, 'standalone pages must retain one bounded fallback probe');
+assert.equal((runtime.match(/fetch\('\/api\/auth\?offline_probe=1'/g) || []).length, 1, 'offline runtime must define only one fallback auth probe');
+assert.doesNotMatch(runtime, /setTimeout\(verifyNetworkReachability,\s*900\)/, 'duplicate delayed auth probes must not return');
 assert.doesNotMatch(runtime, /await navigator\.serviceWorker\.ready/, 'startup must not block waiting for service-worker readiness');
 
 const index = read('index.html');

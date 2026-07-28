@@ -4,3 +4,6 @@ node_modules/
 .env.*
 !.env.example
 app-runtime.js
+app-runtime-performance.js
+offline-runtime-performance.js
+sw-resilient-v3.js

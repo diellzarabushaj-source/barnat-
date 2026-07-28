@@ -196,7 +196,7 @@ async function refreshStatic(request) {
 
 async function staticResponse(event) {
   const request = event.request;
-  const cached = await caches.match(request) || await caches.match(requestFor(new URL(request.url).pathname));
+  const cached = await caches.match(request) || await caches.match(request, { ignoreSearch:true });
   if (cached) {
     if (networkProfile.online && !networkProfile.slow && !networkProfile.saveData) event.waitUntil(refreshStatic(request));
     return cloneWithHeader(cached, 'static-fast-hit');

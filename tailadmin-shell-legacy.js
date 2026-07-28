@@ -10,7 +10,7 @@
     '/klasifikimi.html': ['Klasifikimi ATC', 'Grupet, nën-grupet dhe substancat aktive'],
     '/icd.html': ['ICD', 'Diagnozat dhe kodet klinike'],
     '/analizat.html': ['Analizat laboratorike', 'Referencë klinike e strukturuar'],
-    '/dozologjia.html': ['Dozologjia', 'Skema të verifikuara për të rritur dhe pediatri'],
+    '/dozologjia.html': ['Dozologjia', 'Skema me burim për të rritur dhe pediatri'],
     '/protokollet.html': ['Protokollet', 'Dokumentet zyrtare të Ministrisë së Shëndetësisë'],
     '/recetat.html': ['Recetat', 'Krijim, kontroll dhe ruajtje e recetave'],
   };
@@ -155,6 +155,9 @@
 
   function createShell(existingNav) {
     const [title, subtitle] = currentPage();
+    const headingTitle = isIndexPage()
+      ? `<h1 class="mi-page-heading-title">${esc(title)}</h1>`
+      : `<p class="mi-page-heading-title">${esc(title)}</p>`;
     const app = document.createElement('div');
     app.className = 'mi-app-shell';
     app.innerHTML = `
@@ -163,7 +166,7 @@
         <div class="mi-sidebar-header">
           <a class="mi-brand" href="/index.html" aria-label="MedIndex — Barnat">
             <span class="mi-brand-mark">M<span>+</span></span>
-            <span class="mi-brand-copy"><strong>MedIndex</strong><small>Clinical workspace</small></span>
+            <span class="mi-brand-copy"><strong>MedIndex</strong><small>Hapësirë klinike</small></span>
           </a>
           <button class="mi-sidebar-close" type="button" data-mi-sidebar-close aria-label="Mbyll menynë">${ICONS.close}</button>
         </div>
@@ -196,8 +199,8 @@
         <main class="mi-main" id="miMain">
           <div class="mi-content-container">
             <div class="mi-page-heading">
-              <div><div class="mi-breadcrumb"><a href="/index.html">MedIndex</a><span>/</span><strong>${esc(title)}</strong></div><h1>${esc(title)}</h1><p>${esc(subtitle)}</p></div>
-              <div class="mi-heading-badge"><span class="mi-status-dot"></span>Burime të kontrolluara</div>
+              <div><div class="mi-breadcrumb"><a href="/index.html">MedIndex</a><span>/</span><strong>${esc(title)}</strong></div>${headingTitle}<p>${esc(subtitle)}</p></div>
+              <div class="mi-heading-badge" title="Kontrollo burimin në secilën kartelë"><span class="mi-status-dot"></span>Të dhëna klinike</div>
             </div>
             <div class="mi-page-slot" id="miPageSlot"></div>
           </div>

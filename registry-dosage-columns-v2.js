@@ -8,8 +8,8 @@
   const REGISTRY_WAIT_TIMEOUT_MS = 30000;
   const INDEX_BATCH_SIZE = 250;
   const COLUMNS = [
-    { key:'adult', label:'1. Dozimi për të rritur', empty:'Nuk ka dozë të verifikuar për të rritur.' },
-    { key:'pediatric', label:'2. Dozimi për fëmijë', empty:'Nuk ka dozë pediatrike të verifikuar.' },
+    { key:'adult', label:'1. Dozimi për të rritur', empty:'Nuk ka dozë të strukturuar për të rritur.' },
+    { key:'pediatric', label:'2. Dozimi për fëmijë', empty:'Nuk ka dozë pediatrike të strukturuar.' },
   ];
 
   const clean = value => String(value ?? '').replace(/\s+/g, ' ').trim();
@@ -22,9 +22,9 @@
   const visibility = (() => {
     try {
       const stored = JSON.parse(localStorage.getItem(STORAGE_KEY) || '{}');
-      return { adult:stored.adult !== false, pediatric:stored.pediatric !== false };
+      return { adult:stored.adult === true, pediatric:stored.pediatric === true };
     } catch {
-      return { adult:true, pediatric:true };
+      return { adult:false, pediatric:false };
     }
   })();
 
@@ -230,7 +230,7 @@
 
   function dosageRow(dose, route, indication = '', sources = []) {
     const sourceText = (Array.isArray(sources) ? sources : []).map(clean).filter(Boolean).join(' · ');
-    const title = sourceText ? ` title="Burimet e verifikuara: ${escapeHtml(sourceText)}"` : '';
+    const title = sourceText ? ` title="Burimet e lidhura: ${escapeHtml(sourceText)}"` : '';
     return `<div class="registry-dosage-grid registry-dosage-regimen"${title}>` +
       `<div>${indication ? `<span class="registry-dosage-indication">${escapeHtml(indication)}</span>` : ''}${escapeHtml(dose)}</div>` +
       `<div class="registry-dosage-route">${escapeHtml(route || '—')}</div>` +
@@ -261,6 +261,7 @@
     const cell = document.createElement('td');
     cell.className = `registry-dosage-column registry-dosage-${column.key}`;
     cell.dataset.registryDosageColumn = column.key;
+    cell.dataset.label = column.label;
     if (registry.status === 'loading') cell.innerHTML = '<span class="registry-dosage-muted">Duke e lidhur me barin…</span>';
     else if (!row) cell.innerHTML = '<span class="registry-dosage-muted">Bari nuk u identifikua në mënyrë unike.</span>';
     else cell.innerHTML = cellContent(row, card, column.key, column.empty);

@@ -1,7 +1,7 @@
 /* MedIndex physician-first offline service worker */
 'use strict';
 
-const VERSION = 'production-audit-v1';
+const VERSION = 'production-audit-v2';
 const CACHE_EPOCH = 'csp-static-runtime-20260727-1';
 const CACHE_NAMESPACE = `${VERSION}-${CACHE_EPOCH}`;
 const STATIC_CACHE = `medindex-static-${CACHE_NAMESPACE}`;

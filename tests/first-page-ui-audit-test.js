@@ -10,9 +10,9 @@ const css = read('first-page-clinical.css');
 const js = read('first-page-clinical.js');
 const loader = read('first-page-style-loader.js');
 
-assert.match(html, /rel="preload" href="first-page-clinical\.css\?v=20260725-1" as="style"/);
-assert.match(html, /first-page-style-loader\.js\?v=20260725-1/);
-assert.match(html, /first-page-clinical\.js\?v=20260725-1/);
+assert.match(html, /rel="preload" href="first-page-clinical\.css\?v=20260727-2" as="style"/);
+assert.match(html, /first-page-style-loader\.js\?v=20260727-2/);
+assert.match(html, /first-page-clinical\.js\?v=20260727-2/);
 const staticStylesheets = [...html.matchAll(/<link[^>]+rel="stylesheet"[^>]+href="([^"]+)"/g)].map(match => match[1]);
 assert.match(staticStylesheets.at(-1), /tailadmin-professional\.css/, 'The shared professional TailAdmin CSS must remain the final static stylesheet.');
 assert.ok(
@@ -20,7 +20,7 @@ assert.ok(
   'The first-page runtime must enhance the completed pharmaceutical form picker.'
 );
 assert.match(loader, /document\.head\.appendChild\(link\)/);
-assert.match(loader, /first-page-clinical\.css\?v=20260725-1/);
+assert.match(loader, /first-page-clinical\.css\?v=20260727-2/);
 assert.match(loader, /medindex:tailadmin-ready/);
 
 for (const marker of [

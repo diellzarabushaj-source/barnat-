@@ -63,7 +63,7 @@ html.medindex-tailadmin.mi-first-page-audited .registry-eyebrow{
   display:block;
   margin-bottom:3px;
   color:var(--registry-teal);
-  font-size:.62rem;
+  font-size:.75rem;
   font-weight:850;
   letter-spacing:.1em;
 }
@@ -106,7 +106,7 @@ html.medindex-tailadmin.mi-first-page-audited .registry-overview-meta strong{
 html.medindex-tailadmin.mi-first-page-audited .registry-overview-meta small{
   margin-top:3px;
   color:var(--registry-muted);
-  font-size:.56rem;
+  font-size:.72rem;
   font-weight:680;
   letter-spacing:.02em;
 }
@@ -146,7 +146,7 @@ html.medindex-tailadmin.mi-first-page-audited .registry-search-heading strong{
 html.medindex-tailadmin.mi-first-page-audited .registry-search-heading span,
 html.medindex-tailadmin.mi-first-page-audited .registry-search-help{
   color:var(--registry-muted);
-  font-size:.61rem;
+  font-size:.72rem;
   line-height:1.35;
 }
 html.medindex-tailadmin.mi-first-page-audited .registry-search-help{display:none}
@@ -408,7 +408,7 @@ html.medindex-tailadmin.mi-first-page-audited .table-wrap.is-scrolled-x{box-shad
 html.medindex-tailadmin.mi-first-page-audited .table-wrap::-webkit-scrollbar{width:10px;height:10px}
 html.medindex-tailadmin.mi-first-page-audited .table-wrap::-webkit-scrollbar-thumb{border:2px solid transparent;border-radius:999px;background:#b8c6c2;background-clip:padding-box}
 html.medindex-tailadmin.mi-first-page-audited #dataTable{
-  min-width:1260px;
+  min-width:960px!important;
   border-collapse:separate!important;
   border-spacing:0!important;
   background:#fff!important;
@@ -424,7 +424,7 @@ html.medindex-tailadmin.mi-first-page-audited #dataTable thead th{
   border-bottom:0!important;
   background:var(--registry-teal)!important;
   color:#fff!important;
-  font-size:.62rem!important;
+  font-size:.72rem!important;
   font-weight:790!important;
   letter-spacing:.045em!important;
   line-height:1.2!important;
@@ -491,7 +491,7 @@ html.medindex-tailadmin.mi-first-page-audited .pagination button{
   border-radius:8px!important;
   background:#fff!important;
   color:#445653!important;
-  font-size:.67rem!important;
+  font-size:.75rem!important;
   font-weight:700!important;
 }
 html.medindex-tailadmin.mi-first-page-audited .pagination button:hover:not(:disabled){border-color:#aac5bc!important;background:#f2f7f5!important;color:var(--registry-teal-dark)!important}
@@ -549,7 +549,14 @@ html[data-theme=dark].medindex-tailadmin.mi-first-page-audited #dataTable td.nam
 }
 @media(max-width:720px){
   html.medindex-tailadmin.mi-first-page-audited .registry-page-workspace{gap:11px}
-  html.medindex-tailadmin.mi-first-page-audited .registry-overview{padding:13px!important}
+  html.medindex-tailadmin.mi-first-page-audited .registry-overview{
+    min-height:0!important;
+    grid-template-columns:minmax(0,1fr)!important;
+    padding:12px 14px!important;
+  }
+  html.medindex-tailadmin.mi-first-page-audited .registry-overview-icon,
+  html.medindex-tailadmin.mi-first-page-audited .registry-overview-meta{display:none!important}
+  html.medindex-tailadmin.mi-first-page-audited .registry-overview h2{font-size:1.05rem!important}
   html.medindex-tailadmin.mi-first-page-audited .registry-overview p{display:none}
   html.medindex-tailadmin.mi-first-page-audited .registry-overview-meta>span{min-height:45px;padding:7px 9px}
   html.medindex-tailadmin.mi-first-page-audited .registry-toolbar{padding:10px!important}
@@ -563,7 +570,98 @@ html[data-theme=dark].medindex-tailadmin.mi-first-page-audited #dataTable td.nam
   html.medindex-tailadmin.mi-first-page-audited .registry-action-group .protocol-toolbar-btn{flex:1 1 170px!important}
   html.medindex-tailadmin.mi-first-page-audited .registry-table-title p{display:none}
   html.medindex-tailadmin.mi-first-page-audited .registry-reset-filters span{display:none}
-  html.medindex-tailadmin.mi-first-page-audited .table-wrap{max-height:58dvh!important}
+  html.medindex-tailadmin.mi-first-page-audited .table-wrap{
+    max-height:none!important;
+    overflow:visible!important;
+    border:0!important;
+    border-radius:0!important;
+    background:transparent!important;
+    box-shadow:none!important;
+  }
+  html.medindex-tailadmin.mi-first-page-audited #dataTable{
+    display:block!important;
+    width:100%!important;
+    min-width:0!important;
+    background:transparent!important;
+  }
+  html.medindex-tailadmin.mi-first-page-audited #dataTable thead{
+    position:absolute!important;
+    width:1px!important;
+    height:1px!important;
+    overflow:hidden!important;
+    clip:rect(0 0 0 0)!important;
+    clip-path:inset(50%)!important;
+    white-space:nowrap!important;
+  }
+  html.medindex-tailadmin.mi-first-page-audited #dataTable tbody{
+    display:grid!important;
+    gap:10px!important;
+  }
+  html.medindex-tailadmin.mi-first-page-audited #dataTable tbody tr{
+    position:relative!important;
+    display:block!important;
+    overflow:hidden!important;
+    border:1px solid var(--registry-line)!important;
+    border-radius:12px!important;
+    background:var(--registry-row-bg)!important;
+    box-shadow:0 3px 12px rgba(17,65,67,.05)!important;
+  }
+  html.medindex-tailadmin.mi-first-page-audited #dataTable tbody td{
+    position:static!important;
+    display:grid!important;
+    min-height:40px!important;
+    grid-template-columns:minmax(96px,38%) minmax(0,1fr)!important;
+    align-items:center!important;
+    gap:10px!important;
+    padding:9px 12px!important;
+    border-bottom:1px solid var(--registry-line)!important;
+    background:transparent!important;
+    white-space:normal!important;
+  }
+  html.medindex-tailadmin.mi-first-page-audited #dataTable tbody td::before{
+    content:attr(data-label);
+    color:var(--registry-muted);
+    font-size:.72rem;
+    font-weight:750;
+    line-height:1.25;
+  }
+  html.medindex-tailadmin.mi-first-page-audited #dataTable tbody td.name{
+    min-width:0!important;
+    max-width:none!important;
+    padding-right:60px!important;
+    color:var(--registry-teal-dark)!important;
+    font-size:.9rem!important;
+  }
+  html.medindex-tailadmin.mi-first-page-audited #dataTable tbody td.select-col{
+    position:absolute!important;
+    inset:10px 10px auto auto!important;
+    z-index:3!important;
+    display:grid!important;
+    width:44px!important;
+    min-width:44px!important;
+    max-width:44px!important;
+    min-height:44px!important;
+    padding:0!important;
+    place-items:center!important;
+    border:1px solid var(--registry-line-strong)!important;
+    border-radius:10px!important;
+    background:var(--registry-surface)!important;
+  }
+  html.medindex-tailadmin.mi-first-page-audited #dataTable tbody td.select-col::before{display:none}
+  html.medindex-tailadmin.mi-first-page-audited #dataTable tbody td.select-col + td{padding-right:64px!important}
+  html.medindex-tailadmin.mi-first-page-audited #dataTable .drug-actions-trigger{
+    width:44px!important;
+    height:44px!important;
+  }
+  html.medindex-tailadmin.mi-first-page-audited #dataTable tbody td:last-child{border-bottom:0!important}
+  html.medindex-tailadmin.mi-first-page-audited #dataTable tbody td[colspan]{
+    position:static!important;
+    display:block!important;
+    width:auto!important;
+    max-width:none!important;
+    padding:0!important;
+    border:0!important;
+  }
   html.medindex-tailadmin.mi-first-page-audited #dataTable :is(th,td):nth-child(2),
   html.medindex-tailadmin.mi-first-page-audited #dataTable :is(th,td):nth-child(3){position:static!important;left:auto!important;box-shadow:none!important}
   html.medindex-tailadmin.mi-first-page-audited #dataTable thead :is(th):nth-child(2),

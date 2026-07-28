@@ -28,7 +28,7 @@ const bridge = read('prescription-bridge.js');
 ].forEach(pattern => assert.match(bridge, pattern, `Ura ICD→Recetë mungon ${pattern}`));
 const prescriptionHtml = read('recetat.html');
 assert.equal((prescriptionHtml.match(/prescription-bridge\.js/gi) || []).length, 1, 'Ura ICD→Recetë duhet të ngarkohet vetëm një herë');
-assert.match(prescriptionHtml, /prescription-bridge\.js\?v=production-audit-v1/, 'Versioni i cache-it të urës ICD→Recetë është i vjetër');
+assert.match(prescriptionHtml, /prescription-bridge\.js\?v=production-audit-v2/, 'Versioni i cache-it të urës ICD→Recetë është i vjetër');
 assert.ok(prescriptionHtml.indexOf('auth-client.js') < prescriptionHtml.indexOf('prescription-bridge.js'), 'Auth duhet të ngarkohet para urës ICD→Recetë');
 assert.ok(prescriptionHtml.indexOf('prescription-bridge.js') < prescriptionHtml.indexOf('recetat.js'), 'Ura ICD→Recetë duhet të dëgjojë para inicializimit të recetës');
 
@@ -41,7 +41,7 @@ assert.doesNotMatch(localRegistry, /\/api\/drug-search/, 'Kërkimi lokal nuk duh
 assert.doesNotMatch(localRegistry, /Function\s*\(|eval\s*\(/, 'Kërkimi lokal nuk duhet të ekzekutojë payload si kod');
 
 const worker = read('sw.js');
-assert.match(worker, /production-audit-v1/);
+assert.match(worker, /production-audit-v2/);
 assert.match(worker, /clinical-workflow\.js/);
 assert.match(worker, /local-registry\.js/);
 assert.match(worker, /app-runtime\.js/);
@@ -65,7 +65,7 @@ assert.match(auth, /if \(!navigator\.onLine\)/);
 assert.match(auth, /offline-no-lease/);
 assert.match(auth, /response\.status === 401 \|\| response\.status === 403/);
 assert.match(auth, /medindex:offline-auth-invalid/);
-assert.match(auth, /production-audit-v1/);
+assert.match(auth, /production-audit-v2/);
 
 const runtime = read('offline-runtime.js');
 assert.match(runtime, /clinical-workflow\.js/);

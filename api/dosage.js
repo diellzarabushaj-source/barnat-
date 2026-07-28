@@ -7,6 +7,9 @@ const DEFAULT_DOSAGE_FILE_ID = '1T7XsfkXLQfEomFL4DmXoA8PheiR6s3Qmu36hTqklOMo';
 const MEMORY_CACHE_MS = 5 * 60 * 1000;
 const FETCH_TIMEOUT_MS = 12000;
 const MAX_WORKBOOK_BYTES = 10 * 1024 * 1024;
+const NEON_FALLBACK_REASON = 'NEON_UNAVAILABLE';
+const STALE_REFRESH_REASON = 'UPSTREAM_REFRESH_FAILED';
+const DOSAGE_ERROR_CODE = 'DOSAGE_UNAVAILABLE';
 
 let memoryCache = null;
 let memoryCacheTime = 0;
@@ -188,6 +191,29 @@ function finalize(payload) {
   return { payload, body, etag:`"${crypto.createHash('sha256').update(body).digest('base64url')}"` };
 }
 
+function staleResultFromCache(cached) {
+  return finalize({
+    ...cached.payload,
+    meta:{
+      ...cached.payload.meta,
+      stale:true,
+      staleReason:STALE_REFRESH_REASON,
+    },
+  });
+}
+
+function publicLoadError() {
+  return {
+    code:DOSAGE_ERROR_CODE,
+    error:'Dozologjia nuk mund të ngarkohet tani.',
+    forms:[],
+    adult:[],
+    pediatric:[],
+    cards:[],
+    meta:{ clinicalAutoFillEnabled:false, geminiForDosage:false, dataSource:'error' },
+  };
+}
+
 async function buildSheetsPayload(fileId) {
   const startedAt = Date.now();
   const workbook = XLSX.read(await downloadWorkbook(fileId), { type:'buffer', cellDates:false });
@@ -280,9 +306,10 @@ async function buildPayload(fileId) {
     return await buildNeonPayload();
   } catch (error) {
     if (!NeonClinical.allowsSheetsFallback()) throw error;
+    console.error('Neon dosage read failed; using Sheets fallback:', error);
     const fallback = await buildSheetsPayload(fileId);
     fallback.payload.meta.dataSource = 'sheets-fallback';
-    fallback.payload.meta.neonError = String(error?.message || error).slice(0, 500);
+    fallback.payload.meta.neonError = NEON_FALLBACK_REASON;
     return finalize(fallback.payload);
   }
 }
@@ -301,9 +328,8 @@ async function getPayload() {
       return result;
     }).catch(error => {
       if (memoryCache && memoryCacheKey === key) {
-        memoryCache.payload.meta.stale = true;
-        memoryCache.payload.meta.staleReason = String(error?.message || error).slice(0, 500);
-        return finalize(memoryCache.payload);
+        console.error('Dosage refresh failed; serving stale cache:', error);
+        return staleResultFromCache(memoryCache);
       }
       throw error;
     }).finally(() => { pendingBuild = null; pendingBuildKey = ''; });
@@ -347,14 +373,12 @@ async function handler(req, res) {
     console.error('Dosage data error:', error);
     res.setHeader('Content-Type', 'application/json; charset=utf-8');
     res.setHeader('Cache-Control', 'no-store');
-    return res.status(500).json({
-      error:error.message || 'Gabim gjatë ngarkimit të dozologjisë.', forms:[], adult:[], pediatric:[], cards:[],
-      meta:{ clinicalAutoFillEnabled:false, geminiForDosage:false, dataSource:'error' },
-    });
+    return res.status(500).json(publicLoadError());
   }
 }
 
 handler.getPayload = getPayload;
 handler.buildNeonPayload = buildNeonPayload;
 handler.buildSheetsPayload = buildSheetsPayload;
+handler._test = Object.freeze({ finalize, staleResultFromCache, publicLoadError });
 module.exports = handler;

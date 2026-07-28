@@ -62,6 +62,19 @@ function response() {
     id:'upk-test', type:'pdf', blobUrl:'https://store.private.blob.vercel-storage.com/test.pdf',
     contentSha256:'a'.repeat(64), bytes:4,
   };
+  const responseForBlobStatus = async statusCode => {
+    const result = response();
+    await route.handle(
+      { method:'GET', headers:{}, query:{ id:'upk-test' } },
+      result,
+      {
+        authorized:async () => true,
+        safeDocument:() => document,
+        getBlob:async () => ({ statusCode, stream:null, headers:new Headers() }),
+      },
+    );
+    return result;
+  };
 
   res = response();
   await route.handle(
@@ -104,6 +117,29 @@ function response() {
   assert.equal(seen.options.access, 'private');
   assert.equal(res.getHeader('content-range'), 'bytes 0-3/10');
   assert.equal(res.getHeader('cache-control'), 'private, no-cache, max-age=0');
+
+  res = await responseForBlobStatus(304);
+  assert.equal(res.statusCode, 304);
+  assert.equal(res.getHeader('etag'), `"${'a'.repeat(64)}"`);
+
+  res = await responseForBlobStatus(404);
+  assert.equal(res.statusCode, 404);
+  assert.equal(res.body.error, 'Dokumenti privat nuk u gjet.');
+  assert.match(res.getHeader('cache-control'), /\bno-store\b/);
+
+  res = await responseForBlobStatus(403);
+  assert.equal(res.statusCode, 502, 'Blob authorization failures must not masquerade as an expired user session');
+  assert.equal(res.body.error, 'Dokumenti nuk mund të ngarkohet tani.');
+
+  res = await responseForBlobStatus(429);
+  assert.equal(res.statusCode, 503, 'Blob rate limits must surface as temporary unavailability');
+
+  res = await responseForBlobStatus(500);
+  assert.equal(res.statusCode, 502, 'Blob server failures must surface as a bad gateway');
+
+  res = await responseForBlobStatus(416);
+  assert.equal(res.statusCode, 416);
+  assert.equal(res.body.error, 'Intervali i kërkuar nuk ekziston në dokument.');
 
   res = response();
   await route.handle(

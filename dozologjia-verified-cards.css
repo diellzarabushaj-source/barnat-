@@ -160,13 +160,21 @@ html.medindex-tailadmin[data-mi-page="dozologjia"] .dosage-card-chip {
   border-radius:999px;
   background:#f2f4f7;
   color:#475467;
-  font-size:9px;
+  font-size:12px;
   font-weight:700;
 }
 
 html.medindex-tailadmin[data-mi-page="dozologjia"] .dosage-card-chip.is-verified {
   background:#ecfdf3;
   color:#067647;
+}
+html.medindex-tailadmin[data-mi-page="dozologjia"] .dosage-card-chip.has-source {
+  background:#eaf4f1;
+  color:#155f63;
+}
+html.medindex-tailadmin[data-mi-page="dozologjia"] .dosage-card-chip.is-unverified {
+  background:#fff4e5;
+  color:#8a550f;
 }
 
 html.medindex-tailadmin[data-mi-page="dozologjia"] .dosage-card-number {

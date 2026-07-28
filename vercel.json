@@ -41,6 +41,13 @@
       ]
     },
     {
+      "source": "/data/protocols.json",
+      "headers": [
+        { "key": "Cache-Control", "value": "private, no-cache, max-age=0" },
+        { "key": "Vary", "value": "Cookie" }
+      ]
+    },
+    {
       "source": "/login.html",
       "headers": [{ "key": "Cache-Control", "value": "private, no-cache, no-store, must-revalidate" }]
     },

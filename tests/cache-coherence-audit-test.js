@@ -3,7 +3,7 @@ const fs = require('node:fs');
 const path = require('node:path');
 
 const ROOT = path.resolve(__dirname, '..');
-const RELEASE = 'production-audit-v1';
+const RELEASE = 'production-audit-v2';
 const read = file => fs.readFileSync(path.join(ROOT, file), 'utf8');
 const pages = ['index.html', 'klasifikimi.html', 'icd.html', 'analizat.html', 'dozologjia.html', 'protokollet.html', 'recetat.html'];
 

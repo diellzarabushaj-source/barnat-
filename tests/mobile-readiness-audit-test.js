@@ -14,7 +14,7 @@ const browserSpec = read('tests/mobile-deep-audit.spec.js');
 execFileSync(process.execPath, ['--check', path.join(ROOT, 'mobile-experience.js')], { stdio:'pipe' });
 
 [
-  /production-audit-v1/,
+  /production-audit-v2/,
   /safe-area-inset-top/,
   /safe-area-inset-bottom/,
   /--mi-touch-target:44px/,
@@ -32,7 +32,7 @@ execFileSync(process.execPath, ['--check', path.join(ROOT, 'mobile-experience.js
 ].forEach(pattern => assert.match(mobile, pattern, `mobile-experience.js missing ${pattern}`));
 
 assert.doesNotMatch(mobile, /fetch\(|\/api\//, 'mobile experience runtime must not touch backend APIs or the network');
-assert.match(shell, /MOBILE_SRC = '\/mobile-experience\.js\?v=production-audit-v1'/, 'shell must load the audited mobile runtime');
+assert.match(shell, /MOBILE_SRC = '\/mobile-experience\.js\?v=production-audit-v2'/, 'shell must load the audited mobile runtime');
 assert.match(shell, /loadMobileExperience\(\)/, 'mobile runtime loader is missing');
 assert.match(shell, /warm\(MOBILE_SRC\)/, 'mobile runtime must be warmed for offline reuse');
 

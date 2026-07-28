@@ -6,17 +6,18 @@
   <meta name="description" content="MedIndex — krijim i shpejtë dhe i strukturuar i recetave klinike.">
   <meta name="robots" content="noindex,nofollow,noarchive">
   <meta name="theme-color" content="#0d3d40">
+  <link rel="manifest" href="manifest.webmanifest">
   <title>MedIndex | Recetat — Dr. Diellza Rabushaj</title>
   <link rel="stylesheet" href="medical-hub.css?v=20260723-1">
-  <link rel="stylesheet" href="app-polish.css?v=20260723-2">
+  <link rel="stylesheet" href="app-polish.css?v=20260728-1">
   <link rel="stylesheet" href="performance.css?v=20260723-1">
   <link rel="stylesheet" href="recetat.css?v=20260723-1">
   <link rel="stylesheet" href="recetat-audit.css?v=20260723-1">
   <link rel="stylesheet" href="signature-templates.css?v=20260723-1">
-  <link rel="stylesheet" href="tailadmin-medindex.css?v=20260724-3" data-tailadmin-medindex-css>
-  <link rel="stylesheet" href="tailadmin-professional.css?v=20260724-1" data-tailadmin-professional-css>
-  <script src="tailadmin-shell.js?v=production-audit-v1" defer></script>
-  <script src="tailadmin-professional.js?v=production-audit-v1" defer></script>
+  <link rel="stylesheet" href="tailadmin-medindex.css?v=20260728-1" data-tailadmin-medindex-css>
+  <link rel="stylesheet" href="tailadmin-professional.css?v=20260728-1" data-tailadmin-professional-css>
+  <script src="tailadmin-shell.js?v=production-audit-v2" defer></script>
+  <script src="tailadmin-professional.js?v=production-audit-v2" defer></script>
 </head>
 <body>
   <a class="skip-link" href="#rxContent">Kalo te krijimi i recetës</a>
@@ -61,7 +62,7 @@ S (Signatura): Nga 1 tabletë çdo 12 orë pas ushqimit, për 7 ditë.
 Tab. Paracetamol 500 mg
 Sasia: Scat. No I (Një kuti = 20 tableta)
 S (Signatura): Nga 1 tabletë çdo 8 orë sipas nevojës."></textarea>
-            <span class="rx-editor-hint"><kbd>Ctrl</kbd> + <kbd>Enter</kbd> për ta përgatitur me Gemini</span>
+            <span class="rx-editor-hint"><kbd>Ctrl</kbd> + <kbd>Enter</kbd> për formatim lokal</span>
           </div>
 
           <div class="rx-selected" id="rxSelectedDrugs" hidden aria-label="Barnat e zgjedhura"></div>
@@ -79,8 +80,8 @@ S (Signatura): Nga 1 tabletë çdo 8 orë sipas nevojës."></textarea>
           </div>
 
           <div class="rx-compose-actions">
-            <button class="rx-primary" id="rxGenerate" type="button"><span class="rx-ai-mark" aria-hidden="true">✦</span><span>Përgatit me Gemini</span></button>
-            <button class="rx-secondary" id="rxFormatLocal" type="button">Formato pa AI</button>
+            <button class="rx-primary" id="rxFormatLocal" type="button">Formato lokalisht</button>
+            <button class="rx-secondary" id="rxGenerate" type="button"><span class="rx-ai-mark" aria-hidden="true">✦</span><span>Sugjero me AI · kërkon internet</span></button>
             <button class="rx-ghost" id="rxClear" type="button">Pastro</button>
           </div>
           <p class="rx-status" id="rxStatus" role="status" aria-live="polite"></p>
@@ -120,14 +121,14 @@ S (Signatura): Nga 1 tabletë çdo 8 orë sipas nevojës."></textarea>
   </div>
   <div class="rx-toast" id="rxToast" role="status" aria-live="polite"></div>
   <script src="local-registry-fidelity.js?v=registry-prescription-master-v3" defer></script>
-  <script src="auth-client.js?v=production-audit-v1" defer></script>
-  <script src="prescription-bridge.js?v=production-audit-v1" defer></script>
+  <script src="auth-client.js?v=production-audit-v2" defer></script>
+  <script src="prescription-bridge.js?v=production-audit-v2" defer></script>
   <script src="medical-icons.js?v=20260723-1" defer></script>
   <script src="dosage-engine.js?v=prescription-v1" defer></script>
   <script src="prescription-format-core.js?v=20260723-1" defer></script>
   <script src="prescription-registry-bridge.js?v=prescription-v1" defer></script>
   <script src="signature-templates.js?v=20260723-1" defer></script>
-  <script src="recetat.js?v=prescription-v1" defer></script>
+  <script src="recetat.js?v=20260728-1" defer></script>
   <script src="recetat-safe-print.js?v=production-audit-v2" defer></script>
   <script src="app-stability.js?v=20260724-2" defer></script>
 </body>

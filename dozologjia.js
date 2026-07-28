@@ -95,7 +95,7 @@
     if (!matches.length) return '';
     const label = population === 'pediatric' ? 'Indikacioni pediatrik' : 'Indikacioni';
     if (matches.length === 1) {
-      return `<div class="dosage-indication is-fixed"><b>${label}</b><span>${esc(regimen?.indication || 'Skema e vetme e verifikuar')}</span></div>`;
+      return `<div class="dosage-indication is-fixed"><b>${label}</b><span>${esc(regimen?.indication || 'Skema e vetme e strukturuar')}</span></div>`;
     }
     return `<label class="dosage-indication">
       <b>${label}</b>
@@ -113,7 +113,7 @@
   function calculationMarkup(card, matches, regimen) {
     if (!text(card.pediatricDose)) return '';
     if (!matches.length) {
-      return '<div class="dosage-calculation"><strong>Dozë pediatrike e verifikuar</strong><p class="dosage-calculation-note">Doza është publikuar si tekst. Kalkulatori aktivizohet pasi formula të strukturohet dhe verifikohet.</p></div>';
+      return '<div class="dosage-calculation"><strong>Dozë pediatrike e publikuar</strong><p class="dosage-calculation-note">Doza është publikuar si tekst. Kalkulatori aktivizohet pasi formula të strukturohet dhe të lidhet me burimin.</p></div>';
     }
     if (matches.length > 1 && !regimen) {
       return '<div class="dosage-calculation"><strong>Kalkulatori sipas kg</strong><p class="dosage-calculation-note">Zgjidh indikacionin për ta përdorur skemën e saktë.</p></div>';
@@ -130,7 +130,7 @@
       return `<div class="dosage-calculation"><strong>Kalkulatori sipas kg</strong><p class="dosage-calculation-note">Shëno ${esc(needs.join(' dhe ') || 'të dhënat e pacientit')} sipër.</p></div>`;
     }
     if (result.status === 'out-of-range') {
-      return '<div class="dosage-calculation"><strong>Kërkohet rishikim klinik</strong><p class="dosage-calculation-note">Mosha ose pesha është jashtë kufijve të verifikuar të kësaj skeme.</p></div>';
+      return '<div class="dosage-calculation"><strong>Kërkohet rishikim klinik</strong><p class="dosage-calculation-note">Mosha ose pesha është jashtë kufijve të deklaruar të kësaj skeme.</p></div>';
     }
 
     const items = [
@@ -144,7 +144,7 @@
     return `<div class="dosage-calculation">
       <strong>Rezultati për ${esc(formatDose(patient().weightKg, 'kg'))}</strong>
       <div class="dosage-calculation-grid">${items.map(([label, value]) => `<div class="dosage-calculation-item"><b>${esc(label)}</b>${esc(value)}</div>`).join('')}</div>
-      <p class="dosage-calculation-note">Llogaritur nga formula e strukturuar e verifikuar.${esc(capped)}</p>
+      <p class="dosage-calculation-note">Llogaritur nga formula e strukturuar e publikuar.${esc(capped)}</p>
     </div>`;
   }
 
@@ -163,7 +163,7 @@
         return '<div class="dosage-signature is-pending"><b>Signatura automatike</b><p>Shëno peshën dhe, vetëm kur kërkohet, moshën.</p></div>';
       }
       if (calculation?.status === 'out-of-range') {
-        return '<div class="dosage-signature is-warning"><b>Signatura nuk u krijua</b><p>Pacienti është jashtë kufijve të verifikuar.</p></div>';
+        return '<div class="dosage-signature is-warning"><b>Signatura nuk u krijua</b><p>Pacienti është jashtë kufijve të deklaruar të skemës.</p></div>';
       }
     }
 
@@ -175,14 +175,14 @@
   }
 
   function statusLabel(population, matches, regimen) {
-    if (!matches.length) return 'Dozë e verifikuar';
+    if (!matches.length) return 'Pa skemë të strukturuar';
     if (matches.length > 1 && !regimen) return 'Zgjidh indikacionin';
     if (population === 'pediatric' && (
       Number.isFinite(regimen?.mgPerKg)
       || Number.isFinite(regimen?.fixedDoseMg)
       || Number.isFinite(regimen?.fixedVolumeMl)
     )) return 'Kalkulim sipas kg';
-    return 'E verifikuar';
+    return /^https:\/\//i.test(text(regimen?.sourceUrl)) ? 'Skemë me burim' : 'Skemë e strukturuar';
   }
 
   function populationMarkup(card, population) {
@@ -193,7 +193,7 @@
     if (!dose && pediatric) {
       return `<section class="dosage-population is-pediatric is-empty">
         <div class="dosage-population-head"><h3 class="dosage-population-title">${label}</h3><span class="dosage-population-badge">Në pritje të plotësimit</span></div>
-        <p class="dosage-empty-text">Nuk ka dozë pediatrike të verifikuar dhe të publikuar për këtë kartelë.</p>
+        <p class="dosage-empty-text">Nuk ka dozë pediatrike të strukturuar dhe të publikuar për këtë kartelë.</p>
       </section>`;
     }
 
@@ -211,8 +211,17 @@
     </section>`;
   }
 
+  function linkedSources(card) {
+    return Array.isArray(card.sourceUrls) ? card.sourceUrls.filter(url => /^https:\/\//i.test(url)) : [];
+  }
+
+  function provenanceChip(card) {
+    const linked = linkedSources(card).length > 0;
+    return `<span class="dosage-card-chip ${linked ? 'has-source' : 'is-unverified'}">${linked ? 'BURIM I LIDHUR' : 'PA BURIM TË LIDHUR'}</span>`;
+  }
+
   function sourceMarkup(card) {
-    const sources = Array.isArray(card.sourceUrls) ? card.sourceUrls.filter(url => /^https:\/\//i.test(url)) : [];
+    const sources = linkedSources(card);
     if (!sources.length) return '<span class="dosage-card-chip">Burimi nuk është lidhur</span>';
     return sources.slice(0, 3).map((url, index) => `<a href="${esc(url)}" target="_blank" rel="noopener noreferrer">Burimi${sources.length > 1 ? ` ${index + 1}` : ''}</a>`).join('');
   }
@@ -245,7 +254,7 @@
             ${card.atc ? `<span class="dosage-card-chip">${esc(card.atc)}</span>` : ''}
             ${card.form ? `<span class="dosage-card-chip">${esc(card.form)}</span>` : ''}
             ${card.pdid ? `<span class="dosage-card-chip">PDID ${esc(card.pdid)}</span>` : ''}
-            <span class="dosage-card-chip is-verified">E VERIFIKUAR</span>
+            ${provenanceChip(card)}
           </div>
         </div>
         <span class="dosage-card-number">Nr. ${esc(card.nr || '—')}</span>
@@ -281,8 +290,9 @@
     const rows = filteredCards();
     const total = cards().length;
     const pediatricCount = cards().filter(card => text(card.pediatricDose)).length;
+    const linkedSourceCount = cards().filter(card => linkedSources(card).length).length;
     $('#dosageCount').textContent = total;
-    $('#dosageStatus').textContent = `${rows.length} nga ${total} kartela të verifikuara · ${pediatricCount} me dozë pediatrike të publikuar`;
+    $('#dosageStatus').textContent = `${rows.length} nga ${total} kartela · ${linkedSourceCount} me burim të lidhur · ${pediatricCount} me dozë pediatrike`;
     $('#dosageList').innerHTML = rows.length ? rows.map(cardMarkup).join('') : '<div class="clinical-empty">Nuk u gjet asnjë kartelë për këta filtra.</div>';
   }
 
@@ -301,7 +311,7 @@
         return;
       }
       if (!eligibility.eligible) {
-        $('#dosageStatus').textContent = 'Pacienti është jashtë kufijve të verifikuar të kësaj skeme. Kërkohet rishikim klinik.';
+        $('#dosageStatus').textContent = 'Pacienti është jashtë kufijve të deklaruar të kësaj skeme. Kërkohet rishikim klinik.';
         return;
       }
       calculation = Engine.calculatePediatricDose?.(regimen, patient()) || null;

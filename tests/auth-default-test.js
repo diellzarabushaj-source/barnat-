@@ -26,7 +26,14 @@ const { pathToFileURL } = require('node:url');
   const token = configured.createSessionToken();
   assert.equal(configured.verifySessionToken(token), true, 'Configured auth session token failed');
 
+  process.env.ACCESS_CODE_SCRYPT = `scrypt:16384:8:1:${'ab'.repeat(16)}:${'cd'.repeat(32)}`;
+  const conflicting = await import(`${baseUrl}?conflicting=${Date.now()}`);
+  assert.equal(conflicting.accessConfigurationEnabled(), false, 'Conflicting access verifiers must fail closed');
+  assert.equal(conflicting.secureConfigurationEnabled(), false, 'Conflicting access verifiers must never report hardened auth');
+  assert.equal(conflicting.verifyAccessCode('medindex-test-password-2026'), false, 'Plain access code remained active during a verifier conflict');
+
   delete process.env.ACCESS_CODE;
+  delete process.env.ACCESS_CODE_SCRYPT;
   delete process.env.SESSION_SECRET;
   process.env.GEMINI_API_KEY = 'g'.repeat(40);
   const noSecretReuse = await import(`${baseUrl}?no-secret-reuse=${Date.now()}`);

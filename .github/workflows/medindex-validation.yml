@@ -15,13 +15,20 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          version: 10.28.0
+          run_install: false
+
       - name: Setup Node
         uses: actions/setup-node@v4
         with:
           node-version: 22
+          cache: pnpm
 
       - name: Install dependencies
-        run: npm install --ignore-scripts --no-audit --no-fund
+        run: pnpm install --frozen-lockfile --ignore-scripts
 
       - name: Validate JavaScript syntax
         shell: bash
@@ -63,7 +70,7 @@ jobs:
           node --check /tmp/medindex-registry-bundle.js
 
       - name: Run complete test suite
-        run: npm test
+        run: pnpm test
 
       - name: Verify the dedicated prescription dashboard
         shell: bash
@@ -144,7 +151,8 @@ jobs:
           done
           grep -q 'tailadmin-medindex.css' login.html
           grep -q -- '--mi-sidebar-width: 290px' tailadmin-medindex.css
-          grep -q -- '--mi-brand-500: #465fff' tailadmin-medindex.css
+          grep -q -- '--mi-brand-500: #1f7779' tailadmin-medindex.css
+          grep -q -- '--mi-sidebar-width: 264px' tailadmin-professional.css
           grep -q 'html\[data-theme="dark"\]' tailadmin-medindex.css
           grep -q 'prefers-reduced-motion' tailadmin-medindex.css
           grep -q 'MOBILE_BREAKPOINT = 1024' tailadmin-shell.js

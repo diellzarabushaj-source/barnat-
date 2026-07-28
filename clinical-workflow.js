@@ -1,7 +1,7 @@
 (() => {
   'use strict';
 
-  const VERSION = 'production-audit-v1';
+  const VERSION = 'production-audit-v2';
   const QUERY_KEY = 'medindex_global_query_v1';
   const DIAGNOSIS_KEY = 'medindex_rx_diagnosis_v1';
   const DRAFT_KEY = 'medindex_rx_autodraft_v1';
@@ -33,7 +33,7 @@
       .mi-command-item strong,.mi-command-item small{display:block}.mi-command-item strong{font-size:13px}.mi-command-item small{margin-top:3px;color:var(--mi-gray-500,#667085);font-size:11px}.mi-command-item kbd{font:700 10px/1 var(--mi-font,system-ui);color:var(--mi-gray-500,#667085)}
       .mi-command-empty{padding:14px;color:var(--mi-gray-500,#667085);font-size:12px;text-align:center}
       .mi-data-tools{display:flex;align-items:center;gap:8px;flex-wrap:wrap}.mi-data-tool{min-height:36px;padding:0 12px;border:1px solid var(--mi-gray-300,#d0d5dd);border-radius:9px;background:var(--mi-white,#fff);color:var(--mi-gray-700,#344054);font:700 12px/1 var(--mi-font,system-ui);cursor:pointer}.mi-data-tool:hover{background:var(--mi-gray-50,#f9fafb)}
-      .mi-use-diagnosis{display:inline-flex;align-items:center;justify-content:center;min-height:38px;margin-left:auto;padding:0 13px;border:0;border-radius:9px;background:var(--mi-brand-600,#465fff);color:#fff;font:750 12px/1 var(--mi-font,system-ui);cursor:pointer}.mi-use-diagnosis:hover{filter:brightness(.96)}
+      .mi-use-diagnosis{display:inline-flex;align-items:center;justify-content:center;min-height:38px;margin-left:auto;padding:0 13px;border:0;border-radius:9px;background:var(--mi-brand-600,#155f63);color:#fff;font:750 12px/1 var(--mi-font,system-ui);cursor:pointer}.mi-use-diagnosis:hover{filter:brightness(.96)}
       .rx-toast .mi-toast-action{margin-left:10px;padding:5px 8px;border:1px solid currentColor;border-radius:7px;background:transparent;color:inherit;font:inherit;font-weight:800;cursor:pointer}
       .mi-draft-note{display:inline-flex;align-items:center;gap:6px;margin-left:8px;color:var(--mi-gray-500,#667085);font-size:11px}.mi-draft-note::before{content:'';width:6px;height:6px;border-radius:50%;background:#12b76a}
       html[data-theme="dark"] .mi-command-palette{background:#101828;border-color:#344054}.dark .mi-command-item,html[data-theme="dark"] .mi-command-item{color:#f2f4f7}.dark .mi-command-item:hover,html[data-theme="dark"] .mi-command-item:hover,.dark .mi-command-item[aria-selected="true"],html[data-theme="dark"] .mi-command-item[aria-selected="true"]{background:#182230}.dark .mi-data-tool,html[data-theme="dark"] .mi-data-tool{background:#182230;border-color:#344054;color:#eaecf0}

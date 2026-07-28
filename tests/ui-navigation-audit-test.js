@@ -102,7 +102,7 @@ assert.match(uiEnhancements, /\$\{legacyNavigationStyles\}/, 'shared registry en
 const css = read('tailadmin-medindex.css');
 const professionalCss = read('tailadmin-professional.css');
 [
-  /--mi-brand-500:\s*#465fff/,
+  /--mi-brand-500:\s*#1f7779/,
   /--mi-gray-900:\s*#101828/,
   /--mi-sidebar-width:\s*290px/,
   /--mi-sidebar-collapsed:\s*90px/,

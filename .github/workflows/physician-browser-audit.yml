@@ -17,23 +17,29 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          version: 10.28.0
+          run_install: false
+
       - name: Setup Node
         uses: actions/setup-node@v4
         with:
           node-version: 22
+          cache: pnpm
 
       - name: Install app dependencies
-        run: npm install --ignore-scripts --no-audit --no-fund
+        run: pnpm install --frozen-lockfile --ignore-scripts
 
       - name: Run static and clinical audit gates
-        run: npm test
+        run: pnpm test
 
       - name: Install Playwright Chromium
         shell: bash
         run: |
           set -euo pipefail
-          npm install --no-save --ignore-scripts --no-audit --no-fund @playwright/test@1.54.1 > /tmp/playwright-install.log 2>&1 || { tail -200 /tmp/playwright-install.log; exit 1; }
-          npx playwright install --with-deps chromium >> /tmp/playwright-install.log 2>&1 || { tail -200 /tmp/playwright-install.log; exit 1; }
+          pnpm exec playwright install --with-deps chromium > /tmp/playwright-install.log 2>&1 || { tail -200 /tmp/playwright-install.log; exit 1; }
           echo "Playwright Chromium installed."
 
       - name: Run desktop, mobile, tablet, CSP and 4006-row performance audits
@@ -55,7 +61,7 @@ jobs:
             if curl -fsS http://127.0.0.1:4174/index.html >/dev/null; then break; fi
             sleep 1
           done
-          npx playwright test tests/csp-browser-audit.spec.js tests/physician-flow.spec.js tests/mobile-deep-audit.spec.js tests/registry-main-thread-performance.spec.js --reporter=line --workers=1 > /tmp/physician-flow.log 2>&1 || { cat /tmp/physician-flow.log; exit 1; }
+          pnpm exec playwright test tests/csp-browser-audit.spec.js tests/physician-flow.spec.js tests/mobile-deep-audit.spec.js tests/registry-main-thread-performance.spec.js --reporter=line --workers=1 > /tmp/physician-flow.log 2>&1 || { cat /tmp/physician-flow.log; exit 1; }
           cat /tmp/physician-flow.log
 
       - name: Upload physician diagnostics

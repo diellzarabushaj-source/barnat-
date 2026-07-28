@@ -24,6 +24,13 @@ assert.ok(fs.existsSync(path.join(ROOT, 'lib/gemini-prescription.js')), 'Gemini 
 
 const vercel = JSON.parse(read('vercel.json'));
 assert.ok(vercel.rewrites.some(item => item.source === '/api/gemini-prescription' && item.destination === '/api/gemini-prescription-secure'), 'Gemini route must pass through the secure gateway');
+const protocolManifestIndex = vercel.headers.findIndex(item => item.source === '/data/protocols.json');
+const genericJsonIndex = vercel.headers.findIndex(item => item.source === '/(.*)\\.(json|txt)');
+assert.ok(protocolManifestIndex >= 0 && protocolManifestIndex < genericJsonIndex, 'Private protocol manifest headers must precede the generic JSON cache rule');
+const protocolManifestHeaders = Object.fromEntries(vercel.headers[protocolManifestIndex].headers.map(item => [item.key.toLowerCase(), item.value]));
+assert.match(protocolManifestHeaders['cache-control'], /\bprivate\b/);
+assert.match(protocolManifestHeaders['cache-control'], /\bno-cache\b/);
+assert.equal(protocolManifestHeaders.vary, 'Cookie');
 
 const protocol = require('../api/protocol-document.js');
 assert.equal(protocol.safeRange('bytes=0-100'), 'bytes=0-100');

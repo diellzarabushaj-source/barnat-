@@ -3,7 +3,7 @@
 
   const ROOT = document.documentElement;
   const MOBILE_BREAKPOINT = 1024;
-  const VERSION = 'production-audit-v1';
+  const VERSION = 'production-audit-v2';
   const SEARCH_ICON = '<svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="11" cy="11" r="7"></circle><path d="m16.5 16.5 4 4"></path></svg>';
   let trigger = null;
   let backdrop = null;

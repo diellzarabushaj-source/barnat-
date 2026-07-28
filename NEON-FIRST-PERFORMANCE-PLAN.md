@@ -152,8 +152,8 @@ Client-side:
 Komandat ekzistuese ruhen:
 
 ```bash
-npm run sync:neon
-npm run sync:all
+pnpm run sync:neon
+pnpm run sync:all
 ```
 
 Sinkronizimi duhet të:

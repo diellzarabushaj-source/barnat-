@@ -171,17 +171,18 @@ function render(){
       const rowClasses = [checked ? 'row-selected' : '', qualityRowClass(r)].filter(Boolean).join(' ');
       const qualityTitle = String(r.__qualityMessage || '').trim();
       return '<tr class="' + rowClasses + '"' + (qualityTitle ? ' title="' + escapeHtml(qualityTitle) + '"' : '') + '>' +
-        '<td class="select-col"><input class="drug-select" type="checkbox" aria-label="' + (blocked ? 'Nuk lejohet në recetë pa verifikim: ' : 'Zgjidh ') + escapeHtml(r['Emri tregtar']) + '" data-drug-key="' + escapeHtml(key) + '" ' + (checked ? 'checked ' : '') + (blocked ? 'disabled title="Rreshti është bllokuar nga kontrolli i cilësisë"' : '') + '></td>' + cols.map(col => {
+        '<td class="select-col" data-label="Për recetë"><input class="drug-select" type="checkbox" aria-label="' + (blocked ? 'Nuk lejohet në recetë pa verifikim: ' : 'Zgjidh ') + escapeHtml(r['Emri tregtar']) + '" data-drug-key="' + escapeHtml(key) + '" ' + (checked ? 'checked ' : '') + (blocked ? 'disabled title="Rreshti është bllokuar nga kontrolli i cilësisë"' : '') + '></td>' + cols.map(col => {
+        const mobileLabel = escapeHtml(col.mobileLabel || col.key);
         let val = r[col.key];
         if(col.key === 'Statusi'){
           const s = String(val ?? '').trim();
           const cls = s === 'Gjenerik' ? 'gjenerik' : (s === 'Origjinator' ? 'origjinator' : '');
           val = s ? '<span class="badge ' + cls + '">' + escapeHtml(s) + '</span>' : '';
-          return '<td class="' + col.cls + '">' + val + '</td>';
+          return '<td class="' + col.cls + '" data-label="' + mobileLabel + '">' + val + '</td>';
         }
         if(col.key === 'Substanca aktive'){
-          return '<td class="' + col.cls + ' quality-substance" title="' + escapeHtml(qualityTitle || val) + '"><span>' + escapeHtml(val) + '</span>' + qualityBadge(r) + '</td>';
+          return '<td class="' + col.cls + ' quality-substance" data-label="' + mobileLabel + '" title="' + escapeHtml(qualityTitle || val) + '"><span>' + escapeHtml(val) + '</span>' + qualityBadge(r) + '</td>';
         }
         if(col.key === 'Forma farmaceutike'){
           const cat = categoryOf(val);
-          const color = cat ? CATEGORY_COLORS[cat] : '#99
+          const color = cat ? CATEGORY_COLORS[cat] : '#999';
