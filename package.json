@@ -14,7 +14,8 @@
   },
   "dependencies": {
     "@vercel/blob": "^2.3.0",
-    "@vercel/oidc": "^3.8.0",
+    "@vercel/functions": "3.7.5",
+    "@vercel/oidc": "3.8.0",
     "xlsx": "https://cdn.sheetjs.com/xlsx-0.20.3/xlsx-0.20.3.tgz"
   },
   "devDependencies": {
