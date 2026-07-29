@@ -50,7 +50,7 @@ function routeMatches(regimen, context) {
   const administration = regimenAdministration(regimen);
   if (administration.category !== context.category) return false;
   const routes = Administration.routeTokens(regimen.route || administration.routes.join(' '));
-  return routes.length === 1 && routes[0] === context.route;
+  return routes.includes(context.route);
 }
 
 function prepareRegimen(regimen, context) {
