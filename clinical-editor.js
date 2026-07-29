@@ -1,39 +1,53 @@
 (() => {
   'use strict';
 
-  const VERSION = 'clinical-editor-live-v1';
+  const VERSION = 'clinical-editor-live-v2';
   const ENDPOINT = '/api/clinical-editor';
   const DOSAGE_STORAGE_KEY = 'medindex-registry-dosage-columns-v2';
   const STATUS_COLUMN = 'clinical-status';
   const ACTION_COLUMN = 'clinical-action';
-  const statusLabels = { pending:'Pa kontrolluar', in_review:'Në verifikim', verified:'I verifikuar' };
+  const STATUS_LABELS = Object.freeze({
+    pending:'Pa kontrolluar',
+    in_review:'Në verifikim',
+    verified:'I verifikuar',
+  });
 
   const clean = value => String(value ?? '').replace(/\s+/g, ' ').trim();
   const escapeHtml = value => String(value ?? '').replace(/[&<>"']/g, character => ({
     '&':'&amp;', '<':'&lt;', '>':'&gt;', '"':'&quot;', "'":'&#39;',
   })[character]);
 
-  try {
-    const current = JSON.parse(localStorage.getItem(DOSAGE_STORAGE_KEY) || '{}');
-    if (current.adult === undefined && current.pediatric === undefined) {
-      localStorage.setItem(DOSAGE_STORAGE_KEY, JSON.stringify({ adult:true, pediatric:true }));
-    }
-    document.documentElement.classList.remove('hide-registry-dosage-adult', 'hide-registry-dosage-pediatric');
-  } catch {}
-
   let summary = { total:0, pending:0, inReview:0, verified:0, adultVerified:0, pediatricVerified:0, items:[] };
   let summaryMap = new Map();
   let currentRegistryNumber = null;
-  let enhanceQueued = false;
-  let enhancing = false;
-  let tableObserver = null;
+  let progressButton = null;
   let dialog = null;
   let form = null;
   let message = null;
-  let progressButton = null;
+  let tableObserver = null;
+  let enhanceQueued = false;
+  let enhancing = false;
+  let started = false;
 
-  function statusClass(status) {
-    return ['pending', 'in_review', 'verified'].includes(status) ? status : 'pending';
+  function makeDosageColumnsVisibleByDefault() {
+    try {
+      const current = JSON.parse(localStorage.getItem(DOSAGE_STORAGE_KEY) || '{}');
+      if (current.adult === undefined && current.pediatric === undefined) {
+        localStorage.setItem(DOSAGE_STORAGE_KEY, JSON.stringify({ adult:true, pediatric:true }));
+      }
+      document.documentElement.classList.remove('hide-registry-dosage-adult', 'hide-registry-dosage-pediatric');
+    } catch {}
+  }
+
+  function statusClass(value) {
+    return Object.hasOwn(STATUS_LABELS, value) ? value : 'pending';
+  }
+
+  function nextIncomplete(afterNumber = 0) {
+    const items = [...summaryMap.values()].sort((left, right) => Number(left.registryNumber) - Number(right.registryNumber));
+    return items.find(item => Number(item.registryNumber) > Number(afterNumber) && item.verificationStatus !== 'verified')
+      || items.find(item => item.verificationStatus !== 'verified')
+      || null;
   }
 
   function updateProgressButton() {
@@ -46,45 +60,54 @@
     if (progressButton?.isConnected) return;
     const toolbar = document.querySelector('.toolbar');
     if (!toolbar) return;
+
     progressButton = document.createElement('button');
     progressButton.type = 'button';
     progressButton.className = 'clinical-editor-progress';
     progressButton.dataset.clinicalEditorProgress = VERSION;
     progressButton.addEventListener('click', () => {
-      const next = nextIncomplete(null);
-      if (next) openEditor(next.registryNumber);
+      const next = nextIncomplete();
+      if (next) void openEditor(next.registryNumber);
     });
-    toolbar.insertBefore(progressButton, document.getElementById('countBadge') || null);
+
+    const reference = document.getElementById('countBadge');
+    if (reference?.parentElement === toolbar) toolbar.insertBefore(progressButton, reference);
+    else toolbar.appendChild(progressButton);
     updateProgressButton();
   }
 
   function buildHeaderIndex() {
-    const map = new Map();
-    Array.from(document.querySelectorAll('#headerRow > th')).forEach((header, index) => {
+    const output = new Map();
+    document.querySelectorAll('#headerRow > th').forEach((header, index) => {
       const label = clean(header.textContent).replace(/[▲▼↕]/g, '').trim();
-      if (label && !map.has(label)) map.set(label, index);
+      if (label && !output.has(label)) output.set(label, index);
     });
-    return map;
+    return output;
   }
 
   function registryNumberForRow(tableRow, headerIndex) {
-    const directNumber = Number(clean(tableRow.querySelector('td[data-label="Nr"]')?.textContent));
-    if (Number.isInteger(directNumber)) return directNumber;
+    const direct = Number(clean(tableRow.querySelector('td[data-label="Nr"]')?.textContent));
+    if (Number.isInteger(direct) && direct > 0) return direct;
     const index = headerIndex.get('Nr');
-    const indexed = Number(clean(Number.isInteger(index) ? tableRow.children[index]?.textContent : ''));
-    return Number.isInteger(indexed) ? indexed : null;
+    const value = Number(clean(Number.isInteger(index) ? tableRow.children[index]?.textContent : ''));
+    return Number.isInteger(value) && value > 0 ? value : null;
   }
 
   function statusMarkup(item) {
     const status = statusClass(item?.verificationStatus);
-    const adult = item?.adultVerified ? '<span class="clinical-dose-check ok">Të rritur ✓</span>' : '<span class="clinical-dose-check missing">Të rritur —</span>';
-    const pediatric = item?.pediatricVerified ? '<span class="clinical-dose-check ok">Fëmijë ✓</span>' : '<span class="clinical-dose-check missing">Fëmijë —</span>';
-    return `<span class="clinical-status-badge ${status}">${escapeHtml(statusLabels[status])}</span><span class="clinical-dose-checks">${adult}${pediatric}</span>`;
+    const adult = item?.adultVerified
+      ? '<span class="clinical-dose-check ok">Të rritur ✓</span>'
+      : '<span class="clinical-dose-check missing">Të rritur —</span>';
+    const pediatric = item?.pediatricVerified
+      ? '<span class="clinical-dose-check ok">Fëmijë ✓</span>'
+      : '<span class="clinical-dose-check missing">Fëmijë —</span>';
+    return `<span class="clinical-status-badge ${status}">${escapeHtml(STATUS_LABELS[status])}</span><span class="clinical-dose-checks">${adult}${pediatric}</span>`;
   }
 
   function ensureHeader() {
     const header = document.getElementById('headerRow');
     if (!header) return;
+
     if (!header.querySelector(`[data-clinical-editor-column="${STATUS_COLUMN}"]`)) {
       const status = document.createElement('th');
       status.scope = 'col';
@@ -93,6 +116,7 @@
       status.textContent = 'Verifikimi';
       header.appendChild(status);
     }
+
     if (!header.querySelector(`[data-clinical-editor-column="${ACTION_COLUMN}"]`)) {
       const action = document.createElement('th');
       action.scope = 'col';
@@ -111,10 +135,11 @@
         if (cell) cell.colSpan = document.querySelectorAll('#headerRow > th').length || 1;
         return;
       }
-      const number = registryNumberForRow(tableRow, headerIndex);
-      if (!number) return;
-      tableRow.dataset.registryNumber = String(number);
-      const item = summaryMap.get(number) || { registryNumber:number, verificationStatus:'pending' };
+
+      const registryNumber = registryNumberForRow(tableRow, headerIndex);
+      if (!registryNumber) return;
+      tableRow.dataset.registryNumber = String(registryNumber);
+      const item = summaryMap.get(registryNumber) || { registryNumber, verificationStatus:'pending' };
 
       let statusCell = tableRow.querySelector(`[data-clinical-editor-column="${STATUS_COLUMN}"]`);
       if (!statusCell) {
@@ -140,7 +165,7 @@
         button.type = 'button';
         button.className = 'clinical-editor-open';
         button.textContent = 'Hap';
-        button.addEventListener('click', () => openEditor(number));
+        button.addEventListener('click', () => void openEditor(registryNumber));
         actionCell.replaceChildren(button);
       }
     });
@@ -180,8 +205,14 @@
 
   async function api(url, options = {}) {
     const response = await fetch(url, {
-      credentials:'same-origin', cache:'no-store', ...options,
-      headers:{ Accept:'application/json', ...(options.body ? { 'Content-Type':'application/json' } : {}), ...(options.headers || {}) },
+      credentials:'same-origin',
+      cache:'no-store',
+      ...options,
+      headers:{
+        Accept:'application/json',
+        ...(options.body ? { 'Content-Type':'application/json' } : {}),
+        ...(options.headers || {}),
+      },
     });
     const payload = await response.json().catch(() => ({}));
     if (!response.ok || payload.ok === false) throw new Error(payload.error || `Kërkesa dështoi (${response.status}).`);
@@ -198,8 +229,8 @@
 
   function field(name, label, options = {}) {
     const tag = options.area ? 'textarea' : 'input';
-    const attrs = options.area ? 'rows="3"' : `type="${options.type || 'text'}"`;
-    return `<label class="clinical-editor-field ${options.wide ? 'wide' : ''}"><span>${escapeHtml(label)}</span><${tag} name="${escapeHtml(name)}" ${attrs} ${options.required ? 'required' : ''}></${tag}></label>`;
+    const attributes = options.area ? 'rows="3"' : `type="${options.type || 'text'}"`;
+    return `<label class="clinical-editor-field ${options.wide ? 'wide' : ''}"><span>${escapeHtml(label)}</span><${tag} name="${escapeHtml(name)}" ${attributes} ${options.required ? 'required' : ''}></${tag}></label>`;
   }
 
   function ensureDialog() {
@@ -273,17 +304,18 @@
           <div><button type="button" class="clinical-editor-secondary" data-save-next>Ruaj dhe hap tjetrin</button><button type="submit" class="clinical-editor-primary">Ruaj ndryshimet</button></div>
         </footer>
       </form>`;
+
     document.body.appendChild(dialog);
     form = dialog.querySelector('#clinicalEditorForm');
     message = dialog.querySelector('#clinicalEditorMessage');
     dialog.querySelector('.clinical-editor-close').addEventListener('click', () => dialog.close());
     dialog.addEventListener('click', event => { if (event.target === dialog) dialog.close(); });
-    form.addEventListener('submit', event => { event.preventDefault(); saveEditor(false); });
-    dialog.querySelector('[data-save-next]').addEventListener('click', () => saveEditor(true));
+    form.addEventListener('submit', event => { event.preventDefault(); void saveEditor(false); });
+    dialog.querySelector('[data-save-next]').addEventListener('click', () => void saveEditor(true));
   }
 
   function setValue(name, value) {
-    const control = form.elements.namedItem(name);
+    const control = form?.elements.namedItem(name);
     if (!control) return;
     if (control.type === 'checkbox') control.checked = value === true;
     else control.value = value ?? '';
@@ -294,22 +326,41 @@
     currentRegistryNumber = Number(drug.registryNumber);
     dialog.querySelector('#clinicalEditorTitle').textContent = `${drug.registryNumber}. ${drug.tradeName}`;
     dialog.querySelector('#clinicalEditorMeta').textContent = `${drug.activeSubstance} · ${drug.strength} · ${drug.pharmaceuticalForm}`;
+
     Object.entries({
-      tradeName:drug.tradeName, activeSubstance:drug.activeSubstance, atcCode:drug.atcCode,
-      drugClass:drug.drugClass, useText:drug.useText, strength:drug.strength,
-      pharmaceuticalForm:drug.pharmaceuticalForm, packaging:drug.packaging,
-      verificationStatus:profile.verificationStatus, sourceUrls:(profile.sourceUrls || []).join('\n'),
-      clinicalSummary:profile.clinicalSummary, indicationsText:profile.indicationsText,
-      contraindications:profile.contraindications, warnings:profile.warnings, interactions:profile.interactions,
-      pregnancyLactation:profile.pregnancyLactation, renalAdjustment:profile.renalAdjustment,
-      hepaticAdjustment:profile.hepaticAdjustment, monitoring:profile.monitoring,
-      administrationNotes:profile.administrationNotes, editorialNotes:profile.editorialNotes,
-      adultDose:dosage.adult.dose, adultRoute:dosage.adult.route, adultSourceUrl:dosage.adult.sourceUrl,
-      adultNotes:dosage.adult.notes, adultVerified:dosage.adult.verified,
-      pediatricDose:dosage.pediatric.dose, pediatricRoute:dosage.pediatric.route,
-      pediatricSourceUrl:dosage.pediatric.sourceUrl, pediatricNotes:dosage.pediatric.notes,
+      tradeName:drug.tradeName,
+      activeSubstance:drug.activeSubstance,
+      atcCode:drug.atcCode,
+      drugClass:drug.drugClass,
+      useText:drug.useText,
+      strength:drug.strength,
+      pharmaceuticalForm:drug.pharmaceuticalForm,
+      packaging:drug.packaging,
+      verificationStatus:profile.verificationStatus,
+      sourceUrls:(profile.sourceUrls || []).join('\n'),
+      clinicalSummary:profile.clinicalSummary,
+      indicationsText:profile.indicationsText,
+      contraindications:profile.contraindications,
+      warnings:profile.warnings,
+      interactions:profile.interactions,
+      pregnancyLactation:profile.pregnancyLactation,
+      renalAdjustment:profile.renalAdjustment,
+      hepaticAdjustment:profile.hepaticAdjustment,
+      monitoring:profile.monitoring,
+      administrationNotes:profile.administrationNotes,
+      editorialNotes:profile.editorialNotes,
+      adultDose:dosage.adult.dose,
+      adultRoute:dosage.adult.route,
+      adultSourceUrl:dosage.adult.sourceUrl,
+      adultNotes:dosage.adult.notes,
+      adultVerified:dosage.adult.verified,
+      pediatricDose:dosage.pediatric.dose,
+      pediatricRoute:dosage.pediatric.route,
+      pediatricSourceUrl:dosage.pediatric.sourceUrl,
+      pediatricNotes:dosage.pediatric.notes,
       pediatricVerified:dosage.pediatric.verified,
     }).forEach(([name, value]) => setValue(name, value));
+
     const auditContainer = dialog.querySelector('#clinicalEditorAudit');
     auditContainer.innerHTML = audit?.length
       ? audit.map(item => `<div><strong>${escapeHtml(item.action || 'Ndryshim')}</strong><span>${escapeHtml(item.changedBy || 'Editor')} · ${escapeHtml(item.changedAt ? new Date(item.changedAt).toLocaleString('sq-AL') : '')}</span></div>`).join('')
@@ -346,30 +397,47 @@
     return {
       registryNumber:currentRegistryNumber,
       drug:{
-        tradeName:controlValue('tradeName'), activeSubstance:controlValue('activeSubstance'), atcCode:controlValue('atcCode'),
-        drugClass:controlValue('drugClass'), useText:controlValue('useText'), strength:controlValue('strength'),
-        pharmaceuticalForm:controlValue('pharmaceuticalForm'), packaging:controlValue('packaging'),
+        tradeName:controlValue('tradeName'),
+        activeSubstance:controlValue('activeSubstance'),
+        atcCode:controlValue('atcCode'),
+        drugClass:controlValue('drugClass'),
+        useText:controlValue('useText'),
+        strength:controlValue('strength'),
+        pharmaceuticalForm:controlValue('pharmaceuticalForm'),
+        packaging:controlValue('packaging'),
       },
       profile:{
-        verificationStatus:controlValue('verificationStatus'), sourceUrls:controlValue('sourceUrls').split('\n'),
-        clinicalSummary:controlValue('clinicalSummary'), indicationsText:controlValue('indicationsText'),
-        contraindications:controlValue('contraindications'), warnings:controlValue('warnings'),
-        interactions:controlValue('interactions'), pregnancyLactation:controlValue('pregnancyLactation'),
-        renalAdjustment:controlValue('renalAdjustment'), hepaticAdjustment:controlValue('hepaticAdjustment'),
-        monitoring:controlValue('monitoring'), administrationNotes:controlValue('administrationNotes'),
+        verificationStatus:controlValue('verificationStatus'),
+        sourceUrls:controlValue('sourceUrls').split('\n'),
+        clinicalSummary:controlValue('clinicalSummary'),
+        indicationsText:controlValue('indicationsText'),
+        contraindications:controlValue('contraindications'),
+        warnings:controlValue('warnings'),
+        interactions:controlValue('interactions'),
+        pregnancyLactation:controlValue('pregnancyLactation'),
+        renalAdjustment:controlValue('renalAdjustment'),
+        hepaticAdjustment:controlValue('hepaticAdjustment'),
+        monitoring:controlValue('monitoring'),
+        administrationNotes:controlValue('administrationNotes'),
         editorialNotes:controlValue('editorialNotes'),
       },
       dosage:{
-        adult:{ dose:controlValue('adultDose'), route:controlValue('adultRoute'), sourceUrl:controlValue('adultSourceUrl'), notes:controlValue('adultNotes'), verified:controlValue('adultVerified') },
-        pediatric:{ dose:controlValue('pediatricDose'), route:controlValue('pediatricRoute'), sourceUrl:controlValue('pediatricSourceUrl'), notes:controlValue('pediatricNotes'), verified:controlValue('pediatricVerified') },
+        adult:{
+          dose:controlValue('adultDose'), route:controlValue('adultRoute'), sourceUrl:controlValue('adultSourceUrl'),
+          notes:controlValue('adultNotes'), verified:controlValue('adultVerified'),
+        },
+        pediatric:{
+          dose:controlValue('pediatricDose'), route:controlValue('pediatricRoute'), sourceUrl:controlValue('pediatricSourceUrl'),
+          notes:controlValue('pediatricNotes'), verified:controlValue('pediatricVerified'),
+        },
       },
     };
   }
 
   function setVisibleCell(tableRow, labels, value) {
-    const normalizedLabels = labels.map(clean);
-    Array.from(tableRow.querySelectorAll('td')).forEach(cell => {
-      if (!normalizedLabels.includes(clean(cell.dataset.label))) return;
+    const normalized = labels.map(clean);
+    tableRow.querySelectorAll('td').forEach(cell => {
+      if (!normalized.includes(clean(cell.dataset.label))) return;
       const badge = cell.querySelector('.data-quality-badge');
       if (badge && cell.firstElementChild) cell.firstElementChild.textContent = value;
       else cell.textContent = value;
@@ -379,25 +447,35 @@
 
   function updateRegistryRow(record) {
     const drug = record.drug;
-    const row = Array.isArray(window.MEDINDEX_REGISTRY_ROWS)
+    const sourceRow = Array.isArray(window.MEDINDEX_REGISTRY_ROWS)
       ? window.MEDINDEX_REGISTRY_ROWS.find(item => Number(item['Nr rendor']) === Number(drug.registryNumber))
       : null;
-    if (row) Object.assign(row, {
-      'Emri tregtar':drug.tradeName, 'Substanca aktive':drug.activeSubstance, 'ATC Code':drug.atcCode,
-      'Klasa / Çka është':drug.drugClass, 'Përdorimi (fjalë kyçe)':drug.useText,
-      Fortësia:drug.strength, 'Forma farmaceutike':drug.pharmaceuticalForm, 'Madhësia e paketimit':drug.packaging,
-    });
+    if (sourceRow) {
+      Object.assign(sourceRow, {
+        'Emri tregtar':drug.tradeName,
+        'Substanca aktive':drug.activeSubstance,
+        'ATC Code':drug.atcCode,
+        'Klasa / Çka është':drug.drugClass,
+        'Përdorimi (fjalë kyçe)':drug.useText,
+        Fortësia:drug.strength,
+        'Forma farmaceutike':drug.pharmaceuticalForm,
+        'Madhësia e paketimit':drug.packaging,
+      });
+    }
+
     const tableRow = document.querySelector(`#tbody > tr[data-registry-number="${drug.registryNumber}"]`);
     if (!tableRow) return;
-    const setDoseCell = (population, dose) => {
+
+    const updateDose = (population, dose) => {
       const cell = tableRow.querySelector(`[data-registry-dosage-column="${population}"]`);
       if (!cell) return;
       cell.innerHTML = dose?.verified
         ? `<span class="registry-dosage-verified">✓ E verifikuar</span><div class="registry-dosage-grid registry-dosage-regimen"><div>${escapeHtml(dose.dose)}</div><div class="registry-dosage-route">${escapeHtml(dose.route || '—')}</div></div>`
         : '<span class="registry-dosage-muted">Pa dozë të verifikuar.</span>';
     };
-    setDoseCell('adult', record.dosage?.adult);
-    setDoseCell('pediatric', record.dosage?.pediatric);
+    updateDose('adult', record.dosage?.adult);
+    updateDose('pediatric', record.dosage?.pediatric);
+
     setVisibleCell(tableRow, ['Emri tregtar'], drug.tradeName);
     setVisibleCell(tableRow, ['Substanca aktive'], drug.activeSubstance);
     setVisibleCell(tableRow, ['ATC'], drug.atcCode);
@@ -409,15 +487,21 @@
   }
 
   function replaceSummaryItem(record) {
-    const number = Number(record.drug.registryNumber);
+    const registryNumber = Number(record.drug.registryNumber);
     const next = {
-      ...(summaryMap.get(number) || {}), registryNumber:number, drugId:record.drug.id, tradeName:record.drug.tradeName,
-      verificationStatus:record.profile.verificationStatus, adultVerified:record.dosage.adult.verified === true,
-      pediatricVerified:record.dosage.pediatric.verified === true, editorialOverride:true,
-      reviewedAt:record.profile.reviewedAt || '', updatedAt:record.profile.updatedAt || '',
+      ...(summaryMap.get(registryNumber) || {}),
+      registryNumber,
+      drugId:record.drug.id,
+      tradeName:record.drug.tradeName,
+      verificationStatus:record.profile.verificationStatus,
+      adultVerified:record.dosage.adult.verified === true,
+      pediatricVerified:record.dosage.pediatric.verified === true,
+      editorialOverride:true,
+      reviewedAt:record.profile.reviewedAt || '',
+      updatedAt:record.profile.updatedAt || '',
     };
-    summaryMap.set(number, next);
-    summary.items = [...summaryMap.values()].sort((a, b) => a.registryNumber - b.registryNumber);
+    summaryMap.set(registryNumber, next);
+    summary.items = [...summaryMap.values()].sort((left, right) => Number(left.registryNumber) - Number(right.registryNumber));
     summary.pending = summary.items.filter(item => item.verificationStatus === 'pending').length;
     summary.inReview = summary.items.filter(item => item.verificationStatus === 'in_review').length;
     summary.verified = summary.items.filter(item => item.verificationStatus === 'verified').length;
@@ -426,24 +510,23 @@
     updateProgressButton();
   }
 
-  function nextIncomplete(afterNumber) {
-    const items = [...summaryMap.values()].sort((a, b) => a.registryNumber - b.registryNumber);
-    return items.find(item => item.registryNumber > Number(afterNumber || 0) && item.verificationStatus !== 'verified')
-      || items.find(item => item.verificationStatus !== 'verified') || null;
-  }
-
   async function saveEditor(openNext) {
-    const originalNumber = currentRegistryNumber;
+    const savedNumber = currentRegistryNumber;
     setBusy(true, 'Duke i ruajtur ndryshimet në Neon…');
     try {
       const payload = await api(ENDPOINT, { method:'PUT', body:JSON.stringify(payloadFromForm()) });
       updateRegistryRow(payload.record);
       replaceSummaryItem(payload.record);
       scheduleEnhance();
+
       if (openNext) {
-        const next = nextIncomplete(originalNumber);
-        if (next) return openEditor(next.registryNumber);
+        const next = nextIncomplete(savedNumber);
+        if (next) {
+          await openEditor(next.registryNumber);
+          return;
+        }
       }
+
       populate(payload.record);
       setBusy(false, 'U ruajt përgjithmonë në Neon. Ndryshimi është i mbrojtur nga sinkronizimi i Drive-it.');
     } catch (error) {
@@ -452,11 +535,14 @@
   }
 
   function start() {
+    if (started) return;
+    started = true;
+    makeDosageColumnsVisibleByDefault();
     ensureDialog();
     ensureProgressButton();
     observeTable();
     scheduleEnhance();
-    loadSummary().catch(error => {
+    void loadSummary().catch(error => {
       console.error('Përmbledhja e editorit nuk u ngarkua:', error);
       if (progressButton) progressButton.title = error.message;
     });
