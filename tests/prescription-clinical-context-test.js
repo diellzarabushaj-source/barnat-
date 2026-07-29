@@ -1,6 +1,8 @@
 const assert = require('node:assert/strict');
 const Administration = require('../administration-routes.js');
 const Context = require('../prescription-registry-bridge.js');
+const InteractionFix = require('../prescription-interaction-fix.js');
+const ContextApi = require('../api/prescription-dosage-context.js');
 const Engine = require('../dosage-engine.js');
 
 assert.equal(Administration.inferAdministration({ form:'Film-coated tablet' }).category, 'ENTERAL');
@@ -41,6 +43,31 @@ assert.deepEqual(Context.filterRegimens(regimens, { administrationCategory:'TOPI
 assert.deepEqual(Context.filterRegimens(regimens, { administrationCategory:'INHALATION', route:'MDI' }).map(item => item.regimenId), ['adult-inh']);
 assert.deepEqual(Context.filterRegimens(regimens, { administrationCategory:'PARENTERAL', route:'IV' }).map(item => item.regimenId), ['adult-iv']);
 
+const multiRouteForIv = InteractionFix.normalizeRegimensForContext(regimens, { administrationCategory:'PARENTERAL', route:'IV' });
+assert.equal(multiRouteForIv.find(item => item.regimenId === 'adult-ambiguous').route, 'IV');
+const multiRouteForIm = InteractionFix.normalizeRegimensForContext(regimens, { administrationCategory:'PARENTERAL', route:'IM' });
+assert.equal(multiRouteForIm.find(item => item.regimenId === 'adult-ambiguous').route, 'IM');
+
+const fakeControl = { closest:selector => selector ? fakeControl : null };
+const composerOnlyDocument = {
+  querySelector:() => null,
+  getElementById:id => id === 'rxComposer' ? { value:'Rp: tekst manual' } : null,
+};
+const selectedDrugDocument = {
+  querySelector:() => ({ className:'rx-drug-chip' }),
+  getElementById:id => id === 'rxComposer' ? { value:'Rp: tekst manual' } : null,
+};
+assert.equal(InteractionFix.shouldTemporarilyReleaseComposer(composerOnlyDocument, fakeControl), true);
+assert.equal(InteractionFix.shouldTemporarilyReleaseComposer(selectedDrugDocument, fakeControl), false);
+
+const ivContext = ContextApi._test.parseContext({ category:'PARENTERAL', route:'IV' });
+const imContext = ContextApi._test.parseContext({ category:'PARENTERAL', route:'IM' });
+const scContext = ContextApi._test.parseContext({ category:'PARENTERAL', route:'SC' });
+const ivImRegimen = { population:'adult', form:'Powder for solution for injection', route:'IV; IM' };
+assert.equal(ContextApi._test.routeMatches(ivImRegimen, ivContext), true);
+assert.equal(ContextApi._test.routeMatches(ivImRegimen, imContext), true);
+assert.equal(ContextApi._test.routeMatches(ivImRegimen, scContext), false);
+
 assert.equal(Context.compatibleDrug({ form:'Cream' }, { administrationCategory:'TOPICAL_LOCAL', route:'TOP' }).valid, true);
 assert.equal(Context.compatibleDrug({ form:'Tablet' }, { administrationCategory:'PARENTERAL', route:'IV' }).valid, false);
 assert.equal(Context.compatibleDrug({ form:'Injection', allowedRoutes:['IV', 'IM'] }, { administrationCategory:'PARENTERAL', route:'IM' }).valid, true);
@@ -71,4 +98,4 @@ assert.equal(rangeTransfer.signatura, '');
 assert.equal(rangeTransfer.calculatedDoseRange, '72–360 mg · 1,8–9 mL');
 assert.match(rangeTransfer.warnings, /indikacionit dhe protokollit/);
 
-console.log('Prescription administration categories and pediatric calculator tests passed.');
+console.log('Prescription administration, interaction and pediatric calculator tests passed.');
