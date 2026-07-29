@@ -46,7 +46,8 @@ assert.equal(pediatricIv.adult.length, 0);
 assert.deepEqual(pediatricIv.pediatric.map(item => item.regimenId), ['ped-iv']);
 assert.equal(pediatricIv.pediatric[0].serverCalculation.status, 'calculated');
 assert.equal(pediatricIv.pediatric[0].serverCalculation.perDoseMg, 180);
-assert.match(pediatricIv.pediatric[0].serverSignature, /180 mg/);
+assert.equal(pediatricIv.pediatric[0].serverCalculation.perDoseMl, 1.8);
+assert.match(pediatricIv.pediatric[0].serverSignature, /1,8 mL/);
 assert.equal(pediatricIv.meta.clinicalContextApplied, true);
 assert.equal(pediatricIv.meta.route, 'IV');
 
