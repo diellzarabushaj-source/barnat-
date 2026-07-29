@@ -67,7 +67,8 @@
     if (/otik|otic|ear\s*drops?|pika\s*(per|për)?\s*vesh/.test(source)) add('OTIC');
     if (/nazal|nasal|intranas/.test(source)) add('NASAL');
     if (/transderm|patch|flaster|ngjites/.test(source)) add('TD');
-    if (/topik|topical|kutan|cutaneous|dermal|lekure/.test(source)) add('TOP');
+    const isSpecialDermalRoute = /intraderm|transderm/.test(source);
+    if (!isSpecialDermalRoute && /topik|topical|kutan|cutaneous|dermal|lekure/.test(source)) add('TOP');
 
     if (/metered\s*dose|\bmdi\b/.test(source)) add('MDI');
     if (/dry\s*powder|\bdpi\b/.test(source)) add('DPI');
