@@ -1,0 +1,37 @@
+name: One-time dosage spreadsheet sync ID repair
+
+on:
+  push:
+    paths:
+      - .github/workflows/one-time-sync-spreadsheet-id-fix.yml
+
+permissions:
+  contents: write
+
+jobs:
+  repair:
+    if: github.actor != 'github-actions[bot]'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - name: Replace obsolete dosage spreadsheet ID
+        shell: bash
+        run: |
+          set -euo pipefail
+          old='17cuXg5qORIIWkvAxLZ7uz2FMmGvzwjr850cubUcIgLE'
+          current='1T7XsfkXLQfEomFL4DmXoA8PheiR6s3Qmu36hTqklOMo'
+          mapfile -t files < <(git grep -l "$old" || true)
+          if [ "${#files[@]}" -eq 0 ]; then
+            echo 'No obsolete spreadsheet IDs remain.'
+            exit 0
+          fi
+          for file in "${files[@]}"; do
+            sed -i "s/${old}/${current}/g" "$file"
+          done
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add -- "${files[@]}"
+          git commit -m 'Use current dosage spreadsheet for synchronization'
+          git push origin HEAD:main
