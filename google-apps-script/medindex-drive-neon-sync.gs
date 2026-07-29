@@ -15,17 +15,21 @@ const MEDINDEX_DRIVE_SOURCES = Object.freeze([
 
 function setupMedIndexDriveSync() {
   const ui = SpreadsheetApp.getUi();
-  const response = ui.prompt(
-    'MedIndex · Google Drive → Neon',
-    'Ngjite vlerën e MEDINDEX_DRIVE_SYNC_SECRET. Ajo ruhet vetëm te Script Properties.',
-    ui.ButtonSet.OK_CANCEL
-  );
-  if (response.getSelectedButton() !== ui.Button.OK) return;
+  const properties = PropertiesService.getScriptProperties();
+  let secret = String(properties.getProperty('MEDINDEX_DRIVE_SYNC_SECRET') || '').trim();
 
-  const secret = String(response.getResponseText() || '').trim();
-  if (secret.length < 24) throw new Error('Çelësi privat duhet të ketë së paku 24 karaktere.');
+  if (secret.length < 24) {
+    const response = ui.prompt(
+      'MedIndex · Google Sheet ↔ Neon',
+      'Ngjite çelësin privat vetëm këtë herë. Ai ruhet te Script Properties dhe nuk vendoset në Vercel.',
+      ui.ButtonSet.OK_CANCEL
+    );
+    if (response.getSelectedButton() !== ui.Button.OK) return;
+    secret = String(response.getResponseText() || '').trim();
+    if (secret.length < 24) throw new Error('Çelësi privat duhet të ketë së paku 24 karaktere.');
+  }
 
-  PropertiesService.getScriptProperties().setProperties({
+  properties.setProperties({
     MEDINDEX_DRIVE_SYNC_SECRET:secret,
     MEDINDEX_DRIVE_SYNC_ENDPOINT:MEDINDEX_SYNC_ENDPOINT_DEFAULT,
     MEDINDEX_NEXT_SOURCE_INDEX:'0',
@@ -39,17 +43,18 @@ function setupMedIndexDriveSync() {
 
   ensureMedIndexSheets_();
   initializeMedIndexState_();
-  recordMedIndexStatus_('SISTEMI', 'AKTIV', 'Drive mbetet burimi kryesor; kontrolli me Neon bëhet çdo 5 minuta.');
-  ui.alert('Sinkronizimi Google Drive → Neon u aktivizua.');
+  setupMedIndexBidirectionalSync();
+  recordMedIndexStatus_('SISTEMI', 'AKTIV', 'Google Sheet → Neon sinkronizohet pas editimit; Neon → Google Sheet kontrollohet çdo minutë.');
+  ui.alert('Sinkronizimi dykahësh Google Sheet ↔ Neon u aktivizua.');
 }
 
 function disableMedIndexDriveSync() {
   removeMedIndexTriggers_();
-  recordMedIndexStatus_('SISTEMI', 'NDALUR', 'Trigger-at e sinkronizimit u hoqën.');
+  recordMedIndexStatus_('SISTEMI', 'NDALUR', 'Të gjithë trigger-at e sinkronizimit u hoqën.');
 }
 
 function removeMedIndexTriggers_() {
-  const handlers = new Set(['medIndexDriveOnEdit', 'medIndexDriveReconcile']);
+  const handlers = new Set(['medIndexDriveOnEdit', 'medIndexDriveReconcile', 'medIndexEditorPull']);
   ScriptApp.getProjectTriggers().forEach(trigger => {
     if (handlers.has(trigger.getHandlerFunction())) ScriptApp.deleteTrigger(trigger);
   });
