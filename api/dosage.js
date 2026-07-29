@@ -1,6 +1,7 @@
 const XLSX = require('xlsx');
 const crypto = require('node:crypto');
 const DosageEngine = require('../dosage-engine.js');
+const Administration = require('../administration-routes.js');
 const NeonClinical = require('../lib/neon-clinical-reader.js');
 
 const DEFAULT_DOSAGE_FILE_ID = '1T7XsfkXLQfEomFL4DmXoA8PheiR6s3Qmu36hTqklOMo';
@@ -29,6 +30,20 @@ const numberOrNull = value => {
   const parsed = Number(raw.replace(',', '.'));
   return raw && Number.isFinite(parsed) ? parsed : null;
 };
+function numberRange(value) {
+  const raw = clean(value).replace(/,/g, '.');
+  if (!raw) return { minimum:null, maximum:null };
+  const match = raw.match(/^\s*(\d+(?:\.\d+)?)\s*(?:-|–|—|deri(?:\s+në)?|to)\s*(\d+(?:\.\d+)?)\s*$/i);
+  if (!match) {
+    const single = numberOrNull(raw);
+    return { minimum:single, maximum:single };
+  }
+  const first = Number(match[1]);
+  const second = Number(match[2]);
+  return Number.isFinite(first) && Number.isFinite(second)
+    ? { minimum:Math.min(first, second), maximum:Math.max(first, second) }
+    : { minimum:null, maximum:null };
+}
 
 function sourceUrls(fileId) {
   return [
@@ -44,7 +59,7 @@ async function fetchWorkbook(url) {
   try {
     const response = await fetch(url, {
       redirect:'follow', signal:controller.signal,
-      headers:{ 'User-Agent':'Mozilla/5.0 (compatible; MedIndexDosage/3.0)' },
+      headers:{ 'User-Agent':'Mozilla/5.0 (compatible; MedIndexDosage/4.0)' },
     });
     if (!response.ok) throw new Error(`status ${response.status}`);
     const declaredSize = Number(response.headers.get('content-length') || 0);
@@ -59,8 +74,7 @@ async function fetchWorkbook(url) {
 async function downloadWorkbook(fileId) {
   let lastError;
   for (const url of sourceUrls(fileId)) {
-    try { return await fetchWorkbook(url); }
-    catch (error) { lastError = error; }
+    try { return await fetchWorkbook(url); } catch (error) { lastError = error; }
   }
   throw new Error(`Google Sheets nuk e dha workbook-un: ${lastError?.message || 'gabim i panjohur'}.`);
 }
@@ -81,18 +95,24 @@ function sheetToRecords(workbook, sheetName) {
 }
 
 const configFromRows = rows => Object.fromEntries(rows.map(row => [clean(row['Çelësi']), row.Vlera]).filter(([key]) => key));
-
 function safeSingleRoute(value) {
   const route = clean(value);
   if (!route || /sipas|\bor\b|\bose\b|\//i.test(route)) return '';
-  return route;
+  return Administration.normalizeRoute(route) || route;
+}
+function administrationFields(value) {
+  const inferred = Administration.inferAdministration(value);
+  return { administrationCategory:inferred.category, allowedRoutes:inferred.routes };
 }
 
 function mapForm(row) {
   const route = yes(row['Publiko rrugën?']) ? safeSingleRoute(row['Rruga default']) : '';
+  const inferred = Administration.inferAdministration({
+    category:row.Kategoria, route:row['Rruga default'], form:row['Forma në databazë'],
+  });
   return {
     form:clean(row['Forma në databazë']), formKey:clean(row.FormaKey) || token(row['Forma në databazë']),
-    category:clean(row.Kategoria), prefix:clean(row['Parashtesa MedIndex']), route,
+    category:inferred.category || clean(row.Kategoria), prefix:clean(row['Parashtesa MedIndex']), route,
     routeSuggested:Boolean(route), unit:clean(row['Njësia e dozës']), safetyNote:clean(row['Vërejtje sigurie']),
     version:clean(row.Versioni), reviewedAt:clean(row['Kontrolluar më']),
   };
@@ -104,13 +124,14 @@ function mapAdult(row) {
     referenceStrength:clean(row['Fortësia referencë']), indication:clean(row.Indikacioni), icd:clean(row['Kodi ICD (opsional)']),
     population:clean(row.Popullata), doseMg:clean(row['Doza për marrje (mg)']), practicalUnit:clean(row['Njësia praktike']),
     unitCount:clean(row['Numri i njësive']), route:clean(row.Rruga), frequency:clean(row.Shpeshtësia),
-    intervalHours:clean(row['Intervali (orë)']), duration:clean(row['Kohëzgjatja default']), prn:yes(row['PRN?']),
+    intervalHours:numberOrNull(row['Intervali (orë)']), duration:clean(row['Kohëzgjatja default']), prn:yes(row['PRN?']),
     prnIndication:clean(row['Indikacioni PRN']), maxSingleMg:numberOrNull(row['Maks. për marrje (mg)']),
     max24hMg:numberOrNull(row['Maks. 24h (mg)']), maxUnits24h:clean(row['Maks. njësi/24h']),
     dispense:clean(row['Dispenso default']), signatura:clean(row['Signatura draft']), warnings:clean(row['Udhëzime / alarme']),
     renalHepatic:clean(row['Renal / hepatik']), sourceUrl:httpsUrl(row['Burimi URL']), sourceDate:clean(row['Data e burimit']),
     status:'VERIFIKUAR',
   };
+  Object.assign(result, administrationFields(result));
   result.matchKey = DosageEngine.buildMatchKey(result);
   result.normalized = {
     atc:DosageEngine.normalizeAtc(result.atc), substance:DosageEngine.normalizeSubstance(result.substance),
@@ -120,20 +141,25 @@ function mapAdult(row) {
 }
 
 function mapPediatric(row) {
+  const doseRange = numberRange(row['Vlera mg/kg']);
   const result = {
     regimenId:clean(row.RegimenID), substance:clean(row['Substanca aktive']), atc:clean(row.ATC), form:clean(row.Forma),
     concentration:clean(row.Përqendrimi), indication:clean(row.Indikacioni), icd:clean(row['ICD (opsional)']),
     minAgeMonths:numberOrNull(row['Mosha min (muaj)']), maxAgeMonths:numberOrNull(row['Mosha max (muaj)']),
     minWeightKg:numberOrNull(row['Pesha min (kg)']), maxWeightKg:numberOrNull(row['Pesha max (kg)']),
-    regimenType:clean(row['Lloji i skemës']), mgPerKg:numberOrNull(row['Vlera mg/kg']), basis:clean(row['Baza (dozë/ditë)']),
-    dosesPerDay:numberOrNull(row['Nr. dozave/ditë']), fixedDoseMg:numberOrNull(row['Doza fikse (mg)']),
-    fixedVolumeMl:numberOrNull(row['Vëllimi fikse (mL)']), route:clean(row.Rruga), frequency:clean(row.Shpeshtësia),
-    intervalHours:clean(row['Intervali (orë)']), maxSingleMg:numberOrNull(row['Maks. për marrje (mg)']),
-    max24hMg:numberOrNull(row['Maks. 24h (mg)']), maxDoses24h:numberOrNull(row['Maks. nr. dozave/24h']),
-    duration:clean(row['Kohëzgjatja default']), dispense:clean(row['Dispenso default']), formula:clean(row['Formula e llogaritjes']),
+    regimenType:clean(row['Lloji i skemës']),
+    mgPerKg:doseRange.minimum != null && doseRange.minimum === doseRange.maximum ? doseRange.minimum : null,
+    mgPerKgMin:doseRange.minimum, mgPerKgMax:doseRange.maximum,
+    basis:clean(row['Baza (dozë/ditë)']), dosesPerDay:numberOrNull(row['Nr. dozave/ditë']),
+    fixedDoseMg:numberOrNull(row['Doza fikse (mg)']), fixedVolumeMl:numberOrNull(row['Vëllimi fikse (mL)']),
+    route:clean(row.Rruga), frequency:clean(row.Shpeshtësia), intervalHours:numberOrNull(row['Intervali (orë)']),
+    maxSingleMg:numberOrNull(row['Maks. për marrje (mg)']), max24hMg:numberOrNull(row['Maks. 24h (mg)']),
+    maxDoses24h:numberOrNull(row['Maks. nr. dozave/24h']), duration:clean(row['Kohëzgjatja default']),
+    dispense:clean(row['Dispenso default']), formula:clean(row['Formula e llogaritjes']),
     signatura:clean(row['Signatura draft']), warnings:clean(row['Udhëzime / alarme']),
     sourceUrl:httpsUrl(row['Burimi URL']), sourceDate:clean(row['Data e burimit']), status:'VERIFIKUAR',
   };
+  Object.assign(result, administrationFields(result));
   result.matchKey = DosageEngine.buildMatchKey(result);
   result.normalized = {
     atc:DosageEngine.normalizeAtc(result.atc), substance:DosageEngine.normalizeSubstance(result.substance),
@@ -146,7 +172,7 @@ function mapCard(row) {
   const pdid = clean(row.PDID);
   const tradeName = clean(row['Emri tregtar']);
   const strength = clean(row.Fortësia);
-  return {
+  const result = {
     cardKey:[pdid, tradeName, strength].join('|'), nr:clean(row['Nr rendor']), pdid, tradeName,
     substance:clean(row['Substanca aktive']), atc:clean(row.ATC), form:clean(row.Forma), strength,
     drugClass:clean(row['Klasa / Çka është']), use:clean(row.Përdorimi),
@@ -155,24 +181,26 @@ function mapCard(row) {
     sourceUrls:sourceList(row['Burimi URL']), auditedAt:clean(row['Data e auditimit']),
     auditNote:clean(row['Shënim auditimi']), status:'VERIFIKUAR',
   };
+  const administration = Administration.inferAdministration({ form:result.form, route:`${result.adultRoute} ${result.pediatricRoute}` });
+  result.administrationCategory = administration.category;
+  result.allowedRoutes = administration.routes;
+  return result;
 }
 
 const publishedForm = row => verified(row.Statusi) && yes(row['Publiko parashtesën?']) && clean(row['Forma në databazë']) && clean(row['Parashtesa MedIndex']);
 const requestedDosage = row => verified(row.Statusi) && yes(row['Auto-fill']);
 const publishedCard = row => verified(row.Statusi) && yes(row['Publiko?']) && clean(row.PDID) && clean(row['Doza e plotë — Të rritur']) && clean(row['Rruga — Të rritur']);
-
 function validAdult(row) {
   return requestedDosage(row) && clean(row.RegimenID) && clean(row['Substanca aktive']) && clean(row.ATC) && clean(row.Forma)
     && clean(row['Fortësia referencë']) && clean(row.Indikacioni) && clean(row.Rruga) && clean(row.Shpeshtësia)
     && clean(row['Signatura draft']) && httpsUrl(row['Burimi URL']);
 }
-
 function validPediatric(row) {
-  const hasDoseRule = numberOrNull(row['Vlera mg/kg']) != null || numberOrNull(row['Doza fikse (mg)']) != null || numberOrNull(row['Vëllimi fikse (mL)']) != null;
+  const range = numberRange(row['Vlera mg/kg']);
+  const hasDoseRule = range.minimum != null || numberOrNull(row['Doza fikse (mg)']) != null || numberOrNull(row['Vëllimi fikse (mL)']) != null;
   return requestedDosage(row) && clean(row.RegimenID) && clean(row['Substanca aktive']) && clean(row.ATC) && clean(row.Forma)
     && clean(row.Përqendrimi) && clean(row.Indikacioni) && clean(row.Rruga) && clean(row.Shpeshtësia) && hasDoseRule && httpsUrl(row['Burimi URL']);
 }
-
 function uniqueBy(items, keyName) {
   const seen = new Set();
   const output = [];
@@ -180,38 +208,19 @@ function uniqueBy(items, keyName) {
   for (const item of items) {
     const key = token(item[keyName]);
     if (!key || seen.has(key)) { duplicates += 1; continue; }
-    seen.add(key);
-    output.push(item);
+    seen.add(key); output.push(item);
   }
   return { output, duplicates };
 }
-
 function finalize(payload) {
   const body = JSON.stringify(payload);
   return { payload, body, etag:`"${crypto.createHash('sha256').update(body).digest('base64url')}"` };
 }
-
 function staleResultFromCache(cached) {
-  return finalize({
-    ...cached.payload,
-    meta:{
-      ...cached.payload.meta,
-      stale:true,
-      staleReason:STALE_REFRESH_REASON,
-    },
-  });
+  return finalize({ ...cached.payload, meta:{ ...cached.payload.meta, stale:true, staleReason:STALE_REFRESH_REASON } });
 }
-
 function publicLoadError() {
-  return {
-    code:DOSAGE_ERROR_CODE,
-    error:'Dozologjia nuk mund të ngarkohet tani.',
-    forms:[],
-    adult:[],
-    pediatric:[],
-    cards:[],
-    meta:{ clinicalAutoFillEnabled:false, geminiForDosage:false, dataSource:'error' },
-  };
+  return { code:DOSAGE_ERROR_CODE, error:'Dozologjia nuk mund të ngarkohet tani.', forms:[], adult:[], pediatric:[], cards:[], meta:{ clinicalAutoFillEnabled:false, geminiForDosage:false, dataSource:'error' } };
 }
 
 async function buildSheetsPayload(fileId) {
@@ -223,7 +232,6 @@ async function buildSheetsPayload(fileId) {
   const adultRows = sheetToRecords(workbook, clean(config.ADULT_SHEET) || 'DOZA_TE_RRITUR');
   const pediatricRows = sheetToRecords(workbook, clean(config.PEDIATRIC_SHEET) || 'DOZA_PEDIATRIKE');
   const cardRows = sheetToRecords(workbook, clean(config.CARD_SHEET) || 'KARTELA_BARNAVE');
-
   const formsResult = uniqueBy(formRows.filter(publishedForm).map(mapForm), 'formKey');
   const eligibleAdultResult = uniqueBy(adultRows.filter(validAdult).map(mapAdult), 'regimenId');
   const eligiblePediatricResult = uniqueBy(pediatricRows.filter(validPediatric).map(mapPediatric), 'regimenId');
@@ -231,27 +239,21 @@ async function buildSheetsPayload(fileId) {
   const adult = clinicalAutoFillEnabled ? eligibleAdultResult.output : [];
   const pediatric = clinicalAutoFillEnabled ? eligiblePediatricResult.output : [];
   const cards = cardsResult.output;
-
   return finalize({
-    schemaVersion:clean(config.SCHEMA_VERSION) || '1.0.0', matchVersion:'exact-v1', datasetVersion:clean(config.DATASET_VERSION),
-    mode:clean(config.WEBSITE_MODE) || 'SAFE_VERIFIED_ONLY', generatedAt:new Date().toISOString(),
-    forms:formsResult.output, adult, pediatric, cards,
+    schemaVersion:clean(config.SCHEMA_VERSION) || '1.0.0', matchVersion:'exact-v2', datasetVersion:clean(config.DATASET_VERSION),
+    mode:clean(config.WEBSITE_MODE) || 'SAFE_VERIFIED_ONLY', generatedAt:new Date().toISOString(), forms:formsResult.output, adult, pediatric, cards,
     meta:{
       dataSource:'sheets', sourceFileId:fileId, clinicalAutoFillEnabled,
       activationSource:envFlag('ENABLE_DOSAGE_AUTOFILL') ? 'vercel-env' : clinicalAutoFillEnabled ? 'sheet-config' : 'disabled',
       autoApplyPolicy:clean(config.AUTO_APPLY_POLICY) || 'UNIQUE_EXACT_MATCH_AUTO_APPLY',
-      publishedForms:formsResult.output.length, publishedAdultRegimens:adult.length,
-      publishedPediatricRegimens:pediatric.length, publishedCards:cards.length,
-      eligibleAdultRegimens:eligibleAdultResult.output.length, eligiblePediatricRegimens:eligiblePediatricResult.output.length,
-      eligibleCards:cardsResult.output.length,
+      publishedForms:formsResult.output.length, publishedAdultRegimens:adult.length, publishedPediatricRegimens:pediatric.length, publishedCards:cards.length,
+      eligibleAdultRegimens:eligibleAdultResult.output.length, eligiblePediatricRegimens:eligiblePediatricResult.output.length, eligibleCards:cardsResult.output.length,
       rejectedAdultRegimens:adultRows.filter(requestedDosage).length - eligibleAdultResult.output.length,
       rejectedPediatricRegimens:pediatricRows.filter(requestedDosage).length - eligiblePediatricResult.output.length,
       duplicateForms:formsResult.duplicates, duplicateAdultRegimens:eligibleAdultResult.duplicates,
       duplicatePediatricRegimens:eligiblePediatricResult.duplicates, duplicateCards:cardsResult.duplicates,
-      draftAdultRegimens:adultRows.filter(row => !requestedDosage(row)).length,
-      draftPediatricRegimens:pediatricRows.filter(row => !requestedDosage(row)).length,
-      draftCards:cardRows.filter(row => !publishedCard(row)).length,
-      cardsReadOnlyWhenAutoFillDisabled:!clinicalAutoFillEnabled,
+      draftAdultRegimens:adultRows.filter(row => !requestedDosage(row)).length, draftPediatricRegimens:pediatricRows.filter(row => !requestedDosage(row)).length,
+      draftCards:cardRows.filter(row => !publishedCard(row)).length, cardsReadOnlyWhenAutoFillDisabled:!clinicalAutoFillEnabled,
       buildMs:Date.now() - startedAt, geminiForDosage:false,
     },
   });
@@ -266,35 +268,20 @@ async function buildNeonPayload() {
   const cardResult = uniqueBy(dataset.cards, 'cardKey');
   const formResult = uniqueBy(dataset.forms, 'formKey');
   return finalize({
-    schemaVersion:'neon-1.0.0', matchVersion:'exact-v1', datasetVersion:'neon-published-v1',
-    mode:'SAFE_VERIFIED_ONLY', generatedAt:new Date().toISOString(),
-    forms:formResult.output,
-    adult:clinicalAutoFillEnabled ? adultResult.output : [],
-    pediatric:clinicalAutoFillEnabled ? pediatricResult.output : [],
-    cards:cardResult.output,
+    schemaVersion:'neon-2.0.0', matchVersion:'exact-v2', datasetVersion:'neon-published-v2',
+    mode:'SAFE_VERIFIED_ONLY', generatedAt:new Date().toISOString(), forms:formResult.output,
+    adult:clinicalAutoFillEnabled ? adultResult.output : [], pediatric:clinicalAutoFillEnabled ? pediatricResult.output : [], cards:cardResult.output,
     meta:{
-      dataSource:'neon', clinicalAutoFillEnabled,
-      activationSource:clinicalAutoFillEnabled ? 'vercel-env' : 'disabled',
-      autoApplyPolicy:'UNIQUE_EXACT_MATCH_AUTO_APPLY',
-      publishedForms:formResult.output.length,
+      dataSource:'neon', clinicalAutoFillEnabled, activationSource:clinicalAutoFillEnabled ? 'vercel-env' : 'disabled',
+      autoApplyPolicy:'UNIQUE_EXACT_MATCH_AUTO_APPLY', publishedForms:formResult.output.length,
       publishedAdultRegimens:clinicalAutoFillEnabled ? adultResult.output.length : 0,
-      publishedPediatricRegimens:clinicalAutoFillEnabled ? pediatricResult.output.length : 0,
-      publishedCards:cardResult.output.length,
-      eligibleAdultRegimens:adultResult.output.length,
-      eligiblePediatricRegimens:pediatricResult.output.length,
-      eligibleCards:cardResult.output.length,
-      rawPublishedRegimens:dataset.rawCount,
-      draftAdultRegimens:0,
-      draftPediatricRegimens:0,
-      draftCards:0,
-      duplicateForms:formResult.duplicates,
-      duplicateAdultRegimens:adultResult.duplicates,
-      duplicatePediatricRegimens:pediatricResult.duplicates,
-      duplicateCards:cardResult.duplicates,
-      cardsReadOnlyWhenAutoFillDisabled:!clinicalAutoFillEnabled,
-      buildMs:Date.now() - startedAt,
-      neonQueryMs:Date.now() - startedAt,
-      geminiForDosage:false,
+      publishedPediatricRegimens:clinicalAutoFillEnabled ? pediatricResult.output.length : 0, publishedCards:cardResult.output.length,
+      eligibleAdultRegimens:adultResult.output.length, eligiblePediatricRegimens:pediatricResult.output.length, eligibleCards:cardResult.output.length,
+      rawPublishedRegimens:dataset.rawCount, draftAdultRegimens:0, draftPediatricRegimens:0, draftCards:0,
+      duplicateForms:formResult.duplicates, duplicateAdultRegimens:adultResult.duplicates,
+      duplicatePediatricRegimens:pediatricResult.duplicates, duplicateCards:cardResult.duplicates,
+      cardsReadOnlyWhenAutoFillDisabled:!clinicalAutoFillEnabled, buildMs:Date.now() - startedAt,
+      neonQueryMs:Date.now() - startedAt, geminiForDosage:false,
     },
   });
 }
@@ -302,9 +289,8 @@ async function buildNeonPayload() {
 async function buildPayload(fileId) {
   const mode = NeonClinical.dataSourceMode();
   if (mode === 'sheets') return buildSheetsPayload(fileId);
-  try {
-    return await buildNeonPayload();
-  } catch (error) {
+  try { return await buildNeonPayload(); }
+  catch (error) {
     if (!NeonClinical.allowsSheetsFallback()) throw error;
     console.error('Neon dosage read failed; using Sheets fallback:', error);
     const fallback = await buildSheetsPayload(fileId);
@@ -316,16 +302,13 @@ async function buildPayload(fileId) {
 
 async function getPayload() {
   const fileId = process.env.DOSAGE_SHEET_ID || DEFAULT_DOSAGE_FILE_ID;
-  const key = `${NeonClinical.dataSourceMode()}:${fileId}:${envFlag('ENABLE_DOSAGE_AUTOFILL')}:neon-v1`;
+  const key = `${NeonClinical.dataSourceMode()}:${fileId}:${envFlag('ENABLE_DOSAGE_AUTOFILL')}:neon-v2`;
   const now = Date.now();
   if (memoryCache && memoryCacheKey === key && now - memoryCacheTime < MEMORY_CACHE_MS) return memoryCache;
   if (!pendingBuild || pendingBuildKey !== key) {
     pendingBuildKey = key;
     pendingBuild = buildPayload(fileId).then(result => {
-      memoryCache = result;
-      memoryCacheTime = Date.now();
-      memoryCacheKey = key;
-      return result;
+      memoryCache = result; memoryCacheTime = Date.now(); memoryCacheKey = key; return result;
     }).catch(error => {
       if (memoryCache && memoryCacheKey === key) {
         console.error('Dosage refresh failed; serving stale cache:', error);
@@ -341,7 +324,6 @@ async function authorized(req) {
   const auth = await import('../lib/auth.mjs');
   return auth.verifySessionToken(auth.sessionFromRequest(req));
 }
-
 async function handler(req, res) {
   const startedAt = Date.now();
   try {
@@ -350,16 +332,13 @@ async function handler(req, res) {
       return res.status(405).json({ error:'Lejohet vetëm GET/HEAD.' });
     }
     if (!(await authorized(req))) {
-      res.setHeader('Cache-Control', 'no-store');
-      res.setHeader('Vary', 'Cookie');
+      res.setHeader('Cache-Control', 'no-store'); res.setHeader('Vary', 'Cookie');
       return res.status(401).json({ error:'Sesioni nuk është aktiv.', forms:[], adult:[], pediatric:[], cards:[] });
     }
-
     const result = await getPayload();
     res.setHeader('Content-Type', 'application/json; charset=utf-8');
     res.setHeader('Cache-Control', 'private, no-cache, max-age=0');
-    res.setHeader('Vary', 'Cookie');
-    res.setHeader('X-Content-Type-Options', 'nosniff');
+    res.setHeader('Vary', 'Cookie'); res.setHeader('X-Content-Type-Options', 'nosniff');
     res.setHeader('ETag', result.etag);
     res.setHeader('Server-Timing', `dosage;dur=${Date.now() - startedAt}${Number.isFinite(result.payload.meta.neonQueryMs) ? `, neon;dur=${result.payload.meta.neonQueryMs}` : ''}`);
     res.setHeader('X-MedIndex-Dosage-Cards', String(result.payload.cards.length));
@@ -371,8 +350,7 @@ async function handler(req, res) {
     return res.status(200).send(result.body);
   } catch (error) {
     console.error('Dosage data error:', error);
-    res.setHeader('Content-Type', 'application/json; charset=utf-8');
-    res.setHeader('Cache-Control', 'no-store');
+    res.setHeader('Content-Type', 'application/json; charset=utf-8'); res.setHeader('Cache-Control', 'no-store');
     return res.status(500).json(publicLoadError());
   }
 }
@@ -380,5 +358,5 @@ async function handler(req, res) {
 handler.getPayload = getPayload;
 handler.buildNeonPayload = buildNeonPayload;
 handler.buildSheetsPayload = buildSheetsPayload;
-handler._test = Object.freeze({ finalize, staleResultFromCache, publicLoadError });
+handler._test = Object.freeze({ finalize, staleResultFromCache, publicLoadError, numberRange, mapPediatric });
 module.exports = handler;
