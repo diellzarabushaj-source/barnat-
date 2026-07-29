@@ -1,37 +1,25 @@
 const Dosage = require('./dosage.js');
 const Engine = require('../dosage-engine.js');
+const Administration = require('../administration-routes.js');
 
-const ROUTES = new Set(['IV', 'IM', 'SC']);
-const PARENTERAL_FORM = /ampul|ampoule|injeks|injection|infuz|infusion|flakon|vial/i;
 const clean = value => String(value ?? '').replace(/\s+/g, ' ').trim();
 const bool = value => ['1', 'true', 'yes', 'po'].includes(clean(value).toLowerCase());
 
-function routeTokens(value) {
-  const source = clean(value).normalize('NFD').replace(/[\u0300-\u036f]/g, '').toLowerCase();
-  const routes = [];
-  if (/\bi\.?v\.?\b|intraveno/.test(source)) routes.push('IV');
-  if (/\bi\.?m\.?\b|intramusk/.test(source)) routes.push('IM');
-  if (/\bs\.?c\.?\b|subkutan|subcutan/.test(source)) routes.push('SC');
-  if (/\bp\.?o\.?\b|oral|nga goja/.test(source)) routes.push('PO');
-  if (/inhal/.test(source)) routes.push('INH');
-  if (/rektal|rectal/.test(source)) routes.push('PR');
-  if (/topik|topical|kutan|cutan/.test(source)) routes.push('TOP');
-  return routes;
-}
-
-function isParenteral(regimen = {}) {
-  return routeTokens(regimen.route).some(route => ROUTES.has(route)) || PARENTERAL_FORM.test(clean(regimen.form));
-}
-
 function parseContext(query = {}) {
   const pediatric = clean(query.population).toLowerCase() === 'pediatric';
-  const parenteral = bool(query.parenteral);
-  const route = clean(query.route).toUpperCase();
+  const legacyParenteral = bool(query.parenteral);
+  const category = Administration.normalizeCategory(query.category)
+    || (legacyParenteral ? 'PARENTERAL' : 'ENTERAL');
+  const route = Administration.normalizeRoute(query.route)
+    || (!query.route && category === 'ENTERAL' ? 'PO' : '');
   const ageMonths = Number(query.ageMonths);
   const weightKg = Number(query.weightKg);
   const errors = [];
 
-  if (parenteral && !ROUTES.has(route)) errors.push('Zgjidh një rrugë të vetme: IV, IM ose SC.');
+  if (!category) errors.push('Zgjidh kategorinë e administrimit.');
+  if (!route || !Administration.routeBelongsToCategory(route, category)) {
+    errors.push(`Zgjidh një rrugë të vlefshme për kategorinë ${Administration.categoryLabel(category) || category}.`);
+  }
   if (pediatric) {
     if (!Number.isFinite(ageMonths) || ageMonths < 0 || ageMonths > 216) errors.push('Mosha pediatrike duhet të jetë ndërmjet 0 dhe 216 muaj.');
     if (!Number.isFinite(weightKg) || weightKg < 0.5 || weightKg > 200) errors.push('Pesha pediatrike duhet të jetë ndërmjet 0.5 dhe 200 kg.');
@@ -42,40 +30,52 @@ function parseContext(query = {}) {
     errors,
     pediatric,
     population:pediatric ? 'pediatric' : 'adult',
-    parenteral,
-    route:parenteral ? route : '',
+    category,
+    route,
+    parenteral:category === 'PARENTERAL',
     patient:pediatric ? { ageMonths, weightKg } : {},
   };
 }
 
+function regimenAdministration(regimen = {}) {
+  return Administration.inferAdministration({
+    administrationCategory:regimen.administrationCategory,
+    allowedRoutes:regimen.allowedRoutes,
+    form:regimen.form,
+    route:regimen.route,
+  });
+}
+
 function routeMatches(regimen, context) {
-  if (isParenteral(regimen) !== context.parenteral) return false;
-  if (!context.parenteral) return true;
-  const routes = routeTokens(regimen.route);
+  const administration = regimenAdministration(regimen);
+  if (administration.category !== context.category) return false;
+  const routes = Administration.routeTokens(regimen.route || administration.routes.join(' '));
   return routes.length === 1 && routes[0] === context.route;
 }
 
 function prepareRegimen(regimen, context) {
   if (!routeMatches(regimen, context)) return null;
+  const base = {
+    ...regimen,
+    administrationCategory:context.category,
+    route:context.route,
+    serverContextVerified:true,
+  };
   if (!context.pediatric) {
-    return {
-      ...regimen,
-      _medindexPopulation:'adult',
-      serverSignature:Engine.buildSignature(regimen, 'adult'),
-      serverContextVerified:true,
-    };
+    return { ...base, _medindexPopulation:'adult', serverSignature:Engine.buildSignature(base, 'adult') };
   }
 
-  const eligibility = Engine.pediatricEligibility(regimen, context.patient);
+  const eligibility = Engine.pediatricEligibility(base, context.patient);
   if (!eligibility.eligible) return null;
-  const calculation = Engine.calculatePediatricDose(regimen, context.patient);
-  if (calculation.status !== 'calculated') return null;
+  const calculation = Engine.calculatePediatricDose(base, context.patient);
+  if (!['calculated', 'range-calculated'].includes(calculation.status)) return null;
   return {
-    ...regimen,
+    ...base,
     _medindexPopulation:'pediatric',
     serverCalculation:calculation,
-    serverSignature:Engine.buildSignature(regimen, 'pediatric', calculation),
-    serverContextVerified:true,
+    serverSignature:calculation.status === 'calculated' ? Engine.buildSignature(base, 'pediatric', calculation) : '',
+    serverDoseRange:Engine.calculatedRangeText(calculation),
+    serverRequiresDoseSelection:calculation.status === 'range-calculated',
   };
 }
 
@@ -95,11 +95,13 @@ function contextualize(payload, context) {
       ...payload.meta,
       clinicalContextApplied:true,
       population:context.population,
+      administrationCategory:context.category,
       parenteral:context.parenteral,
       route:context.route,
       serverFilteredAdultRegimens:adult.length,
       serverFilteredPediatricRegimens:pediatric.length,
-      pediatricCalculation:'server-verified',
+      pediatricCalculation:'server-verified-formula-only',
+      rangePolicy:'CALCULATE_RANGE_REQUIRE_CLINICIAN_SELECTION',
     },
   };
 }
@@ -137,7 +139,7 @@ async function handler(req, res) {
     res.setHeader('Cache-Control', 'private, no-store');
     res.setHeader('Vary', 'Cookie');
     res.setHeader('X-Content-Type-Options', 'nosniff');
-    res.setHeader('X-MedIndex-Clinical-Context', `${context.population};${context.parenteral ? context.route : 'non-parenteral'}`);
+    res.setHeader('X-MedIndex-Clinical-Context', `${context.population};${context.category};${context.route}`);
     if (req.method === 'HEAD') return res.status(200).end();
     return res.status(200).json(payload);
   } catch (error) {
@@ -151,5 +153,5 @@ async function handler(req, res) {
   }
 }
 
-handler._test = Object.freeze({ routeTokens, isParenteral, parseContext, routeMatches, prepareRegimen, contextualize });
+handler._test = Object.freeze({ parseContext, regimenAdministration, routeMatches, prepareRegimen, contextualize });
 module.exports = handler;
