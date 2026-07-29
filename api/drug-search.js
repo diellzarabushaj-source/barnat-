@@ -1,47 +1,42 @@
 const registryHandler = require('./registry.js');
 const PrescriptionNotation = require('../prescription-notation.js');
+const Administration = require('../administration-routes.js');
 
 const MAX_QUERY = 90;
 const MAX_RESULTS = 12;
-
-function clean(value) {
-  return String(value ?? '').replace(/\s+/g, ' ').trim();
-}
-
+const clean = value => String(value ?? '').replace(/\s+/g, ' ').trim();
 function normalize(value) {
-  return clean(value)
-    .normalize('NFD')
-    .replace(/[\u0300-\u036f]/g, '')
-    .toLocaleLowerCase('sq')
-    .replace(/[^a-z0-9%+./-]+/g, ' ')
-    .trim();
+  return clean(value).normalize('NFD').replace(/[\u0300-\u036f]/g, '').toLocaleLowerCase('sq').replace(/[^a-z0-9%+./-]+/g, ' ').trim();
 }
 
 function resultFromRow(row) {
   const tradeName = clean(row['Emri tregtar']);
   const substance = clean(row['Substanca aktive']);
-  const strength = clean(row['Fortësia']);
+  const strength = clean(row.Fortësia);
   const form = clean(row['Forma farmaceutike']);
   const packaging = clean(row['Madhësia e paketimit']);
   const pdid = clean(row.PDID);
   const protocolNo = clean(row.ProtocolNo);
   const notation = PrescriptionNotation.build(row);
+  const administration = Administration.inferAdministration({
+    administrationCategory:row.__administrationCategory || row['Kategoria e administrimit'],
+    allowedRoutes:row.__allowedRoutes || row['Rrugët e lejuara'],
+    form,
+    route:[notation.route, row['Rrugët e lejuara']].filter(Boolean).join(' '),
+  });
   return {
     key:`${pdid}|${protocolNo}|${tradeName}|${strength}`,
-    tradeName,
-    substance,
-    strength,
-    form,
-    packaging,
+    tradeName, substance, strength, form, packaging,
     prescriptionLine:notation.line,
     prescriptionNotation:notation.full,
     packagingSummary:notation.packaging,
     dispense:notation.dispense,
-    route:notation.route,
+    route:administration.route || notation.route,
+    administrationCategory:administration.category,
+    administrationCategoryLabel:administration.categoryLabel,
+    allowedRoutes:administration.routes,
     sheetPrescriptionNotation:clean(row.__sheetPrescriptionNotation),
-    atc:clean(row['ATC Code']),
-    pdid,
-    protocolNo,
+    atc:clean(row['ATC Code']), pdid, protocolNo,
     qualityStatus:clean(row.__qualityStatus || 'verified'),
   };
 }
@@ -49,7 +44,7 @@ function resultFromRow(row) {
 function rank(row, query, tokens) {
   const trade = normalize(row['Emri tregtar']);
   const substance = normalize(row['Substanca aktive']);
-  const strength = normalize(row['Fortësia']);
+  const strength = normalize(row.Fortësia);
   const form = normalize(row['Forma farmaceutike']);
   const atc = normalize(row['ATC Code']);
   const prescription = normalize(row['Si të shënohet në recetë']);
@@ -82,23 +77,18 @@ module.exports = async function handler(req, res) {
     res.setHeader('Cache-Control', 'private, no-store, max-age=0');
     return res.status(401).json({ error:'Kërkohet autentikim.' });
   }
-
   const query = normalize(clean(req.query?.q).slice(0, MAX_QUERY));
   if (query.length < 2) {
     res.setHeader('Cache-Control', 'private, max-age=30');
     return res.status(200).json({ ok:true, query, results:[] });
   }
-
   try {
     const { rows, meta } = await registryHandler.getRegistryDataset();
     const tokens = query.split(/\s+/).filter(Boolean);
-    const results = rows
-      .map(row => ({ row, score:rank(row, query, tokens) }))
+    const results = rows.map(row => ({ row, score:rank(row, query, tokens) }))
       .filter(item => item.score >= 0)
       .sort((a, b) => b.score - a.score || String(a.row['Substanca aktive']).localeCompare(String(b.row['Substanca aktive']), 'sq'))
-      .slice(0, MAX_RESULTS)
-      .map(item => resultFromRow(item.row));
-
+      .slice(0, MAX_RESULTS).map(item => resultFromRow(item.row));
     res.setHeader('Cache-Control', 'private, max-age=60, stale-while-revalidate=300');
     res.setHeader('Server-Timing', `drugsearch;dur=${Date.now() - startedAt}`);
     return res.status(200).json({ ok:true, query, results, registryVersion:meta.version, prescriptionSheetRows:meta.prescriptionMatched });
