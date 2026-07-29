@@ -2,7 +2,12 @@
 
 const crypto = require('node:crypto');
 const DriveNeonSync = require('../lib/drive-neon-sync.js');
+const Administration = require('../administration-routes.js');
 const { neonRequest } = require('../lib/neon-data-api.js');
+
+const CURRENT_DOSAGE_SPREADSHEET_ID = '1T7XsfkXLQfEomFL4DmXoA8PheiR6s3Qmu36hTqklOMo';
+const LEGACY_DOSAGE_SPREADSHEET_ID = '17cuXg5qORIIWkvAxLZ7uz2FMmGvzwjr850cubUcIgLE';
+const DOSAGE_SHEETS = new Set(['KARTELA_BARNAVE', 'DOZA_TE_RRITUR', 'DOZA_PEDIATRIKE']);
 
 const clean = value => String(value ?? '').replace(/\s+/g, ' ').trim();
 const isoOrEmpty = value => {
@@ -16,6 +21,15 @@ function parseBody(req) {
     try { return JSON.parse(req.body || '{}'); } catch { return {}; }
   }
   return {};
+}
+
+function canonicalPayload(payload = {}) {
+  const spreadsheetId = clean(payload.spreadsheetId);
+  const sheetName = clean(payload.sheetName);
+  if (spreadsheetId === CURRENT_DOSAGE_SPREADSHEET_ID && DOSAGE_SHEETS.has(sheetName)) {
+    return { ...payload, spreadsheetId:LEGACY_DOSAGE_SPREADSHEET_ID };
+  }
+  return payload;
 }
 
 function safeEqual(left, right) {
@@ -40,11 +54,46 @@ async function verifiedSecret(req, payload = parseBody(req)) {
   return safeEqual(suppliedHash, source.auth_secret_hash) ? { secret:received, source } : '';
 }
 
+async function setCurrentSourceStatus(payload, status, error = null) {
+  const spreadsheetId = clean(payload?.spreadsheetId);
+  const sheetName = clean(payload?.sheetName);
+  if (spreadsheetId !== CURRENT_DOSAGE_SPREADSHEET_ID || !DOSAGE_SHEETS.has(sheetName)) return;
+  const now = new Date().toISOString();
+  await neonRequest(
+    `drive_sync_sources?spreadsheet_id=eq.${encodeURIComponent(spreadsheetId)}`
+      + `&sheet_name=eq.${encodeURIComponent(sheetName)}`,
+    {
+      method:'PATCH',
+      body:{
+        last_status:status,
+        last_error:error ? clean(error).slice(0, 2000) : null,
+        last_synced_at:status === 'synced' ? now : undefined,
+        updated_at:now,
+      },
+      prefer:'return=minimal',
+    },
+  );
+}
+
 function editorValues(scope, audit) {
   const next = audit?.new_data || {};
   const drug = next.drug || {};
+  const adult = next.dosage?.adult || {};
+  const pediatric = next.dosage?.pediatric || {};
+  const profile = next.profile || {};
   const registryNumber = Number(drug.registryNumber);
   if (!Number.isInteger(registryNumber) || registryNumber < 1) return null;
+
+  const administration = Administration.inferAdministration({
+    form:drug.pharmaceuticalForm,
+    route:[adult.route, pediatric.route].filter(Boolean).join(' '),
+    administrationCategory:drug.administrationCategory,
+    allowedRoutes:drug.allowedRoutes,
+  });
+  const category = clean(drug.administrationCategory || administration.category);
+  const allowedRoutes = Administration.routeTokens(
+    [drug.allowedRoutes, adult.route, pediatric.route, administration.routes].flat().filter(Boolean).join(' '),
+  ).join('; ');
 
   if (scope === 'drugs') {
     return {
@@ -59,14 +108,13 @@ function editorValues(scope, audit) {
         'Fortësia':clean(drug.strength),
         'Forma farmaceutike':clean(drug.pharmaceuticalForm),
         'Madhësia e paketimit':clean(drug.packaging),
+        'Kategoria e administrimit':category,
+        'Rrugët e lejuara':allowedRoutes,
       },
     };
   }
 
   if (scope === 'dosage_cards') {
-    const adult = next.dosage?.adult || {};
-    const pediatric = next.dosage?.pediatric || {};
-    const profile = next.profile || {};
     return {
       rowKey:String(registryNumber),
       values:{
@@ -85,6 +133,8 @@ function editorValues(scope, audit) {
         'Statusi':profile.verificationStatus === 'verified' ? 'VERIFIKUAR' : 'NË PUNË',
         'Publiko?':adult.verified || pediatric.verified ? 'PO' : 'JO',
         'Shënim auditimi':[clean(adult.notes), clean(pediatric.notes), clean(profile.editorialNotes)].filter(Boolean).join(' | '),
+        'Kategoria e administrimit':category,
+        'Rrugët e lejuara':allowedRoutes,
       },
     };
   }
@@ -129,12 +179,23 @@ module.exports = async function handler(req, res) {
       return pullEditorUpdates(req, res, payload, verification.source);
     }
 
-    const previous = process.env.MEDINDEX_DRIVE_SYNC_SECRET;
+    const previousSecret = process.env.MEDINDEX_DRIVE_SYNC_SECRET;
+    const previousBody = req.body;
     process.env.MEDINDEX_DRIVE_SYNC_SECRET = verification.secret;
-    try { return await DriveNeonSync.handle(req, res); }
-    finally {
-      if (previous === undefined) delete process.env.MEDINDEX_DRIVE_SYNC_SECRET;
-      else process.env.MEDINDEX_DRIVE_SYNC_SECRET = previous;
+    req.body = canonicalPayload(payload);
+    try {
+      await setCurrentSourceStatus(payload, 'syncing');
+      const result = await DriveNeonSync.handle(req, res);
+      const successful = Number(res.statusCode || 200) >= 200 && Number(res.statusCode || 200) < 300;
+      await setCurrentSourceStatus(payload, successful ? 'synced' : 'failed', successful ? null : 'Sinkronizimi u refuzua nga API-ja.');
+      return result;
+    } catch (error) {
+      await setCurrentSourceStatus(payload, 'failed', error.message).catch(() => {});
+      throw error;
+    } finally {
+      req.body = previousBody;
+      if (previousSecret === undefined) delete process.env.MEDINDEX_DRIVE_SYNC_SECRET;
+      else process.env.MEDINDEX_DRIVE_SYNC_SECRET = previousSecret;
     }
   } catch (error) {
     console.error('Drive sync authorization failed:', error);
@@ -142,4 +203,13 @@ module.exports = async function handler(req, res) {
   }
 };
 
-module.exports._test = { parseBody, safeEqual, verifiedSecret, editorValues, isoOrEmpty };
+module.exports._test = {
+  parseBody,
+  canonicalPayload,
+  safeEqual,
+  verifiedSecret,
+  editorValues,
+  isoOrEmpty,
+  CURRENT_DOSAGE_SPREADSHEET_ID,
+  LEGACY_DOSAGE_SPREADSHEET_ID,
+};
