@@ -42,9 +42,14 @@ assert.deepEqual(topical.adult.map(item => item.regimenId), ['adult-top']);
 assert.equal(topical.meta.administrationCategory, 'TOPICAL_LOCAL');
 
 const adultIm = T.contextualize(rows, T.parseContext({ population:'adult', category:'PARENTERAL', route:'IM' }));
-assert.deepEqual(adultIm.adult.map(item => item.regimenId), ['adult-im']);
-assert.equal(adultIm.adult[0].serverContextVerified, true);
+assert.deepEqual(adultIm.adult.map(item => item.regimenId), ['adult-im', 'adult-ambiguous']);
+assert.equal(adultIm.adult.every(item => item.serverContextVerified === true), true);
+assert.equal(adultIm.adult.every(item => item.route === 'IM'), true);
 assert.match(adultIm.adult[0].serverSignature, /1 ampulë/);
+
+const adultIv = T.contextualize(rows, T.parseContext({ population:'adult', category:'PARENTERAL', route:'IV' }));
+assert.deepEqual(adultIv.adult.map(item => item.regimenId), ['adult-ambiguous']);
+assert.equal(adultIv.adult[0].route, 'IV');
 
 const pediatricIv = T.contextualize(rows, child);
 assert.equal(pediatricIv.adult.length, 0);
