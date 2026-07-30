@@ -2,6 +2,7 @@
 
 const { verifyGoogleIdToken } = require('../lib/google-id-token.js');
 const UserStore = require('../lib/user-store.js');
+const UserLibrary = require('../lib/user-library.js');
 
 const attempts = new Map();
 const WINDOW_MS = 15 * 60 * 1000;
@@ -82,10 +83,18 @@ async function readBody(req) {
   try { return JSON.parse(body || '{}'); } catch { return {}; }
 }
 
+function queryValue(req, key) {
+  if (req.query && req.query[key] !== undefined) return req.query[key];
+  try { return new URL(req.url || '/api/auth', 'https://medindex.local').searchParams.get(key); }
+  catch { return null; }
+}
+
+function libraryRequested(req) {
+  return queryValue(req, 'scope') === 'library';
+}
+
 function resetRequested(req) {
-  if (req.method !== 'GET') return false;
-  try { return new URL(req.url || '/api/auth', 'https://medindex.local').searchParams.get('reset') === '1'; }
-  catch { return false; }
+  return req.method === 'GET' && queryValue(req, 'reset') === '1';
 }
 
 function browserResetPage() {
@@ -106,6 +115,8 @@ module.exports = async function handler(req, res) {
     res.setHeader('Refresh', '3; url=/login.html?reset-complete=1');
     return res.status(200).end(browserResetPage());
   }
+
+  if (libraryRequested(req)) return UserLibrary.handle(req, res);
 
   const auth = await import('../lib/auth.mjs');
   const session = auth.sessionData(auth.sessionFromRequest(req));
@@ -224,6 +235,8 @@ module.exports._test = {
   clientIp,
   sameOrigin,
   declaredBodySize,
+  queryValue,
+  libraryRequested,
   resetRequested,
   browserResetPage,
   MAX_ATTEMPTS,
