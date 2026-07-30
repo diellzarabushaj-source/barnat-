@@ -8,17 +8,30 @@ function setupMedIndexBootstrap() {
     throw new Error('Hape Apps Script nga spreadsheet-i MedIndex dhe provo përsëri.');
   }
 
-  const activationSheet = spreadsheet.getSheetByName('AKTIVIZO_SYNC');
-  if (!activationSheet) throw new Error('Tab-i AKTIVIZO_SYNC mungon.');
-
-  const activationCell = activationSheet.getRange('D30');
-  const secret = String(activationCell.getValue() || '').trim();
-  if (secret.length < 24) {
-    throw new Error('Çelësi njëpërdorimësh i aktivizimit mungon.');
+  const file = DriveApp.getFileById(spreadsheet.getId());
+  const ownerEmail = String(file.getOwner().getEmail() || '').trim().toLowerCase();
+  if (ownerEmail !== 'diellzarabushaj@gmail.com') {
+    throw new Error('Vetëm pronari i spreadsheet-it mund ta aktivizojë sinkronizimin.');
   }
 
-  PropertiesService.getScriptProperties().setProperty('MEDINDEX_DRIVE_SYNC_SECRET', secret);
-  activationCell.clearContent();
-  SpreadsheetApp.flush();
+  const response = UrlFetchApp.fetch('https://barnat-six.vercel.app/api/drive-sync', {
+    method:'post',
+    contentType:'application/json; charset=utf-8',
+    headers:{ Authorization:`Bearer ${ScriptApp.getOAuthToken()}` },
+    payload:JSON.stringify({
+      action:'bootstrap_secret',
+      spreadsheetId:spreadsheet.getId(),
+      sheetName:'KARTELA_BARNAVE',
+    }),
+    muteHttpExceptions:true,
+    followRedirects:true,
+  });
+  const status = response.getResponseCode();
+  const body = JSON.parse(response.getContentText() || '{}');
+  if (status < 200 || status >= 300 || !body.ok || !body.secret) {
+    throw new Error(body.error || `Aktivizimi dështoi (${status}).`);
+  }
+
+  PropertiesService.getScriptProperties().setProperty('MEDINDEX_DRIVE_SYNC_SECRET', body.secret);
   setupMedIndexPerfectSync();
 }
