@@ -17,29 +17,41 @@ jobs:
         with:
           fetch-depth: 0
 
-      - name: Accept valid Sheets-scoped Apps Script token
+      - name: Verify exact spreadsheet through Sheets API
         shell: python
         run: |
           from pathlib import Path
 
           path = Path('api/drive-sync.js')
           text = path.read_text(encoding='utf-8')
-          old = """  const tokenInfo = await tokenInfoResponse.json().catch(() => ({}));
-  const email = clean(tokenInfo.email).toLowerCase();
-  if (email !== GOOGLE_SYNC_OWNER_EMAIL) return '';
-"""
-          new = """  const tokenInfo = await tokenInfoResponse.json().catch(() => ({}));
-  const scopes = clean(tokenInfo.scope).split(' ').filter(Boolean);
-  const hasSheetsScope = scopes.some(scope => [
-    'https://www.googleapis.com/auth/spreadsheets',
-    'https://www.googleapis.com/auth/spreadsheets.currentonly',
-  ].includes(scope));
-  if (!hasSheetsScope) return '';
-"""
-          if old not in text:
-            raise SystemExit('Expected token verification block was not found')
-          text = text.replace(old, new, 1)
-          text = text.replace('  return email;\n}\n\nasync function bootstrapSecret', '  return GOOGLE_SYNC_OWNER_EMAIL;\n}\n\nasync function bootstrapSecret', 1)
+          start = text.index('async function verifiedGoogleOwner')
+          end = text.index('\nasync function bootstrapSecret', start)
+          replacement = r'''async function verifiedGoogleOwner(req, payload = parseBody(req)) {
+            const authorization = clean(req.headers?.authorization);
+            const match = authorization.match(/^Bearer\s+(.+)$/i);
+            if (!match) return '';
+            const token = clean(match[1]);
+            if (token.length < 40 || token.length > 4096) return '';
+
+            const spreadsheetId = clean(payload.spreadsheetId);
+            if (spreadsheetId !== CURRENT_DOSAGE_SPREADSHEET_ID) return '';
+
+            const sheetResponse = await fetch(
+              `https://sheets.googleapis.com/v4/spreadsheets/${encodeURIComponent(spreadsheetId)}`
+                + '?fields=spreadsheetId%2Csheets.properties.title',
+              { headers:{ Authorization:`Bearer ${token}`, Accept:'application/json' } },
+            );
+            if (!sheetResponse.ok) return '';
+            const metadata = await sheetResponse.json().catch(() => ({}));
+            const titles = Array.isArray(metadata.sheets)
+              ? metadata.sheets.map(item => clean(item?.properties?.title))
+              : [];
+            if (metadata.spreadsheetId !== spreadsheetId) return '';
+            if (![...DOSAGE_SHEETS, 'AKTIVIZO_SYNC'].every(title => titles.includes(title))) return '';
+            return GOOGLE_SYNC_OWNER_EMAIL;
+          }
+'''
+          text = text[:start] + replacement + text[end:]
           path.write_text(text, encoding='utf-8')
 
       - name: Verify syntax
@@ -52,5 +64,5 @@ jobs:
           git config user.name 'github-actions[bot]'
           git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
           git add api/drive-sync.js .github/workflows/fix-bootstrap-token-scope.yml
-          git commit -m 'Verify Apps Script through Sheets token scope'
+          git commit -m 'Verify Apps Script through exact Sheet access'
           git push origin HEAD:main
