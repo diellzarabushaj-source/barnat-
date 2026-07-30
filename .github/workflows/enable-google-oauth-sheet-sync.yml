@@ -1,0 +1,243 @@
+name: Enable Google-authorized Sheet sync
+
+on:
+  push:
+    paths:
+      - .github/workflows/enable-google-oauth-sheet-sync.yml
+
+permissions:
+  contents: write
+
+jobs:
+  patch:
+    if: github.actor != 'github-actions[bot]'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Replace private-key prompt with Google authorization
+        shell: python
+        run: |
+          from pathlib import Path
+          import re
+
+          api_path = Path('api/drive-sync.js')
+          api = api_path.read_text(encoding='utf-8')
+
+          marker = "const DOSAGE_SHEETS = new Set(['KARTELA_BARNAVE', 'DOZA_TE_RRITUR', 'DOZA_PEDIATRIKE']);"
+          owner = "const GOOGLE_SYNC_OWNER_EMAIL = 'diellzarabushaj@gmail.com';"
+          if owner not in api:
+              api = api.replace(marker, marker + "\n" + owner, 1)
+
+          auth_block = r'''async function configuredSource(payload = {}) {
+            const spreadsheetId = clean(payload.spreadsheetId);
+            const sheetName = clean(payload.sheetName);
+            if (!spreadsheetId || !sheetName) return null;
+            const path = `drive_sync_sources?select=auth_secret_hash,enabled,entity_scope`
+              + `&spreadsheet_id=eq.${encodeURIComponent(spreadsheetId)}`
+              + `&sheet_name=eq.${encodeURIComponent(sheetName)}&limit=1`;
+            const { data } = await neonRequest(path);
+            return Array.isArray(data) ? data[0] || null : null;
+          }
+
+          async function verifiedSecret(req, payload = parseBody(req)) {
+            const received = clean(req.headers?.['x-medindex-sync-secret']);
+            if (received.length < 24) return '';
+            const source = await configuredSource(payload);
+            if (!source || source.enabled !== true || !source.auth_secret_hash) return '';
+            const suppliedHash = crypto.createHash('sha256').update(received, 'utf8').digest('hex');
+            return safeEqual(suppliedHash, source.auth_secret_hash) ? { secret:received, source, mode:'secret' } : '';
+          }
+
+          async function verifiedGoogleAuthorization(req, payload = parseBody(req)) {
+            const authorization = clean(req.headers?.authorization);
+            const match = authorization.match(/^Bearer\s+(.+)$/i);
+            if (!match) return '';
+            const token = clean(match[1]);
+            if (token.length < 40 || token.length > 4096) return '';
+
+            const spreadsheetId = clean(payload.spreadsheetId);
+            const sheetName = clean(payload.sheetName);
+            if (spreadsheetId !== CURRENT_DOSAGE_SPREADSHEET_ID || !DOSAGE_SHEETS.has(sheetName)) return '';
+
+            const tokenInfoResponse = await fetch(
+              `https://oauth2.googleapis.com/tokeninfo?access_token=${encodeURIComponent(token)}`,
+              { headers:{ Accept:'application/json' } },
+            );
+            if (!tokenInfoResponse.ok) return '';
+            const tokenInfo = await tokenInfoResponse.json().catch(() => ({}));
+            const email = clean(tokenInfo.email).toLowerCase();
+            const emailVerified = tokenInfo.email_verified;
+            if (email !== GOOGLE_SYNC_OWNER_EMAIL) return '';
+            if (emailVerified !== undefined && emailVerified !== true && emailVerified !== 'true') return '';
+
+            const sheetResponse = await fetch(
+              `https://sheets.googleapis.com/v4/spreadsheets/${encodeURIComponent(spreadsheetId)}`
+                + '?fields=spreadsheetId%2Csheets.properties.title',
+              { headers:{ Authorization:`Bearer ${token}`, Accept:'application/json' } },
+            );
+            if (!sheetResponse.ok) return '';
+            const metadata = await sheetResponse.json().catch(() => ({}));
+            const titles = Array.isArray(metadata.sheets)
+              ? metadata.sheets.map(item => clean(item?.properties?.title))
+              : [];
+            if (metadata.spreadsheetId !== spreadsheetId || !titles.includes(sheetName)) return '';
+
+            const source = await configuredSource(payload);
+            if (!source || source.enabled !== true) return '';
+            return { secret:'', source, mode:'google', googleEmail:email };
+          }
+
+          async function verifiedSyncAccess(req, payload = parseBody(req)) {
+            return (await verifiedSecret(req, payload)) || (await verifiedGoogleAuthorization(req, payload));
+          }
+          '''
+
+          api, count = re.subn(
+              r"async function verifiedSecret\(req, payload = parseBody\(req\)\) \{.*?\n\}\n\n(?=async function setCurrentSourceStatus)",
+              auth_block + "\n",
+              api,
+              count=1,
+              flags=re.S,
+          )
+          if count != 1:
+              raise SystemExit('Could not replace API authorization block')
+
+          api = api.replace(
+              'const verification = await verifiedSecret(req, payload);',
+              'const verification = await verifiedSyncAccess(req, payload);',
+              1,
+          )
+
+          old_internal = '''    const previousSecret = process.env.MEDINDEX_DRIVE_SYNC_SECRET;
+              const previousBody = req.body;
+              process.env.MEDINDEX_DRIVE_SYNC_SECRET = verification.secret;
+              req.body = canonicalPayload(payload);'''
+          new_internal = '''    const previousSecret = process.env.MEDINDEX_DRIVE_SYNC_SECRET;
+              const previousBody = req.body;
+              const previousSyncHeader = req.headers?.['x-medindex-sync-secret'];
+              const internalSecret = verification.secret || crypto.randomBytes(32).toString('hex');
+              process.env.MEDINDEX_DRIVE_SYNC_SECRET = internalSecret;
+              req.headers = req.headers || {};
+              req.headers['x-medindex-sync-secret'] = internalSecret;
+              req.body = canonicalPayload(payload);'''
+          if old_internal not in api:
+              raise SystemExit('Could not find internal authorization bridge')
+          api = api.replace(old_internal, new_internal, 1)
+
+          old_finally = '''      req.body = previousBody;
+                if (previousSecret === undefined) delete process.env.MEDINDEX_DRIVE_SYNC_SECRET;
+                else process.env.MEDINDEX_DRIVE_SYNC_SECRET = previousSecret;'''
+          new_finally = '''      req.body = previousBody;
+                if (previousSyncHeader === undefined) delete req.headers['x-medindex-sync-secret'];
+                else req.headers['x-medindex-sync-secret'] = previousSyncHeader;
+                if (previousSecret === undefined) delete process.env.MEDINDEX_DRIVE_SYNC_SECRET;
+                else process.env.MEDINDEX_DRIVE_SYNC_SECRET = previousSecret;'''
+          if old_finally not in api:
+              raise SystemExit('Could not find internal authorization cleanup')
+          api = api.replace(old_finally, new_finally, 1)
+
+          api = api.replace(
+              '  verifiedSecret,\n  editorValues,',
+              '  verifiedSecret,\n  verifiedGoogleAuthorization,\n  verifiedSyncAccess,\n  editorValues,',
+              1,
+          )
+          api_path.write_text(api, encoding='utf-8')
+
+          script_paths = [
+              Path('google-apps-script/medindex-current-sync-standalone.gs'),
+              Path('google-apps-script/medindex-perfect-sync-all-in-one.gs'),
+          ]
+          setup_pattern = re.compile(
+              r"  const properties = PropertiesService\.getScriptProperties\(\);\n"
+              r"  let secret = String\(properties\.getProperty\(MEDINDEX_STANDALONE_SECRET_PROPERTY\) \|\| ''\)\.trim\(\);\n"
+              r"  if \(secret\.length < 24\) \{.*?\n  \}\n\n"
+              r"  properties\.setProperties\(\{\n"
+              r"    \[MEDINDEX_STANDALONE_SECRET_PROPERTY\]:secret,",
+              re.S,
+          )
+          setup_replacement = "  const properties = PropertiesService.getScriptProperties();\n\n  properties.setProperties({"
+
+          auth_helper = r'''function medIndexStandaloneAuthHeaders_() {
+            const token = ScriptApp.getOAuthToken();
+            if (!token) throw new Error('Autorizimi Google nuk u krijua. Ekzekuto setup-in përsëri dhe prano lejet.');
+            const headers = {
+              Authorization:`Bearer ${token}`,
+              'X-MedIndex-Google-Email':Session.getEffectiveUser().getEmail(),
+            };
+            const legacySecret = String(
+              PropertiesService.getScriptProperties().getProperty(MEDINDEX_STANDALONE_SECRET_PROPERTY) || ''
+            ).trim();
+            if (legacySecret.length >= 24) headers['X-MedIndex-Sync-Secret'] = legacySecret;
+            return headers;
+          }
+
+          '''
+
+          for path in script_paths:
+              text = path.read_text(encoding='utf-8')
+              text, count = setup_pattern.subn(setup_replacement, text, count=1)
+              if count != 1:
+                  raise SystemExit(f'Could not remove key prompt from {path}')
+
+              if 'function medIndexStandaloneAuthHeaders_()' not in text:
+                  text = text.replace('function medIndexStandalonePost_(body) {', auth_helper + 'function medIndexStandalonePost_(body) {', 1)
+
+              text, count = re.subn(
+                  r"function medIndexStandalonePost_\(body\) \{\n"
+                  r"  const secret = String\(.*?\n"
+                  r"  \)\.trim\(\);\n"
+                  r"  if \(secret\.length < 24\) throw new Error\('Çelësi privat i sinkronizimit nuk është konfiguruar\.'\);",
+                  "function medIndexStandalonePost_(body) {\n  const headers = medIndexStandaloneAuthHeaders_();",
+                  text,
+                  count=1,
+                  flags=re.S,
+              )
+              if count != 1:
+                  raise SystemExit(f'Could not patch post authorization in {path}')
+              text = text.replace("headers:{ 'X-MedIndex-Sync-Secret':secret },", 'headers,', 1)
+
+              text, count = re.subn(
+                  r"function medIndexStandaloneSend_\(source, rows, deletedKeys\) \{\n"
+                  r"  const secret = String\(.*?\n"
+                  r"  \)\.trim\(\);\n"
+                  r"  if \(secret\.length < 24\) throw new Error\('Çelësi privat i sinkronizimit nuk është konfiguruar\.'\);",
+                  "function medIndexStandaloneSend_(source, rows, deletedKeys) {\n  const headers = medIndexStandaloneAuthHeaders_();",
+                  text,
+                  count=1,
+                  flags=re.S,
+              )
+              if count != 1:
+                  raise SystemExit(f'Could not patch send authorization in {path}')
+              text = text.replace("headers:{ 'X-MedIndex-Sync-Secret':secret },", 'headers,', 1)
+              path.write_text(text, encoding='utf-8')
+
+          test_path = Path('tests/bidirectional-sync-test.js')
+          tests = test_path.read_text(encoding='utf-8')
+          anchor = "assert.match(api, /auth_secret_hash/);"
+          additions = """assert.match(api, /verifiedGoogleAuthorization/);\nassert.match(api, /oauth2\\.googleapis\\.com\\/tokeninfo/);\nassert.match(api, /sheets\\.googleapis\\.com\\/v4\\/spreadsheets/);"""
+          if additions not in tests:
+              tests = tests.replace(anchor, anchor + "\n" + additions, 1)
+          standalone_anchor = "assert.doesNotMatch(standalone, /MEDINDEX_DRIVE_SYNC_SECRET\\s*=\\s*['\"][^'\"]+['\"]/);"
+          standalone_add = "assert.match(standalone, /ScriptApp\\.getOAuthToken/);\nassert.doesNotMatch(standalone, /Ngjite çelësin privat/);"
+          if standalone_add not in tests:
+              tests = tests.replace(standalone_anchor, standalone_anchor + "\n" + standalone_add, 1)
+          test_path.write_text(tests, encoding='utf-8')
+
+      - name: Verify syntax and sync contract
+        shell: bash
+        run: |
+          node --check api/drive-sync.js
+          node tests/bidirectional-sync-test.js
+
+      - name: Commit secure Google authorization
+        shell: bash
+        run: |
+          rm -f .github/workflows/enable-google-oauth-sheet-sync.yml
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add api/drive-sync.js google-apps-script/medindex-current-sync-standalone.gs google-apps-script/medindex-perfect-sync-all-in-one.gs tests/bidirectional-sync-test.js .github/workflows/enable-google-oauth-sheet-sync.yml
+          git commit -m 'Use Google authorization for one-click Sheet sync'
+          git push origin HEAD:main
