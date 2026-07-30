@@ -35,7 +35,6 @@ function safeEqual(left, right) {
   return a.length === b.length && a.length > 0 && crypto.timingSafeEqual(a, b);
 }
 
-
 async function verifiedGoogleOwner(req, payload = parseBody(req)) {
   const authorization = clean(req.headers?.authorization);
   const match = authorization.match(/^Bearer\s+(.+)$/i);
@@ -46,14 +45,20 @@ async function verifiedGoogleOwner(req, payload = parseBody(req)) {
   const spreadsheetId = clean(payload.spreadsheetId);
   if (spreadsheetId !== CURRENT_DOSAGE_SPREADSHEET_ID) return '';
 
-  const tokenInfoResponse = await fetch(
-    `https://oauth2.googleapis.com/tokeninfo?access_token=${encodeURIComponent(token)}`,
-    { headers:{ Accept:'application/json' } },
+  const driveResponse = await fetch(
+    `https://www.googleapis.com/drive/v3/files/${encodeURIComponent(spreadsheetId)}`
+      + '?fields=id%2CmimeType%2Cowners(emailAddress)%2Ccapabilities(canEdit)&supportsAllDrives=true',
+    { headers:{ Authorization:`Bearer ${token}`, Accept:'application/json' } },
   );
-  if (!tokenInfoResponse.ok) return '';
-  const tokenInfo = await tokenInfoResponse.json().catch(() => ({}));
-  const email = clean(tokenInfo.email).toLowerCase();
-  if (email !== GOOGLE_SYNC_OWNER_EMAIL) return '';
+  if (!driveResponse.ok) return '';
+  const driveFile = await driveResponse.json().catch(() => ({}));
+  const owners = Array.isArray(driveFile.owners)
+    ? driveFile.owners.map(item => clean(item?.emailAddress).toLowerCase())
+    : [];
+  if (driveFile.id !== spreadsheetId) return '';
+  if (driveFile.mimeType !== 'application/vnd.google-apps.spreadsheet') return '';
+  if (driveFile.capabilities?.canEdit !== true) return '';
+  if (!owners.includes(GOOGLE_SYNC_OWNER_EMAIL)) return '';
 
   const sheetResponse = await fetch(
     `https://sheets.googleapis.com/v4/spreadsheets/${encodeURIComponent(spreadsheetId)}`
@@ -67,7 +72,7 @@ async function verifiedGoogleOwner(req, payload = parseBody(req)) {
     : [];
   if (metadata.spreadsheetId !== spreadsheetId) return '';
   if (![...DOSAGE_SHEETS].every(title => titles.includes(title))) return '';
-  return email;
+  return GOOGLE_SYNC_OWNER_EMAIL;
 }
 
 async function bootstrapSecret(req, res, payload) {
