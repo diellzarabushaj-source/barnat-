@@ -1,6 +1,30 @@
 'use strict';
 
+const crypto = require('node:crypto');
 const { neonRequest, exactCount } = require('../lib/neon-data-api');
+
+const hash = value => crypto.createHash('sha256').update(String(value || ''), 'utf8').digest('hex');
+
+function decodePayload(token) {
+  const segment = String(token || '').split('.')[1] || '';
+  if (!segment) return {};
+  try { return JSON.parse(Buffer.from(segment, 'base64url').toString('utf8')); }
+  catch { return {}; }
+}
+
+async function oidcDiagnostic() {
+  const oidc = await import('@vercel/oidc');
+  const token = process.env.VERCEL_OIDC_TOKEN || await oidc.getVercelOidcToken();
+  const payload = decodePayload(token);
+  return {
+    available:Boolean(token),
+    subjectHash:hash(payload.sub),
+    ownerHash:hash(payload.owner),
+    projectHash:hash(payload.project),
+    environment:String(payload.environment || ''),
+    issuerHash:hash(payload.iss),
+  };
+}
 
 async function tableCount(table) {
   const { response } = await neonRequest(`${table}?select=id&limit=1`, {
@@ -18,6 +42,9 @@ module.exports = async function handler(req, res) {
   }
 
   try {
+    const diagnostic = String(req.query?.diagnostic || '') === 'oidc'
+      ? await oidcDiagnostic()
+      : undefined;
     const [drugs, dosageRegimens, icdCodes, labTests] = await Promise.all([
       tableCount('drugs'),
       tableCount('dosage_regimens'),
@@ -29,6 +56,7 @@ module.exports = async function handler(req, res) {
       provider:'neon',
       project:'MedIndex',
       counts:{ drugs, dosageRegimens, icdCodes, labTests },
+      ...(diagnostic ? { diagnostic } : {}),
       checkedAt:new Date().toISOString(),
     });
   } catch (error) {
@@ -40,3 +68,5 @@ module.exports = async function handler(req, res) {
     });
   }
 };
+
+module.exports._test = { decodePayload, oidcDiagnostic };
