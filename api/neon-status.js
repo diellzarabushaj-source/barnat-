@@ -1,6 +1,7 @@
 'use strict';
 
 const { neonRequest, exactCount } = require('../lib/neon-data-api');
+const SyncOutbox = require('../lib/sync-outbox.js');
 
 const CURRENT_DOSAGE_SPREADSHEET_ID = '1T7XsfkXLQfEomFL4DmXoA8PheiR6s3Qmu36hTqklOMo';
 const REQUIRED_DOSAGE_SHEETS = Object.freeze(['KARTELA_BARNAVE', 'DOZA_TE_RRITUR', 'DOZA_PEDIATRIKE']);
@@ -67,7 +68,7 @@ function publicSource(source, now = Date.now()) {
 }
 
 async function healthPayload(now = Date.now()) {
-  const [drugs, dosageRegimens, icdCodes, labTests, rawSources, editorEvents, recentRuns] = await Promise.all([
+  const [drugs, dosageRegimens, icdCodes, labTests, rawSources, editorEvents, recentRuns, outbox] = await Promise.all([
     tableCount('drugs'),
     tableCount('dosage_regimens'),
     tableCount('icd_codes'),
@@ -75,6 +76,7 @@ async function healthPayload(now = Date.now()) {
     list('drive_sync_sources?select=spreadsheet_id,sheet_name,entity_scope,enabled,last_status,last_error,last_synced_at,updated_at&order=spreadsheet_id.asc,sheet_name.asc'),
     list('audit_logs?select=id,entity_type,entity_id,action,changed_by,changed_at&source=eq.clinical_editor&order=changed_at.desc&limit=8'),
     list('sync_runs?select=source_type,target_scope,status,rows_read,rows_inserted,rows_updated,rows_skipped,error_summary,started_at,completed_at&order=started_at.desc&limit=5'),
+    SyncOutbox.stats(),
   ]);
 
   const sources = rawSources.map(source => publicSource(source, now));
@@ -109,6 +111,7 @@ async function healthPayload(now = Date.now()) {
       staleAfterMinutes:STALE_AFTER_MS / 60000,
       dosageSources,
       allEnabledSources:sources.filter(source => source.enabled),
+      outbox,
     },
     editor:{
       available:true,

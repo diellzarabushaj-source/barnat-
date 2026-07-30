@@ -11,8 +11,8 @@ const MEDINDEX_STANDALONE_BATCH_SIZE = 75;
 
 const MEDINDEX_STANDALONE_SOURCES = Object.freeze([
   { sheetName:'KARTELA_BARNAVE', headerRow:1, keyColumn:'Nr rendor', editorPull:true },
-  { sheetName:'DOZA_TE_RRITUR', headerRow:1, keyColumn:'RegimenID', editorPull:false },
-  { sheetName:'DOZA_PEDIATRIKE', headerRow:1, keyColumn:'RegimenID', editorPull:false },
+  { sheetName:'DOZA_TE_RRITUR', headerRow:1, keyColumn:'RegimenID', editorPull:true },
+  { sheetName:'DOZA_PEDIATRIKE', headerRow:1, keyColumn:'RegimenID', editorPull:true },
 ]);
 
 function onOpen() {
@@ -192,44 +192,67 @@ function medIndexStandaloneEditorPull() {
   const lock = LockService.getScriptLock();
   if (!lock.tryLock(30000)) return;
   try {
-    const source = MEDINDEX_STANDALONE_SOURCES.find(item => item.editorPull);
-    const properties = PropertiesService.getScriptProperties();
-    const secret = String(properties.getProperty(MEDINDEX_STANDALONE_SECRET_PROPERTY) || '').trim();
-    if (secret.length < 24) throw new Error('Çelësi privat i sinkronizimit nuk është konfiguruar.');
-    const cursor = properties.getProperty(MEDINDEX_STANDALONE_CURSOR_PROPERTY)
-      || new Date(Date.now() - 60000).toISOString();
-
-    const response = UrlFetchApp.fetch(MEDINDEX_STANDALONE_ENDPOINT, {
-      method:'post',
-      contentType:'application/json; charset=utf-8',
-      headers:{ 'X-MedIndex-Sync-Secret':secret },
-      payload:JSON.stringify({
-        action:'pull_editor_updates',
-        spreadsheetId:MEDINDEX_STANDALONE_SPREADSHEET_ID,
-        sheetName:source.sheetName,
-        cursor,
-      }),
-      muteHttpExceptions:true,
-      followRedirects:true,
-    });
-
-    const status = response.getResponseCode();
-    const text = response.getContentText();
-    if (status < 200 || status >= 300) throw new Error(`Editor pull ${status}: ${text.slice(0, 500)}`);
-    const payload = JSON.parse(text || '{}');
-    if (!payload.ok) throw new Error(payload.error || 'Neon nuk e konfirmoi editor pull.');
-
-    const updates = Array.isArray(payload.updates) ? payload.updates : [];
-    if (updates.length) medIndexStandaloneApplyEditorUpdates_(source, updates);
-    properties.setProperty(MEDINDEX_STANDALONE_CURSOR_PROPERTY, payload.nextCursor || cursor);
-    if (updates.length) {
-      medIndexStandaloneRecordStatus_(source.sheetName, 'OK', `${updates.length} ndryshim(e) nga editori u shkruan në Sheet.`);
-    }
+    MEDINDEX_STANDALONE_SOURCES
+      .filter(source => source.editorPull)
+      .forEach(source => medIndexStandalonePullEditorSource_(source));
   } catch (error) {
     medIndexStandaloneRecordStatus_('EDITORI LIVE', 'GABIM', error.message);
     throw error;
   } finally {
     lock.releaseLock();
+  }
+}
+
+function medIndexStandalonePullEditorSource_(source) {
+  const properties = PropertiesService.getScriptProperties();
+  const cursorKey = `${MEDINDEX_STANDALONE_CURSOR_PROPERTY}_${source.sheetName}`;
+  const cursor = properties.getProperty(cursorKey)
+    || properties.getProperty(MEDINDEX_STANDALONE_CURSOR_PROPERTY)
+    || new Date(Date.now() - 60000).toISOString();
+  const payload = medIndexStandalonePost_({
+    action:'pull_editor_updates',
+    spreadsheetId:MEDINDEX_STANDALONE_SPREADSHEET_ID,
+    sheetName:source.sheetName,
+    cursor,
+  });
+  const updates = Array.isArray(payload.updates) ? payload.updates : [];
+  if (!updates.length) {
+    properties.setProperty(cursorKey, payload.nextCursor || cursor);
+    return;
+  }
+
+  const outboxIds = updates.map(update => Number(update.outboxId)).filter(Number.isFinite);
+  try {
+    const applied = medIndexStandaloneApplyEditorUpdates_(source, updates);
+    if (outboxIds.length) {
+      medIndexStandalonePost_({
+        action:'ack_editor_updates',
+        spreadsheetId:MEDINDEX_STANDALONE_SPREADSHEET_ID,
+        sheetName:source.sheetName,
+        outboxIds,
+      });
+    }
+    properties.setProperty(cursorKey, payload.nextCursor || cursor);
+    medIndexStandaloneRecordStatus_(
+      source.sheetName,
+      'OK',
+      `${applied} ndryshim(e) nga editori u shkruan dhe u konfirmuan në Sheet.`
+    );
+  } catch (error) {
+    if (outboxIds.length) {
+      try {
+        medIndexStandalonePost_({
+          action:'fail_editor_updates',
+          spreadsheetId:MEDINDEX_STANDALONE_SPREADSHEET_ID,
+          sheetName:source.sheetName,
+          outboxIds,
+          error:error.message,
+        });
+      } catch (reportError) {
+        console.error(`Outbox failure report failed: ${reportError.message}`);
+      }
+    }
+    throw error;
   }
 }
 
@@ -256,21 +279,48 @@ function medIndexStandaloneApplyEditorUpdates_(source, updates) {
 
   updates.forEach(update => {
     const rowKey = String(update.rowKey || '').trim();
-    const rowNumber = rowByKey.get(rowKey);
-    if (!rowNumber || !update.values || typeof update.values !== 'object') return;
+    if (!rowKey || !update.values || typeof update.values !== 'object') return;
+    let rowNumber = rowByKey.get(rowKey);
+    if (!rowNumber) {
+      rowNumber = Math.max(source.headerRow + 1, sheet.getLastRow() + 1);
+      sheet.getRange(rowNumber, keyIndex + 1).setValue(rowKey);
+      rowByKey.set(rowKey, rowNumber);
+    }
     Object.entries(update.values).forEach(([header, value]) => {
       const columnIndex = headers.indexOf(header);
-      if (columnIndex < 0 || columnIndex === keyIndex) return;
+      if (columnIndex < 0) return;
       sheet.getRange(rowNumber, columnIndex + 1).setValue(value ?? '');
     });
     touchedRows.push(rowNumber);
   });
 
   const uniqueRows = [...new Set(touchedRows)];
-  if (!uniqueRows.length) return;
+  if (!uniqueRows.length) return 0;
   SpreadsheetApp.flush();
   const stateRows = uniqueRows.flatMap(row => medIndexStandaloneReadRows_(sheet, source, row, 1));
   medIndexStandaloneUpsertState_(source, stateRows);
+  return uniqueRows.length;
+}
+
+function medIndexStandalonePost_(body) {
+  const secret = String(
+    PropertiesService.getScriptProperties().getProperty(MEDINDEX_STANDALONE_SECRET_PROPERTY) || ''
+  ).trim();
+  if (secret.length < 24) throw new Error('Çelësi privat i sinkronizimit nuk është konfiguruar.');
+  const response = UrlFetchApp.fetch(MEDINDEX_STANDALONE_ENDPOINT, {
+    method:'post',
+    contentType:'application/json; charset=utf-8',
+    headers:{ 'X-MedIndex-Sync-Secret':secret },
+    payload:JSON.stringify(body || {}),
+    muteHttpExceptions:true,
+    followRedirects:true,
+  });
+  const status = response.getResponseCode();
+  const text = response.getContentText();
+  if (status < 200 || status >= 300) throw new Error(`MedIndex sync ${status}: ${text.slice(0, 500)}`);
+  const payload = JSON.parse(text || '{}');
+  if (!payload.ok) throw new Error(payload.error || 'Sinkronizimi nuk u konfirmua.');
+  return payload;
 }
 
 function medIndexStandaloneSend_(source, rows, deletedKeys) {

@@ -528,7 +528,15 @@
       }
 
       populate(payload.record);
-      setBusy(false, 'U ruajt përgjithmonë në Neon. Ndryshimi është i mbrojtur nga sinkronizimi i Drive-it.');
+      const sync = payload.record?.sync;
+      const syncMessage = sync?.queued
+        ? `U ruajt në Neon dhe ${sync.count || 0} ndryshime u vendosën në radhën e sigurt për Google Sheet.`
+        : sync?.available === false
+          ? 'U ruajt në Neon. Deri në aktivizimin e outbox-it, Google Sheet përdor audit fallback.'
+          : sync?.error
+            ? `U ruajt në Neon, por radha e Google Sheet kërkon kontroll: ${sync.error}`
+            : 'U ruajt përgjithmonë në Neon.';
+      setBusy(false, syncMessage);
     } catch (error) {
       setBusy(false, error.message);
     }
