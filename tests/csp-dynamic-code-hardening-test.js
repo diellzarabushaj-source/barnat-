@@ -23,9 +23,14 @@ for (const page of pages) {
 const vercel = JSON.parse(read('vercel.json'));
 const globalHeaders = vercel.headers.find(entry => entry.source === '/(.*)')?.headers || [];
 const csp = globalHeaders.find(header => header.key === 'Content-Security-Policy')?.value || '';
-assert.match(csp, /script-src 'self'(?:;|$)/, 'CSP must allow scripts only from self');
+assert.match(csp, /script-src 'self' https:\/\/accounts\.google\.com\/gsi\/client;/, 'CSP must allow only the official Google Identity client in addition to self');
+assert.match(csp, /frame-src https:\/\/accounts\.google\.com\/gsi\//, 'CSP must allow only the Google Identity frame');
+assert.match(csp, /connect-src 'self' https:\/\/accounts\.google\.com\/gsi\//, 'CSP must allow only the Google Identity connection in addition to self');
+assert.match(csp, /style-src 'self' 'unsafe-inline' https:\/\/accounts\.google\.com\/gsi\/style/, 'CSP must allow the official Google Identity style');
 assert.match(csp, /script-src-attr 'none'/, 'CSP must block inline event-handler scripts');
 assert.doesNotMatch(csp, /script-src[^;]*(?:unsafe-inline|unsafe-eval)/, 'script-src must not contain unsafe-inline or unsafe-eval');
+assert.doesNotMatch(csp, /(?:script-src|connect-src|frame-src|style-src)[^;]*\shttps:\s/, 'CSP must not allow a broad HTTPS wildcard');
+assert.doesNotMatch(csp, /(?:googleapis\.com|gstatic\.com)(?!\/gsi\/)/, 'CSP must not broadly allow unrelated Google origins');
 
 function browserScripts(directory, relative = '') {
   const blockedDirectories = new Set(['api', 'lib', 'scripts', 'tests', 'node_modules', '.git', '.github']);
@@ -66,6 +71,7 @@ assert.match(builder, /hardenTailAdminCss/, 'build must remove third-party font 
 
 const rxHtml = read('recetat.html');
 assert.ok(rxHtml.indexOf('recetat.js') < rxHtml.indexOf('recetat-safe-print.js'), 'safe print must load after the legacy composer');
+assert.ok(rxHtml.indexOf('user-library-client.js') < rxHtml.indexOf('recetat.js'), 'persistent library must load before the recipe composer');
 const safePrint = read('recetat-safe-print.js');
 assert.match(safePrint, /cloneNode\(true\)/, 'safe print must remove the legacy listener');
 assert.match(safePrint, /popup\.opener = null/, 'print popup must sever its opener');
@@ -73,8 +79,9 @@ assert.doesNotMatch(safePrint, /<script\b/i, 'print output must not inject scrip
 
 const loginHtml = read('login.html');
 assert.match(loginHtml, /theme-preload\.js/, 'login theme preload must be external');
+assert.match(loginHtml, /https:\/\/accounts\.google\.com\/gsi\/client/, 'login must load the official Google Identity client');
 const middleware = read('middleware.ts');
-for (const asset of ['/login.html', '/login.css', '/login.js', '/theme-preload.js', '/tailadmin-medindex.css']) {
+for (const asset of ['/login.html', '/login.css', '/google-login.css', '/login.js', '/theme-preload.js', '/tailadmin-medindex.css']) {
   assert.ok(middleware.includes(`'${asset}'`), `middleware must allow the required login asset ${asset}`);
 }
 assert.doesNotMatch(middleware, /pathname\.startsWith\('\/(?:data|app-parts|api\/registry)'\)/, 'clinical datasets must not be public before authentication');
