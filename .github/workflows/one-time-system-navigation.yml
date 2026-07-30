@@ -1,0 +1,71 @@
+name: One-time system health navigation
+
+on:
+  push:
+    paths:
+      - .github/workflows/one-time-system-navigation.yml
+
+permissions:
+  contents: write
+
+jobs:
+  patch:
+    if: github.actor != 'github-actions[bot]'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - name: Add system health page to the shell
+        shell: bash
+        run: |
+          set -euo pipefail
+          python - <<'PY'
+          from pathlib import Path
+
+          shell_path = Path('tailadmin-shell.js')
+          shell = shell_path.read_text()
+          if "'/sistemi.html':['Sistemi']" not in shell:
+              shell = shell.replace("    '/recetat.html':['Recetat'],\n", "    '/recetat.html':['Recetat'],\n    '/sistemi.html':['Sistemi'],\n", 1)
+
+          function_code = r'''
+          function ensureSystemNavItem() {
+            const tools = document.querySelector('.mi-menu-group-tools');
+            if (!tools || tools.querySelector('[data-medical-nav="system"]')) return;
+            const link = document.createElement('a');
+            const path = location.pathname.replace(/\/{2,}/g, '/').replace(/\/+$/, '') || '/';
+            const current = path === '/sistemi.html';
+            link.className = `app-menu-link mi-menu-item${current ? ' active' : ''}`;
+            link.href = '/sistemi.html';
+            link.dataset.medicalNav = 'system';
+            link.setAttribute('aria-label', 'Sistemi');
+            if (current) link.setAttribute('aria-current', 'page');
+            link.innerHTML = '<span class="app-menu-icon mi-menu-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 12h4l2-6 4 12 2-6h4"/><path d="M4 4h16v16H4z"/></svg></span><span class="app-menu-title mi-menu-label">Sistemi</span>';
+            const search = tools.querySelector('[data-nav="search"]');
+            if (search) search.after(link);
+            else tools.appendChild(link);
+          }
+          '''
+          if 'function ensureSystemNavItem()' not in shell:
+              marker = '  function finalizeShellReady() {'
+              if marker not in shell:
+                  raise SystemExit('tailadmin-shell insertion marker missing')
+              shell = shell.replace(marker, function_code + '\n' + marker, 1)
+          if '    ensureSystemNavItem();\n    loadMobileExperience();' not in shell:
+              shell = shell.replace('    queueMicrotask(ensureStylesheetLast);\n    loadMobileExperience();', '    queueMicrotask(ensureStylesheetLast);\n    ensureSystemNavItem();\n    loadMobileExperience();', 1)
+          if "    ensureSystemNavItem();\n    if (document.querySelector('.mi-app-shell')) finalizeShellReady();" not in shell:
+              shell = shell.replace("    revealCachedShellOnWeakConnection();\n    if (document.querySelector('.mi-app-shell')) finalizeShellReady();", "    revealCachedShellOnWeakConnection();\n    ensureSystemNavItem();\n    if (document.querySelector('.mi-app-shell')) finalizeShellReady();", 1)
+          shell_path.write_text(shell)
+
+          legacy_path = Path('tailadmin-shell-legacy.js')
+          legacy = legacy_path.read_text()
+          if "'/sistemi.html': ['Sistemi', 'Statusi i Neon-it, sinkronizimit dhe editorit klinik']" not in legacy:
+              legacy = legacy.replace("    '/recetat.html': ['Recetat', 'Krijim, kontroll dhe ruajtje e recetave'],\n", "    '/recetat.html': ['Recetat', 'Krijim, kontroll dhe ruajtje e recetave'],\n    '/sistemi.html': ['Sistemi', 'Statusi i Neon-it, sinkronizimit dhe editorit klinik'],\n", 1)
+          legacy_path.write_text(legacy)
+          PY
+          git rm .github/workflows/one-time-system-navigation.yml
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add tailadmin-shell.js tailadmin-shell-legacy.js
+          git commit -m 'Add system health dashboard to navigation'
+          git push origin HEAD:main
