@@ -9,6 +9,7 @@
     '/dozologjia.html':['Dozologjia'],
     '/protokollet.html':['Protokollet'],
     '/recetat.html':['Recetat'],
+    '/sistemi.html':['Sistemi'],
   };
   const LEGACY_SRC = '/tailadmin-shell-legacy.js?v=production-audit-v2';
   const MOBILE_SRC = '/mobile-experience.js?v=production-audit-v2';
@@ -170,6 +171,24 @@
     }
   }
 
+
+function ensureSystemNavItem() {
+  const tools = document.querySelector('.mi-menu-group-tools');
+  if (!tools || tools.querySelector('[data-medical-nav="system"]')) return;
+  const link = document.createElement('a');
+  const path = location.pathname.replace(/\/{2,}/g, '/').replace(/\/+$/, '') || '/';
+  const current = path === '/sistemi.html';
+  link.className = `app-menu-link mi-menu-item${current ? ' active' : ''}`;
+  link.href = '/sistemi.html';
+  link.dataset.medicalNav = 'system';
+  link.setAttribute('aria-label', 'Sistemi');
+  if (current) link.setAttribute('aria-current', 'page');
+  link.innerHTML = '<span class="app-menu-icon mi-menu-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 12h4l2-6 4 12 2-6h4"/><path d="M4 4h16v16H4z"/></svg></span><span class="app-menu-title mi-menu-label">Sistemi</span>';
+  const search = tools.querySelector('[data-nav="search"]');
+  if (search) search.after(link);
+  else tools.appendChild(link);
+}
+
   function finalizeShellReady() {
     if (shellReady && document.querySelector('.mi-app-shell')) return;
     if (!document.querySelector('.mi-app-shell') && document.body?.dataset.tailadminReady !== '1') return;
@@ -180,6 +199,7 @@
     delete document.documentElement.dataset.miShellError;
     ensureCriticalMobileStyles();
     queueMicrotask(ensureStylesheetLast);
+    ensureSystemNavItem();
     loadMobileExperience();
     warmRuntimeAssets();
   }
@@ -237,6 +257,7 @@
     resetSidebarPosition();
     syncResponsiveSidebar();
     revealCachedShellOnWeakConnection();
+    ensureSystemNavItem();
     if (document.querySelector('.mi-app-shell')) finalizeShellReady();
   }, { passive:true });
 

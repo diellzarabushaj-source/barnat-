@@ -13,6 +13,7 @@
     '/dozologjia.html': ['Dozologjia', 'Skema me burim për të rritur dhe pediatri'],
     '/protokollet.html': ['Protokollet', 'Dokumentet zyrtare të Ministrisë së Shëndetësisë'],
     '/recetat.html': ['Recetat', 'Krijim, kontroll dhe ruajtje e recetave'],
+    '/sistemi.html': ['Sistemi', 'Statusi i Neon-it, sinkronizimit dhe editorit klinik'],
   };
 
   const ICONS = {
