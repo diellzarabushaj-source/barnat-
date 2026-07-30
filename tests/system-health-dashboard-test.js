@@ -29,6 +29,7 @@ const shell = read('tailadmin-shell.js');
 const legacyShell = read('tailadmin-shell-legacy.js');
 const middleware = read('middleware.ts');
 const endpoint = read('api/neon-status.js');
+const driveSync = read('api/drive-sync.js');
 
 for (const marker of [
   'systemOverallState', 'systemSourceList', 'systemEditorEvents', 'systemImportRows',
@@ -42,11 +43,16 @@ assert.match(client, /credentials:'same-origin'/);
 assert.match(shell, /ensureSystemNavItem/);
 assert.match(shell, /data-medical-nav=\\?"system/);
 assert.match(legacyShell, /\/sistemi\.html/);
-assert.doesNotMatch(middleware, /PUBLIC_PATHS[\s\S]{0,800}'\/api\/neon-status'/);
+assert.match(middleware, /PUBLIC_SECRET_APIS/);
+assert.match(middleware, /'\/api\/drive-sync'/);
+assert.doesNotMatch(middleware, /PUBLIC_(?:PATHS|SECRET_APIS)[\s\S]{0,900}'\/api\/neon-status'/);
+assert.match(driveSync, /verifiedSecret/);
+assert.match(driveSync, /auth_secret_hash/);
+assert.match(driveSync, /status\(401\)/);
 assert.doesNotMatch(endpoint, /auth_secret_hash/);
 assert.match(endpoint, /drive_sync_sources/);
 assert.match(endpoint, /audit_logs/);
 assert.match(endpoint, /sync_runs/);
 assert.match(endpoint, /STALE_AFTER_MS = 15 \* 60 \* 1000/);
 
-console.log('System health, private status and synchronization dashboard passed.');
+console.log('System health, private status and secret-authenticated sync gateway passed.');
