@@ -4,6 +4,7 @@ import { sessionFromRequest, verifySessionToken } from './lib/auth-edge.mjs';
 const PUBLIC_PATHS = new Set([
   '/login.html',
   '/login.css',
+  '/google-login.css',
   '/login.js',
   '/theme-preload.js',
   '/tailadmin-medindex.css',
@@ -67,7 +68,7 @@ export default async function middleware(request) {
   if (pathname.startsWith('/api/')) {
     return new Response(JSON.stringify({ error:'Kërkohet autentikim.' }), {
       status:401,
-      headers: {
+      headers:{
         'Content-Type':'application/json; charset=utf-8',
         'Cache-Control':'no-store',
         'X-Content-Type-Options':'nosniff',
