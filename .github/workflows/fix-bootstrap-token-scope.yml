@@ -1,0 +1,56 @@
+name: Fix bootstrap token verification
+
+on:
+  push:
+    paths:
+      - .github/workflows/fix-bootstrap-token-scope.yml
+
+permissions:
+  contents: write
+
+jobs:
+  patch:
+    if: github.actor != 'github-actions[bot]'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Accept valid Sheets-scoped Apps Script token
+        shell: python
+        run: |
+          from pathlib import Path
+
+          path = Path('api/drive-sync.js')
+          text = path.read_text(encoding='utf-8')
+          old = """  const tokenInfo = await tokenInfoResponse.json().catch(() => ({}));
+  const email = clean(tokenInfo.email).toLowerCase();
+  if (email !== GOOGLE_SYNC_OWNER_EMAIL) return '';
+"""
+          new = """  const tokenInfo = await tokenInfoResponse.json().catch(() => ({}));
+  const scopes = clean(tokenInfo.scope).split(' ').filter(Boolean);
+  const hasSheetsScope = scopes.some(scope => [
+    'https://www.googleapis.com/auth/spreadsheets',
+    'https://www.googleapis.com/auth/spreadsheets.currentonly',
+  ].includes(scope));
+  if (!hasSheetsScope) return '';
+"""
+          if old not in text:
+            raise SystemExit('Expected token verification block was not found')
+          text = text.replace(old, new, 1)
+          text = text.replace('  return email;\n}\n\nasync function bootstrapSecret', '  return GOOGLE_SYNC_OWNER_EMAIL;\n}\n\nasync function bootstrapSecret', 1)
+          path.write_text(text, encoding='utf-8')
+
+      - name: Verify syntax
+        run: node --check api/drive-sync.js
+
+      - name: Commit fix
+        shell: bash
+        run: |
+          rm -f .github/workflows/fix-bootstrap-token-scope.yml
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add api/drive-sync.js .github/workflows/fix-bootstrap-token-scope.yml
+          git commit -m 'Verify Apps Script through Sheets token scope'
+          git push origin HEAD:main
