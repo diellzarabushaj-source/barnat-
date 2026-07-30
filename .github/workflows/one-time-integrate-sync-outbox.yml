@@ -1,0 +1,326 @@
+name: One-time integrate synchronization outbox
+
+on:
+  push:
+    paths:
+      - .github/workflows/one-time-integrate-sync-outbox.yml
+
+permissions:
+  contents: write
+
+jobs:
+  integrate:
+    if: github.actor != 'github-actions[bot]'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - name: Integrate outbox delivery
+        shell: bash
+        run: |
+          python <<'PY'
+          from pathlib import Path
+          import json
+
+          root = Path('.')
+
+          # Clinical editor server: queue every saved record for all Sheet targets.
+          path = root / 'lib/clinical-editor.js'
+          text = path.read_text()
+          marker = "const { neonRequest } = require('./neon-data-api.js');"
+          if "require('./sync-outbox.js')" not in text:
+              text = text.replace(marker, marker + "\nconst SyncOutbox = require('./sync-outbox.js');")
+          old = "  return getDrugEditor(registryNumber);\n}"
+          new = """  const sync = await SyncOutbox.enqueueEditorRecord({
+            drug:updatedDrug,
+            profile:{
+              ...(payload.profile || {}),
+              verificationStatus:profile.verification_status,
+              sourceUrls:profile.source_urls,
+            },
+            dosage:{ adult, pediatric },
+          });
+          const saved = await getDrugEditor(registryNumber);
+          return { ...saved, sync };
+          }"""
+          if old not in text:
+              raise SystemExit('clinical editor return marker not found')
+          text = text.replace(old, new, 1)
+          path.write_text(text)
+
+          # Clinical editor UI: report actual queue state instead of claiming Sheet sync prematurely.
+          path = root / 'clinical-editor.js'
+          text = path.read_text()
+          old = "      setBusy(false, 'U ruajt përgjithmonë në Neon. Ndryshimi është i mbrojtur nga sinkronizimi i Drive-it.');"
+          new = """      const sync = payload.record?.sync;
+                const syncMessage = sync?.queued
+                  ? `U ruajt në Neon dhe ${sync.count || 0} ndryshime u vendosën në radhën e sigurt për Google Sheet.`
+                  : sync?.available === false
+                    ? 'U ruajt në Neon. Deri në aktivizimin e outbox-it, Google Sheet përdor audit fallback.'
+                    : sync?.error
+                      ? `U ruajt në Neon, por radha e Google Sheet kërkon kontroll: ${sync.error}`
+                      : 'U ruajt përgjithmonë në Neon.';
+                setBusy(false, syncMessage);"""
+          if old not in text:
+              raise SystemExit('clinical editor UI message marker not found')
+          text = text.replace(old, new, 1)
+          path.write_text(text)
+
+          # Current standalone Apps Script: pull all three tabs, append missing rows and acknowledge delivery.
+          path = root / 'google-apps-script/medindex-current-sync-standalone.gs'
+          text = path.read_text()
+          text = text.replace("{ sheetName:'DOZA_TE_RRITUR', headerRow:1, keyColumn:'RegimenID', editorPull:false }", "{ sheetName:'DOZA_TE_RRITUR', headerRow:1, keyColumn:'RegimenID', editorPull:true }")
+          text = text.replace("{ sheetName:'DOZA_PEDIATRIKE', headerRow:1, keyColumn:'RegimenID', editorPull:false }", "{ sheetName:'DOZA_PEDIATRIKE', headerRow:1, keyColumn:'RegimenID', editorPull:true }")
+
+          start = text.index('function medIndexStandaloneEditorPull() {')
+          end = text.index('function medIndexStandaloneApplyEditorUpdates_', start)
+          replacement = r'''function medIndexStandaloneEditorPull() {
+            const lock = LockService.getScriptLock();
+            if (!lock.tryLock(30000)) return;
+            try {
+              MEDINDEX_STANDALONE_SOURCES
+                .filter(source => source.editorPull)
+                .forEach(source => medIndexStandalonePullEditorSource_(source));
+            } catch (error) {
+              medIndexStandaloneRecordStatus_('EDITORI LIVE', 'GABIM', error.message);
+              throw error;
+            } finally {
+              lock.releaseLock();
+            }
+          }
+
+          function medIndexStandalonePullEditorSource_(source) {
+            const properties = PropertiesService.getScriptProperties();
+            const cursorKey = `${MEDINDEX_STANDALONE_CURSOR_PROPERTY}_${source.sheetName}`;
+            const cursor = properties.getProperty(cursorKey)
+              || properties.getProperty(MEDINDEX_STANDALONE_CURSOR_PROPERTY)
+              || new Date(Date.now() - 60000).toISOString();
+            const payload = medIndexStandalonePost_({
+              action:'pull_editor_updates',
+              spreadsheetId:MEDINDEX_STANDALONE_SPREADSHEET_ID,
+              sheetName:source.sheetName,
+              cursor,
+            });
+            const updates = Array.isArray(payload.updates) ? payload.updates : [];
+            if (!updates.length) {
+              properties.setProperty(cursorKey, payload.nextCursor || cursor);
+              return;
+            }
+
+            const outboxIds = updates.map(update => Number(update.outboxId)).filter(Number.isFinite);
+            try {
+              const applied = medIndexStandaloneApplyEditorUpdates_(source, updates);
+              if (outboxIds.length) {
+                medIndexStandalonePost_({
+                  action:'ack_editor_updates',
+                  spreadsheetId:MEDINDEX_STANDALONE_SPREADSHEET_ID,
+                  sheetName:source.sheetName,
+                  outboxIds,
+                });
+              }
+              properties.setProperty(cursorKey, payload.nextCursor || cursor);
+              medIndexStandaloneRecordStatus_(
+                source.sheetName,
+                'OK',
+                `${applied} ndryshim(e) nga editori u shkruan dhe u konfirmuan në Sheet.`
+              );
+            } catch (error) {
+              if (outboxIds.length) {
+                try {
+                  medIndexStandalonePost_({
+                    action:'fail_editor_updates',
+                    spreadsheetId:MEDINDEX_STANDALONE_SPREADSHEET_ID,
+                    sheetName:source.sheetName,
+                    outboxIds,
+                    error:error.message,
+                  });
+                } catch (reportError) {
+                  console.error(`Outbox failure report failed: ${reportError.message}`);
+                }
+              }
+              throw error;
+            }
+          }
+
+          '''
+          text = text[:start] + replacement + text[end:]
+
+          start = text.index('function medIndexStandaloneApplyEditorUpdates_')
+          end = text.index('function medIndexStandaloneSend_', start)
+          replacement = r'''function medIndexStandaloneApplyEditorUpdates_(source, updates) {
+            const spreadsheet = SpreadsheetApp.openById(MEDINDEX_STANDALONE_SPREADSHEET_ID);
+            const sheet = spreadsheet.getSheetByName(source.sheetName);
+            if (!sheet) throw new Error(`Mungon tab-i ${source.sheetName}.`);
+
+            const lastColumn = sheet.getLastColumn();
+            const headers = sheet.getRange(source.headerRow, 1, 1, lastColumn).getDisplayValues()[0]
+              .map(value => String(value || '').trim());
+            const keyIndex = headers.indexOf(source.keyColumn);
+            if (keyIndex < 0) throw new Error(`Mungon kolona ${source.keyColumn} te ${source.sheetName}.`);
+
+            const firstDataRow = source.headerRow + 1;
+            const rowCount = Math.max(0, sheet.getLastRow() - source.headerRow);
+            const keys = rowCount
+              ? sheet.getRange(firstDataRow, keyIndex + 1, rowCount, 1).getDisplayValues().flat()
+              : [];
+            const rowByKey = new Map(
+              keys.map((value, index) => [String(value || '').trim(), firstDataRow + index]).filter(item => item[0])
+            );
+            const touchedRows = [];
+
+            updates.forEach(update => {
+              const rowKey = String(update.rowKey || '').trim();
+              if (!rowKey || !update.values || typeof update.values !== 'object') return;
+              let rowNumber = rowByKey.get(rowKey);
+              if (!rowNumber) {
+                rowNumber = Math.max(source.headerRow + 1, sheet.getLastRow() + 1);
+                sheet.getRange(rowNumber, keyIndex + 1).setValue(rowKey);
+                rowByKey.set(rowKey, rowNumber);
+              }
+              Object.entries(update.values).forEach(([header, value]) => {
+                const columnIndex = headers.indexOf(header);
+                if (columnIndex < 0) return;
+                sheet.getRange(rowNumber, columnIndex + 1).setValue(value ?? '');
+              });
+              touchedRows.push(rowNumber);
+            });
+
+            const uniqueRows = [...new Set(touchedRows)];
+            if (!uniqueRows.length) return 0;
+            SpreadsheetApp.flush();
+            const stateRows = uniqueRows.flatMap(row => medIndexStandaloneReadRows_(sheet, source, row, 1));
+            medIndexStandaloneUpsertState_(source, stateRows);
+            return uniqueRows.length;
+          }
+
+          function medIndexStandalonePost_(body) {
+            const secret = String(
+              PropertiesService.getScriptProperties().getProperty(MEDINDEX_STANDALONE_SECRET_PROPERTY) || ''
+            ).trim();
+            if (secret.length < 24) throw new Error('Çelësi privat i sinkronizimit nuk është konfiguruar.');
+            const response = UrlFetchApp.fetch(MEDINDEX_STANDALONE_ENDPOINT, {
+              method:'post',
+              contentType:'application/json; charset=utf-8',
+              headers:{ 'X-MedIndex-Sync-Secret':secret },
+              payload:JSON.stringify(body || {}),
+              muteHttpExceptions:true,
+              followRedirects:true,
+            });
+            const status = response.getResponseCode();
+            const text = response.getContentText();
+            if (status < 200 || status >= 300) throw new Error(`MedIndex sync ${status}: ${text.slice(0, 500)}`);
+            const payload = JSON.parse(text || '{}');
+            if (!payload.ok) throw new Error(payload.error || 'Sinkronizimi nuk u konfirmua.');
+            return payload;
+          }
+
+          '''
+          text = text[:start] + replacement + text[end:]
+          path.write_text(text)
+
+          # System status includes outbox health without exposing payloads.
+          path = root / 'api/neon-status.js'
+          text = path.read_text()
+          marker = "const { neonRequest, exactCount } = require('../lib/neon-data-api');"
+          if "require('../lib/sync-outbox.js')" not in text:
+              text = text.replace(marker, marker + "\nconst SyncOutbox = require('../lib/sync-outbox.js');")
+          text = text.replace(
+              "const [drugs, dosageRegimens, icdCodes, labTests, rawSources, editorEvents, recentRuns] = await Promise.all([",
+              "const [drugs, dosageRegimens, icdCodes, labTests, rawSources, editorEvents, recentRuns, outbox] = await Promise.all(["
+          )
+          needle = "    list('sync_runs?select=source_type,target_scope,status,rows_read,rows_inserted,rows_updated,rows_skipped,error_summary,started_at,completed_at&order=started_at.desc&limit=5'),\n  ]);"
+          replacement = "    list('sync_runs?select=source_type,target_scope,status,rows_read,rows_inserted,rows_updated,rows_skipped,error_summary,started_at,completed_at&order=started_at.desc&limit=5'),\n    SyncOutbox.stats(),\n  ]);"
+          if needle not in text:
+              raise SystemExit('neon status Promise marker not found')
+          text = text.replace(needle, replacement, 1)
+          text = text.replace(
+              "      dosageSources,\n      allEnabledSources:sources.filter(source => source.enabled),",
+              "      dosageSources,\n      allEnabledSources:sources.filter(source => source.enabled),\n      outbox,"
+          )
+          path.write_text(text)
+
+          # Contract tests for mapping, safe auto-fill policy and acknowledgement wiring.
+          test = root / 'tests/sync-outbox-test.js'
+          test.write_text(r'''const assert = require('node:assert/strict');
+          const fs = require('node:fs');
+          const os = require('node:os');
+          const path = require('node:path');
+          const { execFileSync } = require('node:child_process');
+          const Outbox = require('../lib/sync-outbox.js');
+
+          const record = {
+            drug:{
+              registryNumber:4009, pdid:'REF-SOLU-MEDROL-40', tradeName:'SOLU-MEDROL',
+              activeSubstance:'Methylprednisolone sodium succinate', atcCode:'H02AB04',
+              strength:'40 mg/1 mL', pharmaceuticalForm:'Powder for solution for injection',
+              drugClass:'Kortikosteroid parenteral', useText:'Gjendje të rënda inflamatore',
+            },
+            profile:{
+              verificationStatus:'verified', sourceUrls:['https://dailymed.nlm.nih.gov/example'],
+              indicationsText:'Astmë e rëndë', renalAdjustment:'Individualizo', editorialNotes:'Kontrolluar',
+            },
+            dosage:{
+              adult:{ dose:'10–40 mg sipas indikacionit', route:'IV; IM', sourceUrl:'https://dailymed.nlm.nih.gov/adult', notes:'IV ngadalë', verified:true },
+              pediatric:{ dose:'1–2 mg/kg/ditë', route:'IV', sourceUrl:'https://dailymed.nlm.nih.gov/ped', notes:'Kërkon zgjedhje klinike', verified:true },
+            },
+          };
+
+          const targets = Outbox.buildTargets(record);
+          assert.deepEqual(targets.map(item => item.sheetName), ['KARTELA_BARNAVE', 'DOZA_TE_RRITUR', 'DOZA_PEDIATRIKE']);
+          assert.equal(targets[0].values['Kategoria e administrimit'], 'PARENTERAL');
+          assert.equal(targets[0].values['Rrugët e lejuara'], 'IV; IM');
+          assert.equal(targets[1].values['Auto-fill'], 'JO');
+          assert.equal(targets[1].values['RegimenID'], 'EDITOR-4009-ADULT');
+          assert.equal(targets[2].values['Auto-fill'], 'JO');
+          assert.match(targets[2].values['Formula e llogaritjes'], /skemë e strukturuar/);
+          assert.equal(Outbox._test.statusLabel('verified'), 'VERIFIKUAR');
+          assert.deepEqual(Outbox._test.numericIds([1, '2', 2, -1, 'x']), [1, 2]);
+
+          const root = path.resolve(__dirname, '..');
+          const api = fs.readFileSync(path.join(root, 'api/drive-sync.js'), 'utf8');
+          const editor = fs.readFileSync(path.join(root, 'lib/clinical-editor.js'), 'utf8');
+          const script = fs.readFileSync(path.join(root, 'google-apps-script/medindex-current-sync-standalone.gs'), 'utf8');
+          const status = fs.readFileSync(path.join(root, 'api/neon-status.js'), 'utf8');
+          assert.match(api, /ack_editor_updates/);
+          assert.match(api, /fail_editor_updates/);
+          assert.match(api, /SyncOutbox\.pullUpdates/);
+          assert.match(editor, /SyncOutbox\.enqueueEditorRecord/);
+          assert.match(script, /ack_editor_updates/);
+          assert.match(script, /fail_editor_updates/);
+          assert.match(script, /sheet\.getLastRow\(\) \+ 1/);
+          assert.equal((script.match(/editorPull:true/g) || []).length, 3);
+          assert.match(status, /SyncOutbox\.stats/);
+
+          execFileSync(process.execPath, ['--check', path.join(root, 'lib/sync-outbox.js')], { stdio:'pipe' });
+          execFileSync(process.execPath, ['--check', path.join(root, 'api/drive-sync.js')], { stdio:'pipe' });
+          execFileSync(process.execPath, ['--check', path.join(root, 'lib/clinical-editor.js')], { stdio:'pipe' });
+          const temp = fs.mkdtempSync(path.join(os.tmpdir(), 'medindex-outbox-'));
+          try {
+            const appsScript = path.join(temp, 'current-sync.js');
+            fs.copyFileSync(path.join(root, 'google-apps-script/medindex-current-sync-standalone.gs'), appsScript);
+            execFileSync(process.execPath, ['--check', appsScript], { stdio:'pipe' });
+          } finally {
+            fs.rmSync(temp, { recursive:true, force:true });
+          }
+          console.log('Acknowledged editor synchronization outbox contract passed.');
+          ''')
+
+          package = root / 'package.json'
+          data = json.loads(package.read_text())
+          command = data['scripts']['test']
+          marker = 'node tests/bidirectional-sync-test.js && '
+          if 'node tests/sync-outbox-test.js' not in command:
+              command = command.replace(marker, marker + 'node tests/sync-outbox-test.js && ', 1)
+          data['scripts']['test'] = command
+          package.write_text(json.dumps(data, ensure_ascii=False, indent=2) + '\n')
+
+          workflow = root / '.github/workflows/one-time-integrate-sync-outbox.yml'
+          workflow.unlink()
+          PY
+
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add -A
+          git commit -m 'Complete acknowledged editor and Sheet synchronization'
+          git push origin HEAD:main
