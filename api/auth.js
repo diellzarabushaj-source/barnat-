@@ -1,5 +1,3 @@
-const crypto = require('node:crypto');
-const { neonRequest, exactCount } = require('../lib/neon-data-api');
 const attempts = new Map();
 const WINDOW_MS = 15 * 60 * 1000;
 const MAX_ATTEMPTS = 5;
@@ -71,72 +69,13 @@ async function readBody(req) {
   try { return JSON.parse(body || '{}'); } catch { return {}; }
 }
 
-function queryValue(req, key) {
-  try { return new URL(req.url || '/api/auth', 'https://medindex.local').searchParams.get(key); }
-  catch { return null; }
-}
-
 function resetRequested(req) {
-  return req.method === 'GET' && queryValue(req, 'reset') === '1';
-}
-
-function oidcDiagnosticRequested(req) {
-  return req.method === 'GET' && queryValue(req, 'diagnostic') === 'oidc';
-}
-
-function hash(value) {
-  return crypto.createHash('sha256').update(String(value || ''), 'utf8').digest('hex');
-}
-
-function decodeJwtPayload(token) {
-  const segment = String(token || '').split('.')[1] || '';
-  if (!segment) return {};
-  try { return JSON.parse(Buffer.from(segment, 'base64url').toString('utf8')); }
-  catch { return {}; }
-}
-
-async function visibleDosageCount() {
-  const path = 'dosage_regimens?select=id&editorial_status=eq.published'
-    + '&calculation_status=in.(text_verified,calculable_verified)&limit=1';
-  const { response } = await neonRequest(path, {
-    headers:{ Range:'0-0', 'Range-Unit':'items' },
-    prefer:'count=exact',
-  });
-  return exactCount(response);
-}
-
-async function databaseAuthorizationState() {
-  const { data } = await neonRequest('rpc/medindex_vercel_authorized', {
-    method:'POST',
-    body:{},
-  });
-  if (Array.isArray(data)) return Boolean(data[0]);
-  return Boolean(data);
-}
-
-async function hashedOidcDiagnostic() {
-  const oidc = await import('@vercel/oidc');
-  const token = process.env.VERCEL_OIDC_TOKEN || await oidc.getVercelOidcToken();
-  const payload = decodeJwtPayload(token);
-  const result = {
-    available:Boolean(token),
-    subjectHash:hash(payload.sub),
-    ownerHash:hash(payload.owner),
-    projectHash:hash(payload.project),
-    environment:String(payload.environment || ''),
-    issuerHash:hash(payload.iss),
-    databaseAuthorized:null,
-    visibleDosageRows:null,
-  };
+  if (req.method !== 'GET') return false;
   try {
-    [result.databaseAuthorized, result.visibleDosageRows] = await Promise.all([
-      databaseAuthorizationState(),
-      visibleDosageCount(),
-    ]);
-  } catch (error) {
-    result.databaseErrorHash = hash(error?.message || error);
+    return new URL(req.url || '/api/auth', 'https://medindex.local').searchParams.get('reset') === '1';
+  } catch {
+    return false;
   }
-  return result;
 }
 
 function browserResetPage() {
@@ -173,11 +112,6 @@ module.exports = async function handler(req, res) {
     res.setHeader('Content-Security-Policy', "default-src 'none'; style-src 'unsafe-inline'; base-uri 'none'; form-action 'none'; frame-ancestors 'none'");
     res.setHeader('Refresh', '3; url=/login.html?reset-complete=1');
     return res.status(200).end(browserResetPage());
-  }
-
-  if (oidcDiagnosticRequested(req)) {
-    try { return res.status(200).json({ diagnostic:await hashedOidcDiagnostic() }); }
-    catch { return res.status(500).json({ diagnostic:{ available:false } }); }
   }
 
   const auth = await import('../lib/auth.mjs');
@@ -256,8 +190,6 @@ module.exports._test = {
   clientIp,
   declaredBodySize,
   resetRequested,
-  oidcDiagnosticRequested,
-  decodeJwtPayload,
   browserResetPage,
   MAX_ATTEMPTS,
   MAX_BODY_BYTES,
