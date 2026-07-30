@@ -20,12 +20,16 @@ const PUBLIC_PATHS = new Set([
   '/robots.txt',
 ]);
 
+const PUBLIC_SECRET_APIS = new Set([
+  '/api/drive-sync',
+]);
+
 export const config = {
   matcher: '/:path*',
 };
 
 function isPublicPath(pathname) {
-  return PUBLIC_PATHS.has(pathname) || pathname === '/api/auth';
+  return PUBLIC_PATHS.has(pathname) || PUBLIC_SECRET_APIS.has(pathname) || pathname === '/api/auth';
 }
 
 function safeReturnPath(url) {
