@@ -30,7 +30,10 @@ const appsScript = read('google-apps-script/medindex-drive-neon-sync.gs');
 const envExample = read('.env.example');
 const Sync = require('../lib/drive-neon-sync.js');
 
-assert.equal(Object.keys(Sync.SOURCE_CONFIGS).length, 6);
+assert.equal(Object.keys(Sync.SOURCE_CONFIGS).length, 9);
+assert.ok(Sync.SOURCE_CONFIGS['1T7XsfkXLQfEomFL4DmXoA8PheiR6s3Qmu36hTqklOMo|KARTELA_BARNAVE']);
+assert.ok(Sync.SOURCE_CONFIGS['1T7XsfkXLQfEomFL4DmXoA8PheiR6s3Qmu36hTqklOMo|DOZA_TE_RRITUR']);
+assert.ok(Sync.SOURCE_CONFIGS['1T7XsfkXLQfEomFL4DmXoA8PheiR6s3Qmu36hTqklOMo|DOZA_PEDIATRIKE']);
 assert.match(source, /MEDINDEX_DRIVE_SYNC_SECRET/);
 assert.match(source, /x-medindex-sync-secret/);
 assert.match(source, /timingSafeEqual/);

@@ -24,11 +24,6 @@ function parseBody(req) {
 }
 
 function canonicalPayload(payload = {}) {
-  const spreadsheetId = clean(payload.spreadsheetId);
-  const sheetName = clean(payload.sheetName);
-  if (spreadsheetId === CURRENT_DOSAGE_SPREADSHEET_ID && DOSAGE_SHEETS.has(sheetName)) {
-    return { ...payload, spreadsheetId:LEGACY_DOSAGE_SPREADSHEET_ID };
-  }
   return payload;
 }
 
