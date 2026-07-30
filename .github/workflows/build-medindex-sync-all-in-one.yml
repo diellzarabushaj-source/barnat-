@@ -1,0 +1,39 @@
+name: Build MedIndex sync all-in-one
+
+on:
+  push:
+    paths:
+      - google-apps-script/medindex-current-sync-standalone.gs
+      - google-apps-script/medindex-perfect-sync-launcher.gs
+      - .github/workflows/build-medindex-sync-all-in-one.yml
+
+permissions:
+  contents: write
+
+jobs:
+  build:
+    if: github.actor != 'github-actions[bot]'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Build one-file Apps Script
+        shell: bash
+        run: |
+          set -euo pipefail
+          output='google-apps-script/medindex-perfect-sync-all-in-one.gs'
+          {
+            printf '%s\n' "// MedIndex Google Sheet ↔ Neon — all-in-one installer"
+            printf '%s\n' "// Paste this entire file into Apps Script, then run setupMedIndexPerfectSync once."
+            cat google-apps-script/medindex-current-sync-standalone.gs
+            printf '\n\n'
+            cat google-apps-script/medindex-perfect-sync-launcher.gs
+          } > "$output"
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add "$output"
+          if git diff --cached --quiet; then
+            echo 'All-in-one file is already current.'
+            exit 0
+          fi
+          git commit -m 'Generate one-file MedIndex sync installer'
+          git push origin HEAD:main
