@@ -1,4 +1,5 @@
 const crypto = require('node:crypto');
+const { neonRequest, exactCount } = require('../lib/neon-data-api');
 const attempts = new Map();
 const WINDOW_MS = 15 * 60 * 1000;
 const MAX_ATTEMPTS = 5;
@@ -94,18 +95,48 @@ function decodeJwtPayload(token) {
   catch { return {}; }
 }
 
+async function visibleDosageCount() {
+  const path = 'dosage_regimens?select=id&editorial_status=eq.published'
+    + '&calculation_status=in.(text_verified,calculable_verified)&limit=1';
+  const { response } = await neonRequest(path, {
+    headers:{ Range:'0-0', 'Range-Unit':'items' },
+    prefer:'count=exact',
+  });
+  return exactCount(response);
+}
+
+async function databaseAuthorizationState() {
+  const { data } = await neonRequest('rpc/medindex_vercel_authorized', {
+    method:'POST',
+    body:{},
+  });
+  if (Array.isArray(data)) return Boolean(data[0]);
+  return Boolean(data);
+}
+
 async function hashedOidcDiagnostic() {
   const oidc = await import('@vercel/oidc');
   const token = process.env.VERCEL_OIDC_TOKEN || await oidc.getVercelOidcToken();
   const payload = decodeJwtPayload(token);
-  return {
+  const result = {
     available:Boolean(token),
     subjectHash:hash(payload.sub),
     ownerHash:hash(payload.owner),
     projectHash:hash(payload.project),
     environment:String(payload.environment || ''),
     issuerHash:hash(payload.iss),
+    databaseAuthorized:null,
+    visibleDosageRows:null,
   };
+  try {
+    [result.databaseAuthorized, result.visibleDosageRows] = await Promise.all([
+      databaseAuthorizationState(),
+      visibleDosageCount(),
+    ]);
+  } catch (error) {
+    result.databaseErrorHash = hash(error?.message || error);
+  }
+  return result;
 }
 
 function browserResetPage() {
