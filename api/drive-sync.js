@@ -2,6 +2,7 @@
 
 const crypto = require('node:crypto');
 const DriveNeonSync = require('../lib/drive-neon-sync.js');
+const SyncOutbox = require('../lib/sync-outbox.js');
 const Administration = require('../administration-routes.js');
 const { neonRequest } = require('../lib/neon-data-api.js');
 
@@ -137,10 +138,25 @@ function editorValues(scope, audit) {
   return null;
 }
 
-async function pullEditorUpdates(req, res, payload, source) {
+async function pullEditorUpdates(res, payload, source) {
   const cursor = isoOrEmpty(payload.cursor) || new Date(Date.now() - 5 * 60 * 1000).toISOString();
+  const outbox = await SyncOutbox.pullUpdates({
+    spreadsheetId:payload.spreadsheetId,
+    sheetName:payload.sheetName,
+    limit:100,
+  });
+  if (outbox.available) {
+    return res.status(200).json({
+      ok:true,
+      source:source.entity_scope,
+      mode:'outbox',
+      updates:outbox.updates,
+      nextCursor:cursor,
+    });
+  }
+
   if (!['drugs', 'dosage_cards'].includes(source.entity_scope)) {
-    return res.status(200).json({ ok:true, updates:[], nextCursor:cursor });
+    return res.status(200).json({ ok:true, source:source.entity_scope, mode:'audit_fallback', updates:[], nextCursor:cursor });
   }
 
   const path = `audit_logs?select=${encodeURIComponent('id,new_data,changed_at')}`
@@ -154,7 +170,7 @@ async function pullEditorUpdates(req, res, payload, source) {
     return mapped ? [{ ...mapped, auditId:audit.id, changedAt:audit.changed_at }] : [];
   });
   const nextCursor = audits.length ? audits[audits.length - 1].changed_at : cursor;
-  return res.status(200).json({ ok:true, source:source.entity_scope, updates, nextCursor });
+  return res.status(200).json({ ok:true, source:source.entity_scope, mode:'audit_fallback', updates, nextCursor });
 }
 
 module.exports = async function handler(req, res) {
@@ -168,10 +184,19 @@ module.exports = async function handler(req, res) {
       return res.status(401).json({ ok:false, error:'Çelësi i sinkronizimit nuk është valid.' });
     }
 
-    if (clean(payload.action) === 'pull_editor_updates') {
+    const action = clean(payload.action);
+    if (action === 'pull_editor_updates') {
       res.setHeader('Cache-Control', 'no-store');
       res.setHeader('X-Content-Type-Options', 'nosniff');
-      return pullEditorUpdates(req, res, payload, verification.source);
+      return pullEditorUpdates(res, payload, verification.source);
+    }
+    if (action === 'ack_editor_updates') {
+      const acknowledged = await SyncOutbox.acknowledge(payload.outboxIds);
+      return res.status(200).json({ ok:true, acknowledged });
+    }
+    if (action === 'fail_editor_updates') {
+      const failed = await SyncOutbox.fail(payload.outboxIds, payload.error);
+      return res.status(200).json({ ok:true, failed });
     }
 
     const previousSecret = process.env.MEDINDEX_DRIVE_SYNC_SECRET;
