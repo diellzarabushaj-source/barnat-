@@ -64,9 +64,28 @@
     return descriptions[source.sheetName] || source.entityScope || 'Burim i të dhënave';
   }
 
+  function outboxState(outbox = {}) {
+    if (outbox.available === false) return { label:'Kërkon migrim', severity:'warning' };
+    if (Number(outbox.deadLetter) > 0) return { label:`${outbox.deadLetter} të bllokuara`, severity:'danger' };
+    if (Number(outbox.pending) > 0) return { label:`${outbox.pending} në radhë`, severity:'info' };
+    return { label:'E konfirmuar', severity:'success' };
+  }
+
   function renderSources(payload) {
     const sources = payload?.synchronization?.dosageSources || [];
-    elements.sources.innerHTML = sources.length ? sources.map(source => `
+    const outbox = payload?.synchronization?.outbox || { available:false };
+    const queueState = outboxState(outbox);
+    const outboxMarkup = `
+      <article class="system-source">
+        <div>
+          <strong>Editor → Google Sheet · Outbox</strong>
+          <small>Çdo ndryshim ruhet në radhë dhe hiqet vetëm pas konfirmimit nga Apps Script.</small>
+          <small>Konfirmimi i fundit: ${escapeHtml(relativeTime(outbox.lastAppliedAt))}</small>
+          ${outbox.lastError ? `<small class="system-source-error">${escapeHtml(outbox.lastError)}</small>` : ''}
+        </div>
+        <span class="${stateClass(queueState)}">${escapeHtml(queueState.label)}</span>
+      </article>`;
+    const sourceMarkup = sources.length ? sources.map(source => `
       <article class="system-source">
         <div>
           <strong>${escapeHtml(source.sheetName)}</strong>
@@ -76,6 +95,7 @@
         </div>
         <span class="${stateClass(source.state)}">${escapeHtml(source.state?.label || source.status)}</span>
       </article>`).join('') : '<div class="system-empty">Burimet e sinkronizimit nuk u kthyen nga serveri.</div>';
+    elements.sources.innerHTML = outboxMarkup + sourceMarkup;
 
     setState(elements.sync, payload?.overall);
     elements.setup.hidden = payload?.overall?.code !== 'setup_required';
@@ -121,12 +141,17 @@
     renderSources(payload);
     renderEditor(payload.editor);
     renderImports(payload.recentImports);
-    elements.message.className = 'system-message';
-    elements.message.textContent = payload.overall?.code === 'healthy'
-      ? 'Neon dhe sinkronizimi i dozologjisë janë brenda intervalit të pritshëm.'
-      : payload.overall?.code === 'setup_required'
-        ? 'Databaza është aktive. Për sinkronizim live duhet aktivizuar një herë Apps Script-i.'
-        : 'Kontrollo kartat e mësipërme për burimin që kërkon ndërhyrje.';
+    const outbox = payload?.synchronization?.outbox || {};
+    elements.message.className = `system-message${Number(outbox.deadLetter) > 0 ? ' is-error' : ''}`;
+    elements.message.textContent = Number(outbox.deadLetter) > 0
+      ? `${outbox.deadLetter} ndryshim(e) kanë kaluar në dead letter dhe kërkojnë ndërhyrje.`
+      : Number(outbox.pending) > 0
+        ? `${outbox.pending} ndryshim(e) presin konfirmimin e Google Sheet-it.`
+        : payload.overall?.code === 'healthy'
+          ? 'Neon, outbox-i dhe sinkronizimi i dozologjisë janë brenda intervalit të pritshëm.'
+          : payload.overall?.code === 'setup_required'
+            ? 'Databaza është aktive. Për sinkronizim live duhet aktivizuar një herë Apps Script-i.'
+            : 'Kontrollo kartat e mësipërme për burimin që kërkon ndërhyrje.';
   }
 
   async function load() {
