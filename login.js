@@ -10,9 +10,14 @@
   const message = document.getElementById('loginMessage');
   const toggle = document.getElementById('togglePassword');
   const capsHint = document.getElementById('capsLockHint');
+  const fallback = document.getElementById('passwordFallback');
+  const googleButton = document.getElementById('googleLoginButton');
+  const googleStatus = document.getElementById('googleLoginStatus');
   let busy = false;
   let redirecting = false;
   let configurationBlocked = false;
+  let csrfToken = '';
+  let googleInitialized = false;
 
   function connectionProfile() {
     const connection = navigator.connection || navigator.mozConnection || navigator.webkitConnection;
@@ -25,11 +30,7 @@
 
   function safeReturnPath(value) {
     const path = String(value || '');
-    if (!path.startsWith('/')
-      || path.startsWith('//')
-      || path.startsWith('/api/')
-      || path.startsWith('/login')
-      || path.startsWith('/recovery')) return '/index.html';
+    if (!path.startsWith('/') || path.startsWith('//') || path.startsWith('/api/') || path.startsWith('/login') || path.startsWith('/recovery')) return '/index.html';
     return path;
   }
 
@@ -39,25 +40,36 @@
     return safeReturnPath(queryReturn || stored || '/index.html');
   }
 
-  function setMessage(text, success = false) {
-    message.textContent = text || '';
+  function setMessage(value, success = false) {
+    message.textContent = value || '';
     message.classList.toggle('success', success);
   }
 
-  function setBusy(value) {
+  function setGoogleStatus(value, error = false) {
+    googleStatus.textContent = value || '';
+    googleStatus.classList.toggle('is-error', error);
+  }
+
+  function setBusy(value, provider = '') {
     busy = value;
-    submit.disabled = value || configurationBlocked;
-    password.disabled = value || configurationBlocked;
-    toggle.disabled = value || configurationBlocked;
-    submit.classList.toggle('is-loading', value);
-    submit.querySelector('span:first-child').textContent = value ? 'Duke verifikuar…' : 'Hyr';
-    form.setAttribute('aria-busy', String(value));
+    if (submit) submit.disabled = value || configurationBlocked;
+    if (password) password.disabled = value || configurationBlocked;
+    if (toggle) toggle.disabled = value || configurationBlocked;
+    if (submit) {
+      submit.classList.toggle('is-loading', value);
+      submit.querySelector('span:first-child').textContent = value ? 'Duke verifikuar…' : 'Hyr me password';
+    }
+    form?.setAttribute('aria-busy', String(value));
+    googleButton.style.pointerEvents = value ? 'none' : '';
+    googleButton.style.opacity = value ? '.65' : '';
+    if (value && provider === 'google') setGoogleStatus('Google po verifikon identitetin…');
   }
 
   function blockForConfiguration() {
     configurationBlocked = true;
     setBusy(false);
-    setMessage('Hyrja private nuk është konfiguruar në server. Kontrollo SESSION_SECRET dhe ACCESS_CODE në Vercel.');
+    setGoogleStatus('Hyrja private nuk është konfiguruar ende në server.', true);
+    setMessage('Vendos SESSION_SECRET dhe GOOGLE_CLIENT_ID në Vercel. Password-i rezervë është opsional.');
   }
 
   function saveBootstrapLease(payload = {}) {
@@ -87,7 +99,7 @@
     try {
       if (!('caches' in window)) return;
       const names = await caches.keys();
-      const targets = ['/offline-runtime.js', '/auth-client.js', '/tailadmin-shell.js'];
+      const targets = ['/offline-runtime.js', '/auth-client.js', '/tailadmin-shell.js', '/user-library-client.js'];
       await Promise.allSettled(names
         .filter(name => name.startsWith('medindex-static-'))
         .map(async name => {
@@ -105,40 +117,26 @@
     finally { clearTimeout(timeout); }
   }
 
-  function updateCapsLock(event) {
-    const active = Boolean(event?.getModifierState?.('CapsLock'));
-    capsHint.hidden = !active;
+  async function completeLogin(payload) {
+    saveBootstrapLease(payload);
+    redirecting = true;
+    setMessage('U verifikua. Po hapet MedIndex…', true);
+    setGoogleStatus(`U verifikua ${payload.user?.email || 'llogaria Google'}.`);
+    if (password) password.value = '';
+    try { sessionStorage.removeItem(RETURN_KEY); } catch {}
+    await Promise.race([purgeOnlyStaleRuntimeEntries(), new Promise(resolve => setTimeout(resolve, 1200))]);
+    location.replace(destination());
   }
 
-  ['keydown', 'keyup'].forEach(type => password.addEventListener(type, updateCapsLock));
-  password.addEventListener('blur', () => { capsHint.hidden = true; });
-
-  toggle.addEventListener('click', () => {
-    const visible = password.type === 'text';
-    password.type = visible ? 'password' : 'text';
-    toggle.textContent = visible ? 'Shfaq' : 'Fshih';
-    toggle.setAttribute('aria-pressed', String(!visible));
-    toggle.setAttribute('aria-label', visible ? 'Shfaq password-in' : 'Fshih password-in');
-    password.focus();
-  });
-
-  form.addEventListener('submit', async event => {
-    event.preventDefault();
+  async function submitCredential(body, provider) {
     if (busy || configurationBlocked) return;
-    const value = password.value;
-    if (value.length < 6) {
-      setMessage('Shkruaje password-in e plotë.');
-      password.focus();
-      return;
-    }
-
-    setBusy(true);
+    setBusy(true, provider);
     setMessage(connectionProfile().slow ? 'Lidhja është e dobët; verifikimi mund të zgjasë pak…' : '');
     try {
       const response = await timedFetch('/api/auth', {
         method:'POST',
-        headers:{ 'Content-Type':'application/json', Accept:'application/json' },
-        body:JSON.stringify({ password:value }),
+        headers:{ 'Content-Type':'application/json', Accept:'application/json', 'X-CSRF-Token':csrfToken },
+        body:JSON.stringify({ ...body, csrfToken }),
         cache:'no-store',
         credentials:'same-origin',
       }, 20000, 45000);
@@ -148,52 +146,148 @@
           blockForConfiguration();
           return;
         }
+        if (payload.code === 'CSRF_INVALID') location.reload();
         const retryAfter = Number(response.headers.get('retry-after') || 0);
         const suffix = response.status === 429 && retryAfter ? ` Provo pas rreth ${Math.ceil(retryAfter / 60)} minutash.` : '';
         throw new Error((payload.error || 'Hyrja dështoi.') + suffix);
       }
-      saveBootstrapLease(payload);
-      redirecting = true;
-      setMessage('U verifikua. Po hapet MedIndex…', true);
-      password.value = '';
-      try { sessionStorage.removeItem(RETURN_KEY); } catch {}
-      await Promise.race([
-        purgeOnlyStaleRuntimeEntries(),
-        new Promise(resolve => setTimeout(resolve, 1200)),
-      ]);
-      location.replace(destination());
+      await completeLogin(payload);
     } catch (error) {
       if (configurationBlocked) return;
-      const text = error?.name === 'AbortError'
-        ? 'Lidhja është shumë e ngadalshme. Password-i nuk u refuzua; provo përsëri kur sinjali të jetë pak më i mirë.'
+      const value = error?.name === 'AbortError'
+        ? 'Lidhja është shumë e ngadalshme. Provo përsëri kur sinjali të jetë më i mirë.'
         : error.message || 'Hyrja dështoi.';
-      setMessage(text);
-      password.select();
+      setMessage(value);
+      if (provider === 'google') setGoogleStatus(value, true);
+      else password?.select();
     } finally {
       if (!redirecting && !configurationBlocked) setBusy(false);
     }
+  }
+
+  function updateCapsLock(event) {
+    if (!capsHint) return;
+    capsHint.hidden = !Boolean(event?.getModifierState?.('CapsLock'));
+  }
+
+  ['keydown', 'keyup'].forEach(type => password?.addEventListener(type, updateCapsLock));
+  password?.addEventListener('blur', () => { if (capsHint) capsHint.hidden = true; });
+
+  toggle?.addEventListener('click', () => {
+    const visible = password.type === 'text';
+    password.type = visible ? 'password' : 'text';
+    toggle.textContent = visible ? 'Shfaq' : 'Fshih';
+    toggle.setAttribute('aria-pressed', String(!visible));
+    toggle.setAttribute('aria-label', visible ? 'Shfaq password-in' : 'Fshih password-in');
+    password.focus();
   });
+
+  form?.addEventListener('submit', event => {
+    event.preventDefault();
+    const value = password.value;
+    if (value.length < 6) {
+      setMessage('Shkruaje password-in e plotë.');
+      password.focus();
+      return;
+    }
+    void submitCredential({ password:value }, 'password');
+  });
+
+  function waitForGoogle(timeoutMs = 12000) {
+    const started = Date.now();
+    return new Promise((resolve, reject) => {
+      const check = () => {
+        if (window.google?.accounts?.id) return resolve(window.google.accounts.id);
+        if (Date.now() - started >= timeoutMs) return reject(new Error('Google Sign-In nuk u ngarkua.'));
+        setTimeout(check, 80);
+      };
+      check();
+    });
+  }
+
+  async function initializeGoogle(config) {
+    if (googleInitialized || !config.googleConfigured || !config.googleClientId) return;
+    try {
+      const identity = await waitForGoogle();
+      identity.initialize({
+        client_id:config.googleClientId,
+        callback:response => {
+          const credential = String(response?.credential || '');
+          if (!credential) return setGoogleStatus('Google nuk ktheu credential-in e hyrjes.', true);
+          void submitCredential({ credential }, 'google');
+        },
+        nonce:csrfToken,
+        auto_select:false,
+        cancel_on_tap_outside:true,
+        use_fedcm_for_prompt:true,
+      });
+      const dark = document.documentElement.dataset.theme === 'dark';
+      identity.renderButton(googleButton, {
+        type:'standard',
+        theme:dark ? 'filled_black' : 'outline',
+        size:'large',
+        text:'continue_with',
+        shape:'rectangular',
+        logo_alignment:'left',
+        width:320,
+      });
+      googleInitialized = true;
+      setGoogleStatus('Zgjidh llogarinë e aprovuar Google.');
+    } catch (error) {
+      setGoogleStatus(error.message || 'Google Sign-In nuk u ngarkua.', true);
+      if (config.passwordFallbackConfigured) {
+        fallback.hidden = false;
+        fallback.open = true;
+      }
+    }
+  }
+
+  function configureProviders(config) {
+    csrfToken = String(config.csrfToken || '');
+    fallback.hidden = !config.passwordFallbackConfigured;
+    if (!config.googleConfigured) {
+      googleButton.innerHTML = '<div class="google-login-unavailable">Google Client ID ende nuk është vendosur në Vercel.</div>';
+      setGoogleStatus('Hyrja me Google është gati në kod, por pret konfigurimin e Google Client ID.', true);
+      if (config.passwordFallbackConfigured) {
+        fallback.hidden = false;
+        fallback.open = true;
+        password.focus();
+      } else {
+        blockForConfiguration();
+      }
+      return;
+    }
+    if (config.passwordFallbackConfigured && new URLSearchParams(location.search).get('fallback') === '1') fallback.open = true;
+    void initializeGoogle(config);
+  }
 
   async function checkExistingSession() {
     try {
-      const response = await timedFetch('/api/auth', { cache:'no-store', credentials:'same-origin' }, 10000, 24000);
+      const response = await timedFetch('/api/auth', { cache:'no-store', credentials:'same-origin', headers:{ Accept:'application/json' } }, 10000, 24000);
       const payload = await response.json().catch(() => ({}));
       if (response.ok && payload.authenticated) {
         redirecting = true;
         location.replace(destination());
         return;
       }
-      if (response.ok && (payload.hardened === false || payload.accessConfigured === false || payload.sessionConfigured === false)) blockForConfiguration();
-    } catch {}
+      if (!response.ok || payload.sessionConfigured === false || payload.hardened === false) {
+        if (!payload.googleConfigured && !payload.passwordFallbackConfigured) blockForConfiguration();
+      }
+      configureProviders(payload);
+    } catch (error) {
+      setGoogleStatus(error?.name === 'AbortError' ? 'Kontrolli i hyrjes zgjati tepër.' : 'Serveri i hyrjes nuk u arrit.', true);
+      setMessage('Kontrollo lidhjen me internet dhe provo përsëri.');
+    }
   }
 
   function init() {
     setBusy(false);
-    password.focus();
     refreshWorkerInBackground();
     checkExistingSession();
   }
 
-  window.addEventListener('pageshow', () => { if (!busy && !configurationBlocked) password.focus(); });
+  window.addEventListener('pageshow', () => {
+    if (!busy && !configurationBlocked && fallback.open) password?.focus();
+  });
   init();
 })();
