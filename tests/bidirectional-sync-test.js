@@ -12,6 +12,7 @@ const api = read('api/drive-sync.js');
 const appsScript = read('google-apps-script/medindex-neon-editor-pull.gs');
 const currentSync = read('google-apps-script/medindex-current-dosage-sync.gs');
 const standalone = read('google-apps-script/medindex-current-sync-standalone.gs');
+const launcher = read('google-apps-script/medindex-perfect-sync-launcher.gs');
 
 assert.match(api, /pull_editor_updates/);
 assert.match(api, /source=eq\.clinical_editor/);
@@ -67,6 +68,17 @@ for (const marker of [
   'UrlFetchApp.fetch',
 ]) assert.ok(standalone.includes(marker), `Missing standalone sync marker ${marker}`);
 
+for (const marker of [
+  'setupMedIndexPerfectSync',
+  'disableMedIndexPerfectSync',
+  'medIndexRemoveLegacySyncTriggers_',
+  'medIndexDriveOnEdit',
+  'medIndexDriveReconcile',
+  'medIndexEditorPull',
+  'medIndexCurrentDosageOnEdit',
+  'medIndexStandaloneOnEdit',
+]) assert.ok(launcher.includes(marker), `Missing launcher marker ${marker}`);
+
 assert.doesNotMatch(standalone, /MEDINDEX_DRIVE_SYNC_SECRET\s*=\s*['"][^'"]+['"]/);
 assert.doesNotMatch(standalone, /17cuXg5qORIIWkvAxLZ7uz2FMmGvzwjr850cubUcIgLE/);
 
@@ -75,12 +87,15 @@ try {
   const editorCheck = path.join(temp, 'editor-pull.js');
   const currentCheck = path.join(temp, 'current-sync.js');
   const standaloneCheck = path.join(temp, 'standalone-sync.js');
+  const launcherCheck = path.join(temp, 'launcher.js');
   fs.writeFileSync(editorCheck, appsScript);
   fs.writeFileSync(currentCheck, currentSync);
   fs.writeFileSync(standaloneCheck, standalone);
+  fs.writeFileSync(launcherCheck, launcher);
   execFileSync(process.execPath, ['--check', editorCheck], { stdio:'pipe' });
   execFileSync(process.execPath, ['--check', currentCheck], { stdio:'pipe' });
   execFileSync(process.execPath, ['--check', standaloneCheck], { stdio:'pipe' });
+  execFileSync(process.execPath, ['--check', launcherCheck], { stdio:'pipe' });
 } finally {
   fs.rmSync(temp, { recursive:true, force:true });
 }
