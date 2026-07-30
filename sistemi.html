@@ -1,0 +1,85 @@
+<!doctype html>
+<html lang="sq" class="auth-checking medindex-tailadmin">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+  <meta name="robots" content="noindex,nofollow,noarchive">
+  <meta name="theme-color" content="#0d3d40">
+  <title>MedIndex | Sistemi dhe sinkronizimi</title>
+  <link rel="stylesheet" href="app-polish.css?v=20260728-1">
+  <link rel="stylesheet" href="performance.css?v=20260723-1">
+  <link rel="stylesheet" href="tailadmin-medindex.css?v=20260728-1" data-tailadmin-medindex-css>
+  <link rel="stylesheet" href="system-health.css?v=system-health-v1">
+  <link rel="stylesheet" href="tailadmin-professional.css?v=20260728-1" data-tailadmin-professional-css>
+  <script src="tailadmin-shell.js?v=system-health-v1" defer></script>
+  <script src="tailadmin-professional.js?v=production-audit-v2" defer></script>
+</head>
+<body>
+  <a class="skip-link" href="#systemHealth">Kalo te statusi i sistemit</a>
+  <main class="system-health" id="systemHealth" tabindex="-1">
+    <section class="system-hero" aria-labelledby="systemTitle">
+      <div>
+        <p class="system-kicker">MedIndex · kontroll operacional</p>
+        <h1 id="systemTitle">Sistemi dhe sinkronizimi</h1>
+        <p>Gjendja reale e Neon-it, Google Sheet-it, editorit klinik dhe të dhënave që përdoren nga recetat.</p>
+      </div>
+      <div class="system-hero-actions">
+        <span class="system-state is-loading" id="systemOverallState">Duke kontrolluar…</span>
+        <button class="system-refresh" id="systemRefresh" type="button">Rifresko tani</button>
+      </div>
+    </section>
+
+    <section class="system-metrics" aria-label="Numrat e databazës">
+      <article><span>Barnat</span><strong id="systemDrugCount">—</strong><small>prezantime në Neon</small></article>
+      <article><span>Skemat e dozimit</span><strong id="systemDosageCount">—</strong><small>të rritur dhe pediatri</small></article>
+      <article><span>Kodet ICD</span><strong id="systemIcdCount">—</strong><small>diagnoza të strukturuara</small></article>
+      <article><span>Analizat</span><strong id="systemLabCount">—</strong><small>referenca laboratorike</small></article>
+    </section>
+
+    <section class="system-grid">
+      <article class="system-panel system-sync-panel">
+        <header>
+          <div><p class="system-kicker">Google Sheet ↔ Neon</p><h2>Sinkronizimi i dozologjisë</h2></div>
+          <span class="system-state is-loading" id="systemSyncState">Duke kontrolluar…</span>
+        </header>
+        <div class="system-source-list" id="systemSourceList" aria-live="polite"></div>
+        <div class="system-setup" id="systemSetup" hidden>
+          <strong>Kërkohet aktivizimi një herë</strong>
+          <p>Në Apps Script të spreadsheet-it aktual ekzekuto funksionin:</p>
+          <code>setupMedIndexPerfectSync</code>
+          <p>Pas autorizimit, editimet kalojnë menjëherë në Neon, kontrolli rikuperues bëhet çdo 5 minuta dhe ndryshimet e editorit kthehen në Sheet çdo minutë.</p>
+        </div>
+      </article>
+
+      <article class="system-panel">
+        <header>
+          <div><p class="system-kicker">Editori klinik</p><h2>Ndryshimet e kontrolluara</h2></div>
+          <span class="system-state is-neutral" id="systemEditorState">Gati</span>
+        </header>
+        <p class="system-panel-copy" id="systemEditorSummary">Po kontrollohen ndryshimet e fundit të editorit.</p>
+        <div class="system-event-list" id="systemEditorEvents"></div>
+      </article>
+    </section>
+
+    <section class="system-panel system-audit-panel">
+      <header>
+        <div><p class="system-kicker">Audit operacional</p><h2>Importet e fundit të plota</h2></div>
+        <span class="system-checked" id="systemCheckedAt">—</span>
+      </header>
+      <p class="system-panel-copy">Këto janë importe historike të databazës. Sinkronizimi i përditshëm vlerësohet nga kartat e Google Sheet-it më sipër.</p>
+      <div class="system-table-wrap">
+        <table>
+          <thead><tr><th>Koha</th><th>Statusi</th><th>Fushëveprimi</th><th>Rreshta</th><th>Detajet</th></tr></thead>
+          <tbody id="systemImportRows"><tr><td colspan="5">Duke ngarkuar auditin…</td></tr></tbody>
+        </table>
+      </div>
+    </section>
+
+    <p class="system-message" id="systemMessage" role="status" aria-live="polite"></p>
+  </main>
+
+  <script src="auth-client.js?v=production-audit-v2" defer></script>
+  <script src="system-health.js?v=system-health-v1" defer></script>
+  <script src="app-stability.js?v=20260724-2" defer></script>
+</body>
+</html>
