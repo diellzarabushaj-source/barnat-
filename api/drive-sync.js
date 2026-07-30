@@ -9,6 +9,7 @@ const { neonRequest } = require('../lib/neon-data-api.js');
 const CURRENT_DOSAGE_SPREADSHEET_ID = '1T7XsfkXLQfEomFL4DmXoA8PheiR6s3Qmu36hTqklOMo';
 const LEGACY_DOSAGE_SPREADSHEET_ID = '17cuXg5qORIIWkvAxLZ7uz2FMmGvzwjr850cubUcIgLE';
 const DOSAGE_SHEETS = new Set(['KARTELA_BARNAVE', 'DOZA_TE_RRITUR', 'DOZA_PEDIATRIKE']);
+const GOOGLE_SYNC_OWNER_EMAIL = 'diellzarabushaj@gmail.com';
 
 const clean = value => String(value ?? '').replace(/\s+/g, ' ').trim();
 const isoOrEmpty = value => {
@@ -32,6 +33,62 @@ function safeEqual(left, right) {
   const a = Buffer.from(String(left || ''), 'utf8');
   const b = Buffer.from(String(right || ''), 'utf8');
   return a.length === b.length && a.length > 0 && crypto.timingSafeEqual(a, b);
+}
+
+
+async function verifiedGoogleOwner(req, payload = parseBody(req)) {
+  const authorization = clean(req.headers?.authorization);
+  const match = authorization.match(/^Bearer\s+(.+)$/i);
+  if (!match) return '';
+  const token = clean(match[1]);
+  if (token.length < 40 || token.length > 4096) return '';
+
+  const spreadsheetId = clean(payload.spreadsheetId);
+  if (spreadsheetId !== CURRENT_DOSAGE_SPREADSHEET_ID) return '';
+
+  const tokenInfoResponse = await fetch(
+    `https://oauth2.googleapis.com/tokeninfo?access_token=${encodeURIComponent(token)}`,
+    { headers:{ Accept:'application/json' } },
+  );
+  if (!tokenInfoResponse.ok) return '';
+  const tokenInfo = await tokenInfoResponse.json().catch(() => ({}));
+  const email = clean(tokenInfo.email).toLowerCase();
+  if (email !== GOOGLE_SYNC_OWNER_EMAIL) return '';
+
+  const sheetResponse = await fetch(
+    `https://sheets.googleapis.com/v4/spreadsheets/${encodeURIComponent(spreadsheetId)}`
+      + '?fields=spreadsheetId%2Csheets.properties.title',
+    { headers:{ Authorization:`Bearer ${token}`, Accept:'application/json' } },
+  );
+  if (!sheetResponse.ok) return '';
+  const metadata = await sheetResponse.json().catch(() => ({}));
+  const titles = Array.isArray(metadata.sheets)
+    ? metadata.sheets.map(item => clean(item?.properties?.title))
+    : [];
+  if (metadata.spreadsheetId !== spreadsheetId) return '';
+  if (![...DOSAGE_SHEETS].every(title => titles.includes(title))) return '';
+  return email;
+}
+
+async function bootstrapSecret(req, res, payload) {
+  const email = await verifiedGoogleOwner(req, payload);
+  res.setHeader('Cache-Control', 'no-store');
+  res.setHeader('X-Content-Type-Options', 'nosniff');
+  if (!email) return res.status(401).json({ ok:false, error:'Autorizimi Google nuk u verifikua.' });
+
+  const secret = crypto.randomBytes(36).toString('base64url');
+  const secretHash = crypto.createHash('sha256').update(secret, 'utf8').digest('hex');
+  const now = new Date().toISOString();
+  await neonRequest(
+    `drive_sync_sources?spreadsheet_id=eq.${encodeURIComponent(CURRENT_DOSAGE_SPREADSHEET_ID)}`
+      + `&sheet_name=in.(${[...DOSAGE_SHEETS].join(',')})`,
+    {
+      method:'PATCH',
+      body:{ auth_secret_hash:secretHash, enabled:true, last_status:'pending', last_error:null, updated_at:now },
+      prefer:'return=minimal',
+    },
+  );
+  return res.status(200).json({ ok:true, secret, owner:email, expires:'stored_by_apps_script_only' });
 }
 
 async function verifiedSecret(req, payload = parseBody(req)) {
@@ -177,6 +234,7 @@ module.exports = async function handler(req, res) {
   if (req.method !== 'POST') return DriveNeonSync.handle(req, res);
   try {
     const payload = parseBody(req);
+    if (clean(payload.action) === 'bootstrap_secret') return bootstrapSecret(req, res, payload);
     const verification = await verifiedSecret(req, payload);
     if (!verification) {
       res.setHeader('Cache-Control', 'no-store');
@@ -228,6 +286,8 @@ module.exports._test = {
   canonicalPayload,
   safeEqual,
   verifiedSecret,
+  verifiedGoogleOwner,
+  bootstrapSecret,
   editorValues,
   isoOrEmpty,
   CURRENT_DOSAGE_SPREADSHEET_ID,
