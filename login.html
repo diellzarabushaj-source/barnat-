@@ -8,7 +8,9 @@
   <title>Hyr në MedIndex</title>
   <script src="theme-preload.js?v=production-audit-v2"></script>
   <link rel="stylesheet" href="login.css?v=20260723-2">
+  <link rel="stylesheet" href="google-login.css?v=20260730-1">
   <link rel="stylesheet" href="tailadmin-medindex.css?v=20260728-1" data-tailadmin-medindex-css>
+  <script src="https://accounts.google.com/gsi/client" async defer></script>
 </head>
 <body>
   <main class="login-shell">
@@ -16,26 +18,39 @@
       <div class="login-brand" aria-hidden="true">M<span>+</span></div>
       <p class="login-kicker">Qasje private</p>
       <h1 id="loginTitle">Hyr në MedIndex</h1>
-      <p class="login-copy">Shkruaje password-in personal për të hapur regjistrin, recetat, ICD-në dhe analizat.</p>
+      <p class="login-copy">Hyr direkt me llogarinë e aprovuar Google. MedIndex verifikon identitetin në server dhe hap rolin Editor vetëm për pronaren.</p>
 
-      <form id="loginForm" autocomplete="on" novalidate>
-        <label for="password">Password-i</label>
-        <div class="password-row">
-          <input id="password" name="password" type="password" autocomplete="current-password" required minlength="6" maxlength="128" autofocus aria-describedby="capsLockHint loginMessage">
-          <button id="togglePassword" type="button" aria-label="Shfaq password-in" aria-pressed="false">Shfaq</button>
-        </div>
-        <p class="caps-lock-hint" id="capsLockHint" hidden>Caps Lock është aktiv.</p>
-        <button class="login-submit" id="loginSubmit" type="submit">
-          <span>Hyr</span>
-          <span aria-hidden="true">→</span>
-        </button>
-        <p class="login-message" id="loginMessage" role="alert" aria-live="polite"></p>
-      </form>
+      <section class="google-login-panel" id="googleLoginPanel" aria-labelledby="googleLoginHeading">
+        <h2 class="google-login-heading" id="googleLoginHeading">Vazhdo me Google</h2>
+        <div class="google-login-button" id="googleLoginButton" aria-live="polite"></div>
+        <p class="google-login-status" id="googleLoginStatus" role="status" aria-live="polite">Po përgatitet hyrja e sigurt…</p>
+      </section>
+
+      <p class="login-account-note">Lejohet vetëm diellzarabushaj@gmail.com</p>
+
+      <details class="password-fallback" id="passwordFallback" hidden>
+        <summary>Hyrje rezervë me password</summary>
+        <div class="login-divider"><span>Rezervë</span></div>
+        <form id="loginForm" autocomplete="on" novalidate>
+          <label for="password">Password-i</label>
+          <div class="password-row">
+            <input id="password" name="password" type="password" autocomplete="current-password" required minlength="6" maxlength="128" aria-describedby="capsLockHint loginMessage">
+            <button id="togglePassword" type="button" aria-label="Shfaq password-in" aria-pressed="false">Shfaq</button>
+          </div>
+          <p class="caps-lock-hint" id="capsLockHint" hidden>Caps Lock është aktiv.</p>
+          <button class="login-submit" id="loginSubmit" type="submit">
+            <span>Hyr me password</span>
+            <span aria-hidden="true">→</span>
+          </button>
+        </form>
+      </details>
+
+      <p class="login-message" id="loginMessage" role="alert" aria-live="polite"></p>
 
       <div class="login-meta" aria-label="Siguria e sesionit">
+        <span>Google ID i verifikuar</span>
         <span>Sesioni 8 orë</span>
         <span>Cookie HttpOnly</span>
-        <span>5 tentativa / 15 min</span>
       </div>
     </section>
     <aside class="login-side-panel" aria-label="MedIndex">
@@ -43,10 +58,10 @@
         <div class="login-side-mark">M<span>+</span></div>
         <h2>MedIndex</h2>
         <p>Një hapësirë e unifikuar për barnat, klasifikimin ATC, ICD-në, analizat, dozologjinë, protokollet dhe recetat.</p>
-        <div class="login-side-grid" aria-hidden="true"><span>Të dhëna klinike</span><span>Dokumente zyrtare</span><span>Qasje private</span></div>
+        <div class="login-side-grid" aria-hidden="true"><span>Të dhëna klinike</span><span>Bibliotekë personale</span><span>Qasje private</span></div>
       </div>
     </aside>
   </main>
-  <script src="login.js?v=production-audit-v3" defer></script>
+  <script src="login.js?v=google-auth-v1" defer></script>
 </body>
 </html>
