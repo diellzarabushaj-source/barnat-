@@ -25,7 +25,7 @@ export const config = {
 };
 
 function isPublicPath(pathname) {
-  return PUBLIC_PATHS.has(pathname) || pathname === '/api/auth';
+  return PUBLIC_PATHS.has(pathname) || pathname === '/api/auth' || pathname === '/api/neon-status';
 }
 
 function safeReturnPath(url) {
