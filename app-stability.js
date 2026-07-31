@@ -13,6 +13,12 @@
       link.dataset.medindexWorkspaceFinal = '1';
       document.head.appendChild(link);
     }
+    if (!document.getElementById('medindexWorkspaceResponsiveSafety')) {
+      const style = document.createElement('style');
+      style.id = 'medindexWorkspaceResponsiveSafety';
+      style.textContent = '@media(max-width:760px){html.medindex-workspace-final #dataTable{display:block!important;width:100%!important;min-width:0!important;max-width:100%!important}}';
+      document.head.appendChild(style);
+    }
     if (!document.querySelector('script[data-medindex-workspace-final]')) {
       const script = document.createElement('script');
       script.src = 'clinical-workspace-final.js?v=20260801-1';
@@ -222,7 +228,7 @@
     document.addEventListener('keydown', trapFocus, true);
     document.addEventListener('keydown', closeTransientUi, true);
     document.addEventListener('click', clearPrescriptionRegistryCacheOnLogout, true);
-    window.MEDINDEX_RUNTIME = { version:'2026-08-01.1', online:() => navigator.onLine, clearPrivateClientCaches };
+    window.MEDINDEX_RUNTIME = { version:'2026-08-01.2', online:() => navigator.onLine, clearPrivateClientCaches };
   }
 
   if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', init, { once:true });
