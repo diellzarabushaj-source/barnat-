@@ -1,52 +1,182 @@
-/* Keep dynamically injected editor and dosage columns aligned at every viewport. */
-@media (min-width: 761px) {
-  html.medindex-tailadmin.mi-first-page-audited #dataTable {
-    width: max-content !important;
-    min-width: 100% !important;
-    table-layout: auto !important;
+/* MedIndex registry table integrity v2.
+   Desktop/tablet only: one deterministic colgroup, no positional sticky cells,
+   stable scrollbars and exact header/body alignment. */
+@media (min-width:761px) {
+  html.medindex-tailadmin.mi-first-page-audited[data-mi-page="barnat"] .table-wrap,
+  html.medindex-tailadmin.mi-first-page-audited.medindex-workspace-final[data-mi-page="barnat"] .table-wrap {
+    position:relative!important;
+    isolation:isolate!important;
+    width:100%!important;
+    max-width:100%!important;
+    max-height:min(72dvh,780px)!important;
+    overflow:auto!important;
+    overflow-anchor:none!important;
+    overscroll-behavior:contain!important;
+    scrollbar-gutter:stable both-edges!important;
+    border-radius:14px!important;
+    background:var(--mw-surface,var(--registry-surface,#fff))!important;
+    box-shadow:none!important;
   }
 
-  html.medindex-tailadmin.mi-first-page-audited #headerRow > th,
-  html.medindex-tailadmin.mi-first-page-audited #tbody > tr > td {
-    box-sizing: border-box !important;
+  html.medindex-tailadmin.mi-first-page-audited[data-mi-page="barnat"] #dataTable,
+  html.medindex-tailadmin.mi-first-page-audited.medindex-workspace-final[data-mi-page="barnat"] #dataTable {
+    width:var(--registry-table-width,100%)!important;
+    min-width:var(--registry-table-width,100%)!important;
+    max-width:none!important;
+    table-layout:fixed!important;
+    border-collapse:separate!important;
+    border-spacing:0!important;
+    transform:none!important;
+    contain:style!important;
   }
 
-  html.medindex-tailadmin.mi-first-page-audited #dataTable .clinical-editor-status-column {
-    width: 190px !important;
-    min-width: 190px !important;
-    max-width: 190px !important;
-    white-space: normal !important;
+  html.medindex-tailadmin.mi-first-page-audited[data-mi-page="barnat"] #dataTable col,
+  html.medindex-tailadmin.mi-first-page-audited.medindex-workspace-final[data-mi-page="barnat"] #dataTable col {
+    min-width:0!important;
+    max-width:none!important;
   }
 
-  html.medindex-tailadmin.mi-first-page-audited #dataTable .clinical-editor-action-column {
-    width: 96px !important;
-    min-width: 96px !important;
-    max-width: 96px !important;
-    text-align: center !important;
-    white-space: nowrap !important;
+  html.medindex-tailadmin.mi-first-page-audited[data-mi-page="barnat"] #dataTable thead th,
+  html.medindex-tailadmin.mi-first-page-audited.medindex-workspace-final[data-mi-page="barnat"] #dataTable thead th {
+    position:sticky!important;
+    top:0!important;
+    left:auto!important;
+    right:auto!important;
+    z-index:20!important;
+    box-sizing:border-box!important;
+    width:auto!important;
+    min-width:0!important;
+    max-width:none!important;
+    height:52px!important;
+    padding:8px 12px!important;
+    overflow:hidden!important;
+    white-space:normal!important;
+    overflow-wrap:anywhere!important;
+    text-overflow:ellipsis!important;
+    vertical-align:middle!important;
+    box-shadow:none!important;
+    transform:none!important;
   }
 
-  html.medindex-tailadmin.mi-first-page-audited #dataTable .registry-dosage-column {
-    width: 320px !important;
-    min-width: 320px !important;
-    max-width: 320px !important;
-    overflow: hidden !important;
-    text-overflow: clip !important;
-    white-space: normal !important;
+  html.medindex-tailadmin.mi-first-page-audited[data-mi-page="barnat"] #dataTable tbody td,
+  html.medindex-tailadmin.mi-first-page-audited.medindex-workspace-final[data-mi-page="barnat"] #dataTable tbody td {
+    position:static!important;
+    inset:auto!important;
+    left:auto!important;
+    right:auto!important;
+    z-index:auto!important;
+    box-sizing:border-box!important;
+    width:auto!important;
+    min-width:0!important;
+    max-width:none!important;
+    padding:12px!important;
+    overflow:hidden!important;
+    vertical-align:middle!important;
+    box-shadow:none!important;
+    transform:none!important;
   }
 
-  html.medindex-tailadmin.mi-first-page-audited #dataTable .registry-dosage-grid {
-    grid-template-columns: minmax(0, 1fr) 66px !important;
-    width: 100% !important;
+  html.medindex-tailadmin.mi-first-page-audited[data-mi-page="barnat"] #dataTable tbody tr,
+  html.medindex-tailadmin.mi-first-page-audited.medindex-workspace-final[data-mi-page="barnat"] #dataTable tbody tr {
+    height:auto!important;
+    min-height:64px!important;
+    transform:none!important;
   }
 
-  html.medindex-tailadmin.mi-first-page-audited #dataTable .registry-dosage-grid > :first-child {
-    min-width: 0 !important;
-    overflow-wrap: anywhere !important;
+  html.medindex-tailadmin.mi-first-page-audited[data-mi-page="barnat"] #dataTable :is(th,td):nth-child(1),
+  html.medindex-tailadmin.mi-first-page-audited[data-mi-page="barnat"] #dataTable :is(th,td):nth-child(2),
+  html.medindex-tailadmin.mi-first-page-audited[data-mi-page="barnat"] #dataTable :is(th,td):nth-child(3),
+  html.medindex-tailadmin.mi-first-page-audited.medindex-workspace-final[data-mi-page="barnat"] #dataTable :is(th,td):nth-child(1),
+  html.medindex-tailadmin.mi-first-page-audited.medindex-workspace-final[data-mi-page="barnat"] #dataTable :is(th,td):nth-child(2),
+  html.medindex-tailadmin.mi-first-page-audited.medindex-workspace-final[data-mi-page="barnat"] #dataTable :is(th,td):nth-child(3) {
+    left:auto!important;
+    right:auto!important;
+    width:auto!important;
+    min-width:0!important;
+    max-width:none!important;
+    box-shadow:none!important;
   }
 
-  html.medindex-tailadmin.mi-first-page-audited #dataTable .registry-dosage-route {
-    width: 66px !important;
-    max-width: 66px !important;
+  html.medindex-tailadmin.mi-first-page-audited[data-mi-page="barnat"] #dataTable tbody td[data-registry-column-key="trade-name"],
+  html.medindex-tailadmin.mi-first-page-audited[data-mi-page="barnat"] #dataTable tbody td[data-registry-column-key="active-substance"],
+  html.medindex-tailadmin.mi-first-page-audited.medindex-workspace-final[data-mi-page="barnat"] #dataTable tbody td[data-registry-column-key="trade-name"],
+  html.medindex-tailadmin.mi-first-page-audited.medindex-workspace-final[data-mi-page="barnat"] #dataTable tbody td[data-registry-column-key="active-substance"] {
+    white-space:nowrap!important;
+    text-overflow:ellipsis!important;
+  }
+
+  html.medindex-tailadmin.mi-first-page-audited[data-mi-page="barnat"] #dataTable tbody td[data-registry-column-key="form"],
+  html.medindex-tailadmin.mi-first-page-audited[data-mi-page="barnat"] #dataTable tbody td[data-registry-column-key="drug-class"],
+  html.medindex-tailadmin.mi-first-page-audited[data-mi-page="barnat"] #dataTable tbody td[data-registry-column-key="use"],
+  html.medindex-tailadmin.mi-first-page-audited.medindex-workspace-final[data-mi-page="barnat"] #dataTable tbody td[data-registry-column-key="form"],
+  html.medindex-tailadmin.mi-first-page-audited.medindex-workspace-final[data-mi-page="barnat"] #dataTable tbody td[data-registry-column-key="drug-class"],
+  html.medindex-tailadmin.mi-first-page-audited.medindex-workspace-final[data-mi-page="barnat"] #dataTable tbody td[data-registry-column-key="use"] {
+    white-space:normal!important;
+    overflow-wrap:anywhere!important;
+  }
+
+  html.medindex-tailadmin.mi-first-page-audited[data-mi-page="barnat"] #dataTable :is(th,td).registry-dosage-column,
+  html.medindex-tailadmin.mi-first-page-audited.medindex-workspace-final[data-mi-page="barnat"] #dataTable :is(th,td).registry-dosage-column,
+  html.medindex-tailadmin.mi-first-page-audited[data-mi-page="barnat"] #dataTable :is(th,td).clinical-editor-status-column,
+  html.medindex-tailadmin.mi-first-page-audited.medindex-workspace-final[data-mi-page="barnat"] #dataTable :is(th,td).clinical-editor-status-column,
+  html.medindex-tailadmin.mi-first-page-audited[data-mi-page="barnat"] #dataTable :is(th,td).clinical-editor-action-column,
+  html.medindex-tailadmin.mi-first-page-audited.medindex-workspace-final[data-mi-page="barnat"] #dataTable :is(th,td).clinical-editor-action-column {
+    width:auto!important;
+    min-width:0!important;
+    max-width:none!important;
+  }
+
+  html.medindex-tailadmin.mi-first-page-audited[data-mi-page="barnat"] #dataTable td.registry-dosage-column,
+  html.medindex-tailadmin.mi-first-page-audited.medindex-workspace-final[data-mi-page="barnat"] #dataTable td.registry-dosage-column {
+    white-space:normal!important;
+    overflow:visible!important;
+  }
+
+  html.medindex-tailadmin.mi-first-page-audited[data-mi-page="barnat"] #dataTable .registry-dosage-grid,
+  html.medindex-tailadmin.mi-first-page-audited.medindex-workspace-final[data-mi-page="barnat"] #dataTable .registry-dosage-grid {
+    width:100%!important;
+    min-width:0!important;
+    grid-template-columns:minmax(0,1fr) 68px!important;
+    gap:8px!important;
+  }
+
+  html.medindex-tailadmin.mi-first-page-audited[data-mi-page="barnat"] #dataTable .registry-dosage-grid > :first-child,
+  html.medindex-tailadmin.mi-first-page-audited.medindex-workspace-final[data-mi-page="barnat"] #dataTable .registry-dosage-grid > :first-child {
+    min-width:0!important;
+    overflow-wrap:anywhere!important;
+  }
+
+  html.medindex-tailadmin.mi-first-page-audited[data-mi-page="barnat"] #dataTable .registry-dosage-route,
+  html.medindex-tailadmin.mi-first-page-audited.medindex-workspace-final[data-mi-page="barnat"] #dataTable .registry-dosage-route {
+    width:68px!important;
+    max-width:68px!important;
+    overflow:hidden!important;
+    text-overflow:ellipsis!important;
+  }
+
+  html.medindex-tailadmin.mi-first-page-audited[data-mi-page="barnat"] #dataTable tr[data-registry-column-integrity="mismatch"],
+  html.medindex-tailadmin.mi-first-page-audited.medindex-workspace-final[data-mi-page="barnat"] #dataTable tr[data-registry-column-integrity="mismatch"] {
+    outline:2px solid rgba(181,71,71,.35)!important;
+    outline-offset:-2px!important;
+  }
+}
+
+@media (max-width:760px) {
+  html.medindex-tailadmin.mi-first-page-audited[data-mi-page="barnat"] #dataTable,
+  html.medindex-tailadmin.mi-first-page-audited.medindex-workspace-final[data-mi-page="barnat"] #dataTable {
+    width:100%!important;
+    min-width:0!important;
+    table-layout:auto!important;
+  }
+
+  html.medindex-tailadmin.mi-first-page-audited[data-mi-page="barnat"] #dataTable colgroup,
+  html.medindex-tailadmin.mi-first-page-audited.medindex-workspace-final[data-mi-page="barnat"] #dataTable colgroup {
+    display:none!important;
+  }
+}
+
+@media (prefers-reduced-motion:reduce) {
+  html.medindex-tailadmin.mi-first-page-audited[data-mi-page="barnat"] .table-wrap {
+    scroll-behavior:auto!important;
   }
 }
