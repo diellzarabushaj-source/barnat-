@@ -1,0 +1,52 @@
+/* Keep dynamically injected editor and dosage columns aligned at every viewport. */
+@media (min-width: 761px) {
+  html.medindex-tailadmin.mi-first-page-audited #dataTable {
+    width: max-content !important;
+    min-width: 100% !important;
+    table-layout: auto !important;
+  }
+
+  html.medindex-tailadmin.mi-first-page-audited #headerRow > th,
+  html.medindex-tailadmin.mi-first-page-audited #tbody > tr > td {
+    box-sizing: border-box !important;
+  }
+
+  html.medindex-tailadmin.mi-first-page-audited #dataTable .clinical-editor-status-column {
+    width: 190px !important;
+    min-width: 190px !important;
+    max-width: 190px !important;
+    white-space: normal !important;
+  }
+
+  html.medindex-tailadmin.mi-first-page-audited #dataTable .clinical-editor-action-column {
+    width: 96px !important;
+    min-width: 96px !important;
+    max-width: 96px !important;
+    text-align: center !important;
+    white-space: nowrap !important;
+  }
+
+  html.medindex-tailadmin.mi-first-page-audited #dataTable .registry-dosage-column {
+    width: 320px !important;
+    min-width: 320px !important;
+    max-width: 320px !important;
+    overflow: hidden !important;
+    text-overflow: clip !important;
+    white-space: normal !important;
+  }
+
+  html.medindex-tailadmin.mi-first-page-audited #dataTable .registry-dosage-grid {
+    grid-template-columns: minmax(0, 1fr) 66px !important;
+    width: 100% !important;
+  }
+
+  html.medindex-tailadmin.mi-first-page-audited #dataTable .registry-dosage-grid > :first-child {
+    min-width: 0 !important;
+    overflow-wrap: anywhere !important;
+  }
+
+  html.medindex-tailadmin.mi-first-page-audited #dataTable .registry-dosage-route {
+    width: 66px !important;
+    max-width: 66px !important;
+  }
+}
