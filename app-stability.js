@@ -5,6 +5,23 @@
   let uiFrame = 0;
   const bannerTimers = new Map();
 
+  function loadFinalWorkspaceAssets() {
+    if (!document.querySelector('link[data-medindex-workspace-final]')) {
+      const link = document.createElement('link');
+      link.rel = 'stylesheet';
+      link.href = 'clinical-workspace-final.css?v=20260801-1';
+      link.dataset.medindexWorkspaceFinal = '1';
+      document.head.appendChild(link);
+    }
+    if (!document.querySelector('script[data-medindex-workspace-final]')) {
+      const script = document.createElement('script');
+      script.src = 'clinical-workspace-final.js?v=20260801-1';
+      script.async = false;
+      script.dataset.medindexWorkspaceFinal = '1';
+      document.head.appendChild(script);
+    }
+  }
+
   function banner(className, message, persistent = false) {
     let node = document.querySelector(`.${className}`);
     if (!node) {
@@ -65,6 +82,7 @@
       '#miOverlay:not([hidden]) [role="dialog"]',
       '#rxDosageChooser:not([hidden]) [role="dialog"]',
       '[data-modal-overlay]:not([hidden]) [role="dialog"]',
+      '#mwProtocolDialog[open]',
     ];
     return selectors.map(selector => document.querySelector(selector)).find(Boolean) || null;
   }
@@ -104,6 +122,7 @@
   function overlayIsOpen(overlay) {
     if (!overlay) return false;
     if (overlay.classList.contains('atc-info-overlay')) return overlay.classList.contains('open') && overlay.getAttribute('aria-hidden') !== 'true';
+    if (overlay.matches?.('#mwProtocolDialog')) return overlay.hasAttribute('open');
     return !overlay.hidden && !overlay.hasAttribute('hidden') && overlay.getAttribute('aria-hidden') !== 'true';
   }
 
@@ -129,7 +148,7 @@
       requestAnimationFrame(() => focusable(dialog)[0]?.focus());
     }
     document.querySelectorAll('[data-stability-focus="1"]').forEach(node => {
-      const overlay = node.closest('.atc-info-overlay,.med-panel-overlay,#miOverlay,#rxDosageChooser,[data-modal-overlay]');
+      const overlay = node.closest('.atc-info-overlay,.med-panel-overlay,#miOverlay,#rxDosageChooser,[data-modal-overlay],#mwProtocolDialog');
       if (overlayIsOpen(overlay)) return;
       delete node.dataset.stabilityFocus;
       if (lastFocused?.isConnected) lastFocused.focus({ preventScroll:true });
@@ -189,6 +208,7 @@
   }
 
   function init() {
+    loadFinalWorkspaceAssets();
     updateConnectivity();
     installPerformanceHints();
     watchUi();
@@ -202,7 +222,7 @@
     document.addEventListener('keydown', trapFocus, true);
     document.addEventListener('keydown', closeTransientUi, true);
     document.addEventListener('click', clearPrescriptionRegistryCacheOnLogout, true);
-    window.MEDINDEX_RUNTIME = { version:'2026-07-26.2', online:() => navigator.onLine, clearPrivateClientCaches };
+    window.MEDINDEX_RUNTIME = { version:'2026-08-01.1', online:() => navigator.onLine, clearPrivateClientCaches };
   }
 
   if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', init, { once:true });
