@@ -1,0 +1,488 @@
+/* MedIndex Barnat — final clinical workspace UI layer.
+   Presentation only: no backend, clinical data, authentication or sync behavior is changed. */
+html.medindex-workspace-final{
+  --mw-bg:#f5f8f7;
+  --mw-surface:#ffffff;
+  --mw-surface-soft:#f8fbfa;
+  --mw-line:#dbe6e2;
+  --mw-line-strong:#c5d6d0;
+  --mw-text:#173033;
+  --mw-muted:#687a7d;
+  --mw-primary:#0d5f63;
+  --mw-primary-dark:#0a4448;
+  --mw-primary-soft:#e8f3f0;
+  --mw-gold:#b97820;
+  --mw-gold-soft:#fbf0dc;
+  --mw-danger:#b54747;
+  --mw-radius:14px;
+  --mw-radius-sm:10px;
+  --mw-shadow:0 12px 34px rgba(17,65,67,.07);
+  --mw-shadow-soft:0 4px 16px rgba(17,65,67,.055);
+}
+html[data-theme="dark"].medindex-workspace-final{
+  --mw-bg:#0c191b;
+  --mw-surface:#132326;
+  --mw-surface-soft:#172a2d;
+  --mw-line:#2b4144;
+  --mw-line-strong:#3b5557;
+  --mw-text:#edf5f3;
+  --mw-muted:#a7bab7;
+  --mw-primary:#79cfcb;
+  --mw-primary-dark:#9cddda;
+  --mw-primary-soft:#193b3c;
+  --mw-gold:#efbd70;
+  --mw-gold-soft:#3a2b16;
+  --mw-shadow:0 16px 42px rgba(0,0,0,.28);
+  --mw-shadow-soft:0 6px 20px rgba(0,0,0,.22);
+}
+html.medindex-workspace-final body{
+  background:var(--mw-bg)!important;
+  color:var(--mw-text);
+}
+html.medindex-workspace-final .mi-main,
+html.medindex-workspace-final .med-main{
+  background:var(--mw-bg)!important;
+}
+html.medindex-workspace-final .mi-content-container{
+  width:min(1540px,100%)!important;
+  min-width:0!important;
+  margin-inline:auto!important;
+}
+html.medindex-workspace-final :is(.clinical-main,.med-main,.rx-main,.atc-main){
+  min-width:0;
+}
+html.medindex-workspace-final :is(.clinical-hero,.med-hero,.registry-overview,.rx-page-heading,.atc-hero){
+  border:1px solid var(--mw-line)!important;
+  border-radius:var(--mw-radius)!important;
+  background:linear-gradient(120deg,var(--mw-surface) 0%,var(--mw-surface) 72%,var(--mw-primary-soft) 100%)!important;
+  box-shadow:none!important;
+}
+html.medindex-workspace-final :is(.clinical-hero,.med-hero,.registry-overview,.rx-page-heading,.atc-hero) h1,
+html.medindex-workspace-final :is(.clinical-hero,.med-hero,.registry-overview,.rx-page-heading,.atc-hero) h2{
+  color:var(--mw-text)!important;
+  letter-spacing:-.025em!important;
+}
+html.medindex-workspace-final :is(.clinical-kicker,.med-kicker,.registry-eyebrow){
+  color:var(--mw-primary)!important;
+}
+html.medindex-workspace-final :is(.clinical-toolbar,.registry-toolbar,.med-toolbar,.rx-command-bar,.atc-toolbar){
+  border:1px solid var(--mw-line)!important;
+  border-radius:var(--mw-radius)!important;
+  background:color-mix(in srgb,var(--mw-surface) 95%,transparent)!important;
+  box-shadow:0 1px 2px rgba(17,65,67,.035)!important;
+  backdrop-filter:blur(12px);
+}
+html.medindex-workspace-final :is(input,select,textarea,button){
+  font-family:inherit;
+}
+html.medindex-workspace-final :is(.clinical-toolbar,.registry-toolbar,.med-toolbar,.rx-command-bar,.atc-toolbar) :is(input,select,button){
+  border-color:var(--mw-line-strong)!important;
+  border-radius:9px!important;
+  background:var(--mw-surface)!important;
+  color:var(--mw-text)!important;
+  box-shadow:none!important;
+}
+html.medindex-workspace-final :is(input,select,textarea,button,a):focus-visible{
+  outline:3px solid color-mix(in srgb,var(--mw-primary) 24%,transparent)!important;
+  outline-offset:2px!important;
+}
+html.medindex-workspace-final :is(.clinical-summary,.med-summary,.registry-overview-meta>span,.atc-stat,.rx-stat){
+  border-color:var(--mw-line)!important;
+  background:var(--mw-surface)!important;
+  box-shadow:none!important;
+}
+html.medindex-workspace-final :is(.clinical-row,.med-card,.lab-card,.icd-card,.atc-card,.rx-card,.protocol-card){
+  border-color:var(--mw-line)!important;
+  background:var(--mw-surface)!important;
+  box-shadow:var(--mw-shadow-soft)!important;
+}
+html.medindex-workspace-final :is(.clinical-chip,.badge,.status-chip){
+  border:1px solid color-mix(in srgb,var(--mw-primary) 16%,transparent);
+  background:var(--mw-primary-soft)!important;
+  color:var(--mw-primary-dark)!important;
+}
+html.medindex-workspace-final .clinical-note{
+  border:1px solid var(--mw-line)!important;
+  border-left:4px solid var(--mw-gold)!important;
+  border-radius:var(--mw-radius-sm)!important;
+  background:var(--mw-surface)!important;
+}
+
+/* Main registry table: deterministic, readable and fast. */
+html.medindex-workspace-final .table-wrap{
+  border:1px solid var(--mw-line)!important;
+  border-radius:var(--mw-radius)!important;
+  background:var(--mw-surface)!important;
+  box-shadow:none!important;
+  scrollbar-gutter:stable both-edges;
+  overscroll-behavior:contain;
+}
+html.medindex-workspace-final .table-wrap[data-mw-scrolled="true"]{
+  box-shadow:inset 14px 0 18px -20px rgba(13,65,69,.72)!important;
+}
+html.medindex-workspace-final #dataTable{
+  width:max-content!important;
+  min-width:100%!important;
+  table-layout:auto!important;
+  border-collapse:separate!important;
+  border-spacing:0!important;
+  background:var(--mw-surface)!important;
+}
+html.medindex-workspace-final #dataTable thead th{
+  height:48px!important;
+  padding:0 12px!important;
+  border-right:1px solid rgba(255,255,255,.14)!important;
+  background:var(--mw-primary)!important;
+  color:#fff!important;
+  font-size:.7rem!important;
+  font-weight:800!important;
+  letter-spacing:.045em!important;
+  line-height:1.2!important;
+  vertical-align:middle!important;
+  white-space:nowrap!important;
+}
+html.medindex-workspace-final #dataTable tbody td{
+  min-height:52px!important;
+  padding:10px 12px!important;
+  border-right:1px solid color-mix(in srgb,var(--mw-line) 68%,transparent)!important;
+  border-bottom:1px solid var(--mw-line)!important;
+  background:var(--registry-row-bg,var(--mw-surface))!important;
+  color:var(--mw-text)!important;
+  line-height:1.42!important;
+  vertical-align:middle!important;
+}
+html.medindex-workspace-final #dataTable tbody tr:hover td{
+  background:color-mix(in srgb,var(--mw-primary-soft) 58%,var(--mw-surface))!important;
+}
+html.medindex-workspace-final #dataTable :is(th,td).registry-dosage-column{
+  width:340px!important;
+  min-width:340px!important;
+  max-width:390px!important;
+  white-space:normal!important;
+}
+html.medindex-workspace-final #dataTable :is(th,td).clinical-editor-status-column{
+  width:200px!important;
+  min-width:200px!important;
+  max-width:230px!important;
+  white-space:normal!important;
+}
+html.medindex-workspace-final #dataTable :is(th,td).clinical-editor-action-column{
+  width:102px!important;
+  min-width:102px!important;
+  max-width:102px!important;
+  text-align:center!important;
+}
+html.medindex-workspace-final #dataTable .registry-dosage-grid{
+  grid-template-columns:minmax(210px,1fr) 72px!important;
+  gap:10px!important;
+}
+html.medindex-workspace-final #dataTable .registry-dosage-route{
+  align-self:start;
+  border-color:color-mix(in srgb,var(--mw-primary) 22%,transparent)!important;
+  background:var(--mw-primary-soft)!important;
+  color:var(--mw-primary-dark)!important;
+}
+html.medindex-workspace-final #dataTable .clinical-editor-open{
+  min-width:68px;
+  min-height:34px;
+  border-color:var(--mw-primary)!important;
+  background:var(--mw-primary)!important;
+  color:#fff!important;
+}
+
+/* Protocol library: readable cards and an explicit official-source workflow. */
+html.medindex-workspace-final[data-mi-page="protokollet"] .clinical-main{
+  width:min(1240px,calc(100% - 32px))!important;
+}
+html.medindex-workspace-final[data-mi-page="protokollet"] .clinical-list{
+  gap:12px!important;
+}
+html.medindex-workspace-final .mw-protocol-card{
+  position:relative;
+  grid-template-columns:minmax(0,1fr) minmax(210px,auto)!important;
+  gap:18px!important;
+  padding:18px!important;
+  overflow:hidden;
+  border-radius:var(--mw-radius)!important;
+  transition:transform .18s ease,border-color .18s ease,box-shadow .18s ease;
+}
+html.medindex-workspace-final .mw-protocol-card::before{
+  content:"";
+  position:absolute;
+  inset:0 auto 0 0;
+  width:4px;
+  background:linear-gradient(180deg,var(--mw-primary),color-mix(in srgb,var(--mw-primary) 45%,var(--mw-gold)));
+}
+html.medindex-workspace-final .mw-protocol-card:hover{
+  transform:translateY(-1px);
+  border-color:var(--mw-line-strong)!important;
+  box-shadow:var(--mw-shadow)!important;
+}
+html.medindex-workspace-final .mw-protocol-card h2{
+  max-width:850px;
+  color:var(--mw-text)!important;
+  font-size:1rem!important;
+  line-height:1.42!important;
+}
+html.medindex-workspace-final .mw-protocol-card .clinical-actions{
+  align-content:center;
+  align-items:stretch!important;
+  min-width:210px;
+  max-width:260px!important;
+}
+html.medindex-workspace-final .mw-protocol-card .clinical-actions :is(a,button){
+  min-height:40px!important;
+  flex:1 1 100%;
+  border-color:var(--mw-line-strong)!important;
+  background:var(--mw-surface)!important;
+  color:var(--mw-text)!important;
+}
+html.medindex-workspace-final .mw-protocol-card .clinical-actions .primary{
+  border-color:var(--mw-primary)!important;
+  background:var(--mw-primary)!important;
+  color:#fff!important;
+}
+html.medindex-workspace-final .mw-protocol-plan-button{
+  border-color:color-mix(in srgb,var(--mw-primary) 40%,var(--mw-line))!important;
+  background:var(--mw-primary-soft)!important;
+  color:var(--mw-primary-dark)!important;
+}
+html.medindex-workspace-final .mw-protocol-trust{
+  display:flex;
+  align-items:center;
+  gap:7px;
+  margin-top:10px;
+  color:var(--mw-muted);
+  font-size:.7rem;
+  font-weight:650;
+}
+html.medindex-workspace-final .mw-protocol-trust::before{
+  content:"✓";
+  display:grid;
+  width:20px;
+  height:20px;
+  place-items:center;
+  border-radius:999px;
+  background:var(--mw-primary-soft);
+  color:var(--mw-primary-dark);
+  font-weight:900;
+}
+
+/* Protocol reading drawer. */
+html.medindex-workspace-final .mw-protocol-dialog{
+  width:min(780px,calc(100vw - 24px));
+  max-width:none;
+  max-height:min(92dvh,880px);
+  padding:0;
+  overflow:hidden;
+  border:0;
+  border-radius:18px;
+  background:var(--mw-surface);
+  color:var(--mw-text);
+  box-shadow:0 28px 90px rgba(10,35,37,.32);
+}
+html.medindex-workspace-final .mw-protocol-dialog::backdrop{
+  background:rgba(8,27,29,.62);
+  backdrop-filter:blur(3px);
+}
+html.medindex-workspace-final .mw-protocol-dialog-shell{
+  display:grid;
+  max-height:min(92dvh,880px);
+  grid-template-rows:auto minmax(0,1fr) auto;
+}
+html.medindex-workspace-final .mw-protocol-dialog-header{
+  display:flex;
+  align-items:flex-start;
+  justify-content:space-between;
+  gap:18px;
+  padding:22px 24px 18px;
+  border-bottom:1px solid var(--mw-line);
+  background:linear-gradient(125deg,var(--mw-surface),var(--mw-primary-soft));
+}
+html.medindex-workspace-final .mw-protocol-dialog-header h2{
+  margin:4px 0 0;
+  font-size:1.22rem;
+  line-height:1.35;
+}
+html.medindex-workspace-final .mw-protocol-dialog-kicker{
+  color:var(--mw-primary-dark);
+  font-size:.68rem;
+  font-weight:850;
+  letter-spacing:.08em;
+  text-transform:uppercase;
+}
+html.medindex-workspace-final .mw-protocol-dialog-close{
+  width:38px;
+  height:38px;
+  flex:0 0 auto;
+  border:1px solid var(--mw-line-strong);
+  border-radius:10px;
+  background:var(--mw-surface);
+  color:var(--mw-text);
+  cursor:pointer;
+  font-size:1.35rem;
+}
+html.medindex-workspace-final .mw-protocol-dialog-body{
+  overflow:auto;
+  padding:22px 24px 26px;
+  overscroll-behavior:contain;
+}
+html.medindex-workspace-final .mw-protocol-meta-grid{
+  display:grid;
+  grid-template-columns:repeat(3,minmax(0,1fr));
+  gap:9px;
+  margin-bottom:22px;
+}
+html.medindex-workspace-final .mw-protocol-meta-grid>div{
+  padding:11px 12px;
+  border:1px solid var(--mw-line);
+  border-radius:11px;
+  background:var(--mw-surface-soft);
+}
+html.medindex-workspace-final .mw-protocol-meta-grid span{
+  display:block;
+  margin-bottom:4px;
+  color:var(--mw-muted);
+  font-size:.64rem;
+  font-weight:800;
+  letter-spacing:.045em;
+  text-transform:uppercase;
+}
+html.medindex-workspace-final .mw-protocol-meta-grid strong{
+  font-size:.78rem;
+  line-height:1.35;
+}
+html.medindex-workspace-final .mw-protocol-section-title{
+  margin:0 0 13px;
+  font-size:.92rem;
+}
+html.medindex-workspace-final .mw-protocol-timeline{
+  position:relative;
+  display:grid;
+  gap:0;
+  margin:0;
+  padding:0;
+  list-style:none;
+}
+html.medindex-workspace-final .mw-protocol-timeline::before{
+  content:"";
+  position:absolute;
+  top:24px;
+  bottom:24px;
+  left:20px;
+  width:2px;
+  background:var(--mw-line-strong);
+}
+html.medindex-workspace-final .mw-protocol-step{
+  position:relative;
+  display:grid;
+  grid-template-columns:42px minmax(0,1fr);
+  gap:14px;
+  padding:0 0 19px;
+}
+html.medindex-workspace-final .mw-protocol-step:last-child{padding-bottom:0}
+html.medindex-workspace-final .mw-protocol-step-number{
+  z-index:1;
+  display:grid;
+  width:42px;
+  height:42px;
+  place-items:center;
+  border:4px solid var(--mw-surface);
+  border-radius:999px;
+  background:var(--mw-primary);
+  color:#fff;
+  font-size:.75rem;
+  font-weight:900;
+  box-shadow:0 0 0 1px var(--mw-line-strong);
+}
+html.medindex-workspace-final .mw-protocol-step-copy{
+  padding:8px 12px 10px;
+  border:1px solid var(--mw-line);
+  border-radius:11px;
+  background:var(--mw-surface-soft);
+}
+html.medindex-workspace-final .mw-protocol-step-copy strong{
+  display:block;
+  margin-bottom:4px;
+  font-size:.82rem;
+}
+html.medindex-workspace-final .mw-protocol-step-copy p{
+  margin:0;
+  color:var(--mw-muted);
+  font-size:.76rem;
+  line-height:1.5;
+}
+html.medindex-workspace-final .mw-protocol-source-note{
+  margin:20px 0 0;
+  padding:12px 13px;
+  border:1px solid color-mix(in srgb,var(--mw-gold) 30%,var(--mw-line));
+  border-radius:11px;
+  background:var(--mw-gold-soft);
+  color:color-mix(in srgb,var(--mw-text) 82%,var(--mw-gold));
+  font-size:.75rem;
+  line-height:1.5;
+}
+html.medindex-workspace-final .mw-protocol-dialog-footer{
+  display:flex;
+  justify-content:flex-end;
+  gap:9px;
+  padding:14px 24px;
+  border-top:1px solid var(--mw-line);
+  background:var(--mw-surface);
+}
+html.medindex-workspace-final .mw-protocol-dialog-footer a{
+  display:inline-flex;
+  min-height:41px;
+  align-items:center;
+  justify-content:center;
+  padding:0 14px;
+  border:1px solid var(--mw-line-strong);
+  border-radius:9px;
+  background:var(--mw-surface);
+  color:var(--mw-text);
+  font-size:.75rem;
+  font-weight:800;
+  text-decoration:none;
+}
+html.medindex-workspace-final .mw-protocol-dialog-footer a.primary{
+  border-color:var(--mw-primary);
+  background:var(--mw-primary);
+  color:#fff;
+}
+
+html.medindex-workspace-final .mw-reveal{
+  opacity:0;
+  transform:translateY(8px);
+}
+html.medindex-workspace-final .mw-reveal.is-visible{
+  opacity:1;
+  transform:none;
+  transition:opacity .32s ease,transform .32s ease;
+}
+
+@media(max-width:900px){
+  html.medindex-workspace-final .mw-protocol-card{grid-template-columns:1fr!important}
+  html.medindex-workspace-final .mw-protocol-card .clinical-actions{display:grid;grid-template-columns:1fr 1fr;max-width:none!important}
+  html.medindex-workspace-final .mw-protocol-card .clinical-actions :is(a,button){flex:auto}
+}
+@media(max-width:760px){
+  html.medindex-workspace-final .mi-content-container{padding-inline:10px!important}
+  html.medindex-workspace-final .table-wrap{border-radius:12px!important}
+  html.medindex-workspace-final #dataTable :is(th,td).registry-dosage-column,
+  html.medindex-workspace-final #dataTable :is(th,td).clinical-editor-status-column,
+  html.medindex-workspace-final #dataTable :is(th,td).clinical-editor-action-column{
+    width:auto!important;min-width:0!important;max-width:none!important;
+  }
+  html.medindex-workspace-final .mw-protocol-card{padding:15px!important}
+  html.medindex-workspace-final .mw-protocol-card .clinical-actions{grid-template-columns:1fr}
+  html.medindex-workspace-final .mw-protocol-meta-grid{grid-template-columns:1fr}
+  html.medindex-workspace-final .mw-protocol-dialog-header,
+  html.medindex-workspace-final .mw-protocol-dialog-body,
+  html.medindex-workspace-final .mw-protocol-dialog-footer{padding-left:16px;padding-right:16px}
+  html.medindex-workspace-final .mw-protocol-dialog-footer{display:grid;grid-template-columns:1fr}
+}
+@media(prefers-reduced-motion:reduce){
+  html.medindex-workspace-final .mw-protocol-card,
+  html.medindex-workspace-final .mw-reveal,
+  html.medindex-workspace-final .mw-reveal.is-visible{transition:none!important;transform:none!important;opacity:1!important}
+}
