@@ -96,7 +96,8 @@
         summary.className = 'tg-pagination-summary';
         root.prepend(summary);
       }
-      summary.textContent = `Faqja ${current} nga ${total}`;
+      const summaryText = `Faqja ${current} nga ${total}`;
+      if (summary.textContent !== summaryText) summary.textContent = summaryText;
     } finally {
       enhancingPagination = false;
     }
