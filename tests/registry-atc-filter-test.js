@@ -40,9 +40,10 @@ assert.match(coreTail, /medindex:registry-atc-state/, 'Registry must publish the
 
 const atcFilterPosition = coreTail.indexOf('let rows = getRegistryAtcRows();');
 const searchPosition = coreTail.indexOf('const q = normalizeSearchText(state.search);', atcFilterPosition);
-const paginationSource = read('app-parts/part-04.txt');
+const renderSource = read('app-parts/part-03.txt') + read('app-parts/part-04.txt');
 assert.ok(atcFilterPosition >= 0 && searchPosition > atcFilterPosition, 'ATC must be applied before text search');
-assert.match(paginationSource, /const filtered = sortRows\(getFiltered\(\)\)/, 'Pagination must consume the fully filtered registry rows');
+assert.match(renderSource, /const filtered = sortRows\(getFiltered\(\)\)/, 'The renderer and pagination must consume fully filtered registry rows');
+assert.match(renderSource, /const pageRows = filtered\.slice\(start, start \+ pageSize\)/, 'Pagination must slice only after every filter has been applied');
 
 const sourceFiles = [
   'app-parts/part-01.txt',
