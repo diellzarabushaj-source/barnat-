@@ -4,6 +4,8 @@ MedIndex është një aplikacion i lehtë për kërkimin e barnave, klasifikimev
 
 Në regjistrin e barnave, qelizat me tekst të prerë mund të zgjerohen brenda vetë rreshtit të tabelës. Nuk hapet modal i veçantë; klikimi i dytë e kthen rreshtin në pamjen kompakte.
 
+Verifikimi për të rritur dhe fëmijë është fail-closed: `Po` kërkon dozë të publikuar, rrugë administrimi dhe burim HTTPS; `Jo` kërkon vendim eksplicit të dokumentuar; kur evidenca nuk mjafton shfaqet `Pa të dhëna`.
+
 ## Nisja lokale
 
 Kërkohen Node.js 22 dhe pnpm 10.
