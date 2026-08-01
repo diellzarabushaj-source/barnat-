@@ -34,7 +34,20 @@ test('qeliza e gjatë e rrit rreshtin inline pa hapur modal', async ({ page }) =
 
   const trigger = cell.locator('.registry-cell-preview-trigger');
   await expect(trigger).toBeVisible({ timeout:10000 });
-  await expect(trigger.locator('[data-lineicons-icon="expand-square-4"]')).toHaveCount(1);
+  const iconVisual = await trigger.evaluate(node => {
+    const style = getComputedStyle(node, '::before');
+    return {
+      content:style.content,
+      width:style.width,
+      height:style.height,
+      mask:style.webkitMaskImage || style.maskImage,
+      background:style.backgroundColor,
+    };
+  });
+  expect(iconVisual.content).not.toBe('none');
+  expect(iconVisual.width).toBe('16px');
+  expect(iconVisual.height).toBe('16px');
+  expect(iconVisual.mask).toContain('data:image/svg+xml');
   await expect(trigger).toHaveAttribute('aria-expanded', 'false');
 
   const row = cell.locator('xpath=ancestor::tr');
