@@ -28,7 +28,8 @@ assert.match(sidebar, /mi-sidebar-collapsed/, 'Collapsed desktop sidebar behavio
 assert.match(sidebar, /MOBILE_BREAKPOINT = 1024/, 'The ATC sidebar must use the same desktop/mobile breakpoint');
 assert.match(sidebar, /event\.key !== 'Escape'/, 'Keyboard Escape behavior is missing');
 assert.match(sidebar, /medindex:registry-atc-state/, 'The sidebar must follow the live registry ATC state');
-assert.doesNotMatch(sidebar, /createElement\(['"]aside['"]\)|className\s*=\s*['"].*sidebar.*['"]/s, 'ATC navigation must not create a second sidebar');
+assert.doesNotMatch(sidebar, /createElement\(['"]aside['"]\)/, 'ATC navigation must not create a second sidebar element');
+assert.doesNotMatch(sidebar, /appendChild\([^)]*miSidebar|insertAdjacentHTML\([^)]*<aside/i, 'ATC navigation must not mount another sidebar shell');
 
 assert.match(styles, /\.mi-atc-root-panel/, 'Root submenu styles are missing');
 assert.match(styles, /\.mi-atc-submenu/, 'Nested subgroup styles are missing');
