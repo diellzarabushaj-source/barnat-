@@ -1,7 +1,7 @@
 (() => {
   'use strict';
 
-  const VERSION = 'registry-row-expand-20260801-3';
+  const VERSION = 'registry-row-expand-20260801-4';
   const FINAL_STYLE_ID = 'registryColumnsFiltersStyles';
   const EXPANDABLE_KEYS = new Set([
     'trade-name',
@@ -81,6 +81,16 @@
     return text.length > (THRESHOLDS[key] || 48);
   }
 
+  function syncPreviewTriggers(row, expanded) {
+    row.querySelectorAll('.registry-cell-preview-trigger').forEach(trigger => {
+      const cell = trigger.closest('td');
+      const label = clean(cell?.dataset?.label || cell?.dataset?.registryColumnKey || 'Përmbajtja').toLocaleLowerCase('sq');
+      trigger.setAttribute('aria-expanded', String(expanded));
+      trigger.setAttribute('aria-label', expanded ? `Mbyll ${label}` : `Zgjero ${label} për ta parë tekstin e plotë`);
+      trigger.title = expanded ? 'Mbyll tekstin e plotë' : 'Shfaq tekstin e plotë në rresht';
+    });
+  }
+
   function syncRowState(row) {
     const key = rowKey(row);
     const expanded = Boolean(key && expandedRows.has(key));
@@ -93,6 +103,7 @@
     row.querySelectorAll('.registry-dosage-details').forEach(details => {
       details.open = expanded;
     });
+    syncPreviewTriggers(row, expanded);
   }
 
   function enhanceRows() {
