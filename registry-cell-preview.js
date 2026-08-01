@@ -1,7 +1,7 @@
 (() => {
   'use strict';
 
-  const VERSION = 'registry-cell-preview-20260801-5';
+  const VERSION = 'registry-cell-preview-20260801-6';
   const TRIGGER_CLASS = 'registry-cell-preview-trigger';
   const PREVIEW_ATTR = 'data-registry-cell-preview';
   const THRESHOLDS = Object.freeze({
@@ -100,7 +100,14 @@
     return Boolean(row?.classList.contains('registry-row-expanded') || row?.dataset?.registryRowExpanded === 'true');
   }
 
+  function ensureExpandIcon(trigger) {
+    if (!trigger?.querySelector?.('[data-lineicons-icon="expand-square-4"]')) {
+      trigger.innerHTML = EXPAND_ICON;
+    }
+  }
+
   function syncTriggerState(trigger) {
+    ensureExpandIcon(trigger);
     const cell = trigger?.closest?.(`td[${PREVIEW_ATTR}="true"]`);
     if (!cell) return;
     const expanded = rowIsExpanded(cell.closest('tr'));
