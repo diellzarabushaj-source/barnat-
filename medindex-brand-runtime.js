@@ -9,6 +9,7 @@
     iconLight:`${ROOT}medindex-icon-on-light.png`,
     iconDark:`${ROOT}medindex-icon-on-dark.png`,
   });
+  let faviconsInstalled = false;
 
   function installStyles() {
     if (document.getElementById('medindexBrandRuntimeStyles')) return;
@@ -46,21 +47,29 @@
 
   function enhanceSidebarBrand() {
     const brand = document.querySelector('.mi-sidebar .mi-brand');
-    if (!brand || brand.dataset.medindexBrand === VERSION) return;
-    brand.dataset.medindexBrand = VERSION;
-    brand.setAttribute('aria-label', 'MedIndex by Dr. Diellza Rabushaj');
-    brand.innerHTML = `${picture('full','medindex-brand-full')}${picture('icon','medindex-brand-icon')}`;
+    if (!brand) return false;
+    if (brand.dataset.medindexBrand !== VERSION) {
+      brand.dataset.medindexBrand = VERSION;
+      brand.setAttribute('aria-label', 'MedIndex by Dr. Diellza Rabushaj');
+      brand.innerHTML = `${picture('full','medindex-brand-full')}${picture('icon','medindex-brand-icon')}`;
+    }
+    return true;
   }
 
   function enhanceMobileBrand() {
     const brand = document.querySelector('.mi-mobile-brand');
-    if (!brand || brand.dataset.medindexBrand === VERSION) return;
-    brand.dataset.medindexBrand = VERSION;
-    brand.setAttribute('aria-label', 'MedIndex');
-    brand.innerHTML = picture('icon','medindex-brand-icon');
+    if (!brand) return false;
+    if (brand.dataset.medindexBrand !== VERSION) {
+      brand.dataset.medindexBrand = VERSION;
+      brand.setAttribute('aria-label', 'MedIndex');
+      brand.innerHTML = picture('icon','medindex-brand-icon');
+    }
+    return true;
   }
 
   function ensureFavicons() {
+    if (faviconsInstalled) return;
+    faviconsInstalled = true;
     document.querySelectorAll('link[data-medindex-brand-icon]').forEach(node => node.remove());
     const entries = [
       ['icon','(prefers-color-scheme: light)',ASSETS.iconLight],
@@ -79,29 +88,28 @@
 
   function apply() {
     installStyles();
-    enhanceSidebarBrand();
-    enhanceMobileBrand();
     ensureFavicons();
+    const sidebarReady = enhanceSidebarBrand();
+    const mobileReady = enhanceMobileBrand();
     document.documentElement.dataset.medindexBrand = VERSION;
+    return sidebarReady && mobileReady;
   }
 
   let frame = 0;
+  const observer = new MutationObserver(schedule);
   function schedule() {
     if (frame) return;
     frame = requestAnimationFrame(() => {
       frame = 0;
-      apply();
+      if (apply()) observer.disconnect();
     });
   }
 
-  const observer = new MutationObserver(schedule);
   function start() {
-    apply();
-    observer.observe(document.body, { childList:true, subtree:true });
+    if (!apply()) observer.observe(document.body, { childList:true, subtree:true });
   }
 
   window.addEventListener('medindex:tailadmin-ready', schedule);
-  window.addEventListener('medindex:theme-change', schedule);
   window.addEventListener('pageshow', schedule, { passive:true });
   if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', start, { once:true });
   else start();
