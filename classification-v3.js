@@ -38,13 +38,17 @@
   function cardHtml(code, title, items, type) {
     const examples = uniqueExamples(items);
     const description = examples.length ? examples.join(', ') : 'Nuk ka shembuj të regjistruar.';
-    return `<article class="atc-card" tabindex="0" role="button" data-card-type="${type}" data-code="${escapeHtml(code)}">
-      <span class="atc-card-code">${escapeHtml(code)}</span>
-      <h3>${escapeHtml(title)}</h3>
-      <p class="atc-card-examples">${escapeHtml(description)}</p>
-      <div class="atc-card-footer"><span class="atc-card-count">${items.length} barna</span><span>${type === 'group' ? 'Shiko nën-grupet' : 'Hap te Barnat'}</span></div>
-      <span class="atc-card-arrow">${arrowIcon()}</span>
-    </article>`;
+    const action = type === 'group' ? 'Shiko nën-grupet' : 'Hap te Barnat';
+    return `<div class="atc-card-shell" data-atc-card-shell="${escapeHtml(code)}">
+      <article class="atc-card" tabindex="0" role="button" aria-label="${escapeHtml(`${code} — ${title}. ${action}`)}" data-card-type="${type}" data-code="${escapeHtml(code)}">
+        <span class="atc-card-code">${escapeHtml(code)}</span>
+        <h3>${escapeHtml(title)}</h3>
+        <p class="atc-card-examples">${escapeHtml(description)}</p>
+        <div class="atc-card-footer"><span class="atc-card-count">${items.length} barna</span><span>${action}</span></div>
+        <span class="atc-card-arrow">${arrowIcon()}</span>
+      </article>
+      <button class="atc-card-info" type="button" data-atc-info data-code="${escapeHtml(code)}" data-card-type="${type}" aria-label="Shiko informacionin për ${escapeHtml(`${code} — ${title}`)}">i</button>
+    </div>`;
   }
 
   function setSection(title, subtitle, breadcrumb = '') {
@@ -218,7 +222,7 @@
   }
 
   function initNavigation() {
-    $('#backButton').addEventListener('click', () => state.query ? renderGroups() : state.group ? renderGroups() : renderGroups());
+    $('#backButton').addEventListener('click', renderGroups);
     $('#resetButton').addEventListener('click', () => {
       $('#atcSearch').value = '';
       renderGroups();
@@ -262,6 +266,12 @@
       if (loader) loader.innerHTML = `<div class="atc-empty">Databaza nuk u ngarkua: ${escapeHtml(error.message || 'gabim i panjohur')}.</div>`;
     }
   }
+
+  window.MedIndexClassification = Object.freeze({
+    openGroup:code => openGroup(text(code).toUpperCase()),
+    openSubgroup:(code, query = '') => openSubgroup(text(code).toUpperCase(), text(query)),
+    revealSubgroup:code => revealSubgroup(text(code).toUpperCase()),
+  });
 
   if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', init, { once:true });
   else init();
