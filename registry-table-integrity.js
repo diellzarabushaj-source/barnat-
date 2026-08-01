@@ -462,7 +462,6 @@
     }
     observer.observe(header, { childList:true, subtree:true });
     observer.observe(tbody, { childList:true, subtree:true });
-    observer.observe(document.documentElement, { attributes:true, attributeFilter:['class', 'data-theme'] });
   }
 
   function initResizeObserver() {
