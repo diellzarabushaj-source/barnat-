@@ -2,6 +2,8 @@
 
 MedIndex është një aplikacion i lehtë për kërkimin e barnave, klasifikimeve ATC/ICD, dozologjisë, protokolleve, analizave dhe përgatitjen e recetave. Ndërfaqja është statike dhe e shpejtë; funksionet private ekspozohen si API të vogla serverless.
 
+Në regjistrin e barnave, qelizat me tekst të prerë mund të zgjerohen brenda vetë rreshtit të tabelës. Nuk hapet modal i veçantë; klikimi i dytë e kthen rreshtin në pamjen kompakte.
+
 ## Nisja lokale
 
 Kërkohen Node.js 22 dhe pnpm 10.
