@@ -14,16 +14,16 @@
   "categories": ["medical", "productivity", "utilities"],
   "icons": [
     {
-      "src": "/medindex-icon.svg",
-      "sizes": "any",
-      "type": "image/svg+xml",
+      "src": "/public/images/brand/medindex-icon-on-light.png",
+      "sizes": "128x125",
+      "type": "image/png",
       "purpose": "any maskable"
     }
   ],
   "shortcuts": [
-    { "name": "Barnat", "short_name": "Barnat", "url": "/index.html", "icons": [{ "src": "/medindex-icon.svg", "sizes": "any", "type": "image/svg+xml" }] },
-    { "name": "ICD", "short_name": "ICD", "url": "/icd.html", "icons": [{ "src": "/medindex-icon.svg", "sizes": "any", "type": "image/svg+xml" }] },
-    { "name": "Dozologjia", "short_name": "Doza", "url": "/dozologjia.html", "icons": [{ "src": "/medindex-icon.svg", "sizes": "any", "type": "image/svg+xml" }] },
-    { "name": "Recetë e re", "short_name": "Recetë", "url": "/recetat.html", "icons": [{ "src": "/medindex-icon.svg", "sizes": "any", "type": "image/svg+xml" }] }
+    { "name": "Barnat", "short_name": "Barnat", "url": "/index.html", "icons": [{ "src": "/public/images/brand/medindex-icon-on-light.png", "sizes": "128x125", "type": "image/png" }] },
+    { "name": "ICD", "short_name": "ICD", "url": "/icd.html", "icons": [{ "src": "/public/images/brand/medindex-icon-on-light.png", "sizes": "128x125", "type": "image/png" }] },
+    { "name": "Dozologjia", "short_name": "Doza", "url": "/dozologjia.html", "icons": [{ "src": "/public/images/brand/medindex-icon-on-light.png", "sizes": "128x125", "type": "image/png" }] },
+    { "name": "Recetë e re", "short_name": "Recetë", "url": "/recetat.html", "icons": [{ "src": "/public/images/brand/medindex-icon-on-light.png", "sizes": "128x125", "type": "image/png" }] }
   ]
 }
