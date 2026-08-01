@@ -1,10 +1,10 @@
 (() => {
   'use strict';
 
-  const VERSION = 'registry-runtime-loader-v4';
+  const VERSION = 'registry-runtime-loader-v5';
   const RUNTIME_SRC = '/app-performance.js?v=20260801-1';
-  const FIRST_INTERACTION_FALLBACK_MS = 15000;
-  const POST_INTERACTION_GRACE_MS = 1500;
+  const FIRST_INTERACTION_FALLBACK_MS = 5000;
+  const POST_INTERACTION_GRACE_MS = 800;
   const AUTH_WAIT_LIMIT_MS = 5000;
   const INTERACTION_EVENTS = ['click', 'keyup', 'touchend'];
   let scheduled = false;
@@ -13,6 +13,14 @@
   let authObserver = null;
   let authTimer = 0;
   let fallbackTimer = 0;
+  let resolveUiReady = null;
+
+  if (!window.MEDINDEX_REGISTRY_UI_READY || typeof window.MEDINDEX_REGISTRY_UI_READY.then !== 'function') {
+    window.MEDINDEX_REGISTRY_UI_READY = new Promise(resolve => {
+      resolveUiReady = resolve;
+    });
+  }
+  document.documentElement.dataset.registryRuntimeLoader = VERSION;
 
   function authReady() {
     return document.documentElement.classList.contains('auth-ready');
@@ -27,6 +35,7 @@
     script.dataset.medindexAppPerformance = VERSION;
     script.addEventListener('error', () => {
       document.documentElement.dataset.registryRuntimeLoaderError = 'load';
+      resolveUiReady?.({ ready:false, reason:'runtime-load-error' });
       console.error('Runtime-i i regjistrit nuk u ngarkua.');
     }, { once:true });
     document.head.appendChild(script);
@@ -88,6 +97,10 @@
       if (authReady()) installInteractionGate();
     }, AUTH_WAIT_LIMIT_MS);
   }
+
+  window.addEventListener('medindex:registry-ready', () => {
+    resolveUiReady?.({ ready:true });
+  }, { once:true });
 
   if (document.readyState === 'loading') {
     document.addEventListener('DOMContentLoaded', waitForAuthenticatedShell, { once:true });
