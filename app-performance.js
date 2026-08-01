@@ -46,7 +46,7 @@ const yieldToInteractiveShell = () => new Promise(resolve => {
     passive:true,
   }));
   requestAnimationFrame(() => requestAnimationFrame(() => {
-    fallbackTimer = window.setTimeout(() => finish(0), 700);
+    fallbackTimer = window.setTimeout(() => finish(0), 2000);
   }));
 });
 
