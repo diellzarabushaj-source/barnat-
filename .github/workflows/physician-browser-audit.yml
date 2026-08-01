@@ -61,7 +61,7 @@ jobs:
             if curl -fsS http://127.0.0.1:4174/index.html >/dev/null; then break; fi
             sleep 1
           done
-          pnpm exec playwright test tests/csp-browser-audit.spec.js tests/physician-flow.spec.js tests/mobile-deep-audit.spec.js tests/registry-cell-preview.spec.js tests/registry-main-thread-performance.spec.js --reporter=line --workers=1 > /tmp/physician-flow.log 2>&1 || { cat /tmp/physician-flow.log; exit 1; }
+          pnpm exec playwright test tests/csp-browser-audit.spec.js tests/physician-flow.spec.js tests/mobile-deep-audit.spec.js tests/registry-cell-preview.spec.js tests/registry-main-thread-performance.spec.js tests/atc-visual-audit.spec.js --reporter=line --workers=1 > /tmp/physician-flow.log 2>&1 || { cat /tmp/physician-flow.log; exit 1; }
           cat /tmp/physician-flow.log
 
       - name: Upload physician diagnostics
@@ -73,6 +73,7 @@ jobs:
             /tmp/physician-flow.log
             /tmp/medindex-clinical-server.log
             /tmp/medindex-registry-performance-server.log
+            /tmp/atc-visual
             test-results
             playwright-report
           if-no-files-found: warn
