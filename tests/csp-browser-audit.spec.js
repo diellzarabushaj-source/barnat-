@@ -3,7 +3,6 @@ const { test, expect } = require('@playwright/test');
 const BASE = 'http://127.0.0.1:4173';
 const pages = [
   '/index.html',
-  '/klasifikimi.html',
   '/icd.html',
   '/analizat.html',
   '/dozologjia.html',
@@ -62,6 +61,11 @@ test('all clinical pages run without CSP violations or blocked runtime assets', 
     }
     await page.waitForTimeout(180);
   }
+
+  await page.goto(`${BASE}/klasifikimi.html#N02`, { waitUntil:'domcontentloaded' });
+  await page.waitForURL(url => url.pathname === '/index.html' && url.searchParams.get('atc') === 'N02', { timeout:10000 });
+  await expect(page.locator('.mi-page-heading h1')).toHaveText('Barnat');
+  await expect(page.locator('#cardGrid, #atcSearch, .atc-card')).toHaveCount(0);
 
   expect(failures, failures.join('\n')).toEqual([]);
 });
