@@ -42,7 +42,7 @@ jobs:
           pnpm exec playwright install --with-deps chromium > /tmp/playwright-install.log 2>&1 || { tail -200 /tmp/playwright-install.log; exit 1; }
           echo "Playwright Chromium installed."
 
-      - name: Run desktop, mobile, tablet, CSP and 4006-row performance audits
+      - name: Run desktop, mobile, tablet, CSP, cell preview and 4006-row performance audits
         shell: bash
         run: |
           set -euo pipefail
@@ -61,7 +61,7 @@ jobs:
             if curl -fsS http://127.0.0.1:4174/index.html >/dev/null; then break; fi
             sleep 1
           done
-          pnpm exec playwright test tests/csp-browser-audit.spec.js tests/physician-flow.spec.js tests/mobile-deep-audit.spec.js tests/registry-main-thread-performance.spec.js --reporter=line --workers=1 > /tmp/physician-flow.log 2>&1 || { cat /tmp/physician-flow.log; exit 1; }
+          pnpm exec playwright test tests/csp-browser-audit.spec.js tests/physician-flow.spec.js tests/mobile-deep-audit.spec.js tests/registry-cell-preview.spec.js tests/registry-main-thread-performance.spec.js --reporter=line --workers=1 > /tmp/physician-flow.log 2>&1 || { cat /tmp/physician-flow.log; exit 1; }
           cat /tmp/physician-flow.log
 
       - name: Upload physician diagnostics
