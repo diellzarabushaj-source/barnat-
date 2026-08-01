@@ -1,3 +1,4 @@
 Redeploy trigger for current main build.
-Date: 2026-07-23
-Reason: deploy the completed Albanian ICD-10 2019 chapter index and smart search after the Vercel build-rate window reset.
+Date: 2026-08-01
+Source merge: f12844dd7d3bf6ecd295ecc66cfc83c68c0449c0
+Reason: publish the table-only ATC classification routing after validation and physician browser audits passed.
