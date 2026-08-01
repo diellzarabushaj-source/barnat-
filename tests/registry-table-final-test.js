@@ -15,21 +15,25 @@ const release = read('registry-ui-release.js');
 assert.match(index,/data-registry-ui-release="20260801-12"/,'index must use the final table release');
 assert.match(index,/registry-table-final\.css\?v=20260801-1/,'final table stylesheet must be wired');
 assert.match(index,/registry-table-final\.js\?v=20260801-3/,'final table runtime v3 must be wired');
-assert.match(index,/registry-runtime-loader\.js\?v=20260801-1/,'cooperative registry runtime loader must be wired');
+assert.match(index,/registry-runtime-loader\.js\?v=20260801-2/,'first-interaction registry runtime loader must be wired');
 assert.doesNotMatch(index,/<script src="app-performance\.js"/,'the heavy registry bootstrap must not execute as a parser-ordered defer script');
 assert.ok(index.indexOf('registry-table-final.css') < index.indexOf('tailadmin-professional.css'),'TailAdmin professional must remain the final static stylesheet');
 assert.ok(index.indexOf('registry-table-final.js') > index.indexOf('registry-ui-release.js'),'final table runtime must execute after legacy registry controllers');
 assert.match(index,/registryTableFinalMobileCompatibility[\s\S]*#dataTable tbody tr\{display:block!important\}/,'mobile registry cards must preserve the block-row contract');
 assert.match(release,/registry-ui-20260801-12/,'cache release must be bumped');
 assert.match(read('tests/population-verification-test.js'),/20260801-12/,'population verification audit must follow the current table release');
-assert.match(read('tests/registry-fast-start-test.js'),/registry-runtime-loader\.js/,'fast-start audit must cover the cooperative loader');
-assert.match(read('tests/registry-interaction-resilience-test.js'),/cooperative interaction-safe bootstrap/,'interaction resilience audit must cover the cooperative loader');
-assert.match(read('tests/registry-main-thread-deep-audit-test.js'),/Registry cooperative bootstrap and main-thread deep audit passed/,'main-thread audit must cover the cooperative loader');
-assert.match(read('tests/runtime-asset-version-audit-test.js'),/cooperative bootstrap and idle dosage asset audit passed/,'runtime version audit must cover the cooperative loader');
+assert.match(read('tests/registry-fast-start-test.js'),/authenticated first-interaction gate/,'fast-start audit must cover the interaction gate');
+assert.match(read('tests/registry-interaction-resilience-test.js'),/first-interaction gate/,'interaction resilience audit must cover the interaction gate');
+assert.match(read('tests/registry-main-thread-deep-audit-test.js'),/first-interaction gate and main-thread deep audit passed/,'main-thread audit must cover the interaction gate');
+assert.match(read('tests/runtime-asset-version-audit-test.js'),/first-interaction gate and idle dosage asset audit passed/,'runtime version audit must cover the interaction gate');
 
 assert.doesNotThrow(() => new Function(runtime),'final table runtime must be valid JavaScript');
 assert.doesNotThrow(() => new Function(loader),'registry runtime loader must be valid JavaScript');
-assert.match(loader,/INTERACTION_GRACE_MS = 220/,'shell must receive a bounded first-interaction grace period');
+assert.match(loader,/registry-runtime-loader-v2/,'loader must expose the current interaction gate version');
+assert.match(loader,/FIRST_INTERACTION_FALLBACK_MS = 1800/,'registry must retain a bounded automatic fallback');
+assert.match(loader,/POST_INTERACTION_GRACE_MS = 320/,'the first interaction must finish before registry startup');
+assert.match(loader,/INTERACTION_EVENTS = \['pointerdown', 'keydown', 'touchstart'\]/,'pointer, keyboard and touch interactions must be supported');
+assert.match(loader,/handleFirstInteraction[\s\S]*scheduleRuntime\(POST_INTERACTION_GRACE_MS\)/,'first interaction must schedule the heavy runtime asynchronously');
 assert.match(loader,/classList\.contains\('auth-ready'\)/,'registry runtime must wait for the authenticated shell');
 assert.match(loader,/requestAnimationFrame\(\(\) => requestAnimationFrame\(loadRuntime\)\)/,'heavy runtime startup must cross two paint opportunities');
 assert.match(loader,/app-performance\.js\?v=20260801-1/,'loader must request the audited registry bootstrap');
@@ -58,4 +62,4 @@ assert.match(css,/#registryFilterPanel #search/,'search must remain part of the 
 assert.match(css,/\.col-panel\.open[\s\S]*grid-template-columns:repeat\(2,minmax\(0,1fr\)\)/,'desktop multi-column picker must be compact');
 assert.doesNotMatch(css,/https?:\/\//,'final table styles must not load third-party assets');
 
-console.log('Unified final registry table, filter, expansion, verification, cooperative startup and responsive audit passed.');
+console.log('Unified final registry table, filter, expansion, verification, first-interaction startup and responsive audit passed.');
