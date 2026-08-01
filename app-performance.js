@@ -19,6 +19,14 @@ const releaseStaleInteractionLock = () => {
   ['registryContent', 'dataTable', 'search'].forEach(id => document.getElementById(id)?.removeAttribute('inert'));
 };
 
+const yieldToInteractiveShell = () => new Promise(resolve => {
+  if (document.visibilityState === 'hidden' || typeof requestAnimationFrame !== 'function') {
+    window.setTimeout(resolve, 0);
+    return;
+  }
+  requestAnimationFrame(() => requestAnimationFrame(() => window.setTimeout(resolve, 120)));
+});
+
 releaseStaleInteractionLock();
 
 (async () => {
@@ -41,6 +49,7 @@ releaseStaleInteractionLock();
   let cacheSaveScheduled = false;
 
   performance.mark?.('medindex-app-start');
+  await yieldToInteractiveShell();
   const hasRegistryData = () => Array.isArray(window.DRUG_DATA_PARTS) && window.DRUG_DATA_PARTS.length > 0;
 
   async function timedFetch(url, options = {}, timeoutMs = REQUEST_TIMEOUT_MS) {
