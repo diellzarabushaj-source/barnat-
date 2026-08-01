@@ -264,7 +264,7 @@
     ['medindex:registry-data-ready', 'medindex:tailadmin-ready']
       .forEach(eventName => window.addEventListener(eventName, scheduleEnhance));
     window.addEventListener('resize', scheduleEnhance, { passive:true });
-    window.addEventListener('pageshow', () => { activate(); scheduleEnhance(); }, { passive:true });
+    window.addEventListener('pageshow', scheduleEnhance, { passive:true });
 
     const armFallback = () => { fallbackTimer = setTimeout(activate, 2200); };
     if (document.readyState === 'complete') armFallback();
