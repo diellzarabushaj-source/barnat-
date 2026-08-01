@@ -7,8 +7,9 @@ Ta bëjë navigimin e kategorive të qartë, kompakt dhe të qëndrueshëm pa kr
 ## Ndryshimet
 
 - Numërime reale për 81 kategoritë, 14 grupet dhe totalin e produkteve të klasifikueshme.
-- Endpoint privat dhe i lehtë `/api/atc-counts`, i bazuar në dataset-in kanonik të regjistrit.
-- Cache privat në server dhe cache 5-minutësh në `sessionStorage`.
+- Rruga private `/api/atc-counts` ripërdor function-in ekzistues `api/drug-search.js` me `view=atc-counts`, prandaj nuk konsumon function slot shtesë në Vercel Hobby.
+- Numërimet bazohen në dataset-in kanonik të regjistrit.
+- Cache i kufizuar në përgjigje dhe cache 5-minutësh në `sessionStorage`.
 - `Të gjitha kategoritë` hap direkt `/index.html`, jo faqen e hequr të klasifikimit.
 - Active state më i qartë për grupin dhe nënkategorinë.
 - Vetëm një grup mund të jetë i hapur.
@@ -22,4 +23,4 @@ Ta bëjë navigimin e kategorive të qartë, kompakt dhe të qëndrueshëm pa kr
 
 - Tabela dhe kolonat e Barnave nuk ndryshojnë.
 - Databaza Neon nuk ndryshon.
-- Numërimet dështojnë në mënyrë të butë; navigimi mbetet funksional edhe pa endpoint.
+- Numërimet dështojnë në mënyrë të butë; navigimi mbetet funksional edhe pa përgjigje nga API-ja.
