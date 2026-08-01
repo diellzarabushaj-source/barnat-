@@ -1,7 +1,7 @@
 (() => {
   'use strict';
 
-  const VERSION = 'registry-table-final-v1';
+  const VERSION = 'registry-table-final-v2';
   const MOBILE_BREAKPOINT = 760;
   const CLINICAL_KEYS = new Set([
     'select',
@@ -40,8 +40,10 @@
   const PENCIL = '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 20h9"/><path d="M16.5 3.5a2.12 2.12 0 0 1 3 3L8 18l-4 1 1-4Z"/></svg>';
 
   let frame = 0;
+  let toolbarFrame = 0;
   let idleHandle = 0;
   let observerAttempts = 0;
+  let registryReady = false;
   let headerObserver = null;
   let rootObserver = null;
   let toolbarObserver = null;
@@ -104,6 +106,7 @@
   }
 
   function normalizeTableGeometry() {
+    if (!registryReady) return false;
     const table = document.getElementById('dataTable');
     const wrapper = document.getElementById('registryContent');
     if (!table || !wrapper) return false;
@@ -129,6 +132,14 @@
     root.dataset.registryFiltersOpen = String(open);
   }
 
+  function scheduleToolbar() {
+    if (toolbarFrame) return;
+    toolbarFrame = requestAnimationFrame(() => {
+      toolbarFrame = 0;
+      normalizeToolbar();
+    });
+  }
+
   function stripLegacyDialogs() {
     document.querySelectorAll('.registry-dose-dialog,.registry-cell-preview-dialog').forEach(dialog => dialog.remove());
   }
@@ -149,7 +160,7 @@
   }
 
   function scheduleIdleWork() {
-    if (idleHandle) return;
+    if (!registryReady || idleHandle) return;
     if ('requestIdleCallback' in window) {
       idleHandle = requestIdleCallback(() => {
         stripLegacyDialogs();
@@ -165,14 +176,20 @@
 
   function reconcile() {
     frame = 0;
+    if (!registryReady) return;
     normalizeToolbar();
     normalizeTableGeometry();
     scheduleIdleWork();
   }
 
   function schedule() {
-    if (frame) return;
+    if (!registryReady || frame) return;
     frame = requestAnimationFrame(reconcile);
+  }
+
+  function markRegistryReady() {
+    if (!registryReady) registryReady = true;
+    schedule();
   }
 
   function bindObservers() {
@@ -181,7 +198,9 @@
 
     const header = document.getElementById('headerRow');
     if (header) {
-      headerObserver = new MutationObserver(schedule);
+      headerObserver = new MutationObserver(() => {
+        if (registryReady) schedule();
+      });
       headerObserver.observe(header, {
         childList:true,
         subtree:true,
@@ -190,16 +209,18 @@
       });
     }
 
-    rootObserver = new MutationObserver(schedule);
+    rootObserver = new MutationObserver(() => {
+      if (registryReady) schedule();
+    });
     rootObserver.observe(document.documentElement,{
       attributes:true,
-      attributeFilter:['data-registry-ux-view','data-theme','class'],
+      attributeFilter:['data-registry-ux-view'],
     });
 
     const toolbar = document.getElementById('registryViewToolbar');
     const panel = document.getElementById('registryFilterPanel');
     if (toolbar || panel) {
-      toolbarObserver = new MutationObserver(schedule);
+      toolbarObserver = new MutationObserver(scheduleToolbar);
       if (toolbar) toolbarObserver.observe(toolbar,{ attributes:true,subtree:true,attributeFilter:['aria-expanded','class'] });
       if (panel) toolbarObserver.observe(panel,{ attributes:true,attributeFilter:['hidden','class','data-registry-filter-open'] });
     }
@@ -215,19 +236,31 @@
   }
 
   function start() {
-    schedule();
+    scheduleToolbar();
     refreshObservers();
-    window.addEventListener('resize',schedule,{ passive:true });
-    window.addEventListener('orientationchange',schedule,{ passive:true });
+
+    if (Array.isArray(window.MEDINDEX_REGISTRY_ROWS) && window.MEDINDEX_REGISTRY_ROWS.length) {
+      markRegistryReady();
+    }
+
+    window.addEventListener('resize',() => {
+      if (registryReady) schedule();
+    },{ passive:true });
+    window.addEventListener('orientationchange',() => {
+      if (registryReady) schedule();
+    },{ passive:true });
+
+    window.addEventListener('medindex:registry-ready',markRegistryReady,{ once:true });
     [
-      'medindex:registry-ready',
       'medindex:registry-table-stable',
       'medindex:registry-view-change',
       'medindex:registry-columns-change',
       'medindex:registry-dosage-ready',
       'medindex:population-verification-ready',
       'medindex:registry-ui-release-ready',
-    ].forEach(name => window.addEventListener(name,schedule));
+    ].forEach(name => window.addEventListener(name,() => {
+      if (registryReady) schedule();
+    }));
   }
 
   if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded',start,{ once:true });
