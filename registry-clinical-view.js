@@ -223,9 +223,11 @@
   function scheduleActivation() {
     if (active || activationScheduled) return;
     activationScheduled = true;
-    const run = () => void activate();
-    if ('requestIdleCallback' in window) window.requestIdleCallback(run, { timeout:900 });
-    else window.setTimeout(run, 40);
+    window.setTimeout(() => {
+      const run = () => void activate();
+      if ('requestIdleCallback' in window) window.requestIdleCallback(run, { timeout:1800 });
+      else window.setTimeout(run, 40);
+    }, 1800);
   }
 
   function dataIsReady() {
