@@ -1,19 +1,19 @@
 (() => {
   'use strict';
 
-  const VERSION = 'registry-clinical-view-20260801-6';
+  const VERSION = 'registry-clinical-view-20260801-7';
   const STORAGE_KEY = 'medindex.registry.view.v1';
   const VALID_VIEWS = new Set(['clinical', 'full']);
   const COMPACT_WIDTHS = Object.freeze({
     select:48,
-    'trade-name':238,
-    'active-substance':254,
-    strength:122,
-    form:198,
-    'dosage-adult':314,
-    'dosage-pediatric':314,
-    'clinical-status':196,
-    'clinical-action':118,
+    'trade-name':250,
+    'active-substance':220,
+    strength:92,
+    form:180,
+    'dosage-adult':270,
+    'dosage-pediatric':270,
+    'clinical-status':170,
+    'clinical-action':100,
   });
 
   let active = false;
@@ -21,6 +21,7 @@
   let resizeObserver = null;
   let refreshScheduled = false;
   let lastWidthSignature = '';
+  let initialScrollReset = false;
 
   function storedView() {
     try {
@@ -40,6 +41,16 @@
     return VALID_VIEWS.has(value) ? value : storedView();
   }
 
+  function resetClinicalScroll({ force = false } = {}) {
+    const wrapper = document.querySelector('.table-wrap');
+    if (!wrapper || currentView() !== 'clinical') return;
+    if (!force && initialScrollReset) return;
+    initialScrollReset = true;
+    requestAnimationFrame(() => {
+      if (Math.abs(wrapper.scrollLeft) > 1) wrapper.scrollLeft = 0;
+    });
+  }
+
   function setView(view, { persist = true } = {}) {
     const next = VALID_VIEWS.has(view) ? view : 'clinical';
     document.documentElement.dataset.registryUxView = next;
@@ -48,6 +59,7 @@
     updateToolbarState();
     lastWidthSignature = '';
     scheduleRefresh();
+    if (next === 'clinical') resetClinicalScroll({ force:true });
     window.dispatchEvent(new Event('resize'));
   }
 
@@ -142,12 +154,13 @@
         col.style.setProperty('width', '0px', 'important');
         return;
       }
-      const width = COMPACT_WIDTHS[key] || 184;
+      const width = COMPACT_WIDTHS[key] || 172;
       col.style.setProperty('width', `${width}px`, 'important');
       total += width;
     });
     table.style.setProperty('--registry-table-width', `${Math.max(total, viewport)}px`);
     table.dataset.registryClinicalWidth = String(total);
+    resetClinicalScroll();
   }
 
   function refresh() {
@@ -197,29 +210,33 @@
     requestAnimationFrame(activate);
   }
 
-  function dataIsReady() {
-    return Array.isArray(window.MEDINDEX_REGISTRY_ROWS) && window.MEDINDEX_REGISTRY_ROWS.length > 0;
-  }
-
   function initializeViewState() {
     document.documentElement.dataset.registryUxView = storedView();
-    if (dataIsReady()) scheduleActivation();
+    scheduleActivation();
   }
 
-  window.addEventListener('medindex:registry-data-ready', scheduleActivation, { once:true });
-  window.addEventListener('medindex:registry-ready', scheduleActivation, { once:true });
+  window.addEventListener('medindex:registry-data-ready', () => {
+    if (!active) scheduleActivation();
+    lastWidthSignature = '';
+    scheduleRefresh();
+  });
+  window.addEventListener('medindex:registry-ready', () => {
+    if (!active) scheduleActivation();
+    lastWidthSignature = '';
+    scheduleRefresh();
+  });
   window.addEventListener('medindex:registry-table-stable', () => {
     if (!active) scheduleActivation();
     lastWidthSignature = '';
     scheduleRefresh();
   });
-  window.addEventListener('medindex:tailadmin-ready', () => {
-    if (dataIsReady()) scheduleActivation();
-  });
+  window.addEventListener('medindex:tailadmin-ready', scheduleActivation);
   window.addEventListener('resize', scheduleRefresh, { passive:true });
   window.addEventListener('pageshow', () => {
-    if (dataIsReady()) scheduleActivation();
+    scheduleActivation();
+    lastWidthSignature = '';
     scheduleRefresh();
+    resetClinicalScroll();
   }, { passive:true });
 
   initializeViewState();

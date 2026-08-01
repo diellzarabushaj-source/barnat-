@@ -1,16 +1,14 @@
 (() => {
   'use strict';
 
-  const VERSION = 'registry-tailgrids-refinement-20260801-2';
-  const FINAL_STYLE_IDS = ['registryClinicalViewStyles', 'registryTailgridsRefinementStyles'];
+  const VERSION = 'registry-tailgrids-refinement-20260801-3';
+  const RUNTIME_STYLE_ID = 'registryTailgridsRuntimeFixes';
 
   let active = false;
-  let activationScheduled = false;
   let paginationObserver = null;
   let tableObserver = null;
   let enhancingPagination = false;
   let scheduled = false;
-  let styleOrderScheduled = false;
 
   const arrowIcon = direction => direction === 'left'
     ? '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="m15 18-6-6 6-6"/></svg>'
@@ -18,32 +16,23 @@
 
   const editIcon = '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 20h9"/><path d="M16.5 3.5a2.12 2.12 0 0 1 3 3L7 19l-4 1 1-4Z"/></svg>';
 
-  function stabilizeStylesheetOrder() {
-    if (styleOrderScheduled) return;
-    styleOrderScheduled = true;
-    requestAnimationFrame(() => requestAnimationFrame(() => {
-      styleOrderScheduled = false;
-      const integrity = document.querySelector('link[href*="registry-table-integrity.css"]');
-      integrity?.removeAttribute('data-registry-table-integrity-css');
-      FINAL_STYLE_IDS.forEach(id => {
-        const link = document.getElementById(id);
-        if (link) document.head.appendChild(link);
-      });
-      document.documentElement.dataset.registryStyleOrder = VERSION;
-    }));
+  function ensureRuntimeStyles() {
+    if (document.getElementById(RUNTIME_STYLE_ID)) return;
+    const style = document.createElement('style');
+    style.id = RUNTIME_STYLE_ID;
+    style.textContent = '@media(max-width:760px){html.medindex-tailadmin #registryContent.table-wrap{overflow-x:visible!important;overflow-y:visible!important;scrollbar-gutter:auto!important;box-shadow:none!important}}';
+    document.head.appendChild(style);
   }
 
   function normalizePaginationButton(button, type) {
-    if (!button || button.dataset.tgPaginationType === type) return;
+    if (!button) return;
     button.dataset.tgPaginationType = type;
     button.classList.add('tg-pagination-nav');
-    if (type === 'previous') {
-      button.innerHTML = `${arrowIcon('left')}<span>Para</span>`;
-      button.setAttribute('aria-label', 'Faqja e mëparshme');
-    } else {
-      button.innerHTML = `<span>Pas</span>${arrowIcon('right')}`;
-      button.setAttribute('aria-label', 'Faqja pasuese');
-    }
+    const markup = type === 'previous'
+      ? `${arrowIcon('left')}<span>Para</span>`
+      : `<span>Pas</span>${arrowIcon('right')}`;
+    if (button.innerHTML !== markup) button.innerHTML = markup;
+    button.setAttribute('aria-label', type === 'previous' ? 'Faqja e mëparshme' : 'Faqja pasuese');
   }
 
   function enhancePagination() {
@@ -90,8 +79,10 @@
         else button.removeAttribute('aria-current');
       });
 
-      normalizePaginationButton(buttons[0], 'previous');
-      normalizePaginationButton(buttons[buttons.length - 1], 'next');
+      if (buttons.length > 1) {
+        normalizePaginationButton(buttons[0], 'previous');
+        normalizePaginationButton(buttons[buttons.length - 1], 'next');
+      }
       controls.querySelectorAll(':scope > span').forEach(span => span.classList.add('tg-pagination-ellipsis'));
 
       let summary = root.querySelector(':scope > .tg-pagination-summary');
@@ -109,14 +100,16 @@
 
   function enhanceEditorButtons() {
     document.querySelectorAll('.clinical-editor-open').forEach(button => {
-      if (button.dataset.tgEditorButton !== VERSION) {
-        button.replaceChildren();
-        button.insertAdjacentHTML('beforeend', `${editIcon}<span>Redakto</span>`);
+      const alreadyNormalized = button.dataset.tgEditorButton === VERSION
+        && button.querySelector(':scope > svg')
+        && button.querySelector(':scope > span')?.textContent === 'Redakto';
+      if (!alreadyNormalized) {
+        button.innerHTML = `${editIcon}<span>Redakto</span>`;
         button.dataset.tgEditorButton = VERSION;
       }
       button.setAttribute('aria-haspopup', 'dialog');
-      button.setAttribute('aria-label', 'Hap panelin e redaktimit');
-      button.title = 'Hap panelin e redaktimit';
+      button.setAttribute('aria-label', 'Redakto barin');
+      button.title = 'Redakto barin';
     });
   }
 
@@ -124,7 +117,6 @@
     if (!active) return;
     enhancePagination();
     enhanceEditorButtons();
-    stabilizeStylesheetOrder();
     document.documentElement.dataset.registryTailgridsRefinement = VERSION;
   }
 
@@ -156,34 +148,15 @@
   function activate() {
     if (active) return;
     active = true;
-    activationScheduled = false;
+    ensureRuntimeStyles();
     observe();
     refresh();
   }
 
-  function scheduleActivation() {
-    if (active || activationScheduled) return;
-    activationScheduled = true;
-    requestAnimationFrame(activate);
-  }
+  ['medindex:registry-ready', 'medindex:registry-data-ready', 'medindex:registry-table-stable']
+    .forEach(eventName => window.addEventListener(eventName, scheduleRefresh));
+  window.addEventListener('pageshow', scheduleRefresh, { passive:true });
 
-  function dataIsReady() {
-    return Array.isArray(window.MEDINDEX_REGISTRY_ROWS) && window.MEDINDEX_REGISTRY_ROWS.length > 0;
-  }
-
-  window.addEventListener('medindex:registry-ready', scheduleActivation, { once:true });
-  window.addEventListener('medindex:registry-data-ready', scheduleActivation, { once:true });
-  window.addEventListener('medindex:registry-table-stable', () => {
-    if (!active) scheduleActivation();
-    scheduleRefresh();
-  });
-  window.addEventListener('pageshow', () => {
-    if (dataIsReady()) scheduleActivation();
-    if (active) {
-      stabilizeStylesheetOrder();
-      scheduleRefresh();
-    }
-  }, { passive:true });
-
-  if (dataIsReady()) scheduleActivation();
+  if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', activate, { once:true });
+  else activate();
 })();
