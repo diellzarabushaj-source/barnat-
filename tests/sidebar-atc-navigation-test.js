@@ -27,7 +27,7 @@ assert.match(sidebar, /aria-current="page"/, 'The active ATC subcategory needs a
 assert.match(sidebar, /ensureActiveVisible/, 'The active ATC item must be brought into view without unnecessary jumps');
 assert.match(sidebar, /SCROLL_STORAGE_KEY = 'medindex_atc_sidebar_scroll_v1'/, 'Sidebar scroll position must be preserved across category navigation');
 assert.match(sidebar, /restoreSidebarScroll\(\)/, 'The saved sidebar scroll position must be restored');
-assert.match(sidebar, /COUNTS_ENDPOINT = '\/api\/atc-counts'/, 'The sidebar must use the lightweight ATC counts endpoint');
+assert.match(sidebar, /COUNTS_ENDPOINT = '\/api\/atc-counts'/, 'The sidebar must use the lightweight ATC counts route');
 assert.match(sidebar, /data-mi-atc-category-count/, 'Subcategories must expose real count badges');
 assert.match(sidebar, /data-mi-atc-group-count/, 'Groups must expose real count badges');
 assert.match(sidebar, /COUNT_CACHE_TTL = 5 \* 60 \* 1000/, 'ATC counts must use a short browser cache');
@@ -58,6 +58,6 @@ assert.match(styles, /prefers-reduced-motion:reduce/, 'Reduced-motion support is
 
 execFileSync(process.execPath, ['--check', path.join(ROOT, 'atc-sidebar.js')], { stdio:'pipe' });
 execFileSync(process.execPath, ['--check', path.join(ROOT, 'tailadmin-shell.js')], { stdio:'pipe' });
-execFileSync(process.execPath, ['--check', path.join(ROOT, 'api/atc-counts.js')], { stdio:'pipe' });
+execFileSync(process.execPath, ['--check', path.join(ROOT, 'api/drug-search.js')], { stdio:'pipe' });
 
 console.log('Polished nested ATC sidebar navigation tests passed.');
