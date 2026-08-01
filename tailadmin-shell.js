@@ -16,7 +16,7 @@
   const MOBILE_A11Y_SRC = '/mobile-accessibility-hardening.js?v=mobile-a11y-deep-audit-v1';
   const OFFLINE_RUNTIME_SRC = '/offline-runtime-performance.js?v=low-bandwidth-v3';
   const BRAND_SRC = '/medindex-brand-runtime.js?v=medindex-brand-v1';
-  const ATC_NAV_SRC = '/atc-sidebar.js?v=atc-sidebar-v1';
+  const ATC_NAV_SRC = '/atc-sidebar.js?v=atc-sidebar-v2';
   const ATC_SEARCH_SRC = '/atc-global-search.js?v=atc-global-search-v1';
   const SHELL_VERSION = 'production-audit-v2';
   const id = 'appMenu';

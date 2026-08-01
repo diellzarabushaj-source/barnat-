@@ -13,6 +13,7 @@
   ],
   "rewrites": [
     { "source": "/data/registry-data.js", "destination": "/api/registry" },
+    { "source": "/api/atc-counts", "destination": "/api/drug-search?view=atc-counts" },
     { "source": "/api/gemini-prescription", "destination": "/api/gemini-prescription-secure" },
     { "source": "/api/user-library", "destination": "/api/auth?scope=library" },
     { "source": "/api/population-verification", "destination": "/api/clinical-editor?populationVerification=1" },

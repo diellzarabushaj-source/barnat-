@@ -9,6 +9,39 @@ function normalize(value) {
   return clean(value).normalize('NFD').replace(/[\u0300-\u036f]/g, '').toLocaleLowerCase('sq').replace(/[^a-z0-9%+./-]+/g, ' ').trim();
 }
 
+function atcCategoryCode(value) {
+  const code = clean(value).toUpperCase().replace(/\s+/g, '');
+  const match = code.match(/^([A-Z]\d{2})/);
+  return match ? match[1] : '';
+}
+
+function countAtcRows(rows = []) {
+  const counts = Object.create(null);
+  const groupCounts = Object.create(null);
+  let classifiedTotal = 0;
+  let unclassifiedTotal = 0;
+
+  for (const row of Array.isArray(rows) ? rows : []) {
+    const category = atcCategoryCode(row?.['ATC Code'] ?? row?.atc_code ?? row?.atc);
+    if (!category) {
+      unclassifiedTotal += 1;
+      continue;
+    }
+    counts[category] = (counts[category] || 0) + 1;
+    const group = category.charAt(0);
+    groupCounts[group] = (groupCounts[group] || 0) + 1;
+    classifiedTotal += 1;
+  }
+
+  return {
+    total:classifiedTotal + unclassifiedTotal,
+    classifiedTotal,
+    unclassifiedTotal,
+    counts,
+    groupCounts,
+  };
+}
+
 function resultFromRow(row) {
   const tradeName = clean(row['Emri tregtar']);
   const substance = clean(row['Substanca aktive']);
@@ -77,6 +110,27 @@ module.exports = async function handler(req, res) {
     res.setHeader('Cache-Control', 'private, no-store, max-age=0');
     return res.status(401).json({ error:'Kërkohet autentikim.' });
   }
+
+  const view = clean(req.query?.view).toLowerCase();
+  if (view === 'atc-counts') {
+    try {
+      const { rows, meta } = await registryHandler.getRegistryDataset();
+      const summary = countAtcRows(rows);
+      res.setHeader('Cache-Control', 'private, max-age=120, stale-while-revalidate=600');
+      res.setHeader('Server-Timing', `atccounts;dur=${Date.now() - startedAt}`);
+      return res.status(200).json({
+        ok:true,
+        ...summary,
+        registryVersion:clean(meta?.version),
+        generatedAt:new Date().toISOString(),
+      });
+    } catch (error) {
+      console.error('ATC counts error:', error);
+      res.setHeader('Cache-Control', 'private, no-store, max-age=0');
+      return res.status(500).json({ error:'Numërimet e kategorive nuk u ngarkuan.' });
+    }
+  }
+
   const query = normalize(clean(req.query?.q).slice(0, MAX_QUERY));
   if (query.length < 2) {
     res.setHeader('Cache-Control', 'private, max-age=30');
@@ -98,3 +152,6 @@ module.exports = async function handler(req, res) {
     return res.status(500).json({ error:'Kërkimi i barnave nuk u ngarkua.' });
   }
 };
+
+module.exports.atcCategoryCode = atcCategoryCode;
+module.exports.countAtcRows = countAtcRows;
