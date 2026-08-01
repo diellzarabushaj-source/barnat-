@@ -63,8 +63,14 @@ html.medindex-tailadmin[data-mi-page="barnat"] body .registry-cell-preview-trigg
   pointer-events:none!important;
 }
 
-html.medindex-tailadmin[data-mi-page="barnat"] body #dataTable tbody tr.registry-row-expanded td[data-registry-cell-preview="true"] {
-  height:auto!important;
+html.medindex-tailadmin[data-mi-page="barnat"] body #dataTable tbody tr.registry-row-expanded[data-registry-row-expanded="true"] {
+  height:132px!important;
+  min-height:132px!important;
+  max-height:none!important;
+}
+
+html.medindex-tailadmin[data-mi-page="barnat"] body #dataTable tbody tr.registry-row-expanded[data-registry-row-expanded="true"] td[data-registry-cell-preview="true"] {
+  height:132px!important;
   min-height:132px!important;
   max-height:none!important;
   padding-top:14px!important;
@@ -73,7 +79,7 @@ html.medindex-tailadmin[data-mi-page="barnat"] body #dataTable tbody tr.registry
   white-space:normal!important;
 }
 
-html.medindex-tailadmin[data-mi-page="barnat"] body #dataTable tbody tr.registry-row-expanded td[data-registry-cell-preview="true"] :is(
+html.medindex-tailadmin[data-mi-page="barnat"] body #dataTable tbody tr.registry-row-expanded[data-registry-row-expanded="true"] td[data-registry-cell-preview="true"] :is(
   .drug-name-text,
   .registry-cell-value,
   .registry-dosage-grid,
@@ -120,7 +126,13 @@ html.medindex-tailadmin:is(.dark,[data-theme="dark"])[data-mi-page="barnat"] bod
     opacity:.92!important;
   }
 
-  html.medindex-tailadmin[data-mi-page="barnat"] body #dataTable tbody tr.registry-row-expanded td[data-registry-cell-preview="true"] {
+  html.medindex-tailadmin[data-mi-page="barnat"] body #dataTable tbody tr.registry-row-expanded[data-registry-row-expanded="true"] {
+    height:148px!important;
+    min-height:148px!important;
+  }
+
+  html.medindex-tailadmin[data-mi-page="barnat"] body #dataTable tbody tr.registry-row-expanded[data-registry-row-expanded="true"] td[data-registry-cell-preview="true"] {
+    height:148px!important;
     min-height:148px!important;
     padding-top:16px!important;
     padding-bottom:22px!important;
