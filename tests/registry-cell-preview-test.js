@@ -18,7 +18,8 @@ assert(
   index.indexOf('registry-cell-preview.js?v=20260801-2') < index.indexOf('registry-row-expand.js?v=20260801-4'),
   'Cell expansion trigger must initialize before row expansion.'
 );
-assert(index.includes('data-registry-ui-release="20260801-12"'), 'Registry UI release was not bumped.');
+assert(index.includes('data-registry-ui-release="20260801-13"'), 'Registry UI release was not bumped.');
+assert(index.includes('registry-unified-table.js?v=20260801-1'), 'Unified table controller is not wired.');
 
 assert(controller.includes('data-lineicons-icon="expand-square-4"'), 'Lineicons expand-square-4 is missing.');
 assert(controller.includes('rowController.toggleRow(row)'), 'Cell trigger must expand the table row inline.');
@@ -42,4 +43,4 @@ assert(styles.includes('prefers-reduced-motion:reduce'), 'Reduced-motion handlin
 assert(rowExpand.includes("button, input, select, textarea"), 'Row expansion must ignore nested controls.');
 assert(rowExpand.includes('syncPreviewTriggers(row, expanded)'), 'Row expansion must synchronize the cell trigger state.');
 
-console.log('Inline full-cell row expansion and local Lineicons integration audit passed.');
+console.log('Inline full-cell row expansion, release 13 and unified table audit passed.');
