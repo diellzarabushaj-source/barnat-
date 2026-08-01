@@ -8,13 +8,29 @@ test.use({ serviceWorkers:'block', viewport:{ width:1440, height:900 } });
 test('qeliza e gjatë e rrit rreshtin inline pa hapur modal', async ({ page }) => {
   await page.goto(`${BASE}/index.html`, { waitUntil:'domcontentloaded' });
   await page.waitForFunction(() => document.documentElement.classList.contains('auth-ready'));
+  await expect.poll(
+    () => page.evaluate(() => ({
+      stable:window.MEDINDEX_REGISTRY_TABLE_AUDIT?.stable === true,
+      pending:document.getElementById('dataTable')?.dataset.registryUnifiedPending === 'true',
+      preview:window.MedIndexCellPreview?.version || '',
+    })),
+    { timeout:30000, message:'tabela ose kontrolluesi i zgjerimit nuk u stabilizua' }
+  ).toEqual({ stable:true, pending:false, preview:'registry-cell-preview-20260801-7' });
 
   const cell = page.locator('#tbody > tr td[data-registry-column-key="active-substance"]').first();
   await expect(cell).toBeVisible({ timeout:30000 });
-  await cell.evaluate((node, text) => {
+  const previewResult = await cell.evaluate((node, text) => {
     node.textContent = text;
-    window.MedIndexCellPreview?.refresh?.();
+    window.MedIndexCellPreview.refresh();
+    return {
+      text:node.textContent,
+      hasTrigger:Boolean(node.querySelector('.registry-cell-preview-trigger')),
+      key:node.dataset.registryColumnKey,
+    };
   }, FULL_TEXT);
+  expect(previewResult.key).toBe('active-substance');
+  expect(previewResult.text).toContain('Montelukast');
+  expect(previewResult.hasTrigger).toBe(true);
 
   const trigger = cell.locator('.registry-cell-preview-trigger');
   await expect(trigger).toBeVisible({ timeout:10000 });
