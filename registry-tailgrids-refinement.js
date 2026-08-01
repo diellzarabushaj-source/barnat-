@@ -2,17 +2,34 @@
   'use strict';
 
   const VERSION = 'registry-tailgrids-refinement-20260801-2';
+  const FINAL_STYLE_IDS = ['registryClinicalViewStyles', 'registryTailgridsRefinementStyles'];
 
   let paginationObserver = null;
   let tableObserver = null;
   let enhancingPagination = false;
   let scheduled = false;
+  let styleOrderScheduled = false;
 
   const arrowIcon = direction => direction === 'left'
     ? '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="m15 18-6-6 6-6"/></svg>'
     : '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="m9 18 6-6-6-6"/></svg>';
 
   const editIcon = '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 20h9"/><path d="M16.5 3.5a2.12 2.12 0 0 1 3 3L7 19l-4 1 1-4Z"/></svg>';
+
+  function stabilizeStylesheetOrder() {
+    if (styleOrderScheduled) return;
+    styleOrderScheduled = true;
+    requestAnimationFrame(() => requestAnimationFrame(() => {
+      styleOrderScheduled = false;
+      const integrity = document.querySelector('link[href*="registry-table-integrity.css"]');
+      integrity?.removeAttribute('data-registry-table-integrity-css');
+      FINAL_STYLE_IDS.forEach(id => {
+        const link = document.getElementById(id);
+        if (link) document.head.appendChild(link);
+      });
+      document.documentElement.dataset.registryStyleOrder = VERSION;
+    }));
+  }
 
   function normalizePaginationButton(button, type) {
     if (!button || button.dataset.tgPaginationType === type) return;
@@ -104,6 +121,7 @@
   function refresh() {
     enhancePagination();
     enhanceEditorButtons();
+    stabilizeStylesheetOrder();
     document.documentElement.dataset.registryTailgridsRefinement = VERSION;
   }
 
@@ -139,7 +157,10 @@
 
   ['medindex:registry-ready', 'medindex:registry-data-ready', 'medindex:registry-table-stable']
     .forEach(eventName => window.addEventListener(eventName, scheduleRefresh));
-  window.addEventListener('pageshow', scheduleRefresh, { passive:true });
+  window.addEventListener('pageshow', () => {
+    stabilizeStylesheetOrder();
+    scheduleRefresh();
+  }, { passive:true });
 
   if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', boot, { once:true });
   else boot();
