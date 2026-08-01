@@ -200,12 +200,15 @@ html.medindex-tailadmin[data-theme="dark"][data-mi-page="barnat"] body #registry
 }
 
 @media (max-width:760px) {
+  /* Mobile uses readable cards and the page's native vertical scroll.
+     The dedicated two-axis table viewport starts at tablet/desktop widths. */
   html.medindex-tailadmin[data-mi-page="barnat"] body #registryContent.table-wrap {
-    max-height:68dvh!important;
-    min-height:320px!important;
-    overflow-x:clip!important;
-    overflow-y:auto!important;
-    scrollbar-gutter:stable!important;
+    max-height:none!important;
+    min-height:0!important;
+    overflow:visible!important;
+    overscroll-behavior:auto!important;
+    scrollbar-gutter:auto!important;
+    touch-action:pan-y!important;
   }
 
   html.medindex-tailadmin[data-mi-page="barnat"] body #registryContent #dataTable tbody tr:is(
