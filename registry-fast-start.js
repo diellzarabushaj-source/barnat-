@@ -7,6 +7,7 @@
   const tbody = document.getElementById('tbody');
   let released = false;
   let observer = null;
+  let authObserver = null;
 
   function loadingText() {
     return `${tbody?.textContent || ''} ${badge?.textContent || ''}`.toLowerCase();
@@ -26,6 +27,7 @@
     document.documentElement.dataset.medindexRegistryStartup = reason;
 
     if (loader) {
+      loader.style.pointerEvents = 'none';
       loader.classList.add('is-hidden');
       loader.setAttribute('aria-hidden', 'true');
       window.setTimeout(() => loader.remove(), 180);
@@ -42,6 +44,14 @@
     }
 
     observer?.disconnect();
+    authObserver?.disconnect();
+  }
+
+  function releaseInteractiveShell() {
+    const root = document.documentElement;
+    if (!root.classList.contains('auth-ready')) return;
+    if (!document.querySelector('.mi-app-shell')) return;
+    releaseLoader('interactive-shell');
   }
 
   const timer = window.setTimeout(() => releaseLoader('background'), MAX_BLOCKING_MS);
@@ -52,8 +62,15 @@
     releaseLoader('ready');
   });
 
+  authObserver = new MutationObserver(releaseInteractiveShell);
+  authObserver.observe(document.documentElement, {
+    attributes:true,
+    attributeFilter:['class'],
+  });
+
   if (tbody) observer.observe(tbody, { childList:true, subtree:true, characterData:true });
 
+  window.addEventListener('medindex:tailadmin-ready', releaseInteractiveShell);
   window.addEventListener('medindex:registry-ready', () => {
     window.clearTimeout(timer);
     releaseLoader('ready');
@@ -64,4 +81,10 @@
     window.clearTimeout(timer);
     releaseLoader('runtime-error');
   }, { once:true });
+
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', releaseInteractiveShell, { once:true });
+  } else {
+    releaseInteractiveShell();
+  }
 })();
