@@ -22,6 +22,7 @@ test('qeliza e gjatë hap tekstin e plotë pa zgjeruar rreshtin', async ({ page 
 
   const row = cell.locator('xpath=ancestor::tr');
   const before = await row.getAttribute('data-registry-row-expanded');
+  await cell.evaluate(node => node.scrollIntoView({ block:'center', inline:'center', behavior:'instant' }));
   await trigger.click();
 
   const dialog = page.locator('#registryCellPreviewDialog');
@@ -46,6 +47,7 @@ test('qeliza e gjatë hap tekstin e plotë pa zgjeruar rreshtin', async ({ page 
   await expect(trigger).toBeFocused();
 
   await page.setViewportSize({ width:390, height:844 });
+  await cell.evaluate(node => node.scrollIntoView({ block:'center', inline:'center', behavior:'instant' }));
   await trigger.click();
   await expect(dialog).toBeVisible();
   const mobileGeometry = await dialog.evaluate(node => {
