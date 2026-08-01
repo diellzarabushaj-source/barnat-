@@ -25,6 +25,7 @@ assert.match(read('tests/population-verification-test.js'),/20260801-12/,'popula
 assert.match(read('tests/registry-fast-start-test.js'),/registry-runtime-loader\.js/,'fast-start audit must cover the cooperative loader');
 assert.match(read('tests/registry-interaction-resilience-test.js'),/cooperative interaction-safe bootstrap/,'interaction resilience audit must cover the cooperative loader');
 assert.match(read('tests/registry-main-thread-deep-audit-test.js'),/Registry cooperative bootstrap and main-thread deep audit passed/,'main-thread audit must cover the cooperative loader');
+assert.match(read('tests/runtime-asset-version-audit-test.js'),/cooperative bootstrap and idle dosage asset audit passed/,'runtime version audit must cover the cooperative loader');
 
 assert.doesNotThrow(() => new Function(runtime),'final table runtime must be valid JavaScript');
 assert.doesNotThrow(() => new Function(loader),'registry runtime loader must be valid JavaScript');
