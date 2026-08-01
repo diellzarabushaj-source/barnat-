@@ -8,8 +8,8 @@ test.use({ serviceWorkers:'block', viewport:{ width:1440, height:900 } });
 test('qeliza e gjatë hap tekstin e plotë pa zgjeruar rreshtin', async ({ page }) => {
   await page.goto(`${BASE}/index.html`, { waitUntil:'domcontentloaded' });
   await page.waitForFunction(() => document.documentElement.classList.contains('auth-ready'));
-  await page.waitForFunction(() => window.MEDINDEX_APP_VERSION === 'clinical-audit-v5-performance-runtime', null, { timeout:30000 });
   await expect(page.locator('#tbody > tr')).toHaveCount(50, { timeout:30000 });
+  await expect(page.locator('#countBadge')).not.toContainText(/ngarkuar|gabim/i, { timeout:30000 });
 
   const cell = page.locator('#tbody > tr td[data-registry-column-key="active-substance"]').first();
   await expect(cell).toBeVisible();
