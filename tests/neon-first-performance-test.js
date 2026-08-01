@@ -10,7 +10,7 @@ const read = file => fs.readFileSync(path.join(root, file), 'utf8');
 const readerSource = read('lib/neon-clinical-reader.js');
 const registrySource = read('api/registry.js');
 const dosageSource = read('api/dosage.js');
-const icdSource = read('api/icd.js');
+const icdSource = read('lib/icd-api-base.js');
 const labsSource = read('analizat.js');
 const publishSource = read('scripts/publish-neon-registry.js');
 const serviceWorker = read('sw-resilient-v3.js');
