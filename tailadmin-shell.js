@@ -15,6 +15,7 @@
   const MOBILE_SRC = '/mobile-experience.js?v=production-audit-v2';
   const MOBILE_A11Y_SRC = '/mobile-accessibility-hardening.js?v=mobile-a11y-deep-audit-v1';
   const OFFLINE_RUNTIME_SRC = '/offline-runtime-performance.js?v=low-bandwidth-v3';
+  const BRAND_SRC = '/medindex-brand-runtime.js?v=medindex-brand-v1';
   const SHELL_VERSION = 'production-audit-v2';
   const id = 'appMenu';
   const SHELL_RETRY_MS = 3500;
@@ -152,7 +153,7 @@
     if (profile.slow || profile.saveData || !('serviceWorker' in navigator)) return;
     const warm = source => fetch(source, { cache:'no-cache', credentials:'same-origin' }).catch(() => null);
     navigator.serviceWorker.ready.then(() => {
-      const run = () => Promise.all([warm(LEGACY_SRC), warm(MOBILE_SRC), warm(MOBILE_A11Y_SRC), warm(OFFLINE_RUNTIME_SRC)]);
+      const run = () => Promise.all([warm(LEGACY_SRC), warm(MOBILE_SRC), warm(MOBILE_A11Y_SRC), warm(OFFLINE_RUNTIME_SRC), warm(BRAND_SRC)]);
       if (navigator.serviceWorker.controller) run();
       else navigator.serviceWorker.addEventListener('controllerchange', run, { once:true });
     }).catch(() => null);
@@ -171,23 +172,22 @@
     }
   }
 
-
-function ensureSystemNavItem() {
-  const tools = document.querySelector('.mi-menu-group-tools');
-  if (!tools || tools.querySelector('[data-medical-nav="system"]')) return;
-  const link = document.createElement('a');
-  const path = location.pathname.replace(/\/{2,}/g, '/').replace(/\/+$/, '') || '/';
-  const current = path === '/sistemi.html';
-  link.className = `app-menu-link mi-menu-item${current ? ' active' : ''}`;
-  link.href = '/sistemi.html';
-  link.dataset.medicalNav = 'system';
-  link.setAttribute('aria-label', 'Sistemi');
-  if (current) link.setAttribute('aria-current', 'page');
-  link.innerHTML = '<span class="app-menu-icon mi-menu-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 12h4l2-6 4 12 2-6h4"/><path d="M4 4h16v16H4z"/></svg></span><span class="app-menu-title mi-menu-label">Sistemi</span>';
-  const search = tools.querySelector('[data-nav="search"]');
-  if (search) search.after(link);
-  else tools.appendChild(link);
-}
+  function ensureSystemNavItem() {
+    const tools = document.querySelector('.mi-menu-group-tools');
+    if (!tools || tools.querySelector('[data-medical-nav="system"]')) return;
+    const link = document.createElement('a');
+    const path = location.pathname.replace(/\/{2,}/g, '/').replace(/\/+$/, '') || '/';
+    const current = path === '/sistemi.html';
+    link.className = `app-menu-link mi-menu-item${current ? ' active' : ''}`;
+    link.href = '/sistemi.html';
+    link.dataset.medicalNav = 'system';
+    link.setAttribute('aria-label', 'Sistemi');
+    if (current) link.setAttribute('aria-current', 'page');
+    link.innerHTML = '<span class="app-menu-icon mi-menu-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 12h4l2-6 4 12 2-6h4"/><path d="M4 4h16v16H4z"/></svg></span><span class="app-menu-title mi-menu-label">Sistemi</span>';
+    const search = tools.querySelector('[data-nav="search"]');
+    if (search) search.after(link);
+    else tools.appendChild(link);
+  }
 
   function finalizeShellReady() {
     if (shellReady && document.querySelector('.mi-app-shell')) return;
@@ -200,6 +200,7 @@ function ensureSystemNavItem() {
     ensureCriticalMobileStyles();
     queueMicrotask(ensureStylesheetLast);
     ensureSystemNavItem();
+    loadRuntime(BRAND_SRC, 'data-medindex-brand-runtime', 'miBrandRuntimeError');
     loadMobileExperience();
     warmRuntimeAssets();
   }
