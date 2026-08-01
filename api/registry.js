@@ -4,6 +4,7 @@ const crypto = require('node:crypto');
 const registryQuality = require('../data/registry-quality.js');
 const PrescriptionNotation = require('../prescription-notation.js');
 const NeonClinical = require('../lib/neon-clinical-reader.js');
+const RegistryRevision = require('../lib/registry-revision.js');
 
 const DRIVE_FILE_ID = '1SY2rb2Eqo3fVkRhgQ8ltJHCRrWyAUDvd';
 const PRESCRIPTION_SHEET_ID = process.env.PRESCRIPTION_SHEET_ID || '1gGQjnJboj8W7txs0fhG15PXO06rdB9aetLQgFmmPHz8';
@@ -253,21 +254,40 @@ async function buildDataset() {
   }
 }
 
+async function registryCacheIdentity() {
+  const mode = NeonClinical.dataSourceMode();
+  if (mode === 'sheets') return { mode, revision:'sheets-source', key:mode };
+  const revision = await RegistryRevision.getRegistryRevision();
+  return { mode, revision, key:`${mode}:${revision}` };
+}
+
 async function getRegistryDataset() {
-  const key = NeonClinical.dataSourceMode();
+  const identity = await registryCacheIdentity();
+  const key = identity.key;
   const now = Date.now();
   if (datasetCache && datasetCacheKey === key && now - datasetCacheTime < MEMORY_CACHE_MS) return datasetCache;
   if (!pendingDataset || pendingDatasetKey !== key) {
     pendingDatasetKey = key;
     pendingDataset = buildDataset().then(dataset => {
+      dataset.meta.registryRevision = identity.revision;
+      dataset.meta.registryCacheKey = key;
       datasetCache = dataset;
       datasetCacheTime = Date.now();
       datasetCacheKey = key;
       payloadCache = null;
+      payloadCacheKey = '';
       return dataset;
     }).catch(error => {
-      if (datasetCache && datasetCacheKey === key) {
-        return { ...datasetCache, meta:{ ...datasetCache.meta, stale:true, staleReason:String(error?.message || error).slice(0, 500) } };
+      if (datasetCache) {
+        return {
+          ...datasetCache,
+          meta:{
+            ...datasetCache.meta,
+            stale:true,
+            staleReason:String(error?.message || error).slice(0, 500),
+            requestedRegistryRevision:identity.revision,
+          },
+        };
       }
       throw error;
     }).finally(() => { pendingDataset = null; pendingDatasetKey = ''; });
@@ -276,10 +296,10 @@ async function getRegistryDataset() {
 }
 
 async function getPayload() {
-  const key = NeonClinical.dataSourceMode();
+  const dataset = await getRegistryDataset();
+  const key = String(dataset.meta.registryCacheKey || `${dataset.meta.dataSource}:${dataset.meta.registryRevision || 'unversioned'}`);
   const now = Date.now();
   if (payloadCache && payloadCacheKey === key && now - payloadCacheTime < MEMORY_CACHE_MS) return payloadCache;
-  const dataset = await getRegistryDataset();
   const json = JSON.stringify(dataset.rows);
   const encoded = zlib.gzipSync(Buffer.from(json, 'utf8'), { level:9 }).toString('base64');
   const body = `window.DRUG_DATA_PARTS = [${JSON.stringify(encoded)}];\nwindow.REGISTRY_QUALITY_META = ${JSON.stringify(dataset.meta)};\n`;
@@ -320,6 +340,7 @@ async function handler(req, res) {
     res.setHeader('X-MedIndex-Rows', String(payload.meta.sourceRows));
     res.setHeader('X-MedIndex-Prescription-Rows', String(payload.meta.prescriptionMatched));
     res.setHeader('X-MedIndex-Data-Source', payload.meta.dataSource || 'unknown');
+    res.setHeader('X-MedIndex-Registry-Revision', String(payload.meta.registryRevision || 'unversioned'));
     if (payload.meta.stale) res.setHeader('Warning', '110 - "Response is stale"');
 
     if (req.headers['if-none-match'] === payload.etag) return res.status(304).end();
@@ -343,4 +364,5 @@ handler.attachPrescriptionNotation = attachPrescriptionNotation;
 handler.normalizeCellValue = normalizeCellValue;
 handler.buildNeonDataset = buildNeonDataset;
 handler.buildSheetsDataset = buildSheetsDataset;
+handler.registryCacheIdentity = registryCacheIdentity;
 module.exports = handler;
