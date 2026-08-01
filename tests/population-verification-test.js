@@ -39,13 +39,17 @@ assert.strictEqual(
 assert.deepStrictEqual(Verification.parseRegistryNumbers('12,12,13'), [12, 13], 'Numrat duhet të deduplikohen.');
 
 const index = read('index.html');
+const loader = read('registry-verification-loader.js');
 const ui = read('registry-verification-ui.js');
 const styles = read('registry-verification-ui.css');
 const endpoint = read('api/clinical-editor.js');
 const vercel = JSON.parse(read('vercel.json'));
 
 assert(index.includes('registry-verification-ui.css?v=20260801-1'), 'CSS-ja e verifikimit nuk është lidhur.');
-assert(index.includes('registry-verification-ui.js?v=20260801-1'), 'Kontrolluesi i verifikimit nuk është lidhur.');
+assert(index.includes('registry-verification-loader.js?v=20260801-1'), 'Idle loader-i i verifikimit nuk është lidhur.');
+assert(loader.includes("window.addEventListener('medindex:registry-ready'"), 'Verifikimi duhet të presë registry-ready.');
+assert(loader.includes('requestIdleCallback'), 'Verifikimi duhet të ngarkohet në idle.');
+assert(loader.includes('registry-verification-ui.js?v=20260801-1'), 'Loader-i nuk e ngarkon kontrolluesin e verifikimit.');
 assert(index.includes('data-registry-ui-release="20260801-11"'), 'Release-i i tabelës nuk u rrit.');
 assert(ui.includes('data-population-pencil'), 'Ikona e vetme e lapsit mungon.');
 assert(ui.includes("state:'unknown'"), 'Gjendja pa të dhëna mungon.');
