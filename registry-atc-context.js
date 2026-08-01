@@ -3,6 +3,7 @@
 
   const PANEL_ID = 'registryAtcContext';
   const TITLE_ID = 'registryAtcContextTitle';
+  const MOBILE_BREAKPOINT = 1024;
   let lastTrigger = null;
 
   const clean = value => String(value ?? '').trim();
@@ -21,6 +22,42 @@
       page:Number(source.page) || 1,
       pageSize:Number(source.pageSize) || 50,
     };
+  }
+
+  function findActiveCategoryLink(code) {
+    return [...document.querySelectorAll('[data-mi-atc-code]')]
+      .find(link => clean(link.dataset.miAtcCode) === clean(code)) || null;
+  }
+
+  function reducedMotion() {
+    return Boolean(window.matchMedia?.('(prefers-reduced-motion: reduce)')?.matches);
+  }
+
+  function revealCategoryNavigation(attempt = 0) {
+    const state = currentState();
+    const rootTrigger = document.querySelector('[data-mi-atc-root-trigger]');
+    if (!rootTrigger) {
+      if (attempt < 12) setTimeout(() => revealCategoryNavigation(attempt + 1), 100);
+      return;
+    }
+
+    if (rootTrigger.getAttribute('aria-expanded') !== 'true') rootTrigger.click();
+
+    requestAnimationFrame(() => requestAnimationFrame(() => {
+      const target = findActiveCategoryLink(state.activeAtc) || rootTrigger;
+      target.scrollIntoView?.({
+        behavior:reducedMotion() ? 'auto' : 'smooth',
+        block:'center',
+      });
+      target.focus?.({ preventScroll:true });
+    }));
+  }
+
+  function openCategoryNavigation() {
+    const mobile = window.innerWidth < MOBILE_BREAKPOINT;
+    const sidebarToggle = document.querySelector('[data-mi-sidebar-toggle]');
+    if (mobile && sidebarToggle?.getAttribute('aria-expanded') !== 'true') sidebarToggle.click();
+    setTimeout(() => revealCategoryNavigation(), mobile ? 180 : 0);
   }
 
   function ensurePanel() {
@@ -42,10 +79,10 @@
         </div>
       </div>
       <div class="registry-atc-context__actions">
-        <a class="registry-atc-context__back" data-atc-context-back href="/klasifikimi.html">
-          <span aria-hidden="true">←</span>
-          <span>Kthehu te klasifikimi</span>
-        </a>
+        <button class="registry-atc-context__back" data-atc-context-browse type="button" aria-label="Shiko kategoritë në navigim">
+          <span aria-hidden="true">☷</span>
+          <span>Shiko kategoritë</span>
+        </button>
         <button class="registry-atc-context__clear" data-atc-context-clear type="button">
           Hiqe filtrin ATC
         </button>
@@ -56,6 +93,11 @@
     const anchor = toolbar || registry;
     if (anchor?.parentNode) anchor.parentNode.insertBefore(panel, anchor);
     else document.body.appendChild(panel);
+
+    panel.querySelector('[data-atc-context-browse]')?.addEventListener('click', event => {
+      lastTrigger = event.currentTarget;
+      openCategoryNavigation();
+    });
 
     panel.querySelector('[data-atc-context-clear]')?.addEventListener('click', event => {
       lastTrigger = event.currentTarget;
@@ -87,9 +129,6 @@
     panel.dataset.atcCode = state.activeAtc;
     panel.querySelector(`#${TITLE_ID}`).textContent = state.label || `Kategoria ATC ${state.activeAtc}`;
     panel.querySelector('[data-atc-context-summary]').textContent = summaryText(state);
-
-    const back = panel.querySelector('[data-atc-context-back]');
-    if (back) back.href = window.MedIndexATC?.classificationUrl?.(state.activeAtc) || `/klasifikimi.html#${encodeURIComponent(state.activeAtc)}`;
   }
 
   function clearAtcFilter() {
