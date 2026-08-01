@@ -1,8 +1,8 @@
 (() => {
   'use strict';
 
-  const VERSION = 'registry-table-integrity-v2';
-  const STYLE_VERSION = '20260801-2';
+  const VERSION = 'registry-table-integrity-v3';
+  const STYLE_VERSION = '20260801-3';
   const DYNAMIC_ORDER = Object.freeze([
     '[data-clinical-editor-column="clinical-status"]',
     '[data-clinical-editor-column="clinical-action"]',
@@ -70,6 +70,9 @@
   let resizeObserver = null;
   let scheduled = false;
   let enforcing = false;
+  let lastLayoutSignature = '';
+  let lastAuditSignature = '';
+  let lastObservedWidth = 0;
 
   const normalize = value => String(value ?? '')
     .replace(/[▲▼↕]/g, '')
@@ -100,17 +103,27 @@
     return Array.from(container?.children || []).filter(node => node.matches?.(selector));
   }
 
+  function sameNodes(left, right) {
+    return left.length === right.length && left.every((node, index) => node === right[index]);
+  }
+
   function canonicalizeDynamic(container) {
-    if (!container) return;
+    if (!container) return false;
+
     const ordered = [];
     DYNAMIC_ORDER.forEach(selector => {
       const matches = directMatches(container, selector);
       matches.slice(1).forEach(node => node.remove());
       if (matches[0]) ordered.push(matches[0]);
     });
-    ordered.forEach(node => {
-      if (container.lastElementChild !== node) container.appendChild(node);
-    });
+
+    const current = Array.from(container.children);
+    const dynamic = new Set(ordered);
+    const desired = current.filter(node => !dynamic.has(node)).concat(ordered);
+    if (sameNodes(current, desired)) return false;
+
+    container.replaceChildren(...desired);
+    return true;
   }
 
   function keyForCell(cell, index = 0) {
@@ -165,7 +178,7 @@
     if (!row || row.querySelector('.empty-state')) {
       const emptyCell = row?.querySelector('td');
       if (emptyCell) emptyCell.colSpan = Math.max(model.length, 1);
-      return;
+      return false;
     }
 
     const cells = rowMap(row);
@@ -178,15 +191,17 @@
       cells.delete(key);
     });
     cells.forEach(cell => ordered.push(cell));
-    ordered.forEach(cell => {
-      if (row.lastElementChild !== cell) row.appendChild(cell);
-    });
+
+    const current = Array.from(row.children);
+    const changed = !sameNodes(current, ordered);
+    if (changed) row.replaceChildren(...ordered);
 
     const actual = Array.from(row.children).map((cell, index) => keyForCell(cell, index));
     const expected = model.map(item => item.key);
     row.dataset.registryColumnCount = String(actual.length);
     row.dataset.registryColumnIntegrity = actual.length === expected.length
       && actual.every((key, index) => key === expected[index]) ? 'ok' : 'mismatch';
+    return changed;
   }
 
   function cellIsVisible(cell) {
@@ -194,40 +209,56 @@
     return getComputedStyle(cell).display !== 'none';
   }
 
-  function ensureColgroup(table, model, tbody) {
-    let colgroup = table.querySelector(':scope > colgroup[data-registry-colgroup]');
-    if (!colgroup) {
-      colgroup = document.createElement('colgroup');
-      colgroup.dataset.registryColgroup = VERSION;
-      table.insertBefore(colgroup, table.firstChild);
-    }
-    colgroup.replaceChildren();
-
+  function layoutModel(model, tbody, wrapper) {
     const sampleRow = firstDataRow(tbody);
     const sampleByKey = sampleRow ? rowMap(sampleRow) : new Map();
-    let total = 0;
-    const visibleKeys = [];
-
-    model.forEach(({ cell, key, width }) => {
+    const columns = model.map(({ cell, key, width }) => {
       const sampleCell = sampleByKey.get(key);
       const visible = cellIsVisible(cell) && (!sampleCell || cellIsVisible(sampleCell));
-      const col = document.createElement('col');
-      col.dataset.registryColumnKey = key;
-      col.style.width = `${visible ? width : 0}px`;
-      if (!visible) col.style.display = 'none';
-      colgroup.appendChild(col);
-      if (visible) {
-        total += width;
-        visibleKeys.push(key);
-      }
+      return { key, width, visible };
     });
+    const viewport = Math.max(0, Math.round(wrapper?.clientWidth || 0));
+    const total = columns.reduce((sum, column) => sum + (column.visible ? column.width : 0), 0);
+    const visibleKeys = columns.filter(column => column.visible).map(column => column.key);
+    const signature = `${viewport}|${columns.map(column => `${column.key}:${column.width}:${column.visible ? 1 : 0}`).join('|')}`;
+    return { columns, viewport, total, visibleKeys, signature };
+  }
 
-    const wrapper = table.closest('.table-wrap');
-    const viewport = Math.max(0, wrapper?.clientWidth || 0);
-    table.style.setProperty('--registry-table-width', `${Math.max(total, viewport)}px`);
-    table.dataset.registryVisibleColumns = visibleKeys.join(',');
+  function ensureColgroup(table, model, tbody, wrapper) {
+    const layout = layoutModel(model, tbody, wrapper);
+    let colgroup = table.querySelector(':scope > colgroup[data-registry-colgroup]');
+    const needsRebuild = !colgroup
+      || colgroup.dataset.registryColgroup !== VERSION
+      || layout.signature !== lastLayoutSignature;
+
+    if (needsRebuild) {
+      if (!colgroup) {
+        colgroup = document.createElement('colgroup');
+        table.insertBefore(colgroup, table.firstChild);
+      }
+      colgroup.dataset.registryColgroup = VERSION;
+      const fragment = document.createDocumentFragment();
+      layout.columns.forEach(column => {
+        const col = document.createElement('col');
+        col.dataset.registryColumnKey = column.key;
+        col.style.width = `${column.visible ? column.width : 0}px`;
+        if (!column.visible) col.style.display = 'none';
+        fragment.appendChild(col);
+      });
+      colgroup.replaceChildren(fragment);
+      lastLayoutSignature = layout.signature;
+    }
+
+    const tableWidth = `${Math.max(layout.total, layout.viewport)}px`;
+    if (table.style.getPropertyValue('--registry-table-width') !== tableWidth) {
+      table.style.setProperty('--registry-table-width', tableWidth);
+    }
+    const visibleValue = layout.visibleKeys.join(',');
+    if (table.dataset.registryVisibleColumns !== visibleValue) {
+      table.dataset.registryVisibleColumns = visibleValue;
+    }
     table.dataset.registryTableVersion = VERSION;
-    return { total, visibleKeys };
+    return { ...layout, changed:needsRebuild };
   }
 
   function exposeAudit(table, tbody, model, layout) {
@@ -245,7 +276,12 @@
     };
     window.MEDINDEX_REGISTRY_TABLE_AUDIT = audit;
     document.documentElement.dataset.registryTableIntegrity = audit.stable ? `${VERSION}-ok` : `${VERSION}-mismatch`;
-    window.dispatchEvent(new CustomEvent('medindex:registry-table-stable', { detail:audit }));
+
+    const signature = `${audit.columns}|${audit.visibleColumns}|${audit.width}|${audit.rows}|${audit.mismatchedRows}|${audit.stable}`;
+    if (signature !== lastAuditSignature) {
+      lastAuditSignature = signature;
+      window.dispatchEvent(new CustomEvent('medindex:registry-table-stable', { detail:audit }));
+    }
   }
 
   function enforce() {
@@ -258,8 +294,6 @@
 
     enforcing = true;
     observer?.disconnect();
-    const scrollLeft = wrapper.scrollLeft;
-    const scrollTop = wrapper.scrollTop;
 
     try {
       canonicalizeDynamic(header);
@@ -267,16 +301,11 @@
 
       const model = headerModel(header);
       Array.from(tbody.children).forEach(row => alignRow(row, model));
-      const layout = ensureColgroup(table, model, tbody);
+      const layout = ensureColgroup(table, model, tbody, wrapper);
       exposeAudit(table, tbody, model, layout);
     } finally {
       enforcing = false;
       observe();
-      requestAnimationFrame(() => {
-        const maxLeft = Math.max(0, wrapper.scrollWidth - wrapper.clientWidth);
-        wrapper.scrollLeft = Math.min(scrollLeft, maxLeft);
-        wrapper.scrollTop = scrollTop;
-      });
     }
   }
 
@@ -303,7 +332,13 @@
     const wrapper = document.querySelector('.table-wrap');
     if (!wrapper || !('ResizeObserver' in window)) return;
     resizeObserver?.disconnect();
-    resizeObserver = new ResizeObserver(() => schedule());
+    lastObservedWidth = Math.round(wrapper.getBoundingClientRect().width);
+    resizeObserver = new ResizeObserver(entries => {
+      const width = Math.round(entries[0]?.contentRect?.width || wrapper.getBoundingClientRect().width);
+      if (Math.abs(width - lastObservedWidth) < 2) return;
+      lastObservedWidth = width;
+      schedule();
+    });
     resizeObserver.observe(wrapper);
   }
 
