@@ -44,6 +44,8 @@
   margin:5px 0 10px 14px;
   padding:5px 0 6px 13px;
   border-left:1px solid var(--mi-gray-200, #e4e7ec);
+  overscroll-behavior:contain;
+  contain:layout style;
 }
 
 .mi-atc-root-panel:not([hidden]),
@@ -104,6 +106,10 @@
   display:flex;
   flex-direction:column;
   gap:2px;
+}
+
+.mi-atc-group {
+  contain:layout style;
 }
 
 .mi-atc-group-trigger {
@@ -352,6 +358,7 @@ html[data-theme="dark"] .mi-atc-subcategory-link.is-active::after {
   .mi-atc-root-panel {
     margin-left:11px;
     padding-left:11px;
+    scrollbar-gutter:stable;
   }
 
   .mi-atc-all-link,
@@ -380,6 +387,87 @@ html[data-theme="dark"] .mi-atc-subcategory-link.is-active::after {
     min-width:28px;
     height:22px;
     font-size:.67rem;
+  }
+
+  .mi-atc-menu:has(.mi-atc-group.is-open) .mi-atc-all-link,
+  .mi-atc-menu:has(.mi-atc-group.is-open) .mi-atc-group:not(.is-open) {
+    display:none;
+  }
+
+  .mi-atc-menu:has(.mi-atc-group.is-open) .mi-atc-root-panel {
+    margin-left:0;
+    padding-left:0;
+    border-left:0;
+  }
+
+  .mi-atc-menu:has(.mi-atc-group.is-open) .mi-atc-group.is-open > .mi-atc-group-trigger {
+    position:sticky;
+    top:0;
+    z-index:4;
+    min-height:54px;
+    grid-template-columns:24px minmax(0,1fr) auto 18px;
+    margin:0 0 6px;
+    padding:7px 8px;
+    border:1px solid var(--mi-gray-200, #e4e7ec);
+    background:var(--mi-gray-25, #fcfcfd);
+    box-shadow:0 6px 16px rgba(16,24,40,.08);
+  }
+
+  .mi-atc-menu:has(.mi-atc-group.is-open) .mi-atc-group.is-open > .mi-atc-group-trigger::before {
+    content:"←";
+    grid-column:1;
+    grid-row:1;
+    display:grid;
+    place-items:center;
+    width:24px;
+    height:24px;
+    border-radius:7px;
+    background:var(--mi-brand-50, #eff8ff);
+    color:var(--mi-brand-700, #175cd3);
+    font-size:1rem;
+    font-weight:800;
+  }
+
+  .mi-atc-menu:has(.mi-atc-group.is-open) .mi-atc-group.is-open > .mi-atc-group-trigger .mi-atc-group-code {
+    display:none;
+  }
+
+  .mi-atc-menu:has(.mi-atc-group.is-open) .mi-atc-group.is-open > .mi-atc-group-trigger .mi-atc-group-name {
+    grid-column:2;
+    font-size:.79rem;
+    font-weight:760;
+  }
+
+  .mi-atc-menu:has(.mi-atc-group.is-open) .mi-atc-group.is-open > .mi-atc-group-trigger .mi-atc-group-name::before {
+    content:"Kthehu te grupet";
+    display:block;
+    margin-bottom:2px;
+    color:var(--mi-gray-500, #667085);
+    font-size:.63rem;
+    font-weight:650;
+    letter-spacing:.01em;
+  }
+
+  .mi-atc-menu:has(.mi-atc-group.is-open) .mi-atc-group.is-open > .mi-atc-submenu {
+    margin:0;
+    padding:0;
+    border-left:0;
+    gap:4px;
+  }
+
+  html[data-theme="dark"] .mi-atc-menu:has(.mi-atc-group.is-open) .mi-atc-group.is-open > .mi-atc-group-trigger {
+    border-color:var(--mi-gray-700, #344054);
+    background:var(--mi-gray-900, #101828)!important;
+    box-shadow:0 8px 18px rgba(0,0,0,.28);
+  }
+
+  html[data-theme="dark"] .mi-atc-menu:has(.mi-atc-group.is-open) .mi-atc-group.is-open > .mi-atc-group-trigger::before {
+    background:rgba(53,140,255,.16);
+    color:#b2ddff;
+  }
+
+  html[data-theme="dark"] .mi-atc-menu:has(.mi-atc-group.is-open) .mi-atc-group.is-open > .mi-atc-group-trigger .mi-atc-group-name::before {
+    color:var(--mi-gray-400, #98a2b3);
   }
 }
 
