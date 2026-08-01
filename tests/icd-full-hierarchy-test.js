@@ -73,6 +73,8 @@ const byEnglish = queryDataset(dataset, { q:'intestinal infectious', pageSize:10
 assert.equal(byEnglish.rows[0].code, 'A00-A09');
 
 assert.throws(() => buildDataset(csv.replace('A00.1','A00.0'), { strictCounts:false }), /Kodi i dyfishtë/);
-assert.throws(() => buildDataset(csv.replace(',A00,"WHO ↗"', ',A99,"WHO ↗"'), { strictCounts:false }), /prindi A99 nuk ekziston/);
+const missingParentCsv = csv.replace('"A00","WHO ↗"', '"A99","WHO ↗"');
+assert.notEqual(missingParentCsv, csv, 'Test fixture must replace one parent code.');
+assert.throws(() => buildDataset(missingParentCsv, { strictCounts:false }), /prindi A99 nuk ekziston/);
 
 console.log('ICD-10 full hierarchy, translation safety and search foundation tests passed.');
