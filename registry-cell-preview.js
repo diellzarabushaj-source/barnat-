@@ -1,7 +1,7 @@
 (() => {
   'use strict';
 
-  const VERSION = 'registry-cell-preview-20260801-4';
+  const VERSION = 'registry-cell-preview-20260801-5';
   const TRIGGER_CLASS = 'registry-cell-preview-trigger';
   const PREVIEW_ATTR = 'data-registry-cell-preview';
   const THRESHOLDS = Object.freeze({
@@ -183,6 +183,13 @@
     scheduleEnhance();
   }
 
+  function refreshNow() {
+    active = true;
+    clearTimeout(fallbackTimer);
+    scheduled = false;
+    enhanceVisibleCells();
+  }
+
   function toggleInline(trigger) {
     const cell = trigger?.closest?.(`td[${PREVIEW_ATTR}="true"]`);
     const row = cell?.closest('tr');
@@ -233,12 +240,14 @@
 
   window.MedIndexCellPreview = {
     version:VERSION,
-    refresh() { activate(); },
+    refresh:refreshNow,
     openForCell(cell) {
+      enhanceCell(cell);
       const trigger = cell?.querySelector?.(`:scope > .${TRIGGER_CLASS}`);
       return trigger ? toggleInline(trigger) : false;
     },
     toggleForCell(cell) {
+      enhanceCell(cell);
       const trigger = cell?.querySelector?.(`:scope > .${TRIGGER_CLASS}`);
       return trigger ? toggleInline(trigger) : false;
     },
