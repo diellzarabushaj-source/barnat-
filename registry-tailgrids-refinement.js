@@ -4,6 +4,8 @@
   const VERSION = 'registry-tailgrids-refinement-20260801-2';
   const FINAL_STYLE_IDS = ['registryClinicalViewStyles', 'registryTailgridsRefinementStyles'];
 
+  let active = false;
+  let activationScheduled = false;
   let paginationObserver = null;
   let tableObserver = null;
   let enhancingPagination = false;
@@ -119,6 +121,7 @@
   }
 
   function refresh() {
+    if (!active) return;
     enhancePagination();
     enhanceEditorButtons();
     stabilizeStylesheetOrder();
@@ -126,7 +129,7 @@
   }
 
   function scheduleRefresh() {
-    if (scheduled) return;
+    if (!active || scheduled) return;
     scheduled = true;
     requestAnimationFrame(() => {
       scheduled = false;
@@ -150,18 +153,37 @@
     }
   }
 
-  function boot() {
+  function activate() {
+    if (active) return;
+    active = true;
+    activationScheduled = false;
     observe();
     refresh();
   }
 
-  ['medindex:registry-ready', 'medindex:registry-data-ready', 'medindex:registry-table-stable']
-    .forEach(eventName => window.addEventListener(eventName, scheduleRefresh));
-  window.addEventListener('pageshow', () => {
-    stabilizeStylesheetOrder();
+  function scheduleActivation() {
+    if (active || activationScheduled) return;
+    activationScheduled = true;
+    requestAnimationFrame(activate);
+  }
+
+  function dataIsReady() {
+    return Array.isArray(window.MEDINDEX_REGISTRY_ROWS) && window.MEDINDEX_REGISTRY_ROWS.length > 0;
+  }
+
+  window.addEventListener('medindex:registry-ready', scheduleActivation, { once:true });
+  window.addEventListener('medindex:registry-data-ready', scheduleActivation, { once:true });
+  window.addEventListener('medindex:registry-table-stable', () => {
+    if (!active) scheduleActivation();
     scheduleRefresh();
+  });
+  window.addEventListener('pageshow', () => {
+    if (dataIsReady()) scheduleActivation();
+    if (active) {
+      stabilizeStylesheetOrder();
+      scheduleRefresh();
+    }
   }, { passive:true });
 
-  if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', boot, { once:true });
-  else boot();
+  if (dataIsReady()) scheduleActivation();
 })();
