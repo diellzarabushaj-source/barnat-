@@ -16,6 +16,7 @@ const index = read('index.html');
 assert.match(index, /registry-runtime-loader\.js\?v=20260801-6/, 'index.html: current immediate registry loader is missing');
 assert.match(index, /registry-unified-table\.js\?v=20260801-1/, 'index.html: unified table controller is missing');
 assert.match(index, /registry-unified-table\.css\?v=20260801-1/, 'index.html: unified table stylesheet is missing');
+assert.match(index, /registry-full-text-expansion\.css\?v=20260801-1/, 'index.html: full-row text reveal stylesheet is missing');
 assert.doesNotMatch(index, /(?:registry-table-integrity|registry-clinical-view|registry-tailgrids-refinement|registry-columns-filters|registry-table-final)\.(?:js|css)/, 'index.html: a legacy table controller is still loaded');
 assert.doesNotMatch(index, /<script src="app-performance\.js"/, 'index.html: heavy registry bootstrap must not be parser ordered');
 assert.doesNotMatch(index, /src="app\.js/, 'index.html: legacy registry bootstrap must not be loaded');
@@ -25,7 +26,7 @@ assert.doesNotMatch(index, /src="registry-dosage-columns-v2\.js/, 'index.html: d
 assert.match(index, /offline-runtime-performance\.js[^>]+data-medindex-offline-runtime/, 'index.html: cache-isolated offline runtime must be loaded explicitly');
 assert.match(index, /registry-fast-start\.js\?v=registry-fast-start-v2/, 'index.html: fast-start guard version is stale');
 assert.match(index, /<script id="drug-data" type="application\/json">\[\]<\/script>/, 'registry JSON fallback must remain inert');
-assert.match(index, /data-registry-ui-release="20260801-13"/, 'registry UI release is stale');
+assert.match(index, /data-registry-ui-release="20260801-14"/, 'registry UI release is stale');
 
 const runtimeLoader = read('registry-runtime-loader.js');
 assert.match(runtimeLoader, /registry-runtime-loader-v6/, 'immediate registry loader version is stale');
@@ -62,4 +63,4 @@ assert.match(performanceRuntime, /SERVICE_WORKER_URL = `\/sw-resilient-v3\.js\?v
 assert.match(performanceWorker, /VERSION = 'low-bandwidth-v3'/, 'cache-isolated service worker version is stale');
 assert.match(performanceRuntime, /CLINICAL_WORKFLOW_URL = `\/clinical-workflow\.js\?v=\$\{VERSION\}`/, 'offline runtime must version the clinical workflow');
 
-console.log('Clinical runtime cache-version, loader v6 and unified table asset audit passed.');
+console.log('Clinical runtime cache-version, loader v6 and full-row reveal asset audit passed.');
