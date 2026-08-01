@@ -1,9 +1,9 @@
 (() => {
   'use strict';
 
-  const VERSION = 'registry-runtime-loader-v2';
+  const VERSION = 'registry-runtime-loader-v3';
   const RUNTIME_SRC = '/app-performance.js?v=20260801-1';
-  const FIRST_INTERACTION_FALLBACK_MS = 1800;
+  const FIRST_INTERACTION_FALLBACK_MS = 5000;
   const POST_INTERACTION_GRACE_MS = 320;
   const AUTH_WAIT_LIMIT_MS = 5000;
   const INTERACTION_EVENTS = ['pointerdown', 'keydown', 'touchstart'];
