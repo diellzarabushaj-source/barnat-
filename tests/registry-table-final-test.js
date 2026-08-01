@@ -14,7 +14,7 @@ const release = read('registry-ui-release.js');
 assert.match(index,/data-registry-ui-release="20260801-12"/,'index must use the final table release');
 assert.match(index,/registry-table-final\.css\?v=20260801-1/,'final table stylesheet must be wired');
 assert.match(index,/registry-table-final\.js\?v=20260801-1/,'final table runtime must be wired');
-assert.ok(index.indexOf('registry-table-final.css') > index.indexOf('tailadmin-professional.css'),'final table stylesheet must be declared after professional styles');
+assert.ok(index.indexOf('registry-table-final.css') < index.indexOf('tailadmin-professional.css'),'TailAdmin professional must remain the final static stylesheet');
 assert.ok(index.indexOf('registry-table-final.js') > index.indexOf('registry-ui-release.js'),'final table runtime must execute after legacy registry controllers');
 assert.match(release,/registry-ui-20260801-12/,'cache release must be bumped');
 
