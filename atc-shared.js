@@ -3,6 +3,7 @@
 
   const root = typeof window !== 'undefined' ? window : globalThis;
   const ATC_PATTERN = /^[A-Z](?:\d{2}(?:[A-Z](?:[A-Z](?:\d{2})?)?)?)?$/;
+  const DEFAULT_REGISTRY_PAGE_SIZE = 50;
 
   const clean = value => String(value ?? '').trim();
 
@@ -65,9 +66,59 @@
       .map(([code, name]) => ({ code, name: clean(name), label: `${code} — ${clean(name)}` }));
   }
 
+  function matchesCategory(value, categoryValue) {
+    const code = normalizeCode(value);
+    const category = resolveCategoryCode(categoryValue);
+    return Boolean(code && category && code.startsWith(category));
+  }
+
   function positiveInteger(value) {
     const number = Number(value);
     return Number.isInteger(number) && number > 0 ? number : null;
+  }
+
+  function safeUrl(value, fallbackPath = '/index.html') {
+    const fallback = `https://medindex.local${fallbackPath}`;
+    try {
+      return new URL(clean(value) || root.location?.href || fallback, fallback);
+    } catch {
+      return new URL(fallback);
+    }
+  }
+
+  function readRegistryUrlState(value) {
+    const url = safeUrl(value);
+    const query = clean(url.searchParams.get('q'));
+    return {
+      atc:resolveCategoryCode(url.searchParams.get('atc')),
+      query,
+      q:query,
+      page:positiveInteger(url.searchParams.get('page')) || 1,
+      pageSize:positiveInteger(url.searchParams.get('pageSize')) || DEFAULT_REGISTRY_PAGE_SIZE,
+    };
+  }
+
+  function registryUrlFromState(value, state = {}, options = {}) {
+    const url = safeUrl(value, clean(options.path) || '/index.html');
+    const atc = resolveCategoryCode(state.atc);
+    const query = clean(state.query ?? state.q);
+    const page = positiveInteger(state.page) || 1;
+    const pageSize = positiveInteger(state.pageSize) || DEFAULT_REGISTRY_PAGE_SIZE;
+
+    if (atc) url.searchParams.set('atc', atc);
+    else url.searchParams.delete('atc');
+
+    if (query) url.searchParams.set('q', query);
+    else url.searchParams.delete('q');
+
+    if (page > 1) url.searchParams.set('page', String(page));
+    else url.searchParams.delete('page');
+
+    if (pageSize !== DEFAULT_REGISTRY_PAGE_SIZE) url.searchParams.set('pageSize', String(pageSize));
+    else url.searchParams.delete('pageSize');
+
+    const relative = `${url.pathname}${url.search}${url.hash}`;
+    return options.absolute === true ? `${url.origin}${relative}` : relative;
   }
 
   function registryUrl(options = {}) {
@@ -107,6 +158,10 @@
     getCategoryLabel,
     getAtcLabel:getCategoryLabel,
     getChildren,
+    matchesCategory,
+    matchesAtcCategory:matchesCategory,
+    readRegistryUrlState,
+    registryUrlFromState,
     registryUrl,
     buildRegistryAtcUrl:registryUrl,
     classificationUrl,
