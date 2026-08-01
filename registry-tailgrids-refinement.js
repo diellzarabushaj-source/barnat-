@@ -1,40 +1,47 @@
 (() => {
   'use strict';
 
-  const VERSION = 'registry-tailgrids-refinement-20260801-1';
-  const STYLE_ID = 'registryTailgridsRefinementStyles';
-  const STYLE_HREF = '/registry-tailgrids-refinement.css?v=20260801-1';
+  const VERSION = 'registry-tailgrids-refinement-20260801-2';
+  const FINAL_STYLE_IDS = ['registryClinicalViewStyles', 'registryTailgridsRefinementStyles'];
 
+  let active = false;
+  let activationScheduled = false;
   let paginationObserver = null;
   let tableObserver = null;
   let enhancingPagination = false;
   let scheduled = false;
+  let styleOrderScheduled = false;
 
-  const icon = direction => direction === 'left'
+  const arrowIcon = direction => direction === 'left'
     ? '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="m15 18-6-6 6-6"/></svg>'
     : '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="m9 18 6-6-6-6"/></svg>';
 
-  function ensureStyles() {
-    let link = document.getElementById(STYLE_ID);
-    if (!link) {
-      link = document.createElement('link');
-      link.id = STYLE_ID;
-      link.rel = 'stylesheet';
-      link.href = STYLE_HREF;
-      link.dataset.registryTailgridsRefinement = VERSION;
-    }
-    if (document.head.lastElementChild !== link) document.head.appendChild(link);
+  const editIcon = '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 20h9"/><path d="M16.5 3.5a2.12 2.12 0 0 1 3 3L7 19l-4 1 1-4Z"/></svg>';
+
+  function stabilizeStylesheetOrder() {
+    if (styleOrderScheduled) return;
+    styleOrderScheduled = true;
+    requestAnimationFrame(() => requestAnimationFrame(() => {
+      styleOrderScheduled = false;
+      const integrity = document.querySelector('link[href*="registry-table-integrity.css"]');
+      integrity?.removeAttribute('data-registry-table-integrity-css');
+      FINAL_STYLE_IDS.forEach(id => {
+        const link = document.getElementById(id);
+        if (link) document.head.appendChild(link);
+      });
+      document.documentElement.dataset.registryStyleOrder = VERSION;
+    }));
   }
 
-  function normalizeButton(button, type) {
+  function normalizePaginationButton(button, type) {
     if (!button || button.dataset.tgPaginationType === type) return;
     button.dataset.tgPaginationType = type;
     button.classList.add('tg-pagination-nav');
     if (type === 'previous') {
-      button.innerHTML = `${icon('left')}<span>Para</span>`;
+      button.innerHTML = `${arrowIcon('left')}<span>Para</span>`;
       button.setAttribute('aria-label', 'Faqja e mëparshme');
     } else {
-      button.innerHTML = `<span>Pas</span>${icon('right')}`;
+      button.innerHTML = `<span>Pas</span>${arrowIcon('right')}`;
       button.setAttribute('aria-label', 'Faqja pasuese');
     }
   }
@@ -56,8 +63,7 @@
         : directButtons;
 
       if (!sourceButtons.length) {
-        const summary = root.querySelector(':scope > .tg-pagination-summary');
-        if (summary) summary.remove();
+        root.querySelector(':scope > .tg-pagination-summary')?.remove();
         return;
       }
 
@@ -65,8 +71,9 @@
       if (!controls) {
         controls = document.createElement('div');
         controls.className = 'tg-pagination-controls';
-        const movable = Array.from(root.children).filter(node => !node.classList?.contains('tg-pagination-summary'));
-        movable.forEach(node => controls.appendChild(node));
+        Array.from(root.children)
+          .filter(node => !node.classList?.contains('tg-pagination-summary'))
+          .forEach(node => controls.appendChild(node));
         root.appendChild(controls);
       }
 
@@ -76,18 +83,15 @@
       const current = Number(currentButton?.textContent || 1);
       const total = Math.max(1, ...numericButtons.map(button => Number(button.textContent || 0)));
 
-      buttons.forEach(button => {
-        if (/^\d+$/.test(button.textContent.trim())) {
-          const page = Number(button.textContent.trim());
-          button.setAttribute('aria-label', `Shko në faqen ${page}`);
-          if (button.classList.contains('active')) button.setAttribute('aria-current', 'page');
-          else button.removeAttribute('aria-current');
-        }
+      numericButtons.forEach(button => {
+        const page = Number(button.textContent.trim());
+        button.setAttribute('aria-label', `Shko në faqen ${page}`);
+        if (button.classList.contains('active')) button.setAttribute('aria-current', 'page');
+        else button.removeAttribute('aria-current');
       });
 
-      normalizeButton(buttons[0], 'previous');
-      normalizeButton(buttons[buttons.length - 1], 'next');
-
+      normalizePaginationButton(buttons[0], 'previous');
+      normalizePaginationButton(buttons[buttons.length - 1], 'next');
       controls.querySelectorAll(':scope > span').forEach(span => span.classList.add('tg-pagination-ellipsis'));
 
       let summary = root.querySelector(':scope > .tg-pagination-summary');
@@ -105,20 +109,27 @@
 
   function enhanceEditorButtons() {
     document.querySelectorAll('.clinical-editor-open').forEach(button => {
+      if (button.dataset.tgEditorButton !== VERSION) {
+        button.replaceChildren();
+        button.insertAdjacentHTML('beforeend', `${editIcon}<span>Redakto</span>`);
+        button.dataset.tgEditorButton = VERSION;
+      }
       button.setAttribute('aria-haspopup', 'dialog');
+      button.setAttribute('aria-label', 'Hap panelin e redaktimit');
       button.title = 'Hap panelin e redaktimit';
     });
   }
 
   function refresh() {
-    ensureStyles();
+    if (!active) return;
     enhancePagination();
     enhanceEditorButtons();
+    stabilizeStylesheetOrder();
     document.documentElement.dataset.registryTailgridsRefinement = VERSION;
   }
 
   function scheduleRefresh() {
-    if (scheduled) return;
+    if (!active || scheduled) return;
     scheduled = true;
     requestAnimationFrame(() => {
       scheduled = false;
@@ -142,16 +153,37 @@
     }
   }
 
-  function boot() {
-    ensureStyles();
+  function activate() {
+    if (active) return;
+    active = true;
+    activationScheduled = false;
     observe();
     refresh();
   }
 
-  ['medindex:registry-ready', 'medindex:registry-data-ready', 'medindex:registry-table-stable']
-    .forEach(eventName => window.addEventListener(eventName, scheduleRefresh));
-  window.addEventListener('pageshow', scheduleRefresh, { passive:true });
+  function scheduleActivation() {
+    if (active || activationScheduled) return;
+    activationScheduled = true;
+    requestAnimationFrame(activate);
+  }
 
-  if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', boot, { once:true });
-  else boot();
+  function dataIsReady() {
+    return Array.isArray(window.MEDINDEX_REGISTRY_ROWS) && window.MEDINDEX_REGISTRY_ROWS.length > 0;
+  }
+
+  window.addEventListener('medindex:registry-ready', scheduleActivation, { once:true });
+  window.addEventListener('medindex:registry-data-ready', scheduleActivation, { once:true });
+  window.addEventListener('medindex:registry-table-stable', () => {
+    if (!active) scheduleActivation();
+    scheduleRefresh();
+  });
+  window.addEventListener('pageshow', () => {
+    if (dataIsReady()) scheduleActivation();
+    if (active) {
+      stabilizeStylesheetOrder();
+      scheduleRefresh();
+    }
+  }, { passive:true });
+
+  if (dataIsReady()) scheduleActivation();
 })();

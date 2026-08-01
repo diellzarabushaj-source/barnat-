@@ -1,56 +1,26 @@
 (() => {
   'use strict';
 
-  const VERSION = 'registry-clinical-view-20260801-5';
-  const STYLE_ID = 'registryClinicalViewStyles';
-  const STYLE_HREF = '/registry-clinical-view.css?v=20260801-5';
+  const VERSION = 'registry-clinical-view-20260801-6';
   const STORAGE_KEY = 'medindex.registry.view.v1';
   const VALID_VIEWS = new Set(['clinical', 'full']);
   const COMPACT_WIDTHS = Object.freeze({
-    select: 48,
-    'trade-name': 238,
-    'active-substance': 254,
-    strength: 122,
-    form: 198,
-    'dosage-adult': 314,
-    'dosage-pediatric': 314,
-    'clinical-status': 196,
-    'clinical-action': 118,
+    select:48,
+    'trade-name':238,
+    'active-substance':254,
+    strength:122,
+    form:198,
+    'dosage-adult':314,
+    'dosage-pediatric':314,
+    'clinical-status':196,
+    'clinical-action':118,
   });
 
   let active = false;
   let activationScheduled = false;
   let resizeObserver = null;
   let refreshScheduled = false;
-  let stylePromise = null;
   let lastWidthSignature = '';
-
-  function loadStyles() {
-    if (stylePromise) return stylePromise;
-    const existing = document.getElementById(STYLE_ID)
-      || document.querySelector('link[data-registry-clinical-view-css]');
-    if (existing) {
-      existing.id = STYLE_ID;
-      stylePromise = Promise.resolve(existing);
-      return stylePromise;
-    }
-
-    stylePromise = new Promise(resolve => {
-      const link = document.createElement('link');
-      link.id = STYLE_ID;
-      link.rel = 'stylesheet';
-      link.href = STYLE_HREF;
-      link.dataset.registryClinicalViewCss = VERSION;
-      link.addEventListener('load', () => resolve(link), { once:true });
-      link.addEventListener('error', () => {
-        document.documentElement.dataset.registryClinicalViewStyleError = 'load';
-        resolve(link);
-      }, { once:true });
-      const professional = document.querySelector('link[data-tailadmin-professional-css]');
-      document.head.insertBefore(link, professional || null);
-    });
-    return stylePromise;
-  }
 
   function storedView() {
     try {
@@ -74,7 +44,9 @@
     const next = VALID_VIEWS.has(view) ? view : 'clinical';
     document.documentElement.dataset.registryUxView = next;
     if (persist) persistView(next);
+    if (!active) activate();
     updateToolbarState();
+    lastWidthSignature = '';
     scheduleRefresh();
     window.dispatchEvent(new Event('resize'));
   }
@@ -204,17 +176,16 @@
       const width = Math.round(entries[0]?.contentRect?.width || wrapper.clientWidth);
       if (Math.abs(width - last) < 2) return;
       last = width;
+      lastWidthSignature = '';
       scheduleRefresh();
     });
     resizeObserver.observe(wrapper);
   }
 
-  async function activate() {
+  function activate() {
     if (active) return;
     active = true;
     activationScheduled = false;
-    await loadStyles();
-    document.documentElement.dataset.registryUxView = storedView();
     createToolbar();
     observeWidth();
     refresh();
@@ -223,37 +194,35 @@
   function scheduleActivation() {
     if (active || activationScheduled) return;
     activationScheduled = true;
-    window.setTimeout(() => {
-      const run = () => void activate();
-      if ('requestIdleCallback' in window) window.requestIdleCallback(run, { timeout:1800 });
-      else window.setTimeout(run, 40);
-    }, 1800);
+    requestAnimationFrame(activate);
   }
 
   function dataIsReady() {
-    return Array.isArray(window.MEDINDEX_REGISTRY_ROWS)
-      && window.MEDINDEX_REGISTRY_ROWS.length > 0;
+    return Array.isArray(window.MEDINDEX_REGISTRY_ROWS) && window.MEDINDEX_REGISTRY_ROWS.length > 0;
   }
 
-  function boot() {
+  function initializeViewState() {
+    document.documentElement.dataset.registryUxView = storedView();
     if (dataIsReady()) scheduleActivation();
   }
 
   window.addEventListener('medindex:registry-data-ready', scheduleActivation, { once:true });
-  window.addEventListener('medindex:registry-ready', () => {
-    if (dataIsReady()) scheduleActivation();
+  window.addEventListener('medindex:registry-ready', scheduleActivation, { once:true });
+  window.addEventListener('medindex:registry-table-stable', () => {
+    if (!active) scheduleActivation();
+    lastWidthSignature = '';
+    scheduleRefresh();
   });
-  window.addEventListener('medindex:registry-table-stable', scheduleRefresh);
   window.addEventListener('medindex:tailadmin-ready', () => {
     if (dataIsReady()) scheduleActivation();
   });
   window.addEventListener('resize', scheduleRefresh, { passive:true });
   window.addEventListener('pageshow', () => {
     if (dataIsReady()) scheduleActivation();
+    scheduleRefresh();
   }, { passive:true });
 
-  if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', boot, { once:true });
-  else boot();
+  initializeViewState();
 
   window.MedIndexRegistryClinicalView = {
     version:VERSION,
