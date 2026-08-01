@@ -1,42 +1,55 @@
 (() => {
   'use strict';
 
-  const VERSION = 'registry-clinical-view-20260801-4';
+  const VERSION = 'registry-clinical-view-20260801-5';
   const STYLE_ID = 'registryClinicalViewStyles';
-  const STYLE_HREF = '/registry-clinical-view.css?v=20260801-2';
+  const STYLE_HREF = '/registry-clinical-view.css?v=20260801-5';
   const STORAGE_KEY = 'medindex.registry.view.v1';
   const VALID_VIEWS = new Set(['clinical', 'full']);
   const COMPACT_WIDTHS = Object.freeze({
-    select: 44,
-    'trade-name': 224,
-    'active-substance': 216,
-    strength: 110,
-    form: 182,
-    'dosage-adult': 300,
-    'dosage-pediatric': 278,
+    select: 48,
+    'trade-name': 238,
+    'active-substance': 254,
+    strength: 122,
+    form: 198,
+    'dosage-adult': 314,
+    'dosage-pediatric': 314,
+    'clinical-status': 196,
+    'clinical-action': 118,
   });
 
   let active = false;
   let activationScheduled = false;
   let resizeObserver = null;
-  let scheduled = false;
+  let refreshScheduled = false;
+  let stylePromise = null;
   let lastWidthSignature = '';
 
-  function ensureStyles() {
-    let link = document.getElementById(STYLE_ID)
+  function loadStyles() {
+    if (stylePromise) return stylePromise;
+    const existing = document.getElementById(STYLE_ID)
       || document.querySelector('link[data-registry-clinical-view-css]');
-    if (link) {
-      link.id = STYLE_ID;
-      return;
+    if (existing) {
+      existing.id = STYLE_ID;
+      stylePromise = Promise.resolve(existing);
+      return stylePromise;
     }
 
-    link = document.createElement('link');
-    link.id = STYLE_ID;
-    link.rel = 'stylesheet';
-    link.href = STYLE_HREF;
-    link.dataset.registryClinicalViewCss = VERSION;
-    const professional = document.querySelector('link[data-tailadmin-professional-css]');
-    document.head.insertBefore(link, professional || null);
+    stylePromise = new Promise(resolve => {
+      const link = document.createElement('link');
+      link.id = STYLE_ID;
+      link.rel = 'stylesheet';
+      link.href = STYLE_HREF;
+      link.dataset.registryClinicalViewCss = VERSION;
+      link.addEventListener('load', () => resolve(link), { once:true });
+      link.addEventListener('error', () => {
+        document.documentElement.dataset.registryClinicalViewStyleError = 'load';
+        resolve(link);
+      }, { once:true });
+      const professional = document.querySelector('link[data-tailadmin-professional-css]');
+      document.head.insertBefore(link, professional || null);
+    });
+    return stylePromise;
   }
 
   function storedView() {
@@ -59,7 +72,6 @@
 
   function setView(view, { persist = true } = {}) {
     const next = VALID_VIEWS.has(view) ? view : 'clinical';
-    if (!active) activate();
     document.documentElement.dataset.registryUxView = next;
     if (persist) persistView(next);
     updateToolbarState();
@@ -71,32 +83,38 @@
     const tableWrap = document.querySelector('.table-wrap');
     if (!tableWrap || document.getElementById('registryViewToolbar')) return;
 
-    const bar = document.createElement('section');
-    bar.id = 'registryViewToolbar';
-    bar.className = 'registry-view-toolbar';
-    bar.setAttribute('aria-label', 'Pamja e tabelës së barnave');
-    bar.innerHTML = `
-      <div class="registry-view-copy">
-        <strong>Pamja e tabelës</strong>
-        <span data-registry-view-description>Dozat dhe të dhënat kryesore janë në fokus.</span>
+    const toolbar = document.createElement('section');
+    toolbar.id = 'registryViewToolbar';
+    toolbar.className = 'registry-view-toolbar';
+    toolbar.setAttribute('aria-label', 'Kontrollet e tabelës së barnave');
+    toolbar.innerHTML = `
+      <div class="registry-view-heading">
+        <span class="registry-view-heading-icon" aria-hidden="true">
+          <svg viewBox="0 0 24 24"><path d="M4 5.5h16M4 12h16M4 18.5h16M8 3v18"/></svg>
+        </span>
+        <div class="registry-view-copy">
+          <strong>Regjistri i barnave</strong>
+          <span data-registry-view-description>Të dhënat kryesore klinike janë në fokus.</span>
+        </div>
       </div>
       <div class="registry-view-actions" role="group" aria-label="Zgjidh pamjen e tabelës">
         <button type="button" data-registry-view="clinical" aria-pressed="true">
-          <span aria-hidden="true">✦</span> Klinike
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3v18M3 12h18"/><circle cx="12" cy="12" r="7"/></svg>
+          <span>Fokus klinik</span>
         </button>
         <button type="button" data-registry-view="full" aria-pressed="false">
-          <span aria-hidden="true">▦</span> Të gjitha kolonat
+          <svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="4" width="18" height="16" rx="2"/><path d="M3 9h18M9 9v11M15 9v11"/></svg>
+          <span>Tabela e plotë</span>
         </button>
       </div>
     `;
 
-    bar.addEventListener('click', event => {
+    toolbar.addEventListener('click', event => {
       const button = event.target.closest('button[data-registry-view]');
-      if (!button) return;
-      setView(button.dataset.registryView);
+      if (button) setView(button.dataset.registryView);
     });
 
-    tableWrap.before(bar);
+    tableWrap.before(toolbar);
   }
 
   function updateToolbarState() {
@@ -106,12 +124,15 @@
       button.setAttribute('aria-pressed', String(selected));
       button.classList.toggle('is-active', selected);
     });
+
     const description = document.querySelector('[data-registry-view-description]');
-    if (description) {
-      description.textContent = view === 'clinical'
-        ? 'Emri, substanca, forma dhe dozat janë në fokus.'
-        : 'Shfaqen të gjitha kolonat e zgjedhura.';
-    }
+    if (!description) return;
+    const countText = String(document.getElementById('countBadge')?.textContent || '').trim();
+    const count = countText.match(/[\d.,]+/)?.[0];
+    const prefix = count ? `${count} barna · ` : '';
+    description.textContent = view === 'clinical'
+      ? `${prefix}dozat, verifikimi dhe redaktimi janë të prioritizuara.`
+      : `${prefix}të gjitha kolonat e regjistrit janë të dukshme.`;
   }
 
   function headerFor(key) {
@@ -132,7 +153,7 @@
     const view = currentView();
     const viewport = Math.max(0, Math.round(wrapper.clientWidth));
     const signature = `${view}|${viewport}|${table.dataset.registryVisibleColumns || ''}`;
-    if (signature === lastWidthSignature && view !== 'clinical') return;
+    if (signature === lastWidthSignature) return;
     lastWidthSignature = signature;
 
     if (view !== 'clinical') {
@@ -159,7 +180,6 @@
 
   function refresh() {
     if (!active) return;
-    ensureStyles();
     createToolbar();
     updateToolbarState();
     applyCompactWidths();
@@ -167,10 +187,10 @@
   }
 
   function scheduleRefresh() {
-    if (!active || scheduled) return;
-    scheduled = true;
+    if (!active || refreshScheduled) return;
+    refreshScheduled = true;
     requestAnimationFrame(() => {
-      scheduled = false;
+      refreshScheduled = false;
       refresh();
     });
   }
@@ -189,11 +209,11 @@
     resizeObserver.observe(wrapper);
   }
 
-  function activate() {
+  async function activate() {
     if (active) return;
     active = true;
     activationScheduled = false;
-    ensureStyles();
+    await loadStyles();
     document.documentElement.dataset.registryUxView = storedView();
     createToolbar();
     observeWidth();
@@ -203,12 +223,9 @@
   function scheduleActivation() {
     if (active || activationScheduled) return;
     activationScheduled = true;
-    const run = () => activate();
-    if ('requestIdleCallback' in window) {
-      window.requestIdleCallback(run, { timeout: 500 });
-    } else {
-      window.setTimeout(run, 0);
-    }
+    const run = () => void activate();
+    if ('requestIdleCallback' in window) window.requestIdleCallback(run, { timeout:900 });
+    else window.setTimeout(run, 40);
   }
 
   function dataIsReady() {
@@ -217,11 +234,10 @@
   }
 
   function boot() {
-    ensureStyles();
     if (dataIsReady()) scheduleActivation();
   }
 
-  window.addEventListener('medindex:registry-data-ready', scheduleActivation, { once: true });
+  window.addEventListener('medindex:registry-data-ready', scheduleActivation, { once:true });
   window.addEventListener('medindex:registry-ready', () => {
     if (dataIsReady()) scheduleActivation();
   });
@@ -229,19 +245,19 @@
   window.addEventListener('medindex:tailadmin-ready', () => {
     if (dataIsReady()) scheduleActivation();
   });
-  window.addEventListener('resize', scheduleRefresh, { passive: true });
+  window.addEventListener('resize', scheduleRefresh, { passive:true });
   window.addEventListener('pageshow', () => {
     if (dataIsReady()) scheduleActivation();
-  }, { passive: true });
+  }, { passive:true });
 
-  if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', boot, { once: true });
+  if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', boot, { once:true });
   else boot();
 
   window.MedIndexRegistryClinicalView = {
-    version: VERSION,
-    refresh: scheduleRefresh,
-    activate: scheduleActivation,
+    version:VERSION,
+    refresh:scheduleRefresh,
+    activate:scheduleActivation,
     setView,
-    getView: currentView,
+    getView:currentView,
   };
 })();
