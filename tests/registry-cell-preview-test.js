@@ -13,17 +13,19 @@ const styles = read('registry-cell-preview.css');
 const rowExpand = read('registry-row-expand.js');
 
 assert(index.includes('registry-cell-preview.css?v=20260801-2'), 'Inline cell expansion stylesheet is not wired.');
-assert(index.includes('registry-cell-preview.js?v=20260801-2'), 'Inline cell expansion controller is not wired.');
+assert(index.includes('registry-cell-preview.js?v=20260801-3'), 'Inline cell expansion controller v4 is not wired.');
 assert(
-  index.indexOf('registry-cell-preview.js?v=20260801-2') < index.indexOf('registry-row-expand.js?v=20260801-4'),
+  index.indexOf('registry-cell-preview.js?v=20260801-3') < index.indexOf('registry-row-expand.js?v=20260801-4'),
   'Cell expansion trigger must initialize before row expansion.'
 );
 assert(index.includes('data-registry-ui-release="20260801-13"'), 'Registry UI release was not bumped.');
 assert(index.includes('registry-unified-table.js?v=20260801-1'), 'Unified table controller is not wired.');
 
+assert(controller.includes("const VERSION = 'registry-cell-preview-20260801-4'"), 'Cell preview runtime version is stale.');
 assert(controller.includes('data-lineicons-icon="expand-square-4"'), 'Lineicons expand-square-4 is missing.');
 assert(controller.includes('rowController.toggleRow(row)'), 'Cell trigger must expand the table row inline.');
 assert(controller.includes("trigger.setAttribute('aria-expanded'"), 'Inline trigger must expose its expanded state.');
+assert(controller.includes("window.addEventListener('medindex:registry-table-stable', activate)"), 'Cell triggers must be rebuilt whenever the unified table stabilizes.');
 assert(controller.includes('MutationObserver'), 'Cell triggers must follow table rerenders.');
 assert(!controller.includes('showModal'), 'Cell expansion must not open a modal.');
 assert(!controller.includes('registryCellPreviewDialog'), 'Legacy preview dialog must be removed.');
@@ -43,4 +45,4 @@ assert(styles.includes('prefers-reduced-motion:reduce'), 'Reduced-motion handlin
 assert(rowExpand.includes("button, input, select, textarea"), 'Row expansion must ignore nested controls.');
 assert(rowExpand.includes('syncPreviewTriggers(row, expanded)'), 'Row expansion must synchronize the cell trigger state.');
 
-console.log('Inline full-cell row expansion, release 13 and unified table audit passed.');
+console.log('Inline full-cell row expansion v4, release 13 and unified table audit passed.');
