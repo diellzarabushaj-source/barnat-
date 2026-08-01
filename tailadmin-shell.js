@@ -16,6 +16,7 @@
   const MOBILE_A11Y_SRC = '/mobile-accessibility-hardening.js?v=mobile-a11y-deep-audit-v1';
   const OFFLINE_RUNTIME_SRC = '/offline-runtime-performance.js?v=low-bandwidth-v3';
   const BRAND_SRC = '/medindex-brand-runtime.js?v=medindex-brand-v1';
+  const ATC_NAV_SRC = '/atc-sidebar.js?v=atc-sidebar-v1';
   const SHELL_VERSION = 'production-audit-v2';
   const id = 'appMenu';
   const SHELL_RETRY_MS = 3500;
@@ -153,7 +154,7 @@
     if (profile.slow || profile.saveData || !('serviceWorker' in navigator)) return;
     const warm = source => fetch(source, { cache:'no-cache', credentials:'same-origin' }).catch(() => null);
     navigator.serviceWorker.ready.then(() => {
-      const run = () => Promise.all([warm(LEGACY_SRC), warm(MOBILE_SRC), warm(MOBILE_A11Y_SRC), warm(OFFLINE_RUNTIME_SRC), warm(BRAND_SRC)]);
+      const run = () => Promise.all([warm(LEGACY_SRC), warm(MOBILE_SRC), warm(MOBILE_A11Y_SRC), warm(OFFLINE_RUNTIME_SRC), warm(BRAND_SRC), warm(ATC_NAV_SRC)]);
       if (navigator.serviceWorker.controller) run();
       else navigator.serviceWorker.addEventListener('controllerchange', run, { once:true });
     }).catch(() => null);
@@ -190,7 +191,10 @@
   }
 
   function finalizeShellReady() {
-    if (shellReady && document.querySelector('.mi-app-shell')) return;
+    if (shellReady && document.querySelector('.mi-app-shell')) {
+      loadRuntime(ATC_NAV_SRC, 'data-medindex-atc-sidebar', 'miAtcSidebarError');
+      return;
+    }
     if (!document.querySelector('.mi-app-shell') && document.body?.dataset.tailadminReady !== '1') return;
     shellReady = true;
     clearTimeout(shellRetry);
@@ -201,6 +205,7 @@
     queueMicrotask(ensureStylesheetLast);
     ensureSystemNavItem();
     loadRuntime(BRAND_SRC, 'data-medindex-brand-runtime', 'miBrandRuntimeError');
+    loadRuntime(ATC_NAV_SRC, 'data-medindex-atc-sidebar', 'miAtcSidebarError');
     loadMobileExperience();
     warmRuntimeAssets();
   }
