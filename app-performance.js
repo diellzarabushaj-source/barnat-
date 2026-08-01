@@ -19,37 +19,6 @@ const releaseStaleInteractionLock = () => {
   ['registryContent', 'dataTable', 'search'].forEach(id => document.getElementById(id)?.removeAttribute('inert'));
 };
 
-const yieldToInteractiveShell = () => new Promise(resolve => {
-  if (document.visibilityState === 'hidden' || typeof requestAnimationFrame !== 'function') {
-    window.setTimeout(resolve, 0);
-    return;
-  }
-
-  let settled = false;
-  let fallbackTimer = 0;
-  const eventNames = ['pointerdown', 'touchstart', 'keydown'];
-  const cleanup = () => {
-    window.clearTimeout(fallbackTimer);
-    eventNames.forEach(name => window.removeEventListener(name, onFirstInteraction, true));
-  };
-  const finish = delay => {
-    if (settled) return;
-    settled = true;
-    cleanup();
-    window.setTimeout(resolve, delay);
-  };
-  const onFirstInteraction = () => finish(120);
-
-  eventNames.forEach(name => window.addEventListener(name, onFirstInteraction, {
-    once:true,
-    capture:true,
-    passive:true,
-  }));
-  requestAnimationFrame(() => requestAnimationFrame(() => {
-    fallbackTimer = window.setTimeout(() => finish(0), 2000);
-  }));
-});
-
 releaseStaleInteractionLock();
 
 (async () => {
@@ -72,7 +41,6 @@ releaseStaleInteractionLock();
   let cacheSaveScheduled = false;
 
   performance.mark?.('medindex-app-start');
-  await yieldToInteractiveShell();
   const hasRegistryData = () => Array.isArray(window.DRUG_DATA_PARTS) && window.DRUG_DATA_PARTS.length > 0;
 
   async function timedFetch(url, options = {}, timeoutMs = REQUEST_TIMEOUT_MS) {
