@@ -29,7 +29,9 @@ assert(!controller.includes('registryCellPreviewDialog'), 'Legacy preview dialog
 assert(!controller.includes('data-lineicons-icon="xmark"'), 'Legacy modal close icon must be removed.');
 assert(!/https?:\/\//.test(controller), 'Cell expansion controller must not load third-party runtime assets.');
 
-assert(styles.includes('tr.registry-row-expanded td[data-registry-cell-preview="true"]'), 'Expanded row height styling is missing.');
+assert(styles.includes('tr.registry-row-expanded[data-registry-row-expanded="true"]'), 'Expanded row height styling is missing.');
+assert(styles.includes('height:132px!important'), 'Desktop expanded row height is missing.');
+assert(styles.includes('height:148px!important'), 'Mobile expanded row height is missing.');
 assert(styles.includes('.registry-cell-preview-trigger[aria-expanded="true"]'), 'Expanded trigger styling is missing.');
 assert(!styles.includes('registry-cell-preview-dialog'), 'Legacy dialog styling must be removed.');
 assert(!styles.includes('::backdrop'), 'Legacy modal backdrop styling must be removed.');
