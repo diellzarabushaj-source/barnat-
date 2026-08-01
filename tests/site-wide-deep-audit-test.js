@@ -19,16 +19,20 @@ for (const page of pages) {
   assert.deepEqual([...new Set(duplicates)], [], `${page}: duplicate ids: ${duplicates.join(', ')}`);
 }
 
-for (const page of pages.filter(page => page !== 'login.html')) {
+for (const page of pages.filter(page => !['login.html', 'klasifikimi.html'].includes(page))) {
   const html = read(page);
   assert.match(html, /auth-client\.js\?v=production-audit-v2/, `${page}: auth guard is missing or stale`);
   assert.match(html, /app-stability\.js\?v=/, `${page}: global stability runtime is missing`);
 }
 
+const classificationRedirectPage = read('klasifikimi.html');
+assert.match(classificationRedirectPage, /classification-redirect\.js\?v=table-only-v1/, 'classification compatibility route must redirect to the main registry');
+assert.doesNotMatch(classificationRedirectPage, /atc-card|cardGrid|atcSearch|classification-v3\.js/, 'legacy classification workspace must not return');
+
 const jsFiles = [
   'app-stability.js', 'sw.js', 'tailadmin-shell.js', 'tailadmin-shell-legacy.js',
   'mobile-experience.js', 'auth-client.js', 'offline-runtime.js', 'app.js',
-  'theme-preload.js', 'recetat-safe-print.js',
+  'theme-preload.js', 'recetat-safe-print.js', 'classification-redirect.js',
   'icd.js', 'analizat.js', 'dozologjia.js', 'dozologjia-deep-audit.js',
   'protokollet.js', 'recetat.js',
 ];

@@ -6,7 +6,7 @@ const TABLET = { width:820, height:1180 };
 
 const sections = [
   { path:'/index.html', heading:'Barnat', key:'#search' },
-  { path:'/klasifikimi.html', heading:'Klasifikimi ATC', key:'#atcSearch' },
+  { path:'/klasifikimi.html', heading:'Barnat', key:'#search' },
   { path:'/icd.html', heading:'ICD', key:'#icdSmartSearch' },
   { path:'/analizat.html', heading:'Analizat laboratorike', key:'#labSearch' },
   { path:'/dozologjia.html', heading:'Dozologjia', key:'#dosageSearch' },
