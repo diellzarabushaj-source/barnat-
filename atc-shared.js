@@ -2,10 +2,14 @@
   'use strict';
 
   const root = typeof window !== 'undefined' ? window : globalThis;
-  const ATC_PATTERN = /^[A-Z](?:\d{2}(?:[A-Z](?:[A-Z](?:\d{2})?)?)?)?$/;
+  const STANDARD_ATC_PATTERN = /^[A-Z](?:\d{2}(?:[A-Z](?:[A-Z](?:\d{2})?)?)?)?$/;
+  const REGISTRY_ATC_PATTERN = /^[A-Z](?:\d{2}[A-Z0-9]{0,4})?$/;
+  const CATEGORY_PATTERN = /^[A-Z]\d{2}$/;
   const DEFAULT_REGISTRY_PAGE_SIZE = 50;
+  const UNCLASSIFIED_VALUES = new Set(['N/A', 'NA', 'NONE', 'UNKNOWN', 'UNCLASSIFIED', '-']);
 
   const clean = value => String(value ?? '').trim();
+  const compactCode = value => clean(value).toUpperCase().replace(/\s+/g, '');
 
   function groups() {
     const value = root.MEDINDEX_ATC_GROUPS;
@@ -18,8 +22,13 @@
   }
 
   function normalizeCode(value) {
-    const code = clean(value).toUpperCase().replace(/\s+/g, '');
-    return ATC_PATTERN.test(code) ? code : '';
+    const code = compactCode(value);
+    return REGISTRY_ATC_PATTERN.test(code) ? code : '';
+  }
+
+  function isStandardCode(value) {
+    const code = compactCode(value);
+    return Boolean(code && STANDARD_ATC_PATTERN.test(code));
   }
 
   function resolveGroupCode(value) {
@@ -33,7 +42,7 @@
     if (!code) return '';
 
     const category = code.slice(0, 3);
-    if (category.length === 3 && Object.hasOwn(subgroups(), category)) return category;
+    if (CATEGORY_PATTERN.test(category) && Object.hasOwn(subgroups(), category)) return category;
 
     return resolveGroupCode(code);
   }
@@ -66,10 +75,132 @@
       .map(([code, name]) => ({ code, name: clean(name), label: `${code} — ${clean(name)}` }));
   }
 
+  function classifyCode(value) {
+    const raw = clean(value);
+    const compact = compactCode(value);
+    if (!raw || UNCLASSIFIED_VALUES.has(compact)) {
+      return Object.freeze({
+        raw,
+        normalized:'',
+        group:'',
+        category:'',
+        status:'unclassified',
+        isStandard:false,
+        isCategoryResolvable:false,
+      });
+    }
+
+    const normalized = normalizeCode(compact);
+    if (!normalized) {
+      return Object.freeze({
+        raw,
+        normalized:'',
+        group:'',
+        category:'',
+        status:'invalid',
+        isStandard:false,
+        isCategoryResolvable:false,
+      });
+    }
+
+    const group = resolveGroupCode(normalized);
+    const category = normalized.length >= 3 && Object.hasOwn(subgroups(), normalized.slice(0, 3))
+      ? normalized.slice(0, 3)
+      : '';
+    const standard = isStandardCode(normalized);
+    let status = standard ? 'standard' : 'nonstandard-resolvable';
+    if (!group) status = 'unknown-group';
+    else if (normalized.length >= 3 && !category) status = 'unknown-category';
+
+    return Object.freeze({
+      raw,
+      normalized,
+      group,
+      category,
+      status,
+      isStandard:standard,
+      isCategoryResolvable:Boolean(category),
+    });
+  }
+
   function matchesCategory(value, categoryValue) {
-    const code = normalizeCode(value);
+    const codeAudit = classifyCode(value);
     const category = resolveCategoryCode(categoryValue);
-    return Boolean(code && category && code.startsWith(category));
+    return Boolean(codeAudit.normalized && category && codeAudit.normalized.startsWith(category));
+  }
+
+  function readRowAtc(row, options = {}) {
+    if (typeof options.getAtc === 'function') return options.getAtc(row);
+    if (!row || typeof row !== 'object') return '';
+    return row.atc_code ?? row.atcCode ?? row.atc ?? row['ATC Code'] ?? row.ATC ?? '';
+  }
+
+  function auditRows(rows, options = {}) {
+    const source = Array.isArray(rows) ? rows : [];
+    const categoryCounts = Object.fromEntries(Object.keys(subgroups()).map(code => [code, 0]));
+    const groupCounts = Object.fromEntries(Object.keys(groups()).map(code => [code, 0]));
+    const statuses = {
+      standard:0,
+      nonstandardResolvable:0,
+      unclassified:0,
+      invalid:0,
+      unknownGroup:0,
+      unknownCategory:0,
+    };
+    const examples = {
+      nonstandardResolvable:[],
+      unclassified:[],
+      invalid:[],
+      unknownGroup:[],
+      unknownCategory:[],
+    };
+    const exampleLimit = Number.isInteger(options.exampleLimit) && options.exampleLimit >= 0
+      ? options.exampleLimit
+      : 5;
+
+    source.forEach(row => {
+      const result = classifyCode(readRowAtc(row, options));
+      if (result.status === 'standard') statuses.standard += 1;
+      else if (result.status === 'nonstandard-resolvable') statuses.nonstandardResolvable += 1;
+      else if (result.status === 'unclassified') statuses.unclassified += 1;
+      else if (result.status === 'invalid') statuses.invalid += 1;
+      else if (result.status === 'unknown-group') statuses.unknownGroup += 1;
+      else if (result.status === 'unknown-category') statuses.unknownCategory += 1;
+
+      if (result.group && Object.hasOwn(groupCounts, result.group)) groupCounts[result.group] += 1;
+      if (result.category && Object.hasOwn(categoryCounts, result.category)) categoryCounts[result.category] += 1;
+
+      const exampleKey = result.status === 'nonstandard-resolvable'
+        ? 'nonstandardResolvable'
+        : result.status === 'unknown-group'
+          ? 'unknownGroup'
+          : result.status === 'unknown-category'
+            ? 'unknownCategory'
+            : result.status;
+      if (examples[exampleKey] && examples[exampleKey].length < exampleLimit) {
+        examples[exampleKey].push(result.raw || '(bosh)');
+      }
+    });
+
+    const categorized = statuses.standard + statuses.nonstandardResolvable;
+    const total = source.length;
+    const report = {
+      total,
+      categorized,
+      coveragePercent:total ? Number(((categorized / total) * 100).toFixed(3)) : 100,
+      catalog:{
+        groups:Object.keys(groups()).length,
+        categories:Object.keys(subgroups()).length,
+      },
+      statuses,
+      groupCounts,
+      categoryCounts,
+      emptyCategories:Object.entries(categoryCounts)
+        .filter(([, count]) => count === 0)
+        .map(([code]) => code),
+      examples,
+    };
+    return Object.freeze(report);
   }
 
   function positiveInteger(value) {
@@ -147,6 +278,12 @@
   const api = Object.freeze({
     normalizeCode,
     normalizeAtcCode:normalizeCode,
+    isStandardCode,
+    isStandardAtcCode:isStandardCode,
+    classifyCode,
+    auditCode:classifyCode,
+    auditRows,
+    auditRegistryRows:auditRows,
     resolveGroupCode,
     getAtcGroupCode:resolveGroupCode,
     resolveCategoryCode,
