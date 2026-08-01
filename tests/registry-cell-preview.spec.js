@@ -5,7 +5,7 @@ const PERFORMANCE_BASE = 'http://127.0.0.1:4174';
 
 test.use({ serviceWorkers:'block', viewport:{ width:1440, height:900 } });
 
-async function waitForStableRegistry(page, base = BASE) {
+async function waitForStableRegistry(page, base = BASE, minimumRows = 1) {
   await page.goto(`${base}/index.html`, { waitUntil:'domcontentloaded' });
   await page.waitForFunction(() => document.documentElement.classList.contains('auth-ready'));
 
@@ -17,6 +17,24 @@ async function waitForStableRegistry(page, base = BASE) {
     })),
     { timeout:30000, message:'tabela ose kontrolluesi i zgjerimit nuk u stabilizua' }
   ).toEqual({ stable:true, pending:false, preview:'registry-cell-preview-20260801-7' });
+
+  if (minimumRows > 1) {
+    await expect.poll(
+      () => page.evaluate(minimum => {
+        const body = document.getElementById('tbody');
+        const table = document.getElementById('dataTable');
+        const rows = body
+          ? Array.from(body.children).filter(row => !row.querySelector('.empty-state')).length
+          : 0;
+        return {
+          rows,
+          stable:window.MEDINDEX_REGISTRY_TABLE_AUDIT?.stable === true,
+          pending:table?.dataset.registryUnifiedPending === 'true',
+        };
+      }, minimumRows),
+      { timeout:30000, message:'rreshtat realë të regjistrit nuk u renderuan para auditit të scroll-it' }
+    ).toEqual({ rows:minimumRows, stable:true, pending:false });
+  }
 }
 
 test('qeliza reale e dozimit të gjatë e rrit rreshtin inline pa hapur modal', async ({ page }) => {
@@ -217,7 +235,7 @@ test('një zoom zbulon tekstin e plotë në të gjitha kolonat e rreshtit', asyn
 });
 
 test('tabela scrollon horizontalisht dhe vertikalisht pa ngrirë kolonat', async ({ page }) => {
-  await waitForStableRegistry(page, PERFORMANCE_BASE);
+  await waitForStableRegistry(page, PERFORMANCE_BASE, 50);
 
   const area = page.locator('#registryContent.table-wrap');
   const header = page.locator('#headerRow th[data-registry-column-key="trade-name"]');
