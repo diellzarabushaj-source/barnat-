@@ -1,0 +1,5 @@
+MedIndex registry table final deployment trigger.
+GitHub PR: #55
+Validated branch head: 2b92959ffc102d5467f2cd0359beb90ed5075a44
+Merged main commit: 3203ed5bb7d36e77c90d1ba67c171b5cf12e929a
+All 8 Chromium physician-flow and 4006-row performance audits passed.
