@@ -1,0 +1,319 @@
+/* MedIndex registry final responsive layer.
+   One visual system, compact by default, full row expansion on demand. */
+
+html.medindex-tailadmin #registryContent.table-wrap {
+  border:1px solid #d9e4f1!important;
+  border-radius:16px!important;
+  background:#fff!important;
+  box-shadow:0 8px 28px rgba(15,23,42,.045)!important;
+}
+
+html.medindex-tailadmin #dataTable {
+  height:auto!important;
+  border-collapse:separate!important;
+  border-spacing:0!important;
+  background:#fff!important;
+}
+
+html.medindex-tailadmin #dataTable thead th,
+html.medindex-tailadmin #dataTable thead th[data-registry-column-key] {
+  height:58px!important;
+  min-height:58px!important;
+  max-height:58px!important;
+  padding:11px 14px!important;
+  overflow:hidden!important;
+  border-right:1px solid #e2e8f0!important;
+  border-bottom:1px solid #dbe5f1!important;
+  background:#fff!important;
+  background-image:none!important;
+  color:#1d4ed8!important;
+  box-shadow:0 1px 0 rgba(15,23,42,.025)!important;
+  font-family:Inter,"Segoe UI",system-ui,sans-serif!important;
+  font-size:11px!important;
+  font-weight:780!important;
+  letter-spacing:.035em!important;
+  line-height:1.3!important;
+  text-transform:uppercase!important;
+  white-space:normal!important;
+  vertical-align:middle!important;
+}
+
+html.medindex-tailadmin #dataTable thead th:first-child { border-top-left-radius:15px!important; }
+html.medindex-tailadmin #dataTable thead th:last-child { border-top-right-radius:15px!important; border-right:0!important; }
+
+html.medindex-tailadmin #headerRow .registry-dosage-subhead {
+  display:block!important;
+  margin-top:4px!important;
+  color:#94a3b8!important;
+  font-size:9px!important;
+  font-weight:560!important;
+  letter-spacing:0!important;
+  line-height:1.2!important;
+  text-transform:none!important;
+}
+
+html.medindex-tailadmin #dataTable .clinical-editor-open {
+  display:inline-flex!important;
+  width:auto!important;
+  min-width:84px!important;
+  min-height:36px!important;
+  align-items:center!important;
+  justify-content:center!important;
+  gap:7px!important;
+  padding:0 11px!important;
+  overflow:hidden!important;
+  border:1px solid #bfdbfe!important;
+  border-radius:9px!important;
+  background:#fff!important;
+  background-image:none!important;
+  color:#2563eb!important;
+  box-shadow:0 1px 2px rgba(15,23,42,.04)!important;
+  font-size:0!important;
+  font-weight:720!important;
+  line-height:1!important;
+  white-space:nowrap!important;
+}
+
+html.medindex-tailadmin #dataTable .clinical-editor-open::before,
+html.medindex-tailadmin #dataTable .clinical-editor-open::after { display:none!important; content:none!important; }
+html.medindex-tailadmin #dataTable .clinical-editor-open > svg { width:15px!important; height:15px!important; flex:0 0 15px!important; fill:none!important; stroke:currentColor!important; stroke-width:1.9!important; }
+html.medindex-tailadmin #dataTable .clinical-editor-open > span { display:block!important; color:inherit!important; font-size:12px!important; font-weight:720!important; line-height:1!important; }
+html.medindex-tailadmin #dataTable .clinical-editor-open:hover { border-color:#60a5fa!important; background:#eff6ff!important; color:#1d4ed8!important; }
+html.medindex-tailadmin #dataTable .clinical-editor-open:focus-visible { outline:3px solid rgba(37,99,235,.18)!important; outline-offset:2px!important; }
+
+html.medindex-tailadmin .registry-dose-dialog { display:none!important; }
+
+@media (min-width:761px) {
+  html.medindex-tailadmin #registryContent.table-wrap {
+    overflow-x:auto!important;
+    overflow-y:visible!important;
+    scrollbar-gutter:stable!important;
+    overscroll-behavior-x:contain!important;
+  }
+
+  html.medindex-tailadmin #dataTable,
+  html.medindex-tailadmin #dataTable tbody {
+    height:auto!important;
+    min-height:0!important;
+    max-height:none!important;
+  }
+
+  html.medindex-tailadmin #dataTable tbody tr {
+    height:88px!important;
+    min-height:88px!important;
+    max-height:88px!important;
+  }
+
+  html.medindex-tailadmin #dataTable tbody td {
+    height:88px!important;
+    min-height:88px!important;
+    max-height:88px!important;
+    padding:12px 14px!important;
+    overflow:hidden!important;
+    border-right:1px solid #e2e8f0!important;
+    border-bottom:1px solid #e2e8f0!important;
+    background:#fff!important;
+    color:#172033!important;
+    font-size:13px!important;
+    line-height:1.45!important;
+    vertical-align:middle!important;
+    white-space:normal!important;
+    overflow-wrap:anywhere!important;
+    word-break:normal!important;
+    text-overflow:clip!important;
+  }
+
+  html.medindex-tailadmin #dataTable tbody tr:nth-child(even) td { background:#f8fbff!important; }
+  html.medindex-tailadmin #dataTable tbody tr:hover td { background:#f2f7ff!important; }
+
+  html.medindex-tailadmin #dataTable tbody td[data-registry-expandable="true"] {
+    cursor:zoom-in!important;
+    outline:none!important;
+  }
+
+  html.medindex-tailadmin #dataTable tbody td[data-registry-expandable="true"]:focus-visible {
+    box-shadow:inset 0 0 0 2px rgba(37,99,235,.32)!important;
+  }
+
+  html.medindex-tailadmin #dataTable tbody td[data-registry-expandable="true"]::after {
+    content:"";
+    position:absolute;
+    right:9px;
+    bottom:7px;
+    width:6px;
+    height:6px;
+    border-right:1.5px solid #60a5fa;
+    border-bottom:1.5px solid #60a5fa;
+    transform:rotate(45deg);
+    opacity:.7;
+    pointer-events:none;
+  }
+
+  html.medindex-tailadmin #dataTable tbody td[data-registry-expandable="true"] { position:relative!important; }
+
+  html.medindex-tailadmin #dataTable tbody td[data-registry-column-key="trade-name"] .drug-name-text,
+  html.medindex-tailadmin #dataTable tbody td[data-registry-column-key="active-substance"],
+  html.medindex-tailadmin #dataTable tbody td[data-registry-column-key="drug-class"],
+  html.medindex-tailadmin #dataTable tbody td[data-registry-column-key="use"],
+  html.medindex-tailadmin #dataTable tbody td[data-registry-column-key="form"] {
+    overflow:hidden!important;
+    text-overflow:ellipsis!important;
+  }
+
+  html.medindex-tailadmin #dataTable tbody td[data-registry-column-key="trade-name"] .drug-name-text {
+    display:-webkit-box!important;
+    white-space:normal!important;
+    -webkit-box-orient:vertical!important;
+    -webkit-line-clamp:2!important;
+  }
+
+  html.medindex-tailadmin #dataTable .registry-dosage-grid {
+    max-height:62px!important;
+    overflow:hidden!important;
+    grid-template-columns:minmax(0,1fr) 64px!important;
+    gap:8px!important;
+  }
+
+  html.medindex-tailadmin #dataTable .registry-dosage-grid > :first-child,
+  html.medindex-tailadmin #dataTable .registry-dosage-muted {
+    display:-webkit-box!important;
+    max-height:62px!important;
+    overflow:hidden!important;
+    -webkit-box-orient:vertical!important;
+    -webkit-line-clamp:3!important;
+  }
+
+  html.medindex-tailadmin #dataTable .registry-dosage-details {
+    max-height:62px!important;
+    overflow:hidden!important;
+  }
+
+  html.medindex-tailadmin #dataTable .registry-dosage-details > :not(summary) { display:none!important; }
+
+  html.medindex-tailadmin #dataTable tbody tr.registry-row-expanded {
+    height:auto!important;
+    min-height:118px!important;
+    max-height:none!important;
+  }
+
+  html.medindex-tailadmin #dataTable tbody tr.registry-row-expanded td {
+    height:auto!important;
+    min-height:118px!important;
+    max-height:none!important;
+    overflow:visible!important;
+    vertical-align:top!important;
+    background:#f7fbff!important;
+    box-shadow:inset 0 1px 0 #bfdbfe,inset 0 -1px 0 #bfdbfe!important;
+  }
+
+  html.medindex-tailadmin #dataTable tbody tr.registry-row-expanded td[data-registry-expandable="true"] {
+    cursor:zoom-out!important;
+  }
+
+  html.medindex-tailadmin #dataTable tbody tr.registry-row-expanded td[data-registry-expandable="true"]::after {
+    transform:rotate(225deg);
+    bottom:10px;
+  }
+
+  html.medindex-tailadmin #dataTable tbody tr.registry-row-expanded .drug-name-text,
+  html.medindex-tailadmin #dataTable tbody tr.registry-row-expanded .registry-dosage-grid > :first-child,
+  html.medindex-tailadmin #dataTable tbody tr.registry-row-expanded .registry-dosage-muted {
+    display:block!important;
+    max-height:none!important;
+    overflow:visible!important;
+    white-space:normal!important;
+    text-overflow:clip!important;
+    -webkit-line-clamp:unset!important;
+  }
+
+  html.medindex-tailadmin #dataTable tbody tr.registry-row-expanded .registry-dosage-grid,
+  html.medindex-tailadmin #dataTable tbody tr.registry-row-expanded .registry-dosage-details {
+    max-height:none!important;
+    overflow:visible!important;
+  }
+
+  html.medindex-tailadmin #dataTable tbody tr.registry-row-expanded .registry-dosage-details[open] > :not(summary) {
+    display:grid!important;
+  }
+
+  html.medindex-tailadmin #dataTable tbody tr.registry-row-expanded .registry-dosage-details > summary {
+    margin-bottom:10px!important;
+  }
+
+  html.medindex-tailadmin #dataTable th[data-registry-column-key="clinical-action"],
+  html.medindex-tailadmin #dataTable td[data-registry-column-key="clinical-action"] {
+    width:100px!important;
+    min-width:100px!important;
+    max-width:100px!important;
+    text-align:center!important;
+  }
+
+  html.medindex-tailadmin #dataTable th[data-registry-column-key="clinical-status"],
+  html.medindex-tailadmin #dataTable td[data-registry-column-key="clinical-status"] {
+    width:170px!important;
+    min-width:170px!important;
+    max-width:170px!important;
+  }
+}
+
+@media (max-width:760px) {
+  html.medindex-tailadmin #registryContent.table-wrap {
+    overflow-x:clip!important;
+    overflow-y:visible!important;
+    border:0!important;
+    border-radius:0!important;
+    box-shadow:none!important;
+    background:transparent!important;
+  }
+
+  html.medindex-tailadmin #dataTable,
+  html.medindex-tailadmin #dataTable tbody,
+  html.medindex-tailadmin #dataTable tbody tr,
+  html.medindex-tailadmin #dataTable tbody td {
+    height:auto!important;
+    min-height:0!important;
+    max-height:none!important;
+  }
+
+  html.medindex-tailadmin #dataTable tbody td[data-registry-expandable="true"] {
+    cursor:pointer!important;
+  }
+
+  html.medindex-tailadmin #dataTable tbody tr:not(.registry-row-expanded) td[data-registry-expandable="true"] {
+    max-height:112px!important;
+    overflow:hidden!important;
+  }
+
+  html.medindex-tailadmin #dataTable tbody tr.registry-row-expanded td[data-registry-expandable="true"] {
+    max-height:none!important;
+    overflow:visible!important;
+  }
+
+  html.medindex-tailadmin #dataTable .clinical-editor-open {
+    width:40px!important;
+    min-width:40px!important;
+    height:40px!important;
+    min-height:40px!important;
+    padding:0!important;
+  }
+
+  html.medindex-tailadmin #dataTable .clinical-editor-open > span { display:none!important; }
+}
+
+html[data-theme="dark"].medindex-tailadmin #registryContent.table-wrap,
+html[data-theme="dark"].medindex-tailadmin #dataTable,
+html[data-theme="dark"].medindex-tailadmin #dataTable thead th,
+html[data-theme="dark"].medindex-tailadmin #dataTable tbody td {
+  border-color:#334155!important;
+  background:#111827!important;
+  color:#e5eefb!important;
+}
+
+html[data-theme="dark"].medindex-tailadmin #dataTable thead th { color:#93c5fd!important; }
+html[data-theme="dark"].medindex-tailadmin #dataTable tbody tr:nth-child(even) td { background:#121d2e!important; }
+html[data-theme="dark"].medindex-tailadmin #dataTable tbody tr:hover td,
+html[data-theme="dark"].medindex-tailadmin #dataTable tbody tr.registry-row-expanded td { background:#17233a!important; }
+
+@media (prefers-reduced-motion:reduce) {
+  html.medindex-tailadmin #dataTable * { scroll-behavior:auto!important; transition:none!important; animation:none!important; }
+}
