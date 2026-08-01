@@ -100,12 +100,12 @@ test('advanced Albanian ICD suggestions are grouped, explained and keyboard acce
   await expect(page.locator('[data-code="I10"] .icd-suggestion-match')).toHaveText('Sinonim shqip');
   await expect(page.locator('.icd-suggestion-safety')).toContainText('nuk vendosin diagnozë');
 
+  await page.screenshot({ path:path.join(OUTPUT, 'advanced-search-desktop.png'), fullPage:true });
+
   await search.press('ArrowDown');
   await expect(page.locator('#icdSuggestions [role="option"][aria-selected="true"]')).toHaveCount(1);
   await search.press('Enter');
   await expect(page).toHaveURL(/parent=I10/);
-
-  await page.screenshot({ path:path.join(OUTPUT, 'advanced-search-desktop.png'), fullPage:true });
 });
 
 test('typo correction remains readable and inside the mobile viewport', async ({ page }) => {
