@@ -20,7 +20,7 @@ assert.ok(
   'Registry identities must be available before the clinical editor enhances rows.'
 );
 
-assert.match(script, /registry-table-integrity-v4/);
+assert.match(script, /registry-table-integrity-v5/);
 assert.match(script, /data-registry-colgroup/);
 assert.match(script, /data-registry-number-probe/);
 assert.match(script, /registry-dynamic-placeholder/);

@@ -1,14 +1,14 @@
 (() => {
   'use strict';
 
-  const VERSION = 'registry-table-integrity-v4';
+  const VERSION = 'registry-table-integrity-v5';
   const STYLE_VERSION = '20260801-4';
   const PROBE_KEY = 'registry-number-probe';
   const DYNAMIC_ORDER = Object.freeze([
-    '[data-clinical-editor-column="clinical-status"]',
-    '[data-clinical-editor-column="clinical-action"]',
     '[data-registry-dosage-column="adult"]',
     '[data-registry-dosage-column="pediatric"]',
+    '[data-clinical-editor-column="clinical-status"]',
+    '[data-clinical-editor-column="clinical-action"]',
     '[data-registry-number-probe]',
   ]);
   const LABEL_KEYS = Object.freeze({
@@ -453,16 +453,9 @@
     const header = document.getElementById('headerRow');
     const tbody = document.getElementById('tbody');
     if (!header || !tbody) return;
-    if (!observer) {
-      observer = new MutationObserver(records => {
-        const structural = records.some(record => record.type === 'childList');
-        if (structural) enforce();
-        else schedule();
-      });
-    }
+    if (!observer) observer = new MutationObserver(schedule);
     observer.observe(header, { childList:true, subtree:true });
     observer.observe(tbody, { childList:true, subtree:true });
-    observer.observe(document.documentElement, { attributes:true, attributeFilter:['class', 'data-theme'] });
   }
 
   function initResizeObserver() {
@@ -491,15 +484,15 @@
 
   function init() {
     promoteStylesheet();
-    enforce();
+    schedule();
     initResizeObserver();
     bindDosageDetails();
     ['medindex:registry-ready', 'medindex:registry-data-ready', 'medindex:tailadmin-ready']
-      .forEach(eventName => window.addEventListener(eventName, enforce));
+      .forEach(eventName => window.addEventListener(eventName, schedule));
     window.addEventListener('resize', schedule, { passive:true });
     requestAnimationFrame(() => {
       promoteStylesheet();
-      enforce();
+      schedule();
     });
   }
 
