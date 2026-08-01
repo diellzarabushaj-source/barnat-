@@ -203,6 +203,8 @@ html.medindex-tailadmin[data-theme="dark"][data-mi-page="barnat"] body #registry
   html.medindex-tailadmin[data-mi-page="barnat"] body #registryContent.table-wrap {
     max-height:68dvh!important;
     min-height:320px!important;
+    overflow-x:visible!important;
+    overflow-y:auto!important;
     scrollbar-gutter:stable!important;
   }
 
