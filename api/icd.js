@@ -9,6 +9,8 @@ async function authorized(req) {
 }
 
 module.exports = async function handler(req, res) {
+  res.setHeader('X-Content-Type-Options', 'nosniff');
+  res.setHeader('Vary', 'Cookie');
   if (!(await authorized(req))) {
     res.setHeader('Cache-Control', 'private, no-store, max-age=0');
     return res.status(401).json({ error:'Kërkohet autentikim.', ok:false, data:null });
