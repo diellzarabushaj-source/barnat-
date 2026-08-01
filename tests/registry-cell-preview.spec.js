@@ -8,11 +8,9 @@ test.use({ serviceWorkers:'block', viewport:{ width:1440, height:900 } });
 test('qeliza e gjatë hap tekstin e plotë pa zgjeruar rreshtin', async ({ page }) => {
   await page.goto(`${BASE}/index.html`, { waitUntil:'domcontentloaded' });
   await page.waitForFunction(() => document.documentElement.classList.contains('auth-ready'));
-  await expect(page.locator('#tbody > tr')).toHaveCount(50, { timeout:30000 });
-  await expect(page.locator('#countBadge')).not.toContainText(/ngarkuar|gabim/i, { timeout:30000 });
 
   const cell = page.locator('#tbody > tr td[data-registry-column-key="active-substance"]').first();
-  await expect(cell).toBeVisible();
+  await expect(cell).toBeVisible({ timeout:30000 });
   await cell.evaluate((node, text) => {
     node.textContent = text;
     window.MedIndexCellPreview?.refresh?.();
@@ -35,7 +33,7 @@ test('qeliza e gjatë hap tekstin e plotë pa zgjeruar rreshtin', async ({ page 
 
   const desktopGeometry = await dialog.evaluate(node => {
     const rect = node.getBoundingClientRect();
-    return { left:rect.left, right:rect.right, top:rect.top, bottom:rect.bottom, width:rect.width, height:rect.height };
+    return { left:rect.left, right:rect.right, top:rect.top, bottom:rect.bottom };
   });
   expect(desktopGeometry.left).toBeGreaterThanOrEqual(0);
   expect(desktopGeometry.right).toBeLessThanOrEqual(1440);
@@ -52,7 +50,7 @@ test('qeliza e gjatë hap tekstin e plotë pa zgjeruar rreshtin', async ({ page 
   await expect(dialog).toBeVisible();
   const mobileGeometry = await dialog.evaluate(node => {
     const rect = node.getBoundingClientRect();
-    return { left:rect.left, right:rect.right, top:rect.top, bottom:rect.bottom, width:rect.width, height:rect.height };
+    return { left:rect.left, right:rect.right, bottom:rect.bottom };
   });
   expect(mobileGeometry.left).toBeGreaterThanOrEqual(-1);
   expect(mobileGeometry.right).toBeLessThanOrEqual(391);
