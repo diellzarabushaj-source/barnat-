@@ -18,6 +18,9 @@ const sampleRows = [
   { 'Emri tregtar':'Imigran', 'Substanca aktive':'Sumatriptan', 'ATC Code':'N02CC01' },
   { 'Emri tregtar':'Keppra', 'Substanca aktive':'Levetiracetam', 'ATC Code':'N03AX14' },
   { 'Emri tregtar':'Brufen', 'Substanca aktive':'Ibuprofen', 'ATC Code':'M01AE01' },
+  { 'Emri tregtar':'Anzibel', 'Substanca aktive':'Kombinim për fytin', 'ATC Code':'R02AAXX' },
+  { 'Emri tregtar':'Prospan', 'Substanca aktive':'Hedera helix', 'ATC Code':'R05CAXX' },
+  { 'Emri tregtar':'NoNausea', 'Substanca aktive':'Pa klasifikim', 'ATC Code':'N/A' },
 ];
 
 const categoryRows = sampleRows.filter(row => ATC.matchesCategory(row['ATC Code'], 'N02'));
@@ -27,6 +30,18 @@ const searchedRows = categoryRows.filter(row =>
   `${row['Emri tregtar']} ${row['Substanca aktive']}`.toLowerCase().includes('paracetamol')
 );
 assert.deepEqual(searchedRows.map(row => row['Emri tregtar']), ['Panadol']);
+
+assert.deepEqual(
+  sampleRows.filter(row => ATC.matchesCategory(row['ATC Code'], 'R02')).map(row => row['Emri tregtar']),
+  ['Anzibel'],
+  'Non-standard R02 legacy codes must remain visible in the R02 category'
+);
+assert.deepEqual(
+  sampleRows.filter(row => ATC.matchesCategory(row['ATC Code'], 'R05')).map(row => row['Emri tregtar']),
+  ['Prospan'],
+  'Non-standard R05 legacy codes must remain visible in the R05 category'
+);
+assert.equal(ATC.matchesCategory('N/A', 'N02'), false, 'Unclassified products must not be assigned to an ATC category');
 
 const coreTail = read('app-parts/core-tail.txt');
 assert.match(coreTail, /applyRegistryUrlStateFromLocation\(\)/, 'Registry must initialize its state from the URL');
