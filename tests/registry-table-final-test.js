@@ -22,6 +22,7 @@ assert.ok(index.indexOf('registry-table-final.js') > index.indexOf('registry-ui-
 assert.match(index,/registryTableFinalMobileCompatibility[\s\S]*#dataTable tbody tr\{display:block!important\}/,'mobile registry cards must preserve the block-row contract');
 assert.match(release,/registry-ui-20260801-12/,'cache release must be bumped');
 assert.match(read('tests/population-verification-test.js'),/20260801-12/,'population verification audit must follow the current table release');
+assert.match(read('tests/registry-fast-start-test.js'),/registry-runtime-loader\.js/,'fast-start audit must cover the cooperative loader');
 
 assert.doesNotThrow(() => new Function(runtime),'final table runtime must be valid JavaScript');
 assert.doesNotThrow(() => new Function(loader),'registry runtime loader must be valid JavaScript');
