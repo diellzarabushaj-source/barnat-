@@ -46,7 +46,7 @@ assert.doesNotMatch(runtime,/observe\(document\.body|subtree\s*:\s*true/,'unifie
 assert.match(runtime,/registryUnifiedIntegrity/,'runtime must expose row/header integrity');
 assert.match(runtime,/MEDINDEX_REGISTRY_TABLE_AUDIT/,'runtime must expose a browser audit object');
 assert.match(runtime,/normalizePencils/,'edit buttons must be normalized once by the unified controller');
-assert.match(runtime,/registry-dose-dialog|registry-cell-preview-dialog/,'',);
+assert.doesNotMatch(runtime,/registry-dose-dialog|registry-cell-preview-dialog/,'unified runtime must not contain a text modal');
 
 assert.match(css,/#dataTable\[data-registry-unified-table\] thead th[\s\S]*background:#fff!important/,'header must remain white');
 assert.match(css,/#dataTable\[data-registry-unified-table\] :is\(th,td\)\[data-registry-column-key\][\s\S]*position:relative!important/,'columns must be non-sticky');
