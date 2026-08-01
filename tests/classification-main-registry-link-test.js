@@ -7,28 +7,22 @@ const ROOT = path.resolve(__dirname, '..');
 const read = relativePath => fs.readFileSync(path.join(ROOT, relativePath), 'utf8');
 
 const html = read('klasifikimi.html');
-const classification = read('classification-v3.js');
+const redirect = read('classification-redirect.js');
+const vercel = JSON.parse(read('vercel.json'));
 
-assert.doesNotMatch(classification, /function drugTable\s*\(/, 'Classification must not own a second medicines table renderer');
-assert.doesNotMatch(classification, /drugTableBody['"]\)\.innerHTML|<tr class="registry-quality-/, 'Classification must not render medicine table rows');
-assert.doesNotMatch(html, /<table[^>]+class="atc-table"|id="drugTableBody"/, 'The obsolete classification medicines table must not remain in the DOM');
-assert.match(html, /id="drugResults" hidden aria-hidden="true"><\/section>/, 'Only a harmless hidden compatibility anchor may remain during rollout');
-assert.match(classification, /function openSubgroup\(code, query = ''\)/, 'Subgroup navigation entry point is missing');
-assert.match(classification, /location\.href = registryUrl\(category, query\)/, 'Subgroups must open the main registry table');
-assert.match(classification, /MedIndexATC\?\.registryUrl/, 'Classification must use the shared ATC URL contract');
-assert.match(classification, /openSubgroup\(card\.dataset\.code, state\.query\)/, 'Search context must be preserved when opening a category');
-assert.match(classification, /matchingRows\.map\(subgroupCode\)/, 'Drug search must derive matching ATC categories without rendering a local table');
-assert.match(classification, /Hap te Barnat/, 'Subgroup cards must clearly state that they open the main registry');
-assert.match(classification, /Kërko te Barnat/, 'Ambiguous searches need a safe route to the main registry');
-assert.match(classification, /revealSubgroup\(hash\)/, 'Returning from the registry must reveal the category instead of redirecting immediately');
-assert.match(classification, /openGroup\(group, \{ updateHistory:false, focusCode:category \}\)/, 'The return link must open the parent group and focus the active category');
-assert.match(classification, /#drugResults['"]\)\.hidden = true/, 'The compatibility anchor must remain hidden');
+assert.doesNotMatch(html, /Barnat sipas klasifikimit ATC|id="cardGrid"|id="atcSearch"|atc-card|classification-v3\.js/, 'The obsolete card-based classification workspace must not be served');
+assert.doesNotMatch(html, /<table|drugTableBody|drugResults/, 'The legacy classification route must not contain any medicine table or compatibility workspace');
+assert.match(html, /classification-redirect\.js\?v=table-only-v1/, 'The offline-compatible redirect runtime must be loaded');
+assert.match(html, /href="\/index\.html"/, 'The no-script fallback must point to the main registry table');
 
-const openSubgroupStart = classification.indexOf('function openSubgroup');
-const renderSearchStart = classification.indexOf('function renderSearch');
-const section = classification.slice(openSubgroupStart, renderSearchStart);
-assert.doesNotMatch(section, /innerHTML|createElement\(['"]table['"]\)/, 'Opening a subgroup must only navigate, never render another table');
+assert.match(redirect, /new URL\('\/index\.html'/, 'Legacy classification routes must target the main registry');
+assert.match(redirect, /target\.searchParams\.set\('atc', legacyHash\.slice\(0, 3\)\)/, 'Legacy subgroup hashes such as #N02 must become the ATC table filter');
+assert.match(redirect, /location\.replace/, 'Redirects must replace history rather than leave the obsolete page in browser history');
 
-execFileSync(process.execPath, ['--check', path.join(ROOT, 'classification-v3.js')], { stdio:'pipe' });
+const redirects = Array.isArray(vercel.redirects) ? vercel.redirects : [];
+assert.ok(redirects.some(rule => rule.source === '/klasifikimi.html' && rule.destination === '/index.html'), 'Vercel must redirect /klasifikimi.html to the main registry');
+assert.ok(redirects.some(rule => rule.source === '/klasifikimi' && rule.destination === '/index.html'), 'Vercel must redirect the extensionless classification route');
 
-console.log('Classification cards now use only the main registry table.');
+execFileSync(process.execPath, ['--check', path.join(ROOT, 'classification-redirect.js')], { stdio:'pipe' });
+
+console.log('Legacy classification page removed; all classification routes now open the main registry table.');
