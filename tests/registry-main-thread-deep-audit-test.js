@@ -8,6 +8,7 @@ const read = file => fs.readFileSync(path.join(ROOT, file), 'utf8');
 const syntax = file => execFileSync(process.execPath, ['--check', path.join(ROOT, file)], { stdio:'pipe' });
 
 [
+  'registry-runtime-loader.js',
   'app-performance.js',
   'registry-parser-worker-v2.js',
   'registry-dosage-loader.js',
@@ -16,6 +17,7 @@ const syntax = file => execFileSync(process.execPath, ['--check', path.join(ROOT
 ].forEach(syntax);
 
 const index = read('index.html');
+const runtimeLoader = read('registry-runtime-loader.js');
 const bootstrap = read('app-performance.js');
 const worker = read('registry-parser-worker-v2.js');
 const part = read('app-parts/part-01.txt');
@@ -24,10 +26,15 @@ const dosage = read('registry-dosage-columns-v2.js');
 const builder = read('scripts/build-static-runtime.js');
 const middleware = read('middleware.ts');
 
-assert.match(index, /app-performance\.js/);
+assert.match(index, /registry-runtime-loader\.js\?v=20260801-1/);
+assert.doesNotMatch(index, /<script src="app-performance\.js"/);
 assert.match(index, /app-runtime-performance\.js/);
 assert.match(index, /registry-dosage-loader\.js/);
 assert.doesNotMatch(index, /src="app\.js|src="registry-dosage-columns(?:-v2)?\.js/);
+assert.match(runtimeLoader, /app-performance\.js\?v=20260801-1/);
+assert.match(runtimeLoader, /INTERACTION_GRACE_MS = 220/);
+assert.match(runtimeLoader, /classList\.contains\('auth-ready'\)/);
+assert.match(runtimeLoader, /requestAnimationFrame\(\(\) => requestAnimationFrame\(loadRuntime\)\)/);
 
 assert.match(bootstrap, /scheduleBrowserCacheSave/);
 assert.match(bootstrap, /requestIdleCallback\(run/);
@@ -69,4 +76,4 @@ assert.match(builder, /runtimeOutputs/);
 assert.match(builder, /app-runtime-performance\.js/);
 assert.match(middleware, /registry-parser-worker-v2\.js/);
 
-console.log('Registry main-thread deep audit passed.');
+console.log('Registry cooperative bootstrap and main-thread deep audit passed.');
