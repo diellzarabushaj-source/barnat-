@@ -46,10 +46,15 @@
     }
   }
 
-  function start() {
+  function scheduleCleanup() {
     const run = () => void clearLegacyPresentationCaches();
-    if ('requestIdleCallback' in window) requestIdleCallback(run, { timeout:2500 });
-    else setTimeout(run, 250);
+    if ('requestIdleCallback' in window) requestIdleCallback(run, { timeout:9000 });
+    else setTimeout(run, 6000);
+  }
+
+  function start() {
+    if (document.readyState === 'complete') scheduleCleanup();
+    else window.addEventListener('load', scheduleCleanup, { once:true });
   }
 
   if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', start, { once:true });
