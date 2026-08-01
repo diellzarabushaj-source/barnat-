@@ -453,13 +453,7 @@
     const header = document.getElementById('headerRow');
     const tbody = document.getElementById('tbody');
     if (!header || !tbody) return;
-    if (!observer) {
-      observer = new MutationObserver(records => {
-        const structural = records.some(record => record.type === 'childList');
-        if (structural) enforce();
-        else schedule();
-      });
-    }
+    if (!observer) observer = new MutationObserver(schedule);
     observer.observe(header, { childList:true, subtree:true });
     observer.observe(tbody, { childList:true, subtree:true });
   }
@@ -490,15 +484,15 @@
 
   function init() {
     promoteStylesheet();
-    enforce();
+    schedule();
     initResizeObserver();
     bindDosageDetails();
     ['medindex:registry-ready', 'medindex:registry-data-ready', 'medindex:tailadmin-ready']
-      .forEach(eventName => window.addEventListener(eventName, enforce));
+      .forEach(eventName => window.addEventListener(eventName, schedule));
     window.addEventListener('resize', schedule, { passive:true });
     requestAnimationFrame(() => {
       promoteStylesheet();
-      enforce();
+      schedule();
     });
   }
 
