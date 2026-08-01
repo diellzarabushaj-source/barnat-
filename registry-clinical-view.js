@@ -1,11 +1,13 @@
 (() => {
   'use strict';
 
-  const VERSION = 'registry-clinical-view-20260801-1';
+  const VERSION = 'registry-clinical-view-20260801-2';
   const STYLE_ID = 'registryClinicalViewStyles';
   const STYLE_HREF = '/registry-clinical-view.css?v=20260801-1';
   const STORAGE_KEY = 'medindex.registry.view.v1';
   const VALID_VIEWS = new Set(['clinical', 'full']);
+  const INITIAL_ROW_BUDGET = 60;
+  const IDLE_ROW_BATCH = 16;
   const COMPACT_WIDTHS = Object.freeze({
     select: 44,
     'trade-name': 224,
@@ -21,6 +23,7 @@
   let scheduled = false;
   let enhancing = false;
   let lastWidthSignature = '';
+  let rowPassToken = 0;
 
   const clean = value => String(value ?? '').replace(/\s+/g, ' ').trim();
 
@@ -202,12 +205,51 @@
     });
   }
 
-  function enhanceRows() {
-    document.querySelectorAll('#tbody > tr').forEach(row => {
-      if (row.querySelector('.empty-state')) return;
-      enhanceNameCell(row);
-      enhanceCellTitles(row);
-    });
+  function enhanceRow(row) {
+    if (!row || row.querySelector('.empty-state')) return;
+    enhanceNameCell(row);
+    enhanceCellTitles(row);
+  }
+
+  function queueIdle(callback) {
+    if ('requestIdleCallback' in window) {
+      window.requestIdleCallback(callback, { timeout: 700 });
+      return;
+    }
+    window.setTimeout(() => callback({ didTimeout: false, timeRemaining: () => 8 }), 24);
+  }
+
+  function enhanceRowsProgressively() {
+    const tbody = document.getElementById('tbody');
+    if (!tbody) return;
+
+    const token = ++rowPassToken;
+    const total = tbody.children.length;
+    let index = 0;
+    let immediate = 0;
+
+    while (index < total && immediate < INITIAL_ROW_BUDGET) {
+      enhanceRow(tbody.children[index]);
+      index += 1;
+      immediate += 1;
+    }
+
+    if (index >= total) return;
+
+    const runIdleBatch = deadline => {
+      if (token !== rowPassToken || !tbody.isConnected) return;
+      let processed = 0;
+      const currentTotal = tbody.children.length;
+      while (index < currentTotal && processed < IDLE_ROW_BATCH) {
+        if (processed > 0 && !deadline.didTimeout && deadline.timeRemaining() <= 2) break;
+        enhanceRow(tbody.children[index]);
+        index += 1;
+        processed += 1;
+      }
+      if (index < tbody.children.length && token === rowPassToken) queueIdle(runIdleBatch);
+    };
+
+    queueIdle(runIdleBatch);
   }
 
   function columnIsVisible(key) {
@@ -258,9 +300,9 @@
         document.documentElement.dataset.registryUxView = storedView();
       }
       compactDoseHeaders();
-      enhanceRows();
       updateToolbarState();
       applyCompactWidths();
+      enhanceRowsProgressively();
       document.documentElement.dataset.registryClinicalView = VERSION;
     } finally {
       enhancing = false;
@@ -285,8 +327,13 @@
       if (enhancing) return;
       if (records.some(record => record.type === 'childList' || record.type === 'attributes')) scheduleRefresh();
     });
-    observer.observe(header, { childList: true, subtree: true, attributes: true, attributeFilter: ['hidden', 'class', 'data-registry-column-key'] });
-    observer.observe(tbody, { childList: true, subtree: true });
+    observer.observe(header, {
+      childList: true,
+      subtree: true,
+      attributes: true,
+      attributeFilter: ['hidden', 'class', 'data-registry-column-key'],
+    });
+    observer.observe(tbody, { childList: true });
   }
 
   function observeWidth() {
