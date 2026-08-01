@@ -1,14 +1,18 @@
 (() => {
   'use strict';
 
-  const VERSION = 'registry-runtime-loader-v1';
+  const VERSION = 'registry-runtime-loader-v2';
   const RUNTIME_SRC = '/app-performance.js?v=20260801-1';
-  const INTERACTION_GRACE_MS = 220;
+  const FIRST_INTERACTION_FALLBACK_MS = 1800;
+  const POST_INTERACTION_GRACE_MS = 320;
   const AUTH_WAIT_LIMIT_MS = 5000;
+  const INTERACTION_EVENTS = ['pointerdown', 'keydown', 'touchstart'];
   let scheduled = false;
   let loaded = false;
+  let gateInstalled = false;
   let authObserver = null;
   let authTimer = 0;
+  let fallbackTimer = 0;
 
   function authReady() {
     return document.documentElement.classList.contains('auth-ready');
@@ -28,20 +32,52 @@
     document.head.appendChild(script);
   }
 
-  function beginGracePeriod() {
+  function removeInteractionGate() {
+    if (!gateInstalled) return;
+    gateInstalled = false;
+    INTERACTION_EVENTS.forEach(name => {
+      document.removeEventListener(name, handleFirstInteraction, true);
+    });
+  }
+
+  function scheduleRuntime(delay = 0) {
     if (scheduled) return;
     scheduled = true;
     authObserver?.disconnect();
     window.clearTimeout(authTimer);
+    window.clearTimeout(fallbackTimer);
+    removeInteractionGate();
     window.setTimeout(() => {
       requestAnimationFrame(() => requestAnimationFrame(loadRuntime));
-    }, INTERACTION_GRACE_MS);
+    }, Math.max(0, delay));
+  }
+
+  function handleFirstInteraction() {
+    scheduleRuntime(POST_INTERACTION_GRACE_MS);
+  }
+
+  function installInteractionGate() {
+    if (gateInstalled || scheduled) return;
+    gateInstalled = true;
+    INTERACTION_EVENTS.forEach(name => {
+      document.addEventListener(name, handleFirstInteraction, {
+        capture:true,
+        passive:true,
+        once:false,
+      });
+    });
+    fallbackTimer = window.setTimeout(() => {
+      scheduleRuntime(0);
+    }, FIRST_INTERACTION_FALLBACK_MS);
   }
 
   function waitForAuthenticatedShell() {
-    if (authReady()) return beginGracePeriod();
+    if (authReady()) return installInteractionGate();
     authObserver = new MutationObserver(() => {
-      if (authReady()) beginGracePeriod();
+      if (authReady()) {
+        authObserver?.disconnect();
+        installInteractionGate();
+      }
     });
     authObserver.observe(document.documentElement, {
       attributes:true,
@@ -49,7 +85,7 @@
     });
     authTimer = window.setTimeout(() => {
       authObserver?.disconnect();
-      if (authReady()) beginGracePeriod();
+      if (authReady()) installInteractionGate();
     }, AUTH_WAIT_LIMIT_MS);
   }
 
