@@ -17,6 +17,7 @@ assert.match(index,/registry-table-final\.js\?v=20260801-1/,'final table runtime
 assert.ok(index.indexOf('registry-table-final.css') < index.indexOf('tailadmin-professional.css'),'TailAdmin professional must remain the final static stylesheet');
 assert.ok(index.indexOf('registry-table-final.js') > index.indexOf('registry-ui-release.js'),'final table runtime must execute after legacy registry controllers');
 assert.match(release,/registry-ui-20260801-12/,'cache release must be bumped');
+assert.match(read('tests/population-verification-test.js'),/20260801-12/,'population verification audit must follow the current table release');
 
 assert.doesNotThrow(() => new Function(runtime),'final table runtime must be valid JavaScript');
 assert.match(runtime,/const MOBILE_BREAKPOINT = 760/,'runtime must have an explicit mobile breakpoint');
