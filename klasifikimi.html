@@ -10,6 +10,7 @@
   <title>MedIndex | Klasifikimi ATC — Dr. Diellza Rabushaj</title>
   <link rel="stylesheet" href="classification.css?v=20260723-2">
   <link rel="stylesheet" href="classification-nav-fix.css?v=20260723-1">
+  <link rel="stylesheet" href="classification-info-v3.css?v=atc-info-actions-v1">
   <link rel="stylesheet" href="registry-quality.css?v=20260723-2">
   <link rel="stylesheet" href="app-polish.css?v=20260728-1">
   <link rel="stylesheet" href="performance.css?v=20260723-1">
@@ -32,7 +33,7 @@
     </nav>
 
     <main class="atc-main" id="atcContent" tabindex="-1">
-      <header class="atc-header"><p class="atc-kicker">MedIndex · Dr. Diellza Rabushaj</p><h1>Barnat sipas klasifikimit ATC</h1><p>Shfleto grupet, nën-grupet dhe barnat e regjistrit. Kartat, tabelat, modali dhe auditi përdorin të njëjtin dataset të kontrolluar.</p></header>
+      <header class="atc-header"><p class="atc-kicker">MedIndex · Dr. Diellza Rabushaj</p><h1>Barnat sipas klasifikimit ATC</h1><p>Shfleto grupet dhe nën-grupet ATC. Zgjedhja e një kategorie hap të njëjtën tabelë të plotë të Barnave me filtrin përkatës.</p></header>
       <div class="atc-toolbar" role="search" aria-label="Kërkimi në klasifikimin ATC">
         <button class="atc-back" id="backButton" type="button" hidden>← Kthehu</button>
         <div class="atc-search-wrap"><svg fill="none" viewBox="0 0 24 24" aria-hidden="true"><circle cx="10.5" cy="10.5" r="6.5" stroke="currentColor" stroke-width="2"/><path d="m15.5 15.5 5 5" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg><input class="atc-search" id="atcSearch" type="search" placeholder="Kërko barin, substancën, klasën ose kodin ATC..." autocomplete="off" enterkeyhint="search" aria-label="Kërko në klasifikimin ATC"></div>
@@ -44,7 +45,7 @@
         <div id="atcWorkspace" hidden>
           <div class="atc-section-head"><div><div class="atc-breadcrumb" id="breadcrumb"></div><h2 id="sectionTitle">Grupet kryesore ATC</h2><p id="sectionSubtitle"></p></div></div>
           <div class="atc-grid" id="cardGrid"></div>
-          <section class="atc-results" id="drugResults" hidden><div class="atc-table-wrap" tabindex="0" aria-label="Barnat e grupit ATC"><table class="atc-table"><thead><tr><th>Emri tregtar</th><th>Substanca aktive</th><th>ATC</th><th>Klasa / Çka është</th><th>Fortësia</th><th>Forma</th></tr></thead><tbody id="drugTableBody"></tbody></table></div></section>
+          <section class="atc-results" id="drugResults" hidden aria-hidden="true"><div class="atc-table-wrap" tabindex="-1" aria-label="Tabela e vjetër e klasifikimit është çaktivizuar"><table class="atc-table"><thead><tr><th>Emri tregtar</th><th>Substanca aktive</th><th>ATC</th><th>Klasa / Çka është</th><th>Fortësia</th><th>Forma</th></tr></thead><tbody id="drugTableBody"></tbody></table></div></section>
           <div class="atc-source-note" id="sourceNote"></div>
         </div>
       </section>
@@ -56,9 +57,9 @@
   <script src="classification-data.js?v=20260722-1" defer></script>
   <script src="atc-shared.js?v=atc-shared-v1" defer></script>
   <script src="classification-registry-bridge.js?v=20260727-1" defer></script>
-  <script src="classification-v3.js?v=20260723-1" defer></script>
+  <script src="classification-v3.js?v=atc-main-registry-v2" defer></script>
   <script src="classification-audit-view.js?v=20260723-2" defer></script>
-  <script src="classification-info-v3.js?v=20260723-1" defer></script>
+  <script src="classification-info-v3.js?v=atc-info-actions-v1" defer></script>
   <script src="classification-icons.js?v=20260723-2" defer></script>
   <script src="auth-client.js?v=production-audit-v2" defer></script>
   <script src="app-stability.js?v=20260724-2" defer></script>
