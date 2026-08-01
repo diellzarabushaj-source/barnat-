@@ -1,7 +1,7 @@
 (() => {
   'use strict';
 
-  const VERSION = 'registry-clinical-view-20260801-3';
+  const VERSION = 'registry-clinical-view-20260801-4';
   const STYLE_ID = 'registryClinicalViewStyles';
   const STYLE_HREF = '/registry-clinical-view.css?v=20260801-2';
   const STORAGE_KEY = 'medindex.registry.view.v1';
@@ -16,6 +16,8 @@
     'dosage-pediatric': 278,
   });
 
+  let active = false;
+  let activationScheduled = false;
   let resizeObserver = null;
   let scheduled = false;
   let lastWidthSignature = '';
@@ -57,6 +59,7 @@
 
   function setView(view, { persist = true } = {}) {
     const next = VALID_VIEWS.has(view) ? view : 'clinical';
+    if (!active) activate();
     document.documentElement.dataset.registryUxView = next;
     if (persist) persistView(next);
     updateToolbarState();
@@ -99,9 +102,9 @@
   function updateToolbarState() {
     const view = currentView();
     document.querySelectorAll('#registryViewToolbar button[data-registry-view]').forEach(button => {
-      const active = button.dataset.registryView === view;
-      button.setAttribute('aria-pressed', String(active));
-      button.classList.toggle('is-active', active);
+      const selected = button.dataset.registryView === view;
+      button.setAttribute('aria-pressed', String(selected));
+      button.classList.toggle('is-active', selected);
     });
     const description = document.querySelector('[data-registry-view-description]');
     if (description) {
@@ -155,18 +158,16 @@
   }
 
   function refresh() {
+    if (!active) return;
     ensureStyles();
     createToolbar();
-    if (!VALID_VIEWS.has(document.documentElement.dataset.registryUxView)) {
-      document.documentElement.dataset.registryUxView = storedView();
-    }
     updateToolbarState();
     applyCompactWidths();
     document.documentElement.dataset.registryClinicalView = VERSION;
   }
 
   function scheduleRefresh() {
-    if (scheduled) return;
+    if (!active || scheduled) return;
     scheduled = true;
     requestAnimationFrame(() => {
       scheduled = false;
@@ -188,19 +189,50 @@
     resizeObserver.observe(wrapper);
   }
 
-  function boot() {
+  function activate() {
+    if (active) return;
+    active = true;
+    activationScheduled = false;
     ensureStyles();
-    if (!VALID_VIEWS.has(document.documentElement.dataset.registryUxView)) {
-      document.documentElement.dataset.registryUxView = storedView();
-    }
+    document.documentElement.dataset.registryUxView = storedView();
+    createToolbar();
     observeWidth();
     refresh();
   }
 
-  ['medindex:registry-ready', 'medindex:registry-data-ready', 'medindex:tailadmin-ready', 'medindex:registry-table-stable']
-    .forEach(eventName => window.addEventListener(eventName, scheduleRefresh));
+  function scheduleActivation() {
+    if (active || activationScheduled) return;
+    activationScheduled = true;
+    const run = () => activate();
+    if ('requestIdleCallback' in window) {
+      window.requestIdleCallback(run, { timeout: 500 });
+    } else {
+      window.setTimeout(run, 0);
+    }
+  }
+
+  function dataIsReady() {
+    return Array.isArray(window.MEDINDEX_REGISTRY_ROWS)
+      && window.MEDINDEX_REGISTRY_ROWS.length > 0;
+  }
+
+  function boot() {
+    ensureStyles();
+    if (dataIsReady()) scheduleActivation();
+  }
+
+  window.addEventListener('medindex:registry-data-ready', scheduleActivation, { once: true });
+  window.addEventListener('medindex:registry-ready', () => {
+    if (dataIsReady()) scheduleActivation();
+  });
+  window.addEventListener('medindex:registry-table-stable', scheduleRefresh);
+  window.addEventListener('medindex:tailadmin-ready', () => {
+    if (dataIsReady()) scheduleActivation();
+  });
   window.addEventListener('resize', scheduleRefresh, { passive: true });
-  window.addEventListener('pageshow', scheduleRefresh, { passive: true });
+  window.addEventListener('pageshow', () => {
+    if (dataIsReady()) scheduleActivation();
+  }, { passive: true });
 
   if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', boot, { once: true });
   else boot();
@@ -208,6 +240,7 @@
   window.MedIndexRegistryClinicalView = {
     version: VERSION,
     refresh: scheduleRefresh,
+    activate: scheduleActivation,
     setView,
     getView: currentView,
   };
