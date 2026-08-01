@@ -1,18 +1,26 @@
 const crypto = require('node:crypto');
 const NeonClinical = require('../lib/neon-clinical-reader.js');
+const FullIcd = require('../lib/icd-full-hierarchy.js');
 
 const SPREADSHEET_ID = '19ncbnrTJ_w-WQ0msWO9_dUoxjmicSUAz6Nt4sh20gFw';
 const SHEETS = { all:1504864603, urgent:285385409, critical:255407421 };
+const FULL_SPREADSHEET_ID = '1O2S9xNIzvNmiG8ny-VLAp9NeyiUsrY8pxRpyJgTF_O0';
+const FULL_SHEET_GID = 329283560;
+const FULL_VIEWS = new Set(['table', 'nav', 'children', 'resolve', 'suggest', 'meta']);
 const CACHE_TTL_MS = 15 * 60 * 1000;
-const FETCH_TIMEOUT_MS = 12000;
+const FULL_CACHE_TTL_MS = 6 * 60 * 60 * 1000;
+const FETCH_TIMEOUT_MS = 20000;
 const MAX_CSV_BYTES = 6 * 1024 * 1024;
 const memoryCaches = new Map();
 const pendingLoads = new Map();
+let fullHierarchyCache = null;
+let fullHierarchyPending = null;
 
 const clean = value => String(value ?? '').trim();
 const normalized = value => clean(value).normalize('NFD').replace(/[\u0300-\u036f]/g, '').toLowerCase().replace(/[^a-z0-9]+/g, ' ').trim();
 const httpsUrl = value => /^https:\/\/[^\s]+$/i.test(clean(value)) ? clean(value) : '';
 const csvUrl = gid => `https://docs.google.com/spreadsheets/d/${SPREADSHEET_ID}/gviz/tq?tqx=out:csv&gid=${gid}`;
+const fullCsvUrl = () => `https://docs.google.com/spreadsheets/d/${FULL_SPREADSHEET_ID}/gviz/tq?tqx=out:csv&gid=${FULL_SHEET_GID}`;
 
 function parseCsv(value) {
   const rows = [];
@@ -67,6 +75,24 @@ async function fetchCsv(gid) {
     const text = await response.text();
     if (Buffer.byteLength(text, 'utf8') > MAX_CSV_BYTES) throw new Error('Google Sheet ICD-10 tejkalon kufirin e madhësisë.');
     if (!text.trim()) throw new Error('Google Sheet ICD-10 ishte bosh.');
+    return text;
+  } finally { clearTimeout(timeout); }
+}
+
+async function fetchFullCsv() {
+  const controller = new AbortController();
+  const timeout = setTimeout(() => controller.abort(), FETCH_TIMEOUT_MS);
+  try {
+    const response = await fetch(fullCsvUrl(), {
+      headers:{ Accept:'text/csv,*/*;q=0.8', 'User-Agent':'MedIndex/2.0' },
+      signal:controller.signal,
+    });
+    if (!response.ok) throw new Error(`Google Sheet i plotë ICD-10 ktheu ${response.status}.`);
+    const declared = Number(response.headers.get('content-length') || 0);
+    if (declared > MAX_CSV_BYTES) throw new Error('Google Sheet i plotë ICD-10 tejkalon kufirin e madhësisë.');
+    const text = await response.text();
+    if (Buffer.byteLength(text, 'utf8') > MAX_CSV_BYTES) throw new Error('Google Sheet i plotë ICD-10 tejkalon kufirin e madhësisë.');
+    if (!text.trim()) throw new Error('Google Sheet i plotë ICD-10 ishte bosh.');
     return text;
   } finally { clearTimeout(timeout); }
 }
@@ -175,6 +201,115 @@ async function loadDataset(scope) {
   return pendingLoads.get(key);
 }
 
+async function loadFullHierarchy() {
+  const cached = fullHierarchyCache;
+  if (cached && Date.now() - cached.loadedAt < FULL_CACHE_TTL_MS) return cached;
+  if (!fullHierarchyPending) {
+    fullHierarchyPending = (async () => {
+      const startedAt = Date.now();
+      const csv = await fetchFullCsv();
+      const data = FullIcd.buildDataset(csv, { strictCounts:true });
+      const result = { loadedAt:Date.now(), buildMs:Date.now() - startedAt, data, stale:false };
+      fullHierarchyCache = result;
+      return result;
+    })().catch(error => {
+      if (cached) return { ...cached, stale:true, staleReason:String(error?.message || error).slice(0, 500) };
+      throw error;
+    }).finally(() => { fullHierarchyPending = null; });
+  }
+  return fullHierarchyPending;
+}
+
+function compactNode(node, childCount = 0) {
+  if (!node) return null;
+  return {
+    code:node.code,
+    level:node.level,
+    chapter:node.chapter,
+    block:node.block,
+    parentCode:node.parentCode,
+    englishTitle:node.englishTitle,
+    albanianDraft:node.albanianDraft,
+    displayTitle:node.displayTitle,
+    translationStatus:node.translationStatus,
+    sourceUrl:node.sourceUrl,
+    childCount,
+  };
+}
+
+function childCounts(dataset) {
+  const counts = new Map();
+  for (const node of dataset.nodes) counts.set(node.parentCode, (counts.get(node.parentCode) || 0) + 1);
+  return counts;
+}
+
+function fullViewPayload(dataset, query = {}) {
+  const view = clean(query.view).toLowerCase() || 'table';
+  const counts = childCounts(dataset);
+  const byCode = FullIcd.nodeMap(dataset);
+  const meta = {
+    version:dataset.version,
+    sourceSpreadsheetId:dataset.sourceSpreadsheetId,
+    counts:dataset.counts,
+    quality:dataset.quality,
+  };
+
+  if (view === 'meta') return { meta };
+
+  if (view === 'nav') {
+    const chapters = dataset.nodes.filter(node => node.level === 'chapter').map(node => compactNode(node, counts.get(node.code) || 0));
+    const blocks = dataset.nodes.filter(node => node.level === 'block').map(node => compactNode(node, counts.get(node.code) || 0));
+    return { meta, chapters, blocks };
+  }
+
+  if (view === 'children') {
+    const parent = clean(query.parent);
+    const parentNode = byCode.get(parent) || null;
+    const rows = FullIcd.childrenOf(dataset, parent).map(node => compactNode(node, counts.get(node.code) || 0));
+    return { meta, parent:compactNode(parentNode, counts.get(parent) || 0), ancestors:FullIcd.ancestorsOf(dataset, parent).map(node => compactNode(node, counts.get(node.code) || 0)), rows, total:rows.length };
+  }
+
+  if (view === 'resolve') {
+    const code = clean(query.code || query.parent);
+    const node = byCode.get(code) || null;
+    return { meta, node:compactNode(node, counts.get(code) || 0), ancestors:node ? FullIcd.ancestorsOf(dataset, code).map(item => compactNode(item, counts.get(item.code) || 0)) : [] };
+  }
+
+  const isSuggest = view === 'suggest';
+  const result = FullIcd.queryDataset(dataset, {
+    q:query.q,
+    parent:query.parent,
+    chapter:query.chapter,
+    levels:isSuggest ? '' : (query.levels || query.level || 'category,subcategory'),
+    page:isSuggest ? 1 : query.page,
+    pageSize:isSuggest ? 12 : query.pageSize,
+  });
+  const rows = result.rows.map(node => compactNode(node, counts.get(node.code) || 0));
+  const contextCode = clean(query.parent);
+  const context = contextCode ? byCode.get(contextCode) || null : null;
+  return {
+    meta,
+    ...result,
+    rows,
+    context:compactNode(context, counts.get(contextCode) || 0),
+    ancestors:context ? FullIcd.ancestorsOf(dataset, contextCode).map(node => compactNode(node, counts.get(node.code) || 0)) : [],
+  };
+}
+
+function sendJson(req, res, payload, dataSource, startedAt, stale = false) {
+  const body = JSON.stringify({ ok:true, data:payload });
+  const etag = `"${crypto.createHash('sha256').update(body).digest('base64url')}"`;
+  res.setHeader('ETag', etag);
+  res.setHeader('Cache-Control', 'private, max-age=300, stale-while-revalidate=3600');
+  res.setHeader('Content-Type', 'application/json; charset=utf-8');
+  res.setHeader('X-MedIndex-Data-Source', dataSource);
+  res.setHeader('Server-Timing', `icd;dur=${Date.now() - startedAt}`);
+  if (stale) res.setHeader('Warning', '110 - "Response is stale"');
+  if (req.headers['if-none-match'] === etag) return res.status(304).end();
+  if (req.method === 'HEAD') return res.status(200).end();
+  return res.status(200).send(body);
+}
+
 async function authorized(req) {
   const auth = await import('../lib/auth.mjs');
   return auth.verifySessionToken(auth.sessionFromRequest(req));
@@ -194,7 +329,15 @@ module.exports = async function handler(req, res) {
   }
 
   const scope = clean(req.query?.dataset).toLowerCase() === 'labs' ? 'labs' : 'icd';
+  const requestedView = clean(req.query?.view).toLowerCase();
   try {
+    if (scope === 'icd' && FULL_VIEWS.has(requestedView)) {
+      const full = await loadFullHierarchy();
+      const payload = fullViewPayload(full.data, req.query || {});
+      res.setHeader('X-MedIndex-ICD-Nodes', String(full.data.counts.total));
+      return sendJson(req, res, payload, 'full-hierarchy-sheet', startedAt, full.stale);
+    }
+
     const dataset = await loadDataset(scope);
     res.setHeader('ETag', dataset.etag);
     res.setHeader('Cache-Control', 'private, max-age=300, stale-while-revalidate=3600');

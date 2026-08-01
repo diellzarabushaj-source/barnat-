@@ -101,7 +101,7 @@ test('mjeku gjen shërbimin, krijon recetë dhe vazhdon offline', async ({ page,
   await useDiagnosis.click();
   await restoredPage.waitForURL(/recetat\.html/);
   await restoredPage.waitForFunction(() => document.documentElement.classList.contains('auth-ready'));
-  await expect(restoredPage.locator('#rxDiagnosis')).toHaveValue(/J85/i);
+  await expect(restoredPage.locator('#rxDiagnosis')).toHaveValue(/A00/i);
   await expect(restoredPage.locator('#rxComposer')).toHaveValue(/Paracetamol/i);
   await expect(restoredPage.locator('#rxComposer')).toHaveValue(/Amoxicillin/i);
   await expect(restoredPage.locator('#rxComposer')).toHaveValue(/Një kuti = 20 kapsula/i);

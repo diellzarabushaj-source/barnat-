@@ -6,32 +6,68 @@ const root = path.resolve(__dirname, '..');
 const read = file => fs.readFileSync(path.join(root, file), 'utf8');
 
 const html = read('icd.html');
-const css = read('icd-premium-cards.css');
-const js = read('icd-premium-cards.js');
+const tableCss = read('icd-full-table.css');
+const tableJs = read('icd-full-table.js');
+const sidebarCss = read('icd-sidebar.css');
+const sidebarJs = read('icd-sidebar.js');
+const detailCss = read('icd-detail-panel.css');
+const detailJs = read('icd-detail-panel.js');
 
-assert.match(html, /icd-premium-cards\.css\?v=20260725-1/);
-assert.match(html, /icd-premium-cards\.js\?v=20260725-1/);
-assert.ok(html.indexOf('icd.js?v=20260723-4') < html.indexOf('icd-premium-cards.js?v=20260725-1'), 'Premium renderer must load after the ICD data renderer');
+for (const asset of [
+  'icd-full-table.css?v=icd-full-table-v1',
+  'icd-sidebar.css?v=icd-sidebar-v1',
+  'icd-detail-panel.css?v=icd-detail-panel-v1',
+  'icd-full-table.js?v=icd-full-table-v1',
+  'icd-sidebar.js?v=icd-sidebar-v1',
+  'icd-detail-panel.js?v=icd-detail-panel-v1',
+]) assert.ok(html.includes(asset), `ICD table page missing ${asset}`);
 
-new Function(js);
-assert.match(js, /const THEMES = \[/);
-assert.match(js, /const ICONS = \[/);
-assert.match(js, /romanToNumber/);
-assert.match(js, /ICONS\[chapterIndex % ICONS\.length\]/);
-assert.match(js, /themeStyle\(chapterIndex\)/);
-assert.match(js, /MutationObserver/);
-assert.match(js, /Hap kapitullin/);
-assert.match(js, /dataset\[DECORATED\]/);
-assert.equal((js.match(/\['#[0-9a-f]{6}','#[0-9a-f]{6}','#[0-9a-f]{6}'\]/gi) || []).length, 22, 'Every ICD chapter must have a distinct gradient theme');
+for (const legacy of [
+  'icd-premium-cards.css', 'icd-premium-cards.js', 'icd-clinical-workspace.js',
+  'icd-clinical-style-loader.js', 'icd.js?v=', 'icd-hero-stats', 'icd-chapter-grid', 'icd-code-grid',
+]) assert.ok(!html.includes(legacy), `Legacy ICD card workspace must not load: ${legacy}`);
 
 for (const marker of [
-  '.icd-aura-card', '.icd-aura-icon', '.icd-aura-roman', '.icd-aura-title',
-  '.icd-aura-range', '.icd-aura-count', '.icd-aura-action', '.icd-aura-arrow',
-  '@media(max-width:1180px)', '@media(max-width:720px)',
-  '@media(prefers-reduced-motion:reduce)', '@media(forced-colors:active)'
-]) assert.ok(css.includes(marker), `Premium ICD CSS missing ${marker}`);
+  'id="icdTable"', 'id="icdTableBody"', 'id="icdSearch"', 'id="icdSuggestions"',
+  'id="icdContext"', 'id="icdPagination"', 'Kategori dhe nënkategori',
+]) assert.ok(html.includes(marker), `Unified ICD table HTML missing ${marker}`);
 
-assert.doesNotMatch(js, /fetch\(|\/api\//, 'Premium visual renderer must not touch backend APIs');
-assert.doesNotMatch(css, /https?:\/\//, 'Premium cards must not load external visual assets');
+for (const marker of [
+  '.icd-registry-panel', '.icd-table', '.icd-suggestions', '.icd-context',
+  '@media(max-width:1023px)', '@media(max-width:620px)', 'html[data-theme="dark"]',
+  '@media(prefers-reduced-motion:reduce)', '@media(forced-colors:active)',
+]) assert.ok(tableCss.includes(marker), `Unified ICD table CSS missing ${marker}`);
 
-console.log('Premium ICD aura cards audit passed.');
+for (const marker of [
+  '.mi-icd-menu', '.mi-icd-chapter-trigger', '.mi-icd-block-trigger', '.mi-icd-category-link',
+  'Kthehu te kapitujt', ':has(.mi-icd-chapter.is-open)', '@media(max-width:1023px)',
+]) assert.ok(sidebarCss.includes(marker), `Nested ICD sidebar CSS missing ${marker}`);
+
+for (const marker of [
+  '.icd-detail-panel', '.icd-use-diagnosis', '.icd-detail-summary',
+  '@media(max-width:620px)', 'html[data-theme="dark"]',
+]) assert.ok(detailCss.includes(marker), `ICD detail panel CSS missing ${marker}`);
+
+for (const marker of [
+  "const API = '/api/icd'", 'view=suggest', 'MedIndexIcdTable', 'medindex:icd-state',
+  'data-icd-open-branch', 'translationStatus', 'popstate',
+]) assert.ok(tableJs.includes(marker), `Unified ICD table runtime missing ${marker}`);
+
+for (const marker of [
+  'view=nav', 'view=children', 'view=resolve', 'data-mi-icd-chapter-trigger',
+  'data-mi-icd-block-trigger', 'data-mi-icd-filter-parent', 'medindex:open-icd-sidebar',
+]) assert.ok(sidebarJs.includes(marker), `Nested ICD sidebar runtime missing ${marker}`);
+
+for (const marker of [
+  "DIAGNOSIS_KEY = 'medindex_rx_diagnosis_v1'", 'data-open-code', 'detailOverlay',
+  'Përdore në recetë', 'view=resolve', 'sessionStorage.setItem', 'focusables',
+]) assert.ok(detailJs.includes(marker), `ICD detail and prescription transfer missing ${marker}`);
+
+new Function(tableJs);
+new Function(sidebarJs);
+new Function(detailJs);
+assert.doesNotMatch(tableCss, /https?:\/\//, 'ICD table CSS must not load external assets');
+assert.doesNotMatch(sidebarCss, /https?:\/\//, 'ICD sidebar CSS must not load external assets');
+assert.doesNotMatch(detailCss, /https?:\/\//, 'ICD detail CSS must not load external assets');
+
+console.log('ICD legacy cards removed; unified table, nested sidebar and prescription transfer contract passed.');

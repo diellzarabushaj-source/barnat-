@@ -216,7 +216,7 @@ test.describe('mobile physician experience', () => {
     await expectTouchTarget(useDiagnosis);
     await useDiagnosis.click();
     await page.waitForURL(/recetat\.html/);
-    await expect(page.locator('#rxDiagnosis')).toHaveValue(/J85/i);
+    await expect(page.locator('#rxDiagnosis')).toHaveValue(/A00/i);
     await expect(page.locator('#rxComposer')).toHaveValue(/Paracetamol/i);
 
     page.once('dialog', dialog => dialog.accept());
