@@ -26,15 +26,16 @@ const dosage = read('registry-dosage-columns-v2.js');
 const builder = read('scripts/build-static-runtime.js');
 const middleware = read('middleware.ts');
 
-assert.match(index, /registry-runtime-loader\.js\?v=20260801-4/);
+assert.match(index, /registry-runtime-loader\.js\?v=20260801-5/);
 assert.doesNotMatch(index, /<script src="app-performance\.js"/);
 assert.match(index, /app-runtime-performance\.js/);
 assert.match(index, /registry-dosage-loader\.js/);
 assert.doesNotMatch(index, /src="app\.js|src="registry-dosage-columns(?:-v2)?\.js/);
-assert.match(runtimeLoader, /registry-runtime-loader-v4/);
+assert.match(runtimeLoader, /registry-runtime-loader-v5/);
 assert.match(runtimeLoader, /app-performance\.js\?v=20260801-1/);
-assert.match(runtimeLoader, /FIRST_INTERACTION_FALLBACK_MS = 15000/);
-assert.match(runtimeLoader, /POST_INTERACTION_GRACE_MS = 1500/);
+assert.match(runtimeLoader, /FIRST_INTERACTION_FALLBACK_MS = 5000/);
+assert.match(runtimeLoader, /POST_INTERACTION_GRACE_MS = 800/);
+assert.match(runtimeLoader, /window\.MEDINDEX_REGISTRY_UI_READY = new Promise/);
 assert.match(runtimeLoader, /handleCompletedInteraction[\s\S]*scheduleRuntime\(POST_INTERACTION_GRACE_MS\)/);
 assert.match(runtimeLoader, /classList\.contains\('auth-ready'\)/);
 assert.match(runtimeLoader, /requestAnimationFrame\(\(\) => requestAnimationFrame\(loadRuntime\)\)/);
@@ -79,4 +80,4 @@ assert.match(builder, /runtimeOutputs/);
 assert.match(builder, /app-runtime-performance\.js/);
 assert.match(middleware, /registry-parser-worker-v2\.js/);
 
-console.log('Registry completed first-interaction gate v4 and main-thread deep audit passed.');
+console.log('Registry non-blocking loader v5 and main-thread deep audit passed.');
