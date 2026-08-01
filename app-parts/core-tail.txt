@@ -5,6 +5,165 @@
   }
 }
 
+const REGISTRY_DEFAULT_PAGE_SIZE = 50;
+const REGISTRY_ALLOWED_PAGE_SIZES = new Set([50, 100, 250, 500, 4006]);
+let registryAtcRowsCacheCode = '';
+let registryAtcRowsCache = RAW;
+
+function sanitizeRegistryPageSize(value){
+  const numeric = Number(value);
+  return REGISTRY_ALLOWED_PAGE_SIZES.has(numeric) ? numeric : REGISTRY_DEFAULT_PAGE_SIZE;
+}
+
+function readRegistryUrlState(){
+  const reader = window.MedIndexATC?.readRegistryUrlState;
+  if(typeof reader !== 'function'){
+    return { atc:'', query:'', page:1, pageSize:REGISTRY_DEFAULT_PAGE_SIZE };
+  }
+  const value = reader(window.location.href);
+  return {
+    atc:String(value.atc || ''),
+    query:String(value.query || ''),
+    page:Number.isInteger(Number(value.page)) && Number(value.page) > 0 ? Number(value.page) : 1,
+    pageSize:sanitizeRegistryPageSize(value.pageSize),
+  };
+}
+
+function resetRegistryFilterCaches(){
+  filteredCacheKey = '';
+  filteredCacheRows = RAW;
+  sortedCacheKey = '';
+  sortedCacheInput = null;
+  sortedCacheRows = RAW;
+  registryAtcRowsCacheCode = '';
+  registryAtcRowsCache = RAW;
+}
+
+function applyRegistryUrlStateFromLocation(){
+  const next = readRegistryUrlState();
+  state.activeAtc = next.atc;
+  state.search = next.query;
+  state.page = next.page;
+  state.pageSize = next.pageSize;
+  resetRegistryFilterCaches();
+
+  const searchInput = document.getElementById('search');
+  if(searchInput && searchInput.value !== state.search) searchInput.value = state.search;
+
+  const pageSizeSelect = document.getElementById('pageSize');
+  if(pageSizeSelect){
+    const available = [...pageSizeSelect.options].some(option => Number(option.value) === state.pageSize);
+    if(available) pageSizeSelect.value = String(state.pageSize);
+    else {
+      state.pageSize = REGISTRY_DEFAULT_PAGE_SIZE;
+      pageSizeSelect.value = String(REGISTRY_DEFAULT_PAGE_SIZE);
+    }
+  }
+}
+
+function syncRegistryUrlState(options = {}){
+  const builder = window.MedIndexATC?.registryUrlFromState;
+  if(typeof builder !== 'function' || !window.history) return;
+  const next = builder(window.location.href, {
+    atc:state.activeAtc,
+    query:state.search,
+    page:state.page,
+    pageSize:state.pageSize,
+  });
+  const current = `${window.location.pathname}${window.location.search}${window.location.hash}`;
+  if(next === current) return;
+  const method = options.push === true ? 'pushState' : 'replaceState';
+  window.history[method]({ medindexRegistry:true }, '', next);
+}
+
+function getRegistryAtcRows(){
+  const activeAtc = String(state.activeAtc || '');
+  if(!activeAtc) return RAW;
+  if(activeAtc === registryAtcRowsCacheCode) return registryAtcRowsCache;
+  const matches = window.MedIndexATC?.matchesCategory;
+  registryAtcRowsCacheCode = activeAtc;
+  registryAtcRowsCache = typeof matches === 'function'
+    ? RAW.filter(row => matches(row['ATC Code'], activeAtc))
+    : RAW;
+  return registryAtcRowsCache;
+}
+
+currentFilterKey = function currentFilterKeyWithAtc(){
+  return [
+    String(state.activeAtc || ''),
+    normalizeSearchText(state.search),
+    state.status,
+    state.formType || '',
+    state.formValue || '',
+  ].join('|');
+};
+
+getFiltered = function getFilteredWithAtc(){
+  const key = currentFilterKey();
+  if(key === filteredCacheKey) return filteredCacheRows;
+
+  let rows = getRegistryAtcRows();
+  const q = normalizeSearchText(state.search);
+  if(q){
+    const terms = q.split(/\s+/).filter(Boolean);
+    rows = rows.filter(row => rowMatchesSearch(row, terms));
+  }
+  if(state.status){
+    rows = rows.filter(row => String(row['Statusi'] ?? '').trim() === state.status);
+  }
+  if(state.formType === 'form'){
+    rows = rows.filter(row => String(row['Forma farmaceutike'] ?? '').trim() === state.formValue);
+  } else if(state.formType === 'category'){
+    rows = rows.filter(row => categoryOf(row['Forma farmaceutike']) === state.formValue);
+  }
+
+  filteredCacheKey = key;
+  filteredCacheRows = rows;
+  return rows;
+};
+
+const renderRegistryBase = render;
+render = function renderRegistryWithAtcState(){
+  renderRegistryBase();
+
+  const categoryRows = getRegistryAtcRows();
+  const filteredRows = getFiltered();
+  const activeAtc = String(state.activeAtc || '');
+  const label = activeAtc
+    ? (window.MedIndexATC?.getCategoryLabel?.(activeAtc) || `Kategoria ATC ${activeAtc}`)
+    : '';
+  const detail = {
+    activeAtc,
+    label,
+    categoryTotal:categoryRows.length,
+    filteredTotal:filteredRows.length,
+    query:String(state.search || ''),
+    page:state.page,
+    pageSize:state.pageSize,
+  };
+
+  window.MEDINDEX_REGISTRY_ACTIVE_ATC = activeAtc;
+  window.MEDINDEX_REGISTRY_ATC_STATE = detail;
+
+  if(activeAtc){
+    const quality = window.MEDINDEX_REGISTRY_QUALITY?.summary || {};
+    const qualityNote = quality.blocked ? ` · ${quality.blocked} të bllokuara për verifikim` : '';
+    const badge = document.getElementById('countBadge');
+    if(badge) badge.textContent = `${filteredRows.length} / ${categoryRows.length} barna · ${activeAtc}${qualityNote}`;
+
+    if(filteredRows.length === 0){
+      const empty = document.querySelector('#tbody .empty-state');
+      if(empty){
+        empty.textContent = state.search
+          ? `Nuk u gjet “${state.search}” brenda ${label}.`
+          : `Nuk u gjet asnjë bar në ${label}.`;
+      }
+    }
+  }
+
+  window.dispatchEvent(new CustomEvent('medindex:registry-atc-state', { detail }));
+};
+
 function selectForm(type, value){
   state.formType = type;
   state.formValue = value;
@@ -18,6 +177,7 @@ function selectForm(type, value){
     btn.innerHTML = '<span class="cat-dot" style="background:' + CATEGORY_COLORS[categoryOf(value)] + '"></span>' + escapeHtml(value) + ' ▾';
   }
   document.getElementById('formPanel').classList.remove('open');
+  syncRegistryUrlState();
   render();
 }
 
@@ -107,7 +267,11 @@ function initPrescriptionBridge(){
   updateProtocolCounters();
 }
 
+applyRegistryUrlStateFromLocation();
+syncRegistryUrlState();
+
 const registrySearchInput = document.getElementById('search');
+registrySearchInput.value = state.search;
 let registrySearchTimer = 0;
 let registrySearchFrame = 0;
 let registrySearchComposing = false;
@@ -117,6 +281,7 @@ function applyRegistrySearch(){
   registrySearchFrame = requestAnimationFrame(() => {
     state.search = registrySearchInput.value;
     state.page = 1;
+    syncRegistryUrlState();
     render();
   });
 }
@@ -130,13 +295,34 @@ registrySearchInput.addEventListener('input', () => {
 registrySearchInput.addEventListener('search', applyRegistrySearch);
 
 document.getElementById('statusFilter').addEventListener('change', e => {
-  state.status = e.target.value; state.page = 1; render();
+  state.status = e.target.value;
+  state.page = 1;
+  syncRegistryUrlState();
+  render();
 });
 document.getElementById('pageSize').addEventListener('change', e => {
   const requested = Number(e.target.value) || 50;
   state.pageSize = Math.min(requested, Math.max(50, RAW.length));
   state.page = 1;
+  syncRegistryUrlState();
   render();
+});
+
+document.getElementById('pagination')?.addEventListener('click', event => {
+  const button = event.target.closest?.('button');
+  if(!button || button.disabled) return;
+  queueMicrotask(() => syncRegistryUrlState({ push:true }));
+});
+
+document.getElementById('headerRow')?.addEventListener('click', event => {
+  if(!event.target.closest?.('th')) return;
+  queueMicrotask(() => syncRegistryUrlState());
+});
+
+window.addEventListener('popstate', () => {
+  applyRegistryUrlStateFromLocation();
+  render();
+  queueMicrotask(() => syncRegistryUrlState());
 });
 
 initFormPicker();
