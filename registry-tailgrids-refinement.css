@@ -1,0 +1,405 @@
+/* Final TailGrids-inspired refinement: light table header, sheet editor and pagination. */
+
+html.medindex-tailadmin[data-mi-page="barnat"] {
+  --tg-blue-50:#eff6ff;
+  --tg-blue-100:#dbeafe;
+  --tg-blue-200:#bfdbfe;
+  --tg-blue-500:#3b82f6;
+  --tg-blue-600:#2563eb;
+  --tg-blue-700:#1d4ed8;
+  --tg-slate-50:#f8fafc;
+  --tg-slate-100:#f1f5f9;
+  --tg-slate-200:#e2e8f0;
+  --tg-slate-300:#cbd5e1;
+  --tg-slate-500:#64748b;
+  --tg-slate-700:#334155;
+  --tg-slate-900:#0f172a;
+}
+
+/* The table header is intentionally light, quiet and easy to scan. */
+@media (min-width:761px) {
+  html.medindex-tailadmin.mi-first-page-audited[data-mi-page="barnat"][data-registry-ux-view]
+  #dataTable thead th {
+    min-height:58px!important;
+    padding:13px 14px!important;
+    border-right:1px solid var(--tg-slate-200)!important;
+    border-bottom:1px solid var(--tg-slate-200)!important;
+    background:#fff!important;
+    color:var(--tg-blue-600)!important;
+    font-size:.68rem!important;
+    font-weight:760!important;
+    letter-spacing:.025em!important;
+    line-height:1.25!important;
+    text-transform:uppercase!important;
+    box-shadow:none!important;
+  }
+  html.medindex-tailadmin.mi-first-page-audited[data-mi-page="barnat"][data-registry-ux-view]
+  #dataTable thead th:first-child {
+    border-top-left-radius:14px!important;
+  }
+  html.medindex-tailadmin.mi-first-page-audited[data-mi-page="barnat"][data-registry-ux-view]
+  #dataTable thead th:last-child {
+    border-top-right-radius:14px!important;
+  }
+  html.medindex-tailadmin.mi-first-page-audited[data-mi-page="barnat"][data-registry-ux-view]
+  #headerRow .registry-dosage-subhead {
+    margin-top:5px!important;
+    color:#94a3b8!important;
+    font-size:.56rem!important;
+    font-weight:560!important;
+    letter-spacing:0!important;
+    text-transform:none!important;
+  }
+
+  /* Keep the first and last columns useful without making them visually heavy. */
+  html.medindex-tailadmin.mi-first-page-audited[data-mi-page="barnat"][data-registry-ux-view]
+  #dataTable thead th[data-registry-column-key="select"],
+  html.medindex-tailadmin.mi-first-page-audited[data-mi-page="barnat"][data-registry-ux-view]
+  #dataTable thead th[data-registry-column-key="trade-name"],
+  html.medindex-tailadmin.mi-first-page-audited[data-mi-page="barnat"][data-registry-ux-view]
+  #dataTable thead th[data-registry-column-key="clinical-action"] {
+    background:#fff!important;
+  }
+
+  /* Simple TailGrids outline trigger for the sheet editor. */
+  html.medindex-tailadmin.mi-first-page-audited[data-mi-page="barnat"][data-registry-ux-view]
+  #dataTable .clinical-editor-open {
+    display:inline-flex!important;
+    width:auto!important;
+    min-width:92px!important;
+    min-height:36px!important;
+    align-items:center!important;
+    justify-content:center!important;
+    gap:7px!important;
+    padding:0 12px!important;
+    border:1px solid var(--tg-blue-200)!important;
+    border-radius:9px!important;
+    background:#fff!important;
+    color:var(--tg-blue-600)!important;
+    box-shadow:0 1px 2px rgba(15,23,42,.035)!important;
+    font-size:0!important;
+    font-weight:680!important;
+    line-height:1!important;
+    white-space:nowrap!important;
+  }
+  html.medindex-tailadmin.mi-first-page-audited[data-mi-page="barnat"][data-registry-ux-view]
+  #dataTable .clinical-editor-open > * {
+    display:none!important;
+  }
+  html.medindex-tailadmin.mi-first-page-audited[data-mi-page="barnat"][data-registry-ux-view]
+  #dataTable .clinical-editor-open::before {
+    content:""!important;
+    display:block!important;
+    width:15px!important;
+    height:15px!important;
+    background:currentColor!important;
+    mask:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M12 20h9'/%3E%3Cpath d='M16.5 3.5a2.12 2.12 0 0 1 3 3L7 19l-4 1 1-4Z'/%3E%3C/svg%3E") center/contain no-repeat!important;
+  }
+  html.medindex-tailadmin.mi-first-page-audited[data-mi-page="barnat"][data-registry-ux-view]
+  #dataTable .clinical-editor-open::after {
+    content:"Redakto"!important;
+    display:block!important;
+    color:inherit!important;
+    font-size:.7rem!important;
+    font-weight:700!important;
+    line-height:1!important;
+  }
+  html.medindex-tailadmin.mi-first-page-audited[data-mi-page="barnat"][data-registry-ux-view]
+  #dataTable .clinical-editor-open:hover {
+    border-color:var(--tg-blue-600)!important;
+    background:var(--tg-blue-50)!important;
+    color:var(--tg-blue-700)!important;
+    box-shadow:0 1px 2px rgba(15,23,42,.04)!important;
+  }
+  html.medindex-tailadmin.mi-first-page-audited[data-mi-page="barnat"][data-registry-ux-view]
+  #dataTable .clinical-editor-open:focus-visible {
+    outline:3px solid rgba(37,99,235,.18)!important;
+    outline-offset:2px!important;
+  }
+}
+
+/* TailGrids Sheet: the existing clinical editor now opens as a right-side drawer. */
+.clinical-editor-dialog {
+  position:fixed!important;
+  inset:0 0 0 auto!important;
+  width:min(680px,calc(100vw - 20px))!important;
+  height:100dvh!important;
+  max-width:680px!important;
+  max-height:100dvh!important;
+  margin:0!important;
+  padding:0!important;
+  border:0!important;
+  border-left:1px solid var(--tg-slate-200)!important;
+  border-radius:18px 0 0 18px!important;
+  background:#fff!important;
+  color:var(--tg-slate-900)!important;
+  box-shadow:-24px 0 70px rgba(15,23,42,.2)!important;
+}
+.clinical-editor-dialog[open] {
+  animation:medindex-sheet-in .2s cubic-bezier(.22,1,.36,1) both;
+}
+.clinical-editor-dialog::backdrop {
+  background:rgba(15,23,42,.42)!important;
+  backdrop-filter:blur(2px)!important;
+}
+.clinical-editor-shell {
+  height:100dvh!important;
+  grid-template-rows:auto minmax(0,1fr) auto!important;
+}
+.clinical-editor-header {
+  position:sticky!important;
+  top:0!important;
+  z-index:3!important;
+  align-items:flex-start!important;
+  padding:20px 22px!important;
+  border-bottom:1px solid var(--tg-slate-200)!important;
+  background:#fff!important;
+}
+.clinical-editor-header h2 {
+  margin:5px 0 3px!important;
+  color:var(--tg-slate-900)!important;
+  font-size:1.18rem!important;
+  font-weight:760!important;
+  letter-spacing:-.02em!important;
+}
+.clinical-editor-header p {
+  color:var(--tg-slate-500)!important;
+  font-size:.78rem!important;
+}
+.clinical-editor-kicker {
+  color:var(--tg-blue-600)!important;
+  font-size:.67rem!important;
+  font-weight:760!important;
+}
+.clinical-editor-close {
+  display:grid!important;
+  width:36px!important;
+  height:36px!important;
+  place-items:center!important;
+  border:1px solid var(--tg-slate-200)!important;
+  border-radius:9px!important;
+  background:#fff!important;
+  color:var(--tg-slate-700)!important;
+  font-size:1.35rem!important;
+}
+.clinical-editor-close:hover {
+  background:var(--tg-slate-50)!important;
+  color:var(--tg-slate-900)!important;
+}
+.clinical-editor-body {
+  min-height:0!important;
+  overflow-y:auto!important;
+  padding:18px 22px 28px!important;
+  background:var(--tg-slate-50)!important;
+}
+.clinical-editor-section {
+  margin-bottom:14px!important;
+  padding:16px!important;
+  border:1px solid var(--tg-slate-200)!important;
+  border-radius:12px!important;
+  background:#fff!important;
+  box-shadow:0 1px 2px rgba(15,23,42,.025)!important;
+}
+.clinical-editor-section-title h3 {
+  color:var(--tg-slate-900)!important;
+  font-size:.92rem!important;
+  font-weight:730!important;
+}
+.clinical-editor-section-title p {
+  color:var(--tg-slate-500)!important;
+  font-size:.76rem!important;
+}
+.clinical-editor-field > span {
+  color:var(--tg-slate-700)!important;
+  font-size:.72rem!important;
+  font-weight:680!important;
+}
+.clinical-editor-field input,
+.clinical-editor-field textarea,
+.clinical-editor-field select {
+  min-height:40px!important;
+  border:1px solid var(--tg-slate-300)!important;
+  border-radius:8px!important;
+  background:#fff!important;
+  color:var(--tg-slate-900)!important;
+  font-size:.78rem!important;
+}
+.clinical-editor-field input:focus,
+.clinical-editor-field textarea:focus,
+.clinical-editor-field select:focus {
+  border-color:var(--tg-blue-500)!important;
+  outline:3px solid rgba(37,99,235,.14)!important;
+}
+.clinical-editor-footer {
+  position:sticky!important;
+  bottom:0!important;
+  z-index:3!important;
+  padding:13px 18px!important;
+  border-top:1px solid var(--tg-slate-200)!important;
+  background:rgba(255,255,255,.97)!important;
+  box-shadow:0 -8px 24px rgba(15,23,42,.045)!important;
+}
+.clinical-editor-primary,
+.clinical-editor-secondary {
+  min-height:38px!important;
+  padding:0 14px!important;
+  border-radius:8px!important;
+  font-size:.75rem!important;
+  font-weight:700!important;
+}
+.clinical-editor-primary {
+  border-color:var(--tg-blue-600)!important;
+  background:var(--tg-blue-600)!important;
+}
+.clinical-editor-primary:hover {
+  background:var(--tg-blue-700)!important;
+}
+.clinical-editor-secondary {
+  border-color:var(--tg-slate-300)!important;
+  background:#fff!important;
+  color:var(--tg-slate-700)!important;
+}
+
+/* TailGrids Pagination component adapted to the registry's existing state. */
+#pagination.tg-pagination {
+  display:flex!important;
+  width:100%!important;
+  align-items:center!important;
+  justify-content:space-between!important;
+  gap:14px!important;
+  padding:18px 4px 8px!important;
+  color:var(--tg-slate-500)!important;
+  font-family:var(--mi-font,Inter,"Segoe UI",sans-serif)!important;
+}
+#pagination .tg-pagination-summary {
+  flex:0 0 auto;
+  font-size:.72rem;
+  font-weight:600;
+  white-space:nowrap;
+}
+#pagination .tg-pagination-controls {
+  display:flex;
+  min-width:0;
+  align-items:center;
+  justify-content:flex-end;
+  gap:5px;
+}
+#pagination .tg-pagination-controls > button {
+  display:inline-flex!important;
+  min-width:36px!important;
+  height:36px!important;
+  align-items:center!important;
+  justify-content:center!important;
+  gap:6px!important;
+  padding:0 10px!important;
+  border:1px solid var(--tg-slate-200)!important;
+  border-radius:8px!important;
+  background:#fff!important;
+  color:var(--tg-slate-700)!important;
+  box-shadow:0 1px 2px rgba(15,23,42,.025)!important;
+  font:inherit!important;
+  font-size:.72rem!important;
+  font-weight:650!important;
+  line-height:1!important;
+}
+#pagination .tg-pagination-controls > button:hover:not(:disabled) {
+  border-color:var(--tg-blue-200)!important;
+  background:var(--tg-blue-50)!important;
+  color:var(--tg-blue-700)!important;
+}
+#pagination .tg-pagination-controls > button.active,
+#pagination .tg-pagination-controls > button[aria-current="page"] {
+  border-color:var(--tg-blue-600)!important;
+  background:var(--tg-blue-600)!important;
+  color:#fff!important;
+  box-shadow:0 4px 10px rgba(37,99,235,.18)!important;
+}
+#pagination .tg-pagination-controls > button:disabled {
+  opacity:.45!important;
+  cursor:not-allowed!important;
+  box-shadow:none!important;
+}
+#pagination .tg-pagination-controls > button.tg-pagination-nav {
+  min-width:auto!important;
+  padding-inline:11px!important;
+}
+#pagination .tg-pagination-controls svg {
+  width:15px;
+  height:15px;
+  fill:none;
+  stroke:currentColor;
+  stroke-width:1.9;
+  stroke-linecap:round;
+  stroke-linejoin:round;
+}
+#pagination .tg-pagination-ellipsis {
+  display:inline-grid;
+  width:28px;
+  height:36px;
+  place-items:center;
+  color:#94a3b8!important;
+  font-size:.8rem;
+  font-weight:700;
+}
+
+@keyframes medindex-sheet-in {
+  from { opacity:.5; transform:translateX(28px); }
+  to { opacity:1; transform:translateX(0); }
+}
+
+html[data-theme="dark"] .clinical-editor-dialog,
+html[data-theme="dark"] .clinical-editor-header,
+html[data-theme="dark"] .clinical-editor-footer,
+html[data-theme="dark"] .clinical-editor-section {
+  border-color:#334155!important;
+  background:#111827!important;
+  color:#f8fafc!important;
+}
+html[data-theme="dark"] .clinical-editor-body { background:#0f172a!important; }
+html[data-theme="dark"] .clinical-editor-header h2,
+html[data-theme="dark"] .clinical-editor-section-title h3 { color:#f8fafc!important; }
+html[data-theme="dark"] .clinical-editor-header p,
+html[data-theme="dark"] .clinical-editor-section-title p { color:#94a3b8!important; }
+html[data-theme="dark"] .clinical-editor-field input,
+html[data-theme="dark"] .clinical-editor-field textarea,
+html[data-theme="dark"] .clinical-editor-field select,
+html[data-theme="dark"] .clinical-editor-close,
+html[data-theme="dark"] .clinical-editor-secondary {
+  border-color:#475569!important;
+  background:#172033!important;
+  color:#f8fafc!important;
+}
+
+@media (max-width:760px) {
+  .clinical-editor-dialog {
+    width:100vw!important;
+    max-width:100vw!important;
+    border-left:0!important;
+    border-radius:0!important;
+  }
+  .clinical-editor-grid,
+  .clinical-editor-dose-grid {
+    grid-template-columns:1fr!important;
+  }
+  #pagination.tg-pagination {
+    align-items:stretch!important;
+    flex-direction:column!important;
+    padding-inline:10px!important;
+  }
+  #pagination .tg-pagination-summary { text-align:center; }
+  #pagination .tg-pagination-controls {
+    justify-content:center;
+    flex-wrap:wrap;
+  }
+  #pagination .tg-pagination-controls > button.tg-pagination-nav span {
+    display:none;
+  }
+  #pagination .tg-pagination-controls > button.tg-pagination-nav {
+    min-width:36px!important;
+    padding:0!important;
+  }
+}
+
+@media (prefers-reduced-motion:reduce) {
+  .clinical-editor-dialog[open] { animation:none!important; }
+}
