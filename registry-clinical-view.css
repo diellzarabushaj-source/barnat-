@@ -1,292 +1,62 @@
 /* MedIndex clinical registry view: dose-first, compact and observer-free. */
 
-.registry-view-toolbar {
-  display:flex;
-  align-items:center;
-  justify-content:space-between;
-  gap:14px;
-  margin:0 0 10px;
-  padding:9px 11px;
-  border:1px solid var(--mw-line,var(--registry-line,#dce6e2));
-  border-radius:12px;
-  background:color-mix(in srgb,var(--mw-surface,var(--registry-surface,#fff)) 94%,var(--mw-primary-soft,var(--registry-teal-soft,#eaf4f1)));
-  color:var(--mw-text,var(--registry-ink,#172b2f));
-}
-.registry-view-copy {
-  display:grid;
-  min-width:0;
-  gap:2px;
-}
-.registry-view-copy strong {
-  font-size:.77rem;
-  font-weight:820;
-  letter-spacing:.01em;
-}
-.registry-view-copy span {
-  overflow:hidden;
-  color:var(--mw-muted,var(--registry-muted,#607477));
-  font-size:.69rem;
-  line-height:1.35;
-  text-overflow:ellipsis;
-  white-space:nowrap;
-}
-.registry-view-actions {
-  display:inline-flex;
-  flex:0 0 auto;
-  gap:4px;
-  padding:3px;
-  border:1px solid var(--mw-line,var(--registry-line,#dce6e2));
-  border-radius:10px;
-  background:var(--mw-surface,var(--registry-surface,#fff));
-}
-.registry-view-actions button {
-  display:inline-flex;
-  min-height:34px;
-  align-items:center;
-  justify-content:center;
-  gap:6px;
-  padding:0 11px;
-  border:0;
-  border-radius:7px;
-  background:transparent;
-  color:var(--mw-muted,var(--registry-muted,#607477));
-  cursor:pointer;
-  font:inherit;
-  font-size:.7rem;
-  font-weight:770;
-  white-space:nowrap;
-}
-.registry-view-actions button:hover {
-  background:var(--mw-surface-soft,var(--registry-soft,#f6f9f8));
-  color:var(--mw-text,var(--registry-ink,#172b2f));
-}
-.registry-view-actions button.is-active,
-.registry-view-actions button[aria-pressed="true"] {
-  background:var(--mw-primary,var(--registry-teal,#155f63));
-  color:#fff;
-  box-shadow:0 1px 2px rgba(13,65,69,.18);
-}
-.registry-view-actions button:focus-visible {
-  outline:3px solid color-mix(in srgb,var(--mw-primary,var(--registry-teal,#155f63)) 28%,transparent);
-  outline-offset:2px;
-}
+.registry-view-toolbar{display:flex;align-items:center;justify-content:space-between;gap:14px;margin:0 0 10px;padding:9px 11px;border:1px solid var(--mw-line,var(--registry-line,#dce6e2));border-radius:12px;background:color-mix(in srgb,var(--mw-surface,var(--registry-surface,#fff)) 94%,var(--mw-primary-soft,var(--registry-teal-soft,#eaf4f1)));color:var(--mw-text,var(--registry-ink,#172b2f))}
+.registry-view-copy{display:grid;min-width:0;gap:2px}
+.registry-view-copy strong{font-size:.77rem;font-weight:820;letter-spacing:.01em}
+.registry-view-copy span{overflow:hidden;color:var(--mw-muted,var(--registry-muted,#607477));font-size:.69rem;line-height:1.35;text-overflow:ellipsis;white-space:nowrap}
+.registry-view-actions{display:inline-flex;flex:0 0 auto;gap:4px;padding:3px;border:1px solid var(--mw-line,var(--registry-line,#dce6e2));border-radius:10px;background:var(--mw-surface,var(--registry-surface,#fff))}
+.registry-view-actions button{display:inline-flex;min-height:34px;align-items:center;justify-content:center;gap:6px;padding:0 11px;border:0;border-radius:7px;background:transparent;color:var(--mw-muted,var(--registry-muted,#607477));cursor:pointer;font:inherit;font-size:.7rem;font-weight:770;white-space:nowrap}
+.registry-view-actions button:hover{background:var(--mw-surface-soft,var(--registry-soft,#f6f9f8));color:var(--mw-text,var(--registry-ink,#172b2f))}
+.registry-view-actions button.is-active,.registry-view-actions button[aria-pressed="true"]{background:var(--mw-primary,var(--registry-teal,#155f63));color:#fff;box-shadow:0 1px 2px rgba(13,65,69,.18)}
+.registry-view-actions button:focus-visible{outline:3px solid color-mix(in srgb,var(--mw-primary,var(--registry-teal,#155f63)) 28%,transparent);outline-offset:2px}
 
-@media (min-width:761px) {
-  html.medindex-tailadmin.mi-first-page-audited[data-mi-page="barnat"][data-registry-ux-view="clinical"]
-  #dataTable :is(th,td)[data-registry-column-key]
-  :not([data-registry-column-key="select"])
-  :not([data-registry-column-key="trade-name"])
-  :not([data-registry-column-key="active-substance"])
-  :not([data-registry-column-key="strength"])
-  :not([data-registry-column-key="form"])
-  :not([data-registry-column-key="dosage-adult"])
-  :not([data-registry-column-key="dosage-pediatric"]) {
+@media (min-width:761px){
+  html.medindex-tailadmin.mi-first-page-audited[data-mi-page="barnat"][data-registry-ux-view="clinical"] #dataTable :is(th,td)[data-registry-column-key]:not(:is([data-registry-column-key="select"],[data-registry-column-key="trade-name"],[data-registry-column-key="active-substance"],[data-registry-column-key="strength"],[data-registry-column-key="form"],[data-registry-column-key="dosage-adult"],[data-registry-column-key="dosage-pediatric"])){
     display:none!important;
   }
 
-  html.medindex-tailadmin.mi-first-page-audited[data-mi-page="barnat"][data-registry-ux-view="clinical"] .table-wrap {
-    overflow-x:auto!important;
-    border-radius:13px!important;
-    scrollbar-width:thin;
-    scrollbar-color:color-mix(in srgb,var(--mw-primary,var(--registry-teal,#155f63)) 34%,transparent) transparent;
-  }
-  html.medindex-tailadmin.mi-first-page-audited[data-mi-page="barnat"][data-registry-ux-view="clinical"] .table-wrap::-webkit-scrollbar {
-    width:9px;
-    height:9px;
-  }
-  html.medindex-tailadmin.mi-first-page-audited[data-mi-page="barnat"][data-registry-ux-view="clinical"] .table-wrap::-webkit-scrollbar-thumb {
-    border:2px solid transparent;
-    border-radius:999px;
-    background:color-mix(in srgb,var(--mw-primary,var(--registry-teal,#155f63)) 36%,transparent);
-    background-clip:padding-box;
-  }
+  html.medindex-tailadmin.mi-first-page-audited[data-mi-page="barnat"][data-registry-ux-view="clinical"] .table-wrap{overflow-x:auto!important;border-radius:13px!important;scrollbar-width:thin;scrollbar-color:color-mix(in srgb,var(--mw-primary,var(--registry-teal,#155f63)) 34%,transparent) transparent}
+  html.medindex-tailadmin.mi-first-page-audited[data-mi-page="barnat"][data-registry-ux-view="clinical"] .table-wrap::-webkit-scrollbar{width:9px;height:9px}
+  html.medindex-tailadmin.mi-first-page-audited[data-mi-page="barnat"][data-registry-ux-view="clinical"] .table-wrap::-webkit-scrollbar-thumb{border:2px solid transparent;border-radius:999px;background:color-mix(in srgb,var(--mw-primary,var(--registry-teal,#155f63)) 36%,transparent);background-clip:padding-box}
 
-  html.medindex-tailadmin.mi-first-page-audited[data-mi-page="barnat"][data-registry-ux-view="clinical"] #dataTable tbody tr {
-    --registry-clinical-row-bg:var(--mw-surface,var(--registry-surface,#fff));
-    height:84px!important;
-    min-height:84px!important;
-    max-height:84px!important;
-  }
-  html.medindex-tailadmin.mi-first-page-audited[data-mi-page="barnat"][data-registry-ux-view="clinical"] #dataTable tbody tr:nth-child(even) {
-    --registry-clinical-row-bg:color-mix(in srgb,var(--mw-surface,var(--registry-surface,#fff)) 96%,var(--mw-primary-soft,var(--registry-teal-soft,#eaf4f1)));
-  }
+  html.medindex-tailadmin.mi-first-page-audited[data-mi-page="barnat"][data-registry-ux-view="clinical"] #dataTable tbody tr{--registry-clinical-row-bg:var(--mw-surface,var(--registry-surface,#fff));height:84px!important;min-height:84px!important;max-height:84px!important}
+  html.medindex-tailadmin.mi-first-page-audited[data-mi-page="barnat"][data-registry-ux-view="clinical"] #dataTable tbody tr:nth-child(even){--registry-clinical-row-bg:color-mix(in srgb,var(--mw-surface,var(--registry-surface,#fff)) 96%,var(--mw-primary-soft,var(--registry-teal-soft,#eaf4f1)))}
   html.medindex-tailadmin.mi-first-page-audited[data-mi-page="barnat"][data-registry-ux-view="clinical"] #dataTable tbody tr:hover,
-  html.medindex-tailadmin.mi-first-page-audited[data-mi-page="barnat"][data-registry-ux-view="clinical"] #dataTable tbody tr:focus-within {
-    --registry-clinical-row-bg:color-mix(in srgb,var(--mw-primary-soft,var(--registry-teal-soft,#eaf4f1)) 58%,var(--mw-surface,var(--registry-surface,#fff)));
-  }
-  html.medindex-tailadmin.mi-first-page-audited[data-mi-page="barnat"][data-registry-ux-view="clinical"] #dataTable tbody td {
-    height:84px!important;
-    min-height:84px!important;
-    max-height:84px!important;
-    padding:8px 10px!important;
-    background:var(--registry-clinical-row-bg)!important;
-    font-size:.76rem!important;
-    line-height:1.35!important;
-  }
-  html.medindex-tailadmin.mi-first-page-audited[data-mi-page="barnat"][data-registry-ux-view="clinical"] #dataTable thead th {
-    height:54px!important;
-    min-height:54px!important;
-    max-height:54px!important;
-    padding:8px 10px!important;
-    font-size:.66rem!important;
-    line-height:1.18!important;
-  }
+  html.medindex-tailadmin.mi-first-page-audited[data-mi-page="barnat"][data-registry-ux-view="clinical"] #dataTable tbody tr:focus-within{--registry-clinical-row-bg:color-mix(in srgb,var(--mw-primary-soft,var(--registry-teal-soft,#eaf4f1)) 58%,var(--mw-surface,var(--registry-surface,#fff)))}
+  html.medindex-tailadmin.mi-first-page-audited[data-mi-page="barnat"][data-registry-ux-view="clinical"] #dataTable tbody td{height:84px!important;min-height:84px!important;max-height:84px!important;padding:8px 10px!important;background:var(--registry-clinical-row-bg)!important;font-size:.76rem!important;line-height:1.35!important}
+  html.medindex-tailadmin.mi-first-page-audited[data-mi-page="barnat"][data-registry-ux-view="clinical"] #dataTable thead th{height:54px!important;min-height:54px!important;max-height:54px!important;padding:8px 10px!important;font-size:.66rem!important;line-height:1.18!important}
 
-  html.medindex-tailadmin.mi-first-page-audited[data-mi-page="barnat"][data-registry-ux-view="clinical"] #dataTable thead th[data-registry-column-key="select"] {
-    position:sticky!important;
-    left:0!important;
-    z-index:34!important;
-  }
-  html.medindex-tailadmin.mi-first-page-audited[data-mi-page="barnat"][data-registry-ux-view="clinical"] #dataTable tbody td[data-registry-column-key="select"] {
-    position:sticky!important;
-    left:0!important;
-    z-index:12!important;
-    background:var(--registry-clinical-row-bg)!important;
-  }
-  html.medindex-tailadmin.mi-first-page-audited[data-mi-page="barnat"][data-registry-ux-view="clinical"] #dataTable thead th[data-registry-column-key="trade-name"] {
-    position:sticky!important;
-    left:44px!important;
-    z-index:33!important;
-    box-shadow:12px 0 18px -18px rgba(8,44,47,.72)!important;
-  }
-  html.medindex-tailadmin.mi-first-page-audited[data-mi-page="barnat"][data-registry-ux-view="clinical"] #dataTable tbody td[data-registry-column-key="trade-name"] {
-    position:sticky!important;
-    left:44px!important;
-    z-index:11!important;
-    background:var(--registry-clinical-row-bg)!important;
-    box-shadow:12px 0 18px -18px rgba(8,44,47,.5)!important;
-    white-space:normal!important;
-    overflow-wrap:anywhere!important;
-    text-overflow:clip!important;
-  }
+  html.medindex-tailadmin.mi-first-page-audited[data-mi-page="barnat"][data-registry-ux-view="clinical"] #dataTable thead th[data-registry-column-key="select"]{position:sticky!important;left:0!important;z-index:34!important}
+  html.medindex-tailadmin.mi-first-page-audited[data-mi-page="barnat"][data-registry-ux-view="clinical"] #dataTable tbody td[data-registry-column-key="select"]{position:sticky!important;left:0!important;z-index:12!important;background:var(--registry-clinical-row-bg)!important}
+  html.medindex-tailadmin.mi-first-page-audited[data-mi-page="barnat"][data-registry-ux-view="clinical"] #dataTable thead th[data-registry-column-key="trade-name"]{position:sticky!important;left:44px!important;z-index:33!important;box-shadow:12px 0 18px -18px rgba(8,44,47,.72)!important}
+  html.medindex-tailadmin.mi-first-page-audited[data-mi-page="barnat"][data-registry-ux-view="clinical"] #dataTable tbody td[data-registry-column-key="trade-name"]{position:sticky!important;left:44px!important;z-index:11!important;background:var(--registry-clinical-row-bg)!important;box-shadow:12px 0 18px -18px rgba(8,44,47,.5)!important;white-space:normal!important;overflow-wrap:anywhere!important;text-overflow:clip!important}
   html.medindex-tailadmin.mi-first-page-audited[data-mi-page="barnat"][data-registry-ux-view="clinical"] #dataTable tbody td[data-registry-column-key="active-substance"],
-  html.medindex-tailadmin.mi-first-page-audited[data-mi-page="barnat"][data-registry-ux-view="clinical"] #dataTable tbody td[data-registry-column-key="form"] {
-    white-space:normal!important;
-    overflow-wrap:anywhere!important;
-    text-overflow:clip!important;
-  }
+  html.medindex-tailadmin.mi-first-page-audited[data-mi-page="barnat"][data-registry-ux-view="clinical"] #dataTable tbody td[data-registry-column-key="form"]{white-space:normal!important;overflow-wrap:anywhere!important;text-overflow:clip!important}
 
-  html.medindex-tailadmin.mi-first-page-audited[data-mi-page="barnat"][data-registry-ux-view="clinical"] #dataTable td.registry-dosage-column {
-    padding:7px 8px!important;
-    white-space:normal!important;
-  }
-  html.medindex-tailadmin.mi-first-page-audited[data-mi-page="barnat"][data-registry-ux-view="clinical"] #dataTable .registry-dosage-compact {
-    width:100%!important;
-    max-height:68px!important;
-  }
-  html.medindex-tailadmin.mi-first-page-audited[data-mi-page="barnat"][data-registry-ux-view="clinical"] #dataTable .registry-dosage-compact > summary {
-    display:grid!important;
-    width:100%!important;
-    min-height:58px!important;
-    grid-template-columns:minmax(0,1fr) 28px!important;
-    align-items:center!important;
-    gap:8px!important;
-    padding:8px 9px!important;
-    overflow:hidden!important;
-    border:1px solid color-mix(in srgb,var(--mw-primary,var(--registry-teal,#155f63)) 17%,var(--mw-line,var(--registry-line,#dce6e2)))!important;
-    border-radius:10px!important;
-    background:linear-gradient(135deg,var(--mw-surface,var(--registry-surface,#fff)),var(--mw-surface-soft,var(--registry-soft,#f6f9f8)))!important;
-    color:var(--mw-text,var(--registry-ink,#172b2f))!important;
-    cursor:pointer!important;
-  }
-  html.medindex-tailadmin.mi-first-page-audited[data-mi-page="barnat"][data-registry-ux-view="clinical"] #dataTable .registry-dosage-compact > summary:hover {
-    border-color:color-mix(in srgb,var(--mw-primary,var(--registry-teal,#155f63)) 42%,var(--mw-line,var(--registry-line,#dce6e2)))!important;
-    background:var(--mw-primary-soft,var(--registry-teal-soft,#eaf4f1))!important;
-  }
-  html.medindex-tailadmin.mi-first-page-audited[data-mi-page="barnat"][data-registry-ux-view="clinical"] #dataTable .registry-dosage-compact > summary:focus-visible {
-    outline:3px solid color-mix(in srgb,var(--mw-primary,var(--registry-teal,#155f63)) 28%,transparent)!important;
-    outline-offset:1px!important;
-  }
-  html.medindex-tailadmin.mi-first-page-audited[data-mi-page="barnat"][data-registry-ux-view="clinical"] #dataTable .registry-dosage-preview {
-    display:-webkit-box!important;
-    min-width:0!important;
-    overflow:hidden!important;
-    color:var(--mw-text,var(--registry-ink,#172b2f))!important;
-    font-size:.7rem!important;
-    font-weight:740!important;
-    line-height:1.34!important;
-    overflow-wrap:anywhere!important;
-    -webkit-box-orient:vertical!important;
-    -webkit-line-clamp:3!important;
-  }
-  html.medindex-tailadmin.mi-first-page-audited[data-mi-page="barnat"][data-registry-ux-view="clinical"] #dataTable .registry-dosage-more {
-    display:inline-grid!important;
-    width:28px!important;
-    min-width:28px!important;
-    height:28px!important;
-    min-height:28px!important;
-    place-items:center!important;
-    padding:0!important;
-    overflow:hidden!important;
-    border:1px solid color-mix(in srgb,var(--mw-primary,var(--registry-teal,#155f63)) 22%,transparent)!important;
-    border-radius:8px!important;
-    background:var(--mw-primary-soft,var(--registry-teal-soft,#eaf4f1))!important;
-    color:transparent!important;
-    font-size:0!important;
-  }
-  html.medindex-tailadmin.mi-first-page-audited[data-mi-page="barnat"][data-registry-ux-view="clinical"] #dataTable .registry-dosage-more::before {
-    content:'›';
-    color:var(--mw-primary-dark,var(--registry-teal-dark,#0d4145));
-    font-size:1rem;
-    font-weight:900;
-    line-height:1;
-  }
-  html.medindex-tailadmin.mi-first-page-audited[data-mi-page="barnat"][data-registry-ux-view="clinical"] #dataTable .registry-dosage-more::after {
-    display:none!important;
-  }
-  html.medindex-tailadmin.mi-first-page-audited[data-mi-page="barnat"][data-registry-ux-view="clinical"] #headerRow .registry-dosage-subhead {
-    display:block!important;
-    margin-top:3px!important;
-    color:rgba(255,255,255,.72)!important;
-    font-size:.56rem!important;
-    font-weight:650!important;
-    letter-spacing:.01em!important;
-    text-transform:none!important;
-  }
+  html.medindex-tailadmin.mi-first-page-audited[data-mi-page="barnat"][data-registry-ux-view="clinical"] #dataTable td.registry-dosage-column{padding:7px 8px!important;white-space:normal!important}
+  html.medindex-tailadmin.mi-first-page-audited[data-mi-page="barnat"][data-registry-ux-view="clinical"] #dataTable .registry-dosage-compact{width:100%!important;max-height:68px!important}
+  html.medindex-tailadmin.mi-first-page-audited[data-mi-page="barnat"][data-registry-ux-view="clinical"] #dataTable .registry-dosage-compact>summary{display:grid!important;width:100%!important;min-height:58px!important;grid-template-columns:minmax(0,1fr) 28px!important;align-items:center!important;gap:8px!important;padding:8px 9px!important;overflow:hidden!important;border:1px solid color-mix(in srgb,var(--mw-primary,var(--registry-teal,#155f63)) 17%,var(--mw-line,var(--registry-line,#dce6e2)))!important;border-radius:10px!important;background:linear-gradient(135deg,var(--mw-surface,var(--registry-surface,#fff)),var(--mw-surface-soft,var(--registry-soft,#f6f9f8)))!important;color:var(--mw-text,var(--registry-ink,#172b2f))!important;cursor:pointer!important}
+  html.medindex-tailadmin.mi-first-page-audited[data-mi-page="barnat"][data-registry-ux-view="clinical"] #dataTable .registry-dosage-compact>summary:hover{border-color:color-mix(in srgb,var(--mw-primary,var(--registry-teal,#155f63)) 42%,var(--mw-line,var(--registry-line,#dce6e2)))!important;background:var(--mw-primary-soft,var(--registry-teal-soft,#eaf4f1))!important}
+  html.medindex-tailadmin.mi-first-page-audited[data-mi-page="barnat"][data-registry-ux-view="clinical"] #dataTable .registry-dosage-compact>summary:focus-visible{outline:3px solid color-mix(in srgb,var(--mw-primary,var(--registry-teal,#155f63)) 28%,transparent)!important;outline-offset:1px!important}
+  html.medindex-tailadmin.mi-first-page-audited[data-mi-page="barnat"][data-registry-ux-view="clinical"] #dataTable .registry-dosage-preview{display:-webkit-box!important;min-width:0!important;overflow:hidden!important;color:var(--mw-text,var(--registry-ink,#172b2f))!important;font-size:.7rem!important;font-weight:740!important;line-height:1.34!important;overflow-wrap:anywhere!important;-webkit-box-orient:vertical!important;-webkit-line-clamp:3!important}
+  html.medindex-tailadmin.mi-first-page-audited[data-mi-page="barnat"][data-registry-ux-view="clinical"] #dataTable .registry-dosage-more{display:inline-grid!important;width:28px!important;min-width:28px!important;height:28px!important;min-height:28px!important;place-items:center!important;padding:0!important;overflow:hidden!important;border:1px solid color-mix(in srgb,var(--mw-primary,var(--registry-teal,#155f63)) 22%,transparent)!important;border-radius:8px!important;background:var(--mw-primary-soft,var(--registry-teal-soft,#eaf4f1))!important;color:transparent!important;font-size:0!important}
+  html.medindex-tailadmin.mi-first-page-audited[data-mi-page="barnat"][data-registry-ux-view="clinical"] #dataTable .registry-dosage-more::before{content:'›';color:var(--mw-primary-dark,var(--registry-teal-dark,#0d4145));font-size:1rem;font-weight:900;line-height:1}
+  html.medindex-tailadmin.mi-first-page-audited[data-mi-page="barnat"][data-registry-ux-view="clinical"] #dataTable .registry-dosage-more::after{display:none!important}
+  html.medindex-tailadmin.mi-first-page-audited[data-mi-page="barnat"][data-registry-ux-view="clinical"] #headerRow .registry-dosage-subhead{display:block!important;margin-top:3px!important;color:rgba(255,255,255,.72)!important;font-size:.56rem!important;font-weight:650!important;letter-spacing:.01em!important;text-transform:none!important}
 }
 
-html[data-theme="dark"] .registry-view-toolbar,
-html.dark .registry-view-toolbar {
-  background:color-mix(in srgb,var(--mw-surface,#102426) 90%,var(--mw-primary-soft,#183c3f));
+html[data-theme="dark"] .registry-view-toolbar,html.dark .registry-view-toolbar{background:color-mix(in srgb,var(--mw-surface,#102426) 90%,var(--mw-primary-soft,#183c3f))}
+
+@media (max-width:760px){
+  .registry-view-toolbar{align-items:stretch;flex-direction:column;margin:8px 10px 10px}
+  .registry-view-copy span{white-space:normal}
+  .registry-view-actions{display:grid;width:100%;grid-template-columns:1fr 1fr}
+  .registry-view-actions button{width:100%}
 }
 
-@media (max-width:760px) {
-  .registry-view-toolbar {
-    align-items:stretch;
-    flex-direction:column;
-    margin:8px 10px 10px;
-  }
-  .registry-view-copy span {
-    white-space:normal;
-  }
-  .registry-view-actions {
-    display:grid;
-    width:100%;
-    grid-template-columns:1fr 1fr;
-  }
-  .registry-view-actions button {
-    width:100%;
-  }
-}
+@media (prefers-reduced-motion:reduce){.registry-view-actions button,#dataTable .registry-dosage-compact>summary{transition:none!important}}
 
-@media (prefers-reduced-motion:reduce) {
-  .registry-view-actions button,
-  #dataTable .registry-dosage-compact > summary {
-    transition:none!important;
-  }
-}
-
-@media (forced-colors:active) {
-  .registry-view-toolbar,
-  .registry-view-actions,
-  .registry-view-actions button,
-  #dataTable .registry-dosage-compact > summary {
-    border:1px solid CanvasText!important;
-    background:Canvas!important;
-    color:CanvasText!important;
-  }
-  .registry-view-actions button[aria-pressed="true"] {
-    background:Highlight!important;
-    color:HighlightText!important;
-  }
+@media (forced-colors:active){
+  .registry-view-toolbar,.registry-view-actions,.registry-view-actions button,#dataTable .registry-dosage-compact>summary{border:1px solid CanvasText!important;background:Canvas!important;color:CanvasText!important}
+  .registry-view-actions button[aria-pressed="true"]{background:Highlight!important;color:HighlightText!important}
 }
