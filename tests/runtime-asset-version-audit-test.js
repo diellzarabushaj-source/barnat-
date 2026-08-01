@@ -13,7 +13,7 @@ for (const page of pages) {
 }
 
 const index = read('index.html');
-assert.match(index, /registry-runtime-loader\.js\?v=20260801-3/, 'index.html: current interaction-gated registry loader is missing');
+assert.match(index, /registry-runtime-loader\.js\?v=20260801-4/, 'index.html: current completed-interaction registry loader is missing');
 assert.doesNotMatch(index, /<script src="app-performance\.js"/, 'index.html: heavy registry bootstrap must not be parser ordered');
 assert.doesNotMatch(index, /src="app\.js/, 'index.html: legacy registry bootstrap must not be loaded');
 assert.match(index, /app-runtime-performance\.js\?v=clinical-audit-v5-performance-runtime/, 'index.html: cache-isolated generated registry runtime preload is stale');
@@ -24,12 +24,12 @@ assert.match(index, /registry-fast-start\.js\?v=registry-fast-start-v2/, 'index.
 assert.match(index, /<script id="drug-data" type="application\/json">\[\]<\/script>/, 'registry JSON fallback must remain inert');
 
 const runtimeLoader = read('registry-runtime-loader.js');
-assert.match(runtimeLoader, /registry-runtime-loader-v3/, 'interaction-gated registry loader version is stale');
-assert.match(runtimeLoader, /app-performance\.js\?v=20260801-1/, 'interaction-gated registry loader must request the versioned bootstrap');
-assert.match(runtimeLoader, /FIRST_INTERACTION_FALLBACK_MS = 5000/, 'interaction-gated registry fallback is stale');
-assert.match(runtimeLoader, /POST_INTERACTION_GRACE_MS = 320/, 'post-interaction grace is stale');
-assert.match(runtimeLoader, /INTERACTION_EVENTS = \['pointerdown', 'keydown', 'touchstart'\]/, 'interaction event contract is incomplete');
-assert.match(runtimeLoader, /classList\.contains\('auth-ready'\)/, 'interaction-gated registry loader must wait for authentication');
+assert.match(runtimeLoader, /registry-runtime-loader-v4/, 'completed-interaction registry loader version is stale');
+assert.match(runtimeLoader, /app-performance\.js\?v=20260801-1/, 'completed-interaction registry loader must request the versioned bootstrap');
+assert.match(runtimeLoader, /FIRST_INTERACTION_FALLBACK_MS = 15000/, 'completed-interaction registry fallback is stale');
+assert.match(runtimeLoader, /POST_INTERACTION_GRACE_MS = 1500/, 'post-interaction grace is stale');
+assert.match(runtimeLoader, /INTERACTION_EVENTS = \['click', 'keyup', 'touchend'\]/, 'completed interaction event contract is incomplete');
+assert.match(runtimeLoader, /classList\.contains\('auth-ready'\)/, 'completed-interaction registry loader must wait for authentication');
 
 const app = read('app-performance.js');
 assert.match(app, /clinical-audit-v5-performance-runtime/);
@@ -59,4 +59,4 @@ assert.match(performanceRuntime, /SERVICE_WORKER_URL = `\/sw-resilient-v3\.js\?v
 assert.match(performanceWorker, /VERSION = 'low-bandwidth-v3'/, 'cache-isolated service worker version is stale');
 assert.match(performanceRuntime, /CLINICAL_WORKFLOW_URL = `\/clinical-workflow\.js\?v=\$\{VERSION\}`/, 'offline runtime must version the clinical workflow');
 
-console.log('Clinical runtime cache-version, first-interaction gate v3 and idle dosage asset audit passed.');
+console.log('Clinical runtime cache-version, completed first-interaction gate v4 and idle dosage asset audit passed.');
