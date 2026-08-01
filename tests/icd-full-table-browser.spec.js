@@ -34,20 +34,36 @@ async function openA00(page, mobile) {
   await expect(page.locator('#icdTableBody [data-icd-row="A00.0"]')).toBeVisible();
   await expect(page.locator('#icdTableBody [data-icd-row="A00.1"]')).toBeVisible();
   await expect(page.locator('#icdContextTitle')).toContainText('A00');
-  if (mobile) await expect(page.locator('body')).not.toHaveClass(/mi-sidebar-open/);
+  if (mobile) {
+    await expect(page.locator('body')).not.toHaveClass(/mi-sidebar-open/);
+    await expect.poll(async () => (await page.locator('#miSidebar').boundingBox())?.right ?? -999, { timeout:2500 }).toBeLessThanOrEqual(1);
+  }
 }
 
-async function assertViewport(page) {
-  const report = await page.evaluate(() => ({
-    documentWidth:document.documentElement.scrollWidth,
-    viewportWidth:innerWidth,
-    panel:document.querySelector('.icd-registry-panel')?.getBoundingClientRect().toJSON(),
-    table:document.querySelector('.icd-table')?.getBoundingClientRect().toJSON(),
-    sidebar:document.querySelector('#miSidebar')?.getBoundingClientRect().toJSON(),
-  }));
+async function assertViewport(page, desktop) {
+  const report = await page.evaluate(() => {
+    const rect = selector => document.querySelector(selector)?.getBoundingClientRect().toJSON() || null;
+    return {
+      documentWidth:document.documentElement.scrollWidth,
+      viewportWidth:innerWidth,
+      panel:rect('.icd-registry-panel'),
+      table:rect('.icd-table'),
+      sidebar:rect('#miSidebar'),
+      openCode:rect('#icdTableBody [data-open-code]'),
+      copyCode:rect('#icdTableBody [data-icd-copy]'),
+      who:rect('#icdTableBody .icd-row-actions a'),
+    };
+  });
   expect(report.documentWidth).toBeLessThanOrEqual(report.viewportWidth + 2);
   expect(report.panel.right).toBeLessThanOrEqual(report.viewportWidth + 2);
   expect(report.panel.left).toBeGreaterThanOrEqual(-1);
+  if (desktop) {
+    for (const [name, item] of Object.entries({ openCode:report.openCode, copyCode:report.copyCode, who:report.who })) {
+      expect(item, `${name} is missing`).not.toBeNull();
+      expect(item.right, `${name} is clipped on the right`).toBeLessThanOrEqual(report.panel.right + 1);
+      expect(item.left, `${name} is clipped on the left`).toBeGreaterThanOrEqual(report.panel.left - 1);
+    }
+  }
 }
 
 for (const profile of [
@@ -58,11 +74,29 @@ for (const profile of [
   test(`${profile.name} full ICD hierarchy and table`, async ({ page }) => {
     await openIcd(page, profile);
     await openA00(page, profile.width < 1024);
-    await assertViewport(page);
+    await assertViewport(page, profile.width >= 1024);
+    await page.waitForTimeout(180);
     await page.screenshot({ path:path.join(OUTPUT, `${profile.name}-full.png`), fullPage:true });
     if (profile.width >= 1024) await page.locator('#miSidebar').screenshot({ path:path.join(OUTPUT, `${profile.name}-sidebar.png`) });
   });
 }
+
+test('ICD detail panel and prescription action fit a phone viewport', async ({ page }) => {
+  await openIcd(page, { width:390, height:844 });
+  await page.locator('[data-open-code]').first().click();
+  const overlay = page.locator('#detailOverlay');
+  await expect(overlay).toBeVisible();
+  await expect(page.getByRole('button', { name:'Përdore në recetë' })).toBeVisible();
+  const geometry = await page.evaluate(() => {
+    const rect = document.querySelector('#detailOverlay .med-panel').getBoundingClientRect();
+    return { left:rect.left, right:rect.right, top:rect.top, bottom:rect.bottom, width:innerWidth, height:innerHeight };
+  });
+  expect(geometry.left).toBeGreaterThanOrEqual(0);
+  expect(geometry.right).toBeLessThanOrEqual(geometry.width);
+  expect(geometry.top).toBeGreaterThanOrEqual(0);
+  expect(geometry.bottom).toBeLessThanOrEqual(geometry.height);
+  await page.screenshot({ path:path.join(OUTPUT, 'mobile-detail.png'), fullPage:true });
+});
 
 test('ICD search exposes keyboard-accessible suggestions', async ({ page }) => {
   await openIcd(page, { width:1280, height:900 });
