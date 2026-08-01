@@ -1,7 +1,7 @@
 (() => {
   'use strict';
 
-  const VERSION = 'registry-column-contract-20260801-1';
+  const VERSION = 'registry-column-contract-20260801-2';
   const MAP = Object.freeze({
     perrecete:'select', zgjidh:'select', nr:'number', nrrendor:'number',
     emritregtar:'trade-name', emri:'trade-name', substancaaktive:'active-substance',
@@ -96,16 +96,28 @@
     queueMicrotask(reconcileContract);
   }
 
+  function relevantMutation(records) {
+    return records.some(record => [...record.addedNodes].some(node => {
+      if (!(node instanceof Element)) return false;
+      return node.matches('tr,th,td,[data-registry-dosage-column],[data-clinical-editor-column]')
+        || Boolean(node.querySelector?.('tr,th,td,[data-registry-dosage-column],[data-clinical-editor-column]'));
+    }));
+  }
+
   function observe() {
     const header = document.getElementById('headerRow');
     const tbody = document.getElementById('tbody');
     if (header) {
-      if (!headerObserver) headerObserver = new MutationObserver(schedule);
+      if (!headerObserver) headerObserver = new MutationObserver(records => {
+        if (relevantMutation(records)) schedule();
+      });
       headerObserver.observe(header, { childList:true });
     }
     if (tbody) {
-      if (!bodyObserver) bodyObserver = new MutationObserver(schedule);
-      bodyObserver.observe(tbody, { childList:true });
+      if (!bodyObserver) bodyObserver = new MutationObserver(records => {
+        if (relevantMutation(records)) schedule();
+      });
+      bodyObserver.observe(tbody, { childList:true, subtree:true });
     }
   }
 
