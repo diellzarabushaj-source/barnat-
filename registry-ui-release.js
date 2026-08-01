@@ -1,7 +1,7 @@
 (() => {
   'use strict';
 
-  const RELEASE = 'registry-ui-20260801-12';
+  const RELEASE = 'registry-ui-20260801-13';
   const STORAGE_KEY = 'medindex.registry.ui.release';
   const SESSION_KEY = 'medindex.registry.ui.cache-cleared';
 
@@ -48,8 +48,8 @@
 
   function scheduleCleanup() {
     const run = () => void clearLegacyPresentationCaches();
-    if ('requestIdleCallback' in window) requestIdleCallback(run, { timeout:4500 });
-    else setTimeout(run, 2500);
+    if ('requestIdleCallback' in window) requestIdleCallback(run, { timeout:3000 });
+    else setTimeout(run, 1200);
   }
 
   function start() {
