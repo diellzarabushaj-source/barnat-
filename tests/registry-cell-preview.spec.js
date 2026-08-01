@@ -214,3 +214,78 @@ test('një zoom zbulon tekstin e plotë në të gjitha kolonat e rreshtit', asyn
   await trigger.click();
   await expect(row).toHaveAttribute('data-registry-row-expanded', 'false');
 });
+
+test('tabela scrollon horizontalisht dhe vertikalisht pa ngrirë kolonat', async ({ page }) => {
+  await waitForStableRegistry(page);
+
+  const area = page.locator('#registryContent.table-wrap');
+  const header = page.locator('#headerRow th[data-registry-column-key="trade-name"]');
+  await expect(area).toBeVisible();
+  await expect(header).toBeVisible();
+
+  const initial = await area.evaluate(node => {
+    const style = getComputedStyle(node);
+    const rect = node.getBoundingClientRect();
+    return {
+      overflowX:style.overflowX,
+      overflowY:style.overflowY,
+      touchAction:style.touchAction,
+      clientWidth:node.clientWidth,
+      clientHeight:node.clientHeight,
+      scrollWidth:node.scrollWidth,
+      scrollHeight:node.scrollHeight,
+      top:rect.top,
+    };
+  });
+
+  expect(['auto', 'scroll']).toContain(initial.overflowX);
+  expect(['auto', 'scroll']).toContain(initial.overflowY);
+  expect(initial.touchAction).toContain('pan-x');
+  expect(initial.touchAction).toContain('pan-y');
+  expect(initial.scrollWidth).toBeGreaterThan(initial.clientWidth + 2);
+  expect(initial.scrollHeight).toBeGreaterThan(initial.clientHeight + 2);
+
+  const headerTopBefore = await header.evaluate(node => node.getBoundingClientRect().top);
+  await area.evaluate(node => {
+    node.scrollTo({
+      left:Math.min(420, Math.max(0, node.scrollWidth - node.clientWidth)),
+      top:Math.min(520, Math.max(0, node.scrollHeight - node.clientHeight)),
+      behavior:'instant',
+    });
+  });
+
+  await expect.poll(
+    () => area.evaluate(node => ({ left:node.scrollLeft, top:node.scrollTop })),
+    { timeout:5000, message:'scroll area nuk lëvizi në të dy boshtet' }
+  ).toMatchObject({ left:expect.any(Number), top:expect.any(Number) });
+
+  const moved = await area.evaluate(node => ({ left:node.scrollLeft, top:node.scrollTop }));
+  expect(moved.left).toBeGreaterThan(0);
+  expect(moved.top).toBeGreaterThan(0);
+
+  const headerState = await header.evaluate(node => {
+    const style = getComputedStyle(node);
+    return {
+      position:style.position,
+      top:node.getBoundingClientRect().top,
+      left:style.left,
+      right:style.right,
+    };
+  });
+  expect(headerState.position).toBe('sticky');
+  expect(Math.abs(headerState.top - headerTopBefore)).toBeLessThanOrEqual(3);
+  expect(headerState.left).toBe('auto');
+  expect(headerState.right).toBe('auto');
+
+  const frozenDataCells = await page.locator('#tbody td[data-registry-column-key]').evaluateAll(cells =>
+    cells.filter(cell => {
+      const style = getComputedStyle(cell);
+      return style.position === 'sticky' || style.position === 'fixed';
+    }).map(cell => cell.dataset.registryColumnKey)
+  );
+  expect(frozenDataCells).toEqual([]);
+
+  await area.evaluate(node => node.scrollTo({ left:0, top:0, behavior:'instant' }));
+  await expect.poll(() => area.evaluate(node => ({ left:node.scrollLeft, top:node.scrollTop })))
+    .toEqual({ left:0, top:0 });
+});
