@@ -18,7 +18,7 @@ assert(
   index.indexOf('registry-cell-preview.js?v=20260801-2') < index.indexOf('registry-row-expand.js?v=20260801-4'),
   'Cell expansion trigger must initialize before row expansion.'
 );
-assert(index.includes('data-registry-ui-release="20260801-10"'), 'Registry UI release was not bumped.');
+assert(index.includes('data-registry-ui-release="20260801-11"'), 'Registry UI release was not bumped.');
 
 assert(controller.includes('data-lineicons-icon="expand-square-4"'), 'Lineicons expand-square-4 is missing.');
 assert(controller.includes('rowController.toggleRow(row)'), 'Cell trigger must expand the table row inline.');
