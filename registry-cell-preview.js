@@ -1,11 +1,10 @@
 (() => {
   'use strict';
 
-  const VERSION = 'registry-cell-preview-20260801-1';
+  const VERSION = 'registry-cell-preview-20260801-2';
   const DIALOG_ID = 'registryCellPreviewDialog';
   const TRIGGER_CLASS = 'registry-cell-preview-trigger';
   const PREVIEW_ATTR = 'data-registry-cell-preview';
-
   const THRESHOLDS = Object.freeze({
     'active-substance':34,
     'drug-class':40,
@@ -32,7 +31,9 @@
 
   let tableObserver = null;
   let scheduled = false;
+  let active = false;
   let activeTrigger = null;
+  let fallbackTimer = 0;
 
   const cleanInline = value => String(value ?? '').replace(/[\t ]+/g, ' ').replace(/\s*\n\s*/g, ' ').trim();
   const cleanMultiline = value => String(value ?? '')
@@ -50,36 +51,30 @@
   function columnLabel(cell) {
     const explicit = cleanInline(cell?.dataset?.label);
     if (explicit) return explicit;
-
     const key = columnKey(cell);
     const header = Array.from(document.querySelectorAll('#headerRow > th'))
       .find(item => item.dataset.registryColumnKey === key);
-    const headerLabel = cleanInline(header?.textContent).replace(/[↕↑↓]+$/g, '').trim();
-    return headerLabel || key || 'Përmbajtja e qelizës';
+    return cleanInline(header?.textContent).replace(/[↕↑↓]+$/g, '').trim() || key || 'Përmbajtja e qelizës';
   }
 
   function prepareCloneForText(cell) {
     const clone = cell.cloneNode(true);
     clone.querySelectorAll(`.${TRIGGER_CLASS},input,select,textarea,button,.drug-actions-trigger,.favorite-marker,.clinical-editor-open`)
       .forEach(element => element.remove());
-
     clone.querySelectorAll('details').forEach(details => {
       details.open = true;
       const summary = details.querySelector(':scope > summary');
       if (summary && details.children.length > 1) summary.remove();
     });
-
     clone.querySelectorAll('br').forEach(br => br.replaceWith(document.createTextNode('\n')));
-    clone.querySelectorAll('li').forEach(item => item.append(document.createTextNode('\n')));
-    clone.querySelectorAll('p').forEach(item => item.append(document.createTextNode('\n')));
+    clone.querySelectorAll('li,p').forEach(item => item.append(document.createTextNode('\n')));
     return clone;
   }
 
   function extractCellText(cell) {
     if (!cell) return '';
     const clone = prepareCloneForText(cell);
-    const raw = clone.innerText || clone.textContent || '';
-    return cleanMultiline(raw)
+    return cleanMultiline(clone.innerText || clone.textContent || '')
       .replace(/\s*Më shumë\s*$/i, '')
       .replace(/\s*Shfaq skemat\s*$/i, '')
       .trim();
@@ -87,32 +82,26 @@
 
   function hasExistingControl(cell) {
     if (!cell) return true;
-    const key = columnKey(cell);
-    if (key === 'trade-name') return true;
+    if (columnKey(cell) === 'trade-name') return true;
     if (cell.querySelector('.drug-select,.drug-actions-trigger,.favorite-marker,.clinical-editor-open')) return true;
-    if (cell.matches('.registry-verification-column,.registry-editor-column,.registry-actions-column')) return true;
-    return false;
+    return cell.matches('.registry-verification-column,.registry-editor-column,.registry-actions-column');
   }
 
   function elementIsClipped(element) {
-    if (!(element instanceof HTMLElement)) return false;
-    if (element.clientWidth <= 0 || element.clientHeight <= 0) return false;
-    return element.scrollWidth > element.clientWidth + 2 || element.scrollHeight > element.clientHeight + 2;
+    return element instanceof HTMLElement
+      && element.clientWidth > 0
+      && element.clientHeight > 0
+      && (element.scrollWidth > element.clientWidth + 2 || element.scrollHeight > element.clientHeight + 2);
   }
 
   function cellIsVisuallyClipped(cell) {
-    const candidates = [
-      cell,
-      ...cell.querySelectorAll('.drug-name-text,.registry-dosage-preview,.registry-cell-value,[class*="truncate"],[class*="clamp"]'),
-    ];
-    return candidates.some(elementIsClipped);
+    return [cell, ...cell.querySelectorAll('.drug-name-text,.registry-dosage-preview,.registry-cell-value,[class*="truncate"],[class*="clamp"]')]
+      .some(elementIsClipped);
   }
 
   function shouldPreviewCell(cell, text) {
     if (!cell || !text || hasExistingControl(cell)) return false;
-    const key = columnKey(cell);
-    const threshold = THRESHOLDS[key] || 58;
-    return cellIsVisuallyClipped(cell) || text.length > threshold;
+    return cellIsVisuallyClipped(cell) || text.length > (THRESHOLDS[columnKey(cell)] || 58);
   }
 
   function removePreview(cell) {
@@ -136,51 +125,60 @@
   }
 
   function enhanceCell(cell) {
-    if (!(cell instanceof HTMLTableCellElement)) return false;
+    if (!(cell instanceof HTMLTableCellElement)) return;
     const text = extractCellText(cell);
     if (!shouldPreviewCell(cell, text)) {
-      if (cell.hasAttribute(PREVIEW_ATTR)) {
-        removePreview(cell);
-        return true;
-      }
-      return false;
+      if (cell.hasAttribute(PREVIEW_ATTR)) removePreview(cell);
+      return;
     }
-
     const label = columnLabel(cell);
     cell.setAttribute(PREVIEW_ATTR, 'true');
     cell.dataset.registryCellPreviewText = text;
     const trigger = cell.querySelector(`:scope > .${TRIGGER_CLASS}`) || createTrigger(cell, label);
     trigger.setAttribute('aria-label', `Shfaq ${label.toLocaleLowerCase('sq')} të plotë`);
-    return true;
+  }
+
+  function connectObserver() {
+    const tbody = document.getElementById('tbody');
+    if (!tbody || !tableObserver) return;
+    tableObserver.observe(tbody, { childList:true, subtree:true, characterData:true });
   }
 
   function enhanceVisibleCells() {
     const tbody = document.getElementById('tbody');
     if (!tbody) return;
-
-    let changed = false;
-    tbody.querySelectorAll(':scope > tr:not([hidden]) > td').forEach(cell => {
-      if (cell.classList.contains('empty-state')) return;
-      changed = enhanceCell(cell) || changed;
-    });
-
-    document.documentElement.dataset.registryCellPreview = VERSION;
-    if (changed) window.MedIndexRegistryRows?.refresh?.();
+    tableObserver?.disconnect();
+    try {
+      tbody.querySelectorAll(':scope > tr:not([hidden]) > td').forEach(cell => {
+        if (!cell.classList.contains('empty-state')) enhanceCell(cell);
+      });
+      document.documentElement.dataset.registryCellPreview = VERSION;
+    } finally {
+      connectObserver();
+    }
   }
 
   function scheduleEnhance() {
-    if (scheduled) return;
+    if (!active || scheduled) return;
     scheduled = true;
-    requestAnimationFrame(() => {
+    const run = () => {
       scheduled = false;
       enhanceVisibleCells();
-    });
+    };
+    if ('requestIdleCallback' in window) requestIdleCallback(run, { timeout:1400 });
+    else setTimeout(() => requestAnimationFrame(run), 160);
+  }
+
+  function activate() {
+    if (active) return;
+    active = true;
+    clearTimeout(fallbackTimer);
+    setTimeout(scheduleEnhance, 520);
   }
 
   function ensureDialog() {
     let dialog = document.getElementById(DIALOG_ID);
     if (dialog) return dialog;
-
     dialog = document.createElement('dialog');
     dialog.id = DIALOG_ID;
     dialog.className = 'registry-cell-preview-dialog';
@@ -194,9 +192,7 @@
             <h2 class="registry-cell-preview-title" id="${DIALOG_ID}Title"></h2>
             <div class="registry-cell-preview-context" id="${DIALOG_ID}Context"></div>
           </div>
-          <button class="registry-cell-preview-close" type="button" aria-label="Mbyll tekstin e plotë" title="Mbyll" data-lineicons-source="Lineicons Basic / xmark">
-            ${CLOSE_ICON}
-          </button>
+          <button class="registry-cell-preview-close" type="button" aria-label="Mbyll tekstin e plotë" title="Mbyll" data-lineicons-source="Lineicons Basic / xmark">${CLOSE_ICON}</button>
         </header>
         <div class="registry-cell-preview-body" id="${DIALOG_ID}Body" role="document" tabindex="0"></div>
       </section>`;
@@ -205,33 +201,26 @@
       if (typeof dialog.close === 'function' && dialog.open) dialog.close();
       else dialog.removeAttribute('open');
     };
-
     dialog.querySelector('.registry-cell-preview-close')?.addEventListener('click', close);
-    dialog.addEventListener('click', event => {
-      if (event.target === dialog) close();
-    });
+    dialog.addEventListener('click', event => { if (event.target === dialog) close(); });
     dialog.addEventListener('close', () => {
       const trigger = activeTrigger;
       activeTrigger = null;
       if (trigger?.isConnected) requestAnimationFrame(() => trigger.focus({ preventScroll:true }));
     });
-
     document.body.appendChild(dialog);
     return dialog;
   }
 
   function rowContext(cell) {
     const row = cell.closest('tr');
-    if (!row) return '';
-    const tradeCell = row.querySelector('td[data-registry-column-key="trade-name"]');
-    const tradeName = cleanInline(extractCellText(tradeCell));
-    return tradeName || cleanInline(row.dataset.registryNumber);
+    const tradeCell = row?.querySelector('td[data-registry-column-key="trade-name"]');
+    return cleanInline(extractCellText(tradeCell)) || cleanInline(row?.dataset?.registryNumber);
   }
 
   function openPreview(trigger) {
     const cell = trigger.closest(`td[${PREVIEW_ATTR}="true"]`);
     if (!cell) return;
-
     const dialog = ensureDialog();
     const title = dialog.querySelector(`#${DIALOG_ID}Title`);
     const context = dialog.querySelector(`#${DIALOG_ID}Context`);
@@ -259,30 +248,27 @@
   }
 
   function onKeydown(event) {
-    if (event.key !== 'Enter' && event.key !== ' ') return;
-    if (!event.target.closest?.(`.${TRIGGER_CLASS}`)) return;
-    event.stopImmediatePropagation();
-  }
-
-  function observeTable() {
-    const tbody = document.getElementById('tbody');
-    if (!tbody) return;
-    tableObserver?.disconnect();
-    tableObserver = new MutationObserver(scheduleEnhance);
-    tableObserver.observe(tbody, { childList:true, subtree:true, characterData:true });
+    if ((event.key === 'Enter' || event.key === ' ') && event.target.closest?.(`.${TRIGGER_CLASS}`)) {
+      event.stopImmediatePropagation();
+    }
   }
 
   function init() {
-    ensureDialog();
     document.addEventListener('click', onClick, true);
     document.addEventListener('keydown', onKeydown, true);
-    observeTable();
-    scheduleEnhance();
+    tableObserver = new MutationObserver(() => { if (active) scheduleEnhance(); });
+    connectObserver();
 
-    ['medindex:registry-ready', 'medindex:registry-data-ready', 'medindex:registry-table-stable', 'medindex:tailadmin-ready']
+    ['medindex:registry-ready', 'medindex:registry-table-stable']
+      .forEach(eventName => window.addEventListener(eventName, activate, { once:true }));
+    ['medindex:registry-data-ready', 'medindex:tailadmin-ready']
       .forEach(eventName => window.addEventListener(eventName, scheduleEnhance));
     window.addEventListener('resize', scheduleEnhance, { passive:true });
-    window.addEventListener('pageshow', scheduleEnhance, { passive:true });
+    window.addEventListener('pageshow', () => { activate(); scheduleEnhance(); }, { passive:true });
+
+    const armFallback = () => { fallbackTimer = setTimeout(activate, 2200); };
+    if (document.readyState === 'complete') armFallback();
+    else window.addEventListener('load', armFallback, { once:true });
   }
 
   if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', init, { once:true });
@@ -290,7 +276,7 @@
 
   window.MedIndexCellPreview = {
     version:VERSION,
-    refresh:scheduleEnhance,
+    refresh() { activate(); scheduleEnhance(); },
     openForCell(cell) {
       const trigger = cell?.querySelector?.(`:scope > .${TRIGGER_CLASS}`);
       if (trigger) openPreview(trigger);
