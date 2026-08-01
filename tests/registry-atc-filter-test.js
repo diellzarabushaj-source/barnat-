@@ -34,7 +34,8 @@ assert.match(coreTail, /state\.activeAtc = next\.atc/, 'Registry state must keep
 assert.match(coreTail, /registryUrlFromState/, 'Registry must synchronize ATC, query and pagination back to the URL');
 assert.match(coreTail, /window\.addEventListener\('popstate'/, 'Browser back and forward must restore registry URL state');
 assert.match(coreTail, /getRegistryAtcRows/, 'Registry must have a dedicated ATC-filtered row source');
-assert.match(coreTail, /matchesCategory\(row\['ATC Code'\], activeAtc\)/, 'ATC filtering must use canonical category matching');
+assert.match(coreTail, /const matches = window\.MedIndexATC\?\.matchesCategory/, 'ATC filtering must use the canonical category matcher');
+assert.match(coreTail, /RAW\.filter\(row => matches\(row\['ATC Code'\], activeAtc\)\)/, 'The canonical matcher must filter the registry rows');
 assert.match(coreTail, /medindex:registry-atc-state/, 'Registry must publish the active category state for later UI integration');
 
 const atcFilterPosition = coreTail.indexOf('let rows = getRegistryAtcRows();');
