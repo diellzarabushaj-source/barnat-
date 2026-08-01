@@ -8,21 +8,24 @@ const root = path.resolve(__dirname,'..');
 const read = file => fs.readFileSync(path.join(root,file),'utf8');
 const index = read('index.html');
 const css = read('registry-unified-table.css');
+const fullTextCss = read('registry-full-text-expansion.css');
 const runtime = read('registry-unified-table.js');
 const loader = read('registry-runtime-loader.js');
 const fast = read('registry-fast-start.js');
 const release = read('registry-ui-release.js');
 
-assert.match(index,/data-registry-ui-release="20260801-13"/,'index must use the unified table release');
+assert.match(index,/data-registry-ui-release="20260801-14"/,'index must use the full-row text release');
 assert.match(index,/registry-unified-table\.css\?v=20260801-1/,'unified table stylesheet must be wired');
+assert.match(index,/registry-full-text-expansion\.css\?v=20260801-1/,'full-row text stylesheet must be wired');
 assert.match(index,/registry-unified-table\.js\?v=20260801-1/,'unified table controller must be wired');
 assert.match(index,/registry-runtime-loader\.js\?v=20260801-6/,'fast authenticated registry loader must be wired');
-assert.ok(index.indexOf('registry-unified-table.css') < index.indexOf('tailadmin-professional.css'),'TailAdmin professional must remain the final static stylesheet');
+assert.ok(index.indexOf('registry-unified-table.css') < index.indexOf('registry-full-text-expansion.css'),'full-row reveal must follow compact unified geometry');
+assert.ok(index.indexOf('registry-full-text-expansion.css') < index.indexOf('tailadmin-professional.css'),'TailAdmin professional must remain the final static stylesheet');
 assert.ok(index.indexOf('registry-ui-release.js') < index.indexOf('registry-unified-table.js'),'unified controller must run after the release guard');
 assert.doesNotMatch(index,/(?:registry-table-integrity|registry-clinical-view|registry-tailgrids-refinement|registry-columns-filters|registry-table-final)\.(?:css|js)/,'competing table controllers must not be loaded');
 assert.doesNotMatch(index,/registryTableFinalMobileCompatibility/,'legacy mobile compatibility patch must be removed');
 assert.doesNotMatch(index,/<script src="app-performance\.js"/,'heavy registry bootstrap must remain dynamically loaded after authentication');
-assert.match(release,/registry-ui-20260801-13/,'cache release must match the unified table');
+assert.match(release,/registry-ui-20260801-14/,'cache release must match the full-row text contract');
 assert.match(fast,/releaseInteractiveShell/,'visual loader must release when authentication and shell are ready');
 assert.match(fast,/loader\.style\.pointerEvents = 'none'/,'visual loader must never intercept the table after shell readiness');
 
@@ -61,4 +64,11 @@ assert.match(css,/\.col-panel\.open[\s\S]*grid-template-columns:repeat\(2,minmax
 assert.doesNotMatch(css,/position:sticky|position:fixed[^;]*!important;[\s\S]{0,80}data-registry-column-key/,'table columns must never be frozen');
 assert.doesNotMatch(css,/https?:\/\//,'unified table styles must not load third-party assets');
 
-console.log('Single-controller registry table, immediate startup and column-integrity audit passed.');
+assert.match(fullTextCss,/data-registry-column-key="active-substance"\] > span:first-child[\s\S]*display:block!important/,'long active-substance wrappers must be fully released');
+assert.match(fullTextCss,/data-registry-column-key="dosage-adult"/,'adult dosage must be revealed with the row');
+assert.match(fullTextCss,/data-registry-column-key="dosage-pediatric"/,'pediatric dosage must be revealed with the row');
+assert.match(fullTextCss,/-webkit-line-clamp:unset!important/,'expanded text must never remain line-clamped');
+assert.match(fullTextCss,/max-height:none!important/,'expanded text must never retain compact max-height');
+assert.doesNotMatch(fullTextCss,/https?:\/\//,'full-row text styles must not load third-party assets');
+
+console.log('Single-controller registry table and full-row text reveal audit passed.');

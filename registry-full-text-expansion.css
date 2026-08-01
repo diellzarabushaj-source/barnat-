@@ -1,0 +1,145 @@
+/* MedIndex — full-row text reveal contract.
+   Loaded after the unified table so one zoom action reveals every textual
+   column in the selected row, regardless of the wrapper markup used by a
+   clinical renderer. */
+
+html.medindex-tailadmin[data-mi-page="barnat"] body #registryContent #dataTable tbody tr:is(
+  .registry-row-expanded,
+  [data-registry-row-expanded="true"]
+) {
+  height:auto!important;
+  min-height:0!important;
+  max-height:none!important;
+}
+
+html.medindex-tailadmin[data-mi-page="barnat"] body #registryContent #dataTable tbody tr:is(
+  .registry-row-expanded,
+  [data-registry-row-expanded="true"]
+) > td[data-registry-column-key] {
+  height:auto!important;
+  min-height:0!important;
+  max-height:none!important;
+  overflow:visible!important;
+  vertical-align:top!important;
+  white-space:normal!important;
+}
+
+/* Every text-bearing column is released as one row-level operation. */
+html.medindex-tailadmin[data-mi-page="barnat"] body #registryContent #dataTable tbody tr:is(
+  .registry-row-expanded,
+  [data-registry-row-expanded="true"]
+) > td:is(
+  [data-registry-column-key="trade-name"],
+  [data-registry-column-key="active-substance"],
+  [data-registry-column-key="drug-class"],
+  [data-registry-column-key="use"],
+  [data-registry-column-key="form"],
+  [data-registry-column-key="dosage-adult"],
+  [data-registry-column-key="dosage-pediatric"]
+) :is(span,p,div,summary,details,ul,ol,li) {
+  height:auto!important;
+  min-height:0!important;
+  max-height:none!important;
+  overflow:visible!important;
+  text-overflow:clip!important;
+  white-space:normal!important;
+  -webkit-line-clamp:unset!important;
+}
+
+/* Compact renderers use anonymous/first-child wrappers. Reset those explicitly. */
+html.medindex-tailadmin[data-mi-page="barnat"] body #registryContent #dataTable tbody tr:is(
+  .registry-row-expanded,
+  [data-registry-row-expanded="true"]
+) > td[data-registry-column-key="trade-name"] .drug-name-text,
+html.medindex-tailadmin[data-mi-page="barnat"] body #registryContent #dataTable tbody tr:is(
+  .registry-row-expanded,
+  [data-registry-row-expanded="true"]
+) > td[data-registry-column-key="active-substance"] > span:first-child,
+html.medindex-tailadmin[data-mi-page="barnat"] body #registryContent #dataTable tbody tr:is(
+  .registry-row-expanded,
+  [data-registry-row-expanded="true"]
+) > td[data-registry-column-key="drug-class"] > :first-child,
+html.medindex-tailadmin[data-mi-page="barnat"] body #registryContent #dataTable tbody tr:is(
+  .registry-row-expanded,
+  [data-registry-row-expanded="true"]
+) > td[data-registry-column-key="use"] > :first-child,
+html.medindex-tailadmin[data-mi-page="barnat"] body #registryContent #dataTable tbody tr:is(
+  .registry-row-expanded,
+  [data-registry-row-expanded="true"]
+) > td[data-registry-column-key="form"] .registry-cell-value {
+  display:block!important;
+  height:auto!important;
+  min-height:0!important;
+  max-height:none!important;
+  overflow:visible!important;
+  text-overflow:clip!important;
+  white-space:normal!important;
+  -webkit-box-orient:initial!important;
+  -webkit-line-clamp:unset!important;
+}
+
+/* Preserve the useful dose/route layout while removing every dose clamp. */
+html.medindex-tailadmin[data-mi-page="barnat"] body #registryContent #dataTable tbody tr:is(
+  .registry-row-expanded,
+  [data-registry-row-expanded="true"]
+) .registry-dosage-grid {
+  display:grid!important;
+  height:auto!important;
+  min-height:0!important;
+  max-height:none!important;
+  grid-template-columns:minmax(0,1fr) 52px!important;
+  overflow:visible!important;
+}
+
+html.medindex-tailadmin[data-mi-page="barnat"] body #registryContent #dataTable tbody tr:is(
+  .registry-row-expanded,
+  [data-registry-row-expanded="true"]
+) .registry-dosage-details {
+  display:block!important;
+  height:auto!important;
+  max-height:none!important;
+  overflow:visible!important;
+}
+
+html.medindex-tailadmin[data-mi-page="barnat"] body #registryContent #dataTable tbody tr:is(
+  .registry-row-expanded,
+  [data-registry-row-expanded="true"]
+) .registry-dosage-details[open] > summary {
+  display:none!important;
+}
+
+html.medindex-tailadmin[data-mi-page="barnat"] body #registryContent #dataTable tbody tr:is(
+  .registry-row-expanded,
+  [data-registry-row-expanded="true"]
+) .registry-dosage-details[open] > :not(summary) {
+  display:block!important;
+  height:auto!important;
+  max-height:none!important;
+  overflow:visible!important;
+}
+
+/* The trigger remains available at the top of every long cell after expansion. */
+html.medindex-tailadmin[data-mi-page="barnat"] body #registryContent #dataTable tbody tr:is(
+  .registry-row-expanded,
+  [data-registry-row-expanded="true"]
+) .registry-cell-preview-trigger {
+  position:absolute!important;
+  top:7px!important;
+  right:7px!important;
+}
+
+@media (max-width:760px) {
+  html.medindex-tailadmin[data-mi-page="barnat"] body #registryContent #dataTable tbody tr:is(
+    .registry-row-expanded,
+    [data-registry-row-expanded="true"]
+  ) > td[data-registry-column-key] {
+    min-height:48px!important;
+  }
+
+  html.medindex-tailadmin[data-mi-page="barnat"] body #registryContent #dataTable tbody tr:is(
+    .registry-row-expanded,
+    [data-registry-row-expanded="true"]
+  ) .registry-dosage-grid {
+    grid-template-columns:minmax(0,1fr) 52px!important;
+  }
+}

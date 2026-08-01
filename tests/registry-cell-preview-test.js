@@ -10,17 +10,27 @@ const read = file => fs.readFileSync(path.join(root, file), 'utf8');
 const index = read('index.html');
 const controller = read('registry-cell-preview.js');
 const styles = read('registry-cell-preview.css');
+const fullTextStyles = read('registry-full-text-expansion.css');
 const rowExpand = read('registry-row-expand.js');
 
 assert(index.includes('registry-cell-preview.css?v=20260801-3'), 'Inline cell expansion stylesheet v3 is not wired.');
+assert(index.includes('registry-full-text-expansion.css?v=20260801-1'), 'Full-row text reveal contract is not wired.');
 assert(index.includes('registry-cell-preview.js?v=20260801-6'), 'Inline cell expansion controller v7 is not wired.');
 assert(
   index.indexOf('registry-cell-preview.js?v=20260801-6') < index.indexOf('registry-row-expand.js?v=20260801-4'),
   'Cell expansion trigger must initialize before row expansion.'
 );
-assert(index.includes('data-registry-ui-release="20260801-13"'), 'Registry UI release was not bumped.');
+assert(index.includes('data-registry-ui-release="20260801-14"'), 'Registry UI release was not bumped.');
 assert(index.includes('registry-column-contract.js?v=20260801-2'), 'Column contract v2 is not wired.');
 assert(index.includes('registry-unified-table.js?v=20260801-1'), 'Unified table controller is not wired.');
+assert(
+  index.indexOf('registry-unified-table.css?v=20260801-1') < index.indexOf('registry-full-text-expansion.css?v=20260801-1'),
+  'Full-row reveal must load after the unified compact geometry.'
+);
+assert(
+  index.indexOf('registry-full-text-expansion.css?v=20260801-1') < index.indexOf('tailadmin-professional.css'),
+  'TailAdmin professional must remain the final static stylesheet.'
+);
 
 assert(controller.includes("const VERSION = 'registry-cell-preview-20260801-7'"), 'Cell preview runtime version is stale.');
 assert(controller.includes('data-lineicons-icon="expand-square-4"'), 'Lineicons expand-square-4 source markup is missing.');
@@ -44,8 +54,6 @@ assert(styles.includes('mask-image:url("data:image/svg+xml'), 'Standards-based L
 assert(styles.includes('.registry-cell-preview-trigger svg'), 'Nested SVG fallback must be explicitly controlled.');
 assert(styles.includes('display:none!important'), 'Nested SVG must be hidden to avoid duplicate icons.');
 assert(styles.includes('tr.registry-row-expanded[data-registry-row-expanded="true"]'), 'Expanded row height styling is missing.');
-assert(styles.includes('height:132px!important'), 'Desktop expanded row height is missing.');
-assert(styles.includes('height:148px!important'), 'Mobile expanded row height is missing.');
 assert(styles.includes('.registry-cell-preview-trigger[aria-expanded="true"]'), 'Expanded trigger styling is missing.');
 assert(!styles.includes('registry-cell-preview-dialog'), 'Legacy dialog styling must be removed.');
 assert(!styles.includes('::backdrop'), 'Legacy modal backdrop styling must be removed.');
@@ -53,7 +61,16 @@ assert(styles.includes('@media (max-width:680px)'), 'Mobile inline expansion sty
 assert(styles.includes('[data-theme="dark"]'), 'Dark-mode styling is missing.');
 assert(styles.includes('prefers-reduced-motion:reduce'), 'Reduced-motion handling is missing.');
 
-assert(rowExpand.includes("button, input, select, textarea"), 'Row expansion must ignore nested controls.');
-assert(rowExpand.includes('syncPreviewTriggers(row, expanded)'), 'Row expansion must synchronize the cell trigger state.');
+assert(fullTextStyles.includes('data-registry-column-key="active-substance"] > span:first-child'), 'Anonymous active-substance wrapper must be released.');
+assert(fullTextStyles.includes('data-registry-column-key="trade-name"] .drug-name-text'), 'Trade-name wrapper must be released.');
+assert(fullTextStyles.includes('data-registry-column-key="dosage-adult"'), 'Adult dosage must participate in row-level reveal.');
+assert(fullTextStyles.includes('data-registry-column-key="dosage-pediatric"'), 'Pediatric dosage must participate in row-level reveal.');
+assert(fullTextStyles.includes('-webkit-line-clamp:unset!important'), 'Every expanded text wrapper must lose line clamp.');
+assert(fullTextStyles.includes('max-height:none!important'), 'Every expanded text wrapper must lose max-height.');
+assert(fullTextStyles.includes('.registry-dosage-details[open] > :not(summary)'), 'Expanded dosage details must reveal their full body.');
+assert(!/https?:\/\//.test(fullTextStyles), 'Full-text expansion must not load third-party assets.');
 
-console.log('Inline full-cell row expansion v7, immutable Lineicons mask and unified table audit passed.');
+assert(rowExpand.includes("button, input, select, textarea"), 'Row expansion must ignore nested controls.');
+assert(rowExpand.includes('syncPreviewTriggers(row, expanded)'), 'Row expansion must synchronize every trigger in the row.');
+
+console.log('Full-row zoom reveals every textual column without modal or clamp.');

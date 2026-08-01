@@ -26,9 +26,24 @@ const rows = [
     __prescriptionLine:'Caps. Amoxicillin 500 mg', __packagingSummary:'1 kuti = 20 kapsula',
     __dispense:'Scat. No I (Një kuti = 20 kapsula)', __prescriptionRoute:'',
   },
+  {
+    'Nr rendor':3, PDID:'1003', ProtocolNo:'TEST-3',
+    'Emri tregtar':'ONCEAIR PEDIATRIC CHEWABLE TABLETS WITH EXTENDED DISPLAY NAME',
+    'Substanca aktive':'Montelukast (as 4.16 mg montelukast sodium) — përmbajtje e gjatë që duhet të shfaqet e plotë pas zgjerimit të rreshtit',
+    'ATC Code':'R03DC03',
+    'Klasa / Çka është':'Antagonist i receptorit leukotrien me përshkrim të gjatë klinik për kontrollin e regresionit vizual',
+    'Përdorimi (fjalë kyçe)':'astmë pediatrike profilaksi bronkospazëm alergji sezonale dhe përdorim klinik i zgjatur',
+    'Fortësia':'4 mg',
+    'Forma farmaceutike':'Chewable tablet me përshkrim të gjatë të formës farmaceutike',
+    'Madhësia e paketimit':'28', Statusi:'Origjinator', __qualityStatus:'verified',
+    'Si të shënohet në recetë':'Tab. përtypëse Montelukast 4 mg — Paketimi: 28',
+    __sheetPrescriptionNotation:'Tab. përtypëse Montelukast 4 mg — Paketimi: 28',
+    __prescriptionLine:'Tab. përtypëse Montelukast 4 mg', __packagingSummary:'1 kuti = 28 tableta',
+    __dispense:'Scat. No I (Një kuti = 28 tableta)', __prescriptionRoute:'',
+  },
 ];
 const encodedRegistry = zlib.gzipSync(Buffer.from(JSON.stringify(rows))).toString('base64');
-const registryMeta = { version:'browser-test', summary:{ total:2, verified:2, blocked:0 } };
+const registryMeta = { version:'browser-test', summary:{ total:3, verified:3, blocked:0 } };
 const registryBody = `window.DRUG_DATA_PARTS = [${JSON.stringify(encodedRegistry)}];\nwindow.REGISTRY_QUALITY_META = ${JSON.stringify(registryMeta)};\n`;
 
 const dosage = {

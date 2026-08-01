@@ -4,6 +4,20 @@ const BASE = 'http://127.0.0.1:4173';
 
 test.use({ serviceWorkers:'block', viewport:{ width:1440, height:900 } });
 
+async function waitForStableRegistry(page) {
+  await page.goto(`${BASE}/index.html`, { waitUntil:'domcontentloaded' });
+  await page.waitForFunction(() => document.documentElement.classList.contains('auth-ready'));
+
+  await expect.poll(
+    () => page.evaluate(() => ({
+      stable:window.MEDINDEX_REGISTRY_TABLE_AUDIT?.stable === true,
+      pending:document.getElementById('dataTable')?.dataset.registryUnifiedPending === 'true',
+      preview:window.MedIndexCellPreview?.version || '',
+    })),
+    { timeout:30000, message:'tabela ose kontrolluesi i zgjerimit nuk u stabilizua' }
+  ).toEqual({ stable:true, pending:false, preview:'registry-cell-preview-20260801-7' });
+}
+
 test('qeliza reale e dozimit të gjatë e rrit rreshtin inline pa hapur modal', async ({ page }) => {
   await page.goto(`${BASE}/index.html`, { waitUntil:'domcontentloaded' });
   await page.waitForFunction(() => document.documentElement.classList.contains('auth-ready'));
@@ -99,4 +113,104 @@ test('qeliza reale e dozimit të gjatë e rrit rreshtin inline pa hapur modal', 
   expect(mobileGeometry.height).toBeGreaterThan(compactHeight);
   expect(mobileGeometry.left).toBeGreaterThanOrEqual(-1);
   expect(mobileGeometry.right).toBeLessThanOrEqual(mobileGeometry.viewport + 1);
+});
+
+test('një zoom zbulon tekstin e plotë në të gjitha kolonat e rreshtit', async ({ page }) => {
+  await waitForStableRegistry(page);
+
+  const substanceCell = page.locator(
+    '#tbody > tr td[data-registry-column-key="active-substance"]',
+    { hasText:'Montelukast (as 4.16 mg montelukast sodium)' }
+  ).first();
+  await expect(substanceCell).toBeVisible({ timeout:30000 });
+
+  await substanceCell.evaluate(() => window.MedIndexCellPreview.refresh());
+  const trigger = substanceCell.locator('.registry-cell-preview-trigger');
+  await expect(trigger).toBeVisible({ timeout:10000 });
+
+  const row = substanceCell.locator('xpath=ancestor::tr');
+  const compactHeight = await row.evaluate(node => node.getBoundingClientRect().height);
+  const compactWrapper = substanceCell.locator(':scope > span').first();
+  await expect(compactWrapper).toBeVisible();
+
+  const compactState = await compactWrapper.evaluate(node => {
+    const style = getComputedStyle(node);
+    return {
+      lineClamp:style.webkitLineClamp,
+      maxHeight:style.maxHeight,
+      overflow:style.overflow,
+      clipped:node.scrollHeight > node.clientHeight + 2,
+    };
+  });
+  expect(compactState.clipped || !['none', 'unset', '0'].includes(compactState.lineClamp)).toBe(true);
+
+  await trigger.click();
+  await expect(row).toHaveAttribute('data-registry-row-expanded', 'true');
+  await expect(row).toHaveClass(/registry-row-expanded/);
+  await expect.poll(async () => row.evaluate(node => node.getBoundingClientRect().height)).toBeGreaterThan(compactHeight);
+
+  const allTriggersExpanded = await row.evaluate(node =>
+    Array.from(node.querySelectorAll('.registry-cell-preview-trigger'))
+      .every(triggerNode => triggerNode.getAttribute('aria-expanded') === 'true')
+  );
+  expect(allTriggersExpanded).toBe(true);
+
+  const expandedState = await compactWrapper.evaluate(node => {
+    const style = getComputedStyle(node);
+    return {
+      lineClamp:style.webkitLineClamp,
+      maxHeight:style.maxHeight,
+      overflow:style.overflow,
+      whiteSpace:style.whiteSpace,
+      clipped:node.scrollHeight > node.clientHeight + 2 && style.overflow !== 'visible',
+    };
+  });
+  expect(['none', 'unset', '0']).toContain(expandedState.lineClamp);
+  expect(expandedState.maxHeight).toBe('none');
+  expect(expandedState.overflow).toBe('visible');
+  expect(expandedState.whiteSpace).toBe('normal');
+  expect(expandedState.clipped).toBe(false);
+
+  const revealAudit = await row.evaluate(node => {
+    const textKeys = new Set([
+      'trade-name', 'active-substance', 'drug-class', 'use', 'form',
+      'dosage-adult', 'dosage-pediatric',
+    ]);
+    const failures = [];
+
+    node.querySelectorAll('td[data-registry-column-key]').forEach(cell => {
+      if (!textKeys.has(cell.dataset.registryColumnKey || '')) return;
+      const candidates = [cell, ...cell.querySelectorAll('span,p,div,summary,details,ul,ol,li')];
+      candidates.forEach(element => {
+        if (!(element instanceof HTMLElement) || !element.getClientRects().length) return;
+        if (element.matches('.registry-cell-preview-trigger,.registry-dosage-route,.population-verification-grid,.population-verification-row,.population-verification-icon')) return;
+        if (element.closest('button,input,select,textarea')) return;
+
+        const style = getComputedStyle(element);
+        const clamp = style.webkitLineClamp;
+        const clamped = Boolean(clamp && !['none', 'unset', '0'].includes(clamp));
+        const clipped = (element.scrollHeight > element.clientHeight + 2 || element.scrollWidth > element.clientWidth + 2)
+          && !['visible', 'clip'].includes(style.overflow)
+          && !['visible', 'clip'].includes(style.overflowY);
+        if (clamped || clipped) {
+          failures.push({
+            key:cell.dataset.registryColumnKey,
+            tag:element.tagName,
+            className:element.className,
+            clamp,
+            overflow:style.overflow,
+            clientHeight:element.clientHeight,
+            scrollHeight:element.scrollHeight,
+          });
+        }
+      });
+    });
+
+    return failures;
+  });
+  expect(revealAudit).toEqual([]);
+  await expect(substanceCell).toContainText('pas zgjerimit të rreshtit');
+
+  await trigger.click();
+  await expect(row).toHaveAttribute('data-registry-row-expanded', 'false');
 });
