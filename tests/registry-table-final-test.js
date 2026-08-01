@@ -67,4 +67,4 @@ assert.match(css,/#registryFilterPanel #search/,'search must remain part of the 
 assert.match(css,/\.col-panel\.open[\s\S]*grid-template-columns:repeat\(2,minmax\(0,1fr\)\)/,'desktop multi-column picker must be compact');
 assert.doesNotMatch(css,/https?:\/\//,'final table styles must not load third-party assets');
 
-console.log('Unified final registry table, filter, expansion, verification, non-blocking loader v5 and responsive audit passed.');
+console.log('Unified final registry table v5 re-audit passed.');
