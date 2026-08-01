@@ -1,11 +1,12 @@
 const { test, expect } = require('@playwright/test');
 
 const BASE = 'http://127.0.0.1:4173';
+const PERFORMANCE_BASE = 'http://127.0.0.1:4174';
 
 test.use({ serviceWorkers:'block', viewport:{ width:1440, height:900 } });
 
-async function waitForStableRegistry(page) {
-  await page.goto(`${BASE}/index.html`, { waitUntil:'domcontentloaded' });
+async function waitForStableRegistry(page, base = BASE) {
+  await page.goto(`${base}/index.html`, { waitUntil:'domcontentloaded' });
   await page.waitForFunction(() => document.documentElement.classList.contains('auth-ready'));
 
   await expect.poll(
@@ -216,7 +217,7 @@ test('një zoom zbulon tekstin e plotë në të gjitha kolonat e rreshtit', asyn
 });
 
 test('tabela scrollon horizontalisht dhe vertikalisht pa ngrirë kolonat', async ({ page }) => {
-  await waitForStableRegistry(page);
+  await waitForStableRegistry(page, PERFORMANCE_BASE);
 
   const area = page.locator('#registryContent.table-wrap');
   const header = page.locator('#headerRow th[data-registry-column-key="trade-name"]');
