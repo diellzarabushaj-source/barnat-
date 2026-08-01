@@ -1,24 +1,58 @@
 const { test, expect } = require('@playwright/test');
 
 const BASE = 'http://127.0.0.1:4173';
-const FULL_TEXT = 'Montelukast (as 10.4 mg montelukast sodium) — tekst i plotë klinik për verifikimin e qelizës së gjatë. Teksti vazhdon që rreshti të rritet vertikalisht dhe të mos hapet asnjë dritare e re.';
 
 test.use({ serviceWorkers:'block', viewport:{ width:1440, height:900 } });
 
-test('qeliza e gjatë e rrit rreshtin inline pa hapur modal', async ({ page }) => {
+test('qeliza reale e dozimit të gjatë e rrit rreshtin inline pa hapur modal', async ({ page }) => {
   await page.goto(`${BASE}/index.html`, { waitUntil:'domcontentloaded' });
   await page.waitForFunction(() => document.documentElement.classList.contains('auth-ready'));
 
-  const cell = page.locator('#tbody > tr td[data-registry-column-key="active-substance"]').first();
+  await expect.poll(
+    () => page.evaluate(() => window.MedIndexRegistryDosage?.clinicalStatus?.() || 'pending'),
+    { timeout:30000, message:'integrimi klinik i dozimit nuk u bë gati' }
+  ).toBe('ready');
+
+  await expect.poll(
+    () => page.evaluate(() => ({
+      stable:window.MEDINDEX_REGISTRY_TABLE_AUDIT?.stable === true,
+      pending:document.getElementById('dataTable')?.dataset.registryUnifiedPending === 'true',
+      preview:window.MedIndexCellPreview?.version || '',
+    })),
+    { timeout:30000, message:'tabela ose kontrolluesi i zgjerimit nuk u stabilizua' }
+  ).toEqual({ stable:true, pending:false, preview:'registry-cell-preview-20260801-7' });
+
+  const cell = page.locator('#tbody > tr td[data-registry-column-key="dosage-adult"]').first();
   await expect(cell).toBeVisible({ timeout:30000 });
-  await cell.evaluate((node, text) => {
-    node.textContent = text;
-    window.MedIndexCellPreview?.refresh?.();
-  }, FULL_TEXT);
+  await expect(cell).toContainText(/500|tablet|orë|nevoj/i);
+
+  const previewResult = await cell.evaluate(node => {
+    window.MedIndexCellPreview.refresh();
+    return {
+      text:String(node.innerText || node.textContent || '').replace(/\s+/g, ' ').trim(),
+      hasTrigger:Boolean(node.querySelector('.registry-cell-preview-trigger')),
+      key:node.dataset.registryColumnKey,
+    };
+  });
+  expect(previewResult.key).toBe('dosage-adult');
+  expect(previewResult.text.length).toBeGreaterThan(54);
+  expect(previewResult.hasTrigger).toBe(true);
 
   const trigger = cell.locator('.registry-cell-preview-trigger');
   await expect(trigger).toBeVisible({ timeout:10000 });
-  await expect(trigger.locator('[data-lineicons-icon="expand-square-4"]')).toHaveCount(1);
+  const iconVisual = await trigger.evaluate(node => {
+    const style = getComputedStyle(node, '::before');
+    return {
+      content:style.content,
+      width:style.width,
+      height:style.height,
+      mask:style.webkitMaskImage || style.maskImage,
+    };
+  });
+  expect(iconVisual.content).not.toBe('none');
+  expect(iconVisual.width).toBe('16px');
+  expect(iconVisual.height).toBe('16px');
+  expect(iconVisual.mask).toContain('data:image/svg+xml');
   await expect(trigger).toHaveAttribute('aria-expanded', 'false');
 
   const row = cell.locator('xpath=ancestor::tr');

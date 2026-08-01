@@ -13,6 +13,7 @@ const syntax = file => execFileSync(process.execPath, ['--check', path.join(ROOT
   'registry-parser-worker-v2.js',
   'registry-dosage-loader.js',
   'registry-dosage-columns-v2.js',
+  'registry-unified-table.js',
   'scripts/build-static-runtime.js',
 ].forEach(syntax);
 
@@ -23,22 +24,22 @@ const worker = read('registry-parser-worker-v2.js');
 const part = read('app-parts/part-01.txt');
 const loader = read('registry-dosage-loader.js');
 const dosage = read('registry-dosage-columns-v2.js');
+const unified = read('registry-unified-table.js');
 const builder = read('scripts/build-static-runtime.js');
 const middleware = read('middleware.ts');
 
-assert.match(index, /registry-runtime-loader\.js\?v=20260801-5/);
+assert.match(index, /registry-runtime-loader\.js\?v=20260801-6/);
+assert.match(index, /registry-unified-table\.js\?v=20260801-1/);
 assert.doesNotMatch(index, /<script src="app-performance\.js"/);
 assert.match(index, /app-runtime-performance\.js/);
 assert.match(index, /registry-dosage-loader\.js/);
 assert.doesNotMatch(index, /src="app\.js|src="registry-dosage-columns(?:-v2)?\.js/);
-assert.match(runtimeLoader, /registry-runtime-loader-v5/);
-assert.match(runtimeLoader, /app-performance\.js\?v=20260801-1/);
-assert.match(runtimeLoader, /FIRST_INTERACTION_FALLBACK_MS = 5000/);
-assert.match(runtimeLoader, /POST_INTERACTION_GRACE_MS = 800/);
-assert.match(runtimeLoader, /window\.MEDINDEX_REGISTRY_UI_READY = new Promise/);
-assert.match(runtimeLoader, /handleCompletedInteraction[\s\S]*scheduleRuntime\(POST_INTERACTION_GRACE_MS\)/);
+assert.doesNotMatch(index, /(?:registry-table-integrity|registry-clinical-view|registry-tailgrids-refinement|registry-columns-filters|registry-table-final)\.js/);
+assert.match(runtimeLoader, /registry-runtime-loader-v6/);
+assert.match(runtimeLoader, /app-performance\.js\?v=20260801-2/);
 assert.match(runtimeLoader, /classList\.contains\('auth-ready'\)/);
-assert.match(runtimeLoader, /requestAnimationFrame\(\(\) => requestAnimationFrame\(loadRuntime\)\)/);
+assert.match(runtimeLoader, /requestAnimationFrame\(\(\) => \{[\s\S]*loadRuntime\(\)/);
+assert.doesNotMatch(runtimeLoader, /FIRST_INTERACTION_FALLBACK_MS|POST_INTERACTION_GRACE_MS|MEDINDEX_REGISTRY_UI_READY\s*=\s*new Promise/);
 
 assert.match(bootstrap, /scheduleBrowserCacheSave/);
 assert.match(bootstrap, /requestIdleCallback\(run/);
@@ -76,8 +77,15 @@ assert.match(dosage, /existing\.innerHTML !== desired\.innerHTML/);
 assert.doesNotMatch(dosage, /DRUG_DATA_PARTS|\batob\s*\(|DecompressionStream|Uint8Array/);
 assert.doesNotMatch(dosage, /observe\([^\n]+subtree\s*:\s*true/);
 
+assert.match(unified, /const CLINICAL_ORDER = Object\.freeze/);
+assert.match(unified, /observer\.observe\(header, \{ childList:true \}\)/);
+assert.match(unified, /observer\.observe\(tbody, \{ childList:true \}\)/);
+assert.doesNotMatch(unified, /subtree\s*:\s*true|observe\(document\.body/);
+assert.match(unified, /lastGeometry/,'unified geometry must be idempotent');
+assert.match(unified, /MEDINDEX_REGISTRY_TABLE_AUDIT/,'table alignment must expose an audit contract');
+
 assert.match(builder, /runtimeOutputs/);
 assert.match(builder, /app-runtime-performance\.js/);
 assert.match(middleware, /registry-parser-worker-v2\.js/);
 
-console.log('Registry non-blocking loader v5 and main-thread deep audit passed.');
+console.log('Registry immediate loader v6, single controller and main-thread deep audit passed.');

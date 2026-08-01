@@ -13,24 +13,26 @@ for (const page of pages) {
 }
 
 const index = read('index.html');
-assert.match(index, /registry-runtime-loader\.js\?v=20260801-5/, 'index.html: current non-blocking registry loader is missing');
+assert.match(index, /registry-runtime-loader\.js\?v=20260801-6/, 'index.html: current immediate registry loader is missing');
+assert.match(index, /registry-unified-table\.js\?v=20260801-1/, 'index.html: unified table controller is missing');
+assert.match(index, /registry-unified-table\.css\?v=20260801-1/, 'index.html: unified table stylesheet is missing');
+assert.doesNotMatch(index, /(?:registry-table-integrity|registry-clinical-view|registry-tailgrids-refinement|registry-columns-filters|registry-table-final)\.(?:js|css)/, 'index.html: a legacy table controller is still loaded');
 assert.doesNotMatch(index, /<script src="app-performance\.js"/, 'index.html: heavy registry bootstrap must not be parser ordered');
 assert.doesNotMatch(index, /src="app\.js/, 'index.html: legacy registry bootstrap must not be loaded');
-assert.match(index, /app-runtime-performance\.js\?v=clinical-audit-v5-performance-runtime/, 'index.html: cache-isolated generated registry runtime preload is stale');
+assert.match(index, /app-runtime-performance\.js\?v=clinical-audit-v5-performance-runtime/, 'index.html: generated registry runtime preload is stale');
 assert.match(index, /registry-dosage-loader\.js/, 'index.html: idle dosage loader is missing');
 assert.doesNotMatch(index, /src="registry-dosage-columns-v2\.js/, 'index.html: dosage enrichment must not block initial parsing');
 assert.match(index, /offline-runtime-performance\.js[^>]+data-medindex-offline-runtime/, 'index.html: cache-isolated offline runtime must be loaded explicitly');
 assert.match(index, /registry-fast-start\.js\?v=registry-fast-start-v2/, 'index.html: fast-start guard version is stale');
 assert.match(index, /<script id="drug-data" type="application\/json">\[\]<\/script>/, 'registry JSON fallback must remain inert');
+assert.match(index, /data-registry-ui-release="20260801-13"/, 'registry UI release is stale');
 
 const runtimeLoader = read('registry-runtime-loader.js');
-assert.match(runtimeLoader, /registry-runtime-loader-v5/, 'non-blocking registry loader version is stale');
-assert.match(runtimeLoader, /app-performance\.js\?v=20260801-1/, 'non-blocking registry loader must request the versioned bootstrap');
-assert.match(runtimeLoader, /FIRST_INTERACTION_FALLBACK_MS = 5000/, 'non-blocking registry fallback is stale');
-assert.match(runtimeLoader, /POST_INTERACTION_GRACE_MS = 800/, 'post-interaction grace is stale');
-assert.match(runtimeLoader, /INTERACTION_EVENTS = \['click', 'keyup', 'touchend'\]/, 'completed interaction event contract is incomplete');
-assert.match(runtimeLoader, /window\.MEDINDEX_REGISTRY_UI_READY = new Promise/, 'registry readiness promise must be exposed immediately');
-assert.match(runtimeLoader, /classList\.contains\('auth-ready'\)/, 'non-blocking registry loader must wait for authentication');
+assert.match(runtimeLoader, /registry-runtime-loader-v6/, 'immediate registry loader version is stale');
+assert.match(runtimeLoader, /app-performance\.js\?v=20260801-2/, 'registry loader must request the versioned bootstrap');
+assert.match(runtimeLoader, /classList\.contains\('auth-ready'\)/, 'registry loader must wait for authentication');
+assert.doesNotMatch(runtimeLoader, /FIRST_INTERACTION_FALLBACK_MS|POST_INTERACTION_GRACE_MS|INTERACTION_EVENTS/, 'old interaction gate must not return');
+assert.doesNotMatch(runtimeLoader, /MEDINDEX_REGISTRY_UI_READY\s*=\s*new Promise/, 'loader must not create a circular readiness promise');
 
 const app = read('app-performance.js');
 assert.match(app, /clinical-audit-v5-performance-runtime/);
@@ -60,4 +62,4 @@ assert.match(performanceRuntime, /SERVICE_WORKER_URL = `\/sw-resilient-v3\.js\?v
 assert.match(performanceWorker, /VERSION = 'low-bandwidth-v3'/, 'cache-isolated service worker version is stale');
 assert.match(performanceRuntime, /CLINICAL_WORKFLOW_URL = `\/clinical-workflow\.js\?v=\$\{VERSION\}`/, 'offline runtime must version the clinical workflow');
 
-console.log('Clinical runtime cache-version, non-blocking loader v5 and idle dosage asset audit passed.');
+console.log('Clinical runtime cache-version, loader v6 and unified table asset audit passed.');

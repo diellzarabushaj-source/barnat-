@@ -1,7 +1,7 @@
 (() => {
   'use strict';
 
-  const VERSION = 'registry-cell-preview-20260801-3';
+  const VERSION = 'registry-cell-preview-20260801-7';
   const TRIGGER_CLASS = 'registry-cell-preview-trigger';
   const PREVIEW_ATTR = 'data-registry-cell-preview';
   const THRESHOLDS = Object.freeze({
@@ -14,7 +14,6 @@
   });
 
   // Lineicons Basic (MIT): expand-square-4.
-  // Source: LineiconsHQ/Lineicons, assets/svgs/regular/.
   const EXPAND_ICON = `
     <svg viewBox="0 0 25 24" fill="none" aria-hidden="true" data-lineicons-icon="expand-square-4">
       <path d="M3.5625 5.5C3.5625 4.25736 4.56986 3.25 5.8125 3.25H8.31213C8.72635 3.25 9.06213 3.58579 9.06213 4C9.06213 4.41421 8.72635 4.75 8.31213 4.75H5.8125C5.39829 4.75 5.0625 5.08579 5.0625 5.5V8C5.0625 8.41421 4.72671 8.75 4.3125 8.75C3.89829 8.75 3.5625 8.41421 3.5625 8V5.5Z" fill="currentColor"/>
@@ -75,9 +74,9 @@
 
   function hasExistingControl(cell) {
     if (!cell) return true;
-    if (columnKey(cell) === 'trade-name') return true;
-    if (cell.querySelector('.drug-select,.drug-actions-trigger,.favorite-marker,.clinical-editor-open')) return true;
-    return cell.matches('.registry-verification-column,.registry-editor-column,.registry-actions-column');
+    const key = columnKey(cell);
+    if (['select', 'trade-name', 'clinical-status', 'clinical-action'].includes(key)) return true;
+    return Boolean(cell.querySelector('.drug-select,.drug-actions-trigger,.favorite-marker,.clinical-editor-open'));
   }
 
   function elementIsClipped(element) {
@@ -101,7 +100,14 @@
     return Boolean(row?.classList.contains('registry-row-expanded') || row?.dataset?.registryRowExpanded === 'true');
   }
 
+  function ensureExpandIcon(trigger) {
+    if (!trigger?.querySelector?.('[data-lineicons-icon="expand-square-4"]')) {
+      trigger.innerHTML = EXPAND_ICON;
+    }
+  }
+
   function syncTriggerState(trigger) {
+    ensureExpandIcon(trigger);
     const cell = trigger?.closest?.(`td[${PREVIEW_ATTR}="true"]`);
     if (!cell) return;
     const expanded = rowIsExpanded(cell.closest('tr'));
@@ -170,19 +176,25 @@
   function scheduleEnhance() {
     if (!active || scheduled) return;
     scheduled = true;
-    const run = () => {
+    requestAnimationFrame(() => {
       scheduled = false;
       enhanceVisibleCells();
-    };
-    if ('requestIdleCallback' in window) requestIdleCallback(run, { timeout:1400 });
-    else setTimeout(() => requestAnimationFrame(run), 160);
+    });
   }
 
   function activate() {
-    if (active) return;
+    if (!active) {
+      active = true;
+      clearTimeout(fallbackTimer);
+    }
+    scheduleEnhance();
+  }
+
+  function refreshNow() {
     active = true;
     clearTimeout(fallbackTimer);
-    setTimeout(scheduleEnhance, 520);
+    scheduled = false;
+    enhanceVisibleCells();
   }
 
   function toggleInline(trigger) {
@@ -218,14 +230,14 @@
     tableObserver = new MutationObserver(() => { if (active) scheduleEnhance(); });
     connectObserver();
 
-    ['medindex:registry-ready', 'medindex:registry-table-stable']
-      .forEach(eventName => window.addEventListener(eventName, activate, { once:true }));
+    window.addEventListener('medindex:registry-ready', activate, { once:true });
+    window.addEventListener('medindex:registry-table-stable', activate);
     ['medindex:registry-data-ready', 'medindex:tailadmin-ready']
       .forEach(eventName => window.addEventListener(eventName, scheduleEnhance));
     window.addEventListener('resize', scheduleEnhance, { passive:true });
     window.addEventListener('pageshow', scheduleEnhance, { passive:true });
 
-    const armFallback = () => { fallbackTimer = setTimeout(activate, 2200); };
+    const armFallback = () => { fallbackTimer = setTimeout(activate, 1800); };
     if (document.readyState === 'complete') armFallback();
     else window.addEventListener('load', armFallback, { once:true });
   }
@@ -235,12 +247,14 @@
 
   window.MedIndexCellPreview = {
     version:VERSION,
-    refresh() { activate(); scheduleEnhance(); },
+    refresh:refreshNow,
     openForCell(cell) {
+      enhanceCell(cell);
       const trigger = cell?.querySelector?.(`:scope > .${TRIGGER_CLASS}`);
       return trigger ? toggleInline(trigger) : false;
     },
     toggleForCell(cell) {
+      enhanceCell(cell);
       const trigger = cell?.querySelector?.(`:scope > .${TRIGGER_CLASS}`);
       return trigger ? toggleInline(trigger) : false;
     },

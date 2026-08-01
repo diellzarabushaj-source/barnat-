@@ -6,7 +6,7 @@ const { execFileSync } = require('node:child_process');
 const ROOT = path.resolve(__dirname, '..');
 const read = file => fs.readFileSync(path.join(ROOT, file), 'utf8');
 
-for (const file of ['registry-runtime-loader.js', 'app-performance.js', 'registry-parser-worker-v2.js', 'registry-dosage-loader.js', 'registry-dosage-columns-v2.js']) {
+for (const file of ['registry-runtime-loader.js', 'app-performance.js', 'registry-parser-worker-v2.js', 'registry-dosage-loader.js', 'registry-dosage-columns-v2.js', 'registry-unified-table.js']) {
   execFileSync(process.execPath, ['--check', path.join(ROOT, file)], { stdio:'pipe' });
 }
 
@@ -16,19 +16,17 @@ const part = read('app-parts/part-01.txt');
 const worker = read('registry-parser-worker-v2.js');
 const dosageLoader = read('registry-dosage-loader.js');
 const dosage = read('registry-dosage-columns-v2.js');
+const unified = read('registry-unified-table.js');
 const middleware = read('middleware.ts');
 const index = read('index.html');
 const builder = read('scripts/build-static-runtime.js');
 
-assert.match(loader, /registry-runtime-loader-v5/, 'non-blocking interaction gate version must be current');
-assert.match(loader, /FIRST_INTERACTION_FALLBACK_MS = 5000/, 'automatic startup fallback must remain bounded');
-assert.match(loader, /POST_INTERACTION_GRACE_MS = 800/, 'heavy bootstrap must wait until the completed interaction settles');
-assert.match(loader, /INTERACTION_EVENTS = \['click', 'keyup', 'touchend'\]/, 'interaction gate must support completed pointer, keyboard and touch actions');
-assert.match(loader, /window\.MEDINDEX_REGISTRY_UI_READY = new Promise/, 'registry UI readiness promise must exist before heavy startup');
-assert.match(loader, /handleCompletedInteraction[\s\S]*scheduleRuntime\(POST_INTERACTION_GRACE_MS\)/, 'completed interaction must schedule, not synchronously start, the registry');
+assert.match(loader, /registry-runtime-loader-v6/, 'immediate authenticated loader version must be current');
 assert.match(loader, /classList\.contains\('auth-ready'\)/, 'registry bootstrap must wait for the authenticated shell');
-assert.match(loader, /requestAnimationFrame\(\(\) => requestAnimationFrame\(loadRuntime\)\)/, 'registry bootstrap must yield across two paint opportunities');
-assert.match(loader, /app-performance\.js\?v=20260801-1/, 'cooperative loader must request the audited registry bootstrap');
+assert.match(loader, /requestAnimationFrame\(\(\) => \{[\s\S]*loadRuntime\(\)/, 'registry bootstrap must yield a paint opportunity');
+assert.match(loader, /app-performance\.js\?v=20260801-2/, 'loader must request the audited registry bootstrap');
+assert.doesNotMatch(loader, /FIRST_INTERACTION_FALLBACK_MS|POST_INTERACTION_GRACE_MS|INTERACTION_EVENTS/, 'loader must not wait for a click or multi-second fallback');
+assert.doesNotMatch(loader, /MEDINDEX_REGISTRY_UI_READY\s*=\s*new Promise/, 'loader must not shadow the runtime readiness promise');
 assert.doesNotMatch(loader, /document\.write|eval\s*\(|new Function/, 'loader must not use dynamic-code shortcuts');
 
 assert.match(app, /clinical-audit-v5-performance-runtime/, 'registry bootstrap version must isolate the performance runtime');
@@ -59,18 +57,24 @@ assert.doesNotMatch(worker, /fetch\(/, 'parser worker must not perform independe
 
 assert.match(dosageLoader, /medindex:registry-ready/, 'dosage enrichment must wait for an interactive registry');
 assert.match(dosageLoader, /requestIdleCallback\(run, \{ timeout:5000 \}\)/, 'dosage enrichment must start during idle time');
-assert.match(dosageLoader, /registry-dosage-columns-v2\.js/, 'idle loader must inject the single-pass dosage runtime');
+assert.match(dosageLoader, /registry-dosage-columns-v2\.js/, 'idle loader must inject the dosage runtime');
 assert.match(dosage, /MEDINDEX_REGISTRY_ROWS/, 'dosage columns must reuse the shared registry');
 assert.doesNotMatch(dosage, /DRUG_DATA_PARTS|\batob\s*\(|DecompressionStream|Uint8Array/, 'dosage columns must never parse the registry again');
 assert.doesNotMatch(dosage, /subtree\s*:\s*true/, 'dosage observers must not watch their own subtree mutations');
 
+assert.match(unified, /registry-unified-table-20260801-1/, 'single table controller must be active');
+assert.doesNotMatch(unified, /observe\(document\.body|subtree\s*:\s*true/, 'single controller must not scan the whole page or table subtree');
+assert.match(unified, /observer\.observe\(tbody, \{ childList:true \}\)/, 'table body observer must react only to page-row replacement');
+
 assert.match(middleware, /'\/registry-parser-worker-v2\.js'/, 'v2 parser worker must pass through auth middleware');
-assert.match(index, /registry-runtime-loader\.js\?v=20260801-5/, 'index must request the current non-blocking bootstrap');
+assert.match(index, /registry-runtime-loader\.js\?v=20260801-6/, 'index must request the current immediate bootstrap');
+assert.match(index, /registry-unified-table\.js\?v=20260801-1/, 'index must load the single table controller');
+assert.doesNotMatch(index, /(?:registry-table-integrity|registry-clinical-view|registry-tailgrids-refinement|registry-columns-filters|registry-table-final)\.js/, 'legacy table controllers must not load');
 assert.doesNotMatch(index, /<script src="app-performance\.js"/, 'heavy registry application must not be parser ordered');
-assert.ok(index.indexOf('registry-fast-start.js') < index.indexOf('registry-runtime-loader.js'), 'fast-start must precede cooperative registry startup');
+assert.ok(index.indexOf('registry-fast-start.js') < index.indexOf('registry-runtime-loader.js'), 'fast-start must precede registry startup');
 assert.match(index, /app-runtime-performance\.js\?v=clinical-audit-v5-performance-runtime/, 'index must preload the cache-isolated generated runtime');
 assert.match(index, /registry-dosage-loader\.js/, 'index must load the idle dosage loader');
 assert.doesNotMatch(index, /src="registry-dosage-columns-v2\.js/, 'heavy dosage integration must not be in the critical parser path');
 assert.match(builder, /app-runtime-performance\.js/, 'build must generate the cache-isolated runtime artifact');
 
-console.log('Registry interaction resilience, non-blocking loader v5, idle dosage and single-pass worker audit passed.');
+console.log('Registry interaction resilience, immediate loader v6 and single-controller audit passed.');

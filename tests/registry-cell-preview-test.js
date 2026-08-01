@@ -12,23 +12,37 @@ const controller = read('registry-cell-preview.js');
 const styles = read('registry-cell-preview.css');
 const rowExpand = read('registry-row-expand.js');
 
-assert(index.includes('registry-cell-preview.css?v=20260801-2'), 'Inline cell expansion stylesheet is not wired.');
-assert(index.includes('registry-cell-preview.js?v=20260801-2'), 'Inline cell expansion controller is not wired.');
+assert(index.includes('registry-cell-preview.css?v=20260801-3'), 'Inline cell expansion stylesheet v3 is not wired.');
+assert(index.includes('registry-cell-preview.js?v=20260801-6'), 'Inline cell expansion controller v7 is not wired.');
 assert(
-  index.indexOf('registry-cell-preview.js?v=20260801-2') < index.indexOf('registry-row-expand.js?v=20260801-4'),
+  index.indexOf('registry-cell-preview.js?v=20260801-6') < index.indexOf('registry-row-expand.js?v=20260801-4'),
   'Cell expansion trigger must initialize before row expansion.'
 );
-assert(index.includes('data-registry-ui-release="20260801-12"'), 'Registry UI release was not bumped.');
+assert(index.includes('data-registry-ui-release="20260801-13"'), 'Registry UI release was not bumped.');
+assert(index.includes('registry-column-contract.js?v=20260801-2'), 'Column contract v2 is not wired.');
+assert(index.includes('registry-unified-table.js?v=20260801-1'), 'Unified table controller is not wired.');
 
-assert(controller.includes('data-lineicons-icon="expand-square-4"'), 'Lineicons expand-square-4 is missing.');
+assert(controller.includes("const VERSION = 'registry-cell-preview-20260801-7'"), 'Cell preview runtime version is stale.');
+assert(controller.includes('data-lineicons-icon="expand-square-4"'), 'Lineicons expand-square-4 source markup is missing.');
 assert(controller.includes('rowController.toggleRow(row)'), 'Cell trigger must expand the table row inline.');
 assert(controller.includes("trigger.setAttribute('aria-expanded'"), 'Inline trigger must expose its expanded state.');
+assert(controller.includes("window.addEventListener('medindex:registry-table-stable', activate)"), 'Cell triggers must be rebuilt whenever the unified table stabilizes.');
+assert(controller.includes('function refreshNow()'), 'Manual cell-preview refresh must be synchronous.');
+assert(controller.includes('refresh:refreshNow'), 'Public refresh must use the synchronous path.');
+assert(controller.includes("['select', 'trade-name', 'clinical-status', 'clinical-action'].includes(key)"), 'Preview exclusions must use the canonical column key.');
+assert(!controller.includes("cell.matches('.registry-verification-column,.registry-editor-column,.registry-actions-column')"), 'Legacy CSS classes must not block a valid preview cell.');
+assert(controller.includes('function ensureExpandIcon(trigger)'), 'The nested SVG may still self-heal for graceful fallback.');
 assert(controller.includes('MutationObserver'), 'Cell triggers must follow table rerenders.');
 assert(!controller.includes('showModal'), 'Cell expansion must not open a modal.');
 assert(!controller.includes('registryCellPreviewDialog'), 'Legacy preview dialog must be removed.');
 assert(!controller.includes('data-lineicons-icon="xmark"'), 'Legacy modal close icon must be removed.');
 assert(!/https?:\/\//.test(controller), 'Cell expansion controller must not load third-party runtime assets.');
 
+assert(styles.includes('.registry-cell-preview-trigger::before'), 'The immutable CSS icon layer is missing.');
+assert(styles.includes('-webkit-mask-image:url("data:image/svg+xml'), 'Lineicons CSS mask is missing.');
+assert(styles.includes('mask-image:url("data:image/svg+xml'), 'Standards-based Lineicons mask is missing.');
+assert(styles.includes('.registry-cell-preview-trigger svg'), 'Nested SVG fallback must be explicitly controlled.');
+assert(styles.includes('display:none!important'), 'Nested SVG must be hidden to avoid duplicate icons.');
 assert(styles.includes('tr.registry-row-expanded[data-registry-row-expanded="true"]'), 'Expanded row height styling is missing.');
 assert(styles.includes('height:132px!important'), 'Desktop expanded row height is missing.');
 assert(styles.includes('height:148px!important'), 'Mobile expanded row height is missing.');
@@ -42,4 +56,4 @@ assert(styles.includes('prefers-reduced-motion:reduce'), 'Reduced-motion handlin
 assert(rowExpand.includes("button, input, select, textarea"), 'Row expansion must ignore nested controls.');
 assert(rowExpand.includes('syncPreviewTriggers(row, expanded)'), 'Row expansion must synchronize the cell trigger state.');
 
-console.log('Inline full-cell row expansion and local Lineicons integration audit passed.');
+console.log('Inline full-cell row expansion v7, immutable Lineicons mask and unified table audit passed.');

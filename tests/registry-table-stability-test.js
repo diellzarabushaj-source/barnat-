@@ -6,43 +6,43 @@ const root = path.resolve(__dirname, '..');
 const read = file => fs.readFileSync(path.join(root, file), 'utf8');
 
 const index = read('index.html');
-const script = read('registry-table-integrity.js');
-const css = read('registry-table-integrity.css');
+const script = read('registry-unified-table.js');
+const css = read('registry-unified-table.css');
 
-assert.match(index, /registry-table-integrity\.css\?v=20260801-4/);
-assert.match(index, /registry-table-integrity\.js\?v=20260801-4/);
+assert.match(index, /registry-unified-table\.css\?v=20260801-1/);
+assert.match(index, /registry-unified-table\.js\?v=20260801-1/);
 assert.ok(
-  index.indexOf('registry-table-integrity.js') < index.indexOf('registry-dosage-loader.js'),
-  'The stable column skeleton must load before dosage columns.'
+  index.indexOf('registry-dosage-loader.js') < index.indexOf('registry-unified-table.js'),
+  'The unified controller must reconcile dosage columns after the idle dosage loader is wired.'
 );
 assert.ok(
-  index.indexOf('registry-table-integrity.js') < index.indexOf('clinical-editor.js'),
-  'Registry identities must be available before the clinical editor enhances rows.'
+  index.indexOf('clinical-editor.js') < index.indexOf('registry-unified-table.js'),
+  'The unified controller must reconcile editor columns after the clinical editor is wired.'
 );
+assert.doesNotMatch(index, /registry-table-integrity\.(?:css|js)/, 'legacy integrity controller must not load');
 
-assert.match(script, /registry-table-integrity-v5/);
-assert.match(script, /data-registry-colgroup/);
-assert.match(script, /data-registry-number-probe/);
-assert.match(script, /registry-dynamic-placeholder/);
-assert.match(script, /registryNumberForRow/);
-assert.match(script, /wakeClinicalEditor/);
+assert.match(script, /registry-unified-table-20260801-1/);
+assert.match(script, /const FULL_ORDER = Object\.freeze/);
+assert.match(script, /const CLINICAL_ORDER = Object\.freeze/);
+assert.match(script, /data-registry-column-key|registryColumnKey/);
+assert.match(script, /registryNumber/);
 assert.match(script, /MEDINDEX_REGISTRY_TABLE_AUDIT/);
-assert.match(script, /registry-dose-dialog/);
 assert.match(script, /dosage-adult/);
 assert.match(script, /clinical-status/);
+assert.match(script, /table\.querySelectorAll\(':scope > colgroup'\)\.forEach\(group => group\.remove\(\)\)/);
+assert.match(script, /observer\.observe\(header, \{ childList:true \}\)/);
+assert.match(script, /observer\.observe\(tbody, \{ childList:true \}\)/);
+assert.doesNotMatch(script, /registry-dose-dialog|showModal\(/);
+assert.doesNotMatch(script, /subtree\s*:\s*true|observe\(document\.body/);
 assert.doesNotMatch(script, /wrapper\.scrollTop\s*=/);
-assert.doesNotMatch(script, /const scrollTop\s*=\s*wrapper\.scrollTop/);
 
 assert.match(css, /table-layout:fixed!important/);
-assert.match(css, /tbody td[\s\S]*position:static!important/);
-assert.match(css, /scrollbar-gutter:stable both-edges!important/);
-assert.match(css, /height:auto!important/);
-assert.match(css, /height:96px!important/);
-assert.match(css, /registry-cell-skeleton/);
-assert.match(css, /registry-dose-dialog/);
-assert.match(css, /nth-child\(3\)[\s\S]*left:auto!important/);
+assert.match(css, /#dataTable\[data-registry-unified-table\] :is\(th,td\)\[data-registry-column-key\][\s\S]*position:relative!important/);
+assert.match(css, /scrollbar-gutter:stable!important/);
+assert.match(css, /height:92px!important/);
+assert.match(css, /registry-unified-skeleton/);
+assert.match(css, /:is\(\.registry-dose-dialog,\.registry-cell-preview-dialog\)[\s\S]*display:none!important/);
 assert.match(css, /@media \(max-width:760px\)/);
-assert.doesNotMatch(css, /height:clamp\(460px,68dvh,760px\)!important/);
 assert.doesNotMatch(css, /tbody td[\s\S]{0,180}position:sticky!important/);
 
-console.log('Preallocated registry columns, single page scroll and fixed row geometry audit passed.');
+console.log('Single-controller registry columns, one colgroup and fixed row geometry audit passed.');
