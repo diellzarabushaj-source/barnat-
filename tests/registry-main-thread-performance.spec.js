@@ -122,25 +122,44 @@ test.describe('registry main-thread performance', () => {
     await expect(page.locator('#tbody > tr')).toHaveCount(50);
     await expect(page.locator('#headerRow [data-registry-dosage-column]')).toHaveCount(2);
 
+    await expect.poll(
+      () => page.evaluate(() => {
+        const headerKeys = [...document.querySelectorAll('#headerRow > th')]
+          .map(cell => cell.dataset.registryColumnKey)
+          .filter(Boolean);
+        const rows = [...document.querySelectorAll('#tbody > tr')].filter(row => !row.querySelector('.empty-state'));
+        const mismatches = rows.filter(row => {
+          const keys = [...row.children].map(cell => cell.dataset.registryColumnKey).filter(Boolean);
+          return keys.length !== headerKeys.length || keys.some((key, index) => key !== headerKeys[index]);
+        }).length;
+        return {
+          rows:rows.length,
+          mismatches,
+          colgroups:document.querySelectorAll('#dataTable > colgroup').length,
+          stable:window.MEDINDEX_REGISTRY_TABLE_AUDIT?.stable === true,
+          pending:document.getElementById('dataTable')?.dataset.registryUnifiedPending === 'true',
+        };
+      }),
+      { timeout:5000, message:'the unified column contract did not settle atomically' }
+    ).toEqual({ rows:50, mismatches:0, colgroups:1, stable:true, pending:false });
+
     const tableShape = await page.evaluate(() => {
       const headerKeys = [...document.querySelectorAll('#headerRow > th')]
         .map(cell => cell.dataset.registryColumnKey)
         .filter(Boolean);
       const rows = [...document.querySelectorAll('#tbody > tr')].filter(row => !row.querySelector('.empty-state'));
-      const mismatches = rows.filter(row => {
-        const keys = [...row.children].map(cell => cell.dataset.registryColumnKey).filter(Boolean);
-        return keys.length !== headerKeys.length || keys.some((key, index) => key !== headerKeys[index]);
-      }).length;
+      const firstRowKeys = rows[0] ? [...rows[0].children].map(cell => cell.dataset.registryColumnKey).filter(Boolean) : [];
       return {
         headerKeys,
+        firstRowKeys,
         rowCount:rows.length,
-        mismatches,
         colgroups:document.querySelectorAll('#dataTable > colgroup').length,
         audit:window.MEDINDEX_REGISTRY_TABLE_AUDIT || null,
       };
     });
+    console.log(`REGISTRY_TABLE_SHAPE ${JSON.stringify(tableShape)}`);
     expect(tableShape.rowCount).toBe(50);
-    expect(tableShape.mismatches).toBe(0);
+    expect(tableShape.firstRowKeys).toEqual(tableShape.headerKeys);
     expect(tableShape.colgroups).toBe(1);
     expect(tableShape.audit?.stable).toBe(true);
 
