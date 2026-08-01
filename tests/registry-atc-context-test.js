@@ -20,7 +20,14 @@ assert.ok(
 assert.match(script, /id = 'registryAtcContext'|PANEL_ID = 'registryAtcContext'/, 'The panel needs a stable ID');
 assert.match(script, /panel\.hidden = true/, 'The panel must be hidden without an ATC category');
 assert.match(script, /medindex:registry-atc-state/, 'The panel must consume the registry ATC state event');
-assert.match(script, /classificationUrl/, 'The back action must return to the active classification category');
+assert.match(script, /data-atc-context-browse/, 'The panel must expose an in-place category browser action');
+assert.match(script, /Shiko kategoritë/, 'The visible category browser label is missing');
+assert.match(script, /openCategoryNavigation/, 'The panel must open category navigation without leaving the table');
+assert.match(script, /\[data-mi-sidebar-toggle\]/, 'Mobile category browsing must open the existing sidebar drawer');
+assert.match(script, /\[data-mi-atc-root-trigger\]/, 'The category browser must expand the existing Classification submenu');
+assert.match(script, /\[data-mi-atc-code\]/, 'The active category must be focused in the existing submenu');
+assert.match(script, /target\.focus/, 'The category browser must move keyboard focus to the active category');
+assert.doesNotMatch(script, /classificationUrl|\/klasifikimi(?:\.html)?/, 'The active category panel must never navigate to the removed legacy page');
 assert.match(script, /registryUrlFromState/, 'Clearing ATC must preserve the remaining URL state');
 assert.match(script, /atc:''/, 'The clear action must remove only the ATC filter');
 assert.match(script, /page:1/, 'Clearing ATC must reset pagination');
