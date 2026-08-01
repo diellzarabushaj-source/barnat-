@@ -8,7 +8,8 @@ const read = file => fs.readFileSync(path.join(root, file), 'utf8');
 const html = read('icd.html');
 const tableJs = read('icd-full-table.js');
 const sidebarJs = read('icd-sidebar.js');
-const api = read('api/icd.js');
+const apiWrapper = read('api/icd.js');
+const apiBase = read('lib/icd-api-base.js');
 const hierarchy = read('lib/icd-full-hierarchy.js');
 
 const staticStyles = [...html.matchAll(/<link[^>]+rel="stylesheet"[^>]+href="([^"]+)"/g)].map(match => match[1]);
@@ -41,7 +42,12 @@ for (const marker of [
   "FULL_SPREADSHEET_ID = '1O2S9xNIzvNmiG8ny-VLAp9NeyiUsrY8pxRpyJgTF_O0'",
   "FULL_SHEET_GID = 329283560", "'table', 'nav', 'children', 'resolve', 'suggest', 'meta'",
   'loadFullHierarchy', 'fullViewPayload', 'X-MedIndex-ICD-Nodes',
-]) assert.ok(api.includes(marker), `ICD API full hierarchy mode missing ${marker}`);
+]) assert.ok(apiBase.includes(marker), `ICD API full hierarchy mode missing ${marker}`);
+
+for (const marker of [
+  "require('../lib/icd-api-base.js')", "require('../lib/icd-advanced-handler.js')",
+  "String(req.query?.advanced || '') === '1'",
+]) assert.ok(apiWrapper.includes(marker), `ICD API router missing ${marker}`);
 
 for (const marker of [
   'levels || params.level', 'childrenOf', 'ancestorsOf', 'nodeMap',
@@ -55,6 +61,7 @@ assert.doesNotMatch(tableJs, /innerHTML\s*=\s*[^;]*location\./, 'URL values must
 
 new Function(tableJs);
 new Function(sidebarJs);
-new Function(api);
+new Function(apiWrapper);
+new Function(apiBase);
 new Function(hierarchy);
-console.log('ICD full hierarchy table, nested navigation and accessibility audit passed.');
+console.log('ICD full hierarchy table, nested navigation and shared API routing audit passed.');
