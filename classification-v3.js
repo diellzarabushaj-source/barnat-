@@ -42,7 +42,7 @@
       <span class="atc-card-code">${escapeHtml(code)}</span>
       <h3>${escapeHtml(title)}</h3>
       <p class="atc-card-examples">${escapeHtml(description)}</p>
-      <div class="atc-card-footer"><span class="atc-card-count">${items.length} barna</span><span>${type === 'group' ? 'Shiko nën-grupet' : 'Shiko barnat'}</span></div>
+      <div class="atc-card-footer"><span class="atc-card-count">${items.length} barna</span><span>${type === 'group' ? 'Shiko nën-grupet' : 'Hap te Barnat'}</span></div>
       <span class="atc-card-arrow">${arrowIcon()}</span>
     </article>`;
   }
@@ -55,14 +55,19 @@
 
   function updateControls(count) {
     $('#atcCount').textContent = `${count} / ${rows.length} barna`;
-    $('#backButton').hidden = !state.group && !state.subgroup && !state.query;
+    $('#backButton').hidden = !state.group && !state.query;
+  }
+
+  function registryUrl(code, query = '') {
+    return window.MedIndexATC?.registryUrl?.({ atc:code, query })
+      || `/index.html?atc=${encodeURIComponent(code)}${query ? `&q=${encodeURIComponent(query)}` : ''}`;
   }
 
   function attachCardEvents() {
     document.querySelectorAll('.atc-card').forEach(card => {
       const activate = () => card.dataset.cardType === 'group'
         ? openGroup(card.dataset.code)
-        : openSubgroup(card.dataset.code);
+        : openSubgroup(card.dataset.code, state.query);
       card.addEventListener('click', activate);
       card.addEventListener('keydown', event => {
         if (event.key === 'Enter' || event.key === ' ') {
@@ -91,17 +96,19 @@
     attachCardEvents();
   }
 
-  function openGroup(code) {
+  function openGroup(code, options = {}) {
     state.group = code;
     state.subgroup = '';
-    state.query = '';
-    $('#atcSearch').value = '';
-    location.hash = code;
+    if (!options.preserveQuery) {
+      state.query = '';
+      $('#atcSearch').value = '';
+    }
+    if (options.updateHistory !== false) location.hash = code;
     const groupRows = rows.filter(row => groupCode(row) === code);
     const codes = [...new Set(groupRows.map(subgroupCode).filter(Boolean))].sort();
     setSection(
       `${code} — ${GROUPS[code] || 'Grupi ATC'}`,
-      'Nën-grupet dhe numri real i barnave në databazën aktuale.',
+      'Zgjidhe nën-grupin për ta hapur në tabelën kryesore të Barnave.',
       `<button class="atc-reset" type="button" data-go-home>Klasifikimi ATC</button> / <strong>${escapeHtml(code)}</strong>`
     );
     $('#cardGrid').innerHTML = codes.length
@@ -112,64 +119,88 @@
     updateControls(groupRows.length);
     attachCardEvents();
     $('[data-go-home]')?.addEventListener('click', renderGroups);
-    scrollTo({ top: 0, behavior: 'smooth' });
+
+    if (options.focusCode) {
+      requestAnimationFrame(() => {
+        const card = document.querySelector(`.atc-card[data-code="${options.focusCode}"]`);
+        card?.focus({ preventScroll:true });
+        card?.scrollIntoView({ block:'center', behavior:'smooth' });
+      });
+    } else {
+      scrollTo({ top:0, behavior:'smooth' });
+    }
   }
 
-  function drugTable(items, heading) {
-    setSection(
-      heading,
-      `${items.length} barna të marra nga i njëjti dataset i audituar.`,
-      `<button class="atc-reset" type="button" data-go-home>Klasifikimi ATC</button>${state.group ? ` / <button class="atc-reset" type="button" data-go-group>${escapeHtml(state.group)}</button>` : ''}${state.subgroup ? ` / <strong>${escapeHtml(state.subgroup)}</strong>` : ''}`
-    );
-    $('#cardGrid').hidden = true;
-    $('#drugResults').hidden = false;
-    $('#drugTableBody').innerHTML = items.length ? items.map(row => {
-      const quality = row.__qualityStatus || 'verified';
-      const qualityLabel = quality === 'corrected' ? '✓ Korrigjuar' : quality === 'blocked' ? '⚠ Bllokuar' : quality === 'warning' ? '⚠ Verifiko' : '';
-      return `<tr class="registry-quality-${escapeHtml(quality)}" data-quality-status="${escapeHtml(quality)}">
-        <td class="drug-title" title="${escapeHtml(row['Emri tregtar'])}"><button type="button" title="Kliko për ta zgjeruar">${escapeHtml(row['Emri tregtar'] || 'Pa emër')}</button>${qualityLabel ? `<small class="registry-quality-badge">${escapeHtml(qualityLabel)}</small>` : ''}</td>
-        <td class="wrap">${escapeHtml(row['Substanca aktive'])}</td>
-        <td class="code">${escapeHtml(row['ATC Code'])}</td>
-        <td class="wrap">${escapeHtml(row['Klasa / Çka është'])}</td>
-        <td>${escapeHtml(row['Fortësia'])}</td>
-        <td class="wrap">${escapeHtml(row['Forma farmaceutike'])}</td>
-      </tr>`;
-    }).join('') : '<tr><td colspan="6"><div class="atc-empty">Nuk u gjet asnjë bar.</div></td></tr>';
-    updateControls(items.length);
-    $('#drugTableBody').querySelectorAll('.drug-title button').forEach(button => {
-      button.addEventListener('click', () => button.parentElement.classList.toggle('expanded'));
-    });
-    $('[data-go-home]')?.addEventListener('click', renderGroups);
-    $('[data-go-group]')?.addEventListener('click', () => openGroup(state.group));
+  function revealSubgroup(code) {
+    const category = window.MedIndexATC?.resolveCategoryCode?.(code) || code;
+    const group = category.charAt(0);
+    history.replaceState(null, '', `${location.pathname}#${encodeURIComponent(category)}`);
+    openGroup(group, { updateHistory:false, focusCode:category });
   }
 
-  function openSubgroup(code) {
-    state.group = code.charAt(0);
-    state.subgroup = code;
-    state.query = '';
-    $('#atcSearch').value = '';
-    location.hash = code;
-    drugTable(rows.filter(row => subgroupCode(row) === code), `${code} — ${SUBGROUPS[code] || 'Nën-grupi ATC'}`);
-    scrollTo({ top: 0, behavior: 'smooth' });
+  function openSubgroup(code, query = '') {
+    const category = window.MedIndexATC?.resolveCategoryCode?.(code) || code;
+    location.href = registryUrl(category, query);
+  }
+
+  function rowsMatchingQuery(query) {
+    const needle = normalize(query);
+    if (!needle) return [];
+    return rows.filter(row => normalize([
+      row['Emri tregtar'], row['Substanca aktive'], row['ATC Code'],
+      row['Klasa / Çka është'], row['Përdorimi (fjalë kyçe)'], row['Forma farmaceutike']
+    ].join(' ')).includes(needle));
   }
 
   function renderSearch(query) {
     state.query = text(query);
     if (!state.query) {
-      if (state.subgroup) openSubgroup(state.subgroup);
-      else if (state.group) openGroup(state.group);
-      else renderGroups();
+      renderGroups();
       return;
     }
+
     const needle = normalize(state.query);
-    const items = rows.filter(row => normalize([
-      row['Emri tregtar'], row['Substanca aktive'], row['ATC Code'],
-      row['Klasa / Çka është'], row['Përdorimi (fjalë kyçe)'], row['Forma farmaceutike']
-    ].join(' ')).includes(needle));
+    const matchingRows = rowsMatchingQuery(state.query);
+    const matchingGroupCodes = new Set(Object.entries(GROUPS)
+      .filter(([code, name]) => normalize(`${code} ${name}`).includes(needle))
+      .map(([code]) => code));
+    const matchingSubgroupCodes = new Set(Object.entries(SUBGROUPS)
+      .filter(([code, name]) => normalize(`${code} ${name}`).includes(needle))
+      .map(([code]) => code));
+
+    matchingRows.map(subgroupCode).filter(Boolean).forEach(code => matchingSubgroupCodes.add(code));
+
     state.group = '';
     state.subgroup = '';
     history.replaceState(null, '', `${location.pathname}?q=${encodeURIComponent(state.query)}`);
-    drugTable(items, `Rezultatet për “${state.query}”`);
+
+    const cards = [];
+    matchingGroupCodes.forEach(code => {
+      const items = rows.filter(row => groupCode(row) === code);
+      if (items.length) cards.push(cardHtml(code, GROUPS[code], items, 'group'));
+    });
+    matchingSubgroupCodes.forEach(code => {
+      const exactMatches = matchingRows.filter(row => subgroupCode(row) === code);
+      const items = exactMatches.length ? exactMatches : rows.filter(row => subgroupCode(row) === code);
+      if (items.length) cards.push(cardHtml(code, SUBGROUPS[code] || `Nën-grupi ${code}`, items, 'subgroup'));
+    });
+
+    setSection(
+      `Rezultatet për “${state.query}”`,
+      cards.length
+        ? 'Zgjidhe kategorinë për t’i hapur rezultatet në tabelën kryesore të Barnave.'
+        : 'Nuk u identifikua një kategori e vetme. Mund ta vazhdosh kërkimin në tabelën e Barnave.',
+      '<button class="atc-reset" type="button" data-go-home>Klasifikimi ATC</button> / <strong>Kërkimi</strong>'
+    );
+
+    $('#cardGrid').innerHTML = cards.length
+      ? cards.join('')
+      : `<div class="atc-empty"><p>Nuk u gjet kategori e drejtpërdrejtë për “${escapeHtml(state.query)}”.</p><a class="atc-reset atc-search-registry-link" href="${escapeHtml(window.MedIndexATC?.registryUrl?.({ query:state.query }) || `/index.html?q=${encodeURIComponent(state.query)}`)}">Kërko te Barnat</a></div>`;
+    $('#cardGrid').hidden = false;
+    $('#drugResults').hidden = true;
+    updateControls(matchingRows.length);
+    attachCardEvents();
+    $('[data-go-home]')?.addEventListener('click', renderGroups);
   }
 
   function applyTheme(theme) {
@@ -187,15 +218,24 @@
   }
 
   function initNavigation() {
-    $('#backButton').addEventListener('click', () => state.query ? renderGroups() : state.subgroup ? openGroup(state.group) : renderGroups());
+    $('#backButton').addEventListener('click', () => state.query ? renderGroups() : state.group ? renderGroups() : renderGroups());
     $('#resetButton').addEventListener('click', () => {
       $('#atcSearch').value = '';
       renderGroups();
     });
     let timer;
-    $('#atcSearch').addEventListener('input', event => {
+    const search = $('#atcSearch');
+    search.addEventListener('input', event => {
       clearTimeout(timer);
       timer = setTimeout(() => renderSearch(event.target.value), 180);
+    });
+    search.addEventListener('keydown', event => {
+      if (event.key !== 'Enter' || !text(search.value)) return;
+      const subgroupCards = [...document.querySelectorAll('.atc-card[data-card-type="subgroup"]')];
+      if (subgroupCards.length === 1) {
+        event.preventDefault();
+        subgroupCards[0].click();
+      }
     });
   }
 
@@ -213,7 +253,7 @@
       if (query) {
         $('#atcSearch').value = query;
         renderSearch(query);
-      } else if (/^[A-Z]\d{2}$/.test(hash)) openSubgroup(hash);
+      } else if (/^[A-Z]\d{2}$/.test(hash)) revealSubgroup(hash);
       else if (/^[A-Z]$/.test(hash) && GROUPS[hash]) openGroup(hash);
       else renderGroups();
     } catch (error) {
@@ -223,6 +263,6 @@
     }
   }
 
-  if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', init, { once: true });
+  if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', init, { once:true });
   else init();
 })();
