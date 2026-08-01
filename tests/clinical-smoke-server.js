@@ -61,6 +61,78 @@ const dosage = {
   meta:{ clinicalAutoFillEnabled:true, publishedForms:1, publishedAdultRegimens:1, publishedPediatricRegimens:0, geminiForDosage:false },
 };
 
+const icdMeta = {
+  version:'ICD-10-WHO 2019',
+  sourceSpreadsheetId:'1O2S9xNIzvNmiG8ny-VLAp9NeyiUsrY8pxRpyJgTF_O0',
+  counts:{ chapter:22, block:274, category:2050, subcategory:10196, total:12542 },
+  quality:{ missingTranslations:5240, machineDraftTranslations:7302, verifiedTranslations:0, translationCoverage:58.22, publicationReady:false },
+};
+const icdNodes = [
+  { code:'I', level:'chapter', chapter:'I', block:'', parentCode:'', englishTitle:'Certain infectious and parasitic diseases (A00-B99)', albanianDraft:'Sëmundje të caktuara infektive dhe parazitare', displayTitle:'Sëmundje të caktuara infektive dhe parazitare', translationStatus:'machine-draft', sourceUrl:'https://icd.who.int/browse10/2019/en#/I', childCount:1 },
+  { code:'IX', level:'chapter', chapter:'IX', block:'', parentCode:'', englishTitle:'Diseases of the circulatory system (I00-I99)', albanianDraft:'Sëmundjet e sistemit të qarkullimit', displayTitle:'Sëmundjet e sistemit të qarkullimit', translationStatus:'machine-draft', sourceUrl:'https://icd.who.int/browse10/2019/en#/IX', childCount:1 },
+  { code:'A00-A09', level:'block', chapter:'I', block:'A00-A09', parentCode:'I', englishTitle:'Intestinal infectious diseases', albanianDraft:'Sëmundjet infektive të zorrëve', displayTitle:'Sëmundjet infektive të zorrëve', translationStatus:'machine-draft', sourceUrl:'https://icd.who.int/browse10/2019/en#/A00-A09', childCount:2 },
+  { code:'I10-I15', level:'block', chapter:'IX', block:'I10-I15', parentCode:'IX', englishTitle:'Hypertensive diseases', albanianDraft:'Sëmundjet hipertensive', displayTitle:'Sëmundjet hipertensive', translationStatus:'machine-draft', sourceUrl:'https://icd.who.int/browse10/2019/en#/I10-I15', childCount:1 },
+  { code:'A00', level:'category', chapter:'I', block:'A00-A09', parentCode:'A00-A09', englishTitle:'Cholera', albanianDraft:'Kolera', displayTitle:'Kolera', translationStatus:'machine-draft', sourceUrl:'https://icd.who.int/browse10/2019/en#/A00', childCount:2 },
+  { code:'A01', level:'category', chapter:'I', block:'A00-A09', parentCode:'A00-A09', englishTitle:'Typhoid and paratyphoid fevers', albanianDraft:'Ethet tifoide dhe paratifoide', displayTitle:'Ethet tifoide dhe paratifoide', translationStatus:'machine-draft', sourceUrl:'https://icd.who.int/browse10/2019/en#/A01', childCount:0 },
+  { code:'I10', level:'category', chapter:'IX', block:'I10-I15', parentCode:'I10-I15', englishTitle:'Essential (primary) hypertension', albanianDraft:'Hipertensioni esencial (primar)', displayTitle:'Hipertensioni esencial (primar)', translationStatus:'machine-draft', sourceUrl:'https://icd.who.int/browse10/2019/en#/I10', childCount:0 },
+  { code:'A00.0', level:'subcategory', chapter:'I', block:'A00-A09', parentCode:'A00', englishTitle:'Cholera due to Vibrio cholerae 01, biovar cholerae', albanianDraft:'', displayTitle:'Cholera due to Vibrio cholerae 01, biovar cholerae', translationStatus:'missing', sourceUrl:'https://icd.who.int/browse10/2019/en#/A00.0', childCount:0 },
+  { code:'A00.1', level:'subcategory', chapter:'I', block:'A00-A09', parentCode:'A00', englishTitle:'Cholera due to Vibrio cholerae 01, biovar eltor', albanianDraft:'Kolera për shkak të Vibrio cholerae 01, biovar eltor', displayTitle:'Kolera për shkak të Vibrio cholerae 01, biovar eltor', translationStatus:'machine-draft', sourceUrl:'https://icd.who.int/browse10/2019/en#/A00.1', childCount:0 },
+];
+
+function icdAncestors(code) {
+  const byCode = new Map(icdNodes.map(node => [node.code, node]));
+  const result = [];
+  let node = byCode.get(code);
+  while (node?.parentCode) {
+    node = byCode.get(node.parentCode);
+    if (!node) break;
+    result.unshift(node);
+  }
+  return result;
+}
+
+function icdPayload(url) {
+  const view = String(url.searchParams.get('view') || '');
+  const q = String(url.searchParams.get('q') || '').toLowerCase();
+  const parent = String(url.searchParams.get('parent') || '');
+  const chapter = String(url.searchParams.get('chapter') || '');
+  if (!view) return null;
+  if (view === 'meta') return { meta:icdMeta };
+  if (view === 'nav') return { meta:icdMeta, chapters:icdNodes.filter(node => node.level === 'chapter'), blocks:icdNodes.filter(node => node.level === 'block') };
+  if (view === 'children') {
+    const parentNode = icdNodes.find(node => node.code === parent) || null;
+    const direct = icdNodes.filter(node => node.parentCode === parent);
+    return { meta:icdMeta, parent:parentNode, ancestors:parentNode ? icdAncestors(parent) : [], rows:direct, total:direct.length };
+  }
+  if (view === 'resolve') {
+    const code = String(url.searchParams.get('code') || parent);
+    const node = icdNodes.find(item => item.code === code) || null;
+    return { meta:icdMeta, node, ancestors:node ? icdAncestors(code) : [] };
+  }
+  let result = icdNodes.slice();
+  if (view !== 'suggest') result = result.filter(node => ['category', 'subcategory'].includes(node.level));
+  if (parent) result = result.filter(node => node.parentCode === parent);
+  if (chapter) result = result.filter(node => node.chapter === chapter);
+  const levels = String(url.searchParams.get('levels') || '').split(',').filter(Boolean);
+  if (levels.length) result = result.filter(node => levels.includes(node.level));
+  if (q) result = result.filter(node => `${node.code} ${node.displayTitle} ${node.englishTitle}`.toLowerCase().includes(q));
+  if (view === 'suggest') result = result.slice(0, 12);
+  const pageSize = view === 'suggest' ? 12 : Math.max(1, Number(url.searchParams.get('pageSize') || 50));
+  const page = view === 'suggest' ? 1 : Math.max(1, Number(url.searchParams.get('page') || 1));
+  const total = result.length;
+  const context = parent ? icdNodes.find(node => node.code === parent) || null : null;
+  return {
+    meta:icdMeta,
+    page,
+    pageSize,
+    total,
+    totalPages:Math.max(1, Math.ceil(total / pageSize)),
+    rows:result.slice((page - 1) * pageSize, page * pageSize),
+    context,
+    ancestors:context ? icdAncestors(context.code) : [],
+  };
+}
+
 const TYPES = {
   '.html':'text/html; charset=utf-8', '.js':'application/javascript; charset=utf-8', '.css':'text/css; charset=utf-8',
   '.json':'application/json; charset=utf-8', '.txt':'text/plain; charset=utf-8', '.svg':'image/svg+xml',
@@ -81,8 +153,8 @@ function send(res, status, body, type = 'text/plain; charset=utf-8', headers = {
 }
 
 function safeFile(urlPath) {
-  const clean = decodeURIComponent(urlPath.split('?')[0]);
-  const relative = clean === '/' ? 'index.html' : clean.replace(/^\/+/, '');
+  const cleanPath = decodeURIComponent(urlPath.split('?')[0]);
+  const relative = cleanPath === '/' ? 'index.html' : cleanPath.replace(/^\/+/, '');
   const file = path.resolve(ROOT, relative);
   return file.startsWith(ROOT + path.sep) ? file : null;
 }
@@ -97,7 +169,11 @@ const server = http.createServer((req, res) => {
     return send(res, 200, registryBody, 'application/javascript; charset=utf-8', { ETag:'"browser-registry"' });
   }
   if (url.pathname === '/api/dosage') return send(res, 200, JSON.stringify(dosage), 'application/json; charset=utf-8');
-  if (url.pathname === '/api/icd') return send(res, 503, JSON.stringify({ error:'Use embedded test data' }), 'application/json; charset=utf-8');
+  if (url.pathname === '/api/icd') {
+    const data = icdPayload(url);
+    if (data) return send(res, 200, JSON.stringify({ ok:true, data }), 'application/json; charset=utf-8');
+    return send(res, 503, JSON.stringify({ error:'Use full hierarchy test views' }), 'application/json; charset=utf-8');
+  }
   if (url.pathname === '/api/drug-search') {
     const q = String(url.searchParams.get('q') || '').toLowerCase();
     const results = rows.filter(row => `${row['Substanca aktive']} ${row['Emri tregtar']}`.toLowerCase().includes(q)).map(row => ({
