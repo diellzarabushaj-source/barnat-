@@ -41,10 +41,10 @@
 
   let frame = 0;
   let idleHandle = 0;
+  let observerAttempts = 0;
   let headerObserver = null;
   let rootObserver = null;
   let toolbarObserver = null;
-  let tableObserver = null;
   let bound = false;
 
   const keyOf = node => String(node?.dataset?.registryColumnKey || '').trim();
@@ -73,28 +73,33 @@
 
   function rebuildColgroup(table, headers) {
     if (!table) return;
+
+    const wrapperWidth = document.getElementById('registryContent')?.clientWidth || 0;
+    const mobile = isMobile();
+    const geometry = headers.map(header => [keyOf(header),widthFor(header)]);
+    const total = geometry.reduce((sum,[,width]) => sum + width,0);
+    const finalWidth = mobile ? '100%' : `${Math.ceil(Math.max(total,Math.max(0,wrapperWidth - 2)))}px`;
+    const signature = mobile
+      ? 'mobile'
+      : `${geometry.map(([key,width]) => `${key}:${width}`).join('|')}@${Math.ceil(wrapperWidth)}`;
+    const finalGroup = table.querySelector(':scope > colgroup[data-registry-table-final]');
+
+    table.style.setProperty('--registry-table-final-width',finalWidth);
+    if (table.dataset.registryFinalGeometry === signature && (mobile || finalGroup)) return;
+    table.dataset.registryFinalGeometry = signature;
+
     table.querySelectorAll(':scope > colgroup').forEach(group => group.remove());
-    if (!headers.length || isMobile()) {
-      table.style.setProperty('--registry-table-final-width','100%');
-      return;
-    }
+    if (!headers.length || mobile) return;
 
     const group = document.createElement('colgroup');
     group.dataset.registryTableFinal = VERSION;
-    let total = 0;
-    headers.forEach(header => {
-      const width = widthFor(header);
-      total += width;
+    geometry.forEach(([key,width]) => {
       const col = document.createElement('col');
-      col.dataset.registryColumnKey = keyOf(header);
+      col.dataset.registryColumnKey = key;
       col.style.width = `${width}px`;
       group.appendChild(col);
     });
     table.prepend(group);
-
-    const wrapperWidth = document.getElementById('registryContent')?.clientWidth || 0;
-    const finalWidth = Math.max(total, Math.max(0,wrapperWidth - 2));
-    table.style.setProperty('--registry-table-final-width',`${Math.ceil(finalWidth)}px`);
     table.dataset.registryFinalColumns = headers.map(keyOf).join(',');
   }
 
@@ -130,16 +135,17 @@
 
   function pencilizeBatch() {
     idleHandle = 0;
-    const buttons = [...document.querySelectorAll('#tbody .clinical-editor-open:not([data-registry-final-pencil])')];
-    if (!buttons.length) return;
-    const batch = buttons.slice(0,120);
-    batch.forEach(button => {
+    let processed = 0;
+    while (processed < 40) {
+      const button = document.querySelector('#tbody .clinical-editor-open:not([data-registry-final-pencil])');
+      if (!button) break;
       button.dataset.registryFinalPencil = VERSION;
       button.setAttribute('aria-label','Redakto barin');
       button.setAttribute('title','Redakto');
       if (!button.querySelector('svg')) button.innerHTML = PENCIL;
-    });
-    if (buttons.length > batch.length) scheduleIdleWork();
+      processed += 1;
+    }
+    if (document.querySelector('#tbody .clinical-editor-open:not([data-registry-final-pencil])')) scheduleIdleWork();
   }
 
   function scheduleIdleWork() {
@@ -148,12 +154,12 @@
       idleHandle = requestIdleCallback(() => {
         stripLegacyDialogs();
         pencilizeBatch();
-      }, { timeout:1800 });
+      }, { timeout:5000 });
     } else {
       idleHandle = setTimeout(() => {
         stripLegacyDialogs();
         pencilizeBatch();
-      },180);
+      },500);
     }
   }
 
@@ -184,14 +190,6 @@
       });
     }
 
-    const table = document.getElementById('dataTable');
-    if (table) {
-      tableObserver = new MutationObserver(records => {
-        if (records.some(record => [...record.addedNodes,...record.removedNodes].some(node => node.nodeName === 'COLGROUP'))) schedule();
-      });
-      tableObserver.observe(table,{ childList:true,subtree:false });
-    }
-
     rootObserver = new MutationObserver(schedule);
     rootObserver.observe(document.documentElement,{
       attributes:true,
@@ -212,7 +210,8 @@
       bindObservers();
       return;
     }
-    requestAnimationFrame(refreshObservers);
+    observerAttempts += 1;
+    if (observerAttempts < 50) setTimeout(refreshObservers,120);
   }
 
   function start() {
