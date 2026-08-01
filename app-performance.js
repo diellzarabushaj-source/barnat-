@@ -24,7 +24,30 @@ const yieldToInteractiveShell = () => new Promise(resolve => {
     window.setTimeout(resolve, 0);
     return;
   }
-  requestAnimationFrame(() => requestAnimationFrame(() => window.setTimeout(resolve, 120)));
+
+  let settled = false;
+  let fallbackTimer = 0;
+  const eventNames = ['pointerdown', 'touchstart', 'keydown'];
+  const cleanup = () => {
+    window.clearTimeout(fallbackTimer);
+    eventNames.forEach(name => window.removeEventListener(name, onFirstInteraction, true));
+  };
+  const finish = delay => {
+    if (settled) return;
+    settled = true;
+    cleanup();
+    window.setTimeout(resolve, delay);
+  };
+  const onFirstInteraction = () => finish(120);
+
+  eventNames.forEach(name => window.addEventListener(name, onFirstInteraction, {
+    once:true,
+    capture:true,
+    passive:true,
+  }));
+  requestAnimationFrame(() => requestAnimationFrame(() => {
+    fallbackTimer = window.setTimeout(() => finish(0), 700);
+  }));
 });
 
 releaseStaleInteractionLock();
