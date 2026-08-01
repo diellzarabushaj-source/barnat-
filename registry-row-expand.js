@@ -1,8 +1,8 @@
 (() => {
   'use strict';
 
-  const VERSION = 'registry-row-expand-20260801-1';
-  const FINAL_STYLE_ID = 'registryResponsiveFinalStyles';
+  const VERSION = 'registry-row-expand-20260801-2';
+  const FINAL_STYLE_ID = 'registryColumnsFiltersStyles';
   const EXPANDABLE_KEYS = new Set([
     'trade-name',
     'active-substance',
