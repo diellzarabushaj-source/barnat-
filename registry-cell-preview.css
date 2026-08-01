@@ -1,5 +1,5 @@
-/* MedIndex full-cell preview.
-   Icons: Lineicons Basic (MIT), expand-square-4 and xmark. */
+/* MedIndex inline full-cell expansion.
+   Icon: Lineicons Basic (MIT), expand-square-4. */
 
 html.medindex-tailadmin[data-mi-page="barnat"] body #dataTable td[data-registry-cell-preview="true"] {
   position:relative!important;
@@ -27,7 +27,7 @@ html.medindex-tailadmin[data-mi-page="barnat"] body .registry-cell-preview-trigg
   background:rgba(255,255,255,.96)!important;
   color:#2563eb!important;
   box-shadow:0 1px 2px rgba(15,23,42,.06),0 5px 16px rgba(37,99,235,.08)!important;
-  opacity:.72!important;
+  opacity:.78!important;
   cursor:pointer!important;
   transition:opacity .16s ease,border-color .16s ease,background-color .16s ease,transform .16s ease,box-shadow .16s ease!important;
 }
@@ -43,6 +43,14 @@ html.medindex-tailadmin[data-mi-page="barnat"] body .registry-cell-preview-trigg
   transform:translateY(-1px)!important;
 }
 
+html.medindex-tailadmin[data-mi-page="barnat"] body .registry-cell-preview-trigger[aria-expanded="true"] {
+  border-color:#2563eb!important;
+  background:#2563eb!important;
+  color:#fff!important;
+  box-shadow:0 0 0 3px rgba(37,99,235,.14),0 8px 22px rgba(37,99,235,.2)!important;
+  opacity:1!important;
+}
+
 html.medindex-tailadmin[data-mi-page="barnat"] body .registry-cell-preview-trigger:focus-visible {
   outline:2px solid #2563eb!important;
   outline-offset:2px!important;
@@ -55,125 +63,37 @@ html.medindex-tailadmin[data-mi-page="barnat"] body .registry-cell-preview-trigg
   pointer-events:none!important;
 }
 
-html.medindex-tailadmin[data-mi-page="barnat"] body .registry-cell-preview-dialog {
-  width:min(620px,calc(100vw - 32px))!important;
-  max-width:620px!important;
-  max-height:min(78vh,720px)!important;
-  margin:auto!important;
-  padding:0!important;
-  overflow:hidden!important;
-  border:0!important;
-  border-radius:20px!important;
-  background:#fff!important;
-  color:#172033!important;
-  box-shadow:0 28px 80px rgba(15,23,42,.28),0 8px 24px rgba(37,99,235,.12)!important;
+html.medindex-tailadmin[data-mi-page="barnat"] body #dataTable tbody tr.registry-row-expanded[data-registry-row-expanded="true"] {
+  height:132px!important;
+  min-height:132px!important;
+  max-height:none!important;
 }
 
-html.medindex-tailadmin[data-mi-page="barnat"] body .registry-cell-preview-dialog::backdrop {
-  background:rgba(15,23,42,.48)!important;
-  backdrop-filter:blur(3px)!important;
+html.medindex-tailadmin[data-mi-page="barnat"] body #dataTable tbody tr.registry-row-expanded[data-registry-row-expanded="true"] td[data-registry-cell-preview="true"] {
+  height:132px!important;
+  min-height:132px!important;
+  max-height:none!important;
+  padding-top:14px!important;
+  padding-bottom:18px!important;
+  overflow:visible!important;
+  white-space:normal!important;
 }
 
-html.medindex-tailadmin[data-mi-page="barnat"] body .registry-cell-preview-card {
-  display:grid!important;
-  grid-template-rows:auto minmax(0,1fr)!important;
-  max-height:min(78vh,720px)!important;
-  background:#fff!important;
-}
-
-html.medindex-tailadmin[data-mi-page="barnat"] body .registry-cell-preview-header {
-  display:grid!important;
-  grid-template-columns:minmax(0,1fr) auto!important;
-  align-items:start!important;
-  gap:16px!important;
-  padding:18px 18px 15px!important;
-  border-bottom:1px solid #dbe5f1!important;
-  background:linear-gradient(180deg,#f8fbff 0%,#fff 100%)!important;
-}
-
-html.medindex-tailadmin[data-mi-page="barnat"] body .registry-cell-preview-heading {
-  display:grid!important;
-  min-width:0!important;
-  gap:4px!important;
-}
-
-html.medindex-tailadmin[data-mi-page="barnat"] body .registry-cell-preview-kicker {
-  color:#2563eb!important;
-  font-size:.67rem!important;
-  font-weight:760!important;
-  letter-spacing:.055em!important;
-  line-height:1.2!important;
-  text-transform:uppercase!important;
-}
-
-html.medindex-tailadmin[data-mi-page="barnat"] body .registry-cell-preview-title {
-  margin:0!important;
-  color:#172033!important;
-  font-size:1rem!important;
-  font-weight:800!important;
-  letter-spacing:-.018em!important;
-  line-height:1.28!important;
-}
-
-html.medindex-tailadmin[data-mi-page="barnat"] body .registry-cell-preview-context {
-  min-height:1.2em!important;
-  overflow:hidden!important;
-  color:#64748b!important;
-  font-size:.72rem!important;
-  font-weight:620!important;
-  line-height:1.35!important;
-  text-overflow:ellipsis!important;
-  white-space:nowrap!important;
-}
-
-html.medindex-tailadmin[data-mi-page="barnat"] body .registry-cell-preview-close {
-  display:inline-grid!important;
-  width:38px!important;
-  height:38px!important;
-  min-width:38px!important;
-  min-height:38px!important;
-  margin:0!important;
-  padding:0!important;
-  place-items:center!important;
-  border:1px solid #d6e0ec!important;
-  border-radius:11px!important;
-  background:#fff!important;
-  color:#475569!important;
-  cursor:pointer!important;
-}
-
-html.medindex-tailadmin[data-mi-page="barnat"] body .registry-cell-preview-close:hover,
-html.medindex-tailadmin[data-mi-page="barnat"] body .registry-cell-preview-close:focus-visible {
-  border-color:#a9bdd6!important;
-  background:#f1f5f9!important;
-  color:#0f172a!important;
-}
-
-html.medindex-tailadmin[data-mi-page="barnat"] body .registry-cell-preview-close:focus-visible {
-  outline:2px solid #2563eb!important;
-  outline-offset:2px!important;
-}
-
-html.medindex-tailadmin[data-mi-page="barnat"] body .registry-cell-preview-close svg {
-  width:19px!important;
-  height:19px!important;
-  pointer-events:none!important;
-}
-
-html.medindex-tailadmin[data-mi-page="barnat"] body .registry-cell-preview-body {
-  min-height:120px!important;
-  max-height:calc(min(78vh,720px) - 96px)!important;
-  padding:20px!important;
-  overflow:auto!important;
-  overscroll-behavior:contain!important;
-  background:#fff!important;
-  color:#172033!important;
-  font-size:.9rem!important;
-  font-weight:560!important;
-  line-height:1.72!important;
-  overflow-wrap:anywhere!important;
-  white-space:pre-wrap!important;
-  user-select:text!important;
+html.medindex-tailadmin[data-mi-page="barnat"] body #dataTable tbody tr.registry-row-expanded[data-registry-row-expanded="true"] td[data-registry-cell-preview="true"] :is(
+  .drug-name-text,
+  .registry-cell-value,
+  .registry-dosage-grid,
+  .registry-dosage-muted,
+  .registry-dosage-preview,
+  [class*="truncate"],
+  [class*="clamp"]
+) {
+  height:auto!important;
+  max-height:none!important;
+  overflow:visible!important;
+  text-overflow:clip!important;
+  white-space:normal!important;
+  -webkit-line-clamp:unset!important;
 }
 
 html.medindex-tailadmin:is(.dark,[data-theme="dark"])[data-mi-page="barnat"] body .registry-cell-preview-trigger {
@@ -190,28 +110,10 @@ html.medindex-tailadmin:is(.dark,[data-theme="dark"])[data-mi-page="barnat"] bod
   color:#dbeafe!important;
 }
 
-html.medindex-tailadmin:is(.dark,[data-theme="dark"])[data-mi-page="barnat"] body :is(.registry-cell-preview-dialog,.registry-cell-preview-card,.registry-cell-preview-body) {
-  background:#0f172a!important;
-  color:#e5edf8!important;
-}
-
-html.medindex-tailadmin:is(.dark,[data-theme="dark"])[data-mi-page="barnat"] body .registry-cell-preview-header {
-  border-bottom-color:#273449!important;
-  background:linear-gradient(180deg,#111d34 0%,#0f172a 100%)!important;
-}
-
-html.medindex-tailadmin:is(.dark,[data-theme="dark"])[data-mi-page="barnat"] body .registry-cell-preview-title {
-  color:#f8fafc!important;
-}
-
-html.medindex-tailadmin:is(.dark,[data-theme="dark"])[data-mi-page="barnat"] body .registry-cell-preview-context {
-  color:#94a3b8!important;
-}
-
-html.medindex-tailadmin:is(.dark,[data-theme="dark"])[data-mi-page="barnat"] body .registry-cell-preview-close {
-  border-color:#334155!important;
-  background:#172033!important;
-  color:#cbd5e1!important;
+html.medindex-tailadmin:is(.dark,[data-theme="dark"])[data-mi-page="barnat"] body .registry-cell-preview-trigger[aria-expanded="true"] {
+  border-color:#60a5fa!important;
+  background:#2563eb!important;
+  color:#fff!important;
 }
 
 @media (max-width:680px) {
@@ -221,29 +123,19 @@ html.medindex-tailadmin:is(.dark,[data-theme="dark"])[data-mi-page="barnat"] bod
     min-width:30px!important;
     min-height:30px!important;
     border-radius:10px!important;
-    opacity:.9!important;
+    opacity:.92!important;
   }
 
-  html.medindex-tailadmin[data-mi-page="barnat"] body .registry-cell-preview-dialog {
-    width:100vw!important;
-    max-width:none!important;
-    max-height:84dvh!important;
-    margin:auto 0 0!important;
-    border-radius:20px 20px 0 0!important;
+  html.medindex-tailadmin[data-mi-page="barnat"] body #dataTable tbody tr.registry-row-expanded[data-registry-row-expanded="true"] {
+    height:148px!important;
+    min-height:148px!important;
   }
 
-  html.medindex-tailadmin[data-mi-page="barnat"] body .registry-cell-preview-card {
-    max-height:84dvh!important;
-  }
-
-  html.medindex-tailadmin[data-mi-page="barnat"] body .registry-cell-preview-header {
-    padding:16px!important;
-  }
-
-  html.medindex-tailadmin[data-mi-page="barnat"] body .registry-cell-preview-body {
-    max-height:calc(84dvh - 90px)!important;
-    padding:18px 16px calc(22px + env(safe-area-inset-bottom))!important;
-    font-size:.92rem!important;
+  html.medindex-tailadmin[data-mi-page="barnat"] body #dataTable tbody tr.registry-row-expanded[data-registry-row-expanded="true"] td[data-registry-cell-preview="true"] {
+    height:148px!important;
+    min-height:148px!important;
+    padding-top:16px!important;
+    padding-bottom:22px!important;
   }
 }
 
