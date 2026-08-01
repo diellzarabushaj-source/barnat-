@@ -56,6 +56,15 @@ assert.match(styles, /min-height:44px/, 'Mobile ATC items must satisfy touch-tar
 assert.match(styles, /:focus-visible/, 'Keyboard focus visibility is missing');
 assert.match(styles, /prefers-reduced-motion:reduce/, 'Reduced-motion support is missing');
 
+assert.match(styles, /contain:layout style/, 'ATC navigation must isolate layout/style work from the registry table');
+assert.match(styles, /overscroll-behavior:contain/, 'Nested category scrolling must not leak into the page');
+assert.match(styles, /\.mi-atc-menu:has\(\.mi-atc-group\.is-open\) \.mi-atc-group:not\(\.is-open\)/, 'Mobile focus mode must hide unrelated groups');
+assert.match(styles, /content:"Kthehu te grupet"/, 'The open mobile group must expose a clear back affordance');
+assert.match(styles, /position:sticky/, 'The mobile back/group header must remain visible while scrolling');
+assert.match(styles, /grid-template-columns:24px minmax\(0,1fr\) auto 18px/, 'Mobile focus header geometry must remain stable');
+assert.match(styles, /html\[data-theme="dark"\] \.mi-atc-menu:has/, 'Mobile focus mode needs a dark-theme contract');
+assert.match(styles, /scrollbar-gutter:stable/, 'Mobile category scrolling must avoid width jumps');
+
 execFileSync(process.execPath, ['--check', path.join(ROOT, 'atc-sidebar.js')], { stdio:'pipe' });
 execFileSync(process.execPath, ['--check', path.join(ROOT, 'tailadmin-shell.js')], { stdio:'pipe' });
 execFileSync(process.execPath, ['--check', path.join(ROOT, 'api/drug-search.js')], { stdio:'pipe' });
