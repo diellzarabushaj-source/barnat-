@@ -1,13 +1,11 @@
 (() => {
   'use strict';
 
-  const VERSION = 'registry-clinical-view-20260801-2';
+  const VERSION = 'registry-clinical-view-20260801-3';
   const STYLE_ID = 'registryClinicalViewStyles';
-  const STYLE_HREF = '/registry-clinical-view.css?v=20260801-1';
+  const STYLE_HREF = '/registry-clinical-view.css?v=20260801-2';
   const STORAGE_KEY = 'medindex.registry.view.v1';
   const VALID_VIEWS = new Set(['clinical', 'full']);
-  const INITIAL_ROW_BUDGET = 60;
-  const IDLE_ROW_BATCH = 16;
   const COMPACT_WIDTHS = Object.freeze({
     select: 44,
     'trade-name': 224,
@@ -18,25 +16,25 @@
     'dosage-pediatric': 278,
   });
 
-  let observer = null;
   let resizeObserver = null;
   let scheduled = false;
-  let enhancing = false;
   let lastWidthSignature = '';
-  let rowPassToken = 0;
-
-  const clean = value => String(value ?? '').replace(/\s+/g, ' ').trim();
 
   function ensureStyles() {
-    let link = document.getElementById(STYLE_ID);
-    if (!link) {
-      link = document.createElement('link');
+    let link = document.getElementById(STYLE_ID)
+      || document.querySelector('link[data-registry-clinical-view-css]');
+    if (link) {
       link.id = STYLE_ID;
-      link.rel = 'stylesheet';
-      link.dataset.registryClinicalView = VERSION;
+      return;
     }
-    if (link.getAttribute('href') !== STYLE_HREF) link.href = STYLE_HREF;
-    if (document.head.lastElementChild !== link) document.head.appendChild(link);
+
+    link = document.createElement('link');
+    link.id = STYLE_ID;
+    link.rel = 'stylesheet';
+    link.href = STYLE_HREF;
+    link.dataset.registryClinicalViewCss = VERSION;
+    const professional = document.querySelector('link[data-tailadmin-professional-css]');
+    document.head.insertBefore(link, professional || null);
   }
 
   function storedView() {
@@ -108,148 +106,13 @@
     const description = document.querySelector('[data-registry-view-description]');
     if (description) {
       description.textContent = view === 'clinical'
-        ? 'Dozat, forma dhe substanca aktive shfaqen pa rrëshqitje horizontale.'
-        : 'Shfaqen të gjitha kolonat e zgjedhura; mund të kërkohet rrëshqitje horizontale.';
+        ? 'Emri, substanca, forma dhe dozat janë në fokus.'
+        : 'Shfaqen të gjitha kolonat e zgjedhura.';
     }
   }
 
   function headerFor(key) {
     return document.querySelector(`#headerRow > th[data-registry-column-key="${key}"]`);
-  }
-
-  function compactDoseHeaders() {
-    const adult = headerFor('dosage-adult');
-    const pediatric = headerFor('dosage-pediatric');
-    if (adult && adult.dataset.registryClinicalHeader !== VERSION) {
-      adult.innerHTML = '<span class="registry-clinical-header-title">Doza · Të rritur</span><span class="registry-dosage-subhead">Doza e plotë · Rruga</span>';
-      adult.dataset.registryClinicalHeader = VERSION;
-    }
-    if (pediatric && pediatric.dataset.registryClinicalHeader !== VERSION) {
-      pediatric.innerHTML = '<span class="registry-clinical-header-title">Doza · Fëmijë</span><span class="registry-dosage-subhead">Doza e plotë · Rruga</span>';
-      pediatric.dataset.registryClinicalHeader = VERSION;
-    }
-  }
-
-  function directTextList(cell) {
-    if (!cell) return [];
-    const checks = cell.querySelector('.clinical-dose-checks');
-    const nodes = checks ? Array.from(checks.children) : [];
-    const values = nodes.map(node => clean(node.textContent)).filter(Boolean);
-    if (values.length) return values.slice(0, 3);
-    const fallback = clean(cell.textContent);
-    if (!fallback || /ngarkuar|lidhur/i.test(fallback)) return [];
-    return [fallback];
-  }
-
-  function createMetaChip(className, text) {
-    const chip = document.createElement('span');
-    chip.className = `registry-row-chip ${className}`;
-    chip.textContent = text;
-    chip.title = text;
-    return chip;
-  }
-
-  function enhanceNameCell(row) {
-    const nameCell = row.querySelector('td[data-registry-column-key="trade-name"]');
-    if (!nameCell) return;
-    if (!nameCell.dataset.label) nameCell.dataset.label = 'Emri Tregtar';
-
-    const atc = clean(row.querySelector('td[data-registry-column-key="atc"]')?.textContent);
-    const status = clean(row.querySelector('td[data-registry-column-key="status"]')?.textContent);
-    const checks = directTextList(row.querySelector('td[data-registry-column-key="clinical-status"]'));
-    const signature = [atc, status, ...checks].join('|');
-
-    let meta = nameCell.querySelector(':scope > .registry-row-meta');
-    if (!meta) {
-      meta = document.createElement('div');
-      meta.className = 'registry-row-meta';
-      nameCell.appendChild(meta);
-    }
-
-    if (meta.dataset.signature !== signature) {
-      meta.replaceChildren();
-      if (atc) meta.appendChild(createMetaChip('is-atc', atc));
-      if (status) meta.appendChild(createMetaChip('is-status', status));
-      checks.forEach(text => meta.appendChild(createMetaChip('is-check', text)));
-      meta.dataset.signature = signature;
-    }
-
-    let editButton = nameCell.querySelector(':scope > .registry-row-clinical-edit');
-    if (!editButton) {
-      editButton = document.createElement('button');
-      editButton.type = 'button';
-      editButton.className = 'registry-row-clinical-edit';
-      editButton.innerHTML = '<span aria-hidden="true">✎</span><span class="sr-only">Redakto të dhënat klinike</span>';
-      editButton.addEventListener('click', event => {
-        event.preventDefault();
-        event.stopPropagation();
-        const original = row.querySelector('td[data-registry-column-key="clinical-action"] .clinical-editor-open');
-        original?.click();
-      });
-      nameCell.appendChild(editButton);
-    }
-
-    const originalEdit = row.querySelector('td[data-registry-column-key="clinical-action"] .clinical-editor-open');
-    const drugName = clean(nameCell.childNodes[0]?.textContent || nameCell.textContent) || 'barin';
-    editButton.disabled = !originalEdit;
-    editButton.setAttribute('aria-label', `Redakto të dhënat klinike për ${drugName}`);
-    editButton.title = originalEdit ? 'Redakto të dhënat klinike' : 'Redaktimi klinik nuk është ende i gatshëm';
-  }
-
-  function enhanceCellTitles(row) {
-    ['active-substance', 'strength', 'form'].forEach(key => {
-      const cell = row.querySelector(`td[data-registry-column-key="${key}"]`);
-      if (!cell) return;
-      const text = clean(cell.textContent);
-      if (text) cell.title = text;
-    });
-  }
-
-  function enhanceRow(row) {
-    if (!row || row.querySelector('.empty-state')) return;
-    enhanceNameCell(row);
-    enhanceCellTitles(row);
-  }
-
-  function queueIdle(callback) {
-    if ('requestIdleCallback' in window) {
-      window.requestIdleCallback(callback, { timeout: 700 });
-      return;
-    }
-    window.setTimeout(() => callback({ didTimeout: false, timeRemaining: () => 8 }), 24);
-  }
-
-  function enhanceRowsProgressively() {
-    const tbody = document.getElementById('tbody');
-    if (!tbody) return;
-
-    const token = ++rowPassToken;
-    const total = tbody.children.length;
-    let index = 0;
-    let immediate = 0;
-
-    while (index < total && immediate < INITIAL_ROW_BUDGET) {
-      enhanceRow(tbody.children[index]);
-      index += 1;
-      immediate += 1;
-    }
-
-    if (index >= total) return;
-
-    const runIdleBatch = deadline => {
-      if (token !== rowPassToken || !tbody.isConnected) return;
-      let processed = 0;
-      const currentTotal = tbody.children.length;
-      while (index < currentTotal && processed < IDLE_ROW_BATCH) {
-        if (processed > 0 && !deadline.didTimeout && deadline.timeRemaining() <= 2) break;
-        enhanceRow(tbody.children[index]);
-        index += 1;
-        processed += 1;
-      }
-      if (index < tbody.children.length && token === rowPassToken) queueIdle(runIdleBatch);
-    };
-
-    queueIdle(runIdleBatch);
   }
 
   function columnIsVisible(key) {
@@ -272,6 +135,7 @@
     if (view !== 'clinical') {
       colgroup.querySelectorAll('col').forEach(col => col.style.removeProperty('width'));
       table.style.removeProperty('--registry-table-width');
+      table.removeAttribute('data-registry-clinical-width');
       return;
     }
 
@@ -282,7 +146,7 @@
         col.style.setProperty('width', '0px', 'important');
         return;
       }
-      const width = COMPACT_WIDTHS[key] || Number.parseFloat(col.style.width) || 184;
+      const width = COMPACT_WIDTHS[key] || 184;
       col.style.setProperty('width', `${width}px`, 'important');
       total += width;
     });
@@ -291,22 +155,14 @@
   }
 
   function refresh() {
-    if (enhancing) return;
-    enhancing = true;
-    try {
-      ensureStyles();
-      createToolbar();
-      if (!VALID_VIEWS.has(document.documentElement.dataset.registryUxView)) {
-        document.documentElement.dataset.registryUxView = storedView();
-      }
-      compactDoseHeaders();
-      updateToolbarState();
-      applyCompactWidths();
-      enhanceRowsProgressively();
-      document.documentElement.dataset.registryClinicalView = VERSION;
-    } finally {
-      enhancing = false;
+    ensureStyles();
+    createToolbar();
+    if (!VALID_VIEWS.has(document.documentElement.dataset.registryUxView)) {
+      document.documentElement.dataset.registryUxView = storedView();
     }
+    updateToolbarState();
+    applyCompactWidths();
+    document.documentElement.dataset.registryClinicalView = VERSION;
   }
 
   function scheduleRefresh() {
@@ -316,24 +172,6 @@
       scheduled = false;
       refresh();
     });
-  }
-
-  function observeTable() {
-    const header = document.getElementById('headerRow');
-    const tbody = document.getElementById('tbody');
-    if (!header || !tbody) return;
-    observer?.disconnect();
-    observer = new MutationObserver(records => {
-      if (enhancing) return;
-      if (records.some(record => record.type === 'childList' || record.type === 'attributes')) scheduleRefresh();
-    });
-    observer.observe(header, {
-      childList: true,
-      subtree: true,
-      attributes: true,
-      attributeFilter: ['hidden', 'class', 'data-registry-column-key'],
-    });
-    observer.observe(tbody, { childList: true });
   }
 
   function observeWidth() {
@@ -355,7 +193,6 @@
     if (!VALID_VIEWS.has(document.documentElement.dataset.registryUxView)) {
       document.documentElement.dataset.registryUxView = storedView();
     }
-    observeTable();
     observeWidth();
     refresh();
   }
