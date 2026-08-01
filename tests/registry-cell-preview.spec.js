@@ -55,7 +55,8 @@ test('qeliza e gjatë e rrit rreshtin inline pa hapur modal', async ({ page }) =
   await page.keyboard.press('Enter');
   await expect(row).toHaveAttribute('data-registry-row-expanded', 'true');
   await expect(trigger).toHaveAttribute('aria-expanded', 'true');
-  await expect(page.locator('dialog')).toHaveCount(0);
+  await expect(page.locator('#registryCellPreviewDialog')).toHaveCount(0);
+  await expect(page.locator('dialog.registry-cell-preview-dialog')).toHaveCount(0);
 
   const mobileGeometry = await row.evaluate(node => {
     const rect = node.getBoundingClientRect();
