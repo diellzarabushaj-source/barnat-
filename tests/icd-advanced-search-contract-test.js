@@ -8,7 +8,9 @@ const read = file => fs.readFileSync(path.join(root, file), 'utf8');
 const html = read('icd.html');
 const browser = read('icd-advanced-search.js');
 const styles = read('icd-advanced-search.css');
-const api = read('api/icd-advanced-search.js');
+const apiWrapper = read('api/icd.js');
+const apiBase = read('lib/icd-api-base.js');
+const advancedHandler = read('lib/icd-advanced-handler.js');
 const engine = read('lib/icd-search-engine.js');
 
 for (const asset of [
@@ -22,9 +24,9 @@ assert.ok(
 );
 
 for (const marker of [
-  '/api/icd-advanced-search', 'sq-clinical-search-v1', 'MutationObserver',
-  'Diagnoza të sugjeruara', 'Kategori më të gjera', 'Nënkode më specifike',
-  'nuk vendosin diagnozë',
+  "const SOURCE_PATH = '/api/icd'", "const ADVANCED_FLAG = 'advanced'", "url.searchParams.set(ADVANCED_FLAG, '1')",
+  'sq-clinical-search-v1', 'MutationObserver', 'Diagnoza të sugjeruara',
+  'Kategori më të gjera', 'Nënkode më specifike', 'nuk vendosin diagnozë',
 ]) assert.ok(browser.includes(marker), `Browser integration missing ${marker}`);
 
 for (const marker of [
@@ -33,22 +35,34 @@ for (const marker of [
 ]) assert.ok(styles.includes(marker), `Advanced suggestion CSS missing ${marker}`);
 
 for (const marker of [
+  "require('../lib/icd-api-base.js')", "require('../lib/icd-advanced-handler.js')",
+  "String(req.query?.advanced || '') === '1'", 'advancedHandler(req, res)', 'baseHandler(req, res)',
+]) assert.ok(apiWrapper.includes(marker), `Shared ICD API router missing ${marker}`);
+
+for (const marker of [
   "require('../lib/icd-search-engine.js')", 'verifySessionToken', 'MAX_QUERY_CHARS',
   'strictCounts:true', 'diagnosticDecision:false', 'X-MedIndex-Search-Version',
   "['GET', 'HEAD']", 'private, no-store',
-]) assert.ok(api.includes(marker), `Advanced search API missing ${marker}`);
+]) assert.ok(advancedHandler.includes(marker), `Advanced search handler missing ${marker}`);
+
+for (const marker of [
+  'FULL_SPREADSHEET_ID', 'loadFullHierarchy', 'fullViewPayload', 'X-MedIndex-ICD-Nodes',
+]) assert.ok(apiBase.includes(marker), `Base ICD handler missing ${marker}`);
 
 for (const marker of [
   'ALIAS_ROWS', 'boundedDistance', 'aliasExpansions', 'rankNodes', 'suggestDataset',
   'nuk vendosin diagnozë',
 ]) assert.ok(engine.includes(marker), `Advanced search engine missing ${marker}`);
 
+assert.ok(!fs.existsSync(path.join(root, 'api/icd-advanced-search.js')), 'Advanced search must not create a twelfth Vercel function.');
 assert.doesNotMatch(browser, /eval\s*\(|new Function\s*\(/, 'Browser search integration must not use dynamic code.');
 assert.doesNotMatch(styles, /https?:\/\//, 'Advanced search CSS must not load external assets.');
-assert.doesNotMatch(api, /res\.status\(200\).*verifySessionToken/s, 'Authentication must happen before successful data delivery.');
+assert.doesNotMatch(advancedHandler, /res\.status\(200\).*verifySessionToken/s, 'Authentication must happen before successful data delivery.');
 
 new Function(browser);
-new Function(api);
+new Function(apiWrapper);
+new Function(apiBase);
+new Function(advancedHandler);
 new Function(engine);
 
-console.log('Advanced ICD search wiring, authentication, accessibility and safety contract passed.');
+console.log('Advanced ICD search uses the shared function with authentication, accessibility and safety contracts intact.');
