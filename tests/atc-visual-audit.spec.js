@@ -6,6 +6,7 @@ const BASE = 'http://127.0.0.1:4173';
 const OUTPUT = '/tmp/atc-visual';
 fs.mkdirSync(OUTPUT, { recursive:true });
 
+test.use({ serviceWorkers:'block' });
 test.describe.configure({ mode:'serial' });
 
 async function openAtc(page, viewport) {
@@ -61,6 +62,30 @@ async function assertNoOverflow(page) {
   }
 }
 
+async function assertMobileFocus(page) {
+  const state = await page.evaluate(() => {
+    const open = document.querySelector('[data-mi-atc-group="N"]');
+    const trigger = open?.querySelector('.mi-atc-group-trigger');
+    const label = open?.querySelector('.mi-atc-group-name');
+    const other = document.querySelector('[data-mi-atc-group="M"]');
+    const all = document.querySelector('[data-mi-atc-all-link]');
+    return {
+      openDisplay:getComputedStyle(open).display,
+      otherDisplay:getComputedStyle(other).display,
+      allDisplay:getComputedStyle(all).display,
+      triggerPosition:getComputedStyle(trigger).position,
+      backIcon:getComputedStyle(trigger, '::before').content,
+      backLabel:getComputedStyle(label, '::before').content,
+    };
+  });
+  expect(state.openDisplay).not.toBe('none');
+  expect(state.otherDisplay).toBe('none');
+  expect(state.allDisplay).toBe('none');
+  expect(state.triggerPosition).toBe('sticky');
+  expect(state.backIcon).toContain('←');
+  expect(state.backLabel).toContain('Kthehu te grupet');
+}
+
 for (const profile of [
   { name:'desktop', width:1440, height:1000 },
   { name:'tablet', width:820, height:1180 },
@@ -70,12 +95,9 @@ for (const profile of [
     await openAtc(page, profile);
     await assertNoOverflow(page);
 
-    if (profile.width < 1024) {
-      await expect(page.locator('[data-mi-atc-group="N"]')).toHaveClass(/is-mobile-focus/);
-      await expect(page.locator('[data-mi-atc-group="N"] .mi-atc-group-trigger')).toContainText('Kthehu te grupet');
-    }
-
     await page.screenshot({ path:path.join(OUTPUT, `${profile.name}-full.png`), fullPage:true });
     await page.locator('#miSidebar').screenshot({ path:path.join(OUTPUT, `${profile.name}-sidebar.png`) });
+
+    if (profile.width < 1024) await assertMobileFocus(page);
   });
 }
