@@ -44,7 +44,7 @@ const publicDosageError = dosageHandler._test.publicLoadError(new Error('private
 assert.equal(publicDosageError.code, 'DOSAGE_UNAVAILABLE');
 assert.doesNotMatch(JSON.stringify(publicDosageError), /private upstream detail/);
 
-const icd = read('api/icd.js');
+const icd = read('lib/icd-api-base.js');
 assert.match(icd, /MAX_CSV_BYTES/);
 assert.match(icd, /pendingLoad/);
 assert.match(icd, /Buffer\.byteLength/);
