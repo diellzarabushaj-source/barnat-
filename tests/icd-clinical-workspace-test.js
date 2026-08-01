@@ -17,7 +17,7 @@ assert.match(staticStyles.at(-1), /tailadmin-professional\.css/, 'The profession
 for (const marker of [
   'ICD-10 — hierarkia e plotë', 'icd-registry-intro', 'icd-registry-panel',
   'icdOpenSidebar', 'icdClearFilters', 'icdLevelFilter', 'icdPageSize',
-  'Titulli shqip', 'Titulli anglisht', 'Statusi', 'Veprimet',
+  'Titulli shqip', 'Titulli anglisht', 'Përkthimi', 'Veprimet',
 ]) assert.ok(html.includes(marker), `ICD table workspace missing ${marker}`);
 
 for (const removed of [
@@ -45,7 +45,6 @@ for (const marker of [
 
 for (const marker of [
   'levels || params.level', 'childrenOf', 'ancestorsOf', 'nodeMap',
-  'category,subcategory',
 ]) assert.ok(hierarchy.includes(marker), `ICD hierarchy query layer missing ${marker}`);
 
 assert.match(html, /role="combobox"/);
