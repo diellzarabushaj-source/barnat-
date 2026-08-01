@@ -70,8 +70,9 @@ function tableData(query) {
 }
 
 async function installAdvancedRoute(page) {
-  await page.route('**/api/icd-advanced-search**', async route => {
+  await page.route('**/api/icd**', async route => {
     const url = new URL(route.request().url());
+    if (url.pathname !== '/api/icd' || url.searchParams.get('advanced') !== '1') return route.continue();
     const query = url.searchParams.get('q') || '';
     const view = url.searchParams.get('view') || 'table';
     const data = view === 'suggest' ? suggestionData(query) : tableData(query);
