@@ -10,6 +10,7 @@
   <link rel="stylesheet" href="performance.css?v=20260723-1">
   <link rel="stylesheet" href="tailadmin-medindex.css?v=20260728-1" data-tailadmin-medindex-css>
   <link rel="stylesheet" href="system-health.css?v=system-health-v1">
+  <link rel="stylesheet" href="media-library.css?v=vercel-blob-media-v1">
   <link rel="stylesheet" href="tailadmin-professional.css?v=20260728-1" data-tailadmin-professional-css>
   <script src="tailadmin-shell.js?v=system-health-v1" defer></script>
   <script src="tailadmin-professional.js?v=production-audit-v2" defer></script>
@@ -61,6 +62,47 @@
       </article>
     </section>
 
+    <section class="system-panel media-library-panel" aria-labelledby="mediaLibraryTitle">
+      <header>
+        <div class="media-library-copy">
+          <p class="system-kicker">Vercel Blob · media publike</p>
+          <h2 id="mediaLibraryTitle">Media Library</h2>
+          <p class="system-panel-copy">Ruaj logo, imazhe të ndërfaqes dhe materiale vizuale publike. Mos ngarko dokumente pacientësh ose të dhëna klinike sensitive.</p>
+        </div>
+        <div class="system-hero-actions">
+          <span class="system-state is-loading" id="mediaLibraryState">Duke kontrolluar…</span>
+          <button class="media-refresh" id="mediaRefresh" type="button">Rifresko</button>
+        </div>
+      </header>
+
+      <div class="media-library-setup" id="mediaLibrarySetup" hidden>
+        <strong>Lidhe një Vercel Blob store me projektin “barnat”</strong>
+        <p>Në Vercel Dashboard hap Storage → Create Database → Blob, zgjidh Public dhe lidhe me projektin. Vercel krijon automatikisht variablën:</p>
+        <code>BLOB_READ_WRITE_TOKEN</code>
+      </div>
+
+      <form class="media-upload-form" id="mediaUploadForm" hidden>
+        <div class="media-field">
+          <label for="mediaFile">Imazhi</label>
+          <input id="mediaFile" type="file" accept="image/png,image/webp,image/jpeg" required>
+        </div>
+        <div class="media-field">
+          <label for="mediaKind">Kategoria</label>
+          <select id="mediaKind">
+            <option value="brand">Logo dhe brand</option>
+            <option value="interface">Ndërfaqe</option>
+            <option value="clinical">Material klinik publik</option>
+            <option value="other">Tjetër</option>
+          </select>
+        </div>
+        <button id="mediaUploadButton" type="submit">Ngarko imazhin</button>
+      </form>
+
+      <p class="media-message" id="mediaMessage" role="status" aria-live="polite"></p>
+      <div class="media-empty" id="mediaEmpty">Nuk ka media të ruajtura.</div>
+      <div class="media-gallery" id="mediaGallery" aria-live="polite"></div>
+    </section>
+
     <section class="system-panel system-audit-panel">
       <header>
         <div><p class="system-kicker">Audit operacional</p><h2>Importet e fundit të plota</h2></div>
@@ -80,6 +122,7 @@
 
   <script src="auth-client.js?v=production-audit-v2" defer></script>
   <script src="system-health.js?v=system-health-v1" defer></script>
+  <script src="media-library.js?v=vercel-blob-media-v1" defer></script>
   <script src="app-stability.js?v=20260724-2" defer></script>
 </body>
 </html>
