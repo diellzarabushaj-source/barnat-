@@ -1,12 +1,12 @@
 (() => {
   'use strict';
 
-  const VERSION = 'registry-runtime-loader-v3';
+  const VERSION = 'registry-runtime-loader-v4';
   const RUNTIME_SRC = '/app-performance.js?v=20260801-1';
-  const FIRST_INTERACTION_FALLBACK_MS = 5000;
-  const POST_INTERACTION_GRACE_MS = 320;
+  const FIRST_INTERACTION_FALLBACK_MS = 15000;
+  const POST_INTERACTION_GRACE_MS = 1500;
   const AUTH_WAIT_LIMIT_MS = 5000;
-  const INTERACTION_EVENTS = ['pointerdown', 'keydown', 'touchstart'];
+  const INTERACTION_EVENTS = ['click', 'keyup', 'touchend'];
   let scheduled = false;
   let loaded = false;
   let gateInstalled = false;
@@ -36,7 +36,7 @@
     if (!gateInstalled) return;
     gateInstalled = false;
     INTERACTION_EVENTS.forEach(name => {
-      document.removeEventListener(name, handleFirstInteraction, true);
+      document.removeEventListener(name, handleCompletedInteraction, true);
     });
   }
 
@@ -52,7 +52,7 @@
     }, Math.max(0, delay));
   }
 
-  function handleFirstInteraction() {
+  function handleCompletedInteraction() {
     scheduleRuntime(POST_INTERACTION_GRACE_MS);
   }
 
@@ -60,7 +60,7 @@
     if (gateInstalled || scheduled) return;
     gateInstalled = true;
     INTERACTION_EVENTS.forEach(name => {
-      document.addEventListener(name, handleFirstInteraction, {
+      document.addEventListener(name, handleCompletedInteraction, {
         capture:true,
         passive:true,
         once:false,
