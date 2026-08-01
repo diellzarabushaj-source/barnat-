@@ -69,6 +69,13 @@ assert.match(fullTextCss,/data-registry-column-key="dosage-adult"/,'adult dosage
 assert.match(fullTextCss,/data-registry-column-key="dosage-pediatric"/,'pediatric dosage must be revealed with the row');
 assert.match(fullTextCss,/-webkit-line-clamp:unset!important/,'expanded text must never remain line-clamped');
 assert.match(fullTextCss,/max-height:none!important/,'expanded text must never retain compact max-height');
-assert.doesNotMatch(fullTextCss,/https?:\/\//,'full-row text styles must not load third-party assets');
+assert.match(fullTextCss,/#registryContent\.table-wrap[\s\S]*overflow:auto!important/,'registry must scroll vertically and horizontally inside one surface');
+assert.match(fullTextCss,/scrollbar-gutter:stable both-edges!important/,'both scrollbar rails must reserve stable space');
+assert.match(fullTextCss,/touch-action:pan-x pan-y!important/,'touch users must be able to pan on both axes');
+assert.match(fullTextCss,/thead th\[data-registry-column-key\][\s\S]*position:sticky!important[\s\S]*top:0!important/,'only the header row must remain visible during vertical scrolling');
+assert.match(fullTextCss,/thead th\[data-registry-column-key\][\s\S]*left:auto!important[\s\S]*right:auto!important/,'sticky header must not freeze any data column horizontally');
+assert.match(fullTextCss,/::-webkit-scrollbar[\s\S]*width:12px!important[\s\S]*height:12px!important/,'both native scrollbar axes must remain visible');
+assert.match(fullTextCss,/data-theme="dark"[\s\S]*scrollbar-color:/,'dark mode must style the same scroll surface');
+assert.doesNotMatch(fullTextCss,/https?:\/\//,'full-row text and scroll styles must not load third-party assets');
 
-console.log('Single-controller registry table and full-row text reveal audit passed.');
+console.log('Single-controller registry table, full-row text reveal and bidirectional scroll audit passed.');
