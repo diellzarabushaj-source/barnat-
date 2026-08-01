@@ -1,14 +1,14 @@
 (() => {
   'use strict';
 
-  const VERSION = 'registry-table-integrity-v4';
+  const VERSION = 'registry-table-integrity-v5';
   const STYLE_VERSION = '20260801-4';
   const PROBE_KEY = 'registry-number-probe';
   const DYNAMIC_ORDER = Object.freeze([
-    '[data-clinical-editor-column="clinical-status"]',
-    '[data-clinical-editor-column="clinical-action"]',
     '[data-registry-dosage-column="adult"]',
     '[data-registry-dosage-column="pediatric"]',
+    '[data-clinical-editor-column="clinical-status"]',
+    '[data-clinical-editor-column="clinical-action"]',
     '[data-registry-number-probe]',
   ]);
   const LABEL_KEYS = Object.freeze({
