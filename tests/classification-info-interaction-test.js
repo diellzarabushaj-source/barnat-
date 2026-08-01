@@ -11,19 +11,20 @@ const classification = read('classification-v3.js');
 const info = read('classification-info-v3.js');
 const styles = read('classification-info-v3.css');
 
-assert.equal((html.match(/classification-info-v3\.css/g) || []).length, 1, 'Static ATC info CSS must load exactly once');
-assert.ok(html.indexOf('classification-info-v3.css') < html.indexOf('tailadmin-professional.css'), 'Professional TailAdmin CSS must remain the final static stylesheet');
-assert.match(classification, /class="atc-card-shell"/, 'Each ATC card needs a non-interactive shell');
-assert.match(classification, /class="atc-card-info"/, 'Each ATC card needs a dedicated Info button');
-assert.match(classification, /data-atc-info/, 'The dedicated Info action marker is missing');
-assert.match(classification, /window\.MedIndexClassification = Object\.freeze/, 'The classification page needs an explicit navigation API');
-assert.match(classification, /openGroup:code => openGroup/, 'The information dialog must be able to open a group without simulating a click');
-assert.match(classification, /openSubgroup:\(code, query = ''\) => openSubgroup/, 'The information dialog must be able to open a subgroup directly');
+assert.doesNotMatch(html, /classification-info-v3\.(?:css|js)|classification-v3\.js|classification-data\.js/, 'The retired classification workspace must not load card or Info assets');
+assert.match(html, /classification-redirect\.js\?v=table-only-v1/, 'The compatibility route must load only the table redirect runtime');
 
-assert.match(info, /event\.target\.closest\('\[data-atc-info\]'\)/, 'Only the explicit Info button may open the dialog');
-assert.match(info, /event\.stopPropagation\(\)/, 'The Info button must not bubble into the card navigation action');
-assert.doesNotMatch(info, /stopImmediatePropagation/, 'Info must not cancel unrelated card or application handlers');
-assert.doesNotMatch(info, /infoBypassOnce/, 'The artificial click bypass state must be removed');
+assert.match(classification, /class="atc-card-shell"/, 'Dormant legacy cards must retain a non-interactive shell until cleanup');
+assert.match(classification, /class="atc-card-info"/, 'Dormant legacy cards must retain a dedicated Info button until cleanup');
+assert.match(classification, /data-atc-info/, 'The legacy Info action marker is missing');
+assert.match(classification, /window\.MedIndexClassification = Object\.freeze/, 'The retired module must keep an explicit navigation API until deletion');
+assert.match(classification, /openGroup:code => openGroup/, 'The retired information dialog must not depend on simulated clicks');
+assert.match(classification, /openSubgroup:\(code, query = ''\) => openSubgroup/, 'The retired information dialog must keep direct subgroup navigation');
+
+assert.match(info, /event\.target\.closest\('\[data-atc-info\]'\)/, 'Only the explicit Info button may open the retired dialog');
+assert.match(info, /event\.stopPropagation\(\)/, 'The Info button must not bubble into card navigation');
+assert.doesNotMatch(info, /stopImmediatePropagation/, 'Info must not cancel unrelated application handlers');
+assert.doesNotMatch(info, /infoBypassOnce/, 'The artificial click bypass state must stay removed');
 assert.doesNotMatch(info, /card\.click\(\)/, 'The dialog must not simulate a card click');
 assert.doesNotMatch(info, /installStyles|createElement\(['"]style['"]\)/, 'Dialog styles must remain in static CSS');
 assert.match(info, /MedIndexClassification\?\.openGroup/, 'Continue must invoke the explicit group navigation API');
@@ -42,4 +43,4 @@ assert.match(styles, /prefers-reduced-motion:reduce/, 'Reduced-motion behavior i
 execFileSync(process.execPath, ['--check', path.join(ROOT, 'classification-v3.js')], { stdio:'pipe' });
 execFileSync(process.execPath, ['--check', path.join(ROOT, 'classification-info-v3.js')], { stdio:'pipe' });
 
-console.log('ATC card navigation and Info actions are explicitly separated.');
+console.log('Legacy classification card and Info assets are no longer loaded by the table-only route.');
