@@ -16,6 +16,7 @@
   let latestSuggestionPayload = null;
   let decorating = false;
   let observer = null;
+  let decorationTimer = 0;
 
   const clean = value => String(value ?? '').trim();
   const esc = value => String(value ?? '').replace(/[&<>"']/g, character => ({
@@ -36,6 +37,14 @@
     }
   }
 
+  function scheduleDecoration() {
+    clearTimeout(decorationTimer);
+    decorationTimer = window.setTimeout(() => {
+      decorationTimer = 0;
+      decorateSuggestionList();
+    }, 0);
+  }
+
   window.fetch = async function medIndexAdvancedIcdFetch(input, init) {
     const route = advancedUrl(input);
     if (!route) return originalFetch(input, init);
@@ -49,7 +58,7 @@
           window.dispatchEvent(new CustomEvent('medindex:icd-advanced-suggestions', {
             detail:{ query:payload.data.query, total:payload.data.total },
           }));
-          queueMicrotask(decorateSuggestionList);
+          scheduleDecoration();
         }).catch(() => {});
       }
       return response;
@@ -92,49 +101,72 @@
     })[level] || clean(level) || '—';
   }
 
+  function sameSuggestionRows(options, rows) {
+    if (options.length !== rows.length) return false;
+    return options.every((option, index) => clean(option.dataset.code) === clean(rows[index]?.code));
+  }
+
   function decorateSuggestionList() {
     if (decorating) return;
     const container = document.getElementById('icdSuggestions');
+    const search = document.getElementById('icdSearch');
     const payload = latestSuggestionPayload;
-    if (!container || container.hidden || !payload?.rows?.length) return;
-    const currentOptions = container.querySelectorAll('[data-suggestion-index]');
-    if (!currentOptions.length || currentOptions.length !== payload.rows.length) return;
+    if (!container || !payload?.rows?.length) return;
+
+    const queryKey = clean(payload.query).toLocaleLowerCase('sq-AL');
+    if (
+      container.dataset.miAdvancedQuery === queryKey
+      && container.querySelector('.icd-suggestion-group')
+    ) {
+      container.hidden = false;
+      search?.setAttribute('aria-expanded', 'true');
+      return;
+    }
+
+    const currentOptions = [...container.querySelectorAll('[data-suggestion-index]')];
+    if (!sameSuggestionRows(currentOptions, payload.rows)) return;
 
     decorating = true;
-    const grouped = new Map(GROUP_ORDER.map(group => [group, []]));
-    payload.rows.forEach((node, index) => {
-      const group = node?.searchMatch?.group || 'suggested';
-      if (!grouped.has(group)) grouped.set(group, []);
-      grouped.get(group).push({ node, index });
-    });
+    try {
+      const grouped = new Map(GROUP_ORDER.map(group => [group, []]));
+      payload.rows.forEach((node, index) => {
+        const group = node?.searchMatch?.group || 'suggested';
+        if (!grouped.has(group)) grouped.set(group, []);
+        grouped.get(group).push({ node, index });
+      });
 
-    const sections = [];
-    if (payload.interpretedAs) {
-      sections.push(`<div class="icd-suggestion-interpretation" role="status">
-        <span>Kërkimi u interpretua si</span>
-        <strong>${esc(payload.interpretedAs)}</strong>
-      </div>`);
+      const sections = [];
+      if (payload.interpretedAs) {
+        sections.push(`<div class="icd-suggestion-interpretation" role="status">
+          <span>Kërkimi u interpretua si</span>
+          <strong>${esc(payload.interpretedAs)}</strong>
+        </div>`);
+      }
+      for (const group of GROUP_ORDER) {
+        const items = grouped.get(group) || [];
+        if (!items.length) continue;
+        const label = payload.groups?.find(item => item.id === group)?.label || GROUP_LABELS[group];
+        sections.push(`<div class="icd-suggestion-group" role="presentation" data-suggestion-group="${group}">
+          <div class="icd-suggestion-group-title" role="presentation">
+            <span>${esc(label)}</span><small>${items.length}</small>
+          </div>
+          ${items.map(item => optionMarkup(item.node, item.index)).join('')}
+        </div>`);
+      }
+      sections.push(`<div class="icd-suggestion-safety" role="note">${esc(payload.safetyNote || 'Sugjerimet ndihmojnë kërkimin dhe kodimin; nuk vendosin diagnozë.')}</div>`);
+      container.innerHTML = sections.join('');
+      container.dataset.miAdvancedQuery = queryKey;
+      container.hidden = false;
+      search?.setAttribute('aria-expanded', 'true');
+    } finally {
+      decorating = false;
     }
-    for (const group of GROUP_ORDER) {
-      const items = grouped.get(group) || [];
-      if (!items.length) continue;
-      const label = payload.groups?.find(item => item.id === group)?.label || GROUP_LABELS[group];
-      sections.push(`<div class="icd-suggestion-group" role="presentation" data-suggestion-group="${group}">
-        <div class="icd-suggestion-group-title" role="presentation">
-          <span>${esc(label)}</span><small>${items.length}</small>
-        </div>
-        ${items.map(item => optionMarkup(item.node, item.index)).join('')}
-      </div>`);
-    }
-    sections.push(`<div class="icd-suggestion-safety" role="note">${esc(payload.safetyNote || 'Sugjerimet ndihmojnë kërkimin dhe kodimin; nuk vendosin diagnozë.')}</div>`);
-    container.innerHTML = sections.join('');
-    decorating = false;
   }
 
   function installObserver() {
     const container = document.getElementById('icdSuggestions');
     if (!container || observer) return;
-    observer = new MutationObserver(() => queueMicrotask(decorateSuggestionList));
+    observer = new MutationObserver(() => scheduleDecoration());
     observer.observe(container, { childList:true, subtree:false, attributes:true, attributeFilter:['hidden'] });
   }
 
