@@ -50,7 +50,7 @@ assert(index.includes('registry-verification-loader.js?v=20260801-1'), 'Idle loa
 assert(loader.includes("window.addEventListener('medindex:registry-ready'"), 'Verifikimi duhet të presë registry-ready.');
 assert(loader.includes('requestIdleCallback'), 'Verifikimi duhet të ngarkohet në idle.');
 assert(loader.includes('registry-verification-ui.js?v=20260801-1'), 'Loader-i nuk e ngarkon kontrolluesin e verifikimit.');
-assert(index.includes('data-registry-ui-release="20260801-11"'), 'Release-i i tabelës nuk u rrit.');
+assert(index.includes('data-registry-ui-release="20260801-12"'), 'Release-i i tabelës nuk u rrit.');
 assert(ui.includes('data-population-pencil'), 'Ikona e vetme e lapsit mungon.');
 assert(ui.includes("state:'unknown'"), 'Gjendja pa të dhëna mungon.');
 assert(read('lib/population-verification.js').includes('Mungesa e dozës nuk interpretohet si kundërindikacion'), 'Rregulli fail-closed mungon.');
