@@ -1,7 +1,7 @@
 (() => {
   'use strict';
 
-  const VERSION = 'registry-row-expand-20260801-2';
+  const VERSION = 'registry-row-expand-20260801-3';
   const FINAL_STYLE_ID = 'registryColumnsFiltersStyles';
   const EXPANDABLE_KEYS = new Set([
     'trade-name',
@@ -86,7 +86,7 @@
     const expanded = Boolean(key && expandedRows.has(key));
     row.classList.toggle('registry-row-expanded', expanded);
     row.dataset.registryRowExpanded = String(expanded);
-    row.querySelectorAll('td[data-registry-expandable="true"]').forEach(cell => {
+    row.querySelectorAll('td[data-registry-expandable="true"]:not([data-registry-cell-preview="true"])').forEach(cell => {
       cell.setAttribute('aria-expanded', String(expanded));
       cell.title = expanded ? 'Kliko për ta mbyllur rreshtin' : 'Kliko për ta zgjeruar rreshtin';
     });
@@ -107,12 +107,20 @@
       row.querySelectorAll(':scope > td').forEach(cell => {
         const key = cell.dataset.registryColumnKey || '';
         const expandable = rowShouldExpand(cell, key);
+        const previewManaged = cell.dataset.registryCellPreview === 'true';
         cell.toggleAttribute('data-registry-expandable', expandable);
         if (expandable) {
           cell.dataset.registryExpandable = 'true';
-          cell.tabIndex = 0;
-          cell.setAttribute('role', 'button');
-          cell.setAttribute('aria-label', `${clean(cell.dataset.label || key || 'Përmbajtja')}. Kliko për ta zgjeruar rreshtin.`);
+          if (previewManaged) {
+            cell.removeAttribute('tabindex');
+            cell.removeAttribute('role');
+            cell.removeAttribute('aria-expanded');
+            if (/Kliko për ta (?:zgjeruar|mbyllur) rreshtin/i.test(cell.title || '')) cell.removeAttribute('title');
+          } else {
+            cell.tabIndex = 0;
+            cell.setAttribute('role', 'button');
+            cell.setAttribute('aria-label', `${clean(cell.dataset.label || key || 'Përmbajtja')}. Kliko për ta zgjeruar rreshtin.`);
+          }
         } else {
           delete cell.dataset.registryExpandable;
           cell.removeAttribute('tabindex');
@@ -154,7 +162,7 @@
   }
 
   function interactiveTarget(target) {
-    return target.closest('a, input, select, textarea, .clinical-editor-open, .drug-actions-trigger, .favorite-marker');
+    return target.closest('a, button, input, select, textarea, [role="button"], .clinical-editor-open, .drug-actions-trigger, .favorite-marker, .registry-cell-preview-trigger');
   }
 
   function onClick(event) {
@@ -175,7 +183,7 @@
     }
 
     const cell = event.target.closest?.('td[data-registry-expandable="true"]');
-    if (!cell || interactiveTarget(event.target)) return;
+    if (!cell || cell.dataset.registryCellPreview === 'true' || interactiveTarget(event.target)) return;
     event.preventDefault();
     toggleRow(cell.closest('tr'));
   }
@@ -183,7 +191,7 @@
   function onKeydown(event) {
     if (event.key !== 'Enter' && event.key !== ' ') return;
     const cell = event.target.closest?.('td[data-registry-expandable="true"]');
-    if (!cell) return;
+    if (!cell || cell.dataset.registryCellPreview === 'true' || interactiveTarget(event.target)) return;
     event.preventDefault();
     toggleRow(cell.closest('tr'));
   }
