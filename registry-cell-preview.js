@@ -1,7 +1,7 @@
 (() => {
   'use strict';
 
-  const VERSION = 'registry-cell-preview-20260801-6';
+  const VERSION = 'registry-cell-preview-20260801-7';
   const TRIGGER_CLASS = 'registry-cell-preview-trigger';
   const PREVIEW_ATTR = 'data-registry-cell-preview';
   const THRESHOLDS = Object.freeze({
@@ -74,9 +74,9 @@
 
   function hasExistingControl(cell) {
     if (!cell) return true;
-    if (columnKey(cell) === 'trade-name') return true;
-    if (cell.querySelector('.drug-select,.drug-actions-trigger,.favorite-marker,.clinical-editor-open')) return true;
-    return cell.matches('.registry-verification-column,.registry-editor-column,.registry-actions-column');
+    const key = columnKey(cell);
+    if (['select', 'trade-name', 'clinical-status', 'clinical-action'].includes(key)) return true;
+    return Boolean(cell.querySelector('.drug-select,.drug-actions-trigger,.favorite-marker,.clinical-editor-open'));
   }
 
   function elementIsClipped(element) {
