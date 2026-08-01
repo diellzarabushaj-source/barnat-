@@ -26,14 +26,14 @@ const dosage = read('registry-dosage-columns-v2.js');
 const builder = read('scripts/build-static-runtime.js');
 const middleware = read('middleware.ts');
 
-assert.match(index, /registry-runtime-loader\.js\?v=20260801-2/);
+assert.match(index, /registry-runtime-loader\.js\?v=20260801-3/);
 assert.doesNotMatch(index, /<script src="app-performance\.js"/);
 assert.match(index, /app-runtime-performance\.js/);
 assert.match(index, /registry-dosage-loader\.js/);
 assert.doesNotMatch(index, /src="app\.js|src="registry-dosage-columns(?:-v2)?\.js/);
-assert.match(runtimeLoader, /registry-runtime-loader-v2/);
+assert.match(runtimeLoader, /registry-runtime-loader-v3/);
 assert.match(runtimeLoader, /app-performance\.js\?v=20260801-1/);
-assert.match(runtimeLoader, /FIRST_INTERACTION_FALLBACK_MS = 1800/);
+assert.match(runtimeLoader, /FIRST_INTERACTION_FALLBACK_MS = 5000/);
 assert.match(runtimeLoader, /POST_INTERACTION_GRACE_MS = 320/);
 assert.match(runtimeLoader, /handleFirstInteraction[\s\S]*scheduleRuntime\(POST_INTERACTION_GRACE_MS\)/);
 assert.match(runtimeLoader, /classList\.contains\('auth-ready'\)/);
@@ -79,4 +79,4 @@ assert.match(builder, /runtimeOutputs/);
 assert.match(builder, /app-runtime-performance\.js/);
 assert.match(middleware, /registry-parser-worker-v2\.js/);
 
-console.log('Registry first-interaction gate and main-thread deep audit passed.');
+console.log('Registry first-interaction gate v3 and main-thread deep audit passed.');
