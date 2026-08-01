@@ -13,7 +13,7 @@ const release = read('registry-ui-release.js');
 
 assert.match(index,/data-registry-ui-release="20260801-12"/,'index must use the final table release');
 assert.match(index,/registry-table-final\.css\?v=20260801-1/,'final table stylesheet must be wired');
-assert.match(index,/registry-table-final\.js\?v=20260801-2/,'final table runtime v2 must be wired');
+assert.match(index,/registry-table-final\.js\?v=20260801-3/,'final table runtime v3 must be wired');
 assert.ok(index.indexOf('registry-table-final.css') < index.indexOf('tailadmin-professional.css'),'TailAdmin professional must remain the final static stylesheet');
 assert.ok(index.indexOf('registry-table-final.js') > index.indexOf('registry-ui-release.js'),'final table runtime must execute after legacy registry controllers');
 assert.match(index,/registryTableFinalMobileCompatibility[\s\S]*#dataTable tbody tr\{display:block!important\}/,'mobile registry cards must preserve the block-row contract');
@@ -21,6 +21,7 @@ assert.match(release,/registry-ui-20260801-12/,'cache release must be bumped');
 assert.match(read('tests/population-verification-test.js'),/20260801-12/,'population verification audit must follow the current table release');
 
 assert.doesNotThrow(() => new Function(runtime),'final table runtime must be valid JavaScript');
+assert.match(runtime,/registry-table-final-v2/,'runtime must expose the optimized v2 controller contract');
 assert.match(runtime,/const MOBILE_BREAKPOINT = 760/,'runtime must have an explicit mobile breakpoint');
 assert.match(runtime,/requestAnimationFrame\(reconcile\)/,'runtime work must be frame-bounded');
 assert.match(runtime,/requestIdleCallback/,'non-critical pencil normalization must be idle');
@@ -28,6 +29,9 @@ assert.doesNotMatch(runtime,/observe\(document\.body/,'runtime must not observe 
 assert.doesNotMatch(runtime,/tableObserver/,'runtime must not observe its own colgroup mutations');
 assert.doesNotMatch(runtime,/requestAnimationFrame\(refreshObservers\)/,'observer discovery must not create a frame loop');
 assert.match(runtime,/registryFinalGeometry === signature/,'column rebuilding must be idempotent');
+assert.match(runtime,/if \(!registryReady\) return false/,'table geometry must wait for registry readiness');
+assert.match(runtime,/attributeFilter:\['data-registry-ux-view'\]/,'theme changes must not trigger column geometry');
+assert.match(runtime,/medindex:registry-ready',markRegistryReady/,'registry readiness must activate final geometry');
 assert.match(runtime,/registry-table-final-width/,'runtime must publish one deterministic table width');
 
 assert.match(css,/#dataTable thead th[\s\S]*background:#fff!important/,'header must remain white');
