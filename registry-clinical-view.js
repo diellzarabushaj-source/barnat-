@@ -17,6 +17,7 @@
   });
 
   let active = false;
+  let activationScheduled = false;
   let resizeObserver = null;
   let refreshScheduled = false;
   let lastWidthSignature = '';
@@ -43,6 +44,7 @@
     const next = VALID_VIEWS.has(view) ? view : 'clinical';
     document.documentElement.dataset.registryUxView = next;
     if (persist) persistView(next);
+    if (!active) activate();
     updateToolbarState();
     lastWidthSignature = '';
     scheduleRefresh();
@@ -183,27 +185,49 @@
   function activate() {
     if (active) return;
     active = true;
-    document.documentElement.dataset.registryUxView = storedView();
+    activationScheduled = false;
     createToolbar();
     observeWidth();
     refresh();
   }
 
-  ['medindex:registry-ready', 'medindex:registry-data-ready', 'medindex:registry-table-stable', 'medindex:tailadmin-ready']
-    .forEach(eventName => window.addEventListener(eventName, () => {
-      lastWidthSignature = '';
-      scheduleRefresh();
-    }));
-  window.addEventListener('resize', scheduleRefresh, { passive:true });
-  window.addEventListener('pageshow', scheduleRefresh, { passive:true });
+  function scheduleActivation() {
+    if (active || activationScheduled) return;
+    activationScheduled = true;
+    requestAnimationFrame(activate);
+  }
 
-  if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', activate, { once:true });
-  else activate();
+  function dataIsReady() {
+    return Array.isArray(window.MEDINDEX_REGISTRY_ROWS) && window.MEDINDEX_REGISTRY_ROWS.length > 0;
+  }
+
+  function initializeViewState() {
+    document.documentElement.dataset.registryUxView = storedView();
+    if (dataIsReady()) scheduleActivation();
+  }
+
+  window.addEventListener('medindex:registry-data-ready', scheduleActivation, { once:true });
+  window.addEventListener('medindex:registry-ready', scheduleActivation, { once:true });
+  window.addEventListener('medindex:registry-table-stable', () => {
+    if (!active) scheduleActivation();
+    lastWidthSignature = '';
+    scheduleRefresh();
+  });
+  window.addEventListener('medindex:tailadmin-ready', () => {
+    if (dataIsReady()) scheduleActivation();
+  });
+  window.addEventListener('resize', scheduleRefresh, { passive:true });
+  window.addEventListener('pageshow', () => {
+    if (dataIsReady()) scheduleActivation();
+    scheduleRefresh();
+  }, { passive:true });
+
+  initializeViewState();
 
   window.MedIndexRegistryClinicalView = {
     version:VERSION,
     refresh:scheduleRefresh,
-    activate,
+    activate:scheduleActivation,
     setView,
     getView:currentView,
   };
