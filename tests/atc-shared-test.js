@@ -32,6 +32,12 @@ assert.equal(ATC.getCategoryLabel('N02'), 'N02 — Analgjetikë – barna kundë
 assert.equal(ATC.getCategoryLabel('N99AA01'), 'N — Sistemi nervor');
 assert.equal(ATC.getCategoryLabel('Z01AA01'), 'Kategoria ATC Z01AA01');
 
+assert.equal(ATC.matchesCategory('N02BE01', 'N02'), true);
+assert.equal(ATC.matchesCategory('N02BE01', 'N02BE01'), true);
+assert.equal(ATC.matchesCategory('N03AX14', 'N02'), false);
+assert.equal(ATC.matchesCategory('M01AE01', 'N02'), false);
+assert.equal(ATC.matchesCategory('invalid', 'N02'), false);
+
 const nervousSystemChildren = ATC.getChildren('N');
 assert.ok(nervousSystemChildren.length >= 7);
 assert.deepEqual(nervousSystemChildren[0], {
@@ -41,6 +47,27 @@ assert.deepEqual(nervousSystemChildren[0], {
 });
 assert.ok(nervousSystemChildren.some(item => item.code === 'N02'));
 assert.deepEqual(ATC.getChildren('Z'), []);
+
+assert.deepEqual(
+  ATC.readRegistryUrlState('https://medindex.local/index.html?atc=n%2002&q=paracetamol&page=2&pageSize=100'),
+  { atc:'N02', query:'paracetamol', q:'paracetamol', page:2, pageSize:100 }
+);
+assert.deepEqual(
+  ATC.readRegistryUrlState('/index.html?atc=Z01AA01&page=invalid&pageSize=invalid'),
+  { atc:'', query:'', q:'', page:1, pageSize:50 }
+);
+assert.equal(
+  ATC.registryUrlFromState('/index.html?status=active&atc=N02&page=9#registry', {
+    atc:'J01CA04', query:'amoxicillin', page:1, pageSize:100,
+  }),
+  '/index.html?status=active&atc=J01&q=amoxicillin&pageSize=100#registry'
+);
+assert.equal(
+  ATC.registryUrlFromState('/index.html?atc=N02&q=paracetamol&page=2&pageSize=100', {
+    atc:'', query:'paracetamol', page:1, pageSize:50,
+  }),
+  '/index.html?q=paracetamol'
+);
 
 assert.equal(
   ATC.registryUrl({ atc:'N02BE01', query:'paracetamol', page:2, pageSize:50 }),
