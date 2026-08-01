@@ -2,8 +2,8 @@
   'use strict';
 
   const VERSION = 'sq-clinical-search-v1';
-  const ADVANCED_PATH = '/api/icd-advanced-search';
   const SOURCE_PATH = '/api/icd';
+  const ADVANCED_FLAG = 'advanced';
   const GROUP_ORDER = ['exact', 'suggested', 'broader', 'narrower', 'english'];
   const GROUP_LABELS = {
     exact:'Përputhje e saktë',
@@ -29,7 +29,7 @@
       const view = clean(url.searchParams.get('view')).toLowerCase();
       const query = clean(url.searchParams.get('q'));
       if (!query || !['table', 'suggest'].includes(view)) return null;
-      url.pathname = ADVANCED_PATH;
+      url.searchParams.set(ADVANCED_FLAG, '1');
       return { url, view };
     } catch {
       return null;
