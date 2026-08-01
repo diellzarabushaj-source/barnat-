@@ -6,6 +6,8 @@ Në regjistrin e barnave, qelizat me tekst të prerë mund të zgjerohen brenda 
 
 Verifikimi për të rritur dhe fëmijë është fail-closed: `Po` kërkon dozë të publikuar, rrugë administrimi dhe burim HTTPS; `Jo` kërkon vendim eksplicit të dokumentuar; kur evidenca nuk mjafton shfaqet `Pa të dhëna`.
 
+Faqja **Sistemi** përmban edhe Media Library të lidhur me Vercel Blob. Ajo përdoret vetëm për logo, imazhe të ndërfaqes dhe materiale vizuale publike; dokumentet e pacientëve dhe të dhënat sensitive nuk duhet të ngarkohen aty.
+
 ## Nisja lokale
 
 Kërkohen Node.js 22 dhe pnpm 10.
@@ -32,7 +34,7 @@ pnpm test
 | `*.html`, `*.css`, `*.js` | Faqet dhe ndërfaqja që ekzekutohet në shfletues |
 | `app-parts/` | Burimi i ndarë i regjistrit; build-i gjeneron `app-runtime.js` |
 | `api/` | Endpoint-et e vogla serverless |
-| `lib/` | Logjika e përbashkët për autentikim, të dhëna dhe Gemini |
+| `lib/` | Logjika e përbashkët për autentikim, të dhëna, media dhe Gemini |
 | `data/` | Të dhënat lokale dhe metadata e cilësisë |
 | `scripts/` | Build-i dhe sinkronizimi i të dhënave |
 | `tests/` | Testet statike, klinike dhe browser smoke |
@@ -43,7 +45,7 @@ Rrjedha kryesore është e thjeshtë:
 2. Faqja e regjistrit lexon së pari kopjen lokale, pastaj `/api/registry`.
 3. Service worker-i ruan shell-in dhe të dhënat private vetëm pas autentikimit.
 4. Kërkimi, filtrimi dhe formatimi bazë i recetës punojnë lokalisht.
-5. Funksionet që kërkojnë rrjet, si sugjerimi me AI, shënohen qartë dhe mbeten opsionale.
+5. Funksionet që kërkojnë rrjet, si sugjerimi me AI dhe Media Library, shënohen qartë.
 
 ## API-të
 
@@ -55,6 +57,7 @@ Rrjedha kryesore është e thjeshtë:
 | `/api/dosage` | Jep dozologjinë dhe kartelat klinike |
 | `/api/icd` | Jep të dhënat ICD dhe laboratorike |
 | `/api/protocol-document` | Jep dokumentin e një protokolli |
+| `/api/media` | Liston, ngarkon ose fshin media publike në Vercel Blob |
 | `/api/gemini-prescription` | Sugjerime opsionale për fushat që mungojnë në recetë |
 
 Endpoint-et private përdorin `Cache-Control: private, no-store`; autentikimi dhe përgjigjet e AI-së nuk ruhen në cache.
@@ -68,13 +71,19 @@ SESSION_SECRET=<vlerë e rastësishme, së paku 32 karaktere>
 ACCESS_CODE=<kodi privat i qasjes>
 ```
 
+Për Media Library, lidhe një **Public Vercel Blob store** me projektin `barnat`. Vercel krijon automatikisht:
+
+```text
+BLOB_READ_WRITE_TOKEN=<tokeni i menaxhuar nga Vercel>
+```
+
 Mund të përdoret `ACCESS_CODE_SCRYPT` në vend të `ACCESS_CODE`. `GEMINI_API_KEY` dhe parametrat e sinkronizimit janë opsionalë. Sekretet nuk duhet të futen në skedarët e frontend-it apo në Git.
 
 ## Offline dhe internet i dobët
 
 - Pas vizitës së parë të autentikuar ruhen faqet, asetet kryesore dhe dataset-et klinike të lejuara.
 - Faqja shfaq kopjen lokale menjëherë dhe rifreskon të dhënat në prapavijë kur rrjeti është i disponueshëm.
-- Receta mund të formatohet lokalisht; AI kërkon internet.
+- Receta mund të formatohet lokalisht; AI dhe Media Library kërkojnë internet.
 - Dalja nga llogaria fshin cache-et dhe të dhënat private lokale.
 - Një instalim i ri pa vizitë të parë online nuk mund të ketë ende dataset-et private.
 
