@@ -20,10 +20,11 @@ const middleware = read('middleware.ts');
 const index = read('index.html');
 const builder = read('scripts/build-static-runtime.js');
 
-assert.match(loader, /registry-runtime-loader-v4/, 'completed-interaction gate version must be current');
-assert.match(loader, /FIRST_INTERACTION_FALLBACK_MS = 15000/, 'automatic startup fallback must remain bounded without competing with the first interaction');
-assert.match(loader, /POST_INTERACTION_GRACE_MS = 1500/, 'heavy bootstrap must wait until the completed interaction settles');
+assert.match(loader, /registry-runtime-loader-v5/, 'non-blocking interaction gate version must be current');
+assert.match(loader, /FIRST_INTERACTION_FALLBACK_MS = 5000/, 'automatic startup fallback must remain bounded');
+assert.match(loader, /POST_INTERACTION_GRACE_MS = 800/, 'heavy bootstrap must wait until the completed interaction settles');
 assert.match(loader, /INTERACTION_EVENTS = \['click', 'keyup', 'touchend'\]/, 'interaction gate must support completed pointer, keyboard and touch actions');
+assert.match(loader, /window\.MEDINDEX_REGISTRY_UI_READY = new Promise/, 'registry UI readiness promise must exist before heavy startup');
 assert.match(loader, /handleCompletedInteraction[\s\S]*scheduleRuntime\(POST_INTERACTION_GRACE_MS\)/, 'completed interaction must schedule, not synchronously start, the registry');
 assert.match(loader, /classList\.contains\('auth-ready'\)/, 'registry bootstrap must wait for the authenticated shell');
 assert.match(loader, /requestAnimationFrame\(\(\) => requestAnimationFrame\(loadRuntime\)\)/, 'registry bootstrap must yield across two paint opportunities');
@@ -64,7 +65,7 @@ assert.doesNotMatch(dosage, /DRUG_DATA_PARTS|\batob\s*\(|DecompressionStream|Uin
 assert.doesNotMatch(dosage, /subtree\s*:\s*true/, 'dosage observers must not watch their own subtree mutations');
 
 assert.match(middleware, /'\/registry-parser-worker-v2\.js'/, 'v2 parser worker must pass through auth middleware');
-assert.match(index, /registry-runtime-loader\.js\?v=20260801-4/, 'index must request the current completed-interaction bootstrap');
+assert.match(index, /registry-runtime-loader\.js\?v=20260801-5/, 'index must request the current non-blocking bootstrap');
 assert.doesNotMatch(index, /<script src="app-performance\.js"/, 'heavy registry application must not be parser ordered');
 assert.ok(index.indexOf('registry-fast-start.js') < index.indexOf('registry-runtime-loader.js'), 'fast-start must precede cooperative registry startup');
 assert.match(index, /app-runtime-performance\.js\?v=clinical-audit-v5-performance-runtime/, 'index must preload the cache-isolated generated runtime');
@@ -72,4 +73,4 @@ assert.match(index, /registry-dosage-loader\.js/, 'index must load the idle dosa
 assert.doesNotMatch(index, /src="registry-dosage-columns-v2\.js/, 'heavy dosage integration must not be in the critical parser path');
 assert.match(builder, /app-runtime-performance\.js/, 'build must generate the cache-isolated runtime artifact');
 
-console.log('Registry interaction resilience, completed first-interaction gate v4, idle dosage and single-pass worker audit passed.');
+console.log('Registry interaction resilience, non-blocking loader v5, idle dosage and single-pass worker audit passed.');
