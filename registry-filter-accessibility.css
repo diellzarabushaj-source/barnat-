@@ -1,0 +1,29 @@
+/* Registry filter accessibility correction.
+   Search stays visible; the filter toggle collapses advanced controls only. */
+
+html.medindex-tailadmin[data-mi-page="barnat"] body #registryFilterPanel.registry-filter-panel[hidden] {
+  display:grid!important;
+}
+
+html.medindex-tailadmin[data-mi-page="barnat"][data-registry-filters-open="false"]
+body #registryFilterPanel.registry-filter-panel .registry-toolbar-secondary {
+  display:none!important;
+}
+
+html.medindex-tailadmin[data-mi-page="barnat"]
+body #registryFilterPanel.registry-filter-panel #search {
+  min-height:46px!important;
+}
+
+@media (max-width:600px) {
+  html.medindex-tailadmin[data-mi-page="barnat"]
+  body .registry-filter-toggle > span:not(.registry-filter-count) {
+    display:inline!important;
+  }
+
+  html.medindex-tailadmin[data-mi-page="barnat"]
+  body .registry-filter-toggle {
+    min-width:auto!important;
+    padding-inline:11px!important;
+  }
+}
