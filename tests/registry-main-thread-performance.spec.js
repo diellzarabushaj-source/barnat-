@@ -53,7 +53,10 @@ test.describe('registry main-thread performance', () => {
 
     await page.goto(`${BASE}/index.html`, { waitUntil:'domcontentloaded' });
     await page.evaluate(() => window.__resetMedIndexPerfProbe?.());
-    await page.waitForFunction(() => document.documentElement.classList.contains('auth-ready'), null, { timeout:10000 });
+    await expect.poll(
+      () => page.evaluate(() => document.documentElement.classList.contains('auth-ready')),
+      { timeout:10000, message:'authenticated shell did not become ready' }
+    ).toBe(true);
     await expect(page.locator('.mi-app-shell')).toBeVisible();
 
     const themeButton = page.locator('.mi-topbar [data-mi-theme-toggle]').first();
@@ -65,9 +68,15 @@ test.describe('registry main-thread performance', () => {
     const interactionLatency = Date.now() - interactionStarted;
     expectBoundedMetric(interactionLatency, 1200, 'shell interaction latency while registry is loading');
 
-    await page.waitForFunction(expected => Array.isArray(window.MEDINDEX_REGISTRY_ROWS)
-      && window.MEDINDEX_REGISTRY_ROWS.length === expected, ROW_COUNT, { timeout:30000 });
-    await page.waitForFunction(() => window.MEDINDEX_APP_VERSION === 'clinical-audit-v5-performance-runtime', null, { timeout:10000 });
+    await expect.poll(
+      () => page.evaluate(expected => Array.isArray(window.MEDINDEX_REGISTRY_ROWS)
+        && window.MEDINDEX_REGISTRY_ROWS.length === expected, ROW_COUNT),
+      { timeout:30000, message:'all registry rows did not load' }
+    ).toBe(true);
+    await expect.poll(
+      () => page.evaluate(() => window.MEDINDEX_APP_VERSION === 'clinical-audit-v5-performance-runtime'),
+      { timeout:10000, message:'performance runtime did not become active' }
+    ).toBe(true);
     await expect(page.locator('#countBadge')).toContainText('4006');
     await expect(page.locator('#tbody > tr')).toHaveCount(50);
 
@@ -112,6 +121,28 @@ test.describe('registry main-thread performance', () => {
     await page.locator('#search').fill('');
     await expect(page.locator('#tbody > tr')).toHaveCount(50);
     await expect(page.locator('#headerRow [data-registry-dosage-column]')).toHaveCount(2);
+
+    const tableShape = await page.evaluate(() => {
+      const headerKeys = [...document.querySelectorAll('#headerRow > th')]
+        .map(cell => cell.dataset.registryColumnKey)
+        .filter(Boolean);
+      const rows = [...document.querySelectorAll('#tbody > tr')].filter(row => !row.querySelector('.empty-state'));
+      const mismatches = rows.filter(row => {
+        const keys = [...row.children].map(cell => cell.dataset.registryColumnKey).filter(Boolean);
+        return keys.length !== headerKeys.length || keys.some((key, index) => key !== headerKeys[index]);
+      }).length;
+      return {
+        headerKeys,
+        rowCount:rows.length,
+        mismatches,
+        colgroups:document.querySelectorAll('#dataTable > colgroup').length,
+        audit:window.MEDINDEX_REGISTRY_TABLE_AUDIT || null,
+      };
+    });
+    expect(tableShape.rowCount).toBe(50);
+    expect(tableShape.mismatches).toBe(0);
+    expect(tableShape.colgroups).toBe(1);
+    expect(tableShape.audit?.stable).toBe(true);
 
     const dosageMetrics = await page.evaluate(() => {
       const state = window.__medindexPerfProbe;
