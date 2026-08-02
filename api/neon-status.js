@@ -2,6 +2,8 @@
 
 const { neonRequest, exactCount } = require('../lib/neon-data-api');
 const SyncOutbox = require('../lib/sync-outbox.js');
+const IcdPublicSource = require('../lib/icd-public-source.js');
+const IcdHealth = require('../lib/icd-health-audit.js');
 
 const CURRENT_DOSAGE_SPREADSHEET_ID = '1T7XsfkXLQfEomFL4DmXoA8PheiR6s3Qmu36hTqklOMo';
 const REQUIRED_DOSAGE_SHEETS = Object.freeze(['KARTELA_BARNAVE', 'DOZA_TE_RRITUR', 'DOZA_PEDIATRIKE']);
@@ -43,10 +45,11 @@ function sourceState(source, now = Date.now()) {
 }
 
 function overallState(states) {
-  const codes = states.map(item => item.code);
+  const codes = states.map(item => item?.code).filter(Boolean);
   if (codes.includes('error')) return { code:'error', label:'Kërkon ndërhyrje', severity:'danger' };
   if (codes.includes('setup_required')) return { code:'setup_required', label:'Aktivizo Apps Script', severity:'warning' };
-  if (codes.includes('stale')) return { code:'stale', label:'Sinkronizimi është vonuar', severity:'warning' };
+  if (codes.includes('stale')) return { code:'stale', label:'Një burim është vonuar', severity:'warning' };
+  if (codes.includes('warning')) return { code:'warning', label:'Kontrollo sistemin', severity:'warning' };
   if (codes.includes('syncing')) return { code:'syncing', label:'Po sinkronizohet', severity:'info' };
   if (states.length && codes.every(code => code === 'healthy')) return { code:'healthy', label:'Të gjitha në rregull', severity:'success' };
   return { code:'warning', label:'Kontrollo konfigurimin', severity:'warning' };
@@ -68,7 +71,7 @@ function publicSource(source, now = Date.now()) {
 }
 
 async function healthPayload(now = Date.now()) {
-  const [drugs, dosageRegimens, icdCodes, labTests, rawSources, editorEvents, recentRuns, outbox] = await Promise.all([
+  const [drugs, dosageRegimens, icdCodes, labTests, rawSources, editorEvents, recentRuns, outbox, icd] = await Promise.all([
     tableCount('drugs'),
     tableCount('dosage_regimens'),
     tableCount('icd_codes'),
@@ -77,6 +80,7 @@ async function healthPayload(now = Date.now()) {
     list('audit_logs?select=id,entity_type,entity_id,action,changed_by,changed_at&source=eq.clinical_editor&order=changed_at.desc&limit=8'),
     list('sync_runs?select=source_type,target_scope,status,rows_read,rows_inserted,rows_updated,rows_skipped,error_summary,started_at,completed_at&order=started_at.desc&limit=5'),
     SyncOutbox.stats(),
+    IcdHealth.loadHealth(IcdPublicSource, now),
   ]);
 
   const sources = rawSources.map(source => publicSource(source, now));
@@ -95,16 +99,18 @@ async function healthPayload(now = Date.now()) {
       }
   );
   const dosageState = overallState(dosageSources.map(source => source.state));
+  const platformState = overallState([dosageState, icd.state]);
   const lastEditorEvent = editorEvents[0] || null;
 
   return {
     connected:true,
     provider:'neon',
     project:'MedIndex',
-    statusVersion:2,
-    overall:dosageState,
+    statusVersion:3,
+    overall:platformState,
     counts:{ drugs, dosageRegimens, icdCodes, labTests },
     synchronization:{
+      state:dosageState,
       currentSpreadsheetId:CURRENT_DOSAGE_SPREADSHEET_ID,
       appsScriptActivated:dosageState.code !== 'setup_required',
       healthy:dosageState.code === 'healthy',
@@ -113,6 +119,7 @@ async function healthPayload(now = Date.now()) {
       allEnabledSources:sources.filter(source => source.enabled),
       outbox,
     },
+    icd,
     editor:{
       available:true,
       lastChangeAt:lastEditorEvent?.changed_at || null,
