@@ -5,7 +5,9 @@ const path = require('node:path');
 const root = path.resolve(__dirname, '..');
 const read = file => fs.readFileSync(path.join(root, file), 'utf8');
 const html = read('icd.html');
+const fetchCapture = read('icd-fetch-capture.js');
 const browser = read('icd-advanced-search.js');
+const raceGuard = read('icd-search-race-guard-v2.js');
 const styles = read('icd-advanced-search.css');
 const polish = read('icd-tree-polish.css');
 const tree = read('icd-tree.js');
@@ -18,22 +20,50 @@ const engineBase = read('lib/icd-search-engine.js');
 const engineV2 = read('lib/icd-search-engine-v2.js');
 const engineV3 = read('lib/icd-search-engine-v3.js');
 
-for (const asset of ['icd-advanced-search.css?v=sq-clinical-search-v2','icd-advanced-search.js?v=sq-clinical-search-v2','icd-tree-polish.css?v=icd-tree-polish-v2']) {
-  assert.ok(html.includes(asset), `ICD advanced search page missing ${asset}`);
-}
+for (const asset of [
+  'icd-advanced-search.css?v=sq-clinical-search-v3',
+  'icd-fetch-capture.js?v=icd-fetch-capture-v1',
+  'icd-advanced-search.js?v=sq-clinical-search-v3',
+  'icd-tree-polish.css?v=icd-tree-polish-v3',
+  'icd-search-race-guard-v2.js?v=icd-race-guard-v5',
+]) assert.ok(html.includes(asset), `ICD advanced search page missing ${asset}`);
 assert.ok(
-  html.indexOf('icd-advanced-search.js?v=sq-clinical-search-v2') < html.indexOf('icd-tree.js?v=icd-tree-v1'),
+  html.indexOf('icd-fetch-capture.js?v=icd-fetch-capture-v1') < html.indexOf('icd-advanced-search.js?v=sq-clinical-search-v3'),
+  'Native fetch must be captured before the advanced wrapper.',
+);
+assert.ok(
+  html.indexOf('icd-advanced-search.js?v=sq-clinical-search-v3') < html.indexOf('icd-tree.js?v=icd-tree-v1'),
   'Advanced fetch routing must load before the tree controller.',
 );
+assert.ok(
+  html.indexOf('icd-tree.js?v=icd-tree-v1') < html.indexOf('icd-search-race-guard-v2.js?v=icd-race-guard-v5'),
+  'The passive ARIA guard must load after the tree controller.',
+);
+for (const marker of ['id="icdSourceStatus"', 'data-source-status="loading"', 'aria-busy="false"']) {
+  assert.ok(html.includes(marker), `ICD source health surface missing ${marker}`);
+}
+for (const marker of ['MedIndexNativeFetch', 'window.fetch.bind(window)', 'writable:false']) {
+  assert.ok(fetchCapture.includes(marker), `Native fetch capture missing ${marker}`);
+}
 
 for (const marker of [
+  "const VERSION = 'sq-clinical-search-v3'", "const ENGINE = 'clinical-ranking-v3'",
   "const SOURCE_PATH = '/api/icd'", "const ADVANCED_FLAG = 'advanced'", "url.searchParams.set(ADVANCED_FLAG, '1')",
-  'sq-clinical-search-v1', 'clinical-ranking-v3', 'MutationObserver', 'Diagnoza të sugjeruara',
+  'latestSuggestionRequest', 'suggestionSequence', 'currentSuggestionResponse', 'setSuggestionBusy',
+  'loadSourceStatus', 'renderSourceStatus', 'Burimi: cache i fundit', 'Burimi: live',
+  'aria-activedescendant', 'syncActiveDescendant', 'MutationObserver', 'Diagnoza të sugjeruara',
   'Kategori më të gjera', 'Nënkode më specifike', 'Kodi u normalizua si',
   'Nuk u gjet asnjë kod ICD-10', 'breadcrumb', 'nuk vendosin diagnozë',
 ]) assert.ok(browser.includes(marker), `Browser integration missing ${marker}`);
-for (const marker of ['loadSuggestions', "endpoint('suggest'", 'revealCode', 'data-suggestion-index']) {
-  assert.ok(tree.includes(marker), `Tree search integration missing ${marker}`);
+for (const marker of [
+  "const VERSION = 'icd-race-guard-v4'", 'passive-aria-observer',
+  'syncActiveDescendant', 'syncExpandedState', 'scheduleSync', 'ensureObserver',
+  'aria-activedescendant', 'aria-expanded', 'MutationObserver',
+]) assert.ok(raceGuard.includes(marker), `Passive ICD ARIA guard missing ${marker}`);
+assert.doesNotMatch(raceGuard, /fetch\s*\(|MedIndexNativeFetch|AbortController|setTimeout|setInterval|stopImmediatePropagation/,
+  'The passive guard must not own requests, timers, transport cancellation or input propagation.');
+for (const marker of ['loadSuggestions', "endpoint('suggest'", 'suggestionSequence', 'suggestionRequest?.abort()', 'revealCode', 'data-suggestion-index']) {
+  assert.ok(tree.includes(marker), `Tree search controller missing ${marker}`);
 }
 for (const marker of [
   'icd-suggestion-group-title', 'icd-suggestion-match', 'icd-suggestion-safety',
@@ -41,7 +71,8 @@ for (const marker of [
 ]) assert.ok(styles.includes(marker), `Advanced suggestion CSS missing ${marker}`);
 for (const marker of [
   'icd-suggestion-empty', 'code-normalized', 'editorial-alias-exact', 'icd-suggestion-path',
-]) assert.ok(polish.includes(marker), `Phase 9 search polish missing ${marker}`);
+  'icd-source-status', 'data-source-status="live"', 'aria-busy="true"',
+]) assert.ok(polish.includes(marker), `Final ICD hardening polish missing ${marker}`);
 for (const marker of [
   "require('../lib/icd-api-base.js')", "require('../lib/icd-advanced-handler.js')",
   "String(req.query?.advanced || '') === '1'", 'advancedHandler(req, res)', 'baseHandler(req, res)',
@@ -71,8 +102,8 @@ for (const marker of [
   'editorial-alias-exact', 'hierarchyRuntime', 'interpretationType', 'normalizedCode',
 ]) assert.ok(engineV3.includes(marker), `Clinical ranking v3 engine missing ${marker}`);
 assert.ok(!fs.existsSync(path.join(root, 'api/icd-advanced-search.js')), 'Advanced search must not create a twelfth Vercel function.');
-assert.doesNotMatch(browser, /eval\s*\(|new Function\s*\(/);
+assert.doesNotMatch(fetchCapture + browser + raceGuard, /eval\s*\(|new Function\s*\(/);
 assert.doesNotMatch(styles + polish, /https?:\/\//);
 assert.doesNotMatch(advancedHandler, /res\.status\(200\).*verifySessionToken/s);
-new Function(browser); new Function(tree); new Function(apiWrapper); new Function(apiBase); new Function(advancedHandler); new Function(publicSource); new Function(hierarchy); new Function(engineBase); new Function(engineV2); new Function(engineV3);
-console.log('Advanced ICD search uses normalized codes, breadcrumbs, bounded caching and one authenticated hierarchy runtime.');
+new Function(fetchCapture); new Function(browser); new Function(raceGuard); new Function(tree); new Function(apiWrapper); new Function(apiBase); new Function(advancedHandler); new Function(publicSource); new Function(hierarchy); new Function(engineBase); new Function(engineV2); new Function(engineV3);
+console.log('Advanced ICD search uses the tree request controller, deterministic sequencing and a passive ARIA observer.');
