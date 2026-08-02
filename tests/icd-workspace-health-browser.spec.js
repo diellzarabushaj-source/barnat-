@@ -2,6 +2,8 @@ const { test, expect } = require('@playwright/test');
 const fs = require('node:fs');
 const path = require('node:path');
 
+test.use({ serviceWorkers:'block' });
+
 const BASE = 'http://127.0.0.1:4173';
 const OUTPUT = '/tmp/icd-visual';
 fs.mkdirSync(OUTPUT, { recursive:true });
