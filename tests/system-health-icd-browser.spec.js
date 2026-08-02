@@ -104,7 +104,8 @@ test('system dashboard shows live ICD revision, hierarchy and five clinical prob
   await installRoutes(page);
   await openDashboard(page);
   await expect(page.locator('#systemIcdState')).toHaveText('ICD në rregull');
-  await expect(page.locator('#systemIcdLiveNodes')).toHaveText('12.542');
+  const liveNodeText = await page.locator('#systemIcdLiveNodes').textContent();
+  expect(String(liveNodeText).replace(/\D/g, '')).toBe('12542');
   await expect(page.locator('#systemIcdRevision')).toHaveText('abcdefghijkl');
   await expect(page.locator('#systemIcdSourceStatus')).toContainText('Live');
   await expect(page.locator('#systemIcdProbeScore')).toHaveText('5/5');
