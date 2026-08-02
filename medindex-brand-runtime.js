@@ -1,7 +1,8 @@
 (() => {
   'use strict';
 
-  const VERSION = 'medindex-brand-v1';
+  const VERSION = 'medindex-brand-v2';
+  const PROFILE_STATE = 'profile-placeholder-v1';
   const ROOT = '/public/images/brand/';
   const ASSETS = Object.freeze({
     fullLight:`${ROOT}medindex-full-on-light.png`,
@@ -29,6 +30,11 @@
       .mi-mobile-brand[data-medindex-brand="${VERSION}"]{display:inline-flex!important;align-items:center!important;justify-content:center!important;line-height:0!important}
       .mi-mobile-brand[data-medindex-brand="${VERSION}"] .medindex-brand-icon{display:block;width:34px;height:34px}
       .mi-mobile-brand[data-medindex-brand="${VERSION}"] .medindex-brand-full{display:none}
+      .mi-user-card[data-profile-state="disabled"]{cursor:default!important;pointer-events:none!important;user-select:none!important}
+      .mi-user-card[data-profile-state="disabled"] .mi-user-arrow{display:none!important}
+      .mi-profile-coming-soon{display:inline-flex;min-height:24px;flex:0 0 auto;align-items:center;justify-content:center;margin-left:auto;padding:4px 8px;border:1px solid var(--mi-border,#e4e7ec);border-radius:999px;background:var(--mi-gray-100,#f2f4f7);color:var(--mi-gray-500,#667085);font-size:10px;font-weight:650;line-height:1;white-space:nowrap}
+      html[data-theme="dark"] .mi-profile-coming-soon,html.dark .mi-profile-coming-soon{background:rgba(255,255,255,.06);color:var(--mi-gray-300,#d0d5dd)}
+      body.mi-sidebar-collapsed .mi-profile-coming-soon{display:none!important}
       @media(max-width:1023px){.mi-sidebar .medindex-brand-full{display:none!important}.mi-sidebar .medindex-brand-icon{display:block!important;width:38px;height:38px}.mi-sidebar-header{min-height:66px!important}}
       @media(min-width:1024px){body:not(.mi-sidebar-collapsed) .mi-sidebar .mi-brand{justify-content:flex-start!important}}
     `;
@@ -67,6 +73,36 @@
     return true;
   }
 
+  function enhanceSidebarProfile() {
+    const card = document.querySelector('.mi-sidebar .mi-user-card');
+    if (!card) return false;
+
+    card.dataset.profileState = 'disabled';
+    card.dataset.profilePlaceholder = PROFILE_STATE;
+    card.setAttribute('aria-disabled', 'true');
+    card.setAttribute('aria-label', 'Profili i Diellza Rabushaj — së shpejti');
+    card.setAttribute('title', 'Profili do të jetë i disponueshëm së shpejti');
+    card.removeAttribute('tabindex');
+    card.removeAttribute('onclick');
+
+    const arrow = card.querySelector('.mi-user-arrow');
+    if (arrow) {
+      arrow.hidden = true;
+      arrow.setAttribute('aria-hidden', 'true');
+    }
+
+    let badge = card.querySelector('.mi-profile-coming-soon');
+    if (!badge) {
+      badge = document.createElement('span');
+      badge.className = 'mi-profile-coming-soon';
+      badge.textContent = 'Së shpejti';
+      badge.setAttribute('aria-hidden', 'true');
+      card.appendChild(badge);
+    }
+
+    return true;
+  }
+
   function ensureFavicons() {
     if (faviconsInstalled) return;
     faviconsInstalled = true;
@@ -91,8 +127,10 @@
     ensureFavicons();
     const sidebarReady = enhanceSidebarBrand();
     const mobileReady = enhanceMobileBrand();
+    const profileReady = enhanceSidebarProfile();
     document.documentElement.dataset.medindexBrand = VERSION;
-    return sidebarReady && mobileReady;
+    document.documentElement.dataset.medindexProfile = PROFILE_STATE;
+    return sidebarReady && mobileReady && profileReady;
   }
 
   let frame = 0;
