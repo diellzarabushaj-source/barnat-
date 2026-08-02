@@ -12,6 +12,7 @@ const SPREADSHEET_ID = '1O2S9xNIzvNmiG8ny-VLAp9NeyiUsrY8pxRpyJgTF_O0';
 const SHEET_GID = 329283560;
 const SOURCE = `https://docs.google.com/spreadsheets/d/${SPREADSHEET_ID}/gviz/tq?tqx=out:csv&gid=${SHEET_GID}`;
 const MAX_BYTES = 8 * 1024 * 1024;
+const EXPECTED_STANDARDIZED_BY_CHAPTER = Object.freeze({ IX:79, X:118, XVIII:210 });
 
 async function loadCsv() {
   const localPath = String(process.env.ICD_CSV_PATH || '').trim();
@@ -51,6 +52,7 @@ function childCounts(dataset) {
   assert.equal(dataset.terminology.version, 'sq-terminology-2026.2');
   assert.deepEqual(dataset.terminology.pilotChapters, ['IX', 'X', 'XVIII']);
   assert.equal(dataset.quality.verifiedTranslations, 0);
+  assert.equal(dataset.quality.standardizedTranslations, 426);
   assert.equal(dataset.quality.publicationReady, false);
   assert.ok(!dataset.nodes.some(node => /^loading\.{3}$/i.test(node.displayTitle)), 'Loading... leaked into a display title.');
 
@@ -68,9 +70,13 @@ function childCounts(dataset) {
     assert.ok(byCode.has(code), `Required clinical code ${code} is missing.`);
     assert.equal(byCode.get(code).translationStatus, 'standardized', `${code} is not standardized.`);
   }
+  assert.equal(byCode.get('J44').chapter, 'X');
+  assert.equal(byCode.get('R06.0').chapter, 'XVIII');
 
   assert.equal(FullIcd.queryDataset(dataset, { q:'gulçim', pageSize:10 }).rows[0].code, 'R06.0');
   assert.equal(FullIcd.queryDataset(dataset, { q:'djegie gjatë urinimit', pageSize:10 }).rows[0].code, 'R30.0');
+  assert.ok(FullIcd.queryDataset(dataset, { chapter:'X', pageSize:100 }).total > 0, 'Chapter X filtering returned no rows.');
+  assert.ok(FullIcd.queryDataset(dataset, { chapter:'XVIII', pageSize:100 }).total > 0, 'Chapter XVIII filtering returned no rows.');
 
   const counts = childCounts(dataset);
   const generalCopd = AdvancedIcd._test.tablePayload(
@@ -101,6 +107,8 @@ function childCounts(dataset) {
       dataset.nodes.filter(node => node.chapter === chapter && node.translationStatus === 'standardized').length,
     ]),
   );
+  assert.deepEqual(standardizedByChapter, EXPECTED_STANDARDIZED_BY_CHAPTER);
+  assert.deepEqual(dataset.quality.standardizedByChapter, EXPECTED_STANDARDIZED_BY_CHAPTER);
 
   console.log(JSON.stringify({
     sourceBytes:Buffer.byteLength(csv, 'utf8'),
