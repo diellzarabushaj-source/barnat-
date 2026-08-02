@@ -99,12 +99,14 @@ assert.doesNotMatch(js, /localStorage\.setItem|sessionStorage\.setItem/);
 assert.match(recovery, /icd-clinical-guidance-recovery-v5/);
 assert.match(recovery, /Riprovo listën klinike/);
 assert.match(recovery, /data-mi-icd-clinical-retry-visible/);
+assert.match(recovery, /button\.addEventListener\('click'/);
+assert.match(recovery, /miIcdClinicalRetryBound/);
 assert.match(recovery, /new root\.CustomEvent\('medindex:icd-state'/);
 assert.match(recovery, /source:'clinical-recovery'/);
-assert.match(recovery, /api\?\.normalizeCode/);
-assert.doesNotMatch(recovery, /root\.fetch|internalRetry\.click|stopImmediatePropagation|location\.reload|localStorage|sessionStorage/);
+assert.match(recovery, /internalRetry\?\.click\(\)/);
+assert.doesNotMatch(recovery, /root\.fetch|stopImmediatePropagation|location\.reload|localStorage|sessionStorage/);
 assert.match(css, /@media \(max-width: 520px\)/);
 assert.match(css, /@media \(forced-colors: active\)/);
 assert.match(css, /overflow-wrap: anywhere/);
 
-console.log('ICD clinical guidance, curated Google Sheet provenance, controller-based in-place recovery and non-fabrication contract passed.');
+console.log('ICD clinical guidance, curated Google Sheet provenance, directly bound recovery and non-fabrication contract passed.');
