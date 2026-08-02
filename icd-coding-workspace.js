@@ -16,7 +16,8 @@
   const API_PATH = '/api/icd';
   const PRIMARY_KEY = 'medindex_rx_diagnosis_context_v2';
   const SECONDARY_KEY = 'medindex_rx_secondary_diagnosis_context_v1';
-  const CODE_PATTERN = /^[A-Z][0-9]{2}(?:\.[0-9A-Z]{1,4})?$/;
+  const DIAGNOSIS_CODE_PATTERN = /^[A-Z][0-9]{2}(?:\.[0-9A-Z]{1,4})?$/;
+  const NAVIGATION_CODE_PATTERN = /^(?:[IVXLCDM]{1,8}|[A-Z][0-9]{2}-[A-Z][0-9]{2}|[A-Z][0-9]{2}(?:\.[0-9A-Z]{1,4})?)$/;
   const CODABLE_LEVELS = new Set(['category', 'subcategory']);
   const LEVEL_LABELS = Object.freeze({
     chapter:'Kapitull',
@@ -46,7 +47,7 @@
 
   function normalizeCode(value) {
     const code = safeText(value, 24).toUpperCase();
-    return CODE_PATTERN.test(code) ? code : '';
+    return NAVIGATION_CODE_PATTERN.test(code) ? code : '';
   }
 
   function normalizeNode(value) {
@@ -96,7 +97,8 @@
   }
 
   function canCode(node) {
-    return Boolean(normalizeNode(node) && CODABLE_LEVELS.has(clean(node?.level).toLowerCase()));
+    const normalized = normalizeNode(node);
+    return Boolean(normalized && CODABLE_LEVELS.has(normalized.level) && DIAGNOSIS_CODE_PATTERN.test(normalized.code));
   }
 
   function specificityInfo(node) {
@@ -146,7 +148,7 @@
     const { node, ancestors } = resolved;
     const terminology = terminologyInfo(node.translationStatus);
     const path = [...ancestors, node].map(item => item.code).join(' › ');
-    const lines = [
+    return [
       'ICD-10-WHO 2019',
       `Kodi: ${node.code}`,
       `Niveli: ${levelLabel(node.level)}`,
@@ -154,8 +156,7 @@
       `English: ${node.titleEn || '—'}`,
       `Statusi i termit: ${terminology.label}`,
       `Hierarkia: ${path}`,
-    ];
-    return lines.join('\n');
+    ].join('\n');
   }
 
   function ensureHost() {
@@ -304,18 +305,19 @@
     if (!normalizedCode || !rootRef) return null;
     const sequence = ++requestSequence;
     activeController?.abort();
-    activeController = new AbortController();
+    const controller = new AbortController();
+    activeController = controller;
     renderLoading(normalizedCode);
     try {
       const response = await rootRef.fetch(`${API_PATH}?view=resolve&code=${encodeURIComponent(normalizedCode)}`, {
         credentials:'same-origin',
         cache:'no-store',
         headers:{ Accept:'application/json' },
-        signal:activeController.signal,
+        signal:controller.signal,
       });
       if (!response.ok) throw new Error(`ICD API ${response.status}`);
       const payload = await response.json();
-      if (sequence !== requestSequence || activeController.signal.aborted) return null;
+      if (sequence !== requestSequence || controller.signal.aborted) return null;
       if (!payload?.ok || !payload?.data?.node) throw new Error('Kodi ICD-10 nuk u gjet.');
       renderResolved(payload.data);
       return activeResolved;
