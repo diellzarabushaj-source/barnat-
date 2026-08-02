@@ -441,7 +441,8 @@
         }
       });
     }
-    button.hidden = !usable;
+    const nextHidden = !usable;
+    if (button.hidden !== nextHidden) button.hidden = nextHidden;
   }
 
   function bindIcd() {
