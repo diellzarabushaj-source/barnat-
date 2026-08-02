@@ -100,6 +100,13 @@ async function viewportReport(page) {
   }));
 }
 
+async function captureIcdPanel(page, filename) {
+  const panel = page.locator('.system-icd-panel');
+  await panel.scrollIntoViewIfNeeded();
+  await expect(panel).toBeVisible();
+  await panel.screenshot({ path:path.join(OUTPUT, filename) });
+}
+
 test('system dashboard shows live ICD revision, hierarchy and five clinical probes', async ({ page }) => {
   await installRoutes(page);
   await openDashboard(page);
@@ -111,7 +118,7 @@ test('system dashboard shows live ICD revision, hierarchy and five clinical prob
   await expect(page.locator('#systemIcdProbeScore')).toHaveText('5/5');
   await expect(page.locator('#systemIcdProbeList .system-probe')).toHaveCount(5);
   await expect(page.locator('#systemIcdProbeList .system-probe.is-failed')).toHaveCount(0);
-  await page.screenshot({ path:path.join(OUTPUT, 'icd-health-live-desktop.png'), fullPage:true });
+  await captureIcdPanel(page, 'icd-health-live-panel-desktop.png');
 });
 
 test('stale ICD fallback remains explicit and inside the phone viewport', async ({ page }) => {
@@ -121,9 +128,11 @@ test('stale ICD fallback remains explicit and inside the phone viewport', async 
   await expect(page.locator('#systemIcdState')).toHaveText('ICD nga cache');
   await expect(page.locator('#systemIcdSourceStatus')).toHaveText('Cache i fundit i vlefshëm');
   await expect(page.locator('#systemMessage')).toContainText('cache-i i fundit');
+  const panel = page.locator('.system-icd-panel');
+  await panel.scrollIntoViewIfNeeded();
   const report = await viewportReport(page);
   expect(report.scrollWidth).toBeLessThanOrEqual(report.width + 1);
   expect(report.probeRect.left).toBeGreaterThanOrEqual(-1);
   expect(report.probeRect.right).toBeLessThanOrEqual(report.width + 1);
-  await page.screenshot({ path:path.join(OUTPUT, 'icd-health-stale-mobile.png'), fullPage:true });
+  await panel.screenshot({ path:path.join(OUTPUT, 'icd-health-stale-panel-mobile.png') });
 });
