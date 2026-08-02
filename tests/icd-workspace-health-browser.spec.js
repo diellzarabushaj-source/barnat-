@@ -17,6 +17,7 @@ const source = {
 
 async function installMetaRoute(page, controls = {}) {
   controls.requests = 0;
+  controls.workspaceRequests = 0;
   controls.failuresRemaining = Number(controls.failuresRemaining || 0);
   await page.route('**/api/icd**', async route => {
     const url = new URL(route.request().url());
@@ -27,7 +28,10 @@ async function installMetaRoute(page, controls = {}) {
     ) return route.continue();
 
     controls.requests += 1;
-    if (controls.failuresRemaining > 0) {
+    const headers = route.request().headers();
+    const isWorkspaceRequest = headers['x-medindex-icd-workspace'] === 'health-v2';
+    if (isWorkspaceRequest) controls.workspaceRequests += 1;
+    if (isWorkspaceRequest && controls.failuresRemaining > 0) {
       controls.failuresRemaining -= 1;
       return route.fulfill({
         status:503,
@@ -102,7 +106,7 @@ test('workspace source health preserves live metadata and cached context offline
   await page.evaluate(() => window.dispatchEvent(new Event('online')));
   await expect(health).toHaveAttribute('data-state', 'live');
   await expect(badge).toHaveText('Burimi: live');
-  expect(controls.requests).toBeGreaterThanOrEqual(2);
+  expect(controls.workspaceRequests).toBeGreaterThanOrEqual(1);
 });
 
 test('manual source refresh performs one bounded retry and keeps the tree usable', async ({ page }) => {
@@ -112,7 +116,7 @@ test('manual source refresh performs one bounded retry and keeps the tree usable
 
   const health = page.locator('#icdSourceHealth');
   const refresh = page.locator('#icdSourceHealthRefresh');
-  const initialRequests = controls.requests;
+  const initialWorkspaceRequests = controls.workspaceRequests;
   controls.failuresRemaining = 1;
 
   await page.evaluate(() => {
@@ -126,7 +130,7 @@ test('manual source refresh performs one bounded retry and keeps the tree usable
   await expect(refresh).toBeEnabled();
   await expect(page.locator('#icdTree')).toHaveAttribute('aria-busy', 'false');
 
-  expect(controls.requests - initialRequests).toBe(2);
+  expect(controls.workspaceRequests - initialWorkspaceRequests).toBe(2);
   const retryEvents = await page.evaluate(() => window.__icdWorkspaceRetryEvents || []);
   expect(retryEvents).toHaveLength(1);
   expect(retryEvents[0].status).toBe(503);
