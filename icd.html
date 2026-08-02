@@ -19,6 +19,7 @@
   <link rel="stylesheet" href="icd-advanced-search.css?v=sq-clinical-search-v3">
   <link rel="stylesheet" href="icd-detail-panel.css?v=icd-detail-panel-v2">
   <link rel="stylesheet" href="icd-terminology-detail.css?v=icd-terminology-detail-v1">
+  <link rel="stylesheet" href="icd-favorites.css?v=icd-favorites-v1">
   <link rel="stylesheet" href="icd-tree-polish.css?v=icd-tree-polish-v3">
   <link rel="stylesheet" href="tailadmin-professional.css?v=20260728-1" data-tailadmin-professional-css>
   <script src="tailadmin-shell.js?v=production-audit-v2" defer></script>
@@ -59,9 +60,23 @@
             <div class="icd-suggestions" id="icdSuggestions" role="listbox" aria-label="Sugjerime të avancuara ICD-10" aria-busy="false" hidden></div>
           </div>
           <button class="icd-tree-action" id="icdCollapseAll" type="button">Mbyll të gjitha</button>
+          <button class="icd-tree-action icd-favorites-toggle" id="icdFavoritesToggle" type="button" aria-expanded="false" aria-controls="icdFavoritesPanel" aria-label="Të preferuarat ICD, 0 kode">Të preferuarat <span id="icdFavoritesCount" aria-hidden="true">0</span></button>
           <span class="icd-tree-status" id="icdTreeStatus" aria-live="polite">Duke u ngarkuar…</span>
           <span class="icd-source-status" id="icdSourceStatus" data-source-status="loading" role="status" aria-live="polite">Burimi: duke u verifikuar</span>
         </div>
+
+        <section class="icd-favorites-panel" id="icdFavoritesPanel" aria-labelledby="icdFavoritesHeading" hidden>
+          <header class="icd-favorites-head">
+            <div>
+              <h3 id="icdFavoritesHeading">Kodet e preferuara</h3>
+              <p>Shortcut-e personale për kategori dhe nënkategori ICD-10; nuk përfaqësojnë diagnozë automatike.</p>
+            </div>
+            <button class="icd-favorites-clear" id="icdFavoritesClear" type="button" hidden>Pastro të gjitha</button>
+          </header>
+          <div class="icd-favorites-list" id="icdFavoritesList" role="list"></div>
+          <p class="icd-favorites-empty" id="icdFavoritesEmpty">Nuk ke ruajtur ende kode. Hape një kategori ose nënkategori dhe zgjidh “Shto te të preferuarat”.</p>
+          <p class="sr-only" id="icdFavoritesStatus" role="status" aria-live="polite"></p>
+        </section>
 
         <div class="icd-tree-wrap">
           <div class="icd-tree" id="icdTree" role="tree" aria-label="Kapitujt, blloqet, kategoritë dhe nënkategoritë ICD-10" aria-busy="true">
@@ -83,6 +98,7 @@
   <script src="icd-detail-panel.js?v=icd-detail-panel-v2" defer></script>
   <script src="icd-terminology-detail.js?v=icd-terminology-detail-v1" defer></script>
   <script src="icd-prescription-roundtrip.js?v=icd-rx-roundtrip-v1" defer></script>
+  <script src="icd-favorites.js?v=icd-favorites-v1" defer></script>
   <script src="auth-client.js?v=production-audit-v2" defer></script>
   <script src="app-stability.js?v=20260724-2" defer></script>
 </body>
