@@ -4,11 +4,61 @@
   if (!root?.document) return;
   const VERSION = 'icd-clinical-guidance-recovery-v5';
   let observer = null;
-  let clickBound = false;
   let retryTimer = 0;
 
   function stateNode() {
     return root.document.getElementById('icdClinicalGuidanceState');
+  }
+
+  function setButtonReady(button) {
+    if (!button?.isConnected) return;
+    button.disabled = false;
+    button.removeAttribute('aria-busy');
+    button.textContent = 'Riprovo listën klinike';
+  }
+
+  function activeCode() {
+    const value = String(root.document.getElementById('icdCodingWorkspaceCode')?.textContent || '').trim().toUpperCase();
+    return root.MedIndexIcdClinicalGuidance?.normalizeCode?.(value) || (/^[A-Z][0-9]{2}(?:\.[0-9A-Z]{1,4})?$/.test(value) ? value : '');
+  }
+
+  function retry(button) {
+    const code = activeCode();
+    if (!code) {
+      setButtonReady(button);
+      return;
+    }
+
+    button.disabled = true;
+    button.setAttribute('aria-busy', 'true');
+    button.textContent = 'Duke u rilidhur…';
+    root.document.documentElement.dataset.miIcdClinicalRecoveryAttempt = code;
+    root.clearTimeout(retryTimer);
+
+    root.setTimeout(() => {
+      root.dispatchEvent(new root.CustomEvent('medindex:icd-state', {
+        detail:{ code, source:'clinical-recovery', force:true },
+      }));
+
+      root.setTimeout(() => {
+        if (stateNode()?.dataset.tone !== 'error') return;
+        const internalRetry = root.document.querySelector('[data-mi-icd-clinical-retry]');
+        internalRetry?.click();
+      }, 250);
+    }, 0);
+
+    retryTimer = root.setTimeout(() => {
+      if (stateNode()?.dataset.tone === 'error') setButtonReady(button);
+    }, 8000);
+  }
+
+  function bindButton(button) {
+    if (!button || button.dataset.miIcdClinicalRetryBound === 'true') return;
+    button.dataset.miIcdClinicalRetryBound = 'true';
+    button.addEventListener('click', event => {
+      event.preventDefault();
+      retry(button);
+    }, { capture:true });
   }
 
   function ensureRetryControl() {
@@ -33,53 +83,13 @@
       const content = empty.querySelector('div') || empty;
       content.appendChild(button);
     }
-  }
-
-  function setButtonReady(button) {
-    if (!button?.isConnected) return;
-    button.disabled = false;
-    button.removeAttribute('aria-busy');
-    button.textContent = 'Riprovo listën klinike';
-  }
-
-  function retry(button) {
-    const api = root.MedIndexIcdClinicalGuidance;
-    const code = api?.normalizeCode?.(root.document.getElementById('icdCodingWorkspaceCode')?.textContent);
-    if (!code) {
-      setButtonReady(button);
-      return;
-    }
-
-    button.disabled = true;
-    button.setAttribute('aria-busy', 'true');
-    button.textContent = 'Duke u rilidhur…';
-
-    root.clearTimeout(retryTimer);
-    root.dispatchEvent(new root.CustomEvent('medindex:icd-state', {
-      detail:{ code, source:'clinical-recovery', force:true },
-    }));
-
-    retryTimer = root.setTimeout(() => {
-      if (stateNode()?.dataset.tone === 'error') setButtonReady(button);
-    }, 8000);
-  }
-
-  function bindControlledRetry() {
-    if (clickBound) return;
-    clickBound = true;
-    root.document.addEventListener('click', event => {
-      const button = event.target.closest('[data-mi-icd-clinical-retry-visible]');
-      if (!button) return;
-      event.preventDefault();
-      retry(button);
-    });
+    bindButton(button);
   }
 
   function init() {
     const state = stateNode();
     if (!state) return false;
     ensureRetryControl();
-    bindControlledRetry();
     observer?.disconnect();
     observer = new MutationObserver(ensureRetryControl);
     observer.observe(state, {
