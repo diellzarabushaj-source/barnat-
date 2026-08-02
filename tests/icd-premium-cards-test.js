@@ -55,7 +55,7 @@ for (const marker of ['.icd-detail-panel', '.icd-use-diagnosis', '.icd-detail-su
   assert.ok(detailCss.includes(marker), `Detail CSS missing ${marker}`);
 }
 for (const marker of [
-  "DIAGNOSIS_KEY = 'medindex_rx_diagnosis_v1'", 'data-open-code', 'medindex:icd-open-detail',
+  "DIAGNOSIS_CONTEXT_KEY = 'medindex_rx_diagnosis_context_v2'", 'data-open-code', 'medindex:icd-open-detail',
   'MedIndexIcdDetail', 'Përdore në recetë', 'view=resolve', 'sessionStorage.setItem', 'focusables',
 ]) assert.ok(detailJs.includes(marker), `Detail and prescription integration missing ${marker}`);
 
@@ -65,4 +65,4 @@ new Function(detailJs);
 assert.doesNotMatch(treeCss, /https?:\/\//, 'Tree CSS must not load external assets.');
 assert.doesNotMatch(sidebarCss, /https?:\/\//, 'Sidebar CSS must not load external assets.');
 assert.doesNotMatch(detailCss, /https?:\/\//, 'Detail CSS must not load external assets.');
-console.log('ICD table removed; hierarchy tree, nested sidebar and prescription transfer contract passed.');
+console.log('ICD table removed; hierarchy tree, nested sidebar and isolated prescription transfer contract passed.');
