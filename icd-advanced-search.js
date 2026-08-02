@@ -19,6 +19,7 @@
   let decorationTimer = 0;
 
   const clean = value => String(value ?? '').trim();
+  const queryKey = value => clean(value).toLocaleLowerCase('sq-AL');
   const esc = value => String(value ?? '').replace(/[&<>"']/g, character => ({
     '&':'&amp;', '<':'&lt;', '>':'&gt;', '"':'&quot;', "'":'&#39;',
   }[character]));
@@ -56,7 +57,11 @@
           if (!payload?.ok || !payload?.data) return;
           latestSuggestionPayload = payload.data;
           window.dispatchEvent(new CustomEvent('medindex:icd-advanced-suggestions', {
-            detail:{ query:payload.data.query, total:payload.data.total },
+            detail:{
+              query:payload.data.query,
+              total:payload.data.total,
+              normalizedCode:payload.data.normalizedCode || '',
+            },
           }));
           scheduleDecoration();
         }).catch(() => {});
@@ -68,6 +73,13 @@
   };
 
   function pathText(node) {
+    const breadcrumb = Array.isArray(node?.breadcrumb) ? node.breadcrumb : [];
+    if (breadcrumb.length) {
+      return breadcrumb.map(item => {
+        const title = clean(item?.title);
+        return [clean(item?.code), title].filter(Boolean).join(' — ');
+      }).filter(Boolean).join(' › ');
+    }
     return [node?.chapter ? `Kapitulli ${node.chapter}` : '', node?.block || '', node?.parentCode || '']
       .filter(Boolean)
       .join(' · ');
@@ -106,28 +118,54 @@
     return options.every((option, index) => clean(option.dataset.code) === clean(rows[index]?.code));
   }
 
+  function interpretationMarkup(payload) {
+    if (!payload?.interpretedAs) return '';
+    const label = payload.interpretationType === 'code-normalized'
+      ? 'Kodi u normalizua si'
+      : 'Kërkimi u interpretua si';
+    return `<div class="icd-suggestion-interpretation" role="status">
+      <span>${esc(label)}</span>
+      <strong>${esc(payload.interpretedAs)}</strong>
+    </div>`;
+  }
+
+  function emptyMarkup(payload) {
+    return `${interpretationMarkup(payload)}
+      <div class="icd-suggestion-empty" role="status">
+        <strong>Nuk u gjet asnjë kod ICD-10</strong>
+        <span>Provo kodin me ose pa pikë, diagnozën në shqip, termin anglisht ose një sinonim klinik.</span>
+      </div>
+      <div class="icd-suggestion-safety" role="note">${esc(payload?.safetyNote || 'Sugjerimet ndihmojnë kërkimin dhe kodimin; nuk vendosin diagnozë.')}</div>`;
+  }
+
   function decorateSuggestionList() {
     if (decorating) return;
     const container = document.getElementById('icdSuggestions');
     const search = document.getElementById('icdSearch');
     const payload = latestSuggestionPayload;
-    if (!container || !payload?.rows?.length) return;
+    if (!container || !search || !payload) return;
 
-    const queryKey = clean(payload.query).toLocaleLowerCase('sq-AL');
-    if (
-      container.dataset.miAdvancedQuery === queryKey
-      && container.querySelector('.icd-suggestion-group')
-    ) {
+    const payloadKey = queryKey(payload.query);
+    if (!payloadKey || queryKey(search.value) !== payloadKey) return;
+    if (container.dataset.miAdvancedQuery === payloadKey && container.dataset.miAdvancedReady === 'true') {
       container.hidden = false;
-      search?.setAttribute('aria-expanded', 'true');
+      search.setAttribute('aria-expanded', 'true');
       return;
     }
 
-    const currentOptions = [...container.querySelectorAll('[data-suggestion-index]')];
-    if (!sameSuggestionRows(currentOptions, payload.rows)) return;
-
     decorating = true;
     try {
+      if (!payload.rows?.length) {
+        container.innerHTML = emptyMarkup(payload);
+        container.dataset.miAdvancedQuery = payloadKey;
+        container.dataset.miAdvancedReady = 'true';
+        container.hidden = false;
+        search.setAttribute('aria-expanded', 'true');
+        return;
+      }
+
+      const currentOptions = [...container.querySelectorAll('[data-suggestion-index]')];
+      if (!sameSuggestionRows(currentOptions, payload.rows)) return;
       const grouped = new Map(GROUP_ORDER.map(group => [group, []]));
       payload.rows.forEach((node, index) => {
         const group = node?.searchMatch?.group || 'suggested';
@@ -135,13 +173,7 @@
         grouped.get(group).push({ node, index });
       });
 
-      const sections = [];
-      if (payload.interpretedAs) {
-        sections.push(`<div class="icd-suggestion-interpretation" role="status">
-          <span>Kërkimi u interpretua si</span>
-          <strong>${esc(payload.interpretedAs)}</strong>
-        </div>`);
-      }
+      const sections = [interpretationMarkup(payload)];
       for (const group of GROUP_ORDER) {
         const items = grouped.get(group) || [];
         if (!items.length) continue;
@@ -155,9 +187,10 @@
       }
       sections.push(`<div class="icd-suggestion-safety" role="note">${esc(payload.safetyNote || 'Sugjerimet ndihmojnë kërkimin dhe kodimin; nuk vendosin diagnozë.')}</div>`);
       container.innerHTML = sections.join('');
-      container.dataset.miAdvancedQuery = queryKey;
+      container.dataset.miAdvancedQuery = payloadKey;
+      container.dataset.miAdvancedReady = 'true';
       container.hidden = false;
-      search?.setAttribute('aria-expanded', 'true');
+      search.setAttribute('aria-expanded', 'true');
     } finally {
       decorating = false;
     }
@@ -173,9 +206,10 @@
   function init() {
     installObserver();
     document.documentElement.dataset.miIcdSearch = VERSION;
+    document.documentElement.dataset.miIcdSearchEngine = 'clinical-ranking-v3';
     window.addEventListener('pageshow', installObserver, { passive:true });
     window.dispatchEvent(new CustomEvent('medindex:icd-advanced-search-ready', {
-      detail:{ version:VERSION },
+      detail:{ version:VERSION, engine:'clinical-ranking-v3' },
     }));
   }
 
