@@ -18,7 +18,7 @@ const engineBase = read('lib/icd-search-engine.js');
 const engineV2 = read('lib/icd-search-engine-v2.js');
 const engineV3 = read('lib/icd-search-engine-v3.js');
 
-for (const asset of ['icd-advanced-search.css?v=sq-clinical-search-v2','icd-advanced-search.js?v=sq-clinical-search-v2','icd-tree-polish.css?v=icd-tree-polish-v2']) {
+for (const asset of ['icd-advanced-search.css?v=sq-clinical-search-v2','icd-advanced-search.js?v=sq-clinical-search-v2','icd-tree-polish.css?v=icd-tree-polish-v3']) {
   assert.ok(html.includes(asset), `ICD advanced search page missing ${asset}`);
 }
 assert.ok(
