@@ -96,12 +96,14 @@ assert.match(js, /Shenja alarmi \/ kujdes/);
 assert.match(js, /MedIndex nuk fabrikon shënime/);
 assert.match(js, /credentials:'same-origin'/);
 assert.doesNotMatch(js, /localStorage\.setItem|sessionStorage\.setItem/);
-assert.match(recovery, /icd-clinical-guidance-recovery-v1/);
+assert.match(recovery, /icd-clinical-guidance-recovery-v2/);
 assert.match(recovery, /Riprovo listën klinike/);
 assert.match(recovery, /data-mi-icd-clinical-retry-visible/);
-assert.doesNotMatch(recovery, /localStorage|sessionStorage/);
+assert.match(recovery, /data-mi-icd-clinical-retry/);
+assert.match(recovery, /internalRetry\.click\(\)/);
+assert.doesNotMatch(recovery, /location\.reload|localStorage|sessionStorage/);
 assert.match(css, /@media \(max-width: 520px\)/);
 assert.match(css, /@media \(forced-colors: active\)/);
 assert.match(css, /overflow-wrap: anywhere/);
 
-console.log('ICD clinical guidance, curated Google Sheet provenance, recovery and non-fabrication contract passed.');
+console.log('ICD clinical guidance, curated Google Sheet provenance, in-place recovery and non-fabrication contract passed.');
