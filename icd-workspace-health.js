@@ -12,7 +12,6 @@
   let fallbackTimer = 0;
   let currentSource = null;
   let currentState = 'loading';
-  let authoritativeSourceUntil = 0;
   let refreshSequence = 0;
 
   const clean = value => String(value ?? '').trim();
@@ -47,16 +46,21 @@
   }
 
   function sourceDetail(source, { cached = false } = {}) {
+    const metadata = [];
+    const loadedAt = dateLabel(source?.loadedAt);
+    if (loadedAt) metadata.push(`përditësuar ${loadedAt}`);
+    const size = byteLabel(source?.csvBytes);
+    if (size) metadata.push(size);
+    const revision = clean(source?.revision).slice(0, 8);
+    if (revision) metadata.push(`rev ${revision}`);
+
     const parts = [];
     if (cached) parts.push('cache lokal');
-    const loadedAt = dateLabel(source?.loadedAt);
-    if (loadedAt) parts.push(`përditësuar ${loadedAt}`);
-    const size = byteLabel(source?.csvBytes);
-    if (size) parts.push(size);
-    const revision = clean(source?.revision).slice(0, 8);
-    if (revision) parts.push(`rev ${revision}`);
-    const existing = clean(source?.displayDetail) || clean(els.badge.title);
-    if (existing && !parts.includes(existing)) parts.push(existing);
+    if (metadata.length) parts.push(...metadata);
+    else {
+      const fallback = clean(source?.displayDetail) || clean(els.badge.title);
+      if (fallback) parts.push(fallback);
+    }
     return parts.join(' · ') || 'Google Sheet publik · hierarkia e plotë';
   }
 
@@ -85,7 +89,13 @@
     return 'Burimi: status i panjohur';
   }
 
+  function validSource(source) {
+    const status = clean(source?.status).toLowerCase();
+    return Boolean(source && typeof source === 'object' && ['live', 'stale'].includes(status));
+  }
+
   function saveCache(source) {
+    if (!validSource(source)) return;
     try {
       sessionStorage.setItem(CACHE_KEY, JSON.stringify({ savedAt:Date.now(), source }));
     } catch {}
@@ -94,23 +104,27 @@
   function readCache() {
     try {
       const cached = JSON.parse(sessionStorage.getItem(CACHE_KEY) || 'null');
-      if (!cached?.source || Date.now() - Number(cached.savedAt || 0) > CACHE_TTL) return null;
+      if (
+        !validSource(cached?.source)
+        || Date.now() - Number(cached.savedAt || 0) > CACHE_TTL
+      ) return null;
       return cached.source;
     } catch { return null; }
   }
 
   function applySource(source, { cached = false } = {}) {
-    if (!source || typeof source !== 'object') return;
+    if (!validSource(source)) return false;
     currentSource = source;
-    const rawStatus = clean(source.status).toLowerCase();
-    const status = ['live', 'stale'].includes(rawStatus) ? rawStatus : 'unknown';
+    const status = clean(source.status).toLowerCase();
     const displayStatus = cached ? 'cached' : status;
+    const detail = sourceDetail(source, { cached });
     els.badge.dataset.sourceStatus = displayStatus;
     els.badge.textContent = badgeText(displayStatus);
     els.badge.title = sourceDetail(source);
     window.clearTimeout(fallbackTimer);
-    setWrapperState(displayStatus, sourceDetail(source, { cached }), { cached });
+    setWrapperState(displayStatus, detail, { cached });
     if (!cached) saveCache(source);
+    return true;
   }
 
   function syncFromBadge() {
@@ -197,10 +211,11 @@
 
       try {
         const payload = await response.json();
-        if (!payload?.ok || !payload?.data?.meta) {
-          throw new Error('Përgjigje e pavlefshme e statusit ICD-10.');
+        const source = payload?.data?.meta?.source;
+        if (!payload?.ok || !validSource(source)) {
+          throw new Error('Përgjigjja ICD-10 nuk përmban burim live/stale të verifikuar.');
         }
-        return payload.data.meta.source || { status:'unknown', loadedAt:new Date().toISOString() };
+        return source;
       } catch (error) {
         lastError = error;
         if (attempt === 0 && navigator.onLine !== false) {
@@ -226,7 +241,6 @@
   }
 
   function offlineState() {
-    authoritativeSourceUntil = 0;
     refreshSequence += 1;
     els.badge.dataset.sourceStatus = 'offline';
     els.badge.textContent = badgeText('offline');
@@ -260,7 +274,6 @@
       const [sourceResult] = await Promise.allSettled([requestMeta(controller.signal), treeReload]);
       if (sourceResult.status === 'fulfilled') {
         const verifiedSource = sourceResult.value;
-        if (manual) authoritativeSourceUntil = Date.now() + 2000;
         applySource(verifiedSource);
         if (manual) {
           await settleBrowserTurn();
@@ -270,11 +283,10 @@
         return verifiedSource;
       }
 
-      authoritativeSourceUntil = 0;
       const error = sourceResult.reason;
       if (error?.name === 'AbortError') return null;
       console.error('ICD workspace source check failed:', error);
-      if (currentSource) {
+      if (validSource(currentSource)) {
         els.badge.dataset.sourceStatus = 'stale';
         els.badge.textContent = badgeText('stale');
         setWrapperState('stale', `${sourceDetail(currentSource, { cached:true })} · kontrolli i ri dështoi`, {
