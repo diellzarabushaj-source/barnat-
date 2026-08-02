@@ -225,6 +225,9 @@ test.describe('mobile physician experience', () => {
     await expectTouchTarget(useDiagnosis);
     await useDiagnosis.click();
     await page.waitForURL(/recetat\.html/);
+    await expect(page.locator('#rxDiagnosis')).toHaveValue(/Dhimbje koke/i);
+    await expect(page.locator('#rxIcdContext')).toHaveClass(/is-pending/);
+    await page.getByRole('button', { name:'Apliko kodin' }).click();
     await expect(page.locator('#rxDiagnosis')).toHaveValue(/A00/i);
     await expect(page.locator('#rxComposer')).toHaveValue(/Paracetamol/i);
 
