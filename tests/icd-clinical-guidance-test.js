@@ -85,7 +85,7 @@ const apiBase = read('lib/icd-api-base.js');
 
 assert.match(html, /icd-clinical-guidance\.css\?v=icd-clinical-guidance-v1/);
 assert.match(html, /icd-clinical-guidance\.js\?v=icd-clinical-guidance-v1/);
-assert.match(html, /icd-clinical-guidance-recovery\.js\?v=icd-clinical-guidance-recovery-v1/);
+assert.match(html, /icd-clinical-guidance-recovery\.js\?v=icd-clinical-guidance-recovery-v4/);
 assert.match(apiBase, /19ncbnrTJ_w-WQ0msWO9_dUoxjmicSUAz6Nt4sh20gFw/);
 assert.match(apiBase, /all:1504864603/);
 assert.match(apiBase, /urgent:285385409/);
