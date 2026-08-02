@@ -20,7 +20,7 @@
   <link rel="stylesheet" href="icd-detail-panel.css?v=icd-detail-panel-v2">
   <link rel="stylesheet" href="icd-terminology-detail.css?v=icd-terminology-detail-v1">
   <link rel="stylesheet" href="icd-favorites.css?v=icd-favorites-v1">
-  <link rel="stylesheet" href="icd-tree-polish.css?v=icd-tree-polish-v3">
+  <link rel="stylesheet" href="icd-tree-polish.css?v=icd-tree-polish-v4">
   <link rel="stylesheet" href="tailadmin-professional.css?v=20260728-1" data-tailadmin-professional-css>
   <script src="tailadmin-shell.js?v=production-audit-v2" defer></script>
   <script src="tailadmin-professional.js?v=production-audit-v2" defer></script>
@@ -60,22 +60,29 @@
             <div class="icd-suggestions" id="icdSuggestions" role="listbox" aria-label="Sugjerime të avancuara ICD-10" aria-busy="false" hidden></div>
           </div>
           <button class="icd-tree-action" id="icdCollapseAll" type="button">Mbyll të gjitha</button>
-          <button class="icd-tree-action icd-favorites-toggle" id="icdFavoritesToggle" type="button" aria-expanded="false" aria-controls="icdFavoritesPanel" aria-label="Të preferuarat ICD, 0 kode">Të preferuarat <span id="icdFavoritesCount" aria-hidden="true">0</span></button>
+          <button class="icd-tree-action icd-favorites-toggle" id="icdFavoritesToggle" type="button" aria-controls="icdFavoritesPanel" aria-expanded="false" aria-label="Hap të preferuarat ICD-10">
+            <span aria-hidden="true">☆</span>
+            <span>Të preferuarat</span>
+            <span class="icd-favorites-count" id="icdFavoritesCount">0</span>
+          </button>
           <span class="icd-tree-status" id="icdTreeStatus" aria-live="polite">Duke u ngarkuar…</span>
-          <span class="icd-source-status" id="icdSourceStatus" data-source-status="loading" role="status" aria-live="polite">Burimi: duke u verifikuar</span>
+          <div class="icd-source-health" id="icdSourceHealth" data-state="loading" aria-busy="true">
+            <span class="icd-source-status" id="icdSourceStatus" data-source-status="loading" role="status" aria-live="polite" aria-atomic="true">Burimi: duke u verifikuar</span>
+            <small class="icd-source-health-detail" id="icdSourceHealthDetail">Google Sheet publik · hierarkia e plotë</small>
+            <button class="icd-source-health-refresh" id="icdSourceHealthRefresh" type="button" aria-label="Rifresko burimin dhe hierarkinë ICD-10">Rifresko</button>
+          </div>
         </div>
 
         <section class="icd-favorites-panel" id="icdFavoritesPanel" aria-labelledby="icdFavoritesHeading" hidden>
-          <header class="icd-favorites-head">
+          <div class="icd-favorites-head">
             <div>
-              <h3 id="icdFavoritesHeading">Kodet e preferuara</h3>
-              <p>Shortcut-e personale për kategori dhe nënkategori ICD-10; nuk përfaqësojnë diagnozë automatike.</p>
+              <h3 id="icdFavoritesHeading">Të preferuarat ICD-10</h3>
+              <p>Kodet e ruajtura që i përdor më shpesh.</p>
             </div>
-            <button class="icd-favorites-clear" id="icdFavoritesClear" type="button" hidden>Pastro të gjitha</button>
-          </header>
-          <div class="icd-favorites-list" id="icdFavoritesList" role="list"></div>
-          <p class="icd-favorites-empty" id="icdFavoritesEmpty">Nuk ke ruajtur ende kode. Hape një kategori ose nënkategori dhe zgjidh “Shto te të preferuarat”.</p>
-          <p class="sr-only" id="icdFavoritesStatus" role="status" aria-live="polite"></p>
+            <button class="icd-favorites-close" id="icdFavoritesClose" type="button" aria-label="Mbyll të preferuarat">×</button>
+          </div>
+          <div class="icd-favorites-list" id="icdFavoritesList"></div>
+          <p class="icd-favorites-empty" id="icdFavoritesEmpty">Nuk ke ruajtur ende asnjë kod ICD-10.</p>
         </section>
 
         <div class="icd-tree-wrap">
@@ -95,6 +102,7 @@
   <script src="icd-advanced-search.js?v=sq-clinical-search-v3" defer></script>
   <script src="icd-tree.js?v=icd-tree-v1" defer></script>
   <script src="icd-search-race-guard-v2.js?v=icd-race-guard-v5" defer></script>
+  <script src="icd-workspace-health.js?v=icd-workspace-health-v2" defer></script>
   <script src="icd-detail-panel.js?v=icd-detail-panel-v2" defer></script>
   <script src="icd-terminology-detail.js?v=icd-terminology-detail-v1" defer></script>
   <script src="icd-prescription-roundtrip.js?v=icd-rx-roundtrip-v1" defer></script>
