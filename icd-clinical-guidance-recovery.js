@@ -2,7 +2,7 @@
   'use strict';
 
   if (!root?.document) return;
-  const VERSION = 'icd-clinical-guidance-recovery-v4';
+  const VERSION = 'icd-clinical-guidance-recovery-v5';
   let observer = null;
   let clickBound = false;
 
@@ -31,14 +31,7 @@
     }
   }
 
-  function resetVisibleButton(button) {
-    if (!button?.isConnected) return;
-    button.disabled = false;
-    button.removeAttribute('aria-busy');
-    button.textContent = 'Riprovo listën klinike';
-  }
-
-  function bindControlledRetry() {
+  function bindControlledReload() {
     if (clickBound) return;
     clickBound = true;
     root.document.addEventListener('click', event => {
@@ -49,17 +42,7 @@
       button.disabled = true;
       button.setAttribute('aria-busy', 'true');
       button.textContent = 'Duke u rilidhur…';
-
-      const internalRetry = root.document.querySelector('[data-mi-icd-clinical-retry]');
-      if (!internalRetry) {
-        resetVisibleButton(button);
-        return;
-      }
-      internalRetry.click();
-      root.setTimeout(() => {
-        const state = root.document.getElementById('icdClinicalGuidanceState');
-        if (state?.dataset.tone === 'error') resetVisibleButton(button);
-      }, 6000);
+      root.location.reload();
     }, { capture:true });
   }
 
@@ -67,7 +50,7 @@
     const state = root.document.getElementById('icdClinicalGuidanceState');
     if (!state) return false;
     ensureRetryControl();
-    bindControlledRetry();
+    bindControlledReload();
     observer?.disconnect();
     observer = new MutationObserver(ensureRetryControl);
     observer.observe(state, {
