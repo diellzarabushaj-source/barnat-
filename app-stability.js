@@ -29,8 +29,14 @@
   }
 
   function loadIcdProblemListAssets() {
-    const prescriptionPage = document.getElementById('rxComposer') || document.getElementById('rxDiagnosis');
-    const icdPage = document.getElementById('icdContent');
+    const pageName = String(document.documentElement.dataset.miPage || '').trim().toLowerCase();
+    const pathname = String(window.location.pathname || '').toLowerCase();
+    const prescriptionPage = pageName === 'recetat'
+      || /\/recetat(?:\.html)?$/.test(pathname)
+      || Boolean(document.getElementById('rxComposer') || document.getElementById('rxDiagnosis'));
+    const icdPage = pageName === 'icd'
+      || /\/icd(?:\.html)?$/.test(pathname)
+      || Boolean(document.getElementById('icdContent'));
     if (!prescriptionPage && !icdPage) return;
     if (prescriptionPage && !document.getElementById('rxContent')) {
       const marker = document.createElement('span');
