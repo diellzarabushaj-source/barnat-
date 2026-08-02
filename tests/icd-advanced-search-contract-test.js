@@ -24,7 +24,7 @@ for (const asset of [
   'icd-advanced-search.css?v=sq-clinical-search-v3',
   'icd-fetch-capture.js?v=icd-fetch-capture-v1',
   'icd-advanced-search.js?v=sq-clinical-search-v3',
-  'icd-tree-polish.css?v=icd-tree-polish-v3',
+  'icd-tree-polish.css?v=icd-tree-polish-v4',
   'icd-search-race-guard-v2.js?v=icd-race-guard-v5',
 ]) assert.ok(html.includes(asset), `ICD advanced search page missing ${asset}`);
 assert.ok(
