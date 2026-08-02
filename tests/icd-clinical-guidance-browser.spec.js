@@ -56,7 +56,7 @@ async function waitForIcd(page, code) {
   await expect(html).toHaveAttribute('data-mi-icd-tree', 'ready');
   await expect(html).toHaveAttribute('data-mi-icd-coding-workspace', 'icd-coding-workspace-v1');
   await expect(html).toHaveAttribute('data-mi-icd-clinical-guidance', 'icd-clinical-guidance-v1');
-  await expect(html).toHaveAttribute('data-mi-icd-clinical-guidance-recovery', 'icd-clinical-guidance-recovery-v5');
+  await expect(html).toHaveAttribute('data-mi-icd-clinical-guidance-recovery', 'icd-clinical-guidance-recovery-v6');
   await expect(page.locator('#icdCodingWorkspaceCode')).toHaveText(code);
 }
 
@@ -193,12 +193,13 @@ test('clinical source failure exposes in-place recovery and leaves the ICD works
   const urlBefore = page.url();
   control.allowRecovery();
   await page.locator('[data-mi-icd-clinical-retry-visible]').click();
+  await expect(page.locator('html')).toHaveAttribute('data-mi-icd-clinical-recovery-attempt', 'I10');
+  await expect.poll(() => control.requests()).toBeGreaterThanOrEqual(2);
   await expect(page.locator('#icdClinicalGuidanceContent')).toBeVisible({ timeout:15000 });
   await expect(page.locator('#icdClinicalGuidanceFamily')).toHaveText('Themelor');
   await expect(page.locator('[data-mi-icd-clinical-retry-visible]')).toHaveCount(0);
   await expect(page.locator('#icdCodingWorkspaceCode')).toHaveText('I10');
   expect(page.url()).toBe(urlBefore);
-  expect(control.requests()).toBeGreaterThanOrEqual(2);
 });
 
 test('long MF and emergency guidance remains bounded on a phone viewport', async ({ page }) => {
