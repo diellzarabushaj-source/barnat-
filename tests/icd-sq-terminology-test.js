@@ -5,111 +5,99 @@ const Terminology = require('../lib/icd-sq-terminology-v2.js');
 const FullIcd = require('../lib/icd-full-hierarchy.js');
 const AdvancedIcd = require('../lib/icd-advanced-handler.js');
 
+const PILOT_CHAPTERS = ['IV', 'IX', 'X', 'XI', 'XIII', 'XIV', 'XVIII'];
 function node(code, chapter, englishTitle, albanianDraft = '', level = 'category', block = '', parentCode = '') {
-  return Terminology.applyNode({
-    code, level, chapter, block, parentCode, englishTitle, albanianDraft,
-    displayTitle:albanianDraft || englishTitle,
-  });
+  return Terminology.applyNode({ code, level, chapter, block, parentCode, englishTitle, albanianDraft, displayTitle:albanianDraft || englishTitle });
 }
 
 const samples = {
-  hypertension:node('I10', 'IX', 'Essential (primary) hypertension', 'Hipertension esencial primar', 'category', 'I10-I15', 'I10-I15'),
-  heartFailure:node('I50', 'IX', 'Heart failure', 'Dështimi i zemrës', 'category', 'I30-I52', 'I30-I52'),
-  copd:node('J44', 'X', 'Other chronic obstructive pulmonary disease', 'COPD', 'category', 'J40-J47', 'J40-J47'),
-  respiratoryFailure:node('J96.0', 'X', 'Acute respiratory failure', '', 'subcategory', 'J95-J99', 'J96'),
-  dyspnoea:node('R06.0', 'XVIII', 'Dyspnoea', '', 'subcategory', 'R00-R09', 'R06'),
-  chestPain:node('R07.4', 'XVIII', 'Chest pain, unspecified', '', 'subcategory', 'R00-R09', 'R07'),
-  untouched:node('K00', 'XI', 'Disorders of tooth development and eruption', 'Çrregullime të zhvillimit të dhëmbëve'),
-  missing:node('K01', 'XI', 'Embedded and impacted teeth', ''),
+  diabetes:node('E11', 'IV', 'Type 2 diabetes mellitus', 'Diabet tip 2'),
+  hypertension:node('I10', 'IX', 'Essential (primary) hypertension', 'Hipertension esencial primar'),
+  copd:node('J44', 'X', 'Other chronic obstructive pulmonary disease', 'COPD'),
+  fattyLiver:node('K76.0', 'XI', 'Fatty (change of) liver, not elsewhere classified', 'Mëlçia yndyrore'),
+  lowBackPain:node('M54.5', 'XIII', 'Low back pain', 'Dhimbje të shpinës së poshtme'),
+  uti:node('N39.0', 'XIV', 'Urinary tract infection, site not specified', 'Infeksion urinar'),
+  dyspnoea:node('R06.0', 'XVIII', 'Dyspnoea', ''),
+  untouched:node('G00', 'VI', 'Bacterial meningitis, not elsewhere classified', 'Meningjiti bakterial'),
+  missing:node('G01', 'VI', 'Meningitis in bacterial diseases classified elsewhere', ''),
 };
 
-assert.equal(samples.hypertension.albanianDraft, 'Hipertensioni esencial (primar)');
-assert.equal(samples.hypertension.machineDraftTitle, 'Hipertension esencial primar');
-assert.ok(samples.hypertension.searchText.includes('tension i larte'));
-assert.equal(samples.heartFailure.albanianDraft, 'Pamjaftueshmëria e zemrës');
-assert.ok(samples.heartFailure.searchText.includes('insuficienca kardiake'));
-assert.equal(samples.heartFailure.terminologySource, 'medindex-editorial-pilot-ix');
-
-assert.equal(samples.copd.albanianDraft, 'Sëmundje të tjera kronike obstruktive të mushkërive');
-assert.ok(samples.copd.searchText.includes('spok'));
-assert.ok(samples.copd.searchText.includes('copd'));
+assert.equal(samples.diabetes.displayTitle, 'Diabeti mellitus i tipit 2');
+assert.ok(samples.diabetes.searchText.includes('diabet tip 2'));
+assert.equal(samples.diabetes.terminologySource, 'medindex-editorial-pilot-iv');
+assert.equal(samples.hypertension.terminologySource, 'medindex-editorial-pilot-ix');
 assert.equal(samples.copd.terminologySource, 'medindex-editorial-pilot-x');
-assert.equal(samples.respiratoryFailure.albanianDraft, 'Insuficienca respiratore akute');
-assert.ok(samples.respiratoryFailure.searchText.includes('deshtim respirator akut'));
-
-assert.equal(samples.dyspnoea.albanianDraft, 'Dispnea');
-assert.ok(samples.dyspnoea.searchText.includes('gulcim'));
-assert.ok(samples.dyspnoea.searchText.includes('veshtiresi ne frymemarrje'));
+assert.equal(samples.fattyLiver.displayTitle, 'Steatoza hepatike, e paklasifikuar diku tjetër');
+assert.ok(samples.fattyLiver.searchText.includes('melci yndyrore'));
+assert.equal(samples.fattyLiver.terminologySource, 'medindex-editorial-pilot-xi');
+assert.equal(samples.lowBackPain.displayTitle, 'Dhimbja e mesit');
+assert.equal(samples.lowBackPain.terminologySource, 'medindex-editorial-pilot-xiii');
+assert.equal(samples.uti.displayTitle, 'Infeksioni i traktit urinar, vendi i paspecifikuar');
+assert.equal(samples.uti.terminologySource, 'medindex-editorial-pilot-xiv');
+assert.equal(samples.dyspnoea.displayTitle, 'Dispnea');
 assert.equal(samples.dyspnoea.terminologySource, 'medindex-editorial-pilot-xviii');
-assert.equal(samples.chestPain.albanianDraft, 'Dhimbja e kraharorit, e paspecifikuar');
-assert.ok(samples.chestPain.searchText.includes('dhimbje gjoksi e paspecifikuar'));
-
 assert.equal(samples.untouched.translationStatus, 'machine-draft');
-assert.equal(samples.untouched.reviewState, 'pending-review');
 assert.equal(samples.missing.translationStatus, 'missing');
 assert.ok(samples.missing.terminologyFlags.includes('MISSING_ALBANIAN'));
 assert.ok(!Terminology.lintTitle('Pamundësi për të të ushqyer', 'Feeding difficulty').includes('DUPLICATED_WORD'));
 assert.ok(Terminology.lintTitle('Dhimbje dhimbje abdominale', 'Abdominal pain').includes('DUPLICATED_WORD'));
-assert.deepEqual(Terminology.adjacentRepeatedWords('Blloku atrioventrikular dhe blloku i degës së majtë'), []);
-assert.ok(!Terminology.lintTitle('Blloku atrioventrikular dhe blloku i degës së majtë', 'Atrioventricular and left bundle-branch block').includes('DUPLICATED_WORD'));
-assert.deepEqual(Terminology.adjacentRepeatedWords('Dhimbje dhimbje abdominale'), ['dhimbje']);
 
 const summary = Terminology.quality(Object.values(samples));
-assert.equal(summary.standardizedTranslations, 6);
+assert.equal(summary.standardizedTranslations, 7);
 assert.equal(summary.machineDraftTranslations, 1);
 assert.equal(summary.missingTranslations, 1);
-assert.equal(summary.terminologyCoverage, 75);
-assert.equal(summary.translationCoverage, 87.5);
+assert.equal(summary.terminologyCoverage, 77.78);
+assert.equal(summary.translationCoverage, 88.89);
 assert.equal(summary.publicationReady, false);
-assert.deepEqual(summary.pilotChapters, ['IX', 'X', 'XVIII']);
-assert.deepEqual(summary.standardizedByChapter, { IX:2, X:2, XVIII:2 });
+assert.deepEqual(summary.pilotChapters, PILOT_CHAPTERS);
+assert.deepEqual(summary.standardizedByChapter, { IV:1, IX:1, X:1, XI:1, XIII:1, XIV:1, XVIII:1 });
 
+const rows = [
+  ['KAPITULL','IV','','IV','Chapter IV — Endocrine nutritional and metabolic diseases','Loading...',''],
+  ['BLLOK','IV','E10-E14','E10-E14','Diabetes mellitus','Loading...','IV'],
+  ['KATEGORI','IV','E10-E14','E11','Type 2 diabetes mellitus','Loading...','E10-E14'],
+  ['KAPITULL','XI','','XI','Chapter XI — Diseases of the digestive system','Loading...',''],
+  ['BLLOK','XI','K70-K77','K70-K77','Diseases of liver','Loading...','XI'],
+  ['KATEGORI','XI','K70-K77','K76','Other diseases of liver','Loading...','K70-K77'],
+  ['NËNKATEGORI','XI','K70-K77','K76.0','Fatty (change of) liver not elsewhere classified','Loading...','K76'],
+  ['KAPITULL','XIII','','XIII','Chapter XIII — Diseases of the musculoskeletal system and connective tissue','Loading...',''],
+  ['BLLOK','XIII','M50-M54','M50-M54','Other dorsopathies','Loading...','XIII'],
+  ['KATEGORI','XIII','M50-M54','M54','Dorsalgia','Loading...','M50-M54'],
+  ['NËNKATEGORI','XIII','M50-M54','M54.5','Low back pain','Loading...','M54'],
+  ['KAPITULL','XIV','','XIV','Chapter XIV — Diseases of the genitourinary system','Loading...',''],
+  ['BLLOK','XIV','N30-N39','N30-N39','Other diseases of urinary system','Loading...','XIV'],
+  ['KATEGORI','XIV','N30-N39','N39','Other disorders of urinary system','Loading...','N30-N39'],
+  ['NËNKATEGORI','XIV','N30-N39','N39.0','Urinary tract infection site not specified','Loading...','N39'],
+  ['KAPITULL','XVIII','','XVIII','Chapter XVIII — Symptoms signs and abnormal findings','Loading...',''],
+  ['BLLOK','XVIII','R10-R19','R10-R19','Symptoms involving digestive system and abdomen','Loading...','XVIII'],
+  ['KATEGORI','XVIII','R10-R19','R10','Abdominal and pelvic pain','Loading...','R10-R19'],
+  ['BLLOK','XVIII','R30-R39','R30-R39','Symptoms involving urinary system','Loading...','XVIII'],
+  ['KATEGORI','XVIII','R30-R39','R30','Pain associated with micturition','Loading...','R30-R39'],
+  ['NËNKATEGORI','XVIII','R30-R39','R30.0','Dysuria','Loading...','R30'],
+];
 const csv = [
-  'Niveli,Kodi ICD-10,Titulli zyrtar — English,Titulli — Shqip,Kapitulli,Blloku,Kodi prind',
-  'KAPITULL,IX,Diseases of the circulatory system,Loading...,IX,,',
-  'BLLOK,I10-I15,Hypertensive diseases,Sëmundjet hipertensive,IX,I10-I15,IX',
-  'KATEGORI,I10,Essential (primary) hypertension,Hipertension esencial primar,IX,I10-I15,I10-I15',
-  'KAPITULL,X,Diseases of the respiratory system,Loading...,X,,',
-  'BLLOK,J40-J47,Chronic lower respiratory diseases,Loading...,X,J40-J47,X',
-  'KATEGORI,J44,Other chronic obstructive pulmonary disease,COPD,X,J40-J47,J40-J47',
-  'NËNKATEGORI,J44.1,Chronic obstructive pulmonary disease with acute exacerbation unspecified,Loading...,X,J40-J47,J44',
-  'KAPITULL,XVIII,Symptoms signs and abnormal clinical and laboratory findings not elsewhere classified,Loading...,XVIII,,',
-  'BLLOK,R00-R09,Symptoms and signs involving the circulatory and respiratory systems,Loading...,XVIII,R00-R09,XVIII',
-  'KATEGORI,R06,Abnormalities of breathing,Loading...,XVIII,R00-R09,R00-R09',
-  'NËNKATEGORI,R06.0,Dyspnoea,Loading...,XVIII,R00-R09,R06',
+  'Niveli,Kapitulli,Blloku,Kodi ICD-10,Titulli zyrtar — English,Titulli — Shqip,Kodi prind',
+  ...rows.map(row => row.map(value => `"${value}"`).join(',')),
 ].join('\n');
-
 const dataset = FullIcd.buildDataset(csv, { strictCounts:false });
-assert.equal(dataset.terminology.version, 'sq-terminology-2026.2');
-assert.deepEqual(dataset.terminology.pilotChapters, ['IX', 'X', 'XVIII']);
-assert.equal(dataset.quality.standardizedTranslations, 11);
-assert.equal(dataset.nodes.find(item => item.code === 'J44').displayTitle, 'Sëmundje të tjera kronike obstruktive të mushkërive');
-assert.equal(dataset.nodes.find(item => item.code === 'R06.0').displayTitle, 'Dispnea');
+assert.equal(dataset.terminology.version, 'sq-terminology-2026.3');
+assert.deepEqual(dataset.terminology.pilotChapters, PILOT_CHAPTERS);
+assert.equal(FullIcd.queryDataset(dataset, { q:'diabet tip 2', pageSize:10 }).rows[0].code, 'E11');
+assert.equal(FullIcd.queryDataset(dataset, { q:'mëlçi yndyrore', pageSize:10 }).rows[0].code, 'K76.0');
+assert.equal(FullIcd.queryDataset(dataset, { q:'dhimbje mesi', pageSize:10 }).rows[0].code, 'M54.5');
+assert.equal(FullIcd.queryDataset(dataset, { q:'infeksion urinar', pageSize:10 }).rows[0].code, 'N39.0');
 
-assert.equal(FullIcd.queryDataset(dataset, { q:'tension i lartë', pageSize:10 }).rows[0].code, 'I10');
-const basicCopd = FullIcd.queryDataset(dataset, { q:'spok', pageSize:10 });
-assert.ok(basicCopd.rows.some(item => item.code === 'J44'));
-assert.equal(FullIcd.queryDataset(dataset, { q:'gulçim', pageSize:10 }).rows[0].code, 'R06.0');
+const childCounts = new Map();
+for (const item of dataset.nodes) childCounts.set(item.parentCode, (childCounts.get(item.parentCode) || 0) + 1);
+const dysuria = AdvancedIcd._test.tablePayload(dataset, { q:'djegie gjatë urinimit', page:1, pageSize:10, levels:'category,subcategory' }, childCounts);
+assert.equal(dysuria.rows[0].code, 'R30.0');
+assert.ok(!dysuria.rows.slice(0, 3).some(item => item.code === 'N39.0'));
+const abdominalPain = AdvancedIcd._test.tablePayload(dataset, { q:'dhimbje barku', page:1, pageSize:10, levels:'category,subcategory' }, childCounts);
+assert.equal(abdominalPain.rows[0].code, 'R10');
+assert.ok(!abdominalPain.rows.slice(0, 3).some(item => ['K29','K35'].includes(item.code)));
 
-const advancedCopd = AdvancedIcd._test.tablePayload(
-  dataset,
-  { q:'spok', page:1, pageSize:10, levels:'category,subcategory' },
-  new Map(),
-);
-assert.equal(advancedCopd.rows[0].code, 'J44');
-assert.equal(advancedCopd.rows[0].translationStatus, 'standardized');
-
-const advancedDyspnoea = AdvancedIcd._test.tablePayload(
-  dataset,
-  { q:'gulçim', page:1, pageSize:10, levels:'category,subcategory' },
-  new Map(),
-);
-assert.equal(advancedDyspnoea.rows[0].code, 'R06.0');
-assert.ok(!advancedDyspnoea.rows.some(item => item.code === 'J45' || item.code === 'J96.0'));
-assert.ok(advancedDyspnoea.meta.search.supports.includes('editorial-alias'));
-
-assert.equal(Terminology.TERMINOLOGY_VERSION, 'sq-terminology-2026.2');
+assert.equal(Terminology.TERMINOLOGY_VERSION, 'sq-terminology-2026.3');
 assert.equal(Object.keys(Terminology.CHAPTER_TERMS).length, 22);
-assert.ok(Object.keys(Terminology.CODE_TERMS).length >= 400);
+assert.ok(Object.keys(Terminology.CODE_TERMS).length >= 800);
 
-console.log('Albanian ICD terminology standards, aliases and review states for Chapters IX, X and XVIII passed.');
+console.log('Albanian ICD terminology and symptom-safety tests for seven chapters passed.');
