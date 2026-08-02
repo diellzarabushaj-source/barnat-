@@ -11,6 +11,7 @@ const tree = read('icd-tree.js');
 const sidebar = read('icd-sidebar.js');
 const apiWrapper = read('api/icd.js');
 const apiBase = read('lib/icd-api-base.js');
+const publicSource = read('lib/icd-public-source.js');
 const hierarchy = read('lib/icd-full-hierarchy.js');
 
 const styles = [...html.matchAll(/<link[^>]+rel="stylesheet"[^>]+href="([^"]+)"/g)].map(match => match[1]);
@@ -39,14 +40,21 @@ for (const marker of [
 ]) assert.ok(sidebar.includes(marker), `ICD nested sidebar missing ${marker}`);
 
 for (const marker of [
-  "FULL_SPREADSHEET_ID = '1O2S9xNIzvNmiG8ny-VLAp9NeyiUsrY8pxRpyJgTF_O0'",
-  "'table', 'nav', 'children', 'resolve', 'suggest', 'meta'", 'loadFullHierarchy', 'fullViewPayload', 'X-MedIndex-ICD-Nodes',
+  "require('../lib/icd-public-source.js')", "'table', 'nav', 'children', 'resolve', 'suggest', 'meta'",
+  'IcdPublicSource.load()', 'fullViewPayload', 'X-MedIndex-ICD-Nodes', 'X-MedIndex-ICD-Revision',
 ]) assert.ok(apiBase.includes(marker), `ICD API full hierarchy mode missing ${marker}`);
+for (const marker of [
+  "SPREADSHEET_ID = '1O2S9xNIzvNmiG8ny-VLAp9NeyiUsrY8pxRpyJgTF_O0'", 'SHEET_GID = 329283560',
+  'validateCsv', 'strictCounts:true', 'sourceMeta', 'staleReason',
+]) assert.ok(publicSource.includes(marker), `Shared ICD source missing ${marker}`);
+assert.ok(!apiBase.includes('1O2S9xNIzvNmiG8ny-VLAp9NeyiUsrY8pxRpyJgTF_O0'), 'Full spreadsheet ID must not be duplicated in the API handler.');
 
 for (const marker of [
   "require('../lib/icd-api-base.js')", "require('../lib/icd-advanced-handler.js')", "String(req.query?.advanced || '') === '1'",
 ]) assert.ok(apiWrapper.includes(marker), `ICD API router missing ${marker}`);
-for (const marker of ['childrenOf', 'ancestorsOf', 'nodeMap']) assert.ok(hierarchy.includes(marker), `Hierarchy layer missing ${marker}`);
+for (const marker of ['childrenOf', 'ancestorsOf', 'nodeMap', 'attachIndexes', 'childCountOf']) {
+  assert.ok(hierarchy.includes(marker), `Hierarchy layer missing ${marker}`);
+}
 
 assert.match(html, /role="combobox"/);
 assert.match(html, /role="listbox"/);
@@ -57,5 +65,6 @@ new Function(tree);
 new Function(sidebar);
 new Function(apiWrapper);
 new Function(apiBase);
+new Function(publicSource);
 new Function(hierarchy);
-console.log('ICD hierarchy tree, lazy navigation and shared API routing audit passed.');
+console.log('ICD hierarchy tree, indexed public source and shared API routing audit passed.');
