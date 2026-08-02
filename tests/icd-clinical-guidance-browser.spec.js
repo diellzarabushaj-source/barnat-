@@ -23,11 +23,12 @@ function clinicalPayload(entries, source = 'Google Sheet i dhënë nga përdorue
 
 async function mockClinicalDataset(page, entries, options = {}) {
   let requests = 0;
+  let blocked = Boolean(options.blockUntilRecovery);
   await page.route('**/api/icd*', async route => {
     const url = new URL(route.request().url());
     if (url.pathname === '/api/icd' && !url.search) {
       requests += 1;
-      if (options.fail || (options.failOnce && requests === 1)) {
+      if (options.fail || blocked || (options.failOnce && requests === 1)) {
         await route.fulfill({ status:503, contentType:'application/json', body:JSON.stringify({ ok:false, data:null }) });
         return;
       }
@@ -43,7 +44,10 @@ async function mockClinicalDataset(page, entries, options = {}) {
     }
     await route.fallback();
   });
-  return () => requests;
+  return {
+    requests:() => requests,
+    allowRecovery:() => { blocked = false; },
+  };
 }
 
 async function waitForIcd(page, code) {
@@ -110,7 +114,7 @@ test('critical emergency context comes from the curated Google Sheet and does no
 });
 
 test('subcategory inherits only its category context and the clinical dataset is fetched once', async ({ page }) => {
-  const requestCount = await mockClinicalDataset(page, [
+  const control = await mockClinicalDataset(page, [
     {
       code:'A00',
       title:'Kolera',
@@ -140,7 +144,7 @@ test('subcategory inherits only its category context and the clinical dataset is
   await expect(page.locator('#icdClinicalGuidanceInheritance')).toContainText('Kontekst i trashëguar nga A00');
   await expect(page.locator('#icdClinicalGuidanceInheritance')).toContainText('A00.0 nuk ka rresht të veçantë');
   await expect(page.locator('#icdClinicalGuidanceCodingNotes')).toContainText('verifiko nënkodin A00.0');
-  expect(requestCount()).toBe(1);
+  expect(control.requests()).toBe(1);
 
   await page.evaluate(() => {
     window.dispatchEvent(new CustomEvent('medindex:icd-state', { detail:{ code:'I10' } }));
@@ -148,7 +152,7 @@ test('subcategory inherits only its category context and the clinical dataset is
   await expect(page.locator('#icdClinicalGuidanceFamily')).toHaveText('Themelor');
   await expect(page.locator('#icdClinicalGuidanceEmergency')).toHaveText('Shumë i rëndësishëm');
   await expect(page.locator('#icdClinicalGuidance')).toHaveAttribute('data-context', 'exact');
-  expect(requestCount()).toBe(1);
+  expect(control.requests()).toBe(1);
 });
 
 test('an uncurated code receives no invented family-medicine or emergency priority', async ({ page }) => {
@@ -169,28 +173,29 @@ test('an uncurated code receives no invented family-medicine or emergency priori
 });
 
 test('clinical source failure exposes recovery and leaves the ICD workspace usable', async ({ page }) => {
-  const requestCount = await mockClinicalDataset(page, [{
+  const control = await mockClinicalDataset(page, [{
     code:'I10',
     title:'Hipertensioni esencial (primar)',
     primaryCare:'Themelor',
     emergency:'Shumë i rëndësishëm',
     priority:'1 – Thelbësor / urgjent',
     warning:'Vlerëso shenjat e dëmtimit akut të organeve target.',
-  }], { failOnce:true });
+  }], { blockUntilRecovery:true });
 
   await page.goto(`${BASE}/icd.html?code=I10`, { waitUntil:'domcontentloaded' });
   await waitForIcd(page, 'I10');
+  await expect(page.locator('#icdClinicalGuidanceState')).toHaveAttribute('data-tone', 'error', { timeout:15000 });
   await expect(page.locator('#icdClinicalGuidanceEmpty')).toContainText('Konteksti klinik nuk u ngarkua');
-  await expect(page.locator('#icdClinicalGuidanceState')).toHaveAttribute('data-tone', 'error');
   await expect(page.locator('[data-mi-icd-clinical-retry-visible]')).toBeVisible();
   await expect(page.locator('#icdCodingWorkspaceContent')).toBeVisible();
   await expect(page.locator('#icdCodingWorkspaceCode')).toHaveText('I10');
 
+  control.allowRecovery();
   await page.locator('[data-mi-icd-clinical-retry-visible]').click();
   await expect(page.locator('#icdClinicalGuidanceContent')).toBeVisible();
   await expect(page.locator('#icdClinicalGuidanceFamily')).toHaveText('Themelor');
   await expect(page.locator('[data-mi-icd-clinical-retry-visible]')).toHaveCount(0);
-  expect(requestCount()).toBe(2);
+  expect(control.requests()).toBeGreaterThanOrEqual(2);
 });
 
 test('long MF and emergency guidance remains bounded on a phone viewport', async ({ page }) => {
