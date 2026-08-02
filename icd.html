@@ -16,10 +16,10 @@
   <link rel="stylesheet" href="tailadmin-medindex.css?v=20260728-1" data-tailadmin-medindex-css>
   <link rel="stylesheet" href="icd-sidebar.css?v=icd-sidebar-v1" data-mi-icd-sidebar-css>
   <link rel="stylesheet" href="icd-tree.css?v=icd-tree-v1">
-  <link rel="stylesheet" href="icd-advanced-search.css?v=sq-clinical-search-v2">
+  <link rel="stylesheet" href="icd-advanced-search.css?v=sq-clinical-search-v3">
   <link rel="stylesheet" href="icd-detail-panel.css?v=icd-detail-panel-v2">
   <link rel="stylesheet" href="icd-terminology-detail.css?v=icd-terminology-detail-v1">
-  <link rel="stylesheet" href="icd-tree-polish.css?v=icd-tree-polish-v2">
+  <link rel="stylesheet" href="icd-tree-polish.css?v=icd-tree-polish-v3">
   <link rel="stylesheet" href="tailadmin-professional.css?v=20260728-1" data-tailadmin-professional-css>
   <script src="tailadmin-shell.js?v=production-audit-v2" defer></script>
   <script src="tailadmin-professional.js?v=production-audit-v2" defer></script>
@@ -56,10 +56,11 @@
             <span class="icd-search-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"></circle><path d="m16.5 16.5 4 4"></path></svg></span>
             <input id="icdSearch" type="search" autocomplete="off" placeholder="p.sh. I10, A001, tension i lartë ose hipertensjon…" aria-label="Kërko ICD-10 sipas kodit, titullit ose sinonimit" role="combobox" aria-autocomplete="list" aria-controls="icdSuggestions" aria-expanded="false">
             <button class="icd-search-clear" id="icdSearchClear" type="button" aria-label="Pastro kërkimin" hidden>×</button>
-            <div class="icd-suggestions" id="icdSuggestions" role="listbox" aria-label="Sugjerime të avancuara ICD-10" hidden></div>
+            <div class="icd-suggestions" id="icdSuggestions" role="listbox" aria-label="Sugjerime të avancuara ICD-10" aria-busy="false" hidden></div>
           </div>
           <button class="icd-tree-action" id="icdCollapseAll" type="button">Mbyll të gjitha</button>
           <span class="icd-tree-status" id="icdTreeStatus" aria-live="polite">Duke u ngarkuar…</span>
+          <span class="icd-source-status" id="icdSourceStatus" data-source-status="loading" role="status" aria-live="polite">Burimi: duke u verifikuar</span>
         </div>
 
         <div class="icd-tree-wrap">
@@ -75,8 +76,10 @@
   <script src="medical-icons.js?v=20260723-1" defer></script>
   <script src="section-icons.js?v=20260723-1" defer></script>
   <script src="icd-sidebar.js?v=icd-sidebar-v1" defer></script>
-  <script src="icd-advanced-search.js?v=sq-clinical-search-v2" defer></script>
+  <script src="icd-fetch-capture.js?v=icd-fetch-capture-v1" defer></script>
+  <script src="icd-advanced-search.js?v=sq-clinical-search-v3" defer></script>
   <script src="icd-tree.js?v=icd-tree-v1" defer></script>
+  <script src="icd-search-race-guard-v2.js?v=icd-race-guard-v5" defer></script>
   <script src="icd-detail-panel.js?v=icd-detail-panel-v2" defer></script>
   <script src="icd-terminology-detail.js?v=icd-terminology-detail-v1" defer></script>
   <script src="auth-client.js?v=production-audit-v2" defer></script>
