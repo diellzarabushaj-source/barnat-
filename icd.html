@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-  <meta name="description" content="MedIndex — hierarkia e plotë ICD-10-WHO 2019 me kërkim të avancuar dhe terminologji shqipe të standardizuar.">
+  <meta name="description" content="MedIndex — shfletuesi hierarkik ICD-10-WHO 2019 me kërkim të avancuar dhe terminologji shqipe të standardizuar.">
   <meta name="robots" content="noindex,nofollow,noarchive">
   <meta name="theme-color" content="#0d3d40">
   <link rel="manifest" href="manifest.webmanifest">
@@ -15,16 +15,16 @@
   <link rel="stylesheet" href="clinical-density.css?v=20260724-1">
   <link rel="stylesheet" href="tailadmin-medindex.css?v=20260728-1" data-tailadmin-medindex-css>
   <link rel="stylesheet" href="icd-sidebar.css?v=icd-sidebar-v1" data-mi-icd-sidebar-css>
-  <link rel="stylesheet" href="icd-full-table.css?v=icd-full-table-v1">
-  <link rel="stylesheet" href="icd-terminology.css?v=sq-terminology-v1">
+  <link rel="stylesheet" href="icd-tree.css?v=icd-tree-v1">
   <link rel="stylesheet" href="icd-advanced-search.css?v=sq-clinical-search-v1">
-  <link rel="stylesheet" href="icd-detail-panel.css?v=icd-detail-panel-v1">
+  <link rel="stylesheet" href="icd-detail-panel.css?v=icd-detail-panel-v2">
+  <link rel="stylesheet" href="icd-tree-polish.css?v=icd-tree-polish-v1">
   <link rel="stylesheet" href="tailadmin-professional.css?v=20260728-1" data-tailadmin-professional-css>
   <script src="tailadmin-shell.js?v=production-audit-v2" defer></script>
   <script src="tailadmin-professional.js?v=production-audit-v2" defer></script>
 </head>
 <body>
-  <a class="skip-link" href="#icdContent">Kalo te tabela ICD-10</a>
+  <a class="skip-link" href="#icdContent">Kalo te përmbajtja ICD-10</a>
   <div class="med-shell">
     <nav class="med-nav" aria-label="Navigimi kryesor">
       <a class="med-nav-link" href="index.html"><span class="med-nav-title">Barnat</span></a>
@@ -37,8 +37,8 @@
     <main class="med-main icd-registry-main" id="icdContent" tabindex="-1">
       <section class="icd-registry-intro" aria-labelledby="icdRegistryTitle">
         <div>
-          <h1 id="icdRegistryTitle">ICD-10 — hierarkia e plotë</h1>
-          <p>Kërko sipas kodit, titullit shqip ose anglisht, sinonimeve dhe gabimeve të vogla të shkrimit. Termat e standardizuar dallohen nga draftet automatike; sugjerimet ndihmojnë kodimin, ndërsa diagnoza përfundimtare mbetet vendim klinik.</p>
+          <h2 id="icdRegistryTitle">ICD-10 — shfletuesi hierarkik</h2>
+          <p>Hap kapitullin, bllokun, kategorinë dhe nënkodin me klikim. Kërkimi njeh kodet, shqipen, anglishten, sinonimet dhe gabimet e vogla të shkrimit. Sugjerimet ndihmojnë kodimin; diagnoza përfundimtare mbetet vendim klinik.</p>
         </div>
         <div class="icd-registry-stats" aria-label="Përmbledhje ICD-10">
           <span class="icd-registry-stat"><strong id="icdTotalNodes">12,542</strong><span>nyje</span></span>
@@ -48,68 +48,25 @@
         </div>
       </section>
 
-      <section class="icd-context" id="icdContext" aria-live="polite" hidden>
-        <div class="icd-context-copy">
-          <p class="icd-context-kicker" id="icdContextKicker">Filtri aktiv</p>
-          <h2 class="icd-context-title" id="icdContextTitle">ICD-10</h2>
-          <p class="icd-context-path" id="icdContextPath"></p>
-        </div>
-        <div class="icd-context-actions">
-          <button type="button" id="icdOpenSidebar">Shiko hierarkinë</button>
-          <button type="button" id="icdClearFilters">Hiq filtrat</button>
-        </div>
-      </section>
-
-      <section class="icd-registry-panel" aria-label="Tabela e plotë ICD-10">
-        <div class="icd-toolbar" role="search" aria-label="Kërkimi dhe filtrat ICD-10">
+      <section class="icd-tree-panel" aria-labelledby="icdTreeHeading">
+        <h2 class="sr-only" id="icdTreeHeading">Hierarkia e plotë ICD-10-WHO 2019</h2>
+        <div class="icd-tree-toolbar" role="search" aria-label="Kërko dhe shfleto ICD-10">
           <div class="icd-search-wrap" id="icdSmartSearch">
             <span class="icd-search-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"></circle><path d="m16.5 16.5 4 4"></path></svg></span>
             <input id="icdSearch" type="search" autocomplete="off" placeholder="p.sh. I10, tension i lartë ose hipertensjon…" aria-label="Kërko ICD-10 sipas kodit, titullit ose sinonimit" role="combobox" aria-autocomplete="list" aria-controls="icdSuggestions" aria-expanded="false">
             <button class="icd-search-clear" id="icdSearchClear" type="button" aria-label="Pastro kërkimin" hidden>×</button>
             <div class="icd-suggestions" id="icdSuggestions" role="listbox" aria-label="Sugjerime të avancuara ICD-10" hidden></div>
           </div>
-          <select class="icd-filter" id="icdLevelFilter" aria-label="Filtro nivelin ICD-10">
-            <option value="">Kategori dhe nënkategori</option>
-            <option value="category">Vetëm kategori</option>
-            <option value="subcategory">Vetëm nënkategori</option>
-          </select>
-          <select id="icdPageSize" aria-label="Rezultate për faqe">
-            <option value="25">25 / faqe</option>
-            <option value="50" selected>50 / faqe</option>
-            <option value="100">100 / faqe</option>
-          </select>
-          <span class="icd-result-count" id="icdResultCount" aria-live="polite">Duke u ngarkuar…</span>
+          <button class="icd-tree-action" id="icdCollapseAll" type="button">Mbyll të gjitha</button>
+          <span class="icd-tree-status" id="icdTreeStatus" aria-live="polite">Duke u ngarkuar…</span>
         </div>
 
-        <div class="icd-table-scroll" tabindex="0" aria-label="Tabela ICD-10 me scroll horizontal">
-          <table class="icd-table" id="icdTable">
-            <caption class="sr-only">Hierarkia ICD-10-WHO 2019 me tituj në shqip dhe anglisht</caption>
-            <colgroup><col><col><col><col><col><col><col></colgroup>
-            <thead>
-              <tr>
-                <th scope="col">Kodi</th>
-                <th scope="col">Titulli shqip</th>
-                <th scope="col">Titulli anglisht</th>
-                <th scope="col">Niveli</th>
-                <th scope="col">Kapitulli / blloku</th>
-                <th scope="col">Përkthimi</th>
-                <th scope="col">Veprimet</th>
-              </tr>
-            </thead>
-            <tbody id="icdTableBody">
-              <tr><td colspan="7" class="icd-loading">Po ngarkohet hierarkia e plotë ICD-10…</td></tr>
-            </tbody>
-          </table>
-        </div>
-
-        <nav class="icd-pagination" id="icdPagination" aria-label="Faqet e rezultateve ICD-10" hidden>
-          <span class="icd-pagination-info" id="icdPageInfo">0 rezultate</span>
-          <div class="icd-pagination-actions">
-            <button class="icd-page-button" id="icdPrevPage" type="button">← Para</button>
-            <span class="icd-page-current" id="icdPageCurrent">Faqja 1 / 1</span>
-            <button class="icd-page-button" id="icdNextPage" type="button">Tjetra →</button>
+        <div class="icd-tree-wrap">
+          <div class="icd-tree" id="icdTree" role="tree" aria-label="Kapitujt, blloqet, kategoritë dhe nënkategoritë ICD-10" aria-busy="true">
+            <div class="icd-tree-loading"><span class="icd-tree-spinner" aria-hidden="true"></span><p>Po ngarkohet hierarkia ICD-10…</p></div>
           </div>
-        </nav>
+          <button class="icd-tree-action" id="icdTreeRetry" type="button" hidden>Provo përsëri</button>
+        </div>
       </section>
     </main>
   </div>
@@ -118,9 +75,8 @@
   <script src="section-icons.js?v=20260723-1" defer></script>
   <script src="icd-sidebar.js?v=icd-sidebar-v1" defer></script>
   <script src="icd-advanced-search.js?v=sq-clinical-search-v1" defer></script>
-  <script src="icd-full-table.js?v=icd-full-table-v1" defer></script>
-  <script src="icd-terminology-ui.js?v=sq-terminology-ui-v1" defer></script>
-  <script src="icd-detail-panel.js?v=icd-detail-panel-v1" defer></script>
+  <script src="icd-tree.js?v=icd-tree-v1" defer></script>
+  <script src="icd-detail-panel.js?v=icd-detail-panel-v2" defer></script>
   <script src="auth-client.js?v=production-audit-v2" defer></script>
   <script src="app-stability.js?v=20260724-2" defer></script>
 </body>

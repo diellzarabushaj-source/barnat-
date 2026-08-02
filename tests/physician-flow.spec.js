@@ -22,6 +22,15 @@ function expectInsideViewport(item, viewport) {
   expect(item.rect.bottom).toBeLessThanOrEqual(viewport.height);
 }
 
+async function openA00Detail(page) {
+  await page.waitForFunction(() => document.documentElement.dataset.miIcdTree === 'ready');
+  await page.locator('[data-tree-toggle="I"]').click();
+  await expect(page.locator('[data-icd-tree-node="A00-A09"]')).toBeVisible();
+  await page.locator('[data-tree-toggle="A00-A09"]').click();
+  await expect(page.locator('[data-icd-tree-node="A00"]')).toBeVisible();
+  await page.locator('[data-icd-tree-node="A00"] [data-open-code="A00"]').click();
+}
+
 test('mjeku gjen shërbimin, krijon recetë dhe vazhdon offline', async ({ page, context }) => {
   await page.goto('http://127.0.0.1:4173/index.html', { waitUntil:'domcontentloaded' });
   await page.waitForFunction(() => document.documentElement.classList.contains('auth-ready'));
@@ -94,7 +103,7 @@ test('mjeku gjen shërbimin, krijon recetë dhe vazhdon offline', async ({ page,
   await navigationPromise;
   await restoredPage.waitForFunction(() => document.documentElement.classList.contains('auth-ready'));
   await expect(restoredPage.locator('.mi-page-heading-title')).toHaveText('ICD');
-  await restoredPage.locator('[data-open-code]').first().click();
+  await openA00Detail(restoredPage);
   await expect(restoredPage.locator('#detailOverlay')).toBeVisible();
   const useDiagnosis = restoredPage.getByRole('button', { name:'Përdore në recetë' });
   await expect(useDiagnosis).toBeVisible();
