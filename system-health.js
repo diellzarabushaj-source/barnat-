@@ -9,6 +9,10 @@
     editorSummary:$('systemEditorSummary'), editorEvents:$('systemEditorEvents'),
     imports:$('systemImportRows'), checked:$('systemCheckedAt'), message:$('systemMessage'),
     drugs:$('systemDrugCount'), dosage:$('systemDosageCount'), icd:$('systemIcdCount'), labs:$('systemLabCount'),
+    icdState:$('systemIcdState'), icdSummary:$('systemIcdSummary'), icdLiveNodes:$('systemIcdLiveNodes'),
+    icdRevision:$('systemIcdRevision'), icdLoadedAt:$('systemIcdLoadedAt'),
+    icdSourceStatus:$('systemIcdSourceStatus'), icdProbeScore:$('systemIcdProbeScore'),
+    icdProbeList:$('systemIcdProbeList'), icdError:$('systemIcdError'),
   };
   let controller = null;
   let timer = 0;
@@ -20,6 +24,14 @@
   function formatNumber(value) {
     const number = Number(value);
     return Number.isFinite(number) ? new Intl.NumberFormat('sq-AL').format(number) : '—';
+  }
+
+  function formatBytes(value) {
+    const bytes = Number(value);
+    if (!Number.isFinite(bytes) || bytes <= 0) return '—';
+    if (bytes < 1024) return `${bytes} B`;
+    if (bytes < 1024 * 1024) return `${(bytes / 1024).toFixed(1)} KB`;
+    return `${(bytes / (1024 * 1024)).toFixed(2)} MB`;
   }
 
   function formatDate(value, includeTime = true) {
@@ -97,8 +109,50 @@
       </article>`).join('') : '<div class="system-empty">Burimet e sinkronizimit nuk u kthyen nga serveri.</div>';
     elements.sources.innerHTML = outboxMarkup + sourceMarkup;
 
-    setState(elements.sync, payload?.overall);
-    elements.setup.hidden = payload?.overall?.code !== 'setup_required';
+    const syncState = payload?.synchronization?.state || payload?.overall;
+    setState(elements.sync, syncState);
+    elements.setup.hidden = syncState?.code !== 'setup_required';
+  }
+
+  function renderIcd(icd = {}) {
+    const source = icd.source || {};
+    const hierarchy = icd.hierarchy || {};
+    const search = icd.search || {};
+    const probes = Array.isArray(search.probes) ? search.probes : [];
+    const totalNodes = hierarchy?.actual?.total;
+    const complete = hierarchy.complete === true;
+
+    setState(elements.icdState, icd.state || { label:'E panjohur', severity:'neutral' });
+    elements.icdLiveNodes.textContent = formatNumber(totalNodes);
+    elements.icdRevision.textContent = source.revision ? String(source.revision).slice(0, 12) : '—';
+    elements.icdRevision.title = source.revision || '';
+    elements.icdLoadedAt.textContent = source.loadedAt ? relativeTime(source.loadedAt) : '—';
+    elements.icdSourceStatus.textContent = source.status === 'stale'
+      ? 'Cache i fundit i vlefshëm'
+      : source.status === 'live'
+        ? `Live · ${formatBytes(source.csvBytes)}`
+        : source.status || '—';
+    elements.icdProbeScore.textContent = `${Number(search.passed) || 0}/${Number(search.total) || 0}`;
+    elements.icdSummary.textContent = icd.error
+      ? 'Burimi publik ICD nuk u lexua; Neon dhe shërbimet e tjera vazhdojnë të kontrollohen veçmas.'
+      : complete && search.healthy
+        ? 'Hierarkia e plotë dhe kërkimi clinical-ranking-v3 kaluan auditin operacional.'
+        : complete
+          ? 'Hierarkia është e plotë, por një ose më shumë kërkime klinike kërkojnë kontroll.'
+          : 'Numrat e hierarkisë nuk përputhen me baseline-in 22 / 274 / 2,050 / 10,196 / 12,542.';
+
+    elements.icdProbeList.innerHTML = probes.length ? probes.map(probe => `
+      <article class="system-probe ${probe.passed ? 'is-ok' : 'is-failed'}">
+        <div>
+          <strong>${escapeHtml(probe.label || probe.id || 'Provë klinike')}</strong>
+          <small><code>${escapeHtml(probe.query || '')}</code> → ${escapeHtml(probe.firstCode || 'pa rezultat')}</small>
+          ${probe.error ? `<small class="system-source-error">${escapeHtml(probe.error)}</small>` : ''}
+        </div>
+        <span>${probe.passed ? 'Kaloi' : 'Dështoi'}</span>
+      </article>`).join('') : '<div class="system-empty">Nuk u kthyen rezultatet e smoke-probes ICD.</div>';
+
+    elements.icdError.hidden = !icd.error;
+    elements.icdError.textContent = icd.error || '';
   }
 
   function renderEditor(editor = {}) {
@@ -139,19 +193,27 @@
     elements.labs.textContent = formatNumber(payload.counts?.labTests);
     elements.checked.textContent = `Kontrolluar: ${formatDate(payload.checkedAt)}`;
     renderSources(payload);
+    renderIcd(payload.icd);
     renderEditor(payload.editor);
     renderImports(payload.recentImports);
     const outbox = payload?.synchronization?.outbox || {};
-    elements.message.className = `system-message${Number(outbox.deadLetter) > 0 ? ' is-error' : ''}`;
+    const icdState = payload?.icd?.state?.code;
+    elements.message.className = `system-message${Number(outbox.deadLetter) > 0 || icdState === 'error' ? ' is-error' : ''}`;
     elements.message.textContent = Number(outbox.deadLetter) > 0
       ? `${outbox.deadLetter} ndryshim(e) kanë kaluar në dead letter dhe kërkojnë ndërhyrje.`
-      : Number(outbox.pending) > 0
-        ? `${outbox.pending} ndryshim(e) presin konfirmimin e Google Sheet-it.`
-        : payload.overall?.code === 'healthy'
-          ? 'Neon, outbox-i dhe sinkronizimi i dozologjisë janë brenda intervalit të pritshëm.'
-          : payload.overall?.code === 'setup_required'
-            ? 'Databaza është aktive. Për sinkronizim live duhet aktivizuar një herë Apps Script-i.'
-            : 'Kontrollo kartat e mësipërme për burimin që kërkon ndërhyrje.';
+      : icdState === 'error'
+        ? 'Burimi ICD nuk u lexua. Kontrollo kartën ICD; Neon mbetet i izoluar nga ky gabim.'
+        : icdState === 'stale'
+          ? 'ICD po shërbehet nga cache-i i fundit i vlefshëm derisa Google Sheet të rikthehet.'
+          : icdState === 'warning'
+            ? 'ICD u lexua, por integriteti ose një smoke-probe klinik kërkon kontroll.'
+            : Number(outbox.pending) > 0
+              ? `${outbox.pending} ndryshim(e) presin konfirmimin e Google Sheet-it.`
+              : payload.overall?.code === 'healthy'
+                ? 'Neon, sinkronizimi dhe burimi ICD janë brenda intervalit të pritshëm.'
+                : payload?.synchronization?.state?.code === 'setup_required'
+                  ? 'Databaza është aktive. Për sinkronizim live duhet aktivizuar një herë Apps Script-i.'
+                  : 'Kontrollo kartat e mësipërme për burimin që kërkon ndërhyrje.';
   }
 
   async function load() {
@@ -176,6 +238,7 @@
       if (error.name === 'AbortError') return;
       setState(elements.overall, { label:'Nuk u kontrollua', severity:'danger' });
       setState(elements.sync, { label:'Gabim', severity:'danger' });
+      setState(elements.icdState, { label:'Gabim', severity:'danger' });
       elements.message.className = 'system-message is-error';
       elements.message.textContent = error.message || 'Ndodhi një gabim gjatë kontrollit.';
     } finally {
