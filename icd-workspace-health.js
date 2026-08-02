@@ -56,7 +56,9 @@
     if (size) parts.push(size);
     const revision = clean(source?.revision).slice(0, 8);
     if (revision) parts.push(`rev ${revision}`);
-    return parts.join(' · ') || clean(els.badge.title) || 'Google Sheet publik · hierarkia e plotë';
+    const existing = clean(source?.displayDetail) || clean(els.badge.title);
+    if (existing && !parts.includes(existing)) parts.push(existing);
+    return parts.join(' · ') || 'Google Sheet publik · hierarkia e plotë';
   }
 
   function emit(state, extra = {}) {
@@ -78,6 +80,7 @@
   function badgeText(status) {
     if (status === 'live') return 'Burimi: live';
     if (status === 'stale') return 'Burimi: cache i fundit';
+    if (status === 'cached') return 'Burimi: cache lokal';
     if (status === 'offline') return 'Burimi: pa rrjet';
     if (status === 'error') return 'Burimi: nuk u verifikua';
     return 'Burimi: status i panjohur';
@@ -100,11 +103,14 @@
   function applySource(source, { cached = false } = {}) {
     if (!source || typeof source !== 'object') return;
     currentSource = source;
-    const status = clean(source.status).toLowerCase() === 'stale' ? 'stale' : 'live';
-    els.badge.dataset.sourceStatus = status;
-    els.badge.textContent = badgeText(status);
+    const rawStatus = clean(source.status).toLowerCase();
+    const status = ['live', 'stale'].includes(rawStatus) ? rawStatus : 'unknown';
+    const displayStatus = cached ? 'cached' : status;
+    els.badge.dataset.sourceStatus = displayStatus;
+    els.badge.textContent = badgeText(displayStatus);
     els.badge.title = sourceDetail(source);
-    setWrapperState(cached ? 'cached' : status, sourceDetail(source, { cached }), { cached });
+    window.clearTimeout(fallbackTimer);
+    setWrapperState(displayStatus, sourceDetail(source, { cached }), { cached });
     if (!cached) saveCache(source);
   }
 
@@ -114,6 +120,13 @@
     if (status === 'loading' && ['cached', 'live', 'stale'].includes(currentState)) return;
     if (status === 'live' || status === 'stale') {
       const detail = clean(els.badge.title) || sourceDetail(currentSource);
+      currentSource = {
+        ...(currentSource || {}),
+        status,
+        displayDetail:detail,
+      };
+      saveCache(currentSource);
+      window.clearTimeout(fallbackTimer);
       setWrapperState(status, detail, { fromBadge:true });
       return;
     }
