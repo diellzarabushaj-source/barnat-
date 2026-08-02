@@ -96,7 +96,7 @@ assert.match(js, /Shenja alarmi \/ kujdes/);
 assert.match(js, /MedIndex nuk fabrikon shënime/);
 assert.match(js, /credentials:'same-origin'/);
 assert.doesNotMatch(js, /localStorage\.setItem|sessionStorage\.setItem/);
-assert.match(recovery, /icd-clinical-guidance-recovery-v2/);
+assert.match(recovery, /icd-clinical-guidance-recovery-v4/);
 assert.match(recovery, /Riprovo listën klinike/);
 assert.match(recovery, /data-mi-icd-clinical-retry-visible/);
 assert.match(recovery, /data-mi-icd-clinical-retry/);
