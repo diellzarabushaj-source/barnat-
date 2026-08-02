@@ -18,6 +18,7 @@ const source = {
 async function installMetaRoute(page, controls = {}) {
   controls.requests = 0;
   controls.workspaceRequests = 0;
+  controls.workspaceAttempts = [];
   controls.failuresRemaining = Number(controls.failuresRemaining || 0);
   await page.route('**/api/icd**', async route => {
     const url = new URL(route.request().url());
@@ -28,10 +29,13 @@ async function installMetaRoute(page, controls = {}) {
     ) return route.continue();
 
     controls.requests += 1;
-    const headers = route.request().headers();
-    const isWorkspaceRequest = headers['x-medindex-icd-workspace'] === 'health-v2';
-    if (isWorkspaceRequest) controls.workspaceRequests += 1;
-    if (isWorkspaceRequest && controls.failuresRemaining > 0) {
+    const isWorkspaceRequest = url.searchParams.get('workspaceHealth') === '1';
+    const workspaceAttempt = Number(url.searchParams.get('attempt') || 0);
+    if (isWorkspaceRequest) {
+      controls.workspaceRequests += 1;
+      controls.workspaceAttempts.push(workspaceAttempt);
+    }
+    if (isWorkspaceRequest && workspaceAttempt === 1 && controls.failuresRemaining > 0) {
       controls.failuresRemaining -= 1;
       return route.fulfill({
         status:503,
@@ -121,6 +125,7 @@ test('manual source refresh performs one bounded retry and keeps the tree usable
   await page.evaluate(() => window.MedIndexIcdWorkspaceHealth.refresh());
   await expect(health).toHaveAttribute('data-state', 'live');
   const initialWorkspaceRequests = controls.workspaceRequests;
+  const initialAttemptCount = controls.workspaceAttempts.length;
   controls.failuresRemaining = 1;
 
   await page.evaluate(() => {
@@ -133,7 +138,7 @@ test('manual source refresh performs one bounded retry and keeps the tree usable
 
   await expect.poll(
     () => controls.workspaceRequests - initialWorkspaceRequests,
-    { timeout:8000, message:'Workspace refresh should issue one request and one bounded retry.' },
+    { timeout:8000, message:'Workspace refresh should issue attempt=1 and one bounded attempt=2 retry.' },
   ).toBe(2);
   await expect.poll(
     () => page.evaluate(() => (window.__icdWorkspaceRetryEvents || []).length),
@@ -145,6 +150,7 @@ test('manual source refresh performs one bounded retry and keeps the tree usable
   await expect(page.locator('#icdTree')).toHaveAttribute('aria-busy', 'false');
   await expect(page.locator('html')).toHaveAttribute('data-mi-icd-prescription-roundtrip', 'icd-rx-roundtrip-v1');
 
+  expect(controls.workspaceAttempts.slice(initialAttemptCount)).toEqual([1, 2]);
   const retryEvents = await page.evaluate(() => window.__icdWorkspaceRetryEvents || []);
   expect(retryEvents[0].status).toBe(503);
 });
