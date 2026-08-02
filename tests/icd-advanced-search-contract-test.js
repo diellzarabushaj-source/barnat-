@@ -18,11 +18,11 @@ const engineBase = read('lib/icd-search-engine.js');
 const engineV2 = read('lib/icd-search-engine-v2.js');
 const engineV3 = read('lib/icd-search-engine-v3.js');
 
-for (const asset of ['icd-advanced-search.css?v=sq-clinical-search-v1','icd-advanced-search.js?v=sq-clinical-search-v1']) {
+for (const asset of ['icd-advanced-search.css?v=sq-clinical-search-v2','icd-advanced-search.js?v=sq-clinical-search-v2','icd-tree-polish.css?v=icd-tree-polish-v2']) {
   assert.ok(html.includes(asset), `ICD advanced search page missing ${asset}`);
 }
 assert.ok(
-  html.indexOf('icd-advanced-search.js?v=sq-clinical-search-v1') < html.indexOf('icd-tree.js?v=icd-tree-v1'),
+  html.indexOf('icd-advanced-search.js?v=sq-clinical-search-v2') < html.indexOf('icd-tree.js?v=icd-tree-v1'),
   'Advanced fetch routing must load before the tree controller.',
 );
 
