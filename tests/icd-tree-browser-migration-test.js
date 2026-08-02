@@ -1,0 +1,10 @@
+'use strict';
+const assert = require('node:assert/strict');
+const fs = require('node:fs');
+const html = fs.readFileSync('icd.html', 'utf8');
+assert.ok(html.includes('icd-tree.js?v=icd-tree-v1'));
+assert.ok(html.includes('icd-tree.css?v=icd-tree-v1'));
+assert.ok(html.includes('role="tree"'));
+assert.ok(!html.includes('icd-full-table.js'));
+assert.ok(!html.includes('id="icdTable"'));
+console.log('ICD tree migration guard passed.');
