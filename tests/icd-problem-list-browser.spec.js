@@ -24,10 +24,40 @@ const context = (code, titleSq, level = 'category', index = 0) => ({
   selectedAt:Date.now() - index * 1000,
 });
 
+async function problemListDiagnostics(page) {
+  return page.evaluate(async () => {
+    let responseStatus = 0;
+    let responseType = '';
+    let responseStart = '';
+    try {
+      const response = await fetch('/icd-problem-list.js?v=icd-problem-list-v1', { cache:'no-store' });
+      responseStatus = response.status;
+      responseType = response.headers.get('content-type') || '';
+      responseStart = (await response.text()).slice(0, 80);
+    } catch (error) {
+      responseStart = String(error?.message || error);
+    }
+    return {
+      attribute:document.documentElement.dataset.miIcdProblemList || '',
+      roundtrip:document.documentElement.dataset.miIcdPrescriptionRoundtrip || '',
+      rxContent:Boolean(document.getElementById('rxContent')),
+      script:Boolean(document.querySelector('script[data-mi-icd-problem-list]')),
+      scriptSrc:document.querySelector('script[data-mi-icd-problem-list]')?.src || '',
+      apiVersion:window.MedIndexIcdProblemList?.VERSION || '',
+      runtimeVersion:window.MEDINDEX_RUNTIME?.version || '',
+      responseStatus,
+      responseType,
+      responseStart,
+    };
+  });
+}
+
 async function waitForPrescription(page) {
   const html = page.locator('html');
   await expect(html).toHaveClass(/auth-ready/);
   await expect(html).toHaveAttribute('data-mi-prescription-icd', 'icd-context-v2');
+  await page.waitForTimeout(400);
+  console.log('ICD_PROBLEM_LIST_BOOT', JSON.stringify(await problemListDiagnostics(page)));
   await expect(html).toHaveAttribute('data-mi-icd-problem-list', 'icd-problem-list-v1');
 }
 
