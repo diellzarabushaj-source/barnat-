@@ -28,6 +28,24 @@
     }
   }
 
+  function loadIcdProblemListAssets() {
+    if (!document.getElementById('rxContent') && !document.getElementById('icdContent')) return;
+    if (!document.querySelector('link[data-mi-icd-problem-list]')) {
+      const link = document.createElement('link');
+      link.rel = 'stylesheet';
+      link.href = 'icd-problem-list.css?v=icd-problem-list-v1';
+      link.dataset.miIcdProblemList = '1';
+      document.head.appendChild(link);
+    }
+    if (!document.querySelector('script[data-mi-icd-problem-list]')) {
+      const script = document.createElement('script');
+      script.src = 'icd-problem-list.js?v=icd-problem-list-v1';
+      script.async = false;
+      script.dataset.miIcdProblemList = '1';
+      document.head.appendChild(script);
+    }
+  }
+
   function banner(className, message, persistent = false) {
     let node = document.querySelector(`.${className}`);
     if (!node) {
@@ -215,6 +233,7 @@
 
   function init() {
     loadFinalWorkspaceAssets();
+    loadIcdProblemListAssets();
     updateConnectivity();
     installPerformanceHints();
     watchUi();
@@ -228,7 +247,7 @@
     document.addEventListener('keydown', trapFocus, true);
     document.addEventListener('keydown', closeTransientUi, true);
     document.addEventListener('click', clearPrescriptionRegistryCacheOnLogout, true);
-    window.MEDINDEX_RUNTIME = { version:'2026-08-01.2', online:() => navigator.onLine, clearPrivateClientCaches };
+    window.MEDINDEX_RUNTIME = { version:'2026-08-02.1', online:() => navigator.onLine, clearPrivateClientCaches };
   }
 
   if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', init, { once:true });
