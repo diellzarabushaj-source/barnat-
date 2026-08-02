@@ -125,7 +125,6 @@
     const verifiedStatus = clean(currentSource?.status).toLowerCase();
     if (
       ['loading', 'unknown'].includes(status)
-      && Date.now() < authoritativeSourceUntil
       && ['live', 'stale'].includes(verifiedStatus)
     ) {
       applySource(currentSource);
