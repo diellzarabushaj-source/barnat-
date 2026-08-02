@@ -126,12 +126,20 @@ test('manual source refresh performs one bounded retry and keeps the tree usable
     });
   });
   await refresh.click();
+
+  await expect.poll(
+    () => controls.workspaceRequests - initialWorkspaceRequests,
+    { timeout:8000, message:'Workspace refresh should issue one request and one bounded retry.' },
+  ).toBe(2);
+  await expect.poll(
+    () => page.evaluate(() => (window.__icdWorkspaceRetryEvents || []).length),
+    { timeout:8000, message:'Workspace refresh should emit exactly one retry event.' },
+  ).toBe(1);
+
   await expect(health).toHaveAttribute('data-state', 'live', { timeout:8000 });
   await expect(refresh).toBeEnabled();
   await expect(page.locator('#icdTree')).toHaveAttribute('aria-busy', 'false');
 
-  expect(controls.workspaceRequests - initialWorkspaceRequests).toBe(2);
   const retryEvents = await page.evaluate(() => window.__icdWorkspaceRetryEvents || []);
-  expect(retryEvents).toHaveLength(1);
   expect(retryEvents[0].status).toBe(503);
 });
