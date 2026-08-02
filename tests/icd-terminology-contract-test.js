@@ -7,8 +7,8 @@ const root = path.resolve(__dirname, '..');
 const read = file => fs.readFileSync(path.join(root, file), 'utf8');
 
 const html = read('icd.html');
-const ui = read('icd-terminology-ui.js');
-const css = read('icd-terminology.css');
+const ui = read('icd-tree.js');
+const css = read('icd-tree.css');
 const terminologyBase = read('lib/icd-sq-terminology.js');
 const terminology = read('lib/icd-sq-terminology-v2.js');
 const hierarchy = read('lib/icd-full-hierarchy.js');
@@ -21,12 +21,15 @@ const packages = {
   XVIII:JSON.parse(read('lib/icd-sq-terms-xviii.json')),
 };
 
-for (const asset of ['icd-terminology.css?v=sq-terminology-v1','icd-terminology-ui.js?v=sq-terminology-ui-v1']) {
-  assert.ok(html.includes(asset), `ICD terminology workspace missing ${asset}`);
+for (const asset of ['icd-tree.css?v=icd-tree-v1','icd-tree.js?v=icd-tree-v1']) {
+  assert.ok(html.includes(asset), `ICD terminology tree missing ${asset}`);
 }
-assert.ok(html.indexOf('icd-full-table.js?v=icd-full-table-v1') < html.indexOf('icd-terminology-ui.js?v=sq-terminology-ui-v1'));
-for (const marker of ['machine-draft','standardized','verified','Term i standardizuar','terminologyCoverage']) assert.ok(ui.includes(marker));
-for (const marker of ['.is-standardized','.is-verified','html[data-theme="dark"]']) assert.ok(css.includes(marker));
+for (const marker of ['translationStatus','is-standardized','is-verified','I standardizuar','I verifikuar','Vetëm anglisht','Draft']) {
+  assert.ok(ui.includes(marker), `ICD tree terminology UI missing ${marker}`);
+}
+for (const marker of ['.icd-tree-translation.is-standardized','.icd-tree-translation.is-verified','.icd-tree-translation.is-draft','.icd-tree-translation.is-missing','html[data-theme="dark"]']) {
+  assert.ok(css.includes(marker), `ICD tree terminology CSS missing ${marker}`);
+}
 
 for (const marker of [
   "TERMINOLOGY_VERSION = 'sq-terminology-2026.3'",
@@ -54,9 +57,8 @@ assert.equal(packages.XVIII['R30.0'].aliases.includes('djegie gjatë urinimit'),
 for (const marker of ["require('./icd-sq-terminology-v2.js')",'.map(Terminology.applyNode)','quality:Terminology.quality(nodes)','pilotChapters:Terminology.PILOT_CHAPTERS']) {
   assert.ok(hierarchy.includes(marker), `Full ICD hierarchy missing ${marker}`);
 }
-assert.doesNotMatch(terminology, /translationStatus\s*:\s*['"]verified['"]/, 'Phase 6 must not claim professional verification.');
+assert.doesNotMatch(terminology, /translationStatus\s*:\s*['"]verified['"]/, 'Phase 7 must not claim professional verification.');
 assert.doesNotMatch(ui, /eval\s*\(|new Function\s*\(/);
 assert.doesNotMatch(css, /https?:\/\//);
 new Function(ui); new Function(terminologyBase); new Function(terminology); new Function(hierarchy);
-
-console.log('ICD terminology 2026.3 packages, UI wiring and non-verification contract passed.');
+console.log('ICD terminology 2026.3 packages, tree badges and non-verification contract passed.');
