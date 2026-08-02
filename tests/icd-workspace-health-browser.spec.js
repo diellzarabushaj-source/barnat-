@@ -116,6 +116,9 @@ test('manual source refresh performs one bounded retry and keeps the tree usable
 
   const health = page.locator('#icdSourceHealth');
   const refresh = page.locator('#icdSourceHealthRefresh');
+
+  await page.evaluate(() => window.MedIndexIcdWorkspaceHealth.refresh());
+  await expect(health).toHaveAttribute('data-state', 'live');
   const initialWorkspaceRequests = controls.workspaceRequests;
   controls.failuresRemaining = 1;
 
