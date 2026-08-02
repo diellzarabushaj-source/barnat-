@@ -2,7 +2,7 @@
   'use strict';
 
   if (!root?.document) return;
-  const VERSION = 'icd-clinical-guidance-recovery-v5';
+  const VERSION = 'icd-clinical-guidance-recovery-v4';
   let observer = null;
   let clickBound = false;
 
