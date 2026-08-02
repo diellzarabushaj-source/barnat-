@@ -85,7 +85,7 @@ const apiBase = read('lib/icd-api-base.js');
 
 assert.match(html, /icd-clinical-guidance\.css\?v=icd-clinical-guidance-v1/);
 assert.match(html, /icd-clinical-guidance\.js\?v=icd-clinical-guidance-v1/);
-assert.match(html, /icd-clinical-guidance-recovery\.js\?v=icd-clinical-guidance-recovery-v4/);
+assert.match(html, /icd-clinical-guidance-recovery\.js\?v=icd-clinical-guidance-recovery-v5/);
 assert.match(apiBase, /19ncbnrTJ_w-WQ0msWO9_dUoxjmicSUAz6Nt4sh20gFw/);
 assert.match(apiBase, /all:1504864603/);
 assert.match(apiBase, /urgent:285385409/);
@@ -96,14 +96,14 @@ assert.match(js, /Shenja alarmi \/ kujdes/);
 assert.match(js, /MedIndex nuk fabrikon shënime/);
 assert.match(js, /credentials:'same-origin'/);
 assert.doesNotMatch(js, /localStorage\.setItem|sessionStorage\.setItem/);
-assert.match(recovery, /icd-clinical-guidance-recovery-v4/);
+assert.match(recovery, /icd-clinical-guidance-recovery-v5/);
 assert.match(recovery, /Riprovo listën klinike/);
 assert.match(recovery, /data-mi-icd-clinical-retry-visible/);
 assert.match(recovery, /data-mi-icd-clinical-retry/);
 assert.match(recovery, /internalRetry\.click\(\)/);
-assert.doesNotMatch(recovery, /location\.reload|localStorage|sessionStorage/);
+assert.doesNotMatch(recovery, /stopImmediatePropagation|location\.reload|localStorage|sessionStorage/);
 assert.match(css, /@media \(max-width: 520px\)/);
 assert.match(css, /@media \(forced-colors: active\)/);
 assert.match(css, /overflow-wrap: anywhere/);
 
-console.log('ICD clinical guidance, curated Google Sheet provenance, in-place recovery and non-fabrication contract passed.');
+console.log('ICD clinical guidance, curated Google Sheet provenance, native retry propagation and non-fabrication contract passed.');
