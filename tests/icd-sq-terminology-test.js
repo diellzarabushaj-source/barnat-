@@ -50,6 +50,9 @@ assert.equal(samples.missing.translationStatus, 'missing');
 assert.ok(samples.missing.terminologyFlags.includes('MISSING_ALBANIAN'));
 assert.ok(!Terminology.lintTitle('Pamundësi për të të ushqyer', 'Feeding difficulty').includes('DUPLICATED_WORD'));
 assert.ok(Terminology.lintTitle('Dhimbje dhimbje abdominale', 'Abdominal pain').includes('DUPLICATED_WORD'));
+assert.deepEqual(Terminology.adjacentRepeatedWords('Blloku atrioventrikular dhe blloku i degës së majtë'), []);
+assert.ok(!Terminology.lintTitle('Blloku atrioventrikular dhe blloku i degës së majtë', 'Atrioventricular and left bundle-branch block').includes('DUPLICATED_WORD'));
+assert.deepEqual(Terminology.adjacentRepeatedWords('Dhimbje dhimbje abdominale'), ['dhimbje']);
 
 const summary = Terminology.quality(Object.values(samples));
 assert.equal(summary.standardizedTranslations, 6);
