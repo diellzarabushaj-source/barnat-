@@ -1,6 +1,7 @@
 'use strict';
 
 const assert = require('node:assert/strict');
+const fs = require('node:fs');
 const FullIcd = require('../lib/icd-full-hierarchy.js');
 const Terminology = require('../lib/icd-sq-terminology-v2.js');
 const AdvancedIcd = require('../lib/icd-advanced-handler.js');
@@ -12,22 +13,28 @@ const SHEET_GID = 329283560;
 const SOURCE = `https://docs.google.com/spreadsheets/d/${SPREADSHEET_ID}/gviz/tq?tqx=out:csv&gid=${SHEET_GID}`;
 const MAX_BYTES = 8 * 1024 * 1024;
 
-async function fetchCsv() {
-  const response = await fetch(SOURCE, {
-    headers:{ Accept:'text/csv,*/*;q=0.8', 'User-Agent':'MedIndex-ICD-Live-Audit/1.0' },
-    signal:AbortSignal.timeout(30000),
-  });
-  assert.equal(response.ok, true, `Live ICD Sheet returned HTTP ${response.status}.`);
-  const csv = await response.text();
-  assert.ok(csv.length > 1_000_000, 'Live ICD Sheet export is unexpectedly small.');
-  assert.ok(Buffer.byteLength(csv, 'utf8') <= MAX_BYTES, 'Live ICD Sheet export exceeds the audit limit.');
+async function loadCsv() {
+  const localPath = String(process.env.ICD_CSV_PATH || '').trim();
+  let csv;
+  if (localPath) {
+    csv = fs.readFileSync(localPath, 'utf8');
+  } else {
+    const response = await fetch(SOURCE, {
+      headers:{ Accept:'text/csv,*/*;q=0.8', 'User-Agent':'MedIndex-ICD-Live-Audit/1.0' },
+      signal:AbortSignal.timeout(30000),
+    });
+    assert.equal(response.ok, true, `Live ICD Sheet returned HTTP ${response.status}. Supply ICD_CSV_PATH when the Sheet is private.`);
+    csv = await response.text();
+  }
+  assert.ok(csv.length > 1_000_000, 'ICD Sheet export is unexpectedly small.');
+  assert.ok(Buffer.byteLength(csv, 'utf8') <= MAX_BYTES, 'ICD Sheet export exceeds the audit limit.');
   return csv;
 }
 
 function assertPackageCoverage(dataset, terms, label) {
   const byCode = FullIcd.nodeMap(dataset);
   const missing = Object.keys(terms).filter(code => !byCode.has(code));
-  assert.deepEqual(missing, [], `${label} contains codes missing from the live hierarchy: ${missing.join(', ')}`);
+  assert.deepEqual(missing, [], `${label} contains codes missing from the hierarchy: ${missing.join(', ')}`);
 }
 
 function childCounts(dataset) {
@@ -37,7 +44,7 @@ function childCounts(dataset) {
 }
 
 (async () => {
-  const csv = await fetchCsv();
+  const csv = await loadCsv();
   const dataset = FullIcd.buildDataset(csv, { strictCounts:true });
 
   assert.deepEqual(dataset.counts, FullIcd.EXPECTED_COUNTS);
