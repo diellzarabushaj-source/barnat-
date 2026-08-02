@@ -28,6 +28,24 @@
     document.head.appendChild(link);
   }
 
+  function loadProblemListAssets() {
+    if (!document.getElementById('rxContent') && !document.getElementById('icdContent')) return;
+    if (!document.querySelector('link[data-mi-icd-problem-list]')) {
+      const link = document.createElement('link');
+      link.rel = 'stylesheet';
+      link.href = '/icd-problem-list.css?v=icd-problem-list-v1';
+      link.dataset.miIcdProblemList = '1';
+      document.head.appendChild(link);
+    }
+    if (!document.querySelector('script[data-mi-icd-problem-list]')) {
+      const script = document.createElement('script');
+      script.src = '/icd-problem-list.js?v=icd-problem-list-v1';
+      script.async = false;
+      script.dataset.miIcdProblemList = '1';
+      document.head.appendChild(script);
+    }
+  }
+
   function normalizeContext(value) {
     if (!value || typeof value !== 'object' || Array.isArray(value)) return null;
     const code = safeText(value.code, 24).toUpperCase();
@@ -329,6 +347,7 @@
   }
 
   function init() {
+    loadProblemListAssets();
     if (document.getElementById('rxContent')) initPrescription();
     if (document.getElementById('icdContent')) initIcd();
   }

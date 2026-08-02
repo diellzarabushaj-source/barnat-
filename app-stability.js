@@ -28,6 +28,39 @@
     }
   }
 
+  function loadIcdProblemListAssets() {
+    const pageName = String(document.documentElement.dataset.miPage || '').trim().toLowerCase();
+    const pathname = String(window.location.pathname || '').toLowerCase();
+    const prescriptionPage = pageName === 'recetat'
+      || /\/recetat(?:\.html)?$/.test(pathname)
+      || Boolean(document.getElementById('rxComposer') || document.getElementById('rxDiagnosis'));
+    const icdPage = pageName === 'icd'
+      || /\/icd(?:\.html)?$/.test(pathname)
+      || Boolean(document.getElementById('icdContent'));
+    if (!prescriptionPage && !icdPage) return;
+    if (prescriptionPage && !document.getElementById('rxContent')) {
+      const marker = document.createElement('span');
+      marker.id = 'rxContent';
+      marker.hidden = true;
+      marker.setAttribute('aria-hidden', 'true');
+      document.body.appendChild(marker);
+    }
+    if (!document.querySelector('link[data-mi-icd-problem-list]')) {
+      const link = document.createElement('link');
+      link.rel = 'stylesheet';
+      link.href = 'icd-problem-list.css?v=icd-problem-list-v1';
+      link.dataset.miIcdProblemList = '1';
+      document.head.appendChild(link);
+    }
+    if (!document.querySelector('script[data-mi-icd-problem-list]')) {
+      const script = document.createElement('script');
+      script.src = 'icd-problem-list.js?v=icd-problem-list-v1';
+      script.async = false;
+      script.dataset.miIcdProblemList = '1';
+      document.head.appendChild(script);
+    }
+  }
+
   function banner(className, message, persistent = false) {
     let node = document.querySelector(`.${className}`);
     if (!node) {
@@ -144,9 +177,31 @@
     });
   }
 
+  function reconcileRecentSecondaryButtons() {
+    const primaryCode = String(window.MedIndexPrescriptionIcdContext?.current?.()?.code || '').trim().toUpperCase();
+    document.querySelectorAll('#rxIcdRecent .rx-icd-recent-item').forEach(article => {
+      const code = String(article.querySelector('.rx-icd-recent-code')?.textContent || '').trim().toUpperCase();
+      if (!code) return;
+      let button = article.querySelector('[data-mi-recent-secondary]');
+      if (!button) {
+        button = document.createElement('button');
+        button.type = 'button';
+        button.className = 'rx-icd-recent-secondary';
+        article.appendChild(button);
+      }
+      button.dataset.miRecentSecondary = code;
+      button.textContent = 'Shoqëruese';
+      button.setAttribute('aria-label', `Shto ${code} si diagnozë shoqëruese`);
+      const isPrimary = Boolean(primaryCode && code === primaryCode);
+      button.hidden = isPrimary;
+      button.disabled = isPrimary;
+    });
+  }
+
   function reconcileUi() {
     uiFrame = 0;
     syncControlledDisclosures();
+    reconcileRecentSecondaryButtons();
     const dialog = visibleDialog();
     if (dialog && !dialog.dataset.stabilityFocus) {
       lastFocused = document.activeElement;
@@ -215,6 +270,7 @@
 
   function init() {
     loadFinalWorkspaceAssets();
+    loadIcdProblemListAssets();
     updateConnectivity();
     installPerformanceHints();
     watchUi();
@@ -228,7 +284,7 @@
     document.addEventListener('keydown', trapFocus, true);
     document.addEventListener('keydown', closeTransientUi, true);
     document.addEventListener('click', clearPrescriptionRegistryCacheOnLogout, true);
-    window.MEDINDEX_RUNTIME = { version:'2026-08-01.2', online:() => navigator.onLine, clearPrivateClientCaches };
+    window.MEDINDEX_RUNTIME = { version:'2026-08-02.1', online:() => navigator.onLine, clearPrivateClientCaches };
   }
 
   if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', init, { once:true });
