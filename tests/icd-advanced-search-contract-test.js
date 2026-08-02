@@ -11,6 +11,8 @@ const tree = read('icd-tree.js');
 const apiWrapper = read('api/icd.js');
 const apiBase = read('lib/icd-api-base.js');
 const advancedHandler = read('lib/icd-advanced-handler.js');
+const publicSource = read('lib/icd-public-source.js');
+const hierarchy = read('lib/icd-full-hierarchy.js');
 const engineBase = read('lib/icd-search-engine.js');
 const engine = read('lib/icd-search-engine-v2.js');
 
@@ -39,11 +41,17 @@ for (const marker of [
   "String(req.query?.advanced || '') === '1'", 'advancedHandler(req, res)', 'baseHandler(req, res)',
 ]) assert.ok(apiWrapper.includes(marker), `Shared ICD API router missing ${marker}`);
 for (const marker of [
-  "require('../lib/icd-search-engine-v2.js')", 'verifySessionToken', 'MAX_QUERY_CHARS',
-  'strictCounts:true', 'diagnosticDecision:false', 'X-MedIndex-Search-Version', "['GET', 'HEAD']", 'private, no-store',
+  "require('../lib/icd-search-engine-v2.js')", "require('../lib/icd-public-source.js')", 'verifySessionToken', 'MAX_QUERY_CHARS',
+  'searchRuntimeByDataset', 'diagnosticDecision:false', 'X-MedIndex-Search-Version', "['GET', 'HEAD']", 'private, no-store',
 ]) assert.ok(advancedHandler.includes(marker), `Advanced search handler missing ${marker}`);
-for (const marker of ['FULL_SPREADSHEET_ID', 'loadFullHierarchy', 'fullViewPayload', 'X-MedIndex-ICD-Nodes']) {
+for (const marker of ['IcdPublicSource.load()', 'fullViewPayload', 'X-MedIndex-ICD-Nodes', 'X-MedIndex-ICD-Revision']) {
   assert.ok(apiBase.includes(marker), `Base ICD handler missing ${marker}`);
+}
+for (const marker of [
+  'strictCounts:true', 'validateCsv', 'public-link', 'sourceRevision', 'CACHE_TTL_MS', 'Anyone with the link',
+]) assert.ok(publicSource.includes(marker), `Public ICD source missing ${marker}`);
+for (const marker of ['attachIndexes', 'childrenByParent', 'childCountByCode', 'byChapter', 'byLevel']) {
+  assert.ok(hierarchy.includes(marker), `ICD runtime index missing ${marker}`);
 }
 for (const marker of ['ALIAS_ROWS', 'boundedDistance', 'aliasExpansions', 'rankNodes', 'suggestDataset', 'nuk vendosin diagnozë']) {
   assert.ok(engineBase.includes(marker), `Base advanced search engine missing ${marker}`);
@@ -55,5 +63,5 @@ assert.ok(!fs.existsSync(path.join(root, 'api/icd-advanced-search.js')), 'Advanc
 assert.doesNotMatch(browser, /eval\s*\(|new Function\s*\(/);
 assert.doesNotMatch(styles, /https?:\/\//);
 assert.doesNotMatch(advancedHandler, /res\.status\(200\).*verifySessionToken/s);
-new Function(browser); new Function(tree); new Function(apiWrapper); new Function(apiBase); new Function(advancedHandler); new Function(engineBase); new Function(engine);
-console.log('Advanced ICD search routes into the hierarchy tree with authentication and safety contracts intact.');
+new Function(browser); new Function(tree); new Function(apiWrapper); new Function(apiBase); new Function(advancedHandler); new Function(publicSource); new Function(hierarchy); new Function(engineBase); new Function(engine);
+console.log('Advanced ICD search uses one authenticated, indexed and public-source-backed hierarchy runtime.');
