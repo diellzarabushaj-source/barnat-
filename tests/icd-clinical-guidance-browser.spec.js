@@ -27,7 +27,7 @@ async function mockClinicalDataset(page, entries, options = {}) {
     const url = new URL(route.request().url());
     if (url.pathname === '/api/icd' && !url.search) {
       requests += 1;
-      if (options.fail) {
+      if (options.fail || (options.failOnce && requests === 1)) {
         await route.fulfill({ status:503, contentType:'application/json', body:JSON.stringify({ ok:false, data:null }) });
         return;
       }
@@ -52,6 +52,7 @@ async function waitForIcd(page, code) {
   await expect(html).toHaveAttribute('data-mi-icd-tree', 'ready');
   await expect(html).toHaveAttribute('data-mi-icd-coding-workspace', 'icd-coding-workspace-v1');
   await expect(html).toHaveAttribute('data-mi-icd-clinical-guidance', 'icd-clinical-guidance-v1');
+  await expect(html).toHaveAttribute('data-mi-icd-clinical-guidance-recovery', 'icd-clinical-guidance-recovery-v1');
   await expect(page.locator('#icdCodingWorkspaceCode')).toHaveText(code);
 }
 
@@ -167,14 +168,29 @@ test('an uncurated code receives no invented family-medicine or emergency priori
   await expect(page.locator('#icdCodingWorkspaceContent')).toBeVisible();
 });
 
-test('clinical source failure stays explicit while the ICD workspace remains usable', async ({ page }) => {
-  await mockClinicalDataset(page, [], { fail:true });
+test('clinical source failure exposes recovery and leaves the ICD workspace usable', async ({ page }) => {
+  const requestCount = await mockClinicalDataset(page, [{
+    code:'I10',
+    title:'Hipertensioni esencial (primar)',
+    primaryCare:'Themelor',
+    emergency:'Shumë i rëndësishëm',
+    priority:'1 – Thelbësor / urgjent',
+    warning:'Vlerëso shenjat e dëmtimit akut të organeve target.',
+  }], { failOnce:true });
+
   await page.goto(`${BASE}/icd.html?code=I10`, { waitUntil:'domcontentloaded' });
   await waitForIcd(page, 'I10');
   await expect(page.locator('#icdClinicalGuidanceEmpty')).toContainText('Konteksti klinik nuk u ngarkua');
   await expect(page.locator('#icdClinicalGuidanceState')).toHaveAttribute('data-tone', 'error');
+  await expect(page.locator('[data-mi-icd-clinical-retry-visible]')).toBeVisible();
   await expect(page.locator('#icdCodingWorkspaceContent')).toBeVisible();
   await expect(page.locator('#icdCodingWorkspaceCode')).toHaveText('I10');
+
+  await page.locator('[data-mi-icd-clinical-retry-visible]').click();
+  await expect(page.locator('#icdClinicalGuidanceContent')).toBeVisible();
+  await expect(page.locator('#icdClinicalGuidanceFamily')).toHaveText('Themelor');
+  await expect(page.locator('[data-mi-icd-clinical-retry-visible]')).toHaveCount(0);
+  expect(requestCount()).toBe(2);
 });
 
 test('long MF and emergency guidance remains bounded on a phone viewport', async ({ page }) => {
