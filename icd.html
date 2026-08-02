@@ -16,9 +16,9 @@
   <link rel="stylesheet" href="tailadmin-medindex.css?v=20260728-1" data-tailadmin-medindex-css>
   <link rel="stylesheet" href="icd-sidebar.css?v=icd-sidebar-v1" data-mi-icd-sidebar-css>
   <link rel="stylesheet" href="icd-tree.css?v=icd-tree-v1">
-  <link rel="stylesheet" href="icd-advanced-search.css?v=sq-clinical-search-v1">
+  <link rel="stylesheet" href="icd-advanced-search.css?v=sq-clinical-search-v2">
   <link rel="stylesheet" href="icd-detail-panel.css?v=icd-detail-panel-v2">
-  <link rel="stylesheet" href="icd-tree-polish.css?v=icd-tree-polish-v1">
+  <link rel="stylesheet" href="icd-tree-polish.css?v=icd-tree-polish-v2">
   <link rel="stylesheet" href="tailadmin-professional.css?v=20260728-1" data-tailadmin-professional-css>
   <script src="tailadmin-shell.js?v=production-audit-v2" defer></script>
   <script src="tailadmin-professional.js?v=production-audit-v2" defer></script>
@@ -38,7 +38,7 @@
       <section class="icd-registry-intro" aria-labelledby="icdRegistryTitle">
         <div>
           <h2 id="icdRegistryTitle">ICD-10 — shfletuesi hierarkik</h2>
-          <p>Hap kapitullin, bllokun, kategorinë dhe nënkodin me klikim. Kërkimi njeh kodet, shqipen, anglishten, sinonimet dhe gabimet e vogla të shkrimit. Sugjerimet ndihmojnë kodimin; diagnoza përfundimtare mbetet vendim klinik.</p>
+          <p>Hap kapitullin, bllokun, kategorinë dhe nënkodin me klikim. Kërkimi njeh kodet me ose pa pikë, shqipen, anglishten, sinonimet dhe gabimet e vogla të shkrimit. Sugjerimet ndihmojnë kodimin; diagnoza përfundimtare mbetet vendim klinik.</p>
         </div>
         <div class="icd-registry-stats" aria-label="Përmbledhje ICD-10">
           <span class="icd-registry-stat"><strong id="icdTotalNodes">12,542</strong><span>nyje</span></span>
@@ -53,7 +53,7 @@
         <div class="icd-tree-toolbar" role="search" aria-label="Kërko dhe shfleto ICD-10">
           <div class="icd-search-wrap" id="icdSmartSearch">
             <span class="icd-search-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"></circle><path d="m16.5 16.5 4 4"></path></svg></span>
-            <input id="icdSearch" type="search" autocomplete="off" placeholder="p.sh. I10, tension i lartë ose hipertensjon…" aria-label="Kërko ICD-10 sipas kodit, titullit ose sinonimit" role="combobox" aria-autocomplete="list" aria-controls="icdSuggestions" aria-expanded="false">
+            <input id="icdSearch" type="search" autocomplete="off" placeholder="p.sh. I10, A001, tension i lartë ose hipertensjon…" aria-label="Kërko ICD-10 sipas kodit, titullit ose sinonimit" role="combobox" aria-autocomplete="list" aria-controls="icdSuggestions" aria-expanded="false">
             <button class="icd-search-clear" id="icdSearchClear" type="button" aria-label="Pastro kërkimin" hidden>×</button>
             <div class="icd-suggestions" id="icdSuggestions" role="listbox" aria-label="Sugjerime të avancuara ICD-10" hidden></div>
           </div>
@@ -74,7 +74,7 @@
   <script src="medical-icons.js?v=20260723-1" defer></script>
   <script src="section-icons.js?v=20260723-1" defer></script>
   <script src="icd-sidebar.js?v=icd-sidebar-v1" defer></script>
-  <script src="icd-advanced-search.js?v=sq-clinical-search-v1" defer></script>
+  <script src="icd-advanced-search.js?v=sq-clinical-search-v2" defer></script>
   <script src="icd-tree.js?v=icd-tree-v1" defer></script>
   <script src="icd-detail-panel.js?v=icd-detail-panel-v2" defer></script>
   <script src="auth-client.js?v=production-audit-v2" defer></script>
