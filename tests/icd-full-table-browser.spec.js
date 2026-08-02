@@ -10,9 +10,9 @@ test.describe.configure({ mode:'serial' });
 async function openIcd(page, viewport) {
   await page.setViewportSize(viewport);
   await page.goto(`${BASE}/icd.html`, { waitUntil:'domcontentloaded' });
-  await page.waitForFunction(() => document.documentElement.classList.contains('auth-ready'));
+  await expect(page.locator('html')).toHaveClass(/auth-ready/);
   await expect(page.locator('.mi-app-shell')).toBeVisible();
-  await page.waitForFunction(() => document.documentElement.dataset.miIcdTree === 'ready');
+  await expect(page.locator('html')).toHaveAttribute('data-mi-icd-tree', 'ready');
   await expect(page.locator('[data-icd-tree-node="I"]')).toBeVisible();
   await expect(page.locator('[data-icd-tree-node="IX"]')).toBeVisible();
   await expect.poll(() => page.locator('[data-icd-tree-node][aria-level="1"]').count()).toBeGreaterThanOrEqual(2);
@@ -130,8 +130,8 @@ test('structured ICD diagnosis reaches the prescription and persists provenance'
   await expect(page.locator('#detailOverlay')).toBeVisible();
   await page.getByRole('button', { name:'Përdore në recetë' }).click();
   await page.waitForURL(/recetat\.html\?from=icd/);
-  await page.waitForFunction(() => document.documentElement.classList.contains('auth-ready'));
-  await page.waitForFunction(() => document.documentElement.dataset.miPrescriptionIcd === 'icd-context-v2');
+  await expect(page.locator('html')).toHaveClass(/auth-ready/);
+  await expect(page.locator('html')).toHaveAttribute('data-mi-prescription-icd', 'icd-context-v2');
 
   const diagnosis = page.locator('#rxDiagnosis');
   await expect(diagnosis).toHaveValue(/^A00 — /);
@@ -183,8 +183,8 @@ test('existing draft diagnosis is not overwritten until the doctor confirms', as
   });
   await page.setViewportSize({ width:390, height:844 });
   await page.goto(`${BASE}/recetat.html`, { waitUntil:'domcontentloaded' });
-  await page.waitForFunction(() => document.documentElement.classList.contains('auth-ready'));
-  await page.waitForFunction(() => document.documentElement.dataset.miPrescriptionIcd === 'icd-context-v2');
+  await expect(page.locator('html')).toHaveClass(/auth-ready/);
+  await expect(page.locator('html')).toHaveAttribute('data-mi-prescription-icd', 'icd-context-v2');
 
   await expect(page.locator('#rxDiagnosis')).toHaveValue('Diagnozë ekzistuese');
   await expect(page.locator('#rxIcdContext')).toBeVisible();
