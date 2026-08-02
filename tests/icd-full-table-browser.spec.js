@@ -72,7 +72,9 @@ test('accordion keeps one chapter branch open', async ({ page }) => {
 
 test('tree detail panel and prescription action fit a phone viewport', async ({ page }) => {
   await openIcd(page, { width:390, height:844 });
-  await page.locator('[data-icd-tree-node="I"] [data-open-code="I"]').click();
+  await page.locator('[data-tree-toggle="I"]').click();
+  await page.locator('[data-tree-toggle="A00-A09"]').click();
+  await page.locator('[data-icd-tree-node="A00"] [data-open-code="A00"]').click();
   const overlay = page.locator('#detailOverlay');
   await expect(overlay).toBeVisible();
   await expect(page.getByRole('button', { name:'Përdore në recetë' })).toBeVisible();
@@ -85,6 +87,13 @@ test('tree detail panel and prescription action fit a phone viewport', async ({ 
   expect(geometry.top).toBeGreaterThanOrEqual(0);
   expect(geometry.bottom).toBeLessThanOrEqual(geometry.height);
   await page.screenshot({ path:path.join(OUTPUT, 'mobile-tree-detail.png'), fullPage:true });
+});
+
+test('chapter and block levels cannot be transferred as diagnoses', async ({ page }) => {
+  await openIcd(page, { width:1280, height:900 });
+  await page.locator('[data-icd-tree-node="I"] [data-open-code="I"]').click();
+  await expect(page.locator('#detailOverlay')).toBeVisible();
+  await expect(page.getByRole('button', { name:'Përdore në recetë' })).toBeHidden();
 });
 
 test('ICD search reveals the selected code and supports keyboard navigation', async ({ page }) => {
