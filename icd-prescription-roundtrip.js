@@ -11,6 +11,7 @@
   let contextObserver = null;
   let savedObserver = null;
   let detailObserver = null;
+  let icdReturnMode = false;
 
   const clean = value => String(value ?? '').replace(/\s+/g, ' ').trim();
   const safeText = (value, max = 500) => String(value ?? '').slice(0, max).trim();
@@ -183,11 +184,12 @@
         link?.remove();
         return;
       }
+      if (!actions) return;
       if (!link) {
         link = document.createElement('a');
         link.className = 'rx-icd-saved-open';
         link.textContent = 'Hape ICD';
-        actions?.insertBefore(link, actions.lastElementChild || null);
+        actions.insertBefore(link, actions.lastElementChild || null);
       }
       link.href = icdHref(context.code);
       link.dataset.miOpenIcd = context.code;
@@ -263,7 +265,7 @@
   }
 
   function preserveReturnParameter() {
-    if (!returningToPrescription()) return;
+    if (!icdReturnMode) return;
     const url = new URL(location.href);
     if (url.searchParams.get('return') === 'recetat') return;
     url.searchParams.set('return', 'recetat');
@@ -275,7 +277,7 @@
   }
 
   function ensureIcdReturnControl() {
-    if (!returningToPrescription()) return;
+    if (!icdReturnMode) return;
     const toolbar = document.querySelector('.icd-tree-toolbar');
     const collapse = document.getElementById('icdCollapseAll');
     if (!toolbar || document.getElementById('icdReturnPrescription')) return;
@@ -289,7 +291,7 @@
   }
 
   function decorateDetailReturn() {
-    if (!returningToPrescription()) return;
+    if (!icdReturnMode) return;
     const actions = document.querySelector('#detailOverlay .icd-detail-actions');
     if (!actions || actions.querySelector('.icd-detail-return-prescription')) return;
     const link = document.createElement('a');
@@ -309,16 +311,11 @@
 
   function initIcd() {
     ensureStyles();
-    if (returningToPrescription()) {
+    icdReturnMode = returningToPrescription();
+    if (icdReturnMode) {
       ensureIcdReturnControl();
       installDetailObserver();
-      window.addEventListener('medindex:icd-state', () => {
-        const url = new URL(location.href);
-        if (url.searchParams.get('return') !== 'recetat') {
-          url.searchParams.set('return', 'recetat');
-          history.replaceState(history.state, '', `${url.pathname}${url.search}${url.hash}`);
-        }
-      });
+      window.addEventListener('medindex:icd-state', preserveReturnParameter);
       window.addEventListener('medindex:icd-detail-ready', installDetailObserver, { once:true });
       window.addEventListener('popstate', () => setTimeout(() => {
         preserveReturnParameter();
@@ -327,7 +324,7 @@
     }
     document.documentElement.dataset.miIcdPrescriptionRoundtrip = VERSION;
     window.dispatchEvent(new CustomEvent('medindex:icd-prescription-roundtrip-ready', {
-      detail:{ version:VERSION, page:'icd', returning:returningToPrescription() },
+      detail:{ version:VERSION, page:'icd', returning:icdReturnMode },
     }));
   }
 
