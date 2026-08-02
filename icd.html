@@ -19,7 +19,7 @@
   <link rel="stylesheet" href="icd-advanced-search.css?v=sq-clinical-search-v3">
   <link rel="stylesheet" href="icd-detail-panel.css?v=icd-detail-panel-v2">
   <link rel="stylesheet" href="icd-terminology-detail.css?v=icd-terminology-detail-v1">
-  <link rel="stylesheet" href="icd-tree-polish.css?v=icd-tree-polish-v3">
+  <link rel="stylesheet" href="icd-tree-polish.css?v=icd-tree-polish-v4">
   <link rel="stylesheet" href="tailadmin-professional.css?v=20260728-1" data-tailadmin-professional-css>
   <script src="tailadmin-shell.js?v=production-audit-v2" defer></script>
   <script src="tailadmin-professional.js?v=production-audit-v2" defer></script>
@@ -60,7 +60,11 @@
           </div>
           <button class="icd-tree-action" id="icdCollapseAll" type="button">Mbyll të gjitha</button>
           <span class="icd-tree-status" id="icdTreeStatus" aria-live="polite">Duke u ngarkuar…</span>
-          <span class="icd-source-status" id="icdSourceStatus" data-source-status="loading" role="status" aria-live="polite">Burimi: duke u verifikuar</span>
+          <div class="icd-source-health" id="icdSourceHealth" data-state="loading" aria-busy="true">
+            <span class="icd-source-status" id="icdSourceStatus" data-source-status="loading" role="status" aria-live="polite" aria-atomic="true">Burimi: duke u verifikuar</span>
+            <small class="icd-source-health-detail" id="icdSourceHealthDetail">Google Sheet publik · hierarkia e plotë</small>
+            <button class="icd-source-health-refresh" id="icdSourceHealthRefresh" type="button" aria-label="Rifresko burimin dhe hierarkinë ICD-10">Rifresko</button>
+          </div>
         </div>
 
         <div class="icd-tree-wrap">
@@ -80,6 +84,7 @@
   <script src="icd-advanced-search.js?v=sq-clinical-search-v3" defer></script>
   <script src="icd-tree.js?v=icd-tree-v1" defer></script>
   <script src="icd-search-race-guard-v2.js?v=icd-race-guard-v5" defer></script>
+  <script src="icd-workspace-health.js?v=icd-workspace-health-v2" defer></script>
   <script src="icd-detail-panel.js?v=icd-detail-panel-v2" defer></script>
   <script src="icd-terminology-detail.js?v=icd-terminology-detail-v1" defer></script>
   <script src="auth-client.js?v=production-audit-v2" defer></script>
