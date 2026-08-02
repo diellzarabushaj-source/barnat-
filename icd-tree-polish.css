@@ -8,6 +8,9 @@
 .icd-registry-stat strong{display:block;color:var(--mi-gray-900,#101828);font-size:.96rem;font-variant-numeric:tabular-nums}
 .icd-registry-stat span{display:block;margin-top:3px;color:var(--mi-gray-500,#667085);font-size:.6rem;line-height:1.25;text-transform:uppercase;letter-spacing:.035em}
 .icd-search-wrap #icdSearch{padding-left:48px!important;padding-right:44px!important}
+.icd-search-wrap #icdSearch::-webkit-search-cancel-button{-webkit-appearance:none;appearance:none;display:none}
+.icd-search-wrap #icdSearch::-webkit-search-decoration{-webkit-appearance:none;appearance:none}
+.icd-search-wrap #icdSearch::-ms-clear,.icd-search-wrap #icdSearch::-ms-reveal{display:none;width:0;height:0}
 .icd-search-wrap .icd-search-icon{left:16px!important;z-index:3}
 .icd-search-wrap .icd-search-icon svg{display:block}
 .icd-tree-detail{white-space:nowrap}
