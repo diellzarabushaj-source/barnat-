@@ -90,7 +90,14 @@ async function openDashboard(page) {
 async function viewportReport(page) {
   return page.evaluate(() => ({
     width:innerWidth,
+    height:innerHeight,
     scrollWidth:document.documentElement.scrollWidth,
+    panelRect:(() => {
+      const node = document.querySelector('.system-icd-panel');
+      if (!node) return null;
+      const rect = node.getBoundingClientRect();
+      return { top:rect.top, bottom:rect.bottom, left:rect.left, right:rect.right, width:rect.width, height:rect.height };
+    })(),
     probeRect:(() => {
       const node = document.getElementById('systemIcdProbeList');
       if (!node) return null;
@@ -102,7 +109,8 @@ async function viewportReport(page) {
 
 async function captureIcdPanel(page, filename) {
   const panel = page.locator('.system-icd-panel');
-  await panel.scrollIntoViewIfNeeded();
+  await panel.evaluate(node => node.scrollIntoView({ block:'start', inline:'nearest' }));
+  await page.waitForTimeout(80);
   await expect(panel).toBeVisible();
   await panel.screenshot({ path:path.join(OUTPUT, filename) });
 }
@@ -121,17 +129,21 @@ test('system dashboard shows live ICD revision, hierarchy and five clinical prob
   await captureIcdPanel(page, 'icd-health-live-panel-desktop.png');
 });
 
-test('stale ICD fallback remains explicit and inside the phone viewport', async ({ page }) => {
-  await page.setViewportSize({ width:390, height:844 });
+test('stale ICD fallback remains explicit and complete in the phone layout', async ({ page }) => {
+  await page.setViewportSize({ width:390, height:1400 });
   await installRoutes(page, { stale:true });
   await openDashboard(page);
   await expect(page.locator('#systemIcdState')).toHaveText('ICD nga cache');
   await expect(page.locator('#systemIcdSourceStatus')).toHaveText('Cache i fundit i vlefshëm');
   await expect(page.locator('#systemMessage')).toContainText('cache-i i fundit');
+  await expect(page.locator('#systemIcdProbeList .system-probe')).toHaveCount(5);
   const panel = page.locator('.system-icd-panel');
-  await panel.scrollIntoViewIfNeeded();
+  await panel.evaluate(node => node.scrollIntoView({ block:'start', inline:'nearest' }));
+  await page.waitForTimeout(80);
   const report = await viewportReport(page);
   expect(report.scrollWidth).toBeLessThanOrEqual(report.width + 1);
+  expect(report.panelRect.top).toBeGreaterThanOrEqual(60);
+  expect(report.panelRect.bottom).toBeLessThanOrEqual(report.height + 1);
   expect(report.probeRect.left).toBeGreaterThanOrEqual(-1);
   expect(report.probeRect.right).toBeLessThanOrEqual(report.width + 1);
   await panel.screenshot({ path:path.join(OUTPUT, 'icd-health-stale-panel-mobile.png') });
