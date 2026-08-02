@@ -41,7 +41,9 @@ assert.equal(dataset.quality.machineDraftTranslations, 3);
 assert.equal(dataset.quality.standardizedTranslations, 1);
 assert.equal(dataset.quality.verifiedTranslations, 0);
 assert.equal(dataset.quality.publicationReady, false);
-assert.equal(dataset.quality.terminologyVersion, 'sq-terminology-2026.1');
+assert.equal(dataset.quality.terminologyVersion, 'sq-terminology-2026.2');
+assert.deepEqual(dataset.quality.pilotChapters, ['IX', 'X', 'XVIII']);
+assert.deepEqual(dataset.terminology.pilotChapters, ['IX', 'X', 'XVIII']);
 
 const chapter = dataset.nodes.find(node => node.code === 'I');
 const block = dataset.nodes.find(node => node.code === 'A00-A09');
@@ -81,4 +83,4 @@ const missingParentCsv = csv.replace('"A00","WHO ↗"', '"A99","WHO ↗"');
 assert.notEqual(missingParentCsv, csv, 'Test fixture must replace one parent code.');
 assert.throws(() => buildDataset(missingParentCsv, { strictCounts:false }), /prindi A99 nuk ekziston/);
 
-console.log('ICD-10 full hierarchy, translation safety and terminology foundation tests passed.');
+console.log('ICD-10 full hierarchy, translation safety and expanded terminology foundation tests passed.');
