@@ -14,7 +14,7 @@ async function openIcd(page, viewport) {
   await expect(page.locator('.mi-app-shell')).toBeVisible();
   await page.waitForFunction(() => document.documentElement.dataset.miIcdTree === 'ready');
   await expect(page.locator('[data-icd-tree-node="I"]')).toBeVisible();
-  await expect(page.locator('[data-icd-tree-node="II"]')).toBeVisible();
+  await expect(page.locator('[data-icd-tree-node="IX"]')).toBeVisible();
   await expect.poll(() => page.locator('[data-icd-tree-node][aria-level="1"]').count()).toBeGreaterThanOrEqual(2);
 }
 
@@ -66,8 +66,8 @@ test('accordion keeps one chapter branch open', async ({ page }) => {
   await openIcd(page, { width:1280, height:900 });
   await page.locator('[data-tree-toggle="I"]').click();
   await expect(page.locator('[data-icd-tree-node="I"]')).toHaveAttribute('aria-expanded', 'true');
-  await page.locator('[data-tree-toggle="II"]').click();
-  await expect(page.locator('[data-icd-tree-node="II"]')).toHaveAttribute('aria-expanded', 'true');
+  await page.locator('[data-tree-toggle="IX"]').click();
+  await expect(page.locator('[data-icd-tree-node="IX"]')).toHaveAttribute('aria-expanded', 'true');
   await expect(page.locator('[data-icd-tree-node="I"]')).toHaveAttribute('aria-expanded', 'false');
 });
 
