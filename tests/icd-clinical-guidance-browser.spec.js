@@ -15,7 +15,7 @@ function clinicalPayload(entries, source = 'Google Sheet i dhënë nga përdorue
       source,
       sourceSpreadsheetId:SHEET_ID,
       version:'ICD-10-WHO 2019',
-      counts:{ total:701, familyMedicine:701, emergency:648, critical:247 },
+      counts:{ total:701, familyMedicine:701, emergency:622, critical:244 },
       entries,
     },
   };
@@ -56,7 +56,7 @@ async function waitForIcd(page, code) {
   await expect(html).toHaveAttribute('data-mi-icd-tree', 'ready');
   await expect(html).toHaveAttribute('data-mi-icd-coding-workspace', 'icd-coding-workspace-v1');
   await expect(html).toHaveAttribute('data-mi-icd-clinical-guidance', 'icd-clinical-guidance-v1');
-  await expect(html).toHaveAttribute('data-mi-icd-clinical-guidance-recovery', 'icd-clinical-guidance-recovery-v3');
+  await expect(html).toHaveAttribute('data-mi-icd-clinical-guidance-recovery', 'icd-clinical-guidance-recovery-v4');
   await expect(page.locator('#icdCodingWorkspaceCode')).toHaveText(code);
 }
 
@@ -172,7 +172,7 @@ test('an uncurated code receives no invented family-medicine or emergency priori
   await expect(page.locator('#icdCodingWorkspaceContent')).toBeVisible();
 });
 
-test('clinical source failure exposes recovery and leaves the ICD workspace usable', async ({ page }) => {
+test('clinical source failure exposes in-place recovery and leaves the ICD workspace usable', async ({ page }) => {
   const control = await mockClinicalDataset(page, [{
     code:'I10',
     title:'Hipertensioni esencial (primar)',
@@ -190,16 +190,14 @@ test('clinical source failure exposes recovery and leaves the ICD workspace usab
   await expect(page.locator('#icdCodingWorkspaceContent')).toBeVisible();
   await expect(page.locator('#icdCodingWorkspaceCode')).toHaveText('I10');
 
+  const urlBefore = page.url();
   control.allowRecovery();
-  await Promise.all([
-    page.waitForNavigation({ waitUntil:'domcontentloaded' }),
-    page.locator('[data-mi-icd-clinical-retry-visible]').click(),
-  ]);
-  await waitForIcd(page, 'I10');
+  await page.locator('[data-mi-icd-clinical-retry-visible]').click();
   await expect(page.locator('#icdClinicalGuidanceContent')).toBeVisible({ timeout:15000 });
   await expect(page.locator('#icdClinicalGuidanceFamily')).toHaveText('Themelor');
   await expect(page.locator('[data-mi-icd-clinical-retry-visible]')).toHaveCount(0);
   await expect(page.locator('#icdCodingWorkspaceCode')).toHaveText('I10');
+  expect(page.url()).toBe(urlBefore);
   expect(control.requests()).toBeGreaterThanOrEqual(2);
 });
 
