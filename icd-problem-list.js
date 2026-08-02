@@ -474,8 +474,14 @@
   function init(root) {
     if (initialized || !root?.document) return false;
     rootRef = root;
-    const prescription = root.document.getElementById('rxContent');
-    const icd = root.document.getElementById('icdContent');
+    const pageName = clean(root.document.documentElement.dataset.miPage).toLowerCase();
+    const pathname = String(root.location?.pathname || '').toLowerCase();
+    const prescription = pageName === 'recetat'
+      || /\/recetat(?:\.html)?$/.test(pathname)
+      || Boolean(root.document.getElementById('rxDiagnosis') || root.document.getElementById('rxComposer'));
+    const icd = pageName === 'icd'
+      || /\/icd(?:\.html)?$/.test(pathname)
+      || Boolean(root.document.getElementById('icdContent'));
     if (!prescription && !icd) return false;
     initialized = true;
     if (prescription) initPrescription();
