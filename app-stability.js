@@ -29,7 +29,16 @@
   }
 
   function loadIcdProblemListAssets() {
-    if (!document.getElementById('rxContent') && !document.getElementById('icdContent')) return;
+    const prescriptionPage = document.getElementById('rxComposer') || document.getElementById('rxDiagnosis');
+    const icdPage = document.getElementById('icdContent');
+    if (!prescriptionPage && !icdPage) return;
+    if (prescriptionPage && !document.getElementById('rxContent')) {
+      const marker = document.createElement('span');
+      marker.id = 'rxContent';
+      marker.hidden = true;
+      marker.setAttribute('aria-hidden', 'true');
+      document.body.appendChild(marker);
+    }
     if (!document.querySelector('link[data-mi-icd-problem-list]')) {
       const link = document.createElement('link');
       link.rel = 'stylesheet';
