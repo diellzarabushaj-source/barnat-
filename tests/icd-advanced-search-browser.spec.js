@@ -11,6 +11,13 @@ const meta = {
   sourceSpreadsheetId:'1O2S9xNIzvNmiG8ny-VLAp9NeyiUsrY8pxRpyJgTF_O0',
   counts:{ chapter:22, block:274, category:2050, subcategory:10196, total:12542 },
   quality:{ missingTranslations:5240, machineDraftTranslations:6445, standardizedTranslations:857, verifiedTranslations:0, translationCoverage:58.22, publicationReady:false },
+  source:{
+    type:'google-sheet', status:'live', visibility:'public-link',
+    spreadsheetId:'1O2S9xNIzvNmiG8ny-VLAp9NeyiUsrY8pxRpyJgTF_O0',
+    sheetName:'ICD-10 EN-SQ', sheetGid:329283560,
+    loadedAt:'2026-08-02T09:00:00.000Z', csvBytes:4106422,
+    revision:'abcdefghijklmnopqrst', fetchMs:321, buildMs:87,
+  },
   search:{
     version:'sq-clinical-search-v1', engine:'clinical-ranking-v3',
     supports:['code', 'normalized-code', 'sq-title', 'en-title', 'sq-synonym', 'typo', 'wildcard', 'hierarchy-groups', 'breadcrumbs'],
@@ -93,9 +100,19 @@ function suggestionData(query) {
 async function installAdvancedRoute(page) {
   await page.route('**/api/icd**', async route => {
     const url = new URL(route.request().url());
-    if (url.pathname !== '/api/icd' || url.searchParams.get('advanced') !== '1') return route.continue();
+    if (url.pathname !== '/api/icd') return route.continue();
+    const view = url.searchParams.get('view') || 'table';
+    if (view === 'meta' && url.searchParams.get('advanced') !== '1') {
+      return route.fulfill({
+        status:200,
+        contentType:'application/json; charset=utf-8',
+        body:JSON.stringify({ ok:true, data:{ meta } }),
+        headers:{ 'X-MedIndex-ICD-Source-State':'live', 'X-MedIndex-ICD-Revision':meta.source.revision },
+      });
+    }
+    if (url.searchParams.get('advanced') !== '1') return route.continue();
     const query = url.searchParams.get('q') || '';
-    if ((url.searchParams.get('view') || 'table') !== 'suggest') return route.continue();
+    if (view !== 'suggest') return route.continue();
     await route.fulfill({
       status:200,
       contentType:'application/json; charset=utf-8',
@@ -186,4 +203,29 @@ test('empty clinical search stays visible, helpful and inside the phone viewport
   expect(report.right).toBeLessThanOrEqual(report.viewport + 1);
   expect(report.scrollWidth).toBeLessThanOrEqual(report.viewport + 1);
   await page.screenshot({ path:path.join(OUTPUT, 'advanced-tree-search-empty-mobile.png'), fullPage:true });
+});
+
+test('ICD source health exposes the live revision and preserves cached context offline', async ({ page, context }) => {
+  await page.setViewportSize({ width:390, height:844 });
+  await installAdvancedRoute(page);
+  await openTree(page);
+  const health = page.locator('#icdSourceHealth');
+  await expect(health).toHaveAttribute('data-state', 'live');
+  await expect(page.locator('#icdSourceHealthLabel')).toHaveText('Burimi ICD-10 është live');
+  await expect(page.locator('#icdSourceHealthDetail')).toContainText('rev abcdefgh');
+  const report = await health.evaluate(node => {
+    const rect = node.getBoundingClientRect();
+    return { left:rect.left, right:rect.right, viewport:innerWidth, scrollWidth:document.documentElement.scrollWidth };
+  });
+  expect(report.left).toBeGreaterThanOrEqual(-1);
+  expect(report.right).toBeLessThanOrEqual(report.viewport + 1);
+  expect(report.scrollWidth).toBeLessThanOrEqual(report.viewport + 1);
+
+  await context.setOffline(true);
+  await page.evaluate(() => window.dispatchEvent(new Event('offline')));
+  await expect(health).toHaveAttribute('data-state', 'offline');
+  await expect(page.locator('#icdSourceHealthLabel')).toContainText('Pa rrjet');
+  await expect(page.locator('#icdSourceHealthDetail')).toContainText('cache lokal');
+  await page.screenshot({ path:path.join(OUTPUT, 'icd-source-health-offline-mobile.png'), fullPage:true });
+  await context.setOffline(false);
 });
