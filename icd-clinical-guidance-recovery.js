@@ -3,7 +3,20 @@
 
   if (!root?.document) return;
   const VERSION = 'icd-clinical-guidance-recovery-v1';
+  const CODE_PATTERN = /^[A-Z][0-9]{2}(?:\.[0-9A-Z]{1,4})?$/;
   let observer = null;
+  let clickBound = false;
+
+  function activeCode() {
+    const code = String(root.document.getElementById('icdCodingWorkspaceCode')?.textContent || '').trim().toUpperCase();
+    return CODE_PATTERN.test(code) ? code : '';
+  }
+
+  function rerenderActiveCode() {
+    const code = activeCode();
+    if (!code) return;
+    root.dispatchEvent(new root.CustomEvent('medindex:icd-state', { detail:{ code } }));
+  }
 
   function ensureRetryControl() {
     const document = root.document;
@@ -31,10 +44,20 @@
     }
   }
 
+  function bindRetryRerender() {
+    if (clickBound) return;
+    clickBound = true;
+    root.document.addEventListener('click', event => {
+      if (!event.target.closest('[data-mi-icd-clinical-retry-visible]')) return;
+      root.setTimeout(rerenderActiveCode, 0);
+    }, { capture:true });
+  }
+
   function init() {
     const state = root.document.getElementById('icdClinicalGuidanceState');
     if (!state) return false;
     ensureRetryControl();
+    bindRetryRerender();
     observer = new MutationObserver(ensureRetryControl);
     observer.observe(state, {
       attributes:true,
