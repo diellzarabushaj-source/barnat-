@@ -56,7 +56,7 @@ async function waitForIcd(page, code) {
   await expect(html).toHaveAttribute('data-mi-icd-tree', 'ready');
   await expect(html).toHaveAttribute('data-mi-icd-coding-workspace', 'icd-coding-workspace-v1');
   await expect(html).toHaveAttribute('data-mi-icd-clinical-guidance', 'icd-clinical-guidance-v1');
-  await expect(html).toHaveAttribute('data-mi-icd-clinical-guidance-recovery', 'icd-clinical-guidance-recovery-v1');
+  await expect(html).toHaveAttribute('data-mi-icd-clinical-guidance-recovery', 'icd-clinical-guidance-recovery-v2');
   await expect(page.locator('#icdCodingWorkspaceCode')).toHaveText(code);
 }
 
@@ -195,6 +195,7 @@ test('clinical source failure exposes recovery and leaves the ICD workspace usab
   await expect(page.locator('#icdClinicalGuidanceContent')).toBeVisible();
   await expect(page.locator('#icdClinicalGuidanceFamily')).toHaveText('Themelor');
   await expect(page.locator('[data-mi-icd-clinical-retry-visible]')).toHaveCount(0);
+  await expect(page.locator('#icdCodingWorkspaceCode')).toHaveText('I10');
   expect(control.requests()).toBeGreaterThanOrEqual(2);
 });
 
