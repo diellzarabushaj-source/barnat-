@@ -12,6 +12,8 @@
   let fallbackTimer = 0;
   let currentSource = null;
   let currentState = 'loading';
+  let authoritativeSourceUntil = 0;
+  let refreshSequence = 0;
 
   const clean = value => String(value ?? '').trim();
   const nativeFetch = (...args) => (window.MedIndexNativeFetch || window.fetch.bind(window))(...args);
@@ -21,6 +23,9 @@
       window.clearTimeout(timer);
       reject(new DOMException('Aborted', 'AbortError'));
     }, { once:true });
+  });
+  const settleBrowserTurn = () => new Promise(resolve => {
+    requestAnimationFrame(() => requestAnimationFrame(resolve));
   });
 
   function cacheElements() {
@@ -117,6 +122,15 @@
   function syncFromBadge() {
     if (navigator.onLine === false) return;
     const status = clean(els.badge.dataset.sourceStatus).toLowerCase() || 'loading';
+    const verifiedStatus = clean(currentSource?.status).toLowerCase();
+    if (
+      ['loading', 'unknown'].includes(status)
+      && Date.now() < authoritativeSourceUntil
+      && ['live', 'stale'].includes(verifiedStatus)
+    ) {
+      applySource(currentSource);
+      return;
+    }
     if (status === 'loading' && ['cached', 'live', 'stale'].includes(currentState)) return;
     if (status === 'live' || status === 'stale') {
       const detail = clean(els.badge.title) || sourceDetail(currentSource);
@@ -188,6 +202,8 @@
   }
 
   function offlineState() {
+    authoritativeSourceUntil = 0;
+    refreshSequence += 1;
     els.badge.dataset.sourceStatus = 'offline';
     els.badge.textContent = badgeText('offline');
     const detail = currentSource
@@ -203,6 +219,7 @@
       return null;
     }
 
+    const sequence = ++refreshSequence;
     controller?.abort();
     controller = new AbortController();
     if (manual) {
@@ -218,11 +235,18 @@
         : Promise.resolve();
       const [sourceResult] = await Promise.allSettled([requestMeta(controller.signal), treeReload]);
       if (sourceResult.status === 'fulfilled') {
-        applySource(sourceResult.value);
+        const verifiedSource = sourceResult.value;
+        if (manual) authoritativeSourceUntil = Date.now() + 2000;
+        applySource(verifiedSource);
+        if (manual) {
+          await settleBrowserTurn();
+          if (sequence === refreshSequence && navigator.onLine !== false) applySource(verifiedSource);
+        }
         measure();
-        return sourceResult.value;
+        return verifiedSource;
       }
 
+      authoritativeSourceUntil = 0;
       const error = sourceResult.reason;
       if (error?.name === 'AbortError') return null;
       console.error('ICD workspace source check failed:', error);
