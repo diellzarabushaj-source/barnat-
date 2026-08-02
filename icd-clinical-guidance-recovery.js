@@ -2,7 +2,7 @@
   'use strict';
 
   if (!root?.document) return;
-  const VERSION = 'icd-clinical-guidance-recovery-v4';
+  const VERSION = 'icd-clinical-guidance-recovery-v5';
   let observer = null;
   let clickBound = false;
 
@@ -45,7 +45,6 @@
       const button = event.target.closest('[data-mi-icd-clinical-retry-visible]');
       if (!button) return;
       event.preventDefault();
-      event.stopImmediatePropagation();
       button.disabled = true;
       button.setAttribute('aria-busy', 'true');
       button.textContent = 'Duke u rilidhur…';
@@ -55,9 +54,7 @@
         resetVisibleButton(button);
         return;
       }
-      root.setTimeout(function dispatchInternalRetry() {
-        internalRetry.click();
-      }, 0);
+      internalRetry.click();
       root.setTimeout(() => {
         const state = root.document.getElementById('icdClinicalGuidanceState');
         if (state?.dataset.tone === 'error') resetVisibleButton(button);
