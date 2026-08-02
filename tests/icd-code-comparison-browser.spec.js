@@ -80,6 +80,8 @@ test('detail panel can add a code and the comparison enforces the three-code lim
   await expect(page.locator('#icdAddComparison')).toBeVisible();
   await page.locator('#icdAddComparison').click();
   await expect(page.locator('[data-comparison-code="A00.1"]')).toBeVisible();
+  await page.locator('#detailDone').click();
+  await expect(page.locator('#detailOverlay')).toBeHidden();
 
   const additions = await page.evaluate(async () => {
     const api = window.MedIndexIcdCodeComparison;
