@@ -8,12 +8,17 @@ const STORAGE_KEY = 'medindex_icd_favorites_v1';
 fs.mkdirSync(OUTPUT, { recursive:true });
 test.describe.configure({ mode:'serial' });
 
+async function waitForIcdReady(page) {
+  const html = page.locator('html');
+  await expect(html).toHaveClass(/auth-ready/);
+  await expect(html).toHaveAttribute('data-mi-icd-tree', 'ready');
+  await expect(html).toHaveAttribute('data-mi-icd-favorites', 'icd-favorites-v1');
+}
+
 async function openIcd(page, viewport = { width:1280, height:900 }) {
   await page.setViewportSize(viewport);
   await page.goto(`${BASE}/icd.html`, { waitUntil:'domcontentloaded' });
-  await page.waitForFunction(() => document.documentElement.classList.contains('auth-ready'));
-  await page.waitForFunction(() => document.documentElement.dataset.miIcdTree === 'ready');
-  await page.waitForFunction(() => document.documentElement.dataset.miIcdFavorites === 'icd-favorites-v1');
+  await waitForIcdReady(page);
   await expect(page.locator('[data-icd-tree-node="I"]')).toBeVisible();
 }
 
@@ -47,9 +52,7 @@ test('a doctor saves, reopens and removes an ICD favorite without losing the tre
   await page.screenshot({ path:path.join(OUTPUT, 'icd-favorites-desktop.png'), fullPage:true });
 
   await page.reload({ waitUntil:'domcontentloaded' });
-  await page.waitForFunction(() => document.documentElement.classList.contains('auth-ready'));
-  await page.waitForFunction(() => document.documentElement.dataset.miIcdTree === 'ready');
-  await page.waitForFunction(() => document.documentElement.dataset.miIcdFavorites === 'icd-favorites-v1');
+  await waitForIcdReady(page);
   await expect(page.locator('#icdFavoritesCount')).toHaveText('1');
   await page.locator('#icdFavoritesToggle').click();
   await page.locator('[data-favorite-open="A00"]').click();
