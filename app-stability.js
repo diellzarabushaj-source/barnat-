@@ -162,9 +162,31 @@
     });
   }
 
+  function reconcileRecentSecondaryButtons() {
+    const primaryCode = String(window.MedIndexPrescriptionIcdContext?.current?.()?.code || '').trim().toUpperCase();
+    document.querySelectorAll('#rxIcdRecent .rx-icd-recent-item').forEach(article => {
+      const code = String(article.querySelector('.rx-icd-recent-code')?.textContent || '').trim().toUpperCase();
+      if (!code) return;
+      let button = article.querySelector('[data-mi-recent-secondary]');
+      if (!button) {
+        button = document.createElement('button');
+        button.type = 'button';
+        button.className = 'rx-icd-recent-secondary';
+        article.appendChild(button);
+      }
+      button.dataset.miRecentSecondary = code;
+      button.textContent = 'Shoqëruese';
+      button.setAttribute('aria-label', `Shto ${code} si diagnozë shoqëruese`);
+      const isPrimary = Boolean(primaryCode && code === primaryCode);
+      button.hidden = isPrimary;
+      button.disabled = isPrimary;
+    });
+  }
+
   function reconcileUi() {
     uiFrame = 0;
     syncControlledDisclosures();
+    reconcileRecentSecondaryButtons();
     const dialog = visibleDialog();
     if (dialog && !dialog.dataset.stabilityFocus) {
       lastFocused = document.activeElement;
