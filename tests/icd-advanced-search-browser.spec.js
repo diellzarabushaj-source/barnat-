@@ -6,17 +6,23 @@ const BASE = 'http://127.0.0.1:4173';
 const OUTPUT = '/tmp/icd-visual';
 fs.mkdirSync(OUTPUT, { recursive:true });
 
+const source = {
+  type:'google-sheet', status:'live', visibility:'public-link',
+  loadedAt:'2026-08-02T09:00:00.000Z', revision:'phase10live1234567890', csvBytes:4106422,
+};
 const meta = {
   version:'ICD-10-WHO 2019',
   sourceSpreadsheetId:'1O2S9xNIzvNmiG8ny-VLAp9NeyiUsrY8pxRpyJgTF_O0',
   counts:{ chapter:22, block:274, category:2050, subcategory:10196, total:12542 },
   quality:{ missingTranslations:5240, machineDraftTranslations:6445, standardizedTranslations:857, verifiedTranslations:0, translationCoverage:58.22, publicationReady:false },
+  source,
   search:{
-    version:'sq-clinical-search-v1', engine:'clinical-ranking-v3',
+    version:'sq-clinical-search-v3', engine:'clinical-ranking-v3',
     supports:['code', 'normalized-code', 'sq-title', 'en-title', 'sq-synonym', 'typo', 'wildcard', 'hierarchy-groups', 'breadcrumbs'],
     diagnosticDecision:false,
   },
 };
+
 const block = {
   code:'I10-I15', level:'block', chapter:'IX', block:'I10-I15', parentCode:'IX',
   englishTitle:'Hypertensive diseases', albanianDraft:'Sëmundjet hipertensive', displayTitle:'Sëmundjet hipertensive',
@@ -90,33 +96,95 @@ function suggestionData(query) {
   };
 }
 
-async function installAdvancedRoute(page) {
-  await page.route('**/api/icd**', async route => {
+function suggestionResponse(query) {
+  return {
+    status:200,
+    contentType:'application/json; charset=utf-8',
+    body:JSON.stringify({ ok:true, data:suggestionData(query) }),
+    headers:{ 'X-MedIndex-Search-Version':'sq-clinical-search-v3', 'X-MedIndex-Search-Engine':'clinical-ranking-v3' },
+  };
+}
+
+async function safeFulfill(route, response) {
+  try {
+    await route.fulfill(response);
+  } catch (error) {
+    if (!/aborted|already handled|intercept|closed/i.test(String(error?.message || error))) throw error;
+  }
+}
+
+async function installAdvancedRoute(page, delayForQuery = () => 0, observed = []) {
+  await page.route('**/api/icd**', route => {
     const url = new URL(route.request().url());
-    if (url.pathname !== '/api/icd' || url.searchParams.get('advanced') !== '1') return route.continue();
+    if (url.pathname !== '/api/icd') return route.continue();
+    const view = url.searchParams.get('view') || 'table';
+    if (view === 'meta' && url.searchParams.get('advanced') !== '1') {
+      return safeFulfill(route, {
+        status:200,
+        contentType:'application/json; charset=utf-8',
+        body:JSON.stringify({ ok:true, data:{ meta } }),
+      });
+    }
+    if (url.searchParams.get('advanced') !== '1' || view !== 'suggest') return route.continue();
+
     const query = url.searchParams.get('q') || '';
-    if ((url.searchParams.get('view') || 'table') !== 'suggest') return route.continue();
-    await route.fulfill({
-      status:200,
-      contentType:'application/json; charset=utf-8',
-      body:JSON.stringify({ ok:true, data:suggestionData(query) }),
-      headers:{ 'X-MedIndex-Search-Version':'sq-clinical-search-v1', 'X-MedIndex-Search-Engine':'clinical-ranking-v3' },
-    });
+    observed.push({ query, controller:url.searchParams.get('controller') || 'tree-controller' });
+    const delay = Number(delayForQuery(query) || 0);
+    const fulfill = () => safeFulfill(route, suggestionResponse(query));
+    if (delay > 0) {
+      setTimeout(() => { void fulfill(); }, delay);
+      return undefined;
+    }
+    return fulfill();
   });
+}
+
+async function installBrowserRaceFetch(page) {
+  const first = suggestionData('tension i lartë');
+  const second = suggestionData('A001');
+  await page.addInitScript(({ firstPayload, secondPayload }) => {
+    const nativeFetch = window.fetch.bind(window);
+    window.__medindexRaceQueries = [];
+    window.fetch = async function medIndexRaceFetch(input, init) {
+      const url = new URL(typeof input === 'string' ? input : input?.url, location.origin);
+      if (
+        url.pathname === '/api/icd'
+        && url.searchParams.get('view') === 'suggest'
+        && url.searchParams.get('advanced') === '1'
+      ) {
+        const query = url.searchParams.get('q') || '';
+        window.__medindexRaceQueries.push(query);
+        const isSecond = query === 'A001';
+        await new Promise(resolve => setTimeout(resolve, isSecond ? 30 : 500));
+        return new Response(JSON.stringify({ ok:true, data:isSecond ? secondPayload : firstPayload }), {
+          status:200,
+          headers:{
+            'Content-Type':'application/json; charset=utf-8',
+            'X-MedIndex-Search-Version':'sq-clinical-search-v3',
+            'X-MedIndex-Search-Engine':'clinical-ranking-v3',
+          },
+        });
+      }
+      return nativeFetch(input, init);
+    };
+  }, { firstPayload:first, secondPayload:second });
 }
 
 async function openTree(page) {
   await page.goto(`${BASE}/icd.html`, { waitUntil:'domcontentloaded' });
-  await page.waitForFunction(() => document.documentElement.classList.contains('auth-ready'));
-  await page.waitForFunction(() => document.documentElement.dataset.miIcdTree === 'ready');
-  await page.waitForFunction(() => document.documentElement.dataset.miIcdSearch === 'sq-clinical-search-v1');
-  await page.waitForFunction(() => document.documentElement.dataset.miIcdSearchEngine === 'clinical-ranking-v3');
+  const html = page.locator('html');
+  await expect(html).toHaveClass(/auth-ready/);
+  await expect(html).toHaveAttribute('data-mi-icd-tree', 'ready');
+  await expect(html).toHaveAttribute('data-mi-icd-search', 'sq-clinical-search-v3');
+  await expect(html).toHaveAttribute('data-mi-icd-search-engine', 'clinical-ranking-v3');
+  await expect(html).toHaveAttribute('data-mi-icd-race-guard', 'icd-race-guard-v4');
 }
 
 test('advanced Albanian ICD suggestions are grouped, explained and reveal the code in the tree', async ({ page }) => {
   await installAdvancedRoute(page);
   await openTree(page);
   const search = page.locator('#icdSearch');
+  await expect(page.locator('#icdSourceStatus')).toContainText('Burimi: live');
   await search.fill('tension i lartë');
   await expect(page.locator('#icdSuggestions')).toBeVisible();
   await expect(page.locator('.icd-suggestion-interpretation')).toContainText('hypertension');
@@ -127,10 +195,32 @@ test('advanced Albanian ICD suggestions are grouped, explained and reveal the co
   await expect(page.locator('.icd-suggestion-safety')).toContainText('nuk vendosin diagnozë');
   await page.screenshot({ path:path.join(OUTPUT, 'advanced-tree-search-desktop.png'), fullPage:true });
   await search.press('ArrowDown');
-  await expect(page.locator('#icdSuggestions [role="option"][aria-selected="true"]')).toHaveCount(1);
+  const selected = page.locator('#icdSuggestions [role="option"][aria-selected="true"]');
+  await expect(selected).toHaveCount(1);
+  await expect(search).toHaveAttribute('aria-activedescendant', await selected.getAttribute('id'));
   await search.press('Enter');
   await expect(page).toHaveURL(/code=I10/);
   await expect(page.locator('[data-icd-tree-node="I10"] .icd-tree-row')).toHaveClass(/is-selected/);
+});
+
+test('the newest query wins when an older suggestion response finishes later', async ({ page }) => {
+  await installBrowserRaceFetch(page);
+  await openTree(page);
+  const search = page.locator('#icdSearch');
+  const requestCount = query => page.evaluate(value => (
+    window.__medindexRaceQueries || []
+  ).filter(item => item === value).length, query);
+
+  await search.fill('tension i lartë');
+  await expect.poll(() => requestCount('tension i lartë')).toBeGreaterThan(0);
+  await search.fill('A001');
+  await expect.poll(() => requestCount('A001')).toBeGreaterThan(0);
+  await expect(page.locator('[data-code="A00.1"]')).toBeVisible();
+  await page.waitForTimeout(600);
+  await expect(page.locator('[data-code="A00.1"]')).toBeVisible();
+  await expect(page.locator('[data-code="I10"]')).toHaveCount(0);
+  await expect(search).toHaveValue('A001');
+  await expect(page.locator('#icdSuggestions')).toHaveAttribute('aria-busy', 'false');
 });
 
 test('compact ICD code is normalized, explained and opened in its hierarchy', async ({ page }) => {

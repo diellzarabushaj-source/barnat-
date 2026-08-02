@@ -1,7 +1,8 @@
 (() => {
   'use strict';
 
-  const VERSION = 'sq-clinical-search-v1';
+  const VERSION = 'sq-clinical-search-v3';
+  const ENGINE = 'clinical-ranking-v3';
   const SOURCE_PATH = '/api/icd';
   const ADVANCED_FLAG = 'advanced';
   const GROUP_ORDER = ['exact', 'suggested', 'broader', 'narrower', 'english'];
@@ -12,11 +13,14 @@
     narrower:'Nënkode më specifike',
     english:'Rezultate në anglisht',
   };
-  const originalFetch = window.fetch.bind(window);
+  const originalFetch = window.MedIndexNativeFetch || window.fetch.bind(window);
   let latestSuggestionPayload = null;
+  let latestSuggestionRequest = null;
+  let suggestionSequence = 0;
   let decorating = false;
   let observer = null;
   let decorationTimer = 0;
+  let sourceRequest = null;
 
   const clean = value => String(value ?? '').trim();
   const queryKey = value => clean(value).toLocaleLowerCase('sq-AL');
@@ -32,10 +36,65 @@
       const query = clean(url.searchParams.get('q'));
       if (!query || !['table', 'suggest'].includes(view)) return null;
       url.searchParams.set(ADVANCED_FLAG, '1');
-      return { url, view };
+      if (view === 'suggest') url.searchParams.set('controller', 'race-guard-v2');
+      return { url, view, query };
     } catch {
       return null;
     }
+  }
+
+  function suggestionContainer() {
+    return document.getElementById('icdSuggestions');
+  }
+
+  function setSuggestionBusy(value) {
+    const container = suggestionContainer();
+    if (container) container.setAttribute('aria-busy', String(Boolean(value)));
+  }
+
+  function sourceStatusText(source) {
+    if (source?.status === 'stale') return 'Burimi: cache i fundit';
+    if (source?.status === 'live') return 'Burimi: live';
+    return 'Burimi: duke u verifikuar';
+  }
+
+  function renderSourceStatus(source) {
+    const node = document.getElementById('icdSourceStatus');
+    if (!node) return;
+    const status = clean(source?.status).toLowerCase();
+    node.dataset.sourceStatus = status || 'loading';
+    node.textContent = sourceStatusText(source);
+    const loadedAt = clean(source?.loadedAt);
+    const revision = clean(source?.revision);
+    const details = [];
+    if (loadedAt) {
+      const date = new Date(loadedAt);
+      if (!Number.isNaN(date.getTime())) details.push(`Ngarkuar ${date.toLocaleString('sq-AL')}`);
+    }
+    if (revision) details.push(`Revizioni ${revision}`);
+    node.title = details.join(' · ');
+  }
+
+  async function loadSourceStatus() {
+    if (sourceRequest) return sourceRequest;
+    sourceRequest = originalFetch(`${SOURCE_PATH}?view=meta`, {
+      credentials:'same-origin',
+      cache:'no-store',
+      headers:{ Accept:'application/json' },
+    }).then(async response => {
+      if (!response.ok) throw new Error(`ICD meta ${response.status}`);
+      const payload = await response.json();
+      renderSourceStatus(payload?.data?.meta?.source || null);
+    }).catch(() => {
+      const node = document.getElementById('icdSourceStatus');
+      if (node) {
+        node.dataset.sourceStatus = 'unknown';
+        node.textContent = 'Burimi: status i panjohur';
+      }
+    }).finally(() => {
+      sourceRequest = null;
+    });
+    return sourceRequest;
   }
 
   function scheduleDecoration() {
@@ -46,29 +105,66 @@
     }, 0);
   }
 
+  function registerSuggestionPayload(payload) {
+    if (!payload?.ok || !payload?.data) return;
+    latestSuggestionPayload = payload.data;
+    renderSourceStatus(payload.data.meta?.source || null);
+    window.dispatchEvent(new CustomEvent('medindex:icd-advanced-suggestions', {
+      detail:{
+        query:payload.data.query,
+        total:payload.data.total,
+        normalizedCode:payload.data.normalizedCode || '',
+      },
+    }));
+    scheduleDecoration();
+  }
+
+  async function currentSuggestionResponse(sequence, ownPromise) {
+    try {
+      const response = await ownPromise;
+      if (sequence !== latestSuggestionRequest?.sequence) {
+        const latest = await latestSuggestionRequest?.promise;
+        return latest?.clone ? latest.clone() : response;
+      }
+      return response;
+    } catch (error) {
+      if (sequence !== latestSuggestionRequest?.sequence && latestSuggestionRequest?.promise) {
+        const latest = await latestSuggestionRequest.promise;
+        return latest.clone();
+      }
+      throw error;
+    }
+  }
+
   window.fetch = async function medIndexAdvancedIcdFetch(input, init) {
     const route = advancedUrl(input);
     if (!route) return originalFetch(input, init);
+
+    if (route.view !== 'suggest') {
+      try {
+        const response = await originalFetch(route.url.toString(), init);
+        return response.ok ? response : originalFetch(input, init);
+      } catch (error) {
+        if (error?.name === 'AbortError') throw error;
+        return originalFetch(input, init);
+      }
+    }
+
+    const sequence = ++suggestionSequence;
+    setSuggestionBusy(true);
+    const requestInit = init?.signal ? { ...init, signal:undefined } : init;
+    const ownPromise = originalFetch(route.url.toString(), requestInit);
+    latestSuggestionRequest = { sequence, query:route.query, promise:ownPromise };
+
     try {
-      const response = await originalFetch(route.url.toString(), init);
-      if (!response.ok) return originalFetch(input, init);
-      if (route.view === 'suggest') {
-        response.clone().json().then(payload => {
-          if (!payload?.ok || !payload?.data) return;
-          latestSuggestionPayload = payload.data;
-          window.dispatchEvent(new CustomEvent('medindex:icd-advanced-suggestions', {
-            detail:{
-              query:payload.data.query,
-              total:payload.data.total,
-              normalizedCode:payload.data.normalizedCode || '',
-            },
-          }));
-          scheduleDecoration();
-        }).catch(() => {});
+      let response = await currentSuggestionResponse(sequence, ownPromise);
+      if (!response.ok) response = await originalFetch(input, requestInit);
+      if (sequence === latestSuggestionRequest?.sequence) {
+        response.clone().json().then(registerSuggestionPayload).catch(() => {});
       }
       return response;
-    } catch {
-      return originalFetch(input, init);
+    } finally {
+      if (sequence === latestSuggestionRequest?.sequence) setSuggestionBusy(false);
     }
   };
 
@@ -90,7 +186,7 @@
     const english = clean(node?.englishTitle);
     const display = clean(node?.displayTitle);
     const alternate = english && english.toLowerCase() !== display.toLowerCase() ? english : '';
-    return `<button class="icd-suggestion icd-suggestion-advanced" type="button" role="option" aria-selected="false" data-suggestion-index="${index}" data-code="${esc(node?.code)}" data-level="${esc(node?.level)}">
+    return `<button class="icd-suggestion icd-suggestion-advanced" id="icdSuggestion-${index}" type="button" role="option" aria-selected="false" data-suggestion-index="${index}" data-code="${esc(node?.code)}" data-level="${esc(node?.level)}">
       <span class="icd-suggestion-code">${esc(node?.code)}</span>
       <span class="icd-suggestion-copy">
         <strong>${esc(display)}</strong>
@@ -113,11 +209,6 @@
     })[level] || clean(level) || '—';
   }
 
-  function sameSuggestionRows(options, rows) {
-    if (options.length !== rows.length) return false;
-    return options.every((option, index) => clean(option.dataset.code) === clean(rows[index]?.code));
-  }
-
   function interpretationMarkup(payload) {
     if (!payload?.interpretedAs) return '';
     const label = payload.interpretationType === 'code-normalized'
@@ -138,18 +229,31 @@
       <div class="icd-suggestion-safety" role="note">${esc(payload?.safetyNote || 'Sugjerimet ndihmojnë kërkimin dhe kodimin; nuk vendosin diagnozë.')}</div>`;
   }
 
+  function syncActiveDescendant() {
+    const search = document.getElementById('icdSearch');
+    const selected = suggestionContainer()?.querySelector('[role="option"][aria-selected="true"]');
+    if (!search) return;
+    if (selected?.id) search.setAttribute('aria-activedescendant', selected.id);
+    else search.removeAttribute('aria-activedescendant');
+  }
+
   function decorateSuggestionList() {
     if (decorating) return;
-    const container = document.getElementById('icdSuggestions');
+    const container = suggestionContainer();
     const search = document.getElementById('icdSearch');
     const payload = latestSuggestionPayload;
     if (!container || !search || !payload) return;
 
     const payloadKey = queryKey(payload.query);
     if (!payloadKey || queryKey(search.value) !== payloadKey) return;
-    if (container.dataset.miAdvancedQuery === payloadKey && container.dataset.miAdvancedReady === 'true') {
+    if (
+      container.dataset.miAdvancedQuery === payloadKey
+      && container.dataset.miAdvancedReady === 'true'
+      && container.querySelector('.icd-suggestion-group, .icd-suggestion-empty')
+    ) {
       container.hidden = false;
       search.setAttribute('aria-expanded', 'true');
+      syncActiveDescendant();
       return;
     }
 
@@ -161,11 +265,10 @@
         container.dataset.miAdvancedReady = 'true';
         container.hidden = false;
         search.setAttribute('aria-expanded', 'true');
+        syncActiveDescendant();
         return;
       }
 
-      const currentOptions = [...container.querySelectorAll('[data-suggestion-index]')];
-      if (!sameSuggestionRows(currentOptions, payload.rows)) return;
       const grouped = new Map(GROUP_ORDER.map(group => [group, []]));
       payload.rows.forEach((node, index) => {
         const group = node?.searchMatch?.group || 'suggested';
@@ -191,25 +294,102 @@
       container.dataset.miAdvancedReady = 'true';
       container.hidden = false;
       search.setAttribute('aria-expanded', 'true');
+      syncActiveDescendant();
     } finally {
       decorating = false;
     }
   }
 
+  async function chooseDecoratedSuggestion(option) {
+    const code = clean(option?.dataset?.code);
+    if (!code) return;
+    const search = document.getElementById('icdSearch');
+    const clear = document.getElementById('icdSearchClear');
+    const container = suggestionContainer();
+    if (search) {
+      search.value = code;
+      search.setAttribute('aria-expanded', 'false');
+      search.removeAttribute('aria-activedescendant');
+    }
+    if (clear) clear.hidden = false;
+    if (container) {
+      container.hidden = true;
+      container.innerHTML = '';
+    }
+    try {
+      await window.MedIndexIcdTable?.revealCode?.(code, { history:true, focus:true });
+      if (clean(option.dataset.level) === 'subcategory') {
+        window.dispatchEvent(new CustomEvent('medindex:icd-open-detail', { detail:{ code } }));
+      }
+    } catch (error) {
+      console.error('ICD suggestion selection failed:', error);
+    }
+  }
+
   function installObserver() {
-    const container = document.getElementById('icdSuggestions');
+    const container = suggestionContainer();
     if (!container || observer) return;
-    observer = new MutationObserver(() => scheduleDecoration());
-    observer.observe(container, { childList:true, subtree:false, attributes:true, attributeFilter:['hidden'] });
+    observer = new MutationObserver(() => {
+      scheduleDecoration();
+      queueMicrotask(syncActiveDescendant);
+    });
+    observer.observe(container, {
+      childList:true,
+      subtree:true,
+      attributes:true,
+      attributeFilter:['hidden', 'aria-selected'],
+    });
+  }
+
+  function bindAccessibility() {
+    const search = document.getElementById('icdSearch');
+    const container = suggestionContainer();
+    if (!search || !container) return;
+    search.addEventListener('keydown', event => {
+      if (event.key === 'Enter') {
+        const selected = container.querySelector('[role="option"][aria-selected="true"]')
+          || container.querySelector('[role="option"]');
+        if (selected?.classList.contains('icd-suggestion-advanced')) {
+          event.preventDefault();
+          event.stopImmediatePropagation();
+          chooseDecoratedSuggestion(selected);
+          return;
+        }
+      }
+      if (['ArrowDown', 'ArrowUp', 'Escape'].includes(event.key)) {
+        queueMicrotask(syncActiveDescendant);
+      }
+    }, true);
+    container.addEventListener('click', event => {
+      const option = event.target.closest('.icd-suggestion-advanced[data-code]');
+      if (!option) return;
+      event.preventDefault();
+      event.stopImmediatePropagation();
+      chooseDecoratedSuggestion(option);
+    }, true);
+    search.addEventListener('input', () => {
+      search.removeAttribute('aria-activedescendant');
+      const container = suggestionContainer();
+      if (container) {
+        delete container.dataset.miAdvancedQuery;
+        delete container.dataset.miAdvancedReady;
+      }
+    });
   }
 
   function init() {
     installObserver();
+    bindAccessibility();
+    renderSourceStatus(null);
     document.documentElement.dataset.miIcdSearch = VERSION;
-    document.documentElement.dataset.miIcdSearchEngine = 'clinical-ranking-v3';
-    window.addEventListener('pageshow', installObserver, { passive:true });
+    document.documentElement.dataset.miIcdSearchEngine = ENGINE;
+    window.addEventListener('pageshow', () => {
+      installObserver();
+      loadSourceStatus();
+    }, { passive:true });
+    window.addEventListener('medindex:icd-tree-ready', loadSourceStatus, { once:true });
     window.dispatchEvent(new CustomEvent('medindex:icd-advanced-search-ready', {
-      detail:{ version:VERSION, engine:'clinical-ranking-v3' },
+      detail:{ version:VERSION, engine:ENGINE },
     }));
   }
 

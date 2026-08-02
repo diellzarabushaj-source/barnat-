@@ -12,6 +12,7 @@
   let selectedCode = '';
   let activeRequest = null;
   let suggestionRequest = null;
+  let suggestionSequence = 0;
   let suggestionTimer = 0;
   let suggestionRows = [];
   let selectedSuggestion = -1;
@@ -280,12 +281,23 @@
   }
 
   async function loadSuggestions(query) {
-    suggestionRequest?.abort();
     const q = clean(query);
-    if (q.length < 2) return closeSuggestions();
-    suggestionRequest = new AbortController();
+    const requestId = ++suggestionSequence;
+    suggestionRequest?.abort();
+    if (q.length < 2) {
+      suggestionRequest = null;
+      closeSuggestions();
+      return;
+    }
+    const controller = new AbortController();
+    suggestionRequest = controller;
     try {
-      const data = await getJson(endpoint('suggest', { q }), suggestionRequest);
+      const data = await getJson(endpoint('suggest', { q }), controller);
+      if (
+        requestId !== suggestionSequence
+        || controller.signal.aborted
+        || clean(document.getElementById('icdSearch')?.value) !== q
+      ) return;
       suggestionRows = Array.isArray(data.rows) ? data.rows : [];
       remember(suggestionRows);
       if (!suggestionRows.length) return closeSuggestions();
@@ -294,8 +306,11 @@
       els.search.setAttribute('aria-expanded', 'true');
       selectedSuggestion = -1;
     } catch (error) {
-      if (error.name !== 'AbortError') console.error('ICD suggestions failed:', error);
+      if (requestId !== suggestionSequence || controller.signal.aborted || error.name === 'AbortError') return;
+      console.error('ICD suggestions failed:', error);
       closeSuggestions();
+    } finally {
+      if (requestId === suggestionSequence) suggestionRequest = null;
     }
   }
 
@@ -349,14 +364,24 @@
     });
   }
 
+  function refreshSearchElements(search = document.getElementById('icdSearch')) {
+    if (search) els.search = search;
+    els.clear = document.getElementById('icdSearchClear') || els.clear;
+    els.suggestions = document.getElementById('icdSuggestions') || els.suggestions;
+  }
+
   function bindSearch() {
-    els.search.addEventListener('input', () => {
+    document.addEventListener('input', event => {
+      if (event.target?.id !== 'icdSearch') return;
+      refreshSearchElements(event.target);
       const q = clean(els.search.value);
       els.clear.hidden = !q;
       clearTimeout(suggestionTimer);
       suggestionTimer = setTimeout(() => loadSuggestions(q), 180);
-    });
-    els.search.addEventListener('keydown', event => {
+    }, true);
+    document.addEventListener('keydown', event => {
+      if (event.target?.id !== 'icdSearch') return;
+      refreshSearchElements(event.target);
       const options = [...els.suggestions.querySelectorAll('[role="option"]')];
       if (event.key === 'Escape') return closeSuggestions();
       if (!options.length || els.suggestions.hidden) return;
@@ -365,20 +390,32 @@
         selectedSuggestion = (selectedSuggestion + (event.key === 'ArrowDown' ? 1 : -1) + options.length) % options.length;
         options.forEach((option, index) => option.setAttribute('aria-selected', String(index === selectedSuggestion)));
         options[selectedSuggestion]?.scrollIntoView({ block:'nearest' });
-      } else if (event.key === 'Enter') { event.preventDefault(); chooseSuggestion(selectedSuggestion >= 0 ? selectedSuggestion : 0); }
+      } else if (event.key === 'Enter') {
+        event.preventDefault();
+        chooseSuggestion(selectedSuggestion >= 0 ? selectedSuggestion : 0);
+      }
+    }, true);
+    document.addEventListener('click', event => {
+      refreshSearchElements();
+      const option = event.target.closest?.('[data-suggestion-index]');
+      if (option) {
+        chooseSuggestion(Number(option.dataset.suggestionIndex));
+        return;
+      }
+      if (event.target.closest?.('#icdSearchClear')) {
+        els.search.value = '';
+        els.clear.hidden = true;
+        clearTimeout(suggestionTimer);
+        suggestionSequence += 1;
+        suggestionRequest?.abort();
+        suggestionRequest = null;
+        closeSuggestions();
+        els.search.focus();
+        history.pushState({ medindexIcdTree:true }, '', '/icd.html');
+        return;
+      }
+      if (!event.target.closest?.('.icd-search-wrap')) closeSuggestions();
     });
-    els.suggestions.addEventListener('click', event => {
-      const option = event.target.closest('[data-suggestion-index]');
-      if (option) chooseSuggestion(Number(option.dataset.suggestionIndex));
-    });
-    els.clear.addEventListener('click', () => {
-      els.search.value = '';
-      els.clear.hidden = true;
-      closeSuggestions();
-      els.search.focus();
-      history.pushState({ medindexIcdTree:true }, '', '/icd.html');
-    });
-    document.addEventListener('click', event => { if (!event.target.closest('.icd-search-wrap')) closeSuggestions(); });
   }
 
   function collapseAll() {
