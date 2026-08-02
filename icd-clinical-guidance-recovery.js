@@ -55,7 +55,9 @@
         resetVisibleButton(button);
         return;
       }
-      internalRetry.click();
+      root.setTimeout(function dispatchInternalRetry() {
+        internalRetry.click();
+      }, 0);
       root.setTimeout(() => {
         const state = root.document.getElementById('icdClinicalGuidanceState');
         if (state?.dataset.tone === 'error') resetVisibleButton(button);
