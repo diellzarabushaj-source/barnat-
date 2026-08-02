@@ -83,7 +83,7 @@ test('detail panel can add a code and the comparison enforces the three-code lim
 
   const additions = await page.evaluate(async () => {
     const api = window.MedIndexIcdCodeComparison;
-    return [await api.addCode('A00.0'), await api.addCode('A00.9'), await api.addCode('I10')];
+    return [await api.addCode('A00.0'), await api.addCode('A00'), await api.addCode('I10')];
   });
   expect(additions).toEqual([true, true, false]);
   await expect(page.locator('.icd-comparison-card')).toHaveCount(3);
@@ -91,7 +91,7 @@ test('detail panel can add a code and the comparison enforces the three-code lim
   await expect(page.locator('[data-comparison-code="I10"]')).toHaveCount(0);
   await expect(page.locator('#icdComparisonStatus')).toContainText('maksimum 3 kode');
 
-  await page.locator('[data-mi-icd-comparison-remove="A00.9"]').click();
+  await page.locator('[data-mi-icd-comparison-remove="A00"]').click();
   await expect(page.locator('.icd-comparison-card')).toHaveCount(2);
   const addedAfterRemoval = await page.evaluate(() => window.MedIndexIcdCodeComparison.addCode('I10'));
   expect(addedAfterRemoval).toBe(true);
