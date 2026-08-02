@@ -66,6 +66,7 @@
     currentState = state;
     currentSource = source || currentSource;
     els.root.dataset.state = state;
+    els.root.setAttribute('aria-busy', String(state === 'loading'));
     els.label.textContent = label;
     els.detail.textContent = detail;
     els.refresh.disabled = state === 'loading';
