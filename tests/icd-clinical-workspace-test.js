@@ -1,67 +1,61 @@
+'use strict';
+
 const assert = require('node:assert/strict');
 const fs = require('node:fs');
 const path = require('node:path');
 
 const root = path.resolve(__dirname, '..');
 const read = file => fs.readFileSync(path.join(root, file), 'utf8');
-
 const html = read('icd.html');
-const tableJs = read('icd-full-table.js');
-const sidebarJs = read('icd-sidebar.js');
+const tree = read('icd-tree.js');
+const sidebar = read('icd-sidebar.js');
 const apiWrapper = read('api/icd.js');
 const apiBase = read('lib/icd-api-base.js');
 const hierarchy = read('lib/icd-full-hierarchy.js');
 
-const staticStyles = [...html.matchAll(/<link[^>]+rel="stylesheet"[^>]+href="([^"]+)"/g)].map(match => match[1]);
-assert.match(staticStyles.at(-1), /tailadmin-professional\.css/, 'The professional shell must remain the final static stylesheet.');
+const styles = [...html.matchAll(/<link[^>]+rel="stylesheet"[^>]+href="([^"]+)"/g)].map(match => match[1]);
+assert.match(styles.at(-1), /tailadmin-professional\.css/, 'Professional shell must remain the final static stylesheet.');
 
 for (const marker of [
-  'ICD-10 — hierarkia e plotë', 'icd-registry-intro', 'icd-registry-panel',
-  'icdOpenSidebar', 'icdClearFilters', 'icdLevelFilter', 'icdPageSize',
-  'Titulli shqip', 'Titulli anglisht', 'Përkthimi', 'Veprimet',
-]) assert.ok(html.includes(marker), `ICD table workspace missing ${marker}`);
+  'ICD-10 — shfletuesi hierarkik', 'icd-tree-panel', 'id="icdTree"', 'role="tree"',
+  'id="icdSearch"', 'id="icdSuggestions"', 'id="icdCollapseAll"', 'id="icdTreeRetry"',
+  'Kapitujt, blloqet, kategoritë dhe nënkategoritë ICD-10',
+]) assert.ok(html.includes(marker), `ICD tree workspace missing ${marker}`);
 
 for (const removed of [
-  'icd-clinical-hero', 'icd-hero-stats', 'icd-workbench', 'icd-quick-nav',
-  'data-icd-quick=', 'chapterGrid', 'icdGrid', 'detailOverlay',
-]) assert.ok(!html.includes(removed), `Legacy ICD workspace must remain removed: ${removed}`);
+  'id="icdTable"', 'id="icdTableBody"', 'id="icdPagination"', 'icdPageSize', 'icdLevelFilter',
+  'icd-clinical-hero', 'icd-hero-stats', 'icd-workbench', 'chapterGrid', 'icdGrid',
+]) assert.ok(!html.includes(removed), `Table or legacy ICD workspace must remain removed: ${removed}`);
 
 for (const marker of [
-  'readState', 'stateUrl', 'apiUrl', 'renderTable', 'renderContext', 'renderSuggestions',
-  'chooseNode', 'copyCode', 'MedIndexIcdTable', 'medindex:icd-table-ready',
-  'aria-expanded', 'ArrowDown', 'ArrowUp', 'Escape',
-]) assert.ok(tableJs.includes(marker), `ICD table runtime missing ${marker}`);
+  'loadNavigation', 'loadChildren', 'expandNode', 'collapseNode', 'collapseSiblings',
+  'revealCode', 'visibleButtons', 'loadSuggestions', 'MedIndexIcdTable',
+  'medindex:icd-tree-ready', 'ArrowDown', 'ArrowUp', 'ArrowLeft', 'ArrowRight', 'Home', 'End',
+]) assert.ok(tree.includes(marker), `ICD tree runtime missing ${marker}`);
 
 for (const marker of [
   'loadNavigation', 'loadCategories', 'resolveActive', 'syncActive',
   'setRootOpen', 'setChapterOpen', 'setBlockOpen', 'closeMobileSidebar',
-  'MutationObserver', 'medindex:tailadmin-ready',
-]) assert.ok(sidebarJs.includes(marker), `ICD nested navigation missing ${marker}`);
+]) assert.ok(sidebar.includes(marker), `ICD nested sidebar missing ${marker}`);
 
 for (const marker of [
   "FULL_SPREADSHEET_ID = '1O2S9xNIzvNmiG8ny-VLAp9NeyiUsrY8pxRpyJgTF_O0'",
-  "FULL_SHEET_GID = 329283560", "'table', 'nav', 'children', 'resolve', 'suggest', 'meta'",
-  'loadFullHierarchy', 'fullViewPayload', 'X-MedIndex-ICD-Nodes',
+  "'table', 'nav', 'children', 'resolve', 'suggest', 'meta'", 'loadFullHierarchy', 'fullViewPayload', 'X-MedIndex-ICD-Nodes',
 ]) assert.ok(apiBase.includes(marker), `ICD API full hierarchy mode missing ${marker}`);
 
 for (const marker of [
-  "require('../lib/icd-api-base.js')", "require('../lib/icd-advanced-handler.js')",
-  "String(req.query?.advanced || '') === '1'",
+  "require('../lib/icd-api-base.js')", "require('../lib/icd-advanced-handler.js')", "String(req.query?.advanced || '') === '1'",
 ]) assert.ok(apiWrapper.includes(marker), `ICD API router missing ${marker}`);
-
-for (const marker of [
-  'levels || params.level', 'childrenOf', 'ancestorsOf', 'nodeMap',
-]) assert.ok(hierarchy.includes(marker), `ICD hierarchy query layer missing ${marker}`);
+for (const marker of ['childrenOf', 'ancestorsOf', 'nodeMap']) assert.ok(hierarchy.includes(marker), `Hierarchy layer missing ${marker}`);
 
 assert.match(html, /role="combobox"/);
 assert.match(html, /role="listbox"/);
 assert.match(html, /aria-live="polite"/);
-assert.match(html, /tabindex="0" aria-label="Tabela ICD-10 me scroll horizontal"/);
-assert.doesNotMatch(tableJs, /innerHTML\s*=\s*[^;]*location\./, 'URL values must not be injected directly into markup');
-
-new Function(tableJs);
-new Function(sidebarJs);
+assert.match(html, /aria-busy="true"/);
+assert.doesNotMatch(tree, /innerHTML\s*=\s*[^;]*location\./, 'URL values must not be injected into markup.');
+new Function(tree);
+new Function(sidebar);
 new Function(apiWrapper);
 new Function(apiBase);
 new Function(hierarchy);
-console.log('ICD full hierarchy table, nested navigation and shared API routing audit passed.');
+console.log('ICD hierarchy tree, lazy navigation and shared API routing audit passed.');
