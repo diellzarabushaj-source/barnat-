@@ -1,0 +1,38 @@
+name: ICD private audit bundle
+
+on:
+  pull_request:
+    paths:
+      - 'lib/icd-**'
+      - 'tests/icd-live-sheet-audit.js'
+      - '.github/workflows/icd-live-sheet-audit.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  prepare-private-audit:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - name: Validate private audit runner
+        run: |
+          node --check tests/icd-live-sheet-audit.js
+          node -e "require('./lib/icd-full-hierarchy.js'); require('./lib/icd-advanced-handler.js'); require('./lib/icd-sq-terminology-v2.js')"
+      - name: Upload private audit bundle
+        uses: actions/upload-artifact@v4
+        with:
+          name: icd-private-audit-bundle
+          retention-days: 1
+          if-no-files-found: error
+          path: |
+            lib/icd-*.js
+            lib/icd-sq-terms-*.json
+            tests/icd-live-sheet-audit.js

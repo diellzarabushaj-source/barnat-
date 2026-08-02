@@ -11,7 +11,8 @@ const styles = read('icd-advanced-search.css');
 const apiWrapper = read('api/icd.js');
 const apiBase = read('lib/icd-api-base.js');
 const advancedHandler = read('lib/icd-advanced-handler.js');
-const engine = read('lib/icd-search-engine.js');
+const engineBase = read('lib/icd-search-engine.js');
+const engine = read('lib/icd-search-engine-v2.js');
 
 for (const asset of [
   'icd-advanced-search.css?v=sq-clinical-search-v1',
@@ -40,7 +41,7 @@ for (const marker of [
 ]) assert.ok(apiWrapper.includes(marker), `Shared ICD API router missing ${marker}`);
 
 for (const marker of [
-  "require('../lib/icd-search-engine.js')", 'verifySessionToken', 'MAX_QUERY_CHARS',
+  "require('../lib/icd-search-engine-v2.js')", 'verifySessionToken', 'MAX_QUERY_CHARS',
   'strictCounts:true', 'diagnosticDecision:false', 'X-MedIndex-Search-Version',
   "['GET', 'HEAD']", 'private, no-store',
 ]) assert.ok(advancedHandler.includes(marker), `Advanced search handler missing ${marker}`);
@@ -52,7 +53,12 @@ for (const marker of [
 for (const marker of [
   'ALIAS_ROWS', 'boundedDistance', 'aliasExpansions', 'rankNodes', 'suggestDataset',
   'nuk vendosin diagnozë',
-]) assert.ok(engine.includes(marker), `Advanced search engine missing ${marker}`);
+]) assert.ok(engineBase.includes(marker), `Base advanced search engine missing ${marker}`);
+
+for (const marker of [
+  "require('./icd-search-engine.js')", 'exactEditorialAlias', 'prioritizeExactAlias',
+  'terminologyAliases', 'rankNodes', 'suggestDataset',
+]) assert.ok(engine.includes(marker), `Editorial alias ranking engine missing ${marker}`);
 
 assert.ok(!fs.existsSync(path.join(root, 'api/icd-advanced-search.js')), 'Advanced search must not create a twelfth Vercel function.');
 assert.doesNotMatch(browser, /eval\s*\(|new Function\s*\(/, 'Browser search integration must not use dynamic code.');
@@ -63,6 +69,7 @@ new Function(browser);
 new Function(apiWrapper);
 new Function(apiBase);
 new Function(advancedHandler);
+new Function(engineBase);
 new Function(engine);
 
-console.log('Advanced ICD search uses the shared function with authentication, accessibility and safety contracts intact.');
+console.log('Advanced ICD search uses the shared function with exact editorial alias ranking, authentication and safety contracts intact.');
