@@ -78,6 +78,15 @@ async function expectTouchTarget(locator, minimum = 44) {
   expect(box.height).toBeGreaterThanOrEqual(minimum - 0.5);
 }
 
+async function openA00Detail(page) {
+  await waitForPageFlag(page, () => document.documentElement.dataset.miIcdTree === 'ready');
+  await page.locator('[data-tree-toggle="I"]').click();
+  await expect(page.locator('[data-icd-tree-node="A00-A09"]')).toBeVisible();
+  await page.locator('[data-tree-toggle="A00-A09"]').click();
+  await expect(page.locator('[data-icd-tree-node="A00"]')).toBeVisible();
+  await page.locator('[data-icd-tree-node="A00"] [data-open-code="A00"]').click();
+}
+
 async function expectDrawerCycle(page) {
   const toggle = page.locator('[data-mi-sidebar-toggle]').first();
   const sidebar = page.locator('.mi-sidebar');
@@ -206,7 +215,7 @@ test.describe('mobile physician experience', () => {
     page.once('dialog', dialog => dialog.accept());
     await page.goto(`${BASE}/icd.html`, { waitUntil:'domcontentloaded' });
     await waitForPageFlag(page, () => document.documentElement.classList.contains('auth-ready'));
-    await page.locator('[data-open-code]').first().click();
+    await openA00Detail(page);
     const overlay = page.locator('#detailOverlay');
     await expect(overlay).toBeVisible();
     const panel = page.locator('#detailOverlay .med-panel');
