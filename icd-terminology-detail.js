@@ -137,6 +137,18 @@
     return Boolean(node?.code && kicker.includes(clean(node.code)));
   }
 
+  function updateControls(node, info) {
+    const badge = document.getElementById('detailTranslationBadge');
+    if (badge) {
+      badge.textContent = info.label;
+      badge.className = `icd-detail-badge is-${info.tone}`;
+    }
+    const panel = document.querySelector('#detailOverlay .icd-detail-panel');
+    if (panel) panel.dataset.terminologyStatus = clean(node.translationStatus);
+    const copy = document.getElementById('icdCopyCode');
+    if (copy) copy.textContent = 'Kopjo kodin + titujt';
+  }
+
   function enhancePanel() {
     const data = activeDetail;
     const node = data?.node;
@@ -145,22 +157,16 @@
     if (!node || !summary || !detailCodeMatches(node)) return;
 
     const info = statusInfo(node.translationStatus);
-    const badge = document.getElementById('detailTranslationBadge');
-    if (badge) {
-      badge.textContent = info.label;
-      badge.className = `icd-detail-badge is-${info.tone}`;
-    }
+    updateControls(node, info);
 
-    body.querySelector('.icd-terminology-trust')?.remove();
+    const code = clean(node.code);
+    const existing = body.querySelector('.icd-terminology-trust');
+    if (body.dataset.terminologyEnhancedCode === code && existing) return;
+
+    existing?.remove();
     summary.insertAdjacentHTML('afterend', trustMarkup(data));
-    body.dataset.terminologyEnhancedCode = clean(node.code);
+    body.dataset.terminologyEnhancedCode = code;
     body.dataset.terminologyStatus = clean(node.translationStatus);
-
-    const panel = document.querySelector('#detailOverlay .icd-detail-panel');
-    if (panel) panel.dataset.terminologyStatus = clean(node.translationStatus);
-
-    const copy = document.getElementById('icdCopyCode');
-    if (copy) copy.textContent = 'Kopjo kodin + titujt';
   }
 
   function copyText(data) {
@@ -242,6 +248,11 @@
     document.addEventListener('click', event => {
       if (!event.target.closest('[data-open-code]')) return;
       activeDetail = null;
+      const body = document.getElementById('detailBody');
+      if (body) {
+        delete body.dataset.terminologyEnhancedCode;
+        delete body.dataset.terminologyStatus;
+      }
       document.querySelector('.icd-terminology-trust')?.remove();
     }, true);
     document.documentElement.dataset.miIcdTerminologyDetail = VERSION;
