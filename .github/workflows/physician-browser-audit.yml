@@ -63,7 +63,7 @@ jobs:
           done
           : > /tmp/physician-flow.log
           pnpm exec playwright test tests/csp-browser-audit.spec.js tests/physician-flow.spec.js tests/mobile-deep-audit.spec.js tests/registry-cell-preview.spec.js tests/registry-main-thread-performance.spec.js --reporter=line --workers=1 >> /tmp/physician-flow.log 2>&1 || { cat /tmp/physician-flow.log; exit 1; }
-          pnpm exec playwright test tests/atc-visual-audit.spec.js tests/icd-full-table-browser.spec.js tests/icd-advanced-search-browser.spec.js tests/icd-terminology-detail-browser.spec.js tests/system-health-icd-browser.spec.js --reporter=line --workers=1 >> /tmp/physician-flow.log 2>&1 || { cat /tmp/physician-flow.log; exit 1; }
+          pnpm exec playwright test tests/atc-visual-audit.spec.js tests/icd-full-table-browser.spec.js tests/icd-advanced-search-browser.spec.js tests/icd-workspace-health-browser.spec.js tests/icd-terminology-detail-browser.spec.js tests/system-health-icd-browser.spec.js --reporter=line --workers=1 >> /tmp/physician-flow.log 2>&1 || { cat /tmp/physician-flow.log; exit 1; }
           cat /tmp/physician-flow.log
 
       - name: Upload physician diagnostics
