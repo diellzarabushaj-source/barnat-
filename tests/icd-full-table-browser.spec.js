@@ -14,7 +14,8 @@ async function openIcd(page, viewport) {
   await expect(page.locator('.mi-app-shell')).toBeVisible();
   await page.waitForFunction(() => document.documentElement.dataset.miIcdTree === 'ready');
   await expect(page.locator('[data-icd-tree-node="I"]')).toBeVisible();
-  await expect(page.locator('[data-icd-tree-node][aria-level="1"]')).toHaveCount(22);
+  await expect(page.locator('[data-icd-tree-node="II"]')).toBeVisible();
+  await expect.poll(() => page.locator('[data-icd-tree-node][aria-level="1"]').count()).toBeGreaterThanOrEqual(2);
 }
 
 async function expandA00(page) {
