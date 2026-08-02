@@ -1,0 +1,10 @@
+.icd-translation-badge.is-standardized{background:#ecfdf3;color:#027a48}
+.icd-translation-badge.is-verified{background:#eff8ff;color:#175cd3}
+.icd-translation-badge.is-review{background:#fff4e5;color:#b54708}
+.icd-registry-stat[data-terminology-stat="standardized"]{border-color:rgba(18,183,106,.28);background:#f6fef9}
+.icd-registry-stat[data-terminology-stat="standardized"] strong{color:#027a48}
+html[data-theme="dark"] .icd-translation-badge.is-standardized{background:rgba(18,183,106,.16);color:#75e0a7}
+html[data-theme="dark"] .icd-translation-badge.is-verified{background:rgba(46,144,250,.16);color:#84caff}
+html[data-theme="dark"] .icd-translation-badge.is-review{background:rgba(247,144,9,.16);color:#fec84b}
+html[data-theme="dark"] .icd-registry-stat[data-terminology-stat="standardized"]{border-color:rgba(18,183,106,.3);background:rgba(18,183,106,.08)}
+html[data-theme="dark"] .icd-registry-stat[data-terminology-stat="standardized"] strong{color:#75e0a7}

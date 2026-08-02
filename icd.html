@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-  <meta name="description" content="MedIndex — hierarkia e plotë ICD-10-WHO 2019 me kërkim të avancuar, filtrim dhe tituj në shqip e anglisht.">
+  <meta name="description" content="MedIndex — hierarkia e plotë ICD-10-WHO 2019 me kërkim të avancuar dhe terminologji shqipe të standardizuar.">
   <meta name="robots" content="noindex,nofollow,noarchive">
   <meta name="theme-color" content="#0d3d40">
   <link rel="manifest" href="manifest.webmanifest">
@@ -16,6 +16,7 @@
   <link rel="stylesheet" href="tailadmin-medindex.css?v=20260728-1" data-tailadmin-medindex-css>
   <link rel="stylesheet" href="icd-sidebar.css?v=icd-sidebar-v1" data-mi-icd-sidebar-css>
   <link rel="stylesheet" href="icd-full-table.css?v=icd-full-table-v1">
+  <link rel="stylesheet" href="icd-terminology.css?v=sq-terminology-v1">
   <link rel="stylesheet" href="icd-advanced-search.css?v=sq-clinical-search-v1">
   <link rel="stylesheet" href="icd-detail-panel.css?v=icd-detail-panel-v1">
   <link rel="stylesheet" href="tailadmin-professional.css?v=20260728-1" data-tailadmin-professional-css>
@@ -37,13 +38,13 @@
       <section class="icd-registry-intro" aria-labelledby="icdRegistryTitle">
         <div>
           <h1 id="icdRegistryTitle">ICD-10 — hierarkia e plotë</h1>
-          <p>Kërko sipas kodit, titullit shqip ose anglisht, sinonimeve dhe gabimeve të vogla të shkrimit. Sugjerimet ndihmojnë kërkimin dhe kodimin; diagnoza përfundimtare mbetet vendim klinik.</p>
+          <p>Kërko sipas kodit, titullit shqip ose anglisht, sinonimeve dhe gabimeve të vogla të shkrimit. Termat e standardizuar dallohen nga draftet automatike; sugjerimet ndihmojnë kodimin, ndërsa diagnoza përfundimtare mbetet vendim klinik.</p>
         </div>
         <div class="icd-registry-stats" aria-label="Përmbledhje ICD-10">
           <span class="icd-registry-stat"><strong id="icdTotalNodes">12,542</strong><span>nyje</span></span>
           <span class="icd-registry-stat"><strong id="icdTotalCategories">2,050</strong><span>kategori</span></span>
           <span class="icd-registry-stat"><strong id="icdTotalSubcategories">10,196</strong><span>nënkategori</span></span>
-          <span class="icd-registry-stat"><strong id="icdTranslationCoverage">—</strong><span>shqip draft</span></span>
+          <span class="icd-registry-stat"><strong id="icdTranslationCoverage">—</strong><span>standardizuar</span></span>
         </div>
       </section>
 
@@ -118,6 +119,7 @@
   <script src="icd-sidebar.js?v=icd-sidebar-v1" defer></script>
   <script src="icd-advanced-search.js?v=sq-clinical-search-v1" defer></script>
   <script src="icd-full-table.js?v=icd-full-table-v1" defer></script>
+  <script src="icd-terminology-ui.js?v=sq-terminology-ui-v1" defer></script>
   <script src="icd-detail-panel.js?v=icd-detail-panel-v1" defer></script>
   <script src="auth-client.js?v=production-audit-v2" defer></script>
   <script src="app-stability.js?v=20260724-2" defer></script>
