@@ -19,7 +19,7 @@
   <link rel="stylesheet" href="icd-advanced-search.css?v=sq-clinical-search-v2">
   <link rel="stylesheet" href="icd-detail-panel.css?v=icd-detail-panel-v2">
   <link rel="stylesheet" href="icd-terminology-detail.css?v=icd-terminology-detail-v1">
-  <link rel="stylesheet" href="icd-tree-polish.css?v=icd-tree-polish-v2">
+  <link rel="stylesheet" href="icd-tree-polish.css?v=icd-tree-polish-v3">
   <link rel="stylesheet" href="tailadmin-professional.css?v=20260728-1" data-tailadmin-professional-css>
   <script src="tailadmin-shell.js?v=production-audit-v2" defer></script>
   <script src="tailadmin-professional.js?v=production-audit-v2" defer></script>
@@ -40,6 +40,14 @@
         <div>
           <h2 id="icdRegistryTitle">ICD-10 — shfletuesi hierarkik</h2>
           <p>Hap kapitullin, bllokun, kategorinë dhe nënkodin me klikim. Kërkimi njeh kodet me ose pa pikë, shqipen, anglishten, sinonimet dhe gabimet e vogla të shkrimit. Sugjerimet ndihmojnë kodimin; diagnoza përfundimtare mbetet vendim klinik.</p>
+          <div class="icd-source-health" id="icdSourceHealth" data-state="loading" aria-busy="true">
+            <span class="icd-source-health-dot" aria-hidden="true"></span>
+            <span class="icd-source-health-copy" role="status" aria-live="polite" aria-atomic="true">
+              <strong id="icdSourceHealthLabel">Po kontrollohet burimi ICD-10…</strong>
+              <small id="icdSourceHealthDetail">Google Sheet publik · hierarkia e plotë</small>
+            </span>
+            <button class="icd-source-health-refresh" id="icdSourceHealthRefresh" type="button" aria-label="Rifresko burimin dhe hierarkinë ICD-10">Rifresko</button>
+          </div>
         </div>
         <div class="icd-registry-stats" aria-label="Përmbledhje ICD-10">
           <span class="icd-registry-stat"><strong id="icdTotalNodes">12,542</strong><span>nyje</span></span>
@@ -77,6 +85,7 @@
   <script src="icd-sidebar.js?v=icd-sidebar-v1" defer></script>
   <script src="icd-advanced-search.js?v=sq-clinical-search-v2" defer></script>
   <script src="icd-tree.js?v=icd-tree-v1" defer></script>
+  <script src="icd-workspace-health.js?v=icd-workspace-health-v1" defer></script>
   <script src="icd-detail-panel.js?v=icd-detail-panel-v2" defer></script>
   <script src="icd-terminology-detail.js?v=icd-terminology-detail-v1" defer></script>
   <script src="auth-client.js?v=production-audit-v2" defer></script>
