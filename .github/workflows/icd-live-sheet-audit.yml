@@ -1,4 +1,4 @@
-name: ICD live Sheet audit
+name: ICD private audit bundle
 
 on:
   pull_request:
@@ -12,7 +12,7 @@ permissions:
   contents: read
 
 jobs:
-  live-icd-audit:
+  prepare-private-audit:
     runs-on: ubuntu-latest
     timeout-minutes: 10
     steps:
@@ -22,5 +22,17 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: 22
-      - name: Audit live ICD Sheet and clinical search safety
-        run: node tests/icd-live-sheet-audit.js
+      - name: Validate private audit runner
+        run: |
+          node --check tests/icd-live-sheet-audit.js
+          node -e "require('./lib/icd-full-hierarchy.js'); require('./lib/icd-advanced-handler.js'); require('./lib/icd-sq-terminology-v2.js')"
+      - name: Upload private audit bundle
+        uses: actions/upload-artifact@v4
+        with:
+          name: icd-private-audit-bundle
+          retention-days: 1
+          if-no-files-found: error
+          path: |
+            lib/icd-*.js
+            lib/icd-sq-terms-*.json
+            tests/icd-live-sheet-audit.js
