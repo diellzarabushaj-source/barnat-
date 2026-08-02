@@ -60,16 +60,19 @@ assert.equal(Source.sourceMeta({ stale:true }).status, 'stale');
 const root = path.resolve(__dirname, '..');
 const base = fs.readFileSync(path.join(root, 'lib/icd-api-base.js'), 'utf8');
 const advanced = fs.readFileSync(path.join(root, 'lib/icd-advanced-handler.js'), 'utf8');
+const publicSource = fs.readFileSync(path.join(root, 'lib/icd-public-source.js'), 'utf8');
 const hierarchy = fs.readFileSync(path.join(root, 'lib/icd-full-hierarchy.js'), 'utf8');
 for (const source of [base, advanced]) {
   assert.ok(source.includes("require('../lib/icd-public-source.js')"));
   assert.ok(source.includes('IcdPublicSource.load()'));
-  assert.doesNotMatch(source, /gviz\/tq\?tqx=out:csv/);
+  assert.ok(!source.includes(Source.SPREADSHEET_ID), 'Full hierarchy spreadsheet ID must live only in the shared source module.');
 }
+assert.doesNotMatch(advanced, /gviz\/tq\?tqx=out:csv/);
+assert.equal((publicSource.match(new RegExp(Source.SPREADSHEET_ID, 'g')) || []).length, 1);
 for (const marker of ['attachIndexes', 'childrenByParent', 'childCountByCode', 'byChapter', 'byLevel']) {
   assert.ok(hierarchy.includes(marker), `Hierarchy runtime index missing ${marker}`);
 }
-new Function(fs.readFileSync(path.join(root, 'lib/icd-public-source.js'), 'utf8'));
+new Function(publicSource);
 new Function(base);
 new Function(advanced);
 new Function(hierarchy);
