@@ -148,7 +148,10 @@
       const response = await nativeFetch(API, {
         credentials:'same-origin',
         cache:'no-store',
-        headers:{ Accept:'application/json' },
+        headers:{
+          Accept:'application/json',
+          'X-MedIndex-ICD-Workspace':'health-v2',
+        },
         signal,
       });
       if (!response.ok) {
