@@ -17,13 +17,7 @@
 
   const clean = value => String(value ?? '').trim();
   const nativeFetch = (...args) => (window.MedIndexNativeFetch || window.fetch.bind(window))(...args);
-  const delay = (milliseconds, signal) => new Promise((resolve, reject) => {
-    const timer = window.setTimeout(resolve, milliseconds);
-    signal?.addEventListener('abort', () => {
-      window.clearTimeout(timer);
-      reject(new DOMException('Aborted', 'AbortError'));
-    }, { once:true });
-  });
+  const delay = milliseconds => new Promise(resolve => window.setTimeout(resolve, milliseconds));
   const settleBrowserTurn = () => new Promise(resolve => {
     requestAnimationFrame(() => requestAnimationFrame(resolve));
   });
@@ -156,37 +150,68 @@
     return 800;
   }
 
-  async function requestMeta(signal, attempt = 0) {
-    try {
-      const response = await nativeFetch(API, {
-        credentials:'same-origin',
-        cache:'no-store',
-        headers:{
-          Accept:'application/json',
-          'X-MedIndex-ICD-Workspace':'health-v2',
-        },
-        signal,
-      });
-      if (!response.ok) {
-        if (attempt < 1 && RETRYABLE_STATUS.has(response.status)) {
-          emit('retrying', { status:response.status, attempt:attempt + 1 });
-          await delay(retryDelay(response), signal);
-          return requestMeta(signal, attempt + 1);
+  function abortError() {
+    return new DOMException('Aborted', 'AbortError');
+  }
+
+  async function requestMeta(signal) {
+    let lastError = null;
+    for (let attempt = 0; attempt < 2; attempt += 1) {
+      if (signal?.aborted) throw abortError();
+
+      const url = new URL(API, location.origin);
+      url.searchParams.set('workspaceHealth', '1');
+      url.searchParams.set('attempt', String(attempt + 1));
+
+      let response;
+      try {
+        response = await nativeFetch(url.toString(), {
+          credentials:'same-origin',
+          cache:'no-store',
+          headers:{
+            Accept:'application/json',
+            'X-MedIndex-ICD-Workspace':'health-v2',
+          },
+          signal,
+        });
+      } catch (error) {
+        if (error?.name === 'AbortError' || signal?.aborted) throw abortError();
+        lastError = error;
+        if (attempt === 0 && navigator.onLine !== false) {
+          emit('retrying', { status:0, attempt:1 });
+          await delay(800);
+          continue;
         }
-        throw new Error(`ICD meta ${response.status}`);
+        throw error;
       }
-      const payload = await response.json();
-      if (!payload?.ok || !payload?.data?.meta) throw new Error('Përgjigje e pavlefshme e statusit ICD-10.');
-      return payload.data.meta.source || { status:'unknown', loadedAt:new Date().toISOString() };
-    } catch (error) {
-      if (error?.name === 'AbortError') throw error;
-      if (attempt < 1 && navigator.onLine !== false) {
-        emit('retrying', { status:0, attempt:attempt + 1 });
-        await delay(800, signal);
-        return requestMeta(signal, attempt + 1);
+
+      if (!response.ok) {
+        lastError = new Error(`ICD meta ${response.status}`);
+        if (attempt === 0 && RETRYABLE_STATUS.has(response.status)) {
+          emit('retrying', { status:response.status, attempt:1 });
+          await delay(retryDelay(response));
+          continue;
+        }
+        throw lastError;
       }
-      throw error;
+
+      try {
+        const payload = await response.json();
+        if (!payload?.ok || !payload?.data?.meta) {
+          throw new Error('Përgjigje e pavlefshme e statusit ICD-10.');
+        }
+        return payload.data.meta.source || { status:'unknown', loadedAt:new Date().toISOString() };
+      } catch (error) {
+        lastError = error;
+        if (attempt === 0 && navigator.onLine !== false) {
+          emit('retrying', { status:0, attempt:1 });
+          await delay(800);
+          continue;
+        }
+        throw error;
+      }
     }
+    throw lastError || new Error('Burimi ICD-10 nuk u verifikua.');
   }
 
   function mark(name) {
