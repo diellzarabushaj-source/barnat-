@@ -3,6 +3,7 @@
 const assert = require('node:assert/strict');
 const Terminology = require('../lib/icd-sq-terminology.js');
 const FullIcd = require('../lib/icd-full-hierarchy.js');
+const AdvancedIcd = require('../lib/icd-advanced-handler.js');
 
 const hypertension = Terminology.applyNode({
   code:'I10', level:'category', chapter:'IX', block:'I10-I15', parentCode:'I10-I15',
@@ -74,6 +75,16 @@ const aliasResult = FullIcd.queryDataset(dataset, { q:'insuficienca kardiake', p
 assert.equal(aliasResult.rows[0].code, 'I50');
 const bloodPressureResult = FullIcd.queryDataset(dataset, { q:'tension i lartë', pageSize:10 });
 assert.equal(bloodPressureResult.rows[0].code, 'I10');
+
+const advancedAlias = AdvancedIcd._test.tablePayload(
+  dataset,
+  { q:'insuficienca kardiake', page:1, pageSize:10, levels:'category' },
+  new Map(),
+);
+assert.equal(advancedAlias.rows[0].code, 'I50');
+assert.equal(advancedAlias.rows[0].albanianDraft, 'Pamjaftueshmëria e zemrës');
+assert.equal(advancedAlias.rows[0].translationStatus, 'standardized');
+assert.ok(advancedAlias.meta.search.supports.includes('editorial-alias'));
 
 assert.equal(Terminology.TERMINOLOGY_VERSION, 'sq-terminology-2026.1');
 assert.equal(Object.keys(Terminology.CHAPTER_TERMS).length, 22);
