@@ -1,0 +1,30 @@
+.rx-icd-problem-list{display:grid;gap:10px;margin:10px 0 0;padding:12px;border:1px solid var(--mi-gray-200,#e4e7ec);border-radius:12px;background:var(--mi-gray-25,#fcfcfd)}
+.rx-icd-problem-list[hidden]{display:none!important}
+.rx-icd-problem-head{display:flex;align-items:flex-start;justify-content:space-between;gap:12px}
+.rx-icd-problem-head>div{display:grid;gap:2px}
+.rx-icd-problem-head strong{color:var(--mi-gray-900,#101828);font-size:.78rem}
+.rx-icd-problem-head span{color:var(--mi-gray-500,#667085);font-size:.65rem;line-height:1.4}
+.rx-icd-problem-head button,.rx-icd-problem-actions button,.rx-icd-problem-actions a,.rx-icd-recent-secondary{min-height:30px;padding:5px 8px;border:1px solid var(--mi-gray-300,#d0d5dd);border-radius:8px;background:var(--mi-white,#fff);color:var(--mi-gray-700,#344054);font:inherit;font-size:.64rem;font-weight:700;text-decoration:none;cursor:pointer}
+.rx-icd-problem-items{display:grid;gap:7px}
+.rx-icd-problem-item{display:grid;grid-template-columns:auto minmax(0,1fr) auto;align-items:center;gap:9px;padding:8px;border:1px solid var(--mi-gray-200,#e4e7ec);border-radius:10px;background:var(--mi-white,#fff)}
+.rx-icd-problem-code{display:inline-flex;align-items:center;justify-content:center;min-width:52px;min-height:28px;padding:4px 7px;border-radius:7px;background:#eff8ff;color:#175cd3;font:800 .7rem/1 ui-monospace,SFMono-Regular,Menlo,Consolas,monospace}
+.rx-icd-problem-copy{display:grid;min-width:0;gap:2px}
+.rx-icd-problem-copy strong{overflow:hidden;color:var(--mi-gray-900,#101828);font-size:.72rem;line-height:1.35;text-overflow:ellipsis;white-space:nowrap}
+.rx-icd-problem-copy small{color:var(--mi-gray-500,#667085);font-size:.62rem}
+.rx-icd-problem-actions{display:flex;align-items:center;justify-content:flex-end;gap:5px}
+.rx-icd-problem-actions [data-mi-problem-promote]{border-color:#a6f4c5;background:#ecfdf3;color:#067647}
+.rx-icd-problem-actions [data-mi-problem-remove]{border-color:#fecdca;color:#b42318}
+.rx-icd-recent-secondary{align-self:stretch;margin-left:4px}
+.rx-icd-problem-saved-badge{display:inline-flex;align-items:center;min-height:22px;padding:0 7px;border-radius:999px;background:#eff8ff;color:#175cd3;font-size:.62rem;font-weight:800}
+.icd-add-secondary-diagnosis{border-color:#b2ddff!important;background:#eff8ff!important;color:#175cd3!important}
+html[data-theme="dark"] .rx-icd-problem-list{border-color:#344054;background:#1d2939}
+html[data-theme="dark"] .rx-icd-problem-head strong,html[data-theme="dark"] .rx-icd-problem-copy strong{color:#f9fafb}
+html[data-theme="dark"] .rx-icd-problem-head span,html[data-theme="dark"] .rx-icd-problem-copy small{color:#98a2b3}
+html[data-theme="dark"] .rx-icd-problem-item{border-color:#344054;background:#101828}
+html[data-theme="dark"] .rx-icd-problem-head button,html[data-theme="dark"] .rx-icd-problem-actions button,html[data-theme="dark"] .rx-icd-problem-actions a,html[data-theme="dark"] .rx-icd-recent-secondary{border-color:#475467;background:#101828;color:#f2f4f7}
+html[data-theme="dark"] .rx-icd-problem-actions [data-mi-problem-promote]{border-color:#087443;background:rgba(5,150,105,.14);color:#75e0a7}
+html[data-theme="dark"] .rx-icd-problem-actions [data-mi-problem-remove]{border-color:#b42318;color:#fda29b}
+html[data-theme="dark"] .icd-add-secondary-diagnosis{border-color:#175cd3!important;background:rgba(46,144,250,.12)!important;color:#84caff!important}
+@media(max-width:760px){.rx-icd-problem-item{grid-template-columns:auto minmax(0,1fr)}.rx-icd-problem-actions{grid-column:1/-1;justify-content:stretch}.rx-icd-problem-actions>*{flex:1 1 auto;text-align:center}.rx-icd-problem-copy strong{white-space:normal}.rx-icd-recent-secondary{width:100%;margin:4px 0 0}.icd-add-secondary-diagnosis{width:100%}}
+@media(max-width:430px){.rx-icd-problem-head{align-items:center}.rx-icd-problem-head span{max-width:230px}.rx-icd-problem-actions{display:grid;grid-template-columns:1fr 1fr}.rx-icd-problem-actions [data-mi-problem-remove]{grid-column:1/-1}}
+@media(forced-colors:active){.rx-icd-problem-list,.rx-icd-problem-item,.rx-icd-problem-head button,.rx-icd-problem-actions button,.rx-icd-problem-actions a,.rx-icd-recent-secondary,.icd-add-secondary-diagnosis{border:1px solid CanvasText}}
