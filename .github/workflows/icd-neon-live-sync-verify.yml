@@ -44,6 +44,43 @@ jobs:
           node tests/icd-public-source-test.js
           node tests/icd-hierarchy-neon-sync-test.js
 
+      - name: Diagnose Google Sheet CSV endpoints
+        shell: bash
+        run: |
+          node <<'NODE'
+          const Source = require('./lib/icd-public-source.js');
+          const id = Source.SPREADSHEET_ID;
+          const gid = Source.SHEET_GID;
+          const endpoints = {
+            gviz:`https://docs.google.com/spreadsheets/d/${id}/gviz/tq?tqx=out:csv&gid=${gid}`,
+            export:`https://docs.google.com/spreadsheets/d/${id}/export?format=csv&gid=${gid}`,
+          };
+          (async () => {
+            for (const [name, url] of Object.entries(endpoints)) {
+              const response = await fetch(url, { headers:{ Accept:'text/csv,*/*;q=0.8', 'User-Agent':'MedIndex/2.0' } });
+              const text = await response.text();
+              const head = text.slice(0, 240).replace(/\s+/g, ' ');
+              const result = { name, status:response.status, contentType:response.headers.get('content-type'), bytes:Buffer.byteLength(text), head };
+              try {
+                const valid = Source.validateCsv(text, {
+                  contentType:response.headers.get('content-type'),
+                  declaredBytes:response.headers.get('content-length'),
+                });
+                result.valid = true;
+                result.headerRow = valid.headerRow;
+                result.revision = valid.revision;
+              } catch (error) {
+                result.valid = false;
+                result.error = error.message;
+              }
+              console.log(JSON.stringify(result));
+            }
+          })().catch(error => {
+            console.error(error?.stack || error);
+            process.exit(1);
+          });
+          NODE
+
       - name: Import and activate Google Sheet revision
         run: node scripts/sync-icd-hierarchy-to-neon.js
 
