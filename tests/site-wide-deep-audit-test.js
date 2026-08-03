@@ -34,7 +34,7 @@ const jsFiles = [
   'mobile-experience.js', 'auth-client.js', 'offline-runtime.js', 'app.js',
   'theme-preload.js', 'recetat-safe-print.js', 'classification-redirect.js',
   'icd.js', 'analizat.js', 'dozologjia.js', 'dozologjia-deep-audit.js',
-  'protokollet.js', 'recetat.js',
+  'protokollet.js', 'recetat.js', 'registry-row-expand.js',
 ];
 for (const file of jsFiles) {
   assert.ok(exists(file), `${file}: missing`);
@@ -55,12 +55,14 @@ const auth = read('auth-client.js');
   'medindex_offline_lease_v1',
   'barnat-registry-parts-v4',
   'barnat-registry-cached-at-v4',
+  'barnat-registry-cached-at-v5',
   'regjistriBarnave_protokollet_v1',
   'medindex_rx_autodraft_v1',
   'medindexPrescriptionSelection',
   'medindex_rx_diagnosis_v1',
   'medindex-prescriptions-v1',
 ].forEach(key => assert.ok(auth.includes(key), `logout cleanup is missing ${key}`));
+assert.match(auth, /deleteDatabase\('medindex-registry-v1'\)/, 'logout must delete the current registry IndexedDB database');
 assert.match(auth, /lease\.hardened !== true/, 'offline lease must require a hardened online session');
 assert.match(auth, /AUTH_NOT_CONFIGURED/, 'missing server auth configuration must invalidate access');
 assert.match(auth, /CLEAR_PRIVATE_DATA/, 'logout must clear service-worker private caches');
