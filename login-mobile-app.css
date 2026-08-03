@@ -1,0 +1,494 @@
+/* MedIndex mobile app login. Loaded after login-page.css and scoped to login.html. */
+html[data-mi-page="login"],
+html[data-mi-page="login"] body {
+  width:100%;
+  max-width:100%;
+  overflow-x:hidden;
+  -webkit-text-size-adjust:100%;
+  text-size-adjust:100%;
+}
+
+html[data-mi-page="login"] input {
+  font-size:16px;
+}
+
+html[data-mi-page="login"] .google-login-button,
+html[data-mi-page="login"] .google-login-button > div,
+html[data-mi-page="login"] .google-login-button iframe {
+  width:100%!important;
+  max-width:100%!important;
+}
+
+html[data-mi-page="login"] .login-copy-mobile,
+html[data-mi-page="login"] .login-account-mobile {
+  display:none;
+}
+
+@media (max-width:600px) {
+  html[data-mi-page="login"] body {
+    min-height:100svh;
+    overscroll-behavior-x:none;
+  }
+
+  html[data-mi-page="login"] .landing-login-page {
+    position:relative;
+    isolation:isolate;
+    display:flex;
+    min-height:100svh;
+    min-height:100dvh;
+    flex-direction:column;
+    overflow-x:hidden;
+    overflow-y:auto;
+    background:
+      radial-gradient(circle at 90% 7%,rgba(142,235,228,.24),transparent 27%),
+      radial-gradient(circle at 7% 94%,rgba(28,119,151,.24),transparent 34%),
+      linear-gradient(155deg,#117d7d 0%,#0c5b68 52%,#091c31 100%)!important;
+  }
+
+  html[data-mi-page="login"] .landing-login-page::before,
+  html[data-mi-page="login"] .landing-login-page::after {
+    content:"";
+    position:absolute;
+    z-index:-1;
+    pointer-events:none;
+    border:1px solid rgba(255,255,255,.08);
+    border-radius:50%;
+    background:rgba(255,255,255,.035);
+  }
+
+  html[data-mi-page="login"] .landing-login-page::before {
+    width:190px;
+    height:190px;
+    top:-88px;
+    right:-72px;
+    box-shadow:none;
+  }
+
+  html[data-mi-page="login"] .landing-login-page::after {
+    width:230px;
+    height:230px;
+    bottom:-150px;
+    left:-120px;
+  }
+
+  html[data-mi-page="login"] .landing-container {
+    width:calc(100% - 28px);
+    max-width:420px;
+  }
+
+  html[data-mi-page="login"] .landing-nav {
+    position:relative;
+    inset:auto;
+    padding:max(14px,env(safe-area-inset-top)) 0 8px;
+  }
+
+  html[data-mi-page="login"] .landing-nav::after {
+    display:none;
+  }
+
+  html[data-mi-page="login"] .landing-nav-inner {
+    min-height:52px;
+    justify-content:center;
+  }
+
+  html[data-mi-page="login"] .landing-brand {
+    min-height:52px;
+    gap:11px;
+    padding:4px 13px 4px 5px;
+    border:1px solid rgba(255,255,255,.13);
+    border-radius:17px;
+    background:rgba(6,38,49,.20);
+    box-shadow:0 12px 32px rgba(3,24,35,.14);
+    backdrop-filter:blur(16px);
+    -webkit-backdrop-filter:blur(16px);
+  }
+
+  html[data-mi-page="login"] .landing-brand-logo {
+    width:42px;
+    height:42px;
+    flex:0 0 42px;
+    border-radius:13px;
+    box-shadow:0 8px 20px rgba(1,28,37,.22);
+  }
+
+  html[data-mi-page="login"] .landing-brand-copy {
+    display:grid;
+    gap:3px;
+    text-align:left;
+  }
+
+  html[data-mi-page="login"] .landing-brand-copy strong {
+    font-size:17px;
+    letter-spacing:-.035em;
+  }
+
+  html[data-mi-page="login"] .landing-brand-copy small {
+    display:block;
+    color:rgba(255,255,255,.70);
+    font-size:7px;
+    letter-spacing:.13em;
+  }
+
+  html[data-mi-page="login"] .landing-nav-meta,
+  html[data-mi-page="login"] .landing-showcase,
+  html[data-mi-page="login"] .login-clinical-note,
+  html[data-mi-page="login"] .landing-wave,
+  html[data-mi-page="login"] .login-card-brand,
+  html[data-mi-page="login"] .login-meta {
+    display:none!important;
+  }
+
+  html[data-mi-page="login"] .landing-hero {
+    display:grid;
+    min-height:calc(100svh - 74px);
+    min-height:calc(100dvh - 74px);
+    flex:1;
+    align-items:center;
+    padding:12px 0 max(28px,env(safe-area-inset-bottom));
+  }
+
+  html[data-mi-page="login"] .landing-hero-grid {
+    display:block;
+  }
+
+  html[data-mi-page="login"] .landing-login-column {
+    display:block;
+    width:100%;
+  }
+
+  html[data-mi-page="login"] .login-card {
+    width:100%!important;
+    max-width:396px;
+    margin:0 auto;
+    padding:29px 20px 22px!important;
+    overflow:visible;
+    border:1px solid rgba(255,255,255,.84)!important;
+    border-radius:30px!important;
+    background:rgba(255,255,255,.978)!important;
+    box-shadow:
+      0 30px 80px rgba(2,25,36,.34),
+      0 2px 0 rgba(255,255,255,.82) inset!important;
+    backdrop-filter:blur(20px);
+    -webkit-backdrop-filter:blur(20px);
+  }
+
+  html[data-mi-page="login"] .login-card::before {
+    display:none;
+  }
+
+  html[data-mi-page="login"] .login-kicker {
+    display:flex;
+    width:max-content;
+    min-height:30px;
+    align-items:center;
+    justify-content:center;
+    gap:7px;
+    margin:0 auto 19px!important;
+    padding:0 11px;
+    border:1px solid #d9e9e7;
+    border-radius:999px;
+    background:#f1f8f7;
+    color:#416568!important;
+    font-size:9px!important;
+    letter-spacing:.045em!important;
+  }
+
+  html[data-mi-page="login"] .login-kicker::before {
+    content:"";
+    width:7px;
+    height:7px;
+    flex:0 0 7px;
+    border-radius:50%;
+    background:#16867f;
+    box-shadow:0 0 0 4px rgba(22,134,127,.10);
+  }
+
+  html[data-mi-page="login"] .login-card h1 {
+    margin:0!important;
+    color:#10202a!important;
+    font-size:30px!important;
+    font-weight:800!important;
+    line-height:1.08!important;
+    letter-spacing:-.052em!important;
+    text-align:center;
+  }
+
+  html[data-mi-page="login"] .login-copy {
+    max-width:290px;
+    margin:10px auto 0!important;
+    color:#687780!important;
+    font-size:13px!important;
+    line-height:1.48!important;
+    text-align:center;
+  }
+
+  html[data-mi-page="login"] .login-copy-desktop,
+  html[data-mi-page="login"] .login-account-desktop {
+    display:none!important;
+  }
+
+  html[data-mi-page="login"] .login-copy-mobile,
+  html[data-mi-page="login"] .login-account-mobile {
+    display:inline!important;
+  }
+
+  html[data-mi-page="login"] .google-login-panel {
+    gap:8px;
+    margin-top:24px;
+  }
+
+  html[data-mi-page="login"] .google-login-heading {
+    position:absolute;
+    width:1px;
+    height:1px;
+    padding:0;
+    margin:-1px;
+    overflow:hidden;
+    clip:rect(0,0,0,0);
+    white-space:nowrap;
+    border:0;
+  }
+
+  html[data-mi-page="login"] .google-login-button {
+    min-height:52px;
+    overflow:hidden;
+    border-radius:14px;
+    background:#fff;
+    box-shadow:0 8px 22px rgba(15,45,58,.07);
+  }
+
+  html[data-mi-page="login"] .google-login-button > div,
+  html[data-mi-page="login"] .google-login-button iframe {
+    min-height:52px!important;
+    border-radius:14px!important;
+  }
+
+  html[data-mi-page="login"] .google-login-status:not(.is-error) {
+    display:none;
+  }
+
+  html[data-mi-page="login"] .google-login-status.is-error {
+    min-height:0;
+    margin-top:4px;
+    color:#a23d45;
+    font-size:10px;
+    text-align:center;
+  }
+
+  html[data-mi-page="login"] .login-account-note {
+    display:flex;
+    width:100%;
+    min-height:46px;
+    align-items:center!important;
+    gap:9px;
+    margin-top:13px!important;
+    padding:11px 13px!important;
+    border:1px solid #d5e7e4!important;
+    border-radius:14px!important;
+    background:#f0f8f7!important;
+    color:#285b5d!important;
+    font-size:10px!important;
+    font-weight:750!important;
+    line-height:1.3!important;
+  }
+
+  html[data-mi-page="login"] .login-account-note::before {
+    width:22px;
+    height:22px;
+    flex:0 0 22px;
+    margin:0;
+    background:#137f79;
+    font-size:11px;
+  }
+
+  html[data-mi-page="login"] .password-fallback {
+    margin-top:14px;
+    padding-top:14px;
+  }
+
+  html[data-mi-page="login"] .password-fallback summary,
+  html[data-mi-page="login"] .password-row input,
+  html[data-mi-page="login"] .password-row button,
+  html[data-mi-page="login"] .login-submit {
+    min-height:48px!important;
+  }
+
+  html[data-mi-page="login"] .password-fallback summary {
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    border-radius:12px;
+  }
+
+  html[data-mi-page="login"] .password-row {
+    grid-template-columns:minmax(0,1fr);
+  }
+
+  html[data-mi-page="login"] .password-row button {
+    width:100%;
+  }
+
+  html[data-mi-page="login"] .login-message:empty {
+    display:none;
+  }
+}
+
+@media (max-width:360px) {
+  html[data-mi-page="login"] .landing-container {
+    width:calc(100% - 18px);
+  }
+
+  html[data-mi-page="login"] .landing-nav {
+    padding-top:max(10px,env(safe-area-inset-top));
+  }
+
+  html[data-mi-page="login"] .landing-brand {
+    min-height:48px;
+    gap:9px;
+    padding-right:10px;
+  }
+
+  html[data-mi-page="login"] .landing-brand-logo {
+    width:38px;
+    height:38px;
+    flex-basis:38px;
+  }
+
+  html[data-mi-page="login"] .landing-brand-copy strong {
+    font-size:16px;
+  }
+
+  html[data-mi-page="login"] .login-card {
+    padding:24px 15px 19px!important;
+    border-radius:25px!important;
+  }
+
+  html[data-mi-page="login"] .login-kicker {
+    margin-bottom:16px!important;
+    font-size:8px!important;
+  }
+
+  html[data-mi-page="login"] .login-card h1 {
+    font-size:27px!important;
+  }
+
+  html[data-mi-page="login"] .login-copy {
+    max-width:260px;
+    font-size:12px!important;
+  }
+
+  html[data-mi-page="login"] .google-login-panel {
+    margin-top:20px;
+  }
+
+  html[data-mi-page="login"] .login-account-note {
+    padding:10px 11px!important;
+    font-size:9.5px!important;
+  }
+}
+
+@media (max-width:600px) and (max-height:700px) {
+  html[data-mi-page="login"] .landing-hero {
+    min-height:auto;
+    padding-top:8px;
+    padding-bottom:max(16px,env(safe-area-inset-bottom));
+  }
+
+  html[data-mi-page="login"] .login-card {
+    padding-top:22px!important;
+    padding-bottom:18px!important;
+  }
+
+  html[data-mi-page="login"] .login-kicker {
+    margin-bottom:14px!important;
+  }
+
+  html[data-mi-page="login"] .google-login-panel {
+    margin-top:18px;
+  }
+}
+
+@media (max-width:900px) and (orientation:landscape) and (max-height:520px) {
+  html[data-mi-page="login"] .landing-container {
+    width:min(calc(100% - 28px),540px);
+    max-width:540px;
+  }
+
+  html[data-mi-page="login"] .landing-nav {
+    padding-top:max(6px,env(safe-area-inset-top));
+    padding-bottom:6px;
+  }
+
+  html[data-mi-page="login"] .landing-nav-inner {
+    justify-content:center;
+  }
+
+  html[data-mi-page="login"] .landing-nav-meta,
+  html[data-mi-page="login"] .landing-showcase,
+  html[data-mi-page="login"] .login-clinical-note,
+  html[data-mi-page="login"] .landing-wave,
+  html[data-mi-page="login"] .login-card-brand,
+  html[data-mi-page="login"] .login-meta {
+    display:none!important;
+  }
+
+  html[data-mi-page="login"] .landing-hero {
+    min-height:auto;
+    padding:9px 0 max(14px,env(safe-area-inset-bottom));
+  }
+
+  html[data-mi-page="login"] .landing-hero-grid {
+    display:block;
+  }
+
+  html[data-mi-page="login"] .login-card {
+    max-width:520px;
+    padding:18px 20px!important;
+    border-radius:20px!important;
+  }
+
+  html[data-mi-page="login"] .login-kicker {
+    margin-bottom:10px!important;
+  }
+
+  html[data-mi-page="login"] .login-card h1 {
+    font-size:25px!important;
+  }
+
+  html[data-mi-page="login"] .login-copy {
+    margin-top:5px!important;
+    font-size:10.5px!important;
+    line-height:1.35!important;
+  }
+
+  html[data-mi-page="login"] .google-login-panel {
+    margin-top:10px;
+  }
+
+  html[data-mi-page="login"] .login-account-note {
+    min-height:40px;
+    margin-top:8px!important;
+    padding:8px 10px!important;
+  }
+}
+
+@media (prefers-reduced-motion:reduce) {
+  html[data-mi-page="login"] *,
+  html[data-mi-page="login"] *::before,
+  html[data-mi-page="login"] *::after {
+    scroll-behavior:auto!important;
+    animation-duration:.01ms!important;
+    animation-iteration-count:1!important;
+    transition-duration:.01ms!important;
+  }
+}
+
+@media (forced-colors:active) {
+  html[data-mi-page="login"] .login-card,
+  html[data-mi-page="login"] .landing-brand,
+  html[data-mi-page="login"] .landing-brand-logo,
+  html[data-mi-page="login"] .login-account-note,
+  html[data-mi-page="login"] .login-kicker {
+    border:1px solid CanvasText!important;
+  }
+}
