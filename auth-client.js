@@ -261,88 +261,101 @@
     logoutObserver = new MutationObserver(() => {
       if (installLogout()) stopLogoutObserver();
     });
-    logoutObserver.observe(document.documentElement, { childList:true, subtree:true });
-    logoutObserverTimer = setTimeout(stopLogoutObserver, 12000);
+    logoutObserver.observe(document.body || document.documentElement, { childList:true, subtree:true });
+    logoutObserverTimer = window.setTimeout(stopLogoutObserver, 10000);
   }
 
-  function showExpiredBanner() {
-    if (document.getElementById('sessionExpiredBanner')) return;
+  function showExpired() {
+    if (document.querySelector('.session-expired-banner')) return;
     const banner = document.createElement('div');
-    banner.id = 'sessionExpiredBanner';
     banner.className = 'session-expired-banner';
-    banner.textContent = 'Sesioni ka skaduar. Po ktheheni te hyrja…';
+    banner.setAttribute('role', 'alert');
+    banner.textContent = 'Sesioni ka skaduar. Po kthehesh te hyrja…';
+    setAuthBootstrapMessage('Sesioni ka skaduar. Po hapet faqja e hyrjes…');
     document.body.appendChild(banner);
+    clearOfflineLease();
+    settleAuth(false, { reason:'expired' });
+    setTimeout(() => goToLogin('expired'), 700);
   }
 
-  function interceptFetch() {
-    window.fetch = async (...args) => {
-      const response = await originalFetch(...args);
-      const request = args[0];
-      const url = typeof request === 'string' ? request : request?.url || '';
-      if (response.status === 401 && /\/api\//.test(url) && !/\/api\/auth/.test(url)) {
-        showExpiredBanner();
-        clearOfflineLease();
-        setTimeout(() => goToLogin('session-expired'), 700);
-      }
-      return response;
-    };
-  }
-
-  function applyAuthenticated(payload = {}) {
-    saveOfflineLease(payload);
-    ensureProfessionalRuntime();
-    startOfflineRuntime();
-    document.documentElement.classList.remove('auth-checking', 'auth-offline');
-    document.documentElement.classList.add('auth-ready');
-    document.documentElement.dataset.authMode = payload.offline ? 'offline' : 'online';
-    installLogoutWhenReady();
-    settleAuth(true, payload);
-  }
-
-  function applyOfflineLease(lease) {
-    ensureProfessionalRuntime();
-    startOfflineRuntime();
-    document.documentElement.classList.remove('auth-checking');
+  function activateOfflineLease(reason) {
+    const lease = readOfflineLease();
+    if (!lease) return false;
     document.documentElement.classList.add('auth-ready', 'auth-offline');
-    document.documentElement.dataset.authMode = 'offline';
+    document.documentElement.classList.remove('auth-checking');
+    settleAuth(true, { offline:true, hardened:true, reason, expiresAt:lease.expiresAt });
     installLogoutWhenReady();
-    settleAuth(true, { offline:true, lease });
+    ensureProfessionalRuntime();
+    startOfflineRuntime();
+    installOnlineRevalidation();
+    return true;
   }
 
-  async function verifySession({ allowOffline = true } = {}) {
+  function configurationUnavailable(response, payload) {
+    return response.status === 503 && (payload.code === 'AUTH_NOT_CONFIGURED'
+      || payload.hardened === false
+      || payload.accessConfigured === false
+      || payload.sessionConfigured === false);
+  }
+
+  async function revalidateOnlineSession() {
+    if (!document.documentElement.classList.contains('auth-offline') || !navigator.onLine) return;
     try {
       const response = await authRequest();
       const payload = await response.json().catch(() => ({}));
-      if (!response.ok || payload.authenticated !== true || payload.hardened !== true) {
-        if (payload.code === 'AUTH_NOT_CONFIGURED') clearOfflineLease();
-        return false;
-      }
-      applyAuthenticated(payload);
-      return true;
-    } catch (error) {
-      if (!allowOffline) return false;
-      const lease = readOfflineLease();
-      if (!lease) return false;
-      applyOfflineLease(lease);
-      return true;
-    }
+      if (configurationUnavailable(response, payload)) return goToLogin('auth-not-configured');
+      if (response.status === 401 || response.status === 403 || !response.ok || !payload.authenticated || payload.hardened !== true) return showExpired();
+      const lease = saveOfflineLease(payload);
+      if (!lease) return showExpired();
+      document.documentElement.classList.remove('auth-offline');
+      window.dispatchEvent(new CustomEvent('medindex:auth-revalidated', { detail:{ authenticated:true, hardened:true } }));
+      window.MedIndexOffline?.warm?.();
+    } catch {}
   }
 
   function installOnlineRevalidation() {
     if (onlineRevalidationInstalled) return;
     onlineRevalidationInstalled = true;
-    window.addEventListener('online', async () => {
-      const authenticated = await verifySession({ allowOffline:false });
-      if (!authenticated) goToLogin('online-revalidation-failed');
-    });
+    window.addEventListener('online', revalidateOnlineSession);
   }
 
-  async function boot() {
-    interceptFetch();
-    installOnlineRevalidation();
-    const authenticated = await verifySession();
-    if (!authenticated) goToLogin('unauthenticated');
+  window.fetch = async (...args) => {
+    const response = await originalFetch(...args);
+    const target = typeof args[0] === 'string' ? args[0] : args[0]?.url || '';
+    if ((response.status === 401 || response.status === 403) && !String(target).includes('/api/auth')) showExpired();
+    return response;
+  };
+
+  window.addEventListener('medindex:offline-auth-invalid', showExpired);
+
+  async function init() {
+    if (!navigator.onLine) {
+      if (activateOfflineLease('offline')) return;
+      return goToLogin('offline-no-lease');
+    }
+    try {
+      const response = await authRequest();
+      const payload = await response.json().catch(() => ({}));
+      if (configurationUnavailable(response, payload)) return goToLogin('auth-not-configured');
+      if (response.status === 401 || response.status === 403) return goToLogin('unauthenticated');
+      if (!response.ok || !payload.authenticated || payload.hardened !== true) {
+        if (response.status >= 500 && activateOfflineLease('server-unavailable')) return;
+        return goToLogin('unauthenticated');
+      }
+      const lease = saveOfflineLease(payload);
+      if (!lease) return goToLogin('unhardened-session');
+      document.documentElement.classList.add('auth-ready');
+      document.documentElement.classList.remove('auth-checking', 'auth-offline');
+      settleAuth(true, { ...payload, hardened:true, offline:false, expiresAt:lease.expiresAt });
+      installLogoutWhenReady();
+      ensureProfessionalRuntime();
+      startOfflineRuntime();
+    } catch (error) {
+      if (activateOfflineLease(error?.name === 'AbortError' ? 'timeout' : 'network')) return;
+      goToLogin(error?.name === 'AbortError' ? 'timeout' : 'network');
+    }
   }
 
-  boot();
+  if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', init, { once:true });
+  else init();
 })();
