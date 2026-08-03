@@ -26,19 +26,24 @@ assert.doesNotMatch(fast, /location\.reload|caches\.delete|unregister\(/, 'fast-
 
 const index = read('index.html');
 assert.match(index, /registry-fast-start\.js\?v=registry-fast-start-v2/);
-assert.match(index, /registry-runtime-loader\.js\?v=20260801-6/);
+assert.match(index, /registry-runtime-loader\.js\?v=20260803-unverified-1/);
 assert.ok(index.indexOf('registry-fast-start.js') < index.indexOf('registry-runtime-loader.js'), 'fast-start must execute before registry startup');
 assert.doesNotMatch(index, /<script src="app-performance\.js"/, 'heavy registry startup must remain dynamically loaded');
-assert.match(index, /app-runtime-performance\.js\?v=clinical-audit-v5-performance-runtime[^>]+as="script"/, 'performance registry runtime must be preloaded');
+assert.match(index, /app-runtime-performance\.js\?v=clinical-audit-v6-unverified-visible[^>]+as="script"/, 'current performance registry runtime must be preloaded');
 assert.match(index, /registry-quality\.js\?v=20260723-2[^>]+as="script"/, 'current quality layer must be preloaded');
 
 const loader = read('registry-runtime-loader.js');
-assert.match(loader, /registry-runtime-loader-v6/, 'the authenticated immediate loader version must be current');
-assert.match(loader, /app-performance\.js\?v=20260801-2/, 'loader must launch the current registry application');
+assert.match(loader, /registry-runtime-loader-v7-unverified-visible/, 'the authenticated registry loader version must be current');
+assert.match(loader, /app-performance\.js\?v=20260803-unverified-1/, 'loader must launch the current registry application');
 assert.match(loader, /classList\.contains\('auth-ready'\)/, 'registry startup must wait for the authenticated shell');
 assert.match(loader, /requestAnimationFrame\(\(\) => \{[\s\S]*loadRuntime\(\)/, 'registry startup must yield one frame before loading');
 assert.doesNotMatch(loader, /FIRST_INTERACTION_FALLBACK_MS|POST_INTERACTION_GRACE_MS|INTERACTION_EVENTS/, 'artificial interaction delays must be removed');
 assert.doesNotMatch(loader, /MEDINDEX_REGISTRY_UI_READY\s*=\s*new Promise/, 'loader must not create a circular UI-ready promise');
+
+const app = read('app-performance.js');
+assert.match(app, /clinical-audit-v6-unverified-visible/);
+assert.match(app, /registry-parts-prescription-v2/);
+assert.match(app, /barnat-registry-cached-at-v5/);
 
 const part = read('app-parts/part-01.txt');
 assert.match(part, /const timeout = setTimeout\(finish, 2600\)/, 'quality fallback bootstrap must have a bounded wait');
@@ -46,4 +51,4 @@ assert.match(part, /if\(existing\)[\s\S]*existing\.addEventListener\('load', fin
 assert.match(part, /script\.async = true/, 'quality fallback runtime must not block document parsing');
 assert.doesNotMatch(part, /existing\.addEventListener\('error', reject/, 'quality bootstrap must not remain rejected or unresolved');
 
-console.log('Registry fast-start and immediate authenticated loader v6 audit passed.');
+console.log('Registry fast-start and authenticated loader v7 audit passed.');
