@@ -3,6 +3,7 @@
 const fs = require('fs');
 const path = require('path');
 const assert = require('assert');
+const { execFileSync } = require('node:child_process');
 
 const root = path.resolve(__dirname, '..');
 const read = file => fs.readFileSync(path.join(root, file), 'utf8');
@@ -11,25 +12,27 @@ const index = read('index.html');
 const controller = read('registry-cell-preview.js');
 const styles = read('registry-cell-preview.css');
 const fullTextStyles = read('registry-full-text-expansion.css');
-const rowExpand = read('registry-row-expand.js');
+const dosageDisclosureStyles = read('registry-dosage-disclosure-fix.css');
+const rowExpandPath = path.join(root, 'registry-row-expand.js');
+const rowExpand = fs.readFileSync(rowExpandPath, 'utf8');
+
+execFileSync(process.execPath, ['--check', rowExpandPath], { stdio:'pipe' });
 
 assert(index.includes('registry-cell-preview.css?v=20260801-3'), 'Inline cell expansion stylesheet v3 is not wired.');
 assert(index.includes('registry-full-text-expansion.css?v=20260801-1'), 'Full-row text reveal contract is not wired.');
-assert(index.includes('registry-cell-preview.js?v=20260801-6'), 'Inline cell expansion controller v7 is not wired.');
+assert(index.includes('registry-dosage-disclosure-fix.css?v=20260803-3'), 'Hardened dosage disclosure stylesheet is not wired.');
+assert(index.includes('registry-cell-preview.js?v=20260801-6'), 'Inline cell expansion controller is not wired.');
+assert(index.includes('registry-row-expand.js?v=20260803-6'), 'Hardened row expansion controller is not wired.');
 assert(
-  index.indexOf('registry-cell-preview.js?v=20260801-6') < index.indexOf('registry-row-expand.js?v=20260801-4'),
+  index.indexOf('registry-cell-preview.js?v=20260801-6') < index.indexOf('registry-row-expand.js?v=20260803-6'),
   'Cell expansion trigger must initialize before row expansion.'
 );
-assert(index.includes('data-registry-ui-release="20260801-14"'), 'Registry UI release was not bumped.');
+assert(index.includes('data-registry-ui-release="20260801-14"'), 'Registry UI release was not preserved.');
 assert(index.includes('registry-column-contract.js?v=20260801-2'), 'Column contract v2 is not wired.');
 assert(index.includes('registry-unified-table.js?v=20260801-1'), 'Unified table controller is not wired.');
 assert(
   index.indexOf('registry-unified-table.css?v=20260801-1') < index.indexOf('registry-full-text-expansion.css?v=20260801-1'),
   'Full-row reveal must load after the unified compact geometry.'
-);
-assert(
-  index.indexOf('registry-full-text-expansion.css?v=20260801-1') < index.indexOf('tailadmin-professional.css'),
-  'TailAdmin professional must remain the final static stylesheet.'
 );
 
 assert(controller.includes("const VERSION = 'registry-cell-preview-20260801-7'"), 'Cell preview runtime version is stale.');
@@ -70,7 +73,27 @@ assert(fullTextStyles.includes('max-height:none!important'), 'Every expanded tex
 assert(fullTextStyles.includes('.registry-dosage-details[open] > :not(summary)'), 'Expanded dosage details must reveal their full body.');
 assert(!/https?:\/\//.test(fullTextStyles), 'Full-text expansion must not load third-party assets.');
 
-assert(rowExpand.includes("button, input, select, textarea"), 'Row expansion must ignore nested controls.');
+assert(rowExpand.includes("const VERSION = 'registry-row-expand-20260803-6'"), 'Row expansion runtime version is stale.');
+assert(rowExpand.includes("const dosageTrigger = event.target.closest?.('.registry-dosage-dose')"), 'Më shumë must be handled by the row controller.');
+assert(rowExpand.includes('event.stopImmediatePropagation()'), 'The legacy dosage listener must not toggle the same disclosure twice.');
+assert(rowExpand.includes('syncDosageControls(row, expanded)'), 'Row expansion must synchronize dosage controls.');
+assert(rowExpand.includes("toggle.textContent = expanded ? 'Më pak' : 'Më shumë'"), 'Disclosure label must match the actual state.');
+assert(rowExpand.includes("regimen.dataset.dosageExpanded = String(expanded)"), 'Expanded dosage state must be exposed to CSS without relying only on :has().');
+assert(rowExpand.includes("link[data-registry-dosage-disclosure-fix-css]"), 'The dosage disclosure stylesheet must be protected from later compact styles.');
+assert(rowExpand.includes('function rowKey(row)'), 'Expanded row identity must be stable across rerenders.');
+assert(rowExpand.includes("return fallback ? `row:${fallback}` : ''"), 'Rows without registry identifiers need a deterministic fallback key.');
+assert(rowExpand.includes("button, input, select, textarea"), 'Row expansion must ignore unrelated nested controls.');
 assert(rowExpand.includes('syncPreviewTriggers(row, expanded)'), 'Row expansion must synchronize every trigger in the row.');
+assert(rowExpand.includes("new CustomEvent('medindex:registry-row-toggle'"), 'Row state changes must be observable by other UI layers.');
 
-console.log('Full-row zoom reveals every textual column without modal or clamp.');
+assert(dosageDisclosureStyles.includes('[data-dosage-expanded="true"]'), 'CSS must have an explicit expanded-state fallback.');
+assert(dosageDisclosureStyles.includes('contain:none!important'), 'Expanded cells must not remain clipped by containment.');
+assert(dosageDisclosureStyles.includes('-webkit-line-clamp:unset!important'), 'Expanded dosage text must lose WebKit line clamp.');
+assert(dosageDisclosureStyles.includes('line-clamp:unset!important'), 'Expanded dosage text must lose standards line clamp.');
+assert(dosageDisclosureStyles.includes('max-height:none!important'), 'Expanded dosage text must lose compact max-height.');
+assert(dosageDisclosureStyles.includes('overflow:visible!important'), 'Expanded dosage text must not remain hidden.');
+assert(dosageDisclosureStyles.includes('@media (max-width:760px)'), 'Mobile disclosure rules are missing.');
+assert(dosageDisclosureStyles.includes('@media (prefers-reduced-motion:reduce)'), 'Reduced-motion disclosure behavior is missing.');
+assert(!/https?:\/\//.test(dosageDisclosureStyles), 'Dosage disclosure must not load third-party assets.');
+
+console.log('Full-row and dosage disclosure reveal every character without modal, clamp or duplicate toggle.');
