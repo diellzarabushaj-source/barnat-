@@ -1,8 +1,9 @@
 (() => {
   'use strict';
 
-  const VERSION = 'registry-row-expand-20260803-7';
+  const VERSION = 'registry-row-expand-20260803-8';
   const FINAL_STYLE_ID = 'registryColumnsFiltersStyles';
+  const STATUS_ID = 'registryDisclosureStatus';
   const EXPANDABLE_KEYS = new Set([
     'trade-name',
     'active-substance',
@@ -44,6 +45,34 @@
     return fallback ? `row:${fallback}` : '';
   }
 
+  function compactHash(value) {
+    let hash = 2166136261;
+    for (const character of String(value || '')) {
+      hash ^= character.charCodeAt(0);
+      hash = Math.imul(hash, 16777619);
+    }
+    return (hash >>> 0).toString(36);
+  }
+
+  function ensureStatusRegion() {
+    let status = document.getElementById(STATUS_ID);
+    if (status) return status;
+    status = document.createElement('span');
+    status.id = STATUS_ID;
+    status.className = 'registry-disclosure-status';
+    status.setAttribute('role', 'status');
+    status.setAttribute('aria-live', 'polite');
+    status.setAttribute('aria-atomic', 'true');
+    (document.body || document.documentElement).appendChild(status);
+    return status;
+  }
+
+  function announce(message) {
+    const status = ensureStatusRegion();
+    status.textContent = '';
+    requestAnimationFrame(() => { status.textContent = message; });
+  }
+
   function stabilizeCascade() {
     if (stabilizing || !document.head) return;
     stabilizing = true;
@@ -61,11 +90,7 @@
       const alreadyStable = desiredTail.length > 0
         && desiredTail.every((node, index) => currentTail[index] === node);
 
-      // Append the protected scoped styles once, in their canonical order. The
-      // next observer pass sees the same tail and performs no writes, avoiding
-      // a self-sustaining MutationObserver loop.
       if (!alreadyStable) desiredTail.forEach(node => document.head.appendChild(node));
-
       document.documentElement.dataset.registryFinalCascade = VERSION;
     } finally {
       stabilizing = false;
@@ -88,9 +113,44 @@
     });
   }
 
+  function isOverflowing(element) {
+    if (!element) return false;
+    return element.scrollHeight > element.clientHeight + 1 || element.scrollWidth > element.clientWidth + 1;
+  }
+
+  function syncDisclosureMetadata(row) {
+    const key = rowKey(row) || `row-${row.rowIndex}`;
+    const rowExpanded = row.classList.contains('registry-row-expanded') || row.dataset.registryRowExpanded === 'true';
+
+    row.querySelectorAll('.registry-dosage-regimen').forEach((regimen, index) => {
+      const trigger = regimen.querySelector('.registry-dosage-dose');
+      const text = regimen.querySelector('.registry-dosage-dose-text');
+      const indication = regimen.querySelector('.registry-dosage-indication');
+      const toggle = regimen.querySelector('.registry-dosage-toggle');
+      if (!trigger || !text) return;
+
+      const previous = regimen.dataset.disclosureNeeded;
+      const contentLength = clean(`${indication?.textContent || ''} ${text.textContent || ''}`).length;
+      const needed = rowExpanded && previous
+        ? previous === 'true'
+        : isOverflowing(text) || isOverflowing(indication) || contentLength > 78;
+
+      const textId = `mi-dose-${compactHash(key)}-${index}`;
+      text.id = textId;
+      trigger.setAttribute('aria-controls', textId);
+      trigger.disabled = !needed;
+      trigger.classList.toggle('is-static', !needed);
+      trigger.title = needed ? 'Shfaq dozimin e plotë' : '';
+      regimen.dataset.disclosureNeeded = String(needed);
+      if (toggle) toggle.hidden = !needed;
+    });
+  }
+
   function rowShouldExpand(cell, key) {
     if (!cell || !EXPANDABLE_KEYS.has(key)) return false;
-    if (cell.querySelector('.registry-dosage-details,.registry-dosage-dose')) return true;
+    if (cell.querySelector('.registry-dosage-details')) return true;
+    if ([...cell.querySelectorAll('.registry-dosage-regimen')]
+      .some(regimen => regimen.dataset.disclosureNeeded === 'true')) return true;
     return clean(cell.textContent).length > (THRESHOLDS[key] || 48);
   }
 
@@ -106,18 +166,24 @@
 
   function syncDosageControls(row, expanded) {
     row.querySelectorAll('.registry-dosage-regimen').forEach(regimen => {
-      regimen.classList.toggle('is-expanded', expanded);
-      regimen.dataset.dosageExpanded = String(expanded);
+      const needed = regimen.dataset.disclosureNeeded !== 'false';
+      regimen.classList.toggle('is-expanded', expanded && needed);
+      regimen.dataset.dosageExpanded = String(expanded && needed);
 
       const trigger = regimen.querySelector('.registry-dosage-dose');
       if (!trigger) return;
-      const dose = clean(trigger.querySelector('.registry-dosage-dose-text')?.textContent);
-      trigger.setAttribute('aria-expanded', String(expanded));
-      trigger.setAttribute('aria-label', `${expanded ? 'Mbyll' : 'Shfaq'} dozimin e plotë: ${dose}`);
-      trigger.title = dose;
+      trigger.disabled = !needed;
+      trigger.setAttribute('aria-expanded', String(expanded && needed));
+      trigger.setAttribute('aria-label', needed
+        ? `${expanded ? 'Mbyll' : 'Shfaq'} dozimin e plotë`
+        : 'Dozimi shfaqet i plotë');
+      trigger.title = needed ? (expanded ? 'Mbyll dozimin e plotë' : 'Shfaq dozimin e plotë') : '';
 
       const toggle = trigger.querySelector('.registry-dosage-toggle');
-      if (toggle) toggle.textContent = expanded ? 'Më pak' : 'Më shumë';
+      if (toggle) {
+        toggle.hidden = !needed;
+        toggle.textContent = expanded ? 'Më pak' : 'Më shumë';
+      }
     });
   }
 
@@ -137,6 +203,21 @@
     syncPreviewTriggers(row, expanded);
   }
 
+  function preserveRowAnchor(row, beforeTop) {
+    requestAnimationFrame(() => {
+      if (!row?.isConnected) return;
+      const delta = row.getBoundingClientRect().top - beforeTop;
+      if (Math.abs(delta) < 1) return;
+
+      const wrapper = document.getElementById('registryContent');
+      if (wrapper && wrapper.contains(row) && wrapper.scrollHeight > wrapper.clientHeight + 1) {
+        wrapper.scrollTop += delta;
+      } else {
+        window.scrollBy({ top:delta, left:0, behavior:'auto' });
+      }
+    });
+  }
+
   function enhanceRows() {
     const tbody = document.getElementById('tbody');
     if (!tbody) return;
@@ -144,6 +225,7 @@
     tbody.querySelectorAll(':scope > tr').forEach(row => {
       if (row.querySelector('.empty-state')) return;
       row.querySelectorAll('td.registry-dosage-column').forEach(restoreLegacyCompactMarkup);
+      syncDisclosureMetadata(row);
 
       row.querySelectorAll(':scope > td').forEach(cell => {
         const key = cell.dataset.registryColumnKey || '';
@@ -197,11 +279,14 @@
     const key = rowKey(row);
     if (!key) return false;
 
+    const beforeTop = row.getBoundingClientRect().top;
     const expanded = typeof force === 'boolean' ? force : !expandedRows.has(key);
     if (expanded) expandedRows.add(key);
     else expandedRows.delete(key);
     syncRowState(row);
     stabilizeCascade();
+    preserveRowAnchor(row, beforeTop);
+    announce(expanded ? 'Teksti i plotë u shfaq.' : 'Teksti i plotë u mbyll.');
 
     window.dispatchEvent(new CustomEvent('medindex:registry-row-toggle', {
       detail:{ key, expanded, row },
@@ -209,13 +294,14 @@
     return expanded;
   }
 
-  function interactiveTarget(target) {
-    return target.closest('a, button, input, select, textarea, [role="button"], .clinical-editor-open, .drug-actions-trigger, .favorite-marker, .registry-cell-preview-trigger');
+  function interactiveTarget(target, root) {
+    const candidate = target?.closest?.('a, button, input, select, textarea, [role="button"], .clinical-editor-open, .drug-actions-trigger, .favorite-marker, .registry-cell-preview-trigger');
+    return Boolean(candidate && candidate !== root);
   }
 
   function onClick(event) {
     const dosageTrigger = event.target.closest?.('.registry-dosage-dose');
-    if (dosageTrigger) {
+    if (dosageTrigger && !dosageTrigger.disabled) {
       event.preventDefault();
       event.stopImmediatePropagation();
       toggleRow(dosageTrigger.closest('tr'));
@@ -239,15 +325,25 @@
     }
 
     const cell = event.target.closest?.('td[data-registry-expandable="true"]');
-    if (!cell || cell.dataset.registryCellPreview === 'true' || interactiveTarget(event.target)) return;
+    if (!cell || cell.dataset.registryCellPreview === 'true' || interactiveTarget(event.target, cell)) return;
     event.preventDefault();
     toggleRow(cell.closest('tr'));
   }
 
   function onKeydown(event) {
+    if (event.key === 'Escape') {
+      const row = event.target.closest?.('tr[data-registry-row-expanded="true"]');
+      if (!row) return;
+      event.preventDefault();
+      toggleRow(row, false);
+      const control = row.querySelector('.registry-dosage-dose:not(:disabled), .registry-cell-preview-trigger, td[data-registry-expandable="true"]');
+      control?.focus?.({ preventScroll:true });
+      return;
+    }
+
     if (event.key !== 'Enter' && event.key !== ' ') return;
     const cell = event.target.closest?.('td[data-registry-expandable="true"]');
-    if (!cell || cell.dataset.registryCellPreview === 'true' || interactiveTarget(event.target)) return;
+    if (!cell || cell.dataset.registryCellPreview === 'true' || interactiveTarget(event.target, cell)) return;
     event.preventDefault();
     toggleRow(cell.closest('tr'));
   }
@@ -268,6 +364,7 @@
   }
 
   function init() {
+    ensureStatusRegion();
     document.addEventListener('click', onClick, true);
     document.addEventListener('keydown', onKeydown, true);
     observe();
@@ -279,6 +376,7 @@
     ['medindex:registry-ready', 'medindex:registry-data-ready', 'medindex:registry-table-stable', 'medindex:tailadmin-ready']
       .forEach(eventName => window.addEventListener(eventName, scheduleEnhance));
     window.addEventListener('pageshow', scheduleEnhance, { passive:true });
+    window.addEventListener('resize', scheduleEnhance, { passive:true });
   }
 
   if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', init, { once:true });
