@@ -150,9 +150,16 @@ test('MedIndex login is compact and stable on iPhone, tablet and desktop', async
     inside(current.card, viewport);
     inside(current.google, viewport);
 
-    if (viewport.width <= 560 || (viewport.width > viewport.height && viewport.height <= 520)) {
+    const portraitPhone = viewport.width <= 560;
+    const landscapePhone = viewport.width > viewport.height && viewport.height <= 520;
+    if (portraitPhone || landscapePhone) {
       expect(current.heroHidden, `${viewport.name}: marketing hero hidden on phone`).toBe(true);
-      expect(current.card.width, `${viewport.name}: card uses phone width`).toBeGreaterThan(viewport.width * 0.88);
+      if (portraitPhone) {
+        expect(current.card.width, `${viewport.name}: card uses portrait width`).toBeGreaterThan(viewport.width * 0.88);
+      } else {
+        expect(current.card.width, `${viewport.name}: ergonomic landscape card`).toBeGreaterThanOrEqual(480);
+        expect(current.card.width, `${viewport.name}: bounded landscape card`).toBeLessThanOrEqual(560);
+      }
       expect(current.pageHeight, `${viewport.name}: compact phone page`).toBeLessThanOrEqual(viewport.height + 180);
     } else if (viewport.width <= 820) {
       expect(current.heroHidden).toBe(false);
