@@ -20,11 +20,11 @@ execFileSync(process.execPath, ['--check', rowExpandPath], { stdio:'pipe' });
 
 assert(index.includes('registry-cell-preview.css?v=20260801-3'), 'Inline cell expansion stylesheet v3 is not wired.');
 assert(index.includes('registry-full-text-expansion.css?v=20260801-1'), 'Full-row text reveal contract is not wired.');
-assert(index.includes('registry-dosage-disclosure-fix.css?v=20260803-3'), 'Hardened dosage disclosure stylesheet is not wired.');
+assert(index.includes('registry-dosage-disclosure-fix.css?v=20260803-4'), 'Polished dosage disclosure stylesheet is not wired.');
 assert(index.includes('registry-cell-preview.js?v=20260801-6'), 'Inline cell expansion controller is not wired.');
-assert(index.includes('registry-row-expand.js?v=20260803-7'), 'Idempotent row expansion controller is not wired.');
+assert(index.includes('registry-row-expand.js?v=20260803-8'), 'Polished row expansion controller is not wired.');
 assert(
-  index.indexOf('registry-cell-preview.js?v=20260801-6') < index.indexOf('registry-row-expand.js?v=20260803-7'),
+  index.indexOf('registry-cell-preview.js?v=20260801-6') < index.indexOf('registry-row-expand.js?v=20260803-8'),
   'Cell expansion trigger must initialize before row expansion.'
 );
 assert(index.includes('data-registry-ui-release="20260801-14"'), 'Registry UI release was not preserved.');
@@ -73,12 +73,12 @@ assert(fullTextStyles.includes('max-height:none!important'), 'Every expanded tex
 assert(fullTextStyles.includes('.registry-dosage-details[open] > :not(summary)'), 'Expanded dosage details must reveal their full body.');
 assert(!/https?:\/\//.test(fullTextStyles), 'Full-text expansion must not load third-party assets.');
 
-assert(rowExpand.includes("const VERSION = 'registry-row-expand-20260803-7'"), 'Row expansion runtime version is stale.');
+assert(rowExpand.includes("const VERSION = 'registry-row-expand-20260803-8'"), 'Row expansion runtime version is stale.');
 assert(rowExpand.includes("const dosageTrigger = event.target.closest?.('.registry-dosage-dose')"), 'Më shumë must be handled by the row controller.');
 assert(rowExpand.includes('event.stopImmediatePropagation()'), 'The legacy dosage listener must not toggle the same disclosure twice.');
 assert(rowExpand.includes('syncDosageControls(row, expanded)'), 'Row expansion must synchronize dosage controls.');
 assert(rowExpand.includes("toggle.textContent = expanded ? 'Më pak' : 'Më shumë'"), 'Disclosure label must match the actual state.');
-assert(rowExpand.includes("regimen.dataset.dosageExpanded = String(expanded)"), 'Expanded dosage state must be exposed to CSS without relying only on :has().');
+assert(rowExpand.includes("regimen.dataset.dosageExpanded = String(expanded && needed)"), 'Expanded dosage state must be exposed to CSS without relying only on :has().');
 assert(rowExpand.includes("link[data-registry-dosage-disclosure-fix-css]"), 'The dosage disclosure stylesheet must be protected from later compact styles.');
 assert(rowExpand.includes('const desiredTail = [finalStyle, fullText, dosageDisclosure].filter(Boolean)'), 'Protected styles need one canonical tail order.');
 assert(rowExpand.includes('const alreadyStable = desiredTail.length > 0'), 'Cascade stabilization needs a no-write steady state.');
@@ -86,8 +86,15 @@ assert(rowExpand.includes('if (!alreadyStable) desiredTail.forEach(node => docum
 assert(!rowExpand.includes("document.head.lastElementChild !== finalStyle"), 'The observer must not repeatedly move the compact style after the disclosure styles.');
 assert(rowExpand.includes('function rowKey(row)'), 'Expanded row identity must be stable across rerenders.');
 assert(rowExpand.includes("return fallback ? `row:${fallback}` : ''"), 'Rows without registry identifiers need a deterministic fallback key.');
-assert(rowExpand.includes("button, input, select, textarea"), 'Row expansion must ignore unrelated nested controls.');
-assert(rowExpand.includes('syncPreviewTriggers(row, expanded)'), 'Row expansion must synchronize every trigger in the row.');
+assert(rowExpand.includes('function isOverflowing(element)'), 'Disclosure controls must be based on real overflow.');
+assert(rowExpand.includes("trigger.setAttribute('aria-controls', textId)"), 'The disclosure button must identify the controlled text.');
+assert(rowExpand.includes('trigger.disabled = !needed'), 'Short text must not expose a fake disclosure button.');
+assert(rowExpand.includes('function preserveRowAnchor(row, beforeTop)'), 'Expanding a row must preserve the reader position.');
+assert(rowExpand.includes("if (event.key === 'Escape')"), 'Escape must close the expanded row.');
+assert(rowExpand.includes('interactiveTarget(event.target, cell)'), 'The root keyboard-operable cell must not block itself.');
+assert(rowExpand.includes('candidate && candidate !== root'), 'Nested controls must be ignored without disabling the root cell.');
+assert(rowExpand.includes("event.key !== 'Enter' && event.key !== ' '"), 'Enter and Space keyboard disclosure is missing.');
+assert(rowExpand.includes('ensureStatusRegion()'), 'Disclosure changes need an accessible live status.');
 assert(rowExpand.includes("new CustomEvent('medindex:registry-row-toggle'"), 'Row state changes must be observable by other UI layers.');
 
 assert(dosageDisclosureStyles.includes('[data-dosage-expanded="true"]'), 'CSS must have an explicit expanded-state fallback.');
@@ -96,8 +103,12 @@ assert(dosageDisclosureStyles.includes('-webkit-line-clamp:unset!important'), 'E
 assert(dosageDisclosureStyles.includes('line-clamp:unset!important'), 'Expanded dosage text must lose standards line clamp.');
 assert(dosageDisclosureStyles.includes('max-height:none!important'), 'Expanded dosage text must lose compact max-height.');
 assert(dosageDisclosureStyles.includes('overflow:visible!important'), 'Expanded dosage text must not remain hidden.');
+assert(dosageDisclosureStyles.includes('.registry-dosage-toggle::after'), 'Disclosure state needs a visible directional affordance.');
+assert(dosageDisclosureStyles.includes('data-disclosure-needed="false"'), 'Short text disclosure controls must remain hidden.');
+assert(dosageDisclosureStyles.includes('.registry-disclosure-status'), 'Accessible disclosure status styling is missing.');
+assert(dosageDisclosureStyles.includes('overflow-anchor:none!important'), 'Expanded rows must not trigger browser scroll jumps.');
 assert(dosageDisclosureStyles.includes('@media (max-width:760px)'), 'Mobile disclosure rules are missing.');
 assert(dosageDisclosureStyles.includes('@media (prefers-reduced-motion:reduce)'), 'Reduced-motion disclosure behavior is missing.');
 assert(!/https?:\/\//.test(dosageDisclosureStyles), 'Dosage disclosure must not load third-party assets.');
 
-console.log('Full-row and dosage disclosure reveal every character without modal, clamp, duplicate toggle or observer loop.');
+console.log('Polished dosage disclosure reveals complete text with keyboard, focus, overflow and scroll stability.');
