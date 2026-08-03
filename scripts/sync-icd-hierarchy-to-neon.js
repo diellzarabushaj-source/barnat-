@@ -3,6 +3,7 @@
 const crypto = require('node:crypto');
 const IcdPublicSource = require('../lib/icd-public-source.js');
 const FullIcd = require('../lib/icd-full-hierarchy.js');
+const HierarchyValidation = require('../lib/icd-hierarchy-validation.js');
 const { neonRequest } = require('../lib/neon-data-api.js');
 
 const REVISION_TABLE = 'icd_hierarchy_revisions';
@@ -89,7 +90,7 @@ function revisionRecord(loaded) {
 
 function validateLoaded(loaded) {
   const nodes = loaded?.data?.nodes;
-  const validation = FullIcd.validate(Array.isArray(nodes) ? nodes : [], { strictCounts:true });
+  const validation = HierarchyValidation.validate(Array.isArray(nodes) ? nodes : [], { strictCounts:true });
   if (!clean(loaded?.sourceRevision)) throw new Error('Revision-i i Google Sheet-it ICD mungon.');
   if (loaded?.sourceType !== 'google-sheet') throw new Error('Importi duhet të lexojë drejtpërdrejt Google Sheet-in editorial.');
   return validation;
