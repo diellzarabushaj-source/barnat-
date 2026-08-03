@@ -8,7 +8,8 @@ const { neonRequest, dataOf } = require('../lib/neon-data-api.js');
 
 const REVISION_TABLE = 'icd_hierarchy_revisions';
 const NODES_TABLE = 'icd_hierarchy_nodes';
-const BATCH_SIZE = 500;
+const BATCH_SIZE = 100;
+const BATCH_TIMEOUT_MS = 60000;
 
 const clean = value => String(value ?? '').trim();
 const hash = value => crypto.createHash('sha256').update(String(value ?? '')).digest('base64url');
@@ -109,7 +110,7 @@ async function existingRevision(revision) {
 async function upsertRevision(record) {
   return neonRequest(`/${REVISION_TABLE}?on_conflict=revision`, {
     method:'POST',
-    headers:{ Prefer:'resolution=merge-duplicates,return=representation' },
+    prefer:'resolution=merge-duplicates,return=representation',
     body:[record],
     timeoutMs:12000,
     label:'ICD hierarchy revision staging',
@@ -119,7 +120,7 @@ async function upsertRevision(record) {
 async function deleteRevisionNodes(revision) {
   return neonRequest(`/${NODES_TABLE}?revision=eq.${encodeURIComponent(revision)}`, {
     method:'DELETE',
-    headers:{ Prefer:'return=minimal' },
+    prefer:'return=minimal',
     timeoutMs:20000,
     label:'ICD hierarchy staging cleanup',
   });
@@ -128,9 +129,9 @@ async function deleteRevisionNodes(revision) {
 async function insertNodeBatch(records, index, total) {
   return neonRequest(`/${NODES_TABLE}?on_conflict=revision,code`, {
     method:'POST',
-    headers:{ Prefer:'resolution=merge-duplicates,return=minimal' },
+    prefer:'resolution=merge-duplicates,return=minimal',
     body:records,
-    timeoutMs:30000,
+    timeoutMs:BATCH_TIMEOUT_MS,
     label:`ICD hierarchy batch ${index}/${total}`,
   });
 }
@@ -150,12 +151,14 @@ async function markFailed(revision, error) {
   try {
     await neonRequest(`/${REVISION_TABLE}?revision=eq.${encodeURIComponent(revision)}`, {
       method:'PATCH',
-      headers:{ Prefer:'return=minimal' },
+      prefer:'return=minimal',
       body:{ status:'failed', error_summary:reason },
-      timeoutMs:8000,
+      timeoutMs:12000,
       label:'ICD hierarchy revision failure',
     });
-  } catch {}
+  } catch (markError) {
+    process.stderr.write(`ICD hierarchy failure marker was not persisted: ${clean(markError?.message || markError)}\n`);
+  }
 }
 
 async function sync(options = {}) {
@@ -174,6 +177,7 @@ async function sync(options = {}) {
   }
 
   const records = loaded.data.nodes.map(node => nodeRecord(node, loaded.data, revision));
+  const chunks = batch(records);
   if (options.dryRun) {
     return {
       ok:true,
@@ -181,19 +185,23 @@ async function sync(options = {}) {
       revision,
       counts:validation,
       records:records.length,
-      batches:batch(records).length,
+      batches:chunks.length,
+      batchSize:BATCH_SIZE,
       headerRow:loaded.headerRow,
     };
   }
 
+  process.stdout.write(`ICD hierarchy ${revision}: ${records.length} records, ${chunks.length} bounded batches.\n`);
   await upsertRevision(revisionRecord(loaded));
   try {
     await deleteRevisionNodes(revision);
-    const chunks = batch(records);
     for (let index = 0; index < chunks.length; index += 1) {
-      await insertNodeBatch(chunks[index], index + 1, chunks.length);
+      const currentBatch = chunks[index];
+      process.stdout.write(`Starting ICD hierarchy batch ${index + 1}/${chunks.length} (${currentBatch.length} rows).\n`);
+      await insertNodeBatch(currentBatch, index + 1, chunks.length);
       process.stdout.write(`ICD hierarchy batch ${index + 1}/${chunks.length} imported.\n`);
     }
+    process.stdout.write(`Activating ICD hierarchy revision ${revision}.\n`);
     const activation = await activateRevision(revision);
     return {
       ok:true,
@@ -201,6 +209,7 @@ async function sync(options = {}) {
       revision,
       counts:validation,
       records:records.length,
+      batches:chunks.length,
       activation,
     };
   } catch (error) {
@@ -225,6 +234,7 @@ module.exports = {
   REVISION_TABLE,
   NODES_TABLE,
   BATCH_SIZE,
+  BATCH_TIMEOUT_MS,
   batch,
   nodeRecord,
   revisionRecord,
