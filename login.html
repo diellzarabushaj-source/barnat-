@@ -4,61 +4,113 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
   <meta name="robots" content="noindex,nofollow,noarchive">
-  <meta name="theme-color" content="#0d3d40">
+  <meta name="theme-color" content="#10242c">
+  <meta name="description" content="MedIndex — asistent digjital për mjekun dhe mbështetje për vendimmarrje klinike.">
   <title>Hyr në MedIndex</title>
   <script src="theme-preload.js?v=production-audit-v2"></script>
   <link rel="stylesheet" href="tailadmin-medindex.css?v=20260728-1" data-tailadmin-medindex-css>
   <link rel="stylesheet" href="google-login.css?v=20260730-1">
-  <link rel="stylesheet" href="login.css?v=20260801-1">
+  <link rel="stylesheet" href="login.css?v=20260803-1">
   <script src="https://accounts.google.com/gsi/client" async defer></script>
 </head>
 <body>
   <main class="login-shell auth-page">
-    <section class="login-card" aria-labelledby="loginTitle">
-      <div class="login-brand" aria-hidden="true"><span>M</span><b>+</b></div>
-      <p class="login-kicker">Qasje private</p>
-      <h1 id="loginTitle">Hyr në MedIndex</h1>
-      <p class="login-copy">Hyr direkt me llogarinë e aprovuar Google. MedIndex verifikon identitetin në server dhe hap rolin Editor vetëm për pronaren.</p>
+    <section class="login-area" aria-labelledby="loginTitle">
+      <div class="login-card">
+        <div class="login-brand-lockup" aria-label="MedIndex">
+          <div class="login-brand" aria-hidden="true"><span>M</span><b>+</b></div>
+          <span class="login-brand-name">MedIndex</span>
+        </div>
 
-      <section class="google-login-panel" id="googleLoginPanel" aria-labelledby="googleLoginHeading">
-        <h2 class="google-login-heading" id="googleLoginHeading">Vazhdo me Google</h2>
-        <div class="google-login-button" id="googleLoginButton" aria-live="polite"></div>
-        <p class="google-login-status" id="googleLoginStatus" role="status" aria-live="polite">Po përgatitet hyrja e sigurt…</p>
-      </section>
+        <div class="login-intro">
+          <p class="login-kicker">Qasje e sigurt</p>
+          <h1 id="loginTitle">Mirë se vini</h1>
+          <p class="login-copy">Hyr në hapësirën tënde klinike.</p>
+        </div>
 
-      <p class="login-account-note">Lejohet vetëm diellzarabushaj@gmail.com</p>
+        <section class="google-login-panel" id="googleLoginPanel" aria-labelledby="googleLoginHeading">
+          <h2 class="google-login-heading" id="googleLoginHeading">Vazhdo me Google</h2>
+          <div class="google-login-button" id="googleLoginButton" aria-live="polite"></div>
+          <p class="google-login-status" id="googleLoginStatus" role="status" aria-live="polite">Po përgatitet hyrja e sigurt…</p>
+        </section>
 
-      <details class="password-fallback" id="passwordFallback" hidden>
-        <summary>Hyrje rezervë me password</summary>
-        <div class="login-divider"><span>Rezervë</span></div>
-        <form id="loginForm" autocomplete="on" novalidate>
-          <label for="password">Password-i</label>
-          <div class="password-row">
-            <input id="password" name="password" type="password" autocomplete="current-password" required minlength="6" maxlength="128" aria-describedby="capsLockHint loginMessage">
-            <button id="togglePassword" type="button" aria-label="Shfaq password-in" aria-pressed="false">Shfaq</button>
-          </div>
-          <p class="caps-lock-hint" id="capsLockHint" hidden>Caps Lock është aktiv.</p>
-          <button class="login-submit" id="loginSubmit" type="submit">
-            <span>Hyr me password</span>
-            <span aria-hidden="true">→</span>
-          </button>
-        </form>
-      </details>
+        <p class="login-account-note">
+          <span>Llogaria e aprovuar</span>
+          <strong>diellzarabushaj@gmail.com</strong>
+        </p>
 
-      <p class="login-message" id="loginMessage" role="alert" aria-live="polite"></p>
+        <details class="password-fallback" id="passwordFallback" hidden>
+          <summary>Hyrje rezervë me password</summary>
+          <div class="login-divider"><span>Rezervë</span></div>
+          <form id="loginForm" autocomplete="on" novalidate>
+            <label for="password">Password-i</label>
+            <div class="password-row">
+              <input id="password" name="password" type="password" autocomplete="current-password" required minlength="6" maxlength="128" aria-describedby="capsLockHint loginMessage">
+              <button id="togglePassword" type="button" aria-label="Shfaq password-in" aria-pressed="false">Shfaq</button>
+            </div>
+            <p class="caps-lock-hint" id="capsLockHint" hidden>Caps Lock është aktiv.</p>
+            <button class="login-submit" id="loginSubmit" type="submit">
+              <span>Hyr me password</span>
+              <span aria-hidden="true">→</span>
+            </button>
+          </form>
+        </details>
 
-      <div class="login-meta" aria-label="Siguria e sesionit">
-        <span>Google ID i verifikuar</span>
-        <span>Sesioni 8 orë</span>
-        <span>Cookie HttpOnly</span>
+        <p class="login-message" id="loginMessage" role="alert" aria-live="polite"></p>
+
+        <div class="login-meta" aria-label="Siguria e sesionit">
+          <span>Google ID</span>
+          <span>Sesioni 8 orë</span>
+          <span>Cookie HttpOnly</span>
+        </div>
       </div>
+      <p class="login-footer">Qasje private · Të dhënat mbrohen në sesion të sigurt</p>
     </section>
-    <aside class="login-side-panel" aria-label="MedIndex">
+
+    <aside class="login-side-panel" aria-labelledby="loginSideTitle">
       <div class="login-side-inner">
-        <div class="login-side-mark" aria-hidden="true"><span>M</span><b>+</b></div>
-        <h2>MedIndex</h2>
-        <p>Një hapësirë e unifikuar për barnat, klasifikimin ATC, ICD-në, analizat, dozologjinë, protokollet dhe recetat.</p>
-        <div class="login-side-grid" aria-hidden="true"><span>Të dhëna klinike</span><span>Bibliotekë personale</span><span>Qasje private</span></div>
+        <div class="login-side-brand" aria-label="MedIndex">
+          <div class="login-side-mark" aria-hidden="true"><span>M</span><b>+</b></div>
+          <span>MedIndex</span>
+        </div>
+
+        <div class="login-side-copy">
+          <p class="login-side-kicker">Asistent klinik digjital</p>
+          <h2 id="loginSideTitle">Vendime klinike,<br><span>me më pak kërkim.</span></h2>
+          <p>MedIndex i bashkon barnat, ATC-në, ICD-në, analizat dhe dozologjinë në një hapësirë të vetme për mjekun.</p>
+        </div>
+
+        <figure class="clinical-illustration">
+          <svg viewBox="0 0 620 410" role="img" aria-labelledby="doctorIllustrationTitle doctorIllustrationDesc">
+            <title id="doctorIllustrationTitle">Mjek duke përdorur laptopin</title>
+            <desc id="doctorIllustrationDesc">Piktogramë minimaliste e një mjeku që përdor MedIndex gjatë punës klinike.</desc>
+            <rect class="illustration-frame" x="32" y="30" width="556" height="330" rx="28"/>
+            <circle class="illustration-accent" cx="530" cy="84" r="24"/>
+            <path class="illustration-accent-mark" d="M530 72v24M518 84h24"/>
+            <circle class="illustration-head" cx="190" cy="128" r="42"/>
+            <path class="illustration-hair" d="M151 124c3-32 20-51 43-51 28 0 46 22 44 55-13-10-25-19-39-29-8 14-24 24-48 25Z"/>
+            <path class="illustration-neck" d="M175 166v25h32v-25"/>
+            <path class="illustration-coat" d="M122 298v-65c0-33 28-58 62-58h16c35 0 64 26 64 59v64"/>
+            <path class="illustration-shirt" d="M169 181l23 31 23-31"/>
+            <path class="illustration-stethoscope" d="M156 198v32c0 20 15 36 34 36s34-16 34-36v-31M151 196h10M219 196h10"/>
+            <circle class="illustration-stethoscope-dot" cx="190" cy="266" r="8"/>
+            <path class="illustration-arm" d="M252 228c28 7 49 21 67 43"/>
+            <path class="illustration-arm" d="M130 228c-18 13-30 31-36 54"/>
+            <rect class="illustration-laptop" x="280" y="160" width="214" height="134" rx="16"/>
+            <path class="illustration-laptop-line" d="M304 270h166"/>
+            <path class="illustration-laptop-base" d="M258 300h258c0 17-14 31-31 31H289c-17 0-31-14-31-31Z"/>
+            <circle class="illustration-screen-dot" cx="387" cy="215" r="28"/>
+            <path class="illustration-screen-mark" d="M387 200v30M372 215h30"/>
+            <path class="illustration-desk" d="M76 332h470"/>
+            <path class="illustration-note" d="M88 95h34M88 112h22"/>
+          </svg>
+        </figure>
+
+        <div class="login-side-grid" aria-label="Mjetet kryesore">
+          <span>Barnat &amp; dozologjia</span>
+          <span>ICD &amp; ATC</span>
+          <span>Analizat</span>
+        </div>
       </div>
     </aside>
   </main>
