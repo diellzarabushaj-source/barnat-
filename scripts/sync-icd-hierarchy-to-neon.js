@@ -21,10 +21,14 @@ function batch(values, size = BATCH_SIZE) {
 }
 
 function nodeRecord(node, dataset, revision) {
-  const breadcrumb = typeof dataset?.breadcrumbFor === 'function'
-    ? dataset.breadcrumbFor(node.code)
-    : [];
-  const pathText = breadcrumb.map(item => `${item.code} ${item.title}`).join(' › ');
+  const breadcrumb = [
+    ...FullIcd.ancestorsOf(dataset, node.code),
+    node,
+  ];
+  const pathText = breadcrumb
+    .map(item => `${clean(item.code)} ${clean(item.displayTitle || item.albanianDraft || item.englishTitle)}`.trim())
+    .filter(Boolean)
+    .join(' › ');
   const record = {
     revision,
     code:clean(node.code),
@@ -161,7 +165,7 @@ async function sync(options = {}) {
       ok:true,
       skipped:true,
       revision,
-      counts:validation.counts,
+      counts:validation,
       reason:'Revision-i i Google Sheet-it është tashmë aktiv në Neon.',
     };
   }
@@ -172,7 +176,7 @@ async function sync(options = {}) {
       ok:true,
       dryRun:true,
       revision,
-      counts:validation.counts,
+      counts:validation,
       records:records.length,
       batches:batch(records).length,
       headerRow:loaded.headerRow,
@@ -192,7 +196,7 @@ async function sync(options = {}) {
       ok:true,
       skipped:false,
       revision,
-      counts:validation.counts,
+      counts:validation,
       records:records.length,
       activation,
     };
