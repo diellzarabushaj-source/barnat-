@@ -13,11 +13,16 @@
   const fallback = document.getElementById('passwordFallback');
   const googleButton = document.getElementById('googleLoginButton');
   const googleStatus = document.getElementById('googleLoginStatus');
+  const retryButton = document.getElementById('retryLoginConfig');
   let busy = false;
   let redirecting = false;
   let configurationBlocked = false;
   let csrfToken = '';
   let googleInitialized = false;
+  let googleIdentity = null;
+  let googleButtonWidth = 0;
+  let googleResizeFrame = 0;
+  let lastConfiguration = null;
 
   function connectionProfile() {
     const connection = navigator.connection || navigator.mozConnection || navigator.webkitConnection;
@@ -40,14 +45,27 @@
     return safeReturnPath(queryReturn || stored || '/index.html');
   }
 
-  function setMessage(value, success = false) {
-    message.textContent = value || '';
-    message.classList.toggle('success', success);
+  function setMessage(value, tone = 'error') {
+    if (!message) return;
+    const text = String(value || '');
+    const error = Boolean(text) && tone === 'error';
+    message.textContent = text;
+    message.classList.toggle('success', tone === 'success');
+    message.dataset.tone = text ? tone : '';
+    message.setAttribute('role', error ? 'alert' : 'status');
+    message.setAttribute('aria-live', error ? 'assertive' : 'polite');
   }
 
   function setGoogleStatus(value, error = false) {
+    if (!googleStatus) return;
     googleStatus.textContent = value || '';
     googleStatus.classList.toggle('is-error', error);
+    googleStatus.setAttribute('role', error ? 'alert' : 'status');
+    googleStatus.setAttribute('aria-live', error ? 'assertive' : 'polite');
+  }
+
+  function showRetry(value) {
+    if (retryButton) retryButton.hidden = !value;
   }
 
   function setBusy(value, provider = '') {
@@ -55,18 +73,24 @@
     if (submit) submit.disabled = value || configurationBlocked;
     if (password) password.disabled = value || configurationBlocked;
     if (toggle) toggle.disabled = value || configurationBlocked;
+    if (retryButton) retryButton.disabled = value || configurationBlocked;
     if (submit) {
       submit.classList.toggle('is-loading', value);
-      submit.querySelector('span:first-child').textContent = value ? 'Duke verifikuar…' : 'Hyr me password';
+      const label = submit.querySelector('span:first-child');
+      if (label) label.textContent = value ? 'Duke verifikuar…' : 'Hyr me password';
     }
     form?.setAttribute('aria-busy', String(value));
-    googleButton.style.pointerEvents = value ? 'none' : '';
-    googleButton.style.opacity = value ? '.65' : '';
+    if (googleButton) {
+      googleButton.setAttribute('aria-busy', String(value));
+      googleButton.style.pointerEvents = value ? 'none' : '';
+      googleButton.style.opacity = value ? '.65' : '';
+    }
     if (value && provider === 'google') setGoogleStatus('Google po verifikon identitetin…');
   }
 
   function blockForConfiguration() {
     configurationBlocked = true;
+    showRetry(false);
     setBusy(false);
     setGoogleStatus('Hyrja private nuk është konfiguruar ende në server.', true);
     setMessage('Vendos SESSION_SECRET dhe GOOGLE_CLIENT_ID në Vercel. Password-i rezervë është opsional.');
@@ -120,9 +144,13 @@
   async function completeLogin(payload) {
     saveBootstrapLease(payload);
     redirecting = true;
-    setMessage('U verifikua. Po hapet MedIndex…', true);
+    showRetry(false);
+    setMessage('U verifikua. Po hapet MedIndex…', 'success');
     setGoogleStatus(`U verifikua ${payload.user?.email || 'llogaria Google'}.`);
-    if (password) password.value = '';
+    if (password) {
+      password.value = '';
+      password.removeAttribute('aria-invalid');
+    }
     try { sessionStorage.removeItem(RETURN_KEY); } catch {}
     await Promise.race([purgeOnlyStaleRuntimeEntries(), new Promise(resolve => setTimeout(resolve, 1200))]);
     location.replace(destination());
@@ -130,8 +158,9 @@
 
   async function submitCredential(body, provider) {
     if (busy || configurationBlocked) return;
+    showRetry(false);
     setBusy(true, provider);
-    setMessage(connectionProfile().slow ? 'Lidhja është e dobët; verifikimi mund të zgjasë pak…' : '');
+    setMessage(connectionProfile().slow ? 'Lidhja është e dobët; verifikimi mund të zgjasë pak…' : '', 'status');
     try {
       const response = await timedFetch('/api/auth', {
         method:'POST',
@@ -158,8 +187,13 @@
         ? 'Lidhja është shumë e ngadalshme. Provo përsëri kur sinjali të jetë më i mirë.'
         : error.message || 'Hyrja dështoi.';
       setMessage(value);
-      if (provider === 'google') setGoogleStatus(value, true);
-      else password?.select();
+      if (provider === 'google') {
+        setGoogleStatus(value, true);
+        showRetry(true);
+      } else {
+        password?.setAttribute('aria-invalid', 'true');
+        password?.select();
+      }
     } finally {
       if (!redirecting && !configurationBlocked) setBusy(false);
     }
@@ -172,8 +206,10 @@
 
   ['keydown', 'keyup'].forEach(type => password?.addEventListener(type, updateCapsLock));
   password?.addEventListener('blur', () => { if (capsHint) capsHint.hidden = true; });
+  password?.addEventListener('input', () => password.removeAttribute('aria-invalid'));
 
   toggle?.addEventListener('click', () => {
+    if (!password) return;
     const visible = password.type === 'text';
     password.type = visible ? 'password' : 'text';
     toggle.textContent = visible ? 'Shfaq' : 'Fshih';
@@ -184,12 +220,14 @@
 
   form?.addEventListener('submit', event => {
     event.preventDefault();
-    const value = password.value;
+    const value = password?.value || '';
     if (value.length < 6) {
+      password?.setAttribute('aria-invalid', 'true');
       setMessage('Shkruaje password-in e plotë.');
-      password.focus();
+      password?.focus();
       return;
     }
+    password.removeAttribute('aria-invalid');
     void submitCredential({ password:value }, 'password');
   });
 
@@ -203,6 +241,28 @@
       };
       check();
     });
+  }
+
+  function targetGoogleButtonWidth() {
+    const available = Math.floor(googleButton?.getBoundingClientRect().width || googleButton?.clientWidth || 320);
+    return Math.max(200, Math.min(400, available));
+  }
+
+  function renderGoogleButton(force = false) {
+    if (!googleInitialized || !googleIdentity || !googleButton) return;
+    const width = targetGoogleButtonWidth();
+    if (!force && googleButton.firstElementChild && Math.abs(width - googleButtonWidth) < 8) return;
+    googleButton.replaceChildren();
+    googleIdentity.renderButton(googleButton, {
+      type:'standard',
+      theme:'outline',
+      size:'large',
+      text:'continue_with',
+      shape:'rectangular',
+      logo_alignment:'left',
+      width,
+    });
+    googleButtonWidth = width;
   }
 
   async function initializeGoogle(config) {
@@ -221,47 +281,45 @@
         cancel_on_tap_outside:true,
         use_fedcm_for_prompt:true,
       });
-      const dark = document.documentElement.dataset.theme === 'dark';
-      identity.renderButton(googleButton, {
-        type:'standard',
-        theme:dark ? 'filled_black' : 'outline',
-        size:'large',
-        text:'continue_with',
-        shape:'rectangular',
-        logo_alignment:'left',
-        width:320,
-      });
+      googleIdentity = identity;
       googleInitialized = true;
+      renderGoogleButton(true);
+      showRetry(false);
       setGoogleStatus('Zgjidh llogarinë e aprovuar Google.');
     } catch (error) {
       setGoogleStatus(error.message || 'Google Sign-In nuk u ngarkua.', true);
-      if (config.passwordFallbackConfigured) {
+      showRetry(true);
+      if (config.passwordFallbackConfigured && fallback) {
         fallback.hidden = false;
         fallback.open = true;
+        password?.focus();
       }
     }
   }
 
   function configureProviders(config) {
+    lastConfiguration = config;
     csrfToken = String(config.csrfToken || '');
-    fallback.hidden = !config.passwordFallbackConfigured;
+    showRetry(false);
+    if (fallback) fallback.hidden = !config.passwordFallbackConfigured;
     if (!config.googleConfigured) {
-      googleButton.innerHTML = '<div class="google-login-unavailable">Google Client ID ende nuk është vendosur në Vercel.</div>';
+      if (googleButton) googleButton.innerHTML = '<div class="google-login-unavailable">Google Client ID ende nuk është vendosur në Vercel.</div>';
       setGoogleStatus('Hyrja me Google është gati në kod, por pret konfigurimin e Google Client ID.', true);
-      if (config.passwordFallbackConfigured) {
+      if (config.passwordFallbackConfigured && fallback) {
         fallback.hidden = false;
         fallback.open = true;
-        password.focus();
+        password?.focus();
       } else {
         blockForConfiguration();
       }
       return;
     }
-    if (config.passwordFallbackConfigured && new URLSearchParams(location.search).get('fallback') === '1') fallback.open = true;
+    if (config.passwordFallbackConfigured && new URLSearchParams(location.search).get('fallback') === '1' && fallback) fallback.open = true;
     void initializeGoogle(config);
   }
 
   async function checkExistingSession() {
+    showRetry(false);
     try {
       const response = await timedFetch('/api/auth', { cache:'no-store', credentials:'same-origin', headers:{ Accept:'application/json' } }, 10000, 24000);
       const payload = await response.json().catch(() => ({}));
@@ -277,17 +335,43 @@
     } catch (error) {
       setGoogleStatus(error?.name === 'AbortError' ? 'Kontrolli i hyrjes zgjati tepër.' : 'Serveri i hyrjes nuk u arrit.', true);
       setMessage('Kontrollo lidhjen me internet dhe provo përsëri.');
+      showRetry(true);
     }
+  }
+
+  retryButton?.addEventListener('click', () => {
+    if (busy || configurationBlocked) return;
+    showRetry(false);
+    setMessage('', 'status');
+    setGoogleStatus('Po riprovohet lidhja e sigurt…');
+    if (lastConfiguration?.googleConfigured && !googleInitialized) void initializeGoogle(lastConfiguration);
+    else void checkExistingSession();
+  });
+
+  function initGoogleResizeAudit() {
+    if (!googleButton || !('ResizeObserver' in window)) return;
+    const observer = new ResizeObserver(() => {
+      if (!googleInitialized) return;
+      cancelAnimationFrame(googleResizeFrame);
+      googleResizeFrame = requestAnimationFrame(() => renderGoogleButton());
+    });
+    observer.observe(googleButton);
   }
 
   function init() {
     setBusy(false);
+    initGoogleResizeAudit();
     refreshWorkerInBackground();
     checkExistingSession();
   }
 
-  window.addEventListener('pageshow', () => {
-    if (!busy && !configurationBlocked && fallback.open) password?.focus();
+  window.addEventListener('online', () => {
+    if (!configurationBlocked && retryButton && !retryButton.hidden) setGoogleStatus('Lidhja u rikthye. Riprovo hyrjen.');
   });
+
+  window.addEventListener('pageshow', () => {
+    if (!busy && !configurationBlocked && fallback?.open) password?.focus();
+  });
+
   init();
 })();
