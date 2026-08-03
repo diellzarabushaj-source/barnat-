@@ -3,24 +3,34 @@
 const assert = require('node:assert/strict');
 const fs = require('node:fs');
 const path = require('node:path');
+const { execFileSync } = require('node:child_process');
 
 const root = path.resolve(__dirname,'..');
 const read = file => fs.readFileSync(path.join(root,file),'utf8');
 const index = read('index.html');
 const css = read('registry-unified-table.css');
 const fullTextCss = read('registry-full-text-expansion.css');
+const dosageDisclosureCss = read('registry-dosage-disclosure-fix.css');
 const runtime = read('registry-unified-table.js');
-const loader = read('registry-runtime-loader.js');
+const loaderPath = path.join(root, 'registry-runtime-loader.js');
+const loader = fs.readFileSync(loaderPath, 'utf8');
+const rowExpandPath = path.join(root, 'registry-row-expand.js');
+const rowExpand = fs.readFileSync(rowExpandPath, 'utf8');
 const fast = read('registry-fast-start.js');
 const release = read('registry-ui-release.js');
 
-assert.match(index,/data-registry-ui-release="20260801-14"/,'index must use the full-row text release');
+execFileSync(process.execPath, ['--check', loaderPath], { stdio:'pipe' });
+execFileSync(process.execPath, ['--check', rowExpandPath], { stdio:'pipe' });
+
+assert.match(index,/data-registry-ui-release="20260801-14"/,'index must preserve the full-row text release');
 assert.match(index,/registry-unified-table\.css\?v=20260801-1/,'unified table stylesheet must be wired');
 assert.match(index,/registry-full-text-expansion\.css\?v=20260801-1/,'full-row text stylesheet must be wired');
+assert.match(index,/registry-dosage-disclosure-fix\.css\?v=20260803-3/,'hardened dosage disclosure stylesheet must be wired');
 assert.match(index,/registry-unified-table\.js\?v=20260801-1/,'unified table controller must be wired');
-assert.match(index,/registry-runtime-loader\.js\?v=20260801-6/,'fast authenticated registry loader must be wired');
+assert.match(index,/registry-row-expand\.js\?v=20260803-6/,'hardened row expansion controller must be wired');
+assert.match(index,/registry-runtime-loader\.js\?v=20260803-unverified-1/,'current authenticated registry loader must be wired');
 assert.ok(index.indexOf('registry-unified-table.css') < index.indexOf('registry-full-text-expansion.css'),'full-row reveal must follow compact unified geometry');
-assert.ok(index.indexOf('registry-full-text-expansion.css') < index.indexOf('tailadmin-professional.css'),'TailAdmin professional must remain the final static stylesheet');
+assert.ok(index.indexOf('registry-full-text-expansion.css') < index.indexOf('registry-dosage-disclosure-fix.css'),'dosage disclosure must follow the general full-text release');
 assert.ok(index.indexOf('registry-ui-release.js') < index.indexOf('registry-unified-table.js'),'unified controller must run after the release guard');
 assert.doesNotMatch(index,/(?:registry-table-integrity|registry-clinical-view|registry-tailgrids-refinement|registry-columns-filters|registry-table-final)\.(?:css|js)/,'competing table controllers must not be loaded');
 assert.doesNotMatch(index,/registryTableFinalMobileCompatibility/,'legacy mobile compatibility patch must be removed');
@@ -31,8 +41,9 @@ assert.match(fast,/loader\.style\.pointerEvents = 'none'/,'visual loader must ne
 
 assert.doesNotThrow(() => new Function(runtime),'unified table controller must be valid JavaScript');
 assert.doesNotThrow(() => new Function(loader),'registry runtime loader must be valid JavaScript');
-assert.match(loader,/registry-runtime-loader-v6/,'loader must expose the immediate authenticated version');
-assert.match(loader,/app-performance\.js\?v=20260801-2/,'loader must request the current registry bootstrap');
+assert.doesNotThrow(() => new Function(rowExpand),'row expansion controller must be valid JavaScript');
+assert.match(loader,/registry-runtime-loader-v7-unverified-visible/,'loader must expose the current authenticated version');
+assert.match(loader,/app-performance\.js\?v=20260803-unverified-1/,'loader must request the current registry bootstrap');
 assert.match(loader,/classList\.contains\('auth-ready'\)/,'registry startup must wait for authentication');
 assert.match(loader,/requestAnimationFrame\(\(\) => \{[\s\S]*loadRuntime\(\)/,'registry startup must yield one paint without an artificial multi-second wait');
 assert.doesNotMatch(loader,/FIRST_INTERACTION_FALLBACK_MS|POST_INTERACTION_GRACE_MS|INTERACTION_EVENTS/,'interaction gates and five-second fallbacks must be removed');
@@ -50,6 +61,16 @@ assert.match(runtime,/registryUnifiedIntegrity/,'runtime must expose row/header 
 assert.match(runtime,/MEDINDEX_REGISTRY_TABLE_AUDIT/,'runtime must expose a browser audit object');
 assert.match(runtime,/normalizePencils/,'edit buttons must be normalized once by the unified controller');
 assert.doesNotMatch(runtime,/registry-dose-dialog|registry-cell-preview-dialog/,'unified runtime must not contain a text modal');
+
+assert.match(rowExpand,/registry-row-expand-20260803-6/,'row expansion runtime version is stale');
+assert.match(rowExpand,/const dosageTrigger = event\.target\.closest\?\.\('\.registry-dosage-dose'\)/,'dosage disclosure click must be owned by the row controller');
+assert.match(rowExpand,/event\.stopImmediatePropagation\(\)/,'duplicate legacy disclosure toggles must be blocked');
+assert.match(rowExpand,/syncDosageControls\(row, expanded\)/,'row and dosage state must stay synchronized');
+assert.match(rowExpand,/regimen\.dataset\.dosageExpanded = String\(expanded\)/,'CSS must receive an explicit expanded state');
+assert.match(rowExpand,/toggle\.textContent = expanded \? 'Më pak' : 'Më shumë'/,'visible disclosure label must reflect state');
+assert.match(rowExpand,/link\[data-registry-dosage-disclosure-fix-css\]/,'disclosure CSS must be kept after dynamically injected compact styles');
+assert.match(rowExpand,/return fallback \? `row:\$\{fallback\}` : ''/,'rows without IDs need a deterministic expansion key');
+assert.match(rowExpand,/new CustomEvent\('medindex:registry-row-toggle'/,'expansion changes must be observable');
 
 assert.match(css,/#dataTable\[data-registry-unified-table\] thead th[\s\S]*background:#fff!important/,'header must remain white');
 assert.match(css,/#dataTable\[data-registry-unified-table\] :is\(th,td\)\[data-registry-column-key\][\s\S]*position:relative!important/,'columns must be non-sticky');
@@ -78,4 +99,13 @@ assert.match(fullTextCss,/::-webkit-scrollbar[\s\S]*width:12px!important[\s\S]*h
 assert.match(fullTextCss,/data-theme="dark"[\s\S]*scrollbar-color:/,'dark mode must style the same scroll surface');
 assert.doesNotMatch(fullTextCss,/https?:\/\//,'full-row text and scroll styles must not load third-party assets');
 
-console.log('Single-controller registry table, full-row text reveal and bidirectional scroll audit passed.');
+assert.match(dosageDisclosureCss,/data-dosage-expanded="true"/,'explicit dosage expansion selector is missing');
+assert.match(dosageDisclosureCss,/contain:none!important/,'expanded dosage cells must not remain clipped by containment');
+assert.match(dosageDisclosureCss,/-webkit-line-clamp:unset!important/,'expanded dosage text must lose WebKit line clamp');
+assert.match(dosageDisclosureCss,/line-clamp:unset!important/,'expanded dosage text must lose standards line clamp');
+assert.match(dosageDisclosureCss,/max-height:none!important/,'expanded dosage text must lose max-height');
+assert.match(dosageDisclosureCss,/overflow:visible!important/,'expanded dosage text must lose overflow clipping');
+assert.match(dosageDisclosureCss,/@media \(max-width:760px\)/,'mobile dosage expansion is missing');
+assert.doesNotMatch(dosageDisclosureCss,/https?:\/\//,'dosage disclosure styles must not load third-party assets');
+
+console.log('Single-controller registry table and full dosage disclosure audit passed.');
