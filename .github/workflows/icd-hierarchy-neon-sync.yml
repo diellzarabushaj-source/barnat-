@@ -1,4 +1,5 @@
 name: ICD hierarchy Neon sync
+run-name: ICD hierarchy Neon sync · trusted internal run
 
 on:
   push:
