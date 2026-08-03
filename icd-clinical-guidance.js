@@ -454,11 +454,11 @@
     const code = normalizeCode(activeCode || activeWorkspaceCode());
     if (!code || !authReady()) return false;
     activeCode = code;
-    const sequence = ++renderSequence;
+    ++renderSequence;
     renderLoading(code);
     try {
       const index = await loadDataset(true);
-      if (sequence !== renderSequence || code !== activeCode) return false;
+      if (code !== activeCode) return false;
       const context = resolveClinicalContext(code, index);
       if (!context) return renderNotCurated(code);
       const rendered = renderContext(context);
@@ -470,7 +470,7 @@
       }
       return rendered;
     } catch (error) {
-      if (sequence === renderSequence) renderError(error?.message || error);
+      if (code === activeCode) renderError(error?.message || error);
       rootRef.document.documentElement.dataset.miIcdClinicalRecoveryResult = 'error';
       return false;
     }
