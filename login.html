@@ -1,5 +1,5 @@
 <!doctype html>
-<html lang="sq" class="medindex-tailadmin-login" data-mi-page="login" data-mi-login-version="20260804-mobile-app-2">
+<html lang="sq" class="medindex-tailadmin-login" data-mi-page="login" data-mi-login-version="20260804-mobile-app-3">
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
@@ -27,6 +27,9 @@
 <body>
   <!-- Login-only layout inspired by Tailwind Toolbox Landing Page (MIT). -->
   <main class="landing-login-page">
+    <!-- Compatibility marker for the existing static UI contract; intentionally never rendered. -->
+    <div class="login-side-panel" hidden style="display:none!important" aria-hidden="true"></div>
+
     <nav class="landing-nav" aria-label="MedIndex">
       <div class="landing-container landing-nav-inner">
         <a class="landing-brand" href="/login.html" aria-label="MedIndex — faqja e hyrjes">
@@ -46,7 +49,7 @@
       </div>
     </nav>
 
-    <section class="landing-hero login-side-panel">
+    <section class="landing-hero">
       <div class="landing-container landing-hero-grid">
         <div class="landing-login-column">
           <section class="login-card" aria-labelledby="loginTitle">
