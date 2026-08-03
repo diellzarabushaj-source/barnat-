@@ -32,7 +32,7 @@ const builder = read('scripts/build-static-runtime.js');
 const middleware = read('middleware.ts');
 
 assert.match(index, /registry-runtime-loader\.js\?v=20260803-unverified-1/);
-assert.match(index, /registry-row-expand\.js\?v=20260803-6/);
+assert.match(index, /registry-row-expand\.js\?v=20260803-7/);
 assert.match(index, /registry-dosage-disclosure-fix\.css\?v=20260803-3/);
 assert.match(index, /registry-unified-table\.js\?v=20260801-1/);
 assert.doesNotMatch(index, /<script src="app-performance\.js"/);
@@ -85,13 +85,17 @@ assert.match(dosage, /existing\.innerHTML !== desired\.innerHTML/);
 assert.doesNotMatch(dosage, /DRUG_DATA_PARTS|\batob\s*\(|DecompressionStream|Uint8Array/);
 assert.doesNotMatch(dosage, /observe\([^\n]+subtree\s*:\s*true/);
 
-assert.match(rowExpand, /registry-row-expand-20260803-6/);
+assert.match(rowExpand, /registry-row-expand-20260803-7/);
 assert.match(rowExpand, /document\.addEventListener\('click', onClick, true\)/);
 assert.match(rowExpand, /const dosageTrigger = event\.target\.closest\?\.\('\.registry-dosage-dose'\)/);
 assert.match(rowExpand, /event\.stopImmediatePropagation\(\)/);
 assert.match(rowExpand, /syncDosageControls\(row, expanded\)/);
 assert.match(rowExpand, /data-registry-dosage-disclosure-fix-css/);
 assert.match(rowExpand, /new CustomEvent\('medindex:registry-row-toggle'/);
+assert.match(rowExpand, /const desiredTail = \[finalStyle, fullText, dosageDisclosure\]\.filter\(Boolean\)/);
+assert.match(rowExpand, /const alreadyStable = desiredTail\.length > 0/);
+assert.match(rowExpand, /if \(!alreadyStable\) desiredTail\.forEach\(node => document\.head\.appendChild\(node\)\)/);
+assert.doesNotMatch(rowExpand, /document\.head\.lastElementChild !== finalStyle/);
 assert.doesNotMatch(rowExpand, /setInterval|document\.body.*subtree\s*:\s*true/);
 
 assert.match(disclosureCss, /data-dosage-expanded="true"/);
@@ -111,4 +115,4 @@ assert.match(builder, /runtimeOutputs/);
 assert.match(builder, /app-runtime-performance\.js/);
 assert.match(middleware, /registry-parser-worker-v2\.js/);
 
-console.log('Registry loader v7, full dosage disclosure, single controller and main-thread deep audit passed.');
+console.log('Registry loader v7, idempotent dosage disclosure, single controller and main-thread deep audit passed.');
