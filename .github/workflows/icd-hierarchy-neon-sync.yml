@@ -9,6 +9,7 @@ on:
       - 'lib/icd-hierarchy-source-normalizer.js'
       - 'lib/icd-hierarchy-validation.js'
       - 'lib/icd-hierarchy-neon-reader.js'
+      - 'lib/neon-data-api.js'
       - 'scripts/sync-icd-hierarchy-to-neon.js'
       - 'sql/icd-hierarchy-neon.sql'
       - '.github/workflows/icd-hierarchy-neon-sync.yml'

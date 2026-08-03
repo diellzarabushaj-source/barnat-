@@ -20,6 +20,31 @@ assert.equal(DataApi.isRelationMissing({ status:404, message:'not found' }), tru
 assert.equal(DataApi.isRelationMissing({ status:400, payload:{ code:'42P01' } }), true);
 assert.equal(DataApi.isRelationMissing({ status:500, message:'timeout' }), false);
 
+const tokenSnapshot = {
+  medindex:process.env.MEDINDEX_NEON_DATA_API_TOKEN,
+  neon:process.env.NEON_DATA_API_TOKEN,
+  vercel:process.env.VERCEL_OIDC_TOKEN,
+};
+try {
+  process.env.MEDINDEX_NEON_DATA_API_TOKEN = 'medindex-token';
+  process.env.NEON_DATA_API_TOKEN = 'neon-token';
+  process.env.VERCEL_OIDC_TOKEN = 'vercel-token';
+  assert.equal(DataApi.configuredToken(), 'medindex-token');
+  delete process.env.MEDINDEX_NEON_DATA_API_TOKEN;
+  assert.equal(DataApi.configuredToken(), 'neon-token');
+  delete process.env.NEON_DATA_API_TOKEN;
+  assert.equal(DataApi.configuredToken(), 'vercel-token');
+} finally {
+  for (const [key, value] of [
+    ['MEDINDEX_NEON_DATA_API_TOKEN', tokenSnapshot.medindex],
+    ['NEON_DATA_API_TOKEN', tokenSnapshot.neon],
+    ['VERCEL_OIDC_TOKEN', tokenSnapshot.vercel],
+  ]) {
+    if (value === undefined) delete process.env[key];
+    else process.env[key] = value;
+  }
+}
+
 const sampleNodes = [
   {
     code:'I', level:'chapter', chapter:'I', block:'', parentCode:'',
@@ -111,6 +136,7 @@ const reader = fs.readFileSync(path.join(root, 'lib/icd-hierarchy-neon-reader.js
 const dataApi = fs.readFileSync(path.join(root, 'lib/neon-data-api.js'), 'utf8');
 const publicSource = fs.readFileSync(path.join(root, 'lib/icd-public-source.js'), 'utf8');
 const packageJson = fs.readFileSync(path.join(root, 'package.json'), 'utf8');
+const workflow = fs.readFileSync(path.join(root, '.github/workflows/icd-hierarchy-neon-sync.yml'), 'utf8');
 
 assert.match(script, /sheetOnly:true/);
 assert.match(script, /BATCH_SIZE = 500/);
@@ -132,9 +158,16 @@ assert.match(reader, /FullIcd\.attachIndexes\(data\)/);
 assert.match(reader, /counts:data\.counts/);
 assert.doesNotMatch(reader, /attachIndexes\(nodes\)/);
 assert.doesNotMatch(reader, /validation\.counts/);
+assert.match(dataApi, /process\.env\.NEON_DATA_API_URL/);
+assert.match(dataApi, /process\.env\.MEDINDEX_NEON_DATA_API_TOKEN/);
+assert.match(dataApi, /process\.env\.NEON_DATA_API_TOKEN/);
+assert.match(dataApi, /function configuredToken/);
 assert.match(dataApi, /function hasNeonConfig/);
 assert.match(dataApi, /function dataOf/);
 assert.match(dataApi, /function isRelationMissing/);
+assert.match(workflow, /lib\/neon-data-api\.js/);
+assert.match(workflow, /MEDINDEX_NEON_DATA_API_TOKEN/);
+assert.match(workflow, /NEON_DATA_API_TOKEN/);
 assert.match(publicSource, /NeonHierarchy\.load/);
 assert.match(publicSource, /sourceType:'google-sheet'/);
 assert.match(publicSource, /sheetOnly/);
@@ -147,4 +180,4 @@ new Function(reader);
 new Function(dataApi);
 new Function(publicSource);
 
-console.log('Atomic Google Sheet to Neon ICD hierarchy parity, Data API, dataset and sync contract passed.');
+console.log('Atomic Google Sheet to Neon ICD hierarchy parity, token configuration, Data API, dataset and sync contract passed.');
