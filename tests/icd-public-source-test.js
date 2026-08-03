@@ -25,9 +25,11 @@ const tolerantFixture = [
 assert.equal(Source.SPREADSHEET_ID, '1O2S9xNIzvNmiG8ny-VLAp9NeyiUsrY8pxRpyJgTF_O0');
 assert.equal(Source.SHEET_GID, 329283560);
 assert.equal(Source.SHEET_NAME, 'ICD-10 EN-SQ');
-assert.match(Source.csvUrl(), /^https:\/\/docs\.google\.com\/spreadsheets\/d\//);
-assert.match(Source.csvUrl(), /\/export\?format=csv&gid=329283560$/);
-assert.doesNotMatch(Source.csvUrl(), /gviz\/tq/);
+assert.equal(Source.SOURCE_URLS.length, 2);
+assert.equal(Source.csvUrl(), Source.SOURCE_URLS[0]);
+assert.match(Source.SOURCE_URLS[0], /\/gviz\/tq\?tqx=out:csv&gid=329283560$/);
+assert.match(Source.SOURCE_URLS[1], /\/export\?format=csv&single=true&gid=329283560$/);
+assert.equal(new Set(Source.SOURCE_URLS).size, Source.SOURCE_URLS.length);
 
 const first = Source.validateCsv(fixture, { contentType:'text/csv; charset=utf-8' });
 const second = Source.validateCsv(fixture, { contentType:'text/csv' });
@@ -50,6 +52,10 @@ assert.equal(Normalizer.inspectRows(require('../lib/icd-full-hierarchy.js').pars
 assert.throws(
   () => Source.validateCsv('<!doctype html><html><body>Sign in</body></html>', { contentType:'text/html' }),
   /nuk u kthye si CSV publik/,
+);
+assert.throws(
+  () => Source.validateCsv('PK\u0003\u0004workbook', { contentType:'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' }),
+  /workbook\/ZIP/,
 );
 assert.throws(
   () => Source.validateCsv('Niveli,Kodi', { contentType:'text/csv' }),
@@ -124,8 +130,11 @@ for (const source of [base, advanced]) {
   assert.ok(!source.includes(Source.SPREADSHEET_ID), 'Full hierarchy spreadsheet ID must live only in the shared source module.');
 }
 assert.doesNotMatch(advanced, /gviz\/tq\?tqx=out:csv/);
-assert.doesNotMatch(publicSource, /gviz\/tq/);
-assert.match(publicSource, /\/export\?format=csv&gid=/);
+assert.match(publicSource, /gviz\/tq\?tqx=out:csv/);
+assert.match(publicSource, /\/export\?format=csv&single=true&gid=/);
+assert.match(publicSource, /for \(const url of SOURCE_URLS\)/);
+assert.match(publicSource, /redirect:'follow'/);
+assert.match(publicSource, /cache:'no-store'/);
 assert.equal((publicSource.match(new RegExp(Source.SPREADSHEET_ID, 'g')) || []).length, 1);
 assert.match(publicSource, /normalizeCsvHeaders/);
 assert.match(publicSource, /NeonHierarchy\.load/);
@@ -141,4 +150,4 @@ new Function(base);
 new Function(advanced);
 new Function(hierarchy);
 
-console.log('Verified Google Sheet export fallback, Neon-first metadata, canonical headers and indexed ICD runtime contracts passed.');
+console.log('Dual public CSV fallback, canonical headers, Neon-first metadata and indexed ICD runtime contracts passed.');
