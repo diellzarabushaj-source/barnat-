@@ -1,0 +1,108 @@
+name: ICD Neon live parity verification v2
+
+on:
+  pull_request:
+
+permissions:
+  contents: read
+  id-token: write
+
+env:
+  FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: 'true'
+  MEDINDEX_NEON_DATA_API_URL: ${{ secrets.MEDINDEX_NEON_DATA_API_URL }}
+  NEON_DATA_API_URL: ${{ secrets.NEON_DATA_API_URL }}
+  MEDINDEX_NEON_DATA_API_TOKEN: ${{ secrets.MEDINDEX_NEON_DATA_API_TOKEN }}
+  NEON_DATA_API_TOKEN: ${{ secrets.NEON_DATA_API_TOKEN }}
+  VERCEL_OIDC_TOKEN: ${{ secrets.VERCEL_OIDC_TOKEN }}
+
+jobs:
+  live-parity:
+    if: github.head_ref == 'agent/icd-neon-live-verify-v2' && github.event.pull_request.head.repo.full_name == github.repository
+    runs-on: ubuntu-24.04
+    timeout-minutes: 30
+    steps:
+      - name: Checkout trusted branch
+        uses: actions/checkout@v4
+
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          version: 10.28.0
+          run_install: false
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: pnpm
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile --ignore-scripts
+
+      - name: Verify Sheet, hierarchy and Neon contracts
+        run: |
+          node tests/icd-public-source-test.js
+          node tests/icd-hierarchy-neon-sync-test.js
+
+      - name: Verify trusted authentication path
+        shell: bash
+        run: |
+          node <<'NODE'
+          const DataApi = require('./lib/neon-data-api.js');
+          (async () => {
+            const token = await DataApi.oidcToken();
+            console.log(JSON.stringify({
+              dataApiUrl:Boolean(DataApi.DATA_API_BASE),
+              configuredSecret:Boolean(DataApi.configuredToken()),
+              resolvedToken:Boolean(token),
+            }));
+            if (!token) throw new Error('No Neon/Vercel OIDC token resolved in the trusted workflow.');
+          })().catch(error => {
+            console.error(error?.stack || error);
+            process.exit(1);
+          });
+          NODE
+
+      - name: Import and atomically activate hierarchy
+        run: node scripts/sync-icd-hierarchy-to-neon.js
+
+      - name: Verify active parity through Neon Data API
+        shell: bash
+        run: |
+          node <<'NODE'
+          const { neonRequest, dataOf, exactCount } = require('./lib/neon-data-api.js');
+          const revision = 're3nQDC_0rCcjpS5sQFH';
+          const expected = { chapter:22, block:274, category:2050, subcategory:10196 };
+
+          (async () => {
+            const revisionResult = await neonRequest(`/icd_hierarchy_revisions?revision=eq.${revision}&status=eq.active&select=revision,status,counts,source_bytes,header_row,activated_at&limit=1`, {
+              timeoutMs:10000,
+              label:'active ICD revision verification',
+            });
+            const active = dataOf(revisionResult)?.[0];
+            if (!active) throw new Error(`Revision ${revision} is not active.`);
+            if (Number(active.source_bytes) !== 4106422 || Number(active.header_row) !== 6) {
+              throw new Error(`Source provenance mismatch: ${JSON.stringify(active)}`);
+            }
+            for (const [level, count] of Object.entries(expected)) {
+              const result = await neonRequest(`/icd_hierarchy_active?revision=eq.${revision}&level_name=eq.${level}&select=code&limit=1`, {
+                prefer:'count=exact',
+                timeoutMs:10000,
+                label:`${level} count verification`,
+              });
+              const actual = exactCount(result.response);
+              if (actual !== count) throw new Error(`${level} count is ${actual}; expected ${count}.`);
+            }
+            const totalResult = await neonRequest(`/icd_hierarchy_active?revision=eq.${revision}&select=code&limit=1`, {
+              prefer:'count=exact',
+              timeoutMs:10000,
+              label:'total ICD count verification',
+            });
+            const total = exactCount(totalResult.response);
+            if (total !== 12542) throw new Error(`Total ICD nodes are ${total}; expected 12542.`);
+            console.log(JSON.stringify({ ok:true, revision, total, expected, headerRow:active.header_row, sourceBytes:active.source_bytes }));
+          })().catch(error => {
+            console.error(error?.stack || error);
+            process.exit(1);
+          });
+          NODE
