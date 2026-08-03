@@ -1,4 +1,39 @@
-/* Final mobile refinements for wide phones and phone landscape. */
+/* Final cross-breakpoint refinements for the isolated MedIndex login. */
+@media (min-width:601px) {
+  html[data-mi-page="login"] .login-card {
+    opacity:1!important;
+    visibility:visible!important;
+    filter:none!important;
+    width:100%!important;
+    max-width:440px!important;
+    overflow:hidden!important;
+    border:1px solid rgba(255,255,255,.82)!important;
+    border-radius:24px!important;
+    background:rgba(255,255,255,.985)!important;
+    color:#14242a!important;
+    box-shadow:0 30px 80px rgba(5,25,34,.24),0 8px 24px rgba(5,25,34,.10)!important;
+  }
+
+  html[data-mi-page="login"] .login-card::before {
+    display:block!important;
+    opacity:1!important;
+  }
+
+  html[data-mi-page="login"] .login-card-brand,
+  html[data-mi-page="login"] .login-card h1,
+  html[data-mi-page="login"] .google-login-heading,
+  html[data-mi-page="login"] .login-card label {
+    color:#14242a!important;
+    opacity:1!important;
+  }
+
+  html[data-mi-page="login"] .login-copy,
+  html[data-mi-page="login"] .google-login-status {
+    color:#65777d!important;
+    opacity:1!important;
+  }
+}
+
 @media (max-width:600px) {
   html[data-mi-page="login"] .google-login-button {
     justify-content:center!important;
