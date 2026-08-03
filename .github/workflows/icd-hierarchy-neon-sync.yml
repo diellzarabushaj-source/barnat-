@@ -2,7 +2,7 @@ name: ICD hierarchy Neon sync
 
 on:
   push:
-    branches: [main]
+    branches: [main, agent/icd-neon-live-run]
     paths:
       - 'lib/icd-full-hierarchy.js'
       - 'lib/icd-public-source.js'
