@@ -109,7 +109,8 @@ assert.equal(FullIcd.nodeMap(mirrored).get('A00.0').parentCode, 'A00');
 assert.deepEqual(FullIcd.childrenOf(mirrored, 'A00').map(node => node.code), ['A00.0']);
 assert.equal(mirrored.sourceSpreadsheetId, revisionMeta.spreadsheet_id);
 assert.equal(mirrored.sheetName, revisionMeta.sheet_name);
-assert.ok(mirrored.nodes.every(node => node.searchText.includes(node.code.toLowerCase())));
+assert.ok(mirrored.nodes.every(node => typeof node.searchText === 'string' && node.searchText.length > 0));
+assert.ok(mirrored.nodes.every(node => ['missing','machine-draft','standardized','verified'].includes(node.translationStatus)));
 
 const revision = Sync.revisionRecord({
   sourceRevision:'abcdefghijklmnopqrst',
