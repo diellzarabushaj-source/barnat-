@@ -27,7 +27,7 @@ assert.match(index,/registry-unified-table\.css\?v=20260801-1/,'unified table st
 assert.match(index,/registry-full-text-expansion\.css\?v=20260801-1/,'full-row text stylesheet must be wired');
 assert.match(index,/registry-dosage-disclosure-fix\.css\?v=20260803-3/,'hardened dosage disclosure stylesheet must be wired');
 assert.match(index,/registry-unified-table\.js\?v=20260801-1/,'unified table controller must be wired');
-assert.match(index,/registry-row-expand\.js\?v=20260803-6/,'hardened row expansion controller must be wired');
+assert.match(index,/registry-row-expand\.js\?v=20260803-7/,'idempotent row expansion controller must be wired');
 assert.match(index,/registry-runtime-loader\.js\?v=20260803-unverified-1/,'current authenticated registry loader must be wired');
 assert.ok(index.indexOf('registry-unified-table.css') < index.indexOf('registry-full-text-expansion.css'),'full-row reveal must follow compact unified geometry');
 assert.ok(index.indexOf('registry-full-text-expansion.css') < index.indexOf('registry-dosage-disclosure-fix.css'),'dosage disclosure must follow the general full-text release');
@@ -62,13 +62,17 @@ assert.match(runtime,/MEDINDEX_REGISTRY_TABLE_AUDIT/,'runtime must expose a brow
 assert.match(runtime,/normalizePencils/,'edit buttons must be normalized once by the unified controller');
 assert.doesNotMatch(runtime,/registry-dose-dialog|registry-cell-preview-dialog/,'unified runtime must not contain a text modal');
 
-assert.match(rowExpand,/registry-row-expand-20260803-6/,'row expansion runtime version is stale');
+assert.match(rowExpand,/registry-row-expand-20260803-7/,'row expansion runtime version is stale');
 assert.match(rowExpand,/const dosageTrigger = event\.target\.closest\?\.\('\.registry-dosage-dose'\)/,'dosage disclosure click must be owned by the row controller');
 assert.match(rowExpand,/event\.stopImmediatePropagation\(\)/,'duplicate legacy disclosure toggles must be blocked');
 assert.match(rowExpand,/syncDosageControls\(row, expanded\)/,'row and dosage state must stay synchronized');
 assert.match(rowExpand,/regimen\.dataset\.dosageExpanded = String\(expanded\)/,'CSS must receive an explicit expanded state');
 assert.match(rowExpand,/toggle\.textContent = expanded \? 'Më pak' : 'Më shumë'/,'visible disclosure label must reflect state');
 assert.match(rowExpand,/link\[data-registry-dosage-disclosure-fix-css\]/,'disclosure CSS must be kept after dynamically injected compact styles');
+assert.match(rowExpand,/const desiredTail = \[finalStyle, fullText, dosageDisclosure\]\.filter\(Boolean\)/,'scoped table styles need one canonical cascade tail');
+assert.match(rowExpand,/const alreadyStable = desiredTail\.length > 0/,'cascade stabilization needs a steady-state check');
+assert.match(rowExpand,/if \(!alreadyStable\) desiredTail\.forEach\(node => document\.head\.appendChild\(node\)\)/,'cascade writes must happen only when needed');
+assert.doesNotMatch(rowExpand,/document\.head\.lastElementChild !== finalStyle/,'cascade stabilization must not create an observer loop');
 assert.match(rowExpand,/return fallback \? `row:\$\{fallback\}` : ''/,'rows without IDs need a deterministic expansion key');
 assert.match(rowExpand,/new CustomEvent\('medindex:registry-row-toggle'/,'expansion changes must be observable');
 
@@ -108,4 +112,4 @@ assert.match(dosageDisclosureCss,/overflow:visible!important/,'expanded dosage t
 assert.match(dosageDisclosureCss,/@media \(max-width:760px\)/,'mobile dosage expansion is missing');
 assert.doesNotMatch(dosageDisclosureCss,/https?:\/\//,'dosage disclosure styles must not load third-party assets');
 
-console.log('Single-controller registry table and full dosage disclosure audit passed.');
+console.log('Single-controller registry table, full dosage disclosure and idempotent cascade audit passed.');
