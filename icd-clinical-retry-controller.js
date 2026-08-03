@@ -4,7 +4,7 @@
   if (!root?.document || !root.MedIndexIcdClinicalGuidance) return;
 
   const base = root.MedIndexIcdClinicalGuidance;
-  const VERSION = 'icd-clinical-retry-controller-v1';
+  const VERSION = 'icd-clinical-retry-controller-v2';
   const API_PATH = '/api/icd';
   const SHEET_ID_PATTERN = /^[A-Za-z0-9_-]{20,}$/;
   const clean = value => String(value ?? '').replace(/\s+/g, ' ').trim();
@@ -189,10 +189,13 @@
     setState('Duke u rilidhur…', 'loading');
 
     try {
-      const response = await root.fetch(API_PATH, {
+      const fetchClinical = typeof root.MedIndexNativeFetch === 'function'
+        ? root.MedIndexNativeFetch
+        : root.fetch.bind(root);
+      const response = await fetchClinical(API_PATH, {
         credentials:'same-origin',
         cache:'no-store',
-        headers:{ Accept:'application/json' },
+        headers:{ Accept:'application/json', 'X-MedIndex-Retry':'1' },
       });
       if (!response.ok) throw new Error(`Lista klinike ktheu statusin ${response.status}.`);
       const payload = await response.json();
