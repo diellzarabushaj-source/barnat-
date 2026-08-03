@@ -586,6 +586,10 @@ html.medindex-tailadmin-login .recovery-card {
   box-shadow:0 30px 90px rgba(5,25,34,.27)!important;
 }
 
+html.medindex-tailadmin-login .recovery-card .login-card-brand {
+  margin-bottom:24px;
+}
+
 html.medindex-tailadmin-login .recovery-card .login-copy {
   display:grid;
   grid-template-columns:auto minmax(0,1fr);
