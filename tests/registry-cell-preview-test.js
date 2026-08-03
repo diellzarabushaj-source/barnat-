@@ -22,9 +22,9 @@ assert(index.includes('registry-cell-preview.css?v=20260801-3'), 'Inline cell ex
 assert(index.includes('registry-full-text-expansion.css?v=20260801-1'), 'Full-row text reveal contract is not wired.');
 assert(index.includes('registry-dosage-disclosure-fix.css?v=20260803-3'), 'Hardened dosage disclosure stylesheet is not wired.');
 assert(index.includes('registry-cell-preview.js?v=20260801-6'), 'Inline cell expansion controller is not wired.');
-assert(index.includes('registry-row-expand.js?v=20260803-6'), 'Hardened row expansion controller is not wired.');
+assert(index.includes('registry-row-expand.js?v=20260803-7'), 'Idempotent row expansion controller is not wired.');
 assert(
-  index.indexOf('registry-cell-preview.js?v=20260801-6') < index.indexOf('registry-row-expand.js?v=20260803-6'),
+  index.indexOf('registry-cell-preview.js?v=20260801-6') < index.indexOf('registry-row-expand.js?v=20260803-7'),
   'Cell expansion trigger must initialize before row expansion.'
 );
 assert(index.includes('data-registry-ui-release="20260801-14"'), 'Registry UI release was not preserved.');
@@ -73,13 +73,17 @@ assert(fullTextStyles.includes('max-height:none!important'), 'Every expanded tex
 assert(fullTextStyles.includes('.registry-dosage-details[open] > :not(summary)'), 'Expanded dosage details must reveal their full body.');
 assert(!/https?:\/\//.test(fullTextStyles), 'Full-text expansion must not load third-party assets.');
 
-assert(rowExpand.includes("const VERSION = 'registry-row-expand-20260803-6'"), 'Row expansion runtime version is stale.');
+assert(rowExpand.includes("const VERSION = 'registry-row-expand-20260803-7'"), 'Row expansion runtime version is stale.');
 assert(rowExpand.includes("const dosageTrigger = event.target.closest?.('.registry-dosage-dose')"), 'Më shumë must be handled by the row controller.');
 assert(rowExpand.includes('event.stopImmediatePropagation()'), 'The legacy dosage listener must not toggle the same disclosure twice.');
 assert(rowExpand.includes('syncDosageControls(row, expanded)'), 'Row expansion must synchronize dosage controls.');
 assert(rowExpand.includes("toggle.textContent = expanded ? 'Më pak' : 'Më shumë'"), 'Disclosure label must match the actual state.');
 assert(rowExpand.includes("regimen.dataset.dosageExpanded = String(expanded)"), 'Expanded dosage state must be exposed to CSS without relying only on :has().');
 assert(rowExpand.includes("link[data-registry-dosage-disclosure-fix-css]"), 'The dosage disclosure stylesheet must be protected from later compact styles.');
+assert(rowExpand.includes('const desiredTail = [finalStyle, fullText, dosageDisclosure].filter(Boolean)'), 'Protected styles need one canonical tail order.');
+assert(rowExpand.includes('const alreadyStable = desiredTail.length > 0'), 'Cascade stabilization needs a no-write steady state.');
+assert(rowExpand.includes('if (!alreadyStable) desiredTail.forEach(node => document.head.appendChild(node))'), 'Protected styles must move only when their order is wrong.');
+assert(!rowExpand.includes("document.head.lastElementChild !== finalStyle"), 'The observer must not repeatedly move the compact style after the disclosure styles.');
 assert(rowExpand.includes('function rowKey(row)'), 'Expanded row identity must be stable across rerenders.');
 assert(rowExpand.includes("return fallback ? `row:${fallback}` : ''"), 'Rows without registry identifiers need a deterministic fallback key.');
 assert(rowExpand.includes("button, input, select, textarea"), 'Row expansion must ignore unrelated nested controls.');
@@ -96,4 +100,4 @@ assert(dosageDisclosureStyles.includes('@media (max-width:760px)'), 'Mobile disc
 assert(dosageDisclosureStyles.includes('@media (prefers-reduced-motion:reduce)'), 'Reduced-motion disclosure behavior is missing.');
 assert(!/https?:\/\//.test(dosageDisclosureStyles), 'Dosage disclosure must not load third-party assets.');
 
-console.log('Full-row and dosage disclosure reveal every character without modal, clamp or duplicate toggle.');
+console.log('Full-row and dosage disclosure reveal every character without modal, clamp, duplicate toggle or observer loop.');
