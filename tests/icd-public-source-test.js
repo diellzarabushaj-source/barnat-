@@ -26,8 +26,8 @@ assert.equal(Source.SPREADSHEET_ID, '1O2S9xNIzvNmiG8ny-VLAp9NeyiUsrY8pxRpyJgTF_O
 assert.equal(Source.SHEET_GID, 329283560);
 assert.equal(Source.SHEET_NAME, 'ICD-10 EN-SQ');
 assert.match(Source.csvUrl(), /^https:\/\/docs\.google\.com\/spreadsheets\/d\//);
-assert.match(Source.csvUrl(), /tqx=out:csv/);
-assert.match(Source.csvUrl(), /gid=329283560/);
+assert.match(Source.csvUrl(), /\/export\?format=csv&gid=329283560$/);
+assert.doesNotMatch(Source.csvUrl(), /gviz\/tq/);
 
 const first = Source.validateCsv(fixture, { contentType:'text/csv; charset=utf-8' });
 const second = Source.validateCsv(fixture, { contentType:'text/csv' });
@@ -124,6 +124,8 @@ for (const source of [base, advanced]) {
   assert.ok(!source.includes(Source.SPREADSHEET_ID), 'Full hierarchy spreadsheet ID must live only in the shared source module.');
 }
 assert.doesNotMatch(advanced, /gviz\/tq\?tqx=out:csv/);
+assert.doesNotMatch(publicSource, /gviz\/tq/);
+assert.match(publicSource, /\/export\?format=csv&gid=/);
 assert.equal((publicSource.match(new RegExp(Source.SPREADSHEET_ID, 'g')) || []).length, 1);
 assert.match(publicSource, /normalizeCsvHeaders/);
 assert.match(publicSource, /NeonHierarchy\.load/);
@@ -139,4 +141,4 @@ new Function(base);
 new Function(advanced);
 new Function(hierarchy);
 
-console.log('Resilient Google Sheet fallback, Neon-first metadata, canonical headers and indexed ICD runtime contracts passed.');
+console.log('Verified Google Sheet export fallback, Neon-first metadata, canonical headers and indexed ICD runtime contracts passed.');
