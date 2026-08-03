@@ -4,7 +4,7 @@
   if (!root?.document || !root.MedIndexIcdClinicalGuidance) return;
 
   const base = root.MedIndexIcdClinicalGuidance;
-  const VERSION = 'icd-clinical-retry-controller-v2';
+  const VERSION = 'icd-clinical-retry-controller-v3';
   const API_PATH = '/api/icd';
   const SHEET_ID_PATTERN = /^[A-Za-z0-9_-]{20,}$/;
   const clean = value => String(value ?? '').replace(/\s+/g, ' ').trim();
@@ -192,7 +192,8 @@
       const fetchClinical = typeof root.MedIndexNativeFetch === 'function'
         ? root.MedIndexNativeFetch
         : root.fetch.bind(root);
-      const response = await fetchClinical(API_PATH, {
+      const retryUrl = `${API_PATH}?retry=${Date.now().toString(36)}`;
+      const response = await fetchClinical(retryUrl, {
         credentials:'same-origin',
         cache:'no-store',
         headers:{ Accept:'application/json', 'X-MedIndex-Retry':'1' },
