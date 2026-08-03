@@ -66,15 +66,24 @@ assert.match(dosage, /MEDINDEX_REGISTRY_ROWS/, 'dosage columns must reuse the sh
 assert.doesNotMatch(dosage, /DRUG_DATA_PARTS|\batob\s*\(|DecompressionStream|Uint8Array/, 'dosage columns must never parse the registry again');
 assert.doesNotMatch(dosage, /subtree\s*:\s*true/, 'dosage observers must not watch their own subtree mutations');
 
-assert.match(rowExpand, /registry-row-expand-20260803-7/, 'full-row disclosure controller must be current');
+assert.match(rowExpand, /registry-row-expand-20260803-8/, 'full-row disclosure controller must be current');
 assert.match(rowExpand, /document\.addEventListener\('click', onClick, true\)/, 'disclosure must capture the click before the legacy listener');
 assert.match(rowExpand, /const dosageTrigger = event\.target\.closest\?\.\('\.registry-dosage-dose'\)/, 'Më shumë must expand through the row controller');
 assert.match(rowExpand, /event\.stopImmediatePropagation\(\)/, 'a dosage click must never toggle twice');
 assert.match(rowExpand, /syncDosageControls\(row, expanded\)/, 'row and dosage state must remain synchronized');
-assert.match(rowExpand, /trigger\.setAttribute\('aria-expanded', String\(expanded\)\)/, 'assistive technology must receive disclosure state');
+assert.match(rowExpand, /trigger\.setAttribute\('aria-expanded', String\(expanded && needed\)\)/, 'assistive technology must receive truthful disclosure state');
+assert.match(rowExpand, /trigger\.setAttribute\('aria-controls', textId\)/, 'the disclosure control must identify its text');
+assert.match(rowExpand, /trigger\.disabled = !needed/, 'short text must not expose an unnecessary button');
 assert.match(rowExpand, /toggle\.textContent = expanded \? 'Më pak' : 'Më shumë'/, 'visible disclosure label must be truthful');
 assert.match(rowExpand, /return fallback \? `row:\$\{fallback\}` : ''/, 'rows without IDs need stable disclosure state');
 assert.match(rowExpand, /link\[data-registry-dosage-disclosure-fix-css\]/, 'the unclamped stylesheet must stay after compact styles');
+assert.match(rowExpand, /function isOverflowing\(element\)/, 'disclosure need must follow actual clipping');
+assert.match(rowExpand, /function preserveRowAnchor\(row, beforeTop\)/, 'expansion must preserve the active row position');
+assert.match(rowExpand, /interactiveTarget\(event\.target, cell\)/, 'keyboard-operable root cells must not be mistaken for nested controls');
+assert.match(rowExpand, /candidate && candidate !== root/, 'nested controls must be ignored without disabling the root cell');
+assert.match(rowExpand, /if \(event\.key === 'Escape'\)/, 'Escape must close the active disclosure');
+assert.match(rowExpand, /event\.key !== 'Enter' && event\.key !== ' '/, 'Enter and Space must toggle keyboard-operable cells');
+assert.match(rowExpand, /ensureStatusRegion\(\)/, 'screen readers need disclosure announcements');
 assert.match(rowExpand, /const desiredTail = \[finalStyle, fullText, dosageDisclosure\]\.filter\(Boolean\)/, 'disclosure styles need one canonical order');
 assert.match(rowExpand, /const alreadyStable = desiredTail\.length > 0/, 'cascade stabilization needs a no-write steady state');
 assert.match(rowExpand, /if \(!alreadyStable\) desiredTail\.forEach\(node => document\.head\.appendChild\(node\)\)/, 'cascade writes must happen only when needed');
@@ -87,6 +96,10 @@ assert.match(disclosureCss, /max-height:none!important/, 'expanded cells must lo
 assert.match(disclosureCss, /overflow:visible!important/, 'expanded cells must lose overflow clipping');
 assert.match(disclosureCss, /-webkit-line-clamp:unset!important/, 'expanded text must lose WebKit line clamp');
 assert.match(disclosureCss, /line-clamp:unset!important/, 'expanded text must lose standards line clamp');
+assert.match(disclosureCss, /registry-dosage-toggle::after/, 'the control needs a visible open-close direction');
+assert.match(disclosureCss, /data-disclosure-needed="false"/, 'short text controls must remain hidden');
+assert.match(disclosureCss, /overflow-anchor:none!important/, 'expanded rows must not jump during layout changes');
+assert.match(disclosureCss, /registry-disclosure-status/, 'accessible status styling must remain present');
 assert.match(disclosureCss, /@media \(max-width:760px\)/, 'mobile expansion rules must remain present');
 
 assert.match(unified, /registry-unified-table-20260801-1/, 'single table controller must be active');
@@ -95,8 +108,8 @@ assert.match(unified, /observer\.observe\(tbody, \{ childList:true \}\)/, 'table
 
 assert.match(middleware, /'\/registry-parser-worker-v2\.js'/, 'v2 parser worker must pass through auth middleware');
 assert.match(index, /registry-runtime-loader\.js\?v=20260803-unverified-1/, 'index must request the current bootstrap');
-assert.match(index, /registry-row-expand\.js\?v=20260803-7/, 'index must request the current disclosure controller');
-assert.match(index, /registry-dosage-disclosure-fix\.css\?v=20260803-3/, 'index must request the current disclosure stylesheet');
+assert.match(index, /registry-row-expand\.js\?v=20260803-8/, 'index must request the current disclosure controller');
+assert.match(index, /registry-dosage-disclosure-fix\.css\?v=20260803-4/, 'index must request the current disclosure stylesheet');
 assert.match(index, /registry-unified-table\.js\?v=20260801-1/, 'index must load the single table controller');
 assert.doesNotMatch(index, /(?:registry-table-integrity|registry-clinical-view|registry-tailgrids-refinement|registry-columns-filters|registry-table-final)\.js/, 'legacy table controllers must not load');
 assert.doesNotMatch(index, /<script src="app-performance\.js"/, 'heavy registry application must not be parser ordered');
@@ -106,4 +119,4 @@ assert.match(index, /registry-dosage-loader\.js/, 'index must load the idle dosa
 assert.doesNotMatch(index, /src="registry-dosage-columns-v2\.js/, 'heavy dosage integration must not be in the critical parser path');
 assert.match(builder, /app-runtime-performance\.js/, 'build must generate the cache-isolated runtime artifact');
 
-console.log('Registry interaction resilience, loader v7 and idempotent full dosage disclosure audit passed.');
+console.log('Registry interaction resilience and polished dosage disclosure audit passed.');
