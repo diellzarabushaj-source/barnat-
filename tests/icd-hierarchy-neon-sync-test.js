@@ -5,6 +5,7 @@ const fs = require('node:fs');
 const path = require('node:path');
 const Sync = require('../scripts/sync-icd-hierarchy-to-neon.js');
 const Reader = require('../lib/icd-hierarchy-neon-reader.js');
+const DataApi = require('../lib/neon-data-api.js');
 const FullIcd = require('../lib/icd-full-hierarchy.js');
 
 assert.equal(Sync.REVISION_TABLE, 'icd_hierarchy_revisions');
@@ -12,6 +13,12 @@ assert.equal(Sync.NODES_TABLE, 'icd_hierarchy_nodes');
 assert.equal(Sync.BATCH_SIZE, 500);
 assert.deepEqual(Sync.batch([1, 2, 3, 4, 5], 2), [[1, 2], [3, 4], [5]]);
 assert.deepEqual(Sync.batch([], 500), []);
+assert.equal(DataApi.hasNeonConfig(), true);
+assert.deepEqual(DataApi.dataOf({ data:[{ id:1 }] }), [{ id:1 }]);
+assert.deepEqual(DataApi.dataOf([{ id:2 }]), [{ id:2 }]);
+assert.equal(DataApi.isRelationMissing({ status:404, message:'not found' }), true);
+assert.equal(DataApi.isRelationMissing({ status:400, payload:{ code:'42P01' } }), true);
+assert.equal(DataApi.isRelationMissing({ status:500, message:'timeout' }), false);
 
 const sampleNodes = [
   {
@@ -101,6 +108,7 @@ const root = path.resolve(__dirname, '..');
 const script = fs.readFileSync(path.join(root, 'scripts/sync-icd-hierarchy-to-neon.js'), 'utf8');
 const schema = fs.readFileSync(path.join(root, 'sql/icd-hierarchy-neon.sql'), 'utf8');
 const reader = fs.readFileSync(path.join(root, 'lib/icd-hierarchy-neon-reader.js'), 'utf8');
+const dataApi = fs.readFileSync(path.join(root, 'lib/neon-data-api.js'), 'utf8');
 const publicSource = fs.readFileSync(path.join(root, 'lib/icd-public-source.js'), 'utf8');
 const packageJson = fs.readFileSync(path.join(root, 'package.json'), 'utf8');
 
@@ -110,6 +118,7 @@ assert.match(script, /activate_icd_hierarchy_revision/);
 assert.match(script, /status:'failed'/);
 assert.match(script, /strictCounts:true/);
 assert.match(script, /counts:validation/);
+assert.match(script, /dataOf\(result\)/);
 assert.doesNotMatch(script, /validation\.counts/);
 assert.match(schema, /icd_hierarchy_one_active_revision/);
 assert.match(schema, /CREATE OR REPLACE FUNCTION public\.activate_icd_hierarchy_revision/);
@@ -118,10 +127,14 @@ assert.match(schema, /v_orphans <> 0/);
 assert.match(schema, /SET status = 'superseded'/);
 assert.match(reader, /status=eq\.active/);
 assert.match(reader, /datasetFromRows/);
+assert.match(reader, /dataOf\(result\)/);
 assert.match(reader, /FullIcd\.attachIndexes\(data\)/);
 assert.match(reader, /counts:data\.counts/);
 assert.doesNotMatch(reader, /attachIndexes\(nodes\)/);
 assert.doesNotMatch(reader, /validation\.counts/);
+assert.match(dataApi, /function hasNeonConfig/);
+assert.match(dataApi, /function dataOf/);
+assert.match(dataApi, /function isRelationMissing/);
 assert.match(publicSource, /NeonHierarchy\.load/);
 assert.match(publicSource, /sourceType:'google-sheet'/);
 assert.match(publicSource, /sheetOnly/);
@@ -131,6 +144,7 @@ assert.doesNotMatch(script, /icd_codes\?/);
 assert.doesNotMatch(script, /drugs\?|lab_tests\?|dosage_regimens\?/);
 new Function(script);
 new Function(reader);
+new Function(dataApi);
 new Function(publicSource);
 
-console.log('Atomic Google Sheet to Neon ICD hierarchy parity, dataset and sync contract passed.');
+console.log('Atomic Google Sheet to Neon ICD hierarchy parity, Data API, dataset and sync contract passed.');
