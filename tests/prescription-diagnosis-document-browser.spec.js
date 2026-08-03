@@ -80,7 +80,7 @@ test('preview, copy, TXT export and print share the same diagnosis document', as
   const downloadPromise = page.waitForEvent('download');
   await page.locator('#rxExport').click();
   const download = await downloadPromise;
-  expect(download.suggestedFilename()).toBe('recete-2026-08-02-i10.txt');
+  expect(download.suggestedFilename()).toMatch(/^recete-\d{4}-\d{2}-\d{2}-i10\.txt$/);
   const downloadPath = await download.path();
   const exported = fs.readFileSync(downloadPath, 'utf8').replace(/^\uFEFF/, '');
   expect(exported).toContain('Diagnoza kryesore:\nI10 — Hipertensioni esencial (primar)');
