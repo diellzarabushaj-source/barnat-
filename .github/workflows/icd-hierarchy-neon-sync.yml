@@ -1,0 +1,63 @@
+name: ICD hierarchy Neon sync
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'lib/icd-full-hierarchy.js'
+      - 'lib/icd-public-source.js'
+      - 'lib/icd-hierarchy-source-normalizer.js'
+      - 'lib/icd-hierarchy-neon-reader.js'
+      - 'scripts/sync-icd-hierarchy-to-neon.js'
+      - 'sql/icd-hierarchy-neon.sql'
+      - '.github/workflows/icd-hierarchy-neon-sync.yml'
+  schedule:
+    - cron: '17 3 * * *'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  id-token: write
+
+env:
+  FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: 'true'
+  MEDINDEX_NEON_DATA_API_URL: ${{ secrets.MEDINDEX_NEON_DATA_API_URL }}
+  NEON_DATA_API_URL: ${{ secrets.NEON_DATA_API_URL }}
+  MEDINDEX_NEON_DATA_API_TOKEN: ${{ secrets.MEDINDEX_NEON_DATA_API_TOKEN }}
+  NEON_DATA_API_TOKEN: ${{ secrets.NEON_DATA_API_TOKEN }}
+  VERCEL_OIDC_TOKEN: ${{ secrets.VERCEL_OIDC_TOKEN }}
+
+concurrency:
+  group: icd-hierarchy-neon-sync
+  cancel-in-progress: false
+
+jobs:
+  sync:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 20
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          version: 10.28.0
+          run_install: false
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: pnpm
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile --ignore-scripts
+
+      - name: Validate hierarchy source and sync contract
+        run: |
+          node tests/icd-public-source-test.js
+          node tests/icd-hierarchy-neon-sync-test.js
+
+      - name: Import and atomically activate hierarchy revision
+        run: node scripts/sync-icd-hierarchy-to-neon.js
