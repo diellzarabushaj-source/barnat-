@@ -4,7 +4,7 @@ const crypto = require('node:crypto');
 const IcdPublicSource = require('../lib/icd-public-source.js');
 const FullIcd = require('../lib/icd-full-hierarchy.js');
 const HierarchyValidation = require('../lib/icd-hierarchy-validation.js');
-const { neonRequest } = require('../lib/neon-data-api.js');
+const { neonRequest, dataOf } = require('../lib/neon-data-api.js');
 
 const REVISION_TABLE = 'icd_hierarchy_revisions';
 const NODES_TABLE = 'icd_hierarchy_nodes';
@@ -98,10 +98,11 @@ function validateLoaded(loaded) {
 
 async function existingRevision(revision) {
   const select = encodeURIComponent('revision,status,counts,activated_at');
-  const rows = await neonRequest(`/${REVISION_TABLE}?revision=eq.${encodeURIComponent(revision)}&select=${select}&limit=1`, {
+  const result = await neonRequest(`/${REVISION_TABLE}?revision=eq.${encodeURIComponent(revision)}&select=${select}&limit=1`, {
     timeoutMs:8000,
     label:'ICD hierarchy existing revision',
   });
+  const rows = dataOf(result);
   return Array.isArray(rows) ? rows[0] || null : null;
 }
 
@@ -135,12 +136,13 @@ async function insertNodeBatch(records, index, total) {
 }
 
 async function activateRevision(revision) {
-  return neonRequest('/rpc/activate_icd_hierarchy_revision', {
+  const result = await neonRequest('/rpc/activate_icd_hierarchy_revision', {
     method:'POST',
     body:{ p_revision:revision },
     timeoutMs:30000,
     label:'ICD hierarchy revision activation',
   });
+  return dataOf(result);
 }
 
 async function markFailed(revision, error) {
