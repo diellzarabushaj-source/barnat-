@@ -11,7 +11,7 @@
   <title>MedIndex | Hyrje e sigurt</title>
 
   <link rel="preconnect" href="https://accounts.google.com" crossorigin>
-  <link rel="dns-prefetch" href="//accounts.google.com">
+  <link rel="dns-prefetch" href="https://accounts.google.com">
   <link rel="preload" href="/public/images/brand/medindex-icon-on-dark.png" as="image" type="image/png" fetchpriority="high">
 
   <!-- Critical layout prevents an unstyled or hidden login while external CSS is loading. -->
@@ -24,9 +24,11 @@
   <link rel="preload" href="login-mobile.css?v=20260803-3" as="style" fetchpriority="high">
   <link rel="stylesheet" href="login-mobile.css?v=20260803-3" data-mobile-login-css>
 
-  <!-- Final quality overrides: isolation, WCAG contrast and stable Google-button alignment. -->
+  <!-- Final quality overrides: isolation, WCAG contrast and stable controls. -->
   <style>
     html[data-mi-page="login"] .login-side-panel{display:block!important;visibility:visible!important;opacity:1!important}
+    html[data-mi-page="login"] .mi-brand,
+    html[data-mi-page="login"] .mi-private-pill{min-height:44px!important}
     html[data-mi-page="login"] .mi-eyebrow{color:#c9f5f2!important}
     html[data-mi-page="login"] .mi-hero-description,
     html[data-mi-page="login"] .mi-nav-link,
