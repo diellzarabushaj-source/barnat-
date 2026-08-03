@@ -1,320 +1,593 @@
-/* Login and recovery — professional, page-owned authentication surfaces. */
+/*
+ * MedIndex login landing page.
+ * Layout adapted from Tailwind Toolbox Landing Page (MIT).
+ * Full attribution: THIRD_PARTY_NOTICES.md
+ */
 :root {
-  --auth-bg:#f3f5f6;
-  --auth-surface:#ffffff;
-  --auth-soft:#f7f9fa;
-  --auth-line:#dce3e6;
-  --auth-text:#17262b;
-  --auth-muted:#66757b;
-  --auth-primary:#0f6668;
-  --auth-primary-strong:#0b5052;
-  --auth-accent:#b66c16;
-  --auth-danger:#a23d45;
-  --auth-success:#24704f;
-  --auth-side:#18232d;
-  --auth-side-muted:#aab6c0;
-  --auth-font:Inter,ui-sans-serif,-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+  --landing-teal:#0f7779;
+  --landing-teal-dark:#0d5360;
+  --landing-navy:#0b1f2a;
+  --landing-cyan:#84e0dc;
+  --landing-white:#ffffff;
+  --landing-off-white:#f7faf9;
+  --landing-text:#14242a;
+  --landing-muted:#6b797e;
+  --landing-line:#dde6e4;
+  --landing-soft:#f4f8f7;
+  --landing-success:#0f7779;
+  --landing-danger:#a23d45;
+  --landing-accent:#e2b466;
+  --landing-font:Inter,ui-sans-serif,-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
   color-scheme:light;
-}
-
-html[data-theme="dark"] {
-  --auth-bg:#0f171c;
-  --auth-surface:#172229;
-  --auth-soft:#1d2a31;
-  --auth-line:#34444c;
-  --auth-text:#eef3f5;
-  --auth-muted:#a8b5bb;
-  --auth-primary:#50b8b8;
-  --auth-primary-strong:#73cccc;
-  --auth-accent:#e0a14e;
-  --auth-danger:#f0a3a9;
-  --auth-success:#7bc7a1;
-  --auth-side:#0b1117;
-  --auth-side-muted:#9eacb7;
-  color-scheme:dark;
 }
 
 html.medindex-tailadmin-login,
 html.medindex-tailadmin-login body {
   min-height:100%;
   margin:0;
-  background:var(--auth-bg) !important;
-  color:var(--auth-text) !important;
-  font-family:var(--auth-font) !important;
+  color:var(--landing-text)!important;
+  font-family:var(--landing-font)!important;
+  text-rendering:optimizeLegibility;
+  -webkit-font-smoothing:antialiased;
 }
 
 html.medindex-tailadmin-login * { box-sizing:border-box; }
+html.medindex-tailadmin-login body::before { display:none!important; }
 
-html.medindex-tailadmin-login body::before { display:none !important; }
-
-html.medindex-tailadmin-login .auth-page {
-  display:grid !important;
+html.medindex-tailadmin-login .landing-login-page {
+  position:relative;
   min-height:100vh;
   min-height:100dvh;
-  grid-template-columns:minmax(440px,1.05fr) minmax(390px,.95fr) !important;
-  place-items:stretch !important;
-  padding:0 !important;
-  background:var(--auth-bg) !important;
+  overflow:hidden;
+  background:linear-gradient(100deg,var(--landing-teal) 0%,var(--landing-teal-dark) 52%,var(--landing-navy) 100%);
+  color:#fff;
+}
+
+html.medindex-tailadmin-login .landing-container {
+  width:min(1280px,calc(100% - 48px));
+  margin:0 auto;
+}
+
+html.medindex-tailadmin-login .landing-nav {
+  position:absolute;
+  inset:0 0 auto;
+  z-index:30;
+  padding:20px 0;
+}
+
+html.medindex-tailadmin-login .landing-nav::after {
+  content:"";
+  position:absolute;
+  right:0;
+  bottom:0;
+  left:0;
+  height:1px;
+  background:rgba(255,255,255,.16);
+}
+
+html.medindex-tailadmin-login .landing-nav-inner {
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:24px;
+}
+
+html.medindex-tailadmin-login .landing-brand {
+  display:inline-flex;
+  align-items:center;
+  gap:13px;
+  color:#fff;
+  text-decoration:none;
+}
+
+html.medindex-tailadmin-login .landing-brand-logo {
+  display:grid;
+  width:50px;
+  height:50px;
+  place-items:center;
+  overflow:hidden;
+  border:1px solid rgba(255,255,255,.24);
+  border-radius:14px;
+  background:rgba(6,24,33,.28);
+}
+
+html.medindex-tailadmin-login .landing-brand-logo img {
+  display:block;
+  width:100%;
+  height:100%;
+  object-fit:cover;
+}
+
+html.medindex-tailadmin-login .landing-brand-copy {
+  display:grid;
+  gap:2px;
+}
+
+html.medindex-tailadmin-login .landing-brand-copy strong {
+  font-size:21px;
+  font-weight:800;
+  letter-spacing:-.035em;
+}
+
+html.medindex-tailadmin-login .landing-brand-copy small {
+  color:rgba(255,255,255,.68);
+  font-size:10px;
+  font-weight:700;
+  letter-spacing:.12em;
+  text-transform:uppercase;
+}
+
+html.medindex-tailadmin-login .landing-nav-meta {
+  display:flex;
+  align-items:center;
+  gap:12px;
+  color:rgba(255,255,255,.82);
+  font-size:12px;
+  font-weight:650;
+}
+
+html.medindex-tailadmin-login .landing-private-pill {
+  display:inline-flex;
+  min-height:36px;
+  align-items:center;
+  gap:8px;
+  padding:0 14px;
+  border:1px solid rgba(255,255,255,.24);
+  border-radius:999px;
+  background:rgba(255,255,255,.08);
+  color:#fff;
+  font-size:10px;
+  font-weight:800;
+  letter-spacing:.08em;
+  text-transform:uppercase;
+}
+
+html.medindex-tailadmin-login .landing-private-pill::before {
+  content:"";
+  width:7px;
+  height:7px;
+  border-radius:50%;
+  background:var(--landing-cyan);
+  box-shadow:0 0 0 4px rgba(132,224,220,.14);
+}
+
+html.medindex-tailadmin-login .landing-hero {
+  position:relative;
+  z-index:10;
+  display:flex;
+  min-height:100vh;
+  min-height:100dvh;
+  align-items:center;
+  padding:118px 0 150px;
+}
+
+html.medindex-tailadmin-login .landing-hero-grid {
+  display:grid;
+  grid-template-columns:minmax(390px,.84fr) minmax(520px,1.16fr);
+  align-items:center;
+  gap:clamp(48px,7vw,104px);
+}
+
+html.medindex-tailadmin-login .landing-login-column {
+  display:grid;
+  gap:14px;
 }
 
 html.medindex-tailadmin-login .login-card {
   position:relative;
-  display:flex !important;
-  width:min(470px,calc(100% - 48px)) !important;
-  align-self:center;
-  justify-self:center;
-  flex-direction:column;
-  padding:38px !important;
-  border:1px solid var(--auth-line) !important;
-  border-radius:14px !important;
-  background:var(--auth-surface) !important;
-  box-shadow:0 18px 50px rgba(16,24,40,.09) !important;
+  width:100%!important;
+  padding:clamp(30px,3.5vw,42px)!important;
+  border:1px solid rgba(255,255,255,.72)!important;
+  border-radius:24px!important;
+  background:#fff!important;
+  color:var(--landing-text)!important;
+  box-shadow:0 30px 90px rgba(5,25,34,.27)!important;
 }
 
-html[data-theme="dark"].medindex-tailadmin-login .login-card {
-  box-shadow:0 20px 56px rgba(0,0,0,.26) !important;
-}
+html.medindex-tailadmin-login .login-card::after { display:none!important; }
 
-html.medindex-tailadmin-login .login-card::after { display:none !important; }
-
-html.medindex-tailadmin-login :is(.login-brand,.login-side-mark) {
-  display:flex !important;
+html.medindex-tailadmin-login .login-card-brand {
+  display:flex;
   align-items:center;
-  justify-content:center;
-  gap:1px;
-  color:#fff !important;
-  font-family:var(--auth-font) !important;
-  font-weight:750 !important;
-  letter-spacing:-.05em;
+  gap:12px;
+  margin-bottom:26px;
+  color:var(--landing-text);
+  font-size:16px;
+  font-weight:800;
+  letter-spacing:-.025em;
 }
 
-html.medindex-tailadmin-login .login-brand {
-  width:48px !important;
-  height:48px !important;
-  margin:0 0 24px !important;
-  border:0 !important;
-  border-radius:11px !important;
-  background:#0f6668 !important;
-  box-shadow:none !important;
-  font-size:19px !important;
+html.medindex-tailadmin-login .login-card-brand img {
+  display:block;
+  width:50px;
+  height:50px;
+  overflow:hidden;
+  border-radius:14px;
+  object-fit:cover;
 }
-
-html.medindex-tailadmin-login :is(.login-brand,.login-side-mark) > span { color:inherit !important; }
-html.medindex-tailadmin-login :is(.login-brand,.login-side-mark) > b { color:#efb15d; font-size:.78em; }
 
 html.medindex-tailadmin-login .login-kicker {
-  margin:0 0 7px !important;
-  color:var(--auth-primary) !important;
-  font-size:11px !important;
-  font-weight:750 !important;
-  letter-spacing:.08em !important;
+  margin:0 0 8px!important;
+  color:var(--landing-teal)!important;
+  font-size:11px!important;
+  font-weight:850!important;
+  letter-spacing:.11em!important;
   text-transform:uppercase;
 }
 
 html.medindex-tailadmin-login .login-card h1 {
-  margin:0 !important;
-  color:var(--auth-text) !important;
-  font-family:var(--auth-font) !important;
-  font-size:30px !important;
-  font-weight:650 !important;
-  letter-spacing:-.025em !important;
-  line-height:1.2 !important;
+  margin:0!important;
+  color:var(--landing-text)!important;
+  font-family:var(--landing-font)!important;
+  font-size:clamp(34px,4vw,44px)!important;
+  font-weight:760!important;
+  letter-spacing:-.05em!important;
+  line-height:1.05!important;
 }
 
 html.medindex-tailadmin-login .login-copy {
-  margin:10px 0 26px !important;
-  color:var(--auth-muted) !important;
-  font-size:14px !important;
-  line-height:1.58 !important;
+  max-width:420px;
+  margin:13px 0 0!important;
+  color:var(--landing-muted)!important;
+  font-size:14px!important;
+  line-height:1.65!important;
+}
+
+html.medindex-tailadmin-login .google-login-panel {
+  display:grid;
+  gap:11px;
+  margin:28px 0 0;
+}
+
+html.medindex-tailadmin-login .google-login-heading {
+  margin:0;
+  color:var(--landing-text);
+  font-size:13px;
+  font-weight:800;
+  text-align:left;
+}
+
+html.medindex-tailadmin-login .google-login-button {
+  display:flex;
+  min-height:48px;
+  align-items:center;
+  justify-content:flex-start;
+  overflow:hidden;
+  border-radius:10px;
+}
+
+html.medindex-tailadmin-login .google-login-button > div,
+html.medindex-tailadmin-login .google-login-button iframe {
+  max-width:100%!important;
+}
+
+html.medindex-tailadmin-login .google-login-status {
+  min-height:1.35em;
+  margin:0;
+  color:var(--landing-muted);
+  font-size:11px;
+  line-height:1.5;
+  text-align:left;
+}
+
+html.medindex-tailadmin-login .google-login-status.is-error { color:var(--landing-danger); }
+
+html.medindex-tailadmin-login .login-account-note {
+  display:flex;
+  align-items:center;
+  gap:9px;
+  margin:14px 0 0;
+  padding:10px 12px;
+  border:1px solid #c9dfdc;
+  border-radius:11px;
+  background:#eef7f5;
+  color:#225c5f;
+  font-size:11px;
+  font-weight:750;
+}
+
+html.medindex-tailadmin-login .login-account-note::before {
+  content:"✓";
+  display:grid;
+  width:19px;
+  height:19px;
+  flex:0 0 auto;
+  place-items:center;
+  border-radius:50%;
+  background:var(--landing-teal);
+  color:#fff;
+  font-size:11px;
+}
+
+html.medindex-tailadmin-login .password-fallback {
+  margin-top:16px;
+  padding-top:15px;
+  border-top:1px solid var(--landing-line);
+}
+
+html.medindex-tailadmin-login .password-fallback summary {
+  cursor:pointer;
+  color:var(--landing-muted);
+  font-size:11px;
+  font-weight:800;
+  text-align:center;
+  list-style:none;
+}
+
+html.medindex-tailadmin-login .password-fallback summary::-webkit-details-marker { display:none; }
+html.medindex-tailadmin-login .password-fallback summary::after { content:"  ▾"; }
+html.medindex-tailadmin-login .password-fallback[open] summary::after { content:"  ▴"; }
+html.medindex-tailadmin-login .password-fallback form { margin-top:15px; }
+
+html.medindex-tailadmin-login .login-divider {
+  display:flex;
+  align-items:center;
+  gap:10px;
+  margin:16px 0;
+  color:#859296;
+  font-size:9px;
+  font-weight:800;
+  letter-spacing:.1em;
+  text-transform:uppercase;
+}
+
+html.medindex-tailadmin-login .login-divider::before,
+html.medindex-tailadmin-login .login-divider::after {
+  content:"";
+  height:1px;
+  flex:1;
+  background:var(--landing-line);
 }
 
 html.medindex-tailadmin-login .login-card label {
   display:block;
-  margin-bottom:7px !important;
-  color:var(--auth-text) !important;
-  font-size:13px !important;
-  font-weight:650 !important;
+  margin-bottom:7px!important;
+  color:var(--landing-text)!important;
+  font-size:12px!important;
+  font-weight:750!important;
 }
 
 html.medindex-tailadmin-login .password-row {
   display:grid;
   grid-template-columns:minmax(0,1fr) auto;
-  gap:9px !important;
+  gap:9px!important;
 }
 
 html.medindex-tailadmin-login .password-row input {
   min-width:0;
-  height:48px !important;
+  height:47px!important;
   padding:0 13px;
-  border:1px solid var(--auth-line) !important;
-  border-radius:9px !important;
-  background:var(--auth-soft) !important;
-  color:var(--auth-text) !important;
-  font-size:16px;
+  border:1px solid var(--landing-line)!important;
+  border-radius:10px!important;
+  background:var(--landing-soft)!important;
+  color:var(--landing-text)!important;
+  font-size:15px;
   outline:none;
 }
 
 html.medindex-tailadmin-login .password-row input:focus {
-  border-color:var(--auth-primary) !important;
-  background:var(--auth-surface) !important;
-  box-shadow:0 0 0 3px color-mix(in srgb,var(--auth-primary) 17%,transparent);
+  border-color:var(--landing-teal)!important;
+  background:#fff!important;
+  box-shadow:0 0 0 4px rgba(15,119,121,.13);
 }
 
 html.medindex-tailadmin-login .password-row button {
-  min-width:76px !important;
-  min-height:48px !important;
+  min-width:74px!important;
+  min-height:47px!important;
   padding:0 12px;
-  border:1px solid var(--auth-line) !important;
-  border-radius:9px !important;
-  background:var(--auth-surface) !important;
-  color:var(--auth-primary) !important;
-  font-size:12px;
-  font-weight:750;
+  border:1px solid var(--landing-line)!important;
+  border-radius:10px!important;
+  background:#fff!important;
+  color:var(--landing-teal)!important;
+  font-size:11px;
+  font-weight:800;
   cursor:pointer;
 }
 
 html.medindex-tailadmin-login .password-row button:hover {
-  border-color:var(--auth-primary) !important;
-  background:var(--auth-soft) !important;
+  border-color:#9ec8c5!important;
+  background:var(--landing-soft)!important;
 }
 
 html.medindex-tailadmin-login .password-row button:disabled { cursor:wait; opacity:.58; }
 
 html.medindex-tailadmin-login .caps-lock-hint {
   margin:7px 2px 0;
-  color:var(--auth-accent);
-  font-size:11px;
-  font-weight:700;
+  color:#9b6b24;
+  font-size:10px;
+  font-weight:750;
 }
 
 html.medindex-tailadmin-login .login-submit {
   display:flex;
   width:100%;
-  height:48px !important;
+  min-height:47px!important;
   align-items:center;
   justify-content:space-between;
-  margin-top:14px !important;
+  margin-top:13px!important;
   padding:0 15px;
-  border:1px solid #0f6668 !important;
-  border-radius:9px !important;
-  background:#0f6668 !important;
+  border:1px solid var(--landing-teal)!important;
+  border-radius:10px!important;
+  background:var(--landing-teal)!important;
   color:#fff;
-  box-shadow:none !important;
-  font-size:14px !important;
-  font-weight:750 !important;
+  box-shadow:none!important;
+  font-size:13px!important;
+  font-weight:800!important;
   cursor:pointer;
 }
 
 html.medindex-tailadmin-login .login-submit:hover {
-  background:#0b5052 !important;
-  transform:none !important;
+  background:#0c6668!important;
+  transform:none!important;
 }
 
 html.medindex-tailadmin-login .login-submit:disabled { opacity:.62; cursor:wait; }
 html.medindex-tailadmin-login .login-submit.is-loading span:last-child { animation:auth-pulse .8s ease-in-out infinite alternate; }
 
 html.medindex-tailadmin-login .login-message {
-  min-height:20px;
-  margin:9px 0 0;
-  color:var(--auth-danger);
-  font-size:12px;
+  min-height:18px;
+  margin:8px 0 0;
+  color:var(--landing-danger);
+  font-size:11px;
   line-height:1.45;
 }
 
-html.medindex-tailadmin-login .login-message.success { color:var(--auth-success); }
+html.medindex-tailadmin-login .login-message.success { color:#24704f; }
 
 html.medindex-tailadmin-login .login-meta {
   display:grid;
   grid-template-columns:repeat(3,minmax(0,1fr));
-  gap:6px;
-  margin-top:20px !important;
-  padding-top:17px !important;
-  border-top:1px solid var(--auth-line) !important;
+  gap:0;
+  margin-top:17px!important;
+  padding-top:16px!important;
+  border-top:1px solid var(--landing-line)!important;
 }
 
 html.medindex-tailadmin-login .login-meta span {
   min-width:0;
-  padding:6px;
-  border:1px solid var(--auth-line);
-  border-radius:7px;
-  background:var(--auth-soft) !important;
-  color:var(--auth-muted) !important;
-  font-size:10px;
-  font-weight:650;
+  padding:4px 8px;
+  border-right:1px solid var(--landing-line);
+  color:#718084!important;
+  font-size:9px;
+  font-weight:700;
   text-align:center;
 }
 
-html.medindex-tailadmin-login .login-side-panel {
-  position:relative;
-  display:flex;
-  min-height:100%;
-  align-items:center;
-  justify-content:center;
-  overflow:hidden;
-  padding:48px;
-  background:var(--auth-side) !important;
-  color:#fff;
-}
+html.medindex-tailadmin-login .login-meta span:last-child { border-right:0; }
 
-html.medindex-tailadmin-login .login-side-panel::before,
-html.medindex-tailadmin-login .login-side-panel::after { display:none !important; }
-
-html.medindex-tailadmin-login .login-side-inner {
-  position:relative;
-  width:min(430px,100%);
-  text-align:center;
-}
-
-html.medindex-tailadmin-login .login-side-mark {
-  width:64px;
-  height:64px;
-  margin:0 auto 22px;
-  border:1px solid rgba(255,255,255,.17);
-  border-radius:14px;
-  background:#22313e !important;
-  font-size:23px;
-  backdrop-filter:none !important;
-}
-
-html.medindex-tailadmin-login .login-side-inner h2 {
+html.medindex-tailadmin-login .login-clinical-note {
   margin:0;
-  font-size:30px;
-  font-weight:650;
-  letter-spacing:-.025em;
+  color:rgba(255,255,255,.76);
+  font-size:10px;
+  line-height:1.5;
+  text-align:center;
 }
 
-html.medindex-tailadmin-login .login-side-inner p {
-  margin:12px auto 0;
-  color:var(--auth-side-muted);
-  font-size:14px;
-  line-height:1.65;
+html.medindex-tailadmin-login .landing-showcase {
+  display:flex;
+  min-width:0;
+  flex-direction:column;
+  align-items:flex-start;
+  justify-content:center;
 }
 
-html.medindex-tailadmin-login .login-side-grid {
-  display:grid;
-  grid-template-columns:repeat(3,minmax(0,1fr));
-  gap:9px;
-  margin-top:28px;
+html.medindex-tailadmin-login .landing-showcase-copy {
+  max-width:650px;
 }
 
-html.medindex-tailadmin-login .login-side-grid span {
-  padding:11px 7px;
-  border:1px solid rgba(255,255,255,.12);
-  border-radius:8px;
-  background:#202e39;
-  color:#d3dbe1;
+html.medindex-tailadmin-login .landing-eyebrow {
+  margin:0 0 13px;
+  color:var(--landing-cyan);
   font-size:11px;
+  font-weight:850;
+  letter-spacing:.12em;
+  text-transform:uppercase;
 }
 
+html.medindex-tailadmin-login .landing-showcase h2 {
+  margin:0;
+  color:#fff;
+  font-size:clamp(46px,5.5vw,76px);
+  font-weight:800;
+  letter-spacing:-.06em;
+  line-height:.96;
+}
+
+html.medindex-tailadmin-login .landing-showcase h2 span { color:#fff; }
+
+html.medindex-tailadmin-login .landing-showcase-copy > p:last-child {
+  max-width:610px;
+  margin:20px 0 0;
+  color:rgba(255,255,255,.78);
+  font-size:clamp(15px,1.5vw,19px);
+  line-height:1.55;
+}
+
+html.medindex-tailadmin-login .landing-doctor-visual {
+  width:min(690px,100%);
+  margin:16px 0 -6px;
+}
+
+html.medindex-tailadmin-login .landing-doctor-visual svg {
+  display:block;
+  width:100%;
+  height:auto;
+}
+
+html.medindex-tailadmin-login .landing-feature-pills {
+  display:flex;
+  flex-wrap:wrap;
+  gap:9px;
+  margin-top:3px;
+}
+
+html.medindex-tailadmin-login .landing-feature-pills span {
+  display:inline-flex;
+  min-height:35px;
+  align-items:center;
+  padding:0 14px;
+  border:1px solid rgba(255,255,255,.22);
+  border-radius:999px;
+  background:rgba(255,255,255,.07);
+  color:rgba(255,255,255,.88);
+  font-size:10px;
+  font-weight:750;
+}
+
+html.medindex-tailadmin-login .landing-wave {
+  position:absolute;
+  right:0;
+  bottom:-1px;
+  left:0;
+  z-index:6;
+  height:132px;
+  pointer-events:none;
+}
+
+html.medindex-tailadmin-login .landing-wave svg {
+  display:block;
+  width:100%;
+  height:100%;
+}
+
+html.medindex-tailadmin-login .google-login-unavailable {
+  width:100%;
+  padding:12px;
+  border:1px solid #e4d2a9;
+  border-radius:10px;
+  background:#fff8e8;
+  color:#725514;
+  font-size:11px;
+  line-height:1.5;
+  text-align:center;
+}
+
+html.medindex-tailadmin-login :is(button,input,summary,a):focus-visible {
+  outline:3px solid rgba(226,180,102,.7);
+  outline-offset:3px;
+}
+
+/* Recovery page keeps the same secure form language without the hero. */
 html.medindex-tailadmin-login .recovery-page {
-  grid-template-columns:1fr !important;
-  place-items:center !important;
-  padding:24px !important;
+  display:grid!important;
+  min-height:100vh;
+  min-height:100dvh;
+  place-items:center!important;
+  padding:24px!important;
+  background:linear-gradient(100deg,var(--landing-teal),var(--landing-navy));
 }
 
 html.medindex-tailadmin-login .recovery-card {
-  width:min(520px,100%) !important;
-  padding:38px !important;
+  width:min(520px,100%)!important;
+  padding:38px!important;
+  border:1px solid rgba(255,255,255,.7)!important;
+  border-radius:24px!important;
+  background:#fff!important;
+  box-shadow:0 30px 90px rgba(5,25,34,.27)!important;
+}
+
+html.medindex-tailadmin-login .recovery-card .login-card-brand {
+  margin-bottom:24px;
 }
 
 html.medindex-tailadmin-login .recovery-card .login-copy {
@@ -322,53 +595,109 @@ html.medindex-tailadmin-login .recovery-card .login-copy {
   grid-template-columns:auto minmax(0,1fr);
   align-items:center;
   gap:12px;
-  margin-bottom:0 !important;
+  margin-top:22px!important;
   padding:14px;
-  border:1px solid var(--auth-line);
-  border-radius:9px;
-  background:var(--auth-soft);
+  border:1px solid var(--landing-line);
+  border-radius:10px;
+  background:var(--landing-soft);
 }
 
 html.medindex-tailadmin-login .recovery-card .login-copy::before {
   content:"";
   width:20px;
   height:20px;
-  border:2px solid var(--auth-line);
-  border-top-color:var(--auth-primary);
+  border:2px solid var(--landing-line);
+  border-top-color:var(--landing-teal);
   border-radius:50%;
   animation:auth-spin .9s linear infinite;
-}
-
-html.medindex-tailadmin-login :is(button,input):focus-visible {
-  outline:3px solid color-mix(in srgb,var(--auth-accent) 38%,transparent);
-  outline-offset:2px;
 }
 
 @keyframes auth-pulse { to { transform:translateX(4px); } }
 @keyframes auth-spin { to { transform:rotate(360deg); } }
 
-@media (max-width:900px) {
-  html.medindex-tailadmin-login .auth-page { grid-template-columns:1fr !important; }
-  html.medindex-tailadmin-login .login-side-panel { display:none !important; }
+@media (max-width:1040px) {
+  html.medindex-tailadmin-login .landing-hero-grid {
+    grid-template-columns:minmax(360px,.92fr) minmax(430px,1.08fr);
+    gap:46px;
+  }
+
+  html.medindex-tailadmin-login .landing-doctor-visual { margin-top:24px; }
 }
 
-@media (max-width:500px) {
-  html.medindex-tailadmin-login .auth-page { padding:14px !important; }
-  html.medindex-tailadmin-login .login-card,
-  html.medindex-tailadmin-login .recovery-card { width:100% !important; padding:25px 20px !important; }
-  html.medindex-tailadmin-login .login-meta { grid-template-columns:1fr; }
-  html.medindex-tailadmin-login .login-meta span { text-align:left; }
-  html.medindex-tailadmin-login .password-row { grid-template-columns:minmax(0,1fr); }
+@media (max-width:900px) {
+  html.medindex-tailadmin-login .landing-login-page { overflow:auto; }
+
+  html.medindex-tailadmin-login .landing-nav {
+    position:relative;
+    padding:16px 0;
+  }
+
+  html.medindex-tailadmin-login .landing-hero {
+    min-height:auto;
+    padding:48px 0 156px;
+  }
+
+  html.medindex-tailadmin-login .landing-hero-grid {
+    grid-template-columns:1fr;
+    gap:52px;
+  }
+
+  html.medindex-tailadmin-login .landing-login-column {
+    width:min(560px,100%);
+    margin:0 auto;
+    order:2;
+  }
+
+  html.medindex-tailadmin-login .landing-showcase {
+    align-items:center;
+    order:1;
+    text-align:center;
+  }
+
+  html.medindex-tailadmin-login .landing-showcase-copy > p:last-child { margin-right:auto; margin-left:auto; }
+  html.medindex-tailadmin-login .landing-doctor-visual { width:min(600px,100%); }
+  html.medindex-tailadmin-login .landing-feature-pills { justify-content:center; }
+}
+
+@media (max-width:620px) {
+  html.medindex-tailadmin-login .landing-container { width:min(100% - 28px,1280px); }
+  html.medindex-tailadmin-login .landing-nav-meta > span:first-child { display:none; }
+
+  html.medindex-tailadmin-login .landing-brand-copy small { display:none; }
+  html.medindex-tailadmin-login .landing-brand-copy strong { font-size:18px; }
+  html.medindex-tailadmin-login .landing-brand-logo { width:44px; height:44px; border-radius:12px; }
+
+  html.medindex-tailadmin-login .landing-hero { padding-top:34px; }
+  html.medindex-tailadmin-login .landing-showcase h2 { font-size:44px; }
+  html.medindex-tailadmin-login .landing-showcase-copy > p:last-child { font-size:15px; }
+  html.medindex-tailadmin-login .landing-doctor-visual { margin-top:12px; }
+
+  html.medindex-tailadmin-login .login-card { padding:27px 21px!important; border-radius:20px!important; }
+  html.medindex-tailadmin-login .login-card h1 { font-size:34px!important; }
+  html.medindex-tailadmin-login .login-card-brand { margin-bottom:22px; }
+  html.medindex-tailadmin-login .google-login-panel { margin-top:24px; }
+
+  html.medindex-tailadmin-login .login-meta { grid-template-columns:1fr; gap:7px; }
+  html.medindex-tailadmin-login .login-meta span { border-right:0; text-align:left; }
+  html.medindex-tailadmin-login .password-row { grid-template-columns:1fr; }
   html.medindex-tailadmin-login .password-row button { width:100%; }
+  html.medindex-tailadmin-login .landing-wave { height:104px; }
+}
+
+@media (max-width:420px) {
+  html.medindex-tailadmin-login .landing-private-pill { padding:0 10px; font-size:9px; }
+  html.medindex-tailadmin-login .landing-showcase h2 { font-size:38px; }
+  html.medindex-tailadmin-login .landing-eyebrow { font-size:9px; }
+  html.medindex-tailadmin-login .landing-feature-pills span { padding:0 11px; }
 }
 
 @media (prefers-reduced-motion:reduce) {
   html.medindex-tailadmin-login *,
   html.medindex-tailadmin-login *::before,
   html.medindex-tailadmin-login *::after {
-    scroll-behavior:auto !important;
-    animation-duration:.01ms !important;
-    animation-iteration-count:1 !important;
-    transition-duration:.01ms !important;
+    scroll-behavior:auto!important;
+    animation-duration:.01ms!important;
+    animation-iteration-count:1!important;
+    transition-duration:.01ms!important;
   }
 }
