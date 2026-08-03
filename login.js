@@ -64,6 +64,16 @@
     googleStatus.setAttribute('aria-live', error ? 'assertive' : 'polite');
   }
 
+  function announceProviderError(provider, value) {
+    if (provider === 'google') {
+      setMessage('', 'status');
+      setGoogleStatus(value, true);
+      return;
+    }
+    setGoogleStatus('', false);
+    setMessage(value);
+  }
+
   function showRetry(value) {
     if (retryButton) retryButton.hidden = !value;
   }
@@ -93,7 +103,7 @@
     showRetry(false);
     setBusy(false);
     setGoogleStatus('Hyrja private nuk është konfiguruar ende në server.', true);
-    setMessage('Vendos SESSION_SECRET dhe GOOGLE_CLIENT_ID në Vercel. Password-i rezervë është opsional.');
+    setMessage('Vendos SESSION_SECRET dhe GOOGLE_CLIENT_ID në Vercel. Password-i rezervë është opsional.', 'status');
   }
 
   function saveBootstrapLease(payload = {}) {
@@ -141,12 +151,18 @@
     finally { clearTimeout(timeout); }
   }
 
-  async function completeLogin(payload) {
+  async function completeLogin(payload, provider) {
     saveBootstrapLease(payload);
     redirecting = true;
     showRetry(false);
-    setMessage('U verifikua. Po hapet MedIndex…', 'success');
-    setGoogleStatus(`U verifikua ${payload.user?.email || 'llogaria Google'}.`);
+    const success = `U verifikua ${payload.user?.email || 'llogaria'}. Po hapet MedIndex…`;
+    if (provider === 'google') {
+      setMessage('', 'status');
+      setGoogleStatus(success);
+    } else {
+      setGoogleStatus('', false);
+      setMessage(success, 'success');
+    }
     if (password) {
       password.value = '';
       password.removeAttribute('aria-invalid');
@@ -160,7 +176,13 @@
     if (busy || configurationBlocked) return;
     showRetry(false);
     setBusy(true, provider);
-    setMessage(connectionProfile().slow ? 'Lidhja është e dobët; verifikimi mund të zgjasë pak…' : '', 'status');
+    const slowMessage = connectionProfile().slow ? 'Lidhja është e dobët; verifikimi mund të zgjasë pak…' : '';
+    if (provider === 'google') {
+      setMessage('', 'status');
+      if (slowMessage) setGoogleStatus(slowMessage);
+    } else {
+      setMessage(slowMessage, 'status');
+    }
     try {
       const response = await timedFetch('/api/auth', {
         method:'POST',
@@ -180,15 +202,14 @@
         const suffix = response.status === 429 && retryAfter ? ` Provo pas rreth ${Math.ceil(retryAfter / 60)} minutash.` : '';
         throw new Error((payload.error || 'Hyrja dështoi.') + suffix);
       }
-      await completeLogin(payload);
+      await completeLogin(payload, provider);
     } catch (error) {
       if (configurationBlocked) return;
       const value = error?.name === 'AbortError'
         ? 'Lidhja është shumë e ngadalshme. Provo përsëri kur sinjali të jetë më i mirë.'
         : error.message || 'Hyrja dështoi.';
-      setMessage(value);
+      announceProviderError(provider, value);
       if (provider === 'google') {
-        setGoogleStatus(value, true);
         showRetry(true);
       } else {
         password?.setAttribute('aria-invalid', 'true');
@@ -223,6 +244,7 @@
     const value = password?.value || '';
     if (value.length < 6) {
       password?.setAttribute('aria-invalid', 'true');
+      setGoogleStatus('', false);
       setMessage('Shkruaje password-in e plotë.');
       password?.focus();
       return;
@@ -287,6 +309,7 @@
       showRetry(false);
       setGoogleStatus('Zgjidh llogarinë e aprovuar Google.');
     } catch (error) {
+      setMessage('', 'status');
       setGoogleStatus(error.message || 'Google Sign-In nuk u ngarkua.', true);
       showRetry(true);
       if (config.passwordFallbackConfigured && fallback) {
@@ -301,7 +324,11 @@
     lastConfiguration = config;
     csrfToken = String(config.csrfToken || '');
     showRetry(false);
-    if (fallback) fallback.hidden = !config.passwordFallbackConfigured;
+    const fallbackRequested = new URLSearchParams(location.search).get('fallback') === '1';
+    if (fallback) {
+      fallback.hidden = !config.passwordFallbackConfigured || (config.googleConfigured && !fallbackRequested);
+      fallback.open = Boolean(config.passwordFallbackConfigured && fallbackRequested);
+    }
     if (!config.googleConfigured) {
       if (googleButton) googleButton.innerHTML = '<div class="google-login-unavailable">Google Client ID ende nuk është vendosur në Vercel.</div>';
       setGoogleStatus('Hyrja me Google është gati në kod, por pret konfigurimin e Google Client ID.', true);
@@ -314,7 +341,6 @@
       }
       return;
     }
-    if (config.passwordFallbackConfigured && new URLSearchParams(location.search).get('fallback') === '1' && fallback) fallback.open = true;
     void initializeGoogle(config);
   }
 
@@ -333,8 +359,8 @@
       }
       configureProviders(payload);
     } catch (error) {
-      setGoogleStatus(error?.name === 'AbortError' ? 'Kontrolli i hyrjes zgjati tepër.' : 'Serveri i hyrjes nuk u arrit.', true);
-      setMessage('Kontrollo lidhjen me internet dhe provo përsëri.');
+      setMessage('', 'status');
+      setGoogleStatus(error?.name === 'AbortError' ? 'Kontrolli i hyrjes zgjati tepër. Provo përsëri.' : 'Serveri i hyrjes nuk u arrit. Kontrollo internetin dhe provo përsëri.', true);
       showRetry(true);
     }
   }
