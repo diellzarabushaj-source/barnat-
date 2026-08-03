@@ -86,7 +86,7 @@ async function snapshot(page) {
     };
     const ids = [...document.querySelectorAll('[id]')].map(node => node.id);
     const duplicates = [...new Set(ids.filter((id, index) => ids.indexOf(id) !== index))];
-    const logo = document.querySelector('.mi-brand-logo img');
+    const brandLogo = document.querySelector('.mi-brand-logo');
     const hero = document.querySelector('.mi-hero-copy');
     const targets = [...document.querySelectorAll('a,button,summary')]
       .filter(node => {
@@ -105,8 +105,8 @@ async function snapshot(page) {
       copy:rect('.mi-hero-copy'),
       google:rect('#googleLoginButton'),
       wave:rect('.mi-wave'),
-      logoCount:document.querySelectorAll('.mi-brand-logo img').length,
-      logoReady:Boolean(logo?.complete && logo.naturalWidth > 0),
+      logoCount:document.querySelectorAll('.mi-brand-logo').length,
+      logoReady:getComputedStyle(brandLogo).backgroundImage.includes('medindex-mark-mplus.svg'),
       heroHidden:getComputedStyle(hero).display === 'none',
       duplicates,
       h1Count:document.querySelectorAll('h1').length,
@@ -131,7 +131,7 @@ test('MedIndex login is compact and stable on iPhone, tablet and desktop', async
     await page.goto(`${BASE}/login.html`, { waitUntil:'domcontentloaded' });
     await expect(page.locator('.mi-login-card')).toBeVisible();
     await expect(page.locator('.mock-google-sign-in')).toBeVisible();
-    await expect(page.locator('.mi-brand-logo img')).toBeVisible();
+    await expect(page.locator('.mi-brand-logo')).toBeVisible();
     await expect(page.locator('#passwordFallback')).toBeHidden();
     await page.waitForTimeout(180);
 
@@ -139,7 +139,7 @@ test('MedIndex login is compact and stable on iPhone, tablet and desktop', async
     expect(current.htmlWidth, `${viewport.name}: html overflow`).toBeLessThanOrEqual(viewport.width + 1);
     expect(current.bodyWidth, `${viewport.name}: body overflow`).toBeLessThanOrEqual(viewport.width + 1);
     expect(current.logoCount, `${viewport.name}: one logo`).toBe(1);
-    expect(current.logoReady, `${viewport.name}: logo loads`).toBe(true);
+    expect(current.logoReady, `${viewport.name}: approved logo background`).toBe(true);
     expect(current.duplicates, `${viewport.name}: duplicate IDs`).toEqual([]);
     expect(current.h1Count).toBe(1);
     expect(current.h2Count).toBe(1);
