@@ -7,6 +7,7 @@ const OUTPUT = '/tmp/icd-clinical-guidance';
 const SHEET_ID = '19ncbnrTJ_w-WQ0msWO9_dUoxjmicSUAz6Nt4sh20gFw';
 fs.mkdirSync(OUTPUT, { recursive:true });
 test.describe.configure({ mode:'serial' });
+test.use({ serviceWorkers:'block' });
 
 function clinicalPayload(entries, source = 'Google Sheet i dhënë nga përdoruesi') {
   return {
