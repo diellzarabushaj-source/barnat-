@@ -1,51 +1,89 @@
-/* MedIndex login page only. This file is loaded exclusively by login.html. */
+/* MedIndex login page only. Loaded exclusively by login.html. */
 :root {
-  --mi-teal:#0f7779;
-  --mi-teal-dark:#0d5360;
-  --mi-navy:#0b1f2a;
-  --mi-cyan:#84e0dc;
+  --mi-teal-700:#0f6f72;
+  --mi-teal-800:#0c5b61;
+  --mi-navy-950:#081b25;
+  --mi-cyan-300:#8be4df;
+  --mi-white:#ffffff;
+  --mi-surface:#ffffff;
+  --mi-surface-soft:#f4f8f7;
   --mi-text:#14242a;
-  --mi-muted:#697a80;
+  --mi-muted:#65777d;
   --mi-line:#dce6e4;
-  --mi-soft:#f4f8f7;
   --mi-danger:#a23d45;
+  --mi-success:#24704f;
+  --mi-shadow:0 30px 80px rgba(5,25,34,.24),0 8px 24px rgba(5,25,34,.10);
   --mi-font:Inter,ui-sans-serif,-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+  color-scheme:light;
 }
 
-html.medindex-tailadmin-login,
+html.medindex-tailadmin-login {
+  min-height:100%;
+  background:var(--mi-navy-950);
+  -webkit-text-size-adjust:100%;
+  text-size-adjust:100%;
+}
+
 html.medindex-tailadmin-login body {
   min-height:100%;
   margin:0;
+  overflow-x:hidden;
+  background:var(--mi-navy-950)!important;
   color:var(--mi-text)!important;
   font-family:var(--mi-font)!important;
   text-rendering:optimizeLegibility;
   -webkit-font-smoothing:antialiased;
 }
 
-html.medindex-tailadmin-login * { box-sizing:border-box; }
+html.medindex-tailadmin-login *,
+html.medindex-tailadmin-login *::before,
+html.medindex-tailadmin-login *::after { box-sizing:border-box; }
+
 html.medindex-tailadmin-login body::before { display:none!important; }
+
+html.medindex-tailadmin-login :is(a,button,input,summary):focus-visible {
+  outline:3px solid rgba(139,228,223,.92)!important;
+  outline-offset:3px!important;
+}
 
 .landing-login-page {
   position:relative;
+  isolation:isolate;
   min-height:100vh;
+  min-height:100svh;
   min-height:100dvh;
   overflow:hidden;
   color:#fff;
   background:
-    radial-gradient(circle at 78% 18%,rgba(132,224,220,.13),transparent 25%),
-    linear-gradient(105deg,var(--mi-teal) 0%,var(--mi-teal-dark) 50%,var(--mi-navy) 100%);
+    radial-gradient(circle at 84% 15%,rgba(139,228,223,.16),transparent 27%),
+    radial-gradient(circle at 15% 88%,rgba(255,255,255,.07),transparent 24%),
+    linear-gradient(112deg,var(--mi-teal-700) 0%,var(--mi-teal-800) 47%,var(--mi-navy-950) 100%);
+}
+
+.landing-login-page::before {
+  content:"";
+  position:absolute;
+  z-index:-1;
+  width:520px;
+  height:520px;
+  top:-310px;
+  right:-160px;
+  border:1px solid rgba(255,255,255,.10);
+  border-radius:50%;
+  box-shadow:0 0 0 70px rgba(255,255,255,.025),0 0 0 140px rgba(255,255,255,.018);
+  pointer-events:none;
 }
 
 .landing-container {
-  width:min(1260px,calc(100% - 48px));
-  margin:0 auto;
+  width:min(1180px,calc(100% - 56px));
+  margin-inline:auto;
 }
 
 .landing-nav {
   position:absolute;
   inset:0 0 auto;
   z-index:20;
-  padding:20px 0;
+  padding:calc(18px + env(safe-area-inset-top)) 0 18px;
 }
 
 .landing-nav::after {
@@ -55,7 +93,7 @@ html.medindex-tailadmin-login body::before { display:none!important; }
   bottom:0;
   left:0;
   height:1px;
-  background:rgba(255,255,255,.15);
+  background:linear-gradient(90deg,transparent,rgba(255,255,255,.18) 18%,rgba(255,255,255,.18) 82%,transparent);
 }
 
 .landing-nav-inner,
@@ -67,23 +105,30 @@ html.medindex-tailadmin-login body::before { display:none!important; }
   align-items:center;
 }
 
-.landing-nav-inner { justify-content:space-between; gap:24px; }
+.landing-nav-inner {
+  min-height:48px;
+  justify-content:space-between;
+  gap:24px;
+}
 
 .landing-brand {
-  gap:13px;
+  min-width:0;
+  gap:12px;
   color:#fff;
   text-decoration:none;
 }
 
 .landing-brand-logo {
   display:grid;
-  width:50px;
-  height:50px;
+  width:48px;
+  height:48px;
+  flex:0 0 auto;
   place-items:center;
   overflow:hidden;
-  border:1px solid rgba(255,255,255,.24);
+  border:1px solid rgba(255,255,255,.22);
   border-radius:14px;
-  background:rgba(6,24,33,.26);
+  background:rgba(6,24,33,.30);
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.10);
 }
 
 .landing-brand-logo img,
@@ -94,17 +139,36 @@ html.medindex-tailadmin-login body::before { display:none!important; }
   object-fit:cover;
 }
 
-.landing-brand-copy { display:grid; gap:2px; }
-.landing-brand-copy strong { font-size:21px; font-weight:800; letter-spacing:-.035em; }
+.landing-brand-copy {
+  display:grid;
+  min-width:0;
+  gap:2px;
+}
+
+.landing-brand-copy strong {
+  overflow:hidden;
+  font-size:20px;
+  font-weight:800;
+  letter-spacing:-.035em;
+  text-overflow:ellipsis;
+  white-space:nowrap;
+}
+
 .landing-brand-copy small {
-  color:rgba(255,255,255,.68);
-  font-size:10px;
-  font-weight:700;
-  letter-spacing:.12em;
+  color:rgba(255,255,255,.64);
+  font-size:9px;
+  font-weight:750;
+  letter-spacing:.13em;
   text-transform:uppercase;
 }
 
-.landing-nav-meta { gap:12px; color:rgba(255,255,255,.84); font-size:12px; font-weight:650; }
+.landing-nav-meta {
+  flex:0 0 auto;
+  gap:12px;
+  color:rgba(255,255,255,.78);
+  font-size:12px;
+  font-weight:650;
+}
 
 .landing-private-pill {
   display:inline-flex;
@@ -112,14 +176,16 @@ html.medindex-tailadmin-login body::before { display:none!important; }
   align-items:center;
   gap:8px;
   padding:0 14px;
-  border:1px solid rgba(255,255,255,.24);
+  border:1px solid rgba(255,255,255,.22);
   border-radius:999px;
   background:rgba(255,255,255,.08);
   color:#fff;
-  font-size:10px;
-  font-weight:800;
-  letter-spacing:.08em;
+  font-size:9px;
+  font-weight:850;
+  letter-spacing:.09em;
   text-transform:uppercase;
+  backdrop-filter:blur(10px);
+  -webkit-backdrop-filter:blur(10px);
 }
 
 .landing-private-pill::before {
@@ -127,8 +193,8 @@ html.medindex-tailadmin-login body::before { display:none!important; }
   width:7px;
   height:7px;
   border-radius:50%;
-  background:var(--mi-cyan);
-  box-shadow:0 0 0 4px rgba(132,224,220,.14);
+  background:var(--mi-cyan-300);
+  box-shadow:0 0 0 4px rgba(139,228,223,.13);
 }
 
 .landing-hero {
@@ -136,53 +202,73 @@ html.medindex-tailadmin-login body::before { display:none!important; }
   z-index:5;
   display:flex;
   min-height:100vh;
+  min-height:100svh;
   min-height:100dvh;
   align-items:center;
-  padding:118px 0 148px;
+  padding:124px 0 max(126px,calc(90px + env(safe-area-inset-bottom)));
 }
 
 .landing-hero-grid {
   display:grid;
-  grid-template-columns:minmax(390px,.84fr) minmax(500px,1.16fr);
+  grid-template-columns:minmax(390px,440px) minmax(0,1fr);
   align-items:center;
-  gap:clamp(48px,7vw,100px);
+  gap:clamp(54px,7vw,96px);
 }
 
-.landing-login-column { display:grid; gap:14px; }
+.landing-login-column {
+  display:grid;
+  min-width:0;
+  gap:14px;
+}
 
 .login-card {
   position:relative;
   width:100%!important;
-  padding:clamp(30px,3.3vw,42px)!important;
-  border:1px solid rgba(255,255,255,.72)!important;
+  max-width:440px;
+  padding:clamp(30px,3vw,40px)!important;
+  overflow:hidden;
+  border:1px solid rgba(255,255,255,.78)!important;
   border-radius:24px!important;
-  background:#fff!important;
+  background:rgba(255,255,255,.985)!important;
   color:var(--mi-text)!important;
-  box-shadow:0 30px 90px rgba(5,25,34,.27)!important;
+  box-shadow:var(--mi-shadow)!important;
+}
+
+.login-card::before {
+  content:"";
+  position:absolute;
+  top:0;
+  right:0;
+  left:0;
+  height:3px;
+  background:linear-gradient(90deg,var(--mi-teal-700),var(--mi-cyan-300));
 }
 
 .login-card::after { display:none!important; }
 
 .login-card-brand {
-  gap:12px;
-  margin-bottom:26px;
-  font-size:16px;
+  gap:11px;
+  margin-bottom:24px;
+  color:var(--mi-text);
+  font-size:15px;
   font-weight:800;
   letter-spacing:-.025em;
 }
 
 .login-card-brand img {
-  width:50px;
-  height:50px;
-  border-radius:14px;
+  width:46px;
+  height:46px;
+  flex:0 0 auto;
+  border-radius:13px;
+  box-shadow:0 6px 18px rgba(15,111,114,.14);
 }
 
 .login-kicker {
   margin:0 0 8px!important;
-  color:var(--mi-teal)!important;
-  font-size:11px!important;
+  color:var(--mi-teal-700)!important;
+  font-size:10px!important;
   font-weight:850!important;
-  letter-spacing:.11em!important;
+  letter-spacing:.12em!important;
   text-transform:uppercase;
 }
 
@@ -190,32 +276,63 @@ html.medindex-tailadmin-login body::before { display:none!important; }
   margin:0!important;
   color:var(--mi-text)!important;
   font-family:var(--mi-font)!important;
-  font-size:clamp(34px,4vw,44px)!important;
-  font-weight:760!important;
-  letter-spacing:-.05em!important;
-  line-height:1.05!important;
+  font-size:clamp(34px,3.7vw,43px)!important;
+  font-weight:780!important;
+  letter-spacing:-.052em!important;
+  line-height:1.04!important;
 }
 
 .login-copy {
-  max-width:420px;
+  max-width:390px;
   margin:13px 0 0!important;
   color:var(--mi-muted)!important;
   font-size:14px!important;
-  line-height:1.65!important;
+  line-height:1.62!important;
 }
 
-.google-login-panel { display:grid; gap:11px; margin:28px 0 0; }
-.google-login-heading { margin:0; color:var(--mi-text); font-size:13px; font-weight:800; text-align:left; }
+.google-login-panel {
+  display:grid;
+  gap:10px;
+  margin:27px 0 0;
+}
+
+.google-login-heading {
+  margin:0;
+  color:var(--mi-text);
+  font-size:12px;
+  font-weight:800;
+  text-align:left;
+}
+
 .google-login-button {
   display:flex;
+  width:100%;
+  min-width:0;
   min-height:48px;
   align-items:center;
   justify-content:flex-start;
   overflow:hidden;
   border-radius:10px;
 }
+
 .google-login-button > div,
-.google-login-button iframe { max-width:100%!important; }
+.google-login-button iframe {
+  width:100%!important;
+  max-width:100%!important;
+  min-width:0!important;
+}
+
+.google-login-unavailable {
+  width:100%;
+  padding:13px 14px;
+  border:1px solid #f0d5d8;
+  border-radius:10px;
+  background:#fff7f8;
+  color:var(--mi-danger);
+  font-size:12px;
+  line-height:1.45;
+}
+
 .google-login-status {
   min-height:1.35em;
   margin:0;
@@ -224,18 +341,20 @@ html.medindex-tailadmin-login body::before { display:none!important; }
   line-height:1.5;
   text-align:left;
 }
+
 .google-login-status.is-error { color:var(--mi-danger); }
 
 .login-account-note {
   gap:9px;
   margin:14px 0 0;
   padding:10px 12px;
-  border:1px solid #c9dfdc;
+  border:1px solid #c8e0dc;
   border-radius:11px;
-  background:#eef7f5;
+  background:#eef8f6;
   color:#225c5f;
   font-size:11px;
   font-weight:750;
+  overflow-wrap:anywhere;
 }
 
 .login-account-note::before {
@@ -246,7 +365,7 @@ html.medindex-tailadmin-login body::before { display:none!important; }
   flex:0 0 auto;
   place-items:center;
   border-radius:50%;
-  background:var(--mi-teal);
+  background:var(--mi-teal-700);
   color:#fff;
   font-size:11px;
 }
@@ -256,6 +375,7 @@ html.medindex-tailadmin-login body::before { display:none!important; }
   padding-top:15px;
   border-top:1px solid var(--mi-line);
 }
+
 .password-fallback summary {
   cursor:pointer;
   color:var(--mi-muted);
@@ -263,7 +383,9 @@ html.medindex-tailadmin-login body::before { display:none!important; }
   font-weight:800;
   text-align:center;
   list-style:none;
+  border-radius:8px;
 }
+
 .password-fallback summary::-webkit-details-marker { display:none; }
 .password-fallback summary::after { content:"  ▾"; }
 .password-fallback[open] summary::after { content:"  ▴"; }
@@ -274,14 +396,20 @@ html.medindex-tailadmin-login body::before { display:none!important; }
   align-items:center;
   gap:10px;
   margin:16px 0;
-  color:#859296;
+  color:#829095;
   font-size:9px;
   font-weight:800;
   letter-spacing:.1em;
   text-transform:uppercase;
 }
+
 .login-divider::before,
-.login-divider::after { content:""; height:1px; flex:1; background:var(--mi-line); }
+.login-divider::after {
+  content:"";
+  height:1px;
+  flex:1;
+  background:var(--mi-line);
+}
 
 .login-card label {
   display:block;
@@ -291,62 +419,101 @@ html.medindex-tailadmin-login body::before { display:none!important; }
   font-weight:750!important;
 }
 
-.password-row { display:grid; grid-template-columns:minmax(0,1fr) auto; gap:9px!important; }
+.password-row {
+  display:grid;
+  grid-template-columns:minmax(0,1fr) auto;
+  gap:9px!important;
+}
+
 .password-row input {
+  width:100%;
   min-width:0;
-  height:47px!important;
+  height:48px!important;
   padding:0 13px;
   border:1px solid var(--mi-line)!important;
   border-radius:10px!important;
-  background:var(--mi-soft)!important;
+  background:var(--mi-surface-soft)!important;
   color:var(--mi-text)!important;
-  font-size:15px;
+  font-family:inherit;
+  font-size:16px;
   outline:none;
+  transition:border-color .16s ease,box-shadow .16s ease,background-color .16s ease;
 }
+
 .password-row input:focus {
-  border-color:var(--mi-teal)!important;
+  border-color:var(--mi-teal-700)!important;
   background:#fff!important;
-  box-shadow:0 0 0 4px rgba(15,119,121,.13);
+  box-shadow:0 0 0 4px rgba(15,111,114,.12);
 }
+
 .password-row button {
-  min-width:74px!important;
-  min-height:47px!important;
+  min-width:76px!important;
+  min-height:48px!important;
   padding:0 12px;
   border:1px solid var(--mi-line)!important;
   border-radius:10px!important;
   background:#fff!important;
-  color:var(--mi-teal)!important;
+  color:var(--mi-teal-700)!important;
+  font-family:inherit;
   font-size:11px;
   font-weight:800;
   cursor:pointer;
+  transition:border-color .16s ease,background-color .16s ease;
 }
-.password-row button:hover { border-color:#9ec8c5!important; background:var(--mi-soft)!important; }
+
+.password-row button:hover {
+  border-color:#9ec8c5!important;
+  background:var(--mi-surface-soft)!important;
+}
+
 .password-row button:disabled { cursor:wait; opacity:.58; }
 
-.caps-lock-hint { margin:7px 2px 0; color:#9b6b24; font-size:10px; font-weight:750; }
+.caps-lock-hint {
+  margin:7px 2px 0;
+  color:#8a5f1f;
+  font-size:10px;
+  font-weight:750;
+}
 
 .login-submit {
   display:flex;
   width:100%;
-  min-height:47px!important;
+  min-height:48px!important;
   align-items:center;
   justify-content:space-between;
   margin-top:13px!important;
   padding:0 15px;
-  border:1px solid var(--mi-teal)!important;
+  border:1px solid var(--mi-teal-700)!important;
   border-radius:10px!important;
-  background:var(--mi-teal)!important;
+  background:var(--mi-teal-700)!important;
   color:#fff;
-  box-shadow:none!important;
+  box-shadow:0 8px 20px rgba(15,111,114,.18)!important;
+  font-family:inherit;
   font-size:13px!important;
   font-weight:800!important;
   cursor:pointer;
+  transition:transform .16s ease,background-color .16s ease,box-shadow .16s ease;
 }
-.login-submit:hover { background:#0c6668!important; transform:none!important; }
-.login-submit:disabled { opacity:.62; cursor:wait; }
 
-.login-message { min-height:18px; margin:8px 0 0; color:var(--mi-danger); font-size:11px; line-height:1.45; }
-.login-message.success { color:#24704f; }
+.login-submit:hover {
+  background:var(--mi-teal-800)!important;
+  box-shadow:0 10px 24px rgba(15,91,97,.22)!important;
+  transform:translateY(-1px)!important;
+}
+
+.login-submit:active { transform:translateY(0)!important; }
+.login-submit:disabled { cursor:wait; opacity:.62; transform:none!important; }
+.login-submit.is-loading span:last-child { animation:mi-login-pulse .8s ease-in-out infinite alternate; }
+
+.login-message {
+  min-height:18px;
+  margin:8px 0 0;
+  color:var(--mi-danger);
+  font-size:11px;
+  line-height:1.45;
+}
+
+.login-message.success { color:var(--mi-success); }
 
 .login-meta {
   display:grid;
@@ -355,6 +522,7 @@ html.medindex-tailadmin-login body::before { display:none!important; }
   padding-top:16px!important;
   border-top:1px solid var(--mi-line)!important;
 }
+
 .login-meta span {
   min-width:0;
   padding:4px 8px;
@@ -362,13 +530,15 @@ html.medindex-tailadmin-login body::before { display:none!important; }
   color:#718084!important;
   font-size:9px;
   font-weight:700;
+  line-height:1.35;
   text-align:center;
 }
+
 .login-meta span:last-child { border-right:0; }
 
 .login-clinical-note {
   margin:0;
-  color:rgba(255,255,255,.76);
+  color:rgba(255,255,255,.70);
   font-size:10px;
   line-height:1.5;
   text-align:center;
@@ -377,57 +547,76 @@ html.medindex-tailadmin-login body::before { display:none!important; }
 .landing-showcase {
   display:flex;
   min-width:0;
+  max-width:650px;
   flex-direction:column;
   align-items:flex-start;
   justify-content:center;
 }
-.landing-showcase-copy { max-width:650px; }
+
+.landing-showcase-copy { max-width:620px; }
+
 .landing-eyebrow {
-  margin:0 0 13px;
-  color:var(--mi-cyan);
-  font-size:11px;
+  margin:0 0 12px;
+  color:var(--mi-cyan-300);
+  font-size:10px;
   font-weight:850;
-  letter-spacing:.12em;
+  letter-spacing:.13em;
   text-transform:uppercase;
 }
+
 .landing-showcase h2 {
   margin:0;
   color:#fff;
-  font-size:clamp(46px,5.5vw,76px);
+  font-size:clamp(48px,5.4vw,72px);
   font-weight:800;
   letter-spacing:-.06em;
-  line-height:.96;
+  line-height:.97;
+  text-wrap:balance;
 }
+
+.landing-showcase h2 span { color:#d9fffc; }
+
 .landing-showcase-copy > p:last-child {
-  max-width:610px;
-  margin:20px 0 0;
-  color:rgba(255,255,255,.76);
-  font-size:16px;
-  line-height:1.7;
+  max-width:590px;
+  margin:18px 0 0;
+  color:rgba(255,255,255,.75);
+  font-size:15px;
+  line-height:1.65;
 }
 
 .landing-doctor-visual {
-  width:min(700px,100%);
-  margin:10px 0 -20px;
+  width:min(590px,100%);
+  margin:8px 0 -22px;
+  filter:drop-shadow(0 24px 40px rgba(2,14,20,.18));
 }
-.landing-doctor-visual svg { display:block; width:100%; height:auto; }
+
+.landing-doctor-visual svg {
+  display:block;
+  width:100%;
+  height:auto;
+}
 
 .landing-feature-pills {
   display:grid;
   width:100%;
   grid-template-columns:repeat(4,minmax(0,1fr));
-  gap:10px;
+  gap:9px;
 }
+
 .landing-feature-pills span {
   display:grid;
-  min-height:46px;
+  min-height:44px;
   place-items:center;
-  border:1px solid rgba(255,255,255,.18);
+  padding:0 8px;
+  border:1px solid rgba(255,255,255,.16);
   border-radius:12px;
   background:rgba(5,25,34,.13);
-  color:rgba(255,255,255,.92);
-  font-size:11px;
+  color:rgba(255,255,255,.91);
+  font-size:10px;
   font-weight:750;
+  text-align:center;
+  backdrop-filter:blur(8px);
+  -webkit-backdrop-filter:blur(8px);
 }
 
 .landing-wave {
@@ -436,50 +625,117 @@ html.medindex-tailadmin-login body::before { display:none!important; }
   bottom:-1px;
   left:0;
   z-index:4;
-  height:145px;
+  height:132px;
   pointer-events:none;
 }
-.landing-wave svg { display:block; width:100%; height:100%; }
+
+.landing-wave svg {
+  display:block;
+  width:100%;
+  height:100%;
+}
+
+@keyframes mi-login-pulse {
+  from { opacity:.45; transform:translateX(-2px); }
+  to { opacity:1; transform:translateX(1px); }
+}
 
 @media (max-width:1040px) {
-  .landing-login-page { overflow:auto; }
-  .landing-hero { padding:124px 0 170px; }
-  .landing-hero-grid { grid-template-columns:minmax(340px,.9fr) minmax(380px,1.1fr); gap:40px; }
-  .landing-showcase h2 { font-size:clamp(42px,6vw,62px); }
+  .landing-container { width:min(1040px,calc(100% - 40px)); }
+  .landing-hero-grid { grid-template-columns:minmax(360px,420px) minmax(0,1fr); gap:44px; }
+  .landing-showcase h2 { font-size:clamp(44px,5.7vw,62px); }
+  .landing-doctor-visual { width:min(520px,100%); }
 }
 
 @media (max-width:820px) {
-  .landing-container { width:min(680px,calc(100% - 32px)); }
+  .landing-login-page {
+    overflow-x:hidden;
+    overflow-y:auto;
+    background:
+      radial-gradient(circle at 80% 12%,rgba(139,228,223,.14),transparent 30%),
+      linear-gradient(155deg,var(--mi-teal-700) 0%,var(--mi-teal-800) 44%,var(--mi-navy-950) 100%);
+  }
+
+  .landing-container { width:min(620px,calc(100% - 32px)); }
   .landing-nav-meta > span:first-child { display:none; }
-  .landing-hero { align-items:flex-start; padding:112px 0 120px; }
-  .landing-hero-grid { grid-template-columns:1fr; gap:52px; }
-  .landing-login-column { order:1; }
-  .landing-showcase { order:2; align-items:center; text-align:center; }
-  .landing-doctor-visual { width:min(620px,100%); }
-  .landing-feature-pills { max-width:620px; }
+  .landing-hero { align-items:flex-start; padding:112px 0 64px; }
+  .landing-hero-grid { grid-template-columns:1fr; gap:46px; }
+  .landing-login-column { order:1; justify-items:center; }
+  .login-card { max-width:520px; }
+  .login-clinical-note { max-width:460px; }
+  .landing-showcase { order:2; max-width:620px; align-items:center; text-align:center; }
+  .landing-showcase-copy > p:last-child { margin-inline:auto; }
+  .landing-doctor-visual { width:min(470px,92%); margin:4px auto -12px; }
+  .landing-feature-pills { max-width:520px; }
   .landing-wave { display:none; }
 }
 
-@media (max-width:560px) {
+@media (max-width:600px) {
   .landing-container { width:calc(100% - 24px); }
-  .landing-nav { padding:14px 0; }
-  .landing-brand-logo { width:44px; height:44px; border-radius:12px; }
+  .landing-nav { padding:calc(12px + env(safe-area-inset-top)) 0 12px; }
+  .landing-nav-inner { gap:12px; }
+  .landing-brand-logo { width:42px; height:42px; border-radius:12px; }
   .landing-brand-copy strong { font-size:18px; }
   .landing-brand-copy small { display:none; }
-  .landing-private-pill { min-height:32px; padding:0 11px; font-size:9px; }
-  .landing-hero { padding:92px 0 50px; }
-  .landing-hero-grid { gap:38px; }
-  .login-card { padding:27px 21px!important; border-radius:20px!important; }
+  .landing-private-pill { min-height:32px; padding:0 11px; font-size:8px; }
+  .landing-hero { padding:88px 0 max(38px,calc(26px + env(safe-area-inset-bottom))); }
+  .landing-hero-grid { gap:34px; }
+  .login-card { padding:26px 21px!important; border-radius:20px!important; box-shadow:0 22px 54px rgba(5,25,34,.24)!important; }
+  .login-card-brand { margin-bottom:20px; }
+  .login-card-brand img { width:42px; height:42px; border-radius:12px; }
   .login-card h1 { font-size:34px!important; }
-  .login-copy { font-size:13px!important; }
-  .login-card-brand { margin-bottom:22px; }
-  .landing-showcase h2 { font-size:42px; }
-  .landing-showcase-copy > p:last-child { font-size:14px; }
-  .landing-doctor-visual { margin-top:4px; }
-  .landing-feature-pills { grid-template-columns:repeat(2,minmax(0,1fr)); }
+  .login-copy { font-size:13px!important; line-height:1.58!important; }
+  .google-login-panel { margin-top:23px; }
+  .google-login-button { min-height:46px; }
   .login-meta span { padding:4px 3px; font-size:8px; }
+  .landing-showcase h2 { font-size:40px; }
+  .landing-showcase-copy > p:last-child { font-size:14px; line-height:1.6; }
+  .landing-doctor-visual { width:min(390px,100%); }
+  .landing-feature-pills { grid-template-columns:repeat(2,minmax(0,1fr)); }
+}
+
+@media (max-width:430px) {
+  .landing-container { width:calc(100% - 20px); }
+  .landing-nav-meta { gap:0; }
+  .landing-private-pill { padding:0 10px; }
+  .landing-hero { padding-top:82px; }
+  .login-card { padding:24px 18px!important; border-radius:18px!important; }
+  .login-card h1 { font-size:32px!important; }
+  .login-account-note { align-items:flex-start; }
+  .login-meta { grid-template-columns:1fr; gap:7px; }
+  .login-meta span { border-right:0; padding:0; }
+  .landing-showcase { padding-bottom:4px; }
+  .landing-showcase h2 { font-size:36px; }
+  .landing-doctor-visual,
+  .landing-feature-pills { display:none; }
+}
+
+@media (max-width:360px) {
+  .landing-brand-copy { display:none; }
+  .password-row { grid-template-columns:1fr; }
+  .password-row button { width:100%; }
+  .login-card { padding-inline:16px!important; }
+  .login-card h1 { font-size:30px!important; }
+}
+
+@media (max-height:720px) and (min-width:821px) {
+  .landing-hero { padding-top:108px; padding-bottom:96px; }
+  .landing-doctor-visual { width:min(470px,100%); margin-top:-4px; }
+  .landing-showcase h2 { font-size:clamp(42px,5vw,60px); }
+}
+
+@media (prefers-contrast:more) {
+  .login-card { border-color:#fff!important; }
+  .login-copy,.google-login-status { color:#485b62!important; }
+  .landing-private-pill,.landing-feature-pills span { border-color:rgba(255,255,255,.42); }
 }
 
 @media (prefers-reduced-motion:reduce) {
-  *,*::before,*::after { scroll-behavior:auto!important; animation:none!important; transition:none!important; }
+  html.medindex-tailadmin-login *,
+  html.medindex-tailadmin-login *::before,
+  html.medindex-tailadmin-login *::after {
+    scroll-behavior:auto!important;
+    animation:none!important;
+    transition:none!important;
+  }
 }
