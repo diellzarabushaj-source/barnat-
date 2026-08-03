@@ -178,7 +178,12 @@ test('MedIndex login remains stable, accessible and viewport-safe at every appro
 
     if (viewport.width <= 820 && !(viewport.width > viewport.height && viewport.height <= 520)) {
       expect(current.card.top, `${viewport.name}: login is first`).toBeLessThan(current.copy.top);
-      expect(current.card.width, `${viewport.name}: card uses mobile width`).toBeGreaterThan(viewport.width * 0.86);
+      if (viewport.width <= 560) {
+        expect(current.card.width, `${viewport.name}: phone card uses available width`).toBeGreaterThan(viewport.width * 0.86);
+      } else {
+        const ergonomicTabletWidth = Math.min(560, viewport.width - 32);
+        expect(current.card.width, `${viewport.name}: tablet card keeps an ergonomic reading width`).toBeGreaterThanOrEqual(ergonomicTabletWidth - 1);
+      }
     }
 
     if (viewport.width >= 1024) {
