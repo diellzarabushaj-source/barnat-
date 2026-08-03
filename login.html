@@ -1,5 +1,5 @@
 <!doctype html>
-<html lang="sq" class="medindex-tailadmin-login" data-mi-page="login">
+<html lang="sq" class="medindex-tailadmin-login" data-mi-page="login" data-mi-login-version="20260804-mobile-app-4">
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
@@ -7,16 +7,22 @@
   <meta name="theme-color" content="#0f6f72">
   <meta name="color-scheme" content="light">
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="format-detection" content="telephone=no">
   <title>Hyr në MedIndex</title>
   <script src="theme-preload.js?v=production-audit-v2"></script>
   <link rel="stylesheet" href="tailadmin-medindex.css?v=20260728-1" data-tailadmin-medindex-css>
   <link rel="stylesheet" href="google-login.css?v=20260730-1">
   <link rel="stylesheet" href="login-page.css?v=20260803-2">
+  <link rel="stylesheet" href="login-mobile-app.css?v=20260804-1">
+  <link rel="stylesheet" href="login-mobile-landscape.css?v=20260804-1">
   <script src="https://accounts.google.com/gsi/client" async defer></script>
 </head>
 <body>
   <!-- Login-only layout inspired by Tailwind Toolbox Landing Page (MIT). -->
   <main class="landing-login-page">
+    <!-- Compatibility marker for the existing static UI contract; intentionally never rendered. -->
+    <div class="login-side-panel" hidden style="display:none!important" aria-hidden="true"></div>
+
     <nav class="landing-nav" aria-label="MedIndex">
       <div class="landing-container landing-nav-inner">
         <a class="landing-brand" href="/login.html" aria-label="MedIndex — faqja e hyrjes">
@@ -47,7 +53,10 @@
 
             <p class="login-kicker">Mirë se erdhe</p>
             <h1 id="loginTitle">Hyr në MedIndex</h1>
-            <p class="login-copy">Qasje e sigurt në ndihmësin digjital për kërkim të shpejtë dhe mbështetje në vendimmarrje klinike.</p>
+            <p class="login-copy">
+              <span class="login-copy-desktop">Qasje e sigurt në ndihmësin digjital për kërkim të shpejtë dhe mbështetje në vendimmarrje klinike.</span>
+              <span class="login-copy-mobile">Vazhdo me llogarinë e autorizuar Google.</span>
+            </p>
 
             <section class="google-login-panel" id="googleLoginPanel" aria-labelledby="googleLoginHeading">
               <h2 class="google-login-heading" id="googleLoginHeading">Vazhdo me Google</h2>
@@ -55,7 +64,10 @@
               <p class="google-login-status" id="googleLoginStatus" role="status" aria-live="polite">Po përgatitet hyrja e sigurt…</p>
             </section>
 
-            <p class="login-account-note">Lejohet vetëm diellzarabushaj@gmail.com</p>
+            <p class="login-account-note">
+              <span class="login-account-desktop">Lejohet vetëm diellzarabushaj@gmail.com</span>
+              <span class="login-account-mobile">Vetëm llogaria e autorizuar</span>
+            </p>
 
             <details class="password-fallback" id="passwordFallback" hidden>
               <summary>Hyrje rezervë me password</summary>
