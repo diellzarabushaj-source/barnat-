@@ -1,0 +1,84 @@
+name: Login browser audit
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - login.html
+      - login.js
+      - login-*.css
+      - public/images/brand/**
+      - tests/login-responsive-audit.spec.js
+      - .github/workflows/login-browser-audit.yml
+  pull_request:
+    paths:
+      - login.html
+      - login.js
+      - login-*.css
+      - public/images/brand/**
+      - tests/login-responsive-audit.spec.js
+      - .github/workflows/login-browser-audit.yml
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  login-audit:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          version: 10.28.0
+          run_install: false
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: pnpm
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile --ignore-scripts
+
+      - name: Install Chromium
+        shell: bash
+        run: |
+          set -euo pipefail
+          pnpm exec playwright install --with-deps chromium > /tmp/playwright-install.log 2>&1 || { tail -200 /tmp/playwright-install.log; exit 1; }
+
+      - name: Run isolated login audit
+        shell: bash
+        run: |
+          set -euo pipefail
+          node tests/clinical-smoke-server.js > /tmp/medindex-login-server.log 2>&1 &
+          SERVER_PID=$!
+          trap 'kill "$SERVER_PID" 2>/dev/null || true; cat /tmp/medindex-login-server.log' EXIT
+          READY=0
+          for attempt in {1..30}; do
+            if curl -fsS http://127.0.0.1:4173/login.html >/dev/null; then
+              READY=1
+              break
+            fi
+            sleep 1
+          done
+          test "$READY" = "1" || { echo "Login audit server did not become ready."; exit 1; }
+          pnpm exec playwright test tests/login-responsive-audit.spec.js --reporter=line --workers=1
+
+      - name: Upload login diagnostics
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: login-browser-diagnostics
+          path: |
+            /tmp/login-visual
+            /tmp/medindex-login-server.log
+            test-results
+            playwright-report
+          if-no-files-found: warn
+          retention-days: 7
