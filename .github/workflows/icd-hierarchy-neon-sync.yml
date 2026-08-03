@@ -7,6 +7,7 @@ on:
       - 'lib/icd-full-hierarchy.js'
       - 'lib/icd-public-source.js'
       - 'lib/icd-hierarchy-source-normalizer.js'
+      - 'lib/icd-hierarchy-validation.js'
       - 'lib/icd-hierarchy-neon-reader.js'
       - 'scripts/sync-icd-hierarchy-to-neon.js'
       - 'sql/icd-hierarchy-neon.sql'
