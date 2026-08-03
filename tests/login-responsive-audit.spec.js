@@ -219,12 +219,18 @@ test('MedIndex login remains stable, accessible and viewport-safe at every appro
       const value = document.querySelector(selector)?.getBoundingClientRect();
       return value ? { left:value.left, right:value.right, width:value.width, height:value.height } : null;
     };
+    const summary = document.querySelector('#passwordFallback summary');
+    const pseudo = summary ? getComputedStyle(summary, '::after') : null;
     return {
       scrollWidth:document.documentElement.scrollWidth,
       inputFont:parseFloat(getComputedStyle(document.querySelector('#password')).fontSize),
       input:rect('#password'),
       toggle:rect('#togglePassword'),
       submit:rect('#loginSubmit'),
+      summary:rect('#passwordFallback summary'),
+      disclosureContent:pseudo?.content || '',
+      disclosureWidth:parseFloat(pseudo?.width || '0'),
+      disclosureMarginLeft:parseFloat(pseudo?.marginLeft || '0'),
     };
   });
   expect(fallback.scrollWidth).toBeLessThanOrEqual(391);
@@ -232,8 +238,13 @@ test('MedIndex login remains stable, accessible and viewport-safe at every appro
   inside(fallback.input, { width:390, height:844 });
   inside(fallback.toggle, { width:390, height:844 });
   inside(fallback.submit, { width:390, height:844 });
+  inside(fallback.summary, { width:390, height:844 });
   expect(fallback.toggle.height).toBeGreaterThanOrEqual(43.5);
   expect(fallback.submit.height).toBeGreaterThanOrEqual(43.5);
+  expect(fallback.summary.height).toBeGreaterThanOrEqual(43.5);
+  expect(fallback.disclosureContent).toBe('""');
+  expect(fallback.disclosureWidth).toBeGreaterThanOrEqual(6.5);
+  expect(fallback.disclosureMarginLeft).toBeGreaterThanOrEqual(8);
   await page.screenshot({ path:path.join(OUTPUT, 'iphone-390-password-fallback.png'), fullPage:true });
 
   expect(pageErrors).toEqual([]);
