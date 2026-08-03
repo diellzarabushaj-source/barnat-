@@ -9,7 +9,7 @@
   <script src="theme-preload.js?v=production-audit-v2"></script>
   <link rel="stylesheet" href="tailadmin-medindex.css?v=20260728-1" data-tailadmin-medindex-css>
   <link rel="stylesheet" href="google-login.css?v=20260730-1">
-  <link rel="stylesheet" href="login.css?v=20260803-1">
+  <link rel="stylesheet" href="login.css?v=20260803-2">
   <script src="https://accounts.google.com/gsi/client" async defer></script>
 </head>
 <body>
@@ -19,17 +19,17 @@
         <section class="login-card" aria-labelledby="loginTitle">
           <div class="login-brand-row">
             <div class="login-brand">
-              <img src="/public/images/brand/medindex-icon-on-light.png" alt="Logoja MedIndex" width="44" height="44">
+              <img src="/public/images/brand/medindex-icon-on-light.png" alt="Logoja MedIndex" width="48" height="48">
             </div>
             <span class="login-private-badge">Qasje private</span>
           </div>
 
           <p class="login-kicker">Mirë se erdhe</p>
           <h1 id="loginTitle">Hyr në MedIndex</h1>
-          <p class="login-copy">Qasje e sigurt në ndihmësin tuaj klinik për punën e përditshme.</p>
+          <p class="login-copy">Qasje e sigurt në ndihmësin digjital për kërkim dhe vendimmarrje klinike.</p>
 
           <section class="google-login-panel" id="googleLoginPanel" aria-labelledby="googleLoginHeading">
-            <h2 class="google-login-heading" id="googleLoginHeading">Vazhdo me llogarinë e aprovuar</h2>
+            <h2 class="google-login-heading" id="googleLoginHeading">Vazhdo me Google</h2>
             <div class="google-login-button" id="googleLoginButton" aria-live="polite"></div>
             <p class="google-login-status" id="googleLoginStatus" role="status" aria-live="polite">Po përgatitet hyrja e sigurt…</p>
           </section>
@@ -56,7 +56,7 @@
           <p class="login-message" id="loginMessage" role="alert" aria-live="polite"></p>
 
           <div class="login-meta" aria-label="Siguria e sesionit">
-            <span>Identitet i verifikuar</span>
+            <span>Google i verifikuar</span>
             <span>Sesioni 8 orë</span>
             <span>Cookie HttpOnly</span>
           </div>
@@ -65,26 +65,20 @@
       </div>
     </section>
 
-    <aside class="login-side-panel" aria-label="MedIndex — asistent klinik digjital">
+    <aside class="login-side-panel" aria-label="MedIndex — ndihmës digjital për mjekun">
       <div class="login-side-inner">
         <div class="login-side-brand">
-          <span class="login-side-logo-shell"><img src="/public/images/brand/medindex-icon-on-light.png" alt="" width="48" height="48"></span>
+          <span class="login-side-logo-shell"><img src="/public/images/brand/medindex-icon-on-light.png" alt="" width="52" height="52"></span>
           <span>MedIndex</span>
         </div>
 
         <div class="login-doctor-visual" aria-hidden="true">
           <svg viewBox="0 0 520 360" role="img">
-            <defs>
-              <linearGradient id="screenGlow" x1="0" y1="0" x2="1" y2="1">
-                <stop offset="0" stop-color="#40c1bd" stop-opacity=".34"/>
-                <stop offset="1" stop-color="#4f8cff" stop-opacity=".08"/>
-              </linearGradient>
-            </defs>
             <circle cx="410" cy="70" r="54" fill="#173747"/>
             <circle cx="78" cy="265" r="36" fill="#133240"/>
             <rect x="94" y="246" width="340" height="18" rx="9" fill="#284756"/>
             <rect x="152" y="114" width="226" height="142" rx="18" fill="#102b38" stroke="#476778" stroke-width="2"/>
-            <rect x="169" y="130" width="192" height="109" rx="12" fill="url(#screenGlow)" stroke="#315b6e"/>
+            <rect x="169" y="130" width="192" height="109" rx="12" fill="#173f4d" stroke="#315b6e"/>
             <path d="M235 184h60M265 154v60" stroke="#78d9d3" stroke-width="11" stroke-linecap="round"/>
             <path d="M126 265h276" stroke="#577788" stroke-width="5" stroke-linecap="round"/>
             <circle cx="120" cy="106" r="38" fill="#d8a584"/>
@@ -102,9 +96,9 @@
           </svg>
         </div>
 
-        <p class="login-side-eyebrow">Asistent klinik digjital</p>
+        <p class="login-side-eyebrow">Ndihmës digjital për mjekun</p>
         <h2>Vendime klinike, më qartë.</h2>
-        <p class="login-side-copy">Barnat, ATC, ICD, analizat dhe dozologjia — në një hapësirë të vetme për mjekun.</p>
+        <p class="login-side-copy">Kërko barna, ATC, ICD, analiza dhe dozologji në një hapësirë të vetme.</p>
 
         <div class="login-side-grid" aria-label="Funksionet kryesore">
           <span>Barnat</span>
