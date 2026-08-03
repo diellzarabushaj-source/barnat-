@@ -32,8 +32,8 @@ const builder = read('scripts/build-static-runtime.js');
 const middleware = read('middleware.ts');
 
 assert.match(index, /registry-runtime-loader\.js\?v=20260803-unverified-1/);
-assert.match(index, /registry-row-expand\.js\?v=20260803-7/);
-assert.match(index, /registry-dosage-disclosure-fix\.css\?v=20260803-3/);
+assert.match(index, /registry-row-expand\.js\?v=20260803-8/);
+assert.match(index, /registry-dosage-disclosure-fix\.css\?v=20260803-4/);
 assert.match(index, /registry-unified-table\.js\?v=20260801-1/);
 assert.doesNotMatch(index, /<script src="app-performance\.js"/);
 assert.match(index, /app-runtime-performance\.js\?v=clinical-audit-v6-unverified-visible/);
@@ -85,13 +85,20 @@ assert.match(dosage, /existing\.innerHTML !== desired\.innerHTML/);
 assert.doesNotMatch(dosage, /DRUG_DATA_PARTS|\batob\s*\(|DecompressionStream|Uint8Array/);
 assert.doesNotMatch(dosage, /observe\([^\n]+subtree\s*:\s*true/);
 
-assert.match(rowExpand, /registry-row-expand-20260803-7/);
+assert.match(rowExpand, /registry-row-expand-20260803-8/);
 assert.match(rowExpand, /document\.addEventListener\('click', onClick, true\)/);
 assert.match(rowExpand, /const dosageTrigger = event\.target\.closest\?\.\('\.registry-dosage-dose'\)/);
 assert.match(rowExpand, /event\.stopImmediatePropagation\(\)/);
 assert.match(rowExpand, /syncDosageControls\(row, expanded\)/);
 assert.match(rowExpand, /data-registry-dosage-disclosure-fix-css/);
 assert.match(rowExpand, /new CustomEvent\('medindex:registry-row-toggle'/);
+assert.match(rowExpand, /function isOverflowing\(element\)/);
+assert.match(rowExpand, /trigger\.disabled = !needed/);
+assert.match(rowExpand, /aria-controls/);
+assert.match(rowExpand, /function preserveRowAnchor\(row, beforeTop\)/);
+assert.match(rowExpand, /candidate && candidate !== root/);
+assert.match(rowExpand, /if \(event\.key === 'Escape'\)/);
+assert.match(rowExpand, /ensureStatusRegion\(\)/);
 assert.match(rowExpand, /const desiredTail = \[finalStyle, fullText, dosageDisclosure\]\.filter\(Boolean\)/);
 assert.match(rowExpand, /const alreadyStable = desiredTail\.length > 0/);
 assert.match(rowExpand, /if \(!alreadyStable\) desiredTail\.forEach\(node => document\.head\.appendChild\(node\)\)/);
@@ -103,6 +110,9 @@ assert.match(disclosureCss, /contain:none!important/);
 assert.match(disclosureCss, /max-height:none!important/);
 assert.match(disclosureCss, /overflow:visible!important/);
 assert.match(disclosureCss, /-webkit-line-clamp:unset!important/);
+assert.match(disclosureCss, /registry-dosage-toggle::after/);
+assert.match(disclosureCss, /data-disclosure-needed="false"/);
+assert.match(disclosureCss, /overflow-anchor:none!important/);
 
 assert.match(unified, /const CLINICAL_ORDER = Object\.freeze/);
 assert.match(unified, /observer\.observe\(header, \{ childList:true \}\)/);
@@ -115,4 +125,4 @@ assert.match(builder, /runtimeOutputs/);
 assert.match(builder, /app-runtime-performance\.js/);
 assert.match(middleware, /registry-parser-worker-v2\.js/);
 
-console.log('Registry loader v7, idempotent dosage disclosure, single controller and main-thread deep audit passed.');
+console.log('Registry loader v7, polished disclosure, single controller and main-thread deep audit passed.');
