@@ -1,7 +1,7 @@
 (() => {
   'use strict';
 
-  const VERSION = 'registry-row-expand-20260803-6';
+  const VERSION = 'registry-row-expand-20260803-7';
   const FINAL_STYLE_ID = 'registryColumnsFiltersStyles';
   const EXPANDABLE_KEYS = new Set([
     'trade-name',
@@ -44,14 +44,8 @@
     return fallback ? `row:${fallback}` : '';
   }
 
-  function moveAfter(reference, element) {
-    if (!reference || !element || reference === element) return reference;
-    if (reference.nextElementSibling !== element) reference.after(element);
-    return element;
-  }
-
   function stabilizeCascade() {
-    if (stabilizing) return;
+    if (stabilizing || !document.head) return;
     stabilizing = true;
     try {
       const integrity = [...document.querySelectorAll('link[rel="stylesheet"]')]
@@ -59,15 +53,18 @@
       integrity?.removeAttribute('data-registry-table-integrity-css');
 
       const finalStyle = document.getElementById(FINAL_STYLE_ID);
-      if (finalStyle && document.head.lastElementChild !== finalStyle) document.head.appendChild(finalStyle);
-
-      // These two narrowly scoped styles must follow every compact table rule,
-      // including dynamically injected styles, or the full text can be clamped again.
       const fullText = document.querySelector('link[data-registry-full-text-expansion-css]');
       const dosageDisclosure = document.querySelector('link[data-registry-dosage-disclosure-fix-css]');
-      let tail = finalStyle || document.head.lastElementChild;
-      tail = moveAfter(tail, fullText);
-      moveAfter(tail, dosageDisclosure);
+      const desiredTail = [finalStyle, fullText, dosageDisclosure].filter(Boolean);
+      const stylesheetNodes = [...document.head.querySelectorAll('style,link[rel="stylesheet"]')];
+      const currentTail = stylesheetNodes.slice(-desiredTail.length);
+      const alreadyStable = desiredTail.length > 0
+        && desiredTail.every((node, index) => currentTail[index] === node);
+
+      // Append the protected scoped styles once, in their canonical order. The
+      // next observer pass sees the same tail and performs no writes, avoiding
+      // a self-sustaining MutationObserver loop.
+      if (!alreadyStable) desiredTail.forEach(node => document.head.appendChild(node));
 
       document.documentElement.dataset.registryFinalCascade = VERSION;
     } finally {
