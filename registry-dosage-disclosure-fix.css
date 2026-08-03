@@ -1,0 +1,83 @@
+/* MedIndex — make the inline “Më shumë / Më pak” dosage disclosure fully functional.
+   The dosage controller already toggles .is-expanded and aria-expanded; this layer
+   releases every table height/overflow clamp while that specific regimen is open. */
+
+html.medindex-tailadmin[data-mi-page="barnat"] body #registryContent #dataTable tbody tr:has(
+  .registry-dosage-regimen.is-expanded
+) {
+  height:auto!important;
+  min-height:132px!important;
+  max-height:none!important;
+}
+
+html.medindex-tailadmin[data-mi-page="barnat"] body #registryContent #dataTable tbody tr:has(
+  .registry-dosage-regimen.is-expanded
+) > td {
+  height:auto!important;
+  min-height:132px!important;
+  max-height:none!important;
+  overflow:visible!important;
+  vertical-align:top!important;
+}
+
+html.medindex-tailadmin[data-mi-page="barnat"] body #registryContent #dataTable tbody td:has(
+  .registry-dosage-regimen.is-expanded
+) {
+  overflow:visible!important;
+  white-space:normal!important;
+}
+
+html.medindex-tailadmin[data-mi-page="barnat"] body #registryContent #dataTable .registry-dosage-regimen.is-expanded {
+  display:grid!important;
+  height:auto!important;
+  min-height:0!important;
+  max-height:none!important;
+  grid-template-columns:minmax(0,1fr) 52px!important;
+  align-items:start!important;
+  overflow:visible!important;
+}
+
+html.medindex-tailadmin[data-mi-page="barnat"] body #registryContent #dataTable .registry-dosage-regimen.is-expanded .registry-dosage-dose {
+  display:block!important;
+  height:auto!important;
+  min-height:0!important;
+  max-height:none!important;
+  overflow:visible!important;
+  white-space:normal!important;
+}
+
+html.medindex-tailadmin[data-mi-page="barnat"] body #registryContent #dataTable .registry-dosage-regimen.is-expanded :is(
+  .registry-dosage-dose-text,
+  .registry-dosage-indication
+) {
+  display:block!important;
+  height:auto!important;
+  min-height:0!important;
+  max-height:none!important;
+  overflow:visible!important;
+  text-overflow:clip!important;
+  white-space:normal!important;
+  -webkit-box-orient:initial!important;
+  -webkit-line-clamp:unset!important;
+}
+
+html.medindex-tailadmin[data-mi-page="barnat"] body #registryContent #dataTable .registry-dosage-dose[aria-expanded="true"] .registry-dosage-toggle {
+  display:inline-block!important;
+  position:static!important;
+  margin-top:6px!important;
+}
+
+@media (max-width:760px) {
+  html.medindex-tailadmin[data-mi-page="barnat"] body #registryContent #dataTable tbody tr:has(
+    .registry-dosage-regimen.is-expanded
+  ),
+  html.medindex-tailadmin[data-mi-page="barnat"] body #registryContent #dataTable tbody tr:has(
+    .registry-dosage-regimen.is-expanded
+  ) > td {
+    min-height:0!important;
+  }
+
+  html.medindex-tailadmin[data-mi-page="barnat"] body #registryContent #dataTable .registry-dosage-regimen.is-expanded {
+    grid-template-columns:minmax(0,1fr) 62px!important;
+  }
+}
