@@ -1,7 +1,7 @@
 (() => {
   'use strict';
 
-  const VERSION = 'registry-row-expand-20260803-5';
+  const VERSION = 'registry-row-expand-20260803-6';
   const FINAL_STYLE_ID = 'registryColumnsFiltersStyles';
   const EXPANDABLE_KEYS = new Set([
     'trade-name',
@@ -33,9 +33,21 @@
   function rowKey(row) {
     const registryNumber = clean(row?.dataset?.registryNumber);
     if (registryNumber) return `nr:${registryNumber}`;
+
     const drugKey = clean(row?.querySelector('.drug-select')?.dataset?.drugKey);
     if (drugKey) return `drug:${drugKey}`;
-    return '';
+
+    const tradeName = clean(row?.querySelector('[data-registry-column-key="trade-name"]')?.textContent);
+    const strength = clean(row?.querySelector('[data-registry-column-key="strength"]')?.textContent);
+    const atc = clean(row?.querySelector('[data-registry-column-key="atc"]')?.textContent);
+    const fallback = [tradeName, strength, atc].filter(Boolean).join('|');
+    return fallback ? `row:${fallback}` : '';
+  }
+
+  function moveAfter(reference, element) {
+    if (!reference || !element || reference === element) return reference;
+    if (reference.nextElementSibling !== element) reference.after(element);
+    return element;
   }
 
   function stabilizeCascade() {
@@ -47,9 +59,16 @@
       integrity?.removeAttribute('data-registry-table-integrity-css');
 
       const finalStyle = document.getElementById(FINAL_STYLE_ID);
-      if (finalStyle && document.head.lastElementChild !== finalStyle) {
-        document.head.appendChild(finalStyle);
-      }
+      if (finalStyle && document.head.lastElementChild !== finalStyle) document.head.appendChild(finalStyle);
+
+      // These two narrowly scoped styles must follow every compact table rule,
+      // including dynamically injected styles, or the full text can be clamped again.
+      const fullText = document.querySelector('link[data-registry-full-text-expansion-css]');
+      const dosageDisclosure = document.querySelector('link[data-registry-dosage-disclosure-fix-css]');
+      let tail = finalStyle || document.head.lastElementChild;
+      tail = moveAfter(tail, fullText);
+      moveAfter(tail, dosageDisclosure);
+
       document.documentElement.dataset.registryFinalCascade = VERSION;
     } finally {
       stabilizing = false;
@@ -59,9 +78,7 @@
   function restoreLegacyCompactMarkup(cell) {
     const single = cell.querySelector(':scope > details.registry-dosage-single');
     const expanded = single?.querySelector(':scope > .registry-dosage-expanded');
-    if (single && expanded) {
-      cell.replaceChildren(...Array.from(expanded.childNodes));
-    }
+    if (single && expanded) cell.replaceChildren(...Array.from(expanded.childNodes));
 
     cell.querySelectorAll(':scope > details.registry-dosage-details').forEach(details => {
       details.classList.remove('registry-dosage-compact', 'registry-dosage-single', 'registry-dosage-multiple');
@@ -77,8 +94,7 @@
   function rowShouldExpand(cell, key) {
     if (!cell || !EXPANDABLE_KEYS.has(key)) return false;
     if (cell.querySelector('.registry-dosage-details,.registry-dosage-dose')) return true;
-    const text = clean(cell.textContent);
-    return text.length > (THRESHOLDS[key] || 48);
+    return clean(cell.textContent).length > (THRESHOLDS[key] || 48);
   }
 
   function syncPreviewTriggers(row, expanded) {
@@ -94,12 +110,15 @@
   function syncDosageControls(row, expanded) {
     row.querySelectorAll('.registry-dosage-regimen').forEach(regimen => {
       regimen.classList.toggle('is-expanded', expanded);
+      regimen.dataset.dosageExpanded = String(expanded);
+
       const trigger = regimen.querySelector('.registry-dosage-dose');
       if (!trigger) return;
       const dose = clean(trigger.querySelector('.registry-dosage-dose-text')?.textContent);
       trigger.setAttribute('aria-expanded', String(expanded));
       trigger.setAttribute('aria-label', `${expanded ? 'Mbyll' : 'Shfaq'} dozimin e plotë: ${dose}`);
       trigger.title = dose;
+
       const toggle = trigger.querySelector('.registry-dosage-toggle');
       if (toggle) toggle.textContent = expanded ? 'Më pak' : 'Më shumë';
     });
@@ -110,13 +129,13 @@
     const expanded = Boolean(key && expandedRows.has(key));
     row.classList.toggle('registry-row-expanded', expanded);
     row.dataset.registryRowExpanded = String(expanded);
+    row.setAttribute('aria-expanded', String(expanded));
+
     row.querySelectorAll('td[data-registry-expandable="true"]:not([data-registry-cell-preview="true"])').forEach(cell => {
       cell.setAttribute('aria-expanded', String(expanded));
       cell.title = expanded ? 'Kliko për ta mbyllur rreshtin' : 'Kliko për ta zgjeruar rreshtin';
     });
-    row.querySelectorAll('.registry-dosage-details').forEach(details => {
-      details.open = expanded;
-    });
+    row.querySelectorAll('.registry-dosage-details').forEach(details => { details.open = expanded; });
     syncDosageControls(row, expanded);
     syncPreviewTriggers(row, expanded);
   }
@@ -127,7 +146,6 @@
 
     tbody.querySelectorAll(':scope > tr').forEach(row => {
       if (row.querySelector('.empty-state')) return;
-
       row.querySelectorAll('td.registry-dosage-column').forEach(restoreLegacyCompactMarkup);
 
       row.querySelectorAll(':scope > td').forEach(cell => {
@@ -135,6 +153,7 @@
         const expandable = rowShouldExpand(cell, key);
         const previewManaged = cell.dataset.registryCellPreview === 'true';
         cell.toggleAttribute('data-registry-expandable', expandable);
+
         if (expandable) {
           cell.dataset.registryExpandable = 'true';
           if (previewManaged) {
@@ -180,11 +199,17 @@
     if (!row || row.querySelector('.empty-state')) return false;
     const key = rowKey(row);
     if (!key) return false;
-    const next = typeof force === 'boolean' ? force : !expandedRows.has(key);
-    if (next) expandedRows.add(key);
+
+    const expanded = typeof force === 'boolean' ? force : !expandedRows.has(key);
+    if (expanded) expandedRows.add(key);
     else expandedRows.delete(key);
     syncRowState(row);
-    return next;
+    stabilizeCascade();
+
+    window.dispatchEvent(new CustomEvent('medindex:registry-row-toggle', {
+      detail:{ key, expanded, row },
+    }));
+    return expanded;
   }
 
   function interactiveTarget(target) {
@@ -265,6 +290,10 @@
   window.MedIndexRegistryRows = {
     version:VERSION,
     toggleRow,
+    isExpanded(row) {
+      const key = rowKey(row);
+      return Boolean(key && expandedRows.has(key));
+    },
     refresh:scheduleEnhance,
   };
 })();
