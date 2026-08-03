@@ -13,14 +13,16 @@ for (const page of pages) {
 }
 
 const index = read('index.html');
-assert.match(index, /registry-runtime-loader\.js\?v=20260801-6/, 'index.html: current immediate registry loader is missing');
+assert.match(index, /registry-runtime-loader\.js\?v=20260803-unverified-1/, 'index.html: current registry loader is missing');
 assert.match(index, /registry-unified-table\.js\?v=20260801-1/, 'index.html: unified table controller is missing');
 assert.match(index, /registry-unified-table\.css\?v=20260801-1/, 'index.html: unified table stylesheet is missing');
 assert.match(index, /registry-full-text-expansion\.css\?v=20260801-1/, 'index.html: full-row text reveal stylesheet is missing');
+assert.match(index, /registry-dosage-disclosure-fix\.css\?v=20260803-3/, 'index.html: hardened dosage disclosure stylesheet is missing');
+assert.match(index, /registry-row-expand\.js\?v=20260803-6/, 'index.html: hardened row expansion controller is missing');
 assert.doesNotMatch(index, /(?:registry-table-integrity|registry-clinical-view|registry-tailgrids-refinement|registry-columns-filters|registry-table-final)\.(?:js|css)/, 'index.html: a legacy table controller is still loaded');
 assert.doesNotMatch(index, /<script src="app-performance\.js"/, 'index.html: heavy registry bootstrap must not be parser ordered');
 assert.doesNotMatch(index, /src="app\.js/, 'index.html: legacy registry bootstrap must not be loaded');
-assert.match(index, /app-runtime-performance\.js\?v=clinical-audit-v5-performance-runtime/, 'index.html: generated registry runtime preload is stale');
+assert.match(index, /app-runtime-performance\.js\?v=clinical-audit-v6-unverified-visible/, 'index.html: generated registry runtime preload is stale');
 assert.match(index, /registry-dosage-loader\.js/, 'index.html: idle dosage loader is missing');
 assert.doesNotMatch(index, /src="registry-dosage-columns-v2\.js/, 'index.html: dosage enrichment must not block initial parsing');
 assert.match(index, /offline-runtime-performance\.js[^>]+data-medindex-offline-runtime/, 'index.html: cache-isolated offline runtime must be loaded explicitly');
@@ -29,15 +31,29 @@ assert.match(index, /<script id="drug-data" type="application\/json">\[\]<\/scri
 assert.match(index, /data-registry-ui-release="20260801-14"/, 'registry UI release is stale');
 
 const runtimeLoader = read('registry-runtime-loader.js');
-assert.match(runtimeLoader, /registry-runtime-loader-v6/, 'immediate registry loader version is stale');
-assert.match(runtimeLoader, /app-performance\.js\?v=20260801-2/, 'registry loader must request the versioned bootstrap');
+assert.match(runtimeLoader, /registry-runtime-loader-v7-unverified-visible/, 'current registry loader version is stale');
+assert.match(runtimeLoader, /app-performance\.js\?v=20260803-unverified-1/, 'registry loader must request the versioned bootstrap');
 assert.match(runtimeLoader, /classList\.contains\('auth-ready'\)/, 'registry loader must wait for authentication');
 assert.doesNotMatch(runtimeLoader, /FIRST_INTERACTION_FALLBACK_MS|POST_INTERACTION_GRACE_MS|INTERACTION_EVENTS/, 'old interaction gate must not return');
 assert.doesNotMatch(runtimeLoader, /MEDINDEX_REGISTRY_UI_READY\s*=\s*new Promise/, 'loader must not create a circular readiness promise');
 
 const app = read('app-performance.js');
-assert.match(app, /clinical-audit-v5-performance-runtime/);
+assert.match(app, /clinical-audit-v6-unverified-visible/);
+assert.match(app, /registry-parts-prescription-v2/);
+assert.match(app, /barnat-registry-cached-at-v5/);
 assert.match(app, /app-runtime-performance\.js/);
+
+const rowExpand = read('registry-row-expand.js');
+assert.match(rowExpand, /registry-row-expand-20260803-6/);
+assert.match(rowExpand, /registry-dosage-disclosure-fix-css/);
+assert.match(rowExpand, /data-dosage-expanded/);
+assert.match(rowExpand, /Më pak/);
+
+const dosageDisclosure = read('registry-dosage-disclosure-fix.css');
+assert.match(dosageDisclosure, /data-dosage-expanded="true"/);
+assert.match(dosageDisclosure, /contain:none!important/);
+assert.match(dosageDisclosure, /-webkit-line-clamp:unset!important/);
+assert.match(dosageDisclosure, /max-height:none!important/);
 
 const dosageLoader = read('registry-dosage-loader.js');
 assert.match(dosageLoader, /medindex:registry-ready/);
@@ -63,4 +79,4 @@ assert.match(performanceRuntime, /SERVICE_WORKER_URL = `\/sw-resilient-v3\.js\?v
 assert.match(performanceWorker, /VERSION = 'low-bandwidth-v3'/, 'cache-isolated service worker version is stale');
 assert.match(performanceRuntime, /CLINICAL_WORKFLOW_URL = `\/clinical-workflow\.js\?v=\$\{VERSION\}`/, 'offline runtime must version the clinical workflow');
 
-console.log('Clinical runtime cache-version, loader v6 and full-row reveal asset audit passed.');
+console.log('Clinical runtime cache-version, unverified registry and hardened dosage disclosure audit passed.');
