@@ -88,7 +88,7 @@ const fetchCapture = read('icd-fetch-capture.js');
 
 assert.match(html, /icd-clinical-guidance\.css\?v=icd-clinical-guidance-v1/);
 assert.match(html, /icd-clinical-guidance\.js\?v=icd-clinical-guidance-v2/);
-assert.match(html, /icd-clinical-retry-controller\.js\?v=icd-clinical-retry-controller-v2/);
+assert.match(html, /icd-clinical-retry-controller\.js\?v=icd-clinical-retry-controller-v3/);
 assert.match(html, /icd-clinical-guidance-recovery\.js\?v=icd-clinical-guidance-recovery-v7/);
 assert.ok(html.indexOf('icd-clinical-guidance.js') < html.indexOf('icd-clinical-retry-controller.js'));
 assert.ok(html.indexOf('icd-clinical-retry-controller.js') < html.indexOf('icd-clinical-guidance-recovery.js'));
@@ -106,9 +106,10 @@ assert.match(js, /loadDataset\(true\)/);
 assert.match(js, /retry,\s*init/);
 assert.doesNotMatch(js, /localStorage\.setItem|sessionStorage\.setItem/);
 assert.match(fetchCapture, /MedIndexNativeFetch/);
-assert.match(controller, /icd-clinical-retry-controller-v2/);
+assert.match(controller, /icd-clinical-retry-controller-v3/);
 assert.match(controller, /MedIndexNativeFetch/);
 assert.match(controller, /X-MedIndex-Retry/);
+assert.match(controller, /\?retry=\$\{Date\.now\(\)\.toString\(36\)\}/);
 assert.match(controller, /base\.buildIndex\(entries\)/);
 assert.match(controller, /base\.resolveClinicalContext\(code, index\)/);
 assert.match(controller, /root\.MedIndexIcdClinicalGuidance = Object\.freeze/);
@@ -126,4 +127,4 @@ assert.match(css, /@media \(max-width: 520px\)/);
 assert.match(css, /@media \(forced-colors: active\)/);
 assert.match(css, /overflow-wrap: anywhere/);
 
-console.log('ICD clinical guidance, curated Google Sheet provenance, native-fetch retry controller and non-fabrication contract passed.');
+console.log('ICD clinical guidance, curated Google Sheet provenance, unique native-fetch retry and non-fabrication contract passed.');
