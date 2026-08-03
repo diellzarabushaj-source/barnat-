@@ -2,9 +2,8 @@
   'use strict';
 
   if (!root?.document) return;
-  const VERSION = 'icd-clinical-guidance-recovery-v6';
+  const VERSION = 'icd-clinical-guidance-recovery-v7';
   let observer = null;
-  let retryTimer = 0;
 
   function stateNode() {
     return root.document.getElementById('icdClinicalGuidanceState');
@@ -17,14 +16,10 @@
     button.textContent = 'Riprovo listën klinike';
   }
 
-  function activeCode() {
-    const value = String(root.document.getElementById('icdCodingWorkspaceCode')?.textContent || '').trim().toUpperCase();
-    return root.MedIndexIcdClinicalGuidance?.normalizeCode?.(value) || (/^[A-Z][0-9]{2}(?:\.[0-9A-Z]{1,4})?$/.test(value) ? value : '');
-  }
-
-  function retry(button) {
-    const code = activeCode();
-    if (!code) {
+  async function retry(button) {
+    const api = root.MedIndexIcdClinicalGuidance;
+    const code = api?.normalizeCode?.(root.document.getElementById('icdCodingWorkspaceCode')?.textContent);
+    if (!code || typeof api?.retry !== 'function') {
       setButtonReady(button);
       return;
     }
@@ -33,23 +28,16 @@
     button.setAttribute('aria-busy', 'true');
     button.textContent = 'Duke u rilidhur…';
     root.document.documentElement.dataset.miIcdClinicalRecoveryAttempt = code;
-    root.clearTimeout(retryTimer);
 
-    root.setTimeout(() => {
-      root.dispatchEvent(new root.CustomEvent('medindex:icd-state', {
-        detail:{ code, source:'clinical-recovery', force:true },
-      }));
+    const success = await api.retry();
+    if (success) {
+      root.document.documentElement.dataset.miIcdClinicalRecoveryResult = 'success';
+      button.remove();
+      return;
+    }
 
-      root.setTimeout(() => {
-        if (stateNode()?.dataset.tone !== 'error') return;
-        const internalRetry = root.document.querySelector('[data-mi-icd-clinical-retry]');
-        internalRetry?.click();
-      }, 250);
-    }, 0);
-
-    retryTimer = root.setTimeout(() => {
-      if (stateNode()?.dataset.tone === 'error') setButtonReady(button);
-    }, 8000);
+    root.document.documentElement.dataset.miIcdClinicalRecoveryResult = 'error';
+    setButtonReady(button);
   }
 
   function bindButton(button) {
@@ -57,7 +45,7 @@
     button.dataset.miIcdClinicalRetryBound = 'true';
     button.addEventListener('click', event => {
       event.preventDefault();
-      retry(button);
+      void retry(button);
     }, { capture:true });
   }
 
