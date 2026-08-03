@@ -1,6 +1,6 @@
-/* MedIndex — reliable inline “Më shumë / Më pak” dosage disclosure.
-   Expansion is driven explicitly by the row controller, so this layer does not
-   depend only on :has() and releases every compact table clamp. */
+/* MedIndex — production-safe inline “Më shumë / Më pak” disclosure.
+   The row controller owns the state; this stylesheet releases every compact
+   table constraint after expansion and is kept last in the scoped cascade. */
 
 html.medindex-tailadmin[data-mi-page="barnat"] body #registryContent #dataTable tbody tr:is(
   .registry-row-expanded,
@@ -12,6 +12,8 @@ html.medindex-tailadmin[data-mi-page="barnat"] body #registryContent #dataTable 
   height:auto!important;
   min-height:0!important;
   max-height:none!important;
+  contain:none!important;
+  overflow:visible!important;
 }
 
 html.medindex-tailadmin[data-mi-page="barnat"] body #registryContent #dataTable tbody tr:is(
@@ -24,6 +26,7 @@ html.medindex-tailadmin[data-mi-page="barnat"] body #registryContent #dataTable 
   height:auto!important;
   min-height:0!important;
   max-height:none!important;
+  contain:none!important;
   overflow:visible!important;
   vertical-align:top!important;
   white-space:normal!important;
@@ -36,11 +39,16 @@ html.medindex-tailadmin[data-mi-page="barnat"] body #registryContent #dataTable 
   .registry-row-expanded,
   [data-registry-row-expanded="true"]
 ) > td.registry-dosage-column {
+  height:auto!important;
+  min-height:0!important;
+  max-height:none!important;
+  contain:none!important;
   overflow:visible!important;
   white-space:normal!important;
 }
 
 html.medindex-tailadmin[data-mi-page="barnat"] body #registryContent #dataTable .registry-dosage-regimen.is-expanded,
+html.medindex-tailadmin[data-mi-page="barnat"] body #registryContent #dataTable .registry-dosage-regimen[data-dosage-expanded="true"],
 html.medindex-tailadmin[data-mi-page="barnat"] body #registryContent #dataTable tbody tr:is(
   .registry-row-expanded,
   [data-registry-row-expanded="true"]
@@ -50,12 +58,15 @@ html.medindex-tailadmin[data-mi-page="barnat"] body #registryContent #dataTable 
   height:auto!important;
   min-height:0!important;
   max-height:none!important;
+  contain:none!important;
   grid-template-columns:minmax(0,1fr) 52px!important;
   align-items:start!important;
+  gap:7px!important;
   overflow:visible!important;
 }
 
 html.medindex-tailadmin[data-mi-page="barnat"] body #registryContent #dataTable .registry-dosage-regimen.is-expanded .registry-dosage-dose,
+html.medindex-tailadmin[data-mi-page="barnat"] body #registryContent #dataTable .registry-dosage-regimen[data-dosage-expanded="true"] .registry-dosage-dose,
 html.medindex-tailadmin[data-mi-page="barnat"] body #registryContent #dataTable tbody tr:is(
   .registry-row-expanded,
   [data-registry-row-expanded="true"]
@@ -65,11 +76,17 @@ html.medindex-tailadmin[data-mi-page="barnat"] body #registryContent #dataTable 
   height:auto!important;
   min-height:0!important;
   max-height:none!important;
+  contain:none!important;
   overflow:visible!important;
+  color:inherit!important;
   white-space:normal!important;
 }
 
 html.medindex-tailadmin[data-mi-page="barnat"] body #registryContent #dataTable .registry-dosage-regimen.is-expanded :is(
+  .registry-dosage-dose-text,
+  .registry-dosage-indication
+),
+html.medindex-tailadmin[data-mi-page="barnat"] body #registryContent #dataTable .registry-dosage-regimen[data-dosage-expanded="true"] :is(
   .registry-dosage-dose-text,
   .registry-dosage-indication
 ),
@@ -80,12 +97,15 @@ html.medindex-tailadmin[data-mi-page="barnat"] body #registryContent #dataTable 
   .registry-dosage-dose-text,
   .registry-dosage-indication,
   .registry-dosage-preview,
-  .registry-dosage-muted
+  .registry-dosage-muted,
+  .registry-dosage-grid > :first-child
 ) {
   display:block!important;
+  width:auto!important;
   height:auto!important;
   min-height:0!important;
   max-height:none!important;
+  contain:none!important;
   overflow:visible!important;
   text-overflow:clip!important;
   white-space:normal!important;
@@ -102,8 +122,25 @@ html.medindex-tailadmin[data-mi-page="barnat"] body #registryContent #dataTable 
   [data-registry-row-expanded="true"]
 ) .registry-dosage-toggle {
   position:static!important;
-  display:inline-block!important;
+  display:inline-flex!important;
+  align-items:center!important;
+  min-height:28px!important;
   margin-top:7px!important;
+  padding:2px 0!important;
+  overflow:visible!important;
+}
+
+html.medindex-tailadmin[data-mi-page="barnat"] body #registryContent #dataTable .registry-dosage-dose[aria-expanded="true"]:focus-visible {
+  border-radius:6px!important;
+  outline:2px solid #2563eb!important;
+  outline-offset:3px!important;
+}
+
+html.medindex-tailadmin[data-mi-page="barnat"] body #registryContent #dataTable tbody tr:is(
+  .registry-row-expanded,
+  [data-registry-row-expanded="true"]
+) .registry-dosage-route {
+  align-self:start!important;
 }
 
 html.medindex-tailadmin[data-mi-page="barnat"] body #registryContent #dataTable tbody tr:is(
@@ -111,9 +148,11 @@ html.medindex-tailadmin[data-mi-page="barnat"] body #registryContent #dataTable 
   [data-registry-row-expanded="true"]
 ) .registry-dosage-details {
   display:block!important;
+  width:100%!important;
   height:auto!important;
   min-height:0!important;
   max-height:none!important;
+  contain:none!important;
   overflow:visible!important;
 }
 
@@ -129,9 +168,11 @@ html.medindex-tailadmin[data-mi-page="barnat"] body #registryContent #dataTable 
   [data-registry-row-expanded="true"]
 ) .registry-dosage-details[open] > :not(summary) {
   display:grid!important;
+  width:100%!important;
   height:auto!important;
   min-height:0!important;
   max-height:none!important;
+  contain:none!important;
   overflow:visible!important;
 }
 
@@ -154,10 +195,17 @@ html.medindex-tailadmin[data-mi-page="barnat"] body #registryContent #dataTable 
   }
 
   html.medindex-tailadmin[data-mi-page="barnat"] body #registryContent #dataTable .registry-dosage-regimen.is-expanded,
+  html.medindex-tailadmin[data-mi-page="barnat"] body #registryContent #dataTable .registry-dosage-regimen[data-dosage-expanded="true"],
   html.medindex-tailadmin[data-mi-page="barnat"] body #registryContent #dataTable tbody tr:is(
     .registry-row-expanded,
     [data-registry-row-expanded="true"]
   ) .registry-dosage-regimen {
     grid-template-columns:minmax(0,1fr) 62px!important;
+  }
+}
+
+@media (prefers-reduced-motion:reduce) {
+  html.medindex-tailadmin[data-mi-page="barnat"] body #registryContent #dataTable .registry-dosage-dose {
+    scroll-behavior:auto!important;
   }
 }
