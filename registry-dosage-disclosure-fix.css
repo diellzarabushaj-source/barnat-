@@ -1,0 +1,60 @@
+/* Final disclosure layer for dosage cells.
+   The original control changed its label but the table row and dosage grid
+   remained height-clamped. This layer releases only the expanded dosage cell. */
+
+html.medindex-tailadmin[data-mi-page="barnat"] body #dataTable tbody tr.registry-dose-inline-expanded {
+  height:auto!important;
+  min-height:92px!important;
+  max-height:none!important;
+}
+
+html.medindex-tailadmin[data-mi-page="barnat"] body #dataTable tbody tr.registry-dose-inline-expanded > td {
+  height:auto!important;
+  min-height:92px!important;
+  max-height:none!important;
+}
+
+html.medindex-tailadmin[data-mi-page="barnat"] body #dataTable tbody td.registry-dosage-cell-expanded {
+  overflow:visible!important;
+  vertical-align:top!important;
+}
+
+html.medindex-tailadmin[data-mi-page="barnat"] body #dataTable .registry-dosage-regimen.is-expanded {
+  display:grid!important;
+  height:auto!important;
+  min-height:0!important;
+  max-height:none!important;
+  overflow:visible!important;
+}
+
+html.medindex-tailadmin[data-mi-page="barnat"] body #dataTable .registry-dosage-regimen.is-expanded > .registry-dosage-dose {
+  display:block!important;
+  height:auto!important;
+  min-height:0!important;
+  max-height:none!important;
+  overflow:visible!important;
+  white-space:normal!important;
+}
+
+html.medindex-tailadmin[data-mi-page="barnat"] body #dataTable .registry-dosage-regimen.is-expanded .registry-dosage-dose-text {
+  display:block!important;
+  height:auto!important;
+  min-height:0!important;
+  max-height:none!important;
+  overflow:visible!important;
+  text-overflow:clip!important;
+  white-space:normal!important;
+  -webkit-box-orient:initial!important;
+  -webkit-line-clamp:unset!important;
+}
+
+html.medindex-tailadmin[data-mi-page="barnat"] body #dataTable .registry-dosage-regimen.is-expanded .registry-dosage-toggle {
+  display:inline-flex!important;
+  margin-top:5px!important;
+}
+
+@media (max-width:760px) {
+  html.medindex-tailadmin[data-mi-page="barnat"] body #dataTable tbody tr.registry-dose-inline-expanded > td {
+    min-height:48px!important;
+  }
+}
