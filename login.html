@@ -1,5 +1,5 @@
 <!doctype html>
-<html lang="sq" class="medindex-tailadmin-login" data-mi-page="login" data-mi-login-version="20260804-mobile-app-1">
+<html lang="sq" class="medindex-tailadmin-login" data-mi-page="login" data-mi-login-version="20260804-mobile-app-2">
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
@@ -14,6 +14,14 @@
   <link rel="stylesheet" href="google-login.css?v=20260730-1">
   <link rel="stylesheet" href="login-page.css?v=20260803-2">
   <link rel="stylesheet" href="login-mobile-app.css?v=20260804-1">
+  <style>
+    @media (max-width:900px) and (orientation:landscape) and (max-height:520px) {
+      html[data-mi-page="login"] .login-copy-desktop,
+      html[data-mi-page="login"] .login-account-desktop { display:none!important; }
+      html[data-mi-page="login"] .login-copy-mobile,
+      html[data-mi-page="login"] .login-account-mobile { display:inline!important; }
+    }
+  </style>
   <script src="https://accounts.google.com/gsi/client" async defer></script>
 </head>
 <body>
