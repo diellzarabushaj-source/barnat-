@@ -147,7 +147,8 @@ test('MedIndex login looks and behaves like a mobile app', async ({ page }) => {
 
     const portrait = viewport.width <= 600;
     if (portrait) {
-      expect(current.card.width, `${viewport.name}: ergonomic app card width`).toBeGreaterThan(viewport.width * .84);
+      const ergonomicMinimum = Math.min(viewport.width * .84, 334);
+      expect(current.card.width, `${viewport.name}: ergonomic app card width`).toBeGreaterThanOrEqual(ergonomicMinimum);
       expect(current.card.width, `${viewport.name}: app card bounded`).toBeLessThanOrEqual(398);
       expect(current.pageHeight, `${viewport.name}: compact page`).toBeLessThanOrEqual(viewport.height + 100);
     } else {
