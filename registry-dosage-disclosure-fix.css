@@ -2,6 +2,22 @@
    The row controller owns the state; this stylesheet releases every compact
    table constraint after expansion and is kept last in the scoped cascade. */
 
+.registry-disclosure-status {
+  position:fixed!important;
+  width:1px!important;
+  height:1px!important;
+  padding:0!important;
+  margin:-1px!important;
+  overflow:hidden!important;
+  clip:rect(0,0,0,0)!important;
+  white-space:nowrap!important;
+  border:0!important;
+}
+
+html.medindex-tailadmin[data-mi-page="barnat"] body #registryContent #dataTable tbody tr {
+  scroll-margin-top:82px!important;
+}
+
 html.medindex-tailadmin[data-mi-page="barnat"] body #registryContent #dataTable tbody tr:is(
   .registry-row-expanded,
   [data-registry-row-expanded="true"]
@@ -14,6 +30,7 @@ html.medindex-tailadmin[data-mi-page="barnat"] body #registryContent #dataTable 
   max-height:none!important;
   contain:none!important;
   overflow:visible!important;
+  overflow-anchor:none!important;
 }
 
 html.medindex-tailadmin[data-mi-page="barnat"] body #registryContent #dataTable tbody tr:is(
@@ -30,6 +47,15 @@ html.medindex-tailadmin[data-mi-page="barnat"] body #registryContent #dataTable 
   overflow:visible!important;
   vertical-align:top!important;
   white-space:normal!important;
+  background:#f7fbff!important;
+  transition:background-color .16s ease, box-shadow .16s ease!important;
+}
+
+html.medindex-tailadmin[data-mi-page="barnat"] body #registryContent #dataTable tbody tr:is(
+  .registry-row-expanded,
+  [data-registry-row-expanded="true"]
+) > td:first-child {
+  box-shadow:inset 3px 0 0 #2563eb!important;
 }
 
 html.medindex-tailadmin[data-mi-page="barnat"] body #registryContent #dataTable tbody td:has(
@@ -61,7 +87,8 @@ html.medindex-tailadmin[data-mi-page="barnat"] body #registryContent #dataTable 
   contain:none!important;
   grid-template-columns:minmax(0,1fr) 52px!important;
   align-items:start!important;
-  gap:7px!important;
+  gap:9px!important;
+  padding:2px 0 7px!important;
   overflow:visible!important;
 }
 
@@ -116,24 +143,64 @@ html.medindex-tailadmin[data-mi-page="barnat"] body #registryContent #dataTable 
   line-clamp:unset!important;
 }
 
-html.medindex-tailadmin[data-mi-page="barnat"] body #registryContent #dataTable .registry-dosage-dose[aria-expanded="true"] .registry-dosage-toggle,
-html.medindex-tailadmin[data-mi-page="barnat"] body #registryContent #dataTable tbody tr:is(
-  .registry-row-expanded,
-  [data-registry-row-expanded="true"]
-) .registry-dosage-toggle {
-  position:static!important;
+html.medindex-tailadmin[data-mi-page="barnat"] body #registryContent #dataTable .registry-dosage-toggle {
   display:inline-flex!important;
-  align-items:center!important;
   min-height:28px!important;
-  margin-top:7px!important;
-  padding:2px 0!important;
-  overflow:visible!important;
+  align-items:center!important;
+  gap:5px!important;
+  margin-top:5px!important;
+  padding:3px 8px!important;
+  border:1px solid #bfdbfe!important;
+  border-radius:999px!important;
+  background:#eff6ff!important;
+  color:#1d4ed8!important;
+  font-size:.68rem!important;
+  font-weight:800!important;
+  line-height:1!important;
+  letter-spacing:.01em!important;
+  transition:background-color .14s ease, border-color .14s ease, transform .14s ease!important;
+}
+
+html.medindex-tailadmin[data-mi-page="barnat"] body #registryContent #dataTable .registry-dosage-toggle::after {
+  content:'›'!important;
+  display:inline-block!important;
+  font-size:.9rem!important;
+  line-height:1!important;
+  transform:rotate(90deg)!important;
+  transform-origin:center!important;
+  transition:transform .14s ease!important;
+}
+
+html.medindex-tailadmin[data-mi-page="barnat"] body #registryContent #dataTable .registry-dosage-dose:is(:hover,:focus-visible) .registry-dosage-toggle {
+  border-color:#93c5fd!important;
+  background:#dbeafe!important;
+}
+
+html.medindex-tailadmin[data-mi-page="barnat"] body #registryContent #dataTable .registry-dosage-dose[aria-expanded="true"] .registry-dosage-toggle {
+  position:static!important;
+  margin-top:8px!important;
+  border-color:#93c5fd!important;
+  background:#dbeafe!important;
+}
+
+html.medindex-tailadmin[data-mi-page="barnat"] body #registryContent #dataTable .registry-dosage-dose[aria-expanded="true"] .registry-dosage-toggle::after {
+  transform:rotate(-90deg)!important;
+}
+
+html.medindex-tailadmin[data-mi-page="barnat"] body #registryContent #dataTable .registry-dosage-toggle[hidden],
+html.medindex-tailadmin[data-mi-page="barnat"] body #registryContent #dataTable .registry-dosage-regimen[data-disclosure-needed="false"] .registry-dosage-toggle {
+  display:none!important;
+}
+
+html.medindex-tailadmin[data-mi-page="barnat"] body #registryContent #dataTable .registry-dosage-dose:disabled {
+  cursor:default!important;
+  opacity:1!important;
 }
 
 html.medindex-tailadmin[data-mi-page="barnat"] body #registryContent #dataTable .registry-dosage-dose[aria-expanded="true"]:focus-visible {
-  border-radius:6px!important;
+  border-radius:7px!important;
   outline:2px solid #2563eb!important;
-  outline-offset:3px!important;
+  outline-offset:4px!important;
 }
 
 html.medindex-tailadmin[data-mi-page="barnat"] body #registryContent #dataTable tbody tr:is(
@@ -141,6 +208,7 @@ html.medindex-tailadmin[data-mi-page="barnat"] body #registryContent #dataTable 
   [data-registry-row-expanded="true"]
 ) .registry-dosage-route {
   align-self:start!important;
+  margin-top:1px!important;
 }
 
 html.medindex-tailadmin[data-mi-page="barnat"] body #registryContent #dataTable tbody tr:is(
@@ -176,7 +244,30 @@ html.medindex-tailadmin[data-mi-page="barnat"] body #registryContent #dataTable 
   overflow:visible!important;
 }
 
+html[data-theme="dark"].medindex-tailadmin[data-mi-page="barnat"] body #registryContent #dataTable tbody tr:is(
+  .registry-row-expanded,
+  [data-registry-row-expanded="true"]
+) > td {
+  background:#13283a!important;
+}
+
+html[data-theme="dark"].medindex-tailadmin[data-mi-page="barnat"] body #registryContent #dataTable .registry-dosage-toggle {
+  border-color:rgba(147,197,253,.28)!important;
+  background:rgba(37,99,235,.16)!important;
+  color:#bfdbfe!important;
+}
+
+html[data-theme="dark"].medindex-tailadmin[data-mi-page="barnat"] body #registryContent #dataTable .registry-dosage-dose:is(:hover,:focus-visible) .registry-dosage-toggle,
+html[data-theme="dark"].medindex-tailadmin[data-mi-page="barnat"] body #registryContent #dataTable .registry-dosage-dose[aria-expanded="true"] .registry-dosage-toggle {
+  border-color:rgba(147,197,253,.5)!important;
+  background:rgba(37,99,235,.28)!important;
+}
+
 @media (max-width:760px) {
+  html.medindex-tailadmin[data-mi-page="barnat"] body #registryContent #dataTable tbody tr {
+    scroll-margin-top:68px!important;
+  }
+
   html.medindex-tailadmin[data-mi-page="barnat"] body #registryContent #dataTable tbody tr:is(
     .registry-row-expanded,
     [data-registry-row-expanded="true"]
@@ -202,10 +293,21 @@ html.medindex-tailadmin[data-mi-page="barnat"] body #registryContent #dataTable 
   ) .registry-dosage-regimen {
     grid-template-columns:minmax(0,1fr) 62px!important;
   }
+
+  html.medindex-tailadmin[data-mi-page="barnat"] body #registryContent #dataTable .registry-dosage-toggle {
+    min-height:32px!important;
+    padding:5px 10px!important;
+    font-size:.72rem!important;
+  }
 }
 
 @media (prefers-reduced-motion:reduce) {
-  html.medindex-tailadmin[data-mi-page="barnat"] body #registryContent #dataTable .registry-dosage-dose {
-    scroll-behavior:auto!important;
+  html.medindex-tailadmin[data-mi-page="barnat"] body #registryContent #dataTable :is(
+    tbody tr,
+    tbody td,
+    .registry-dosage-toggle,
+    .registry-dosage-toggle::after
+  ) {
+    transition:none!important;
   }
 }
