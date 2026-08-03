@@ -37,7 +37,7 @@ assert.ok(
   'Round-trip workflow must load after the prescription composer.',
 );
 assert.ok(
-  icdHtml.indexOf('icd-detail-panel.js?v=icd-detail-panel-v2') < icdHtml.indexOf('icd-prescription-roundtrip.js?v=icd-rx-roundtrip-v1'),
+  icdHtml.indexOf('icd-detail-panel.js?v=icd-detail-panel-v3') < icdHtml.indexOf('icd-prescription-roundtrip.js?v=icd-rx-roundtrip-v1'),
   'Round-trip workflow must load after the ICD detail panel.',
 );
 

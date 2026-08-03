@@ -67,7 +67,7 @@ assert.match(auth, /CLEAR_PRIVATE_DATA/, 'logout must clear service-worker priva
 assert.match(auth, /clearSensitiveWebStorage/, 'logout storage cleanup must remain centralized');
 
 const worker = read('sw.js');
-assert.match(worker, /csp-static-runtime-20260727-1/, 'service-worker cache epoch is stale');
+assert.match(worker, /icd-responsive-runtime-20260803-1/, 'service-worker cache epoch is stale');
 [
   'app-runtime.js', 'theme-preload.js', 'recetat-safe-print.js',
   'dozologjia-deep-audit.js', 'dozologjia-clinical-readiness.css',

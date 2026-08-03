@@ -23,20 +23,20 @@ const engineV3 = read('lib/icd-search-engine-v3.js');
 for (const asset of [
   'icd-advanced-search.css?v=sq-clinical-search-v3',
   'icd-fetch-capture.js?v=icd-fetch-capture-v1',
-  'icd-advanced-search.js?v=sq-clinical-search-v3',
-  'icd-tree-polish.css?v=icd-tree-polish-v4',
+  'icd-advanced-search.js?v=sq-clinical-search-v3-ui1',
+  'icd-tree-polish.css?v=icd-tree-polish-v5',
   'icd-search-race-guard-v2.js?v=icd-race-guard-v5',
 ]) assert.ok(html.includes(asset), `ICD advanced search page missing ${asset}`);
 assert.ok(
-  html.indexOf('icd-fetch-capture.js?v=icd-fetch-capture-v1') < html.indexOf('icd-advanced-search.js?v=sq-clinical-search-v3'),
+  html.indexOf('icd-fetch-capture.js?v=icd-fetch-capture-v1') < html.indexOf('icd-advanced-search.js?v=sq-clinical-search-v3-ui1'),
   'Native fetch must be captured before the advanced wrapper.',
 );
 assert.ok(
-  html.indexOf('icd-advanced-search.js?v=sq-clinical-search-v3') < html.indexOf('icd-tree.js?v=icd-tree-v1'),
+  html.indexOf('icd-advanced-search.js?v=sq-clinical-search-v3-ui1') < html.indexOf('icd-tree.js?v=icd-tree-v2'),
   'Advanced fetch routing must load before the tree controller.',
 );
 assert.ok(
-  html.indexOf('icd-tree.js?v=icd-tree-v1') < html.indexOf('icd-search-race-guard-v2.js?v=icd-race-guard-v5'),
+  html.indexOf('icd-tree.js?v=icd-tree-v2') < html.indexOf('icd-search-race-guard-v2.js?v=icd-race-guard-v5'),
   'The passive ARIA guard must load after the tree controller.',
 );
 for (const marker of ['id="icdSourceStatus"', 'data-source-status="loading"', 'aria-busy="false"']) {

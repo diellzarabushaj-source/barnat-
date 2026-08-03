@@ -1,9 +1,9 @@
 .icd-comparison-panel {
-  margin: 0 0 20px;
+  margin: 0 0 14px;
   border: 1px solid color-mix(in srgb, var(--med-border, #d7e1e3) 88%, transparent);
-  border-radius: 20px;
+  border-radius: 14px;
   background: var(--med-surface, #fff);
-  box-shadow: 0 12px 32px rgba(13, 61, 64, .07);
+  box-shadow: 0 1px 3px rgba(16, 24, 40, .06);
   overflow: hidden;
 }
 
@@ -11,14 +11,14 @@
   display: flex;
   align-items: flex-start;
   justify-content: space-between;
-  gap: 22px;
-  padding: 19px 22px 16px;
+  gap: 16px;
+  padding: 14px 16px 12px;
   border-bottom: 1px solid color-mix(in srgb, var(--med-border, #d7e1e3) 72%, transparent);
-  background: linear-gradient(140deg, color-mix(in srgb, var(--med-accent, #0d6b68) 5%, var(--med-surface, #fff)), var(--med-surface, #fff));
+  background: color-mix(in srgb, var(--med-accent, #0d6b68) 4%, var(--med-surface, #fff));
 }
 
 .icd-comparison-head h2 {
-  margin: 3px 0 5px;
+  margin: 2px 0 4px;
   color: var(--med-text, #17383b);
   font-size: clamp(1.08rem, 2vw, 1.32rem);
   line-height: 1.2;
@@ -28,7 +28,8 @@
   margin: 0;
   max-width: 760px;
   color: var(--med-muted, #61777a);
-  line-height: 1.5;
+  font-size: .82rem;
+  line-height: 1.42;
 }
 
 .icd-comparison-head .med-kicker {
@@ -97,15 +98,15 @@
 }
 
 .icd-comparison-body {
-  padding: 18px 22px 21px;
+  padding: 12px 16px 14px;
 }
 
 .icd-comparison-empty {
   display: flex;
   align-items: center;
   gap: 14px;
-  min-height: 78px;
-  padding: 15px;
+  min-height: 62px;
+  padding: 11px 12px;
   border: 1px dashed color-mix(in srgb, var(--med-border, #d7e1e3) 92%, transparent);
   border-radius: 14px;
   background: color-mix(in srgb, var(--med-accent, #0d6b68) 3%, var(--med-surface, #fff));
@@ -115,9 +116,9 @@
   display: grid;
   place-items: center;
   flex: 0 0 auto;
-  width: 50px;
-  height: 50px;
-  border-radius: 15px;
+  width: 42px;
+  height: 42px;
+  border-radius: 12px;
   background: color-mix(in srgb, var(--med-accent, #0d6b68) 12%, transparent);
   color: var(--med-accent, #0d6b68);
   font: 900 .78rem/1 ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
@@ -468,4 +469,30 @@
     background: Highlight;
     color: HighlightText;
   }
+}
+
+html[data-theme="dark"] .icd-comparison-panel {
+  border-color: #344054;
+  background: #101828;
+}
+
+html[data-theme="dark"] .icd-comparison-head,
+html[data-theme="dark"] .icd-comparison-body {
+  border-color: #344054;
+  background: #101828;
+}
+
+html[data-theme="dark"] .icd-comparison-head h2,
+html[data-theme="dark"] .icd-comparison-empty strong {
+  color: #f2f4f7;
+}
+
+html[data-theme="dark"] .icd-comparison-head p,
+html[data-theme="dark"] .icd-comparison-empty p {
+  color: #98a2b3;
+}
+
+html[data-theme="dark"] .icd-comparison-empty {
+  border-color: #475467;
+  background: #1d2939;
 }

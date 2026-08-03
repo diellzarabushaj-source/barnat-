@@ -21,7 +21,7 @@ const packages = {
   XVIII:JSON.parse(read('lib/icd-sq-terms-xviii.json')),
 };
 
-for (const asset of ['icd-tree.css?v=icd-tree-v1','icd-tree.js?v=icd-tree-v1']) {
+for (const asset of ['icd-tree.css?v=icd-tree-v1','icd-tree.js?v=icd-tree-v2']) {
   assert.ok(html.includes(asset), `ICD terminology tree missing ${asset}`);
 }
 for (const marker of ['translationStatus','is-standardized','is-verified','I standardizuar','I verifikuar','Vetëm anglisht','Draft']) {

@@ -16,7 +16,7 @@ for (const asset of [
 ]) assert.ok(html.includes(asset), `ICD terminology detail asset missing ${asset}`);
 
 assert.ok(
-  html.indexOf('icd-detail-panel.js?v=icd-detail-panel-v2')
+  html.indexOf('icd-detail-panel.js?v=icd-detail-panel-v3')
     < html.indexOf('icd-terminology-detail.js?v=icd-terminology-detail-v1'),
   'Terminology detail enhancement must load after the base detail panel.',
 );

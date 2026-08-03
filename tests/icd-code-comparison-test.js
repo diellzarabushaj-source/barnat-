@@ -80,7 +80,7 @@ const context = comparison.diagnosisContext(sub0, 123456);
 assert.deepEqual({ code:context.code, level:context.level, selectedAt:context.selectedAt }, { code:'A00.0', level:'subcategory', selectedAt:123456 });
 assert.ok(!('ancestors' in context));
 
-for (const marker of ['icd-code-comparison.css?v=icd-code-comparison-v1', 'icd-code-comparison.js?v=icd-code-comparison-v1', 'icd-code-comparison-bridge.js?v=icd-code-comparison-bridge-v1']) {
+for (const marker of ['icd-code-comparison.css?v=icd-code-comparison-v2', 'icd-code-comparison.js?v=icd-code-comparison-v1', 'icd-code-comparison-bridge.js?v=icd-code-comparison-bridge-v1']) {
   assert.ok(html.includes(marker), `ICD page missing ${marker}`);
 }
 for (const marker of ['MAX_ITEMS = 3', 'deepestCommonAncestor', 'relationInfo', 'Krahasimi profesional i kodeve', 'data-mi-icd-comparison-primary', 'data-mi-icd-comparison-secondary']) {

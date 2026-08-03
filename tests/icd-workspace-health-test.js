@@ -15,8 +15,8 @@ const apiBase = read('lib/icd-api-base.js');
 for (const marker of [
   'id="icdSourceHealth"', 'id="icdSourceStatus"', 'id="icdSourceHealthDetail"',
   'id="icdSourceHealthRefresh"', 'role="status"', 'aria-atomic="true"', 'aria-busy="true"',
-  'icd-workspace-health.js?v=icd-workspace-health-v2', 'icd-tree-polish.css?v=icd-tree-polish-v4',
-  'icd-advanced-search.js?v=sq-clinical-search-v3', 'icd-terminology-detail.js?v=icd-terminology-detail-v1',
+  'icd-workspace-health.js?v=icd-workspace-health-v2', 'icd-tree-polish.css?v=icd-tree-polish-v5',
+  'icd-advanced-search.js?v=sq-clinical-search-v3-ui1', 'icd-terminology-detail.js?v=icd-terminology-detail-v1',
   'icd-prescription-roundtrip.js?v=icd-rx-roundtrip-v1',
 ]) assert.ok(html.includes(marker), `ICD workspace health surface missing ${marker}`);
 

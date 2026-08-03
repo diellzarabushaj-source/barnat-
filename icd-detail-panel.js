@@ -43,6 +43,7 @@
           <div class="icd-detail-head-meta" aria-label="Statusi i kodit">
             <span class="icd-detail-badge" id="detailLevelBadge">—</span>
             <span class="icd-detail-badge" id="detailTranslationBadge">—</span>
+            <span class="icd-detail-badge icd-detail-clinical-badge" id="detailClinicalBadge" hidden></span>
           </div>
         </div>
         <button class="med-panel-close" id="detailClose" type="button" aria-label="Mbyll">×</button>
@@ -101,6 +102,22 @@
     if (status === 'standardized') return 'is-standardized';
     if (status === 'missing') return 'is-missing';
     return 'is-machine';
+  }
+
+  function clinicalPresentation(node) {
+    const role = clean(node?.primaryCareRole || node?.role);
+    const management = clean(node?.managementSummary || node?.management);
+    const contractLevel = clean(node?.urgencyLevel || node?.clinicalPriority).toLowerCase();
+    const normalizedRole = role.normalize('NFD').replace(/[\u0300-\u036f]/g, '').toLowerCase();
+    let level = contractLevel === 'emergency' ? 'direct' : contractLevel === 'primary-care' ? 'family-medicine' : contractLevel;
+    if (!['direct', 'urgent', 'family-medicine'].includes(level)) {
+      if (node?.isDirectUrgency || normalizedRole === 'urgjence ne mf') level = 'direct';
+      else if (node?.isUrgent || normalizedRole.includes('urgjenc')) level = 'urgent';
+      else if (normalizedRole.startsWith('mf')) level = 'family-medicine';
+      else level = '';
+    }
+    const label = level === 'direct' ? 'Urgjencë në MF' : level === 'urgent' ? 'Urgjencë' : level === 'family-medicine' ? 'Menaxhim në MF' : '';
+    return { role, management, level, label };
   }
 
   function translationNote(node) {
@@ -162,6 +179,11 @@
     const translationBadge = document.getElementById('detailTranslationBadge');
     translationBadge.textContent = translationLabel(node.translationStatus);
     translationBadge.className = `icd-detail-badge ${translationClass(node.translationStatus)}`;
+    const clinical = clinicalPresentation(node);
+    const clinicalBadge = document.getElementById('detailClinicalBadge');
+    clinicalBadge.hidden = !clinical.level;
+    clinicalBadge.textContent = clinical.label;
+    clinicalBadge.dataset.urgencyLevel = clinical.level;
     const path = [...ancestors, node].map(item => `<span>${esc(item.code)} — ${esc(item.displayTitle)}</span>`).join('');
     const sourceUrl = safeHttpsUrl(node.sourceUrl);
     document.getElementById('detailBody').innerHTML = `<div class="icd-detail-summary">
@@ -173,6 +195,8 @@
       ${field('Blloku', node.block)}
       ${field('Kodi prind', node.parentCode)}
       ${field('Nënkode direkte', String(Number(node.childCount || 0)))}
+      ${field('Roli në mjekësinë familjare', clinical.role, true)}
+      ${field('Menaxhimi i rekomanduar', clinical.management, true)}
       <section class="icd-detail-field is-full"><strong>Hierarkia</strong><div class="icd-detail-path">${path}</div></section>
     </div>
     ${specificityNote(node)}
@@ -195,6 +219,9 @@
     const translationBadge = document.getElementById('detailTranslationBadge');
     translationBadge.textContent = '—';
     translationBadge.className = 'icd-detail-badge';
+    const clinicalBadge = document.getElementById('detailClinicalBadge');
+    clinicalBadge.hidden = true;
+    clinicalBadge.removeAttribute('data-urgency-level');
     document.getElementById('detailBody').innerHTML = '<p>Po ngarkohet kodi ICD-10…</p>';
     overlay.hidden = false;
     overlay.setAttribute('aria-hidden', 'false');

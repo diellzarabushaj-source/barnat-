@@ -28,6 +28,22 @@
     '&':'&amp;', '<':'&lt;', '>':'&gt;', '"':'&quot;', "'":'&#39;',
   }[character]));
 
+  function clinicalPresentation(node) {
+    const role = clean(node?.primaryCareRole || node?.role);
+    const management = clean(node?.managementSummary || node?.management);
+    const contractLevel = clean(node?.urgencyLevel || node?.clinicalPriority).toLowerCase();
+    const normalizedRole = role.normalize('NFD').replace(/[\u0300-\u036f]/g, '').toLowerCase();
+    let level = contractLevel === 'emergency' ? 'direct' : contractLevel === 'primary-care' ? 'family-medicine' : contractLevel;
+    if (!['direct', 'urgent', 'family-medicine'].includes(level)) {
+      if (node?.isDirectUrgency || normalizedRole === 'urgjence ne mf') level = 'direct';
+      else if (node?.isUrgent || normalizedRole.includes('urgjenc')) level = 'urgent';
+      else if (normalizedRole.startsWith('mf')) level = 'family-medicine';
+      else level = '';
+    }
+    const label = level === 'direct' ? 'Urgjencë MF' : level === 'urgent' ? 'Urgjencë' : level === 'family-medicine' ? 'MF' : '';
+    return { role, management, level, label };
+  }
+
   function advancedUrl(input) {
     try {
       const url = new URL(typeof input === 'string' ? input : input?.url, location.origin);
@@ -186,7 +202,8 @@
     const english = clean(node?.englishTitle);
     const display = clean(node?.displayTitle);
     const alternate = english && english.toLowerCase() !== display.toLowerCase() ? english : '';
-    return `<button class="icd-suggestion icd-suggestion-advanced" id="icdSuggestion-${index}" type="button" role="option" aria-selected="false" data-suggestion-index="${index}" data-code="${esc(node?.code)}" data-level="${esc(node?.level)}">
+    const clinical = clinicalPresentation(node);
+    return `<button class="icd-suggestion icd-suggestion-advanced" id="icdSuggestion-${index}" type="button" role="option" aria-selected="false" data-suggestion-index="${index}" data-code="${esc(node?.code)}" data-level="${esc(node?.level)}"${clinical.level ? ` data-urgency-level="${esc(clinical.level)}"` : ''}>
       <span class="icd-suggestion-code">${esc(node?.code)}</span>
       <span class="icd-suggestion-copy">
         <strong>${esc(display)}</strong>
@@ -194,6 +211,7 @@
         <small class="icd-suggestion-path">${esc(pathText(node))}</small>
       </span>
       <span class="icd-suggestion-meta">
+        ${clinical.level ? `<span class="icd-clinical-badge" data-urgency-level="${esc(clinical.level)}" title="${esc([clinical.role, clinical.management].filter(Boolean).join(' — '))}">${esc(clinical.label)}</span>` : ''}
         <span class="icd-suggestion-level">${esc(levelLabel(node?.level))}</span>
         <span class="icd-suggestion-match" data-match-type="${esc(match.type)}">${esc(match.label || 'Përputhje')}</span>
       </span>

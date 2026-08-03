@@ -19,9 +19,9 @@ const PRIVATE_PAGES = new Set([
   '/dozologjia.html', '/protokollet.html', '/recetat.html',
 ]);
 const PRIVATE_DATA_PATHS = new Set([
-  '/api/registry', '/data/registry-data.js', '/api/dosage', '/api/icd',
+  '/api/registry', '/data/registry-data.js', '/api/dosage',
 ]);
-const QUERY_DATA_PATHS = new Set(['/api/drug-search']);
+const QUERY_DATA_PATHS = new Set(['/api/drug-search', '/api/icd']);
 const REQUIRED_PRIVATE_PATHS = ['/api/registry', '/api/dosage', '/data/protocols.json'];
 let networkProfile = { online:true, slow:false, saveData:false };
 

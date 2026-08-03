@@ -27,8 +27,8 @@ assert.equal(Source.SHEET_GID, 329283560);
 assert.equal(Source.SHEET_NAME, 'ICD-10 EN-SQ');
 assert.equal(Source.SOURCE_URLS.length, 2);
 assert.equal(Source.csvUrl(), Source.SOURCE_URLS[0]);
-assert.match(Source.SOURCE_URLS[0], /\/gviz\/tq\?tqx=out:csv&gid=329283560$/);
-assert.match(Source.SOURCE_URLS[1], /\/export\?format=csv&single=true&gid=329283560$/);
+assert.match(Source.SOURCE_URLS[0], /\/gviz\/tq\?tqx=out:csv&gid=329283560&range=A:J$/);
+assert.match(Source.SOURCE_URLS[1], /\/export\?format=csv&single=true&gid=329283560&range=A:J$/);
 assert.equal(new Set(Source.SOURCE_URLS).size, Source.SOURCE_URLS.length);
 
 const first = Source.validateCsv(fixture, { contentType:'text/csv; charset=utf-8' });

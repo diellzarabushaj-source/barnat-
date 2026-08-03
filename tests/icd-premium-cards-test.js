@@ -16,8 +16,8 @@ const detailJs = read('icd-detail-panel.js');
 
 for (const asset of [
   'icd-tree.css?v=icd-tree-v1', 'icd-sidebar.css?v=icd-sidebar-v1',
-  'icd-detail-panel.css?v=icd-detail-panel-v2', 'icd-tree.js?v=icd-tree-v1',
-  'icd-sidebar.js?v=icd-sidebar-v1', 'icd-detail-panel.js?v=icd-detail-panel-v2',
+  'icd-detail-panel.css?v=icd-detail-panel-v2', 'icd-tree.js?v=icd-tree-v2',
+  'icd-sidebar.js?v=icd-sidebar-v1', 'icd-detail-panel.js?v=icd-detail-panel-v3',
 ]) assert.ok(html.includes(asset), `ICD tree page missing ${asset}`);
 
 for (const removed of [

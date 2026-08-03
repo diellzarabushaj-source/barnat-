@@ -2,7 +2,7 @@
   'use strict';
 
   const API = '/api/icd';
-  const CACHE_KEY = 'medindex_icd_tree_nav_v1';
+  const CACHE_KEY = 'medindex_icd_nav_cache_v1';
   const CACHE_TTL = 15 * 60 * 1000;
   const LABELS = Object.freeze({ chapter:'Kapitull', block:'Bllok', category:'Kategori', subcategory:'Nënkategori' });
   const els = {};
@@ -69,6 +69,32 @@
     return '<span class="icd-tree-translation is-draft">Draft</span>';
   }
 
+  function clinicalPresentation(node) {
+    const role = clean(node?.primaryCareRole || node?.role);
+    const management = clean(node?.managementSummary || node?.management);
+    const contractLevel = clean(node?.urgencyLevel || node?.clinicalPriority).toLowerCase();
+    const normalizedRole = role.normalize('NFD').replace(/[\u0300-\u036f]/g, '').toLowerCase();
+    let level = contractLevel;
+    if (level === 'emergency') level = 'direct';
+    if (level === 'primary-care') level = 'family-medicine';
+    if (!['direct', 'urgent', 'family-medicine'].includes(level)) {
+      if (node?.isDirectUrgency || normalizedRole === 'urgjence ne mf') level = 'direct';
+      else if (node?.isUrgent || normalizedRole.includes('urgjenc')) level = 'urgent';
+      else if (normalizedRole.startsWith('mf')) level = 'family-medicine';
+      else level = '';
+    }
+    const label = level === 'direct' ? 'Urgjencë në MF' : level === 'urgent' ? 'Urgjencë' : level === 'family-medicine' ? 'MF' : '';
+    return { role, management, level, label };
+  }
+
+  function clinicalBadge(node, compact = false) {
+    const clinical = clinicalPresentation(node);
+    if (!clinical.level) return '';
+    const detail = [clinical.role, clinical.management].filter(Boolean).join(' — ');
+    const label = compact && clinical.level === 'direct' ? 'Urgjencë MF' : clinical.label;
+    return `<span class="icd-clinical-badge" data-urgency-level="${esc(clinical.level)}"${detail ? ` title="${esc(detail)}"` : ''}>${esc(label)}</span>`;
+  }
+
   const chevron = () => '<span class="icd-tree-chevron" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="m9 18 6-6-6-6"/></svg></span>';
 
   function rowMarkup(node, depth = 1) {
@@ -77,13 +103,14 @@
     const english = clean(node.englishTitle);
     const display = title(node);
     const secondary = english && english.toLowerCase() !== display.toLowerCase();
-    return `<div class="icd-tree-node level-${esc(node.level)}" role="treeitem" aria-level="${depth}"${expandable ? ' aria-expanded="false"' : ''} data-icd-tree-node="${esc(code)}" data-level="${esc(node.level)}">
+    const clinical = clinicalPresentation(node);
+    return `<div class="icd-tree-node level-${esc(node.level)}" role="treeitem" aria-level="${depth}"${expandable ? ' aria-expanded="false"' : ''} data-icd-tree-node="${esc(code)}" data-level="${esc(node.level)}"${clinical.level ? ` data-urgency-level="${esc(clinical.level)}"` : ''}>
       <div class="icd-tree-row${selectedCode === code ? ' is-selected' : ''}">
         <button class="icd-tree-toggle" type="button" data-tree-toggle="${esc(code)}" aria-label="${expandable ? 'Hap' : 'Shiko'} ${esc(code)}">
           ${expandable ? chevron() : '<span class="icd-tree-leaf" aria-hidden="true"></span>'}
           <span class="icd-tree-code">${esc(code)}</span>
           <span class="icd-tree-copy"><strong>${esc(display)}</strong>${secondary ? `<small>${esc(english)}</small>` : ''}</span>
-          <span class="icd-tree-meta">${statusBadge(node)}${expandable ? `<span class="icd-tree-count">${count(node.childCount)}</span>` : ''}</span>
+          <span class="icd-tree-meta">${clinicalBadge(node)}${statusBadge(node)}${expandable ? `<span class="icd-tree-count">${count(node.childCount)}</span>` : ''}</span>
         </button>
         <button class="icd-tree-detail" type="button" data-open-code="${esc(code)}" aria-label="Hap detajet për ${esc(code)}">Detaje</button>
       </div>
@@ -102,6 +129,7 @@
 
   function loading() {
     els.tree.setAttribute('aria-busy', 'true');
+    els.tree.dataset.state = 'loading';
     els.tree.innerHTML = '<div class="icd-tree-loading"><span class="icd-tree-spinner" aria-hidden="true"></span><p>Po ngarkohet hierarkia ICD-10…</p></div>';
     els.status.textContent = 'Duke u ngarkuar…';
     els.status.classList.remove('is-error');
@@ -111,6 +139,7 @@
   function errorState(error) {
     console.error('ICD tree load failed:', error);
     els.tree.setAttribute('aria-busy', 'false');
+    els.tree.dataset.state = 'error';
     els.tree.innerHTML = `<div class="icd-tree-error" role="alert"><strong>Hierarkia ICD-10 nuk u ngarkua.</strong><p>${esc(error?.message || 'Provo përsëri.')}</p></div>`;
     els.status.textContent = 'Gabim gjatë ngarkimit';
     els.status.classList.add('is-error');
@@ -121,6 +150,7 @@
     const chapters = nav?.chapters || [];
     remember(chapters);
     els.tree.setAttribute('aria-busy', 'false');
+    els.tree.dataset.state = 'ready';
     els.tree.innerHTML = chapters.map(chapter => rowMarkup(chapter, 1)).join('');
     els.status.textContent = `${count(chapters.length)} kapituj kryesorë`;
     els.status.classList.remove('is-error');
@@ -134,9 +164,19 @@
     try {
       nav = force ? null : cachedNav();
       if (!nav) {
-        nav = await getJson(endpoint('nav'), activeRequest);
+        if (!force && window.MedIndexIcdNavPromise) nav = await window.MedIndexIcdNavPromise;
+        else {
+          const request = getJson(endpoint('nav'), activeRequest);
+          if (!force) window.MedIndexIcdNavPromise = request;
+          try { nav = await request; }
+          catch (error) {
+            if (!force) window.MedIndexIcdNavPromise = null;
+            throw error;
+          }
+        }
         saveNav(nav);
       }
+      window.MedIndexIcdNavPromise = Promise.resolve(nav);
       remember(nav.chapters);
       remember(nav.blocks);
       renderMeta(nav.meta);
@@ -277,7 +317,8 @@
   }
 
   function suggestionMarkup(node, index) {
-    return `<button class="icd-suggestion" type="button" role="option" aria-selected="false" data-suggestion-index="${index}" data-code="${esc(node.code)}" data-level="${esc(node.level)}"><span class="icd-suggestion-code">${esc(node.code)}</span><span class="icd-suggestion-copy"><strong>${esc(title(node))}</strong><small>${esc(node.englishTitle || '')}</small></span><span class="icd-suggestion-level">${esc(node.searchMatch?.label || label(node.level))}</span></button>`;
+    const clinical = clinicalPresentation(node);
+    return `<button class="icd-suggestion" type="button" role="option" aria-selected="false" data-suggestion-index="${index}" data-code="${esc(node.code)}" data-level="${esc(node.level)}"${clinical.level ? ` data-urgency-level="${esc(clinical.level)}"` : ''}><span class="icd-suggestion-code">${esc(node.code)}</span><span class="icd-suggestion-copy"><strong>${esc(title(node))}</strong><small>${esc(node.englishTitle || '')}</small></span><span class="icd-suggestion-meta">${clinicalBadge(node, true)}<span class="icd-suggestion-level">${esc(node.searchMatch?.label || label(node.level))}</span></span></button>`;
   }
 
   async function loadSuggestions(query) {
@@ -291,6 +332,10 @@
     }
     const controller = new AbortController();
     suggestionRequest = controller;
+    els.suggestions.setAttribute('aria-busy', 'true');
+    els.suggestions.innerHTML = '<div class="icd-search-feedback is-loading" role="status"><strong>Po kërkohet…</strong><span>Kod, diagnozë ose sinonim klinik</span></div>';
+    els.suggestions.hidden = false;
+    els.search.setAttribute('aria-expanded', 'true');
     try {
       const data = await getJson(endpoint('suggest', { q }), controller);
       if (
@@ -300,7 +345,12 @@
       ) return;
       suggestionRows = Array.isArray(data.rows) ? data.rows : [];
       remember(suggestionRows);
-      if (!suggestionRows.length) return closeSuggestions();
+      if (!suggestionRows.length) {
+        els.suggestions.innerHTML = '<div class="icd-search-feedback is-empty" role="status"><strong>Nuk u gjet asnjë kod</strong><span>Provo kodin me ose pa pikë, shqip ose anglisht.</span></div>';
+        els.suggestions.hidden = false;
+        els.search.setAttribute('aria-expanded', 'true');
+        return;
+      }
       els.suggestions.innerHTML = suggestionRows.map(suggestionMarkup).join('');
       els.suggestions.hidden = false;
       els.search.setAttribute('aria-expanded', 'true');
@@ -308,8 +358,11 @@
     } catch (error) {
       if (requestId !== suggestionSequence || controller.signal.aborted || error.name === 'AbortError') return;
       console.error('ICD suggestions failed:', error);
-      closeSuggestions();
+      els.suggestions.innerHTML = '<div class="icd-search-feedback is-error" role="alert"><strong>Kërkimi nuk u përgjigj</strong><span>Provo përsëri pas pak; hierarkia aktuale mbetet e hapur.</span></div>';
+      els.suggestions.hidden = false;
+      els.search.setAttribute('aria-expanded', 'true');
     } finally {
+      if (requestId === suggestionSequence) els.suggestions.setAttribute('aria-busy', 'false');
       if (requestId === suggestionSequence) suggestionRequest = null;
     }
   }
@@ -377,7 +430,7 @@
       const q = clean(els.search.value);
       els.clear.hidden = !q;
       clearTimeout(suggestionTimer);
-      suggestionTimer = setTimeout(() => loadSuggestions(q), 180);
+      suggestionTimer = setTimeout(() => loadSuggestions(q), 120);
     }, true);
     document.addEventListener('keydown', event => {
       if (event.target?.id !== 'icdSearch') return;

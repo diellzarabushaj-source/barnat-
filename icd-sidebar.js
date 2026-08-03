@@ -72,10 +72,19 @@
 
   async function loadNavigation() {
     const cached = readNavCache();
-    if (cached) return cached;
-    const data = await fetchData(`${API}?view=nav`);
-    writeNavCache(data);
-    return data;
+    if (cached) {
+      window.MedIndexIcdNavPromise = Promise.resolve(cached);
+      return cached;
+    }
+    if (window.MedIndexIcdNavPromise) return window.MedIndexIcdNavPromise;
+    window.MedIndexIcdNavPromise = fetchData(`${API}?view=nav`).then(data => {
+      writeNavCache(data);
+      return data;
+    }).catch(error => {
+      window.MedIndexIcdNavPromise = null;
+      throw error;
+    });
+    return window.MedIndexIcdNavPromise;
   }
 
   function currentState(detail = {}) {

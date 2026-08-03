@@ -2,7 +2,7 @@
 'use strict';
 
 const VERSION = 'production-audit-v2';
-const CACHE_EPOCH = 'csp-static-runtime-20260727-1';
+const CACHE_EPOCH = 'icd-responsive-runtime-20260803-1';
 const CACHE_NAMESPACE = `${VERSION}-${CACHE_EPOCH}`;
 const STATIC_CACHE = `medindex-static-${CACHE_NAMESPACE}`;
 const PAGE_CACHE = `medindex-pages-${CACHE_NAMESPACE}`;
@@ -47,9 +47,9 @@ const APP_SHELL = [
 ];
 
 const PRIVATE_DATA_PATHS = new Set([
-  '/api/registry', '/data/registry-data.js', '/api/dosage', '/api/icd'
+  '/api/registry', '/data/registry-data.js', '/api/dosage'
 ]);
-const QUERY_DATA_PATHS = new Set(['/api/drug-search']);
+const QUERY_DATA_PATHS = new Set(['/api/drug-search', '/api/icd']);
 const SAFE_AUTO_REFRESH_PATHS = new Set(['/icd.html', '/analizat.html']);
 const REQUIRED_PRIVATE_PATHS = ['/api/registry', '/api/dosage', '/data/protocols.json'];
 

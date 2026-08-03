@@ -20,9 +20,9 @@
   <link rel="stylesheet" href="icd-detail-panel.css?v=icd-detail-panel-v2">
   <link rel="stylesheet" href="icd-terminology-detail.css?v=icd-terminology-detail-v1">
   <link rel="stylesheet" href="icd-favorites.css?v=icd-favorites-v1">
-  <link rel="stylesheet" href="icd-tree-polish.css?v=icd-tree-polish-v4">
+  <link rel="stylesheet" href="icd-tree-polish.css?v=icd-tree-polish-v5">
   <link rel="stylesheet" href="icd-coding-workspace.css?v=icd-coding-workspace-v1">
-  <link rel="stylesheet" href="icd-code-comparison.css?v=icd-code-comparison-v1">
+  <link rel="stylesheet" href="icd-code-comparison.css?v=icd-code-comparison-v2">
   <link rel="stylesheet" href="icd-clinical-guidance.css?v=icd-clinical-guidance-v1">
   <link rel="stylesheet" href="tailadmin-professional.css?v=20260728-1" data-tailadmin-professional-css>
   <script src="tailadmin-shell.js?v=production-audit-v2" defer></script>
@@ -59,6 +59,7 @@
           <div class="icd-search-wrap" id="icdSmartSearch">
             <span class="icd-search-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"></circle><path d="m16.5 16.5 4 4"></path></svg></span>
             <input id="icdSearch" type="search" autocomplete="off" placeholder="p.sh. I10, A001, tension i lartë ose hipertensjon…" aria-label="Kërko ICD-10 sipas kodit, titullit ose sinonimit" role="combobox" aria-autocomplete="list" aria-controls="icdSuggestions" aria-expanded="false">
+            <kbd class="icd-search-shortcut" aria-hidden="true">/</kbd>
             <button class="icd-search-clear" id="icdSearchClear" type="button" aria-label="Pastro kërkimin" hidden>×</button>
             <div class="icd-suggestions" id="icdSuggestions" role="listbox" aria-label="Sugjerime të avancuara ICD-10" aria-busy="false" hidden></div>
           </div>
@@ -71,6 +72,13 @@
             <button class="icd-source-health-refresh" id="icdSourceHealthRefresh" type="button" aria-label="Rifresko burimin dhe hierarkinë ICD-10">Rifresko</button>
           </div>
         </div>
+
+        <aside class="icd-clinical-legend" aria-label="Shpjegimi i prioriteteve klinike">
+          <strong>Roli në MF</strong>
+          <span data-urgency-level="direct"><i aria-hidden="true"></i>Urgjencë në MF</span>
+          <span data-urgency-level="urgent"><i aria-hidden="true"></i>Urgjencë</span>
+          <span data-urgency-level="family-medicine"><i aria-hidden="true"></i>Menaxhim në MF</span>
+        </aside>
 
         <section class="icd-favorites-panel" id="icdFavoritesPanel" aria-labelledby="icdFavoritesHeading" hidden>
           <header class="icd-favorites-head">
@@ -99,12 +107,12 @@
   <script src="section-icons.js?v=20260723-1" defer></script>
   <script src="icd-sidebar.js?v=icd-sidebar-v1" defer></script>
   <script src="icd-fetch-capture.js?v=icd-fetch-capture-v1" defer></script>
-  <script src="icd-advanced-search.js?v=sq-clinical-search-v3" defer></script>
-  <script src="icd-tree.js?v=icd-tree-v1" defer></script>
+  <script src="icd-advanced-search.js?v=sq-clinical-search-v3-ui1" defer></script>
+  <script src="icd-tree.js?v=icd-tree-v2" defer></script>
   <script src="icd-coding-workspace.js?v=icd-coding-workspace-v1" defer></script>
   <script src="icd-search-race-guard-v2.js?v=icd-race-guard-v5" defer></script>
   <script src="icd-workspace-health.js?v=icd-workspace-health-v2" defer></script>
-  <script src="icd-detail-panel.js?v=icd-detail-panel-v2" defer></script>
+  <script src="icd-detail-panel.js?v=icd-detail-panel-v3" defer></script>
   <script src="icd-terminology-detail.js?v=icd-terminology-detail-v1" defer></script>
   <script src="icd-prescription-roundtrip.js?v=icd-rx-roundtrip-v1" defer></script>
   <script src="icd-favorites.js?v=icd-favorites-v1" defer></script>

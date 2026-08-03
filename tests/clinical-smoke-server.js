@@ -64,6 +64,12 @@ const dosage = {
 const icdMeta = {
   version:'ICD-10-WHO 2019',
   sourceSpreadsheetId:'1O2S9xNIzvNmiG8ny-VLAp9NeyiUsrY8pxRpyJgTF_O0',
+  source:{
+    type:'local-snapshot', status:'stale', visibility:'bundled-cache',
+    spreadsheetId:'1O2S9xNIzvNmiG8ny-VLAp9NeyiUsrY8pxRpyJgTF_O0', sheetName:'ICD-10 EN-SQ', sheetGid:329283560,
+    headerRow:6, loadedAt:'2026-08-03T07:00:00.000Z', csvBytes:2602265,
+    revision:'browser-test-snapshot', fetchMs:0, buildMs:100, activatedAt:null,
+  },
   counts:{ chapter:22, block:274, category:2050, subcategory:10196, total:12542 },
   quality:{ missingTranslations:5240, machineDraftTranslations:7302, verifiedTranslations:0, translationCoverage:58.22, publicationReady:false },
 };
@@ -74,7 +80,7 @@ const icdNodes = [
   { code:'I10-I15', level:'block', chapter:'IX', block:'I10-I15', parentCode:'IX', englishTitle:'Hypertensive diseases', albanianDraft:'Sëmundjet hipertensive', displayTitle:'Sëmundjet hipertensive', translationStatus:'machine-draft', sourceUrl:'https://icd.who.int/browse10/2019/en#/I10-I15', childCount:1 },
   { code:'A00', level:'category', chapter:'I', block:'A00-A09', parentCode:'A00-A09', englishTitle:'Cholera', albanianDraft:'Kolera', displayTitle:'Kolera', translationStatus:'machine-draft', sourceUrl:'https://icd.who.int/browse10/2019/en#/A00', childCount:2 },
   { code:'A01', level:'category', chapter:'I', block:'A00-A09', parentCode:'A00-A09', englishTitle:'Typhoid and paratyphoid fevers', albanianDraft:'Ethet tifoide dhe paratifoide', displayTitle:'Ethet tifoide dhe paratifoide', translationStatus:'machine-draft', sourceUrl:'https://icd.who.int/browse10/2019/en#/A01', childCount:0 },
-  { code:'I10', level:'category', chapter:'IX', block:'I10-I15', parentCode:'I10-I15', englishTitle:'Essential (primary) hypertension', albanianDraft:'Hipertensioni esencial (primar)', displayTitle:'Hipertensioni esencial (primar)', translationStatus:'machine-draft', sourceUrl:'https://icd.who.int/browse10/2019/en#/I10', childCount:0 },
+  { code:'I10', level:'category', chapter:'IX', block:'I10-I15', parentCode:'I10-I15', englishTitle:'Essential (primary) hypertension', albanianDraft:'Hipertensioni esencial (primar)', displayTitle:'Hipertensioni esencial (primar)', translationStatus:'machine-draft', primaryCareRole:'MF — e shpeshtë', managementSummary:'Konfirmo me matje të përsëritura; vlerëso riskun dhe dëmtimin e organeve.', urgencyLevel:'family-medicine', isUrgent:false, isDirectUrgency:false, sourceUrl:'https://icd.who.int/browse10/2019/en#/I10', childCount:0 },
   { code:'A00.0', level:'subcategory', chapter:'I', block:'A00-A09', parentCode:'A00', englishTitle:'Cholera due to Vibrio cholerae 01, biovar cholerae', albanianDraft:'', displayTitle:'Cholera due to Vibrio cholerae 01, biovar cholerae', translationStatus:'missing', sourceUrl:'https://icd.who.int/browse10/2019/en#/A00.0', childCount:0 },
   { code:'A00.1', level:'subcategory', chapter:'I', block:'A00-A09', parentCode:'A00', englishTitle:'Cholera due to Vibrio cholerae 01, biovar eltor', albanianDraft:'Kolera për shkak të Vibrio cholerae 01, biovar eltor', displayTitle:'Kolera për shkak të Vibrio cholerae 01, biovar eltor', translationStatus:'machine-draft', sourceUrl:'https://icd.who.int/browse10/2019/en#/A00.1', childCount:0 },
 ];
