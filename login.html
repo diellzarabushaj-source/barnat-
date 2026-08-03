@@ -9,8 +9,12 @@
   <title>MedIndex | Hyrje e sigurt</title>
   <script src="theme-preload.js?v=production-audit-v2"></script>
   <link rel="preconnect" href="https://accounts.google.com">
+  <style>
+    html[data-mi-page="login"],html[data-mi-page="login"] body{min-height:100%;margin:0;background:#0f7779;color:#fff;font-family:Inter,ui-sans-serif,-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif}html[data-mi-page="login"] *{box-sizing:border-box}html[data-mi-page="login"] .mi-landing-page{min-height:100vh;min-height:100dvh}
+  </style>
   <link rel="stylesheet" href="tailadmin-medindex.css?v=20260728-1" data-tailadmin-medindex-css>
-  <link rel="stylesheet" href="login-tailwind-toolbox.css?v=20260803-1">
+  <link rel="preload" href="login-tailwind-toolbox.css?v=20260803-2" as="style">
+  <link rel="stylesheet" href="login-tailwind-toolbox.css?v=20260803-2">
   <script src="https://accounts.google.com/gsi/client" async defer></script>
 </head>
 <body>
@@ -20,7 +24,7 @@
       <div class="mi-container mi-nav-inner">
         <a class="mi-brand" href="/login.html" aria-label="MedIndex — faqja e hyrjes">
           <span class="mi-brand-logo">
-            <img src="/public/images/brand/medindex-icon-on-dark.png" alt="" width="48" height="48" decoding="async">
+            <img src="/public/images/brand/medindex-icon-on-dark.png" alt="" width="48" height="48" decoding="async" fetchpriority="high">
           </span>
           <span class="mi-brand-copy">
             <strong>MedIndex</strong>
@@ -32,6 +36,7 @@
           <span class="mi-nav-link">Barnat</span>
           <span class="mi-nav-link">ATC &amp; ICD</span>
           <span class="mi-nav-link">Recetat</span>
+          <span class="mi-nav-link">Blog</span>
           <span class="mi-private-pill"><span aria-hidden="true"></span>Qasje private</span>
         </div>
       </div>
@@ -51,7 +56,7 @@
             </div>
 
             <figure class="mi-founder-quote">
-              <img src="/public/images/brand/diellza-avatar.svg" alt="Dr. Diellza Rabushaj" width="48" height="48">
+              <img src="/public/images/brand/diellza-avatar.svg" alt="Dr. Diellza Rabushaj" width="48" height="48" decoding="async">
               <figcaption>
                 <blockquote>“Informacion klinik i qartë, i shpejtë dhe i besueshëm.”</blockquote>
                 <p><strong>Dr. Diellza Rabushaj</strong><span>CEO</span></p>
