@@ -37,78 +37,80 @@
       </div>
     </nav>
 
-    <section class="login-side-panel mi-hero" aria-labelledby="brandTitle">
-      <div class="mi-container mi-hero-grid">
-        <div class="mi-hero-copy">
-          <p class="mi-eyebrow">Platformë klinike profesionale</p>
-          <h1 id="brandTitle">Informacioni klinik,<br><span>më i qartë.</span></h1>
-          <p class="mi-hero-description">Barnat e Kosovës, klasifikimi ATC, ICD, analizat, dozologjia, protokollet dhe recetat — të organizuara në një hapësirë të vetme pune.</p>
+    <section class="login-side-panel" aria-labelledby="brandTitle">
+      <div class="mi-hero">
+        <div class="mi-container mi-hero-grid">
+          <div class="mi-hero-copy">
+            <p class="mi-eyebrow">Platformë klinike profesionale</p>
+            <h1 id="brandTitle">Informacioni klinik,<br><span>më i qartë.</span></h1>
+            <p class="mi-hero-description">Barnat e Kosovës, klasifikimi ATC, ICD, analizat, dozologjia, protokollet dhe recetat — të organizuara në një hapësirë të vetme pune.</p>
 
-          <div class="mi-hero-actions">
-            <a class="mi-primary-action" href="#loginTitle">Hyr në MedIndex <span aria-hidden="true">→</span></a>
-            <span class="mi-secure-note"><span aria-hidden="true">✓</span> Google ID i verifikuar</span>
+            <div class="mi-hero-actions">
+              <a class="mi-primary-action" href="#loginTitle">Hyr në MedIndex <span aria-hidden="true">→</span></a>
+              <span class="mi-secure-note"><span aria-hidden="true">✓</span> Google ID i verifikuar</span>
+            </div>
+
+            <figure class="mi-founder-quote">
+              <img src="/public/images/brand/diellza-avatar.svg" alt="Dr. Diellza Rabushaj" width="48" height="48">
+              <figcaption>
+                <blockquote>“Informacion klinik i qartë, i shpejtë dhe i besueshëm.”</blockquote>
+                <p><strong>Dr. Diellza Rabushaj</strong><span>CEO</span></p>
+              </figcaption>
+            </figure>
           </div>
 
-          <figure class="mi-founder-quote">
-            <img src="/public/images/brand/diellza-avatar.svg" alt="Dr. Diellza Rabushaj" width="48" height="48">
-            <figcaption>
-              <blockquote>“Informacion klinik i qartë, i shpejtë dhe i besueshëm.”</blockquote>
-              <p><strong>Dr. Diellza Rabushaj</strong><span>CEO</span></p>
-            </figcaption>
-          </figure>
-        </div>
+          <div class="mi-login-column">
+            <section class="mi-login-card" aria-labelledby="loginTitle">
+              <div class="mi-card-status"><span aria-hidden="true"></span>Mjedis privat dhe i mbrojtur</div>
 
-        <div class="mi-login-column">
-          <section class="mi-login-card" aria-labelledby="loginTitle">
-            <div class="mi-card-status"><span aria-hidden="true"></span>Mjedis privat dhe i mbrojtur</div>
+              <header class="mi-login-heading">
+                <p class="login-kicker">Qasje e autorizuar</p>
+                <h2 id="loginTitle">Hyr në MedIndex</h2>
+                <p class="login-copy">Vazhdo me llogarinë e aprovuar Google. Identiteti verifikohet në server para hapjes së hapësirës klinike.</p>
+              </header>
 
-            <header class="mi-login-heading">
-              <p class="login-kicker">Qasje e autorizuar</p>
-              <h2 id="loginTitle">Hyr në MedIndex</h2>
-              <p class="login-copy">Vazhdo me llogarinë e aprovuar Google. Identiteti verifikohet në server para hapjes së hapësirës klinike.</p>
-            </header>
+              <noscript>
+                <p class="mi-noscript" role="alert">JavaScript duhet të jetë aktiv për hyrjen e sigurt në MedIndex.</p>
+              </noscript>
 
-            <noscript>
-              <p class="mi-noscript" role="alert">JavaScript duhet të jetë aktiv për hyrjen e sigurt në MedIndex.</p>
-            </noscript>
+              <section class="google-login-panel" id="googleLoginPanel" aria-labelledby="googleLoginHeading">
+                <h3 class="google-login-heading" id="googleLoginHeading">Vazhdo me Google</h3>
+                <div class="google-login-button" id="googleLoginButton" aria-label="Butoni për hyrje me Google"></div>
+                <p class="google-login-status" id="googleLoginStatus" role="status" aria-live="polite" aria-atomic="true">Po përgatitet hyrja e sigurt…</p>
+                <button class="mi-retry-button" id="retryLoginConfig" type="button" hidden>Riprovo lidhjen</button>
+              </section>
 
-            <section class="google-login-panel" id="googleLoginPanel" aria-labelledby="googleLoginHeading">
-              <h3 class="google-login-heading" id="googleLoginHeading">Vazhdo me Google</h3>
-              <div class="google-login-button" id="googleLoginButton" aria-label="Butoni për hyrje me Google"></div>
-              <p class="google-login-status" id="googleLoginStatus" role="status" aria-live="polite" aria-atomic="true">Po përgatitet hyrja e sigurt…</p>
-              <button class="mi-retry-button" id="retryLoginConfig" type="button" hidden>Riprovo lidhjen</button>
+              <p class="login-account-note">
+                <span aria-hidden="true">✓</span>
+                Lejohet vetëm diellzarabushaj@gmail.com
+              </p>
+
+              <details class="password-fallback" id="passwordFallback" hidden>
+                <summary>Hyrje rezervë me password</summary>
+                <div class="login-divider"><span>Rezervë</span></div>
+                <form id="loginForm" autocomplete="on" novalidate>
+                  <label for="password">Password-i</label>
+                  <div class="password-row">
+                    <input id="password" name="password" type="password" autocomplete="current-password" autocapitalize="none" spellcheck="false" enterkeyhint="go" required minlength="6" maxlength="128" aria-describedby="capsLockHint loginMessage">
+                    <button id="togglePassword" type="button" aria-label="Shfaq password-in" aria-pressed="false">Shfaq</button>
+                  </div>
+                  <p class="caps-lock-hint" id="capsLockHint" hidden>Caps Lock është aktiv.</p>
+                  <button class="login-submit" id="loginSubmit" type="submit">
+                    <span>Hyr me password</span>
+                    <span aria-hidden="true">→</span>
+                  </button>
+                </form>
+              </details>
+
+              <p class="login-message" id="loginMessage" role="status" aria-live="polite" aria-atomic="true"></p>
+
+              <div class="login-meta" aria-label="Siguria e sesionit">
+                <span>Google ID</span>
+                <span>Sesion 8 orë</span>
+                <span>Cookie HttpOnly</span>
+              </div>
             </section>
-
-            <p class="login-account-note">
-              <span aria-hidden="true">✓</span>
-              Lejohet vetëm diellzarabushaj@gmail.com
-            </p>
-
-            <details class="password-fallback" id="passwordFallback" hidden>
-              <summary>Hyrje rezervë me password</summary>
-              <div class="login-divider"><span>Rezervë</span></div>
-              <form id="loginForm" autocomplete="on" novalidate>
-                <label for="password">Password-i</label>
-                <div class="password-row">
-                  <input id="password" name="password" type="password" autocomplete="current-password" autocapitalize="none" spellcheck="false" enterkeyhint="go" required minlength="6" maxlength="128" aria-describedby="capsLockHint loginMessage">
-                  <button id="togglePassword" type="button" aria-label="Shfaq password-in" aria-pressed="false">Shfaq</button>
-                </div>
-                <p class="caps-lock-hint" id="capsLockHint" hidden>Caps Lock është aktiv.</p>
-                <button class="login-submit" id="loginSubmit" type="submit">
-                  <span>Hyr me password</span>
-                  <span aria-hidden="true">→</span>
-                </button>
-              </form>
-            </details>
-
-            <p class="login-message" id="loginMessage" role="status" aria-live="polite" aria-atomic="true"></p>
-
-            <div class="login-meta" aria-label="Siguria e sesionit">
-              <span>Google ID</span>
-              <span>Sesion 8 orë</span>
-              <span>Cookie HttpOnly</span>
-            </div>
-          </section>
+          </div>
         </div>
       </div>
     </section>
