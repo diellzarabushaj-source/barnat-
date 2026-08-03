@@ -1,4 +1,4 @@
-/* MedIndex login — native-app mobile layout. Desktop remains owned by login-tailwind-toolbox.css. */
+/* MedIndex login — premium native-app mobile layout. Desktop remains owned by login-tailwind-toolbox.css. */
 html[data-mi-page="login"],
 html[data-mi-page="login"] body {
   width:100%;
@@ -37,7 +37,8 @@ html[data-mi-page="login"] .google-login-button iframe {
 }
 
 html[data-mi-page="login"] .mi-copy-mobile,
-html[data-mi-page="login"] .mi-account-mobile {
+html[data-mi-page="login"] .mi-account-mobile,
+html[data-mi-page="login"] .mi-status-mobile {
   display:none!important;
 }
 
@@ -164,46 +165,98 @@ html[data-mi-page="login"] .mi-account-mobile {
 
 @media (max-width:560px) {
   html[data-mi-page="login"] .mi-landing-page {
+    position:relative;
+    isolation:isolate;
     min-height:100svh;
-    background:linear-gradient(155deg,#0f7779 0%,#0b5965 48%,#0c2034 100%);
+    background:
+      radial-gradient(circle at 88% 8%,rgba(134,230,224,.22),transparent 28%),
+      radial-gradient(circle at 8% 92%,rgba(27,112,146,.24),transparent 34%),
+      linear-gradient(155deg,#117d7d 0%,#0c5b68 52%,#091c31 100%)!important;
+  }
+
+  html[data-mi-page="login"] .mi-landing-page::before,
+  html[data-mi-page="login"] .mi-landing-page::after {
+    content:"";
+    position:absolute;
+    z-index:-1;
+    pointer-events:none;
+    border:1px solid rgba(255,255,255,.08);
+    border-radius:50%;
+    background:rgba(255,255,255,.035);
+    backdrop-filter:blur(2px);
+  }
+
+  html[data-mi-page="login"] .mi-landing-page::before {
+    width:190px;
+    height:190px;
+    top:-88px;
+    right:-72px;
+  }
+
+  html[data-mi-page="login"] .mi-landing-page::after {
+    width:230px;
+    height:230px;
+    bottom:-148px;
+    left:-120px;
   }
 
   html[data-mi-page="login"] .mi-container {
-    width:calc(100% - 24px);
+    width:calc(100% - 28px);
   }
 
   html[data-mi-page="login"] .mi-nav {
-    padding-top:max(9px,env(safe-area-inset-top));
-    padding-bottom:9px;
+    padding-top:max(14px,env(safe-area-inset-top));
+    padding-bottom:8px;
     background:transparent;
     border-bottom:0;
   }
 
   html[data-mi-page="login"] .mi-nav-inner {
-    justify-content:flex-start;
+    justify-content:center;
   }
 
   html[data-mi-page="login"] .mi-brand {
-    min-height:44px!important;
+    min-height:50px!important;
+    gap:11px;
+    padding:4px 12px 4px 5px;
+    border:1px solid rgba(255,255,255,.12);
+    border-radius:17px;
+    background:rgba(6,38,49,.18);
+    box-shadow:0 10px 30px rgba(3,24,35,.12);
+    backdrop-filter:blur(14px);
+    -webkit-backdrop-filter:blur(14px);
   }
 
   html[data-mi-page="login"] .mi-brand-logo {
-    width:38px;
-    height:38px;
-    flex-basis:38px;
-    border-radius:11px;
+    width:42px;
+    height:42px;
+    flex-basis:42px;
+    border:1px solid rgba(255,255,255,.22);
+    border-radius:13px;
+    box-shadow:0 8px 20px rgba(1,28,37,.22);
+  }
+
+  html[data-mi-page="login"] .mi-brand-copy {
+    gap:3px;
+    text-align:left;
   }
 
   html[data-mi-page="login"] .mi-brand-copy strong {
-    font-size:16px;
-    letter-spacing:-.025em;
+    font-size:17px;
+    font-weight:800;
+    letter-spacing:-.035em;
   }
 
-  html[data-mi-page="login"] .mi-brand-copy small,
+  html[data-mi-page="login"] .mi-brand-copy small {
+    display:block!important;
+    color:rgba(255,255,255,.70)!important;
+    font-size:7px;
+    letter-spacing:.13em;
+  }
+
   html[data-mi-page="login"] .mi-nav-content,
   html[data-mi-page="login"] .mi-hero-copy,
   html[data-mi-page="login"] .mi-wave,
-  html[data-mi-page="login"] .mi-card-status,
   html[data-mi-page="login"] .login-kicker,
   html[data-mi-page="login"] .login-meta {
     display:none!important;
@@ -211,15 +264,15 @@ html[data-mi-page="login"] .mi-account-mobile {
 
   html[data-mi-page="login"] .login-side-panel {
     display:grid!important;
-    min-height:calc(100svh - 62px);
+    min-height:calc(100svh - 78px);
     align-items:center;
   }
 
   html[data-mi-page="login"] .mi-hero {
     display:grid;
-    min-height:calc(100svh - 62px);
+    min-height:calc(100svh - 78px);
     align-items:center;
-    padding:14px 0 max(22px,env(safe-area-inset-bottom));
+    padding:12px 0 max(28px,env(safe-area-inset-bottom));
   }
 
   html[data-mi-page="login"] .mi-hero-grid {
@@ -228,28 +281,77 @@ html[data-mi-page="login"] .mi-account-mobile {
   }
 
   html[data-mi-page="login"] .mi-login-card {
-    max-width:420px;
-    padding:22px 18px 20px;
-    border:1px solid rgba(255,255,255,.76);
-    border-radius:22px;
-    box-shadow:0 20px 52px rgba(3,25,35,.32);
+    position:relative;
+    max-width:396px;
+    padding:28px 20px 22px;
+    border:1px solid rgba(255,255,255,.84);
+    border-radius:30px;
+    background:rgba(255,255,255,.975)!important;
+    box-shadow:
+      0 30px 80px rgba(2,25,36,.34),
+      0 2px 0 rgba(255,255,255,.82) inset;
+    backdrop-filter:blur(20px);
+    -webkit-backdrop-filter:blur(20px);
+  }
+
+  html[data-mi-page="login"] .mi-card-status {
+    display:flex!important;
+    width:max-content!important;
+    max-width:100%;
+    min-height:30px;
+    align-items:center;
+    justify-content:center;
+    gap:7px;
+    margin:0 auto 19px;
+    padding:0 11px;
+    border:1px solid #d9e9e7;
+    border-radius:999px;
+    background:#f1f8f7;
+    color:#416568;
+    font-size:9px;
+    font-weight:800;
+    letter-spacing:.045em;
+    text-transform:uppercase;
+  }
+
+  html[data-mi-page="login"] .mi-card-status > span:first-child {
+    width:7px;
+    height:7px;
+    flex:0 0 7px;
+    border-radius:50%;
+    background:#16867f;
+    box-shadow:0 0 0 4px rgba(22,134,127,.10);
+  }
+
+  html[data-mi-page="login"] .mi-status-desktop {
+    display:none!important;
+  }
+
+  html[data-mi-page="login"] .mi-status-mobile {
+    display:inline!important;
   }
 
   html[data-mi-page="login"] .mi-login-heading {
-    padding-bottom:14px;
+    padding:0;
+    border-bottom:0;
+    text-align:center;
   }
 
   html[data-mi-page="login"] .mi-login-card h2 {
     margin:0!important;
-    font-size:28px!important;
+    color:#10202a!important;
+    font-size:30px!important;
     line-height:1.08!important;
-    letter-spacing:-.045em!important;
+    letter-spacing:-.052em!important;
   }
 
   html[data-mi-page="login"] .login-copy {
-    margin-top:8px!important;
-    font-size:12.5px!important;
+    max-width:290px;
+    margin:10px auto 0!important;
+    color:#687780!important;
+    font-size:13px!important;
     line-height:1.48!important;
+    text-align:center;
   }
 
   html[data-mi-page="login"] .mi-copy-desktop,
@@ -269,7 +371,7 @@ html[data-mi-page="login"] .mi-account-mobile {
 
   html[data-mi-page="login"] .google-login-panel {
     gap:8px;
-    margin-top:14px;
+    margin-top:24px;
   }
 
   html[data-mi-page="login"] .google-login-heading {
@@ -285,9 +387,18 @@ html[data-mi-page="login"] .mi-account-mobile {
   }
 
   html[data-mi-page="login"] .google-login-button {
-    min-height:50px;
+    min-height:52px;
     overflow:hidden;
-    border-radius:11px;
+    border-radius:14px;
+    background:#fff;
+    box-shadow:0 8px 22px rgba(15,45,58,.07);
+  }
+
+  html[data-mi-page="login"] .google-login-button > div,
+  html[data-mi-page="login"] .google-login-button iframe,
+  html[data-mi-page="login"] .mock-google-sign-in {
+    min-height:52px!important;
+    border-radius:14px!important;
   }
 
   html[data-mi-page="login"] .google-login-status:not(.is-error) {
@@ -296,25 +407,44 @@ html[data-mi-page="login"] .mi-account-mobile {
 
   html[data-mi-page="login"] .google-login-status.is-error {
     min-height:0;
-    margin-top:3px;
+    margin-top:4px;
+    color:#a23d45;
     font-size:10px;
+    text-align:center;
   }
 
   html[data-mi-page="login"] .login-account-note {
     display:grid!important;
-    grid-template-columns:20px minmax(0,1fr);
+    grid-template-columns:22px minmax(0,1fr);
     align-items:center!important;
-    gap:8px;
+    gap:9px;
     width:100%;
-    margin-top:12px!important;
-    padding:10px 11px!important;
+    margin-top:13px!important;
+    padding:11px 13px!important;
+    border:1px solid #d5e7e4!important;
+    border-radius:14px!important;
+    background:#f0f8f7!important;
+    color:#285b5d!important;
     font-size:10px!important;
     line-height:1.3!important;
   }
 
   html[data-mi-page="login"] .login-account-note > span[aria-hidden="true"] {
+    display:grid;
+    width:22px;
+    height:22px;
     grid-column:1;
     grid-row:1;
+    place-items:center;
+    margin:0;
+    border-radius:50%;
+    background:#137f79;
+    color:#fff;
+    font-size:11px;
+  }
+
+  html[data-mi-page="login"] .login-account-note strong {
+    font-weight:750;
   }
 
   html[data-mi-page="login"] .login-message:empty {
@@ -322,8 +452,8 @@ html[data-mi-page="login"] .mi-account-mobile {
   }
 
   html[data-mi-page="login"] .password-fallback {
-    margin-top:12px!important;
-    padding-top:12px!important;
+    margin-top:14px!important;
+    padding-top:14px!important;
   }
 
   html[data-mi-page="login"] .password-fallback summary {
@@ -331,6 +461,7 @@ html[data-mi-page="login"] .mi-account-mobile {
     min-height:46px;
     align-items:center;
     justify-content:center;
+    border-radius:12px;
   }
 
   html[data-mi-page="login"] .password-row {
@@ -344,39 +475,54 @@ html[data-mi-page="login"] .mi-account-mobile {
 
 @media (max-width:360px) {
   html[data-mi-page="login"] .mi-container {
-    width:calc(100% - 16px);
+    width:calc(100% - 18px);
   }
 
   html[data-mi-page="login"] .mi-nav {
-    padding-top:max(7px,env(safe-area-inset-top));
-    padding-bottom:7px;
+    padding-top:max(10px,env(safe-area-inset-top));
+  }
+
+  html[data-mi-page="login"] .mi-brand {
+    min-height:46px!important;
+    gap:9px;
+    padding-right:10px;
   }
 
   html[data-mi-page="login"] .mi-brand-logo {
-    width:36px;
-    height:36px;
-    flex-basis:36px;
+    width:38px;
+    height:38px;
+    flex-basis:38px;
   }
 
   html[data-mi-page="login"] .mi-brand-copy strong {
-    font-size:15px;
+    font-size:16px;
   }
 
   html[data-mi-page="login"] .mi-login-card {
-    padding:19px 14px 18px;
-    border-radius:19px;
+    padding:23px 15px 19px;
+    border-radius:25px;
+  }
+
+  html[data-mi-page="login"] .mi-card-status {
+    margin-bottom:16px;
+    font-size:8px;
   }
 
   html[data-mi-page="login"] .mi-login-card h2 {
-    font-size:26px!important;
+    font-size:27px!important;
   }
 
   html[data-mi-page="login"] .login-copy {
+    max-width:260px;
     font-size:12px!important;
   }
 
+  html[data-mi-page="login"] .google-login-panel {
+    margin-top:20px;
+  }
+
   html[data-mi-page="login"] .login-account-note {
-    padding:9px 10px!important;
+    padding:10px 11px!important;
     font-size:9.5px!important;
   }
 }
@@ -388,13 +534,21 @@ html[data-mi-page="login"] .mi-account-mobile {
   }
 
   html[data-mi-page="login"] .mi-hero {
-    padding-top:10px;
-    padding-bottom:max(14px,env(safe-area-inset-bottom));
+    padding-top:8px;
+    padding-bottom:max(16px,env(safe-area-inset-bottom));
   }
 
   html[data-mi-page="login"] .mi-login-card {
-    padding-top:18px;
-    padding-bottom:17px;
+    padding-top:21px;
+    padding-bottom:18px;
+  }
+
+  html[data-mi-page="login"] .mi-card-status {
+    margin-bottom:14px;
+  }
+
+  html[data-mi-page="login"] .google-login-panel {
+    margin-top:18px;
   }
 }
 
@@ -408,10 +562,13 @@ html[data-mi-page="login"] .mi-account-mobile {
     padding-bottom:6px;
   }
 
+  html[data-mi-page="login"] .mi-nav-inner {
+    justify-content:center;
+  }
+
   html[data-mi-page="login"] .mi-nav-content,
   html[data-mi-page="login"] .mi-hero-copy,
   html[data-mi-page="login"] .mi-wave,
-  html[data-mi-page="login"] .mi-card-status,
   html[data-mi-page="login"] .login-kicker,
   html[data-mi-page="login"] .login-meta {
     display:none!important;
@@ -423,7 +580,7 @@ html[data-mi-page="login"] .mi-account-mobile {
   }
 
   html[data-mi-page="login"] .mi-hero {
-    padding:10px 0 max(14px,env(safe-area-inset-bottom));
+    padding:9px 0 max(14px,env(safe-area-inset-bottom));
   }
 
   html[data-mi-page="login"] .mi-hero-grid {
@@ -433,11 +590,15 @@ html[data-mi-page="login"] .mi-account-mobile {
   html[data-mi-page="login"] .mi-login-card {
     max-width:520px;
     padding:17px 20px;
-    border-radius:18px;
+    border-radius:20px;
+  }
+
+  html[data-mi-page="login"] .mi-card-status {
+    margin-bottom:10px;
   }
 
   html[data-mi-page="login"] .mi-login-heading {
-    padding-bottom:10px;
+    padding-bottom:0;
   }
 
   html[data-mi-page="login"] .mi-login-card h2 {
@@ -451,7 +612,7 @@ html[data-mi-page="login"] .mi-account-mobile {
   }
 
   html[data-mi-page="login"] .google-login-panel {
-    margin-top:9px;
+    margin-top:10px;
   }
 
   html[data-mi-page="login"] .login-account-note {
@@ -474,7 +635,8 @@ html[data-mi-page="login"] .mi-account-mobile {
 @media (forced-colors:active) {
   html[data-mi-page="login"] .mi-login-card,
   html[data-mi-page="login"] .mi-brand-logo,
-  html[data-mi-page="login"] .login-account-note {
+  html[data-mi-page="login"] .login-account-note,
+  html[data-mi-page="login"] .mi-card-status {
     border:1px solid CanvasText;
   }
 }
