@@ -18,7 +18,7 @@ assert.match(index, /registry-unified-table\.js\?v=20260801-1/, 'index.html: uni
 assert.match(index, /registry-unified-table\.css\?v=20260801-1/, 'index.html: unified table stylesheet is missing');
 assert.match(index, /registry-full-text-expansion\.css\?v=20260801-1/, 'index.html: full-row text reveal stylesheet is missing');
 assert.match(index, /registry-dosage-disclosure-fix\.css\?v=20260803-3/, 'index.html: hardened dosage disclosure stylesheet is missing');
-assert.match(index, /registry-row-expand\.js\?v=20260803-6/, 'index.html: hardened row expansion controller is missing');
+assert.match(index, /registry-row-expand\.js\?v=20260803-7/, 'index.html: idempotent row expansion controller is missing');
 assert.doesNotMatch(index, /(?:registry-table-integrity|registry-clinical-view|registry-tailgrids-refinement|registry-columns-filters|registry-table-final)\.(?:js|css)/, 'index.html: a legacy table controller is still loaded');
 assert.doesNotMatch(index, /<script src="app-performance\.js"/, 'index.html: heavy registry bootstrap must not be parser ordered');
 assert.doesNotMatch(index, /src="app\.js/, 'index.html: legacy registry bootstrap must not be loaded');
@@ -44,10 +44,14 @@ assert.match(app, /barnat-registry-cached-at-v5/);
 assert.match(app, /app-runtime-performance\.js/);
 
 const rowExpand = read('registry-row-expand.js');
-assert.match(rowExpand, /registry-row-expand-20260803-6/);
+assert.match(rowExpand, /registry-row-expand-20260803-7/);
 assert.match(rowExpand, /registry-dosage-disclosure-fix-css/);
 assert.match(rowExpand, /data-dosage-expanded/);
 assert.match(rowExpand, /Më pak/);
+assert.match(rowExpand, /const desiredTail = \[finalStyle, fullText, dosageDisclosure\]\.filter\(Boolean\)/);
+assert.match(rowExpand, /const alreadyStable = desiredTail\.length > 0/);
+assert.match(rowExpand, /if \(!alreadyStable\) desiredTail\.forEach\(node => document\.head\.appendChild\(node\)\)/);
+assert.doesNotMatch(rowExpand, /document\.head\.lastElementChild !== finalStyle/);
 
 const dosageDisclosure = read('registry-dosage-disclosure-fix.css');
 assert.match(dosageDisclosure, /data-dosage-expanded="true"/);
@@ -65,6 +69,7 @@ assert.match(auth, /offline-runtime-performance\.js\?v=low-bandwidth-v3/, 'every
 assert.match(auth, /tailadmin-professional\.js\?v=production-audit-v2/, 'auth client must migrate a stale professional runtime');
 assert.match(auth, /ensureProfessionalRuntime/, 'professional runtime migration guard is missing');
 assert.match(auth, /miProfessionalVersion/, 'professional runtime version must be checked before migration');
+assert.match(auth, /barnat-registry-cached-at-v5/, 'logout must remove the current registry cache timestamp');
 
 const professional = read('tailadmin-professional.js');
 assert.match(professional, /PROFESSIONAL_VERSION = 'production-audit-v2'/, 'professional runtime version is stale');
@@ -79,4 +84,4 @@ assert.match(performanceRuntime, /SERVICE_WORKER_URL = `\/sw-resilient-v3\.js\?v
 assert.match(performanceWorker, /VERSION = 'low-bandwidth-v3'/, 'cache-isolated service worker version is stale');
 assert.match(performanceRuntime, /CLINICAL_WORKFLOW_URL = `\/clinical-workflow\.js\?v=\$\{VERSION\}`/, 'offline runtime must version the clinical workflow');
 
-console.log('Clinical runtime cache-version, unverified registry and hardened dosage disclosure audit passed.');
+console.log('Clinical runtime cache-version, unverified registry and idempotent dosage disclosure audit passed.');
