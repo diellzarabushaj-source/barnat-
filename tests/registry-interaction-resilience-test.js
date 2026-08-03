@@ -66,7 +66,7 @@ assert.match(dosage, /MEDINDEX_REGISTRY_ROWS/, 'dosage columns must reuse the sh
 assert.doesNotMatch(dosage, /DRUG_DATA_PARTS|\batob\s*\(|DecompressionStream|Uint8Array/, 'dosage columns must never parse the registry again');
 assert.doesNotMatch(dosage, /subtree\s*:\s*true/, 'dosage observers must not watch their own subtree mutations');
 
-assert.match(rowExpand, /registry-row-expand-20260803-6/, 'full-row disclosure controller must be current');
+assert.match(rowExpand, /registry-row-expand-20260803-7/, 'full-row disclosure controller must be current');
 assert.match(rowExpand, /document\.addEventListener\('click', onClick, true\)/, 'disclosure must capture the click before the legacy listener');
 assert.match(rowExpand, /const dosageTrigger = event\.target\.closest\?\.\('\.registry-dosage-dose'\)/, 'Më shumë must expand through the row controller');
 assert.match(rowExpand, /event\.stopImmediatePropagation\(\)/, 'a dosage click must never toggle twice');
@@ -75,6 +75,10 @@ assert.match(rowExpand, /trigger\.setAttribute\('aria-expanded', String\(expande
 assert.match(rowExpand, /toggle\.textContent = expanded \? 'Më pak' : 'Më shumë'/, 'visible disclosure label must be truthful');
 assert.match(rowExpand, /return fallback \? `row:\$\{fallback\}` : ''/, 'rows without IDs need stable disclosure state');
 assert.match(rowExpand, /link\[data-registry-dosage-disclosure-fix-css\]/, 'the unclamped stylesheet must stay after compact styles');
+assert.match(rowExpand, /const desiredTail = \[finalStyle, fullText, dosageDisclosure\]\.filter\(Boolean\)/, 'disclosure styles need one canonical order');
+assert.match(rowExpand, /const alreadyStable = desiredTail\.length > 0/, 'cascade stabilization needs a no-write steady state');
+assert.match(rowExpand, /if \(!alreadyStable\) desiredTail\.forEach\(node => document\.head\.appendChild\(node\)\)/, 'cascade writes must happen only when needed');
+assert.doesNotMatch(rowExpand, /document\.head\.lastElementChild !== finalStyle/, 'head observer must not sustain its own mutation loop');
 assert.match(rowExpand, /new CustomEvent\('medindex:registry-row-toggle'/, 'other UI layers must be able to observe disclosure changes');
 
 assert.match(disclosureCss, /data-dosage-expanded="true"/, 'CSS needs a non-:has expanded-state selector');
@@ -91,7 +95,7 @@ assert.match(unified, /observer\.observe\(tbody, \{ childList:true \}\)/, 'table
 
 assert.match(middleware, /'\/registry-parser-worker-v2\.js'/, 'v2 parser worker must pass through auth middleware');
 assert.match(index, /registry-runtime-loader\.js\?v=20260803-unverified-1/, 'index must request the current bootstrap');
-assert.match(index, /registry-row-expand\.js\?v=20260803-6/, 'index must request the current disclosure controller');
+assert.match(index, /registry-row-expand\.js\?v=20260803-7/, 'index must request the current disclosure controller');
 assert.match(index, /registry-dosage-disclosure-fix\.css\?v=20260803-3/, 'index must request the current disclosure stylesheet');
 assert.match(index, /registry-unified-table\.js\?v=20260801-1/, 'index must load the single table controller');
 assert.doesNotMatch(index, /(?:registry-table-integrity|registry-clinical-view|registry-tailgrids-refinement|registry-columns-filters|registry-table-final)\.js/, 'legacy table controllers must not load');
@@ -102,4 +106,4 @@ assert.match(index, /registry-dosage-loader\.js/, 'index must load the idle dosa
 assert.doesNotMatch(index, /src="registry-dosage-columns-v2\.js/, 'heavy dosage integration must not be in the critical parser path');
 assert.match(builder, /app-runtime-performance\.js/, 'build must generate the cache-isolated runtime artifact');
 
-console.log('Registry interaction resilience, loader v7 and full dosage disclosure audit passed.');
+console.log('Registry interaction resilience, loader v7 and idempotent full dosage disclosure audit passed.');
