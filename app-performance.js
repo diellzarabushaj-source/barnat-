@@ -22,16 +22,16 @@ const releaseStaleInteractionLock = () => {
 releaseStaleInteractionLock();
 
 (async () => {
-  const APP_VERSION = 'clinical-audit-v5-performance-runtime';
+  const APP_VERSION = 'clinical-audit-v6-unverified-visible';
   const RUNTIME_URL = `/app-runtime-performance.js?v=${encodeURIComponent(APP_VERSION)}`;
   const DB_NAME = 'medindex-registry-v1';
   const DB_STORE = 'datasets';
-  const DB_KEY = 'registry-parts-prescription-v1';
-  const CACHE_TIME_KEY = 'barnat-registry-cached-at-v4';
+  const DB_KEY = 'registry-parts-prescription-v2';
+  const CACHE_TIME_KEY = 'barnat-registry-cached-at-v5';
   const LEGACY_CACHE_KEYS = [
     'barnat-registry-parts-v2', 'barnat-registry-cached-at-v2',
     'barnat-registry-parts-v3', 'barnat-registry-cached-at-v3',
-    'barnat-registry-parts-v4'
+    'barnat-registry-parts-v4', 'barnat-registry-cached-at-v4'
   ];
   const BACKGROUND_REFRESH_MS = 6 * 60 * 60 * 1000;
   const REQUEST_TIMEOUT_MS = 15000;
@@ -242,8 +242,18 @@ releaseStaleInteractionLock();
   if (hasRegistryData()) {
     window.REGISTRY_DATA_SOURCE = 'embedded-cache';
     scheduleBrowserCacheSave();
-  } else if (!(await loadBrowserCache())) {
-    await loadRegistrySource();
+  } else {
+    const loadedFromCache = await loadBrowserCache();
+    if (navigator.onLine) {
+      try {
+        await loadRegistrySource();
+      } catch (error) {
+        if (!loadedFromCache) throw error;
+        console.warn('Regjistri online nuk u rifreskua; po përdoret kopja lokale:', error);
+      }
+    } else if (!loadedFromCache) {
+      throw new Error('Nuk ka ende kopje lokale të regjistrit.');
+    }
   }
 
   await loadRegistryRuntime();
