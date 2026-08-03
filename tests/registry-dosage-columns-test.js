@@ -9,14 +9,20 @@ const loaderPath = path.join(root, 'registry-dosage-loader.js');
 const loader = fs.readFileSync(loaderPath, 'utf8');
 const scriptPath = path.join(root, 'registry-dosage-columns-v2.js');
 const script = fs.readFileSync(scriptPath, 'utf8');
+const rowExpandPath = path.join(root, 'registry-row-expand.js');
+const rowExpand = fs.readFileSync(rowExpandPath, 'utf8');
 const css = fs.readFileSync(path.join(root, 'registry-dosage-columns.css'), 'utf8');
+const disclosureCss = fs.readFileSync(path.join(root, 'registry-dosage-disclosure-fix.css'), 'utf8');
 const api = fs.readFileSync(path.join(root, 'api', 'dosage.js'), 'utf8');
 
 execFileSync(process.execPath, ['--check', loaderPath], { stdio:'pipe' });
 execFileSync(process.execPath, ['--check', scriptPath], { stdio:'pipe' });
+execFileSync(process.execPath, ['--check', rowExpandPath], { stdio:'pipe' });
 
 assert.match(index, /dosage-engine\.js/);
 assert.match(index, /registry-dosage-loader\.js/);
+assert.match(index, /registry-row-expand\.js\?v=20260803-6/);
+assert.match(index, /registry-dosage-disclosure-fix\.css\?v=20260803-3/);
 assert.doesNotMatch(index, /src="registry-dosage-columns(?:-v2)?\.js/);
 assert.match(index, /registry-dosage-columns\.css/);
 assert.match(loader, /medindex:registry-ready/);
@@ -68,4 +74,32 @@ assert.match(css, /registry-dosage-dose-text/);
 assert.match(css, /-webkit-line-clamp:\s*2/);
 assert.match(css, /registry-dosage-regimen\.is-expanded/);
 
-console.log('Registry dosage columns idle-loader performance test passed.');
+// The capturing row controller is the single source of truth for disclosure state.
+assert.match(rowExpand, /registry-row-expand-20260803-6/);
+assert.match(rowExpand, /const dosageTrigger = event\.target\.closest\?\.\('\.registry-dosage-dose'\)/);
+assert.match(rowExpand, /event\.stopImmediatePropagation\(\)/);
+assert.match(rowExpand, /syncDosageControls\(row, expanded\)/);
+assert.match(rowExpand, /regimen\.classList\.toggle\('is-expanded', expanded\)/);
+assert.match(rowExpand, /regimen\.dataset\.dosageExpanded = String\(expanded\)/);
+assert.match(rowExpand, /trigger\.setAttribute\('aria-expanded', String\(expanded\)\)/);
+assert.match(rowExpand, /toggle\.textContent = expanded \? 'Më pak' : 'Më shumë'/);
+assert.match(rowExpand, /document\.addEventListener\('click', onClick, true\)/);
+assert.match(rowExpand, /document\.addEventListener\('keydown', onKeydown, true\)/);
+assert.match(rowExpand, /new CustomEvent\('medindex:registry-row-toggle'/);
+
+// Expanded content must be released through explicit class/data selectors, not only :has().
+assert.match(disclosureCss, /data-dosage-expanded="true"/);
+assert.match(disclosureCss, /registry-row-expanded/);
+assert.match(disclosureCss, /contain:none!important/);
+assert.match(disclosureCss, /height:auto!important/);
+assert.match(disclosureCss, /max-height:none!important/);
+assert.match(disclosureCss, /overflow:visible!important/);
+assert.match(disclosureCss, /text-overflow:clip!important/);
+assert.match(disclosureCss, /-webkit-line-clamp:unset!important/);
+assert.match(disclosureCss, /line-clamp:unset!important/);
+assert.match(disclosureCss, /registry-dosage-dose\[aria-expanded="true"\]/);
+assert.match(disclosureCss, /@media \(max-width:760px\)/);
+assert.match(disclosureCss, /@media \(prefers-reduced-motion:reduce\)/);
+assert.doesNotMatch(disclosureCss, /https?:\/\//);
+
+console.log('Registry dosage columns and full-text disclosure regression test passed.');
