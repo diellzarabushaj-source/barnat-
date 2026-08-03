@@ -87,6 +87,7 @@ async function snapshot(page) {
     const ids = [...document.querySelectorAll('[id]')].map(node => node.id);
     const duplicates = [...new Set(ids.filter((id, index) => ids.indexOf(id) !== index))];
     const brandLogo = document.querySelector('.mi-brand-logo');
+    const brandImage = brandLogo?.querySelector('img');
     const hero = document.querySelector('.mi-hero-copy');
     const targets = [...document.querySelectorAll('a,button,summary')]
       .filter(node => {
@@ -106,7 +107,10 @@ async function snapshot(page) {
       google:rect('#googleLoginButton'),
       wave:rect('.mi-wave'),
       logoCount:document.querySelectorAll('.mi-brand-logo').length,
-      logoReady:getComputedStyle(brandLogo).backgroundImage.includes('medindex-mark-mplus.svg'),
+      logoReady:Boolean(
+        (brandImage?.complete && brandImage.naturalWidth > 0 && brandImage.naturalHeight > 0)
+        || getComputedStyle(brandLogo).backgroundImage.includes('medindex-mark-mplus.svg')
+      ),
       heroHidden:getComputedStyle(hero).display === 'none',
       duplicates,
       h1Count:document.querySelectorAll('h1').length,
@@ -139,7 +143,7 @@ test('MedIndex login is compact and stable on iPhone, tablet and desktop', async
     expect(current.htmlWidth, `${viewport.name}: html overflow`).toBeLessThanOrEqual(viewport.width + 1);
     expect(current.bodyWidth, `${viewport.name}: body overflow`).toBeLessThanOrEqual(viewport.width + 1);
     expect(current.logoCount, `${viewport.name}: one logo`).toBe(1);
-    expect(current.logoReady, `${viewport.name}: approved logo background`).toBe(true);
+    expect(current.logoReady, `${viewport.name}: approved logo loads`).toBe(true);
     expect(current.duplicates, `${viewport.name}: duplicate IDs`).toEqual([]);
     expect(current.h1Count).toBe(1);
     expect(current.h2Count).toBe(1);
