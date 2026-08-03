@@ -80,13 +80,17 @@ assert.doesNotMatch(copied, /sourceSpreadsheetId|dataSource|selectedAt|localStor
 
 const html = read('icd.html');
 const js = read('icd-clinical-guidance.js');
+const controller = read('icd-clinical-retry-controller.js');
 const recovery = read('icd-clinical-guidance-recovery.js');
 const css = read('icd-clinical-guidance.css');
 const apiBase = read('lib/icd-api-base.js');
 
 assert.match(html, /icd-clinical-guidance\.css\?v=icd-clinical-guidance-v1/);
 assert.match(html, /icd-clinical-guidance\.js\?v=icd-clinical-guidance-v2/);
+assert.match(html, /icd-clinical-retry-controller\.js\?v=icd-clinical-retry-controller-v1/);
 assert.match(html, /icd-clinical-guidance-recovery\.js\?v=icd-clinical-guidance-recovery-v7/);
+assert.ok(html.indexOf('icd-clinical-guidance.js') < html.indexOf('icd-clinical-retry-controller.js'));
+assert.ok(html.indexOf('icd-clinical-retry-controller.js') < html.indexOf('icd-clinical-guidance-recovery.js'));
 assert.match(apiBase, /19ncbnrTJ_w-WQ0msWO9_dUoxjmicSUAz6Nt4sh20gFw/);
 assert.match(apiBase, /all:1504864603/);
 assert.match(apiBase, /urgent:285385409/);
@@ -98,9 +102,15 @@ assert.match(js, /MedIndex nuk fabrikon shënime/);
 assert.match(js, /credentials:'same-origin'/);
 assert.match(js, /async function retry\(\)/);
 assert.match(js, /loadDataset\(true\)/);
-assert.match(js, /miIcdClinicalRecoveryResult = 'success'/);
 assert.match(js, /retry,\s*init/);
 assert.doesNotMatch(js, /localStorage\.setItem|sessionStorage\.setItem/);
+assert.match(controller, /icd-clinical-retry-controller-v1/);
+assert.match(controller, /root\.fetch\(API_PATH/);
+assert.match(controller, /base\.buildIndex\(entries\)/);
+assert.match(controller, /base\.resolveClinicalContext\(code, index\)/);
+assert.match(controller, /root\.MedIndexIcdClinicalGuidance = Object\.freeze/);
+assert.match(controller, /miIcdClinicalRecoveryError/);
+assert.doesNotMatch(controller, /location\.reload|localStorage|sessionStorage|eval\(|new Function/);
 assert.match(recovery, /icd-clinical-guidance-recovery-v7/);
 assert.match(recovery, /Riprovo listën klinike/);
 assert.match(recovery, /data-mi-icd-clinical-retry-visible/);
@@ -113,4 +123,4 @@ assert.match(css, /@media \(max-width: 520px\)/);
 assert.match(css, /@media \(forced-colors: active\)/);
 assert.match(css, /overflow-wrap: anywhere/);
 
-console.log('ICD clinical guidance, curated Google Sheet provenance, public retry API and non-fabrication contract passed.');
+console.log('ICD clinical guidance, curated Google Sheet provenance, deterministic retry controller and non-fabrication contract passed.');
