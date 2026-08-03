@@ -12,7 +12,7 @@
 })(typeof window !== 'undefined' ? window : null, function createIcdClinicalGuidance() {
   'use strict';
 
-  const VERSION = 'icd-clinical-guidance-v1';
+  const VERSION = 'icd-clinical-guidance-v2';
   const API_PATH = '/api/icd';
   const MAX_KEYWORDS = 8;
   const CODE_PATTERN = /^[A-Z][0-9]{2}(?:\.[0-9A-Z]{1,4})?$/;
@@ -307,9 +307,9 @@
 
   function renderContext(context) {
     const host = ensureHost();
-    if (!host || !context?.entry) return;
+    if (!host || !context?.entry) return false;
     const entry = normalizeEntry(context.entry);
-    if (!entry) return;
+    if (!entry) return false;
     const document = rootRef.document;
     const empty = document.getElementById('icdClinicalGuidanceEmpty');
     const content = document.getElementById('icdClinicalGuidanceContent');
@@ -356,11 +356,13 @@
     host.dataset.context = context.inherited ? 'inherited' : 'exact';
     setState(`${context.requestedCode} · ${entry.emergency || entry.primaryCare || 'kontekst klinik'}`, urgencyTone(entry));
     announce(`Konteksti klinik për ${context.requestedCode} u ngarkua.`);
+    return true;
   }
 
   function renderNotSelected() {
     setEmpty('Zgjidh një kod për kontekstin klinik', 'Paneli lidhet me kategoritë dhe nënkategoritë e workspace-it.', 'empty');
     setState('Pa kod aktiv', 'empty');
+    return false;
   }
 
   function renderNotCurated(code) {
@@ -370,6 +372,7 @@
       'not-curated',
     );
     setState(`${code} · pa klasifikim MF/urgjencë`, 'not-curated');
+    return false;
   }
 
   function renderLoading(code) {
@@ -381,8 +384,9 @@
     const host = ensureHost();
     setEmpty('Konteksti klinik nuk u ngarkua', safeText(message, 300) || 'Workspace-i ICD mbetet i përdorshëm. Riprovo ngarkimin e listës klinike.', 'error');
     setState('Burimi klinik i padisponueshëm', 'error');
-    const retry = host?.querySelector('[data-mi-icd-clinical-retry]');
-    if (retry) retry.hidden = false;
+    const retryButton = host?.querySelector('[data-mi-icd-clinical-retry]');
+    if (retryButton) retryButton.hidden = false;
+    return false;
   }
 
   function authReady() {
@@ -414,8 +418,8 @@
         sourceSpreadsheetId:payload.data.sourceSpreadsheetId || '',
         counts:payload.data.counts || null,
       };
-      const retry = ensureHost()?.querySelector('[data-mi-icd-clinical-retry]');
-      if (retry) retry.hidden = true;
+      const retryButton = ensureHost()?.querySelector('[data-mi-icd-clinical-retry]');
+      if (retryButton) retryButton.hidden = true;
       return datasetIndex;
     })().catch(error => {
       datasetPromise = null;
@@ -431,17 +435,44 @@
     if (!code) return renderNotSelected();
     if (!authReady()) {
       renderLoading(code);
-      return;
+      return false;
     }
     renderLoading(code);
     try {
       const index = await loadDataset();
-      if (sequence !== renderSequence || code !== activeCode) return;
+      if (sequence !== renderSequence || code !== activeCode) return false;
       const context = resolveClinicalContext(code, index);
       if (!context) return renderNotCurated(code);
-      renderContext(context);
+      return renderContext(context);
+    } catch (error) {
+      if (sequence === renderSequence) return renderError(error?.message || error);
+      return false;
+    }
+  }
+
+  async function retry() {
+    const code = normalizeCode(activeCode || activeWorkspaceCode());
+    if (!code || !authReady()) return false;
+    activeCode = code;
+    const sequence = ++renderSequence;
+    renderLoading(code);
+    try {
+      const index = await loadDataset(true);
+      if (sequence !== renderSequence || code !== activeCode) return false;
+      const context = resolveClinicalContext(code, index);
+      if (!context) return renderNotCurated(code);
+      const rendered = renderContext(context);
+      if (rendered) {
+        rootRef.document.documentElement.dataset.miIcdClinicalRecoveryResult = 'success';
+        rootRef.dispatchEvent(new rootRef.CustomEvent('medindex:icd-clinical-recovered', {
+          detail:{ code, source:datasetMeta?.dataSource || '' },
+        }));
+      }
+      return rendered;
     } catch (error) {
       if (sequence === renderSequence) renderError(error?.message || error);
+      rootRef.document.documentElement.dataset.miIcdClinicalRecoveryResult = 'error';
+      return false;
     }
   }
 
@@ -494,18 +525,16 @@
 
   function bind() {
     rootRef.document.addEventListener('click', event => {
-      if (event.target.closest('[data-mi-icd-clinical-copy]')) copyActive();
-      if (event.target.closest('[data-mi-icd-clinical-retry]')) {
-        loadDataset(true).then(() => updateForCode(activeCode)).catch(error => renderError(error?.message || error));
-      }
+      if (event.target.closest('[data-mi-icd-clinical-copy]')) void copyActive();
+      if (event.target.closest('[data-mi-icd-clinical-retry]')) void retry();
     });
     rootRef.addEventListener('medindex:icd-state', event => {
       const code = normalizeCode(event.detail?.code || event.detail?.node?.code);
-      if (code) updateForCode(code);
+      if (code) void updateForCode(code);
     });
     rootRef.addEventListener('popstate', () => {
       const code = normalizeCode(new URL(rootRef.location.href).searchParams.get('code'));
-      if (code) updateForCode(code);
+      if (code) void updateForCode(code);
     });
   }
 
@@ -537,6 +566,7 @@
     sourceLabel,
     urgencyTone,
     copyText,
+    retry,
     init,
   });
 });
