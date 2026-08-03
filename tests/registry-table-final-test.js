@@ -25,9 +25,9 @@ execFileSync(process.execPath, ['--check', rowExpandPath], { stdio:'pipe' });
 assert.match(index,/data-registry-ui-release="20260801-14"/,'index must preserve the full-row text release');
 assert.match(index,/registry-unified-table\.css\?v=20260801-1/,'unified table stylesheet must be wired');
 assert.match(index,/registry-full-text-expansion\.css\?v=20260801-1/,'full-row text stylesheet must be wired');
-assert.match(index,/registry-dosage-disclosure-fix\.css\?v=20260803-3/,'hardened dosage disclosure stylesheet must be wired');
+assert.match(index,/registry-dosage-disclosure-fix\.css\?v=20260803-4/,'polished dosage disclosure stylesheet must be wired');
 assert.match(index,/registry-unified-table\.js\?v=20260801-1/,'unified table controller must be wired');
-assert.match(index,/registry-row-expand\.js\?v=20260803-7/,'idempotent row expansion controller must be wired');
+assert.match(index,/registry-row-expand\.js\?v=20260803-8/,'polished row expansion controller must be wired');
 assert.match(index,/registry-runtime-loader\.js\?v=20260803-unverified-1/,'current authenticated registry loader must be wired');
 assert.ok(index.indexOf('registry-unified-table.css') < index.indexOf('registry-full-text-expansion.css'),'full-row reveal must follow compact unified geometry');
 assert.ok(index.indexOf('registry-full-text-expansion.css') < index.indexOf('registry-dosage-disclosure-fix.css'),'dosage disclosure must follow the general full-text release');
@@ -62,11 +62,11 @@ assert.match(runtime,/MEDINDEX_REGISTRY_TABLE_AUDIT/,'runtime must expose a brow
 assert.match(runtime,/normalizePencils/,'edit buttons must be normalized once by the unified controller');
 assert.doesNotMatch(runtime,/registry-dose-dialog|registry-cell-preview-dialog/,'unified runtime must not contain a text modal');
 
-assert.match(rowExpand,/registry-row-expand-20260803-7/,'row expansion runtime version is stale');
+assert.match(rowExpand,/registry-row-expand-20260803-8/,'row expansion runtime version is stale');
 assert.match(rowExpand,/const dosageTrigger = event\.target\.closest\?\.\('\.registry-dosage-dose'\)/,'dosage disclosure click must be owned by the row controller');
 assert.match(rowExpand,/event\.stopImmediatePropagation\(\)/,'duplicate legacy disclosure toggles must be blocked');
 assert.match(rowExpand,/syncDosageControls\(row, expanded\)/,'row and dosage state must stay synchronized');
-assert.match(rowExpand,/regimen\.dataset\.dosageExpanded = String\(expanded\)/,'CSS must receive an explicit expanded state');
+assert.match(rowExpand,/regimen\.dataset\.dosageExpanded = String\(expanded && needed\)/,'CSS must receive an explicit expanded state');
 assert.match(rowExpand,/toggle\.textContent = expanded \? 'Më pak' : 'Më shumë'/,'visible disclosure label must reflect state');
 assert.match(rowExpand,/link\[data-registry-dosage-disclosure-fix-css\]/,'disclosure CSS must be kept after dynamically injected compact styles');
 assert.match(rowExpand,/const desiredTail = \[finalStyle, fullText, dosageDisclosure\]\.filter\(Boolean\)/,'scoped table styles need one canonical cascade tail');
@@ -74,6 +74,13 @@ assert.match(rowExpand,/const alreadyStable = desiredTail\.length > 0/,'cascade 
 assert.match(rowExpand,/if \(!alreadyStable\) desiredTail\.forEach\(node => document\.head\.appendChild\(node\)\)/,'cascade writes must happen only when needed');
 assert.doesNotMatch(rowExpand,/document\.head\.lastElementChild !== finalStyle/,'cascade stabilization must not create an observer loop');
 assert.match(rowExpand,/return fallback \? `row:\$\{fallback\}` : ''/,'rows without IDs need a deterministic expansion key');
+assert.match(rowExpand,/function isOverflowing\(element\)/,'fake disclosure controls must be suppressed by real overflow detection');
+assert.match(rowExpand,/trigger\.setAttribute\('aria-controls', textId\)/,'dosage controls must identify the text they reveal');
+assert.match(rowExpand,/trigger\.disabled = !needed/,'short text must not expose an unnecessary control');
+assert.match(rowExpand,/function preserveRowAnchor\(row, beforeTop\)/,'expansion must not jump the reader away from the active row');
+assert.match(rowExpand,/candidate && candidate !== root/,'keyboard-operable cells must not block themselves');
+assert.match(rowExpand,/if \(event\.key === 'Escape'\)/,'Escape must close an expanded row');
+assert.match(rowExpand,/ensureStatusRegion\(\)/,'disclosure changes need an accessible announcement');
 assert.match(rowExpand,/new CustomEvent\('medindex:registry-row-toggle'/,'expansion changes must be observable');
 
 assert.match(css,/#dataTable\[data-registry-unified-table\] thead th[\s\S]*background:#fff!important/,'header must remain white');
@@ -109,7 +116,11 @@ assert.match(dosageDisclosureCss,/-webkit-line-clamp:unset!important/,'expanded 
 assert.match(dosageDisclosureCss,/line-clamp:unset!important/,'expanded dosage text must lose standards line clamp');
 assert.match(dosageDisclosureCss,/max-height:none!important/,'expanded dosage text must lose max-height');
 assert.match(dosageDisclosureCss,/overflow:visible!important/,'expanded dosage text must lose overflow clipping');
+assert.match(dosageDisclosureCss,/\.registry-dosage-toggle::after/,'disclosure state needs a directional affordance');
+assert.match(dosageDisclosureCss,/data-disclosure-needed="false"/,'unnecessary controls must stay hidden');
+assert.match(dosageDisclosureCss,/overflow-anchor:none!important/,'expanded rows must preserve scroll position');
+assert.match(dosageDisclosureCss,/\.registry-disclosure-status/,'screen-reader status styling is missing');
 assert.match(dosageDisclosureCss,/@media \(max-width:760px\)/,'mobile dosage expansion is missing');
 assert.doesNotMatch(dosageDisclosureCss,/https?:\/\//,'dosage disclosure styles must not load third-party assets');
 
-console.log('Single-controller registry table, full dosage disclosure and idempotent cascade audit passed.');
+console.log('Single-controller registry table and polished full dosage disclosure audit passed.');
