@@ -26,7 +26,8 @@ async function mockClinicalDataset(page, entries, options = {}) {
   let blocked = Boolean(options.blockUntilRecovery);
   await page.route('**/api/icd*', async route => {
     const url = new URL(route.request().url());
-    if (url.pathname === '/api/icd' && !url.search) {
+    const isClinicalRequest = !url.search || url.searchParams.has('retry');
+    if (url.pathname === '/api/icd' && isClinicalRequest) {
       requests += 1;
       if (options.fail || blocked || (options.failOnce && requests === 1)) {
         await route.fulfill({ status:503, contentType:'application/json', body:JSON.stringify({ ok:false, data:null }) });
@@ -56,6 +57,7 @@ async function waitForIcd(page, code) {
   await expect(html).toHaveAttribute('data-mi-icd-tree', 'ready');
   await expect(html).toHaveAttribute('data-mi-icd-coding-workspace', 'icd-coding-workspace-v1');
   await expect(html).toHaveAttribute('data-mi-icd-clinical-guidance', 'icd-clinical-guidance-v2');
+  await expect(html).toHaveAttribute('data-mi-icd-clinical-retry-controller', 'icd-clinical-retry-controller-v3');
   await expect(html).toHaveAttribute('data-mi-icd-clinical-guidance-recovery', 'icd-clinical-guidance-recovery-v7');
   await expect(page.locator('#icdCodingWorkspaceCode')).toHaveText(code);
 }
