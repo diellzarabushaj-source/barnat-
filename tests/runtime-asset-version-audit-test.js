@@ -17,8 +17,8 @@ assert.match(index, /registry-runtime-loader\.js\?v=20260803-unverified-1/, 'ind
 assert.match(index, /registry-unified-table\.js\?v=20260801-1/, 'index.html: unified table controller is missing');
 assert.match(index, /registry-unified-table\.css\?v=20260801-1/, 'index.html: unified table stylesheet is missing');
 assert.match(index, /registry-full-text-expansion\.css\?v=20260801-1/, 'index.html: full-row text reveal stylesheet is missing');
-assert.match(index, /registry-dosage-disclosure-fix\.css\?v=20260803-3/, 'index.html: hardened dosage disclosure stylesheet is missing');
-assert.match(index, /registry-row-expand\.js\?v=20260803-7/, 'index.html: idempotent row expansion controller is missing');
+assert.match(index, /registry-dosage-disclosure-fix\.css\?v=20260803-4/, 'index.html: polished dosage disclosure stylesheet is missing');
+assert.match(index, /registry-row-expand\.js\?v=20260803-8/, 'index.html: polished row expansion controller is missing');
 assert.doesNotMatch(index, /(?:registry-table-integrity|registry-clinical-view|registry-tailgrids-refinement|registry-columns-filters|registry-table-final)\.(?:js|css)/, 'index.html: a legacy table controller is still loaded');
 assert.doesNotMatch(index, /<script src="app-performance\.js"/, 'index.html: heavy registry bootstrap must not be parser ordered');
 assert.doesNotMatch(index, /src="app\.js/, 'index.html: legacy registry bootstrap must not be loaded');
@@ -44,10 +44,17 @@ assert.match(app, /barnat-registry-cached-at-v5/);
 assert.match(app, /app-runtime-performance\.js/);
 
 const rowExpand = read('registry-row-expand.js');
-assert.match(rowExpand, /registry-row-expand-20260803-7/);
+assert.match(rowExpand, /registry-row-expand-20260803-8/);
 assert.match(rowExpand, /registry-dosage-disclosure-fix-css/);
 assert.match(rowExpand, /data-dosage-expanded/);
 assert.match(rowExpand, /Më pak/);
+assert.match(rowExpand, /function isOverflowing\(element\)/);
+assert.match(rowExpand, /aria-controls/);
+assert.match(rowExpand, /trigger\.disabled = !needed/);
+assert.match(rowExpand, /preserveRowAnchor/);
+assert.match(rowExpand, /candidate && candidate !== root/);
+assert.match(rowExpand, /event\.key === 'Escape'/);
+assert.match(rowExpand, /ensureStatusRegion/);
 assert.match(rowExpand, /const desiredTail = \[finalStyle, fullText, dosageDisclosure\]\.filter\(Boolean\)/);
 assert.match(rowExpand, /const alreadyStable = desiredTail\.length > 0/);
 assert.match(rowExpand, /if \(!alreadyStable\) desiredTail\.forEach\(node => document\.head\.appendChild\(node\)\)/);
@@ -58,6 +65,10 @@ assert.match(dosageDisclosure, /data-dosage-expanded="true"/);
 assert.match(dosageDisclosure, /contain:none!important/);
 assert.match(dosageDisclosure, /-webkit-line-clamp:unset!important/);
 assert.match(dosageDisclosure, /max-height:none!important/);
+assert.match(dosageDisclosure, /registry-dosage-toggle::after/);
+assert.match(dosageDisclosure, /data-disclosure-needed="false"/);
+assert.match(dosageDisclosure, /overflow-anchor:none!important/);
+assert.match(dosageDisclosure, /registry-disclosure-status/);
 
 const dosageLoader = read('registry-dosage-loader.js');
 assert.match(dosageLoader, /medindex:registry-ready/);
@@ -84,4 +95,4 @@ assert.match(performanceRuntime, /SERVICE_WORKER_URL = `\/sw-resilient-v3\.js\?v
 assert.match(performanceWorker, /VERSION = 'low-bandwidth-v3'/, 'cache-isolated service worker version is stale');
 assert.match(performanceRuntime, /CLINICAL_WORKFLOW_URL = `\/clinical-workflow\.js\?v=\$\{VERSION\}`/, 'offline runtime must version the clinical workflow');
 
-console.log('Clinical runtime cache-version, unverified registry and idempotent dosage disclosure audit passed.');
+console.log('Clinical runtime cache-version and polished dosage disclosure audit passed.');
