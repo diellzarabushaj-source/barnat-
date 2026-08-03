@@ -46,7 +46,7 @@ function mockGoogleIdentity() {
   };
 }
 
-async function prepare(page) {
+async function prepare(page, state) {
   await page.addInitScript(mockGoogleIdentity);
   await page.route('**/api/auth', async route => {
     const request = route.request();
@@ -60,7 +60,7 @@ async function prepare(page) {
           hardened:true,
           googleConfigured:true,
           googleClientId:'login-audit-client',
-          passwordFallbackConfigured:true,
+          passwordFallbackConfigured:Boolean(state.fallbackEnabled),
           csrfToken:'login-audit-csrf',
           sessionHours:8,
         }),
@@ -94,7 +94,7 @@ async function report(page) {
     };
     const ids = [...document.querySelectorAll('[id]')].map(node => node.id);
     const duplicates = [...new Set(ids.filter((id, index) => ids.indexOf(id) !== index))];
-    const logos = [...document.querySelectorAll('img')].filter(img => /medindex-icon-on-dark\.png/.test(img.getAttribute('src') || ''));
+    const logos = [...document.querySelectorAll('.mi-brand-logo img')];
     const visibleTargets = [...document.querySelectorAll('a,button,summary,input')]
       .filter(node => {
         const style = getComputedStyle(node);
@@ -139,7 +139,8 @@ async function report(page) {
 test('MedIndex login remains stable, accessible and viewport-safe at every approved breakpoint', async ({ page }) => {
   test.setTimeout(90000);
   fs.mkdirSync(OUTPUT, { recursive:true });
-  await prepare(page);
+  const state = { fallbackEnabled:false };
+  await prepare(page, state);
 
   const consoleErrors = [];
   const pageErrors = [];
@@ -157,6 +158,7 @@ test('MedIndex login remains stable, accessible and viewport-safe at every appro
     await expect(page.locator('.mi-login-card')).toBeVisible();
     await expect(page.locator('.mock-google-sign-in')).toBeVisible();
     await expect(page.locator('.mi-brand-logo img')).toBeVisible();
+    await expect(page.locator('#passwordFallback')).toBeHidden();
     await page.waitForTimeout(250);
 
     const current = await report(page);
@@ -188,7 +190,7 @@ test('MedIndex login remains stable, accessible and viewport-safe at every appro
 
     if (viewport.width >= 1024) {
       expect(current.copy.right, `${viewport.name}: desktop columns do not overlap`).toBeLessThan(current.card.left);
-      expect(current.card.bottom, `${viewport.name}: card stays above decorative wave`).toBeLessThanOrEqual(current.wave.top + 2);
+      expect(current.card.bottom, `${viewport.name}: primary card stays clear of decorative wave`).toBeLessThanOrEqual(current.wave.top + 2);
     }
 
     for (const target of current.targets) {
@@ -203,6 +205,36 @@ test('MedIndex login remains stable, accessible and viewport-safe at every appro
 
     await page.screenshot({ path:path.join(OUTPUT, `${viewport.name}.png`), fullPage:true });
   }
+
+  state.fallbackEnabled = true;
+  await page.setViewportSize({ width:390, height:844 });
+  await page.goto(`${BASE}/login.html?fallback=1`, { waitUntil:'domcontentloaded' });
+  await expect(page.locator('#passwordFallback')).toBeVisible();
+  await expect(page.locator('#passwordFallback')).toHaveAttribute('open', '');
+  await expect(page.locator('#password')).toBeVisible();
+  await expect(page.locator('#togglePassword')).toBeVisible();
+  await expect(page.locator('#loginSubmit')).toBeVisible();
+  const fallback = await page.evaluate(() => {
+    const rect = selector => {
+      const value = document.querySelector(selector)?.getBoundingClientRect();
+      return value ? { left:value.left, right:value.right, width:value.width, height:value.height } : null;
+    };
+    return {
+      scrollWidth:document.documentElement.scrollWidth,
+      inputFont:parseFloat(getComputedStyle(document.querySelector('#password')).fontSize),
+      input:rect('#password'),
+      toggle:rect('#togglePassword'),
+      submit:rect('#loginSubmit'),
+    };
+  });
+  expect(fallback.scrollWidth).toBeLessThanOrEqual(391);
+  expect(fallback.inputFont).toBeGreaterThanOrEqual(16);
+  inside(fallback.input, { width:390, height:844 });
+  inside(fallback.toggle, { width:390, height:844 });
+  inside(fallback.submit, { width:390, height:844 });
+  expect(fallback.toggle.height).toBeGreaterThanOrEqual(43.5);
+  expect(fallback.submit.height).toBeGreaterThanOrEqual(43.5);
+  await page.screenshot({ path:path.join(OUTPUT, 'iphone-390-password-fallback.png'), fullPage:true });
 
   expect(pageErrors).toEqual([]);
   expect(consoleErrors).toEqual([]);
