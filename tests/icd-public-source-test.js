@@ -81,8 +81,36 @@ assert.deepEqual(Source.sourceMeta({
   revision:'abcdefghijklmnopqrst',
   fetchMs:321,
   buildMs:87,
+  activatedAt:null,
 });
 assert.equal(Source.sourceMeta({ stale:true }).status, 'stale');
+assert.deepEqual(Source.sourceMeta({
+  sourceType:'neon',
+  spreadsheetId:Source.SPREADSHEET_ID,
+  sheetName:Source.SHEET_NAME,
+  sheetGid:Source.SHEET_GID,
+  headerRow:6,
+  loadedAt:Date.UTC(2026, 7, 3, 3, 0, 0),
+  csvBytes:4106422,
+  sourceRevision:'neonrevision12345678',
+  fetchMs:45,
+  buildMs:12,
+  activatedAt:'2026-08-03T02:59:00.000Z',
+}), {
+  type:'neon',
+  status:'active',
+  visibility:'private-mirror',
+  spreadsheetId:Source.SPREADSHEET_ID,
+  sheetName:Source.SHEET_NAME,
+  sheetGid:Source.SHEET_GID,
+  headerRow:6,
+  loadedAt:'2026-08-03T03:00:00.000Z',
+  csvBytes:4106422,
+  revision:'neonrevision12345678',
+  fetchMs:45,
+  buildMs:12,
+  activatedAt:'2026-08-03T02:59:00.000Z',
+});
 
 const root = path.resolve(__dirname, '..');
 const base = fs.readFileSync(path.join(root, 'lib/icd-api-base.js'), 'utf8');
@@ -98,6 +126,8 @@ for (const source of [base, advanced]) {
 assert.doesNotMatch(advanced, /gviz\/tq\?tqx=out:csv/);
 assert.equal((publicSource.match(new RegExp(Source.SPREADSHEET_ID, 'g')) || []).length, 1);
 assert.match(publicSource, /normalizeCsvHeaders/);
+assert.match(publicSource, /NeonHierarchy\.load/);
+assert.match(publicSource, /sheetOnly/);
 assert.match(normalizer, /ICD_HIERARCHY_HEADER_MISSING/);
 assert.match(normalizer, /maxHeaderRows = 40/);
 for (const marker of ['attachIndexes', 'childrenByParent', 'childCountByCode', 'byChapter', 'byLevel']) {
@@ -109,4 +139,4 @@ new Function(base);
 new Function(advanced);
 new Function(hierarchy);
 
-console.log('Resilient public Google Sheet validation, canonical headers and indexed ICD runtime contracts passed.');
+console.log('Resilient Google Sheet fallback, Neon-first metadata, canonical headers and indexed ICD runtime contracts passed.');

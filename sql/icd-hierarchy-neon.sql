@@ -59,3 +59,72 @@ SELECT n.*
 FROM public.icd_hierarchy_nodes n
 JOIN public.icd_hierarchy_revisions r ON r.revision = n.revision
 WHERE r.status = 'active' AND n.is_published = true;
+
+CREATE OR REPLACE FUNCTION public.activate_icd_hierarchy_revision(p_revision text)
+RETURNS jsonb
+LANGUAGE plpgsql
+AS $function$
+DECLARE
+  v_total integer;
+  v_chapter integer;
+  v_block integer;
+  v_category integer;
+  v_subcategory integer;
+  v_orphans integer;
+BEGIN
+  IF NOT EXISTS (
+    SELECT 1 FROM public.icd_hierarchy_revisions
+    WHERE revision = p_revision AND status = 'staging'
+  ) THEN
+    RAISE EXCEPTION 'ICD hierarchy revision % is not staging', p_revision;
+  END IF;
+
+  SELECT
+    count(*)::integer,
+    count(*) FILTER (WHERE level_name = 'chapter')::integer,
+    count(*) FILTER (WHERE level_name = 'block')::integer,
+    count(*) FILTER (WHERE level_name = 'category')::integer,
+    count(*) FILTER (WHERE level_name = 'subcategory')::integer
+  INTO v_total, v_chapter, v_block, v_category, v_subcategory
+  FROM public.icd_hierarchy_nodes
+  WHERE revision = p_revision AND is_published = true;
+
+  IF v_total <> 12542 OR v_chapter <> 22 OR v_block <> 274 OR v_category <> 2050 OR v_subcategory <> 10196 THEN
+    RAISE EXCEPTION 'ICD hierarchy counts invalid: total %, chapter %, block %, category %, subcategory %',
+      v_total, v_chapter, v_block, v_category, v_subcategory;
+  END IF;
+
+  SELECT count(*)::integer
+  INTO v_orphans
+  FROM public.icd_hierarchy_nodes child
+  LEFT JOIN public.icd_hierarchy_nodes parent
+    ON parent.revision = child.revision
+   AND parent.code = child.parent_code
+  WHERE child.revision = p_revision
+    AND child.parent_code IS NOT NULL
+    AND child.parent_code <> ''
+    AND parent.code IS NULL;
+
+  IF v_orphans <> 0 THEN
+    RAISE EXCEPTION 'ICD hierarchy contains % orphan nodes', v_orphans;
+  END IF;
+
+  UPDATE public.icd_hierarchy_revisions
+  SET status = 'superseded'
+  WHERE status = 'active' AND revision <> p_revision;
+
+  UPDATE public.icd_hierarchy_revisions
+  SET status = 'active', activated_at = now(), error_summary = NULL
+  WHERE revision = p_revision;
+
+  RETURN jsonb_build_object(
+    'revision', p_revision,
+    'total', v_total,
+    'chapter', v_chapter,
+    'block', v_block,
+    'category', v_category,
+    'subcategory', v_subcategory,
+    'orphans', v_orphans
+  );
+END;
+$function$;

@@ -3,6 +3,7 @@
 const crypto = require('node:crypto');
 const IcdPublicSource = require('../lib/icd-public-source.js');
 const FullIcd = require('../lib/icd-full-hierarchy.js');
+const HierarchyValidation = require('../lib/icd-hierarchy-validation.js');
 const { neonRequest } = require('../lib/neon-data-api.js');
 
 const REVISION_TABLE = 'icd_hierarchy_revisions';
@@ -21,10 +22,14 @@ function batch(values, size = BATCH_SIZE) {
 }
 
 function nodeRecord(node, dataset, revision) {
-  const breadcrumb = typeof dataset?.breadcrumbFor === 'function'
-    ? dataset.breadcrumbFor(node.code)
-    : [];
-  const pathText = breadcrumb.map(item => `${item.code} ${item.title}`).join(' › ');
+  const breadcrumb = [
+    ...FullIcd.ancestorsOf(dataset, node.code),
+    node,
+  ];
+  const pathText = breadcrumb
+    .map(item => `${clean(item.code)} ${clean(item.displayTitle || item.albanianDraft || item.englishTitle)}`.trim())
+    .filter(Boolean)
+    .join(' › ');
   const record = {
     revision,
     code:clean(node.code),
@@ -85,7 +90,7 @@ function revisionRecord(loaded) {
 
 function validateLoaded(loaded) {
   const nodes = loaded?.data?.nodes;
-  const validation = FullIcd.validate(Array.isArray(nodes) ? nodes : [], { strictCounts:true });
+  const validation = HierarchyValidation.validate(Array.isArray(nodes) ? nodes : [], { strictCounts:true });
   if (!clean(loaded?.sourceRevision)) throw new Error('Revision-i i Google Sheet-it ICD mungon.');
   if (loaded?.sourceType !== 'google-sheet') throw new Error('Importi duhet të lexojë drejtpërdrejt Google Sheet-in editorial.');
   return validation;
@@ -161,7 +166,7 @@ async function sync(options = {}) {
       ok:true,
       skipped:true,
       revision,
-      counts:validation.counts,
+      counts:validation,
       reason:'Revision-i i Google Sheet-it është tashmë aktiv në Neon.',
     };
   }
@@ -172,7 +177,7 @@ async function sync(options = {}) {
       ok:true,
       dryRun:true,
       revision,
-      counts:validation.counts,
+      counts:validation,
       records:records.length,
       batches:batch(records).length,
       headerRow:loaded.headerRow,
@@ -192,7 +197,7 @@ async function sync(options = {}) {
       ok:true,
       skipped:false,
       revision,
-      counts:validation.counts,
+      counts:validation,
       records:records.length,
       activation,
     };
