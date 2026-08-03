@@ -1,7 +1,7 @@
 (() => {
   'use strict';
 
-  const VERSION = 'registry-row-expand-20260801-4';
+  const VERSION = 'registry-row-expand-20260803-5';
   const FINAL_STYLE_ID = 'registryColumnsFiltersStyles';
   const EXPANDABLE_KEYS = new Set([
     'trade-name',
@@ -76,7 +76,7 @@
 
   function rowShouldExpand(cell, key) {
     if (!cell || !EXPANDABLE_KEYS.has(key)) return false;
-    if (cell.querySelector('.registry-dosage-details')) return true;
+    if (cell.querySelector('.registry-dosage-details,.registry-dosage-dose')) return true;
     const text = clean(cell.textContent);
     return text.length > (THRESHOLDS[key] || 48);
   }
@@ -88,6 +88,20 @@
       trigger.setAttribute('aria-expanded', String(expanded));
       trigger.setAttribute('aria-label', expanded ? `Mbyll ${label}` : `Zgjero ${label} për ta parë tekstin e plotë`);
       trigger.title = expanded ? 'Mbyll tekstin e plotë' : 'Shfaq tekstin e plotë në rresht';
+    });
+  }
+
+  function syncDosageControls(row, expanded) {
+    row.querySelectorAll('.registry-dosage-regimen').forEach(regimen => {
+      regimen.classList.toggle('is-expanded', expanded);
+      const trigger = regimen.querySelector('.registry-dosage-dose');
+      if (!trigger) return;
+      const dose = clean(trigger.querySelector('.registry-dosage-dose-text')?.textContent);
+      trigger.setAttribute('aria-expanded', String(expanded));
+      trigger.setAttribute('aria-label', `${expanded ? 'Mbyll' : 'Shfaq'} dozimin e plotë: ${dose}`);
+      trigger.title = dose;
+      const toggle = trigger.querySelector('.registry-dosage-toggle');
+      if (toggle) toggle.textContent = expanded ? 'Më pak' : 'Më shumë';
     });
   }
 
@@ -103,6 +117,7 @@
     row.querySelectorAll('.registry-dosage-details').forEach(details => {
       details.open = expanded;
     });
+    syncDosageControls(row, expanded);
     syncPreviewTriggers(row, expanded);
   }
 
@@ -177,6 +192,14 @@
   }
 
   function onClick(event) {
+    const dosageTrigger = event.target.closest?.('.registry-dosage-dose');
+    if (dosageTrigger) {
+      event.preventDefault();
+      event.stopImmediatePropagation();
+      toggleRow(dosageTrigger.closest('tr'));
+      return;
+    }
+
     const summary = event.target.closest?.('.registry-dosage-details > summary');
     if (summary) {
       event.preventDefault();
