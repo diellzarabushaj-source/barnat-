@@ -1,5 +1,5 @@
 <!doctype html>
-<html lang="sq" class="medindex-tailadmin-login">
+<html lang="sq" class="medindex-tailadmin-login" data-mi-page="login">
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
@@ -7,15 +7,15 @@
   <meta name="theme-color" content="#0d3d40">
   <title>Hyr në MedIndex</title>
   <script src="theme-preload.js?v=production-audit-v2"></script>
-  <link rel="stylesheet" href="login.css?v=20260723-2">
-  <link rel="stylesheet" href="google-login.css?v=20260730-1">
   <link rel="stylesheet" href="tailadmin-medindex.css?v=20260728-1" data-tailadmin-medindex-css>
+  <link rel="stylesheet" href="google-login.css?v=20260730-1">
+  <link rel="stylesheet" href="login.css?v=20260801-1">
   <script src="https://accounts.google.com/gsi/client" async defer></script>
 </head>
 <body>
-  <main class="login-shell">
+  <main class="login-shell auth-page">
     <section class="login-card" aria-labelledby="loginTitle">
-      <div class="login-brand" aria-hidden="true">M<span>+</span></div>
+      <div class="login-brand" aria-hidden="true"><span>M</span><b>+</b></div>
       <p class="login-kicker">Qasje private</p>
       <h1 id="loginTitle">Hyr në MedIndex</h1>
       <p class="login-copy">Hyr direkt me llogarinë e aprovuar Google. MedIndex verifikon identitetin në server dhe hap rolin Editor vetëm për pronaren.</p>
@@ -55,7 +55,7 @@
     </section>
     <aside class="login-side-panel" aria-label="MedIndex">
       <div class="login-side-inner">
-        <div class="login-side-mark">M<span>+</span></div>
+        <div class="login-side-mark" aria-hidden="true"><span>M</span><b>+</b></div>
         <h2>MedIndex</h2>
         <p>Një hapësirë e unifikuar për barnat, klasifikimin ATC, ICD-në, analizat, dozologjinë, protokollet dhe recetat.</p>
         <div class="login-side-grid" aria-hidden="true"><span>Të dhëna klinike</span><span>Bibliotekë personale</span><span>Qasje private</span></div>

@@ -149,8 +149,15 @@ function render(){
   const filtered = sortRows(getFiltered());
   const total = filtered.length;
   const quality = window.MEDINDEX_REGISTRY_QUALITY?.summary || {};
-  const qualityNote = quality.blocked ? ` · ${quality.blocked} të bllokuara për verifikim` : '';
-  document.getElementById('countBadge').textContent = total + ' / ' + RAW.length + ' barna' + qualityNote;
+  const countBadge = document.getElementById('countBadge');
+  const blockedCount = Number(quality.blocked || 0);
+  countBadge.dataset.visible = String(total);
+  countBadge.dataset.total = String(RAW.length);
+  countBadge.dataset.blocked = String(blockedCount);
+  countBadge.textContent = (total === RAW.length ? total + ' barna' : total + ' nga ' + RAW.length + ' barna')
+    + (blockedCount ? ' · ' + blockedCount + ' për kontroll' : '');
+  countBadge.title = total + ' rezultate nga ' + RAW.length
+    + (blockedCount ? '; ' + blockedCount + ' rreshta kërkojnë kontroll' : '');
 
   const pageSize = state.pageSize;
   const totalPages = Math.max(1, Math.ceil(total / pageSize));
@@ -171,17 +178,18 @@ function render(){
       const rowClasses = [checked ? 'row-selected' : '', qualityRowClass(r)].filter(Boolean).join(' ');
       const qualityTitle = String(r.__qualityMessage || '').trim();
       return '<tr class="' + rowClasses + '"' + (qualityTitle ? ' title="' + escapeHtml(qualityTitle) + '"' : '') + '>' +
-        '<td class="select-col" data-label="Për recetë"><input class="drug-select" type="checkbox" aria-label="' + (blocked ? 'Nuk lejohet në recetë pa verifikim: ' : 'Zgjidh ') + escapeHtml(r['Emri tregtar']) + '" data-drug-key="' + escapeHtml(key) + '" ' + (checked ? 'checked ' : '') + (blocked ? 'disabled title="Rreshti është bllokuar nga kontrolli i cilësisë"' : '') + '></td>' + cols.map(col => {
+        '<td class="select-col" data-column-key="__select" data-label="Për recetë"><label class="registry-selection-control"><input class="drug-select" type="checkbox" aria-label="' + (blocked ? 'Nuk lejohet në recetë pa verifikim: ' : 'Zgjidh ') + escapeHtml(r['Emri tregtar']) + '" data-drug-key="' + escapeHtml(key) + '" ' + (checked ? 'checked ' : '') + (blocked ? 'disabled title="Rreshti është bllokuar nga kontrolli i cilësisë"' : '') + '></label></td>' + cols.map(col => {
         const mobileLabel = escapeHtml(col.mobileLabel || col.key);
+        const columnKey = escapeHtml(col.key);
         let val = r[col.key];
         if(col.key === 'Statusi'){
           const s = String(val ?? '').trim();
           const cls = s === 'Gjenerik' ? 'gjenerik' : (s === 'Origjinator' ? 'origjinator' : '');
           val = s ? '<span class="badge ' + cls + '">' + escapeHtml(s) + '</span>' : '';
-          return '<td class="' + col.cls + '" data-label="' + mobileLabel + '">' + val + '</td>';
+          return '<td class="' + col.cls + '" data-column-key="' + columnKey + '" data-label="' + mobileLabel + '">' + val + '</td>';
         }
         if(col.key === 'Substanca aktive'){
-          return '<td class="' + col.cls + ' quality-substance" data-label="' + mobileLabel + '" title="' + escapeHtml(qualityTitle || val) + '"><span>' + escapeHtml(val) + '</span>' + qualityBadge(r) + '</td>';
+          return '<td class="' + col.cls + ' quality-substance" data-column-key="' + columnKey + '" data-label="' + mobileLabel + '" title="' + escapeHtml(qualityTitle || val) + '"><span>' + escapeHtml(val) + '</span>' + qualityBadge(r) + '</td>';
         }
         if(col.key === 'Forma farmaceutike'){
           const cat = categoryOf(val);

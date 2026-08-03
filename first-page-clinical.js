@@ -69,18 +69,17 @@
 
     const legacyHeader = content.querySelector('header');
     if (legacyHeader) {
-      legacyHeader.className = 'registry-overview';
+      legacyHeader.className = 'registry-overview registry-status-strip';
       legacyHeader.innerHTML = `
         <div class="registry-overview-icon">${ICONS.registry}</div>
         <div class="registry-overview-copy">
-          <span class="registry-eyebrow">REGJISTRI KLINIK</span>
           <h2>Barnat e regjistruara</h2>
-          <p>Kërko sipas emrit tregtar, substancës aktive, ATC-së, përdorimit ose formës farmaceutike.</p>
+          <p>Kërkim klinik sipas emrit, substancës, ATC-së, përdorimit ose formës.</p>
         </div>
         <div class="registry-overview-meta" aria-label="Informacioni i regjistrit">
           <span><strong id="registryDatasetTotal">—</strong><small>barna</small></span>
-          <span><strong>1.2</strong><small>versioni</small></span>
-          <span><strong>31.12.2026</strong><small>vlefshmëria</small></span>
+          <span><small>Versioni</small><strong>1.2</strong></span>
+          <span><small>Vlen deri</small><strong>31.12.2026</strong></span>
         </div>`;
     }
 
@@ -89,7 +88,7 @@
     toolbar.setAttribute('aria-label', 'Kërkimi, filtrat dhe veprimet e regjistrit');
 
     const searchBlock = create('section', 'registry-search-block');
-    const searchHeading = create('div', 'registry-search-heading', '<strong>Kërko në regjistër</strong><span>Emër tregtar, substancë aktive, ATC, përdorim ose formë</span>');
+    const searchHeading = create('div', 'registry-search-heading', '<strong>Kërko në regjistër</strong><span>Emër, substancë, ATC, përdorim ose formë</span>');
     const searchShell = create('label', 'registry-search-shell');
     searchShell.setAttribute('for', 'search');
     searchShell.innerHTML = `<span class="registry-search-icon">${ICONS.search}</span>`;
@@ -97,7 +96,7 @@
     search.setAttribute('aria-describedby', 'registrySearchHelp');
     const searchShortcut = create('kbd', 'registry-search-shortcut', 'Alt + S');
     searchShell.append(search, searchShortcut);
-    const searchHelp = create('span', 'registry-search-help', 'Kërkimi përditëson rezultatet menjëherë.');
+    const searchHelp = create('span', 'registry-search-help', 'Rezultatet përditësohen menjëherë gjatë shkrimit.');
     searchHelp.id = 'registrySearchHelp';
     searchBlock.append(searchHeading, searchShell, searchHelp);
 
@@ -120,7 +119,7 @@
     toolbar.replaceChildren(searchBlock, secondary);
 
     const tableBar = create('section', 'registry-table-bar');
-    const tableTitle = create('div', 'registry-table-title', `${ICONS.table}<div><h2>Lista e barnave</h2><p>Zgjidh një ose më shumë barna dhe vazhdo direkt te krijimi i recetës.</p></div>`);
+    const tableTitle = create('div', 'registry-table-title', `${ICONS.table}<div><h2>Lista e barnave</h2><p>Zgjidh një ose më shumë barna dhe vazhdo te krijimi i recetës.</p></div>`);
     const tableActions = create('div', 'registry-table-actions');
     const filterState = create('span', 'registry-filter-state');
     filterState.id = 'registryFilterState';
@@ -152,6 +151,11 @@
     tableWrap.setAttribute('role', 'region');
     tableWrap.setAttribute('aria-label', 'Rezultatet e regjistrit të barnave');
     tableWrap.tabIndex = 0;
+    const scrollHelp = create('p', 'visually-hidden');
+    scrollHelp.id = 'registryScrollHelp';
+    scrollHelp.textContent = 'Kur tabela vazhdon anash, fokusoje dhe përdor shigjetat majtas ose djathtas.';
+    tableWrap.setAttribute('aria-describedby', scrollHelp.id);
+    tableWrap.before(scrollHelp);
 
     const update = () => {
       const searchActive = Boolean(search.value.trim());
@@ -164,9 +168,11 @@
       resetButton.hidden = activeCount === 0;
 
       const countText = text(countBadge.textContent);
-      const match = countText.match(/([\d.,]+)\s*\/\s*([\d.,]+)/);
+      const match = countText.match(/([\d.,]+)\s*(?:\/|nga)\s*([\d.,]+)/);
+      const datasetTotal = Number(countBadge.dataset.total || 0);
       const totalNode = document.getElementById('registryDatasetTotal');
-      if (totalNode && match) totalNode.textContent = match[2];
+      if (totalNode && datasetTotal > 0) totalNode.textContent = String(datasetTotal);
+      else if (totalNode && match) totalNode.textContent = match[2];
 
       const selected = Number(selectedCount?.textContent || 0);
       tableWrap.classList.toggle('has-selection', selected > 0);
@@ -190,11 +196,20 @@
 
     const syncScrollState = () => {
       const max = Math.max(0, tableWrap.scrollWidth - tableWrap.clientWidth);
+      tableWrap.classList.toggle('has-horizontal-scroll', max > 4);
       tableWrap.classList.toggle('is-scrolled-x', tableWrap.scrollLeft > 4);
       tableWrap.classList.toggle('is-scroll-end', max > 0 && tableWrap.scrollLeft >= max - 4);
     };
     tableWrap.addEventListener('scroll', syncScrollState, { passive:true });
+    tableWrap.addEventListener('keydown', event => {
+      if (event.target !== tableWrap || !tableWrap.classList.contains('has-horizontal-scroll')) return;
+      if (event.key !== 'ArrowLeft' && event.key !== 'ArrowRight') return;
+      event.preventDefault();
+      tableWrap.scrollBy({ left:event.key === 'ArrowRight' ? 96 : -96, behavior:'auto' });
+    });
     new ResizeObserver(syncScrollState).observe(tableWrap);
+    new MutationObserver(() => requestAnimationFrame(syncScrollState))
+      .observe(document.documentElement, { attributes:true, attributeFilter:['class'] });
 
     syncPanelState(formButton, formPanel);
     syncPanelState(columnButton, columnPanel);

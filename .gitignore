@@ -7,3 +7,4 @@ app-runtime.js
 app-runtime-performance.js
 offline-runtime-performance.js
 sw-resilient-v3.js
+.superdesign/tmp/

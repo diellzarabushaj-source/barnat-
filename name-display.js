@@ -8,7 +8,7 @@
     const style = document.createElement('style');
     style.id = 'nameDisplayStyles';
     style.textContent = `
-      td.name { min-width: 300px; max-width: 340px; }
+      td.name { min-width: 220px; max-width: 260px; }
       .drug-name-layout {
         width: 100%;
         min-width: 0;
@@ -18,6 +18,7 @@
         gap: 7px;
       }
       .drug-name-text {
+        display: -webkit-box;
         min-width: 0;
         width: 100%;
         padding: 2px 0;
@@ -28,27 +29,31 @@
         font-weight: inherit;
         line-height: 1.35;
         text-align: left;
-        white-space: nowrap;
+        white-space: normal;
         overflow: hidden;
-        text-overflow: ellipsis;
+        text-overflow: clip;
         cursor: zoom-in;
+        -webkit-box-orient: vertical;
+        -webkit-line-clamp: 2;
       }
       .drug-name-text:focus-visible {
         outline: 2px solid var(--amber, #c77d1f);
         outline-offset: 3px;
         border-radius: 3px;
       }
-      td.name.name-expanded { max-width: 470px; }
+      td.name.name-expanded { max-width: 380px; }
       td.name.name-expanded .drug-name-layout {
-        min-width: 390px;
-        max-width: 470px;
+        min-width: 280px;
+        max-width: 380px;
         align-items: start;
       }
       td.name.name-expanded .drug-name-text {
+        display: block;
         white-space: normal;
         overflow: visible;
         text-overflow: clip;
         cursor: zoom-out;
+        -webkit-line-clamp: unset;
       }
       .app-menu-link[data-nav="classification"] .app-menu-icon svg { width: 27px; height: 27px; }
       .generic-prescription-note {
@@ -70,9 +75,9 @@
       }
       html[data-theme="dark"] .generic-prescription-note strong { color: #edf5f2; }
       @media (max-width: 720px) {
-        td.name { min-width: 255px; max-width: 285px; }
+        td.name { min-width: 0; max-width: none; }
         td.name.name-expanded,
-        td.name.name-expanded .drug-name-layout { min-width: 300px; max-width: 360px; }
+        td.name.name-expanded .drug-name-layout { min-width: 0; max-width: none; }
       }
     `;
     document.head.appendChild(style);
@@ -114,7 +119,7 @@
     else {
       const spacer = document.createElement('span');
       spacer.className = 'favorite-marker';
-      spacer.textContent = '★';
+      spacer.setAttribute('aria-hidden', 'true');
       layout.appendChild(spacer);
     }
     layout.appendChild(nameButton);

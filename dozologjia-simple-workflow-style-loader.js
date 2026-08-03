@@ -1,7 +1,7 @@
 (() => {
   'use strict';
   const ID = 'dozologjiaSimpleWorkflowStyles';
-  const HREF = '/dozologjia-simple-workflow.css?v=20260726-1';
+  const HREF = '/dozologjia-simple-workflow.css?v=20260801-1';
 
   function ensure() {
     let link = document.getElementById(ID);
@@ -17,5 +17,6 @@
 
   ensure();
   window.addEventListener('medindex:tailadmin-ready', ensure);
+  window.addEventListener('medindex:professional-ui-ready', ensure);
   window.addEventListener('pageshow', ensure, { passive:true });
 })();

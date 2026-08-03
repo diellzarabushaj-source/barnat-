@@ -1,5 +1,5 @@
 <!doctype html>
-<html lang="sq" class="auth-checking medindex-clean-ui medindex-tailadmin">
+<html lang="sq" class="auth-checking medindex-clean-ui medindex-tailadmin" data-mi-page="dozologjia">
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
@@ -10,15 +10,15 @@
   <link rel="stylesheet" href="medical-hub.css?v=20260723-1">
   <link rel="stylesheet" href="clinical-reference.css?v=20260724-1">
   <link rel="stylesheet" href="tailadmin-medindex.css?v=20260728-1" data-tailadmin-medindex-css>
-  <link rel="preload" href="dozologjia-verified-cards.css?v=20260728-1" as="style">
-  <link rel="preload" href="dozologjia-simple-workflow.css?v=20260726-1" as="style">
-  <link rel="preload" href="dozologjia-safety-enhancements.css?v=20260726-1" as="style">
-  <link rel="preload" href="dozologjia-clinical-readiness.css?v=20260726-1" as="style">
+  <link rel="preload" href="dozologjia-verified-cards.css?v=20260801-1" as="style">
+  <link rel="preload" href="dozologjia-simple-workflow.css?v=20260801-1" as="style">
+  <link rel="preload" href="dozologjia-safety-enhancements.css?v=20260801-1" as="style">
+  <link rel="preload" href="dozologjia-clinical-readiness.css?v=20260801-1" as="style">
   <link rel="stylesheet" href="tailadmin-professional.css?v=20260728-1" data-tailadmin-professional-css>
   <script src="tailadmin-shell.js?v=production-audit-v2" defer></script>
   <script src="tailadmin-professional.js?v=production-audit-v2" defer></script>
-  <script src="dozologjia-card-style-loader.js?v=20260726-1" defer></script>
-  <script src="dozologjia-simple-workflow-style-loader.js?v=20260726-1" defer></script>
+  <script src="dozologjia-card-style-loader.js?v=20260801-1" defer></script>
+  <script src="dozologjia-simple-workflow-style-loader.js?v=20260801-1" defer></script>
 </head>
 <body>
   <a class="skip-link" href="#dosageContent">Kalo te dozologjia</a>
@@ -34,7 +34,7 @@
       <div class="med-theme"><span>Tema</span><button id="themeButton" type="button" aria-label="Ndërro temën">☾</button></div>
     </nav>
     <main class="med-main clinical-main" id="dosageContent" tabindex="-1">
-      <header class="clinical-hero">
+      <header class="clinical-hero dosage-page-header">
         <div>
           <p class="clinical-kicker">MedIndex · kartela klinike</p>
           <h1>Dozologjia</h1>
@@ -43,25 +43,33 @@
         <div class="clinical-summary"><strong id="dosageCount">0</strong><span>kartela</span></div>
       </header>
 
-      <div class="clinical-toolbar" role="search" aria-label="Kërkimi dhe filtrat e dozologjisë">
-        <input id="dosageSearch" type="search" autocomplete="off" placeholder="Kërko barin, substancën, përdorimin ose ATC…">
-        <select id="dosagePopulation" aria-label="Doza e publikuar">
-          <option value="all">Të gjitha dozat</option>
-          <option value="adult">Doza për të rritur</option>
-          <option value="pediatric">Me dozë për fëmijë</option>
-        </select>
-        <select id="dosageForm" aria-label="Forma"><option value="">Të gjitha format</option></select>
-        <select id="dosageAtc" aria-label="ATC"><option value="">Të gjitha ATC-të</option></select>
-      </div>
-
-      <div class="clinical-patient" id="pediatricInputs">
-        <div class="dosage-calculator-copy">
-          <strong>Kalkulatori pediatrik sipas peshës</strong>
-          <span>Shëno peshën. Rezultati shfaqet vetëm kur ekziston formulë pediatrike e strukturuar me burim të lidhur; teksti origjinal i dozës mbetet gjithmonë i dukshëm.</span>
+      <section class="dosage-control-panel" aria-labelledby="dosageControlTitle">
+        <div class="dosage-control-heading">
+          <div>
+            <h2 id="dosageControlTitle">Kërko dozologjinë</h2>
+            <p>Filtro sipas popullatës, formës ose ATC-së.</p>
+          </div>
         </div>
-        <label>Pesha e fëmijës (kg)<input id="patientWeightKg" type="number" min="0.1" step="0.1" inputmode="decimal" placeholder="p.sh. 18"></label>
-        <label>Mosha (muaj, kur kërkohet)<input id="patientAgeMonths" type="number" min="0" step="1" inputmode="numeric" placeholder="p.sh. 48"></label>
-      </div>
+        <div class="clinical-toolbar" role="search" aria-label="Kërkimi dhe filtrat e dozologjisë">
+          <input id="dosageSearch" type="search" autocomplete="off" placeholder="Kërko barin, substancën, përdorimin ose ATC…">
+          <select id="dosagePopulation" aria-label="Doza e publikuar">
+            <option value="all">Të gjitha dozat</option>
+            <option value="adult">Doza për të rritur</option>
+            <option value="pediatric">Me dozë për fëmijë</option>
+          </select>
+          <select id="dosageForm" aria-label="Forma"><option value="">Të gjitha format</option></select>
+          <select id="dosageAtc" aria-label="ATC"><option value="">Të gjitha ATC-të</option></select>
+        </div>
+
+        <div class="clinical-patient" id="pediatricInputs">
+          <div class="dosage-calculator-copy">
+            <strong>Kalkulatori pediatrik sipas peshës</strong>
+            <span>Shëno peshën. Rezultati shfaqet vetëm kur ekziston formulë pediatrike e strukturuar me burim të lidhur; teksti origjinal i dozës mbetet gjithmonë i dukshëm.</span>
+          </div>
+          <label>Pesha e fëmijës (kg)<input id="patientWeightKg" type="number" min="0.1" step="0.1" inputmode="decimal" placeholder="p.sh. 18"></label>
+          <label>Mosha (muaj, kur kërkohet)<input id="patientAgeMonths" type="number" min="0" step="1" inputmode="numeric" placeholder="p.sh. 48"></label>
+        </div>
+      </section>
 
       <p class="clinical-status" id="dosageStatus" role="status" aria-live="polite">Duke ngarkuar kartelat klinike…</p>
       <div class="clinical-list dosage-card-list" id="dosageList" aria-live="polite"></div>

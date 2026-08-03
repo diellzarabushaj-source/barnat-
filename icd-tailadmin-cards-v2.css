@@ -1,532 +1,174 @@
 @import url('/icd-clinical-workspace.css?v=20260725-1');
 
-/* ICD card refinement for the existing TailAdmin dashboard.
-   The sidebar, topbar, hero, search, filters and clinical behaviour remain owned
-   by the shared TailAdmin and ICD workspace layers. */
+/* Neutral professional ICD workspace. The runtime still owns all data,
+   filtering, selection, and dialog behaviour. */
+html.medindex-tailadmin.medindex-professional[data-mi-page="icd"] #icdContent {
+  width:100%!important;max-width:none!important;margin:0!important;padding:0!important;background:transparent!important;
+}
+html.medindex-tailadmin.medindex-professional[data-mi-page="icd"] #icdContent .icd-clinical-hero {
+  display:grid!important;grid-template-columns:minmax(0,1fr) auto!important;align-items:center!important;gap:18px!important;
+  min-height:0!important;margin:0 0 12px!important;padding:16px 18px!important;border:1px solid var(--mi-border)!important;
+  border-radius:12px!important;background:var(--mi-surface)!important;background-image:none!important;color:var(--mi-text)!important;
+  box-shadow:var(--mi-shadow-xs)!important;
+}
+html.medindex-tailadmin.medindex-professional[data-mi-page="icd"] #icdContent .icd-clinical-hero::before,
+html.medindex-tailadmin.medindex-professional[data-mi-page="icd"] #icdContent .icd-clinical-hero::after { display:none!important; }
+html.medindex-tailadmin.medindex-professional[data-mi-page="icd"] #icdContent .icd-hero-copy .med-kicker {
+  margin:0 0 4px!important;color:var(--mi-gray-500)!important;font-size:10px!important;font-weight:600!important;letter-spacing:.07em!important;
+}
+html.medindex-tailadmin.medindex-professional[data-mi-page="icd"] #icdContent .icd-hero-copy h1 {
+  margin:0!important;color:var(--mi-gray-900)!important;font-size:20px!important;font-weight:650!important;line-height:1.25!important;
+}
+html.medindex-tailadmin.medindex-professional[data-mi-page="icd"] #icdContent .icd-hero-copy p {
+  margin:5px 0 0!important;color:var(--mi-gray-500)!important;font-size:12px!important;line-height:1.5!important;
+}
+html.medindex-tailadmin.medindex-professional[data-mi-page="icd"] #icdContent .icd-hero-stats { grid-template-columns:repeat(3,minmax(78px,1fr))!important;gap:6px!important; }
+html.medindex-tailadmin.medindex-professional[data-mi-page="icd"] #icdContent .icd-hero-stat {
+  min-width:78px!important;min-height:54px!important;padding:8px 10px!important;border:1px solid var(--mi-gray-200)!important;
+  border-radius:9px!important;background:var(--mi-gray-50)!important;background-image:none!important;box-shadow:none!important;
+}
+html.medindex-tailadmin.medindex-professional[data-mi-page="icd"] #icdContent .icd-hero-stat strong { color:var(--mi-gray-900)!important;font-size:15px!important;font-weight:650!important; }
+html.medindex-tailadmin.medindex-professional[data-mi-page="icd"] #icdContent .icd-hero-stat span { margin-top:3px!important;color:var(--mi-gray-500)!important;font-size:9px!important;letter-spacing:.04em!important; }
+html.medindex-tailadmin.medindex-professional[data-mi-page="icd"] #icdContent .icd-source-bar {
+  margin:0 0 12px!important;padding:9px 11px!important;border:1px solid var(--mi-gray-200)!important;border-left:3px solid var(--mi-brand-500)!important;
+  border-radius:9px!important;background:var(--mi-gray-50)!important;background-image:none!important;color:var(--mi-gray-600)!important;
+  font-size:11px!important;box-shadow:none!important;
+}
+html.medindex-tailadmin.medindex-professional[data-mi-page="icd"] #icdContent .icd-source-icon { background:var(--mi-brand-50)!important;color:var(--mi-brand-600)!important; }
+html.medindex-tailadmin.medindex-professional[data-mi-page="icd"] #icdContent .icd-workbench {
+  position:sticky!important;top:8px!important;z-index:24!important;margin:0 0 16px!important;padding:9px!important;
+  border:1px solid var(--mi-border)!important;border-radius:12px!important;background:var(--mi-surface)!important;background-image:none!important;
+  box-shadow:var(--mi-shadow-xs)!important;backdrop-filter:none!important;
+}
+html.medindex-tailadmin.medindex-professional[data-mi-page="icd"] #icdContent .icd-toolbar {
+  display:grid!important;grid-template-columns:minmax(300px,1fr) minmax(145px,200px) minmax(145px,200px) auto!important;
+  align-items:center!important;gap:8px!important;margin:0!important;padding:0!important;border:0!important;background:transparent!important;box-shadow:none!important;
+}
+html.medindex-tailadmin.medindex-professional[data-mi-page="icd"] #icdContent :is(#icdSmartSearch,#icdLevel,#icdContext) {
+  min-height:40px!important;height:40px!important;border-color:var(--mi-gray-300)!important;border-radius:8px!important;
+  background:var(--mi-surface)!important;color:var(--mi-gray-700)!important;box-shadow:none!important;font-size:12px!important;
+}
+html.medindex-tailadmin.medindex-professional[data-mi-page="icd"] #icdContent #smartCount,
+html.medindex-tailadmin.medindex-professional[data-mi-page="icd"] #icdContent .icd-section .med-count {
+  min-height:28px!important;border-color:var(--mi-gray-200)!important;background:var(--mi-gray-50)!important;color:var(--mi-gray-600)!important;font-size:10px!important;
+}
+html.medindex-tailadmin.medindex-professional[data-mi-page="icd"] #icdContent .icd-quick-nav { gap:5px!important;margin-top:8px!important;padding-top:8px!important;border-color:var(--mi-gray-200)!important; }
+html.medindex-tailadmin.medindex-professional[data-mi-page="icd"] #icdContent .icd-quick-button {
+  min-height:32px!important;padding:0 10px!important;border-color:var(--mi-gray-200)!important;border-radius:8px!important;
+  background:var(--mi-surface)!important;color:var(--mi-gray-600)!important;font-size:11px!important;font-weight:500!important;box-shadow:none!important;
+}
+html.medindex-tailadmin.medindex-professional[data-mi-page="icd"] #icdContent .icd-quick-button[aria-pressed="true"] {
+  border-color:var(--mi-brand-200)!important;background:var(--mi-brand-50)!important;color:var(--mi-brand-700)!important;
+}
+html.medindex-tailadmin.medindex-professional[data-mi-page="icd"] #icdContent .icd-section+.icd-section { margin-top:22px!important; }
+html.medindex-tailadmin.medindex-professional[data-mi-page="icd"] #icdContent .icd-section .med-section-head { margin-bottom:10px!important; }
+html.medindex-tailadmin.medindex-professional[data-mi-page="icd"] #icdContent .icd-section .med-section-head h2 {
+  color:var(--mi-gray-900)!important;font-size:18px!important;font-weight:650!important;line-height:1.3!important;
+}
+html.medindex-tailadmin.medindex-professional[data-mi-page="icd"] #icdContent .icd-section .med-section-head p { margin-top:3px!important;color:var(--mi-gray-500)!important;font-size:11px!important; }
 
-html.medindex-tailadmin[data-mi-page="icd"] {
-  --icd-card-text: #ffffff;
-  --icd-card-muted: rgba(255,255,255,.78);
-  --icd-card-line: rgba(255,255,255,.22);
-  --icd-card-glass: rgba(255,255,255,.11);
-  --icd-card-shadow: 0 12px 28px rgba(16,24,40,.11);
-  --icd-card-shadow-hover: 0 20px 42px rgba(16,24,40,.18);
+/* The legacy decorator supplies chapter semantics; this layer collapses its
+   per-chapter palette into one calm TailAdmin card system. */
+html.medindex-tailadmin.medindex-professional[data-mi-page="icd"] #chapterGrid .icd-aura-card {
+  --icd-deep:var(--mi-brand-700)!important;--icd-accent:var(--mi-brand-600)!important;--icd-glow:var(--mi-brand-200)!important;
+  position:relative!important;display:flex!important;min-width:0!important;min-height:196px!important;flex-direction:column!important;
+  padding:15px!important;border:1px solid var(--mi-gray-200)!important;border-radius:12px!important;background:var(--mi-surface)!important;
+  background-image:none!important;color:var(--mi-text)!important;box-shadow:var(--mi-shadow-xs)!important;filter:none!important;transform:none!important;
+}
+html.medindex-tailadmin.medindex-professional[data-mi-page="icd"] #chapterGrid.icd-chapter-grid { grid-template-columns:repeat(3,minmax(220px,1fr))!important;gap:10px!important; }
+html.medindex-tailadmin.medindex-professional[data-mi-page="icd"] #chapterGrid .icd-aura-card::before,
+html.medindex-tailadmin.medindex-professional[data-mi-page="icd"] #chapterGrid .icd-aura-card::after,
+html.medindex-tailadmin.medindex-professional[data-mi-page="icd"] #chapterGrid .icd-aura-light,
+html.medindex-tailadmin.medindex-professional[data-mi-page="icd"] #chapterGrid .icd-aura-orb,
+html.medindex-tailadmin.medindex-professional[data-mi-page="icd"] #chapterGrid .icd-aura-dots { display:none!important; }
+html.medindex-tailadmin.medindex-professional[data-mi-page="icd"] #chapterGrid .icd-aura-topline { padding:0!important;gap:10px!important; }
+html.medindex-tailadmin.medindex-professional[data-mi-page="icd"] #chapterGrid .icd-aura-icon {
+  width:40px!important;height:40px!important;flex-basis:40px!important;border:1px solid var(--mi-brand-100)!important;border-radius:9px!important;
+  background:var(--mi-brand-50)!important;background-image:none!important;color:var(--mi-brand-600)!important;box-shadow:none!important;backdrop-filter:none!important;
+}
+html.medindex-tailadmin.medindex-professional[data-mi-page="icd"] #chapterGrid .icd-aura-icon svg { width:19px!important;height:19px!important; }
+html.medindex-tailadmin.medindex-professional[data-mi-page="icd"] #chapterGrid .icd-aura-roman {
+  min-width:62px!important;min-height:40px!important;padding:5px 8px!important;border:1px solid var(--mi-gray-200)!important;border-radius:9px!important;
+  background:var(--mi-gray-50)!important;background-image:none!important;color:var(--mi-text)!important;box-shadow:none!important;backdrop-filter:none!important;
+}
+html.medindex-tailadmin.medindex-professional[data-mi-page="icd"] #chapterGrid .icd-aura-roman small { color:var(--mi-gray-500)!important;font-size:7px!important; }
+html.medindex-tailadmin.medindex-professional[data-mi-page="icd"] #chapterGrid .icd-aura-roman strong { margin-top:3px!important;color:var(--mi-gray-900)!important;font-size:15px!important; }
+html.medindex-tailadmin.medindex-professional[data-mi-page="icd"] #chapterGrid .icd-aura-copy { gap:4px!important;margin-top:13px!important; }
+html.medindex-tailadmin.medindex-professional[data-mi-page="icd"] #chapterGrid .icd-aura-kicker { color:var(--mi-gray-500)!important;font-size:9px!important;font-weight:600!important; }
+html.medindex-tailadmin.medindex-professional[data-mi-page="icd"] #chapterGrid .icd-aura-title {
+  min-height:42px!important;color:var(--mi-gray-900)!important;font-size:15px!important;font-weight:650!important;line-height:1.35!important;text-shadow:none!important;
+}
+html.medindex-tailadmin.medindex-professional[data-mi-page="icd"] #chapterGrid .icd-aura-meta { gap:5px!important;margin-top:10px!important; }
+html.medindex-tailadmin.medindex-professional[data-mi-page="icd"] #chapterGrid :is(.icd-aura-range,.icd-aura-count) {
+  min-height:24px!important;padding:0 7px!important;border:1px solid var(--mi-gray-200)!important;border-radius:7px!important;
+  background:var(--mi-gray-50)!important;background-image:none!important;color:var(--mi-gray-600)!important;font-size:9px!important;backdrop-filter:none!important;
+}
+html.medindex-tailadmin.medindex-professional[data-mi-page="icd"] #chapterGrid .icd-aura-action {
+  min-height:36px!important;margin-top:auto!important;padding:5px 5px 5px 10px!important;border:1px solid var(--mi-gray-200)!important;border-radius:8px!important;
+  background:var(--mi-surface-soft)!important;background-image:none!important;color:var(--mi-gray-700)!important;box-shadow:none!important;font-size:10px!important;backdrop-filter:none!important;
+}
+html.medindex-tailadmin.medindex-professional[data-mi-page="icd"] #chapterGrid .icd-aura-arrow {
+  width:27px!important;height:27px!important;flex-basis:27px!important;border-radius:7px!important;background:var(--mi-brand-600)!important;color:#fff!important;box-shadow:none!important;
+}
+html.medindex-tailadmin.medindex-professional[data-mi-page="icd"] #chapterGrid .icd-aura-card:is(:hover,:focus-visible,[aria-pressed="true"],.is-selected) {
+  border-color:var(--mi-brand-300)!important;outline:0!important;box-shadow:var(--mi-shadow-sm)!important;filter:none!important;transform:none!important;
 }
 
-/* Section typography */
-html.medindex-tailadmin[data-mi-page="icd"] .icd-section .med-section-head {
-  margin-bottom: 14px !important;
+html.medindex-tailadmin.medindex-professional[data-mi-page="icd"] #icdGrid.icd-code-grid { grid-template-columns:repeat(3,minmax(240px,1fr))!important;gap:10px!important; }
+html.medindex-tailadmin.medindex-professional[data-mi-page="icd"] #icdGrid .icd-code-card {
+  min-height:188px!important;padding:14px!important;border:1px solid var(--mi-gray-200)!important;border-radius:12px!important;
+  background:var(--mi-surface)!important;background-image:none!important;box-shadow:var(--mi-shadow-xs)!important;transform:none!important;
 }
-
-html.medindex-tailadmin[data-mi-page="icd"] .icd-section .med-section-head h2 {
-  color: var(--mi-gray-900) !important;
-  font-family: var(--mi-font) !important;
-  font-size: clamp(20px, 1.7vw, 25px) !important;
-  font-weight: 650 !important;
-  line-height: 1.24 !important;
-  letter-spacing: -.028em !important;
+html.medindex-tailadmin.medindex-professional[data-mi-page="icd"] #icdGrid .icd-code-card::before { width:3px!important;background:var(--mi-brand-500)!important; }
+html.medindex-tailadmin.medindex-professional[data-mi-page="icd"] #icdGrid .icd-code-card h3 { margin:11px 0 4px!important;color:var(--mi-gray-900)!important;font-size:14px!important;font-weight:650!important; }
+html.medindex-tailadmin.medindex-professional[data-mi-page="icd"] #icdGrid .icd-code-card>p { color:var(--mi-gray-500)!important;font-size:11px!important; }
+html.medindex-tailadmin.medindex-professional[data-mi-page="icd"] #icdGrid .icd-code-card>button { min-height:36px!important;margin-top:10px!important;border-radius:8px!important; }
+html.medindex-tailadmin.medindex-professional[data-mi-page="icd"] .med-panel-overlay { backdrop-filter:none!important; }
+html.medindex-tailadmin.medindex-professional[data-mi-page="icd"] .med-panel {
+  border:1px solid var(--mi-border)!important;border-radius:14px!important;background:var(--mi-surface)!important;box-shadow:var(--mi-shadow-lg)!important;
 }
-
-html.medindex-tailadmin[data-mi-page="icd"] .icd-section .med-section-head p {
-  margin-top: 5px !important;
-  color: var(--mi-gray-500) !important;
-  font-family: var(--mi-font) !important;
-  font-size: 13px !important;
-  line-height: 1.5 !important;
+html.medindex-tailadmin.medindex-professional[data-mi-page="icd"] .med-panel-head {
+  padding:15px 17px!important;border-bottom:1px solid var(--mi-border)!important;background:var(--mi-surface)!important;background-image:none!important;color:var(--mi-text)!important;
 }
+html.medindex-tailadmin.medindex-professional[data-mi-page="icd"] .med-panel-head :is(small,h2) { color:var(--mi-text)!important; }
+html.medindex-tailadmin.medindex-professional[data-mi-page="icd"] .med-panel-close { border-color:var(--mi-border)!important;background:var(--mi-gray-50)!important;color:var(--mi-gray-700)!important; }
+html.medindex-tailadmin.medindex-professional[data-mi-page="icd"] .med-panel-foot { background:var(--mi-surface)!important; }
 
-/* Chapter grid */
-html.medindex-tailadmin[data-mi-page="icd"] #chapterGrid.icd-chapter-grid {
-  display: grid !important;
-  grid-template-columns: repeat(3, minmax(0, 1fr)) !important;
-  gap: 15px !important;
-  align-items: stretch !important;
+html[data-theme="dark"].medindex-tailadmin.medindex-professional[data-mi-page="icd"] #icdContent :is(.icd-clinical-hero,.icd-workbench,.icd-aura-card,.icd-code-card) {
+  border-color:var(--mi-gray-700)!important;background:var(--mi-gray-800)!important;
 }
-
-html.medindex-tailadmin[data-mi-page="icd"] #chapterGrid .icd-aura-card {
-  position: relative !important;
-  display: flex !important;
-  min-width: 0 !important;
-  min-height: 304px !important;
-  flex-direction: column !important;
-  align-items: stretch !important;
-  justify-content: flex-start !important;
-  padding: 20px !important;
-  overflow: hidden !important;
-  border: 1px solid color-mix(in srgb, var(--icd-glow) 28%, transparent) !important;
-  border-radius: 19px !important;
-  background:
-    radial-gradient(circle at 12% 4%, color-mix(in srgb, var(--icd-glow) 27%, transparent), transparent 34%),
-    radial-gradient(circle at 94% 96%, rgba(255,255,255,.10), transparent 31%),
-    linear-gradient(145deg, var(--icd-deep) 0%, var(--icd-accent) 100%) !important;
-  color: var(--icd-card-text) !important;
-  box-shadow: var(--icd-card-shadow) !important;
-  cursor: pointer !important;
-  isolation: isolate !important;
-  text-align: left !important;
-  transform: translateZ(0);
-  transition: transform .18s ease, box-shadow .18s ease, filter .18s ease !important;
+html[data-theme="dark"].medindex-tailadmin.medindex-professional[data-mi-page="icd"] #icdContent :is(.icd-hero-copy h1,.icd-hero-stat strong,.med-section-head h2,.icd-aura-title,.icd-aura-roman strong,.icd-code-card h3) { color:var(--mi-gray-50)!important; }
+html[data-theme="dark"].medindex-tailadmin.medindex-professional[data-mi-page="icd"] #icdContent :is(.icd-hero-stat,.icd-source-bar,.icd-quick-button,.icd-aura-roman,.icd-aura-range,.icd-aura-count,.icd-aura-action) {
+  border-color:var(--mi-gray-700)!important;background:var(--mi-gray-900)!important;color:var(--mi-gray-300)!important;
 }
+html[data-theme="dark"].medindex-tailadmin.medindex-professional[data-mi-page="icd"] #icdContent :is(#icdSmartSearch,#icdLevel,#icdContext) { border-color:var(--mi-gray-700)!important;background:var(--mi-gray-900)!important;color:var(--mi-gray-200)!important; }
+html[data-theme="dark"].medindex-tailadmin.medindex-professional[data-mi-page="icd"] :is(.med-panel,.med-panel-head,.med-panel-foot) { border-color:var(--mi-gray-700)!important;background:var(--mi-gray-800)!important; }
 
-html.medindex-tailadmin[data-mi-page="icd"] #chapterGrid .icd-aura-card::before {
-  content: "";
-  position: absolute;
-  inset: 0;
-  z-index: -1;
-  border-radius: inherit;
-  background:
-    linear-gradient(115deg, rgba(255,255,255,.12), transparent 38%),
-    linear-gradient(to top, rgba(7,15,28,.20), transparent 44%);
-  pointer-events: none;
+@media(max-width:1199px){
+  html.medindex-tailadmin.medindex-professional[data-mi-page="icd"] #chapterGrid.icd-chapter-grid,
+  html.medindex-tailadmin.medindex-professional[data-mi-page="icd"] #icdGrid.icd-code-grid { grid-template-columns:repeat(2,minmax(220px,1fr))!important; }
 }
-
-html.medindex-tailadmin[data-mi-page="icd"] #chapterGrid .icd-aura-card::after {
-  content: "";
-  position: absolute;
-  right: -58px;
-  bottom: -72px;
-  width: 178px;
-  height: 178px;
-  z-index: -1;
-  border: 1px solid rgba(255,255,255,.10);
-  border-radius: 50%;
-  background: rgba(255,255,255,.055);
-  pointer-events: none;
+@media(max-width:860px){
+  html.medindex-tailadmin.medindex-professional[data-mi-page="icd"] #icdContent .icd-clinical-hero { grid-template-columns:1fr!important;gap:12px!important; }
+  html.medindex-tailadmin.medindex-professional[data-mi-page="icd"] #icdContent .icd-workbench { position:relative!important;top:auto!important; }
+  html.medindex-tailadmin.medindex-professional[data-mi-page="icd"] #icdContent .icd-toolbar { grid-template-columns:1fr 1fr!important; }
+  html.medindex-tailadmin.medindex-professional[data-mi-page="icd"] #icdContent .icd-smart-wrap { grid-column:1/-1!important; }
+  html.medindex-tailadmin.medindex-professional[data-mi-page="icd"] #icdContent #smartCount { grid-column:1/-1!important;justify-self:stretch!important; }
 }
-
-html.medindex-tailadmin[data-mi-page="icd"] .icd-aura-light,
-html.medindex-tailadmin[data-mi-page="icd"] .icd-aura-orb {
-  display: none !important;
+@media(max-width:620px){
+  html.medindex-tailadmin.medindex-professional[data-mi-page="icd"] #icdContent .icd-clinical-hero { padding:14px!important; }
+  html.medindex-tailadmin.medindex-professional[data-mi-page="icd"] #icdContent .icd-hero-stats { grid-template-columns:repeat(3,minmax(0,1fr))!important; }
+  html.medindex-tailadmin.medindex-professional[data-mi-page="icd"] #icdContent .icd-toolbar { grid-template-columns:1fr!important; }
+  html.medindex-tailadmin.medindex-professional[data-mi-page="icd"] #icdContent .icd-toolbar>* { grid-column:auto!important;width:100%!important; }
+  html.medindex-tailadmin.medindex-professional[data-mi-page="icd"] #chapterGrid.icd-chapter-grid,
+  html.medindex-tailadmin.medindex-professional[data-mi-page="icd"] #icdGrid.icd-code-grid { grid-template-columns:1fr!important; }
+  html.medindex-tailadmin.medindex-professional[data-mi-page="icd"] #chapterGrid .icd-aura-card { min-height:180px!important; }
+  html.medindex-tailadmin.medindex-professional[data-mi-page="icd"] .med-panel-overlay { padding:0!important;align-items:end!important; }
+  html.medindex-tailadmin.medindex-professional[data-mi-page="icd"] .med-panel { border-radius:14px 14px 0 0!important; }
 }
-
-html.medindex-tailadmin[data-mi-page="icd"] .icd-aura-dots {
-  position: absolute !important;
-  top: 20px !important;
-  right: 20px !important;
-  display: flex !important;
-  gap: 5px !important;
+@media(prefers-reduced-motion:reduce){
+  html.medindex-tailadmin.medindex-professional[data-mi-page="icd"] #icdContent :is(.icd-aura-card,.icd-code-card,.icd-quick-button) { transition:none!important; }
 }
-
-html.medindex-tailadmin[data-mi-page="icd"] .icd-aura-dots i {
-  display: block !important;
-  width: 6px !important;
-  height: 6px !important;
-  border-radius: 50% !important;
-  background: rgba(255,255,255,.65) !important;
-}
-
-html.medindex-tailadmin[data-mi-page="icd"] .icd-aura-dots i:nth-child(2) { opacity: .55 !important; }
-html.medindex-tailadmin[data-mi-page="icd"] .icd-aura-dots i:nth-child(3) { opacity: .32 !important; }
-
-html.medindex-tailadmin[data-mi-page="icd"] .icd-aura-topline {
-  position: relative !important;
-  z-index: 2 !important;
-  display: flex !important;
-  width: 100% !important;
-  align-items: flex-start !important;
-  justify-content: space-between !important;
-  gap: 14px !important;
-  padding-right: 35px !important;
-}
-
-html.medindex-tailadmin[data-mi-page="icd"] .icd-aura-icon {
-  display: grid !important;
-  width: 52px !important;
-  height: 52px !important;
-  flex: 0 0 52px !important;
-  place-items: center !important;
-  border: 1px solid var(--icd-card-line) !important;
-  border-radius: 14px !important;
-  background: var(--icd-card-glass) !important;
-  color: #fff !important;
-  box-shadow: inset 0 1px 0 rgba(255,255,255,.09) !important;
-  backdrop-filter: blur(10px);
-}
-
-html.medindex-tailadmin[data-mi-page="icd"] .icd-aura-icon svg {
-  width: 25px !important;
-  height: 25px !important;
-  stroke: currentColor !important;
-  stroke-width: 1.85 !important;
-}
-
-html.medindex-tailadmin[data-mi-page="icd"] .icd-aura-roman {
-  display: flex !important;
-  min-width: 78px !important;
-  min-height: 54px !important;
-  flex-direction: column !important;
-  align-items: center !important;
-  justify-content: center !important;
-  padding: 7px 12px !important;
-  border: 1px solid var(--icd-card-line) !important;
-  border-radius: 14px !important;
-  background: var(--icd-card-glass) !important;
-  color: #fff !important;
-  box-shadow: inset 0 1px 0 rgba(255,255,255,.09) !important;
-  backdrop-filter: blur(10px);
-}
-
-html.medindex-tailadmin[data-mi-page="icd"] .icd-aura-roman small {
-  color: rgba(255,255,255,.72) !important;
-  font-family: var(--mi-font) !important;
-  font-size: 8px !important;
-  font-weight: 700 !important;
-  line-height: 1.1 !important;
-  letter-spacing: .105em !important;
-  text-transform: uppercase !important;
-}
-
-html.medindex-tailadmin[data-mi-page="icd"] .icd-aura-roman strong {
-  margin-top: 5px !important;
-  color: #fff !important;
-  font-family: var(--mi-font) !important;
-  font-size: 20px !important;
-  font-weight: 700 !important;
-  line-height: 1 !important;
-  letter-spacing: -.015em !important;
-}
-
-html.medindex-tailadmin[data-mi-page="icd"] .icd-aura-copy {
-  position: relative !important;
-  z-index: 2 !important;
-  display: flex !important;
-  min-width: 0 !important;
-  flex-direction: column !important;
-  gap: 8px !important;
-  margin-top: 22px !important;
-}
-
-html.medindex-tailadmin[data-mi-page="icd"] .icd-aura-kicker {
-  color: var(--icd-card-muted) !important;
-  font-family: var(--mi-font) !important;
-  font-size: 10px !important;
-  font-weight: 650 !important;
-  line-height: 1.25 !important;
-  letter-spacing: .075em !important;
-  text-transform: uppercase !important;
-  opacity: 1 !important;
-}
-
-html.medindex-tailadmin[data-mi-page="icd"] .icd-aura-title {
-  display: -webkit-box !important;
-  min-height: 72px !important;
-  color: #fff !important;
-  font-family: var(--mi-font) !important;
-  font-size: 19px !important;
-  font-weight: 650 !important;
-  line-height: 1.28 !important;
-  letter-spacing: -.023em !important;
-  text-shadow: none !important;
-  text-wrap: balance;
-  -webkit-box-orient: vertical !important;
-  -webkit-line-clamp: 3 !important;
-  overflow: hidden !important;
-}
-
-html.medindex-tailadmin[data-mi-page="icd"] .icd-aura-meta {
-  position: relative !important;
-  z-index: 2 !important;
-  display: flex !important;
-  flex-wrap: wrap !important;
-  gap: 8px !important;
-  margin-top: 17px !important;
-}
-
-html.medindex-tailadmin[data-mi-page="icd"] .icd-aura-range,
-html.medindex-tailadmin[data-mi-page="icd"] .icd-aura-count {
-  display: inline-flex !important;
-  min-height: 30px !important;
-  align-items: center !important;
-  padding: 0 10px !important;
-  border: 1px solid var(--icd-card-line) !important;
-  border-radius: 999px !important;
-  background: rgba(10,18,32,.18) !important;
-  color: #fff !important;
-  font-family: var(--mi-font) !important;
-  font-size: 10px !important;
-  font-weight: 650 !important;
-  line-height: 1 !important;
-  letter-spacing: .015em !important;
-  white-space: nowrap !important;
-  backdrop-filter: blur(8px);
-}
-
-html.medindex-tailadmin[data-mi-page="icd"] .icd-aura-count {
-  background: rgba(255,255,255,.10) !important;
-}
-
-html.medindex-tailadmin[data-mi-page="icd"] .icd-aura-action {
-  position: relative !important;
-  z-index: 2 !important;
-  display: flex !important;
-  width: 100% !important;
-  min-height: 48px !important;
-  align-items: center !important;
-  justify-content: space-between !important;
-  gap: 12px !important;
-  margin-top: auto !important;
-  padding: 6px 6px 6px 15px !important;
-  overflow: hidden !important;
-  border: 1px solid var(--icd-card-line) !important;
-  border-radius: 14px !important;
-  background: rgba(255,255,255,.105) !important;
-  color: #fff !important;
-  box-shadow: inset 0 1px 0 rgba(255,255,255,.08) !important;
-  font-family: var(--mi-font) !important;
-  font-size: 12px !important;
-  font-weight: 650 !important;
-  backdrop-filter: blur(10px);
-  transition: background .18s ease, border-color .18s ease !important;
-}
-
-html.medindex-tailadmin[data-mi-page="icd"] .icd-aura-action::before {
-  display: none !important;
-}
-
-html.medindex-tailadmin[data-mi-page="icd"] .icd-aura-arrow {
-  display: grid !important;
-  width: 36px !important;
-  height: 36px !important;
-  flex: 0 0 36px !important;
-  place-items: center !important;
-  border-radius: 11px !important;
-  background: rgba(255,255,255,.94) !important;
-  color: var(--icd-deep) !important;
-  box-shadow: 0 4px 10px rgba(8,18,32,.14) !important;
-  transition: transform .18s ease !important;
-}
-
-html.medindex-tailadmin[data-mi-page="icd"] .icd-aura-arrow svg {
-  width: 16px !important;
-  height: 16px !important;
-}
-
-html.medindex-tailadmin[data-mi-page="icd"] .icd-aura-card[aria-pressed="true"],
-html.medindex-tailadmin[data-mi-page="icd"] .icd-aura-card.is-selected {
-  outline: 3px solid color-mix(in srgb, var(--icd-glow) 40%, transparent) !important;
-  outline-offset: 3px !important;
-  box-shadow: var(--icd-card-shadow-hover) !important;
-}
-
-html.medindex-tailadmin[data-mi-page="icd"] .icd-aura-card:focus-visible {
-  outline: 3px solid color-mix(in srgb, var(--icd-glow) 55%, #fff) !important;
-  outline-offset: 3px !important;
-}
-
-@media (hover: hover) and (pointer: fine) {
-  html.medindex-tailadmin[data-mi-page="icd"] #chapterGrid .icd-aura-card:hover {
-    transform: translateY(-3px) !important;
-    box-shadow: var(--icd-card-shadow-hover) !important;
-    filter: saturate(1.04) brightness(1.02);
-  }
-
-  html.medindex-tailadmin[data-mi-page="icd"] .icd-aura-card:hover .icd-aura-action {
-    border-color: rgba(255,255,255,.34) !important;
-    background: rgba(255,255,255,.16) !important;
-  }
-
-  html.medindex-tailadmin[data-mi-page="icd"] .icd-aura-card:hover .icd-aura-arrow {
-    transform: translateX(3px) !important;
-  }
-}
-
-/* Main ICD code cards */
-html.medindex-tailadmin[data-mi-page="icd"] #icdGrid.icd-code-grid {
-  gap: 14px !important;
-}
-
-html.medindex-tailadmin[data-mi-page="icd"] #icdGrid .icd-code-card {
-  position: relative !important;
-  min-height: 236px !important;
-  padding: 17px !important;
-  overflow: hidden !important;
-  border: 1px solid var(--mi-gray-200) !important;
-  border-radius: 14px !important;
-  background: var(--mi-surface) !important;
-  box-shadow: 0 1px 3px rgba(16,24,40,.045) !important;
-}
-
-html.medindex-tailadmin[data-mi-page="icd"] #icdGrid .icd-code-card::before {
-  content: "";
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 4px;
-  height: 100%;
-  border-radius: 14px 0 0 14px;
-  background: var(--mi-brand-500);
-}
-
-html.medindex-tailadmin[data-mi-page="icd"] .icd-code-head .med-card-code {
-  min-height: 30px !important;
-  padding: 0 10px !important;
-  border-radius: 8px !important;
-  background: var(--mi-brand-50) !important;
-  color: var(--mi-brand-700) !important;
-  font-family: var(--mi-font) !important;
-  font-size: 10px !important;
-  font-weight: 700 !important;
-  letter-spacing: .025em !important;
-}
-
-html.medindex-tailadmin[data-mi-page="icd"] .icd-priority {
-  color: var(--mi-gray-500) !important;
-  font-family: var(--mi-font) !important;
-  font-size: 9px !important;
-  font-weight: 650 !important;
-  line-height: 1.35 !important;
-}
-
-html.medindex-tailadmin[data-mi-page="icd"] .icd-code-card h3 {
-  margin: 14px 0 6px !important;
-  color: var(--mi-gray-900) !important;
-  font-family: var(--mi-font) !important;
-  font-size: 15px !important;
-  font-weight: 650 !important;
-  line-height: 1.35 !important;
-  letter-spacing: -.015em !important;
-}
-
-html.medindex-tailadmin[data-mi-page="icd"] .icd-code-card > p {
-  margin-top: 5px !important;
-  color: var(--mi-gray-600) !important;
-  font-family: var(--mi-font) !important;
-  font-size: 12px !important;
-  line-height: 1.5 !important;
-}
-
-html.medindex-tailadmin[data-mi-page="icd"] .icd-code-card .icd-english {
-  color: var(--mi-gray-500) !important;
-  font-size: 11px !important;
-  font-style: normal !important;
-}
-
-html.medindex-tailadmin[data-mi-page="icd"] .icd-code-card .med-chip {
-  min-height: 25px !important;
-  padding: 0 8px !important;
-  border-radius: 7px !important;
-  font-family: var(--mi-font) !important;
-  font-size: 9px !important;
-  font-weight: 650 !important;
-}
-
-html.medindex-tailadmin[data-mi-page="icd"] .icd-code-card > button {
-  min-height: 40px !important;
-  margin-top: 12px !important;
-  border: 1px solid var(--mi-gray-300) !important;
-  border-radius: 9px !important;
-  background: var(--mi-surface) !important;
-  color: var(--mi-gray-700) !important;
-  font-family: var(--mi-font) !important;
-  font-size: 11px !important;
-  font-weight: 650 !important;
-  box-shadow: var(--mi-shadow-xs) !important;
-}
-
-@media (hover: hover) and (pointer: fine) {
-  html.medindex-tailadmin[data-mi-page="icd"] #icdGrid .icd-code-card:hover {
-    transform: translateY(-2px) !important;
-    border-color: var(--mi-brand-200) !important;
-    box-shadow: 0 12px 24px rgba(16,24,40,.08) !important;
-  }
-
-  html.medindex-tailadmin[data-mi-page="icd"] .icd-code-card > button:hover {
-    border-color: var(--mi-brand-300) !important;
-    background: var(--mi-brand-50) !important;
-    color: var(--mi-brand-700) !important;
-  }
-}
-
-html[data-theme="dark"].medindex-tailadmin[data-mi-page="icd"] .icd-section .med-section-head h2,
-html[data-theme="dark"].medindex-tailadmin[data-mi-page="icd"] .icd-code-card h3 {
-  color: var(--mi-gray-50) !important;
-}
-
-html[data-theme="dark"].medindex-tailadmin[data-mi-page="icd"] #icdGrid .icd-code-card {
-  border-color: var(--mi-gray-700) !important;
-  background: var(--mi-gray-800) !important;
-}
-
-html[data-theme="dark"].medindex-tailadmin[data-mi-page="icd"] .icd-code-head .med-card-code {
-  background: rgba(31,119,121,.14) !important;
-  color: var(--mi-brand-300) !important;
-}
-
-html[data-theme="dark"].medindex-tailadmin[data-mi-page="icd"] .icd-code-card > p,
-html[data-theme="dark"].medindex-tailadmin[data-mi-page="icd"] .icd-code-card .icd-english {
-  color: var(--mi-gray-400) !important;
-}
-
-html[data-theme="dark"].medindex-tailadmin[data-mi-page="icd"] .icd-code-card > button {
-  border-color: var(--mi-gray-600) !important;
-  background: var(--mi-gray-800) !important;
-  color: var(--mi-gray-200) !important;
-}
-
-@media (max-width: 1260px) {
-  html.medindex-tailadmin[data-mi-page="icd"] #chapterGrid.icd-chapter-grid {
-    grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
-  }
-}
-
-@media (max-width: 720px) {
-  html.medindex-tailadmin[data-mi-page="icd"] #chapterGrid.icd-chapter-grid {
-    grid-template-columns: 1fr !important;
-    gap: 12px !important;
-  }
-
-  html.medindex-tailadmin[data-mi-page="icd"] #chapterGrid .icd-aura-card {
-    min-height: 274px !important;
-    padding: 17px !important;
-    border-radius: 16px !important;
-  }
-
-  html.medindex-tailadmin[data-mi-page="icd"] .icd-aura-dots {
-    top: 17px !important;
-    right: 17px !important;
-  }
-
-  html.medindex-tailadmin[data-mi-page="icd"] .icd-aura-title {
-    min-height: auto !important;
-    font-size: 17px !important;
-    -webkit-line-clamp: 4 !important;
-  }
-
-  html.medindex-tailadmin[data-mi-page="icd"] .icd-aura-copy {
-    margin-top: 18px !important;
-  }
-}
-
-@media (prefers-reduced-motion: reduce) {
-  html.medindex-tailadmin[data-mi-page="icd"] .icd-aura-card,
-  html.medindex-tailadmin[data-mi-page="icd"] .icd-aura-action,
-  html.medindex-tailadmin[data-mi-page="icd"] .icd-aura-arrow,
-  html.medindex-tailadmin[data-mi-page="icd"] .icd-code-card {
-    transition: none !important;
-  }
-
-  html.medindex-tailadmin[data-mi-page="icd"] .icd-aura-card:hover,
-  html.medindex-tailadmin[data-mi-page="icd"] .icd-code-card:hover {
-    transform: none !important;
-  }
-}
-
-@media (forced-colors: active) {
-  html.medindex-tailadmin[data-mi-page="icd"] #chapterGrid .icd-aura-card,
-  html.medindex-tailadmin[data-mi-page="icd"] #icdGrid .icd-code-card {
-    border: 2px solid ButtonText !important;
-    background: Canvas !important;
-    color: CanvasText !important;
-    box-shadow: none !important;
-  }
-
-  html.medindex-tailadmin[data-mi-page="icd"] .icd-aura-title,
-  html.medindex-tailadmin[data-mi-page="icd"] .icd-aura-kicker,
-  html.medindex-tailadmin[data-mi-page="icd"] .icd-aura-roman small,
-  html.medindex-tailadmin[data-mi-page="icd"] .icd-aura-roman strong,
-  html.medindex-tailadmin[data-mi-page="icd"] .icd-aura-range,
-  html.medindex-tailadmin[data-mi-page="icd"] .icd-aura-count,
-  html.medindex-tailadmin[data-mi-page="icd"] .icd-aura-action {
-    color: CanvasText !important;
-  }
+@media(forced-colors:active){
+  html.medindex-tailadmin.medindex-professional[data-mi-page="icd"] #icdContent :is(.icd-clinical-hero,.icd-workbench,.icd-aura-card,.icd-code-card) { border:2px solid ButtonText!important;background:Canvas!important;color:CanvasText!important;box-shadow:none!important; }
 }

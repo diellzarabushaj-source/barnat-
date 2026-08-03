@@ -1,0 +1,473 @@
+{
+  "meta": {
+    "url": "https://free-demo.tailadmin.com/",
+    "title": "eCommerce Dashboard | TailAdmin - Tailwind CSS Admin Dashboard Template",
+    "description": "",
+    "language": "en",
+    "viewport": "width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0",
+    "themeColor": null,
+    "ogImage": null,
+    "ogTitle": "eCommerce Dashboard | TailAdmin - Tailwind CSS Admin Dashboard Template",
+    "ogDescription": ""
+  },
+  "theme": {
+    "mode": "light",
+    "bodyBackground": "#f9fafb",
+    "isDark": false,
+    "confidence": 0.9
+  },
+  "brand": {
+    "name": "eCommerce Dashboard",
+    "favicon": {
+      "href": "https://free-demo.tailadmin.com/favicon.ico",
+      "type": null
+    }
+  },
+  "colors": {
+    "dominant": [
+      {
+        "hex": "#e4e7ec",
+        "ratio": 0.669
+      },
+      {
+        "hex": "#000000",
+        "ratio": 0.252
+      },
+      {
+        "hex": "#667085",
+        "ratio": 0.015
+      },
+      {
+        "hex": "#344054",
+        "ratio": 0.015
+      },
+      {
+        "hex": "#1d2939",
+        "ratio": 0.01
+      },
+      {
+        "hex": "#f2f4f7",
+        "ratio": 0.009
+      },
+      {
+        "hex": "#ffffff",
+        "ratio": 0.009
+      },
+      {
+        "hex": "#98a2b3",
+        "ratio": 0.004
+      },
+      {
+        "hex": "#f9fafb",
+        "ratio": 0.004
+      },
+      {
+        "hex": "#465fff",
+        "ratio": 0.003
+      },
+      {
+        "hex": "#d0d5dd",
+        "ratio": 0.002
+      },
+      {
+        "hex": "#90a4ae",
+        "ratio": 0.001
+      },
+      {
+        "hex": "#393939",
+        "ratio": 0.001
+      },
+      {
+        "hex": "#12b76a",
+        "ratio": 0.001
+      },
+      {
+        "hex": "#039855",
+        "ratio": 0.001
+      },
+      {
+        "hex": "#ecfdf3",
+        "ratio": 0.001
+      },
+      {
+        "hex": "#d92d20",
+        "ratio": 0
+      },
+      {
+        "hex": "#373d3f",
+        "ratio": 0
+      },
+      {
+        "hex": "#ecf3ff",
+        "ratio": 0
+      },
+      {
+        "hex": "#101828",
+        "ratio": 0
+      },
+      {
+        "hex": "#fd853a",
+        "ratio": 0
+      },
+      {
+        "hex": "#f04438",
+        "ratio": 0
+      },
+      {
+        "hex": "#fef3f2",
+        "ratio": 0
+      },
+      {
+        "hex": "#eceff1",
+        "ratio": 0
+      },
+      {
+        "hex": "#dddddd",
+        "ratio": 0
+      },
+      {
+        "hex": "#9cb9ff",
+        "ratio": 0
+      },
+      {
+        "hex": "#dc6803",
+        "ratio": 0
+      },
+      {
+        "hex": "#fffaeb",
+        "ratio": 0
+      },
+      {
+        "hex": "#027a48",
+        "ratio": 0
+      },
+      {
+        "hex": "#5c5cff",
+        "ratio": 0
+      }
+    ],
+    "palette": [
+      {
+        "hex": "#f9fafb",
+        "role": "background",
+        "source": "computed"
+      },
+      {
+        "hex": "#000000",
+        "role": "foreground",
+        "source": "computed"
+      },
+      {
+        "hex": "#465fff",
+        "role": "primary",
+        "source": "heuristic"
+      },
+      {
+        "hex": "#9cb9ff",
+        "role": "secondary",
+        "source": "heuristic"
+      },
+      {
+        "hex": "#5c5cff",
+        "role": "accent",
+        "source": "heuristic"
+      }
+    ],
+    "cssVariables": {
+      "--fc-button-bg-color": "#2c3e50",
+      "--fc-button-text-color": "#fff",
+      "--color-brand-600": "#3641f5",
+      "--color-blue-light-50": "#f0f9ff",
+      "--fc-event-border-color": "#3788d8",
+      "--color-orange-50": "#fff6ed",
+      "--color-gray-300": "#d0d5dd",
+      "--color-brand-400": "#7592ff",
+      "--color-gray-500": "#667085",
+      "--color-brand-300": "#9cb9ff",
+      "--color-gray-50": "#f9fafb",
+      "--tw-ring-offset-color": "#fff",
+      "--color-white": "#ffffff",
+      "--color-gray-400": "#98a2b3",
+      "--color-gray-dark": "#1a2231",
+      "--color-error-300": "#fda29b",
+      "--color-brand-100": "#dde9ff",
+      "--color-gray-100": "#f2f4f7",
+      "--color-success-800": "#05603a",
+      "--fc-today-bg-color": "#ffdc28",
+      "--fc-button-hover-bg-color": "#1e2b37",
+      "--fc-border-color": "#ddd",
+      "--color-theme-purple-500": "#7a5af8",
+      "--color-warning-50": "#fffaeb",
+      "--color-error-50": "#fef3f2",
+      "--color-error-700": "#b42318",
+      "--color-error-600": "#d92d20",
+      "--fc-button-hover-border-color": "#1a252f",
+      "--color-success-50": "#ecfdf3",
+      "--fc-event-selected-overlay-color": "#000000",
+      "--fc-event-text-color": "#fff",
+      "--color-gray-800": "#1d2939",
+      "--color-success-300": "#6ce9a6",
+      "--color-orange-500": "#fb6514",
+      "--fc-page-bg-color": "#fff",
+      "--fc-bg-event-color": "#8fdf82",
+      "--color-orange-400": "#fd853a",
+      "--color-success-500": "#12b76a",
+      "--fc-highlight-color": "#bce8f1",
+      "--color-brand-950": "#161950",
+      "--color-warning-600": "#dc6803",
+      "--color-brand-500": "#465fff",
+      "--color-brand-800": "#252dae",
+      "--color-gray-900": "#101828",
+      "--color-error-500": "#f04438",
+      "--fc-list-event-hover-bg-color": "#f5f5f5",
+      "--color-gray-700": "#344054",
+      "--color-theme-pink-500": "#ee46bc",
+      "--color-gray-600": "#475467",
+      "--color-success-700": "#027a48",
+      "--fc-more-link-bg-color": "#d0d0d0",
+      "--color-warning-700": "#b54708",
+      "--fc-button-active-border-color": "#151e27",
+      "--color-gray-200": "#e4e7ec",
+      "--color-blue-light-500": "#0ba5ec",
+      "--color-black": "#101828",
+      "--fc-button-border-color": "#2c3e50",
+      "--color-success-600": "#039855",
+      "--fc-event-bg-color": "#3788d8",
+      "--fc-button-active-bg-color": "#1a252f",
+      "--color-error-800": "#912018",
+      "--color-warning-500": "#f79009",
+      "--color-warning-400": "#fdb022",
+      "--color-brand-50": "#ecf3ff",
+      "--tw-shadow": "#101828"
+    },
+    "gradients": []
+  },
+  "logo": {
+    "candidates": [
+      {
+        "selector": "img.dark:hidden",
+        "href": "https://free-demo.tailadmin.com/src/images/logo/logo.svg",
+        "type": "svg",
+        "width": 154,
+        "height": 32,
+        "svgContent": null,
+        "colors": [],
+        "isLight": false,
+        "isDark": false,
+        "needsDarkBackground": false,
+        "needsLightBackground": false,
+        "_score": 135,
+        "uploadedUrl": "https://vgbujcuwptvheqijyjbe.supabase.co/storage/v1/object/public/hmac-uploads/brand/565553d2-675a-4ef7-a7f3-b1c30ec805df/assets/fe2ec9bb-fd98-42bf-a826-6513a2fa1223.svg"
+      },
+      {
+        "selector": "img.hidden",
+        "href": "https://free-demo.tailadmin.com/src/images/logo/logo-dark.svg",
+        "type": "svg",
+        "width": 154,
+        "height": 32,
+        "svgContent": null,
+        "colors": [],
+        "isLight": false,
+        "isDark": false,
+        "needsDarkBackground": false,
+        "needsLightBackground": false,
+        "_score": 135
+      },
+      {
+        "selector": "img.dark:hidden",
+        "href": "https://free-demo.tailadmin.com/src/images/logo/logo.svg",
+        "type": "svg",
+        "width": 154,
+        "height": 32,
+        "svgContent": null,
+        "colors": [],
+        "isLight": false,
+        "isDark": false,
+        "needsDarkBackground": false,
+        "needsLightBackground": false,
+        "_score": 105
+      },
+      {
+        "selector": "img.hidden",
+        "href": "https://free-demo.tailadmin.com/src/images/logo/logo-dark.svg",
+        "type": "svg",
+        "width": 154,
+        "height": 32,
+        "svgContent": null,
+        "colors": [],
+        "isLight": false,
+        "isDark": false,
+        "needsDarkBackground": false,
+        "needsLightBackground": false,
+        "_score": 105
+      },
+      {
+        "selector": "img.logo-icon",
+        "href": "https://free-demo.tailadmin.com/src/images/logo/logo-icon.svg",
+        "type": "svg",
+        "width": 32,
+        "height": 32,
+        "svgContent": null,
+        "colors": [],
+        "isLight": false,
+        "isDark": false,
+        "needsDarkBackground": false,
+        "needsLightBackground": false,
+        "_score": 68
+      }
+    ],
+    "best": {
+      "selector": "img.dark:hidden",
+      "href": "https://free-demo.tailadmin.com/src/images/logo/logo.svg",
+      "type": "svg",
+      "width": 154,
+      "height": 32,
+      "svgContent": null,
+      "colors": [],
+      "isLight": false,
+      "isDark": false,
+      "needsDarkBackground": false,
+      "needsLightBackground": false,
+      "_score": 135,
+      "uploadedUrl": "https://vgbujcuwptvheqijyjbe.supabase.co/storage/v1/object/public/hmac-uploads/brand/565553d2-675a-4ef7-a7f3-b1c30ec805df/assets/fe2ec9bb-fd98-42bf-a826-6513a2fa1223.svg"
+    }
+  },
+  "fonts": {
+    "computed": [
+      {
+        "family": "Outfit, sans-serif",
+        "weights": [
+          "400",
+          "500",
+          "600",
+          "700",
+          "300"
+        ],
+        "source": "web"
+      }
+    ],
+    "baseSizePx": 16
+  },
+  "confidence": {
+    "colorExtraction": 0.9,
+    "logoDetection": 0.85,
+    "fontDetection": 0.8
+  },
+  "screenshot": {
+    "url": "https://vgbujcuwptvheqijyjbe.supabase.co/storage/v1/object/public/hmac-uploads/brand/565553d2-675a-4ef7-a7f3-b1c30ec805df/screenshot.png",
+    "width": 1920,
+    "height": 1080,
+    "sizeBytes": 125338,
+    "uploadedAt": "2026-07-31T14:56:18.108Z"
+  },
+  "assets": {
+    "fe2ec9bb-fd98-42bf-a826-6513a2fa1223": {
+      "url": "https://vgbujcuwptvheqijyjbe.supabase.co/storage/v1/object/public/hmac-uploads/brand/565553d2-675a-4ef7-a7f3-b1c30ec805df/assets/fe2ec9bb-fd98-42bf-a826-6513a2fa1223.svg",
+      "name": "logo.svg",
+      "type": "image",
+      "description": "UI screenshot of TailAdmin logo and branding. The logo occupies the left side with a blue square icon containing white bar chart elements, followed by dark text reading 'TailAdmin'. Ample negative space exists to the right of the logo, suitable for text overlays or additional UI elements. The design uses a minimal, modern aesthetic with high contrast between the blue accent and dark background.",
+      "metadata": {
+        "size": "6.24 KB",
+        "mimeType": "image/svg+xml",
+        "sizeBytes": 6391,
+        "uploadedAt": "2026-07-31T14:56:18.281Z"
+      }
+    },
+    "751dffdd-952f-4164-999a-9430ac38ca1d": {
+      "url": "https://vgbujcuwptvheqijyjbe.supabase.co/storage/v1/object/public/hmac-uploads/brand/565553d2-675a-4ef7-a7f3-b1c30ec805df/assets/751dffdd-952f-4164-999a-9430ac38ca1d.jpg",
+      "name": "product-01.jpg",
+      "type": "image",
+      "description": "Product photograph of a MacBook laptop displayed at a slight angle showing the open screen. The device features a gradient wallpaper transitioning from purple/magenta to pink tones. The laptop is centered in the frame with neutral gray background space surrounding it. The lighting is clean and even, creating a premium product photography style with minimal shadows and high contrast.",
+      "metadata": {
+        "size": "7.25 KB",
+        "mimeType": "image/jpeg",
+        "sizeBytes": 7427,
+        "uploadedAt": "2026-07-31T14:56:18.278Z"
+      }
+    },
+    "4f38f66e-75fa-4f2f-863a-d70953835a8d": {
+      "url": "https://vgbujcuwptvheqijyjbe.supabase.co/storage/v1/object/public/hmac-uploads/brand/565553d2-675a-4ef7-a7f3-b1c30ec805df/assets/4f38f66e-75fa-4f2f-863a-d70953835a8d.jpg",
+      "name": "product-02.jpg",
+      "type": "image",
+      "description": "Product photograph of an Apple Watch Ultra with orange/red band and metallic casing, shown at a three-quarter angle against a white background. The watch face displays a prominent circular digital display. The device is positioned centrally with substantial white negative space on all sides. The lighting is bright and neutral, emphasizing the watch's premium build and color details.",
+      "metadata": {
+        "size": "10.57 KB",
+        "mimeType": "image/jpeg",
+        "sizeBytes": 10827,
+        "uploadedAt": "2026-07-31T14:56:18.319Z"
+      }
+    },
+    "395fc7ba-361a-44a9-9eac-e2b8627d61c2": {
+      "url": "https://vgbujcuwptvheqijyjbe.supabase.co/storage/v1/object/public/hmac-uploads/brand/565553d2-675a-4ef7-a7f3-b1c30ec805df/assets/395fc7ba-361a-44a9-9eac-e2b8627d61c2.jpg",
+      "name": "product-03.jpg",
+      "type": "image",
+      "description": "Product photograph of an iPhone 14 Pro in space gray, displayed at a slight angle showing the front face and titanium frame. The device features a notch cutout at the top and flat edges. It is centered in the composition with white background space surrounding it. The lighting is clean and professional with soft shadows, highlighting the phone's refined design and camera placement.",
+      "metadata": {
+        "size": "6.18 KB",
+        "mimeType": "image/jpeg",
+        "sizeBytes": 6329,
+        "uploadedAt": "2026-07-31T14:56:18.276Z"
+      }
+    },
+    "a4cf271e-c6b8-4a85-8414-965ab5c735b2": {
+      "url": "https://vgbujcuwptvheqijyjbe.supabase.co/storage/v1/object/public/hmac-uploads/brand/565553d2-675a-4ef7-a7f3-b1c30ec805df/assets/a4cf271e-c6b8-4a85-8414-965ab5c735b2.jpg",
+      "name": "product-04.jpg",
+      "type": "image",
+      "description": "Product photograph of a tablet or iPad stand in white, shown in profile view with a minimalist design. The stand is positioned in the center-right portion of the frame against a white background. The composition has significant empty white space on the left side, ideal for text overlay. The aesthetic is clean, modern, and minimal with neutral lighting.",
+      "metadata": {
+        "size": "4.16 KB",
+        "mimeType": "image/jpeg",
+        "sizeBytes": 4261,
+        "uploadedAt": "2026-07-31T14:56:18.342Z"
+      }
+    },
+    "7e4bf773-c789-4f62-b011-fdce21cf6c31": {
+      "url": "https://vgbujcuwptvheqijyjbe.supabase.co/storage/v1/object/public/hmac-uploads/brand/565553d2-675a-4ef7-a7f3-b1c30ec805df/assets/7e4bf773-c789-4f62-b011-fdce21cf6c31.jpg",
+      "name": "product-05.jpg",
+      "type": "image",
+      "description": "Product photograph of Apple AirPods Pro earbuds with their white charging case, displayed against a white background. The case is positioned in the center-lower portion of the frame with both earbuds visible emerging from or beside it. Substantial white negative space exists above and around the products. The lighting is bright and even, emphasizing the glossy white finish and premium appearance.",
+      "metadata": {
+        "size": "3.00 KB",
+        "mimeType": "image/jpeg",
+        "sizeBytes": 3073,
+        "uploadedAt": "2026-07-31T14:56:18.505Z"
+      }
+    },
+    "e5af4ccc-9d4d-49ae-aed9-c35b6f4fa018": {
+      "url": "https://vgbujcuwptvheqijyjbe.supabase.co/storage/v1/object/public/hmac-uploads/brand/565553d2-675a-4ef7-a7f3-b1c30ec805df/assets/e5af4ccc-9d4d-49ae-aed9-c35b6f4fa018.jpg",
+      "name": "owner.jpg",
+      "type": "image",
+      "description": "Portrait photograph of a man wearing a blue PIMJO branded hoodie, looking directly at the camera with a neutral, friendly expression. The subject is framed from shoulders up and positioned slightly off-center. The background is a blurred indoor environment in soft white/gray tones. The lighting is warm and natural, creating an approachable, professional headshot aesthetic suitable for team or leadership pages.",
+      "metadata": {
+        "size": "148.76 KB",
+        "mimeType": "image/jpeg",
+        "sizeBytes": 152333,
+        "uploadedAt": "2026-07-31T14:56:18.773Z"
+      }
+    },
+    "bece94ee-0efb-4ece-84f6-528612244fce": {
+      "url": "https://vgbujcuwptvheqijyjbe.supabase.co/storage/v1/object/public/hmac-uploads/brand/565553d2-675a-4ef7-a7f3-b1c30ec805df/assets/bece94ee-0efb-4ece-84f6-528612244fce.svg",
+      "name": "country-01.svg",
+      "type": "image",
+      "description": "Flag icon or circular badge featuring the United States flag design with red and white stripes and blue canton with stars. The icon is circular in format and centered in the frame against a transparent or white background. The style is flat and simplified, typical of web interface icons or country selector graphics. Colors are primary red, white, and blue with high contrast.",
+      "metadata": {
+        "size": "2.14 KB",
+        "mimeType": "image/svg+xml",
+        "sizeBytes": 2196,
+        "uploadedAt": "2026-07-31T14:56:18.488Z"
+      }
+    },
+    "a6cb43f6-1daf-48fe-bb12-0d2ed7b67149": {
+      "url": "https://vgbujcuwptvheqijyjbe.supabase.co/storage/v1/object/public/hmac-uploads/brand/565553d2-675a-4ef7-a7f3-b1c30ec805df/assets/a6cb43f6-1daf-48fe-bb12-0d2ed7b67149.svg",
+      "name": "country-02.svg",
+      "type": "image",
+      "description": "Flag icon or circular badge featuring the French flag design with vertical stripes of blue, white, and red. The icon is circular in format and centered against a transparent or white background. The style is flat and simplified, consistent with web interface country selector graphics. Colors are vivid primary blue, white, and red with high contrast and clean edges.",
+      "metadata": {
+        "size": "680 B",
+        "mimeType": "image/svg+xml",
+        "sizeBytes": 680,
+        "uploadedAt": "2026-07-31T14:56:18.506Z"
+      }
+    }
+  }
+}

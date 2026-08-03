@@ -46,7 +46,7 @@ html.medindex-tailadmin[data-mi-page="dozologjia"] .clinical-patient {
   padding:14px 16px !important;
   border:1px solid #d9d0f4 !important;
   border-radius:14px !important;
-  background:linear-gradient(135deg,#fbfaff 0%,#f5f1ff 100%) !important;
+  background:#f7f5fb !important;
 }
 
 html.medindex-tailadmin[data-mi-page="dozologjia"] .clinical-patient[hidden] {
@@ -117,7 +117,7 @@ html.medindex-tailadmin[data-mi-page="dozologjia"] .dosage-card::before {
   position:absolute;
   inset:0 auto 0 0;
   width:4px;
-  background:linear-gradient(180deg,var(--dose-adult),var(--dose-child));
+  background:var(--dose-adult);
 }
 
 html.medindex-tailadmin[data-mi-page="dozologjia"] .dosage-card-head {
@@ -230,12 +230,12 @@ html.medindex-tailadmin[data-mi-page="dozologjia"] .dosage-population {
 
 html.medindex-tailadmin[data-mi-page="dozologjia"] .dosage-population.is-adult {
   border-color:#b8ded8;
-  background:linear-gradient(145deg,#f7fffd,var(--dose-adult-soft));
+  background:var(--dose-adult-soft);
 }
 
 html.medindex-tailadmin[data-mi-page="dozologjia"] .dosage-population.is-pediatric {
   border-color:#d9d0f4;
-  background:linear-gradient(145deg,#fcfbff,var(--dose-child-soft));
+  background:var(--dose-child-soft);
 }
 
 html.medindex-tailadmin[data-mi-page="dozologjia"] .dosage-population.is-empty {

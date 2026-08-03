@@ -273,7 +273,7 @@ html.medindex-tailadmin :where(.med-grid,.atc-grid,.lab-grid,.clinical-list,.rx-
 html.medindex-tailadmin[data-mi-page="barnat"] .mi-index-content > header:not(.registry-overview) { display: grid !important; grid-template-columns: minmax(280px, 1fr) auto !important; align-items: center !important; gap: 14px 24px !important; padding: 18px 22px !important; }
 html.medindex-tailadmin[data-mi-page="barnat"] .mi-index-content > header:not(.registry-overview) h1 { font-size: 20px !important; }
 html.medindex-tailadmin[data-mi-page="barnat"] .mi-index-content > header:not(.registry-overview) .sub { margin: 0 !important; text-align: right; }
-html.medindex-tailadmin[data-mi-page="barnat"] .toolbar { position: sticky !important; top: 8px !important; z-index: 28 !important; display: grid !important; grid-template-columns: minmax(280px, 2.4fr) minmax(145px, .85fr) minmax(145px, .85fr) minmax(105px, .55fr) auto auto auto !important; align-items: center !important; margin: 0 0 18px !important; background: color-mix(in srgb, var(--mi-surface) 94%, transparent) !important; backdrop-filter: blur(16px); }
+html.medindex-tailadmin[data-mi-page="barnat"] .toolbar { position: sticky !important; top: 8px !important; z-index: 28 !important; display: grid !important; grid-template-columns: minmax(280px, 2.4fr) minmax(145px, .85fr) minmax(145px, .85fr) minmax(105px, .55fr) auto auto auto !important; align-items: center !important; margin: 0 0 18px !important; background: var(--mi-surface) !important; backdrop-filter: none; }
 html.medindex-tailadmin[data-mi-page="barnat"] .toolbar > input[type="search"] { width: 100% !important; min-width: 0 !important; }
 html.medindex-tailadmin[data-mi-page="barnat"] .toolbar .count-badge { grid-column: 1 / -1; justify-self: start; margin: 0 !important; }
 html.medindex-tailadmin[data-mi-page="barnat"] .table-wrap { max-height: calc(100dvh - 330px); }
@@ -284,11 +284,11 @@ html.medindex-tailadmin[data-mi-page="barnat"] .selection-badge,
 html.medindex-tailadmin[data-mi-page="barnat"] .count-badge { white-space: nowrap; }
 
 /* Klasifikimi */
-html.medindex-tailadmin[data-mi-page="klasifikimi"] .atc-header { display: grid !important; grid-template-columns: minmax(190px, .75fr) minmax(300px, 1.25fr) minmax(260px, 1fr) !important; align-items: center !important; gap: 24px 36px !important; min-height: 132px !important; padding: 26px 32px !important; overflow: hidden !important; border: 0 !important; border-radius: 14px !important; background: linear-gradient(120deg, #0d4d50, #176b6d) !important; color: #fff !important; box-shadow: var(--mi-shadow-sm) !important; }
+html.medindex-tailadmin[data-mi-page="klasifikimi"] .atc-header { display: grid !important; grid-template-columns: minmax(190px, .75fr) minmax(300px, 1.25fr) minmax(260px, 1fr) !important; align-items: center !important; gap: 16px 24px !important; min-height: 0 !important; padding: 18px 20px !important; overflow: hidden !important; border: 1px solid var(--mi-border) !important; border-radius: 12px !important; background: var(--mi-surface) !important; color: var(--mi-text) !important; box-shadow: var(--mi-shadow-xs) !important; }
 html.medindex-tailadmin[data-mi-page="klasifikimi"] .atc-header > * { min-width: 0; max-width: 100%; }
-html.medindex-tailadmin[data-mi-page="klasifikimi"] .atc-header .atc-kicker { margin: 0 !important; color: #d0d5dd !important; line-height: 1.45 !important; }
-html.medindex-tailadmin[data-mi-page="klasifikimi"] .atc-header h1 { color: #fff !important; font-size: clamp(28px, 3vw, 38px) !important; line-height: 1.06 !important; }
-html.medindex-tailadmin[data-mi-page="klasifikimi"] .atc-header > p:last-child { margin: 0 !important; color: #d5e7e5 !important; font-size: 13px !important; line-height: 1.55 !important; overflow-wrap: anywhere; }
+html.medindex-tailadmin[data-mi-page="klasifikimi"] .atc-header .atc-kicker { margin: 0 !important; color: var(--mi-muted) !important; line-height: 1.45 !important; }
+html.medindex-tailadmin[data-mi-page="klasifikimi"] .atc-header h1 { color: var(--mi-text) !important; font-size: 22px !important; line-height: 1.2 !important; }
+html.medindex-tailadmin[data-mi-page="klasifikimi"] .atc-header > p:last-child { margin: 0 !important; color: var(--mi-muted) !important; font-size: 13px !important; line-height: 1.5 !important; overflow-wrap: anywhere; }
 html.medindex-tailadmin[data-mi-page="klasifikimi"] .atc-toolbar { display: grid !important; grid-template-columns: auto minmax(280px, 1fr) auto auto !important; align-items: center !important; margin: 16px 0 18px !important; }
 html.medindex-tailadmin[data-mi-page="klasifikimi"] .atc-search-wrap { min-width: 0 !important; }
 html.medindex-tailadmin[data-mi-page="klasifikimi"] .atc-audit { grid-template-columns: repeat(8, minmax(105px, 1fr)) !important; gap: 8px !important; overflow-x: auto; padding: 10px !important; }
@@ -297,11 +297,13 @@ html.medindex-tailadmin[data-mi-page="klasifikimi"] .atc-grid { grid-template-co
 
 /* ICD and Analizat */
 html.medindex-tailadmin[data-mi-page="icd"] .med-hero,
-html.medindex-tailadmin[data-mi-page="analizat"] .med-hero { min-height: 128px !important; padding: 24px 28px !important; overflow: hidden !important; border: 0 !important; background: linear-gradient(120deg, #0d4d50, #176b6d) !important; color: #fff !important; }
+html.medindex-tailadmin[data-mi-page="analizat"] .med-hero { min-height: 0 !important; padding: 18px 20px !important; overflow: hidden !important; border: 1px solid var(--mi-border) !important; border-radius: 12px !important; background: var(--mi-surface) !important; color: var(--mi-text) !important; box-shadow: var(--mi-shadow-xs) !important; }
 html.medindex-tailadmin[data-mi-page="icd"] .med-hero h1,
 html.medindex-tailadmin[data-mi-page="analizat"] .med-hero h1,
 html.medindex-tailadmin[data-mi-page="icd"] .med-hero p,
-html.medindex-tailadmin[data-mi-page="analizat"] .med-hero p { color: #fff !important; }
+html.medindex-tailadmin[data-mi-page="analizat"] .med-hero p { color: var(--mi-muted) !important; }
+html.medindex-tailadmin[data-mi-page="icd"] .med-hero h1,
+html.medindex-tailadmin[data-mi-page="analizat"] .med-hero h1 { color: var(--mi-text) !important; }
 html.medindex-tailadmin[data-mi-page="icd"] .icd-toolbar { display: grid !important; grid-template-columns: minmax(300px, 1fr) minmax(150px, 210px) minmax(150px, 210px) auto !important; align-items: center !important; }
 html.medindex-tailadmin[data-mi-page="icd"] .icd-smart-wrap { min-width: 0 !important; }
 html.medindex-tailadmin[data-mi-page="icd"] .icd-chapter-grid { grid-template-columns: repeat(3, minmax(240px, 1fr)) !important; gap: 10px !important; }
@@ -314,7 +316,7 @@ html.medindex-tailadmin[data-mi-page="analizat"] .lab-card-open { min-height: 17
 html.medindex-tailadmin[data-mi-page="dozologjia"] .clinical-hero,
 html.medindex-tailadmin[data-mi-page="protokollet"] .clinical-hero { display: grid !important; grid-template-columns: minmax(0, 1fr) auto !important; align-items: center !important; gap: 18px !important; padding: 20px 22px !important; }
 html.medindex-tailadmin[data-mi-page="dozologjia"] .clinical-toolbar,
-html.medindex-tailadmin[data-mi-page="protokollet"] .clinical-toolbar { position: sticky !important; top: 8px !important; z-index: 24 !important; display: grid !important; grid-template-columns: minmax(280px, 2fr) repeat(3, minmax(150px, 1fr)) !important; background: color-mix(in srgb, var(--mi-surface) 94%, transparent) !important; backdrop-filter: blur(16px); }
+html.medindex-tailadmin[data-mi-page="protokollet"] .clinical-toolbar { position: sticky !important; top: 8px !important; z-index: 24 !important; display: grid !important; grid-template-columns: minmax(280px, 2fr) repeat(3, minmax(150px, 1fr)) !important; background: var(--mi-surface) !important; backdrop-filter: none; }
 html.medindex-tailadmin[data-mi-page="dozologjia"] .clinical-row,
 html.medindex-tailadmin[data-mi-page="protokollet"] .clinical-row { grid-template-columns: minmax(0, 1fr) auto !important; gap: 14px !important; padding: 14px 16px !important; border-radius: 12px !important; box-shadow: var(--mi-shadow-xs) !important; }
 html.medindex-tailadmin[data-mi-page="dozologjia"] .clinical-details { grid-template-columns: repeat(4, minmax(130px, 1fr)) !important; gap: 8px !important; }
@@ -385,6 +387,8 @@ html.medindex-tailadmin[data-mi-page="recetat"] .rx-compose-actions { display: f
   html.medindex-tailadmin .mi-content-container { padding: 18px 12px 34px !important; }
   html.medindex-tailadmin :where(input,select,textarea) { font-size: 16px !important; }
   html.medindex-tailadmin .mi-page-heading { margin-bottom: 16px !important; }
+  html.medindex-tailadmin .mi-index-content > .mi-offline-status { width: 100% !important; min-width: 0 !important; justify-content: flex-start !important; padding-inline: 12px !important; }
+  html.medindex-tailadmin .mi-index-content > .mi-offline-status span:last-child { display: inline !important; overflow: hidden; text-overflow: ellipsis; }
   html.medindex-tailadmin[data-mi-page="barnat"] .mi-index-content > header:not(.registry-overview) { grid-template-columns: 1fr !important; padding: 16px !important; }
   html.medindex-tailadmin[data-mi-page="barnat"] .mi-index-content > header:not(.registry-overview) .sub { text-align: left; }
   html.medindex-tailadmin[data-mi-page="barnat"] .toolbar,

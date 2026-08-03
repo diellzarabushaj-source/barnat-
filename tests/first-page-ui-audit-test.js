@@ -9,10 +9,12 @@ const html = read('index.html');
 const css = read('first-page-clinical.css');
 const js = read('first-page-clinical.js');
 const loader = read('first-page-style-loader.js');
+const headerSource = read('app-parts/part-02.txt');
+const rowSource = read('app-parts/part-03.txt') + read('app-parts/part-04.txt');
 
-assert.match(html, /rel="preload" href="first-page-clinical\.css\?v=20260727-2" as="style"/);
-assert.match(html, /first-page-style-loader\.js\?v=20260727-2/);
-assert.match(html, /first-page-clinical\.js\?v=20260727-2/);
+assert.match(html, /rel="preload" href="first-page-clinical\.css\?v=20260731-1" as="style"/);
+assert.match(html, /first-page-style-loader\.js\?v=20260731-1/);
+assert.match(html, /first-page-clinical\.js\?v=20260731-1/);
 const staticStylesheets = [...html.matchAll(/<link[^>]+rel="stylesheet"[^>]+href="([^"]+)"/g)].map(match => match[1]);
 assert.match(staticStylesheets.at(-1), /tailadmin-professional\.css/, 'The shared professional TailAdmin CSS must remain the final static stylesheet.');
 assert.ok(
@@ -20,18 +22,23 @@ assert.ok(
   'The first-page runtime must enhance the completed pharmaceutical form picker.'
 );
 assert.match(loader, /document\.head\.appendChild\(link\)/);
-assert.match(loader, /first-page-clinical\.css\?v=20260727-2/);
+assert.match(loader, /first-page-clinical\.css\?v=20260731-1/);
 assert.match(loader, /medindex:tailadmin-ready/);
 
 for (const marker of [
   'registry-overview',
+  'registry-status-strip',
   'registry-toolbar-secondary',
   'registry-search-shell',
   'registry-table-bar',
   'registry-result-count',
-  'Pin the identifying columns',
+  'Pin only selection',
+  'data-column-key="Emri tregtar"',
+  'registry-selection-control',
+  'registry-sort-trigger',
+  'has-horizontal-scroll',
   'html[data-theme=dark]',
-  '@media(max-width:720px)',
+  '@media(max-width:820px)',
   '@media(prefers-reduced-motion:reduce)',
   '@media(forced-colors:active)',
 ]) {
@@ -47,6 +54,9 @@ for (const marker of [
   'aria-expanded',
   'Alt + S',
   'Regjistri i barnave me emër tregtar',
+  'registryScrollHelp',
+  'has-horizontal-scroll',
+  'countBadge.dataset.total',
   'MutationObserver',
 ]) {
   assert.ok(js.includes(marker), `first-page clinical runtime is missing ${marker}`);
@@ -56,5 +66,17 @@ assert.doesNotMatch(js, /fetch\s*\(/, 'The visual audit layer must not fetch or 
 assert.doesNotMatch(js, /\/api\//, 'The visual audit layer must remain frontend-only.');
 assert.doesNotMatch(js, /innerHTML\s*=\s*[^;]*(?:RAW|DRUG_DATA_PARTS)/, 'The visual layer must not render a substitute dataset.');
 assert.doesNotMatch(loader, /fetch\s*\(/, 'The stylesheet loader must not perform network data requests.');
+assert.doesNotMatch(css, /nth-child\(2\)\{position:sticky/, 'Trade-name pinning must not depend on a dynamic column index.');
+assert.doesNotMatch(css, /(?:linear|radial)-gradient|backdrop-filter:\s*blur/, 'The compact registry workspace must not use gradients or glass effects.');
+assert.match(css, /\.registry-toolbar\{[\s\S]*position:sticky!important;[\s\S]*grid-template-columns:minmax\(300px,1fr\) auto!important;/, 'The working toolbar must stay compact and sticky on desktop.');
+assert.match(css, /#dataTable thead th\{[\s\S]*background:#f9fafb!important;[\s\S]*text-transform:none!important;/, 'The table header must use a neutral sentence-case treatment.');
+for (const pageSize of ['50', '100', '250', '500']) {
+  assert.match(html, new RegExp(`<option value="${pageSize}">${pageSize} / faqe</option>`), `Registry must preserve the ${pageSize}-row page-size option.`);
+}
+assert.match(headerSource, /sortButton\.className = 'registry-sort-trigger'/, 'Sortable headers need native keyboard-operable buttons.');
+assert.match(headerSource, /setAttribute\('aria-sort'/, 'The active sort direction must be exposed to assistive technology.');
+assert.match(headerSource, /th\.dataset\.columnKey = col\.key/, 'Headers need stable column keys.');
+assert.match(rowSource, /data-column-key="' \+ columnKey \+ '"/, 'Cells need stable column keys.');
+assert.match(rowSource, /registry-selection-control/, 'Row selection needs a 44px hit target.');
 
 console.log('First-page doctor-style UI audit passed.');

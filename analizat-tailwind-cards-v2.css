@@ -1,29 +1,138 @@
 @import url('/analizat-tailwind-cards.css?v=20260726-1');
 
-/* Cascade lock: TailAdmin remains the shell owner; these rules own only the
-   laboratory card density after TailAdmin's page-specific defaults. */
-html.medindex-tailadmin[data-mi-page="analizat"] #labContent .lab-grid {
-  gap: 14px !important;
+/* Neutral professional Analizat workspace. Inline category palettes remain
+   data metadata only; these important custom properties prevent a rainbow UI. */
+html.medindex-tailadmin.medindex-professional[data-mi-page="analizat"] #labContent {
+  width:100%!important;max-width:none!important;margin:0!important;padding:0!important;background:transparent!important;
 }
-
-html.medindex-tailadmin[data-mi-page="analizat"] #labContent .lab-card-open {
-  min-height: 218px !important;
-  padding: 16px 16px 14px !important;
+html.medindex-tailadmin.medindex-professional[data-mi-page="analizat"] #labContent :is(.lab-category-tile,.lab-category-section,.lab-card) {
+  --lab-accent:var(--mi-brand-600)!important;--lab-strong:var(--mi-brand-700)!important;
+  --lab-soft:var(--mi-brand-50)!important;--lab-ring:var(--mi-brand-200)!important;
 }
-
-@media (max-width: 940px) {
-  html.medindex-tailadmin[data-mi-page="analizat"] #labContent .lab-card-open {
-    min-height: 205px !important;
-  }
+html.medindex-tailadmin.medindex-professional[data-mi-page="analizat"] #labContent .lab-hero {
+  display:grid!important;grid-template-columns:minmax(0,1fr) auto!important;align-items:center!important;gap:18px!important;
+  min-height:0!important;margin:0 0 12px!important;padding:16px 18px!important;border:1px solid var(--mi-border)!important;
+  border-radius:12px!important;background:var(--mi-surface)!important;background-image:none!important;color:var(--mi-text)!important;box-shadow:var(--mi-shadow-xs)!important;
 }
-
-@media (max-width: 640px) {
-  html.medindex-tailadmin[data-mi-page="analizat"] #labContent .lab-grid {
-    gap: 10px !important;
-  }
-
-  html.medindex-tailadmin[data-mi-page="analizat"] #labContent .lab-card-open {
-    min-height: 190px !important;
-    padding: 14px !important;
-  }
+html.medindex-tailadmin.medindex-professional[data-mi-page="analizat"] #labContent .lab-hero::before,
+html.medindex-tailadmin.medindex-professional[data-mi-page="analizat"] #labContent .lab-hero::after { display:none!important; }
+html.medindex-tailadmin.medindex-professional[data-mi-page="analizat"] #labContent .lab-hero .med-kicker { margin:0 0 4px!important;color:var(--mi-gray-500)!important;font-size:10px!important;font-weight:600!important;letter-spacing:.07em!important; }
+html.medindex-tailadmin.medindex-professional[data-mi-page="analizat"] #labContent .lab-hero h1 { margin:0!important;color:var(--mi-gray-900)!important;font-size:20px!important;font-weight:650!important;line-height:1.25!important; }
+html.medindex-tailadmin.medindex-professional[data-mi-page="analizat"] #labContent .lab-hero p { margin:5px 0 0!important;color:var(--mi-gray-500)!important;font-size:12px!important;line-height:1.5!important; }
+html.medindex-tailadmin.medindex-professional[data-mi-page="analizat"] #labContent .lab-hero-stat {
+  min-width:132px!important;padding:8px 10px!important;border:1px solid var(--mi-gray-200)!important;border-radius:9px!important;
+  background:var(--mi-gray-50)!important;background-image:none!important;color:var(--mi-text)!important;box-shadow:none!important;backdrop-filter:none!important;
 }
+html.medindex-tailadmin.medindex-professional[data-mi-page="analizat"] #labContent .lab-hero-stat strong { color:var(--mi-gray-900)!important;font-size:15px!important;font-weight:650!important; }
+html.medindex-tailadmin.medindex-professional[data-mi-page="analizat"] #labContent .lab-hero-stat span { color:var(--mi-gray-500)!important;font-size:10px!important; }
+html.medindex-tailadmin.medindex-professional[data-mi-page="analizat"] #labContent .lab-sheet-note {
+  margin:0 0 12px!important;padding:9px 11px!important;border:1px solid var(--mi-gray-200)!important;border-left:3px solid var(--mi-brand-500)!important;
+  border-radius:9px!important;background:var(--mi-gray-50)!important;background-image:none!important;color:var(--mi-gray-600)!important;font-size:11px!important;box-shadow:none!important;
+}
+html.medindex-tailadmin.medindex-professional[data-mi-page="analizat"] #labContent .lab-quickbar {
+  position:sticky!important;top:8px!important;z-index:24!important;display:grid!important;
+  grid-template-columns:minmax(300px,1fr) minmax(180px,260px) auto!important;align-items:center!important;gap:8px!important;
+  margin:0 0 12px!important;padding:9px!important;border:1px solid var(--mi-border)!important;border-radius:12px!important;
+  background:var(--mi-surface)!important;background-image:none!important;box-shadow:var(--mi-shadow-xs)!important;backdrop-filter:none!important;
+}
+html.medindex-tailadmin.medindex-professional[data-mi-page="analizat"] #labContent :is(#labSearch,#labCategory) {
+  min-height:40px!important;height:40px!important;border-color:var(--mi-gray-300)!important;border-radius:8px!important;
+  background:var(--mi-surface)!important;color:var(--mi-gray-700)!important;box-shadow:none!important;font-size:12px!important;
+}
+html.medindex-tailadmin.medindex-professional[data-mi-page="analizat"] #labContent #labCount {
+  min-height:28px!important;border-color:var(--mi-gray-200)!important;background:var(--mi-gray-50)!important;color:var(--mi-gray-600)!important;font-size:10px!important;
+}
+html.medindex-tailadmin.medindex-professional[data-mi-page="analizat"] #labContent .lab-category-nav {
+  grid-auto-columns:minmax(190px,225px)!important;gap:8px!important;margin:0 0 14px!important;padding:1px 1px 7px!important;
+}
+html.medindex-tailadmin.medindex-professional[data-mi-page="analizat"] #labContent .lab-category-nav .lab-category-tile {
+  grid-template-columns:34px minmax(0,1fr) auto!important;gap:9px!important;min-height:60px!important;padding:9px 10px!important;
+  border:1px solid var(--mi-gray-200)!important;border-radius:10px!important;background:var(--mi-surface)!important;background-image:none!important;
+  color:var(--mi-text)!important;box-shadow:var(--mi-shadow-xs)!important;transform:none!important;
+}
+html.medindex-tailadmin.medindex-professional[data-mi-page="analizat"] #labContent .lab-category-tile::before { width:3px!important;background:var(--mi-brand-500)!important; }
+html.medindex-tailadmin.medindex-professional[data-mi-page="analizat"] #labContent .lab-category-tile::after { display:none!important; }
+html.medindex-tailadmin.medindex-professional[data-mi-page="analizat"] #labContent .lab-category-tile:is(:hover,:focus-visible,.is-active) {
+  border-color:var(--mi-brand-300)!important;background:var(--mi-brand-25)!important;background-image:none!important;box-shadow:var(--mi-shadow-sm)!important;transform:none!important;
+}
+html.medindex-tailadmin.medindex-professional[data-mi-page="analizat"] #labContent .lab-category-tile-icon {
+  width:34px!important;height:34px!important;border:1px solid var(--mi-brand-100)!important;border-radius:8px!important;
+  background:var(--mi-brand-50)!important;background-image:none!important;color:var(--mi-brand-600)!important;box-shadow:none!important;
+}
+html.medindex-tailadmin.medindex-professional[data-mi-page="analizat"] #labContent .lab-category-tile-copy small { color:var(--mi-gray-500)!important;font-size:8px!important; }
+html.medindex-tailadmin.medindex-professional[data-mi-page="analizat"] #labContent .lab-category-tile-copy strong { color:var(--mi-gray-800)!important;font-size:11px!important;font-weight:600!important; }
+html.medindex-tailadmin.medindex-professional[data-mi-page="analizat"] #labContent .lab-category-tile-count { border-color:var(--mi-gray-200)!important;background:var(--mi-gray-50)!important;color:var(--mi-gray-600)!important; }
+html.medindex-tailadmin.medindex-professional[data-mi-page="analizat"] #labContent .lab-main-head { margin:12px 0 10px!important; }
+html.medindex-tailadmin.medindex-professional[data-mi-page="analizat"] #labContent .lab-main-head h2 { color:var(--mi-gray-900)!important;font-size:18px!important;font-weight:650!important; }
+html.medindex-tailadmin.medindex-professional[data-mi-page="analizat"] #labContent .lab-main-head p { margin-top:3px!important;color:var(--mi-gray-500)!important;font-size:11px!important; }
+html.medindex-tailadmin.medindex-professional[data-mi-page="analizat"] #labContent .lab-sheet-link { min-height:34px!important;border-color:var(--mi-gray-300)!important;background:var(--mi-surface)!important;color:var(--mi-gray-700)!important;font-size:11px!important; }
+html.medindex-tailadmin.medindex-professional[data-mi-page="analizat"] #labContent .lab-category-section { margin:0 0 22px!important; }
+html.medindex-tailadmin.medindex-professional[data-mi-page="analizat"] #labContent .lab-category-head {
+  grid-template-columns:38px minmax(0,1fr) auto!important;gap:10px!important;min-height:60px!important;margin:0 0 10px!important;padding:9px 12px!important;
+  border:1px solid var(--mi-gray-200)!important;border-left:3px solid var(--mi-brand-500)!important;border-radius:10px!important;
+  background:var(--mi-gray-50)!important;background-image:none!important;box-shadow:none!important;
+}
+html.medindex-tailadmin.medindex-professional[data-mi-page="analizat"] #labContent :is(.lab-category-head::after,.lab-category-head-accent,.lab-category-number) { display:none!important; }
+html.medindex-tailadmin.medindex-professional[data-mi-page="analizat"] #labContent .lab-category-symbol {
+  width:36px!important;height:36px!important;border:1px solid var(--mi-brand-100)!important;border-radius:8px!important;
+  background:var(--mi-brand-50)!important;background-image:none!important;color:var(--mi-brand-600)!important;box-shadow:none!important;
+}
+html.medindex-tailadmin.medindex-professional[data-mi-page="analizat"] #labContent .lab-category-copy>p { margin-bottom:3px!important;color:var(--mi-gray-500)!important;font-size:8px!important; }
+html.medindex-tailadmin.medindex-professional[data-mi-page="analizat"] #labContent .lab-category-copy>h2 { color:var(--mi-gray-900)!important;font-size:14px!important;font-weight:650!important; }
+html.medindex-tailadmin.medindex-professional[data-mi-page="analizat"] #labContent .lab-category-count { border-color:var(--mi-gray-200)!important;background:var(--mi-surface)!important;color:var(--mi-gray-600)!important; }
+html.medindex-tailadmin.medindex-professional[data-mi-page="analizat"] #labContent .lab-grid { grid-template-columns:repeat(4,minmax(190px,1fr))!important;gap:10px!important; }
+html.medindex-tailadmin.medindex-professional[data-mi-page="analizat"] #labContent .lab-card {
+  border:1px solid var(--mi-gray-200)!important;border-radius:12px!important;background:var(--mi-surface)!important;background-image:none!important;
+  box-shadow:var(--mi-shadow-xs)!important;transform:none!important;
+}
+html.medindex-tailadmin.medindex-professional[data-mi-page="analizat"] #labContent .lab-card-open {
+  min-height:180px!important;padding:13px!important;background:var(--mi-surface)!important;background-image:none!important;color:var(--mi-text)!important;
+}
+html.medindex-tailadmin.medindex-professional[data-mi-page="analizat"] #labContent .lab-card-accent { display:none!important;background:none!important; }
+html.medindex-tailadmin.medindex-professional[data-mi-page="analizat"] #labContent .lab-card-topline { margin-bottom:10px!important; }
+html.medindex-tailadmin.medindex-professional[data-mi-page="analizat"] #labContent .lab-test-icon {
+  width:34px!important;height:34px!important;flex-basis:34px!important;border:1px solid var(--mi-brand-100)!important;border-radius:8px!important;
+  background:var(--mi-brand-50)!important;background-image:none!important;color:var(--mi-brand-600)!important;box-shadow:none!important;
+}
+html.medindex-tailadmin.medindex-professional[data-mi-page="analizat"] #labContent .lab-card-order { border-color:var(--mi-gray-200)!important;background:var(--mi-gray-50)!important; }
+html.medindex-tailadmin.medindex-professional[data-mi-page="analizat"] #labContent .lab-card h3 { color:var(--mi-gray-900)!important;font-size:14px!important;font-weight:650!important; }
+html.medindex-tailadmin.medindex-professional[data-mi-page="analizat"] #labContent .lab-card-sq { color:var(--mi-gray-600)!important; }
+html.medindex-tailadmin.medindex-professional[data-mi-page="analizat"] #labContent .lab-card p { margin:8px 0 10px!important;color:var(--mi-gray-500)!important;font-size:11px!important;line-height:1.45!important;-webkit-line-clamp:2!important; }
+html.medindex-tailadmin.medindex-professional[data-mi-page="analizat"] #labContent .lab-card-action { padding-top:9px!important;border-color:var(--mi-gray-200)!important;color:var(--mi-brand-700)!important; }
+html.medindex-tailadmin.medindex-professional[data-mi-page="analizat"] #labContent .lab-card:hover { border-color:var(--mi-brand-300)!important;box-shadow:var(--mi-shadow-sm)!important;transform:none!important; }
+html.medindex-tailadmin.medindex-professional[data-mi-page="analizat"] .med-panel-overlay { backdrop-filter:none!important; }
+html.medindex-tailadmin.medindex-professional[data-mi-page="analizat"] .lab-panel { border:1px solid var(--mi-border)!important;border-radius:14px!important;background:var(--mi-surface)!important;box-shadow:var(--mi-shadow-lg)!important; }
+html.medindex-tailadmin.medindex-professional[data-mi-page="analizat"] .lab-panel .med-panel-head { padding:14px 16px!important;border-bottom:1px solid var(--mi-border)!important;background:var(--mi-surface)!important;background-image:none!important;color:var(--mi-text)!important; }
+html.medindex-tailadmin.medindex-professional[data-mi-page="analizat"] .lab-panel .med-panel-head :is(small,h2) { color:var(--mi-text)!important; }
+html.medindex-tailadmin.medindex-professional[data-mi-page="analizat"] .lab-panel .med-panel-close { border-color:var(--mi-border)!important;background:var(--mi-gray-50)!important;color:var(--mi-gray-700)!important; }
+
+html[data-theme="dark"].medindex-tailadmin.medindex-professional[data-mi-page="analizat"] #labContent :is(.lab-hero,.lab-quickbar,.lab-category-tile,.lab-category-head,.lab-card,.lab-card-open) {
+  border-color:var(--mi-gray-700)!important;background:var(--mi-gray-800)!important;
+}
+html[data-theme="dark"].medindex-tailadmin.medindex-professional[data-mi-page="analizat"] #labContent :is(.lab-hero h1,.lab-hero-stat strong,.lab-main-head h2,.lab-category-tile-copy strong,.lab-category-copy>h2,.lab-card h3) { color:var(--mi-gray-50)!important; }
+html[data-theme="dark"].medindex-tailadmin.medindex-professional[data-mi-page="analizat"] #labContent :is(.lab-hero-stat,.lab-sheet-note,.lab-category-tile-count,.lab-category-count,.lab-card-order) {
+  border-color:var(--mi-gray-700)!important;background:var(--mi-gray-900)!important;color:var(--mi-gray-300)!important;
+}
+html[data-theme="dark"].medindex-tailadmin.medindex-professional[data-mi-page="analizat"] #labContent :is(#labSearch,#labCategory) { border-color:var(--mi-gray-700)!important;background:var(--mi-gray-900)!important;color:var(--mi-gray-200)!important; }
+html[data-theme="dark"].medindex-tailadmin.medindex-professional[data-mi-page="analizat"] :is(.lab-panel,.lab-panel .med-panel-head,.lab-panel .med-panel-foot) { border-color:var(--mi-gray-700)!important;background:var(--mi-gray-800)!important; }
+
+@media(max-width:1320px){html.medindex-tailadmin.medindex-professional[data-mi-page="analizat"] #labContent .lab-grid{grid-template-columns:repeat(3,minmax(190px,1fr))!important}}
+@media(max-width:940px){
+  html.medindex-tailadmin.medindex-professional[data-mi-page="analizat"] #labContent .lab-grid{grid-template-columns:repeat(2,minmax(190px,1fr))!important}
+  html.medindex-tailadmin.medindex-professional[data-mi-page="analizat"] #labContent .lab-quickbar{grid-template-columns:1fr 220px!important}
+  html.medindex-tailadmin.medindex-professional[data-mi-page="analizat"] #labContent .lab-search-wrap{grid-column:1/-1!important}
+  html.medindex-tailadmin.medindex-professional[data-mi-page="analizat"] #labContent #labCount{grid-column:1/-1!important;justify-self:stretch!important}
+}
+@media(max-width:640px){
+  html.medindex-tailadmin.medindex-professional[data-mi-page="analizat"] #labContent .lab-hero{grid-template-columns:1fr!important;gap:10px!important;padding:14px!important}
+  html.medindex-tailadmin.medindex-professional[data-mi-page="analizat"] #labContent .lab-hero-stat{width:100%!important}
+  html.medindex-tailadmin.medindex-professional[data-mi-page="analizat"] #labContent .lab-quickbar{position:relative!important;top:auto!important;grid-template-columns:1fr!important}
+  html.medindex-tailadmin.medindex-professional[data-mi-page="analizat"] #labContent .lab-quickbar>*{grid-column:auto!important;width:100%!important}
+  html.medindex-tailadmin.medindex-professional[data-mi-page="analizat"] #labContent .lab-category-nav{grid-auto-columns:minmax(190px,82vw)!important}
+  html.medindex-tailadmin.medindex-professional[data-mi-page="analizat"] #labContent .lab-grid{grid-template-columns:1fr!important}
+  html.medindex-tailadmin.medindex-professional[data-mi-page="analizat"] #labContent .lab-card-open{min-height:168px!important}
+  html.medindex-tailadmin.medindex-professional[data-mi-page="analizat"] .med-panel-overlay{padding:0!important;align-items:end!important}
+  html.medindex-tailadmin.medindex-professional[data-mi-page="analizat"] .lab-panel{border-radius:14px 14px 0 0!important}
+}
+@media(prefers-reduced-motion:reduce){html.medindex-tailadmin.medindex-professional[data-mi-page="analizat"] #labContent :is(.lab-category-tile,.lab-card){transition:none!important}}
+@media(forced-colors:active){html.medindex-tailadmin.medindex-professional[data-mi-page="analizat"] #labContent :is(.lab-hero,.lab-quickbar,.lab-category-tile,.lab-category-head,.lab-card){border:2px solid ButtonText!important;background:Canvas!important;color:CanvasText!important;box-shadow:none!important}}

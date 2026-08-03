@@ -1,6 +1,8 @@
 const assert = require('node:assert/strict');
 const crypto = require('node:crypto');
 const manifest = require('../data/protocols.json');
+const elaborationManifest = require('../data/protocol-elaborations.json');
+const reader = require('../protokollet.js');
 const {
   parseRegistryEntries,
   officialUrlKey,
@@ -70,4 +72,30 @@ assert.equal(unlistedVerified.registryVerifiedAt, null);
 assert.equal(unlistedVerified.publishedAt, null);
 assert.throws(() => validateRegistryUrl('https://example.com/Documents/Index/273'), /Regjistër jozyrtar/);
 assert.throws(() => verifyRegistryDocument(manifest.documents[1], registryEntries), /nuk u gjet/);
+
+assert.equal(elaborationManifest.schemaVersion, 1);
+const publishedElaborations = reader.normalizeElaborations(elaborationManifest);
+assert.equal(publishedElaborations.size, elaborationManifest.entries.length, 'every published elaboration must satisfy the reader schema');
+for (const elaboration of publishedElaborations.values()) {
+  const source = manifest.documents.find(document => document.id === elaboration.protocolId);
+  assert.ok(source, `unknown elaboration protocol ${elaboration.protocolId}`);
+  assert.equal(elaboration.sourceHash, source.contentSha256, `stale elaboration sourceHash for ${elaboration.protocolId}`);
+}
+
+const fixtureHash = 'a'.repeat(64);
+const fixtureElaborations = reader.normalizeElaborations({
+  schemaVersion:1,
+  entries:[{
+    protocolId:'upk-test',
+    sourceHash:fixtureHash,
+    reviewedAt:'2026-08-01',
+    summary:'Përmbledhje testuese.',
+    sections:[{ id:'section-1', title:'Seksion testues', body:'Tekst testues.', citations:[{ page:2 }] }],
+  }],
+});
+assert.ok(reader.matchingElaboration({ id:'upk-test', contentSha256:fixtureHash }, fixtureElaborations));
+assert.equal(reader.matchingElaboration({ id:'upk-test', contentSha256:'b'.repeat(64) }, fixtureElaborations), null, 'stale source hashes must hide elaborations');
+assert.equal(reader.safeHttpsUrl(manifest.documents[0].officialUrl), manifest.documents[0].officialUrl);
+assert.equal(reader.safeHttpsUrl('https://example.com/Documents/DownloadDocument?fileName=test.pdf'), '');
+assert.equal(reader.safeHttpsUrl('https://msh.rks-gov.net.evil.example/Documents/DownloadDocument?fileName=test.pdf'), '');
 console.log('Protocol manifest tests passed.');

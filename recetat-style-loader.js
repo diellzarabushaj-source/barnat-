@@ -1,9 +1,10 @@
 (() => {
   'use strict';
+
   const STYLES = [
-    ['dozologjiaVerifiedCardStyles', '/dozologjia-verified-cards.css?v=20260801-1', 'dozologjiaVerifiedCards'],
-    ['dozologjiaSafetyStyles', '/dozologjia-safety-enhancements.css?v=20260801-1', 'dozologjiaSafety'],
-    ['dozologjiaReadinessStyles', '/dozologjia-clinical-readiness.css?v=20260801-1', 'dozologjiaReadiness'],
+    ['recetatSignatureStyles', '/signature-templates.css?v=20260801-1', 'recetatSignature'],
+    ['recetatPageStyles', '/recetat.css?v=20260801-1', 'recetatPage'],
+    ['recetatAuditStyles', '/recetat-audit.css?v=20260801-1', 'recetatAudit'],
   ];
 
   function ensure() {

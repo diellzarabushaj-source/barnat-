@@ -10,6 +10,7 @@
   <link rel="stylesheet" href="medical-hub.css?v=20260723-1">
   <link rel="stylesheet" href="clinical-reference.css?v=20260724-1">
   <link rel="stylesheet" href="tailadmin-medindex.css?v=20260728-1" data-tailadmin-medindex-css>
+  <link rel="stylesheet" href="protocol-reader.css?v=20260801-1">
   <link rel="stylesheet" href="tailadmin-professional.css?v=20260728-1" data-tailadmin-professional-css>
   <script src="tailadmin-shell.js?v=production-audit-v2" defer></script>
   <script src="tailadmin-professional.js?v=production-audit-v2" defer></script>
@@ -28,23 +29,29 @@
       <div class="med-theme"><span>Tema</span><button id="themeButton" type="button" aria-label="Ndërro temën">☾</button></div>
     </nav>
     <main class="med-main clinical-main" id="protocolContent" tabindex="-1">
-      <header class="clinical-hero">
-        <div><p class="clinical-kicker">Ministria e Shëndetësisë · UPK</p><h1>Protokollet</h1><p>55 dokumente zyrtare në 12 kategori. MedIndex i organizon dokumentet dhe nuk nxjerr ose rishkruan rekomandime klinike prej tyre.</p></div>
-        <div class="clinical-summary"><strong id="protocolCount">55</strong><span>dokumente</span></div>
-      </header>
-      <div class="clinical-toolbar" role="search" aria-label="Kërkimi dhe filtrat e protokolleve">
-        <input id="protocolSearch" type="search" autocomplete="off" placeholder="Kërko titullin ose kategorinë…">
-        <select id="protocolCategory" aria-label="Kategoria"><option value="">Të gjitha kategoritë</option></select>
-        <select id="protocolType" aria-label="Formati"><option value="">PDF dhe DOCX</option><option value="pdf">Vetëm PDF</option><option value="docx">Vetëm DOCX</option></select>
-        <select id="protocolArchive" aria-label="Statusi"><option value="current">Dokumente aktuale</option><option value="all">Të gjitha</option><option value="archived">Vetëm arkivore</option></select>
-      </div>
-      <p class="clinical-status" id="protocolStatus" role="status" aria-live="polite">Duke ngarkuar dokumentet…</p>
-      <div class="clinical-list" id="protocolList" aria-live="polite"></div>
-      <aside class="clinical-note">Dokumentet COVID-19 janë shënuar si <strong>arkivore</strong>. Për versionin, datën dhe vlefshmërinë klinike kontrollo gjithmonë dokumentin dhe regjistrin zyrtar të Ministrisë.</aside>
+      <section class="protocol-directory" id="protocolDirectory">
+        <header class="clinical-hero">
+          <div><p class="clinical-kicker">Ministria e Shëndetësisë · UPK</p><h1>Protokollet</h1><p>55 dokumente zyrtare në 12 kategori. MedIndex i organizon dokumentet dhe nuk nxjerr ose rishkruan rekomandime klinike prej tyre.</p></div>
+          <div class="clinical-summary"><strong id="protocolCount">55</strong><span>dokumente</span></div>
+        </header>
+        <div class="clinical-toolbar" role="search" aria-label="Kërkimi dhe filtrat e protokolleve">
+          <input id="protocolSearch" type="search" autocomplete="off" placeholder="Kërko titullin ose kategorinë…">
+          <select id="protocolCategory" aria-label="Kategoria"><option value="">Të gjitha kategoritë</option></select>
+          <select id="protocolType" aria-label="Formati"><option value="">PDF dhe DOCX</option><option value="pdf">Vetëm PDF</option><option value="docx">Vetëm DOCX</option></select>
+          <select id="protocolArchive" aria-label="Statusi"><option value="current">Dokumente aktuale</option><option value="all">Të gjitha</option><option value="archived">Vetëm arkivore</option></select>
+        </div>
+        <p class="clinical-status" id="protocolStatus" role="status" aria-live="polite">Duke ngarkuar dokumentet…</p>
+        <div class="clinical-list" id="protocolList" aria-live="polite"></div>
+        <aside class="clinical-note">Dokumentet COVID-19 janë shënuar si <strong>arkivore</strong>. Për versionin, datën dhe vlefshmërinë klinike kontrollo gjithmonë dokumentin dhe regjistrin zyrtar të Ministrisë.</aside>
+      </section>
+      <section class="protocol-reader" id="protocolReader" aria-labelledby="protocolReaderTitle" hidden>
+        <p class="protocol-reader-loading" role="status">Duke përgatitur lexuesin…</p>
+      </section>
+      <footer class="protocol-page-footer">Bazuar 100% në dokumentet e Ministrisë së Shëndetësisë · Prishtinë</footer>
     </main>
   </div>
   <script src="auth-client.js?v=production-audit-v2" defer></script>
-  <script src="protokollet.js?v=20260724-1" defer></script>
+  <script src="protokollet.js?v=20260801-1" defer></script>
   <script src="app-stability.js?v=20260724-2" defer></script>
 </body>
 </html>

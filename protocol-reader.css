@@ -1,0 +1,555 @@
+:root{
+  --protocol-source:#0d6668;
+  --protocol-source-strong:#094f51;
+  --protocol-source-soft:#e8f3f1;
+  --protocol-source-line:#c7ddda;
+  --protocol-danger:#963d35;
+}
+
+[data-theme="dark"]{
+  --protocol-source:#73cbc8;
+  --protocol-source-strong:#a8e0dd;
+  --protocol-source-soft:#17393a;
+  --protocol-source-line:#315557;
+  --protocol-danger:#f0a39b;
+}
+
+.protocol-directory[hidden],
+.protocol-reader[hidden]{
+  display:none!important;
+}
+
+.protocol-directory .clinical-actions{
+  max-width:330px;
+}
+
+.protocol-directory .clinical-actions .protocol-action-elaborate{
+  border-color:var(--clinical-accent);
+  background:var(--clinical-accent);
+  color:#fff;
+}
+
+.protocol-directory .clinical-actions .protocol-action-source{
+  border-color:var(--clinical-accent);
+  color:var(--clinical-accent);
+}
+
+.protocol-directory .clinical-action-disabled{
+  display:inline-flex;
+  align-items:center;
+  min-height:38px;
+  padding:0 12px;
+  color:var(--clinical-muted);
+  font-size:.73rem;
+}
+
+.protocol-directory .clinical-actions .protocol-mirror-link{
+  min-height:28px;
+  padding:0 4px;
+  border-color:transparent;
+  background:transparent;
+  color:var(--clinical-muted);
+  font-size:.68rem;
+  font-weight:650;
+  text-decoration:underline;
+  text-underline-offset:3px;
+}
+
+.protocol-directory .clinical-actions .protocol-mirror-link:hover{
+  color:var(--clinical-text);
+}
+
+.protocol-reader{
+  min-width:0;
+}
+
+.protocol-reader-loading{
+  min-height:220px;
+  display:grid;
+  place-items:center;
+  margin:0;
+  color:var(--clinical-muted);
+}
+
+.protocol-reader-frame{
+  opacity:0;
+  transform:translateY(5px);
+  transition:opacity 160ms ease,transform 160ms ease;
+}
+
+.protocol-reader-frame.is-visible{
+  opacity:1;
+  transform:translateY(0);
+}
+
+.protocol-reader-back{
+  display:inline-flex;
+  align-items:center;
+  min-height:38px;
+  margin:0 0 14px;
+  padding:0 11px;
+  border:1px solid var(--clinical-line);
+  border-radius:9px;
+  background:var(--clinical-surface);
+  color:var(--clinical-text);
+  font:inherit;
+  font-size:.76rem;
+  font-weight:760;
+  cursor:pointer;
+}
+
+.protocol-reader-back:hover{
+  border-color:var(--clinical-accent);
+  color:var(--clinical-accent);
+}
+
+.protocol-reader-back:focus-visible,
+.protocol-reader a:focus-visible,
+.protocol-reader button:focus-visible,
+.protocol-reader h1:focus-visible{
+  outline:3px solid color-mix(in srgb,var(--clinical-accent) 45%,transparent);
+  outline-offset:2px;
+}
+
+.protocol-reader-header{
+  display:grid;
+  grid-template-columns:minmax(0,1fr) auto;
+  gap:22px;
+  align-items:start;
+  padding:22px;
+  border:1px solid var(--clinical-line);
+  border-radius:16px;
+  background:var(--clinical-surface);
+  box-shadow:var(--clinical-shadow);
+}
+
+.protocol-reader-header h1{
+  max-width:850px;
+  margin:5px 0 8px;
+  font-size:clamp(1.45rem,3vw,2.05rem);
+  line-height:1.18;
+  letter-spacing:-.035em;
+}
+
+.protocol-reader-header p{
+  max-width:760px;
+  margin:0;
+  color:var(--clinical-muted);
+  font-size:.82rem;
+  line-height:1.55;
+}
+
+.protocol-reader-eyebrow{
+  display:flex;
+  flex-wrap:wrap;
+  gap:6px;
+}
+
+.protocol-reader-actions{
+  display:flex;
+  flex-direction:column;
+  align-items:stretch;
+  gap:7px;
+  width:min(100%,210px);
+}
+
+.protocol-reader-actions a,
+.protocol-source-button{
+  display:inline-flex;
+  align-items:center;
+  justify-content:center;
+  min-height:42px;
+  padding:0 13px;
+  border:1px solid var(--clinical-line);
+  border-radius:10px;
+  background:var(--clinical-surface);
+  color:var(--clinical-text);
+  font-size:.75rem;
+  font-weight:780;
+  text-align:center;
+  text-decoration:none;
+}
+
+.protocol-reader-actions .protocol-official-button,
+.protocol-source-button{
+  border-color:var(--clinical-accent);
+  background:var(--clinical-accent);
+  color:#fff;
+}
+
+.protocol-reader-actions .protocol-private-button{
+  min-height:32px;
+  padding:0 5px;
+  border-color:transparent;
+  background:transparent;
+  color:var(--clinical-muted);
+  font-size:.68rem;
+  font-weight:650;
+  text-decoration:underline;
+  text-underline-offset:3px;
+}
+
+.protocol-reader-actions .protocol-private-button:hover{
+  color:var(--clinical-text);
+}
+
+.protocol-reader-integrity{
+  display:flex;
+  gap:10px;
+  align-items:flex-start;
+  margin:12px 0 16px;
+  padding:12px 14px;
+  border:1px solid var(--protocol-source-line);
+  border-radius:11px;
+  background:var(--protocol-source-soft);
+  color:var(--clinical-text);
+  font-size:.77rem;
+  line-height:1.48;
+}
+
+.protocol-reader-integrity strong{
+  display:block;
+  margin-bottom:2px;
+  color:var(--protocol-source-strong);
+}
+
+.protocol-integrity-mark{
+  flex:0 0 auto;
+  width:10px;
+  height:10px;
+  margin-top:5px;
+  border-radius:50%;
+  background:var(--protocol-source);
+  box-shadow:0 0 0 4px color-mix(in srgb,var(--protocol-source) 15%,transparent);
+}
+
+.protocol-reader-layout{
+  display:grid;
+  grid-template-columns:minmax(0,1fr) minmax(235px,285px);
+  gap:18px;
+  align-items:start;
+}
+
+.protocol-reader-main,
+.protocol-source-only,
+.protocol-source-panel{
+  border:1px solid var(--clinical-line);
+  border-radius:14px;
+  background:var(--clinical-surface);
+}
+
+.protocol-reader-main{
+  padding:22px;
+}
+
+.protocol-reader-section-head{
+  margin-bottom:20px;
+}
+
+.protocol-reader-section-head h2{
+  margin:0 0 5px;
+  font-size:1.18rem;
+}
+
+.protocol-reader-section-head p{
+  margin:0;
+  color:var(--clinical-muted);
+  font-size:.78rem;
+  line-height:1.5;
+}
+
+.protocol-sections{
+  display:grid;
+  gap:12px;
+  margin:0;
+  padding:0;
+  list-style:none;
+}
+
+.protocol-section{
+  padding:16px;
+  border:1px solid var(--protocol-source-line);
+  border-radius:11px;
+  background:color-mix(in srgb,var(--protocol-source-soft) 35%,var(--clinical-surface));
+  scroll-margin-top:22px;
+}
+
+.protocol-section-label{
+  display:inline-flex;
+  margin-bottom:7px;
+  padding:3px 8px;
+  border-radius:999px;
+  background:var(--protocol-source-soft);
+  color:var(--protocol-source-strong);
+  font-size:.67rem;
+  font-weight:820;
+  letter-spacing:.035em;
+  text-transform:uppercase;
+}
+
+.protocol-section h3{
+  margin:0 0 8px;
+  font-size:1rem;
+  line-height:1.35;
+}
+
+.protocol-section-body{
+  margin:0;
+  color:var(--clinical-text);
+  font-size:.84rem;
+  line-height:1.65;
+  white-space:pre-line;
+}
+
+.protocol-citations{
+  display:flex;
+  flex-wrap:wrap;
+  gap:6px;
+  margin-top:12px;
+}
+
+.protocol-citation{
+  display:inline-flex;
+  align-items:center;
+  min-height:30px;
+  padding:4px 9px;
+  border:1px solid var(--protocol-source-line);
+  border-radius:8px;
+  background:var(--protocol-source-soft);
+  color:var(--protocol-source-strong);
+  font-size:.68rem;
+  font-weight:720;
+  text-decoration:none;
+}
+
+.protocol-citation:hover{
+  border-color:var(--protocol-source);
+}
+
+.protocol-reader-sidebar{
+  position:sticky;
+  top:18px;
+}
+
+.protocol-source-panel{
+  padding:16px;
+  box-shadow:0 7px 22px rgba(20,61,62,.06);
+}
+
+.protocol-source-panel + .protocol-source-panel{
+  margin-top:10px;
+}
+
+.protocol-source-panel h2{
+  margin:0 0 10px;
+  font-size:.85rem;
+}
+
+.protocol-source-panel p{
+  margin:0 0 12px;
+  color:var(--clinical-muted);
+  font-size:.72rem;
+  line-height:1.5;
+  overflow-wrap:anywhere;
+}
+
+.protocol-source-facts{
+  display:grid;
+  gap:8px;
+  margin:0 0 14px;
+}
+
+.protocol-source-facts div{
+  padding-bottom:8px;
+  border-bottom:1px solid var(--clinical-line);
+}
+
+.protocol-source-facts dt{
+  margin:0 0 2px;
+  color:var(--clinical-muted);
+  font-size:.61rem;
+  font-weight:800;
+  letter-spacing:.055em;
+  text-transform:uppercase;
+}
+
+.protocol-source-facts dd{
+  margin:0;
+  font-size:.73rem;
+  font-weight:680;
+  line-height:1.4;
+  overflow-wrap:anywhere;
+}
+
+.protocol-source-hash{
+  font-family:ui-monospace,SFMono-Regular,Consolas,"Liberation Mono",monospace;
+  font-size:.64rem!important;
+}
+
+.protocol-contents{
+  display:grid;
+  gap:3px;
+  margin:0;
+  padding:0;
+  list-style:none;
+}
+
+.protocol-contents a{
+  display:block;
+  padding:7px 8px;
+  border-radius:7px;
+  color:var(--clinical-text);
+  font-size:.71rem;
+  line-height:1.35;
+  text-decoration:none;
+}
+
+.protocol-contents a:hover{
+  background:var(--protocol-source-soft);
+  color:var(--protocol-source-strong);
+}
+
+.protocol-source-only{
+  min-height:310px;
+  display:grid;
+  place-items:center;
+  padding:34px;
+  text-align:center;
+}
+
+.protocol-source-only-inner{
+  max-width:570px;
+}
+
+.protocol-source-only-mark{
+  display:grid;
+  place-items:center;
+  width:44px;
+  height:44px;
+  margin:0 auto 14px;
+  border:1px solid var(--protocol-source-line);
+  border-radius:12px;
+  background:var(--protocol-source-soft);
+  color:var(--protocol-source-strong);
+  font-size:1rem;
+  font-weight:850;
+}
+
+.protocol-source-only h2{
+  margin:0 0 8px;
+  font-size:1.15rem;
+}
+
+.protocol-source-only p{
+  margin:0 auto 16px;
+  color:var(--clinical-muted);
+  font-size:.8rem;
+  line-height:1.6;
+}
+
+.protocol-source-unavailable{
+  display:inline-flex;
+  align-items:center;
+  justify-content:center;
+  min-height:42px;
+  color:var(--clinical-muted);
+  font-size:.75rem;
+  font-weight:700;
+}
+
+.protocol-reader-error{
+  padding:34px;
+  border:1px solid var(--clinical-line);
+  border-radius:14px;
+  background:var(--clinical-surface);
+  text-align:center;
+}
+
+.protocol-reader-error h1{
+  margin:0 0 8px;
+  font-size:1.3rem;
+}
+
+.protocol-reader-error p{
+  margin:0 0 16px;
+  color:var(--clinical-muted);
+}
+
+.protocol-retry-button{
+  min-height:40px;
+  padding:0 13px;
+  border:1px solid var(--clinical-accent);
+  border-radius:9px;
+  background:var(--clinical-accent);
+  color:#fff;
+  font:inherit;
+  font-size:.75rem;
+  font-weight:760;
+  cursor:pointer;
+}
+
+.protocol-page-footer{
+  margin-top:24px;
+  padding-top:16px;
+  border-top:1px solid var(--clinical-line);
+  color:var(--clinical-muted);
+  font-size:.7rem;
+  font-weight:680;
+  letter-spacing:.025em;
+  text-align:center;
+}
+
+@media(max-width:860px){
+  .protocol-reader-header{
+    grid-template-columns:1fr;
+  }
+
+  .protocol-reader-actions{
+    flex-direction:row;
+    flex-wrap:wrap;
+    width:auto;
+  }
+
+  .protocol-reader-layout{
+    grid-template-columns:1fr;
+  }
+
+  .protocol-reader-sidebar{
+    position:static;
+  }
+}
+
+@media(max-width:640px){
+  .protocol-directory .clinical-actions{
+    display:grid;
+    grid-template-columns:1fr 1fr;
+  }
+
+  .protocol-directory .clinical-actions .protocol-mirror-link{
+    grid-column:1 / -1;
+    justify-self:start;
+  }
+
+  .protocol-reader-header,
+  .protocol-reader-main,
+  .protocol-source-only{
+    padding:16px;
+  }
+
+  .protocol-reader-actions{
+    display:grid;
+    grid-template-columns:1fr;
+  }
+
+  .protocol-section{
+    padding:13px;
+  }
+}
+
+@media(prefers-reduced-motion:reduce){
+  .protocol-reader-frame{
+    opacity:1;
+    transform:none;
+    transition:none;
+  }
+}

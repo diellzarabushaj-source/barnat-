@@ -1,15 +1,15 @@
 (() => {
   'use strict';
 
-  const VERSION = 'registry-dosage-performance-v2';
+  const VERSION = 'registry-dosage-performance-v3';
   const ENDPOINT = '/api/dosage';
   const STORAGE_KEY = 'medindex-registry-dosage-columns-v2';
   const PICKER_GROUP_ID = 'registryDosageColumnControls';
   const REGISTRY_WAIT_TIMEOUT_MS = 30000;
   const INDEX_BATCH_SIZE = 250;
   const COLUMNS = [
-    { key:'adult', label:'1. Dozimi për të rritur', empty:'Nuk ka dozë të strukturuar për të rritur.' },
-    { key:'pediatric', label:'2. Dozimi për fëmijë', empty:'Nuk ka dozë pediatrike të strukturuar.' },
+    { key:'adult', label:'Dozimi · të rritur', empty:'Nuk ka dozë të strukturuar për të rritur.' },
+    { key:'pediatric', label:'Dozimi · fëmijë', empty:'Nuk ka dozë pediatrike të strukturuar.' },
   ];
 
   const clean = value => String(value ?? '').replace(/\s+/g, ' ').trim();
@@ -231,8 +231,12 @@
   function dosageRow(dose, route, indication = '', sources = []) {
     const sourceText = (Array.isArray(sources) ? sources : []).map(clean).filter(Boolean).join(' · ');
     const title = sourceText ? ` title="Burimet e lidhura: ${escapeHtml(sourceText)}"` : '';
+    const fullDose = clean(dose);
     return `<div class="registry-dosage-grid registry-dosage-regimen"${title}>` +
-      `<div>${indication ? `<span class="registry-dosage-indication">${escapeHtml(indication)}</span>` : ''}${escapeHtml(dose)}</div>` +
+      `<button type="button" class="registry-dosage-dose" aria-expanded="false" aria-label="Shfaq dozimin e plotë: ${escapeHtml(fullDose)}" title="${escapeHtml(fullDose)}">` +
+      `${indication ? `<span class="registry-dosage-indication">${escapeHtml(indication)}</span>` : ''}` +
+      `<span class="registry-dosage-dose-text">${escapeHtml(fullDose)}</span>` +
+      `<span class="registry-dosage-toggle" aria-hidden="true">Më shumë</span></button>` +
       `<div class="registry-dosage-route">${escapeHtml(route || '—')}</div>` +
       `</div>`;
   }
@@ -297,7 +301,7 @@
       th.className = `registry-dosage-column registry-dosage-${column.key}`;
       th.dataset.registryDosageColumn = column.key;
       th.setAttribute('scope', 'col');
-      th.innerHTML = `${escapeHtml(column.label)}<span class="registry-dosage-subhead">Doza e plotë&nbsp;&nbsp;|&nbsp;&nbsp;Rruga</span>`;
+      th.innerHTML = `${escapeHtml(column.label)}<span class="registry-dosage-subhead">Doza&nbsp;&nbsp;·&nbsp;&nbsp;Rruga</span>`;
       header.appendChild(th);
     });
   }
@@ -385,7 +389,10 @@
         const heading = document.createElement('div');
         heading.className = 'registry-dosage-picker-heading';
         heading.textContent = 'Dozimi';
-        group.appendChild(heading);
+        const note = document.createElement('p');
+        note.className = 'registry-dosage-picker-note';
+        note.textContent = 'Aktivizo vetëm kolonën që të duhet për një tabelë më të shpejtë për t’u lexuar.';
+        group.append(heading, note);
         COLUMNS.forEach(column => group.appendChild(pickerLabel(column)));
         const actions = panel.querySelector('.col-panel-actions');
         actions?.insertAdjacentElement('afterend', group) || panel.prepend(group);
@@ -453,6 +460,22 @@
     observeTable();
     observePanel();
     document.getElementById('colPickerBtn')?.addEventListener('click', () => requestAnimationFrame(ensurePicker));
+    const tbody = document.getElementById('tbody');
+    if (tbody && !tbody.dataset.registryDosageDisclosure) {
+      tbody.dataset.registryDosageDisclosure = '1';
+      tbody.addEventListener('click', event => {
+        const trigger = event.target.closest('.registry-dosage-dose');
+        if (!trigger) return;
+        event.stopPropagation();
+        const regimen = trigger.closest('.registry-dosage-regimen');
+        const expanded = regimen?.classList.toggle('is-expanded') || false;
+        trigger.setAttribute('aria-expanded', String(expanded));
+        const toggle = trigger.querySelector('.registry-dosage-toggle');
+        if (toggle) toggle.textContent = expanded ? 'Më pak' : 'Më shumë';
+        const dose = clean(trigger.querySelector('.registry-dosage-dose-text')?.textContent);
+        trigger.setAttribute('aria-label', `${expanded ? 'Mbyll' : 'Shfaq'} dozimin e plotë: ${dose}`);
+      });
+    }
   }
 
   applyVisibility();

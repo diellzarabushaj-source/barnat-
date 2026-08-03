@@ -2,7 +2,7 @@
   'use strict';
 
   const ID = 'firstPageClinicalStyles';
-  const HREF = '/first-page-clinical.css?v=20260727-2';
+  const HREF = '/first-page-clinical.css?v=20260731-1';
 
   function ensure() {
     let link = document.getElementById(ID);

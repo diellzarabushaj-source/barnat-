@@ -54,20 +54,37 @@ function buildHeader(){
 
   const selectTh = document.createElement('th');
   selectTh.className = 'select-col';
+  selectTh.dataset.columnKey = '__select';
+  selectTh.setAttribute('scope', 'col');
   selectTh.title = 'Zgjidhi të gjitha barnat në këtë faqe';
   const selectAll = document.createElement('input');
   selectAll.type = 'checkbox';
   selectAll.setAttribute('aria-label', 'Zgjidhi të gjitha barnat në këtë faqe');
   selectAll.addEventListener('click', e => e.stopPropagation());
   selectAll.addEventListener('change', () => toggleCurrentPageSelection(selectAll.checked));
-  selectTh.appendChild(selectAll);
+  const selectControl = document.createElement('label');
+  selectControl.className = 'registry-selection-control';
+  selectControl.appendChild(selectAll);
+  selectTh.appendChild(selectControl);
   row.appendChild(selectTh);
 
   visibleColumns().forEach(col => {
     const th = document.createElement('th');
+    th.className = ['registry-column-header', col.cls].filter(Boolean).join(' ');
+    th.dataset.columnKey = col.key;
+    th.setAttribute('scope', 'col');
     th.innerHTML = col.label + '<span class="arrow">' + (state.sortKey===col.key ? (state.sortDir===1?'▲':'▼') : '↕') + '</span>';
-    if(state.sortKey===col.key) th.classList.add('sorted');
-    th.addEventListener('click', () => {
+    const sortButton = document.createElement('button');
+    sortButton.type = 'button';
+    sortButton.className = 'registry-sort-trigger';
+    sortButton.innerHTML = th.innerHTML;
+    sortButton.setAttribute('aria-label', 'Rendit sipas ' + (col.mobileLabel || col.key));
+    th.replaceChildren(sortButton);
+    if(state.sortKey===col.key){
+      th.classList.add('sorted');
+      th.setAttribute('aria-sort', state.sortDir === 1 ? 'ascending' : 'descending');
+    }
+    sortButton.addEventListener('click', () => {
       if(state.sortKey === col.key){ state.sortDir *= -1; }
       else { state.sortKey = col.key; state.sortDir = 1; }
       state.page = 1;
