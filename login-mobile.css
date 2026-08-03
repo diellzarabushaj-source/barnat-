@@ -7,6 +7,19 @@ html[data-mi-page="login"] .mi-landing-page {
   overflow-x:clip;
 }
 
+/* Approved M+ brand mark from the final visual reference. The previous image remains only as a harmless fallback node. */
+html[data-mi-page="login"] .mi-brand-logo {
+  background-color:rgba(7,27,37,.22)!important;
+  background-image:url('/public/images/brand/medindex-mark-mplus.svg')!important;
+  background-position:center!important;
+  background-repeat:no-repeat!important;
+  background-size:100% 100%!important;
+}
+
+html[data-mi-page="login"] .mi-brand-logo img {
+  opacity:0!important;
+}
+
 html[data-mi-page="login"] :is(button,input,summary,.mi-primary-action,.mi-private-pill) {
   touch-action:manipulation;
   -webkit-tap-highlight-color:transparent;
@@ -369,7 +382,7 @@ html[data-mi-page="login"] .google-login-button iframe {
 
   html[data-mi-page="login"] .login-meta span {
     min-height:40px;
-    font-size:7px;
+    font-size:8.5px;
   }
 
   html[data-mi-page="login"] .mi-hero-copy h1 {
