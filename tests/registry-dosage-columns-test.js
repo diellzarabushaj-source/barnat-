@@ -21,8 +21,8 @@ execFileSync(process.execPath, ['--check', rowExpandPath], { stdio:'pipe' });
 
 assert.match(index, /dosage-engine\.js/);
 assert.match(index, /registry-dosage-loader\.js/);
-assert.match(index, /registry-row-expand\.js\?v=20260803-7/);
-assert.match(index, /registry-dosage-disclosure-fix\.css\?v=20260803-3/);
+assert.match(index, /registry-row-expand\.js\?v=20260803-8/);
+assert.match(index, /registry-dosage-disclosure-fix\.css\?v=20260803-4/);
 assert.doesNotMatch(index, /src="registry-dosage-columns(?:-v2)?\.js/);
 assert.match(index, /registry-dosage-columns\.css/);
 assert.match(loader, /medindex:registry-ready/);
@@ -74,24 +74,30 @@ assert.match(css, /registry-dosage-dose-text/);
 assert.match(css, /-webkit-line-clamp:\s*2/);
 assert.match(css, /registry-dosage-regimen\.is-expanded/);
 
-// The capturing row controller is the single source of truth for disclosure state.
-assert.match(rowExpand, /registry-row-expand-20260803-7/);
+assert.match(rowExpand, /registry-row-expand-20260803-8/);
 assert.match(rowExpand, /const dosageTrigger = event\.target\.closest\?\.\('\.registry-dosage-dose'\)/);
 assert.match(rowExpand, /event\.stopImmediatePropagation\(\)/);
 assert.match(rowExpand, /syncDosageControls\(row, expanded\)/);
-assert.match(rowExpand, /regimen\.classList\.toggle\('is-expanded', expanded\)/);
-assert.match(rowExpand, /regimen\.dataset\.dosageExpanded = String\(expanded\)/);
-assert.match(rowExpand, /trigger\.setAttribute\('aria-expanded', String\(expanded\)\)/);
+assert.match(rowExpand, /regimen\.classList\.toggle\('is-expanded', expanded && needed\)/);
+assert.match(rowExpand, /regimen\.dataset\.dosageExpanded = String\(expanded && needed\)/);
+assert.match(rowExpand, /trigger\.setAttribute\('aria-expanded', String\(expanded && needed\)\)/);
 assert.match(rowExpand, /toggle\.textContent = expanded \? 'Më pak' : 'Më shumë'/);
 assert.match(rowExpand, /document\.addEventListener\('click', onClick, true\)/);
 assert.match(rowExpand, /document\.addEventListener\('keydown', onKeydown, true\)/);
 assert.match(rowExpand, /new CustomEvent\('medindex:registry-row-toggle'/);
+assert.match(rowExpand, /function isOverflowing\(element\)/);
+assert.match(rowExpand, /trigger\.setAttribute\('aria-controls', textId\)/);
+assert.match(rowExpand, /trigger\.disabled = !needed/);
+assert.match(rowExpand, /interactiveTarget\(event\.target, cell\)/);
+assert.match(rowExpand, /candidate && candidate !== root/);
+assert.match(rowExpand, /if \(event\.key === 'Escape'\)/);
+assert.match(rowExpand, /function preserveRowAnchor\(row, beforeTop\)/);
+assert.match(rowExpand, /ensureStatusRegion\(\)/);
 assert.match(rowExpand, /const desiredTail = \[finalStyle, fullText, dosageDisclosure\]\.filter\(Boolean\)/);
 assert.match(rowExpand, /const alreadyStable = desiredTail\.length > 0/);
 assert.match(rowExpand, /if \(!alreadyStable\) desiredTail\.forEach\(node => document\.head\.appendChild\(node\)\)/);
 assert.doesNotMatch(rowExpand, /document\.head\.lastElementChild !== finalStyle/);
 
-// Expanded content must be released through explicit class/data selectors, not only :has().
 assert.match(disclosureCss, /data-dosage-expanded="true"/);
 assert.match(disclosureCss, /registry-row-expanded/);
 assert.match(disclosureCss, /contain:none!important/);
@@ -102,8 +108,12 @@ assert.match(disclosureCss, /text-overflow:clip!important/);
 assert.match(disclosureCss, /-webkit-line-clamp:unset!important/);
 assert.match(disclosureCss, /line-clamp:unset!important/);
 assert.match(disclosureCss, /registry-dosage-dose\[aria-expanded="true"\]/);
+assert.match(disclosureCss, /registry-dosage-toggle::after/);
+assert.match(disclosureCss, /data-disclosure-needed="false"/);
+assert.match(disclosureCss, /overflow-anchor:none!important/);
+assert.match(disclosureCss, /registry-disclosure-status/);
 assert.match(disclosureCss, /@media \(max-width:760px\)/);
 assert.match(disclosureCss, /@media \(prefers-reduced-motion:reduce\)/);
 assert.doesNotMatch(disclosureCss, /https?:\/\//);
 
-console.log('Registry dosage columns, full-text disclosure and stable cascade regression test passed.');
+console.log('Registry dosage columns and polished full-text disclosure regression test passed.');
