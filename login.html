@@ -4,140 +4,113 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
   <meta name="robots" content="noindex,nofollow,noarchive">
-  <meta name="theme-color" content="#0f6f72">
-  <title>Hyr në MedIndex</title>
+  <meta name="theme-color" content="#0c182c">
+  <meta name="description" content="MedIndex — hapësirë klinike private për barnat, ATC, ICD, analizat, dozologjinë dhe recetat.">
+  <title>MedIndex | Hyrje e sigurt</title>
   <script src="theme-preload.js?v=production-audit-v2"></script>
+  <link rel="preconnect" href="https://accounts.google.com">
   <link rel="stylesheet" href="tailadmin-medindex.css?v=20260728-1" data-tailadmin-medindex-css>
-  <link rel="stylesheet" href="google-login.css?v=20260730-1">
-  <link rel="stylesheet" href="login-page.css?v=20260803-1">
+  <link rel="stylesheet" href="login-tailwind-page.css?v=20260803-minimal-1">
   <script src="https://accounts.google.com/gsi/client" async defer></script>
 </head>
 <body>
-  <!-- Login-only layout inspired by Tailwind Toolbox Landing Page (MIT). -->
-  <main class="landing-login-page">
-    <nav class="landing-nav" aria-label="MedIndex">
-      <div class="landing-container landing-nav-inner">
-        <a class="landing-brand" href="/login.html" aria-label="MedIndex">
-          <span class="landing-brand-logo">
-            <img src="/images/brand/medindex-icon-on-dark.png" alt="Logoja MedIndex" width="48" height="48">
-          </span>
-          <span class="landing-brand-copy">
-            <strong>MedIndex</strong>
-            <small>Clinical Workspace</small>
-          </span>
-        </a>
+  <main class="mi-login-shell">
+    <section class="login-side-panel" aria-labelledby="brandTitle">
+      <div class="mi-brand-surface">
+        <header class="mi-brand-header">
+          <a class="mi-brand" href="/login.html" aria-label="MedIndex — faqja e hyrjes">
+            <span class="mi-brand-mark" aria-hidden="true">
+              <object data="/images/brand/medindex-icon-on-dark.png" type="image/png" width="50" height="50" tabindex="-1">
+                <svg viewBox="0 0 50 50" width="50" height="50" focusable="false" aria-hidden="true">
+                  <rect width="50" height="50" rx="14" fill="#176d73"/>
+                  <path d="M12 33V17h4.2l5.8 9.2L27.8 17H32v16h-4V23.4l-5.8 8.8h-.5L16 23.4V33Z" fill="#fff"/>
+                  <path d="M36.5 20v9M32 24.5h9" stroke="#d6a84f" stroke-width="2.4" stroke-linecap="round"/>
+                </svg>
+              </object>
+            </span>
+            <span class="mi-brand-copy">
+              <strong>MedIndex</strong>
+              <small>Clinical Workspace</small>
+            </span>
+          </a>
+          <span class="mi-private-badge">Qasje private</span>
+        </header>
 
-        <div class="landing-nav-meta" aria-label="Informacioni i qasjes">
-          <span>Dr. Diellza Rabushaj</span>
-          <span class="landing-private-pill">Qasje private</span>
-        </div>
-      </div>
-    </nav>
-
-    <section class="landing-hero">
-      <div class="landing-container landing-hero-grid">
-        <div class="landing-login-column">
-          <section class="login-card" aria-labelledby="loginTitle">
-            <div class="login-card-brand">
-              <img src="/images/brand/medindex-icon-on-light.png" alt="Logoja MedIndex" width="50" height="50">
-              <span>MedIndex</span>
-            </div>
-
-            <p class="login-kicker">Mirë se erdhe</p>
-            <h1 id="loginTitle">Hyr në MedIndex</h1>
-            <p class="login-copy">Qasje e sigurt në ndihmësin digjital për kërkim dhe mbështetje në vendimmarrje klinike.</p>
-
-            <section class="google-login-panel" id="googleLoginPanel" aria-labelledby="googleLoginHeading">
-              <h2 class="google-login-heading" id="googleLoginHeading">Vazhdo me Google</h2>
-              <div class="google-login-button" id="googleLoginButton" aria-live="polite"></div>
-              <p class="google-login-status" id="googleLoginStatus" role="status" aria-live="polite">Po përgatitet hyrja e sigurt…</p>
-            </section>
-
-            <p class="login-account-note">Lejohet vetëm diellzarabushaj@gmail.com</p>
-
-            <details class="password-fallback" id="passwordFallback" hidden>
-              <summary>Hyrje rezervë me password</summary>
-              <div class="login-divider"><span>Rezervë</span></div>
-              <form id="loginForm" autocomplete="on" novalidate>
-                <label for="password">Password-i</label>
-                <div class="password-row">
-                  <input id="password" name="password" type="password" autocomplete="current-password" required minlength="6" maxlength="128" aria-describedby="capsLockHint loginMessage">
-                  <button id="togglePassword" type="button" aria-label="Shfaq password-in" aria-pressed="false">Shfaq</button>
-                </div>
-                <p class="caps-lock-hint" id="capsLockHint" hidden>Caps Lock është aktiv.</p>
-                <button class="login-submit" id="loginSubmit" type="submit">
-                  <span>Hyr me password</span>
-                  <span aria-hidden="true">→</span>
-                </button>
-              </form>
-            </details>
-
-            <p class="login-message" id="loginMessage" role="alert" aria-live="polite"></p>
-
-            <div class="login-meta" aria-label="Siguria e sesionit">
-              <span>Google i verifikuar</span>
-              <span>Sesioni 8 orë</span>
-              <span>Cookie HttpOnly</span>
-            </div>
-          </section>
-          <p class="login-clinical-note">Mbështet punën klinike; nuk e zëvendëson gjykimin profesional.</p>
+        <div class="mi-brand-content">
+          <p class="mi-eyebrow">Platformë klinike profesionale</p>
+          <h1 id="brandTitle">Informacion klinik,<br><span>pa zhurmë.</span></h1>
+          <p class="mi-brand-description">Barnat, ATC, ICD, analizat dhe recetat — të organizuara qartë në një hapësirë të vetme pune.</p>
         </div>
 
-        <div class="landing-showcase" aria-label="MedIndex — ndihmës digjital për mjekun">
-          <div class="landing-showcase-copy">
-            <p class="landing-eyebrow">Ndihmës digjital për mjekun</p>
-            <h2>Vendime klinike,<br><span>më qartë.</span></h2>
-            <p>Barnat, ATC, ICD, analizat, dozologjia dhe recetat — në një hapësirë të vetme.</p>
-          </div>
-
-          <div class="landing-doctor-visual" aria-hidden="true">
-            <svg viewBox="0 0 700 470" role="img">
-              <circle cx="566" cy="82" r="60" fill="rgba(255,255,255,.08)"/>
-              <circle cx="110" cy="365" r="43" fill="rgba(255,255,255,.07)"/>
-              <path d="M76 385h548" stroke="rgba(255,255,255,.22)" stroke-width="10" stroke-linecap="round"/>
-              <rect x="287" y="146" width="286" height="192" rx="26" fill="#0b2733" stroke="#6ebfc1" stroke-opacity=".45" stroke-width="3"/>
-              <rect x="312" y="169" width="236" height="138" rx="18" fill="#123d49" stroke="#77d7d4" stroke-opacity=".34"/>
-              <path d="M402 239h58M431 210v58" stroke="#84e0dc" stroke-width="15" stroke-linecap="round"/>
-              <rect x="340" y="338" width="180" height="13" rx="6.5" fill="#638692"/>
-              <path d="M281 365h300" stroke="#8ca9b2" stroke-width="7" stroke-linecap="round"/>
-              <circle cx="210" cy="139" r="51" fill="#d8a17e"/>
-              <path d="M166 133c4-43 31-66 67-53 18 6 31 23 33 45-26-11-54-11-82-2-7 2-13 6-18 10Z" fill="#102b37"/>
-              <path d="M142 325c6-79 27-130 72-130 47 0 73 54 79 130" fill="#f8fbfb"/>
-              <path d="M181 207c4 34 15 59 32 75 17-17 29-42 33-75" fill="#e8f2f3"/>
-              <path d="M173 218c-15 38-22 74-22 110M254 218c16 38 23 74 23 110" stroke="#d8e8ea" stroke-width="12" stroke-linecap="round"/>
-              <path d="M192 228c-3 25-1 43 6 54 6 10 17 15 31 12" fill="none" stroke="#0f7779" stroke-width="7" stroke-linecap="round"/>
-              <circle cx="233" cy="294" r="11" fill="#0f7779"/>
-              <path d="M267 286c27 7 49 21 65 42" stroke="#d8a17e" stroke-width="23" stroke-linecap="round"/>
-              <path d="M158 286c-20 7-37 20-50 40" stroke="#d8a17e" stroke-width="23" stroke-linecap="round"/>
-              <circle cx="611" cy="348" r="24" fill="#174653"/>
-              <path d="M600 348h22M611 337v22" stroke="#8be4df" stroke-width="6" stroke-linecap="round"/>
-            </svg>
-          </div>
-
-          <div class="landing-feature-pills" aria-label="Funksionet kryesore">
-            <span>Barnat</span>
-            <span>ATC &amp; ICD</span>
-            <span>Analizat</span>
-            <span>Recetat</span>
-          </div>
-        </div>
+        <footer class="mi-brand-footer">
+          <div><strong>Dr. Diellza Rabushaj</strong><span>CEO</span></div>
+          <p>Platformë private për përdorim profesional.</p>
+        </footer>
       </div>
     </section>
 
-    <div class="landing-wave" aria-hidden="true">
-      <svg viewBox="0 0 1428 174" preserveAspectRatio="none">
-        <g stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
-          <g transform="translate(-2 44)" fill="#fff" fill-rule="nonzero">
-            <path d="M0 0c90.7.9 147.9 27.2 291.9 59.9 96 21.8 251.7 29.4 467.1 22.8C469.3 156.3 216.3 153.7 0 75Z" opacity=".1"/>
-            <path d="M100 104.7c177.4-32.5 326.1-52.2 446.2-59.1 120.1-7 264.3-3.8 432.8 9.5-47.9 1-168.7 19.8-362.3 56.2-193.6 36.4-365.8 34.2-516.7-6.6Z" opacity=".1"/>
-            <path d="M1046 51.7c84.8-22.4 233.1-34.1 393-11.5V120c-167.8-42.1-298.8-64.8-393-68.3Z" opacity=".2"/>
-          </g>
-          <g transform="translate(-4 76)" fill="#fff" fill-rule="nonzero">
-            <path d="M.5 34C57.1 53.2 98.2 65.8 123.8 71.9c57.6 13.6 110.5 18.4 148.2 21.6 39.3 3.3 124.6 2.3 189-1.8 25.7-1.7 57.7-5.3 95.9-10.9 38.8-6.2 65.4-10.7 79.9-13.8 27.1-5.7 75.7-17.5 90.8-20.9 52.9-11.8 91.2-23.6 128.7-30.2C922.7 4.2 955.7 2.5 1011.2.4c49.5 1.1 86.2 2.7 110 5 40.5 3.8 87.4 12.4 114.2 16.9 50.5 8.4 119 25.1 205.5 50.1l.3 32L1.1 104 .5 34Z"/>
-          </g>
-        </g>
-      </svg>
-    </div>
+    <section class="mi-auth-panel" aria-labelledby="loginTitle">
+      <div class="mi-auth-wrap">
+        <div class="mi-security-status" aria-label="Statusi i sigurisë">
+          <span aria-hidden="true"></span>
+          Mjedis privat dhe i mbrojtur
+        </div>
+
+        <section class="mi-login-card">
+          <div class="mi-login-heading">
+            <p class="login-kicker">Qasje e autorizuar</p>
+            <h2 id="loginTitle">Hyr në MedIndex</h2>
+            <p class="login-copy">Vazhdo me llogarinë e aprovuar Google për të hapur hapësirën klinike.</p>
+          </div>
+
+          <noscript>
+            <p class="mi-noscript" role="alert">JavaScript duhet të jetë aktiv për hyrjen e sigurt në MedIndex.</p>
+          </noscript>
+
+          <section class="google-login-panel" id="googleLoginPanel" aria-labelledby="googleLoginHeading">
+            <h3 class="google-login-heading" id="googleLoginHeading">Vazhdo me Google</h3>
+            <div class="google-login-button" id="googleLoginButton" aria-live="polite"></div>
+            <p class="google-login-status" id="googleLoginStatus" role="status" aria-live="polite">Po përgatitet hyrja e sigurt…</p>
+          </section>
+
+          <p class="login-account-note">
+            <span aria-hidden="true">✓</span>
+            Lejohet vetëm diellzarabushaj@gmail.com
+          </p>
+
+          <details class="password-fallback" id="passwordFallback" hidden>
+            <summary>Hyrje rezervë me password</summary>
+            <div class="login-divider"><span>Rezervë</span></div>
+            <form id="loginForm" autocomplete="on" novalidate>
+              <label for="password">Password-i</label>
+              <div class="password-row">
+                <input id="password" name="password" type="password" autocomplete="current-password" required minlength="6" maxlength="128" aria-describedby="capsLockHint loginMessage">
+                <button id="togglePassword" type="button" aria-label="Shfaq password-in" aria-pressed="false">Shfaq</button>
+              </div>
+              <p class="caps-lock-hint" id="capsLockHint" hidden>Caps Lock është aktiv.</p>
+              <button class="login-submit" id="loginSubmit" type="submit">
+                <span>Hyr me password</span>
+                <span aria-hidden="true">→</span>
+              </button>
+            </form>
+          </details>
+
+          <p class="login-message" id="loginMessage" role="alert" aria-live="polite"></p>
+
+          <div class="login-meta" aria-label="Siguria e sesionit">
+            <span>Google i verifikuar</span>
+            <span>Sesion 8 orë</span>
+            <span>Cookie HttpOnly</span>
+          </div>
+        </section>
+
+        <footer class="mi-auth-footer">
+          <span>MedIndex</span>
+          <span aria-hidden="true">•</span>
+          <span>Hapësirë klinike private</span>
+        </footer>
+      </div>
+    </section>
   </main>
 
   <script src="login.js?v=google-auth-v1" defer></script>
