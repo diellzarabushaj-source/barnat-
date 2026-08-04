@@ -29,9 +29,15 @@ execFileSync(process.execPath, ['--check', path.join(ROOT, 'mobile-experience.js
   /orientationchange/,
   /max-height:500px/,
   /width:min\(var\(--mi-sidebar-width\),calc\(100vw - 44px\)\)/,
+  /\.mi-topbar-actions\{[\s\S]*display:flex!important/,
+  /\.mi-mobile-search-trigger\{[\s\S]*visibility:visible!important/,
+  /syncTriggerVisibility/,
+  /miMobileSearchBound/,
+  /subtree: false/,
 ].forEach(pattern => assert.match(mobile, pattern, `mobile-experience.js missing ${pattern}`));
 
 assert.doesNotMatch(mobile, /fetch\(|\/api\//, 'mobile experience runtime must not touch backend APIs or the network');
+assert.doesNotMatch(mobile, /bodyObserver\.observe\([^;]+subtree:\s*true/, 'mobile observer must not recursively observe its own descendant class writes');
 assert.match(shell, /MOBILE_SRC = '\/mobile-experience\.js\?v=production-audit-v2'/, 'shell must load the audited mobile runtime');
 assert.match(shell, /loadMobileExperience\(\)/, 'mobile runtime loader is missing');
 assert.match(shell, /warm\(MOBILE_SRC\)/, 'mobile runtime must be warmed for offline reuse');
@@ -50,4 +56,4 @@ assert.match(workflow, /mobile-deep-audit\.spec\.js/, 'browser workflow must exe
   /context\.setOffline\(true\)/,
 ].forEach(pattern => assert.match(browserSpec, pattern, `mobile browser audit missing ${pattern}`));
 
-console.log('Mobile, tablet, touch, safe-area and orientation audit passed.');
+console.log('Mobile, tablet, touch, safe-area, search visibility and orientation audit passed.');
