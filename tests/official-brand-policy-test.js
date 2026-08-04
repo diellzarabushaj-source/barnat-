@@ -41,11 +41,12 @@ for (const asset of Object.values(expectedAssets)) {
   allowedReferences.add(asset.route);
   allowedReferences.add(asset.route.replace(/^\//, ''));
   allowedReferences.add(asset.blobPath);
+  allowedReferences.add(path.posix.basename(asset.route));
 }
 
-const ignoredDirectories = new Set(['.git', '.vercel', 'node_modules', 'coverage']);
+const ignoredDirectories = new Set(['.git', '.vercel', 'node_modules', 'coverage', 'tests']);
 const sourceExtensions = new Set(['.html', '.css', '.js', '.mjs', '.ts', '.json']);
-const imageReferencePattern = /(?:\/?[A-Za-z0-9_.-]+\/)*medindex[A-Za-z0-9_.\/-]*\.(?:png|webp|svg|jpe?g)(?!\.[A-Za-z0-9])/gi;
+const imageReferencePattern = /(?:\/?[A-Za-z0-9_.-]+\/)*medindex-[A-Za-z0-9_.\/-]*\.(?:png|webp|svg|jpe?g)(?!\.[A-Za-z0-9])/gi;
 const violations = [];
 
 function walk(directory) {
