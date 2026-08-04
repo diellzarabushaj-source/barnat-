@@ -1,5 +1,5 @@
 <!doctype html>
-<html lang="sq" class="medindex-tailadmin-login" data-mi-page="login" data-mi-login-version="20260804-micro-strips-128">
+<html lang="sq" class="medindex-tailadmin-login" data-mi-page="login" data-mi-login-version="20260804-plan-cards">
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
@@ -25,6 +25,207 @@
     .login-card-brand img{object-fit:cover!important;background:#fff!important;padding:0!important}
     .visual-login{display:block!important;grid-template-columns:none!important}
     .artwork{width:100%}
+
+    .plan-block{
+      position:relative;
+      min-height:286px;
+      padding:28px 25px 22px!important;
+      overflow:hidden;
+      border:1px solid rgba(90,112,165,.11);
+      border-radius:24px;
+      background:
+        radial-gradient(circle at 100% 0,rgba(110,151,255,.14),transparent 42%),
+        linear-gradient(145deg,rgba(255,255,255,.92),rgba(248,250,255,.72));
+      box-shadow:0 14px 36px rgba(48,61,95,.07),inset 0 1px 0 rgba(255,255,255,.92);
+      transition:transform .42s cubic-bezier(.2,.8,.2,1),box-shadow .42s ease,border-color .32s ease,background .32s ease;
+    }
+    .plan-block::before{
+      content:"";
+      position:absolute;
+      top:0;
+      right:0;
+      left:0;
+      height:3px;
+      opacity:.72;
+      background:linear-gradient(90deg,#b8c9ff,#72b9eb,#4777e5);
+      transform:scaleX(.38);
+      transform-origin:left;
+      transition:transform .5s cubic-bezier(.2,.8,.2,1),opacity .35s ease;
+    }
+    .plan-block::after{
+      content:"";
+      position:absolute;
+      top:-84px;
+      right:-78px;
+      width:170px;
+      height:170px;
+      pointer-events:none;
+      border-radius:50%;
+      background:radial-gradient(circle,rgba(102,145,255,.2),transparent 68%);
+      transform:scale(.72);
+      transition:transform .55s cubic-bezier(.2,.8,.2,1),opacity .35s ease;
+    }
+    .plan-block h2{
+      position:relative;
+      z-index:1;
+      margin-bottom:20px!important;
+      color:#222d47!important;
+      font-size:17px!important;
+      letter-spacing:-.035em!important;
+      transition:color .3s ease,transform .35s ease;
+    }
+    .plan-block .plan-list{
+      position:relative;
+      z-index:1;
+      gap:13px!important;
+      margin-bottom:22px!important;
+    }
+    .plan-block .plan-list li{
+      min-height:22px;
+      padding-left:27px!important;
+      color:#737d93!important;
+      font-size:12px!important;
+      transition:color .25s ease,transform .3s ease;
+    }
+    .plan-block .plan-list li::before{
+      top:2px!important;
+      border-color:#9ba8c4!important;
+      transition:border-color .25s ease,transform .3s ease;
+    }
+    .plan-disclosure{
+      position:relative;
+      z-index:2;
+      margin-top:auto;
+    }
+    .plan-disclosure summary{
+      display:inline-flex;
+      width:max-content;
+      max-width:100%;
+      list-style:none;
+      cursor:pointer;
+      outline:none;
+      border-radius:999px;
+    }
+    .plan-disclosure summary::-webkit-details-marker{display:none}
+    .plan-more{
+      display:inline-flex!important;
+      min-height:44px;
+      align-items:center;
+      gap:13px!important;
+      margin-top:0!important;
+      color:#7b8499!important;
+      transition:color .25s ease,transform .35s cubic-bezier(.2,.8,.2,1);
+    }
+    .plan-more i{
+      width:40px!important;
+      height:40px!important;
+      border:1px solid rgba(79,105,172,.1);
+      background:rgba(255,255,255,.94)!important;
+      color:#43506b!important;
+      font-size:19px!important;
+      box-shadow:0 10px 26px rgba(44,61,104,.1)!important;
+      transition:transform .42s cubic-bezier(.2,.8,.2,1),background .3s ease,color .3s ease,box-shadow .3s ease;
+    }
+    .plan-more span{
+      font-size:9px;
+      font-weight:820;
+      letter-spacing:.09em;
+      transition:transform .3s ease;
+    }
+    .plan-details{
+      position:relative;
+      margin-top:17px;
+      padding-top:17px;
+      border-top:1px solid rgba(93,112,159,.12);
+      color:#69748a;
+      animation:planReveal .38s cubic-bezier(.2,.8,.2,1) both;
+    }
+    .plan-details p{
+      margin:0;
+      font-size:11px;
+      line-height:1.62;
+    }
+    .plan-tags{
+      display:flex;
+      flex-wrap:wrap;
+      gap:7px;
+      margin-top:13px;
+    }
+    .plan-tags span{
+      display:inline-flex;
+      min-height:26px;
+      align-items:center;
+      padding:0 9px;
+      border:1px solid rgba(78,110,190,.11);
+      border-radius:999px;
+      background:rgba(239,244,255,.78);
+      color:#4b628f;
+      font-size:8px;
+      font-weight:760;
+      letter-spacing:.035em;
+    }
+    .plan-login-link{
+      display:inline-flex;
+      min-height:36px;
+      align-items:center;
+      justify-content:center;
+      margin-top:14px;
+      padding:0 13px;
+      border:0;
+      border-radius:10px;
+      background:#edf2ff;
+      color:#315ab7;
+      cursor:pointer;
+      font-size:9px;
+      font-weight:820;
+      transition:transform .25s ease,background .25s ease,box-shadow .25s ease;
+    }
+    .plan-disclosure[open] .plan-more i{
+      background:#4777e5!important;
+      color:#fff!important;
+      box-shadow:0 13px 30px rgba(71,119,229,.25)!important;
+      transform:rotate(45deg) scale(1.06);
+    }
+    .plan-disclosure[open] .plan-more{color:#324568!important}
+    .plan-disclosure[open] .plan-more span{transform:translateX(2px)}
+    .plan-disclosure summary:focus-visible{
+      outline:3px solid rgba(71,119,229,.24);
+      outline-offset:5px;
+    }
+    @media(hover:hover) and (pointer:fine){
+      .plan-block:hover{
+        z-index:3;
+        border-color:rgba(79,119,218,.25);
+        background:
+          radial-gradient(circle at 100% 0,rgba(96,142,255,.2),transparent 44%),
+          linear-gradient(145deg,#fff,rgba(246,249,255,.96));
+        box-shadow:0 25px 58px rgba(45,66,118,.15),inset 0 1px 0 #fff;
+        transform:translateY(-10px) scale(1.018);
+      }
+      .plan-block:hover::before{opacity:1;transform:scaleX(1)}
+      .plan-block:hover::after{transform:scale(1.08)}
+      .plan-block:hover h2{color:#315ec3!important;transform:translateY(-2px)}
+      .plan-block:hover .plan-list li{color:#56647f!important;transform:translateX(3px)}
+      .plan-block:hover .plan-list li::before{border-color:#4777e5!important}
+      .plan-disclosure summary:hover .plan-more{color:#315ec3!important;transform:translateX(3px)}
+      .plan-disclosure summary:hover .plan-more i{
+        background:#4777e5!important;
+        color:#fff!important;
+        box-shadow:0 14px 32px rgba(71,119,229,.27)!important;
+        transform:rotate(90deg) scale(1.08);
+      }
+      .plan-disclosure[open] summary:hover .plan-more i{transform:rotate(135deg) scale(1.08)}
+      .plan-login-link:hover{
+        background:#dfe8ff;
+        box-shadow:0 9px 20px rgba(71,119,229,.16);
+        transform:translateY(-2px);
+      }
+    }
+    @keyframes planReveal{
+      from{opacity:0;transform:translateY(-8px)}
+      to{opacity:1;transform:translateY(0)}
+    }
+
     .login-modal[popover]{position:fixed;inset:0;width:100%;height:100%;max-width:none;max-height:none;margin:0;padding:24px;border:0;background:transparent;overflow:auto}
     .login-modal[popover]:not(:popover-open){display:none}
     .login-modal[popover]:popover-open{display:grid;place-items:center}
@@ -35,6 +236,7 @@
     @media(max-width:840px){
       .editorial-nav{position:relative;padding-bottom:38px}
       .landing-nav-meta{position:absolute;right:0;bottom:8px;left:0;display:flex!important;justify-content:center;gap:24px!important;margin:0!important}
+      .plan-block{min-height:265px;padding:24px 21px 20px!important}
     }
     @media(max-width:600px){
       .landing-showcase{display:block!important}
@@ -54,6 +256,11 @@
       .login-stage{width:min(396px,100%)!important}
       .login-modal-close{top:-10px;right:-7px;width:44px;height:44px}
       .login-card{padding:24px 18px 20px!important;border-radius:24px!important;backdrop-filter:none!important;-webkit-backdrop-filter:none!important}
+    }
+    @media(prefers-reduced-motion:reduce){
+      .plan-block,.plan-block::before,.plan-block::after,.plan-block h2,.plan-block .plan-list li,.plan-more,.plan-more i,.plan-login-link{transition:none!important}
+      .plan-details{animation:none!important}
+      .plan-block:hover{transform:none!important}
     }
   </style>
   <script src="https://accounts.google.com/gsi/client" async defer></script>
@@ -92,7 +299,18 @@
                 <li>Klasifikimi ATC dhe ICD</li>
                 <li>Kërkim klinik i shpejtë</li>
               </ul>
-              <div class="plan-more"><i aria-hidden="true">+</i><span>Më shumë</span></div>
+              <details class="plan-disclosure">
+                <summary aria-label="Shfaq më shumë për MedIndex Core">
+                  <span class="plan-more"><i aria-hidden="true">+</i><span>Më shumë</span></span>
+                </summary>
+                <div class="plan-details">
+                  <p>Qasje e shpejtë në të dhënat bazë klinike, të organizuara për përdorim të përditshëm.</p>
+                  <div class="plan-tags" aria-label="Veçoritë e MedIndex Core">
+                    <span>Të dhëna të strukturuara</span><span>ATC &amp; ICD</span><span>Kërkim i avancuar</span>
+                  </div>
+                  <button class="plan-login-link" type="button" popovertarget="loginPanel">Hyr për ta përdorur</button>
+                </div>
+              </details>
             </section>
 
             <section class="plan-block" aria-labelledby="plusTitle">
@@ -102,7 +320,18 @@
                 <li>Dozologji e strukturuar</li>
                 <li>Hapësirë private klinike</li>
               </ul>
-              <div class="plan-more"><i aria-hidden="true">+</i><span>Më shumë</span></div>
+              <details class="plan-disclosure">
+                <summary aria-label="Shfaq më shumë për MedIndex Clinical Plus">
+                  <span class="plan-more"><i aria-hidden="true">+</i><span>Më shumë</span></span>
+                </summary>
+                <div class="plan-details">
+                  <p>Mjete profesionale për receta, protokolle dhe organizim privat të rrjedhës klinike.</p>
+                  <div class="plan-tags" aria-label="Veçoritë e MedIndex Clinical Plus">
+                    <span>Receta</span><span>Protokolle</span><span>Dozologji</span>
+                  </div>
+                  <button class="plan-login-link" type="button" popovertarget="loginPanel">Hyr për ta përdorur</button>
+                </div>
+              </details>
             </section>
           </div>
         </div>
