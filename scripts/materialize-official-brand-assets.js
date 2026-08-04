@@ -46,3 +46,6 @@ console.log('Canonicalized MedIndex runtime logo references.');
 
 // Every build must reject any MedIndex logo outside the four approved v1 assets.
 require('../tests/official-brand-policy-test.js');
+
+// On Vercel, overwrite the four private Blob assets with the approved transparent variants.
+require('./seed-official-brand-assets.js');
