@@ -1,12 +1,20 @@
 import { next } from '@vercel/functions';
 import { sessionFromRequest, verifySessionToken } from './lib/auth-edge.mjs';
 
+const PUBLIC_INFO_PATHS = new Set([
+  '/rreth-nesh.html',
+  '/kontakt.html',
+  '/blog.html',
+]);
+
 const PUBLIC_PATHS = new Set([
   '/login.html',
   '/login.css',
   '/login-editorial.css',
   '/google-login.css',
   '/login.js',
+  '/info-pages.css',
+  ...PUBLIC_INFO_PATHS,
   '/theme-preload.js',
   '/tailadmin-medindex.css',
   '/recovery.html',
@@ -46,6 +54,7 @@ function safeReturnPath(url) {
     && !value.startsWith('/api/')
     && !value.startsWith('/login')
     && !value.startsWith('/recovery')
+    && !PUBLIC_INFO_PATHS.has(url.pathname)
     ? value
     : '/index.html';
 }
@@ -56,13 +65,18 @@ export default async function middleware(request) {
   const authenticated = await verifySessionToken(sessionFromRequest(request));
 
   if (isPublicPath(pathname)) {
+    if (authenticated && PUBLIC_INFO_PATHS.has(pathname)) {
+      return Response.redirect(new URL('/index.html', request.url), 302);
+    }
+
     if (pathname === '/login.html' && authenticated) {
-      const target = new URL(url.searchParams.get('return') || '/', request.url);
+      const target = new URL(url.searchParams.get('return') || '/index.html', request.url);
       if (target.origin !== url.origin
         || target.pathname.startsWith('/api/')
         || target.pathname.startsWith('/login')
-        || target.pathname.startsWith('/recovery')) {
-        return Response.redirect(new URL('/', request.url), 302);
+        || target.pathname.startsWith('/recovery')
+        || PUBLIC_INFO_PATHS.has(target.pathname)) {
+        return Response.redirect(new URL('/index.html', request.url), 302);
       }
       return Response.redirect(target, 302);
     }
