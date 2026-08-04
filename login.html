@@ -21,11 +21,11 @@
   <main class="editorial-shell">
     <div class="editorial-container">
       <nav class="editorial-nav" aria-label="Navigimi i faqes së hyrjes">
-        <a class="brand" href="/login.html" aria-label="MedIndex — faqja e hyrjes">
-          <span class="brand-mark"><img src="/images/brand/medindex-mark-mplus.svg" alt="" width="34" height="34" decoding="async" loading="eager" fetchpriority="high"></span>
+        <a class="brand landing-brand" href="/login.html" aria-label="MedIndex — faqja e hyrjes">
+          <span class="brand-mark landing-brand-logo"><img src="/images/brand/medindex-mark-mplus.svg" alt="" width="34" height="34" decoding="async" loading="eager" fetchpriority="high"></span>
           <span class="brand-copy"><strong>MedIndex</strong><small>Clinical Workspace</small></span>
         </a>
-        <div class="nav-links" aria-label="Modulet kryesore">
+        <div class="nav-links landing-nav-meta" aria-label="Modulet kryesore">
           <span class="nav-link" aria-hidden="true">Barnat</span>
           <span class="nav-link" aria-hidden="true">ATC &amp; ICD</span>
           <span class="nav-link" aria-hidden="true">Recetat</span>
@@ -39,7 +39,7 @@
       <div class="editorial-container">
         <div class="editorial-hero">
           <div class="hero-grid">
-            <div class="hero-copy">
+            <div class="hero-copy landing-showcase">
               <h1 id="brandTitle">Një mënyrë e re për <span>punë klinike</span> më të qartë.</h1>
               <p>Barnat e Kosovës, ATC, ICD, analizat, dozologjia, protokollet dhe recetat — të organizuara në një hapësirë private pune.</p>
               <a class="hero-cta" href="#loginPanel">Hyr në MedIndex</a>
@@ -72,10 +72,14 @@
 
           <div class="login-stage">
             <section class="login-card" aria-labelledby="loginTitle">
+              <div class="login-card-brand" aria-hidden="true">
+                <img src="/images/brand/medindex-mark-mplus.svg" alt="" width="36" height="36" decoding="async">
+                <span><strong>MedIndex</strong><small>Clinical Workspace</small></span>
+              </div>
               <div class="status">Mjedis privat dhe i mbrojtur</div>
               <header>
                 <h2 id="loginTitle">Hyr në MedIndex</h2>
-                <p class="login-copy">Vazhdo me llogarinë e aprovuar Google. Identiteti verifikohet në server para hapjes së hapësirës klinike.</p>
+                <p class="login-copy"><span class="login-copy-desktop">Vazhdo me llogarinë e aprovuar Google. Identiteti verifikohet në server para hapjes së hapësirës klinike.</span><span class="login-copy-mobile">Vazhdo me llogarinë e aprovuar Google.</span></p>
               </header>
 
               <noscript><p class="noscript" role="alert">JavaScript duhet të jetë aktiv për hyrjen e sigurt në MedIndex.</p></noscript>
