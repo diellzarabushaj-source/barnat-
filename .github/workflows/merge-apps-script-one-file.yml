@@ -17,7 +17,7 @@ jobs:
         with:
           fetch-depth: 0
       - name: Add one-click launcher to standalone script
-        shell: python
+        shell: python {0}
         run: |
           from pathlib import Path
           path = Path('google-apps-script/medindex-current-sync-standalone.gs')
