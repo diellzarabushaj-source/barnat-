@@ -14,103 +14,120 @@ html[data-mi-page="login"] .login-card-brand img{
 html[data-mi-page="login"] .visual-login{
   position:relative;
   isolation:isolate;
-  overflow:hidden;
-  border:1px solid rgba(255,255,255,.78);
-  box-shadow:0 22px 56px rgba(54,82,145,.13),0 2px 0 rgba(255,255,255,.7) inset;
-  transform:translateZ(0);
-  transition:transform .55s cubic-bezier(.2,.8,.2,1),box-shadow .55s cubic-bezier(.2,.8,.2,1),border-color .35s ease;
-}
-html[data-mi-page="login"] .visual-login::before{
-  content:"";
-  position:absolute;
-  z-index:4;
-  top:-70%;
-  bottom:-70%;
-  left:-38%;
-  width:28%;
-  pointer-events:none;
-  opacity:0;
-  background:linear-gradient(90deg,transparent,rgba(255,255,255,.42),transparent);
-  filter:blur(3px);
-  transform:translateX(-140%) rotate(14deg);
-  transition:transform .9s cubic-bezier(.2,.75,.15,1),opacity .28s ease;
+  overflow:visible!important;
+  border:0!important;
+  background:transparent!important;
+  box-shadow:none!important;
 }
 html[data-mi-page="login"] .visual-login::after{
   content:"MEDINDEX  /  CLINICAL WORKSPACE";
   position:absolute;
-  z-index:5;
+  z-index:8;
   top:18px;
   left:18px;
   display:inline-flex;
   min-height:30px;
   align-items:center;
   padding:0 12px;
-  border:1px solid rgba(255,255,255,.44);
+  border:1px solid rgba(255,255,255,.62);
   border-radius:999px;
-  background:rgba(255,255,255,.17);
-  color:rgba(255,255,255,.9);
+  background:rgba(255,255,255,.18);
+  color:rgba(255,255,255,.95);
   font-size:8px;
   font-weight:820;
   letter-spacing:.14em;
   text-transform:uppercase;
-  box-shadow:0 10px 28px rgba(45,80,166,.12);
+  box-shadow:0 10px 28px rgba(45,80,166,.14);
   backdrop-filter:blur(12px);
   -webkit-backdrop-filter:blur(12px);
-  transition:transform .45s cubic-bezier(.2,.8,.2,1),background .3s ease;
+  pointer-events:none;
 }
-html[data-mi-page="login"] .artwork,
-html[data-mi-page="login"] .artwork::before,
-html[data-mi-page="login"] .artwork::after,
-html[data-mi-page="login"] .artwork-label{
-  transition:transform .65s cubic-bezier(.2,.8,.2,1),filter .65s ease,letter-spacing .45s ease;
-}
+
 html[data-mi-page="login"] .artwork{
-  transform:scale(1.001);
-  will-change:transform;
+  position:relative;
+  min-height:370px;
+  overflow:visible!important;
+  border-radius:32px;
+  background:#d9e3f4!important;
+  box-shadow:0 24px 64px rgba(54,82,145,.17),0 2px 0 rgba(255,255,255,.82) inset;
+  perspective:900px;
+  transform-style:preserve-3d;
 }
 html[data-mi-page="login"] .artwork::before,
 html[data-mi-page="login"] .artwork::after{
-  will-change:transform;
+  display:none!important;
 }
+
+html[data-mi-page="login"] .micro-strips{
+  position:absolute;
+  inset:0;
+  z-index:2;
+  display:grid;
+  grid-template-columns:repeat(128,minmax(0,1fr));
+  overflow:visible;
+  border-radius:inherit;
+  transform-style:preserve-3d;
+}
+html[data-mi-page="login"] .micro-strip{
+  position:relative;
+  min-width:0;
+  height:100%;
+  border-right:1px solid rgba(255,255,255,.34);
+  background-image:
+    radial-gradient(circle at 72% 50%,rgba(255,255,255,.92) 0 3.5%,rgba(193,211,255,.72) 8%,rgba(93,132,224,.36) 17%,transparent 30%),
+    radial-gradient(ellipse 52% 94% at 85% 50%,rgba(62,103,207,.96) 0 66%,transparent 67%),
+    linear-gradient(90deg,#cecafa 0%,#9cc9ee 25%,#edf4f8 54.3%,#5b82df 54.5%,#3f6bce 100%);
+  background-repeat:no-repeat;
+  background-size:12800% 100%;
+  background-position:var(--pos) 0;
+  box-shadow:0 0 0 rgba(46,78,164,0),inset 1px 0 rgba(255,255,255,.15);
+  filter:brightness(var(--brightness,1)) saturate(var(--saturation,1));
+  transform:translateY(var(--lift,0px)) rotateY(var(--tilt,0deg)) scaleX(var(--scale-x,1)) scaleY(var(--scale-y,1));
+  transform-origin:center bottom;
+  transition:transform .24s cubic-bezier(.2,.85,.2,1),filter .24s ease,box-shadow .24s ease;
+  transition-delay:var(--delay,0ms);
+  will-change:transform,filter;
+}
+html[data-mi-page="login"] .micro-strip:first-child{
+  border-radius:32px 0 0 32px;
+}
+html[data-mi-page="login"] .micro-strip:last-child{
+  border-right:0;
+  border-radius:0 32px 32px 0;
+}
+html[data-mi-page="login"] .micro-strip.is-near-pointer{
+  z-index:4;
+  box-shadow:0 18px 34px rgba(46,78,164,var(--shadow-alpha,.2)),inset 0 1px rgba(255,255,255,.62);
+}
+html[data-mi-page="login"] .micro-strip.is-near-pointer::after{
+  content:"";
+  position:absolute;
+  inset:0;
+  background:linear-gradient(180deg,rgba(255,255,255,.2),transparent 42%,rgba(28,62,150,.08));
+  pointer-events:none;
+}
+
 html[data-mi-page="login"] .artwork-label{
-  text-shadow:0 5px 18px rgba(28,53,117,.25);
+  position:absolute!important;
+  z-index:9!important;
+  right:28px!important;
+  bottom:25px!important;
+  max-width:260px!important;
+  color:rgba(255,255,255,.96)!important;
+  font-size:11px!important;
+  font-weight:820!important;
+  letter-spacing:.065em!important;
+  line-height:1.35!important;
+  text-align:right!important;
+  text-transform:none!important;
+  text-shadow:0 7px 22px rgba(23,48,112,.42)!important;
+  pointer-events:none;
 }
 
 @media(hover:hover) and (pointer:fine){
-  html[data-mi-page="login"] .visual-login:hover{
-    border-color:rgba(255,255,255,.96);
-    box-shadow:0 38px 78px rgba(50,79,151,.24),0 10px 28px rgba(58,97,196,.14),0 2px 0 rgba(255,255,255,.82) inset;
-    transform:translateY(-12px) scale(1.008);
-  }
-  html[data-mi-page="login"] .visual-login:hover::before{
-    opacity:1;
-    transform:translateX(560%) rotate(14deg);
-  }
-  html[data-mi-page="login"] .visual-login:hover::after{
-    background:rgba(255,255,255,.25);
-    transform:translateY(-3px);
-  }
   html[data-mi-page="login"] .visual-login:hover .artwork{
-    transform:scale(1.018);
+    box-shadow:0 32px 76px rgba(54,82,145,.23),0 2px 0 rgba(255,255,255,.9) inset;
   }
-  html[data-mi-page="login"] .visual-login:hover .artwork::before{
-    transform:translateX(18px);
-  }
-  html[data-mi-page="login"] .visual-login:hover .artwork::after{
-    filter:saturate(1.08) brightness(1.03);
-    transform:translateX(-10px) scale(1.035);
-  }
-  html[data-mi-page="login"] .visual-login:hover .artwork-label{
-    letter-spacing:.11em;
-    transform:translateY(-5px);
-  }
-}
-
-html[data-mi-page="login"] .visual-login:focus-visible{
-  outline:3px solid rgba(71,119,229,.42);
-  outline-offset:6px;
-  box-shadow:0 35px 76px rgba(50,79,151,.22);
-  transform:translateY(-10px) scale(1.006);
 }
 
 @media(max-width:600px){
@@ -121,20 +138,28 @@ html[data-mi-page="login"] .visual-login:focus-visible{
     padding:0 10px;
     font-size:7px;
   }
+  html[data-mi-page="login"] .artwork{
+    min-height:210px!important;
+    border-radius:24px;
+  }
+  html[data-mi-page="login"] .micro-strip:first-child{
+    border-radius:24px 0 0 24px;
+  }
+  html[data-mi-page="login"] .micro-strip:last-child{
+    border-radius:0 24px 24px 0;
+  }
+  html[data-mi-page="login"] .artwork-label{
+    right:16px!important;
+    bottom:14px!important;
+    max-width:210px!important;
+    font-size:8px!important;
+  }
 }
 
 @media(prefers-reduced-motion:reduce){
-  html[data-mi-page="login"] .visual-login,
-  html[data-mi-page="login"] .visual-login::before,
-  html[data-mi-page="login"] .visual-login::after,
-  html[data-mi-page="login"] .artwork,
-  html[data-mi-page="login"] .artwork::before,
-  html[data-mi-page="login"] .artwork::after,
-  html[data-mi-page="login"] .artwork-label{
+  html[data-mi-page="login"] .micro-strip{
     transition:none!important;
-  }
-  html[data-mi-page="login"] .visual-login:hover,
-  html[data-mi-page="login"] .visual-login:focus-visible{
-    transform:none;
+    transform:none!important;
+    filter:none!important;
   }
 }
