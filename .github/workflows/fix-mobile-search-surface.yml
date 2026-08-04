@@ -1,0 +1,125 @@
+name: Fix mobile search surface
+
+on:
+  push:
+    paths:
+      - .github/workflows/fix-mobile-search-surface.yml
+
+permissions:
+  contents: write
+
+jobs:
+  patch:
+    if: github.actor != 'github-actions[bot]'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Patch mobile search portal and dosage text extraction
+        shell: python {0}
+        run: |
+          from pathlib import Path
+
+          mobile_path = Path('mobile-experience.js')
+          mobile = mobile_path.read_text(encoding='utf-8')
+
+          mobile = mobile.replace(
+              "  let backdrop = null;\n  let bodyObserver = null;",
+              "  let backdrop = null;\n  let searchSurface = null;\n  let searchHome = null;\n  let searchNextSibling = null;\n  let bodyObserver = null;",
+              1,
+          )
+
+          marker = "  function closeMobileSearch({ restoreFocus = false } = {}) {"
+          portal = r'''  function rememberSearchHome(surface) {
+            if (!surface || surface.parentElement === document.body) return;
+            searchHome = surface.parentElement;
+            searchNextSibling = surface.nextSibling;
+          }
+
+          function mountMobileSearchSurface(input) {
+            const surface = input?.closest?.('.mi-global-search');
+            if (!surface || !document.body) return;
+            rememberSearchHome(surface);
+            searchSurface = surface;
+            if (surface.parentElement !== document.body) document.body.appendChild(surface);
+
+            const surfaceStyles = {
+              display:'block', position:'fixed', zIndex:'2200',
+              top:'calc(10px + var(--mi-safe-top))',
+              left:'calc(12px + var(--mi-safe-left))',
+              right:'calc(12px + var(--mi-safe-right))',
+              width:'auto', maxWidth:'none', visibility:'visible', opacity:'1', pointerEvents:'auto',
+            };
+            Object.entries(surfaceStyles).forEach(([property, value]) => {
+              surface.style.setProperty(property.replace(/[A-Z]/g, letter => `-${letter.toLowerCase()}`), value, 'important');
+            });
+            surface.hidden = false;
+            surface.removeAttribute('aria-hidden');
+
+            input.hidden = false;
+            input.removeAttribute('aria-hidden');
+            input.style.setProperty('display', 'block', 'important');
+            input.style.setProperty('visibility', 'visible', 'important');
+            input.style.setProperty('opacity', '1', 'important');
+            input.style.setProperty('pointer-events', 'auto', 'important');
+          }
+
+          function restoreMobileSearchSurface() {
+            const surface = searchSurface || document.querySelector('.mi-global-search');
+            const input = document.getElementById('miGlobalSearch');
+            if (!surface) return;
+
+            [
+              'display','position','z-index','top','left','right','width','max-width',
+              'visibility','opacity','pointer-events',
+            ].forEach(property => surface.style.removeProperty(property));
+            ['display','visibility','opacity','pointer-events'].forEach(property => input?.style.removeProperty(property));
+
+            const fallbackHome = document.querySelector('.mi-topbar-leading');
+            const home = searchHome?.isConnected ? searchHome : fallbackHome;
+            if (home && surface.parentElement !== home) {
+              if (searchNextSibling?.isConnected && searchNextSibling.parentElement === home) home.insertBefore(surface, searchNextSibling);
+              else home.appendChild(surface);
+            }
+            searchSurface = null;
+          }
+
+'''
+          if marker not in mobile:
+              raise SystemExit('Mobile search close marker not found.')
+          mobile = mobile.replace(marker, portal + marker, 1)
+
+          mobile = mobile.replace(
+              "    body?.classList.remove('mi-mobile-search-open');\n    if (backdrop) backdrop.hidden = true;",
+              "    body?.classList.remove('mi-mobile-search-open');\n    restoreMobileSearchSurface();\n    if (backdrop) backdrop.hidden = true;",
+              1,
+          )
+          mobile = mobile.replace(
+              "    document.body.classList.add('mi-mobile-search-open');\n    if (backdrop) backdrop.hidden = false;",
+              "    mountMobileSearchSurface(input);\n    document.body.classList.add('mi-mobile-search-open');\n    if (backdrop) backdrop.hidden = false;",
+              1,
+          )
+          mobile_path.write_text(mobile, encoding='utf-8')
+
+          preview_path = Path('registry-cell-preview.js')
+          preview = preview_path.read_text(encoding='utf-8')
+          old = "clone.querySelectorAll(`.${TRIGGER_CLASS},input,select,textarea,button,.drug-actions-trigger,.favorite-marker,.clinical-editor-open`)"
+          new = "clone.querySelectorAll(`.${TRIGGER_CLASS},input,select,textarea,.drug-actions-trigger,.favorite-marker,.clinical-editor-open`)"
+          if old not in preview:
+              raise SystemExit('Cell preview extraction selector not found.')
+          preview_path.write_text(preview.replace(old, new, 1), encoding='utf-8')
+
+      - name: Verify and commit
+        shell: bash
+        run: |
+          set -euo pipefail
+          node --check mobile-experience.js
+          node --check registry-cell-preview.js
+          rm -f .github/workflows/fix-mobile-search-surface.yml
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add mobile-experience.js registry-cell-preview.js .github/workflows/fix-mobile-search-surface.yml
+          git commit -m 'Portal mobile search and preserve dosage text'
+          git push origin HEAD:main
