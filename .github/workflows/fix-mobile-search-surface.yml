@@ -86,7 +86,7 @@ jobs:
             searchSurface = null;
           }
 
-'''
+          '''
           if marker not in mobile:
               raise SystemExit('Mobile search close marker not found.')
           mobile = mobile.replace(marker, portal + marker, 1)
