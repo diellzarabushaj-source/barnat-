@@ -149,6 +149,11 @@
     const height = Math.max(240, Math.round(viewport?.height || window.innerHeight));
     ROOT.style.setProperty('--mi-visual-height', `${height}px`);
     ROOT.dataset.miMobileLayout = String(isMobileLayout());
+    const mobileBrand = document.querySelector('.mi-mobile-brand');
+    const compactLandscape = isMobileLayout() && window.innerHeight <= 500;
+    if (mobileBrand && compactLandscape) mobileBrand.style.setProperty('display', 'none', 'important');
+    else mobileBrand?.style.removeProperty('display');
+    ROOT.dataset.miCompactLandscape = String(compactLandscape);
   }
 
   function scheduleViewportUpdate() {
