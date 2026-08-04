@@ -40,6 +40,8 @@ execFileSync(process.execPath, ['--check', path.join(ROOT, 'registry-cell-previe
   /document\.body\.appendChild\(surface\)/,
   /input\.style\.setProperty\('display', 'block', 'important'\)/,
   /function restoreMobileSearchSurface\(\)/,
+  /miCompactLandscape/,
+  /mobileBrand\.style\.setProperty\('display', 'none', 'important'\)/,
 ].forEach(pattern => assert.match(mobile, pattern, `mobile-experience.js missing ${pattern}`));
 
 assert.doesNotMatch(mobile, /fetch\(|\/api\//, 'mobile experience runtime must not touch backend APIs or the network');
@@ -47,6 +49,7 @@ assert.doesNotMatch(mobile, /bodyObserver\.observe\([^;]+subtree:\s*true/, 'mobi
 assert.equal(fs.existsSync(path.join(ROOT, '.github/workflows/fix-mobile-observer.yml')), false, 'temporary mobile observer workflow must be removed');
 assert.equal(fs.existsSync(path.join(ROOT, '.github/workflows/cancel-stale-browser-audits.yml')), false, 'temporary browser cancellation workflow must be removed');
 assert.equal(fs.existsSync(path.join(ROOT, '.github/workflows/fix-mobile-search-surface.yml')), false, 'temporary mobile search patch workflow must be removed');
+assert.equal(fs.existsSync(path.join(ROOT, '.github/workflows/fix-landscape-brand.yml')), false, 'temporary landscape patch workflow must be removed');
 assert.match(shell, /MOBILE_SRC = '\/mobile-experience\.js\?v=production-audit-v2'/, 'shell must load the audited mobile runtime');
 assert.match(shell, /loadMobileExperience\(\)/, 'mobile runtime loader is missing');
 assert.match(shell, /warm\(MOBILE_SRC\)/, 'mobile runtime must be warmed for offline reuse');
@@ -70,4 +73,4 @@ assert.match(workflow, /mobile-deep-audit\.spec\.js/, 'browser workflow must exe
   /context\.setOffline\(true\)/,
 ].forEach(pattern => assert.match(browserSpec, pattern, `mobile browser audit missing ${pattern}`));
 
-console.log('Mobile, tablet, touch, safe-area, portal search, dosage preview and orientation audit passed.');
+console.log('Mobile, tablet, touch, safe-area, portal search, compact landscape, dosage preview and orientation audit passed.');
