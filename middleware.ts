@@ -19,6 +19,10 @@ const PUBLIC_PATHS = new Set([
   '/manifest.webmanifest',
   '/medindex-icon.svg',
   '/images/brand/medindex-mark-mplus.svg',
+  '/brand/medindex-mark-on-light.webp',
+  '/brand/medindex-full-on-dark.png',
+  '/brand/medindex-mark-on-dark.png',
+  '/brand/medindex-full-on-light.png',
   '/favicon.ico',
   '/robots.txt',
 ]);
