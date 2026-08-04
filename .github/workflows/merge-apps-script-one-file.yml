@@ -25,33 +25,33 @@ jobs:
           marker = "function setupMedIndexPerfectSync()"
           launcher = r'''
 
-function setupMedIndexPerfectSync() {
-  medIndexRemoveLegacySyncTriggers_();
-  setupMedIndexCurrentSyncStandalone();
-}
+          function setupMedIndexPerfectSync() {
+            medIndexRemoveLegacySyncTriggers_();
+            setupMedIndexCurrentSyncStandalone();
+          }
 
-function disableMedIndexPerfectSync() {
-  medIndexRemoveLegacySyncTriggers_();
-  disableMedIndexCurrentSyncStandalone();
-}
+          function disableMedIndexPerfectSync() {
+            medIndexRemoveLegacySyncTriggers_();
+            disableMedIndexCurrentSyncStandalone();
+          }
 
-function medIndexRemoveLegacySyncTriggers_() {
-  const handlers = new Set([
-    'medIndexDriveOnEdit',
-    'medIndexDriveReconcile',
-    'medIndexEditorPull',
-    'medIndexCurrentDosageOnEdit',
-    'medIndexCurrentDosageReconcile',
-    'medIndexCurrentDosageEditorPull',
-    'medIndexStandaloneOnEdit',
-    'medIndexStandaloneReconcile',
-    'medIndexStandaloneEditorPull',
-  ]);
-  ScriptApp.getProjectTriggers().forEach(trigger => {
-    if (handlers.has(trigger.getHandlerFunction())) ScriptApp.deleteTrigger(trigger);
-  });
-}
-'''
+          function medIndexRemoveLegacySyncTriggers_() {
+            const handlers = new Set([
+              'medIndexDriveOnEdit',
+              'medIndexDriveReconcile',
+              'medIndexEditorPull',
+              'medIndexCurrentDosageOnEdit',
+              'medIndexCurrentDosageReconcile',
+              'medIndexCurrentDosageEditorPull',
+              'medIndexStandaloneOnEdit',
+              'medIndexStandaloneReconcile',
+              'medIndexStandaloneEditorPull',
+            ]);
+            ScriptApp.getProjectTriggers().forEach(trigger => {
+              if (handlers.has(trigger.getHandlerFunction())) ScriptApp.deleteTrigger(trigger);
+            });
+          }
+          '''
           if marker not in text:
               text = text.replace("'use strict';", "'use strict';" + launcher, 1)
           text = text.replace(".addItem('Aktivizo sinkronizimin', 'setupMedIndexCurrentSyncStandalone')", ".addItem('Aktivizo sinkronizimin', 'setupMedIndexPerfectSync')")
