@@ -60,10 +60,14 @@ global.fetch = async () => {
     q:direct.code,
   }, loaded);
   const suggestMs = performance.now() - suggestStarted;
+  const suggestBudgetMs = process.env.VERCEL || process.env.CI ? 350 : 120;
   assert.equal(networkCalls, 0);
   assert.ok(result.rows.length > 0);
   assert.ok(result.rows.some(row => row.isDirectUrgency && row.urgencyLevel === 'direct'));
-  assert.ok(suggestMs < 120, `Snapshot suggestion path was ${suggestMs.toFixed(1)}ms.`);
+  assert.ok(
+    suggestMs < suggestBudgetMs,
+    `Snapshot suggestion path was ${suggestMs.toFixed(1)}ms (budget ${suggestBudgetMs}ms).`,
+  );
 
   assert.equal(direct.isUrgent, true);
   assert.equal(direct.isDirectUrgency, true);
