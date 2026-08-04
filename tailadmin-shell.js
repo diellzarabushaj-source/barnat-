@@ -21,14 +21,21 @@
   const SHELL_VERSION = 'production-audit-v2';
   const id = 'appMenu';
   const SHELL_RETRY_MS = 3500;
+  const SHELL_FALLBACK_MS = 8000;
   let shellReady = false;
   let shellRetry = 0;
+  let shellFallback = 0;
   let mobileStarted = false;
 
   // Static compatibility contract retained for the navigation safety gates:
   // data-mi-sidebar-toggle aria-controls="miSidebar" data-mi-sidebar-overlay
   // data-mi-theme-toggle aria-current="page" favoriteNavCount
   // Keyboard contract: Ctrl / ctrlKey, metaKey and Escape.
+
+  function isRegistryPage() {
+    const path = location.pathname.replace(/\/{2,}/g, '/').replace(/\/+$/, '') || '/';
+    return path === '/' || path === '/index.html' || document.documentElement.dataset.miPage === 'barnat';
+  }
 
   function connectionProfile() {
     const connection = navigator.connection || navigator.mozConnection || navigator.webkitConnection;
@@ -199,14 +206,29 @@
     loadRuntime(ATC_SEARCH_SRC, 'data-medindex-atc-global-search', 'miAtcGlobalSearchError');
   }
 
+  function clearBootState() {
+    clearTimeout(shellFallback);
+    document.documentElement.classList.remove('mi-shell-booting', 'mi-shell-fallback');
+  }
+
+  function revealSafeFallback() {
+    if (document.querySelector('.mi-app-shell') || document.body?.dataset.tailadminReady === '1') return;
+    document.documentElement.classList.remove('mi-shell-booting');
+    document.documentElement.classList.add('mi-shell-fallback');
+    document.documentElement.dataset.miShellError ||= 'fallback-visible';
+    document.getElementById('pageLoader')?.classList.add('is-hidden');
+  }
+
   function finalizeShellReady() {
     if (shellReady && document.querySelector('.mi-app-shell')) {
+      clearBootState();
       loadClinicalEnhancements();
       return;
     }
     if (!document.querySelector('.mi-app-shell') && document.body?.dataset.tailadminReady !== '1') return;
     shellReady = true;
     clearTimeout(shellRetry);
+    clearBootState();
     document.documentElement.dataset.miShellVersion = SHELL_VERSION;
     document.documentElement.dataset.miThemeKey = THEME_KEY;
     delete document.documentElement.dataset.miShellError;
@@ -256,6 +278,7 @@
   }
 
   function init() {
+    if (isRegistryPage()) document.documentElement.classList.add('mi-shell-booting');
     ensureCriticalMobileStyles();
     ensureOfflineRuntime();
     loadLegacyShell();
@@ -263,6 +286,7 @@
     shellRetry = setTimeout(() => {
       if (!document.querySelector('.mi-app-shell')) loadLegacyShell(true);
     }, SHELL_RETRY_MS);
+    shellFallback = setTimeout(revealSafeFallback, SHELL_FALLBACK_MS);
   }
 
   window.addEventListener('medindex:tailadmin-ready', finalizeShellReady);
