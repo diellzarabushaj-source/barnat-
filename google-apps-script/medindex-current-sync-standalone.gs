@@ -1,5 +1,33 @@
 'use strict';
 
+function setupMedIndexPerfectSync() {
+  medIndexRemoveLegacySyncTriggers_();
+  setupMedIndexCurrentSyncStandalone();
+}
+
+function disableMedIndexPerfectSync() {
+  medIndexRemoveLegacySyncTriggers_();
+  disableMedIndexCurrentSyncStandalone();
+}
+
+function medIndexRemoveLegacySyncTriggers_() {
+  const handlers = new Set([
+    'medIndexDriveOnEdit',
+    'medIndexDriveReconcile',
+    'medIndexEditorPull',
+    'medIndexCurrentDosageOnEdit',
+    'medIndexCurrentDosageReconcile',
+    'medIndexCurrentDosageEditorPull',
+    'medIndexStandaloneOnEdit',
+    'medIndexStandaloneReconcile',
+    'medIndexStandaloneEditorPull',
+  ]);
+  ScriptApp.getProjectTriggers().forEach(trigger => {
+    if (handlers.has(trigger.getHandlerFunction())) ScriptApp.deleteTrigger(trigger);
+  });
+}
+
+
 const MEDINDEX_STANDALONE_SPREADSHEET_ID = '1T7XsfkXLQfEomFL4DmXoA8PheiR6s3Qmu36hTqklOMo';
 const MEDINDEX_STANDALONE_ENDPOINT = 'https://barnat-six.vercel.app/api/drive-sync';
 const MEDINDEX_STANDALONE_SECRET_PROPERTY = 'MEDINDEX_DRIVE_SYNC_SECRET';
@@ -18,11 +46,11 @@ const MEDINDEX_STANDALONE_SOURCES = Object.freeze([
 function onOpen() {
   SpreadsheetApp.getUi()
     .createMenu('MedIndex Sync')
-    .addItem('Aktivizo sinkronizimin', 'setupMedIndexCurrentSyncStandalone')
+    .addItem('Aktivizo sinkronizimin', 'setupMedIndexPerfectSync')
     .addItem('Kontrollo tani', 'medIndexStandaloneRunNow')
     .addItem('Shfaq statusin', 'medIndexStandaloneShowStatus')
     .addSeparator()
-    .addItem('Ndalo sinkronizimin', 'disableMedIndexCurrentSyncStandalone')
+    .addItem('Ndalo sinkronizimin', 'disableMedIndexPerfectSync')
     .addToUi();
 }
 
