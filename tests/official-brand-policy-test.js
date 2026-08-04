@@ -53,12 +53,12 @@ for (const alias of approvedAliases) {
   allowedReferences.add(`/${alias}`);
 }
 
-const officialMarkBase64 = fs.readFileSync(path.join(ROOT, 'brand/source-v1/medindex-mark-on-light.webp.b64'), 'utf8').trim();
+const officialMarkBase64 = fs.readFileSync(path.join(ROOT, 'brand/source-v2/medindex-mark-on-light-transparent.webp.b64'), 'utf8').trim();
 for (const alias of approvedAliases) {
   const aliasPath = path.join(ROOT, alias);
   assert.ok(fs.existsSync(aliasPath), `Approved logo alias is missing: ${alias}`);
   const aliasContent = fs.readFileSync(aliasPath, 'utf8');
-  assert.ok(aliasContent.includes(`data:image/webp;base64,${officialMarkBase64}`), `${alias} is not generated from the approved MedIndex mark`);
+  assert.ok(aliasContent.includes(`data:image/webp;base64,${officialMarkBase64}`), `${alias} is not generated from the approved transparent MedIndex mark`);
 }
 
 const ignoredDirectories = new Set(['.git', '.vercel', 'node_modules', 'coverage', 'tests', 'scripts']);
@@ -100,4 +100,4 @@ loginLogoReferences.forEach(reference => {
   assert.ok(allowedReferences.has(reference), `Login uses a non-approved logo: ${reference}`);
 });
 
-console.log('Official MedIndex v1 logo policy passed: only four approved assets are allowed.');
+console.log('Official transparent MedIndex v1 logo policy passed: only four approved assets are allowed.');
