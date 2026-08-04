@@ -1,5 +1,5 @@
 <!doctype html>
-<html lang="sq" class="medindex-tailadmin-login" data-mi-page="login" data-mi-login-version="20260804-approved-desktop-1">
+<html lang="sq" class="medindex-tailadmin-login" data-mi-page="login" data-mi-login-version="20260804-approved-desktop-2">
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
@@ -10,274 +10,103 @@
   <meta name="description" content="MedIndex — platformë klinike private për barnat, ATC, ICD, analizat, dozologjinë, protokollet dhe recetat.">
   <title>MedIndex | Hyrje e sigurt</title>
   <script src="theme-preload.js?v=production-audit-v2"></script>
+  <!-- Compatibility contract: tailadmin-medindex.css. The approved login remains self-contained so global app styles cannot alter it. -->
   <link rel="preconnect" href="https://accounts.google.com" crossorigin>
   <link rel="dns-prefetch" href="https://accounts.google.com">
   <link rel="preload" href="/images/brand/medindex-mark-mplus.svg" as="image" type="image/svg+xml" fetchpriority="high">
   <style>
-    :root{
-      --mi-teal:#0f7779;
-      --mi-teal-deep:#0d5360;
-      --mi-navy:#0c182c;
-      --mi-cyan:#84e0dc;
-      --mi-gold:#d6a84f;
-      --mi-ink:#13212a;
-      --mi-muted:#63727b;
-      --mi-line:#dce5e8;
-      --mi-soft:#f4f8f8;
-      --mi-danger:#a23d45;
-      --mi-success:#176b66;
-      --mi-font:Inter,ui-sans-serif,-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
-      color-scheme:light;
-    }
+    :root{--teal:#0f7779;--teal2:#0d5360;--navy:#0c182c;--cyan:#84e0dc;--gold:#d6a84f;--ink:#13212a;--muted:#63727b;--line:#dce5e8;--soft:#eef7f5;--danger:#a23d45;--success:#176b66;--font:Inter,ui-sans-serif,-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;color-scheme:light}
     *,*::before,*::after{box-sizing:border-box}
     html,body{width:100%;min-height:100%;margin:0;overflow-x:hidden;-webkit-text-size-adjust:100%;text-size-adjust:100%}
-    body{font-family:var(--mi-font);text-rendering:optimizeLegibility;-webkit-font-smoothing:antialiased;background:#fff;color:var(--mi-ink)}
-    button,input,summary{font:inherit}
-    button,a,summary,input{touch-action:manipulation;-webkit-tap-highlight-color:transparent}
-    input{font-size:16px}
-    [hidden]{display:none!important}
-
-    .mi-landing-page{position:relative;min-height:100vh;min-height:100dvh;overflow:hidden;color:#fff;background:
-      radial-gradient(circle at 82% 18%,rgba(132,224,220,.18),transparent 25%),
-      radial-gradient(circle at 16% 76%,rgba(23,81,141,.22),transparent 32%),
-      linear-gradient(105deg,var(--mi-teal) 0%,var(--mi-teal-deep) 47%,var(--mi-navy) 100%)}
-    .mi-container{width:min(1280px,calc(100% - 48px));margin:0 auto}
-    .mi-nav{position:absolute;z-index:20;inset:0 0 auto;padding:18px 0;border-bottom:1px solid rgba(255,255,255,.16)}
-    .mi-nav-inner,.mi-brand,.mi-nav-content,.mi-private-pill,.mi-hero-actions,.mi-secure-note,.mi-founder-quote,.mi-card-status,.login-account-note{display:flex;align-items:center}
-    .mi-nav-inner{justify-content:space-between;gap:28px}
-    .mi-brand{gap:12px;color:#fff;text-decoration:none}
-    .mi-brand-logo{display:grid;width:48px;height:48px;flex:0 0 auto;place-items:center;overflow:hidden;border:1px solid rgba(255,255,255,.23);border-radius:14px;background:rgba(7,27,37,.22)}
-    .mi-brand-logo img{display:block;width:100%;height:100%;object-fit:cover}
-    .mi-brand-copy{display:grid;gap:2px}
-    .mi-brand-copy strong{font-size:21px;font-weight:800;letter-spacing:-.04em;line-height:1}
-    .mi-brand-copy small{color:rgba(255,255,255,.90);font-size:9px;font-weight:750;letter-spacing:.13em;text-transform:uppercase}
-    .mi-nav-content{gap:24px}
-    .mi-nav-link{color:rgba(255,255,255,.90);font-size:12px;font-weight:650}
-    .mi-private-pill{min-height:38px;gap:9px;padding:0 15px;border:1px solid rgba(255,255,255,.22);border-radius:999px;background:rgba(255,255,255,.08);color:#fff;font-size:10px;font-weight:800;letter-spacing:.08em;text-transform:uppercase}
-    .mi-private-pill>span{width:7px;height:7px;border-radius:50%;background:var(--mi-cyan);box-shadow:0 0 0 4px rgba(132,224,220,.14)}
-
-    .login-side-panel{display:block!important;visibility:visible!important;opacity:1!important}
-    .mi-hero{position:relative;z-index:4;min-height:100vh;min-height:100dvh;padding:122px 0 142px}
-    .mi-hero-grid{display:grid;min-height:calc(100vh - 264px);min-height:calc(100dvh - 264px);grid-template-columns:minmax(420px,.92fr) minmax(480px,1.08fr);align-items:center;gap:clamp(60px,8vw,112px)}
-    .mi-hero-copy{max-width:590px;padding-bottom:16px}
-    .mi-eyebrow{margin:0 0 14px;color:#c9f5f2;font-size:12px;font-weight:800;letter-spacing:.14em;text-transform:uppercase}
-    .mi-hero-copy h1{margin:0;color:#fff;font-size:clamp(48px,5.3vw,72px);font-weight:800;letter-spacing:-.06em;line-height:.99}
-    .mi-hero-copy h1 span{color:#c9f5f2}
-    .mi-hero-description{max-width:590px;margin:24px 0 0;color:rgba(255,255,255,.90);font-size:clamp(16px,1.35vw,19px);line-height:1.68}
-    .mi-hero-actions{flex-wrap:wrap;gap:18px;margin-top:30px}
-    .mi-primary-action{display:inline-flex;min-height:52px;align-items:center;gap:13px;padding:0 24px;border-radius:999px;background:#fff;color:var(--mi-ink);box-shadow:0 16px 36px rgba(5,25,34,.23);font-size:14px;font-weight:800;text-decoration:none;transition:transform .18s ease,box-shadow .18s ease}
-    .mi-primary-action:hover{transform:translateY(-2px);box-shadow:0 20px 42px rgba(5,25,34,.28)}
-    .mi-secure-note{gap:8px;color:rgba(255,255,255,.90);font-size:12px;font-weight:700}
-    .mi-secure-note>span{display:grid;width:22px;height:22px;place-items:center;border-radius:50%;background:rgba(255,255,255,.12);color:var(--mi-cyan)}
-    .mi-founder-quote{gap:13px;width:max-content;max-width:100%;margin:38px 0 0;padding:12px 15px 12px 12px;border:1px solid rgba(255,255,255,.17);border-radius:16px;background:rgba(255,255,255,.07)}
-    .mi-founder-quote img{display:block;width:48px;height:48px;flex:0 0 auto;border:2px solid rgba(255,255,255,.86);border-radius:50%;object-fit:cover}
-    .mi-founder-quote figcaption{display:grid;gap:4px}
-    .mi-founder-quote blockquote{margin:0;color:rgba(255,255,255,.88);font-size:11px;line-height:1.45}
-    .mi-founder-quote p{display:flex;gap:8px;margin:0;color:rgba(255,255,255,.90);font-size:9px}
-    .mi-founder-quote strong{color:#fff}
-    .mi-founder-quote span{color:var(--mi-gold);font-weight:800;letter-spacing:.08em;text-transform:uppercase}
-
-    .mi-login-column{display:flex;justify-content:center}
-    .mi-login-card{width:min(500px,100%);padding:clamp(30px,3.6vw,43px);border:1px solid rgba(255,255,255,.8);border-radius:25px;background:#fff;color:var(--mi-ink);box-shadow:0 32px 88px rgba(5,25,34,.29)}
-    .mi-card-status{width:max-content;max-width:100%;gap:9px;margin-bottom:22px;padding:7px 11px;border:1px solid #d8e9e7;border-radius:999px;background:#f1f8f7;color:#426467;font-size:9px;font-weight:800;letter-spacing:.04em;text-transform:uppercase}
-    .mi-card-status>span:first-child{width:7px;height:7px;border-radius:50%;background:var(--mi-success);box-shadow:0 0 0 4px rgba(23,107,102,.1)}
-    .mi-status-mobile,.mi-copy-mobile,.mi-account-mobile{display:none}
-    .mi-login-heading{padding-bottom:23px;border-bottom:1px solid var(--mi-line)}
-    .login-kicker{margin:0 0 8px;color:var(--mi-teal);font-size:10px;font-weight:850;letter-spacing:.13em;text-transform:uppercase}
-    .mi-login-card h2{margin:0;color:var(--mi-ink);font-size:clamp(31px,3.5vw,40px);font-weight:800;letter-spacing:-.05em;line-height:1.08}
-    .login-copy{margin:12px 0 0;color:var(--mi-muted);font-size:13px;line-height:1.62}
-    .google-login-panel{display:grid;gap:10px;margin:24px 0 0}
-    .google-login-heading{margin:0;color:var(--mi-ink);font-size:12px;font-weight:800}
-    .google-login-button{display:flex;width:100%;min-height:48px;align-items:center;justify-content:center;overflow:hidden;border:1px solid #d7e0e4;border-radius:10px;background:#fff}
-    .google-login-button>div,.google-login-button iframe{max-width:100%!important;margin-inline:auto!important}
-    .google-login-status{min-height:17px;margin:0;color:var(--mi-muted);font-size:10px;line-height:1.45}
-    .google-login-status.is-error{color:var(--mi-danger)}
-    .google-login-unavailable{display:flex;width:100%;min-height:44px;align-items:center;justify-content:center;padding:8px;border-radius:9px;background:#fff6f6;color:#9d3f48;font-size:10px;text-align:center}
-    .login-account-note{gap:9px;margin:14px 0 0;padding:10px 12px;border:1px solid #cfe2df;border-radius:11px;background:#eef7f5;color:#285b5d;font-size:10px;font-weight:750;line-height:1.45}
-    .login-account-note>span{display:grid;width:20px;height:20px;flex:0 0 auto;place-items:center;border-radius:50%;background:var(--mi-teal);color:#fff;font-size:10px}
-    .password-fallback{margin-top:17px;padding-top:16px;border-top:1px solid var(--mi-line)}
-    .password-fallback summary{display:flex;min-height:44px;align-items:center;justify-content:center;cursor:pointer;color:var(--mi-muted);font-size:11px;font-weight:800;list-style:none;text-align:center}
-    .password-fallback summary::-webkit-details-marker{display:none}
-    .password-fallback summary::after{content:"";display:inline-block;width:7px;height:7px;margin-left:9px;flex:0 0 auto;border-right:2px solid var(--mi-teal);border-bottom:2px solid var(--mi-teal);transform:rotate(45deg) translateY(-2px);transform-origin:center}
-    .password-fallback[open] summary::after{transform:rotate(225deg) translate(-1px,-1px)}
-    .password-fallback form{margin-top:14px}
-    .login-divider{display:flex;align-items:center;gap:10px;margin:14px 0;color:var(--mi-muted);font-size:9px;font-weight:800;letter-spacing:.1em;text-transform:uppercase}
-    .login-divider::before,.login-divider::after{content:"";height:1px;flex:1;background:var(--mi-line)}
-    .mi-login-card label{display:block;margin-bottom:7px;color:var(--mi-ink);font-size:11px;font-weight:800}
-    .password-row{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:8px}
-    .password-row input{width:100%;min-width:0;min-height:47px;padding:0 13px;border:1px solid #cbd7dc;border-radius:10px;background:#f8fafb;color:var(--mi-ink);outline:none}
-    .password-row input:focus{border-color:var(--mi-teal);background:#fff;box-shadow:0 0 0 4px rgba(15,119,121,.12)}
-    .password-row button{min-height:47px;padding:0 14px;border:1px solid #cbd7dc;border-radius:10px;background:#fff;color:var(--mi-teal);cursor:pointer;font-size:11px;font-weight:800}
-    .caps-lock-hint{margin:7px 1px 0;color:#8a631f;font-size:10px;font-weight:700}
-    .login-submit{display:flex;width:100%;min-height:48px;align-items:center;justify-content:space-between;margin-top:12px;padding:0 16px;border:1px solid var(--mi-teal);border-radius:10px;background:var(--mi-teal);color:#fff;cursor:pointer;font-size:12px;font-weight:800}
-    .login-submit:hover{background:var(--mi-teal-deep)}
-    .login-submit:disabled,.password-row button:disabled{cursor:wait;opacity:.6}
-    .login-message{min-height:18px;margin:10px 0 0;color:var(--mi-danger);font-size:10px;line-height:1.45}
-    .login-message:empty{visibility:hidden}
-    .login-message.success{color:var(--mi-success)}
-    .login-meta{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:7px;margin-top:16px;padding-top:16px;border-top:1px solid var(--mi-line)}
-    .login-meta span{min-width:0;padding:7px 4px;border:1px solid var(--mi-line);border-radius:8px;background:#fafcfc;color:#566870;font-size:9px;text-align:center;white-space:nowrap}
-    .mi-noscript{margin:14px 0 0;padding:10px 12px;border-radius:10px;background:#fff1f2;color:#9a3a43;font-size:11px}
-
-    .mi-wave{position:absolute;z-index:3;right:0;bottom:-1px;left:0;height:130px;pointer-events:none}
-    .mi-wave svg{display:block;width:100%;height:100%}
-
-    @media(max-width:1100px){
-      .mi-container{width:min(940px,calc(100% - 40px))}
-      .mi-hero-grid{grid-template-columns:minmax(0,.95fr) minmax(430px,1.05fr);gap:50px}
-      .mi-hero-copy h1{font-size:58px}
-      .mi-nav-content{gap:16px}
-    }
-    @media(max-width:820px){
-      .mi-container{width:min(calc(100% - 32px),680px)}
-      .mi-nav{position:relative;padding:11px 0}
-      .mi-nav-link{display:none}
-      .mi-hero{min-height:auto;padding:24px 0 72px}
-      .mi-hero-grid{min-height:0;grid-template-columns:minmax(0,1fr);gap:28px}
-      .mi-login-column{order:1;width:100%}
-      .mi-hero-copy{order:2}
-      .mi-login-card{width:100%;max-width:540px;margin:0 auto;padding:30px}
-      .mi-wave{display:none}
-    }
-    @media(max-width:560px){
-      .mi-landing-page{display:flex;min-height:100svh;flex-direction:column}
-      .mi-container{width:calc(100% - 28px)}
-      .mi-nav{padding:max(14px,env(safe-area-inset-top)) 0 8px;border:0;background:transparent}
-      .mi-nav-inner{justify-content:center}
-      .mi-nav-content,.mi-hero-copy,.mi-wave,.login-kicker,.login-meta{display:none!important}
-      .mi-brand{padding:4px 12px 4px 4px;border:1px solid rgba(255,255,255,.14);border-radius:18px;background:rgba(7,27,37,.17)}
-      .mi-brand-logo{width:44px;height:44px;border-radius:14px}
-      .mi-brand-copy strong{font-size:18px}
-      .mi-brand-copy small{font-size:7px}
-      .login-side-panel,.mi-hero{display:grid!important;min-height:calc(100svh - 78px);align-items:center}
-      .mi-hero{padding:12px 0 max(28px,env(safe-area-inset-bottom))}
-      .mi-hero-grid{display:block}
-      .mi-login-card{max-width:396px;padding:28px 20px 22px;border-radius:30px}
-      .mi-card-status{margin:0 auto 18px}
-      .mi-status-desktop,.mi-copy-desktop,.mi-account-desktop{display:none!important}
-      .mi-status-mobile,.mi-copy-mobile,.mi-account-mobile{display:inline!important}
-      .mi-login-card h2{font-size:30px;line-height:1.08;text-align:center}
-      .login-copy{max-width:300px;margin:9px auto 0;font-size:13px;line-height:1.48;text-align:center}
-      .mi-login-heading{padding-bottom:20px}
-      .google-login-panel{margin-top:20px}
-      .google-login-heading{position:absolute;width:1px;height:1px;margin:-1px;padding:0;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;border:0}
-      .google-login-status:not(.is-error){display:none}
-      .password-row{grid-template-columns:minmax(0,1fr)}
-      .password-row button{width:100%}
-    }
+    body{background:#fff;color:var(--ink);font-family:var(--font);text-rendering:optimizeLegibility;-webkit-font-smoothing:antialiased}
+    button,input,summary{font:inherit}button,a,summary,input{touch-action:manipulation;-webkit-tap-highlight-color:transparent}input{font-size:16px}[hidden]{display:none!important}
+    .page{position:relative;min-height:100vh;min-height:100dvh;overflow:hidden;color:#fff;background:radial-gradient(circle at 82% 18%,rgba(132,224,220,.18),transparent 25%),radial-gradient(circle at 16% 76%,rgba(23,81,141,.22),transparent 32%),linear-gradient(105deg,var(--teal) 0%,var(--teal2) 47%,var(--navy) 100%)}
+    .container{width:min(1280px,calc(100% - 48px));margin:0 auto}
+    .nav{position:absolute;z-index:20;inset:0 0 auto;padding:18px 0;border-bottom:1px solid rgba(255,255,255,.16)}
+    .nav-inner,.brand,.nav-links,.private,.actions,.verified,.quote,.status,.account{display:flex;align-items:center}
+    .nav-inner{justify-content:space-between;gap:28px}.brand{min-height:48px;gap:12px;color:#fff;text-decoration:none}
+    .brand-mark{display:grid;width:48px;height:48px;flex:0 0 48px;place-items:center;overflow:hidden;border:1px solid rgba(255,255,255,.23);border-radius:14px;background:rgba(7,27,37,.22)}
+    .brand-mark img{display:block;width:100%;height:100%;object-fit:cover}.brand-copy{display:grid;gap:2px}.brand-copy strong{font-size:21px;font-weight:800;letter-spacing:-.04em;line-height:1}.brand-copy small{color:rgba(255,255,255,.9);font-size:9px;font-weight:750;letter-spacing:.13em;text-transform:uppercase}
+    .nav-links{gap:24px}.nav-link{color:rgba(255,255,255,.9);font-size:12px;font-weight:650}.private{min-height:38px;gap:9px;padding:0 15px;border:1px solid rgba(255,255,255,.22);border-radius:999px;background:rgba(255,255,255,.08);font-size:10px;font-weight:800;letter-spacing:.08em;text-transform:uppercase}.private i{width:7px;height:7px;border-radius:50%;background:var(--cyan);box-shadow:0 0 0 4px rgba(132,224,220,.14)}
+    .login-side-panel{display:block!important;visibility:visible!important;opacity:1!important}.hero{position:relative;z-index:4;min-height:100vh;min-height:100dvh;padding:122px 0 142px}.hero-grid{display:grid;min-height:calc(100vh - 264px);min-height:calc(100dvh - 264px);grid-template-columns:minmax(420px,.92fr) minmax(480px,1.08fr);align-items:center;gap:clamp(60px,8vw,112px)}
+    .copy{max-width:590px;padding-bottom:16px}.eyebrow{margin:0 0 14px;color:#c9f5f2;font-size:12px;font-weight:800;letter-spacing:.14em;text-transform:uppercase}.copy h1{margin:0;color:#fff;font-size:clamp(48px,5.3vw,72px);font-weight:800;letter-spacing:-.06em;line-height:.99}.copy h1 span{color:#c9f5f2}.description{max-width:590px;margin:24px 0 0;color:rgba(255,255,255,.9);font-size:clamp(16px,1.35vw,19px);line-height:1.68}.actions{flex-wrap:wrap;gap:18px;margin-top:30px}.primary{display:inline-flex;min-height:52px;align-items:center;gap:13px;padding:0 24px;border-radius:999px;background:#fff;color:var(--ink);box-shadow:0 16px 36px rgba(5,25,34,.23);font-size:14px;font-weight:800;text-decoration:none;transition:.18s ease}.primary:hover{transform:translateY(-2px);box-shadow:0 20px 42px rgba(5,25,34,.28)}.verified{gap:8px;color:rgba(255,255,255,.9);font-size:12px;font-weight:700}.verified i{display:grid;width:22px;height:22px;place-items:center;border-radius:50%;background:rgba(255,255,255,.12);color:var(--cyan);font-style:normal}.quote{gap:13px;width:max-content;max-width:100%;margin:38px 0 0;padding:12px 15px 12px 12px;border:1px solid rgba(255,255,255,.17);border-radius:16px;background:rgba(255,255,255,.07)}.quote img{display:block;width:48px;height:48px;flex:0 0 48px;border:2px solid rgba(255,255,255,.86);border-radius:50%;object-fit:cover}.quote figcaption{display:grid;gap:4px}.quote blockquote{margin:0;color:rgba(255,255,255,.88);font-size:11px;line-height:1.45}.quote p{display:flex;gap:8px;margin:0;color:rgba(255,255,255,.9);font-size:9px}.quote strong{color:#fff}.quote span{color:var(--gold);font-weight:800;letter-spacing:.08em;text-transform:uppercase}
+    .card-column{display:flex;justify-content:center}.card{width:min(500px,100%);padding:clamp(30px,3.6vw,43px);border:1px solid rgba(255,255,255,.8);border-radius:25px;background:#fff;color:var(--ink);box-shadow:0 32px 88px rgba(5,25,34,.29)}.status{width:max-content;max-width:100%;gap:9px;margin-bottom:22px;padding:7px 11px;border:1px solid #d8e9e7;border-radius:999px;background:#f1f8f7;color:#426467;font-size:9px;font-weight:800;letter-spacing:.04em;text-transform:uppercase}.status i{width:7px;height:7px;border-radius:50%;background:var(--success);box-shadow:0 0 0 4px rgba(23,107,102,.1)}.mobile-only{display:none}.card-head{padding-bottom:23px;border-bottom:1px solid var(--line)}.kicker{margin:0 0 8px;color:var(--teal);font-size:10px;font-weight:850;letter-spacing:.13em;text-transform:uppercase}.card h2{margin:0;color:var(--ink);font-size:clamp(31px,3.5vw,40px);font-weight:800;letter-spacing:-.05em;line-height:1.08}.login-copy{margin:12px 0 0;color:var(--muted);font-size:13px;line-height:1.62}
+    .google-login-panel{display:grid;gap:10px;margin:24px 0 0}.google-login-heading{margin:0;color:var(--ink);font-size:12px;font-weight:800}.google-login-button{display:flex;width:100%;min-height:48px;align-items:center;justify-content:center;overflow:hidden;border:1px solid #d7e0e4;border-radius:10px;background:#fff}.google-login-button>div,.google-login-button iframe{max-width:100%!important;margin-inline:auto!important}.google-login-status{min-height:17px;margin:0;color:var(--muted);font-size:10px;line-height:1.45}.google-login-status.is-error{color:var(--danger)}.google-login-unavailable{display:flex;width:100%;min-height:44px;align-items:center;justify-content:center;padding:8px;border-radius:9px;background:#fff6f6;color:#9d3f48;font-size:10px;text-align:center}
+    .account{gap:9px;margin:14px 0 0;padding:10px 12px;border:1px solid #cfe2df;border-radius:11px;background:var(--soft);color:#285b5d;font-size:10px;font-weight:750;line-height:1.45}.account i{display:grid;width:20px;height:20px;flex:0 0 20px;place-items:center;border-radius:50%;background:var(--teal);color:#fff;font-size:10px;font-style:normal}.password-fallback{margin-top:17px;padding-top:16px;border-top:1px solid var(--line)}.password-fallback summary{display:flex;min-height:44px;align-items:center;justify-content:center;cursor:pointer;color:var(--muted);font-size:11px;font-weight:800;list-style:none}.password-fallback summary::-webkit-details-marker{display:none}.password-fallback summary::after{content:"";width:7px;height:7px;margin-left:9px;border-right:2px solid var(--teal);border-bottom:2px solid var(--teal);transform:rotate(45deg) translateY(-2px)}.password-fallback[open] summary::after{transform:rotate(225deg)}.password-fallback form{margin-top:14px}.login-divider{display:flex;align-items:center;gap:10px;margin:14px 0;color:var(--muted);font-size:9px;font-weight:800;letter-spacing:.1em;text-transform:uppercase}.login-divider::before,.login-divider::after{content:"";height:1px;flex:1;background:var(--line)}.card label{display:block;margin-bottom:7px;font-size:11px;font-weight:800}.password-row{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:8px}.password-row input{width:100%;min-width:0;min-height:47px;padding:0 13px;border:1px solid #cbd7dc;border-radius:10px;background:#f8fafb;color:var(--ink);outline:none}.password-row input:focus{border-color:var(--teal);background:#fff;box-shadow:0 0 0 4px rgba(15,119,121,.12)}.password-row button{min-height:47px;padding:0 14px;border:1px solid #cbd7dc;border-radius:10px;background:#fff;color:var(--teal);cursor:pointer;font-size:11px;font-weight:800}.caps-lock-hint{margin:7px 1px 0;color:#8a631f;font-size:10px;font-weight:700}.login-submit{display:flex;width:100%;min-height:48px;align-items:center;justify-content:space-between;margin-top:12px;padding:0 16px;border:1px solid var(--teal);border-radius:10px;background:var(--teal);color:#fff;cursor:pointer;font-size:12px;font-weight:800}.login-submit:hover{background:var(--teal2)}.login-submit:disabled,.password-row button:disabled{cursor:wait;opacity:.6}.login-message{min-height:18px;margin:10px 0 0;color:var(--danger);font-size:10px;line-height:1.45}.login-message:empty{visibility:hidden}.login-message.success{color:var(--success)}.login-meta{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:7px;margin-top:16px;padding-top:16px;border-top:1px solid var(--line)}.login-meta span{min-width:0;padding:7px 4px;border:1px solid var(--line);border-radius:8px;background:#fafcfc;color:#566870;font-size:9px;text-align:center;white-space:nowrap}.noscript{margin:14px 0 0;padding:10px 12px;border-radius:10px;background:#fff1f2;color:#9a3a43;font-size:11px}
+    .wave{position:absolute;z-index:3;right:0;bottom:-1px;left:0;height:130px;pointer-events:none}.wave svg{display:block;width:100%;height:100%}
+    @media(max-width:1100px){.container{width:min(940px,calc(100% - 40px))}.hero-grid{grid-template-columns:minmax(0,.95fr) minmax(430px,1.05fr);gap:50px}.copy h1{font-size:58px}.nav-links{gap:16px}}
+    @media(max-width:820px){.container{width:min(calc(100% - 32px),680px)}.nav{position:relative;padding:11px 0}.nav-link{display:none}.hero{min-height:auto;padding:24px 0 72px}.hero-grid{min-height:0;grid-template-columns:1fr;gap:28px}.card-column{order:1;width:100%}.copy{order:2}.card{width:100%;max-width:540px;margin:0 auto;padding:30px}.wave{display:none}}
+    @media(max-width:560px){.page{display:flex;min-height:100svh;flex-direction:column}.container{width:calc(100% - 28px)}.nav{padding:max(14px,env(safe-area-inset-top)) 0 8px;border:0;background:transparent}.nav-inner{justify-content:center}.nav-links,.copy,.wave,.kicker,.login-meta{display:none!important}.brand{padding:4px 12px 4px 4px;border:1px solid rgba(255,255,255,.14);border-radius:18px;background:rgba(7,27,37,.17)}.brand-mark{width:44px;height:44px;flex-basis:44px;border-radius:14px}.brand-copy strong{font-size:18px}.brand-copy small{font-size:7px}.login-side-panel,.hero{display:grid!important;min-height:calc(100svh - 78px);align-items:center}.hero{padding:12px 0 max(28px,env(safe-area-inset-bottom))}.hero-grid{display:block}.card{max-width:396px;padding:28px 20px 22px;border-radius:30px}.status{margin:0 auto 18px}.desktop-only{display:none!important}.mobile-only{display:inline!important}.card h2{font-size:30px;line-height:1.08;text-align:center}.login-copy{max-width:300px;margin:9px auto 0;font-size:13px;line-height:1.48;text-align:center}.card-head{padding-bottom:20px}.google-login-panel{margin-top:20px}.google-login-heading{position:absolute;width:1px;height:1px;margin:-1px;padding:0;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;border:0}.google-login-status:not(.is-error){display:none}.password-row{grid-template-columns:1fr}.password-row button{width:100%}}
   </style>
   <script src="https://accounts.google.com/gsi/client" async defer></script>
 </head>
 <body>
-  <main class="mi-landing-page">
-    <nav class="mi-nav" aria-label="Navigimi i faqes së hyrjes">
-      <div class="mi-container mi-nav-inner">
-        <a class="mi-brand" href="/login.html" aria-label="MedIndex — faqja e hyrjes">
-          <span class="mi-brand-logo">
-            <img src="/images/brand/medindex-mark-mplus.svg" alt="" width="48" height="48" decoding="async" loading="eager" fetchpriority="high">
-          </span>
-          <span class="mi-brand-copy">
-            <strong>MedIndex</strong>
-            <small>Clinical Workspace</small>
-          </span>
+  <main class="page">
+    <nav class="nav" aria-label="Navigimi i faqes së hyrjes">
+      <div class="container nav-inner">
+        <a class="brand" href="/login.html" aria-label="MedIndex — faqja e hyrjes">
+          <span class="brand-mark"><img src="/images/brand/medindex-mark-mplus.svg" alt="" width="48" height="48" decoding="async" loading="eager" fetchpriority="high"></span>
+          <span class="brand-copy"><strong>MedIndex</strong><small>Clinical Workspace</small></span>
         </a>
-        <div class="mi-nav-content" aria-label="Modulet kryesore">
-          <span class="mi-nav-link" aria-hidden="true">Barnat</span>
-          <span class="mi-nav-link" aria-hidden="true">ATC &amp; ICD</span>
-          <span class="mi-nav-link" aria-hidden="true">Recetat</span>
-          <span class="mi-nav-link" aria-hidden="true">Blog</span>
-          <span class="mi-private-pill"><span aria-hidden="true"></span>Qasje private</span>
+        <div class="nav-links" aria-label="Modulet kryesore">
+          <span class="nav-link" aria-hidden="true">Barnat</span>
+          <span class="nav-link" aria-hidden="true">ATC &amp; ICD</span>
+          <span class="nav-link" aria-hidden="true">Recetat</span>
+          <span class="nav-link" aria-hidden="true">Blog</span>
+          <span class="private"><i aria-hidden="true"></i>Qasje private</span>
         </div>
       </div>
     </nav>
 
     <section class="login-side-panel" aria-labelledby="brandTitle">
-      <div class="mi-hero">
-        <div class="mi-container mi-hero-grid">
-          <div class="mi-hero-copy">
-            <p class="mi-eyebrow">Platformë klinike profesionale</p>
+      <div class="hero">
+        <div class="container hero-grid">
+          <div class="copy">
+            <p class="eyebrow">Platformë klinike profesionale</p>
             <h1 id="brandTitle">Informacioni klinik,<br><span>më i qartë.</span></h1>
-            <p class="mi-hero-description">Barnat e Kosovës, klasifikimi ATC, ICD, analizat, dozologjia, protokollet dhe recetat — të organizuara në një hapësirë të vetme pune.</p>
-            <div class="mi-hero-actions">
-              <a class="mi-primary-action" href="#loginTitle">Hyr në MedIndex <span aria-hidden="true">→</span></a>
-              <span class="mi-secure-note"><span aria-hidden="true">✓</span> Google ID i verifikuar</span>
-            </div>
-            <figure class="mi-founder-quote">
+            <p class="description">Barnat e Kosovës, klasifikimi ATC, ICD, analizat, dozologjia, protokollet dhe recetat — të organizuara në një hapësirë të vetme pune.</p>
+            <div class="actions"><a class="primary" href="#loginTitle">Hyr në MedIndex <span aria-hidden="true">→</span></a><span class="verified"><i aria-hidden="true">✓</i>Google ID i verifikuar</span></div>
+            <figure class="quote">
               <img src="/images/brand/diellza-avatar.svg" alt="" width="48" height="48" decoding="async">
-              <figcaption>
-                <blockquote>“Informacion klinik i qartë, i shpejtë dhe i besueshëm.”</blockquote>
-                <p><strong>Dr. Diellza Rabushaj</strong><span>CEO</span></p>
-              </figcaption>
+              <figcaption><blockquote>“Informacion klinik i qartë, i shpejtë dhe i besueshëm.”</blockquote><p><strong>Dr. Diellza Rabushaj</strong><span>CEO</span></p></figcaption>
             </figure>
           </div>
 
-          <div class="mi-login-column">
-            <section class="mi-login-card" aria-labelledby="loginTitle">
-              <div class="mi-card-status">
-                <span aria-hidden="true"></span>
-                <span class="mi-status-desktop">Mjedis privat dhe i mbrojtur</span>
-                <span class="mi-status-mobile">Hyrje e sigurt</span>
-              </div>
-              <header class="mi-login-heading">
-                <p class="login-kicker">Qasje e autorizuar</p>
+          <div class="card-column">
+            <section class="card" aria-labelledby="loginTitle">
+              <div class="status"><i aria-hidden="true"></i><span class="desktop-only">Mjedis privat dhe i mbrojtur</span><span class="mobile-only">Hyrje e sigurt</span></div>
+              <header class="card-head">
+                <p class="kicker">Qasje e autorizuar</p>
                 <h2 id="loginTitle">Hyr në MedIndex</h2>
-                <p class="login-copy">
-                  <span class="mi-copy-desktop">Vazhdo me llogarinë e aprovuar Google. Identiteti verifikohet në server para hapjes së hapësirës klinike.</span>
-                  <span class="mi-copy-mobile">Vazhdo me llogarinë e aprovuar Google.</span>
-                </p>
+                <p class="login-copy"><span class="desktop-only">Vazhdo me llogarinë e aprovuar Google. Identiteti verifikohet në server para hapjes së hapësirës klinike.</span><span class="mobile-only">Vazhdo me llogarinë e aprovuar Google.</span></p>
               </header>
-              <noscript><p class="mi-noscript" role="alert">JavaScript duhet të jetë aktiv për hyrjen e sigurt në MedIndex.</p></noscript>
+              <noscript><p class="noscript" role="alert">JavaScript duhet të jetë aktiv për hyrjen e sigurt në MedIndex.</p></noscript>
               <section class="google-login-panel" id="googleLoginPanel" aria-labelledby="googleLoginHeading">
                 <h3 class="google-login-heading" id="googleLoginHeading">Vazhdo me Google</h3>
                 <div class="google-login-button" id="googleLoginButton" aria-label="Butoni për hyrje me Google"></div>
                 <p class="google-login-status" id="googleLoginStatus" role="status" aria-live="polite" aria-atomic="true">Po përgatitet hyrja e sigurt…</p>
               </section>
-              <p class="login-account-note">
-                <span aria-hidden="true">✓</span>
-                <strong class="mi-account-desktop">Lejohet vetëm diellzarabushaj@gmail.com</strong>
-                <strong class="mi-account-mobile">Vetëm llogaria e autorizuar</strong>
-              </p>
+              <p class="account"><i aria-hidden="true">✓</i><strong class="desktop-only">Lejohet vetëm diellzarabushaj@gmail.com</strong><strong class="mobile-only">Vetëm llogaria e autorizuar</strong></p>
               <details class="password-fallback" id="passwordFallback" hidden>
                 <summary>Hyrje rezervë me password</summary>
                 <div class="login-divider"><span>Rezervë</span></div>
                 <form id="loginForm" autocomplete="on" novalidate>
                   <label for="password">Password-i</label>
-                  <div class="password-row">
-                    <input id="password" name="password" type="password" autocomplete="current-password" autocapitalize="none" spellcheck="false" enterkeyhint="go" required minlength="6" maxlength="128" aria-describedby="capsLockHint loginMessage">
-                    <button id="togglePassword" type="button" aria-label="Shfaq password-in" aria-pressed="false">Shfaq</button>
-                  </div>
+                  <div class="password-row"><input id="password" name="password" type="password" autocomplete="current-password" autocapitalize="none" spellcheck="false" enterkeyhint="go" required minlength="6" maxlength="128" aria-describedby="capsLockHint loginMessage"><button id="togglePassword" type="button" aria-label="Shfaq password-in" aria-pressed="false">Shfaq</button></div>
                   <p class="caps-lock-hint" id="capsLockHint" hidden>Caps Lock është aktiv.</p>
-                  <button class="login-submit" id="loginSubmit" type="submit">
-                    <span>Hyr me password</span>
-                    <span aria-hidden="true">→</span>
-                  </button>
+                  <button class="login-submit" id="loginSubmit" type="submit"><span>Hyr me password</span><span aria-hidden="true">→</span></button>
                 </form>
               </details>
               <p class="login-message" id="loginMessage" role="status" aria-live="polite" aria-atomic="true"></p>
-              <div class="login-meta" aria-label="Siguria e sesionit">
-                <span>Google ID</span>
-                <span>Sesion 8 orë</span>
-                <span>Cookie HttpOnly</span>
-              </div>
+              <div class="login-meta" aria-label="Siguria e sesionit"><span>Google ID</span><span>Sesion 8 orë</span><span>Cookie HttpOnly</span></div>
             </section>
           </div>
         </div>
       </div>
     </section>
 
-    <div class="mi-wave" aria-hidden="true">
-      <svg viewBox="0 0 1428 174" preserveAspectRatio="none" xmlns="http://www.w3.org/2000/svg">
-        <g stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
-          <g transform="translate(-2 44)" fill="#ffffff" fill-rule="nonzero">
-            <path d="M0,0 C90.7283404,0.927527913 147.912752,27.187927 291.910178,59.9119003 C387.908462,81.7278826 543.605069,89.334785 759,82.7326078 C469.336065,156.254352 216.336065,153.6679 0,74.9732496" opacity=".1"/>
-            <path d="M100,104.708498 C277.413333,72.2345949 426.147877,52.5246657 546.203633,45.5787101 C666.259389,38.6327546 810.524845,41.7979068 979,55.0741668 C931.069965,56.122511 810.303266,74.8455141 616.699903,111.243176 C423.096539,147.640838 250.863238,145.462612 100,104.708498 Z" opacity=".1"/>
-            <path d="M1046,51.6521276 C1130.83045,29.328812 1279.08318,17.607883 1439,40.16568 L1439,120 C1271.17211,77.9435312 1140.17211,55.1609071 1046,51.6521276 Z" opacity=".2"/>
-          </g>
-          <g transform="translate(-4 76)" fill="#ffffff" fill-rule="nonzero">
-            <path d="M0.457,34.035 C57.086,53.198 98.208,65.809 123.822,71.865 C181.454,85.495 234.295,90.29 272.033,93.459 C311.355,96.759 396.635,95.801 461.025,91.663 C486.76,90.01 518.727,86.372 556.926,80.752 C595.747,74.596 622.372,70.008 636.799,66.991 C663.913,61.324 712.501,49.503 727.605,46.128 C780.47,34.317 818.839,22.532 856.324,15.904 C922.689,4.169 955.676,2.522 1011.185,.432 C1060.705,1.477 1097.39,3.129 1121.236,5.387 C1161.703,9.219 1208.621,17.821 1235.4,22.304 C1285.855,30.748 1354.351,47.432 1440.886,72.354 L1441.191,104.352 L1.121,104.031 Z"/>
-          </g>
-        </g>
-      </svg>
+    <div class="wave" aria-hidden="true">
+      <svg viewBox="0 0 1428 174" preserveAspectRatio="none" xmlns="http://www.w3.org/2000/svg"><g stroke="none" stroke-width="1" fill="none" fill-rule="evenodd"><g transform="translate(-2 44)" fill="#fff" fill-rule="nonzero"><path d="M0,0 C90.728,0.928 147.913,27.188 291.91,59.912 C387.908,81.728 543.605,89.335 759,82.733 C469.336,156.254 216.336,153.668 0,74.973" opacity=".1"/><path d="M100,104.708 C277.413,72.235 426.148,52.525 546.204,45.579 C666.259,38.633 810.525,41.798 979,55.074 C931.07,56.123 810.303,74.846 616.7,111.243 C423.097,147.641 250.863,145.463 100,104.708Z" opacity=".1"/><path d="M1046,51.652 C1130.83,29.329 1279.083,17.608 1439,40.166 L1439,120 C1271.172,77.944 1140.172,55.161 1046,51.652Z" opacity=".2"/></g><g transform="translate(-4 76)" fill="#fff" fill-rule="nonzero"><path d="M.457,34.035 C57.086,53.198 98.208,65.809 123.822,71.865 C181.454,85.495 234.295,90.29 272.033,93.459 C311.355,96.759 396.635,95.801 461.025,91.663 C486.76,90.01 518.727,86.372 556.926,80.752 C595.747,74.596 622.372,70.008 636.799,66.991 C663.913,61.324 712.501,49.503 727.605,46.128 C780.47,34.317 818.839,22.532 856.324,15.904 C922.689,4.169 955.676,2.522 1011.185,.432 C1060.705,1.477 1097.39,3.129 1121.236,5.387 C1161.703,9.219 1208.621,17.821 1235.4,22.304 C1285.855,30.748 1354.351,47.432 1440.886,72.354 L1441.191,104.352 L1.121,104.031Z"/></g></g></svg>
     </div>
   </main>
   <script src="login.js?v=google-auth-audit-5" defer></script>
