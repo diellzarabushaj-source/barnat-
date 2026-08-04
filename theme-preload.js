@@ -20,7 +20,7 @@
     document.head.appendChild(soundUiOverride);
 
     const soundScript = document.createElement('script');
-    soundScript.src = '/ecg-sound.js?v=20260804-2';
+    soundScript.src = '/ecg-sound.js?v=20260804-3';
     soundScript.async = true;
     soundScript.dataset.miEcgSound = 'true';
     document.head.appendChild(soundScript);
