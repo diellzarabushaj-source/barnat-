@@ -1,0 +1,39 @@
+name: Fix mobile observer
+
+on:
+  push:
+    paths:
+      - .github/workflows/fix-mobile-observer.yml
+
+permissions:
+  contents: write
+
+jobs:
+  patch:
+    if: github.actor != 'github-actions[bot]'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - name: Limit mobile observer to shell-level mutations
+        shell: python {0}
+        run: |
+          from pathlib import Path
+          path = Path('mobile-experience.js')
+          text = path.read_text(encoding='utf-8')
+          old = "bodyObserver.observe(document.body, { childList: true, subtree: true, attributes: true, attributeFilter: ['class'] });"
+          new = "bodyObserver.observe(document.body, { childList: true, subtree: false, attributes: true, attributeFilter: ['class'] });"
+          if old not in text:
+              raise SystemExit('Expected mobile observer contract was not found.')
+          path.write_text(text.replace(old, new, 1), encoding='utf-8')
+      - name: Verify and commit
+        shell: bash
+        run: |
+          node --check mobile-experience.js
+          rm -f .github/workflows/fix-mobile-observer.yml
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add mobile-experience.js .github/workflows/fix-mobile-observer.yml
+          git commit -m 'Prevent recursive mobile search reconciliation'
+          git push origin HEAD:main
