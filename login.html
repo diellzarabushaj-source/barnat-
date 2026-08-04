@@ -1,42 +1,367 @@
 <!doctype html>
-<html lang="sq" class="medindex-tailadmin-login" data-mi-page="login" data-mi-login-version="20260804-inline-production-3">
+<html lang="sq" class="medindex-tailadmin-login" data-mi-page="login" data-mi-login-version="20260804-premium-4">
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
   <meta name="robots" content="noindex,nofollow,noarchive">
-  <meta name="theme-color" content="#0f6f72">
+  <meta name="theme-color" content="#0e7476">
   <meta name="color-scheme" content="light">
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
   <meta name="format-detection" content="telephone=no">
   <meta name="description" content="MedIndex — hyrje e sigurt në hapësirën klinike.">
   <title>Hyr në MedIndex</title>
   <script src="theme-preload.js?v=production-audit-v2"></script>
+
   <!-- Self-contained replacement: tailadmin-medindex.css google-login.css login-page.css login-mobile-app.css login-mobile-landscape.css -->
   <style>
-    :root{--teal:#0f6f72;--teal2:#0b5965;--navy:#081a2c;--gold:#d6a84f;--ink:#10212b;--muted:#687982;--line:#dbe6e8;--soft:#f0f8f7}
-    *,*::before,*::after{box-sizing:border-box}html,body{width:100%;min-height:100%;margin:0;overflow-x:hidden;-webkit-text-size-adjust:100%;text-size-adjust:100%}body{font-family:Inter,ui-sans-serif,-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;color:#fff;background:var(--navy)}button,input,summary{font:inherit}button,a,summary,input{touch-action:manipulation;-webkit-tap-highlight-color:transparent}input{font-size:16px}[hidden]{display:none!important}
-    .landing-login-page{position:relative;isolation:isolate;min-height:100vh;min-height:100svh;overflow:hidden;background:radial-gradient(circle at 87% 8%,rgba(137,235,227,.22),transparent 27%),radial-gradient(circle at 5% 92%,rgba(26,121,151,.22),transparent 32%),linear-gradient(135deg,#117b7c 0%,var(--teal2) 48%,#091a2d 100%)}.landing-login-page::before,.landing-login-page::after{content:"";position:absolute;z-index:-1;pointer-events:none;border:1px solid rgba(255,255,255,.07);border-radius:50%;background:rgba(255,255,255,.025)}.landing-login-page::before{width:430px;height:430px;top:-235px;right:-115px}.landing-login-page::after{width:360px;height:360px;bottom:-230px;left:-140px}.landing-container{width:min(1180px,calc(100% - 48px));margin:0 auto}
-    .landing-nav{position:absolute;z-index:20;inset:0 0 auto;padding:22px 0;border-bottom:1px solid rgba(255,255,255,.12)}.landing-nav-inner,.landing-brand,.landing-nav-meta{display:flex;align-items:center}.landing-nav-inner{min-height:54px;justify-content:space-between;gap:28px}.landing-brand{min-height:52px;gap:12px;color:#fff;text-decoration:none}.landing-brand-logo{display:grid;width:48px;height:48px;flex:0 0 48px;place-items:center;overflow:hidden;border:1px solid rgba(255,255,255,.20);border-radius:15px;background:rgba(5,39,50,.22);box-shadow:0 12px 30px rgba(2,24,34,.20)}.landing-brand-logo img{display:block;width:100%;height:100%;object-fit:cover}.landing-brand-copy{display:grid;gap:2px}.landing-brand-copy strong{font-size:20px;font-weight:800;line-height:1;letter-spacing:-.035em}.landing-brand-copy small{color:rgba(255,255,255,.68);font-size:8px;font-weight:700;letter-spacing:.14em;text-transform:uppercase}.landing-nav-meta{gap:14px;color:rgba(255,255,255,.78);font-size:12px;font-weight:650}.landing-private-pill{display:inline-flex;min-height:38px;align-items:center;padding:0 14px;border:1px solid rgba(255,255,255,.18);border-radius:999px;background:rgba(255,255,255,.08);color:#fff}
-    .landing-hero{display:grid;min-height:100vh;min-height:100svh;align-items:center;padding:116px 0 58px}.landing-hero-grid{display:grid;grid-template-columns:minmax(0,1fr) minmax(420px,500px);align-items:center;gap:clamp(72px,9vw,130px)}.landing-showcase{order:1;max-width:570px}.landing-login-column{order:2;width:100%;max-width:500px;justify-self:end}.landing-eyebrow{margin:0 0 18px;color:#b9efeb;font-size:12px;font-weight:800;letter-spacing:.14em;text-transform:uppercase}.landing-showcase h2{margin:0;color:#fff;font-size:clamp(52px,6vw,76px);font-weight:850;line-height:.96;letter-spacing:-.065em}.landing-showcase h2 span{color:#b8efeb}.landing-showcase>p:last-of-type{max-width:520px;margin:26px 0 0;color:rgba(255,255,255,.82);font-size:18px;line-height:1.6}.landing-feature-pills{display:flex;flex-wrap:wrap;gap:9px;margin-top:30px}.landing-feature-pills span{display:inline-flex;min-height:36px;align-items:center;padding:0 13px;border:1px solid rgba(255,255,255,.14);border-radius:999px;background:rgba(255,255,255,.07);color:rgba(255,255,255,.90);font-size:11px;font-weight:750}
-    .login-card{position:relative;width:100%;padding:38px;overflow:hidden;border:1px solid rgba(255,255,255,.88);border-radius:30px;background:rgba(255,255,255,.985);color:var(--ink);box-shadow:0 36px 90px rgba(2,23,34,.36),0 1px 0 rgba(255,255,255,.86) inset}.login-card::before{content:"";position:absolute;inset:0 0 auto;height:4px;background:linear-gradient(90deg,var(--teal),#61c7c2,var(--gold))}.login-card-brand{display:flex;align-items:center;gap:10px;margin-bottom:28px;color:var(--ink);font-size:15px;font-weight:800}.login-card-brand img{display:block;width:42px;height:42px;border-radius:13px;box-shadow:0 8px 18px rgba(12,85,91,.16)}.login-kicker{display:inline-flex;min-height:30px;align-items:center;gap:8px;margin:0 0 18px;padding:0 11px;border:1px solid #d7e8e6;border-radius:999px;background:var(--soft);color:#416568;font-size:9px;font-weight:800;letter-spacing:.055em;text-transform:uppercase}.login-kicker::before{content:"";width:7px;height:7px;border-radius:50%;background:#16867f;box-shadow:0 0 0 4px rgba(22,134,127,.10)}.login-card h1{margin:0;color:var(--ink);font-size:38px;font-weight:850;line-height:1.08;letter-spacing:-.055em}.login-copy{margin:12px 0 0;color:var(--muted);font-size:14px;line-height:1.55}.login-copy-mobile,.login-account-mobile{display:none}
-    .google-login-panel{display:grid;gap:8px;margin-top:28px}.google-login-heading{margin:0 0 2px;color:var(--ink);font-size:12px;font-weight:800}.google-login-button{display:flex;width:100%;min-height:52px;align-items:center;justify-content:center;overflow:hidden;border-radius:14px;background:#fff}.google-login-button>div,.google-login-button iframe{width:100%!important;max-width:100%!important;min-height:52px!important;margin-inline:auto!important;border-radius:14px!important}.google-login-status{min-height:16px;margin:0;color:#74838b;font-size:10px;line-height:1.4;text-align:center}.google-login-status.is-error{color:#a23d45}.google-login-unavailable{display:flex;min-height:52px;align-items:center;justify-content:center;padding:10px;border:1px solid #efd0d3;border-radius:14px;background:#fff6f6;color:#9d3f48;font-size:11px;text-align:center}.login-account-note{display:flex;min-height:46px;align-items:center;gap:9px;margin:14px 0 0;padding:11px 13px;border:1px solid #d5e7e4;border-radius:14px;background:var(--soft);color:#285b5d;font-size:10px;font-weight:800;line-height:1.3}.login-account-note::before{content:"✓";display:grid;width:22px;height:22px;flex:0 0 22px;place-items:center;border-radius:50%;background:#137f79;color:#fff;font-size:11px;font-weight:900}
-    .password-fallback{margin-top:16px;padding-top:16px;border-top:1px solid var(--line)}.password-fallback summary{display:flex;min-height:46px;align-items:center;justify-content:center;cursor:pointer;color:#365d63;font-size:11px;font-weight:800;list-style:none}.password-fallback summary::-webkit-details-marker{display:none}.password-fallback summary::after{content:"";width:7px;height:7px;margin-left:9px;border-right:2px solid var(--teal);border-bottom:2px solid var(--teal);transform:rotate(45deg) translateY(-2px)}.password-fallback[open] summary::after{transform:rotate(225deg)}.login-divider{display:flex;align-items:center;gap:10px;margin:8px 0 14px;color:#7c8b91;font-size:9px;text-transform:uppercase}.login-divider::before,.login-divider::after{content:"";height:1px;flex:1;background:var(--line)}#loginForm label{display:block;margin:0 0 7px;color:#455b64;font-size:11px;font-weight:750}.password-row{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:8px}.password-row input{width:100%;min-height:48px;padding:0 13px;border:1px solid #cbd9dd;border-radius:12px;outline:none;color:var(--ink);background:#fff}.password-row input:focus{border-color:#2e9b97;box-shadow:0 0 0 4px rgba(46,155,151,.12)}.password-row button,.login-submit{min-height:48px;border:0;border-radius:12px;cursor:pointer;font-weight:800}.password-row button{padding:0 14px;background:#eaf4f3;color:#245b5d}.login-submit{display:flex;width:100%;align-items:center;justify-content:space-between;margin-top:10px;padding:0 16px;background:var(--ink);color:#fff}.caps-lock-hint,.login-message{margin:8px 0 0;color:#a23d45;font-size:10px;line-height:1.4}.login-message:empty{display:none}.login-message.success{color:#187263}.login-meta{display:grid;grid-template-columns:repeat(3,1fr);gap:6px;margin-top:20px}.login-meta span{display:flex;min-height:30px;align-items:center;justify-content:center;border:1px solid #e0e9eb;border-radius:9px;background:#fafcfc;color:#63747c;font-size:8px;text-align:center}.login-clinical-note{margin:14px 0 0;color:rgba(255,255,255,.65);font-size:10px;line-height:1.4;text-align:center}.landing-wave{display:none}
-    @media(max-width:820px){.landing-container{width:min(calc(100% - 32px),680px)}.landing-nav{position:relative;padding:max(12px,env(safe-area-inset-top)) 0 8px;border-bottom:0}.landing-nav-inner{justify-content:center}.landing-nav-meta{display:none}.landing-brand{padding:5px 14px 5px 5px;border:1px solid rgba(255,255,255,.14);border-radius:18px;background:rgba(5,38,49,.20);box-shadow:0 12px 32px rgba(3,24,35,.14);backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px)}.landing-hero{min-height:calc(100svh - 76px);padding:12px 0 max(28px,env(safe-area-inset-bottom))}.landing-hero-grid{display:block}.landing-showcase{display:none}.landing-login-column{width:100%;max-width:none}.login-card{width:min(396px,100%);margin:0 auto;padding:29px 20px 22px}.login-card-brand,.login-meta,.login-clinical-note{display:none}.login-kicker{display:flex;width:max-content;margin:0 auto 19px}.login-card h1{font-size:30px;text-align:center}.login-copy{max-width:290px;margin:10px auto 0;font-size:13px;text-align:center}.login-copy-desktop,.login-account-desktop{display:none!important}.login-copy-mobile,.login-account-mobile{display:inline!important}.google-login-panel{margin-top:24px}.google-login-heading{position:absolute;width:1px;height:1px;margin:-1px;padding:0;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;border:0}.google-login-status:not(.is-error){display:none}.password-row{grid-template-columns:minmax(0,1fr)}.password-row button{width:100%}}
-    @media(max-width:600px){.landing-container{width:calc(100% - 28px);max-width:420px}.landing-brand{min-height:52px}.landing-brand-logo{width:42px;height:42px;flex-basis:42px;border-radius:13px}.landing-brand-copy strong{font-size:17px}.landing-brand-copy small{font-size:7px}.login-card{border-radius:30px}}
-    @media(max-width:360px){.landing-container{width:calc(100% - 18px)}.landing-nav{padding-top:max(10px,env(safe-area-inset-top))}.landing-brand{min-height:48px;gap:9px;padding-right:10px}.landing-brand-logo{width:38px;height:38px;flex-basis:38px}.landing-brand-copy strong{font-size:16px}.login-card{padding:24px 15px 19px;border-radius:25px}.login-kicker{margin-bottom:16px;font-size:8px}.login-card h1{font-size:27px}.login-copy{max-width:260px;font-size:12px}.google-login-panel{margin-top:20px}.login-account-note{padding:10px 11px;font-size:9.5px}}
-    @media(max-width:600px) and (max-height:700px){.landing-hero{min-height:auto;padding-top:8px;padding-bottom:max(16px,env(safe-area-inset-bottom))}.login-card{padding-top:22px;padding-bottom:18px}.login-kicker{margin-bottom:14px}.google-login-panel{margin-top:18px}}
-    @media(max-width:900px) and (orientation:landscape) and (max-height:520px){.landing-container{width:min(calc(100% - 28px),540px);max-width:540px}.landing-nav{position:relative;padding:max(6px,env(safe-area-inset-top)) 0 4px;border-bottom:0}.landing-nav-inner{min-height:44px;justify-content:center}.landing-nav-meta,.landing-showcase,.login-card-brand,.login-meta,.login-clinical-note{display:none!important}.landing-brand{min-height:44px;gap:8px;padding:3px 10px 3px 4px;border:1px solid rgba(255,255,255,.14);border-radius:14px;background:rgba(5,38,49,.20)}.landing-brand-logo{width:34px;height:34px;flex-basis:34px;border-radius:10px}.landing-brand-copy strong{font-size:15px}.landing-brand-copy small{font-size:6px}.landing-hero{min-height:auto;padding:5px 0 max(10px,env(safe-area-inset-bottom))}.landing-hero-grid{display:block}.landing-login-column{width:100%;max-width:none}.login-card{width:min(520px,calc(100vw - 32px));max-width:520px;margin:0 auto;padding:15px 18px 14px;border-radius:20px}.login-kicker{display:none}.login-card h1{font-size:24px;text-align:center}.login-copy{max-width:360px;margin:5px auto 0;font-size:10.5px;line-height:1.35;text-align:center}.login-copy-desktop,.login-account-desktop{display:none!important}.login-copy-mobile,.login-account-mobile{display:inline!important}.google-login-panel{gap:5px;margin-top:10px}.google-login-heading{position:absolute;width:1px;height:1px;margin:-1px;padding:0;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;border:0}.google-login-button,.google-login-button>div,.google-login-button iframe{min-height:48px!important}.google-login-status:not(.is-error){display:none}.login-account-note{min-height:40px;justify-content:center;margin-top:7px;padding:7px 10px;font-size:9.5px}.login-account-note::before{width:20px;height:20px;flex-basis:20px;font-size:10px}.password-fallback{margin-top:8px;padding-top:8px}.password-fallback summary,.password-row input,.password-row button,.login-submit{min-height:44px}}
-    @media(prefers-reduced-motion:reduce){*,*::before,*::after{scroll-behavior:auto!important;animation-duration:.01ms!important;animation-iteration-count:1!important;transition-duration:.01ms!important}}@media(forced-colors:active){.login-card,.landing-brand,.landing-brand-logo,.login-account-note,.login-kicker{border:1px solid CanvasText}}
+    :root{
+      --teal:#0e7476;
+      --teal-dark:#09555f;
+      --navy:#071a2d;
+      --gold:#d6a84f;
+      --ink:#10212b;
+      --muted:#667781;
+      --line:#dce7e9;
+      --soft:#f2f8f7;
+      --white:#fff;
+    }
+
+    *,*::before,*::after{box-sizing:border-box}
+    html,body{width:100%;min-height:100%;margin:0;overflow-x:hidden;-webkit-text-size-adjust:100%;text-size-adjust:100%}
+    body{font-family:Inter,ui-sans-serif,-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;color:#fff;background:var(--navy)}
+    button,input,summary{font:inherit}
+    button,a,summary,input{touch-action:manipulation;-webkit-tap-highlight-color:transparent}
+    input{font-size:16px}
+    [hidden]{display:none!important}
+
+    .landing-login-page{
+      position:relative;
+      isolation:isolate;
+      min-height:100vh;
+      min-height:100svh;
+      overflow:hidden;
+      background:
+        radial-gradient(circle at 88% 10%,rgba(116,220,214,.18),transparent 27%),
+        radial-gradient(circle at 8% 92%,rgba(31,134,164,.16),transparent 31%),
+        linear-gradient(132deg,#117b7c 0%,#0b5965 49%,#081a2d 100%);
+    }
+    .landing-login-page::before{
+      content:"";
+      position:absolute;
+      z-index:-1;
+      width:520px;
+      height:520px;
+      top:-335px;
+      right:-110px;
+      border:1px solid rgba(255,255,255,.065);
+      border-radius:50%;
+      box-shadow:0 0 0 68px rgba(255,255,255,.018);
+      pointer-events:none;
+    }
+    .landing-login-page::after{
+      content:"";
+      position:absolute;
+      z-index:-1;
+      right:8%;
+      bottom:9%;
+      width:185px;
+      height:185px;
+      border-radius:50%;
+      background:radial-gradient(circle,rgba(106,222,215,.10),transparent 67%);
+      filter:blur(4px);
+      pointer-events:none;
+    }
+
+    .landing-container{width:min(1220px,calc(100% - 56px));margin:0 auto}
+    .landing-nav{position:absolute;z-index:20;inset:0 0 auto;padding:20px 0}
+    .landing-nav::after{content:"";position:absolute;right:0;bottom:0;left:0;height:1px;background:rgba(255,255,255,.10)}
+    .landing-nav-inner,.landing-brand,.landing-nav-meta{display:flex;align-items:center}
+    .landing-nav-inner{min-height:56px;justify-content:space-between;gap:28px}
+    .landing-brand{min-height:52px;gap:12px;color:#fff;text-decoration:none}
+    .landing-brand-logo{display:grid;width:48px;height:48px;flex:0 0 48px;place-items:center;overflow:hidden;border:1px solid rgba(255,255,255,.19);border-radius:15px;background:rgba(5,39,50,.20);box-shadow:0 12px 30px rgba(2,24,34,.20)}
+    .landing-brand-logo img{display:block;width:100%;height:100%;object-fit:cover}
+    .landing-brand-copy{display:grid;gap:3px}
+    .landing-brand-copy strong{font-size:20px;font-weight:820;line-height:1;letter-spacing:-.035em}
+    .landing-brand-copy small{color:rgba(255,255,255,.66);font-size:8px;font-weight:750;letter-spacing:.15em;text-transform:uppercase}
+    .landing-nav-meta{gap:14px;color:rgba(255,255,255,.78);font-size:12px;font-weight:680}
+    .landing-private-pill{display:inline-flex;min-height:38px;align-items:center;gap:8px;padding:0 14px;border:1px solid rgba(255,255,255,.17);border-radius:999px;background:rgba(255,255,255,.075);color:#fff;backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px)}
+    .landing-private-pill::before{content:"";width:7px;height:7px;border-radius:50%;background:#78d8d2;box-shadow:0 0 0 4px rgba(120,216,210,.10)}
+
+    .landing-hero{display:grid;min-height:100vh;min-height:100svh;align-items:center;padding:118px 0 58px}
+    .landing-hero-grid{display:grid;grid-template-columns:minmax(0,1.08fr) minmax(420px,.92fr);align-items:center;gap:clamp(76px,8vw,124px)}
+    .landing-showcase{max-width:610px;padding-bottom:14px}
+    .landing-login-column{width:100%;max-width:470px;justify-self:end}
+    .landing-eyebrow{display:inline-flex;align-items:center;gap:10px;margin:0 0 22px;color:#c7f2ef;font-size:11px;font-weight:820;letter-spacing:.16em;text-transform:uppercase}
+    .landing-eyebrow::before{content:"";width:28px;height:1px;background:rgba(199,242,239,.65)}
+    .landing-showcase h2{margin:0;color:#fff;font-size:clamp(54px,5.5vw,72px);font-weight:860;line-height:.99;letter-spacing:-.062em}
+    .landing-showcase h2 span{color:#bdece8}
+    .landing-showcase>p:last-of-type{max-width:520px;margin:26px 0 0;color:rgba(255,255,255,.78);font-size:18px;line-height:1.62}
+    .landing-feature-pills{display:flex;flex-wrap:wrap;gap:10px;margin-top:31px}
+    .landing-feature-pills span{display:inline-flex;min-height:37px;align-items:center;padding:0 14px;border:1px solid rgba(255,255,255,.13);border-radius:999px;background:rgba(255,255,255,.06);color:rgba(255,255,255,.90);font-size:11px;font-weight:740;backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px)}
+
+    .login-card{
+      position:relative;
+      width:100%;
+      padding:34px 34px 28px;
+      overflow:hidden;
+      border:1px solid rgba(255,255,255,.88);
+      border-radius:28px;
+      background:rgba(255,255,255,.985);
+      color:var(--ink);
+      box-shadow:0 30px 78px rgba(2,23,34,.34),0 1px 0 rgba(255,255,255,.90) inset;
+    }
+    .login-card::before{content:"";position:absolute;inset:0 0 auto;height:3px;background:linear-gradient(90deg,var(--teal),#66c8c3 62%,var(--gold))}
+    .login-card-brand{display:flex;align-items:center;justify-content:space-between;gap:14px;margin-bottom:26px}
+    .login-card-brand-main{display:flex;align-items:center;gap:10px;min-width:0}
+    .login-card-brand img{display:block;width:38px;height:38px;flex:0 0 38px;border-radius:12px;box-shadow:0 8px 20px rgba(12,85,91,.15)}
+    .login-card-brand-copy{display:grid;gap:2px}
+    .login-card-brand-copy strong{color:var(--ink);font-size:14px;font-weight:820;line-height:1}
+    .login-card-brand-copy small{color:#7b8a91;font-size:8px;font-weight:720;letter-spacing:.10em;text-transform:uppercase}
+    .login-secure-dot{display:inline-flex;min-height:28px;align-items:center;gap:7px;padding:0 10px;border:1px solid #d7e8e6;border-radius:999px;background:var(--soft);color:#406568;font-size:8px;font-weight:820;letter-spacing:.05em;text-transform:uppercase}
+    .login-secure-dot::before{content:"";width:7px;height:7px;border-radius:50%;background:#16867f;box-shadow:0 0 0 4px rgba(22,134,127,.10)}
+    .login-card h1{margin:0;color:var(--ink);font-size:39px;font-weight:860;line-height:1.06;letter-spacing:-.055em}
+    .login-copy{margin:11px 0 0;color:var(--muted);font-size:13.5px;line-height:1.55}
+    .login-copy-mobile,.login-account-mobile{display:none}
+
+    .google-login-panel{display:grid;gap:8px;margin-top:25px}
+    .google-login-heading{margin:0 0 4px;color:#31454f;font-size:11px;font-weight:820}
+    .google-login-button{display:flex;width:100%;height:52px;min-height:52px;max-height:52px;align-items:center;justify-content:center;padding:4px;overflow:hidden;border:1px solid #d6e0e3;border-radius:13px;background:#fff;box-shadow:0 1px 1px rgba(15,42,50,.02)}
+    .google-login-button>div{width:320px!important;max-width:100%!important;height:44px!important;min-height:44px!important;max-height:44px!important;margin:0 auto!important;overflow:hidden!important}
+    .google-login-button iframe{width:320px!important;max-width:100%!important;height:44px!important;min-height:44px!important;max-height:44px!important;margin:0 auto!important}
+    .google-login-status{min-height:15px;margin:0;color:#7a8990;font-size:9.5px;line-height:1.4;text-align:center}
+    .google-login-status.is-error{color:#a23d45}
+    .google-login-unavailable{display:flex;width:100%;height:44px;align-items:center;justify-content:center;padding:8px;border-radius:9px;background:#fff6f6;color:#9d3f48;font-size:10px;text-align:center}
+
+    .login-account-note{display:flex;min-height:44px;align-items:center;gap:9px;margin:12px 0 0;padding:9px 12px;border:1px solid #d5e7e4;border-radius:13px;background:var(--soft);color:#285b5d;font-size:9.5px;font-weight:800;line-height:1.3}
+    .login-account-note::before{content:"✓";display:grid;width:21px;height:21px;flex:0 0 21px;place-items:center;border-radius:50%;background:#137f79;color:#fff;font-size:10px;font-weight:900}
+
+    .password-fallback{margin-top:14px;padding-top:12px;border-top:1px solid var(--line)}
+    .password-fallback summary{display:flex;min-height:42px;align-items:center;justify-content:center;cursor:pointer;color:#406067;font-size:10px;font-weight:800;list-style:none}
+    .password-fallback summary::-webkit-details-marker{display:none}
+    .password-fallback summary::after{content:"";width:7px;height:7px;margin-left:9px;border-right:2px solid var(--teal);border-bottom:2px solid var(--teal);transform:rotate(45deg) translateY(-2px)}
+    .password-fallback[open] summary::after{transform:rotate(225deg)}
+    .login-divider{display:flex;align-items:center;gap:10px;margin:6px 0 13px;color:#7c8b91;font-size:8px;text-transform:uppercase}
+    .login-divider::before,.login-divider::after{content:"";height:1px;flex:1;background:var(--line)}
+    #loginForm label{display:block;margin:0 0 7px;color:#455b64;font-size:10px;font-weight:750}
+    .password-row{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:8px}
+    .password-row input{width:100%;min-height:48px;padding:0 13px;border:1px solid #cbd9dd;border-radius:12px;outline:none;color:var(--ink);background:#fff}
+    .password-row input:focus{border-color:#2e9b97;box-shadow:0 0 0 4px rgba(46,155,151,.12)}
+    .password-row button,.login-submit{min-height:48px;border:0;border-radius:12px;cursor:pointer;font-weight:800}
+    .password-row button{padding:0 14px;background:#eaf4f3;color:#245b5d}
+    .login-submit{display:flex;width:100%;align-items:center;justify-content:space-between;margin-top:10px;padding:0 16px;background:var(--ink);color:#fff}
+    .caps-lock-hint,.login-message{margin:8px 0 0;color:#a23d45;font-size:10px;line-height:1.4}
+    .login-message:empty{display:none}
+    .login-message.success{color:#187263}
+    .login-meta{display:flex;align-items:center;justify-content:center;gap:10px;margin-top:16px;color:#728188;font-size:8px;white-space:nowrap}
+    .login-meta span+span::before{content:"•";margin-right:10px;color:#b4c0c4}
+    .login-clinical-note{margin:12px 0 0;color:rgba(255,255,255,.60);font-size:9.5px;line-height:1.4;text-align:center}
+    .landing-wave{display:none}
+
+    @media(max-width:980px){
+      .landing-container{width:min(calc(100% - 36px),760px)}
+      .landing-nav{position:relative;padding:max(12px,env(safe-area-inset-top)) 0 8px}
+      .landing-nav::after{display:none}
+      .landing-nav-inner{justify-content:center}
+      .landing-nav-meta{display:none}
+      .landing-brand{padding:5px 14px 5px 5px;border:1px solid rgba(255,255,255,.14);border-radius:18px;background:rgba(5,38,49,.20);box-shadow:0 12px 32px rgba(3,24,35,.14);backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px)}
+      .landing-hero{min-height:calc(100svh - 76px);padding:12px 0 max(28px,env(safe-area-inset-bottom))}
+      .landing-hero-grid{display:block}
+      .landing-showcase{display:none}
+      .landing-login-column{width:100%;max-width:none}
+      .login-card{width:min(410px,100%);margin:0 auto;padding:28px 22px 22px}
+      .login-card-brand{margin-bottom:23px}
+      .login-card h1{font-size:31px;text-align:center}
+      .login-copy{max-width:300px;margin:9px auto 0;font-size:12.5px;text-align:center}
+      .login-copy-desktop,.login-account-desktop{display:none!important}
+      .login-copy-mobile,.login-account-mobile{display:inline!important}
+      .login-secure-dot{display:none}
+      .google-login-panel{margin-top:22px}
+      .google-login-heading{position:absolute;width:1px;height:1px;margin:-1px;padding:0;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;border:0}
+      .google-login-status:not(.is-error){display:none}
+      .login-meta,.login-clinical-note{display:none}
+      .password-row{grid-template-columns:minmax(0,1fr)}
+      .password-row button{width:100%}
+    }
+
+    @media(max-width:600px){
+      .landing-container{width:calc(100% - 24px);max-width:430px}
+      .landing-nav{padding-top:max(10px,env(safe-area-inset-top));padding-bottom:7px}
+      .landing-brand{min-height:50px;gap:10px;padding:4px 12px 4px 4px;border-radius:17px}
+      .landing-brand-logo{width:40px;height:40px;flex-basis:40px;border-radius:12px}
+      .landing-brand-copy strong{font-size:17px}
+      .landing-brand-copy small{font-size:7px}
+      .landing-hero{min-height:calc(100svh - 67px);padding-top:8px;padding-bottom:max(20px,env(safe-area-inset-bottom))}
+      .login-card{width:100%;padding:25px 18px 20px;border-radius:27px;box-shadow:0 24px 64px rgba(2,23,34,.31)}
+      .login-card-brand{justify-content:center;margin-bottom:21px}
+      .login-card-brand-main{justify-content:center}
+      .login-card-brand img{width:36px;height:36px;flex-basis:36px}
+      .login-card-brand-copy small{display:none}
+      .login-card h1{font-size:29px}
+      .login-copy{max-width:270px;font-size:12px}
+      .google-login-panel{margin-top:20px}
+      .login-account-note{justify-content:center;margin-top:11px;padding:9px 10px;font-size:9.5px}
+      .password-fallback{margin-top:12px;padding-top:10px}
+    }
+
+    @media(max-width:360px){
+      .landing-container{width:calc(100% - 16px)}
+      .landing-brand{min-height:46px;gap:8px;padding-right:9px}
+      .landing-brand-logo{width:36px;height:36px;flex-basis:36px;border-radius:11px}
+      .landing-brand-copy strong{font-size:15px}
+      .landing-brand-copy small{font-size:6px}
+      .login-card{padding:22px 14px 18px;border-radius:23px}
+      .login-card-brand{margin-bottom:18px}
+      .login-card h1{font-size:26px}
+      .login-copy{font-size:11.5px}
+      .google-login-button{height:50px;min-height:50px;max-height:50px}
+      .google-login-button>div,.google-login-button iframe{height:42px!important;min-height:42px!important;max-height:42px!important}
+      .login-account-note{font-size:9px}
+    }
+
+    @media(max-width:600px) and (max-height:700px){
+      .landing-hero{min-height:auto;padding-top:6px;padding-bottom:max(14px,env(safe-area-inset-bottom))}
+      .login-card{padding-top:20px;padding-bottom:17px}
+      .login-card-brand{margin-bottom:15px}
+      .google-login-panel{margin-top:16px}
+    }
+
+    @media(max-width:900px) and (orientation:landscape) and (max-height:520px){
+      .landing-container{width:min(calc(100% - 24px),540px);max-width:540px}
+      .landing-nav{position:relative;padding:max(5px,env(safe-area-inset-top)) 0 3px}
+      .landing-nav-inner{min-height:44px;justify-content:center}
+      .landing-nav-meta,.landing-showcase,.login-meta,.login-clinical-note{display:none!important}
+      .landing-brand{min-height:44px;gap:8px;padding:3px 10px 3px 4px;border-radius:14px}
+      .landing-brand-logo{width:34px;height:34px;flex-basis:34px;border-radius:10px}
+      .landing-brand-copy strong{font-size:15px}
+      .landing-brand-copy small{font-size:6px}
+      .landing-hero{min-height:auto;padding:5px 0 max(8px,env(safe-area-inset-bottom))}
+      .landing-hero-grid{display:block}
+      .landing-login-column{width:100%;max-width:none}
+      .login-card{width:min(520px,calc(100vw - 28px));max-width:520px;margin:0 auto;padding:14px 18px 13px;border-radius:19px}
+      .login-card-brand{justify-content:center;margin-bottom:8px}
+      .login-card-brand img{width:30px;height:30px;flex-basis:30px;border-radius:9px}
+      .login-card-brand-copy small,.login-secure-dot{display:none}
+      .login-card h1{font-size:23px;text-align:center}
+      .login-copy{max-width:380px;margin:4px auto 0;font-size:10px;line-height:1.3;text-align:center}
+      .login-copy-desktop,.login-account-desktop{display:none!important}
+      .login-copy-mobile,.login-account-mobile{display:inline!important}
+      .google-login-panel{gap:4px;margin-top:9px}
+      .google-login-heading{position:absolute;width:1px;height:1px;margin:-1px;padding:0;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;border:0}
+      .google-login-button{height:46px;min-height:46px;max-height:46px}
+      .google-login-button>div,.google-login-button iframe{height:38px!important;min-height:38px!important;max-height:38px!important}
+      .google-login-status:not(.is-error){display:none}
+      .login-account-note{min-height:38px;justify-content:center;margin-top:6px;padding:6px 10px;font-size:9px}
+      .login-account-note::before{width:19px;height:19px;flex-basis:19px;font-size:9px}
+      .password-fallback{margin-top:7px;padding-top:6px}
+      .password-fallback summary,.password-row input,.password-row button,.login-submit{min-height:44px}
+    }
+
+    @media(prefers-reduced-motion:reduce){*,*::before,*::after{scroll-behavior:auto!important;animation-duration:.01ms!important;animation-iteration-count:1!important;transition-duration:.01ms!important}}
+    @media(forced-colors:active){.login-card,.landing-brand,.landing-brand-logo,.login-account-note,.login-secure-dot{border:1px solid CanvasText}}
   </style>
+
   <script src="https://accounts.google.com/gsi/client" async defer></script>
 </head>
 <body>
   <main class="landing-login-page">
     <div class="login-side-panel" hidden aria-hidden="true"></div>
-    <nav class="landing-nav" aria-label="MedIndex"><div class="landing-container landing-nav-inner"><a class="landing-brand" href="/login.html" aria-label="MedIndex — faqja e hyrjes"><span class="landing-brand-logo"><img src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCA0OCA0OCIgcm9sZT0iaW1nIiBhcmlhLWxhYmVsbGVkYnk9InRpdGxlIj4KICA8dGl0bGUgaWQ9InRpdGxlIj5NZWRJbmRleCBNIHBsdXM8L3RpdGxlPgogIDxyZWN0IHdpZHRoPSI0OCIgaGVpZ2h0PSI0OCIgcng9IjEzIiBmaWxsPSIjMGY2ZjcyIi8+CiAgPHBhdGggZmlsbD0iI2ZmZmZmZiIgZD0iTTEwIDMyVjE1aDQuNGw1LjYgOC4zNUwyNS42IDE1SDMwdjE3aC00LjI1VjIyLjFsLTQuMTUgNi4xaC0zLjJsLTQuMTUtNi4xVjMySDEwWiIvPgogIDxwYXRoIGZpbGw9IiNkNmE4NGYiIGQ9Ik0zNi4yNSAyMHYzLjI1SDM5LjV2My41aC0zLjI1VjMwaC0zLjV2LTMuMjVIMjkuNXYtMy41aDMuMjVWMjBoMy41WiIvPgo8L3N2Zz4=" alt="Logoja MedIndex" width="48" height="48" decoding="async"></span><span class="landing-brand-copy"><strong>MedIndex</strong><small>Clinical Workspace</small></span></a><div class="landing-nav-meta" aria-label="Informacioni i qasjes"><span>Dr. Diellza Rabushaj</span><span class="landing-private-pill">Qasje private</span></div></div></nav>
-    <section class="landing-hero"><div class="landing-container landing-hero-grid"><div class="landing-login-column"><section class="login-card" aria-labelledby="loginTitle"><div class="login-card-brand"><img src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCA0OCA0OCIgcm9sZT0iaW1nIiBhcmlhLWxhYmVsbGVkYnk9InRpdGxlIj4KICA8dGl0bGUgaWQ9InRpdGxlIj5NZWRJbmRleCBNIHBsdXM8L3RpdGxlPgogIDxyZWN0IHdpZHRoPSI0OCIgaGVpZ2h0PSI0OCIgcng9IjEzIiBmaWxsPSIjMGY2ZjcyIi8+CiAgPHBhdGggZmlsbD0iI2ZmZmZmZiIgZD0iTTEwIDMyVjE1aDQuNGw1LjYgOC4zNUwyNS42IDE1SDMwdjE3aC00LjI1VjIyLjFsLTQuMTUgNi4xaC0zLjJsLTQuMTUtNi4xVjMySDEwWiIvPgogIDxwYXRoIGZpbGw9IiNkNmE4NGYiIGQ9Ik0zNi4yNSAyMHYzLjI1SDM5LjV2My41aC0zLjI1VjMwaC0zLjV2LTMuMjVIMjkuNXYtMy41aDMuMjVWMjBoMy41WiIvPgo8L3N2Zz4=" alt="Logoja MedIndex" width="42" height="42" decoding="async"><span>MedIndex</span></div><p class="login-kicker">Mirë se erdhe</p><h1 id="loginTitle">Hyr në MedIndex</h1><p class="login-copy"><span class="login-copy-desktop">Qasje e sigurt në ndihmësin digjital për kërkim të shpejtë dhe mbështetje në vendimmarrje klinike.</span><span class="login-copy-mobile">Vazhdo me llogarinë e autorizuar Google.</span></p><section class="google-login-panel" id="googleLoginPanel" aria-labelledby="googleLoginHeading"><h2 class="google-login-heading" id="googleLoginHeading">Vazhdo me Google</h2><div class="google-login-button" id="googleLoginButton" aria-live="polite"></div><p class="google-login-status" id="googleLoginStatus" role="status" aria-live="polite">Po përgatitet hyrja e sigurt…</p></section><p class="login-account-note"><span class="login-account-desktop">Lejohet vetëm diellzarabushaj@gmail.com</span><span class="login-account-mobile">Vetëm llogaria e autorizuar</span></p><details class="password-fallback" id="passwordFallback" hidden><summary>Hyrje rezervë me password</summary><div class="login-divider"><span>Rezervë</span></div><form id="loginForm" autocomplete="on" novalidate><label for="password">Password-i</label><div class="password-row"><input id="password" name="password" type="password" autocomplete="current-password" autocapitalize="none" spellcheck="false" enterkeyhint="go" required minlength="6" maxlength="128" aria-describedby="capsLockHint loginMessage"><button id="togglePassword" type="button" aria-label="Shfaq password-in" aria-pressed="false">Shfaq</button></div><p class="caps-lock-hint" id="capsLockHint" hidden>Caps Lock është aktiv.</p><button class="login-submit" id="loginSubmit" type="submit"><span>Hyr me password</span><span aria-hidden="true">→</span></button></form></details><p class="login-message" id="loginMessage" role="alert" aria-live="polite"></p><div class="login-meta" aria-label="Siguria e sesionit"><span>Google i verifikuar</span><span>Sesioni 8 orë</span><span>Cookie HttpOnly</span></div></section><p class="login-clinical-note">Mbështet punën klinike; nuk e zëvendëson gjykimin profesional.</p></div><div class="landing-showcase" aria-label="MedIndex — ndihmës digjital për mjekun"><p class="landing-eyebrow">Ndihmës digjital për mjekun</p><h2>Vendime klinike,<br><span>më qartë.</span></h2><p>Barnat, ATC, ICD, analizat, dozologjia dhe recetat — në një hapësirë të vetme.</p><div class="landing-feature-pills" aria-label="Funksionet kryesore"><span>Barnat</span><span>ATC &amp; ICD</span><span>Analizat</span><span>Recetat</span></div></div></div></section>
+
+    <nav class="landing-nav" aria-label="MedIndex">
+      <div class="landing-container landing-nav-inner">
+        <a class="landing-brand" href="/login.html" aria-label="MedIndex — faqja e hyrjes">
+          <span class="landing-brand-logo">
+            <img src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCA0OCA0OCIgcm9sZT0iaW1nIiBhcmlhLWxhYmVsbGVkYnk9InRpdGxlIj4KICA8dGl0bGUgaWQ9InRpdGxlIj5NZWRJbmRleCBNIHBsdXM8L3RpdGxlPgogIDxyZWN0IHdpZHRoPSI0OCIgaGVpZ2h0PSI0OCIgcng9IjEzIiBmaWxsPSIjMGY2ZjcyIi8+CiAgPHBhdGggZmlsbD0iI2ZmZmZmZiIgZD0iTTEwIDMyVjE1aDQuNGw1LjYgOC4zNUwyNS42IDE1SDMwdjE3aC00LjI1VjIyLjFsLTQuMTUgNi4xaC0zLjJsLTQuMTUtNi4xVjMySDEwWiIvPgogIDxwYXRoIGZpbGw9IiNkNmE4NGYiIGQ9Ik0zNi4yNSAyMHYzLjI1SDM5LjV2My41aC0zLjI1VjMwaC0zLjV2LTMuMjVIMjkuNXYtMy41aDMuMjVWMjBoMy41WiIvPgo8L3N2Zz4=" alt="Logoja MedIndex" width="48" height="48" decoding="async">
+          </span>
+          <span class="landing-brand-copy">
+            <strong>MedIndex</strong>
+            <small>Clinical Workspace</small>
+          </span>
+        </a>
+
+        <div class="landing-nav-meta" aria-label="Informacioni i qasjes">
+          <span>Dr. Diellza Rabushaj</span>
+          <span class="landing-private-pill">Qasje private</span>
+        </div>
+      </div>
+    </nav>
+
+    <section class="landing-hero">
+      <div class="landing-container landing-hero-grid">
+        <div class="landing-showcase" aria-label="MedIndex — ndihmës digjital për mjekun">
+          <p class="landing-eyebrow">Ndihmës digjital për mjekun</p>
+          <h2>Vendime klinike.<br><span>Më qartë.</span></h2>
+          <p>Barnat, ATC, ICD, analizat, dozologjia dhe recetat — të organizuara në një hapësirë të vetme pune.</p>
+          <div class="landing-feature-pills" aria-label="Funksionet kryesore">
+            <span>Barnat</span>
+            <span>ATC &amp; ICD</span>
+            <span>Analizat</span>
+            <span>Recetat</span>
+          </div>
+        </div>
+
+        <div class="landing-login-column">
+          <section class="login-card" aria-labelledby="loginTitle">
+            <div class="login-card-brand">
+              <div class="login-card-brand-main">
+                <img src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCA0OCA0OCIgcm9sZT0iaW1nIiBhcmlhLWxhYmVsbGVkYnk9InRpdGxlIj4KICA8dGl0bGUgaWQ9InRpdGxlIj5NZWRJbmRleCBNIHBsdXM8L3RpdGxlPgogIDxyZWN0IHdpZHRoPSI0OCIgaGVpZ2h0PSI0OCIgcng9IjEzIiBmaWxsPSIjMGY2ZjcyIi8+CiAgPHBhdGggZmlsbD0iI2ZmZmZmZiIgZD0iTTEwIDMyVjE1aDQuNGw1LjYgOC4zNUwyNS42IDE1SDMwdjE3aC00LjI1VjIyLjFsLTQuMTUgNi4xaC0zLjJsLTQuMTUtNi4xVjMySDEwWiIvPgogIDxwYXRoIGZpbGw9IiNkNmE4NGYiIGQ9Ik0zNi4yNSAyMHYzLjI1SDM5LjV2My41aC0zLjI1VjMwaC0zLjV2LTMuMjVIMjkuNXYtMy41aDMuMjVWMjBoMy41WiIvPgo8L3N2Zz4=" alt="Logoja MedIndex" width="38" height="38" decoding="async">
+                <span class="login-card-brand-copy">
+                  <strong>MedIndex</strong>
+                  <small>Clinical Workspace</small>
+                </span>
+              </div>
+              <span class="login-secure-dot">E sigurt</span>
+            </div>
+
+            <h1 id="loginTitle">Hyr në MedIndex</h1>
+            <p class="login-copy">
+              <span class="login-copy-desktop">Vazhdo me llogarinë e autorizuar Google për të hapur hapësirën klinike.</span>
+              <span class="login-copy-mobile">Vazhdo me llogarinë e autorizuar Google.</span>
+            </p>
+
+            <section class="google-login-panel" id="googleLoginPanel" aria-labelledby="googleLoginHeading">
+              <h2 class="google-login-heading" id="googleLoginHeading">Vazhdo me Google</h2>
+              <div class="google-login-button" id="googleLoginButton" aria-live="polite"></div>
+              <p class="google-login-status" id="googleLoginStatus" role="status" aria-live="polite">Po përgatitet hyrja e sigurt…</p>
+            </section>
+
+            <p class="login-account-note">
+              <span class="login-account-desktop">Lejohet vetëm diellzarabushaj@gmail.com</span>
+              <span class="login-account-mobile">Vetëm llogaria e autorizuar</span>
+            </p>
+
+            <details class="password-fallback" id="passwordFallback" hidden>
+              <summary>Hyrje rezervë me password</summary>
+              <div class="login-divider"><span>Rezervë</span></div>
+              <form id="loginForm" autocomplete="on" novalidate>
+                <label for="password">Password-i</label>
+                <div class="password-row">
+                  <input id="password" name="password" type="password" autocomplete="current-password" autocapitalize="none" spellcheck="false" enterkeyhint="go" required minlength="6" maxlength="128" aria-describedby="capsLockHint loginMessage">
+                  <button id="togglePassword" type="button" aria-label="Shfaq password-in" aria-pressed="false">Shfaq</button>
+                </div>
+                <p class="caps-lock-hint" id="capsLockHint" hidden>Caps Lock është aktiv.</p>
+                <button class="login-submit" id="loginSubmit" type="submit">
+                  <span>Hyr me password</span>
+                  <span aria-hidden="true">→</span>
+                </button>
+              </form>
+            </details>
+
+            <p class="login-message" id="loginMessage" role="alert" aria-live="polite"></p>
+
+            <div class="login-meta" aria-label="Siguria e sesionit">
+              <span>Google i verifikuar</span>
+              <span>Sesion 8 orë</span>
+              <span>Cookie HttpOnly</span>
+            </div>
+          </section>
+          <p class="login-clinical-note">Mbështet punën klinike; nuk e zëvendëson gjykimin profesional.</p>
+        </div>
+      </div>
+    </section>
+
     <div class="landing-wave" aria-hidden="true"></div>
   </main>
+
   <script src="login.js?v=google-auth-v1" defer></script>
 </body>
 </html>
