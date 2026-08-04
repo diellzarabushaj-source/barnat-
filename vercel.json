@@ -1,7 +1,6 @@
 {
   "$schema": "https://openapi.vercel.sh/vercel.json",
   "framework": null,
-  "buildCommand": "node scripts/seed-official-brand-assets.js && pnpm test",
   "outputDirectory": ".",
   "functions": {
     "api/icd.js": {
@@ -23,7 +22,11 @@
     { "source": "/api/gemini-prescription", "destination": "/api/gemini-prescription-secure" },
     { "source": "/api/user-library", "destination": "/api/auth?scope=library" },
     { "source": "/api/population-verification", "destination": "/api/clinical-editor?populationVerification=1" },
-    { "source": "/api/media", "destination": "/api/clinical-editor?mediaLibrary=1" }
+    { "source": "/api/media", "destination": "/api/clinical-editor?mediaLibrary=1" },
+    { "source": "/brand/medindex-mark-on-light.webp", "destination": "/api/clinical-editor?officialBrand=markOnLight" },
+    { "source": "/brand/medindex-full-on-dark.png", "destination": "/api/clinical-editor?officialBrand=fullOnDark" },
+    { "source": "/brand/medindex-mark-on-dark.png", "destination": "/api/clinical-editor?officialBrand=markOnDark" },
+    { "source": "/brand/medindex-full-on-light.png", "destination": "/api/clinical-editor?officialBrand=fullOnLight" }
   ],
   "headers": [
     {
