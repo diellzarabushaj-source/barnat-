@@ -23,13 +23,15 @@ jobs:
           path = Path('mobile-experience.js')
           text = path.read_text(encoding='utf-8')
           old = "    ROOT.dataset.miMobileLayout = String(isMobileLayout());\n  }"
-          new = """    ROOT.dataset.miMobileLayout = String(isMobileLayout());
-    const mobileBrand = document.querySelector('.mi-mobile-brand');
-    const compactLandscape = isMobileLayout() && window.innerHeight <= 500;
-    if (mobileBrand && compactLandscape) mobileBrand.style.setProperty('display', 'none', 'important');
-    else mobileBrand?.style.removeProperty('display');
-    ROOT.dataset.miCompactLandscape = String(compactLandscape);
-  }"""
+          new = "\n".join([
+              "    ROOT.dataset.miMobileLayout = String(isMobileLayout());",
+              "    const mobileBrand = document.querySelector('.mi-mobile-brand');",
+              "    const compactLandscape = isMobileLayout() && window.innerHeight <= 500;",
+              "    if (mobileBrand && compactLandscape) mobileBrand.style.setProperty('display', 'none', 'important');",
+              "    else mobileBrand?.style.removeProperty('display');",
+              "    ROOT.dataset.miCompactLandscape = String(compactLandscape);",
+              "  }",
+          ])
           if old not in text:
               raise SystemExit('Viewport update marker was not found.')
           path.write_text(text.replace(old, new, 1), encoding='utf-8')
