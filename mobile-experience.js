@@ -10,6 +10,7 @@
   let bodyObserver = null;
   let viewportFrame = 0;
   let installed = false;
+  let initialStateNormalized = false;
 
   const isMobileLayout = () => window.innerWidth < MOBILE_BREAKPOINT;
 
@@ -52,8 +53,26 @@
           scroll-padding-bottom:calc(24px + var(--mi-safe-bottom));
         }
         html.medindex-tailadmin .mi-content-container{padding-bottom:calc(34px + var(--mi-safe-bottom))!important}
+        html.medindex-tailadmin .mi-topbar-actions{
+          display:flex!important;
+          min-width:0!important;
+          flex:0 0 auto!important;
+          align-items:center!important;
+          visibility:visible!important;
+          opacity:1!important;
+        }
         html.medindex-tailadmin .mi-topbar-actions .mi-icon-button{display:grid!important}
-        html.medindex-tailadmin .mi-mobile-search-trigger{display:grid!important;width:var(--mi-touch-target)!important;height:var(--mi-touch-target)!important;min-width:var(--mi-touch-target)!important;min-height:var(--mi-touch-target)!important}
+        html.medindex-tailadmin .mi-topbar-actions .mi-mobile-search-trigger{
+          display:grid!important;
+          position:relative!important;
+          width:var(--mi-touch-target)!important;
+          height:var(--mi-touch-target)!important;
+          min-width:var(--mi-touch-target)!important;
+          min-height:var(--mi-touch-target)!important;
+          visibility:visible!important;
+          opacity:1!important;
+          pointer-events:auto!important;
+        }
         html.medindex-tailadmin .mi-primary-action{min-width:var(--mi-touch-target)!important;min-height:var(--mi-touch-target)!important}
         html.medindex-tailadmin :where(
           .mi-topbar button,.mi-topbar a,#appMenu button,#appMenu a,
@@ -152,19 +171,49 @@
     if (main) main.inert = searchOpen;
   }
 
+  function syncTriggerVisibility() {
+    const actions = document.querySelector('.mi-topbar-actions');
+    if (!trigger || !actions) return;
+    const mobile = isMobileLayout();
+    const searchOpen = mobile && document.body?.classList.contains('mi-mobile-search-open');
+
+    if (mobile) {
+      actions.style.setProperty('display', 'flex', 'important');
+      actions.style.setProperty('visibility', 'visible', 'important');
+      actions.style.setProperty('opacity', '1', 'important');
+      trigger.style.setProperty('display', 'grid', 'important');
+      trigger.style.setProperty('visibility', 'visible', 'important');
+      trigger.style.setProperty('opacity', '1', 'important');
+      trigger.style.setProperty('pointer-events', 'auto', 'important');
+    } else {
+      actions.style.removeProperty('display');
+      actions.style.removeProperty('visibility');
+      actions.style.removeProperty('opacity');
+      trigger.style.removeProperty('display');
+      trigger.style.removeProperty('visibility');
+      trigger.style.removeProperty('opacity');
+      trigger.style.removeProperty('pointer-events');
+    }
+
+    trigger.hidden = false;
+    trigger.removeAttribute('aria-hidden');
+    trigger.setAttribute('aria-expanded', String(searchOpen));
+  }
+
   function closeMobileSearch({ restoreFocus = false } = {}) {
     const body = document.body;
     const input = document.getElementById('miGlobalSearch');
     const palette = document.getElementById('miCommandPalette');
-    if (!body?.classList.contains('mi-mobile-search-open')) return;
-    body.classList.remove('mi-mobile-search-open');
+    const wasOpen = Boolean(body?.classList.contains('mi-mobile-search-open'));
+    body?.classList.remove('mi-mobile-search-open');
     if (backdrop) backdrop.hidden = true;
     if (trigger) trigger.setAttribute('aria-expanded', 'false');
     if (palette) palette.hidden = true;
     input?.setAttribute('aria-expanded', 'false');
-    input?.blur();
+    if (wasOpen) input?.blur();
     setBackgroundState();
-    if (restoreFocus) trigger?.focus({ preventScroll: true });
+    syncTriggerVisibility();
+    if (restoreFocus && wasOpen) trigger?.focus({ preventScroll: true });
   }
 
   function openMobileSearch() {
@@ -179,12 +228,19 @@
     if (backdrop) backdrop.hidden = false;
     trigger?.setAttribute('aria-expanded', 'true');
     setBackgroundState();
+    syncTriggerVisibility();
     scheduleViewportUpdate();
     requestAnimationFrame(() => {
       input.focus({ preventScroll: true });
       input.select();
       input.dispatchEvent(new Event('input', { bubbles: true }));
     });
+  }
+
+  function bindTrigger(button) {
+    if (!button || button.dataset.miMobileSearchBound === VERSION) return;
+    button.addEventListener('click', openMobileSearch);
+    button.dataset.miMobileSearchBound = VERSION;
   }
 
   function ensureMobileSearch() {
@@ -195,19 +251,24 @@
     document.querySelector('.mi-primary-action')?.setAttribute('aria-label', 'Recetë e re');
     input.setAttribute('enterkeyhint', 'search');
 
-    trigger = document.querySelector('[data-mi-mobile-search]');
+    const candidates = [...document.querySelectorAll('[data-mi-mobile-search]')];
+    trigger = candidates.find(button => button.closest('.mi-topbar-actions') === actions) || candidates[0] || null;
+    candidates.forEach(button => {
+      if (button !== trigger) button.remove();
+    });
+
     if (!trigger) {
       trigger = document.createElement('button');
       trigger.type = 'button';
-      trigger.className = 'mi-icon-button mi-mobile-search-trigger';
       trigger.dataset.miMobileSearch = '1';
-      trigger.setAttribute('aria-label', 'Kërko në MedIndex');
-      trigger.setAttribute('aria-controls', 'miGlobalSearch');
-      trigger.setAttribute('aria-expanded', 'false');
-      trigger.innerHTML = SEARCH_ICON;
-      actions.insertBefore(trigger, actions.firstChild);
-      trigger.addEventListener('click', openMobileSearch);
     }
+
+    trigger.className = 'mi-icon-button mi-mobile-search-trigger';
+    trigger.setAttribute('aria-label', 'Kërko në MedIndex');
+    trigger.setAttribute('aria-controls', 'miGlobalSearch');
+    if (!trigger.querySelector('svg')) trigger.innerHTML = SEARCH_ICON;
+    if (trigger.parentElement !== actions) actions.insertBefore(trigger, actions.firstChild);
+    bindTrigger(trigger);
 
     backdrop = document.querySelector('.mi-mobile-search-backdrop');
     if (!backdrop) {
@@ -219,6 +280,7 @@
       backdrop.addEventListener('click', () => closeMobileSearch({ restoreFocus: true }));
     }
 
+    syncTriggerVisibility();
     return true;
   }
 
@@ -228,16 +290,19 @@
         ensureMobileSearch();
         setBackgroundState();
       });
-      bodyObserver.observe(document.body, { childList: true, subtree: false, attributes: true, attributeFilter: ['class'] });
+      bodyObserver.observe(document.body, { childList: true, subtree: true, attributes: true, attributeFilter: ['class'] });
     }
 
     window.addEventListener('resize', () => {
       scheduleViewportUpdate();
+      ensureMobileSearch();
       if (!isMobileLayout()) closeMobileSearch();
+      else syncTriggerVisibility();
       setBackgroundState();
     }, { passive: true });
     window.addEventListener('orientationchange', () => setTimeout(() => {
       scheduleViewportUpdate();
+      ensureMobileSearch();
       closeMobileSearch();
       setBackgroundState();
     }, 80), { passive: true });
@@ -252,6 +317,10 @@
   function stabilize() {
     if (!document.body) return;
     injectStyles();
+    if (!initialStateNormalized) {
+      initialStateNormalized = true;
+      document.body.classList.remove('mi-mobile-search-open');
+    }
     ensureMobileSearch();
     updateVisualViewport();
     setBackgroundState();
