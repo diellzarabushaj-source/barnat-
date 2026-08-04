@@ -1,3 +1,14 @@
+/* MedIndex public landing — audited interaction and visual layer */
+
+html[data-mi-page="login"]{
+  --mi-blue:#4777e5;
+  --mi-blue-strong:#315fbf;
+  --mi-cyan:#71bee9;
+  --mi-ink:#172036;
+  --mi-muted:#68748b;
+  --mi-focus:rgba(71,119,229,.28);
+}
+
 html[data-mi-page="login"] .brand-mark,
 html[data-mi-page="login"] .login-card-brand img{
   background:transparent!important;
@@ -11,6 +22,64 @@ html[data-mi-page="login"] .login-card-brand img{
   padding:0!important;
 }
 
+/* Navigation and hero hierarchy */
+html[data-mi-page="login"] .editorial-nav{
+  position:relative;
+}
+html[data-mi-page="login"] .landing-brand{
+  border-radius:14px;
+  outline:none;
+}
+html[data-mi-page="login"] .nav-link{
+  position:relative;
+  display:inline-flex;
+  min-height:44px;
+  align-items:center;
+  color:#737985!important;
+  transition:color .24s ease,transform .24s cubic-bezier(.2,.8,.2,1);
+}
+html[data-mi-page="login"] .nav-link::after{
+  content:"";
+  position:absolute;
+  right:0;
+  bottom:8px;
+  left:0;
+  height:2px;
+  border-radius:999px;
+  background:linear-gradient(90deg,var(--mi-cyan),var(--mi-blue));
+  opacity:0;
+  transform:scaleX(.2);
+  transform-origin:center;
+  transition:opacity .22s ease,transform .28s cubic-bezier(.2,.8,.2,1);
+}
+html[data-mi-page="login"] .hero-copy h1{
+  max-width:12ch;
+  text-wrap:balance;
+}
+html[data-mi-page="login"] .hero-copy p{
+  text-wrap:pretty;
+}
+html[data-mi-page="login"] :is(.landing-brand,.nav-link,.nav-cta,.hero-cta,.login-modal-close,.plan-disclosure summary,.plan-login-link):focus-visible{
+  outline:3px solid var(--mi-focus)!important;
+  outline-offset:4px!important;
+}
+html[data-mi-page="login"] :is(.nav-cta,.hero-cta){
+  position:relative;
+  overflow:hidden;
+  isolation:isolate;
+}
+html[data-mi-page="login"] :is(.nav-cta,.hero-cta)::after{
+  content:"";
+  position:absolute;
+  inset:-80% auto -80% -42%;
+  z-index:-1;
+  width:34%;
+  background:linear-gradient(90deg,transparent,rgba(255,255,255,.28),transparent);
+  transform:skewX(-14deg) translateX(-220%);
+  transition:transform .65s cubic-bezier(.2,.8,.2,1);
+}
+
+/* Interactive artwork — the approved 128-strip design remains unchanged */
 html[data-mi-page="login"] .visual-login{
   position:relative;
   isolation:isolate;
@@ -42,7 +111,6 @@ html[data-mi-page="login"] .visual-login::after{
   -webkit-backdrop-filter:blur(12px);
   pointer-events:none;
 }
-
 html[data-mi-page="login"] .artwork{
   position:relative;
   min-height:370px;
@@ -52,12 +120,12 @@ html[data-mi-page="login"] .artwork{
   box-shadow:0 24px 64px rgba(54,82,145,.17),0 2px 0 rgba(255,255,255,.82) inset;
   perspective:900px;
   transform-style:preserve-3d;
+  transition:box-shadow .42s ease;
 }
 html[data-mi-page="login"] .artwork::before,
 html[data-mi-page="login"] .artwork::after{
   display:none!important;
 }
-
 html[data-mi-page="login"] .micro-strips{
   position:absolute;
   inset:0;
@@ -88,13 +156,8 @@ html[data-mi-page="login"] .micro-strip{
   transition-delay:var(--delay,0ms);
   will-change:transform,filter;
 }
-html[data-mi-page="login"] .micro-strip:first-child{
-  border-radius:32px 0 0 32px;
-}
-html[data-mi-page="login"] .micro-strip:last-child{
-  border-right:0;
-  border-radius:0 32px 32px 0;
-}
+html[data-mi-page="login"] .micro-strip:first-child{border-radius:32px 0 0 32px}
+html[data-mi-page="login"] .micro-strip:last-child{border-right:0;border-radius:0 32px 32px 0}
 html[data-mi-page="login"] .micro-strip.is-near-pointer{
   z-index:4;
   box-shadow:0 18px 34px rgba(46,78,164,var(--shadow-alpha,.2)),inset 0 1px rgba(255,255,255,.62);
@@ -106,7 +169,6 @@ html[data-mi-page="login"] .micro-strip.is-near-pointer::after{
   background:linear-gradient(180deg,rgba(255,255,255,.2),transparent 42%,rgba(28,62,150,.08));
   pointer-events:none;
 }
-
 html[data-mi-page="login"] .artwork-label{
   position:absolute!important;
   z-index:9!important;
@@ -124,40 +186,66 @@ html[data-mi-page="login"] .artwork-label{
   pointer-events:none;
 }
 
-/* Premium plan cards */
+/* Plan cards: one coherent system */
 html[data-mi-page="login"] .editorial-hero .hero-grid{
   align-items:stretch;
 }
 html[data-mi-page="login"] .editorial-hero .plan-block{
+  --plan-accent:#4777e5;
+  --plan-accent-rgb:71,119,229;
+  position:relative;
   display:flex!important;
-  min-height:300px!important;
+  min-height:296px!important;
   flex-direction:column;
   isolation:isolate;
+  overflow:clip!important;
   padding:27px 24px 22px!important;
-  border-color:rgba(72,100,165,.13)!important;
-  border-radius:26px!important;
+  border:1px solid rgba(72,100,165,.13)!important;
+  border-radius:25px!important;
   background:
-    linear-gradient(135deg,rgba(255,255,255,.98),rgba(247,249,255,.88)) padding-box,
-    linear-gradient(135deg,rgba(255,255,255,.88),rgba(102,143,244,.26)) border-box!important;
-  box-shadow:0 16px 44px rgba(44,59,98,.08),inset 0 1px 0 rgba(255,255,255,.96)!important;
+    radial-gradient(circle at 102% -8%,rgba(var(--plan-accent-rgb),.14),transparent 41%),
+    linear-gradient(145deg,rgba(255,255,255,.99),rgba(247,249,255,.9))!important;
+  box-shadow:0 15px 42px rgba(44,59,98,.08),inset 0 1px 0 rgba(255,255,255,.98)!important;
   transform:translateZ(0);
+  transition:transform .36s cubic-bezier(.2,.8,.2,1),box-shadow .36s ease,border-color .28s ease,background .28s ease;
+}
+html[data-mi-page="login"] .editorial-hero .plan-block:nth-of-type(2){
+  --plan-accent:#315fbf;
+  --plan-accent-rgb:49,95,191;
 }
 html[data-mi-page="login"] .editorial-hero .plan-block::before{
-  height:4px!important;
-  opacity:.8!important;
-  background:linear-gradient(90deg,#c5d4ff 0%,#79c4ef 48%,#4677e5 100%)!important;
-  box-shadow:0 5px 18px rgba(71,119,229,.16);
+  content:"";
+  position:absolute;
+  z-index:0;
+  top:0;
+  right:0;
+  left:0;
+  height:3px!important;
+  opacity:.82!important;
+  background:linear-gradient(90deg,#c8d6ff 0%,#79c4ef 48%,var(--plan-accent) 100%)!important;
+  box-shadow:0 5px 18px rgba(var(--plan-accent-rgb),.14);
+  transform:scaleX(.44);
+  transform-origin:left;
+  transition:transform .42s cubic-bezier(.2,.8,.2,1),opacity .28s ease;
 }
 html[data-mi-page="login"] .editorial-hero .plan-block::after{
+  content:"";
+  position:absolute;
+  z-index:0;
   top:-72px!important;
   right:-64px!important;
   width:178px!important;
   height:178px!important;
-  opacity:.78;
-  background:
-    radial-gradient(circle at 50% 50%,rgba(255,255,255,.62) 0 8%,rgba(102,146,255,.16) 28%,transparent 69%)!important;
+  border-radius:50%;
+  opacity:.76;
+  background:radial-gradient(circle,rgba(255,255,255,.64) 0 8%,rgba(var(--plan-accent-rgb),.15) 29%,transparent 69%)!important;
+  transform:scale(.78);
+  transition:transform .48s cubic-bezier(.2,.8,.2,1),opacity .3s ease;
+  pointer-events:none;
 }
 html[data-mi-page="login"] .editorial-hero .plan-block h2{
+  position:relative;
+  z-index:1;
   display:flex;
   align-items:center;
   justify-content:space-between;
@@ -165,21 +253,24 @@ html[data-mi-page="login"] .editorial-hero .plan-block h2{
   margin:0 0 21px!important;
   color:#1e2941!important;
   font-size:18px!important;
-  font-weight:850!important;
+  font-weight:840!important;
   letter-spacing:-.04em!important;
+  text-wrap:balance;
 }
 html[data-mi-page="login"] .editorial-hero .plan-block h2::after{
   content:"";
-  width:9px;
-  height:9px;
-  flex:0 0 9px;
-  border:3px solid rgba(71,119,229,.18);
+  width:8px;
+  height:8px;
+  flex:0 0 8px;
+  border:3px solid rgba(var(--plan-accent-rgb),.18);
   border-radius:50%;
-  background:#4777e5;
-  box-shadow:0 0 0 6px rgba(71,119,229,.07);
-  transition:transform .35s cubic-bezier(.2,.8,.2,1),box-shadow .35s ease;
+  background:var(--plan-accent);
+  box-shadow:0 0 0 6px rgba(var(--plan-accent-rgb),.07);
+  transition:transform .32s cubic-bezier(.2,.8,.2,1),box-shadow .32s ease;
 }
 html[data-mi-page="login"] .editorial-hero .plan-block .plan-list{
+  position:relative;
+  z-index:1;
   gap:12px!important;
   margin:0 0 23px!important;
 }
@@ -188,10 +279,11 @@ html[data-mi-page="login"] .editorial-hero .plan-block .plan-list li{
   min-height:25px!important;
   align-items:center;
   padding-left:29px!important;
-  color:#69758c!important;
+  color:#657188!important;
   font-size:12px!important;
-  font-weight:560;
+  font-weight:570;
   line-height:1.45!important;
+  transition:color .24s ease,transform .28s cubic-bezier(.2,.8,.2,1);
 }
 html[data-mi-page="login"] .editorial-hero .plan-block .plan-list li::before{
   content:"✓"!important;
@@ -201,194 +293,251 @@ html[data-mi-page="login"] .editorial-hero .plan-block .plan-list li::before{
   width:19px!important;
   height:19px!important;
   place-items:center;
-  border:1px solid rgba(80,111,184,.15)!important;
+  border:1px solid rgba(var(--plan-accent-rgb),.16)!important;
   border-radius:7px;
-  background:rgba(238,243,255,.84);
-  color:#5573b5;
+  background:rgba(238,243,255,.86);
+  color:var(--plan-accent);
   font-size:10px;
   font-weight:900;
   line-height:1;
   transform:none!important;
-  box-shadow:inset 0 1px 0 rgba(255,255,255,.9);
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.92);
+  transition:border-color .24s ease,background .24s ease,transform .28s cubic-bezier(.2,.8,.2,1);
 }
 html[data-mi-page="login"] .editorial-hero .plan-disclosure{
+  position:relative;
+  z-index:2;
   width:100%;
   margin-top:auto!important;
 }
 html[data-mi-page="login"] .editorial-hero .plan-disclosure summary{
   display:flex!important;
   width:100%!important;
-  min-height:49px;
+  min-height:50px;
   align-items:center;
-  padding:4px 10px 4px 5px;
-  border:1px solid rgba(80,104,163,.11);
+  padding:4px 9px 4px 5px;
+  border:1px solid rgba(80,104,163,.12);
   border-radius:15px!important;
-  background:rgba(255,255,255,.72);
-  box-shadow:0 8px 22px rgba(42,55,91,.055),inset 0 1px 0 rgba(255,255,255,.95);
-  transition:border-color .28s ease,background .28s ease,box-shadow .28s ease,transform .3s cubic-bezier(.2,.8,.2,1);
+  background:rgba(255,255,255,.78);
+  box-shadow:0 8px 22px rgba(42,55,91,.055),inset 0 1px 0 rgba(255,255,255,.96);
+  cursor:pointer;
+  transition:border-color .25s ease,background .25s ease,box-shadow .25s ease,transform .28s cubic-bezier(.2,.8,.2,1);
 }
+html[data-mi-page="login"] .editorial-hero .plan-disclosure summary::-webkit-details-marker{display:none}
 html[data-mi-page="login"] .editorial-hero .plan-more{
+  display:flex!important;
   width:100%;
-  min-height:39px!important;
+  min-height:40px!important;
+  align-items:center;
   gap:11px!important;
-  color:#69758e!important;
+  margin:0!important;
+  color:#657189!important;
 }
 html[data-mi-page="login"] .editorial-hero .plan-more i{
+  display:grid;
   width:38px!important;
   height:38px!important;
   flex:0 0 38px;
-  border-color:rgba(71,105,184,.13)!important;
+  place-items:center;
+  border:1px solid rgba(var(--plan-accent-rgb),.14)!important;
+  border-radius:50%;
+  background:#fff!important;
   color:#3f4f70!important;
+  font-size:19px!important;
+  font-style:normal;
   box-shadow:0 8px 20px rgba(45,61,101,.09)!important;
+  transition:transform .36s cubic-bezier(.2,.8,.2,1),background .26s ease,color .26s ease,box-shadow .26s ease;
 }
 html[data-mi-page="login"] .editorial-hero .plan-more span{
   font-size:9px!important;
+  font-weight:820;
   letter-spacing:.105em!important;
+  text-transform:uppercase;
 }
 html[data-mi-page="login"] .editorial-hero .plan-more::after{
   content:"→";
   display:grid;
-  width:28px;
-  height:28px;
+  width:29px;
+  height:29px;
   margin-left:auto;
   place-items:center;
   border-radius:9px;
-  background:#f0f4ff;
-  color:#4770c8;
+  background:rgba(var(--plan-accent-rgb),.08);
+  color:var(--plan-accent);
   font-size:13px;
   font-weight:850;
-  transition:transform .35s cubic-bezier(.2,.8,.2,1),background .28s ease,color .28s ease;
+  transition:transform .32s cubic-bezier(.2,.8,.2,1),background .25s ease,color .25s ease;
 }
 html[data-mi-page="login"] .editorial-hero .plan-details{
+  position:relative;
   margin:12px 0 0!important;
   padding:15px!important;
-  border:1px solid rgba(76,105,174,.11)!important;
+  border:1px solid rgba(var(--plan-accent-rgb),.12)!important;
   border-radius:17px;
-  background:
-    radial-gradient(circle at 100% 0,rgba(114,157,255,.12),transparent 45%),
-    rgba(255,255,255,.68);
-  box-shadow:inset 0 1px 0 rgba(255,255,255,.94);
-  color:#667289!important;
+  background:radial-gradient(circle at 100% 0,rgba(var(--plan-accent-rgb),.11),transparent 46%),rgba(255,255,255,.72);
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.95);
+  color:#626f86!important;
+  animation:miPlanReveal .32s cubic-bezier(.2,.8,.2,1) both;
 }
 html[data-mi-page="login"] .editorial-hero .plan-details p{
-  color:#667289;
+  margin:0;
+  color:#626f86;
   font-size:11px!important;
   line-height:1.65!important;
+  text-wrap:pretty;
 }
 html[data-mi-page="login"] .editorial-hero .plan-tags{
-  gap:6px!important;
+  display:flex;
+  flex-wrap:wrap;
+  gap:7px!important;
   margin-top:12px!important;
 }
 html[data-mi-page="login"] .editorial-hero .plan-tags span{
-  min-height:27px!important;
-  padding:0 9px!important;
-  border-color:rgba(72,106,188,.12)!important;
-  background:rgba(237,243,255,.86)!important;
-  color:#48618f!important;
-  font-size:8px!important;
-  font-weight:780!important;
+  display:inline-flex;
+  min-height:28px!important;
+  align-items:center;
+  padding:0 10px!important;
+  border:1px solid rgba(var(--plan-accent-rgb),.13)!important;
+  border-radius:999px;
+  background:rgba(237,243,255,.88)!important;
+  color:#445d8c!important;
+  font-size:9px!important;
+  font-weight:760!important;
+  letter-spacing:.02em;
 }
 html[data-mi-page="login"] .editorial-hero .plan-login-link{
+  display:flex;
   width:100%;
-  min-height:41px!important;
+  min-height:42px!important;
+  align-items:center;
+  justify-content:center;
   gap:8px;
   margin-top:14px!important;
+  border:0;
   border-radius:12px!important;
-  background:linear-gradient(135deg,#315fbf,#4777e5)!important;
+  background:linear-gradient(135deg,var(--mi-blue-strong),var(--plan-accent))!important;
   color:#fff!important;
-  box-shadow:0 11px 25px rgba(53,93,185,.19);
+  cursor:pointer;
+  font-size:10px;
+  font-weight:820;
+  box-shadow:0 11px 25px rgba(var(--plan-accent-rgb),.2);
+  transition:transform .25s ease,box-shadow .25s ease,filter .25s ease;
 }
-html[data-mi-page="login"] .editorial-hero .plan-login-link::after{
-  content:"→";
-  font-size:12px;
+html[data-mi-page="login"] .editorial-hero .plan-login-link::after{content:"→";font-size:12px}
+html[data-mi-page="login"] .editorial-hero .plan-disclosure[open] summary{
+  border-color:rgba(var(--plan-accent-rgb),.22);
+  background:rgba(244,247,255,.98);
+  box-shadow:0 10px 26px rgba(56,78,132,.08),inset 0 1px 0 #fff;
+}
+html[data-mi-page="login"] .editorial-hero .plan-disclosure[open] .plan-more i{
+  background:var(--plan-accent)!important;
+  color:#fff!important;
+  box-shadow:0 12px 28px rgba(var(--plan-accent-rgb),.24)!important;
+  transform:rotate(45deg) scale(1.04);
+}
+html[data-mi-page="login"] .editorial-hero .plan-disclosure[open] .plan-more::after{
+  background:var(--plan-accent);
+  color:#fff;
+  transform:rotate(90deg);
 }
 html[data-mi-page="login"] .editorial-hero .plan-block:focus-within,
 html[data-mi-page="login"] .editorial-hero .plan-block:has(.plan-disclosure[open]){
   z-index:4;
-  border-color:rgba(70,112,215,.3)!important;
-  box-shadow:0 27px 64px rgba(43,65,120,.16),inset 0 1px 0 #fff!important;
-  transform:translateY(-6px) scale(1.008)!important;
+  border-color:rgba(var(--plan-accent-rgb),.3)!important;
+  box-shadow:0 25px 60px rgba(43,65,120,.15),inset 0 1px 0 #fff!important;
+  transform:translateY(-5px)!important;
 }
 html[data-mi-page="login"] .editorial-hero .plan-block:has(.plan-disclosure[open])::before{
   opacity:1!important;
   transform:scaleX(1)!important;
 }
 html[data-mi-page="login"] .editorial-hero .plan-block:has(.plan-disclosure[open]) h2::after{
-  transform:scale(1.18);
-  box-shadow:0 0 0 8px rgba(71,119,229,.1),0 0 24px rgba(71,119,229,.2);
+  transform:scale(1.16);
+  box-shadow:0 0 0 8px rgba(var(--plan-accent-rgb),.1),0 0 23px rgba(var(--plan-accent-rgb),.18);
 }
-html[data-mi-page="login"] .editorial-hero .plan-disclosure[open] summary{
-  border-color:rgba(71,119,229,.2);
-  background:rgba(244,247,255,.96);
-  box-shadow:0 10px 26px rgba(56,78,132,.08),inset 0 1px 0 #fff;
+
+/* Modal and focus stability */
+html[data-mi-page="login"] body:has(.login-modal:popover-open){overflow:hidden}
+html[data-mi-page="login"] .login-modal[popover]{
+  padding:max(18px,env(safe-area-inset-top)) max(18px,env(safe-area-inset-right)) max(18px,env(safe-area-inset-bottom)) max(18px,env(safe-area-inset-left))!important;
 }
-html[data-mi-page="login"] .editorial-hero .plan-disclosure[open] .plan-more::after{
-  background:#4777e5;
-  color:#fff;
-  transform:rotate(90deg);
+html[data-mi-page="login"] .login-modal:popover-open .login-card{
+  animation:miModalIn .3s cubic-bezier(.2,.8,.2,1) both;
+}
+html[data-mi-page="login"] .login-modal-close{
+  transition:transform .25s cubic-bezier(.2,.8,.2,1),background .25s ease,box-shadow .25s ease;
+}
+html[data-mi-page="login"] .login-card{
+  border-color:rgba(255,255,255,.94)!important;
+  box-shadow:0 30px 86px rgba(17,20,26,.27),inset 0 1px 0 #fff!important;
 }
 
 @media(hover:hover) and (pointer:fine){
+  html[data-mi-page="login"] .nav-link:hover{color:#30394e!important;transform:translateY(-1px)}
+  html[data-mi-page="login"] .nav-link:hover::after{opacity:1;transform:scaleX(1)}
+  html[data-mi-page="login"] :is(.nav-cta,.hero-cta):hover::after{transform:skewX(-14deg) translateX(540%)}
   html[data-mi-page="login"] .visual-login:hover .artwork{
-    box-shadow:0 32px 76px rgba(54,82,145,.23),0 2px 0 rgba(255,255,255,.9) inset;
+    box-shadow:0 31px 74px rgba(54,82,145,.22),0 2px 0 rgba(255,255,255,.9) inset;
   }
   html[data-mi-page="login"] .editorial-hero .plan-block:hover{
     z-index:5;
-    border-color:rgba(68,111,214,.27)!important;
-    box-shadow:0 28px 66px rgba(41,64,119,.16),inset 0 1px 0 #fff!important;
-    transform:translateY(-9px) scale(1.012)!important;
+    border-color:rgba(var(--plan-accent-rgb),.28)!important;
+    box-shadow:0 27px 64px rgba(41,64,119,.15),inset 0 1px 0 #fff!important;
+    transform:translateY(-7px)!important;
   }
-  html[data-mi-page="login"] .editorial-hero .plan-block:hover::before{
-    opacity:1!important;
-    transform:scaleX(1)!important;
-  }
-  html[data-mi-page="login"] .editorial-hero .plan-block:hover::after{
-    opacity:1;
-    transform:scale(1.14)!important;
-  }
+  html[data-mi-page="login"] .editorial-hero .plan-block:hover::before{opacity:1!important;transform:scaleX(1)!important}
+  html[data-mi-page="login"] .editorial-hero .plan-block:hover::after{opacity:1;transform:scale(1.1)!important}
   html[data-mi-page="login"] .editorial-hero .plan-block:hover h2::after{
-    transform:scale(1.12);
-    box-shadow:0 0 0 7px rgba(71,119,229,.09),0 0 22px rgba(71,119,229,.17);
+    transform:scale(1.1);
+    box-shadow:0 0 0 7px rgba(var(--plan-accent-rgb),.09),0 0 21px rgba(var(--plan-accent-rgb),.16);
   }
-  html[data-mi-page="login"] .editorial-hero .plan-block:hover .plan-list li{
-    color:#53627d!important;
-    transform:translateX(3px)!important;
-  }
-  html[data-mi-page="login"] .editorial-hero .plan-block:hover .plan-list li::before{
-    border-color:rgba(71,119,229,.25)!important;
-    background:#edf3ff;
-    color:#3564c6;
-  }
+  html[data-mi-page="login"] .editorial-hero .plan-block:hover .plan-list li{color:#4f5f7a!important;transform:translateX(2px)!important}
+  html[data-mi-page="login"] .editorial-hero .plan-block:hover .plan-list li::before{background:#edf3ff;transform:scale(1.04)!important}
   html[data-mi-page="login"] .editorial-hero .plan-disclosure summary:hover{
-    border-color:rgba(71,119,229,.2);
+    border-color:rgba(var(--plan-accent-rgb),.22);
     background:#fff;
     box-shadow:0 13px 30px rgba(48,67,112,.09),inset 0 1px 0 #fff;
     transform:translateY(-2px);
   }
   html[data-mi-page="login"] .editorial-hero .plan-disclosure summary:hover .plan-more::after{
-    background:#4777e5;
+    background:var(--plan-accent);
     color:#fff;
     transform:translateX(2px);
   }
-  html[data-mi-page="login"] .editorial-hero .plan-disclosure[open] summary:hover .plan-more::after{
-    transform:rotate(90deg) translateX(2px);
-  }
+  html[data-mi-page="login"] .editorial-hero .plan-disclosure[open] summary:hover .plan-more::after{transform:rotate(90deg) translateX(2px)}
   html[data-mi-page="login"] .editorial-hero .plan-login-link:hover{
-    background:linear-gradient(135deg,#284fa4,#3f70df)!important;
-    box-shadow:0 15px 30px rgba(53,93,185,.27)!important;
+    filter:brightness(.96) saturate(1.05);
+    box-shadow:0 15px 31px rgba(var(--plan-accent-rgb),.28)!important;
     transform:translateY(-2px)!important;
+  }
+  html[data-mi-page="login"] .login-modal-close:hover{
+    background:#26324a;
+    box-shadow:0 16px 36px rgba(17,20,26,.3);
+    transform:translateY(-2px) rotate(5deg) scale(1.04);
   }
 }
 
 @media(max-width:840px){
+  html[data-mi-page="login"] .hero-copy h1{max-width:13ch}
   html[data-mi-page="login"] .editorial-hero .plan-block{
-    min-height:285px!important;
+    min-height:282px!important;
     padding:23px 20px 19px!important;
     border-radius:22px!important;
   }
 }
 
 @media(max-width:600px){
+  html[data-mi-page="login"] .hero-copy h1{max-width:100%;text-wrap:balance}
+  html[data-mi-page="login"] .editorial-hero .plan-block{
+    display:flex!important;
+    min-height:0!important;
+    margin-top:16px;
+    padding:22px 19px 18px!important;
+    border-radius:21px!important;
+  }
+  html[data-mi-page="login"] .editorial-hero .plan-block + .plan-block{margin-top:14px}
+  html[data-mi-page="login"] .editorial-hero .plan-block h2{font-size:17px!important;margin-bottom:18px!important}
+  html[data-mi-page="login"] .editorial-hero .plan-disclosure summary{min-height:52px}
   html[data-mi-page="login"] .visual-login::after{
     top:12px;
     left:12px;
@@ -396,16 +545,9 @@ html[data-mi-page="login"] .editorial-hero .plan-disclosure[open] .plan-more::af
     padding:0 10px;
     font-size:7px;
   }
-  html[data-mi-page="login"] .artwork{
-    min-height:210px!important;
-    border-radius:24px;
-  }
-  html[data-mi-page="login"] .micro-strip:first-child{
-    border-radius:24px 0 0 24px;
-  }
-  html[data-mi-page="login"] .micro-strip:last-child{
-    border-radius:0 24px 24px 0;
-  }
+  html[data-mi-page="login"] .artwork{min-height:210px!important;border-radius:24px}
+  html[data-mi-page="login"] .micro-strip:first-child{border-radius:24px 0 0 24px}
+  html[data-mi-page="login"] .micro-strip:last-child{border-radius:0 24px 24px 0}
   html[data-mi-page="login"] .artwork-label{
     right:16px!important;
     bottom:14px!important;
@@ -414,12 +556,27 @@ html[data-mi-page="login"] .editorial-hero .plan-disclosure[open] .plan-more::af
   }
 }
 
+@media(max-width:390px){
+  html[data-mi-page="login"] .landing-nav-meta{gap:13px!important}
+  html[data-mi-page="login"] .nav-link{font-size:8px!important;letter-spacing:.02em}
+  html[data-mi-page="login"] .editorial-hero .plan-tags span{font-size:8px!important;padding:0 8px!important}
+}
+
 @media(prefers-reduced-motion:reduce){
+  html[data-mi-page="login"] *,
+  html[data-mi-page="login"] *::before,
+  html[data-mi-page="login"] *::after{
+    scroll-behavior:auto!important;
+  }
   html[data-mi-page="login"] .micro-strip{
     transition:none!important;
     transform:none!important;
     filter:none!important;
   }
+  html[data-mi-page="login"] .nav-link,
+  html[data-mi-page="login"] .nav-link::after,
+  html[data-mi-page="login"] :is(.nav-cta,.hero-cta)::after,
+  html[data-mi-page="login"] .artwork,
   html[data-mi-page="login"] .editorial-hero .plan-block,
   html[data-mi-page="login"] .editorial-hero .plan-block::before,
   html[data-mi-page="login"] .editorial-hero .plan-block::after,
@@ -427,8 +584,10 @@ html[data-mi-page="login"] .editorial-hero .plan-disclosure[open] .plan-more::af
   html[data-mi-page="login"] .editorial-hero .plan-list li,
   html[data-mi-page="login"] .editorial-hero .plan-list li::before,
   html[data-mi-page="login"] .editorial-hero .plan-disclosure summary,
+  html[data-mi-page="login"] .editorial-hero .plan-more i,
   html[data-mi-page="login"] .editorial-hero .plan-more::after,
-  html[data-mi-page="login"] .editorial-hero .plan-login-link{
+  html[data-mi-page="login"] .editorial-hero .plan-login-link,
+  html[data-mi-page="login"] .login-modal-close{
     transition:none!important;
   }
   html[data-mi-page="login"] .editorial-hero .plan-block:hover,
@@ -436,4 +595,17 @@ html[data-mi-page="login"] .editorial-hero .plan-disclosure[open] .plan-more::af
   html[data-mi-page="login"] .editorial-hero .plan-block:has(.plan-disclosure[open]){
     transform:none!important;
   }
+  html[data-mi-page="login"] .editorial-hero .plan-details,
+  html[data-mi-page="login"] .login-modal:popover-open .login-card{
+    animation:none!important;
+  }
+}
+
+@keyframes miPlanReveal{
+  from{opacity:0;transform:translateY(-7px)}
+  to{opacity:1;transform:translateY(0)}
+}
+@keyframes miModalIn{
+  from{opacity:0;transform:translateY(14px) scale(.985)}
+  to{opacity:1;transform:translateY(0) scale(1)}
 }
