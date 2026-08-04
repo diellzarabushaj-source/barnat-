@@ -1,5 +1,5 @@
 <!doctype html>
-<html lang="sq" class="medindex-tailadmin-login" data-mi-page="login" data-mi-login-version="20260804-editorial-popover-2">
+<html lang="sq" class="medindex-tailadmin-login" data-mi-page="login" data-mi-login-version="20260804-editorial-popover-brand-v1">
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
@@ -13,11 +13,14 @@
   <!-- Compatibility contract: tailadmin-medindex.css. This editorial login is intentionally self-contained. -->
   <link rel="preconnect" href="https://accounts.google.com" crossorigin>
   <link rel="dns-prefetch" href="https://accounts.google.com">
-  <link rel="preload" href="/images/brand/medindex-mark-mplus.svg" as="image" type="image/svg+xml" fetchpriority="high">
+  <link rel="preload" href="/brand/medindex-mark-on-light.webp" as="image" type="image/webp" fetchpriority="high">
   <link rel="stylesheet" href="login-editorial.css?v=20260804-2">
 
   <style>
     .nav-cta,.hero-cta{border:0;cursor:pointer}
+    .brand-mark{overflow:hidden;border:1px solid rgba(17,18,20,.08);background:#fff!important}
+    .brand-mark img{width:40px!important;height:40px!important;object-fit:cover!important}
+    .login-card-brand img{object-fit:cover!important;background:#fff!important;padding:0!important}
     .visual-login{display:block!important;grid-template-columns:none!important}
     .artwork{width:100%}
     .login-modal[popover]{position:fixed;inset:0;width:100%;height:100%;max-width:none;max-height:none;margin:0;padding:24px;border:0;background:transparent;overflow:auto}
@@ -52,7 +55,7 @@
     <div class="editorial-container">
       <nav class="editorial-nav" aria-label="Navigimi i faqes së hyrjes">
         <a class="brand landing-brand" href="/login.html" aria-label="MedIndex — faqja e hyrjes">
-          <span class="brand-mark landing-brand-logo"><img src="/images/brand/medindex-mark-mplus.svg" alt="" width="34" height="34" decoding="async" loading="eager" fetchpriority="high"></span>
+          <span class="brand-mark landing-brand-logo"><img src="/brand/medindex-mark-on-light.webp" alt="" width="40" height="40" decoding="async" loading="eager" fetchpriority="high"></span>
           <span class="brand-copy"><strong>MedIndex</strong><small>Clinical Workspace</small></span>
         </a>
         <div class="nav-links landing-nav-meta" aria-label="Modulet kryesore">
@@ -108,7 +111,7 @@
         <button class="login-modal-close" type="button" popovertarget="loginPanel" popovertargetaction="hide" aria-label="Mbyll hyrjen">×</button>
         <section class="login-card" aria-labelledby="loginTitle">
           <div class="login-card-brand" aria-hidden="true">
-            <img src="/images/brand/medindex-mark-mplus.svg" alt="" width="36" height="36" decoding="async">
+            <img src="/brand/medindex-mark-on-light.webp" alt="" width="36" height="36" decoding="async">
             <span><strong>MedIndex</strong><small>Clinical Workspace</small></span>
           </div>
           <div class="status">Mjedis privat dhe i mbrojtur</div>
