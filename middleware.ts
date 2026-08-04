@@ -11,6 +11,7 @@ const PUBLIC_PATHS = new Set([
   '/login.html',
   '/login.css',
   '/login-editorial.css',
+  '/landing-effects.css',
   '/google-login.css',
   '/login.js',
   '/info-pages.css',
