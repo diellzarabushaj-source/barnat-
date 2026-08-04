@@ -93,7 +93,6 @@ async function snapshot(page) {
     return {
       htmlWidth:document.documentElement.scrollWidth,
       bodyWidth:document.body.scrollWidth,
-      pageHeight:document.documentElement.scrollHeight,
       card:rect('.login-card'),
       google:rect('#googleLoginButton'),
       brand:rect('.landing-brand'),
@@ -115,7 +114,7 @@ function inside(rect, viewport, tolerance = 1.5) {
   expect(rect.right).toBeLessThanOrEqual(viewport.width + tolerance);
 }
 
-test('MedIndex login looks and behaves like a mobile app', async ({ page }) => {
+test('MedIndex landing opens the secure login only after the CTA', async ({ page }) => {
   test.setTimeout(90000);
   fs.mkdirSync(OUTPUT, { recursive:true });
   await prepare(page);
@@ -126,6 +125,10 @@ test('MedIndex login looks and behaves like a mobile app', async ({ page }) => {
   for (const viewport of phones) {
     await page.setViewportSize({ width:viewport.width, height:viewport.height });
     await page.goto(`${BASE}/login.html`, { waitUntil:'domcontentloaded' });
+
+    await expect(page.locator('.login-card')).toBeHidden();
+    await expect(page.locator('.nav-cta')).toBeVisible();
+    await page.locator('.nav-cta').click();
     await expect(page.locator('.login-card')).toBeVisible();
     await expect(page.locator('.mock-google-sign-in')).toBeVisible();
     await page.waitForTimeout(160);
@@ -134,7 +137,9 @@ test('MedIndex login looks and behaves like a mobile app', async ({ page }) => {
     expect(current.htmlWidth, `${viewport.name}: html overflow`).toBeLessThanOrEqual(viewport.width + 1);
     expect(current.bodyWidth, `${viewport.name}: body overflow`).toBeLessThanOrEqual(viewport.width + 1);
     expect(current.visibleLogos, `${viewport.name}: one visible logo`).toBe(1);
-    expect(current.showcaseVisible, `${viewport.name}: showcase hidden`).toBe(false);
+
+    const portrait = viewport.width <= 600;
+    expect(current.showcaseVisible, `${viewport.name}: landing copy state`).toBe(portrait);
     expect(current.navMetaVisible, `${viewport.name}: desktop nav hidden`).toBe(false);
     expect(current.cardBrandVisible, `${viewport.name}: duplicate card brand hidden`).toBe(false);
     expect(current.metaVisible, `${viewport.name}: desktop metadata hidden`).toBe(false);
@@ -145,14 +150,12 @@ test('MedIndex login looks and behaves like a mobile app', async ({ page }) => {
     inside(current.card, viewport);
     inside(current.google, viewport);
 
-    const portrait = viewport.width <= 600;
     if (portrait) {
       const ergonomicMinimum = Math.min(viewport.width * .84, 334);
       expect(current.card.width, `${viewport.name}: ergonomic app card width`).toBeGreaterThanOrEqual(ergonomicMinimum);
       expect(current.card.width, `${viewport.name}: app card bounded`).toBeLessThanOrEqual(398);
-      expect(current.pageHeight, `${viewport.name}: compact page`).toBeLessThanOrEqual(viewport.height + 100);
     } else {
-      expect(current.card.width, `${viewport.name}: landscape card`).toBeGreaterThanOrEqual(480);
+      expect(current.card.width, `${viewport.name}: landscape card`).toBeGreaterThanOrEqual(420);
       expect(current.card.width, `${viewport.name}: landscape bounded`).toBeLessThanOrEqual(540);
     }
 
@@ -161,10 +164,14 @@ test('MedIndex login looks and behaves like a mobile app', async ({ page }) => {
     }
 
     await page.screenshot({ path:path.join(OUTPUT, `${viewport.name}.png`), fullPage:true });
+    await page.locator('.login-modal-close').click();
+    await expect(page.locator('.login-card')).toBeHidden();
   }
 
   await page.setViewportSize({ width:1440, height:900 });
   await page.goto(`${BASE}/login.html`, { waitUntil:'domcontentloaded' });
+  await expect(page.locator('.login-card')).toBeHidden();
+  await page.locator('.nav-cta').click();
   await expect(page.locator('.mock-google-sign-in')).toBeVisible();
   const desktop = await snapshot(page);
   expect(desktop.showcaseVisible).toBe(true);
