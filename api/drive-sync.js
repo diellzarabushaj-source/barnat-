@@ -45,6 +45,21 @@ async function verifiedGoogleOwner(req, payload = parseBody(req)) {
   const spreadsheetId = clean(payload.spreadsheetId);
   if (spreadsheetId !== CURRENT_DOSAGE_SPREADSHEET_ID) return '';
 
+  const driveResponse = await fetch(
+    `https://www.googleapis.com/drive/v3/files/${encodeURIComponent(spreadsheetId)}`
+      + '?fields=id%2CmimeType%2Cowners(emailAddress)%2Ccapabilities(canEdit)&supportsAllDrives=true',
+    { headers:{ Authorization:`Bearer ${token}`, Accept:'application/json' } },
+  );
+  if (!driveResponse.ok) return '';
+  const driveFile = await driveResponse.json().catch(() => ({}));
+  const owners = Array.isArray(driveFile.owners)
+    ? driveFile.owners.map(item => clean(item?.emailAddress).toLowerCase())
+    : [];
+  if (driveFile.id !== spreadsheetId) return '';
+  if (driveFile.mimeType !== 'application/vnd.google-apps.spreadsheet') return '';
+  if (driveFile.capabilities?.canEdit !== true) return '';
+  if (!owners.includes(GOOGLE_SYNC_OWNER_EMAIL)) return '';
+
   const sheetResponse = await fetch(
     `https://sheets.googleapis.com/v4/spreadsheets/${encodeURIComponent(spreadsheetId)}`
       + '?fields=spreadsheetId%2Csheets.properties.title',
@@ -56,7 +71,7 @@ async function verifiedGoogleOwner(req, payload = parseBody(req)) {
     ? metadata.sheets.map(item => clean(item?.properties?.title))
     : [];
   if (metadata.spreadsheetId !== spreadsheetId) return '';
-  if (![...DOSAGE_SHEETS, 'AKTIVIZO_SYNC'].every(title => titles.includes(title))) return '';
+  if (![...DOSAGE_SHEETS].every(title => titles.includes(title))) return '';
   return GOOGLE_SYNC_OWNER_EMAIL;
 }
 
