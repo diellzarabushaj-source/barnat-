@@ -8,7 +8,8 @@ const source = path.join(ROOT, 'brand/source-v1/medindex-mark-on-light.webp.b64'
 const output = path.join(ROOT, 'brand/medindex-mark-on-light.webp');
 
 if (!fs.existsSync(source)) throw new Error('Official MedIndex logo source is missing.');
-const buffer = Buffer.from(fs.readFileSync(source, 'utf8').trim(), 'base64');
+const sourceBase64 = fs.readFileSync(source, 'utf8').trim();
+const buffer = Buffer.from(sourceBase64, 'base64');
 if (buffer.length < 1000 || buffer.toString('ascii', 0, 4) !== 'RIFF' || buffer.toString('ascii', 8, 12) !== 'WEBP') {
   throw new Error('Official MedIndex logo source is invalid.');
 }
@@ -16,19 +17,20 @@ fs.mkdirSync(path.dirname(output), { recursive:true });
 fs.writeFileSync(output, buffer);
 console.log(`Materialized official MedIndex logo fallback (${buffer.length} bytes).`);
 
+const aliasSvg = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 256 256" role="img" aria-label="MedIndex"><image href="data:image/webp;base64,${sourceBase64}" width="256" height="256" preserveAspectRatio="xMidYMid meet"/></svg>\n`;
+for (const relativePath of ['medindex-icon.svg', 'images/brand/medindex-mark-mplus.svg']) {
+  const absolutePath = path.join(ROOT, relativePath);
+  fs.mkdirSync(path.dirname(absolutePath), { recursive:true });
+  fs.writeFileSync(absolutePath, aliasSvg);
+}
+console.log('Materialized official MedIndex PWA aliases from the approved mark.');
+
 const canonicalReplacements = new Map([
   ['medindex-brand-runtime.js', [
     ["const ROOT = '/public/images/brand/';", "const ROOT = '/brand/';"],
     ['medindex-icon-on-light.png', 'medindex-mark-on-light.webp'],
     ['medindex-icon-on-dark.png', 'medindex-mark-on-dark.png'],
   ]],
-  ['middleware.ts', [
-    ['/images/brand/medindex-mark-mplus.svg', '/brand/medindex-mark-on-light.webp'],
-    ['/medindex-icon.svg', '/brand/medindex-mark-on-light.webp'],
-  ]],
-  ['sw.js', [['/medindex-icon.svg', '/brand/medindex-mark-on-light.webp']]],
-  ['sw-resilient.js', [['/medindex-icon.svg', '/brand/medindex-mark-on-light.webp']]],
-  ['sw-resilient-v3.js', [['/medindex-icon.svg', '/brand/medindex-mark-on-light.webp']]],
 ]);
 
 for (const [relativePath, replacements] of canonicalReplacements) {
