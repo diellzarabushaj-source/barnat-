@@ -290,7 +290,7 @@
         ensureMobileSearch();
         setBackgroundState();
       });
-      bodyObserver.observe(document.body, { childList: true, subtree: true, attributes: true, attributeFilter: ['class'] });
+      bodyObserver.observe(document.body, { childList: true, subtree: false, attributes: true, attributeFilter: ['class'] });
     }
 
     window.addEventListener('resize', () => {
