@@ -7,11 +7,13 @@ const ROOT = path.resolve(__dirname, '..');
 const read = relative => fs.readFileSync(path.join(ROOT, relative), 'utf8');
 
 const mobile = read('mobile-experience.js');
+const cellPreview = read('registry-cell-preview.js');
 const shell = read('tailadmin-shell.js');
 const workflow = read('.github/workflows/physician-browser-audit.yml');
 const browserSpec = read('tests/mobile-deep-audit.spec.js');
 
 execFileSync(process.execPath, ['--check', path.join(ROOT, 'mobile-experience.js')], { stdio:'pipe' });
+execFileSync(process.execPath, ['--check', path.join(ROOT, 'registry-cell-preview.js')], { stdio:'pipe' });
 
 [
   /production-audit-v2/,
@@ -34,15 +36,25 @@ execFileSync(process.execPath, ['--check', path.join(ROOT, 'mobile-experience.js
   /syncTriggerVisibility/,
   /miMobileSearchBound/,
   /subtree: false/,
+  /function mountMobileSearchSurface\(input\)/,
+  /document\.body\.appendChild\(surface\)/,
+  /input\.style\.setProperty\('display', 'block', 'important'\)/,
+  /function restoreMobileSearchSurface\(\)/,
 ].forEach(pattern => assert.match(mobile, pattern, `mobile-experience.js missing ${pattern}`));
 
 assert.doesNotMatch(mobile, /fetch\(|\/api\//, 'mobile experience runtime must not touch backend APIs or the network');
 assert.doesNotMatch(mobile, /bodyObserver\.observe\([^;]+subtree:\s*true/, 'mobile observer must not recursively observe its own descendant class writes');
 assert.equal(fs.existsSync(path.join(ROOT, '.github/workflows/fix-mobile-observer.yml')), false, 'temporary mobile observer workflow must be removed');
 assert.equal(fs.existsSync(path.join(ROOT, '.github/workflows/cancel-stale-browser-audits.yml')), false, 'temporary browser cancellation workflow must be removed');
+assert.equal(fs.existsSync(path.join(ROOT, '.github/workflows/fix-mobile-search-surface.yml')), false, 'temporary mobile search patch workflow must be removed');
 assert.match(shell, /MOBILE_SRC = '\/mobile-experience\.js\?v=production-audit-v2'/, 'shell must load the audited mobile runtime');
 assert.match(shell, /loadMobileExperience\(\)/, 'mobile runtime loader is missing');
 assert.match(shell, /warm\(MOBILE_SRC\)/, 'mobile runtime must be warmed for offline reuse');
+
+/* Long dosage text is often rendered inside a semantic button; preserve that text while cloning. */
+assert.match(cellPreview, /input,select,textarea,\.drug-actions-trigger/, 'cell preview must keep semantic dosage button text');
+assert.doesNotMatch(cellPreview, /input,select,textarea,button,\.drug-actions-trigger/, 'cell preview must not delete dosage button content');
+assert.match(cellPreview, /\['dosage-adult', 'dosage-pediatric'\]\.includes\(key\)/, 'adult and pediatric dosage cells must remain previewable');
 
 assert.match(workflow, /mobile-deep-audit\.spec\.js/, 'browser workflow must execute the mobile audit');
 [
@@ -58,4 +70,4 @@ assert.match(workflow, /mobile-deep-audit\.spec\.js/, 'browser workflow must exe
   /context\.setOffline\(true\)/,
 ].forEach(pattern => assert.match(browserSpec, pattern, `mobile browser audit missing ${pattern}`));
 
-console.log('Mobile, tablet, touch, safe-area, search visibility and orientation audit passed.');
+console.log('Mobile, tablet, touch, safe-area, portal search, dosage preview and orientation audit passed.');
