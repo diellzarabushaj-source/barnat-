@@ -13,5 +13,11 @@
     link.href = '/landing-effects.css?v=20260804-1';
     link.dataset.miLandingEffects = 'true';
     document.head.appendChild(link);
+
+    const soundScript = document.createElement('script');
+    soundScript.src = '/ecg-sound.js?v=20260804-1';
+    soundScript.async = true;
+    soundScript.dataset.miEcgSound = 'true';
+    document.head.appendChild(soundScript);
   }
 })();
