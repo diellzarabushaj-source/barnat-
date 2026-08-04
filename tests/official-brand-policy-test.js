@@ -27,6 +27,11 @@ const expectedAssets = {
   },
 };
 
+const approvedAliases = [
+  'medindex-icon.svg',
+  'images/brand/medindex-mark-mplus.svg',
+];
+
 assert.equal(manifest.brand, 'MedIndex');
 assert.equal(manifest.version, 'v1');
 assert.deepEqual(Object.keys(manifest.assets).sort(), Object.keys(expectedAssets).sort());
@@ -42,6 +47,18 @@ for (const asset of Object.values(expectedAssets)) {
   allowedReferences.add(asset.route.replace(/^\//, ''));
   allowedReferences.add(asset.blobPath);
   allowedReferences.add(path.posix.basename(asset.route));
+}
+for (const alias of approvedAliases) {
+  allowedReferences.add(alias);
+  allowedReferences.add(`/${alias}`);
+}
+
+const officialMarkBase64 = fs.readFileSync(path.join(ROOT, 'brand/source-v1/medindex-mark-on-light.webp.b64'), 'utf8').trim();
+for (const alias of approvedAliases) {
+  const aliasPath = path.join(ROOT, alias);
+  assert.ok(fs.existsSync(aliasPath), `Approved logo alias is missing: ${alias}`);
+  const aliasContent = fs.readFileSync(aliasPath, 'utf8');
+  assert.ok(aliasContent.includes(`data:image/webp;base64,${officialMarkBase64}`), `${alias} is not generated from the approved MedIndex mark`);
 }
 
 const ignoredDirectories = new Set(['.git', '.vercel', 'node_modules', 'coverage', 'tests', 'scripts']);
