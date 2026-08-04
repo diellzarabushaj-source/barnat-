@@ -1,5 +1,5 @@
 <!doctype html>
-<html lang="sq" class="medindex-tailadmin-login" data-mi-page="login" data-mi-login-version="20260804-editorial-public-nav">
+<html lang="sq" class="medindex-tailadmin-login" data-mi-page="login" data-mi-login-version="20260804-micro-strips-128">
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
@@ -15,6 +15,7 @@
   <link rel="dns-prefetch" href="https://accounts.google.com">
   <link rel="preload" href="/brand/medindex-mark-on-light.webp" as="image" type="image/webp" fetchpriority="high">
   <link rel="stylesheet" href="login-editorial.css?v=20260804-2">
+  <link rel="stylesheet" href="landing-effects.css?v=20260804-128">
 
   <style>
     .nav-cta,.hero-cta{border:0;cursor:pointer}
@@ -47,7 +48,7 @@
       .brand-copy small{display:none}
       .landing-nav-meta{gap:18px!important}
       .nav-link{font-size:9px!important}
-      .visual-login{display:block!important;min-height:0!important;margin:18px 0 24px!important;border-radius:24px!important;background:#dadbdd!important}
+      .visual-login{display:block!important;min-height:0!important;margin:18px 0 24px!important;border-radius:24px!important;background:transparent!important}
       .artwork{display:block!important;min-height:210px!important}
       .login-modal[popover]{padding:18px}
       .login-stage{width:min(396px,100%)!important}
@@ -107,7 +108,10 @@
         </div>
 
         <div class="visual-login">
-          <div class="artwork" aria-hidden="true"><span class="artwork-label">Informacion klinik, i organizuar me qartësi.</span></div>
+          <div class="artwork" aria-label="Instalacion grafik interaktiv i MedIndex me 128 shirita">
+            <div class="micro-strips" aria-hidden="true"></div>
+            <span class="artwork-label">Dr. Diellza Rabushaj, CEO</span>
+          </div>
         </div>
       </div>
     </section>
@@ -156,6 +160,7 @@
       </div>
     </section>
   </main>
+  <script src="landing-strips.js?v=20260804-128" defer></script>
   <script src="login.js?v=google-auth-audit-5" defer></script>
 </body>
 </html>
