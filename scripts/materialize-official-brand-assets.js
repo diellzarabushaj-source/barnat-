@@ -44,4 +44,3 @@ for (const [relativePath, replacements] of canonicalReplacements) {
 
 console.log('Canonicalized MedIndex runtime logo references.');
 require('../tests/official-brand-policy-test.js');
-require('./seed-official-brand-assets.js');
