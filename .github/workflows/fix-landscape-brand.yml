@@ -1,0 +1,46 @@
+name: Fix compact landscape brand
+
+on:
+  push:
+    paths:
+      - .github/workflows/fix-landscape-brand.yml
+
+permissions:
+  contents: write
+
+jobs:
+  patch:
+    if: github.actor != 'github-actions[bot]'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - name: Keep compact landscape topbar uncluttered
+        shell: python {0}
+        run: |
+          from pathlib import Path
+          path = Path('mobile-experience.js')
+          text = path.read_text(encoding='utf-8')
+          old = "    ROOT.dataset.miMobileLayout = String(isMobileLayout());\n  }"
+          new = """    ROOT.dataset.miMobileLayout = String(isMobileLayout());
+    const mobileBrand = document.querySelector('.mi-mobile-brand');
+    const compactLandscape = isMobileLayout() && window.innerHeight <= 500;
+    if (mobileBrand && compactLandscape) mobileBrand.style.setProperty('display', 'none', 'important');
+    else mobileBrand?.style.removeProperty('display');
+    ROOT.dataset.miCompactLandscape = String(compactLandscape);
+  }"""
+          if old not in text:
+              raise SystemExit('Viewport update marker was not found.')
+          path.write_text(text.replace(old, new, 1), encoding='utf-8')
+      - name: Verify and commit
+        shell: bash
+        run: |
+          set -euo pipefail
+          node --check mobile-experience.js
+          rm -f .github/workflows/fix-landscape-brand.yml
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add mobile-experience.js .github/workflows/fix-landscape-brand.yml
+          git commit -m 'Hide mobile brand in compact landscape'
+          git push origin HEAD:main
