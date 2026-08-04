@@ -38,6 +38,8 @@ execFileSync(process.execPath, ['--check', path.join(ROOT, 'mobile-experience.js
 
 assert.doesNotMatch(mobile, /fetch\(|\/api\//, 'mobile experience runtime must not touch backend APIs or the network');
 assert.doesNotMatch(mobile, /bodyObserver\.observe\([^;]+subtree:\s*true/, 'mobile observer must not recursively observe its own descendant class writes');
+assert.equal(fs.existsSync(path.join(ROOT, '.github/workflows/fix-mobile-observer.yml')), false, 'temporary mobile observer workflow must be removed');
+assert.equal(fs.existsSync(path.join(ROOT, '.github/workflows/cancel-stale-browser-audits.yml')), false, 'temporary browser cancellation workflow must be removed');
 assert.match(shell, /MOBILE_SRC = '\/mobile-experience\.js\?v=production-audit-v2'/, 'shell must load the audited mobile runtime');
 assert.match(shell, /loadMobileExperience\(\)/, 'mobile runtime loader is missing');
 assert.match(shell, /warm\(MOBILE_SRC\)/, 'mobile runtime must be warmed for offline reuse');
