@@ -14,8 +14,13 @@
     link.dataset.miLandingEffects = 'true';
     document.head.appendChild(link);
 
+    const soundUiOverride = document.createElement('style');
+    soundUiOverride.textContent = 'html[data-mi-page="login"] .ecg-sound-hint{display:none!important}';
+    soundUiOverride.dataset.miEcgSoundUi = 'hidden';
+    document.head.appendChild(soundUiOverride);
+
     const soundScript = document.createElement('script');
-    soundScript.src = '/ecg-sound.js?v=20260804-1';
+    soundScript.src = '/ecg-sound.js?v=20260804-2';
     soundScript.async = true;
     soundScript.dataset.miEcgSound = 'true';
     document.head.appendChild(soundScript);
