@@ -11,15 +11,23 @@ const read = file => fs.readFileSync(path.join(root, file), 'utf8');
 const syncPath = path.join(root, 'lib', 'drive-neon-sync.js');
 const apiPath = path.join(root, 'api', 'drive-sync.js');
 const appsScriptPath = path.join(root, 'google-apps-script', 'medindex-drive-neon-sync.gs');
+const standalonePath = path.join(root, 'google-apps-script', 'medindex-current-sync-standalone.gs');
+const bootstrapPath = path.join(root, 'google-apps-script', 'medindex-secret-bootstrap.gs');
 
 execFileSync(process.execPath, ['--check', syncPath], { stdio:'pipe' });
 execFileSync(process.execPath, ['--check', apiPath], { stdio:'pipe' });
 
 const tempDirectory = fs.mkdtempSync(path.join(os.tmpdir(), 'medindex-drive-sync-'));
-const appsScriptCheckPath = path.join(tempDirectory, 'medindex-drive-neon-sync.js');
 try {
-  fs.copyFileSync(appsScriptPath, appsScriptCheckPath);
-  execFileSync(process.execPath, ['--check', appsScriptCheckPath], { stdio:'pipe' });
+  for (const [sourcePath, targetName] of [
+    [appsScriptPath, 'medindex-drive-neon-sync.js'],
+    [standalonePath, 'medindex-current-sync-standalone.js'],
+    [bootstrapPath, 'medindex-secret-bootstrap.js'],
+  ]) {
+    const targetPath = path.join(tempDirectory, targetName);
+    fs.copyFileSync(sourcePath, targetPath);
+    execFileSync(process.execPath, ['--check', targetPath], { stdio:'pipe' });
+  }
 } finally {
   fs.rmSync(tempDirectory, { recursive:true, force:true });
 }
@@ -27,6 +35,8 @@ try {
 const source = read('lib/drive-neon-sync.js');
 const api = read('api/drive-sync.js');
 const appsScript = read('google-apps-script/medindex-drive-neon-sync.gs');
+const standalone = read('google-apps-script/medindex-current-sync-standalone.gs');
+const bootstrap = read('google-apps-script/medindex-secret-bootstrap.gs');
 const envExample = read('.env.example');
 const Sync = require('../lib/drive-neon-sync.js');
 
@@ -46,6 +56,20 @@ assert.match(source, /resolution=merge-duplicates/);
 assert.doesNotMatch(source, /MEDINDEX_DRIVE_SYNC_SECRET\s*=\s*['"][^'"]+['"]/);
 assert.match(api, /DriveNeonSync\.handle/);
 
+/* Bootstrap authorization must prove ownership and editability through Google APIs. */
+assert.match(api, /googleapis\.com\/drive\/v3\/files/);
+assert.match(api, /owners\(emailAddress\)/);
+assert.match(api, /capabilities\(canEdit\)/);
+assert.match(api, /application\/vnd\.google-apps\.spreadsheet/);
+assert.match(api, /driveFile\.capabilities\?\.canEdit !== true/);
+assert.match(api, /owners\.includes\(GOOGLE_SYNC_OWNER_EMAIL\)/);
+assert.match(api, /sheets\.googleapis\.com\/v4\/spreadsheets/);
+assert.match(api, /DOSAGE_SHEETS.*every/s);
+assert.match(api, /crypto\.randomBytes\(36\)/);
+assert.match(api, /crypto\.createHash\('sha256'\)/);
+assert.match(api, /Cache-Control', 'no-store'/);
+assert.doesNotMatch(api, /GOOGLE_SYNC_OWNER_EMAIL\s*=\s*clean\(payload/);
+
 for (const marker of [
   'setupMedIndexDriveSync',
   'medIndexDriveOnEdit',
@@ -59,6 +83,43 @@ for (const marker of [
 }
 assert.doesNotMatch(appsScript, /MEDINDEX_DRIVE_SYNC_SECRET\s*:\s*['"][^'"]+['"]/);
 assert.match(envExample, /MEDINDEX_DRIVE_SYNC_SECRET=/);
+
+/* The current one-file installer must replace all historical trigger variants. */
+for (const marker of [
+  'setupMedIndexPerfectSync',
+  'disableMedIndexPerfectSync',
+  'medIndexRemoveLegacySyncTriggers_',
+  'setupMedIndexCurrentSyncStandalone',
+  'medIndexStandaloneOnEdit',
+  'medIndexStandaloneReconcile',
+  'medIndexStandaloneEditorPull',
+  "everyMinutes(5)",
+  "everyMinutes(1)",
+]) {
+  assert.ok(standalone.includes(marker), `Standalone Apps Script is missing ${marker}`);
+}
+for (const legacyHandler of [
+  'medIndexDriveOnEdit',
+  'medIndexDriveReconcile',
+  'medIndexEditorPull',
+  'medIndexCurrentDosageOnEdit',
+  'medIndexCurrentDosageReconcile',
+  'medIndexCurrentDosageEditorPull',
+]) {
+  assert.ok(standalone.includes(legacyHandler), `Legacy trigger cleanup is missing ${legacyHandler}`);
+}
+assert.match(standalone, /addItem\('Aktivizo sinkronizimin', 'setupMedIndexPerfectSync'\)/);
+assert.match(standalone, /addItem\('Ndalo sinkronizimin', 'disableMedIndexPerfectSync'\)/);
+assert.match(bootstrap, /DriveApp\.getFileById/);
+assert.match(bootstrap, /file\.getOwner\(\)\.getEmail\(\)/);
+assert.match(bootstrap, /ScriptApp\.getOAuthToken\(\)/);
+assert.match(bootstrap, /action:'bootstrap_secret'/);
+assert.match(bootstrap, /setupMedIndexPerfectSync\(\)/);
+assert.doesNotMatch(bootstrap, /MEDINDEX_DRIVE_SYNC_SECRET\s*=\s*['"][^'"]+['"]/);
+
+/* One-time mutation workflows must disappear after applying their changes. */
+assert.equal(fs.existsSync(path.join(root, '.github/workflows/merge-apps-script-one-file.yml')), false);
+assert.equal(fs.existsSync(path.join(root, '.github/workflows/harden-medindex-bootstrap.yml')), false);
 
 const drug = Sync.mapDrug({
   'Nr rendor':'1',
@@ -125,4 +186,4 @@ assert.equal(icd.code, 'R51');
 assert.equal(icd.title_sq, 'Dhimbje koke');
 assert.deepEqual(icd.tags, ['kokë', 'dhimbje']);
 
-console.log('Google Drive to Neon incremental sync contract passed.');
+console.log('Google Drive to Neon incremental sync and bootstrap security contract passed.');
