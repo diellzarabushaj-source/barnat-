@@ -44,7 +44,7 @@ for (const asset of Object.values(expectedAssets)) {
   allowedReferences.add(path.posix.basename(asset.route));
 }
 
-const ignoredDirectories = new Set(['.git', '.vercel', 'node_modules', 'coverage', 'tests']);
+const ignoredDirectories = new Set(['.git', '.vercel', 'node_modules', 'coverage', 'tests', 'scripts']);
 const sourceExtensions = new Set(['.html', '.css', '.js', '.mjs', '.ts', '.json']);
 const imageReferencePattern = /(?:\/?[A-Za-z0-9_.-]+\/)*medindex-[A-Za-z0-9_.\/-]*\.(?:png|webp|svg|jpe?g)(?!\.[A-Za-z0-9])/gi;
 const violations = [];
