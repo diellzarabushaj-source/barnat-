@@ -149,7 +149,9 @@ jobs:
             grep -q 'tailadmin-professional.js' "$page"
             grep -q 'skip-link' "$page"
           done
-          grep -q 'tailadmin-medindex.css' login.html
+          grep -q 'medindex-tailadmin-login' login.html
+          grep -q 'login-editorial.css' login.html
+          grep -q 'landing-effects.css' login.html
           grep -q -- '--mi-sidebar-width: 290px' tailadmin-medindex.css
           grep -q -- '--mi-brand-500: #1f7779' tailadmin-medindex.css
           grep -q -- '--mi-sidebar-width: 264px' tailadmin-professional.css
