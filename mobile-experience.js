@@ -7,6 +7,9 @@
   const SEARCH_ICON = '<svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="11" cy="11" r="7"></circle><path d="m16.5 16.5 4 4"></path></svg>';
   let trigger = null;
   let backdrop = null;
+  let searchSurface = null;
+  let searchHome = null;
+  let searchNextSibling = null;
   let bodyObserver = null;
   let viewportFrame = 0;
   let installed = false;
@@ -200,12 +203,67 @@
     trigger.setAttribute('aria-expanded', String(searchOpen));
   }
 
+  function rememberSearchHome(surface) {
+  if (!surface || surface.parentElement === document.body) return;
+  searchHome = surface.parentElement;
+  searchNextSibling = surface.nextSibling;
+}
+
+function mountMobileSearchSurface(input) {
+  const surface = input?.closest?.('.mi-global-search');
+  if (!surface || !document.body) return;
+  rememberSearchHome(surface);
+  searchSurface = surface;
+  if (surface.parentElement !== document.body) document.body.appendChild(surface);
+
+  const surfaceStyles = {
+    display:'block', position:'fixed', zIndex:'2200',
+    top:'calc(10px + var(--mi-safe-top))',
+    left:'calc(12px + var(--mi-safe-left))',
+    right:'calc(12px + var(--mi-safe-right))',
+    width:'auto', maxWidth:'none', visibility:'visible', opacity:'1', pointerEvents:'auto',
+  };
+  Object.entries(surfaceStyles).forEach(([property, value]) => {
+    surface.style.setProperty(property.replace(/[A-Z]/g, letter => `-${letter.toLowerCase()}`), value, 'important');
+  });
+  surface.hidden = false;
+  surface.removeAttribute('aria-hidden');
+
+  input.hidden = false;
+  input.removeAttribute('aria-hidden');
+  input.style.setProperty('display', 'block', 'important');
+  input.style.setProperty('visibility', 'visible', 'important');
+  input.style.setProperty('opacity', '1', 'important');
+  input.style.setProperty('pointer-events', 'auto', 'important');
+}
+
+function restoreMobileSearchSurface() {
+  const surface = searchSurface || document.querySelector('.mi-global-search');
+  const input = document.getElementById('miGlobalSearch');
+  if (!surface) return;
+
+  [
+    'display','position','z-index','top','left','right','width','max-width',
+    'visibility','opacity','pointer-events',
+  ].forEach(property => surface.style.removeProperty(property));
+  ['display','visibility','opacity','pointer-events'].forEach(property => input?.style.removeProperty(property));
+
+  const fallbackHome = document.querySelector('.mi-topbar-leading');
+  const home = searchHome?.isConnected ? searchHome : fallbackHome;
+  if (home && surface.parentElement !== home) {
+    if (searchNextSibling?.isConnected && searchNextSibling.parentElement === home) home.insertBefore(surface, searchNextSibling);
+    else home.appendChild(surface);
+  }
+  searchSurface = null;
+}
+
   function closeMobileSearch({ restoreFocus = false } = {}) {
     const body = document.body;
     const input = document.getElementById('miGlobalSearch');
     const palette = document.getElementById('miCommandPalette');
     const wasOpen = Boolean(body?.classList.contains('mi-mobile-search-open'));
     body?.classList.remove('mi-mobile-search-open');
+    restoreMobileSearchSurface();
     if (backdrop) backdrop.hidden = true;
     if (trigger) trigger.setAttribute('aria-expanded', 'false');
     if (palette) palette.hidden = true;
@@ -224,6 +282,7 @@
       input.select();
       return;
     }
+    mountMobileSearchSurface(input);
     document.body.classList.add('mi-mobile-search-open');
     if (backdrop) backdrop.hidden = false;
     trigger?.setAttribute('aria-expanded', 'true');
