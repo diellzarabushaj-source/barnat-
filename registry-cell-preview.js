@@ -76,7 +76,9 @@
     if (!cell) return true;
     const key = columnKey(cell);
     if (['select', 'trade-name', 'clinical-status', 'clinical-action'].includes(key)) return true;
-    return Boolean(cell.querySelector('.drug-select,.drug-actions-trigger,.favorite-marker,.clinical-editor-open'));
+    // Dosage cells may contain an editor action and still need an independent full-text control.
+    if (['dosage-adult', 'dosage-pediatric'].includes(key)) return false;
+    return Boolean(cell.querySelector('.drug-select,.drug-actions-trigger,.favorite-marker'));
   }
 
   function elementIsClipped(element) {
