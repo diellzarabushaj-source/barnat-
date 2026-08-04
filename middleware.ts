@@ -4,6 +4,7 @@ import { sessionFromRequest, verifySessionToken } from './lib/auth-edge.mjs';
 const PUBLIC_PATHS = new Set([
   '/login.html',
   '/login.css',
+  '/login-editorial.css',
   '/google-login.css',
   '/login.js',
   '/theme-preload.js',
@@ -17,6 +18,7 @@ const PUBLIC_PATHS = new Set([
   '/registry-parser-worker-v2.js',
   '/manifest.webmanifest',
   '/medindex-icon.svg',
+  '/images/brand/medindex-mark-mplus.svg',
   '/favicon.ico',
   '/robots.txt',
 ]);
