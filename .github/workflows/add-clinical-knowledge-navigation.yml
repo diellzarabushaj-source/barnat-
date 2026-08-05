@@ -21,171 +21,107 @@ jobs:
         shell: python {0}
         run: |
           from pathlib import Path
+          import re
 
-          def replace_once(path, old, new):
+          def edit(path, transform):
               file = Path(path)
               text = file.read_text(encoding='utf-8')
+              updated = transform(text)
+              if updated == text:
+                  print(f'No change needed: {path}')
+              file.write_text(updated, encoding='utf-8')
+
+          def add_before(text, marker, addition, guard):
+              if guard in text:
+                  return text
+              if marker not in text:
+                  raise SystemExit(f'Marker not found: {marker[:80]}')
+              return text.replace(marker, addition + marker, 1)
+
+          def replace_once(text, old, new):
+              if new in text:
+                  return text
               if old not in text:
-                  raise SystemExit(f'Marker not found in {path}: {old[:80]}')
-              file.write_text(text.replace(old, new, 1), encoding='utf-8')
+                  raise SystemExit(f'Marker not found: {old[:80]}')
+              return text.replace(old, new, 1)
 
-          replace_once(
-              'main-navigation-extension.js',
-              """    {
-                id:'labs', href:'analizat.html', title:'Analizat',""",
-              """    {
-                id:'emergencies', href:'urgjencat.html', title:'Urgjencat',
-                icon:'<svg fill=\"none\" viewBox=\"0 0 256 256\" aria-hidden=\"true\"><path d=\"M128 28 228 210H28L128 28Z\" stroke=\"currentColor\" stroke-width=\"16\" stroke-linejoin=\"round\"/><path d=\"M128 88v58M128 180h.1\" stroke=\"currentColor\" stroke-width=\"16\" stroke-linecap=\"round\"/></svg>'
-              },
-              {
-                id:'labs', href:'analizat.html', title:'Analizat',""",
-          )
-          replace_once(
-              'main-navigation-extension.js',
-              """    {
-                id:'clinical-protocols', href:'protokollet.html', title:'Protokollet',""",
-              """    {
-                id:'learning', href:'medical-hub.html', title:'Medical Hub',
-                icon:'<svg fill=\"none\" viewBox=\"0 0 256 256\" aria-hidden=\"true\"><path d=\"M44 48h72a28 28 0 0 1 28 28v132H72a28 28 0 0 0-28 28V48Z\" stroke=\"currentColor\" stroke-width=\"16\"/><path d=\"M212 48h-40a28 28 0 0 0-28 28v132h40a28 28 0 0 1 28 28V48Z\" stroke=\"currentColor\" stroke-width=\"16\"/></svg>'
-              },
-              {
-                id:'clinical-protocols', href:'protokollet.html', title:'Protokollet',""",
-          )
+          def patch_extension(text):
+              text = add_before(text,
+                  "    {\n      id:'labs', href:'analizat.html', title:'Analizat',",
+                  "    {\n      id:'emergencies', href:'urgjencat.html', title:'Urgjencat',\n      icon:'<svg fill=\"none\" viewBox=\"0 0 256 256\" aria-hidden=\"true\"><path d=\"M128 28 228 210H28L128 28Z\" stroke=\"currentColor\" stroke-width=\"16\" stroke-linejoin=\"round\"/><path d=\"M128 88v58M128 180h.1\" stroke=\"currentColor\" stroke-width=\"16\" stroke-linecap=\"round\"/></svg>'\n    },\n",
+                  "id:'emergencies'")
+              text = add_before(text,
+                  "    {\n      id:'clinical-protocols', href:'protokollet.html', title:'Protokollet',",
+                  "    {\n      id:'learning', href:'medical-hub.html', title:'Medical Hub',\n      icon:'<svg fill=\"none\" viewBox=\"0 0 256 256\" aria-hidden=\"true\"><path d=\"M44 48h72a28 28 0 0 1 28 28v132H72a28 28 0 0 0-28 28V48Z\" stroke=\"currentColor\" stroke-width=\"16\"/><path d=\"M212 48h-40a28 28 0 0 0-28 28v132h40a28 28 0 0 1 28 28V48Z\" stroke=\"currentColor\" stroke-width=\"16\"/></svg>'\n    },\n",
+                  "id:'learning'")
+              return text
 
-          replace_once(
-              'tailadmin-shell-legacy.js',
-              """    '/icd.html': ['ICD', 'Diagnozat dhe kodet klinike'],
-              '/analizat.html':""",
-              """    '/icd.html': ['ICD', 'Diagnozat dhe kodet klinike'],
-              '/urgjencat.html': ['Urgjencat', 'Hapa të shpejtë, referim dhe kujdes sekondar'],
-              '/analizat.html':""",
-          )
-          replace_once(
-              'tailadmin-shell-legacy.js',
-              """    '/protokollet.html': ['Protokollet', 'Dokumentet zyrtare të Ministrisë së Shëndetësisë'],
-              '/recetat.html':""",
-              """    '/protokollet.html': ['Protokollet', 'Dokumentet zyrtare të Ministrisë së Shëndetësisë'],
-              '/medical-hub.html': ['Medical Hub', 'Pyetje klinike, trajtim hap pas hapi dhe receta'],
-              '/recetat.html':""",
-          )
-          replace_once(
-              'tailadmin-shell-legacy.js',
-              """    labs: '<svg viewBox=\"0 0 24 24\" aria-hidden=\"true\">""",
-              """    emergencies: '<svg viewBox=\"0 0 24 24\" aria-hidden=\"true\"><path d=\"M12 3 22 21H2L12 3Z\"/><path d=\"M12 9v5M12 17h.01\"/></svg>',
-              learning: '<svg viewBox=\"0 0 24 24\" aria-hidden=\"true\"><path d=\"M4 4h6a3 3 0 0 1 3 3v13H7a3 3 0 0 0-3 3V4Z\"/><path d=\"M20 4h-4a3 3 0 0 0-3 3v13h4a3 3 0 0 1 3 3V4Z\"/></svg>',
-              labs: '<svg viewBox=\"0 0 24 24\" aria-hidden=\"true\">""",
-          )
-          replace_once(
-              'tailadmin-shell-legacy.js',
-              """      icd: ['/icd.html'],
-              labs: ['/analizat.html'],""",
-              """      icd: ['/icd.html'],
-              emergencies: ['/urgjencat.html'],
-              labs: ['/analizat.html'],""",
-          )
-          replace_once(
-              'tailadmin-shell-legacy.js',
-              """      'clinical-protocols': ['/protokollet.html'],
-              prescriptions: ['/recetat.html'],""",
-              """      'clinical-protocols': ['/protokollet.html'],
-              learning: ['/medical-hub.html'],
-              prescriptions: ['/recetat.html'],""",
-          )
-          replace_once(
-              'tailadmin-shell-legacy.js',
-              """        ${navItem({ id:'icd', href:'/icd.html', label:'ICD', icon:ICONS.icd })}
-              ${navItem({ id:'labs',""",
-              """        ${navItem({ id:'icd', href:'/icd.html', label:'ICD', icon:ICONS.icd })}
-              ${navItem({ id:'emergencies', href:'/urgjencat.html', label:'Urgjencat', icon:ICONS.emergencies })}
-              ${navItem({ id:'labs',""",
-          )
-          replace_once(
-              'tailadmin-shell-legacy.js',
-              """        ${navItem({ id:'clinical-protocols', href:'/protokollet.html', label:'Protokollet', icon:ICONS.protocols })}
-              ${navItem({ id:'prescriptions',""",
-              """        ${navItem({ id:'clinical-protocols', href:'/protokollet.html', label:'Protokollet', icon:ICONS.protocols })}
-              ${navItem({ id:'learning', href:'/medical-hub.html', label:'Medical Hub', icon:ICONS.learning })}
-              ${navItem({ id:'prescriptions',""",
-          )
+          def patch_legacy(text):
+              text = add_before(text,
+                  "    '/analizat.html': ['Analizat laboratorike', 'Referencë klinike e strukturuar'],",
+                  "    '/urgjencat.html': ['Urgjencat', 'Hapa të shpejtë, referim dhe kujdes sekondar'],\n",
+                  "'/urgjencat.html'")
+              text = add_before(text,
+                  "    '/recetat.html': ['Recetat', 'Krijim, kontroll dhe ruajtje e recetave'],",
+                  "    '/medical-hub.html': ['Medical Hub', 'Pyetje klinike, trajtim hap pas hapi dhe receta'],\n",
+                  "'/medical-hub.html'")
+              text = add_before(text,
+                  "    labs: '<svg viewBox=\"0 0 24 24\" aria-hidden=\"true\">",
+                  "    emergencies: '<svg viewBox=\"0 0 24 24\" aria-hidden=\"true\"><path d=\"M12 3 22 21H2L12 3Z\"/><path d=\"M12 9v5M12 17h.01\"/></svg>',\n    learning: '<svg viewBox=\"0 0 24 24\" aria-hidden=\"true\"><path d=\"M4 4h6a3 3 0 0 1 3 3v13H7a3 3 0 0 0-3 3V4Z\"/><path d=\"M20 4h-4a3 3 0 0 0-3 3v13h4a3 3 0 0 1 3 3V4Z\"/></svg>',\n",
+                  "emergencies: '<svg")
+              if "emergencies: ['/urgjencat.html']" not in text:
+                  text = re.sub(r"(\n\s*icd:\s*\['/icd\.html'\],)", r"\1\n      emergencies: ['/urgjencat.html'],", text, count=1)
+              if "learning: ['/medical-hub.html']" not in text:
+                  text = re.sub(r"(\n\s*'clinical-protocols':\s*\['/protokollet\.html'\],)", r"\1\n      learning: ['/medical-hub.html'],", text, count=1)
+              text = add_before(text,
+                  "        ${navItem({ id:'labs', href:'/analizat.html', label:'Analizat', icon:ICONS.labs })}",
+                  "        ${navItem({ id:'emergencies', href:'/urgjencat.html', label:'Urgjencat', icon:ICONS.emergencies })}\n",
+                  "id:'emergencies', href:'/urgjencat.html'")
+              text = add_before(text,
+                  "        ${navItem({ id:'prescriptions', href:'/recetat.html', label:'Recetat', icon:ICONS.prescriptions })}",
+                  "        ${navItem({ id:'learning', href:'/medical-hub.html', label:'Medical Hub', icon:ICONS.learning })}\n",
+                  "id:'learning', href:'/medical-hub.html'")
+              return text
 
-          replace_once(
-              'tailadmin-shell.js',
-              """    '/dozologjia.html':['Dozologjia'],
-              '/protokollet.html':['Protokollet'],""",
-              """    '/dozologjia.html':['Dozologjia'],
-              '/urgjencat.html':['Urgjencat'],
-              '/protokollet.html':['Protokollet'],
-              '/medical-hub.html':['Medical Hub'],""",
-          )
-          replace_once(
-              'tailadmin-shell.js',
-              """'#dosageSearch', '#protocolSearch', '#rxDrugSearch']""",
-              """'#dosageSearch', '#emergencySearch', '#protocolSearch', '#learningSearch', '#rxDrugSearch']""",
-          )
+          def patch_shell(text):
+              text = add_before(text, "    '/protokollet.html':['Protokollet'],", "    '/urgjencat.html':['Urgjencat'],\n", "'/urgjencat.html'")
+              text = add_before(text, "    '/recetat.html':['Recetat'],", "    '/medical-hub.html':['Medical Hub'],\n", "'/medical-hub.html'")
+              text = replace_once(text,
+                  "'#dosageSearch', '#protocolSearch', '#rxDrugSearch']",
+                  "'#dosageSearch', '#emergencySearch', '#protocolSearch', '#learningSearch', '#rxDrugSearch']")
+              return text
 
-          replace_once(
-              'tailadmin-professional.js',
-              """    '/icd.html':'icd',
-              '/analizat.html':'analizat',""",
-              """    '/icd.html':'icd',
-              '/urgjencat.html':'urgjencat',
-              '/analizat.html':'analizat',""",
-          )
-          replace_once(
-              'tailadmin-professional.js',
-              """    '/protokollet.html':'protokollet',
-              '/recetat.html':'recetat',""",
-              """    '/protokollet.html':'protokollet',
-              '/medical-hub.html':'medical-hub',
-              '/recetat.html':'recetat',""",
-          )
+          def patch_professional(text):
+              text = add_before(text, "    '/analizat.html':'analizat',", "    '/urgjencat.html':'urgjencat',\n", "'/urgjencat.html'")
+              text = add_before(text, "    '/recetat.html':'recetat',", "    '/medical-hub.html':'medical-hub',\n", "'/medical-hub.html'")
+              return text
 
-          replace_once(
-              'tests/ui-navigation-audit-test.js',
-              """  ['icd.html', 'icdContent'],
-              ['analizat.html', 'labContent'],""",
-              """  ['icd.html', 'icdContent'],
-              ['urgjencat.html', 'emergencyContent'],
-              ['analizat.html', 'labContent'],""",
-          )
-          replace_once(
-              'tests/ui-navigation-audit-test.js',
-              """  ['protokollet.html', 'protocolContent'],
-              ['recetat.html', 'rxContent'],""",
-              """  ['protokollet.html', 'protocolContent'],
-              ['medical-hub.html', 'medicalHubContent'],
-              ['recetat.html', 'rxContent'],""",
-          )
-          replace_once(
-              'tests/ui-navigation-audit-test.js',
-              """  /\\/protokollet\\.html/,
-              /\\/recetat\\.html/,""",
-              """  /\\/urgjencat\\.html/,
-              /\\/protokollet\\.html/,
-              /\\/medical-hub\\.html/,
-              /\\/recetat\\.html/,""",
-          )
+          def patch_tests(text):
+              text = add_before(text, "  ['analizat.html', 'labContent'],", "  ['urgjencat.html', 'emergencyContent'],\n", "['urgjencat.html', 'emergencyContent']")
+              text = add_before(text, "  ['recetat.html', 'rxContent'],", "  ['medical-hub.html', 'medicalHubContent'],\n", "['medical-hub.html', 'medicalHubContent']")
+              text = add_before(text, "  /\\/protokollet\\.html/,", "  /\\/urgjencat\\.html/,\n", "/\\/urgjencat\\.html/")
+              text = add_before(text, "  /\\/recetat\\.html/,", "  /\\/medical-hub\\.html/,\n", "/\\/medical-hub\\.html/")
+              return text
 
-          replace_once(
-              'sw.js',
-              """const CACHE_EPOCH = 'icd-responsive-runtime-20260803-1';""",
-              """const CACHE_EPOCH = 'clinical-knowledge-20260805-1';""",
-          )
-          replace_once(
-              'sw.js',
-              """  '/dozologjia.html', '/protokollet.html', '/recetat.html', '/login.html',""",
-              """  '/dozologjia.html', '/urgjencat.html', '/protokollet.html', '/medical-hub.html', '/recetat.html', '/login.html',""",
-          )
-          replace_once(
-              'sw.js',
-              """  '/tailadmin-professional.css', '/medical-hub.css', '/clinical-density.css',""",
-              """  '/tailadmin-professional.css', '/medical-hub.css', '/clinical-knowledge.css', '/clinical-density.css',""",
-          )
-          replace_once(
-              'sw.js',
-              """  '/dozologjia-deep-audit.js', '/protokollet.js',""",
-              """  '/dozologjia-deep-audit.js', '/sanity-clinical-client.js', '/urgjencat.js', '/medical-hub.js', '/protokollet.js',""",
-          )
+          def patch_sw(text):
+              text = re.sub(r"const CACHE_EPOCH = '[^']+';", "const CACHE_EPOCH = 'clinical-knowledge-20260805-1';", text, count=1)
+              text = replace_once(text,
+                  "  '/dozologjia.html', '/protokollet.html', '/recetat.html', '/login.html',",
+                  "  '/dozologjia.html', '/urgjencat.html', '/protokollet.html', '/medical-hub.html', '/recetat.html', '/login.html',")
+              text = replace_once(text,
+                  "  '/tailadmin-professional.css', '/medical-hub.css', '/clinical-density.css',",
+                  "  '/tailadmin-professional.css', '/medical-hub.css', '/clinical-knowledge.css', '/clinical-density.css',")
+              text = replace_once(text,
+                  "  '/dozologjia-deep-audit.js', '/protokollet.js',",
+                  "  '/dozologjia-deep-audit.js', '/sanity-clinical-client.js', '/urgjencat.js', '/medical-hub.js', '/protokollet.js',")
+              return text
+
+          edit('main-navigation-extension.js', patch_extension)
+          edit('tailadmin-shell-legacy.js', patch_legacy)
+          edit('tailadmin-shell.js', patch_shell)
+          edit('tailadmin-professional.js', patch_professional)
+          edit('tests/ui-navigation-audit-test.js', patch_tests)
+          edit('sw.js', patch_sw)
 
       - name: Validate files
         shell: bash
