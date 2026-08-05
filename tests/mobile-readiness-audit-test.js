@@ -8,12 +8,16 @@ const read = relative => fs.readFileSync(path.join(ROOT, relative), 'utf8');
 
 const mobile = read('mobile-experience.js');
 const cellPreview = read('registry-cell-preview.js');
+const columnPicker = read('registry-column-picker-tailwind.js');
+const columnPickerCss = read('registry-column-picker-tailwind.css');
+const index = read('index.html');
 const shell = read('tailadmin-shell.js');
 const workflow = read('.github/workflows/physician-browser-audit.yml');
 const browserSpec = read('tests/mobile-deep-audit.spec.js');
 
 execFileSync(process.execPath, ['--check', path.join(ROOT, 'mobile-experience.js')], { stdio:'pipe' });
 execFileSync(process.execPath, ['--check', path.join(ROOT, 'registry-cell-preview.js')], { stdio:'pipe' });
+execFileSync(process.execPath, ['--check', path.join(ROOT, 'registry-column-picker-tailwind.js')], { stdio:'pipe' });
 
 [
   /production-audit-v2/,
@@ -50,6 +54,8 @@ assert.equal(fs.existsSync(path.join(ROOT, '.github/workflows/fix-mobile-observe
 assert.equal(fs.existsSync(path.join(ROOT, '.github/workflows/cancel-stale-browser-audits.yml')), false, 'temporary browser cancellation workflow must be removed');
 assert.equal(fs.existsSync(path.join(ROOT, '.github/workflows/fix-mobile-search-surface.yml')), false, 'temporary mobile search patch workflow must be removed');
 assert.equal(fs.existsSync(path.join(ROOT, '.github/workflows/fix-landscape-brand.yml')), false, 'temporary landscape patch workflow must be removed');
+assert.equal(fs.existsSync(path.join(ROOT, '.github/workflows/finalize-column-picker-viewport.yml')), false, 'temporary column picker viewport workflow must be removed');
+assert.equal(fs.existsSync(path.join(ROOT, '.github/workflows/harden-column-picker-clamp.yml')), false, 'temporary column picker clamp workflow must be removed');
 assert.match(shell, /MOBILE_SRC = '\/mobile-experience\.js\?v=production-audit-v2'/, 'shell must load the audited mobile runtime');
 assert.match(shell, /loadMobileExperience\(\)/, 'mobile runtime loader is missing');
 assert.match(shell, /warm\(MOBILE_SRC\)/, 'mobile runtime must be warmed for offline reuse');
@@ -59,7 +65,21 @@ assert.match(cellPreview, /input,select,textarea,\.drug-actions-trigger/, 'cell 
 assert.doesNotMatch(cellPreview, /input,select,textarea,button,\.drug-actions-trigger/, 'cell preview must not delete dosage button content');
 assert.match(cellPreview, /\['dosage-adult', 'dosage-pediatric'\]\.includes\(key\)/, 'adult and pediatric dosage cells must remain previewable');
 
+/* The Tailwind-style column picker must size itself and clamp to every viewport. */
+assert.match(columnPicker, /column-picker-tailwind-20260805-3/);
+assert.match(columnPicker, /function resetPanelPosition\(root\)/);
+assert.match(columnPicker, /function keepPanelInsideViewport\(root\)/);
+assert.match(columnPicker, /setProperty\('left',[\s\S]*'important'\)/);
+assert.match(columnPicker, /setProperty\('right',[\s\S]*'important'\)/);
+assert.match(columnPickerCss, /#colPanel\.col-panel \*/);
+assert.match(columnPickerCss, /box-sizing: border-box/);
+assert.match(columnPickerCss, /position: fixed !important/);
+assert.match(columnPickerCss, /grid-template-columns: 1fr !important/);
+assert.match(index, /registry-column-picker-tailwind\.css\?v=20260805-3/);
+assert.match(index, /registry-column-picker-tailwind\.js\?v=20260805-3/);
+
 assert.match(workflow, /mobile-deep-audit\.spec\.js/, 'browser workflow must execute the mobile audit');
+assert.match(workflow, /column-picker-tailwind\.spec\.js/, 'browser workflow must execute the column picker audit');
 [
   /viewport:PHONE/,
   /viewport:TABLET/,
@@ -73,4 +93,4 @@ assert.match(workflow, /mobile-deep-audit\.spec\.js/, 'browser workflow must exe
   /context\.setOffline\(true\)/,
 ].forEach(pattern => assert.match(browserSpec, pattern, `mobile browser audit missing ${pattern}`));
 
-console.log('Mobile, tablet, touch, safe-area, portal search, compact landscape, dosage preview and orientation audit passed.');
+console.log('Mobile, tablet, touch, safe-area, Tailwind column picker, compact landscape, dosage preview and orientation audit passed.');
