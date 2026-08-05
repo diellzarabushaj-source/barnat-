@@ -6,7 +6,9 @@ const root = path.join(__dirname, '..');
 const html = fs.readFileSync(path.join(root, 'dozologjia.html'), 'utf8');
 const js = fs.readFileSync(path.join(root, 'dozologjia-deep-audit.js'), 'utf8');
 const css = fs.readFileSync(path.join(root, 'dozologjia-clinical-readiness.css'), 'utf8');
-const api = fs.readFileSync(path.join(root, 'api/dosage.js'), 'utf8');
+const apiRouter = fs.readFileSync(path.join(root, 'api/dosage.js'), 'utf8');
+const apiHandler = fs.readFileSync(path.join(root, 'lib/dosage-handler.js'), 'utf8');
+const api = `${apiRouter}\n${apiHandler}`;
 
 assert.match(html, /dozologjia-deep-audit\.js/);
 assert.doesNotMatch(html, /dozologjia-(?:safety-enhancements|clinical-readiness)\.js/, 'legacy observer layers must not run alongside the consolidated controller');
@@ -33,6 +35,7 @@ assert.match(css, /content-visibility:auto/);
 assert.match(css, /dosage-readiness/);
 assert.match(css, /dosage-regimen-provenance/);
 
+assert.match(apiRouter, /dosageHandler/);
 assert.match(api, /sourceDate:clean\(row\['Data e burimit'\]\)/, 'pediatric provenance date must be preserved');
 assert.match(api, /const cards = cardsResult\.output/, 'verified cards must remain published independently of autofill');
 assert.doesNotMatch(api, /const cards = clinicalAutoFillEnabled \? cardsResult\.output : \[\]/, 'autofill flag must not blank the verified read-only catalogue');
