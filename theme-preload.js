@@ -31,7 +31,7 @@
     if (!document.querySelector('link[data-mi-signature-style]')) {
       const signature = document.createElement('link');
       signature.rel = 'stylesheet';
-      signature.href = '/landing-signature.css?v=20260805-1';
+      signature.href = '/landing-signature.css?v=20260805-2';
       signature.dataset.miSignatureStyle = 'true';
       document.head.appendChild(signature);
     }
