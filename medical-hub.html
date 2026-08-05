@@ -1,0 +1,62 @@
+<!doctype html>
+<html lang="sq" class="auth-checking medindex-clean-ui medindex-tailadmin" data-mi-page="medical-hub">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+  <meta name="robots" content="noindex,nofollow,noarchive">
+  <meta name="theme-color" content="#0d3d40">
+  <link rel="manifest" href="manifest.webmanifest">
+  <title>MedIndex | Medical Hub</title>
+  <link rel="stylesheet" href="medical-hub.css?v=20260723-1">
+  <link rel="stylesheet" href="tailadmin-medindex.css?v=20260728-1" data-tailadmin-medindex-css>
+  <link rel="stylesheet" href="clinical-knowledge.css?v=20260805-1">
+  <link rel="stylesheet" href="tailadmin-professional.css?v=20260728-1" data-tailadmin-professional-css>
+  <script src="tailadmin-shell.js?v=production-audit-v2" defer></script>
+  <script src="tailadmin-professional.js?v=production-audit-v2" defer></script>
+</head>
+<body>
+  <a class="skip-link" href="#medicalHubContent">Kalo te Medical Hub</a>
+  <div class="med-shell">
+    <nav class="med-nav" aria-label="Navigimi kryesor">
+      <a class="med-nav-link" href="index.html"><span class="med-nav-icon">⌂</span><span class="med-nav-title">Barnat</span></a>
+      <a class="med-nav-link" href="icd.html"><span class="med-nav-icon">ICD</span><span class="med-nav-title">ICD</span></a>
+      <a class="med-nav-link" href="urgjencat.html"><span class="med-nav-icon">!</span><span class="med-nav-title">Urgjencat</span></a>
+      <a class="med-nav-link" href="protokollet.html"><span class="med-nav-icon">▤</span><span class="med-nav-title">Protokollet</span></a>
+      <a class="med-nav-link active" href="medical-hub.html" aria-current="page"><span class="med-nav-icon">✦</span><span class="med-nav-title">Medical Hub</span></a>
+      <a class="med-nav-link" href="recetat.html"><span class="med-nav-icon">Rx</span><span class="med-nav-title">Recetat</span></a>
+      <div class="med-theme"><span>Tema</span><button id="themeButton" type="button" aria-label="Ndërro temën">☾</button></div>
+    </nav>
+    <main class="med-main" id="medicalHubContent" tabindex="-1">
+      <div class="clinical-knowledge-page">
+        <header class="ck-hero">
+          <div>
+            <p class="ck-kicker">Pyetje · Trajtim · Receta</p>
+            <h1>Medical Hub</h1>
+            <p>Shkruaj pyetjen klinike dhe merr një përgjigje të strukturuar: red flags, trajtimi hap pas hapi, receta dhe referimi.</p>
+          </div>
+          <a class="ck-studio-link" href="https://medindex-clinical-knowledge.sanity.studio/" target="_blank" rel="noopener noreferrer">Menaxho në Sanity ↗</a>
+        </header>
+
+        <div class="ck-toolbar" role="search" aria-label="Kërkimi në Medical Hub">
+          <input id="learningSearch" type="search" autocomplete="off" placeholder="P.sh. qysh trajtohet migrena…" aria-label="Shkruaj pyetjen klinike">
+          <select id="learningCategory" aria-label="Kategoria"><option value="">Të gjitha temat</option></select>
+        </div>
+
+        <p class="ck-status" id="learningStatus" role="status" aria-live="polite">Duke i ngarkuar temat…</p>
+        <div class="ck-layout">
+          <aside class="ck-directory" aria-label="Temat mësimore">
+            <div class="ck-list" id="learningList"></div>
+          </aside>
+          <article class="ck-detail" id="learningDetail" aria-live="polite">
+            <div class="ck-empty">Shkruaj një pyetje ose zgjidh një temë.</div>
+          </article>
+        </div>
+      </div>
+    </main>
+  </div>
+  <script src="auth-client.js?v=production-audit-v2" defer></script>
+  <script src="sanity-clinical-client.js?v=20260805-1" defer></script>
+  <script src="medical-hub.js?v=20260805-1" defer></script>
+  <script src="app-stability.js?v=20260724-2" defer></script>
+</body>
+</html>
