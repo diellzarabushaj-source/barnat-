@@ -1,0 +1,67 @@
+html.medindex-tailadmin[data-mi-page="urgjencat"],
+html.medindex-tailadmin[data-mi-page="medical-hub"]{
+  --ck-ink:#172033;
+  --ck-muted:#6d778a;
+  --ck-line:rgba(66,87,130,.12);
+  --ck-surface:#fff;
+  --ck-soft:#f5f8fd;
+  --ck-blue:#4777e5;
+  --ck-red:#c74444;
+  --ck-amber:#b97719;
+  --ck-green:#17766f;
+}
+
+.clinical-knowledge-page{display:grid;gap:20px;padding-bottom:32px}
+.ck-hero{display:flex;align-items:flex-end;justify-content:space-between;gap:24px;padding:28px;border:1px solid var(--ck-line);border-radius:24px;background:linear-gradient(145deg,rgba(255,255,255,.98),rgba(245,248,255,.92));box-shadow:0 18px 46px rgba(33,53,96,.08)}
+.ck-kicker{margin:0 0 8px;color:var(--ck-blue);font-size:11px;font-weight:800;letter-spacing:.13em;text-transform:uppercase}
+.ck-hero h1{margin:0;color:var(--ck-ink);font-size:clamp(34px,5vw,58px);font-weight:720;letter-spacing:-.055em;line-height:1}
+.ck-hero p{max-width:720px;margin:14px 0 0;color:var(--ck-muted);font-size:14px;line-height:1.65}
+.ck-studio-link{display:inline-flex;min-height:44px;align-items:center;justify-content:center;padding:0 16px;border:1px solid rgba(71,119,229,.16);border-radius:13px;background:#fff;color:#345fc5;font-size:12px;font-weight:750;text-decoration:none;box-shadow:0 8px 24px rgba(48,80,150,.07)}
+.ck-toolbar{display:grid;grid-template-columns:minmax(0,1fr) 220px;gap:12px;padding:14px;border:1px solid var(--ck-line);border-radius:18px;background:var(--ck-surface)}
+.ck-toolbar input,.ck-toolbar select{width:100%;min-height:48px;border:1px solid rgba(83,103,143,.15);border-radius:13px;background:#fff;color:var(--ck-ink);padding:0 14px;font:inherit;outline:none}
+.ck-toolbar input:focus,.ck-toolbar select:focus{border-color:rgba(71,119,229,.55);box-shadow:0 0 0 4px rgba(71,119,229,.09)}
+.ck-layout{display:grid;grid-template-columns:minmax(260px,340px) minmax(0,1fr);gap:18px;align-items:start}
+.ck-directory,.ck-detail{border:1px solid var(--ck-line);border-radius:22px;background:var(--ck-surface);box-shadow:0 16px 44px rgba(32,50,88,.065)}
+.ck-directory{position:sticky;top:16px;max-height:calc(100dvh - 150px);overflow:auto;padding:10px}
+.ck-list{display:grid;gap:8px}
+.ck-list-button{display:block;width:100%;padding:14px;border:1px solid transparent;border-radius:15px;background:transparent;color:inherit;text-align:left;cursor:pointer;transition:.2s ease}
+.ck-list-button:hover{background:var(--ck-soft);border-color:rgba(71,119,229,.1)}
+.ck-list-button.is-active{border-color:rgba(71,119,229,.18);background:linear-gradient(145deg,#f7f9ff,#eef3ff);box-shadow:inset 3px 0 0 var(--ck-blue)}
+.ck-list-button strong{display:block;color:var(--ck-ink);font-size:14px;line-height:1.35}
+.ck-list-button span{display:block;margin-top:5px;color:var(--ck-muted);font-size:11px;line-height:1.4}
+.ck-detail{min-height:420px;padding:26px}
+.ck-empty{display:grid;min-height:360px;place-items:center;color:var(--ck-muted);text-align:center}
+.ck-detail-head{display:flex;align-items:flex-start;justify-content:space-between;gap:20px;padding-bottom:20px;border-bottom:1px solid var(--ck-line)}
+.ck-detail-head h2{margin:0;color:var(--ck-ink);font-size:clamp(28px,4vw,42px);font-weight:720;letter-spacing:-.045em;line-height:1.05}
+.ck-meta{display:flex;flex-wrap:wrap;gap:8px;margin-top:13px}
+.ck-chip{display:inline-flex;min-height:29px;align-items:center;padding:0 10px;border:1px solid var(--ck-line);border-radius:999px;background:var(--ck-soft);color:#536079;font-size:10px;font-weight:750}
+.ck-chip.is-critical{border-color:rgba(199,68,68,.18);background:#fff3f3;color:#a52f2f}
+.ck-chip.is-review{border-color:rgba(185,119,25,.2);background:#fff8e9;color:#946013}
+.ck-chip.is-verified{border-color:rgba(23,118,111,.18);background:#edf9f7;color:#12675f}
+.ck-summary{margin:18px 0 0;color:#59657a;font-size:14px;line-height:1.7}
+.ck-sections{display:grid;gap:18px;margin-top:22px}
+.ck-section{padding:18px;border:1px solid var(--ck-line);border-radius:18px;background:linear-gradient(180deg,#fff,#fbfcff)}
+.ck-section h3{margin:0 0 14px;color:var(--ck-ink);font-size:15px;font-weight:800;letter-spacing:-.015em}
+.ck-steps{display:grid;gap:10px;counter-reset:clinical-step}
+.ck-step{position:relative;padding:15px 15px 15px 54px;border:1px solid rgba(78,99,143,.11);border-radius:15px;background:var(--ck-soft)}
+.ck-step::before{counter-increment:clinical-step;content:counter(clinical-step);position:absolute;top:14px;left:14px;display:grid;width:28px;height:28px;place-items:center;border-radius:9px;background:linear-gradient(145deg,#5f8ef0,#315fc8);color:#fff;font-size:11px;font-weight:800}
+.ck-step strong{display:block;color:var(--ck-ink);font-size:13px}
+.ck-step p{margin:7px 0 0;color:#5f6a7e;font-size:12px;line-height:1.6}
+.ck-step small{display:block;margin-top:7px;color:#8790a0;font-size:10px;line-height:1.5}
+.ck-referral{border-color:rgba(199,68,68,.16);background:linear-gradient(145deg,#fff,#fff7f7)}
+.ck-referral h3{color:#a33434}
+.ck-bullets{display:grid;gap:8px;margin:0;padding:0;list-style:none}
+.ck-bullets li{position:relative;padding-left:20px;color:#5b6679;font-size:12px;line-height:1.55}
+.ck-bullets li::before{content:"•";position:absolute;left:4px;color:var(--ck-blue);font-weight:900}
+.ck-rx-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}
+.ck-rx-card{padding:16px;border:1px solid var(--ck-line);border-radius:16px;background:#fff}
+.ck-rx-card strong{display:block;color:var(--ck-ink);font-size:13px}
+.ck-rx-card dl{display:grid;grid-template-columns:90px 1fr;gap:7px 10px;margin:13px 0 0;font-size:11px}
+.ck-rx-card dt{color:#8a93a3}.ck-rx-card dd{margin:0;color:#566176}
+.ck-status{margin:0;padding:16px;color:var(--ck-muted);font-size:12px;text-align:center}
+html[data-theme="dark"] .ck-hero,html[data-theme="dark"] .ck-toolbar,html[data-theme="dark"] .ck-directory,html[data-theme="dark"] .ck-detail,html[data-theme="dark"] .ck-section,html[data-theme="dark"] .ck-rx-card{background:#111827;color:#e5e7eb;border-color:rgba(148,163,184,.16)}
+html[data-theme="dark"] .ck-hero h1,html[data-theme="dark"] .ck-detail-head h2,html[data-theme="dark"] .ck-section h3,html[data-theme="dark"] .ck-list-button strong,html[data-theme="dark"] .ck-step strong,html[data-theme="dark"] .ck-rx-card strong{color:#f8fafc}
+html[data-theme="dark"] .ck-toolbar input,html[data-theme="dark"] .ck-toolbar select{background:#0f172a;color:#f8fafc;border-color:rgba(148,163,184,.2)}
+html[data-theme="dark"] .ck-list-button.is-active,html[data-theme="dark"] .ck-step{background:#162036}
+@media(max-width:900px){.ck-hero{align-items:flex-start;flex-direction:column}.ck-toolbar{grid-template-columns:1fr}.ck-layout{grid-template-columns:1fr}.ck-directory{position:static;max-height:none}.ck-rx-grid{grid-template-columns:1fr}}
+@media(max-width:600px){.clinical-knowledge-page{gap:14px}.ck-hero,.ck-detail{padding:20px;border-radius:19px}.ck-toolbar{padding:10px}.ck-detail-head{display:block}.ck-layout{gap:14px}.ck-section{padding:15px}.ck-step{padding-right:12px}.ck-rx-card dl{grid-template-columns:76px 1fr}}
