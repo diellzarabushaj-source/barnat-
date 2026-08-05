@@ -13,12 +13,15 @@ syntax('api/dosage.js');
 syntax('lib/dosage-handler.js');
 syntax('lib/dose-calculator-handler.js');
 syntax('registry-dose-calculator.js');
+syntax('registry-dose-calculator-fast-ui.js');
 
 const apiSource = read('lib/dose-calculator-handler.js');
 const routerSource = read('api/dosage.js');
 const uiSource = read('registry-dose-calculator.js');
+const fastUiSource = read('registry-dose-calculator-fast-ui.js');
 const html = read('index.html');
 const css = read('registry-dosage-columns.css');
+const fastCss = read('registry-dose-calculator-fast-ui.css');
 const vercel = JSON.parse(read('vercel.json'));
 
 assert.match(apiSource, /dose_sources_v2/);
@@ -37,6 +40,8 @@ assert.ok(vercel.rewrites.some(item => item.source === '/api/dose-calculator'
   && item.destination === '/api/dosage?view=calculator'), 'Dose calculator rewrite is missing');
 
 assert.match(html, /registry-dose-calculator\.js\?v=/);
+assert.match(html, /registry-dose-calculator-fast-ui\.js\?v=/);
+assert.match(html, /registry-dose-calculator-fast-ui\.css\?v=/);
 assert.match(html, /registry-dosage-columns\.css\?v=/);
 assert.match(uiSource, /Kalkulo dozën/);
 assert.match(uiSource, /Indikacioni/);
@@ -54,6 +59,18 @@ assert.doesNotMatch(uiSource, /localStorage|sessionStorage/);
 assert.match(css, /\.dose-calculator-modal/);
 assert.match(css, /\.dose-calculator-result\.is-error/);
 assert.match(css, /dose-calculator-group-pediatric_only/);
+
+assert.match(fastUiSource, /Doza në 10 sekonda/);
+assert.match(fastUiSource, /AUTO_DELAY_MS = 220/);
+assert.match(fastUiSource, /WEIGHT_PRESETS/);
+assert.match(fastUiSource, /inferGroupFromAge/);
+assert.match(fastUiSource, /scheduleAutomaticCalculation/);
+assert.match(fastUiSource, /modal\.submit\.click\(\)/);
+assert.match(fastUiSource, /event\.key !== 'Enter'/);
+assert.doesNotMatch(fastUiSource, /localStorage|sessionStorage/);
+assert.match(fastCss, /dose-calculator-group-choices/);
+assert.match(fastCss, /dose-calculator-weight-presets/);
+assert.match(fastCss, /dose-calculator-fast-hidden/);
 
 const dosageApi = require(path.join(ROOT, 'api/dosage.js'));
 const helpers = dosageApi._doseCalculatorTest;
@@ -100,4 +117,4 @@ assert.equal(product.rules.length, 1);
 assert.equal(product.denominatorUnit, 'tablet');
 assert.equal(product.patientGroup, 'pediatric_and_adult');
 
-console.log('Dose calculator V2 contract tests passed.');
+console.log('Dose calculator V2 and 10-second physician workflow tests passed.');
