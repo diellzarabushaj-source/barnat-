@@ -26,7 +26,9 @@ assert.doesNotMatch(index, /src="registry-dosage-columns-v2\.js/, 'index.html: d
 assert.match(index, /offline-runtime-performance\.js[^>]+data-medindex-offline-runtime/, 'index.html: cache-isolated offline runtime must be loaded explicitly');
 assert.match(index, /registry-fast-start\.js\?v=registry-fast-start-v2/, 'index.html: fast-start guard version is stale');
 assert.match(index, /<script id="drug-data" type="application\/json">\[\]<\/script>/, 'registry JSON fallback must remain inert');
-assert.match(index, /data-registry-ui-release="20260805-15"/, 'registry UI release is stale');
+assert.match(index, /data-registry-ui-release="20260805-19"/, 'registry UI release is stale');
+assert.match(index, /registry-dose-calculator-fast-ui\.js\?v=20260805-2/, 'dose calculator fast runtime version is stale');
+assert.match(index, /registry-dose-calculator-fast-ui\.css\?v=20260805-2/, 'dose calculator fast stylesheet version is stale');
 
 const runtimeLoader = read('registry-runtime-loader.js');
 assert.match(runtimeLoader, /registry-runtime-loader-v6/, 'immediate registry loader version is stale');
