@@ -1,0 +1,54 @@
+const fs = require('node:fs');
+const path = require('node:path');
+const assert = require('node:assert/strict');
+
+const root = path.resolve(__dirname, '..');
+const read = file => fs.readFileSync(path.join(root, file), 'utf8');
+
+const css = read('medindex-tailwind-ui.css');
+assert.match(css, /--tw-teal-500:#147d7e/);
+assert.match(css, /--tw-control:44px/);
+assert.match(css, /html\.medindex-tailadmin/);
+assert.match(css, /body:has\(\.info-shell\)/);
+assert.match(css, /html\[data-mi-page="login"\]/);
+assert.match(css, /html\[data-theme="dark"\]\.medindex-tailadmin/);
+assert.match(css, /prefers-reduced-motion:reduce/);
+assert.match(css, /focus-visible/);
+assert.doesNotMatch(css, /cdn\.tailwindcss\.com|fonts\.googleapis\.com/i);
+
+const professional = read('tailadmin-professional.css');
+const coreIndex = professional.indexOf('tailadmin-professional-core.css');
+const uiIndex = professional.indexOf('medindex-tailwind-ui.css');
+assert.ok(coreIndex >= 0, 'professional core stylesheet is missing');
+assert.ok(uiIndex > coreIndex, 'Tailwind UI must load after professional core');
+
+const polish = read('app-polish.css');
+assert.match(polish, /^@import url\("medindex-tailwind-ui\.css\?v=20260805-1"\);/);
+
+const themePreload = read('theme-preload.js');
+assert.match(themePreload, /medindex-tailwind-ui\.css\?v=20260805-1/);
+assert.match(themePreload, /dataset\.miTailwindUi = '20260805-1'/);
+
+const appPages = [
+  'index.html', 'analizat.html', 'icd.html', 'dozologjia.html',
+  'recetat.html', 'protokollet.html', 'medical-hub.html',
+  'urgjencat.html', 'sistemi.html',
+];
+for (const file of appPages) {
+  const html = read(file);
+  assert.match(html, /tailadmin-professional\.css/, `${file} does not load the final professional bundle`);
+  assert.match(html, /class="[^"]*medindex-tailadmin/, `${file} is missing the shared TailAdmin root class`);
+}
+
+for (const file of ['rreth-nesh.html', 'kontakt.html', 'blog.html']) {
+  const html = read(file);
+  assert.match(html, /medindex-tailwind-ui\.css\?v=20260805-1/);
+  assert.doesNotMatch(html, /(?:href|src)="\/(?:brand|info-pages|login|rreth-nesh|kontakt|blog)/, `${file} still contains project-root-only public paths`);
+}
+
+for (const file of ['login.html', 'recovery.html']) {
+  const html = read(file);
+  assert.match(html, /theme-preload\.js/);
+}
+
+console.log('Unified Tailwind UI system, loading order, responsive, dark-mode, public and clinical page contracts passed.');
