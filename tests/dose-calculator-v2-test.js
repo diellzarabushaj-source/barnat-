@@ -15,12 +15,14 @@ syntax('lib/dose-calculator-handler.js');
 syntax('registry-dose-calculator.js');
 syntax('registry-dose-calculator-fast-ui.js');
 syntax('registry-dose-table-button.js');
+syntax('registry-dose-modal-accessibility.js');
 
 const apiSource = read('lib/dose-calculator-handler.js');
 const routerSource = read('api/dosage.js');
 const uiSource = read('registry-dose-calculator.js');
 const fastUiSource = read('registry-dose-calculator-fast-ui.js');
 const tableUiSource = read('registry-dose-table-button.js');
+const modalA11ySource = read('registry-dose-modal-accessibility.js');
 const html = read('index.html');
 const css = read('registry-dosage-columns.css');
 const fastCss = read('registry-dose-calculator-fast-ui.css');
@@ -47,6 +49,7 @@ assert.match(html, /registry-dose-calculator-fast-ui\.js\?v=/);
 assert.match(html, /registry-dose-calculator-fast-ui\.css\?v=/);
 assert.match(html, /registry-dose-table-button\.js\?v=/);
 assert.match(html, /registry-dose-table-button\.css\?v=/);
+assert.match(html, /registry-dose-modal-accessibility\.js\?v=/);
 assert.match(html, /registry-dosage-columns\.css\?v=/);
 assert.match(uiSource, /Kalkulo dozën/);
 assert.match(uiSource, /Indikacioni/);
@@ -79,16 +82,13 @@ assert.match(fastCss, /dose-calculator-group-choices/);
 assert.match(fastCss, /dose-calculator-weight-presets/);
 assert.match(fastCss, /dose-calculator-fast-hidden/);
 
-assert.match(tableUiSource, /dose-table-button-deep-audit-v3/);
+assert.match(tableUiSource, /dose-table-button-manual-qa-v4/);
 assert.match(tableUiSource, /pendingRows = new Set\(\)/);
-assert.match(tableUiSource, /internalCells = new WeakSet\(\)/);
-assert.match(tableUiSource, /internalHeaders = new WeakSet\(\)/);
-assert.match(tableUiSource, /endInternalCellWrite/);
-assert.match(tableUiSource, /endInternalHeaderWrite/);
 assert.match(tableUiSource, /FRAME_BUDGET_MS = 7/);
 assert.match(tableUiSource, /requestIdleCallback/);
 assert.match(tableUiSource, /requestAnimationFrame/);
 assert.match(tableUiSource, /dataset\.doseTableSignature/);
+assert.match(tableUiSource, /dataset\.doseHeaderMeta/);
 assert.match(tableUiSource, /mutationTouchesRelevantUi/);
 assert.match(tableUiSource, /if \(!pendingRows\.size && headerDirty\)/,
   'Header counting must run only after the row queue is drained');
@@ -105,15 +105,28 @@ assert.match(tableUiSource, /maxRunMs/);
 assert.match(tableUiSource, /metrics:\(\)/);
 assert.equal((tableUiSource.match(/addEventListener\('click'/g) || []).length, 1,
   'The main table dose action must use one delegated click listener');
+assert.doesNotMatch(tableUiSource, /replaceChildren|insertAdjacentHTML|\.innerHTML\s*=/,
+  'The table polish layer must never rewrite calculator cell children');
 assert.doesNotMatch(tableUiSource, /localStorage|sessionStorage/);
 assert.match(tableCss, /position: sticky/);
 assert.match(tableCss, /min-height: 44px/);
 assert.match(tableCss, /touch-action: manipulation/);
 assert.match(tableCss, /aria-selected="true"/);
+assert.match(tableCss, /\.dose-table-button::before/);
+assert.match(tableCss, /\.dose-table-button::after/);
+assert.match(tableCss, /content:\s*"Kalkulo"/);
+assert.match(tableCss, /content:\s*"Doza"/);
 assert.match(tableCss, /prefers-reduced-motion: reduce/);
 assert.match(tableCss, /forced-colors: active/);
 assert.match(tableCss, /@media print/);
-assert.match(tableCss, /dose-table-button-label-mobile/);
+
+assert.match(modalA11ySource, /dose-modal-accessibility-v1/);
+assert.match(modalA11ySource, /restoreTriggerFocus/);
+assert.match(modalA11ySource, /event\.key !== 'Tab'/);
+assert.match(modalA11ySource, /Ky preparat nuk përdoret te fëmijët/);
+assert.match(modalA11ySource, /Ky preparat nuk përdoret te të rriturit/);
+assert.match(modalA11ySource, /aria-expanded/);
+assert.doesNotMatch(modalA11ySource, /localStorage|sessionStorage/);
 
 const dosageApi = require(path.join(ROOT, 'api/dosage.js'));
 const helpers = dosageApi._doseCalculatorTest;
@@ -160,4 +173,4 @@ assert.equal(product.rules.length, 1);
 assert.equal(product.denominatorUnit, 'tablet');
 assert.equal(product.patientGroup, 'pediatric_and_adult');
 
-console.log('Dose calculator V2, 10-second workflow and main-table deep audit tests passed.');
+console.log('Dose calculator V2, 10-second workflow and mutation-free manual-QA table contract passed.');
