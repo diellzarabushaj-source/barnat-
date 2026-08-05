@@ -1,0 +1,2 @@
+MedIndex registry dose calculator manual QA release: 20260805-26
+Scope: canonical dose column, desktop/mobile physician workflow, keyboard, fail-closed safety, cell preview, 4006-row performance.
