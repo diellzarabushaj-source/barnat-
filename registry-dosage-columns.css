@@ -226,9 +226,356 @@
   background: rgba(255, 255, 255, 0.035);
 }
 
+.registry-dose-calculator-column {
+  width: 150px;
+  min-width: 150px;
+  max-width: 150px;
+  vertical-align: middle;
+  white-space: normal;
+  text-align: center;
+}
+
+#headerRow .registry-dose-calculator-column {
+  width: 150px;
+  min-width: 150px;
+  max-width: 150px;
+  cursor: default;
+}
+
+.dose-calculator-group {
+  display: block;
+  margin-bottom: 7px;
+  font-size: 0.62rem;
+  font-weight: 850;
+  letter-spacing: 0.035em;
+  line-height: 1.2;
+}
+
+.dose-calculator-group-pediatric_only {
+  color: #b42318;
+}
+
+.dose-calculator-group-adult_only {
+  color: #475467;
+}
+
+.dose-calculator-group-pediatric_and_adult {
+  color: #0d5f63;
+}
+
+.dose-calculator-open,
+.dose-calculator-submit {
+  border: 1px solid #0d5f63;
+  border-radius: 8px;
+  background: #0d5f63;
+  color: #fff;
+  font: inherit;
+  font-weight: 800;
+  cursor: pointer;
+  transition: transform 120ms ease, box-shadow 120ms ease, background 120ms ease;
+}
+
+.dose-calculator-open {
+  min-height: 34px;
+  padding: 7px 10px;
+  font-size: 0.74rem;
+  line-height: 1.2;
+}
+
+.dose-calculator-open:hover,
+.dose-calculator-submit:hover {
+  background: #09494c;
+  box-shadow: 0 5px 14px rgba(13, 95, 99, 0.18);
+  transform: translateY(-1px);
+}
+
+.dose-calculator-open:focus-visible,
+.dose-calculator-submit:focus-visible,
+.dose-calculator-close:focus-visible {
+  outline: 3px solid rgba(13, 95, 99, 0.28);
+  outline-offset: 2px;
+}
+
+body.dose-calculator-modal-open {
+  overflow: hidden;
+}
+
+.dose-calculator-modal[hidden] {
+  display: none !important;
+}
+
+.dose-calculator-modal {
+  position: fixed;
+  inset: 0;
+  z-index: 10040;
+  display: grid;
+  place-items: center;
+  padding: 18px;
+}
+
+.dose-calculator-backdrop {
+  position: absolute;
+  inset: 0;
+  background: rgba(15, 23, 42, 0.58);
+  backdrop-filter: blur(3px);
+}
+
+.dose-calculator-dialog {
+  position: relative;
+  width: min(660px, 100%);
+  max-height: min(90vh, 820px);
+  overflow: auto;
+  padding: 22px;
+  border: 1px solid rgba(13, 95, 99, 0.16);
+  border-radius: 16px;
+  background: #fff;
+  color: #172326;
+  box-shadow: 0 24px 70px rgba(15, 23, 42, 0.28);
+}
+
+.dose-calculator-dialog-header {
+  display: flex;
+  gap: 16px;
+  align-items: flex-start;
+  justify-content: space-between;
+  margin-bottom: 8px;
+}
+
+.dose-calculator-dialog-header h2 {
+  margin: 3px 0 0;
+  color: #102f32;
+  font-size: clamp(1.25rem, 3vw, 1.7rem);
+  line-height: 1.2;
+}
+
+.dose-calculator-eyebrow {
+  color: #0d5f63;
+  font-size: 0.68rem;
+  font-weight: 850;
+  letter-spacing: 0.075em;
+  text-transform: uppercase;
+}
+
+.dose-calculator-close {
+  display: inline-grid;
+  width: 38px;
+  height: 38px;
+  flex: 0 0 38px;
+  place-items: center;
+  padding: 0;
+  border: 1px solid #d8e0df;
+  border-radius: 10px;
+  background: #fff;
+  color: #344054;
+  font-size: 1.5rem;
+  cursor: pointer;
+}
+
+.dose-calculator-product {
+  margin-bottom: 17px;
+  padding: 10px 12px;
+  border-radius: 9px;
+  background: #edf7f6;
+  color: #0d5f63;
+  font-size: 0.84rem;
+  font-weight: 800;
+}
+
+.dose-calculator-form {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 13px;
+}
+
+.dose-calculator-form label {
+  display: grid;
+  gap: 6px;
+  min-width: 0;
+}
+
+.dose-calculator-form label > span:first-child {
+  color: #344054;
+  font-size: 0.76rem;
+  font-weight: 800;
+}
+
+.dose-calculator-form select,
+.dose-calculator-form input,
+.dose-calculator-form output {
+  width: 100%;
+  min-width: 0;
+  min-height: 42px;
+  box-sizing: border-box;
+  padding: 9px 11px;
+  border: 1px solid #cfd9d7;
+  border-radius: 9px;
+  background: #fff;
+  color: #172326;
+  font: inherit;
+  font-size: 0.86rem;
+}
+
+.dose-calculator-form input:disabled {
+  background: #f2f4f7;
+  color: #667085;
+}
+
+.dose-calculator-form output {
+  display: flex;
+  align-items: center;
+  grid-column: auto;
+  overflow-wrap: anywhere;
+}
+
+.dose-calculator-input-pair {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  align-items: stretch;
+}
+
+.dose-calculator-input-pair input {
+  border-radius: 9px 0 0 9px;
+}
+
+.dose-calculator-input-pair select,
+.dose-calculator-unit {
+  width: auto;
+  min-width: 76px;
+  border-left: 0;
+  border-radius: 0 9px 9px 0;
+}
+
+.dose-calculator-unit {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 7px 10px;
+  border: 1px solid #cfd9d7;
+  background: #f8faf9;
+  color: #475467;
+  font-size: 0.75rem;
+  font-weight: 750;
+  white-space: nowrap;
+}
+
+.dose-calculator-submit {
+  width: 100%;
+  min-height: 46px;
+  margin-top: 17px;
+  padding: 10px 16px;
+  font-size: 0.9rem;
+}
+
+.dose-calculator-result {
+  margin-top: 17px;
+  padding: 16px;
+  border: 1px solid #a8d6d1;
+  border-radius: 12px;
+  background: #f0faf8;
+}
+
+.dose-calculator-result.is-error {
+  border-color: #f5b7b1;
+  background: #fff1f0;
+  color: #9f1c13;
+}
+
+.dose-calculator-result h3 {
+  margin: 0 0 7px;
+  color: inherit;
+  font-size: 0.78rem;
+  font-weight: 850;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+
+.dose-calculator-result > p {
+  margin: 0;
+  color: #102f32;
+  font-size: 1rem;
+  font-weight: 800;
+  line-height: 1.55;
+}
+
+.dose-calculator-result.is-error > p {
+  color: #9f1c13;
+}
+
+.dose-calculator-result details {
+  margin-top: 13px;
+  padding-top: 12px;
+  border-top: 1px solid rgba(13, 95, 99, 0.15);
+}
+
+.dose-calculator-result summary {
+  color: #0d5f63;
+  font-size: 0.8rem;
+  font-weight: 850;
+  cursor: pointer;
+}
+
+.dose-calculator-details {
+  display: grid;
+  gap: 7px;
+  margin-top: 10px;
+}
+
+.dose-calculator-detail-row {
+  display: grid;
+  grid-template-columns: 145px minmax(0, 1fr);
+  gap: 10px;
+  align-items: start;
+  font-size: 0.78rem;
+  line-height: 1.45;
+}
+
+.dose-calculator-detail-row strong {
+  color: #344054;
+}
+
+.dose-calculator-detail-row a {
+  color: #0d5f63;
+  font-weight: 750;
+  overflow-wrap: anywhere;
+}
+
+.dose-calculator-safety {
+  margin: 14px 0 0;
+  color: #667085;
+  font-size: 0.7rem;
+  line-height: 1.45;
+}
+
+[data-theme="dark"] .dose-calculator-dialog {
+  border-color: rgba(255, 255, 255, 0.13);
+  background: #172326;
+  color: #e7eeee;
+}
+
+[data-theme="dark"] .dose-calculator-dialog-header h2,
+[data-theme="dark"] .dose-calculator-result > p {
+  color: #e7eeee;
+}
+
+[data-theme="dark"] .dose-calculator-close,
+[data-theme="dark"] .dose-calculator-form select,
+[data-theme="dark"] .dose-calculator-form input,
+[data-theme="dark"] .dose-calculator-form output {
+  border-color: rgba(255, 255, 255, 0.16);
+  background: #1f3033;
+  color: #e7eeee;
+}
+
+[data-theme="dark"] .dose-calculator-product,
+[data-theme="dark"] .dose-calculator-result {
+  background: rgba(128, 214, 216, 0.08);
+}
+
 @media (max-width: 760px) {
   .registry-dosage-column,
-  #headerRow .registry-dosage-column {
+  #headerRow .registry-dosage-column,
+  .registry-dose-calculator-column,
+  #headerRow .registry-dose-calculator-column {
     width: auto;
     min-width: 0;
     max-width: none;
@@ -236,5 +583,26 @@
 
   .registry-dosage-grid {
     grid-template-columns: minmax(0, 1fr) 62px;
+  }
+
+  .dose-calculator-modal {
+    align-items: end;
+    padding: 0;
+  }
+
+  .dose-calculator-dialog {
+    width: 100%;
+    max-height: 94vh;
+    padding: 18px;
+    border-radius: 18px 18px 0 0;
+  }
+
+  .dose-calculator-form {
+    grid-template-columns: 1fr;
+  }
+
+  .dose-calculator-detail-row {
+    grid-template-columns: 1fr;
+    gap: 2px;
   }
 }
