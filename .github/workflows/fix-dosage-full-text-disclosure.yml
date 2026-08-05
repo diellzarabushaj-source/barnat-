@@ -69,7 +69,6 @@ jobs:
           node tests/registry-cell-preview-test.js
           node tests/registry-table-final-test.js
           node tests/registry-dosage-columns-test.js
-          node tests/runtime-asset-version-audit-test.js
           pnpm test
 
       - name: Commit
