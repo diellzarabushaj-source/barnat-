@@ -1,7 +1,7 @@
 (() => {
   'use strict';
 
-  const VERSION = 'registry-row-expand-20260801-4';
+  const VERSION = 'registry-row-expand-20260805-5';
   const FINAL_STYLE_ID = 'registryColumnsFiltersStyles';
   const EXPANDABLE_KEYS = new Set([
     'trade-name',
@@ -91,6 +91,19 @@
     });
   }
 
+  function syncDosageDisclosures(row, expanded) {
+    row.querySelectorAll('.registry-dosage-regimen').forEach(regimen => {
+      regimen.classList.toggle('is-expanded', expanded);
+      const trigger = regimen.querySelector('.registry-dosage-dose');
+      if (!trigger) return;
+      trigger.setAttribute('aria-expanded', String(expanded));
+      const toggle = trigger.querySelector('.registry-dosage-toggle');
+      if (toggle) toggle.textContent = expanded ? 'Më pak' : 'Më shumë';
+      const dose = clean(trigger.querySelector('.registry-dosage-dose-text')?.textContent);
+      trigger.setAttribute('aria-label', `${expanded ? 'Mbyll' : 'Shfaq'} dozimin e plotë: ${dose}`);
+    });
+  }
+
   function syncRowState(row) {
     const key = rowKey(row);
     const expanded = Boolean(key && expandedRows.has(key));
@@ -103,6 +116,7 @@
     row.querySelectorAll('.registry-dosage-details').forEach(details => {
       details.open = expanded;
     });
+    syncDosageDisclosures(row, expanded);
     syncPreviewTriggers(row, expanded);
   }
 

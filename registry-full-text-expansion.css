@@ -225,3 +225,30 @@ html.medindex-tailadmin[data-theme="dark"][data-mi-page="barnat"] body #registry
     grid-template-columns:minmax(0,1fr) 52px!important;
   }
 }
+
+/* Më shumë uses the same row-level reveal contract as the square icon.
+   Release the dosage button itself as well as its text span so no compact
+   table rule can keep the clinical instruction clipped. */
+html.medindex-tailadmin[data-mi-page="barnat"] body #registryContent #dataTable tbody tr:is(
+  .registry-row-expanded,
+  [data-registry-row-expanded="true"]
+) .registry-dosage-regimen.is-expanded,
+html.medindex-tailadmin[data-mi-page="barnat"] body #registryContent #dataTable tbody tr:is(
+  .registry-row-expanded,
+  [data-registry-row-expanded="true"]
+) .registry-dosage-regimen.is-expanded .registry-dosage-dose,
+html.medindex-tailadmin[data-mi-page="barnat"] body #registryContent #dataTable tbody tr:is(
+  .registry-row-expanded,
+  [data-registry-row-expanded="true"]
+) .registry-dosage-regimen.is-expanded .registry-dosage-dose-text {
+  display:block!important;
+  height:auto!important;
+  min-height:0!important;
+  max-height:none!important;
+  overflow:visible!important;
+  text-overflow:clip!important;
+  white-space:normal!important;
+  -webkit-box-orient:initial!important;
+  -webkit-line-clamp:unset!important;
+}
+

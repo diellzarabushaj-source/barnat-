@@ -1,7 +1,7 @@
 (() => {
   'use strict';
 
-  const RELEASE = 'registry-ui-20260801-14';
+  const RELEASE = 'registry-ui-20260805-15';
   const STORAGE_KEY = 'medindex.registry.ui.release';
   const SESSION_KEY = 'medindex.registry.ui.cache-cleared';
 

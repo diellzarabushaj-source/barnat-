@@ -12,23 +12,24 @@ const controller = read('registry-cell-preview.js');
 const styles = read('registry-cell-preview.css');
 const fullTextStyles = read('registry-full-text-expansion.css');
 const rowExpand = read('registry-row-expand.js');
+const dosageRuntime = read('registry-dosage-columns-v2.js');
 
-assert(index.includes('registry-cell-preview.css?v=20260801-3'), 'Inline cell expansion stylesheet v3 is not wired.');
-assert(index.includes('registry-full-text-expansion.css?v=20260801-1'), 'Full-row text reveal contract is not wired.');
+assert(index.includes('registry-cell-preview.css?v=20260805-4'), 'Inline cell expansion stylesheet v3 is not wired.');
+assert(index.includes('registry-full-text-expansion.css?v=20260805-2'), 'Full-row text reveal contract is not wired.');
 assert(index.includes('registry-cell-preview.js?v=20260801-6'), 'Inline cell expansion controller v7 is not wired.');
 assert(
-  index.indexOf('registry-cell-preview.js?v=20260801-6') < index.indexOf('registry-row-expand.js?v=20260801-4'),
+  index.indexOf('registry-cell-preview.js?v=20260801-6') < index.indexOf('registry-row-expand.js?v=20260805-5'),
   'Cell expansion trigger must initialize before row expansion.'
 );
-assert(index.includes('data-registry-ui-release="20260801-14"'), 'Registry UI release was not bumped.');
+assert(index.includes('data-registry-ui-release="20260805-15"'), 'Registry UI release was not bumped.');
 assert(index.includes('registry-column-contract.js?v=20260801-2'), 'Column contract v2 is not wired.');
 assert(index.includes('registry-unified-table.js?v=20260801-1'), 'Unified table controller is not wired.');
 assert(
-  index.indexOf('registry-unified-table.css?v=20260801-1') < index.indexOf('registry-full-text-expansion.css?v=20260801-1'),
+  index.indexOf('registry-unified-table.css?v=20260801-1') < index.indexOf('registry-full-text-expansion.css?v=20260805-2'),
   'Full-row reveal must load after the unified compact geometry.'
 );
 assert(
-  index.indexOf('registry-full-text-expansion.css?v=20260801-1') < index.indexOf('tailadmin-professional.css'),
+  index.indexOf('registry-full-text-expansion.css?v=20260805-2') < index.indexOf('tailadmin-professional.css'),
   'TailAdmin professional must remain the final static stylesheet.'
 );
 
@@ -72,5 +73,11 @@ assert(!/https?:\/\//.test(fullTextStyles), 'Full-text expansion must not load t
 
 assert(rowExpand.includes("button, input, select, textarea"), 'Row expansion must ignore nested controls.');
 assert(rowExpand.includes('syncPreviewTriggers(row, expanded)'), 'Row expansion must synchronize every trigger in the row.');
+assert(rowExpand.includes('function syncDosageDisclosures(row, expanded)'), 'Row expansion must synchronize dosage disclosure controls.');
+assert(rowExpand.includes("regimen.classList.toggle('is-expanded', expanded)"), 'All dosage regimens must follow the canonical row state.');
+assert(dosageRuntime.includes("rowController.toggleRow(row)"), 'The Më shumë control must release the containing table row.');
+assert(!dosageRuntime.includes("regimen?.classList.toggle('is-expanded')"), 'The dosage control must not expand only a clipped inner element.');
+assert(!styles.includes('height:132px!important;\n  min-height:132px!important'), 'Expanded desktop rows must not have a fixed height ceiling.');
+assert(fullTextStyles.includes('.registry-dosage-regimen.is-expanded .registry-dosage-dose-text'), 'Expanded dosage text must have an explicit unclamped contract.');
 
-console.log('Full-row zoom reveals every textual column without modal or clamp.');
+console.log('Full-row zoom and Më shumë reveal every textual column without modal or clamp.');

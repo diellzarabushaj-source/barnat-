@@ -1,8 +1,8 @@
 (() => {
   'use strict';
 
-  const VERSION = 'registry-dosage-idle-loader-v2';
-  const SRC = '/registry-dosage-columns-v2.js?v=20260728-2';
+  const VERSION = 'registry-dosage-idle-loader-v3';
+  const SRC = '/registry-dosage-columns-v2.js?v=20260805-4';
   let scheduled = false;
   let loaded = false;
   let fallbackTimer = 0;

@@ -1,7 +1,7 @@
 (() => {
   'use strict';
 
-  const VERSION = 'registry-dosage-performance-v3';
+  const VERSION = 'registry-dosage-performance-v4';
   const ENDPOINT = '/api/dosage';
   const STORAGE_KEY = 'medindex-registry-dosage-columns-v2';
   const PICKER_GROUP_ID = 'registryDosageColumnControls';
@@ -466,14 +466,31 @@
       tbody.addEventListener('click', event => {
         const trigger = event.target.closest('.registry-dosage-dose');
         if (!trigger) return;
+        event.preventDefault();
         event.stopPropagation();
-        const regimen = trigger.closest('.registry-dosage-regimen');
-        const expanded = regimen?.classList.toggle('is-expanded') || false;
-        trigger.setAttribute('aria-expanded', String(expanded));
-        const toggle = trigger.querySelector('.registry-dosage-toggle');
-        if (toggle) toggle.textContent = expanded ? 'Më pak' : 'Më shumë';
-        const dose = clean(trigger.querySelector('.registry-dosage-dose-text')?.textContent);
-        trigger.setAttribute('aria-label', `${expanded ? 'Mbyll' : 'Shfaq'} dozimin e plotë: ${dose}`);
+
+        const row = trigger.closest('tr');
+        if (!row) return;
+
+        const rowController = window.MedIndexRegistryRows;
+        if (typeof rowController?.toggleRow === 'function') {
+          rowController.toggleRow(row);
+          return;
+        }
+
+        const expanded = !(row.classList.contains('registry-row-expanded') || row.dataset.registryRowExpanded === 'true');
+        row.classList.toggle('registry-row-expanded', expanded);
+        row.dataset.registryRowExpanded = String(expanded);
+        row.querySelectorAll('.registry-dosage-regimen').forEach(regimen => {
+          regimen.classList.toggle('is-expanded', expanded);
+          const button = regimen.querySelector('.registry-dosage-dose');
+          if (!button) return;
+          button.setAttribute('aria-expanded', String(expanded));
+          const toggle = button.querySelector('.registry-dosage-toggle');
+          if (toggle) toggle.textContent = expanded ? 'Më pak' : 'Më shumë';
+          const dose = clean(button.querySelector('.registry-dosage-dose-text')?.textContent);
+          button.setAttribute('aria-label', `${expanded ? 'Mbyll' : 'Shfaq'} dozimin e plotë: ${dose}`);
+        });
       });
     }
   }

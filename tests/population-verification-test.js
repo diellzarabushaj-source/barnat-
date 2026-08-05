@@ -50,9 +50,9 @@ assert(index.includes('registry-verification-loader.js?v=20260801-1'), 'Idle loa
 assert(loader.includes("window.addEventListener('medindex:registry-ready'"), 'Verifikimi duhet të presë registry-ready.');
 assert(loader.includes('requestIdleCallback'), 'Verifikimi duhet të ngarkohet në idle.');
 assert(loader.includes('registry-verification-ui.js?v=20260801-1'), 'Loader-i nuk e ngarkon kontrolluesin e verifikimit.');
-assert(index.includes('data-registry-ui-release="20260801-14"'), 'Release-i unik i tabelës nuk u rrit.');
+assert(index.includes('data-registry-ui-release="20260805-15"'), 'Release-i unik i tabelës nuk u rrit.');
 assert(index.includes('registry-unified-table.js?v=20260801-1'), 'Kontrolluesi unik i tabelës mungon.');
-assert(index.includes('registry-full-text-expansion.css?v=20260801-1'), 'Kontrata e tekstit të plotë mungon.');
+assert(index.includes('registry-full-text-expansion.css?v=20260805-2'), 'Kontrata e tekstit të plotë mungon.');
 assert(ui.includes('data-population-pencil'), 'Ikona e vetme e lapsit mungon.');
 assert(ui.includes("state:'unknown'"), 'Gjendja pa të dhëna mungon.');
 assert(read('lib/population-verification.js').includes('Mungesa e dozës nuk interpretohet si kundërindikacion'), 'Rregulli fail-closed mungon.');
