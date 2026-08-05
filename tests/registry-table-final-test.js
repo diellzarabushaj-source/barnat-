@@ -14,7 +14,7 @@ const loader = read('registry-runtime-loader.js');
 const fast = read('registry-fast-start.js');
 const release = read('registry-ui-release.js');
 
-assert.match(index,/data-registry-ui-release="20260805-24"/,'index must use the mutation-free manual-QA release');
+assert.match(index,/data-registry-ui-release="20260805-25"/,'index must use the stable canonical dose release');
 assert.match(index,/registry-unified-table\.css\?v=20260801-1/,'unified table stylesheet must be wired');
 assert.match(index,/registry-full-text-expansion\.css\?v=20260805-2/,'full-row text stylesheet must be wired');
 assert.match(index,/registry-unified-table\.js\?v=20260801-1/,'unified table controller must be wired');
@@ -25,7 +25,7 @@ assert.ok(index.indexOf('registry-ui-release.js') < index.indexOf('registry-unif
 assert.doesNotMatch(index,/(?:registry-table-integrity|registry-clinical-view|registry-tailgrids-refinement|registry-columns-filters|registry-table-final)\.(?:css|js)/,'competing table controllers must not be loaded');
 assert.doesNotMatch(index,/registryTableFinalMobileCompatibility/,'legacy mobile compatibility patch must be removed');
 assert.doesNotMatch(index,/<script src="app-performance\.js"/,'heavy registry bootstrap must remain dynamically loaded after authentication');
-assert.match(release,/registry-ui-20260805-24/,'cache release must match the mutation-free manual-QA contract');
+assert.match(release,/registry-ui-20260805-25/,'cache release must match the stable canonical dose contract');
 assert.match(fast,/releaseInteractiveShell/,'visual loader must release when authentication and shell are ready');
 assert.match(fast,/loader\.style\.pointerEvents = 'none'/,'visual loader must never intercept the table after shell readiness');
 
@@ -41,7 +41,10 @@ assert.doesNotMatch(loader,/MEDINDEX_REGISTRY_UI_READY\s*=\s*new Promise/,'loade
 assert.match(runtime,/registry-unified-table-20260801-1/,'unified controller version is missing');
 assert.match(runtime,/const FULL_ORDER = Object\.freeze/,'one canonical full-column order is required');
 assert.match(runtime,/const CLINICAL_ORDER = Object\.freeze/,'one canonical clinical-column order is required');
-assert.match(runtime,/clinical-action':54/,'edit column must remain compact');
+assert.match(runtime,/'clinical-action', 'dose-calculator'/,'verified dose must be part of canonical clinical order');
+assert.match(runtime,/DYNAMIC_KEYS = new Set\([\s\S]*'dose-calculator'/,'verified dose must be a canonical dynamic column');
+assert.match(runtime,/clinical-action':54[\s\S]*'dose-calculator':128/,'edit and dose columns must remain compact');
+assert.match(runtime,/dataset\.registryDoseCalculatorColumn === 'dose-calculator'/,'unified controller must recognize the dose column');
 assert.match(runtime,/table\.querySelectorAll\(':scope > colgroup'\)\.forEach\(group => group\.remove\(\)\)/,'only one colgroup may survive');
 assert.match(runtime,/observer\.observe\(header, \{ childList:true \}\)/,'header observer must be shallow');
 assert.match(runtime,/observer\.observe\(tbody, \{ childList:true \}\)/,'body observer must watch only row replacement');
@@ -52,7 +55,7 @@ assert.match(runtime,/normalizePencils/,'edit buttons must be normalized once by
 assert.doesNotMatch(runtime,/registry-dose-dialog|registry-cell-preview-dialog/,'unified runtime must not contain a text modal');
 
 assert.match(css,/#dataTable\[data-registry-unified-table\] thead th[\s\S]*background:#fff!important/,'header must remain white');
-assert.match(css,/#dataTable\[data-registry-unified-table\] :is\(th,td\)\[data-registry-column-key\][\s\S]*position:relative!important/,'columns must be non-sticky');
+assert.match(css,/#dataTable\[data-registry-unified-table\] :is\(th,td\)\[data-registry-column-key\][\s\S]*position:relative!important/,'base columns must remain non-sticky');
 assert.match(css,/#dataTable\[data-registry-unified-table\] tbody tr \{[\s\S]*height:92px!important/,'rows must use compact stable geometry');
 assert.match(css,/registry-row-expanded[\s\S]*max-height:none!important/,'expanded rows must reveal full inline content');
 assert.match(css,/:is\(\.registry-dose-dialog,\.registry-cell-preview-dialog\)[\s\S]*display:none!important/,'legacy text modals must remain disabled');
@@ -61,7 +64,7 @@ assert.match(css,/\.population-verification-grid/,'strict population verificatio
 assert.match(css,/@media \(max-width:760px\)[\s\S]*#dataTable tbody td\[data-registry-column-key\][\s\S]*grid-template-columns:94px minmax\(0,1fr\)/,'mobile cards must remain readable');
 assert.match(css,/#registryFilterPanel #search/,'search must remain visible in the unified filter surface');
 assert.match(css,/\.col-panel\.open[\s\S]*grid-template-columns:repeat\(2,minmax\(0,1fr\)\)/,'desktop multi-column picker must remain compact');
-assert.doesNotMatch(css,/position:sticky|position:fixed[^;]*!important;[\s\S]{0,80}data-registry-column-key/,'table columns must never be frozen');
+assert.doesNotMatch(css,/position:sticky|position:fixed[^;]*!important;[\s\S]{0,80}data-registry-column-key/,'base table stylesheet must not freeze data columns');
 assert.doesNotMatch(css,/https?:\/\//,'unified table styles must not load third-party assets');
 
 assert.match(fullTextCss,/data-registry-column-key="active-substance"\] > span:first-child[\s\S]*display:block!important/,'long active-substance wrappers must be fully released');
@@ -73,9 +76,9 @@ assert.match(fullTextCss,/#registryContent\.table-wrap[\s\S]*overflow:auto!impor
 assert.match(fullTextCss,/scrollbar-gutter:stable both-edges!important/,'both scrollbar rails must reserve stable space');
 assert.match(fullTextCss,/touch-action:pan-x pan-y!important/,'touch users must be able to pan on both axes');
 assert.match(fullTextCss,/thead th\[data-registry-column-key\][\s\S]*position:sticky!important[\s\S]*top:0!important/,'only the header row must remain visible during vertical scrolling');
-assert.match(fullTextCss,/thead th\[data-registry-column-key\][\s\S]*left:auto!important[\s\S]*right:auto!important/,'sticky header must not freeze any data column horizontally');
+assert.match(fullTextCss,/thead th\[data-registry-column-key\][\s\S]*left:auto!important[\s\S]*right:auto!important/,'sticky header must not freeze normal data columns horizontally');
 assert.match(fullTextCss,/::-webkit-scrollbar[\s\S]*width:12px!important[\s\S]*height:12px!important/,'both native scrollbar axes must remain visible');
 assert.match(fullTextCss,/data-theme="dark"[\s\S]*scrollbar-color:/,'dark mode must style the same scroll surface');
 assert.doesNotMatch(fullTextCss,/https?:\/\//,'full-row text and scroll styles must not load third-party assets');
 
-console.log('Single-controller registry table, full-row text reveal and bidirectional scroll audit passed.');
+console.log('Single-controller registry table, canonical dose column, full-row reveal and bidirectional scroll audit passed.');
