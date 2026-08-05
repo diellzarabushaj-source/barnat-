@@ -14,27 +14,16 @@
   padding-block: 9px !important;
 }
 
-.dose-table-header {
-  font-size: 0 !important;
-}
-
-.dose-table-header > * {
-  display: none !important;
-}
-
+.dose-table-header { font-size: 0 !important; }
+.dose-table-header > * { display: none !important; }
 .dose-table-header::before,
-.dose-table-header::after {
-  display: block;
-  color: inherit;
-}
-
+.dose-table-header::after { display: block; color: inherit; }
 .dose-table-header::before {
   content: "Doza";
   font-size: 0.76rem;
   font-weight: 850;
   line-height: 1.15;
 }
-
 .dose-table-header::after {
   content: attr(data-dose-header-meta);
   margin-top: 4px;
@@ -44,10 +33,7 @@
   opacity: 0.82;
 }
 
-.dose-table-cell-ready {
-  background-clip: padding-box;
-}
-
+.dose-table-cell-ready { background-clip: padding-box; }
 .dose-table-cell-empty .registry-dosage-muted,
 .dose-table-cell-loading .registry-dosage-muted {
   min-height: 44px;
@@ -92,7 +78,6 @@
   transform: none !important;
   white-space: nowrap;
 }
-
 .registry-dose-calculator-column .dose-calculator-open::before {
   content: "✓";
   display: inline-grid;
@@ -105,23 +90,19 @@
   font-size: 0.64rem;
   font-weight: 900;
 }
-
 .registry-dose-calculator-column .dose-calculator-open::after {
   content: "Kalkulo";
   font-size: 0.74rem;
   font-weight: 800;
 }
-
 .registry-dose-calculator-column .dose-calculator-open:hover {
   box-shadow: 0 3px 10px rgba(13, 95, 99, 0.18) !important;
   transform: none !important;
 }
-
 .registry-dose-calculator-column .dose-calculator-open:active {
   box-shadow: none !important;
   transform: translateY(1px) !important;
 }
-
 .registry-dose-calculator-column .dose-calculator-open:focus-visible {
   outline: 3px solid rgba(13, 95, 99, 0.32) !important;
   outline-offset: 2px !important;
@@ -130,42 +111,36 @@
 .has-pediatric-only-dose-calculator > .registry-dose-calculator-column {
   box-shadow: inset 3px 0 0 rgba(180, 35, 24, 0.72);
 }
-
 .has-adult-only-dose-calculator > .registry-dose-calculator-column {
   box-shadow: inset 3px 0 0 rgba(71, 84, 103, 0.42);
 }
-
 .has-all-ages-dose-calculator > .registry-dose-calculator-column {
   box-shadow: inset 3px 0 0 rgba(13, 95, 99, 0.5);
 }
 
 @media (min-width: 980px) {
-  #headerRow > .registry-dose-calculator-column,
-  #tbody > tr > .registry-dose-calculator-column {
+  #dataTable[data-registry-unified-table] #headerRow > th.registry-dose-calculator-column[data-registry-column-key="dose-calculator"],
+  #dataTable[data-registry-unified-table] #tbody > tr > td.registry-dose-calculator-column[data-registry-column-key="dose-calculator"] {
     position: sticky !important;
     right: 0 !important;
     left: auto !important;
   }
-
-  #headerRow > .registry-dose-calculator-column {
+  #dataTable[data-registry-unified-table] #headerRow > th.registry-dose-calculator-column[data-registry-column-key="dose-calculator"] {
     z-index: 8;
     background: var(--table-header-bg, #f9fafb);
     box-shadow: -5px 0 10px rgba(15, 23, 42, 0.035);
   }
-
-  #tbody > tr > .registry-dose-calculator-column {
+  #dataTable[data-registry-unified-table] #tbody > tr > td.registry-dose-calculator-column[data-registry-column-key="dose-calculator"] {
     z-index: 2;
     background: var(--surface, #fff);
     box-shadow: -5px 0 10px rgba(15, 23, 42, 0.025);
   }
-
-  #tbody > tr:hover > .registry-dose-calculator-column {
+  #dataTable[data-registry-unified-table] #tbody > tr:hover > td.registry-dose-calculator-column[data-registry-column-key="dose-calculator"] {
     background: var(--surface-hover, #f7fbfa);
   }
-
-  #tbody > tr[aria-selected="true"] > .registry-dose-calculator-column,
-  #tbody > tr.is-selected > .registry-dose-calculator-column,
-  #tbody > tr.selected > .registry-dose-calculator-column {
+  #dataTable[data-registry-unified-table] #tbody > tr[aria-selected="true"] > td.registry-dose-calculator-column[data-registry-column-key="dose-calculator"],
+  #dataTable[data-registry-unified-table] #tbody > tr.is-selected > td.registry-dose-calculator-column[data-registry-column-key="dose-calculator"],
+  #dataTable[data-registry-unified-table] #tbody > tr.selected > td.registry-dose-calculator-column[data-registry-column-key="dose-calculator"] {
     background: var(--surface-selected, #eef8f7);
   }
 }
@@ -176,26 +151,18 @@
   border-left-color: rgba(255, 255, 255, 0.1);
   box-shadow: -5px 0 10px rgba(0, 0, 0, 0.16);
 }
-
-[data-theme="dark"] #tbody > tr:hover > .registry-dose-calculator-column {
-  background: #1b2b2e;
-}
-
+[data-theme="dark"] #tbody > tr:hover > .registry-dose-calculator-column { background: #1b2b2e; }
 [data-theme="dark"] #tbody > tr[aria-selected="true"] > .registry-dose-calculator-column,
 [data-theme="dark"] #tbody > tr.is-selected > .registry-dose-calculator-column,
-[data-theme="dark"] #tbody > tr.selected > .registry-dose-calculator-column {
-  background: #1d3435;
-}
+[data-theme="dark"] #tbody > tr.selected > .registry-dose-calculator-column { background: #1d3435; }
 
 @media (hover: none) {
-  .registry-dose-calculator-column .dose-calculator-open:hover {
-    box-shadow: none !important;
-  }
+  .registry-dose-calculator-column .dose-calculator-open:hover { box-shadow: none !important; }
 }
 
 @media (max-width: 760px) {
-  .registry-dose-calculator-column,
-  #headerRow .registry-dose-calculator-column {
+  #dataTable[data-registry-unified-table] #headerRow > th.registry-dose-calculator-column[data-registry-column-key="dose-calculator"],
+  #dataTable[data-registry-unified-table] #tbody > tr > td.registry-dose-calculator-column[data-registry-column-key="dose-calculator"] {
     position: relative !important;
     right: auto !important;
     left: auto !important;
@@ -204,43 +171,22 @@
     max-width: none !important;
     padding-inline: 12px !important;
   }
-
-  .registry-dose-calculator-column .dose-calculator-open::after {
-    content: "Doza";
-  }
-
-  .dose-calculator-group {
-    font-size: 0.58rem !important;
-  }
+  .registry-dose-calculator-column .dose-calculator-open::after { content: "Doza"; }
+  .dose-calculator-group { font-size: 0.58rem !important; }
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .registry-dose-calculator-column .dose-calculator-open {
-    transition: none !important;
-  }
-
-  .registry-dose-calculator-column .dose-calculator-open:active {
-    transform: none !important;
-  }
+  .registry-dose-calculator-column .dose-calculator-open { transition: none !important; }
+  .registry-dose-calculator-column .dose-calculator-open:active { transform: none !important; }
 }
 
 @media (forced-colors: active) {
-  .registry-dose-calculator-column {
-    border-left: 1px solid CanvasText;
-  }
-
+  .registry-dose-calculator-column { border-left: 1px solid CanvasText; }
   .registry-dose-calculator-column .dose-calculator-open,
-  .dose-calculator-group {
-    border: 1px solid ButtonText;
-  }
-
-  .registry-dose-calculator-column .dose-calculator-open::before {
-    background: transparent;
-  }
+  .dose-calculator-group { border: 1px solid ButtonText; }
+  .registry-dose-calculator-column .dose-calculator-open::before { background: transparent; }
 }
 
 @media print {
-  .registry-dose-calculator-column {
-    display: none !important;
-  }
+  .registry-dose-calculator-column { display: none !important; }
 }
