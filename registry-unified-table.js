@@ -11,14 +11,16 @@
     'pdid', 'protocol', 'strength', 'form', 'prescription-label', 'packaging', 'mah',
     'manufacturer', 'ma-certificate', 'status', 'wholesale-price', 'margin-price', 'vat',
     'retail-price', 'validity', 'dosage-adult', 'dosage-pediatric', 'clinical-status',
-    'clinical-action',
+    'clinical-action', 'dose-calculator',
   ]);
   const CLINICAL_ORDER = Object.freeze([
     'select', 'trade-name', 'active-substance', 'strength', 'form',
-    'dosage-adult', 'dosage-pediatric', 'clinical-status', 'clinical-action',
+    'dosage-adult', 'dosage-pediatric', 'clinical-status', 'clinical-action', 'dose-calculator',
   ]);
   const VALID_KEYS = new Set(FULL_ORDER);
-  const DYNAMIC_KEYS = new Set(['dosage-adult', 'dosage-pediatric', 'clinical-status', 'clinical-action']);
+  const DYNAMIC_KEYS = new Set([
+    'dosage-adult', 'dosage-pediatric', 'clinical-status', 'clinical-action', 'dose-calculator',
+  ]);
   const CLINICAL_BASE_KEYS = Object.freeze(['trade-name', 'active-substance', 'strength', 'form']);
 
   const LABEL_BY_KEY = Object.freeze({
@@ -30,7 +32,7 @@
     status:'Statusi', 'wholesale-price':'Çmimi me shumicë', 'margin-price':'Çmimi me marzhë',
     vat:'TVSH', 'retail-price':'Çmimi me pakicë', validity:'Afati i vlefshmërisë',
     'dosage-adult':'1. Dozimi për të rritur', 'dosage-pediatric':'2. Dozimi për fëmijë',
-    'clinical-status':'Verifikimi', 'clinical-action':'Redakto',
+    'clinical-status':'Verifikimi', 'clinical-action':'Redakto', 'dose-calculator':'Doza',
   });
   const RAW_FIELD_BY_KEY = Object.freeze({
     'trade-name':'Emri tregtar', 'active-substance':'Substanca aktive', strength:'Fortësia',
@@ -49,6 +51,7 @@
     'ma-certificate':138, status:112, 'wholesale-price':116, 'margin-price':116,
     vat:78, 'retail-price':116, validity:140, 'dosage-adult':250,
     'dosage-pediatric':250, 'clinical-status':150, 'clinical-action':54,
+    'dose-calculator':128,
   });
   const LABEL_KEYS = Object.freeze({
     perrecete:'select', zgjidh:'select', nr:'number', nrrendor:'number',
@@ -64,7 +67,8 @@
     cmimimepakice:'retail-price', cmpakice:'retail-price', afatiivlefshmerise:'validity',
     afati:'validity', dozimiipertetritur:'dosage-adult', dozimiiperritur:'dosage-adult',
     dozimiiperfemije:'dosage-pediatric', dozimipediatrik:'dosage-pediatric',
-    verifikimi:'clinical-status', redakto:'clinical-action',
+    verifikimi:'clinical-status', redakto:'clinical-action', doza:'dose-calculator',
+    kalkulatori:'dose-calculator', kalkulatoridozes:'dose-calculator',
   });
 
   const PENCIL = '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 20h9"/><path d="M16.5 3.5a2.12 2.12 0 0 1 3 3L7 19l-4 1 1-4Z"/></svg>';
@@ -96,6 +100,7 @@
     if (VALID_KEYS.has(existing)) return existing;
     if (cell.dataset.registryDosageColumn === 'adult') return 'dosage-adult';
     if (cell.dataset.registryDosageColumn === 'pediatric') return 'dosage-pediatric';
+    if (cell.dataset.registryDoseCalculatorColumn === 'dose-calculator') return 'dose-calculator';
     if (cell.dataset.clinicalEditorColumn === 'clinical-status') return 'clinical-status';
     if (cell.dataset.clinicalEditorColumn === 'clinical-action') return 'clinical-action';
     if (cell.classList?.contains('select-col')) return 'select';
@@ -141,7 +146,11 @@
     const cell = document.createElement('th');
     if (synthetic) cell.dataset.registryUnifiedSynthetic = 'true';
     stamp(cell, key);
-    if (key === 'dosage-adult' || key === 'dosage-pediatric') {
+    if (key === 'dose-calculator') {
+      cell.dataset.registryDoseCalculatorColumn = 'dose-calculator';
+      cell.className = 'registry-dose-calculator-column';
+      cell.innerHTML = 'Kalkulatori<span class="registry-dosage-subhead">Doza individuale</span>';
+    } else if (key === 'dosage-adult' || key === 'dosage-pediatric') {
       const population = key === 'dosage-adult' ? 'adult' : 'pediatric';
       cell.dataset.registryDosageColumn = population;
       cell.className = `registry-dosage-column registry-dosage-${population}`;
@@ -168,7 +177,11 @@
     const raw = rawForRow(row);
     const value = clean(raw?.[RAW_FIELD_BY_KEY[key]]);
 
-    if (key === 'dosage-adult' || key === 'dosage-pediatric') {
+    if (key === 'dose-calculator') {
+      cell.dataset.registryDoseCalculatorColumn = 'dose-calculator';
+      cell.className = 'registry-dose-calculator-column registry-unified-placeholder';
+      cell.innerHTML = '<span class="registry-dosage-muted">Duke u lidhur…</span>';
+    } else if (key === 'dosage-adult' || key === 'dosage-pediatric') {
       const population = key === 'dosage-adult' ? 'adult' : 'pediatric';
       cell.dataset.registryDosageColumn = population;
       cell.className = `registry-dosage-column registry-dosage-${population} registry-unified-placeholder`;
