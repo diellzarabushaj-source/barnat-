@@ -1,11 +1,12 @@
 (() => {
   'use strict';
 
-  const VERSION = 'dose-table-button-deep-audit-v1';
+  const VERSION = 'dose-table-button-deep-audit-v2';
   const COLUMN_KEY = 'dose-calculator';
   const CELL_SELECTOR = `[data-registry-dose-calculator-column="${COLUMN_KEY}"]`;
   const ROW_SELECTOR = '#tbody > tr';
-  const IDLE_TIMEOUT_MS = 160;
+  const IDENTITY_SELECTOR = '[data-column-key="Emri tregtar"], .drug-select';
+  const IDLE_TIMEOUT_MS = 120;
   const FRAME_BUDGET_MS = 7;
 
   const clean = value => String(value ?? '').replace(/\s+/g, ' ').trim();
@@ -15,12 +16,21 @@
   };
 
   const pendingRows = new Set();
+  const internalCells = new WeakSet();
+  const internalHeaders = new WeakSet();
   let scheduled = false;
+  let headerDirty = true;
   let tbodyObserver = null;
   let headerObserver = null;
   let processedCells = 0;
   let openedCalculators = 0;
+  let queueRuns = 0;
+  let tableScans = 0;
+  let headerUpdates = 0;
+  let observedMutations = 0;
+  let ignoredMutations = 0;
   let lastRunMs = 0;
+  let maxRunMs = 0;
 
   function productNameForRow(row) {
     if (!row) return 'këtë preparat';
@@ -74,9 +84,17 @@
   }
 
   function emptyState(cell) {
-    const text = clean(cell.textContent);
-    if (/duke u lidhur/i.test(text)) return 'loading';
-    return 'unavailable';
+    return /duke u lidhur/i.test(clean(cell.textContent)) ? 'loading' : 'unavailable';
+  }
+
+  function beginInternalCellWrite(cell) {
+    internalCells.add(cell);
+    queueMicrotask(() => internalCells.delete(cell));
+  }
+
+  function beginInternalHeaderWrite(header) {
+    internalHeaders.add(header);
+    queueMicrotask(() => internalHeaders.delete(header));
   }
 
   function enhanceCell(cell) {
@@ -86,9 +104,10 @@
     const group = groupForCell(cell);
     const productName = productNameForRow(row);
     const state = button ? 'ready' : emptyState(cell);
-    const signature = [state, clean(button?.dataset?.doseProductKey), group, productName].join('|');
+    const signature = [VERSION, state, clean(button?.dataset?.doseProductKey), group, productName].join('|');
 
     if (cell.dataset.doseTableSignature === signature) return;
+    beginInternalCellWrite(cell);
     cell.dataset.doseTableSignature = signature;
     cell.dataset.doseTableState = state;
     cell.classList.toggle('dose-table-cell-ready', state === 'ready');
@@ -138,6 +157,8 @@
 
     button.append(verifiedMark, desktopLabel, mobileLabel);
     const groupText = accessibleGroupLabel(group);
+    button.setAttribute('aria-haspopup', 'dialog');
+    button.setAttribute('aria-controls', 'doseCalculatorModal');
     button.setAttribute(
       'aria-label',
       `Kalkulo dozën për ${productName}${groupText ? `, ${groupText}` : ''}`,
@@ -148,6 +169,7 @@
   }
 
   function currentRows() {
+    tableScans += 1;
     return Array.from(document.querySelectorAll(ROW_SELECTOR))
       .filter(row => !row.querySelector('.empty-state'));
   }
@@ -157,14 +179,20 @@
     if (!(header instanceof HTMLElement)) return;
 
     const rows = currentRows();
-    const readyCount = rows.reduce((count, row) => (
-      count + (row.querySelector(`${CELL_SELECTOR} .dose-calculator-open`) ? 1 : 0)
-    ), 0);
-    const loading = rows.some(row => row.querySelector(`${CELL_SELECTOR}.dose-table-cell-loading`));
-    const state = loading ? 'loading' : readyCount > 0 ? 'ready' : 'empty';
-    const signature = `${state}|${readyCount}|${rows.length}`;
+    let readyCount = 0;
+    let loading = false;
+    rows.forEach(row => {
+      const cell = row.querySelector(CELL_SELECTOR);
+      if (!cell) return;
+      if (cell.querySelector('.dose-calculator-open')) readyCount += 1;
+      if (cell.dataset.doseTableState === 'loading' || /duke u lidhur/i.test(clean(cell.textContent))) loading = true;
+    });
 
+    const state = loading ? 'loading' : readyCount > 0 ? 'ready' : 'empty';
+    const signature = `${VERSION}|${state}|${readyCount}|${rows.length}`;
     if (header.dataset.doseHeaderSignature === signature) return;
+
+    beginInternalHeaderWrite(header);
     header.dataset.doseHeaderSignature = signature;
     header.dataset.doseTableState = state;
     header.classList.add('dose-table-header');
@@ -179,7 +207,7 @@
     meta.textContent = loading
       ? 'Duke u ngarkuar'
       : readyCount > 0
-        ? `${readyCount} të verifikuara`
+        ? `${readyCount} në këtë faqe`
         : 'Vetëm të verifikuara';
 
     header.append(title, meta);
@@ -189,23 +217,52 @@
         ? 'Kolona e dozës po ngarkohet'
         : `${readyCount} preparate me kalkulator të verifikuar në këtë faqe`,
     );
+    headerUpdates += 1;
   }
 
   function enqueueRow(row) {
     if (!(row instanceof HTMLTableRowElement) || row.querySelector('.empty-state')) return;
     pendingRows.add(row);
+    headerDirty = true;
   }
 
-  function enqueueFromNode(node) {
+  function enqueueRowsFromNode(node) {
     if (!(node instanceof Element)) return;
     if (node.matches(ROW_SELECTOR)) enqueueRow(node);
     node.querySelectorAll?.(ROW_SELECTOR).forEach(enqueueRow);
-    const ownerRow = node.closest?.(ROW_SELECTOR);
-    if (ownerRow) enqueueRow(ownerRow);
+  }
+
+  function nodeTouchesDoseUi(node) {
+    if (!(node instanceof Element)) return false;
+    return node.matches(CELL_SELECTOR)
+      || Boolean(node.closest(CELL_SELECTOR))
+      || Boolean(node.querySelector?.(CELL_SELECTOR));
+  }
+
+  function nodeTouchesIdentity(node) {
+    if (!(node instanceof Element)) return false;
+    return node.matches(IDENTITY_SELECTOR)
+      || Boolean(node.closest(IDENTITY_SELECTOR))
+      || Boolean(node.querySelector?.(IDENTITY_SELECTOR));
+  }
+
+  function mutationOwnerRow(mutation) {
+    const target = mutation.target instanceof Element ? mutation.target : null;
+    return target?.closest(ROW_SELECTOR) || null;
+  }
+
+  function mutationTouchesRelevantUi(mutation) {
+    const target = mutation.target instanceof Element ? mutation.target : null;
+    const targetCell = target?.closest(CELL_SELECTOR);
+    if (targetCell && internalCells.has(targetCell)) return false;
+    if (targetCell || target?.closest(IDENTITY_SELECTOR)) return true;
+    return [...mutation.addedNodes, ...mutation.removedNodes]
+      .some(node => nodeTouchesDoseUi(node) || nodeTouchesIdentity(node));
   }
 
   function processQueue(deadline) {
     scheduled = false;
+    queueRuns += 1;
     const startedAt = performance.now();
 
     while (pendingRows.size) {
@@ -219,9 +276,14 @@
       if (elapsed >= FRAME_BUDGET_MS && idleRemaining < 2) break;
     }
 
-    updateHeader();
+    if (!pendingRows.size && headerDirty) {
+      headerDirty = false;
+      updateHeader();
+    }
+
     lastRunMs = performance.now() - startedAt;
-    if (pendingRows.size) scheduleProcessing();
+    maxRunMs = Math.max(maxRunMs, lastRunMs);
+    if (pendingRows.size || headerDirty) scheduleProcessing();
   }
 
   function scheduleProcessing() {
@@ -236,6 +298,7 @@
 
   function scanVisiblePage() {
     currentRows().forEach(enqueueRow);
+    headerDirty = true;
     scheduleProcessing();
   }
 
@@ -246,10 +309,20 @@
     if (tbody && !tbodyObserver) {
       tbodyObserver = new MutationObserver(mutations => {
         mutations.forEach(mutation => {
-          mutation.addedNodes.forEach(enqueueFromNode);
-          if (mutation.target instanceof Element) enqueueFromNode(mutation.target);
+          observedMutations += 1;
+          if (mutation.target === tbody) {
+            mutation.addedNodes.forEach(enqueueRowsFromNode);
+            if (mutation.removedNodes.length) headerDirty = true;
+            return;
+          }
+          if (!mutationTouchesRelevantUi(mutation)) {
+            ignoredMutations += 1;
+            return;
+          }
+          const row = mutationOwnerRow(mutation);
+          if (row) enqueueRow(row);
         });
-        scheduleProcessing();
+        if (pendingRows.size || headerDirty) scheduleProcessing();
       });
       tbodyObserver.observe(tbody, { childList:true, subtree:true });
       tbody.addEventListener('click', event => {
@@ -258,9 +331,15 @@
     }
 
     if (header && !headerObserver) {
-      headerObserver = new MutationObserver(() => {
-        updateHeader();
-        scanVisiblePage();
+      headerObserver = new MutationObserver(mutations => {
+        const internalOnly = mutations.every(mutation => internalHeaders.has(mutation.target));
+        if (internalOnly) return;
+        const doseHeaderChanged = mutations.some(mutation =>
+          [...mutation.addedNodes, ...mutation.removedNodes].some(node => nodeTouchesDoseUi(node)),
+        );
+        headerDirty = true;
+        if (doseHeaderChanged) currentRows().forEach(enqueueRow);
+        scheduleProcessing();
       });
       headerObserver.observe(header, { childList:true });
     }
@@ -285,7 +364,13 @@
       queuedRows:pendingRows.size,
       processedCells,
       openedCalculators,
+      queueRuns,
+      tableScans,
+      headerUpdates,
+      observedMutations,
+      ignoredMutations,
       lastRunMs:Number(lastRunMs.toFixed(2)),
+      maxRunMs:Number(maxRunMs.toFixed(2)),
     }),
   });
 })();
