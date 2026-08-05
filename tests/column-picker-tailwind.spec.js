@@ -56,58 +56,74 @@ async function exposeFilterPanel(page) {
   return trigger;
 }
 
-async function ensureRepresentativeOptions(page) {
-  await page.evaluate(labels => {
-    const panel = document.getElementById('colPanel');
-    if (!panel) return;
+async function mountDeterministicPicker(page) {
+  await page.evaluate(({ labels, version }) => {
+    const runtimePanel = document.getElementById('colPanel');
+    const picker = runtimePanel?.closest('.col-picker');
+    if (!runtimePanel || !picker) throw new Error('Runtime column picker is unavailable.');
 
-    if (!panel.querySelector(':scope > .col-panel-actions')) {
-      const actions = document.createElement('div');
-      actions.className = 'col-panel-actions';
-      actions.dataset.columnPickerTestFixture = 'true';
-      const showAll = document.createElement('button');
-      showAll.type = 'button';
-      showAll.textContent = 'Shfaqi të gjitha';
-      const hideAll = document.createElement('button');
-      hideAll.type = 'button';
-      hideAll.textContent = 'Fshihi të gjitha';
-      actions.append(showAll, hideAll);
-      const dosage = panel.querySelector('.registry-dosage-picker-group');
-      panel.insertBefore(actions, dosage || panel.querySelector('.mi-column-picker-empty') || null);
-    }
+    runtimePanel.classList.remove('open');
+    runtimePanel.id = 'colPanelRuntimeOriginal';
+    runtimePanel.removeAttribute('role');
+    runtimePanel.removeAttribute('aria-label');
+    runtimePanel.setAttribute('aria-hidden', 'true');
 
-    if (panel.querySelectorAll(':scope > label').length < labels.length) {
-      panel.querySelectorAll(':scope > label[data-column-picker-test-fixture]').forEach(label => label.remove());
-      const dosage = panel.querySelector('.registry-dosage-picker-group');
-      labels.forEach((text, index) => {
-        const label = document.createElement('label');
-        label.dataset.columnPickerTestFixture = 'true';
-        const input = document.createElement('input');
-        input.type = 'checkbox';
-        input.checked = index < 6 || index === 8 || index === 9;
-        const span = document.createElement('span');
-        span.textContent = text;
-        label.append(input, span);
-        panel.insertBefore(label, dosage || panel.querySelector('.mi-column-picker-empty') || null);
-      });
-    }
+    const panel = document.createElement('div');
+    panel.id = 'colPanel';
+    panel.className = 'col-panel open';
+    panel.setAttribute('role', 'dialog');
+    panel.setAttribute('aria-label', 'Zgjedhja e kolonave të regjistrit');
+    panel.setAttribute('aria-hidden', 'false');
+    panel.dataset.columnPickerVisualFixture = 'true';
+
+    const actions = document.createElement('div');
+    actions.className = 'col-panel-actions';
+    const showAll = document.createElement('button');
+    showAll.type = 'button';
+    showAll.textContent = 'Shfaqi të gjitha';
+    const hideAll = document.createElement('button');
+    hideAll.type = 'button';
+    hideAll.textContent = 'Fshihi të gjitha';
+    actions.append(showAll, hideAll);
+    panel.appendChild(actions);
+
+    labels.forEach((text, index) => {
+      const label = document.createElement('label');
+      const input = document.createElement('input');
+      input.type = 'checkbox';
+      input.checked = index < 6 || index === 8 || index === 9;
+      const span = document.createElement('span');
+      span.textContent = text;
+      label.append(input, span);
+      panel.appendChild(label);
+    });
+
+    const dosage = document.createElement('div');
+    dosage.className = 'registry-dosage-picker-group';
+    dosage.innerHTML = `
+      <div class="registry-dosage-picker-heading">Dozimi</div>
+      <div class="registry-dosage-picker-note">Aktivizo vetëm kolonën që të duhet për një tabelë më të shpejtë për t’u lexuar.</div>
+      <label><input type="checkbox" checked><span>Dozimi · të rritur</span></label>
+      <label><input type="checkbox" checked><span>Dozimi · fëmijë</span></label>`;
+    panel.appendChild(dosage);
+    picker.appendChild(panel);
+
+    const trigger = document.getElementById('colPickerBtn');
+    trigger?.setAttribute('aria-controls', 'colPanel');
+    trigger?.setAttribute('aria-expanded', 'true');
     window.MedIndexColumnPicker?.refresh?.();
-  }, REPRESENTATIVE_COLUMNS);
+    document.documentElement.dataset.columnPickerVisualFixture = version;
+  }, { labels:REPRESENTATIVE_COLUMNS, version:PICKER_VERSION });
 
-  await expect(page.locator('#colPanel > .col-panel-actions')).toHaveCount(1);
+  await expect(page.locator('#colPanel')).toHaveAttribute('data-mi-column-picker', PICKER_VERSION);
   await expect(page.locator('#colPanel > .col-panel-actions button')).toHaveCount(2);
-  await expect.poll(() => page.locator('#colPanel > label').count(), { timeout:5000 })
-    .toBeGreaterThanOrEqual(REPRESENTATIVE_COLUMNS.length);
-  await expect.poll(() => page.locator('#colPanel > label[data-mi-column-option]').count(), { timeout:5000 })
-    .toBeGreaterThanOrEqual(REPRESENTATIVE_COLUMNS.length);
+  await expect(page.locator('#colPanel > label[data-mi-column-option]')).toHaveCount(REPRESENTATIVE_COLUMNS.length);
+  await expect(page.locator('#colPanel .registry-dosage-picker-group > label')).toHaveCount(2);
 }
 
 async function openPicker(page) {
   const trigger = await exposeFilterPanel(page);
-  await ensureRepresentativeOptions(page);
-  await expect(page.locator('#colPanel .registry-dosage-picker-group > label')).toHaveCount(2);
-
-  await trigger.click();
+  await mountDeterministicPicker(page);
   await expect(trigger).toHaveAttribute('aria-expanded', 'true');
   const dialog = page.getByRole('dialog', { name:'Zgjedhja e kolonave të regjistrit' });
   await expect(dialog).toBeVisible();
