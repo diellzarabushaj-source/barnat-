@@ -1,0 +1,181 @@
+.dose-calculator-dialog[data-fast-dose-ux] {
+  width: min(570px, 100%);
+  padding: 18px;
+}
+
+.dose-calculator-dialog[data-fast-dose-ux] .dose-calculator-product {
+  margin-bottom: 10px;
+}
+
+.dose-calculator-fast-note {
+  display: grid;
+  gap: 3px;
+  margin-bottom: 14px;
+  padding: 10px 12px;
+  border: 1px solid rgba(13, 95, 99, 0.16);
+  border-radius: 10px;
+  background: rgba(13, 95, 99, 0.055);
+}
+
+.dose-calculator-fast-note strong {
+  color: #0d5f63;
+  font-size: 0.76rem;
+  font-weight: 900;
+}
+
+.dose-calculator-fast-note span {
+  color: #475467;
+  font-size: 0.72rem;
+  line-height: 1.4;
+}
+
+.dose-calculator-dialog[data-fast-dose-ux] .dose-calculator-form {
+  gap: 10px;
+}
+
+.dose-calculator-dialog[data-fast-dose-ux] .dose-calculator-form label {
+  gap: 5px;
+}
+
+.dose-calculator-dialog[data-fast-dose-ux] .dose-calculator-form select,
+.dose-calculator-dialog[data-fast-dose-ux] .dose-calculator-form input,
+.dose-calculator-dialog[data-fast-dose-ux] .dose-calculator-form output {
+  min-height: 46px;
+  font-size: 0.92rem;
+}
+
+.dose-calculator-group-choices {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 7px;
+}
+
+.dose-calculator-group-choice,
+.dose-calculator-weight-presets button {
+  min-height: 40px;
+  border: 1px solid #c9d7d5;
+  border-radius: 9px;
+  background: #fff;
+  color: #344054;
+  font: inherit;
+  font-size: 0.8rem;
+  font-weight: 800;
+  cursor: pointer;
+}
+
+.dose-calculator-group-choice:hover,
+.dose-calculator-weight-presets button:hover {
+  border-color: #0d5f63;
+  background: #f1f9f8;
+}
+
+.dose-calculator-group-choice.is-selected,
+.dose-calculator-weight-presets button.is-selected {
+  border-color: #0d5f63;
+  background: #0d5f63;
+  color: #fff;
+  box-shadow: 0 4px 12px rgba(13, 95, 99, 0.16);
+}
+
+.dose-calculator-weight-presets {
+  display: grid;
+  grid-template-columns: repeat(5, minmax(0, 1fr));
+  gap: 5px;
+  margin-top: 2px;
+}
+
+.dose-calculator-weight-presets[hidden] {
+  display: none !important;
+}
+
+.dose-calculator-weight-presets button {
+  min-height: 32px;
+  padding: 4px;
+  font-size: 0.68rem;
+}
+
+.dose-calculator-auto-status {
+  margin: 6px 0 0;
+  color: #667085;
+  font-size: 0.68rem;
+  line-height: 1.35;
+  text-align: center;
+}
+
+.dose-calculator-dialog[data-fast-dose-ux] .dose-calculator-submit {
+  min-height: 48px;
+  margin-top: 13px;
+  font-size: 0.94rem;
+}
+
+.dose-calculator-dialog[data-fast-dose-ux] .dose-calculator-result {
+  margin-top: 13px;
+}
+
+.dose-calculator-fast-hidden {
+  display: none !important;
+}
+
+.dose-calculator-visually-hidden {
+  position: absolute !important;
+  width: 1px !important;
+  height: 1px !important;
+  padding: 0 !important;
+  margin: -1px !important;
+  overflow: hidden !important;
+  clip: rect(0, 0, 0, 0) !important;
+  white-space: nowrap !important;
+  border: 0 !important;
+}
+
+.dose-calculator-weight-disabled {
+  opacity: 0.82;
+}
+
+[data-theme="dark"] .dose-calculator-fast-note {
+  border-color: rgba(128, 214, 216, 0.18);
+  background: rgba(128, 214, 216, 0.07);
+}
+
+[data-theme="dark"] .dose-calculator-fast-note strong {
+  color: #9bd9db;
+}
+
+[data-theme="dark"] .dose-calculator-fast-note span,
+[data-theme="dark"] .dose-calculator-auto-status {
+  color: #b5c3c5;
+}
+
+[data-theme="dark"] .dose-calculator-group-choice,
+[data-theme="dark"] .dose-calculator-weight-presets button {
+  border-color: rgba(255, 255, 255, 0.16);
+  background: #1f3033;
+  color: #e7eeee;
+}
+
+[data-theme="dark"] .dose-calculator-group-choice.is-selected,
+[data-theme="dark"] .dose-calculator-weight-presets button.is-selected {
+  border-color: #9bd9db;
+  background: #0d5f63;
+  color: #fff;
+}
+
+@media (max-width: 760px) {
+  .dose-calculator-dialog[data-fast-dose-ux] {
+    padding: 15px;
+  }
+
+  .dose-calculator-dialog[data-fast-dose-ux] .dose-calculator-dialog-header {
+    margin-bottom: 5px;
+  }
+
+  .dose-calculator-dialog[data-fast-dose-ux] .dose-calculator-form {
+    gap: 9px;
+  }
+
+  .dose-calculator-weight-presets {
+    grid-template-columns: repeat(5, minmax(48px, 1fr));
+    overflow-x: auto;
+    padding-bottom: 2px;
+  }
+}
