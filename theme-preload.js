@@ -8,12 +8,27 @@
     document.documentElement.dataset.theme = 'light';
   }
 
+  const assetUrl = path => new URL(String(path || '').replace(/^\/+/, ''), document.baseURI).href;
+
+  function ensureTailwindUi() {
+    let stylesheet = document.querySelector('link[data-medindex-tailwind-ui]');
+    if (!stylesheet) {
+      stylesheet = document.createElement('link');
+      stylesheet.rel = 'stylesheet';
+      stylesheet.href = assetUrl('medindex-tailwind-ui.css?v=20260805-1');
+      stylesheet.dataset.medindexTailwindUi = '20260805-1';
+    }
+    document.head.appendChild(stylesheet);
+    document.documentElement.dataset.miTailwindUi = '20260805-1';
+  }
+
+  ensureTailwindUi();
+
   if (document.documentElement.dataset.miPage !== 'login') return;
 
   /* Resolve public assets relative to the current page instead of the domain
      root. This keeps the landing page working both on a custom domain and
      when it is deployed below a project path such as /barnat-/. */
-  const assetUrl = path => new URL(String(path || '').replace(/^\/+/, ''), document.baseURI).href;
 
   /* Critical, fail-safe icon geometry. The Clinical+ card stylesheet remains
      the visual source of truth; these rules only prevent an unstyled inline
@@ -124,6 +139,11 @@
       planCard.dataset.miClinicalPlanFinal = 'true';
       document.head.appendChild(planCard);
     }
+
+    /* The site-wide system is always the last visual layer. It standardizes
+       spacing, controls, focus, responsive behaviour and the quiet teal
+       Tailwind palette without touching the login or clinical logic. */
+    ensureTailwindUi();
 
     document.documentElement.dataset.miSignature = '20260805-3';
     document.documentElement.dataset.miClinicalPlan = '20260805-3';
