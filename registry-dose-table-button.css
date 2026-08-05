@@ -118,6 +118,14 @@
   box-shadow: inset 3px 0 0 rgba(13, 95, 99, 0.5);
 }
 
+@media (min-width: 761px) {
+  html.medindex-tailadmin[data-mi-page="barnat"][data-registry-ux-view="clinical"] body
+  #dataTable[data-registry-unified-table]
+  :is(th,td).registry-dose-calculator-column[data-registry-column-key="dose-calculator"] {
+    display: table-cell !important;
+  }
+}
+
 @media (min-width: 980px) {
   #dataTable[data-registry-unified-table] #headerRow > th.registry-dose-calculator-column[data-registry-column-key="dose-calculator"],
   #dataTable[data-registry-unified-table] #tbody > tr > td.registry-dose-calculator-column[data-registry-column-key="dose-calculator"] {
@@ -161,6 +169,12 @@
 }
 
 @media (max-width: 760px) {
+  html.medindex-tailadmin[data-mi-page="barnat"] body
+  #dataTable[data-registry-unified-table]
+  td.registry-dose-calculator-column[data-registry-column-key="dose-calculator"] {
+    display: grid !important;
+  }
+
   #dataTable[data-registry-unified-table] #headerRow > th.registry-dose-calculator-column[data-registry-column-key="dose-calculator"],
   #dataTable[data-registry-unified-table] #tbody > tr > td.registry-dose-calculator-column[data-registry-column-key="dose-calculator"] {
     position: relative !important;
