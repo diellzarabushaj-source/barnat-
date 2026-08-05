@@ -9,13 +9,17 @@ const ROOT = path.resolve(__dirname, '..');
 const read = relativePath => fs.readFileSync(path.join(ROOT, relativePath), 'utf8');
 const syntax = relativePath => execFileSync(process.execPath, ['--check', path.join(ROOT, relativePath)], { stdio:'pipe' });
 
-syntax('api/dose-calculator.js');
+syntax('api/dosage.js');
+syntax('lib/dosage-handler.js');
+syntax('lib/dose-calculator-handler.js');
 syntax('registry-dose-calculator.js');
 
-const apiSource = read('api/dose-calculator.js');
+const apiSource = read('lib/dose-calculator-handler.js');
+const routerSource = read('api/dosage.js');
 const uiSource = read('registry-dose-calculator.js');
 const html = read('index.html');
 const css = read('registry-dosage-columns.css');
+const vercel = JSON.parse(read('vercel.json'));
 
 assert.match(apiSource, /dose_sources_v2/);
 assert.match(apiSource, /dose_indications_v2/);
@@ -27,6 +31,10 @@ assert.match(apiSource, /officialVerifiedOnly:true/);
 assert.match(apiSource, /failClosed:true/);
 assert.match(apiSource, /Sesioni nuk është aktiv/);
 assert.match(apiSource, /conversion_status/);
+assert.match(routerSource, /view.*calculator/s);
+assert.match(routerSource, /doseCalculatorHandler/);
+assert.ok(vercel.rewrites.some(item => item.source === '/api/dose-calculator'
+  && item.destination === '/api/dosage?view=calculator'), 'Dose calculator rewrite is missing');
 
 assert.match(html, /registry-dose-calculator\.js\?v=/);
 assert.match(html, /registry-dosage-columns\.css\?v=/);
@@ -47,8 +55,10 @@ assert.match(css, /\.dose-calculator-modal/);
 assert.match(css, /\.dose-calculator-result\.is-error/);
 assert.match(css, /dose-calculator-group-pediatric_only/);
 
-const calculatorApi = require(path.join(ROOT, 'api/dose-calculator.js'));
-const helpers = calculatorApi._test;
+const dosageApi = require(path.join(ROOT, 'api/dosage.js'));
+const helpers = dosageApi._doseCalculatorTest;
+assert.equal(dosageApi.isCalculatorRequest({ url:'/api/dosage?view=calculator' }), true);
+assert.equal(dosageApi.isCalculatorRequest({ url:'/api/dosage' }), false);
 assert.equal(helpers.groupCovers('pediatric_and_adult', 'pediatric_only'), true);
 assert.equal(helpers.groupCovers('adult_only', 'pediatric_only'), false);
 assert.equal(helpers.statusAllowed('verified'), true);
