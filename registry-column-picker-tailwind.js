@@ -1,7 +1,7 @@
 (() => {
   'use strict';
 
-  const VERSION = 'column-picker-tailwind-20260805-2';
+  const VERSION = 'column-picker-tailwind-20260805-3';
   const PANEL_ID = 'colPanel';
   const BUTTON_ID = 'colPickerBtn';
   const SEARCH_ICON = '<svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="11" cy="11" r="7"></circle><path d="m16.5 16.5 4 4"></path></svg>';
@@ -142,18 +142,27 @@
     if (empty) empty.hidden = visibleCount > 0;
   }
 
+  function resetPanelPosition(root) {
+    root?.style.removeProperty('left');
+    root?.style.removeProperty('right');
+  }
+
   function keepPanelInsideViewport(root) {
     if (!root || !root.classList.contains('open')) return;
-    root.style.setProperty('--mi-column-picker-shift-x', '0px');
+    resetPanelPosition(root);
     if (window.matchMedia('(max-width: 640px)').matches) return;
     requestAnimationFrame(() => {
       if (!root.classList.contains('open')) return;
       const rect = root.getBoundingClientRect();
+      const parentRect = root.offsetParent?.getBoundingClientRect() || { left:0, right:window.innerWidth };
       const margin = 12;
-      let shift = 0;
-      if (rect.left < margin) shift = margin - rect.left;
-      else if (rect.right > window.innerWidth - margin) shift = (window.innerWidth - margin) - rect.right;
-      root.style.setProperty('--mi-column-picker-shift-x', `${Math.round(shift)}px`);
+      if (rect.left < margin) {
+        root.style.setProperty('left', `${Math.round(margin - parentRect.left)}px`, 'important');
+        root.style.setProperty('right', 'auto', 'important');
+      } else if (rect.right > window.innerWidth - margin) {
+        root.style.setProperty('right', `${Math.round(parentRect.right - (window.innerWidth - margin))}px`, 'important');
+        root.style.setProperty('left', 'auto', 'important');
+      }
     });
   }
   function syncOpenState() {
@@ -172,7 +181,7 @@
         requestAnimationFrame(() => search.focus({ preventScroll:true }));
       }
     } else {
-      root.style.removeProperty('--mi-column-picker-shift-x');
+      resetPanelPosition(root);
     }
   }
 

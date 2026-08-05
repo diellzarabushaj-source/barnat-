@@ -7,6 +7,12 @@ html[data-mi-page="barnat"] .col-picker {
   z-index: 1700;
 }
 
+html[data-mi-page="barnat"] #colPanel.col-panel,
+html[data-mi-page="barnat"] #colPanel.col-panel *,
+html[data-mi-page="barnat"] #colPanel.col-panel *::before,
+html[data-mi-page="barnat"] #colPanel.col-panel *::after {
+  box-sizing: border-box;
+}
 html[data-mi-page="barnat"] #colPanel.col-panel {
   box-sizing: border-box !important;
   --cp-slate-50: #f8fafc;
@@ -51,7 +57,6 @@ html[data-mi-page="barnat"] #colPanel.col-panel {
   backdrop-filter: blur(18px);
   -webkit-backdrop-filter: blur(18px);
   transform-origin: top right;
-  translate: var(--mi-column-picker-shift-x, 0px) 0;
   z-index: 1900 !important;
 }
 
