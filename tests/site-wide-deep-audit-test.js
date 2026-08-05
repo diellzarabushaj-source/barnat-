@@ -34,7 +34,7 @@ const jsFiles = [
   'mobile-experience.js', 'auth-client.js', 'offline-runtime.js', 'app.js',
   'theme-preload.js', 'recetat-safe-print.js', 'classification-redirect.js',
   'icd.js', 'analizat.js', 'dozologjia.js', 'dozologjia-deep-audit.js',
-  'protokollet.js', 'recetat.js',
+  'protokollet.js', 'recetat.js', 'registry-dose-modal-accessibility.js',
 ];
 for (const file of jsFiles) {
   assert.ok(exists(file), `${file}: missing`);
@@ -67,7 +67,7 @@ assert.match(auth, /CLEAR_PRIVATE_DATA/, 'logout must clear service-worker priva
 assert.match(auth, /clearSensitiveWebStorage/, 'logout storage cleanup must remain centralized');
 
 const worker = read('sw.js');
-assert.match(worker, /icd-responsive-runtime-20260803-1/, 'service-worker cache epoch is stale');
+assert.match(worker, /clinical-knowledge-20260805-1/, 'service-worker cache epoch is stale');
 [
   'app-runtime.js', 'theme-preload.js', 'recetat-safe-print.js',
   'dozologjia-deep-audit.js', 'dozologjia-clinical-readiness.css',
