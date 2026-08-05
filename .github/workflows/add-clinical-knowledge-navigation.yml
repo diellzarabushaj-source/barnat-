@@ -1,0 +1,212 @@
+name: Add clinical knowledge navigation
+
+on:
+  push:
+    paths:
+      - .github/workflows/add-clinical-knowledge-navigation.yml
+
+permissions:
+  contents: write
+
+jobs:
+  patch:
+    if: github.actor != 'github-actions[bot]'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Patch dashboard navigation and offline shell
+        shell: python {0}
+        run: |
+          from pathlib import Path
+
+          def replace_once(path, old, new):
+              file = Path(path)
+              text = file.read_text(encoding='utf-8')
+              if old not in text:
+                  raise SystemExit(f'Marker not found in {path}: {old[:80]}')
+              file.write_text(text.replace(old, new, 1), encoding='utf-8')
+
+          replace_once(
+              'main-navigation-extension.js',
+              """    {
+                id:'labs', href:'analizat.html', title:'Analizat',""",
+              """    {
+                id:'emergencies', href:'urgjencat.html', title:'Urgjencat',
+                icon:'<svg fill=\"none\" viewBox=\"0 0 256 256\" aria-hidden=\"true\"><path d=\"M128 28 228 210H28L128 28Z\" stroke=\"currentColor\" stroke-width=\"16\" stroke-linejoin=\"round\"/><path d=\"M128 88v58M128 180h.1\" stroke=\"currentColor\" stroke-width=\"16\" stroke-linecap=\"round\"/></svg>'
+              },
+              {
+                id:'labs', href:'analizat.html', title:'Analizat',""",
+          )
+          replace_once(
+              'main-navigation-extension.js',
+              """    {
+                id:'clinical-protocols', href:'protokollet.html', title:'Protokollet',""",
+              """    {
+                id:'learning', href:'medical-hub.html', title:'Medical Hub',
+                icon:'<svg fill=\"none\" viewBox=\"0 0 256 256\" aria-hidden=\"true\"><path d=\"M44 48h72a28 28 0 0 1 28 28v132H72a28 28 0 0 0-28 28V48Z\" stroke=\"currentColor\" stroke-width=\"16\"/><path d=\"M212 48h-40a28 28 0 0 0-28 28v132h40a28 28 0 0 1 28 28V48Z\" stroke=\"currentColor\" stroke-width=\"16\"/></svg>'
+              },
+              {
+                id:'clinical-protocols', href:'protokollet.html', title:'Protokollet',""",
+          )
+
+          replace_once(
+              'tailadmin-shell-legacy.js',
+              """    '/icd.html': ['ICD', 'Diagnozat dhe kodet klinike'],
+              '/analizat.html':""",
+              """    '/icd.html': ['ICD', 'Diagnozat dhe kodet klinike'],
+              '/urgjencat.html': ['Urgjencat', 'Hapa të shpejtë, referim dhe kujdes sekondar'],
+              '/analizat.html':""",
+          )
+          replace_once(
+              'tailadmin-shell-legacy.js',
+              """    '/protokollet.html': ['Protokollet', 'Dokumentet zyrtare të Ministrisë së Shëndetësisë'],
+              '/recetat.html':""",
+              """    '/protokollet.html': ['Protokollet', 'Dokumentet zyrtare të Ministrisë së Shëndetësisë'],
+              '/medical-hub.html': ['Medical Hub', 'Pyetje klinike, trajtim hap pas hapi dhe receta'],
+              '/recetat.html':""",
+          )
+          replace_once(
+              'tailadmin-shell-legacy.js',
+              """    labs: '<svg viewBox=\"0 0 24 24\" aria-hidden=\"true\">""",
+              """    emergencies: '<svg viewBox=\"0 0 24 24\" aria-hidden=\"true\"><path d=\"M12 3 22 21H2L12 3Z\"/><path d=\"M12 9v5M12 17h.01\"/></svg>',
+              learning: '<svg viewBox=\"0 0 24 24\" aria-hidden=\"true\"><path d=\"M4 4h6a3 3 0 0 1 3 3v13H7a3 3 0 0 0-3 3V4Z\"/><path d=\"M20 4h-4a3 3 0 0 0-3 3v13h4a3 3 0 0 1 3 3V4Z\"/></svg>',
+              labs: '<svg viewBox=\"0 0 24 24\" aria-hidden=\"true\">""",
+          )
+          replace_once(
+              'tailadmin-shell-legacy.js',
+              """      icd: ['/icd.html'],
+              labs: ['/analizat.html'],""",
+              """      icd: ['/icd.html'],
+              emergencies: ['/urgjencat.html'],
+              labs: ['/analizat.html'],""",
+          )
+          replace_once(
+              'tailadmin-shell-legacy.js',
+              """      'clinical-protocols': ['/protokollet.html'],
+              prescriptions: ['/recetat.html'],""",
+              """      'clinical-protocols': ['/protokollet.html'],
+              learning: ['/medical-hub.html'],
+              prescriptions: ['/recetat.html'],""",
+          )
+          replace_once(
+              'tailadmin-shell-legacy.js',
+              """        ${navItem({ id:'icd', href:'/icd.html', label:'ICD', icon:ICONS.icd })}
+              ${navItem({ id:'labs',""",
+              """        ${navItem({ id:'icd', href:'/icd.html', label:'ICD', icon:ICONS.icd })}
+              ${navItem({ id:'emergencies', href:'/urgjencat.html', label:'Urgjencat', icon:ICONS.emergencies })}
+              ${navItem({ id:'labs',""",
+          )
+          replace_once(
+              'tailadmin-shell-legacy.js',
+              """        ${navItem({ id:'clinical-protocols', href:'/protokollet.html', label:'Protokollet', icon:ICONS.protocols })}
+              ${navItem({ id:'prescriptions',""",
+              """        ${navItem({ id:'clinical-protocols', href:'/protokollet.html', label:'Protokollet', icon:ICONS.protocols })}
+              ${navItem({ id:'learning', href:'/medical-hub.html', label:'Medical Hub', icon:ICONS.learning })}
+              ${navItem({ id:'prescriptions',""",
+          )
+
+          replace_once(
+              'tailadmin-shell.js',
+              """    '/dozologjia.html':['Dozologjia'],
+              '/protokollet.html':['Protokollet'],""",
+              """    '/dozologjia.html':['Dozologjia'],
+              '/urgjencat.html':['Urgjencat'],
+              '/protokollet.html':['Protokollet'],
+              '/medical-hub.html':['Medical Hub'],""",
+          )
+          replace_once(
+              'tailadmin-shell.js',
+              """'#dosageSearch', '#protocolSearch', '#rxDrugSearch']""",
+              """'#dosageSearch', '#emergencySearch', '#protocolSearch', '#learningSearch', '#rxDrugSearch']""",
+          )
+
+          replace_once(
+              'tailadmin-professional.js',
+              """    '/icd.html':'icd',
+              '/analizat.html':'analizat',""",
+              """    '/icd.html':'icd',
+              '/urgjencat.html':'urgjencat',
+              '/analizat.html':'analizat',""",
+          )
+          replace_once(
+              'tailadmin-professional.js',
+              """    '/protokollet.html':'protokollet',
+              '/recetat.html':'recetat',""",
+              """    '/protokollet.html':'protokollet',
+              '/medical-hub.html':'medical-hub',
+              '/recetat.html':'recetat',""",
+          )
+
+          replace_once(
+              'tests/ui-navigation-audit-test.js',
+              """  ['icd.html', 'icdContent'],
+              ['analizat.html', 'labContent'],""",
+              """  ['icd.html', 'icdContent'],
+              ['urgjencat.html', 'emergencyContent'],
+              ['analizat.html', 'labContent'],""",
+          )
+          replace_once(
+              'tests/ui-navigation-audit-test.js',
+              """  ['protokollet.html', 'protocolContent'],
+              ['recetat.html', 'rxContent'],""",
+              """  ['protokollet.html', 'protocolContent'],
+              ['medical-hub.html', 'medicalHubContent'],
+              ['recetat.html', 'rxContent'],""",
+          )
+          replace_once(
+              'tests/ui-navigation-audit-test.js',
+              """  /\\/protokollet\\.html/,
+              /\\/recetat\\.html/,""",
+              """  /\\/urgjencat\\.html/,
+              /\\/protokollet\\.html/,
+              /\\/medical-hub\\.html/,
+              /\\/recetat\\.html/,""",
+          )
+
+          replace_once(
+              'sw.js',
+              """const CACHE_EPOCH = 'icd-responsive-runtime-20260803-1';""",
+              """const CACHE_EPOCH = 'clinical-knowledge-20260805-1';""",
+          )
+          replace_once(
+              'sw.js',
+              """  '/dozologjia.html', '/protokollet.html', '/recetat.html', '/login.html',""",
+              """  '/dozologjia.html', '/urgjencat.html', '/protokollet.html', '/medical-hub.html', '/recetat.html', '/login.html',""",
+          )
+          replace_once(
+              'sw.js',
+              """  '/tailadmin-professional.css', '/medical-hub.css', '/clinical-density.css',""",
+              """  '/tailadmin-professional.css', '/medical-hub.css', '/clinical-knowledge.css', '/clinical-density.css',""",
+          )
+          replace_once(
+              'sw.js',
+              """  '/dozologjia-deep-audit.js', '/protokollet.js',""",
+              """  '/dozologjia-deep-audit.js', '/sanity-clinical-client.js', '/urgjencat.js', '/medical-hub.js', '/protokollet.js',""",
+          )
+
+      - name: Validate files
+        shell: bash
+        run: |
+          set -euo pipefail
+          node --check main-navigation-extension.js
+          node --check tailadmin-shell.js
+          node --check tailadmin-shell-legacy.js
+          node --check tailadmin-professional.js
+          node --check sanity-clinical-client.js
+          node --check urgjencat.js
+          node --check medical-hub.js
+          node --check sw.js
+          node tests/ui-navigation-audit-test.js
+
+      - name: Commit integrated pages
+        shell: bash
+        run: |
+          rm -f .github/workflows/add-clinical-knowledge-navigation.yml
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add main-navigation-extension.js tailadmin-shell.js tailadmin-shell-legacy.js tailadmin-professional.js tests/ui-navigation-audit-test.js sw.js .github/workflows/add-clinical-knowledge-navigation.yml
+          git commit -m 'Integrate Emergencies and Medical Hub navigation'
+          git push origin HEAD:main
