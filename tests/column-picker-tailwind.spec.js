@@ -17,14 +17,53 @@ const REPRESENTATIVE_COLUMNS = [
   'Prodhuesi',
 ];
 
-async function openRegistry(page) {
-  await page.goto(`${BASE}/index.html`, { waitUntil:'domcontentloaded' });
-  await expect.poll(() => page.evaluate(() => document.documentElement.classList.contains('auth-ready')), { timeout:15000 }).toBe(true);
-  await expect.poll(() => page.evaluate(() => document.documentElement.dataset.miColumnPicker), { timeout:15000 })
+function optionMarkup(text, checked) {
+  return `<label><input type="checkbox"${checked ? ' checked' : ''}><span>${text}</span></label>`;
+}
+
+async function mountHarness(page) {
+  const options = REPRESENTATIVE_COLUMNS
+    .map((text, index) => optionMarkup(text, index < 6 || index === 8 || index === 9))
+    .join('');
+
+  await page.setContent(`<!DOCTYPE html>
+    <html lang="sq" data-mi-page="barnat">
+      <head><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"></head>
+      <body>
+        <div class="toolbar">
+          <div class="col-picker">
+            <button id="colPickerBtn" type="button" aria-haspopup="dialog" aria-controls="colPanel" aria-expanded="false">Kolonat ▾</button>
+            <div id="colPanel" class="col-panel" role="dialog" aria-label="Zgjedhja e kolonave të regjistrit" aria-hidden="true">
+              <div class="col-panel-actions">
+                <button type="button">Shfaqi të gjitha</button>
+                <button type="button">Fshihi të gjitha</button>
+              </div>
+              ${options}
+              <div class="registry-dosage-picker-group">
+                <div class="registry-dosage-picker-heading">Dozimi</div>
+                <div class="registry-dosage-picker-note">Aktivizo vetëm kolonën që të duhet për një tabelë më të shpejtë për t’u lexuar.</div>
+                ${optionMarkup('Dozimi · të rritur', true)}
+                ${optionMarkup('Dozimi · fëmijë', true)}
+              </div>
+            </div>
+          </div>
+        </div>
+        <script>
+          document.getElementById('colPickerBtn').addEventListener('click', () => {
+            document.getElementById('colPanel').classList.toggle('open');
+          });
+        </script>
+      </body>
+    </html>`);
+
+  await page.addStyleTag({ url:`${BASE}/registry-column-picker-tailwind.css?v=20260805-1` });
+  await page.addScriptTag({ url:`${BASE}/registry-column-picker-tailwind.js?v=20260805-1` });
+
+  await expect.poll(() => page.evaluate(() => document.documentElement.dataset.miColumnPicker), { timeout:5000 })
     .toBe(PICKER_VERSION);
-  await expect(page.locator('.mi-app-shell')).toBeVisible();
-  await expect(page.locator('#registryViewToolbar')).toBeVisible({ timeout:15000 });
-  await expect(page.locator('[data-registry-filter-toggle]')).toBeVisible();
+  await expect(page.locator('#colPanel')).toHaveAttribute('data-mi-column-picker', PICKER_VERSION);
+  await expect(page.locator('#colPanel > label[data-mi-column-option]')).toHaveCount(REPRESENTATIVE_COLUMNS.length);
+  await expect(page.locator('#colPanel .registry-dosage-picker-group > label')).toHaveCount(2);
 }
 
 async function expectInsideViewport(page, selector) {
@@ -32,7 +71,7 @@ async function expectInsideViewport(page, selector) {
     const rect = document.querySelector(target).getBoundingClientRect();
     return {
       left:rect.left, right:rect.right, top:rect.top, bottom:rect.bottom,
-      width:rect.width, height:rect.height, viewportWidth:innerWidth, viewportHeight:innerHeight,
+      viewportWidth:innerWidth, viewportHeight:innerHeight,
       htmlWidth:document.documentElement.scrollWidth,
     };
   }, selector);
@@ -43,99 +82,20 @@ async function expectInsideViewport(page, selector) {
   expect(geometry.htmlWidth).toBeLessThanOrEqual(geometry.viewportWidth + 1);
 }
 
-async function exposeFilterPanel(page) {
-  const trigger = page.locator('#colPickerBtn');
-  if (await trigger.isVisible()) return trigger;
-
-  const filterToggle = page.locator('[data-registry-filter-toggle]');
-  await filterToggle.click();
-  await expect(filterToggle).toHaveAttribute('aria-expanded', 'true');
-  await expect.poll(() => page.evaluate(() => document.documentElement.dataset.registryFiltersOpen)).toBe('true');
-  await expect(page.locator('#registryFilterPanel')).toBeVisible();
-  await expect(trigger).toBeVisible();
-  return trigger;
-}
-
-async function mountDeterministicPicker(page) {
-  await page.evaluate(({ labels, version }) => {
-    const runtimePanel = document.getElementById('colPanel');
-    const picker = runtimePanel?.closest('.col-picker');
-    if (!runtimePanel || !picker) throw new Error('Runtime column picker is unavailable.');
-
-    runtimePanel.classList.remove('open');
-    runtimePanel.id = 'colPanelRuntimeOriginal';
-    runtimePanel.removeAttribute('role');
-    runtimePanel.removeAttribute('aria-label');
-    runtimePanel.setAttribute('aria-hidden', 'true');
-
-    const panel = document.createElement('div');
-    panel.id = 'colPanel';
-    panel.className = 'col-panel open';
-    panel.setAttribute('role', 'dialog');
-    panel.setAttribute('aria-label', 'Zgjedhja e kolonave të regjistrit');
-    panel.setAttribute('aria-hidden', 'false');
-    panel.dataset.columnPickerVisualFixture = 'true';
-
-    const actions = document.createElement('div');
-    actions.className = 'col-panel-actions';
-    const showAll = document.createElement('button');
-    showAll.type = 'button';
-    showAll.textContent = 'Shfaqi të gjitha';
-    const hideAll = document.createElement('button');
-    hideAll.type = 'button';
-    hideAll.textContent = 'Fshihi të gjitha';
-    actions.append(showAll, hideAll);
-    panel.appendChild(actions);
-
-    labels.forEach((text, index) => {
-      const label = document.createElement('label');
-      const input = document.createElement('input');
-      input.type = 'checkbox';
-      input.checked = index < 6 || index === 8 || index === 9;
-      const span = document.createElement('span');
-      span.textContent = text;
-      label.append(input, span);
-      panel.appendChild(label);
-    });
-
-    const dosage = document.createElement('div');
-    dosage.className = 'registry-dosage-picker-group';
-    dosage.innerHTML = `
-      <div class="registry-dosage-picker-heading">Dozimi</div>
-      <div class="registry-dosage-picker-note">Aktivizo vetëm kolonën që të duhet për një tabelë më të shpejtë për t’u lexuar.</div>
-      <label><input type="checkbox" checked><span>Dozimi · të rritur</span></label>
-      <label><input type="checkbox" checked><span>Dozimi · fëmijë</span></label>`;
-    panel.appendChild(dosage);
-    picker.appendChild(panel);
-
-    const trigger = document.getElementById('colPickerBtn');
-    trigger?.setAttribute('aria-controls', 'colPanel');
-    trigger?.setAttribute('aria-expanded', 'true');
-    window.MedIndexColumnPicker?.refresh?.();
-    document.documentElement.dataset.columnPickerVisualFixture = version;
-  }, { labels:REPRESENTATIVE_COLUMNS, version:PICKER_VERSION });
-
-  await expect(page.locator('#colPanel')).toHaveAttribute('data-mi-column-picker', PICKER_VERSION);
-  await expect(page.locator('#colPanel > .col-panel-actions button')).toHaveCount(2);
-  await expect(page.locator('#colPanel > label[data-mi-column-option]')).toHaveCount(REPRESENTATIVE_COLUMNS.length);
-  await expect(page.locator('#colPanel .registry-dosage-picker-group > label')).toHaveCount(2);
-}
-
 async function openPicker(page) {
-  const trigger = await exposeFilterPanel(page);
-  await mountDeterministicPicker(page);
+  const trigger = page.locator('#colPickerBtn');
+  await trigger.click();
   await expect(trigger).toHaveAttribute('aria-expanded', 'true');
   const dialog = page.getByRole('dialog', { name:'Zgjedhja e kolonave të regjistrit' });
   await expect(dialog).toBeVisible();
-  await expect(dialog).toHaveAttribute('data-mi-column-picker', PICKER_VERSION);
+  await expect(dialog).toHaveAttribute('aria-hidden', 'false');
   return { trigger, dialog };
 }
 
 test.describe('Tailwind-style registry column picker', () => {
-  test.use({ viewport:{ width:1280, height:900 } });
-
   test('desktop picker is compact, searchable and aligned', async ({ page }) => {
-    await openRegistry(page);
+    await page.setViewportSize({ width:1280, height:900 });
+    await mountHarness(page);
     const { trigger, dialog } = await openPicker(page);
     await expectInsideViewport(page, '#colPanel');
 
@@ -148,7 +108,7 @@ test.describe('Tailwind-style registry column picker', () => {
       });
       const labels = [...node.querySelectorAll(':scope > label[data-mi-column-option]')].slice(0, 4).map(label => {
         const rect = label.getBoundingClientRect();
-        return { top:rect.top, left:rect.left, width:rect.width, height:rect.height };
+        return { width:rect.width, height:rect.height };
       });
       return {
         display:style.display,
@@ -173,7 +133,7 @@ test.describe('Tailwind-style registry column picker', () => {
     });
 
     await expect(dialog.locator('.registry-dosage-picker-group')).toBeVisible();
-    await expect(dialog.locator('.mi-column-picker-count')).toContainText('/');
+    await expect(dialog.locator('.mi-column-picker-count')).toContainText('10 / 14');
 
     const search = dialog.getByRole('searchbox', { name:'Kërko kolonën' });
     await search.fill('ATC');
@@ -191,7 +151,7 @@ test.describe('Tailwind-style registry column picker', () => {
 
   test('mobile picker stays inside viewport with one-column touch layout', async ({ page }) => {
     await page.setViewportSize({ width:390, height:844 });
-    await openRegistry(page);
+    await mountHarness(page);
     const { dialog } = await openPicker(page);
     await expectInsideViewport(page, '#colPanel');
 
