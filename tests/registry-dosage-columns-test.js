@@ -10,7 +10,9 @@ const loader = fs.readFileSync(loaderPath, 'utf8');
 const scriptPath = path.join(root, 'registry-dosage-columns-v2.js');
 const script = fs.readFileSync(scriptPath, 'utf8');
 const css = fs.readFileSync(path.join(root, 'registry-dosage-columns.css'), 'utf8');
-const api = fs.readFileSync(path.join(root, 'api', 'dosage.js'), 'utf8');
+const apiRouter = fs.readFileSync(path.join(root, 'api', 'dosage.js'), 'utf8');
+const apiHandler = fs.readFileSync(path.join(root, 'lib', 'dosage-handler.js'), 'utf8');
+const api = `${apiRouter}\n${apiHandler}`;
 
 execFileSync(process.execPath, ['--check', loaderPath], { stdio:'pipe' });
 execFileSync(process.execPath, ['--check', scriptPath], { stdio:'pipe' });
@@ -51,6 +53,7 @@ assert.doesNotMatch(script, /Uint8Array/);
 assert.doesNotMatch(script, /subtree\s*:\s*true/);
 assert.doesNotMatch(script, /appendColumnPickerItems/);
 assert.doesNotMatch(script, /fetch\([^)]*method\s*:\s*['"](?:POST|PUT|PATCH|DELETE)/i, 'registry card integration must be read-only');
+assert.match(apiRouter, /dosageHandler/);
 assert.match(api, /KARTELA_BARNAVE/);
 assert.match(api, /publishedCard/);
 assert.match(api, /cards\s*:\s*\[\]/, 'dosage API error and unauthenticated responses must preserve the cards array');
