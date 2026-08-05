@@ -11,12 +11,20 @@
       icon:'<svg fill="none" viewBox="0 0 256 256" aria-hidden="true"><path d="M48 32h112l48 48v144H48V32Z" stroke="currentColor" stroke-width="16"/><path d="M160 32v48h48M80 120h96M80 160h96M80 200h64" stroke="currentColor" stroke-width="16" stroke-linecap="round"/></svg>'
     },
     {
+      id:'emergencies', href:'urgjencat.html', title:'Urgjencat',
+      icon:'<svg fill="none" viewBox="0 0 256 256" aria-hidden="true"><path d="M128 28 228 210H28L128 28Z" stroke="currentColor" stroke-width="16" stroke-linejoin="round"/><path d="M128 88v58M128 180h.1" stroke="currentColor" stroke-width="16" stroke-linecap="round"/></svg>'
+    },
+    {
       id:'labs', href:'analizat.html', title:'Analizat',
       icon:'<svg fill="none" viewBox="0 0 256 256" aria-hidden="true"><path d="M96 24h64M112 24v64l-56 96a32 32 0 0 0 28 48h88a32 32 0 0 0 28-48l-56-96V24" stroke="currentColor" stroke-width="16"/><path d="M78 176h100" stroke="currentColor" stroke-width="16"/></svg>'
     },
     {
       id:'dosage', href:'dozologjia.html', title:'Dozologjia',
       icon:'<svg fill="none" viewBox="0 0 256 256" aria-hidden="true"><path d="M64 52h128v152H64zM96 84h64M96 124h64M96 164h36" stroke="currentColor" stroke-width="16" stroke-linecap="round"/></svg>'
+    },
+    {
+      id:'learning', href:'medical-hub.html', title:'Medical Hub',
+      icon:'<svg fill="none" viewBox="0 0 256 256" aria-hidden="true"><path d="M44 48h72a28 28 0 0 1 28 28v132H72a28 28 0 0 0-28 28V48Z" stroke="currentColor" stroke-width="16"/><path d="M212 48h-40a28 28 0 0 0-28 28v132h40a28 28 0 0 1 28 28V48Z" stroke="currentColor" stroke-width="16"/></svg>'
     },
     {
       id:'clinical-protocols', href:'protokollet.html', title:'Protokollet',

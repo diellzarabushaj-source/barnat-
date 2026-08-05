@@ -7,7 +7,9 @@
   const MOBILE_BREAKPOINT = 1024;
   const PAGE_META = {
     '/dozologjia.html':['Dozologjia'],
+    '/urgjencat.html':['Urgjencat'],
     '/protokollet.html':['Protokollet'],
+    '/medical-hub.html':['Medical Hub'],
     '/recetat.html':['Recetat'],
     '/sistemi.html':['Sistemi'],
   };
@@ -121,7 +123,7 @@
   headObserver.observe(document.head, { childList:true });
 
   function focusPageSearch(value = '') {
-    const input = ['#search', '#atcSearch', '#icdSearch', '#labSearch', '#dosageSearch', '#protocolSearch', '#rxDrugSearch']
+    const input = ['#search', '#atcSearch', '#icdSearch', '#labSearch', '#dosageSearch', '#emergencySearch', '#protocolSearch', '#learningSearch', '#rxDrugSearch']
       .map(selector => document.querySelector(selector))
       .find(Boolean);
     if (!input) return;

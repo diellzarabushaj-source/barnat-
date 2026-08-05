@@ -2,7 +2,7 @@
 'use strict';
 
 const VERSION = 'production-audit-v2';
-const CACHE_EPOCH = 'icd-responsive-runtime-20260803-1';
+const CACHE_EPOCH = 'clinical-knowledge-20260805-1';
 const CACHE_NAMESPACE = `${VERSION}-${CACHE_EPOCH}`;
 const STATIC_CACHE = `medindex-static-${CACHE_NAMESPACE}`;
 const PAGE_CACHE = `medindex-pages-${CACHE_NAMESPACE}`;
@@ -16,11 +16,11 @@ const MAX_QUERY_RESPONSES = 40;
 
 const APP_SHELL = [
   '/', '/index.html', '/klasifikimi.html', '/icd.html', '/analizat.html',
-  '/dozologjia.html', '/protokollet.html', '/recetat.html', '/login.html',
+  '/dozologjia.html', '/urgjencat.html', '/protokollet.html', '/medical-hub.html', '/recetat.html', '/login.html',
   '/manifest.webmanifest', '/medindex-icon.svg',
   '/styles.css', '/ui-controls.css', '/loader.css', '/app-polish.css',
   '/performance.css', '/clean-medindex-ui.css', '/tailadmin-medindex.css',
-  '/tailadmin-professional.css', '/medical-hub.css', '/clinical-density.css',
+  '/tailadmin-professional.css', '/medical-hub.css', '/clinical-knowledge.css', '/clinical-density.css',
   '/classification.css', '/classification-nav-fix.css', '/registry-quality.css',
   '/clinical-reference.css', '/analizat-polish.css', '/analizat-tailwind-cards-v2.css',
   '/icd-premium-cards.css', '/icd-clinical-workspace.css', '/icd-tailadmin-cards-v2.css',
@@ -40,7 +40,7 @@ const APP_SHELL = [
   '/icd-clinical-style-loader.js', '/icd-tailadmin-card-style-loader.js',
   '/lab-sheet-data.js', '/analizat.js', '/analizat-clinical-style-loader.js',
   '/clinical-dialog.js', '/dosage-engine.js', '/dozologjia.js',
-  '/dozologjia-deep-audit.js', '/protokollet.js',
+  '/dozologjia-deep-audit.js', '/sanity-clinical-client.js', '/urgjencat.js', '/medical-hub.js', '/protokollet.js',
   '/prescription-format-core.js', '/signature-templates.js',
   '/recetat.js', '/login.js', '/data/registry-quality.js',
   '/data/protocols.json'

@@ -10,9 +10,11 @@ const pages = [
   ['index.html', 'registryContent'],
   ['klasifikimi.html', 'atcContent'],
   ['icd.html', 'icdContent'],
+  ['urgjencat.html', 'emergencyContent'],
   ['analizat.html', 'labContent'],
   ['dozologjia.html', 'dosageContent'],
   ['protokollet.html', 'protocolContent'],
+  ['medical-hub.html', 'medicalHubContent'],
   ['recetat.html', 'rxContent'],
 ];
 
@@ -77,7 +79,9 @@ const uiEnhancements = read('ui-enhancements.js');
   /Escape/,
   /scrollIntoView/,
   /\/dozologjia\.html/,
+  /\/urgjencat\.html/,
   /\/protokollet\.html/,
+  /\/medical-hub\.html/,
   /\/recetat\.html/,
   /favoriteNavCount/,
 ].forEach(pattern => assert.match(shell, pattern, `tailadmin-shell.js missing ${pattern}`));

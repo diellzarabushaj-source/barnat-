@@ -9,9 +9,11 @@
     '/index.html': ['Barnat', 'Regjistri i barnave të Kosovës'],
     '/klasifikimi.html': ['Klasifikimi ATC', 'Grupet, nën-grupet dhe substancat aktive'],
     '/icd.html': ['ICD', 'Diagnozat dhe kodet klinike'],
+    '/urgjencat.html': ['Urgjencat', 'Hapa të shpejtë, referim dhe kujdes sekondar'],
     '/analizat.html': ['Analizat laboratorike', 'Referencë klinike e strukturuar'],
     '/dozologjia.html': ['Dozologjia', 'Skema me burim për të rritur dhe pediatri'],
     '/protokollet.html': ['Protokollet', 'Dokumentet zyrtare të Ministrisë së Shëndetësisë'],
+    '/medical-hub.html': ['Medical Hub', 'Pyetje klinike, trajtim hap pas hapi dhe receta'],
     '/recetat.html': ['Recetat', 'Krijim, kontroll dhe ruajtje e recetave'],
     '/sistemi.html': ['Sistemi', 'Statusi i Neon-it, sinkronizimit dhe editorit klinik'],
   };
@@ -20,6 +22,8 @@
     drugs: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M8.4 4.2a4.5 4.5 0 0 1 6.4 0l5 5a4.5 4.5 0 0 1-6.4 6.4l-5-5a4.5 4.5 0 0 1 0-6.4Z"/><path d="m6.6 12.4 5.8-5.8"/><path d="M5.5 14.5h6a4 4 0 0 1 0 8h-6a4 4 0 0 1 0-8Z"/><path d="M8.5 14.5v8"/></svg>',
     classification: '<svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="3" width="7" height="7" rx="1.5"/><rect x="14" y="3" width="7" height="7" rx="1.5"/><rect x="3" y="14" width="7" height="7" rx="1.5"/><rect x="14" y="14" width="7" height="7" rx="1.5"/></svg>',
     icd: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 3h8l4 4v14H6z"/><path d="M14 3v5h5M9 12h6M9 16h6"/></svg>',
+    emergencies: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3 22 21H2L12 3Z"/><path d="M12 9v5M12 17h.01"/></svg>',
+    learning: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 4h6a3 3 0 0 1 3 3v13H7a3 3 0 0 0-3 3V4Z"/><path d="M20 4h-4a3 3 0 0 0-3 3v13h4a3 3 0 0 1 3 3V4Z"/></svg>',
     labs: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M9 3h6M10 3v6l-5 9a2 2 0 0 0 1.8 3h10.4a2 2 0 0 0 1.8-3l-5-9V3"/><path d="M7.5 16h9"/></svg>',
     dosage: '<svg viewBox="0 0 24 24" aria-hidden="true"><rect x="5" y="3" width="14" height="18" rx="2"/><path d="M8.5 8h7M8.5 12h7M8.5 16h4"/></svg>',
     protocols: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M7 3h10a2 2 0 0 1 2 2v16H5V5a2 2 0 0 1 2-2Z"/><path d="M8.5 8h7M8.5 12h7M8.5 16h5"/></svg>',
@@ -106,9 +110,11 @@
       home: ['/', '/index.html'],
       classification: ['/klasifikimi.html'],
       icd: ['/icd.html'],
+      emergencies: ['/urgjencat.html'],
       labs: ['/analizat.html'],
       dosage: ['/dozologjia.html'],
       'clinical-protocols': ['/protokollet.html'],
+      learning: ['/medical-hub.html'],
       prescriptions: ['/recetat.html'],
     };
     const current = (activePath[id] || []).includes(normalizedPath());
@@ -136,9 +142,11 @@
       <div class="mi-menu-group">
         <p class="mi-menu-heading">KLINIKE</p>
         ${navItem({ id:'icd', href:'/icd.html', label:'ICD', icon:ICONS.icd })}
+        ${navItem({ id:'emergencies', href:'/urgjencat.html', label:'Urgjencat', icon:ICONS.emergencies })}
         ${navItem({ id:'labs', href:'/analizat.html', label:'Analizat', icon:ICONS.labs })}
         ${navItem({ id:'dosage', href:'/dozologjia.html', label:'Dozologjia', icon:ICONS.dosage })}
         ${navItem({ id:'clinical-protocols', href:'/protokollet.html', label:'Protokollet', icon:ICONS.protocols })}
+        ${navItem({ id:'learning', href:'/medical-hub.html', label:'Medical Hub', icon:ICONS.learning })}
         ${navItem({ id:'prescriptions', href:'/recetat.html', label:'Recetat', icon:ICONS.prescriptions })}
       </div>
       <div class="mi-menu-group mi-menu-group-tools">

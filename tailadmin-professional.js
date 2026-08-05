@@ -9,9 +9,11 @@
     '/index.html':'barnat',
     '/klasifikimi.html':'klasifikimi',
     '/icd.html':'icd',
+    '/urgjencat.html':'urgjencat',
     '/analizat.html':'analizat',
     '/dozologjia.html':'dozologjia',
     '/protokollet.html':'protokollet',
+    '/medical-hub.html':'medical-hub',
     '/recetat.html':'recetat',
     '/login.html':'login',
   };
