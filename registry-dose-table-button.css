@@ -1,16 +1,16 @@
 .registry-dose-calculator-column {
-  width: 126px !important;
-  min-width: 126px !important;
-  max-width: 126px !important;
+  width: 128px !important;
+  min-width: 128px !important;
+  max-width: 128px !important;
   padding-inline: 9px !important;
   border-left: 1px solid rgba(13, 95, 99, 0.12);
   text-align: center;
 }
 
 #headerRow .registry-dose-calculator-column {
-  width: 126px !important;
-  min-width: 126px !important;
-  max-width: 126px !important;
+  width: 128px !important;
+  min-width: 128px !important;
+  max-width: 128px !important;
   padding-block: 9px !important;
 }
 
@@ -28,7 +28,7 @@
 .dose-table-header-meta {
   margin-top: 4px;
   color: inherit;
-  font-size: 0.62rem;
+  font-size: 0.61rem;
   font-weight: 650;
   line-height: 1.2;
   opacity: 0.82;
@@ -40,7 +40,7 @@
 
 .dose-table-cell-empty .registry-dosage-muted,
 .dose-table-cell-loading .registry-dosage-muted {
-  min-height: 38px;
+  min-height: 44px;
   display: inline-flex;
   align-items: center;
   justify-content: center;
@@ -62,22 +62,23 @@
   font-weight: 850;
   letter-spacing: 0.025em !important;
   line-height: 1.1 !important;
-  opacity: 0.92;
+  opacity: 0.94;
   white-space: nowrap;
 }
 
 .dose-table-button {
   width: 100%;
-  min-height: 38px !important;
+  min-height: 44px !important;
   display: inline-flex;
   align-items: center;
   justify-content: center;
   gap: 5px;
-  padding: 7px 8px !important;
-  border-radius: 8px !important;
+  padding: 8px !important;
+  border-radius: 9px !important;
   box-shadow: none !important;
   font-size: 0.74rem !important;
   line-height: 1 !important;
+  touch-action: manipulation;
   transform: none !important;
   white-space: nowrap;
 }
@@ -92,6 +93,11 @@
   transform: translateY(1px) !important;
 }
 
+.dose-table-button:focus-visible {
+  outline: 3px solid rgba(13, 95, 99, 0.32) !important;
+  outline-offset: 2px !important;
+}
+
 .dose-table-button-label-mobile {
   display: none;
 }
@@ -100,6 +106,7 @@
   display: inline-grid;
   width: 16px;
   height: 16px;
+  flex: 0 0 16px;
   place-items: center;
   border-radius: 50%;
   background: rgba(255, 255, 255, 0.18);
@@ -128,25 +135,48 @@
 
   #headerRow > .registry-dose-calculator-column {
     z-index: 8;
+    background: var(--table-header-bg, #f9fafb);
+    box-shadow: -5px 0 10px rgba(15, 23, 42, 0.035);
   }
 
   #tbody > tr > .registry-dose-calculator-column {
     z-index: 2;
     background: var(--surface, #fff);
+    box-shadow: -5px 0 10px rgba(15, 23, 42, 0.025);
   }
 
   #tbody > tr:hover > .registry-dose-calculator-column {
     background: var(--surface-hover, #f7fbfa);
   }
+
+  #tbody > tr[aria-selected="true"] > .registry-dose-calculator-column,
+  #tbody > tr.is-selected > .registry-dose-calculator-column,
+  #tbody > tr.selected > .registry-dose-calculator-column {
+    background: var(--surface-selected, #eef8f7);
+  }
 }
 
+[data-theme="dark"] #headerRow > .registry-dose-calculator-column,
 [data-theme="dark"] #tbody > tr > .registry-dose-calculator-column {
   background: #172326;
   border-left-color: rgba(255, 255, 255, 0.1);
+  box-shadow: -5px 0 10px rgba(0, 0, 0, 0.16);
 }
 
 [data-theme="dark"] #tbody > tr:hover > .registry-dose-calculator-column {
   background: #1b2b2e;
+}
+
+[data-theme="dark"] #tbody > tr[aria-selected="true"] > .registry-dose-calculator-column,
+[data-theme="dark"] #tbody > tr.is-selected > .registry-dose-calculator-column,
+[data-theme="dark"] #tbody > tr.selected > .registry-dose-calculator-column {
+  background: #1d3435;
+}
+
+@media (hover: none) {
+  .dose-table-button:hover {
+    box-shadow: none !important;
+  }
 }
 
 @media (max-width: 760px) {
@@ -156,10 +186,6 @@
     min-width: 0 !important;
     max-width: none !important;
     padding-inline: 12px !important;
-  }
-
-  .dose-table-button {
-    min-height: 44px !important;
   }
 
   .dose-table-button-label-desktop {
@@ -186,6 +212,10 @@
 }
 
 @media (forced-colors: active) {
+  .registry-dose-calculator-column {
+    border-left: 1px solid CanvasText;
+  }
+
   .dose-table-button,
   .dose-calculator-group {
     border: 1px solid ButtonText;
