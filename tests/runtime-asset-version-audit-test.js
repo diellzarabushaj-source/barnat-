@@ -31,8 +31,16 @@ assert.match(index, /registry-cell-preview\.js\?v=20260805-8/, 'cell preview run
 assert.match(index, /registry-dose-calculator-fast-ui\.js\?v=20260805-2/, 'dose calculator fast runtime version is stale');
 assert.match(index, /registry-dose-calculator-fast-ui\.css\?v=20260805-2/, 'dose calculator fast stylesheet version is stale');
 assert.match(index, /registry-dose-table-button\.js\?v=20260805-5/, 'dose table button runtime is missing');
-assert.match(index, /registry-dose-table-button\.css\?v=20260805-5/, 'dose table button stylesheet is missing');
+assert.match(index, /registry-dose-table-button\.css\?v=20260805-6/, 'dose table button stylesheet is missing');
 assert.match(index, /registry-dose-modal-accessibility\.js\?v=20260805-2/, 'dose modal accessibility runtime is missing');
+assert.ok(
+  index.indexOf('registry-unified-table.css?v=20260801-1') < index.indexOf('registry-dose-table-button.css?v=20260805-6'),
+  'dose action styles must load after the unified table visibility rules',
+);
+assert.ok(
+  index.indexOf('registry-dose-table-button.css?v=20260805-6') < index.indexOf('tailadmin-professional.css?v=20260728-1'),
+  'professional TailAdmin stylesheet must remain the final static stylesheet',
+);
 
 const runtimeLoader = read('registry-runtime-loader.js');
 assert.match(runtimeLoader, /registry-runtime-loader-v6/, 'immediate registry loader version is stale');
@@ -69,4 +77,4 @@ assert.match(performanceRuntime, /SERVICE_WORKER_URL = `\/sw-resilient-v3\.js\?v
 assert.match(performanceWorker, /VERSION = 'low-bandwidth-v3'/, 'cache-isolated service worker version is stale');
 assert.match(performanceRuntime, /CLINICAL_WORKFLOW_URL = `\/clinical-workflow\.js\?v=\$\{VERSION\}`/, 'offline runtime must version the clinical workflow');
 
-console.log('Clinical runtime cache-version, loader v6, final manual-QA dose accessibility and full-row reveal asset audit passed.');
+console.log('Clinical runtime cache-version, dose stylesheet order and final manual-QA audit passed.');
