@@ -79,10 +79,12 @@ assert.match(fastCss, /dose-calculator-group-choices/);
 assert.match(fastCss, /dose-calculator-weight-presets/);
 assert.match(fastCss, /dose-calculator-fast-hidden/);
 
-assert.match(tableUiSource, /dose-table-button-deep-audit-v2/);
+assert.match(tableUiSource, /dose-table-button-deep-audit-v3/);
 assert.match(tableUiSource, /pendingRows = new Set\(\)/);
 assert.match(tableUiSource, /internalCells = new WeakSet\(\)/);
 assert.match(tableUiSource, /internalHeaders = new WeakSet\(\)/);
+assert.match(tableUiSource, /endInternalCellWrite/);
+assert.match(tableUiSource, /endInternalHeaderWrite/);
 assert.match(tableUiSource, /FRAME_BUDGET_MS = 7/);
 assert.match(tableUiSource, /requestIdleCallback/);
 assert.match(tableUiSource, /requestAnimationFrame/);
