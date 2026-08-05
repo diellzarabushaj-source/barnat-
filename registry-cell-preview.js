@@ -1,7 +1,7 @@
 (() => {
   'use strict';
 
-  const VERSION = 'registry-cell-preview-20260801-7';
+  const VERSION = 'registry-cell-preview-20260805-8';
   const TRIGGER_CLASS = 'registry-cell-preview-trigger';
   const PREVIEW_ATTR = 'data-registry-cell-preview';
   const THRESHOLDS = Object.freeze({
@@ -51,7 +51,7 @@
 
   function prepareCloneForText(cell) {
     const clone = cell.cloneNode(true);
-    clone.querySelectorAll(`.${TRIGGER_CLASS},input,select,textarea,.drug-actions-trigger,.favorite-marker,.clinical-editor-open`)
+    clone.querySelectorAll(`.${TRIGGER_CLASS},input,select,textarea,.drug-actions-trigger,.favorite-marker,.clinical-editor-open,.dose-calculator-open`)
       .forEach(element => element.remove());
     clone.querySelectorAll('details').forEach(details => {
       details.open = true;
@@ -75,10 +75,10 @@
   function hasExistingControl(cell) {
     if (!cell) return true;
     const key = columnKey(cell);
-    if (['select', 'trade-name', 'clinical-status', 'clinical-action'].includes(key)) return true;
+    if (['select', 'trade-name', 'clinical-status', 'clinical-action', 'dose-calculator'].includes(key)) return true;
     // Dosage cells may contain an editor action and still need an independent full-text control.
     if (['dosage-adult', 'dosage-pediatric'].includes(key)) return false;
-    return Boolean(cell.querySelector('.drug-select,.drug-actions-trigger,.favorite-marker'));
+    return Boolean(cell.querySelector('.drug-select,.drug-actions-trigger,.favorite-marker,.dose-calculator-open'));
   }
 
   function elementIsClipped(element) {
@@ -103,9 +103,7 @@
   }
 
   function ensureExpandIcon(trigger) {
-    if (!trigger?.querySelector?.('[data-lineicons-icon="expand-square-4"]')) {
-      trigger.innerHTML = EXPAND_ICON;
-    }
+    if (!trigger?.querySelector?.('[data-lineicons-icon="expand-square-4"]')) trigger.innerHTML = EXPAND_ICON;
   }
 
   function syncTriggerState(trigger) {
@@ -203,7 +201,6 @@
     const cell = trigger?.closest?.(`td[${PREVIEW_ATTR}="true"]`);
     const row = cell?.closest('tr');
     if (!row) return false;
-
     let expanded;
     const rowController = window.MedIndexRegistryRows;
     if (typeof rowController?.toggleRow === 'function') {
@@ -214,7 +211,6 @@
       row.dataset.registryRowExpanded = String(expanded);
       row.querySelectorAll('.registry-dosage-details').forEach(details => { details.open = expanded; });
     }
-
     row.querySelectorAll(`.${TRIGGER_CLASS}`).forEach(syncTriggerState);
     return expanded;
   }
@@ -231,14 +227,12 @@
     document.addEventListener('click', onClick, true);
     tableObserver = new MutationObserver(() => { if (active) scheduleEnhance(); });
     connectObserver();
-
     window.addEventListener('medindex:registry-ready', activate, { once:true });
     window.addEventListener('medindex:registry-table-stable', activate);
     ['medindex:registry-data-ready', 'medindex:tailadmin-ready']
       .forEach(eventName => window.addEventListener(eventName, scheduleEnhance));
     window.addEventListener('resize', scheduleEnhance, { passive:true });
     window.addEventListener('pageshow', scheduleEnhance, { passive:true });
-
     const armFallback = () => { fallbackTimer = setTimeout(activate, 1800); };
     if (document.readyState === 'complete') armFallback();
     else window.addEventListener('load', armFallback, { once:true });
