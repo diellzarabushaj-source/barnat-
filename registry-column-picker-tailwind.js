@@ -4,7 +4,6 @@
   const VERSION = 'column-picker-tailwind-20260805-1';
   const PANEL_ID = 'colPanel';
   const BUTTON_ID = 'colPickerBtn';
-  const CHROME_SELECTOR = '[data-mi-column-picker-chrome]';
   const SEARCH_ICON = '<svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="11" cy="11" r="7"></circle><path d="m16.5 16.5 4 4"></path></svg>';
   const COLUMNS_ICON = '<svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="4" width="18" height="16" rx="2"></rect><path d="M9 4v16M15 4v16"></path></svg>';
   const CHECKS_ICON = '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="m4 7 2 2 4-4"></path><path d="m4 14 2 2 4-4"></path><path d="M13 7h7M13 14h7"></path></svg>';
@@ -19,10 +18,14 @@
   const button = () => document.getElementById(BUTTON_ID);
   const clean = value => String(value ?? '').replace(/\s+/g, ' ').trim();
 
+  function directColumnLabels(root = panel()) {
+    return root ? [...root.querySelectorAll(':scope > label:not([data-mi-column-picker-chrome])')] : [];
+  }
+
   function allColumnLabels(root = panel()) {
     if (!root) return [];
     return [
-      ...root.querySelectorAll(':scope > label'),
+      ...directColumnLabels(root),
       ...root.querySelectorAll('.registry-dosage-picker-group > label'),
     ];
   }
@@ -48,7 +51,7 @@
   }
 
   function makeSearch() {
-    const wrapper = document.createElement('label');
+    const wrapper = document.createElement('div');
     wrapper.className = 'mi-column-picker-search';
     wrapper.dataset.miColumnPickerChrome = 'search';
     wrapper.innerHTML = `
@@ -115,7 +118,7 @@
     const term = clean(value).toLocaleLowerCase('sq');
     let visibleCount = 0;
 
-    root.querySelectorAll(':scope > label').forEach(label => {
+    directColumnLabels(root).forEach(label => {
       const visible = !term || clean(label.textContent).toLocaleLowerCase('sq').includes(term);
       label.hidden = !visible;
       if (visible) visibleCount += 1;
