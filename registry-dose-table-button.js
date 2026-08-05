@@ -1,7 +1,7 @@
 (() => {
   'use strict';
 
-  const VERSION = 'dose-table-button-manual-qa-v4';
+  const VERSION = 'dose-table-button-manual-qa-v5';
   const COLUMN_KEY = 'dose-calculator';
   const CELL_SELECTOR = `[data-registry-dose-calculator-column="${COLUMN_KEY}"]`;
   const ROW_SELECTOR = '#tbody > tr';
@@ -10,11 +10,6 @@
   const FRAME_BUDGET_MS = 7;
 
   const clean = value => String(value ?? '').replace(/\s+/g, ' ').trim();
-  const shortText = (value, max = 96) => {
-    const text = clean(value);
-    return text.length > max ? `${text.slice(0, max - 1)}…` : text;
-  };
-
   const pendingRows = new Set();
   let scheduled = false;
   let headerDirty = true;
@@ -30,27 +25,10 @@
   let lastRunMs = 0;
   let maxRunMs = 0;
 
-  function productNameForRow(row) {
-    if (!row) return 'këtë preparat';
-    const namedCell = row.querySelector('[data-column-key="Emri tregtar"]');
-    const namedText = shortText(namedCell?.textContent);
-    if (namedText) return namedText;
-    const selectable = row.querySelector('.drug-select');
-    const fallback = shortText(selectable?.getAttribute('aria-label') || selectable?.dataset?.drugKey);
-    return fallback || 'këtë preparat';
-  }
-
   function groupForCell(cell) {
     if (cell.querySelector('.dose-calculator-group-pediatric_only')) return 'pediatric_only';
     if (cell.querySelector('.dose-calculator-group-adult_only')) return 'adult_only';
     if (cell.querySelector('.dose-calculator-group-pediatric_and_adult')) return 'pediatric_and_adult';
-    return '';
-  }
-
-  function accessibleGroupLabel(group) {
-    if (group === 'pediatric_only') return 'vetëm për fëmijë';
-    if (group === 'adult_only') return 'vetëm për të rritur';
-    if (group === 'pediatric_and_adult') return 'për fëmijë dhe të rritur';
     return '';
   }
 
@@ -74,60 +52,27 @@
     row.classList.toggle('has-all-ages-dose-calculator', group === 'pediatric_and_adult');
   }
 
-  function emptyState(cell) {
+  function stateForCell(cell) {
+    if (cell.querySelector('.dose-calculator-open')) return 'ready';
     return /duke u lidhur/i.test(clean(cell.textContent)) ? 'loading' : 'unavailable';
   }
 
   function enhanceCell(cell) {
     if (!(cell instanceof HTMLElement)) return;
     const row = cell.closest('tr');
-    const button = cell.querySelector('.dose-calculator-open');
+    const state = stateForCell(cell);
     const group = groupForCell(cell);
-    const productName = productNameForRow(row);
-    const state = button ? 'ready' : emptyState(cell);
-    const signature = [VERSION, state, clean(button?.dataset?.doseProductKey), group, productName].join('|');
-
+    const productKey = clean(cell.querySelector('.dose-calculator-open')?.dataset?.doseProductKey);
+    const signature = [VERSION, state, productKey, group].join('|');
     if (cell.dataset.doseTableSignature === signature) return;
+
     cell.dataset.doseTableSignature = signature;
     cell.dataset.doseTableState = state;
     cell.classList.toggle('dose-table-cell-ready', state === 'ready');
     cell.classList.toggle('dose-table-cell-loading', state === 'loading');
     cell.classList.toggle('dose-table-cell-empty', state === 'unavailable');
-
-    if (!button) {
-      clearRowState(row);
-      const muted = cell.querySelector('.registry-dosage-muted');
-      if (muted) {
-        muted.setAttribute(
-          'aria-label',
-          state === 'loading' ? 'Kalkulatori i dozës po ngarkohet' : 'Nuk ka kalkulim të verifikuar',
-        );
-        muted.title = state === 'loading'
-          ? 'Kalkulatori i dozës po ngarkohet'
-          : 'Ky preparat nuk ka ende rregull të verifikuar për kalkulim.';
-      }
-      processedCells += 1;
-      return;
-    }
-
-    setRowState(row, group);
-    const groupNode = cell.querySelector('.dose-calculator-group');
-    const groupText = accessibleGroupLabel(group);
-    if (groupNode) {
-      groupNode.title = groupText;
-      groupNode.setAttribute('aria-label', groupText);
-    }
-
-    button.classList.add('dose-table-button');
-    button.setAttribute('aria-haspopup', 'dialog');
-    button.setAttribute('aria-controls', 'doseCalculatorModal');
-    button.setAttribute('aria-expanded', 'false');
-    button.setAttribute(
-      'aria-label',
-      `Kalkulo dozën për ${productName}${groupText ? `, ${groupText}` : ''}`,
-    );
-    button.title = `Hap kalkulatorin e dozës për ${productName}`;
-    button.dataset.doseTableEnhanced = VERSION;
+    if (state === 'ready') setRowState(row, group);
+    else clearRowState(row);
     processedCells += 1;
   }
 
@@ -140,7 +85,6 @@
   function updateHeader() {
     const header = document.querySelector(`#headerRow > ${CELL_SELECTOR}`);
     if (!(header instanceof HTMLElement)) return;
-
     const rows = currentRows();
     let readyCount = 0;
     let loading = false;
@@ -148,27 +92,19 @@
       const cell = row.querySelector(CELL_SELECTOR);
       if (!cell) return;
       if (cell.querySelector('.dose-calculator-open')) readyCount += 1;
-      if (cell.dataset.doseTableState === 'loading' || /duke u lidhur/i.test(clean(cell.textContent))) loading = true;
+      if (stateForCell(cell) === 'loading') loading = true;
     });
-
     const state = loading ? 'loading' : readyCount > 0 ? 'ready' : 'empty';
-    const meta = loading
-      ? 'Duke u ngarkuar'
-      : readyCount > 0
-        ? `${readyCount} në këtë faqe`
-        : 'Vetëm të verifikuara';
+    const meta = loading ? 'Duke u ngarkuar' : readyCount > 0 ? `${readyCount} në këtë faqe` : 'Vetëm të verifikuara';
     const signature = `${VERSION}|${state}|${readyCount}|${rows.length}`;
     if (header.dataset.doseHeaderSignature === signature) return;
-
     header.dataset.doseHeaderSignature = signature;
     header.dataset.doseTableState = state;
     header.dataset.doseHeaderMeta = meta;
     header.classList.add('dose-table-header');
     header.setAttribute(
       'aria-label',
-      loading
-        ? 'Kolona e dozës po ngarkohet'
-        : `${readyCount} preparate me kalkulator të verifikuar në këtë faqe`,
+      loading ? 'Kolona e dozës po ngarkohet' : `${readyCount} preparate me kalkulator të verifikuar në këtë faqe`,
     );
     headerUpdates += 1;
   }
@@ -185,53 +121,33 @@
     node.querySelectorAll?.(ROW_SELECTOR).forEach(enqueueRow);
   }
 
-  function nodeTouchesDoseUi(node) {
+  function nodeTouchesRelevantUi(node) {
     if (!(node instanceof Element)) return false;
     return node.matches(CELL_SELECTOR)
       || Boolean(node.closest(CELL_SELECTOR))
-      || Boolean(node.querySelector?.(CELL_SELECTOR));
-  }
-
-  function nodeTouchesIdentity(node) {
-    if (!(node instanceof Element)) return false;
-    return node.matches(IDENTITY_SELECTOR)
+      || Boolean(node.querySelector?.(CELL_SELECTOR))
+      || node.matches(IDENTITY_SELECTOR)
       || Boolean(node.closest(IDENTITY_SELECTOR))
       || Boolean(node.querySelector?.(IDENTITY_SELECTOR));
-  }
-
-  function mutationOwnerRow(mutation) {
-    const target = mutation.target instanceof Element ? mutation.target : null;
-    return target?.closest(ROW_SELECTOR) || null;
-  }
-
-  function mutationTouchesRelevantUi(mutation) {
-    const target = mutation.target instanceof Element ? mutation.target : null;
-    if (target?.closest(CELL_SELECTOR) || target?.closest(IDENTITY_SELECTOR)) return true;
-    return [...mutation.addedNodes, ...mutation.removedNodes]
-      .some(node => nodeTouchesDoseUi(node) || nodeTouchesIdentity(node));
   }
 
   function processQueue(deadline) {
     scheduled = false;
     queueRuns += 1;
     const startedAt = performance.now();
-
     while (pendingRows.size) {
       const row = pendingRows.values().next().value;
       pendingRows.delete(row);
       const cell = row.querySelector(CELL_SELECTOR);
       if (cell) enhanceCell(cell);
-
       const elapsed = performance.now() - startedAt;
       const idleRemaining = typeof deadline?.timeRemaining === 'function' ? deadline.timeRemaining() : 0;
       if (elapsed >= FRAME_BUDGET_MS && idleRemaining < 2) break;
     }
-
     if (!pendingRows.size && headerDirty) {
       headerDirty = false;
       updateHeader();
     }
-
     lastRunMs = performance.now() - startedAt;
     maxRunMs = Math.max(maxRunMs, lastRunMs);
     if (pendingRows.size || headerDirty) scheduleProcessing();
@@ -240,11 +156,8 @@
   function scheduleProcessing() {
     if (scheduled) return;
     scheduled = true;
-    if ('requestIdleCallback' in window) {
-      window.requestIdleCallback(processQueue, { timeout:IDLE_TIMEOUT_MS });
-    } else {
-      window.requestAnimationFrame(() => processQueue(null));
-    }
+    if ('requestIdleCallback' in window) window.requestIdleCallback(processQueue, { timeout:IDLE_TIMEOUT_MS });
+    else window.requestAnimationFrame(() => processQueue(null));
   }
 
   function scanVisiblePage() {
@@ -256,7 +169,6 @@
   function observeTable() {
     const tbody = document.getElementById('tbody');
     const header = document.getElementById('headerRow');
-
     if (tbody && !tbodyObserver) {
       tbodyObserver = new MutationObserver(mutations => {
         mutations.forEach(mutation => {
@@ -266,11 +178,13 @@
             if (mutation.removedNodes.length) headerDirty = true;
             return;
           }
-          if (!mutationTouchesRelevantUi(mutation)) {
+          const relevant = [...mutation.addedNodes, ...mutation.removedNodes].some(nodeTouchesRelevantUi)
+            || (mutation.target instanceof Element && nodeTouchesRelevantUi(mutation.target));
+          if (!relevant) {
             ignoredMutations += 1;
             return;
           }
-          const row = mutationOwnerRow(mutation);
+          const row = mutation.target instanceof Element ? mutation.target.closest(ROW_SELECTOR) : null;
           if (row) enqueueRow(row);
         });
         if (pendingRows.size || headerDirty) scheduleProcessing();
@@ -280,14 +194,9 @@
         if (event.target.closest('.dose-calculator-open')) openedCalculators += 1;
       });
     }
-
     if (header && !headerObserver) {
-      headerObserver = new MutationObserver(mutations => {
-        const doseHeaderChanged = mutations.some(mutation =>
-          [...mutation.addedNodes, ...mutation.removedNodes].some(node => nodeTouchesDoseUi(node)),
-        );
+      headerObserver = new MutationObserver(() => {
         headerDirty = true;
-        if (doseHeaderChanged) currentRows().forEach(enqueueRow);
         scheduleProcessing();
       });
       headerObserver.observe(header, { childList:true });
@@ -300,11 +209,8 @@
     document.documentElement.dataset.doseTableButtonAudit = VERSION;
   }
 
-  if (document.readyState === 'loading') {
-    document.addEventListener('DOMContentLoaded', start, { once:true });
-  } else {
-    start();
-  }
+  if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', start, { once:true });
+  else start();
 
   window.MedIndexDoseTableUx = Object.freeze({
     version:VERSION,
