@@ -27,6 +27,7 @@
 <link rel="stylesheet" href="registry-atc-context.css?v=atc-context-v1" data-registry-atc-context-css>
 <link rel="stylesheet" href="registry-mobile-critical.css?v=20260805-1" data-registry-mobile-critical-css>
 <link rel="stylesheet" href="tailadmin-professional.css?v=20260728-1" data-tailadmin-professional-css>
+<link rel="stylesheet" href="registry-column-picker-tailwind.css?v=20260805-1" data-registry-column-picker-tailwind-css>
 <script src="classification-data.js?v=atc-shared-v1" defer></script>
 <script src="atc-shared.js?v=atc-shared-v1" defer></script>
 <script src="tailadmin-shell.js?v=production-audit-v2" defer></script>
@@ -74,8 +75,8 @@
     <option value="4006" hidden>Favoritet</option>
   </select>
   <div class="col-picker">
-    <button id="colPickerBtn" type="button" aria-haspopup="menu" aria-controls="colPanel" aria-expanded="false">Kolonat ▾</button>
-    <div class="col-panel" id="colPanel"></div>
+    <button id="colPickerBtn" type="button" aria-haspopup="dialog" aria-controls="colPanel" aria-expanded="false">Kolonat ▾</button>
+    <div class="col-panel" id="colPanel" role="dialog" aria-label="Zgjedhja e kolonave të regjistrit" aria-hidden="true"></div>
   </div>
   <span class="selection-badge" title="Barnat e zgjedhura për recetë">Të zgjedhura: <strong id="selectedCount">0</strong></span>
   <button class="protocol-toolbar-btn" id="protocolsBtn" type="button">Krijo recetën <span class="mini-count" id="savedProtocolCount">0</span></button>
@@ -102,6 +103,7 @@
 <script src="registry-cell-preview.js?v=20260801-6" defer></script>
 <script src="registry-row-expand.js?v=20260801-4" defer></script>
 <script src="registry-dosage-loader.js?v=20260728-2" defer></script>
+<script src="registry-column-picker-tailwind.js?v=20260805-1" defer></script>
 <script src="name-display.js?v=20260728-2" defer></script>
 <script src="clinical-editor.js?v=20260729-1" defer></script>
 <script src="registry-verification-loader.js?v=20260801-1" defer></script>
