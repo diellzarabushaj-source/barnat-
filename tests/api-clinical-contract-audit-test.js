@@ -5,23 +5,37 @@ const { execFileSync } = require('node:child_process');
 
 const root = path.join(__dirname, '..');
 const read = file => fs.readFileSync(path.join(root, file), 'utf8');
-const apis = ['api/registry.js', 'api/dosage.js', 'api/icd.js', 'api/drug-search.js'];
+const apiFiles = ['api/registry.js', 'api/dosage.js', 'api/icd.js', 'api/drug-search.js'];
+const dosageRouter = read('api/dosage.js');
+const dosageCore = read('lib/dosage-handler.js');
+const dosageCalculator = read('lib/dose-calculator-handler.js');
+const dosage = `${dosageRouter}\n${dosageCore}\n${dosageCalculator}`;
+const sources = {
+  'api/registry.js':read('api/registry.js'),
+  'api/dosage.js':dosage,
+  'api/icd.js':read('api/icd.js'),
+  'api/drug-search.js':read('api/drug-search.js'),
+};
 
-for (const file of apis) {
+for (const file of [...apiFiles, 'lib/dosage-handler.js', 'lib/dose-calculator-handler.js']) {
   execFileSync(process.execPath, ['--check', path.join(root, file)], { stdio:'pipe' });
-  const source = read(file);
+}
+for (const [file, source] of Object.entries(sources)) {
   assert.match(source, /authorized|verifySessionToken/, `${file}: authentication guard missing`);
   assert.match(source, /X-Content-Type-Options/, `${file}: nosniff missing`);
   assert.match(source, /Cache-Control/, `${file}: cache policy missing`);
 }
 
-const dosage = read('api/dosage.js');
+assert.match(dosageRouter, /dosageHandler/);
+assert.match(dosageRouter, /doseCalculatorHandler/);
 assert.match(dosage, /MAX_WORKBOOK_BYTES/);
 assert.match(dosage, /pendingBuild/);
 assert.match(dosage, /sourceDate:clean\(row\['Data e burimit'\]\)/);
 assert.match(dosage, /const cards = cardsResult\.output/);
 assert.match(dosage, /cardsReadOnlyWhenAutoFillDisabled/);
 assert.match(dosage, /X-MedIndex-Dosage-Cards/);
+assert.match(dosageCalculator, /officialVerifiedOnly:true/);
+assert.match(dosageCalculator, /failClosed:true/);
 assert.doesNotMatch(dosage, /const cards = clinicalAutoFillEnabled \? cardsResult\.output : \[\]/);
 assert.doesNotMatch(dosage, /error:error\.message/, 'dosage endpoint must not return raw upstream errors');
 assert.doesNotMatch(dosage, /staleReason:String/, 'stale dosage payload must expose a stable reason code');
