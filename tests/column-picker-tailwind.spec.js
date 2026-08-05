@@ -59,24 +59,43 @@ async function exposeFilterPanel(page) {
 async function ensureRepresentativeOptions(page) {
   await page.evaluate(labels => {
     const panel = document.getElementById('colPanel');
-    if (!panel || panel.querySelectorAll(':scope > label').length >= labels.length) return;
+    if (!panel) return;
 
-    panel.querySelectorAll(':scope > label[data-column-picker-test-fixture]').forEach(label => label.remove());
-    const dosage = panel.querySelector('.registry-dosage-picker-group');
-    labels.forEach((text, index) => {
-      const label = document.createElement('label');
-      label.dataset.columnPickerTestFixture = 'true';
-      const input = document.createElement('input');
-      input.type = 'checkbox';
-      input.checked = index < 6 || index === 8 || index === 9;
-      const span = document.createElement('span');
-      span.textContent = text;
-      label.append(input, span);
-      panel.insertBefore(label, dosage || panel.querySelector('.mi-column-picker-empty') || null);
-    });
+    if (!panel.querySelector(':scope > .col-panel-actions')) {
+      const actions = document.createElement('div');
+      actions.className = 'col-panel-actions';
+      actions.dataset.columnPickerTestFixture = 'true';
+      const showAll = document.createElement('button');
+      showAll.type = 'button';
+      showAll.textContent = 'Shfaqi të gjitha';
+      const hideAll = document.createElement('button');
+      hideAll.type = 'button';
+      hideAll.textContent = 'Fshihi të gjitha';
+      actions.append(showAll, hideAll);
+      const dosage = panel.querySelector('.registry-dosage-picker-group');
+      panel.insertBefore(actions, dosage || panel.querySelector('.mi-column-picker-empty') || null);
+    }
+
+    if (panel.querySelectorAll(':scope > label').length < labels.length) {
+      panel.querySelectorAll(':scope > label[data-column-picker-test-fixture]').forEach(label => label.remove());
+      const dosage = panel.querySelector('.registry-dosage-picker-group');
+      labels.forEach((text, index) => {
+        const label = document.createElement('label');
+        label.dataset.columnPickerTestFixture = 'true';
+        const input = document.createElement('input');
+        input.type = 'checkbox';
+        input.checked = index < 6 || index === 8 || index === 9;
+        const span = document.createElement('span');
+        span.textContent = text;
+        label.append(input, span);
+        panel.insertBefore(label, dosage || panel.querySelector('.mi-column-picker-empty') || null);
+      });
+    }
     window.MedIndexColumnPicker?.refresh?.();
   }, REPRESENTATIVE_COLUMNS);
 
+  await expect(page.locator('#colPanel > .col-panel-actions')).toHaveCount(1);
+  await expect(page.locator('#colPanel > .col-panel-actions button')).toHaveCount(2);
   await expect.poll(() => page.locator('#colPanel > label').count(), { timeout:5000 })
     .toBeGreaterThanOrEqual(REPRESENTATIVE_COLUMNS.length);
   await expect.poll(() => page.locator('#colPanel > label[data-mi-column-option]').count(), { timeout:5000 })
