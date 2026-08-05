@@ -9,7 +9,9 @@ const read = file => fs.readFileSync(path.join(root, file), 'utf8');
 
 const readerSource = read('lib/neon-clinical-reader.js');
 const registrySource = read('api/registry.js');
-const dosageSource = read('api/dosage.js');
+const dosageRouterSource = read('api/dosage.js');
+const dosageHandlerSource = read('lib/dosage-handler.js');
+const dosageSource = `${dosageRouterSource}\n${dosageHandlerSource}`;
 const icdSource = read('lib/icd-api-base.js');
 const labsSource = read('analizat.js');
 const publishSource = read('scripts/publish-neon-registry.js');
@@ -29,6 +31,7 @@ assert.match(registrySource, /sheets-fallback/, 'registry controlled fallback is
 assert.match(registrySource, /X-MedIndex-Data-Source/, 'registry source header is missing');
 assert.match(registrySource, /gzipSync/, 'registry payload compression contract changed');
 
+assert.match(dosageRouterSource, /dosageHandler/, 'dosage API router is missing');
 assert.match(dosageSource, /buildNeonPayload/, 'dosage Neon source is missing');
 assert.match(dosageSource, /rawPublishedRegimens/, 'dosage published row audit is missing');
 assert.match(dosageSource, /cardsReadOnlyWhenAutoFillDisabled/, 'read-only dosage cards safety contract changed');
