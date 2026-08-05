@@ -28,7 +28,15 @@ async function mountHarness(page) {
 
   await page.setContent(`<!DOCTYPE html>
     <html lang="sq" data-mi-page="barnat">
-      <head><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"></head>
+      <head>
+        <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+        <style>
+          html,body{margin:0;min-height:100%;font-family:Inter,ui-sans-serif,system-ui,sans-serif;background:#f8fafc}
+          .toolbar{padding:16px}
+          .col-picker{position:relative;display:inline-block}
+          #colPickerBtn{min-height:44px;padding:0 18px;border:1px solid #cbd5e1;border-radius:12px;background:#fff}
+        </style>
+      </head>
       <body>
         <div class="toolbar">
           <div class="col-picker">
@@ -89,6 +97,7 @@ async function openPicker(page) {
   const dialog = page.getByRole('dialog', { name:'Zgjedhja e kolonave të regjistrit' });
   await expect(dialog).toBeVisible();
   await expect(dialog).toHaveAttribute('aria-hidden', 'false');
+  await page.waitForTimeout(220);
   return { trigger, dialog };
 }
 
