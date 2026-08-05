@@ -1,0 +1,61 @@
+name: Login plan card audit
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  plan-card:
+    runs-on: ubuntu-latest
+    timeout-minutes: 12
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          version: 10.28.0
+          run_install: false
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: pnpm
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile --ignore-scripts
+
+      - name: Install Playwright Chromium
+        run: pnpm exec playwright install --with-deps chromium
+
+      - name: Run isolated desktop and mobile landing audit
+        shell: bash
+        run: |
+          set -euo pipefail
+          node tests/clinical-smoke-server.js > /tmp/medindex-login-server.log 2>&1 &
+          SERVER_PID=$!
+          trap 'kill "$SERVER_PID" 2>/dev/null || true; cat /tmp/medindex-login-server.log' EXIT
+          for attempt in {1..30}; do
+            if curl -fsS http://127.0.0.1:4173/login.html >/dev/null; then break; fi
+            sleep 1
+          done
+          pnpm exec playwright test tests/login-plan-card-browser.spec.js --reporter=line --workers=1
+
+      - name: Upload landing screenshots
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: login-plan-card-screenshots
+          path: |
+            /tmp/login-clinical-plan-*.png
+            /tmp/medindex-login-server.log
+            test-results
+          if-no-files-found: warn
+          retention-days: 3
