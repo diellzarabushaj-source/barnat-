@@ -50,7 +50,7 @@ assert(index.includes('registry-verification-loader.js?v=20260801-1'), 'Idle loa
 assert(loader.includes("window.addEventListener('medindex:registry-ready'"), 'Verifikimi duhet të presë registry-ready.');
 assert(loader.includes('requestIdleCallback'), 'Verifikimi duhet të ngarkohet në idle.');
 assert(loader.includes('registry-verification-ui.js?v=20260801-1'), 'Loader-i nuk e ngarkon kontrolluesin e verifikimit.');
-assert(index.includes('data-registry-ui-release="20260805-24"'), 'Release-i unik i tabelës nuk u rrit.');
+assert(index.includes('data-registry-ui-release="20260805-25"'), 'Release-i unik i tabelës nuk u rrit.');
 assert(index.includes('registry-unified-table.js?v=20260801-1'), 'Kontrolluesi unik i tabelës mungon.');
 assert(index.includes('registry-full-text-expansion.css?v=20260805-2'), 'Kontrata e tekstit të plotë mungon.');
 assert(ui.includes('data-population-pencil'), 'Ikona e vetme e lapsit mungon.');
@@ -64,4 +64,4 @@ assert(vercel.rewrites.some(item => item.source === '/api/population-verificatio
 assert(!fs.existsSync(path.join(root, 'api/population-verification.js')), 'Verifikimi nuk duhet të konsumojë funksion të ri Vercel.');
 assert(!/https?:\/\//.test(ui), 'UI-ja nuk duhet të ngarkojë asete të jashtme.');
 
-console.log('Strict adult/pediatric population verification, unified table and full-row reveal audit passed.');
+console.log('Strict adult/pediatric population verification, canonical table and full-row reveal audit passed.');
