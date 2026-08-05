@@ -14,14 +14,17 @@ syntax('lib/dosage-handler.js');
 syntax('lib/dose-calculator-handler.js');
 syntax('registry-dose-calculator.js');
 syntax('registry-dose-calculator-fast-ui.js');
+syntax('registry-dose-table-button.js');
 
 const apiSource = read('lib/dose-calculator-handler.js');
 const routerSource = read('api/dosage.js');
 const uiSource = read('registry-dose-calculator.js');
 const fastUiSource = read('registry-dose-calculator-fast-ui.js');
+const tableUiSource = read('registry-dose-table-button.js');
 const html = read('index.html');
 const css = read('registry-dosage-columns.css');
 const fastCss = read('registry-dose-calculator-fast-ui.css');
+const tableCss = read('registry-dose-table-button.css');
 const vercel = JSON.parse(read('vercel.json'));
 
 assert.match(apiSource, /dose_sources_v2/);
@@ -42,6 +45,8 @@ assert.ok(vercel.rewrites.some(item => item.source === '/api/dose-calculator'
 assert.match(html, /registry-dose-calculator\.js\?v=/);
 assert.match(html, /registry-dose-calculator-fast-ui\.js\?v=/);
 assert.match(html, /registry-dose-calculator-fast-ui\.css\?v=/);
+assert.match(html, /registry-dose-table-button\.js\?v=/);
+assert.match(html, /registry-dose-table-button\.css\?v=/);
 assert.match(html, /registry-dosage-columns\.css\?v=/);
 assert.match(uiSource, /Kalkulo dozën/);
 assert.match(uiSource, /Indikacioni/);
@@ -71,6 +76,26 @@ assert.doesNotMatch(fastUiSource, /localStorage|sessionStorage/);
 assert.match(fastCss, /dose-calculator-group-choices/);
 assert.match(fastCss, /dose-calculator-weight-presets/);
 assert.match(fastCss, /dose-calculator-fast-hidden/);
+
+assert.match(tableUiSource, /dose-table-button-deep-audit-v1/);
+assert.match(tableUiSource, /pendingRows = new Set\(\)/);
+assert.match(tableUiSource, /FRAME_BUDGET_MS = 7/);
+assert.match(tableUiSource, /requestIdleCallback/);
+assert.match(tableUiSource, /requestAnimationFrame/);
+assert.match(tableUiSource, /dataset\.doseTableSignature/);
+assert.match(tableUiSource, /Kalkulo dozën për/);
+assert.match(tableUiSource, /Nuk ka kalkulim të verifikuar/);
+assert.match(tableUiSource, /MutationObserver/);
+assert.match(tableUiSource, /metrics:\(\)/);
+assert.equal((tableUiSource.match(/addEventListener\('click'/g) || []).length, 1,
+  'The main table dose action must use one delegated click listener');
+assert.doesNotMatch(tableUiSource, /localStorage|sessionStorage/);
+assert.match(tableCss, /position: sticky/);
+assert.match(tableCss, /min-height: 44px/);
+assert.match(tableCss, /prefers-reduced-motion: reduce/);
+assert.match(tableCss, /forced-colors: active/);
+assert.match(tableCss, /@media print/);
+assert.match(tableCss, /dose-table-button-label-mobile/);
 
 const dosageApi = require(path.join(ROOT, 'api/dosage.js'));
 const helpers = dosageApi._doseCalculatorTest;
@@ -117,4 +142,4 @@ assert.equal(product.rules.length, 1);
 assert.equal(product.denominatorUnit, 'tablet');
 assert.equal(product.patientGroup, 'pediatric_and_adult');
 
-console.log('Dose calculator V2 and 10-second physician workflow tests passed.');
+console.log('Dose calculator V2, 10-second workflow and main-table deep audit tests passed.');
