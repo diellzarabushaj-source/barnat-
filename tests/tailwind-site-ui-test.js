@@ -16,11 +16,18 @@ assert.match(css, /prefers-reduced-motion:reduce/);
 assert.match(css, /focus-visible/);
 assert.doesNotMatch(css, /cdn\.tailwindcss\.com|fonts\.googleapis\.com/i);
 
+const touch = read('medindex-tailwind-touch.css');
+assert.match(touch, /#icdSourceHealthRefresh/);
+assert.match(touch, /min-height:40px/);
+assert.match(touch, /min-height:44px/);
+
 const professional = read('tailadmin-professional.css');
 const coreIndex = professional.indexOf('tailadmin-professional-core.css');
 const uiIndex = professional.indexOf('medindex-tailwind-ui.css');
+const touchIndex = professional.indexOf('medindex-tailwind-touch.css');
 assert.ok(coreIndex >= 0, 'professional core stylesheet is missing');
 assert.ok(uiIndex > coreIndex, 'Tailwind UI must load after professional core');
+assert.ok(touchIndex > uiIndex, 'touch-target corrections must be the final clinical layer');
 
 const polish = read('app-polish.css');
 assert.match(polish, /^@import url\("medindex-tailwind-ui\.css\?v=20260805-1"\);/);
@@ -51,4 +58,4 @@ for (const file of ['login.html', 'recovery.html']) {
   assert.match(html, /theme-preload\.js/);
 }
 
-console.log('Unified Tailwind UI system, loading order, responsive, dark-mode, public and clinical page contracts passed.');
+console.log('Unified Tailwind UI system, loading order, touch targets, responsive, dark-mode, public and clinical page contracts passed.');
