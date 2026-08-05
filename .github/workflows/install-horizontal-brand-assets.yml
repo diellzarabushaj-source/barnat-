@@ -1,0 +1,217 @@
+name: Install horizontal brand assets
+
+on:
+  push:
+    paths:
+      - .github/workflows/install-horizontal-brand-assets.yml
+
+permissions:
+  contents: write
+
+jobs:
+  install:
+    if: github.actor != 'github-actions[bot]'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Register and integrate horizontal logos
+        shell: python {0}
+        run: |
+          from pathlib import Path
+          import json
+          import re
+
+          root = Path('.')
+
+          manifest_path = root / 'official-brand-assets.json'
+          manifest = json.loads(manifest_path.read_text(encoding='utf-8'))
+          manifest['policy'] = 'Only these six approved assets may be used as MedIndex logos.'
+          manifest['assets']['horizontalOnLight'] = {
+              'route':'/brand/medindex-horizontal-on-light.webp',
+              'blobPath':'medindex/brand/v1/medindex-horizontal-on-light.webp',
+              'usage':'Cropped transparent horizontal wordmark for expanded navigation and wide light surfaces',
+          }
+          manifest['assets']['horizontalOnDark'] = {
+              'route':'/brand/medindex-horizontal-on-dark.webp',
+              'blobPath':'medindex/brand/v1/medindex-horizontal-on-dark.webp',
+              'usage':'Cropped transparent horizontal wordmark for expanded navigation and wide dark surfaces',
+          }
+          manifest_path.write_text(json.dumps(manifest, ensure_ascii=False, indent=2) + '\n', encoding='utf-8')
+
+          api_path = root / 'api/clinical-editor.js'
+          api = api_path.read_text(encoding='utf-8')
+          anchor = "  fullOnLight:{ pathname:'medindex/brand/v1/medindex-full-on-light.png', contentType:'image/png' },"
+          additions = anchor + "\n  horizontalOnLight:{ pathname:'medindex/brand/v1/medindex-horizontal-on-light.webp', contentType:'image/webp' },\n  horizontalOnDark:{ pathname:'medindex/brand/v1/medindex-horizontal-on-dark.webp', contentType:'image/webp' },"
+          if 'horizontalOnLight' not in api:
+              if anchor not in api:
+                  raise SystemExit('Official brand API anchor not found.')
+              api = api.replace(anchor, additions, 1)
+          api_path.write_text(api, encoding='utf-8')
+
+          middleware_path = root / 'middleware.ts'
+          middleware = middleware_path.read_text(encoding='utf-8')
+          middleware_anchor = "  '/brand/medindex-full-on-light.png',"
+          middleware_additions = middleware_anchor + "\n  '/brand/medindex-horizontal-on-light.webp',\n  '/brand/medindex-horizontal-on-dark.webp',"
+          if '/brand/medindex-horizontal-on-light.webp' not in middleware:
+              if middleware_anchor not in middleware:
+                  raise SystemExit('Middleware brand route anchor not found.')
+              middleware = middleware.replace(middleware_anchor, middleware_additions, 1)
+          middleware_path.write_text(middleware, encoding='utf-8')
+
+          vercel_path = root / 'vercel.json'
+          vercel = json.loads(vercel_path.read_text(encoding='utf-8'))
+          horizontal_rewrites = [
+              {'source':'/brand/medindex-horizontal-on-light.webp', 'destination':'/api/clinical-editor?officialBrand=horizontalOnLight'},
+              {'source':'/brand/medindex-horizontal-on-dark.webp', 'destination':'/api/clinical-editor?officialBrand=horizontalOnDark'},
+          ]
+          existing_sources = {item.get('source') for item in vercel.get('rewrites', [])}
+          for rewrite in horizontal_rewrites:
+              if rewrite['source'] not in existing_sources:
+                  vercel.setdefault('rewrites', []).append(rewrite)
+          vercel_path.write_text(json.dumps(vercel, ensure_ascii=False, indent=2) + '\n', encoding='utf-8')
+
+          seed_path = root / 'scripts/seed-horizontal-brand-assets.js'
+          seed_path.write_text(r'''\
+          'use strict';
+
+          const fs = require('node:fs');
+          const path = require('node:path');
+          const { put } = require('@vercel/blob');
+
+          const ROOT = path.resolve(__dirname, '..');
+          const ASSETS = Object.freeze([
+            {
+              key:'horizontalOnLight',
+              source:'brand/source-v2/medindex-horizontal-on-light.webp',
+              local:'brand/medindex-horizontal-on-light.webp',
+              pathname:'medindex/brand/v1/medindex-horizontal-on-light.webp',
+            },
+            {
+              key:'horizontalOnDark',
+              source:'brand/source-v2/medindex-horizontal-on-dark.webp',
+              local:'brand/medindex-horizontal-on-dark.webp',
+              pathname:'medindex/brand/v1/medindex-horizontal-on-dark.webp',
+            },
+          ]);
+
+          function verifyWebp(buffer, key) {
+            if (buffer.length < 1000
+              || buffer.toString('ascii', 0, 4) !== 'RIFF'
+              || buffer.toString('ascii', 8, 12) !== 'WEBP') {
+              throw new Error(`Invalid cropped horizontal WebP source for ${key}.`);
+            }
+          }
+
+          async function main() {
+            const prepared = [];
+            for (const asset of ASSETS) {
+              const sourcePath = path.join(ROOT, asset.source);
+              const outputPath = path.join(ROOT, asset.local);
+              const buffer = fs.readFileSync(sourcePath);
+              verifyWebp(buffer, asset.key);
+              fs.mkdirSync(path.dirname(outputPath), { recursive:true });
+              fs.writeFileSync(outputPath, buffer);
+              prepared.push({ ...asset, buffer });
+              console.log(`MEDINDEX_HORIZONTAL_BRAND ${asset.key} materialized ${buffer.length}B`);
+            }
+
+            if (!process.env.BLOB_READ_WRITE_TOKEN) {
+              console.log('MEDINDEX_HORIZONTAL_BRAND Blob upload skipped: BLOB_READ_WRITE_TOKEN is unavailable.');
+              return;
+            }
+
+            for (const asset of prepared) {
+              const blob = await put(asset.pathname, asset.buffer, {
+                access:'private',
+                contentType:'image/webp',
+                addRandomSuffix:false,
+                allowOverwrite:true,
+                cacheControlMaxAge:31536000,
+              });
+              console.log(`MEDINDEX_HORIZONTAL_BRAND ${asset.key} uploaded ${blob.pathname}`);
+            }
+          }
+
+          main().catch(error => {
+            console.error('Horizontal MedIndex brand upload failed:', error?.stack || error);
+            process.exitCode = 1;
+          });
+          ''', encoding='utf-8')
+
+          package_path = root / 'package.json'
+          package = json.loads(package_path.read_text(encoding='utf-8'))
+          build_runtime = package['scripts']['build:runtime']
+          command = 'node scripts/seed-horizontal-brand-assets.js'
+          if command not in build_runtime:
+              package['scripts']['build:runtime'] = build_runtime + ' && ' + command
+          package_path.write_text(json.dumps(package, ensure_ascii=False, indent=2) + '\n', encoding='utf-8')
+
+          runtime_path = root / 'medindex-brand-runtime.js'
+          runtime = runtime_path.read_text(encoding='utf-8')
+          runtime = runtime.replace("const VERSION = 'medindex-brand-v3';", "const VERSION = 'medindex-brand-v4';", 1)
+          runtime = re.sub(r"const ROOT = '[^']+';", "const ROOT = '/brand/';", runtime, count=1)
+          runtime = re.sub(
+              r"const ASSETS = Object\.freeze\(\{[\s\S]*?\n  \}\);",
+              """const ASSETS = Object.freeze({
+              horizontalLight:`${ROOT}medindex-horizontal-on-light.webp`,
+              horizontalDark:`${ROOT}medindex-horizontal-on-dark.webp`,
+              fullLight:`${ROOT}medindex-full-on-light.png`,
+              fullDark:`${ROOT}medindex-full-on-dark.png`,
+              iconLight:`${ROOT}medindex-mark-on-light.webp`,
+              iconDark:`${ROOT}medindex-mark-on-dark.png`,
+            });""",
+              runtime,
+              count=1,
+          )
+          runtime = runtime.replace('const light = full ? ASSETS.fullLight : ASSETS.iconLight;', 'const light = full ? ASSETS.horizontalLight : ASSETS.iconLight;', 1)
+          runtime = runtime.replace('const dark = full ? ASSETS.fullDark : ASSETS.iconDark;', 'const dark = full ? ASSETS.horizontalDark : ASSETS.iconDark;', 1)
+          runtime = runtime.replace('width:154px;height:58px', 'width:188px;height:52px', 1)
+          runtime_path.write_text(runtime, encoding='utf-8')
+
+          test_path = root / 'tests/official-brand-policy-test.js'
+          test = test_path.read_text(encoding='utf-8')
+          expected_anchor = "  fullOnLight: {\n    route: '/brand/medindex-full-on-light.png',\n    blobPath: 'medindex/brand/v1/medindex-full-on-light.png',\n  },"
+          expected_additions = expected_anchor + "\n  horizontalOnLight: {\n    route: '/brand/medindex-horizontal-on-light.webp',\n    blobPath: 'medindex/brand/v1/medindex-horizontal-on-light.webp',\n  },\n  horizontalOnDark: {\n    route: '/brand/medindex-horizontal-on-dark.webp',\n    blobPath: 'medindex/brand/v1/medindex-horizontal-on-dark.webp',\n  },"
+          if 'horizontalOnLight' not in test:
+              if expected_anchor not in test:
+                  raise SystemExit('Official brand test anchor not found.')
+              test = test.replace(expected_anchor, expected_additions, 1)
+          test = test.replace('only four approved assets are allowed', 'all six approved assets are allowed')
+          source_check_anchor = "const officialMarkBase64 = fs.readFileSync(path.join(ROOT, 'brand/source-v2/medindex-mark-on-light-transparent.webp.b64'), 'utf8').trim();"
+          source_check = """const horizontalSources = [
+            'brand/source-v2/medindex-horizontal-on-light.webp',
+            'brand/source-v2/medindex-horizontal-on-dark.webp',
+          ];
+          for (const relativePath of horizontalSources) {
+            const buffer = fs.readFileSync(path.join(ROOT, relativePath));
+            assert.ok(buffer.length > 1000, `Horizontal logo source is too small: ${relativePath}`);
+            assert.equal(buffer.toString('ascii', 0, 4), 'RIFF', `Horizontal logo is not WebP: ${relativePath}`);
+            assert.equal(buffer.toString('ascii', 8, 12), 'WEBP', `Horizontal logo is not WebP: ${relativePath}`);
+          }
+
+          """ + source_check_anchor
+          if 'const horizontalSources' not in test:
+              if source_check_anchor not in test:
+                  raise SystemExit('Official source check anchor not found.')
+              test = test.replace(source_check_anchor, source_check, 1)
+          test_path.write_text(test, encoding='utf-8')
+
+      - name: Materialize, validate and commit
+        shell: bash
+        run: |
+          set -euo pipefail
+          pnpm install --frozen-lockfile --ignore-scripts
+          node scripts/seed-horizontal-brand-assets.js
+          node --check scripts/seed-horizontal-brand-assets.js
+          node --check medindex-brand-runtime.js
+          node --check api/clinical-editor.js
+          node tests/official-brand-policy-test.js
+          rm -f .github/workflows/install-horizontal-brand-assets.yml
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add official-brand-assets.json api/clinical-editor.js middleware.ts vercel.json package.json scripts/seed-horizontal-brand-assets.js medindex-brand-runtime.js tests/official-brand-policy-test.js brand/medindex-horizontal-on-light.webp brand/medindex-horizontal-on-dark.webp .github/workflows/install-horizontal-brand-assets.yml
+          git commit -m 'Integrate cropped horizontal logos through Vercel Blob'
+          git push origin HEAD:main
