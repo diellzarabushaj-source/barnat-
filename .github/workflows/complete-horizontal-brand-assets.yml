@@ -1,0 +1,69 @@
+name: Complete horizontal brand assets
+
+on:
+  push:
+    paths:
+      - .github/workflows/complete-horizontal-brand-assets.yml
+
+permissions:
+  contents: write
+
+jobs:
+  install:
+    if: github.actor != 'github-actions[bot]'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - uses: pnpm/action-setup@v4
+        with:
+          version: 10.28.0
+          run_install: false
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: pnpm
+
+      - name: Apply and repair the horizontal brand integration
+        shell: python {0}
+        run: |
+          from pathlib import Path
+          import subprocess
+
+          workflow = Path('.github/workflows/install-horizontal-brand-assets.yml').read_text(encoding='utf-8')
+          start_marker = "      - name: Register and integrate horizontal logos\n        shell: python {0}\n        run: |\n"
+          end_marker = "\n      - name: Materialize, validate and commit"
+          start = workflow.index(start_marker) + len(start_marker)
+          end = workflow.index(end_marker, start)
+          lines = workflow[start:end].splitlines()
+          script = '\n'.join(line[10:] if line.startswith('          ') else line for line in lines) + '\n'
+          script_path = Path('/tmp/install-horizontal-brand-assets.py')
+          script_path.write_text(script, encoding='utf-8')
+          subprocess.run(['python', str(script_path)], check=True)
+
+          seed_path = Path('scripts/seed-horizontal-brand-assets.js')
+          seed = seed_path.read_text(encoding='utf-8')
+          if seed.startswith('\\\n'):
+              seed = seed[2:]
+          seed_path.write_text(seed.lstrip('\n'), encoding='utf-8')
+
+      - name: Materialize, validate and commit
+        shell: bash
+        run: |
+          set -euo pipefail
+          pnpm install --frozen-lockfile --ignore-scripts
+          node scripts/materialize-official-brand-assets.js
+          node scripts/seed-horizontal-brand-assets.js
+          node --check scripts/seed-horizontal-brand-assets.js
+          node --check medindex-brand-runtime.js
+          node --check api/clinical-editor.js
+          node tests/official-brand-policy-test.js
+          rm -f .github/workflows/install-horizontal-brand-assets.yml .github/workflows/retry-horizontal-brand-assets.yml .github/workflows/finish-horizontal-brand-assets.yml .github/workflows/complete-horizontal-brand-assets.yml
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add official-brand-assets.json api/clinical-editor.js middleware.ts vercel.json package.json scripts/seed-horizontal-brand-assets.js medindex-brand-runtime.js tests/official-brand-policy-test.js brand/medindex-horizontal-on-light.webp brand/medindex-horizontal-on-dark.webp medindex-icon.svg images/brand/medindex-mark-mplus.svg .github/workflows/install-horizontal-brand-assets.yml .github/workflows/retry-horizontal-brand-assets.yml .github/workflows/finish-horizontal-brand-assets.yml .github/workflows/complete-horizontal-brand-assets.yml
+          git commit -m 'Integrate cropped horizontal logos through Vercel Blob'
+          git push origin HEAD:main
