@@ -1,3 +1,5 @@
+@import url("medindex-tailwind-ui.css?v=20260805-1");
+
 :root{
   --focus-ring:#f0a53a;
   --safe-bottom:env(safe-area-inset-bottom,0px);
