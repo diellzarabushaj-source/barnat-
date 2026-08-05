@@ -41,6 +41,13 @@ for (const file of jsFiles) {
   execFileSync(process.execPath, ['--check', path.join(ROOT, file)], { stdio:'pipe' });
 }
 
+const themePreload = read('theme-preload.js');
+assert.match(themePreload, /const assetUrl = path => new URL/, 'login assets must resolve relative to the deployed page');
+assert.doesNotMatch(themePreload, /(?:href|src)\s*=\s*['"]\/(?:landing-effects|landing-signature|clinical-plan-card|ecg-sound)/, 'login assets must not resolve from the domain root');
+assert.match(themePreload, /\.plan-kicker-icon>svg,[\s\S]*\.plan-cta i>svg/, 'pricing-card inline SVGs must have a critical size guard');
+assert.match(themePreload, /querySelectorAll\('\.plan-kicker-icon > svg, \.plan-cta i > svg'\)[\s\S]*svg\.remove\(\)/, 'legacy pricing-card SVGs must be removed after DOM readiness');
+assert.match(themePreload, /clinical-plan-card\.css\?v=20260805-3/, 'final Clinical+ card stylesheet revision is stale');
+
 const stability = read('app-stability.js');
 assert.match(stability, /const bannerTimers = new Map\(\)/, 'banner timers must not interfere across status types');
 assert.match(stability, /getAttribute\('aria-expanded'\) !== value/, 'aria disclosure sync must be idempotent');
