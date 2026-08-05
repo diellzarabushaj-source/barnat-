@@ -2,11 +2,13 @@
    Uses local design tokens only; no CDN/runtime dependency. */
 
 html[data-mi-page="barnat"] .col-picker {
+  position: relative;
   isolation: isolate;
   z-index: 1700;
 }
 
 html[data-mi-page="barnat"] #colPanel.col-panel {
+  box-sizing: border-box !important;
   --cp-slate-50: #f8fafc;
   --cp-slate-100: #f1f5f9;
   --cp-slate-200: #e2e8f0;
@@ -49,6 +51,7 @@ html[data-mi-page="barnat"] #colPanel.col-panel {
   backdrop-filter: blur(18px);
   -webkit-backdrop-filter: blur(18px);
   transform-origin: top right;
+  translate: var(--mi-column-picker-shift-x, 0px) 0;
   z-index: 1900 !important;
 }
 
