@@ -1,7 +1,7 @@
 (() => {
   'use strict';
 
-  const VERSION = 'dose-table-button-deep-audit-v2';
+  const VERSION = 'dose-table-button-deep-audit-v3';
   const COLUMN_KEY = 'dose-calculator';
   const CELL_SELECTOR = `[data-registry-dose-calculator-column="${COLUMN_KEY}"]`;
   const ROW_SELECTOR = '#tbody > tr';
@@ -89,11 +89,17 @@
 
   function beginInternalCellWrite(cell) {
     internalCells.add(cell);
+  }
+
+  function endInternalCellWrite(cell) {
     queueMicrotask(() => internalCells.delete(cell));
   }
 
   function beginInternalHeaderWrite(header) {
     internalHeaders.add(header);
+  }
+
+  function endInternalHeaderWrite(header) {
     queueMicrotask(() => internalHeaders.delete(header));
   }
 
@@ -108,64 +114,68 @@
 
     if (cell.dataset.doseTableSignature === signature) return;
     beginInternalCellWrite(cell);
-    cell.dataset.doseTableSignature = signature;
-    cell.dataset.doseTableState = state;
-    cell.classList.toggle('dose-table-cell-ready', state === 'ready');
-    cell.classList.toggle('dose-table-cell-loading', state === 'loading');
-    cell.classList.toggle('dose-table-cell-empty', state === 'unavailable');
+    try {
+      cell.dataset.doseTableSignature = signature;
+      cell.dataset.doseTableState = state;
+      cell.classList.toggle('dose-table-cell-ready', state === 'ready');
+      cell.classList.toggle('dose-table-cell-loading', state === 'loading');
+      cell.classList.toggle('dose-table-cell-empty', state === 'unavailable');
 
-    if (!button) {
-      clearRowState(row);
-      const muted = cell.querySelector('.registry-dosage-muted');
-      if (muted) {
-        muted.textContent = state === 'loading' ? '…' : '—';
-        muted.setAttribute(
-          'aria-label',
-          state === 'loading' ? 'Kalkulatori i dozës po ngarkohet' : 'Nuk ka kalkulim të verifikuar',
-        );
-        muted.title = state === 'loading'
-          ? 'Kalkulatori i dozës po ngarkohet'
-          : 'Ky preparat nuk ka ende rregull të verifikuar për kalkulim.';
+      if (!button) {
+        clearRowState(row);
+        const muted = cell.querySelector('.registry-dosage-muted');
+        if (muted) {
+          muted.textContent = state === 'loading' ? '…' : '—';
+          muted.setAttribute(
+            'aria-label',
+            state === 'loading' ? 'Kalkulatori i dozës po ngarkohet' : 'Nuk ka kalkulim të verifikuar',
+          );
+          muted.title = state === 'loading'
+            ? 'Kalkulatori i dozës po ngarkohet'
+            : 'Ky preparat nuk ka ende rregull të verifikuar për kalkulim.';
+        }
+        processedCells += 1;
+        return;
       }
+
+      setRowState(row, group);
+      const groupNode = cell.querySelector('.dose-calculator-group');
+      if (groupNode) {
+        groupNode.textContent = compactGroupLabel(group);
+        groupNode.title = accessibleGroupLabel(group);
+        groupNode.setAttribute('aria-label', accessibleGroupLabel(group));
+      }
+
+      button.classList.add('dose-table-button');
+      button.replaceChildren();
+
+      const desktopLabel = document.createElement('span');
+      desktopLabel.className = 'dose-table-button-label dose-table-button-label-desktop';
+      desktopLabel.textContent = 'Kalkulo';
+
+      const mobileLabel = document.createElement('span');
+      mobileLabel.className = 'dose-table-button-label dose-table-button-label-mobile';
+      mobileLabel.textContent = 'Doza';
+
+      const verifiedMark = document.createElement('span');
+      verifiedMark.className = 'dose-table-verified-mark';
+      verifiedMark.setAttribute('aria-hidden', 'true');
+      verifiedMark.textContent = '✓';
+
+      button.append(verifiedMark, desktopLabel, mobileLabel);
+      const groupText = accessibleGroupLabel(group);
+      button.setAttribute('aria-haspopup', 'dialog');
+      button.setAttribute('aria-controls', 'doseCalculatorModal');
+      button.setAttribute(
+        'aria-label',
+        `Kalkulo dozën për ${productName}${groupText ? `, ${groupText}` : ''}`,
+      );
+      button.title = `Hap kalkulatorin e dozës për ${productName}`;
+      button.dataset.doseTableEnhanced = VERSION;
       processedCells += 1;
-      return;
+    } finally {
+      endInternalCellWrite(cell);
     }
-
-    setRowState(row, group);
-    const groupNode = cell.querySelector('.dose-calculator-group');
-    if (groupNode) {
-      groupNode.textContent = compactGroupLabel(group);
-      groupNode.title = accessibleGroupLabel(group);
-      groupNode.setAttribute('aria-label', accessibleGroupLabel(group));
-    }
-
-    button.classList.add('dose-table-button');
-    button.replaceChildren();
-
-    const desktopLabel = document.createElement('span');
-    desktopLabel.className = 'dose-table-button-label dose-table-button-label-desktop';
-    desktopLabel.textContent = 'Kalkulo';
-
-    const mobileLabel = document.createElement('span');
-    mobileLabel.className = 'dose-table-button-label dose-table-button-label-mobile';
-    mobileLabel.textContent = 'Doza';
-
-    const verifiedMark = document.createElement('span');
-    verifiedMark.className = 'dose-table-verified-mark';
-    verifiedMark.setAttribute('aria-hidden', 'true');
-    verifiedMark.textContent = '✓';
-
-    button.append(verifiedMark, desktopLabel, mobileLabel);
-    const groupText = accessibleGroupLabel(group);
-    button.setAttribute('aria-haspopup', 'dialog');
-    button.setAttribute('aria-controls', 'doseCalculatorModal');
-    button.setAttribute(
-      'aria-label',
-      `Kalkulo dozën për ${productName}${groupText ? `, ${groupText}` : ''}`,
-    );
-    button.title = `Hap kalkulatorin e dozës për ${productName}`;
-    button.dataset.doseTableEnhanced = VERSION;
-    processedCells += 1;
   }
 
   function currentRows() {
@@ -193,31 +203,35 @@
     if (header.dataset.doseHeaderSignature === signature) return;
 
     beginInternalHeaderWrite(header);
-    header.dataset.doseHeaderSignature = signature;
-    header.dataset.doseTableState = state;
-    header.classList.add('dose-table-header');
-    header.replaceChildren();
+    try {
+      header.dataset.doseHeaderSignature = signature;
+      header.dataset.doseTableState = state;
+      header.classList.add('dose-table-header');
+      header.replaceChildren();
 
-    const title = document.createElement('span');
-    title.className = 'dose-table-header-title';
-    title.textContent = 'Doza';
+      const title = document.createElement('span');
+      title.className = 'dose-table-header-title';
+      title.textContent = 'Doza';
 
-    const meta = document.createElement('span');
-    meta.className = 'dose-table-header-meta';
-    meta.textContent = loading
-      ? 'Duke u ngarkuar'
-      : readyCount > 0
-        ? `${readyCount} në këtë faqe`
-        : 'Vetëm të verifikuara';
+      const meta = document.createElement('span');
+      meta.className = 'dose-table-header-meta';
+      meta.textContent = loading
+        ? 'Duke u ngarkuar'
+        : readyCount > 0
+          ? `${readyCount} në këtë faqe`
+          : 'Vetëm të verifikuara';
 
-    header.append(title, meta);
-    header.setAttribute(
-      'aria-label',
-      loading
-        ? 'Kolona e dozës po ngarkohet'
-        : `${readyCount} preparate me kalkulator të verifikuar në këtë faqe`,
-    );
-    headerUpdates += 1;
+      header.append(title, meta);
+      header.setAttribute(
+        'aria-label',
+        loading
+          ? 'Kolona e dozës po ngarkohet'
+          : `${readyCount} preparate me kalkulator të verifikuar në këtë faqe`,
+      );
+      headerUpdates += 1;
+    } finally {
+      endInternalHeaderWrite(header);
+    }
   }
 
   function enqueueRow(row) {
