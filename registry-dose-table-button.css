@@ -1,0 +1,203 @@
+.registry-dose-calculator-column {
+  width: 126px !important;
+  min-width: 126px !important;
+  max-width: 126px !important;
+  padding-inline: 9px !important;
+  border-left: 1px solid rgba(13, 95, 99, 0.12);
+  text-align: center;
+}
+
+#headerRow .registry-dose-calculator-column {
+  width: 126px !important;
+  min-width: 126px !important;
+  max-width: 126px !important;
+  padding-block: 9px !important;
+}
+
+.dose-table-header-title,
+.dose-table-header-meta {
+  display: block;
+}
+
+.dose-table-header-title {
+  font-size: 0.76rem;
+  font-weight: 850;
+  line-height: 1.15;
+}
+
+.dose-table-header-meta {
+  margin-top: 4px;
+  color: inherit;
+  font-size: 0.62rem;
+  font-weight: 650;
+  line-height: 1.2;
+  opacity: 0.82;
+}
+
+.dose-table-cell-ready {
+  background-clip: padding-box;
+}
+
+.dose-table-cell-empty .registry-dosage-muted,
+.dose-table-cell-loading .registry-dosage-muted {
+  min-height: 38px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  color: #98a2b3;
+  font-size: 0.88rem;
+}
+
+.dose-calculator-group {
+  display: inline-flex !important;
+  max-width: 100%;
+  min-height: 18px;
+  align-items: center;
+  justify-content: center;
+  margin: 0 0 5px !important;
+  padding: 2px 6px;
+  border: 1px solid currentColor;
+  border-radius: 999px;
+  font-size: 0.55rem !important;
+  font-weight: 850;
+  letter-spacing: 0.025em !important;
+  line-height: 1.1 !important;
+  opacity: 0.92;
+  white-space: nowrap;
+}
+
+.dose-table-button {
+  width: 100%;
+  min-height: 38px !important;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 5px;
+  padding: 7px 8px !important;
+  border-radius: 8px !important;
+  box-shadow: none !important;
+  font-size: 0.74rem !important;
+  line-height: 1 !important;
+  transform: none !important;
+  white-space: nowrap;
+}
+
+.dose-table-button:hover {
+  box-shadow: 0 3px 10px rgba(13, 95, 99, 0.18) !important;
+  transform: none !important;
+}
+
+.dose-table-button:active {
+  box-shadow: none !important;
+  transform: translateY(1px) !important;
+}
+
+.dose-table-button-label-mobile {
+  display: none;
+}
+
+.dose-table-verified-mark {
+  display: inline-grid;
+  width: 16px;
+  height: 16px;
+  place-items: center;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.18);
+  font-size: 0.64rem;
+  font-weight: 900;
+}
+
+.has-pediatric-only-dose-calculator > .registry-dose-calculator-column {
+  box-shadow: inset 3px 0 0 rgba(180, 35, 24, 0.72);
+}
+
+.has-adult-only-dose-calculator > .registry-dose-calculator-column {
+  box-shadow: inset 3px 0 0 rgba(71, 84, 103, 0.42);
+}
+
+.has-all-ages-dose-calculator > .registry-dose-calculator-column {
+  box-shadow: inset 3px 0 0 rgba(13, 95, 99, 0.5);
+}
+
+@media (min-width: 980px) {
+  #headerRow > .registry-dose-calculator-column,
+  #tbody > tr > .registry-dose-calculator-column {
+    position: sticky;
+    right: 0;
+  }
+
+  #headerRow > .registry-dose-calculator-column {
+    z-index: 8;
+  }
+
+  #tbody > tr > .registry-dose-calculator-column {
+    z-index: 2;
+    background: var(--surface, #fff);
+  }
+
+  #tbody > tr:hover > .registry-dose-calculator-column {
+    background: var(--surface-hover, #f7fbfa);
+  }
+}
+
+[data-theme="dark"] #tbody > tr > .registry-dose-calculator-column {
+  background: #172326;
+  border-left-color: rgba(255, 255, 255, 0.1);
+}
+
+[data-theme="dark"] #tbody > tr:hover > .registry-dose-calculator-column {
+  background: #1b2b2e;
+}
+
+@media (max-width: 760px) {
+  .registry-dose-calculator-column,
+  #headerRow .registry-dose-calculator-column {
+    width: auto !important;
+    min-width: 0 !important;
+    max-width: none !important;
+    padding-inline: 12px !important;
+  }
+
+  .dose-table-button {
+    min-height: 44px !important;
+  }
+
+  .dose-table-button-label-desktop {
+    display: none;
+  }
+
+  .dose-table-button-label-mobile {
+    display: inline;
+  }
+
+  .dose-calculator-group {
+    font-size: 0.58rem !important;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .dose-table-button {
+    transition: none !important;
+  }
+
+  .dose-table-button:active {
+    transform: none !important;
+  }
+}
+
+@media (forced-colors: active) {
+  .dose-table-button,
+  .dose-calculator-group {
+    border: 1px solid ButtonText;
+  }
+
+  .dose-table-verified-mark {
+    background: transparent;
+  }
+}
+
+@media print {
+  .registry-dose-calculator-column {
+    display: none !important;
+  }
+}
