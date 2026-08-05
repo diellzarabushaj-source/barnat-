@@ -1,7 +1,7 @@
 (() => {
   'use strict';
 
-  const RELEASE = 'registry-ui-20260805-24';
+  const RELEASE = 'registry-ui-20260805-25';
   const STORAGE_KEY = 'medindex.registry.ui.release';
   const SESSION_KEY = 'medindex.registry.ui.cache-cleared';
 
@@ -28,7 +28,6 @@
       document.documentElement.dataset.registryUiRelease = RELEASE;
       return;
     }
-
     rememberSessionClear();
     try {
       if ('caches' in window) {
