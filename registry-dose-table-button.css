@@ -14,20 +14,30 @@
   padding-block: 9px !important;
 }
 
-.dose-table-header-title,
-.dose-table-header-meta {
-  display: block;
+.dose-table-header {
+  font-size: 0 !important;
 }
 
-.dose-table-header-title {
+.dose-table-header > * {
+  display: none !important;
+}
+
+.dose-table-header::before,
+.dose-table-header::after {
+  display: block;
+  color: inherit;
+}
+
+.dose-table-header::before {
+  content: "Doza";
   font-size: 0.76rem;
   font-weight: 850;
   line-height: 1.15;
 }
 
-.dose-table-header-meta {
+.dose-table-header::after {
+  content: attr(data-dose-header-meta);
   margin-top: 4px;
-  color: inherit;
   font-size: 0.61rem;
   font-weight: 650;
   line-height: 1.2;
@@ -76,11 +86,30 @@
   padding: 8px !important;
   border-radius: 9px !important;
   box-shadow: none !important;
-  font-size: 0.74rem !important;
+  font-size: 0 !important;
   line-height: 1 !important;
   touch-action: manipulation;
   transform: none !important;
   white-space: nowrap;
+}
+
+.dose-table-button::before {
+  content: "✓";
+  display: inline-grid;
+  width: 16px;
+  height: 16px;
+  flex: 0 0 16px;
+  place-items: center;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.18);
+  font-size: 0.64rem;
+  font-weight: 900;
+}
+
+.dose-table-button::after {
+  content: "Kalkulo";
+  font-size: 0.74rem;
+  font-weight: 800;
 }
 
 .dose-table-button:hover {
@@ -96,22 +125,6 @@
 .dose-table-button:focus-visible {
   outline: 3px solid rgba(13, 95, 99, 0.32) !important;
   outline-offset: 2px !important;
-}
-
-.dose-table-button-label-mobile {
-  display: none;
-}
-
-.dose-table-verified-mark {
-  display: inline-grid;
-  width: 16px;
-  height: 16px;
-  flex: 0 0 16px;
-  place-items: center;
-  border-radius: 50%;
-  background: rgba(255, 255, 255, 0.18);
-  font-size: 0.64rem;
-  font-weight: 900;
 }
 
 .has-pediatric-only-dose-calculator > .registry-dose-calculator-column {
@@ -188,12 +201,8 @@
     padding-inline: 12px !important;
   }
 
-  .dose-table-button-label-desktop {
-    display: none;
-  }
-
-  .dose-table-button-label-mobile {
-    display: inline;
+  .dose-table-button::after {
+    content: "Doza";
   }
 
   .dose-calculator-group {
@@ -221,7 +230,7 @@
     border: 1px solid ButtonText;
   }
 
-  .dose-table-verified-mark {
+  .dose-table-button::before {
     background: transparent;
   }
 }
