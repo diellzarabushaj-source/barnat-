@@ -1,5 +1,7 @@
 const { test, expect } = require('@playwright/test');
 
+test.use({ serviceWorkers:'block' });
+
 const cases = [
   { name:'desktop', viewport:{ width:1440, height:900 } },
   { name:'mobile', viewport:{ width:390, height:844 } },
@@ -8,6 +10,23 @@ const cases = [
 for (const scenario of cases) {
   test(`Clinical+ card keeps bounded icons on ${scenario.name}`, async ({ page }) => {
     await page.setViewportSize(scenario.viewport);
+
+    await page.route('**/api/auth', async route => {
+      if (route.request().method() !== 'GET') return route.continue();
+      await route.fulfill({
+        status:200,
+        contentType:'application/json',
+        body:JSON.stringify({
+          authenticated:false,
+          sessionConfigured:true,
+          hardened:true,
+          googleConfigured:false,
+          passwordFallbackConfigured:true,
+          csrfToken:'landing-card-browser-test',
+        }),
+      });
+    });
+
     await page.goto('http://127.0.0.1:4173/login.html', { waitUntil:'domcontentloaded' });
 
     const card = page.locator('.plan-block');
