@@ -11,6 +11,8 @@ const OFFICIAL_BRAND = Object.freeze({
   fullOnDark:{ pathname:'medindex/brand/v1/medindex-full-on-dark.png', contentType:'image/png' },
   markOnDark:{ pathname:'medindex/brand/v1/medindex-mark-on-dark.png', contentType:'image/png' },
   fullOnLight:{ pathname:'medindex/brand/v1/medindex-full-on-light.png', contentType:'image/png' },
+  horizontalOnLight:{ pathname:'medindex/brand/v1/medindex-horizontal-on-light.webp', contentType:'image/webp' },
+  horizontalOnDark:{ pathname:'medindex/brand/v1/medindex-horizontal-on-dark.webp', contentType:'image/webp' },
 });
 
 function queryValue(req, name) {

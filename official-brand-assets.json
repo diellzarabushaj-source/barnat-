@@ -2,7 +2,7 @@
   "brand": "MedIndex",
   "version": "v1",
   "owner": "Dr. Diellza Rabushaj",
-  "policy": "Only these four approved assets may be used as MedIndex logos.",
+  "policy": "Only these six approved assets may be used as MedIndex logos.",
   "assets": {
     "markOnLight": {
       "route": "/brand/medindex-mark-on-light.webp",
@@ -23,6 +23,16 @@
       "route": "/brand/medindex-full-on-dark.png",
       "blobPath": "medindex/brand/v1/medindex-full-on-dark.png",
       "usage": "Full wordmark on black and dark surfaces"
+    },
+    "horizontalOnLight": {
+      "route": "/brand/medindex-horizontal-on-light.webp",
+      "blobPath": "medindex/brand/v1/medindex-horizontal-on-light.webp",
+      "usage": "Cropped transparent horizontal wordmark for expanded navigation and wide light surfaces"
+    },
+    "horizontalOnDark": {
+      "route": "/brand/medindex-horizontal-on-dark.webp",
+      "blobPath": "medindex/brand/v1/medindex-horizontal-on-dark.webp",
+      "usage": "Cropped transparent horizontal wordmark for expanded navigation and wide dark surfaces"
     }
   }
 }

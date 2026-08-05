@@ -17,6 +17,14 @@ const expectedAssets = {
     route: '/brand/medindex-full-on-light.png',
     blobPath: 'medindex/brand/v1/medindex-full-on-light.png',
   },
+  horizontalOnLight: {
+    route: '/brand/medindex-horizontal-on-light.webp',
+    blobPath: 'medindex/brand/v1/medindex-horizontal-on-light.webp',
+  },
+  horizontalOnDark: {
+    route: '/brand/medindex-horizontal-on-dark.webp',
+    blobPath: 'medindex/brand/v1/medindex-horizontal-on-dark.webp',
+  },
   markOnDark: {
     route: '/brand/medindex-mark-on-dark.png',
     blobPath: 'medindex/brand/v1/medindex-mark-on-dark.png',
@@ -51,6 +59,17 @@ for (const asset of Object.values(expectedAssets)) {
 for (const alias of approvedAliases) {
   allowedReferences.add(alias);
   allowedReferences.add(`/${alias}`);
+}
+
+const horizontalSources = [
+  'brand/source-v2/medindex-horizontal-on-light.webp',
+  'brand/source-v2/medindex-horizontal-on-dark.webp',
+];
+for (const relativePath of horizontalSources) {
+  const buffer = fs.readFileSync(path.join(ROOT, relativePath));
+  assert.ok(buffer.length > 1000, `Horizontal logo source is too small: ${relativePath}`);
+  assert.equal(buffer.toString('ascii', 0, 4), 'RIFF', `Horizontal logo is not WebP: ${relativePath}`);
+  assert.equal(buffer.toString('ascii', 8, 12), 'WEBP', `Horizontal logo is not WebP: ${relativePath}`);
 }
 
 const officialMarkBase64 = fs.readFileSync(path.join(ROOT, 'brand/source-v2/medindex-mark-on-light-transparent.webp.b64'), 'utf8').trim();
@@ -100,4 +119,4 @@ loginLogoReferences.forEach(reference => {
   assert.ok(allowedReferences.has(reference), `Login uses a non-approved logo: ${reference}`);
 });
 
-console.log('Official transparent MedIndex v1 logo policy passed: only four approved assets are allowed.');
+console.log('Official transparent MedIndex v1 logo policy passed: all six approved assets are allowed.');
