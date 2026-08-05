@@ -36,7 +36,19 @@
       document.head.appendChild(signature);
     }
 
+    /* Keep the Clinical+ card as the final visual layer. Loading it after the
+       signature stylesheet prevents earlier landing rules from resizing or
+       recoloring the card arrows and hover states. */
+    if (!document.querySelector('link[data-mi-clinical-plan-final]')) {
+      const planCard = document.createElement('link');
+      planCard.rel = 'stylesheet';
+      planCard.href = '/clinical-plan-card.css?v=20260805-2';
+      planCard.dataset.miClinicalPlanFinal = 'true';
+      document.head.appendChild(planCard);
+    }
+
     document.documentElement.dataset.miSignature = '20260805';
+    document.documentElement.dataset.miClinicalPlan = '20260805-2';
 
     if (!window.matchMedia('(hover:hover) and (pointer:fine)').matches) return;
     if (window.matchMedia('(prefers-reduced-motion:reduce)').matches) return;
