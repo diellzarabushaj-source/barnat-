@@ -1,0 +1,66 @@
+name: Tailwind site UI audit
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  site-ui:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          version: 10.28.0
+          run_install: false
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: pnpm
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile --ignore-scripts
+
+      - name: Run static Tailwind site contract
+        run: node tests/tailwind-site-ui-test.js
+
+      - name: Install Playwright Chromium
+        run: pnpm exec playwright install --with-deps chromium
+
+      - name: Run desktop and mobile site audit
+        shell: bash
+        run: |
+          set -euo pipefail
+          node tests/clinical-smoke-server.js > /tmp/medindex-tailwind-server.log 2>&1 &
+          SERVER_PID=$!
+          trap 'kill "$SERVER_PID" 2>/dev/null || true; cat /tmp/medindex-tailwind-server.log' EXIT
+          for attempt in {1..30}; do
+            if curl -fsS http://127.0.0.1:4173/index.html >/dev/null; then break; fi
+            sleep 1
+          done
+          pnpm exec playwright test tests/tailwind-site-browser.spec.js --reporter=line --workers=1 --retries=1
+
+      - name: Upload Tailwind UI screenshots
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: tailwind-site-ui-screenshots
+          path: |
+            /tmp/tailwind-clinical-*.png
+            /tmp/tailwind-public-*.png
+            test-results
+            playwright-report
+            /tmp/medindex-tailwind-server.log
+          if-no-files-found: warn
+          retention-days: 3
