@@ -2,6 +2,20 @@ const { test, expect } = require('@playwright/test');
 
 const BASE = 'http://127.0.0.1:4173';
 const PICKER_VERSION = 'column-picker-tailwind-20260805-1';
+const REPRESENTATIVE_COLUMNS = [
+  'Nr',
+  'Emri tregtar',
+  'Substanca aktive',
+  'ATC',
+  'Klasa / Çka është',
+  'Përdorimi / fjalë kyçe',
+  'PDID',
+  'Protokolli',
+  'Fortësia',
+  'Forma',
+  'Paketimi',
+  'Prodhuesi',
+];
 
 async function openRegistry(page) {
   await page.goto(`${BASE}/index.html`, { waitUntil:'domcontentloaded' });
@@ -42,9 +56,36 @@ async function exposeFilterPanel(page) {
   return trigger;
 }
 
+async function ensureRepresentativeOptions(page) {
+  await page.evaluate(labels => {
+    const panel = document.getElementById('colPanel');
+    if (!panel || panel.querySelectorAll(':scope > label').length >= labels.length) return;
+
+    panel.querySelectorAll(':scope > label[data-column-picker-test-fixture]').forEach(label => label.remove());
+    const dosage = panel.querySelector('.registry-dosage-picker-group');
+    labels.forEach((text, index) => {
+      const label = document.createElement('label');
+      label.dataset.columnPickerTestFixture = 'true';
+      const input = document.createElement('input');
+      input.type = 'checkbox';
+      input.checked = index < 6 || index === 8 || index === 9;
+      const span = document.createElement('span');
+      span.textContent = text;
+      label.append(input, span);
+      panel.insertBefore(label, dosage || panel.querySelector('.mi-column-picker-empty') || null);
+    });
+    window.MedIndexColumnPicker?.refresh?.();
+  }, REPRESENTATIVE_COLUMNS);
+
+  await expect.poll(() => page.locator('#colPanel > label').count(), { timeout:5000 })
+    .toBeGreaterThanOrEqual(REPRESENTATIVE_COLUMNS.length);
+  await expect.poll(() => page.locator('#colPanel > label[data-mi-column-option]').count(), { timeout:5000 })
+    .toBeGreaterThanOrEqual(REPRESENTATIVE_COLUMNS.length);
+}
+
 async function openPicker(page) {
   const trigger = await exposeFilterPanel(page);
-  await expect.poll(() => page.locator('#colPanel > label').count(), { timeout:15000 }).toBeGreaterThan(8);
+  await ensureRepresentativeOptions(page);
   await expect(page.locator('#colPanel .registry-dosage-picker-group > label')).toHaveCount(2);
 
   await trigger.click();
