@@ -42,7 +42,7 @@ jobs:
           pnpm exec playwright install --with-deps chromium > /tmp/playwright-install.log 2>&1 || { tail -200 /tmp/playwright-install.log; exit 1; }
           echo "Playwright Chromium installed."
 
-      - name: Run desktop, mobile, tablet, CSP, dose manual QA, cell preview and 4006-row performance audits
+      - name: Run desktop, mobile, tablet, CSP, landing, dose manual QA, cell preview and 4006-row performance audits
         shell: bash
         run: |
           set -euo pipefail
@@ -62,7 +62,7 @@ jobs:
             sleep 1
           done
           : > /tmp/physician-flow.log
-          pnpm exec playwright test tests/csp-browser-audit.spec.js tests/physician-flow.spec.js tests/mobile-deep-audit.spec.js tests/column-picker-tailwind.spec.js tests/registry-cell-preview.spec.js tests/dose-calculator-manual-qa-v2.spec.js tests/registry-main-thread-performance.spec.js --reporter=line --workers=1 --retries=1 >> /tmp/physician-flow.log 2>&1 || { cat /tmp/physician-flow.log; exit 1; }
+          pnpm exec playwright test tests/csp-browser-audit.spec.js tests/login-plan-card-browser.spec.js tests/physician-flow.spec.js tests/mobile-deep-audit.spec.js tests/column-picker-tailwind.spec.js tests/registry-cell-preview.spec.js tests/dose-calculator-manual-qa-v2.spec.js tests/registry-main-thread-performance.spec.js --reporter=line --workers=1 --retries=1 >> /tmp/physician-flow.log 2>&1 || { cat /tmp/physician-flow.log; exit 1; }
           pnpm exec playwright test tests/atc-visual-audit.spec.js tests/icd-full-table-browser.spec.js tests/icd-advanced-search-browser.spec.js tests/icd-workspace-health-browser.spec.js tests/icd-terminology-detail-browser.spec.js tests/icd-prescription-roundtrip-browser.spec.js tests/icd-favorites-browser.spec.js tests/icd-problem-list-browser.spec.js tests/icd-coding-workspace-browser.spec.js tests/icd-code-comparison-browser.spec.js tests/icd-clinical-guidance-browser.spec.js tests/prescription-diagnosis-document-browser.spec.js tests/system-health-icd-browser.spec.js --reporter=line --workers=1 >> /tmp/physician-flow.log 2>&1 || { cat /tmp/physician-flow.log; exit 1; }
           cat /tmp/physician-flow.log
 
@@ -75,6 +75,7 @@ jobs:
             /tmp/physician-flow.log
             /tmp/medindex-clinical-server.log
             /tmp/medindex-registry-performance-server.log
+            /tmp/login-clinical-plan-*.png
             /tmp/dose-manual-qa
             /tmp/atc-visual
             /tmp/icd-visual
