@@ -1,5 +1,6 @@
 /* MedIndex professional TailAdmin bundle.
-   The audited legacy geometry loads first; the unified Tailwind UI system is
-   the final visual layer on every authenticated clinical page. */
+   The audited legacy geometry loads first; the unified Tailwind UI system and
+   final touch-target corrections load last on every clinical page. */
 @import url("tailadmin-professional-core.css?v=20260805-1");
 @import url("medindex-tailwind-ui.css?v=20260805-1");
+@import url("medindex-tailwind-touch.css?v=20260805-1");
