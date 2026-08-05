@@ -60,6 +60,8 @@ assert.match(uiSource, /nuk rekomandohet nën \$\{ageLabel\}/);
 assert.match(uiSource, /tabletSplitAllowed/);
 assert.match(uiSource, /Doza nuk mund të kalkulohet/);
 assert.match(uiSource, /if \(!raw\) return null/);
+assert.equal((uiSource.match(/root\.id = 'doseCalculatorModal'/g) || []).length, 1,
+  'The registry must create exactly one reusable dose calculator modal');
 assert.doesNotMatch(uiSource, /localStorage|sessionStorage/);
 assert.match(css, /\.dose-calculator-modal/);
 assert.match(css, /\.dose-calculator-result\.is-error/);
@@ -77,21 +79,35 @@ assert.match(fastCss, /dose-calculator-group-choices/);
 assert.match(fastCss, /dose-calculator-weight-presets/);
 assert.match(fastCss, /dose-calculator-fast-hidden/);
 
-assert.match(tableUiSource, /dose-table-button-deep-audit-v1/);
+assert.match(tableUiSource, /dose-table-button-deep-audit-v2/);
 assert.match(tableUiSource, /pendingRows = new Set\(\)/);
+assert.match(tableUiSource, /internalCells = new WeakSet\(\)/);
+assert.match(tableUiSource, /internalHeaders = new WeakSet\(\)/);
 assert.match(tableUiSource, /FRAME_BUDGET_MS = 7/);
 assert.match(tableUiSource, /requestIdleCallback/);
 assert.match(tableUiSource, /requestAnimationFrame/);
 assert.match(tableUiSource, /dataset\.doseTableSignature/);
+assert.match(tableUiSource, /mutationTouchesRelevantUi/);
+assert.match(tableUiSource, /if \(!pendingRows\.size && headerDirty\)/,
+  'Header counting must run only after the row queue is drained');
 assert.match(tableUiSource, /Kalkulo dozën për/);
+assert.match(tableUiSource, /aria-haspopup', 'dialog/);
+assert.match(tableUiSource, /aria-controls', 'doseCalculatorModal/);
 assert.match(tableUiSource, /Nuk ka kalkulim të verifikuar/);
+assert.match(tableUiSource, /\$\{readyCount\} në këtë faqe/);
 assert.match(tableUiSource, /MutationObserver/);
+assert.match(tableUiSource, /ignoredMutations/);
+assert.match(tableUiSource, /tableScans/);
+assert.match(tableUiSource, /headerUpdates/);
+assert.match(tableUiSource, /maxRunMs/);
 assert.match(tableUiSource, /metrics:\(\)/);
 assert.equal((tableUiSource.match(/addEventListener\('click'/g) || []).length, 1,
   'The main table dose action must use one delegated click listener');
 assert.doesNotMatch(tableUiSource, /localStorage|sessionStorage/);
 assert.match(tableCss, /position: sticky/);
 assert.match(tableCss, /min-height: 44px/);
+assert.match(tableCss, /touch-action: manipulation/);
+assert.match(tableCss, /aria-selected="true"/);
 assert.match(tableCss, /prefers-reduced-motion: reduce/);
 assert.match(tableCss, /forced-colors: active/);
 assert.match(tableCss, /@media print/);
