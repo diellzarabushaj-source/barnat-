@@ -106,10 +106,22 @@ async function routeCatalog(page, payload = safePayload) {
 async function openRegistry(page, payload = safePayload) {
   await routeCatalog(page, payload);
   await page.goto(BASE_URL, { waitUntil:'domcontentloaded' });
-  await page.waitForFunction(() => document.documentElement.classList.contains('auth-ready'));
-  await page.waitForFunction(() => window.MedIndexDoseCalculator?.catalogStatus?.() === 'ready');
-  await page.waitForFunction(() => document.querySelectorAll('#tbody > tr:not(.empty-state)').length >= 3);
-  await page.waitForFunction(() => document.querySelectorAll('.dose-table-button').length === 3);
+  await expect.poll(
+    () => page.evaluate(() => document.documentElement.classList.contains('auth-ready')),
+    { timeout:10000, message:'authenticated registry shell did not become ready' },
+  ).toBe(true);
+  await expect.poll(
+    () => page.evaluate(() => window.MedIndexDoseCalculator?.catalogStatus?.() || 'loading'),
+    { timeout:15000, message:'verified dose catalog did not become ready' },
+  ).toBe('ready');
+  await expect.poll(
+    () => page.locator('#tbody > tr').count(),
+    { timeout:15000, message:'the three manual-QA registry rows were not rendered' },
+  ).toBe(3);
+  await expect.poll(
+    () => page.locator('.dose-table-button').count(),
+    { timeout:15000, message:'the three verified dose buttons were not rendered' },
+  ).toBe(3);
 }
 
 function rowFor(page, text) {
@@ -121,9 +133,10 @@ test('desktop: tabela, filtrimi dhe modal-i punojnë si rrjedhë reale e mjekut'
   await page.setViewportSize({ width:1440, height:900 });
   await openRegistry(page);
 
-  const rows = page.locator('#tbody > tr').filter({ hasNot:page.locator('.empty-state') });
+  const rows = page.locator('#tbody > tr');
+  const doseHeader = page.locator('#headerRow [data-registry-dose-calculator-column="dose-calculator"]');
   await expect(rows).toHaveCount(3);
-  await expect(page.locator('#headerRow [data-registry-dose-calculator-column="dose-calculator"]')).toContainText('3 në këtë faqe');
+  await expect(doseHeader).toHaveAttribute('data-dose-header-meta', '3 në këtë faqe');
   await expect(page.locator('.dose-table-button')).toHaveCount(3);
   await expect(page.locator('#doseCalculatorModal')).toHaveCount(1);
 
@@ -131,6 +144,8 @@ test('desktop: tabela, filtrimi dhe modal-i punojnë si rrjedhë reale e mjekut'
   expect(cellCounts).toEqual([1, 1, 1]);
   const stickyPosition = await rowFor(page, 'PARACETAMOL TEST').locator('[data-registry-dose-calculator-column="dose-calculator"]').evaluate(node => getComputedStyle(node).position);
   expect(stickyPosition).toBe('sticky');
+  const desktopLabel = await rowFor(page, 'PARACETAMOL TEST').locator('.dose-table-button').evaluate(node => getComputedStyle(node, '::after').content.replace(/^['"]|['"]$/g, ''));
+  expect(desktopLabel).toBe('Kalkulo');
 
   await page.screenshot({ path:`${QA_DIR}/desktop-table.png`, fullPage:false });
 
@@ -216,9 +231,8 @@ test('mobile: butoni 44px, etiketa Doza dhe modal pa overflow', async ({ page })
   const button = allAgesRow.getByRole('button', { name:/Kalkulo dozën për AMOXICILLIN TEST/i });
   const box = await button.boundingBox();
   expect(box.height).toBeGreaterThanOrEqual(44);
-  await expect(button.locator('.dose-table-button-label-mobile')).toBeVisible();
-  await expect(button.locator('.dose-table-button-label-mobile')).toHaveText('Doza');
-  await expect(button.locator('.dose-table-button-label-desktop')).toBeHidden();
+  const mobileLabel = await button.evaluate(node => getComputedStyle(node, '::after').content.replace(/^['"]|['"]$/g, ''));
+  expect(mobileLabel).toBe('Doza');
 
   await page.screenshot({ path:`${QA_DIR}/mobile-table.png`, fullPage:false });
   await button.click();
@@ -250,8 +264,14 @@ test('siguria fail-closed: katalogu jo i verifikuar nuk krijon asnjë buton', as
   };
   await routeCatalog(page, unsafePayload);
   await page.goto(BASE_URL, { waitUntil:'domcontentloaded' });
-  await page.waitForFunction(() => document.documentElement.classList.contains('auth-ready'));
-  await page.waitForFunction(() => window.MedIndexDoseCalculator?.catalogStatus?.() === 'error');
+  await expect.poll(
+    () => page.evaluate(() => document.documentElement.classList.contains('auth-ready')),
+    { timeout:10000, message:'authenticated shell did not become ready for fail-closed test' },
+  ).toBe(true);
+  await expect.poll(
+    () => page.evaluate(() => window.MedIndexDoseCalculator?.catalogStatus?.() || 'loading'),
+    { timeout:15000, message:'unsafe catalog was not rejected' },
+  ).toBe('error');
   await expect(page.locator('.dose-calculator-open')).toHaveCount(0);
   await expect(page.locator('[data-registry-dose-calculator-column="dose-calculator"] .registry-dosage-muted')).toHaveCount(3);
   const labels = await page.locator('[data-registry-dose-calculator-column="dose-calculator"] .registry-dosage-muted').evaluateAll(nodes => nodes.map(node => node.getAttribute('aria-label')));
