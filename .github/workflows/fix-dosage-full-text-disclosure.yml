@@ -27,7 +27,17 @@ jobs:
           cache: pnpm
 
       - name: Apply fix
-        run: python scripts/fix-dosage-full-text-disclosure.py
+        run: |
+          python scripts/fix-dosage-full-text-disclosure.py
+          python - <<'PY'
+          from pathlib import Path
+          path = Path('tests/registry-dosage-columns-test.js')
+          source = path.read_text(encoding='utf-8')
+          source = source.replace("SRC = '\\/registry-dosage-columns-v2\\.js\\?v=20260728-2'", "SRC = '\\/registry-dosage-columns-v2\\.js\\?v=20260805-4'", 1)
+          source = source.replace('registry-dosage-performance-v3', 'registry-dosage-performance-v4', 1)
+          source = source.replace("assert.match(script, /registryDosageDisclosure/);", "assert.match(script, /registryDosageDisclosure/);\nassert.match(script, /rowController\\?\\.toggleRow|rowController\\.toggleRow/);", 1)
+          path.write_text(source, encoding='utf-8')
+          PY
 
       - name: Validate
         run: |
@@ -38,6 +48,7 @@ jobs:
           node --check registry-dosage-loader.js
           node tests/registry-cell-preview-test.js
           node tests/registry-table-final-test.js
+          node tests/registry-dosage-columns-test.js
           pnpm test
 
       - name: Commit
