@@ -76,7 +76,7 @@
   white-space: nowrap;
 }
 
-.dose-table-button {
+.registry-dose-calculator-column .dose-calculator-open {
   width: 100%;
   min-height: 44px !important;
   display: inline-flex;
@@ -93,7 +93,7 @@
   white-space: nowrap;
 }
 
-.dose-table-button::before {
+.registry-dose-calculator-column .dose-calculator-open::before {
   content: "✓";
   display: inline-grid;
   width: 16px;
@@ -106,23 +106,23 @@
   font-weight: 900;
 }
 
-.dose-table-button::after {
+.registry-dose-calculator-column .dose-calculator-open::after {
   content: "Kalkulo";
   font-size: 0.74rem;
   font-weight: 800;
 }
 
-.dose-table-button:hover {
+.registry-dose-calculator-column .dose-calculator-open:hover {
   box-shadow: 0 3px 10px rgba(13, 95, 99, 0.18) !important;
   transform: none !important;
 }
 
-.dose-table-button:active {
+.registry-dose-calculator-column .dose-calculator-open:active {
   box-shadow: none !important;
   transform: translateY(1px) !important;
 }
 
-.dose-table-button:focus-visible {
+.registry-dose-calculator-column .dose-calculator-open:focus-visible {
   outline: 3px solid rgba(13, 95, 99, 0.32) !important;
   outline-offset: 2px !important;
 }
@@ -188,7 +188,7 @@
 }
 
 @media (hover: none) {
-  .dose-table-button:hover {
+  .registry-dose-calculator-column .dose-calculator-open:hover {
     box-shadow: none !important;
   }
 }
@@ -205,7 +205,7 @@
     padding-inline: 12px !important;
   }
 
-  .dose-table-button::after {
+  .registry-dose-calculator-column .dose-calculator-open::after {
     content: "Doza";
   }
 
@@ -215,11 +215,11 @@
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .dose-table-button {
+  .registry-dose-calculator-column .dose-calculator-open {
     transition: none !important;
   }
 
-  .dose-table-button:active {
+  .registry-dose-calculator-column .dose-calculator-open:active {
     transform: none !important;
   }
 }
@@ -229,12 +229,12 @@
     border-left: 1px solid CanvasText;
   }
 
-  .dose-table-button,
+  .registry-dose-calculator-column .dose-calculator-open,
   .dose-calculator-group {
     border: 1px solid ButtonText;
   }
 
-  .dose-table-button::before {
+  .registry-dose-calculator-column .dose-calculator-open::before {
     background: transparent;
   }
 }
