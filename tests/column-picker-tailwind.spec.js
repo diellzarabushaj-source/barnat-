@@ -1,13 +1,16 @@
 const { test, expect } = require('@playwright/test');
 
 const BASE = 'http://127.0.0.1:4173';
+const PICKER_VERSION = 'column-picker-tailwind-20260805-1';
 
 async function openRegistry(page) {
   await page.goto(`${BASE}/index.html`, { waitUntil:'domcontentloaded' });
   await expect.poll(() => page.evaluate(() => document.documentElement.classList.contains('auth-ready')), { timeout:15000 }).toBe(true);
   await expect.poll(() => page.evaluate(() => document.documentElement.dataset.miColumnPicker), { timeout:15000 })
-    .toBe('column-picker-tailwind-20260805-1');
+    .toBe(PICKER_VERSION);
   await expect(page.locator('.mi-app-shell')).toBeVisible();
+  await expect(page.locator('#registryViewToolbar')).toBeVisible({ timeout:15000 });
+  await expect(page.locator('[data-registry-filter-toggle]')).toBeVisible();
 }
 
 async function expectInsideViewport(page, selector) {
@@ -26,13 +29,29 @@ async function expectInsideViewport(page, selector) {
   expect(geometry.htmlWidth).toBeLessThanOrEqual(geometry.viewportWidth + 1);
 }
 
-async function openPicker(page) {
+async function exposeFilterPanel(page) {
   const trigger = page.locator('#colPickerBtn');
+  if (await trigger.isVisible()) return trigger;
+
+  const filterToggle = page.locator('[data-registry-filter-toggle]');
+  await filterToggle.click();
+  await expect(filterToggle).toHaveAttribute('aria-expanded', 'true');
+  await expect.poll(() => page.evaluate(() => document.documentElement.dataset.registryFiltersOpen)).toBe('true');
+  await expect(page.locator('#registryFilterPanel')).toBeVisible();
+  await expect(trigger).toBeVisible();
+  return trigger;
+}
+
+async function openPicker(page) {
+  const trigger = await exposeFilterPanel(page);
+  await expect.poll(() => page.locator('#colPanel > label').count(), { timeout:15000 }).toBeGreaterThan(8);
+  await expect(page.locator('#colPanel .registry-dosage-picker-group > label')).toHaveCount(2);
+
   await trigger.click();
   await expect(trigger).toHaveAttribute('aria-expanded', 'true');
   const dialog = page.getByRole('dialog', { name:'Zgjedhja e kolonave të regjistrit' });
   await expect(dialog).toBeVisible();
-  await expect(dialog).toHaveAttribute('data-mi-column-picker', 'column-picker-tailwind-20260805-1');
+  await expect(dialog).toHaveAttribute('data-mi-column-picker', PICKER_VERSION);
   return { trigger, dialog };
 }
 
@@ -51,7 +70,7 @@ test.describe('Tailwind-style registry column picker', () => {
         const rect = button.getBoundingClientRect();
         return { width:rect.width, height:rect.height };
       });
-      const labels = [...node.querySelectorAll(':scope > label')].slice(0, 4).map(label => {
+      const labels = [...node.querySelectorAll(':scope > label[data-mi-column-option]')].slice(0, 4).map(label => {
         const rect = label.getBoundingClientRect();
         return { top:rect.top, left:rect.left, width:rect.width, height:rect.height };
       });
@@ -82,8 +101,8 @@ test.describe('Tailwind-style registry column picker', () => {
 
     const search = dialog.getByRole('searchbox', { name:'Kërko kolonën' });
     await search.fill('ATC');
-    await expect(dialog.locator(':scope > label:not([hidden])')).toHaveCount(1);
-    await expect(dialog.locator(':scope > label:not([hidden])').first()).toContainText('ATC');
+    await expect(dialog.locator(':scope > label[data-mi-column-option]:not([hidden])')).toHaveCount(1);
+    await expect(dialog.locator(':scope > label[data-mi-column-option]:not([hidden])').first()).toContainText('ATC');
     await expect(dialog.locator('.registry-dosage-picker-group')).toBeHidden();
     await search.fill('');
     await expect(dialog.locator('.registry-dosage-picker-group')).toBeVisible();
@@ -102,7 +121,7 @@ test.describe('Tailwind-style registry column picker', () => {
 
     const layout = await dialog.evaluate(node => {
       const style = getComputedStyle(node);
-      const option = node.querySelector(':scope > label');
+      const option = node.querySelector(':scope > label[data-mi-column-option]');
       const optionStyle = getComputedStyle(option);
       const optionRect = option.getBoundingClientRect();
       const closeRect = node.querySelector('.mi-column-picker-close').getBoundingClientRect();
