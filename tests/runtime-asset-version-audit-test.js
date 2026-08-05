@@ -26,11 +26,12 @@ assert.doesNotMatch(index, /src="registry-dosage-columns-v2\.js/, 'index.html: d
 assert.match(index, /offline-runtime-performance\.js[^>]+data-medindex-offline-runtime/, 'index.html: cache-isolated offline runtime must be loaded explicitly');
 assert.match(index, /registry-fast-start\.js\?v=registry-fast-start-v2/, 'index.html: fast-start guard version is stale');
 assert.match(index, /<script id="drug-data" type="application\/json">\[\]<\/script>/, 'registry JSON fallback must remain inert');
-assert.match(index, /data-registry-ui-release="20260805-22"/, 'registry UI release is stale');
+assert.match(index, /data-registry-ui-release="20260805-23"/, 'registry UI release is stale');
 assert.match(index, /registry-dose-calculator-fast-ui\.js\?v=20260805-2/, 'dose calculator fast runtime version is stale');
 assert.match(index, /registry-dose-calculator-fast-ui\.css\?v=20260805-2/, 'dose calculator fast stylesheet version is stale');
 assert.match(index, /registry-dose-table-button\.js\?v=20260805-3/, 'dose table button runtime is missing');
 assert.match(index, /registry-dose-table-button\.css\?v=20260805-2/, 'dose table button stylesheet is missing');
+assert.match(index, /registry-dose-modal-accessibility\.js\?v=20260805-1/, 'dose modal accessibility runtime is missing');
 
 const runtimeLoader = read('registry-runtime-loader.js');
 assert.match(runtimeLoader, /registry-runtime-loader-v6/, 'immediate registry loader version is stale');
@@ -67,4 +68,4 @@ assert.match(performanceRuntime, /SERVICE_WORKER_URL = `\/sw-resilient-v3\.js\?v
 assert.match(performanceWorker, /VERSION = 'low-bandwidth-v3'/, 'cache-isolated service worker version is stale');
 assert.match(performanceRuntime, /CLINICAL_WORKFLOW_URL = `\/clinical-workflow\.js\?v=\$\{VERSION\}`/, 'offline runtime must version the clinical workflow');
 
-console.log('Clinical runtime cache-version, loader v6 and full-row reveal asset audit passed.');
+console.log('Clinical runtime cache-version, loader v6, dose accessibility and full-row reveal asset audit passed.');
