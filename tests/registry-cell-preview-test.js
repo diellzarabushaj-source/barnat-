@@ -16,12 +16,12 @@ const dosageRuntime = read('registry-dosage-columns-v2.js');
 
 assert(index.includes('registry-cell-preview.css?v=20260805-4'), 'Inline cell expansion stylesheet v3 is not wired.');
 assert(index.includes('registry-full-text-expansion.css?v=20260805-2'), 'Full-row text reveal contract is not wired.');
-assert(index.includes('registry-cell-preview.js?v=20260801-6'), 'Inline cell expansion controller v7 is not wired.');
+assert(index.includes('registry-cell-preview.js?v=20260805-8'), 'Inline cell expansion controller v8 is not wired.');
 assert(
-  index.indexOf('registry-cell-preview.js?v=20260801-6') < index.indexOf('registry-row-expand.js?v=20260805-5'),
+  index.indexOf('registry-cell-preview.js?v=20260805-8') < index.indexOf('registry-row-expand.js?v=20260805-5'),
   'Cell expansion trigger must initialize before row expansion.'
 );
-assert(index.includes('data-registry-ui-release="20260805-25"'), 'Registry UI release was not bumped.');
+assert(index.includes('data-registry-ui-release="20260805-26"'), 'Registry UI release was not bumped.');
 assert(index.includes('registry-column-contract.js?v=20260801-2'), 'Column contract v2 is not wired.');
 assert(index.includes('registry-unified-table.js?v=20260801-1'), 'Unified table controller is not wired.');
 assert(
@@ -33,14 +33,15 @@ assert(
   'TailAdmin professional must remain the final static stylesheet.'
 );
 
-assert(controller.includes("const VERSION = 'registry-cell-preview-20260801-7'"), 'Cell preview runtime version is stale.');
+assert(controller.includes("const VERSION = 'registry-cell-preview-20260805-8'"), 'Cell preview runtime version is stale.');
 assert(controller.includes('data-lineicons-icon="expand-square-4"'), 'Lineicons expand-square-4 source markup is missing.');
 assert(controller.includes('rowController.toggleRow(row)'), 'Cell trigger must expand the table row inline.');
 assert(controller.includes("trigger.setAttribute('aria-expanded'"), 'Inline trigger must expose its expanded state.');
 assert(controller.includes("window.addEventListener('medindex:registry-table-stable', activate)"), 'Cell triggers must be rebuilt whenever the unified table stabilizes.');
 assert(controller.includes('function refreshNow()'), 'Manual cell-preview refresh must be synchronous.');
 assert(controller.includes('refresh:refreshNow'), 'Public refresh must use the synchronous path.');
-assert(controller.includes("['select', 'trade-name', 'clinical-status', 'clinical-action'].includes(key)"), 'Preview exclusions must use the canonical column key.');
+assert(controller.includes("['select', 'trade-name', 'clinical-status', 'clinical-action', 'dose-calculator'].includes(key)"), 'Preview exclusions must protect canonical action columns.');
+assert(controller.includes('.dose-calculator-open'), 'Verified dose actions must be excluded from text extraction and preview controls.');
 assert(!controller.includes("cell.matches('.registry-verification-column,.registry-editor-column,.registry-actions-column')"), 'Legacy CSS classes must not block a valid preview cell.');
 assert(controller.includes('function ensureExpandIcon(trigger)'), 'The nested SVG may still self-heal for graceful fallback.');
 assert(controller.includes('MutationObserver'), 'Cell triggers must follow table rerenders.');
@@ -80,4 +81,4 @@ assert(!dosageRuntime.includes("regimen?.classList.toggle('is-expanded')"), 'The
 assert(!styles.includes('height:132px!important;\n  min-height:132px!important'), 'Expanded desktop rows must not have a fixed height ceiling.');
 assert(fullTextStyles.includes('.registry-dosage-regimen.is-expanded .registry-dosage-dose-text'), 'Expanded dosage text must have an explicit unclamped contract.');
 
-console.log('Full-row zoom and Më shumë reveal every textual column without modal or clamp.');
+console.log('Full-row zoom excludes verified dose actions and reveals every textual column without modal or clamp.');
