@@ -30,6 +30,10 @@
       "destination": "/api/registry"
     },
     {
+      "source": "/api/dose-calculator",
+      "destination": "/api/dosage?view=calculator"
+    },
+    {
       "source": "/api/atc-counts",
       "destination": "/api/drug-search?view=atc-counts"
     },
