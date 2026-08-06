@@ -1,0 +1,123 @@
+/* Clinical row markers for verified pediatric-only and parenteral therapies. */
+:root {
+  --mi-dose-pediatric-text: #b42318;
+  --mi-dose-pediatric-strong: #912018;
+  --mi-dose-parenteral-bg: #ecfdf3;
+  --mi-dose-parenteral-hover: #dcfae6;
+  --mi-dose-parenteral-selected: #d1fadf;
+  --mi-dose-parenteral-border: #12b76a;
+}
+
+#tbody > tr.mi-dose-row--parenteral > td {
+  background-color: var(--mi-dose-parenteral-bg) !important;
+  background-image: none !important;
+}
+
+#tbody > tr.mi-dose-row--parenteral:hover > td {
+  background-color: var(--mi-dose-parenteral-hover) !important;
+}
+
+#tbody > tr.mi-dose-row--parenteral:is([aria-selected="true"], .is-selected, .selected) > td {
+  background-color: var(--mi-dose-parenteral-selected) !important;
+}
+
+#tbody > tr.mi-dose-row--parenteral > td:first-child {
+  box-shadow: inset 4px 0 0 var(--mi-dose-parenteral-border);
+}
+
+#tbody > tr.mi-dose-row--pediatric-only > td {
+  color: var(--mi-dose-pediatric-text) !important;
+}
+
+#tbody > tr.mi-dose-row--pediatric-only > td :where(
+  a,
+  span,
+  div,
+  strong,
+  small,
+  label,
+  summary,
+  .registry-dosage-dose,
+  .registry-dosage-route,
+  .registry-dosage-indication,
+  .registry-dosage-dose-text
+) {
+  color: inherit !important;
+}
+
+#tbody > tr.mi-dose-row--pediatric-only > td:first-child {
+  border-left: 4px solid var(--mi-dose-pediatric-text) !important;
+}
+
+#tbody > tr.mi-dose-row--pediatric-only .dose-calculator-open {
+  border-color: var(--mi-dose-pediatric-strong) !important;
+  background: var(--mi-dose-pediatric-text) !important;
+  color: #fff !important;
+}
+
+#tbody > tr.mi-dose-row--pediatric-only .dose-calculator-open::before,
+#tbody > tr.mi-dose-row--pediatric-only .dose-calculator-open::after {
+  color: #fff !important;
+}
+
+#tbody > tr.mi-dose-row--pediatric-only .dose-calculator-group {
+  border-color: currentColor !important;
+  background: rgba(180, 35, 24, 0.06) !important;
+}
+
+/* Combined rule: pediatric-only remains red, while the full row keeps the green parenteral tint. */
+#tbody > tr.mi-dose-row--pediatric-parenteral > td {
+  color: var(--mi-dose-pediatric-text) !important;
+  background-color: var(--mi-dose-parenteral-bg) !important;
+}
+
+[data-theme="dark"] {
+  --mi-dose-pediatric-text: #ffb4ab;
+  --mi-dose-pediatric-strong: #d92d20;
+  --mi-dose-parenteral-bg: #102f27;
+  --mi-dose-parenteral-hover: #153b30;
+  --mi-dose-parenteral-selected: #194637;
+  --mi-dose-parenteral-border: #32d583;
+}
+
+[data-theme="dark"] #tbody > tr.mi-dose-row--pediatric-only .dose-calculator-group {
+  background: rgba(255, 180, 171, 0.1) !important;
+}
+
+@media (max-width: 760px) {
+  #tbody > tr.mi-dose-row--parenteral {
+    border-inline-start: 4px solid var(--mi-dose-parenteral-border);
+  }
+
+  #tbody > tr.mi-dose-row--pediatric-only {
+    border-inline-end: 4px solid var(--mi-dose-pediatric-text);
+  }
+}
+
+@media (forced-colors: active) {
+  #tbody > tr.mi-dose-row--parenteral > td {
+    background: Canvas !important;
+    border-top: 2px solid Highlight !important;
+    border-bottom: 2px solid Highlight !important;
+  }
+
+  #tbody > tr.mi-dose-row--pediatric-only > td {
+    color: CanvasText !important;
+    text-decoration: underline double;
+  }
+}
+
+@media print {
+  #tbody > tr.mi-dose-row--parenteral > td,
+  #tbody > tr.mi-dose-row--pediatric-parenteral > td {
+    background-color: var(--mi-dose-parenteral-bg) !important;
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
+  }
+
+  #tbody > tr.mi-dose-row--pediatric-only > td {
+    color: var(--mi-dose-pediatric-text) !important;
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
+  }
+}

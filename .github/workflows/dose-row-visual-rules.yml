@@ -1,0 +1,42 @@
+name: Dose row visual rules
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'index.html'
+      - 'registry-dose-clinical-row-markers.js'
+      - 'registry-dose-clinical-row-markers.css'
+      - 'registry-dose-calculator.js'
+      - 'registry-dose-calculator-fast-ui.js'
+      - 'tests/dose-row-visual-rules-test.js'
+      - '.github/workflows/dose-row-visual-rules.yml'
+  pull_request:
+    paths:
+      - 'index.html'
+      - 'registry-dose-clinical-row-markers.js'
+      - 'registry-dose-clinical-row-markers.css'
+      - 'registry-dose-calculator.js'
+      - 'registry-dose-calculator-fast-ui.js'
+      - 'tests/dose-row-visual-rules-test.js'
+      - '.github/workflows/dose-row-visual-rules.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  clinical-row-contract:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+
+      - name: Verify pediatric, parenteral and adaptive calculator rules
+        run: node tests/dose-row-visual-rules-test.js
