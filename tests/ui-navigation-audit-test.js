@@ -104,7 +104,12 @@ assert.match(uiEnhancements, /legacyNavigationStyles[\s\S]*contains\('medindex-t
 assert.match(uiEnhancements, /\$\{legacyNavigationStyles\}/, 'shared registry enhancements must keep legacy navigation isolated');
 
 const css = read('tailadmin-medindex.css');
-const professionalCss = read('tailadmin-professional.css');
+const professionalCss = [
+  read('tailadmin-professional.css'),
+  read('tailadmin-professional-core.css'),
+  read('medindex-tailwind-ui.css'),
+  read('medindex-tailwind-touch.css'),
+].join('\n');
 [
   /--mi-brand-500:\s*#1f7779/,
   /--mi-gray-900:\s*#101828/,
@@ -143,7 +148,7 @@ const professionalCss = read('tailadmin-professional.css');
   /data-mi-page="recetat"/,
   /@media \(max-width: 1023px\)/,
   /@media \(max-height: 760px\)/,
-].forEach(pattern => assert.match(professionalCss, pattern, `tailadmin-professional.css missing ${pattern}`));
+].forEach(pattern => assert.match(professionalCss, pattern, `TailAdmin professional bundle missing ${pattern}`));
 assert.doesNotMatch(css, /--medindex-nav-width|bottom navigation/i, 'TailAdmin shell must not retain the legacy bottom-navigation geometry');
 
 const login = read('login.html');
