@@ -14,7 +14,7 @@ const loader = read('registry-runtime-loader.js');
 const fast = read('registry-fast-start.js');
 const release = read('registry-ui-release.js');
 
-assert.match(index,/data-registry-ui-release="20260805-26"/,'index must use the final manual-QA dose release');
+assert.match(index,/data-registry-ui-release="20260809-1"/,'index must use the current audited dose release');
 assert.match(index,/registry-unified-table\.css\?v=20260801-1/,'unified table stylesheet must be wired');
 assert.match(index,/registry-full-text-expansion\.css\?v=20260805-2/,'full-row text stylesheet must be wired');
 assert.match(index,/registry-unified-table\.js\?v=20260801-1/,'unified table controller must be wired');
@@ -25,7 +25,7 @@ assert.ok(index.indexOf('registry-ui-release.js') < index.indexOf('registry-unif
 assert.doesNotMatch(index,/(?:registry-table-integrity|registry-clinical-view|registry-tailgrids-refinement|registry-columns-filters|registry-table-final)\.(?:css|js)/,'competing table controllers must not be loaded');
 assert.doesNotMatch(index,/registryTableFinalMobileCompatibility/,'legacy mobile compatibility patch must be removed');
 assert.doesNotMatch(index,/<script src="app-performance\.js"/,'heavy registry bootstrap must remain dynamically loaded after authentication');
-assert.match(release,/registry-ui-20260805-26/,'cache release must match the final manual-QA dose contract');
+assert.match(release,/registry-ui-20260809-1/,'cache release must match the current audited dose contract');
 assert.match(fast,/releaseInteractiveShell/,'visual loader must release when authentication and shell are ready');
 assert.match(fast,/loader\.style\.pointerEvents = 'none'/,'visual loader must never intercept the table after shell readiness');
 
@@ -81,4 +81,4 @@ assert.match(fullTextCss,/::-webkit-scrollbar[\s\S]*width:12px!important[\s\S]*h
 assert.match(fullTextCss,/data-theme="dark"[\s\S]*scrollbar-color:/,'dark mode must style the same scroll surface');
 assert.doesNotMatch(fullTextCss,/https?:\/\//,'full-row text and scroll styles must not load third-party assets');
 
-console.log('Single-controller registry table, final manual-QA dose column, full-row reveal and bidirectional scroll audit passed.');
+console.log('Single-controller registry table, current audited dose column, full-row reveal and bidirectional scroll audit passed.');
