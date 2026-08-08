@@ -1,136 +1,90 @@
 (() => {
   'use strict';
 
-  const VERSION = 'dose-modal-accessibility-v2';
+  const VERSION = 'dose-modal-accessibility-v3';
   const MODAL_ID = 'doseCalculatorModal';
   const TRIGGER_SELECTOR = '.dose-calculator-open';
-  const CELL_SELECTOR = '[data-registry-dose-calculator-column="dose-calculator"]';
   const FOCUSABLE_SELECTOR = [
-    'button:not([disabled])', 'a[href]', 'input:not([disabled])', 'select:not([disabled])',
-    'textarea:not([disabled])', '[tabindex]:not([tabindex="-1"])',
+    'button:not([disabled])',
+    'select:not([disabled])',
+    'input:not([disabled])',
+    'a[href]',
+    'summary',
+    '[tabindex]:not([tabindex="-1"])',
   ].join(',');
 
   let lastTrigger = null;
-  let modalObserver = null;
-  let attachmentObserver = null;
-  let focusRestores = 0;
-  let trappedTabs = 0;
-  let translatedBlocks = 0;
+  let modal = null;
+  let observer = null;
 
-  const clean = value => String(value ?? '').replace(/\s+/g, ' ').trim();
-  const modalRoot = () => document.getElementById(MODAL_ID);
-  const modalOpen = root => Boolean(root && !root.hidden);
-
-  function groupForTrigger(trigger) {
-    const cell = trigger?.closest(CELL_SELECTOR);
-    if (!cell) return '';
-    if (cell.querySelector('.dose-calculator-group-adult_only')) return 'adult_only';
-    if (cell.querySelector('.dose-calculator-group-pediatric_only')) return 'pediatric_only';
-    if (cell.querySelector('.dose-calculator-group-pediatric_and_adult')) return 'pediatric_and_adult';
-    return '';
+  function currentModal() {
+    const node = document.getElementById(MODAL_ID);
+    return node instanceof HTMLElement ? node : null;
   }
 
-  function visibleFocusable(root) {
-    if (!root) return [];
+  function focusables() {
+    const root = currentModal();
+    if (!root || root.hidden) return [];
     return Array.from(root.querySelectorAll(FOCUSABLE_SELECTOR)).filter(node => {
-      if (!(node instanceof HTMLElement) || node.hidden || node.getAttribute('aria-hidden') === 'true') return false;
-      const style = getComputedStyle(node);
-      return style.display !== 'none' && style.visibility !== 'hidden' && node.getClientRects().length > 0;
+      if (!(node instanceof HTMLElement)) return false;
+      if (node.closest('[hidden]')) return false;
+      return node.getClientRects().length > 0;
     });
   }
 
   function restoreTriggerFocus() {
-    if (!(lastTrigger instanceof HTMLElement) || !lastTrigger.isConnected) {
-      lastTrigger = null;
-      return;
-    }
-    lastTrigger.focus({ preventScroll:true });
-    focusRestores += 1;
+    const target = lastTrigger;
     lastTrigger = null;
-  }
-
-  function translateClinicalBlock(root) {
-    if (!root || !lastTrigger) return;
-    const output = root.querySelector('[data-dose-result-text]');
-    if (!output) return;
-    const text = clean(output.textContent);
-    const group = groupForTrigger(lastTrigger);
-    let replacement = '';
-    if (group === 'adult_only' && text.includes('Grupmosha “I rritur” nuk përputhet me moshën e shkruar.')) {
-      replacement = 'Ky preparat nuk përdoret te fëmijët sipas burimit zyrtar. Doza nuk mund të kalkulohet.';
-    }
-    if (group === 'pediatric_only' && text.includes('Grupmosha “Fëmijë” nuk përputhet me moshën e shkruar.')) {
-      replacement = 'Ky preparat nuk përdoret te të rriturit sipas burimit zyrtar. Doza nuk mund të kalkulohet.';
-    }
-    if (!replacement || replacement === text) return;
-    output.textContent = replacement;
-    translatedBlocks += 1;
-  }
-
-  function onKeydown(event) {
-    const root = modalRoot();
-    if (!modalOpen(root)) return;
-    if (event.key === 'Escape') {
-      setTimeout(restoreTriggerFocus, 0);
-      return;
-    }
-    if (event.key !== 'Tab') return;
-    const focusable = visibleFocusable(root);
-    if (!focusable.length) {
-      event.preventDefault();
-      root.querySelector('[role="dialog"]')?.focus?.();
-      return;
-    }
-    const first = focusable[0];
-    const last = focusable[focusable.length - 1];
-    const active = document.activeElement;
-    const outside = !root.contains(active);
-    if (event.shiftKey && (active === first || outside)) {
-      event.preventDefault();
-      last.focus();
-      trappedTabs += 1;
-    } else if (!event.shiftKey && (active === last || outside)) {
-      event.preventDefault();
-      first.focus();
-      trappedTabs += 1;
-    }
+    if (!(target instanceof HTMLElement) || !target.isConnected) return;
+    requestAnimationFrame(() => target.focus({ preventScroll:true }));
   }
 
   function onDocumentClick(event) {
     const trigger = event.target.closest?.(TRIGGER_SELECTOR);
-    if (trigger) lastTrigger = trigger;
+    if (trigger instanceof HTMLButtonElement) lastTrigger = trigger;
   }
 
-  function attachModal() {
-    const root = modalRoot();
-    if (!root || root.dataset.doseModalAccessibility === VERSION) return false;
-    root.dataset.doseModalAccessibility = VERSION;
-    root.querySelector('[role="dialog"]')?.setAttribute('tabindex', '-1');
-    modalObserver = new MutationObserver(mutations => {
-      const hiddenChanged = mutations.some(mutation => mutation.type === 'attributes' && mutation.attributeName === 'hidden');
-      if (hiddenChanged && root.hidden) requestAnimationFrame(restoreTriggerFocus);
-      if (!root.hidden) translateClinicalBlock(root);
+  function onKeyDown(event) {
+    const root = currentModal();
+    if (!root || root.hidden || event.key !== 'Tab') return;
+    const items = focusables();
+    if (!items.length) return;
+    const first = items[0];
+    const last = items[items.length - 1];
+    if (event.shiftKey && document.activeElement === first) {
+      event.preventDefault();
+      last.focus();
+    } else if (!event.shiftKey && document.activeElement === last) {
+      event.preventDefault();
+      first.focus();
+    }
+  }
+
+  function watchModal() {
+    const next = currentModal();
+    if (!next || next === modal) return;
+    observer?.disconnect();
+    modal = next;
+    let wasHidden = modal.hidden;
+    observer = new MutationObserver(() => {
+      const hidden = modal.hidden;
+      if (!wasHidden && hidden) restoreTriggerFocus();
+      wasHidden = hidden;
     });
-    modalObserver.observe(root, {
-      attributes:true, attributeFilter:['hidden'], childList:true, subtree:true, characterData:true,
-    });
+    observer.observe(modal, { attributes:true, attributeFilter:['hidden'] });
+  }
+
+  function start() {
+    watchModal();
+    document.addEventListener('click', onDocumentClick, true);
+    document.addEventListener('keydown', onKeyDown, true);
+    const bodyObserver = new MutationObserver(watchModal);
+    bodyObserver.observe(document.body, { childList:true });
     document.documentElement.dataset.doseModalAccessibility = VERSION;
-    return true;
   }
 
-  document.addEventListener('click', onDocumentClick, true);
-  document.addEventListener('keydown', onKeydown, true);
-  if (!attachModal()) {
-    attachmentObserver = new MutationObserver(() => {
-      if (!attachModal()) return;
-      attachmentObserver.disconnect();
-      attachmentObserver = null;
-    });
-    attachmentObserver.observe(document.documentElement, { childList:true, subtree:true });
-  }
+  if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', start, { once:true });
+  else start();
 
-  window.MedIndexDoseModalAccessibility = Object.freeze({
-    version:VERSION,
-    metrics:() => Object.freeze({ focusRestores, trappedTabs, translatedBlocks }),
-  });
+  window.MedIndexDoseModalAccessibility = Object.freeze({ version:VERSION, restoreTriggerFocus });
 })();
