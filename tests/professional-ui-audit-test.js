@@ -31,7 +31,12 @@ for (const fileName of pages) {
   assert.ok(shellJs >= 0 && proJs > shellJs, `${fileName}: professional runtime must follow shell runtime`);
 }
 
-const css = read('tailadmin-professional.css');
+const css = [
+  read('tailadmin-professional.css'),
+  read('tailadmin-professional-core.css'),
+  read('medindex-tailwind-ui.css'),
+  read('medindex-tailwind-touch.css'),
+].join('\n');
 [
   /position:\s*fixed\s*!important;[\s\S]*inset:\s*0\s*!important;/,
   /#appMenu \.app-menu-link,[\s\S]*flex-direction:\s*row\s*!important;/,
@@ -45,7 +50,7 @@ const css = read('tailadmin-professional.css');
   /data-mi-page="recetat"/,
   /@media \(max-width: 1023px\)/,
   /@media \(max-height: 760px\)/,
-].forEach(pattern => assert.match(css, pattern, `professional CSS missing ${pattern}`));
+].forEach(pattern => assert.match(css, pattern, `professional CSS bundle missing ${pattern}`));
 
 const runtime = read('tailadmin-professional.js');
 [
