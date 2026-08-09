@@ -14,6 +14,7 @@ const syntax = relativePath => execFileSync(process.execPath, ['--check', path.j
   'lib/dosage-handler.js',
   'lib/dose-calculator-handler.js',
   'registry-dose-calculator.js',
+  'registry-dose-10s-flow.js',
   'registry-dose-table-button.js',
   'registry-dose-modal-accessibility.js',
   'registry-unified-table.js',
@@ -22,6 +23,7 @@ const syntax = relativePath => execFileSync(process.execPath, ['--check', path.j
 const apiSource = read('lib/dose-calculator-handler.js');
 const routerSource = read('api/dosage.js');
 const uiSource = read('registry-dose-calculator.js');
+const fastFlowSource = read('registry-dose-10s-flow.js');
 const tableUiSource = read('registry-dose-table-button.js');
 const modalA11ySource = read('registry-dose-modal-accessibility.js');
 const unifiedSource = read('registry-unified-table.js');
@@ -47,6 +49,11 @@ assert.ok(vercel.rewrites.some(item => item.source === '/api/dose-calculator'
   && item.destination === '/api/dosage?view=calculator'), 'Dose calculator rewrite is missing');
 
 assert.match(html, /registry-dose-calculator\.js\?v=20260809-1/);
+assert.match(html, /registry-dose-10s-flow\.js\?v=20260809-1/);
+assert.ok(
+  html.indexOf('registry-dose-calculator.js?v=20260809-1') < html.indexOf('registry-dose-10s-flow.js?v=20260809-1'),
+  'The 10-second workflow must enhance the canonical calculator after it initializes.'
+);
 assert.match(html, /registry-dose-modal-accessibility\.js\?v=20260809-1/);
 assert.doesNotMatch(html, /registry-dose-calculator-fast-ui\.(?:js|css)/);
 assert.match(html, /registry-dose-table-button\.js\?v=/);
@@ -77,6 +84,23 @@ assert.doesNotMatch(uiSource, /dose-calculator-submit/,
 assert.equal((uiSource.match(/root\.id = 'doseCalculatorModal'/g) || []).length, 1,
   'The registry must create exactly one reusable dose calculator modal');
 assert.doesNotMatch(uiSource, /localStorage|sessionStorage/);
+
+assert.match(fastFlowSource, /registry-dose-10s-flow-v1/);
+assert.match(fastFlowSource, /Zgjidh indikacionin/,
+  'Multiple indications must require one explicit choice instead of silently using the first option.');
+assert.match(fastFlowSource, /realOptions\.length <= 1/,
+  'A single indication must remain automatic and hidden from the fast path.');
+assert.match(fastFlowSource, /enterKeyHint = 'next'/);
+assert.match(fastFlowSource, /enterKeyHint = 'done'/);
+assert.match(fastFlowSource, /data-dose-weight-chips/);
+assert.match(fastFlowSource, /display:none!important/,
+  'Approximate weight shortcuts must stay out of the physician fast path.');
+assert.match(fastFlowSource, /event\.key !== 'Enter'/);
+assert.match(fastFlowSource, /focusNextFromAge/);
+assert.match(fastFlowSource, /event\.key !== '\/'/,
+  'The registry must expose the slash shortcut for immediate drug search focus.');
+assert.match(fastFlowSource, /Rezultati është gati/);
+assert.doesNotMatch(fastFlowSource, /localStorage|sessionStorage/);
 
 assert.match(uiSource, /conversion\.status === 'automatic'/);
 assert.match(uiSource, /conversion\.status === 'not_allowed'/);
@@ -141,4 +165,4 @@ assert.equal(mappedRule.conversion.enabled, false);
 assert.equal(mappedRule.conversion.status, 'not_allowed');
 assert.equal(mappedRule.source.official, true);
 
-console.log('Dose calculator V2.2 shared-engine, adaptive-flow and fail-closed contract passed.');
+console.log('Dose calculator V2.2 shared-engine, 10-second physician flow and fail-closed contract passed.');
