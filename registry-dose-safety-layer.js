@@ -1,7 +1,7 @@
 (() => {
   'use strict';
 
-  const VERSION = 'registry-dose-safety-v1.0.0';
+  const VERSION = 'registry-dose-safety-v1.1.0';
   const ENDPOINT = '/api/dosage?view=safety';
   const MAX_VISIBLE_ITEMS = 4;
   const AGE_ADULT_MONTHS = 18 * 12;
@@ -19,7 +19,7 @@
     return true;
   };
 
-  let catalog = { status:'loading', byProduct:new Map() };
+  let catalog = { status:'loading', byProduct:new Map(), errorMessage:'' };
   let activeProductKey = '';
   let observer = null;
   let internalMutation = false;
@@ -62,19 +62,21 @@
   }
 
   async function loadCatalog() {
+    catalog = { status:'loading', byProduct:new Map(), errorMessage:'' };
+    refresh();
     try {
       const response = await fetch(ENDPOINT, { cache:'no-store', credentials:'same-origin' });
       if (!response.ok) throw new Error(`HTTP ${response.status}`);
       const payload = await response.json();
-      if (!payload?.meta?.officialVerifiedOnly || !Array.isArray(payload.catalog)) throw new Error('Kontratë safety e pavlefshme.');
+      if (!payload?.meta?.officialVerifiedOnly || !payload?.meta?.failClosed || !Array.isArray(payload.catalog)) throw new Error('Kontratë safety e pavlefshme.');
       const byProduct = new Map();
       payload.catalog.forEach(entry => {
         if (entry?.productKey && Array.isArray(entry.safety)) byProduct.set(clean(entry.productKey), entry.safety);
       });
-      catalog = { status:'ready', byProduct };
+      catalog = { status:'ready', byProduct, errorMessage:'' };
     } catch (error) {
       console.error('Dose safety layer:', error);
-      catalog = { status:'error', byProduct:new Map() };
+      catalog = { status:'error', byProduct:new Map(), errorMessage:'Kontrolli i sigurisë nuk është i disponueshëm. Verifiko manualisht para përdorimit të dozës.' };
     }
     refresh();
   }
@@ -118,7 +120,7 @@
     panel = document.createElement('section');
     panel.className = 'dose-safety-panel';
     panel.dataset.doseSafetyPanel = 'true';
-    panel.innerHTML = `<div class="dose-safety-head"><div class="dose-safety-title"><i>✓</i><span>Kontroll i shpejtë i sigurisë</span></div><span class="dose-safety-status" data-dose-safety-status>Pa red flags të zgjedhura</span></div><div class="dose-safety-items" data-dose-safety-items></div><button type="button" class="dose-safety-more" data-dose-safety-more hidden>Shfaq të gjitha</button><div class="dose-safety-gate" data-dose-safety-gate hidden aria-live="assertive"></div>`;
+    panel.innerHTML = `<div class="dose-safety-head"><div class="dose-safety-title"><i>✓</i><span>Kontroll i shpejtë i sigurisë</span></div><span class="dose-safety-status" data-dose-safety-status>Po ngarkohet…</span></div><div class="dose-safety-items" data-dose-safety-items></div><button type="button" class="dose-safety-more" data-dose-safety-more hidden>Shfaq të gjitha</button><div class="dose-safety-gate" data-dose-safety-gate hidden aria-live="assertive"></div>`;
     result.parentNode.insertBefore(panel, result);
     panel.addEventListener('change', event => {
       if (event.target.matches('[data-dose-safety-check]')) applyGate();
@@ -129,6 +131,33 @@
       renderItems();
     });
     return panel;
+  }
+
+  function suppressResult(suppressed) {
+    const result = modalRoot()?.querySelector('[data-dose-result]');
+    if (!result) return;
+    if (suppressed) result.dataset.safetySuppressed = 'true';
+    else delete result.dataset.safetySuppressed;
+  }
+
+  function renderUnavailable() {
+    const panel = ensurePanel();
+    if (!panel) return;
+    panel.hidden = false;
+    panel.querySelector('[data-dose-safety-items]').replaceChildren();
+    panel.querySelector('[data-dose-safety-more]').hidden = true;
+    const status = panel.querySelector('[data-dose-safety-status]');
+    const gate = panel.querySelector('[data-dose-safety-gate]');
+    gate.hidden = false;
+    gate.className = 'dose-safety-gate is-manual_review';
+    if (catalog.status === 'loading') {
+      status.textContent = 'Duke ngarkuar sigurinë…';
+      gate.innerHTML = '<strong>Kontrolli i sigurisë po ngarkohet</strong><span>Rezultati automatik do të shfaqet vetëm pasi Safety Layer të jetë gati.</span>';
+    } else {
+      status.textContent = 'Kontroll manual';
+      gate.innerHTML = `<strong>Kërkohet verifikim manual</strong><span>${escapeHtml(catalog.errorMessage || 'Kontrolli i sigurisë nuk është i disponueshëm.')}</span>`;
+    }
+    suppressResult(true);
   }
 
   function itemMarkup(item, hiddenExtra) {
@@ -144,6 +173,10 @@
   function renderItems() {
     const panel = ensurePanel();
     if (!panel) return;
+    if (catalog.status !== 'ready') {
+      renderUnavailable();
+      return;
+    }
     const items = applicableItems();
     panel.hidden = !items.length;
     if (!items.length) {
@@ -173,7 +206,7 @@
 
   function releaseGate() {
     const root = modalRoot();
-    if (!root) return;
+    if (!root || catalog.status !== 'ready') return;
     const result = root.querySelector('[data-dose-result]');
     const gate = root.querySelector('[data-dose-safety-gate]');
     if (gate) gate.hidden = true;
@@ -185,6 +218,10 @@
 
   function applyGate() {
     if (internalMutation) return;
+    if (catalog.status !== 'ready') {
+      renderUnavailable();
+      return;
+    }
     const root = modalRoot();
     const panel = ensurePanel();
     if (!root || !panel || panel.hidden) return;
@@ -225,7 +262,7 @@
     if (!panel) return;
     panel.querySelectorAll('[data-dose-safety-check]').forEach(input => { input.checked = false; });
     panel.querySelector('[data-dose-safety-more]').dataset.expanded = 'false';
-    releaseGate();
+    if (catalog.status === 'ready') releaseGate();
     renderItems();
   }
 
