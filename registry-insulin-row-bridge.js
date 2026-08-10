@@ -1,7 +1,7 @@
 (() => {
   'use strict';
 
-  const VERSION = 'registry-insulin-row-bridge-v1.0.0';
+  const VERSION = 'registry-insulin-row-bridge-v1.1.0';
   const SUPPORTED = Object.freeze([
     {
       registryNumber: '2508',
@@ -18,6 +18,46 @@
       atc: 'A10AD05',
       adultLabel: 'Dozim individual · Smart Insulin',
       pediatricLabel: '≥10 vjeç · dozim individual',
+    },
+    {
+      registryNumber: '2510',
+      name: 'Ryzodeg',
+      nameKey: 'ryzodeg',
+      atc: 'A10AD06',
+      adultLabel: 'Dozim individual · Smart Insulin',
+      pediatricLabel: '≥2 vjeç · dozim individual',
+    },
+    {
+      registryNumber: '2511',
+      name: 'Levemir FlexPen',
+      nameKey: 'levemir flexpen',
+      atc: 'A10AE05',
+      adultLabel: 'Dozim individual · Smart Insulin',
+      pediatricLabel: '≥1 vjeç · dozim individual',
+    },
+    {
+      registryNumber: '2512',
+      name: 'Tresiba',
+      nameKey: 'tresiba',
+      atc: 'A10AE06',
+      adultLabel: 'Dozim individual · Smart Insulin',
+      pediatricLabel: '≥1 vjeç · dozim individual',
+    },
+    {
+      registryNumber: '2965',
+      name: 'APIDRA SOLOSTAR',
+      nameKey: 'apidra solostar',
+      atc: 'A10AB06',
+      adultLabel: 'Dozim individual · Smart Insulin',
+      pediatricLabel: '≥6 vjeç · dozim individual',
+    },
+    {
+      registryNumber: '3730',
+      name: 'Semglee',
+      nameKey: 'semglee',
+      atc: 'A10AE04',
+      adultLabel: 'Dozim individual · Smart Insulin',
+      pediatricLabel: '≥2 vjeç · dozim individual',
     },
   ]);
 
@@ -119,7 +159,7 @@
     wrapper.style.display = 'grid';
     wrapper.style.gap = '3px';
     wrapper.style.lineHeight = '1.25';
-    wrapper.innerHTML = `<strong style="font-size:.76rem;color:var(--teal-dark,#0d3d40)">${audience === 'adult' ? product.adultLabel : product.pediatricLabel}</strong><small style="font-size:.64rem;color:#64748b">Hap kalkulatorin për workflow klinik dhe safety gate.</small>`;
+    wrapper.innerHTML = `<strong style="font-size:.76rem;color:var(--teal-dark,#0d3d40)">${audience === 'adult' ? product.adultLabel : product.pediatricLabel}</strong><small style="font-size:.64rem;color:#64748b">Hap kalkulatorin e thjeshtë për dozimin klinik.</small>`;
     cell.replaceChildren(wrapper);
     cell.title = `${product.name}: doza individualizohet sipas kontekstit klinik.`;
   }
