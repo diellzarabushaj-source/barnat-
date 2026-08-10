@@ -4,10 +4,12 @@
   const API_URL = '/api/user-library';
   const PRESCRIPTIONS_KEY = 'regjistriBarnave_protokollet_v1';
   const FAVORITES_KEY = 'regjistriBarnave_favoritet_v1';
+  const NOTES_KEY = 'regjistriBarnave_shenime_v1';
   const META_KEY = 'medindex_user_library_meta_v1';
   const RELOAD_KEY = 'medindex_user_library_reload_v1';
   const POLL_MS = 1200;
   const SYNC_DELAY_MS = 700;
+  const NOTE_MAX = 2000;
   const TOMBSTONE_MAX_AGE_MS = 180 * 24 * 60 * 60 * 1000;
   const nativeFetch = window.fetch.bind(window);
 
@@ -34,6 +36,26 @@
       return Array.isArray(value) ? value : [];
     } catch {
       return [];
+    }
+  }
+
+  function parseNotes() {
+    try {
+      const value = JSON.parse(localStorage.getItem(NOTES_KEY) || '{}');
+      if (!value || typeof value !== 'object' || Array.isArray(value)) return {};
+      const output = {};
+      Object.entries(value).forEach(([key, entry]) => {
+        const entityKey = text(key).slice(0, 300);
+        if (!entityKey) return;
+        const raw = typeof entry === 'string' ? { text:entry, updatedAt:'' } : entry;
+        if (!raw || typeof raw !== 'object') return;
+        const noteText = String(raw.text ?? '').slice(0, NOTE_MAX);
+        if (!noteText.trim()) return;
+        output[entityKey] = { text:noteText, updatedAt:text(raw.updatedAt) };
+      });
+      return output;
+    } catch {
+      return {};
     }
   }
 
@@ -75,6 +97,7 @@
     return {
       prescriptions:parseArray(PRESCRIPTIONS_KEY),
       favorites:parseArray(FAVORITES_KEY).map(String).filter(Boolean),
+      notes:parseNotes(),
     };
   }
 
@@ -82,6 +105,7 @@
     return JSON.stringify({
       prescriptions:[...(state.prescriptions || [])].sort((a, b) => text(a?.id).localeCompare(text(b?.id))),
       favorites:[...(state.favorites || [])].map(String).sort(),
+      notes:Object.entries(state.notes || {}).sort(([a], [b]) => a.localeCompare(b)),
     });
   }
 
@@ -103,6 +127,11 @@
     state.favorites.forEach(key => {
       const id = favoriteId('drug', key);
       meta.favorites[id] = meta.favorites[id] || stamp;
+      delete meta.deletedFavorites[id];
+    });
+    Object.entries(state.notes || {}).forEach(([key, entry]) => {
+      const id = favoriteId('drug-note', key);
+      meta.favorites[id] = meta.favorites[id] || entry.updatedAt || stamp;
       delete meta.deletedFavorites[id];
     });
     return meta;
@@ -142,6 +171,23 @@
       meta.favorites[id] = stamp;
       delete meta.deletedFavorites[id];
     });
+
+    const previousNotes = previous?.notes || {};
+    const currentNotes = current.notes || {};
+    Object.keys(previousNotes).forEach(key => {
+      if (currentNotes[key]) return;
+      const id = favoriteId('drug-note', key);
+      meta.deletedFavorites[id] = stamp;
+      delete meta.favorites[id];
+    });
+    Object.entries(currentNotes).forEach(([key, entry]) => {
+      const before = previousNotes[key];
+      if (!before || before.text !== entry.text || before.updatedAt !== entry.updatedAt) {
+        const id = favoriteId('drug-note', key);
+        meta.favorites[id] = entry.updatedAt || stamp;
+        delete meta.deletedFavorites[id];
+      }
+    });
     writeMeta(meta);
   }
 
@@ -149,18 +195,25 @@
     const state = readState();
     const meta = ensureMetaForState(state, readMeta());
     writeMeta(meta);
+    const favoriteRows = state.favorites.map(entityKey => ({
+      entityType:'drug',
+      entityKey,
+      payload:{},
+      clientUpdatedAt:meta.favorites[favoriteId('drug', entityKey)] || nowIso(),
+    }));
+    const noteRows = Object.entries(state.notes || {}).map(([entityKey, entry]) => ({
+      entityType:'drug-note',
+      entityKey,
+      payload:{ text:String(entry.text || '').slice(0, NOTE_MAX) },
+      clientUpdatedAt:meta.favorites[favoriteId('drug-note', entityKey)] || entry.updatedAt || nowIso(),
+    }));
     return {
       version:1,
       prescriptions:state.prescriptions.flatMap(payload => {
         const clientId = protocolId(payload);
         return clientId ? [{ clientId, payload, clientUpdatedAt:meta.prescriptions[clientId] || payload.updatedAt || nowIso() }] : [];
       }),
-      favorites:state.favorites.map(entityKey => ({
-        entityType:'drug',
-        entityKey,
-        payload:{},
-        clientUpdatedAt:meta.favorites[favoriteId('drug', entityKey)] || nowIso(),
-      })),
+      favorites:[...favoriteRows, ...noteRows],
       tombstones:{
         prescriptions:Object.entries(meta.deletedPrescriptions).map(([clientId, deletedAt]) => ({ clientId, deletedAt })),
         favorites:Object.entries(meta.deletedFavorites).map(([id, deletedAt]) => {
@@ -202,35 +255,51 @@
     });
 
     const favorites = new Set(local.favorites);
+    const notes = { ...(local.notes || {}) };
     (snapshot.favorites || []).forEach(row => {
       const type = text(row.entityType) || 'drug';
       const key = text(row.entityKey);
-      if (!key || type !== 'drug') return;
+      if (!key) return;
       const id = favoriteId(type, key);
-      if (!favorites.has(key) || time(row.clientUpdatedAt || row.serverUpdatedAt) > time(meta.favorites[id])) {
-        favorites.add(key);
-        meta.favorites[id] = row.clientUpdatedAt || row.serverUpdatedAt || nowIso();
+      const remoteUpdated = time(row.clientUpdatedAt || row.serverUpdatedAt);
+      if (type === 'drug') {
+        if (!favorites.has(key) || remoteUpdated > time(meta.favorites[id])) {
+          favorites.add(key);
+          meta.favorites[id] = row.clientUpdatedAt || row.serverUpdatedAt || nowIso();
+        }
+        delete meta.deletedFavorites[id];
+        return;
       }
-      delete meta.deletedFavorites[id];
+      if (type === 'drug-note') {
+        const remoteText = String(row.payload?.text ?? '').slice(0, NOTE_MAX);
+        const localUpdated = time(meta.favorites[id] || notes[key]?.updatedAt);
+        if (remoteText.trim() && (!notes[key] || remoteUpdated > localUpdated)) {
+          notes[key] = { text:remoteText, updatedAt:row.clientUpdatedAt || row.serverUpdatedAt || nowIso() };
+          meta.favorites[id] = row.clientUpdatedAt || row.serverUpdatedAt || nowIso();
+        }
+        delete meta.deletedFavorites[id];
+      }
     });
 
     (snapshot.tombstones?.favorites || []).forEach(row => {
       const type = text(row.entityType) || 'drug';
       const key = text(row.entityKey);
       const id = favoriteId(type, key);
-      if (!key || type !== 'drug') return;
-      if (time(row.deletedAt) >= time(meta.favorites[id])) {
-        favorites.delete(key);
-        delete meta.favorites[id];
-        meta.deletedFavorites[id] = row.deletedAt;
-      }
+      if (!key) return;
+      if (time(row.deletedAt) < time(meta.favorites[id])) return;
+      if (type === 'drug') favorites.delete(key);
+      if (type === 'drug-note') delete notes[key];
+      if (!['drug','drug-note'].includes(type)) return;
+      delete meta.favorites[id];
+      meta.deletedFavorites[id] = row.deletedAt;
     });
 
-    const merged = { prescriptions:[...prescriptions.values()], favorites:[...favorites] };
+    const merged = { prescriptions:[...prescriptions.values()], favorites:[...favorites], notes };
     const changed = stableState(local) !== stableState(merged);
     try {
       localStorage.setItem(PRESCRIPTIONS_KEY, JSON.stringify(merged.prescriptions));
       localStorage.setItem(FAVORITES_KEY, JSON.stringify(merged.favorites));
+      localStorage.setItem(NOTES_KEY, JSON.stringify(merged.notes));
     } catch {}
     writeMeta(meta);
     lastState = merged;
@@ -344,6 +413,7 @@
       try {
         localStorage.removeItem(PRESCRIPTIONS_KEY);
         localStorage.removeItem(FAVORITES_KEY);
+        localStorage.removeItem(NOTES_KEY);
         localStorage.removeItem(META_KEY);
       } catch {}
       return response;
