@@ -20,7 +20,7 @@ assert.ok(html.indexOf('registry-ux-phase1.css') < html.indexOf('registry-ux-pha
 assert.ok(html.indexOf('registry-unified-table.js') < html.indexOf('registry-ux-phase2.js'), 'Phase 2 must decorate the stable unified table rather than replace it');
 assert.ok(html.indexOf('registry-ux-phase1.js') < html.indexOf('registry-ux-phase2.js'), 'Phase 2 must extend Phase 1 interaction UX');
 
-assert.match(js, /registry-ux-phase2-v1\.0\.0/);
+assert.match(js, /registry-ux-phase2-v1\.0\.1/);
 assert.match(js, /MEDINDEX_REGISTRY_ROWS/);
 assert.match(js, /rawByDrugKey = new Map/);
 assert.match(js, /#tbody > tr/);
@@ -29,6 +29,7 @@ assert.match(js, /ATC Code/);
 assert.match(js, /Statusi/);
 assert.match(js, /medindex:registry-rendered/);
 assert.match(js, /requestAnimationFrame/);
+assert.match(js, /updateHorizontalState\(\);/);
 assert.doesNotMatch(js, /MutationObserver/);
 assert.doesNotMatch(js, /setInterval\s*\(/);
 assert.doesNotMatch(js, /calculateDose|dose-calculator-submit|registry-novorapid|registry-novomix/i, 'Phase 2 must not implement or alter dosing calculations');
