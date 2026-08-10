@@ -1,7 +1,7 @@
 (() => {
   'use strict';
 
-  const VERSION = 'registry-novorapid-protocol-v2.0.0';
+  const VERSION = 'registry-novorapid-protocol-v2.1.0';
   const REGISTRY_NUMBER = '2508';
   const STORAGE_KEY = 'medindex:novorapid:patient-protocol:v2';
   const EMA_URL = 'https://www.ema.europa.eu/en/medicines/human/EPAR/novorapid';
@@ -21,7 +21,7 @@
 
   function loadProtocol() {
     try {
-      const parsed = JSON.parse(localStorage.getItem(STORAGE_KEY) || 'null');
+      const parsed = JSON.parse(sessionStorage.getItem(STORAGE_KEY) || 'null');
       if (!parsed || typeof parsed !== 'object') return null;
       const target = num(parsed.target);
       const icr = num(parsed.icr);
@@ -35,7 +35,11 @@
   }
 
   function saveProtocol(protocol) {
-    localStorage.setItem(STORAGE_KEY, JSON.stringify(protocol));
+    sessionStorage.setItem(STORAGE_KEY, JSON.stringify(protocol));
+  }
+
+  function dropProtocol() {
+    try { sessionStorage.removeItem(STORAGE_KEY); } catch {}
   }
 
   function ensureModal() {
@@ -112,7 +116,7 @@
           <div class="novorapid-simple-result" data-novorapid-result aria-live="polite" hidden></div>
 
           <details class="novorapid-protocol-panel" data-novorapid-protocol-panel>
-            <summary>Protokolli i pacientit <span>ruhet në këtë pajisje</span></summary>
+            <summary>Protokolli i pacientit <span>vetëm për këtë sesion</span></summary>
             <div class="novorapid-protocol-grid">
               <label class="novorapid-simple-field">
                 <span>Targeti i glukozës</span>
@@ -135,7 +139,7 @@
               <button type="button" class="novorapid-save-protocol" data-save-protocol>Ruaje protokollin</button>
               <button type="button" class="novorapid-clear-protocol" data-clear-protocol>Fshije</button>
             </div>
-            <p class="novorapid-protocol-note">ICR, ISF dhe targeti duhet të jenë të përcaktuara/verifikuara për pacientin. Kalkulatori nuk i shpik nga pesha ose kaloritë.</p>
+            <p class="novorapid-protocol-note">ICR, ISF dhe targeti duhet të jenë të përcaktuara/verifikuara për pacientin. Kalkulatori nuk i shpik nga pesha ose kaloritë. “Pacient i ri” i fshin këto vlera që të mos kalojnë te pacienti tjetër.</p>
           </details>
         </div>
 
@@ -149,7 +153,7 @@
 
     modal.addEventListener('click', event => {
       if (event.target.closest('[data-novorapid-close]')) close();
-      if (event.target.closest('[data-novorapid-reset]')) resetEncounter();
+      if (event.target.closest('[data-novorapid-reset]')) resetEncounter(true);
       if (event.target.closest('[data-novorapid-calculate]')) calculate();
       if (event.target.closest('[data-save-protocol]')) persistProtocol();
       if (event.target.closest('[data-clear-protocol]')) clearProtocol();
@@ -183,7 +187,7 @@
 
     if (protocol) {
       status.className = 'novorapid-protocol-status is-ready';
-      status.innerHTML = `<span>✓ Protokoll aktiv</span><small>Target ${protocol.target} · ICR 1:${protocol.icr} · ISF ${protocol.isf} mmol/L/U</small>`;
+      status.innerHTML = `<span>✓ Protokoll aktiv për këtë pacient</span><small>Target ${protocol.target} · ICR 1:${protocol.icr} · ISF ${protocol.isf} mmol/L/U</small>`;
       target.value = protocol.target;
       icr.value = protocol.icr;
       isf.value = protocol.isf;
@@ -192,6 +196,10 @@
     } else {
       status.className = 'novorapid-protocol-status is-missing';
       status.innerHTML = '<span>Vendos protokollin e pacientit një herë</span><small>Target + ICR + ISF</small>';
+      target.value = '';
+      icr.value = '';
+      isf.value = '';
+      step.value = '1';
       if (panel) panel.open = true;
     }
   }
@@ -204,19 +212,19 @@
     const step = num(modal.querySelector('[data-protocol-step]')?.value);
 
     if (!(target >= 3.9 && target <= 12) || !(icr > 0 && icr <= 100) || !(isf > 0 && isf <= 15) || ![0.5, 1].includes(step)) {
-      showResult('warning', 'Kontrollo protokollin', 'Plotëso targetin, ICR dhe ISF me vlera të verifikuara për pacientin.');
+      showResult('warning', 'Kontrollo protokollin', '<span>Plotëso targetin, ICR dhe ISF me vlera të verifikuara për pacientin.</span>');
       return;
     }
 
     saveProtocol({ target: round1(target), icr: round1(icr), isf: round1(isf), step });
     syncProtocolUI();
-    showResult('info', 'Protokolli u ruajt', 'Tani mjafton glukoza, karbohidratet dhe IOB për të llogaritur bolusin.');
+    showResult('info', 'Protokolli u ruajt', '<span>Tani mjafton glukoza, karbohidratet dhe IOB për të llogaritur bolusin.</span>');
   }
 
   function clearProtocol() {
-    try { localStorage.removeItem(STORAGE_KEY); } catch {}
+    dropProtocol();
     syncProtocolUI();
-    showResult('warning', 'Protokolli u fshi', 'Doza nuk llogaritet derisa të ruhet një protokoll i verifikuar për pacientin.');
+    showResult('warning', 'Protokolli u fshi', '<span>Doza nuk llogaritet derisa të ruhet një protokoll i verifikuar për pacientin.</span>');
   }
 
   function showResult(level, title, html) {
@@ -292,8 +300,9 @@
     lastFocus?.focus?.();
   }
 
-  function resetEncounter() {
+  function resetEncounter(clearPatientProtocol = false) {
     if (!modal) return;
+    if (clearPatientProtocol) dropProtocol();
     ['[data-novorapid-glucose]','[data-novorapid-weight]','[data-novorapid-carbs]'].forEach(selector => {
       const input = modal.querySelector(selector);
       if (input) input.value = '';
@@ -306,6 +315,7 @@
       result.textContent = '';
       result.className = 'novorapid-simple-result';
     }
+    syncProtocolUI();
     modal.querySelector('[data-novorapid-glucose]')?.focus();
   }
 
