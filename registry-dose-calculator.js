@@ -1,7 +1,7 @@
 (() => {
   'use strict';
 
-  const VERSION = 'registry-dose-calculator-v2.2.0';
+  const VERSION = 'registry-dose-calculator-v2.3.0';
   const ENDPOINT = '/api/dose-calculator';
   const COLUMN_KEY = 'dose-calculator';
   const MAX_AGE_MONTHS = 130 * 12;
@@ -30,6 +30,74 @@
   };
   const needsWeightMethod = method => ['dose_per_kg_per_dose','dose_per_kg_per_day'].includes(clean(method));
   const needsBsaMethod = method => ['dose_per_m2_per_dose','dose_per_m2_per_day'].includes(clean(method));
+
+  function canonicalUnit(value) {
+    const unit = clean(value).toLowerCase().replace(/\s+/g, '').replace(/μ/g, 'µ');
+    const aliases = {
+      milligram:'mg', milligrams:'mg',
+      microgram:'µg', micrograms:'µg', mcg:'µg', ug:'µg',
+      gram:'g', grams:'g',
+      milliliter:'ml', milliliters:'ml', millilitre:'ml', millilitres:'ml',
+    };
+    return aliases[unit] || unit;
+  }
+
+  function massFactorToMg(unit) {
+    const canonical = canonicalUnit(unit);
+    if (canonical === 'mg') return 1;
+    if (canonical === 'g') return 1000;
+    if (canonical === 'µg') return 0.001;
+    return null;
+  }
+
+  function convertDoseUnit(value, fromUnit, toUnit) {
+    const numeric = num(value);
+    if (numeric === null) return null;
+    if (canonicalUnit(fromUnit) === canonicalUnit(toUnit)) return numeric;
+    const fromFactor = massFactorToMg(fromUnit);
+    const toFactor = massFactorToMg(toUnit);
+    return fromFactor !== null && toFactor !== null ? numeric * fromFactor / toFactor : null;
+  }
+
+  function administrationsPerDay(rule) {
+    const explicit = num(rule.timesPerDay);
+    const interval = num(rule.intervalMinHours);
+    const maximum = num(rule.maxDoses24h);
+    let count = explicit && explicit > 0 ? explicit : null;
+    if (count === null && clean(rule.frequencyMode) === 'once') count = 1;
+    if (count === null && clean(rule.frequencyMode) === 'interval' && interval && interval > 0) {
+      count = Math.ceil(24 / interval);
+    }
+    if (maximum && maximum > 0) count = count === null ? maximum : Math.min(count, maximum);
+    return count;
+  }
+
+  function hasExplicitAgeBand(rule) {
+    return num(rule.minAgeMonths) !== null || num(rule.maxAgeMonths) !== null;
+  }
+
+  function ageMatchesRule(rule, ageMonths) {
+    if (!within(ageMonths, num(rule.minAgeMonths), num(rule.maxAgeMonths))) return false;
+    if (hasExplicitAgeBand(rule)) return true;
+    const group = clean(rule.patientGroup);
+    if (group === 'adult_only') return ageMonths >= 216;
+    if (group === 'pediatric_only') return ageMonths < 216;
+    return group === 'pediatric_and_adult';
+  }
+
+  function preferredUnique(rules) {
+    if (rules.length <= 1) return rules;
+    const preferred = rules.filter(rule => rule.preferred === true);
+    return preferred.length === 1 ? preferred : rules;
+  }
+
+  function renderPlainLanguageTemplate(template, values = {}) {
+    const source = clean(template);
+    if (!source) return '';
+    const tokenPattern = /\{(quantity|dose|frequency|duration|product)\}/g;
+    if (!source.match(tokenPattern)) return '';
+    return source.replace(tokenPattern, (_, key) => clean(values[key])).trim();
+  }
 
   let registry = { status:'loading', byNumber:new Map(), byDrugKey:new Map() };
   let catalog = { status:'loading', byPdid:new Map(), byRegistryNumber:new Map(), byProductKey:new Map() };
@@ -133,11 +201,13 @@
   }
 
   function ruleCoversPediatric(rule) {
+    if (!hasExplicitAgeBand(rule)) return clean(rule.patientGroup) !== 'adult_only';
     const minimum = num(rule.minAgeMonths);
     return minimum === null || minimum < 216;
   }
 
   function ruleCoversAdult(rule) {
+    if (!hasExplicitAgeBand(rule)) return clean(rule.patientGroup) !== 'pediatric_only';
     const maximum = num(rule.maxAgeMonths);
     return maximum === null || maximum >= 216;
   }
@@ -226,13 +296,13 @@
       capsule:singular ? 'kapsulë' : 'kapsula',
       suppository:singular ? 'supozitor' : 'supozitorë',
       sachet:'qese', ampoule:singular ? 'ampulë' : 'ampula', vial:singular ? 'vial' : 'viale',
-      dose:singular ? 'dozë' : 'doza', mL:'mL',
+      dose:singular ? 'dozë' : 'doza', ml:'mL',
     };
-    return names[unit] || clean(unit);
+    return names[canonicalUnit(unit)] || clean(unit);
   }
 
   function roundQuantity(value, product, conversion) {
-    const unit = clean(product.denominatorUnit);
+    const unit = canonicalUnit(product.denominatorUnit);
     if (unit === 'tablet') {
       const denominator = conversion.tabletSplitAllowed ? Math.max(1, Number(product.tabletSplitDenominator) || 1) : 1;
       const increment = 1 / denominator;
@@ -241,7 +311,7 @@
       return rounded;
     }
     const increment = num(conversion.roundingIncrementValue)
-      || (unit === 'mL' ? num(product.measurableIncrementMl) : null);
+      || (unit === 'ml' ? num(product.measurableIncrementMl) : null);
     if (!increment) return value;
     const ratio = value / increment;
     const mode = clean(product.roundingMode);
@@ -303,50 +373,65 @@
     let doseMin = minimum;
     let doseMax = maximum;
     let calculation = 'Dozë fikse; pesha nuk përdoret në këtë rregull.';
+    const administrations = administrationsPerDay(rule);
+
     if (needsWeightMethod(rule.calculationMethod)) {
       if (weightKg === null || weightKg <= 0) return { error:'Shkruaje peshën e pacientit.' };
       doseMin = minimum * weightKg;
       doseMax = maximum * weightKg;
       calculation = `${fmt(weightKg)} kg × ${minimum === maximum ? fmt(minimum) : `${fmt(minimum)}–${fmt(maximum)}`} ${rule.doseUnit}/kg`;
       if (rule.calculationMethod === 'dose_per_kg_per_day') {
-        const times = num(rule.timesPerDay);
-        if (!times || times <= 0) return { error:'Mungon numri i dozave në ditë për këtë rregull.' };
-        doseMin /= times;
-        doseMax /= times;
-        calculation += ` ÷ ${fmt(times)} doza/ditë`;
+        if (!administrations || administrations <= 0) return { error:'Mungon numri i dozave në ditë për këtë rregull.' };
+        doseMin /= administrations;
+        doseMax /= administrations;
+        calculation += ` ÷ ${fmt(administrations)} doza/ditë`;
       }
+    } else if (clean(rule.doseBasis) === 'per_day') {
+      if (!administrations || administrations <= 0) return { error:'Mungon skema e administrimeve për dozën ditore.' };
+      doseMin /= administrations;
+      doseMax /= administrations;
+      calculation = `Doza totale ditore ÷ ${fmt(administrations)} administrime/ditë`;
     }
 
     const maxSingle = num(rule.maxSingleDoseMg);
-    if (clean(rule.doseUnit).toLowerCase() === 'mg' && maxSingle !== null) {
-      doseMin = Math.min(doseMin, maxSingle);
-      doseMax = Math.min(doseMax, maxSingle);
+    if (maxSingle !== null) {
+      const minMg = convertDoseUnit(doseMin, rule.doseUnit, 'mg');
+      const maxMg = convertDoseUnit(doseMax, rule.doseUnit, 'mg');
+      if (minMg !== null && maxMg !== null) {
+        doseMin = convertDoseUnit(Math.min(minMg, maxSingle), 'mg', rule.doseUnit);
+        doseMax = convertDoseUnit(Math.min(maxMg, maxSingle), 'mg', rule.doseUnit);
+      }
     }
     const maxDaily = num(rule.maxDailyDoseMg);
-    const times = num(rule.timesPerDay);
-    if (clean(rule.doseUnit).toLowerCase() === 'mg' && maxDaily !== null && times && times > 0) {
-      doseMin = Math.min(doseMin, maxDaily / times);
-      doseMax = Math.min(doseMax, maxDaily / times);
+    if (maxDaily !== null && administrations && administrations > 0) {
+      const perAdministrationMaxMg = maxDaily / administrations;
+      const minMg = convertDoseUnit(doseMin, rule.doseUnit, 'mg');
+      const maxMg = convertDoseUnit(doseMax, rule.doseUnit, 'mg');
+      if (minMg !== null && maxMg !== null) {
+        doseMin = convertDoseUnit(Math.min(minMg, perAdministrationMaxMg), 'mg', rule.doseUnit);
+        doseMax = convertDoseUnit(Math.min(maxMg, perAdministrationMaxMg), 'mg', rule.doseUnit);
+      }
     }
 
     const conversion = rule.conversion || {};
     const numerator = num(product.numeratorValue);
     const denominator = num(product.denominatorValue);
-    const sameUnit = clean(product.numeratorUnit).toLowerCase() === clean(rule.doseUnit).toLowerCase();
+    const doseMinForProduct = convertDoseUnit(doseMin, rule.doseUnit, product.numeratorUnit);
+    const doseMaxForProduct = convertDoseUnit(doseMax, rule.doseUnit, product.numeratorUnit);
     let quantityMin = null;
     let quantityMax = null;
     let conversionText = 'Konvertimi në njësinë e këtij preparati kërkon verifikim manual.';
     if (!conversion.enabled || conversion.status === 'not_allowed') {
-      conversionText = 'Konvertimi automatik në këtë preparat nuk lejohet; përdor dozën në mg dhe verifiko preparatin.';
-    } else if (conversion.status === 'automatic' && numerator && denominator && sameUnit) {
-      quantityMin = roundQuantity(doseMin * denominator / numerator, product, conversion);
-      quantityMax = roundQuantity(doseMax * denominator / numerator, product, conversion);
+      conversionText = 'Konvertimi automatik në këtë preparat nuk lejohet; përdor dozën dhe verifiko preparatin.';
+    } else if (conversion.status === 'automatic' && numerator && denominator && doseMinForProduct !== null && doseMaxForProduct !== null) {
+      quantityMin = roundQuantity(doseMinForProduct * denominator / numerator, product, conversion);
+      quantityMax = roundQuantity(doseMaxForProduct * denominator / numerator, product, conversion);
       if (quantityMin === null || quantityMax === null) {
         return { error:'Doza nuk mund të shndërrohet saktë në këtë preparat pa ndarje ose rrumbullakim të palejuar.' };
       }
-      const mg = Math.abs(doseMin - doseMax) < EPSILON ? fmt(doseMin) : `${fmt(doseMin)}–${fmt(doseMax)}`;
+      const doseLabel = Math.abs(doseMin - doseMax) < EPSILON ? fmt(doseMin) : `${fmt(doseMin)}–${fmt(doseMax)}`;
       const units = Math.abs(quantityMin - quantityMax) < EPSILON ? fmt(quantityMin) : `${fmt(quantityMin)}–${fmt(quantityMax)}`;
-      conversionText = `${mg} ${rule.doseUnit} = ${units} ${quantityName(product.denominatorUnit, quantityMax)}`;
+      conversionText = `${doseLabel} ${rule.doseUnit} = ${units} ${quantityName(product.denominatorUnit, quantityMax)}`;
     }
 
     return { doseMin, doseMax, quantityMin, quantityMax, calculation, conversionText };
@@ -367,7 +452,7 @@
 
   function ageMatchedRules(ageMonths = currentAgeMonths()) {
     if (ageMonths === null) return [];
-    return rulesForIndication().filter(rule => within(ageMonths, num(rule.minAgeMonths), num(rule.maxAgeMonths)));
+    return rulesForIndication().filter(rule => ageMatchesRule(rule, ageMonths));
   }
 
   function ruleNeedsWeight(rule) {
@@ -449,8 +534,8 @@
       return false;
     }
 
-    const eligible = ageRules.filter(rule => !ruleNeedsWeight(rule)
-      || within(weight, num(rule.minWeightKg), num(rule.maxWeightKg)));
+    const eligible = preferredUnique(ageRules.filter(rule => !ruleNeedsWeight(rule)
+      || within(weight, num(rule.minWeightKg), num(rule.maxWeightKg))));
     if (eligible.length !== 1) {
       if (!eligible.length) showError('Nuk ka rregull të vetëm për këtë moshë, peshë dhe indikacion.');
       else showError('U gjetën disa rregulla që përputhen. Kalkulimi u bllokua për kontroll klinik.');
@@ -476,8 +561,15 @@
 
     modal.result.hidden = false;
     modal.result.classList.remove('is-error');
-    if (clean(rule.plainLanguageTemplate)) {
-      modal.resultText.textContent = clean(rule.plainLanguageTemplate);
+    const renderedTemplate = renderPlainLanguageTemplate(rule.plainLanguageTemplate, {
+      quantity,
+      dose:doseRange,
+      frequency:frequencyText(rule),
+      duration:durationText(rule).toLowerCase(),
+      product:activeProduct.tradeName,
+    });
+    if (renderedTemplate) {
+      modal.resultText.textContent = renderedTemplate;
     } else if (hasAutomaticQuantity) {
       modal.resultText.textContent = `Doza: ${quantity} · ${frequencyText(rule)} · ${durationText(rule).toLowerCase()}.`;
     } else {
@@ -582,9 +674,9 @@
   }
 
   function ensureStyles() {
-    if (document.getElementById('doseCalculatorV22Styles')) return;
+    if (document.getElementById('doseCalculatorV23Styles')) return;
     const style = document.createElement('style');
-    style.id = 'doseCalculatorV22Styles';
+    style.id = 'doseCalculatorV23Styles';
     style.textContent = `.dose-calculator-progress{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:6px;margin:0 0 12px}.dose-calculator-progress span{padding:5px 7px;border:1px solid #d9e2e1;border-radius:999px;background:#f8faf9;color:#667085;font-size:.65rem;font-weight:800;text-align:center}.dose-calculator-progress span.is-done{border-color:rgba(13,95,99,.24);background:rgba(13,95,99,.08);color:#0d5f63}.dose-calculator-weight-chips{display:flex;gap:6px;flex-wrap:wrap;margin-top:6px}.dose-calculator-weight-chips[hidden],.dose-calculator-result-actions[hidden],.dose-calculator-form label[hidden]{display:none!important}.dose-calculator-weight-chips button,.dose-calculator-result-actions button{min-height:38px;border:1px solid #c9d7d5;border-radius:9px;background:#fff;color:#344054;font:inherit;font-size:.76rem;font-weight:800;cursor:pointer}.dose-calculator-weight-chips button{padding:5px 9px}.dose-calculator-result-actions{display:grid;grid-template-columns:1.35fr 1fr;gap:8px;margin-top:12px}.dose-calculator-result-actions button:first-child{border-color:#0d5f63;background:#0d5f63;color:#fff}.dose-calculator-auto-note{margin:10px 0 0;color:#667085;font-size:.7rem;text-align:center}.dose-calculator-detail-row a{overflow-wrap:anywhere}.has-pediatric-only-dose-calculator>td{color:#b42318}.has-parenteral-dose-calculator>td{background:rgba(6,118,71,.07)}.has-pediatric-only-dose-calculator.has-parenteral-dose-calculator>td{color:#b42318}.dose-calculator-dialog .dose-calculator-form{grid-template-columns:repeat(2,minmax(0,1fr))}.dose-calculator-dialog .dose-calculator-form label:first-child{grid-column:1/-1}@media(max-width:760px){.dose-calculator-dialog .dose-calculator-form{grid-template-columns:1fr}.dose-calculator-result-actions{grid-template-columns:1fr}}[data-theme="dark"] .dose-calculator-progress span{border-color:rgba(255,255,255,.13);background:rgba(255,255,255,.04);color:#aebdc0}[data-theme="dark"] .dose-calculator-progress span.is-done{color:#9bd9db;border-color:rgba(128,214,216,.22);background:rgba(128,214,216,.08)}[data-theme="dark"] .dose-calculator-weight-chips button,[data-theme="dark"] .dose-calculator-result-actions button{border-color:rgba(255,255,255,.16);background:#1f3033;color:#e7eeee}[data-theme="dark"] .dose-calculator-result-actions button:first-child{background:#0d5f63;color:#fff}@media(prefers-reduced-motion:reduce){.dose-calculator-dialog *{transition:none!important;scroll-behavior:auto!important}}`;
     document.head.appendChild(style);
   }
@@ -666,6 +758,6 @@
     refresh:scheduleEnhance,
     openByProductKey(productKey) { openModal(catalog.byProductKey.get(clean(productKey)) || null); },
     catalogStatus:() => catalog.status,
-    _test:Object.freeze({ num, within, needsWeightMethod, needsBsaMethod, computeDose, frequencyText, durationText, ruleCoversPediatric, ruleCoversAdult, productGroup }),
+    _test:Object.freeze({ num, within, needsWeightMethod, needsBsaMethod, canonicalUnit, convertDoseUnit, administrationsPerDay, ageMatchesRule, preferredUnique, renderPlainLanguageTemplate, computeDose, frequencyText, durationText, ruleCoversPediatric, ruleCoversAdult, productGroup }),
   };
 })();
