@@ -27,19 +27,19 @@ assert.match(index, /offline-runtime-performance\.js[^>]+data-medindex-offline-r
 assert.match(index, /registry-fast-start\.js\?v=registry-fast-start-v2/, 'index.html: fast-start guard version is stale');
 assert.match(index, /<script id="drug-data" type="application\/json">\[\]<\/script>/, 'registry JSON fallback must remain inert');
 assert.match(index, /data-registry-ui-release="20260809-1"/, 'registry UI release is stale');
-assert.match(index, /registry-cell-preview\.js\?v=20260805-8/, 'cell preview runtime version is stale');
-assert.match(index, /registry-dose-calculator\.js\?v=20260809-1/, 'canonical dose calculator runtime is stale');
+assert.match(index, /registry-cell-preview\.js\?v=20260810-1/, 'cell preview runtime version is stale');
+assert.match(index, /registry-dose-calculator\.js\?v=20260810-2/, 'canonical dose calculator runtime is stale');
 assert.doesNotMatch(index, /registry-dose-calculator-fast-ui\.(?:js|css)/, 'obsolete dose fast UI layer must not be loaded');
 assert.match(index, /registry-dose-table-button\.js\?v=20260805-5/, 'dose table button runtime is missing');
-assert.match(index, /registry-dose-table-button\.css\?v=20260805-6/, 'dose table button stylesheet is missing');
+assert.match(index, /registry-dose-table-button\.css\?v=20260810-1/, 'dose table button stylesheet is missing');
 assert.match(index, /registry-dose-modal-accessibility\.js\?v=20260809-1/, 'dose modal accessibility runtime is stale');
 assert.match(index, /registry-ui-release\.js\?v=20260809-1/, 'registry UI release runtime is stale');
 assert.ok(
-  index.indexOf('registry-unified-table.css?v=20260801-1') < index.indexOf('registry-dose-table-button.css?v=20260805-6'),
+  index.indexOf('registry-unified-table.css?v=20260801-1') < index.indexOf('registry-dose-table-button.css?v=20260810-1'),
   'dose action styles must load after the unified table visibility rules',
 );
 assert.ok(
-  index.indexOf('registry-dose-table-button.css?v=20260805-6') < index.indexOf('tailadmin-professional.css?v=20260728-1'),
+  index.indexOf('registry-dose-table-button.css?v=20260810-1') < index.indexOf('tailadmin-professional.css?v=20260728-1'),
   'professional TailAdmin stylesheet must remain the final static stylesheet',
 );
 

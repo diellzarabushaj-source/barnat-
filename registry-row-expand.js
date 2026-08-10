@@ -112,12 +112,19 @@
       button = document.createElement('button');
       button.type = 'button';
       button.className = 'registry-row-details-toggle';
+      button.dataset.registryUiOnly = 'true';
       nameCell.appendChild(button);
     }
     const label = expanded ? 'Mbyll detajet' : 'Shiko detajet';
     if (button.textContent !== label) button.textContent = label;
     button.setAttribute('aria-expanded', String(expanded));
-    const drugName = clean(nameCell.querySelector('.drug-name-text')?.textContent || 'barit');
+    const rawKey = clean(row.querySelector('.drug-select')?.dataset?.drugKey);
+    const firstSeparator = rawKey.indexOf('|');
+    const lastSeparator = rawKey.lastIndexOf('|');
+    const canonicalName = firstSeparator >= 0 && lastSeparator > firstSeparator
+      ? clean(rawKey.slice(firstSeparator + 1, lastSeparator))
+      : '';
+    const drugName = canonicalName || clean(nameCell.querySelector('.drug-name-text')?.textContent || 'barit');
     button.setAttribute('aria-label', `${label} për ${drugName}`);
   }
 

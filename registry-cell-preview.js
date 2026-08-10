@@ -51,7 +51,7 @@
 
   function prepareCloneForText(cell) {
     const clone = cell.cloneNode(true);
-    clone.querySelectorAll(`.${TRIGGER_CLASS},input,select,textarea,.drug-actions-trigger,.favorite-marker,.clinical-editor-open,.dose-calculator-open`)
+    clone.querySelectorAll(`.${TRIGGER_CLASS},input,select,textarea,.drug-actions-trigger,.favorite-marker,.clinical-editor-open,.dose-calculator-open,[data-registry-ui-only]`)
       .forEach(element => element.remove());
     clone.querySelectorAll('details').forEach(details => {
       details.open = true;

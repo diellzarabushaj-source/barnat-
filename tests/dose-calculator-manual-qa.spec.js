@@ -232,7 +232,7 @@ test('mobile: butoni 44px, etiketa Doza dhe modal pa overflow', async ({ page })
   const box = await button.boundingBox();
   expect(box.height).toBeGreaterThanOrEqual(44);
   const mobileLabel = await button.evaluate(node => getComputedStyle(node, '::after').content.replace(/^['"]|['"]$/g, ''));
-  expect(mobileLabel).toBe('Doza');
+  expect(mobileLabel).toBe('Kalkulo');
 
   await page.screenshot({ path:`${QA_DIR}/mobile-table.png`, fullPage:false });
   await button.click();

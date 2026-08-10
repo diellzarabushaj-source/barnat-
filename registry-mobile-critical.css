@@ -379,8 +379,7 @@
     padding:0 11px!important;
     border:1px solid #d0d5dd!important;
     border-radius:12px!important;
-    background:#fff!imporã­-¢G§²ÚîÆ­yÒarnat"].mi-first-page-audited body .registry-action-group .protocol-toolbar-btn{
-    display:flex!important;
+    background:#fff!imporãİí¢G§²ÚîÆ­yÑimportant;
     width:100%!important;
     min-width:0!important;
     min-height:50px!important;
@@ -721,8 +720,9 @@
   }
   html.medindex-tailadmin[data-mi-page="barnat"] body #registryContent #dataTable[data-registry-unified-table] .registry-row-details-toggle{
     display:inline-flex!important;
-    width:100%;
+    width:100%!important;
     min-height:44px;
+    grid-column:1 / -1!important;
     align-items:center;
     justify-content:center;
     margin:10px 0 0;
@@ -735,6 +735,8 @@
     font-size:.75rem;
     font-weight:800;
     line-height:1.2;
+    box-sizing:border-box;
+    justify-self:stretch;
     touch-action:manipulation;
   }
   html.medindex-tailadmin[data-mi-page="barnat"] body #registryContent #dataTable[data-registry-unified-table] .registry-row-details-toggle:focus-visible{

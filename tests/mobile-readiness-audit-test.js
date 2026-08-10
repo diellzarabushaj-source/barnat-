@@ -17,6 +17,8 @@ const browserSpec = read('tests/mobile-deep-audit.spec.js');
 const registryMobile = read('registry-mobile-critical.css');
 const rowExpand = read('registry-row-expand.js');
 const doseButtonCss = read('registry-dose-table-button.css');
+const uiEnhancements = read('ui-enhancements.js');
+const nameDisplay = read('name-display.js');
 
 execFileSync(process.execPath, ['--check', path.join(ROOT, 'mobile-experience.js')], { stdio:'pipe' });
 execFileSync(process.execPath, ['--check', path.join(ROOT, 'registry-cell-preview.js')], { stdio:'pipe' });
@@ -89,10 +91,16 @@ assert.match(index, /registry-dose-table-button\.css\?v=20260810-1/);
 assert.match(rowExpand, /registry-row-details-toggle/);
 assert.match(rowExpand, /button\.setAttribute\('aria-expanded', String\(expanded\)\)/);
 assert.match(rowExpand, /const detailsButton = event\.target\.closest/);
+assert.match(rowExpand, /button\.dataset\.registryUiOnly = 'true'/);
+assert.match(uiEnhancements, /rawKey\.slice\(firstSeparator \+ 1, lastSeparator\)/,
+  'Drug names must be derived from immutable registry keys, never appended controls.');
+assert.match(uiEnhancements, /\[data-registry-ui-only\]/);
+assert.match(nameDisplay, /\[data-registry-ui-only\]/);
 assert.match(registryMobile, /#dataTable\[data-registry-unified-table\] tbody tr\{[\s\S]*height:auto!important/);
 assert.match(registryMobile, /content-visibility:auto/);
 assert.match(registryMobile, /data-registry-column-key="dose-calculator"/);
 assert.match(registryMobile, /\.registry-row-details-toggle\{[\s\S]*min-height:44px/);
+assert.match(registryMobile, /width:100%!important;[\s\S]*justify-self:stretch/);
 assert.match(doseButtonCss, /dose-calculator-open::after \{ content: "Kalkulo"; \}/);
 
 assert.match(workflow, /mobile-deep-audit\.spec\.js/, 'browser workflow must execute the mobile audit');

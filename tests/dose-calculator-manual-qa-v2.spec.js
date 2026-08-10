@@ -22,7 +22,8 @@ function makeRule({ key, indication, group, dose, minAge, maxAge = null, templat
     reviewAfterDays:null, minAgeMonths:minAge, maxAgeMonths:maxAge, minWeightKg:null, maxWeightKg:null,
     route:'PO', prn:false, renalAdjustmentRequired:false, specialistOnly:false, outOfRangeAction:'block',
     sourceSection:'4.2', verifiedBy:'Clinical QA', verifiedAt:'2026-08-05T12:00:00Z',
-    clinicalNotes:'Kontrollo kundërindikacionet.', plainLanguageTemplate:template, versionNo:1,
+    clinicalNotes:'Kontrollo kundërindikacionet.',
+    plainLanguageTemplate:template || 'Jep {quantity} ({dose}) nga goja, {frequency}, për 3 ditë.', versionNo:1,
     conversion:{ enabled:true, tabletSplitAllowed:false, roundingIncrementValue:null, roundingIncrementUnit:null, status:'automatic' },
     source:officialSource,
   };
@@ -43,19 +44,19 @@ const catalog = [
     key:'PROD-ADULT', number:1, pdid:1001, name:'PARACETAMOL TEST', substance:'Paracetamol',
     group:'adult_only', dose:500, unit:'tablet', form:'Tabletë',
     rule:makeRule({ key:'ADULT', indication:'Dhimbje / temperaturë', group:'adult_only', dose:500,
-      minAge:216, times:3, template:'Jep 1 tabletë (500 mg) nga goja, 3 herë në ditë, për 3 ditë.' }),
+      minAge:216, times:3, template:'Jep {quantity} ({dose}) nga goja, {frequency}, për 3 ditë.' }),
   }),
   makeProduct({
     key:'PROD-ALL', number:2, pdid:1002, name:'AMOXICILLIN TEST', substance:'Amoxicillin',
     group:'pediatric_and_adult', dose:500, unit:'capsule', form:'Kapsulë',
     rule:makeRule({ key:'ALL', indication:'Infeksion bakterial — QA', group:'pediatric_and_adult', dose:500,
-      minAge:144, times:3, template:'Jep 1 kapsulë (500 mg) nga goja, 3 herë në ditë, për 3 ditë.' }),
+      minAge:144, times:3, template:'Jep {quantity} ({dose}) nga goja, {frequency}, për 3 ditë.' }),
   }),
   makeProduct({
     key:'PROD-PED', number:3, pdid:1003, name:'ONCEAIR PEDIATRIC CHEWABLE TABLETS WITH EXTENDED DISPLAY NAME',
     substance:'Montelukast', group:'pediatric_only', dose:4, unit:'tablet', form:'Tabletë përtypëse',
     rule:makeRule({ key:'PED', indication:'Astmë pediatrike — QA', group:'pediatric_only', dose:4,
-      minAge:24, maxAge:215, template:'Jep 1 tabletë përtypëse (4 mg) nga goja, një herë në ditë.' }),
+      minAge:24, maxAge:215, template:'Jep {quantity} përtypëse ({dose}) nga goja, {frequency}.' }),
   }),
 ];
 
@@ -92,6 +93,62 @@ test('desktop physician flow: table, filter, calculation, safety and keyboard', 
   await expect(header).toHaveAttribute('data-dose-header-meta', '3 në këtë faqe');
   await expect(page.locator('#doseCalculatorModal')).toHaveCount(1);
   expect(await rows.evaluateAll(list => list.map(row => row.querySelectorAll('[data-registry-dose-calculator-column="dose-calculator"]').length))).toEqual([1,1,1]);
+  const nameContract = await rows.evaluateAll(list => list.map(row => ({
+    text:row.querySelector('.drug-name-text')?.textContent || '',
+    name:row.dataset.drugName || '',
+    action:row.querySelector('.drug-actions-trigger')?.getAttribute('aria-label') || '',
+    details:row.querySelector('.registry-row-details-toggle')?.getAttribute('aria-label') || '',
+  })));
+  nameContract.flatMap(item => Object.values(item)).forEach(value => {
+    expect(value).not.toMatch(/(?:Shiko|Mbyll) detajet.*(?:Shiko|Mbyll) detajet/);
+  });
+  nameContract.forEach(item => {
+    expect(item.text).not.toMatch(/(?:Shiko|Mbyll) detajet/);
+    expect(item.name).not.toMatch(/(?:Shiko|Mbyll) detajet/);
+  });
+
+  const engineContract = await page.evaluate(() => {
+    const engine = window.MedIndexDoseCalculator._test;
+    const product = {
+      numeratorValue:100, numeratorUnit:'mg', denominatorValue:1, denominatorUnit:'tablet',
+      tabletSplitDenominator:1, measurableIncrementMl:null, roundingMode:'exact',
+    };
+    const conversion = { enabled:true, status:'automatic', tabletSplitAllowed:false };
+    const daily = engine.computeDose({
+      calculationMethod:'fixed_dose', doseMinValue:1200, doseMaxValue:1200, doseUnit:'mg',
+      doseBasis:'per_day', frequencyMode:'times_per_day', timesPerDay:3,
+      maxDailyDoseMg:1200, conversion,
+    }, product, null);
+    const interval = engine.computeDose({
+      calculationMethod:'fixed_dose', doseMinValue:600, doseMaxValue:600, doseUnit:'mg',
+      doseBasis:'per_dose', frequencyMode:'interval', intervalMinHours:4, maxDoses24h:6,
+      maxDailyDoseMg:3000, conversion,
+    }, product, null);
+    const alias = engine.computeDose({
+      calculationMethod:'fixed_dose', doseMinValue:500, doseMaxValue:500, doseUnit:'µg',
+      doseBasis:'per_dose', frequencyMode:'once', conversion,
+    }, { ...product, numeratorValue:0.5, numeratorUnit:'mg' }, null);
+    return {
+      dailyDose:daily.doseMin,
+      intervalDose:interval.doseMin,
+      aliasQuantity:alias.quantityMin,
+      childBlocked:engine.ageMatchesRule({ patientGroup:'adult_only', minAgeMonths:null, maxAgeMonths:null }, 120),
+      adultAllowed:engine.ageMatchesRule({ patientGroup:'adult_only', minAgeMonths:null, maxAgeMonths:null }, 300),
+      preferred:engine.preferredUnique([{ ruleKey:'A' }, { ruleKey:'B', preferred:true }])[0].ruleKey,
+      staticTemplate:engine.renderPlainLanguageTemplate('Jep një tabletë.', { quantity:'1 tabletë' }),
+      computedTemplate:engine.renderPlainLanguageTemplate('Jep {quantity} ({dose}).', { quantity:'1 tabletë', dose:'500 mg' }),
+    };
+  });
+  expect(engineContract).toEqual({
+    dailyDose:400,
+    intervalDose:500,
+    aliasQuantity:1,
+    childBlocked:false,
+    adultAllowed:true,
+    preferred:'B',
+    staticTemplate:'',
+    computedTemplate:'Jep 1 tabletë (500 mg).',
+  });
 
   const adultRow = rowFor(page, 'PARACETAMOL TEST');
   const adultButton = adultRow.locator('.dose-calculator-open');
@@ -157,7 +214,7 @@ test('mobile physician flow: 44px action and no modal overflow', async ({ page }
   const button = rowFor(page, 'AMOXICILLIN TEST').locator('.dose-calculator-open');
   const box = await button.boundingBox();
   expect(box.height).toBeGreaterThanOrEqual(44);
-  expect(await button.evaluate(node => getComputedStyle(node, '::after').content.replace(/^['"]|['"]$/g, ''))).toBe('Doza');
+  expect(await button.evaluate(node => getComputedStyle(node, '::after').content.replace(/^['"]|['"]$/g, ''))).toBe('Kalkulo');
   await button.click();
   const modal = page.locator('#doseCalculatorModal');
   await modal.locator('[data-dose-age]').fill('12');

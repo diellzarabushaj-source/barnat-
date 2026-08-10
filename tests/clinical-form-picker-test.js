@@ -11,7 +11,7 @@ const js = read('form-picker-clinical.js');
 
 assert.match(html, /form-picker-clinical\.css\?v=20260725-1/);
 assert.match(html, /form-picker-clinical\.js\?v=20260725-1/);
-assert.ok(html.indexOf('ui-enhancements.js?v=20260724-1') < html.indexOf('form-picker-clinical.js?v=20260725-1'));
+assert.ok(html.indexOf('ui-enhancements.js?v=20260810-1') < html.indexOf('form-picker-clinical.js?v=20260725-1'));
 new Function(js);
 
 for (const category of [

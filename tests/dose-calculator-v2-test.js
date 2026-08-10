@@ -3,6 +3,7 @@
 const assert = require('node:assert/strict');
 const fs = require('node:fs');
 const path = require('node:path');
+const vm = require('node:vm');
 const { execFileSync } = require('node:child_process');
 
 const ROOT = path.resolve(__dirname, '..');
@@ -48,10 +49,10 @@ assert.match(routerSource, /view.*calculator/s);
 assert.ok(vercel.rewrites.some(item => item.source === '/api/dose-calculator'
   && item.destination === '/api/dosage?view=calculator'), 'Dose calculator rewrite is missing');
 
-assert.match(html, /registry-dose-calculator\.js\?v=20260809-1/);
+assert.match(html, /registry-dose-calculator\.js\?v=20260810-2/);
 assert.match(html, /registry-dose-10s-flow\.js\?v=20260809-1/);
 assert.ok(
-  html.indexOf('registry-dose-calculator.js?v=20260809-1') < html.indexOf('registry-dose-10s-flow.js?v=20260809-1'),
+  html.indexOf('registry-dose-calculator.js?v=20260810-2') < html.indexOf('registry-dose-10s-flow.js?v=20260809-1'),
   'The 10-second workflow must enhance the canonical calculator after it initializes.'
 );
 assert.match(html, /registry-dose-modal-accessibility\.js\?v=20260809-1/);
@@ -59,7 +60,7 @@ assert.doesNotMatch(html, /registry-dose-calculator-fast-ui\.(?:js|css)/);
 assert.match(html, /registry-dose-table-button\.js\?v=/);
 assert.match(html, /registry-dose-table-button\.css\?v=/);
 
-assert.match(uiSource, /registry-dose-calculator-v2\.2\.0/);
+assert.match(uiSource, /registry-dose-calculator-v2\.3\.0/);
 assert.match(uiSource, /Indikacioni/);
 assert.match(uiSource, /Mosha/);
 assert.match(uiSource, /Pesha/);
@@ -77,8 +78,20 @@ assert.match(uiSource, /Konvertimi në .* kërkon verifikim manual/);
 assert.match(uiSource, /tabletSplitAllowed/);
 assert.match(uiSource, /MAX_AGE_MONTHS/);
 assert.match(uiSource, /MAX_WEIGHT_KG/);
-assert.doesNotMatch(uiSource, /data-dose-group|Grupmosha|ADULT_MONTHS/,
-  'Age bands must be authoritative; there must be no manual or hard-coded adult-group gate');
+assert.doesNotMatch(uiSource, /data-dose-group|Grupmosha/,
+  'Age bands must be authoritative; there must be no manual patient-group input');
+assert.match(uiSource, /function ageMatchesRule/,
+  'Patient-group metadata must fail closed only when an explicit age band is absent.');
+assert.match(uiSource, /function administrationsPerDay/,
+  'Daily caps must derive an administration count from verified schedules.');
+assert.match(uiSource, /clean\(rule\.doseBasis\) === 'per_day'/,
+  'Fixed daily doses must be divided into administrations.');
+assert.match(uiSource, /function convertDoseUnit/,
+  'Mass-unit aliases must be converted before product conversion.');
+assert.match(uiSource, /function renderPlainLanguageTemplate/,
+  'Editorial templates must interpolate computed values instead of replacing them verbatim.');
+assert.match(uiSource, /preferredUnique/,
+  'Exactly one approved preferred rule must resolve an otherwise ambiguous match.');
 assert.doesNotMatch(uiSource, /dose-calculator-submit/,
   'The canonical flow must not require a second calculate click');
 assert.equal((uiSource.match(/root\.id = 'doseCalculatorModal'/g) || []).length, 1,
@@ -165,4 +178,48 @@ assert.equal(mappedRule.conversion.enabled, false);
 assert.equal(mappedRule.conversion.status, 'not_allowed');
 assert.equal(mappedRule.source.official, true);
 
-console.log('Dose calculator V2.2 shared-engine, 10-second physician flow and fail-closed contract passed.');
+const preferredRule = helpers.rulePublic(rule, indication, source, { ...link, preferred:true });
+assert.equal(preferredRule.preferred, true);
+
+/* Execute the real browser engine without mounting UI so clinical arithmetic is unit-tested. */
+const engineSource = uiSource.replace(
+  /\n  ensureModal\(\);\n  observe\(\);/,
+  `\n  window.__doseEngine = { canonicalUnit, convertDoseUnit, administrationsPerDay, ageMatchesRule, preferredUnique, computeDose, renderPlainLanguageTemplate };\n  return;\n  ensureModal();\n  observe();`,
+);
+const engineWindow = {};
+vm.runInNewContext(engineSource, { window:engineWindow, console, Intl, Map, Set, URLSearchParams });
+const engine = engineWindow.__doseEngine;
+assert(engine, 'The calculator engine test hook could not be installed.');
+const automatic = { enabled:true, status:'automatic', tabletSplitAllowed:false };
+const tablet100 = {
+  numeratorValue:100, numeratorUnit:'mg', denominatorValue:1, denominatorUnit:'tablet',
+  tabletSplitDenominator:1, measurableIncrementMl:null, roundingMode:'exact',
+};
+const dailyDose = engine.computeDose({
+  calculationMethod:'fixed_dose', doseMinValue:1200, doseMaxValue:1200, doseUnit:'mg', doseBasis:'per_day',
+  frequencyMode:'times_per_day', timesPerDay:3, maxDailyDoseMg:1200, conversion:automatic,
+}, tablet100, null);
+assert.equal(dailyDose.doseMin, 400, 'A fixed total daily dose must be divided by administrations.');
+
+const intervalCapped = engine.computeDose({
+  calculationMethod:'fixed_dose', doseMinValue:600, doseMaxValue:600, doseUnit:'mg', doseBasis:'per_dose',
+  frequencyMode:'interval', intervalMinHours:4, maxDoses24h:6, maxDailyDoseMg:3000, conversion:automatic,
+}, tablet100, null);
+assert.equal(intervalCapped.doseMin, 500, 'An interval schedule must enforce its 24-hour maximum per administration.');
+
+const microgramAlias = engine.computeDose({
+  calculationMethod:'fixed_dose', doseMinValue:500, doseMaxValue:500, doseUnit:'µg', doseBasis:'per_dose',
+  frequencyMode:'once', conversion:automatic,
+}, { ...tablet100, numeratorValue:0.5, numeratorUnit:'mg' }, null);
+assert.equal(microgramAlias.quantityMin, 1, 'µg and mg must convert dimensionally before product conversion.');
+assert.equal(engine.ageMatchesRule({ patientGroup:'adult_only' }, 120), false);
+assert.equal(engine.ageMatchesRule({ patientGroup:'adult_only' }, 300), true);
+assert.equal(engine.ageMatchesRule({ patientGroup:'adult_only', minAgeMonths:144 }, 150), true,
+  'An explicit verified age band must remain authoritative.');
+assert.equal(engine.preferredUnique([{ ruleKey:'A' }, { ruleKey:'B', preferred:true }])[0].ruleKey, 'B');
+assert.equal(engine.renderPlainLanguageTemplate('Jep një tabletë.', { quantity:'1 tabletë' }), '',
+  'Static text must never replace a computed result.');
+assert.equal(engine.renderPlainLanguageTemplate('Jep {quantity} ({dose}).', { quantity:'1 tabletë', dose:'500 mg' }),
+  'Jep 1 tabletë (500 mg).');
+
+console.log('Dose calculator V2.3 shared-engine, 10-second physician flow and fail-closed contract passed.');

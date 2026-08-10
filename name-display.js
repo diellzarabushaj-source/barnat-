@@ -85,9 +85,16 @@
 
   function fullDrugName(cell) {
     const row = cell.closest('tr');
+    const rawKey = String(row?.querySelector('.drug-select')?.dataset?.drugKey || '');
+    const firstSeparator = rawKey.indexOf('|');
+    const lastSeparator = rawKey.lastIndexOf('|');
+    if (firstSeparator >= 0 && lastSeparator > firstSeparator) {
+      const canonicalName = rawKey.slice(firstSeparator + 1, lastSeparator).trim();
+      if (canonicalName) return canonicalName;
+    }
     if (row?.dataset.drugName) return row.dataset.drugName;
     const clone = cell.cloneNode(true);
-    clone.querySelectorAll('.favorite-marker, .drug-actions-trigger, .drug-name-text').forEach(node => node.remove());
+    clone.querySelectorAll('.favorite-marker, .drug-actions-trigger, .drug-name-text, [data-registry-ui-only]').forEach(node => node.remove());
     return (cell.getAttribute('title') || clone.textContent || '').trim();
   }
 

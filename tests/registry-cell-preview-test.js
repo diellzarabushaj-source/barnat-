@@ -16,9 +16,9 @@ const dosageRuntime = read('registry-dosage-columns-v2.js');
 
 assert(index.includes('registry-cell-preview.css?v=20260805-4'), 'Inline cell expansion stylesheet v3 is not wired.');
 assert(index.includes('registry-full-text-expansion.css?v=20260805-2'), 'Full-row text reveal contract is not wired.');
-assert(index.includes('registry-cell-preview.js?v=20260805-8'), 'Inline cell expansion controller v8 is not wired.');
+assert(index.includes('registry-cell-preview.js?v=20260810-1'), 'Inline cell expansion controller is not wired.');
 assert(
-  index.indexOf('registry-cell-preview.js?v=20260805-8') < index.indexOf('registry-row-expand.js?v=20260805-5'),
+  index.indexOf('registry-cell-preview.js?v=20260810-1') < index.indexOf('registry-row-expand.js?v=20260810-1'),
   'Cell expansion trigger must initialize before row expansion.'
 );
 assert(index.includes('data-registry-ui-release="20260809-1"'), 'Registry UI release was not bumped.');
