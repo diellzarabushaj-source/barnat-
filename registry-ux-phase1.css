@@ -1,0 +1,203 @@
+/* MedIndex Registry UX — Phase 1: instant command surface
+   Visual-only progressive enhancement. No clinical data or dosing logic. */
+
+:root{
+  --mi-registry-accent:#157f7a;
+  --mi-registry-accent-strong:#0f6662;
+  --mi-registry-accent-soft:#ecf8f6;
+  --mi-registry-line:#dce5e4;
+  --mi-registry-ink:#172b2d;
+  --mi-registry-muted:#6f7f82;
+}
+
+html.medindex-tailadmin .toolbar{
+  position:sticky!important;
+  top:8px!important;
+  z-index:28!important;
+  display:flex!important;
+  align-items:center!important;
+  gap:8px!important;
+  margin-bottom:10px!important;
+  padding:8px!important;
+  border:1px solid rgba(113,132,135,.18)!important;
+  border-radius:14px!important;
+  background:rgba(255,255,255,.98)!important;
+  box-shadow:0 8px 24px rgba(24,48,50,.055)!important;
+  transform:translateZ(0);
+}
+
+.mi-registry-search-shell{
+  position:relative;
+  display:flex;
+  min-width:280px;
+  flex:1 1 440px;
+  align-items:center;
+}
+.mi-registry-search-shell>svg{
+  position:absolute;
+  z-index:2;
+  left:14px;
+  width:18px;
+  height:18px;
+  fill:none;
+  stroke:#718386;
+  stroke-width:1.8;
+  pointer-events:none;
+}
+html.medindex-tailadmin .toolbar .mi-registry-search-shell #search{
+  width:100%!important;
+  min-width:0!important;
+  min-height:46px!important;
+  padding:0 58px 0 42px!important;
+  border:1px solid #cfdcda!important;
+  border-radius:11px!important;
+  background:#fbfdfd!important;
+  color:var(--mi-registry-ink)!important;
+  font-size:.86rem!important;
+  font-weight:560!important;
+  letter-spacing:-.005em;
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.92)!important;
+  transition:border-color .11s ease,box-shadow .11s ease,background .11s ease!important;
+}
+html.medindex-tailadmin .toolbar .mi-registry-search-shell #search::placeholder{color:#8a999b!important;font-weight:500}
+html.medindex-tailadmin .toolbar .mi-registry-search-shell #search:hover{border-color:#b8cac8!important;background:#fff!important}
+html.medindex-tailadmin .toolbar .mi-registry-search-shell #search:focus{
+  border-color:var(--mi-registry-accent)!important;
+  background:#fff!important;
+  box-shadow:0 0 0 3px rgba(21,127,122,.105)!important;
+  outline:none!important;
+}
+.mi-registry-search-shortcut{
+  position:absolute;
+  z-index:2;
+  right:9px;
+  display:inline-flex;
+  height:25px;
+  min-width:34px;
+  align-items:center;
+  justify-content:center;
+  padding:0 7px;
+  border:1px solid #d9e2e1;
+  border-bottom-color:#c8d4d2;
+  border-radius:6px;
+  background:#fff;
+  color:#748487;
+  font:700 .61rem/1 ui-sans-serif,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
+  letter-spacing:.02em;
+  box-shadow:0 1px 1px rgba(23,43,45,.045);
+  pointer-events:none;
+}
+
+.registry-quick-favorites{
+  display:inline-flex!important;
+  min-height:44px!important;
+  flex:0 0 auto!important;
+  align-items:center!important;
+  justify-content:center!important;
+  gap:7px!important;
+  padding:0 12px!important;
+  border:1px solid #d4dfde!important;
+  border-radius:10px!important;
+  background:#fff!important;
+  color:#46595b!important;
+  font:750 .72rem/1 ui-sans-serif,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif!important;
+  cursor:pointer!important;
+  touch-action:manipulation;
+  box-shadow:none!important;
+  transition:border-color .1s ease,background .1s ease,color .1s ease,transform .08s ease!important;
+}
+.registry-quick-favorites svg{width:17px;height:17px;fill:none;stroke:currentColor;stroke-width:1.8}
+.registry-quick-favorites:hover{border-color:#e6c995!important;background:#fffaf1!important;color:#9a6217!important}
+.registry-quick-favorites:active{transform:scale(.975)}
+.registry-quick-favorites.is-active{border-color:#e3bf80!important;background:#fff7e8!important;color:#9a6217!important}
+.registry-quick-favorites.is-active svg{fill:#f1b24c;stroke:#9a6217}
+.registry-quick-favorites-count{
+  display:inline-grid;
+  min-width:21px;
+  height:21px;
+  place-items:center;
+  padding:0 5px;
+  border-radius:999px;
+  background:#f2f5f5;
+  color:#607174;
+  font-size:.62rem;
+  font-weight:850;
+}
+.registry-quick-favorites.is-active .registry-quick-favorites-count{background:#fff0d3;color:#8b5711}
+
+html.medindex-tailadmin .toolbar :where(select,button:not(.registry-quick-favorites)){
+  border-radius:10px!important;
+}
+html.medindex-tailadmin .toolbar #countBadge{
+  margin-left:auto!important;
+  white-space:nowrap!important;
+}
+
+/* Calm table: make scanning faster without heavy animation. */
+html.medindex-tailadmin #dataTable tbody tr{transition:background-color .075s linear!important}
+html.medindex-tailadmin #dataTable tbody tr:hover>td{background-color:rgba(21,127,122,.032)}
+html.medindex-tailadmin #dataTable tbody tr.is-favorite:hover>td.name{background:linear-gradient(90deg,rgba(199,125,31,.11),rgba(21,127,122,.025))!important}
+html.medindex-tailadmin #dataTable td.name{font-weight:690;letter-spacing:-.008em}
+html.medindex-tailadmin #dataTable td,
+html.medindex-tailadmin #dataTable th{border-color:rgba(122,141,143,.16)!important}
+
+/* Personal notes stay visually secondary until the user interacts. */
+html.medindex-tailadmin .registry-personal-note-wrap textarea{
+  border-color:#dbe4e3!important;
+  background:#fcfdfd!important;
+  box-shadow:none!important;
+}
+html.medindex-tailadmin .registry-personal-note-wrap textarea:not(:focus):not(.has-content){opacity:.84}
+html.medindex-tailadmin .registry-personal-note-wrap textarea:hover,
+html.medindex-tailadmin .registry-personal-note-wrap textarea:focus{opacity:1}
+
+/* Fast tactile response. */
+html.medindex-tailadmin :where(.registry-row-favorite-toggle,.registry-quick-favorites,.registry-favorites-banner button){-webkit-tap-highlight-color:transparent}
+html.medindex-tailadmin :where(.registry-row-favorite-toggle,.registry-quick-favorites):focus-visible{
+  outline:3px solid rgba(21,127,122,.18)!important;
+  outline-offset:2px!important;
+}
+
+html[data-theme="dark"].medindex-tailadmin .toolbar{
+  border-color:#2d4143!important;
+  background:rgba(18,27,29,.985)!important;
+  box-shadow:0 8px 24px rgba(0,0,0,.14)!important;
+}
+html[data-theme="dark"] .mi-registry-search-shell>svg{stroke:#8ca0a3}
+html[data-theme="dark"].medindex-tailadmin .toolbar .mi-registry-search-shell #search{
+  border-color:#35494b!important;
+  background:#111b1d!important;
+  color:#eef5f4!important;
+}
+html[data-theme="dark"].medindex-tailadmin .toolbar .mi-registry-search-shell #search:hover,
+html[data-theme="dark"].medindex-tailadmin .toolbar .mi-registry-search-shell #search:focus{background:#152123!important}
+html[data-theme="dark"] .mi-registry-search-shortcut{border-color:#35494b;border-bottom-color:#2c3e40;background:#1a2729;color:#94a7aa;box-shadow:none}
+html[data-theme="dark"] .registry-quick-favorites{border-color:#35494b!important;background:#172224!important;color:#b5c4c6!important}
+html[data-theme="dark"] .registry-quick-favorites:hover,
+html[data-theme="dark"] .registry-quick-favorites.is-active{border-color:#624820!important;background:#302718!important;color:#efb55e!important}
+html[data-theme="dark"] .registry-quick-favorites-count{background:#223032;color:#aababc}
+html[data-theme="dark"] .registry-quick-favorites.is-active .registry-quick-favorites-count{background:#44331c;color:#f2bf70}
+html[data-theme="dark"].medindex-tailadmin #dataTable tbody tr:hover>td{background-color:rgba(63,170,163,.045)}
+html[data-theme="dark"].medindex-tailadmin .registry-personal-note-wrap textarea{border-color:#314447!important;background:#111b1d!important}
+
+@media(max-width:980px){
+  html.medindex-tailadmin .toolbar{top:6px!important;flex-wrap:wrap!important}
+  .mi-registry-search-shell{min-width:min(100%,320px);flex:1 1 100%}
+  .registry-quick-favorites{order:2}
+  html.medindex-tailadmin .toolbar #countBadge{margin-left:0!important}
+}
+
+@media(max-width:620px){
+  html.medindex-tailadmin .toolbar{margin-inline:-4px!important;padding:7px!important;border-radius:12px!important}
+  .mi-registry-search-shortcut{display:none}
+  html.medindex-tailadmin .toolbar .mi-registry-search-shell #search{min-height:48px!important;padding-right:12px!important;font-size:.9rem!important}
+  .registry-quick-favorites{min-height:42px!important;padding:0 10px!important}
+  .registry-quick-favorites-label{display:none}
+  .registry-quick-favorites-count{min-width:22px;height:22px}
+}
+
+@media(prefers-reduced-motion:reduce){
+  html.medindex-tailadmin .toolbar *,
+  html.medindex-tailadmin #dataTable tbody tr{transition:none!important}
+  .registry-quick-favorites:active{transform:none}
+}
