@@ -379,37 +379,7 @@
     padding:0 11px!important;
     border:1px solid #d0d5dd!important;
     border-radius:12px!important;
-    background:#fff!important;
-    color:#344054!important;
-    font-size:13px!important;
-    font-weight:580!important;
-    box-shadow:none!important;
-    text-align:left!important;
-  }
-  html.medindex-tailadmin[data-mi-page="barnat"].mi-first-page-audited body .registry-action-group{
-    position:sticky!important;
-    z-index:34!important;
-    bottom:calc(8px + env(safe-area-inset-bottom))!important;
-    grid-column:1/-1!important;
-    margin-top:1px!important;
-    padding:8px!important;
-    border:1px solid rgba(97,115,148,.14)!important;
-    border-radius:16px!important;
-    background:rgba(255,255,255,.91)!important;
-    box-shadow:0 18px 42px rgba(16,24,40,.16)!important;
-    backdrop-filter:blur(18px) saturate(1.08)!important;
-    -webkit-backdrop-filter:blur(18px) saturate(1.08)!important;
-  }
-  html.medindex-tailadmin[data-mi-page="barnat"].mi-first-page-audited body .registry-action-group .registry-control-label{
-    display:none!important;
-  }
-  html.medindex-tailadmin[data-mi-page="barnat"].mi-first-page-audited body .registry-action-group .registry-control-row{
-    display:grid!important;
-    grid-template-columns:minmax(0,.82fr) minmax(0,1.18fr)!important;
-    gap:8px!important;
-  }
-  html.medindex-tailadmin[data-mi-page="barnat"].mi-first-page-audited body .registry-action-group .selection-badge,
-  html.medindex-tailadmin[data-mi-page="barnat"].mi-first-page-audited body .registry-action-group .protocol-toolbar-btn{
+    background:#fff!imporã­-¢G§²ÚîÆ­yÒarnat"].mi-first-page-audited body .registry-action-group .protocol-toolbar-btn{
     display:flex!important;
     width:100%!important;
     min-width:0!important;
@@ -712,6 +682,64 @@
   html.medindex-tailadmin[data-mi-page="barnat"].mi-first-page-audited body #dataTable tbody td{
     grid-template-columns:1fr!important;
     gap:4px!important;
+  }
+}
+
+/* Compact mobile summary: the calculator and an explicit details action stay
+   reachable without relying on a clipped drug-name cell. */
+.registry-row-details-toggle{
+  display:none;
+}
+
+@media (max-width:760px){
+  html.medindex-tailadmin[data-mi-page="barnat"] body #registryContent #dataTable[data-registry-unified-table] tbody tr{
+    height:auto!important;
+    min-height:0!important;
+    max-height:none!important;
+    content-visibility:auto;
+    contain-intrinsic-size:auto 190px;
+  }
+  html.medindex-tailadmin[data-mi-page="barnat"] body #registryContent #dataTable[data-registry-unified-table] tbody tr>td[data-registry-column-key]{
+    height:auto!important;
+    min-height:48px!important;
+    max-height:none!important;
+    overflow:visible!important;
+  }
+  html.medindex-tailadmin[data-mi-page="barnat"] body #registryContent #dataTable[data-registry-unified-table] tbody tr:not(.registry-row-expanded):not([data-registry-row-expanded="true"])>td[data-registry-column-key]{
+    display:none!important;
+  }
+  html.medindex-tailadmin[data-mi-page="barnat"] body #registryContent #dataTable[data-registry-unified-table] tbody tr:not(.registry-row-expanded):not([data-registry-row-expanded="true"])>td:is(
+    [data-registry-column-key="select"],
+    [data-registry-column-key="trade-name"],
+    [data-registry-column-key="active-substance"],
+    [data-registry-column-key="dose-calculator"]
+  ){
+    display:grid!important;
+  }
+  html.medindex-tailadmin[data-mi-page="barnat"] body #registryContent #dataTable[data-registry-unified-table] tbody td[data-registry-column-key="trade-name"]{
+    padding-bottom:12px!important;
+  }
+  html.medindex-tailadmin[data-mi-page="barnat"] body #registryContent #dataTable[data-registry-unified-table] .registry-row-details-toggle{
+    display:inline-flex!important;
+    width:100%;
+    min-height:44px;
+    align-items:center;
+    justify-content:center;
+    margin:10px 0 0;
+    padding:9px 12px;
+    border:1px solid #b8d5d3;
+    border-radius:10px;
+    background:#f2f8f7;
+    color:#0d5f63;
+    font:inherit;
+    font-size:.75rem;
+    font-weight:800;
+    line-height:1.2;
+    touch-action:manipulation;
+  }
+  html.medindex-tailadmin[data-mi-page="barnat"] body #registryContent #dataTable[data-registry-unified-table] .registry-row-details-toggle:focus-visible{
+    outline:3px solid rgba(13,95,99,.28);
+    outline-offset:2px;
   }
 }
 

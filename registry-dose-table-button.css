@@ -185,7 +185,7 @@
     max-width: none !important;
     padding-inline: 12px !important;
   }
-  .registry-dose-calculator-column .dose-calculator-open::after { content: "Doza"; }
+  .registry-dose-calculator-column .dose-calculator-open::after { content: "Kalkulo"; }
   .dose-calculator-group { font-size: 0.58rem !important; }
 }
 

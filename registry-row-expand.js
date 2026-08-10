@@ -1,7 +1,7 @@
 (() => {
   'use strict';
 
-  const VERSION = 'registry-row-expand-20260805-5';
+  const VERSION = 'registry-row-expand-20260810-1';
   const FINAL_STYLE_ID = 'registryColumnsFiltersStyles';
   const EXPANDABLE_KEYS = new Set([
     'trade-name',
@@ -104,6 +104,23 @@
     });
   }
 
+  function syncDetailsToggle(row, expanded) {
+    const nameCell = row.querySelector('td[data-registry-column-key="trade-name"], td.name');
+    if (!nameCell) return;
+    let button = nameCell.querySelector(':scope > .registry-row-details-toggle');
+    if (!button) {
+      button = document.createElement('button');
+      button.type = 'button';
+      button.className = 'registry-row-details-toggle';
+      nameCell.appendChild(button);
+    }
+    const label = expanded ? 'Mbyll detajet' : 'Shiko detajet';
+    if (button.textContent !== label) button.textContent = label;
+    button.setAttribute('aria-expanded', String(expanded));
+    const drugName = clean(nameCell.querySelector('.drug-name-text')?.textContent || 'barit');
+    button.setAttribute('aria-label', `${label} për ${drugName}`);
+  }
+
   function syncRowState(row) {
     const key = rowKey(row);
     const expanded = Boolean(key && expandedRows.has(key));
@@ -118,6 +135,7 @@
     });
     syncDosageDisclosures(row, expanded);
     syncPreviewTriggers(row, expanded);
+    syncDetailsToggle(row, expanded);
   }
 
   function enhanceRows() {
@@ -191,6 +209,14 @@
   }
 
   function onClick(event) {
+    const detailsButton = event.target.closest?.('.registry-row-details-toggle');
+    if (detailsButton) {
+      event.preventDefault();
+      event.stopImmediatePropagation();
+      toggleRow(detailsButton.closest('tr'));
+      return;
+    }
+
     const summary = event.target.closest?.('.registry-dosage-details > summary');
     if (summary) {
       event.preventDefault();
