@@ -19,9 +19,13 @@ assert.ok(html.indexOf('registry-user-personalization.js') < html.indexOf('regis
 assert.ok(html.indexOf('registry-ux-phase2.js') < html.indexOf('registry-ux-phase3.js'), 'Phase 3 must extend the Clinical Scanner instead of replacing it');
 assert.ok(html.indexOf('registry-ux-phase2.css') < html.indexOf('registry-ux-phase3.css'), 'Phase 3 styling must layer after Phase 2');
 
-assert.match(js, /registry-ux-phase3-v1\.0\.0/);
+assert.match(js, /registry-ux-phase3-v1\.0\.1/);
 assert.match(js, /regjistriBarnave_shenime_v1/);
 assert.match(js, /regjistriBarnave_favoritet_v1/);
+assert.match(js, /noteStorageSnapshot/);
+assert.match(js, /noteEntryCache/);
+assert.match(js, /renderList = false/);
+assert.match(js, /panel\?\.hidden/);
 assert.match(js, /registryPersonalWorkspace/);
 assert.match(js, /data-workspace-note-key/);
 assert.match(js, /data-row-note-jump/);
@@ -46,4 +50,4 @@ assert.match(css, /data-theme="dark"/);
 assert.match(css, /prefers-reduced-motion/);
 assert.doesNotMatch(css, /https?:\/\//, 'Phase 3 must not load third-party visual assets');
 
-console.log('Phase 3 personal clinical workspace, instant note jump and per-user event-driven UX audit passed.');
+console.log('Phase 3 personal clinical workspace, cached note panel and per-user event-driven UX audit passed.');
