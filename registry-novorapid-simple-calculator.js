@@ -1,10 +1,11 @@
 (() => {
   'use strict';
 
-  const VERSION = 'registry-novorapid-protocol-v2.2.0';
+  const VERSION = 'registry-novorapid-protocol-v3.0.0';
   const REGISTRY_NUMBER = '2508';
-  const STORAGE_KEY = 'medindex:novorapid:patient-protocol:v3';
+  const STORAGE_KEY = 'medindex:novorapid:patient-protocol:v4';
   const EMA_URL = 'https://www.ema.europa.eu/en/medicines/human/EPAR/novorapid';
+  const SMPC_URL = 'https://www.medicines.org.uk/emc/product/7920/smpc';
   const ADA_URL = 'https://diabetesjournals.org/care/article/49/Supplement_1/S183/163934/9-Pharmacologic-Approaches-to-Glycemic-Treatment';
 
   let modal = null;
@@ -12,12 +13,15 @@
 
   const clean = value => String(value ?? '').replace(/\s+/g, ' ').trim();
   const num = value => {
-    const parsed = Number(String(value ?? '').replace(',', '.'));
+    const text = clean(value).replace(',', '.');
+    if (text === '') return null;
+    const parsed = Number(text);
     return Number.isFinite(parsed) ? parsed : null;
   };
   const round1 = value => Math.round(value * 10) / 10;
-  const doseText = value => Number.isInteger(value) ? String(value) : value.toFixed(1);
+  const doseText = value => Number.isInteger(value) ? String(value) : Number(value).toFixed(1);
   const esc = value => clean(value).replace(/[&<>"']/g, ch => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[ch]));
+  const ageGroup = age => age < 18 ? 'pediatric' : 'adult';
 
   function loadProtocol() {
     try {
@@ -27,15 +31,22 @@
       const icr = num(parsed.icr);
       const isf = num(parsed.isf);
       const tdd = num(parsed.tdd);
-      if (!(target > 0) || !(icr > 0) || !(isf > 0)) return null;
-      return { target, icr, isf, tdd: tdd > 0 ? tdd : null, source: clean(parsed.source) || 'manual' };
+      if (!(target >= 3.9 && target <= 12) || !(icr > 0 && icr <= 100) || !(isf > 0 && isf <= 15)) return null;
+      return {
+        target,
+        icr,
+        isf,
+        tdd: tdd > 0 ? tdd : null,
+        source: clean(parsed.source) || 'manual',
+        ageGroup: parsed.ageGroup === 'pediatric' ? 'pediatric' : 'adult'
+      };
     } catch {
       return null;
     }
   }
 
   function saveProtocol(protocol) {
-    sessionStorage.setItem(STORAGE_KEY, JSON.stringify(protocol));
+    try { sessionStorage.setItem(STORAGE_KEY, JSON.stringify(protocol)); } catch {}
   }
 
   function dropProtocol() {
@@ -59,7 +70,7 @@
           <div>
             <span class="novorapid-simple-kicker">INSULIN ASPART · NOVORAPID FLEXPEN</span>
             <h2 id="novorapidSimpleTitle">NovoRapid</h2>
-            <p>Bolus i vaktit + korrigjim</p>
+            <p>Bolus i vaktit + korrigjim · SC</p>
           </div>
           <button type="button" class="novorapid-simple-close" data-novorapid-close aria-label="Mbyll">×</button>
         </header>
@@ -69,18 +80,18 @@
 
           <div class="novorapid-primary-grid">
             <label class="novorapid-simple-field">
-              <span>Glukoza tani</span>
+              <span>Mosha</span>
               <div class="novorapid-simple-input-with-unit">
-                <input type="number" min="0" step="0.1" inputmode="decimal" data-novorapid-glucose autocomplete="off" placeholder="p.sh. 8.4">
-                <small>mmol/L</small>
+                <input type="number" min="0" step="1" inputmode="numeric" data-novorapid-age autocomplete="off" placeholder="p.sh. 42">
+                <small>vjeç</small>
               </div>
             </label>
 
             <label class="novorapid-simple-field">
-              <span>Pesha</span>
+              <span>Glukoza tani</span>
               <div class="novorapid-simple-input-with-unit">
-                <input type="number" min="1" step="0.1" inputmode="decimal" data-novorapid-weight autocomplete="off" placeholder="p.sh. 77">
-                <small>kg</small>
+                <input type="number" min="0" step="0.1" inputmode="decimal" data-novorapid-glucose autocomplete="off" placeholder="p.sh. 8.4">
+                <small>mmol/L</small>
               </div>
             </label>
           </div>
@@ -99,23 +110,33 @@
             </div>
           </label>
 
-          <details class="novorapid-more">
-            <summary>Më shumë <span>IOB / insulinë aktive</span></summary>
-            <label class="novorapid-simple-field novorapid-iob-field">
-              <span>Insulinë aktive nga bolusi i fundit</span>
-              <div class="novorapid-simple-input-with-unit">
-                <input type="number" min="0" step="0.1" inputmode="decimal" data-novorapid-iob autocomplete="off" value="0">
-                <small>U</small>
-              </div>
-              <small class="novorapid-help">0 vetëm kur nuk ka insulinë aktive për t’u zbritur.</small>
-            </label>
+          <details class="novorapid-more" open>
+            <summary>Më shumë <span>IOB është i detyrueshëm</span></summary>
+            <div class="novorapid-protocol-grid" style="padding-top:0">
+              <label class="novorapid-simple-field">
+                <span>IOB / insulinë aktive</span>
+                <div class="novorapid-simple-input-with-unit">
+                  <input type="number" min="0" step="0.1" inputmode="decimal" data-novorapid-iob autocomplete="off" placeholder="p.sh. 0">
+                  <small>U</small>
+                </div>
+                <small class="novorapid-help">Shkruaj 0 vetëm kur nuk ka insulinë aktive nga bolusi i fundit.</small>
+              </label>
+              <label class="novorapid-simple-field">
+                <span>Pesha <small style="font-weight:650;color:#64748b">(opsionale)</small></span>
+                <div class="novorapid-simple-input-with-unit">
+                  <input type="number" min="1" step="0.1" inputmode="decimal" data-novorapid-weight autocomplete="off" placeholder="p.sh. 77">
+                  <small>kg</small>
+                </div>
+                <small class="novorapid-help">Nuk përdoret direkt në formulën e bolusit të këtij kalkulatori.</small>
+              </label>
+            </div>
           </details>
 
           <button type="button" class="novorapid-simple-calculate" data-novorapid-calculate>Llogarit dozën</button>
           <div class="novorapid-simple-result" data-novorapid-result aria-live="polite" hidden></div>
 
           <details class="novorapid-protocol-panel" data-novorapid-protocol-panel>
-            <summary>Parametrat e pacientit <span>vetëm për këtë sesion</span></summary>
+            <summary>Parametrat e pacientit <span>ruhen vetëm për këtë sesion</span></summary>
 
             <div class="novorapid-protocol-grid">
               <label class="novorapid-simple-field">
@@ -124,7 +145,7 @@
                   <input type="number" min="1" max="300" step="1" inputmode="decimal" data-protocol-tdd placeholder="p.sh. 50">
                   <small>U/24h</small>
                 </div>
-                <small class="novorapid-help">Nëse pacienti ka regjim të qëndrueshëm, TDD mund të përdoret për vlerësim fillestar të ICR/ISF.</small>
+                <small class="novorapid-help">Vetëm te të rriturit mund të përdoret si vlerësim fillestar i ICR/ISF; nuk aktivizohet pa verifikim.</small>
               </label>
 
               <label class="novorapid-simple-field">
@@ -137,7 +158,7 @@
               </label>
             </div>
 
-            <button type="button" class="novorapid-save-protocol" data-derive-protocol>Llogarit ICR / ISF fillestar</button>
+            <button type="button" class="novorapid-save-protocol" data-derive-protocol>Vlerëso ICR / ISF nga TDD</button>
 
             <div class="novorapid-protocol-grid">
               <label class="novorapid-simple-field">
@@ -150,9 +171,9 @@
               </label>
             </div>
 
-            <p class="novorapid-protocol-note" data-protocol-estimate-note>ICR dhe ISF mund t’i shkruash direkt nëse janë tashmë të njohura. Vlerësimi nga TDD është vetëm pikënisje dhe duhet verifikuar klinikisht.</p>
+            <p class="novorapid-protocol-note" data-protocol-estimate-note>ICR dhe ISF mund t’i shkruash direkt nëse janë të njohura. Te pediatria përdor vetëm parametrat e verifikuar të pacientit.</p>
 
-            <label class="novorapid-simple-field">
+            <label class="novorapid-simple-field" style="padding:0 12px 10px">
               <span>Konfirmim klinik</span>
               <span style="display:flex;gap:10px;align-items:flex-start;font-weight:600"><input type="checkbox" data-protocol-confirm style="width:18px;height:18px;min-height:18px;margin-top:2px"> I kam kontrolluar targetin, ICR dhe ISF për këtë pacient.</span>
             </label>
@@ -161,12 +182,12 @@
               <button type="button" class="novorapid-save-protocol" data-save-protocol>Aktivizo parametrat</button>
               <button type="button" class="novorapid-clear-protocol" data-clear-protocol>Fshije</button>
             </div>
-            <p class="novorapid-protocol-note">NovoRapid FlexPen jep 1–60 U në hapa prej 1 U; rezultati rrumbullakoset në 1 U. “Pacient i ri” i fshin parametrat.</p>
+            <p class="novorapid-protocol-note">NovoRapid FlexPen jep 1–60 U në hapa prej 1 U. Kalkulatori nuk ndan automatikisht doza mbi kapacitetin e pen-it.</p>
           </details>
         </div>
 
         <footer class="novorapid-simple-foot">
-          <div class="novorapid-source-links"><a href="${ADA_URL}" target="_blank" rel="noopener noreferrer">ADA 2026</a><a href="${EMA_URL}" target="_blank" rel="noopener noreferrer">EMA NovoRapid</a></div>
+          <div class="novorapid-source-links"><a href="${EMA_URL}" target="_blank" rel="noopener noreferrer">EMA</a><a href="${SMPC_URL}" target="_blank" rel="noopener noreferrer">SmPC</a><a href="${ADA_URL}" target="_blank" rel="noopener noreferrer">ADA 2026</a></div>
           <button type="button" data-novorapid-reset>Pacient i ri</button>
         </footer>
       </section>`;
@@ -188,7 +209,7 @@
     });
 
     modal.addEventListener('keydown', event => {
-      if (event.key === 'Enter' && event.target.matches('[data-novorapid-glucose],[data-novorapid-weight],[data-novorapid-carbs],[data-novorapid-iob]')) {
+      if (event.key === 'Enter' && event.target.matches('input,select')) {
         event.preventDefault();
         calculate();
       }
@@ -196,6 +217,23 @@
 
     syncProtocolUI();
     return modal;
+  }
+
+  function currentAge() {
+    return num(modal?.querySelector('[data-novorapid-age]')?.value);
+  }
+
+  function validAgeOrShow() {
+    const age = currentAge();
+    if (age === null || age < 0) {
+      showResult('warning', 'Shkruaj moshën', '<span>Mosha nevojitet për të kontrolluar përdorimin pediatrik.</span>');
+      return null;
+    }
+    if (age < 1) {
+      showResult('block', 'Nën 1 vjeç', '<span>Siguria dhe efikasiteti i NovoRapid nuk janë të vendosura për fëmijë nën 1 vjeç në SmPC.</span>');
+      return null;
+    }
+    return age;
   }
 
   function syncProtocolUI() {
@@ -211,7 +249,7 @@
 
     if (protocol) {
       status.className = 'novorapid-protocol-status is-ready';
-      status.innerHTML = `<span>✓ Parametrat aktivë</span><small>Target ${protocol.target} · ICR 1:${protocol.icr} · ISF ${protocol.isf} mmol/L/U</small>`;
+      status.innerHTML = `<span>✓ Parametrat aktivë</span><small>Target ${protocol.target} · ICR 1:${protocol.icr} · ISF ${protocol.isf} mmol/L/U · ${protocol.ageGroup === 'pediatric' ? 'pediatrik' : 'adult'}</small>`;
       tdd.value = protocol.tdd || '';
       target.value = protocol.target;
       icr.value = protocol.icr;
@@ -220,7 +258,7 @@
       if (panel) panel.open = false;
     } else {
       status.className = 'novorapid-protocol-status is-missing';
-      status.innerHTML = '<span>Vendos parametrat një herë</span><small>TDD + target → ICR/ISF fillestar, ose shkruaji direkt</small>';
+      status.innerHTML = '<span>Vendos parametrat një herë</span><small>Target + ICR + ISF të pacientit</small>';
       tdd.value = '';
       target.value = '';
       icr.value = '';
@@ -232,10 +270,17 @@
 
   function deriveProtocol() {
     if (!modal) return;
+    const age = validAgeOrShow();
+    if (age === null) return;
+    if (age < 18) {
+      showResult('block', 'Pediatri · mos derivoni automatikisht', '<span>Te pacientët nën 18 vjeç vendos ICR, ISF dhe targetin e verifikuar individualisht; ky kalkulator nuk krijon faktorë pediatrikë nga TDD.</span>');
+      return;
+    }
+
     const tdd = num(modal.querySelector('[data-protocol-tdd]')?.value);
     const target = num(modal.querySelector('[data-protocol-target]')?.value);
     if (!(tdd >= 5 && tdd <= 300)) {
-      showResult('warning', 'Shkruaj TDD', '<span>Duhet insulina totale ditore e pacientit (U/24h) për të krijuar një vlerësim fillestar.</span>');
+      showResult('warning', 'Shkruaj TDD', '<span>Duhet insulina totale ditore e pacientit (U/24h) për vlerësimin fillestar.</span>');
       return;
     }
     if (!(target >= 3.9 && target <= 12)) {
@@ -244,22 +289,21 @@
     }
 
     const icr = round1(500 / tdd);
-    const isf = round1(100 / tdd); // 1800-rule converted from mg/dL to mmol/L: (1800/TDD)/18 = 100/TDD.
+    const isf = round1(100 / tdd);
     modal.querySelector('[data-protocol-icr]').value = icr;
     modal.querySelector('[data-protocol-isf]').value = isf;
     modal.querySelector('[data-protocol-confirm]').checked = false;
 
     const note = modal.querySelector('[data-protocol-estimate-note]');
-    if (note) note.textContent = `Vlerësim fillestar nga TDD ${tdd} U/24h: ICR ≈ 1:${icr} g dhe ISF ≈ ${isf} mmol/L/U. Kontrolloji para aktivizimit.`;
-
-    const targetWarning = target < 4.4
-      ? ' Targeti është nën intervalin preprandial 4.4–7.2 mmol/L që ADA jep për shumë të rritur jo-shtatzënë; përdore vetëm nëse është zgjedhur posaçërisht për këtë pacient.'
-      : '';
-    showResult('info', 'ICR / ISF u vlerësuan', `<span>Kontrolloji dhe shëno konfirmimin klinik para se t’i aktivizosh.${esc(targetWarning)}</span>`);
+    if (note) note.textContent = `Vlerësim fillestar adult nga TDD ${tdd} U/24h: ICR ≈ 1:${icr} g dhe ISF ≈ ${isf} mmol/L/U. Këto janë vetëm pika nisjeje; kontrolloji para aktivizimit.`;
+    showResult('info', 'ICR / ISF u vlerësuan', '<span>Kontrolloji kundrejt protokollit dhe përgjigjes reale të pacientit, pastaj shëno konfirmimin klinik.</span>');
   }
 
   function persistProtocol() {
     if (!modal) return;
+    const age = validAgeOrShow();
+    if (age === null) return;
+
     const tdd = num(modal.querySelector('[data-protocol-tdd]')?.value);
     const target = num(modal.querySelector('[data-protocol-target]')?.value);
     const icr = num(modal.querySelector('[data-protocol-icr]')?.value);
@@ -274,11 +318,14 @@
       showResult('warning', 'Konfirmimi mungon', '<span>Kontrollo targetin, ICR dhe ISF dhe shëno konfirmimin klinik.</span>');
       return;
     }
+    if (age < 18 && tdd > 0) {
+      showResult('warning', 'TDD nuk përdoret për derivim pediatrik', '<span>Te pediatria ICR/ISF duhet të jenë vendosur drejtpërdrejt si parametra individualë; TDD ruhet vetëm si kontekst.</span>');
+    }
 
-    const source = tdd > 0 ? 'tdd-estimate-or-reviewed' : 'manual';
-    saveProtocol({ target: round1(target), icr: round1(icr), isf: round1(isf), tdd: tdd > 0 ? round1(tdd) : null, source });
+    const source = tdd > 0 && age >= 18 ? 'adult-tdd-estimate-reviewed' : 'manual-reviewed';
+    saveProtocol({ target: round1(target), icr: round1(icr), isf: round1(isf), tdd: tdd > 0 ? round1(tdd) : null, source, ageGroup: ageGroup(age) });
     syncProtocolUI();
-    showResult('info', 'Parametrat u aktivizuan', '<span>Tani kalkulatori mund të japë bolusin e vaktit + korrigjimin sipas këtyre parametrave.</span>');
+    showResult('info', 'Parametrat u aktivizuan', '<span>Kalkulatori tani përdor vetëm këta faktorë të verifikuar për bolusin e vaktit + korrigjimin.</span>');
   }
 
   function clearProtocol() {
@@ -297,26 +344,44 @@
 
   function calculate() {
     if (!modal) return;
+    const age = validAgeOrShow();
+    if (age === null) return;
+
     const glucose = num(modal.querySelector('[data-novorapid-glucose]')?.value);
-    const weight = num(modal.querySelector('[data-novorapid-weight]')?.value);
     const carbs = num(modal.querySelector('[data-novorapid-carbs]')?.value);
     const iob = num(modal.querySelector('[data-novorapid-iob]')?.value);
+    const weight = num(modal.querySelector('[data-novorapid-weight]')?.value);
     const protocol = loadProtocol();
 
-    if (glucose === null || glucose <= 0 || weight === null || weight <= 0 || carbs === null || carbs < 0 || iob === null || iob < 0) {
-      showResult('warning', 'Plotëso inputet', '<span>Shkruaj glukozën, peshën, karbohidratet dhe IOB (0 nëse nuk ka insulinë aktive).</span>');
+    if (!(glucose > 0) || carbs === null || carbs < 0) {
+      showResult('warning', 'Plotëso glukozën dhe karbohidratet', '<span>Duhet glukoza aktuale dhe gramët e karbohidrateve të vaktit.</span>');
+      return;
+    }
+    if (iob === null || iob < 0) {
+      showResult('warning', 'Shkruaj IOB', '<span>Shkruaj insulinën aktive në U. Përdor 0 vetëm kur nuk ka bolus aktiv që duhet zbritur.</span>');
+      return;
+    }
+    if (weight !== null && weight <= 0) {
+      showResult('warning', 'Kontrollo peshën', '<span>Pesha është opsionale, por nëse shkruhet duhet të jetë >0 kg.</span>');
       return;
     }
 
     if (!protocol) {
       const panel = modal.querySelector('[data-novorapid-protocol-panel]');
       if (panel) panel.open = true;
-      showResult('warning', 'Mungojnë parametrat e pacientit', '<span>Jep TDD + target për vlerësim fillestar të ICR/ISF, ose shkruaj ICR/ISF të njohura dhe aktivizoji.</span>');
+      showResult('warning', 'Mungojnë parametrat e pacientit', '<span>Vendos targetin, ICR dhe ISF të verifikuara. Te të rriturit mund të përdoret TDD vetëm për vlerësim fillestar.</span>');
+      return;
+    }
+
+    if (protocol.ageGroup !== ageGroup(age)) {
+      const panel = modal.querySelector('[data-novorapid-protocol-panel]');
+      if (panel) panel.open = true;
+      showResult('block', 'Parametrat nuk përputhen me grupmoshën', '<span>Protokolli i ruajtur është nga një grupmoshë tjetër. Shtyp “Pacient i ri” dhe vendos parametrat e këtij pacienti.</span>');
       return;
     }
 
     if (glucose < 3.9) {
-      showResult('block', 'Hipoglikemi — mos jep bolus rutinë', `<span>Glukoza është ${round1(glucose)} mmol/L. Trajto/rivlerëso hipoglikeminë para insulinës së vaktit.</span>`);
+      showResult('block', 'Hipoglikemi — mos llogarit bolus rutinë', `<span>Glukoza është ${round1(glucose)} mmol/L. Trajto/rivlerëso hipoglikeminë para dozimit rutinë.</span>`);
       return;
     }
 
@@ -324,15 +389,18 @@
     const correctionRaw = (glucose - protocol.target) / protocol.isf;
     const correctionAfterIob = correctionRaw - iob;
     const mathematicalTotal = Math.max(0, meal + correctionAfterIob);
-    const rounded = Math.max(0, Math.round(mathematicalTotal)); // FlexPen = 1 U increments.
+    const rounded = Math.max(0, Math.round(mathematicalTotal));
 
     if (rounded > 60) {
-      showResult('block', 'Doza kalon kapacitetin e FlexPen', `<span>Rezultati matematik është ${doseText(round1(mathematicalTotal))} U, ndërsa FlexPen zgjedh 1–60 U për injeksion. Mos e ndaj automatikisht; rishiko regjimin klinik.</span>`);
+      showResult('block', 'Doza kalon kapacitetin e FlexPen', `<span>Rezultati matematik është ${doseText(round1(mathematicalTotal))} U, ndërsa NovoRapid FlexPen jep maksimum 60 U për një injeksion. Mos e ndani automatikisht pa plan të verifikuar.</span>`);
       return;
     }
 
     const ketoneWarning = glucose >= 13.9
-      ? '<em class="novorapid-result-alert">Glukoza ≥13.9 mmol/L: kontrollo ketonet dhe kontekstin klinik; në dyshim për DKA/dehidrim/sëmundje akute mos u mbështet vetëm në kalkulator.</em>'
+      ? '<em class="novorapid-result-alert">Glukoza ≥13.9 mmol/L: kontrollo ketonet dhe gjendjen klinike. Në ketone/DKA, dehidrim ose sëmundje akute përdor protokollin përkatës, jo vetëm këtë kalkulator.</em>'
+      : '';
+    const pedNote = age < 18
+      ? '<em class="novorapid-result-alert">Pediatrik: rezultati vlen vetëm me ICR/ISF/target të verifikuara individualisht dhe monitorim të afërt.</em>'
       : '';
 
     showResult(
@@ -342,8 +410,8 @@
         <span><b>Vakti</b><strong>${doseText(round1(meal))} U</strong><small>${round1(carbs)} g ÷ ICR ${protocol.icr}</small></span>
         <span><b>Korrigjimi</b><strong>${correctionAfterIob >= 0 ? '+' : ''}${doseText(round1(correctionAfterIob))} U</strong><small>(${round1(glucose)} − ${protocol.target}) ÷ ${protocol.isf} − IOB ${round1(iob)}</small></span>
       </div>
-      <p class="novorapid-result-meta">Totali matematik ${doseText(round1(mathematicalTotal))} U → ${rounded} U, sepse NovoRapid FlexPen punon me hapa 1 U. Pesha ${round1(weight)} kg përdoret vetëm si kontekst dhe kontroll, jo për të shpikur bolusin.</p>
-      ${ketoneWarning}`
+      <p class="novorapid-result-meta">Totali matematik ${doseText(round1(mathematicalTotal))} U → ${rounded} U (FlexPen: hapa 1 U).${weight !== null ? ` Pesha ${round1(weight)} kg është vetëm kontekst.` : ''}</p>
+      ${pedNote}${ketoneWarning}`
     );
   }
 
@@ -353,7 +421,7 @@
     syncProtocolUI();
     modal.hidden = false;
     document.body.classList.add('novorapid-simple-opened');
-    window.requestAnimationFrame(() => modal.querySelector('[data-novorapid-glucose]')?.focus());
+    window.requestAnimationFrame(() => modal.querySelector('[data-novorapid-age]')?.focus());
   }
 
   function close() {
@@ -365,12 +433,10 @@
 
   function resetEncounter(clearPatientProtocol = false) {
     if (!modal) return;
-    ['[data-novorapid-glucose]','[data-novorapid-weight]','[data-novorapid-carbs]'].forEach(selector => {
+    ['[data-novorapid-age]','[data-novorapid-glucose]','[data-novorapid-weight]','[data-novorapid-carbs]','[data-novorapid-iob]'].forEach(selector => {
       const input = modal.querySelector(selector);
       if (input) input.value = '';
     });
-    const iob = modal.querySelector('[data-novorapid-iob]');
-    if (iob) iob.value = '0';
     if (clearPatientProtocol) dropProtocol();
     syncProtocolUI();
     const result = modal.querySelector('[data-novorapid-result]');
@@ -379,7 +445,7 @@
       result.textContent = '';
       result.className = 'novorapid-simple-result';
     }
-    modal.querySelector('[data-novorapid-glucose]')?.focus();
+    modal.querySelector('[data-novorapid-age]')?.focus();
   }
 
   document.addEventListener('click', event => {
