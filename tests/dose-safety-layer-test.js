@@ -43,3 +43,4 @@ console.log('Dose safety layer verified-only, fail-closed, product-aware and phy
 require('./insulin-calculators-deep-audit-test.js');
 require('./registry-user-personalization-test.js');
 require('./registry-ux-phase2-test.js');
+require('./registry-ux-phase3-test.js');
