@@ -10,6 +10,8 @@ const read = file => fs.readFileSync(path.join(root, file), 'utf8');
 const html = read('index.html');
 const ui = read('registry-user-personalization.js');
 const css = read('registry-user-personalization.css');
+const uxPhase1 = read('registry-ux-phase1.js');
+const uxPhase1Css = read('registry-ux-phase1.css');
 const client = read('user-library-client.js');
 const server = read('lib/user-library.js');
 const shell = read('tailadmin-shell-legacy.js');
@@ -18,14 +20,18 @@ const runtimePatch = read('scripts/patch-registry-personalization-runtime.js');
 const runtime = read('app-runtime.js');
 
 assert.doesNotThrow(() => new Function(ui), 'Personalization UI must parse as JavaScript');
+assert.doesNotThrow(() => new Function(uxPhase1), 'Registry UX phase 1 must parse as JavaScript');
 assert.doesNotThrow(() => new Function(client), 'User library client must parse as JavaScript');
 assert.doesNotThrow(() => new Function(server), 'User library server must parse as JavaScript');
 assert.doesNotThrow(() => new Function(runtimePatch), 'Registry personalization runtime patch must parse as JavaScript');
 
 assert.match(html, /registry-user-personalization\.css\?v=20260810-3/, 'Latest personalization CSS is not loaded');
 assert.match(html, /registry-user-personalization\.js\?v=20260810-2/, 'Latest personalization JS is not loaded');
+assert.match(html, /registry-ux-phase1\.css\?v=20260810-1/, 'Phase 1 premium registry CSS is not loaded');
+assert.match(html, /registry-ux-phase1\.js\?v=20260810-1/, 'Phase 1 instant interaction layer is not loaded');
 assert.doesNotMatch(html, /registry-personalization-polish\.js/, 'Duplicate personalization controller must not be loaded');
 assert.ok(html.indexOf('registry-unified-table.js') < html.indexOf('registry-user-personalization.js'), 'Personalization must run after unified table');
+assert.ok(html.indexOf('registry-user-personalization.js') < html.indexOf('registry-ux-phase1.js'), 'Phase 1 UX must enhance the stable personalization layer, not race it');
 assert.doesNotMatch(html, /<option value="4006"[^>]*>Favoritet<\/option>/, 'Favorites must not use a page-size hack');
 
 assert.match(pkg, /patch-registry-personalization-runtime\.js/, 'Native favorites runtime patch must run in the production build');
@@ -62,6 +68,17 @@ assert.doesNotMatch(css, /medindex-favorites-only[^\n]*#pagination|medindex-favo
 assert.match(css, /@media\(max-width:720px\)/, 'Personalization must keep a dedicated mobile treatment');
 assert.match(css, /prefers-reduced-motion/, 'Personalization must respect reduced-motion preferences');
 
+assert.match(uxPhase1, /requestIdleCallback/, 'Phase 1 noncritical polish must be deferred off the critical path');
+assert.match(uxPhase1, /Control\+K Meta\+K/, 'Phase 1 must expose a fast keyboard search shortcut');
+assert.match(uxPhase1, /event\.key === '\/'/, 'Phase 1 must support slash-to-search when the user is not editing');
+assert.match(uxPhase1, /registryQuickFavorites/, 'Phase 1 must provide a one-click toolbar favorites control');
+assert.match(uxPhase1, /MedIndexRegistryPersonalization/, 'Quick favorites must reuse the audited personalization controller');
+assert.doesNotMatch(uxPhase1, /MutationObserver|setInterval\s*\(/, 'Phase 1 must remain deterministic and event-driven');
+assert.match(uxPhase1Css, /position:sticky!important/, 'The registry command surface should stay reachable while scanning');
+assert.match(uxPhase1Css, /mi-registry-search-shell/, 'Phase 1 must visually prioritize search');
+assert.match(uxPhase1Css, /registry-quick-favorites/, 'Phase 1 quick favorites styling is missing');
+assert.match(uxPhase1Css, /prefers-reduced-motion/, 'Phase 1 must respect reduced-motion preferences');
+
 assert.match(client, /regjistriBarnave_shenime_v1/, 'Per-user notes local cache is missing');
 assert.match(client, /NOTE_ENTITY_TYPE = 'protocol'/, 'Notes must stay compatible with the existing user_favorites schema');
 assert.match(client, /NOTE_ENTITY_PREFIX = 'drug-note:'/, 'Notes must use an isolated namespaced entity key');
@@ -90,4 +107,4 @@ assert.throws(() => library._test.normalizedFavorite({
   payload:{ kind:'drug-note', text:'x'.repeat(2001) },
 }), /maksimum 2000/i, 'Oversized personal notes must fail closed');
 
-console.log('Fast native favorites and compact per-user personal notes UX audit passed.');
+console.log('Fast native favorites, compact notes and Phase 1 instant registry UX audit passed.');
