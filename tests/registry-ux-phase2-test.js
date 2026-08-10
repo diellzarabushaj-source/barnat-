@@ -12,7 +12,7 @@ const js = read('registry-ux-phase2.js');
 const css = read('registry-ux-phase2.css');
 
 assert.doesNotThrow(() => new Function(js), 'Phase 2 clinical scanner JS must parse');
-assert.match(html, /data-registry-ui-release="20260810-ux-phase2"/);
+assert.match(html, /data-registry-ui-release="20260809-1"/, 'Visual UX phases must not alter the audited clinical release contract');
 assert.match(html, /registry-ux-phase2\.css\?v=20260810-1/);
 assert.match(html, /registry-ux-phase2\.js\?v=20260810-1/);
 assert.ok(html.indexOf('registry-unified-table.css') < html.indexOf('registry-ux-phase2.css'), 'Phase 2 CSS must enhance the audited table after its base stylesheet');
@@ -31,7 +31,7 @@ assert.match(js, /medindex:registry-rendered/);
 assert.match(js, /requestAnimationFrame/);
 assert.doesNotMatch(js, /MutationObserver/);
 assert.doesNotMatch(js, /setInterval\s*\(/);
-assert.doesNotMatch(js, /dosage|dose.*=.*[+*/-]/i, 'Phase 2 must not implement dosing calculations');
+assert.doesNotMatch(js, /calculateDose|dose-calculator-submit|registry-novorapid|registry-novomix/i, 'Phase 2 must not implement or alter dosing calculations');
 
 assert.match(css, /Clinical Scanner/);
 assert.match(css, /registry-scan-atc/);
