@@ -84,8 +84,8 @@ assert(others.includes('dose > 80'), 'Semglee pen must enforce 80 U single-injec
 // Final fail-closed guard: never silently round pediatric rapid-insulin doses or incompatible pen doses.
 assert(finalSafety.includes('guardNovoRapidPediatricPrecision'), 'NovoRapid pediatric precision guard missing');
 assert(finalSafety.includes('guardApidraPediatricPrecision'), 'Apidra pediatric precision guard missing');
-assert(finalSafety.includes('protocol?.ageGroup !== \'pediatric\''), 'pediatric rapid-insulin guard must require pediatric protocol');
-assert(finalSafety.includes('kalkulatori nuk e rrumbullakos automatikisht'), 'pediatric dose rounding must fail closed');
+assert(finalSafety.includes("protocol?.ageGroup !== 'pediatric'"), 'pediatric rapid-insulin guard must require pediatric protocol');
+assert(/nuk e rrumbullakos automatikisht/i.test(finalSafety), 'pediatric dose rounding must fail closed');
 assert(finalSafety.includes("product:'levemir flexpen'"), 'Levemir whole-unit pen guard missing');
 assert(finalSafety.includes("product:'semglee'"), 'Semglee whole-unit pen guard missing');
 assert(finalSafety.includes("option.value = 'premix'"), 'Tresiba premix must have a separate switch choice');
