@@ -17,13 +17,14 @@ const browserSpec = read('tests/mobile-deep-audit.spec.js');
 const registryMobile = read('registry-mobile-critical.css');
 const rowExpand = read('registry-row-expand.js');
 const doseButtonCss = read('registry-dose-table-button.css');
-const uiEnhancements = read('ui-enhancements.js');
+const drugNameHardening = read('registry-drug-name-hardening.js');
 const nameDisplay = read('name-display.js');
 
 execFileSync(process.execPath, ['--check', path.join(ROOT, 'mobile-experience.js')], { stdio:'pipe' });
 execFileSync(process.execPath, ['--check', path.join(ROOT, 'registry-cell-preview.js')], { stdio:'pipe' });
 execFileSync(process.execPath, ['--check', path.join(ROOT, 'registry-column-picker-tailwind.js')], { stdio:'pipe' });
 execFileSync(process.execPath, ['--check', path.join(ROOT, 'registry-row-expand.js')], { stdio:'pipe' });
+execFileSync(process.execPath, ['--check', path.join(ROOT, 'registry-drug-name-hardening.js')], { stdio:'pipe' });
 
 [
   /production-audit-v2/,
@@ -88,13 +89,17 @@ assert.match(index, /registry-column-picker-tailwind\.js\?v=20260805-3/);
 assert.match(index, /registry-mobile-critical\.css\?v=20260810-1/);
 assert.match(index, /registry-row-expand\.js\?v=20260810-1/);
 assert.match(index, /registry-dose-table-button\.css\?v=20260810-1/);
+assert.match(index, /registry-drug-name-hardening\.js\?v=20260810-1/);
+assert.ok(index.indexOf('registry-drug-name-hardening.js?v=20260810-1') < index.indexOf('ui-enhancements.js?v=20260810-1'),
+  'Immutable drug names must be established before UI controls are appended.');
 assert.match(rowExpand, /registry-row-details-toggle/);
 assert.match(rowExpand, /button\.setAttribute\('aria-expanded', String\(expanded\)\)/);
 assert.match(rowExpand, /const detailsButton = event\.target\.closest/);
 assert.match(rowExpand, /button\.dataset\.registryUiOnly = 'true'/);
-assert.match(uiEnhancements, /rawKey\.slice\(firstSeparator \+ 1, lastSeparator\)/,
+assert.match(drugNameHardening, /rawKey\.slice\(firstSeparator \+ 1, lastSeparator\)/,
   'Drug names must be derived from immutable registry keys, never appended controls.');
-assert.match(uiEnhancements, /\[data-registry-ui-only\]/);
+assert.match(drugNameHardening, /\[data-registry-ui-only\]/);
+assert.match(drugNameHardening, /row\.dataset\.drugName = canonicalName/);
 assert.match(nameDisplay, /\[data-registry-ui-only\]/);
 assert.match(registryMobile, /#dataTable\[data-registry-unified-table\] tbody tr\{[\s\S]*height:auto!important/);
 assert.match(registryMobile, /content-visibility:auto/);
@@ -118,4 +123,4 @@ assert.match(workflow, /column-picker-tailwind\.spec\.js/, 'browser workflow mus
   /context\.setOffline\(true\)/,
 ].forEach(pattern => assert.match(browserSpec, pattern, `mobile browser audit missing ${pattern}`));
 
-console.log('Mobile, tablet, touch, safe-area, Tailwind column picker, compact landscape, dosage preview and orientation audit passed.');
+console.log('Mobile, tablet, touch, safe-area, immutable drug-name, Tailwind column picker, dosage preview and orientation audit passed.');
