@@ -1,6 +1,6 @@
 .registry-personal-note-head{
-  min-width:250px;
-  width:250px;
+  min-width:220px;
+  width:220px;
   vertical-align:middle;
 }
 .registry-personal-note-head>span{
@@ -12,66 +12,88 @@
   display:block;
   margin-top:2px;
   color:#64748b;
-  font-size:.62rem;
+  font-size:.6rem;
   font-weight:650;
   white-space:nowrap;
 }
 .registry-personal-note-cell{
-  min-width:250px;
-  width:250px;
-  padding:7px 8px!important;
+  min-width:220px;
+  width:220px;
+  padding:5px 7px!important;
   vertical-align:middle;
 }
 .registry-personal-note-wrap{
   position:relative;
-  min-width:230px;
+  min-width:206px;
 }
 .registry-personal-note-wrap textarea{
   display:block;
   width:100%;
-  min-height:46px;
-  max-height:124px;
+  height:38px;
+  min-height:38px;
+  max-height:104px;
   box-sizing:border-box;
-  resize:vertical;
+  resize:none;
+  overflow:auto;
   border:1px solid #d8e0df;
-  border-radius:9px;
-  padding:8px 9px 18px;
+  border-radius:8px;
+  padding:8px 28px 15px 9px;
   background:#fff;
   color:#172b2d;
   font:inherit;
-  font-size:.74rem;
-  line-height:1.3;
+  font-size:.72rem;
+  line-height:1.28;
   outline:none;
-  transition:border-color .15s ease,box-shadow .15s ease,background .15s ease;
+  transition:border-color .12s ease,box-shadow .12s ease,background .12s ease;
 }
 .registry-personal-note-wrap textarea::placeholder{color:#94a3b8}
 .registry-personal-note-wrap textarea:hover{border-color:#b8c9c7}
 .registry-personal-note-wrap textarea:focus{
   border-color:#168c86;
-  box-shadow:0 0 0 3px rgba(22,140,134,.12);
+  box-shadow:0 0 0 3px rgba(22,140,134,.11);
   background:#fff;
 }
+.registry-personal-note-wrap textarea.has-content{background:#fbfefd}
 .registry-personal-note-state{
   position:absolute;
   right:7px;
-  bottom:4px;
-  min-height:11px;
+  bottom:3px;
+  min-height:10px;
   color:#64748b;
-  font-size:.56rem;
+  font-size:.54rem;
   font-weight:750;
+  line-height:1;
   pointer-events:none;
-  transition:color .15s ease,opacity .15s ease;
+  transition:color .12s ease,opacity .12s ease;
 }
-.registry-personal-note-state[data-saved="true"],
+.registry-personal-note-state[data-status="saved"],
 .registry-personal-note-state[data-status="synced"]{color:#0f766e}
 .registry-personal-note-state[data-status="saving"]{color:#64748b}
 .registry-personal-note-state[data-status="local"]{color:#b45309}
+.registry-personal-note-clear{
+  position:absolute;
+  top:5px;
+  right:5px;
+  width:22px;
+  height:22px;
+  padding:0;
+  border:0;
+  border-radius:6px;
+  background:transparent;
+  color:#94a3b8;
+  font:700 16px/1 system-ui,sans-serif;
+  cursor:pointer;
+  display:grid;
+  place-items:center;
+}
+.registry-personal-note-clear:hover{background:#f1f5f4;color:#475569}
+.registry-personal-note-clear:focus-visible{outline:2px solid rgba(22,140,134,.28);outline-offset:1px}
 
 .registry-row-favorite-toggle{
-  width:28px;
-  height:28px;
-  margin-left:6px;
-  padding:5px;
+  width:32px;
+  height:32px;
+  margin-left:5px;
+  padding:6px;
   border:1px solid transparent;
   border-radius:8px;
   background:transparent;
@@ -80,11 +102,12 @@
   vertical-align:middle;
   display:inline-grid;
   place-items:center;
-  transition:transform .14s ease,color .14s ease,background .14s ease,border-color .14s ease,box-shadow .14s ease;
+  touch-action:manipulation;
+  transition:transform .12s ease,color .12s ease,background .12s ease,border-color .12s ease,box-shadow .12s ease;
 }
 .registry-row-favorite-toggle svg{
-  width:17px;
-  height:17px;
+  width:18px;
+  height:18px;
   fill:transparent;
   stroke:currentColor;
   stroke-width:1.7;
@@ -95,6 +118,7 @@
   background:#fff8ed;
   border-color:#f0d4ad;
 }
+.registry-row-favorite-toggle:active{transform:scale(.94)}
 .registry-row-favorite-toggle:focus-visible{
   outline:none;
   box-shadow:0 0 0 3px rgba(199,125,31,.18);
@@ -108,26 +132,27 @@
   fill:#f4b44e;
   stroke:#b36a10;
 }
-/* The dedicated one-click star replaces the older passive marker. */
-.favorite-marker{display:none!important}
+.favorite-marker,
+.drug-action-item.favorite{display:none!important}
 .drug-row.is-favorite td.name,
 tr.is-favorite td.name{
-  background:linear-gradient(90deg,rgba(199,125,31,.08),transparent);
+  background:linear-gradient(90deg,rgba(199,125,31,.075),transparent);
 }
 
 .registry-favorites-banner{
-  margin:10px 14px 8px;
-  padding:10px 12px;
+  margin:8px 14px 7px;
+  min-height:42px;
+  padding:7px 9px 7px 12px;
   border:1px solid #bee9e4;
-  border-radius:11px;
+  border-radius:10px;
   background:#f0fdfa;
   color:#134e4a;
   display:flex;
   align-items:center;
   justify-content:space-between;
-  gap:12px;
-  font-size:.76rem;
-  box-shadow:0 5px 18px rgba(15,118,110,.06);
+  gap:10px;
+  font-size:.74rem;
+  box-shadow:0 4px 14px rgba(15,118,110,.05);
 }
 .registry-favorites-banner span{
   display:flex;
@@ -137,39 +162,30 @@ tr.is-favorite td.name{
 }
 .registry-favorites-banner b{font-weight:900;white-space:nowrap}
 .registry-favorites-banner small{
+  overflow:hidden;
   color:#3f6f6b;
-  font-size:.68rem;
+  font-size:.66rem;
   font-weight:700;
+  text-overflow:ellipsis;
+  white-space:nowrap;
 }
 .registry-favorites-banner button{
   flex:0 0 auto;
+  min-height:30px;
   border:1px solid #99d9d3;
-  border-radius:8px;
+  border-radius:7px;
   background:#fff;
   color:#0f766e;
-  padding:6px 9px;
+  padding:5px 9px;
   font:inherit;
-  font-size:.7rem;
+  font-size:.68rem;
   font-weight:800;
   cursor:pointer;
+  touch-action:manipulation;
 }
 .registry-favorites-banner button:hover{background:#e6fffb}
-.registry-favorites-banner button:focus-visible{
-  outline:none;
-  box-shadow:0 0 0 3px rgba(15,118,110,.15);
-}
-.registry-personalization-empty{
-  padding:34px 20px!important;
-  text-align:center!important;
-  background:#fbfdfc!important;
-  color:#334155!important;
-}
-.registry-personalization-empty strong,
-.registry-personalization-empty span{display:block}
-.registry-personalization-empty strong{font-size:.9rem;color:#134e4a}
-.registry-personalization-empty span{margin-top:5px;font-size:.72rem;color:#64748b}
-body.medindex-favorites-only #pagination,
-body.medindex-favorites-only .pagination{display:none!important}
+.registry-favorites-banner button:focus-visible{outline:none;box-shadow:0 0 0 3px rgba(15,118,110,.15)}
+
 [data-nav="favorites"].active,
 [data-mi-shell-action="favorites"].active,
 [data-nav="favorites"].is-active,
@@ -178,8 +194,6 @@ body.medindex-favorites-only .pagination{display:none!important}
   color:#0f766e!important;
   font-weight:800;
 }
-.personalization-favorite-match{animation:favoriteRowIn .14s ease-out}
-@keyframes favoriteRowIn{from{opacity:.65}to{opacity:1}}
 
 html[data-theme="dark"] .registry-personal-note-head>small{color:#9fb4b7}
 html[data-theme="dark"] .registry-personal-note-wrap textarea{
@@ -187,14 +201,15 @@ html[data-theme="dark"] .registry-personal-note-wrap textarea{
   border-color:#344749;
   color:#e8f0ee;
 }
+html[data-theme="dark"] .registry-personal-note-wrap textarea.has-content{background:#152123}
 html[data-theme="dark"] .registry-personal-note-wrap textarea:hover{border-color:#456064}
-html[data-theme="dark"] .registry-personal-note-wrap textarea:focus{
-  background:#172426;
-  border-color:#2f9c96;
-}
+html[data-theme="dark"] .registry-personal-note-wrap textarea:focus{background:#172426;border-color:#2f9c96}
 html[data-theme="dark"] .registry-personal-note-state{color:#9fb4b7}
+html[data-theme="dark"] .registry-personal-note-state[data-status="saved"],
 html[data-theme="dark"] .registry-personal-note-state[data-status="synced"]{color:#72d8cf}
 html[data-theme="dark"] .registry-personal-note-state[data-status="local"]{color:#f0b55f}
+html[data-theme="dark"] .registry-personal-note-clear{color:#819699}
+html[data-theme="dark"] .registry-personal-note-clear:hover{background:#253235;color:#d7e5e3}
 html[data-theme="dark"] .registry-row-favorite-toggle{color:#7f9295}
 html[data-theme="dark"] .registry-row-favorite-toggle:hover,
 html[data-theme="dark"] .registry-row-favorite-toggle.is-favorite{
@@ -202,37 +217,24 @@ html[data-theme="dark"] .registry-row-favorite-toggle.is-favorite{
   background:#332819;
   border-color:#61451f;
 }
-html[data-theme="dark"] .registry-row-favorite-toggle.is-favorite svg{
-  fill:#d99538;
-  stroke:#f0b55f;
-}
-html[data-theme="dark"] .registry-favorites-banner{
-  background:#12302e;
-  border-color:#255a56;
-  color:#d8f5f0;
-}
+html[data-theme="dark"] .registry-row-favorite-toggle.is-favorite svg{fill:#d99538;stroke:#f0b55f}
+html[data-theme="dark"] .registry-favorites-banner{background:#12302e;border-color:#255a56;color:#d8f5f0}
 html[data-theme="dark"] .registry-favorites-banner small{color:#a8ccc8}
-html[data-theme="dark"] .registry-favorites-banner button{
-  background:#182628;
-  border-color:#3a6d69;
-  color:#d8f5f0;
-}
-html[data-theme="dark"] .registry-personalization-empty{
-  background:#182022!important;
-  color:#d7e5e3!important;
-}
-html[data-theme="dark"] .registry-personalization-empty strong{color:#d8f5f0}
-html[data-theme="dark"] .registry-personalization-empty span{color:#9fb4b7}
+html[data-theme="dark"] .registry-favorites-banner button{background:#182628;border-color:#3a6d69;color:#d8f5f0}
 
 @media(max-width:720px){
-  .registry-personal-note-head,.registry-personal-note-cell{min-width:210px;width:210px}
-  .registry-personal-note-wrap{min-width:190px}
-  .registry-row-favorite-toggle{width:30px;height:30px;margin-left:4px}
-  .registry-favorites-banner{margin:8px 8px 6px;align-items:stretch;flex-direction:column}
+  .registry-personal-note-head,.registry-personal-note-cell{min-width:190px;width:190px}
+  .registry-personal-note-wrap{min-width:176px}
+  .registry-personal-note-wrap textarea{max-height:92px;font-size:.75rem}
+  .registry-row-favorite-toggle{width:40px;height:40px;margin-left:2px;padding:9px;border-radius:10px}
+  .registry-row-favorite-toggle svg{width:20px;height:20px}
+  .registry-favorites-banner{margin:7px 8px 6px;align-items:stretch;flex-direction:column}
   .registry-favorites-banner span{align-items:flex-start;flex-direction:column;gap:2px}
-  .registry-favorites-banner button{width:100%}
+  .registry-favorites-banner small{white-space:normal}
+  .registry-favorites-banner button{width:100%;min-height:38px}
 }
 
 @media(prefers-reduced-motion:reduce){
-  .registry-row-favorite-toggle,.personalization-favorite-match{animation:none;transition:none}
+  .registry-row-favorite-toggle,.registry-personal-note-wrap textarea{transition:none}
+  .registry-row-favorite-toggle:hover,.registry-row-favorite-toggle:active{transform:none}
 }
