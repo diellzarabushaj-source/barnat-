@@ -187,7 +187,11 @@ const engineSource = uiSource.replace(
   `\n  window.__doseEngine = { canonicalUnit, convertDoseUnit, administrationsPerDay, ageMatchesRule, preferredUnique, computeDose, renderPlainLanguageTemplate };\n  return;\n  ensureModal();\n  observe();`,
 );
 const engineWindow = {};
-vm.runInNewContext(engineSource, { window:engineWindow, console, Intl, Map, Set, URLSearchParams });
+const engineDocument = Object.freeze({
+  getElementById:() => null,
+  addEventListener:() => {},
+});
+vm.runInNewContext(engineSource, { window:engineWindow, document:engineDocument, console, Intl, Map, Set, URLSearchParams });
 const engine = engineWindow.__doseEngine;
 assert(engine, 'The calculator engine test hook could not be installed.');
 const automatic = { enabled:true, status:'automatic', tabletSplitAllowed:false };
