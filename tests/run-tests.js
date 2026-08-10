@@ -105,7 +105,8 @@ async function main() {
     if (!['dozologjia.html', 'protokollet.html'].includes(relativePath)) assert.match(html, /app-polish\.css/);
   });
   assert.match(file('index.html'), /value="500"/);
-  assert.match(file('index.html'), /value="4006" hidden/);
+  assert.doesNotMatch(file('index.html'), /value="4006" hidden/, 'Stale favorites page-size sentinel must not return');
+  assert.match(file('index.html'), /registry-user-personalization\.js/);
   assert.doesNotMatch(file('index.html'), /protocolOverlay|dosage-integration\.js|prescription-review\.js|medindex-view\.js/);
 
   console.log('5/11 Laboratory source and title integrity');
