@@ -46,10 +46,16 @@ const endpoint = read('api/clinical-editor.js');
 const vercel = JSON.parse(read('vercel.json'));
 
 assert(index.includes('registry-verification-ui.css?v=20260801-1'), 'CSS-ja e verifikimit nuk është lidhur.');
-assert(index.includes('registry-verification-loader.js?v=20260801-1'), 'Idle loader-i i verifikimit nuk është lidhur.');
+assert(index.includes('registry-verification-loader.js?v=20260810-1'), 'Idle loader-i i verifikimit nuk është lidhur.');
 assert(loader.includes("window.addEventListener('medindex:registry-ready'"), 'Verifikimi duhet të presë registry-ready.');
 assert(loader.includes('requestIdleCallback'), 'Verifikimi duhet të ngarkohet në idle.');
-assert(loader.includes('registry-verification-ui.js?v=20260801-1'), 'Loader-i nuk e ngarkon kontrolluesin e verifikimit.');
+assert(loader.includes('registry-verification-ui.js?v=20260810-1'), 'Loader-i nuk e ngarkon kontrolluesin e verifikimit.');
+assert(ui.includes('FAILURE_BACKOFF_BASE_MS = 15000'), 'Retry i verifikimit duhet të ketë backoff fillestar.');
+assert(ui.includes('FAILURE_BACKOFF_MAX_MS = 5 * 60 * 1000'), 'Retry i verifikimit duhet të ketë kufi maksimal.');
+assert(ui.includes("tableObserver.observe(tbody, { childList:true })"), 'Observer-i nuk duhet të shohë mutacionet e veta në subtree.');
+assert(!ui.includes("tableObserver.observe(tbody, { childList:true, subtree:true })"), 'Observer-i rekursiv krijon cikël kërkesash.');
+assert(ui.includes('endpointBackoffUntil'), 'Dështimi i endpoint-it duhet të bllokojë retry storm-in.');
+assert(ui.includes('metrics:() => Object.freeze'), 'UI-ja duhet të ekspozojë metrikat e retry-ve për audit browser.');
 assert(index.includes('data-registry-ui-release="20260809-1"'), 'Release-i unik i tabelës nuk u rrit.');
 assert(index.includes('registry-unified-table.js?v=20260801-1'), 'Kontrolluesi unik i tabelës mungon.');
 assert(index.includes('registry-full-text-expansion.css?v=20260805-2'), 'Kontrata e tekstit të plotë mungon.');

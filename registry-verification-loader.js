@@ -1,7 +1,7 @@
 (() => {
   'use strict';
 
-  const SOURCE = 'registry-verification-ui.js?v=20260801-1';
+  const SOURCE = 'registry-verification-ui.js?v=20260810-1';
   let scheduled = false;
   let loaded = false;
   let editorSyncInstalled = false;

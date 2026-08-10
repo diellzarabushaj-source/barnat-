@@ -1,13 +1,18 @@
 (() => {
   'use strict';
 
-  const VERSION = 'registry-population-verification-20260801-1';
+  const VERSION = 'registry-population-verification-20260810-1';
   const ENDPOINT = '/api/population-verification';
   const STATUS_COLUMN = 'clinical-status';
   const ACTION_COLUMN = 'clinical-action';
   const STATUS_WIDTH = 154;
   const ACTION_WIDTH = 54;
+  const REQUEST_TIMEOUT_MS = 8000;
+  const FAILURE_BACKOFF_BASE_MS = 15000;
+  const FAILURE_BACKOFF_MAX_MS = 5 * 60 * 1000;
+  const FAILURE_LOG_INTERVAL_MS = 60 * 1000;
   const decisionCache = new Map();
+  const retryState = new Map();
 
   const ICONS = Object.freeze({
     yes:'<svg viewBox="0 0 20 20" aria-hidden="true"><path d="m4.2 10.2 3.5 3.5 8.1-8.1"/></svg>',
@@ -23,6 +28,11 @@
   let fetching = false;
   let pendingRefresh = false;
   let editorRegistryNumber = null;
+  let endpointFailures = 0;
+  let endpointBackoffUntil = 0;
+  let lastFailureLogAt = 0;
+  let requestCount = 0;
+  let requestFailures = 0;
 
   const clean = value => String(value ?? '').replace(/\s+/g, ' ').trim();
   const escapeHtml = value => String(value ?? '').replace(/[&<>"']/g, character => ({
@@ -30,6 +40,10 @@
   })[character]);
 
   async function api(url, options = {}) {
+    const controller = new AbortController();
+    const timer = window.setTimeout(() => controller.abort(), REQUEST_TIMEOUT_MS);
+    requestCount += 1;
+    try {
     const response = await fetch(url, {
       credentials:'same-origin', cache:'no-store', ...options,
       headers:{
@@ -37,10 +51,47 @@
         ...(options.body ? { 'Content-Type':'application/json' } : {}),
         ...(options.headers || {}),
       },
+      signal:controller.signal,
     });
     const payload = await response.json().catch(() => ({}));
     if (!response.ok || payload.ok === false) throw new Error(payload.error || `Kërkesa dështoi (${response.status}).`);
     return payload;
+    } catch (error) {
+      requestFailures += 1;
+      if (error?.name === 'AbortError') throw new Error('Verifikimi zgjati tepër; do të provohet më vonë.');
+      throw error;
+    } finally {
+      window.clearTimeout(timer);
+    }
+  }
+
+  function retryDelay(failures) {
+    return Math.min(FAILURE_BACKOFF_MAX_MS, FAILURE_BACKOFF_BASE_MS * (2 ** Math.max(0, failures - 1)));
+  }
+
+  function retryAllowed(number, now = Date.now()) {
+    return (retryState.get(number)?.nextRetryAt || 0) <= now;
+  }
+
+  function clearRetryState(numbers) {
+    numbers.forEach(number => retryState.delete(number));
+    endpointFailures = 0;
+    endpointBackoffUntil = 0;
+  }
+
+  function rememberFailure(numbers, error) {
+    const now = Date.now();
+    endpointFailures += 1;
+    const endpointDelay = retryDelay(endpointFailures);
+    endpointBackoffUntil = now + endpointDelay;
+    numbers.forEach(number => {
+      const failures = (retryState.get(number)?.failures || 0) + 1;
+      retryState.set(number, { failures, nextRetryAt:now + retryDelay(failures) });
+    });
+    if (now - lastFailureLogAt >= FAILURE_LOG_INTERVAL_MS) {
+      lastFailureLogAt = now;
+      console.warn(`Verifikimi i popullatës nuk u ngarkua; tentativa tjetër pas ${Math.ceil(endpointDelay / 1000)}s.`, error);
+    }
   }
 
   function registryNumberForRow(row) {
@@ -140,28 +191,40 @@
       return;
     }
     const visible = [...new Set(visibleRegistryNumbers())];
-    const numbers = force ? visible : visible.filter(number => !decisionCache.has(number));
+    const now = Date.now();
+    const candidates = force ? visible : visible.filter(number => !decisionCache.has(number));
+    const numbers = candidates.filter(number => retryAllowed(number, now));
+    if (now < endpointBackoffUntil) {
+      enhanceRows();
+      return;
+    }
     if (!numbers.length) {
       enhanceRows();
       return;
     }
 
     fetching = true;
+    let succeeded = false;
     try {
       const payload = await api(`${ENDPOINT}?registryNumbers=${encodeURIComponent(numbers.join(','))}`);
       (payload.items || []).forEach(item => decisionCache.set(Number(item.registryNumber), item));
       numbers.forEach(number => {
         if (!decisionCache.has(number)) decisionCache.set(number, { registryNumber:number });
       });
+      clearRetryState(numbers);
+      succeeded = true;
       enhanceRows();
     } catch (error) {
-      console.error('Verifikimi i popullatës nuk u ngarkua:', error);
+      rememberFailure(numbers, error);
+      enhanceRows();
     } finally {
       fetching = false;
-      if (pendingRefresh) {
+      if (pendingRefresh && succeeded) {
         const refresh = pendingRefresh;
         pendingRefresh = false;
         void fetchVisibleDecisions({ force:refresh });
+      } else {
+        pendingRefresh = false;
       }
     }
   }
@@ -184,7 +247,7 @@
     const tbody = document.getElementById('tbody');
     const header = document.getElementById('headerRow');
     if (!tableObserver) tableObserver = new MutationObserver(() => schedule());
-    if (tbody) tableObserver.observe(tbody, { childList:true, subtree:true });
+    if (tbody) tableObserver.observe(tbody, { childList:true });
     if (header) tableObserver.observe(header, { childList:true });
   }
 
@@ -331,16 +394,25 @@
   function start() {
     connectTableObserver();
     ensureEditorControls();
-    schedule({ force:true });
+    schedule();
   }
 
   if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', start, { once:true });
   else start();
-  window.addEventListener('medindex:registry-ready', () => schedule({ force:true }));
+  window.addEventListener('medindex:registry-ready', () => schedule());
+  window.addEventListener('medindex:registry-table-stable', () => schedule());
+  window.addEventListener('medindex:registry-dosage-ready', () => schedule());
   window.addEventListener('resize', () => schedule());
 
   window.MedIndexPopulationVerification = Object.freeze({
     version:VERSION,
     refresh:() => schedule({ force:true }),
+    metrics:() => Object.freeze({
+      requests:requestCount,
+      failures:requestFailures,
+      cached:decisionCache.size,
+      retrying:retryState.size,
+      backoffMs:Math.max(0, endpointBackoffUntil - Date.now()),
+    }),
   });
 })();

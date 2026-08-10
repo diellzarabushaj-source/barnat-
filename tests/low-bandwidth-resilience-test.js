@@ -28,7 +28,12 @@ assert.doesNotMatch(worker, /Promise\.allSettled\(APP_SHELL\.map/, 'large concur
 assert.match(worker, /migratePrivateCaches/, 'existing private offline data must be migrated');
 assert.doesNotMatch(worker, /refreshSafeClinicalPages|client\.navigate/, 'worker activation must not force page reloads');
 assert.match(worker, /url\.pathname === '\/api\/auth'[\s\S]*fetch\(request\)/, 'auth must remain network-only');
-assert.match(worker, /caches\.match\(request, \{ ignoreSearch:true \}\)/, 'cached static assets must survive version-query changes offline');
+assert.match(worker, /const cached = await caches\.match\(request\);/, 'online static assets must use their exact versioned cache key');
+assert.match(worker, /static-offline-version-fallback/, 'cached static assets must survive version-query changes offline');
+assert.ok(
+  worker.indexOf('const response = await refreshStatic(request)') < worker.lastIndexOf('caches.match(request, { ignoreSearch:true })'),
+  'an online version miss must fetch the exact asset before considering an old offline fallback'
+);
 
 const shellMatch = worker.match(/const CORE_SHELL = \[([\s\S]*?)\n\];/);
 assert.ok(shellMatch, 'generated worker must contain the install-time core shell');

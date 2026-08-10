@@ -196,13 +196,19 @@ async function refreshStatic(request) {
 
 async function staticResponse(event) {
   const request = event.request;
-  const cached = await caches.match(request) || await caches.match(request, { ignoreSearch:true });
+  const cached = await caches.match(request);
   if (cached) {
     if (networkProfile.online && !networkProfile.slow && !networkProfile.saveData) event.waitUntil(refreshStatic(request));
     return cloneWithHeader(cached, 'static-fast-hit');
   }
+  if (!networkProfile.online) {
+    const offlineFallback = await caches.match(request, { ignoreSearch:true });
+    return offlineFallback ? cloneWithHeader(offlineFallback, 'static-offline-version-fallback') : Response.error();
+  }
   const response = await refreshStatic(request);
-  return response ? cloneWithHeader(response, 'static-network') : Response.error();
+  if (response) return cloneWithHeader(response, 'static-network');
+  const offlineFallback = await caches.match(request, { ignoreSearch:true });
+  return offlineFallback ? cloneWithHeader(offlineFallback, 'static-offline-version-fallback') : Response.error();
 }
 
 async function refreshPrivate(request, key) {
