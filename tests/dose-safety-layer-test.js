@@ -38,3 +38,6 @@ assert.ok(html.indexOf('registry-dose-calculator.js') < html.indexOf('registry-d
 assert.ok(html.indexOf('registry-dose-safety-layer.js') < html.indexOf('registry-dose-10s-flow.js'), 'Safety layer must be available before 10-second flow enhancements');
 
 console.log('Dose safety layer verified-only, fail-closed, product-aware and physician-fast contract passed.');
+
+// Keep the insulin-specific calculator contract in the normal production test chain.
+require('./insulin-calculators-deep-audit-test.js');
