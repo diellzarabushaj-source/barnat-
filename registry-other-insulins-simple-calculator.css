@@ -1,0 +1,43 @@
+body.other-insulin-simple-opened{overflow:hidden}
+.other-insulin-simple-modal{position:fixed;inset:0;z-index:10060;display:grid;place-items:center;padding:18px}
+.other-insulin-simple-modal[hidden]{display:none!important}
+.ois-backdrop{position:absolute;inset:0;background:rgba(15,23,42,.62);backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px)}
+.ois-card{position:relative;width:min(720px,100%);max-height:min(92vh,900px);overflow:auto;border:1px solid rgba(148,163,184,.34);border-radius:26px;background:#fff;box-shadow:0 28px 90px rgba(15,23,42,.28);color:#172033}
+.ois-head{position:sticky;top:0;z-index:2;display:flex;align-items:flex-start;justify-content:space-between;gap:20px;padding:25px 28px 22px;background:#104e50;color:#fff;border-bottom:4px solid #d99532}
+.ois-kicker{display:block;margin-bottom:6px;font-size:11px;font-weight:800;letter-spacing:.09em;color:#26b0a6}
+.ois-head h2{margin:0;font-size:30px;line-height:1.05;letter-spacing:-.04em;color:#fff}
+.ois-head p{margin:8px 0 0;font-size:13px;color:rgba(255,255,255,.72)}
+.ois-close{display:grid;place-items:center;width:44px;height:44px;flex:0 0 44px;border:0;border-radius:12px;background:#f8fafc;color:#172033;font-size:20px;cursor:pointer}
+.ois-body{padding:24px 28px 20px}
+.ois-top-grid,.ois-two,.ois-three{display:grid;gap:14px}
+.ois-top-grid,.ois-two{grid-template-columns:repeat(2,minmax(0,1fr))}
+.ois-three{grid-template-columns:repeat(3,minmax(0,1fr))}
+.ois-field{display:grid;gap:7px;margin:0}
+.ois-field>span{font-size:13px;font-weight:800;color:#1f2a44}
+.ois-field input,.ois-field select{width:100%;min-height:58px;border:1px solid #cbd5e1;border-radius:12px;background:#fff;padding:0 15px;color:#172033;font-size:16px;outline:none;box-shadow:0 2px 6px rgba(15,23,42,.03)}
+.ois-field input:focus,.ois-field select:focus{border-color:#168c86;box-shadow:0 0 0 4px rgba(22,140,134,.12)}
+.ois-input-unit{position:relative}
+.ois-input-unit input{padding-right:74px}
+.ois-input-unit small{position:absolute;top:50%;right:14px;transform:translateY(-50%);font-size:12px;font-weight:800;color:#64748b;pointer-events:none}
+.ois-age-note{margin:12px 0 16px;padding:10px 12px;border-radius:10px;background:#f1f5f9;color:#64748b;font-size:12px;font-weight:650}
+.ois-age-note.is-ped{background:#eff6ff;color:#1d4ed8}.ois-age-note.is-adult{background:#ecfdf5;color:#047857}.ois-age-note.is-block{background:#fff1f2;color:#be123c}
+.ois-callout{display:grid;gap:5px;margin-bottom:15px;padding:14px 15px;border:1px solid #ccfbf1;border-radius:13px;background:#f0fdfa}
+.ois-callout strong{font-size:14px;color:#115e59}.ois-callout span{font-size:12px;line-height:1.5;color:#475569}
+.ois-help{display:block;margin:9px 2px 0;color:#64748b;font-size:11px;line-height:1.45}
+.ois-calculate{width:100%;min-height:58px;margin-top:18px;border:0;border-radius:12px;background:#168c86;color:#fff;font-size:16px;font-weight:800;cursor:pointer;box-shadow:0 10px 22px rgba(22,140,134,.18)}
+.ois-calculate:hover{filter:brightness(.97)}
+.ois-result{display:grid;gap:10px;margin-top:18px;padding:18px;border-radius:14px;border:1px solid transparent}
+.ois-result>strong{font-size:20px;letter-spacing:-.02em}.ois-result>span,.ois-result em{font-size:13px;line-height:1.55}.ois-result em{display:block;font-style:normal;font-weight:700}
+.ois-result.is-ready{background:#ecfdf5;border-color:#a7f3d0;color:#166534}.ois-result.is-info{background:#eff6ff;border-color:#bfdbfe;color:#1e40af}.ois-result.is-warning,.ois-result.is-manual{background:#fffbeb;border-color:#fde68a;color:#92400e}.ois-result.is-block{background:#fff1f2;border-color:#fecdd3;color:#9f1239}
+.ois-breakdown{display:grid;grid-template-columns:1fr 1fr;gap:8px}.ois-breakdown span{display:flex;justify-content:space-between;gap:12px;padding:10px;border-radius:10px;background:rgba(255,255,255,.65);font-size:12px}
+.ois-safety,.ois-protocol,.ois-more{margin-top:16px;border:1px solid #e2e8f0;border-radius:13px;background:#f8fafc;overflow:hidden}
+.ois-safety summary,.ois-protocol summary,.ois-more summary{display:flex;align-items:center;justify-content:space-between;gap:12px;min-height:48px;padding:0 14px;cursor:pointer;font-size:12px;font-weight:800;color:#334155;list-style:none}
+.ois-safety summary::-webkit-details-marker,.ois-protocol summary::-webkit-details-marker,.ois-more summary::-webkit-details-marker{display:none}
+.ois-safety>div{padding:0 14px 13px}.ois-safety p{margin:7px 0;font-size:11px;line-height:1.5;color:#64748b}
+.ois-protocol summary span,.ois-more summary span{font-weight:650;color:#64748b}
+.ois-protocol[open]{padding-bottom:14px}.ois-protocol .ois-three{padding:0 14px}.ois-more[open]{padding-bottom:14px}.ois-more .ois-field{padding:0 14px}
+.ois-protocol-actions{display:flex;gap:9px;padding:12px 14px 0}.ois-protocol-actions button{min-height:38px;padding:0 13px;border:1px solid #cbd5e1;border-radius:9px;background:#fff;color:#334155;font-size:12px;font-weight:800;cursor:pointer}.ois-protocol-actions button:first-child{border-color:#168c86;background:#168c86;color:#fff}
+.ois-foot{display:flex;align-items:center;justify-content:space-between;gap:14px;padding:16px 28px 20px;border-top:1px solid #e2e8f0;background:#f8fafc}
+.ois-foot>div{display:flex;gap:14px}.ois-foot a{font-size:12px;font-weight:800;color:#0f766e;text-decoration:none}.ois-foot button{min-height:40px;padding:0 14px;border:1px solid #cbd5e1;border-radius:10px;background:#fff;color:#334155;font-weight:700;cursor:pointer}
+@media(max-width:680px){.other-insulin-simple-modal{padding:0}.ois-card{width:100%;max-height:100vh;height:100vh;border-radius:0}.ois-head{padding:20px 18px 17px}.ois-head h2{font-size:26px}.ois-body{padding:18px}.ois-top-grid,.ois-two,.ois-three{grid-template-columns:1fr}.ois-foot{padding:14px 18px 18px}.ois-breakdown{grid-template-columns:1fr}.ois-field input,.ois-field select{min-height:54px}}
+@media(prefers-reduced-motion:reduce){.ois-calculate,.ois-close{transition:none!important}}
