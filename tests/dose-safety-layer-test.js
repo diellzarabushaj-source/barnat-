@@ -42,3 +42,4 @@ console.log('Dose safety layer verified-only, fail-closed, product-aware and phy
 // Keep feature-specific contracts in the normal production test chain.
 require('./insulin-calculators-deep-audit-test.js');
 require('./registry-user-personalization-test.js');
+require('./registry-ux-phase2-test.js');
