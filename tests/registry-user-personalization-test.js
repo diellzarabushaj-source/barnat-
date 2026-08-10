@@ -25,7 +25,7 @@ assert.doesNotMatch(html, /<option value="4006"[^>]*>Favoritet<\/option>/, 'Favo
 
 assert.match(ui, /Shënime personale/, 'Personal notes column is missing');
 assert.match(ui, /data-personal-note/, 'Direct table note editor is missing');
-assert.match(ui, /maxlength=\\?"\$\{NOTE_MAX\}/, 'Personal notes must have a bounded length');
+assert.match(ui, /maxlength="\$\{NOTE_MAX\}"/, 'Personal notes must have a bounded length');
 assert.match(ui, /registryNumber\(row\)/, 'Notes must use stable registry identity when available');
 assert.match(ui, /NOTE_SAVE_DELAY = 550/, 'Notes must autosave with debounce');
 assert.match(ui, /MedIndexUserLibrary\?\.syncNow/, 'Notes must schedule persistent user-library sync');
@@ -37,27 +37,31 @@ assert.match(css, /medindex-favorites-only/, 'Favorites-only visual state is mis
 assert.match(css, /registry-personal-note-cell/, 'Notes column styling is missing');
 
 assert.match(client, /regjistriBarnave_shenime_v1/, 'Per-user notes local cache is missing');
-assert.match(client, /entityType:'drug-note'/, 'Notes are not synchronized as scoped user-library entities');
+assert.match(client, /NOTE_ENTITY_TYPE = 'protocol'/, 'Notes must stay compatible with the existing user_favorites schema');
+assert.match(client, /NOTE_ENTITY_PREFIX = 'drug-note:'/, 'Notes must use an isolated namespaced entity key');
+assert.match(client, /payload:\{ kind:'drug-note'/, 'Synced notes must be distinguishable from real protocol favorites');
 assert.match(client, /localStorage\.removeItem\(NOTES_KEY\)/, 'Notes must be removed from the browser on logout');
-assert.match(server, /'drug-note'/, 'Server does not accept drug-note entities');
+assert.match(server, /NOTE_ENTITY_PREFIX = 'drug-note:'/, 'Server note namespace is missing');
+assert.match(server, /payload\.kind === 'drug-note'/, 'Server does not validate namespaced drug notes');
 assert.match(server, /user_id=eq\./, 'User library reads must stay scoped to authenticated user ID');
 assert.match(server, /MAX_NOTE_CHARS = 2000/, 'Server must bound personal note size');
 assert.match(shell, /regjistriBarnave_favoritet_v1/, 'Sidebar favorite badge must use the canonical favorites key');
 
 const library = require('../lib/user-library.js');
 const note = library._test.normalizedFavorite({
-  entityType:'drug-note',
-  entityKey:'registry:2508',
-  payload:{ text:'Kontrollo dozimin para përdorimit.' },
+  entityType:'protocol',
+  entityKey:'drug-note:registry:2508',
+  payload:{ kind:'drug-note', text:'Kontrollo dozimin para përdorimit.' },
   clientUpdatedAt:new Date().toISOString(),
 });
-assert.equal(note.entityType, 'drug-note');
-assert.equal(note.entityKey, 'registry:2508');
+assert.equal(note.entityType, 'protocol');
+assert.equal(note.entityKey, 'drug-note:registry:2508');
+assert.equal(note.payload.kind, 'drug-note');
 assert.equal(note.payload.text, 'Kontrollo dozimin para përdorimit.');
 assert.throws(() => library._test.normalizedFavorite({
-  entityType:'drug-note',
-  entityKey:'registry:2508',
-  payload:{ text:'x'.repeat(2001) },
+  entityType:'protocol',
+  entityKey:'drug-note:registry:2508',
+  payload:{ kind:'drug-note', text:'x'.repeat(2001) },
 }), /maksimum 2000/i, 'Oversized personal notes must fail closed');
 
 console.log('Per-user favorites and personal table notes regression audit passed.');
