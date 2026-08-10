@@ -1,7 +1,7 @@
 (() => {
   'use strict';
 
-  const VERSION = 'registry-ux-phase2-v1.0.0';
+  const VERSION = 'registry-ux-phase2-v1.0.1';
   let rawSource = null;
   let rawByDrugKey = new Map();
   let scheduled = false;
@@ -100,9 +100,17 @@
     });
   }
 
+  function updateHorizontalState() {
+    const wrapper = document.getElementById('registryContent');
+    if (!wrapper) return;
+    wrapper.classList.toggle('is-scrolled-x', wrapper.scrollLeft > 4);
+    wrapper.classList.toggle('is-scrollable-x', wrapper.scrollWidth > wrapper.clientWidth + 2);
+  }
+
   function decorateVisibleRows() {
     decorateHeaders();
     document.querySelectorAll('#tbody > tr').forEach(ensureScanMeta);
+    updateHorizontalState();
     document.documentElement.dataset.registryUxPhase2 = VERSION;
     document.body?.classList.add('registry-ux-phase2-ready');
   }
@@ -114,13 +122,6 @@
       scheduled = false;
       decorateVisibleRows();
     });
-  }
-
-  function updateHorizontalState() {
-    const wrapper = document.getElementById('registryContent');
-    if (!wrapper) return;
-    wrapper.classList.toggle('is-scrolled-x', wrapper.scrollLeft > 4);
-    wrapper.classList.toggle('is-scrollable-x', wrapper.scrollWidth > wrapper.clientWidth + 2);
   }
 
   function bindScroller() {
