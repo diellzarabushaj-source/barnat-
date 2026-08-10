@@ -39,5 +39,6 @@ assert.ok(html.indexOf('registry-dose-safety-layer.js') < html.indexOf('registry
 
 console.log('Dose safety layer verified-only, fail-closed, product-aware and physician-fast contract passed.');
 
-// Keep the insulin-specific calculator contract in the normal production test chain.
+// Keep feature-specific contracts in the normal production test chain.
 require('./insulin-calculators-deep-audit-test.js');
+require('./registry-user-personalization-test.js');
