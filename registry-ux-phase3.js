@@ -1,7 +1,7 @@
 (() => {
   'use strict';
 
-  const VERSION = 'registry-ux-phase3-v1.0.0';
+  const VERSION = 'registry-ux-phase3-v1.0.1';
   const NOTES_KEY = 'regjistriBarnave_shenime_v1';
   const FAVORITES_KEY = 'regjistriBarnave_favoritet_v1';
   const MAX_RECENT_NOTES = 8;
@@ -10,18 +10,10 @@
   let rawByNumber = new Map();
   let rawByDrugKey = new Map();
   let scheduled = false;
+  let noteStorageSnapshot = '';
+  let noteEntryCache = [];
 
   const clean = value => String(value ?? '').replace(/\s+/g, ' ').trim();
-
-  function loadNotes() {
-    try {
-      const value = JSON.parse(localStorage.getItem(NOTES_KEY) || '{}');
-      if (!value || typeof value !== 'object' || Array.isArray(value)) return {};
-      return value;
-    } catch {
-      return {};
-    }
-  }
 
   function favoriteCount() {
     try {
@@ -33,17 +25,32 @@
   }
 
   function noteEntries() {
-    return Object.entries(loadNotes())
-      .map(([key, raw]) => {
-        const entry = typeof raw === 'string' ? { text:raw, updatedAt:'' } : (raw || {});
-        return {
-          key,
-          text:String(entry.text ?? '').trim(),
-          updatedAt:clean(entry.updatedAt),
-        };
-      })
-      .filter(entry => entry.key && entry.text)
-      .sort((a,b) => String(b.updatedAt).localeCompare(String(a.updatedAt)));
+    let serialized = '{}';
+    try { serialized = localStorage.getItem(NOTES_KEY) || '{}'; } catch {}
+    if (serialized === noteStorageSnapshot) return noteEntryCache;
+    noteStorageSnapshot = serialized;
+    try {
+      const value = JSON.parse(serialized);
+      if (!value || typeof value !== 'object' || Array.isArray(value)) {
+        noteEntryCache = [];
+        return noteEntryCache;
+      }
+      noteEntryCache = Object.entries(value)
+        .map(([key, raw]) => {
+          const entry = typeof raw === 'string' ? { text:raw, updatedAt:'' } : (raw || {});
+          return {
+            key,
+            text:String(entry.text ?? '').trim(),
+            updatedAt:clean(entry.updatedAt),
+          };
+        })
+        .filter(entry => entry.key && entry.text)
+        .sort((a,b) => String(b.updatedAt).localeCompare(String(a.updatedAt)));
+      return noteEntryCache;
+    } catch {
+      noteEntryCache = [];
+      return noteEntryCache;
+    }
   }
 
   function refreshRawIndex() {
@@ -113,15 +120,16 @@
     return shell;
   }
 
-  function renderWorkspacePanel() {
+  function renderWorkspacePanel({ renderList = false, entries = noteEntries() } = {}) {
     const shell = workspaceShell();
     if (!shell) return;
-    const entries = noteEntries();
     const count = shell.querySelector('[data-workspace-note-count]');
     if (count) count.textContent = String(entries.length);
     const fav = shell.querySelector('[data-workspace-favorite-count]');
     if (fav) fav.textContent = `★ ${favoriteCount()} favorite`;
 
+    const panel = shell.querySelector('[data-workspace-panel]');
+    if (!renderList && panel?.hidden) return;
     const list = shell.querySelector('[data-workspace-list]');
     if (!list) return;
     list.replaceChildren();
@@ -162,7 +170,7 @@
     const trigger = shell.querySelector('[data-workspace-trigger]');
     const panel = shell.querySelector('[data-workspace-panel]');
     if (!trigger || !panel) return;
-    if (open) renderWorkspacePanel();
+    if (open) renderWorkspacePanel({ renderList:true });
     panel.hidden = !open;
     trigger.setAttribute('aria-expanded', open ? 'true' : 'false');
     shell.classList.toggle('is-open', open);
@@ -237,7 +245,7 @@
     requestAnimationFrame(tryFocus);
   }
 
-  function enrichFavoritesBanner() {
+  function enrichFavoritesBanner(noteCount) {
     const banner = document.getElementById('registryFavoritesBanner');
     if (!banner) return;
     let badge = banner.querySelector('[data-workspace-banner-notes]');
@@ -248,7 +256,7 @@
       const copy = banner.querySelector('[data-favorites-banner-copy]');
       if (copy) copy.insertAdjacentElement('afterend', badge);
     }
-    if (badge) badge.textContent = `✎ ${noteEntries().length} shënime`;
+    if (badge) badge.textContent = `✎ ${noteCount} shënime`;
   }
 
   function refreshRows() {
@@ -257,10 +265,11 @@
 
   function refresh() {
     scheduled = false;
+    const entries = noteEntries();
     workspaceShell();
-    renderWorkspacePanel();
+    renderWorkspacePanel({ entries });
     refreshRows();
-    enrichFavoritesBanner();
+    enrichFavoritesBanner(entries.length);
     document.documentElement.dataset.registryUxPhase3 = VERSION;
     document.body?.classList.add('registry-ux-phase3-ready');
   }
