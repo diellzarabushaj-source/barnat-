@@ -7,6 +7,9 @@
   const NOTES_KEY = 'regjistriBarnave_shenime_v1';
   const META_KEY = 'medindex_user_library_meta_v1';
   const RELOAD_KEY = 'medindex_user_library_reload_v1';
+  const NOTE_ENTITY_TYPE = 'protocol';
+  const NOTE_ENTITY_PREFIX = 'drug-note:';
+  const NOTE_KEY_MAX = 290;
   const POLL_MS = 1200;
   const SYNC_DELAY_MS = 700;
   const NOTE_MAX = 2000;
@@ -29,6 +32,11 @@
     const date = new Date(value || 0);
     return Number.isNaN(date.getTime()) ? 0 : date.getTime();
   };
+  const noteLocalKey = value => text(value).slice(0, NOTE_KEY_MAX);
+  const noteEntityKey = value => `${NOTE_ENTITY_PREFIX}${noteLocalKey(value)}`;
+  const isNoteEntity = (type, key, payload) => type === NOTE_ENTITY_TYPE
+    && String(key || '').startsWith(NOTE_ENTITY_PREFIX)
+    && payload?.kind === 'drug-note';
 
   function parseArray(key) {
     try {
@@ -45,7 +53,7 @@
       if (!value || typeof value !== 'object' || Array.isArray(value)) return {};
       const output = {};
       Object.entries(value).forEach(([key, entry]) => {
-        const entityKey = text(key).slice(0, 300);
+        const entityKey = noteLocalKey(key);
         if (!entityKey) return;
         const raw = typeof entry === 'string' ? { text:entry, updatedAt:'' } : entry;
         if (!raw || typeof raw !== 'object') return;
@@ -117,6 +125,10 @@
     return `${type || 'drug'}|${key}`;
   }
 
+  function noteMetaId(key) {
+    return favoriteId(NOTE_ENTITY_TYPE, noteEntityKey(key));
+  }
+
   function ensureMetaForState(state, meta, stamp = nowIso()) {
     state.prescriptions.forEach(item => {
       const id = protocolId(item);
@@ -130,7 +142,7 @@
       delete meta.deletedFavorites[id];
     });
     Object.entries(state.notes || {}).forEach(([key, entry]) => {
-      const id = favoriteId('drug-note', key);
+      const id = noteMetaId(key);
       meta.favorites[id] = meta.favorites[id] || entry.updatedAt || stamp;
       delete meta.deletedFavorites[id];
     });
@@ -176,14 +188,14 @@
     const currentNotes = current.notes || {};
     Object.keys(previousNotes).forEach(key => {
       if (currentNotes[key]) return;
-      const id = favoriteId('drug-note', key);
+      const id = noteMetaId(key);
       meta.deletedFavorites[id] = stamp;
       delete meta.favorites[id];
     });
     Object.entries(currentNotes).forEach(([key, entry]) => {
       const before = previousNotes[key];
       if (!before || before.text !== entry.text || before.updatedAt !== entry.updatedAt) {
-        const id = favoriteId('drug-note', key);
+        const id = noteMetaId(key);
         meta.favorites[id] = entry.updatedAt || stamp;
         delete meta.deletedFavorites[id];
       }
@@ -201,12 +213,15 @@
       payload:{},
       clientUpdatedAt:meta.favorites[favoriteId('drug', entityKey)] || nowIso(),
     }));
-    const noteRows = Object.entries(state.notes || {}).map(([entityKey, entry]) => ({
-      entityType:'drug-note',
-      entityKey,
-      payload:{ text:String(entry.text || '').slice(0, NOTE_MAX) },
-      clientUpdatedAt:meta.favorites[favoriteId('drug-note', entityKey)] || entry.updatedAt || nowIso(),
-    }));
+    const noteRows = Object.entries(state.notes || {}).map(([localKey, entry]) => {
+      const entityKey = noteEntityKey(localKey);
+      return {
+        entityType:NOTE_ENTITY_TYPE,
+        entityKey,
+        payload:{ kind:'drug-note', text:String(entry.text || '').slice(0, NOTE_MAX) },
+        clientUpdatedAt:meta.favorites[favoriteId(NOTE_ENTITY_TYPE, entityKey)] || entry.updatedAt || nowIso(),
+      };
+    });
     return {
       version:1,
       prescriptions:state.prescriptions.flatMap(payload => {
@@ -270,11 +285,13 @@
         delete meta.deletedFavorites[id];
         return;
       }
-      if (type === 'drug-note') {
+      if (isNoteEntity(type, key, row.payload)) {
+        const localKey = noteLocalKey(key.slice(NOTE_ENTITY_PREFIX.length));
+        if (!localKey) return;
         const remoteText = String(row.payload?.text ?? '').slice(0, NOTE_MAX);
-        const localUpdated = time(meta.favorites[id] || notes[key]?.updatedAt);
-        if (remoteText.trim() && (!notes[key] || remoteUpdated > localUpdated)) {
-          notes[key] = { text:remoteText, updatedAt:row.clientUpdatedAt || row.serverUpdatedAt || nowIso() };
+        const localUpdated = time(meta.favorites[id] || notes[localKey]?.updatedAt);
+        if (remoteText.trim() && (!notes[localKey] || remoteUpdated > localUpdated)) {
+          notes[localKey] = { text:remoteText, updatedAt:row.clientUpdatedAt || row.serverUpdatedAt || nowIso() };
           meta.favorites[id] = row.clientUpdatedAt || row.serverUpdatedAt || nowIso();
         }
         delete meta.deletedFavorites[id];
@@ -285,11 +302,15 @@
       const type = text(row.entityType) || 'drug';
       const key = text(row.entityKey);
       const id = favoriteId(type, key);
-      if (!key) return;
-      if (time(row.deletedAt) < time(meta.favorites[id])) return;
-      if (type === 'drug') favorites.delete(key);
-      if (type === 'drug-note') delete notes[key];
-      if (!['drug','drug-note'].includes(type)) return;
+      if (!key || time(row.deletedAt) < time(meta.favorites[id])) return;
+      if (type === 'drug') {
+        favorites.delete(key);
+      } else if (type === NOTE_ENTITY_TYPE && key.startsWith(NOTE_ENTITY_PREFIX)) {
+        const localKey = noteLocalKey(key.slice(NOTE_ENTITY_PREFIX.length));
+        if (localKey) delete notes[localKey];
+      } else {
+        return;
+      }
       delete meta.favorites[id];
       meta.deletedFavorites[id] = row.deletedAt;
     });
