@@ -60,6 +60,52 @@ function patchDoseHandler(file, label, errorLabel) {
   write(file, source);
 }
 
+function patchDosageFallback() {
+  let source = read('lib/dosage-handler.js');
+  source = mustReplace(
+    source,
+    "const NeonClinical = require('../lib/neon-clinical-reader.js');",
+    "const NeonClinical = require('../lib/neon-clinical-reader.js');\nconst NeonResilience = require('./neon-resilience.js');",
+    'dosage fallback resilience import',
+  );
+  source = mustReplace(
+    source,
+    "    console.error('Neon dosage read failed; using Sheets fallback:', error);",
+    "    NeonResilience.safeLog('Neon dosage read fallback', error, 15 * 60 * 1000);",
+    'dosage fallback raw error log',
+  );
+  source = mustReplace(
+    source,
+    "        console.error('Dosage refresh failed; serving stale cache:', error);",
+    "        NeonResilience.safeLog('Dosage refresh stale-cache fallback', error, 15 * 60 * 1000);",
+    'dosage stale-cache raw error log',
+  );
+  source = mustReplace(
+    source,
+    "  } catch (error) {\n    console.error('Dosage data error:', error);\n    res.setHeader('Content-Type', 'application/json; charset=utf-8'); res.setHeader('Cache-Control', 'no-store');\n    return res.status(500).json(publicLoadError());\n  }",
+    "  } catch (error) {\n    const degraded = NeonResilience.isUnavailable(error);\n    if (degraded) NeonResilience.applyRetryHeaders(res, error);\n    NeonResilience.safeLog('Dosage data', error, 15 * 60 * 1000);\n    res.setHeader('Content-Type', 'application/json; charset=utf-8'); res.setHeader('Cache-Control', 'no-store');\n    return res.status(degraded ? 503 : 500).json(publicLoadError());\n  }",
+    'dosage terminal degraded catch',
+  );
+  write('lib/dosage-handler.js', source);
+}
+
+function patchClinicalNeonEndpoint(file, errorLabel, publicMessage) {
+  let source = read(file);
+  source = mustReplace(
+    source,
+    "const { neonRequest } = require('./neon-data-api.js');",
+    "const { neonRequest } = require('./neon-data-api.js');\nconst NeonResilience = require('./neon-resilience.js');",
+    `${errorLabel} resilience import`,
+  );
+  source = mustReplace(
+    source,
+    `  } catch (error) {\n    console.error('${errorLabel}:', error);\n    return res.status(error.status || 500).json({ ok:false, error:clean(error.message || error).slice(0, 700) });\n  }`,
+    `  } catch (error) {\n    const degraded = NeonResilience.isUnavailable(error);\n    if (degraded) NeonResilience.applyRetryHeaders(res, error);\n    NeonResilience.safeLog('${errorLabel}', error, 15 * 60 * 1000);\n    const status = degraded ? 503 : (error.status || 500);\n    return res.status(status).json({\n      ok:false,\n      code:degraded ? 'NEON_TEMPORARILY_UNAVAILABLE' : undefined,\n      retryAfter:degraded ? NeonResilience.retryAfterSeconds(error) : undefined,\n      error:degraded ? '${publicMessage}' : clean(error.message || error).slice(0, 700),\n    });\n  }`,
+    `${errorLabel} degraded catch`,
+  );
+  write(file, source);
+}
+
 function patchUserLibraryClient() {
   let source = read('user-library-client.js');
   source = mustReplace(source, '  const POLL_MS = 1200;', '  const POLL_MS = 5000;', 'library polling interval');
@@ -114,20 +160,29 @@ function audit() {
   const client = read('user-library-client.js');
   const calc = read('lib/dose-calculator-handler.js');
   const safety = read('lib/dose-safety-handler.js');
+  const dosage = read('lib/dosage-handler.js');
+  const clinicalEditor = read('lib/clinical-editor.js');
+  const population = read('lib/population-verification.js');
   const revision = read('lib/registry-revision.js');
 
   if (!drive.includes("code:'NEON_TEMPORARILY_UNAVAILABLE'") || !drive.includes("res.status(503)")) throw new Error('Drive sync degraded contract missing.');
   if (!library.includes("retryAfter:unavailable") || !library.includes('NeonResilience.safeLog')) throw new Error('User library degraded contract missing.');
   if (!client.includes('const POLL_MS = 5000;') || !client.includes('retryUntil') || !client.includes("medindex:favorites-changed") || !client.includes("medindex:personal-note-saved")) throw new Error('User library client backoff/event contract missing.');
   if (!calc.includes('res.status(degraded ? 503 : 500)') || !safety.includes('res.status(degraded ? 503 : 500)')) throw new Error('Dose degraded response contract missing.');
+  if (!dosage.includes("NeonResilience.safeLog('Neon dosage read fallback'") || dosage.includes("console.error('Neon dosage read failed; using Sheets fallback:'")) throw new Error('Dosage Sheets fallback still logs Neon quota as an error.');
+  if (!clinicalEditor.includes("code:degraded ? 'NEON_TEMPORARILY_UNAVAILABLE'") || !clinicalEditor.includes('NeonResilience.applyRetryHeaders')) throw new Error('Clinical editor degraded contract missing.');
+  if (!population.includes("code:degraded ? 'NEON_TEMPORARILY_UNAVAILABLE'") || !population.includes('NeonResilience.applyRetryHeaders')) throw new Error('Population verification degraded contract missing.');
   if (!revision.includes('NeonResilience.retryAfterSeconds(error)')) throw new Error('Registry revision outage backoff missing.');
   if (/POLL_MS = 1200/.test(client)) throw new Error('Aggressive 1.2s user-library polling returned.');
-  console.log('Final production resilience audit passed: Neon outage backoff, 503 Retry-After, local-first library and reduced polling are active.');
+  console.log('Final production resilience audit passed: Neon outage backoff, controlled Sheets fallback, clinical 503 Retry-After, local-first library and reduced polling are active.');
 }
 
 patchDriveSync();
 patchUserLibraryServer();
 patchDoseHandler('lib/dose-calculator-handler.js', 'dose calculator', 'Dose calculator catalog error');
 patchDoseHandler('lib/dose-safety-handler.js', 'dose safety', 'Dose safety catalog error');
+patchDosageFallback();
+patchClinicalNeonEndpoint('lib/clinical-editor.js', 'Clinical editor error', 'Editori klinik është përkohësisht i padisponueshëm. Provo përsëri pas pak; asnjë ndryshim nuk është ruajtur.');
+patchClinicalNeonEndpoint('lib/population-verification.js', 'Population verification error', 'Verifikimi i popullatës është përkohësisht i padisponueshëm. Provo përsëri pas pak.');
 patchUserLibraryClient();
 audit();
