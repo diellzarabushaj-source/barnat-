@@ -30,18 +30,16 @@ function patchDrawerInert() {
   write('tailadmin-shell-core.js', source);
 }
 
-function patchNoFrozenHeader() {
-  let source = read('registry-full-text-expansion.css');
-  source = source.replace(
-    /(#registryContent #dataTable\[data-registry-unified-table\] thead th\[data-registry-column-key\] \{\n)  position:sticky!important;\n  top:0!important;/,
-    '$1  position:relative!important;\n  top:auto!important;',
-  );
-  if (!source.includes('position:relative!important;\n  top:auto!important;')) {
-    throw new Error('No-frozen-header contract missing.');
+function auditStickyHeader() {
+  const source = read('registry-full-text-expansion.css');
+  if (!/thead th\[data-registry-column-key\][\s\S]*position:sticky!important;[\s\S]*top:0!important;/.test(source)) {
+    throw new Error('Sticky registry header contract missing.');
   }
-  write('registry-full-text-expansion.css', source);
+  if (!/thead th\[data-registry-column-key\][\s\S]*left:auto!important;[\s\S]*right:auto!important;/.test(source)) {
+    throw new Error('Registry header must stay vertically sticky without freezing a data column.');
+  }
 }
 
 patchDrawerInert();
-patchNoFrozenHeader();
-console.log('Final browser audit patch passed: drawer inert and no-frozen-header contracts are active.');
+auditStickyHeader();
+console.log('Final browser audit patch passed: drawer inert and sticky-header/no-frozen-column contracts are active.');
