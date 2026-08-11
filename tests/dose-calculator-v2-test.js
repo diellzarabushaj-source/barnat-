@@ -50,9 +50,9 @@ assert.ok(vercel.rewrites.some(item => item.source === '/api/dose-calculator'
   && item.destination === '/api/dosage?view=calculator'), 'Dose calculator rewrite is missing');
 
 assert.match(html, /registry-dose-calculator\.js\?v=20260810-2/);
-assert.match(html, /registry-dose-10s-flow\.js\?v=20260809-1/);
+assert.match(html, /registry-dose-10s-flow\.js\?v=20260811-2/);
 assert.ok(
-  html.indexOf('registry-dose-calculator.js?v=20260810-2') < html.indexOf('registry-dose-10s-flow.js?v=20260809-1'),
+  html.indexOf('registry-dose-calculator.js?v=20260810-2') < html.indexOf('registry-dose-10s-flow.js?v=20260811-2'),
   'The 10-second workflow must enhance the canonical calculator after it initializes.'
 );
 assert.match(html, /registry-dose-modal-accessibility\.js\?v=20260809-1/);
