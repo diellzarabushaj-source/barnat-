@@ -1,5 +1,6 @@
 'use strict';
 
+// No runtime behavior change: this commit retriggers the already-audited production bundle after the Vercel Hobby build cooldown.
 const fs = require('node:fs');
 const path = require('node:path');
 
