@@ -31,10 +31,34 @@ for (const fileName of pages) {
   assert.ok(shellJs >= 0 && proJs > shellJs, `${fileName}: professional runtime must follow shell runtime`);
 }
 
+const professionalBundle = read('tailadmin-professional.css');
+assert.match(professionalBundle, /medindex-visual-system-v4\.css\?v=20260811-1/, 'Phase 4 visual system must be part of the professional bundle');
+
+const phase4Css = read('medindex-visual-system-v4.css');
+[
+  /--mi-v4-font:/,
+  /--mi-v4-bg:/,
+  /--mi-v4-surface:/,
+  /--mi-v4-line:/,
+  /--mi-v4-accent:/,
+  /--mi-v4-radius-sm:/,
+  /--mi-v4-shadow-1:/,
+  /html\.medindex-tailadmin body/,
+  /:focus-visible/,
+  /#dataTable thead th/,
+  /\.icd-tree-toolbar/,
+  /\.registry-workspace-panel/,
+  /html\[data-theme="dark"\]\.medindex-tailadmin/,
+  /@media\(max-width:720px\)/,
+  /@media\(prefers-reduced-motion:reduce\)/,
+].forEach(pattern => assert.match(phase4Css, pattern, `Phase 4 visual system missing ${pattern}`));
+assert.doesNotMatch(phase4Css, /https?:\/\//, 'Phase 4 visual system must not depend on external assets');
+
 const css = [
-  read('tailadmin-professional.css'),
+  professionalBundle,
   read('tailadmin-professional-core.css'),
   read('medindex-tailwind-ui.css'),
+  phase4Css,
   read('medindex-tailwind-touch.css'),
 ].join('\n');
 [
@@ -108,4 +132,4 @@ assert.ok((labRuntime.match(/accent:'#/g) || []).length >= 14, 'Every laboratory
   /return 'flask'/,
 ].forEach(pattern => assert.match(labRuntime, pattern, `laboratory medical icon mapping missing ${pattern}`));
 
-console.log('Professional TailAdmin shell, Neon-aware laboratory cards and section audit passed.');
+console.log('Professional TailAdmin shell, Phase 4 visual system, Neon-aware laboratory cards and section audit passed.');
