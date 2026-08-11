@@ -42,18 +42,14 @@ function syntaxCheck(relative, source) {
   }
 }
 
-function materializeCanonicalShellCore() {
-  const legacySource = read('tailadmin-shell-legacy.js');
-  if (!legacySource.includes('function createShell(')
-      || !legacySource.includes('function buildNavigation(')
-      || !legacySource.includes("window.dispatchEvent(new CustomEvent('medindex:tailadmin-ready'))")) {
-    throw new Error('The shell implementation source is incomplete; refusing Phase 7 migration.');
+function prepareCanonicalShellCore() {
+  const coreSource = read('tailadmin-shell-core.js');
+  if (!coreSource.includes('function createShell(')
+      || !coreSource.includes('function buildNavigation(')
+      || !coreSource.includes("window.dispatchEvent(new CustomEvent('medindex:tailadmin-ready'))")) {
+    throw new Error('Canonical TailAdmin shell core source is incomplete.');
   }
-
-  const banner = `/* AUTO-GENERATED Phase 7 canonical shell core · release ${RELEASE_ID}. */\n`;
-  const coreSource = banner + legacySource;
   syntaxCheck('tailadmin-shell-core.js', coreSource);
-  write('tailadmin-shell-core.js', coreSource);
 
   const shim = `(() => {\n  'use strict';\n  if (document.body?.dataset.tailadminReady === '1') return;\n  if (document.querySelector('script[data-medindex-tailadmin-core]')) return;\n  const script = document.createElement('script');\n  script.src = '/tailadmin-shell-core.js?v=${RELEASE_ID}';\n  script.async = true;\n  script.dataset.medindexTailadminCore = 'legacy-migration';\n  document.head.appendChild(script);\n})();\n`;
   syntaxCheck('tailadmin-shell-legacy.js', shim);
@@ -228,10 +224,10 @@ function auditPhase7() {
     if (references.length) throw new Error(`Phase 7: obsolete UI runtime references remain for ${file}: ${references.join(', ')}`);
   }
 
-  console.log(`Phase 7 legacy UI cleanup passed for ${RELEASE_ID}: one shell, one navigation implementation and one TailAdmin design system; old paths are compatibility-only.`);
+  console.log(`Phase 7 legacy UI cleanup passed for ${RELEASE_ID}: canonical core is the source of truth; one shell, one navigation implementation and one TailAdmin design system.`);
 }
 
-materializeCanonicalShellCore();
+prepareCanonicalShellCore();
 patchShellBootstrap();
 patchIndex();
 patchCanonicalWorker();
