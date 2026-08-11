@@ -118,13 +118,32 @@ function patchDrawerBrowserTest() {
   );
   source = replaceOnce(
     source,
+    "async function viewportReport(page) {\n  return page.evaluate(() => {\n    const rect = selector => {\n      const node = document.querySelector(selector);\n      if (!node) return null;\n      const value = node.getBoundingClientRect();\n      return { left:value.left, right:value.right, top:value.top, bottom:value.bottom, width:value.width, height:value.height };\n    };\n    return {\n      width:innerWidth,\n      height:innerHeight,\n      htmlScrollWidth:document.documentElement.scrollWidth,\n      bodyScrollWidth:document.body.scrollWidth,\n      shell:rect('.mi-app-shell'),\n      topbar:rect('.mi-topbar'),\n      main:rect('.mi-main'),\n      mobileVersion:document.documentElement.dataset.miMobileExperience || null,\n    };\n  });\n}",
+    "async function viewportReport(page) {\n  let lastError = null;\n  for (let attempt = 0; attempt < 10; attempt += 1) {\n    try {\n      return await page.evaluate(() => {\n        const rect = selector => {\n          const node = document.querySelector(selector);\n          if (!node) return null;\n          const value = node.getBoundingClientRect();\n          return { left:value.left, right:value.right, top:value.top, bottom:value.bottom, width:value.width, height:value.height };\n        };\n        return {\n          width:innerWidth,\n          height:innerHeight,\n          htmlScrollWidth:document.documentElement.scrollWidth,\n          bodyScrollWidth:document.body.scrollWidth,\n          shell:rect('.mi-app-shell'),\n          topbar:rect('.mi-topbar'),\n          main:rect('.mi-main'),\n          mobileVersion:document.documentElement.dataset.miMobileExperience || null,\n        };\n      });\n    } catch (error) {\n      const message = String(error?.message || error || '');\n      if (!/Execution context was destroyed|Cannot find context with specified id|most likely because of a navigation/i.test(message)) throw error;\n      lastError = error;\n      await page.waitForTimeout(50);\n    }\n  }\n  throw lastError || new Error('Viewport report could not acquire a stable browsing context.');\n}",
+    'navigation-safe viewport geometry report',
+  );
+  source = replaceOnce(
+    source,
     "  await page.locator('[data-mi-sidebar-overlay]').click({ position:{ x:Math.max(1, (await page.viewportSize()).width - 8), y:80 } });",
     "  const viewport = await page.viewportSize();\n  await page.mouse.click(Math.max(1, viewport.width - 8), 80);",
     'physical drawer outside-click test',
   );
   if (!source.includes("return '__navigation_pending__';")) throw new Error('Mobile readiness poll does not tolerate navigation context replacement.');
+  if (!source.includes('for (let attempt = 0; attempt < 10; attempt += 1)')) throw new Error('Viewport report navigation retry is missing.');
   if (!source.includes('page.mouse.click(Math.max(1, viewport.width - 8), 80)')) throw new Error('Drawer browser test is not using a physical outside click.');
   write('tests/mobile-deep-audit.spec.js', source);
+}
+
+function patchCellPreviewResizeAudit() {
+  let source = read('tests/registry-cell-preview.spec.js');
+  source = replaceOnce(
+    source,
+    "  await page.setViewportSize({ width:390, height:844 });\n  await trigger.press('Enter');\n  await expect(row).toHaveAttribute('data-registry-row-expanded', 'true');",
+    "  await page.setViewportSize({ width:390, height:844 });\n  await expect.poll(\n    () => page.evaluate(() => ({\n      stable:window.MEDINDEX_REGISTRY_TABLE_AUDIT?.stable === true,\n      pending:document.getElementById('dataTable')?.dataset.registryUnifiedPending === 'true',\n      preview:window.MedIndexCellPreview?.version || '',\n    })),\n    { timeout:10000, message:'registry did not stabilize after the mobile viewport transition' }\n  ).toEqual({ stable:true, pending:false, preview:PREVIEW_VERSION });\n  await page.evaluate(() => new Promise(resolve => requestAnimationFrame(() => requestAnimationFrame(resolve))));\n  await trigger.evaluate(() => window.MedIndexCellPreview.refresh());\n  await trigger.press('Enter');\n  await expect(row).toHaveAttribute('data-registry-row-expanded', 'true');",
+    'post-resize keyboard audit stabilization',
+  );
+  if (!source.includes('registry did not stabilize after the mobile viewport transition')) throw new Error('Post-resize cell preview stabilization gate missing.');
+  write('tests/registry-cell-preview.spec.js', source);
 }
 
 function patchDarkModeClsGate() {
@@ -166,7 +185,8 @@ patchDoseWeightGate();
 patchRowKeyboardOwnership();
 patchBrowserSafetyFixture();
 patchDrawerBrowserTest();
+patchCellPreviewResizeAudit();
 patchDarkModeClsGate();
 patchModalMetricsGate();
 auditStickyHeader();
-console.log('Final browser audit patch passed: single-owner keyboard expansion, synthetic-click suppression, navigation-safe mobile readiness, native population metrics, physical drawer outside-click, valid safety fixture, stable dark-mode CLS and sticky-header/no-frozen-column contracts are active.');
+console.log('Final browser audit patch passed: single-owner keyboard expansion, post-resize keyboard stabilization, synthetic-click suppression, navigation-safe mobile readiness and viewport geometry, native population metrics, physical drawer outside-click, valid safety fixture, stable dark-mode CLS and sticky-header/no-frozen-column contracts are active.');
