@@ -77,6 +77,30 @@ function patchCellPreviewKeyboard() {
   write('registry-cell-preview.js', source);
 }
 
+function patchBrowserSafetyFixture() {
+  let source = read('tests/clinical-smoke-server.js');
+  source = replaceOnce(
+    source,
+    "  if (url.pathname === '/api/dosage') return send(res, 200, JSON.stringify(dosage), 'application/json; charset=utf-8');",
+    "  if (url.pathname === '/api/dosage') {\n    if (url.searchParams.get('view') === 'safety') {\n      return send(res, 200, JSON.stringify({\n        ok:true,\n        meta:{ schemaVersion:'2.0.0', failClosed:true, officialVerifiedOnly:true, generatedAt:'2026-08-11T00:00:00Z' },\n        catalog:[],\n      }), 'application/json; charset=utf-8');\n    }\n    return send(res, 200, JSON.stringify(dosage), 'application/json; charset=utf-8');\n  }",
+    'browser safety API fixture',
+  );
+  if (!source.includes("url.searchParams.get('view') === 'safety'")) throw new Error('Browser safety fixture is not view-aware.');
+  write('tests/clinical-smoke-server.js', source);
+}
+
+function patchDrawerBrowserTest() {
+  let source = read('tests/mobile-deep-audit.spec.js');
+  source = replaceOnce(
+    source,
+    "  await page.locator('[data-mi-sidebar-overlay]').click({ position:{ x:Math.max(1, (await page.viewportSize()).width - 8), y:80 } });",
+    "  const viewport = await page.viewportSize();\n  await page.mouse.click(Math.max(1, viewport.width - 8), 80);",
+    'physical drawer outside-click test',
+  );
+  if (!source.includes('page.mouse.click(Math.max(1, viewport.width - 8), 80)')) throw new Error('Drawer browser test is not using a physical outside click.');
+  write('tests/mobile-deep-audit.spec.js', source);
+}
+
 function auditStickyHeader() {
   const source = read('registry-full-text-expansion.css');
   if (!/thead th\[data-registry-column-key\][\s\S]*position:sticky!important;[\s\S]*top:0!important;/.test(source)) {
@@ -90,5 +114,7 @@ function auditStickyHeader() {
 patchDrawerInert();
 patchDoseWeightGate();
 patchCellPreviewKeyboard();
+patchBrowserSafetyFixture();
+patchDrawerBrowserTest();
 auditStickyHeader();
-console.log('Final browser audit patch passed: physical outside-click drawer close, adaptive dose weight, single keyboard row toggle and sticky-header/no-frozen-column contracts are active.');
+console.log('Final browser audit patch passed: physical drawer outside-click, valid safety fixture, adaptive dose weight, single keyboard row toggle and sticky-header/no-frozen-column contracts are active.');
