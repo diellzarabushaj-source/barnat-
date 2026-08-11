@@ -15,7 +15,8 @@ const dosageSource = `${dosageRouterSource}\n${dosageHandlerSource}`;
 const icdSource = read('lib/icd-api-base.js');
 const labsSource = read('analizat.js');
 const publishSource = read('scripts/publish-neon-registry.js');
-const serviceWorker = read('sw-resilient-v3.js');
+const serviceWorker = read('sw.js');
+const migrationWorker = read('sw-resilient-v3.js');
 const packageJson = JSON.parse(read('package.json'));
 
 assert.match(readerSource, /MEDINDEX_DATA_SOURCE \|\| 'hybrid'/, 'Neon-first mode must default to hybrid');
@@ -48,12 +49,14 @@ assert.match(labsSource, /NEON_TIMEOUT_MS/, 'laboratory network timeout is missi
 assert.match(publishSource, /MINIMUM_REGISTRY_ROWS = 3500/, 'registry publication minimum gate is missing');
 assert.match(publishSource, /editorial_status:'published', is_published:true/, 'complete registry publication is missing');
 assert.match(packageJson.scripts['sync:neon'], /publish-neon-registry\.js/, 'registry publication must run after sync');
-assert.match(packageJson.scripts['build:runtime'], /patch-neon-offline\.js/, 'Neon offline cache isolation must run during build');
+assert.match(packageJson.scripts['build:runtime'], /patch-neon-offline\.js/, 'single-version cache cutover must run during build');
 
 assert.match(serviceWorker, /QUERY_DATA_PATHS = new Set\(\['\/api\/drug-search', '\/api\/icd'\]\)/, 'ICD and labs query caches are not isolated');
 const privateSet = serviceWorker.match(/const PRIVATE_DATA_PATHS = new Set\(\[([\s\S]*?)\]\);/)?.[1] || '';
 assert.ok(privateSet, 'PRIVATE_DATA_PATHS set is missing');
 assert.doesNotMatch(privateSet, /'\/api\/icd'/, 'ICD query route must not use the query-blind private key');
+assert.match(migrationWorker, /importScripts\('\/sw\.js\?v=/, 'legacy worker must migrate to the canonical worker');
+assert.doesNotMatch(migrationWorker, /QUERY_DATA_PATHS|PRIVATE_DATA_PATHS/, 'legacy worker must not keep a second Neon cache policy');
 
 for (const browserFile of ['analizat.js', 'icd.js', 'dozologjia.js', 'app.js']) {
   const source = read(browserFile);
@@ -97,4 +100,4 @@ assert.equal(icd.code, 'J00');
 assert.equal(icd.isFamilyMedicine, true);
 assert.deepEqual(icd.keywords, ['ftohje']);
 
-console.log('Neon-first performance and clinical contract audit passed.');
+console.log('Neon-first performance and canonical-worker clinical contract audit passed.');
