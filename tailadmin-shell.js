@@ -13,7 +13,7 @@
     '/recetat.html':['Recetat'],
     '/sistemi.html':['Sistemi'],
   };
-  const CORE_SRC = '/tailadmin-shell-core.js?v=production-audit-v2';
+  const CORE_SHELL_SRC = '/tailadmin-shell-core.js?v=production-audit-v2';
   const MOBILE_SRC = '/mobile-experience.js?v=production-audit-v2';
   const MOBILE_A11Y_SRC = '/mobile-accessibility-hardening.js?v=mobile-a11y-deep-audit-v1';
   const OFFLINE_RUNTIME_SRC = '/offline-runtime-performance.js?v=low-bandwidth-v3';
@@ -164,7 +164,7 @@
     const warm = source => fetch(source, { cache:'no-cache', credentials:'same-origin' }).catch(() => null);
     navigator.serviceWorker.ready.then(() => {
       const run = () => Promise.all([
-        warm(CORE_SRC), warm(MOBILE_SRC), warm(MOBILE_A11Y_SRC), warm(OFFLINE_RUNTIME_SRC),
+        warm(CORE_SHELL_SRC), warm(MOBILE_SRC), warm(MOBILE_A11Y_SRC), warm(OFFLINE_RUNTIME_SRC),
         warm(BRAND_SRC), warm(ATC_NAV_SRC), warm(ATC_SEARCH_SRC),
       ]);
       if (navigator.serviceWorker.controller) run();
@@ -266,7 +266,7 @@
     if (existing && force) existing.remove();
 
     const script = document.createElement('script');
-    script.src = force ? `${CORE_SRC}&retry=${encodeURIComponent(SHELL_VERSION)}` : CORE_SRC;
+    script.src = force ? `${CORE_SHELL_SRC}&retry=${encodeURIComponent(SHELL_VERSION)}` : CORE_SHELL_SRC;
     script.async = true;
     script.dataset.medindexTailadminCore = force ? 'retry' : '1';
     script.addEventListener('load', () => verifyCoreMount(force), { once:true });
