@@ -16,9 +16,9 @@ const dosageRuntime = read('registry-dosage-columns-v2.js');
 
 assert(index.includes('registry-cell-preview.css?v=20260805-4'), 'Inline cell expansion stylesheet v3 is not wired.');
 assert(index.includes('registry-full-text-expansion.css?v=20260805-2'), 'Full-row text reveal contract is not wired.');
-assert(index.includes('registry-cell-preview.js?v=20260810-1'), 'Inline cell expansion controller is not wired.');
+assert(index.includes('registry-cell-preview.js?v=20260811-2'), 'Inline cell expansion controller is not wired.');
 assert(
-  index.indexOf('registry-cell-preview.js?v=20260810-1') < index.indexOf('registry-row-expand.js?v=20260810-1'),
+  index.indexOf('registry-cell-preview.js?v=20260811-2') < index.indexOf('registry-row-expand.js?v=20260810-1'),
   'Cell expansion trigger must initialize before row expansion.'
 );
 assert(index.includes('data-registry-ui-release="20260809-1"'), 'Registry UI release was not bumped.');
@@ -33,7 +33,9 @@ assert(
   'TailAdmin professional must remain the final static stylesheet.'
 );
 
-assert(controller.includes("const VERSION = 'registry-cell-preview-20260805-8'"), 'Cell preview runtime version is stale.');
+assert(controller.includes("const VERSION = 'registry-cell-preview-20260811-9'"), 'Cell preview runtime version is stale.');
+assert(controller.includes('function restoreCanonicalSource(cell)'), 'Canonical active-substance restore is missing.');
+assert(controller.includes("raw?.['Substanca aktive']"), 'Cell preview must restore the full active-substance field from the canonical registry row.');
 assert(controller.includes('data-lineicons-icon="expand-square-4"'), 'Lineicons expand-square-4 source markup is missing.');
 assert(controller.includes('rowController.toggleRow(row)'), 'Cell trigger must expand the table row inline.');
 assert(controller.includes("trigger.setAttribute('aria-expanded'"), 'Inline trigger must expose its expanded state.');
@@ -81,4 +83,4 @@ assert(!dosageRuntime.includes("regimen?.classList.toggle('is-expanded')"), 'The
 assert(!styles.includes('height:132px!important;\n  min-height:132px!important'), 'Expanded desktop rows must not have a fixed height ceiling.');
 assert(fullTextStyles.includes('.registry-dosage-regimen.is-expanded .registry-dosage-dose-text'), 'Expanded dosage text must have an explicit unclamped contract.');
 
-console.log('Full-row zoom excludes verified dose actions and reveals every textual column without modal or clamp.');
+console.log('Full-row zoom restores canonical active-substance text, excludes verified dose actions and reveals every textual column without modal or clamp.');
