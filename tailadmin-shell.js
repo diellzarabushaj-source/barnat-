@@ -13,7 +13,7 @@
     '/recetat.html':['Recetat'],
     '/sistemi.html':['Sistemi'],
   };
-  const LEGACY_SRC = '/tailadmin-shell-legacy.js?v=production-audit-v2';
+  const CORE_SRC = '/tailadmin-shell-core.js?v=production-audit-v2';
   const MOBILE_SRC = '/mobile-experience.js?v=production-audit-v2';
   const MOBILE_A11Y_SRC = '/mobile-accessibility-hardening.js?v=mobile-a11y-deep-audit-v1';
   const OFFLINE_RUNTIME_SRC = '/offline-runtime-performance.js?v=low-bandwidth-v3';
@@ -21,7 +21,6 @@
   const ATC_NAV_SRC = '/atc-sidebar.js?v=atc-sidebar-v2';
   const ATC_SEARCH_SRC = '/atc-global-search.js?v=atc-global-search-v1';
   const SHELL_VERSION = 'production-audit-v2';
-  const id = 'appMenu';
   const SHELL_RETRY_MS = 3500;
   const SHELL_FALLBACK_MS = 8000;
   let shellReady = false;
@@ -165,7 +164,7 @@
     const warm = source => fetch(source, { cache:'no-cache', credentials:'same-origin' }).catch(() => null);
     navigator.serviceWorker.ready.then(() => {
       const run = () => Promise.all([
-        warm(LEGACY_SRC), warm(MOBILE_SRC), warm(MOBILE_A11Y_SRC), warm(OFFLINE_RUNTIME_SRC),
+        warm(CORE_SRC), warm(MOBILE_SRC), warm(MOBILE_A11Y_SRC), warm(OFFLINE_RUNTIME_SRC),
         warm(BRAND_SRC), warm(ATC_NAV_SRC), warm(ATC_SEARCH_SRC),
       ]);
       if (navigator.serviceWorker.controller) run();
@@ -243,38 +242,38 @@
     warmRuntimeAssets();
   }
 
-  function verifyLegacyMount(script, retry = false) {
+  function verifyCoreMount(retry = false) {
     requestAnimationFrame(() => requestAnimationFrame(() => {
       if (document.querySelector('.mi-app-shell') || document.body?.dataset.tailadminReady === '1') {
         finalizeShellReady();
         return;
       }
-      document.documentElement.dataset.miShellError = retry ? 'legacy-retry-executed-no-shell' : 'legacy-executed-no-shell';
-      if (!retry) loadLegacyShell(true);
+      document.documentElement.dataset.miShellError = retry ? 'core-retry-executed-no-shell' : 'core-executed-no-shell';
+      if (!retry) loadCoreShell(true);
     }));
   }
 
-  function loadLegacyShell(force = false) {
+  function loadCoreShell(force = false) {
     ensureStylesheetLast();
     if (shellReady || document.querySelector('.mi-app-shell')) return finalizeShellReady();
 
-    const existing = document.querySelector('script[data-medindex-tailadmin-legacy]');
+    const existing = document.querySelector('script[data-medindex-tailadmin-core]');
     if (existing && !force) {
-      existing.addEventListener('load', () => verifyLegacyMount(existing, false), { once:true });
-      existing.addEventListener('error', () => loadLegacyShell(true), { once:true });
+      existing.addEventListener('load', () => verifyCoreMount(false), { once:true });
+      existing.addEventListener('error', () => loadCoreShell(true), { once:true });
       return;
     }
     if (existing && force) existing.remove();
 
     const script = document.createElement('script');
-    script.src = force ? `${LEGACY_SRC}&retry=${encodeURIComponent(SHELL_VERSION)}` : LEGACY_SRC;
+    script.src = force ? `${CORE_SRC}&retry=${encodeURIComponent(SHELL_VERSION)}` : CORE_SRC;
     script.async = true;
-    script.dataset.medindexTailadminLegacy = force ? 'retry' : '1';
-    script.addEventListener('load', () => verifyLegacyMount(script, force), { once:true });
+    script.dataset.medindexTailadminCore = force ? 'retry' : '1';
+    script.addEventListener('load', () => verifyCoreMount(force), { once:true });
     script.addEventListener('error', () => {
-      document.documentElement.dataset.miShellError = force ? 'legacy-retry-load' : 'legacy-load';
-      console.error('MedIndex shell runtime failed to load.', script.src);
-      if (!force) loadLegacyShell(true);
+      document.documentElement.dataset.miShellError = force ? 'core-retry-load' : 'core-load';
+      console.error('MedIndex canonical shell runtime failed to load.', script.src);
+      if (!force) loadCoreShell(true);
     }, { once:true });
     document.head.appendChild(script);
   }
@@ -283,10 +282,10 @@
     if (isRegistryPage()) document.documentElement.classList.add('mi-shell-booting');
     ensureCriticalMobileStyles();
     ensureOfflineRuntime();
-    loadLegacyShell();
+    loadCoreShell();
     setTimeout(revealCachedShellOnWeakConnection, 0);
     shellRetry = setTimeout(() => {
-      if (!document.querySelector('.mi-app-shell')) loadLegacyShell(true);
+      if (!document.querySelector('.mi-app-shell')) loadCoreShell(true);
     }, SHELL_RETRY_MS);
     shellFallback = setTimeout(revealSafeFallback, SHELL_FALLBACK_MS);
   }
