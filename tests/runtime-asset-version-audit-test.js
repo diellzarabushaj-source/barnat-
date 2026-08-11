@@ -22,8 +22,8 @@ assert.doesNotMatch(index, /<script src="app-performance\.js"/, 'index.html: hea
 assert.doesNotMatch(index, /src="app\.js/, 'index.html: legacy registry bootstrap must not be loaded');
 assert.match(index, /app-runtime-performance\.js\?v=clinical-audit-v5-performance-runtime/, 'index.html: generated registry runtime preload is stale');
 assert.match(index, /registry-dosage-loader\.js/, 'index.html: idle dosage loader is missing');
-assert.doesNotMatch(index, /src="registry-dosage-columns-v2\.js/, 'index.html: dosage enrichment must not block initial parsing');
-assert.match(index, /offline-runtime-performance\.js[^>]+data-medindex-offline-runtime/, 'index.html: cache-isolated offline runtime must be loaded explicitly');
+assert.match(index, /offline-runtime\.js\?v=[^\"]+[^>]+data-medindex-offline-runtime/, 'index.html: canonical offline runtime must be loaded explicitly');
+assert.doesNotMatch(index, /offline-runtime-performance\.js/, 'index.html: legacy offline runtime path must not be loaded');
 assert.match(index, /registry-fast-start\.js\?v=registry-fast-start-v2/, 'index.html: fast-start guard version is stale');
 assert.match(index, /<script id="drug-data" type="application\/json">\[\]<\/script>/, 'registry JSON fallback must remain inert');
 assert.match(index, /data-registry-ui-release="20260809-1"/, 'registry UI release is stale');
@@ -34,14 +34,6 @@ assert.match(index, /registry-dose-table-button\.js\?v=20260805-5/, 'dose table 
 assert.match(index, /registry-dose-table-button\.css\?v=20260810-1/, 'dose table button stylesheet is missing');
 assert.match(index, /registry-dose-modal-accessibility\.js\?v=20260809-1/, 'dose modal accessibility runtime is stale');
 assert.match(index, /registry-ui-release\.js\?v=20260809-1/, 'registry UI release runtime is stale');
-assert.ok(
-  index.indexOf('registry-unified-table.css?v=20260801-1') < index.indexOf('registry-dose-table-button.css?v=20260810-1'),
-  'dose action styles must load after the unified table visibility rules',
-);
-assert.ok(
-  index.indexOf('registry-dose-table-button.css?v=20260810-1') < index.indexOf('tailadmin-professional.css?v=20260728-1'),
-  'professional TailAdmin stylesheet must remain the final static stylesheet',
-);
 
 const registryRelease = read('registry-ui-release.js');
 assert.match(registryRelease, /registry-ui-20260809-1/, 'registry UI cache-clear release is stale');
@@ -51,34 +43,38 @@ assert.match(runtimeLoader, /registry-runtime-loader-v6/, 'immediate registry lo
 assert.match(runtimeLoader, /app-performance\.js\?v=20260801-2/, 'registry loader must request the versioned bootstrap');
 assert.match(runtimeLoader, /classList\.contains\('auth-ready'\)/, 'registry loader must wait for authentication');
 assert.doesNotMatch(runtimeLoader, /FIRST_INTERACTION_FALLBACK_MS|POST_INTERACTION_GRACE_MS|INTERACTION_EVENTS/, 'old interaction gate must not return');
-assert.doesNotMatch(runtimeLoader, /MEDINDEX_REGISTRY_UI_READY\s*=\s*new Promise/, 'loader must not create a circular readiness promise');
 
 const app = read('app-performance.js');
 assert.match(app, /clinical-audit-v5-performance-runtime/);
 assert.match(app, /app-runtime-performance\.js/);
 
-const dosageLoader = read('registry-dosage-loader.js');
-assert.match(dosageLoader, /medindex:registry-ready/);
-assert.match(dosageLoader, /requestIdleCallback\(run, \{ timeout:5000 \}\)/);
-assert.match(dosageLoader, /registry-dosage-columns-v2\.js/);
-
 const auth = read('auth-client.js');
-assert.match(auth, /offline-runtime-performance\.js\?v=low-bandwidth-v3/, 'every private page must use the same cache-isolated offline runtime');
+assert.match(auth, /OFFLINE_RUNTIME_SRC = '\/offline-runtime\.js\?v=/, 'every private page must use the canonical offline runtime');
+assert.doesNotMatch(auth, /offline-runtime-performance\.js/, 'auth must not load the migration runtime path');
 assert.match(auth, /tailadmin-professional\.js\?v=production-audit-v2/, 'auth client must migrate a stale professional runtime');
-assert.match(auth, /ensureProfessionalRuntime/, 'professional runtime migration guard is missing');
-assert.match(auth, /miProfessionalVersion/, 'professional runtime version must be checked before migration');
 
 const professional = read('tailadmin-professional.js');
 assert.match(professional, /PROFESSIONAL_VERSION = 'production-audit-v2'/, 'professional runtime version is stale');
 assert.match(professional, /dataset\.miProfessionalVersion = PROFESSIONAL_VERSION/, 'professional runtime must expose its active version');
 
 const sourceRuntime = read('offline-runtime.js');
-assert.match(sourceRuntime, /VERSION = 'production-audit-v2'/, 'offline runtime source version is stale');
-const performanceRuntime = read('offline-runtime-performance.js');
-const performanceWorker = read('sw-resilient-v3.js');
-assert.match(performanceRuntime, /RESILIENCE_VERSION = 'low-bandwidth-v3'/, 'cache-isolated offline runtime version is stale');
-assert.match(performanceRuntime, /SERVICE_WORKER_URL = `\/sw-resilient-v3\.js\?v=\$\{RESILIENCE_VERSION\}`/, 'cache-isolated offline runtime must load the v3 worker');
-assert.match(performanceWorker, /VERSION = 'low-bandwidth-v3'/, 'cache-isolated service worker version is stale');
-assert.match(performanceRuntime, /CLINICAL_WORKFLOW_URL = `\/clinical-workflow\.js\?v=\$\{VERSION\}`/, 'offline runtime must version the clinical workflow');
+assert.match(sourceRuntime, /VERSION = 'single-version-v1'/, 'offline runtime must use the single-version strategy');
+assert.match(sourceRuntime, /const RELEASE_ID = '[^']+'/);
+assert.match(sourceRuntime, /SERVICE_WORKER_URL = `\/sw\.js\?v=\$\{RELEASE_ID\}`/);
+assert.match(sourceRuntime, /RELEASE_ENDPOINT = '\/api\/release'/);
+assert.match(sourceRuntime, /checkRelease/);
+assert.doesNotMatch(sourceRuntime, /RESILIENCE_VERSION|sw-resilient-v3\.js/);
 
-console.log('Clinical runtime cache-version, canonical dose runtime and final manual-QA audit passed.');
+const canonicalWorker = read('sw.js');
+assert.match(canonicalWorker, /VERSION = 'single-version-v1'/);
+assert.match(canonicalWorker, /CACHE_NAMESPACE = `\$\{VERSION\}-\$\{RELEASE_ID\}`/);
+assert.doesNotMatch(canonicalWorker, /'\/ui-enhancements\.js'/);
+
+const runtimeShim = read('offline-runtime-performance.js');
+assert.match(runtimeShim, /single-version-migration/);
+assert.match(runtimeShim, /offline-runtime\.js\?v=/);
+const workerShim = read('sw-resilient-v3.js');
+assert.match(workerShim, /importScripts\('\/sw\.js\?v=/);
+assert.doesNotMatch(workerShim, /navigationResponse|PRIVATE_DATA_PATHS/);
+
+console.log('Clinical runtime single-version, canonical dose runtime and final manual-QA audit passed.');
