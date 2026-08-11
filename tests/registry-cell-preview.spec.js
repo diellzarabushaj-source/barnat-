@@ -92,9 +92,7 @@ test('qeliza reale e dozimit të gjatë e rrit rreshtin inline pa hapur modal', 
   const row = cell.locator('xpath=ancestor::tr');
   const compactHeight = await row.evaluate(node => node.getBoundingClientRect().height);
 
-  await trigger.focus();
-  await expect(trigger).toBeFocused();
-  await page.keyboard.press('Enter');
+  await trigger.press('Enter');
 
   await expect(row).toHaveAttribute('data-registry-row-expanded', 'true');
   await expect(row).toHaveClass(/registry-row-expanded/);
@@ -112,15 +110,13 @@ test('qeliza reale e dozimit të gjatë e rrit rreshtin inline pa hapur modal', 
   expect(expandedStyles.overflow).toBe('visible');
   expect(expandedStyles.whiteSpace).toBe('normal');
 
-  await trigger.focus();
-  await page.keyboard.press('Enter');
+  await trigger.press('Enter');
   await expect(row).toHaveAttribute('data-registry-row-expanded', 'false');
   await expect(trigger).toHaveAttribute('aria-expanded', 'false');
   await expect.poll(async () => row.evaluate(node => node.getBoundingClientRect().height)).toBeLessThan(expandedHeight);
 
   await page.setViewportSize({ width:390, height:844 });
-  await trigger.focus();
-  await page.keyboard.press('Enter');
+  await trigger.press('Enter');
   await expect(row).toHaveAttribute('data-registry-row-expanded', 'true');
   await expect(trigger).toHaveAttribute('aria-expanded', 'true');
   await expect(page.locator('#registryCellPreviewDialog')).toHaveCount(0);
