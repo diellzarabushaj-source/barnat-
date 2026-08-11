@@ -74,13 +74,17 @@ assert.match(auth, /CLEAR_PRIVATE_DATA/, 'logout must clear service-worker priva
 assert.match(auth, /clearSensitiveWebStorage/, 'logout storage cleanup must remain centralized');
 
 const worker = read('sw.js');
-assert.match(worker, /clinical-knowledge-20260805-1/, 'service-worker cache epoch is stale');
+assert.match(worker, /VERSION = 'single-version-v1'/, 'service-worker strategy must be single-version');
+assert.match(worker, /const RELEASE_ID = '[^']+'/, 'service-worker deployment release ID is missing');
+assert.match(worker, /CACHE_EPOCH = RELEASE_ID/, 'service-worker cache epoch must follow the deployment release');
+assert.match(worker, /CACHE_NAMESPACE = `\$\{VERSION\}-\$\{RELEASE_ID\}`/, 'service-worker cache namespace must be release-specific');
 [
   'app-runtime.js', 'theme-preload.js', 'recetat-safe-print.js',
   'dozologjia-deep-audit.js', 'dozologjia-clinical-readiness.css',
   'analizat-tailwind-cards-v2.css', 'icd-tailadmin-cards-v2.css',
 ].forEach(asset => assert.ok(worker.includes(asset), `sw.js: ${asset} is missing from the offline shell`));
 assert.doesNotMatch(worker, /app-parts\/part-0[1-4]\.txt|app-parts\/core-tail\.txt/, 'source fragments must not be served as offline runtime assets');
+assert.doesNotMatch(worker, /'\/ui-enhancements\.js'/, 'obsolete UI enhancement layer must not return to the offline shell');
 assert.match(worker, /forms:\[\], adult:\[\], pediatric:\[\], cards:\[\]/, 'offline dosage fallback must preserve the API shape');
 assert.match(worker, /page-network/, 'navigation must remain network-first');
 assert.match(worker, /page-hit/, 'navigation must retain an offline fallback');
@@ -104,4 +108,4 @@ assert.ok(!pkg.scripts.postbuild, 'production build must not mutate Neon or exte
 assert.match(pkg.scripts['build:runtime'] || '', /build-static-runtime/, 'static registry runtime generation must run explicitly');
 assert.match(pkg.scripts['sync:neon'] || '', /sync-neon-from-sheets/, 'manual Neon sync command must remain available');
 
-console.log('Site-wide deep audit passed.');
+console.log('Site-wide deep single-version audit passed.');
