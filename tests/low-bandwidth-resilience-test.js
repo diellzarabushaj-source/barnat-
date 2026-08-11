@@ -8,7 +8,7 @@ const read = file => fs.readFileSync(path.join(ROOT, file), 'utf8');
 const files = [
   'sw.js', 'sw-resilient.js', 'sw-resilient-v3.js',
   'offline-runtime.js', 'offline-runtime-performance.js',
-  'login.js', 'auth-client.js', 'tailadmin-shell.js', 'middleware.ts', 'vercel.json', 'index.html'
+  'login.js', 'auth-client.js', 'api/auth.js', 'tailadmin-shell.js', 'middleware.ts', 'vercel.json', 'index.html'
 ];
 for (const file of files) assert.ok(fs.existsSync(path.join(ROOT, file)), `${file} is missing`);
 for (const file of files.filter(file => file.endsWith('.js'))) execFileSync(process.execPath, ['--check', path.join(ROOT, file)], { stdio:'pipe' });
@@ -38,7 +38,7 @@ for (const file of ['sw-resilient.js', 'sw-resilient-v3.js']) {
 const runtime = read('offline-runtime.js');
 assert.match(runtime, /VERSION = 'single-version-v1'/);
 assert.match(runtime, /SERVICE_WORKER_URL = `\/sw\.js\?v=\$\{RELEASE_ID\}`/);
-assert.match(runtime, /RELEASE_ENDPOINT = '\/api\/release'/);
+assert.match(runtime, /RELEASE_ENDPOINT = '\/api\/auth\?release=1'/);
 assert.match(runtime, /single-version-release-runtime-v1/);
 assert.match(runtime, /checkRelease/);
 assert.match(runtime, /cache:'no-store'/);
@@ -66,6 +66,13 @@ const auth = read('auth-client.js');
 assert.match(auth, /OFFLINE_RUNTIME_SRC = '\/offline-runtime\.js\?v=/);
 assert.doesNotMatch(auth, /offline-runtime-performance\.js/);
 
+const authApi = read('api/auth.js');
+assert.match(authApi, /single-version-release-endpoint-v1/);
+assert.match(authApi, /queryValue\(req, 'release'\) === '1'/);
+assert.match(authApi, /strategy:'single-version-v1'/);
+assert.match(authApi, /Cache-Control', 'no-store, max-age=0'/);
+assert.equal(fs.existsSync(path.join(ROOT, 'api/release.js')), false, 'release identity must not consume a separate function slot');
+
 const shell = read('tailadmin-shell.js');
 assert.match(shell, /OFFLINE_RUNTIME_SRC = '\/offline-runtime\.js\?v=/);
 assert.match(shell, /revealCachedShellOnWeakConnection/);
@@ -74,7 +81,7 @@ assert.match(shell, /auth-optimistic/);
 assert.match(shell, /profile\.slow \|\| profile\.saveData/, 'runtime prefetch must stop on constrained connections');
 
 const middleware = read('middleware.ts');
-assert.match(middleware, /'\/api\/release'/, 'release identity endpoint must be public');
+assert.match(middleware, /pathname === '\/api\/auth'/, 'auth endpoint must remain public for release checks and auth bootstrap');
 assert.match(middleware, /'\/sw\.js'/, 'canonical worker must remain public');
 assert.match(middleware, /'\/sw-resilient-v3\.js'/, 'migration worker path must remain public during cutover');
 
