@@ -9,7 +9,7 @@ const exists = relative => fs.existsSync(path.join(ROOT, relative));
 
 [
   'sw.js', 'sw-resilient-v3.js', 'offline-runtime.js', 'offline-runtime-performance.js',
-  'auth-client.js', 'app-performance.js', 'clinical-workflow.js', 'local-registry.js'
+  'auth-client.js', 'api/auth.js', 'app-performance.js', 'clinical-workflow.js', 'local-registry.js'
 ].forEach(file => {
   assert.ok(exists(file), `${file} is missing`);
   execFileSync(process.execPath, ['--check', path.join(ROOT, file)], { stdio:'pipe' });
@@ -55,7 +55,7 @@ const runtime = read('offline-runtime.js');
   /clinical-workflow\.js/, /Përditësim gati/, /Pa internet/, /\/sw\.js\?v=/,
   /verifyNetworkReachability/, /offline_probe=1/, /networkReachable/, /window\.MEDINDEX_AUTH_READY/,
   /authConnectivitySignal/, /fallbackNetworkProbe/, /reachabilityPromise/,
-  /RELEASE_ENDPOINT = '\/api\/release'/, /checkRelease/, /single-version-release-runtime-v1/,
+  /RELEASE_ENDPOINT = '\/api\/auth\?release=1'/, /checkRelease/, /single-version-release-runtime-v1/,
 ].forEach(pattern => assert.match(runtime, pattern, `offline-runtime.js missing ${pattern}`));
 assert.match(runtime, /installListeners\(\);[\s\S]*installReleaseListener\(\);[\s\S]*scheduleReleaseCheck\(\);[\s\S]*void verifyNetworkReachability\(\);/, 'release and reachability checks must be coordinated during startup');
 assert.match(runtime, /NETWORK_PROBE_TIMEOUT_MS = 6000[\s\S]*AbortController/, 'the standalone fallback probe must have a deterministic timeout');
@@ -64,6 +64,13 @@ assert.match(runtime, /RELEASE_ENDPOINT[\s\S]*cache:'no-store'/, 'release identi
 assert.equal((runtime.match(/fetch\('\/api\/auth\?offline_probe=1'/g) || []).length, 1, 'offline runtime must define exactly one fallback network probe');
 assert.doesNotMatch(runtime, /sw-resilient-v3\.js|RESILIENCE_VERSION/, 'canonical runtime must not register legacy workers');
 assert.doesNotMatch(runtime, /\/api\/gemini-prescription|password/i, 'offline runtime must not call AI or handle passwords');
+
+const authApi = read('api/auth.js');
+assert.match(authApi, /single-version-release-endpoint-v1/);
+assert.match(authApi, /queryValue\(req, 'release'\) === '1'/);
+assert.match(authApi, /strategy:'single-version-v1'/);
+assert.match(authApi, /Cache-Control', 'no-store, max-age=0'/);
+assert.equal(exists('api/release.js'), false, 'release identity must reuse the existing auth function');
 
 const auth = read('auth-client.js');
 [
