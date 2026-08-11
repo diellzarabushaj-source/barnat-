@@ -10,7 +10,9 @@
   "env": {
     "GOOGLE_CLIENT_ID": "352548189224-fs7j23nquvnj9bm0fda2qnfhpureib0j.apps.googleusercontent.com",
     "PRESCRIPTION_SHEET_ID": "1o-TT-Oqlsw4aUo5DW3XZT6T9eD_IeEBCFQyjBSYM4-Q",
-    "PRESCRIPTION_SHEET_GID": "407106508"
+    "PRESCRIPTION_SHEET_GID": "407106508",
+    "MEDINDEX_DATA_SOURCE": "sheets",
+    "DOSAGE_SHEET_ID": "17cuXg5qORIIWkvAxLZ7uz2FMmGvzwjr850cubUcIgLE"
   },
   "redirects": [
     {
