@@ -94,12 +94,52 @@ function patchIndex() {
 
 function patchCanonicalWorker() {
   let source = read('sw.js');
-  source = source.replace("'/tailadmin-shell.js', '/tailadmin-shell-legacy.js', '/tailadmin-professional.js'", "'/tailadmin-shell.js', '/tailadmin-shell-core.js', '/tailadmin-professional.js'");
+  source = source
+    .replace("'/tailadmin-shell.js', '/tailadmin-shell-legacy.js', '/tailadmin-professional.js'", "'/tailadmin-shell.js', '/tailadmin-shell-core.js', '/tailadmin-professional.js'")
+    .replace(/\s*'\/ui-enhancements\.js',?/g, '');
 
   if (!source.includes("'/tailadmin-shell-core.js'")) throw new Error('Canonical shell core is missing from the service-worker shell.');
   if (source.includes("'/tailadmin-shell-legacy.js'")) throw new Error('Legacy shell implementation remains in the canonical service-worker shell.');
+  if (source.includes("'/ui-enhancements.js'")) throw new Error('Obsolete ui-enhancements.js remains in the canonical service-worker shell.');
   syntaxCheck('sw.js', source);
   write('sw.js', source);
+}
+
+function runtimeFiles(directory = ROOT) {
+  const ignored = new Set([
+    '.git', '.github', '.superdesign', '.vercel', 'node_modules', 'tests', 'scripts',
+    'test-results', 'playwright-report',
+  ]);
+  return fs.readdirSync(directory, { withFileTypes:true }).flatMap(entry => {
+    if (entry.isDirectory() && ignored.has(entry.name)) return [];
+    const absolute = path.join(directory, entry.name);
+    if (entry.isDirectory()) return runtimeFiles(absolute);
+    if (!entry.isFile()) return [];
+    if (!/\.(?:html|js|mjs)$/i.test(entry.name)) return [];
+    if (entry.name === 'ui-enhancements.js') return [];
+    return [absolute];
+  });
+}
+
+function findRuntimeReferences(needle) {
+  const references = [];
+  for (const absolute of runtimeFiles()) {
+    const source = fs.readFileSync(absolute, 'utf8');
+    if (!source.includes(needle)) continue;
+    references.push(path.relative(ROOT, absolute).replace(/\\/g, '/'));
+  }
+  return references.sort();
+}
+
+function retireUiEnhancements() {
+  const references = findRuntimeReferences('ui-enhancements.js');
+  if (references.length) {
+    throw new Error(`Phase 7 refused to retire ui-enhancements.js; production references remain: ${references.join(', ')}`);
+  }
+
+  const shim = `(() => {\n  'use strict';\n  // Phase 7 compatibility path only. The former registry visual/navigation controller is retired.\n  document.documentElement.dataset.miLegacyUiEnhancements = 'retired';\n})();\n`;
+  syntaxCheck('ui-enhancements.js', shim);
+  write('ui-enhancements.js', shim);
 }
 
 function auditPhase7() {
@@ -107,15 +147,25 @@ function auditPhase7() {
   const bootstrap = read('tailadmin-shell.js');
   const core = read('tailadmin-shell-core.js');
   const legacyShim = read('tailadmin-shell-legacy.js');
+  const uiShim = read('ui-enhancements.js');
   const worker = read('sw.js');
 
   if ((index.match(/tailadmin-shell\.js/g) || []).length !== 1) throw new Error('Phase 7: multiple shell bootstraps are statically loaded.');
   if (index.includes('tailadmin-shell-legacy.js')) throw new Error('Phase 7: legacy shell is still statically loaded.');
   if (index.includes('offline-runtime-performance.js')) throw new Error('Phase 7: legacy offline runtime is still statically loaded.');
+  if (index.includes('ui-enhancements.js')) throw new Error('Phase 7: obsolete UI enhancement controller is statically loaded.');
   if (!bootstrap.includes('CORE_SHELL_SRC') || bootstrap.includes('LEGACY_SRC')) throw new Error('Phase 7: shell bootstrap is not canonical.');
   if (!core.includes('function createShell(') || !core.includes('function buildNavigation(')) throw new Error('Phase 7: canonical shell core is incomplete.');
-  if (!legacyShim.includes('legacy-migration') || legacyShim.includes('function createShell(')) throw new Error('Phase 7: legacy path is not a migration-only shim.');
-  if (!worker.includes("'/tailadmin-shell-core.js'") || worker.includes("'/tailadmin-shell-legacy.js'")) throw new Error('Phase 7: service-worker shell still has competing shell implementations.');
+  if (!legacyShim.includes('legacy-migration') || legacyShim.includes('function createShell(')) throw new Error('Phase 7: legacy shell path is not a migration-only shim.');
+  if (!uiShim.includes("miLegacyUiEnhancements = 'retired'")
+      || /MutationObserver|localStorage|sessionStorage|insertAdjacentHTML|legacyNavigationStyles|data-drug-actions/.test(uiShim)) {
+    throw new Error('Phase 7: ui-enhancements.js still contains a competing registry UI implementation.');
+  }
+  if (!worker.includes("'/tailadmin-shell-core.js'")
+      || worker.includes("'/tailadmin-shell-legacy.js'")
+      || worker.includes("'/ui-enhancements.js'")) {
+    throw new Error('Phase 7: service-worker shell still has competing UI implementations.');
+  }
 
   const obsoleteStaticLayers = [
     'navigation-consistency.js',
@@ -126,11 +176,15 @@ function auditPhase7() {
     if (index.includes(layer)) throw new Error(`Phase 7: obsolete UI layer returned to index.html: ${layer}`);
   }
 
-  console.log(`Phase 7 legacy UI cleanup passed for ${RELEASE_ID}: one shell bootstrap, one canonical shell core, legacy shell is migration-only.`);
+  const liveUiReferences = findRuntimeReferences('ui-enhancements.js');
+  if (liveUiReferences.length) throw new Error(`Phase 7: obsolete UI runtime references remain: ${liveUiReferences.join(', ')}`);
+
+  console.log(`Phase 7 legacy UI cleanup passed for ${RELEASE_ID}: one shell bootstrap, one canonical shell core; legacy shell and ui-enhancements are compatibility-only.`);
 }
 
 materializeCanonicalShellCore();
 patchShellBootstrap();
 patchIndex();
 patchCanonicalWorker();
+retireUiEnhancements();
 auditPhase7();
