@@ -60,9 +60,14 @@
   function enhanceCell(cell) {
     if (!(cell instanceof HTMLElement)) return;
     const row = cell.closest('tr');
+    const action = cell.querySelector('.dose-calculator-open');
+    if (action && clean(action.textContent) !== 'Kalkulo dozën') {
+      action.textContent = 'Kalkulo dozën';
+      action.setAttribute('aria-label', 'Kalkulo dozën');
+    }
     const state = stateForCell(cell);
     const group = groupForCell(cell);
-    const productKey = clean(cell.querySelector('.dose-calculator-open')?.dataset?.doseProductKey);
+    const productKey = clean(action?.dataset?.doseProductKey);
     const signature = [VERSION, state, productKey, group].join('|');
     if (cell.dataset.doseTableSignature === signature) return;
 
