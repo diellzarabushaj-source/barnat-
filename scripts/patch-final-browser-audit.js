@@ -52,10 +52,19 @@ function patchDoseWeightGate() {
     "      detailRow('Doza zyrtare:', doseText(rule)),",
     'clear official dose detail label',
   );
+  source = replaceOnce(
+    source,
+    "    const ageRules = ageMatchedRules(ageMonths);\n    if (!ageRules.length) {\n      showError('Nuk ka rregull doze për këtë moshë dhe indikacion.');\n      return false;\n    }",
+    "    const ageRules = ageMatchedRules(ageMonths);\n    if (!ageRules.length) {\n      const group = productGroup(activeProduct);\n      if (group === 'adult_only' && ageMonths < 216) {\n        showError('Ky preparat nuk përdoret te fëmijët sipas burimit zyrtar. Doza nuk mund të kalkulohet.');\n      } else {\n        showError('Nuk ka rregull doze për këtë moshë dhe indikacion.');\n      }\n      return false;\n    }",
+    'adult-only pediatric fail-closed message',
+  );
   if (!source.includes('modal.weight.disabled = true;') || !source.includes('modal.weight.disabled = !needsWeight;')) {
     throw new Error('Dose weight adaptive disabled-state contract missing.');
   }
   if (!source.includes("detailRow('Doza zyrtare:', doseText(rule))")) throw new Error('Official dose detail label missing.');
+  if (!source.includes('Ky preparat nuk përdoret te fëmijët sipas burimit zyrtar. Doza nuk mund të kalkulohet.')) {
+    throw new Error('Adult-only pediatric safety message missing.');
+  }
   write('registry-dose-calculator.js', source);
 }
 
@@ -69,18 +78,19 @@ function patchCellPreviewKeyboard() {
   );
   source = replaceOnce(
     source,
-    "    button.dataset.lineiconsSource = 'Lineicons Basic / expand-square-4';\n    cell.appendChild(button);",
-    "    button.dataset.lineiconsSource = 'Lineicons Basic / expand-square-4';\n    button.addEventListener('keydown', event => {\n      if (!['Enter', ' '].includes(event.key)) return;\n      event.preventDefault();\n      event.stopImmediatePropagation();\n      keyboardClickSuppressionUntil = Date.now() + 900;\n      toggleInline(button);\n    });\n    cell.appendChild(button);",
-    'direct cell preview keyboard listener',
+    "  function onClick(event) {\n    const trigger = event.target.closest?.(`.${TRIGGER_CLASS}`);\n    if (!trigger) return;\n    event.preventDefault();\n    event.stopImmediatePropagation();\n    toggleInline(trigger);\n  }",
+    "  function setInlineExpanded(trigger, desired) {\n    const cell = trigger?.closest?.(`td[${PREVIEW_ATTR}=\"true\"]`);\n    const row = cell?.closest('tr');\n    if (!row) return false;\n    row.querySelectorAll(':scope > td').forEach(restoreCanonicalSource);\n    const next = Boolean(desired);\n    const rowController = window.MedIndexRegistryRows;\n    if (typeof rowController?.toggleRow === 'function') {\n      rowController.toggleRow(row, next);\n    } else {\n      row.classList.toggle('registry-row-expanded', next);\n      row.dataset.registryRowExpanded = String(next);\n      row.querySelectorAll('.registry-dosage-details').forEach(details => { details.open = next; });\n    }\n    row.querySelectorAll(`.${TRIGGER_CLASS}`).forEach(syncTriggerState);\n    return next;\n  }\n\n  function onClick(event) {\n    const trigger = event.target.closest?.(`.${TRIGGER_CLASS}`);\n    if (!trigger) return;\n    event.preventDefault();\n    event.stopImmediatePropagation();\n    if (Date.now() < keyboardClickSuppressionUntil) return;\n    toggleInline(trigger);\n  }\n\n  function onKeydown(event) {\n    const trigger = event.target.closest?.(`.${TRIGGER_CLASS}`);\n    if (!trigger || !['Enter', ' '].includes(event.key)) return;\n    event.preventDefault();\n    event.stopImmediatePropagation();\n    keyboardClickSuppressionUntil = Date.now() + 1000;\n    const row = trigger.closest('tr');\n    setInlineExpanded(trigger, !rowIsExpanded(row));\n  }",
+    'single capture keyboard expansion path',
   );
   source = replaceOnce(
     source,
-    "  function onClick(event) {\n    const trigger = event.target.closest?.(`.${TRIGGER_CLASS}`);\n    if (!trigger) return;\n    event.preventDefault();\n    event.stopImmediatePropagation();\n    toggleInline(trigger);\n  }",
-    "  function onClick(event) {\n    const trigger = event.target.closest?.(`.${TRIGGER_CLASS}`);\n    if (!trigger) return;\n    event.preventDefault();\n    event.stopImmediatePropagation();\n    if (Date.now() < keyboardClickSuppressionUntil) return;\n    toggleInline(trigger);\n  }",
-    'keyboard synthetic-click suppression',
+    "  function init() {\n    document.addEventListener('click', onClick, true);",
+    "  function init() {\n    document.addEventListener('keydown', onKeydown, true);\n    document.addEventListener('click', onClick, true);",
+    'capture keyboard listener registration',
   );
-  if (!source.includes('keyboardClickSuppressionUntil = Date.now() + 900')) throw new Error('Cell preview keyboard toggle contract missing.');
-  if (!source.includes('if (Date.now() < keyboardClickSuppressionUntil) return;')) throw new Error('Cell preview synthetic-click suppression missing.');
+  if (!source.includes('function setInlineExpanded(trigger, desired)')) throw new Error('Explicit keyboard expansion setter missing.');
+  if (!source.includes("document.addEventListener('keydown', onKeydown, true)")) throw new Error('Capture keyboard listener missing.');
+  if (!source.includes('rowController.toggleRow(row, next)')) throw new Error('Keyboard expansion must force an explicit row state.');
   write('registry-cell-preview.js', source);
 }
 
@@ -137,4 +147,4 @@ patchBrowserSafetyFixture();
 patchDrawerBrowserTest();
 patchDarkModeClsGate();
 auditStickyHeader();
-console.log('Final browser audit patch passed: official dose label, physical drawer outside-click, valid safety fixture, single keyboard row toggle, stable dark-mode CLS and sticky-header/no-frozen-column contracts are active.');
+console.log('Final browser audit patch passed: pediatric adult-only dose safety, explicit keyboard row state, physical drawer outside-click, valid safety fixture, stable dark-mode CLS and sticky-header/no-frozen-column contracts are active.');
