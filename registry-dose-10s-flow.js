@@ -1,7 +1,7 @@
 (() => {
   'use strict';
 
-  const VERSION = 'registry-dose-10s-flow-v1';
+  const VERSION = 'registry-dose-10s-flow-v2';
   const MODAL_ID = 'doseCalculatorModal';
   const STYLE_ID = 'doseCalculator10sFlowStyles';
   let modal = null;
@@ -53,7 +53,7 @@
     const realOptions = Array.from(select.options).filter(option => !option.dataset.doseFastPlaceholder);
     if (wrap.hidden || realOptions.length <= 1) {
       select.querySelectorAll('[data-dose-fast-placeholder]').forEach(option => option.remove());
-      if (realOptions.length === 1) realOptions[0].selected = true;
+      if (realOptions.length === 1 && !realOptions[0].selected) realOptions[0].selected = true;
       return;
     }
 
@@ -70,6 +70,10 @@
     }
   }
 
+  function setCue(cue, text) {
+    if (cue.textContent !== text) cue.textContent = text;
+  }
+
   function updateCue(root) {
     const cue = root.querySelector('.dose-calculator-auto-note');
     const indicationWrap = root.querySelector('[data-dose-indication-wrap]');
@@ -81,22 +85,22 @@
     if (!(cue instanceof HTMLElement)) return;
 
     if (visible(indicationWrap) && !String(indication?.value || '').trim()) {
-      cue.textContent = 'Zgjidh indikacionin → shkruaj moshën → rezultati del automatikisht.';
+      setCue(cue, 'Zgjidh indikacionin → shkruaj moshën → rezultati del automatikisht.');
       return;
     }
     if (!String(age?.value || '').trim()) {
-      cue.textContent = 'Shkruaj moshën. Pesha hapet vetëm kur rregulli e kërkon.';
+      setCue(cue, 'Shkruaj moshën. Pesha hapet vetëm kur rregulli e kërkon.');
       return;
     }
     if (visible(weightWrap) && !String(weight?.value || '').trim()) {
-      cue.textContent = 'Shkruaj peshën e matur; nuk ka hap tjetër për kalkulim.';
+      setCue(cue, 'Shkruaj peshën e matur; nuk ka hap tjetër për kalkulim.');
       return;
     }
     if (result instanceof HTMLElement && !result.hidden) {
-      cue.textContent = 'Rezultati është gati.';
+      setCue(cue, 'Rezultati është gati.');
       return;
     }
-    cue.textContent = 'Rezultati llogaritet automatikisht sapo të dhënat janë të plota.';
+    setCue(cue, 'Rezultati llogaritet automatikisht sapo të dhënat janë të plota.');
   }
 
   function tuneInputs(root) {
@@ -115,8 +119,8 @@
     }
     if (indication instanceof HTMLSelectElement) indication.setAttribute('aria-label', 'Indikacioni');
     chips?.querySelectorAll('button').forEach(button => {
-      button.tabIndex = -1;
-      button.setAttribute('aria-hidden', 'true');
+      if (button.tabIndex !== -1) button.tabIndex = -1;
+      if (button.getAttribute('aria-hidden') !== 'true') button.setAttribute('aria-hidden', 'true');
     });
   }
 
@@ -167,7 +171,7 @@
     tuneInputs(root);
     ensureExplicitIndication(root);
     wireEvents(root);
-    root.dataset.doseFastReady = 'true';
+    if (root.dataset.doseFastReady !== 'true') root.dataset.doseFastReady = 'true';
     updateCue(root);
   }
 
@@ -176,12 +180,14 @@
     modalObserver = new MutationObserver(mutations => {
       let optionsChanged = false;
       let visibilityChanged = false;
+      let meaningfulChildChange = false;
       for (const mutation of mutations) {
         if (mutation.type === 'childList' && mutation.target.matches?.('[data-dose-indication]')) optionsChanged = true;
+        if (mutation.type === 'childList' && !mutation.target.closest?.('.dose-calculator-auto-note')) meaningfulChildChange = true;
         if (mutation.type === 'attributes') visibilityChanged = true;
       }
       if (optionsChanged || (visibilityChanged && !root.hidden)) prepareModal(root);
-      else if (!root.hidden) updateCue(root);
+      else if (!root.hidden && meaningfulChildChange) updateCue(root);
     });
     modalObserver.observe(root, { childList:true, subtree:true, attributes:true, attributeFilter:['hidden'] });
   }
