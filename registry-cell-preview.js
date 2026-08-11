@@ -1,7 +1,7 @@
 (() => {
   'use strict';
 
-  const VERSION = 'registry-cell-preview-20260805-8';
+  const VERSION = 'registry-cell-preview-20260811-9';
   const TRIGGER_CLASS = 'registry-cell-preview-trigger';
   const PREVIEW_ATTR = 'data-registry-cell-preview';
   const THRESHOLDS = Object.freeze({
@@ -26,6 +26,9 @@
   let scheduled = false;
   let active = false;
   let fallbackTimer = 0;
+  let rawRowsSource = null;
+  let rawByNumber = new Map();
+  let rawByDrugKey = new Map();
 
   const cleanInline = value => String(value ?? '').replace(/[\t ]+/g, ' ').replace(/\s*\n\s*/g, ' ').trim();
   const cleanMultiline = value => String(value ?? '')
@@ -38,6 +41,37 @@
 
   function columnKey(cell) {
     return cleanInline(cell?.dataset?.registryColumnKey || '');
+  }
+
+  function refreshRawIndex() {
+    const rows = Array.isArray(window.MEDINDEX_REGISTRY_ROWS) ? window.MEDINDEX_REGISTRY_ROWS : [];
+    if (rows === rawRowsSource) return;
+    rawRowsSource = rows;
+    rawByNumber = new Map();
+    rawByDrugKey = new Map();
+    rows.forEach(row => {
+      const number = cleanInline(row?.['Nr rendor']);
+      const drugKey = [row?.PDID, row?.['Emri tregtar'], row?.['Fortësia']].map(cleanInline).join('|');
+      if (number && !rawByNumber.has(number)) rawByNumber.set(number, row);
+      if (drugKey && !rawByDrugKey.has(drugKey)) rawByDrugKey.set(drugKey, row);
+    });
+  }
+
+  function rawForTableRow(row) {
+    refreshRawIndex();
+    const number = cleanInline(row?.dataset?.registryNumber);
+    if (number && rawByNumber.has(number)) return rawByNumber.get(number);
+    const drugKey = cleanInline(row?.querySelector?.('.drug-select')?.dataset?.drugKey);
+    return drugKey ? rawByDrugKey.get(drugKey) || null : null;
+  }
+
+  function restoreCanonicalSource(cell) {
+    if (!(cell instanceof HTMLTableCellElement) || columnKey(cell) !== 'active-substance') return;
+    const raw = rawForTableRow(cell.closest('tr'));
+    const source = cleanInline(raw?.['Substanca aktive']);
+    if (!source) return;
+    const wrapper = cell.querySelector(':scope > span:first-child');
+    if (wrapper && cleanInline(wrapper.textContent) !== source) wrapper.textContent = source;
   }
 
   function columnLabel(cell) {
@@ -135,6 +169,7 @@
 
   function enhanceCell(cell) {
     if (!(cell instanceof HTMLTableCellElement)) return;
+    restoreCanonicalSource(cell);
     const text = extractCellText(cell);
     if (!shouldPreviewCell(cell, text)) {
       if (cell.hasAttribute(PREVIEW_ATTR)) removePreview(cell);
@@ -201,6 +236,7 @@
     const cell = trigger?.closest?.(`td[${PREVIEW_ATTR}="true"]`);
     const row = cell?.closest('tr');
     if (!row) return false;
+    row.querySelectorAll(':scope > td').forEach(restoreCanonicalSource);
     let expanded;
     const rowController = window.MedIndexRegistryRows;
     if (typeof rowController?.toggleRow === 'function') {
