@@ -235,7 +235,7 @@ test('një zoom zbulon tekstin e plotë në të gjitha kolonat e rreshtit', asyn
   await expect(row).toHaveAttribute('data-registry-row-expanded', 'false');
 });
 
-test('tabela scrollon horizontalisht dhe vertikalisht pa ngrirë kolonat', async ({ page }) => {
+test('tabela scrollon në të dy boshtet me header sticky, pa ngrirë kolona', async ({ page }) => {
   await waitForStableRegistry(page, PERFORMANCE_BASE, 50);
 
   const area = page.locator('#registryContent.table-wrap');
@@ -292,9 +292,10 @@ test('tabela scrollon horizontalisht dhe vertikalisht pa ngrirë kolonat', async
       right:style.right,
     };
   });
-  expect(['static','relative']).toContain(headerState.position);
-  expect(Math.abs(headerState.top - headerTopBefore)).toBeGreaterThan(24);
+  expect(headerState.position).toBe('sticky');
+  expect(Math.abs(headerState.top - headerTopBefore)).toBeLessThanOrEqual(3);
   expect(['auto','0px']).toContain(headerState.left);
+  expect(['auto','0px']).toContain(headerState.right);
 
   const scrollbarBounds = await area.evaluate(node => ({
     clientWidth:node.clientWidth,
