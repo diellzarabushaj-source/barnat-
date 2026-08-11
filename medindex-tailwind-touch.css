@@ -10,9 +10,45 @@ html.medindex-tailadmin #icdSourceHealthRefresh{
   border-radius:8px!important;
 }
 
+/* Dose action stays compact visually, but its real hit target never drops below 44px. */
+html.medindex-tailadmin #dataTable .registry-dose-calculator-column .dose-calculator-open{
+  min-height:44px!important;
+  height:44px!important;
+  padding-block:8px!important;
+  line-height:1!important;
+}
+
+@media(max-width:1023px){
+  /* The drawer must sit above its scrim, while the scrim must be a real pointer target. */
+  html.medindex-tailadmin .mi-sidebar{
+    z-index:220!important;
+  }
+  html.medindex-tailadmin .mi-mobile-overlay{
+    z-index:210!important;
+    pointer-events:none!important;
+    touch-action:manipulation;
+  }
+  html.medindex-tailadmin body.mi-sidebar-open .mi-mobile-overlay{
+    pointer-events:auto!important;
+  }
+  html.medindex-tailadmin body.mi-sidebar-open .mi-workspace{
+    pointer-events:none!important;
+  }
+
+  html.medindex-tailadmin #appMenu :where(.app-menu-link,.mi-menu-item,.auth-logout),
+  html.medindex-tailadmin .mi-sidebar-close{
+    min-height:44px!important;
+  }
+}
+
 @media(max-width:767px){
   html.medindex-tailadmin #icdSourceHealthRefresh{
     min-width:44px!important;
     min-height:44px!important;
+  }
+
+  html.medindex-tailadmin #dataTable .registry-dose-calculator-column .dose-calculator-open{
+    min-height:44px!important;
+    height:44px!important;
   }
 }
