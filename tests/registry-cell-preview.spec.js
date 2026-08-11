@@ -2,7 +2,7 @@ const { test, expect } = require('@playwright/test');
 
 const BASE = 'http://127.0.0.1:4173';
 const PERFORMANCE_BASE = 'http://127.0.0.1:4174';
-const PREVIEW_VERSION = 'registry-cell-preview-20260805-8';
+const PREVIEW_VERSION = 'registry-cell-preview-20260811-9';
 
 test.use({ serviceWorkers:'block', viewport:{ width:1440, height:900 } });
 
