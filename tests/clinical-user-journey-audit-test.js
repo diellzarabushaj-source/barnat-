@@ -41,7 +41,8 @@ assert.doesNotMatch(localRegistry, /\/api\/drug-search/, 'Kërkimi lokal nuk duh
 assert.doesNotMatch(localRegistry, /Function\s*\(|eval\s*\(/, 'Kërkimi lokal nuk duhet të ekzekutojë payload si kod');
 
 const worker = read('sw.js');
-assert.match(worker, /production-audit-v2/);
+assert.match(worker, /VERSION = 'single-version-v1'/);
+assert.match(worker, /const RELEASE_ID = '[^']+'/);
 assert.match(worker, /clinical-workflow\.js/);
 assert.match(worker, /local-registry\.js/);
 assert.match(worker, /app-runtime\.js/);
@@ -68,10 +69,12 @@ assert.match(auth, /medindex:offline-auth-invalid/);
 assert.match(auth, /production-audit-v2/);
 
 const runtime = read('offline-runtime.js');
+assert.match(runtime, /VERSION = 'single-version-v1'/);
+assert.match(runtime, /RELEASE_ENDPOINT = '\/api\/auth\?release=1'/);
 assert.match(runtime, /clinical-workflow\.js/);
 assert.match(runtime, /Përditësim gati/);
 assert.match(runtime, /Sinkronizimi nuk u konfirmua/);
 assert.match(runtime, /max-width:760px/);
 assert.doesNotMatch(runtime, /setStatus\('ready'.*12000/s, 'Runtime-i nuk duhet të deklarojë sukses pa konfirmim');
 
-console.log('Physician-first clinical journey audit passed.');
+console.log('Physician-first clinical journey and single-version worker audit passed.');
