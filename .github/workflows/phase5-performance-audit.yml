@@ -1,0 +1,74 @@
+name: Phase 5 performance audit
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  phase5-performance:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          version: 10.28.0
+          run_install: false
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: pnpm
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile --ignore-scripts
+
+      - name: Build audited runtime
+        run: pnpm run build:runtime
+
+      - name: Install Chromium
+        shell: bash
+        run: |
+          set -euo pipefail
+          pnpm exec playwright install --with-deps chromium > /tmp/phase5-playwright-install.log 2>&1 || { tail -200 /tmp/phase5-playwright-install.log; exit 1; }
+
+      - name: Run Phase 5 interaction and 4006-row performance gates
+        shell: bash
+        run: |
+          set -euo pipefail
+          node tests/clinical-smoke-server.js > /tmp/phase5-clinical-server.log 2>&1 &
+          CLINICAL_SERVER_PID=$!
+          node tests/registry-performance-server.js > /tmp/phase5-registry-server.log 2>&1 &
+          REGISTRY_SERVER_PID=$!
+          trap 'kill "$CLINICAL_SERVER_PID" "$REGISTRY_SERVER_PID" 2>/dev/null || true' EXIT
+          for attempt in {1..30}; do
+            curl -fsS http://127.0.0.1:4173/index.html >/dev/null && break
+            sleep 1
+          done
+          for attempt in {1..30}; do
+            curl -fsS http://127.0.0.1:4174/index.html >/dev/null && break
+            sleep 1
+          done
+          pnpm exec playwright test tests/phase5-final-performance.spec.js tests/registry-main-thread-performance.spec.js --reporter=line --workers=1 --retries=1 | tee /tmp/phase5-performance.log
+
+      - name: Upload Phase 5 metrics
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: phase5-performance-metrics
+          path: |
+            /tmp/phase5-performance.log
+            /tmp/phase5-clinical-server.log
+            /tmp/phase5-registry-server.log
+            test-results
+          if-no-files-found: warn
+          retention-days: 7
