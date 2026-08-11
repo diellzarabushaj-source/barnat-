@@ -95,7 +95,7 @@ function patchOfflineRuntime() {
     "      version:RELEASE_ID,\n      release:() => RELEASE_ID,\n      pendingRelease:() => pendingReleaseId,\n      checkRelease,\n      warm:"
   );
 
-  if (!source.includes("const SERVICE_WORKER_URL = `/sw.js?v=${RELEASE_ID}`;")
+  if (!source.includes('const SERVICE_WORKER_URL = `/sw.js?v=${RELEASE_ID}`;')
       || !source.includes("const RELEASE_ENDPOINT = '/api/auth?release=1';")
       || !source.includes('single-version-release-runtime-v1')
       || source.includes('sw-resilient-v3.js')
@@ -144,6 +144,10 @@ function patchRuntimeReferences() {
   let index = read('index.html');
   index = index.replace(
     /<script src="offline-runtime-performance\.js(?:\?[^\"]*)?" data-medindex-offline-runtime defer><\/script>/,
+    `<script src="offline-runtime.js?v=${releaseId}" data-medindex-offline-runtime defer></script>`
+  );
+  index = index.replace(
+    /<script src="offline-runtime\.js(?:\?[^\"]*)?" data-medindex-offline-runtime defer><\/script>/,
     `<script src="offline-runtime.js?v=${releaseId}" data-medindex-offline-runtime defer></script>`
   );
   if (!index.includes(`offline-runtime.js?v=${releaseId}`) || index.includes('offline-runtime-performance.js')) {
