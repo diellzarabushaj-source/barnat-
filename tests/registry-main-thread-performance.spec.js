@@ -18,7 +18,22 @@ test.describe('registry main-thread performance', () => {
 
   test('4006 rows stay interactive on a slow registry and large dosage payload', async ({ page }) => {
     const pageErrors = [];
-    page.on('pageerror', error => pageErrors.push(String(error?.message || error)));
+    const consoleErrors = [];
+    page.on('pageerror', error => {
+      const item = {
+        message:String(error?.message || error),
+        name:String(error?.name || ''),
+        stack:String(error?.stack || ''),
+      };
+      pageErrors.push(item);
+      console.log(`REGISTRY_BROWSER_ERROR ${JSON.stringify(item)}`);
+    });
+    page.on('console', message => {
+      if (message.type() !== 'error') return;
+      const item = { text:message.text(), location:message.location() };
+      consoleErrors.push(item);
+      console.log(`REGISTRY_CONSOLE_ERROR ${JSON.stringify(item)}`);
+    });
 
     await page.addInitScript(() => {
       const state = {
@@ -27,8 +42,17 @@ test.describe('registry main-thread performance', () => {
         maxGap:0,
         gaps:[],
         longTasks:[],
+        runtimeErrors:[],
       };
       window.__medindexPerfProbe = state;
+      window.addEventListener('error', event => {
+        state.runtimeErrors.push({
+          message:String(event.message || ''),
+          filename:String(event.filename || ''),
+          lineno:Number(event.lineno || 0),
+          colno:Number(event.colno || 0),
+        });
+      }, true);
       setInterval(() => {
         const now = performance.now();
         const gap = now - state.lastTick;
@@ -198,9 +222,13 @@ test.describe('registry main-thread performance', () => {
         resolve(count);
       }, 1500);
     }));
+    console.log(`REGISTRY_IDLE_MUTATIONS ${idleMutationCount}`);
     expect(idleMutationCount, 'dosage integration entered a DOM mutation feedback loop').toBeLessThanOrEqual(8);
 
-    const allowedErrors = pageErrors.filter(message => !/service worker|offline runtime/i.test(message));
-    expect(allowedErrors).toEqual([]);
+    const runtimeErrors = await page.evaluate(() => window.__medindexPerfProbe?.runtimeErrors || []);
+    if (runtimeErrors.length) console.log(`REGISTRY_RUNTIME_ERRORS ${JSON.stringify(runtimeErrors)}`);
+    if (consoleErrors.length) console.log(`REGISTRY_CONSOLE_ERRORS ${JSON.stringify(consoleErrors)}`);
+    const allowedErrors = pageErrors.filter(item => !/service worker|offline runtime/i.test(item.message));
+    expect(allowedErrors, `browser runtime errors: ${JSON.stringify({ pageErrors:allowedErrors, runtimeErrors, consoleErrors })}`).toEqual([]);
   });
 });
