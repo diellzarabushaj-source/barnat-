@@ -62,7 +62,8 @@ assert.match(dosage, /cell\.dataset\.label = column\.label;/, 'Dosage cells need
 clinicalPages.forEach(page => {
   assert.match(read(page), /<link rel="manifest" href="manifest\.webmanifest">/, `${page} needs a static PWA manifest link`);
 });
-assert.match(auth, /OFFLINE_RUNTIME_SRC = '\/offline-runtime-performance\.js\?v=low-bandwidth-v3'/, 'Every private page must start the same cache-isolated offline runtime');
+assert.match(auth, /OFFLINE_RUNTIME_SRC = '\/offline-runtime\.js\?v=/, 'Every private page must start the canonical single-version offline runtime');
+assert.doesNotMatch(auth, /offline-runtime-performance\.js/, 'Legacy offline runtime path must not be active');
 assert.match(nameDisplay, /\[data-nav="classification"\],\[data-medical-nav="classification"\]/, 'Classification navigation must not be duplicated');
 assert.match(shell, /class="mi-page-heading-title"/, 'The shell title must not create a second page H1');
 assert.doesNotMatch(shell, /Burime të kontrolluara/, 'The shell must not claim every source is controlled');
@@ -86,4 +87,4 @@ assert.equal(manifest.background_color, '#f6f9f8');
   execFileSync(process.execPath, ['--check', path.join(ROOT, file)], { stdio:'pipe' });
 });
 
-console.log('Compact, mobile-first and offline-readable UI audit passed.');
+console.log('Compact, mobile-first and single-version offline-readable UI audit passed.');
