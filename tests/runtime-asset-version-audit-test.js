@@ -30,7 +30,7 @@ assert.match(index, /data-registry-ui-release="20260809-1"/, 'registry UI releas
 assert.match(index, /registry-cell-preview\.js\?v=20260810-1/, 'cell preview runtime version is stale');
 assert.match(index, /registry-dose-calculator\.js\?v=20260810-2/, 'canonical dose calculator runtime is stale');
 assert.doesNotMatch(index, /registry-dose-calculator-fast-ui\.(?:js|css)/, 'obsolete dose fast UI layer must not be loaded');
-assert.match(index, /registry-dose-table-button\.js\?v=20260805-5/, 'dose table button runtime is missing');
+assert.match(index, /registry-dose-table-button\.js\?v=20260811-1/, 'dose table button runtime is missing');
 assert.match(index, /registry-dose-table-button\.css\?v=20260810-1/, 'dose table button stylesheet is missing');
 assert.match(index, /registry-dose-modal-accessibility\.js\?v=20260809-1/, 'dose modal accessibility runtime is stale');
 assert.match(index, /registry-ui-release\.js\?v=20260809-1/, 'registry UI release runtime is stale');
