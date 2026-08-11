@@ -27,7 +27,8 @@ assert.doesNotMatch(index, /offline-runtime-performance\.js/, 'index.html: legac
 assert.match(index, /registry-fast-start\.js\?v=registry-fast-start-v2/, 'index.html: fast-start guard version is stale');
 assert.match(index, /<script id="drug-data" type="application\/json">\[\]<\/script>/, 'registry JSON fallback must remain inert');
 assert.match(index, /data-registry-ui-release="20260809-1"/, 'registry UI release is stale');
-assert.match(index, /registry-cell-preview\.js\?v=20260810-1/, 'cell preview runtime version is stale');
+assert.match(index, /registry-cell-preview\.js\?v=20260811-2/, 'cell preview runtime version is stale');
+assert.match(index, /registry-dose-10s-flow\.js\?v=20260811-2/, 'observer-safe dose fast-flow runtime is stale');
 assert.match(index, /registry-dose-calculator\.js\?v=20260810-2/, 'canonical dose calculator runtime is stale');
 assert.doesNotMatch(index, /registry-dose-calculator-fast-ui\.(?:js|css)/, 'obsolete dose fast UI layer must not be loaded');
 assert.match(index, /registry-dose-table-button\.js\?v=20260811-1/, 'dose table button runtime is missing');
