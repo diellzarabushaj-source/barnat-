@@ -16,7 +16,8 @@ for (const page of pages) {
 const worker = read('sw.js');
 const runtime = read('offline-runtime.js');
 const shell = read('tailadmin-shell.js');
-const auth = read('auth-client.js');
+const authClient = read('auth-client.js');
+const authApi = read('api/auth.js');
 const index = read('index.html');
 
 assert.match(worker, /VERSION = 'single-version-v1'/);
@@ -26,12 +27,12 @@ assert.match(worker, /names\.filter\(name => name\.startsWith\('medindex-'\) && 
 assert.doesNotMatch(worker, /await refreshSafeClinicalPages\(\)/, 'worker activation must not force refresh an open page');
 
 assert.match(runtime, /VERSION = 'single-version-v1'/);
-assert.match(runtime, /RELEASE_ENDPOINT = '\/api\/release'/);
+assert.match(runtime, /RELEASE_ENDPOINT = '\/api\/auth\?release=1'/);
 assert.match(runtime, /SERVICE_WORKER_URL = `\/sw\.js\?v=\$\{RELEASE_ID\}`/);
 assert.match(runtime, /cache:'no-store'/);
 assert.match(runtime, /checkRelease/);
 assert.match(shell, /OFFLINE_RUNTIME_SRC = '\/offline-runtime\.js\?v=/);
-assert.match(auth, /OFFLINE_RUNTIME_SRC = '\/offline-runtime\.js\?v=/);
+assert.match(authClient, /OFFLINE_RUNTIME_SRC = '\/offline-runtime\.js\?v=/);
 assert.match(index, /offline-runtime\.js\?v=[^\"]+[^>]+data-medindex-offline-runtime/);
 assert.doesNotMatch(index, /offline-runtime-performance\.js/);
 
@@ -42,12 +43,12 @@ const workerShim = read('sw-resilient-v3.js');
 assert.match(workerShim, /importScripts\('\/sw\.js\?v=/);
 assert.doesNotMatch(workerShim, /navigationResponse|staticResponse|PRIVATE_DATA_PATHS/);
 
-const releaseApi = read('api/release.js');
-assert.match(releaseApi, /VERCEL_GIT_COMMIT_SHA/);
-assert.match(releaseApi, /no-store/);
-assert.match(releaseApi, /single-version-v1/);
-const middleware = read('middleware.ts');
-assert.match(middleware, /'\/api\/release'/);
+assert.match(authApi, /single-version-release-endpoint-v1/);
+assert.match(authApi, /queryValue\(req, 'release'\) === '1'/);
+assert.match(authApi, /VERCEL_GIT_COMMIT_SHA/);
+assert.match(authApi, /strategy:'single-version-v1'/);
+assert.match(authApi, /Cache-Control', 'no-store, max-age=0'/, 'release identity must inherit no-store auth headers');
+assert.equal(fs.existsSync(path.join(ROOT, 'api/release.js')), false, 'release identity must not consume a separate Vercel function');
 
 const workflow = read('.github/workflows/physician-browser-audit.yml');
 assert.match(workflow, /push:\s*\n\s*branches:\s*\[main\]/, 'browser audit must run after merges to main');
