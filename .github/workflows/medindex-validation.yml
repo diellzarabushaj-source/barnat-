@@ -41,6 +41,7 @@ jobs:
             main-navigation-extension.js
             navigation-consistency.js
             tailadmin-shell.js
+            tailadmin-shell-core.js
             tailadmin-professional.js
             medical-icons.js
             section-icons.js
@@ -89,8 +90,10 @@ jobs:
           test -f prescription-registry-bridge.js
           test -f local-registry-fidelity.js
           test -f recetat.js
+          test -f tailadmin-shell-core.js
           grep -q 'id="protocolsBtn"' index.html
-          grep -q "href = '/recetat.html'" main-navigation-extension.js
+          grep -q "href:'/recetat.html'" tailadmin-shell-core.js
+          grep -q "label:'Recetat'" tailadmin-shell-core.js
           grep -q 'id="rxComposer"' recetat.html
           grep -q '@forma' recetat.html
           grep -q '@bari' recetat.html
@@ -135,7 +138,9 @@ jobs:
           set -euo pipefail
           test -f tailadmin-medindex.css
           test -f tailadmin-shell.js
+          test -f tailadmin-shell-core.js
           test -f tailadmin-professional.css
+          test -f tailadmin-professional-core.css
           test -f tailadmin-professional.js
           test -f TAILADMIN-LICENSE
           test -f THIRD_PARTY_NOTICES.md
@@ -154,14 +159,17 @@ jobs:
           grep -q 'landing-effects.css' login.html
           grep -q -- '--mi-sidebar-width: 290px' tailadmin-medindex.css
           grep -q -- '--mi-brand-500: #1f7779' tailadmin-medindex.css
-          grep -q -- '--mi-sidebar-width: 264px' tailadmin-professional.css
+          grep -q -- '--mi-sidebar-width: 264px' tailadmin-professional-core.css
           grep -q 'html\[data-theme="dark"\]' tailadmin-medindex.css
           grep -q 'prefers-reduced-motion' tailadmin-medindex.css
-          grep -q 'MOBILE_BREAKPOINT = 1024' tailadmin-shell.js
-          grep -q 'data-mi-sidebar-toggle' tailadmin-shell.js
-          grep -q 'aria-current="page"' tailadmin-shell.js
-          grep -q 'MutationObserver' tailadmin-shell.js
-          grep -q 'regjistriBarnave_theme_v1' tailadmin-shell.js
+          grep -q 'MOBILE_BREAKPOINT = 1024' tailadmin-shell-core.js
+          grep -q 'data-mi-sidebar-toggle' tailadmin-shell-core.js
+          grep -q 'aria-current="page"' tailadmin-shell-core.js
+          grep -q 'MutationObserver' tailadmin-shell-core.js
+          grep -q 'regjistriBarnave_theme_v1' tailadmin-shell-core.js
+          grep -q 'CORE_SHELL_SRC' tailadmin-shell.js
+          ! grep -q 'tailadmin-shell-legacy.js' index.html
+          ! grep -q 'offline-runtime-performance.js' index.html
           grep -q 'TailAdmin Free Tailwind Dashboard Template' THIRD_PARTY_NOTICES.md
           ! grep -q 'installClinicalUi' app-stability.js
           ! grep -q 'clinical-ui.css' app-stability.js
