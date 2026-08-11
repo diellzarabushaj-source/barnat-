@@ -98,7 +98,7 @@ assert.equal((uiSource.match(/root\.id = 'doseCalculatorModal'/g) || []).length,
   'The registry must create exactly one reusable dose calculator modal');
 assert.doesNotMatch(uiSource, /localStorage|sessionStorage/);
 
-assert.match(fastFlowSource, /registry-dose-10s-flow-v1/);
+assert.match(fastFlowSource, /registry-dose-10s-flow-v2/);
 assert.match(fastFlowSource, /Zgjidh indikacionin/,
   'Multiple indications must require one explicit choice instead of silently using the first option.');
 assert.match(fastFlowSource, /realOptions\.length <= 1/,
@@ -226,4 +226,4 @@ assert.equal(engine.renderPlainLanguageTemplate('Jep një tabletë.', { quantity
 assert.equal(engine.renderPlainLanguageTemplate('Jep {quantity} ({dose}).', { quantity:'1 tabletë', dose:'500 mg' }),
   'Jep 1 tabletë (500 mg).');
 
-console.log('Dose calculator V2.3 shared-engine, 10-second physician flow and fail-closed contract passed.');
+console.log('Dose calculator V2.3 shared-engine, observer-safe 10-second physician flow and fail-closed contract passed.');
