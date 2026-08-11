@@ -1,0 +1,188 @@
+/* MedIndex — Phase 5: Mobile + Final Performance Contract
+   Performance-first layout rules only. No clinical logic and no network work. */
+
+:root{
+  --mi-p5-touch-target:44px;
+  --mi-p5-scrollbar:10px;
+  --mi-p5-focus:rgba(20,123,118,.18);
+}
+
+html.medindex-tailadmin,
+html.medindex-tailadmin body,
+html.medindex-tailadmin .mi-app-shell,
+html.medindex-tailadmin .mi-workspace,
+html.medindex-tailadmin .mi-main{
+  min-width:0;
+}
+
+html.medindex-tailadmin .mi-main{
+  overflow-anchor:none;
+}
+
+/* Stable counters avoid small width jumps during async hydration. */
+html.medindex-tailadmin :where(
+  .count-badge,
+  .selection-badge,
+  .mini-count,
+  .registry-workspace-count,
+  .registry-quick-favorites-count,
+  #selectedCount,
+  #savedProtocolCount
+){
+  font-variant-numeric:tabular-nums;
+}
+
+/* Keyboard users always keep context without animated scroll surprises. */
+html.medindex-tailadmin :where(a,button,input,select,textarea,summary,[tabindex]):focus-visible{
+  outline:3px solid var(--mi-p5-focus)!important;
+  outline-offset:2px!important;
+  scroll-margin-block:88px 28px;
+}
+
+/* Desktop/laptop table: one bounded horizontal scroller, never the document. */
+@media(min-width:761px){
+  html.medindex-tailadmin{
+    scrollbar-gutter:stable;
+  }
+  html.medindex-tailadmin .table-wrap{
+    max-width:100%!important;
+    overflow-x:auto!important;
+    overflow-y:visible;
+    overscroll-behavior-x:contain;
+    scroll-behavior:auto!important;
+    scrollbar-gutter:stable;
+    touch-action:pan-x pan-y;
+    -webkit-overflow-scrolling:touch;
+  }
+  html.medindex-tailadmin .table-wrap[data-mi-horizontal-scroll]{
+    outline:none;
+  }
+  html.medindex-tailadmin .table-wrap[data-mi-horizontal-scroll]:focus-visible{
+    box-shadow:0 0 0 3px var(--mi-p5-focus)!important;
+  }
+  html.medindex-tailadmin .table-wrap::-webkit-scrollbar{height:var(--mi-p5-scrollbar)}
+  html.medindex-tailadmin .table-wrap::-webkit-scrollbar-track{background:transparent}
+  html.medindex-tailadmin .table-wrap::-webkit-scrollbar-thumb{
+    border:2px solid transparent;
+    border-radius:999px;
+    background-clip:padding-box;
+    background-color:rgba(88,111,113,.32);
+  }
+  html.medindex-tailadmin .table-wrap::-webkit-scrollbar-thumb:hover{background-color:rgba(67,94,96,.48)}
+}
+
+/* 13-inch laptop density: preserve all controls without turning the toolbar into noise. */
+@media(min-width:1024px) and (max-width:1366px){
+  html.medindex-tailadmin .toolbar{
+    gap:6px!important;
+    padding:7px!important;
+  }
+  html.medindex-tailadmin .toolbar :where(button,select){
+    min-width:0!important;
+  }
+  html.medindex-tailadmin .mi-registry-search-shell{
+    min-width:260px!important;
+    flex-basis:360px!important;
+  }
+  html.medindex-tailadmin #dataTable th,
+  html.medindex-tailadmin #dataTable td{
+    padding-inline:10px!important;
+  }
+}
+
+/* Large displays gain breathing room, not giant controls. */
+@media(min-width:1600px){
+  html.medindex-tailadmin .toolbar{
+    gap:9px!important;
+  }
+  html.medindex-tailadmin .mi-registry-search-shell{
+    flex-basis:520px!important;
+  }
+  html.medindex-tailadmin #dataTable th,
+  html.medindex-tailadmin #dataTable td{
+    padding-inline:13px!important;
+  }
+}
+
+/* Touch contract: coarse pointers get at least 44px without bloating desktop mouse UI. */
+@media(pointer:coarse){
+  html.medindex-tailadmin :where(
+    button,
+    [role="button"],
+    .med-nav-link,
+    .app-menu-link,
+    .registry-row-favorite-toggle,
+    .registry-row-note-jump,
+    .registry-row-details-toggle,
+    .icd-tree-action,
+    .icd-source-health-refresh
+  ){
+    min-height:var(--mi-p5-touch-target)!important;
+  }
+  html.medindex-tailadmin :where(
+    .registry-row-favorite-toggle,
+    .registry-row-note-jump,
+    [data-mi-sidebar-toggle],
+    [data-mi-mobile-search],
+    [data-mi-theme-toggle]
+  ){
+    min-width:var(--mi-p5-touch-target)!important;
+  }
+}
+
+/* Phone/tablet: the document itself must never become a horizontal scroller. */
+@media(max-width:1023px){
+  html.medindex-tailadmin,
+  html.medindex-tailadmin body{
+    width:100%;
+    max-width:100%;
+    overflow-x:hidden!important;
+  }
+  html.medindex-tailadmin .mi-app-shell,
+  html.medindex-tailadmin .mi-workspace,
+  html.medindex-tailadmin .mi-main{
+    width:100%;
+    max-width:100%;
+  }
+}
+
+/* Mobile registry cards retain intrinsic space while offscreen rendering is skipped. */
+@media(max-width:760px){
+  html.medindex-tailadmin #dataTable[data-registry-unified-table] tbody tr{
+    contain-intrinsic-size:auto 420px;
+  }
+  html.medindex-tailadmin .registry-workspace-panel,
+  html.medindex-tailadmin .col-panel,
+  html.medindex-tailadmin .form-panel{
+    overscroll-behavior:contain;
+  }
+}
+
+/* Avoid decorative work on slow-refresh or accessibility-oriented displays. */
+@media(update:slow){
+  html.medindex-tailadmin *,
+  html.medindex-tailadmin *::before,
+  html.medindex-tailadmin *::after{
+    transition:none!important;
+    animation:none!important;
+  }
+}
+
+html[data-theme="dark"].medindex-tailadmin .table-wrap::-webkit-scrollbar-thumb{
+  background-color:rgba(150,174,176,.28);
+}
+html[data-theme="dark"].medindex-tailadmin .table-wrap::-webkit-scrollbar-thumb:hover{
+  background-color:rgba(169,194,196,.42);
+}
+
+@media(prefers-reduced-motion:reduce){
+  html.medindex-tailadmin{
+    scroll-behavior:auto!important;
+  }
+  html.medindex-tailadmin *,
+  html.medindex-tailadmin *::before,
+  html.medindex-tailadmin *::after{
+    transition:none!important;
+    animation:none!important;
+  }
+}
