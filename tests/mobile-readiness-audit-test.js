@@ -90,8 +90,7 @@ assert.match(index, /registry-mobile-critical\.css\?v=20260810-1/);
 assert.match(index, /registry-row-expand\.js\?v=20260810-1/);
 assert.match(index, /registry-dose-table-button\.css\?v=20260810-1/);
 assert.match(index, /registry-drug-name-hardening\.js\?v=20260810-1/);
-assert.ok(index.indexOf('registry-drug-name-hardening.js?v=20260810-1') < index.indexOf('ui-enhancements.js?v=20260810-1'),
-  'Immutable drug names must be established before UI controls are appended.');
+assert.doesNotMatch(index, /ui-enhancements\.js/, 'Obsolete registry UI enhancement layer must not return to production');
 assert.match(rowExpand, /registry-row-details-toggle/);
 assert.match(rowExpand, /button\.setAttribute\('aria-expanded', String\(expanded\)\)/);
 assert.match(rowExpand, /const detailsButton = event\.target\.closest/);
