@@ -42,6 +42,7 @@ const PUBLIC_PATHS = new Set([
 
 const PUBLIC_SECRET_APIS = new Set([
   '/api/drive-sync',
+  '/api/release',
 ]);
 
 export const config = {
