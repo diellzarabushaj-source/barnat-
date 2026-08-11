@@ -71,30 +71,27 @@ function patchDoseWeightGate() {
   write('registry-dose-calculator.js', source);
 }
 
-function patchCellPreviewKeyboard() {
-  let source = read('registry-cell-preview.js');
-  source = replaceOnce(
-    source,
-    '  let fallbackTimer = 0;',
-    '  let fallbackTimer = 0;\n  let keyboardClickSuppressionUntil = 0;\n  let keyboardDispatchingClick = false;',
-    'cell preview keyboard dispatch state',
+function patchRowKeyboardOwnership() {
+  let rowSource = read('registry-row-expand.js');
+  rowSource = replaceOnce(
+    rowSource,
+    "  function onKeydown(event) {\n    if (event.key !== 'Enter' && event.key !== ' ') return;\n    const cell = event.target.closest?.('td[data-registry-expandable=\"true\"]');\n    if (!cell || cell.dataset.registryCellPreview === 'true' || interactiveTarget(event.target)) return;\n    event.preventDefault();\n    toggleRow(cell.closest('tr'));\n  }",
+    "  function onKeydown(event) {\n    if (event.key !== 'Enter' && event.key !== ' ') return;\n    const previewTrigger = event.target.closest?.('.registry-cell-preview-trigger');\n    if (previewTrigger) {\n      const row = previewTrigger.closest('tr');\n      if (!row) return;\n      event.preventDefault();\n      event.stopImmediatePropagation();\n      const key = rowKey(row);\n      const next = !Boolean(key && expandedRows.has(key));\n      previewTrigger.dataset.registryKeyboardToggleUntil = String(Date.now() + 1000);\n      toggleRow(row, next);\n      return;\n    }\n    const cell = event.target.closest?.('td[data-registry-expandable=\"true\"]');\n    if (!cell || cell.dataset.registryCellPreview === 'true' || interactiveTarget(event.target)) return;\n    event.preventDefault();\n    toggleRow(cell.closest('tr'));\n  }",
+    'row-controller preview keyboard ownership',
   );
-  source = replaceOnce(
-    source,
+  if (!rowSource.includes('previewTrigger.dataset.registryKeyboardToggleUntil')) throw new Error('Row keyboard preview ownership missing.');
+  if (!rowSource.includes('toggleRow(row, next)')) throw new Error('Row keyboard must force an explicit expansion state.');
+  write('registry-row-expand.js', rowSource);
+
+  let previewSource = read('registry-cell-preview.js');
+  previewSource = replaceOnce(
+    previewSource,
     "  function onClick(event) {\n    const trigger = event.target.closest?.(`.${TRIGGER_CLASS}`);\n    if (!trigger) return;\n    event.preventDefault();\n    event.stopImmediatePropagation();\n    toggleInline(trigger);\n  }",
-    "  function onClick(event) {\n    const trigger = event.target.closest?.(`.${TRIGGER_CLASS}`);\n    if (!trigger) return;\n    event.preventDefault();\n    event.stopImmediatePropagation();\n    if (!keyboardDispatchingClick && Date.now() < keyboardClickSuppressionUntil) return;\n    toggleInline(trigger);\n  }\n\n  function onKeydown(event) {\n    const trigger = event.target.closest?.(`.${TRIGGER_CLASS}`);\n    if (!trigger || !['Enter', ' '].includes(event.key)) return;\n    event.preventDefault();\n    event.stopImmediatePropagation();\n    keyboardDispatchingClick = true;\n    try {\n      trigger.click();\n    } finally {\n      keyboardDispatchingClick = false;\n      keyboardClickSuppressionUntil = Date.now() + 1000;\n    }\n  }",
-    'keyboard routes through proven click path',
+    "  function onClick(event) {\n    const trigger = event.target.closest?.(`.${TRIGGER_CLASS}`);\n    if (!trigger) return;\n    event.preventDefault();\n    event.stopImmediatePropagation();\n    const suppressUntil = Number(trigger.dataset.registryKeyboardToggleUntil || 0);\n    if (event.detail === 0 && Date.now() < suppressUntil) {\n      delete trigger.dataset.registryKeyboardToggleUntil;\n      return;\n    }\n    toggleInline(trigger);\n  }",
+    'cell preview synthetic keyboard click suppression',
   );
-  source = replaceOnce(
-    source,
-    "  function init() {\n    document.addEventListener('click', onClick, true);",
-    "  function init() {\n    document.addEventListener('keydown', onKeydown, true);\n    document.addEventListener('click', onClick, true);",
-    'capture keyboard listener registration',
-  );
-  if (!source.includes('keyboardDispatchingClick = true;')) throw new Error('Keyboard click dispatch guard missing.');
-  if (!source.includes('trigger.click();')) throw new Error('Keyboard path must reuse the proven click path.');
-  if (!source.includes("document.addEventListener('keydown', onKeydown, true)")) throw new Error('Capture keyboard listener missing.');
-  write('registry-cell-preview.js', source);
+  if (!previewSource.includes('registryKeyboardToggleUntil')) throw new Error('Cell preview keyboard click suppression missing.');
+  write('registry-cell-preview.js', previewSource);
 }
 
 function patchBrowserSafetyFixture() {
@@ -133,6 +130,18 @@ function patchDarkModeClsGate() {
   write('tests/phase5-final-performance.spec.js', source);
 }
 
+function patchModalMetricsGate() {
+  let source = read('tests/dose-calculator-manual-qa-v2.spec.js');
+  source = replaceOnce(
+    source,
+    '  expect(metrics.modal.translatedBlocks).toBeGreaterThanOrEqual(2);',
+    '  expect(metrics.modal.nativePopulationBlocks).toBeGreaterThanOrEqual(2);',
+    'native population safety observability gate',
+  );
+  if (!source.includes('metrics.modal.nativePopulationBlocks')) throw new Error('Native population block metric gate missing.');
+  write('tests/dose-calculator-manual-qa-v2.spec.js', source);
+}
+
 function auditStickyHeader() {
   const source = read('registry-full-text-expansion.css');
   if (!/thead th\[data-registry-column-key\][\s\S]*position:sticky!important;[\s\S]*top:0!important;/.test(source)) {
@@ -145,9 +154,10 @@ function auditStickyHeader() {
 
 patchDrawerInert();
 patchDoseWeightGate();
-patchCellPreviewKeyboard();
+patchRowKeyboardOwnership();
 patchBrowserSafetyFixture();
 patchDrawerBrowserTest();
 patchDarkModeClsGate();
+patchModalMetricsGate();
 auditStickyHeader();
-console.log('Final browser audit patch passed: symmetric population dose safety, keyboard-through-click expansion, physical drawer outside-click, valid safety fixture, stable dark-mode CLS and sticky-header/no-frozen-column contracts are active.');
+console.log('Final browser audit patch passed: row-owned keyboard expansion, native population metrics, physical drawer outside-click, valid safety fixture, stable dark-mode CLS and sticky-header/no-frozen-column contracts are active.');
