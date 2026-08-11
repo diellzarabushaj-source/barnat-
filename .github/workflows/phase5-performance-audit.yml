@@ -41,7 +41,7 @@ jobs:
           set -euo pipefail
           pnpm exec playwright install --with-deps chromium > /tmp/phase5-playwright-install.log 2>&1 || { tail -200 /tmp/phase5-playwright-install.log; exit 1; }
 
-      - name: Run Phase 5 interaction and 4006-row performance gates
+      - name: Run Phase 5 interaction, Phase 6 version and 4006-row performance gates
         shell: bash
         run: |
           set -euo pipefail
@@ -49,7 +49,9 @@ jobs:
           CLINICAL_SERVER_PID=$!
           node tests/registry-performance-server.js > /tmp/phase5-registry-server.log 2>&1 &
           REGISTRY_SERVER_PID=$!
-          trap 'kill "$CLINICAL_SERVER_PID" "$REGISTRY_SERVER_PID" 2>/dev/null || true' EXIT
+          node tests/phase6-version-server.js > /tmp/phase6-version-server.log 2>&1 &
+          PHASE6_SERVER_PID=$!
+          trap 'kill "$CLINICAL_SERVER_PID" "$REGISTRY_SERVER_PID" "$PHASE6_SERVER_PID" 2>/dev/null || true' EXIT
           for attempt in {1..30}; do
             curl -fsS http://127.0.0.1:4173/index.html >/dev/null && break
             sleep 1
@@ -58,17 +60,22 @@ jobs:
             curl -fsS http://127.0.0.1:4174/index.html >/dev/null && break
             sleep 1
           done
-          pnpm exec playwright test tests/phase5-final-performance.spec.js tests/registry-main-thread-performance.spec.js --reporter=line --workers=1 --retries=1 | tee /tmp/phase5-performance.log
+          for attempt in {1..30}; do
+            curl -fsS http://127.0.0.1:4175/index.html?phase6=ready >/dev/null && break
+            sleep 1
+          done
+          pnpm exec playwright test tests/phase5-final-performance.spec.js tests/phase6-single-version.spec.js tests/registry-main-thread-performance.spec.js --reporter=line --workers=1 --retries=1 | tee /tmp/phase5-performance.log
 
-      - name: Upload Phase 5 metrics
+      - name: Upload Phase 5 and Phase 6 metrics
         if: always()
         uses: actions/upload-artifact@v4
         with:
-          name: phase5-performance-metrics
+          name: phase5-phase6-performance-metrics
           path: |
             /tmp/phase5-performance.log
             /tmp/phase5-clinical-server.log
             /tmp/phase5-registry-server.log
+            /tmp/phase6-version-server.log
             test-results
           if-no-files-found: warn
           retention-days: 7
