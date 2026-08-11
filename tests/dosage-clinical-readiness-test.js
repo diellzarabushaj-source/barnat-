@@ -41,5 +41,10 @@ assert.match(api, /const cards = cardsResult\.output/, 'verified cards must rema
 assert.doesNotMatch(api, /const cards = clinicalAutoFillEnabled \? cardsResult\.output : \[\]/, 'autofill flag must not blank the verified read-only catalogue');
 assert.match(api, /cardsReadOnlyWhenAutoFillDisabled/, 'API metadata must expose read-only safety mode');
 assert.match(api, /X-MedIndex-Dosage-Cards/, 'API must expose card count for operational audits');
+assert.match(api, /DOSAGE_SHEETS_UNAVAILABLE/, 'invalid or unavailable Sheets fallback must be typed as an upstream outage');
+assert.match(api, /retryAfterSeconds = 60/, 'Sheets outage must publish a bounded retry interval');
+assert.match(api, /const sheetsUnavailable = error\?\.code === 'DOSAGE_SHEETS_UNAVAILABLE'/, 'terminal handler must classify the Sheets source outage as degraded');
+assert.match(api, /X-MedIndex-Data-Source', 'unavailable'/, 'degraded dosage responses must identify the unavailable source state');
+assert.match(api, /res\.status\(degraded \? 503 : 500\)/, 'upstream dosage outages must fail closed with 503 instead of raw 500');
 
 console.log('Dosage clinical readiness audit passed.');
