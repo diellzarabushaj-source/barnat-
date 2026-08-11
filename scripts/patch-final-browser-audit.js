@@ -23,8 +23,8 @@ function patchDrawerInert() {
   source = replaceOnce(
     source,
     "    const setMobileOpen = (open, returnFocus = false) => {\n      body.classList.toggle('mi-sidebar-open', Boolean(open));\n      updateSidebarA11y();",
-    "    const setMobileOpen = (open, returnFocus = false) => {\n      const nextOpen = Boolean(open);\n      body.classList.toggle('mi-sidebar-open', nextOpen);\n      if (workspace) workspace.inert = nextOpen;\n      if (sidebarOverlay) {\n        sidebarOverlay.inert = false;\n        sidebarOverlay.style.setProperty('position', 'fixed', 'important');\n        sidebarOverlay.style.setProperty('inset', '0', 'important');\n        sidebarOverlay.style.setProperty('width', '100vw', 'important');\n        sidebarOverlay.style.setProperty('height', '100dvh', 'important');\n        sidebarOverlay.style.setProperty('z-index', '2147483000', 'important');\n        sidebarOverlay.style.setProperty('pointer-events', nextOpen ? 'auto' : 'none', 'important');\n        sidebarOverlay.style.setProperty('visibility', nextOpen ? 'visible' : 'hidden', 'important');\n        sidebarOverlay.style.setProperty('opacity', nextOpen ? '1' : '0', 'important');\n      }\n      if (sidebar) sidebar.style.setProperty('z-index', '2147483001', 'important');\n      updateSidebarA11y();",
-    'mobile inert and deterministic overlay toggle',
+    "    const setMobileOpen = (open, returnFocus = false) => {\n      const nextOpen = Boolean(open);\n      body.classList.toggle('mi-sidebar-open', nextOpen);\n      if (workspace) workspace.inert = nextOpen;\n      document.documentElement.style.setProperty('pointer-events', nextOpen ? 'none' : 'auto', 'important');\n      body.style.setProperty('pointer-events', nextOpen ? 'none' : 'auto', 'important');\n      if (sidebarOverlay) {\n        sidebarOverlay.inert = false;\n        sidebarOverlay.style.setProperty('position', 'fixed', 'important');\n        sidebarOverlay.style.setProperty('inset', '0', 'important');\n        sidebarOverlay.style.setProperty('width', '100vw', 'important');\n        sidebarOverlay.style.setProperty('height', '100dvh', 'important');\n        sidebarOverlay.style.setProperty('z-index', '2147483000', 'important');\n        sidebarOverlay.style.setProperty('pointer-events', nextOpen ? 'auto' : 'none', 'important');\n        sidebarOverlay.style.setProperty('visibility', nextOpen ? 'visible' : 'hidden', 'important');\n        sidebarOverlay.style.setProperty('opacity', nextOpen ? '1' : '0', 'important');\n      }\n      if (sidebar) {\n        sidebar.style.setProperty('z-index', '2147483001', 'important');\n        sidebar.style.setProperty('pointer-events', 'auto', 'important');\n      }\n      updateSidebarA11y();",
+    'mobile root hit-test isolation and deterministic overlay toggle',
   );
   source = replaceOnce(
     source,
@@ -33,10 +33,10 @@ function patchDrawerInert() {
     'body-portal overlay listener',
   );
   if (!source.includes('workspace.inert = nextOpen')) throw new Error('Mobile drawer inert contract missing.');
-  if (!source.includes('document.body.appendChild(sidebarOverlay)')) throw new Error('Mobile drawer overlay body portal missing.');
-  if (!source.includes("sidebarOverlay.style.setProperty('pointer-events', nextOpen ? 'auto' : 'none', 'important')")) {
-    throw new Error('Mobile drawer overlay hit-testing contract missing.');
+  if (!source.includes("document.documentElement.style.setProperty('pointer-events', nextOpen ? 'none' : 'auto', 'important')")) {
+    throw new Error('Root hit-test isolation contract missing.');
   }
+  if (!source.includes('document.body.appendChild(sidebarOverlay)')) throw new Error('Mobile drawer overlay body portal missing.');
   write('tailadmin-shell-core.js', source);
 }
 
@@ -48,8 +48,17 @@ function patchDoseWeightGate() {
     "    modal.weight.value = '';\n    modal.weight.disabled = true;\n    modal.weight.required = false;\n    modal.weightWrap.hidden = true;\n    modal.weightChips.hidden = true;",
     'dose weight initial safety gate',
   );
+  source = replaceOnce(
+    source,
+    "    modal.details.replaceChildren(...rows);\n    modal.actions.hidden = false;",
+    "    modal.details.replaceChildren(...rows);\n    const calculationDisclosure = modal.details.closest('details');\n    const calculationSummary = calculationDisclosure?.querySelector(':scope > summary');\n    if (calculationDisclosure) {\n      calculationDisclosure.hidden = false;\n      calculationDisclosure.style.setProperty('display', 'block', 'important');\n      calculationDisclosure.style.setProperty('visibility', 'visible', 'important');\n      calculationDisclosure.style.setProperty('min-height', '40px', 'important');\n    }\n    if (calculationSummary) {\n      calculationSummary.hidden = false;\n      calculationSummary.style.setProperty('display', 'list-item', 'important');\n      calculationSummary.style.setProperty('visibility', 'visible', 'important');\n      calculationSummary.style.setProperty('opacity', '1', 'important');\n      calculationSummary.style.setProperty('pointer-events', 'auto', 'important');\n      calculationSummary.style.setProperty('min-height', '32px', 'important');\n      calculationSummary.style.setProperty('line-height', '32px', 'important');\n    }\n    modal.actions.hidden = false;",
+    'dose disclosure physical visibility',
+  );
   if (!source.includes('modal.weight.disabled = true;') || !source.includes('modal.weight.disabled = !needsWeight;')) {
     throw new Error('Dose weight adaptive disabled-state contract missing.');
+  }
+  if (!source.includes("calculationSummary.style.setProperty('min-height', '32px', 'important')")) {
+    throw new Error('Dose calculation disclosure physical visibility contract missing.');
   }
   write('registry-dose-calculator.js', source);
 }
@@ -59,7 +68,7 @@ function patchDoseDisclosureVisibility() {
   source = replaceOnce(
     source,
     "      #${MODAL_ID} .dose-calculator-result details{margin-top:10px;padding-top:9px}",
-    "      #${MODAL_ID} .dose-calculator-result details{display:block!important;visibility:visible!important;opacity:1!important;margin-top:10px;padding-top:9px}\n      #${MODAL_ID} .dose-calculator-result:not([hidden]) details>summary{display:list-item!important;visibility:visible!important;opacity:1!important;pointer-events:auto!important;min-height:32px}",
+    "      #${MODAL_ID} .dose-calculator-result details{display:block!important;visibility:visible!important;opacity:1!important;min-height:40px!important;margin-top:10px;padding-top:9px}\n      #${MODAL_ID} .dose-calculator-result:not([hidden]) details>summary{display:list-item!important;visibility:visible!important;opacity:1!important;pointer-events:auto!important;min-height:32px!important;line-height:32px!important}",
     'dose calculation disclosure visibility',
   );
   if (!source.includes('.dose-calculator-result:not([hidden]) details>summary{display:list-item!important')) {
@@ -72,24 +81,12 @@ function patchCellPreviewKeyboard() {
   let source = read('registry-cell-preview.js');
   source = replaceOnce(
     source,
-    "  let fallbackTimer = 0;",
-    "  let fallbackTimer = 0;\n  let keyboardClickSuppressionUntil = 0;",
-    'cell preview keyboard suppression state',
+    "    button.dataset.lineiconsSource = 'Lineicons Basic / expand-square-4';\n    cell.appendChild(button);",
+    "    button.dataset.lineiconsSource = 'Lineicons Basic / expand-square-4';\n    button.addEventListener('keydown', event => {\n      if (!['Enter', ' '].includes(event.key)) return;\n      event.preventDefault();\n      event.stopImmediatePropagation();\n      toggleInline(button);\n    });\n    cell.appendChild(button);",
+    'direct cell preview keyboard listener',
   );
-  source = replaceOnce(
-    source,
-    "  function onClick(event) {\n    const trigger = event.target.closest?.(`.${TRIGGER_CLASS}`);\n    if (!trigger) return;\n    event.preventDefault();\n    event.stopImmediatePropagation();\n    toggleInline(trigger);\n  }",
-    "  function onClick(event) {\n    const trigger = event.target.closest?.(`.${TRIGGER_CLASS}`);\n    if (!trigger) return;\n    event.preventDefault();\n    event.stopImmediatePropagation();\n    if (event.detail === 0 && Date.now() < keyboardClickSuppressionUntil) return;\n    toggleInline(trigger);\n  }",
-    'cell preview synthetic click suppression',
-  );
-  source = replaceOnce(
-    source,
-    "  function init() {\n    document.addEventListener('click', onClick, true);",
-    "  function onKeydown(event) {\n    const trigger = event.target.closest?.(`.${TRIGGER_CLASS}`);\n    if (!trigger || !['Enter', ' '].includes(event.key)) return;\n    event.preventDefault();\n    event.stopImmediatePropagation();\n    keyboardClickSuppressionUntil = Date.now() + 500;\n    toggleInline(trigger);\n  }\n\n  function init() {\n    document.addEventListener('click', onClick, true);\n    document.addEventListener('keydown', onKeydown, true);",
-    'cell preview keyboard activation',
-  );
-  if (!source.includes('keyboardClickSuppressionUntil = Date.now() + 500') || !source.includes("document.addEventListener('keydown', onKeydown, true)")) {
-    throw new Error('Cell preview Enter/Space keyboard contract missing.');
+  if (!source.includes("button.addEventListener('keydown', event =>")) {
+    throw new Error('Direct cell preview keyboard listener missing.');
   }
   write('registry-cell-preview.js', source);
 }
@@ -109,4 +106,4 @@ patchDoseWeightGate();
 patchDoseDisclosureVisibility();
 patchCellPreviewKeyboard();
 auditStickyHeader();
-console.log('Final browser audit patch passed: adaptive dose weight, visible calculation disclosure, body-portaled drawer overlay, keyboard row expansion and sticky-header/no-frozen-column contracts are active.');
+console.log('Final browser audit patch passed: root-isolated drawer hit-testing, physical dose disclosure visibility, direct keyboard row expansion and sticky-header/no-frozen-column contracts are active.');
