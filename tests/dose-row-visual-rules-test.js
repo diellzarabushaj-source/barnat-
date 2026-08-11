@@ -9,7 +9,7 @@ const html = read('index.html');
 const markerJs = read('registry-dose-clinical-row-markers.js');
 const markerCss = read('registry-dose-clinical-row-markers.css');
 const calculator = read('registry-dose-calculator.js');
-const fastUi = read('registry-dose-calculator-fast-ui.js');
+const tenSecondFlow = read('registry-dose-10s-flow.js');
 
 assert.match(html, /registry-dose-clinical-row-markers\.css\?v=20260806-1/);
 assert.match(html, /registry-dose-clinical-row-markers\.js\?v=20260806-1/);
@@ -21,6 +21,8 @@ assert.ok(
   html.indexOf('registry-dose-table-button.js') < html.indexOf('registry-dose-clinical-row-markers.js'),
   'Clinical row classifier must run after the verified-dose table integration.',
 );
+assert.match(html, /registry-dose-10s-flow\.js\?v=20260809-1/);
+assert.doesNotMatch(html, /registry-dose-calculator-fast-ui\.js/, 'Retired fast-UI controller must not return to production.');
 
 assert.match(markerJs, /mi-dose-row--pediatric-only/);
 assert.match(markerJs, /mi-dose-row--parenteral/);
@@ -39,19 +41,29 @@ assert.match(markerCss, /\[data-theme=\"dark\"\]/);
 assert.match(markerCss, /forced-colors/);
 assert.match(markerCss, /print-color-adjust/);
 
-// Existing calculator flow must remain adaptive and fail-closed.
+// Canonical V2.3 calculator must remain adaptive, automatic and fail-closed.
 assert.match(calculator, /officialVerifiedOnly/);
-assert.match(calculator, /methodNeedsWeight/);
+assert.match(calculator, /needsWeightMethod/);
 assert.match(calculator, /dose_per_kg_per_dose/);
 assert.match(calculator, /dose_per_kg_per_day/);
 assert.match(calculator, /manual_only/);
 assert.match(calculator, /patientGroup/);
-assert.match(fastUi, /WEIGHT_PRESETS = Object\.freeze\(\[5, 10, 15, 30, 40\]\)/);
-assert.match(fastUi, /updateIndicationVisibility/);
-assert.match(fastUi, /inferGroupFromAge/);
-assert.match(fastUi, /scheduleAutomaticCalculation/);
-assert.match(fastUi, /Kopjo udhëzimin/);
-assert.match(fastUi, /Pacient i ri/);
-assert.match(fastUi, /prefers-reduced-motion/);
+assert.match(calculator, /ageMatchedRules/);
+assert.match(calculator, /preferredUnique/);
+assert.match(calculator, /maybeCalculate/);
+assert.match(calculator, /renderPlainLanguageTemplate/);
+assert.match(calculator, /Kopjo udhëzimin/);
+assert.match(calculator, /Pacient i ri/);
+assert.match(calculator, /prefers-reduced-motion/);
 
-console.log('Pediatric-only red text, parenteral green tint, combined state and adaptive verified calculator flow passed.');
+// The one active physician-speed layer may tune UX, never clinical arithmetic.
+assert.match(tenSecondFlow, /ensureExplicitIndication/);
+assert.match(tenSecondFlow, /Zgjidh indikacionin/);
+assert.match(tenSecondFlow, /updateCue/);
+assert.match(tenSecondFlow, /focusNextFromAge/);
+assert.match(tenSecondFlow, /Rezultati llogaritet automatikisht/);
+assert.match(tenSecondFlow, /min-height:48px/);
+assert.doesNotMatch(tenSecondFlow, /computeDose|doseMinValue|doseMaxValue|fetch\s*\(/,
+  '10-second flow may not duplicate or alter clinical dose arithmetic.');
+
+console.log('Pediatric-only red text, parenteral green tint, combined state and canonical adaptive V2.3 dose flow passed.');
