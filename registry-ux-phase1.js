@@ -1,7 +1,7 @@
 (() => {
   'use strict';
 
-  const VERSION = 'registry-ux-phase1-v1.0.0';
+  const VERSION = 'registry-ux-phase1-v1.0.1';
   const FAVORITES_KEY = 'regjistriBarnave_favoritet_v1';
 
   const scheduleIdle = callback => {
@@ -112,12 +112,14 @@
 
       if ((event.ctrlKey || event.metaKey) && !event.altKey && event.key.toLowerCase() === 'k') {
         event.preventDefault();
+        event.stopImmediatePropagation();
         focusSearch();
         return;
       }
 
       if (event.key === '/' && !editing && !event.ctrlKey && !event.metaKey && !event.altKey) {
         event.preventDefault();
+        event.stopImmediatePropagation();
         focusSearch();
         return;
       }
