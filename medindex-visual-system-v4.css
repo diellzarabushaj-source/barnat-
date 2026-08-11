@@ -1,0 +1,346 @@
+/* MedIndex — Phase 4: Unified Clinical Visual System
+   Calm, serious, high-density clinical UI. Visual layer only.
+   Keeps page-specific clinical semantics intact while unifying typography,
+   spacing, radii, borders, focus states, surface depth and interaction rhythm. */
+
+:root{
+  --mi-v4-font:-apple-system,BlinkMacSystemFont,"SF Pro Text","SF Pro Display","Inter","Segoe UI Variable","Segoe UI",sans-serif;
+  --mi-v4-bg:#f5f7f7;
+  --mi-v4-surface:#ffffff;
+  --mi-v4-surface-subtle:#fafcfc;
+  --mi-v4-surface-hover:#f6faf9;
+  --mi-v4-ink:#172c2f;
+  --mi-v4-ink-strong:#102326;
+  --mi-v4-muted:#6f8083;
+  --mi-v4-muted-2:#8b999b;
+  --mi-v4-line:#dbe4e3;
+  --mi-v4-line-strong:#c8d5d3;
+  --mi-v4-accent:#147b76;
+  --mi-v4-accent-strong:#0e6662;
+  --mi-v4-accent-soft:#edf8f6;
+  --mi-v4-focus:rgba(20,123,118,.16);
+  --mi-v4-danger:#b33b38;
+  --mi-v4-warning:#9d691b;
+  --mi-v4-success:#17756f;
+  --mi-v4-radius-xs:7px;
+  --mi-v4-radius-sm:10px;
+  --mi-v4-radius-md:14px;
+  --mi-v4-radius-lg:18px;
+  --mi-v4-radius-xl:22px;
+  --mi-v4-shadow-1:0 1px 2px rgba(18,45,47,.035),0 5px 16px rgba(18,45,47,.035);
+  --mi-v4-shadow-2:0 10px 28px rgba(18,45,47,.07),0 2px 7px rgba(18,45,47,.035);
+  --mi-v4-control-h:42px;
+  --mi-v4-page-gap:16px;
+}
+
+html.medindex-tailadmin{
+  background:var(--mi-v4-bg);
+  color:var(--mi-v4-ink);
+  font-family:var(--mi-v4-font);
+  font-synthesis:none;
+  text-rendering:optimizeLegibility;
+  -webkit-font-smoothing:antialiased;
+  -moz-osx-font-smoothing:grayscale;
+}
+
+html.medindex-tailadmin body,
+html.medindex-tailadmin button,
+html.medindex-tailadmin input,
+html.medindex-tailadmin select,
+html.medindex-tailadmin textarea,
+html.medindex-tailadmin summary{
+  font-family:var(--mi-v4-font)!important;
+}
+
+html.medindex-tailadmin body{
+  background:var(--mi-v4-bg)!important;
+  color:var(--mi-v4-ink)!important;
+  line-height:1.45;
+}
+
+html.medindex-tailadmin :where(h1,h2,h3,h4){
+  color:var(--mi-v4-ink-strong);
+  text-wrap:balance;
+}
+html.medindex-tailadmin h1{letter-spacing:-.035em;line-height:1.08}
+html.medindex-tailadmin h2{letter-spacing:-.025em;line-height:1.12}
+html.medindex-tailadmin h3{letter-spacing:-.017em;line-height:1.18}
+html.medindex-tailadmin h4{letter-spacing:-.01em;line-height:1.22}
+html.medindex-tailadmin :where(p,small,.sub){color:var(--mi-v4-muted)}
+
+/* ---------- Focus and interaction ---------- */
+html.medindex-tailadmin :where(a,button,input,select,textarea,summary):focus-visible{
+  outline:3px solid var(--mi-v4-focus)!important;
+  outline-offset:2px!important;
+}
+html.medindex-tailadmin :where(button,a,[role="button"]){
+  -webkit-tap-highlight-color:transparent;
+}
+html.medindex-tailadmin button:disabled,
+html.medindex-tailadmin [aria-disabled="true"]{
+  cursor:not-allowed!important;
+  opacity:.56!important;
+}
+
+/* ---------- Controls ---------- */
+html.medindex-tailadmin :where(input[type="text"],input[type="search"],input[type="number"],input[type="email"],input[type="password"],select,textarea){
+  border-color:var(--mi-v4-line-strong)!important;
+  border-radius:var(--mi-v4-radius-sm)!important;
+  background:var(--mi-v4-surface)!important;
+  color:var(--mi-v4-ink)!important;
+  box-shadow:none!important;
+  transition:border-color .12s ease,background-color .12s ease,box-shadow .12s ease!important;
+}
+html.medindex-tailadmin :where(input[type="text"],input[type="search"],input[type="number"],input[type="email"],input[type="password"],select){
+  min-height:var(--mi-v4-control-h);
+}
+html.medindex-tailadmin textarea{line-height:1.48}
+html.medindex-tailadmin :where(input,textarea)::placeholder{color:var(--mi-v4-muted-2)!important;opacity:1}
+html.medindex-tailadmin :where(input[type="text"],input[type="search"],input[type="number"],input[type="email"],input[type="password"],select,textarea):hover{
+  border-color:#b8c8c6!important;
+}
+html.medindex-tailadmin :where(input[type="text"],input[type="search"],input[type="number"],input[type="email"],input[type="password"],select,textarea):focus{
+  border-color:var(--mi-v4-accent)!important;
+  box-shadow:0 0 0 3px var(--mi-v4-focus)!important;
+  outline:none!important;
+}
+
+/* Common neutral buttons. Semantic danger/success buttons retain page-specific color. */
+html.medindex-tailadmin :where(
+  .toolbar button,
+  .med-nav-link,
+  .icd-tree-action,
+  .icd-source-health-refresh,
+  .registry-workspace-trigger,
+  .registry-quick-favorites,
+  .col-picker>button,
+  .form-picker>button
+){
+  border-radius:var(--mi-v4-radius-sm)!important;
+  box-shadow:none!important;
+}
+html.medindex-tailadmin :where(.toolbar button,.icd-tree-action,.icd-source-health-refresh,.col-picker>button,.form-picker>button){
+  transition:background-color .12s ease,border-color .12s ease,color .12s ease,transform .08s ease!important;
+}
+html.medindex-tailadmin :where(.toolbar button,.icd-tree-action,.icd-source-health-refresh,.col-picker>button,.form-picker>button):active{
+  transform:translateY(1px)!important;
+}
+
+/* ---------- Navigation ---------- */
+html.medindex-tailadmin .med-nav{
+  gap:4px!important;
+}
+html.medindex-tailadmin .med-nav-link{
+  border:1px solid transparent!important;
+  color:#536669!important;
+  font-weight:670!important;
+  letter-spacing:-.005em;
+  transition:background-color .12s ease,border-color .12s ease,color .12s ease!important;
+}
+html.medindex-tailadmin .med-nav-link:hover{
+  border-color:var(--mi-v4-line)!important;
+  background:var(--mi-v4-surface-subtle)!important;
+  color:var(--mi-v4-ink)!important;
+}
+html.medindex-tailadmin .med-nav-link.active,
+html.medindex-tailadmin .med-nav-link[aria-current="page"]{
+  border-color:#cce3df!important;
+  background:var(--mi-v4-accent-soft)!important;
+  color:var(--mi-v4-accent-strong)!important;
+  box-shadow:none!important;
+}
+
+/* ---------- Core surfaces ---------- */
+html.medindex-tailadmin :where(
+  .toolbar,
+  .table-wrap,
+  .icd-registry-intro,
+  .icd-tree-panel,
+  .icd-favorites-panel,
+  .registry-workspace-panel,
+  .col-panel,
+  .form-panel,
+  .clinical-editor-panel,
+  .system-health-card,
+  .protocol-card,
+  .protocol-reader-card,
+  .med-card,
+  .medical-card,
+  .lab-card,
+  .analysis-card,
+  .prescription-card,
+  .receta-card
+){
+  border-color:var(--mi-v4-line)!important;
+  background-color:var(--mi-v4-surface)!important;
+}
+html.medindex-tailadmin :where(
+  .toolbar,
+  .table-wrap,
+  .icd-registry-intro,
+  .icd-tree-panel,
+  .icd-favorites-panel,
+  .registry-workspace-panel,
+  .clinical-editor-panel,
+  .system-health-card,
+  .protocol-card,
+  .protocol-reader-card,
+  .med-card,
+  .medical-card,
+  .lab-card,
+  .analysis-card,
+  .prescription-card,
+  .receta-card
+){
+  border-radius:var(--mi-v4-radius-md)!important;
+}
+html.medindex-tailadmin :where(.toolbar,.table-wrap,.icd-registry-intro,.icd-tree-panel){
+  box-shadow:var(--mi-v4-shadow-1)!important;
+}
+html.medindex-tailadmin :where(.registry-workspace-panel,.col-panel,.form-panel,.clinical-editor-panel){
+  box-shadow:var(--mi-v4-shadow-2)!important;
+}
+
+/* The command surface is important but should not look like a floating glass card. */
+html.medindex-tailadmin .toolbar{
+  background:rgba(255,255,255,.985)!important;
+  border-color:rgba(107,130,132,.18)!important;
+  box-shadow:0 3px 14px rgba(18,45,47,.045)!important;
+}
+
+/* ---------- Registry table ---------- */
+html.medindex-tailadmin #dataTable{
+  color:var(--mi-v4-ink)!important;
+}
+html.medindex-tailadmin #dataTable thead th{
+  border-color:var(--mi-v4-line)!important;
+  background:#f8fafa!important;
+  color:#586b6e!important;
+  font-weight:760!important;
+  letter-spacing:.012em!important;
+  box-shadow:none!important;
+}
+html.medindex-tailadmin #dataTable tbody td{
+  border-color:rgba(116,139,141,.16)!important;
+}
+html.medindex-tailadmin #dataTable tbody tr:hover>td{
+  background-color:#f8fbfa!important;
+}
+html.medindex-tailadmin #dataTable tbody tr:focus-within>td{
+  background-color:#f5faf9!important;
+}
+html.medindex-tailadmin #dataTable td.name{
+  color:var(--mi-v4-ink-strong)!important;
+  font-weight:720!important;
+  letter-spacing:-.012em!important;
+}
+
+/* ---------- ICD workspace ---------- */
+html.medindex-tailadmin .icd-registry-intro{
+  box-shadow:none!important;
+}
+html.medindex-tailadmin .icd-tree-panel{
+  overflow:visible;
+}
+html.medindex-tailadmin .icd-tree-toolbar{
+  border-color:var(--mi-v4-line)!important;
+  background:var(--mi-v4-surface-subtle)!important;
+  box-shadow:none!important;
+}
+html.medindex-tailadmin .icd-search-wrap input{
+  min-height:44px!important;
+}
+html.medindex-tailadmin :where(.icd-registry-stat,.icd-source-health,.icd-clinical-legend){
+  border-color:var(--mi-v4-line)!important;
+  box-shadow:none!important;
+}
+
+/* ---------- Personal workspace ---------- */
+html.medindex-tailadmin .registry-workspace-panel-head{
+  background:var(--mi-v4-surface-subtle)!important;
+}
+html.medindex-tailadmin .registry-workspace-note-item{
+  transition:background-color .1s ease!important;
+}
+html.medindex-tailadmin .registry-workspace-note-item:hover,
+html.medindex-tailadmin .registry-workspace-note-item:focus-visible{
+  background:var(--mi-v4-surface-hover)!important;
+}
+
+/* ---------- Badges and small status UI ---------- */
+html.medindex-tailadmin :where(
+  .count-badge,
+  .selection-badge,
+  .mini-count,
+  .registry-workspace-count,
+  .registry-quick-favorites-count,
+  .icd-tree-status,
+  .icd-source-status
+){
+  border-radius:999px!important;
+  box-shadow:none!important;
+}
+
+/* ---------- Dialogs / popovers ---------- */
+html.medindex-tailadmin :where(dialog,[role="dialog"],.modal,.drawer,.popover-panel){
+  border-color:var(--mi-v4-line)!important;
+}
+html.medindex-tailadmin :where(dialog,.modal,.drawer){
+  border-radius:var(--mi-v4-radius-lg)!important;
+}
+
+/* ---------- Dark mode ---------- */
+html[data-theme="dark"].medindex-tailadmin{
+  --mi-v4-bg:#0e1719;
+  --mi-v4-surface:#142023;
+  --mi-v4-surface-subtle:#172426;
+  --mi-v4-surface-hover:#1a292b;
+  --mi-v4-ink:#e5eeed;
+  --mi-v4-ink-strong:#f1f6f5;
+  --mi-v4-muted:#9aabad;
+  --mi-v4-muted-2:#7f9295;
+  --mi-v4-line:#2b3e41;
+  --mi-v4-line-strong:#354a4d;
+  --mi-v4-accent:#70c0b8;
+  --mi-v4-accent-strong:#96d7d0;
+  --mi-v4-accent-soft:#18302d;
+  --mi-v4-focus:rgba(112,192,184,.18);
+  --mi-v4-shadow-1:0 1px 2px rgba(0,0,0,.14),0 6px 18px rgba(0,0,0,.12);
+  --mi-v4-shadow-2:0 16px 40px rgba(0,0,0,.28),0 3px 10px rgba(0,0,0,.18);
+}
+html[data-theme="dark"].medindex-tailadmin body{background:var(--mi-v4-bg)!important;color:var(--mi-v4-ink)!important}
+html[data-theme="dark"].medindex-tailadmin :where(input[type="text"],input[type="search"],input[type="number"],input[type="email"],input[type="password"],select,textarea){
+  background:#121e20!important;
+  color:var(--mi-v4-ink)!important;
+}
+html[data-theme="dark"].medindex-tailadmin :where(input,textarea)::placeholder{color:#73878a!important}
+html[data-theme="dark"].medindex-tailadmin .toolbar{background:rgba(20,32,35,.985)!important;border-color:#2b3e41!important;box-shadow:0 4px 18px rgba(0,0,0,.14)!important}
+html[data-theme="dark"].medindex-tailadmin #dataTable thead th{background:#172427!important;color:#9eb0b2!important;border-color:#2a3d40!important}
+html[data-theme="dark"].medindex-tailadmin #dataTable tbody td{border-color:rgba(74,96,99,.34)!important}
+html[data-theme="dark"].medindex-tailadmin #dataTable tbody tr:hover>td{background-color:#172628!important}
+html[data-theme="dark"].medindex-tailadmin #dataTable tbody tr:focus-within>td{background-color:#192a2c!important}
+html[data-theme="dark"].medindex-tailadmin .med-nav-link{color:#a1b2b4!important}
+html[data-theme="dark"].medindex-tailadmin .med-nav-link:hover{border-color:#304447!important;background:#172426!important;color:#e3eceb!important}
+html[data-theme="dark"].medindex-tailadmin .med-nav-link.active,
+html[data-theme="dark"].medindex-tailadmin .med-nav-link[aria-current="page"]{border-color:#315751!important;background:#18302d!important;color:#96d7d0!important}
+html[data-theme="dark"].medindex-tailadmin .icd-tree-toolbar{background:#172426!important;border-color:#2b3e41!important}
+
+/* ---------- Compact screens ---------- */
+@media(max-width:720px){
+  :root{--mi-v4-control-h:44px;--mi-v4-page-gap:12px}
+  html.medindex-tailadmin :where(button,[role="button"],select,input[type="search"],input[type="text"],input[type="number"]){min-height:44px}
+  html.medindex-tailadmin :where(.toolbar,.table-wrap,.icd-tree-panel,.icd-registry-intro){border-radius:12px!important}
+  html.medindex-tailadmin h1{letter-spacing:-.03em}
+  html.medindex-tailadmin h2{letter-spacing:-.022em}
+}
+
+@media(prefers-reduced-motion:reduce){
+  html.medindex-tailadmin *,
+  html.medindex-tailadmin *::before,
+  html.medindex-tailadmin *::after{
+    scroll-behavior:auto!important;
+    transition-duration:.001ms!important;
+    animation-duration:.001ms!important;
+    animation-iteration-count:1!important;
+  }
+}
