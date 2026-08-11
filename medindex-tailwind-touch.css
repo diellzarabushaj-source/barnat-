@@ -1,4 +1,4 @@
-/* Final touch-target corrections discovered by the complete browser audit. */
+/* Final touch-target and mobile hit-testing corrections discovered by the complete browser audit. */
 html.medindex-tailadmin #icdSourceHealthRefresh{
   display:inline-flex!important;
   width:auto!important;
@@ -19,16 +19,25 @@ html.medindex-tailadmin #dataTable .registry-dose-calculator-column .dose-calcul
 }
 
 @media(max-width:1023px){
-  /* The drawer must sit above its scrim, while the scrim must be a real pointer target. */
+  /* The drawer sits above a deterministic full-viewport scrim. */
   html.medindex-tailadmin .mi-sidebar{
     z-index:220!important;
   }
   html.medindex-tailadmin .mi-mobile-overlay{
+    position:fixed!important;
+    inset:0!important;
     z-index:210!important;
+    display:block!important;
+    width:100vw!important;
+    height:100dvh!important;
+    opacity:0!important;
+    visibility:hidden!important;
     pointer-events:none!important;
-    touch-action:manipulation;
+    touch-action:manipulation!important;
   }
   html.medindex-tailadmin body.mi-sidebar-open .mi-mobile-overlay{
+    opacity:1!important;
+    visibility:visible!important;
     pointer-events:auto!important;
   }
   html.medindex-tailadmin body.mi-sidebar-open .mi-workspace{
@@ -41,7 +50,7 @@ html.medindex-tailadmin #dataTable .registry-dose-calculator-column .dose-calcul
   }
 }
 
-@media(max-width:767px){
+@media(max-width:760px){
   html.medindex-tailadmin #icdSourceHealthRefresh{
     min-width:44px!important;
     min-height:44px!important;
@@ -50,5 +59,38 @@ html.medindex-tailadmin #dataTable .registry-dose-calculator-column .dose-calcul
   html.medindex-tailadmin #dataTable .registry-dose-calculator-column .dose-calculator-open{
     min-height:44px!important;
     height:44px!important;
+  }
+
+  /* Mobile registry is a card list, never a desktop-width table hidden inside a 390px viewport. */
+  html.medindex-tailadmin[data-mi-page="barnat"] #registryContent,
+  html.medindex-tailadmin[data-mi-page="barnat"] #dataTable,
+  html.medindex-tailadmin[data-mi-page="barnat"] #dataTable tbody,
+  html.medindex-tailadmin[data-mi-page="barnat"] #dataTable tbody>tr{
+    width:100%!important;
+    max-width:100%!important;
+    min-width:0!important;
+    box-sizing:border-box!important;
+  }
+  html.medindex-tailadmin[data-mi-page="barnat"] #registryContent{
+    overflow-x:clip!important;
+  }
+  html.medindex-tailadmin[data-mi-page="barnat"] #dataTable{
+    display:block!important;
+    table-layout:auto!important;
+  }
+  html.medindex-tailadmin[data-mi-page="barnat"] #dataTable tbody{
+    display:grid!important;
+  }
+  html.medindex-tailadmin[data-mi-page="barnat"] #dataTable tbody>tr{
+    display:block!important;
+    overflow:hidden!important;
+  }
+  html.medindex-tailadmin[data-mi-page="barnat"] #dataTable tbody>tr>td[data-registry-column-key]{
+    width:100%!important;
+    max-width:100%!important;
+    min-width:0!important;
+    box-sizing:border-box!important;
+    overflow-wrap:anywhere!important;
+    word-break:normal!important;
   }
 }
