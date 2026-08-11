@@ -1,8 +1,9 @@
 /* MedIndex professional TailAdmin bundle.
-   Audited legacy geometry loads first, followed by the unified visual system,
-   touch corrections and the final Phase 5 performance/responsive contract. */
+   Audited geometry loads first, followed by the unified visual system,
+   touch/performance corrections, then clinical row semantics last. */
 @import url("tailadmin-professional-core.css?v=20260805-1");
 @import url("medindex-tailwind-ui.css?v=20260805-1");
 @import url("medindex-visual-system-v4.css?v=20260811-1");
-@import url("medindex-tailwind-touch.css?v=20260805-1");
+@import url("medindex-tailwind-touch.css?v=20260811-1");
 @import url("medindex-phase5-performance.css?v=20260811-1");
+@import url("registry-dose-clinical-row-markers.css?v=20260806-1");
