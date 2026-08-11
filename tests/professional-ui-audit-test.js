@@ -33,6 +33,11 @@ for (const fileName of pages) {
 
 const professionalBundle = read('tailadmin-professional.css');
 assert.match(professionalBundle, /medindex-visual-system-v4\.css\?v=20260811-1/, 'Phase 4 visual system must be part of the professional bundle');
+assert.match(professionalBundle, /medindex-phase5-performance\.css\?v=20260811-1/, 'Phase 5 performance system must be the final professional visual contract');
+assert.ok(
+  professionalBundle.indexOf('medindex-tailwind-touch.css') < professionalBundle.indexOf('medindex-phase5-performance.css'),
+  'Phase 5 performance contract must load after the touch correction layer'
+);
 
 const phase4Css = read('medindex-visual-system-v4.css');
 [
@@ -54,12 +59,50 @@ const phase4Css = read('medindex-visual-system-v4.css');
 ].forEach(pattern => assert.match(phase4Css, pattern, `Phase 4 visual system missing ${pattern}`));
 assert.doesNotMatch(phase4Css, /https?:\/\//, 'Phase 4 visual system must not depend on external assets');
 
+const phase5Css = read('medindex-phase5-performance.css');
+[
+  /--mi-p5-touch-target:44px/,
+  /overflow-anchor:none/,
+  /font-variant-numeric:tabular-nums/,
+  /overscroll-behavior-x:contain/,
+  /scrollbar-gutter:stable/,
+  /@media\(min-width:1024px\) and \(max-width:1366px\)/,
+  /@media\(min-width:1600px\)/,
+  /@media\(pointer:coarse\)/,
+  /@media\(max-width:1023px\)/,
+  /contain-intrinsic-size:auto 420px/,
+  /@media\(update:slow\)/,
+  /@media\(prefers-reduced-motion:reduce\)/,
+].forEach(pattern => assert.match(phase5Css, pattern, `Phase 5 performance contract missing ${pattern}`));
+assert.doesNotMatch(phase5Css, /https?:\/\//, 'Phase 5 performance contract must not load external assets');
+assert.doesNotMatch(phase5Css, /animation-name|@keyframes/i, 'Phase 5 must not introduce decorative animation work');
+
+const phase5Browser = read('tests/phase5-final-performance.spec.js');
+[
+  /phone:\{ width:390, height:844 \}/,
+  /tablet:\{ width:820, height:1180 \}/,
+  /laptop13:\{ width:1366, height:768 \}/,
+  /desktopLarge:\{ width:1920, height:1080 \}/,
+  /type:'layout-shift'/,
+  /type:'event'/,
+  /type:'longtask'/,
+  /post-ready CLS/,
+  /keyboard search/,
+  /overscrollBehaviorX/,
+  /Network\.emulateNetworkConditions/,
+  /PHASE5_METRICS/,
+].forEach(pattern => assert.match(phase5Browser, pattern, `Phase 5 browser audit missing ${pattern}`));
+
+const workflow = read('.github/workflows/physician-browser-audit.yml');
+assert.match(workflow, /tests\/phase5-final-performance\.spec\.js/, 'Browser CI must execute the Phase 5 final performance audit');
+
 const css = [
   professionalBundle,
   read('tailadmin-professional-core.css'),
   read('medindex-tailwind-ui.css'),
   phase4Css,
   read('medindex-tailwind-touch.css'),
+  phase5Css,
 ].join('\n');
 [
   /position:\s*fixed\s*!important;[\s\S]*inset:\s*0\s*!important;/,
@@ -132,4 +175,4 @@ assert.ok((labRuntime.match(/accent:'#/g) || []).length >= 14, 'Every laboratory
   /return 'flask'/,
 ].forEach(pattern => assert.match(labRuntime, pattern, `laboratory medical icon mapping missing ${pattern}`));
 
-console.log('Professional TailAdmin shell, Phase 4 visual system, Neon-aware laboratory cards and section audit passed.');
+console.log('Professional TailAdmin shell, Phase 4 visual system, Phase 5 performance contract, Neon-aware laboratory cards and section audit passed.');
