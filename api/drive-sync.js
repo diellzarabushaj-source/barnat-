@@ -6,8 +6,8 @@ const SyncOutbox = require('../lib/sync-outbox.js');
 const Administration = require('../administration-routes.js');
 const { neonRequest } = require('../lib/neon-data-api.js');
 
-const CURRENT_DOSAGE_SPREADSHEET_ID = '1T7XsfkXLQfEomFL4DmXoA8PheiR6s3Qmu36hTqklOMo';
-const LEGACY_DOSAGE_SPREADSHEET_ID = '17cuXg5qORIIWkvAxLZ7uz2FMmGvzwjr850cubUcIgLE';
+const CURRENT_DOSAGE_SPREADSHEET_ID = '17cuXg5qORIIWkvAxLZ7uz2FMmGvzwjr850cubUcIgLE';
+const LEGACY_DOSAGE_SPREADSHEET_ID = '1T7XsfkXLQfEomFL4DmXoA8PheiR6s3Qmu36hTqklOMo';
 const DOSAGE_SHEETS = new Set(['KARTELA_BARNAVE', 'DOZA_TE_RRITUR', 'DOZA_PEDIATRIKE']);
 const GOOGLE_SYNC_OWNER_EMAIL = 'diellzarabushaj@gmail.com';
 
