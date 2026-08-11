@@ -76,10 +76,10 @@ function patchRowKeyboardOwnership() {
   rowSource = replaceOnce(
     rowSource,
     "  function onKeydown(event) {\n    if (event.key !== 'Enter' && event.key !== ' ') return;\n    const cell = event.target.closest?.('td[data-registry-expandable=\"true\"]');\n    if (!cell || cell.dataset.registryCellPreview === 'true' || interactiveTarget(event.target)) return;\n    event.preventDefault();\n    toggleRow(cell.closest('tr'));\n  }",
-    "  function onKeydown(event) {\n    if (event.key !== 'Enter' && event.key !== ' ') return;\n    const previewTrigger = event.target.closest?.('.registry-cell-preview-trigger');\n    if (previewTrigger) {\n      const row = previewTrigger.closest('tr');\n      if (!row) return;\n      event.preventDefault();\n      event.stopImmediatePropagation();\n      const key = rowKey(row);\n      const next = !Boolean(key && expandedRows.has(key));\n      previewTrigger.dataset.registryKeyboardToggleUntil = String(Date.now() + 1000);\n      toggleRow(row, next);\n      return;\n    }\n    const cell = event.target.closest?.('td[data-registry-expandable=\"true\"]');\n    if (!cell || cell.dataset.registryCellPreview === 'true' || interactiveTarget(event.target)) return;\n    event.preventDefault();\n    toggleRow(cell.closest('tr'));\n  }",
+    "  function onKeydown(event) {\n    if (event.key !== 'Enter' && event.key !== ' ') return;\n    const previewTrigger = event.target.closest?.('.registry-cell-preview-trigger');\n    if (previewTrigger) {\n      const row = previewTrigger.closest('tr');\n      if (!row) return;\n      event.preventDefault();\n      event.stopImmediatePropagation();\n      const key = rowKey(row);\n      const next = !Boolean(key && expandedRows.has(key));\n      toggleRow(row, next);\n      return;\n    }\n    const cell = event.target.closest?.('td[data-registry-expandable=\"true\"]');\n    if (!cell || cell.dataset.registryCellPreview === 'true' || interactiveTarget(event.target)) return;\n    event.preventDefault();\n    toggleRow(cell.closest('tr'));\n  }",
     'row-controller preview keyboard ownership',
   );
-  if (!rowSource.includes('previewTrigger.dataset.registryKeyboardToggleUntil')) throw new Error('Row keyboard preview ownership missing.');
+  if (!rowSource.includes("const previewTrigger = event.target.closest?.('.registry-cell-preview-trigger')")) throw new Error('Row keyboard preview ownership missing.');
   if (!rowSource.includes('toggleRow(row, next)')) throw new Error('Row keyboard must force an explicit expansion state.');
   write('registry-row-expand.js', rowSource);
 
@@ -87,10 +87,12 @@ function patchRowKeyboardOwnership() {
   previewSource = replaceOnce(
     previewSource,
     "  function onClick(event) {\n    const trigger = event.target.closest?.(`.${TRIGGER_CLASS}`);\n    if (!trigger) return;\n    event.preventDefault();\n    event.stopImmediatePropagation();\n    toggleInline(trigger);\n  }",
-    "  function onClick(event) {\n    const trigger = event.target.closest?.(`.${TRIGGER_CLASS}`);\n    if (!trigger) return;\n    event.preventDefault();\n    event.stopImmediatePropagation();\n    const suppressUntil = Number(trigger.dataset.registryKeyboardToggleUntil || 0);\n    if (event.detail === 0 && Date.now() < suppressUntil) {\n      delete trigger.dataset.registryKeyboardToggleUntil;\n      return;\n    }\n    toggleInline(trigger);\n  }",
+    "  function onClick(event) {\n    const trigger = event.target.closest?.(`.${TRIGGER_CLASS}`);\n    if (!trigger) return;\n    event.preventDefault();\n    event.stopImmediatePropagation();\n    if (event.detail === 0 && typeof window.MedIndexRegistryRows?.toggleRow === 'function') return;\n    toggleInline(trigger);\n  }",
     'cell preview synthetic keyboard click suppression',
   );
-  if (!previewSource.includes('registryKeyboardToggleUntil')) throw new Error('Cell preview keyboard click suppression missing.');
+  if (!previewSource.includes("event.detail === 0 && typeof window.MedIndexRegistryRows?.toggleRow === 'function'")) {
+    throw new Error('Cell preview synthetic keyboard click suppression missing.');
+  }
   write('registry-cell-preview.js', previewSource);
 }
 
@@ -110,10 +112,17 @@ function patchDrawerBrowserTest() {
   let source = read('tests/mobile-deep-audit.spec.js');
   source = replaceOnce(
     source,
+    "async function waitForPageFlag(page, reader, expected = true, timeout = 10000) {\n  await expect.poll(() => page.evaluate(reader), { timeout }).toBe(expected);\n}",
+    "async function waitForPageFlag(page, reader, expected = true, timeout = 10000) {\n  await expect.poll(async () => {\n    try {\n      return await page.evaluate(reader);\n    } catch (error) {\n      const message = String(error?.message || error || '');\n      if (/Execution context was destroyed|Cannot find context with specified id|most likely because of a navigation/i.test(message)) {\n        return '__navigation_pending__';\n      }\n      throw error;\n    }\n  }, { timeout }).toBe(expected);\n}",
+    'navigation-safe mobile readiness poll',
+  );
+  source = replaceOnce(
+    source,
     "  await page.locator('[data-mi-sidebar-overlay]').click({ position:{ x:Math.max(1, (await page.viewportSize()).width - 8), y:80 } });",
     "  const viewport = await page.viewportSize();\n  await page.mouse.click(Math.max(1, viewport.width - 8), 80);",
     'physical drawer outside-click test',
   );
+  if (!source.includes("return '__navigation_pending__';")) throw new Error('Mobile readiness poll does not tolerate navigation context replacement.');
   if (!source.includes('page.mouse.click(Math.max(1, viewport.width - 8), 80)')) throw new Error('Drawer browser test is not using a physical outside click.');
   write('tests/mobile-deep-audit.spec.js', source);
 }
@@ -160,4 +169,4 @@ patchDrawerBrowserTest();
 patchDarkModeClsGate();
 patchModalMetricsGate();
 auditStickyHeader();
-console.log('Final browser audit patch passed: row-owned keyboard expansion, native population metrics, physical drawer outside-click, valid safety fixture, stable dark-mode CLS and sticky-header/no-frozen-column contracts are active.');
+console.log('Final browser audit patch passed: single-owner keyboard expansion, synthetic-click suppression, navigation-safe mobile readiness, native population metrics, physical drawer outside-click, valid safety fixture, stable dark-mode CLS and sticky-header/no-frozen-column contracts are active.');
