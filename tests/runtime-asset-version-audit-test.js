@@ -61,9 +61,16 @@ const sourceRuntime = read('offline-runtime.js');
 assert.match(sourceRuntime, /VERSION = 'single-version-v1'/, 'offline runtime must use the single-version strategy');
 assert.match(sourceRuntime, /const RELEASE_ID = '[^']+'/);
 assert.match(sourceRuntime, /SERVICE_WORKER_URL = `\/sw\.js\?v=\$\{RELEASE_ID\}`/);
-assert.match(sourceRuntime, /RELEASE_ENDPOINT = '\/api\/release'/);
+assert.match(sourceRuntime, /RELEASE_ENDPOINT = '\/api\/auth\?release=1'/);
 assert.match(sourceRuntime, /checkRelease/);
 assert.doesNotMatch(sourceRuntime, /RESILIENCE_VERSION|sw-resilient-v3\.js/);
+
+const authApi = read('api/auth.js');
+assert.match(authApi, /single-version-release-endpoint-v1/);
+assert.match(authApi, /queryValue\(req, 'release'\) === '1'/);
+assert.match(authApi, /VERCEL_GIT_COMMIT_SHA/);
+assert.match(authApi, /strategy:'single-version-v1'/);
+assert.equal(fs.existsSync(path.join(ROOT, 'api/release.js')), false, 'release identity must not use an additional serverless function');
 
 const canonicalWorker = read('sw.js');
 assert.match(canonicalWorker, /VERSION = 'single-version-v1'/);
