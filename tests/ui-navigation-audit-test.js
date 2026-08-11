@@ -26,7 +26,9 @@ for (const [fileName, skipTarget] of pages) {
   assert.match(html, /<html[^>]+class=["'][^"']*medindex-tailadmin/, `${fileName}: TailAdmin marker must be available before deferred scripts`);
   assert.equal(count(html, /tailadmin-medindex\.css/gi), 1, `${fileName}: TailAdmin CSS must load exactly once`);
   assert.equal(count(html, /tailadmin-professional\.css/gi), 1, `${fileName}: professional TailAdmin CSS must load exactly once`);
-  assert.equal(count(html, /tailadmin-shell\.js/gi), 1, `${fileName}: TailAdmin shell must load exactly once`);
+  assert.equal(count(html, /tailadmin-shell\.js/gi), 1, `${fileName}: TailAdmin shell bootstrap must load exactly once`);
+  assert.equal(count(html, /tailadmin-shell-legacy\.js/gi), 0, `${fileName}: legacy shell must not be statically loaded`);
+  assert.equal(count(html, /ui-enhancements\.js/gi), 0, `${fileName}: retired UI enhancement controller must not be loaded`);
   assert.equal(count(html, /tailadmin-professional\.js/gi), 1, `${fileName}: professional TailAdmin runtime must load exactly once`);
   assert.match(styles.at(-1) || '', /tailadmin-professional\.css/, `${fileName}: professional TailAdmin CSS must be the final static stylesheet`);
   assert.doesNotMatch(html, /navigation-shell\.css|navigation-consistency\.js|main-navigation-extension\.js/, `${fileName}: legacy navigation layer must not load`);
@@ -58,7 +60,9 @@ assert.match(recetat, /id="rxSavedList"[^>]+aria-live="polite"/);
 assert.match(recetat, /id="rxDosageReview"/);
 assert.match(recetat, /id="rxDosageChooser"/);
 
-const shell = read('tailadmin-shell.js');
+const shellBootstrap = read('tailadmin-shell.js');
+const shellCore = read('tailadmin-shell-core.js');
+const legacyShell = read('tailadmin-shell-legacy.js');
 const professional = read('tailadmin-professional.js');
 const authClient = read('auth-client.js');
 const uiEnhancements = read('ui-enhancements.js');
@@ -84,11 +88,16 @@ const uiEnhancements = read('ui-enhancements.js');
   /\/medical-hub\.html/,
   /\/recetat\.html/,
   /favoriteNavCount/,
-].forEach(pattern => assert.match(shell, pattern, `tailadmin-shell.js missing ${pattern}`));
-assert.match(shell, /document\.addEventListener\('DOMContentLoaded', init/);
-assert.match(shell, /MutationObserver\(\(\) => queueMicrotask\(ensureStylesheetLast\)\)/, 'TailAdmin base cascade guard must not expire');
-assert.doesNotMatch(shell, /headObserver\.disconnect|12000/, 'TailAdmin cascade guard must not expire after a timeout');
-assert.match(shell, /MOBILE_BREAKPOINT = 1024/, 'TailAdmin desktop/mobile breakpoint is missing');
+].forEach(pattern => assert.match(shellCore, pattern, `tailadmin-shell-core.js missing ${pattern}`));
+assert.match(shellCore, /document\.addEventListener\('DOMContentLoaded', init/);
+assert.match(shellBootstrap, /MutationObserver\(\(\) => queueMicrotask\(ensureStylesheetLast\)\)/, 'TailAdmin base cascade guard must not expire');
+assert.doesNotMatch(shellBootstrap, /headObserver\.disconnect|12000/, 'TailAdmin cascade guard must not expire after a timeout');
+assert.match(shellBootstrap, /MOBILE_BREAKPOINT = 1024/, 'TailAdmin desktop/mobile breakpoint is missing');
+assert.match(shellBootstrap, /CORE_SHELL_SRC/);
+assert.doesNotMatch(shellBootstrap, /LEGACY_SRC|loadLegacyShell|verifyLegacyMount/);
+assert.match(legacyShell, /tailadmin-shell-core\.js\?v=/, 'legacy shell path must point only to the canonical core');
+assert.match(legacyShell, /legacy-migration/);
+assert.doesNotMatch(legacyShell, /function createShell\(|function buildNavigation\(/, 'legacy shell path must not retain a second implementation');
 [
   /ROOT\.dataset\.miPage/,
   /orderStylesheets/,
@@ -100,8 +109,8 @@ assert.match(shell, /MOBILE_BREAKPOINT = 1024/, 'TailAdmin desktop/mobile breakp
 ].forEach(pattern => assert.match(professional, pattern, `tailadmin-professional.js missing ${pattern}`));
 assert.match(authClient, /installLogout/);
 assert.match(authClient, /\.auth-logout/);
-assert.match(uiEnhancements, /legacyNavigationStyles[\s\S]*contains\('medindex-tailadmin'\) \? ''/, 'legacy registry navigation styles must be disabled inside TailAdmin');
-assert.match(uiEnhancements, /\$\{legacyNavigationStyles\}/, 'shared registry enhancements must keep legacy navigation isolated');
+assert.match(uiEnhancements, /miLegacyUiEnhancements = 'retired'/, 'legacy registry UI path must be an explicit compatibility-only shim');
+assert.doesNotMatch(uiEnhancements, /legacyNavigationStyles|MutationObserver|localStorage|sessionStorage|data-drug-actions|insertAdjacentHTML/, 'retired UI path must not contain a second visual or registry controller');
 
 const css = read('tailadmin-medindex.css');
 const professionalCss = [
@@ -170,4 +179,4 @@ assert.match(stability, /aria-controls/);
 assert.match(stability, /rx-popover:not\(\[hidden\]\)/);
 assert.match(stability, /button:not\(\[type\]\)/);
 
-console.log('TailAdmin UI and navigation audit tests passed.');
+console.log('Canonical TailAdmin UI, navigation and retired legacy-controller audit passed.');
