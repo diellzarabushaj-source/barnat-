@@ -46,9 +46,16 @@ function patchDoseWeightGate() {
     "    modal.weight.value = '';\n    modal.weight.disabled = true;\n    modal.weight.required = false;\n    modal.weightWrap.hidden = true;\n    modal.weightChips.hidden = true;",
     'dose weight initial safety gate',
   );
+  source = replaceOnce(
+    source,
+    "      detailRow('Rregulli:', doseText(rule)),",
+    "      detailRow('Doza zyrtare:', doseText(rule)),",
+    'clear official dose detail label',
+  );
   if (!source.includes('modal.weight.disabled = true;') || !source.includes('modal.weight.disabled = !needsWeight;')) {
     throw new Error('Dose weight adaptive disabled-state contract missing.');
   }
+  if (!source.includes("detailRow('Doza zyrtare:', doseText(rule))")) throw new Error('Official dose detail label missing.');
   write('registry-dose-calculator.js', source);
 }
 
@@ -63,17 +70,17 @@ function patchCellPreviewKeyboard() {
   source = replaceOnce(
     source,
     "    button.dataset.lineiconsSource = 'Lineicons Basic / expand-square-4';\n    cell.appendChild(button);",
-    "    button.dataset.lineiconsSource = 'Lineicons Basic / expand-square-4';\n    button.addEventListener('keydown', event => {\n      if (!['Enter', ' '].includes(event.key)) return;\n      event.preventDefault();\n      event.stopImmediatePropagation();\n      keyboardClickSuppressionUntil = Date.now() + 750;\n      toggleInline(button);\n    });\n    cell.appendChild(button);",
+    "    button.dataset.lineiconsSource = 'Lineicons Basic / expand-square-4';\n    button.addEventListener('keydown', event => {\n      if (!['Enter', ' '].includes(event.key)) return;\n      event.preventDefault();\n      event.stopImmediatePropagation();\n      keyboardClickSuppressionUntil = Date.now() + 900;\n      toggleInline(button);\n    });\n    cell.appendChild(button);",
     'direct cell preview keyboard listener',
   );
   source = replaceOnce(
     source,
     "  function onClick(event) {\n    const trigger = event.target.closest?.(`.${TRIGGER_CLASS}`);\n    if (!trigger) return;\n    event.preventDefault();\n    event.stopImmediatePropagation();\n    toggleInline(trigger);\n  }",
-    "  function onClick(event) {\n    const trigger = event.target.closest?.(`.${TRIGGER_CLASS}`);\n    if (!trigger) return;\n    event.preventDefault();\n    event.stopImmediatePropagation();\n    if (event.detail === 0 && Date.now() < keyboardClickSuppressionUntil) return;\n    toggleInline(trigger);\n  }",
+    "  function onClick(event) {\n    const trigger = event.target.closest?.(`.${TRIGGER_CLASS}`);\n    if (!trigger) return;\n    event.preventDefault();\n    event.stopImmediatePropagation();\n    if (Date.now() < keyboardClickSuppressionUntil) return;\n    toggleInline(trigger);\n  }",
     'keyboard synthetic-click suppression',
   );
-  if (!source.includes('keyboardClickSuppressionUntil = Date.now() + 750')) throw new Error('Cell preview keyboard toggle contract missing.');
-  if (!source.includes('event.detail === 0 && Date.now() < keyboardClickSuppressionUntil')) throw new Error('Cell preview synthetic-click suppression missing.');
+  if (!source.includes('keyboardClickSuppressionUntil = Date.now() + 900')) throw new Error('Cell preview keyboard toggle contract missing.');
+  if (!source.includes('if (Date.now() < keyboardClickSuppressionUntil) return;')) throw new Error('Cell preview synthetic-click suppression missing.');
   write('registry-cell-preview.js', source);
 }
 
@@ -101,6 +108,18 @@ function patchDrawerBrowserTest() {
   write('tests/mobile-deep-audit.spec.js', source);
 }
 
+function patchDarkModeClsGate() {
+  let source = read('tests/phase5-final-performance.spec.js');
+  source = replaceOnce(
+    source,
+    "  test('dark mode does not change registry geometry', async ({ page }) => {\n    await page.setViewportSize(VIEWPORTS.desktopLarge);\n    await installPerfProbe(page);\n    await openReady(page);\n    await waitRegistry(page);\n\n    const measure = () => page.evaluate(() => {",
+    "  test('dark mode does not change registry geometry', async ({ page }) => {\n    await page.setViewportSize(VIEWPORTS.desktopLarge);\n    await installPerfProbe(page);\n    await openReady(page);\n    await waitRegistry(page);\n    await expect.poll(\n      () => page.evaluate(() => window.MEDINDEX_REGISTRY_TABLE_AUDIT?.stable === true),\n      { timeout:10000, message:'registry did not stabilize before dark-mode CLS audit' }\n    ).toBe(true);\n    await page.evaluate(() => new Promise(resolve => requestAnimationFrame(() => requestAnimationFrame(resolve))));\n\n    const measure = () => page.evaluate(() => {",
+    'dark-mode stable-registry wait',
+  );
+  if (!source.includes('registry did not stabilize before dark-mode CLS audit')) throw new Error('Dark-mode CLS stabilization gate missing.');
+  write('tests/phase5-final-performance.spec.js', source);
+}
+
 function auditStickyHeader() {
   const source = read('registry-full-text-expansion.css');
   if (!/thead th\[data-registry-column-key\][\s\S]*position:sticky!important;[\s\S]*top:0!important;/.test(source)) {
@@ -116,5 +135,6 @@ patchDoseWeightGate();
 patchCellPreviewKeyboard();
 patchBrowserSafetyFixture();
 patchDrawerBrowserTest();
+patchDarkModeClsGate();
 auditStickyHeader();
-console.log('Final browser audit patch passed: physical drawer outside-click, valid safety fixture, adaptive dose weight, single keyboard row toggle and sticky-header/no-frozen-column contracts are active.');
+console.log('Final browser audit patch passed: official dose label, physical drawer outside-click, valid safety fixture, single keyboard row toggle, stable dark-mode CLS and sticky-header/no-frozen-column contracts are active.');
