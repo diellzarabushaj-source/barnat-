@@ -12,7 +12,7 @@ const markerCss = read('registry-dose-clinical-row-markers.css');
 const calculator = read('registry-dose-calculator.js');
 const tenSecondFlow = read('registry-dose-10s-flow.js');
 
-assert.match(html, /tailadmin-professional\.css\?v=20260811-2/);
+assert.match(html, /tailadmin-professional\.css\?v=20260811-3/);
 assert.doesNotMatch(html, /<link[^>]+registry-dose-clinical-row-markers\.css/,
   'Clinical row CSS must not create a second stylesheet after the canonical TailAdmin bundle.');
 assert.match(professionalCss, /registry-dose-clinical-row-markers\.css\?v=20260806-1/);
@@ -25,7 +25,7 @@ assert.ok(
   html.indexOf('registry-dose-table-button.js') < html.indexOf('registry-dose-clinical-row-markers.js'),
   'Clinical row classifier must run after the verified-dose table integration.',
 );
-assert.match(html, /registry-dose-10s-flow\.js\?v=20260809-1/);
+assert.match(html, /registry-dose-10s-flow\.js\?v=20260811-2/);
 assert.doesNotMatch(html, /registry-dose-calculator-fast-ui\.js/, 'Retired fast-UI controller must not return to production.');
 
 assert.match(markerJs, /mi-dose-row--pediatric-only/);
@@ -61,6 +61,7 @@ assert.match(calculator, /Pacient i ri/);
 assert.match(calculator, /prefers-reduced-motion/);
 
 // The one active physician-speed layer may tune UX, never clinical arithmetic.
+assert.match(tenSecondFlow, /registry-dose-10s-flow-v2/);
 assert.match(tenSecondFlow, /ensureExplicitIndication/);
 assert.match(tenSecondFlow, /Zgjidh indikacionin/);
 assert.match(tenSecondFlow, /updateCue/);
