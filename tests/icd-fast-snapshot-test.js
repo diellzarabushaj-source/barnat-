@@ -10,12 +10,15 @@ const Source = require('../lib/icd-public-source.js');
 const Base = require('../lib/icd-api-base.js');
 
 const root = path.resolve(__dirname, '..');
-for (const file of ['sw.js', 'sw-resilient.js', 'sw-resilient-v3.js']) {
-  const worker = fs.readFileSync(path.join(root, file), 'utf8');
-  assert.match(worker, /const QUERY_DATA_PATHS = new Set\(\['\/api\/drug-search', '\/api\/icd'\]\)/);
-  const privatePaths = worker.match(/const PRIVATE_DATA_PATHS = new Set\(\[[\s\S]*?\]\);/)?.[0] || '';
-  assert.doesNotMatch(privatePaths, /'\/api\/icd'/);
-  assert.match(worker, /function queryKey\(url\)[\s\S]*normalized\.searchParams\.sort\(\)/);
+const worker = fs.readFileSync(path.join(root, 'sw.js'), 'utf8');
+assert.match(worker, /const QUERY_DATA_PATHS = new Set\(\['\/api\/drug-search', '\/api\/icd'\]\)/);
+const privatePaths = worker.match(/const PRIVATE_DATA_PATHS = new Set\(\[[\s\S]*?\]\);/)?.[0] || '';
+assert.doesNotMatch(privatePaths, /'\/api\/icd'/);
+assert.match(worker, /function queryKey\(url\)[\s\S]*normalized\.searchParams\.sort\(\)/);
+for (const file of ['sw-resilient.js', 'sw-resilient-v3.js']) {
+  const shim = fs.readFileSync(path.join(root, file), 'utf8');
+  assert.match(shim, /importScripts\('\/sw\.js\?v=/, `${file} must only migrate to the canonical worker`);
+  assert.doesNotMatch(shim, /QUERY_DATA_PATHS|PRIVATE_DATA_PATHS|function queryKey/, `${file} must not contain a second cache implementation`);
 }
 const treeSource = fs.readFileSync(path.join(root, 'icd-tree.js'), 'utf8');
 const sidebarSource = fs.readFileSync(path.join(root, 'icd-sidebar.js'), 'utf8');
@@ -48,7 +51,7 @@ global.fetch = async () => {
   const warmMs = performance.now() - warmStarted;
   assert.strictEqual(warm, loaded);
   assert.equal(networkCalls, 0);
-  assert.ok(warmMs < 25, `Warm snapshot path was ${warmMs.toFixed(1)}ms.`);
+  assert.ok(warmMs < 25, `Warm snapshot/index path was ${warmMs.toFixed(1)}ms.`);
 
   const direct = loaded.data.nodes.find(node =>
     node.primaryCareRole === 'URGJENCË NË MF'
@@ -74,7 +77,7 @@ global.fetch = async () => {
   assert.equal(direct.urgencyLevel, 'direct');
   assert.equal(typeof direct.managementSummary, 'string');
 
-  console.log(`ICD snapshot cache-first benchmark passed (cold ${coldMs.toFixed(1)}ms, warm ${warmMs.toFixed(1)}ms, suggest ${suggestMs.toFixed(1)}ms).`);
+  console.log(`ICD snapshot canonical-worker benchmark passed (cold ${coldMs.toFixed(1)}ms, warm ${warmMs.toFixed(1)}ms, suggest ${suggestMs.toFixed(1)}ms).`);
 })().finally(() => {
   global.fetch = originalFetch;
 }).catch(error => {
