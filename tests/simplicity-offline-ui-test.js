@@ -13,7 +13,7 @@ const dosage = read('registry-dosage-columns-v2.js');
 const mobileCss = read('first-page-clinical.css');
 const readme = read('README.md');
 const auth = read('auth-client.js');
-const shell = read('tailadmin-shell-legacy.js');
+const shell = read('tailadmin-shell-core.js');
 const nameDisplay = read('name-display.js');
 const dosagePage = read('dozologjia.js');
 const prescriptionHtml = read('recetat.html');
@@ -71,7 +71,7 @@ assert.match(shell, /Të dhëna klinike/, 'The shell needs a neutral clinical-da
 assert.match(dosagePage, /PA BURIM TË LIDHUR/, 'Dosage cards must expose missing provenance');
 assert.match(dosagePage, /linkedSourceCount/, 'Dosage summary must be derived from linked sources');
 assert.doesNotMatch(dosagePage, /E VERIFIKUAR|kartel(?:a|at) (?:e )?verifikuara|dataset-in e verifikuar/, 'Dosage UI must not show unconditional verification');
-assert.doesNotMatch(read('tailadmin-shell-legacy.js'), /Skema të verifikuara/, 'Dosage page subtitle must stay source-neutral');
+assert.doesNotMatch(shell, /Skema të verifikuara/, 'Dosage page subtitle must stay source-neutral');
 assert.ok(
   prescriptionHtml.indexOf('class="rx-primary" id="rxFormatLocal"') < prescriptionHtml.indexOf('id="rxGenerate"'),
   'Local prescription formatting must be the primary first action'
@@ -83,8 +83,8 @@ assert.match(auth, /id = 'miAuthBootstrap'|id='miAuthBootstrap'|authBootstrap\.i
 assert.equal(manifest.theme_color, '#155f63');
 assert.equal(manifest.background_color, '#f6f9f8');
 
-['registry-dosage-columns-v2.js'].forEach(file => {
+['registry-dosage-columns-v2.js', 'tailadmin-shell-core.js'].forEach(file => {
   execFileSync(process.execPath, ['--check', path.join(ROOT, file)], { stdio:'pipe' });
 });
 
-console.log('Compact, mobile-first and single-version offline-readable UI audit passed.');
+console.log('Compact, mobile-first and canonical-shell offline-readable UI audit passed.');
