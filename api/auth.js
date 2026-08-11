@@ -105,6 +105,37 @@ function publicUser(session) {
   return session ? { email:session.email, role:session.role, name:session.name || '' } : null;
 }
 
+function ownerFallbackUser(identity = {}) {
+  return {
+    id:'',
+    sub:String(identity.sub || '').trim().slice(0, 255),
+    email:UserStore.OWNER_EMAIL,
+    name:String(identity.name || 'Diellza Rabushaj').trim().slice(0, 160),
+    picture:String(identity.picture || '').trim(),
+    role:'editor',
+    enabled:true,
+    lastLoginAt:new Date().toISOString(),
+  };
+}
+
+function ownerStoreUnavailable(error) {
+  const text = `${error?.code || ''} ${error?.message || ''}`;
+  return /Neon Data API\s+(?:402|408|409|425|429|5\d\d)|data transfer quota|quota|fetch failed|ECONN|ENOTFOUND|ETIMEDOUT|EAI_AGAIN|upstream/i.test(text);
+}
+
+async function ensureLoginUser(identity = {}) {
+  const email = String(identity.email || '').trim().toLowerCase();
+  try {
+    return await UserStore.ensureUser(identity);
+  } catch (error) {
+    if (email === UserStore.OWNER_EMAIL && ownerStoreUnavailable(error)) {
+      console.warn('Auth owner-store fallback:', error?.code || error?.message || error);
+      return ownerFallbackUser(identity);
+    }
+    throw error;
+  }
+}
+
 module.exports = async function handler(req, res) {
   securityHeaders(res);
 
@@ -184,7 +215,7 @@ module.exports = async function handler(req, res) {
         clientId:auth.googleClientId(),
         nonce:suppliedCsrf,
       });
-      user = await UserStore.ensureUser(identity);
+      user = await ensureLoginUser(identity);
       provider = 'google';
     } else {
       if (!auth.accessConfigurationEnabled()) return res.status(403).json({ error:'Hyrja me password rezervë nuk është aktive.' });
@@ -196,7 +227,7 @@ module.exports = async function handler(req, res) {
         await new Promise(resolve => setTimeout(resolve, 250));
         return res.status(401).json({ error:'Password-i nuk është i saktë.' });
       }
-      user = await UserStore.ensureUser({ email:UserStore.OWNER_EMAIL, name:'Diellza Rabushaj' });
+      user = await ensureLoginUser({ email:UserStore.OWNER_EMAIL, name:'Diellza Rabushaj' });
       provider = 'password';
     }
 
@@ -239,6 +270,9 @@ module.exports._test = {
   libraryRequested,
   resetRequested,
   browserResetPage,
+  ownerFallbackUser,
+  ownerStoreUnavailable,
+  ensureLoginUser,
   MAX_ATTEMPTS,
   MAX_BODY_BYTES,
   MAX_PASSWORD_CHARS,
