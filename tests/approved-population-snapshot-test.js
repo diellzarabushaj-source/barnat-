@@ -14,6 +14,7 @@ const specs=[
  ['901-1000',require('../data/approved-population-overrides-901-1000.json'),[904,918,944]],
  ['1001-1100',require('../data/approved-population-overrides-1001-1100.json'),[1044,1045,1050,1055,1058,1065,1084]],
  ['1101-1200',require('../data/approved-population-overrides-1101-1200.json'),[1115,1123,1124,1128,1160,1165,1167]],
+ ['1201-1300',require('../data/approved-population-overrides-1201-1300.json'),[1205,1228,1275,1276,1294]],
 ];
 const source=fs.readFileSync(path.join(root,'lib/approved-population-handler.js'),'utf8');
 const sets=specs.map(([,set])=>set);
@@ -34,12 +35,16 @@ for(const [range,set,pediatricOnly] of specs){
 const entries=sets.flatMap(set=>[
  ['Adult only',set.adultOnly],['Pediatric only',set.pediatricOnly],['Pediatric and adult both',set.pediatricAndAdultBoth]
 ].flatMap(([population,numbers])=>numbers.map(n=>[n,population])));
-assert.strictEqual(entries.length,1164,'Expected 1164 classified cards through 1200.');
+assert.strictEqual(entries.length,1255,'Expected 1255 classified cards through 1300.');
 assert.strictEqual(new Set(entries.map(([n])=>n)).size,entries.length,'Registry numbers must be unique.');
 assert(entries.every(([,p])=>allowed.has(p)),'Only three population categories are allowed.');
 entries.forEach(([n,p])=>assert.strictEqual(byNumber.get(n),p,`Card ${n} mismatch.`));
-assert.strictEqual(entries.filter(([,p])=>p==='Pediatric only').length,81,'Expected 81 Pediatric only cards through 1200.');
-for(const [n,p] of [[1100,'Adult only'],[1101,'Pediatric and adult both'],[1115,'Pediatric only'],[1122,'Adult only'],[1123,'Pediatric only'],[1124,'Pediatric only'],[1125,'Pediatric and adult both'],[1128,'Pediatric only'],[1129,'Adult only'],[1160,'Pediatric only'],[1161,'Adult only'],[1165,'Pediatric only'],[1166,'Pediatric and adult both'],[1167,'Pediatric only'],[1200,'Pediatric and adult both']]){
+assert.strictEqual(entries.filter(([,p])=>p==='Pediatric only').length,86,'Expected 86 Pediatric only cards through 1300.');
+for(const [n,p] of [
+ [1200,'Pediatric and adult both'],[1201,undefined],[1205,'Pediatric only'],[1208,'Pediatric and adult both'],[1210,'Adult only'],
+ [1228,'Pediatric only'],[1274,'Adult only'],[1275,'Pediatric only'],[1276,'Pediatric only'],[1277,'Adult only'],
+ [1293,'Pediatric and adult both'],[1294,'Pediatric only'],[1295,'Pediatric and adult both'],[1300,'Pediatric and adult both']
+]){
  assert.strictEqual(byNumber.get(n),p,`Card ${n} sentinel detects population row shift.`);
 }
-console.log('Approved population A→S mapping passed: 1164 classified through 1200; 81 pediatric only.');
+console.log('Approved population A→S mapping passed: 1255 classified through 1300; 86 pediatric only.');
