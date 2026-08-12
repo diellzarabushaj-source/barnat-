@@ -42,10 +42,6 @@ if (!source.includes(MARKER)) {
   const newStatus = `  const checks = await Promise.all([\n    cache.match(normalizedPrivateKey(new URL('/api/registry', self.location.origin))),\n    cache.match(manifestKey(), { ignoreSearch:true }),\n  ]);`;
   replaceOnce(oldStatus, newStatus, 'private cache readiness checks');
 
-  const oldFallback = `    error:'Kërkimi online nuk është i disponueshëm.', results:[], offline:true`;
-  const newFallback = `    error:'Kërkimi online nuk është i disponueshëm.', results:[], cards:[], adult:[], pediatric:[], ok:false, offline:true`;
-  replaceOnce(oldFallback, newFallback, 'query offline fallback shape');
-
   const routingAnchor = `  if (url.pathname === '/api/protocol-document') return event.respondWith(protocolDocumentResponse(event));\n  if (PRIVATE_DATA_PATHS.has(url.pathname)) return event.respondWith(privateDataResponse(event, url));\n  if (QUERY_DATA_PATHS.has(url.pathname)) return event.respondWith(queryDataResponse(event, url));`;
   const routingReplacement = `  if (url.pathname === '/api/protocol-document') return event.respondWith(protocolDocumentResponse(event));\n  if (isTargetedDosageRequest(url)) return event.respondWith(queryDataResponse(event, url));\n  if (PRIVATE_DATA_PATHS.has(url.pathname)) return event.respondWith(privateDataResponse(event, url));\n  if (QUERY_DATA_PATHS.has(url.pathname)) return event.respondWith(queryDataResponse(event, url));`;
   replaceOnce(routingAnchor, routingReplacement, 'fetch routing precedence');
@@ -65,6 +61,7 @@ if (targetedRoute < 0 || privateRoute < 0 || targetedRoute > privateRoute) {
 if (!source.includes("const PRIVATE_DATA_PATHS = new Set([\n  '/api/registry', '/data/registry-data.js', '/api/dosage'")) {
   throw new Error('Phase 9 must preserve full /api/dosage compatibility when explicitly opened.');
 }
+if (!source.includes('MAX_QUERY_RESPONSES = 40')) throw new Error('Phase 9 targeted query cache must stay bounded.');
 
 fs.writeFileSync(TARGET, source, 'utf8');
 console.log('Phase 9 PWA targeted dosage cache isolation, lightweight warm set and mobile shell precache passed.');
