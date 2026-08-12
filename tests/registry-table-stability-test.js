@@ -9,8 +9,8 @@ const index = read('index.html');
 const script = read('registry-unified-table.js');
 const css = read('registry-unified-table.css');
 
-assert.match(index, /registry-unified-table\.css\?v=20260801-1/);
-assert.match(index, /registry-unified-table\.js\?v=20260801-1/);
+assert.match(index, /registry-unified-table\.css\?v=20260812-population-column-1/);
+assert.match(index, /registry-unified-table\.js\?v=20260812-population-column-1/);
 assert.ok(
   index.indexOf('registry-dosage-loader.js') < index.indexOf('registry-unified-table.js'),
   'The unified controller must reconcile dosage columns after the idle dosage loader is wired.'
