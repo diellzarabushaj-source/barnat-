@@ -1,5 +1,192 @@
 {
   "schemaVersion": 1,
-  "updatedAt": "2026-08-01",
-  "entries": []
+  "updatedAt": "2026-08-12",
+  "entries": [
+    {
+      "protocolId": "upk-01",
+      "sourceHash": "22f872d6e57a0a7ef22fafdf977bf7f0224c3b20b6eb54ecf491fc419c606c5d",
+      "reviewedAt": "2026-08-12",
+      "reviewStatus": "review",
+      "summary": "Për mjekun familjar: identifiko rrezikun për frakturë, kërko shkaqe sekondare, përdor FRAX për vlerësimin e rrezikut dhe refero për DXA kur indikohet. Frakturat që kërkojnë trajtim të specializuar dhe terapia IV/SC kalojnë në kujdes të specializuar.",
+      "sections": [
+        {
+          "id": "first-look",
+          "title": "Çfarë nuk duhet humbur në vizitën e parë",
+          "body": "Pyet për frakturë vertebrale ose jo-vertebrale që kërkon trajtim të specializuar. Pyet për rëzime të shpeshta. Vlerëso nëse pacienti mund të ketë nevojë për terapi parenterale IV/SC. Këto pika ndryshojnë rrugën e menaxhimit dhe mund të kërkojnë kujdes të specializuar.",
+          "citations": []
+        },
+        {
+          "id": "risk",
+          "title": "Vlerëso rrezikun për frakturë",
+          "body": "Kontrollo moshën, gjininë, peshën dhe gjatësinë/BMI, frakturën e mëparshme, frakturën e ijës te prindi, duhanpirjen, përdorimin aktual të glukokortikoideve, konsumin e alkoolit, artritin reumatoid dhe shkaqet e osteoporozës sekondare. Përdor FRAX për vlerësimin e probabilitetit të frakturës.",
+          "citations": [
+            {
+              "page": 3,
+              "label": "Faktorët FRAX · f. 3"
+            }
+          ]
+        },
+        {
+          "id": "diagnosis",
+          "title": "Konfirmimi i diagnozës dhe DXA",
+          "body": "Në kujdesin parësor identifiko rrezikun dhe përgatit vlerësimin. Kur kërkohet matja e densitetit kockor, pacienti referohet për DXA në nivel specialistik; konfirmimi bëhet duke kombinuar DXA me vlerësimin klinik të rrezikut për frakturë.",
+          "citations": []
+        },
+        {
+          "id": "labs",
+          "title": "Analizat bazë dhe shkaqet sekondare",
+          "body": "Bëj anamnezë dhe ekzaminim klinik, duke përfshirë gjatësinë dhe kifozën torakale. Analizat bazë: hemogram, ESR ose CRP, kalcium serik, albuminë, kreatininë, fosfatazë alkaline, transaminaza, 25-hidroksi vitaminë D dhe hormonet tiroide. Sipas dyshimit klinik mund të nevojiten PTH, elektroforezë serike/imunoglobulina, hormone seksuale, kortizol, prolaktinë, magnez, serologji për celiaki, kalcium urinar 24-orësh, markerë të rimodelimit kockor ose radiografi.",
+          "citations": []
+        },
+        {
+          "id": "treatment",
+          "title": "Rruga e trajtimit",
+          "body": "Bisfosfonatet janë ndër opsionet kryesore të trajtimit. Kohëzgjatja e terapisë dhe zgjedhja e preparatit individualizohen sipas rrezikut të frakturës, BMD-së, faktorëve klinikë, aderencës dhe preferencës së pacientit. Kur rreziku është i lartë dhe bisfosfonatet orale janë të kundërindikuara ose nuk tolerohen, protokolli përmend denosumab si alternativë; administrimi është SC çdo 6 muaj dhe ndërprerja e papritur duhet shmangur. Terapia IV/SC ofrohet në klinika të specializuara.",
+          "citations": []
+        },
+        {
+          "id": "follow-up",
+          "title": "Ndjekja dhe edukimi",
+          "body": "Rivlerëso përgjigjen ndaj terapisë dhe rrezikun për frakturë. Monitorimi me DXA/BMD përshtatet sipas trajtimit dhe rrezikut. Eduko pacientin për aderencën, stilin e jetesës dhe parandalimin e rënieve.",
+          "citations": []
+        }
+      ],
+      "primaryCare": {
+        "eyebrow": "Për mjekun familjar",
+        "title": "Osteoporoza — çka me pas parasysh në praktikë",
+        "subtitle": "Një pamje e shpejtë për vizitën në QKMF: çfarë të pyesësh, çfarë të kërkosh, kur ta referosh dhe si ta dokumentosh terapinë.",
+        "statusLabel": "Në rishikim klinik",
+        "quickChecks": [
+          {
+            "id": "fracture",
+            "label": "A ka frakturë vertebrale ose jo-vertebrale që kërkon trajtim të specializuar?",
+            "tone": "danger"
+          },
+          {
+            "id": "falls",
+            "label": "A ka rëzime të shpeshta (>4/vit)?",
+            "tone": "warning"
+          },
+          {
+            "id": "secondary",
+            "label": "A ka shenja ose sëmundje që sugjerojnë osteoporozë sekondare?",
+            "tone": "info"
+          },
+          {
+            "id": "parenteral",
+            "label": "A po konsiderohet terapi IV/SC?",
+            "tone": "warning"
+          }
+        ],
+        "workflow": [
+          {
+            "id": "history",
+            "number": "01",
+            "title": "Anamneza + rreziku",
+            "body": "Moshë, gjini, BMI, frakturë e mëparshme, frakturë e ijës te prindi, duhan, alkool, glukokortikoide, artrit reumatoid dhe shkaqe sekondare. Pastaj përdor FRAX.",
+            "setting": "QKMF"
+          },
+          {
+            "id": "exam",
+            "number": "02",
+            "title": "Ekzaminimi",
+            "body": "Peshë, gjatësi, humbje e gjatësisë, qëndrim/kifozë torakale, rrezik për rënie dhe gjetje që sugjerojnë sëmundje sekondare.",
+            "setting": "QKMF"
+          },
+          {
+            "id": "investigate",
+            "number": "03",
+            "title": "Analizat bazë",
+            "body": "Kërko panelin bazë dhe shto analiza të tjera vetëm kur dyshimi klinik e kërkon. Mos e kthe panelin e zgjeruar në analizë rutinë për çdo pacient.",
+            "setting": "QKMF"
+          },
+          {
+            "id": "dxa",
+            "number": "04",
+            "title": "DXA / konfirmimi",
+            "body": "DXA nuk kryhet në kujdesin parësor. Kur indikohet, refero për matjen e densitetit kockor dhe konfirmimin e diagnozës.",
+            "setting": "Referim"
+          },
+          {
+            "id": "treat",
+            "number": "05",
+            "title": "Vendimi për terapi",
+            "body": "Zgjedhja varet nga rreziku për frakturë, BMD, komorbiditetet, toleranca, aderenca dhe preferenca. Terapitë IV/SC kalojnë në klinikë të specializuar.",
+            "setting": "QKMF + specialist"
+          },
+          {
+            "id": "monitor",
+            "number": "06",
+            "title": "Ndjekja",
+            "body": "Kontrollo aderencën, efektet anësore, rëzimet, frakturat e reja dhe nevojën për rivlerësim të rrezikut/BMD.",
+            "setting": "QKMF"
+          }
+        ],
+        "labs": {
+          "essential": [
+            "Hemogram",
+            "ESR ose CRP",
+            "Kalcium serik + albuminë",
+            "Kreatininë",
+            "Fosfatazë alkaline",
+            "Transaminaza",
+            "25-OH vitaminë D",
+            "Hormonet tiroide"
+          ],
+          "whenIndicated": [
+            "PTH",
+            "Elektroforezë serike / imunoglobulina",
+            "Testosteron ose FSH/LH",
+            "Kortizol / test i supresionit me deksametazon",
+            "Prolaktinë",
+            "Magnez në hipokalcemi",
+            "Antitrupa për sëmundje celiake",
+            "Kalcium urinar 24-orësh",
+            "CTX / PINP",
+            "Radiografi sipas indikacionit"
+          ]
+        },
+        "diagnosisBox": {
+          "label": "DXA",
+          "title": "Nuk kryhet në kujdesin parësor",
+          "body": "Në QKMF identifiko rrezikun, plotëso vlerësimin klinik dhe refero kur matja e densitetit kockor indikohet."
+        },
+        "rxBox": {
+          "title": "Receta / terapia",
+          "subtitle": "Kornizë e shpejtë për dokumentim — jo recetë automatike",
+          "lines": [
+            {
+              "medicine": "Bisfosfonat oral",
+              "details": "Një nga opsionet kryesore të trajtimit. Zgjedh preparatin dhe dozën sipas pacientit, funksionit renal, tolerancës dhe dokumentit zyrtar."
+            },
+            {
+              "medicine": "Kalcium / vitaminë D",
+              "details": "Vlerëso marrjen ushqimore dhe 25-OH vitaminë D; korrigjo mungesën ose marrjen e pamjaftueshme në mënyrë individuale."
+            }
+          ],
+          "specialist": [
+            "Denosumab: alternativë në rrezik të lartë kur bisfosfonatet orale janë të kundërindikuara ose nuk tolerohen; SC çdo 6 muaj. Mos e ndërprit papritur pa plan pasues.",
+            "Terapia IV/SC bëhet në klinikë të specializuar."
+          ],
+          "checksBeforeRx": [
+            "Rreziku për frakturë dhe indikacioni",
+            "Funksioni renal / kreatinina",
+            "Kalciumi dhe vitamina D",
+            "Aderenca dhe toleranca",
+            "Kundërindikacionet / komorbiditetet"
+          ]
+        },
+        "referral": {
+          "title": "Kur referohet?",
+          "destination": "Kujdes sekondar / klinikë e specializuar",
+          "items": [
+            "Kur nevojitet DXA për konfirmim / vlerësim të densitetit kockor.",
+            "Frakturë vertebrale ose jo-vertebrale që kërkon trajtim të specializuar.",
+            "Kur kërkohet terapi parenterale IV/SC.",
+            "Vendime komplekse për terapi afatgjatë ose rrezik shumë të lartë për frakturë."
+          ]
+        }
+      }
+    }
+  ]
 }
