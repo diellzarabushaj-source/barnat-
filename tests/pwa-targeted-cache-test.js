@@ -42,7 +42,12 @@ for (const asset of [
   assert(worker.includes(`'${asset}'`), `${asset} must be part of the install-time mobile shell.`);
 }
 
-assert.match(worker, /results:\[\], cards:\[\], adult:\[\], pediatric:\[\], ok:false, offline:true/, 'Offline query fallback must be safe for search and targeted dosage clients.');
+const queryStart = worker.indexOf('async function queryDataResponse');
+const queryEnd = worker.indexOf('function parseRange', queryStart);
+assert(queryStart >= 0 && queryEnd > queryStart, 'Query cache handler boundaries are missing.');
+const queryHandler = worker.slice(queryStart, queryEnd);
+assert.match(queryHandler, /status:503/, 'Offline targeted-query failure must remain an explicit 503 owned by the resilience layer.');
+assert.match(queryHandler, /offline:true/, 'Offline targeted-query fallback must identify itself as offline.');
 assert.match(worker, /MAX_QUERY_RESPONSES = 40/, 'Targeted query cache must remain bounded.');
 assert.match(runtime, /serviceWorker\.register/);
 assert.match(runtime, /\/sw\.js\?v=/);
@@ -54,4 +59,4 @@ assert.ok(Array.isArray(manifest.shortcuts) && manifest.shortcuts.some(item => S
 assert.match(packageJson.scripts['build:runtime'], /patch-phase9-pwa-targeted-cache\.js/, 'Phase 9 must be deterministic in the runtime build chain.');
 assert.equal(fs.existsSync(path.join(ROOT, 'api', 'offline-cache.js')), false, 'Phase 9 must not consume a new Vercel function slot.');
 
-console.log('Phase 9 targeted dosage cache isolation, lightweight PWA warm set and mobile shell offline contract passed.');
+console.log('Phase 9 targeted dosage cache isolation, lightweight PWA warm set and resilience-owned offline fallback contract passed.');
