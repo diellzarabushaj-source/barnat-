@@ -23,10 +23,10 @@ assert(
 );
 assert(index.includes('data-registry-ui-release="20260809-1"'), 'Registry UI release was not bumped.');
 assert(index.includes('registry-column-contract.js?v=20260801-2'), 'Column contract v2 is not wired.');
-assert(index.includes('registry-unified-table.js?v=20260801-1'), 'Unified table controller is not wired.');
+assert(index.includes('registry-unified-table.js?v=20260812-population-column-1'), 'Unified table population controller is not wired.');
 assert(
-  index.indexOf('registry-unified-table.css?v=20260801-1') < index.indexOf('registry-full-text-expansion.css?v=20260805-2'),
-  'Full-row reveal must load after the unified compact geometry.'
+  index.indexOf('registry-unified-table.css?v=20260812-population-column-1') < index.indexOf('registry-full-text-expansion.css?v=20260805-2'),
+  'Full-row reveal must load after the unified compact population geometry.'
 );
 assert(
   index.indexOf('registry-full-text-expansion.css?v=20260805-2') < index.indexOf('tailadmin-professional.css'),
@@ -83,4 +83,4 @@ assert(!dosageRuntime.includes("regimen?.classList.toggle('is-expanded')"), 'The
 assert(!styles.includes('height:132px!important;\n  min-height:132px!important'), 'Expanded desktop rows must not have a fixed height ceiling.');
 assert(fullTextStyles.includes('.registry-dosage-regimen.is-expanded .registry-dosage-dose-text'), 'Expanded dosage text must have an explicit unclamped contract.');
 
-console.log('Full-row zoom restores canonical active-substance text, excludes verified dose actions and reveals every textual column without modal or clamp.');
+console.log('Full-row zoom restores canonical active-substance text, population-aware unified geometry, verified dose actions and every textual column without modal or clamp.');
