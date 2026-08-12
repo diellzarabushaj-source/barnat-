@@ -1,0 +1,443 @@
+{
+  "schemaVersion": 1,
+  "updatedAt": "2026-08-13",
+  "entries": [
+    {
+      "protocolId": "upk-05",
+      "sourceHash": "d5e84c817f2fe6ee2a7511c230db06ee034a2f0546645dcd6dc509a9806aa64e",
+      "reviewStatus": "review",
+      "summary": "Për mjekun familjar: trajtimi farmakologjik i SPOK-ut lidhet me vlerësimin diagnostik, spirometrinë, simptomat dhe historinë e ekzacerbimeve/hospitalizimeve. Protokolli ndan trajtimin fillestar të SPOK-ut stabil nga trajtimi i ekzacerbimeve dhe jep objektivin e oksigjenimit 88–92% gjatë hipoksemisë së ekzacerbimit.",
+      "primaryCare": {
+        "eyebrow": "Për mjekun familjar",
+        "title": "SPOK — trajtimi farmakologjik pa humbur sigurinë",
+        "subtitle": "Pamje praktike e Protokollit Klinik Nr. 3/2025: grupi klinik, terapia iniciale, ekzacerbimi, oksigjeni dhe pikat që kërkojnë nivel më të lartë kujdesi.",
+        "statusLabel": "Në rishikim klinik",
+        "todayActions": [
+          {
+            "number": "1",
+            "title": "Përcakto nëse pacienti është stabil apo në ekzacerbim",
+            "body": "Mos përdor të njëjtën rrugë terapeutike për SPOK stabil dhe për ekzacerbim. Protokolli i trajton veçmas.",
+            "tone": "warning",
+            "sourcePage": 4
+          },
+          {
+            "number": "2",
+            "title": "Përdor simptomat + ekzacerbimet për grupin A/B/E",
+            "body": "Terapia iniciale bazohet në simptomat dhe historinë e ekzacerbimeve/hospitalizimeve, krahas vlerësimit spirometrik.",
+            "tone": "info",
+            "sourcePage": 4
+          },
+          {
+            "number": "3",
+            "title": "Në ekzacerbim kontrollo SpO₂ para oksigjenit",
+            "body": "Kur ka hipoksemi, oksigjeni titrohet drejt saturimit të synuar 88–92%, jo pa objektiv.",
+            "tone": "warning",
+            "sourcePage": 5
+          },
+          {
+            "number": "4",
+            "title": "Rastet e rënda nuk janë trajtim rutinë ambulantor",
+            "body": "Protokolli ndan ekzacerbimin e rëndë që kërkon urgjencë/shtrim dhe trajtim më intensiv nga rastet më të lehta.",
+            "tone": "danger",
+            "sourcePage": 5
+          }
+        ],
+        "quickChecks": [
+          {
+            "id": "hospitalization-history",
+            "label": "≥2 ekzacerbime të moderuara ose ≥1 hospitalizim gjatë vitit?",
+            "response": "Kjo e vendos pacientin në rrugën e grupit E në tabelën e trajtimit inicial.",
+            "tone": "warning",
+            "sourcePage": 4
+          },
+          {
+            "id": "eosinophils",
+            "label": "Eozinofilet në gjak janë ≥300 kur po konsiderohet ICS?",
+            "response": "Në grupin E protokolli thotë të konsiderohet LABA+LAMA+ICS kur eozinofilet janë ≥300.",
+            "tone": "info",
+            "sourcePage": 4
+          },
+          {
+            "id": "purulent-sputum",
+            "label": "Ka sputum purulent gjatë ekzacerbimit?",
+            "response": "Protokolli e lidh antibiotikun me sputumin purulent dhe jep kohëzgjatje 5–7 ditë.",
+            "tone": "warning",
+            "sourcePage": 5
+          },
+          {
+            "id": "hypoxemia",
+            "label": "SpO₂ është <88%?",
+            "response": "Protokolli jep oksigjen të titruar dhe objektiv 88–92%; monitorimi i përgjigjes është i domosdoshëm.",
+            "tone": "danger",
+            "sourcePage": 5
+          },
+          {
+            "id": "severe-exacerbation",
+            "label": "Ekzacerbimi kërkon urgjencë ose shtrim?",
+            "response": "Kaloni në rrugën e ekzacerbimit të rëndë, me oksigjen, bronkodilatatorë, kortikosteroide dhe vlerësim të nivelit të kujdesit.",
+            "tone": "danger",
+            "sourcePage": 6
+          }
+        ],
+        "sections": [
+          {
+            "id": "stable-treatment",
+            "kicker": "SPOK stabil",
+            "title": "Terapia iniciale sipas grupit",
+            "body": "Tabela e protokollit paraqet një bronkodilatator për grupin A, LABA+LAMA për grupin B dhe LABA+LAMA për grupin E; te grupi E konsiderohet LABA+LAMA+ICS kur eozinofilet në gjak janë ≥300.",
+            "sourcePages": [4],
+            "items": [
+              {"title": "Grupi A", "body": "Një bronkodilatator.", "tone": "info"},
+              {"title": "Grupi B", "body": "LABA + LAMA.", "tone": "info"},
+              {"title": "Grupi E", "body": "LABA + LAMA; konsidero LABA + LAMA + ICS kur eozinofilet janë ≥300.", "tone": "warning"}
+            ]
+          },
+          {
+            "id": "exacerbation",
+            "kicker": "Ekzacerbimi",
+            "title": "Çfarë ndryshon gjatë përkeqësimit",
+            "body": "Protokolli vazhdon terapinë bazë, shpeshton SABA çdo 2–4 orë dhe, në ekzacerbim të moderuar, përfshin prednisone 30–40 mg nga goja për 5–7 ditë. Antibiotikët lidhen me sputum purulent dhe jepen 5–7 ditë sipas klasave të listuara në protokoll.",
+            "sourcePages": [5],
+            "items": [
+              {"title": "Bronkodilatatori", "body": "SABA shpeshtohet çdo 2–4 orë; terapia bazë vazhdohet.", "tone": "info"},
+              {"title": "Kortikosteroidi", "body": "Prednisone 30–40 mg PO për 5–7 ditë në rrugën e ekzacerbimit të moderuar të paraqitur nga protokolli.", "tone": "warning"},
+              {"title": "Antibiotiku", "body": "Kur sputumi është purulent: amoxicillin/clavulanate, makrolid, tetracycline ose quinolone PO, 5–7 ditë, sipas tabelës së protokollit.", "tone": "warning"}
+            ]
+          },
+          {
+            "id": "oxygen",
+            "kicker": "Oksigjeni",
+            "title": "Titroje drejt 88–92%",
+            "body": "Protokolli kërkon oksigjen shtesë të titruar për hipokseminë me objektiv 88–92%. Kur SpO₂ është <88%, tabela përmend 1–2 L/min përmes kanulës nazale ose 2–4 L/min përmes maskës Venturi deri te objektivi.",
+            "sourcePages": [5],
+            "items": []
+          },
+          {
+            "id": "severe",
+            "kicker": "Ekzacerbimi i rëndë",
+            "title": "Rrit nivelin e kujdesit",
+            "body": "Për ekzacerbimin e rëndë protokolli liston oksigjenin, rritjen e dozës/frekuencës së SABA, spacer/nebulizer kur përshtatet, kombinimin SABA me antikolinergjik, kortikosteroide orale/IV, antibiotikë kur ka shenja bakteriale, monitorim të lëngjeve dhe trajtim të komorbiditeteve.",
+            "sourcePages": [6],
+            "items": []
+          },
+          {
+            "id": "ltot",
+            "kicker": "Oksigjeni afatgjatë",
+            "title": "Kriteret e protokollit dhe rivlerësimi",
+            "body": "Protokolli përmend PaO₂ <55 mmHg ose SpO₂ <88% të konfirmuar dy herë brenda tre javësh; po ashtu PaO₂ 55–60 mmHg ose SpO₂ rreth 88% me hipertension pulmonar, edemë periferike/dekompensim kardiak ose policitemi. Pas fillimit të oksigjenoterapisë afatgjatë kërkohet rivlerësim pas 60–90 ditësh.",
+            "sourcePages": [6],
+            "items": []
+          }
+        ],
+        "referral": {
+          "title": "Kur rruga ambulantore nuk mjafton",
+          "destination": "Urgjenca / spitali / pulmologjia sipas rëndesës klinike",
+          "sourcePage": [5, 6],
+          "plannedLabel": "Rivlerësim i specializuar",
+          "planned": [
+            "Nevojë për vlerësim të oksigjenoterapisë afatgjatë.",
+            "Nevojë për terapi ose monitorim që nuk mund të realizohet në mënyrë të sigurt në ambulancë."
+          ],
+          "urgentLabel": "Rritje e menjëhershme e nivelit të kujdesit",
+          "urgent": [
+            "Ekzacerbim i rëndë që kërkon vizitë në urgjencë ose shtrim.",
+            "Hipoksemi që kërkon oksigjen të titruar dhe monitorim të afërt.",
+            "Përkeqësim që nuk kontrollohet me menaxhimin fillestar."
+          ]
+        }
+      }
+    },
+    {
+      "protocolId": "upk-06",
+      "sourceHash": "85595c36ac568c8b30f5b2e9bf4cebee59ad75e87ff28c4e2039a24b859f069e",
+      "reviewStatus": "review",
+      "summary": "Për mjekun familjar: menaxhimi i SPOK-ut përfshin reduktimin e ekspozimit ndaj faktorëve të rrezikut, vaksinimin, stilin e shëndetshëm të jetës, farmakoterapinë adekuate dhe parandalimin e ekzacerbimeve. Protokolli jep kritere të qarta referimi/hospitalizimi dhe kërkon plan të shkruar për vetëmenaxhim dhe përcjellje pas ekzacerbimit.",
+      "primaryCare": {
+        "eyebrow": "Për mjekun familjar",
+        "title": "SPOK — menaxhimi i vizitës, ekzacerbimit dhe referimit",
+        "subtitle": "Pamje praktike e Protokollit Klinik Nr. 2/2025: menaxhimi stabil, vetëmenaxhimi, ekzacerbimi, kriteret e referimit dhe follow-up pas daljes nga spitali.",
+        "statusLabel": "Në rishikim klinik",
+        "todayActions": [
+          {
+            "number": "1",
+            "title": "Pyet për duhanin dhe ekspozimet",
+            "body": "Reduktimi i ekspozimit ndaj faktorëve të rrezikut dhe ndërprerja e duhanpirjes janë pjesë e menaxhimit fillestar.",
+            "tone": "info",
+            "sourcePage": 4
+          },
+          {
+            "number": "2",
+            "title": "Kontrollo simptomat dhe ekzacerbimet",
+            "body": "Menaxhimi i SPOK-ut stabil bazohet në simptomat dhe anamnezën për ekzacerbimet.",
+            "tone": "info",
+            "sourcePage": 4
+          },
+          {
+            "number": "3",
+            "title": "Jepi pacientit plan të qartë veprimi",
+            "body": "Plani duhet të përfshijë terapinë, çfarë të bëjë kur përkeqësohet, kur të kontaktojë mjekun dhe kur të thërrasë urgjencën.",
+            "tone": "warning",
+            "sourcePage": 6
+          },
+          {
+            "number": "4",
+            "title": "Kontrollo kriteret e referimit/hospitalizimit",
+            "body": "Cianoza, edema periferike, SpO₂ <92%, dispnea e rëndë, hemoptizia, konfuzioni ose dështimi akut respirator ndryshojnë nivelin e kujdesit.",
+            "tone": "danger",
+            "sourcePage": 7
+          }
+        ],
+        "quickChecks": [
+          {
+            "id": "smoking",
+            "label": "Pacienti vazhdon duhanpirjen ose ekspozimin ndaj faktorëve të rrezikut?",
+            "response": "Protokolli kërkon inkurajim dhe mbështetje për ndërprerjen e duhanpirjes dhe reduktimin e ekspozimeve.",
+            "tone": "info",
+            "sourcePage": 4
+          },
+          {
+            "id": "frequent-infections",
+            "label": "Ka >2 infeksione respiratore në vit?",
+            "response": "Është kriter për referim te specialisti në protokoll.",
+            "tone": "warning",
+            "sourcePage": 7
+          },
+          {
+            "id": "low-sat",
+            "label": "Pulsoksimetria është <92% ose ka cianozë/edemë periferike?",
+            "response": "Protokolli e liston si kriter referimi dhe si shenjë që mund të kërkojë nivel më të lartë kujdesi.",
+            "tone": "danger",
+            "sourcePage": 7
+          },
+          {
+            "id": "severe-dyspnea",
+            "label": "Ka dispne të rëndë, dhimbje/shtrëngim në gjoks ose obstruksion të rëndë?",
+            "response": "Është kriter referimi te specialisti sipas protokollit.",
+            "tone": "danger",
+            "sourcePage": 7
+          },
+          {
+            "id": "confusion",
+            "label": "Ka konfuzion, përgjumje ose dështim akut respirator?",
+            "response": "Protokolli i liston si indikacione të mundshme për hospitalizim.",
+            "tone": "danger",
+            "sourcePage": 7
+          },
+          {
+            "id": "hemoptysis",
+            "label": "Ka hemoptizi?",
+            "response": "Hemoptizia te personi me SPOK është kriter referimi te specialisti në protokoll.",
+            "tone": "danger",
+            "sourcePage": 7
+          }
+        ],
+        "sections": [
+          {
+            "id": "stable",
+            "kicker": "SPOK stabil",
+            "title": "Pesë shtyllat e menaxhimit fillestar",
+            "body": "Protokolli rendit reduktimin e ekspozimit ndaj faktorëve të rrezikut, vaksinimin, këshillimin për jetë të shëndetshme, inicimin e farmakoterapisë adekuate dhe parandalimin e përkeqësimeve.",
+            "sourcePages": [4],
+            "items": [
+              {"title": "Duhani / ekspozimet", "body": "Të gjithë duhanpirësit duhet të inkurajohen dhe mbështeten për ndërprerjen e duhanpirjes.", "tone": "info"},
+              {"title": "Vaksinimi", "body": "Protokolli përfshin vaksinimin në menaxhimin fillestar dhe më vonë liston vaksinat e rekomanduara.", "tone": "info"},
+              {"title": "Farmakoterapia", "body": "Terapia duhet të jetë adekuate për simptomat dhe rrezikun e ekzacerbimeve.", "tone": "warning"}
+            ]
+          },
+          {
+            "id": "exacerbation",
+            "kicker": "Ekzacerbimi",
+            "title": "Çfarë ndryshon gjatë përkeqësimit",
+            "body": "Protokolli përmend SABA me ose pa antikolinergjik me veprim të shkurtër; bronkodilatatorët me veprim të gjatë fillohen sa më shpejt që është e mundur. Në acarime të rënda, kortikosteroidet sistemike mund të përdoren dhe kohëzgjatja nuk duhet të jetë më shumë se 5 ditë. Antibiotikët jepen për 5 ditë sipas indikacionit të protokollit. Ventilimi joinvaziv është mënyra e parë e ventilimit te insuficienca respiratore akute.",
+            "sourcePages": [6],
+            "items": []
+          },
+          {
+            "id": "self-management",
+            "kicker": "Vetëmenaxhimi",
+            "title": "Plani duhet të jetë i shkruar dhe praktik",
+            "body": "Përcakto medikamentet dhe dozat, çfarë bën pacienti kur simptomat përkeqësohen, kur merr doza shtesë, kur kontakton mjekun familjar dhe kur thërret urgjencën. Eduko për teknikën e inhalatorit, aktivitetin fizik dhe reduktimin e ekspozimeve.",
+            "sourcePages": [6, 7],
+            "items": []
+          },
+          {
+            "id": "follow-up",
+            "kicker": "Pas hospitalizimit",
+            "title": "Përcjellje e hershme + kontroll në 3 muaj",
+            "body": "Protokolli rekomandon përcjellje të hershme brenda një muaji kur është e mundur dhe përcjellje edhe rreth 3 muaj pas lirimit për të konfirmuar kthimin në gjendje klinike të qëndrueshme dhe për të rishikuar simptomat.",
+            "sourcePages": [7],
+            "items": []
+          }
+        ],
+        "referral": {
+          "title": "Kriteret e referimit dhe hospitalizimit",
+          "destination": "Pulmologjia / urgjenca / spitali sipas kriterit",
+          "sourcePage": [7],
+          "plannedLabel": "Refero te specialisti",
+          "planned": [
+            "Konfirmim i diagnozës përmes spirometrisë.",
+            "Pa përgjigje adekuate ndaj trajtimit ambulantor; SPOK i rëndë me FEV₁ ≤50% të parashikuar.",
+            ">2 infeksione respiratore në vit; SPOK me fillim nën moshën 40 vjeç.",
+            "SpO₂ <92%, cianozë/edemë periferike, dispne e rëndë ose hemoptizi.",
+            "Përgjumje ditore dhe gërhitje të rënda."
+          ],
+          "urgentLabel": "Mendo për hospitalizim",
+          "urgent": [
+            "Përkeqësim i menjëhershëm i dispnesë në qetësi, takipne/takikardi ose rënie e saturimit.",
+            "Konfuzion, përgjumje ose dështim akut respirator.",
+            "Cianozë/edemë periferike të reja ose dështim i menaxhimit fillestar.",
+            "Komorbiditete të rënda si infarkt/aritmi të reja ose mbështetje e pamjaftueshme në shtëpi."
+          ]
+        }
+      }
+    },
+    {
+      "protocolId": "upk-07",
+      "sourceHash": "9837221cbef76a4a09247c1b1c0a34c5f9ac0785adfff9ddee39969972ff09e5",
+      "reviewStatus": "review",
+      "summary": "Për mjekun familjar: dysho për SPOK kur ka simptoma kronike respiratore dhe ekspozime/rreziqe përkatëse, pastaj përdor spirometrinë pas bronkodilatorit dhe vlerësimin e simptomave. Protokolli jep arsye të qarta për referim dhe indikatorë për hospitalizim gjatë përkeqësimit.",
+      "primaryCare": {
+        "eyebrow": "Për mjekun familjar",
+        "title": "SPOK — diagnostikimi nga dyshimi klinik te referimi",
+        "subtitle": "Pamje praktike e Protokollit Klinik Nr. 1/2025: simptomat, faktorët e rrezikut, CAT/mMRC, spirometria, diferencimi dhe shenjat që kërkojnë referim ose hospitalizim.",
+        "statusLabel": "Në rishikim klinik",
+        "todayActions": [
+          {
+            "number": "1",
+            "title": "Kërko simptomat tipike kronike",
+            "body": "Dispne progresive/persistente, fishkëllimë e përsëritur, kollë kronike dhe infeksione të përsëritura të rrugëve të poshtme respiratore rrisin probabilitetin klinik.",
+            "tone": "info",
+            "sourcePage": 4
+          },
+          {
+            "number": "2",
+            "title": "Dokumento ekspozimet dhe faktorët e rrezikut",
+            "body": "Duhani, tymi nga gatimi/ngrohja, pluhurat/avujt/gazrat në punë dhe faktorët zhvillimorë/gjenetikë janë pjesë e vlerësimit.",
+            "tone": "info",
+            "sourcePage": 4
+          },
+          {
+            "number": "3",
+            "title": "Mos e konfirmo vetëm nga simptomat",
+            "body": "Diagnostikimi bazohet edhe në spirometri/PEF pas bronkodilatorit, historinë e ekzacerbimeve dhe komorbiditetet.",
+            "tone": "warning",
+            "sourcePage": 4
+          },
+          {
+            "number": "4",
+            "title": "Kërko shenjat që ndryshojnë nivelin e kujdesit",
+            "body": "Pasiguria diagnostike, SPOK i rëndë, hemoptizia, rënia e shpejtë e FEV₁, simptomat joproporcionale ose përkeqësimi i rëndë kërkojnë referim/vlerësim të avancuar.",
+            "tone": "danger",
+            "sourcePage": 7
+          }
+        ],
+        "quickChecks": [
+          {
+            "id": "dyspnea",
+            "label": "Dispnea është progresive, persistente ose përkeqësohet me ushtrime?",
+            "response": "Është një nga indikatorët klinikë të probabilitetit për SPOK.",
+            "tone": "info",
+            "sourcePage": 4
+          },
+          {
+            "id": "chronic-cough",
+            "label": "Ka kollë kronike, fishkëllimë të përsëritur ose infeksione të shpeshta të poshtme respiratore?",
+            "response": "Këto janë indikatorë klinikë të listuar në protokoll dhe duhen lidhur me faktorët e rrezikut.",
+            "tone": "info",
+            "sourcePage": 4
+          },
+          {
+            "id": "exposure",
+            "label": "Ka histori duhanpirjeje ose ekspozime relevante në shtëpi/punë?",
+            "response": "Ekspozimet janë pjesë e probabilitetit diagnostik; dokumentoji para interpretimit të testeve.",
+            "tone": "warning",
+            "sourcePage": 4
+          },
+          {
+            "id": "diagnostic-uncertainty",
+            "label": "Ka pasiguri diagnostike ose simptomat janë joproporcionale me spirometrinë?",
+            "response": "Protokolli e liston si arsye për referim dhe mund të kërkojë CT/DLCO ose hetime të tjera sipas rastit.",
+            "tone": "warning",
+            "sourcePage": 7
+          },
+          {
+            "id": "hemoptysis",
+            "label": "Ka hemoptizi?",
+            "response": "Hemoptizia është arsye për referim te specialisti në protokoll.",
+            "tone": "danger",
+            "sourcePage": 7
+          },
+          {
+            "id": "acute-failure",
+            "label": "Ka dispne të rënduar në qetësi, rënie të SpO₂, konfuzion/përgjumje ose dështim akut respirator?",
+            "response": "Këto janë indikatorë të hospitalizimit gjatë përkeqësimit.",
+            "tone": "danger",
+            "sourcePage": 7
+          }
+        ],
+        "sections": [
+          {
+            "id": "clinical-probability",
+            "kicker": "Dyshimi klinik",
+            "title": "Simptomat + ekspozimet vijnë para testit",
+            "body": "Protokolli liston dispnenë progresive/persistente, fishkëllimën e përsëritur, kollën kronike dhe infeksionet e përsëritura të rrugëve të poshtme respiratore. Faktorët e rrezikut përfshijnë tymin e duhanit, ekspozimet nga gatimi/ngrohja, pluhurat/avujt/gazrat në punë dhe faktorë gjenetikë/zhvillimorë.",
+            "sourcePages": [4],
+            "items": []
+          },
+          {
+            "id": "symptom-scores",
+            "kicker": "Simptomat",
+            "title": "Përdor CAT dhe mMRC për ta dokumentuar barrën simptomatike",
+            "body": "Protokolli përfshin CAT dhe shkallën mMRC 0–4 si pjesë të vlerësimit të simptomave. Këto ndihmojnë klasifikimin e simptomave, por nuk zëvendësojnë konfirmimin funksional.",
+            "sourcePages": [5],
+            "items": []
+          },
+          {
+            "id": "spirometry",
+            "kicker": "Funksioni pulmonar",
+            "title": "Spirometria është pjesë e konfirmimit dhe klasifikimit",
+            "body": "Protokolli e bazon diagnostikimin në simptomat/faktorët e rrezikut dhe rezultatet e spirometrisë/PEF pas bronkodilatorit. Klasifikimi GOLD i paraqitur përdor FEV₁ të parashikuar: GOLD 1 ≥80%, GOLD 2 50–<80%, GOLD 3 30–<50%, GOLD 4 ≤30%.",
+            "sourcePages": [4, 5],
+            "items": []
+          },
+          {
+            "id": "exacerbated-assessment",
+            "kicker": "Kur përkeqësohet",
+            "title": "Mendo edhe për diagnoza alternative dhe shkakun e ekzacerbimit",
+            "body": "Gjatë SPOK-ut të ekzacerbuar protokolli kërkon vlerësim të plotë klinik, duke konsideruar pneumonia, insuficiencën e zemrës dhe embolinë pulmonare; dokumentohen dispnea, kolla, takipnea, takikardia, sputumi dhe distresi respirator. Për vlerësim përdoren edhe pulsoksimetria, CRP dhe analiza gazore sipas gjendjes.",
+            "sourcePages": [8],
+            "items": []
+          },
+          {
+            "id": "additional-tests",
+            "kicker": "Hetimet shtesë",
+            "title": "Mos i kërko të gjitha rutinë — përdori sipas problemit klinik",
+            "body": "Protokolli lidh kulturën e sputumit me sputumin persistues purulent; PEF serial me dyshimin për astmë; EKG/peptidet natriuretike dhe ekokardiografinë me dyshim kardiak; CT me simptoma joproporcionale ose diagnoza të tjera; alfa-1 antitripsinën me fillim të hershëm/histori familjare; DLCO me simptoma joproporcionale ose vlerësim procedural.",
+            "sourcePages": [9],
+            "items": []
+          }
+        ],
+        "referral": {
+          "title": "Kur diagnoza ose gjendja kërkon nivel tjetër kujdesi",
+          "destination": "Pulmologjia / urgjenca / spitali sipas kriterit",
+          "sourcePage": [7],
+          "plannedLabel": "Refero për vlerësim specialistik",
+          "planned": [
+            "Pasiguri diagnostike ose dyshim për SPOK të rëndë.",
+            "Cor pulmonale, vlerësim për oksigjen/nebulizator afatgjatë ose rehabilitim pulmonar.",
+            "Rënie e shpejtë e FEV₁, sëmundje buloze ose simptoma joproporcionale me deficitin funksional.",
+            "Fillim i simptomave nën 40 vjeç / dyshim për mungesë të alfa-1 antitripsinës.",
+            "Infeksione të shpeshta ose hemoptizi."
+          ],
+          "urgentLabel": "Mendo për hospitalizim",
+          "urgent": [
+            "Përkeqësim i papritur i dispnesë në qetësi, takipne ose rënie e saturimit.",
+            "Konfuzion, përgjumje ose dështim akut respirator.",
+            "Cianozë/edemë periferike të reja ose mosreagim ndaj menaxhimit fillestar.",
+            "Komorbiditete të rënda ose mbështetje e pamjaftueshme në shtëpi."
+          ]
+        }
+      }
+    }
+  ]
+}
