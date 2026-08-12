@@ -1,13 +1,14 @@
 (() => {
   'use strict';
 
-  const VERSION = 'registry-dosage-idle-loader-v6';
+  const VERSION = 'registry-dosage-idle-loader-v5';
+  const SRC = '/registry-dosage-columns-v3.js?v=20260812-2';
   const BUILD_ID = String(
     document.querySelector('meta[name="medindex-build-id"]')?.content
       || document.documentElement.dataset.medindexBuildId
       || '',
   ).trim();
-  const SRC = `/registry-dosage-columns-v3.js?v=20260812-2${BUILD_ID ? `&build=${encodeURIComponent(BUILD_ID)}` : ''}`;
+  const BUILD_QUERY = BUILD_ID ? `&build=${encodeURIComponent(BUILD_ID)}` : '';
   let scheduled = false;
   let loaded = false;
   let fallbackTimer = 0;
@@ -17,7 +18,7 @@
     loaded = true;
     clearTimeout(fallbackTimer);
     const script = document.createElement('script');
-    script.src = SRC;
+    script.src = SRC + BUILD_QUERY;
     script.async = true;
     script.dataset.registryDosageRuntime = VERSION;
     if (BUILD_ID) script.dataset.medindexBuildId = BUILD_ID;
