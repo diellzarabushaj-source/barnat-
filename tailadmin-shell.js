@@ -16,6 +16,7 @@
   const LEGACY_SRC = '/tailadmin-shell-core.js?v=production-audit-v2';
   const MOBILE_SRC = '/mobile-experience.js?v=production-audit-v2';
   const MOBILE_A11Y_SRC = '/mobile-accessibility-hardening.js?v=mobile-a11y-deep-audit-v1';
+  const MOBILE_SIDEBAR_HARDENING_SRC = '/mobile-sidebar-hardening.js?v=mobile-sidebar-deep-audit-v1';
   const OFFLINE_RUNTIME_SRC = '/offline-runtime-performance.js?v=low-bandwidth-v3';
   const BRAND_SRC = '/medindex-brand-runtime.js?v=medindex-brand-v1';
   const ATC_NAV_SRC = '/atc-sidebar.js?v=atc-sidebar-v2';
@@ -164,7 +165,7 @@
     const warm = source => fetch(source, { cache:'no-cache', credentials:'same-origin' }).catch(() => null);
     navigator.serviceWorker.ready.then(() => {
       const run = () => Promise.all([
-        warm(LEGACY_SRC), warm(MOBILE_SRC), warm(MOBILE_A11Y_SRC), warm(OFFLINE_RUNTIME_SRC),
+        warm(LEGACY_SRC), warm(MOBILE_SRC), warm(MOBILE_A11Y_SRC), warm(MOBILE_SIDEBAR_HARDENING_SRC), warm(OFFLINE_RUNTIME_SRC),
         warm(BRAND_SRC), warm(ATC_NAV_SRC), warm(ATC_SEARCH_SRC),
       ]);
       if (navigator.serviceWorker.controller) run();
@@ -177,6 +178,7 @@
     mobileStarted = true;
     ensureCriticalMobileStyles();
     const mobile = loadRuntime(MOBILE_SRC, 'data-medindex-mobile-experience', 'miMobileExperienceError');
+    loadRuntime(MOBILE_SIDEBAR_HARDENING_SRC, 'data-medindex-mobile-sidebar-hardening', 'miMobileSidebarHardeningError');
     const loadA11y = () => loadRuntime(MOBILE_A11Y_SRC, 'data-medindex-mobile-a11y', 'miMobileA11yError');
     if (document.documentElement.dataset.miMobileExperience === 'production-audit-v2') loadA11y();
     else {
