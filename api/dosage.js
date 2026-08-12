@@ -26,10 +26,14 @@ function isCardRequest(req) {
   return requestView(req) === 'card';
 }
 
+function isCardsRequest(req) {
+  return requestView(req) === 'cards';
+}
+
 async function handler(req, res) {
   if (isCalculatorRequest(req)) return doseCalculatorHandler(req, res);
   if (isSafetyRequest(req)) return doseSafetyHandler(req, res);
-  if (isCardRequest(req)) return dosageCardHandler(req, res);
+  if (isCardRequest(req) || isCardsRequest(req)) return dosageCardHandler(req, res);
   return dosageHandler(req, res);
 }
 
@@ -44,6 +48,7 @@ handler._dosageCardTest = dosageCardHandler._test;
 handler.isCalculatorRequest = isCalculatorRequest;
 handler.isSafetyRequest = isSafetyRequest;
 handler.isCardRequest = isCardRequest;
+handler.isCardsRequest = isCardsRequest;
 handler.requestView = requestView;
 
 module.exports = handler;
