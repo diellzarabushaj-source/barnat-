@@ -1,7 +1,7 @@
 (() => {
   'use strict';
 
-  const VERSION = 'dose-clinical-row-markers-v2-pediatric-population';
+  const VERSION = 'dose-clinical-row-markers-v3-pediatric-column';
   const ROW_SELECTOR = '#tbody > tr';
   const EMPTY_SELECTOR = '.empty-state';
   const FORM_CELL_SELECTOR = '[data-registry-column-key="form"]';
@@ -86,6 +86,28 @@
   function approvedPediatricOnly(row) {
     const number = registryNumber(row);
     return number > 0 && pediatricOnlyRegistryNumbers.has(number);
+  }
+
+  function applyPopulationToRegistryRows() {
+    const rows = Array.isArray(window.MEDINDEX_REGISTRY_ROWS) ? window.MEDINDEX_REGISTRY_ROWS : [];
+    let changed = 0;
+    rows.forEach(item => {
+      const number = Number(item?.['Nr rendor']);
+      const value = Number.isInteger(number) && pediatricOnlyRegistryNumbers.has(number) ? 'Pediatric only' : '';
+      if (item['Pediatric only'] === value) return;
+      item['Pediatric only'] = value;
+      changed += 1;
+    });
+    window.MEDINDEX_PEDIATRIC_ONLY_REGISTRY_NUMBERS = Object.freeze([...pediatricOnlyRegistryNumbers].sort((a, b) => a - b));
+    return changed;
+  }
+
+  function announcePopulationReady(reason = 'loaded') {
+    const changed = applyPopulationToRegistryRows();
+    document.documentElement.dataset.pediatricOnlyPopulationMarkers = String(pediatricOnlyRegistryNumbers.size);
+    window.dispatchEvent(new CustomEvent('medindex:pediatric-only-population-ready', {
+      detail:{ count:pediatricOnlyRegistryNumbers.size, changed, reason },
+    }));
   }
 
   function isParenteral(row) {
@@ -185,7 +207,7 @@
         if (Number.isInteger(number) && number > 0) pediatricOnlyRegistryNumbers.add(number);
       });
       populationReady = true;
-      document.documentElement.dataset.pediatricOnlyPopulationMarkers = String(pediatricOnlyRegistryNumbers.size);
+      announcePopulationReady('api');
       scan();
       return pediatricOnlyRegistryNumbers;
     }).catch(error => {
@@ -218,13 +240,18 @@
     }
   }
 
+  function onRegistryDataReady() {
+    if (populationReady) announcePopulationReady('registry-data-ready');
+    scan();
+  }
+
   function start() {
     observe();
     scan();
     loadApprovedPopulation();
     document.documentElement.dataset.doseClinicalRowMarkers = VERSION;
+    window.addEventListener('medindex:registry-data-ready', onRegistryDataReady);
     [
-      'medindex:registry-data-ready',
       'medindex:registry-ready',
       'medindex:registry-dosage-ready',
       'medindex:registry-table-stable',
@@ -241,6 +268,8 @@
     version:VERSION,
     refresh:scan,
     refreshPopulation:loadApprovedPopulation,
+    applyToRegistryRows:applyPopulationToRegistryRows,
+    isPediatricOnly:number => pediatricOnlyRegistryNumbers.has(Number(number)),
     metrics:() => Object.freeze({
       pendingRows:pendingRows.size,
       processedRows,
