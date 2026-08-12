@@ -1,4 +1,6 @@
-/* Clinical row markers for verified pediatric-only and parenteral therapies. */
+/* Clinical row markers for verified pediatric-only and parenteral therapies.
+   Permanent UI rule: every medicine explicitly classified as `Pediatric only`
+   is highlighted pink across the complete main-registry row. */
 :root {
   --mi-dose-pediatric-text: #b42318;
   --mi-dose-pediatric-strong: #912018;
@@ -6,6 +8,10 @@
   --mi-dose-parenteral-hover: #dcfae6;
   --mi-dose-parenteral-selected: #d1fadf;
   --mi-dose-parenteral-border: #12b76a;
+  --mi-population-pediatric-bg: #fff0f6;
+  --mi-population-pediatric-hover: #ffe4ef;
+  --mi-population-pediatric-selected: #ffd6e7;
+  --mi-population-pediatric-border: #ec4899;
 }
 
 #tbody > tr.mi-dose-row--parenteral > td {
@@ -65,10 +71,39 @@
   background: rgba(180, 35, 24, 0.06) !important;
 }
 
-/* Combined rule: pediatric-only remains red, while the full row keeps the green parenteral tint. */
+/* Combined clinical rule used by the dose marker layer. */
 #tbody > tr.mi-dose-row--pediatric-parenteral > td {
   color: var(--mi-dose-pediatric-text) !important;
   background-color: var(--mi-dose-parenteral-bg) !important;
+}
+
+/* Approved-population rule: explicit Pediatric only always wins visually.
+   It is data-driven from Neon metadata, never from a hard-coded registry list. */
+#tbody > tr.mi-population-row--pediatric-only > td,
+#dataTable[data-registry-unified-table] #tbody > tr.mi-population-row--pediatric-only > td {
+  background-color: var(--mi-population-pediatric-bg) !important;
+  background-image: none !important;
+}
+
+#tbody > tr.mi-population-row--pediatric-only:hover > td,
+#tbody > tr.mi-population-row--pediatric-only:focus-within > td,
+#dataTable[data-registry-unified-table] #tbody > tr.mi-population-row--pediatric-only:is(:hover, :focus-within) > td {
+  background-color: var(--mi-population-pediatric-hover) !important;
+}
+
+#tbody > tr.mi-population-row--pediatric-only:is([aria-selected="true"], .is-selected, .selected) > td,
+#dataTable[data-registry-unified-table] #tbody > tr.mi-population-row--pediatric-only:is([aria-selected="true"], .is-selected, .selected) > td {
+  background-color: var(--mi-population-pediatric-selected) !important;
+}
+
+#tbody > tr.mi-population-row--pediatric-only > td:first-child,
+#dataTable[data-registry-unified-table] #tbody > tr.mi-population-row--pediatric-only > td:first-child {
+  box-shadow: inset 4px 0 0 var(--mi-population-pediatric-border) !important;
+}
+
+/* Keep the same pink identity when an expandable registry row is opened. */
+#dataTable[data-registry-unified-table] #tbody > tr.mi-population-row--pediatric-only:is(.registry-row-expanded, [data-registry-row-expanded="true"]) > td {
+  background-color: var(--mi-population-pediatric-hover) !important;
 }
 
 [data-theme="dark"] {
@@ -78,6 +113,10 @@
   --mi-dose-parenteral-hover: #153b30;
   --mi-dose-parenteral-selected: #194637;
   --mi-dose-parenteral-border: #32d583;
+  --mi-population-pediatric-bg: #3a1d2b;
+  --mi-population-pediatric-hover: #4a2234;
+  --mi-population-pediatric-selected: #5a2940;
+  --mi-population-pediatric-border: #f472b6;
 }
 
 [data-theme="dark"] #tbody > tr.mi-dose-row--pediatric-only .dose-calculator-group {
@@ -92,6 +131,10 @@
   #tbody > tr.mi-dose-row--pediatric-only {
     border-inline-end: 4px solid var(--mi-dose-pediatric-text);
   }
+
+  #tbody > tr.mi-population-row--pediatric-only {
+    border-inline-end-color: var(--mi-population-pediatric-border);
+  }
 }
 
 @media (forced-colors: active) {
@@ -105,6 +148,12 @@
     color: CanvasText !important;
     text-decoration: underline double;
   }
+
+  #tbody > tr.mi-population-row--pediatric-only > td {
+    background: Canvas !important;
+    border-top: 2px solid Highlight !important;
+    border-bottom: 2px solid Highlight !important;
+  }
 }
 
 @media print {
@@ -117,6 +166,12 @@
 
   #tbody > tr.mi-dose-row--pediatric-only > td {
     color: var(--mi-dose-pediatric-text) !important;
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
+  }
+
+  #tbody > tr.mi-population-row--pediatric-only > td {
+    background-color: var(--mi-population-pediatric-bg) !important;
     -webkit-print-color-adjust: exact;
     print-color-adjust: exact;
   }
