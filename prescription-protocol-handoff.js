@@ -111,5 +111,6 @@
     applyTransfer(transfer);
   }
 
-  window.addEventListener('load', () => { void init(); }, { once:true });
+  if (document.readyState === 'complete') void init();
+  else window.addEventListener('load', () => { void init(); }, { once:true });
 })();
