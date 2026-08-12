@@ -31,6 +31,7 @@ const dosage = read('registry-dosage-columns-v3.js');
 const unified = read('registry-unified-table.js');
 const builder = read('scripts/build-static-runtime.js');
 const middleware = read('middleware.ts');
+const api = read('api/drug-search.js');
 
 assert.match(index, /registry-mobile-lite\.js\?v=20260812-2/);
 assert.match(index, /registry-desktop-lite\.js\?v=20260812-1/);
@@ -56,7 +57,8 @@ assert.doesNotMatch(mobile, /DRUG_DATA_PARTS|DecompressionStream|Uint8Array\.fro
 
 assert.match(desktop, /registry-desktop-lite-v1/);
 assert.match(desktop, /DEFAULT_PAGE_SIZE = 50/);
-assert.match(desktop, /MAX_PAGE_SIZE = 50/);
+assert.match(desktop, /pageSize:String\(state\.pageSize\)/, 'desktop page size must be sent through the bounded registry-page request');
+assert.match(api, /REGISTRY_MAX_PAGE_SIZE = 50/, 'desktop page requests must be capped server-side at 50 rows');
 assert.match(desktop, /view:'registry-page'/);
 assert.match(desktop, /medindex:registry-page-ready/);
 assert.match(desktop, /MEDINDEX_REGISTRY_ROWS = canonical/);
@@ -131,4 +133,4 @@ assert.match(builder, /runtimeOutputs/);
 assert.match(builder, /app-runtime-performance\.js/, 'build must retain the full fallback runtime artifact without preloading it');
 assert.match(middleware, /registry-parser-worker-v2\.js/);
 
-console.log('Registry mobile + desktop lightweight Phase 10, stable visible-row dosage cells and main-thread audit passed.');
+console.log('Registry mobile + desktop lightweight Phase 10, server-capped pagination, stable visible-row dosage cells and main-thread audit passed.');
