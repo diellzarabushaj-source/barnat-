@@ -1,0 +1,734 @@
+/* Osteoporosis protocol interaction layer v2.
+   Loaded after protocol-interactive.css so the source-bound primary-care pilot
+   can evolve without changing the shared reader. */
+
+.protocol-primary-care[data-pc-mode="quick"] .pc-deep{
+  display:none!important;
+}
+
+.pc-hero-tools{
+  display:grid;
+  gap:8px;
+  justify-items:end;
+}
+
+.pc-mode-toggle{
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:3px;
+  width:152px;
+  padding:3px;
+  border:1px solid var(--clinical-line);
+  border-radius:10px;
+  background:color-mix(in srgb,var(--clinical-line) 16%,var(--clinical-surface));
+}
+
+.pc-mode-toggle button{
+  min-height:30px;
+  padding:0 9px;
+  border:0;
+  border-radius:7px;
+  background:transparent;
+  color:var(--clinical-muted);
+  font:inherit;
+  font-size:.64rem;
+  font-weight:760;
+  cursor:pointer;
+}
+
+.pc-mode-toggle button[aria-pressed="true"]{
+  background:var(--clinical-surface);
+  color:var(--clinical-text);
+  box-shadow:0 2px 8px rgba(16,38,53,.08);
+}
+
+.pc-source-row{
+  display:flex;
+  flex-wrap:wrap;
+  gap:5px;
+  margin-top:8px;
+}
+
+.pc-source-chip{
+  display:inline-flex;
+  align-items:center;
+  width:max-content;
+  max-width:100%;
+  min-height:25px;
+  padding:0 7px;
+  border:1px solid var(--protocol-source-line);
+  border-radius:7px;
+  background:var(--protocol-source-soft);
+  color:var(--protocol-source-strong);
+  font-size:.58rem;
+  font-weight:760;
+  line-height:1;
+  text-decoration:none;
+  white-space:nowrap;
+}
+
+.pc-source-chip:hover{
+  border-color:var(--protocol-source);
+  color:var(--protocol-source-strong);
+}
+
+.pc-source-chip:focus-visible,
+.pc-mode-toggle button:focus-visible,
+.pc-rx-seed:focus-visible,
+.pc-rx-fields input:focus-visible,
+.pc-rx-fields textarea:focus-visible{
+  outline:3px solid color-mix(in srgb,var(--clinical-accent) 38%,transparent);
+  outline-offset:2px;
+}
+
+.pc-today{
+  border-color:color-mix(in srgb,var(--clinical-accent) 24%,var(--clinical-line));
+  background:linear-gradient(145deg,color-mix(in srgb,var(--protocol-source-soft) 28%,var(--clinical-surface)),var(--clinical-surface));
+}
+
+.pc-today-grid{
+  display:grid;
+  grid-template-columns:repeat(2,minmax(0,1fr));
+  gap:8px;
+}
+
+.pc-today-card{
+  position:relative;
+  display:grid;
+  grid-template-columns:32px minmax(0,1fr);
+  gap:10px;
+  min-height:112px;
+  padding:12px;
+  border:1px solid var(--clinical-line);
+  border-radius:11px;
+  background:var(--clinical-surface);
+}
+
+.pc-today-card.is-danger{
+  border-color:color-mix(in srgb,#c64b43 34%,var(--clinical-line));
+  background:color-mix(in srgb,#c64b43 5%,var(--clinical-surface));
+}
+
+.pc-today-card.is-warning{
+  border-color:color-mix(in srgb,#c78a25 34%,var(--clinical-line));
+  background:color-mix(in srgb,#c78a25 5%,var(--clinical-surface));
+}
+
+.pc-today-card.is-info{
+  border-color:color-mix(in srgb,var(--clinical-accent) 28%,var(--clinical-line));
+}
+
+.pc-today-number{
+  display:grid;
+  place-items:center;
+  width:30px;
+  height:30px;
+  border-radius:8px;
+  background:var(--clinical-text);
+  color:var(--clinical-surface);
+  font-size:.7rem;
+  font-weight:840;
+}
+
+.pc-today-card h3{
+  margin:1px 0 5px;
+  font-size:.76rem;
+  line-height:1.35;
+}
+
+.pc-today-card p{
+  margin:0;
+  color:var(--clinical-muted);
+  font-size:.68rem;
+  line-height:1.48;
+}
+
+.pc-today-card .pc-source-chip{
+  margin-top:8px;
+}
+
+.pc-check-copy{
+  min-width:0;
+}
+
+.pc-check-copy .pc-source-chip{
+  margin-top:7px;
+}
+
+.pc-context-alerts{
+  display:grid;
+  gap:6px;
+  margin-top:10px;
+}
+
+.pc-context-alert{
+  display:grid;
+  gap:2px;
+  padding:9px 10px;
+  border:1px solid var(--clinical-line);
+  border-radius:9px;
+  background:color-mix(in srgb,var(--clinical-line) 10%,var(--clinical-surface));
+  font-size:.66rem;
+  line-height:1.45;
+}
+
+.pc-context-alert strong{
+  font-size:.67rem;
+}
+
+.pc-context-alert span{
+  color:var(--clinical-muted);
+}
+
+.pc-context-alert.is-danger{
+  border-color:color-mix(in srgb,#c64b43 42%,var(--clinical-line));
+  background:color-mix(in srgb,#c64b43 7%,var(--clinical-surface));
+}
+
+.pc-context-alert.is-warning{
+  border-color:color-mix(in srgb,#c78a25 38%,var(--clinical-line));
+  background:color-mix(in srgb,#c78a25 7%,var(--clinical-surface));
+}
+
+.pc-context-alert.is-info{
+  border-color:color-mix(in srgb,var(--clinical-accent) 34%,var(--clinical-line));
+}
+
+.pc-risk{
+  background:color-mix(in srgb,var(--protocol-source-soft) 22%,var(--clinical-surface));
+}
+
+.pc-risk-count{
+  min-width:92px;
+  text-align:right;
+}
+
+.pc-risk-count strong,
+.pc-risk-count span{
+  display:block;
+}
+
+.pc-risk-count strong{
+  font-size:1.15rem;
+  line-height:1;
+}
+
+.pc-risk-count span{
+  margin-top:3px;
+  color:var(--clinical-muted);
+  font-size:.58rem;
+}
+
+.pc-risk-grid{
+  display:grid;
+  grid-template-columns:repeat(2,minmax(0,1fr));
+  gap:7px;
+}
+
+.pc-risk-item{
+  display:grid;
+  grid-template-columns:20px minmax(0,1fr);
+  gap:8px;
+  align-items:center;
+  min-height:46px;
+  padding:9px 10px;
+  border:1px solid var(--clinical-line);
+  border-radius:9px;
+  background:var(--clinical-surface);
+  cursor:pointer;
+}
+
+.pc-risk-item input{
+  position:absolute;
+  opacity:0;
+  pointer-events:none;
+}
+
+.pc-risk-item > span{
+  display:grid;
+  place-items:center;
+  width:19px;
+  height:19px;
+  border:1.5px solid var(--clinical-line);
+  border-radius:50%;
+}
+
+.pc-risk-item input:checked + span{
+  border-color:var(--clinical-accent);
+  background:var(--clinical-accent);
+}
+
+.pc-risk-item input:checked + span::after{
+  content:'✓';
+  color:#fff;
+  font-size:.65rem;
+  font-weight:900;
+}
+
+.pc-risk-item:has(input:focus-visible){
+  outline:3px solid color-mix(in srgb,var(--clinical-accent) 38%,transparent);
+  outline-offset:2px;
+}
+
+.pc-risk-summary{
+  margin-top:9px;
+  padding:9px 10px;
+  border-radius:8px;
+  background:color-mix(in srgb,var(--clinical-accent) 7%,var(--clinical-surface));
+  color:var(--clinical-muted);
+  font-size:.65rem;
+  line-height:1.45;
+}
+
+.pc-step-body{
+  display:grid;
+  gap:8px;
+  padding:0 14px 13px 53px;
+}
+
+.pc-step-body p,
+.pc-step .pc-step-body p{
+  margin:0;
+  padding:0;
+  color:var(--clinical-muted);
+  font-size:.74rem;
+  line-height:1.56;
+}
+
+.pc-treatment-grid{
+  display:grid;
+  grid-template-columns:repeat(3,minmax(0,1fr));
+  gap:8px;
+}
+
+.pc-treatment-card{
+  min-height:148px;
+  padding:12px;
+  border:1px solid var(--clinical-line);
+  border-radius:10px;
+  background:var(--clinical-surface);
+}
+
+.pc-treatment-card > span{
+  display:block;
+  margin-bottom:6px;
+  color:var(--clinical-accent);
+  font-size:.58rem;
+  font-weight:820;
+  letter-spacing:.045em;
+  text-transform:uppercase;
+}
+
+.pc-treatment-card h3{
+  margin:0 0 6px;
+  font-size:.76rem;
+  line-height:1.35;
+}
+
+.pc-treatment-card p{
+  margin:0;
+  color:var(--clinical-muted);
+  font-size:.67rem;
+  line-height:1.5;
+}
+
+.pc-treatment-card.is-warning{
+  border-color:color-mix(in srgb,#c78a25 32%,var(--clinical-line));
+  background:color-mix(in srgb,#c78a25 5%,var(--clinical-surface));
+}
+
+.pc-treatment-card.is-info{
+  border-color:color-mix(in srgb,var(--clinical-accent) 28%,var(--clinical-line));
+}
+
+.pc-rx-section{
+  border-color:color-mix(in srgb,var(--clinical-text) 28%,var(--clinical-line));
+}
+
+.pc-rx-layout{
+  display:grid;
+  grid-template-columns:minmax(0,.92fr) minmax(0,1.08fr);
+  gap:10px;
+  align-items:stretch;
+}
+
+.pc-rx-card,
+.pc-rx-editor{
+  min-width:0;
+}
+
+.pc-rx-seed{
+  margin-top:8px;
+  padding:0;
+  border:0;
+  background:transparent;
+  color:var(--clinical-accent);
+  font:inherit;
+  font-size:.61rem;
+  font-weight:770;
+  text-decoration:underline;
+  text-underline-offset:3px;
+  cursor:pointer;
+}
+
+.pc-rx-editor{
+  overflow:hidden;
+  border:1.5px solid var(--clinical-text);
+  border-radius:12px;
+  background:var(--clinical-surface);
+}
+
+.pc-rx-editor-head{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:10px;
+  padding:12px 14px;
+  border-bottom:1px solid var(--clinical-line);
+  background:color-mix(in srgb,var(--clinical-line) 10%,var(--clinical-surface));
+}
+
+.pc-rx-editor-head > div{
+  display:flex;
+  align-items:center;
+  gap:8px;
+}
+
+.pc-rx-editor-head > div span{
+  font-family:Georgia,'Times New Roman',serif;
+  font-size:1.15rem;
+  font-style:italic;
+  font-weight:700;
+}
+
+.pc-rx-editor-head strong{
+  font-size:.77rem;
+}
+
+.pc-rx-editor-head > span{
+  color:var(--clinical-muted);
+  font-size:.58rem;
+  font-weight:720;
+}
+
+.pc-rx-fields{
+  display:grid;
+  grid-template-columns:repeat(2,minmax(0,1fr));
+  gap:8px;
+  padding:12px;
+}
+
+.pc-rx-fields label{
+  display:grid;
+  gap:5px;
+  min-width:0;
+}
+
+.pc-rx-fields label.is-wide{
+  grid-column:1 / -1;
+}
+
+.pc-rx-fields label > span{
+  color:var(--clinical-muted);
+  font-size:.57rem;
+  font-weight:760;
+  letter-spacing:.025em;
+}
+
+.pc-rx-fields input,
+.pc-rx-fields textarea{
+  width:100%;
+  min-width:0;
+  border:1px solid var(--clinical-line);
+  border-radius:8px;
+  background:color-mix(in srgb,var(--clinical-line) 8%,var(--clinical-surface));
+  color:var(--clinical-text);
+  font:inherit;
+  font-size:.68rem;
+  line-height:1.35;
+  outline:none;
+}
+
+.pc-rx-fields input{
+  min-height:38px;
+  padding:0 9px;
+}
+
+.pc-rx-fields textarea{
+  min-height:62px;
+  padding:9px;
+  resize:vertical;
+}
+
+.pc-rx-fields input:focus,
+.pc-rx-fields textarea:focus{
+  border-color:var(--clinical-accent);
+  background:var(--clinical-surface);
+}
+
+.pc-rx-editor-actions{
+  display:flex;
+  flex-wrap:wrap;
+  align-items:center;
+  gap:10px;
+  padding:0 12px 10px;
+}
+
+.pc-rx-editor-actions .pc-text-button{
+  margin:0;
+}
+
+.pc-copy-button.is-primary{
+  border-color:var(--clinical-accent);
+  background:var(--clinical-accent);
+  color:#fff;
+}
+
+.pc-copy-button.is-primary:hover{
+  filter:brightness(.96);
+}
+
+.pc-rx-editor .pc-copy-status{
+  margin:0;
+  padding:0 12px 11px;
+}
+
+.pc-follow-grid{
+  display:grid;
+  grid-template-columns:repeat(2,minmax(0,1fr));
+  gap:7px;
+}
+
+.pc-follow-grid > div{
+  display:grid;
+  grid-template-columns:22px minmax(0,1fr);
+  gap:8px;
+  align-items:start;
+  min-height:48px;
+  padding:9px;
+  border:1px solid var(--clinical-line);
+  border-radius:9px;
+}
+
+.pc-follow-grid > div > span{
+  display:grid;
+  place-items:center;
+  width:20px;
+  height:20px;
+  border-radius:6px;
+  background:var(--protocol-source-soft);
+  color:var(--protocol-source-strong);
+  font-size:.62rem;
+  font-weight:900;
+}
+
+.pc-follow-grid p{
+  margin:1px 0 0;
+  color:var(--clinical-muted);
+  font-size:.67rem;
+  line-height:1.42;
+}
+
+.pc-safety{
+  border-color:color-mix(in srgb,#c78a25 28%,var(--clinical-line));
+}
+
+.pc-safety-grid{
+  display:grid;
+  grid-template-columns:repeat(2,minmax(0,1fr));
+  gap:7px;
+}
+
+.pc-safety-grid article{
+  padding:10px;
+  border:1px solid color-mix(in srgb,#c78a25 22%,var(--clinical-line));
+  border-radius:9px;
+  background:color-mix(in srgb,#c78a25 4%,var(--clinical-surface));
+}
+
+.pc-safety-grid article:last-child:nth-child(odd){
+  grid-column:1 / -1;
+}
+
+.pc-safety-grid h3{
+  margin:0 0 4px;
+  font-size:.7rem;
+}
+
+.pc-safety-grid p{
+  margin:0;
+  color:var(--clinical-muted);
+  font-size:.65rem;
+  line-height:1.48;
+}
+
+.pc-education ol{
+  display:grid;
+  grid-template-columns:repeat(2,minmax(0,1fr));
+  gap:7px;
+  margin:0;
+  padding:0;
+  list-style:none;
+}
+
+.pc-education li{
+  display:grid;
+  grid-template-columns:24px minmax(0,1fr);
+  gap:8px;
+  padding:9px;
+  border:1px solid var(--clinical-line);
+  border-radius:9px;
+}
+
+.pc-education li > span{
+  display:grid;
+  place-items:center;
+  width:22px;
+  height:22px;
+  border-radius:50%;
+  background:var(--clinical-text);
+  color:var(--clinical-surface);
+  font-size:.58rem;
+  font-weight:820;
+}
+
+.pc-education li p{
+  margin:1px 0 0;
+  color:var(--clinical-muted);
+  font-size:.66rem;
+  line-height:1.45;
+}
+
+.pc-referral-grid{
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:8px;
+}
+
+.pc-referral-box{
+  padding:11px;
+  border:1px solid var(--clinical-line);
+  border-radius:10px;
+  background:var(--clinical-surface);
+}
+
+.pc-referral-box > strong{
+  display:block;
+  margin-bottom:8px;
+  font-size:.69rem;
+}
+
+.pc-referral-box.is-planned{
+  border-color:color-mix(in srgb,var(--clinical-accent) 26%,var(--clinical-line));
+}
+
+.pc-referral-box.is-urgent{
+  border-color:color-mix(in srgb,#c64b43 36%,var(--clinical-line));
+  background:color-mix(in srgb,#c64b43 5%,var(--clinical-surface));
+}
+
+.pc-referral-box ul{
+  display:grid;
+  gap:7px;
+  margin:0;
+  padding:0;
+  list-style:none;
+}
+
+.pc-referral-box li{
+  position:relative;
+  padding-left:15px;
+  color:var(--clinical-muted);
+  font-size:.67rem;
+  line-height:1.45;
+}
+
+.pc-referral-box li::before{
+  content:'→';
+  position:absolute;
+  top:0;
+  left:0;
+  color:var(--clinical-accent);
+  font-weight:850;
+}
+
+.pc-referral-box.is-urgent li::before{
+  color:#b54038;
+}
+
+@media(max-width:920px){
+  .pc-treatment-grid{
+    grid-template-columns:1fr;
+  }
+
+  .pc-treatment-card{
+    min-height:0;
+  }
+
+  .pc-rx-layout{
+    grid-template-columns:1fr;
+  }
+}
+
+@media(max-width:720px){
+  .pc-hero-tools{
+    justify-items:start;
+  }
+
+  .pc-mode-toggle{
+    width:100%;
+    max-width:240px;
+  }
+
+  .pc-today-grid,
+  .pc-risk-grid,
+  .pc-follow-grid,
+  .pc-safety-grid,
+  .pc-education ol,
+  .pc-referral-grid{
+    grid-template-columns:1fr;
+  }
+
+  .pc-safety-grid article:last-child:nth-child(odd){
+    grid-column:auto;
+  }
+
+  .pc-risk-count{
+    text-align:left;
+  }
+
+  .pc-step-body{
+    padding:0 10px 12px;
+  }
+}
+
+@media(max-width:520px){
+  .pc-jump-nav{
+    grid-template-columns:repeat(2,1fr);
+  }
+
+  .pc-rx-fields{
+    grid-template-columns:1fr;
+  }
+
+  .pc-rx-fields label.is-wide{
+    grid-column:auto;
+  }
+
+  .pc-rx-editor-head{
+    align-items:flex-start;
+    flex-direction:column;
+  }
+
+  .pc-today-card{
+    min-height:0;
+  }
+}
+
+@media(prefers-reduced-motion:reduce){
+  .pc-rx-editor,
+  .pc-today-card,
+  .pc-treatment-card{
+    scroll-behavior:auto;
+  }
+}
