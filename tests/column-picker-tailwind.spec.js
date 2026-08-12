@@ -1,7 +1,7 @@
 const { test, expect } = require('@playwright/test');
 
 const BASE = 'http://127.0.0.1:4173';
-const PICKER_VERSION = 'column-picker-tailwind-20260805-3';
+const PICKER_VERSION = 'column-picker-tailwind-20260812-population-1';
 const REPRESENTATIVE_COLUMNS = [
   'Nr',
   'Emri tregtar',
@@ -66,7 +66,7 @@ async function mountHarness(page) {
     </html>`);
 
   await page.addStyleTag({ url:`${BASE}/registry-column-picker-tailwind.css?v=20260805-3` });
-  await page.addScriptTag({ url:`${BASE}/registry-column-picker-tailwind.js?v=20260805-3` });
+  await page.addScriptTag({ url:`${BASE}/registry-column-picker-tailwind.js?v=20260812-population-column-1` });
 
   await expect.poll(() => page.evaluate(() => document.documentElement.dataset.miColumnPicker), { timeout:5000 })
     .toBe(PICKER_VERSION);
