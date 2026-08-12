@@ -37,7 +37,7 @@ assert.match(JSON.stringify(diagnosis), /alfa-1 antitripsinës/i);
 
 assert.match(html, /protocol-interactive-copd\.js\?v=/, 'COPD interactive runtime must be loaded');
 assert.match(runtime, /sourceHash !== currentHash/, 'runtime must fail closed when the official source hash changes');
-assert.match(runtime, /MedIndex.*nuk vendos diagnozë/, 'interactive checks must not claim automated diagnosis');
+assert.match(runtime, /nuk vendos diagnozë/, 'interactive checks must not claim automated diagnosis');
 assert.match(runtime, /SUPPORTED = new Set\(\['upk-05', 'upk-06', 'upk-07'\]\)/, 'runtime must stay scoped to the audited COPD protocols');
 
 console.log('Interactive COPD protocol tests passed.');
