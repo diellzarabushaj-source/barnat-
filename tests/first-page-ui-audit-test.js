@@ -16,7 +16,13 @@ assert.match(html, /rel="preload" href="first-page-clinical\.css\?v=20260731-1" 
 assert.match(html, /first-page-style-loader\.js\?v=20260731-1/);
 assert.match(html, /first-page-clinical\.js\?v=20260731-1/);
 const staticStylesheets = [...html.matchAll(/<link[^>]+rel="stylesheet"[^>]+href="([^"]+)"/g)].map(match => match[1]);
-assert.match(staticStylesheets.at(-1), /tailadmin-professional\.css/, 'The shared professional TailAdmin CSS must remain the final static stylesheet.');
+const professionalCssIndex = staticStylesheets.findIndex(href => /tailadmin-professional\.css/.test(href));
+assert.ok(professionalCssIndex >= 0, 'The shared professional TailAdmin stylesheet must be present.');
+const postProfessionalStyles = staticStylesheets.slice(professionalCssIndex + 1);
+assert.ok(
+  postProfessionalStyles.every(href => /^registry-table-tools\.css(?:\?|$)/.test(href)),
+  `Only the generated registry table-tools stylesheet may follow shared professional TailAdmin CSS; found ${postProfessionalStyles.join(', ')}`,
+);
 assert.ok(
   html.indexOf('form-picker-clinical.js') < html.indexOf('first-page-clinical.js'),
   'The first-page runtime must enhance the completed pharmaceutical form picker.'
