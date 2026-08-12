@@ -43,6 +43,9 @@ const loader = read('registry-verification-loader.js');
 const ui = read('registry-verification-ui.js');
 const styles = read('registry-verification-ui.css');
 const endpoint = read('api/clinical-editor.js');
+const approvedPopulationEndpointSource = read('api/pediatric-only-population.js');
+const approvedPopulationEndpoint = require('../api/pediatric-only-population.js');
+const approvedPopulationSnapshot = require('../data/approved-population-snapshot.json');
 const vercel = JSON.parse(read('vercel.json'));
 
 assert(index.includes('registry-verification-ui.css?v=20260801-1'), 'CSS-ja e verifikimit nuk është lidhur.');
@@ -57,7 +60,9 @@ assert(!ui.includes("tableObserver.observe(tbody, { childList:true, subtree:true
 assert(ui.includes('endpointBackoffUntil'), 'Dështimi i endpoint-it duhet të bllokojë retry storm-in.');
 assert(ui.includes('metrics:() => Object.freeze'), 'UI-ja duhet të ekspozojë metrikat e retry-ve për audit browser.');
 assert(index.includes('data-registry-ui-release="20260809-1"'), 'Release-i unik i tabelës nuk u rrit.');
-assert(index.includes('registry-unified-table.js?v=20260801-1'), 'Kontrolluesi unik i tabelës mungon.');
+assert(index.includes('registry-unified-table.js?v=20260812-population-column-1'), 'Kontrolluesi unik i tabelës me kolonën Popullata mungon.');
+assert(index.includes('registry-unified-table.css?v=20260812-population-column-1'), 'CSS-ja e tabelës me kolonën Popullata mungon.');
+assert(index.includes('registry-dose-clinical-row-markers.js?v=20260812-population-column-1'), 'Runtime-i i klasifikimit të popullatës mungon.');
 assert(index.includes('registry-full-text-expansion.css?v=20260805-2'), 'Kontrata e tekstit të plotë mungon.');
 assert(ui.includes('data-population-pencil'), 'Ikona e vetme e lapsit mungon.');
 assert(ui.includes("state:'unknown'"), 'Gjendja pa të dhëna mungon.');
@@ -70,4 +75,24 @@ assert(vercel.rewrites.some(item => item.source === '/api/population-verificatio
 assert(!fs.existsSync(path.join(root, 'api/population-verification.js')), 'Verifikimi nuk duhet të konsumojë funksion të ri Vercel.');
 assert(!/https?:\/\//.test(ui), 'UI-ja nuk duhet të ngarkojë asete të jashtme.');
 
-console.log('Strict adult/pediatric population verification, canonical table and final manual-QA audit passed.');
+const approvedPopulationItems = approvedPopulationEndpoint.snapshotItems(approvedPopulationSnapshot);
+const pediatricOnlyItems = approvedPopulationItems.filter(item => item.approvedPopulation === 'Pediatric only');
+const allowedPopulations = new Set(['Adult only', 'Pediatric only', 'Pediatric and adult both']);
+assert(!approvedPopulationEndpointSource.includes('neonRequest'), 'Endpoint-i i popullatës duhet të mbetet Neon-free gjatë outage-it.');
+assert(approvedPopulationEndpointSource.includes("require('../data/approved-population-snapshot.json')"), 'Endpoint-i i popullatës duhet të përdorë snapshot-in e Sheet-it.');
+assert.strictEqual(approvedPopulationSnapshot?.source?.spreadsheetId, '17cuXg5qORIIWkvAxLZ7uz2FMmGvzwjr850cubUcIgLE');
+assert.strictEqual(approvedPopulationSnapshot?.source?.sheet, 'KARTELA_BARNAVE');
+assert.strictEqual(approvedPopulationSnapshot?.source?.approvedPopulationColumn, 'S');
+assert.strictEqual(approvedPopulationItems.length, approvedPopulationSnapshot?.counts?.classified, 'Numri i klasifikimeve në snapshot nuk përputhet.');
+assert.strictEqual(pediatricOnlyItems.length, approvedPopulationSnapshot?.counts?.pediatricOnly, 'Numri Pediatric only në snapshot nuk përputhet.');
+assert.strictEqual(new Set(approvedPopulationItems.map(item => item.registryNumber)).size, approvedPopulationItems.length, 'Nr rendor duhet të jetë unik në snapshot.');
+assert(approvedPopulationItems.every(item => allowedPopulations.has(item.approvedPopulation)), 'Snapshot-i përmban kategori popullate të palejuar.');
+for (const registryNumber of [44, 45, 46]) {
+  assert.strictEqual(
+    approvedPopulationItems.find(item => item.registryNumber === registryNumber)?.approvedPopulation,
+    'Pediatric only',
+    `Karta ${registryNumber} duhet të mbetet Pediatric only.`,
+  );
+}
+
+console.log('Strict adult/pediatric verification + approved-population Sheet snapshot passed.');
