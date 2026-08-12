@@ -22,8 +22,8 @@ assert.doesNotMatch(index, /src="registry-dosage-columns-v[23]\.js/);
 assert.match(index, /registry-dosage-columns\.css/);
 assert.match(loader, /medindex:registry-ready/);
 assert.match(loader, /requestIdleCallback\(run, \{ timeout:5000 \}\)/);
-assert.match(loader, /SRC = '\/registry-dosage-columns-v3\.js\?v=20260812-1'/);
-assert.match(loader, /registry-dosage-idle-loader-v4/);
+assert.match(loader, /SRC = '\/registry-dosage-columns-v3\.js\?v=20260812-2'/);
+assert.match(loader, /registry-dosage-idle-loader-v5/);
 assert.match(loader, /dataset\.registryDosageRuntime/);
 
 assert.match(script, /registry-dosage-visible-batch-v1/);
@@ -51,6 +51,7 @@ assert.match(script, /headerObserver\.observe\(header, \{ childList:true \}\)/);
 assert.match(script, /registryDosageSignature/, 'dosage cells must carry a deterministic clinical signature');
 assert.match(script, /existing\.dataset\.registryDosageSignature !== signature/, 'dosage reconciliation must compare deterministic signatures');
 assert.doesNotMatch(script, /existing\.innerHTML !== desired\.innerHTML/, 'dosage reconciliation must not compare mutable innerHTML');
+assert.doesNotMatch(script, /existing\.replaceWith\(desired\)/, 'dosage reconciliation must preserve unified-table cell identity');
 assert.doesNotMatch(script, /DRUG_DATA_PARTS/);
 assert.doesNotMatch(script, /\batob\s*\(/);
 assert.doesNotMatch(script, /DecompressionStream/);
