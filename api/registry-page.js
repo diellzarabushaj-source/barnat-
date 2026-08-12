@@ -145,6 +145,8 @@ function buildPath(query = {}) {
   const q = searchTerm(query.q);
   const status = exactFilter(query.status);
   const form = exactFilter(query.form);
+  const formQuery = searchTerm(query.formQuery);
+  const atc = exactFilter(query.atc, 12).toUpperCase().replace(/[^A-Z0-9]/g, '');
   const sortKey = clean(query.sort).toLowerCase();
   const sortColumn = SORTS[sortKey] || SORTS.registry;
   const direction = clean(query.direction).toLowerCase() === 'desc' ? 'desc' : 'asc';
@@ -158,6 +160,8 @@ function buildPath(query = {}) {
   params.set('offset', String(offset));
   if (status) params.set('product_status', `eq.${status}`);
   if (form) params.set('pharmaceutical_form', `eq.${form}`);
+  else if (formQuery) params.set('pharmaceutical_form', `ilike.*${formQuery}*`);
+  if (atc) params.set('atc_code', `ilike.${atc}*`);
 
   if (q.length >= 2) {
     const pattern = `*${q}*`;
@@ -181,6 +185,8 @@ function buildPath(query = {}) {
     q,
     status,
     form,
+    formQuery,
+    atc,
     sort:sortKey || 'registry',
     direction,
   };
@@ -250,6 +256,8 @@ module.exports = async function handler(req, res) {
         q:request.q,
         status:request.status,
         form:request.form,
+        formQuery:request.formQuery,
+        atc:request.atc,
         sort:request.sort,
         direction:request.direction,
       },
