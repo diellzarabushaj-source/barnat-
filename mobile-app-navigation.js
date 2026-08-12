@@ -6,6 +6,43 @@
   if (!window.matchMedia?.(BREAKPOINT).matches) return;
 
   const html = document.documentElement;
+
+  function ensureStyles() {
+    if (document.getElementById('miMobileAppNavigationStyles')) return;
+    const style = document.createElement('style');
+    style.id = 'miMobileAppNavigationStyles';
+    style.textContent = `
+      @media(max-width:1023px){
+        :root{--mi-mobile-app-nav-height:calc(64px + env(safe-area-inset-bottom,0px))}
+        html.medindex-tailadmin body{padding-bottom:var(--mi-mobile-app-nav-height)!important}
+        html.medindex-tailadmin .mi-main{scroll-padding-bottom:calc(var(--mi-mobile-app-nav-height) + 20px)!important}
+        html.medindex-tailadmin .mi-content-container{padding-bottom:calc(var(--mi-mobile-app-nav-height) + 28px)!important}
+        .mi-mobile-app-nav{
+          position:fixed;z-index:2050;left:0;right:0;bottom:0;
+          display:grid;grid-template-columns:repeat(5,minmax(0,1fr));align-items:start;
+          min-height:var(--mi-mobile-app-nav-height);padding:6px max(6px,env(safe-area-inset-right)) env(safe-area-inset-bottom,0px) max(6px,env(safe-area-inset-left));
+          border-top:1px solid rgba(15,23,42,.10);background:rgba(255,255,255,.96);
+          box-shadow:0 -10px 30px rgba(15,23,42,.08);backdrop-filter:blur(18px) saturate(1.08);-webkit-backdrop-filter:blur(18px) saturate(1.08)
+        }
+        .mi-mobile-app-nav-item{
+          appearance:none;border:0;background:transparent;color:#667085;text-decoration:none;
+          min-width:0;min-height:52px;padding:5px 2px 4px;border-radius:12px;
+          display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;
+          font:600 10px/1.15 -apple-system,BlinkMacSystemFont,"SF Pro Text","Segoe UI",sans-serif;
+          -webkit-tap-highlight-color:transparent;touch-action:manipulation
+        }
+        .mi-mobile-app-nav-item:active{background:#f2f4f7}
+        .mi-mobile-app-nav-item:focus-visible{outline:3px solid rgba(29,78,216,.25);outline-offset:1px}
+        .mi-mobile-app-nav-item.is-active,.mi-mobile-app-nav-item[aria-current="page"]{color:#0f766e;background:#f0fdfa}
+        .mi-mobile-app-nav-icon{display:grid;place-items:center;width:26px;height:26px}
+        .mi-mobile-app-nav-icon svg{width:23px;height:23px}
+        body.mi-sidebar-open .mi-mobile-app-nav,body.mi-mobile-search-open .mi-mobile-app-nav{visibility:hidden;pointer-events:none}
+      }
+      @media(min-width:1024px){.mi-mobile-app-nav{display:none!important}}
+    `;
+    document.head.appendChild(style);
+  }
+
   const normalizePath = value => {
     const path = String(value || '/').split('?')[0].split('#')[0].replace(/\/{2,}/g, '/');
     return path === '/' ? '/index.html' : path.replace(/\/$/, '') || '/index.html';
@@ -37,6 +74,7 @@
 
   function ensureNavigation() {
     if (document.querySelector('[data-mobile-app-navigation]') || !document.body) return;
+    ensureStyles();
     const nav = document.createElement('nav');
     nav.className = 'mi-mobile-app-nav';
     nav.dataset.mobileAppNavigation = VERSION;
@@ -56,8 +94,9 @@
       if (globalTrigger) return globalTrigger.click();
       const input = ['#search','#atcSearch','#icdSearch','#labSearch','#dosageSearch','#protocolSearch','#rxDrugSearch']
         .map(selector => document.querySelector(selector)).find(Boolean);
-      input?.scrollIntoView({ block:'center', behavior:'smooth' });
-      input?.focus({ preventScroll:true });
+      if (!input) return;
+      input.scrollIntoView({ block:'center', behavior:'smooth' });
+      requestAnimationFrame(() => input.focus({ preventScroll:true }));
     });
 
     nav.querySelector('[data-mobile-app-action="more"]')?.addEventListener('click', () => {
