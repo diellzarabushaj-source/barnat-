@@ -6,55 +6,44 @@ const path = require('node:path');
 const ROOT = path.resolve(__dirname, '..');
 const TARGET = path.join(ROOT, 'registry-unified-table.js');
 
-function replaceOnce(source, before, after, label) {
-  if (source.includes(after)) return source;
-  if (!source.includes(before)) throw new Error(`Personal note column patch could not find ${label}.`);
-  return source.replace(before, after);
+function ensureArrayEntry(source, name, entry) {
+  const marker = `const ${name} = `;
+  const start = source.indexOf(marker);
+  if (start < 0) throw new Error(`Personal note column patch could not find ${name}.`);
+  const open = source.indexOf('[', start);
+  const end = source.indexOf(']);', open);
+  if (open < 0 || end < 0) throw new Error(`Personal note column patch could not close ${name}.`);
+  const block = source.slice(open, end);
+  if (block.includes(`'${entry}'`)) return source;
+  const next = `${source.slice(0, end).replace(/\s*$/, '')}, '${entry}'\n  `;
+  return next + source.slice(end);
+}
+
+function ensureObjectEntry(source, name, key, entry) {
+  const marker = `const ${name} = Object.freeze({`;
+  const start = source.indexOf(marker);
+  if (start < 0) throw new Error(`Personal note column patch could not find ${name}.`);
+  const end = source.indexOf('\n  });', start);
+  if (end < 0) throw new Error(`Personal note column patch could not close ${name}.`);
+  const block = source.slice(start, end);
+  if (block.includes(key)) return source;
+  return source.slice(0, end) + `\n    ${entry}` + source.slice(end);
 }
 
 let source = fs.readFileSync(TARGET, 'utf8');
 
-source = replaceOnce(
-  source,
-  "    'clinical-action', 'dose-calculator',\n  ]);",
-  "    'clinical-action', 'dose-calculator', 'personal-note',\n  ]);",
-  'FULL_ORDER tail'
-);
+source = ensureArrayEntry(source, 'FULL_ORDER', 'personal-note');
+source = ensureArrayEntry(source, 'CLINICAL_ORDER', 'personal-note');
+source = ensureArrayEntry(source, 'DYNAMIC_KEYS', 'personal-note');
+source = ensureObjectEntry(source, 'LABEL_BY_KEY', "'personal-note'", "'personal-note':'Shënime personale',");
+source = ensureObjectEntry(source, 'WIDTHS', "'personal-note'", "'personal-note':220,");
+source = ensureObjectEntry(source, 'LABEL_KEYS', "shenimepersonale:'personal-note'", "shenimepersonale:'personal-note', shenime:'personal-note',");
 
-source = replaceOnce(
-  source,
-  "    'dosage-adult', 'dosage-pediatric', 'clinical-status', 'clinical-action', 'dose-calculator',\n  ]);",
-  "    'dosage-adult', 'dosage-pediatric', 'clinical-status', 'clinical-action', 'dose-calculator', 'personal-note',\n  ]);",
-  'CLINICAL_ORDER tail'
-);
-
-source = replaceOnce(
-  source,
-  "    'dosage-adult', 'dosage-pediatric', 'clinical-status', 'clinical-action', 'dose-calculator',\n  ]);\n  const CLINICAL_BASE_KEYS",
-  "    'dosage-adult', 'dosage-pediatric', 'clinical-status', 'clinical-action', 'dose-calculator', 'personal-note',\n  ]);\n  const CLINICAL_BASE_KEYS",
-  'DYNAMIC_KEYS tail'
-);
-
-source = replaceOnce(
-  source,
-  "    'clinical-status':'Verifikimi', 'clinical-action':'Redakto', 'dose-calculator':'Doza',\n  });",
-  "    'clinical-status':'Verifikimi', 'clinical-action':'Redakto', 'dose-calculator':'Doza',\n    'personal-note':'Shënime personale',\n  });",
-  'LABEL_BY_KEY'
-);
-
-source = replaceOnce(
-  source,
-  "    'dose-calculator':128,\n  });",
-  "    'dose-calculator':128, 'personal-note':220,\n  });",
-  'WIDTHS'
-);
-
-source = replaceOnce(
-  source,
-  "    kalkulatori:'dose-calculator', kalkulatoridozes:'dose-calculator',\n  });",
-  "    kalkulatori:'dose-calculator', kalkulatoridozes:'dose-calculator',\n    shenimepersonale:'personal-note', shenime:'personal-note',\n  });",
-  'LABEL_KEYS'
-);
+if (!source.includes("'personal-note':'Shënime personale'")
+    || !source.includes("'personal-note':220")
+    || !source.includes("shenimepersonale:'personal-note'")) {
+  throw new Error('Personal note column patch contract was not applied.');
+}
 
 fs.writeFileSync(TARGET, source);
 console.log('Native personal-note unified registry column contract applied.');
