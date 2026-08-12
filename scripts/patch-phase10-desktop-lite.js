@@ -16,14 +16,23 @@ function replaceOnce(source, before, after, label) {
 function patchIndex() {
   let source = read('index.html');
   source = source.replace(/<link rel="preload" href="app-runtime-performance\.js\?v=[^"]+" as="script">\n?/g, '');
-  const mobileAnchor = '<script src="registry-mobile-phase4.js?v=20260812-2" defer></script>';
-  const desktopScript = '<script src="registry-desktop-lite.js?v=20260812-1" defer></script>';
-  if (!source.includes(desktopScript)) {
-    if (!source.includes(mobileAnchor)) throw new Error('Phase 10 desktop-lite index mobile anchor is missing.');
-    source = source.replace(mobileAnchor, `${mobileAnchor}\n${desktopScript}`);
+
+  const mobilePattern = /<script src="registry-mobile-phase4\.js\?v=20260812-2(?:&[^"]*)?" defer><\/script>/;
+  const desktopPattern = /<script src="registry-desktop-lite\.js\?v=20260812-1(?:&[^"]*)?" defer><\/script>/;
+
+  if (!desktopPattern.test(source)) {
+    const mobileMatch = source.match(mobilePattern);
+    if (!mobileMatch) throw new Error('Phase 10 desktop-lite index mobile anchor is missing.');
+    const buildQuery = mobileMatch[0].match(/&build=[^"]+/)?.[0] || '';
+    const desktopScript = `<script src="registry-desktop-lite.js?v=20260812-1${buildQuery}" defer></script>`;
+    source = source.replace(mobilePattern, `${mobileMatch[0]}\n${desktopScript}`);
   }
+
   source = source.replace(/registry-runtime-loader\.js\?v=20260812-\d+/g, 'registry-runtime-loader.js?v=20260812-8');
-  if (source.indexOf(desktopScript) > source.indexOf('registry-runtime-loader.js?v=20260812-8')) {
+
+  const desktopIndex = source.search(desktopPattern);
+  const loaderIndex = source.indexOf('registry-runtime-loader.js?v=20260812-8');
+  if (desktopIndex < 0 || loaderIndex < 0 || desktopIndex > loaderIndex) {
     throw new Error('Phase 10 desktop-lite must load before the runtime loader.');
   }
   write('index.html', source);
