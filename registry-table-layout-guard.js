@@ -1,9 +1,10 @@
 (() => {
   'use strict';
 
-  const VERSION = 'registry-table-layout-guard-v3';
+  const VERSION = 'registry-table-layout-guard-v4';
   const ROOT = document.documentElement;
   const REMOVED_KEYS = new Set(['clinical-status', 'clinical-action', 'personal-note']);
+  const COMPACT_KEYS = new Set(['select', 'number']);
   const FALLBACK_WIDTHS = Object.freeze({
     select:44, number:68, 'trade-name':210, 'active-substance':172, atc:88,
     'drug-class':210, use:230, pdid:98, protocol:122, strength:82, form:142,
@@ -49,6 +50,41 @@
     return width;
   }
 
+  function fitVisibleColumns(records, wrapperWidth) {
+    const baseContentWidth = records.reduce((sum, item) => sum + item.baseWidth, 0);
+    if (!records.length || wrapperWidth <= 0 || baseContentWidth >= wrapperWidth) {
+      return { baseContentWidth, fittedWidth:baseContentWidth, stretched:false };
+    }
+
+    const flexible = records.filter(item => !COMPACT_KEYS.has(item.key));
+    if (!flexible.length) {
+      return { baseContentWidth, fittedWidth:baseContentWidth, stretched:false };
+    }
+
+    const spare = wrapperWidth - baseContentWidth;
+    const flexibleBaseWidth = flexible.reduce((sum, item) => sum + item.baseWidth, 0) || flexible.length;
+    let allocated = 0;
+
+    flexible.forEach((item, index) => {
+      const isLast = index === flexible.length - 1;
+      const share = isLast
+        ? spare - allocated
+        : Math.floor(spare * (item.baseWidth / flexibleBaseWidth));
+      item.width = item.baseWidth + Math.max(0, share);
+      allocated += Math.max(0, share);
+    });
+
+    records.forEach(item => {
+      if (!Number.isFinite(item.width)) item.width = item.baseWidth;
+    });
+
+    return {
+      baseContentWidth,
+      fittedWidth:records.reduce((sum, item) => sum + item.width, 0),
+      stretched:true,
+    };
+  }
+
   function sync() {
     frame = 0;
     const wrapper = document.getElementById('registryContent');
@@ -56,8 +92,7 @@
     const group = table?.querySelector(':scope > colgroup[data-registry-unified-colgroup]');
     if (!wrapper || !table || !group || window.innerWidth <= 760) return;
 
-    let visibleWidth = 0;
-    let visibleColumns = 0;
+    const visibleRecords = [];
     let hiddenColumns = 0;
 
     group.querySelectorAll(':scope > col[data-registry-column-key]').forEach(col => {
@@ -67,9 +102,7 @@
 
       if (show) {
         col.style.removeProperty('display');
-        col.style.setProperty('width', `${baseWidth}px`);
-        visibleWidth += baseWidth;
-        visibleColumns += 1;
+        visibleRecords.push({ col, key, baseWidth, width:baseWidth });
       } else {
         col.style.setProperty('display', 'none', 'important');
         col.style.setProperty('width', '0px', 'important');
@@ -78,13 +111,24 @@
     });
 
     const wrapperWidth = Math.max(0, Math.round(wrapper.clientWidth || 0));
-    const contentWidth = Math.ceil(visibleWidth);
+    const fit = fitVisibleColumns(visibleRecords, wrapperWidth);
+
+    visibleRecords.forEach(item => {
+      item.col.style.setProperty('width', `${item.width}px`, 'important');
+    });
+
+    const contentWidth = Math.ceil(fit.fittedWidth);
     const targetWidth = Math.max(contentWidth, wrapperWidth);
     table.style.setProperty('--registry-unified-width', `${targetWidth}px`);
     table.style.setProperty('width', `${targetWidth}px`, 'important');
     table.style.setProperty('min-width', `${targetWidth}px`, 'important');
+    table.style.setProperty('max-width', `${targetWidth}px`, 'important');
 
     requestAnimationFrame(() => {
+      if (fit.baseContentWidth <= wrapperWidth) {
+        wrapper.scrollLeft = 0;
+        return;
+      }
       const maxScroll = Math.max(0, table.scrollWidth - wrapper.clientWidth);
       if (wrapper.scrollLeft > maxScroll) wrapper.scrollLeft = maxScroll;
     });
@@ -104,11 +148,13 @@
       doseCalculatorVisible:doseVisible(),
       calculatorActuallyVisible,
       calculatorStateMatches,
-      visibleColumns,
+      visibleColumns:visibleRecords.length,
       hiddenColumns,
+      baseVisibleWidth:Math.ceil(fit.baseContentWidth),
       visibleWidth:contentWidth,
       wrapperWidth,
       tableWidth:targetWidth,
+      stretchedToFit:fit.stretched,
       removedColumnsStillVisible,
       excessReservedWidth:Math.max(0, targetWidth - Math.max(contentWidth, wrapperWidth)),
       stable:exactWidth && calculatorStateMatches && removedColumnsStillVisible.length === 0,
@@ -124,6 +170,7 @@
   }
 
   [
+    'medindex:desktop-lite-ready',
     'medindex:registry-table-stable',
     'medindex:registry-page-ready',
     'medindex:registry-ready',
