@@ -81,19 +81,29 @@ assert(dosageGatewaySource.includes('approvedPopulationHandler(req, res)'), 'Gat
 assert(vercel.rewrites.some(item => item.source === '/api/pediatric-only-population' && item.destination === '/api/dosage?view=approved-population'), 'URL-ja kompatibile e popullatës duhet të ripërdorë /api/dosage.');
 assert(!fs.existsSync(path.join(root, 'api/pediatric-only-population.js')), 'Popullata e aprovuar nuk duhet të konsumojë funksion të 12-të Vercel.');
 
+const rawSnapshotItems = approvedPopulationEndpoint.snapshotItems(approvedPopulationSnapshot, []);
+const rawPediatricOnlyItems = rawSnapshotItems.filter(item => item.approvedPopulation === 'Pediatric only');
 const approvedPopulationItems = approvedPopulationEndpoint.snapshotItems(approvedPopulationSnapshot);
 const pediatricOnlyItems = approvedPopulationItems.filter(item => item.approvedPopulation === 'Pediatric only');
 const allowedPopulations = new Set(['Adult only', 'Pediatric only', 'Pediatric and adult both']);
 assert(!approvedPopulationEndpointSource.includes('neonRequest'), 'Handler-i i popullatës duhet të mbetet Neon-free gjatë outage-it.');
 assert(approvedPopulationEndpointSource.includes("require('../data/approved-population-snapshot.json')"), 'Handler-i i popullatës duhet të përdorë snapshot-in e Sheet-it.');
+assert(approvedPopulationEndpointSource.includes("require('../data/approved-population-overrides-1-500.json')"), 'Handler-i duhet të ruajë override-in 1-500.');
+assert(approvedPopulationEndpointSource.includes("require('../data/approved-population-overrides-501-600.json')"), 'Handler-i duhet të ruajë override-in 501-600.');
 assert.strictEqual(approvedPopulationSnapshot?.source?.spreadsheetId, '17cuXg5qORIIWkvAxLZ7uz2FMmGvzwjr850cubUcIgLE');
 assert.strictEqual(approvedPopulationSnapshot?.source?.sheet, 'KARTELA_BARNAVE');
 assert.strictEqual(approvedPopulationSnapshot?.source?.approvedPopulationColumn, 'S');
-assert.strictEqual(approvedPopulationItems.length, approvedPopulationSnapshot?.counts?.classified, 'Numri i klasifikimeve në snapshot nuk përputhet.');
-assert.strictEqual(pediatricOnlyItems.length, approvedPopulationSnapshot?.counts?.pediatricOnly, 'Numri Pediatric only në snapshot nuk përputhet.');
-assert.strictEqual(new Set(approvedPopulationItems.map(item => item.registryNumber)).size, approvedPopulationItems.length, 'Nr rendor duhet të jetë unik në snapshot.');
-assert(approvedPopulationItems.every(item => allowedPopulations.has(item.approvedPopulation)), 'Snapshot-i përmban kategori popullate të palejuar.');
-for (const registryNumber of [44, 45, 46]) {
+assert.strictEqual(rawSnapshotItems.length, approvedPopulationSnapshot?.counts?.classified, 'Numri i klasifikimeve në snapshot-in bazë nuk përputhet.');
+assert.strictEqual(rawPediatricOnlyItems.length, approvedPopulationSnapshot?.counts?.pediatricOnly, 'Numri Pediatric only në snapshot-in bazë nuk përputhet.');
+assert.strictEqual(new Set(approvedPopulationItems.map(item => item.registryNumber)).size, approvedPopulationItems.length, 'Nr rendor duhet të jetë unik pas bashkimit të override-ve.');
+assert(approvedPopulationItems.every(item => allowedPopulations.has(item.approvedPopulation)), 'Katalogu i bashkuar përmban kategori popullate të palejuar.');
+assert.deepStrictEqual(
+  approvedPopulationEndpoint.DEFAULT_OVERRIDE_SETS.map(overrides => overrides?.source?.range),
+  ['1-500', '501-600'],
+  'Override-et e audituara 1-600 duhet të aplikohen në rendin e deklaruar.'
+);
+assert(pediatricOnlyItems.length >= 40, 'Katalogu i bashkuar duhet të ruajë kartat pediatrike të audituara 1-600.');
+for (const registryNumber of [44, 45, 46, 504]) {
   assert.strictEqual(
     approvedPopulationItems.find(item => item.registryNumber === registryNumber)?.approvedPopulation,
     'Pediatric only',
@@ -101,4 +111,4 @@ for (const registryNumber of [44, 45, 46]) {
   );
 }
 
-console.log('Strict adult/pediatric verification + approved-population shared dosage gateway and Sheet snapshot passed.');
+console.log('Strict adult/pediatric verification + raw Sheet snapshot integrity + approved-population overrides 1-600 passed.');
