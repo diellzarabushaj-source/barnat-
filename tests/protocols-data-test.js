@@ -100,12 +100,26 @@ assert.ok(Array.isArray(osteoporosis.primaryCare?.safety?.items) && osteoporosis
 const protocolHtml = fs.readFileSync(require.resolve('../protokollet.html'), 'utf8');
 const interactiveJs = fs.readFileSync(require.resolve('../protocol-interactive.js'), 'utf8');
 const interactiveCssV2 = fs.readFileSync(require.resolve('../protocol-interactive-v2.css'), 'utf8');
+const protocolHandoffJs = fs.readFileSync(require.resolve('../protocol-prescription-handoff.js'), 'utf8');
+const protocolHandoffCss = fs.readFileSync(require.resolve('../protocol-prescription-handoff.css'), 'utf8');
+const prescriptionHandoffJs = fs.readFileSync(require.resolve('../prescription-protocol-handoff.js'), 'utf8');
+const prescriptionStyleLoader = fs.readFileSync(require.resolve('../recetat-style-loader.js'), 'utf8');
 assert.match(protocolHtml, /protocol-interactive-v2\.css\?v=/, 'polished interactive protocol stylesheet must be loaded');
 assert.match(protocolHtml, /protocol-interactive\.js\?v=/, 'interactive protocol runtime must be loaded');
+assert.match(protocolHtml, /protocol-prescription-handoff\.js\?v=/, 'protocol-to-prescription handoff runtime must be loaded');
+assert.match(protocolHtml, /protocol-prescription-handoff\.css\?v=/, 'protocol handoff accessibility styles must be loaded');
 assert.match(interactiveJs, /const TARGET_PROTOCOL = 'upk-01'/, 'interactive runtime must remain scoped to the osteoporosis pilot');
 assert.match(interactiveJs, /sourceHash !== currentHash/, 'interactive runtime must fail closed on source hash mismatch');
 assert.match(interactiveJs, /MedIndex nuk vendos diagnozë/, 'interactive workflow must not claim automated diagnosis');
 assert.match(interactiveCssV2, /data-pc-mode="quick"/, 'quick/full progressive disclosure contract is required');
+assert.match(protocolHandoffJs, /medindexPrescriptionProtocolDraft/, 'protocol handoff must use an explicit one-time transfer key');
+assert.match(protocolHandoffJs, /moveCitationOutsideLabel/, 'source links must be moved outside checkbox labels for predictable interaction');
+assert.match(protocolHandoffJs, /Duke hapur Recetat/, 'protocol must expose a direct prescription workflow action');
+assert.match(protocolHandoffCss, /pc-check-row/, 'checkbox/source accessibility layout must be styled');
+assert.match(prescriptionHandoffJs, /sourceStillMatches/, 'prescription import must revalidate the protocol source hash after navigation');
+assert.match(prescriptionHandoffJs, /Drafti nga protokolli u bart/, 'imported protocol draft must be clearly labeled as a draft');
+assert.match(prescriptionStyleLoader, /prescription-protocol-handoff\.js/, 'prescription page loader must load the protocol import runtime');
+assert.match(prescriptionStyleLoader, /prescription-protocol-handoff\.css/, 'prescription page loader must load protocol import styling');
 
 const fixtureHash = 'a'.repeat(64);
 const fixtureElaborations = reader.normalizeElaborations({
