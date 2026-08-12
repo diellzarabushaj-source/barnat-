@@ -14,10 +14,6 @@
 
   const root = document.documentElement;
   const clean = value => String(value ?? '').replace(/\s+/g, ' ').trim();
-  const clone = value => value && typeof value === 'object' ? { ...value } : value;
-  const escapeHtml = value => String(value ?? '').replace(/[&<>"']/g, character => ({
-    '&':'&amp;', '<':'&lt;', '>':'&gt;', '"':'&quot;', "'":'&#39;'
-  }[character]));
 
   let mode = 'all';
   let currentRows = [];
@@ -55,6 +51,7 @@
     const item = {
       id:clean(row.id),
       registryNumber:clean(row.registryNumber),
+      pdid:clean(row.pdid),
       tradeName:clean(row.tradeName),
       activeSubstance:clean(row.activeSubstance),
       atc:clean(row.atc).toUpperCase(),
@@ -70,12 +67,25 @@
     return clean(row?.registryNumber) || clean(row?.id) || `${clean(row?.tradeName)}|${clean(row?.atc).toUpperCase()}`;
   }
 
+  function desktopDrugKey(row) {
+    const pdid = clean(row?.pdid);
+    const name = clean(row?.tradeName);
+    const strength = clean(row?.strength);
+    return pdid || name || strength ? `${pdid}|${name}|${strength}` : '';
+  }
+
   function favoriteCandidates(row) {
     const nr = clean(row?.registryNumber);
     const name = clean(row?.tradeName);
     const atc = clean(row?.atc).toUpperCase();
     const values = new Set();
-    [nr, name, nr && name ? `${nr}|${name}` : '', name && atc ? `${name}|${atc}` : ''].forEach(value => {
+    [
+      desktopDrugKey(row),
+      nr,
+      name,
+      nr && name ? `${nr}|${name}` : '',
+      name && atc ? `${name}|${atc}` : '',
+    ].forEach(value => {
       const normalized = clean(value);
       if (normalized) values.add(normalized);
     });
@@ -180,7 +190,7 @@
       favoriteCandidates(item).forEach(key => favorites.delete(key));
       forgetFavorite(item);
     } else {
-      const primary = clean(item.registryNumber) || `${item.tradeName}|${item.atc}`;
+      const primary = desktopDrugKey(item) || clean(item.registryNumber) || `${item.tradeName}|${item.atc}`;
       if (!primary) return;
       favorites.add(primary);
       rememberFavorite(item);
