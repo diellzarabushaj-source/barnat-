@@ -13,7 +13,10 @@ for (const page of pages) {
 }
 
 const index = read('index.html');
-assert.match(index, /registry-runtime-loader\.js\?v=20260801-6/, 'index.html: current immediate registry loader is missing');
+assert.match(index, /registry-mobile-lite\.js\?v=20260812-1/, 'index.html: Phase 2 mobile lightweight client is missing');
+assert.match(index, /registry-mobile-lite\.css\?v=20260812-1/, 'index.html: Phase 2 mobile lightweight stylesheet is missing');
+assert.match(index, /registry-runtime-loader\.js\?v=20260812-7/, 'index.html: current mobile-aware registry loader is missing');
+assert.ok(index.indexOf('registry-mobile-lite.js') < index.indexOf('registry-runtime-loader.js'), 'mobile lightweight client must register before the full loader');
 assert.match(index, /registry-unified-table\.js\?v=20260801-1/, 'index.html: unified table controller is missing');
 assert.match(index, /registry-unified-table\.css\?v=20260801-1/, 'index.html: unified table stylesheet is missing');
 assert.match(index, /registry-full-text-expansion\.css\?v=20260805-2/, 'index.html: full-row text reveal stylesheet is missing');
@@ -39,10 +42,22 @@ assert.match(index, /registry-ui-release\.js\?v=20260809-1/, 'registry UI releas
 const registryRelease = read('registry-ui-release.js');
 assert.match(registryRelease, /registry-ui-20260809-1/, 'registry UI cache-clear release is stale');
 
+const mobile = read('registry-mobile-lite.js');
+assert.match(mobile, /registry-mobile-lite-v1/, 'mobile lightweight client version is stale');
+assert.match(mobile, /\(max-width: 767px\)/, 'mobile lightweight client must not activate on desktop');
+assert.match(mobile, /DEFAULT_PAGE_SIZE = 25/, 'mobile lightweight client must keep the 25-row default');
+assert.match(mobile, /MAX_PAGE_SIZE = 50/, 'mobile lightweight client must keep the 50-row cap');
+assert.match(mobile, /view:'registry-page'/, 'mobile lightweight client must use the lightweight registry gateway');
+assert.match(mobile, /view:'registry-detail'/, 'mobile detail must remain targeted');
+assert.doesNotMatch(mobile, /DRUG_DATA_PARTS|apirest\.|NEON_DATA_API|VERCEL_OIDC_TOKEN/i, 'browser mobile client must not contain full-registry or direct-Neon access');
+
 const runtimeLoader = read('registry-runtime-loader.js');
-assert.match(runtimeLoader, /registry-runtime-loader-v6/, 'immediate registry loader version is stale');
-assert.match(runtimeLoader, /app-performance\.js\?v=20260801-2/, 'registry loader must request the versioned bootstrap');
+assert.match(runtimeLoader, /registry-runtime-loader-v7/, 'mobile-aware registry loader version is stale');
+assert.match(runtimeLoader, /app-performance\.js\?v=20260801-2/, 'registry loader must request the versioned full bootstrap');
 assert.match(runtimeLoader, /classList\.contains\('auth-ready'\)/, 'registry loader must wait for authentication');
+assert.match(runtimeLoader, /MOBILE_LITE_GRACE_MS = 5000/, 'mobile lightweight startup must have a bounded fallback');
+assert.match(runtimeLoader, /mobile-lite-deferred/, 'full runtime must defer on healthy phone startup');
+assert.match(runtimeLoader, /desktop-or-legacy/, 'desktop startup must remain full-runtime');
 assert.doesNotMatch(runtimeLoader, /FIRST_INTERACTION_FALLBACK_MS|POST_INTERACTION_GRACE_MS|INTERACTION_EVENTS/, 'old interaction gate must not return');
 
 const app = read('app-performance.js');
@@ -85,4 +100,4 @@ const workerShim = read('sw-resilient-v3.js');
 assert.match(workerShim, /importScripts\('\/sw\.js\?v=/);
 assert.doesNotMatch(workerShim, /navigationResponse|PRIVATE_DATA_PATHS/);
 
-console.log('Clinical runtime single-version, canonical dose runtime and final manual-QA audit passed.');
+console.log('Clinical runtime single-version, Phase 2 mobile lightweight path and canonical dose runtime audit passed.');
