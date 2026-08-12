@@ -21,7 +21,7 @@ assert(
   index.indexOf('registry-cell-preview.js?v=20260811-2') < index.indexOf('registry-row-expand.js?v=20260810-1'),
   'Cell expansion trigger must initialize before row expansion.'
 );
-assert(index.includes('data-registry-ui-release="20260809-1"'), 'Registry UI release was not bumped.');
+assert(index.includes('data-registry-ui-release="20260812-1"'), 'Registry UI release was not bumped.');
 assert(index.includes('registry-column-contract.js?v=20260801-2'), 'Column contract v2 is not wired.');
 assert(index.includes('registry-unified-table.js?v=20260812-population-column-1'), 'Unified table population controller is not wired.');
 assert(
