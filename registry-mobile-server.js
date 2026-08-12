@@ -1,7 +1,7 @@
 (() => {
   'use strict';
 
-  const VERSION = 'mobile-server-registry-v1';
+  const VERSION = 'mobile-server-registry-v2';
   const MOBILE_QUERY = '(max-width: 767px)';
   const API = '/api/registry-page';
   const DEFAULT_PAGE_SIZE = 25;
@@ -16,6 +16,8 @@
     pageSize:DEFAULT_PAGE_SIZE,
     q:'',
     status:'',
+    formQuery:'',
+    atc:'',
     sort:'registry',
     direction:'asc',
     total:0,
@@ -27,6 +29,7 @@
   let searchTimer = 0;
   let detailController = null;
   let disabled = false;
+  let activeDetailId = '';
 
   html.dataset.registryMobileServer = VERSION;
   window.MEDINDEX_MOBILE_SERVER_ACTIVE = true;
@@ -38,6 +41,31 @@
 
   function authReady() {
     return html.classList.contains('auth-ready');
+  }
+
+  function snapshot() {
+    return {
+      page:state.page,
+      pageSize:state.pageSize,
+      q:state.q,
+      status:state.status,
+      formQuery:state.formQuery,
+      atc:state.atc,
+      sort:state.sort,
+      direction:state.direction,
+      total:state.total,
+      totalPages:state.totalPages,
+      loading:state.loading,
+      ready:state.ready,
+      activeDetailId,
+      disabled,
+    };
+  }
+
+  function emitState(reason = 'update') {
+    window.dispatchEvent(new CustomEvent('medindex:mobile-registry-state', {
+      detail:{ ...snapshot(), reason }
+    }));
   }
 
   function canonical(row) {
@@ -74,6 +102,7 @@
     disabled = true;
     window.MEDINDEX_MOBILE_SERVER_ACTIVE = false;
     html.dataset.registryMobileServerState = 'handoff';
+    emitState('handoff');
     window.dispatchEvent(new CustomEvent('medindex:request-full-registry', { detail:{ reason } }));
   }
 
@@ -94,6 +123,8 @@
     });
     if (state.q.length >= 2) params.set('q', state.q);
     if (state.status) params.set('status', state.status);
+    if (state.formQuery) params.set('formQuery', state.formQuery);
+    if (state.atc) params.set('atc', state.atc);
     return `${API}?${params.toString()}`;
   }
 
@@ -105,18 +136,19 @@
     table?.setAttribute('aria-busy', value ? 'true' : 'false');
     search?.classList.toggle('is-server-loading', value);
     pagination?.classList.toggle('is-server-loading', value);
+    emitState(value ? 'loading' : 'idle');
   }
 
   function renderHeader() {
     const header = document.getElementById('headerRow');
     if (!header) return;
     const columns = [
-      ['name','Emri Tregtar','Emri tregtar'],
-      ['substance','Substanca Aktive','Substanca aktive'],
-      ['atc','ATC','ATC'],
-      ['strength','Fortësia','Fortësia'],
-      ['form','Forma','Forma'],
-      ['status','Statusi','Statusi'],
+      ['name','Emri Tregtar'],
+      ['substance','Substanca Aktive'],
+      ['atc','ATC'],
+      ['strength','Fortësia'],
+      ['form','Forma'],
+      ['status','Statusi'],
     ];
     header.innerHTML = columns.map(([key,label]) => {
       const active = state.sort === key;
@@ -129,7 +161,7 @@
         if (state.sort === key) state.direction = state.direction === 'asc' ? 'desc' : 'asc';
         else { state.sort = key; state.direction = 'asc'; }
         state.page = 1;
-        void loadPage({ scroll:false });
+        void loadPage({ scroll:false, reason:'sort' });
       });
     });
   }
@@ -145,8 +177,8 @@
       const id = escapeHtml(row.id);
       const status = clean(row.productStatus);
       const statusClass = status === 'Gjenerik' ? 'gjenerik' : status === 'Origjinator' ? 'origjinator' : '';
-      return `<tr data-mobile-server-row="${id}">
-        <td data-column-key="Emri tregtar" data-label="Emri tregtar" class="name"><strong>${escapeHtml(row.tradeName)}</strong><button type="button" class="registry-mobile-more" data-mobile-server-detail="${id}">Më shumë</button></td>
+      return `<tr data-mobile-server-row="${id}" data-mobile-drug-name="${escapeHtml(row.tradeName)}" data-mobile-drug-substance="${escapeHtml(row.activeSubstance)}">
+        <td data-column-key="Emri tregtar" data-label="Emri tregtar" class="name"><strong>${escapeHtml(row.tradeName)}</strong><span class="registry-mobile-row-actions"><button type="button" class="registry-mobile-more" data-mobile-server-detail="${id}">Më shumë</button></span></td>
         <td data-column-key="Substanca aktive" data-label="Substanca aktive">${escapeHtml(row.activeSubstance)}</td>
         <td data-column-key="ATC Code" data-label="ATC" class="code">${escapeHtml(row.atc)}</td>
         <td data-column-key="Fortësia" data-label="Fortësia">${escapeHtml(row.strength)}</td>
@@ -160,6 +192,7 @@
         void openDetail(button.dataset.mobileServerDetail, button);
       });
     });
+    window.dispatchEvent(new CustomEvent('medindex:mobile-registry-rows-rendered', { detail:{ rows } }));
   }
 
   function renderCount() {
@@ -167,7 +200,8 @@
     if (!badge) return;
     badge.dataset.visible = String(state.total);
     badge.dataset.total = String(state.total);
-    badge.textContent = `${state.total} barna`;
+    const filtered = Boolean(state.q || state.status || state.formQuery || state.atc);
+    badge.textContent = filtered ? `${state.total} rezultate` : `${state.total} barna`;
     badge.title = `${state.total} rezultate · server-side pagination`;
   }
 
@@ -180,8 +214,8 @@
     for (let page = 1; page <= totalPages; page += 1) {
       if (page === 1 || page === totalPages || Math.abs(page - current) <= 2) pages.push(page);
     }
-    const button = (label, page, disabled, active = false) => `<button type="button" data-mobile-server-page="${page}" ${disabled ? 'disabled' : ''} class="${active ? 'active' : ''}">${escapeHtml(label)}</button>`;
-    let htmlParts = [button('« Para', current - 1, current <= 1)];
+    const button = (label, page, isDisabled, active = false) => `<button type="button" data-mobile-server-page="${page}" ${isDisabled ? 'disabled' : ''} class="${active ? 'active' : ''}">${escapeHtml(label)}</button>`;
+    const htmlParts = [button('« Para', current - 1, current <= 1)];
     let last = 0;
     pages.forEach(page => {
       if (last && page - last > 1) htmlParts.push('<span class="registry-page-dots" aria-hidden="true">…</span>');
@@ -195,7 +229,7 @@
         const page = Number(control.dataset.mobileServerPage);
         if (!Number.isFinite(page) || page < 1 || page > totalPages || page === state.page) return;
         state.page = page;
-        void loadPage({ scroll:true });
+        void loadPage({ scroll:true, reason:'pagination' });
       });
     });
   }
@@ -214,7 +248,7 @@
     }));
   }
 
-  async function loadPage({ scroll = false } = {}) {
+  async function loadPage({ scroll = false, reason = 'reload' } = {}) {
     if (disabled) return;
     requestController?.abort();
     requestController = new AbortController();
@@ -243,8 +277,9 @@
       html.dataset.registryMobileServerReady = '1';
       html.dataset.registryMobileServerState = 'ready';
       hideLoader();
+      emitState(reason);
       window.dispatchEvent(new CustomEvent('medindex:mobile-registry-ready', {
-        detail:{ total:state.total, page:state.page, pageSize:state.pageSize, source:'neon-page' }
+        detail:{ ...snapshot(), source:'neon-page', rows:payload.rows }
       }));
       if (scroll) document.getElementById('registryContent')?.scrollIntoView({ block:'start', behavior:'smooth' });
     } catch (error) {
@@ -268,31 +303,39 @@
     dialog.id = 'registryMobileServerDetail';
     dialog.className = 'registry-mobile-server-detail';
     dialog.hidden = true;
-    dialog.innerHTML = '<div class="registry-mobile-server-backdrop" data-mobile-server-close></div><section class="registry-mobile-server-sheet" role="dialog" aria-modal="true" aria-labelledby="registryMobileServerDetailTitle"><div class="registry-mobile-server-sheet-head"><h2 id="registryMobileServerDetailTitle">Detajet e barit</h2><button type="button" data-mobile-server-close aria-label="Mbyll detajet">×</button></div><div class="registry-mobile-server-sheet-body" data-mobile-server-detail-body></div></section>';
+    dialog.innerHTML = '<div class="registry-mobile-server-backdrop" data-mobile-server-close></div><section class="registry-mobile-server-sheet" role="dialog" aria-modal="true" aria-labelledby="registryMobileServerDetailTitle"><div class="registry-mobile-server-sheet-head"><div><span class="registry-mobile-server-sheet-eyebrow">MedIndex</span><h2 id="registryMobileServerDetailTitle">Detajet e barit</h2></div><button type="button" data-mobile-server-close aria-label="Mbyll detajet">×</button></div><div class="registry-mobile-server-detail-actions" data-mobile-detail-actions></div><div class="registry-mobile-server-sheet-body" data-mobile-server-detail-body></div></section>';
     document.body.appendChild(dialog);
-    dialog.querySelectorAll('[data-mobile-server-close]').forEach(control => control.addEventListener('click', closeDetail));
+    dialog.querySelectorAll('[data-mobile-server-close]').forEach(control => control.addEventListener('click', () => closeDetail({ source:'button' })));
     return dialog;
   }
 
-  function closeDetail() {
+  function closeDetail({ source = 'api' } = {}) {
     detailController?.abort();
     const dialog = document.getElementById('registryMobileServerDetail');
-    if (!dialog) return;
+    if (!dialog || dialog.hidden) return;
     dialog.hidden = true;
     document.body.classList.remove('registry-mobile-server-detail-open');
+    const previousId = activeDetailId;
+    activeDetailId = '';
+    emitState('detail-close');
+    window.dispatchEvent(new CustomEvent('medindex:mobile-detail-closed', { detail:{ id:previousId, source } }));
   }
 
-  async function openDetail(id, trigger) {
-    if (!id || disabled) return;
+  async function openDetail(id, trigger, options = {}) {
+    if (!id || disabled) return null;
     const dialog = ensureDetailDialog();
     const body = dialog.querySelector('[data-mobile-server-detail-body]');
     const title = dialog.querySelector('#registryMobileServerDetailTitle');
-    if (!body || !title) return;
+    const actions = dialog.querySelector('[data-mobile-detail-actions]');
+    if (!body || !title || !actions) return null;
+    activeDetailId = clean(id);
     dialog.hidden = false;
     document.body.classList.add('registry-mobile-server-detail-open');
     body.innerHTML = '<div class="registry-mobile-server-detail-loading">Duke i ngarkuar detajet…</div>';
+    actions.innerHTML = '';
     detailController?.abort();
     detailController = new AbortController();
+    emitState('detail-open');
     try {
       const response = await fetch(`${API}?view=detail&id=${encodeURIComponent(id)}`, {
         credentials:'same-origin', cache:'no-store', signal:detailController.signal, headers:{ Accept:'application/json' }
@@ -302,14 +345,17 @@
       const row = payload?.row;
       if (!row) throw new Error('Detajet mungojnë.');
       title.textContent = clean(row.tradeName) || 'Detajet e barit';
-      const items = [
+      const clinical = [
         ['Substanca aktive', row.activeSubstance], ['ATC', row.atc], ['Fortësia', row.strength], ['Forma', row.form],
-        ['Klasa', row.drugClass], ['Përdorimi', row.use], ['Paketimi', row.packaging], ['Prodhuesi', row.manufacturer],
-        ['Bartësi i autorizimit', row.marketingAuthorizationHolder], ['Statusi', row.productStatus], ['PDID', row.pdid],
-        ['Protokolli', row.protocolNo], ['Certifikata MA', row.maCertificate], ['TVSH', row.vat], ['Afati', row.validity],
+        ['Klasa', row.drugClass], ['Përdorimi', row.use], ['Paketimi', row.packaging],
       ].filter(([,value]) => value !== null && value !== undefined && clean(value) !== '');
-      if (row.retailPrice !== null && row.retailPrice !== undefined) items.push(['Çmimi me pakicë', `${row.retailPrice} €`]);
-      body.innerHTML = items.map(([label,value]) => `<div class="registry-mobile-server-detail-item"><span>${escapeHtml(label)}</span><strong>${escapeHtml(value)}</strong></div>`).join('');
+      const regulatory = [
+        ['Prodhuesi', row.manufacturer], ['Bartësi i autorizimit', row.marketingAuthorizationHolder], ['Statusi', row.productStatus],
+        ['PDID', row.pdid], ['Protokolli', row.protocolNo], ['Certifikata MA', row.maCertificate], ['TVSH', row.vat], ['Afati', row.validity],
+      ].filter(([,value]) => value !== null && value !== undefined && clean(value) !== '');
+      if (row.retailPrice !== null && row.retailPrice !== undefined) regulatory.push(['Çmimi me pakicë', `${row.retailPrice} €`]);
+      const section = (label, items) => items.length ? `<section class="registry-mobile-server-detail-section"><h3>${escapeHtml(label)}</h3>${items.map(([itemLabel,value]) => `<div class="registry-mobile-server-detail-item"><span>${escapeHtml(itemLabel)}</span><strong>${escapeHtml(value)}</strong></div>`).join('')}</section>` : '';
+      body.innerHTML = section('Përmbledhje klinike', clinical) + section('Të dhënat e produktit', regulatory);
       const advanced = document.createElement('button');
       advanced.type = 'button';
       advanced.className = 'registry-mobile-server-advanced';
@@ -317,10 +363,41 @@
       advanced.addEventListener('click', () => requestFullRegistry('detail-advanced'));
       body.appendChild(advanced);
       trigger?.setAttribute('aria-expanded', 'true');
+      window.dispatchEvent(new CustomEvent('medindex:mobile-detail-opened', {
+        detail:{ id:activeDetailId, row, dialog, actions, source:options.source || 'user' }
+      }));
+      return row;
     } catch (error) {
-      if (error?.name === 'AbortError') return;
+      if (error?.name === 'AbortError') return null;
       body.innerHTML = `<div class="registry-mobile-server-detail-error">${escapeHtml(error.message || 'Detajet nuk u ngarkuan.')}</div>`;
+      return null;
     }
+  }
+
+  function applyFilters(next = {}, options = {}) {
+    if (disabled) return;
+    if (Object.hasOwn(next, 'q')) state.q = clean(next.q);
+    if (Object.hasOwn(next, 'status')) state.status = clean(next.status);
+    if (Object.hasOwn(next, 'formQuery')) state.formQuery = clean(next.formQuery);
+    if (Object.hasOwn(next, 'atc')) state.atc = clean(next.atc).toUpperCase().replace(/[^A-Z0-9]/g, '').slice(0, 12);
+    if (Object.hasOwn(next, 'pageSize')) {
+      const size = Number(next.pageSize);
+      if (Number.isFinite(size)) state.pageSize = Math.max(1, Math.min(MAX_PAGE_SIZE, size));
+    }
+    if (Object.hasOwn(next, 'sort') && ['registry','name','substance','atc','strength','form','status','price'].includes(next.sort)) state.sort = next.sort;
+    if (Object.hasOwn(next, 'direction')) state.direction = next.direction === 'desc' ? 'desc' : 'asc';
+    if (Object.hasOwn(next, 'page')) {
+      const page = Number(next.page);
+      state.page = Number.isFinite(page) && page >= 1 ? Math.floor(page) : 1;
+    } else state.page = 1;
+    const search = document.getElementById('search');
+    const status = document.getElementById('statusFilter');
+    const pageSize = document.getElementById('pageSize');
+    if (search && search.value !== state.q) search.value = state.q;
+    if (status && status.value !== state.status) status.value = state.status;
+    if (pageSize && pageSize.value !== String(state.pageSize)) pageSize.value = String(state.pageSize);
+    if (options.reload !== false) void loadPage({ scroll:Boolean(options.scroll), reason:options.reason || 'filters' });
+    else emitState(options.reason || 'filters-no-reload');
   }
 
   function configureControls() {
@@ -350,33 +427,30 @@
       pageSize.addEventListener('change', () => {
         const next = Number(pageSize.value);
         if (!Number.isFinite(next) || next > MAX_PAGE_SIZE) return requestFullRegistry('large-page-size');
-        state.pageSize = Math.max(1, next);
-        state.page = 1;
-        void loadPage();
+        applyFilters({ pageSize:next }, { reason:'page-size' });
       });
     }
 
     search?.addEventListener('input', () => {
       window.clearTimeout(searchTimer);
-      searchTimer = window.setTimeout(() => {
-        state.q = clean(search.value);
-        state.page = 1;
-        void loadPage();
-      }, SEARCH_DEBOUNCE_MS);
+      searchTimer = window.setTimeout(() => applyFilters({ q:search.value }, { reason:'search' }), SEARCH_DEBOUNCE_MS);
     });
 
-    status?.addEventListener('change', () => {
-      state.status = clean(status.value);
-      state.page = 1;
-      void loadPage();
-    });
+    status?.addEventListener('change', () => applyFilters({ status:status.value }, { reason:'status' }));
 
-    [formPicker, columnPicker, protocols].forEach(control => {
+    formPicker?.addEventListener('click', event => {
+      if (disabled) return;
+      event.preventDefault();
+      event.stopImmediatePropagation();
+      window.dispatchEvent(new CustomEvent('medindex:open-mobile-registry-filters'));
+    }, { capture:true });
+
+    [columnPicker, protocols].forEach(control => {
       control?.addEventListener('click', event => {
         if (disabled) return;
         event.preventDefault();
         event.stopImmediatePropagation();
-        requestFullRegistry(control === protocols ? 'prescription' : control === columnPicker ? 'columns' : 'form-filter');
+        requestFullRegistry(control === protocols ? 'prescription' : 'columns');
       }, { capture:true });
     });
   }
@@ -392,14 +466,26 @@
         }
       });
     }
-    closeDetail();
+    closeDetail({ source:'full-runtime' });
   }
 
   function start() {
     if (disabled) return;
     configureControls();
-    void loadPage();
+    emitState('start');
+    void loadPage({ reason:'initial' });
   }
+
+  window.MedIndexMobileRegistry = Object.freeze({
+    version:VERSION,
+    getState:snapshot,
+    setFilters:applyFilters,
+    reload:options => loadPage({ ...(options || {}), reason:options?.reason || 'manual' }),
+    openDetail,
+    closeDetail,
+    requestFullRegistry,
+  });
+  window.dispatchEvent(new CustomEvent('medindex:mobile-registry-api-ready', { detail:{ version:VERSION } }));
 
   window.addEventListener('medindex:full-registry-started', () => {
     disabled = true;
@@ -407,6 +493,7 @@
     html.dataset.registryMobileServerState = 'full-runtime';
     restoreAdvancedControls();
     requestController?.abort();
+    emitState('full-runtime');
   });
 
   window.matchMedia(MOBILE_QUERY).addEventListener?.('change', event => {
