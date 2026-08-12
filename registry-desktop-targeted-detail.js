@@ -37,7 +37,6 @@
       '.registry-targeted-detail-section{min-width:0;padding:12px;border:1px solid color-mix(in srgb,currentColor 12%,transparent);border-radius:10px}',
       '.registry-targeted-detail-section h4{margin:0 0 8px;font-size:12px;line-height:1.3;text-transform:uppercase;letter-spacing:.04em;opacity:.72}',
       '.registry-targeted-detail-field{display:grid;grid-template-columns:minmax(105px,.42fr) minmax(0,1fr);gap:8px;margin-top:7px;font-size:13px;line-height:1.45}',
-      '.registry-targeted-detail-field:first-of-type{margin-top:0}',
       '.registry-targeted-detail-field b{font-weight:600;opacity:.76}',
       '.registry-targeted-detail-field span{min-width:0;overflow-wrap:anywhere}',
       '.registry-targeted-detail-actions{display:flex;flex-wrap:wrap;gap:8px;margin-top:14px}',
@@ -54,14 +53,15 @@
     const id = drugId(row);
     if (!id) return null;
     const next = row.nextElementSibling;
-    if (next?.classList?.contains('registry-targeted-detail-row') && next.dataset.targetedDetailFor === id) return next;
-
+    if (next?.classList?.contains('registry-targeted-detail-row') && next.dataset.targetedDetailFor === id) {
+      next.querySelector('td')?.setAttribute('colspan', String(Math.max(1, row.children.length)));
+      return next;
+    }
     const detailRow = document.createElement('tr');
     detailRow.className = 'registry-targeted-detail-row';
     detailRow.dataset.targetedDetailFor = id;
     detailRow.dataset.registryUiOnly = 'true';
     detailRow.hidden = true;
-
     const cell = document.createElement('td');
     cell.colSpan = Math.max(1, row.children.length);
     const panel = document.createElement('div');
@@ -102,13 +102,9 @@
   function regimenFields(regimen) {
     if (!regimen) return [];
     return [
-      ['Doza', regimen.dose],
-      ['Rruga', regimen.route],
-      ['Frekuenca', regimen.frequency],
-      ['Kohëzgjatja', regimen.duration],
-      ['Maksimumi', regimen.maximum],
-      ['Indikacioni', regimen.indication],
-      ['Paralajmërime', regimen.warnings],
+      ['Doza', regimen.dose], ['Rruga', regimen.route], ['Frekuenca', regimen.frequency],
+      ['Kohëzgjatja', regimen.duration], ['Maksimumi', regimen.maximum],
+      ['Indikacioni', regimen.indication], ['Paralajmërime', regimen.warnings],
     ];
   }
 
@@ -141,8 +137,12 @@
     return button;
   }
 
+  function panelFor(row) {
+    return detailRowFor(row)?.querySelector('.registry-targeted-detail-panel') || null;
+  }
+
   function renderLoading(row) {
-    const panel = detailRowFor(row)?.querySelector('.registry-targeted-detail-panel');
+    const panel = panelFor(row);
     if (!panel) return;
     panel.replaceChildren();
     const status = document.createElement('div');
@@ -153,7 +153,7 @@
 
   function renderError(row, message) {
     const id = drugId(row);
-    const panel = detailRowFor(row)?.querySelector('.registry-targeted-detail-panel');
+    const panel = panelFor(row);
     if (!panel) return;
     panel.replaceChildren();
     const status = document.createElement('div');
@@ -190,11 +190,9 @@
 
   function renderDetail(row, payload) {
     const id = drugId(row);
-    const detailRow = detailRowFor(row);
-    const panel = detailRow?.querySelector('.registry-targeted-detail-panel');
-    if (!detailRow || !panel) return;
+    const panel = panelFor(row);
+    if (!panel) return;
     panel.replaceChildren();
-
     const registry = payload.registry || {};
     const clinical = payload.clinical || {};
     const profile = clinical.profile || {};
@@ -255,9 +253,7 @@
 
   async function fetchJson(url) {
     const response = await fetch(url, {
-      credentials:'same-origin',
-      cache:'no-store',
-      headers:{ Accept:'application/json' },
+      credentials:'same-origin', cache:'no-store', headers:{ Accept:'application/json' },
     });
     if (!response.ok) throw new Error('HTTP ' + response.status);
     const payload = await response.json();
@@ -316,9 +312,11 @@
     const id = drugId(row);
     if (!id) return;
     const expanded = row.dataset.registryRowExpanded === 'true';
-    const detailRow = expanded ? detailRowFor(row) : row.nextElementSibling;
+    const next = row.nextElementSibling;
+    const detailRow = expanded ? detailRowFor(row) : next;
     if (detailRow?.classList?.contains('registry-targeted-detail-row') && detailRow.dataset.targetedDetailFor === id) {
       detailRow.hidden = !expanded;
+      detailRow.querySelector('td')?.setAttribute('colspan', String(Math.max(1, row.children.length)));
     }
     if (expanded) void ensureDetail(row);
   }
@@ -348,14 +346,12 @@
       let needsScan = false;
       records.forEach(record => {
         if (record.type === 'attributes') syncRow(record.target);
-        else needsScan = true;
+        else if (record.type === 'childList' && record.target === tbody) needsScan = true;
       });
       if (needsScan) queueMicrotask(scan);
     });
     observer.observe(tbody, {
-      childList:true,
-      subtree:true,
-      attributes:true,
+      childList:true, subtree:true, attributes:true,
       attributeFilter:['data-registry-row-expanded'],
     });
     scan();
