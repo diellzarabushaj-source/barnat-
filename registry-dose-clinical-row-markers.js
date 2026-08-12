@@ -1,12 +1,11 @@
 (() => {
   'use strict';
 
-  const VERSION = 'dose-clinical-row-markers-v4-approved-population-column';
+  const VERSION = 'dose-clinical-row-markers-v5-page-metadata';
   const ROW_SELECTOR = '#tbody > tr';
   const EMPTY_SELECTOR = '.empty-state';
   const FORM_CELL_SELECTOR = '[data-registry-column-key="form"]';
   const ROUTE_SELECTOR = '.registry-dosage-route';
-  const POPULATION_ENDPOINT = '/api/pediatric-only-population';
   const FRAME_BUDGET_MS = 6;
   const IDLE_TIMEOUT_MS = 120;
   const PARENTERAL_PATTERN = /(?:^|\b)(?:parenteral|intraven|intramusk|subkutan|subcutan|injeksion|injection|injectable|infuzion|infusion|ampul|ampoule|vial|i\.?\s*v\.?|i\.?\s*m\.?|s\.?\s*c\.?)(?:\b|$)/i;
@@ -25,7 +24,6 @@
   let tbodyObserver = null;
   let headerObserver = null;
   let cachedFormIndex = -1;
-  let populationRequest = null;
   let populationReady = false;
   let processedRows = 0;
   let queueRuns = 0;
@@ -90,41 +88,55 @@
     return window.MEDINDEX_REGISTRY_ROWS.find(item => Number(item?.['Nr rendor']) === number) || null;
   }
 
+  function approvedPopulationValue(item) {
+    if (!item) return '';
+    const direct = clean(item['Popullata e aprovuar'] || item.approvedPopulation);
+    if (APPROVED_POPULATIONS.has(direct)) return direct;
+    return clean(item['Pediatric only']) === 'Pediatric only' ? 'Pediatric only' : '';
+  }
+
   function approvedPopulationForRow(row) {
     const number = registryNumber(row);
     if (!number) return '';
-    const fromApi = approvedPopulationByRegistryNumber.get(number);
-    if (APPROVED_POPULATIONS.has(fromApi)) return fromApi;
-    const fromRegistry = clean(rawRowByRegistryNumber(number)?.['Popullata e aprovuar']);
-    return APPROVED_POPULATIONS.has(fromRegistry) ? fromRegistry : '';
+    const indexed = approvedPopulationByRegistryNumber.get(number);
+    if (APPROVED_POPULATIONS.has(indexed)) return indexed;
+    return approvedPopulationValue(rawRowByRegistryNumber(number));
   }
 
   function approvedPediatricOnly(row) {
     return approvedPopulationForRow(row) === 'Pediatric only';
   }
 
-  function applyPopulationToRegistryRows() {
-    const rows = Array.isArray(window.MEDINDEX_REGISTRY_ROWS) ? window.MEDINDEX_REGISTRY_ROWS : [];
+  function rebuildPopulationIndex(rows = window.MEDINDEX_REGISTRY_ROWS) {
+    approvedPopulationByRegistryNumber.clear();
+    pediatricOnlyRegistryNumbers.clear();
+    if (!Array.isArray(rows)) {
+      populationReady = false;
+      return 0;
+    }
+
     let changed = 0;
     rows.forEach(item => {
-      const number = Number(item?.['Nr rendor']);
+      const number = Number(item?.['Nr rendor'] ?? item?.registryNumber);
       if (!Number.isInteger(number) || number <= 0) return;
-
-      const approvedPopulation = approvedPopulationByRegistryNumber.get(number);
-      if (APPROVED_POPULATIONS.has(approvedPopulation) && item['Popullata e aprovuar'] !== approvedPopulation) {
-        item['Popullata e aprovuar'] = approvedPopulation;
-        changed += 1;
+      const approvedPopulation = approvedPopulationValue(item);
+      if (APPROVED_POPULATIONS.has(approvedPopulation)) {
+        approvedPopulationByRegistryNumber.set(number, approvedPopulation);
+        if (approvedPopulation === 'Pediatric only') pediatricOnlyRegistryNumbers.add(number);
+        if (item['Popullata e aprovuar'] !== approvedPopulation) {
+          item['Popullata e aprovuar'] = approvedPopulation;
+          changed += 1;
+        }
       }
 
-      const pediatricOnly = approvedPopulation === 'Pediatric only'
-        || clean(item['Popullata e aprovuar']) === 'Pediatric only'
-        || pediatricOnlyRegistryNumbers.has(number);
-      const legacyValue = pediatricOnly ? 'Pediatric only' : '';
+      const legacyValue = approvedPopulation === 'Pediatric only' ? 'Pediatric only' : '';
       if (item['Pediatric only'] !== legacyValue) {
         item['Pediatric only'] = legacyValue;
         changed += 1;
       }
     });
+
+    populationReady = true;
     window.MEDINDEX_PEDIATRIC_ONLY_REGISTRY_NUMBERS = Object.freeze([...pediatricOnlyRegistryNumbers].sort((a, b) => a - b));
     window.MEDINDEX_APPROVED_POPULATION = Object.freeze(Object.fromEntries(
       [...approvedPopulationByRegistryNumber.entries()].sort((left, right) => left[0] - right[0])
@@ -132,8 +144,9 @@
     return changed;
   }
 
-  function announcePopulationReady(reason = 'loaded') {
-    const changed = applyPopulationToRegistryRows();
+  function announcePopulationReady(reason = 'registry-page', rows = window.MEDINDEX_REGISTRY_ROWS) {
+    const changed = rebuildPopulationIndex(rows);
+    if (!populationReady) return false;
     document.documentElement.dataset.pediatricOnlyPopulationMarkers = String(pediatricOnlyRegistryNumbers.size);
     document.documentElement.dataset.approvedPopulationMarkers = String(approvedPopulationByRegistryNumber.size);
     window.dispatchEvent(new CustomEvent('medindex:pediatric-only-population-ready', {
@@ -142,9 +155,11 @@
         classifiedCount:approvedPopulationByRegistryNumber.size,
         changed,
         reason,
+        partial:Boolean(window.MEDINDEX_REGISTRY_PARTIAL),
       },
     }));
     if (changed) window.MEDINDEX_REFRESH_REGISTRY?.();
+    return true;
   }
 
   function isParenteral(row) {
@@ -229,53 +244,6 @@
     document.querySelectorAll(ROW_SELECTOR).forEach(enqueue);
   }
 
-  function applyPopulationMetadata(payload) {
-    approvedPopulationByRegistryNumber.clear();
-    pediatricOnlyRegistryNumbers.clear();
-
-    (Array.isArray(payload?.items) ? payload.items : []).forEach(item => {
-      const registryNumber = Number(item?.registryNumber);
-      const approvedPopulation = clean(item?.approvedPopulation);
-      if (!Number.isInteger(registryNumber) || registryNumber <= 0 || !APPROVED_POPULATIONS.has(approvedPopulation)) return;
-      approvedPopulationByRegistryNumber.set(registryNumber, approvedPopulation);
-      if (approvedPopulation === 'Pediatric only') pediatricOnlyRegistryNumbers.add(registryNumber);
-    });
-
-    (Array.isArray(payload?.registryNumbers) ? payload.registryNumbers : []).forEach(value => {
-      const number = Number(value);
-      if (!Number.isInteger(number) || number <= 0) return;
-      pediatricOnlyRegistryNumbers.add(number);
-      if (!approvedPopulationByRegistryNumber.has(number)) {
-        approvedPopulationByRegistryNumber.set(number, 'Pediatric only');
-      }
-    });
-  }
-
-  async function loadApprovedPopulation() {
-    if (populationRequest) return populationRequest;
-    populationRequest = fetch(POPULATION_ENDPOINT, {
-      method:'GET',
-      credentials:'same-origin',
-      headers:{ Accept:'application/json' },
-      cache:'no-cache',
-    }).then(async response => {
-      if (!response.ok) throw new Error(`population marker ${response.status}`);
-      const payload = await response.json();
-      applyPopulationMetadata(payload);
-      populationReady = true;
-      announcePopulationReady('api');
-      scan();
-      return approvedPopulationByRegistryNumber;
-    }).catch(error => {
-      populationReady = false;
-      document.documentElement.dataset.pediatricOnlyPopulationMarkers = 'error';
-      document.documentElement.dataset.approvedPopulationMarkers = 'error';
-      console.warn('Approved-population row markers were not loaded:', error);
-      return approvedPopulationByRegistryNumber;
-    });
-    return populationRequest;
-  }
-
   function observe() {
     const tbody = document.getElementById('tbody');
     const header = document.getElementById('headerRow');
@@ -297,22 +265,24 @@
     }
   }
 
-  function onRegistryDataReady() {
-    if (populationReady) announcePopulationReady('registry-data-ready');
+  function onRegistryDataReady(event) {
+    const rows = Array.isArray(event?.detail?.rows) ? event.detail.rows : window.MEDINDEX_REGISTRY_ROWS;
+    announcePopulationReady(event?.type || 'registry-ready', rows);
     scan();
   }
 
   function start() {
     observe();
-    scan();
-    loadApprovedPopulation();
-    document.documentElement.dataset.doseClinicalRowMarkers = VERSION;
+    window.addEventListener('medindex:registry-page-ready', onRegistryDataReady);
     window.addEventListener('medindex:registry-data-ready', onRegistryDataReady);
     [
       'medindex:registry-ready',
       'medindex:registry-dosage-ready',
       'medindex:registry-table-stable',
     ].forEach(name => window.addEventListener(name, scan));
+    announcePopulationReady('initial');
+    scan();
+    document.documentElement.dataset.doseClinicalRowMarkers = VERSION;
   }
 
   if (document.readyState === 'loading') {
@@ -324,8 +294,8 @@
   window.MedIndexDoseClinicalRowMarkers = Object.freeze({
     version:VERSION,
     refresh:scan,
-    refreshPopulation:loadApprovedPopulation,
-    applyToRegistryRows:applyPopulationToRegistryRows,
+    refreshPopulation:() => announcePopulationReady('manual'),
+    applyToRegistryRows:() => rebuildPopulationIndex(window.MEDINDEX_REGISTRY_ROWS),
     isPediatricOnly:number => pediatricOnlyRegistryNumbers.has(Number(number)),
     approvedPopulation:number => approvedPopulationByRegistryNumber.get(Number(number)) || '',
     metrics:() => Object.freeze({
