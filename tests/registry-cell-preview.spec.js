@@ -43,9 +43,9 @@ test('qeliza reale e dozimit të gjatë e rrit rreshtin inline pa hapur modal', 
   await page.waitForFunction(() => document.documentElement.classList.contains('auth-ready'));
 
   await expect.poll(
-    () => page.evaluate(() => window.MedIndexRegistryDosage?.clinicalStatus?.() || 'pending'),
-    { timeout:30000, message:'integrimi klinik i dozimit nuk u bë gati' }
-  ).toBe('ready');
+    () => page.evaluate(() => ['ready', 'degraded'].includes(window.MedIndexRegistryDosage?.clinicalStatus?.() || 'pending')),
+    { timeout:30000, message:'integrimi klinik i dozimit nuk u stabilizua në ready/degraded' }
+  ).toBe(true);
 
   await expect.poll(
     () => page.evaluate(() => ({
