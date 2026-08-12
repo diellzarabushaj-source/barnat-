@@ -6,7 +6,7 @@ const { execFileSync } = require('node:child_process');
 const ROOT = path.resolve(__dirname, '..');
 const read = file => fs.readFileSync(path.join(ROOT, file), 'utf8');
 
-for (const file of ['registry-mobile-lite.js', 'registry-runtime-loader.js', 'app-performance.js', 'registry-parser-worker-v2.js', 'registry-dosage-loader.js', 'registry-dosage-columns-v2.js', 'registry-unified-table.js']) {
+for (const file of ['registry-mobile-lite.js', 'registry-runtime-loader.js', 'app-performance.js', 'registry-parser-worker-v2.js', 'registry-dosage-loader.js', 'registry-dosage-columns-v3.js', 'registry-unified-table.js']) {
   execFileSync(process.execPath, ['--check', path.join(ROOT, file)], { stdio:'pipe' });
 }
 
@@ -16,7 +16,7 @@ const app = read('app-performance.js');
 const part = read('app-parts/part-01.txt');
 const worker = read('registry-parser-worker-v2.js');
 const dosageLoader = read('registry-dosage-loader.js');
-const dosage = read('registry-dosage-columns-v2.js');
+const dosage = read('registry-dosage-columns-v3.js');
 const unified = read('registry-unified-table.js');
 const middleware = read('middleware.ts');
 const index = read('index.html');
@@ -67,8 +67,11 @@ assert.doesNotMatch(worker, /fetch\(/, 'parser worker must not perform independe
 
 assert.match(dosageLoader, /medindex:registry-ready/, 'dosage enrichment must wait for an interactive registry');
 assert.match(dosageLoader, /requestIdleCallback\(run, \{ timeout:5000 \}\)/, 'dosage enrichment must start during idle time');
-assert.match(dosageLoader, /registry-dosage-columns-v2\.js/, 'idle loader must inject the dosage runtime');
+assert.match(dosageLoader, /registry-dosage-columns-v3\.js/, 'idle loader must inject the visible-row dosage runtime');
 assert.match(dosage, /MEDINDEX_REGISTRY_ROWS/, 'dosage columns must reuse the shared registry');
+assert.match(dosage, /view=cards/, 'dosage columns must use the bounded visible-row card endpoint');
+assert.match(dosage, /REQUEST_BATCH_SIZE = 100/, 'visible-row dosage reads must remain bounded');
+assert.doesNotMatch(dosage, /fetch\('\/api\/dosage'\s*,/, 'desktop dosage columns must not fetch the full dosage payload');
 assert.doesNotMatch(dosage, /DRUG_DATA_PARTS|\batob\s*\(|DecompressionStream|Uint8Array/, 'dosage columns must never parse the registry again');
 assert.doesNotMatch(dosage, /subtree\s*:\s*true/, 'dosage observers must not watch their own subtree mutations');
 
@@ -84,8 +87,8 @@ assert.match(index, /registry-unified-table\.js\?v=20260801-1/, 'index must load
 assert.doesNotMatch(index, /(?:registry-table-integrity|registry-clinical-view|registry-tailgrids-refinement|registry-columns-filters|registry-table-final)\.js/, 'legacy table controllers must not load');
 assert.doesNotMatch(index, /<script src="app-performance\.js"/, 'heavy registry application must not be parser ordered');
 assert.match(index, /app-runtime-performance\.js\?v=clinical-audit-v5-performance-runtime/, 'index must preload the cache-isolated generated runtime');
-assert.match(index, /registry-dosage-loader\.js/, 'index must load the idle dosage loader');
-assert.doesNotMatch(index, /src="registry-dosage-columns-v2\.js/, 'heavy dosage integration must not be in the critical parser path');
+assert.match(index, /registry-dosage-loader\.js\?v=20260812-1/, 'index must load the cache-busted idle dosage loader');
+assert.doesNotMatch(index, /src="registry-dosage-columns-v3\.js/, 'visible-row dosage integration must not be in the critical parser path');
 assert.match(builder, /app-runtime-performance\.js/, 'build must generate the cache-isolated runtime artifact');
 
-console.log('Registry interaction resilience, Phase 2 mobile lightweight path and loader v7 audit passed.');
+console.log('Registry interaction resilience, Phase 2 mobile lightweight path and visible-row dosage audit passed.');
