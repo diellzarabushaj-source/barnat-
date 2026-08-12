@@ -17,8 +17,9 @@ assert.match(index, /registry-mobile-lite\.js\?v=20260812-1/, 'index.html: Phase
 assert.match(index, /registry-mobile-lite\.css\?v=20260812-1/, 'index.html: Phase 2 mobile lightweight stylesheet is missing');
 assert.match(index, /registry-runtime-loader\.js\?v=20260812-7/, 'index.html: current mobile-aware registry loader is missing');
 assert.ok(index.indexOf('registry-mobile-lite.js') < index.indexOf('registry-runtime-loader.js'), 'mobile lightweight client must register before the full loader');
-assert.match(index, /registry-unified-table\.js\?v=20260801-1/, 'index.html: unified table controller is missing');
-assert.match(index, /registry-unified-table\.css\?v=20260801-1/, 'index.html: unified table stylesheet is missing');
+assert.match(index, /registry-unified-table\.js\?v=20260812-population-column-1/, 'index.html: population-aware unified table controller is missing');
+assert.match(index, /registry-unified-table\.css\?v=20260812-population-column-1/, 'index.html: population-aware unified table stylesheet is missing');
+assert.match(index, /registry-dose-clinical-row-markers\.js\?v=20260812-population-column-1/, 'index.html: approved-population row marker runtime is missing');
 assert.match(index, /registry-full-text-expansion\.css\?v=20260805-2/, 'index.html: full-row text reveal stylesheet is missing');
 assert.doesNotMatch(index, /(?:registry-table-integrity|registry-clinical-view|registry-tailgrids-refinement|registry-columns-filters|registry-table-final)\.(?:js|css)/, 'index.html: a legacy table controller is still loaded');
 assert.doesNotMatch(index, /<script src="app-performance\.js"/, 'index.html: heavy registry bootstrap must not be parser ordered');
@@ -100,4 +101,4 @@ const workerShim = read('sw-resilient-v3.js');
 assert.match(workerShim, /importScripts\('\/sw\.js\?v=/);
 assert.doesNotMatch(workerShim, /navigationResponse|PRIVATE_DATA_PATHS/);
 
-console.log('Clinical runtime single-version, Phase 2 mobile lightweight path and canonical dose runtime audit passed.');
+console.log('Clinical runtime single-version, approved-population column, Phase 2 mobile path and canonical dose runtime audit passed.');
