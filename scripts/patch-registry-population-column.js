@@ -87,8 +87,8 @@ function patchUnifiedTable() {
 
   source = replaceOnce(
     source,
-    "    form:142,\n    'prescription-label':235, packaging:150, mah:190, manufacturer:180,\n",
-    "    form:142, population:176,\n    'prescription-label':235, packaging:150, mah:190, manufacturer:180,\n",
+    "    'drug-class':210, use:230, pdid:98, protocol:122, strength:82, form:142,\n    'prescription-label':235, packaging:150, mah:190, manufacturer:180,\n",
+    "    'drug-class':210, use:230, pdid:98, protocol:122, strength:82, form:142, population:176,\n    'prescription-label':235, packaging:150, mah:190, manufacturer:180,\n",
     'unified/width',
   );
 
