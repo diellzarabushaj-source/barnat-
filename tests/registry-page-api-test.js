@@ -20,7 +20,7 @@ assert.match(gatewaySource, /request\.includeTotal \? \{ prefer:'count=exact' \}
 assert.match(gatewaySource, /is_published', 'eq\.true'/, 'only published drugs may be returned');
 assert.match(gatewaySource, /editorial_status', 'eq\.published'/, 'editorial published gate is required');
 assert.match(gatewaySource, /product_status', `eq\.\$\{status\}`/, 'status filter must remain server-side');
-assert.match(gatewaySource, /pharmaceutical_form', `eq\.\$\{form\}`/, 'form filter must remain server-side');
+assert.match(gatewaySource, /pharmaceutical_form', `ilike\.\*\$\{form\}\*`/, 'form contains-filter must remain server-side');
 assert.match(gatewaySource, /params\.set\('id', `eq\.\$\{id\}`\)/, 'detail reads must be targeted by drug id');
 assert.match(gatewaySource, /params\.set\('limit', '1'\)/, 'detail reads must never return multiple drugs');
 assert.match(gatewaySource, /REGISTRY_DETAIL_SELECT/, 'detail mode must use an explicit select contract');
