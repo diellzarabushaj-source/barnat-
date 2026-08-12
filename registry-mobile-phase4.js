@@ -1,7 +1,7 @@
 (() => {
   'use strict';
 
-  const VERSION = 'registry-mobile-phase4-v1';
+  const VERSION = 'registry-mobile-phase4-v2';
   const MOBILE_QUERY = '(max-width: 767px)';
   const ENDPOINT = '/api/dosage';
   const CACHE_LIMIT = 12;
@@ -39,17 +39,23 @@
     return `<section class="mi-phase4-section ${extraClass}"><h4>${escapeHtml(title)}</h4><p>${escapeHtml(text)}</p></section>`;
   }
 
+  function verifiedDose(regimen) {
+    return ['text_verified', 'calculable_verified'].includes(clean(regimen?.verification).toLowerCase());
+  }
+
   function doseSection(title, regimen, key) {
     const dose = clean(regimen?.dose);
     if (!dose) return '';
+    const route = clean(regimen.route);
+    const verified = verifiedDose(regimen);
     const metadata = [
-      clean(regimen.route) ? `Rruga: ${clean(regimen.route)}` : '',
+      route ? `Rruga: ${route}` : '',
       clean(regimen.frequency) ? `Shpeshtësia: ${clean(regimen.frequency)}` : '',
       clean(regimen.duration) ? `Kohëzgjatja: ${clean(regimen.duration)}` : '',
       clean(regimen.maximum) ? `Maksimumi: ${clean(regimen.maximum)}` : '',
     ].filter(Boolean);
-    return `<section class="mi-phase4-section mi-phase4-dose" data-mi-phase4-dose="${key}">
-      <div class="mi-phase4-section-head"><h4>${escapeHtml(title)}</h4>${clean(regimen.route) ? `<span>${escapeHtml(regimen.route)}</span>` : ''}</div>
+    return `<section class="mi-phase4-section mi-phase4-dose" data-mi-phase4-dose="${key}" data-mi-phase4-dose-verified="${verified ? 'true' : 'false'}">
+      <div class="mi-phase4-section-head"><h4>${escapeHtml(title)}</h4><div class="mi-phase4-dose-badges">${verified ? '<span class="mi-phase4-dose-verified">✓ E verifikuar</span>' : ''}${route ? `<span class="mi-phase4-route">${escapeHtml(route)}</span>` : ''}</div></div>
       <p class="mi-phase4-dose-text">${escapeHtml(dose)}</p>
       ${metadata.length ? `<p class="mi-phase4-dose-meta">${metadata.map(escapeHtml).join(' · ')}</p>` : ''}
       ${clean(regimen.indication) ? `<p class="mi-phase4-indication-note"><strong>Indikacioni:</strong> ${escapeHtml(regimen.indication)}</p>` : ''}
@@ -125,9 +131,9 @@
     return panel;
   }
 
-  function renderError(panel, message) {
+  function renderError(panel, message, id) {
     if (!panel?.isConnected) return;
-    panel.innerHTML = `<div class="mi-phase4-unavailable"><strong>Detajet klinike nuk u ngarkuan.</strong><span>${escapeHtml(message || 'Provo përsëri.')}</span></div>`;
+    panel.innerHTML = `<div class="mi-phase4-unavailable"><strong>Detajet klinike nuk u ngarkuan.</strong><span>${escapeHtml(message || 'Provo përsëri.')}</span><button type="button" class="mi-phase4-retry" data-mi-phase4-retry="${escapeHtml(id)}">Riprovo</button></div>`;
   }
 
   async function fetchClinical(id, signal) {
@@ -135,7 +141,7 @@
     const params = new URLSearchParams({ view:'card', id });
     const response = await fetch(`${ENDPOINT}?${params.toString()}`, {
       credentials:'same-origin',
-      cache:'no-store',
+      cache:'default',
       signal,
       headers:{ Accept:'application/json' },
     });
@@ -147,11 +153,8 @@
     return payload;
   }
 
-  async function onDetailOpened(event) {
-    const id = clean(event.detail?.id);
-    if (!id || !window.MEDINDEX_MOBILE_LITE_ACTIVE) return;
-    const panel = ensurePanel();
-    if (!panel) return;
+  async function loadClinical(id, panel) {
+    if (!id || !panel) return;
     controller?.abort();
     controller = new AbortController();
     root.dataset.registryMobilePhase4State = 'loading';
@@ -166,11 +169,29 @@
     } catch (error) {
       if (error?.name === 'AbortError') return;
       root.dataset.registryMobilePhase4State = 'error';
-      renderError(panel, error?.message);
+      renderError(panel, error?.message, id);
     }
   }
 
+  function onDetailOpened(event) {
+    const id = clean(event.detail?.id);
+    if (!id || !window.MEDINDEX_MOBILE_LITE_ACTIVE) return;
+    const panel = ensurePanel();
+    if (!panel) return;
+    void loadClinical(id, panel);
+  }
+
   document.addEventListener('click', event => {
+    const retry = event.target.closest?.('[data-mi-phase4-retry]');
+    if (retry) {
+      event.preventDefault();
+      const id = clean(retry.dataset.miPhase4Retry);
+      if (!id) return;
+      cache.delete(id);
+      const panel = ensurePanel();
+      if (panel) void loadClinical(id, panel);
+      return;
+    }
     if (!event.target.closest?.('[data-mobile-lite-close]')) return;
     controller?.abort();
   }, true);
