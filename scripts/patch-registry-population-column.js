@@ -32,7 +32,7 @@ function patchRuntime(relative) {
   source = replaceOnce(
     source,
     "  { key:'Forma farmaceutike', label:'Forma', mobileLabel:'Forma', type:'str', cls:'wrap', visible:true },\n",
-    "  { key:'Forma farmaceutike', label:'Forma', mobileLabel:'Forma', type:'str', cls:'wrap', visible:true },\n  { key:'Popullata e aprovuar', label:'Popullata', mobileLabel:'Popullata', type:'str', cls:'registry-population-column', visible:false },\n",
+    "  { key:'Forma farmaceutike', label:'Forma', mobileLabel:'Forma', type:'str', cls:'wrap', visible:true },\n  { key:'Popullata e aprovuar', label:'Popullata (Adult/Pediatric)', mobileLabel:'Popullata', type:'str', cls:'registry-population-column', visible:false },\n",
     'COLUMNS/forma',
   );
 
