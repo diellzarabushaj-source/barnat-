@@ -182,28 +182,6 @@
     });
   }
 
-  function publishPartialRows(rows) {
-    const canonicalRows = rows.map(row => ({
-      'Nr rendor':row.registryNumber ?? '',
-      PDID:clean(row.pdid),
-      'Emri tregtar':clean(row.tradeName),
-      'Substanca aktive':clean(row.activeSubstance),
-      'ATC Code':clean(row.atc),
-      'Klasa / Çka është':clean(row.drugClass),
-      'Përdorimi (fjalë kyçe)':clean(row.use),
-      Fortësia:clean(row.strength),
-      'Forma farmaceutike':clean(row.form),
-      'Statusi ':clean(row.productStatus),
-      'Çmimi me pakicë':row.retailPrice ?? '',
-      __neonDrugId:clean(row.id),
-      __serverPartial:true,
-    }));
-    window.MEDINDEX_REGISTRY_ROWS = canonicalRows;
-    window.dispatchEvent(new CustomEvent('medindex:registry-data-ready', {
-      detail:{ rows:canonicalRows, partial:true, source:'neon-mobile-page' }
-    }));
-  }
-
   async function loadPage({ includeTotal = false, scroll = false } = {}) {
     if (state.disabled) return;
     pageController?.abort();
@@ -232,15 +210,11 @@
       renderRows(payload.rows);
       renderCount();
       renderPagination();
-      publishPartialRows(payload.rows);
       state.ready = true;
       html.dataset.registryMobileLiteReady = '1';
       html.dataset.registryMobileLiteState = 'ready';
       window.dispatchEvent(new CustomEvent('medindex:mobile-lite-ready', {
         detail:{ page:state.page, pageSize:state.pageSize, total:state.total, source:'neon' }
-      }));
-      window.dispatchEvent(new CustomEvent('medindex:registry-ready', {
-        detail:{ partial:true, source:'neon-mobile-page' }
       }));
       if (scroll) document.getElementById('registryContent')?.scrollIntoView({ block:'start', behavior:'smooth' });
     } catch (error) {
