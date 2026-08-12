@@ -19,7 +19,7 @@
     "test:icd-phase17": "node tests/icd-clinical-guidance-test.js",
     "test:icd-hierarchy-neon": "node tests/icd-public-source-test.js && node tests/icd-hierarchy-neon-sync-test.js",
     "audit:icd-source": "node scripts/audit-icd-public-source.js",
-    "sync:protocols": "node scripts/sync-protocols.js && node scripts/sync-neon-from-sheets.js && node scripts/sync-neon-structured-dosage.js && node scripts/publish-neon-registry.js",
+    "sync:protocols": "node scripts/sync-protocols.js",
     "sync:neon": "node scripts/sync-neon-from-sheets.js && node scripts/sync-neon-structured-dosage.js && node scripts/publish-neon-registry.js",
     "sync:all": "pnpm run sync:protocols && pnpm run sync:neon",
     "build": "pnpm test"
