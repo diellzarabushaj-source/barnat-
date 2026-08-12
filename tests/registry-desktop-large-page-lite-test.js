@@ -45,8 +45,10 @@ assert.match(patch, /MAX_LOGICAL_PAGE_SIZE = 500/);
 assert.match(patch, /MAX_PAGE_CHUNKS = 10/);
 assert.match(patch, /CHUNK_CONCURRENCY = 3/);
 assert.match(patch, /require\('\.\/patch-phase11-form-picker-lite\.js'\)/, 'Phase 11 form picker hardening must compose with the main Phase 11 build patch.');
+assert.match(patch, /require\('\.\/patch-phase12-targeted-detail-wiring\.js'\)/, 'Phase 12 targeted detail wiring must compose with the existing desktop build chain.');
 assert.match(packageJson.scripts['build:runtime'], /patch-phase11-desktop-advanced-lite\.js/, 'Phase 11 patch must execute deterministically in build:runtime.');
 assert.match(packageJson.scripts.test, /registry-desktop-large-page-lite-test\.js/, 'Phase 11 regression test must run in the main test suite.');
 
 require('./registry-desktop-form-lite-test.js');
-console.log('Phase 11 desktop 50/100/250/500 logical pagination stays on bounded 50-row Neon requests without full-registry handoff.');
+require('./registry-desktop-targeted-detail-test.js');
+console.log('Phase 11/12 desktop bounded pages, lightweight form filtering and targeted one-drug detail remain off the full-registry path.');
