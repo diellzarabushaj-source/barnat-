@@ -1,0 +1,199 @@
+{
+  "schemaVersion": 1,
+  "entry": {
+    "protocolId": "upk-03",
+    "sourceHash": "38e88ad8c9b04541dd5a277757d9a502a4f1c4de9cbea58c4c364992dc7faed3",
+    "reviewedAt": "2026-08-13",
+    "reviewStatus": "review",
+    "sourceReview": {
+      "officialSourceIdentityVerified": true,
+      "localPageLevelClinicalAuditComplete": false,
+      "externalClinicalSupport": "WHO Guidelines for the management of symptomatic sexually transmitted infections, 2021",
+      "externalClinicalSupportUrl": "https://www.who.int/publications/i/item/9789240024168"
+    },
+    "primaryCare": {
+      "eyebrow": "Për mjekun familjar",
+      "title": "IST — zgjidh sindromën, pastaj vendimin",
+      "subtitle": "Pamje e thjeshtuar për vizitën e parë: përjashto urgjencën, identifiko sindromën, testo kur mundesh, menaxho partnerët dhe planifiko follow-up. Regjimi farmakologjik lokal nuk plotësohet automatikisht pa audit faqe-për-faqe të Udhërrëfyesit të MSH.",
+      "statusLabel": "Në rishikim klinik",
+      "todayActions": [
+        {
+          "id": "urgent",
+          "number": "1",
+          "title": "Përjashto urgjencën / komplikimin",
+          "body": "Te dhimbja e poshtme abdominale kontrollo shtatzëninë/amenorrenë, periudhën pas lindjes ose abortit, guarding/rebound, gjakderdhjen jo të zakonshme, masën abdominale dhe lezionin cervikal të dyshimtë.",
+          "tone": "danger"
+        },
+        {
+          "id": "syndrome",
+          "number": "2",
+          "title": "Zgjidh sindromën kryesore",
+          "body": "Sekrecion uretral, sekrecion vaginal, dhimbje e poshtme abdominale, ulçerë gjenitale/anorektale ose sekrecion anorektal. Mund të ketë më shumë se një sindromë.",
+          "tone": "primary"
+        },
+        {
+          "id": "testing",
+          "number": "3",
+          "title": "Testo kur është e mundur",
+          "body": "Prefero testimin cilësor molekular/POC kur është i disponueshëm. Në pathway simptomatik mos harro HIV dhe sifilizin sipas rekomandimeve përkatëse.",
+          "tone": "info"
+        },
+        {
+          "id": "partner",
+          "number": "4",
+          "title": "Partneri + follow-up janë pjesë e trajtimit",
+          "body": "Dokumento partnerët/ri-ekspozimin, këshillimin dhe kontrollin pasues. Persistenca ose rikthimi kërkon rivlerësim dhe shpesh testim/referral.",
+          "tone": "warning"
+        }
+      ],
+      "quickChecks": [
+        {
+          "id": "pregnancy-risk",
+          "label": "Dhimbje e poshtme abdominale + menstruacione të vonuara / mundësi shtatzënie?",
+          "tone": "danger",
+          "response": "Mos e trajto vetëm si IST/PID rutinë. Kërko vlerësim obstetrik/gjinekologjik dhe përjashto shkaqet urgjente."
+        },
+        {
+          "id": "acute-abdomen",
+          "label": "Guarding/rebound, masë abdominale ose gjakderdhje vaginale më shumë se spotting?",
+          "tone": "danger",
+          "response": "Kërkon vlerësim kirurgjikal/gjinekologjik; pathway sindromik rutinë nuk mjafton."
+        },
+        {
+          "id": "post-event",
+          "label": "Lindje, abort ose abort spontan i fundit?",
+          "tone": "danger",
+          "response": "Dhimbja abdominale në këtë kontekst kërkon referral/vlerësim specialistik."
+        },
+        {
+          "id": "persistent",
+          "label": "Simptoma të përsëritura ose persistente pas trajtimit?",
+          "tone": "warning",
+          "response": "Kontrollo aderencën, ri-ekspozimin dhe trajtimin e partnerit; refero për testim laboratorik/specialist kur duhet."
+        },
+        {
+          "id": "hiv-syphilis",
+          "label": "HIV dhe sifilizi nuk janë adresuar në këtë episod?",
+          "tone": "info",
+          "response": "Ofro testim sipas algoritmeve dhe shërbimeve parandaluese të zbatueshme."
+        }
+      ],
+      "syndromes": [
+        {
+          "id": "urethral",
+          "short": "Uretral",
+          "title": "Sekrecion uretral / dizuri",
+          "prompt": "Sekrecion uretral i konfirmuar në ekzaminim?",
+          "assessment": [
+            "Anamnezë mjekësore dhe seksuale; vlerëso ekspozimin dhe ri-ekspozimin.",
+            "Konfirmo sekrecionin uretral në ekzaminim.",
+            "Testo N. gonorrhoeae dhe C. trachomatis kur testimi cilësor është i disponueshëm.",
+            "Ofro testim HIV/sifiliz dhe shërbime parandaluese sipas indikacionit."
+          ],
+          "decision": "Kur trajtimi në të njëjtën ditë i bazuar në test molekular nuk është i realizueshëm, WHO mbështet menaxhim sindromik të sekrecionit uretral. Regjimin konkret përdore nga Udhërrëfyesi lokal i verifikuar.",
+          "followUp": "Në persistencë/rikthim: kontrollo njoftimin/trajtimin e partnerit dhe refero për kapacitet laboratorik për GC, CT, M. genitalium, T. vaginalis dhe rezistencë kur është e disponueshme.",
+          "rxDiagnosis": "Sindroma e sekrecionit uretral"
+        },
+        {
+          "id": "vaginal",
+          "short": "Vaginal",
+          "title": "Sekrecion vaginal",
+          "prompt": "Sekrecion vaginal — vaginit, cervicit apo PID?",
+          "assessment": [
+            "Anamnezë mjekësore dhe seksuale; vlerëso rrezikun për IST.",
+            "Ekzaminim abdominal/pelvik për PID, gjendje kirurgjikale ose shtatzëni.",
+            "Ekzaminim vulvovaginal; kur është e mundur vlerëso cervicitin dhe karakterin e sekrecionit.",
+            "Ekzaminim bimanual për cervical motion tenderness ose dhimbje pelvike.",
+            "Testo HIV/sifiliz dhe përdor testim molekular/POC për GC/CT/T. vaginalis kur është i disponueshëm."
+          ],
+          "decision": "Mos e barazo çdo sekrecion vaginal me të njëjtën IST. Dallo shenjat e cervicitit/PID nga vaginiti dhe përdor testimin kur është i disponueshëm; kur nuk është, ndiq algoritmin sindromik lokal.",
+          "followUp": "Sekrecioni persistent/rikthyes kërkon laborator ose vlerësim specialistik për GC, CT, M. genitalium, T. vaginalis, vaginozë bakteriale dhe rezistencë sipas mundësive.",
+          "rxDiagnosis": "Sindroma e sekrecionit vaginal"
+        },
+        {
+          "id": "lower-abdominal",
+          "short": "Dhimbje poshtë",
+          "title": "Dhimbje e poshtme abdominale",
+          "prompt": "A ka shenja klinike që mbështesin PID — apo shenja që kërkojnë referral?",
+          "assessment": [
+            "Anamnezë mjekësore/seksuale dhe vlerësim të rrezikut për IST.",
+            "Ekzaminim abdominal dhe pelvik; përjashto shtatzëninë dhe gjendjet kirurgjikale.",
+            "Ekzaminim bimanual: cervical motion tenderness dhe/ose tenderness abdominal/pelvik.",
+            "Testo GC/CT dhe, kur është i disponueshëm, M. genitalium; ofro HIV/sifiliz."
+          ],
+          "decision": "Te gruaja seksualisht aktive me dhimbje të poshtme abdominale dhe cervical motion tenderness ose tenderness abdominal, WHO sugjeron trajtim për PID në të njëjtën vizitë.",
+          "followUp": "Rivlerëso pas 3 ditësh. Nëse nuk ka përmirësim, refero. Refero menjëherë kur ka menstruacione të vonuara, lindje/abort të fundit, guarding/rebound, gjakderdhje të pazakontë, masë abdominale ose lezion cervikal të dyshimtë.",
+          "rxDiagnosis": "Sindroma e dhimbjes së poshtme abdominale / dyshim PID"
+        },
+        {
+          "id": "genital-ulcer",
+          "short": "Ulçerë",
+          "title": "Ulçerë gjenitale / anorektale",
+          "prompt": "Ulçerë ose vezikula të reja në regjionin gjenital/anorektal?",
+          "assessment": [
+            "Ekzamino lezionin dhe dokumento dhimbjen, numrin, lokalizimin dhe kohëzgjatjen.",
+            "Mendo për sifiliz dhe herpes në vlerësimin etiologjik; përdor testimin kur është i disponueshëm.",
+            "Ofro testim HIV dhe shërbime parandaluese sipas indikacionit.",
+            "Shtatzënia, sëmundja sistemike ose lezionet atipike kërkojnë prag më të ulët për specialist."
+          ],
+          "decision": "Menaxhoje si sindromë të ulçerës gjenitale derisa etiologjia të sqarohet. Regjimi konkret duhet të vijë nga algoritmi lokal i verifikuar, jo nga auto-plotësimi.",
+          "followUp": "Lezionet persistente, atipike ose me diagnozë të paqartë kërkojnë testim/referral specialistik.",
+          "rxDiagnosis": "Sindroma e ulçerës gjenitale"
+        },
+        {
+          "id": "anorectal",
+          "short": "Anorektal",
+          "title": "Sekrecion / dhimbje anorektale",
+          "prompt": "Sekrecion, dhimbje, gjak ose tenesmus pas ekspozimit anorektal?",
+          "assessment": [
+            "Pyet për vendin e ekspozimit seksual pa paragjykim dhe në privatësi.",
+            "Ekzamino regjionin anorektal kur është klinikisht e përshtatshme.",
+            "Merr mostra nga vendi i ekspozimit për testim etiologjik kur është i disponueshëm.",
+            "Ofro HIV/sifiliz dhe shërbime parandaluese sipas indikacionit."
+          ],
+          "decision": "Mos u mbështet vetëm në simptomat uretrale/gjenitale kur ekspozimi ka qenë anorektal. Përdor testim nga vendi relevant dhe algoritmin lokal për trajtim.",
+          "followUp": "Persistenca, dhimbja e fortë, gjakderdhja ose diagnoza e paqartë kërkojnë rivlerësim dhe referral sipas gjendjes klinike.",
+          "rxDiagnosis": "Sindroma anorektale e dyshuar për IST"
+        }
+      ],
+      "alwaysDo": [
+        "Privatësi, komunikim pa gjykim dhe anamnezë seksuale relevante.",
+        "Testim etiologjik kur është i disponueshëm; mos e përdor menaxhimin sindromik si zëvendësim të testimit kur ky është i arritshëm.",
+        "HIV dhe sifiliz sipas algoritmeve/shërbimeve përkatëse.",
+        "Menaxhimi i partnerit/partnerëve për të ulur ri-infektimin dhe transmetimin.",
+        "Kondom dhe këshillim për reduktimin e rrezikut.",
+        "Follow-up i qartë, veçanërisht kur simptomat vazhdojnë ose rikthehen."
+      ],
+      "referral": {
+        "title": "Kur mos ta mbash vetëm në QKMF",
+        "planned": [
+          "Simptoma persistente ose rikthyese pas menaxhimit fillestar.",
+          "Nevojë për testim që nuk është i disponueshëm në kujdesin parësor.",
+          "Lezion gjenital/anorektal atipik ose diagnozë e paqartë.",
+          "Nevojë për vlerësim specialistik STI/gjinekologjik."
+        ],
+        "urgent": [
+          "Dhimbje e poshtme abdominale me menstruacione të vonuara / dyshim shtatzënie.",
+          "Lindje, abort ose abort spontan i fundit me dhimbje abdominale.",
+          "Guarding/rebound tenderness.",
+          "Gjakderdhje vaginale më shumë se spotting.",
+          "Masë abdominale ose lezion cervikal i dyshimtë."
+        ]
+      },
+      "rx": {
+        "title": "Rp. — draft sipas sindromës",
+        "subtitle": "Zgjidh sindromën për ta bartur indikacionin. Bari, doza dhe kohëzgjatja plotësohen nga mjeku vetëm pasi të verifikohet regjimi në Udhërrëfyesin lokal të MSH / burimin aktual.",
+        "fields": [
+          {"id":"diagnosis","label":"Sindroma / indikacioni","placeholder":"Zgjidhet nga paneli sipër"},
+          {"id":"medicine","label":"Bari / preparati","placeholder":"Zgjidhe pas verifikimit të algoritmit lokal"},
+          {"id":"strength","label":"Fortësia","placeholder":"p.sh. mg / mg-mL"},
+          {"id":"dose","label":"Doza","placeholder":"Sipas Udhërrëfyesit dhe pacientit"},
+          {"id":"frequency","label":"Shpeshtësia","placeholder":"p.sh. 1×/ditë"},
+          {"id":"duration","label":"Kohëzgjatja","placeholder":"Sipas regjimit të verifikuar"},
+          {"id":"quantity","label":"Sasia","placeholder":"Sipas planit"},
+          {"id":"instructions","label":"Udhëzimi","placeholder":"Udhëzimet për pacientin / partnerin / follow-up"}
+        ]
+      }
+    }
+  }
+}
