@@ -1,0 +1,100 @@
+@media (max-width:767px){
+  .mi-registry-personalization-bar{
+    display:flex;
+    gap:8px;
+    width:100%;
+    padding:8px 12px 2px;
+    overflow-x:auto;
+    overscroll-behavior-inline:contain;
+    scrollbar-width:none;
+  }
+  .mi-registry-personalization-bar::-webkit-scrollbar{display:none}
+  .mi-registry-personalization-bar button{
+    min-height:44px;
+    flex:0 0 auto;
+    display:inline-flex;
+    align-items:center;
+    justify-content:center;
+    gap:6px;
+    padding:0 14px;
+    border:1px solid var(--mi-border,#d7e1ec);
+    border-radius:999px;
+    background:var(--mi-surface,#fff);
+    color:var(--mi-text,#172033);
+    font:inherit;
+    font-weight:700;
+    cursor:pointer;
+    -webkit-tap-highlight-color:transparent;
+  }
+  .mi-registry-personalization-bar button.is-active{
+    border-color:color-mix(in srgb,var(--mi-primary,#2563eb) 45%,var(--mi-border,#d7e1ec));
+    background:color-mix(in srgb,var(--mi-primary,#2563eb) 9%,var(--mi-surface,#fff));
+    color:var(--mi-primary,#185bd8);
+  }
+  .mi-registry-personalization-bar button span{
+    min-width:20px;
+    height:20px;
+    padding:0 6px;
+    display:inline-flex;
+    align-items:center;
+    justify-content:center;
+    border-radius:999px;
+    background:color-mix(in srgb,currentColor 10%,transparent);
+    font-size:12px;
+    line-height:1;
+  }
+  #tbody .mobile-lite-card{
+    position:relative;
+  }
+  .mi-mobile-favorite-toggle{
+    position:absolute;
+    top:8px;
+    right:8px;
+    z-index:2;
+    width:44px;
+    height:44px;
+    display:grid;
+    place-items:center;
+    padding:0;
+    border:1px solid var(--mi-border,#d7e1ec);
+    border-radius:13px;
+    background:color-mix(in srgb,var(--mi-surface,#fff) 94%,transparent);
+    color:#7d8da5;
+    box-shadow:0 2px 10px rgba(15,23,42,.06);
+    cursor:pointer;
+    -webkit-tap-highlight-color:transparent;
+  }
+  .mi-mobile-favorite-toggle svg{
+    width:21px;
+    height:21px;
+    fill:none;
+    stroke:currentColor;
+    stroke-width:1.8;
+    stroke-linejoin:round;
+  }
+  .mi-mobile-favorite-toggle.is-favorite{
+    color:#b76800;
+    border-color:#f0c982;
+    background:#fff8e7;
+  }
+  .mi-mobile-favorite-toggle.is-favorite svg{
+    fill:currentColor;
+  }
+  .mobile-lite-card:has(.mi-mobile-favorite-toggle) .mobile-lite-open{
+    padding-right:58px;
+  }
+  [data-theme="dark"] .mi-registry-personalization-bar button,
+  [data-theme="dark"] .mi-mobile-favorite-toggle{
+    background:color-mix(in srgb,var(--mi-surface,#111827) 94%,transparent);
+  }
+  [data-theme="dark"] .mi-mobile-favorite-toggle.is-favorite{
+    color:#f4bd55;
+    border-color:#72531d;
+    background:#2c2518;
+  }
+}
+
+@media (min-width:768px){
+  .mi-registry-personalization-bar,
+  .mi-mobile-favorite-toggle{display:none!important}
+}
