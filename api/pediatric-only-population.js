@@ -87,8 +87,7 @@ async function handler(req, res) {
   }
 }
 
-module.exports = {
-  handler,
-  getPediatricOnlyRegistryNumbers,
-  _test:{ approvedPopulationFromNotes, normalizePopulation },
-};
+handler.getPediatricOnlyRegistryNumbers = getPediatricOnlyRegistryNumbers;
+handler.approvedPopulationFromNotes = approvedPopulationFromNotes;
+handler.normalizePopulation = normalizePopulation;
+module.exports = handler;
