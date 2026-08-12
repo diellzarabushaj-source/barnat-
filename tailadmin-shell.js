@@ -16,7 +16,7 @@
   const LEGACY_SRC = '/tailadmin-shell-core.js?v=production-audit-v2';
   const MOBILE_SRC = '/mobile-experience.js?v=production-audit-v2';
   const MOBILE_A11Y_SRC = '/mobile-accessibility-hardening.js?v=mobile-a11y-deep-audit-v1';
-  const MOBILE_SIDEBAR_HARDENING_SRC = '/mobile-sidebar-hardening.js?v=mobile-sidebar-deep-audit-v1';
+  const MOBILE_SIDEBAR_HARDENING_SRC = '/mobile-sidebar-hardening.js?v=mobile-sidebar-deep-audit-v2';
   const OFFLINE_RUNTIME_SRC = '/offline-runtime-performance.js?v=low-bandwidth-v3';
   const BRAND_SRC = '/medindex-brand-runtime.js?v=medindex-brand-v1';
   const ATC_NAV_SRC = '/atc-sidebar.js?v=atc-sidebar-v2';
