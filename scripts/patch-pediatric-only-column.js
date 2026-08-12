@@ -10,6 +10,7 @@ const RUNTIME_OUTPUTS = [
 ];
 const UNIFIED_JS = path.join(ROOT, 'registry-unified-table.js');
 const UNIFIED_CSS = path.join(ROOT, 'registry-unified-table.css');
+const COLUMN_CONTRACT_JS = path.join(ROOT, 'registry-column-contract.js');
 
 function replaceOnce(source, before, after, label) {
   if (source.includes(after)) return source;
@@ -65,7 +66,7 @@ function patchRuntime(source) {
   source = replaceOnce(
     source,
     "initFormPicker();\nbuildColPanel();\ninitPrescriptionBridge();\nrender();",
-    "window.addEventListener('medindex:pediatric-only-population-ready', () => {\n  resetRegistryFilterCaches();\n  sortedCacheKey = '';\n  sortedCacheInput = null;\n  sortedCacheRows = RAW;\n  headerCacheKey = '';\n  render();\n});\n\ninitFormPicker();\nbuildColPanel();\ninitPrescriptionBridge();\nrender();",
+    "window.addEventListener('medindex:pediatric-only-population-ready', () => {\n  if(typeof window.MEDINDEX_REFRESH_REGISTRY === 'function') window.MEDINDEX_REFRESH_REGISTRY();\n  else render();\n});\n\ninitFormPicker();\nbuildColPanel();\ninitPrescriptionBridge();\nrender();",
     'population-ready rerender hook'
   );
 
@@ -80,14 +81,36 @@ function patchRuntime(source) {
 function patchUnifiedTable(source) {
   source = patchFrozenArray(source, 'FULL_ORDER');
   source = patchFrozenArray(source, 'CLINICAL_ORDER');
-  source = addObjectEntry(source, 'LABEL_BY_KEY', "'pediatric-only':'Pediatric only',", "'pediatric-only'");
-  source = addObjectEntry(source, 'RAW_FIELD_BY_KEY', "'pediatric-only':'Pediatric only',", "'pediatric-only'");
-  source = addObjectEntry(source, 'WIDTHS', "'pediatric-only':138,", "'pediatric-only'");
-  source = addObjectEntry(source, 'LABEL_KEYS', "pediatriconly:'pediatric-only', popullataepediatrike:'pediatric-only',", "pediatriconly:'pediatric-only'");
+  source = addObjectEntry(source, 'LABEL_BY_KEY', "'pediatric-only':'Pediatric only',", "'pediatric-only':'Pediatric only'");
+  source = addObjectEntry(source, 'RAW_FIELD_BY_KEY', "'pediatric-only':'Pediatric only',", "'pediatric-only':'Pediatric only'");
+  source = addObjectEntry(source, 'WIDTHS', "'pediatric-only':138,", "'pediatric-only':138");
+
+  if (source.includes("pediatriconly:'population'")) {
+    source = source.replace("pediatriconly:'population'", "pediatriconly:'pediatric-only'");
+  } else if (!source.includes("pediatriconly:'pediatric-only'")) {
+    source = addObjectEntry(source, 'LABEL_KEYS', "pediatriconly:'pediatric-only', popullataepediatrike:'pediatric-only',", "pediatriconly:'pediatric-only'");
+  }
 
   if (!source.includes("'pediatric-only':'Pediatric only'")
       || !source.includes("pediatriconly:'pediatric-only'")) {
     throw new Error('Pediatric-only unified table contract was not applied.');
+  }
+  return source;
+}
+
+function patchColumnContract(source) {
+  if (source.includes("pediatriconly:'population'")) {
+    source = source.replace("pediatriconly:'population'", "pediatriconly:'pediatric-only'");
+  } else if (!source.includes("pediatriconly:'pediatric-only'")) {
+    source = replaceOnce(
+      source,
+      "    formafarmaceutike:'form', sishenohetnerecete:'prescription-label',\n",
+      "    formafarmaceutike:'form', pediatriconly:'pediatric-only', popullataepediatrike:'pediatric-only', sishenohetnerecete:'prescription-label',\n",
+      'column-contract alias'
+    );
+  }
+  if (!source.includes("pediatriconly:'pediatric-only'")) {
+    throw new Error('Pediatric-only registry column contract was not applied.');
   }
   return source;
 }
@@ -98,7 +121,7 @@ function patchUnifiedCss(source) {
   source = replaceOnce(source, before, after, 'clinical-view visibility');
 
   if (!source.includes('.mi-pediatric-only-column-value')) {
-    source += `\n\n/* Optional approved-population column. */\n#dataTable :is(td,th)[data-registry-column-key="pediatric-only"] {\n  text-align:center!important;\n}\n\n#dataTable .mi-pediatric-only-column-value {\n  display:inline-flex!important;\n  min-height:25px!important;\n  align-items:center!important;\n  justify-content:center!important;\n  padding:4px 8px!important;\n  border:1px solid #f9a8d4!important;\n  border-radius:999px!important;\n  background:#fff0f6!important;\n  color:#be185d!important;\n  font-size:.64rem!important;\n  font-weight:800!important;\n  line-height:1!important;\n  white-space:nowrap!important;\n}\n\n[data-theme="dark"] #dataTable .mi-pediatric-only-column-value {\n  border-color:#db2777!important;\n  background:#3a1d2b!important;\n  color:#f9a8d4!important;\n}\n`;
+    source += `\n\n/* Optional approved Pediatric only column from the column picker. */\n#dataTable :is(td,th)[data-registry-column-key="pediatric-only"] {\n  text-align:center!important;\n}\n\n#dataTable .mi-pediatric-only-column-value {\n  display:inline-flex!important;\n  min-height:25px!important;\n  align-items:center!important;\n  justify-content:center!important;\n  padding:4px 8px!important;\n  border:1px solid #f9a8d4!important;\n  border-radius:999px!important;\n  background:#fff0f6!important;\n  color:#be185d!important;\n  font-size:.64rem!important;\n  font-weight:800!important;\n  line-height:1!important;\n  white-space:nowrap!important;\n}\n\n[data-theme="dark"] #dataTable .mi-pediatric-only-column-value {\n  border-color:#db2777!important;\n  background:#3a1d2b!important;\n  color:#f9a8d4!important;\n}\n`;
   }
   return source;
 }
@@ -111,7 +134,10 @@ for (const file of RUNTIME_OUTPUTS) {
 if (!fs.existsSync(UNIFIED_JS)) throw new Error('registry-unified-table.js is missing.');
 fs.writeFileSync(UNIFIED_JS, patchUnifiedTable(fs.readFileSync(UNIFIED_JS, 'utf8')), 'utf8');
 
+if (!fs.existsSync(COLUMN_CONTRACT_JS)) throw new Error('registry-column-contract.js is missing.');
+fs.writeFileSync(COLUMN_CONTRACT_JS, patchColumnContract(fs.readFileSync(COLUMN_CONTRACT_JS, 'utf8')), 'utf8');
+
 if (!fs.existsSync(UNIFIED_CSS)) throw new Error('registry-unified-table.css is missing.');
 fs.writeFileSync(UNIFIED_CSS, patchUnifiedCss(fs.readFileSync(UNIFIED_CSS, 'utf8')), 'utf8');
 
-console.log('Selectable Pediatric only registry column applied to runtime and unified table.');
+console.log('Selectable Pediatric only registry column applied to picker, runtime and unified table.');
