@@ -7,122 +7,247 @@
       "sourceHash": "22f872d6e57a0a7ef22fafdf977bf7f0224c3b20b6eb54ecf491fc419c606c5d",
       "reviewedAt": "2026-08-12",
       "reviewStatus": "review",
-      "summary": "Për mjekun familjar: identifiko rrezikun për frakturë, kërko shkaqe sekondare, përdor FRAX për vlerësimin e rrezikut dhe refero për DXA kur indikohet. Frakturat që kërkojnë trajtim të specializuar dhe terapia IV/SC kalojnë në kujdes të specializuar.",
+      "summary": "Për mjekun familjar: identifiko rrezikun për frakturë, kërko shkaqe sekondare, përdor FRAX për vlerësimin e rrezikut dhe refero për DXA kur indikohet. Frakturat që kërkojnë hospitalizim/trajtim të specializuar dhe terapia IV/SC kalojnë në kujdes të specializuar.",
       "sections": [
         {
           "id": "first-look",
           "title": "Çfarë nuk duhet humbur në vizitën e parë",
-          "body": "Pyet për frakturë vertebrale ose jo-vertebrale që kërkon trajtim të specializuar. Pyet për rëzime të shpeshta. Vlerëso nëse pacienti mund të ketë nevojë për terapi parenterale IV/SC. Këto pika ndryshojnë rrugën e menaxhimit dhe mund të kërkojnë kujdes të specializuar.",
-          "citations": []
+          "body": "Pyet për frakturë vertebrale ose jo-vertebrale që kërkon trajtim të specializuar. Pyet për rëzime të shpeshta (>4/vit). Vlerëso nëse pacienti mund të ketë nevojë për terapi parenterale IV/SC. Këto pika ndryshojnë rrugën e menaxhimit dhe mund të kërkojnë kujdes të specializuar.",
+          "citations": [
+            {
+              "page": 13,
+              "label": "Përmbledhja praktike · f. 13"
+            }
+          ]
         },
         {
           "id": "risk",
           "title": "Vlerëso rrezikun për frakturë",
-          "body": "Kontrollo moshën, gjininë, peshën dhe gjatësinë/BMI, frakturën e mëparshme, frakturën e ijës te prindi, duhanpirjen, përdorimin aktual të glukokortikoideve, konsumin e alkoolit, artritin reumatoid dhe shkaqet e osteoporozës sekondare. Përdor FRAX për vlerësimin e probabilitetit të frakturës.",
+          "body": "Kontrollo moshën, gjininë, peshën dhe gjatësinë/BMI, frakturën e mëparshme nga fragjiliteti, frakturën e ijës te prindi, duhanpirjen, përdorimin aktual të glukokortikoideve, konsumin e lartë të alkoolit, artritin reumatoid dhe shkaqet e osteoporozës sekondare. Përdor FRAX për vlerësimin e probabilitetit të frakturës.",
           "citations": [
             {
-              "page": 3,
-              "label": "Faktorët FRAX · f. 3"
+              "page": 4,
+              "label": "Kriteret / FRAX · f. 4"
             }
           ]
         },
         {
           "id": "diagnosis",
           "title": "Konfirmimi i diagnozës dhe DXA",
-          "body": "Në kujdesin parësor identifiko rrezikun dhe përgatit vlerësimin. Kur kërkohet matja e densitetit kockor, pacienti referohet për DXA në nivel specialistik; konfirmimi bëhet duke kombinuar DXA me vlerësimin klinik të rrezikut për frakturë.",
-          "citations": []
+          "body": "Në kujdesin parësor identifiko rrezikun dhe përgatit vlerësimin. DXA nuk realizohet në kujdesin parësor; kur indikohet, pacienti referohet për matjen e densitetit kockor dhe konfirmimi bëhet duke kombinuar DXA me vlerësimin e rrezikut për frakturë.",
+          "citations": [
+            {
+              "page": 13,
+              "label": "DXA / referimi · f. 13"
+            }
+          ]
         },
         {
           "id": "labs",
           "title": "Analizat bazë dhe shkaqet sekondare",
           "body": "Bëj anamnezë dhe ekzaminim klinik, duke përfshirë gjatësinë dhe kifozën torakale. Analizat bazë: hemogram, ESR ose CRP, kalcium serik, albuminë, kreatininë, fosfatazë alkaline, transaminaza, 25-hidroksi vitaminë D dhe hormonet tiroide. Sipas dyshimit klinik mund të nevojiten PTH, elektroforezë serike/imunoglobulina, hormone seksuale, kortizol, prolaktinë, magnez, serologji për celiaki, kalcium urinar 24-orësh, markerë të rimodelimit kockor ose radiografi.",
-          "citations": []
+          "citations": [
+            {
+              "page": 5,
+              "label": "Hulumtimet klinike · f. 5"
+            }
+          ]
         },
         {
           "id": "treatment",
           "title": "Rruga e trajtimit",
-          "body": "Bisfosfonatet janë ndër opsionet kryesore të trajtimit. Kohëzgjatja e terapisë dhe zgjedhja e preparatit individualizohen sipas rrezikut të frakturës, BMD-së, faktorëve klinikë, aderencës dhe preferencës së pacientit. Kur rreziku është i lartë dhe bisfosfonatet orale janë të kundërindikuara ose nuk tolerohen, protokolli përmend denosumab si alternativë; administrimi është SC çdo 6 muaj dhe ndërprerja e papritur duhet shmangur. Terapia IV/SC ofrohet në klinika të specializuara.",
-          "citations": []
+          "body": "Protokolli paraqet disa terapi antiosteoporotike dhe kërkon që zgjedhja të individualizohet sipas rrezikut për frakturë, BMD-së, komorbiditeteve, tolerancës, aderencës dhe preferencës së pacientit. Për bisfosfonatet rekomandohet rivlerësim pas periudhës fillestare të trajtimit. Denosumab përmendet me 60 mg SC çdo 6 muaj; ndërprerja e papritur duhet shmangur. Terapia IV/SC ofrohet në klinika të specializuara.",
+          "citations": [
+            {
+              "page": 6,
+              "label": "Opsionet e trajtimit · f. 6"
+            },
+            {
+              "page": 7,
+              "label": "Kohëzgjatja / denosumab · f. 7"
+            }
+          ]
         },
         {
           "id": "follow-up",
-          "title": "Ndjekja dhe edukimi",
-          "body": "Rivlerëso përgjigjen ndaj terapisë dhe rrezikun për frakturë. Monitorimi me DXA/BMD përshtatet sipas trajtimit dhe rrezikut. Eduko pacientin për aderencën, stilin e jetesës dhe parandalimin e rënieve.",
-          "citations": []
+          "title": "Ndjekja dhe siguria",
+          "body": "Rivlerëso aderencën, efektet anësore, rëzimet dhe frakturat e reja; monitorimi me DXA/BMD përshtatet sipas trajtimit dhe rrezikut. Protokolli përfshin gjithashtu masa për menaxhimin e efekteve anësore dhe edukimin e pacientit.",
+          "citations": [
+            {
+              "page": 9,
+              "label": "Monitorimi · f. 9"
+            },
+            {
+              "page": 10,
+              "label": "Siguria e terapisë · f. 10"
+            }
+          ]
         }
       ],
       "primaryCare": {
         "eyebrow": "Për mjekun familjar",
         "title": "Osteoporoza — çka me pas parasysh në praktikë",
-        "subtitle": "Një pamje e shpejtë për vizitën në QKMF: çfarë të pyesësh, çfarë të kërkosh, kur ta referosh dhe si ta dokumentosh terapinë.",
+        "subtitle": "Pamje praktike për vizitën në QKMF: çfarë të mos humbësh, çfarë të pyesësh, çfarë të kërkosh, si ta dokumentosh terapinë dhe kur ta referosh.",
         "statusLabel": "Në rishikim klinik",
+        "modeLabels": {
+          "quick": "Shpejt",
+          "full": "E plotë"
+        },
+        "todayActions": [
+          {
+            "id": "today-fracture",
+            "number": "1",
+            "title": "Përjashto frakturën që kërkon specialist",
+            "body": "Nëse ka frakturë vertebrale ose jo-vertebrale që kërkon trajtim të specializuar, mos e trajto si pathway rutinë të osteoporozës.",
+            "tone": "danger",
+            "sourcePage": 13
+          },
+          {
+            "id": "today-risk",
+            "number": "2",
+            "title": "Mblidh faktorët e rrezikut",
+            "body": "Frakturë e mëparshme, frakturë e ijës te prindi, BMI, duhan, alkool, glukokortikoide, artrit reumatoid dhe shkaqe sekondare; pastaj përdor FRAX.",
+            "tone": "info",
+            "sourcePage": 4
+          },
+          {
+            "id": "today-labs",
+            "number": "3",
+            "title": "Kërko panelin bazë",
+            "body": "Hemogram, ESR/CRP, kalcium + albuminë, kreatininë, ALP, transaminaza, 25-OH vitaminë D dhe hormonet tiroide.",
+            "tone": "info",
+            "sourcePage": 5
+          },
+          {
+            "id": "today-dxa",
+            "number": "4",
+            "title": "Refero për DXA kur indikohet",
+            "body": "DXA nuk realizohet në kujdesin parësor; konfirmimi bëhet me DXA + vlerësim të rrezikut për frakturë.",
+            "tone": "warning",
+            "sourcePage": 13
+          }
+        ],
         "quickChecks": [
           {
             "id": "fracture",
-            "label": "A ka frakturë vertebrale ose jo-vertebrale që kërkon trajtim të specializuar?",
-            "tone": "danger"
+            "label": "Frakturë vertebrale ose jo-vertebrale që kërkon trajtim të specializuar?",
+            "tone": "danger",
+            "sourcePage": 13,
+            "response": "Rruga rutinë ndalet: vlerëso nevojën për trajtim specialistik / hospitalizim."
           },
           {
             "id": "falls",
-            "label": "A ka rëzime të shpeshta (>4/vit)?",
-            "tone": "warning"
+            "label": "Rëzime të shpeshta (>4/vit)?",
+            "tone": "warning",
+            "sourcePage": 13,
+            "response": "Rreziku për frakturë rritet dukshëm; adresoni rëniet dhe përfshiji në planin e menaxhimit."
           },
           {
             "id": "secondary",
-            "label": "A ka shenja ose sëmundje që sugjerojnë osteoporozë sekondare?",
-            "tone": "info"
+            "label": "Shenja ose sëmundje që sugjerojnë osteoporozë sekondare?",
+            "tone": "info",
+            "sourcePage": 5,
+            "response": "Zgjero hetimet vetëm sipas dyshimit klinik; mos i kërko të gjitha analizat shtesë rutinë."
           },
           {
             "id": "parenteral",
-            "label": "A po konsiderohet terapi IV/SC?",
-            "tone": "warning"
+            "label": "Po konsiderohet terapi IV/SC?",
+            "tone": "warning",
+            "sourcePage": 13,
+            "response": "Terapia IV/SC është për klinikë të specializuar; planifiko referimin."
           }
         ],
+        "riskProfile": {
+          "title": "Profili i rrezikut — shëno çka vlen për pacientin",
+          "helper": "Ky panel vetëm organizon faktorët e protokollit. Nuk llogarit dhe nuk zëvendëson FRAX.",
+          "sourcePage": 4,
+          "items": [
+            {
+              "id": "prior-fracture",
+              "label": "Frakturë e mëparshme nga fragjiliteti"
+            },
+            {
+              "id": "parent-hip",
+              "label": "Frakturë e ijës te prindi"
+            },
+            {
+              "id": "glucocorticoids",
+              "label": "Glukokortikoide aktuale"
+            },
+            {
+              "id": "smoking",
+              "label": "Duhanpirje aktuale"
+            },
+            {
+              "id": "alcohol",
+              "label": "Konsum i lartë i alkoolit"
+            },
+            {
+              "id": "ra",
+              "label": "Artrit reumatoid"
+            },
+            {
+              "id": "secondary-ost",
+              "label": "Shkak i mundshëm sekondar"
+            },
+            {
+              "id": "low-bmi",
+              "label": "BMI / peshë-gjatësi për t'u vlerësuar"
+            }
+          ]
+        },
         "workflow": [
           {
             "id": "history",
             "number": "01",
             "title": "Anamneza + rreziku",
-            "body": "Moshë, gjini, BMI, frakturë e mëparshme, frakturë e ijës te prindi, duhan, alkool, glukokortikoide, artrit reumatoid dhe shkaqe sekondare. Pastaj përdor FRAX.",
-            "setting": "QKMF"
+            "body": "Moshë, gjini, peshë/gjatësi dhe BMI, frakturë e mëparshme, frakturë e ijës te prindi, duhan, alkool, glukokortikoide, artrit reumatoid dhe shkaqe sekondare. Pastaj përdor FRAX.",
+            "setting": "QKMF",
+            "sourcePage": 4
           },
           {
             "id": "exam",
             "number": "02",
             "title": "Ekzaminimi",
             "body": "Peshë, gjatësi, humbje e gjatësisë, qëndrim/kifozë torakale, rrezik për rënie dhe gjetje që sugjerojnë sëmundje sekondare.",
-            "setting": "QKMF"
+            "setting": "QKMF",
+            "sourcePage": 5
           },
           {
             "id": "investigate",
             "number": "03",
             "title": "Analizat bazë",
-            "body": "Kërko panelin bazë dhe shto analiza të tjera vetëm kur dyshimi klinik e kërkon. Mos e kthe panelin e zgjeruar në analizë rutinë për çdo pacient.",
-            "setting": "QKMF"
+            "body": "Kërko panelin bazë dhe shto analiza të tjera vetëm kur dyshimi klinik e kërkon. Mos e kthe panelin e zgjeruar në rutinë për çdo pacient.",
+            "setting": "QKMF",
+            "sourcePage": 5
           },
           {
             "id": "dxa",
             "number": "04",
             "title": "DXA / konfirmimi",
-            "body": "DXA nuk kryhet në kujdesin parësor. Kur indikohet, refero për matjen e densitetit kockor dhe konfirmimin e diagnozës.",
-            "setting": "Referim"
+            "body": "DXA nuk kryhet në kujdesin parësor. Kur indikohet, refero për matjen e densitetit kockor dhe konfirmimin e diagnozës së bashku me vlerësimin e rrezikut.",
+            "setting": "Referim i planifikuar",
+            "sourcePage": 13
           },
           {
             "id": "treat",
             "number": "05",
             "title": "Vendimi për terapi",
             "body": "Zgjedhja varet nga rreziku për frakturë, BMD, komorbiditetet, toleranca, aderenca dhe preferenca. Terapitë IV/SC kalojnë në klinikë të specializuar.",
-            "setting": "QKMF + specialist"
+            "setting": "QKMF + specialist",
+            "sourcePage": 6
           },
           {
             "id": "monitor",
             "number": "06",
             "title": "Ndjekja",
             "body": "Kontrollo aderencën, efektet anësore, rëzimet, frakturat e reja dhe nevojën për rivlerësim të rrezikut/BMD.",
-            "setting": "QKMF"
+            "setting": "QKMF",
+            "sourcePage": 9
           }
         ],
         "labs": {
+          "sourcePage": 5,
           "essential": [
             "Hemogram",
             "ESR ose CRP",
@@ -148,43 +273,168 @@
         },
         "diagnosisBox": {
           "label": "DXA",
-          "title": "Nuk kryhet në kujdesin parësor",
-          "body": "Në QKMF identifiko rrezikun, plotëso vlerësimin klinik dhe refero kur matja e densitetit kockor indikohet."
+          "title": "Nuk realizohet në kujdesin parësor",
+          "body": "Në QKMF identifiko rrezikun dhe plotëso vlerësimin klinik. Kur indikohet, refero për DXA; diagnoza konfirmohet duke kombinuar DXA me vlerësimin e rrezikut për frakturë.",
+          "sourcePage": 13
+        },
+        "treatmentOptions": {
+          "sourcePages": [
+            6,
+            7
+          ],
+          "cards": [
+            {
+              "label": "Në kujdesin parësor",
+              "title": "Terapia orale / antiresorptive",
+              "body": "Protokolli përfshin bisfosfonatet ndër opsionet e trajtimit. Preparati, doza dhe përshtatshmëria vendosen individualisht; siguro marrje adekuate të kalciumit dhe vitaminës D sipas gjendjes së pacientit.",
+              "tone": "primary"
+            },
+            {
+              "label": "Rivlerësimi",
+              "title": "Bisfosfonatet: mos i vazhdo pa rivlerësim",
+              "body": "Protokolli sugjeron periudhë fillestare rreth 3–6 vjet dhe më pas rivlerësim sipas rrezikut, BMD-së, frakturave, aderencës dhe tolerancës. Për vendime rreth trajtimit shumë afatgjatë kërkohet këshillë specialistike.",
+              "tone": "info"
+            },
+            {
+              "label": "Klinikë e specializuar",
+              "title": "Denosumab / terapi parenterale",
+              "body": "Denosumab përmendet 60 mg SC çdo 6 muaj në kontekstin e pacientëve të përshtatshëm; ndërprerja e papritur duhet shmangur. Terapia IV/SC realizohet në klinikë të specializuar.",
+              "tone": "warning"
+            }
+          ]
         },
         "rxBox": {
-          "title": "Receta / terapia",
-          "subtitle": "Kornizë e shpejtë për dokumentim — jo recetë automatike",
+          "title": "Receta / terapia e punës",
+          "subtitle": "Një katror për ta strukturuar planin. MedIndex nuk e zgjedh dozën automatikisht; mjeku i plotëson fushat pas vlerësimit individual.",
+          "sourcePages": [
+            6,
+            7
+          ],
           "lines": [
             {
               "medicine": "Bisfosfonat oral",
-              "details": "Një nga opsionet kryesore të trajtimit. Zgjedh preparatin dhe dozën sipas pacientit, funksionit renal, tolerancës dhe dokumentit zyrtar."
+              "details": "Opsion i protokollit. Zgjidh preparatin dhe dozën sipas pacientit, funksionit renal, tolerancës, kundërindikacioneve dhe dokumentit zyrtar."
             },
             {
               "medicine": "Kalcium / vitaminë D",
-              "details": "Vlerëso marrjen ushqimore dhe 25-OH vitaminë D; korrigjo mungesën ose marrjen e pamjaftueshme në mënyrë individuale."
+              "details": "Vlerëso marrjen dhe 25-OH vitaminë D; korrigjo mungesën ose marrjen e pamjaftueshme në mënyrë individuale."
             }
           ],
           "specialist": [
-            "Denosumab: alternativë në rrezik të lartë kur bisfosfonatet orale janë të kundërindikuara ose nuk tolerohen; SC çdo 6 muaj. Mos e ndërprit papritur pa plan pasues.",
-            "Terapia IV/SC bëhet në klinikë të specializuar."
+            "Denosumab: 60 mg SC çdo 6 muaj në kontekstin e përshkruar nga protokolli; mos e ndërprit papritur pa plan pasues.",
+            "Terapia IV/SC realizohet në klinikë të specializuar."
           ],
           "checksBeforeRx": [
-            "Rreziku për frakturë dhe indikacioni",
+            "Indikacioni dhe rreziku për frakturë",
             "Funksioni renal / kreatinina",
-            "Kalciumi dhe vitamina D",
-            "Aderenca dhe toleranca",
-            "Kundërindikacionet / komorbiditetet"
+            "Kalciumi dhe 25-OH vitamina D",
+            "Kundërindikacionet / komorbiditetet",
+            "Aderenca dhe toleranca"
+          ],
+          "editableFields": [
+            {
+              "id": "medicine",
+              "label": "Bari / preparati",
+              "placeholder": "p.sh. preparati i zgjedhur"
+            },
+            {
+              "id": "strength",
+              "label": "Fortësia",
+              "placeholder": "plotëso"
+            },
+            {
+              "id": "dose",
+              "label": "Doza",
+              "placeholder": "plotëso"
+            },
+            {
+              "id": "frequency",
+              "label": "Shpeshtësia",
+              "placeholder": "plotëso"
+            },
+            {
+              "id": "duration",
+              "label": "Kohëzgjatja",
+              "placeholder": "plotëso"
+            },
+            {
+              "id": "quantity",
+              "label": "Sasia",
+              "placeholder": "plotëso"
+            },
+            {
+              "id": "instructions",
+              "label": "Udhëzimi për pacientin",
+              "placeholder": "plotëso udhëzimin"
+            }
+          ]
+        },
+        "monitoring": {
+          "title": "Kontrolli pasues — çka me rishiku",
+          "sourcePage": 9,
+          "items": [
+            "Aderenca dhe mënyra e marrjes së terapisë",
+            "Efektet anësore dhe toleranca",
+            "Rëzime të reja ose rritje e rrezikut për rënie",
+            "Frakturë e re gjatë trajtimit",
+            "Nevoja për rivlerësim të rrezikut dhe BMD/DXA sipas planit",
+            "Kalciumi / BMD dhe parametrat relevantë sipas terapisë dhe rrezikut"
+          ]
+        },
+        "safety": {
+          "title": "Siguria — pika praktike që protokolli i veçon",
+          "sourcePage": 10,
+          "items": [
+            {
+              "title": "Pas terapisë parenterale",
+              "body": "Për dhimbje pas rrugës parenterale, protokolli përmend paracetamol dhe monitorim sipas intensitetit të efektit anësor."
+            },
+            {
+              "title": "NSAID te të moshuarit",
+              "body": "Shmangi kur është e mundur; nëse përdoren, protokolli kërkon kujdes me mbrojtjen gastrointestinale dhe monitorimin gastrointestinal, renal dhe kardiovaskular."
+            },
+            {
+              "title": "Opioid te të moshuarit",
+              "body": "Nëse përdoret opioid, mendo për parandalimin e kapsllëkut me laksativ sipas nevojës."
+            },
+            {
+              "title": "Frakturë vertebrale",
+              "body": "Program ushtrimesh / fizioterapi me fokus në ekstenzionin e shtyllës pas frakturës vertebrale."
+            },
+            {
+              "title": "Shëndeti oral / nofulla",
+              "body": "Vlerësim dentar kur indikohet para bisfosfonatit dhe edukim për uljen e rrezikut të osteonekrozës së nofullës."
+            }
+          ]
+        },
+        "patientEducation": {
+          "title": "Çka t’i shpjegosh pacientit",
+          "sourcePages": [
+            10,
+            11
+          ],
+          "items": [
+            "Pse trajtohet osteoporoza dhe si lidhet me rrezikun për frakturë",
+            "Rëndësia e aderencës dhe e marrjes së terapisë sipas udhëzimit",
+            "Parandalimi i rënieve dhe aktiviteti i përshtatshëm fizik",
+            "Kur duhet të lajmërojë frakturë të re, dhimbje të pazakontë ose efekt anësor",
+            "Rëndësia e kalciumit / vitaminës D sipas vlerësimit individual"
           ]
         },
         "referral": {
-          "title": "Kur referohet?",
+          "title": "Kur e dërgoj te specialisti?",
           "destination": "Kujdes sekondar / klinikë e specializuar",
-          "items": [
-            "Kur nevojitet DXA për konfirmim / vlerësim të densitetit kockor.",
-            "Frakturë vertebrale ose jo-vertebrale që kërkon trajtim të specializuar.",
+          "plannedLabel": "Referim i planifikuar",
+          "urgentLabel": "Mos e lër në pathway rutinë",
+          "planned": [
+            "Kur nevojitet DXA për konfirmim / matje të densitetit kockor.",
             "Kur kërkohet terapi parenterale IV/SC.",
             "Vendime komplekse për terapi afatgjatë ose rrezik shumë të lartë për frakturë."
-          ]
+          ],
+          "urgent": [
+            "Frakturë vertebrale ose jo-vertebrale që kërkon trajtim të specializuar / hospitalizim."
+          ],
+          "sourcePage": 13
         }
       }
     }
