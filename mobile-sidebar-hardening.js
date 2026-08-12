@@ -5,6 +5,7 @@
   const VERSION = 'mobile-sidebar-deep-audit-v1';
   const ROOT = document.documentElement;
   let bodyObserver = null;
+  let sidebarObserver = null;
   let resizeFrame = 0;
 
   const isMobile = () => window.innerWidth < MOBILE_BREAKPOINT;
@@ -87,11 +88,30 @@
   }
 
   function syncState() {
-    const mobileOpen = isMobile() && sidebarOpen();
+    const mobile = isMobile();
+    const mobileOpen = mobile && sidebarOpen();
+    const panel = sidebar();
+
     ROOT.classList.toggle('mi-mobile-sidebar-open', mobileOpen);
     ROOT.dataset.miMobileSidebar = mobileOpen ? 'open' : 'closed';
 
-    if (!isMobile()) {
+    if (panel) {
+      const shouldBeInert = mobile && !mobileOpen;
+      if (panel.inert !== shouldBeInert) panel.inert = shouldBeInert;
+
+      if (mobileOpen) {
+        panel.setAttribute('role', 'dialog');
+        panel.setAttribute('aria-modal', 'true');
+        panel.setAttribute('aria-hidden', 'false');
+      } else {
+        panel.removeAttribute('role');
+        panel.removeAttribute('aria-modal');
+        if (mobile) panel.setAttribute('aria-hidden', 'true');
+        else panel.removeAttribute('aria-hidden');
+      }
+    }
+
+    if (!mobile) {
       ROOT.classList.remove('mi-mobile-sidebar-open');
       const workspace = document.querySelector('.mi-workspace');
       if (workspace) {
@@ -125,6 +145,13 @@
     }
   }
 
+  function containSidebarFocus(event) {
+    if (!isMobile() || !sidebarOpen()) return;
+    const panel = sidebar();
+    if (!panel || panel.contains(event.target)) return;
+    visibleFocusableItems()[0]?.focus({ preventScroll:true });
+  }
+
   function closeAtcThroughCanonicalShell(event) {
     if (!isMobile() || !sidebarOpen()) return;
     if (!event.target?.closest?.('[data-mi-atc-code],[data-mi-atc-all-link]')) return;
@@ -146,13 +173,24 @@
     injectStyles();
 
     document.addEventListener('keydown', trapSidebarFocus, true);
+    document.addEventListener('focusin', containSidebarFocus, true);
     document.addEventListener('click', closeAtcThroughCanonicalShell, true);
     window.addEventListener('resize', scheduleResizeSync, { passive:true });
     window.visualViewport?.addEventListener('resize', scheduleResizeSync, { passive:true });
+    window.addEventListener('pageshow', syncState, { passive:true });
 
     if (document.body) {
       bodyObserver = new MutationObserver(syncState);
       bodyObserver.observe(document.body, { attributes:true, attributeFilter:['class'] });
+    }
+
+    const panel = sidebar();
+    if (panel) {
+      sidebarObserver = new MutationObserver(() => {
+        const shouldBeInert = isMobile() && !sidebarOpen();
+        if (panel.inert !== shouldBeInert) syncState();
+      });
+      sidebarObserver.observe(panel, { attributes:true, attributeFilter:['inert'] });
     }
 
     syncState();
