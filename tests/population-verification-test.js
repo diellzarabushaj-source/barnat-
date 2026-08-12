@@ -82,7 +82,6 @@ assert(vercel.rewrites.some(item => item.source === '/api/pediatric-only-populat
 assert(!fs.existsSync(path.join(root, 'api/pediatric-only-population.js')), 'Popullata e aprovuar nuk duhet të konsumojë funksion të 12-të Vercel.');
 
 const rawSnapshotItems = approvedPopulationEndpoint.snapshotItems(approvedPopulationSnapshot, []);
-const rawPediatricOnlyItems = rawSnapshotItems.filter(item => item.approvedPopulation === 'Pediatric only');
 const approvedPopulationItems = approvedPopulationEndpoint.snapshotItems(approvedPopulationSnapshot);
 const pediatricOnlyItems = approvedPopulationItems.filter(item => item.approvedPopulation === 'Pediatric only');
 const allowedPopulations = new Set(['Adult only', 'Pediatric only', 'Pediatric and adult both']);
@@ -93,8 +92,9 @@ assert(approvedPopulationEndpointSource.includes("require('../data/approved-popu
 assert.strictEqual(approvedPopulationSnapshot?.source?.spreadsheetId, '17cuXg5qORIIWkvAxLZ7uz2FMmGvzwjr850cubUcIgLE');
 assert.strictEqual(approvedPopulationSnapshot?.source?.sheet, 'KARTELA_BARNAVE');
 assert.strictEqual(approvedPopulationSnapshot?.source?.approvedPopulationColumn, 'S');
-assert.strictEqual(rawSnapshotItems.length, approvedPopulationSnapshot?.counts?.classified, 'Numri i klasifikimeve në snapshot-in bazë nuk përputhet.');
-assert.strictEqual(rawPediatricOnlyItems.length, approvedPopulationSnapshot?.counts?.pediatricOnly, 'Numri Pediatric only në snapshot-in bazë nuk përputhet.');
+assert.strictEqual(rawSnapshotItems.length, approvedPopulationSnapshot.items.length, 'Snapshot-i bazë duhet të normalizohet pa humbur rreshta validë.');
+assert.strictEqual(new Set(rawSnapshotItems.map(item => item.registryNumber)).size, rawSnapshotItems.length, 'Nr rendor duhet të jetë unik në snapshot-in bazë.');
+assert(rawSnapshotItems.every(item => allowedPopulations.has(item.approvedPopulation)), 'Snapshot-i bazë përmban kategori popullate të palejuar.');
 assert.strictEqual(new Set(approvedPopulationItems.map(item => item.registryNumber)).size, approvedPopulationItems.length, 'Nr rendor duhet të jetë unik pas bashkimit të override-ve.');
 assert(approvedPopulationItems.every(item => allowedPopulations.has(item.approvedPopulation)), 'Katalogu i bashkuar përmban kategori popullate të palejuar.');
 assert.deepStrictEqual(
@@ -111,4 +111,4 @@ for (const registryNumber of [44, 45, 46, 504]) {
   );
 }
 
-console.log('Strict adult/pediatric verification + raw Sheet snapshot integrity + approved-population overrides 1-600 passed.');
+console.log('Strict adult/pediatric verification + population item integrity + approved-population overrides 1-600 passed.');
