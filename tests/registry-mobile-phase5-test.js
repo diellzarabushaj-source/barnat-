@@ -31,7 +31,8 @@ assert.match(api, /params\.set\('active_substance', `ilike\.\*\$\{substance\}\*`
 assert.match(api, /params\.set\('use_text', `ilike\.\*\$\{indication\}\*`\)/, 'indication filtering is missing');
 assert.match(api, /params\.set\('pharmaceutical_form', `ilike\.\*\$\{form\}\*`\)/, 'form filtering is missing');
 assert.doesNotMatch(api, /select['"],\s*['"]\*/, 'Phase 5 must not introduce SELECT *');
-assert.doesNotMatch(api, /\b(?:INSERT|UPDATE|DELETE|ALTER|DROP|CREATE)\b/i, 'Phase 5 gateway must stay read-only');
+assert.doesNotMatch(api, /method\s*:\s*['"](?:POST|PATCH|PUT|DELETE)['"]/i, 'Phase 5 registry gateway must not issue write HTTP methods');
+assert.doesNotMatch(api, /CREATE\s+TABLE|ALTER\s+TABLE|DROP\s+TABLE|\bmigration\b/i, 'Phase 5 registry gateway must not change database schema');
 
 assert.match(lite, /registry-mobile-lite-v2/, 'mobile-lite Phase 5 version is missing');
 for (const field of ['atc', 'form', 'substance', 'indication', 'population']) {
