@@ -12,7 +12,7 @@ const js = read('registry-ux-phase3.js');
 const css = read('registry-ux-phase3.css');
 
 assert.doesNotThrow(() => new Function(js), 'Phase 3 personal workspace JS must parse');
-assert.match(html, /data-registry-ui-release="20260809-1"/, 'Visual UX phases must preserve the audited clinical release contract');
+assert.match(html, /data-registry-ui-release="20260812-1"/, 'Visual UX phases must preserve the audited clinical release contract');
 assert.match(html, /registry-ux-phase3\.css\?v=20260810-1/);
 assert.match(html, /registry-ux-phase3\.js\?v=20260810-1/);
 assert.ok(html.indexOf('registry-user-personalization.js') < html.indexOf('registry-ux-phase3.js'), 'Phase 3 must enhance the per-user persistence controller after it loads');
