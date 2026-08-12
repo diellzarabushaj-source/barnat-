@@ -1,0 +1,54 @@
+.protocol-primary-care .pc-check-row{
+  display:grid;
+  grid-template-columns:minmax(0,1fr) auto;
+  gap:7px;
+  align-items:center;
+  min-width:0;
+}
+
+.protocol-primary-care .pc-check-row > .pc-check{
+  width:100%;
+  min-width:0;
+}
+
+.protocol-primary-care .pc-check-row > .pc-source-chip{
+  align-self:center;
+  margin:0;
+}
+
+.protocol-primary-care .pc-rx-handoff{
+  border-color:var(--clinical-text);
+  background:var(--clinical-text);
+  color:var(--clinical-surface);
+}
+
+.protocol-primary-care .pc-rx-handoff:hover{
+  filter:brightness(.94);
+}
+
+.protocol-primary-care .pc-rx-handoff:disabled{
+  cursor:wait;
+  opacity:.68;
+}
+
+@media(max-width:560px){
+  .protocol-primary-care .pc-check-row{
+    grid-template-columns:1fr;
+  }
+
+  .protocol-primary-care .pc-check-row > .pc-source-chip{
+    margin:-2px 0 2px 34px;
+  }
+
+  .protocol-primary-care .pc-rx-editor-actions{
+    display:grid;
+    grid-template-columns:1fr;
+  }
+
+  .protocol-primary-care .pc-rx-editor-actions .pc-copy-button,
+  .protocol-primary-care .pc-rx-editor-actions .pc-text-button{
+    width:100%;
+    justify-content:center;
+    min-height:42px;
+  }
+}
