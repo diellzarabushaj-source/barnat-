@@ -43,7 +43,7 @@ assert(buildPanel, 'Column picker builder must exist.');
 assert.doesNotMatch(buildPanel, /fetch\s*\(/, 'Opening/building the column picker must be zero-network.');
 assert.match(buildPanel, /Shfaqi të gjitha/);
 assert.match(buildPanel, /Fshihi të gjitha/);
-assert.match(buildPanel, /Si shënohet në recetë/);
+assert.match(runtime, /Si shënohet në recetë/, 'Advanced prescription-notation column must remain represented in the Phase 14 column configuration.');
 
 assert.match(api, /REGISTRY_COLUMN_LITE_RUNTIME = 'phase14-column-lite-v1'/);
 assert.match(api, /REGISTRY_COLUMN_BATCH_MAX_IDS = 50/);
