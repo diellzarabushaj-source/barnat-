@@ -22,6 +22,7 @@ for (const file of [
 ]) execFileSync(process.execPath, ['--check', path.join(ROOT, file)], { stdio:'pipe' });
 
 assert.match(index, /registry-desktop-prescription-lite\.js\?v=20260812-1/);
+assert.match(index, /registry-desktop-column-lite\.js\?v=20260812-1/, 'Phase 14 final column runtime must be wired after Phase 13.');
 assert.match(runtime, /registry-desktop-prescription-lite-v1/);
 assert.match(runtime, /const SELECTION_KEY = 'medindexPrescriptionSelection'/);
 assert.match(runtime, /drugId:row\.__neonDrugId/, 'Stable Neon drugId must cross the registry→Recetat bridge.');
@@ -40,6 +41,7 @@ assert.doesNotMatch(desktop, /prescription-selection|select-page-for-prescriptio
 assert.doesNotMatch(desktop, /\['protocolsBtn', 'prescription-builder'\]/, 'Krijo recetën must stay lightweight in normal desktop mode.');
 assert.match(handoffPatch, /prescription-selection\|select-page-for-prescription/);
 assert.match(wiring, /require\('\.\/patch-phase13-prescription-lite\.js'\)/);
+assert.match(wiring, /require\('\.\/patch-phase14-column-lite\.js'\)/, 'Phase 14 must compose after the Phase 13 handoff cleanup.');
 
 assert.match(recetat, /const SELECTION_KEY = 'medindexPrescriptionSelection'/);
 assert.match(recetat, /sessionStorage\.getItem\(SELECTION_KEY\)/);
@@ -47,4 +49,5 @@ assert.match(recetat, /sessionStorage\.removeItem\(SELECTION_KEY\)/, 'Recetat mu
 assert.match(targetedDosageTest, /\/api\\\/dosage\\\?view=prescription&id=/, 'Phase 7 targeted prescription dosage must remain the downstream dosage path.');
 assert.match(targetedDosageTest, /drugId bridge/);
 
-console.log('Phase 13 desktop selection and Recetat navigation stay zero-network and preserve drugId for targeted prescription dosage.');
+require('./registry-desktop-column-lite-test.js');
+console.log('Phase 13/14 desktop prescription and column customization stay on bounded lightweight paths and preserve drugId for targeted dosage.');
