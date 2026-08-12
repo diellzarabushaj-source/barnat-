@@ -132,8 +132,7 @@
       } else {
         panel.removeAttribute('role');
         panel.removeAttribute('aria-modal');
-        if (mobile) panel.setAttribute('aria-hidden', 'true');
-        else panel.removeAttribute('aria-hidden');
+        panel.setAttribute('aria-hidden', mobile ? 'true' : 'false');
       }
     }
 
