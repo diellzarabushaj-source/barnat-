@@ -18,24 +18,42 @@ async function visibleToggle(page) {
   return toggle;
 }
 
+async function waitForOpenDrawerToSettle(page) {
+  await expect.poll(
+    () => page.locator('#miSidebar').evaluate(node => {
+      const box = node.getBoundingClientRect();
+      return Math.abs(box.left) <= 1 && box.right > 40;
+    }),
+    { timeout:3000, intervals:[50, 75, 100, 150] },
+  ).toBe(true);
+}
+
 async function openSidebar(page) {
   const toggle = await visibleToggle(page);
   await toggle.click();
   await expect(page.locator('body')).toHaveClass(/\bmi-sidebar-open\b/);
   await expect(page.locator('#miSidebar')).toHaveAttribute('aria-hidden', 'false');
+  await expect(page.locator('#miSidebar')).toHaveAttribute('role', 'dialog');
+  await expect(page.locator('#miSidebar')).toHaveAttribute('aria-modal', 'true');
+  await expect.poll(() => page.locator('#miSidebar').evaluate(node => node.inert)).toBe(false);
   await expect(toggle).toHaveAttribute('aria-expanded', 'true');
   await expect(page.locator('[data-mi-sidebar-close]')).toBeFocused();
   await expect.poll(() => page.locator('.mi-workspace').evaluate(node => node.inert)).toBe(true);
   await expect(page.locator('html')).toHaveClass(/\bmi-mobile-sidebar-open\b/);
+  await waitForOpenDrawerToSettle(page);
   return toggle;
 }
 
-async function expectClosed(page, { focusToggle = false } = {}) {
+async function expectClosed(page, { focusTarget = null } = {}) {
   await expect(page.locator('body')).not.toHaveClass(/\bmi-sidebar-open\b/);
   await expect(page.locator('html')).not.toHaveClass(/\bmi-mobile-sidebar-open\b/);
   await expect.poll(() => page.locator('.mi-workspace').evaluate(node => node.inert)).toBe(false);
   await expect(page.locator('.mi-workspace')).not.toHaveAttribute('aria-hidden', 'true');
-  if (focusToggle) await expect(await visibleToggle(page)).toBeFocused();
+  await expect(page.locator('#miSidebar')).toHaveAttribute('aria-hidden', 'true');
+  await expect(page.locator('#miSidebar')).not.toHaveAttribute('role', 'dialog');
+  await expect(page.locator('#miSidebar')).not.toHaveAttribute('aria-modal', 'true');
+  await expect.poll(() => page.locator('#miSidebar').evaluate(node => node.inert)).toBe(true);
+  if (focusTarget) await expect(focusTarget).toBeFocused();
 }
 
 function expectInsideViewport(box, viewport, tolerance = 1) {
@@ -80,7 +98,7 @@ test.describe('mobile sidebar deep audit', () => {
       }
 
       await page.locator('[data-mi-sidebar-close]').click();
-      await expectClosed(page, { focusToggle:true });
+      await expectClosed(page, { focusTarget:toggle });
       await expect(toggle).toHaveAttribute('aria-expanded', 'false');
     }
   });
@@ -92,12 +110,12 @@ test.describe('mobile sidebar deep audit', () => {
 
     let toggle = await openSidebar(page);
     await page.mouse.click(viewport.width - 8, Math.round(viewport.height / 2));
-    await expectClosed(page, { focusToggle:true });
+    await expectClosed(page, { focusTarget:toggle });
     await expect(toggle).toHaveAttribute('aria-expanded', 'false');
 
     toggle = await openSidebar(page);
     await page.keyboard.press('Escape');
-    await expectClosed(page, { focusToggle:true });
+    await expectClosed(page, { focusTarget:toggle });
     await expect(toggle).toHaveAttribute('aria-expanded', 'false');
   });
 
@@ -136,7 +154,7 @@ test.describe('mobile sidebar deep audit', () => {
     await page.setViewportSize({ width:390, height:844 });
     await waitForSidebarReady(page);
     await expect.poll(() => page.evaluate(() => document.documentElement.dataset.miAtcSidebar), { timeout:10000 }).toBe('nested-v2');
-    await openSidebar(page);
+    const toggle = await openSidebar(page);
 
     const rootTrigger = page.locator('[data-mi-atc-root-trigger]');
     if (await rootTrigger.getAttribute('aria-expanded') !== 'true') await rootTrigger.click();
@@ -153,8 +171,8 @@ test.describe('mobile sidebar deep audit', () => {
     const destination = page.locator('[data-mi-atc-submenu]:not([hidden]) [data-mi-atc-code]').first();
     await expect(destination).toBeVisible();
     await destination.click();
-    await expectClosed(page);
-    await expect(await visibleToggle(page)).toHaveAttribute('aria-expanded', 'false');
+    await expectClosed(page, { focusTarget:toggle });
+    await expect(toggle).toHaveAttribute('aria-expanded', 'false');
   });
 
   test('short landscape keeps close control and scrollable navigation reachable', async ({ page }) => {
@@ -194,7 +212,10 @@ test.describe('mobile sidebar deep audit', () => {
     await page.setViewportSize({ width:1280, height:800 });
     await expect.poll(() => page.locator('body').evaluate(node => node.classList.contains('mi-sidebar-open'))).toBe(false);
     await expect.poll(() => page.locator('.mi-workspace').evaluate(node => node.inert)).toBe(false);
+    await expect.poll(() => page.locator('#miSidebar').evaluate(node => node.inert)).toBe(false);
     await expect(page.locator('html')).not.toHaveClass(/\bmi-mobile-sidebar-open\b/);
+    await expect(page.locator('#miSidebar')).not.toHaveAttribute('role', 'dialog');
+    await expect(page.locator('#miSidebar')).not.toHaveAttribute('aria-modal', 'true');
     await expect(page.locator('#miSidebar')).toBeVisible();
   });
 });
