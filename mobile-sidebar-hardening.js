@@ -2,11 +2,13 @@
   'use strict';
 
   const MOBILE_BREAKPOINT = 1024;
-  const VERSION = 'mobile-sidebar-deep-audit-v1';
+  const VERSION = 'mobile-sidebar-deep-audit-v2';
   const ROOT = document.documentElement;
   let bodyObserver = null;
   let sidebarObserver = null;
   let resizeFrame = 0;
+  let lastSidebarOpener = null;
+  let previousMobileOpen = false;
 
   const isMobile = () => window.innerWidth < MOBILE_BREAKPOINT;
   const sidebar = () => document.getElementById('miSidebar') || document.querySelector('.mi-sidebar');
@@ -18,7 +20,15 @@
     style.id = 'miMobileSidebarHardeningStyles';
     style.textContent = `
       @media(max-width:1023px){
+        html.medindex-tailadmin .mi-mobile-overlay{
+          z-index:80!important;
+        }
+        html.medindex-tailadmin .mi-sidebar{
+          z-index:90!important;
+        }
         html.medindex-tailadmin .mi-sidebar-close{
+          position:relative!important;
+          z-index:1!important;
           width:44px!important;
           height:44px!important;
           min-width:44px!important;
@@ -68,11 +78,26 @@
       });
   }
 
+  function openerIsUsable() {
+    if (!(lastSidebarOpener instanceof HTMLElement) || !lastSidebarOpener.isConnected) return false;
+    const style = getComputedStyle(lastSidebarOpener);
+    return style.display !== 'none' && style.visibility !== 'hidden' && lastSidebarOpener.getClientRects().length > 0;
+  }
+
+  function restoreOpenerFocus() {
+    if (!openerIsUsable()) return;
+    requestAnimationFrame(() => {
+      if (!isMobile() || sidebarOpen() || !openerIsUsable()) return;
+      lastSidebarOpener.focus({ preventScroll:true });
+    });
+  }
+
   function canonicalClose() {
     if (!sidebarOpen()) return;
     const closeButton = document.querySelector('[data-mi-sidebar-close]');
     if (closeButton instanceof HTMLElement) {
       closeButton.click();
+      restoreOpenerFocus();
       return;
     }
 
@@ -85,6 +110,7 @@
       workspace.inert = false;
       workspace.removeAttribute('aria-hidden');
     }
+    restoreOpenerFocus();
   }
 
   function syncState() {
@@ -119,6 +145,9 @@
         workspace.removeAttribute('aria-hidden');
       }
     }
+
+    if (previousMobileOpen && !mobileOpen && mobile) restoreOpenerFocus();
+    previousMobileOpen = mobileOpen;
   }
 
   function trapSidebarFocus(event) {
@@ -152,6 +181,12 @@
     visibleFocusableItems()[0]?.focus({ preventScroll:true });
   }
 
+  function rememberSidebarOpener(event) {
+    const toggle = event.target?.closest?.('[data-mi-sidebar-toggle]');
+    if (!(toggle instanceof HTMLElement) || !isMobile()) return;
+    lastSidebarOpener = toggle;
+  }
+
   function closeAtcThroughCanonicalShell(event) {
     if (!isMobile() || !sidebarOpen()) return;
     if (!event.target?.closest?.('[data-mi-atc-code],[data-mi-atc-all-link]')) return;
@@ -172,6 +207,8 @@
     ROOT.dataset.miMobileSidebarHardening = VERSION;
     injectStyles();
 
+    document.addEventListener('pointerdown', rememberSidebarOpener, true);
+    document.addEventListener('click', rememberSidebarOpener, true);
     document.addEventListener('keydown', trapSidebarFocus, true);
     document.addEventListener('focusin', containSidebarFocus, true);
     document.addEventListener('click', closeAtcThroughCanonicalShell, true);
