@@ -86,20 +86,35 @@
   }
   html[data-registry-mobile-phase4] .mi-phase4-section-head{
     display:flex;
-    align-items:center;
+    align-items:flex-start;
     justify-content:space-between;
     gap:10px;
   }
-  html[data-registry-mobile-phase4] .mi-phase4-section-head>span{
+  html[data-registry-mobile-phase4] .mi-phase4-dose-badges{
+    display:flex;
+    flex-wrap:wrap;
+    justify-content:flex-end;
+    gap:5px;
+  }
+  html[data-registry-mobile-phase4] .mi-phase4-route,
+  html[data-registry-mobile-phase4] .mi-phase4-dose-verified{
     display:inline-flex;
     min-height:28px;
     align-items:center;
     padding:0 9px;
     border-radius:999px;
-    background:#f2f4f7;
-    color:#475467;
     font-size:11px;
     font-weight:760;
+    white-space:nowrap;
+  }
+  html[data-registry-mobile-phase4] .mi-phase4-route{
+    background:#f2f4f7;
+    color:#475467;
+  }
+  html[data-registry-mobile-phase4] .mi-phase4-dose-verified{
+    border:1px solid #abefc6;
+    background:#ecfdf3;
+    color:#067647;
   }
   html[data-registry-mobile-phase4] .mi-phase4-dose{
     border-color:#bfdbfe;
@@ -134,9 +149,9 @@
   }
   html[data-registry-mobile-phase4] .mi-phase4-source-list a{
     display:inline-flex;
-    min-height:36px;
+    min-height:44px;
     align-items:center;
-    padding:0 10px;
+    padding:0 11px;
     border:1px solid #d0d5dd;
     border-radius:10px;
     background:#fff;
@@ -167,7 +182,7 @@
   html[data-registry-mobile-phase4] .mi-phase4-loading span:last-child{height:88px}
   html[data-registry-mobile-phase4] .mi-phase4-unavailable{
     display:grid;
-    gap:4px;
+    gap:7px;
     padding:14px;
     border:1px solid #eaecf0;
     border-radius:12px;
@@ -181,6 +196,17 @@
   html[data-registry-mobile-phase4] .mi-phase4-unavailable span{
     color:#667085;
     font-size:12px;
+  }
+  html[data-registry-mobile-phase4] .mi-phase4-retry{
+    min-height:44px;
+    margin-top:3px;
+    padding:0 16px;
+    border:1px solid #d0d5dd;
+    border-radius:10px;
+    background:#fff;
+    color:#1d2939;
+    font-size:13px;
+    font-weight:730;
   }
 
   html[data-theme="dark"][data-registry-mobile-phase4] .mi-phase4-clinical{border-top-color:#344054}
@@ -202,12 +228,22 @@
     background:#102a43;
   }
   html[data-theme="dark"][data-registry-mobile-phase4] .mi-phase4-dose-text{color:#f2f4f7!important}
+  html[data-theme="dark"][data-registry-mobile-phase4] .mi-phase4-route{
+    background:#344054;
+    color:#d0d5dd;
+  }
+  html[data-theme="dark"][data-registry-mobile-phase4] .mi-phase4-dose-verified{
+    border-color:#087443;
+    background:#053321;
+    color:#75e0a7;
+  }
   html[data-theme="dark"][data-registry-mobile-phase4] .mi-phase4-safety{
     border-color:#7a2e0e;
     background:#3b230c;
   }
   html[data-theme="dark"][data-registry-mobile-phase4] .mi-phase4-sources{background:#101828}
-  html[data-theme="dark"][data-registry-mobile-phase4] .mi-phase4-source-list a{
+  html[data-theme="dark"][data-registry-mobile-phase4] .mi-phase4-source-list a,
+  html[data-theme="dark"][data-registry-mobile-phase4] .mi-phase4-retry{
     border-color:#475467;
     background:#1d2939;
     color:#84adff;
