@@ -87,8 +87,6 @@ const pediatricOnlyItems = approvedPopulationItems.filter(item => item.approvedP
 const allowedPopulations = new Set(['Adult only', 'Pediatric only', 'Pediatric and adult both']);
 assert(!approvedPopulationEndpointSource.includes('neonRequest'), 'Handler-i i popullatës duhet të mbetet Neon-free gjatë outage-it.');
 assert(approvedPopulationEndpointSource.includes("require('../data/approved-population-snapshot.json')"), 'Handler-i i popullatës duhet të përdorë snapshot-in e Sheet-it.');
-assert(approvedPopulationEndpointSource.includes("require('../data/approved-population-overrides-1-500.json')"), 'Handler-i duhet të ruajë override-in 1-500.');
-assert(approvedPopulationEndpointSource.includes("require('../data/approved-population-overrides-501-600.json')"), 'Handler-i duhet të ruajë override-in 501-600.');
 assert.strictEqual(approvedPopulationSnapshot?.source?.spreadsheetId, '17cuXg5qORIIWkvAxLZ7uz2FMmGvzwjr850cubUcIgLE');
 assert.strictEqual(approvedPopulationSnapshot?.source?.sheet, 'KARTELA_BARNAVE');
 assert.strictEqual(approvedPopulationSnapshot?.source?.approvedPopulationColumn, 'S');
@@ -97,12 +95,22 @@ assert.strictEqual(new Set(rawSnapshotItems.map(item => item.registryNumber)).si
 assert(rawSnapshotItems.every(item => allowedPopulations.has(item.approvedPopulation)), 'Snapshot-i bazë përmban kategori popullate të palejuar.');
 assert.strictEqual(new Set(approvedPopulationItems.map(item => item.registryNumber)).size, approvedPopulationItems.length, 'Nr rendor duhet të jetë unik pas bashkimit të override-ve.');
 assert(approvedPopulationItems.every(item => allowedPopulations.has(item.approvedPopulation)), 'Katalogu i bashkuar përmban kategori popullate të palejuar.');
-assert.deepStrictEqual(
-  approvedPopulationEndpoint.DEFAULT_OVERRIDE_SETS.map(overrides => overrides?.source?.range),
-  ['1-500', '501-600'],
-  'Override-et e audituara 1-600 duhet të aplikohen në rendin e deklaruar.'
-);
-assert(pediatricOnlyItems.length >= 40, 'Katalogu i bashkuar duhet të ruajë kartat pediatrike të audituara 1-600.');
+
+const overrideRanges = approvedPopulationEndpoint.DEFAULT_OVERRIDE_SETS.map(overrides => {
+  const match = String(overrides?.source?.range || '').match(/^(\d+)-(\d+)$/);
+  assert(match, `Interval override i pavlefshëm: ${overrides?.source?.range || 'mungon'}`);
+  return { start:Number(match[1]), end:Number(match[2]), raw:overrides.source.range };
+});
+assert(overrideRanges.length >= 3, 'Duhet të ruhen të paktën batch-et e audituara deri në 700.');
+assert.strictEqual(overrideRanges[0].start, 1, 'Batch-et e popullatës duhet të fillojnë nga karta 1.');
+overrideRanges.forEach((range, index) => {
+  assert(range.end >= range.start, `Interval override i kthyer mbrapsht: ${range.raw}`);
+  if (index > 0) {
+    assert.strictEqual(range.start, overrideRanges[index - 1].end + 1, `Gap ose overlap ndërmjet ${overrideRanges[index - 1].raw} dhe ${range.raw}.`);
+  }
+});
+assert(overrideRanges.at(-1).end >= 700, 'Auditimi i popullatës duhet të mbulojë të paktën kartat 1-700.');
+assert(pediatricOnlyItems.length >= 40, 'Katalogu i bashkuar duhet të ruajë kartat pediatrike të audituara.');
 for (const registryNumber of [44, 45, 46, 504]) {
   assert.strictEqual(
     approvedPopulationItems.find(item => item.registryNumber === registryNumber)?.approvedPopulation,
@@ -111,4 +119,4 @@ for (const registryNumber of [44, 45, 46, 504]) {
   );
 }
 
-console.log('Strict adult/pediatric verification + population item integrity + approved-population overrides 1-600 passed.');
+console.log(`Strict adult/pediatric verification + population item integrity + contiguous approved-population overrides through ${overrideRanges.at(-1).end} passed.`);
