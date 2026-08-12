@@ -13,7 +13,7 @@ const syntax = file => execFileSync(process.execPath, ['--check', path.join(ROOT
   'app-performance.js',
   'registry-parser-worker-v2.js',
   'registry-dosage-loader.js',
-  'registry-dosage-columns-v2.js',
+  'registry-dosage-columns-v3.js',
   'registry-unified-table.js',
   'scripts/build-static-runtime.js',
 ].forEach(syntax);
@@ -25,7 +25,7 @@ const bootstrap = read('app-performance.js');
 const worker = read('registry-parser-worker-v2.js');
 const part = read('app-parts/part-01.txt');
 const loader = read('registry-dosage-loader.js');
-const dosage = read('registry-dosage-columns-v2.js');
+const dosage = read('registry-dosage-columns-v3.js');
 const unified = read('registry-unified-table.js');
 const builder = read('scripts/build-static-runtime.js');
 const middleware = read('middleware.ts');
@@ -36,8 +36,8 @@ assert.ok(index.indexOf('registry-mobile-lite.js') < index.indexOf('registry-run
 assert.match(index, /registry-unified-table\.js\?v=20260801-1/);
 assert.doesNotMatch(index, /<script src="app-performance\.js"/);
 assert.match(index, /app-runtime-performance\.js/);
-assert.match(index, /registry-dosage-loader\.js/);
-assert.doesNotMatch(index, /src="app\.js|src="registry-dosage-columns(?:-v2)?\.js/);
+assert.match(index, /registry-dosage-loader\.js\?v=20260812-1/);
+assert.doesNotMatch(index, /src="app\.js|src="registry-dosage-columns-v[23]\.js/);
 assert.doesNotMatch(index, /(?:registry-table-integrity|registry-clinical-view|registry-tailgrids-refinement|registry-columns-filters|registry-table-final)\.js/);
 
 assert.match(mobile, /registry-mobile-lite-v1/);
@@ -83,15 +83,18 @@ assert.match(part, /registry-parser-worker-v2\.js/);
 
 assert.match(loader, /function schedule\(\)[\s\S]*requestIdleCallback\(run, \{ timeout:5000 \}\)/);
 assert.match(loader, /addEventListener\('medindex:registry-ready', schedule, \{ once:true \}\)/);
-assert.match(loader, /registry-dosage-columns-v2\.js/);
+assert.match(loader, /registry-dosage-columns-v3\.js/);
 assert.match(loader, /dataset\.registryDosageRuntime/);
 
 assert.match(dosage, /waitForRegistryRows/);
 assert.match(dosage, /window\.MEDINDEX_REGISTRY_ROWS/);
 assert.match(dosage, /INDEX_BATCH_SIZE = 250/);
+assert.match(dosage, /REQUEST_BATCH_SIZE = 100/);
+assert.match(dosage, /view=cards/);
 assert.match(dosage, /await yieldToBrowser\(\)/);
 assert.match(dosage, /disconnectTableObservers/);
 assert.match(dosage, /existing\.innerHTML !== desired\.innerHTML/);
+assert.doesNotMatch(dosage, /fetch\('\/api\/dosage'\s*,/);
 assert.doesNotMatch(dosage, /DRUG_DATA_PARTS|\batob\s*\(|DecompressionStream|Uint8Array/);
 assert.doesNotMatch(dosage, /observe\([^\n]+subtree\s*:\s*true/);
 
@@ -106,4 +109,4 @@ assert.match(builder, /runtimeOutputs/);
 assert.match(builder, /app-runtime-performance\.js/);
 assert.match(middleware, /registry-parser-worker-v2\.js/);
 
-console.log('Registry isolated mobile lightweight loader v7, single controller and main-thread deep audit passed.');
+console.log('Registry isolated mobile lightweight loader v7, single controller and visible-row dosage main-thread audit passed.');
