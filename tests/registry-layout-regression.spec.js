@@ -1,0 +1,114 @@
+const { test, expect } = require('@playwright/test');
+
+const BASE = 'http://127.0.0.1:4174';
+const LAYOUT_VERSION = 'registry-table-layout-guard-v5';
+
+test.use({ serviceWorkers:'block', viewport:{ width:1440, height:900 } });
+
+async function waitForRegistryLayout(page) {
+  await page.goto(`${BASE}/index.html`, { waitUntil:'domcontentloaded' });
+  await page.waitForFunction(() => document.documentElement.classList.contains('auth-ready'));
+
+  await expect.poll(
+    () => page.evaluate(() => ({
+      tableStable:window.MEDINDEX_REGISTRY_TABLE_AUDIT?.stable === true,
+      layoutStable:window.MEDINDEX_REGISTRY_LAYOUT_AUDIT?.stable === true,
+      guard:window.MedIndexRegistryLayoutGuard?.version || '',
+      adult:Boolean(document.querySelector('#headerRow th[data-registry-column-key="dosage-adult"]')),
+      pediatric:Boolean(document.querySelector('#headerRow th[data-registry-column-key="dosage-pediatric"]')),
+    })),
+    { timeout:30000, message:'registry layout guard did not reach the stable dosage-column state' },
+  ).toEqual({
+    tableStable:true,
+    layoutStable:true,
+    guard:LAYOUT_VERSION,
+    adult:true,
+    pediatric:true,
+  });
+}
+
+test('reduced desktop columns fill the registry surface without a blank gutter or stale horizontal offset', async ({ page }) => {
+  await waitForRegistryLayout(page);
+
+  await page.evaluate(() => {
+    const style = document.createElement('style');
+    style.id = 'registry-layout-regression-visible-columns';
+    style.textContent = `
+      #headerRow th[data-registry-column-key]:not([data-registry-column-key="strength"]):not([data-registry-column-key="form"]):not([data-registry-column-key="status"]):not([data-registry-column-key="dosage-adult"]):not([data-registry-column-key="dosage-pediatric"]) {
+        display:none!important;
+      }
+    `;
+    document.head.appendChild(style);
+    document.documentElement.dataset.registryDoseColumnVisible = 'false';
+    const wrapper = document.getElementById('registryContent');
+    if (wrapper) wrapper.scrollLeft = 999;
+    window.MedIndexRegistryLayoutGuard.refresh();
+  });
+
+  await expect.poll(
+    () => page.evaluate(() => {
+      const wrapper = document.getElementById('registryContent');
+      const table = document.getElementById('dataTable');
+      const audit = window.MEDINDEX_REGISTRY_LAYOUT_AUDIT;
+      if (!wrapper || !table || !audit) return false;
+      const widthDelta = Math.abs(table.getBoundingClientRect().width - wrapper.clientWidth);
+      return audit.version === 'registry-table-layout-guard-v5'
+        && audit.mode === 'desktop'
+        && audit.stable === true
+        && audit.stretchedToFit === true
+        && audit.phantomOverflow === false
+        && Number(audit.overflowPx || 0) <= 2
+        && wrapper.scrollLeft === 0
+        && widthDelta <= 2;
+    }),
+    { timeout:10000, message:'reduced-column registry retained blank space, phantom overflow or stale scroll' },
+  ).toBe(true);
+
+  const geometry = await page.evaluate(() => {
+    const wrapper = document.getElementById('registryContent');
+    const table = document.getElementById('dataTable');
+    const audit = window.MEDINDEX_REGISTRY_LAYOUT_AUDIT;
+    const visibleHeaders = Array.from(document.querySelectorAll('#headerRow th[data-registry-column-key]'))
+      .filter(node => getComputedStyle(node).display !== 'none')
+      .map(node => node.dataset.registryColumnKey);
+    return {
+      wrapperWidth:wrapper.clientWidth,
+      tableWidth:Math.round(table.getBoundingClientRect().width),
+      scrollWidth:wrapper.scrollWidth,
+      scrollLeft:wrapper.scrollLeft,
+      visibleHeaders,
+      audit,
+    };
+  });
+
+  expect(geometry.visibleHeaders).toEqual(['strength', 'form', 'status', 'dosage-adult', 'dosage-pediatric']);
+  expect(Math.abs(geometry.tableWidth - geometry.wrapperWidth)).toBeLessThanOrEqual(2);
+  expect(geometry.scrollWidth - geometry.wrapperWidth).toBeLessThanOrEqual(2);
+  expect(geometry.scrollLeft).toBe(0);
+  expect(geometry.audit.excessReservedWidth).toBe(0);
+  expect(geometry.audit.removedColumnsStillVisible).toEqual([]);
+
+  const adultCell = page.locator('#tbody > tr td[data-registry-column-key="dosage-adult"]').first();
+  await expect(adultCell).toBeVisible({ timeout:10000 });
+  await adultCell.evaluate(() => window.MedIndexCellPreview?.refresh?.());
+  const trigger = adultCell.locator('.registry-cell-preview-trigger');
+  await expect(trigger).toBeVisible({ timeout:10000 });
+  await trigger.click();
+
+  const expandedGeometry = await adultCell.locator('xpath=ancestor::tr').evaluate(row => {
+    const wrapper = document.getElementById('registryContent');
+    const rowRect = row.getBoundingClientRect();
+    const wrapperRect = wrapper.getBoundingClientRect();
+    return {
+      expanded:row.dataset.registryRowExpanded,
+      rowLeft:rowRect.left,
+      rowRight:rowRect.right,
+      wrapperLeft:wrapperRect.left,
+      wrapperRight:wrapperRect.right,
+    };
+  });
+
+  expect(expandedGeometry.expanded).toBe('true');
+  expect(expandedGeometry.rowLeft).toBeGreaterThanOrEqual(expandedGeometry.wrapperLeft - 2);
+  expect(expandedGeometry.rowRight).toBeLessThanOrEqual(expandedGeometry.wrapperRight + 2);
+});
