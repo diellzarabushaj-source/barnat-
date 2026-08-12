@@ -9,6 +9,13 @@ const TEST = path.join(ROOT, 'tests/registry-dosage-columns-test.js');
 
 let source = fs.readFileSync(TARGET, 'utf8').replace(/\r\n?/g, '\n');
 
+const retryLoopFilter = `.filter(number => !clinical.loadedNumbers.has(number) && !clinical.pendingNumbers.has(number));`;
+const stableFailureFilter = `.filter(number => !clinical.loadedNumbers.has(number) && !clinical.pendingNumbers.has(number) && !clinical.failedNumbers.has(number));`;
+if (!source.includes(stableFailureFilter)) {
+  if (!source.includes(retryLoopFilter)) throw new Error('Dosage signature patch: visible-batch retry filter anchor missing.');
+  source = source.replace(retryLoopFilter, stableFailureFilter);
+}
+
 if (!source.includes('function dosageCellSignature(')) {
   const before = `  function createDosageCell(column, row, card) {\n    const cell = document.createElement('td');\n    cell.className = \`registry-dosage-column registry-dosage-\${column.key}\`;\n    cell.dataset.registryDosageColumn = column.key;\n    cell.dataset.label = column.label;\n    if (registry.status === 'loading') cell.innerHTML = '<span class="registry-dosage-muted">Duke e lidhur me barin…</span>';\n    else if (!row) cell.innerHTML = '<span class="registry-dosage-muted">Bari nuk u identifikua në mënyrë unike.</span>';\n    else cell.innerHTML = cellContent(row, card, column.key, column.empty);\n    return cell;\n  }`;
 
@@ -40,6 +47,9 @@ if (source.includes('existing.replaceWith(desired)')) {
 if (!source.includes("existing.dataset.registryDosageColumn = column.key;")) {
   throw new Error('Dosage signature patch: stable dosage column identity is missing.');
 }
+if (!source.includes(stableFailureFilter)) {
+  throw new Error('Dosage signature patch: failed batches can still auto-retry during idle.');
+}
 
 fs.writeFileSync(TARGET, source, 'utf8');
 
@@ -56,7 +66,13 @@ if (fs.existsSync(TEST)) {
     if (!test.includes(marker)) throw new Error('Dosage signature patch: stable-cell regression test anchor missing.');
     test = test.replace(marker, assertions);
   }
+  if (!test.includes('failed dosage batches must not auto-retry during idle')) {
+    const marker = `assert.match(script, /REQUEST_BATCH_SIZE = 100/);`;
+    const assertion = `${marker}\nassert.match(script, /!clinical\\.failedNumbers\\.has\\(number\\)/, 'failed dosage batches must not auto-retry during idle');`;
+    if (!test.includes(marker)) throw new Error('Dosage signature patch: failed-batch regression test anchor missing.');
+    test = test.replace(marker, assertion);
+  }
   fs.writeFileSync(TEST, test, 'utf8');
 }
 
-console.log('Deterministic dosage cell signatures active; dosage cells update in place without unified-table identity churn.');
+console.log('Deterministic dosage cells active; failed batches stay stable until an explicit retry or refresh.');
