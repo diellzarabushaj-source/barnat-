@@ -33,7 +33,7 @@ const middleware = read('middleware.ts');
 assert.match(index, /registry-mobile-lite\.js\?v=20260812-1/);
 assert.match(index, /registry-runtime-loader\.js\?v=20260812-7/);
 assert.ok(index.indexOf('registry-mobile-lite.js') < index.indexOf('registry-runtime-loader.js'), 'mobile lightweight path must run before the full runtime loader');
-assert.match(index, /registry-unified-table\.js\?v=20260801-1/);
+assert.match(index, /registry-unified-table\.js\?v=20260812-population-column-1/);
 assert.doesNotMatch(index, /<script src="app-performance\.js"/);
 assert.match(index, /app-runtime-performance\.js/);
 assert.match(index, /registry-dosage-loader\.js\?v=20260812-1/);
