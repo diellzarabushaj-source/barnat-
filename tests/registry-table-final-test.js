@@ -17,7 +17,7 @@ const loader = read('registry-runtime-loader.js');
 const fast = read('registry-fast-start.js');
 const release = read('registry-ui-release.js');
 
-assert.match(index,/data-registry-ui-release="20260809-1"/,'index must use the current audited dose release');
+assert.match(index,/data-registry-ui-release="20260812-1"/,'index must use the current audited dose release');
 assert.match(index,/registry-unified-table\.css\?v=20260812-population-column-1/,'unified population-aware table stylesheet must be wired');
 assert.match(index,/registry-full-text-expansion\.css\?v=20260805-2/,'full-row text stylesheet must be wired');
 assert.match(index,/registry-unified-table\.js\?v=20260812-population-column-1/,'unified population-aware table controller must be wired');
@@ -34,7 +34,7 @@ assert.doesNotMatch(index,/(?:registry-table-integrity|registry-clinical-view|re
 assert.doesNotMatch(index,/registryTableFinalMobileCompatibility/,'legacy mobile compatibility patch must be removed');
 assert.doesNotMatch(index,/<script src="app-performance\.js"/,'heavy registry bootstrap must remain dynamically loaded after authentication');
 assert.doesNotMatch(index,/rel="preload" href="app-runtime-performance\.js/,'full generated registry runtime must not be preloaded on normal lightweight startup');
-assert.match(release,/registry-ui-20260809-1/,'cache release must match the current audited dose contract');
+assert.match(release,/registry-ui-20260812-1/,'cache release must match the current audited dose contract');
 assert.match(fast,/releaseInteractiveShell/,'visual loader must release when authentication and shell are ready');
 assert.match(fast,/loader\.style\.pointerEvents = 'none'/,'visual loader must never intercept the table after shell readiness');
 
