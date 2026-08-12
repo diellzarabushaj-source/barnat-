@@ -132,3 +132,4 @@ if (!unified.includes("population:'Popullata e aprovuar'") || !unified.includes(
 }
 
 console.log('Approved population column added to picker/runtime/unified table.');
+require('./patch-pediatric-only-column.js');
