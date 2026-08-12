@@ -11,16 +11,17 @@ const overrides1to500 = require('../data/approved-population-overrides-1-500.jso
 const overrides501to600 = require('../data/approved-population-overrides-501-600.json');
 const overrides601to700 = require('../data/approved-population-overrides-601-700.json');
 const overrides701to800 = require('../data/approved-population-overrides-701-800.json');
+const overrides801to900 = require('../data/approved-population-overrides-801-900.json');
 const handler = require('../lib/approved-population-handler.js');
 
 const allowed = new Set(['Adult only', 'Pediatric only', 'Pediatric and adult both']);
-const overrideSets = [overrides1to500, overrides501to600, overrides601to700, overrides701to800];
+const overrideSets = [overrides1to500, overrides501to600, overrides601to700, overrides701to800, overrides801to900];
 const items = handler.snapshotItems(snapshot, overrideSets);
 const byNumber = new Map(items.map(item => [item.registryNumber, item.approvedPopulation]));
 
 assert(!handlerSource.includes('neonRequest'), 'Approved-population handler must stay Neon-free in snapshot/fallback mode.');
 assert(handlerSource.includes("require('../data/approved-population-snapshot.json')"), 'Handler must retain the base Sheet snapshot.');
-for (const range of ['1-500','501-600','601-700','701-800']) {
+for (const range of ['1-500','501-600','601-700','701-800','801-900']) {
   assert(handlerSource.includes(`require('../data/approved-population-overrides-${range}.json')`), `Handler must apply cards ${range} overrides.`);
 }
 assert.strictEqual(new Set(items.map(item => item.registryNumber)).size, items.length, 'Registry numbers must remain unique after override merge.');
@@ -31,6 +32,7 @@ for (const [overrides, expectedRange] of [
   [overrides501to600,'501-600'],
   [overrides601to700,'601-700'],
   [overrides701to800,'701-800'],
+  [overrides801to900,'801-900'],
 ]) {
   assert.strictEqual(overrides?.source?.spreadsheetId, '17cuXg5qORIIWkvAxLZ7uz2FMmGvzwjr850cubUcIgLE');
   assert.strictEqual(overrides?.source?.sheet, 'KARTELA_BARNAVE');
@@ -45,8 +47,8 @@ const overrideEntries = overrideSets.flatMap(overrides => [
   ['Pediatric only', overrides.pediatricOnly],
   ['Pediatric and adult both', overrides.pediatricAndAdultBoth],
 ].flatMap(([population, numbers]) => numbers.map(registryNumber => [registryNumber, population])));
-assert.strictEqual(overrideEntries.length, 782, 'Cards 1-800 must contain exactly 782 current classified rows from Sheet A→S.');
-assert.strictEqual(new Set(overrideEntries.map(([registryNumber]) => registryNumber)).size, overrideEntries.length, '1-800 override registry numbers must be unique.');
+assert.strictEqual(overrideEntries.length, 878, 'Cards 1-900 must contain exactly 878 current classified rows from Sheet A→S.');
+assert.strictEqual(new Set(overrideEntries.map(([registryNumber]) => registryNumber)).size, overrideEntries.length, '1-900 override registry numbers must be unique.');
 overrideEntries.forEach(([registryNumber, population]) => {
   assert.strictEqual(byNumber.get(registryNumber), population, `Card ${registryNumber} must match the explicit Sheet A→S override.`);
 });
@@ -57,12 +59,14 @@ const expectedPediatricOnly1to500 = [
 ];
 const expectedPediatricOnly601to700 = [604,608,609,613,642,678,681,682,699];
 const expectedPediatricOnly701to800 = [722,734,736,739,750,751,761,769,786];
+const expectedPediatricOnly801to900 = [832,834,841,853,861,869];
 assert.deepStrictEqual(overrides1to500.pediatricOnly, expectedPediatricOnly1to500, 'Pediatric-only cards 1-500 must match the audited Sheet list exactly.');
 assert.deepStrictEqual(overrides501to600.pediatricOnly, [504], 'Card 504 must be the only Pediatric only card in 501-600 after this audit.');
 assert.deepStrictEqual(overrides601to700.pediatricOnly, expectedPediatricOnly601to700, 'Pediatric-only cards 601-700 must match the audited Sheet list exactly.');
 assert.deepStrictEqual(overrides701to800.pediatricOnly, expectedPediatricOnly701to800, 'Pediatric-only cards 701-800 must match the audited Sheet list exactly.');
+assert.deepStrictEqual(overrides801to900.pediatricOnly, expectedPediatricOnly801to900, 'Pediatric-only cards 801-900 must match the audited Sheet list exactly.');
 
-for (const registryNumber of [...expectedPediatricOnly1to500, 504, ...expectedPediatricOnly601to700, ...expectedPediatricOnly701to800]) {
+for (const registryNumber of [...expectedPediatricOnly1to500, 504, ...expectedPediatricOnly601to700, ...expectedPediatricOnly701to800, ...expectedPediatricOnly801to900]) {
   assert.strictEqual(byNumber.get(registryNumber), 'Pediatric only', `Card ${registryNumber} must remain Pediatric only.`);
 }
 
@@ -77,21 +81,26 @@ for (const [registryNumber, expected] of [
   [700, 'Adult only'],
   [701, 'Pediatric and adult both'],
   [722, 'Pediatric only'],
-  [723, 'Adult only'],
   [734, 'Pediatric only'],
-  [735, 'Pediatric and adult both'],
-  [736, 'Pediatric only'],
-  [739, 'Pediatric only'],
-  [750, 'Pediatric only'],
-  [751, 'Pediatric only'],
-  [761, 'Pediatric only'],
-  [769, 'Pediatric only'],
-  [770, 'Adult only'],
-  [786, 'Pediatric only'],
-  [787, 'Pediatric and adult both'],
   [800, 'Adult only'],
+  [801, 'Adult only'],
+  [832, 'Pediatric only'],
+  [833, 'Pediatric and adult both'],
+  [834, 'Pediatric only'],
+  [840, 'Pediatric and adult both'],
+  [841, 'Pediatric only'],
+  [853, 'Pediatric only'],
+  [861, 'Pediatric only'],
+  [867, undefined],
+  [869, 'Pediatric only'],
+  [870, 'Pediatric and adult both'],
+  [873, undefined],
+  [877, undefined],
+  [879, undefined],
+  [888, 'Adult only'],
+  [900, 'Pediatric and adult both'],
 ]) {
   assert.strictEqual(byNumber.get(registryNumber), expected, `Card ${registryNumber} sentinel detects population row shifts.`);
 }
 
-console.log('Approved population A→S mapping passed: 782 classified in cards 1-800; 58 pediatric only.');
+console.log('Approved population A→S mapping passed: 878 classified in cards 1-900; 64 pediatric only.');
