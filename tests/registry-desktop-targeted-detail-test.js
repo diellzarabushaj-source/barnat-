@@ -22,9 +22,12 @@ for (const file of [
 
 const rowScript = 'registry-row-expand.js?v=20260810-1';
 const detailScript = 'registry-desktop-targeted-detail.js?v=20260812-1';
+const prescriptionScript = 'registry-desktop-prescription-lite.js?v=20260812-1';
 assert(index.includes(rowScript), 'Canonical row expander must remain present.');
 assert(index.includes(detailScript), 'Phase 12 targeted detail runtime must be wired.');
+assert(index.includes(prescriptionScript), 'Phase 13 prescription bridge must be wired.');
 assert(index.indexOf(rowScript) < index.indexOf(detailScript), 'Targeted detail must augment, not replace, the canonical row expander.');
+assert(index.indexOf(detailScript) < index.indexOf(prescriptionScript), 'Prescription bridge must load after targeted detail.');
 
 assert.match(runtime, /registry-desktop-targeted-detail-v1/);
 assert.match(runtime, /\(min-width: 768px\)/, 'Phase 12 must remain desktop-only.');
@@ -53,5 +56,7 @@ assert.match(dosageCard, /params\.set\('drug_id', `eq\.\$\{drugId\}`\)/, 'Clinic
 assert.match(dosageCard, /editorial_status', 'eq\.published/);
 assert.match(dosageCard, /calculation_status', 'in\.\(text_verified,calculable_verified\)/);
 assert.match(wiring, /registry-desktop-targeted-detail\.js\?v=20260812-1/);
+assert.match(wiring, /registry-desktop-prescription-lite\.js\?v=20260812-1/);
 
-console.log('Phase 12 desktop detail uses targeted one-drug registry + clinical reads, memory cache, retry and explicit full-runtime fallback only.');
+require('./registry-desktop-prescription-lite-test.js');
+console.log('Phase 12/13 desktop targeted detail and lightweight prescription selection remain off the full-registry normal path.');
