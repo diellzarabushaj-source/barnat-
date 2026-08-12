@@ -43,7 +43,7 @@ function patchDesktopLargePages() {
     if (state.q.length >= 2) params.set('q', state.q);
     if (state.status) params.set('status', state.status);
     if (includeTotal) params.set('includeTotal', '1');
-    return \`\${API}?\${params.toString()}\`;
+    return \`${API}?\${params.toString()}\`;
   }
 
   function logicalChunkCount(pageSize = state.pageSize) {
@@ -61,7 +61,7 @@ function patchDesktopLargePages() {
       headers:{ Accept:'application/json' },
     });
     if (response.status === 401) throw new Error('Sesioni ka skaduar.');
-    if (!response.ok) throw new Error(\`Lista e barnave nuk u ngarkua (\${response.status}).\`);
+    if (!response.ok) throw new Error(`Lista e barnave nuk u ngarkua (${response.status}).`);
     const payload = await response.json();
     if (!payload?.ok || !Array.isArray(payload.rows)) throw new Error('Përgjigjja e regjistrit është e pavlefshme.');
     return payload;
@@ -185,4 +185,5 @@ function patchDesktopLargePages() {
 }
 
 patchDesktopLargePages();
+require('./patch-phase11-form-picker-lite.js');
 console.log('Phase 11 desktop logical page sizes 50/100/250/500 use bounded 50-row Neon chunks without full-registry handoff.');
