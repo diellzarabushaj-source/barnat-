@@ -51,7 +51,7 @@ assert.match(desktop, /medindex:registry-page-ready/);
 assert.match(desktop, /MEDINDEX_REGISTRY_ROWS = canonical/);
 assert.match(desktop, /medindex:request-full-registry/);
 assert.doesNotMatch(desktop, /prescription-builder|prescription-selection|select-page-for-prescription/, 'Phase 13 prescription flow must remain lightweight until an explicit advanced handoff.');
-assert.match(desktop, /column-picker/);
+assert.doesNotMatch(desktop, /\['colPickerBtn', 'column-picker'\]|column-picker/, 'Phase 14 column picker must stay on the bounded lightweight column runtime.');
 assert.doesNotMatch(desktop, /\['formPickerBtn', 'form-picker'\]/, 'Form picker must not trigger the full registry in Phase 11.');
 assert.doesNotMatch(desktop, /desktop-large-page-size/, '50/100/250/500 page-size selection must remain lightweight in Phase 11.');
 assert.doesNotMatch(desktop, /\/api\/registry(?:\?|['"`])/, 'Normal desktop lightweight mode must not call the full registry endpoint.');
@@ -94,8 +94,8 @@ assert.doesNotMatch(marker, /\/api\/pediatric-only-population/,
   'The legacy pediatric-only endpoint must not be required by normal lightweight rendering.');
 
 assert.match(packageJson.scripts['build:runtime'], /patch-phase10-desktop-lite\.js/, 'Phase 10 wiring must be deterministic in build:runtime.');
-assert.match(packageJson.scripts['build:runtime'], /patch-phase11-desktop-advanced-lite\.js/, 'Phase 11-13 desktop lightweight build chain must remain deterministic.');
+assert.match(packageJson.scripts['build:runtime'], /patch-phase11-desktop-advanced-lite\.js/, 'Phase 11-14 desktop lightweight build chain must remain deterministic.');
 assert.match(packageJson.scripts.test, /registry-desktop-lite-test\.js/, 'Desktop lightweight regression test must run in the main test suite.');
-assert.match(packageJson.scripts.test, /registry-desktop-large-page-lite-test\.js/, 'Phase 11-13 composed regression gate must run in the main test suite.');
+assert.match(packageJson.scripts.test, /registry-desktop-large-page-lite-test\.js/, 'Phase 11-14 composed regression gate must run in the main test suite.');
 
-console.log('Phase 13 desktop bounded pagination, form filtering, inline population, targeted dosage and lightweight prescription contract passed.');
+console.log('Phase 14 desktop bounded pagination, form filtering, inline population, targeted dosage, prescription and column customization contract passed.');
