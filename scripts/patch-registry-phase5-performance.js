@@ -47,6 +47,18 @@ function patchPerformanceServer() {
   write('tests/registry-performance-server.js', source);
 }
 
+function patchPerformanceDiagnostics() {
+  const file = 'tests/registry-main-thread-performance.spec.js';
+  let source = read(file);
+  const before = `    const idleMutationCount = await page.evaluate(() => new Promise(resolve => {\n      const target = document.getElementById('tbody');\n      let count = 0;\n      const observer = new MutationObserver(records => { count += records.length; });\n      observer.observe(target, { childList:true, subtree:true, characterData:true });\n      setTimeout(() => {\n        observer.disconnect();\n        resolve(count);\n      }, 1500);\n    }));\n    console.log(\`REGISTRY_IDLE_MUTATIONS \${idleMutationCount}\`);\n    expect(idleMutationCount, 'dosage integration entered a DOM mutation feedback loop').toBeLessThanOrEqual(8);`;
+  const after = `    const idleMutationAudit = await page.evaluate(() => new Promise(resolve => {\n      const target = document.getElementById('tbody');\n      let count = 0;\n      const targets = new Map();\n      const observer = new MutationObserver(records => {\n        count += records.length;\n        records.forEach(record => {\n          const node = record.target?.nodeType === Node.TEXT_NODE ? record.target.parentElement : record.target;\n          const row = node?.closest?.('tr');\n          const cell = node?.closest?.('td');\n          const key = [\n            record.type,\n            cell?.dataset?.registryColumnKey || cell?.dataset?.registryDosageColumn || cell?.dataset?.clinicalEditorColumn || cell?.className || '',\n            row?.dataset?.registryNumber || row?.querySelector?.('.drug-select')?.dataset?.registryNumber || '',\n          ].join('|');\n          targets.set(key, (targets.get(key) || 0) + 1);\n        });\n      });\n      observer.observe(target, { childList:true, subtree:true, characterData:true });\n      setTimeout(() => {\n        observer.disconnect();\n        resolve({ count, targets:[...targets.entries()].sort((a,b) => b[1] - a[1]).slice(0,20) });\n      }, 1500);\n    }));\n    console.log(\`REGISTRY_IDLE_MUTATIONS \${idleMutationAudit.count}\`);\n    console.log(\`REGISTRY_IDLE_MUTATION_TARGETS \${JSON.stringify(idleMutationAudit.targets)}\`);\n    expect(idleMutationAudit.count, 'dosage integration entered a DOM mutation feedback loop').toBeLessThanOrEqual(8);`;
+  if (!source.includes('REGISTRY_IDLE_MUTATION_TARGETS')) {
+    if (!source.includes(before)) throw new Error('Phase 5 performance diagnostic anchor is missing.');
+    source = source.replace(before, after);
+  }
+  write(file, source);
+}
+
 function patchRegressionTest() {
   const file = 'tests/registry-dosage-columns-test.js';
   let source = read(file);
@@ -64,6 +76,7 @@ function patchRegressionTest() {
 
 patchDosageClient();
 patchPerformanceServer();
+patchPerformanceDiagnostics();
 patchRegressionTest();
 
-console.log('Phase 5 bounded dosage response and production-matched performance fixture patch passed.');
+console.log('Phase 5 bounded dosage response, production-matched performance fixture and idle-mutation diagnostics patch passed.');
