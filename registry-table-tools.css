@@ -16,11 +16,37 @@ html.medindex-tailadmin[data-mi-page="barnat"] body #dataTable :is(.registry-per
   display:none!important;
 }
 
+/* Keep the colgroup in sync with hidden table tools. Without this, fixed-width
+   <col> entries keep reserving empty space even though their th/td cells are hidden. */
+html.medindex-tailadmin[data-mi-page="barnat"] body #dataTable col:is(
+  [data-registry-column-key="clinical-status"],
+  [data-registry-column-key="clinical-action"],
+  [data-registry-column-key="personal-note"]
+) {
+  display:none!important;
+  width:0!important;
+}
+
 html.medindex-tailadmin[data-mi-page="barnat"]:not([data-registry-dose-column-visible="true"]) body #dataTable :is(th,td):is(
   [data-registry-column-key="dose-calculator"],
   [data-registry-dose-calculator-column="dose-calculator"]
 ) {
   display:none!important;
+}
+
+html.medindex-tailadmin[data-mi-page="barnat"]:not([data-registry-dose-column-visible="true"]) body #dataTable col[data-registry-column-key="dose-calculator"] {
+  display:none!important;
+  width:0!important;
+}
+
+/* The visible registry surface must use the whole available workspace. */
+html.medindex-tailadmin[data-mi-page="barnat"] body #registryContent.table-wrap {
+  width:100%!important;
+  max-width:100%!important;
+  min-width:0!important;
+}
+html.medindex-tailadmin[data-mi-page="barnat"] body #dataTable[data-registry-unified-table] {
+  width:max(100%,var(--registry-unified-width,100%))!important;
 }
 
 html.medindex-tailadmin[data-mi-page="barnat"][data-registry-dose-column-visible="true"] body #dataTable :is(th,td):is(
@@ -36,6 +62,35 @@ html.medindex-tailadmin[data-mi-page="barnat"][data-registry-dose-column-visible
   min-width:132px!important;
   max-width:132px!important;
   box-shadow:none!important;
+}
+
+html.medindex-tailadmin[data-mi-page="barnat"][data-registry-dose-column-visible="true"] body #dataTable col[data-registry-column-key="dose-calculator"] {
+  display:table-column!important;
+  width:132px!important;
+}
+
+/* Dose text and the route chip share the cell without colliding. */
+html.medindex-tailadmin[data-mi-page="barnat"] body #dataTable td:is(
+  [data-registry-column-key="dosage-adult"],
+  [data-registry-column-key="dosage-pediatric"]
+) {
+  min-width:0!important;
+}
+html.medindex-tailadmin[data-mi-page="barnat"] body #dataTable td:is(
+  [data-registry-column-key="dosage-adult"],
+  [data-registry-column-key="dosage-pediatric"]
+) .registry-dosage-grid {
+  width:100%!important;
+  min-width:0!important;
+  grid-template-columns:minmax(0,1fr) 54px!important;
+  column-gap:9px!important;
+}
+html.medindex-tailadmin[data-mi-page="barnat"] body #dataTable td:is(
+  [data-registry-column-key="dosage-adult"],
+  [data-registry-column-key="dosage-pediatric"]
+) .registry-dosage-route {
+  justify-self:end!important;
+  flex:none!important;
 }
 
 html.medindex-tailadmin[data-mi-page="barnat"] body #dataTable .dose-table-header {
