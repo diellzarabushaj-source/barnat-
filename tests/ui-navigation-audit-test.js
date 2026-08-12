@@ -30,7 +30,19 @@ for (const [fileName, skipTarget] of pages) {
   assert.equal(count(html, /tailadmin-shell-legacy\.js/gi), 0, `${fileName}: legacy shell must not be statically loaded`);
   assert.equal(count(html, /ui-enhancements\.js/gi), 0, `${fileName}: retired UI enhancement controller must not be loaded`);
   assert.equal(count(html, /tailadmin-professional\.js/gi), 1, `${fileName}: professional TailAdmin runtime must load exactly once`);
-  assert.match(styles.at(-1) || '', /tailadmin-professional\.css/, `${fileName}: professional TailAdmin CSS must be the final static stylesheet`);
+
+  const professionalCssIndex = styles.findIndex(href => /tailadmin-professional\.css/.test(href));
+  assert.ok(professionalCssIndex >= 0, `${fileName}: professional TailAdmin stylesheet is missing from the cascade`);
+  const stylesAfterProfessional = styles.slice(professionalCssIndex + 1);
+  if (fileName === 'index.html') {
+    assert.ok(
+      stylesAfterProfessional.every(href => /^registry-table-tools\.css(?:\?|$)/.test(href)),
+      `${fileName}: only the generated registry table-tools layer may follow professional TailAdmin CSS; found ${stylesAfterProfessional.join(', ')}`,
+    );
+  } else {
+    assert.deepEqual(stylesAfterProfessional, [], `${fileName}: professional TailAdmin CSS must remain the final static stylesheet`);
+  }
+
   assert.doesNotMatch(html, /navigation-shell\.css|navigation-consistency\.js|main-navigation-extension\.js/, `${fileName}: legacy navigation layer must not load`);
 
   const shellIndex = scripts.findIndex(item => item.includes('tailadmin-shell.js'));
