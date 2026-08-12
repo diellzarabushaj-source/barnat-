@@ -19,6 +19,7 @@ if (!source.includes(PRESCRIPTION_SCRIPT)) {
   source = source.replace(DETAIL_SCRIPT, `${DETAIL_SCRIPT}\n${PRESCRIPTION_SCRIPT}`);
 }
 fs.writeFileSync(INDEX, source, 'utf8');
+require('./patch-phase13-prescription-lite.js');
 
 if (source.indexOf(DETAIL_SCRIPT) < source.indexOf(ROW_ANCHOR)) throw new Error('Phase 12 targeted detail must load after the existing row expander.');
 if (source.indexOf(PRESCRIPTION_SCRIPT) < source.indexOf(DETAIL_SCRIPT)) throw new Error('Phase 13 prescription bridge must load after targeted detail.');
