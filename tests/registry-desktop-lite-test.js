@@ -38,18 +38,22 @@ assert.match(desktop, /const VERSION = 'registry-desktop-lite-v1'/);
 assert.match(desktop, /const API = '\/api\/drug-search'/);
 assert.match(desktop, /view:'registry-page'/);
 assert.match(desktop, /const DEFAULT_PAGE_SIZE = 50/);
-assert.match(desktop, /pageSize:String\(state\.pageSize\)/);
+assert.match(desktop, /const SERVER_PAGE_SIZE = 50/);
+assert.match(desktop, /const MAX_LOGICAL_PAGE_SIZE = 500/);
+assert.match(desktop, /pageSize:String\(boundedPageSize\)/, 'Every Neon registry-page request must remain capped to the bounded server page size.');
 assert.match(desktop, /sort:state\.sort/);
 assert.match(desktop, /direction:state\.direction/);
 assert.match(desktop, /params\.set\('q', state\.q\)/);
 assert.match(desktop, /params\.set\('status', state\.status\)/);
+assert.match(desktop, /params\.set\('formExact', state\.formValue\)/, 'Exact pharmaceutical form must stay on the lightweight server filter.');
+assert.match(desktop, /params\.set\('formCategory', state\.formValue\)/, 'Pharmaceutical-form categories must stay on the lightweight server filter.');
 assert.match(desktop, /medindex:registry-page-ready/);
 assert.match(desktop, /MEDINDEX_REGISTRY_ROWS = canonical/);
 assert.match(desktop, /medindex:request-full-registry/);
 assert.match(desktop, /prescription-builder/);
 assert.match(desktop, /column-picker/);
-assert.match(desktop, /form-picker/);
-assert.match(desktop, /desktop-large-page-size/);
+assert.doesNotMatch(desktop, /\['formPickerBtn', 'form-picker'\]/, 'Form picker must not trigger the full registry in Phase 11.');
+assert.doesNotMatch(desktop, /desktop-large-page-size/, '50/100/250/500 page-size selection must remain lightweight in Phase 11.');
 assert.doesNotMatch(desktop, /\/api\/registry(?:\?|['"`])/, 'Normal desktop lightweight mode must not call the full registry endpoint.');
 assert.doesNotMatch(desktop, /DRUG_DATA_PARTS/, 'Desktop lightweight mode must not hydrate the compressed full-registry payload.');
 
@@ -90,6 +94,8 @@ assert.doesNotMatch(marker, /\/api\/pediatric-only-population/,
   'The legacy pediatric-only endpoint must not be required by normal lightweight rendering.');
 
 assert.match(packageJson.scripts['build:runtime'], /patch-phase10-desktop-lite\.js/, 'Phase 10 wiring must be deterministic in build:runtime.');
-assert.match(packageJson.scripts.test, /registry-desktop-lite-test\.js/, 'Phase 10 regression test must run in the main test suite.');
+assert.match(packageJson.scripts['build:runtime'], /patch-phase11-desktop-advanced-lite\.js/, 'Phase 11 bounded large pages and form filtering must be deterministic in build:runtime.');
+assert.match(packageJson.scripts.test, /registry-desktop-lite-test\.js/, 'Desktop lightweight regression test must run in the main test suite.');
+assert.match(packageJson.scripts.test, /registry-desktop-large-page-lite-test\.js/, 'Phase 11 regression test must run in the main test suite.');
 
-console.log('Phase 10 desktop pagination, inline population metadata, deferred full-registry handoff and page-aware targeted dosage contract passed.');
+console.log('Phase 11 desktop bounded pagination, lightweight pharmaceutical-form filtering, inline population metadata and targeted dosage contract passed.');
