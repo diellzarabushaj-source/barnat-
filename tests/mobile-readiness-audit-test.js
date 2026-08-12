@@ -73,7 +73,7 @@ assert.doesNotMatch(cellPreview, /input,select,textarea,button,\.drug-actions-tr
 assert.match(cellPreview, /\['dosage-adult', 'dosage-pediatric'\]\.includes\(key\)/, 'adult and pediatric dosage cells must remain previewable');
 
 /* The Tailwind-style column picker must size itself and clamp to every viewport. */
-assert.match(columnPicker, /column-picker-tailwind-20260805-3/);
+assert.match(columnPicker, /column-picker-tailwind-20260812-population-1/);
 assert.match(columnPicker, /function resetPanelPosition\(root\)/);
 assert.match(columnPicker, /function keepPanelInsideViewport\(root\)/);
 assert.match(columnPicker, /setProperty\('left',[\s\S]*'important'\)/);
@@ -83,7 +83,7 @@ assert.match(columnPickerCss, /box-sizing: border-box/);
 assert.match(columnPickerCss, /position: fixed !important/);
 assert.match(columnPickerCss, /grid-template-columns: 1fr !important/);
 assert.match(index, /registry-column-picker-tailwind\.css\?v=20260805-3/);
-assert.match(index, /registry-column-picker-tailwind\.js\?v=20260805-3/);
+assert.match(index, /registry-column-picker-tailwind\.js\?v=20260812-population-column-1/);
 
 /* Mobile drug cards must expose both details and the verified calculator. */
 assert.match(index, /registry-mobile-critical\.css\?v=20260810-1/);
@@ -122,4 +122,4 @@ assert.match(workflow, /column-picker-tailwind\.spec\.js/, 'browser workflow mus
   /context\.setOffline\(true\)/,
 ].forEach(pattern => assert.match(browserSpec, pattern, `mobile browser audit missing ${pattern}`));
 
-console.log('Mobile, tablet, touch, safe-area, immutable drug-name, Tailwind column picker, dosage preview and orientation audit passed.');
+console.log('Mobile, tablet, touch, safe-area, immutable drug-name, Tailwind population column picker, dosage preview and orientation audit passed.');
