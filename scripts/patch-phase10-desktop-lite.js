@@ -71,6 +71,47 @@ function patchRuntimeLoader() {
   write('registry-runtime-loader.js', source);
 }
 
+function patchRegistryPopulationMetadata() {
+  let source = read('api/drug-search.js');
+  source = replaceOnce(
+    source,
+    `const RegistryRevision = require('../lib/registry-revision.js');\nconst { neonRequest, exactCount } = require('../lib/neon-data-api.js');`,
+    `const RegistryRevision = require('../lib/registry-revision.js');\nconst ApprovedPopulation = require('../lib/approved-population-handler.js');\nconst { neonRequest, exactCount } = require('../lib/neon-data-api.js');`,
+    'approved-population server dependency',
+  );
+  source = replaceOnce(
+    source,
+    `const clean = value => String(value ?? '').replace(/\\s+/g, ' ').trim();\nfunction normalize(value) {`,
+    `const clean = value => String(value ?? '').replace(/\\s+/g, ' ').trim();\nlet approvedPopulationIndex = null;\n\nfunction approvedPopulationForRegistryNumber(value) {\n  const registryNumber = Number(value);\n  if (!Number.isInteger(registryNumber) || registryNumber <= 0) return '';\n  if (!approvedPopulationIndex) {\n    approvedPopulationIndex = new Map(\n      ApprovedPopulation.snapshotItems().map(item => [Number(item.registryNumber), clean(item.approvedPopulation)])\n    );\n  }\n  return clean(approvedPopulationIndex.get(registryNumber));\n}\n\nfunction normalize(value) {`,
+    'approved-population page index',
+  );
+  source = replaceOnce(
+    source,
+    `    registryNumber:row.registry_number ?? null,\n    pdid:clean(row.pdid),`,
+    `    registryNumber:row.registry_number ?? null,\n    approvedPopulation:approvedPopulationForRegistryNumber(row.registry_number),\n    pdid:clean(row.pdid),`,
+    'approved-population lightweight row metadata',
+  );
+  if (!source.includes('ApprovedPopulation.snapshotItems()')) throw new Error('Phase 10 approved-population index is missing.');
+  if (!source.includes('approvedPopulation:approvedPopulationForRegistryNumber(row.registry_number)')) {
+    throw new Error('Phase 10 lightweight registry rows must carry approved population metadata.');
+  }
+  write('api/drug-search.js', source);
+}
+
+function patchDesktopPopulationMetadata() {
+  let source = read('registry-desktop-lite.js');
+  source = replaceOnce(
+    source,
+    `      'Nr rendor':row.registryNumber ?? '',\n      'PDID':clean(row.pdid),`,
+    `      'Nr rendor':row.registryNumber ?? '',\n      'Popullata e aprovuar':clean(row.approvedPopulation),\n      'Pediatric only':clean(row.approvedPopulation) === 'Pediatric only' ? 'Pediatric only' : '',\n      'PDID':clean(row.pdid),`,
+    'approved-population desktop canonical row',
+  );
+  if (!source.includes("'Popullata e aprovuar':clean(row.approvedPopulation)")) {
+    throw new Error('Phase 10 desktop canonical rows must carry approved population metadata.');
+  }
+  write('registry-desktop-lite.js', source);
+}
+
 function patchDosageRuntime() {
   let source = read('registry-dosage-columns-v3.js');
   source = replaceOnce(
@@ -97,7 +138,22 @@ function patchDosageRuntime() {
   write('registry-dosage-columns-v3.js', source);
 }
 
+function verifyPopulationMarker() {
+  const source = read('registry-dose-clinical-row-markers.js');
+  if (/fetch\s*\(/.test(source)) throw new Error('Phase 10 row markers must not perform a population API request.');
+  if (source.includes('/api/pediatric-only-population')) throw new Error('Phase 10 row markers must not depend on the legacy population endpoint.');
+  if (!source.includes("window.addEventListener('medindex:registry-page-ready', onRegistryDataReady)")) {
+    throw new Error('Phase 10 row markers must refresh from each lightweight registry page.');
+  }
+  if (!source.includes("item['Popullata e aprovuar']")) {
+    throw new Error('Phase 10 row markers must read approved population from local row metadata.');
+  }
+}
+
 patchIndex();
 patchRuntimeLoader();
+patchRegistryPopulationMetadata();
+patchDesktopPopulationMetadata();
 patchDosageRuntime();
-console.log('Phase 10 desktop lightweight registry, deferred full runtime and page-aware targeted dosage patch passed.');
+verifyPopulationMarker();
+console.log('Phase 10 desktop lightweight registry, inline approved population, deferred full runtime and page-aware targeted dosage patch passed.');
