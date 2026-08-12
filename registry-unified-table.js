@@ -455,7 +455,7 @@
     toolbar.innerHTML = `
       <div class="registry-view-heading">
         <strong>Regjistri i barnave</strong>
-        <span data-registry-view-description>Dozat dhe verifikimi janë në fokus.</span>
+        <span data-registry-view-description>Dozat dhe rruga e përdorimit janë në fokus.</span>
       </div>
       <div class="registry-view-actions-wrap">
         <button type="button" class="registry-filter-toggle" data-registry-filter-toggle aria-controls="registryFilterPanel" aria-expanded="false">Filtrat <span data-registry-filter-count hidden>0</span></button>
@@ -508,7 +508,7 @@
     const description = toolbar.querySelector('[data-registry-view-description]');
     const countText = clean(document.getElementById('countBadge')?.textContent).match(/[\d.,]+/)?.[0];
     if (description) description.textContent = currentView() === 'clinical'
-      ? `${countText ? `${countText} barna · ` : ''}dozat, rruga dhe verifikimi janë të prioritizuara.`
+      ? `${countText ? `${countText} barna · ` : ''}dozat dhe rruga e përdorimit janë të prioritizuara.`
       : `${countText ? `${countText} barna · ` : ''}kolonat e zgjedhura shfaqen në rend të qëndrueshëm.`;
   }
 

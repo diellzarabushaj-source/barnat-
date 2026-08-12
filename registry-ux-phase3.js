@@ -137,7 +137,7 @@
     if (!entries.length) {
       const empty = document.createElement('div');
       empty.className = 'registry-workspace-empty';
-      empty.innerHTML = '<strong>Ende s’ke shënime.</strong><span>Shkruaj direkt në kolonën “Shënime personale” dhe do të dalin këtu.</span>';
+      empty.innerHTML = '<strong>Ende s’ke shënime.</strong><span>Përdor ikonën e shënimit pranë emrit të barit dhe do të dalin këtu.</span>';
       list.appendChild(empty);
       return;
     }
@@ -224,7 +224,9 @@
 
   function navigateToNote(key, fallbackName = '') {
     setPanelOpen(false);
-    if (focusNoteByKey(key)) return;
+    const noteComponent = window.MedIndexPersonalNoteComponent;
+    if (noteComponent?.openByKey?.(key, { fallbackName })) return;
+    if (!noteComponent && focusNoteByKey(key)) return;
 
     const raw = rawForNoteKey(key);
     const name = clean(raw?.['Emri tregtar']) || clean(fallbackName);
@@ -236,9 +238,10 @@
     search.value = name;
 
     const tryFocus = () => {
-      if (focusNoteByKey(key)) return;
+      if (window.MedIndexPersonalNoteComponent?.openByKey?.(key, { fallbackName:name })) return;
+      if (!window.MedIndexPersonalNoteComponent && focusNoteByKey(key)) return;
       const byName = [...document.querySelectorAll('#tbody > tr')].find(row => clean(row.querySelector('.drug-name-text')?.textContent).toLowerCase() === name.toLowerCase());
-      focusTextarea(rowNoteTextarea(byName));
+      if (!window.MedIndexPersonalNoteComponent?.openForRow?.(byName)) focusTextarea(rowNoteTextarea(byName));
     };
     window.addEventListener('medindex:registry-rendered', tryFocus, { once:true, passive:true });
     search.dispatchEvent(new Event('input', { bubbles:true }));
@@ -307,7 +310,8 @@
       if (rowJump) {
         event.preventDefault();
         event.stopImmediatePropagation();
-        focusTextarea(rowNoteTextarea(rowJump.closest('tr')));
+        const row = rowJump.closest('tr');
+        if (!window.MedIndexPersonalNoteComponent?.openForRow?.(row)) focusTextarea(rowNoteTextarea(row));
         return;
       }
       const shell = document.getElementById('registryPersonalWorkspace');

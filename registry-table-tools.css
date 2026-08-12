@@ -1,0 +1,195 @@
+/* Compact optional tools for the medicine registry.
+   Verification and editing are intentionally removed from the table. */
+
+html.medindex-tailadmin[data-mi-page="barnat"] body #dataTable :is(th,td):is(
+  [data-registry-column-key="clinical-status"],
+  [data-registry-column-key="clinical-action"],
+  [data-clinical-editor-column="clinical-status"],
+  [data-clinical-editor-column="clinical-action"]
+),
+html.medindex-tailadmin[data-mi-page="barnat"] body #dataTable :is(
+  .clinical-editor-status-column,
+  .clinical-editor-action-column
+),
+html.medindex-tailadmin[data-mi-page="barnat"] body #dataTable :is(th,td)[data-registry-column-key="personal-note"],
+html.medindex-tailadmin[data-mi-page="barnat"] body #dataTable :is(.registry-personal-note-head,.registry-personal-note-cell) {
+  display:none!important;
+}
+
+html.medindex-tailadmin[data-mi-page="barnat"]:not([data-registry-dose-column-visible="true"]) body #dataTable :is(th,td):is(
+  [data-registry-column-key="dose-calculator"],
+  [data-registry-dose-calculator-column="dose-calculator"]
+) {
+  display:none!important;
+}
+
+html.medindex-tailadmin[data-mi-page="barnat"][data-registry-dose-column-visible="true"] body #dataTable :is(th,td):is(
+  [data-registry-column-key="dose-calculator"],
+  [data-registry-dose-calculator-column="dose-calculator"]
+) {
+  position:static!important;
+  inset:auto!important;
+  right:auto!important;
+  left:auto!important;
+  display:table-cell!important;
+  width:132px!important;
+  min-width:132px!important;
+  max-width:132px!important;
+  box-shadow:none!important;
+}
+
+html.medindex-tailadmin[data-mi-page="barnat"] body #dataTable .dose-table-header {
+  font-size:0!important;
+}
+html.medindex-tailadmin[data-mi-page="barnat"] body #dataTable .dose-table-header::before {
+  content:"Kalkulatori";
+  font-size:12px!important;
+  font-weight:500!important;
+}
+html.medindex-tailadmin[data-mi-page="barnat"] body #dataTable .dose-table-header::after {
+  content:"Vetëm doza të verifikuara";
+  font-size:10px!important;
+  font-weight:400!important;
+}
+
+.registry-dose-column-preference {
+  display:grid!important;
+  grid-template-columns:18px minmax(0,1fr)!important;
+  align-items:start!important;
+  gap:9px!important;
+  margin:8px 0!important;
+  padding:11px!important;
+  border:1px solid #d9e5e3!important;
+  border-radius:10px!important;
+  background:#f8fbfb!important;
+  color:#263f42!important;
+  cursor:pointer!important;
+}
+.registry-dose-column-preference>input {
+  width:18px!important;
+  height:18px!important;
+  min-height:18px!important;
+  margin:1px 0 0!important;
+  accent-color:#147d77;
+}
+.registry-dose-column-preference-copy {display:grid;gap:3px;min-width:0}
+.registry-dose-column-preference-copy strong {font-size:12px!important;font-weight:500!important}
+.registry-dose-column-preference-copy small {color:#718386;font-size:10px!important;line-height:1.35}
+
+.registry-note-dialog-overlay {
+  position:fixed;
+  z-index:2147483200;
+  inset:0;
+  display:grid;
+  place-items:center;
+  padding:20px;
+  background:rgba(15,23,42,.52);
+  backdrop-filter:blur(3px);
+  -webkit-backdrop-filter:blur(3px);
+}
+.registry-note-dialog-overlay[hidden]{display:none!important}
+.registry-note-dialog {
+  width:min(480px,100%);
+  max-height:min(720px,calc(100dvh - 40px));
+  overflow:hidden;
+  border:1px solid #d9e4e2;
+  border-radius:18px;
+  background:#fff;
+  color:#193235;
+  box-shadow:0 30px 90px rgba(15,23,42,.24),0 4px 16px rgba(15,23,42,.08);
+}
+.registry-note-dialog-head {
+  display:grid;
+  grid-template-columns:40px minmax(0,1fr) 34px;
+  align-items:center;
+  gap:11px;
+  padding:16px;
+  border-bottom:1px solid #e6eeee;
+  background:linear-gradient(180deg,#fff,#fbfdfd);
+}
+.registry-note-dialog-icon {
+  display:grid;
+  width:40px;
+  height:40px;
+  place-items:center;
+  border:1px solid #cce4df;
+  border-radius:11px;
+  background:#edf8f6;
+  color:#147a74;
+}
+.registry-note-dialog-icon svg {width:20px;height:20px;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round}
+.registry-note-dialog-heading {display:grid;gap:3px;min-width:0}
+.registry-note-dialog-heading strong {font-size:15px!important;font-weight:600!important}
+.registry-note-dialog-heading small {overflow:hidden;color:#718386;font-size:12px!important;text-overflow:ellipsis;white-space:nowrap}
+.registry-note-dialog-close {
+  display:grid;
+  width:34px;
+  height:34px;
+  place-items:center;
+  padding:0;
+  border:1px solid #dce6e5;
+  border-radius:9px;
+  background:#fff;
+  color:#718184;
+  font-size:20px;
+  cursor:pointer;
+}
+.registry-note-dialog-close:hover{background:#f3f7f6;color:#314a4d}
+.registry-note-dialog-body {display:grid;gap:8px;padding:17px 18px 14px}
+.registry-note-dialog-body>label {color:#435b5e;font-size:12px!important;font-weight:500!important}
+.registry-note-dialog-body textarea {
+  width:100%;
+  min-height:190px;
+  max-height:46vh;
+  resize:vertical;
+  padding:13px 14px;
+  border:1px solid #cfdcda!important;
+  border-radius:12px!important;
+  background:#fff!important;
+  color:#173033!important;
+  font-size:14px!important;
+  font-weight:400!important;
+  line-height:1.55!important;
+  outline:none;
+  box-shadow:none!important;
+}
+.registry-note-dialog-body textarea:focus {border-color:#168c86!important;box-shadow:0 0 0 3px rgba(22,140,134,.12)!important}
+.registry-note-dialog-body textarea::placeholder{color:#91a0a2}
+.registry-note-dialog-meta {display:flex;align-items:center;justify-content:space-between;gap:12px;color:#718386;font-size:10px!important}
+.registry-note-dialog-foot {display:flex;align-items:center;justify-content:space-between;gap:10px;padding:12px 18px 16px}
+.registry-note-dialog-foot button {min-height:40px;padding:0 14px;border-radius:10px;font-size:12px!important;font-weight:500!important;cursor:pointer}
+.registry-note-dialog-clear {border:1px solid transparent;background:transparent;color:#8a4b47}
+.registry-note-dialog-clear:hover{background:#fff4f3}
+.registry-note-dialog-done {border:1px solid #126e69;background:#147d77;color:#fff}
+.registry-note-dialog-done:hover{background:#106c67}
+body.registry-note-dialog-open{overflow:hidden!important}
+
+html[data-theme="dark"] .registry-dose-column-preference {border-color:#34484a!important;background:#172426!important;color:#e1ebea!important}
+html[data-theme="dark"] .registry-dose-column-preference-copy small{color:#9eb0b2}
+html[data-theme="dark"] .registry-note-dialog {border-color:#34484a;background:#142123;color:#edf4f3}
+html[data-theme="dark"] .registry-note-dialog-head {border-color:#304244;background:#172426}
+html[data-theme="dark"] .registry-note-dialog-icon {border-color:#315c57;background:#17342f;color:#77d2c8}
+html[data-theme="dark"] .registry-note-dialog-close {border-color:#3a4e50;background:#1b2a2c;color:#adc0c2}
+html[data-theme="dark"] .registry-note-dialog-heading small,
+html[data-theme="dark"] .registry-note-dialog-meta {color:#9eb0b2}
+html[data-theme="dark"] .registry-note-dialog-body>label {color:#c2d1d0}
+html[data-theme="dark"] .registry-note-dialog-body textarea {border-color:#3a5052!important;background:#101a1c!important;color:#edf4f3!important}
+html[data-theme="dark"] .registry-note-dialog-clear {color:#f0aaa3}
+
+@media(max-width:640px){
+  .registry-note-dialog-overlay{align-items:end;padding:0;background:rgba(15,23,42,.58)}
+  .registry-note-dialog{width:100%;max-height:92dvh;border-width:1px 0 0;border-radius:20px 20px 0 0}
+  .registry-note-dialog-head{padding:14px}
+  .registry-note-dialog-body{padding:15px 14px 12px}
+  .registry-note-dialog-body textarea{min-height:180px;max-height:48dvh;font-size:16px!important;resize:none}
+  .registry-note-dialog-foot{padding:10px 14px calc(14px + env(safe-area-inset-bottom))}
+  .registry-note-dialog-foot button{min-height:44px}
+}
+
+@media(prefers-reduced-motion:reduce){
+  .registry-note-dialog-overlay,.registry-note-dialog *{transition:none!important}
+}
+
+@media print{
+  .registry-note-dialog-overlay{display:none!important}
+}
