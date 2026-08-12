@@ -1,0 +1,94 @@
+/* MedIndex dashboard typography
+   Self-hosted Inter keeps the authenticated workspace consistent without
+   relying on an external font origin. Body copy stays regular, controls and
+   labels use medium, and semibold is reserved for primary headings. */
+
+@font-face {
+  font-family: "Inter";
+  font-style: normal;
+  font-display: swap;
+  font-weight: 100 900;
+  src: url("fonts/inter-latin-variable-normal.woff2") format("woff2");
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6,
+    U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122,
+    U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+}
+
+@font-face {
+  font-family: "Inter";
+  font-style: italic;
+  font-display: swap;
+  font-weight: 100 900;
+  src: url("fonts/inter-latin-variable-italic.woff2") format("woff2");
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6,
+    U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122,
+    U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+}
+
+html.medindex-tailadmin {
+  --mi-font: "Inter", ui-sans-serif, system-ui, sans-serif !important;
+  --mi-v4-font: var(--mi-font) !important;
+  --tw-font: var(--mi-font) !important;
+  --sans: var(--mi-font) !important;
+  --serif: var(--mi-font) !important;
+  --mono: var(--mi-font) !important;
+  --mi-mono: var(--mi-font) !important;
+}
+
+/* Layered important declarations intentionally outrank older page-specific
+   typography rules while leaving layout, colour, and clinical state intact. */
+@layer medindex-dashboard-typography {
+  html.medindex-tailadmin,
+  html.medindex-tailadmin body,
+  html.medindex-tailadmin body * {
+    font-family: var(--mi-font) !important;
+    font-synthesis: none;
+  }
+
+  html.medindex-tailadmin body * {
+    font-weight: 400 !important;
+  }
+
+  html.medindex-tailadmin body :where(
+    strong,
+    b,
+    button,
+    label,
+    th,
+    summary,
+    [role="button"],
+    [aria-current="page"],
+    .active,
+    .mi-menu-heading,
+    .mi-heading-badge,
+    .badge,
+    [class*="-badge"],
+    [class*="-count"]
+  ) {
+    font-weight: 500 !important;
+  }
+
+  html.medindex-tailadmin body :where(h4, h5, h6) {
+    font-weight: 500 !important;
+  }
+
+  html.medindex-tailadmin body :where(
+    h1,
+    h2,
+    h3,
+    .mi-page-heading-title,
+    .dialog-title,
+    .modal-title,
+    .mi-brand-copy strong
+  ),
+  html.medindex-tailadmin body :where(
+    h1,
+    h2,
+    h3,
+    .mi-page-heading-title,
+    .dialog-title,
+    .modal-title
+  ) * {
+    font-weight: 600 !important;
+  }
+}
