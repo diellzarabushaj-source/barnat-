@@ -32,7 +32,7 @@ assert.match(index, /offline-runtime\.js\?v=[^\"]+[^>]+data-medindex-offline-run
 assert.doesNotMatch(index, /offline-runtime-performance\.js/, 'index.html: legacy offline runtime path must not be loaded');
 assert.match(index, /registry-fast-start\.js\?v=registry-fast-start-v2/, 'index.html: fast-start guard version is stale');
 assert.match(index, /<script id="drug-data" type="application\/json">\[\]<\/script>/, 'registry JSON fallback must remain inert');
-assert.match(index, /data-registry-ui-release="20260809-1"/, 'registry UI release is stale');
+assert.match(index, /data-registry-ui-release="20260812-1"/, 'registry UI release is stale');
 assert.match(index, /registry-cell-preview\.js\?v=20260811-2/, 'cell preview runtime version is stale');
 assert.match(index, /registry-dose-10s-flow\.js\?v=20260811-2/, 'observer-safe dose fast-flow runtime is stale');
 assert.match(index, /registry-dose-calculator\.js\?v=20260810-2/, 'canonical dose calculator runtime is stale');
@@ -40,10 +40,10 @@ assert.doesNotMatch(index, /registry-dose-calculator-fast-ui\.(?:js|css)/, 'obso
 assert.match(index, /registry-dose-table-button\.js\?v=20260811-1/, 'dose table button runtime is missing');
 assert.match(index, /registry-dose-table-button\.css\?v=20260810-1/, 'dose table button stylesheet is missing');
 assert.match(index, /registry-dose-modal-accessibility\.js\?v=20260809-1/, 'dose modal accessibility runtime is stale');
-assert.match(index, /registry-ui-release\.js\?v=20260809-1/, 'registry UI release runtime is stale');
+assert.match(index, /registry-ui-release\.js\?v=20260812-1/, 'registry UI release runtime is stale');
 
 const registryRelease = read('registry-ui-release.js');
-assert.match(registryRelease, /registry-ui-20260809-1/, 'registry UI cache-clear release is stale');
+assert.match(registryRelease, /registry-ui-20260812-1/, 'registry UI cache-clear release is stale');
 
 const mobile = read('registry-mobile-lite.js');
 assert.match(mobile, /registry-mobile-lite-v2/, 'mobile lightweight client version is stale');
