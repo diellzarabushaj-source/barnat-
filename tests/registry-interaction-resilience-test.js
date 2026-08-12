@@ -83,7 +83,7 @@ assert.match(middleware, /'\/registry-parser-worker-v2\.js'/, 'v2 parser worker 
 assert.match(index, /registry-mobile-lite\.js\?v=20260812-1/, 'index must load the phone lightweight client');
 assert.match(index, /registry-runtime-loader\.js\?v=20260812-7/, 'index must request the mobile-aware bootstrap');
 assert.ok(index.indexOf('registry-mobile-lite.js') < index.indexOf('registry-runtime-loader.js'), 'mobile lightweight client must register before the full loader');
-assert.match(index, /registry-unified-table\.js\?v=20260801-1/, 'index must load the single table controller');
+assert.match(index, /registry-unified-table\.js\?v=20260812-population-column-1/, 'index must load the current population-aware single table controller');
 assert.doesNotMatch(index, /(?:registry-table-integrity|registry-clinical-view|registry-tailgrids-refinement|registry-columns-filters|registry-table-final)\.js/, 'legacy table controllers must not load');
 assert.doesNotMatch(index, /<script src="app-performance\.js"/, 'heavy registry application must not be parser ordered');
 assert.match(index, /app-runtime-performance\.js\?v=clinical-audit-v5-performance-runtime/, 'index must preload the cache-isolated generated runtime');
