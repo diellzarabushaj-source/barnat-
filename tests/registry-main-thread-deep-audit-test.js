@@ -46,7 +46,8 @@ assert.match(mobile, /MAX_PAGE_SIZE = 50/);
 assert.match(mobile, /SEARCH_DEBOUNCE_MS = 250/);
 assert.match(mobile, /view:'registry-page'/);
 assert.match(mobile, /view:'registry-detail'/);
-assert.match(mobile, /medindex:registry-data-ready/);
+assert.match(mobile, /medindex:mobile-lite-ready/);
+assert.doesNotMatch(mobile, /MEDINDEX_REGISTRY_ROWS|medindex:registry-data-ready|medindex:registry-ready/, 'mobile lightweight mode must not impersonate full registry readiness');
 assert.doesNotMatch(mobile, /DRUG_DATA_PARTS|DecompressionStream|Uint8Array\.from\(atob/);
 
 assert.match(runtimeLoader, /registry-runtime-loader-v7/);
@@ -105,4 +106,4 @@ assert.match(builder, /runtimeOutputs/);
 assert.match(builder, /app-runtime-performance\.js/);
 assert.match(middleware, /registry-parser-worker-v2\.js/);
 
-console.log('Registry mobile lightweight loader v7, single controller and main-thread deep audit passed.');
+console.log('Registry isolated mobile lightweight loader v7, single controller and main-thread deep audit passed.');
