@@ -15,8 +15,7 @@ function ensureArrayEntry(source, name, entry) {
   if (open < 0 || end < 0) throw new Error(`Personal note column patch could not close ${name}.`);
   const block = source.slice(open, end);
   if (block.includes(`'${entry}'`)) return source;
-  const next = `${source.slice(0, end).replace(/\s*$/, '')}, '${entry}'\n  `;
-  return next + source.slice(end);
+  return source.slice(0, end) + `'${entry}',\n  ` + source.slice(end);
 }
 
 function ensureObjectEntry(source, name, key, entry) {
