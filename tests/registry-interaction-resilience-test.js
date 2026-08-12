@@ -6,10 +6,11 @@ const { execFileSync } = require('node:child_process');
 const ROOT = path.resolve(__dirname, '..');
 const read = file => fs.readFileSync(path.join(ROOT, file), 'utf8');
 
-for (const file of ['registry-runtime-loader.js', 'app-performance.js', 'registry-parser-worker-v2.js', 'registry-dosage-loader.js', 'registry-dosage-columns-v2.js', 'registry-unified-table.js']) {
+for (const file of ['registry-mobile-lite.js', 'registry-runtime-loader.js', 'app-performance.js', 'registry-parser-worker-v2.js', 'registry-dosage-loader.js', 'registry-dosage-columns-v2.js', 'registry-unified-table.js']) {
   execFileSync(process.execPath, ['--check', path.join(ROOT, file)], { stdio:'pipe' });
 }
 
+const mobile = read('registry-mobile-lite.js');
 const loader = read('registry-runtime-loader.js');
 const app = read('app-performance.js');
 const part = read('app-parts/part-01.txt');
@@ -21,11 +22,20 @@ const middleware = read('middleware.ts');
 const index = read('index.html');
 const builder = read('scripts/build-static-runtime.js');
 
-assert.match(loader, /registry-runtime-loader-v6/, 'immediate authenticated loader version must be current');
+assert.match(mobile, /registry-mobile-lite-v1/, 'mobile lightweight client version must be current');
+assert.match(mobile, /credentials:'same-origin'/, 'mobile registry requests must retain private session credentials');
+assert.match(mobile, /view:'registry-page'/, 'mobile registry must read from the Phase 1 lightweight gateway');
+assert.match(mobile, /view:'registry-detail'/, 'mobile detail must remain targeted and on demand');
+assert.doesNotMatch(mobile, /DRUG_DATA_PARTS|app-performance\.js|NEON_DATA_API|apirest\./i, 'mobile client must not load or access the full registry or Neon directly');
+
+assert.match(loader, /registry-runtime-loader-v7/, 'mobile-aware authenticated loader version must be current');
 assert.match(loader, /classList\.contains\('auth-ready'\)/, 'registry bootstrap must wait for the authenticated shell');
-assert.match(loader, /requestAnimationFrame\(\(\) => \{[\s\S]*loadRuntime\(\)/, 'registry bootstrap must yield a paint opportunity');
-assert.match(loader, /app-performance\.js\?v=20260801-2/, 'loader must request the audited registry bootstrap');
-assert.doesNotMatch(loader, /FIRST_INTERACTION_FALLBACK_MS|POST_INTERACTION_GRACE_MS|INTERACTION_EVENTS/, 'loader must not wait for a click or multi-second fallback');
+assert.match(loader, /requestAnimationFrame\(\(\) => \{[\s\S]*loadRuntime\(/, 'registry bootstrap must yield a paint opportunity');
+assert.match(loader, /app-performance\.js\?v=20260801-2/, 'loader must request the audited full registry bootstrap');
+assert.match(loader, /mobile-lite-deferred/, 'phone startup must defer the full registry while lightweight mode is healthy');
+assert.match(loader, /desktop-or-legacy/, 'desktop must preserve the full registry startup behavior');
+assert.match(loader, /medindex:full-registry-started/, 'full-runtime handoff must publish a deterministic event');
+assert.doesNotMatch(loader, /FIRST_INTERACTION_FALLBACK_MS|POST_INTERACTION_GRACE_MS|INTERACTION_EVENTS/, 'loader must not wait for legacy interaction gates');
 assert.doesNotMatch(loader, /MEDINDEX_REGISTRY_UI_READY\s*=\s*new Promise/, 'loader must not shadow the runtime readiness promise');
 assert.doesNotMatch(loader, /document\.write|eval\s*\(|new Function/, 'loader must not use dynamic-code shortcuts');
 
@@ -67,14 +77,15 @@ assert.doesNotMatch(unified, /observe\(document\.body|subtree\s*:\s*true/, 'sing
 assert.match(unified, /observer\.observe\(tbody, \{ childList:true \}\)/, 'table body observer must react only to page-row replacement');
 
 assert.match(middleware, /'\/registry-parser-worker-v2\.js'/, 'v2 parser worker must pass through auth middleware');
-assert.match(index, /registry-runtime-loader\.js\?v=20260801-6/, 'index must request the current immediate bootstrap');
+assert.match(index, /registry-mobile-lite\.js\?v=20260812-1/, 'index must load the phone lightweight client');
+assert.match(index, /registry-runtime-loader\.js\?v=20260812-7/, 'index must request the mobile-aware bootstrap');
+assert.ok(index.indexOf('registry-mobile-lite.js') < index.indexOf('registry-runtime-loader.js'), 'mobile lightweight client must register before the full loader');
 assert.match(index, /registry-unified-table\.js\?v=20260801-1/, 'index must load the single table controller');
 assert.doesNotMatch(index, /(?:registry-table-integrity|registry-clinical-view|registry-tailgrids-refinement|registry-columns-filters|registry-table-final)\.js/, 'legacy table controllers must not load');
 assert.doesNotMatch(index, /<script src="app-performance\.js"/, 'heavy registry application must not be parser ordered');
-assert.ok(index.indexOf('registry-fast-start.js') < index.indexOf('registry-runtime-loader.js'), 'fast-start must precede registry startup');
 assert.match(index, /app-runtime-performance\.js\?v=clinical-audit-v5-performance-runtime/, 'index must preload the cache-isolated generated runtime');
 assert.match(index, /registry-dosage-loader\.js/, 'index must load the idle dosage loader');
 assert.doesNotMatch(index, /src="registry-dosage-columns-v2\.js/, 'heavy dosage integration must not be in the critical parser path');
 assert.match(builder, /app-runtime-performance\.js/, 'build must generate the cache-isolated runtime artifact');
 
-console.log('Registry interaction resilience, immediate loader v6 and single-controller audit passed.');
+console.log('Registry interaction resilience, Phase 2 mobile lightweight path and loader v7 audit passed.');
