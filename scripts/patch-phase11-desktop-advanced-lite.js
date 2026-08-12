@@ -61,7 +61,7 @@ function patchDesktopLargePages() {
       headers:{ Accept:'application/json' },
     });
     if (response.status === 401) throw new Error('Sesioni ka skaduar.');
-    if (!response.ok) throw new Error(`Lista e barnave nuk u ngarkua (${response.status}).`);
+    if (!response.ok) throw new Error(\`Lista e barnave nuk u ngarkua (\${response.status}).\`);
     const payload = await response.json();
     if (!payload?.ok || !Array.isArray(payload.rows)) throw new Error('Përgjigjja e regjistrit është e pavlefshme.');
     return payload;
