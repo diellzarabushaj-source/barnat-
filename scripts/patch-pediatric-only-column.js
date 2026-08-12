@@ -30,9 +30,16 @@ function patchFrozenArray(source, name) {
   if (end < 0) throw new Error(`Pediatric-only column patch could not close ${name}.`);
   const block = source.slice(start, end + 3);
   if (block.includes("'pediatric-only'")) return source;
-  const before = "'dosage-pediatric', 'clinical-status'";
-  if (!block.includes(before)) throw new Error(`Pediatric-only column patch could not place ${name}.`);
-  const next = block.replace(before, "'dosage-pediatric', 'pediatric-only', 'clinical-status'");
+
+  let next = block;
+  if (next.includes("'form', 'population',")) {
+    next = next.replace("'form', 'population',", "'form', 'population', 'pediatric-only',");
+  } else if (next.includes("'form',")) {
+    next = next.replace("'form',", "'form', 'pediatric-only',");
+  } else {
+    throw new Error(`Pediatric-only column patch could not place ${name}.`);
+  }
+
   return source.slice(0, start) + next + source.slice(end + 3);
 }
 
