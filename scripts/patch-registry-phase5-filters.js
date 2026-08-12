@@ -40,13 +40,13 @@ function registryPagePopulation(value) {
 
 function registryListSelectWithPopulation(population) {
   if (population === 'both') {
-    return \`${REGISTRY_LIST_SELECT},adult:dosage_regimens!inner(),pediatric:dosage_regimens!inner()\`;
+    return \`\${REGISTRY_LIST_SELECT},adult:dosage_regimens!inner(),pediatric:dosage_regimens!inner()\`;
   }
   if (population === 'adult_only') {
-    return \`${REGISTRY_LIST_SELECT},adult:dosage_regimens!inner(),pediatric:dosage_regimens()\`;
+    return \`\${REGISTRY_LIST_SELECT},adult:dosage_regimens!inner(),pediatric:dosage_regimens()\`;
   }
   if (population === 'pediatric_only') {
-    return \`${REGISTRY_LIST_SELECT},pediatric:dosage_regimens!inner(),adult:dosage_regimens()\`;
+    return \`\${REGISTRY_LIST_SELECT},pediatric:dosage_regimens!inner(),adult:dosage_regimens()\`;
   }
   return REGISTRY_LIST_SELECT;
 }
@@ -96,33 +96,33 @@ function buildRegistryPagePath(query = {}) {
   params.set('select', registryListSelectWithPopulation(population));
   params.set('is_published', 'eq.true');
   params.set('editorial_status', 'eq.published');
-  params.set('order', \`${sortColumn}.${direction},registry_number.asc\`);
+  params.set('order', \`\${sortColumn}.\${direction},registry_number.asc\`);
   params.set('limit', String(fetchLimit));
   params.set('offset', String(offset));
-  if (status) params.set('product_status', \`eq.${status}\`);
-  if (atc) params.set('atc_code', \`ilike.${atc}*\`);
-  if (form) params.set('pharmaceutical_form', \`ilike.*${form}*\`);
-  if (substance) params.set('active_substance', \`ilike.*${substance}*\`);
-  if (indication) params.set('use_text', \`ilike.*${indication}*\`);
+  if (status) params.set('product_status', \`eq.\${status}\`);
+  if (atc) params.set('atc_code', \`ilike.\${atc}*\`);
+  if (form) params.set('pharmaceutical_form', \`ilike.*\${form}*\`);
+  if (substance) params.set('active_substance', \`ilike.*\${substance}*\`);
+  if (indication) params.set('use_text', \`ilike.*\${indication}*\`);
   applyRegistryPopulationFilters(params, population);
 
   if (q.length >= 2) {
-    const pattern = \`*${q}*\`;
-    params.set('or', \`(${[
-      \`trade_name.ilike.${pattern}\`,
-      \`active_substance.ilike.${pattern}\`,
-      \`atc_code.ilike.${pattern}\`,
-      \`drug_class.ilike.${pattern}\`,
-      \`use_text.ilike.${pattern}\`,
-      \`strength.ilike.${pattern}\`,
-      \`pharmaceutical_form.ilike.${pattern}\`,
-      \`pdid.ilike.${pattern}\`,
-      \`protocol_no.ilike.${pattern}\`,
+    const pattern = \`*\${q}*\`;
+    params.set('or', \`(\${[
+      \`trade_name.ilike.\${pattern}\`,
+      \`active_substance.ilike.\${pattern}\`,
+      \`atc_code.ilike.\${pattern}\`,
+      \`drug_class.ilike.\${pattern}\`,
+      \`use_text.ilike.\${pattern}\`,
+      \`strength.ilike.\${pattern}\`,
+      \`pharmaceutical_form.ilike.\${pattern}\`,
+      \`pdid.ilike.\${pattern}\`,
+      \`protocol_no.ilike.\${pattern}\`,
     ].join(',')})\`);
   }
 
   return {
-    path:\`drugs?${params.toString()}\`,
+    path:\`drugs?\${params.toString()}\`,
     page,
     pageSize,
     includeTotal,
@@ -185,7 +185,7 @@ function patchMobileLite() {
     if (state.indication) params.set('indication', state.indication);
     if (state.population) params.set('population', state.population);
     if (includeTotal) params.set('includeTotal', '1');
-    return \`${API}?${params.toString()}\`;
+    return \`\${API}?\${params.toString()}\`;
   }
 
 `;
