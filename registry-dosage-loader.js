@@ -1,8 +1,13 @@
 (() => {
   'use strict';
 
-  const VERSION = 'registry-dosage-idle-loader-v5';
-  const SRC = '/registry-dosage-columns-v3.js?v=20260812-2';
+  const VERSION = 'registry-dosage-idle-loader-v6';
+  const BUILD_ID = String(
+    document.querySelector('meta[name="medindex-build-id"]')?.content
+      || document.documentElement.dataset.medindexBuildId
+      || '',
+  ).trim();
+  const SRC = `/registry-dosage-columns-v3.js?v=20260812-2${BUILD_ID ? `&build=${encodeURIComponent(BUILD_ID)}` : ''}`;
   let scheduled = false;
   let loaded = false;
   let fallbackTimer = 0;
@@ -15,6 +20,7 @@
     script.src = SRC;
     script.async = true;
     script.dataset.registryDosageRuntime = VERSION;
+    if (BUILD_ID) script.dataset.medindexBuildId = BUILD_ID;
     script.addEventListener('error', () => {
       loaded = false;
       console.warn('Shtresa e dozimit nuk u ngarkua; regjistri mbetet funksional.');
@@ -40,5 +46,5 @@
     if (Array.isArray(window.MEDINDEX_REGISTRY_ROWS)) schedule();
   }, 15000);
 
-  window.MedIndexRegistryDosageLoader = { version:VERSION, schedule, loaded:() => loaded };
+  window.MedIndexRegistryDosageLoader = { version:VERSION, buildId:BUILD_ID, schedule, loaded:() => loaded };
 })();
