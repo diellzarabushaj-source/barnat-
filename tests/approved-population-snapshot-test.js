@@ -41,23 +41,19 @@ for(const [range,set,pediatricOnly] of specs){
 const entries=sets.flatMap(set=>[
  ['Adult only',set.adultOnly],['Pediatric only',set.pediatricOnly],['Pediatric and adult both',set.pediatricAndAdultBoth]
 ].flatMap(([population,numbers])=>numbers.map(n=>[n,population])));
-assert.strictEqual(entries.length,1638,'Expected 1638 classified cards through 1900.');
+assert.strictEqual(entries.length,1678,'Expected 1678 classified cards through 1900.');
 assert.strictEqual(new Set(entries.map(([n])=>n)).size,entries.length,'Registry numbers must be unique.');
 assert(entries.every(([,p])=>allowed.has(p)),'Only three population categories are allowed.');
 entries.forEach(([n,p])=>assert.strictEqual(byNumber.get(n),p,`Card ${n} mismatch.`));
 assert.strictEqual(entries.filter(([,p])=>p==='Pediatric only').length,127,'Expected 127 Pediatric only cards through 1900.');
 for(const [n,p] of [
- [1587,'Pediatric only'],[1588,undefined],[1589,'Pediatric only'],[1590,'Pediatric only'],[1591,'Pediatric and adult both'],[1600,undefined],
- [1601,undefined],[1602,'Pediatric and adult both'],[1603,'Pediatric only'],[1604,'Pediatric only'],[1605,undefined],[1607,'Pediatric only'],[1608,'Pediatric only'],[1609,'Pediatric only'],[1610,'Pediatric only'],[1611,'Adult only'],
- [1615,'Pediatric only'],[1616,undefined],[1617,'Pediatric and adult both'],[1639,'Adult only'],[1640,'Pediatric and adult both'],[1644,'Pediatric only'],[1645,'Pediatric and adult both'],
- [1683,'Pediatric and adult both'],[1684,'Pediatric only'],[1685,'Pediatric only'],[1686,undefined],[1687,'Adult only'],[1698,'Adult only'],[1699,'Pediatric and adult both'],[1700,undefined],
- [1701,'Adult only'],[1702,'Adult only'],[1703,undefined],[1704,undefined],[1705,'Adult only'],[1707,'Pediatric and adult both'],[1708,undefined],[1709,'Pediatric only'],[1710,'Pediatric and adult both'],
- [1713,'Pediatric only'],[1714,'Adult only'],[1718,'Pediatric only'],[1719,'Pediatric only'],[1720,'Adult only'],[1721,'Pediatric only'],
- [1749,'Pediatric only'],[1750,'Pediatric only'],[1751,'Pediatric and adult both'],[1779,'Pediatric only'],[1780,'Pediatric only'],[1781,'Adult only'],
- [1793,'Pediatric only'],[1794,'Pediatric and adult both'],[1795,'Pediatric only'],[1796,'Pediatric only'],[1797,'Adult only'],[1798,'Pediatric and adult both'],[1799,'Adult only'],[1800,'Pediatric and adult both'],
- [1801,'Pediatric and adult both'],[1802,'Adult only'],[1808,'Pediatric only'],[1809,'Adult only'],[1815,'Pediatric only'],[1816,'Pediatric and adult both'],[1817,'Pediatric only'],[1818,'Pediatric and adult both'],[1819,'Pediatric only'],[1820,'Pediatric and adult both'],
- [1850,'Pediatric only'],[1851,'Adult only'],[1857,'Pediatric only'],[1858,'Pediatric and adult both'],[1860,'Pediatric only'],[1861,undefined],[1875,undefined],[1900,undefined]
+ [1587,'Pediatric only'],[1588,undefined],[1589,'Pediatric only'],[1590,'Pediatric only'],[1600,undefined],
+ [1603,'Pediatric only'],[1604,'Pediatric only'],[1607,'Pediatric only'],[1608,'Pediatric only'],[1609,'Pediatric only'],[1610,'Pediatric only'],[1615,'Pediatric only'],[1644,'Pediatric only'],[1684,'Pediatric only'],[1685,'Pediatric only'],
+ [1703,undefined],[1704,undefined],[1708,undefined],[1709,'Pediatric only'],[1713,'Pediatric only'],[1718,'Pediatric only'],[1719,'Pediatric only'],[1721,'Pediatric only'],[1749,'Pediatric only'],[1750,'Pediatric only'],[1779,'Pediatric only'],[1780,'Pediatric only'],[1793,'Pediatric only'],[1795,'Pediatric only'],[1796,'Pediatric only'],
+ [1801,'Pediatric and adult both'],[1802,'Adult only'],[1808,'Pediatric only'],[1815,'Pediatric only'],[1817,'Pediatric only'],[1819,'Pediatric only'],[1850,'Pediatric only'],[1857,'Pediatric only'],[1860,'Pediatric only'],
+ [1861,'Pediatric and adult both'],[1863,'Adult only'],[1869,'Adult only'],[1870,'Pediatric and adult both'],[1875,'Adult only'],[1877,'Adult only'],[1878,'Adult only'],[1879,'Adult only'],[1880,'Pediatric and adult both'],[1881,'Pediatric and adult both'],[1888,'Adult only'],[1891,'Pediatric and adult both'],[1893,'Adult only'],[1898,'Pediatric and adult both'],[1899,'Pediatric and adult both'],[1900,'Adult only']
 ]){
  assert.strictEqual(byNumber.get(n),p,`Card ${n} sentinel detects population row shift.`);
 }
-console.log('Approved population A→S mapping passed: 1638 classified through 1900; 127 pediatric only.');
+for(let n=1801;n<=1900;n++) assert(byNumber.has(n),`Card ${n} should be classified after 1801-1900 clinical audit.`);
+console.log('Approved population A→S mapping passed: 1678 classified through 1900; 127 pediatric only.');
