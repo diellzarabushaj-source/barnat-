@@ -1,7 +1,7 @@
 (() => {
   'use strict';
 
-  const VERSION = 'registry-table-layout-guard-v2';
+  const VERSION = 'registry-table-layout-guard-v3';
   const ROOT = document.documentElement;
   const REMOVED_KEYS = new Set(['clinical-status', 'clinical-action', 'personal-note']);
   const FALLBACK_WIDTHS = Object.freeze({
