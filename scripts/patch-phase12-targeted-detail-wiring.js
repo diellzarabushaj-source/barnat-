@@ -6,6 +6,9 @@ const path = require('node:path');
 const ROOT = path.resolve(__dirname, '..');
 const INDEX = path.join(ROOT, 'index.html');
 
+const DETAIL_SRC = 'registry-desktop-targeted-detail.js?v=20260812-1';
+const PRESCRIPTION_SRC = 'registry-desktop-prescription-lite.js?v=20260812-1';
+const COLUMN_SRC = 'registry-desktop-column-lite.js?v=20260812-1';
 const ROW_PATTERN = /<script src="registry-row-expand\.js\?v=20260810-1(?:&[^"]*)?" defer><\/script>/;
 const DETAIL_PATTERN = /<script src="registry-desktop-targeted-detail\.js\?v=20260812-1(?:&[^"]*)?" defer><\/script>/;
 const PRESCRIPTION_PATTERN = /<script src="registry-desktop-prescription-lite\.js\?v=20260812-1(?:&[^"]*)?" defer><\/script>/;
@@ -17,11 +20,11 @@ function buildQueryFrom(tag) {
   return tag.match(/&build=[^"]+/)?.[0] || '';
 }
 
-function ensureAfter(anchorPattern, targetPattern, targetFile, targetVersion, missingAnchorMessage) {
+function ensureAfter(anchorPattern, targetPattern, targetSrc, missingAnchorMessage) {
   const anchorMatch = source.match(anchorPattern);
   if (!anchorMatch) throw new Error(missingAnchorMessage);
 
-  const desired = `<script src="${targetFile}?v=${targetVersion}${buildQueryFrom(anchorMatch[0])}" defer></script>`;
+  const desired = `<script src="${targetSrc}${buildQueryFrom(anchorMatch[0])}" defer></script>`;
   const existing = source.match(targetPattern);
 
   if (existing) {
@@ -35,22 +38,19 @@ function ensureAfter(anchorPattern, targetPattern, targetFile, targetVersion, mi
 ensureAfter(
   ROW_PATTERN,
   DETAIL_PATTERN,
-  'registry-desktop-targeted-detail.js',
-  '20260812-1',
+  DETAIL_SRC,
   'Phase 12 wiring could not find registry-row-expand.js anchor.',
 );
 ensureAfter(
   DETAIL_PATTERN,
   PRESCRIPTION_PATTERN,
-  'registry-desktop-prescription-lite.js',
-  '20260812-1',
+  PRESCRIPTION_SRC,
   'Phase 13 wiring could not find targeted-detail anchor.',
 );
 ensureAfter(
   PRESCRIPTION_PATTERN,
   COLUMN_PATTERN,
-  'registry-desktop-column-lite.js',
-  '20260812-1',
+  COLUMN_SRC,
   'Phase 14 wiring could not find prescription-lite anchor.',
 );
 
