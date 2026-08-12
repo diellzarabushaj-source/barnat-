@@ -2,12 +2,17 @@ const registryHandler = require('./registry.js');
 const PrescriptionNotation = require('../prescription-notation.js');
 const Administration = require('../administration-routes.js');
 const RegistryRevision = require('../lib/registry-revision.js');
-const { neonRequest } = require('../lib/neon-data-api.js');
+const { neonRequest, exactCount } = require('../lib/neon-data-api.js');
 
 const MAX_QUERY = 90;
 const MAX_RESULTS = 12;
 const SEARCH_CANDIDATE_LIMIT = 80;
+const REGISTRY_DEFAULT_PAGE_SIZE = 25;
+const REGISTRY_MAX_PAGE_SIZE = 50;
+const REGISTRY_MAX_QUERY_LENGTH = 80;
+
 const SEARCH_SELECT = [
+  'id',
   'registry_number',
   'protocol_no',
   'pdid',
@@ -19,22 +24,95 @@ const SEARCH_SELECT = [
   'strength',
   'pharmaceutical_form',
   'packaging',
-  'source_payload',
 ].join(',');
+const SEARCH_HYDRATION_SELECT = 'id,source_payload';
+const REGISTRY_LIST_SELECT = [
+  'id',
+  'registry_number',
+  'pdid',
+  'trade_name',
+  'active_substance',
+  'atc_code',
+  'drug_class',
+  'use_text',
+  'strength',
+  'pharmaceutical_form',
+  'product_status',
+  'retail_price',
+].join(',');
+const REGISTRY_DETAIL_SELECT = [
+  'id',
+  'registry_number',
+  'pdid',
+  'protocol_no',
+  'trade_name',
+  'active_substance',
+  'atc_code',
+  'drug_class',
+  'use_text',
+  'strength',
+  'pharmaceutical_form',
+  'packaging',
+  'marketing_authorization_holder',
+  'manufacturer',
+  'ma_certificate',
+  'product_status',
+  'wholesale_price',
+  'wholesale_with_margin',
+  'vat_text',
+  'retail_price',
+  'validity_text',
+  'updated_at',
+].join(',');
+const REGISTRY_SORTS = Object.freeze({
+  registry:'registry_number',
+  name:'trade_name',
+  substance:'active_substance',
+  atc:'atc_code',
+  strength:'strength',
+  form:'pharmaceutical_form',
+  status:'product_status',
+  price:'retail_price',
+});
 
 const clean = value => String(value ?? '').replace(/\s+/g, ' ').trim();
 function normalize(value) {
   return clean(value).normalize('NFD').replace(/[\u0300-\u036f]/g, '').toLocaleLowerCase('sq').replace(/[^a-z0-9%+./-]+/g, ' ').trim();
 }
 
+function integerInRange(value, fallback, min, max) {
+  const parsed = Number.parseInt(String(value ?? ''), 10);
+  if (!Number.isFinite(parsed)) return fallback;
+  return Math.min(max, Math.max(min, parsed));
+}
+
 function safeSearchToken(value) {
-  return clean(value)
+  const tokens = clean(value)
     .slice(0, MAX_QUERY)
     .replace(/[%*(),]/g, ' ')
     .replace(/\s+/g, ' ')
     .trim()
-    .split(' ')[0]
-    .slice(0, 48);
+    .split(' ')
+    .map(token => token.trim())
+    .filter(token => token.length >= 2)
+    .sort((a, b) => b.length - a.length || a.localeCompare(b, 'sq'));
+  return String(tokens[0] || '').slice(0, 48);
+}
+
+function registrySearchTerm(value) {
+  return clean(value)
+    .slice(0, REGISTRY_MAX_QUERY_LENGTH)
+    .replace(/[^0-9A-Za-zÀ-ž%+./\- ]+/g, ' ')
+    .replace(/[%*]/g, '')
+    .replace(/\s+/g, ' ')
+    .trim();
+}
+
+function exactFilter(value, maximum = 120) {
+  return clean(value)
+    .slice(0, maximum)
+    .replace(/[,*()]/g, '')
+    .trim();
 }
 
 function atcCategoryCode(value) {
@@ -144,8 +222,20 @@ function legacyRowFromNeon(row) {
     'Si të shënohet në recetë':clean(source['Si të shënohet në recetë']),
     'Kategoria e administrimit':clean(source['Kategoria e administrimit']),
     'Rrugët e lejuara':clean(source['Rrugët e lejuara']),
+    __neonDrugId:clean(row.id),
     __qualityStatus:'verified',
     __sheetPrescriptionNotation:clean(source['Si të shënohet në recetë']),
+  };
+}
+
+function hydrateLegacyRow(row, sourcePayload) {
+  const source = sourcePayload && typeof sourcePayload === 'object' ? sourcePayload : {};
+  return {
+    ...row,
+    'Si të shënohet në recetë':clean(source['Si të shënohet në recetë'] || row['Si të shënohet në recetë']),
+    'Kategoria e administrimit':clean(source['Kategoria e administrimit'] || row['Kategoria e administrimit']),
+    'Rrugët e lejuara':clean(source['Rrugët e lejuara'] || row['Rrugët e lejuara']),
+    __sheetPrescriptionNotation:clean(source['Si të shënohet në recetë'] || row.__sheetPrescriptionNotation),
   };
 }
 
@@ -163,25 +253,215 @@ async function neonSearchRows(rawQuery) {
     `atc_code.ilike.*${token}*`,
     `drug_class.ilike.*${token}*`,
     `use_text.ilike.*${token}*`,
+    `strength.ilike.*${token}*`,
+    `pharmaceutical_form.ilike.*${token}*`,
+    `packaging.ilike.*${token}*`,
   ].join(',')})`);
   params.set('order', 'registry_number.asc');
   params.set('limit', String(SEARCH_CANDIDATE_LIMIT));
 
   const { data } = await neonRequest(`drugs?${params.toString()}`, {
     timeoutMs:5000,
-    label:'Drug search',
+    label:'Drug search candidates',
   });
   if (!Array.isArray(data)) throw new Error('Neon search did not return a list.');
   return data.map(legacyRowFromNeon);
 }
 
-function rankedResults(rows, query) {
+function rankedRows(rows, query) {
   const tokens = query.split(/\s+/).filter(Boolean);
   return rows.map(row => ({ row, score:rank(row, query, tokens) }))
     .filter(item => item.score >= 0)
     .sort((a, b) => b.score - a.score || String(a.row['Substanca aktive']).localeCompare(String(b.row['Substanca aktive']), 'sq'))
     .slice(0, MAX_RESULTS)
-    .map(item => resultFromRow(item.row));
+    .map(item => item.row);
+}
+
+async function hydrateSearchRows(rows) {
+  const ids = [...new Set(rows.map(row => clean(row.__neonDrugId)).filter(id => /^[0-9a-f-]{36}$/i.test(id)))];
+  if (!ids.length) return rows;
+
+  const params = new URLSearchParams();
+  params.set('select', SEARCH_HYDRATION_SELECT);
+  params.set('id', `in.(${ids.join(',')})`);
+  params.set('limit', String(Math.min(MAX_RESULTS, ids.length)));
+  const { data } = await neonRequest(`drugs?${params.toString()}`, {
+    timeoutMs:4000,
+    label:'Drug search hydration',
+  });
+  if (!Array.isArray(data)) return rows;
+  const payloadById = new Map(data.map(item => [clean(item.id), item.source_payload]));
+  return rows.map(row => hydrateLegacyRow(row, payloadById.get(clean(row.__neonDrugId))));
+}
+
+function rankedResults(rows, query) {
+  return rankedRows(rows, query).map(resultFromRow);
+}
+
+function rowForRegistryList(row) {
+  return {
+    id:clean(row.id),
+    registryNumber:row.registry_number ?? null,
+    pdid:clean(row.pdid),
+    tradeName:clean(row.trade_name),
+    activeSubstance:clean(row.active_substance),
+    atc:clean(row.atc_code),
+    drugClass:clean(row.drug_class),
+    use:clean(row.use_text),
+    strength:clean(row.strength),
+    form:clean(row.pharmaceutical_form),
+    productStatus:clean(row.product_status),
+    retailPrice:row.retail_price ?? null,
+  };
+}
+
+function rowForRegistryDetail(row) {
+  return {
+    id:clean(row.id),
+    registryNumber:row.registry_number ?? null,
+    pdid:clean(row.pdid),
+    protocolNo:clean(row.protocol_no),
+    tradeName:clean(row.trade_name),
+    activeSubstance:clean(row.active_substance),
+    atc:clean(row.atc_code),
+    drugClass:clean(row.drug_class),
+    use:clean(row.use_text),
+    strength:clean(row.strength),
+    form:clean(row.pharmaceutical_form),
+    packaging:clean(row.packaging),
+    marketingAuthorizationHolder:clean(row.marketing_authorization_holder),
+    manufacturer:clean(row.manufacturer),
+    maCertificate:clean(row.ma_certificate),
+    productStatus:clean(row.product_status),
+    wholesalePrice:row.wholesale_price ?? null,
+    wholesaleWithMargin:row.wholesale_with_margin ?? null,
+    vat:clean(row.vat_text),
+    retailPrice:row.retail_price ?? null,
+    validity:clean(row.validity_text),
+    updatedAt:row.updated_at || null,
+  };
+}
+
+function buildRegistryDetailPath(query = {}) {
+  const id = exactFilter(query.id, 160);
+  if (!id) return null;
+  const params = new URLSearchParams();
+  params.set('select', REGISTRY_DETAIL_SELECT);
+  params.set('id', `eq.${id}`);
+  params.set('is_published', 'eq.true');
+  params.set('editorial_status', 'eq.published');
+  params.set('limit', '1');
+  return `drugs?${params.toString()}`;
+}
+
+function buildRegistryPagePath(query = {}) {
+  const page = integerInRange(query.page, 1, 1, 100000);
+  const pageSize = integerInRange(query.pageSize, REGISTRY_DEFAULT_PAGE_SIZE, 1, REGISTRY_MAX_PAGE_SIZE);
+  const includeTotal = ['1', 'true', 'yes'].includes(clean(query.includeTotal).toLowerCase());
+  const offset = (page - 1) * pageSize;
+  const q = registrySearchTerm(query.q);
+  const status = exactFilter(query.status);
+  const form = exactFilter(query.form);
+  const sortKey = clean(query.sort).toLowerCase();
+  const sortColumn = REGISTRY_SORTS[sortKey] || REGISTRY_SORTS.registry;
+  const direction = clean(query.direction).toLowerCase() === 'desc' ? 'desc' : 'asc';
+  const fetchLimit = includeTotal ? pageSize : Math.min(REGISTRY_MAX_PAGE_SIZE + 1, pageSize + 1);
+
+  const params = new URLSearchParams();
+  params.set('select', REGISTRY_LIST_SELECT);
+  params.set('is_published', 'eq.true');
+  params.set('editorial_status', 'eq.published');
+  params.set('order', `${sortColumn}.${direction},registry_number.asc`);
+  params.set('limit', String(fetchLimit));
+  params.set('offset', String(offset));
+  if (status) params.set('product_status', `eq.${status}`);
+  if (form) params.set('pharmaceutical_form', `eq.${form}`);
+
+  if (q.length >= 2) {
+    const pattern = `*${q}*`;
+    params.set('or', `(${[
+      `trade_name.ilike.${pattern}`,
+      `active_substance.ilike.${pattern}`,
+      `atc_code.ilike.${pattern}`,
+      `drug_class.ilike.${pattern}`,
+      `use_text.ilike.${pattern}`,
+      `strength.ilike.${pattern}`,
+      `pharmaceutical_form.ilike.${pattern}`,
+      `pdid.ilike.${pattern}`,
+      `protocol_no.ilike.${pattern}`,
+    ].join(',')})`);
+  }
+
+  return {
+    path:`drugs?${params.toString()}`,
+    page,
+    pageSize,
+    includeTotal,
+    q,
+    status,
+    form,
+    sort:sortKey || 'registry',
+    direction,
+  };
+}
+
+async function sendRegistryPage(req, res, startedAt) {
+  const request = buildRegistryPagePath(req.query || {});
+  const { data, response } = await neonRequest(request.path, {
+    ...(request.includeTotal ? { prefer:'count=exact' } : {}),
+    timeoutMs:6000,
+    label:'Registry page',
+  });
+  const fetched = Array.isArray(data) ? data : [];
+  const rows = fetched.slice(0, request.pageSize).map(rowForRegistryList);
+  const total = request.includeTotal ? exactCount(response) : null;
+  const hasNext = Number.isFinite(total)
+    ? request.page * request.pageSize < total
+    : fetched.length > request.pageSize;
+  const totalPages = Number.isFinite(total) ? Math.max(1, Math.ceil(total / request.pageSize)) : null;
+
+  res.setHeader('Cache-Control', 'private, max-age=30, stale-while-revalidate=120');
+  res.setHeader('Server-Timing', `registrypage;dur=${Date.now() - startedAt}`);
+  res.setHeader('X-MedIndex-Data-Source', 'neon');
+  return res.status(200).json({
+    ok:true,
+    rows,
+    pagination:{
+      page:request.page,
+      pageSize:request.pageSize,
+      total,
+      totalPages,
+      hasPrevious:request.page > 1,
+      hasNext,
+    },
+    query:{
+      q:request.q,
+      status:request.status,
+      form:request.form,
+      sort:request.sort,
+      direction:request.direction,
+      includeTotal:request.includeTotal,
+    },
+  });
+}
+
+async function sendRegistryDetail(req, res, startedAt) {
+  const detailPath = buildRegistryDetailPath(req.query || {});
+  if (!detailPath) {
+    res.setHeader('Cache-Control', 'private, no-store, max-age=0');
+    return res.status(400).json({ error:'Mungon identifikuesi i barit.' });
+  }
+  const { data } = await neonRequest(detailPath, {
+    timeoutMs:5000,
+    label:'Registry detail',
+  });
+  const row = Array.isArray(data) && data.length ? rowForRegistryDetail(data[0]) : null;
+  res.setHeader('Cache-Control', 'private, max-age=60, stale-while-revalidate=300');
+  res.setHeader('Server-Timing', `registrydetail;dur=${Date.now() - startedAt}`);
+  res.setHeader('X-MedIndex-Data-Source', 'neon');
+  return row
+    ? res.status(200).json({ ok:true, row })
+    : res.status(404).json({ error:'Bari nuk u gjet.' });
 }
 
 module.exports = async function handler(req, res) {
@@ -198,6 +478,22 @@ module.exports = async function handler(req, res) {
   }
 
   const view = clean(req.query?.view).toLowerCase();
+  if (view === 'registry-page') {
+    try { return await sendRegistryPage(req, res, startedAt); }
+    catch (error) {
+      console.error('Registry page error:', error);
+      res.setHeader('Cache-Control', 'private, no-store, max-age=0');
+      return res.status(500).json({ error:'Lista e barnave nuk u ngarkua.' });
+    }
+  }
+  if (view === 'registry-detail') {
+    try { return await sendRegistryDetail(req, res, startedAt); }
+    catch (error) {
+      console.error('Registry detail error:', error);
+      res.setHeader('Cache-Control', 'private, no-store, max-age=0');
+      return res.status(500).json({ error:'Detajet e barit nuk u ngarkuan.' });
+    }
+  }
   if (view === 'atc-counts') {
     try {
       const { rows, meta } = await registryHandler.getRegistryDataset();
@@ -233,15 +529,18 @@ module.exports = async function handler(req, res) {
       console.warn('Bounded Neon drug search failed; using cached registry fallback:', neonError?.message || neonError);
       const dataset = await registryHandler.getRegistryDataset();
       rows = dataset.rows;
-      searchSource = 'registry-fallback';
+      searchSource = 'registry-fallback-error';
     }
 
-    let results = rankedResults(rows, query);
-    if (!results.length && searchSource === 'neon-bounded') {
-      const dataset = await registryHandler.getRegistryDataset();
-      results = rankedResults(dataset.rows, query);
-      searchSource = 'registry-fallback-empty';
+    let topRows = rankedRows(rows, query);
+    if (topRows.length && searchSource === 'neon-bounded') {
+      try { topRows = await hydrateSearchRows(topRows); }
+      catch (hydrateError) {
+        console.warn('Targeted search hydration failed; returning lightweight search rows:', hydrateError?.message || hydrateError);
+        searchSource = 'neon-bounded-lightweight';
+      }
     }
+    const results = topRows.map(resultFromRow);
 
     let registryVersion = '';
     try { registryVersion = clean(await RegistryRevision.getRegistryRevision()); }
@@ -268,5 +567,13 @@ module.exports = async function handler(req, res) {
 module.exports.atcCategoryCode = atcCategoryCode;
 module.exports.countAtcRows = countAtcRows;
 module.exports.neonSearchRows = neonSearchRows;
+module.exports.hydrateSearchRows = hydrateSearchRows;
+module.exports.rankedRows = rankedRows;
 module.exports.rankedResults = rankedResults;
+module.exports.buildRegistryPagePath = buildRegistryPagePath;
+module.exports.buildRegistryDetailPath = buildRegistryDetailPath;
+module.exports.rowForRegistryList = rowForRegistryList;
+module.exports.rowForRegistryDetail = rowForRegistryDetail;
 module.exports.SEARCH_CANDIDATE_LIMIT = SEARCH_CANDIDATE_LIMIT;
+module.exports.REGISTRY_DEFAULT_PAGE_SIZE = REGISTRY_DEFAULT_PAGE_SIZE;
+module.exports.REGISTRY_MAX_PAGE_SIZE = REGISTRY_MAX_PAGE_SIZE;
