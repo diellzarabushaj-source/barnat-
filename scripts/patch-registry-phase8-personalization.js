@@ -26,17 +26,21 @@ function patchMobileLite() {
   }
 
   if (!source.includes('state.rows = payload.rows.map(row => ({ ...row }));')) {
-    source = replaceOnce(
-      source,
-      `      if (!payload?.ok || !Array.isArray(payload.rows)) throw new Error('Payload-i lightweight nuk është valid.');\n      state.page = Number(payload.pagination?.page || state.page);`,
-      `      if (!payload?.ok || !Array.isArray(payload.rows)) throw new Error('Payload-i lightweight nuk është valid.');\n      state.rows = payload.rows.map(row => ({ ...row }));\n      state.page = Number(payload.pagination?.page || state.page);`,
-      'mobile-lite page snapshot',
+    const payloadGuards = [
+      `      if (!payload?.ok || !Array.isArray(payload.rows)) throw new Error('Përgjigjja e regjistrit është e pavlefshme.');`,
+      `      if (!payload?.ok || !Array.isArray(payload.rows)) throw new Error('Payload-i lightweight nuk është valid.');`,
+    ];
+    const guard = payloadGuards.find(candidate => source.includes(candidate));
+    if (!guard) throw new Error('Phase 8 personalization patch could not find mobile-lite page payload guard.');
+    source = source.replace(
+      guard,
+      `${guard}\n      state.rows = payload.rows.map(row => ({ ...row }));`,
     );
   }
 
-  if (!source.includes('function renderLocalRows(rows, label = \'\')')) {
+  if (!source.includes("function renderLocalRows(rows, label = '')")) {
     const anchor = `  window.MEDINDEX_MOBILE_LITE = {`;
-    const helpers = `  function renderLocalRows(rows, label = '') {\n    if (state.disabled) return;\n    const localRows = Array.isArray(rows) ? rows.map(row => ({ ...row })) : [];\n    renderRows(localRows);\n    if (badge) badge.textContent = clean(label) || \`${'${localRows.length}'} barna lokale\`;\n    if (pagination) pagination.innerHTML = '';\n  }\n\n  function restoreCurrentPage() {\n    if (state.disabled) return;\n    renderRows(Array.isArray(state.rows) ? state.rows : []);\n    renderCount();\n    renderPagination();\n  }\n\n`;
+    const helpers = `  function renderLocalRows(rows, label = '') {\n    if (state.disabled) return;\n    const localRows = Array.isArray(rows) ? rows.map(row => ({ ...row })) : [];\n    renderRows(localRows);\n    const badge = document.getElementById('countBadge');\n    const pagination = document.getElementById('pagination');\n    if (badge) badge.textContent = clean(label) || \`${'${localRows.length}'} barna lokale\`;\n    if (pagination) pagination.innerHTML = '';\n  }\n\n  function restoreCurrentPage() {\n    if (state.disabled) return;\n    renderRows(Array.isArray(state.rows) ? state.rows : []);\n    renderCount();\n    renderPagination();\n  }\n\n`;
     if (!source.includes(anchor)) throw new Error('Phase 8 personalization patch could not find mobile-lite API anchor.');
     source = source.replace(anchor, helpers + anchor);
   }
@@ -56,18 +60,18 @@ function patchMobileLite() {
 function patchIndex() {
   let source = read('index.html');
 
-  const cssAnchor = `<link rel="stylesheet" href="registry-mobile-phase4.css?v=20260812-1">`;
-  const cssTag = `<link rel="stylesheet" href="registry-mobile-phase8.css?v=20260812-1">`;
-  if (!source.includes(cssTag)) {
-    if (!source.includes(cssAnchor)) throw new Error('Phase 8 personalization patch could not find Phase 4 CSS anchor.');
-    source = source.replace(cssAnchor, `${cssAnchor}\n  ${cssTag}`);
+  const cssTag = `<link rel="stylesheet" href="registry-mobile-phase8.css?v=20260812-1" data-registry-mobile-phase8-css>`;
+  if (!source.includes('registry-mobile-phase8.css')) {
+    const cssMatch = source.match(/<link rel="stylesheet" href="registry-mobile-phase4\.css\?v=[^"]+"[^>]*>/);
+    if (!cssMatch) throw new Error('Phase 8 personalization patch could not find current Phase 4 CSS anchor.');
+    source = source.replace(cssMatch[0], `${cssMatch[0]}\n${cssTag}`);
   }
 
-  const scriptAnchor = `<script src="registry-mobile-phase4.js?v=20260812-1"></script>`;
-  const scriptTag = `<script src="registry-mobile-phase8.js?v=20260812-1"></script>`;
-  if (!source.includes(scriptTag)) {
-    if (!source.includes(scriptAnchor)) throw new Error('Phase 8 personalization patch could not find Phase 4 script anchor.');
-    source = source.replace(scriptAnchor, `${scriptAnchor}\n  ${scriptTag}`);
+  const scriptTag = `<script src="registry-mobile-phase8.js?v=20260812-1" defer></script>`;
+  if (!source.includes('registry-mobile-phase8.js')) {
+    const scriptMatch = source.match(/<script src="registry-mobile-phase4\.js\?v=[^"]+"[^>]*><\/script>/);
+    if (!scriptMatch) throw new Error('Phase 8 personalization patch could not find current Phase 4 script anchor.');
+    source = source.replace(scriptMatch[0], `${scriptMatch[0]}\n${scriptTag}`);
   }
 
   if (source.indexOf('registry-mobile-phase8.js') > source.indexOf('registry-runtime-loader.js')) {
