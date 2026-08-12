@@ -1,7 +1,7 @@
 (() => {
   'use strict';
 
-  const VERSION = 'dose-clinical-row-markers-v3-pediatric-column';
+  const VERSION = 'dose-clinical-row-markers-v4-approved-population-column';
   const ROW_SELECTOR = '#tbody > tr';
   const EMPTY_SELECTOR = '.empty-state';
   const FORM_CELL_SELECTOR = '[data-registry-column-key="form"]';
@@ -10,6 +10,7 @@
   const FRAME_BUDGET_MS = 6;
   const IDLE_TIMEOUT_MS = 120;
   const PARENTERAL_PATTERN = /(?:^|\b)(?:parenteral|intraven|intramusk|subkutan|subcutan|injeksion|injection|injectable|infuzion|infusion|ampul|ampoule|vial|i\.?\s*v\.?|i\.?\s*m\.?|s\.?\s*c\.?)(?:\b|$)/i;
+  const APPROVED_POPULATIONS = new Set(['Adult only', 'Pediatric only', 'Pediatric and adult both']);
 
   const clean = value => String(value ?? '').replace(/\s+/g, ' ').trim();
   const normalize = value => clean(value)
@@ -19,6 +20,7 @@
 
   const pendingRows = new Set();
   const pediatricOnlyRegistryNumbers = new Set();
+  const approvedPopulationByRegistryNumber = new Map();
   let scheduled = false;
   let tbodyObserver = null;
   let headerObserver = null;
@@ -83,9 +85,22 @@
     return Number.isInteger(fromRaw) && fromRaw > 0 ? fromRaw : 0;
   }
 
-  function approvedPediatricOnly(row) {
+  function rawRowByRegistryNumber(number) {
+    if (!Number.isInteger(number) || number <= 0 || !Array.isArray(window.MEDINDEX_REGISTRY_ROWS)) return null;
+    return window.MEDINDEX_REGISTRY_ROWS.find(item => Number(item?.['Nr rendor']) === number) || null;
+  }
+
+  function approvedPopulationForRow(row) {
     const number = registryNumber(row);
-    return number > 0 && pediatricOnlyRegistryNumbers.has(number);
+    if (!number) return '';
+    const fromApi = approvedPopulationByRegistryNumber.get(number);
+    if (APPROVED_POPULATIONS.has(fromApi)) return fromApi;
+    const fromRegistry = clean(rawRowByRegistryNumber(number)?.['Popullata e aprovuar']);
+    return APPROVED_POPULATIONS.has(fromRegistry) ? fromRegistry : '';
+  }
+
+  function approvedPediatricOnly(row) {
+    return approvedPopulationForRow(row) === 'Pediatric only';
   }
 
   function applyPopulationToRegistryRows() {
@@ -93,21 +108,43 @@
     let changed = 0;
     rows.forEach(item => {
       const number = Number(item?.['Nr rendor']);
-      const value = Number.isInteger(number) && pediatricOnlyRegistryNumbers.has(number) ? 'Pediatric only' : '';
-      if (item['Pediatric only'] === value) return;
-      item['Pediatric only'] = value;
-      changed += 1;
+      if (!Number.isInteger(number) || number <= 0) return;
+
+      const approvedPopulation = approvedPopulationByRegistryNumber.get(number);
+      if (APPROVED_POPULATIONS.has(approvedPopulation) && item['Popullata e aprovuar'] !== approvedPopulation) {
+        item['Popullata e aprovuar'] = approvedPopulation;
+        changed += 1;
+      }
+
+      const pediatricOnly = approvedPopulation === 'Pediatric only'
+        || clean(item['Popullata e aprovuar']) === 'Pediatric only'
+        || pediatricOnlyRegistryNumbers.has(number);
+      const legacyValue = pediatricOnly ? 'Pediatric only' : '';
+      if (item['Pediatric only'] !== legacyValue) {
+        item['Pediatric only'] = legacyValue;
+        changed += 1;
+      }
     });
     window.MEDINDEX_PEDIATRIC_ONLY_REGISTRY_NUMBERS = Object.freeze([...pediatricOnlyRegistryNumbers].sort((a, b) => a - b));
+    window.MEDINDEX_APPROVED_POPULATION = Object.freeze(Object.fromEntries(
+      [...approvedPopulationByRegistryNumber.entries()].sort((left, right) => left[0] - right[0])
+    ));
     return changed;
   }
 
   function announcePopulationReady(reason = 'loaded') {
     const changed = applyPopulationToRegistryRows();
     document.documentElement.dataset.pediatricOnlyPopulationMarkers = String(pediatricOnlyRegistryNumbers.size);
+    document.documentElement.dataset.approvedPopulationMarkers = String(approvedPopulationByRegistryNumber.size);
     window.dispatchEvent(new CustomEvent('medindex:pediatric-only-population-ready', {
-      detail:{ count:pediatricOnlyRegistryNumbers.size, changed, reason },
+      detail:{
+        count:pediatricOnlyRegistryNumbers.size,
+        classifiedCount:approvedPopulationByRegistryNumber.size,
+        changed,
+        reason,
+      },
     }));
+    if (changed) window.MEDINDEX_REFRESH_REGISTRY?.();
   }
 
   function isParenteral(row) {
@@ -127,17 +164,18 @@
   function classifyRow(row) {
     if (!isRealRow(row)) return;
     const calculatorGroup = patientGroup(row);
-    const explicitPediatricOnly = approvedPediatricOnly(row);
+    const approvedPopulation = approvedPopulationForRow(row);
+    const explicitPediatricOnly = approvedPopulation === 'Pediatric only';
     const group = explicitPediatricOnly ? 'pediatric_only' : calculatorGroup;
     const pediatricOnly = group === 'pediatric_only';
     const parenteral = isParenteral(row);
-    const signature = `${VERSION}|${populationReady ? 'population-ready' : 'population-loading'}|${explicitPediatricOnly ? 'approved-pediatric-only' : group}|${parenteral ? 'parenteral' : 'other'}|${normalize(formText(row))}|${normalize(routeText(row))}`;
+    const signature = `${VERSION}|${populationReady ? 'population-ready' : 'population-loading'}|${approvedPopulation || group}|${parenteral ? 'parenteral' : 'other'}|${normalize(formText(row))}|${normalize(routeText(row))}`;
     if (row.dataset.doseClinicalSignature === signature) return;
 
     row.dataset.doseClinicalSignature = signature;
     row.dataset.dosePatientGroup = group || 'unverified';
     row.dataset.doseAdministration = parenteral ? 'parenteral' : 'non-parenteral';
-    if (explicitPediatricOnly) row.dataset.approvedPopulation = 'pediatric_only';
+    if (approvedPopulation) row.dataset.approvedPopulation = normalize(approvedPopulation).replace(/\s+/g, '_');
     else delete row.dataset.approvedPopulation;
 
     row.classList.toggle('mi-dose-row--pediatric-only', pediatricOnly);
@@ -191,6 +229,28 @@
     document.querySelectorAll(ROW_SELECTOR).forEach(enqueue);
   }
 
+  function applyPopulationMetadata(payload) {
+    approvedPopulationByRegistryNumber.clear();
+    pediatricOnlyRegistryNumbers.clear();
+
+    (Array.isArray(payload?.items) ? payload.items : []).forEach(item => {
+      const registryNumber = Number(item?.registryNumber);
+      const approvedPopulation = clean(item?.approvedPopulation);
+      if (!Number.isInteger(registryNumber) || registryNumber <= 0 || !APPROVED_POPULATIONS.has(approvedPopulation)) return;
+      approvedPopulationByRegistryNumber.set(registryNumber, approvedPopulation);
+      if (approvedPopulation === 'Pediatric only') pediatricOnlyRegistryNumbers.add(registryNumber);
+    });
+
+    (Array.isArray(payload?.registryNumbers) ? payload.registryNumbers : []).forEach(value => {
+      const number = Number(value);
+      if (!Number.isInteger(number) || number <= 0) return;
+      pediatricOnlyRegistryNumbers.add(number);
+      if (!approvedPopulationByRegistryNumber.has(number)) {
+        approvedPopulationByRegistryNumber.set(number, 'Pediatric only');
+      }
+    });
+  }
+
   async function loadApprovedPopulation() {
     if (populationRequest) return populationRequest;
     populationRequest = fetch(POPULATION_ENDPOINT, {
@@ -201,20 +261,17 @@
     }).then(async response => {
       if (!response.ok) throw new Error(`population marker ${response.status}`);
       const payload = await response.json();
-      pediatricOnlyRegistryNumbers.clear();
-      (Array.isArray(payload?.registryNumbers) ? payload.registryNumbers : []).forEach(value => {
-        const number = Number(value);
-        if (Number.isInteger(number) && number > 0) pediatricOnlyRegistryNumbers.add(number);
-      });
+      applyPopulationMetadata(payload);
       populationReady = true;
       announcePopulationReady('api');
       scan();
-      return pediatricOnlyRegistryNumbers;
+      return approvedPopulationByRegistryNumber;
     }).catch(error => {
       populationReady = false;
       document.documentElement.dataset.pediatricOnlyPopulationMarkers = 'error';
-      console.warn('Pediatric-only row markers were not loaded:', error);
-      return pediatricOnlyRegistryNumbers;
+      document.documentElement.dataset.approvedPopulationMarkers = 'error';
+      console.warn('Approved-population row markers were not loaded:', error);
+      return approvedPopulationByRegistryNumber;
     });
     return populationRequest;
   }
@@ -270,12 +327,14 @@
     refreshPopulation:loadApprovedPopulation,
     applyToRegistryRows:applyPopulationToRegistryRows,
     isPediatricOnly:number => pediatricOnlyRegistryNumbers.has(Number(number)),
+    approvedPopulation:number => approvedPopulationByRegistryNumber.get(Number(number)) || '',
     metrics:() => Object.freeze({
       pendingRows:pendingRows.size,
       processedRows,
       queueRuns,
       maxRunMs:Number(maxRunMs.toFixed(2)),
       pediatricOnlyRegistryNumbers:pediatricOnlyRegistryNumbers.size,
+      approvedPopulationRegistryNumbers:approvedPopulationByRegistryNumber.size,
       populationReady,
     }),
   });
