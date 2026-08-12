@@ -19,11 +19,13 @@ if (!source.includes('function dosageCellSignature(')) {
 }
 
 const oldReconcile = `        const existing = matches[0];\n        const desired = createDosageCell(column, row, card);\n        if (!existing) tableRow.appendChild(desired);\n        else if (existing.innerHTML !== desired.innerHTML) existing.replaceWith(desired);`;
-const newReconcile = `        const existing = matches[0];\n        const signature = dosageCellSignature(column, row, card);\n        const desired = createDosageCell(column, row, card, signature);\n        if (!existing) tableRow.appendChild(desired);\n        else if (existing.dataset.registryDosageSignature !== signature) existing.replaceWith(desired);`;
+const signatureReplaceReconcile = `        const existing = matches[0];\n        const signature = dosageCellSignature(column, row, card);\n        const desired = createDosageCell(column, row, card, signature);\n        if (!existing) tableRow.appendChild(desired);\n        else if (existing.dataset.registryDosageSignature !== signature) existing.replaceWith(desired);`;
+const stableReconcile = `        const existing = matches[0];\n        const signature = dosageCellSignature(column, row, card);\n        const desired = createDosageCell(column, row, card, signature);\n        if (!existing) tableRow.appendChild(desired);\n        else if (existing.dataset.registryDosageSignature !== signature) {\n          existing.className = desired.className;\n          existing.dataset.registryDosageColumn = column.key;\n          existing.dataset.registryDosageSignature = signature;\n          existing.dataset.label = column.label;\n          existing.innerHTML = desired.innerHTML;\n          existing.title = desired.title || '';\n        }`;
 
-if (!source.includes(newReconcile)) {
-  if (!source.includes(oldReconcile)) throw new Error('Dosage signature patch: ensureRows reconciliation anchor missing.');
-  source = source.replace(oldReconcile, newReconcile);
+if (!source.includes(stableReconcile)) {
+  if (source.includes(signatureReplaceReconcile)) source = source.replace(signatureReplaceReconcile, stableReconcile);
+  else if (source.includes(oldReconcile)) source = source.replace(oldReconcile, stableReconcile);
+  else throw new Error('Dosage signature patch: ensureRows reconciliation anchor missing.');
 }
 
 if (!source.includes('cell.dataset.registryDosageSignature = signature;')) {
@@ -32,18 +34,29 @@ if (!source.includes('cell.dataset.registryDosageSignature = signature;')) {
 if (source.includes('existing.innerHTML !== desired.innerHTML')) {
   throw new Error('Dosage signature patch: unstable innerHTML reconciliation is still active.');
 }
+if (source.includes('existing.replaceWith(desired)')) {
+  throw new Error('Dosage signature patch: dosage cells must be updated in place, not replaced.');
+}
+if (!source.includes("existing.dataset.registryDosageColumn = column.key;")) {
+  throw new Error('Dosage signature patch: stable dosage column identity is missing.');
+}
 
 fs.writeFileSync(TARGET, source, 'utf8');
 
 if (fs.existsSync(TEST)) {
   let test = fs.readFileSync(TEST, 'utf8').replace(/\r\n?/g, '\n');
-  const marker = `assert.match(source, /REQUEST_BATCH_SIZE = 100/, 'visible-row dosage requests must remain bounded');`;
-  const assertions = `${marker}\nassert.match(source, /registryDosageSignature/, 'dosage cells must carry a deterministic clinical signature');\nassert.match(source, /existing\\.dataset\\.registryDosageSignature !== signature/, 'dosage reconciliation must compare signatures');\nassert.doesNotMatch(source, /existing\\.innerHTML !== desired\\.innerHTML/, 'dosage reconciliation must not compare mutable innerHTML');`;
   if (!test.includes('dosage cells must carry a deterministic clinical signature')) {
+    const marker = `assert.match(script, /REQUEST_BATCH_SIZE = 100/);`;
+    const assertions = `${marker}\nassert.match(script, /registryDosageSignature/, 'dosage cells must carry a deterministic clinical signature');\nassert.match(script, /existing\\.dataset\\.registryDosageSignature !== signature/, 'dosage reconciliation must compare deterministic signatures');\nassert.doesNotMatch(script, /existing\\.innerHTML !== desired\\.innerHTML/, 'dosage reconciliation must not compare mutable innerHTML');\nassert.doesNotMatch(script, /existing\\.replaceWith\\(desired\\)/, 'dosage reconciliation must preserve unified-table cell identity');`;
     if (!test.includes(marker)) throw new Error('Dosage signature patch: regression test anchor missing.');
     test = test.replace(marker, assertions);
-    fs.writeFileSync(TEST, test, 'utf8');
+  } else if (!test.includes('dosage reconciliation must preserve unified-table cell identity')) {
+    const marker = `assert.doesNotMatch(script, /existing\\.innerHTML !== desired\\.innerHTML/, 'dosage reconciliation must not compare mutable innerHTML');`;
+    const assertions = `${marker}\nassert.doesNotMatch(script, /existing\\.replaceWith\\(desired\\)/, 'dosage reconciliation must preserve unified-table cell identity');`;
+    if (!test.includes(marker)) throw new Error('Dosage signature patch: stable-cell regression test anchor missing.');
+    test = test.replace(marker, assertions);
   }
+  fs.writeFileSync(TEST, test, 'utf8');
 }
 
-console.log('Deterministic dosage cell signatures active; mutable innerHTML replace loop removed.');
+console.log('Deterministic dosage cell signatures active; dosage cells update in place without unified-table identity churn.');
