@@ -77,11 +77,39 @@
     ['followup', 'Follow-up / siguria', 'Monitorimi, efektet anësore, edukimi i pacientit…'],
   ];
 
+  function checkedCount(saved) {
+    const checks = saved?.checks && typeof saved.checks === 'object' ? saved.checks : {};
+    return reviewItems.filter(([key]) => Boolean(checks[key])).length;
+  }
+
+  function enhanceDirectory() {
+    document.querySelectorAll('.clinical-row[data-protocol-id]').forEach(row => {
+      const id = oneLine(row.dataset.protocolId, 64);
+      if (!ID_PATTERN.test(id)) return;
+      const action = row.querySelector('.protocol-action-elaborate');
+      if (action) {
+        action.textContent = 'Hape protokollin';
+        action.setAttribute('aria-label', `Hape ${oneLine(row.querySelector('h2')?.textContent, 240) || id}`);
+      }
+      const meta = row.querySelector('.clinical-row-meta');
+      if (!meta) return;
+      let chip = meta.querySelector('[data-paw-row-status]');
+      if (!chip) {
+        chip = document.createElement('span');
+        chip.className = 'clinical-chip';
+        chip.dataset.pawRowStatus = '1';
+        meta.appendChild(chip);
+      }
+      const count = checkedCount(readState(id));
+      chip.textContent = id === 'upk-01' ? 'Interaktiv' : (count ? `Audit ${count}/${reviewItems.length}` : 'Workspace');
+    });
+  }
+
   function workspaceMarkup(id, title, sourceUrl, elaborated, saved) {
     const checks = saved.checks && typeof saved.checks === 'object' ? saved.checks : {};
     const notes = saved.notes && typeof saved.notes === 'object' ? saved.notes : {};
-    const checkedCount = reviewItems.filter(([key]) => Boolean(checks[key])).length;
-    const progress = Math.round((checkedCount / reviewItems.length) * 100);
+    const completed = checkedCount(saved);
+    const progress = Math.round((completed / reviewItems.length) * 100);
     const statusCopy = elaborated
       ? 'Elaborimi i burimit ekziston; ky workspace shërben për auditimin final para publikimit klinik.'
       : 'Nuk ka ende elaborim klinik të strukturuar. Workspace-i ruan vetëm auditimin dhe shënimet e tua; nuk shpik rekomandime.';
@@ -100,7 +128,7 @@
         <section class="paw-section" aria-labelledby="pawChecklistTitle">
           <div class="paw-section-head">
             <div><h3 id="pawChecklistTitle">Checklistë para strukturimit</h3><p>Shënoje një pikë vetëm pasi ta kesh kontrolluar në dokumentin zyrtar.</p></div>
-            <div class="paw-progress-label" aria-live="polite"><strong data-paw-count>${checkedCount}/${reviewItems.length}</strong><span>të kontrolluara</span></div>
+            <div class="paw-progress-label" aria-live="polite"><strong data-paw-count>${completed}/${reviewItems.length}</strong><span>të kontrolluara</span></div>
           </div>
           <div class="paw-progress" aria-hidden="true"><span data-paw-progress style="width:${progress}%"></span></div>
           <div class="paw-checks">
@@ -197,6 +225,7 @@
 
   function enhance() {
     scheduled = false;
+    enhanceDirectory();
     const reader = currentReader();
     if (!reader) return;
     const id = routeId();
