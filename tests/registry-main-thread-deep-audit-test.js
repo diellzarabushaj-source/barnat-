@@ -57,7 +57,9 @@ assert.doesNotMatch(mobile, /DRUG_DATA_PARTS|DecompressionStream|Uint8Array\.fro
 
 assert.match(desktop, /registry-desktop-lite-v1/);
 assert.match(desktop, /DEFAULT_PAGE_SIZE = 50/);
-assert.match(desktop, /pageSize:String\(state\.pageSize\)/, 'desktop page size must be sent through the bounded registry-page request');
+assert.match(desktop, /SERVER_PAGE_SIZE = 50/, 'Phase 11 must keep each Neon registry-page request bounded to 50 rows');
+assert.match(desktop, /MAX_LOGICAL_PAGE_SIZE = 500/, 'desktop may compose up to 500 visible rows without weakening the server request cap');
+assert.match(desktop, /pageSize:String\(boundedPageSize\)/, 'desktop page size must be sent through the bounded registry-page request');
 assert.match(api, /REGISTRY_MAX_PAGE_SIZE = 50/, 'desktop page requests must be capped server-side at 50 rows');
 assert.match(desktop, /view:'registry-page'/);
 assert.match(desktop, /medindex:registry-page-ready/);
@@ -133,4 +135,4 @@ assert.match(builder, /runtimeOutputs/);
 assert.match(builder, /app-runtime-performance\.js/, 'build must retain the full fallback runtime artifact without preloading it');
 assert.match(middleware, /registry-parser-worker-v2\.js/);
 
-console.log('Registry mobile + desktop lightweight Phase 10, server-capped pagination, stable visible-row dosage cells and main-thread audit passed.');
+console.log('Registry mobile + desktop lightweight Phase 11, server-capped logical pagination, stable visible-row dosage cells and main-thread audit passed.');
