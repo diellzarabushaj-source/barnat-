@@ -12,6 +12,8 @@ const index = read('index.html');
 const desktop = read('registry-desktop-lite.js');
 const loader = read('registry-runtime-loader.js');
 const dosage = read('registry-dosage-columns-v3.js');
+const marker = read('registry-dose-clinical-row-markers.js');
+const phase10Patch = read('scripts/patch-phase10-desktop-lite.js');
 const api = read('api/drug-search.js');
 const packageJson = JSON.parse(read('package.json'));
 
@@ -19,6 +21,7 @@ for (const file of [
   'registry-desktop-lite.js',
   'registry-runtime-loader.js',
   'registry-dosage-columns-v3.js',
+  'registry-dose-clinical-row-markers.js',
   'scripts/patch-phase10-desktop-lite.js',
 ]) {
   execFileSync(process.execPath, ['--check', path.join(ROOT, file)], { stdio:'pipe' });
@@ -69,7 +72,24 @@ assert.match(api, /REGISTRY_MAX_PAGE_SIZE = 50/);
 assert.match(api, /REGISTRY_LIST_SELECT/);
 assert.doesNotMatch(api, /params\.set\('select', '\*'\)/, 'Registry-page API must never regress to SELECT *.');
 
+assert.match(phase10Patch, /ApprovedPopulation = require\('\.\.\/lib\/approved-population-handler\.js'\)/,
+  'Phase 10 must reuse the existing approved-population snapshot on the server.');
+assert.match(phase10Patch, /ApprovedPopulation\.snapshotItems\(\)/,
+  'Approved population must be indexed locally from the existing snapshot, not fetched by the browser.');
+assert.match(phase10Patch, /approvedPopulation:approvedPopulationForRegistryNumber\(row\.registry_number\)/,
+  'Each lightweight registry row must carry its approved population metadata.');
+assert.match(phase10Patch, /'Popullata e aprovuar':clean\(row\.approvedPopulation\)/,
+  'Desktop canonical rows must expose approved population to downstream clinical UI.');
+assert.match(marker, /medindex:registry-page-ready/,
+  'Clinical row markers must rebuild population state whenever the lightweight page changes.');
+assert.match(marker, /item\['Popullata e aprovuar'\]/,
+  'Clinical row markers must read approved population from local row metadata.');
+assert.doesNotMatch(marker, /fetch\s*\(/,
+  'Clinical row markers must not perform a second browser request for population metadata.');
+assert.doesNotMatch(marker, /\/api\/pediatric-only-population/,
+  'The legacy pediatric-only endpoint must not be required by normal lightweight rendering.');
+
 assert.match(packageJson.scripts['build:runtime'], /patch-phase10-desktop-lite\.js/, 'Phase 10 wiring must be deterministic in build:runtime.');
 assert.match(packageJson.scripts.test, /registry-desktop-lite-test\.js/, 'Phase 10 regression test must run in the main test suite.');
 
-console.log('Phase 10 desktop server pagination, deferred full-registry handoff and page-aware targeted dosage contract passed.');
+console.log('Phase 10 desktop pagination, inline population metadata, deferred full-registry handoff and page-aware targeted dosage contract passed.');
