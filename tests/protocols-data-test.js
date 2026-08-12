@@ -1,5 +1,6 @@
 const assert = require('node:assert/strict');
 const crypto = require('node:crypto');
+const fs = require('node:fs');
 const manifest = require('../data/protocols.json');
 const elaborationManifest = require('../data/protocol-elaborations.json');
 const reader = require('../protokollet.js');
@@ -81,6 +82,30 @@ for (const elaboration of publishedElaborations.values()) {
   assert.ok(source, `unknown elaboration protocol ${elaboration.protocolId}`);
   assert.equal(elaboration.sourceHash, source.contentSha256, `stale elaboration sourceHash for ${elaboration.protocolId}`);
 }
+
+const osteoporosis = elaborationManifest.entries.find(entry => entry.protocolId === 'upk-01');
+assert.ok(osteoporosis, 'upk-01 must have a structured osteoporosis elaboration');
+assert.equal(osteoporosis.sourceHash, manifest.documents[0].contentSha256, 'osteoporosis interactive content must stay source-bound');
+assert.equal(osteoporosis.reviewStatus, 'review', 'osteoporosis pilot must not be presented as clinically verified yet');
+assert.ok(Array.isArray(osteoporosis.primaryCare?.todayActions) && osteoporosis.primaryCare.todayActions.length >= 4, 'primary-care quick actions are required');
+assert.ok(Array.isArray(osteoporosis.primaryCare?.quickChecks) && osteoporosis.primaryCare.quickChecks.length >= 4, '60-second checks are required');
+assert.ok(Array.isArray(osteoporosis.primaryCare?.riskProfile?.items) && osteoporosis.primaryCare.riskProfile.items.length >= 8, 'risk profile must expose source-derived FRAX factors');
+assert.match(osteoporosis.primaryCare.riskProfile.helper, /nuk.*zëvendëson FRAX/i, 'risk-factor UI must explicitly not replace FRAX');
+assert.ok(Array.isArray(osteoporosis.primaryCare?.rxBox?.editableFields) && osteoporosis.primaryCare.rxBox.editableFields.length >= 7, 'prescription work box must remain explicitly clinician-editable');
+assert.match(osteoporosis.primaryCare.rxBox.specialist.join(' '), /60 mg.*6 muaj/i, 'source-grounded denosumab interval must be retained');
+assert.ok(Array.isArray(osteoporosis.primaryCare?.referral?.planned) && osteoporosis.primaryCare.referral.planned.length > 0, 'planned referrals must be distinct');
+assert.ok(Array.isArray(osteoporosis.primaryCare?.referral?.urgent) && osteoporosis.primaryCare.referral.urgent.length > 0, 'fractures requiring specialist treatment must be distinct from routine DXA referral');
+assert.ok(Array.isArray(osteoporosis.primaryCare?.safety?.items) && osteoporosis.primaryCare.safety.items.length >= 5, 'therapy safety section is required');
+
+const protocolHtml = fs.readFileSync(require.resolve('../protokollet.html'), 'utf8');
+const interactiveJs = fs.readFileSync(require.resolve('../protocol-interactive.js'), 'utf8');
+const interactiveCssV2 = fs.readFileSync(require.resolve('../protocol-interactive-v2.css'), 'utf8');
+assert.match(protocolHtml, /protocol-interactive-v2\.css\?v=/, 'polished interactive protocol stylesheet must be loaded');
+assert.match(protocolHtml, /protocol-interactive\.js\?v=/, 'interactive protocol runtime must be loaded');
+assert.match(interactiveJs, /const TARGET_PROTOCOL = 'upk-01'/, 'interactive runtime must remain scoped to the osteoporosis pilot');
+assert.match(interactiveJs, /sourceHash !== currentHash/, 'interactive runtime must fail closed on source hash mismatch');
+assert.match(interactiveJs, /MedIndex nuk vendos diagnozë/, 'interactive workflow must not claim automated diagnosis');
+assert.match(interactiveCssV2, /data-pc-mode="quick"/, 'quick/full progressive disclosure contract is required');
 
 const fixtureHash = 'a'.repeat(64);
 const fixtureElaborations = reader.normalizeElaborations({
