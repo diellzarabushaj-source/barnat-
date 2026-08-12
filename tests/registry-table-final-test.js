@@ -17,9 +17,9 @@ const fast = read('registry-fast-start.js');
 const release = read('registry-ui-release.js');
 
 assert.match(index,/data-registry-ui-release="20260809-1"/,'index must use the current audited dose release');
-assert.match(index,/registry-unified-table\.css\?v=20260801-1/,'unified table stylesheet must be wired');
+assert.match(index,/registry-unified-table\.css\?v=20260812-population-column-1/,'unified population-aware table stylesheet must be wired');
 assert.match(index,/registry-full-text-expansion\.css\?v=20260805-2/,'full-row text stylesheet must be wired');
-assert.match(index,/registry-unified-table\.js\?v=20260801-1/,'unified table controller must be wired');
+assert.match(index,/registry-unified-table\.js\?v=20260812-population-column-1/,'unified population-aware table controller must be wired');
 assert.match(index,/registry-mobile-lite\.js\?v=20260812-1/,'phone lightweight registry client must be wired');
 assert.match(index,/registry-mobile-lite\.css\?v=20260812-1/,'phone lightweight registry stylesheet must be wired');
 assert.match(index,/registry-runtime-loader\.js\?v=20260812-7/,'mobile-aware authenticated registry loader must be wired');
