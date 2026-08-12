@@ -9,6 +9,7 @@ const read = file => fs.readFileSync(path.join(root,file),'utf8');
 const index = read('index.html');
 const mobile = read('registry-mobile-lite.js');
 const mobileCss = read('registry-mobile-lite.css');
+const desktop = read('registry-desktop-lite.js');
 const css = read('registry-unified-table.css');
 const fullTextCss = read('registry-full-text-expansion.css');
 const runtime = read('registry-unified-table.js');
@@ -20,24 +21,28 @@ assert.match(index,/data-registry-ui-release="20260809-1"/,'index must use the c
 assert.match(index,/registry-unified-table\.css\?v=20260812-population-column-1/,'unified population-aware table stylesheet must be wired');
 assert.match(index,/registry-full-text-expansion\.css\?v=20260805-2/,'full-row text stylesheet must be wired');
 assert.match(index,/registry-unified-table\.js\?v=20260812-population-column-1/,'unified population-aware table controller must be wired');
-assert.match(index,/registry-mobile-lite\.js\?v=20260812-1/,'phone lightweight registry client must be wired');
-assert.match(index,/registry-mobile-lite\.css\?v=20260812-1/,'phone lightweight registry stylesheet must be wired');
-assert.match(index,/registry-runtime-loader\.js\?v=20260812-7/,'mobile-aware authenticated registry loader must be wired');
-assert.ok(index.indexOf('registry-mobile-lite.js') < index.indexOf('registry-runtime-loader.js'),'mobile lightweight client must register before the full registry loader');
+assert.match(index,/registry-mobile-lite\.js\?v=20260812-2/,'current phone lightweight registry client must be wired');
+assert.match(index,/registry-mobile-lite\.css\?v=20260812-2/,'current phone lightweight registry stylesheet must be wired');
+assert.match(index,/registry-desktop-lite\.js\?v=20260812-1/,'Phase 10 desktop lightweight registry client must be wired');
+assert.match(index,/registry-runtime-loader\.js\?v=20260812-8/,'mobile-and-desktop-aware authenticated registry loader must be wired');
+assert.ok(index.indexOf('registry-mobile-lite.js') < index.indexOf('registry-desktop-lite.js'),'mobile lightweight client must register before desktop lightweight startup');
+assert.ok(index.indexOf('registry-desktop-lite.js') < index.indexOf('registry-runtime-loader.js'),'desktop lightweight client must register before the full registry loader');
 assert.ok(index.indexOf('registry-unified-table.css') < index.indexOf('registry-full-text-expansion.css'),'full-row reveal must follow compact unified geometry');
 assert.ok(index.indexOf('registry-full-text-expansion.css') < index.indexOf('tailadmin-professional.css'),'TailAdmin professional must remain the final static stylesheet');
 assert.ok(index.indexOf('registry-ui-release.js') < index.indexOf('registry-unified-table.js'),'unified controller must run after the release guard');
 assert.doesNotMatch(index,/(?:registry-table-integrity|registry-clinical-view|registry-tailgrids-refinement|registry-columns-filters|registry-table-final)\.(?:css|js)/,'competing table controllers must not be loaded');
 assert.doesNotMatch(index,/registryTableFinalMobileCompatibility/,'legacy mobile compatibility patch must be removed');
 assert.doesNotMatch(index,/<script src="app-performance\.js"/,'heavy registry bootstrap must remain dynamically loaded after authentication');
+assert.doesNotMatch(index,/rel="preload" href="app-runtime-performance\.js/,'full generated registry runtime must not be preloaded on normal lightweight startup');
 assert.match(release,/registry-ui-20260809-1/,'cache release must match the current audited dose contract');
 assert.match(fast,/releaseInteractiveShell/,'visual loader must release when authentication and shell are ready');
 assert.match(fast,/loader\.style\.pointerEvents = 'none'/,'visual loader must never intercept the table after shell readiness');
 
 assert.doesNotThrow(() => new Function(mobile),'mobile lightweight client must be valid JavaScript');
+assert.doesNotThrow(() => new Function(desktop),'desktop lightweight client must be valid JavaScript');
 assert.doesNotThrow(() => new Function(runtime),'unified table controller must be valid JavaScript');
 assert.doesNotThrow(() => new Function(loader),'registry runtime loader must be valid JavaScript');
-assert.match(mobile,/registry-mobile-lite-v1/,'mobile lightweight client must expose its version');
+assert.match(mobile,/registry-mobile-lite-v2/,'mobile lightweight client must expose its current version');
 assert.match(mobile,/\(max-width: 767px\)/,'mobile lightweight client must not activate on desktop');
 assert.match(mobile,/DEFAULT_PAGE_SIZE = 25/,'mobile list must default to 25 records');
 assert.match(mobile,/MAX_PAGE_SIZE = 50/,'mobile list must cap requests at 50 records');
@@ -48,14 +53,27 @@ assert.doesNotMatch(mobile,/DRUG_DATA_PARTS|apirest\.|NEON_DATA_API|VERCEL_OIDC_
 assert.match(mobileCss,/@media \(max-width:767px\)/,'mobile lightweight CSS must be phone-scoped');
 assert.match(mobileCss,/data-registry-unified-synthetic="true"/,'synthetic desktop cells must be hidden in lightweight phone rows');
 
-assert.match(loader,/registry-runtime-loader-v7/,'loader must expose the mobile-aware authenticated version');
-assert.match(loader,/app-performance\.js\?v=20260801-2/,'loader must request the current full registry bootstrap');
+assert.match(desktop,/registry-desktop-lite-v1/,'desktop lightweight client must expose its version');
+assert.match(desktop,/\(min-width: 768px\)/,'desktop lightweight client must remain desktop-scoped');
+assert.match(desktop,/DEFAULT_PAGE_SIZE = 50/,'desktop normal list must request 50 records');
+assert.match(desktop,/view:'registry-page'/,'desktop normal list must use server-side pagination');
+assert.match(desktop,/MEDINDEX_REGISTRY_ROWS = canonical/,'desktop lightweight page must expose only the current partial page to downstream clinical modules');
+assert.match(desktop,/medindex:registry-page-ready/,'desktop lightweight page replacement must publish a targeted readiness event');
+assert.match(desktop,/medindex:request-full-registry/,'advanced desktop actions must retain an explicit full-runtime handoff');
+assert.doesNotMatch(desktop,/\/api\/registry(?:\?|['"`])|DRUG_DATA_PARTS|apirest\.|NEON_DATA_API|VERCEL_OIDC_TOKEN/i,'desktop normal mode must not contain full-registry or direct-Neon access');
+
+assert.match(loader,/registry-runtime-loader-v8/,'loader must expose the mobile-and-desktop-aware authenticated version');
+assert.match(loader,/app-performance\.js\?v=20260801-2/,'loader must retain the current full registry bootstrap for handoff/fallback');
 assert.match(loader,/classList\.contains\('auth-ready'\)/,'registry startup must wait for authentication');
 assert.match(loader,/MOBILE_LITE_GRACE_MS = 5000/,'mobile lightweight startup must retain a bounded fallback');
+assert.match(loader,/DESKTOP_LITE_GRACE_MS = 5000/,'desktop lightweight startup must retain a bounded fallback');
 assert.match(loader,/mobile-lite-deferred/,'full runtime must be deferred while phone lightweight mode is healthy');
-assert.match(loader,/desktop-or-legacy/,'desktop must retain the existing full runtime behavior');
-assert.match(loader,/medindex:request-full-registry/,'advanced phone actions must be able to hand off to the full registry');
+assert.match(loader,/desktop-lite-deferred/,'full runtime must be deferred while desktop lightweight mode is healthy');
+assert.match(loader,/desktop-lite-timeout/,'desktop lightweight startup must retain a bounded full-runtime fallback');
+assert.match(loader,/legacy-no-lite/,'unsupported environments must retain the audited legacy fallback');
+assert.match(loader,/medindex:request-full-registry/,'advanced lightweight actions must be able to hand off to the full registry');
 assert.match(loader,/requestAnimationFrame\(\(\) => \{[\s\S]*loadRuntime\(/,'full registry startup must yield one paint before loading');
+assert.doesNotMatch(loader,/scheduleRuntime\('desktop-or-legacy'\)/,'normal authenticated desktop must not eagerly load the full registry');
 assert.doesNotMatch(loader,/FIRST_INTERACTION_FALLBACK_MS|POST_INTERACTION_GRACE_MS|INTERACTION_EVENTS/,'legacy interaction gates must remain removed');
 assert.doesNotMatch(loader,/MEDINDEX_REGISTRY_UI_READY\s*=\s*new Promise/,'loader must not create a circular readiness promise');
 
@@ -102,4 +120,4 @@ assert.match(fullTextCss,/::-webkit-scrollbar[\s\S]*width:12px!important[\s\S]*h
 assert.match(fullTextCss,/data-theme="dark"[\s\S]*scrollbar-color:/,'dark mode must style the same scroll surface');
 assert.doesNotMatch(fullTextCss,/https?:\/\//,'full-row text and scroll styles must not load third-party assets');
 
-console.log('Single-controller registry table, Phase 2 phone lightweight mode, full-row reveal and desktop/full-runtime handoff audit passed.');
+console.log('Single-controller registry table, mobile lightweight v2, desktop lightweight Phase 10, full-row reveal and explicit full-runtime handoff audit passed.');
