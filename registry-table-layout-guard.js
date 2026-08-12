@@ -1,7 +1,7 @@
 (() => {
   'use strict';
 
-  const VERSION = 'registry-table-layout-guard-v1';
+  const VERSION = 'registry-table-layout-guard-v2';
   const ROOT = document.documentElement;
   const REMOVED_KEYS = new Set(['clinical-status', 'clinical-action', 'personal-note']);
   const FALLBACK_WIDTHS = Object.freeze({
@@ -17,10 +17,13 @@
 
   const clean = value => String(value ?? '').trim();
   const doseVisible = () => ROOT.dataset.registryDoseColumnVisible === 'true';
+  const escapeSelector = value => window.CSS?.escape
+    ? window.CSS.escape(String(value ?? ''))
+    : String(value ?? '').replace(/["\\]/g, '\\$&');
 
   function headerFor(table, key) {
     if (!key) return null;
-    return table.querySelector(`thead th[data-registry-column-key="${CSS.escape(key)}"]`);
+    return table.querySelector(`thead th[data-registry-column-key="${escapeSelector(key)}"]`);
   }
 
   function shouldShow(table, key) {
@@ -71,7 +74,8 @@
     });
 
     const wrapperWidth = Math.max(0, Math.round(wrapper.clientWidth || 0));
-    const targetWidth = Math.max(Math.ceil(visibleWidth), wrapperWidth);
+    const contentWidth = Math.ceil(visibleWidth);
+    const targetWidth = Math.max(contentWidth, wrapperWidth);
     table.style.setProperty('--registry-unified-width', `${targetWidth}px`);
     table.style.setProperty('width', `${targetWidth}px`, 'important');
     table.style.setProperty('min-width', `${targetWidth}px`, 'important');
@@ -81,17 +85,29 @@
       if (wrapper.scrollLeft > maxScroll) wrapper.scrollLeft = maxScroll;
     });
 
+    const removedColumnsStillVisible = [...REMOVED_KEYS].filter(key => {
+      const header = headerFor(table, key);
+      return Boolean(header && getComputedStyle(header).display !== 'none');
+    });
+    const calculatorHeader = headerFor(table, 'dose-calculator');
+    const calculatorActuallyVisible = Boolean(calculatorHeader && getComputedStyle(calculatorHeader).display !== 'none');
+    const calculatorStateMatches = calculatorActuallyVisible === doseVisible();
+    const exactWidth = targetWidth === Math.max(contentWidth, wrapperWidth);
+
     const audit = {
       version:VERSION,
       view:ROOT.dataset.registryUxView || 'clinical',
       doseCalculatorVisible:doseVisible(),
+      calculatorActuallyVisible,
+      calculatorStateMatches,
       visibleColumns,
       hiddenColumns,
-      visibleWidth:Math.ceil(visibleWidth),
+      visibleWidth:contentWidth,
       wrapperWidth,
       tableWidth:targetWidth,
-      excessBlankWidth:Math.max(0, targetWidth - Math.max(Math.ceil(visibleWidth), wrapperWidth)),
-      stable:targetWidth >= wrapperWidth && targetWidth >= Math.ceil(visibleWidth),
+      removedColumnsStillVisible,
+      excessReservedWidth:Math.max(0, targetWidth - Math.max(contentWidth, wrapperWidth)),
+      stable:exactWidth && calculatorStateMatches && removedColumnsStillVisible.length === 0,
     };
     window.MEDINDEX_REGISTRY_LAYOUT_AUDIT = audit;
     ROOT.dataset.registryLayoutGuard = VERSION;
