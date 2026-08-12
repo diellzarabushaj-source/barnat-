@@ -43,8 +43,9 @@ const loader = read('registry-verification-loader.js');
 const ui = read('registry-verification-ui.js');
 const styles = read('registry-verification-ui.css');
 const endpoint = read('api/clinical-editor.js');
-const approvedPopulationEndpointSource = read('api/pediatric-only-population.js');
-const approvedPopulationEndpoint = require('../api/pediatric-only-population.js');
+const dosageGatewaySource = read('api/dosage.js');
+const approvedPopulationEndpointSource = read('lib/approved-population-handler.js');
+const approvedPopulationEndpoint = require('../lib/approved-population-handler.js');
 const approvedPopulationSnapshot = require('../data/approved-population-snapshot.json');
 const vercel = JSON.parse(read('vercel.json'));
 
@@ -75,11 +76,16 @@ assert(vercel.rewrites.some(item => item.source === '/api/population-verificatio
 assert(!fs.existsSync(path.join(root, 'api/population-verification.js')), 'Verifikimi nuk duhet të konsumojë funksion të ri Vercel.');
 assert(!/https?:\/\//.test(ui), 'UI-ja nuk duhet të ngarkojë asete të jashtme.');
 
+assert(dosageGatewaySource.includes("requestView(req) === 'approved-population'"), 'Gateway-i i dozimit duhet ta ekspozojë popullatën e aprovuar.');
+assert(dosageGatewaySource.includes('approvedPopulationHandler(req, res)'), 'Gateway-i duhet ta delegojë kërkesën te handler-i i snapshot-it.');
+assert(vercel.rewrites.some(item => item.source === '/api/pediatric-only-population' && item.destination === '/api/dosage?view=approved-population'), 'URL-ja kompatibile e popullatës duhet të ripërdorë /api/dosage.');
+assert(!fs.existsSync(path.join(root, 'api/pediatric-only-population.js')), 'Popullata e aprovuar nuk duhet të konsumojë funksion të 12-të Vercel.');
+
 const approvedPopulationItems = approvedPopulationEndpoint.snapshotItems(approvedPopulationSnapshot);
 const pediatricOnlyItems = approvedPopulationItems.filter(item => item.approvedPopulation === 'Pediatric only');
 const allowedPopulations = new Set(['Adult only', 'Pediatric only', 'Pediatric and adult both']);
-assert(!approvedPopulationEndpointSource.includes('neonRequest'), 'Endpoint-i i popullatës duhet të mbetet Neon-free gjatë outage-it.');
-assert(approvedPopulationEndpointSource.includes("require('../data/approved-population-snapshot.json')"), 'Endpoint-i i popullatës duhet të përdorë snapshot-in e Sheet-it.');
+assert(!approvedPopulationEndpointSource.includes('neonRequest'), 'Handler-i i popullatës duhet të mbetet Neon-free gjatë outage-it.');
+assert(approvedPopulationEndpointSource.includes("require('../data/approved-population-snapshot.json')"), 'Handler-i i popullatës duhet të përdorë snapshot-in e Sheet-it.');
 assert.strictEqual(approvedPopulationSnapshot?.source?.spreadsheetId, '17cuXg5qORIIWkvAxLZ7uz2FMmGvzwjr850cubUcIgLE');
 assert.strictEqual(approvedPopulationSnapshot?.source?.sheet, 'KARTELA_BARNAVE');
 assert.strictEqual(approvedPopulationSnapshot?.source?.approvedPopulationColumn, 'S');
@@ -95,4 +101,4 @@ for (const registryNumber of [44, 45, 46]) {
   );
 }
 
-console.log('Strict adult/pediatric verification + approved-population Sheet snapshot passed.');
+console.log('Strict adult/pediatric verification + approved-population shared dosage gateway and Sheet snapshot passed.');
