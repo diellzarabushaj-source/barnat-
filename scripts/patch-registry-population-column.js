@@ -8,6 +8,8 @@ const runtimeFiles = ['app-runtime.js', 'app-runtime-performance.js'];
 const unifiedTableFile = 'registry-unified-table.js';
 const unifiedCssFile = 'registry-unified-table.css';
 const columnContractFile = 'registry-column-contract.js';
+const indexFile = 'index.html';
+const ASSET_VERSION = '20260812-population-column-1';
 
 function read(relative) {
   return fs.readFileSync(path.join(root, relative), 'utf8');
@@ -135,10 +137,19 @@ function patchColumnContract() {
   write(columnContractFile, source);
 }
 
+function patchAssetVersions() {
+  let source = read(indexFile);
+  source = source.replace(/registry-unified-table\.css\?v=[^\"']+/g, `registry-unified-table.css?v=${ASSET_VERSION}`);
+  source = source.replace(/registry-unified-table\.js\?v=[^\"']+/g, `registry-unified-table.js?v=${ASSET_VERSION}`);
+  source = source.replace(/registry-dose-clinical-row-markers\.js\?v=[^\"']+/g, `registry-dose-clinical-row-markers.js?v=${ASSET_VERSION}`);
+  write(indexFile, source);
+}
+
 runtimeFiles.forEach(patchRuntime);
 patchUnifiedTable();
 patchUnifiedCss();
 patchColumnContract();
+patchAssetVersions();
 
 for (const relative of runtimeFiles) {
   const source = read(relative);
@@ -153,6 +164,12 @@ if (!unified.includes("population:'Popullata e aprovuar'") || !unified.includes(
 const unifiedCss = read(unifiedCssFile);
 if (!unifiedCss.includes('[data-registry-column-key="population"]') || !unifiedCss.includes('.registry-population-badge')) {
   throw new Error('Population column patch nuk u aplikua në unified CSS.');
+}
+const indexSource = read(indexFile);
+if (!indexSource.includes(`registry-unified-table.css?v=${ASSET_VERSION}`)
+    || !indexSource.includes(`registry-unified-table.js?v=${ASSET_VERSION}`)
+    || !indexSource.includes(`registry-dose-clinical-row-markers.js?v=${ASSET_VERSION}`)) {
+  throw new Error('Population column asset versions nuk u përditësuan.');
 }
 
 console.log('Approved population column added to picker/runtime/unified table.');
