@@ -26,24 +26,17 @@ const summary = endpoint.countAtcRows([
 assert.equal(summary.total, 6);
 assert.equal(summary.classifiedTotal, 5);
 assert.equal(summary.unclassifiedTotal, 1);
-assert.deepEqual({ ...summary.counts }, {
-  N02:2,
-  N03:1,
-  R02:1,
-  R05:1,
-});
-assert.deepEqual({ ...summary.groupCounts }, {
-  N:3,
-  R:2,
-});
+assert.deepEqual({ ...summary.counts }, { N02:2, N03:1, R02:1, R05:1 });
+assert.deepEqual({ ...summary.groupCounts }, { N:3, R:2 });
 
 assert.equal(endpoint.ATC_COUNTS_PAGE_SIZE, 250, 'ATC projection must stay within the Neon 250-row egress guard.');
 assert.equal(endpoint.ATC_COUNTS_MAX_ROWS, 6000, 'ATC projection needs a hard upper bound.');
-assert.equal(endpoint.ATC_COUNTS_CACHE_TTL_MS, 5 * 60 * 1000, 'ATC counts should reuse a warm server cache for five minutes.');
+assert.equal(endpoint.ATC_COUNTS_CACHE_TTL_MS, 30 * 60 * 1000, 'ATC counts should keep a warm hard cache for thirty minutes.');
+assert.equal(endpoint.ATC_COUNTS_REVISION_CHECK_MS, 60 * 1000, 'ATC counts should validate the lightweight registry revision once per minute.');
 assert.equal(typeof endpoint.fetchAtcCountRowsFromNeon, 'function');
 assert.equal(typeof endpoint.neonAtcCounts, 'function');
 
-assert.match(source, /phase6-atc-counts-neon-v1/, 'Phase 6 ATC runtime marker is missing.');
+assert.match(source, /phase6-atc-counts-neon-v2/, 'Phase 6 ATC revision-aware runtime marker is missing.');
 assert.match(source, /registryHandler\.authorized\(req\)/, 'ATC counts must require the same private authentication as the registry');
 assert.match(source, /view === 'atc-counts'/, 'The existing drug-search function must expose the ATC counts view');
 assert.match(source, /params\.set\('select', 'registry_number,atc_code'\)/, 'ATC counts must fetch only the tiny registry-number/ATC projection');
@@ -52,7 +45,8 @@ assert.match(source, /params\.set\('editorial_status', 'eq\.published'\)/, 'ATC 
 assert.match(source, /params\.set\('order', 'registry_number\.asc'\)/, 'ATC pagination must be deterministic');
 assert.match(source, /params\.set\('limit', String\(ATC_COUNTS_PAGE_SIZE\)\)/, 'ATC reads must be bounded per request');
 assert.match(source, /params\.set\('offset', String\(offset\)\)/, 'ATC reads must page instead of requesting the whole table');
-assert.match(source, /RegistryRevision\.getRegistryRevision\(\)/, 'ATC counts must use the lightweight Neon registry revision');
+assert.match(source, /RegistryRevision\.getRegistryRevision\(\{ maxAgeMs:ATC_COUNTS_REVISION_CHECK_MS \}\)/, 'ATC counts must validate the lightweight Neon registry revision');
+assert.match(source, /cacheState:'revision-hit'/, 'An unchanged registry revision must reuse the existing ATC summary without rereading all ATC rows');
 assert.match(source, /source:'memory-stale-atc'/, 'A warm stale in-memory ATC summary should survive a transient Neon failure');
 assert.match(source, /Retry-After', '30'/, 'A cold ATC failure must be throttled instead of falling back to the full registry');
 assert.match(source, /private, max-age=120, stale-while-revalidate=600/, 'ATC counts must use a bounded private HTTP cache');
@@ -71,4 +65,4 @@ assert.ok(
 );
 assert.equal(fs.existsSync(path.join(ROOT, 'api/atc-counts.js')), false, 'ATC counts must not consume a separate Vercel function slot');
 
-console.log('Phase 6 bounded Neon ATC category counts, cache and no-full-registry tests passed.');
+console.log('Phase 6 revision-aware Neon ATC category counts, bounded projection and no-full-registry tests passed.');
