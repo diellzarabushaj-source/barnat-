@@ -80,9 +80,12 @@
 
   function fillCell(cell, value, column) {
     const text = formatted(value, column);
+    const signature = `${column.key}\u0000${text}`;
+    if (cell.dataset.columnLiteValue === signature) return false;
     cell.className = column.cls || '';
     cell.dataset.registryColumnKey = column.key;
     cell.dataset.label = column.label;
+    cell.dataset.columnLiteValue = signature;
     cell.title = clean(value);
     if (column.key === 'trade-name') {
       cell.replaceChildren();
@@ -110,6 +113,7 @@
     } else {
       cell.textContent = text;
     }
+    return true;
   }
 
   function makeHeader(column) {
@@ -139,22 +143,43 @@
 
   function ensureColumn(column, rowMap) {
     const header = document.getElementById('headerRow');
-    if (!header) return;
-    if (!headerCell(column.key)) header.appendChild(makeHeader(column));
+    if (!header) return false;
+    let changed = false;
+    if (!headerCell(column.key)) {
+      header.appendChild(makeHeader(column));
+      changed = true;
+    }
     rowElements().forEach(row => {
       let cell = rowCell(row, column.key);
+      const existed = Boolean(cell);
       if (!cell) {
         cell = document.createElement('td');
         row.appendChild(cell);
+        changed = true;
       }
       const id = clean(row.dataset.desktopLiteRow);
-      fillCell(cell, valueFor(rowMap.get(id), id, column), column);
+      if (!existed || column.remote) {
+        changed = fillCell(cell, valueFor(rowMap.get(id), id, column), column) || changed;
+      }
     });
+    return changed;
   }
 
   function removeColumn(key) {
-    headerCell(key)?.remove();
-    rowElements().forEach(row => rowCell(row, key)?.remove());
+    let changed = false;
+    const header = headerCell(key);
+    if (header) {
+      header.remove();
+      changed = true;
+    }
+    rowElements().forEach(row => {
+      const cell = rowCell(row, key);
+      if (cell) {
+        cell.remove();
+        changed = true;
+      }
+    });
+    return changed;
   }
 
   function applyColumnsNow() {
@@ -162,12 +187,14 @@
     applying = true;
     try {
       const rowMap = rawById();
+      let changed = false;
       columns.forEach(column => {
         if (column.advanced) return;
-        if (visible.has(column.key)) ensureColumn(column, rowMap);
-        else removeColumn(column.key);
+        changed = (visible.has(column.key)
+          ? ensureColumn(column, rowMap)
+          : removeColumn(column.key)) || changed;
       });
-      window.MedIndexRegistryUnified?.refresh?.();
+      if (changed) window.MedIndexRegistryUnified?.refresh?.();
       syncPanelChecks();
     } finally {
       applying = false;
@@ -328,9 +355,9 @@
     buildPanel();
     onPageReady();
     ['medindex:registry-page-ready', 'medindex:desktop-lite-ready'].forEach(name => window.addEventListener(name, onPageReady));
-    window.addEventListener('medindex:registry-table-stable', () => {
-      if (document.documentElement.dataset.registryUxView === 'full') scheduleApply();
-    });
+    document.addEventListener('click', event => {
+      if (event.target.closest?.('#registryViewToolbar [data-registry-view="full"]')) requestAnimationFrame(scheduleApply);
+    }, true);
     document.documentElement.dataset.registryDesktopColumnLite = VERSION;
   }
 
