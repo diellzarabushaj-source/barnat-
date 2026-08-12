@@ -32,6 +32,9 @@
     border:0!important;
     background:transparent!important;
   }
+  html[data-registry-mobile-lite] #dataTable .mobile-lite-row>td[data-registry-unified-synthetic="true"]{
+    display:none!important;
+  }
 
   html[data-registry-mobile-lite] .mobile-lite-card{
     display:grid;
