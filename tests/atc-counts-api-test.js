@@ -37,15 +37,38 @@ assert.deepEqual({ ...summary.groupCounts }, {
   R:2,
 });
 
+assert.equal(endpoint.ATC_COUNTS_PAGE_SIZE, 250, 'ATC projection must stay within the Neon 250-row egress guard.');
+assert.equal(endpoint.ATC_COUNTS_MAX_ROWS, 6000, 'ATC projection needs a hard upper bound.');
+assert.equal(endpoint.ATC_COUNTS_CACHE_TTL_MS, 5 * 60 * 1000, 'ATC counts should reuse a warm server cache for five minutes.');
+assert.equal(typeof endpoint.fetchAtcCountRowsFromNeon, 'function');
+assert.equal(typeof endpoint.neonAtcCounts, 'function');
+
+assert.match(source, /phase6-atc-counts-neon-v1/, 'Phase 6 ATC runtime marker is missing.');
 assert.match(source, /registryHandler\.authorized\(req\)/, 'ATC counts must require the same private authentication as the registry');
 assert.match(source, /view === 'atc-counts'/, 'The existing drug-search function must expose the ATC counts view');
-assert.match(source, /registryHandler\.getRegistryDataset\(\)/, 'ATC counts must use the canonical registry dataset');
-assert.match(source, /private, max-age=120, stale-while-revalidate=600/, 'ATC counts must use a bounded private cache');
+assert.match(source, /params\.set\('select', 'registry_number,atc_code'\)/, 'ATC counts must fetch only the tiny registry-number/ATC projection');
+assert.match(source, /params\.set\('is_published', 'eq\.true'\)/, 'ATC counts must include only published drugs');
+assert.match(source, /params\.set\('editorial_status', 'eq\.published'\)/, 'ATC counts must include only editorially published drugs');
+assert.match(source, /params\.set\('order', 'registry_number\.asc'\)/, 'ATC pagination must be deterministic');
+assert.match(source, /params\.set\('limit', String\(ATC_COUNTS_PAGE_SIZE\)\)/, 'ATC reads must be bounded per request');
+assert.match(source, /params\.set\('offset', String\(offset\)\)/, 'ATC reads must page instead of requesting the whole table');
+assert.match(source, /RegistryRevision\.getRegistryRevision\(\)/, 'ATC counts must use the lightweight Neon registry revision');
+assert.match(source, /source:'memory-stale-atc'/, 'A warm stale in-memory ATC summary should survive a transient Neon failure');
+assert.match(source, /Retry-After', '30'/, 'A cold ATC failure must be throttled instead of falling back to the full registry');
+assert.match(source, /private, max-age=120, stale-while-revalidate=600/, 'ATC counts must use a bounded private HTTP cache');
 assert.match(source, /module\.exports\.countAtcRows = countAtcRows/, 'The count logic must remain directly testable');
+
+const atcStart = source.indexOf("if (view === 'atc-counts')");
+const atcEnd = source.indexOf('const rawQuery', atcStart);
+assert(atcStart >= 0 && atcEnd > atcStart, 'ATC handler boundaries are missing.');
+const atcHandler = source.slice(atcStart, atcEnd);
+assert.doesNotMatch(atcHandler, /getRegistryDataset\s*\(/, 'ATC counts must never build the full registry dataset on the normal path');
+assert.match(atcHandler, /status\(503\)/, 'Cold upstream ATC failures must fail in a controlled way');
+
 assert.ok(
   vercel.rewrites.some(rule => rule.source === '/api/atc-counts' && rule.destination === '/api/drug-search?view=atc-counts'),
   'The friendly ATC counts route must reuse the existing drug-search function slot'
 );
 assert.equal(fs.existsSync(path.join(ROOT, 'api/atc-counts.js')), false, 'ATC counts must not consume a separate Vercel function slot');
 
-console.log('ATC category counts API tests passed.');
+console.log('Phase 6 bounded Neon ATC category counts, cache and no-full-registry tests passed.');
