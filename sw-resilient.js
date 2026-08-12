@@ -1,7 +1,7 @@
 /* MedIndex resilient low-bandwidth service worker */
 'use strict';
 
-const VERSION = 'low-bandwidth-v2';
+const VERSION = 'low-bandwidth-v3';
 const STATIC_CACHE = `medindex-static-${VERSION}`;
 const PAGE_CACHE = `medindex-pages-${VERSION}`;
 const PRIVATE_CACHE = 'medindex-private-resilient-v2';
@@ -177,6 +177,14 @@ async function navigationResponse(event, url) {
   const key = requestFor(expectedPath);
   const cache = await caches.open(PAGE_CACHE);
   const cached = await cache.match(key) || await caches.match(key, { ignoreSearch:true });
+
+  // The registry shell is build-sensitive. When online, always prefer a fresh index.html
+  // so an older cached document cannot keep loading an older cohort of registry assets.
+  if (expectedPath === '/index.html' && networkProfile.online) {
+    const fresh = await refreshNavigation(request, key, expectedPath);
+    if (fresh && validHtmlResponse(fresh, expectedPath)) return cloneWithHeader(fresh, 'registry-shell-network');
+  }
+
   if (cached) {
     if (networkProfile.online && !networkProfile.saveData) event.waitUntil(refreshNavigation(request, key, expectedPath));
     return cloneWithHeader(cached, networkProfile.slow ? 'page-low-bandwidth-hit' : 'page-fast-hit');
@@ -196,17 +204,22 @@ async function refreshStatic(request) {
 
 async function staticResponse(event) {
   const request = event.request;
+  const requestUrl = new URL(request.url);
+  const buildPinned = requestUrl.searchParams.has('build');
   const cached = await caches.match(request);
   if (cached) {
     if (networkProfile.online && !networkProfile.slow && !networkProfile.saveData) event.waitUntil(refreshStatic(request));
     return cloneWithHeader(cached, 'static-fast-hit');
   }
   if (!networkProfile.online) {
+    // Never disguise an older registry asset as the requested build. Exact-build cache or fail.
+    if (buildPinned) return Response.error();
     const offlineFallback = await caches.match(request, { ignoreSearch:true });
     return offlineFallback ? cloneWithHeader(offlineFallback, 'static-offline-version-fallback') : Response.error();
   }
   const response = await refreshStatic(request);
   if (response) return cloneWithHeader(response, 'static-network');
+  if (buildPinned) return Response.error();
   const offlineFallback = await caches.match(request, { ignoreSearch:true });
   return offlineFallback ? cloneWithHeader(offlineFallback, 'static-offline-version-fallback') : Response.error();
 }
