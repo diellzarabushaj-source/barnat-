@@ -36,6 +36,10 @@
       "destination": "/api/dosage?view=calculator"
     },
     {
+      "source": "/api/pediatric-only-population",
+      "destination": "/api/dosage?view=approved-population"
+    },
+    {
       "source": "/api/atc-counts",
       "destination": "/api/drug-search?view=atc-counts"
     },
