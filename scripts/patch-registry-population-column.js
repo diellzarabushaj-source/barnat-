@@ -6,6 +6,7 @@ const path = require('node:path');
 const root = path.resolve(__dirname, '..');
 const runtimeFiles = ['app-runtime.js', 'app-runtime-performance.js'];
 const unifiedTableFile = 'registry-unified-table.js';
+const unifiedCssFile = 'registry-unified-table.css';
 const columnContractFile = 'registry-column-contract.js';
 
 function read(relative) {
@@ -102,6 +103,24 @@ function patchUnifiedTable() {
   write(unifiedTableFile, source);
 }
 
+function patchUnifiedCss() {
+  let source = read(unifiedCssFile);
+  if (!source.includes('[data-registry-column-key="population"]')) {
+    source = replaceOnce(
+      source,
+      '    [data-registry-column-key="form"],[data-registry-column-key="dosage-adult"],\n    [data-registry-column-key="dosage-pediatric"],[data-registry-column-key="clinical-status"],',
+      '    [data-registry-column-key="form"],[data-registry-column-key="population"],\n    [data-registry-column-key="dosage-adult"],[data-registry-column-key="dosage-pediatric"],\n    [data-registry-column-key="clinical-status"],',
+      'unified css/clinical population visibility',
+    );
+  }
+
+  if (!source.includes('.registry-population-badge')) {
+    source += `\n\n/* Selectable approved-population column. */\nhtml.medindex-tailadmin[data-mi-page="barnat"] body #dataTable .registry-population-column {\n  text-align:center!important;\n}\n\nhtml.medindex-tailadmin[data-mi-page="barnat"] body #dataTable .registry-population-badge {\n  display:inline-flex!important;\n  max-width:100%!important;\n  min-height:27px!important;\n  align-items:center!important;\n  justify-content:center!important;\n  padding:5px 9px!important;\n  border:1px solid #dbe5f1!important;\n  border-radius:999px!important;\n  background:#f8fafc!important;\n  color:#475569!important;\n  font-size:.62rem!important;\n  font-weight:800!important;\n  line-height:1.15!important;\n  text-align:center!important;\n  white-space:normal!important;\n}\n\nhtml.medindex-tailadmin[data-mi-page="barnat"] body #dataTable .registry-population-badge.pediatric-only {\n  border-color:#f9a8d4!important;\n  background:#fff0f6!important;\n  color:#be185d!important;\n}\n\nhtml.medindex-tailadmin[data-mi-page="barnat"] body #dataTable .registry-population-badge.adult-only {\n  border-color:#bfdbfe!important;\n  background:#eff6ff!important;\n  color:#1d4ed8!important;\n}\n\nhtml.medindex-tailadmin[data-mi-page="barnat"] body #dataTable .registry-population-badge.pediatric-adult-both {\n  border-color:#99f6e4!important;\n  background:#f0fdfa!important;\n  color:#0f766e!important;\n}\n\n[data-theme="dark"] html.medindex-tailadmin[data-mi-page="barnat"] body #dataTable .registry-population-badge.pediatric-only {\n  border-color:#db2777!important;\n  background:#3a1d2b!important;\n  color:#f9a8d4!important;\n}\n`;
+  }
+
+  write(unifiedCssFile, source);
+}
+
 function patchColumnContract() {
   let source = read(columnContractFile);
   if (source.includes("popullataeaprovuar:'population'")) return;
@@ -118,6 +137,7 @@ function patchColumnContract() {
 
 runtimeFiles.forEach(patchRuntime);
 patchUnifiedTable();
+patchUnifiedCss();
 patchColumnContract();
 
 for (const relative of runtimeFiles) {
@@ -130,6 +150,9 @@ const unified = read(unifiedTableFile);
 if (!unified.includes("population:'Popullata e aprovuar'") || !unified.includes("'population'")) {
   throw new Error('Population column patch nuk u aplikua në unified table.');
 }
+const unifiedCss = read(unifiedCssFile);
+if (!unifiedCss.includes('[data-registry-column-key="population"]') || !unifiedCss.includes('.registry-population-badge')) {
+  throw new Error('Population column patch nuk u aplikua në unified CSS.');
+}
 
 console.log('Approved population column added to picker/runtime/unified table.');
-require('./patch-pediatric-only-column.js');
