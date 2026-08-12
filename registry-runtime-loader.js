@@ -1,20 +1,24 @@
 (() => {
   'use strict';
 
-  const VERSION = 'registry-runtime-loader-v7';
+  const VERSION = 'registry-runtime-loader-v8';
   const RUNTIME_SRC = '/app-performance.js?v=20260801-2';
   const AUTH_WAIT_LIMIT_MS = 8000;
   const MOBILE_LITE_GRACE_MS = 5000;
+  const DESKTOP_LITE_GRACE_MS = 5000;
   const MOBILE_QUERY = '(max-width: 767px)';
+  const DESKTOP_QUERY = '(min-width: 768px)';
 
   let loaded = false;
   let scheduled = false;
   let authObserver = null;
   let authTimer = 0;
   let mobileGraceTimer = 0;
+  let desktopGraceTimer = 0;
 
   const html = document.documentElement;
   const mobileMedia = window.matchMedia?.(MOBILE_QUERY);
+  const desktopMedia = window.matchMedia?.(DESKTOP_QUERY);
   html.dataset.registryRuntimeLoader = VERSION;
 
   function authReady() {
@@ -25,12 +29,17 @@
     return Boolean(mobileMedia?.matches && html.dataset.registryMobileLite);
   }
 
+  function desktopLiteCandidate() {
+    return Boolean(desktopMedia?.matches && html.dataset.registryDesktopLite);
+  }
+
   function loadRuntime(reason = 'automatic') {
     if (loaded || document.querySelector('script[data-medindex-app-performance]')) return;
     loaded = true;
     authObserver?.disconnect();
     window.clearTimeout(authTimer);
     window.clearTimeout(mobileGraceTimer);
+    window.clearTimeout(desktopGraceTimer);
     html.dataset.registryRuntimeMode = 'full';
     html.dataset.registryRuntimeReason = reason;
     window.dispatchEvent(new CustomEvent('medindex:full-registry-started', { detail:{ reason } }));
@@ -68,12 +77,25 @@
     }, MOBILE_LITE_GRACE_MS);
   }
 
+  function deferForDesktopLite() {
+    html.dataset.registryRuntimeMode = 'desktop-lite-deferred';
+    window.clearTimeout(desktopGraceTimer);
+    desktopGraceTimer = window.setTimeout(() => {
+      if (html.dataset.registryDesktopLiteReady === '1') return;
+      scheduleRuntime('desktop-lite-timeout');
+    }, DESKTOP_LITE_GRACE_MS);
+  }
+
   function onAuthenticated() {
     if (mobileLiteCandidate()) {
       deferForMobileLite();
       return;
     }
-    scheduleRuntime('desktop-or-legacy');
+    if (desktopLiteCandidate()) {
+      deferForDesktopLite();
+      return;
+    }
+    scheduleRuntime('legacy-no-lite');
   }
 
   function waitForAuthenticatedShell() {
@@ -100,7 +122,7 @@
 
   window.MEDINDEX_LOAD_FULL_REGISTRY = reason => scheduleRuntime(reason || 'manual');
   window.addEventListener('medindex:request-full-registry', event => {
-    scheduleRuntime(event.detail?.reason || 'mobile-handoff');
+    scheduleRuntime(event.detail?.reason || 'lite-handoff');
   });
   mobileMedia?.addEventListener?.('change', event => {
     if (!event.matches && html.dataset.registryMobileLiteReady === '1') scheduleRuntime('viewport-desktop');
