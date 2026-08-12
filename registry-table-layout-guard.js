@@ -35,6 +35,10 @@
   }
 
   function rememberedWidth(col, key) {
+    if (key === 'dose-calculator') {
+      col.dataset.registryLayoutBaseWidth = String(FALLBACK_WIDTHS[key]);
+      return FALLBACK_WIDTHS[key];
+    }
     const remembered = Number(col.dataset.registryLayoutBaseWidth);
     if (Number.isFinite(remembered) && remembered > 0) return remembered;
     const inlineWidth = Number.parseFloat(col.style.width || '');
