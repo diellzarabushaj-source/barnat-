@@ -1,7 +1,7 @@
 (() => {
   'use strict';
 
-  const VERSION = 'column-picker-tailwind-20260805-3';
+  const VERSION = 'column-picker-tailwind-20260812-population-1';
   const PANEL_ID = 'colPanel';
   const BUTTON_ID = 'colPickerBtn';
   const SEARCH_ICON = '<svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="11" cy="11" r="7"></circle><path d="m16.5 16.5 4 4"></path></svg>';
@@ -28,6 +28,21 @@
       ...directColumnLabels(root),
       ...root.querySelectorAll('.registry-dosage-picker-group > label'),
     ];
+  }
+
+  function placePopulationWithDosage(root = panel()) {
+    if (!root) return false;
+    const dosageGroup = root.querySelector('.registry-dosage-picker-group');
+    if (!dosageGroup) return false;
+    const populationLabel = allColumnLabels(root).find(label => {
+      const text = clean(label.textContent).toLocaleLowerCase('sq');
+      return text.includes('popullata') || (text.includes('adult') && text.includes('pediatric'));
+    });
+    if (!populationLabel) return false;
+    populationLabel.dataset.miPopulationColumn = '1';
+    populationLabel.style.gridColumn = '1 / -1';
+    if (populationLabel.parentElement !== dosageGroup) dosageGroup.appendChild(populationLabel);
+    return true;
   }
 
   function allColumnInputs(root = panel()) {
@@ -128,12 +143,13 @@
     if (dosageGroup) {
       let dosageVisible = 0;
       dosageGroup.querySelectorAll(':scope > label').forEach(label => {
-        const haystack = `dozimi ${clean(label.textContent)}`.toLocaleLowerCase('sq');
+        const population = label.dataset.miPopulationColumn === '1';
+        const haystack = `${population ? 'popullata adult pediatric fëmijë të rritur' : 'dozimi'} ${clean(label.textContent)}`.toLocaleLowerCase('sq');
         const visible = !term || haystack.includes(term);
         label.hidden = !visible;
         if (visible) dosageVisible += 1;
       });
-      const headingMatch = !term || 'dozimi'.includes(term);
+      const headingMatch = !term || 'dozimi popullata adult pediatric fëmijë të rritur'.includes(term);
       dosageGroup.hidden = dosageVisible === 0 && !headingMatch;
       if (!dosageGroup.hidden) visibleCount += dosageVisible || 1;
     }
@@ -165,6 +181,7 @@
       }
     });
   }
+
   function syncOpenState() {
     const root = panel();
     const trigger = button();
@@ -212,6 +229,7 @@
       if (!root.querySelector('[data-mi-column-picker-chrome="empty"]')) root.appendChild(makeEmptyState());
       if (!root.querySelector('[data-mi-column-picker-chrome="footer"]')) root.appendChild(makeFooter());
 
+      placePopulationWithDosage(root);
       decorateActions(root);
       allColumnLabels(root).forEach(label => {
         label.dataset.miColumnOption = '1';
