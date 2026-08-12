@@ -194,4 +194,5 @@ function removeLegacyFormHandoff() {
 patchDesktopLargePages();
 removeLegacyFormHandoff();
 require('./patch-phase11-form-picker-lite.js');
+require('./patch-phase12-targeted-detail-wiring.js');
 console.log('Phase 11 desktop logical page sizes 50/100/250/500 use bounded 50-row Neon chunks without full-registry handoff.');
