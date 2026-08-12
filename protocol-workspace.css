@@ -1,0 +1,295 @@
+.protocol-audit-workspace{
+  grid-column:1 / -1;
+  border:1px solid var(--clinical-border,#d8e2e4);
+  border-radius:18px;
+  background:var(--clinical-surface,#fff);
+  box-shadow:0 12px 34px rgba(15,44,47,.07);
+  overflow:hidden;
+}
+
+.protocol-audit-workspace .paw-head{
+  display:grid;
+  grid-template-columns:minmax(0,1fr) auto;
+  gap:18px;
+  align-items:start;
+  padding:22px 24px 18px;
+  border-bottom:1px solid var(--clinical-border,#d8e2e4);
+  background:linear-gradient(180deg,rgba(13,61,64,.055),rgba(13,61,64,.015));
+}
+
+.protocol-audit-workspace .paw-kicker{
+  display:block;
+  margin-bottom:6px;
+  color:var(--clinical-accent,#0d6669);
+  font-size:12px;
+  font-weight:700;
+  letter-spacing:.08em;
+  text-transform:uppercase;
+}
+
+.protocol-audit-workspace h2{
+  margin:0;
+  color:var(--clinical-text,#14272a);
+  font-size:clamp(20px,2vw,28px);
+  line-height:1.15;
+}
+
+.protocol-audit-workspace .paw-head p{
+  max-width:820px;
+  margin:8px 0 0;
+  color:var(--clinical-muted,#607477);
+  line-height:1.55;
+}
+
+.protocol-audit-workspace .paw-status{
+  display:inline-flex;
+  align-items:center;
+  gap:7px;
+  min-height:34px;
+  padding:7px 11px;
+  border:1px solid rgba(155,105,17,.25);
+  border-radius:999px;
+  background:rgba(240,177,54,.1);
+  color:#765313;
+  font-size:12px;
+  font-weight:700;
+  white-space:nowrap;
+}
+
+.protocol-audit-workspace .paw-status::before{
+  width:7px;
+  height:7px;
+  border-radius:50%;
+  background:currentColor;
+  content:"";
+}
+
+.protocol-audit-workspace .paw-body{
+  display:grid;
+  grid-template-columns:minmax(0,1.1fr) minmax(300px,.9fr);
+  gap:22px;
+  padding:22px 24px 24px;
+}
+
+.protocol-audit-workspace .paw-section{
+  min-width:0;
+}
+
+.protocol-audit-workspace .paw-section-head{
+  display:flex;
+  align-items:flex-start;
+  justify-content:space-between;
+  gap:14px;
+  margin-bottom:12px;
+}
+
+.protocol-audit-workspace .paw-section-head h3{
+  margin:0;
+  color:var(--clinical-text,#14272a);
+  font-size:16px;
+}
+
+.protocol-audit-workspace .paw-section-head p{
+  margin:4px 0 0;
+  color:var(--clinical-muted,#607477);
+  font-size:13px;
+  line-height:1.45;
+}
+
+.protocol-audit-workspace .paw-progress-label{
+  min-width:70px;
+  text-align:right;
+  color:var(--clinical-muted,#607477);
+  font-size:12px;
+}
+
+.protocol-audit-workspace .paw-progress-label strong{
+  display:block;
+  color:var(--clinical-text,#14272a);
+  font-size:18px;
+}
+
+.protocol-audit-workspace .paw-progress{
+  height:7px;
+  margin-bottom:14px;
+  overflow:hidden;
+  border-radius:999px;
+  background:rgba(13,61,64,.09);
+}
+
+.protocol-audit-workspace .paw-progress > span{
+  display:block;
+  width:0;
+  height:100%;
+  border-radius:inherit;
+  background:var(--clinical-accent,#0d6669);
+  transition:width .2s ease;
+}
+
+.protocol-audit-workspace .paw-checks{
+  display:grid;
+  gap:8px;
+}
+
+.protocol-audit-workspace .paw-check{
+  display:grid;
+  grid-template-columns:20px minmax(0,1fr);
+  gap:10px;
+  align-items:start;
+  padding:11px 12px;
+  border:1px solid var(--clinical-border,#d8e2e4);
+  border-radius:12px;
+  background:var(--clinical-surface,#fff);
+  cursor:pointer;
+}
+
+.protocol-audit-workspace .paw-check:hover{
+  border-color:rgba(13,102,105,.34);
+  background:rgba(13,102,105,.025);
+}
+
+.protocol-audit-workspace .paw-check input{
+  width:17px;
+  height:17px;
+  margin:1px 0 0;
+  accent-color:var(--clinical-accent,#0d6669);
+}
+
+.protocol-audit-workspace .paw-check span{
+  color:var(--clinical-text,#14272a);
+  font-size:13px;
+  line-height:1.42;
+}
+
+.protocol-audit-workspace .paw-notes{
+  display:grid;
+  gap:10px;
+}
+
+.protocol-audit-workspace .paw-note{
+  display:grid;
+  gap:5px;
+}
+
+.protocol-audit-workspace .paw-note > span{
+  color:var(--clinical-text,#14272a);
+  font-size:12px;
+  font-weight:700;
+}
+
+.protocol-audit-workspace textarea{
+  width:100%;
+  min-height:72px;
+  resize:vertical;
+  border:1px solid var(--clinical-border,#d8e2e4);
+  border-radius:11px;
+  padding:10px 11px;
+  background:var(--clinical-surface,#fff);
+  color:var(--clinical-text,#14272a);
+  font:inherit;
+  font-size:13px;
+  line-height:1.45;
+  outline:none;
+}
+
+.protocol-audit-workspace textarea:focus{
+  border-color:var(--clinical-accent,#0d6669);
+  box-shadow:0 0 0 3px rgba(13,102,105,.11);
+}
+
+.protocol-audit-workspace .paw-actions{
+  display:flex;
+  flex-wrap:wrap;
+  gap:8px;
+  padding:0 24px 22px;
+}
+
+.protocol-audit-workspace .paw-button{
+  display:inline-flex;
+  align-items:center;
+  justify-content:center;
+  min-height:39px;
+  padding:8px 13px;
+  border:1px solid var(--clinical-border,#d8e2e4);
+  border-radius:10px;
+  background:var(--clinical-surface,#fff);
+  color:var(--clinical-text,#14272a);
+  font:inherit;
+  font-size:13px;
+  font-weight:700;
+  text-decoration:none;
+  cursor:pointer;
+}
+
+.protocol-audit-workspace .paw-button.is-primary{
+  border-color:var(--clinical-accent,#0d6669);
+  background:var(--clinical-accent,#0d6669);
+  color:#fff;
+}
+
+.protocol-audit-workspace .paw-button:hover{
+  filter:brightness(.97);
+}
+
+.protocol-audit-workspace .paw-status-text{
+  min-height:18px;
+  margin:0 24px 20px;
+  color:var(--clinical-muted,#607477);
+  font-size:12px;
+}
+
+.protocol-audit-workspace .paw-warning{
+  margin:0 24px 22px;
+  padding:12px 13px;
+  border-left:3px solid #c48a1d;
+  border-radius:8px;
+  background:rgba(240,177,54,.08);
+  color:var(--clinical-muted,#607477);
+  font-size:12px;
+  line-height:1.5;
+}
+
+html[data-theme="dark"] .protocol-audit-workspace .paw-status{
+  color:#f4cc70;
+  background:rgba(240,177,54,.09);
+}
+
+@media(max-width:900px){
+  .protocol-audit-workspace .paw-head,
+  .protocol-audit-workspace .paw-body{
+    grid-template-columns:1fr;
+  }
+
+  .protocol-audit-workspace .paw-status{
+    justify-self:start;
+  }
+}
+
+@media(max-width:560px){
+  .protocol-audit-workspace{
+    border-radius:14px;
+  }
+
+  .protocol-audit-workspace .paw-head,
+  .protocol-audit-workspace .paw-body{
+    padding-left:16px;
+    padding-right:16px;
+  }
+
+  .protocol-audit-workspace .paw-actions{
+    display:grid;
+    grid-template-columns:1fr;
+    padding-left:16px;
+    padding-right:16px;
+  }
+
+  .protocol-audit-workspace .paw-button{
+    width:100%;
+  }
+
+  .protocol-audit-workspace .paw-status-text,
+  .protocol-audit-workspace .paw-warning{
+    margin-left:16px;
+    margin-right:16px;
+  }
+}
