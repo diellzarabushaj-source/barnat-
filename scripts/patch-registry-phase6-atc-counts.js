@@ -5,18 +5,18 @@ const path = require('node:path');
 
 const ROOT = path.resolve(__dirname, '..');
 const TARGET = path.join(ROOT, 'api', 'drug-search.js');
-const MARKER = 'phase6-atc-counts-neon-v1';
+const MARKER = 'phase6-atc-counts-neon-v2';
 
 let source = fs.readFileSync(TARGET, 'utf8').replace(/\r\n?/g, '\n');
 
 if (!source.includes(MARKER)) {
   const constantsAnchor = `const REGISTRY_MAX_QUERY_LENGTH = 80;`;
-  const constants = `${constantsAnchor}\nconst ATC_COUNTS_PAGE_SIZE = 250;\nconst ATC_COUNTS_MAX_ROWS = 6000;\nconst ATC_COUNTS_CACHE_TTL_MS = 5 * 60 * 1000;\nconst ATC_COUNTS_RUNTIME = '${MARKER}';\nlet atcCountsCache = null;`;
+  const constants = `${constantsAnchor}\nconst ATC_COUNTS_PAGE_SIZE = 250;\nconst ATC_COUNTS_MAX_ROWS = 6000;\nconst ATC_COUNTS_CACHE_TTL_MS = 30 * 60 * 1000;\nconst ATC_COUNTS_REVISION_CHECK_MS = 60 * 1000;\nconst ATC_COUNTS_RUNTIME = '${MARKER}';\nlet atcCountsCache = null;\nlet atcCountsRevisionCheckedAt = 0;`;
   if (!source.includes(constantsAnchor)) throw new Error('Phase 6 ATC patch: constants anchor missing.');
   source = source.replace(constantsAnchor, constants);
 
   const helperAnchor = `function resultFromRow(row) {`;
-  const helpers = `async function fetchAtcCountRowsFromNeon() {\n  const rows = [];\n  for (let offset = 0; offset < ATC_COUNTS_MAX_ROWS; offset += ATC_COUNTS_PAGE_SIZE) {\n    const params = new URLSearchParams();\n    params.set('select', 'registry_number,atc_code');\n    params.set('is_published', 'eq.true');\n    params.set('editorial_status', 'eq.published');\n    params.set('order', 'registry_number.asc');\n    params.set('limit', String(ATC_COUNTS_PAGE_SIZE));\n    params.set('offset', String(offset));\n    const { data } = await neonRequest(\`drugs?\${params.toString()}\`, {\n      timeoutMs:5000,\n      label:'ATC count projection',\n    });\n    if (!Array.isArray(data)) throw new Error('Neon ATC projection did not return a list.');\n    rows.push(...data);\n    if (data.length < ATC_COUNTS_PAGE_SIZE) return rows;\n  }\n  throw new Error(\`ATC projection exceeded the hard cap of \${ATC_COUNTS_MAX_ROWS} rows.\`);\n}\n\nasync function neonAtcCounts() {\n  const now = Date.now();\n  if (atcCountsCache?.value && atcCountsCache.expiresAt > now) {\n    return { ...atcCountsCache.value, cacheState:'fresh' };\n  }\n\n  try {\n    const rows = await fetchAtcCountRowsFromNeon();\n    const summary = countAtcRows(rows);\n    let registryVersion = '';\n    try { registryVersion = clean(await RegistryRevision.getRegistryRevision()); }\n    catch { registryVersion = ''; }\n    const value = {\n      ...summary,\n      registryVersion,\n      generatedAt:new Date().toISOString(),\n      source:'neon-bounded-atc',\n    };\n    atcCountsCache = { value, expiresAt:now + ATC_COUNTS_CACHE_TTL_MS };\n    return { ...value, cacheState:'fresh' };\n  } catch (error) {\n    if (atcCountsCache?.value) {\n      return { ...atcCountsCache.value, source:'memory-stale-atc', cacheState:'stale' };\n    }\n    throw error;\n  }\n}\n\n${helperAnchor}`;
+  const helpers = `async function fetchAtcCountRowsFromNeon() {\n  const rows = [];\n  for (let offset = 0; offset < ATC_COUNTS_MAX_ROWS; offset += ATC_COUNTS_PAGE_SIZE) {\n    const params = new URLSearchParams();\n    params.set('select', 'registry_number,atc_code');\n    params.set('is_published', 'eq.true');\n    params.set('editorial_status', 'eq.published');\n    params.set('order', 'registry_number.asc');\n    params.set('limit', String(ATC_COUNTS_PAGE_SIZE));\n    params.set('offset', String(offset));\n    const { data } = await neonRequest(\`drugs?\${params.toString()}\`, {\n      timeoutMs:5000,\n      label:'ATC count projection',\n    });\n    if (!Array.isArray(data)) throw new Error('Neon ATC projection did not return a list.');\n    rows.push(...data);\n    if (data.length < ATC_COUNTS_PAGE_SIZE) return rows;\n  }\n  throw new Error(\`ATC projection exceeded the hard cap of \${ATC_COUNTS_MAX_ROWS} rows.\`);\n}\n\nasync function currentAtcRegistryRevision() {\n  return clean(await RegistryRevision.getRegistryRevision({ maxAgeMs:ATC_COUNTS_REVISION_CHECK_MS }));\n}\n\nasync function neonAtcCounts() {\n  const now = Date.now();\n  if (atcCountsCache?.value && atcCountsCache.expiresAt > now) {\n    if (now - atcCountsRevisionCheckedAt < ATC_COUNTS_REVISION_CHECK_MS) {\n      return { ...atcCountsCache.value, cacheState:'fresh' };\n    }\n    try {\n      const revision = await currentAtcRegistryRevision();\n      atcCountsRevisionCheckedAt = Date.now();\n      if (revision && revision === atcCountsCache.value.registryVersion) {\n        return { ...atcCountsCache.value, cacheState:'revision-hit' };\n      }\n    } catch {\n      atcCountsRevisionCheckedAt = Date.now();\n      return { ...atcCountsCache.value, source:'memory-stale-atc', cacheState:'stale' };\n    }\n  }\n\n  try {\n    let registryVersion = '';\n    try { registryVersion = await currentAtcRegistryRevision(); }\n    catch { registryVersion = ''; }\n    const rows = await fetchAtcCountRowsFromNeon();\n    const summary = countAtcRows(rows);\n    const value = {\n      ...summary,\n      registryVersion,\n      generatedAt:new Date().toISOString(),\n      source:'neon-bounded-atc',\n    };\n    atcCountsCache = { value, expiresAt:Date.now() + ATC_COUNTS_CACHE_TTL_MS };\n    atcCountsRevisionCheckedAt = Date.now();\n    return { ...value, cacheState:'fresh' };\n  } catch (error) {\n    if (atcCountsCache?.value) {\n      return { ...atcCountsCache.value, source:'memory-stale-atc', cacheState:'stale' };\n    }\n    throw error;\n  }\n}\n\n${helperAnchor}`;
   if (!source.includes(helperAnchor)) throw new Error('Phase 6 ATC patch: helper anchor missing.');
   source = source.replace(helperAnchor, helpers);
 
@@ -26,7 +26,7 @@ if (!source.includes(MARKER)) {
   source = source.replace(oldHandler, newHandler);
 
   const exportAnchor = `module.exports.countAtcRows = countAtcRows;`;
-  const exports = `${exportAnchor}\nmodule.exports.fetchAtcCountRowsFromNeon = fetchAtcCountRowsFromNeon;\nmodule.exports.neonAtcCounts = neonAtcCounts;\nmodule.exports.ATC_COUNTS_PAGE_SIZE = ATC_COUNTS_PAGE_SIZE;\nmodule.exports.ATC_COUNTS_MAX_ROWS = ATC_COUNTS_MAX_ROWS;\nmodule.exports.ATC_COUNTS_CACHE_TTL_MS = ATC_COUNTS_CACHE_TTL_MS;`;
+  const exports = `${exportAnchor}\nmodule.exports.fetchAtcCountRowsFromNeon = fetchAtcCountRowsFromNeon;\nmodule.exports.neonAtcCounts = neonAtcCounts;\nmodule.exports.ATC_COUNTS_PAGE_SIZE = ATC_COUNTS_PAGE_SIZE;\nmodule.exports.ATC_COUNTS_MAX_ROWS = ATC_COUNTS_MAX_ROWS;\nmodule.exports.ATC_COUNTS_CACHE_TTL_MS = ATC_COUNTS_CACHE_TTL_MS;\nmodule.exports.ATC_COUNTS_REVISION_CHECK_MS = ATC_COUNTS_REVISION_CHECK_MS;`;
   if (!source.includes(exportAnchor)) throw new Error('Phase 6 ATC patch: export anchor missing.');
   source = source.replace(exportAnchor, exports);
 }
@@ -35,6 +35,8 @@ if (!source.includes(MARKER)) throw new Error('Phase 6 ATC patch marker missing 
 if (!source.includes("params.set('select', 'registry_number,atc_code')")) throw new Error('Phase 6 ATC projection is not explicit.');
 if (!source.includes('ATC_COUNTS_PAGE_SIZE = 250')) throw new Error('Phase 6 ATC page size must stay within the Neon egress guard.');
 if (!source.includes('ATC_COUNTS_MAX_ROWS = 6000')) throw new Error('Phase 6 ATC hard cap is missing.');
+if (!source.includes('ATC_COUNTS_REVISION_CHECK_MS = 60 * 1000')) throw new Error('Phase 6 ATC revision probe interval is missing.');
+if (!source.includes("cacheState:'revision-hit'")) throw new Error('Phase 6 ATC revision-hit cache path is missing.');
 if (!source.includes("return res.status(503).json({ error:'Numërimet e kategorive nuk u ngarkuan.' })")) throw new Error('Phase 6 ATC controlled failure path is missing.');
 
 const atcStart = source.indexOf("if (view === 'atc-counts')");
@@ -44,4 +46,4 @@ const atcHandler = source.slice(atcStart, atcEnd);
 if (/getRegistryDataset\s*\(/.test(atcHandler)) throw new Error('Phase 6 ATC path still loads the full registry dataset.');
 
 fs.writeFileSync(TARGET, source, 'utf8');
-console.log('Phase 6 bounded Neon ATC counts, 5-minute memory cache and no-full-registry contract passed.');
+console.log('Phase 6 revision-aware Neon ATC counts, bounded projection and no-full-registry contract passed.');
