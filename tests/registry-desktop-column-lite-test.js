@@ -67,6 +67,7 @@ assert.doesNotMatch(batchBuilder, /source_payload|SELECT \*|select.*\*/, 'Visibl
 
 assert.match(desktop, /DESKTOP_COLUMN_LITE_RUNTIME = 'phase14-column-lite-v1'/);
 assert.match(desktop, /sortBy:sortByColumn/);
+assert.doesNotMatch(desktop, /\['formPickerBtn', 'form-picker'\]/, 'Opening Forma farmaceutike must not hand off to full registry.');
 assert.doesNotMatch(desktop, /\['colPickerBtn', 'column-picker'\]/, 'Opening Kolonat must not hand off to full registry.');
 assert.match(patch, /source = source\.replace\("      \['colPickerBtn', 'column-picker'\],\\n", ''\)/);
 assert.match(wiring, /patch-phase14-column-lite\.js/);
@@ -74,8 +75,8 @@ assert.match(wiring, /registry-desktop-column-lite\.js\?v=20260812-1/);
 assert.doesNotMatch(decorator, /fetch\s*\(/, 'Tailwind column picker decoration must remain presentation-only.');
 
 for (const forbidden of [
-  'desktop-large-page-size', 'form-picker', 'prescription-selection',
-  'select-page-for-prescription', 'prescription-builder', 'column-picker',
+  'desktop-large-page-size', 'prescription-selection',
+  'select-page-for-prescription', 'prescription-builder',
 ]) assert(!desktop.includes(forbidden), `Normal desktop path must not retain ${forbidden} full-registry handoff.`);
 
 console.log('Phase 14 final desktop column customization uses bounded whitelisted visible-row Neon reads; normal registry interactions stay off the full-registry path.');
