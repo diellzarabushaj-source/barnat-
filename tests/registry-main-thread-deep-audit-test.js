@@ -8,6 +8,7 @@ const read = file => fs.readFileSync(path.join(ROOT, file), 'utf8');
 const syntax = file => execFileSync(process.execPath, ['--check', path.join(ROOT, file)], { stdio:'pipe' });
 
 [
+  'registry-mobile-lite.js',
   'registry-runtime-loader.js',
   'app-performance.js',
   'registry-parser-worker-v2.js',
@@ -18,6 +19,7 @@ const syntax = file => execFileSync(process.execPath, ['--check', path.join(ROOT
 ].forEach(syntax);
 
 const index = read('index.html');
+const mobile = read('registry-mobile-lite.js');
 const runtimeLoader = read('registry-runtime-loader.js');
 const bootstrap = read('app-performance.js');
 const worker = read('registry-parser-worker-v2.js');
@@ -28,17 +30,32 @@ const unified = read('registry-unified-table.js');
 const builder = read('scripts/build-static-runtime.js');
 const middleware = read('middleware.ts');
 
-assert.match(index, /registry-runtime-loader\.js\?v=20260801-6/);
+assert.match(index, /registry-mobile-lite\.js\?v=20260812-1/);
+assert.match(index, /registry-runtime-loader\.js\?v=20260812-7/);
+assert.ok(index.indexOf('registry-mobile-lite.js') < index.indexOf('registry-runtime-loader.js'), 'mobile lightweight path must run before the full runtime loader');
 assert.match(index, /registry-unified-table\.js\?v=20260801-1/);
 assert.doesNotMatch(index, /<script src="app-performance\.js"/);
 assert.match(index, /app-runtime-performance\.js/);
 assert.match(index, /registry-dosage-loader\.js/);
 assert.doesNotMatch(index, /src="app\.js|src="registry-dosage-columns(?:-v2)?\.js/);
 assert.doesNotMatch(index, /(?:registry-table-integrity|registry-clinical-view|registry-tailgrids-refinement|registry-columns-filters|registry-table-final)\.js/);
-assert.match(runtimeLoader, /registry-runtime-loader-v6/);
+
+assert.match(mobile, /registry-mobile-lite-v1/);
+assert.match(mobile, /DEFAULT_PAGE_SIZE = 25/);
+assert.match(mobile, /MAX_PAGE_SIZE = 50/);
+assert.match(mobile, /SEARCH_DEBOUNCE_MS = 250/);
+assert.match(mobile, /view:'registry-page'/);
+assert.match(mobile, /view:'registry-detail'/);
+assert.match(mobile, /medindex:registry-data-ready/);
+assert.doesNotMatch(mobile, /DRUG_DATA_PARTS|DecompressionStream|Uint8Array\.from\(atob/);
+
+assert.match(runtimeLoader, /registry-runtime-loader-v7/);
 assert.match(runtimeLoader, /app-performance\.js\?v=20260801-2/);
 assert.match(runtimeLoader, /classList\.contains\('auth-ready'\)/);
-assert.match(runtimeLoader, /requestAnimationFrame\(\(\) => \{[\s\S]*loadRuntime\(\)/);
+assert.match(runtimeLoader, /MOBILE_LITE_GRACE_MS = 5000/);
+assert.match(runtimeLoader, /mobile-lite-deferred/);
+assert.match(runtimeLoader, /desktop-or-legacy/);
+assert.match(runtimeLoader, /requestAnimationFrame\(\(\) => \{[\s\S]*loadRuntime\(/);
 assert.doesNotMatch(runtimeLoader, /FIRST_INTERACTION_FALLBACK_MS|POST_INTERACTION_GRACE_MS|MEDINDEX_REGISTRY_UI_READY\s*=\s*new Promise/);
 
 assert.match(bootstrap, /scheduleBrowserCacheSave/);
@@ -88,4 +105,4 @@ assert.match(builder, /runtimeOutputs/);
 assert.match(builder, /app-runtime-performance\.js/);
 assert.match(middleware, /registry-parser-worker-v2\.js/);
 
-console.log('Registry immediate loader v6, single controller and main-thread deep audit passed.');
+console.log('Registry mobile lightweight loader v7, single controller and main-thread deep audit passed.');
