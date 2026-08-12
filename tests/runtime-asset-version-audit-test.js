@@ -13,7 +13,9 @@ for (const page of pages) {
 }
 
 const index = read('index.html');
-assert.match(index, /registry-runtime-loader\.js\?v=20260801-6/, 'index.html: current immediate registry loader is missing');
+assert.match(index, /registry-mobile-server\.js\?v=20260812-1/, 'index.html: mobile server registry fast path is missing');
+assert.match(index, /registry-mobile-server\.css\?v=20260812-1/, 'index.html: mobile server registry stylesheet is missing');
+assert.match(index, /registry-runtime-loader\.js\?v=20260812-7/, 'index.html: current deferred registry loader is missing');
 assert.match(index, /registry-unified-table\.js\?v=20260801-1/, 'index.html: unified table controller is missing');
 assert.match(index, /registry-unified-table\.css\?v=20260801-1/, 'index.html: unified table stylesheet is missing');
 assert.match(index, /registry-full-text-expansion\.css\?v=20260805-2/, 'index.html: full-row text reveal stylesheet is missing');
@@ -40,7 +42,10 @@ const registryRelease = read('registry-ui-release.js');
 assert.match(registryRelease, /registry-ui-20260809-1/, 'registry UI cache-clear release is stale');
 
 const runtimeLoader = read('registry-runtime-loader.js');
-assert.match(runtimeLoader, /registry-runtime-loader-v6/, 'immediate registry loader version is stale');
+assert.match(runtimeLoader, /registry-runtime-loader-v7/, 'deferred registry loader version is stale');
+assert.match(runtimeLoader, /MOBILE_SERVER_GRACE_MS = 5000/, 'mobile server fast path grace window is missing');
+assert.match(runtimeLoader, /mobile-server-deferred/, 'mobile server fast path must defer the full registry runtime');
+assert.match(runtimeLoader, /medindex:request-full-registry/, 'full registry handoff contract is missing');
 assert.match(runtimeLoader, /app-performance\.js\?v=20260801-2/, 'registry loader must request the versioned bootstrap');
 assert.match(runtimeLoader, /classList\.contains\('auth-ready'\)/, 'registry loader must wait for authentication');
 assert.doesNotMatch(runtimeLoader, /FIRST_INTERACTION_FALLBACK_MS|POST_INTERACTION_GRACE_MS|INTERACTION_EVENTS/, 'old interaction gate must not return');
@@ -85,4 +90,4 @@ const workerShim = read('sw-resilient-v3.js');
 assert.match(workerShim, /importScripts\('\/sw\.js\?v=/);
 assert.doesNotMatch(workerShim, /navigationResponse|PRIVATE_DATA_PATHS/);
 
-console.log('Clinical runtime single-version, canonical dose runtime and final manual-QA audit passed.');
+console.log('Clinical runtime single-version, mobile server fast path, canonical dose runtime and final manual-QA audit passed.');
