@@ -1,9 +1,7 @@
 'use strict';
 
-const { neonRequest } = require('../lib/neon-data-api.js');
+const populationSnapshot = require('../data/approved-population-snapshot.json');
 
-const PROFILE_LIMIT = 6000;
-const DRUG_CHUNK_SIZE = 100;
 const APPROVED_POPULATIONS = new Map([
   ['adult only', 'Adult only'],
   ['pediatric only', 'Pediatric only'],
@@ -28,48 +26,33 @@ function approvedPopulationFromNotes(value) {
   }
 }
 
+function snapshotItems(snapshot = populationSnapshot) {
+  const sourceItems = Array.isArray(snapshot?.items) ? snapshot.items : [];
+  const byRegistryNumber = new Map();
+
+  sourceItems.forEach(row => {
+    const registryNumber = Number(row?.registryNumber);
+    const approvedPopulation = APPROVED_POPULATIONS.get(normalizePopulation(row?.approvedPopulation)) || '';
+    if (!Number.isInteger(registryNumber) || registryNumber <= 0 || !approvedPopulation) return;
+    const previous = byRegistryNumber.get(registryNumber);
+    if (previous && previous !== approvedPopulation) {
+      throw new Error(`Konflikt i popullatës së aprovuar për kartën ${registryNumber}.`);
+    }
+    byRegistryNumber.set(registryNumber, approvedPopulation);
+  });
+
+  return [...byRegistryNumber.entries()]
+    .map(([registryNumber, approvedPopulation]) => ({ registryNumber, approvedPopulation }))
+    .sort((left, right) => left.registryNumber - right.registryNumber);
+}
+
 async function authorized(req) {
   const auth = await import('../lib/auth.mjs');
   return auth.verifySessionToken(auth.sessionFromRequest(req));
 }
 
-async function approvedPopulationProfiles() {
-  const { data } = await neonRequest(
-    `drug_clinical_profiles?select=drug_id,editorial_notes&editorial_notes=ilike.*approved_population*&limit=${PROFILE_LIMIT}`
-  );
-  const profiles = Array.isArray(data) ? data : [];
-  const byDrugId = new Map();
-  profiles.forEach(row => {
-    const drugId = clean(row?.drug_id);
-    const approvedPopulation = approvedPopulationFromNotes(row?.editorial_notes);
-    if (drugId && approvedPopulation) byDrugId.set(drugId, approvedPopulation);
-  });
-  return byDrugId;
-}
-
-async function registryItemsForProfiles(byDrugId) {
-  const drugIds = [...byDrugId.keys()];
-  const items = [];
-  for (let index = 0; index < drugIds.length; index += DRUG_CHUNK_SIZE) {
-    const chunk = drugIds.slice(index, index + DRUG_CHUNK_SIZE);
-    const idFilter = chunk.join(',');
-    const { data } = await neonRequest(
-      `drugs?select=id,registry_number&id=in.(${idFilter})&order=registry_number.asc&limit=${DRUG_CHUNK_SIZE}`
-    );
-    (Array.isArray(data) ? data : []).forEach(row => {
-      const registryNumber = Number(row?.registry_number);
-      const approvedPopulation = byDrugId.get(clean(row?.id)) || '';
-      if (!Number.isInteger(registryNumber) || registryNumber <= 0 || !approvedPopulation) return;
-      items.push({ registryNumber, approvedPopulation });
-    });
-  }
-  return items.sort((left, right) => left.registryNumber - right.registryNumber);
-}
-
 async function getApprovedPopulationItems() {
-  const profiles = await approvedPopulationProfiles();
-  if (!profiles.size) return [];
-  return registryItemsForProfiles(profiles);
+  return snapshotItems();
 }
 
 async function getPediatricOnlyRegistryNumbers() {
@@ -104,6 +87,8 @@ async function handler(req, res) {
       count:registryNumbers.length,
       items,
       classifiedCount:items.length,
+      source:'sheet_snapshot',
+      snapshotGeneratedAt:clean(populationSnapshot?.source?.generatedAt),
     });
   } catch (error) {
     console.error('Approved population marker error:', error);
@@ -115,4 +100,5 @@ handler.getApprovedPopulationItems = getApprovedPopulationItems;
 handler.getPediatricOnlyRegistryNumbers = getPediatricOnlyRegistryNumbers;
 handler.approvedPopulationFromNotes = approvedPopulationFromNotes;
 handler.normalizePopulation = normalizePopulation;
+handler.snapshotItems = snapshotItems;
 module.exports = handler;
