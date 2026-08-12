@@ -12,6 +12,8 @@ const desktop = read('registry-desktop-lite.js');
 const api = read('api/drug-search.js');
 const clinical = read('form-picker-clinical.js');
 const patch = read('scripts/patch-phase11-form-picker-lite.js');
+const phase11Build = read('scripts/patch-phase11-desktop-advanced-lite.js');
+const phase11Gate = read('tests/registry-desktop-large-page-lite-test.js');
 const packageJson = JSON.parse(read('package.json'));
 
 execFileSync(process.execPath, ['--check', path.join(ROOT, 'registry-desktop-lite.js')], { stdio:'pipe' });
@@ -42,7 +44,9 @@ assert.doesNotMatch(clinical, /fetch\s*\(/, 'Opening/decorating the form picker 
 assert.doesNotMatch(clinical, /\/api\//, 'The clinical form decorator must remain presentation-only.');
 assert.match(patch, /extractObjectLiteral\('FORM_CATEGORIES'\)/, 'Phase 11 must reuse the canonical legacy taxonomy rather than duplicate it manually.');
 assert.match(patch, /extractObjectLiteral\('FORM_ALIASES'\)/);
-assert.match(packageJson.scripts['build:runtime'], /patch-phase11-form-picker-lite\.js/, 'The Phase 11 form patch must run deterministically during build.');
-assert.match(packageJson.scripts.test, /registry-desktop-form-lite-test\.js/, 'The Phase 11 form regression test must be part of the main suite.');
+assert.match(phase11Build, /require\('\.\/patch-phase11-form-picker-lite\.js'\)/, 'The existing Phase 11 build patch must compose the form-lite patch.');
+assert.match(phase11Gate, /require\('\.\/registry-desktop-form-lite-test\.js'\)/, 'The existing Phase 11 regression gate must compose the form-lite test.');
+assert.match(packageJson.scripts['build:runtime'], /patch-phase11-desktop-advanced-lite\.js/, 'Phase 11 must remain in the deterministic build chain.');
+assert.match(packageJson.scripts.test, /registry-desktop-large-page-lite-test\.js/, 'Phase 11 must remain in the main test suite.');
 
 console.log('Phase 11 desktop pharmaceutical-form picker is zero-network until selection and filters bounded Neon pages without full-registry handoff.');
