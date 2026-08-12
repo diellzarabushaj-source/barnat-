@@ -64,6 +64,14 @@ function patchPerformanceDiagnostics() {
       source = source.replace(before, after);
     }
   }
+
+  if (!source.includes('REGISTRY_DOSAGE_SETTLED')) {
+    const marker = `    const idleMutationAudit = await page.evaluate(() => new Promise(resolve => {`;
+    const wait = `    await expect.poll(\n      async () => page.evaluate(() => {\n        const cells = [...document.querySelectorAll('#tbody [data-registry-dosage-column]')];\n        const status = window.MedIndexRegistryDosage?.clinicalStatus?.() || 'loading';\n        const unsettled = cells.filter(cell => {\n          const signature = String(cell.dataset.registryDosageSignature || '');\n          return !signature || signature.includes('|pending') || signature.includes('|registry-loading');\n        }).length;\n        return cells.length === 100 && unsettled === 0 && (status === 'ready' || status === 'degraded');\n      }),\n      { timeout:5000, message:'visible dosage hydration did not settle before the idle mutation audit' }\n    ).toBe(true);\n    console.log('REGISTRY_DOSAGE_SETTLED');\n\n${marker}`;
+    if (!source.includes(marker)) throw new Error('Phase 5 dosage-settled audit anchor is missing.');
+    source = source.replace(marker, wait);
+  }
+
   write(file, source);
 }
 
@@ -87,4 +95,4 @@ patchPerformanceServer();
 patchPerformanceDiagnostics();
 patchRegressionTest();
 
-console.log('Phase 5 bounded dosage response, production-matched performance fixture and row-operation diagnostics patch passed.');
+console.log('Phase 5 bounded dosage response, production-matched performance fixture and settled-idle diagnostics patch passed.');
