@@ -93,7 +93,11 @@ assert.match(dosage, /REQUEST_BATCH_SIZE = 100/);
 assert.match(dosage, /view=cards/);
 assert.match(dosage, /await yieldToBrowser\(\)/);
 assert.match(dosage, /disconnectTableObservers/);
-assert.match(dosage, /existing\.innerHTML !== desired\.innerHTML/);
+assert.match(dosage, /registryDosageSignature/);
+assert.match(dosage, /existing\.dataset\.registryDosageSignature !== signature/);
+assert.match(dosage, /existing\.innerHTML = desired\.innerHTML/);
+assert.match(dosage, /!clinical\.failedNumbers\.has\(number\)/, 'failed dosage batches must remain stable until an explicit retry or refresh');
+assert.doesNotMatch(dosage, /existing\.innerHTML !== desired\.innerHTML|existing\.replaceWith\(desired\)/, 'dosage cells must reconcile by clinical signature without replacing unified-table cells');
 assert.doesNotMatch(dosage, /fetch\('\/api\/dosage'\s*,/);
 assert.doesNotMatch(dosage, /DRUG_DATA_PARTS|\batob\s*\(|DecompressionStream|Uint8Array/);
 assert.doesNotMatch(dosage, /observe\([^\n]+subtree\s*:\s*true/);
@@ -109,4 +113,4 @@ assert.match(builder, /runtimeOutputs/);
 assert.match(builder, /app-runtime-performance\.js/);
 assert.match(middleware, /registry-parser-worker-v2\.js/);
 
-console.log('Registry isolated mobile lightweight loader v7, single controller and visible-row dosage main-thread audit passed.');
+console.log('Registry isolated mobile lightweight loader v7, stable visible-row dosage cells and main-thread audit passed.');
