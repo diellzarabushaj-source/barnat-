@@ -198,3 +198,33 @@
     transition:none!important;
   }
 }
+
+/* Dashboard typography is intentionally layered. Important declarations in a
+   cascade layer outrank unlayered !important rules, so phone hierarchy must
+   participate in that same layer instead of fighting it from outside. */
+@layer medindex-dashboard-typography{
+  @media (max-width:767px){
+    html.medindex-tailadmin[data-registry-mobile-lite] body .mobile-lite-name{
+      font-weight:600!important;
+    }
+
+    html.medindex-tailadmin[data-registry-mobile-lite] body .mobile-lite-substance{
+      font-weight:500!important;
+    }
+
+    html.medindex-tailadmin[data-registry-mobile-lite] body .mobile-lite-meta{
+      font-weight:400!important;
+    }
+
+    html.medindex-tailadmin[data-registry-mobile-lite] body .mobile-lite-detail-hero strong,
+    html.medindex-tailadmin[data-registry-mobile-lite] body .mobile-lite-detail-head h2,
+    html.medindex-tailadmin[data-registry-mobile-phase4] body .mi-phase4-clinical-head h3{
+      font-weight:600!important;
+    }
+
+    html.medindex-tailadmin[data-registry-mobile-lite] body :is(.mobile-lite-more,.mobile-lite-full-action),
+    html.medindex-tailadmin[data-registry-mobile-phase3] body :is(.mi-registry-filter-open,.mi-registry-filter-clear,.mi-registry-filter-actions button,.mi-registry-filter-shortcuts button){
+      font-weight:500!important;
+    }
+  }
+}
