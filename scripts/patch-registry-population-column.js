@@ -142,6 +142,7 @@ function patchAssetVersions() {
   source = source.replace(/registry-unified-table\.css\?v=[^\"']+/g, `registry-unified-table.css?v=${ASSET_VERSION}`);
   source = source.replace(/registry-unified-table\.js\?v=[^\"']+/g, `registry-unified-table.js?v=${ASSET_VERSION}`);
   source = source.replace(/registry-dose-clinical-row-markers\.js\?v=[^\"']+/g, `registry-dose-clinical-row-markers.js?v=${ASSET_VERSION}`);
+  source = source.replace(/registry-column-picker-tailwind\.js\?v=[^\"']+/g, `registry-column-picker-tailwind.js?v=${ASSET_VERSION}`);
   write(indexFile, source);
 }
 
@@ -168,7 +169,8 @@ if (!unifiedCss.includes('[data-registry-column-key="population"]') || !unifiedC
 const indexSource = read(indexFile);
 if (!indexSource.includes(`registry-unified-table.css?v=${ASSET_VERSION}`)
     || !indexSource.includes(`registry-unified-table.js?v=${ASSET_VERSION}`)
-    || !indexSource.includes(`registry-dose-clinical-row-markers.js?v=${ASSET_VERSION}`)) {
+    || !indexSource.includes(`registry-dose-clinical-row-markers.js?v=${ASSET_VERSION}`)
+    || !indexSource.includes(`registry-column-picker-tailwind.js?v=${ASSET_VERSION}`)) {
   throw new Error('Population column asset versions nuk u përditësuan.');
 }
 
