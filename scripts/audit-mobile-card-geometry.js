@@ -115,9 +115,6 @@ async function auditWidth(browser, width) {
     const page = await context.newPage();
     await installApiRoute(page);
     await page.goto(`${BASE}/index.html`, { waitUntil:'domcontentloaded', timeout:30000 });
-
-    // Locator waits execute through Playwright's DOM channel and do not require
-    // unsafe-eval, so this audit remains compatible with the production CSP in WebKit.
     await page.locator('html.auth-ready').waitFor({ state:'attached', timeout:10000 });
     await page.locator('#tbody .mobile-lite-card').nth(9).waitFor({ state:'attached', timeout:10000 });
     await page.locator('#tbody .mi-mobile-favorite-toggle').nth(9).waitFor({ state:'attached', timeout:10000 });
@@ -127,6 +124,24 @@ async function auditWidth(browser, width) {
         const value = node.getBoundingClientRect();
         return { left:value.left, top:value.top, right:value.right, bottom:value.bottom, width:value.width, height:value.height };
       };
+      const style = node => {
+        if (!node) return null;
+        const value = getComputedStyle(node);
+        return {
+          display:value.display,
+          position:value.position,
+          height:value.height,
+          minHeight:value.minHeight,
+          maxHeight:value.maxHeight,
+          overflow:value.overflow,
+          overflowY:value.overflowY,
+          contain:value.contain,
+          transform:value.transform,
+          gridAutoRows:value.gridAutoRows,
+          gap:value.gap,
+        };
+      };
+      const tbody = document.getElementById('tbody');
       const cards = [...document.querySelectorAll('#tbody .mobile-lite-card')].slice(0, 10).map((card, index) => {
         const favorite = card.querySelector('.mi-mobile-favorite-toggle');
         const more = card.querySelector('.mobile-lite-more');
@@ -136,8 +151,11 @@ async function auditWidth(browser, width) {
         return {
           index,
           row:row ? rect(row) : null,
+          rowStyle:style(row),
           cell:cell ? rect(cell) : null,
+          cellStyle:style(cell),
           card:rect(card),
+          cardStyle:style(card),
           favorite:favorite ? rect(favorite) : null,
           more:more ? rect(more) : null,
           open:open ? rect(open) : null,
@@ -146,6 +164,8 @@ async function auditWidth(browser, width) {
       });
       return {
         cards,
+        tbodyStyle:style(tbody),
+        htmlPhase8:document.documentElement.dataset.registryMobilePhase8 || '',
         viewport:{ width:document.documentElement.clientWidth, scrollWidth:document.documentElement.scrollWidth },
         runtimeMode:document.documentElement.dataset.registryRuntimeMode || '',
         fullRuntimeLoaded:Boolean(document.querySelector('script[data-medindex-app-performance]')),
@@ -167,6 +187,8 @@ async function auditWidth(browser, width) {
       horizontalOverflow:result.viewport.scrollWidth > result.viewport.width + 1,
       runtimeMode:result.runtimeMode,
       fullRuntimeLoaded:result.fullRuntimeLoaded,
+      htmlPhase8:result.htmlPhase8,
+      tbodyStyle:result.tbodyStyle,
       minCardHeight:Math.min(...normalized.map(card => card.card.height)),
       maxCardHeight:Math.max(...normalized.map(card => card.card.height)),
       actionOverlapCount:normalized.filter(card => card.favoriteMoreOverlap > 0.5).length,
@@ -175,6 +197,8 @@ async function auditWidth(browser, width) {
       rowContainmentFailureCount:normalized.filter(card => !card.rowOwnsCard || !card.cellOwnsCard).length,
       cards:normalized,
     };
+
+    console.log(`\nMOBILE_CARD_GEOMETRY_WIDTH_REPORT ${JSON.stringify(report, null, 2)}\n`);
 
     assert.equal(report.horizontalOverflow, false, `${width}px: horizontal overflow detected.`);
     assert.equal(report.fullRuntimeLoaded, false, `${width}px: full registry runtime should not wake for normal card rendering.`);
