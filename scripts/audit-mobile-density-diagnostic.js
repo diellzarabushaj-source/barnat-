@@ -136,16 +136,72 @@ function rows() {
           rect:rect(node),
         };
       };
+
+      const interestingProperties = new Set([
+        'display','visibility','position','width','min-width','max-width','height','min-height','max-height',
+        'margin','margin-top','margin-right','margin-bottom','margin-left',
+        'padding','padding-top','padding-right','padding-bottom','padding-left',
+        'gap','row-gap','column-gap','grid-template-columns','grid-template-rows','align-items','justify-content','overflow',
+      ]);
+
+      const declarationSnapshot = style => {
+        const declarations = {};
+        if (!style) return declarations;
+        for (const property of interestingProperties) {
+          const value = style.getPropertyValue(property);
+          if (!value) continue;
+          declarations[property] = `${value}${style.getPropertyPriority(property) ? ' !important' : ''}`;
+        }
+        return declarations;
+      };
+
+      const ruleMatches = node => {
+        if (!node) return [];
+        const matches = [];
+        const walk = (rules, href, media = '') => {
+          if (!rules) return;
+          for (const rule of rules) {
+            if (rule.type === CSSRule.STYLE_RULE && rule.selectorText) {
+              let matched = false;
+              try { matched = node.matches(rule.selectorText); } catch {}
+              if (!matched) continue;
+              const declarations = declarationSnapshot(rule.style);
+              if (!Object.keys(declarations).length) continue;
+              matches.push({ href:href || 'inline', media, selector:rule.selectorText, declarations });
+              continue;
+            }
+            if (rule.cssRules) {
+              let nextMedia = media;
+              if (rule.type === CSSRule.MEDIA_RULE) {
+                nextMedia = rule.conditionText || rule.media?.mediaText || media;
+                if (rule.media && !matchMedia(rule.media.mediaText).matches) continue;
+              }
+              walk(rule.cssRules, href, nextMedia);
+            }
+          }
+        };
+        for (const sheet of document.styleSheets) {
+          try { walk(sheet.cssRules, sheet.href || 'inline'); }
+          catch (error) { matches.push({ href:sheet.href || 'inline', error:String(error) }); }
+        }
+        return matches;
+      };
+
       const search = document.getElementById('search');
       const toolbar = search?.closest('.registry-filter-panel-unified,.toolbar');
       const indexContent = document.querySelector('.mi-index-content');
+      const legacyHeader = indexContent?.querySelector(':scope > header') || document.querySelector('body > header');
+      const viewToolbar = document.getElementById('registryViewToolbar');
       const firstRow = document.querySelector('#tbody .mobile-lite-row');
       const firstCell = firstRow?.querySelector(':scope > td');
       const firstCard = firstRow?.querySelector('.mobile-lite-card');
+      const tbody = document.getElementById('tbody');
       const flowSelectors = [
         '.mi-content-container',
         '.mi-page-heading',
         '.mi-index-content',
+        '.mi-index-content>header',
+        '#registryViewToolbar',
         '.registry-overview',
         '.toolbar',
         '.registry-filter-panel-unified',
@@ -176,6 +232,15 @@ function rows() {
           rowChildren:firstRow ? [...firstRow.children].map(describe) : [],
           cellChildren:firstCell ? [...firstCell.children].map(describe) : [],
           cardChildren:firstCard ? [...firstCard.children].map(describe) : [],
+        },
+        cssOwnership:{
+          legacyHeader:{ node:describe(legacyHeader), rules:ruleMatches(legacyHeader) },
+          viewToolbar:{ node:describe(viewToolbar), rules:ruleMatches(viewToolbar) },
+          toolbar:{ node:describe(toolbar), rules:ruleMatches(toolbar) },
+          tbody:{ node:describe(tbody), rules:ruleMatches(tbody) },
+          firstRow:{ node:describe(firstRow), rules:ruleMatches(firstRow) },
+          firstCell:{ node:describe(firstCell), rules:ruleMatches(firstCell) },
+          firstCard:{ node:describe(firstCard), rules:ruleMatches(firstCard) },
         },
         flow:flowSelectors.map(selector => ({ selector, node:describe(document.querySelector(selector)) })),
       };
