@@ -69,6 +69,23 @@ jobs:
           set -euo pipefail
           node scripts/audit-mobile-phase0-runtime.js --assert-single-owner | tee /tmp/mobile-phase0-runtime.log
 
+      # Keep the Phase 0 phone ownership gates ahead of the broad Phase 5/6
+      # performance suite. A desktop CLS or fixture cleanup regression must not
+      # hide the mobile forensic result that this workflow is also responsible for.
+      - name: Run phone WebKit shell, owner, network and startup gates
+        shell: bash
+        env:
+          MOBILE_SHELL_SKIP_BUILD: '1'
+          MOBILE_NETWORK_SKIP_BUILD: '1'
+          MOBILE_STARTUP_SKIP_BUILD: '1'
+        run: |
+          set -euo pipefail
+          node scripts/audit-mobile-density-diagnostic.js | tee /tmp/mobile-density-phase5.log
+          node scripts/audit-mobile-owner-boundary-phase0.js | tee /tmp/mobile-owner-boundary-phase0.log
+          node scripts/audit-mobile-shell-state.js | tee /tmp/mobile-shell-phase4.log
+          node scripts/audit-mobile-network-phase5.js | tee /tmp/mobile-network-phase5.log
+          node scripts/audit-mobile-startup-phase5.js | tee /tmp/mobile-startup-phase5.log
+
       - name: Run Phase 5 interaction, Phase 6 version and 4006-row performance gates
         shell: bash
         run: |
@@ -93,20 +110,6 @@ jobs:
             sleep 1
           done
           pnpm exec playwright test tests/phase5-final-performance.spec.js tests/phase6-single-version.spec.js tests/registry-main-thread-performance.spec.js --reporter=line --workers=1 --retries=1 | tee /tmp/phase5-performance.log
-
-      - name: Run phone WebKit shell, owner, network and startup gates
-        shell: bash
-        env:
-          MOBILE_SHELL_SKIP_BUILD: '1'
-          MOBILE_NETWORK_SKIP_BUILD: '1'
-          MOBILE_STARTUP_SKIP_BUILD: '1'
-        run: |
-          set -euo pipefail
-          node scripts/audit-mobile-density-diagnostic.js | tee /tmp/mobile-density-phase5.log
-          node scripts/audit-mobile-owner-boundary-phase0.js | tee /tmp/mobile-owner-boundary-phase0.log
-          node scripts/audit-mobile-shell-state.js | tee /tmp/mobile-shell-phase4.log
-          node scripts/audit-mobile-network-phase5.js | tee /tmp/mobile-network-phase5.log
-          node scripts/audit-mobile-startup-phase5.js | tee /tmp/mobile-startup-phase5.log
 
       - name: Upload Phase 0, Phase 5 and Phase 6 metrics
         if: always()
