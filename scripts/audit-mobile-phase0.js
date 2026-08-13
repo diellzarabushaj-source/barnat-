@@ -27,6 +27,8 @@ const shell = read('tailadmin-shell.js');
 const mobileExperience = read('mobile-experience.js');
 const sidebarHardening = read('mobile-sidebar-hardening.js');
 const firstPageClinical = read('first-page-clinical.js');
+const registryUxPhase1 = read('registry-ux-phase1.js');
+const registryUxPhase3 = read('registry-ux-phase3.js');
 const vercel = read('vercel.json');
 const packageJson = JSON.parse(read('package.json'));
 const phase8Patch = read('scripts/patch-registry-phase8-personalization.js');
@@ -160,16 +162,19 @@ const phase0DomOwnership = {
   phoneOwnerEvent:/owner:'phone-registry'/.test(firstPageClinical),
   canonicalToolbarMarker:/toolbar\.classList\.add\('registry-filter-panel-unified'\)/.test(firstPageClinical),
   noDeferredLiteMarkerDependency:!/function phoneOwnsFirstPage\(\)[\s\S]{0,500}registryMobileLite/.test(firstPageClinical),
+  phoneSearchWrapperBlocked:/function enhanceSearch\(\)[\s\S]{0,420}if \(phoneRegistryOwnsViewport\(\)\) return;/.test(registryUxPhase1),
+  phoneQuickFavoritesBlocked:/function quickFavoritesButton\(\)[\s\S]{0,420}if \(phoneRegistryOwnsViewport\(\)\) return null;/.test(registryUxPhase1),
+  phoneDesktopNotesWorkspaceBlocked:/function workspaceShell\(\)[\s\S]{0,420}if \(phoneRegistryOwnsViewport\(\)\) return null;/.test(registryUxPhase3),
 };
 
 if (!Object.values(phase0DomOwnership).every(Boolean)) {
   findings.push(finding(
     'P0-DOM-009',
     'high',
-    'Desktop first-page enhancer can still mutate the phone registry DOM',
+    'Desktop first-page or shared registry UX can still mutate the phone registry DOM',
     `Phone DOM guard contract: ${JSON.stringify(phase0DomOwnership)}.`,
-    'Desktop toolbar/table enhancements on top of the phone registry can duplicate controls, inflate the toolbar and push the first medicine below the fold.',
-    'Keep the first-page enhancer unconditionally off <=767px, independent of deferred mobile-lite markers, and preserve the canonical phone toolbar marker.'
+    'Desktop toolbar/table enhancements on top of the phone registry can duplicate controls, wrap the search, inflate the toolbar and push the first medicine below the fold.',
+    'Keep desktop/tablet first-page search/favorites/notes enhancements off <=767px and preserve the canonical phone toolbar direct-child geometry.'
   ));
 }
 
