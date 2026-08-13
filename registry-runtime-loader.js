@@ -1,10 +1,10 @@
 (() => {
   'use strict';
 
-  const VERSION = 'registry-runtime-loader-v8';
+  const VERSION = 'registry-runtime-loader-v9';
   const RUNTIME_SRC = '/app-performance.js?v=20260801-2';
   const AUTH_WAIT_LIMIT_MS = 8000;
-  const MOBILE_LITE_GRACE_MS = 5000;
+  const MOBILE_LITE_STALL_MS = 12000;
   const DESKTOP_LITE_GRACE_MS = 5000;
   const MOBILE_QUERY = '(max-width: 767px)';
   const DESKTOP_QUERY = '(min-width: 768px)';
@@ -13,7 +13,7 @@
   let scheduled = false;
   let authObserver = null;
   let authTimer = 0;
-  let mobileGraceTimer = 0;
+  let mobileWatchTimer = 0;
   let desktopGraceTimer = 0;
 
   const html = document.documentElement;
@@ -33,12 +33,17 @@
     return Boolean(desktopMedia?.matches && html.dataset.registryDesktopLite);
   }
 
+  function clearMobileWatch() {
+    window.clearTimeout(mobileWatchTimer);
+    mobileWatchTimer = 0;
+  }
+
   function loadRuntime(reason = 'automatic') {
     if (loaded || document.querySelector('script[data-medindex-app-performance]')) return;
     loaded = true;
     authObserver?.disconnect();
     window.clearTimeout(authTimer);
-    window.clearTimeout(mobileGraceTimer);
+    clearMobileWatch();
     window.clearTimeout(desktopGraceTimer);
     html.dataset.registryRuntimeMode = 'full';
     html.dataset.registryRuntimeReason = reason;
@@ -70,11 +75,16 @@
 
   function deferForMobileLite() {
     html.dataset.registryRuntimeMode = 'mobile-lite-deferred';
-    window.clearTimeout(mobileGraceTimer);
-    mobileGraceTimer = window.setTimeout(() => {
-      if (html.dataset.registryMobileLiteReady === '1') return;
-      scheduleRuntime('mobile-lite-timeout');
-    }, MOBILE_LITE_GRACE_MS);
+    html.dataset.registryRuntimeReason = 'mobile-lite-owner';
+    clearMobileWatch();
+    mobileWatchTimer = window.setTimeout(() => {
+      if (html.dataset.registryMobileLiteReady === '1' || loaded) return;
+      html.dataset.registryRuntimeMode = 'mobile-lite-stalled';
+      html.dataset.registryRuntimeReason = 'mobile-lite-stalled';
+      window.dispatchEvent(new CustomEvent('medindex:mobile-lite-stalled', {
+        detail:{ waitedMs:MOBILE_LITE_STALL_MS, owner:'mobile-lite' },
+      }));
+    }, MOBILE_LITE_STALL_MS);
   }
 
   function deferForDesktopLite() {
@@ -120,10 +130,44 @@
     }, AUTH_WAIT_LIMIT_MS);
   }
 
-  window.MEDINDEX_LOAD_FULL_REGISTRY = reason => scheduleRuntime(reason || 'manual');
+  function isExplicitMobileFullRequest(reason, detail = {}) {
+    const value = String(reason || '');
+    return detail.fatal === true || value === 'viewport-desktop' || value.startsWith('fatal-');
+  }
+
+  function blockMobileFullRequest(reason) {
+    html.dataset.registryRuntimeBlockedReason = String(reason || 'mobile-nonfatal');
+    window.dispatchEvent(new CustomEvent('medindex:mobile-full-registry-blocked', {
+      detail:{ reason:String(reason || 'mobile-nonfatal'), owner:'mobile-lite' },
+    }));
+  }
+
+  window.MEDINDEX_LOAD_FULL_REGISTRY = (reason, options = {}) => {
+    const resolvedReason = String(reason || 'manual');
+    if (mobileLiteCandidate() && !isExplicitMobileFullRequest(resolvedReason, options)) {
+      blockMobileFullRequest(resolvedReason);
+      return false;
+    }
+    scheduleRuntime(resolvedReason);
+    return true;
+  };
+
   window.addEventListener('medindex:request-full-registry', event => {
-    scheduleRuntime(event.detail?.reason || 'lite-handoff');
+    const reason = String(event.detail?.reason || 'lite-handoff');
+    if (mobileLiteCandidate() && !isExplicitMobileFullRequest(reason, event.detail || {})) {
+      blockMobileFullRequest(reason);
+      return;
+    }
+    scheduleRuntime(reason);
   });
+
+  window.addEventListener('medindex:mobile-lite-ready', () => {
+    if (!mobileMedia?.matches || loaded) return;
+    clearMobileWatch();
+    html.dataset.registryRuntimeMode = 'mobile-lite';
+    html.dataset.registryRuntimeReason = 'mobile-lite-ready';
+  });
+
   mobileMedia?.addEventListener?.('change', event => {
     if (!event.matches && html.dataset.registryMobileLiteReady === '1') scheduleRuntime('viewport-desktop');
   });
