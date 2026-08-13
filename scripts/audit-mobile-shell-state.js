@@ -162,6 +162,10 @@ async function shellGeometryState(page) {
     const cards = [...document.querySelectorAll('#tbody .mobile-lite-card')];
     const firstCard = cards[0] || null;
     const lastCard = cards.at(-1) || null;
+    const main = document.querySelector('.mi-main');
+    const scrollingElement = document.scrollingElement || document.documentElement;
+    const pagination = document.getElementById('pagination');
+    const mainStyle = main ? getComputedStyle(main) : null;
     return {
       viewport:{ width:innerWidth, height:innerHeight },
       topbar:rect(topbar),
@@ -182,6 +186,23 @@ async function shellGeometryState(page) {
       subtitleDisplay:styleDisplay(subtitle),
       headingBadgeDisplay:styleDisplay(headingBadge),
       lastCard:rect(lastCard),
+      pagination:rect(pagination),
+      mainScroll:main ? {
+        rect:rect(main),
+        scrollTop:Math.round(main.scrollTop * 10) / 10,
+        scrollHeight:main.scrollHeight,
+        clientHeight:main.clientHeight,
+        maxScroll:Math.max(0, main.scrollHeight - main.clientHeight),
+        overflowY:mainStyle?.overflowY || '',
+      } : null,
+      documentScroll:scrollingElement ? {
+        tag:scrollingElement.tagName,
+        scrollTop:Math.round(scrollingElement.scrollTop * 10) / 10,
+        scrollHeight:scrollingElement.scrollHeight,
+        clientHeight:scrollingElement.clientHeight,
+        maxScroll:Math.max(0, scrollingElement.scrollHeight - scrollingElement.clientHeight),
+      } : null,
+      lastCardVisibleInViewport:Boolean(lastCard && lastCard.getBoundingClientRect().bottom > 0 && lastCard.getBoundingClientRect().top < innerHeight),
       lastCardCovered:Boolean(lastCard && nav && lastCard.getBoundingClientRect().bottom > nav.getBoundingClientRect().top - 4),
       horizontalOverflow:document.documentElement.scrollWidth > document.documentElement.clientWidth + 1,
     };
@@ -297,6 +318,7 @@ function assertIdleState(state, label) {
     await page.locator('.mi-main').evaluate(node => { node.scrollTop = node.scrollHeight; });
     await page.waitForTimeout(80);
     report.geometryAtEnd = await shellGeometryState(page);
+    console.log(`MOBILE_SHELL_END_GEOMETRY ${JSON.stringify(report.geometryAtEnd)}`);
     assertCompactShellGeometry(report.geometryAtEnd, 'end-of-list geometry', { lastCardVisible:true });
     await page.locator('.mi-main').evaluate(node => { node.scrollTop = 0; });
     await page.waitForTimeout(50);
