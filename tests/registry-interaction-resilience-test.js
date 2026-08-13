@@ -40,7 +40,7 @@ assert.match(desktop, /DEFAULT_PAGE_SIZE = 50/, 'desktop normal mode must remain
 assert.match(desktop, /medindex:request-full-registry/, 'advanced desktop functions must retain an explicit full-runtime handoff');
 assert.doesNotMatch(desktop, /\/api\/registry(?:\?|['"`])|DRUG_DATA_PARTS|NEON_DATA_API|apirest\./i, 'normal desktop lightweight mode must not read the full registry or Neon directly');
 
-assert.match(loader, /registry-runtime-loader-v9/, 'single-owner mobile and bounded desktop authenticated loader version must be current');
+assert.match(loader, /registry-runtime-loader-v10/, 'single-owner mobile and bounded desktop authenticated loader version must be current');
 assert.match(loader, /classList\.contains\('auth-ready'\)/, 'registry bootstrap must wait for the authenticated shell');
 assert.match(loader, /requestAnimationFrame\(\(\) => \{[\s\S]*loadRuntime\(/, 'registry bootstrap must yield a paint opportunity');
 assert.match(loader, /app-performance\.js\?v=20260801-2/, 'loader must retain the audited full registry bootstrap for explicit fallback/handoff');
@@ -103,7 +103,7 @@ assert.match(unified, /observer\.observe\(tbody, \{ childList:true \}\)/, 'table
 assert.match(middleware, /'\/registry-parser-worker-v2\.js'/, 'v2 parser worker must pass through auth middleware');
 assert.match(index, /registry-mobile-lite\.js\?v=20260812-2/, 'index must load the current phone lightweight client');
 assert.match(index, /registry-desktop-lite\.js\?v=20260812-1/, 'index must load the desktop lightweight client');
-assert.match(index, /registry-runtime-loader\.js\?v=20260813-9/, 'index must request the single-owner mobile-and-desktop aware bootstrap');
+assert.match(index, /registry-runtime-loader\.js\?v=20260813-10/, 'index must request the single-owner mobile-and-desktop aware bootstrap');
 assert.ok(index.indexOf('registry-mobile-lite.js') < index.indexOf('registry-desktop-lite.js'), 'mobile lightweight client must register before desktop lightweight startup');
 assert.ok(index.indexOf('registry-desktop-lite.js') < index.indexOf('registry-runtime-loader.js'), 'desktop lightweight client must register before the full loader');
 assert.match(index, /registry-unified-table\.js\?v=20260812-population-column-1/, 'index must load the current population-aware single table controller');
