@@ -42,6 +42,56 @@
     min-height:46px!important;
   }
 
+  /* The desktop first-page enhancer intentionally remains available for larger
+     viewports, but its overview, secondary control matrix and table title add
+     hundreds of vertical pixels when that DOM is reused on a phone. Mobile-lite
+     already owns search, filters, list navigation and detail sheets, so only the
+     working search field is retained above the cards. */
+  html.medindex-tailadmin[data-registry-mobile-lite].mi-first-page-audited .registry-overview,
+  html.medindex-tailadmin[data-registry-mobile-lite].mi-first-page-audited .registry-toolbar-secondary,
+  html.medindex-tailadmin[data-registry-mobile-lite].mi-first-page-audited .registry-table-bar{
+    display:none!important;
+  }
+
+  html.medindex-tailadmin[data-registry-mobile-lite].mi-first-page-audited .registry-toolbar{
+    position:static!important;
+    display:block!important;
+    width:100%!important;
+    min-width:0!important;
+    margin:0 0 4px!important;
+    padding:0!important;
+    border:0!important;
+    border-radius:0!important;
+    background:transparent!important;
+    box-shadow:none!important;
+    backdrop-filter:none!important;
+    -webkit-backdrop-filter:none!important;
+  }
+
+  html.medindex-tailadmin[data-registry-mobile-lite].mi-first-page-audited .registry-search-block,
+  html.medindex-tailadmin[data-registry-mobile-lite].mi-first-page-audited .registry-search-shell{
+    display:block!important;
+    width:100%!important;
+    min-width:0!important;
+    margin:0!important;
+    padding:0!important;
+  }
+
+  html.medindex-tailadmin[data-registry-mobile-lite].mi-first-page-audited :is(.registry-search-heading,.registry-search-help,.registry-search-shortcut){
+    display:none!important;
+  }
+
+  html.medindex-tailadmin[data-registry-mobile-lite].mi-first-page-audited .registry-toolbar #search{
+    display:block!important;
+    width:100%!important;
+    height:46px!important;
+    min-height:46px!important;
+    margin:0!important;
+    padding:0 12px 0 42px!important;
+    border-radius:12px!important;
+    font-size:16px!important;
+  }
+
   body.mi-registry-keyboard-open .mi-registry-bottom-nav{
     opacity:0!important;
     pointer-events:none!important;
