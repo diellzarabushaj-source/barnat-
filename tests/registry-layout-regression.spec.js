@@ -1,7 +1,7 @@
 const { test, expect } = require('@playwright/test');
 
 const BASE = 'http://127.0.0.1:4174';
-const LAYOUT_VERSION = 'registry-table-layout-guard-v5';
+const LAYOUT_VERSION = 'registry-table-layout-guard-v6';
 
 test.use({ serviceWorkers:'block', viewport:{ width:1440, height:900 } });
 
@@ -27,6 +27,12 @@ async function waitForRegistryLayout(page) {
 
 test('reduced desktop columns fill the registry surface without a blank gutter or stale horizontal offset', async ({ page }) => {
   await waitForRegistryLayout(page);
+
+  await page.evaluate(() => window.MedIndexRegistryUnified?.setView?.('full'));
+  await expect.poll(() => page.evaluate(() => ({
+    view:document.documentElement.dataset.registryUxView,
+    status:Boolean(document.querySelector('#headerRow th[data-registry-column-key="status"]')),
+  })), { timeout:10000 }).toEqual({ view:'full', status:true });
 
   await page.evaluate(() => {
     const root = document.documentElement;
@@ -59,39 +65,51 @@ test('reduced desktop columns fill the registry surface without a blank gutter o
     () => page.evaluate(() => {
       const wrapper = document.getElementById('registryContent');
       const table = document.getElementById('dataTable');
-      const audit = window.MEDINDEX_REGISTRY_LAYOUT_AUDIT;
-      if (!wrapper || !table || !audit) return false;
-      const widthDelta = Math.abs(table.getBoundingClientRect().width - wrapper.clientWidth);
-      return audit.version === 'registry-table-layout-guard-v5'
-        && audit.mode === 'desktop'
-        && audit.stable === true
-        && audit.stretchedToFit === true
-        && audit.phantomOverflow === false
-        && Number(audit.overflowPx || 0) <= 2
-        && wrapper.scrollLeft === 0
-        && widthDelta <= 2;
+      const audit = window.MEDINDEX_REGISTRY_LAYOUT_AUDIT || {};
+      const visibleHeaders = Array.from(document.querySelectorAll('#headerRow th[data-registry-column-key]'))
+        .filter(node => getComputedStyle(node).display !== 'none')
+        .map(node => node.dataset.registryColumnKey);
+      if (!wrapper || !table) return { ready:false };
+      return {
+        ready:true,
+        version:audit.version || '',
+        mode:audit.mode || '',
+        stable:audit.stable === true,
+        stretched:audit.stretchedToFit === true,
+        phantom:audit.phantomOverflow === true,
+        overflow:Number(audit.overflowPx || 0),
+        scrollLeft:wrapper.scrollLeft,
+        widthDelta:Math.abs(Math.round(table.getBoundingClientRect().width) - wrapper.clientWidth),
+        visibleHeaders,
+      };
     }),
     { timeout:10000, message:'reduced-column registry retained blank space, phantom overflow or stale scroll' },
-  ).toBe(true);
+  ).toEqual({
+    ready:true,
+    version:LAYOUT_VERSION,
+    mode:'desktop',
+    stable:true,
+    stretched:true,
+    phantom:false,
+    overflow:0,
+    scrollLeft:0,
+    widthDelta:0,
+    visibleHeaders:['strength', 'form', 'status', 'dosage-adult', 'dosage-pediatric'],
+  });
 
   const geometry = await page.evaluate(() => {
     const wrapper = document.getElementById('registryContent');
     const table = document.getElementById('dataTable');
     const audit = window.MEDINDEX_REGISTRY_LAYOUT_AUDIT;
-    const visibleHeaders = Array.from(document.querySelectorAll('#headerRow th[data-registry-column-key]'))
-      .filter(node => getComputedStyle(node).display !== 'none')
-      .map(node => node.dataset.registryColumnKey);
     return {
       wrapperWidth:wrapper.clientWidth,
       tableWidth:Math.round(table.getBoundingClientRect().width),
       scrollWidth:wrapper.scrollWidth,
       scrollLeft:wrapper.scrollLeft,
-      visibleHeaders,
       audit,
     };
   });
 
-  expect(geometry.visibleHeaders).toEqual(['strength', 'form', 'status', 'dosage-adult', 'dosage-pediatric']);
   expect(Math.abs(geometry.tableWidth - geometry.wrapperWidth)).toBeLessThanOrEqual(2);
   expect(geometry.scrollWidth - geometry.wrapperWidth).toBeLessThanOrEqual(2);
   expect(geometry.scrollLeft).toBe(0);
