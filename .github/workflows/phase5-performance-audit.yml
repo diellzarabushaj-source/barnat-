@@ -35,6 +35,14 @@ jobs:
       - name: Build audited runtime
         run: pnpm run build:runtime
 
+      - name: Run mobile static performance contracts
+        shell: bash
+        run: |
+          set -euo pipefail
+          node tests/sidebar-atc-navigation-test.js
+          node tests/global-search-atc-routing-test.js
+          node tests/registry-mobile-phase5-test.js
+
       - name: Install Chromium and WebKit
         shell: bash
         run: |
@@ -66,15 +74,17 @@ jobs:
           done
           pnpm exec playwright test tests/phase5-final-performance.spec.js tests/phase6-single-version.spec.js tests/registry-main-thread-performance.spec.js --reporter=line --workers=1 --retries=1 | tee /tmp/phase5-performance.log
 
-      - name: Run phone WebKit shell and bounded network gates
+      - name: Run phone WebKit shell, network and startup gates
         shell: bash
         env:
           MOBILE_SHELL_SKIP_BUILD: '1'
           MOBILE_NETWORK_SKIP_BUILD: '1'
+          MOBILE_STARTUP_SKIP_BUILD: '1'
         run: |
           set -euo pipefail
           node scripts/audit-mobile-shell-state.js | tee /tmp/mobile-shell-phase4.log
           node scripts/audit-mobile-network-phase5.js | tee /tmp/mobile-network-phase5.log
+          node scripts/audit-mobile-startup-phase5.js | tee /tmp/mobile-startup-phase5.log
 
       - name: Upload Phase 5 and Phase 6 metrics
         if: always()
@@ -85,6 +95,7 @@ jobs:
             /tmp/phase5-performance.log
             /tmp/mobile-shell-phase4.log
             /tmp/mobile-network-phase5.log
+            /tmp/mobile-startup-phase5.log
             /tmp/phase5-clinical-server.log
             /tmp/phase5-registry-server.log
             /tmp/phase6-version-server.log
