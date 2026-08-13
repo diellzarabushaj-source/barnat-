@@ -21,6 +21,13 @@
   const text = value => String(value || '').replace(/\s+/g, ' ').trim();
   let initialized = false;
 
+  function mobileLiteOwnsPhone() {
+    return Boolean(
+      window.matchMedia?.('(max-width: 767px)')?.matches
+      && document.documentElement.dataset.registryMobileLite
+    );
+  }
+
   function labelledGroup(label, icon, className = '') {
     const group = create('div', `registry-control-group ${className}`.trim());
     const heading = create('span', 'registry-control-label', `${icon}<span>${label}</span>`);
@@ -43,6 +50,21 @@
 
   function initialize() {
     if (initialized) return true;
+
+    // The phone registry has its own bounded renderer, filter sheet, bottom nav
+    // and targeted detail surface. Rewriting that DOM with the desktop first-page
+    // workspace creates duplicate chrome and pushes the first medicine hundreds
+    // of pixels below the fold. Keep this enhancer desktop/tablet-only while the
+    // mobile-lite renderer owns <=767px.
+    if (mobileLiteOwnsPhone()) {
+      initialized = true;
+      document.documentElement.dataset.firstPageClinical = 'mobile-lite-skipped';
+      window.dispatchEvent(new CustomEvent('medindex:first-page-audit-ready', {
+        detail:{ skipped:true, owner:'mobile-lite' },
+      }));
+      return true;
+    }
+
     const content = document.querySelector('.mi-index-content');
     const toolbar = content?.querySelector('.toolbar') || document.querySelector('.toolbar');
     const tableWrap = content?.querySelector('#registryContent') || document.getElementById('registryContent');
