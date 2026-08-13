@@ -7,6 +7,7 @@
   const DEFAULT_PAGE_SIZE = 25;
   const MAX_PAGE_SIZE = 50;
   const SEARCH_DEBOUNCE_MS = 250;
+  const DETAIL_FOCUSABLE = 'a[href],button:not([disabled]),input:not([disabled]),select:not([disabled]),textarea:not([disabled]),[tabindex]:not([tabindex="-1"])';
 
   const media = window.matchMedia?.(MOBILE_QUERY);
   if (!media?.matches) return;
@@ -27,6 +28,7 @@
 
   let pageController = null;
   let detailController = null;
+  let detailSession = null;
   let searchTimer = 0;
   let authObserver = null;
 
@@ -55,6 +57,9 @@
       return false;
     }
 
+    if (document.body?.classList.contains('mobile-lite-detail-open')) {
+      closeDetail({ restoreFocus:false });
+    }
     state.disabled = true;
     window.MEDINDEX_MOBILE_LITE_ACTIVE = false;
     html.dataset.registryMobileLiteState = 'handoff';
@@ -152,12 +157,12 @@
       const meta = [row.atc, row.strength, row.form].map(clean).filter(Boolean).join(' · ');
       return `<tr class="mobile-lite-row" data-mobile-lite-row="${id}"><td>
         <article class="mobile-lite-card">
-          <button type="button" class="mobile-lite-open" data-mobile-lite-detail="${id}" aria-label="Hap ${escapeHtml(row.tradeName)}">
+          <button type="button" class="mobile-lite-open" data-mobile-lite-detail="${id}" aria-haspopup="dialog" aria-controls="mobileLiteDrugDetail" aria-expanded="false" aria-label="Hap ${escapeHtml(row.tradeName)}">
             <span class="mobile-lite-name">${escapeHtml(row.tradeName || 'Pa emër')}</span>
             <span class="mobile-lite-substance">${escapeHtml(row.activeSubstance || 'Substanca aktive nuk është shënuar')}</span>
             <span class="mobile-lite-meta">${escapeHtml(meta || 'Pa të dhëna shtesë')}</span>
           </button>
-          <button type="button" class="mobile-lite-more" data-mobile-lite-detail="${id}">Më shumë</button>
+          <button type="button" class="mobile-lite-more" data-mobile-lite-detail="${id}" aria-haspopup="dialog" aria-controls="mobileLiteDrugDetail" aria-expanded="false">Më shumë</button>
         </article>
       </td></tr>`;
     }).join('');
@@ -287,6 +292,58 @@
     }
   }
 
+  function resolveDetailScrollOwner() {
+    const main = document.querySelector('.mi-main');
+    if (main) {
+      const style = getComputedStyle(main);
+      if (/(auto|scroll|overlay)/.test(style.overflowY) || main.scrollHeight > main.clientHeight) return main;
+    }
+    return document.scrollingElement || document.documentElement;
+  }
+
+  function setOwnerScrollTop(owner, value) {
+    if (!owner || !Number.isFinite(value)) return;
+    owner.scrollTop = value;
+    if (owner === document.scrollingElement || owner === document.documentElement || owner === document.body) {
+      window.scrollTo({ top:value, left:window.scrollX, behavior:'auto' });
+    }
+  }
+
+  function focusableDetailControls(dialog) {
+    return [...dialog.querySelectorAll(DETAIL_FOCUSABLE)].filter(node => {
+      if (!(node instanceof HTMLElement)) return false;
+      const style = getComputedStyle(node);
+      return !node.hidden && style.display !== 'none' && style.visibility !== 'hidden';
+    });
+  }
+
+  function onDetailKeydown(event) {
+    const dialog = document.getElementById('mobileLiteDrugDetail');
+    if (!dialog || dialog.hidden) return;
+    if (event.key === 'Escape') {
+      event.preventDefault();
+      event.stopPropagation();
+      closeDetail();
+      return;
+    }
+    if (event.key !== 'Tab') return;
+    const controls = focusableDetailControls(dialog);
+    if (!controls.length) {
+      event.preventDefault();
+      dialog.querySelector('.mobile-lite-detail-sheet')?.focus({ preventScroll:true });
+      return;
+    }
+    const first = controls[0];
+    const last = controls[controls.length - 1];
+    if (event.shiftKey && document.activeElement === first) {
+      event.preventDefault();
+      last.focus({ preventScroll:true });
+    } else if (!event.shiftKey && document.activeElement === last) {
+      event.preventDefault();
+      first.focus({ preventScroll:true });
+    }
+  }
+
   function ensureDetailDialog() {
     let dialog = document.getElementById('mobileLiteDrugDetail');
     if (dialog) return dialog;
@@ -296,7 +353,7 @@
     dialog.hidden = true;
     dialog.innerHTML = `
       <div class="mobile-lite-detail-backdrop" data-mobile-lite-close></div>
-      <section class="mobile-lite-detail-sheet" role="dialog" aria-modal="true" aria-labelledby="mobileLiteDetailTitle">
+      <section class="mobile-lite-detail-sheet" role="dialog" aria-modal="true" aria-labelledby="mobileLiteDetailTitle" tabindex="-1">
         <div class="mobile-lite-detail-head">
           <h2 id="mobileLiteDetailTitle">Detajet e barit</h2>
           <button type="button" data-mobile-lite-close aria-label="Mbyll">×</button>
@@ -305,15 +362,34 @@
       </section>`;
     document.body.appendChild(dialog);
     dialog.querySelectorAll('[data-mobile-lite-close]').forEach(control => control.addEventListener('click', closeDetail));
+    dialog.addEventListener('keydown', onDetailKeydown, true);
     return dialog;
   }
 
-  function closeDetail() {
+  function closeDetail(options = {}) {
     detailController?.abort();
     const dialog = document.getElementById('mobileLiteDrugDetail');
     if (!dialog) return;
+    const wasOpen = !dialog.hidden || document.body?.classList.contains('mobile-lite-detail-open');
+    const session = detailSession;
+    detailSession = null;
     dialog.hidden = true;
-    document.body.classList.remove('mobile-lite-detail-open');
+    document.body?.classList.remove('mobile-lite-detail-open');
+    html.dataset.registryMobileDetailState = 'closed';
+
+    if (session?.trigger?.isConnected) session.trigger.setAttribute('aria-expanded', 'false');
+    if (session?.scrollOwner) {
+      setOwnerScrollTop(session.scrollOwner, session.scrollTop);
+      requestAnimationFrame(() => setOwnerScrollTop(session.scrollOwner, session.scrollTop));
+    }
+    if (options.restoreFocus !== false && session?.trigger?.isConnected) {
+      requestAnimationFrame(() => session.trigger.focus({ preventScroll:true }));
+    }
+    if (wasOpen) {
+      window.dispatchEvent(new CustomEvent('medindex:mobile-lite-detail-closed', {
+        detail:{ id:session?.id || '', scrollTop:session?.scrollTop ?? null },
+      }));
+    }
   }
 
   function detailItem(label, value) {
@@ -329,11 +405,22 @@
     const title = dialog.querySelector('#mobileLiteDetailTitle');
     if (!body || !title) return;
 
+    if (!dialog.hidden) closeDetail({ restoreFocus:false });
+    const scrollOwner = resolveDetailScrollOwner();
+    detailSession = {
+      id,
+      trigger:trigger?.isConnected ? trigger : document.activeElement,
+      scrollOwner,
+      scrollTop:Number(scrollOwner?.scrollTop || 0),
+    };
+    trigger?.setAttribute('aria-expanded', 'true');
     dialog.hidden = false;
     document.body.classList.add('mobile-lite-detail-open');
+    html.dataset.registryMobileDetailState = 'open';
     body.innerHTML = '<div class="mobile-lite-detail-loading">Duke i ngarkuar detajet…</div>';
     detailController?.abort();
     detailController = new AbortController();
+    requestAnimationFrame(() => dialog.querySelector('.mobile-lite-detail-head [data-mobile-lite-close]')?.focus({ preventScroll:true }));
 
     try {
       const params = new URLSearchParams({ view:'registry-detail', id });
@@ -363,7 +450,6 @@
           ${detailItem('Afati i vlefshmërisë', row.validity)}
         </dl>`;
       window.dispatchEvent(new CustomEvent('medindex:mobile-lite-detail-opened', { detail:{ id, row } }));
-      trigger?.setAttribute('aria-expanded', 'true');
     } catch (error) {
       if (error?.name === 'AbortError') return;
       body.innerHTML = `<div class="mobile-lite-detail-error">${escapeHtml(error?.message || 'Detajet nuk u ngarkuan.')}</div>`;
@@ -393,7 +479,14 @@
     version:VERSION,
     reload:() => loadPage({ includeTotal:true, scroll:false }),
     handoff:requestFullRegistry,
+    closeDetail,
     getState:() => ({ ...state }),
+    getDetailState:() => ({
+      open:Boolean(detailSession && document.body?.classList.contains('mobile-lite-detail-open')),
+      id:detailSession?.id || '',
+      scrollTop:detailSession?.scrollTop ?? null,
+      owner:detailSession?.scrollOwner?.classList?.contains('mi-main') ? 'mi-main' : (detailSession?.scrollOwner ? 'document' : ''),
+    }),
   };
 
   media.addEventListener?.('change', event => {
