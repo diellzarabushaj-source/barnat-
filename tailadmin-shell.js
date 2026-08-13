@@ -16,7 +16,7 @@
   const LEGACY_SRC = '/tailadmin-shell-core.js?v=production-audit-v2';
   const MOBILE_SRC = '/mobile-experience.js?v=production-audit-v2';
   const MOBILE_A11Y_SRC = '/mobile-accessibility-hardening.js?v=mobile-a11y-deep-audit-v1';
-  const MOBILE_SIDEBAR_HARDENING_SRC = '/mobile-sidebar-hardening.js?v=mobile-sidebar-deep-audit-v2';
+  const MOBILE_SIDEBAR_HARDENING_SRC = '/mobile-sidebar-hardening.js?v=mobile-sidebar-deep-audit-v3';
   const OFFLINE_RUNTIME_SRC = '/offline-runtime-performance.js?v=low-bandwidth-v3';
   const BRAND_SRC = '/medindex-brand-runtime.js?v=medindex-brand-v1';
   const ATC_NAV_SRC = '/atc-sidebar.js?v=atc-sidebar-v2';
@@ -28,6 +28,7 @@
   let shellRetry = 0;
   let shellFallback = 0;
   let mobileStarted = false;
+  let mobileClinicalEnhancementTriggersBound = false;
 
   // Static compatibility contract retained for the navigation safety gates:
   // data-mi-sidebar-toggle aria-controls="miSidebar" data-mi-sidebar-overlay
@@ -38,6 +39,8 @@
     const path = location.pathname.replace(/\/{2,}/g, '/').replace(/\/+$/, '') || '/';
     return path === '/' || path === '/index.html' || document.documentElement.dataset.miPage === 'barnat';
   }
+
+  const isMobileLayout = () => window.innerWidth < MOBILE_BREAKPOINT;
 
   function connectionProfile() {
     const connection = navigator.connection || navigator.mozConnection || navigator.webkitConnection;
@@ -136,7 +139,7 @@
   }
 
   function syncResponsiveSidebar() {
-    return window.innerWidth < MOBILE_BREAKPOINT;
+    return isMobileLayout();
   }
 
   function resetSidebarPosition() {
@@ -164,10 +167,16 @@
     if (profile.slow || profile.saveData || !('serviceWorker' in navigator)) return;
     const warm = source => fetch(source, { cache:'no-cache', credentials:'same-origin' }).catch(() => null);
     navigator.serviceWorker.ready.then(() => {
-      const run = () => Promise.all([
-        warm(LEGACY_SRC), warm(MOBILE_SRC), warm(MOBILE_A11Y_SRC), warm(MOBILE_SIDEBAR_HARDENING_SRC), warm(OFFLINE_RUNTIME_SRC),
-        warm(BRAND_SRC), warm(ATC_NAV_SRC), warm(ATC_SEARCH_SRC),
-      ]);
+      const run = () => {
+        const assets = [
+          LEGACY_SRC, MOBILE_SRC, MOBILE_A11Y_SRC, MOBILE_SIDEBAR_HARDENING_SRC,
+          OFFLINE_RUNTIME_SRC, BRAND_SRC,
+        ];
+        // ATC bundles are intentionally not warmed on phone startup. They are
+        // already discoverable by the offline shell and load on first user intent.
+        if (!isMobileLayout()) assets.push(ATC_NAV_SRC, ATC_SEARCH_SRC);
+        return Promise.all(assets.map(warm));
+      };
       if (navigator.serviceWorker.controller) run();
       else navigator.serviceWorker.addEventListener('controllerchange', run, { once:true });
     }).catch(() => null);
@@ -204,9 +213,45 @@
     else tools.appendChild(link);
   }
 
+  function loadAtcNavigation() {
+    return loadRuntime(ATC_NAV_SRC, 'data-medindex-atc-sidebar', 'miAtcSidebarError');
+  }
+
+  function loadAtcSearch() {
+    return loadRuntime(ATC_SEARCH_SRC, 'data-medindex-atc-global-search', 'miAtcGlobalSearchError');
+  }
+
+  function bindMobileClinicalEnhancements() {
+    if (mobileClinicalEnhancementTriggersBound) return;
+    mobileClinicalEnhancementTriggersBound = true;
+
+    const loadForPointerIntent = event => {
+      const target = event.target?.closest?.('[data-mi-sidebar-toggle],[data-mi-registry-nav="more"],[data-mi-mobile-search],[data-mi-registry-nav="search"]');
+      if (!target) return;
+      if (target.matches('[data-mi-sidebar-toggle],[data-mi-registry-nav="more"]')) loadAtcNavigation();
+      if (target.matches('[data-mi-mobile-search],[data-mi-registry-nav="search"]')) loadAtcSearch();
+    };
+
+    document.addEventListener('pointerdown', loadForPointerIntent, true);
+    window.addEventListener('medindex:mobile-search-opened', loadAtcSearch);
+    window.addEventListener('resize', () => {
+      if (isMobileLayout()) return;
+      loadAtcNavigation();
+      loadAtcSearch();
+    }, { passive:true });
+
+    if (document.body?.classList.contains('mi-sidebar-open')) loadAtcNavigation();
+    if (document.body?.classList.contains('mi-mobile-search-open')) loadAtcSearch();
+    document.documentElement.dataset.miMobileClinicalEnhancements = 'intent-deferred-v1';
+  }
+
   function loadClinicalEnhancements() {
-    loadRuntime(ATC_NAV_SRC, 'data-medindex-atc-sidebar', 'miAtcSidebarError');
-    loadRuntime(ATC_SEARCH_SRC, 'data-medindex-atc-global-search', 'miAtcGlobalSearchError');
+    if (isMobileLayout()) {
+      bindMobileClinicalEnhancements();
+      return;
+    }
+    loadAtcNavigation();
+    loadAtcSearch();
   }
 
   function clearBootState() {
