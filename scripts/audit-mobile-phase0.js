@@ -26,6 +26,7 @@ const criticalCss = read('registry-mobile-critical.css');
 const shell = read('tailadmin-shell.js');
 const mobileExperience = read('mobile-experience.js');
 const sidebarHardening = read('mobile-sidebar-hardening.js');
+const firstPageClinical = read('first-page-clinical.js');
 const vercel = read('vercel.json');
 const packageJson = JSON.parse(read('package.json'));
 const phase8Patch = read('scripts/patch-registry-phase8-personalization.js');
@@ -36,6 +37,8 @@ const shellBreakpoint = Number((shell.match(/const MOBILE_BREAKPOINT = (\d+)/) |
 const liteBreakpoint = Number((lite.match(/max-width:\s*(\d+)px/) || [])[1] || 0);
 const legacyGraceMs = Number((loader.match(/const MOBILE_LITE_GRACE_MS = (\d+)/) || [])[1] || 0);
 const stallMs = Number((loader.match(/const MOBILE_LITE_STALL_MS = (\d+)/) || [])[1] || 0);
+const desktopGraceMs = Number((loader.match(/const DESKTOP_LITE_GRACE_MS = (\d+)/) || [])[1] || 0);
+const loaderVersion = (loader.match(/const VERSION = '([^']+)'/) || [])[1] || '';
 
 const findings = [];
 
@@ -148,6 +151,26 @@ if (/body\.mi-body[\s\S]*position:fixed!important/.test(criticalCss)
   ));
 }
 
+const firstPageGuardIndex = firstPageClinical.indexOf('if (mobileLiteOwnsPhone())');
+const firstPageRewriteIndex = firstPageClinical.indexOf("const content = document.querySelector('.mi-index-content')");
+const phase0DomOwnership = {
+  mobileLiteGuard:/function mobileLiteOwnsPhone\(\)/.test(firstPageClinical),
+  guardRunsBeforeDesktopRewrite:firstPageGuardIndex >= 0 && firstPageRewriteIndex > firstPageGuardIndex,
+  mobileSkipMarker:/dataset\.firstPageClinical = 'mobile-lite-skipped'/.test(firstPageClinical),
+  canonicalToolbarMarker:/toolbar\.classList\.add\('registry-filter-panel-unified'\)/.test(firstPageClinical),
+};
+
+if (!Object.values(phase0DomOwnership).every(Boolean)) {
+  findings.push(finding(
+    'P0-DOM-009',
+    'high',
+    'Desktop first-page enhancer can still mutate the phone registry DOM',
+    `Phone DOM guard contract: ${JSON.stringify(phase0DomOwnership)}.`,
+    'Desktop toolbar/table enhancements on top of mobile-lite can duplicate controls, inflate the toolbar and push the first medicine below the fold.',
+    'Keep the first-page enhancer desktop/tablet-only while mobile-lite owns <=767px and preserve the canonical mobile toolbar marker.'
+  ));
+}
+
 const phase1Ownership = {
   noTimeoutTakeover:!timeoutTakeoverPresent,
   stalledStateDoesNotWakeFullRuntime:stallMs > 0 && /medindex:mobile-lite-stalled/.test(loader),
@@ -162,11 +185,14 @@ const severityRank = { critical:4, high:3, medium:2, low:1 };
 findings.sort((a, b) => severityRank[b.severity] - severityRank[a.severity] || a.id.localeCompare(b.id));
 const criticalFindings = findings.filter(item => item.severity === 'critical');
 const phase1EntryGateReady = criticalFindings.length === 0 && Object.values(phase1Ownership).every(Boolean);
+const phase0EntryGateReady = phase1EntryGateReady && Object.values(phase0DomOwnership).every(Boolean);
 
 const summary = {
   generatedAt:new Date().toISOString(),
   scope:'MedIndex mobile Phase 0/1/2 forensic source/build audit',
-  noProductionBehaviorChanged:false,
+  sourceAuditOnly:true,
+  phase0EntryGateReady,
+  phase0DomOwnership,
   phase1EntryGateReady,
   phase1Ownership,
   phase2GeometryReady,
@@ -179,6 +205,8 @@ const summary = {
     registryLiteBreakpoint:liteBreakpoint,
     legacyMobileLiteGraceMs:legacyGraceMs,
     mobileLiteStallWatchMs:stallMs,
+    desktopLiteGraceMs:desktopGraceMs,
+    registryRuntimeLoaderVersion:loaderVersion,
     buildRuntimePatchCount:(packageJson.scripts?.['build:runtime']?.match(/node scripts\//g) || []).length,
   },
   findings,
@@ -186,6 +214,10 @@ const summary = {
 
 console.log(JSON.stringify(summary, null, 2));
 
+if (process.argv.includes('--assert-phase0-ready') && !phase0EntryGateReady) {
+  console.error('Phase 0 DOM/ownership baseline is not satisfied. Resolve mobile owner conflicts before visual work.');
+  process.exitCode = 1;
+}
 if (process.argv.includes('--assert-phase1-ready') && !phase1EntryGateReady) {
   console.error('Phase 1 ownership entry gate is not satisfied. Resolve critical ownership/race findings first.');
   process.exitCode = 2;
