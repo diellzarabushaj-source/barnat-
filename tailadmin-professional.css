@@ -27,18 +27,24 @@
     overflow:visible!important;
     box-sizing:border-box!important;
   }
-  html[data-registry-mobile-lite] #dataTable #tbody>tr.mobile-lite-row>td{
+  html[data-registry-mobile-lite] #dataTable #tbody>tr.mobile-lite-row>td:only-child{
     display:block!important;
-    flex:1 1 auto!important;
+    flex:0 0 100%!important;
     align-self:stretch!important;
     width:100%!important;
-    min-width:0!important;
+    min-width:100%!important;
     max-width:100%!important;
     height:auto!important;
     min-height:108px!important;
     max-height:none!important;
     padding:0!important;
     overflow:visible!important;
+    box-sizing:border-box!important;
+  }
+  html[data-registry-mobile-lite] #dataTable #tbody>tr.mobile-lite-row>td:only-child>.mobile-lite-card{
+    width:100%!important;
+    min-width:0!important;
+    max-width:100%!important;
     box-sizing:border-box!important;
   }
 }
