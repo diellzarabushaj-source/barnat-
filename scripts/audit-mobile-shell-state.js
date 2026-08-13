@@ -131,6 +131,63 @@ async function navState(page) {
   });
 }
 
+async function shellGeometryState(page) {
+  return page.evaluate(() => {
+    const rect = node => {
+      if (!node) return null;
+      const value = node.getBoundingClientRect();
+      return {
+        top:Math.round(value.top * 10) / 10,
+        right:Math.round(value.right * 10) / 10,
+        bottom:Math.round(value.bottom * 10) / 10,
+        left:Math.round(value.left * 10) / 10,
+        width:Math.round(value.width * 10) / 10,
+        height:Math.round(value.height * 10) / 10,
+      };
+    };
+    const topbar = document.querySelector('.mi-topbar');
+    const nav = document.getElementById('miRegistryBottomNav');
+    const controls = [...document.querySelectorAll('.mi-topbar .mi-sidebar-toggle,.mi-topbar-actions .mi-icon-button,.mi-topbar-actions .mi-primary-action')];
+    const navItems = [...(nav?.querySelectorAll('a,button') || [])];
+    const primaryLabel = document.querySelector('.mi-topbar .mi-primary-action span');
+    const brandLabel = document.querySelector('.mi-topbar .mi-mobile-brand strong');
+    const lastCard = [...document.querySelectorAll('#tbody .mobile-lite-card')].at(-1) || null;
+    return {
+      viewport:{ width:innerWidth, height:innerHeight },
+      topbar:rect(topbar),
+      nav:rect(nav),
+      navBottomGap:nav ? Math.round((innerHeight - nav.getBoundingClientRect().bottom) * 10) / 10 : null,
+      controlBoxes:controls.map(rect),
+      navItemBoxes:navItems.map(rect),
+      primaryLabelDisplay:primaryLabel ? getComputedStyle(primaryLabel).display : '',
+      brandLabelDisplay:brandLabel ? getComputedStyle(brandLabel).display : '',
+      lastCard:rect(lastCard),
+      lastCardCovered:Boolean(lastCard && nav && lastCard.getBoundingClientRect().bottom > nav.getBoundingClientRect().top - 4),
+    };
+  });
+}
+
+function assertCompactShellGeometry(state, label, { lastCardVisible = false } = {}) {
+  assert.ok(state.topbar, `${label}: topbar is missing.`);
+  assert.ok(state.nav, `${label}: bottom navigation is missing.`);
+  assert.ok(state.topbar.height >= 56 && state.topbar.height <= 62, `${label}: topbar must remain compact (56–62px without a simulated notch), got ${state.topbar.height}px.`);
+  assert.ok(state.nav.height >= 56 && state.nav.height <= 62, `${label}: bottom navigation must remain compact (56–62px), got ${state.nav.height}px.`);
+  assert.ok(state.navBottomGap >= 4 && state.navBottomGap <= 10, `${label}: browser-mode quick nav must stay close to the visual viewport bottom, gap=${state.navBottomGap}px.`);
+  assert.equal(state.primaryLabelDisplay, 'none', `${label}: “Recetë e re” text must collapse to the + icon on phone.`);
+  assert.equal(state.brandLabelDisplay, 'none', `${label}: phone topbar must use the compact MedIndex mark without the wordmark.`);
+  assert.ok(state.controlBoxes.length >= 4, `${label}: expected compact menu/search/theme/add controls.`);
+  state.controlBoxes.forEach((box, index) => {
+    assert.ok(box.width >= 43 && box.height >= 43, `${label}: topbar control ${index + 1} fell below the 44px touch target.`);
+    assert.ok(box.width <= 46 && box.height <= 46, `${label}: topbar control ${index + 1} became oversized.`);
+  });
+  assert.equal(state.navItemBoxes.length, 5, `${label}: bottom navigation must keep five primary actions.`);
+  state.navItemBoxes.forEach((box, index) => {
+    assert.ok(box.height >= 44, `${label}: bottom nav item ${index + 1} fell below the 44px touch target.`);
+    assert.ok(box.height <= 52, `${label}: bottom nav item ${index + 1} became too tall.`);
+  });
+  if (lastCardVisible) assert.equal(state.lastCardCovered, false, `${label}: bottom navigation covers the final medicine card.`);
+}
+
 function assertOpenSurfaceState(state, label) {
   assert.equal(state.exists, true, `${label}: bottom navigation disappeared instead of being state-coordinated.`);
   assert.equal(state.inert, true, `${label}: bottom navigation remained focusable behind a modal surface.`);
@@ -174,10 +231,34 @@ function assertIdleState(state, label) {
     await page.waitForFunction(() => document.querySelectorAll('#tbody .mobile-lite-card').length >= 10, null, { timeout:10000 });
     await page.waitForFunction(() => Boolean(document.getElementById('miRegistryBottomNav')), null, { timeout:10000 });
 
-    const report = { initial:null, sidebar:null, afterSidebar:null, filters:null, afterFilters:null, detail:null, afterDetail:null, globalSearch:null, afterGlobalSearch:null, keyboard:null, afterKeyboard:null };
+    const report = {
+      geometry:null,
+      geometryAtEnd:null,
+      initial:null,
+      sidebar:null,
+      afterSidebar:null,
+      filters:null,
+      afterFilters:null,
+      detail:null,
+      afterDetail:null,
+      globalSearch:null,
+      afterGlobalSearch:null,
+      keyboard:null,
+      afterKeyboard:null,
+    };
+
+    report.geometry = await shellGeometryState(page);
+    assertCompactShellGeometry(report.geometry, 'initial geometry');
 
     report.initial = await navState(page);
     assertIdleState(report.initial, 'initial');
+
+    await page.locator('.mi-main').evaluate(node => { node.scrollTop = node.scrollHeight; });
+    await page.waitForTimeout(80);
+    report.geometryAtEnd = await shellGeometryState(page);
+    assertCompactShellGeometry(report.geometryAtEnd, 'end-of-list geometry', { lastCardVisible:true });
+    await page.locator('.mi-main').evaluate(node => { node.scrollTop = 0; });
+    await page.waitForTimeout(50);
 
     await page.locator('[data-mi-registry-nav="more"]').click();
     await page.waitForFunction(() => document.body.classList.contains('mi-sidebar-open'));
@@ -242,7 +323,7 @@ function assertIdleState(state, label) {
     report.afterKeyboard = await navState(page);
     assertIdleState(report.afterKeyboard, 'after keyboard');
 
-    assert.equal(apiRequests.some(pathname => pathname.startsWith('/api/registry')), false, 'Phase 3 shell states must not request /api/registry.');
+    assert.equal(apiRequests.some(pathname => pathname.startsWith('/api/registry')), false, 'Phase 4 shell states must not request /api/registry.');
 
     console.log(`\nMOBILE_SHELL_STATE_REPORT ${JSON.stringify({ generatedAt:new Date().toISOString(), apiRequests, report }, null, 2)}\n`);
     await context.close();
