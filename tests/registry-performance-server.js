@@ -46,6 +46,7 @@ const registryBody = `window.DRUG_DATA_PARTS = ${JSON.stringify(parts)};\nwindow
 
 const dosageCards = rows.map(row => ({
   cardKey:[row.PDID, row['Emri tregtar'], row['Fortësia']].join('|'),
+  registryNumber:String(row['Nr rendor']),
   nr:String(row['Nr rendor']),
   pdid:row.PDID,
   tradeName:row['Emri tregtar'],
@@ -69,6 +70,24 @@ const dosageBody = JSON.stringify({
   generatedAt:new Date(0).toISOString(), forms:[], adult:[], pediatric:[], cards:dosageCards,
   meta:{ clinicalAutoFillEnabled:false, publishedForms:0, publishedAdultRegimens:0, publishedPediatricRegimens:0, publishedCards:ROW_COUNT },
 });
+
+const doseCalculatorPayload = {
+  ok:true,
+  meta:{ schemaVersion:'2.0.0', failClosed:true, officialVerifiedOnly:true, generatedAt:'2026-08-13T00:00:00Z' },
+  catalog:[],
+};
+const doseSafetyPayload = {
+  ok:true,
+  meta:{
+    schemaVersion:'2.0.0',
+    failClosed:true,
+    officialVerifiedOnly:true,
+    publishedOnly:true,
+    coverageRequired:true,
+    generatedAt:'2026-08-13T00:00:00Z',
+  },
+  catalog:[],
+};
 
 const TYPES = {
   '.html':'text/html; charset=utf-8', '.js':'application/javascript; charset=utf-8', '.css':'text/css; charset=utf-8',
@@ -116,6 +135,33 @@ const server = http.createServer((req, res) => {
   }
   if (url.pathname === '/api/registry' || url.pathname === '/data/registry-data.js') {
     return streamSlowly(res, registryBody, 'application/javascript; charset=utf-8');
+  }
+  if (url.pathname === '/api/dose-calculator') {
+    return send(res, 200, JSON.stringify(doseCalculatorPayload), 'application/json; charset=utf-8');
+  }
+  if (url.pathname === '/api/dosage' && url.searchParams.get('view') === 'safety') {
+    return send(res, 200, JSON.stringify(doseSafetyPayload), 'application/json; charset=utf-8');
+  }
+  if (url.pathname === '/api/dosage' && url.searchParams.get('view') === 'cards') {
+    const requested = new Set(String(url.searchParams.get('nr') || '').split(',').map(value => value.trim()).filter(Boolean));
+    const cards = requested.size ? dosageCards.filter(card => requested.has(card.registryNumber)) : [];
+    const body = JSON.stringify({
+      ok:true,
+      schemaVersion:'performance-v1',
+      matchVersion:'exact-v1',
+      datasetVersion:'performance-4006',
+      mode:'SAFE_VERIFIED_ONLY',
+      generatedAt:new Date(0).toISOString(),
+      forms:[], adult:[], pediatric:[], cards,
+      meta:{
+        clinicalAutoFillEnabled:false,
+        publishedForms:0,
+        publishedAdultRegimens:0,
+        publishedPediatricRegimens:0,
+        publishedCards:cards.length,
+      },
+    });
+    return setTimeout(() => send(res, 200, body, 'application/json; charset=utf-8'), 80);
   }
   if (url.pathname === '/api/dosage') {
     return setTimeout(() => streamSlowly(res, dosageBody, 'application/json; charset=utf-8', 8, 32 * 1024), 900);
