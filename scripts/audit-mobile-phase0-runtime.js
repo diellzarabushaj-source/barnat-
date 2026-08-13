@@ -8,9 +8,9 @@ const { webkit, chromium } = require('@playwright/test');
 const ROOT = path.resolve(__dirname, '..');
 const PORT = Number(process.env.PHASE0_PORT || 4175);
 const BASE = `http://127.0.0.1:${PORT}`;
-const MOBILE_SEARCH_DELAY_MS = Number(process.env.PHASE0_MOBILE_SEARCH_DELAY_MS || 5600);
+const MOBILE_SEARCH_DELAY_MS = Number(process.env.PHASE0_MOBILE_SEARCH_DELAY_MS || 13000);
+const MOBILE_STALL_THRESHOLD_MS = Number(process.env.PHASE0_MOBILE_STALL_THRESHOLD_MS || 12000);
 const SKIP_BUILD = process.env.PHASE0_SKIP_BUILD === '1';
-const EXPECT_CURRENT_RACE = process.argv.includes('--expect-current-race');
 const ASSERT_SINGLE_OWNER = process.argv.includes('--assert-single-owner');
 const BROWSER_NAME = String(process.env.PHASE0_BROWSER || 'webkit').toLowerCase();
 
@@ -164,36 +164,63 @@ async function runBrowserProbe() {
         startedAt,
         fullRegistryStarts:[],
         mobileLiteReady:[],
+        mobileLiteStalled:[],
+        mobileFullRegistryBlocked:[],
         handoffs:[],
         registryReady:[],
+        firstPageAuditReady:[],
       };
       window.__MEDINDEX_PHASE0_PROBE = probe;
       const stamp = () => Math.round((performance.now() - startedAt) * 10) / 10;
-      window.addEventListener('medindex:full-registry-started', event => {
-        probe.fullRegistryStarts.push({ atMs:stamp(), reason:String(event.detail?.reason || '') });
-      });
-      window.addEventListener('medindex:mobile-lite-ready', event => {
-        probe.mobileLiteReady.push({ atMs:stamp(), detail:event.detail || null });
-      });
-      window.addEventListener('medindex:request-full-registry', event => {
-        probe.handoffs.push({ atMs:stamp(), reason:String(event.detail?.reason || '') });
-      });
-      window.addEventListener('medindex:registry-ready', event => {
-        probe.registryReady.push({ atMs:stamp(), detail:event.detail || null });
-      });
+      const capture = (bucket, event) => bucket.push({ atMs:stamp(), detail:event.detail || null });
+      window.addEventListener('medindex:full-registry-started', event => capture(probe.fullRegistryStarts, event));
+      window.addEventListener('medindex:mobile-lite-ready', event => capture(probe.mobileLiteReady, event));
+      window.addEventListener('medindex:mobile-lite-stalled', event => capture(probe.mobileLiteStalled, event));
+      window.addEventListener('medindex:mobile-full-registry-blocked', event => capture(probe.mobileFullRegistryBlocked, event));
+      window.addEventListener('medindex:request-full-registry', event => capture(probe.handoffs, event));
+      window.addEventListener('medindex:registry-ready', event => capture(probe.registryReady, event));
+      window.addEventListener('medindex:first-page-audit-ready', event => capture(probe.firstPageAuditReady, event));
     });
 
     await installDelayedDrugSearchRoute(page);
     await page.goto(`${BASE}/index.html`, { waitUntil:'domcontentloaded', timeout:30000 });
-    await page.waitForFunction(() => document.documentElement.classList.contains('auth-ready'), null, { timeout:10000 });
-    await page.waitForFunction(() => Boolean(document.documentElement.dataset.registryMobileLite), null, { timeout:5000 });
+    await page.locator('html.auth-ready').waitFor({ state:'attached', timeout:10000 });
+    await page.locator('html[data-registry-mobile-lite]').waitFor({ state:'attached', timeout:5000 });
 
-    // The current loader grace is 5 s. The diagnostic response intentionally arrives after it.
-    await page.waitForTimeout(MOBILE_SEARCH_DELAY_MS + 2600);
+    // The v9 owner contract intentionally keeps mobile-lite in control even when
+    // the bounded list request outlives the 12 s diagnostic stall threshold.
+    await page.waitForTimeout(MOBILE_SEARCH_DELAY_MS + 1800);
+    await page.locator('#tbody .mobile-lite-card').first().waitFor({ state:'attached', timeout:5000 });
 
     const state = await page.evaluate(() => {
       const html = document.documentElement;
+      const rect = node => {
+        if (!node) return null;
+        const value = node.getBoundingClientRect();
+        return {
+          top:Math.round(value.top * 10) / 10,
+          right:Math.round(value.right * 10) / 10,
+          bottom:Math.round(value.bottom * 10) / 10,
+          left:Math.round(value.left * 10) / 10,
+          width:Math.round(value.width * 10) / 10,
+          height:Math.round(value.height * 10) / 10,
+        };
+      };
+      const describe = node => {
+        if (!node) return null;
+        const style = getComputedStyle(node);
+        return {
+          tag:node.tagName,
+          id:node.id || '',
+          className:typeof node.className === 'string' ? node.className : '',
+          display:style.display,
+          visibility:style.visibility,
+          position:style.position,
+          rect:rect(node),
+        };
+      };
       const firstCard = document.querySelector('#tbody .mobile-lite-card');
+      const toolbar = document.querySelector('.toolbar');
       return {
         probe:window.__MEDINDEX_PHASE0_PROBE,
         datasets:{
@@ -202,6 +229,9 @@ async function runBrowserProbe() {
           registryMobileLiteState:html.dataset.registryMobileLiteState || '',
           registryRuntimeMode:html.dataset.registryRuntimeMode || '',
           registryRuntimeReason:html.dataset.registryRuntimeReason || '',
+          registryRuntimeBlockedReason:html.dataset.registryRuntimeBlockedReason || '',
+          registryMobilePhase3:html.dataset.registryMobilePhase3 || '',
+          firstPageClinical:html.dataset.firstPageClinical || '',
         },
         mobileLiteActive:window.MEDINDEX_MOBILE_LITE_ACTIVE === true,
         mobileLiteState:window.MEDINDEX_MOBILE_LITE?.getState?.() || null,
@@ -209,47 +239,59 @@ async function runBrowserProbe() {
         geometry:{
           mobileLiteCards:document.querySelectorAll('#tbody .mobile-lite-card').length,
           tableRows:document.querySelectorAll('#tbody > tr').length,
+          firstCard:describe(firstCard),
           firstCardText:firstCard?.textContent?.replace(/\s+/g, ' ').trim() || '',
           firstRowClass:document.querySelector('#tbody > tr')?.className || '',
+          toolbar:describe(toolbar),
+          toolbarChildren:toolbar ? [...toolbar.children].map(describe) : [],
         },
       };
     });
 
-    const firstFullStart = state.probe?.fullRegistryStarts?.[0] || null;
-    const firstLiteReady = state.probe?.mobileLiteReady?.[0] || null;
     const requestedFullRegistry = requests.some(item => item.path.startsWith('/api/registry'));
-    const timeoutStart = state.probe?.fullRegistryStarts?.some(item => item.reason === 'mobile-lite-timeout') || false;
-    const overlappingOwners = Boolean(
-      timeoutStart
-      && firstLiteReady
-      && firstFullStart
-      && firstFullStart.atMs < firstLiteReady.atMs
-      && state.mobileLiteActive
-    );
+    const fullStarts = state.probe?.fullRegistryStarts || [];
+    const firstFullStart = fullStarts[0] || null;
+    const firstLiteReady = state.probe?.mobileLiteReady?.[0] || null;
+    const stalledObserved = (state.probe?.mobileLiteStalled || []).length > 0;
+    const overlappingOwners = Boolean(firstFullStart && firstLiteReady && firstFullStart.atMs < firstLiteReady.atMs);
+    const desktopEnhancerSkipped = state.datasets.firstPageClinical === 'mobile-lite-skipped';
+    const mobileToolbarTagged = String(state.geometry.toolbar?.className || '').split(/\s+/).includes('registry-filter-panel-unified');
+    const toolbarHeight = Number(state.geometry.toolbar?.rect?.height || 0);
+    const layoutWarnings = [];
+    if (toolbarHeight > 110) layoutWarnings.push(`mobile toolbar is ${toolbarHeight}px tall`);
+    if (!desktopEnhancerSkipped) layoutWarnings.push('desktop first-page enhancer did not expose the mobile-lite skip marker');
+    if (!mobileToolbarTagged) layoutWarnings.push('mobile toolbar is missing registry-filter-panel-unified marker');
 
     const report = {
       generatedAt:new Date().toISOString(),
       browser:BROWSER_NAME === 'chromium' ? 'chromium' : 'webkit',
       viewport:{ width:390, height:844 },
       delayedRegistryPageMs:MOBILE_SEARCH_DELAY_MS,
+      mobileStallThresholdMs:MOBILE_STALL_THRESHOLD_MS,
+      stalledObserved,
       requestedFullRegistry,
       overlappingOwners,
+      desktopEnhancerSkipped,
+      mobileToolbarTagged,
+      layoutWarnings,
       requests:requests.filter(item => /\/api\/(?:drug-search|registry)/.test(item.path)),
       state,
     };
 
     console.log(`\nPHASE0_RUNTIME_REPORT ${JSON.stringify(report, null, 2)}\n`);
 
-    if (EXPECT_CURRENT_RACE) {
-      assert.equal(timeoutStart, true, 'Expected the current 5 s mobile-lite timeout takeover to be observable.');
-      assert.equal(requestedFullRegistry, true, 'Expected the full registry data path to be requested after timeout takeover.');
-      assert.equal(overlappingOwners, true, 'Expected mobile-lite to become ready after the full runtime had already started.');
-    }
-
     if (ASSERT_SINGLE_OWNER) {
-      assert.equal(timeoutStart, false, 'Mobile-lite lost list ownership to the full runtime timeout path.');
-      assert.equal(requestedFullRegistry, false, 'The full registry data path was requested during normal delayed mobile startup.');
-      assert.equal(overlappingOwners, false, 'Both mobile-lite and full registry became active during the same mobile startup.');
+      assert.equal(fullStarts.length, 0, 'Full registry runtime started during delayed phone startup.');
+      assert.equal(requestedFullRegistry, false, 'The full registry data path was requested during delayed phone startup.');
+      assert.equal(overlappingOwners, false, 'Both mobile-lite and full registry became active during the same phone startup.');
+      assert.equal(state.mobileLiteActive, true, 'Mobile-lite must remain the active list owner.');
+      assert.equal(state.datasets.registryMobileLiteReady, '1', 'Mobile-lite did not reach ready state after the delayed bounded response.');
+      assert.equal(state.datasets.registryRuntimeMode, 'mobile-lite', 'Runtime loader did not settle back to mobile-lite mode.');
+      assert.equal(desktopEnhancerSkipped, true, 'Desktop first-page enhancer must stay out of the mobile-lite phone DOM.');
+      assert.equal(mobileToolbarTagged, true, 'The canonical phone toolbar marker is missing.');
+      if (MOBILE_SEARCH_DELAY_MS >= MOBILE_STALL_THRESHOLD_MS + 500) {
+        assert.equal(stalledObserved, true, 'Expected the diagnostic stalled event without a full-runtime takeover.');
+      }
     }
 
     await context.close();
