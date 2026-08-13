@@ -43,6 +43,7 @@ jobs:
         run: |
           node --check scripts/audit-mobile-phase0-runtime.js
           node --check scripts/audit-mobile-card-geometry.js
+          node --check scripts/audit-mobile-detail-phase3.js
           node --check scripts/audit-mobile-shell-state.js
           node --check scripts/audit-mobile-network-phase5.js
 
@@ -53,13 +54,14 @@ jobs:
           pnpm exec playwright install --with-deps webkit > /tmp/playwright-webkit-install.log 2>&1 || { tail -200 /tmp/playwright-webkit-install.log; exit 1; }
           echo "Playwright WebKit installed."
 
-      - name: Run iPhone ownership, geometry, shell and network gates
+      - name: Run iPhone ownership, geometry, detail, shell and network gates
         shell: bash
         run: |
           set -euo pipefail
           : > /tmp/mobile-webkit-audit.log
           PHASE0_SKIP_BUILD=1 pnpm run audit:mobile-runtime 2>&1 | tee -a /tmp/mobile-webkit-audit.log
           MOBILE_GEOMETRY_SKIP_BUILD=1 pnpm run audit:mobile-geometry 2>&1 | tee -a /tmp/mobile-webkit-audit.log
+          MOBILE_DETAIL_SKIP_BUILD=1 node scripts/audit-mobile-detail-phase3.js 2>&1 | tee -a /tmp/mobile-webkit-audit.log
           MOBILE_SHELL_SKIP_BUILD=1 pnpm run audit:mobile-shell 2>&1 | tee -a /tmp/mobile-webkit-audit.log
           MOBILE_NETWORK_SKIP_BUILD=1 node scripts/audit-mobile-network-phase5.js 2>&1 | tee -a /tmp/mobile-webkit-audit.log
 
