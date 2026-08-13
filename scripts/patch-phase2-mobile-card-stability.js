@@ -20,9 +20,9 @@ if (!css.includes(stableCard)) {
   css = css.replace(oldCard, stableCard);
 }
 
-const rowFlowMarker = '/* MedIndex revised Phase 4: mobile card row owns card height */';
+const rowFlowMarker = '/* MedIndex revised Phase 4: mobile card list owns vertical flow */';
 if (!css.includes(rowFlowMarker)) {
-  css += `\n\n${rowFlowMarker}\n@media (max-width:767px){\n  html.medindex-tailadmin[data-mi-page=\"barnat\"][data-registry-mobile-lite] body #dataTable #tbody .mobile-lite-row{\n    display:grid!important;\n    grid-template-columns:minmax(0,1fr)!important;\n    align-items:stretch!important;\n    width:100%!important;\n    min-width:0!important;\n    height:auto!important;\n    min-height:0!important;\n    overflow:visible!important;\n  }\n  html.medindex-tailadmin[data-mi-page=\"barnat\"][data-registry-mobile-lite] body #dataTable #tbody .mobile-lite-row>td:has(.mobile-lite-card){\n    display:block!important;\n    position:relative!important;\n    width:100%!important;\n    min-width:0!important;\n    height:auto!important;\n    min-height:0!important;\n    padding:0!important;\n    overflow:visible!important;\n  }\n}\n`;
+  css += `\n\n${rowFlowMarker}\n@media (max-width:767px){\n  html.medindex-tailadmin[data-mi-page=\"barnat\"][data-registry-mobile-lite] body #dataTable[data-registry-unified-table]{\n    display:block!important;\n    width:100%!important;\n    min-width:0!important;\n    max-width:100%!important;\n    height:auto!important;\n    table-layout:auto!important;\n  }\n  html.medindex-tailadmin[data-mi-page=\"barnat\"][data-registry-mobile-lite] body #dataTable[data-registry-unified-table] #tbody{\n    display:flex!important;\n    flex-direction:column!important;\n    align-items:stretch!important;\n    gap:8px!important;\n    width:100%!important;\n    min-width:0!important;\n    max-width:100%!important;\n    height:auto!important;\n    min-height:0!important;\n    max-height:none!important;\n    padding:4px 0 8px!important;\n    overflow:visible!important;\n  }\n  html.medindex-tailadmin[data-mi-page=\"barnat\"][data-registry-mobile-lite] body #dataTable[data-registry-unified-table] #tbody>.mobile-lite-row{\n    display:block!important;\n    position:relative!important;\n    inset:auto!important;\n    float:none!important;\n    flex:0 0 auto!important;\n    width:100%!important;\n    min-width:0!important;\n    max-width:100%!important;\n    height:auto!important;\n    min-height:0!important;\n    max-height:none!important;\n    margin:0!important;\n    padding:0!important;\n    overflow:visible!important;\n    contain:none!important;\n    transform:none!important;\n  }\n  html.medindex-tailadmin[data-mi-page=\"barnat\"][data-registry-mobile-lite] body #dataTable[data-registry-unified-table] #tbody>.mobile-lite-row>td:has(.mobile-lite-card){\n    display:block!important;\n    position:static!important;\n    inset:auto!important;\n    float:none!important;\n    width:100%!important;\n    min-width:0!important;\n    max-width:100%!important;\n    height:auto!important;\n    min-height:0!important;\n    max-height:none!important;\n    margin:0!important;\n    padding:0!important;\n    overflow:visible!important;\n    contain:none!important;\n    transform:none!important;\n    box-sizing:border-box!important;\n  }\n  html.medindex-tailadmin[data-mi-page=\"barnat\"][data-registry-mobile-lite] body #dataTable[data-registry-unified-table] #tbody>.mobile-lite-row .mobile-lite-card{\n    position:relative!important;\n    display:block!important;\n    width:100%!important;\n    min-width:0!important;\n    max-width:100%!important;\n    height:auto!important;\n    min-height:108px!important;\n    margin:0!important;\n    box-sizing:border-box!important;\n  }\n}\n`;
 }
 
 const oldScrollOwner = `  function resolveDetailScrollOwner() {
@@ -89,8 +89,11 @@ if (!css.includes('#tbody .mobile-lite-card:has(.mi-mobile-favorite-toggle) .mob
 if (!css.includes('#tbody .mobile-lite-card:has(.mi-mobile-favorite-toggle) .mobile-lite-more{')) {
   throw new Error('Phase 2 detail action slot contract is missing.');
 }
-if (!css.includes('body #dataTable #tbody .mobile-lite-row{\n    display:grid!important;')) {
-  throw new Error('Phase 4 mobile row-flow ownership is missing.');
+if (!css.includes('#dataTable[data-registry-unified-table] #tbody{\n    display:flex!important;')) {
+  throw new Error('Phase 4 mobile list flex-flow ownership is missing.');
+}
+if (!css.includes('#tbody>.mobile-lite-row{\n    display:block!important;')) {
+  throw new Error('Phase 4 mobile row containment contract is missing.');
 }
 if (!js.includes("if (main) return main;\n    return document.scrollingElement || document.documentElement;")) {
   throw new Error('Phase 3 canonical mobile scroll-owner contract is missing.');
@@ -105,4 +108,4 @@ if (!shellCss.includes('--mi-registry-bottom-nav-clearance:calc(80px + env(safe-
 fs.writeFileSync(cssFile, css, 'utf8');
 fs.writeFileSync(shellCssFile, shellCss, 'utf8');
 fs.writeFileSync(jsFile, js, 'utf8');
-console.log('Phase 2/3/4 mobile stability passed: each row owns the full card height, detail scroll restores exactly, and the fixed bottom nav has real end-of-list clearance.');
+console.log('Phase 2/3/4 mobile stability passed: true vertical card flow, canonical detail scroll restoration and fixed-nav end-of-list clearance.');
