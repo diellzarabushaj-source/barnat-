@@ -10,7 +10,12 @@
   }
 
   html[data-registry-mobile-lite] .mobile-lite-meta{
+    display:block!important;
+    max-width:100%;
+    overflow:hidden!important;
     font-weight:400!important;
+    text-overflow:ellipsis!important;
+    white-space:nowrap!important;
   }
 
   html[data-registry-mobile-lite] .mobile-lite-detail-hero strong,
