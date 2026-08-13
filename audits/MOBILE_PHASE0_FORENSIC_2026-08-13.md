@@ -1,148 +1,136 @@
 # MedIndex Mobile — Phase 0 Forensic Audit
 
-Date: 2026-08-13
+Date: 2026-08-13  
 Scope: phone registry architecture, renderer ownership, runtime handoff, CSS geometry, shell breakpoints, build artifact parity, and network/cache policy.
 
 ## Rule for Phase 0
 
-No visual redesign is implemented in this phase. The goal is to identify the exact ownership/race/cascade causes before changing production UI behavior.
+Phase 0 is the forensic baseline. It must prove who owns the phone registry DOM and network path before later visual/performance phases are accepted. The audit is run against the post-`build:runtime` artifact because build patches intentionally mutate runtime files.
 
-## Critical findings
+## Historical critical findings and their current status
 
-### P0-RACE-001 — mobile-lite can lose ownership after a fixed timeout
+### P0-RACE-001 — fixed and regression-gated
 
-`registry-runtime-loader.js` originally gave mobile-lite a 5 second grace window. If `data-registry-mobile-lite-ready="1"` was not present in that window, it started the full registry runtime with reason `mobile-lite-timeout`.
+The original loader gave mobile-lite a fixed grace period and could start the full registry if the lightweight response was slow. That created a credible dual-owner race.
 
-The full runtime (`app-performance.js`) could then load `/api/registry`, hydrate the complete registry data path and load the generated full registry runtime.
+Current contract:
 
-Consequence: on a cold/slow mobile request, the lightweight list and the full registry path could both become active. This is a credible root cause for a compact mobile list turning into a large desktop/full-table-derived card layout.
+- `registry-runtime-loader-v9` no longer has the `mobile-lite-timeout` takeover;
+- a 12-second `medindex:mobile-lite-stalled` diagnostic is observable but does **not** wake the full renderer;
+- normal delayed phone startup must keep `/api/registry` untouched;
+- the post-build WebKit probe deliberately delays `/api/drug-search?view=registry-page` for 13 seconds so the stall path is exercised rather than merely inferred from source.
 
-### P0-OWNER-002 — feature clicks and initial load failure could hand the phone to the full registry
+### P0-OWNER-002 — fixed and regression-gated
 
-`registry-mobile-lite.js` originally called `requestFullRegistry()` for advanced controls, full-detail escalation and on initial mobile-lite load error.
+Ordinary phone interactions/errors may not replace the mobile list renderer. Nonfatal mobile full-runtime requests are blocked, and full runtime is reserved for explicit fatal recovery or a transition out of the phone viewport.
 
-Consequence: renderer ownership could change mid-session. When that happened, full-registry DOM could be subjected to mobile CSS layers that were written for the lightweight DOM.
+### P0-DOM-009 — fixed with an unconditional phone guard
 
-## High findings
+The desktop/tablet first-page enhancer previously depended on a deferred mobile-lite marker. That dependency was itself an execution-order risk.
 
-### P0-GEOMETRY-003 — favorite and “Më shumë” can share the same right-side geometry
+Current `first-page-clinical.js` decides ownership directly from the phone breakpoint:
 
-The base mobile card is a two-column grid (`1fr auto`). Phase 8 adds a 44×44 favorite button using absolute top/right positioning. The design layer separately gives the `Më shumë` button a fixed right-side footprint.
+- `phoneOwnsFirstPage()` is true on `<=767px`;
+- the guard runs before any desktop first-page DOM rewrite;
+- the phone path stamps `data-first-page-clinical="phone-skipped"`;
+- it emits `medindex:first-page-audit-ready` with owner `phone-registry`;
+- it preserves the canonical `registry-filter-panel-unified` marker without constructing desktop toolbar/table chrome;
+- the decision does not depend on `data-registry-mobile-lite`, removing the deferred-script race.
 
-Consequence: these controls can collide on narrow cards. This matches the supplied iPhone screenshot where the star overlaps the `Më shumë` control.
+## Historical high findings and current status
 
-### P0-BUILD-004 — checked-in source is not identical to the production build artifact
+### P0-GEOMETRY-003 — fixed and statically gated
 
-`build:runtime` runs patch scripts that mutate generated/runtime files. `patch-registry-phase8-personalization.js` modifies `registry-mobile-lite.js` and inserts Phase 8 CSS/JS tags into `index.html` during build.
+The favorite control and `Më shumë` previously shared the right-side card geometry. The current card contract reserves independent action hitboxes and content width. `--assert-phase2-ready` prevents that collision geometry from returning.
 
-The checked-in `index.html` therefore does not fully represent the final production cascade before build execution.
+### P0-BUILD-004 — accepted architecture constraint
 
-Consequence: source-only inspection is insufficient. All mobile regression tests for the next phases must run against the post-`build:runtime` artifact.
+`build:runtime` still applies ordered runtime patches, including mobile personalization. Therefore source-only review is not enough. CI always builds first, then executes the Phase 0 gates against the built artifact.
 
-### P0-CASCADE-005 — too many mobile registry CSS owners
+### P0-CASCADE-005 — still an architectural debt item, not a Phase 0 blocker
 
-The checked-in index already references multiple registry mobile layers (`critical`, `lite`, `phase3`, `phase4`, `design-audit`, `phone-hardening`), and the build adds Phase 8.
+Multiple registry-mobile CSS layers remain. They are intentionally not consolidated during the forensic phase because bulk removal would make causality harder to verify. Later consolidation must happen only after geometry/runtime tests are green.
 
-Consequence: geometry can be correct in one file but overridden later. More CSS patches should not be added before ownership and geometry are stabilized.
+## Medium findings retained for later phases
 
-## Medium findings
+### P0-BREAKPOINT-006
 
-### P0-BREAKPOINT-006 — shell and registry mobile breakpoints differ
+The shell experience and phone registry do not use the same breakpoint. The registry owner boundary remains `<=767px`; the wider shell breakpoint must be tested explicitly at 767/768/1023/1024 rather than treated as accidental equivalence.
 
-The shell/mobile experience uses a 1024px breakpoint, while mobile-lite uses 767px.
+### P0-NETWORK-007
 
-Consequence: widths 768–1023 can receive a mobile shell with a desktop/non-lite registry architecture. This must be treated as an explicit boundary contract in later tests.
+Static assets currently favor freshness/revalidation while private APIs remain strict. This is a performance optimization target, not a Phase 0 ownership fix.
 
-### P0-NETWORK-007 — static assets revalidate while APIs are no-store
+### P0-SHELL-008
 
-Vercel headers currently make API responses private/no-store and JS/CSS `max-age=0, must-revalidate`.
+Safari keyboard, drawer, detail sheet and rotation involve several shell systems. These state combinations remain covered by dedicated WebKit shell tests in later gates.
 
-This is safe for freshness but creates repeated validation overhead across a page with many scripts/styles. It is not the Phase 0 fix; it is a measured optimization target for the performance phases.
+## Phase 0 acceptance gates
 
-### P0-SHELL-008 — mobile shell state is controlled by several overlapping systems
+Phase 0 is considered complete only when both the static post-build gate and the delayed WebKit runtime gate pass.
 
-Critical CSS fixes the app shell/body to the viewport, `mobile-experience.js` tracks `visualViewport`, and `mobile-sidebar-hardening.js` adds body/sidebar observers and focus containment.
-
-Consequence: Safari keyboard, rotation, drawer, and detail-sheet states must be tested as combinations, not as isolated responsive screenshots.
-
-## Phase 0 conclusion
-
-The primary problem is not a missing responsive stylesheet. The first production fix must be architectural:
-
-1. keep a single mobile list owner;
-2. prevent timeout/feature handoff from replacing the lightweight list renderer;
-3. then fix card action geometry;
-4. only after that refine shell/header/sidebar/bottom navigation;
-5. consolidate CSS layers later, after behavior is stable.
-
-## Phase 1 entry gate
-
-Phase 1 may start only with these invariants:
-
-- On <=767px, the list owner remains `mobile-lite` during normal use.
-- Slow initial API response must not cause the full renderer to take over the list.
-- Advanced mobile features may load modules/sheets, but may not replace the list renderer.
-- Full-runtime fallback remains allowed for a genuine fatal recovery path, but ownership transition must be explicit and observable.
-- Desktop behavior remains unchanged.
-
-## Static forensic audit command
-
-Run:
+### 1. Static source/build ownership gate
 
 ```bash
-node scripts/audit-mobile-phase0.js
+node scripts/audit-mobile-phase0.js --assert-phase0-ready --assert-phase1-ready --assert-phase2-ready
 ```
 
-For the ownership gate:
+This verifies, among other invariants:
+
+- no mobile timeout takeover;
+- no ordinary mobile error/full-detail/advanced-control handoff;
+- nonfatal full-runtime requests are blocked;
+- fatal recovery remains explicit;
+- the race-free `phoneOwnsFirstPage()` guard runs before desktop DOM rewriting;
+- the `phone-skipped` and `phone-registry` ownership markers exist;
+- the phone guard does not depend on a deferred mobile-lite marker;
+- card action geometry keeps independent favorite/detail slots.
+
+### 2. Post-build delayed-start runtime gate
 
 ```bash
-node scripts/audit-mobile-phase0.js --assert-phase1-ready
-```
-
-The command prints machine-readable JSON with current findings, ownership invariants and metrics.
-
-## Post-build runtime forensic probe
-
-A second diagnostic reproduces startup ownership against the post-`build:runtime` artifact using a 390×844 mobile viewport and an intentionally delayed lightweight registry response.
-
-Run the neutral probe:
-
-```bash
-node scripts/audit-mobile-phase0-runtime.js
-```
-
-Historical reproduction mode for the pre-fix architecture:
-
-```bash
-node scripts/audit-mobile-phase0-runtime.js --expect-current-race
-```
-
-Regression mode for the new ownership architecture:
-
-```bash
+PHASE0_MOBILE_SEARCH_DELAY_MS=13000 \
+PHASE0_MOBILE_STALL_THRESHOLD_MS=12000 \
 node scripts/audit-mobile-phase0-runtime.js --assert-single-owner
 ```
 
-The probe records:
+The WebKit probe uses a 390×844 phone viewport and records:
 
-- `medindex:full-registry-started` timestamps and reasons;
-- `medindex:mobile-lite-ready` timing;
-- explicit mobile-to-full handoff events;
+- `medindex:full-registry-started`;
+- `medindex:mobile-lite-ready`;
+- `medindex:mobile-lite-stalled`;
+- blocked/full handoff events;
+- `medindex:first-page-audit-ready` owner details;
 - `/api/drug-search` and `/api/registry` requests;
-- final mobile-lite/runtime datasets and first-row/card ownership.
+- final runtime datasets;
+- phone toolbar and first-card ownership/geometry.
 
-The delayed `registry-page` response defaults to 5600 ms. No production API, database, Neon data, or clinical data is modified by the probe.
+Expected delayed-start result:
 
-## Phase 1 ownership checkpoint — implemented on main
+- the stall diagnostic is observed;
+- full registry starts: `0`;
+- `/api/registry` requests: `0`;
+- mobile-lite reaches ready after the delayed bounded response;
+- runtime settles to `mobile-lite`;
+- first-page enhancer marker is `phone-skipped`;
+- ownership event is `phone-registry`;
+- the canonical phone toolbar marker remains present.
 
-The first architectural Phase 1 checkpoint is now implemented:
+## CI enforcement on `main`
 
-- the 5-second `mobile-lite-timeout` takeover was removed;
-- a 12-second mobile stall watchdog now emits `medindex:mobile-lite-stalled` without loading the full registry;
-- nonfatal mobile requests for the full registry are blocked by `registry-runtime-loader`;
-- initial lightweight API failure remains in the mobile renderer and shows retry/recovery instead of automatically changing renderer;
-- prescription navigation uses `/recetat.html` directly on mobile rather than waking the full registry;
-- the old full-detail escalation from the drug detail sheet was removed because Phase 4 already loads targeted clinical data;
-- full runtime transition is retained only for explicit fatal recovery or a viewport transition to desktop.
+`.github/workflows/phase5-performance-audit.yml` now runs, in order:
 
-The remaining high-priority visual defect is `P0-GEOMETRY-003` (favorite/`Më shumë` collision). That belongs to the next geometry/card phase and should not be solved by adding another global mobile stylesheet.
+1. `build:runtime`;
+2. Phase 0 static forensic gates;
+3. existing mobile static contracts;
+4. browser installation;
+5. Phase 0 13-second delayed WebKit single-owner gate;
+6. Phase 5/6 interaction and main-thread gates;
+7. phone WebKit density, shell, network and startup gates;
+8. upload of Phase 0/5/6 diagnostics.
+
+This means a future commit cannot silently reintroduce the old phone owner race while still passing the later performance suite.
+
+## Phase 0 conclusion
+
+The core root cause is architectural ownership, not lack of responsive CSS. The current architecture now has an explicit phone owner contract and machine-verifiable regression gates. Once both Phase 0 CI gates are green on the current `main`, the next implementation work can move to Phase 1/remaining shell density issues without reopening renderer ownership by guesswork.
