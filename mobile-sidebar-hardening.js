@@ -232,7 +232,7 @@
 
     if (!event.shiftKey && (!activeInside || active === last)) {
       event.preventDefault();
-      last.focus({ preventScroll:true });
+      first.focus({ preventScroll:true });
     }
   }
 
