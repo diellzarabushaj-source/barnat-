@@ -28,9 +28,9 @@ for (const file of [
 }
 
 const desktopScript = 'registry-desktop-lite.js?v=20260812-1';
-const loaderScript = 'registry-runtime-loader.js?v=20260812-8';
+const loaderScript = 'registry-runtime-loader.js?v=20260813-9';
 assert(index.includes(desktopScript), 'Desktop lightweight runtime must be present in the registry page.');
-assert(index.includes(loaderScript), 'Phase 10 runtime-loader cache bust must be active.');
+assert(index.includes(loaderScript), 'Single-owner runtime-loader cache bust must be active.');
 assert(index.indexOf(desktopScript) < index.indexOf(loaderScript), 'Desktop lightweight runtime must initialize before the full-runtime loader.');
 assert.doesNotMatch(index, /rel="preload" href="app-runtime-performance\.js/, 'The deferred full registry runtime must not be preloaded on normal lightweight visits.');
 
@@ -57,12 +57,16 @@ assert.doesNotMatch(desktop, /desktop-large-page-size/, '50/100/250/500 page-siz
 assert.doesNotMatch(desktop, /\/api\/registry(?:\?|['"`])/, 'Normal desktop lightweight mode must not call the full registry endpoint.');
 assert.doesNotMatch(desktop, /DRUG_DATA_PARTS/, 'Desktop lightweight mode must not hydrate the compressed full-registry payload.');
 
-assert.match(loader, /const VERSION = 'registry-runtime-loader-v8'/);
+assert.match(loader, /const VERSION = 'registry-runtime-loader-v9'/);
 assert.match(loader, /function desktopLiteCandidate\(\)/);
 assert.match(loader, /desktop-lite-deferred/);
 assert.match(loader, /registryDesktopLiteReady === '1'/);
 assert.match(loader, /desktop-lite-timeout/);
 assert.match(loader, /legacy-no-lite/);
+assert.match(loader, /MOBILE_LITE_STALL_MS = 12000/);
+assert.match(loader, /medindex:mobile-lite-stalled/);
+assert.match(loader, /medindex:mobile-full-registry-blocked/);
+assert.doesNotMatch(loader, /scheduleRuntime\('mobile-lite-timeout'\)/, 'Desktop Phase 10 patch must never restore the old mobile takeover.');
 assert.doesNotMatch(loader, /scheduleRuntime\('desktop-or-legacy'\)/, 'Authenticated desktop must not eagerly launch the full registry runtime.');
 
 assert.match(dosage, /registryIndexSource/);
@@ -84,6 +88,8 @@ assert.match(phase10Patch, /approvedPopulation:approvedPopulationForRegistryNumb
   'Each lightweight registry row must carry its approved population metadata.');
 assert.match(phase10Patch, /'Popullata e aprovuar':clean\(row\.approvedPopulation\)/,
   'Desktop canonical rows must expose approved population to downstream clinical UI.');
+assert.match(phase10Patch, /registry-runtime-loader-v9/, 'Phase 10 build patch must preserve the single-owner v9 loader.');
+assert.doesNotMatch(phase10Patch, /MOBILE_LITE_GRACE_MS = 5000/, 'Phase 10 build patch must not recreate the removed mobile timeout contract.');
 assert.match(marker, /medindex:registry-page-ready/,
   'Clinical row markers must rebuild population state whenever the lightweight page changes.');
 assert.match(marker, /item\['Popullata e aprovuar'\]/,
@@ -98,4 +104,4 @@ assert.match(packageJson.scripts['build:runtime'], /patch-phase11-desktop-advanc
 assert.match(packageJson.scripts.test, /registry-desktop-lite-test\.js/, 'Desktop lightweight regression test must run in the main test suite.');
 assert.match(packageJson.scripts.test, /registry-desktop-large-page-lite-test\.js/, 'Phase 11-14 composed regression gate must run in the main test suite.');
 
-console.log('Phase 14 desktop bounded pagination, form filtering, inline population, targeted dosage, prescription and column customization contract passed.');
+console.log('Phase 14 desktop bounded pagination, single-owner mobile loader, form filtering, inline population, targeted dosage, prescription and column customization contract passed.');
