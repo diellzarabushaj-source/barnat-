@@ -6,7 +6,7 @@
   <meta name="robots" content="noindex,nofollow,noarchive">
   <meta name="theme-color" content="#0d3d40">
   <link rel="manifest" href="manifest.webmanifest">
-  <title>MedIndex | Dozologjia</title>
+  <title>MedIndex | Kalkulatori pediatrik</title>
   <link rel="stylesheet" href="medical-hub.css?v=20260723-1">
   <link rel="stylesheet" href="clinical-reference.css?v=20260724-1">
   <link rel="stylesheet" href="tailadmin-medindex.css?v=20260728-1" data-tailadmin-medindex-css>
@@ -21,7 +21,7 @@
   <script src="dozologjia-simple-workflow-style-loader.js?v=20260801-1" defer></script>
 </head>
 <body>
-  <a class="skip-link" href="#dosageContent">Kalo te dozologjia</a>
+  <a class="skip-link" href="#dosageContent">Kalo te kalkulatori pediatrik</a>
   <div class="med-shell">
     <nav class="med-nav" aria-label="Navigimi kryesor">
       <a class="med-nav-link" href="index.html"><span class="med-nav-icon">⌂</span><span class="med-nav-title">Barnat</span></a>
@@ -33,49 +33,63 @@
       <a class="med-nav-link" href="recetat.html"><span class="med-nav-icon">Rx</span><span class="med-nav-title">Recetat</span></a>
       <div class="med-theme"><span>Tema</span><button id="themeButton" type="button" aria-label="Ndërro temën">☾</button></div>
     </nav>
-    <main class="med-main clinical-main" id="dosageContent" tabindex="-1">
-      <header class="clinical-hero dosage-page-header">
+
+    <main class="med-main clinical-main pediatric-calculator-page" id="dosageContent" tabindex="-1">
+      <header class="clinical-hero dosage-page-header pediatric-calculator-hero">
         <div>
-          <p class="clinical-kicker">MedIndex · kartela klinike</p>
-          <h1>Dozologjia</h1>
-          <p>Për secilin bar shfaqen qartë regjimi dhe rruga për të rritur, si dhe doza pediatrike kur është publikuar në dataset-in klinik.</p>
+          <p class="clinical-kicker">MedIndex · Pediatri</p>
+          <h1>Kalkulatori pediatrik</h1>
+          <p>Një kalkulator i vetëm për barna me përdorim pediatrik. Llogaritja aktivizohet vetëm kur skema pediatrike është e strukturuar dhe e publikuar për preparatin e saktë.</p>
         </div>
-        <div class="clinical-summary"><strong id="dosageCount">0</strong><span>kartela</span></div>
+        <div class="clinical-summary"><strong id="dosageCount">0</strong><span>barna pediatrike</span></div>
       </header>
 
-      <section class="dosage-control-panel" aria-labelledby="dosageControlTitle">
+      <section class="dosage-control-panel pediatric-calculator-panel" aria-labelledby="dosageControlTitle">
         <div class="dosage-control-heading">
           <div>
-            <h2 id="dosageControlTitle">Kërko dozologjinë</h2>
-            <p>Filtro sipas popullatës, formës ose ATC-së.</p>
+            <p class="clinical-kicker">1 · Bari</p>
+            <h2 id="dosageControlTitle">Kërko barin pediatrik</h2>
+            <p>Kërko sipas emrit tregtar, substancës aktive ose ATC-së. Barna adult-only nuk përfshihen në kalkulator.</p>
           </div>
         </div>
-        <div class="clinical-toolbar" role="search" aria-label="Kërkimi dhe filtrat e dozologjisë">
-          <input id="dosageSearch" type="search" autocomplete="off" placeholder="Kërko barin, substancën, përdorimin ose ATC…">
-          <select id="dosagePopulation" aria-label="Doza e publikuar">
-            <option value="all">Të gjitha dozat</option>
-            <option value="adult">Doza për të rritur</option>
-            <option value="pediatric">Me dozë për fëmijë</option>
-          </select>
-          <select id="dosageForm" aria-label="Forma"><option value="">Të gjitha format</option></select>
-          <select id="dosageAtc" aria-label="ATC"><option value="">Të gjitha ATC-të</option></select>
+
+        <div class="clinical-toolbar pediatric-search-toolbar" role="search" aria-label="Kërko barin pediatrik">
+          <input id="dosageSearch" type="search" autocomplete="off" placeholder="Kërko barin, substancën ose ATC…" aria-label="Kërko barin pediatrik">
         </div>
 
-        <div class="clinical-patient" id="pediatricInputs">
+        <div class="dosage-legacy-filter-hooks" hidden aria-hidden="true">
+          <select id="dosagePopulation"><option value="pediatric" selected>Me dozë për fëmijë</option></select>
+          <select id="dosageForm"><option value="">Të gjitha format</option></select>
+          <select id="dosageAtc"><option value="">Të gjitha ATC-të</option></select>
+        </div>
+
+        <div class="clinical-patient pediatric-patient-panel" id="pediatricInputs">
           <div class="dosage-calculator-copy">
-            <strong>Kalkulatori pediatrik sipas peshës</strong>
-            <span>Shëno peshën. Rezultati shfaqet vetëm kur ekziston formulë pediatrike e strukturuar me burim të lidhur; teksti origjinal i dozës mbetet gjithmonë i dukshëm.</span>
+            <p class="clinical-kicker">2 · Pacienti</p>
+            <strong>Të dhënat pediatrike</strong>
+            <span>Pesha përdoret vetëm nga skemat që e kërkojnë. Mosha merret parasysh vetëm kur skema ka kufij të deklaruar sipas moshës.</span>
           </div>
           <label>Pesha e fëmijës (kg)<input id="patientWeightKg" type="number" min="0.1" step="0.1" inputmode="decimal" placeholder="p.sh. 18"></label>
           <label>Mosha (muaj, kur kërkohet)<input id="patientAgeMonths" type="number" min="0" step="1" inputmode="numeric" placeholder="p.sh. 48"></label>
         </div>
       </section>
 
-      <p class="clinical-status" id="dosageStatus" role="status" aria-live="polite">Duke ngarkuar kartelat klinike…</p>
-      <div class="clinical-list dosage-card-list" id="dosageList" aria-live="polite"></div>
-      <aside class="clinical-note"><strong>Kontroll klinik i detyrueshëm:</strong> çdo skemë lidhet me indikacionin e zgjedhur. Kalkulatori zbatohet vetëm mbi formulën e strukturuar të publikuar dhe rezultati bartet në recetë vetëm për rishikim.</aside>
+      <section class="pediatric-result-section" aria-labelledby="pediatricResultTitle">
+        <div class="dosage-control-heading pediatric-result-heading">
+          <div>
+            <p class="clinical-kicker">3 · Rezultati</p>
+            <h2 id="pediatricResultTitle">Doza pediatrike</h2>
+            <p>Zgjidh indikacionin kur ka më shumë se një skemë. Pa formulë të strukturuar, kalkulatori nuk jep rezultat numerik.</p>
+          </div>
+        </div>
+        <p class="clinical-status" id="dosageStatus" role="status" aria-live="polite">Duke ngarkuar skemat pediatrike…</p>
+        <div class="clinical-list dosage-card-list pediatric-calculator-results" id="dosageList" aria-live="polite"></div>
+      </section>
+
+      <aside class="clinical-note pediatric-safety-note"><strong>Kontroll klinik i detyrueshëm:</strong> rezultati llogaritet vetëm nga skema pediatrike e strukturuar për preparatin dhe indikacionin përkatës. Teksti origjinal i dozës dhe burimi mbeten të dukshëm për rishikim.</aside>
     </main>
   </div>
+
   <div class="rx-toast" id="dosageToast" role="status" aria-live="polite"></div>
   <script src="dosage-engine.js?v=20260726-3" defer></script>
   <script src="auth-client.js?v=production-audit-v2" defer></script>
