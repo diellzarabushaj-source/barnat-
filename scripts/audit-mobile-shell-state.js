@@ -263,9 +263,12 @@ function assertIdleState(state, label) {
     });
     await installApi(page);
     await page.goto(`${BASE}/index.html`, { waitUntil:'domcontentloaded', timeout:30000 });
-    await page.waitForFunction(() => document.documentElement.classList.contains('auth-ready'), null, { timeout:10000 });
-    await page.waitForFunction(() => document.querySelectorAll('#tbody .mobile-lite-card').length >= 10, null, { timeout:10000 });
-    await page.waitForFunction(() => Boolean(document.getElementById('miRegistryBottomNav')), null, { timeout:10000 });
+
+    // Keep the audit compatible with production CSP. WebKit can reject
+    // page.waitForFunction because it relies on an eval-like execution path.
+    await page.locator('html.auth-ready').waitFor({ state:'attached', timeout:10000 });
+    await page.locator('#tbody .mobile-lite-card').nth(9).waitFor({ state:'attached', timeout:10000 });
+    await page.locator('#miRegistryBottomNav').waitFor({ state:'attached', timeout:10000 });
 
     const report = {
       geometry:null,
@@ -299,7 +302,7 @@ function assertIdleState(state, label) {
     await page.waitForTimeout(50);
 
     await page.locator('[data-mi-registry-nav="more"]').click();
-    await page.waitForFunction(() => document.body.classList.contains('mi-sidebar-open'));
+    await page.locator('body.mi-sidebar-open').waitFor({ state:'attached', timeout:5000 });
     await page.waitForTimeout(30);
     report.sidebar = await navState(page);
     assertOpenSurfaceState(report.sidebar, 'sidebar');
@@ -308,40 +311,40 @@ function assertIdleState(state, label) {
     assert.equal(report.sidebar.workspaceInert, true, 'sidebar: workspace must be inert while drawer is open.');
 
     await page.locator('[data-mi-sidebar-close]').click();
-    await page.waitForFunction(() => !document.body.classList.contains('mi-sidebar-open'));
+    await page.locator('body.mi-sidebar-open').waitFor({ state:'detached', timeout:5000 });
     await page.waitForTimeout(220);
     report.afterSidebar = await navState(page);
     assertIdleState(report.afterSidebar, 'after sidebar');
 
     await page.locator('[data-mi-phase3-filter-open]').click();
-    await page.waitForFunction(() => document.body.classList.contains('mi-registry-filter-open'));
+    await page.locator('body.mi-registry-filter-open').waitFor({ state:'attached', timeout:5000 });
     await page.waitForTimeout(30);
     report.filters = await navState(page);
     assertOpenSurfaceState(report.filters, 'filters');
     await page.locator('[data-mi-phase3-filter-close]').last().click();
-    await page.waitForFunction(() => !document.body.classList.contains('mi-registry-filter-open'));
+    await page.locator('body.mi-registry-filter-open').waitFor({ state:'detached', timeout:5000 });
     await page.waitForTimeout(220);
     report.afterFilters = await navState(page);
     assertIdleState(report.afterFilters, 'after filters');
 
     await page.locator('#tbody .mobile-lite-more').first().click();
-    await page.waitForFunction(() => document.body.classList.contains('mobile-lite-detail-open'));
+    await page.locator('body.mobile-lite-detail-open').waitFor({ state:'attached', timeout:5000 });
     await page.waitForTimeout(30);
     report.detail = await navState(page);
     assertOpenSurfaceState(report.detail, 'detail');
     await page.locator('#mobileLiteDrugDetail [data-mobile-lite-close]').last().click();
-    await page.waitForFunction(() => !document.body.classList.contains('mobile-lite-detail-open'));
+    await page.locator('body.mobile-lite-detail-open').waitFor({ state:'detached', timeout:5000 });
     await page.waitForTimeout(220);
     report.afterDetail = await navState(page);
     assertIdleState(report.afterDetail, 'after detail');
 
     await page.locator('[data-mi-mobile-search]').click();
-    await page.waitForFunction(() => document.body.classList.contains('mi-mobile-search-open'));
+    await page.locator('body.mi-mobile-search-open').waitFor({ state:'attached', timeout:5000 });
     await page.waitForTimeout(30);
     report.globalSearch = await navState(page);
     assertOpenSurfaceState(report.globalSearch, 'global search');
     await page.keyboard.press('Escape');
-    await page.waitForFunction(() => !document.body.classList.contains('mi-mobile-search-open'));
+    await page.locator('body.mi-mobile-search-open').waitFor({ state:'detached', timeout:5000 });
     await page.waitForTimeout(220);
     report.afterGlobalSearch = await navState(page);
     assertIdleState(report.afterGlobalSearch, 'after global search');
