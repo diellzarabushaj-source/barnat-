@@ -1,9 +1,12 @@
 @media (max-width:767px){
   .mi-registry-personalization-bar{
     display:flex;
-    gap:8px;
-    width:100%;
-    padding:8px 12px 2px;
+    min-height:44px;
+    align-items:center;
+    gap:6px;
+    width:calc(100% - 16px);
+    margin:0 8px 4px;
+    padding:0;
     overflow-x:auto;
     overscroll-behavior-inline:contain;
     scrollbar-width:none;
@@ -15,14 +18,15 @@
     display:inline-flex;
     align-items:center;
     justify-content:center;
-    gap:6px;
-    padding:0 14px;
+    gap:5px;
+    padding:0 12px;
     border:1px solid var(--mi-border,#d7e1ec);
     border-radius:999px;
     background:var(--mi-surface,#fff);
     color:var(--mi-text,#172033);
     font:inherit;
-    font-weight:700;
+    font-size:12px;
+    font-weight:600;
     cursor:pointer;
     -webkit-tap-highlight-color:transparent;
   }
@@ -32,24 +36,54 @@
     color:var(--mi-primary,#185bd8);
   }
   .mi-registry-personalization-bar button span{
-    min-width:20px;
-    height:20px;
-    padding:0 6px;
+    min-width:18px;
+    height:18px;
+    padding:0 5px;
     display:inline-flex;
     align-items:center;
     justify-content:center;
     border-radius:999px;
     background:color-mix(in srgb,currentColor 10%,transparent);
-    font-size:12px;
+    font-size:10px;
     line-height:1;
   }
 
-  /* Phase 2 card action rail: favorite and detail action get separate 44px
-     touch slots. The content reserves the rail width, so neither control can
-     overlap text or the other action even on narrow iPhones. */
-  #tbody .mobile-lite-card{
-    position:relative;
+  /* These legacy personalization rows are desktop/full-table affordances. The
+     mobile-lite owner exposes the same quick favorite/recent mode through the
+     Phase 8 bar and keeps per-card favorite actions, so duplicate toolbar rows
+     must not consume the first phone viewport. DOM is preserved for desktop. */
+  html[data-registry-mobile-lite][data-registry-mobile-phase8] #registryQuickFavorites,
+  html[data-registry-mobile-lite][data-registry-mobile-phase8] #registryPersonalWorkspace{
+    display:none!important;
   }
+
+  /* Phase 2/5 card contract: once actions are absolutely railed, the card no
+     longer needs a second grid column. Force the table-derived row/cell/card
+     chain to own the full phone width and remove inherited desktop row height. */
+  html[data-registry-mobile-lite] #dataTable .mobile-lite-row,
+  html[data-registry-mobile-lite] #dataTable .mobile-lite-row>td{
+    width:100%!important;
+    min-width:0!important;
+    max-width:none!important;
+    height:auto!important;
+    min-height:0!important;
+    max-height:none!important;
+  }
+  html[data-registry-mobile-lite] #dataTable .mobile-lite-row>td{
+    box-sizing:border-box!important;
+  }
+  html[data-registry-mobile-lite] #tbody .mobile-lite-card{
+    position:relative;
+    display:block!important;
+    width:100%!important;
+    min-width:0!important;
+    max-width:none!important;
+    box-sizing:border-box!important;
+  }
+
+  /* Favorite and detail action get separate 44px touch slots. The content
+     reserves the rail width, so neither control can overlap text or the other
+     action even on narrow iPhones. */
   #tbody .mobile-lite-card:has(.mi-mobile-favorite-toggle){
     min-height:108px;
   }
