@@ -10,7 +10,7 @@ const runtimePath = path.join(__dirname, '.audit-mobile-shell-state-webkit-runti
 let source = fs.readFileSync(sourcePath, 'utf8');
 
 const legacyScroll = "await page.locator('.mi-main').evaluate(node => { node.scrollTop = node.scrollHeight; });";
-const webkitScroll = "await page.locator('#pagination').evaluate(node => node.scrollIntoView({ block:'end', inline:'nearest', behavior:'auto' }));";
+const webkitScroll = "await page.locator('.mi-main').evaluate(node => node.scrollTo({ top:node.scrollHeight, left:0, behavior:'auto' }));";
 const legacyGate = "assertCompactShellGeometry(report.geometryAtEnd, 'end-of-list geometry', { lastCardVisible:true });";
 const webkitGate = [
   "assert.ok(report.geometryAtEnd.mainScroll?.scrollTop > 0, 'end-of-list geometry: WebKit did not scroll .mi-main to the final controls.');",
