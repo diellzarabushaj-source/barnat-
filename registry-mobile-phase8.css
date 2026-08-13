@@ -43,14 +43,35 @@
     font-size:12px;
     line-height:1;
   }
+
+  /* Phase 2 card action rail: favorite and detail action get separate 44px
+     touch slots. The content reserves the rail width, so neither control can
+     overlap text or the other action even on narrow iPhones. */
   #tbody .mobile-lite-card{
     position:relative;
+  }
+  #tbody .mobile-lite-card:has(.mi-mobile-favorite-toggle){
+    min-height:108px;
+  }
+  #tbody .mobile-lite-card:has(.mi-mobile-favorite-toggle) .mobile-lite-open{
+    width:100%;
+    min-height:80px;
+    padding-right:96px;
+  }
+  #tbody .mobile-lite-card:has(.mi-mobile-favorite-toggle) .mobile-lite-more{
+    position:absolute;
+    right:8px;
+    bottom:8px;
+    z-index:2;
+    min-width:82px;
+    min-height:44px;
+    margin:0;
   }
   .mi-mobile-favorite-toggle{
     position:absolute;
     top:8px;
     right:8px;
-    z-index:2;
+    z-index:3;
     width:44px;
     height:44px;
     display:grid;
@@ -62,6 +83,7 @@
     color:#7d8da5;
     box-shadow:0 2px 10px rgba(15,23,42,.06);
     cursor:pointer;
+    touch-action:manipulation;
     -webkit-tap-highlight-color:transparent;
   }
   .mi-mobile-favorite-toggle svg{
@@ -80,9 +102,7 @@
   .mi-mobile-favorite-toggle.is-favorite svg{
     fill:currentColor;
   }
-  .mobile-lite-card:has(.mi-mobile-favorite-toggle) .mobile-lite-open{
-    padding-right:58px;
-  }
+
   [data-theme="dark"] .mi-registry-personalization-bar button,
   [data-theme="dark"] .mi-mobile-favorite-toggle{
     background:color-mix(in srgb,var(--mi-surface,#111827) 94%,transparent);
