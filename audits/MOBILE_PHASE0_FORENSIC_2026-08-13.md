@@ -16,9 +16,9 @@ The original loader gave mobile-lite a fixed grace period and could start the fu
 Current contract:
 
 - `registry-runtime-loader-v9` no longer has the `mobile-lite-timeout` takeover;
-- a 12-second `medindex:mobile-lite-stalled` diagnostic is observable but does **not** wake the full renderer;
+- a 12-second `medindex:mobile-lite-stalled` diagnostic remains observable but does **not** wake the full renderer;
 - normal delayed phone startup must keep `/api/registry` untouched;
-- the post-build WebKit probe deliberately delays `/api/drug-search?view=registry-page` for 13 seconds so the stall path is exercised rather than merely inferred from source.
+- the post-build WebKit probe deliberately delays `/api/drug-search?view=registry-page` for 13 seconds, well beyond the removed 5-second takeover window, and verifies ownership directly rather than coupling acceptance to the exact stall-event timer start.
 
 ### P0-OWNER-002 — fixed and regression-gated
 
@@ -98,7 +98,7 @@ The WebKit probe uses a 390×844 phone viewport and records:
 
 - `medindex:full-registry-started`;
 - `medindex:mobile-lite-ready`;
-- `medindex:mobile-lite-stalled`;
+- `medindex:mobile-lite-stalled` as diagnostics;
 - blocked/full handoff events;
 - `medindex:first-page-audit-ready` owner details;
 - `/api/drug-search` and `/api/registry` requests;
@@ -107,14 +107,16 @@ The WebKit probe uses a 390×844 phone viewport and records:
 
 Expected delayed-start result:
 
-- the stall diagnostic is observed;
+- mobile-lite becomes ready **after** the removed 5-second takeover window;
 - full registry starts: `0`;
 - `/api/registry` requests: `0`;
-- mobile-lite reaches ready after the delayed bounded response;
+- no overlapping mobile/full renderer ownership is observed;
 - runtime settles to `mobile-lite`;
 - first-page enhancer marker is `phone-skipped`;
 - ownership event is `phone-registry`;
 - the canonical phone toolbar marker remains present.
+
+The `medindex:mobile-lite-stalled` event is still captured for diagnostics, while the static gate separately verifies the 12-second stall-watch implementation. It is not a hard runtime acceptance condition because its timer begins relative to authentication/startup ordering rather than the intercepted list request itself.
 
 ## CI enforcement on `main`
 
@@ -133,4 +135,4 @@ This means a future commit cannot silently reintroduce the old phone owner race 
 
 ## Phase 0 conclusion
 
-The core root cause is architectural ownership, not lack of responsive CSS. The current architecture now has an explicit phone owner contract and machine-verifiable regression gates. Once both Phase 0 CI gates are green on the current `main`, the next implementation work can move to Phase 1/remaining shell density issues without reopening renderer ownership by guesswork.
+The core root cause is architectural ownership, not lack of responsive CSS. The current architecture now has an explicit phone owner contract and machine-verifiable regression gates. With both Phase 0 CI gates green on `main`, the next implementation work can move to Phase 1 and the remaining shell-density issues without reopening renderer ownership by guesswork.
