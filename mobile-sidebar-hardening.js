@@ -2,7 +2,7 @@
   'use strict';
 
   const MOBILE_BREAKPOINT = 1024;
-  const VERSION = 'mobile-sidebar-deep-audit-v3';
+  const VERSION = 'mobile-sidebar-deep-audit-v4';
   const ROOT = document.documentElement;
   let bodyObserver = null;
   let sidebarObserver = null;
@@ -200,6 +200,7 @@
 
     if (previousMobileOpen && !mobileOpen && mobile) restoreOpenerFocus();
     previousMobileOpen = mobileOpen;
+    window.MedIndexRegistryMobilePhase3?.syncNavigation?.();
   }
 
   function trapSidebarFocus(event) {
