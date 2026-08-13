@@ -9,6 +9,10 @@
     return window.setTimeout(callback, 0);
   };
 
+  function phoneRegistryOwnsViewport() {
+    return window.matchMedia?.('(max-width: 767px)')?.matches === true;
+  }
+
   function favoritesCount() {
     try {
       const value = JSON.parse(localStorage.getItem(FAVORITES_KEY) || '[]');
@@ -24,6 +28,10 @@
   }
 
   function enhanceSearch() {
+    // Phone search geometry is owned by the mobile registry. Wrapping #search
+    // here removes it from the direct-child selectors that keep the toolbar at
+    // one compact search row + count row.
+    if (phoneRegistryOwnsViewport()) return;
     const search = document.getElementById('search');
     if (!search || search.closest('.mi-registry-search-shell')) return;
 
@@ -50,6 +58,9 @@
   }
 
   function quickFavoritesButton() {
+    // Favorites on <=767px are already owned by registry-mobile-phase8. Do not
+    // insert the desktop quick-favorites control into the compact phone toolbar.
+    if (phoneRegistryOwnsViewport()) return null;
     let button = document.getElementById('registryQuickFavorites');
     if (button) return button;
     const toolbar = document.querySelector('.toolbar');
@@ -132,8 +143,8 @@
   }
 
   function markReady() {
-    document.documentElement.dataset.registryUxPhase1 = VERSION;
-    document.body?.classList.add('registry-ux-phase1-ready');
+    document.documentElement.dataset.registryUxPhase1 = phoneRegistryOwnsViewport() ? 'phone-skipped' : VERSION;
+    document.body?.classList.toggle('registry-ux-phase1-ready', !phoneRegistryOwnsViewport());
   }
 
   function refresh() {
