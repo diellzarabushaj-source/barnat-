@@ -36,17 +36,74 @@
     scroll-margin-bottom:86px;
   }
 
-  html[data-registry-mobile-lite][data-registry-mobile-phase3] body>.toolbar>#search,
-  html[data-registry-mobile-lite][data-registry-mobile-phase3] .registry-filter-panel-unified>#search{
+  /* The TailAdmin shell already owns the page heading on phones. The original
+     registry header is useful before shell mounting and on larger screens, but
+     keeping both headings after mobile-lite mounts wastes a large part of the
+     first viewport. */
+  html.medindex-tailadmin[data-registry-mobile-lite] .mi-index-content>header{
+    display:none!important;
+  }
+
+  /* Mobile-lite owns filtering. Target the real toolbar after TailAdmin moves
+     it into .mi-index-content; the old body>.toolbar selector no longer matches
+     after shell mounting. Keep only server search + count in this surface. */
+  html.medindex-tailadmin[data-registry-mobile-lite][data-registry-mobile-phase3] .mi-index-content>.toolbar{
+    position:static!important;
+    top:auto!important;
+    z-index:auto!important;
+    display:grid!important;
+    grid-template-columns:minmax(0,1fr)!important;
+    align-items:stretch!important;
+    gap:5px!important;
+    width:100%!important;
+    min-width:0!important;
+    min-height:0!important;
+    height:auto!important;
+    margin:0 0 4px!important;
+    padding:0!important;
+    border:0!important;
+    border-radius:0!important;
+    background:transparent!important;
+    box-shadow:none!important;
+    backdrop-filter:none!important;
+    -webkit-backdrop-filter:none!important;
+  }
+
+  html.medindex-tailadmin[data-registry-mobile-lite][data-registry-mobile-phase3] .mi-index-content>.toolbar :is(#statusFilter,#pageSize,.form-picker,.col-picker,.selection-badge,#protocolsBtn){
+    display:none!important;
+  }
+
+  html.medindex-tailadmin[data-registry-mobile-lite][data-registry-mobile-phase3] .mi-index-content>.toolbar>#search{
+    display:block!important;
+    grid-column:1/-1!important;
+    width:100%!important;
+    min-width:0!important;
     height:46px!important;
     min-height:46px!important;
+    margin:0!important;
+    padding:0 12px!important;
+    border-radius:12px!important;
+    font-size:16px!important;
+  }
+
+  html.medindex-tailadmin[data-registry-mobile-lite][data-registry-mobile-phase3] .mi-index-content>.toolbar>#countBadge{
+    display:inline-flex!important;
+    grid-column:1/-1!important;
+    justify-self:start!important;
+    width:auto!important;
+    min-width:0!important;
+    min-height:28px!important;
+    height:28px!important;
+    margin:0!important;
+    padding:4px 9px!important;
+    font-size:11px!important;
+    line-height:18px!important;
   }
 
   /* The desktop first-page enhancer intentionally remains available for larger
-     viewports, but its overview, secondary control matrix and table title add
-     hundreds of vertical pixels when that DOM is reused on a phone. Mobile-lite
-     already owns search, filters, list navigation and detail sheets, so only the
-     working search field is retained above the cards. */
+     viewports. These rules are a defensive fallback for any pre-existing DOM if
+     a cached build had already created its desktop overview before mobile-lite
+     ownership was established. */
   html.medindex-tailadmin[data-registry-mobile-lite].mi-first-page-audited .registry-overview,
   html.medindex-tailadmin[data-registry-mobile-lite].mi-first-page-audited .registry-toolbar-secondary,
   html.medindex-tailadmin[data-registry-mobile-lite].mi-first-page-audited .registry-table-bar{
