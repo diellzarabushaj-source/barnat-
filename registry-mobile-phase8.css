@@ -275,6 +275,27 @@
     border-color:#72531d;
     background:#2c2518;
   }
+
+  /* Phase 0: filter + favorites/recents are one horizontally scrollable 44px rail. */
+  html[data-registry-mobile-lite][data-registry-mobile-phase3][data-registry-mobile-phase8] .mi-registry-mobile-filter-bar{
+    flex-wrap:nowrap!important;
+    overflow-x:auto!important;
+    overflow-y:hidden!important;
+    overscroll-behavior-inline:contain;
+    scrollbar-width:none;
+  }
+  html[data-registry-mobile-lite][data-registry-mobile-phase3][data-registry-mobile-phase8] .mi-registry-mobile-filter-bar::-webkit-scrollbar{display:none}
+  html[data-registry-mobile-lite][data-registry-mobile-phase3][data-registry-mobile-phase8] .mi-registry-mobile-filter-bar>#miRegistryPersonalizationBar[data-mi-phase8-inline="true"]{
+    display:inline-flex!important;
+    flex:0 0 auto!important;
+    align-items:center!important;
+    gap:6px!important;
+    width:auto!important;
+    min-height:44px!important;
+    margin:0!important;
+    padding:0!important;
+    overflow:visible!important;
+  }
 }
 
 @media (min-width:768px){

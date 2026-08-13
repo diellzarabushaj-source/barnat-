@@ -244,11 +244,27 @@
     syncCounts();
   }
 
+  function placeBar(bar) {
+    if (!bar) return null;
+    const filterBar = document.getElementById('miRegistryMobileFilterBar');
+    if (filterBar) {
+      if (bar.parentElement !== filterBar) filterBar.appendChild(bar);
+      bar.dataset.miPhase8Inline = 'true';
+      root.dataset.registryMobileActionRail = 'unified-v1';
+      return bar;
+    }
+    const registry = document.getElementById('registryContent');
+    if (registry && bar.parentElement !== registry.parentElement) registry.insertAdjacentElement('beforebegin', bar);
+    delete bar.dataset.miPhase8Inline;
+    return bar;
+  }
+
   function ensureBar() {
     let bar = document.getElementById('miRegistryPersonalizationBar');
-    if (bar) return bar;
-    const anchor = document.getElementById('miRegistryMobileFilterBar') || document.getElementById('registryContent');
-    if (!anchor) return null;
+    if (bar) return placeBar(bar);
+    const filterBar = document.getElementById('miRegistryMobileFilterBar');
+    const registry = document.getElementById('registryContent');
+    if (!filterBar && !registry) return null;
     bar = document.createElement('section');
     bar.id = 'miRegistryPersonalizationBar';
     bar.className = 'mi-registry-personalization-bar';
@@ -257,9 +273,10 @@
       <button type="button" class="is-active" data-mi-phase8-mode="all" aria-pressed="true">Të gjitha</button>
       <button type="button" data-mi-phase8-mode="favorites" aria-pressed="false">★ Favoritet <span data-mi-phase8-favorite-count>0</span></button>
       <button type="button" data-mi-phase8-mode="recent" aria-pressed="false">Të fundit <span data-mi-phase8-recent-count>0</span></button>`;
-    anchor.insertAdjacentElement(anchor.id === 'registryContent' ? 'beforebegin' : 'afterend', bar);
+    if (filterBar) filterBar.appendChild(bar);
+    else registry.insertAdjacentElement('beforebegin', bar);
     bar.querySelectorAll('[data-mi-phase8-mode]').forEach(button => button.addEventListener('click', () => setMode(button.dataset.miPhase8Mode)));
-    return bar;
+    return placeBar(bar);
   }
 
   function handleFavoriteClick(event) {
@@ -294,6 +311,8 @@
 
     document.addEventListener('click', handleFavoriteClick, true);
     window.addEventListener('medindex:mobile-lite-ready', onServerRows);
+    window.addEventListener('medindex:registry-mobile-phase3-ready', () => placeBar(document.getElementById('miRegistryPersonalizationBar')));
+    window.addEventListener('medindex:tailadmin-ready', () => placeBar(document.getElementById('miRegistryPersonalizationBar')));
     window.addEventListener('medindex:mobile-lite-detail-opened', event => saveRecent(event.detail?.row));
     window.addEventListener('medindex:favorites-changed', event => {
       if (event.detail?.source === 'mobile-lite') return;
@@ -309,6 +328,7 @@
     });
     window.addEventListener('medindex:request-full-registry', () => {
       document.getElementById('miRegistryPersonalizationBar')?.remove();
+      delete root.dataset.registryMobileActionRail;
       root.dataset.registryMobilePhase8State = 'handoff';
     }, { once:true });
 
@@ -326,7 +346,10 @@
   }
 
   media.addEventListener?.('change', event => {
-    if (!event.matches) document.getElementById('miRegistryPersonalizationBar')?.remove();
+    if (!event.matches) {
+      document.getElementById('miRegistryPersonalizationBar')?.remove();
+      delete root.dataset.registryMobileActionRail;
+    }
   });
 
   if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', start, { once:true });
