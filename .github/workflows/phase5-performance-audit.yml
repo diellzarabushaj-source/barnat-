@@ -82,6 +82,7 @@ jobs:
           MOBILE_STARTUP_SKIP_BUILD: '1'
         run: |
           set -euo pipefail
+          node scripts/audit-mobile-density-diagnostic.js | tee /tmp/mobile-density-phase5.log
           node scripts/audit-mobile-shell-state.js | tee /tmp/mobile-shell-phase4.log
           node scripts/audit-mobile-network-phase5.js | tee /tmp/mobile-network-phase5.log
           node scripts/audit-mobile-startup-phase5.js | tee /tmp/mobile-startup-phase5.log
@@ -93,6 +94,7 @@ jobs:
           name: phase5-phase6-performance-metrics
           path: |
             /tmp/phase5-performance.log
+            /tmp/mobile-density-phase5.log
             /tmp/mobile-shell-phase4.log
             /tmp/mobile-network-phase5.log
             /tmp/mobile-startup-phase5.log
