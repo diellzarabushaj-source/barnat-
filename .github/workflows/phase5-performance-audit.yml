@@ -94,7 +94,7 @@ jobs:
           done
           pnpm exec playwright test tests/phase5-final-performance.spec.js tests/phase6-single-version.spec.js tests/registry-main-thread-performance.spec.js --reporter=line --workers=1 --retries=1 | tee /tmp/phase5-performance.log
 
-      - name: Run phone WebKit shell, network and startup gates
+      - name: Run phone WebKit shell, owner, network and startup gates
         shell: bash
         env:
           MOBILE_SHELL_SKIP_BUILD: '1'
@@ -103,6 +103,7 @@ jobs:
         run: |
           set -euo pipefail
           node scripts/audit-mobile-density-diagnostic.js | tee /tmp/mobile-density-phase5.log
+          node scripts/audit-mobile-owner-boundary-phase0.js | tee /tmp/mobile-owner-boundary-phase0.log
           node scripts/audit-mobile-shell-state.js | tee /tmp/mobile-shell-phase4.log
           node scripts/audit-mobile-network-phase5.js | tee /tmp/mobile-network-phase5.log
           node scripts/audit-mobile-startup-phase5.js | tee /tmp/mobile-startup-phase5.log
@@ -117,6 +118,7 @@ jobs:
             /tmp/mobile-phase0-runtime.log
             /tmp/phase5-performance.log
             /tmp/mobile-density-phase5.log
+            /tmp/mobile-owner-boundary-phase0.log
             /tmp/mobile-shell-phase4.log
             /tmp/mobile-network-phase5.log
             /tmp/mobile-startup-phase5.log
