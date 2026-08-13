@@ -89,6 +89,10 @@ function verifyAddon() {
   if (!source.includes('const MAX_RECENTS = 20')) throw new Error('Phase 8 recents must remain bounded.');
   if (/\bfetch\s*\(|\/api\//.test(source)) throw new Error('Phase 8 personalization addon must not add backend/network reads.');
   if (!css.includes('min-height:44px') || !css.includes('width:44px') || !css.includes('height:44px')) throw new Error('Phase 8 touch targets must remain at least 44px.');
+  if (!css.includes('body #registryViewToolbar.registry-view-toolbar-unified')) throw new Error('Phase 0 mobile-lite boundary must suppress the shared registry view toolbar on phones.');
+  if (!css.includes('body #registryFilterPanel.registry-filter-panel-unified')) throw new Error('Phase 0 mobile-lite boundary must own compact search/count toolbar geometry.');
+  if (!css.includes('.mobile-lite-row>td:not(:has(.mobile-lite-card))')) throw new Error('Phase 0 mobile-lite boundary must suppress shared synthetic table cells.');
+  if (!css.includes('.mobile-lite-row>td:has(.mobile-lite-card)')) throw new Error('Phase 0 mobile-lite boundary must preserve exactly the canonical card cell.');
 }
 
 patchMobileLite();
