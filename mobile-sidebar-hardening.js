@@ -2,7 +2,7 @@
   'use strict';
 
   const MOBILE_BREAKPOINT = 1024;
-  const VERSION = 'mobile-sidebar-deep-audit-v2';
+  const VERSION = 'mobile-sidebar-deep-audit-v3';
   const ROOT = document.documentElement;
   let bodyObserver = null;
   let sidebarObserver = null;
@@ -22,9 +22,30 @@
       @media(max-width:1023px){
         html.medindex-tailadmin .mi-mobile-overlay{
           z-index:80!important;
+          background:rgba(15,23,42,.34)!important;
+          backdrop-filter:blur(1px)!important;
+          -webkit-backdrop-filter:blur(1px)!important;
         }
         html.medindex-tailadmin .mi-sidebar{
           z-index:90!important;
+          width:min(84vw,340px)!important;
+          min-width:min(84vw,340px)!important;
+          max-width:min(84vw,340px)!important;
+          border-right:1px solid rgba(15,23,42,.08)!important;
+          background:#fff!important;
+          box-shadow:18px 0 50px rgba(15,23,42,.16)!important;
+          -webkit-backdrop-filter:none!important;
+          backdrop-filter:none!important;
+        }
+        html.medindex-tailadmin .mi-sidebar-header{
+          min-height:68px!important;
+          flex-basis:68px!important;
+          padding:8px 10px!important;
+          border-bottom:1px solid #eef2f6!important;
+          background:#fff!important;
+        }
+        html.medindex-tailadmin .mi-sidebar-brand{
+          min-width:0!important;
         }
         html.medindex-tailadmin .mi-sidebar-close{
           position:relative!important;
@@ -34,32 +55,75 @@
           min-width:44px!important;
           min-height:44px!important;
           flex:0 0 44px!important;
+          border-radius:12px!important;
+          background:#f6f8fb!important;
           touch-action:manipulation;
+        }
+        html.medindex-tailadmin #appMenu{
+          padding:8px 8px 10px!important;
         }
         html.medindex-tailadmin #appMenu .app-menu-link,
         html.medindex-tailadmin #appMenu .auth-logout,
         html.medindex-tailadmin #appMenu .mi-menu-item{
           min-height:44px!important;
+          border-radius:11px!important;
+        }
+        html.medindex-tailadmin #appMenu .app-menu-link.active,
+        html.medindex-tailadmin #appMenu .mi-menu-item.active{
+          box-shadow:none!important;
         }
         html.medindex-tailadmin .mi-sidebar-scroll{
+          min-height:0!important;
+          padding-top:2px!important;
+          padding-bottom:2px!important;
           -webkit-overflow-scrolling:touch;
           overscroll-behavior:contain;
           scroll-padding-top:8px;
           scroll-padding-bottom:8px;
         }
+        html.medindex-tailadmin .mi-sidebar-footer{
+          min-height:70px!important;
+          flex-basis:auto!important;
+          padding:9px 10px calc(9px + env(safe-area-inset-bottom))!important;
+          border-top:1px solid #eef2f6!important;
+          background:#fff!important;
+        }
+        html.medindex-tailadmin[data-theme="dark"] .mi-sidebar,
+        html.medindex-tailadmin[data-theme="dark"] .mi-sidebar-header,
+        html.medindex-tailadmin[data-theme="dark"] .mi-sidebar-footer{
+          border-color:#263244!important;
+          background:#101828!important;
+        }
+        html.medindex-tailadmin[data-theme="dark"] .mi-sidebar-close{
+          background:#182230!important;
+        }
+      }
+      @media(max-width:430px){
+        html.medindex-tailadmin .mi-sidebar{
+          width:min(86vw,332px)!important;
+          min-width:min(86vw,332px)!important;
+          max-width:min(86vw,332px)!important;
+        }
+      }
+      @media(max-width:359px){
+        html.medindex-tailadmin .mi-sidebar{
+          width:min(88vw,304px)!important;
+          min-width:min(88vw,304px)!important;
+          max-width:min(88vw,304px)!important;
+        }
       }
       @media(max-width:1023px) and (max-height:500px){
         html.medindex-tailadmin .mi-sidebar-header{
-          min-height:64px!important;
-          flex-basis:64px!important;
-          padding-top:8px!important;
-          padding-bottom:8px!important;
+          min-height:58px!important;
+          flex-basis:58px!important;
+          padding-top:6px!important;
+          padding-bottom:6px!important;
         }
         html.medindex-tailadmin .mi-sidebar-footer{
-          min-height:60px!important;
-          flex-basis:60px!important;
-          padding-top:8px!important;
-          padding-bottom:8px!important;
+          min-height:56px!important;
+          flex-basis:auto!important;
+          padding-top:6px!important;
+          padding-bottom:calc(6px + env(safe-area-inset-bottom))!important;
         }
       }
     `;
@@ -101,7 +165,6 @@
       return;
     }
 
-    // Fail-safe only: the canonical shell close button should normally own this path.
     document.body?.classList.remove('mi-sidebar-open');
     document.querySelectorAll('[data-mi-sidebar-toggle]').forEach(button => button.setAttribute('aria-expanded', 'false'));
     sidebar()?.setAttribute('aria-hidden', String(isMobile()));
@@ -169,7 +232,7 @@
 
     if (!event.shiftKey && (!activeInside || active === last)) {
       event.preventDefault();
-      first.focus({ preventScroll:true });
+      last.focus({ preventScroll:true });
     }
   }
 
