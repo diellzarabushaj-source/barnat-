@@ -10,7 +10,29 @@ const runtimePath = path.join(__dirname, '.audit-mobile-shell-state-webkit-runti
 let source = fs.readFileSync(sourcePath, 'utf8');
 
 const legacyScroll = "await page.locator('.mi-main').evaluate(node => { node.scrollTop = node.scrollHeight; });";
-const webkitScroll = "await page.locator('.mi-main').evaluate(node => node.scrollTo({ top:node.scrollHeight, left:0, behavior:'auto' }));";
+const webkitScroll = `const webkitScrollProbe = await page.locator('.mi-main').evaluate(node => {
+      const style = getComputedStyle(node);
+      const before = node.scrollTop;
+      const target = Math.max(0, node.scrollHeight - node.clientHeight);
+      node.scrollTop = target;
+      const afterAssignment = node.scrollTop;
+      node.scrollTo({ top:target, left:0, behavior:'auto' });
+      const afterScrollTo = node.scrollTop;
+      return {
+        before,
+        target,
+        afterAssignment,
+        afterScrollTo,
+        scrollHeight:node.scrollHeight,
+        clientHeight:node.clientHeight,
+        overflowY:style.overflowY,
+        display:style.display,
+        position:style.position,
+        contain:style.contain,
+        inert:Boolean(node.inert),
+      };
+    });
+    console.log('MOBILE_SHELL_SCROLL_PROBE ' + JSON.stringify(webkitScrollProbe));`;
 const legacyGate = "assertCompactShellGeometry(report.geometryAtEnd, 'end-of-list geometry', { lastCardVisible:true });";
 const webkitGate = [
   "assert.ok(report.geometryAtEnd.mainScroll?.scrollTop > 0, 'end-of-list geometry: WebKit did not scroll .mi-main to the final controls.');",
