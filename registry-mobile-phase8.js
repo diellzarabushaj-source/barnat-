@@ -244,6 +244,17 @@
     syncCounts();
   }
 
+  function keepStatusOutOfFlow() {
+    const status = document.getElementById('miOfflineStatus');
+    if (!status) return;
+    status.style.setProperty('position', 'fixed', 'important');
+    status.style.setProperty('top', 'calc(env(safe-area-inset-top) + 64px)', 'important');
+    status.style.setProperty('right', 'max(8px,env(safe-area-inset-right))', 'important');
+    status.style.setProperty('z-index', '1750', 'important');
+    status.style.setProperty('margin', '0', 'important');
+    root.dataset.registryMobileStatusLayout = 'overlay-v1';
+  }
+
   function placeBar(bar) {
     if (!bar) return null;
     const filterBar = document.getElementById('miRegistryMobileFilterBar');
@@ -298,6 +309,7 @@
     if (mode === 'all') decorateRows();
     else renderMode();
     syncControls();
+    keepStatusOutOfFlow();
   }
 
   function install() {
@@ -308,11 +320,17 @@
     ensureBar();
     syncControls();
     onServerRows();
+    keepStatusOutOfFlow();
 
     document.addEventListener('click', handleFavoriteClick, true);
     window.addEventListener('medindex:mobile-lite-ready', onServerRows);
     window.addEventListener('medindex:registry-mobile-phase3-ready', () => placeBar(document.getElementById('miRegistryPersonalizationBar')));
-    window.addEventListener('medindex:tailadmin-ready', () => placeBar(document.getElementById('miRegistryPersonalizationBar')));
+    window.addEventListener('medindex:tailadmin-ready', () => {
+      placeBar(document.getElementById('miRegistryPersonalizationBar'));
+      keepStatusOutOfFlow();
+    });
+    window.addEventListener('medindex:offline-runtime-ready', keepStatusOutOfFlow);
+    window.addEventListener('medindex:offline-status', keepStatusOutOfFlow);
     window.addEventListener('medindex:mobile-lite-detail-opened', event => saveRecent(event.detail?.row));
     window.addEventListener('medindex:favorites-changed', event => {
       if (event.detail?.source === 'mobile-lite') return;
