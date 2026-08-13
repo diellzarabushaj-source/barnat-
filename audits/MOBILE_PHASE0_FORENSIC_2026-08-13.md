@@ -11,17 +11,17 @@ No visual redesign is implemented in this phase. The goal is to identify the exa
 
 ### P0-RACE-001 — mobile-lite can lose ownership after a fixed timeout
 
-`registry-runtime-loader.js` gives mobile-lite a 5 second grace window. If `data-registry-mobile-lite-ready="1"` is not present in that window, it starts the full registry runtime with reason `mobile-lite-timeout`.
+`registry-runtime-loader.js` originally gave mobile-lite a 5 second grace window. If `data-registry-mobile-lite-ready="1"` was not present in that window, it started the full registry runtime with reason `mobile-lite-timeout`.
 
-The full runtime (`app-performance.js`) can then load `/api/registry`, hydrate the complete registry data path and load the generated full registry runtime.
+The full runtime (`app-performance.js`) could then load `/api/registry`, hydrate the complete registry data path and load the generated full registry runtime.
 
-Consequence: on a cold/slow mobile request, the lightweight list and the full registry path can both become active. This is a credible root cause for a compact mobile list turning into a large desktop/full-table-derived card layout.
+Consequence: on a cold/slow mobile request, the lightweight list and the full registry path could both become active. This is a credible root cause for a compact mobile list turning into a large desktop/full-table-derived card layout.
 
-### P0-OWNER-002 — feature clicks and initial load failure can hand the phone to the full registry
+### P0-OWNER-002 — feature clicks and initial load failure could hand the phone to the full registry
 
-`registry-mobile-lite.js` calls `requestFullRegistry()` for advanced controls and on initial mobile-lite load error. The current owner is therefore not guaranteed to remain mobile-lite for the whole mobile session.
+`registry-mobile-lite.js` originally called `requestFullRegistry()` for advanced controls, full-detail escalation and on initial mobile-lite load error.
 
-Consequence: renderer ownership can change mid-session. When that happens, full-registry DOM can be subjected to mobile CSS layers that were written for the lightweight DOM.
+Consequence: renderer ownership could change mid-session. When that happened, full-registry DOM could be subjected to mobile CSS layers that were written for the lightweight DOM.
 
 ## High findings
 
@@ -93,11 +93,17 @@ Run:
 node scripts/audit-mobile-phase0.js
 ```
 
-The command prints machine-readable JSON with the current Phase 0 source/build findings and metrics. It does not modify production behavior.
+For the ownership gate:
+
+```bash
+node scripts/audit-mobile-phase0.js --assert-phase1-ready
+```
+
+The command prints machine-readable JSON with current findings, ownership invariants and metrics.
 
 ## Post-build runtime forensic probe
 
-A second diagnostic now reproduces the exact startup ownership race against the post-`build:runtime` artifact using a 390×844 mobile viewport and an intentionally delayed lightweight registry response.
+A second diagnostic reproduces startup ownership against the post-`build:runtime` artifact using a 390×844 mobile viewport and an intentionally delayed lightweight registry response.
 
 Run the neutral probe:
 
@@ -105,10 +111,16 @@ Run the neutral probe:
 node scripts/audit-mobile-phase0-runtime.js
 ```
 
-To prove the current bug is still reproducible before Phase 1:
+Historical reproduction mode for the pre-fix architecture:
 
 ```bash
 node scripts/audit-mobile-phase0-runtime.js --expect-current-race
+```
+
+Regression mode for the new ownership architecture:
+
+```bash
+node scripts/audit-mobile-phase0-runtime.js --assert-single-owner
 ```
 
 The probe records:
@@ -119,12 +131,18 @@ The probe records:
 - `/api/drug-search` and `/api/registry` requests;
 - final mobile-lite/runtime datasets and first-row/card ownership.
 
-The delayed `registry-page` response defaults to 5600 ms, deliberately beyond the current 5000 ms mobile-lite grace period. No production API, database, Neon data, or visual behavior is changed by the probe.
+The delayed `registry-page` response defaults to 5600 ms. No production API, database, Neon data, or clinical data is modified by the probe.
 
-The same probe is already prepared as the Phase 1 regression gate. After the ownership fix, run:
+## Phase 1 ownership checkpoint — implemented on main
 
-```bash
-node scripts/audit-mobile-phase0-runtime.js --assert-single-owner
-```
+The first architectural Phase 1 checkpoint is now implemented:
 
-That mode fails if the timeout starts the full runtime, if `/api/registry` is requested during normal delayed mobile startup, or if mobile-lite and the full registry become active in the same startup.
+- the 5-second `mobile-lite-timeout` takeover was removed;
+- a 12-second mobile stall watchdog now emits `medindex:mobile-lite-stalled` without loading the full registry;
+- nonfatal mobile requests for the full registry are blocked by `registry-runtime-loader`;
+- initial lightweight API failure remains in the mobile renderer and shows retry/recovery instead of automatically changing renderer;
+- prescription navigation uses `/recetat.html` directly on mobile rather than waking the full registry;
+- the old full-detail escalation from the drug detail sheet was removed because Phase 4 already loads targeted clinical data;
+- full runtime transition is retained only for explicit fatal recovery or a viewport transition to desktop.
+
+The remaining high-priority visual defect is `P0-GEOMETRY-003` (favorite/`Më shumë` collision). That belongs to the next geometry/card phase and should not be solved by adding another global mobile stylesheet.
