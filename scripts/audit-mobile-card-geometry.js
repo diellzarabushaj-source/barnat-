@@ -130,6 +130,7 @@ async function auditWidth(browser, width) {
         return {
           display:value.display,
           position:value.position,
+          width:value.width,
           height:value.height,
           minHeight:value.minHeight,
           maxHeight:value.maxHeight,
@@ -148,10 +149,17 @@ async function auditWidth(browser, width) {
         const open = card.querySelector('.mobile-lite-open');
         const row = card.closest('.mobile-lite-row');
         const cell = card.closest('td');
+        const rowChildren = row ? [...row.children].map(child => ({
+          tag:child.tagName,
+          className:child.className || '',
+          display:getComputedStyle(child).display,
+          rect:rect(child),
+        })) : [];
         return {
           index,
           row:row ? rect(row) : null,
           rowStyle:style(row),
+          rowChildren,
           cell:cell ? rect(cell) : null,
           cellStyle:style(cell),
           card:rect(card),
@@ -180,6 +188,8 @@ async function auditWidth(browser, width) {
       moreInside:card.more ? card.more.left >= card.card.left - 0.5 && card.more.right <= card.card.right + 0.5 && card.more.top >= card.card.top - 0.5 && card.more.bottom <= card.card.bottom + 0.5 : false,
       rowOwnsCard:card.row ? card.row.top <= card.card.top + 0.5 && card.row.bottom >= card.card.bottom - 0.5 && card.row.height >= card.card.height - 0.5 : false,
       cellOwnsCard:card.cell ? card.cell.top <= card.card.top + 0.5 && card.cell.bottom >= card.card.bottom - 0.5 && card.cell.height >= card.card.height - 0.5 : false,
+      cellWidthRatio:card.row && card.cell && card.row.width > 0 ? card.cell.width / card.row.width : 0,
+      cardWidthRatio:card.row && card.card && card.row.width > 0 ? card.card.width / card.row.width : 0,
     }));
 
     const report = {
@@ -191,10 +201,12 @@ async function auditWidth(browser, width) {
       tbodyStyle:result.tbodyStyle,
       minCardHeight:Math.min(...normalized.map(card => card.card.height)),
       maxCardHeight:Math.max(...normalized.map(card => card.card.height)),
+      minCardWidthRatio:Math.min(...normalized.map(card => card.cardWidthRatio)),
       actionOverlapCount:normalized.filter(card => card.favoriteMoreOverlap > 0.5).length,
       adjacentCardOverlapCount:normalized.filter(card => card.adjacentCardOverlap > 0.5).length,
       outsideCardCount:normalized.filter(card => !card.favoriteInside || !card.moreInside).length,
       rowContainmentFailureCount:normalized.filter(card => !card.rowOwnsCard || !card.cellOwnsCard).length,
+      horizontalOwnershipFailureCount:normalized.filter(card => card.cellWidthRatio < 0.95 || card.cardWidthRatio < 0.95).length,
       cards:normalized,
     };
 
@@ -206,6 +218,7 @@ async function auditWidth(browser, width) {
     assert.equal(report.adjacentCardOverlapCount, 0, `${width}px: adjacent medicine cards overlap in the vertical flow.`);
     assert.equal(report.outsideCardCount, 0, `${width}px: an action escaped the card bounds.`);
     assert.equal(report.rowContainmentFailureCount, 0, `${width}px: a table row/cell does not own the full medicine card height.`);
+    assert.equal(report.horizontalOwnershipFailureCount, 0, `${width}px: a medicine card/cell does not own the full mobile row width.`);
     assert.ok(report.minCardHeight >= 96, `${width}px: card touch/content height became too small (${report.minCardHeight}).`);
     assert.ok(report.maxCardHeight <= 150, `${width}px: compact card became too tall (${report.maxCardHeight}).`);
     return report;
