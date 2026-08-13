@@ -65,7 +65,21 @@ assert.equal(fs.existsSync(path.join(ROOT, '.github/workflows/finalize-column-pi
 assert.equal(fs.existsSync(path.join(ROOT, '.github/workflows/harden-column-picker-clamp.yml')), false, 'temporary column picker clamp workflow must be removed');
 assert.match(shell, /MOBILE_SRC = '\/mobile-experience\.js\?v=production-audit-v2'/, 'shell must load the audited mobile runtime');
 assert.match(shell, /loadMobileExperience\(\)/, 'mobile runtime loader is missing');
-assert.match(shell, /warm\(MOBILE_SRC\)/, 'mobile runtime must be warmed for offline reuse');
+assert.match(
+  shell,
+  /const assets = \[[\s\S]*MOBILE_SRC[\s\S]*\];/,
+  'mobile runtime must remain in the shared warm asset set for offline reuse',
+);
+assert.match(
+  shell,
+  /Promise\.all\(assets\.map\(warm\)\)/,
+  'shared runtime warmer must fetch the bounded asset set for offline reuse',
+);
+assert.match(
+  shell,
+  /if \(!isMobileLayout\(\)\) assets\.push\(ATC_NAV_SRC, ATC_SEARCH_SRC\)/,
+  'phone startup must defer ATC enhancement bundles until user intent',
+);
 
 /* Long dosage text is often rendered inside a semantic button; preserve that text while cloning. */
 assert.match(cellPreview, /input,select,textarea,\.drug-actions-trigger/, 'cell preview must keep semantic dosage button text');
@@ -122,4 +136,4 @@ assert.match(workflow, /column-picker-tailwind\.spec\.js/, 'browser workflow mus
   /context\.setOffline\(true\)/,
 ].forEach(pattern => assert.match(browserSpec, pattern, `mobile browser audit missing ${pattern}`));
 
-console.log('Mobile, tablet, touch, safe-area, immutable drug-name, Tailwind population column picker, dosage preview and orientation audit passed.');
+console.log('Mobile, tablet, touch, safe-area, shared warm-set, immutable drug-name, Tailwind population column picker, dosage preview and orientation audit passed.');
