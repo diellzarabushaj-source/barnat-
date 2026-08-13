@@ -254,12 +254,15 @@ async function runBrowserProbe() {
     const firstLiteReady = state.probe?.mobileLiteReady?.[0] || null;
     const stalledObserved = (state.probe?.mobileLiteStalled || []).length > 0;
     const overlappingOwners = Boolean(firstFullStart && firstLiteReady && firstFullStart.atMs < firstLiteReady.atMs);
-    const desktopEnhancerSkipped = state.datasets.firstPageClinical === 'mobile-lite-skipped';
+    const phoneEnhancerSkipped = state.datasets.firstPageClinical === 'phone-skipped';
+    const firstPageOwnerEvents = state.probe?.firstPageAuditReady || [];
+    const phoneOwnerEventObserved = firstPageOwnerEvents.some(item => item.detail?.skipped === true && item.detail?.owner === 'phone-registry');
     const mobileToolbarTagged = String(state.geometry.toolbar?.className || '').split(/\s+/).includes('registry-filter-panel-unified');
     const toolbarHeight = Number(state.geometry.toolbar?.rect?.height || 0);
     const layoutWarnings = [];
     if (toolbarHeight > 110) layoutWarnings.push(`mobile toolbar is ${toolbarHeight}px tall`);
-    if (!desktopEnhancerSkipped) layoutWarnings.push('desktop first-page enhancer did not expose the mobile-lite skip marker');
+    if (!phoneEnhancerSkipped) layoutWarnings.push('phone first-page enhancer did not expose the phone-skipped marker');
+    if (!phoneOwnerEventObserved) layoutWarnings.push('phone first-page ownership event was not observed');
     if (!mobileToolbarTagged) layoutWarnings.push('mobile toolbar is missing registry-filter-panel-unified marker');
 
     const report = {
@@ -271,7 +274,8 @@ async function runBrowserProbe() {
       stalledObserved,
       requestedFullRegistry,
       overlappingOwners,
-      desktopEnhancerSkipped,
+      phoneEnhancerSkipped,
+      phoneOwnerEventObserved,
       mobileToolbarTagged,
       layoutWarnings,
       requests:requests.filter(item => /\/api\/(?:drug-search|registry)/.test(item.path)),
@@ -287,7 +291,8 @@ async function runBrowserProbe() {
       assert.equal(state.mobileLiteActive, true, 'Mobile-lite must remain the active list owner.');
       assert.equal(state.datasets.registryMobileLiteReady, '1', 'Mobile-lite did not reach ready state after the delayed bounded response.');
       assert.equal(state.datasets.registryRuntimeMode, 'mobile-lite', 'Runtime loader did not settle back to mobile-lite mode.');
-      assert.equal(desktopEnhancerSkipped, true, 'Desktop first-page enhancer must stay out of the mobile-lite phone DOM.');
+      assert.equal(phoneEnhancerSkipped, true, 'Desktop/tablet first-page enhancer must stay out of the phone registry DOM.');
+      assert.equal(phoneOwnerEventObserved, true, 'The explicit phone-registry ownership event was not observed.');
       assert.equal(mobileToolbarTagged, true, 'The canonical phone toolbar marker is missing.');
       if (MOBILE_SEARCH_DELAY_MS >= MOBILE_STALL_THRESHOLD_MS + 500) {
         assert.equal(stalledObserved, true, 'Expected the diagnostic stalled event without a full-runtime takeover.');
