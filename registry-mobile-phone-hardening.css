@@ -44,19 +44,21 @@
     display:none!important;
   }
 
-  /* Mobile-lite owns filtering. Target the real toolbar after TailAdmin moves
-     it into .mi-index-content; the old body>.toolbar selector no longer matches
-     after shell mounting. Keep only server search + count in this surface. */
-  html.medindex-tailadmin[data-registry-mobile-lite][data-registry-mobile-phase3] .mi-index-content>.toolbar{
+  /* Mobile-lite owns filtering. TailAdmin may wrap the legacy toolbar one level
+     deeper while mounting the shell, so ownership must not depend on a brittle
+     direct-child selector. Keep only bounded server search + count on phones. */
+  html.medindex-tailadmin[data-registry-mobile-lite][data-registry-mobile-phase3] .mi-index-content .toolbar{
     position:static!important;
     top:auto!important;
     z-index:auto!important;
     display:grid!important;
     grid-template-columns:minmax(0,1fr)!important;
     align-items:stretch!important;
+    align-content:start!important;
     gap:5px!important;
     width:100%!important;
     min-width:0!important;
+    max-width:none!important;
     min-height:0!important;
     height:auto!important;
     margin:0 0 4px!important;
@@ -69,31 +71,34 @@
     -webkit-backdrop-filter:none!important;
   }
 
-  html.medindex-tailadmin[data-registry-mobile-lite][data-registry-mobile-phase3] .mi-index-content>.toolbar :is(#statusFilter,#pageSize,.form-picker,.col-picker,.selection-badge,#protocolsBtn){
+  html.medindex-tailadmin[data-registry-mobile-lite][data-registry-mobile-phase3] .mi-index-content .toolbar :is(#statusFilter,#pageSize,.form-picker,.col-picker,.selection-badge,#protocolsBtn){
     display:none!important;
   }
 
-  html.medindex-tailadmin[data-registry-mobile-lite][data-registry-mobile-phase3] .mi-index-content>.toolbar>#search{
+  html.medindex-tailadmin[data-registry-mobile-lite][data-registry-mobile-phase3] .mi-index-content .toolbar>#search{
     display:block!important;
     grid-column:1/-1!important;
     width:100%!important;
     min-width:0!important;
     height:46px!important;
     min-height:46px!important;
+    max-height:46px!important;
     margin:0!important;
     padding:0 12px!important;
     border-radius:12px!important;
     font-size:16px!important;
   }
 
-  html.medindex-tailadmin[data-registry-mobile-lite][data-registry-mobile-phase3] .mi-index-content>.toolbar>#countBadge{
+  html.medindex-tailadmin[data-registry-mobile-lite][data-registry-mobile-phase3] .mi-index-content .toolbar>#countBadge{
     display:inline-flex!important;
     grid-column:1/-1!important;
     justify-self:start!important;
+    align-items:center!important;
     width:auto!important;
     min-width:0!important;
     min-height:28px!important;
     height:28px!important;
+    max-height:28px!important;
     margin:0!important;
     padding:4px 9px!important;
     font-size:11px!important;
