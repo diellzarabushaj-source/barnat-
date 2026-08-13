@@ -21,11 +21,12 @@
   const text = value => String(value || '').replace(/\s+/g, ' ').trim();
   let initialized = false;
 
-  function mobileLiteOwnsPhone() {
-    return Boolean(
-      window.matchMedia?.('(max-width: 767px)')?.matches
-      && document.documentElement.dataset.registryMobileLite
-    );
+  function phoneOwnsFirstPage() {
+    // The <=767px registry architecture is intentionally phone-specific and
+    // lightweight. This decision must not depend on whether another deferred
+    // script has already stamped its dataset marker; doing so creates an
+    // execution-order race where the desktop enhancer can rewrite phone DOM.
+    return window.matchMedia?.('(max-width: 767px)')?.matches === true;
   }
 
   function labelledGroup(label, icon, className = '') {
@@ -54,15 +55,14 @@
     // The phone registry has its own bounded renderer, filter sheet, bottom nav
     // and targeted detail surface. Rewriting that DOM with the desktop first-page
     // workspace creates duplicate chrome and pushes the first medicine hundreds
-    // of pixels below the fold. Keep this enhancer desktop/tablet-only while the
-    // mobile-lite renderer owns <=767px.
-    if (mobileLiteOwnsPhone()) {
+    // of pixels below the fold. Keep this enhancer unconditionally off <=767px.
+    if (phoneOwnsFirstPage()) {
       const toolbar = document.querySelector('.toolbar');
       if (toolbar) toolbar.classList.add('registry-filter-panel-unified');
       initialized = true;
-      document.documentElement.dataset.firstPageClinical = 'mobile-lite-skipped';
+      document.documentElement.dataset.firstPageClinical = 'phone-skipped';
       window.dispatchEvent(new CustomEvent('medindex:first-page-audit-ready', {
-        detail:{ skipped:true, owner:'mobile-lite' },
+        detail:{ skipped:true, owner:'phone-registry' },
       }));
       return true;
     }
