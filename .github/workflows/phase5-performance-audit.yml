@@ -35,6 +35,12 @@ jobs:
       - name: Build audited runtime
         run: pnpm run build:runtime
 
+      - name: Run Phase 0 static forensic gates
+        shell: bash
+        run: |
+          set -euo pipefail
+          node scripts/audit-mobile-phase0.js --assert-phase1-ready --assert-phase2-ready | tee /tmp/mobile-phase0-static.log
+
       - name: Run mobile static performance contracts
         shell: bash
         run: |
@@ -48,6 +54,16 @@ jobs:
         run: |
           set -euo pipefail
           pnpm exec playwright install --with-deps chromium webkit > /tmp/phase5-playwright-install.log 2>&1 || { tail -200 /tmp/phase5-playwright-install.log; exit 1; }
+
+      - name: Run Phase 0 delayed-start single-owner gate
+        shell: bash
+        env:
+          PHASE0_SKIP_BUILD: '1'
+          PHASE0_MOBILE_SEARCH_DELAY_MS: '13000'
+          PHASE0_MOBILE_STALL_THRESHOLD_MS: '12000'
+        run: |
+          set -euo pipefail
+          node scripts/audit-mobile-phase0-runtime.js --assert-single-owner | tee /tmp/mobile-phase0-runtime.log
 
       - name: Run Phase 5 interaction, Phase 6 version and 4006-row performance gates
         shell: bash
@@ -87,12 +103,14 @@ jobs:
           node scripts/audit-mobile-network-phase5.js | tee /tmp/mobile-network-phase5.log
           node scripts/audit-mobile-startup-phase5.js | tee /tmp/mobile-startup-phase5.log
 
-      - name: Upload Phase 5 and Phase 6 metrics
+      - name: Upload Phase 0, Phase 5 and Phase 6 metrics
         if: always()
         uses: actions/upload-artifact@v4
         with:
-          name: phase5-phase6-performance-metrics
+          name: phase0-phase5-phase6-performance-metrics
           path: |
+            /tmp/mobile-phase0-static.log
+            /tmp/mobile-phase0-runtime.log
             /tmp/phase5-performance.log
             /tmp/mobile-density-phase5.log
             /tmp/mobile-shell-phase4.log
