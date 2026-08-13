@@ -16,7 +16,9 @@ execFileSync(process.execPath, ['--check', path.join(root, 'mobile-accessibility
 assert.match(shell, /MOBILE_A11Y_SRC/);
 assert.match(shell, /mobile-accessibility-hardening\.js\?v=mobile-a11y-deep-audit-v1/);
 assert.match(shell, /data-medindex-mobile-a11y/);
-assert.match(shell, /warm\(MOBILE_A11Y_SRC\)/);
+assert.match(shell, /const assets = \[[\s\S]*MOBILE_A11Y_SRC[\s\S]*\];/, 'mobile accessibility runtime must remain in the warm asset set');
+assert.match(shell, /Promise\.all\(assets\.map\(warm\)\)/, 'runtime warm set must be fetched through the bounded shared warmer');
+assert.match(shell, /if \(!isMobileLayout\(\)\) assets\.push\(ATC_NAV_SRC, ATC_SEARCH_SRC\)/, 'only ATC enhancement bundles should be omitted from phone startup warming');
 assert.match(shell, /ensureCriticalMobileStyles/);
 assert.match(shell, /miCriticalMobileTouchStyles/);
 assert.match(shell, /input:not\(\[type\]\)/, 'critical styles must cover inputs whose text type is implicit');
@@ -47,4 +49,4 @@ assert.match(experience, /visualViewport/);
 assert.match(experience, /orientationchange/);
 assert.match(experience, /--mi-touch-target:44px/);
 
-console.log('Mobile accessibility and critical implicit-input touch-target audit passed.');
+console.log('Mobile accessibility, batched runtime warming and critical implicit-input touch-target audit passed.');
