@@ -30,7 +30,7 @@ const index = read('index.html');
 assert.match(index, /registry-fast-start\.js\?v=registry-fast-start-v2/);
 assert.match(index, /registry-mobile-lite\.js\?v=20260812-2/);
 assert.match(index, /registry-desktop-lite\.js\?v=20260812-1/);
-assert.match(index, /registry-runtime-loader\.js\?v=20260812-8/);
+assert.match(index, /registry-runtime-loader\.js\?v=20260813-9/);
 assert.ok(index.indexOf('registry-fast-start.js') < index.indexOf('registry-mobile-lite.js'), 'fast-start must execute before mobile lightweight startup');
 assert.ok(index.indexOf('registry-mobile-lite.js') < index.indexOf('registry-desktop-lite.js'), 'mobile lightweight path must register before desktop lightweight startup');
 assert.ok(index.indexOf('registry-desktop-lite.js') < index.indexOf('registry-runtime-loader.js'), 'desktop lightweight path must register before the full runtime loader');
