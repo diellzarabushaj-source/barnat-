@@ -78,6 +78,11 @@
     return `${API}?${params.toString()}`;
   }
 
+  function clearKnownTotal() {
+    state.total = null;
+    state.totalPages = null;
+  }
+
   function setBusy(value) {
     state.loading = value;
     document.getElementById('dataTable')?.setAttribute('aria-busy', value ? 'true' : 'false');
@@ -94,6 +99,7 @@
         const next = Math.min(MAX_PAGE_SIZE, Math.max(1, Number(pageSize.value) || DEFAULT_PAGE_SIZE));
         state.pageSize = next;
         state.page = 1;
+        clearKnownTotal();
         void loadPage({ includeTotal:true, scroll:false });
       });
     }
@@ -102,6 +108,7 @@
     status?.addEventListener('change', () => {
       state.status = clean(status.value);
       state.page = 1;
+      clearKnownTotal();
       void loadPage({ includeTotal:true, scroll:false });
     });
 
@@ -109,9 +116,15 @@
     search?.addEventListener('input', () => {
       window.clearTimeout(searchTimer);
       searchTimer = window.setTimeout(() => {
-        state.q = clean(search.value).slice(0, 80);
+        const nextQuery = clean(search.value).slice(0, 80);
+        if (nextQuery.length === 1) return;
+        state.q = nextQuery;
         state.page = 1;
-        void loadPage({ includeTotal:true, scroll:false });
+        clearKnownTotal();
+        // Exact counts are intentionally skipped while typing. The bounded page
+        // request fetches one look-ahead row to determine hasNext, avoiding a
+        // count=exact query on every search term. Clearing search restores total.
+        void loadPage({ includeTotal:nextQuery.length === 0, scroll:false });
       }, SEARCH_DEBOUNCE_MS);
     });
 
@@ -227,7 +240,7 @@
     try {
       const response = await fetch(buildPageUrl({ includeTotal }), {
         credentials:'same-origin',
-        cache:'no-store',
+        cache:'default',
         signal:pageController.signal,
         headers:{ Accept:'application/json' },
       });
@@ -325,7 +338,7 @@
     try {
       const params = new URLSearchParams({ view:'registry-detail', id });
       const response = await fetch(`${API}?${params.toString()}`, {
-        credentials:'same-origin', cache:'no-store', signal:detailController.signal, headers:{ Accept:'application/json' }
+        credentials:'same-origin', cache:'default', signal:detailController.signal, headers:{ Accept:'application/json' }
       });
       if (!response.ok) throw new Error(`Detajet nuk u ngarkuan (${response.status}).`);
       const payload = await response.json();
