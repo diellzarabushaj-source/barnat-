@@ -82,6 +82,7 @@
   }
 
   html.medindex-tailadmin[data-registry-mobile-lite][data-registry-mobile-phase3] .mi-main{
+    scroll-behavior:auto!important;
     scroll-padding-top:70px!important;
     scroll-padding-bottom:82px!important;
   }
