@@ -30,7 +30,7 @@ const index = read('index.html');
 assert.match(index, /registry-fast-start\.js\?v=registry-fast-start-v2/);
 assert.match(index, /registry-mobile-lite\.js\?v=20260812-2/);
 assert.match(index, /registry-desktop-lite\.js\?v=20260812-1/);
-assert.match(index, /registry-runtime-loader\.js\?v=20260813-9/);
+assert.match(index, /registry-runtime-loader\.js\?v=20260813-10/);
 assert.ok(index.indexOf('registry-fast-start.js') < index.indexOf('registry-mobile-lite.js'), 'fast-start must execute before mobile lightweight startup');
 assert.ok(index.indexOf('registry-mobile-lite.js') < index.indexOf('registry-desktop-lite.js'), 'mobile lightweight path must register before desktop lightweight startup');
 assert.ok(index.indexOf('registry-desktop-lite.js') < index.indexOf('registry-runtime-loader.js'), 'desktop lightweight path must register before the full runtime loader');
@@ -59,7 +59,7 @@ assert.match(desktop, /medindex:request-full-registry/, 'advanced desktop featur
 assert.doesNotMatch(desktop, /\/api\/registry(?:\?|['"`])/, 'normal desktop lightweight startup must not request the full registry endpoint');
 
 const loader = read('registry-runtime-loader.js');
-assert.match(loader, /registry-runtime-loader-v9/, 'single-owner mobile and bounded desktop loader version must be current');
+assert.match(loader, /registry-runtime-loader-v10/, 'single-owner mobile and bounded desktop loader version must be current');
 assert.match(loader, /app-performance\.js\?v=20260801-2/, 'loader must retain the current full registry application for explicit fatal/desktop fallback');
 assert.match(loader, /classList\.contains\('auth-ready'\)/, 'registry startup must wait for the authenticated shell');
 assert.match(loader, /MOBILE_LITE_STALL_MS = 12000/, 'mobile lightweight startup needs a diagnostic stall watch without renderer takeover');
@@ -85,4 +85,4 @@ assert.match(part, /if\(existing\)[\s\S]*existing\.addEventListener\('load', fin
 assert.match(part, /script\.async = true/, 'quality fallback runtime must not block document parsing');
 assert.doesNotMatch(part, /existing\.addEventListener\('error', reject/, 'quality bootstrap must not remain rejected or unresolved');
 
-console.log('Registry fast-start, single-owner mobile lightweight v2, desktop lightweight and authenticated loader v9 audit passed.');
+console.log('Registry fast-start, single-owner mobile lightweight v2, desktop lightweight and authenticated loader v10 audit passed.');
