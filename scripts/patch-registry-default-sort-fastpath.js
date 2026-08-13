@@ -27,4 +27,5 @@ if (!source.includes('const sorted = [...rows].sort((a,b) => {')) {
 }
 
 fs.writeFileSync(TARGET, source, 'utf8');
-console.log('Default Nr rendor ascending registry view reuses canonical order before and after filtering without clone+sort work.');
+require('./patch-registry-visible-row-index.js');
+console.log('Default registry ordering and unified-table indexing both stay bounded to the current filtered/visible working set.');
