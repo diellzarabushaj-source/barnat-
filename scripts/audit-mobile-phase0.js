@@ -65,17 +65,26 @@ if (nonfatalErrorHandoff || fullDetailHandoff || liteHandoffReasons.length) {
   ));
 }
 
+const phase2Geometry = {
+  reservedContentRail:/mobile-lite-card:has\(\.mi-mobile-favorite-toggle\) \.mobile-lite-open\s*\{[\s\S]*?padding-right:96px/.test(phase8Css),
+  favoriteTopSlot:/\.mi-mobile-favorite-toggle\s*\{[\s\S]*?position:absolute;[\s\S]*?top:8px;[\s\S]*?right:8px;[\s\S]*?width:44px;[\s\S]*?height:44px/.test(phase8Css),
+  detailBottomSlot:/mobile-lite-card:has\(\.mi-mobile-favorite-toggle\) \.mobile-lite-more\s*\{[\s\S]*?position:absolute;[\s\S]*?right:8px;[\s\S]*?bottom:8px/.test(phase8Css),
+  cardHeightReserve:/mobile-lite-card:has\(\.mi-mobile-favorite-toggle\)\s*\{[\s\S]*?min-height:108px/.test(phase8Css),
+};
+const phase2GeometryReady = Object.values(phase2Geometry).every(Boolean);
+
 if (/grid-template-columns:minmax\(0,1fr\) auto/.test(liteCss)
     && /position:absolute/.test(phase8Css)
     && /right:8px/.test(phase8Css)
-    && /\.mobile-lite-more/.test(designCss)) {
+    && /\.mobile-lite-more/.test(designCss)
+    && !phase2GeometryReady) {
   findings.push(finding(
     'P0-GEOMETRY-003',
     'high',
     'Favorite control can occupy the same right-side geometry as “Më shumë”',
-    'The base card uses a 1fr/auto grid while Phase 8 places the 44px favorite control absolutely at top/right; the design layer also gives “Më shumë” its own fixed right-side width.',
+    'The base card uses a 1fr/auto grid while the favorite control and detail action do not have independently reserved action slots.',
     'This allows the star and “Më shumë” to overlap on narrow cards, matching the supplied iPhone screenshot.',
-    'Phase 2 must use one explicit action column/row and forbid absolute controls from occupying another action hitbox.'
+    'Phase 2 must reserve independent top/bottom action hitboxes and protect the content width.'
   ));
 }
 
@@ -156,10 +165,12 @@ const phase1EntryGateReady = criticalFindings.length === 0 && Object.values(phas
 
 const summary = {
   generatedAt:new Date().toISOString(),
-  scope:'MedIndex mobile Phase 0 forensic source/build audit',
+  scope:'MedIndex mobile Phase 0/1/2 forensic source/build audit',
   noProductionBehaviorChanged:false,
   phase1EntryGateReady,
   phase1Ownership,
+  phase2GeometryReady,
+  phase2Geometry,
   metrics:{
     checkedInMobileRegistryStyles:mobileStylesInIndex.length,
     effectiveProductionMobileRegistryStylesAtLeast:effectiveMobileLayerCount,
@@ -178,4 +189,8 @@ console.log(JSON.stringify(summary, null, 2));
 if (process.argv.includes('--assert-phase1-ready') && !phase1EntryGateReady) {
   console.error('Phase 1 ownership entry gate is not satisfied. Resolve critical ownership/race findings first.');
   process.exitCode = 2;
+}
+if (process.argv.includes('--assert-phase2-ready') && !phase2GeometryReady) {
+  console.error('Phase 2 static geometry gate is not satisfied. Keep favorite/detail actions in independent hitboxes.');
+  process.exitCode = 3;
 }
