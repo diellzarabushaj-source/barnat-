@@ -25,6 +25,33 @@ function patchIndex() {
   write('index.html', source);
 }
 
+function patchMobileOwnerClients() {
+  for (const file of ['registry-mobile-phase3.js', 'registry-mobile-phase8.js']) {
+    let source = read(file);
+    source = source.replace(
+      "window.addEventListener('medindex:request-full-registry'",
+      "window.addEventListener('medindex:full-registry-started'",
+    );
+    if (!source.includes("window.addEventListener('medindex:full-registry-started'")) {
+      throw new Error(`Phase 1 could not bind ${file} cleanup to the accepted full-runtime signal.`);
+    }
+    if (source.includes("window.addEventListener('medindex:request-full-registry'")) {
+      throw new Error(`Phase 1 found a destructive request-level handoff listener in ${file}.`);
+    }
+
+    if (file === 'registry-mobile-phase8.js' && !source.includes("root.dataset.registryMobileLiteState === 'handoff'")) {
+      const anchor = "    window.addEventListener('medindex:tailadmin-ready', () => {\n      placeBar(document.getElementById('miRegistryPersonalizationBar'));";
+      const guarded = "    window.addEventListener('medindex:tailadmin-ready', () => {\n      if (window.MEDINDEX_MOBILE_LITE_ACTIVE !== true || root.dataset.registryMobileLiteState === 'handoff') return;\n      placeBar(document.getElementById('miRegistryPersonalizationBar'));";
+      if (!source.includes(anchor)) {
+        throw new Error('Phase 1 could not guard Phase 8 against remounting after full-runtime handoff.');
+      }
+      source = source.replace(anchor, guarded);
+    }
+
+    write(file, source);
+  }
+}
+
 function verifyLoader() {
   const source = read('registry-runtime-loader.js');
   if (!source.includes(`const VERSION = '${LOADER_VERSION}';`)) {
@@ -42,5 +69,6 @@ function verifyLoader() {
 }
 
 patchIndex();
+patchMobileOwnerClients();
 verifyLoader();
-console.log(`Phase 1 prebuild activated ${LOADER_VERSION} with asset version ${LOADER_ASSET_VERSION} before offline-shell generation.`);
+console.log(`Phase 1 prebuild activated ${LOADER_VERSION} with asset version ${LOADER_ASSET_VERSION}; mobile shell clients now release ownership only after the canonical full runtime starts.`);
