@@ -1,0 +1,71 @@
+name: Mobile WebKit audit
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  mobile-webkit:
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          version: 10.28.0
+          run_install: false
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: pnpm
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile --ignore-scripts
+
+      - name: Build audited runtime once
+        run: pnpm run build:runtime
+
+      - name: Verify mobile audit syntax
+        run: |
+          node --check scripts/audit-mobile-phase0-runtime.js
+          node --check scripts/audit-mobile-card-geometry.js
+          node --check scripts/audit-mobile-shell-state.js
+
+      - name: Install Playwright WebKit
+        shell: bash
+        run: |
+          set -euo pipefail
+          pnpm exec playwright install --with-deps webkit > /tmp/playwright-webkit-install.log 2>&1 || { tail -200 /tmp/playwright-webkit-install.log; exit 1; }
+          echo "Playwright WebKit installed."
+
+      - name: Run iPhone ownership, card and shell gates
+        shell: bash
+        run: |
+          set -euo pipefail
+          : > /tmp/mobile-webkit-audit.log
+          PHASE0_SKIP_BUILD=1 pnpm run audit:mobile-runtime 2>&1 | tee -a /tmp/mobile-webkit-audit.log
+          MOBILE_GEOMETRY_SKIP_BUILD=1 pnpm run audit:mobile-geometry 2>&1 | tee -a /tmp/mobile-webkit-audit.log
+          MOBILE_SHELL_SKIP_BUILD=1 pnpm run audit:mobile-shell 2>&1 | tee -a /tmp/mobile-webkit-audit.log
+
+      - name: Upload WebKit diagnostics
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: mobile-webkit-diagnostics
+          path: |
+            /tmp/mobile-webkit-audit.log
+            /tmp/playwright-webkit-install.log
+            test-results
+            playwright-report
+          if-no-files-found: warn
+          retention-days: 3
