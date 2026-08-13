@@ -118,12 +118,12 @@ test('reduced desktop columns fill the registry surface without a blank gutter o
 
   const adultCell = page.locator('#tbody > tr td[data-registry-column-key="dosage-adult"]').first();
   await expect(adultCell).toBeVisible({ timeout:10000 });
-  await adultCell.evaluate(() => window.MedIndexCellPreview?.refresh?.());
-  const trigger = adultCell.locator('.registry-cell-preview-trigger');
-  await expect(trigger).toBeVisible({ timeout:10000 });
-  await trigger.click();
+  const adultRow = adultCell.locator('xpath=ancestor::tr');
+  await expect.poll(() => adultRow.evaluate(() => typeof window.MedIndexRegistryRows?.toggleRow === 'function'), { timeout:10000 }).toBe(true);
+  expect(await adultRow.evaluate(row => window.MedIndexRegistryRows.toggleRow(row, true))).toBe(true);
+  await expect(adultRow).toHaveAttribute('data-registry-row-expanded', 'true');
 
-  const expandedGeometry = await adultCell.locator('xpath=ancestor::tr').evaluate(row => {
+  const expandedGeometry = await adultRow.evaluate(row => {
     const wrapper = document.getElementById('registryContent');
     const rowRect = row.getBoundingClientRect();
     const wrapperRect = wrapper.getBoundingClientRect();
