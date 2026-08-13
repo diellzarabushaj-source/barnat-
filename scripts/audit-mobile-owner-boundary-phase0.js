@@ -143,6 +143,7 @@ function fixtureRows() {
         viewToolbarDisplay:viewToolbar ? getComputedStyle(viewToolbar).display : 'missing',
         toolbar:rect(toolbar),
         row:rect(row),
+        rowDisplay:row ? getComputedStyle(row).display : 'missing',
         card:cardRect,
         cardCell:rect(cardCell),
         favorite:favoriteRect,
@@ -168,7 +169,8 @@ function fixtureRows() {
     assert.equal(state.visibleDirectCellCount, 1, `Mobile-lite row exposes ${state.visibleDirectCellCount} visible direct cells instead of one canonical card cell.`);
     assert.deepEqual(state.extraVisibleCells, [], 'Shared synthetic cells are visible beside the mobile-lite card.');
     assert.equal(state.previewVisible, false, 'Desktop cell-preview trigger is visible inside a mobile-lite row.');
-    assert.ok(state.row && state.card && Math.abs(state.row.width - state.card.width) <= 4, `Mobile card does not own row width (row=${state.row?.width}, card=${state.card?.width}).`);
+    const horizontalOwner = state.rowDisplay === 'contents' ? state.cardCell : state.row;
+    assert.ok(horizontalOwner && state.card && Math.abs(horizontalOwner.width - state.card.width) <= 4, `Mobile card does not own the visible row flow width (owner=${horizontalOwner?.width}, card=${state.card?.width}, rowDisplay=${state.rowDisplay}).`);
 
     // Phase 2 screenshot-regression gates: both actions must remain real 44px
     // touch targets, stay inside the compact card and never intersect.
