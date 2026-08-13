@@ -18,6 +18,26 @@ if (!css.includes(stableCard)) {
   css = css.replace(oldCard, stableCard);
 }
 
+const oldScrollOwner = `  function resolveDetailScrollOwner() {
+    const main = document.querySelector('.mi-main');
+    if (main) {
+      const style = getComputedStyle(main);
+      if (/(auto|scroll|overlay)/.test(style.overflowY) || main.scrollHeight > main.clientHeight) return main;
+    }
+    return document.scrollingElement || document.documentElement;
+  }`;
+
+const stableScrollOwner = `  function resolveDetailScrollOwner() {
+    const main = document.querySelector('.mi-main');
+    if (main) return main;
+    return document.scrollingElement || document.documentElement;
+  }`;
+
+if (!js.includes(stableScrollOwner)) {
+  if (!js.includes(oldScrollOwner)) throw new Error('Phase 3 could not find the mobile detail scroll-owner resolver.');
+  js = js.replace(oldScrollOwner, stableScrollOwner);
+}
+
 const oldRestore = `    if (session?.trigger?.isConnected) session.trigger.setAttribute('aria-expanded', 'false');
     if (session?.scrollOwner) {
       restoreDetailScrollOwner(session.scrollOwner, session.scrollOwnerStyle);
@@ -57,10 +77,13 @@ if (!css.includes('#tbody .mobile-lite-card:has(.mi-mobile-favorite-toggle) .mob
 if (!css.includes('#tbody .mobile-lite-card:has(.mi-mobile-favorite-toggle) .mobile-lite-more{')) {
   throw new Error('Phase 2 detail action slot contract is missing.');
 }
+if (!js.includes("if (main) return main;\n    return document.scrollingElement || document.documentElement;")) {
+  throw new Error('Phase 3 canonical mobile scroll-owner contract is missing.');
+}
 if (!js.includes("session.trigger.focus({ preventScroll:true });\n        if (session.scrollOwner) setOwnerScrollTop(session.scrollOwner, session.scrollTop);")) {
   throw new Error('Phase 3 focus-before-final-scroll restoration is missing.');
 }
 
 fs.writeFileSync(cssFile, css, 'utf8');
 fs.writeFileSync(jsFile, js, 'utf8');
-console.log('Phase 2/3 mobile card and detail stability passed: 108px action reserve plus focus-safe exact scroll restoration.');
+console.log('Phase 2/3 mobile card and detail stability passed: 108px action reserve, canonical .mi-main scroll ownership and exact focus-safe restoration.');
