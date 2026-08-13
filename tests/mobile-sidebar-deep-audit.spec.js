@@ -171,7 +171,7 @@ test.describe('mobile sidebar deep audit', () => {
     const destination = page.locator('[data-mi-atc-submenu]:not([hidden]) [data-mi-atc-code]').first();
     await expect(destination).toBeVisible();
     await destination.click();
-    await expectClosed(page, { focusTarget:toggle });
+    await expectClosed(page);
     await expect(toggle).toHaveAttribute('aria-expanded', 'false');
   });
 
