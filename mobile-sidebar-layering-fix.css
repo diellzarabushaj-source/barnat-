@@ -1,0 +1,13 @@
+@media (max-width:1023px){
+  html.medindex-tailadmin body.mi-sidebar-open .mi-mobile-overlay{
+    -webkit-clip-path:inset(0 0 0 min(340px,calc(100vw - 48px)))!important;
+    clip-path:inset(0 0 0 min(340px,calc(100vw - 48px)))!important;
+  }
+}
+
+@media (max-width:359px){
+  html.medindex-tailadmin body.mi-sidebar-open .mi-mobile-overlay{
+    -webkit-clip-path:inset(0 0 0 min(304px,calc(100vw - 48px)))!important;
+    clip-path:inset(0 0 0 min(304px,calc(100vw - 48px)))!important;
+  }
+}
