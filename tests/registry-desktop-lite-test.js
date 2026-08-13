@@ -28,7 +28,7 @@ for (const file of [
 }
 
 const desktopScript = 'registry-desktop-lite.js?v=20260812-1';
-const loaderScript = 'registry-runtime-loader.js?v=20260813-9';
+const loaderScript = 'registry-runtime-loader.js?v=20260813-10';
 assert(index.includes(desktopScript), 'Desktop lightweight runtime must be present in the registry page.');
 assert(index.includes(loaderScript), 'Single-owner runtime-loader cache bust must be active.');
 assert(index.indexOf(desktopScript) < index.indexOf(loaderScript), 'Desktop lightweight runtime must initialize before the full-runtime loader.');
@@ -57,7 +57,7 @@ assert.doesNotMatch(desktop, /desktop-large-page-size/, '50/100/250/500 page-siz
 assert.doesNotMatch(desktop, /\/api\/registry(?:\?|['"`])/, 'Normal desktop lightweight mode must not call the full registry endpoint.');
 assert.doesNotMatch(desktop, /DRUG_DATA_PARTS/, 'Desktop lightweight mode must not hydrate the compressed full-registry payload.');
 
-assert.match(loader, /const VERSION = 'registry-runtime-loader-v9'/);
+assert.match(loader, /const VERSION = 'registry-runtime-loader-v10'/);
 assert.match(loader, /function desktopLiteCandidate\(\)/);
 assert.match(loader, /desktop-lite-deferred/);
 assert.match(loader, /registryDesktopLiteReady === '1'/);
@@ -88,7 +88,7 @@ assert.match(phase10Patch, /approvedPopulation:approvedPopulationForRegistryNumb
   'Each lightweight registry row must carry its approved population metadata.');
 assert.match(phase10Patch, /'Popullata e aprovuar':clean\(row\.approvedPopulation\)/,
   'Desktop canonical rows must expose approved population to downstream clinical UI.');
-assert.match(phase10Patch, /registry-runtime-loader-v9/, 'Phase 10 build patch must preserve the single-owner v9 loader.');
+assert.match(phase10Patch, /registry-runtime-loader-v10/, 'Phase 10 build patch must preserve the single-owner v10 loader.');
 assert.doesNotMatch(phase10Patch, /MOBILE_LITE_GRACE_MS = 5000/, 'Phase 10 build patch must not recreate the removed mobile timeout contract.');
 assert.match(marker, /medindex:registry-page-ready/,
   'Clinical row markers must rebuild population state whenever the lightweight page changes.');
