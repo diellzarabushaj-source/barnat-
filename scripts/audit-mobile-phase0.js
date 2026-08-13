@@ -151,13 +151,15 @@ if (/body\.mi-body[\s\S]*position:fixed!important/.test(criticalCss)
   ));
 }
 
-const firstPageGuardIndex = firstPageClinical.indexOf('if (mobileLiteOwnsPhone())');
+const firstPageGuardIndex = firstPageClinical.indexOf('if (phoneOwnsFirstPage())');
 const firstPageRewriteIndex = firstPageClinical.indexOf("const content = document.querySelector('.mi-index-content')");
 const phase0DomOwnership = {
-  mobileLiteGuard:/function mobileLiteOwnsPhone\(\)/.test(firstPageClinical),
+  phoneViewportGuard:/function phoneOwnsFirstPage\(\)[\s\S]*?max-width:\s*767px[\s\S]*?matches === true/.test(firstPageClinical),
   guardRunsBeforeDesktopRewrite:firstPageGuardIndex >= 0 && firstPageRewriteIndex > firstPageGuardIndex,
-  mobileSkipMarker:/dataset\.firstPageClinical = 'mobile-lite-skipped'/.test(firstPageClinical),
+  phoneSkipMarker:/dataset\.firstPageClinical = 'phone-skipped'/.test(firstPageClinical),
+  phoneOwnerEvent:/owner:'phone-registry'/.test(firstPageClinical),
   canonicalToolbarMarker:/toolbar\.classList\.add\('registry-filter-panel-unified'\)/.test(firstPageClinical),
+  noDeferredLiteMarkerDependency:!/function phoneOwnsFirstPage\(\)[\s\S]{0,500}registryMobileLite/.test(firstPageClinical),
 };
 
 if (!Object.values(phase0DomOwnership).every(Boolean)) {
@@ -166,8 +168,8 @@ if (!Object.values(phase0DomOwnership).every(Boolean)) {
     'high',
     'Desktop first-page enhancer can still mutate the phone registry DOM',
     `Phone DOM guard contract: ${JSON.stringify(phase0DomOwnership)}.`,
-    'Desktop toolbar/table enhancements on top of mobile-lite can duplicate controls, inflate the toolbar and push the first medicine below the fold.',
-    'Keep the first-page enhancer desktop/tablet-only while mobile-lite owns <=767px and preserve the canonical mobile toolbar marker.'
+    'Desktop toolbar/table enhancements on top of the phone registry can duplicate controls, inflate the toolbar and push the first medicine below the fold.',
+    'Keep the first-page enhancer unconditionally off <=767px, independent of deferred mobile-lite markers, and preserve the canonical phone toolbar marker.'
   ));
 }
 
