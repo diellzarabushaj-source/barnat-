@@ -8,6 +8,7 @@
   const MAX_PAGE_SIZE = 50;
   const SEARCH_DEBOUNCE_MS = 250;
   const DETAIL_FOCUSABLE = 'a[href],button:not([disabled]),input:not([disabled]),select:not([disabled]),textarea:not([disabled]),[tabindex]:not([tabindex="-1"])';
+  const DETAIL_SCROLL_LOCK_PROPERTIES = ['overflow-y', 'overscroll-behavior', 'touch-action'];
 
   const media = window.matchMedia?.(MOBILE_QUERY);
   if (!media?.matches) return;
@@ -309,6 +310,27 @@
     }
   }
 
+  function lockDetailScrollOwner(owner) {
+    if (!(owner instanceof HTMLElement)) return null;
+    const snapshot = DETAIL_SCROLL_LOCK_PROPERTIES.map(property => ({
+      property,
+      value:owner.style.getPropertyValue(property),
+      priority:owner.style.getPropertyPriority(property),
+    }));
+    owner.style.setProperty('overflow-y', 'hidden', 'important');
+    owner.style.setProperty('overscroll-behavior', 'none', 'important');
+    owner.style.setProperty('touch-action', 'none', 'important');
+    return snapshot;
+  }
+
+  function restoreDetailScrollOwner(owner, snapshot) {
+    if (!(owner instanceof HTMLElement) || !Array.isArray(snapshot)) return;
+    snapshot.forEach(({ property, value, priority }) => {
+      if (value) owner.style.setProperty(property, value, priority || '');
+      else owner.style.removeProperty(property);
+    });
+  }
+
   function focusableDetailControls(dialog) {
     return [...dialog.querySelectorAll(DETAIL_FOCUSABLE)].filter(node => {
       if (!(node instanceof HTMLElement)) return false;
@@ -379,6 +401,7 @@
 
     if (session?.trigger?.isConnected) session.trigger.setAttribute('aria-expanded', 'false');
     if (session?.scrollOwner) {
+      restoreDetailScrollOwner(session.scrollOwner, session.scrollOwnerStyle);
       setOwnerScrollTop(session.scrollOwner, session.scrollTop);
       requestAnimationFrame(() => setOwnerScrollTop(session.scrollOwner, session.scrollTop));
     }
@@ -407,11 +430,13 @@
 
     if (!dialog.hidden) closeDetail({ restoreFocus:false });
     const scrollOwner = resolveDetailScrollOwner();
+    const scrollTop = Number(scrollOwner?.scrollTop || 0);
     detailSession = {
       id,
       trigger:trigger?.isConnected ? trigger : document.activeElement,
       scrollOwner,
-      scrollTop:Number(scrollOwner?.scrollTop || 0),
+      scrollTop,
+      scrollOwnerStyle:lockDetailScrollOwner(scrollOwner),
     };
     trigger?.setAttribute('aria-expanded', 'true');
     dialog.hidden = false;
