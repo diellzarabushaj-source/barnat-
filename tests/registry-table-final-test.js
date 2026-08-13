@@ -24,7 +24,7 @@ assert.match(index,/registry-unified-table\.js\?v=20260812-population-column-1/,
 assert.match(index,/registry-mobile-lite\.js\?v=20260812-2/,'current phone lightweight registry client must be wired');
 assert.match(index,/registry-mobile-lite\.css\?v=20260812-2/,'current phone lightweight registry stylesheet must be wired');
 assert.match(index,/registry-desktop-lite\.js\?v=20260812-1/,'Phase 10 desktop lightweight registry client must be wired');
-assert.match(index,/registry-runtime-loader\.js\?v=20260813-9/,'single-owner mobile-and-desktop-aware authenticated registry loader must be wired');
+assert.match(index,/registry-runtime-loader\.js\?v=20260813-10/,'single-owner mobile-and-desktop-aware authenticated registry loader must be wired');
 assert.ok(index.indexOf('registry-mobile-lite.js') < index.indexOf('registry-desktop-lite.js'),'mobile lightweight client must register before desktop lightweight startup');
 assert.ok(index.indexOf('registry-desktop-lite.js') < index.indexOf('registry-runtime-loader.js'),'desktop lightweight client must register before the full registry loader');
 assert.ok(index.indexOf('registry-unified-table.css') < index.indexOf('registry-full-text-expansion.css'),'full-row reveal must follow compact unified geometry');
@@ -64,7 +64,7 @@ assert.match(desktop,/medindex:registry-page-ready/,'desktop lightweight page re
 assert.match(desktop,/medindex:request-full-registry/,'advanced desktop actions must retain an explicit full-runtime handoff');
 assert.doesNotMatch(desktop,/\/api\/registry(?:\?|['"`])|DRUG_DATA_PARTS|apirest\.|NEON_DATA_API|VERCEL_OIDC_TOKEN/i,'desktop normal mode must not contain full-registry or direct-Neon access');
 
-assert.match(loader,/registry-runtime-loader-v9/,'loader must expose the single-owner mobile-and-desktop-aware authenticated version');
+assert.match(loader,/registry-runtime-loader-v10/,'loader must expose the single-owner mobile-and-desktop-aware authenticated version');
 assert.match(loader,/app-performance\.js\?v=20260801-2/,'loader must retain the current full registry bootstrap for explicit fatal/desktop handoff');
 assert.match(loader,/classList\.contains\('auth-ready'\)/,'registry startup must wait for authentication');
 assert.match(loader,/MOBILE_LITE_STALL_MS = 12000/,'slow mobile startup must stay observable without handing list ownership away');
@@ -127,4 +127,4 @@ assert.match(fullTextCss,/::-webkit-scrollbar[\s\S]*width:12px!important[\s\S]*h
 assert.match(fullTextCss,/data-theme="dark"[\s\S]*scrollbar-color:/,'dark mode must style the same scroll surface');
 assert.doesNotMatch(fullTextCss,/https?:\/\//,'full-row text and scroll styles must not load third-party assets');
 
-console.log('Single-controller registry table, mobile lightweight v2 single-owner loader v9, desktop lightweight Phase 10, full-row reveal and explicit fatal/desktop full-runtime handoff audit passed.');
+console.log('Single-controller registry table, mobile lightweight v2 single-owner loader v10, desktop lightweight Phase 10, full-row reveal and explicit fatal/desktop full-runtime handoff audit passed.');
