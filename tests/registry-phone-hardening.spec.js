@@ -41,13 +41,13 @@ test.describe('registry phone hardening', () => {
       expectInside(report.main, viewport);
       if (report.nav) expectInside(report.nav, viewport);
 
-      const navItems = page.locator('#miRegistryBottomNav :is(a,button)');
-      if (await navItems.count()) {
-        for (let index = 0; index < await navItems.count(); index += 1) {
-          const box = await navItems.nth(index).boundingBox();
-          expect(box.width).toBeGreaterThanOrEqual(43.5);
-          expect(box.height).toBeGreaterThanOrEqual(43.5);
-        }
+      const navItems = page.locator('#miRegistryBottomNav :is(a,button):visible');
+      const navItemCount = await navItems.count();
+      for (let index = 0; index < navItemCount; index += 1) {
+        const box = await navItems.nth(index).boundingBox();
+        expect(box).not.toBeNull();
+        expect(box.width).toBeGreaterThanOrEqual(43.5);
+        expect(box.height).toBeGreaterThanOrEqual(43.5);
       }
 
       await page.evaluate(() => {
