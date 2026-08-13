@@ -52,6 +52,22 @@ function patchMobileOwnerClients() {
   }
 }
 
+function normalizeMobileLitePublicApi() {
+  let source = read('registry-mobile-lite.js');
+  const extended = `    version:VERSION,\n    reload:() => loadPage({ includeTotal:true, scroll:false }),\n    handoff:requestFullRegistry,\n    closeDetail,\n    getState:() => ({ ...state }),`;
+  const compatible = `    version:VERSION,\n    reload:() => loadPage({ includeTotal:true, scroll:false }),\n    handoff:requestFullRegistry,\n    getState:() => ({ ...state }),\n    closeDetail,`;
+
+  if (source.includes(extended)) {
+    source = source.replace(extended, compatible);
+    write('registry-mobile-lite.js', source);
+  }
+
+  const expected = `    version:VERSION,\n    reload:() => loadPage({ includeTotal:true, scroll:false }),\n    handoff:requestFullRegistry,\n    getState:() => ({ ...state }),`;
+  if (!source.includes(expected) && !source.includes('    setFilters,\n    getFilters,')) {
+    throw new Error('Phase 1 could not preserve the mobile-lite public API shape required by the downstream Phase 5 filter patch.');
+  }
+}
+
 function verifyLoader() {
   const source = read('registry-runtime-loader.js');
   if (!source.includes(`const VERSION = '${LOADER_VERSION}';`)) {
@@ -70,5 +86,6 @@ function verifyLoader() {
 
 patchIndex();
 patchMobileOwnerClients();
+normalizeMobileLitePublicApi();
 verifyLoader();
-console.log(`Phase 1 prebuild activated ${LOADER_VERSION} with asset version ${LOADER_ASSET_VERSION}; mobile shell clients now release ownership only after the canonical full runtime starts.`);
+console.log(`Phase 1 prebuild activated ${LOADER_VERSION} with asset version ${LOADER_ASSET_VERSION}; mobile shell ownership and downstream public API compatibility are preserved.`);
