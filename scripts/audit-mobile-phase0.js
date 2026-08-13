@@ -29,9 +29,14 @@ const sidebarHardening = read('mobile-sidebar-hardening.js');
 const firstPageClinical = read('first-page-clinical.js');
 const registryUxPhase1 = read('registry-ux-phase1.js');
 const registryUxPhase3 = read('registry-ux-phase3.js');
+const unifiedTable = read('registry-unified-table.js');
+const cellPreview = read('registry-cell-preview.js');
 const vercel = read('vercel.json');
 const packageJson = JSON.parse(read('package.json'));
 const phase8Patch = read('scripts/patch-registry-phase8-personalization.js');
+const ownerBoundaryPatch = exists('scripts/patch-phase0-mobile-owner-boundary.js')
+  ? read('scripts/patch-phase0-mobile-owner-boundary.js')
+  : '';
 
 const mobileStylesInIndex = matchAll(index, /href="([^"]*registry-mobile[^"?]*\.css)[^"]*"/g);
 const registryScriptsInIndex = matchAll(index, /src="([^"]*registry-[^"?]*\.js)[^"]*"/g);
@@ -41,6 +46,7 @@ const legacyGraceMs = Number((loader.match(/const MOBILE_LITE_GRACE_MS = (\d+)/)
 const stallMs = Number((loader.match(/const MOBILE_LITE_STALL_MS = (\d+)/) || [])[1] || 0);
 const desktopGraceMs = Number((loader.match(/const DESKTOP_LITE_GRACE_MS = (\d+)/) || [])[1] || 0);
 const loaderVersion = (loader.match(/const VERSION = '([^']+)'/) || [])[1] || '';
+const buildRuntime = packageJson.scripts?.['build:runtime'] || '';
 
 const findings = [];
 
@@ -178,6 +184,38 @@ if (!Object.values(phase0DomOwnership).every(Boolean)) {
   ));
 }
 
+const unifiedGuardIndex = unifiedTable.indexOf('if (phoneRegistryOwnsViewport())');
+const ensureColumnsIndex = unifiedTable.indexOf('ensureRequiredColumns(header, tbody)');
+const shellFunctionIndex = unifiedTable.indexOf('function ensureShell()');
+const shellGuardIndex = unifiedTable.indexOf('if (phoneRegistryOwnsViewport())', shellFunctionIndex);
+const toolbarBuildIndex = unifiedTable.indexOf('buildToolbar()', shellFunctionIndex);
+const boundaryPatchConfigured = buildRuntime.includes('scripts/patch-phase0-mobile-owner-boundary.js');
+const boundaryPatchContract = ownerBoundaryPatch.includes("const PHONE_OWNER_QUERY = '(max-width: 767px)'")
+  && ownerBoundaryPatch.includes('reconcile phone owner guard')
+  && ownerBoundaryPatch.includes('shell phone owner guard')
+  && ownerBoundaryPatch.includes("medindex:request-full-registry");
+
+const phase0SharedRuntimeBoundary = {
+  composedBoundaryPatchConfigured:boundaryPatchConfigured,
+  composedBoundaryPatchContract:boundaryPatchContract,
+  unifiedPhoneBreakpoint:/const PHONE_OWNER_QUERY = '\(max-width: 767px\)'/.test(unifiedTable) || boundaryPatchContract,
+  unifiedReconcileBeforeSyntheticColumns:(unifiedGuardIndex >= 0 && ensureColumnsIndex > unifiedGuardIndex) || boundaryPatchContract,
+  unifiedShellBeforeToolbar:(shellGuardIndex >= 0 && toolbarBuildIndex > shellGuardIndex) || boundaryPatchContract,
+  explicitFullRegistryRecovery:/medindex:request-full-registry/.test(unifiedTable) || boundaryPatchContract,
+  mobileLiteCellPreviewExcluded:/cell\.closest\('\.mobile-lite-row'\)/.test(cellPreview),
+};
+
+if (!Object.values(phase0SharedRuntimeBoundary).every(Boolean)) {
+  findings.push(finding(
+    'P0-SHARED-010',
+    'critical',
+    'Shared table/runtime enhancements can still mutate mobile-lite rows or chrome',
+    `Shared runtime boundary contract: ${JSON.stringify(phase0SharedRuntimeBoundary)}.`,
+    'The unified table can synthesize dosage/editor cells and rebuild its desktop view toolbar after mobile-lite has rendered, while cell-preview can add desktop expansion controls to mobile cards.',
+    'The composed build must defer unified-table reconcile/shell work on <=767px until explicit handoff and keep cell-preview off mobile-lite rows.'
+  ));
+}
+
 const phase1Ownership = {
   noTimeoutTakeover:!timeoutTakeoverPresent,
   stalledStateDoesNotWakeFullRuntime:stallMs > 0 && /medindex:mobile-lite-stalled/.test(loader),
@@ -192,7 +230,9 @@ const severityRank = { critical:4, high:3, medium:2, low:1 };
 findings.sort((a, b) => severityRank[b.severity] - severityRank[a.severity] || a.id.localeCompare(b.id));
 const criticalFindings = findings.filter(item => item.severity === 'critical');
 const phase1EntryGateReady = criticalFindings.length === 0 && Object.values(phase1Ownership).every(Boolean);
-const phase0EntryGateReady = phase1EntryGateReady && Object.values(phase0DomOwnership).every(Boolean);
+const phase0EntryGateReady = phase1EntryGateReady
+  && Object.values(phase0DomOwnership).every(Boolean)
+  && Object.values(phase0SharedRuntimeBoundary).every(Boolean);
 
 const summary = {
   generatedAt:new Date().toISOString(),
@@ -200,6 +240,7 @@ const summary = {
   sourceAuditOnly:true,
   phase0EntryGateReady,
   phase0DomOwnership,
+  phase0SharedRuntimeBoundary,
   phase1EntryGateReady,
   phase1Ownership,
   phase2GeometryReady,
@@ -214,7 +255,7 @@ const summary = {
     mobileLiteStallWatchMs:stallMs,
     desktopLiteGraceMs:desktopGraceMs,
     registryRuntimeLoaderVersion:loaderVersion,
-    buildRuntimePatchCount:(packageJson.scripts?.['build:runtime']?.match(/node scripts\//g) || []).length,
+    buildRuntimePatchCount:(buildRuntime.match(/node scripts\//g) || []).length,
   },
   findings,
 };
