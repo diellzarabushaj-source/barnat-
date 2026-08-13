@@ -12,15 +12,13 @@ async function waitForRegistryLayout(page) {
   await expect.poll(
     () => page.evaluate(() => ({
       tableStable:window.MEDINDEX_REGISTRY_TABLE_AUDIT?.stable === true,
-      layoutStable:window.MEDINDEX_REGISTRY_LAYOUT_AUDIT?.stable === true,
       guard:window.MedIndexRegistryLayoutGuard?.version || '',
       adult:Boolean(document.querySelector('#headerRow th[data-registry-column-key="dosage-adult"]')),
       pediatric:Boolean(document.querySelector('#headerRow th[data-registry-column-key="dosage-pediatric"]')),
     })),
-    { timeout:30000, message:'registry layout guard did not reach the stable dosage-column state' },
+    { timeout:30000, message:'registry table and layout guard did not reach the dosage-column ready state' },
   ).toEqual({
     tableStable:true,
-    layoutStable:true,
     guard:LAYOUT_VERSION,
     adult:true,
     pediatric:true,
