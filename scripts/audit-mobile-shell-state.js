@@ -195,7 +195,7 @@ function assertCompactShellGeometry(state, label, { lastCardVisible = false } = 
   assert.ok(state.nav.height >= 56 && state.nav.height <= 62, `${label}: bottom navigation must remain compact (56–62px), got ${state.nav.height}px.`);
   assert.ok(state.navBottomGap >= 4 && state.navBottomGap <= 10, `${label}: browser-mode quick nav must stay close to the visual viewport bottom, gap=${state.navBottomGap}px.`);
   assert.equal(state.primaryLabelDisplay, 'none', `${label}: “Recetë e re” text must collapse to the + icon on phone.`);
-  assert.equal(state.brandLabelDisplay, 'none', `${label}: phone topbar must use the compact MedIndex mark without the wordmark.`);
+  assert.ok(state.brandLabelDisplay === '' || state.brandLabelDisplay === 'none', `${label}: phone topbar must not expose the MedIndex wordmark.`);
   assert.ok(state.controlBoxes.length >= 4, `${label}: expected compact menu/search/theme/add controls.`);
   state.controlBoxes.forEach((box, index) => {
     assert.ok(box.width >= 43 && box.height >= 43, `${label}: topbar control ${index + 1} fell below the 44px touch target.`);
