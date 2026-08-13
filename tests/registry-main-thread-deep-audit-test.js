@@ -35,7 +35,7 @@ const api = read('api/drug-search.js');
 
 assert.match(index, /registry-mobile-lite\.js\?v=20260812-2/);
 assert.match(index, /registry-desktop-lite\.js\?v=20260812-1/);
-assert.match(index, /registry-runtime-loader\.js\?v=20260813-9/);
+assert.match(index, /registry-runtime-loader\.js\?v=20260813-10/);
 assert.ok(index.indexOf('registry-mobile-lite.js') < index.indexOf('registry-desktop-lite.js'), 'mobile lightweight path must register before desktop lightweight startup');
 assert.ok(index.indexOf('registry-desktop-lite.js') < index.indexOf('registry-runtime-loader.js'), 'desktop lightweight path must run before the full runtime loader');
 assert.match(index, /registry-unified-table\.js\?v=20260812-population-column-1/);
@@ -69,7 +69,7 @@ assert.match(desktop, /MEDINDEX_REGISTRY_ROWS = canonical/);
 assert.match(desktop, /medindex:request-full-registry/);
 assert.doesNotMatch(desktop, /\/api\/registry(?:\?|['"`])|DRUG_DATA_PARTS|DecompressionStream|Uint8Array\.from\(atob/, 'desktop normal mode must remain page-bounded and must not parse the full registry');
 
-assert.match(runtimeLoader, /registry-runtime-loader-v9/);
+assert.match(runtimeLoader, /registry-runtime-loader-v10/);
 assert.match(runtimeLoader, /app-performance\.js\?v=20260801-2/);
 assert.match(runtimeLoader, /classList\.contains\('auth-ready'\)/);
 assert.match(runtimeLoader, /MOBILE_LITE_STALL_MS = 12000/, 'slow phone startup must remain observable without renderer takeover');
