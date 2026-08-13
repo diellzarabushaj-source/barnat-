@@ -57,6 +57,135 @@
     display:none!important;
   }
 
+  /* Phase 0 ownership boundary. Shared desktop/table runtimes are still loaded
+     for larger layouts and explicit recovery, but they must not contribute
+     visible chrome or additional cells while mobile-lite owns <=767px. These
+     selectors intentionally outrank the professional/unified table rules. */
+  html.medindex-tailadmin[data-mi-page="barnat"][data-registry-mobile-lite][data-registry-mobile-phase8] .mi-index-content>header:not(.registry-overview),
+  html.medindex-tailadmin[data-mi-page="barnat"][data-registry-mobile-lite][data-registry-mobile-phase8] body #registryViewToolbar.registry-view-toolbar-unified,
+  html.medindex-tailadmin[data-mi-page="barnat"][data-registry-mobile-lite][data-registry-mobile-phase8] body .registry-overview,
+  html.medindex-tailadmin[data-mi-page="barnat"][data-registry-mobile-lite][data-registry-mobile-phase8] body .registry-table-bar{
+    display:none!important;
+  }
+
+  html.medindex-tailadmin[data-mi-page="barnat"][data-registry-mobile-lite][data-registry-mobile-phase3][data-registry-mobile-phase8] body #registryFilterPanel.registry-filter-panel-unified,
+  html.medindex-tailadmin[data-mi-page="barnat"][data-registry-mobile-lite][data-registry-mobile-phase3][data-registry-mobile-phase8] .mi-index-content .toolbar{
+    position:static!important;
+    top:auto!important;
+    z-index:auto!important;
+    display:grid!important;
+    grid-template-columns:minmax(0,1fr)!important;
+    align-items:stretch!important;
+    gap:5px!important;
+    width:100%!important;
+    min-width:0!important;
+    min-height:0!important;
+    height:auto!important;
+    margin:0 0 4px!important;
+    padding:0!important;
+    border:0!important;
+    border-radius:0!important;
+    background:transparent!important;
+    box-shadow:none!important;
+    backdrop-filter:none!important;
+    -webkit-backdrop-filter:none!important;
+  }
+
+  html.medindex-tailadmin[data-mi-page="barnat"][data-registry-mobile-lite][data-registry-mobile-phase3][data-registry-mobile-phase8] .mi-index-content .toolbar :is(#statusFilter,#pageSize,.form-picker,.col-picker,.selection-badge,#protocolsBtn,.registry-toolbar-secondary){
+    display:none!important;
+  }
+
+  html.medindex-tailadmin[data-mi-page="barnat"][data-registry-mobile-lite][data-registry-mobile-phase3][data-registry-mobile-phase8] .mi-index-content .toolbar #search{
+    display:block!important;
+    grid-column:1/-1!important;
+    width:100%!important;
+    min-width:0!important;
+    height:46px!important;
+    min-height:46px!important;
+    margin:0!important;
+    padding:0 12px!important;
+    border-radius:12px!important;
+    font-size:16px!important;
+  }
+
+  html.medindex-tailadmin[data-mi-page="barnat"][data-registry-mobile-lite][data-registry-mobile-phase3][data-registry-mobile-phase8] .mi-index-content .toolbar #countBadge{
+    display:inline-flex!important;
+    grid-column:1/-1!important;
+    justify-self:start!important;
+    width:auto!important;
+    min-width:0!important;
+    height:28px!important;
+    min-height:28px!important;
+    margin:0!important;
+    padding:4px 9px!important;
+    font-size:11px!important;
+    line-height:18px!important;
+  }
+
+  html.medindex-tailadmin[data-mi-page="barnat"][data-registry-mobile-lite][data-registry-mobile-phase8] body #registryContent.table-wrap{
+    width:100%!important;
+    max-width:100%!important;
+    overflow:visible!important;
+    border:0!important;
+    border-radius:0!important;
+    background:transparent!important;
+    box-shadow:none!important;
+    scrollbar-gutter:auto!important;
+  }
+
+  html.medindex-tailadmin[data-mi-page="barnat"][data-registry-mobile-lite][data-registry-mobile-phase8] body #dataTable,
+  html.medindex-tailadmin[data-mi-page="barnat"][data-registry-mobile-lite][data-registry-mobile-phase8] body #dataTable[data-registry-unified-table],
+  html.medindex-tailadmin[data-mi-page="barnat"][data-registry-mobile-lite][data-registry-mobile-phase8] body #dataTable tbody{
+    display:block!important;
+    width:100%!important;
+    min-width:0!important;
+    height:auto!important;
+    background:transparent!important;
+  }
+
+  html.medindex-tailadmin[data-mi-page="barnat"][data-registry-mobile-lite][data-registry-mobile-phase8] body #dataTable tbody{
+    gap:0!important;
+  }
+
+  html.medindex-tailadmin[data-mi-page="barnat"][data-registry-mobile-lite][data-registry-mobile-phase8] body #dataTable .mobile-lite-row{
+    display:block!important;
+    width:100%!important;
+    min-width:0!important;
+    max-width:none!important;
+    height:auto!important;
+    min-height:0!important;
+    max-height:none!important;
+    overflow:visible!important;
+    border:0!important;
+    border-radius:0!important;
+    background:transparent!important;
+    box-shadow:none!important;
+  }
+
+  html.medindex-tailadmin[data-mi-page="barnat"][data-registry-mobile-lite][data-registry-mobile-phase8] body #dataTable .mobile-lite-row>td:not(:has(.mobile-lite-card)){
+    display:none!important;
+  }
+
+  html.medindex-tailadmin[data-mi-page="barnat"][data-registry-mobile-lite][data-registry-mobile-phase8] body #dataTable .mobile-lite-row>td:has(.mobile-lite-card){
+    display:block!important;
+    width:100%!important;
+    min-width:0!important;
+    max-width:none!important;
+    height:auto!important;
+    min-height:0!important;
+    max-height:none!important;
+    padding:0!important;
+    overflow:visible!important;
+    border:0!important;
+    background:transparent!important;
+  }
+
+  html.medindex-tailadmin[data-mi-page="barnat"][data-registry-mobile-lite][data-registry-mobile-phase8] body #dataTable .mobile-lite-row>td:has(.mobile-lite-card)::before,
+  html.medindex-tailadmin[data-mi-page="barnat"][data-registry-mobile-lite][data-registry-mobile-phase8] body #dataTable .mobile-lite-row .registry-cell-preview-trigger{
+    display:none!important;
+    content:none!important;
+  }
+
   /* Phase 2/5 card contract: once actions are absolutely railed, the card no
      longer needs a second grid column. Force the table-derived row/cell/card
      chain to own the full phone width and remove inherited desktop row height. */
