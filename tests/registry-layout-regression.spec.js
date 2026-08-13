@@ -29,15 +29,27 @@ test('reduced desktop columns fill the registry surface without a blank gutter o
   await waitForRegistryLayout(page);
 
   await page.evaluate(() => {
+    const root = document.documentElement;
+    root.classList.remove('hide-registry-dosage-adult', 'hide-registry-dosage-pediatric');
+    root.dataset.registryDoseColumnVisible = 'false';
+
+    document.getElementById('registry-layout-regression-visible-columns')?.remove();
     const style = document.createElement('style');
     style.id = 'registry-layout-regression-visible-columns';
     style.textContent = `
-      #headerRow th[data-registry-column-key]:not([data-registry-column-key="strength"]):not([data-registry-column-key="form"]):not([data-registry-column-key="status"]):not([data-registry-column-key="dosage-adult"]):not([data-registry-column-key="dosage-pediatric"]) {
+      #dataTable :is(th,td)[data-registry-column-key]:not([data-registry-column-key="strength"]):not([data-registry-column-key="form"]):not([data-registry-column-key="status"]):not([data-registry-column-key="dosage-adult"]):not([data-registry-column-key="dosage-pediatric"]) {
         display:none!important;
+      }
+      #dataTable :is(th,td)[data-registry-column-key="strength"],
+      #dataTable :is(th,td)[data-registry-column-key="form"],
+      #dataTable :is(th,td)[data-registry-column-key="status"],
+      #dataTable :is(th,td)[data-registry-column-key="dosage-adult"],
+      #dataTable :is(th,td)[data-registry-column-key="dosage-pediatric"] {
+        display:table-cell!important;
       }
     `;
     document.head.appendChild(style);
-    document.documentElement.dataset.registryDoseColumnVisible = 'false';
+
     const wrapper = document.getElementById('registryContent');
     if (wrapper) wrapper.scrollLeft = 999;
     window.MedIndexRegistryLayoutGuard.refresh();
