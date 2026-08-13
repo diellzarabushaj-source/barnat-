@@ -15,6 +15,10 @@
 
   const clean = value => String(value ?? '').replace(/\s+/g, ' ').trim();
 
+  function phoneRegistryOwnsViewport() {
+    return window.matchMedia?.('(max-width: 767px)')?.matches === true;
+  }
+
   function favoriteCount() {
     try {
       const value = JSON.parse(localStorage.getItem(FAVORITES_KEY) || '[]');
@@ -86,6 +90,9 @@
   }
 
   function workspaceShell() {
+    // The phone has its own local-first favorites/recents/detail surfaces. The
+    // desktop notes workspace must never become another toolbar row on <=767px.
+    if (phoneRegistryOwnsViewport()) return null;
     let shell = document.getElementById('registryPersonalWorkspace');
     if (shell) return shell;
     const toolbar = document.querySelector('.toolbar');
@@ -273,8 +280,8 @@
     renderWorkspacePanel({ entries });
     refreshRows();
     enrichFavoritesBanner(entries.length);
-    document.documentElement.dataset.registryUxPhase3 = VERSION;
-    document.body?.classList.add('registry-ux-phase3-ready');
+    document.documentElement.dataset.registryUxPhase3 = phoneRegistryOwnsViewport() ? 'phone-skipped' : VERSION;
+    document.body?.classList.toggle('registry-ux-phase3-ready', !phoneRegistryOwnsViewport());
   }
 
   function scheduleRefresh() {
