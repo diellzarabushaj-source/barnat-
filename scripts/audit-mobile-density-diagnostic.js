@@ -109,21 +109,39 @@ function rows() {
           tag:node.tagName,
           id:node.id || '',
           className:typeof node.className === 'string' ? node.className : '',
+          text:String(node.textContent || '').replace(/\s+/g, ' ').trim().slice(0,160),
           display:style.display,
           visibility:style.visibility,
           position:style.position,
+          width:style.width,
+          minWidth:style.minWidth,
+          maxWidth:style.maxWidth,
           height:style.height,
           minHeight:style.minHeight,
+          maxHeight:style.maxHeight,
           marginTop:style.marginTop,
+          marginRight:style.marginRight,
           marginBottom:style.marginBottom,
+          marginLeft:style.marginLeft,
           paddingTop:style.paddingTop,
+          paddingRight:style.paddingRight,
           paddingBottom:style.paddingBottom,
+          paddingLeft:style.paddingLeft,
+          gap:style.gap,
           gridTemplateColumns:style.gridTemplateColumns,
+          gridTemplateRows:style.gridTemplateRows,
+          alignItems:style.alignItems,
+          justifyContent:style.justifyContent,
+          overflow:style.overflow,
           rect:rect(node),
         };
       };
       const search = document.getElementById('search');
       const toolbar = search?.closest('.registry-filter-panel-unified,.toolbar');
+      const indexContent = document.querySelector('.mi-index-content');
+      const firstRow = document.querySelector('#tbody .mobile-lite-row');
+      const firstCell = firstRow?.querySelector(':scope > td');
+      const firstCard = firstRow?.querySelector('.mobile-lite-card');
       const flowSelectors = [
         '.mi-content-container',
         '.mi-page-heading',
@@ -139,6 +157,7 @@ function rows() {
         '#dataTable',
         '#tbody',
         '#tbody .mobile-lite-row',
+        '#tbody .mobile-lite-row>td',
         '#tbody .mobile-lite-card',
         '#pagination',
       ];
@@ -149,6 +168,15 @@ function rows() {
         bodyClass:document.body.className,
         toolbar:describe(toolbar),
         toolbarChildren:toolbar ? [...toolbar.children].map(describe) : [],
+        indexDirectChildren:indexContent ? [...indexContent.children].map(describe) : [],
+        rowGeometry:{
+          row:describe(firstRow),
+          cell:describe(firstCell),
+          card:describe(firstCard),
+          rowChildren:firstRow ? [...firstRow.children].map(describe) : [],
+          cellChildren:firstCell ? [...firstCell.children].map(describe) : [],
+          cardChildren:firstCard ? [...firstCard.children].map(describe) : [],
+        },
         flow:flowSelectors.map(selector => ({ selector, node:describe(document.querySelector(selector)) })),
       };
     });
