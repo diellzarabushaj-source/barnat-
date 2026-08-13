@@ -85,6 +85,37 @@ html.medindex-tailadmin #dataTable .registry-dose-calculator-column .dose-calcul
     display:block!important;
     overflow:hidden!important;
   }
+
+  /* WebKit can keep a blockified <tr> at the 44px touch-row baseline even
+     when its <td> and medicine card are taller. While mobile-lite owns the
+     registry, make each row a flex formatting context so its intrinsic height
+     is derived from the actual card (including wrapped medicine names). */
+  html.medindex-tailadmin[data-mi-page="barnat"][data-registry-mobile-lite] #dataTable tbody>tr.mobile-lite-row{
+    display:flex!important;
+    align-items:stretch!important;
+    width:100%!important;
+    min-width:0!important;
+    max-width:100%!important;
+    height:auto!important;
+    min-height:108px!important;
+    max-height:none!important;
+    overflow:visible!important;
+  }
+  html.medindex-tailadmin[data-mi-page="barnat"][data-registry-mobile-lite] #dataTable tbody>tr.mobile-lite-row>td{
+    display:block!important;
+    flex:1 1 auto!important;
+    align-self:stretch!important;
+    width:100%!important;
+    min-width:0!important;
+    max-width:100%!important;
+    height:auto!important;
+    min-height:108px!important;
+    max-height:none!important;
+    padding:0!important;
+    overflow:visible!important;
+    box-sizing:border-box!important;
+  }
+
   html.medindex-tailadmin[data-mi-page="barnat"] #dataTable tbody>tr>td[data-registry-column-key]{
     width:100%!important;
     max-width:100%!important;
