@@ -89,4 +89,5 @@ patchMobileOwnerClients();
 normalizeMobileLitePublicApi();
 verifyLoader();
 require('./patch-registry-default-sort-fastpath.js');
+require('./patch-registry-filter-single-pass.js');
 console.log(`Phase 1 prebuild activated ${LOADER_VERSION} with asset version ${LOADER_ASSET_VERSION}; mobile shell ownership and downstream public API compatibility are preserved.`);
