@@ -20,15 +20,41 @@
   let sheet = null;
   let lastFocus = null;
   let installed = false;
+  let bodyClassObserver = null;
 
   function mobileLiteActive() {
     return window.MEDINDEX_MOBILE_LITE_ACTIVE === true && root.dataset.registryMobileLiteState !== 'handoff';
+  }
+
+  function modalSurfaceOpen() {
+    const body = document.body;
+    if (!body) return false;
+    return [
+      'mi-sidebar-open',
+      'mi-mobile-search-open',
+      'mi-registry-filter-open',
+      'mobile-lite-detail-open',
+    ].some(className => body.classList.contains(className));
+  }
+
+  function bottomNavBlocked() {
+    return modalSurfaceOpen() || root.dataset.miKeyboardOpen === 'true';
+  }
+
+  function syncBottomNavAvailability() {
+    const nav = document.getElementById('miRegistryBottomNav');
+    if (!nav) return;
+    const blocked = bottomNavBlocked();
+    nav.inert = blocked;
+    nav.dataset.miRegistryNavBlocked = String(blocked);
+    nav.setAttribute('aria-hidden', String(blocked));
   }
 
   function focusRegistrySearch(mode = '') {
     const input = document.getElementById('search');
     if (!input) return;
     closeFilters();
+    window.MedIndexMobileExperience?.closeSearch?.();
     if (mode === 'atc') input.placeholder = 'Kërko ATC, p.sh. N02…';
     else if (mode === 'form') input.placeholder = 'Kërko formën, p.sh. tablet…';
     else input.placeholder = 'Kërko emrin, substancën, klasën, përdorimin, ATC...';
@@ -47,6 +73,8 @@
   }
 
   function openMoreMenu() {
+    closeFilters();
+    window.MedIndexMobileExperience?.closeSearch?.();
     const toggle = document.querySelector('[data-mi-sidebar-toggle]');
     if (toggle) {
       toggle.click();
@@ -57,7 +85,10 @@
 
   function buildBottomNav() {
     let nav = document.getElementById('miRegistryBottomNav');
-    if (nav) return nav;
+    if (nav) {
+      syncBottomNavAvailability();
+      return nav;
+    }
     nav = document.createElement('nav');
     nav.id = 'miRegistryBottomNav';
     nav.className = 'mi-registry-bottom-nav';
@@ -72,6 +103,7 @@
     nav.querySelector('[data-mi-registry-nav="home"]')?.addEventListener('click', scrollRegistryTop);
     nav.querySelector('[data-mi-registry-nav="search"]')?.addEventListener('click', () => focusRegistrySearch());
     nav.querySelector('[data-mi-registry-nav="more"]')?.addEventListener('click', openMoreMenu);
+    syncBottomNavAvailability();
     return nav;
   }
 
@@ -176,11 +208,16 @@
 
   function openFilters(event) {
     if (!mobileLiteActive()) return;
+    window.MedIndexMobileExperience?.closeSearch?.();
+    if (document.body?.classList.contains('mi-sidebar-open')) {
+      document.querySelector('[data-mi-sidebar-close]')?.click();
+    }
     lastFocus = event?.currentTarget || document.activeElement;
     syncSheetValues();
     const dialog = ensureSheet();
     dialog.hidden = false;
     document.body.classList.add('mi-registry-filter-open');
+    syncBottomNavAvailability();
     requestAnimationFrame(() => dialog.querySelector('#miPhase3Status')?.focus({ preventScroll:true }));
   }
 
@@ -189,6 +226,7 @@
     const wasOpen = !sheet.hidden;
     sheet.hidden = true;
     document.body.classList.remove('mi-registry-filter-open');
+    syncBottomNavAvailability();
     if (wasOpen && lastFocus?.isConnected) lastFocus.focus({ preventScroll:true });
   }
 
@@ -230,8 +268,19 @@
       if (event.target?.id === 'statusFilter' || event.target?.id === 'pageSize') syncFilterBadge();
     }, true);
     window.addEventListener('medindex:mobile-lite-ready', syncFilterBadge);
+    window.addEventListener('medindex:mobile-keyboard-change', syncBottomNavAvailability);
+    window.addEventListener('medindex:mobile-search-opened', syncBottomNavAvailability);
+    window.addEventListener('medindex:mobile-search-closed', syncBottomNavAvailability);
+
+    if (!bodyClassObserver && document.body) {
+      bodyClassObserver = new MutationObserver(syncBottomNavAvailability);
+      bodyClassObserver.observe(document.body, { attributes:true, attributeFilter:['class'] });
+    }
+
     window.addEventListener('medindex:request-full-registry', () => {
       closeFilters();
+      bodyClassObserver?.disconnect();
+      bodyClassObserver = null;
       document.getElementById('miRegistryBottomNav')?.remove();
       document.getElementById('miRegistryMobileFilterBar')?.remove();
       root.dataset.registryMobilePhase3State = 'handoff';
@@ -246,10 +295,12 @@
     installed = true;
     root.dataset.registryMobilePhase3 = VERSION;
     root.dataset.registryMobilePhase3State = 'ready';
+    root.dataset.registryMobilePhase3ModalPolicy = 'single-surface-v1';
     buildBottomNav();
     buildFilterBar();
     ensureSheet();
     bindStateSync();
+    syncBottomNavAvailability();
     window.dispatchEvent(new CustomEvent('medindex:registry-mobile-phase3-ready', { detail:{ version:VERSION } }));
   }
 
@@ -259,12 +310,23 @@
     window.addEventListener('medindex:tailadmin-ready', () => {
       buildBottomNav();
       buildFilterBar();
+      syncBottomNavAvailability();
     });
   }
+
+  window.MedIndexRegistryMobilePhase3 = Object.freeze({
+    version:VERSION,
+    syncNavigation:syncBottomNavAvailability,
+    openFilters,
+    closeFilters,
+    isNavigationBlocked:bottomNavBlocked,
+  });
 
   media.addEventListener?.('change', event => {
     if (event.matches) return;
     closeFilters();
+    bodyClassObserver?.disconnect();
+    bodyClassObserver = null;
     document.getElementById('miRegistryBottomNav')?.remove();
     document.getElementById('miRegistryMobileFilterBar')?.remove();
   });
