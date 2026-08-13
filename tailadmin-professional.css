@@ -10,3 +10,34 @@
 @import url("registry-dose-clinical-row-markers.css?v=20260812-pediatric-pink-1");
 @import url("mobile-sidebar-layering-fix.css?v=20260813-1");
 @import url("dashboard-typography.css?v=20260812-1");
+
+/* Safari/WebKit: mobile-lite cards can exceed the 44px legacy row baseline.
+   Make the row own the intrinsic height of its card without affecting desktop. */
+@media (max-width:767px){
+  html[data-registry-mobile-lite] #dataTable #tbody>tr.mobile-lite-row{
+    display:flex!important;
+    align-items:stretch!important;
+    width:100%!important;
+    min-width:0!important;
+    max-width:100%!important;
+    height:auto!important;
+    min-height:108px!important;
+    max-height:none!important;
+    overflow:visible!important;
+    box-sizing:border-box!important;
+  }
+  html[data-registry-mobile-lite] #dataTable #tbody>tr.mobile-lite-row>td{
+    display:block!important;
+    flex:1 1 auto!important;
+    align-self:stretch!important;
+    width:100%!important;
+    min-width:0!important;
+    max-width:100%!important;
+    height:auto!important;
+    min-height:108px!important;
+    max-height:none!important;
+    padding:0!important;
+    overflow:visible!important;
+    box-sizing:border-box!important;
+  }
+}
