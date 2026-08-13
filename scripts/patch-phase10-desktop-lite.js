@@ -28,10 +28,10 @@ function patchIndex() {
     source = source.replace(mobilePattern, `${mobileMatch[0]}\n${desktopScript}`);
   }
 
-  source = source.replace(/registry-runtime-loader\.js\?v=20260812-\d+/g, 'registry-runtime-loader.js?v=20260812-8');
+  source = source.replace(/registry-runtime-loader\.js\?v=[^"&]+/g, 'registry-runtime-loader.js?v=20260813-9');
 
   const desktopIndex = source.search(desktopPattern);
-  const loaderIndex = source.indexOf('registry-runtime-loader.js?v=20260812-8');
+  const loaderIndex = source.indexOf('registry-runtime-loader.js?v=20260813-9');
   if (desktopIndex < 0 || loaderIndex < 0 || desktopIndex > loaderIndex) {
     throw new Error('Phase 10 desktop-lite must load before the runtime loader.');
   }
@@ -39,44 +39,39 @@ function patchIndex() {
 }
 
 function patchRuntimeLoader() {
-  let source = read('registry-runtime-loader.js');
-  source = source.replace("const VERSION = 'registry-runtime-loader-v7';", "const VERSION = 'registry-runtime-loader-v8';");
-  source = replaceOnce(
-    source,
-    `  const MOBILE_LITE_GRACE_MS = 5000;\n  const MOBILE_QUERY = '(max-width: 767px)';`,
-    `  const MOBILE_LITE_GRACE_MS = 5000;\n  const DESKTOP_LITE_GRACE_MS = 5000;\n  const MOBILE_QUERY = '(max-width: 767px)';\n  const DESKTOP_QUERY = '(min-width: 768px)';`,
-    'desktop-lite timing constants',
-  );
-  source = replaceOnce(
-    source,
-    `  let mobileGraceTimer = 0;\n\n  const html = document.documentElement;\n  const mobileMedia = window.matchMedia?.(MOBILE_QUERY);`,
-    `  let mobileGraceTimer = 0;\n  let desktopGraceTimer = 0;\n\n  const html = document.documentElement;\n  const mobileMedia = window.matchMedia?.(MOBILE_QUERY);\n  const desktopMedia = window.matchMedia?.(DESKTOP_QUERY);`,
-    'desktop-lite media state',
-  );
-  source = replaceOnce(
-    source,
-    `  function mobileLiteCandidate() {\n    return Boolean(mobileMedia?.matches && html.dataset.registryMobileLite);\n  }`,
-    `  function mobileLiteCandidate() {\n    return Boolean(mobileMedia?.matches && html.dataset.registryMobileLite);\n  }\n\n  function desktopLiteCandidate() {\n    return Boolean(desktopMedia?.matches && html.dataset.registryDesktopLite);\n  }`,
-    'desktop-lite candidate',
-  );
-  source = replaceOnce(
-    source,
-    `    window.clearTimeout(mobileGraceTimer);\n    html.dataset.registryRuntimeMode = 'full';`,
-    `    window.clearTimeout(mobileGraceTimer);\n    window.clearTimeout(desktopGraceTimer);\n    html.dataset.registryRuntimeMode = 'full';`,
-    'desktop-lite full-runtime timer cleanup',
-  );
-  source = replaceOnce(
-    source,
-    `  function onAuthenticated() {\n    if (mobileLiteCandidate()) {\n      deferForMobileLite();\n      return;\n    }\n    scheduleRuntime('desktop-or-legacy');\n  }`,
-    `  function deferForDesktopLite() {\n    html.dataset.registryRuntimeMode = 'desktop-lite-deferred';\n    window.clearTimeout(desktopGraceTimer);\n    desktopGraceTimer = window.setTimeout(() => {\n      if (html.dataset.registryDesktopLiteReady === '1') return;\n      scheduleRuntime('desktop-lite-timeout');\n    }, DESKTOP_LITE_GRACE_MS);\n  }\n\n  function onAuthenticated() {\n    if (mobileLiteCandidate()) {\n      deferForMobileLite();\n      return;\n    }\n    if (desktopLiteCandidate()) {\n      deferForDesktopLite();\n      return;\n    }\n    scheduleRuntime('legacy-no-lite');\n  }`,
-    'desktop-lite authenticated routing',
-  );
-  source = source.replace("scheduleRuntime(event.detail?.reason || 'mobile-handoff');", "scheduleRuntime(event.detail?.reason || 'lite-handoff');");
+  const source = read('registry-runtime-loader.js');
 
-  if (!source.includes("const VERSION = 'registry-runtime-loader-v8';")) throw new Error('Phase 10 runtime-loader version is not active.');
-  if (!source.includes('function desktopLiteCandidate()')) throw new Error('Phase 10 desktop-lite candidate is missing.');
-  if (!source.includes("html.dataset.registryRuntimeMode = 'desktop-lite-deferred'")) throw new Error('Phase 10 desktop-lite deferral is missing.');
-  if (source.includes("scheduleRuntime('desktop-or-legacy')")) throw new Error('Phase 10 must not eagerly load the full desktop registry.');
+  // Phase 1 now owns phone renderer safety. Phase 10 must verify that contract,
+  // not recreate the old v8 5-second mobile timeout implementation.
+  if (!source.includes("const VERSION = 'registry-runtime-loader-v9';")) {
+    throw new Error('Phase 10 requires the single-owner registry-runtime-loader-v9 contract.');
+  }
+  if (!source.includes('function desktopLiteCandidate()')) {
+    throw new Error('Phase 10 desktop-lite candidate is missing.');
+  }
+  if (!source.includes('const DESKTOP_LITE_GRACE_MS = 5000;')) {
+    throw new Error('Phase 10 desktop-lite fallback timing is missing.');
+  }
+  if (!source.includes("html.dataset.registryRuntimeMode = 'desktop-lite-deferred'")) {
+    throw new Error('Phase 10 desktop-lite deferral is missing.');
+  }
+  if (!source.includes("scheduleRuntime('desktop-lite-timeout')")) {
+    throw new Error('Phase 10 desktop bounded fallback is missing.');
+  }
+  if (!source.includes('MOBILE_LITE_STALL_MS = 12000') || !source.includes('medindex:mobile-lite-stalled')) {
+    throw new Error('Phase 1 mobile stall observability contract is missing.');
+  }
+  if (!source.includes('medindex:mobile-full-registry-blocked') || !source.includes('isExplicitMobileFullRequest')) {
+    throw new Error('Phase 1 mobile single-owner handoff guard is missing.');
+  }
+  if (source.includes("scheduleRuntime('mobile-lite-timeout')")) {
+    throw new Error('Phase 10 must not restore the removed mobile timeout takeover.');
+  }
+  if (source.includes("scheduleRuntime('desktop-or-legacy')")) {
+    throw new Error('Phase 10 must not eagerly load the full desktop registry.');
+  }
+
+  // Deliberately leave the audited loader unchanged.
   write('registry-runtime-loader.js', source);
 }
 
@@ -165,4 +160,4 @@ patchRegistryPopulationMetadata();
 patchDesktopPopulationMetadata();
 patchDosageRuntime();
 verifyPopulationMarker();
-console.log('Phase 10 desktop lightweight registry, inline approved population, deferred full runtime and page-aware targeted dosage patch passed.');
+console.log('Phase 10 desktop lightweight registry, inline approved population, v9 single-owner mobile loader, deferred full runtime and page-aware targeted dosage patch passed.');
