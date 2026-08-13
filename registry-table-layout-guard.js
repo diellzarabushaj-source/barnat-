@@ -5,6 +5,7 @@
   const ROOT = document.documentElement;
   const MOBILE_BREAKPOINT = 760;
   const TOLERANCE_PX = 2;
+  const VISIBILITY_STYLE_ID = 'registry-layout-body-visibility';
   const REMOVED_KEYS = new Set(['clinical-status', 'clinical-action', 'personal-note']);
   const NEVER_FLEX = new Set([
     'select', 'number', 'dose-calculator', 'strength', 'status', 'atc', 'pdid',
@@ -109,6 +110,31 @@
     };
   }
 
+  function visibilityStyle() {
+    let style = document.getElementById(VISIBILITY_STYLE_ID);
+    if (style) return style;
+    style = document.createElement('style');
+    style.id = VISIBILITY_STYLE_ID;
+    style.dataset.registryLayoutGuard = VERSION;
+    document.head.appendChild(style);
+    return style;
+  }
+
+  function syncBodyColumnVisibility(hiddenKeys) {
+    const style = visibilityStyle();
+    const rules = [...hiddenKeys]
+      .filter(Boolean)
+      .sort()
+      .map(key => `#dataTable tbody td[data-registry-column-key="${escapeSelector(key)}"]{display:none!important}`)
+      .join('\n');
+    if (style.textContent !== rules) style.textContent = rules;
+  }
+
+  function clearBodyColumnVisibility() {
+    const style = document.getElementById(VISIBILITY_STYLE_ID);
+    if (style?.textContent) style.textContent = '';
+  }
+
   function publishAudit(audit) {
     window.MEDINDEX_REGISTRY_LAYOUT_AUDIT = audit;
     ROOT.dataset.registryLayoutGuard = VERSION;
@@ -116,6 +142,7 @@
   }
 
   function resetForMobile(table, wrapper) {
+    clearBodyColumnVisibility();
     table.style.removeProperty('--registry-unified-width');
     table.style.removeProperty('width');
     table.style.removeProperty('min-width');
@@ -227,6 +254,7 @@
     if (!group) return;
 
     const visibleRecords = [];
+    const hiddenKeys = new Set();
     let hiddenColumns = 0;
 
     group.querySelectorAll(':scope > col[data-registry-column-key]').forEach(col => {
@@ -236,13 +264,17 @@
 
       if (show) {
         col.style.removeProperty('display');
+        col.style.removeProperty('visibility');
         visibleRecords.push({ col, key, baseWidth, width:baseWidth });
       } else {
         col.style.setProperty('display', 'none', 'important');
         col.style.setProperty('width', '0px', 'important');
+        hiddenKeys.add(key);
         hiddenColumns += 1;
       }
     });
+
+    syncBodyColumnVisibility(hiddenKeys);
 
     const wrapperWidth = Math.max(0, Math.round(wrapper.clientWidth || 0));
     const fit = fitVisibleColumns(visibleRecords, wrapperWidth);
