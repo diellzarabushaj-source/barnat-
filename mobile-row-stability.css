@@ -1,10 +1,14 @@
 /* Mobile-lite row geometry must be present in the same frame the row is rendered.
    Waiting for a later root readiness marker causes a visible 44px -> card-height
-   jump and measurable post-ready CLS on phones. */
-@media (max-width:760px){
+   jump and measurable post-ready CLS on phones.
+
+   WebKit must also be kept out of table/flex column sizing here: the mobile-lite
+   renderer owns exactly one canonical cell per medicine. Any later legacy or
+   synthetic cells/pseudo-elements are not part of the phone list and must not
+   split the available width or the row height. */
+@media (max-width:767px){
   html.medindex-tailadmin[data-mi-page="barnat"] #dataTable tbody>tr.mobile-lite-row{
-    display:flex!important;
-    align-items:stretch!important;
+    display:block!important;
     width:100%!important;
     min-width:0!important;
     max-width:100%!important;
@@ -15,18 +19,33 @@
     box-sizing:border-box!important;
   }
 
+  html.medindex-tailadmin[data-mi-page="barnat"] #dataTable tbody>tr.mobile-lite-row::before,
+  html.medindex-tailadmin[data-mi-page="barnat"] #dataTable tbody>tr.mobile-lite-row::after{
+    content:none!important;
+    display:none!important;
+  }
+
   html.medindex-tailadmin[data-mi-page="barnat"] #dataTable tbody>tr.mobile-lite-row>td{
+    display:none!important;
+  }
+
+  html.medindex-tailadmin[data-mi-page="barnat"] #dataTable tbody>tr.mobile-lite-row>td:first-child{
     display:block!important;
-    flex:1 1 auto!important;
-    align-self:stretch!important;
     width:100%!important;
     min-width:0!important;
     max-width:100%!important;
     height:auto!important;
-    min-height:108px!important;
+    min-height:0!important;
     max-height:none!important;
     padding:0!important;
     overflow:visible!important;
+    box-sizing:border-box!important;
+  }
+
+  html.medindex-tailadmin[data-mi-page="barnat"] #dataTable tbody>tr.mobile-lite-row>td:first-child>.mobile-lite-card{
+    width:100%!important;
+    min-width:0!important;
+    max-width:100%!important;
     box-sizing:border-box!important;
   }
 }
