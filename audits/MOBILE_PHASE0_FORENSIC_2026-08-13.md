@@ -85,7 +85,7 @@ Phase 1 may start only with these invariants:
 - Full-runtime fallback remains allowed for a genuine fatal recovery path, but ownership transition must be explicit and observable.
 - Desktop behavior remains unchanged.
 
-## Audit command
+## Static forensic audit command
 
 Run:
 
@@ -93,4 +93,38 @@ Run:
 node scripts/audit-mobile-phase0.js
 ```
 
-The command prints machine-readable JSON with the current Phase 0 findings and metrics. It does not modify production behavior.
+The command prints machine-readable JSON with the current Phase 0 source/build findings and metrics. It does not modify production behavior.
+
+## Post-build runtime forensic probe
+
+A second diagnostic now reproduces the exact startup ownership race against the post-`build:runtime` artifact using a 390×844 mobile viewport and an intentionally delayed lightweight registry response.
+
+Run the neutral probe:
+
+```bash
+node scripts/audit-mobile-phase0-runtime.js
+```
+
+To prove the current bug is still reproducible before Phase 1:
+
+```bash
+node scripts/audit-mobile-phase0-runtime.js --expect-current-race
+```
+
+The probe records:
+
+- `medindex:full-registry-started` timestamps and reasons;
+- `medindex:mobile-lite-ready` timing;
+- explicit mobile-to-full handoff events;
+- `/api/drug-search` and `/api/registry` requests;
+- final mobile-lite/runtime datasets and first-row/card ownership.
+
+The delayed `registry-page` response defaults to 5600 ms, deliberately beyond the current 5000 ms mobile-lite grace period. No production API, database, Neon data, or visual behavior is changed by the probe.
+
+The same probe is already prepared as the Phase 1 regression gate. After the ownership fix, run:
+
+```bash
+node scripts/audit-mobile-phase0-runtime.js --assert-single-owner
+```
+
+That mode fails if the timeout starts the full runtime, if `/api/registry` is requested during normal delayed mobile startup, or if mobile-lite and the full registry become active in the same startup.
