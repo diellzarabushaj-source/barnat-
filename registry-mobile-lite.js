@@ -479,8 +479,8 @@
     version:VERSION,
     reload:() => loadPage({ includeTotal:true, scroll:false }),
     handoff:requestFullRegistry,
-    closeDetail,
     getState:() => ({ ...state }),
+    closeDetail,
     getDetailState:() => ({
       open:Boolean(detailSession && document.body?.classList.contains('mobile-lite-detail-open')),
       id:detailSession?.id || '',
