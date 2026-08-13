@@ -57,6 +57,8 @@
     // of pixels below the fold. Keep this enhancer desktop/tablet-only while the
     // mobile-lite renderer owns <=767px.
     if (mobileLiteOwnsPhone()) {
+      const toolbar = document.querySelector('.toolbar');
+      if (toolbar) toolbar.classList.add('registry-filter-panel-unified');
       initialized = true;
       document.documentElement.dataset.firstPageClinical = 'mobile-lite-skipped';
       window.dispatchEvent(new CustomEvent('medindex:first-page-audit-ready', {
