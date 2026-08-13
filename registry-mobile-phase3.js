@@ -48,6 +48,9 @@
     nav.inert = blocked;
     nav.dataset.miRegistryNavBlocked = String(blocked);
     nav.setAttribute('aria-hidden', String(blocked));
+    nav.style.visibility = blocked ? 'hidden' : 'visible';
+    nav.style.opacity = blocked ? '0' : '1';
+    nav.style.pointerEvents = blocked ? 'none' : '';
   }
 
   function focusRegistrySearch(mode = '') {
@@ -260,6 +263,15 @@
     syncFilterBadge();
   }
 
+  function releaseMobileShellOwner() {
+    closeFilters();
+    bodyClassObserver?.disconnect();
+    bodyClassObserver = null;
+    document.getElementById('miRegistryBottomNav')?.remove();
+    document.getElementById('miRegistryMobileFilterBar')?.remove();
+    root.dataset.registryMobilePhase3State = 'handoff';
+  }
+
   function bindStateSync() {
     document.addEventListener('input', event => {
       if (event.target?.id === 'search') syncFilterBadge();
@@ -277,14 +289,10 @@
       bodyClassObserver.observe(document.body, { attributes:true, attributeFilter:['class'] });
     }
 
-    window.addEventListener('medindex:request-full-registry', () => {
-      closeFilters();
-      bodyClassObserver?.disconnect();
-      bodyClassObserver = null;
-      document.getElementById('miRegistryBottomNav')?.remove();
-      document.getElementById('miRegistryMobileFilterBar')?.remove();
-      root.dataset.registryMobilePhase3State = 'handoff';
-    }, { once:true });
+    // A request can be rejected by registry-runtime-loader while mobile-lite remains
+    // the canonical owner. Only release the phone shell after the full runtime has
+    // actually started, otherwise blocked legacy requests can tear down navigation.
+    window.addEventListener('medindex:full-registry-started', releaseMobileShellOwner, { once:true });
     document.addEventListener('keydown', event => {
       if (event.key === 'Escape' && sheet && !sheet.hidden) closeFilters();
     }, true);
@@ -308,6 +316,7 @@
     if (mobileLiteActive()) install();
     window.addEventListener('medindex:mobile-lite-ready', install, { once:true });
     window.addEventListener('medindex:tailadmin-ready', () => {
+      if (!mobileLiteActive()) return;
       buildBottomNav();
       buildFilterBar();
       syncBottomNavAvailability();
