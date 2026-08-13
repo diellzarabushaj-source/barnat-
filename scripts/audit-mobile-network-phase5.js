@@ -153,8 +153,8 @@ function fixtureRows(query = '') {
     });
 
     await page.goto(`${BASE}/index.html`, { waitUntil:'domcontentloaded', timeout:30000 });
-    await page.waitForFunction(() => document.documentElement.classList.contains('auth-ready'), null, { timeout:10000 });
-    await page.waitForFunction(() => document.querySelectorAll('#tbody .mobile-lite-card').length > 0, null, { timeout:10000 });
+    await page.locator('html.auth-ready').waitFor({ state:'attached', timeout:10000 });
+    await page.locator('#tbody .mobile-lite-card').first().waitFor({ state:'attached', timeout:10000 });
 
     const pageRequests = () => requests.filter(item => item.view === 'registry-page');
     assert.equal(pageRequests().length, 1, 'initial mobile boot must issue one bounded registry-page request');
@@ -187,7 +187,7 @@ function fixtureRows(query = '') {
     assert.equal(pageRequests()[3].includeTotal, '1', 'clearing search may restore the exact total once');
 
     await page.locator('#tbody .mobile-lite-more').first().click();
-    await page.waitForFunction(() => document.body.classList.contains('mobile-lite-detail-open'));
+    await page.locator('body.mobile-lite-detail-open').waitFor({ state:'attached', timeout:5000 });
     const detailRequests = requests.filter(item => item.view === 'registry-detail');
     assert.equal(detailRequests.length, 1, 'opening one medicine must issue one targeted detail request');
 
