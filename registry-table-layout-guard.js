@@ -1,7 +1,7 @@
 (() => {
   'use strict';
 
-  const VERSION = 'registry-table-layout-guard-v5';
+  const VERSION = 'registry-table-layout-guard-v6';
   const ROOT = document.documentElement;
   const MOBILE_BREAKPOINT = 760;
   const TOLERANCE_PX = 2;
@@ -32,6 +32,12 @@
     vat:78, 'retail-price':116, validity:140, 'dosage-adult':250,
     'dosage-pediatric':250, 'dose-calculator':132,
   });
+  const DESKTOP_GEOMETRY_RULES = `
+#dataTable[data-registry-unified-table] :is(th,td).registry-dosage-column {
+  width:auto!important;
+  min-width:0!important;
+  max-width:none!important;
+}`.trim();
 
   let frame = 0;
   let resizeObserver = null;
@@ -122,11 +128,12 @@
 
   function syncBodyColumnVisibility(hiddenKeys) {
     const style = visibilityStyle();
-    const rules = [...hiddenKeys]
+    const hiddenRules = [...hiddenKeys]
       .filter(Boolean)
       .sort()
       .map(key => `#dataTable tbody td[data-registry-column-key="${escapeSelector(key)}"]{display:none!important}`)
       .join('\n');
+    const rules = [DESKTOP_GEOMETRY_RULES, hiddenRules].filter(Boolean).join('\n');
     if (style.textContent !== rules) style.textContent = rules;
   }
 
