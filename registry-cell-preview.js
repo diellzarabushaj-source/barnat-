@@ -128,7 +128,7 @@
   }
 
   function shouldPreviewCell(cell, text) {
-    if (!cell || !text || hasExistingControl(cell)) return false;
+    if (!cell || !text || cell.closest('.mobile-lite-row') || hasExistingControl(cell)) return false;
     return cellIsVisuallyClipped(cell) || text.length > (THRESHOLDS[columnKey(cell)] || 58);
   }
 
@@ -169,6 +169,10 @@
 
   function enhanceCell(cell) {
     if (!(cell instanceof HTMLTableCellElement)) return;
+    if (cell.closest('.mobile-lite-row')) {
+      if (cell.hasAttribute(PREVIEW_ATTR) || cell.querySelector(`:scope > .${TRIGGER_CLASS}`)) removePreview(cell);
+      return;
+    }
     restoreCanonicalSource(cell);
     const text = extractCellText(cell);
     if (!shouldPreviewCell(cell, text)) {
