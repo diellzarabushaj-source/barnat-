@@ -10,7 +10,7 @@ const runtimePath = path.join(__dirname, '.audit-mobile-shell-state-webkit-runti
 let source = fs.readFileSync(sourcePath, 'utf8');
 
 const legacyScroll = "await page.locator('.mi-main').evaluate(node => { node.scrollTop = node.scrollHeight; });";
-const webkitScroll = `const webkitScrollProbe = await page.locator('.mi-main').evaluate(node => {
+const webkitScroll = `const webkitScrollProbe = await page.locator('.mi-main').evaluate(async node => {
       const style = getComputedStyle(node);
       const before = node.scrollTop;
       const target = Math.max(0, node.scrollHeight - node.clientHeight);
@@ -18,11 +18,20 @@ const webkitScroll = `const webkitScrollProbe = await page.locator('.mi-main').e
       const afterAssignment = node.scrollTop;
       node.scrollTo({ top:target, left:0, behavior:'auto' });
       const afterScrollTo = node.scrollTop;
+      await new Promise(resolve => setTimeout(resolve, 80));
+      const active = document.activeElement;
       return {
         before,
         target,
         afterAssignment,
         afterScrollTo,
+        after80ms:node.scrollTop,
+        activeElement:active ? { tag:active.tagName, id:active.id || '', className:String(active.className || '') } : null,
+        bodyClass:document.body?.className || '',
+        mobileLiteState:document.documentElement.dataset.registryMobileLiteState || '',
+        personalization:document.documentElement.dataset.registryPersonalization || '',
+        uxPhase2:document.documentElement.dataset.registryUxPhase2 || '',
+        uxPhase3:document.documentElement.dataset.registryUxPhase3 || '',
         scrollHeight:node.scrollHeight,
         clientHeight:node.clientHeight,
         overflowY:style.overflowY,
