@@ -103,7 +103,7 @@ assert.match(unified, /observer\.observe\(tbody, \{ childList:true \}\)/, 'table
 assert.match(middleware, /'\/registry-parser-worker-v2\.js'/, 'v2 parser worker must pass through auth middleware');
 assert.match(index, /registry-mobile-lite\.js\?v=20260812-2/, 'index must load the current phone lightweight client');
 assert.match(index, /registry-desktop-lite\.js\?v=20260812-1/, 'index must load the desktop lightweight client');
-assert.match(index, /registry-runtime-loader\.js\?v=20260812-8/, 'index must request the mobile-and-desktop aware bootstrap');
+assert.match(index, /registry-runtime-loader\.js\?v=20260813-9/, 'index must request the single-owner mobile-and-desktop aware bootstrap');
 assert.ok(index.indexOf('registry-mobile-lite.js') < index.indexOf('registry-desktop-lite.js'), 'mobile lightweight client must register before desktop lightweight startup');
 assert.ok(index.indexOf('registry-desktop-lite.js') < index.indexOf('registry-runtime-loader.js'), 'desktop lightweight client must register before the full loader');
 assert.match(index, /registry-unified-table\.js\?v=20260812-population-column-1/, 'index must load the current population-aware single table controller');
