@@ -7,24 +7,22 @@ const ROOT = path.resolve(__dirname, '..');
 const file = path.join(ROOT, 'registry-mobile-phase8.css');
 let css = fs.readFileSync(file, 'utf8').replace(/\r\n?/g, '\n');
 
-const oldBlock = `  html[data-registry-mobile-lite] #tbody .mobile-lite-card{\n    position:relative;\n    display:block!important;\n    width:100%!important;\n    min-width:0!important;\n    max-width:none!important;\n    box-sizing:border-box!important;\n  }\n\n  /* Favorite and detail action get separate 44px touch slots. The content\n     reserves the rail width, so neither control can overlap text or the other\n     action even on narrow iPhones. */\n  #tbody .mobile-lite-card:has(.mi-mobile-favorite-toggle){\n    min-height:108px;\n  }\n  #tbody .mobile-lite-card:has(.mi-mobile-favorite-toggle) .mobile-lite-open{`;
+const oldCard = `  html[data-registry-mobile-lite] #tbody .mobile-lite-card{\n    position:relative;\n    display:block!important;\n    width:100%!important;\n    min-width:0!important;\n    max-width:none!important;\n    box-sizing:border-box!important;\n  }`;
 
-const newBlock = `  html[data-registry-mobile-lite] #tbody .mobile-lite-card{\n    position:relative;\n    display:block!important;\n    width:100%!important;\n    min-width:0!important;\n    max-width:none!important;\n    min-height:108px!important;\n    box-sizing:border-box!important;\n  }\n\n  /* Reserve both 44px action slots before personalization appends the star.\n     The stable 108px card prevents a late list-height jump and keeps Safari's\n     end-of-list scroll range deterministic. */\n  html[data-registry-mobile-lite] #tbody .mobile-lite-open{`;
+const stableCard = `  html[data-registry-mobile-lite] #tbody .mobile-lite-card{\n    position:relative;\n    display:block!important;\n    width:100%!important;\n    min-width:0!important;\n    max-width:none!important;\n    min-height:108px!important;\n    box-sizing:border-box!important;\n  }`;
 
-if (!css.includes(newBlock)) {
-  if (!css.includes(oldBlock)) throw new Error('Phase 2 stable-card patch could not find the Phase 8 action-rail block.');
-  css = css.replace(oldBlock, newBlock);
+if (!css.includes(stableCard)) {
+  if (!css.includes(oldCard)) throw new Error('Phase 2 stable-card patch could not find the Phase 8 card block.');
+  css = css.replace(oldCard, stableCard);
 }
 
-css = css.replace(
-  '#tbody .mobile-lite-card:has(.mi-mobile-favorite-toggle) .mobile-lite-more{',
-  'html[data-registry-mobile-lite] #tbody .mobile-lite-more{',
-);
-
 if (!css.includes('min-height:108px!important')) throw new Error('Phase 2 stable card reserve is missing.');
-if (css.includes('.mobile-lite-card:has(.mi-mobile-favorite-toggle){\n    min-height:108px')) {
-  throw new Error('Phase 2 favorite-dependent card-height jump is still present.');
+if (!css.includes('#tbody .mobile-lite-card:has(.mi-mobile-favorite-toggle) .mobile-lite-open{')) {
+  throw new Error('Phase 2 content action-rail contract is missing.');
+}
+if (!css.includes('#tbody .mobile-lite-card:has(.mi-mobile-favorite-toggle) .mobile-lite-more{')) {
+  throw new Error('Phase 2 detail action slot contract is missing.');
 }
 
 fs.writeFileSync(file, css, 'utf8');
-console.log('Phase 2 mobile card reserves its action rail before personalization; Safari list height stays stable.');
+console.log('Phase 2 mobile card reserves 108px before personalization while preserving independent action-slot contracts.');
