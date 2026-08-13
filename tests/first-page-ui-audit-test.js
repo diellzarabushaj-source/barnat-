@@ -27,7 +27,11 @@ assert.ok(
   html.indexOf('form-picker-clinical.js') < html.indexOf('first-page-clinical.js'),
   'The first-page runtime must enhance the completed pharmaceutical form picker.'
 );
-assert.match(loader, /document\.head\.appendChild\(link\)/);
+assert.match(loader, /PHONE_QUERY = '\(max-width:767px\)'/, 'First-page stylesheet loader must have an explicit phone cascade contract.');
+assert.match(loader, /data-registry-mobile-critical-css/, 'Phone first-page CSS must anchor before the mobile registry cascade.');
+assert.match(loader, /anchor\.before\(link\)/, 'Phone first-page CSS must be inserted before mobile-lite layers, not appended after them.');
+assert.match(loader, /document\.head\.appendChild\(link\)/, 'Desktop first-page CSS must retain its last-layer behavior.');
+assert.match(loader, /phone\?\.addEventListener\?\.\('change', ensure\)/, 'Stylesheet ordering must follow responsive viewport transitions.');
 assert.match(loader, /first-page-clinical\.css\?v=20260731-1/);
 assert.match(loader, /medindex:tailadmin-ready/);
 
