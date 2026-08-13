@@ -29,6 +29,8 @@ assert.match(mobile, /view:'registry-page'/, 'mobile registry must read from the
 assert.match(mobile, /view:'registry-detail'/, 'mobile detail must remain targeted and on demand');
 assert.match(mobile, /DEFAULT_PAGE_SIZE = 25/, 'mobile normal mode must remain bounded at 25 rows by default');
 assert.match(mobile, /MAX_PAGE_SIZE = 50/, 'mobile lightweight requests must remain capped at 50 rows');
+assert.match(mobile, /fatal-mobile-lite-recovery/, 'mobile must retain an explicit fatal recovery path');
+assert.doesNotMatch(mobile, /requestFullRegistry\('mobile-lite-error'\)|requestFullRegistry\('drug-full-detail'\)/, 'ordinary mobile interaction/error paths must not wake the full registry');
 assert.doesNotMatch(mobile, /DRUG_DATA_PARTS|app-performance\.js|NEON_DATA_API|apirest\./i, 'mobile client must not load or access the full registry or Neon directly');
 
 assert.match(desktop, /registry-desktop-lite-v1/, 'desktop lightweight client must be active');
@@ -38,16 +40,20 @@ assert.match(desktop, /DEFAULT_PAGE_SIZE = 50/, 'desktop normal mode must remain
 assert.match(desktop, /medindex:request-full-registry/, 'advanced desktop functions must retain an explicit full-runtime handoff');
 assert.doesNotMatch(desktop, /\/api\/registry(?:\?|['"`])|DRUG_DATA_PARTS|NEON_DATA_API|apirest\./i, 'normal desktop lightweight mode must not read the full registry or Neon directly');
 
-assert.match(loader, /registry-runtime-loader-v8/, 'mobile-and-desktop lightweight authenticated loader version must be current');
+assert.match(loader, /registry-runtime-loader-v9/, 'single-owner mobile and bounded desktop authenticated loader version must be current');
 assert.match(loader, /classList\.contains\('auth-ready'\)/, 'registry bootstrap must wait for the authenticated shell');
 assert.match(loader, /requestAnimationFrame\(\(\) => \{[\s\S]*loadRuntime\(/, 'registry bootstrap must yield a paint opportunity');
-assert.match(loader, /app-performance\.js\?v=20260801-2/, 'loader must retain the audited full registry bootstrap for fallback/handoff');
+assert.match(loader, /app-performance\.js\?v=20260801-2/, 'loader must retain the audited full registry bootstrap for explicit fallback/handoff');
 assert.match(loader, /mobile-lite-deferred/, 'phone startup must defer the full registry while lightweight mode is healthy');
+assert.match(loader, /mobile-lite-stalled/, 'slow phone startup must stay under mobile-lite ownership and publish a stalled state');
+assert.match(loader, /mobile-full-registry-blocked/, 'nonfatal phone attempts to wake the full registry must be blocked');
+assert.match(loader, /isExplicitMobileFullRequest/, 'full mobile transition must be explicit fatal recovery or desktop viewport transition');
+assert.doesNotMatch(loader, /scheduleRuntime\('mobile-lite-timeout'\)/, 'mobile startup timeout must not replace the lightweight renderer');
 assert.match(loader, /desktop-lite-deferred/, 'desktop startup must defer the full registry while lightweight mode is healthy');
 assert.match(loader, /desktop-lite-timeout/, 'desktop lightweight startup must have a bounded fallback');
 assert.match(loader, /legacy-no-lite/, 'unsupported environments must retain the audited legacy fallback');
 assert.match(loader, /medindex:full-registry-started/, 'full-runtime handoff must publish a deterministic event');
-assert.match(loader, /medindex:request-full-registry/, 'advanced lightweight flows must be able to request the full runtime explicitly');
+assert.match(loader, /medindex:request-full-registry/, 'explicit fatal/desktop lightweight flows must be able to request the full runtime');
 assert.doesNotMatch(loader, /scheduleRuntime\('desktop-or-legacy'\)/, 'normal authenticated desktop must not eagerly launch the full registry');
 assert.doesNotMatch(loader, /FIRST_INTERACTION_FALLBACK_MS|POST_INTERACTION_GRACE_MS|INTERACTION_EVENTS/, 'loader must not wait for legacy interaction gates');
 assert.doesNotMatch(loader, /MEDINDEX_REGISTRY_UI_READY\s*=\s*new Promise/, 'loader must not shadow the runtime readiness promise');
@@ -108,4 +114,4 @@ assert.match(index, /registry-dosage-loader\.js\?v=20260812-1/, 'index must load
 assert.doesNotMatch(index, /src="registry-dosage-columns-v3\.js/, 'visible-row dosage integration must not be in the critical parser path');
 assert.match(builder, /app-runtime-performance\.js/, 'build must still generate the cache-isolated full fallback runtime artifact');
 
-console.log('Registry interaction resilience, mobile + desktop lightweight Phase 10 paths and visible-row dosage audit passed.');
+console.log('Registry interaction resilience, single-owner mobile + desktop lightweight paths and visible-row dosage audit passed.');
