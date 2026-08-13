@@ -10,9 +10,11 @@ const shell = read('tailadmin-shell.js');
 const sidebar = read('atc-sidebar.js');
 const styles = read('atc-sidebar.css');
 
-assert.match(shell, /ATC_NAV_SRC = '\/atc-sidebar\.js\?v=atc-sidebar-v2'/, 'TailAdmin must load the polished ATC navigation runtime');
-assert.match(shell, /loadRuntime\(ATC_NAV_SRC, 'data-medindex-atc-sidebar'/, 'ATC navigation must load only after the existing shell is ready');
-assert.match(shell, /warm\(ATC_NAV_SRC\)/, 'ATC navigation must participate in runtime warming/offline discovery');
+assert.match(shell, /ATC_NAV_SRC = '\/atc-sidebar\.js\?v=atc-sidebar-v2'/, 'TailAdmin must expose the polished ATC navigation runtime');
+assert.match(shell, /loadRuntime\(ATC_NAV_SRC, 'data-medindex-atc-sidebar'/, 'ATC navigation must still use the canonical shell loader');
+assert.match(shell, /if \(!isMobileLayout\(\)\) assets\.push\(ATC_NAV_SRC, ATC_SEARCH_SRC\)/, 'ATC navigation must not be warmed during phone startup');
+assert.match(shell, /data-mi-sidebar-toggle.*data-mi-registry-nav="more"/, 'Phone ATC navigation must start loading from explicit sidebar intent');
+assert.match(shell, /miMobileClinicalEnhancements = 'intent-deferred-v1'/, 'Phone ATC runtime deferral marker is missing');
 
 assert.match(sidebar, /querySelector\('\[data-medical-nav="classification"\]'\)/, 'The existing Classification item must be enhanced, not duplicated');
 assert.match(sidebar, /existing\.replaceWith\(menu\)/, 'The original Classification link must become one nested menu');
