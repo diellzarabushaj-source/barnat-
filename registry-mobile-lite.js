@@ -42,12 +42,26 @@
     return html.classList.contains('auth-ready');
   }
 
-  function requestFullRegistry(reason = 'mobile-advanced-feature') {
-    if (state.disabled) return;
+  function requestFullRegistry(reason = 'fatal-mobile-lite-recovery', options = {}) {
+    if (state.disabled) return false;
+    const resolvedReason = clean(reason) || 'fatal-mobile-lite-recovery';
+    const explicitFatal = options.fatal === true || resolvedReason === 'viewport-desktop' || resolvedReason.startsWith('fatal-');
+
+    if (media?.matches && !explicitFatal) {
+      html.dataset.registryMobileLiteBlockedHandoff = resolvedReason;
+      window.dispatchEvent(new CustomEvent('medindex:mobile-lite-handoff-blocked', {
+        detail:{ reason:resolvedReason, owner:'mobile-lite' },
+      }));
+      return false;
+    }
+
     state.disabled = true;
     window.MEDINDEX_MOBILE_LITE_ACTIVE = false;
     html.dataset.registryMobileLiteState = 'handoff';
-    window.dispatchEvent(new CustomEvent('medindex:request-full-registry', { detail:{ reason } }));
+    window.dispatchEvent(new CustomEvent('medindex:request-full-registry', {
+      detail:{ reason:resolvedReason, fatal:options.fatal === true || resolvedReason.startsWith('fatal-') },
+    }));
+    return true;
   }
 
   function buildPageUrl({ includeTotal = false } = {}) {
@@ -101,19 +115,15 @@
       }, SEARCH_DEBOUNCE_MS);
     });
 
-    const advanced = [
-      ['protocolsBtn', 'prescription-builder'],
-      ['colPickerBtn', 'column-picker'],
-      ['formPickerBtn', 'form-picker'],
-    ];
-    advanced.forEach(([id, reason]) => {
-      document.getElementById(id)?.addEventListener('click', event => {
-        if (state.disabled) return;
-        event.preventDefault();
-        event.stopImmediatePropagation();
-        requestFullRegistry(reason);
-      }, true);
-    });
+    // On phones, prescriptions already have a dedicated lightweight page.
+    // Column/form controls are hidden by the mobile filter UI and must not wake
+    // the full registry renderer just because a legacy control receives a click.
+    document.getElementById('protocolsBtn')?.addEventListener('click', event => {
+      if (state.disabled) return;
+      event.preventDefault();
+      event.stopImmediatePropagation();
+      window.location.assign('/recetat.html');
+    }, true);
   }
 
   function renderRows(rows) {
@@ -145,6 +155,33 @@
         event.stopPropagation();
         void openDetail(control.dataset.mobileLiteDetail, control);
       });
+    });
+  }
+
+  function renderInitialLoadError(message) {
+    const tbody = document.getElementById('tbody');
+    const pagination = document.getElementById('pagination');
+    const badge = document.getElementById('countBadge');
+    if (pagination) pagination.innerHTML = '';
+    if (badge) {
+      badge.textContent = 'Nuk u ngarkua';
+      badge.title = clean(message) || 'Lista lightweight nuk u ngarkua.';
+    }
+    if (!tbody) return;
+
+    tbody.innerHTML = `<tr class="mobile-lite-empty-row"><td><div class="mobile-lite-empty">
+      <strong>Lista e barnave nuk u ngarkua.</strong>
+      <span>${escapeHtml(clean(message) || 'Kontrollo lidhjen dhe provo përsëri.')}</span>
+      <button type="button" class="mobile-lite-more" data-mobile-lite-retry>Riprovo</button>
+      <button type="button" class="mobile-lite-full-action" data-mobile-lite-fatal-recovery>Rikuperim i plotë</button>
+    </div></td></tr>`;
+
+    tbody.querySelector('[data-mobile-lite-retry]')?.addEventListener('click', () => {
+      if (state.loading || state.disabled) return;
+      void loadPage({ includeTotal:true, scroll:false });
+    });
+    tbody.querySelector('[data-mobile-lite-fatal-recovery]')?.addEventListener('click', () => {
+      requestFullRegistry('fatal-mobile-lite-recovery', { fatal:true });
     });
   }
 
@@ -221,10 +258,16 @@
       if (error?.name === 'AbortError') return;
       console.error('Mobile lightweight registry failed:', error);
       html.dataset.registryMobileLiteState = 'error';
-      if (!state.ready) requestFullRegistry('mobile-lite-error');
+      window.dispatchEvent(new CustomEvent('medindex:mobile-lite-load-error', {
+        detail:{ message:String(error?.message || error), initial:!state.ready, owner:'mobile-lite' },
+      }));
+      if (!state.ready) renderInitialLoadError(error?.message);
       else {
         const badge = document.getElementById('countBadge');
-        if (badge) badge.textContent = 'Gabim · provo përsëri';
+        if (badge) {
+          badge.textContent = 'Lidhja dështoi · të dhënat e fundit u ruajtën';
+          badge.title = String(error?.message || 'Provo përsëri.');
+        }
       }
     } finally {
       setBusy(false);
@@ -305,9 +348,7 @@
           ${detailItem('Statusi', row.productStatus)}
           ${detailItem('Çmimi me pakicë', row.retailPrice)}
           ${detailItem('Afati i vlefshmërisë', row.validity)}
-        </dl>
-        <button type="button" class="mobile-lite-full-action" data-mobile-lite-full>Hap funksionet e plota klinike</button>`;
-      body.querySelector('[data-mobile-lite-full]')?.addEventListener('click', () => requestFullRegistry('drug-full-detail'));
+        </dl>`;
       window.dispatchEvent(new CustomEvent('medindex:mobile-lite-detail-opened', { detail:{ id, row } }));
       trigger?.setAttribute('aria-expanded', 'true');
     } catch (error) {
