@@ -1,0 +1,8 @@
+@media (max-width:767px){
+  html[data-registry-mobile-lite] body:has(> #miRegistryFilterSheet:not([hidden])) > .mi-registry-bottom-nav{
+    opacity:0!important;
+    visibility:hidden!important;
+    pointer-events:none!important;
+    transform:translateY(calc(100% + 24px))!important;
+  }
+}
