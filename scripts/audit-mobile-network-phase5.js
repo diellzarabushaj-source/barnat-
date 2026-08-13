@@ -89,6 +89,14 @@ function fixtureRows(query = '') {
     });
     const page = await context.newPage();
     const requests = [];
+    const fullRegistryRequests = [];
+
+    page.on('request', request => {
+      const url = new URL(request.url());
+      if (url.pathname === '/api/registry' || url.pathname === '/data/registry-data.js') {
+        fullRegistryRequests.push(`${url.pathname}${url.search}`);
+      }
+    });
 
     await page.route('**/api/drug-search**', async route => {
       const url = new URL(route.request().url());
@@ -152,6 +160,7 @@ function fixtureRows(query = '') {
     assert.equal(pageRequests().length, 1, 'initial mobile boot must issue one bounded registry-page request');
     assert.equal(pageRequests()[0].includeTotal, '1', 'initial mobile boot may request the exact total once');
     assert.equal(pageRequests()[0].pageSize, 25, 'initial mobile boot must stay bounded to 25 rows');
+    assert.equal(await page.locator('#tbody .mobile-lite-card').count(), 25, 'initial DOM must render only the bounded first page');
 
     const search = page.locator('#search');
     await search.fill('B');
@@ -184,16 +193,9 @@ function fixtureRows(query = '') {
 
     assert.equal(requests.some(item => item.view === ''), false, 'mobile registry audit unexpectedly used the legacy generic drug-search path');
     assert.equal(requests.some(item => item.pageSize > 50), false, 'mobile registry requested more than the hard page-size ceiling');
+    assert.deepEqual(fullRegistryRequests, [], 'normal mobile boot/search/detail flow woke the full registry payload');
 
-    const fullRegistryRequests = [];
-    page.on('request', request => {
-      const url = new URL(request.url());
-      if (url.pathname === '/api/registry' || url.pathname === '/data/registry-data.js') fullRegistryRequests.push(url.pathname);
-    });
-    await page.waitForTimeout(100);
-    assert.deepEqual(fullRegistryRequests, [], 'normal mobile search/detail flow woke the full registry payload');
-
-    console.log(`\nMOBILE_NETWORK_PHASE5_REPORT ${JSON.stringify({ generatedAt:new Date().toISOString(), requests }, null, 2)}\n`);
+    console.log(`\nMOBILE_NETWORK_PHASE5_REPORT ${JSON.stringify({ generatedAt:new Date().toISOString(), requests, fullRegistryRequests }, null, 2)}\n`);
     await context.close();
   } finally {
     await browser.close();
