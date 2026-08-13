@@ -172,6 +172,7 @@ async function auditWidth(browser, width) {
       });
       return {
         cards,
+        tbodyRect:tbody ? rect(tbody) : null,
         tbodyStyle:style(tbody),
         htmlPhase8:document.documentElement.dataset.registryMobilePhase8 || '',
         viewport:{ width:document.documentElement.clientWidth, scrollWidth:document.documentElement.scrollWidth },
@@ -180,17 +181,22 @@ async function auditWidth(browser, width) {
       };
     });
 
-    const normalized = result.cards.map((card, index, cards) => ({
-      ...card,
-      favoriteMoreOverlap:card.favorite && card.more ? overlap(card.favorite, card.more) : 0,
-      adjacentCardOverlap:index < cards.length - 1 ? overlap(card.card, cards[index + 1].card) : 0,
-      favoriteInside:card.favorite ? card.favorite.left >= card.card.left - 0.5 && card.favorite.right <= card.card.right + 0.5 && card.favorite.top >= card.card.top - 0.5 && card.favorite.bottom <= card.card.bottom + 0.5 : false,
-      moreInside:card.more ? card.more.left >= card.card.left - 0.5 && card.more.right <= card.card.right + 0.5 && card.more.top >= card.card.top - 0.5 && card.more.bottom <= card.card.bottom + 0.5 : false,
-      rowOwnsCard:card.row ? card.row.top <= card.card.top + 0.5 && card.row.bottom >= card.card.bottom - 0.5 && card.row.height >= card.card.height - 0.5 : false,
-      cellOwnsCard:card.cell ? card.cell.top <= card.card.top + 0.5 && card.cell.bottom >= card.card.bottom - 0.5 && card.cell.height >= card.card.height - 0.5 : false,
-      cellWidthRatio:card.row && card.cell && card.row.width > 0 ? card.cell.width / card.row.width : 0,
-      cardWidthRatio:card.row && card.card && card.row.width > 0 ? card.card.width / card.row.width : 0,
-    }));
+    const normalized = result.cards.map((card, index, cards) => {
+      const rowBoxless = card.rowStyle?.display === 'contents';
+      const horizontalOwner = rowBoxless ? result.tbodyRect : card.row;
+      return {
+        ...card,
+        rowBoxless,
+        favoriteMoreOverlap:card.favorite && card.more ? overlap(card.favorite, card.more) : 0,
+        adjacentCardOverlap:index < cards.length - 1 ? overlap(card.card, cards[index + 1].card) : 0,
+        favoriteInside:card.favorite ? card.favorite.left >= card.card.left - 0.5 && card.favorite.right <= card.card.right + 0.5 && card.favorite.top >= card.card.top - 0.5 && card.favorite.bottom <= card.card.bottom + 0.5 : false,
+        moreInside:card.more ? card.more.left >= card.card.left - 0.5 && card.more.right <= card.card.right + 0.5 && card.more.top >= card.card.top - 0.5 && card.more.bottom <= card.card.bottom + 0.5 : false,
+        rowOwnsCard:rowBoxless ? true : Boolean(card.row && card.row.top <= card.card.top + 0.5 && card.row.bottom >= card.card.bottom - 0.5 && card.row.height >= card.card.height - 0.5),
+        cellOwnsCard:card.cell ? card.cell.top <= card.card.top + 0.5 && card.cell.bottom >= card.card.bottom - 0.5 && card.cell.height >= card.card.height - 0.5 : false,
+        cellWidthRatio:horizontalOwner && card.cell && horizontalOwner.width > 0 ? card.cell.width / horizontalOwner.width : 0,
+        cardWidthRatio:horizontalOwner && card.card && horizontalOwner.width > 0 ? card.card.width / horizontalOwner.width : 0,
+      };
+    });
 
     const report = {
       width,
@@ -198,7 +204,9 @@ async function auditWidth(browser, width) {
       runtimeMode:result.runtimeMode,
       fullRuntimeLoaded:result.fullRuntimeLoaded,
       htmlPhase8:result.htmlPhase8,
+      tbodyRect:result.tbodyRect,
       tbodyStyle:result.tbodyStyle,
+      rowBoxlessCount:normalized.filter(card => card.rowBoxless).length,
       minCardHeight:Math.min(...normalized.map(card => card.card.height)),
       maxCardHeight:Math.max(...normalized.map(card => card.card.height)),
       minCardWidthRatio:Math.min(...normalized.map(card => card.cardWidthRatio)),
@@ -217,8 +225,8 @@ async function auditWidth(browser, width) {
     assert.equal(report.actionOverlapCount, 0, `${width}px: favorite and Më shumë overlap.`);
     assert.equal(report.adjacentCardOverlapCount, 0, `${width}px: adjacent medicine cards overlap in the vertical flow.`);
     assert.equal(report.outsideCardCount, 0, `${width}px: an action escaped the card bounds.`);
-    assert.equal(report.rowContainmentFailureCount, 0, `${width}px: a table row/cell does not own the full medicine card height.`);
-    assert.equal(report.horizontalOwnershipFailureCount, 0, `${width}px: a medicine card/cell does not own the full mobile row width.`);
+    assert.equal(report.rowContainmentFailureCount, 0, `${width}px: the mobile flow/cell does not own the full medicine card height.`);
+    assert.equal(report.horizontalOwnershipFailureCount, 0, `${width}px: a medicine card/cell does not own the full mobile flow width.`);
     assert.ok(report.minCardHeight >= 96, `${width}px: card touch/content height became too small (${report.minCardHeight}).`);
     assert.ok(report.maxCardHeight <= 150, `${width}px: compact card became too tall (${report.maxCardHeight}).`);
     return report;
