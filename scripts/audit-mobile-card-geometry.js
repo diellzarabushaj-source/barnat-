@@ -115,9 +115,12 @@ async function auditWidth(browser, width) {
     const page = await context.newPage();
     await installApiRoute(page);
     await page.goto(`${BASE}/index.html`, { waitUntil:'domcontentloaded', timeout:30000 });
-    await page.waitForFunction(() => document.documentElement.classList.contains('auth-ready'), null, { timeout:10000 });
-    await page.waitForFunction(() => document.querySelectorAll('#tbody .mobile-lite-card').length >= 10, null, { timeout:10000 });
-    await page.waitForFunction(() => document.querySelectorAll('#tbody .mi-mobile-favorite-toggle').length >= 10, null, { timeout:10000 });
+
+    // Locator waits execute through Playwright's DOM channel and do not require
+    // unsafe-eval, so this audit remains compatible with the production CSP in WebKit.
+    await page.locator('html.auth-ready').waitFor({ state:'attached', timeout:10000 });
+    await page.locator('#tbody .mobile-lite-card').nth(9).waitFor({ state:'attached', timeout:10000 });
+    await page.locator('#tbody .mi-mobile-favorite-toggle').nth(9).waitFor({ state:'attached', timeout:10000 });
 
     const result = await page.evaluate(() => {
       const rect = node => {
