@@ -1,7 +1,7 @@
 (() => {
   'use strict';
 
-  const VERSION = 'registry-dose-safety-v1.1.0';
+  const VERSION = 'registry-dose-safety-v1.2.0';
   const ENDPOINT = '/api/dosage?view=safety';
   const MAX_VISIBLE_ITEMS = 4;
   const AGE_ADULT_MONTHS = 18 * 12;
@@ -68,10 +68,21 @@
       const response = await fetch(ENDPOINT, { cache:'no-store', credentials:'same-origin' });
       if (!response.ok) throw new Error(`HTTP ${response.status}`);
       const payload = await response.json();
-      if (!payload?.meta?.officialVerifiedOnly || !payload?.meta?.failClosed || !Array.isArray(payload.catalog)) throw new Error('Kontratë safety e pavlefshme.');
+      if (!payload?.meta?.officialVerifiedOnly
+        || !payload?.meta?.failClosed
+        || !payload?.meta?.publishedOnly
+        || !payload?.meta?.coverageRequired
+        || !Array.isArray(payload.catalog)) throw new Error('Kontratë safety e pavlefshme.');
       const byProduct = new Map();
       payload.catalog.forEach(entry => {
-        if (entry?.productKey && Array.isArray(entry.safety)) byProduct.set(clean(entry.productKey), entry.safety);
+        if (!entry?.productKey || !Array.isArray(entry.safety)) return;
+        byProduct.set(clean(entry.productKey), {
+          productKey:clean(entry.productKey),
+          coverageVerified:entry.coverageVerified === true,
+          coverageReason:clean(entry.coverageReason),
+          requiresManualGate:entry.requiresManualGate === true,
+          safety:entry.safety,
+        });
       });
       catalog = { status:'ready', byProduct, errorMessage:'' };
     } catch (error) {
@@ -98,11 +109,19 @@
     if (group === 'adult_only') return age >= AGE_ADULT_MONTHS;
     return true;
   }
+  function productEntry(productKey = activeProductKey) {
+    if (!productKey || catalog.status !== 'ready') return null;
+    return catalog.byProduct.get(clean(productKey)) || null;
+  }
+  function coverageVerified(productKey = activeProductKey) {
+    return productEntry(productKey)?.coverageVerified === true;
+  }
   function applicableItems() {
-    if (!activeProductKey || catalog.status !== 'ready') return [];
+    const entry = productEntry();
+    if (!entry) return [];
     const age = ageMonths();
     const indication = indicationKey();
-    return (catalog.byProduct.get(activeProductKey) || [])
+    return entry.safety
       .filter(item => !clean(item.indicationKey) || clean(item.indicationKey) === indication)
       .filter(item => within(age, num(item.minAgeMonths), num(item.maxAgeMonths)))
       .filter(item => patientGroupMatches(item, age))
@@ -160,6 +179,25 @@
     suppressResult(true);
   }
 
+  function renderCoverageMissing() {
+    const panel = ensurePanel();
+    if (!panel) return;
+    const entry = productEntry();
+    panel.hidden = false;
+    panel.querySelector('[data-dose-safety-items]').replaceChildren();
+    panel.querySelector('[data-dose-safety-more]').hidden = true;
+    const status = panel.querySelector('[data-dose-safety-status]');
+    const gate = panel.querySelector('[data-dose-safety-gate]');
+    status.textContent = 'Mbulim i paplotë';
+    gate.hidden = false;
+    gate.className = 'dose-safety-gate is-manual_review';
+    const message = entry?.coverageReason === 'manual_gate_missing'
+      ? 'Ky preparat ka rregull që kërkon kontroll renal ose specialistik, por gate-i përkatës i sigurisë nuk është publikuar ende.'
+      : 'Safety coverage për këtë preparat nuk është publikuar ende. Rezultati automatik është bllokuar dhe kërkon verifikim manual.';
+    gate.innerHTML = `<strong>Kërkohet verifikim manual</strong><span>${escapeHtml(message)}</span>`;
+    suppressResult(true);
+  }
+
   function itemMarkup(item, hiddenExtra) {
     const severity = clean(item.severity);
     const badge = severity === 'block' ? 'MOS E PËRDOR' : severity === 'manual_review' ? 'KONTROLL' : severity === 'caution' ? 'KUJDES' : 'INFO';
@@ -175,6 +213,10 @@
     if (!panel) return;
     if (catalog.status !== 'ready') {
       renderUnavailable();
+      return;
+    }
+    if (!coverageVerified()) {
+      renderCoverageMissing();
       return;
     }
     const items = applicableItems();
@@ -206,7 +248,7 @@
 
   function releaseGate() {
     const root = modalRoot();
-    if (!root || catalog.status !== 'ready') return;
+    if (!root || catalog.status !== 'ready' || !coverageVerified()) return;
     const result = root.querySelector('[data-dose-result]');
     const gate = root.querySelector('[data-dose-safety-gate]');
     if (gate) gate.hidden = true;
@@ -220,6 +262,10 @@
     if (internalMutation) return;
     if (catalog.status !== 'ready') {
       renderUnavailable();
+      return;
+    }
+    if (!coverageVerified()) {
+      renderCoverageMissing();
       return;
     }
     const root = modalRoot();
@@ -262,7 +308,6 @@
     if (!panel) return;
     panel.querySelectorAll('[data-dose-safety-check]').forEach(input => { input.checked = false; });
     panel.querySelector('[data-dose-safety-more]').dataset.expanded = 'false';
-    if (catalog.status === 'ready') releaseGate();
     renderItems();
   }
 
@@ -312,6 +357,8 @@
     version:VERSION,
     refresh,
     status:() => catalog.status,
+    coverageVerified:productKey => coverageVerified(productKey),
+    coverageState:productKey => productEntry(productKey),
     _test:Object.freeze({ within, patientGroupMatches, highestSelected }),
   });
 })();
