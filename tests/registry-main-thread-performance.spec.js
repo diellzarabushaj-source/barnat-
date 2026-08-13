@@ -104,6 +104,15 @@ test.describe('registry main-thread performance', () => {
     await expect(page.locator('#countBadge')).toContainText('4006');
     await expect(page.locator('#tbody > tr')).toHaveCount(50);
 
+    const boundedIndexState = await page.evaluate(() => ({
+      fullRows:Array.isArray(window.MEDINDEX_REGISTRY_ROWS) ? window.MEDINDEX_REGISTRY_ROWS.length : 0,
+      visibleRows:Array.isArray(window.MEDINDEX_REGISTRY_VISIBLE_ROWS) ? window.MEDINDEX_REGISTRY_VISIBLE_ROWS.length : 0,
+    }));
+    console.log(`REGISTRY_INDEX_BOUNDS ${JSON.stringify(boundedIndexState)}`);
+    expect(boundedIndexState.fullRows).toBe(ROW_COUNT);
+    expect(boundedIndexState.visibleRows).toBeGreaterThan(0);
+    expect(boundedIndexState.visibleRows).toBeLessThanOrEqual(50);
+
     const registryMetrics = await page.evaluate(() => {
       const state = window.__medindexPerfProbe;
       return {
@@ -129,9 +138,13 @@ test.describe('registry main-thread performance', () => {
     expect(bodyState.pointerEvents).not.toBe('none');
     expect(bodyState.loadingClasses).toEqual([]);
 
+    const searchStarted = Date.now();
     await page.locator('#search').fill('STRESS DRUG 3999');
     await expect(page.locator('#tbody > tr')).toHaveCount(1);
     await expect(page.locator('#tbody')).toContainText('STRESS DRUG 3999');
+    const searchLatency = Date.now() - searchStarted;
+    console.log(`REGISTRY_SEARCH_LATENCY ${searchLatency}ms`);
+    expectBoundedMetric(searchLatency, 1200, '4006-row registry search latency');
 
     await page.evaluate(() => window.__resetMedIndexPerfProbe?.());
     await expect.poll(
