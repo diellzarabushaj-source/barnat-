@@ -13,8 +13,24 @@
 @import url("dashboard-typography.css?v=20260812-1");
 
 @media (max-width:767px){
+  html[data-registry-mobile-lite] #dataTable #tbody{
+    display:flex!important;
+    flex-direction:column!important;
+    align-items:stretch!important;
+    gap:8px!important;
+    width:100%!important;
+    min-width:0!important;
+    max-width:100%!important;
+    height:auto!important;
+    min-height:0!important;
+    max-height:none!important;
+    padding:4px 0 8px!important;
+    overflow:visible!important;
+    box-sizing:border-box!important;
+  }
   html[data-registry-mobile-lite] #dataTable #tbody>tr.mobile-lite-row{
     display:flex!important;
+    flex:0 0 auto!important;
     flex-direction:column!important;
     align-items:stretch!important;
     width:100%!important;
@@ -23,6 +39,8 @@
     height:auto!important;
     min-height:0!important;
     max-height:none!important;
+    margin:0!important;
+    padding:0!important;
     overflow:visible!important;
     box-sizing:border-box!important;
   }
