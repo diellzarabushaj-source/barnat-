@@ -7,8 +7,8 @@ const ROOT = path.resolve(__dirname, '..');
 const read = file => fs.readFileSync(path.join(ROOT, file), 'utf8').replace(/\r\n?/g, '\n');
 const write = (file, value) => fs.writeFileSync(path.join(ROOT, file), value.replace(/\r\n?/g, '\n'), 'utf8');
 
-const LOADER_VERSION = 'registry-runtime-loader-v9';
-const LOADER_ASSET_VERSION = '20260813-9';
+const LOADER_VERSION = 'registry-runtime-loader-v10';
+const LOADER_ASSET_VERSION = '20260813-10';
 
 function patchIndex() {
   let source = read('index.html');
@@ -20,7 +20,7 @@ function patchIndex() {
     `registry-runtime-loader.js?v=${LOADER_ASSET_VERSION}`,
   );
   if (!source.includes(`registry-runtime-loader.js?v=${LOADER_ASSET_VERSION}`)) {
-    throw new Error('Phase 1 prebuild did not activate the v9 loader cache-bust.');
+    throw new Error('Phase 1 prebuild did not activate the current loader cache-bust.');
   }
   write('index.html', source);
 }
@@ -55,7 +55,7 @@ function patchMobileOwnerClients() {
 function verifyLoader() {
   const source = read('registry-runtime-loader.js');
   if (!source.includes(`const VERSION = '${LOADER_VERSION}';`)) {
-    throw new Error('Phase 1 prebuild requires registry-runtime-loader-v9.');
+    throw new Error(`Phase 1 prebuild requires ${LOADER_VERSION}.`);
   }
   if (!source.includes('MOBILE_LITE_STALL_MS = 12000')) {
     throw new Error('Phase 1 mobile stall watchdog is missing.');
