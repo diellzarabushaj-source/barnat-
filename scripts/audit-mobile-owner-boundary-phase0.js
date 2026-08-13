@@ -111,8 +111,16 @@ function fixtureRows() {
       const rect = node => {
         if (!(node instanceof HTMLElement)) return null;
         const value = node.getBoundingClientRect();
-        return { top:value.top, width:value.width, height:value.height };
+        return {
+          top:value.top,
+          right:value.right,
+          bottom:value.bottom,
+          left:value.left,
+          width:value.width,
+          height:value.height,
+        };
       };
+      const intersects = (a, b) => Boolean(a && b && a.left < b.right && a.right > b.left && a.top < b.bottom && a.bottom > b.top);
       const row = document.querySelector('#tbody .mobile-lite-row');
       const cardCell = row ? Array.from(row.children).find(cell => cell.querySelector('.mobile-lite-card')) : null;
       const cells = row ? Array.from(row.children) : [];
@@ -122,14 +130,27 @@ function fixtureRows() {
       const search = document.getElementById('search');
       const toolbar = search?.closest('.registry-filter-panel-unified,.toolbar') || null;
       const card = row?.querySelector('.mobile-lite-card') || null;
+      const favorite = card?.querySelector('.mi-mobile-favorite-toggle') || null;
+      const more = card?.querySelector('.mobile-lite-more') || null;
+      const open = card?.querySelector('.mobile-lite-open') || null;
+      const cardRect = rect(card);
+      const favoriteRect = rect(favorite);
+      const moreRect = rect(more);
+      const openRect = rect(open);
       return {
         phase8:document.documentElement.dataset.registryMobilePhase8 || '',
         legacyHeaderDisplay:header ? getComputedStyle(header).display : 'missing',
         viewToolbarDisplay:viewToolbar ? getComputedStyle(viewToolbar).display : 'missing',
         toolbar:rect(toolbar),
         row:rect(row),
-        card:rect(card),
+        card:cardRect,
         cardCell:rect(cardCell),
+        favorite:favoriteRect,
+        more:moreRect,
+        open:openRect,
+        favoriteMoreOverlap:intersects(favoriteRect, moreRect),
+        favoriteOutsideCard:Boolean(favoriteRect && cardRect && (favoriteRect.left < cardRect.left || favoriteRect.right > cardRect.right || favoriteRect.top < cardRect.top || favoriteRect.bottom > cardRect.bottom)),
+        moreOutsideCard:Boolean(moreRect && cardRect && (moreRect.left < cardRect.left || moreRect.right > cardRect.right || moreRect.top < cardRect.top || moreRect.bottom > cardRect.bottom)),
         directCellCount:cells.length,
         visibleDirectCellCount:cells.filter(visible).length,
         extraVisibleCells:cells.filter(cell => cell !== cardCell && visible(cell)).map(cell => ({ className:cell.className, text:String(cell.textContent || '').trim().slice(0,80) })),
@@ -148,6 +169,17 @@ function fixtureRows() {
     assert.deepEqual(state.extraVisibleCells, [], 'Shared synthetic cells are visible beside the mobile-lite card.');
     assert.equal(state.previewVisible, false, 'Desktop cell-preview trigger is visible inside a mobile-lite row.');
     assert.ok(state.row && state.card && Math.abs(state.row.width - state.card.width) <= 4, `Mobile card does not own row width (row=${state.row?.width}, card=${state.card?.width}).`);
+
+    // Phase 2 screenshot-regression gates: both actions must remain real 44px
+    // touch targets, stay inside the compact card and never intersect.
+    assert.ok(state.card && state.card.height >= 96 && state.card.height <= 112, `Mobile medicine card density drifted outside 96–112px (${state.card?.height}px).`);
+    assert.ok(state.favorite && state.favorite.width >= 43 && state.favorite.height >= 43, 'Favorite action fell below the 44px touch target.');
+    assert.ok(state.more && state.more.height >= 43, '“Më shumë” action fell below the 44px touch target.');
+    assert.equal(state.favoriteMoreOverlap, false, 'Favorite action overlaps “Më shumë”.');
+    assert.equal(state.favoriteOutsideCard, false, 'Favorite action escapes the medicine card bounds.');
+    assert.equal(state.moreOutsideCard, false, '“Më shumë” action escapes the medicine card bounds.');
+    assert.ok(state.open && state.card && state.open.right <= state.card.right + 1, 'Primary medicine content escapes the card bounds.');
+
     assert.equal(state.horizontalOverflow, false, 'Mobile-lite ownership boundary introduced horizontal overflow.');
     assert.equal(registryRequests.length, 0, 'Mobile-lite boundary woke /api/registry.');
 
