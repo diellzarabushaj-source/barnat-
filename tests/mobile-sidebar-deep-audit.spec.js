@@ -7,7 +7,7 @@ async function waitForSidebarReady(page) {
   await page.goto(`${BASE}/index.html`, { waitUntil:'domcontentloaded' });
   await expect.poll(() => page.evaluate(() => document.documentElement.classList.contains('auth-ready')), { timeout:10000 }).toBe(true);
   await expect.poll(() => page.evaluate(() => document.documentElement.dataset.miMobileExperience), { timeout:10000 }).toBe('production-audit-v2');
-  await expect.poll(() => page.evaluate(() => document.documentElement.dataset.miMobileSidebarHardening), { timeout:10000 }).toBe('mobile-sidebar-deep-audit-v1');
+  await expect.poll(() => page.evaluate(() => document.documentElement.dataset.miMobileSidebarHardening), { timeout:10000 }).toBe('mobile-sidebar-deep-audit-v3');
   await expect(page.locator('.mi-app-shell')).toBeVisible();
   await expect(page.locator('#miSidebar')).toBeAttached();
 }
