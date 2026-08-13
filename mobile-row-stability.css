@@ -7,6 +7,20 @@
    synthetic cells/pseudo-elements are not part of the phone list and must not
    split the available width or the row height. */
 @media (max-width:767px){
+  html.medindex-tailadmin[data-mi-page="barnat"][data-registry-mobile-lite] #dataTable{
+    display:block!important;
+    width:100%!important;
+    min-width:0!important;
+    max-width:100%!important;
+    height:auto!important;
+    table-layout:auto!important;
+    box-sizing:border-box!important;
+  }
+
+  html.medindex-tailadmin[data-mi-page="barnat"][data-registry-mobile-lite] #dataTable>thead{
+    display:none!important;
+  }
+
   html.medindex-tailadmin[data-mi-page="barnat"] #dataTable tbody>tr.mobile-lite-row{
     display:block!important;
     width:100%!important;
