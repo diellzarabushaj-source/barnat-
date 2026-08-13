@@ -20,6 +20,11 @@ if (!css.includes(stableCard)) {
   css = css.replace(oldCard, stableCard);
 }
 
+const rowFlowMarker = '/* MedIndex revised Phase 4: mobile card row owns card height */';
+if (!css.includes(rowFlowMarker)) {
+  css += `\n\n${rowFlowMarker}\n@media (max-width:767px){\n  html.medindex-tailadmin[data-mi-page=\"barnat\"][data-registry-mobile-lite] body #dataTable #tbody .mobile-lite-row{\n    display:grid!important;\n    grid-template-columns:minmax(0,1fr)!important;\n    align-items:stretch!important;\n    width:100%!important;\n    min-width:0!important;\n    height:auto!important;\n    min-height:0!important;\n    overflow:visible!important;\n  }\n  html.medindex-tailadmin[data-mi-page=\"barnat\"][data-registry-mobile-lite] body #dataTable #tbody .mobile-lite-row>td:has(.mobile-lite-card){\n    display:block!important;\n    position:relative!important;\n    width:100%!important;\n    min-width:0!important;\n    height:auto!important;\n    min-height:0!important;\n    padding:0!important;\n    overflow:visible!important;\n  }\n}\n`;
+}
+
 const oldScrollOwner = `  function resolveDetailScrollOwner() {
     const main = document.querySelector('.mi-main');
     if (main) {
@@ -84,6 +89,9 @@ if (!css.includes('#tbody .mobile-lite-card:has(.mi-mobile-favorite-toggle) .mob
 if (!css.includes('#tbody .mobile-lite-card:has(.mi-mobile-favorite-toggle) .mobile-lite-more{')) {
   throw new Error('Phase 2 detail action slot contract is missing.');
 }
+if (!css.includes('body #dataTable #tbody .mobile-lite-row{\n    display:grid!important;')) {
+  throw new Error('Phase 4 mobile row-flow ownership is missing.');
+}
 if (!js.includes("if (main) return main;\n    return document.scrollingElement || document.documentElement;")) {
   throw new Error('Phase 3 canonical mobile scroll-owner contract is missing.');
 }
@@ -97,4 +105,4 @@ if (!shellCss.includes('--mi-registry-bottom-nav-clearance:calc(80px + env(safe-
 fs.writeFileSync(cssFile, css, 'utf8');
 fs.writeFileSync(shellCssFile, shellCss, 'utf8');
 fs.writeFileSync(jsFile, js, 'utf8');
-console.log('Phase 2/3/4 mobile stability passed: compact cards, canonical detail scroll ownership and real end-of-list clearance above the 58px bottom nav.');
+console.log('Phase 2/3/4 mobile stability passed: each row owns the full card height, detail scroll restores exactly, and the fixed bottom nav has real end-of-list clearance.');
