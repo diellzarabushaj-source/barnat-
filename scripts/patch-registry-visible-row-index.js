@@ -31,5 +31,4 @@ if (!unified.includes('const rows = visibleRows || (Array.isArray(window.MEDINDE
 }
 fs.writeFileSync(UNIFIED, unified, 'utf8');
 
-require('./patch-registry-atc-filter-single-pass.js');
-console.log('Unified registry indexing and the final ATC-aware filter path stay bounded to the currently rendered/filtered working set.');
+console.log('Unified registry indexing is bounded to the currently rendered page while full data remains available to search and filters.');
