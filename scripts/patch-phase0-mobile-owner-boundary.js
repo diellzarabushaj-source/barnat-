@@ -87,7 +87,25 @@ function patchCellPreview() {
   write('registry-cell-preview.js', source);
 }
 
+function patchSharedPersonalization() {
+  let source = read('registry-user-personalization.js');
+  const marker = 'registry-personalization-phone-deferred-v1';
+  const guard = `  const PHONE_OWNER_QUERY = '(max-width: 767px)';\n  const phoneRegistryOwnsViewport = window.matchMedia?.(PHONE_OWNER_QUERY)?.matches === true\n    && document.documentElement.dataset.registryMobileLiteState !== 'handoff'\n    && (window.MEDINDEX_MOBILE_LITE_ACTIVE === true || Boolean(document.documentElement.dataset.registryMobileLite));\n  if (phoneRegistryOwnsViewport) {\n    document.documentElement.dataset.registryPersonalization = '${marker}';\n    return;\n  }\n\n`;
+
+  if (!source.includes(marker)) {
+    const anchor = `  const VERSION = 'registry-user-personalization-v2.0.0';\n`;
+    if (!source.includes(anchor)) throw new Error('Phase 0 shared personalization version anchor changed.');
+    source = source.replace(anchor, `${anchor}${guard}`);
+  }
+
+  if (!source.includes("document.documentElement.dataset.registryPersonalization = 'registry-personalization-phone-deferred-v1'")) {
+    throw new Error('Phase 0 shared personalization phone guard is missing.');
+  }
+  write('registry-user-personalization.js', source);
+}
+
 patchUnifiedTable();
 patchCellPreview();
+patchSharedPersonalization();
 
-console.log('Phase 0 phone owner boundary: shared unified-table chrome/cells and cell previews remain deferred until desktop or explicit full-registry handoff.');
+console.log('Phase 0 phone owner boundary: shared unified-table chrome/cells, cell previews and desktop personalization remain deferred while mobile-lite owns the phone list.');
