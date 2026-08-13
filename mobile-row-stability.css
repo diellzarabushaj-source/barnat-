@@ -1,0 +1,32 @@
+/* Mobile-lite row geometry must be present in the same frame the row is rendered.
+   Waiting for a later root readiness marker causes a visible 44px -> card-height
+   jump and measurable post-ready CLS on phones. */
+@media (max-width:760px){
+  html.medindex-tailadmin[data-mi-page="barnat"] #dataTable tbody>tr.mobile-lite-row{
+    display:flex!important;
+    align-items:stretch!important;
+    width:100%!important;
+    min-width:0!important;
+    max-width:100%!important;
+    height:auto!important;
+    min-height:108px!important;
+    max-height:none!important;
+    overflow:visible!important;
+    box-sizing:border-box!important;
+  }
+
+  html.medindex-tailadmin[data-mi-page="barnat"] #dataTable tbody>tr.mobile-lite-row>td{
+    display:block!important;
+    flex:1 1 auto!important;
+    align-self:stretch!important;
+    width:100%!important;
+    min-width:0!important;
+    max-width:100%!important;
+    height:auto!important;
+    min-height:108px!important;
+    max-height:none!important;
+    padding:0!important;
+    overflow:visible!important;
+    box-sizing:border-box!important;
+  }
+}
