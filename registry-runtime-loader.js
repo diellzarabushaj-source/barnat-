@@ -1,7 +1,7 @@
 (() => {
   'use strict';
 
-  const VERSION = 'registry-runtime-loader-v9';
+  const VERSION = 'registry-runtime-loader-v10';
   const RUNTIME_SRC = '/app-performance.js?v=20260801-2';
   const AUTH_WAIT_LIMIT_MS = 8000;
   const MOBILE_LITE_STALL_MS = 12000;
@@ -142,6 +142,17 @@
     }));
   }
 
+  function recoverInvalidMobileLiteContract(event) {
+    if (loaded || !mobileLiteCandidate() || event.detail?.initial !== true) return;
+    const message = String(event.detail?.message || '').toLocaleLowerCase('sq');
+    const invalidContract = message.includes('përgjigjja e regjistrit') && message.includes('pavlefshme');
+    if (!invalidContract) return;
+
+    html.dataset.registryRuntimeReason = 'fatal-mobile-lite-contract-mismatch';
+    const handedOff = window.MEDINDEX_MOBILE_LITE?.handoff?.('fatal-mobile-lite-contract-mismatch', { fatal:true });
+    if (handedOff === false) scheduleRuntime('fatal-mobile-lite-contract-mismatch');
+  }
+
   window.MEDINDEX_LOAD_FULL_REGISTRY = (reason, options = {}) => {
     const resolvedReason = String(reason || 'manual');
     if (mobileLiteCandidate() && !isExplicitMobileFullRequest(resolvedReason, options)) {
@@ -160,6 +171,8 @@
     }
     scheduleRuntime(reason);
   });
+
+  window.addEventListener('medindex:mobile-lite-load-error', recoverInvalidMobileLiteContract);
 
   window.addEventListener('medindex:mobile-lite-ready', () => {
     if (!mobileMedia?.matches || loaded) return;
