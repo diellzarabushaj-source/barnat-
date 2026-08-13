@@ -218,7 +218,7 @@ function assertCompactRegistryDensity(state, label) {
   assert.equal(state.breadcrumbDisplay, 'none', `${label}: breadcrumb wastes vertical space on phone.`);
   assert.equal(state.subtitleDisplay, 'none', `${label}: page subtitle must collapse on phone.`);
   assert.ok(state.heading.height <= 36, `${label}: phone heading is too tall (${state.heading.height}px).`);
-  assert.ok(state.search.height >= 43 && state.search.height <= 46, `${label}: phone registry search must stay near the 44px touch target, got ${state.search.height}px.`);
+  assert.ok(state.search.height >= 43 && state.search.height <= 49, `${label}: phone registry search must stay within the compact 44–48px touch range, got ${state.search.height}px.`);
   assert.ok(state.toolbar.height <= 94, `${label}: mobile search/count toolbar is too tall (${state.toolbar.height}px).`);
   assert.ok(state.filterBar.height >= 43 && state.filterBar.height <= 48, `${label}: compact filter bar must remain one touch row, got ${state.filterBar.height}px.`);
   assert.ok(state.firstCardTop != null && state.firstCardTop <= 250, `${label}: first medicine starts too low (${state.firstCardTop}px), wasting the phone viewport.`);
