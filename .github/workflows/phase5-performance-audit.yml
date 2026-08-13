@@ -12,7 +12,7 @@ permissions:
 jobs:
   phase5-performance:
     runs-on: ubuntu-latest
-    timeout-minutes: 15
+    timeout-minutes: 18
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -35,11 +35,11 @@ jobs:
       - name: Build audited runtime
         run: pnpm run build:runtime
 
-      - name: Install Chromium
+      - name: Install Chromium and WebKit
         shell: bash
         run: |
           set -euo pipefail
-          pnpm exec playwright install --with-deps chromium > /tmp/phase5-playwright-install.log 2>&1 || { tail -200 /tmp/phase5-playwright-install.log; exit 1; }
+          pnpm exec playwright install --with-deps chromium webkit > /tmp/phase5-playwright-install.log 2>&1 || { tail -200 /tmp/phase5-playwright-install.log; exit 1; }
 
       - name: Run Phase 5 interaction, Phase 6 version and 4006-row performance gates
         shell: bash
@@ -66,6 +66,16 @@ jobs:
           done
           pnpm exec playwright test tests/phase5-final-performance.spec.js tests/phase6-single-version.spec.js tests/registry-main-thread-performance.spec.js --reporter=line --workers=1 --retries=1 | tee /tmp/phase5-performance.log
 
+      - name: Run phone WebKit shell and bounded network gates
+        shell: bash
+        env:
+          MOBILE_SHELL_SKIP_BUILD: '1'
+          MOBILE_NETWORK_SKIP_BUILD: '1'
+        run: |
+          set -euo pipefail
+          node scripts/audit-mobile-shell-state.js | tee /tmp/mobile-shell-phase4.log
+          node scripts/audit-mobile-network-phase5.js | tee /tmp/mobile-network-phase5.log
+
       - name: Upload Phase 5 and Phase 6 metrics
         if: always()
         uses: actions/upload-artifact@v4
@@ -73,6 +83,8 @@ jobs:
           name: phase5-phase6-performance-metrics
           path: |
             /tmp/phase5-performance.log
+            /tmp/mobile-shell-phase4.log
+            /tmp/mobile-network-phase5.log
             /tmp/phase5-clinical-server.log
             /tmp/phase5-registry-server.log
             /tmp/phase6-version-server.log
