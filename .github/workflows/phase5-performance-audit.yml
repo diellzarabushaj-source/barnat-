@@ -59,7 +59,11 @@ jobs:
         shell: bash
         env:
           PHASE0_SKIP_BUILD: '1'
-          PHASE0_MOBILE_SEARCH_DELAY_MS: '13000'
+          # The production stall watch starts after authenticated-shell ownership
+          # is resolved, not at navigation start. Keep the synthetic response
+          # comfortably beyond 12s so this gate actually observes the diagnostic
+          # stalled event while proving that it never wakes the full registry.
+          PHASE0_MOBILE_SEARCH_DELAY_MS: '16000'
           PHASE0_MOBILE_STALL_THRESHOLD_MS: '12000'
         run: |
           set -euo pipefail
