@@ -242,12 +242,26 @@ function patchMobile() {
     'mobile history handling',
   );
 
+  // The Phase 5 filter rewrite replaces the entire block between buildPageUrl
+  // and setBusy. That block also contains the base clearKnownTotal helper. Keep
+  // a final build invariant here because this ATC patch runs last in build:runtime.
+  if (!source.includes('function clearKnownTotal()')) {
+    source = replaceOnce(
+      source,
+      'function setBusy(value) {',
+      `function clearKnownTotal() {\n    state.total = null;\n    state.totalPages = null;\n    state.hasNext = false;\n  }\n\nfunction setBusy(value) {`,
+      'mobile count invalidation helper',
+    );
+  }
+
   if (!source.includes("params.set('atc', state.atc)")) throw new Error('Mobile lite ATC request is missing.');
   if (!source.includes("window.addEventListener('popstate', handleRegistryLocationChange)")) throw new Error('Mobile lite history handling is missing.');
+  if (!source.includes('function clearKnownTotal()')) throw new Error('Mobile lite count invalidation helper is missing after composed build patches.');
+  if ((source.match(/clearKnownTotal\(\);/g) || []).length < 3) throw new Error('Mobile page-size/status/search paths must invalidate stale totals before refetching.');
   write('registry-mobile-lite.js', source);
 }
 
 patchApi();
 patchDesktop();
 patchMobile();
-console.log('Registry ATC URL state now filters bounded Neon pages on desktop and mobile.');
+console.log('Registry ATC URL state now filters bounded Neon pages on desktop and mobile; count invalidation survives the composed build.');
