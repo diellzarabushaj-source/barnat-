@@ -36,6 +36,12 @@
     scroll-margin-bottom:86px;
   }
 
+  html[data-registry-mobile-lite][data-registry-mobile-phase3] body>.toolbar>#search,
+  html[data-registry-mobile-lite][data-registry-mobile-phase3] .registry-filter-panel-unified>#search{
+    height:46px!important;
+    min-height:46px!important;
+  }
+
   body.mi-registry-keyboard-open .mi-registry-bottom-nav{
     opacity:0!important;
     pointer-events:none!important;
