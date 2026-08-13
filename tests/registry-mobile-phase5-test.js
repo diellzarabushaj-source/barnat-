@@ -30,6 +30,8 @@ assert.match(api, /params\.set\('atc_code', `ilike\.\$\{atc\}\*`\)/, 'ATC prefix
 assert.match(api, /params\.set\('active_substance', `ilike\.\*\$\{substance\}\*`\)/, 'active-substance filtering is missing');
 assert.match(api, /params\.set\('use_text', `ilike\.\*\$\{indication\}\*`\)/, 'indication filtering is missing');
 assert.match(api, /params\.set\('pharmaceutical_form', `ilike\.\*\$\{form\}\*`\)/, 'form filtering is missing');
+assert.match(api, /private, max-age=30, stale-while-revalidate=120/, 'registry page cache policy is missing');
+assert.match(api, /private, max-age=60, stale-while-revalidate=300/, 'registry detail cache policy is missing');
 assert.doesNotMatch(api, /select['"],\s*['"]\*/, 'Phase 5 must not introduce SELECT *');
 assert.doesNotMatch(api, /method\s*:\s*['"](?:POST|PATCH|PUT|DELETE)['"]/i, 'Phase 5 registry gateway must not issue write HTTP methods');
 assert.doesNotMatch(api, /CREATE\s+TABLE|ALTER\s+TABLE|DROP\s+TABLE|\bmigration\b/i, 'Phase 5 registry gateway must not change database schema');
@@ -40,6 +42,11 @@ for (const field of ['atc', 'form', 'substance', 'indication', 'population']) {
 }
 assert.match(lite, /function setFilters\(next = \{\}, options = \{\}\)/, 'single-request filter API is missing');
 assert.match(lite, /medindex:mobile-lite-filters-changed/, 'filter state event is missing');
+assert.match(lite, /function clearKnownTotal\(\)/, 'search/filter count invalidation helper is missing');
+assert.match(lite, /if \(nextQuery\.length === 1\) return;/, 'single-character searches must not refetch the unfiltered registry');
+assert.match(lite, /includeTotal:nextQuery\.length === 0/, 'typing search must skip exact counts and restore totals only when search clears');
+assert.ok((lite.match(/cache:'default'/g) || []).length >= 2, 'mobile list and detail fetches must honor bounded HTTP cache headers');
+assert.doesNotMatch(lite, /cache:'no-store'/, 'mobile bounded list/detail requests must not defeat their server cache policy');
 
 assert.match(phase3, /registry-mobile-phase3-v2/, 'advanced filter sheet version is missing');
 for (const id of ['miPhase3Population', 'miPhase3Atc', 'miPhase3Substance', 'miPhase3Form', 'miPhase3Indication']) {
@@ -55,4 +62,4 @@ assert.match(css, /min-height:48px/, 'mobile filter controls must preserve touch
 assert.match(index, /registry-mobile-lite\.js\?v=20260812-2/, 'mobile-lite Phase 5 cache key is missing');
 assert.match(index, /registry-mobile-phase3\.js\?v=20260812-2/, 'advanced filter cache key is missing');
 
-console.log('Phase 5 advanced ATC, form, substance, indication, population and status server-side filter contract passed.');
+console.log('Phase 5 advanced filters, bounded search counts and mobile HTTP cache contract passed.');
