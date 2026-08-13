@@ -66,17 +66,44 @@ const safePayload = {
   catalog,
 };
 
+const safetyPayload = {
+  ok:true,
+  meta:{
+    schemaVersion:'2.0.0',
+    failClosed:true,
+    officialVerifiedOnly:true,
+    publishedOnly:true,
+    coverageRequired:true,
+    generatedAt:'2026-08-05T12:00:00Z',
+  },
+  catalog:catalog.map(product => ({
+    productKey:product.productKey,
+    coverageVerified:true,
+    coverageReason:'',
+    requiresManualGate:false,
+    safety:[],
+  })),
+};
+
 async function mockCatalog(page, payload = safePayload) {
   await page.route('**/api/dose-calculator', route => route.fulfill({
     status:200, contentType:'application/json; charset=utf-8', body:JSON.stringify(payload),
   }));
 }
 
+async function mockSafety(page, payload = safetyPayload) {
+  await page.route('**/api/dosage?view=safety*', route => route.fulfill({
+    status:200, contentType:'application/json; charset=utf-8', body:JSON.stringify(payload),
+  }));
+}
+
 async function openRegistry(page, payload = safePayload) {
   await mockCatalog(page, payload);
+  await mockSafety(page);
   await page.goto(BASE, { waitUntil:'domcontentloaded' });
   await expect.poll(() => page.evaluate(() => document.documentElement.classList.contains('auth-ready')), { timeout:10000 }).toBe(true);
   await expect.poll(() => page.evaluate(() => window.MedIndexDoseCalculator?.catalogStatus?.() || 'loading'), { timeout:15000 }).toBe('ready');
+  await expect.poll(() => page.evaluate(() => window.MedIndexDoseSafety?.status?.() || 'loading'), { timeout:15000 }).toBe('ready');
   await expect.poll(() => page.locator('#tbody > tr').count(), { timeout:15000 }).toBe(3);
   await expect.poll(() => page.locator('#tbody .dose-calculator-open').count(), { timeout:15000 }).toBe(3);
 }
