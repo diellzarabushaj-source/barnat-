@@ -28,10 +28,10 @@ function patchIndex() {
     source = source.replace(mobilePattern, `${mobileMatch[0]}\n${desktopScript}`);
   }
 
-  source = source.replace(/registry-runtime-loader\.js\?v=[^"&]+/g, 'registry-runtime-loader.js?v=20260813-9');
+  source = source.replace(/registry-runtime-loader\.js\?v=[^"&]+/g, 'registry-runtime-loader.js?v=20260813-10');
 
   const desktopIndex = source.search(desktopPattern);
-  const loaderIndex = source.indexOf('registry-runtime-loader.js?v=20260813-9');
+  const loaderIndex = source.indexOf('registry-runtime-loader.js?v=20260813-10');
   if (desktopIndex < 0 || loaderIndex < 0 || desktopIndex > loaderIndex) {
     throw new Error('Phase 10 desktop-lite must load before the runtime loader.');
   }
@@ -43,8 +43,8 @@ function patchRuntimeLoader() {
 
   // Phase 1 now owns phone renderer safety. Phase 10 must verify that contract,
   // not recreate the old v8 5-second mobile timeout implementation.
-  if (!source.includes("const VERSION = 'registry-runtime-loader-v9';")) {
-    throw new Error('Phase 10 requires the single-owner registry-runtime-loader-v9 contract.');
+  if (!source.includes("const VERSION = 'registry-runtime-loader-v10';")) {
+    throw new Error('Phase 10 requires the single-owner registry-runtime-loader-v10 contract.');
   }
   if (!source.includes('function desktopLiteCandidate()')) {
     throw new Error('Phase 10 desktop-lite candidate is missing.');
@@ -160,4 +160,4 @@ patchRegistryPopulationMetadata();
 patchDesktopPopulationMetadata();
 patchDosageRuntime();
 verifyPopulationMarker();
-console.log('Phase 10 desktop lightweight registry, inline approved population, v9 single-owner mobile loader, deferred full runtime and page-aware targeted dosage patch passed.');
+console.log('Phase 10 desktop lightweight registry, inline approved population, v10 single-owner mobile loader, deferred full runtime and page-aware targeted dosage patch passed.');
