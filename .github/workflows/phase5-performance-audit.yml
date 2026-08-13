@@ -39,7 +39,7 @@ jobs:
         shell: bash
         run: |
           set -euo pipefail
-          node scripts/audit-mobile-phase0.js --assert-phase1-ready --assert-phase2-ready | tee /tmp/mobile-phase0-static.log
+          node scripts/audit-mobile-phase0.js --assert-phase0-ready --assert-phase1-ready --assert-phase2-ready | tee /tmp/mobile-phase0-static.log
 
       - name: Run mobile static performance contracts
         shell: bash
