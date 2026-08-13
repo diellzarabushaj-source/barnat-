@@ -153,8 +153,8 @@ test.describe('mobile sidebar deep audit', () => {
   test('ATC nested destination closes the drawer without stale inert or open state', async ({ page }) => {
     await page.setViewportSize({ width:390, height:844 });
     await waitForSidebarReady(page);
-    await expect.poll(() => page.evaluate(() => document.documentElement.dataset.miAtcSidebar), { timeout:10000 }).toBe('nested-v2');
     const toggle = await openSidebar(page);
+    await expect.poll(() => page.evaluate(() => document.documentElement.dataset.miAtcSidebar), { timeout:10000 }).toBe('nested-v2');
 
     const rootTrigger = page.locator('[data-mi-atc-root-trigger]');
     if (await rootTrigger.getAttribute('aria-expanded') !== 'true') await rootTrigger.click();
