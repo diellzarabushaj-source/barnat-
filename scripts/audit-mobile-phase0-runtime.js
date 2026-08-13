@@ -10,6 +10,7 @@ const PORT = Number(process.env.PHASE0_PORT || 4175);
 const BASE = `http://127.0.0.1:${PORT}`;
 const MOBILE_SEARCH_DELAY_MS = Number(process.env.PHASE0_MOBILE_SEARCH_DELAY_MS || 13000);
 const MOBILE_STALL_THRESHOLD_MS = Number(process.env.PHASE0_MOBILE_STALL_THRESHOLD_MS || 12000);
+const LEGACY_TAKEOVER_WINDOW_MS = 5000;
 const SKIP_BUILD = process.env.PHASE0_SKIP_BUILD === '1';
 const ASSERT_SINGLE_OWNER = process.argv.includes('--assert-single-owner');
 const BROWSER_NAME = String(process.env.PHASE0_BROWSER || 'webkit').toLowerCase();
@@ -187,8 +188,9 @@ async function runBrowserProbe() {
     await page.locator('html.auth-ready').waitFor({ state:'attached', timeout:10000 });
     await page.locator('html[data-registry-mobile-lite]').waitFor({ state:'attached', timeout:5000 });
 
-    // The v9 owner contract intentionally keeps mobile-lite in control even when
-    // the bounded list request outlives the 12 s diagnostic stall threshold.
+    // Delay the bounded phone list well past the removed 5 s takeover window.
+    // The separate static gate verifies the 12 s stall-watch implementation;
+    // runtime ownership must not depend on exactly when auth starts that timer.
     await page.waitForTimeout(MOBILE_SEARCH_DELAY_MS + 1800);
     await page.locator('#tbody .mobile-lite-card').first().waitFor({ state:'attached', timeout:5000 });
 
@@ -253,6 +255,7 @@ async function runBrowserProbe() {
     const firstFullStart = fullStarts[0] || null;
     const firstLiteReady = state.probe?.mobileLiteReady?.[0] || null;
     const stalledObserved = (state.probe?.mobileLiteStalled || []).length > 0;
+    const legacyTakeoverWindowExceeded = Boolean(firstLiteReady && firstLiteReady.atMs > LEGACY_TAKEOVER_WINDOW_MS);
     const overlappingOwners = Boolean(firstFullStart && firstLiteReady && firstFullStart.atMs < firstLiteReady.atMs);
     const phoneEnhancerSkipped = state.datasets.firstPageClinical === 'phone-skipped';
     const firstPageOwnerEvents = state.probe?.firstPageAuditReady || [];
@@ -270,6 +273,8 @@ async function runBrowserProbe() {
       browser:BROWSER_NAME === 'chromium' ? 'chromium' : 'webkit',
       viewport:{ width:390, height:844 },
       delayedRegistryPageMs:MOBILE_SEARCH_DELAY_MS,
+      legacyTakeoverWindowMs:LEGACY_TAKEOVER_WINDOW_MS,
+      legacyTakeoverWindowExceeded,
       mobileStallThresholdMs:MOBILE_STALL_THRESHOLD_MS,
       stalledObserved,
       requestedFullRegistry,
@@ -285,6 +290,7 @@ async function runBrowserProbe() {
     console.log(`\nPHASE0_RUNTIME_REPORT ${JSON.stringify(report, null, 2)}\n`);
 
     if (ASSERT_SINGLE_OWNER) {
+      assert.equal(legacyTakeoverWindowExceeded, true, 'The delayed phone fixture did not exceed the removed 5 s takeover window.');
       assert.equal(fullStarts.length, 0, 'Full registry runtime started during delayed phone startup.');
       assert.equal(requestedFullRegistry, false, 'The full registry data path was requested during delayed phone startup.');
       assert.equal(overlappingOwners, false, 'Both mobile-lite and full registry became active during the same phone startup.');
@@ -294,9 +300,6 @@ async function runBrowserProbe() {
       assert.equal(phoneEnhancerSkipped, true, 'Desktop/tablet first-page enhancer must stay out of the phone registry DOM.');
       assert.equal(phoneOwnerEventObserved, true, 'The explicit phone-registry ownership event was not observed.');
       assert.equal(mobileToolbarTagged, true, 'The canonical phone toolbar marker is missing.');
-      if (MOBILE_SEARCH_DELAY_MS >= MOBILE_STALL_THRESHOLD_MS + 500) {
-        assert.equal(stalledObserved, true, 'Expected the diagnostic stalled event without a full-runtime takeover.');
-      }
     }
 
     await context.close();
