@@ -45,7 +45,10 @@ assert.match(mobile, /DEFAULT_PAGE_SIZE = 25/, 'mobile lightweight path must def
 assert.match(mobile, /MAX_PAGE_SIZE = 50/, 'mobile lightweight path must cap requests at 50 rows');
 assert.match(mobile, /view:'registry-page'/, 'mobile lightweight path must use the bounded registry gateway');
 assert.match(mobile, /SEARCH_DEBOUNCE_MS = 250/, 'mobile search must be debounced');
-assert.match(mobile, /medindex:request-full-registry/, 'advanced mobile features need a safe full-runtime handoff');
+assert.match(mobile, /fatal-mobile-lite-recovery/, 'mobile must retain explicit fatal recovery without ordinary renderer handoff');
+assert.match(mobile, /medindex:request-full-registry/, 'fatal/viewport mobile recovery still needs an observable full-runtime transition');
+assert.doesNotMatch(mobile, /requestFullRegistry\('mobile-lite-error'\)/, 'ordinary mobile API failure must not replace the lightweight renderer');
+assert.doesNotMatch(mobile, /requestFullRegistry\('drug-full-detail'\)/, 'targeted mobile detail must not wake the full registry renderer');
 
 const desktop = read('registry-desktop-lite.js');
 assert.match(desktop, /registry-desktop-lite-v1/, 'desktop lightweight runtime must be active');
@@ -56,16 +59,21 @@ assert.match(desktop, /medindex:request-full-registry/, 'advanced desktop featur
 assert.doesNotMatch(desktop, /\/api\/registry(?:\?|['"`])/, 'normal desktop lightweight startup must not request the full registry endpoint');
 
 const loader = read('registry-runtime-loader.js');
-assert.match(loader, /registry-runtime-loader-v8/, 'the mobile-and-desktop lightweight authenticated loader version must be current');
-assert.match(loader, /app-performance\.js\?v=20260801-2/, 'loader must retain the current full registry application for explicit fallback/handoff');
+assert.match(loader, /registry-runtime-loader-v9/, 'single-owner mobile and bounded desktop loader version must be current');
+assert.match(loader, /app-performance\.js\?v=20260801-2/, 'loader must retain the current full registry application for explicit fatal/desktop fallback');
 assert.match(loader, /classList\.contains\('auth-ready'\)/, 'registry startup must wait for the authenticated shell');
-assert.match(loader, /MOBILE_LITE_GRACE_MS = 5000/, 'mobile lightweight startup needs a bounded fallback grace period');
+assert.match(loader, /MOBILE_LITE_STALL_MS = 12000/, 'mobile lightweight startup needs a diagnostic stall watch without renderer takeover');
 assert.match(loader, /DESKTOP_LITE_GRACE_MS = 5000/, 'desktop lightweight startup needs a bounded fallback grace period');
 assert.match(loader, /mobile-lite-deferred/, 'full runtime must be deferred while the mobile lightweight path starts');
+assert.match(loader, /mobile-lite-stalled/, 'slow mobile startup must remain observable without waking the full renderer');
+assert.match(loader, /medindex:mobile-lite-stalled/, 'mobile stall state must publish an observable diagnostic event');
+assert.match(loader, /mobile-full-registry-blocked/, 'nonfatal mobile attempts to wake the full registry must be blocked and observable');
+assert.match(loader, /isExplicitMobileFullRequest/, 'mobile full-runtime transition must be restricted to explicit fatal/viewport recovery');
+assert.doesNotMatch(loader, /scheduleRuntime\('mobile-lite-timeout'\)/, 'mobile timeout must never replace the mobile-lite list owner');
 assert.match(loader, /desktop-lite-deferred/, 'full runtime must be deferred while the desktop lightweight path starts');
 assert.match(loader, /desktop-lite-timeout/, 'desktop lightweight mode must retain a bounded full-runtime fallback');
 assert.match(loader, /legacy-no-lite/, 'non-lightweight environments must retain a safe legacy fallback');
-assert.match(loader, /medindex:request-full-registry/, 'loader must support explicit lightweight handoff');
+assert.match(loader, /medindex:request-full-registry/, 'loader must support explicit fatal/desktop lightweight handoff');
 assert.match(loader, /requestAnimationFrame\(\(\) => \{[\s\S]*loadRuntime\(/, 'registry startup must yield one frame before loading');
 assert.doesNotMatch(loader, /scheduleRuntime\('desktop-or-legacy'\)/, 'authenticated desktop must not eagerly launch the full registry runtime');
 assert.doesNotMatch(loader, /FIRST_INTERACTION_FALLBACK_MS|POST_INTERACTION_GRACE_MS|INTERACTION_EVENTS/, 'obsolete interaction delays must stay removed');
@@ -77,4 +85,4 @@ assert.match(part, /if\(existing\)[\s\S]*existing\.addEventListener\('load', fin
 assert.match(part, /script\.async = true/, 'quality fallback runtime must not block document parsing');
 assert.doesNotMatch(part, /existing\.addEventListener\('error', reject/, 'quality bootstrap must not remain rejected or unresolved');
 
-console.log('Registry fast-start, mobile lightweight v2, desktop lightweight Phase 10 and authenticated loader v8 audit passed.');
+console.log('Registry fast-start, single-owner mobile lightweight v2, desktop lightweight and authenticated loader v9 audit passed.');
