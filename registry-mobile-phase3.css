@@ -110,6 +110,8 @@
     box-shadow:0 16px 40px rgba(16,24,40,.16);
     backdrop-filter:blur(18px) saturate(1.1);
     -webkit-backdrop-filter:blur(18px) saturate(1.1);
+    transform:translateY(0);
+    transition:opacity .16s ease,transform .18s ease,visibility .18s ease;
   }
 
   .mi-registry-bottom-nav :is(a,button){
@@ -154,6 +156,22 @@
     line-height:1.1;
     text-overflow:ellipsis;
     white-space:nowrap;
+  }
+
+  .mi-registry-bottom-nav[data-mi-registry-nav-blocked="true"],
+  body.mi-sidebar-open .mi-registry-bottom-nav,
+  body.mi-mobile-search-open .mi-registry-bottom-nav,
+  body.mi-registry-filter-open .mi-registry-bottom-nav,
+  body.mobile-lite-detail-open .mi-registry-bottom-nav,
+  html[data-mi-keyboard-open="true"] .mi-registry-bottom-nav{
+    opacity:0!important;
+    visibility:hidden!important;
+    pointer-events:none!important;
+    transform:translateY(calc(100% + 24px))!important;
+  }
+
+  html[data-mi-keyboard-open="true"][data-registry-mobile-lite][data-registry-mobile-phase3] .mi-content-container{
+    padding-bottom:calc(34px + env(safe-area-inset-bottom))!important;
   }
 
   .mi-registry-filter-sheet[hidden]{display:none!important}
