@@ -145,24 +145,45 @@ async function shellGeometryState(page) {
         height:Math.round(value.height * 10) / 10,
       };
     };
+    const styleDisplay = node => node ? getComputedStyle(node).display : '';
     const topbar = document.querySelector('.mi-topbar');
     const nav = document.getElementById('miRegistryBottomNav');
+    const heading = document.querySelector('.mi-page-heading');
+    const breadcrumb = document.querySelector('.mi-breadcrumb');
+    const subtitle = document.querySelector('.mi-page-heading p');
+    const headingBadge = document.querySelector('.mi-heading-badge');
+    const registrySearch = document.getElementById('search');
+    const registryToolbar = registrySearch?.closest('.registry-filter-panel-unified,.toolbar') || null;
+    const filterBar = document.querySelector('.mi-registry-mobile-filter-bar');
     const controls = [...document.querySelectorAll('.mi-topbar .mi-sidebar-toggle,.mi-topbar-actions .mi-icon-button,.mi-topbar-actions .mi-primary-action')];
     const navItems = [...(nav?.querySelectorAll('a,button') || [])];
     const primaryLabel = document.querySelector('.mi-topbar .mi-primary-action span');
     const brandLabel = document.querySelector('.mi-topbar .mi-mobile-brand strong');
-    const lastCard = [...document.querySelectorAll('#tbody .mobile-lite-card')].at(-1) || null;
+    const cards = [...document.querySelectorAll('#tbody .mobile-lite-card')];
+    const firstCard = cards[0] || null;
+    const lastCard = cards.at(-1) || null;
     return {
       viewport:{ width:innerWidth, height:innerHeight },
       topbar:rect(topbar),
       nav:rect(nav),
+      heading:rect(heading),
+      headingBadge:rect(headingBadge),
+      search:rect(registrySearch),
+      toolbar:rect(registryToolbar),
+      filterBar:rect(filterBar),
+      firstCard:rect(firstCard),
+      firstCardTop:firstCard ? Math.round(firstCard.getBoundingClientRect().top * 10) / 10 : null,
       navBottomGap:nav ? Math.round((innerHeight - nav.getBoundingClientRect().bottom) * 10) / 10 : null,
       controlBoxes:controls.map(rect),
       navItemBoxes:navItems.map(rect),
-      primaryLabelDisplay:primaryLabel ? getComputedStyle(primaryLabel).display : '',
-      brandLabelDisplay:brandLabel ? getComputedStyle(brandLabel).display : '',
+      primaryLabelDisplay:styleDisplay(primaryLabel),
+      brandLabelDisplay:styleDisplay(brandLabel),
+      breadcrumbDisplay:styleDisplay(breadcrumb),
+      subtitleDisplay:styleDisplay(subtitle),
+      headingBadgeDisplay:styleDisplay(headingBadge),
       lastCard:rect(lastCard),
       lastCardCovered:Boolean(lastCard && nav && lastCard.getBoundingClientRect().bottom > nav.getBoundingClientRect().top - 4),
+      horizontalOverflow:document.documentElement.scrollWidth > document.documentElement.clientWidth + 1,
     };
   });
 }
@@ -185,7 +206,22 @@ function assertCompactShellGeometry(state, label, { lastCardVisible = false } = 
     assert.ok(box.height >= 44, `${label}: bottom nav item ${index + 1} fell below the 44px touch target.`);
     assert.ok(box.height <= 52, `${label}: bottom nav item ${index + 1} became too tall.`);
   });
+  assert.equal(state.horizontalOverflow, false, `${label}: shell geometry introduced horizontal overflow.`);
   if (lastCardVisible) assert.equal(state.lastCardCovered, false, `${label}: bottom navigation covers the final medicine card.`);
+}
+
+function assertCompactRegistryDensity(state, label) {
+  assert.ok(state.heading, `${label}: page heading is missing.`);
+  assert.ok(state.search, `${label}: registry search is missing.`);
+  assert.ok(state.toolbar, `${label}: registry search toolbar is missing.`);
+  assert.ok(state.filterBar, `${label}: compact filter bar is missing.`);
+  assert.equal(state.breadcrumbDisplay, 'none', `${label}: breadcrumb wastes vertical space on phone.`);
+  assert.equal(state.subtitleDisplay, 'none', `${label}: page subtitle must collapse on phone.`);
+  assert.ok(state.heading.height <= 36, `${label}: phone heading is too tall (${state.heading.height}px).`);
+  assert.ok(state.search.height >= 43 && state.search.height <= 46, `${label}: phone registry search must stay near the 44px touch target, got ${state.search.height}px.`);
+  assert.ok(state.toolbar.height <= 94, `${label}: mobile search/count toolbar is too tall (${state.toolbar.height}px).`);
+  assert.ok(state.filterBar.height >= 43 && state.filterBar.height <= 48, `${label}: compact filter bar must remain one touch row, got ${state.filterBar.height}px.`);
+  assert.ok(state.firstCardTop != null && state.firstCardTop <= 250, `${label}: first medicine starts too low (${state.firstCardTop}px), wasting the phone viewport.`);
 }
 
 function assertOpenSurfaceState(state, label) {
@@ -234,6 +270,7 @@ function assertIdleState(state, label) {
     const report = {
       geometry:null,
       geometryAtEnd:null,
+      smallPhoneGeometry:null,
       initial:null,
       sidebar:null,
       afterSidebar:null,
@@ -249,6 +286,7 @@ function assertIdleState(state, label) {
 
     report.geometry = await shellGeometryState(page);
     assertCompactShellGeometry(report.geometry, 'initial geometry');
+    assertCompactRegistryDensity(report.geometry, 'initial density');
 
     report.initial = await navState(page);
     assertIdleState(report.initial, 'initial');
@@ -322,6 +360,13 @@ function assertIdleState(state, label) {
     await page.waitForTimeout(220);
     report.afterKeyboard = await navState(page);
     assertIdleState(report.afterKeyboard, 'after keyboard');
+
+    await page.setViewportSize({ width:320, height:700 });
+    await page.waitForTimeout(120);
+    report.smallPhoneGeometry = await shellGeometryState(page);
+    assertCompactShellGeometry(report.smallPhoneGeometry, '320px phone geometry');
+    assertCompactRegistryDensity(report.smallPhoneGeometry, '320px phone density');
+    assert.equal(report.smallPhoneGeometry.headingBadgeDisplay, 'none', '320px phone should hide the secondary heading badge to protect one-line density.');
 
     assert.equal(apiRequests.some(pathname => pathname.startsWith('/api/registry')), false, 'Phase 4 shell states must not request /api/registry.');
 
