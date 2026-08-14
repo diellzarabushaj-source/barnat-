@@ -16,6 +16,19 @@ if (!navSource.includes(after)) {
 
 fs.writeFileSync(navFile, navSource, 'utf8');
 
+const phase8CssFile = path.resolve(__dirname, '..', 'registry-mobile-phase8.css');
+let phase8Css = fs.readFileSync(phase8CssFile, 'utf8').replace(/\r\n?/g, '\n');
+const oldPhoneCardPadding = 'padding:10px 10px 10px 13px!important;';
+const compactPhoneCardPadding = 'padding:4px 10px 4px 13px!important;';
+if (!phase8Css.includes(compactPhoneCardPadding)) {
+  if (!phase8Css.includes(oldPhoneCardPadding)) throw new Error('Phase 8 explicit mobile card padding block changed.');
+  phase8Css = phase8Css.replace(oldPhoneCardPadding, compactPhoneCardPadding);
+}
+if (!phase8Css.includes(compactPhoneCardPadding)) {
+  throw new Error('Final phone card vertical spacing was not materialized.');
+}
+fs.writeFileSync(phase8CssFile, phase8Css, 'utf8');
+
 const phoneCssFile = path.resolve(__dirname, '..', 'registry-mobile-phone-hardening.css');
 let phoneCss = fs.readFileSync(phoneCssFile, 'utf8').replace(/\r\n?/g, '\n');
 const oldNarrowCard = `@media (max-width:359px){\n  html[data-registry-mobile-lite] .mobile-lite-card{\n    gap:7px;\n    min-height:92px;\n    padding:11px 9px 11px 12px;\n  }`;
@@ -30,4 +43,4 @@ if (!phoneCss.includes('padding:4px 9px 4px 12px;')) {
 }
 fs.writeFileSync(phoneCssFile, phoneCss, 'utf8');
 
-console.log('Late mobile styles now preserve blocked-nav priority and compact <=359px card spacing.');
+console.log('Late mobile styles now preserve blocked-nav priority and compact phone card spacing without shrinking 44px actions.');
