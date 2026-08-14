@@ -9,7 +9,7 @@ const ROOT = path.resolve(__dirname, '..');
 const PORT = Number(process.env.MOBILE_GEOMETRY_PORT || 4176);
 const BASE = `http://127.0.0.1:${PORT}`;
 const SKIP_BUILD = process.env.MOBILE_GEOMETRY_SKIP_BUILD === '1';
-const WIDTHS = [320, 390, 430];
+const WIDTHS = [320, 360, 375, 390, 430];
 
 function runBuild() {
   if (SKIP_BUILD) return;
@@ -104,6 +104,14 @@ function overlap(a, b) {
     * Math.max(0, Math.min(a.bottom, b.bottom) - Math.max(a.top, b.top));
 }
 
+function inside(inner, outer) {
+  return Boolean(inner && outer
+    && inner.left >= outer.left - 0.5
+    && inner.right <= outer.right + 0.5
+    && inner.top >= outer.top - 0.5
+    && inner.bottom <= outer.bottom + 0.5);
+}
+
 async function auditWidth(browser, width) {
   const context = await browser.newContext({
     viewport:{ width, height:844 },
@@ -118,6 +126,7 @@ async function auditWidth(browser, width) {
     await page.locator('html.auth-ready').waitFor({ state:'attached', timeout:10000 });
     await page.locator('#tbody .mobile-lite-card').nth(9).waitFor({ state:'attached', timeout:10000 });
     await page.locator('#tbody .mi-mobile-favorite-toggle').nth(9).waitFor({ state:'attached', timeout:10000 });
+    await page.locator('#tbody .mobile-lite-actions').nth(9).waitFor({ state:'attached', timeout:10000 });
 
     const result = await page.evaluate(() => {
       const rect = node => {
@@ -138,6 +147,7 @@ async function auditWidth(browser, width) {
           overflowY:value.overflowY,
           contain:value.contain,
           transform:value.transform,
+          gridTemplateColumns:value.gridTemplateColumns,
           gridAutoRows:value.gridAutoRows,
           gap:value.gap,
         };
@@ -147,6 +157,10 @@ async function auditWidth(browser, width) {
         const favorite = card.querySelector('.mi-mobile-favorite-toggle');
         const more = card.querySelector('.mobile-lite-more');
         const open = card.querySelector('.mobile-lite-open');
+        const actions = card.querySelector('.mobile-lite-actions');
+        const detailTriggers = [...card.querySelectorAll('[data-mobile-lite-detail]')];
+        const favoriteControls = [...card.querySelectorAll('[data-mi-mobile-favorite]')];
+        const moreControls = [...card.querySelectorAll('.mobile-lite-more')];
         const row = card.closest('.mobile-lite-row');
         const cell = card.closest('td');
         const rowChildren = row ? [...row.children].map(child => ({
@@ -164,9 +178,15 @@ async function auditWidth(browser, width) {
           cellStyle:style(cell),
           card:rect(card),
           cardStyle:style(card),
+          actions:actions ? rect(actions) : null,
+          actionsStyle:style(actions),
           favorite:favorite ? rect(favorite) : null,
           more:more ? rect(more) : null,
           open:open ? rect(open) : null,
+          openTag:open?.tagName || '',
+          detailTriggerCount:detailTriggers.length,
+          favoriteControlCount:favoriteControls.length,
+          moreControlCount:moreControls.length,
           text:(card.textContent || '').replace(/\s+/g, ' ').trim(),
         };
       });
@@ -189,8 +209,9 @@ async function auditWidth(browser, width) {
         rowBoxless,
         favoriteMoreOverlap:card.favorite && card.more ? overlap(card.favorite, card.more) : 0,
         adjacentCardOverlap:index < cards.length - 1 ? overlap(card.card, cards[index + 1].card) : 0,
-        favoriteInside:card.favorite ? card.favorite.left >= card.card.left - 0.5 && card.favorite.right <= card.card.right + 0.5 && card.favorite.top >= card.card.top - 0.5 && card.favorite.bottom <= card.card.bottom + 0.5 : false,
-        moreInside:card.more ? card.more.left >= card.card.left - 0.5 && card.more.right <= card.card.right + 0.5 && card.more.top >= card.card.top - 0.5 && card.more.bottom <= card.card.bottom + 0.5 : false,
+        favoriteInside:inside(card.favorite, card.card),
+        moreInside:inside(card.more, card.card),
+        actionsInside:inside(card.actions, card.card),
         rowOwnsCard:rowBoxless ? true : Boolean(card.row && card.row.top <= card.card.top + 0.5 && card.row.bottom >= card.card.bottom - 0.5 && card.row.height >= card.card.height - 0.5),
         cellOwnsCard:card.cell ? card.cell.top <= card.card.top + 0.5 && card.cell.bottom >= card.card.bottom - 0.5 && card.cell.height >= card.card.height - 0.5 : false,
         cellWidthRatio:horizontalOwner && card.cell && horizontalOwner.width > 0 ? card.cell.width / horizontalOwner.width : 0,
@@ -211,6 +232,12 @@ async function auditWidth(browser, width) {
       maxCardHeight:Math.max(...normalized.map(card => card.card.height)),
       minCardWidthRatio:Math.min(...normalized.map(card => card.cardWidthRatio)),
       actionOverlapCount:normalized.filter(card => card.favoriteMoreOverlap > 0.5).length,
+      actionRegionMissingCount:normalized.filter(card => !card.actions).length,
+      actionRegionOutsideCount:normalized.filter(card => !card.actionsInside).length,
+      duplicateDetailTriggerCount:normalized.filter(card => card.detailTriggerCount !== 1).length,
+      duplicateFavoriteControlCount:normalized.filter(card => card.favoriteControlCount !== 1).length,
+      duplicateMoreControlCount:normalized.filter(card => card.moreControlCount !== 1).length,
+      interactiveSummaryCount:normalized.filter(card => card.openTag === 'BUTTON').length,
       adjacentCardOverlapCount:normalized.filter(card => card.adjacentCardOverlap > 0.5).length,
       outsideCardCount:normalized.filter(card => !card.favoriteInside || !card.moreInside).length,
       rowContainmentFailureCount:normalized.filter(card => !card.rowOwnsCard || !card.cellOwnsCard).length,
@@ -223,6 +250,12 @@ async function auditWidth(browser, width) {
     assert.equal(report.horizontalOverflow, false, `${width}px: horizontal overflow detected.`);
     assert.equal(report.fullRuntimeLoaded, false, `${width}px: full registry runtime should not wake for normal card rendering.`);
     assert.equal(report.actionOverlapCount, 0, `${width}px: favorite and Më shumë overlap.`);
+    assert.equal(report.actionRegionMissingCount, 0, `${width}px: explicit mobile card action region is missing.`);
+    assert.equal(report.actionRegionOutsideCount, 0, `${width}px: mobile card action region escaped the card.`);
+    assert.equal(report.duplicateDetailTriggerCount, 0, `${width}px: card must expose exactly one detail trigger.`);
+    assert.equal(report.duplicateFavoriteControlCount, 0, `${width}px: card must expose exactly one favorite control.`);
+    assert.equal(report.duplicateMoreControlCount, 0, `${width}px: card must expose exactly one Më shumë control.`);
+    assert.equal(report.interactiveSummaryCount, 0, `${width}px: card summary must be passive; only Më shumë opens details.`);
     assert.equal(report.adjacentCardOverlapCount, 0, `${width}px: adjacent medicine cards overlap in the vertical flow.`);
     assert.equal(report.outsideCardCount, 0, `${width}px: an action escaped the card bounds.`);
     assert.equal(report.rowContainmentFailureCount, 0, `${width}px: the mobile flow/cell does not own the full medicine card height.`);
