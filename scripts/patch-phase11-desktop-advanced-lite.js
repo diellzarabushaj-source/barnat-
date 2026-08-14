@@ -72,7 +72,8 @@ function patchDesktopLargePages() {
     const serverStart = firstServerPage();
     const first = await fetchRegistryChunk(serverStart, { includeTotal, signal });
     const payloads = [first];
-    const payloadTotal = Number(first.pagination?.total);
+    const rawPayloadTotal = first.pagination?.total;
+    const payloadTotal = rawPayloadTotal === null || rawPayloadTotal === undefined ? null : Number(rawPayloadTotal);
     const knownTotal = Number.isFinite(payloadTotal) ? payloadTotal : state.total;
     let chunksToFetch = requestedChunks;
 
@@ -180,6 +181,9 @@ function patchDesktopLargePages() {
   if (!source.includes('payloads.flatMap(payload => payload.rows).slice(0, state.pageSize)')) {
     throw new Error('Phase 11 logical page composition is missing.');
   }
+  if (!source.includes('rawPayloadTotal === null || rawPayloadTotal === undefined ? null : Number(rawPayloadTotal)')) {
+    throw new Error('Phase 11 count-free pages must preserve unknown totals instead of coercing null to zero.');
+  }
 
   write('registry-desktop-lite.js', source);
 }
@@ -214,4 +218,4 @@ patchDesktopSearchCounting();
 removeLegacyFormHandoff();
 require('./patch-phase11-form-picker-lite.js');
 require('./patch-phase12-targeted-detail-wiring.js');
-console.log('Phase 11 desktop logical page sizes 50/100/250/500 use bounded 50-row Neon chunks without full-registry handoff; non-empty search skips exact count work.');
+console.log('Phase 11 desktop logical page sizes 50/100/250/500 use bounded 50-row Neon chunks without full-registry handoff; non-empty search skips exact count work without losing unknown-total pagination.');
