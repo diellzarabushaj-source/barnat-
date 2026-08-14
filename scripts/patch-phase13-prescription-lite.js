@@ -24,9 +24,18 @@ removeBlock(
   "    tbody.querySelectorAll('[data-registry-column-key=\"trade-name\"]').forEach(cell => {",
   'row prescription-selection handoff',
 );
+removeBlock(
+  "    tbody.querySelectorAll('[data-registry-column-key=\"trade-name\"]').forEach(cell => {",
+  '  function renderCount() {',
+  'redundant per-row trade-name detail listeners',
+);
 source = source.replace("      ['protocolsBtn', 'prescription-builder'],\n", '');
 
 if (/prescription-selection|select-page-for-prescription/.test(source)) throw new Error('Phase 13 legacy selection handoff remains.');
 if (source.includes("['protocolsBtn', 'prescription-builder']")) throw new Error('Phase 13 protocolsBtn still hands off to full registry.');
+if (source.includes('desktop-full-detail')) throw new Error('Phase 13 redundant per-row desktop detail handoff remains.');
+if (source.includes("tbody.querySelectorAll('[data-registry-column-key=\"trade-name\"]')")) {
+  throw new Error('Phase 13 per-row trade-name listeners must be delegated to registry-row-expand/targeted-detail.');
+}
 fs.writeFileSync(FILE, source, 'utf8');
-console.log('Phase 13 removed legacy desktop prescription handoffs; lightweight selection bridge owns the normal path.');
+console.log('Phase 13 removed legacy desktop prescription handoffs and redundant per-row trade-name listeners; delegated lightweight runtimes own the normal path.');
