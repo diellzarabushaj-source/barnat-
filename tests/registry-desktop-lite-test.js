@@ -14,6 +14,7 @@ const loader = read('registry-runtime-loader.js');
 const dosage = read('registry-dosage-columns-v3.js');
 const marker = read('registry-dose-clinical-row-markers.js');
 const phase10Patch = read('scripts/patch-phase10-desktop-lite.js');
+const phase11Patch = read('scripts/patch-phase11-desktop-advanced-lite.js');
 const api = read('api/drug-search.js');
 const packageJson = JSON.parse(read('package.json'));
 
@@ -23,6 +24,7 @@ for (const file of [
   'registry-dosage-columns-v3.js',
   'registry-dose-clinical-row-markers.js',
   'scripts/patch-phase10-desktop-lite.js',
+  'scripts/patch-phase11-desktop-advanced-lite.js',
 ]) {
   execFileSync(process.execPath, ['--check', path.join(ROOT, file)], { stdio:'pipe' });
 }
@@ -47,6 +49,10 @@ assert.match(desktop, /params\.set\('q', state\.q\)/);
 assert.match(desktop, /params\.set\('status', state\.status\)/);
 assert.match(desktop, /params\.set\('formExact', state\.formValue\)/, 'Exact pharmaceutical form must stay on the lightweight server filter.');
 assert.match(desktop, /params\.set\('formCategory', state\.formValue\)/, 'Pharmaceutical-form categories must stay on the lightweight server filter.');
+assert.match(desktop, /const nextQuery = clean\(search\.value\)\.slice\(0, 80\)/, 'Desktop search must resolve a bounded settled query before requesting data.');
+assert.match(desktop, /if \(nextQuery\.length === 1\) return;/, 'One-character desktop search must not trigger an unfiltered registry request.');
+assert.match(desktop, /state\.total = null;\s*state\.totalPages = null;/, 'Count-free desktop searches must clear stale totals.');
+assert.match(desktop, /loadPage\(\{ includeTotal:nextQuery\.length === 0, scroll:false \}\)/, 'Non-empty desktop search must skip exact total counting; clearing search restores it.');
 assert.match(desktop, /medindex:registry-page-ready/);
 assert.match(desktop, /MEDINDEX_REGISTRY_ROWS = canonical/);
 assert.match(desktop, /medindex:request-full-registry/);
@@ -78,6 +84,7 @@ assert.match(dosage, /REQUEST_BATCH_SIZE = 100/, 'Visible dosage reads must rema
 
 assert.match(api, /REGISTRY_MAX_PAGE_SIZE = 50/);
 assert.match(api, /REGISTRY_LIST_SELECT/);
+assert.match(api, /request\.includeTotal \? \{ prefer:'count=exact' \} : \{\}/, 'Exact Neon count work must remain conditional on includeTotal.');
 assert.doesNotMatch(api, /params\.set\('select', '\*'\)/, 'Registry-page API must never regress to SELECT *.');
 
 assert.match(phase10Patch, /ApprovedPopulation = require\('\.\.\/lib\/approved-population-handler\.js'\)/,
@@ -90,6 +97,8 @@ assert.match(phase10Patch, /'Popullata e aprovuar':clean\(row\.approvedPopulatio
   'Desktop canonical rows must expose approved population to downstream clinical UI.');
 assert.match(phase10Patch, /registry-runtime-loader-v10/, 'Phase 10 build patch must preserve the single-owner v10 loader.');
 assert.doesNotMatch(phase10Patch, /MOBILE_LITE_GRACE_MS = 5000/, 'Phase 10 build patch must not recreate the removed mobile timeout contract.');
+assert.match(phase11Patch, /function patchDesktopSearchCounting\(\)/, 'Phase 11 must own the desktop search count optimization deterministically.');
+assert.match(phase11Patch, /includeTotal:nextQuery\.length === 0/, 'Phase 11 build must preserve count-free non-empty desktop search.');
 assert.match(marker, /medindex:registry-page-ready/,
   'Clinical row markers must rebuild population state whenever the lightweight page changes.');
 assert.match(marker, /item\['Popullata e aprovuar'\]/,
@@ -104,4 +113,4 @@ assert.match(packageJson.scripts['build:runtime'], /patch-phase11-desktop-advanc
 assert.match(packageJson.scripts.test, /registry-desktop-lite-test\.js/, 'Desktop lightweight regression test must run in the main test suite.');
 assert.match(packageJson.scripts.test, /registry-desktop-large-page-lite-test\.js/, 'Phase 11-14 composed regression gate must run in the main test suite.');
 
-console.log('Phase 14 desktop bounded pagination, single-owner mobile loader, form filtering, inline population, targeted dosage, prescription and column customization contract passed.');
+console.log('Phase 14 desktop bounded pagination, count-efficient search, single-owner mobile loader, form filtering, inline population, targeted dosage, prescription and column customization contract passed.');
