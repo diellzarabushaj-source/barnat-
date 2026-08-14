@@ -37,8 +37,12 @@ assert.match(runtime, /MEDINDEX_DESKTOP_LITE_ACTIVE/, 'Targeted detail must run 
 assert.match(runtime, /REGISTRY_DETAIL_API \+ '\?view=registry-detail&id='/, 'Registry detail must fetch one drug only.');
 assert.match(runtime, /CLINICAL_DETAIL_API \+ '\?view=card&id='/, 'Clinical detail must fetch one clinical card only.');
 assert.match(runtime, /Promise\.allSettled/, 'Registry and clinical one-drug reads should run together and degrade independently.');
+assert.match(runtime, /const DETAIL_CACHE_LIMIT = 96;/, 'Targeted detail session memory must have a conservative bound.');
 assert.match(runtime, /const cache = new Map\(\)/);
 assert.match(runtime, /const inflight = new Map\(\)/);
+assert.match(runtime, /function readDetailCache\(id\)/, 'Targeted detail cache reads must refresh recency.');
+assert.match(runtime, /function rememberDetail\(id, payload\)/, 'Targeted detail cache writes must use the bounded LRU helper.');
+assert.match(runtime, /while \(cache\.size > DETAIL_CACHE_LIMIT\)/, 'Targeted detail cache must evict the least-recent entry after the cap.');
 assert.match(runtime, /cache\.has\(id\)/, 'Reopening the same drug must reuse its in-memory detail.');
 assert.match(runtime, /Riprovo/);
 assert.match(runtime, /desktop-targeted-detail-advanced/, 'Full runtime must be an explicit advanced action only.');
@@ -65,8 +69,10 @@ assert.match(dosageCard, /editorial_status', 'eq\.published/);
 assert.match(dosageCard, /calculation_status', 'in\.\(text_verified,calculable_verified\)/);
 assert.match(wiring, /registry-desktop-targeted-detail\.js\?v=20260812-1/);
 assert.match(wiring, /patchTargetedDetailObserver/, 'Phase 12 build must deterministically remove the subtree observer.');
+assert.match(wiring, /patchTargetedDetailCache/, 'Phase 12 build must deterministically enforce the bounded detail cache.');
+assert.match(wiring, /DETAIL_CACHE_LIMIT = 96/, 'Phase 12 build must preserve the conservative detail cache bound.');
 assert.match(rowStability, /medindex:registry-row-expanded-change/, 'Row-expansion build must preserve the dedicated expansion event.');
 assert.match(wiring, /registry-desktop-prescription-lite\.js\?v=20260812-1/);
 
 require('./registry-desktop-prescription-lite-test.js');
-console.log('Phase 12/13 desktop targeted detail is event-driven, direct-row observed and remains off the full-registry normal path.');
+console.log('Phase 12/13 desktop targeted detail is event-driven, direct-row observed, bounded in session memory and remains off the full-registry normal path.');
