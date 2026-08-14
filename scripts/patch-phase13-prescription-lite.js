@@ -26,6 +26,20 @@ function removeTradeNameListenerBlock() {
   source = source.slice(0, a) + source.slice(b);
 }
 
+function patchHeaderRenderChurn() {
+  const before = `  function buildHeader() {\n    const header = document.getElementById('headerRow');\n    if (!header) return;`;
+  const after = `  function buildHeader() {\n    const header = document.getElementById('headerRow');\n    if (!header) return;\n    const signature = state.sort + '|' + state.direction;\n    if (header.dataset.desktopLiteHeaderSignature === signature) return;\n    header.dataset.desktopLiteHeaderSignature = signature;`;
+
+  if (!source.includes(after)) {
+    if (!source.includes(before)) throw new Error('Phase 13 could not find desktop header render anchor.');
+    source = source.replace(before, after);
+  }
+
+  if (!source.includes("header.dataset.desktopLiteHeaderSignature === signature")) {
+    throw new Error('Phase 13 desktop header must skip rebuilds when sort state is unchanged.');
+  }
+}
+
 removeBlock(
   "    header.querySelector('[data-desktop-lite-select-all]')?.addEventListener('change', event => {",
   "    header.querySelectorAll('[data-desktop-lite-sort]').forEach(button => {",
@@ -37,6 +51,7 @@ removeBlock(
   'row prescription-selection handoff',
 );
 removeTradeNameListenerBlock();
+patchHeaderRenderChurn();
 source = source.replace("      ['protocolsBtn', 'prescription-builder'],\n", '');
 
 if (/prescription-selection|select-page-for-prescription/.test(source)) throw new Error('Phase 13 legacy selection handoff remains.');
@@ -46,4 +61,4 @@ if (source.includes("tbody.querySelectorAll('[data-registry-column-key=\"trade-n
   throw new Error('Phase 13 per-row trade-name listeners must be delegated to registry-row-expand/targeted-detail.');
 }
 fs.writeFileSync(FILE, source, 'utf8');
-console.log('Phase 13 removed legacy desktop prescription handoffs and redundant per-row trade-name listeners; delegated lightweight runtimes own the normal path.');
+console.log('Phase 13 removed legacy desktop handoffs/listeners and skips unchanged desktop header rebuilds; delegated lightweight runtimes own normal interactions.');
