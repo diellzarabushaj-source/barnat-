@@ -12,12 +12,13 @@
   <link rel="preconnect" href="https://accounts.google.com" crossorigin>
   <link rel="dns-prefetch" href="https://accounts.google.com">
   <link rel="preload" href="/brand/medindex-horizontal-on-light.webp" as="image" type="image/webp" fetchpriority="high">
-  <link rel="stylesheet" href="login-v2.css?v=v2-20260814-1">
+  <link rel="stylesheet" href="login-v2.css?v=v2-20260814-2">
   <noscript><style>.lv-reveal{opacity:1!important;translate:none!important}</style></noscript>
   <script src="https://accounts.google.com/gsi/client" async defer></script>
 </head>
 <body>
   <a class="lv-skip" href="#lvMain">Kalo te përmbajtja</a>
+  <div class="lv-progress" aria-hidden="true"></div>
 
   <div class="lv-preview-flag" role="note">
     <span class="lv-preview-dot" aria-hidden="true"></span>
@@ -46,6 +47,7 @@
 
     <!-- ── HERO ───────────────────────────────────────────────────────── -->
     <section class="lv-hero">
+      <canvas class="lv-gl" id="lvCanvas" aria-hidden="true"></canvas>
       <div class="lv-hero-canvas" aria-hidden="true">
         <span class="lv-orb lv-orb-a"></span>
         <span class="lv-orb lv-orb-b"></span>
@@ -392,7 +394,8 @@
     </div>
   </section>
 
-  <script src="login-v2.js?v=v2-20260814-1" defer></script>
+  <script src="login-v2-canvas.js?v=v2-20260814-2" defer></script>
+  <script src="login-v2.js?v=v2-20260814-2" defer></script>
   <script src="login.js?v=google-auth-audit-5" defer></script>
 </body>
 </html>

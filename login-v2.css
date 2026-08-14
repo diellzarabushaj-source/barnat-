@@ -197,6 +197,14 @@ input,summary{font:inherit}
   color:#fff;
 }
 
+/* Kanavaca WebGL rri nën gjithçka. Kur konteksti s'merret, JS-i e heq dhe
+   gradientët e `.lv-hero` mbeten të vetmit — prandaj asgjë nuk varet prej saj. */
+.lv-gl{
+  position:absolute;inset:0;z-index:-2;
+  display:block;width:100%;height:100%;
+  pointer-events:none;
+}
+
 /* ── Parallax: çdo shtresë lëviz me thellësi tjetër ────────────────────── */
 .lv-hero-canvas{position:absolute;inset:0;z-index:-1;pointer-events:none;overflow:hidden}
 .lv-orb{position:absolute;border-radius:50%;filter:blur(70px);opacity:.5;will-change:transform}
@@ -727,6 +735,40 @@ input,summary{font:inherit}
 }
 .login-meta span{color:var(--lv-muted);font-size:9.5px;font-weight:720;letter-spacing:.1em;text-transform:uppercase}
 
+/* ── ANIMIME TË DREJTUARA NGA SKROLLIMI ─────────────────────────────────
+   Native, pa JavaScript. Aty ku shfletuesi s'i mbështet, shiriti i progresit
+   thjesht nuk shfaqet dhe hero-ja rri e qetë — asgjë tjetër nuk ndryshon. */
+.lv-progress{display:none}
+
+@supports (animation-timeline: scroll()){
+  .lv-progress{
+    position:fixed;z-index:70;top:0;right:0;left:0;
+    display:block;height:3px;
+    transform-origin:0 50%;
+    background:linear-gradient(90deg,var(--lv-blue),var(--lv-teal) 70%,#63e0c8);
+    animation:lvProgress linear both;
+    animation-timeline:scroll(root block);
+  }
+  @keyframes lvProgress{from{transform:scaleX(0)}to{transform:scaleX(1)}}
+
+  /* Hero-ja tërhiqet butë ndërsa del nga pamja. `scale` dhe `opacity` janë
+     veti të pavarura, prandaj nuk përplasen me `transform`-in e parallax-it. */
+  .lv-hero-inner{
+    animation:lvHeroExit linear both;
+    animation-timeline:view();
+    animation-range:exit 0% exit 92%;
+  }
+  @keyframes lvHeroExit{to{opacity:0;scale:.94;filter:blur(3px)}}
+
+  /* Kartat vijnë me thellësi ndërsa hyjnë në pamje. */
+  .lv-card{
+    animation:lvCardIn linear both;
+    animation-timeline:view();
+    animation-range:entry 0% entry 55%;
+  }
+  @keyframes lvCardIn{from{opacity:0;scale:.96;translate:0 26px}to{opacity:1;scale:1;translate:none}}
+}
+
 /* ── ANIMIMI I SHFAQJES ─────────────────────────────────────────────────── */
 /* `translate` në vend të `transform`: kështu shfaqja graduale nuk përplaset
    me rrotullimin 3D të kartave, që e mban `transform` për vete. */
@@ -779,10 +821,12 @@ input,summary{font:inherit}
   .lv-reveal{opacity:1;translate:none;transition:none}
   .lv-btn,.lv-card,.lv-nav,.login-modal-close,.login-submit,.lv-card-icon{transition:none}
   .lv-btn:hover,.login-submit:hover{transform:none}
-  /* Parallax-i dhe prekja 3D hiqen krejt. */
+  /* Parallax-i, prekja 3D dhe animimet e skrollimit hiqen krejt. */
   .lv-orb,.lv-grid-lines,.lv-hero-mark,.lv-hero-inner{transform:none!important}
   .lv-card{transform:none!important}
   .lv-card:hover .lv-card-icon{transform:none}
+  .lv-progress{display:none!important}
+  .lv-hero-inner,.lv-card{animation:none!important;opacity:1!important;scale:none!important;filter:none!important}
 }
 
 @media print{
