@@ -150,8 +150,74 @@ async function auditWidth(browser, width) {
           gridTemplateColumns:value.gridTemplateColumns,
           gridAutoRows:value.gridAutoRows,
           gap:value.gap,
+          padding:value.padding,
+          paddingTop:value.paddingTop,
+          paddingRight:value.paddingRight,
+          paddingBottom:value.paddingBottom,
+          paddingLeft:value.paddingLeft,
         };
       };
+
+      function matchingPaddingRules(node) {
+        if (!node) return [];
+        const matches = [];
+        let order = 0;
+        const rememberRules = (rules, href, context = []) => {
+          if (!rules) return;
+          for (const rule of rules) {
+            order += 1;
+            if (rule.type === CSSRule.STYLE_RULE) {
+              const selector = rule.selectorText || '';
+              let selectorMatches = false;
+              try { selectorMatches = Boolean(selector && node.matches(selector)); } catch {}
+              if (!selectorMatches) continue;
+              const hasPadding = rule.style?.getPropertyValue('padding')
+                || rule.style?.getPropertyValue('padding-top')
+                || rule.style?.getPropertyValue('padding-right')
+                || rule.style?.getPropertyValue('padding-bottom')
+                || rule.style?.getPropertyValue('padding-left');
+              if (!hasPadding) continue;
+              matches.push({
+                order,
+                href:href || 'inline-style-sheet',
+                context,
+                selector,
+                padding:rule.style.getPropertyValue('padding'),
+                paddingPriority:rule.style.getPropertyPriority('padding'),
+                paddingTop:rule.style.getPropertyValue('padding-top'),
+                paddingTopPriority:rule.style.getPropertyPriority('padding-top'),
+                paddingRight:rule.style.getPropertyValue('padding-right'),
+                paddingBottom:rule.style.getPropertyValue('padding-bottom'),
+                paddingBottomPriority:rule.style.getPropertyPriority('padding-bottom'),
+                paddingLeft:rule.style.getPropertyValue('padding-left'),
+              });
+              continue;
+            }
+            if ('cssRules' in rule) {
+              let childRules = null;
+              try { childRules = rule.cssRules; } catch {}
+              if (!childRules) continue;
+              const condition = rule.conditionText || rule.name || rule.constructor?.name || 'group';
+              rememberRules(childRules, href, [...context, String(condition)]);
+            }
+          }
+        };
+
+        for (const sheet of [...document.styleSheets]) {
+          let rules = null;
+          try { rules = sheet.cssRules; } catch {}
+          if (rules) rememberRules(rules, sheet.href || 'inline-style-sheet');
+        }
+        if (Array.isArray(document.adoptedStyleSheets)) {
+          for (const sheet of document.adoptedStyleSheets) {
+            let rules = null;
+            try { rules = sheet.cssRules; } catch {}
+            if (rules) rememberRules(rules, 'adopted-style-sheet');
+          }
+        }
+        return matches;
+      }
+
       const tbody = document.getElementById('tbody');
       const cards = [...document.querySelectorAll('#tbody .mobile-lite-card')].slice(0, 10).map((card, index) => {
         const favorite = card.querySelector('.mi-mobile-favorite-toggle');
@@ -178,6 +244,8 @@ async function auditWidth(browser, width) {
           cellStyle:style(cell),
           card:rect(card),
           cardStyle:style(card),
+          cardInlineStyle:card.getAttribute('style') || '',
+          paddingRules:index === 1 ? matchingPaddingRules(card) : [],
           actions:actions ? rect(actions) : null,
           actionsStyle:style(actions),
           favorite:favorite ? rect(favorite) : null,
