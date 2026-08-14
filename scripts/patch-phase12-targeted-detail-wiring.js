@@ -59,6 +59,43 @@ function patchTargetedDetailObserver() {
   fs.writeFileSync(DETAIL_FILE, detail, 'utf8');
 }
 
+function patchTargetedDetailCache() {
+  let detail = fs.readFileSync(DETAIL_FILE, 'utf8').replace(/\r\n?/g, '\n');
+
+  if (!detail.includes('const DETAIL_CACHE_LIMIT = 96;')) {
+    const anchor = `  const UUID_RE = /^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i;\n  const cache = new Map();`;
+    const replacement = `  const UUID_RE = /^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i;\n  const DETAIL_CACHE_LIMIT = 96;\n  const cache = new Map();`;
+    if (!detail.includes(anchor)) throw new Error('Phase 12 could not find targeted-detail cache constant anchor.');
+    detail = detail.replace(anchor, replacement);
+  }
+
+  if (!detail.includes('function readDetailCache(id)')) {
+    const anchor = `  function loadDetail(id) {`;
+    const helpers = `  function readDetailCache(id) {\n    if (!cache.has(id)) return null;\n    const payload = cache.get(id);\n    cache.delete(id);\n    cache.set(id, payload);\n    return payload;\n  }\n\n  function rememberDetail(id, payload) {\n    cache.delete(id);\n    cache.set(id, payload);\n    while (cache.size > DETAIL_CACHE_LIMIT) {\n      const oldestId = cache.keys().next().value;\n      if (!oldestId) break;\n      cache.delete(oldestId);\n    }\n    return payload;\n  }\n\n${anchor}`;
+    if (!detail.includes(anchor)) throw new Error('Phase 12 could not find targeted-detail loadDetail anchor.');
+    detail = detail.replace(anchor, helpers);
+  }
+
+  detail = detail.replace(
+    `    if (cache.has(id)) return Promise.resolve(cache.get(id));`,
+    `    const cached = readDetailCache(id);\n    if (cached) return Promise.resolve(cached);`,
+  );
+  detail = detail.replace(`      cache.set(id, payload);`, `      rememberDetail(id, payload);`);
+  detail = detail.replace(
+    `    if (cache.has(id)) {\n      renderDetail(row, cache.get(id));\n      return true;\n    }`,
+    `    const cached = readDetailCache(id);\n    if (cached) {\n      renderDetail(row, cached);\n      return true;\n    }`,
+  );
+
+  if (!detail.includes('const DETAIL_CACHE_LIMIT = 96;')) throw new Error('Phase 12 detail cache limit is missing.');
+  if (!detail.includes('while (cache.size > DETAIL_CACHE_LIMIT)')) throw new Error('Phase 12 detail cache eviction is missing.');
+  if (!detail.includes('const cached = readDetailCache(id);')) throw new Error('Phase 12 detail cache must refresh recency on reads.');
+  if (detail.includes('cache.set(id, payload);') && !detail.includes('function rememberDetail(id, payload)')) {
+    throw new Error('Phase 12 unbounded detail cache write remains.');
+  }
+
+  fs.writeFileSync(DETAIL_FILE, detail, 'utf8');
+}
+
 ensureAfter(
   ROW_PATTERN,
   DETAIL_PATTERN,
@@ -87,8 +124,9 @@ if (prescriptionIndex <= detailIndex) throw new Error('Phase 13 prescription bri
 if (columnIndex <= prescriptionIndex) throw new Error('Phase 14 column-lite runtime must load after prescription bridge.');
 
 patchTargetedDetailObserver();
+patchTargetedDetailCache();
 fs.writeFileSync(INDEX, source, 'utf8');
 require('./patch-phase13-prescription-lite.js');
 require('./patch-phase14-column-lite.js');
 
-console.log('Phase 12-14 targeted detail uses event-driven row expansion plus direct-row observation; prescription and visible-column lightweight runtimes remain in one build cohort.');
+console.log('Phase 12-14 targeted detail is event-driven with a bounded 96-entry session LRU; prescription and visible-column lightweight runtimes remain in one build cohort.');
