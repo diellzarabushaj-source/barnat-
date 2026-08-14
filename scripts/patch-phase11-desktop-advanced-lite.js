@@ -57,7 +57,7 @@ function patchDesktopLargePages() {
 
   async function fetchRegistryChunk(serverPage, { includeTotal = false, signal } = {}) {
     const response = await fetch(buildPageUrl({ includeTotal, page:serverPage, pageSize:SERVER_PAGE_SIZE }), {
-      credentials:'same-origin', cache:'no-store', signal,
+      credentials:'same-origin', cache:'default', signal,
       headers:{ Accept:'application/json' },
     });
     if (response.status === 401) throw new Error('Sesioni ka skaduar.');
@@ -182,6 +182,9 @@ function patchDesktopLargePages() {
   if (!source.includes('const MAX_LOGICAL_PAGE_SIZE = 500;')) throw new Error('Phase 11 500-row logical cap is missing.');
   if (!source.includes('const MAX_PAGE_CHUNKS = 10;')) throw new Error('Phase 11 bounded chunk cap is missing.');
   if (!source.includes('pageSize:String(boundedPageSize)')) throw new Error('Phase 11 server page-size bound is missing.');
+  if (!source.includes("credentials:'same-origin', cache:'default', signal")) {
+    throw new Error('Phase 11 desktop page requests must honor the private server cache contract.');
+  }
   if (!source.includes('payloads.flatMap(payload => payload.rows).slice(0, state.pageSize)')) {
     throw new Error('Phase 11 logical page composition is missing.');
   }
@@ -225,4 +228,4 @@ patchDesktopSearchCounting();
 removeLegacyFormHandoff();
 require('./patch-phase11-form-picker-lite.js');
 require('./patch-phase12-targeted-detail-wiring.js');
-console.log('Phase 11 desktop logical page sizes 50/100/250/500 use bounded 50-row Neon chunks; search skips exact counts, unknown-total pagination stays correct and loading state remains request-owned.');
+console.log('Phase 11 desktop logical page sizes 50/100/250/500 use bounded 50-row Neon chunks; private browser cache is honored, search skips exact counts, unknown-total pagination stays correct and loading state remains request-owned.');
