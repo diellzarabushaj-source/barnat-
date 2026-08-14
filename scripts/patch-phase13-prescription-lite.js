@@ -40,6 +40,34 @@ function patchHeaderRenderChurn() {
   }
 }
 
+function patchPaginationDelegation() {
+  if (!source.includes('function onDesktopLitePaginationClick(event)')) {
+    const renderAnchor = `  function renderPagination() {`;
+    if (!source.includes(renderAnchor)) throw new Error('Phase 13 could not find desktop pagination render anchor.');
+    const delegated = `  function onDesktopLitePaginationClick(event) {\n    const button = event.target.closest?.('[data-desktop-lite-page]');\n    const pagination = document.getElementById('pagination');\n    if (!button || !pagination?.contains(button) || state.loading || state.disabled) return;\n    const direction = button.dataset.desktopLitePage;\n    if (direction === 'prev') {\n      if (state.page <= 1) return;\n      state.page -= 1;\n    } else if (direction === 'next') {\n      if (!state.hasNext) return;\n      state.page += 1;\n    } else return;\n    void loadPage({ includeTotal:false, scroll:true });\n  }\n\n${renderAnchor}`;
+    source = source.replace(renderAnchor, delegated);
+  }
+
+  const oldPrev = `    pagination.querySelector('[data-desktop-lite-page="prev"]')?.addEventListener('click', () => {\n      if (state.page <= 1 || state.loading) return;\n      state.page -= 1;\n      void loadPage({ includeTotal:false, scroll:true });\n    });\n`;
+  const oldNext = `    pagination.querySelector('[data-desktop-lite-page="next"]')?.addEventListener('click', () => {\n      if (!state.hasNext || state.loading) return;\n      state.page += 1;\n      void loadPage({ includeTotal:false, scroll:true });\n    });\n`;
+  source = source.replace(oldPrev, '').replace(oldNext, '');
+
+  const controlsBefore = `  function configureControls() {\n    const search = document.getElementById('search');`;
+  const controlsAfter = `  function configureControls() {\n    document.getElementById('pagination')?.addEventListener('click', onDesktopLitePaginationClick);\n    const search = document.getElementById('search');`;
+  if (!source.includes(controlsAfter)) {
+    if (!source.includes(controlsBefore)) throw new Error('Phase 13 could not find desktop control setup for pagination delegation.');
+    source = source.replace(controlsBefore, controlsAfter);
+  }
+
+  if (!source.includes("document.getElementById('pagination')?.addEventListener('click', onDesktopLitePaginationClick)")) {
+    throw new Error('Phase 13 delegated desktop pagination listener is missing.');
+  }
+  if (source.includes("pagination.querySelector('[data-desktop-lite-page=\"prev\"]')?.addEventListener") ||
+      source.includes("pagination.querySelector('[data-desktop-lite-page=\"next\"]')?.addEventListener")) {
+    throw new Error('Phase 13 per-render desktop pagination listeners must not return.');
+  }
+}
+
 removeBlock(
   "    header.querySelector('[data-desktop-lite-select-all]')?.addEventListener('change', event => {",
   "    header.querySelectorAll('[data-desktop-lite-sort]').forEach(button => {",
@@ -52,6 +80,7 @@ removeBlock(
 );
 removeTradeNameListenerBlock();
 patchHeaderRenderChurn();
+patchPaginationDelegation();
 source = source.replace("      ['protocolsBtn', 'prescription-builder'],\n", '');
 
 if (/prescription-selection|select-page-for-prescription/.test(source)) throw new Error('Phase 13 legacy selection handoff remains.');
@@ -61,4 +90,4 @@ if (source.includes("tbody.querySelectorAll('[data-registry-column-key=\"trade-n
   throw new Error('Phase 13 per-row trade-name listeners must be delegated to registry-row-expand/targeted-detail.');
 }
 fs.writeFileSync(FILE, source, 'utf8');
-console.log('Phase 13 removed legacy desktop handoffs/listeners and skips unchanged desktop header rebuilds; delegated lightweight runtimes own normal interactions.');
+console.log('Phase 13 removes legacy desktop listener churn: delegated rows/pagination and stable headers own normal lightweight interactions.');
