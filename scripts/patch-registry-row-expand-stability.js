@@ -47,12 +47,26 @@ source = replacePattern(
   'row-expanded change event'
 );
 
+source = replacePattern(
+  source,
+  /tableObserver\.observe\(tbody, \{\s*childList\s*:\s*true\s*,\s*subtree\s*:\s*true\s*\}\);/,
+  "tableObserver.observe(tbody, { childList:true });",
+  'tableObserver.observe(tbody, { childList:true });',
+  'row-expander subtree observer'
+);
+
 if (!source.includes("medindex:registry-row-expanded-change")) {
   throw new Error('Row expansion stability patch must publish targeted expansion changes.');
 }
 if (!source.includes('if (expansionChanged) row.dataset.registryRowExpanded = expandedState;')) {
   throw new Error('Row expansion stability patch must avoid duplicate expanded-state attribute writes.');
 }
+if (!source.includes('tableObserver.observe(tbody, { childList:true });')) {
+  throw new Error('Row expansion stability patch must observe only direct row replacement.');
+}
+if (/tableObserver\.observe\(tbody,[\s\S]{0,100}subtree\s*:\s*true/.test(source)) {
+  throw new Error('Row expansion stability patch must not retain a tbody subtree observer.');
+}
 
 fs.writeFileSync(TARGET, source);
-console.log('Registry row expansion writes are idempotent and publish one targeted expansion-change event instead of relying on subtree attribute observers.');
+console.log('Registry row expansion is event-driven and direct-row observed; nested dosage refreshes are explicit instead of subtree-driven.');
