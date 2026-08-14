@@ -14,6 +14,18 @@ function removeBlock(start, end, label) {
   source = source.slice(0, a) + source.slice(b);
 }
 
+function removeTradeNameListenerBlock() {
+  const start = "    tbody.querySelectorAll('[data-registry-column-key=\"trade-name\"]').forEach(cell => {";
+  const renderRowsClose = '\n  }\n\n  function renderCount() {';
+  const a = source.indexOf(start);
+  if (a < 0) return;
+  const b = source.indexOf(renderRowsClose, a);
+  if (b < 0) throw new Error('Phase 13 could not find redundant per-row trade-name detail listeners end.');
+  // Preserve the closing brace of renderRows(); only the per-row listener loop
+  // is redundant because row-expand and targeted-detail already delegate clicks.
+  source = source.slice(0, a) + source.slice(b);
+}
+
 removeBlock(
   "    header.querySelector('[data-desktop-lite-select-all]')?.addEventListener('change', event => {",
   "    header.querySelectorAll('[data-desktop-lite-sort]').forEach(button => {",
@@ -24,11 +36,7 @@ removeBlock(
   "    tbody.querySelectorAll('[data-registry-column-key=\"trade-name\"]').forEach(cell => {",
   'row prescription-selection handoff',
 );
-removeBlock(
-  "    tbody.querySelectorAll('[data-registry-column-key=\"trade-name\"]').forEach(cell => {",
-  '  function renderCount() {',
-  'redundant per-row trade-name detail listeners',
-);
+removeTradeNameListenerBlock();
 source = source.replace("      ['protocolsBtn', 'prescription-builder'],\n", '');
 
 if (/prescription-selection|select-page-for-prescription/.test(source)) throw new Error('Phase 13 legacy selection handoff remains.');
