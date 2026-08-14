@@ -1,550 +1,880 @@
 # MedIndex — Performance & Responsive V2 Master Plan
 
-## Qëllimi
-
-MedIndex tashmë ka një rrugë lightweight për registry në mobile dhe desktop, server-side pagination të kufizuar, abortim të request-eve stale, Web Worker për fallback-in e plotë dhe një suite të gjerë auditimi. Ky plan **nuk e rindërton aplikacionin nga zero**. Qëllimi është ta çojë nga “i mirë” në një UI dukshëm më të shpejtë, më të qëndrueshme dhe më responsive, pa ndryshuar të dhënat klinike ose kontratat ekzistuese.
-
-Prioriteti është **perceived performance**: search, filter, pagination, hapja e detajeve, tabela, scrolling, navigation, mobile interaction dhe resize duhet të ndihen sa më afër instant-it që lejon arkitektura aktuale.
+**Status:** Plan pune / audit para implementimit  
+**Scope:** Frontend performance, perceived speed, responsiveness, runtime cleanup  
+**Nuk prek pa arsye të provuar:** Neon schema, clinical data, API contracts, auth, dosage logic, prescription logic, offline semantics
 
 ---
 
-## Kufijtë e sigurisë
+# 1. Qëllimi kryesor
 
-Ky optimizim nuk duhet të ndryshojë:
+MedIndex tashmë ka një arkitekturë të mirë performance me lightweight registry për mobile dhe desktop, pagination të kufizuar, request cancellation, worker/fallback runtime dhe audit tests. Qëllimi i V2 nuk është redesign apo rewrite.
 
-- të dhënat e barnave;
-- logjikën klinike;
-- rregullat adult/pediatric;
-- schema-n e Neon;
-- semantikën e API-ve;
-- autentikimin;
-- kontratat e registry/dosage;
-- sjelljen offline/PWA;
-- rezultatet e search/filter/sort;
-- funksionet e recetës.
+Qëllimi është që aplikacioni të ndihet **dukshëm më i shpejtë, më i qetë dhe më profesional në çdo ekran**, sidomos në këto momente:
 
-Nuk duhet të përdorim më shumë Neon/API trafik për ta bërë UI-në të duket më e shpejtë. Nuk lejohen duplicated requests, polling, aggressive prefetching ose shkarkim i dataset-it të plotë vetëm për rehati të frontend-it.
+- hapja e faqes;
+- shfaqja e parë e tabelës;
+- typing në search;
+- filters;
+- ATC/category switching;
+- sorting;
+- pagination;
+- hapja e “Më shumë” / drug detail;
+- kthimi nga detail;
+- modals/dialogs;
+- scrolling;
+- mobile keyboard interaction;
+- navigation;
+- resize/orientation change;
+- përdorimi i gjatë pa memory growth.
 
-`NEON-FIRST-PERFORMANCE-PLAN.md` mbetet plani për data path. Ky dokument fokusohet te **frontend runtime, main thread, DOM, CSS/layout, responsiveness dhe perceived speed**.
-
----
-
-## Çfarë ekziston tashmë dhe duhet ruajtur
-
-Nga kodi aktual:
-
-- `registry-mobile-lite.js` aktivizohet nën 768 px;
-- mobile përdor 25 rreshta default dhe maksimum 50;
-- mobile search ka debounce 250 ms dhe aborton request-in e mëparshëm;
-- mobile shmang exact total count gjatë typing-ut;
-- `registry-desktop-lite.js` aktivizohet nga 768 px;
-- desktop përdor lightweight page rendering dhe kërkon vetëm faqen e nevojshme;
-- fallback runtime i plotë nuk preloadohet në startup normal;
-- `registry-parser-worker-v2.js` mban parsing të rëndë jashtë main thread-it;
-- `registry-dosage-loader.js` shtyn punën jo-kritike me idle scheduling;
-- `registry-unified-table.js` kufizon MutationObserver te header/tbody dhe jo te gjithë `document.body`;
-- ekzistojnë audit-e për fast start, interaction resilience, main-thread, table stability, mobile readiness dhe desktop lite.
-
-Këto janë guardrails. V2 duhet t’i përmirësojë, jo t’i heqë.
+**Parimi kryesor:** optimizojmë atë që përdoruesi e ndjen, jo vetëm benchmark-un.
 
 ---
 
-# Fazat e punës
+# 2. Guardrails — gjërat që nuk duhet të thyhen
 
-## Faza 0 — Baseline i matshëm para çdo ndryshimi
+Çdo optimizim duhet të ruajë 100%:
 
-Para optimizimit krijohet një baseline reproducible.
+- të dhënat ekzistuese të barnave;
+- adult/pediatric population logic;
+- dosage content dhe safety rules;
+- clinical source fidelity;
+- ATC/category semantics;
+- search/filter/sort rezultatet;
+- prescription functionality;
+- authentication;
+- offline/PWA behavior;
+- API contracts;
+- Neon schema dhe backend semantics;
+- current clinical workflow.
 
-### Flows që maten
+## Ndalohet si “performance fix”
 
-1. cold initial load;
-2. warm initial load;
-3. registry startup;
-4. search typing;
-5. search clear;
-6. status filter;
-7. ATC/category switch;
-8. sort;
-9. pagination next/previous;
-10. ndryshim page size;
-11. hapja e “Më shumë” / detail;
-12. kthimi nga detail;
-13. column/form controls;
-14. modal/dialog flows;
-15. navigation ndërmjet faqeve;
-16. vertical scrolling;
-17. horizontal table scrolling;
-18. resize desktop ↔ tablet;
-19. mobile keyboard + search;
-20. offline/warm-cache recovery.
+- shkarkimi i gjithë dataset-it vetëm që frontend-i të duket më i shpejtë;
+- polling;
+- duplicate requests;
+- aggressive prefetching pa benefit të matur;
+- rritja e Neon/API traffic për të maskuar frontend lag;
+- infinite scroll nëse ndryshon workflow-in e registry;
+- framework rewrite pa evidence;
+- redesign që heq informacion klinik;
+- CSS overrides të reja pa kontrolluar konfliktin ekzistues;
+- virtualization vetëm sepse është teknikë moderne.
 
-### Viewport-et minimale
+---
 
-- 320 px;
-- 375 px;
-- 390 px;
-- 430 px;
-- 768 px;
-- 1024 px;
-- 1280 px;
-- 1440 px+.
+# 3. Objektivat e matshme
 
-### Çfarë regjistrohet
+Këto janë **targets**, jo pretendime për gjendjen aktuale.
 
-- request count për flow;
+## Interaction targets
+
+| Fusha | Target |
+|---|---:|
+| Visual response pas click/tap | < 100 ms |
+| Input/typing main-thread blocking | ideal < 50 ms |
+| Search request scheduling pas debounce | pa work shtesë të panevojshëm |
+| Filter/sort UI feedback | < 100 ms |
+| Detail open feedback | < 100 ms |
+| Long tasks gjatë interaction | sa më afër zero > 50 ms |
+| Stale request overwrites | 0 |
+| Duplicate requests për të njëjtin action | 0 |
+| Horizontal page overflow | 0 në viewport-et e testuara |
+| Console runtime errors | 0 |
+| Clinical regression | 0 |
+
+## Web performance targets
+
+- INP: synim **≤ 200 ms**;
+- CLS: synim **< 0.10**;
+- first usable registry UI të mos presë full registry runtime;
+- main thread të mbetet responsive gjatë parsing/loading;
+- scrolling pa jank të dukshëm;
+- memory pas interaction loops të stabilizohet, jo të rritet vazhdimisht.
+
+---
+
+# 4. Prioritetet
+
+## P0 — duhet bërë së pari
+
+1. Baseline me evidence.
+2. Search/filter latency.
+3. Registry render + DOM/listener lifecycle.
+4. Mobile 320–430 px.
+5. Tablet 768–1024 px.
+6. Main-thread startup.
+7. Duplicate/stale request audit.
+8. Detail / “Më shumë” latency.
+
+## P1 — pas P0
+
+9. CSS/layout cleanup.
+10. Observer/timer/listener cleanup.
+11. Long-session memory stability.
+12. Navigation and modal polish.
+13. Desktop large-screen polish.
+
+## P2 — maintainability
+
+14. Runtime patch consolidation.
+15. Bundle/asset cleanup.
+16. Automated performance budgets.
+17. Documentation dhe final regression matrix.
+
+---
+
+# 5. Faza 0 — Baseline para çdo ndryshimi
+
+**Asnjë optimization PR nuk fillon pa baseline.**
+
+## 5.1 Viewport matrix
+
+Testo minimalisht:
+
+- 320 × 568;
+- 375 × 667;
+- 390 × 844;
+- 430 × 932;
+- 768 × 1024;
+- 1024 × 768;
+- 1280 × 800;
+- 1440 × 900;
+- 1920 × 1080 kur është e mundur.
+
+## 5.2 Network modes
+
+- normal broadband;
+- Fast 4G / mobile-like throttling;
+- slow connection;
+- warm cache;
+- cold cache;
+- offline recovery për flows që suportohen.
+
+## 5.3 Flows që maten
+
+1. cold page load;
+2. warm page load;
+3. auth-ready → registry usable;
+4. search: 1 karakter;
+5. search: 2–5 karaktere;
+6. rapid typing + deletion;
+7. clear search;
+8. status filter;
+9. category/ATC switch;
+10. sort asc/desc;
+11. pagination next/previous;
+12. page-size change;
+13. “Më shumë” / detail;
+14. close detail;
+15. return focus;
+16. prescription/advanced handoff;
+17. modal open/close;
+18. horizontal table scroll;
+19. long vertical scroll;
+20. mobile keyboard open/close;
+21. orientation change;
+22. desktop resize;
+23. 20-cycle search/filter/page stress test.
+
+## 5.4 Evidenca që ruhet
+
+Për çdo flow:
+
+- network request count;
+- endpoint;
 - payload size;
 - request duration;
-- main-thread long tasks;
-- scripting/layout/paint time;
-- DOM node count në registry;
-- event listener count aty ku mund të matet në browser tooling;
+- main-thread trace;
+- long tasks;
+- scripting time;
+- style/layout time;
+- paint time;
+- DOM node count;
+- listener/observer behavior;
 - layout shifts;
-- forced synchronous layout/reflow;
-- scroll jank;
-- input latency gjatë typing-ut;
-- koha deri te tabela e përdorshme;
-- koha e hapjes së detail-it;
-- console errors/warnings;
-- memory growth pas 20 search/filter/page cycles.
+- memory before/after;
+- screenshots kur ka responsive issue;
+- console warnings/errors.
 
-**Rregull:** asnjë optimizim nuk pranohet vetëm sepse “duket më i shpejtë”. Duhet before/after evidence.
+## Definition of Done — Faza 0
 
----
-
-## Faza 1 — Search dhe controls: input instant, work i kontrolluar
-
-### Audit i parë
-
-- kontrollo sa punë bëhet pas çdo `input` event;
-- kontrollo nëse exact count po ekzekutohet kur nuk i duhet përdoruesit;
-- kontrollo duplicated/stale requests;
-- kontrollo sa herë rindërtohen header, pagination dhe rows;
-- kontrollo query të njëjta të përsëritura pas back/forward ose filter toggle.
-
-### Hipoteza konkrete për t’u matur
-
-1. **Desktop search** aktualisht thërret `loadPage({ includeTotal:true })` pas debounce-it. Mobile e shmang exact total gjatë typing-ut. Mat nëse count-i i desktop-it është pjesë reale e latency/network cost. Nëse po, desktop duhet të adoptojë të njëjtin parim si mobile: rezultatet shfaqen menjëherë, exact total merret vetëm kur është vërtet i nevojshëm.
-2. Search/filter/page changes përdorin `AbortController`, gjë që duhet ruajtur dhe verifikuar për çdo path.
-3. Mos shto debounce te vetë input-i vizual. Teksti duhet të shfaqet menjëherë; vetëm puna e shtrenjtë mund të debounce/defer-ohet.
-
-### Acceptance
-
-- typing nuk bllokon UI;
-- nuk ka request të panevojshëm për çdo tast;
-- stale result nuk mund ta zëvendësojë query-n më të re;
-- search/filter/sort kanë rezultat identik me para optimizimit;
-- zero rritje e Neon request count për të njëjtin user flow.
+- baseline i dokumentuar;
+- bottlenecks të renditura sipas user impact;
+- secili bottleneck ka evidence;
+- nuk bëhen ndryshime “me hamendje”.
 
 ---
 
-## Faza 2 — Registry rendering: më pak DOM churn
+# 6. Faza 1 — Search, filter, sort dhe pagination
 
-`registry-mobile-lite.js` dhe `registry-desktop-lite.js` rindërtojnë rows me `innerHTML` dhe pastaj lidhin listener-a te controls të rreshtave. Me 25–50 rreshta kjo mund të jetë plotësisht e pranueshme, prandaj **nuk ndryshohet pa profiler evidence**.
+Search është interaction kritik dhe duhet të ndihet instant edhe kur request-i merr kohë.
 
-### Audit
+## Audit
 
-- measure `renderRows()` duration;
-- measure `buildHeader()` duration;
-- measure pagination render;
-- numëro listener-at e krijuar pas 20 render cycles;
-- kontrollo nëse event delegation te `tbody` do të ulte punën realisht;
-- kontrollo nëse header po rindërtohet edhe kur s’ka ndryshuar;
-- kontrollo nëse DOM update mund të bëhet njëherë për cycle dhe jo në disa hapa të ndarë;
-- kontrollo reflow të shkaktuar nga scroll/focus/layout reads pas renderit.
+Kontrollo:
 
-### Ndryshime vetëm nëse provohen me evidence
+- work brenda çdo `input` event;
+- debounce path;
+- `includeTotal` / exact count queries;
+- stale requests;
+- aborted requests;
+- duplicated queries;
+- DOM reconstruction pas response;
+- pagination reconstruction;
+- count badge updates;
+- filter → search interaction;
+- rapid query changes;
+- back/forward behavior.
 
-- event delegation për row actions;
-- mos-rindërtim i header-it kur sort state nuk ndryshon;
-- reuse i pagination nodes kur struktura është e njëjtë;
+## Hipoteza prioritare
+
+### H1 — exact total gjatë desktop search
+
+Mobile lightweight tashmë mund të shmangë exact count gjatë typing-ut. Mat nëse desktop exact total po shton latency ose Neon work.
+
+Nëse po:
+
+- shfaq rezultatet pa pritur exact total;
+- exact total merret vetëm kur UX realisht e kërkon;
+- clear search mund të rikthejë totalin e plotë;
+- mos rrit numrin total të requests.
+
+### H2 — stale response race
+
+Verifiko që request-i i vjetër:
+
+- abortohet;
+- nuk mund të overwrite query-n e re;
+- nuk ndryshon pagination/count pas query change.
+
+### H3 — repeated query
+
+Nëse i njëjti state kërkohet disa herë menjëherë, mat nëse client dedupe do të ndihmonte pa cenuar freshness.
+
+## Acceptance criteria
+
+- typing nuk ngrin UI;
+- input value shfaqet menjëherë;
+- zero stale overwrite;
+- zero duplicate request për një action normal;
+- search/filter/sort rezultatet mbeten identike;
+- Neon/API traffic nuk rritet.
+
+---
+
+# 7. Faza 2 — Registry render dhe DOM lifecycle
+
+Qëllimi është të ulim DOM churn pa komplikuar kodin kot.
+
+## Audit targets
+
+- `renderRows()`;
+- header rendering;
+- pagination rendering;
+- count badge;
+- row actions;
+- checkbox/select listeners;
+- detail listeners;
+- table geometry reconciliation;
+- dosage cell updates;
+- focus/scroll restoration.
+
+## Mat
+
+- render duration për 25 rows;
+- render duration për 50 rows;
+- DOM nodes para/pas;
+- listeners pas 1, 10 dhe 20 render cycles;
+- layout/paint cost;
+- forced reflow;
+- GC/memory behavior.
+
+## Kandidatë për optimization vetëm pas evidence
+
+- event delegation në `tbody`;
+- one-time listeners në stable parent nodes;
+- mos-rindërtim i header-it kur nuk ka state change;
+- partial update i pagination/count;
 - batching i DOM writes;
-- shmangie e read-after-write layout patterns;
-- ruajtje e focus/scroll pa forced reflow.
+- shmangie read-after-write;
+- reuse i stable DOM nodes;
+- `DocumentFragment` kur matja tregon benefit;
+- idempotent geometry updates.
 
-### Nuk bëjmë
+## Mos bëj
 
-- virtualization vetëm sepse ekziston si teknikë;
-- infinite scroll që ndryshon workflow-in klinik;
-- full dataset rendering;
-- framework migration.
+- 4,000+ rows në DOM;
+- framework migration;
+- virtualization pa nevojë;
+- nested observers në gjithë document tree.
+
+## Definition of Done
+
+- render cost i dokumentuar before/after;
+- zero listener accumulation;
+- zero table alignment regression;
+- zero clinical cell loss;
+- pagination/search functionality identike.
 
 ---
 
-## Faza 3 — Responsive V2: mobile, tablet dhe desktop pa kompromis
+# 8. Faza 3 — Responsive V2
 
-### 3.1 Page shell
+Responsive nuk është “desktop i zvogëluar”. Çdo klasë ekrani testohet si workflow real.
 
-Audit për:
-
-- horizontal page overflow;
-- nested scroll containers;
-- sticky header/sidebar overlap;
-- content nën navigation;
-- viewport height (`100vh`) issues në mobile;
-- safe-area handling;
-- layout jump kur shfaqet/hiqet scrollbar;
-- resize loops ose ResizeObserver loops.
-
-### 3.2 Registry mobile
-
-Mobile duhet të mbetet lightweight dhe clinical-content-safe.
+## 8.1 Mobile — 320 / 375 / 390 / 430 px
 
 Kontrollo:
 
-- 320/375/390/430 px;
-- card width dhe padding;
-- emra shumë të gjatë të barnave/substancave;
-- ATC + strength + form wrapping;
-- touch targets;
-- pagination në 320 px;
-- search me tastierën e hapur;
-- detail overlay/full-screen behavior;
-- body/owner scroll lock;
-- focus trap dhe kthimi i focus-it;
+- page shell;
+- top navigation;
+- search;
+- filters;
+- registry cards/rows;
+- long trade names;
+- long active substances;
+- ATC/strength/form wrapping;
+- pagination;
+- “Më shumë” button;
+- detail screen/dialog;
+- keyboard open;
+- focus;
+- scroll lock;
 - orientation change;
-- iOS/Android overscroll behavior.
+- bottom safe area;
+- sticky controls;
+- touch target size;
+- overscroll.
 
-Asnjë informacion klinik nuk humbet vetëm për ta bërë layout-in më të pastër.
+### Mobile acceptance
 
-### 3.3 Registry tablet
-
-768–1024 px duhet audit i veçantë, jo vetëm “desktop i vogël”.
-
-Kontrollo:
-
-- nëse 768 px është breakpoint optimal për renderer handoff;
-- column crowding;
-- sidebar width;
-- toolbar wrapping;
-- search/filter/page controls;
-- table scroll owner;
-- touch usability në tablet.
-
-Breakpoint-i ndryshohet vetëm nëse geometry tests tregojnë problem real.
-
-### 3.4 Desktop
-
-Kontrollo 1024, 1280, 1440 dhe ekrane të mëdha:
-
-- densitetin e tabelës;
-- max content width;
-- column alignment;
-- sticky header;
-- width distribution;
-- horizontal scroll vetëm kur është realisht i nevojshëm;
-- modal/detail max-height;
-- focus/keyboard navigation.
-
-### Acceptance responsive
-
-- zero horizontal overflow i faqes në viewport-et e testuara;
-- tabela mund të ketë scroll container të kontrolluar kur është e nevojshme;
-- asnjë control jashtë viewport-it;
+- zero page-level horizontal overflow;
+- asnjë clipped control;
 - asnjë overlap;
-- modal/detail i përdorshëm me mobile keyboard;
-- text klinik nuk pritet pa mënyrë për ta hapur;
-- touch targets të rehatshëm dhe controls të aksesueshme.
+- search usable me keyboard të hapur;
+- detail nuk kalon viewport-in në mënyrë të pakontrolluar;
+- user mund të kthehet te row i njëjtë;
+- nuk humbet informacion klinik.
 
 ---
 
-## Faza 4 — Main thread dhe startup
+## 8.2 Tablet — 768 / 820 / 1024 px
 
-### Audit
-
-- renditja reale e script-eve në `index.html`;
-- blocking scripts;
-- runtime loader handoff;
-- auth-ready path;
-- full-runtime fallback conditions;
-- worker startup;
-- dosage loader startup;
-- observers;
-- timers;
-- idle callbacks;
-- requestAnimationFrame chains;
-- synchronous initialization që nuk duhet në first interaction path.
-
-### Qëllimi
-
-Puna jo-kritike duhet të ndodhë pas UI-së bazë, por pa krijuar delayed surprise work që e bllokon përdoruesin disa sekonda më vonë.
-
-### Kandidatë
-
-- lazy/deferred loading vetëm për funksione që nuk duhen në first view;
-- grupim i punës në idle chunks;
-- yield ndërmjet batch-eve të gjata;
-- reduktim i DOM queries të përsëritura;
-- cache i element references vetëm kur lifecycle-i e lejon;
-- shmangie e synchronous JSON/string transforms në main thread;
-- worker për CPU work që realisht matet si problem.
-
----
-
-## Faza 5 — CSS performance + cleanup
-
-Kjo fazë nuk është redesign.
-
-### Audit
-
-- duplicated selectors;
-- `!important` chains;
-- override layers;
-- mobile-specific conflicts;
-- selectors tepër të gjerë;
-- expensive shadows/blur/backdrop-filter;
-- transitions në properties që shkaktojnë layout;
-- hidden elements që vazhdojnë të marrin layout cost;
-- font weights që ngarkohen por nuk përdoren;
-- repeated CSS nga patch phases.
-
-### Rregulla
-
-- së pari gjendet rregulli ekzistues;
-- hiqet konflikti, jo shtohet një override i katërt;
-- animacionet preferojnë `transform`/`opacity` kur ka animacion;
-- `will-change` nuk përdoret globalisht;
-- blur/shadow reduktohet në mobile vetëm kur profiler/paint evidence e justifikon;
-- typography dhe clinical hierarchy ruhen.
-
----
-
-## Faza 6 — Build/runtime patch consolidation
-
-`package.json` aktual ka një chain shumë të gjatë `build:runtime` me patch scripts të njëpasnjëshme. Kjo është një pikë e rëndësishme për maintainability dhe mund ta bëjë source-of-truth më të vështirë për t’u audituar.
-
-### Qëllimi
-
-Jo të fshihen patch-et në mënyrë agresive, por të identifikohen ato që:
-
-- materializojnë permanent changes që tashmë mund të jetojnë direkt në source;
-- prekin të njëjtin runtime/file disa herë;
-- kanë faza të vjetra të superseduara;
-- ekzistojnë vetëm për compat të një versioni të kaluar;
-- shtojnë CSS/JS të njëjtë në disa hapa.
-
-### Procesi
-
-1. mapo çdo patch → files/functions që ndryshon;
-2. regjistro dependency/order;
-3. krahaso source para build-it me artifact pas build-it;
-4. identifiko patches që mund të squash-ohen në source;
-5. migro **një grup të vogël në një PR**;
-6. ekzekuto të gjithë regression tests;
-7. krahaso runtime output;
-8. vetëm pastaj hiq patch script-in e vjetër.
-
-### Acceptance
-
-- build identik funksionalisht;
-- më pak patch layers;
-- source më i lexueshëm;
-- asnjë regression klinik/UI/PWA;
-- build runtime më determinist.
-
----
-
-## Faza 7 — Network discipline pa rritur load në Neon
-
-### Kontrollo
-
-- duplicate API requests;
-- exact count queries;
-- no-store vs cache semantics në endpoints ku kontrata e lejon;
-- same-query deduplication në client vetëm nëse nuk rrezikon freshness;
-- request abort behavior;
-- payload fields të papërdorura në lightweight UI;
-- repeated detail requests;
-- page back/forward behavior;
-- service worker + browser cache coherence.
-
-### Rregull absolut
-
-Asnjë frontend optimization nuk pranohet nëse rrit ndjeshëm numrin e database/API calls për të njëjtin flow.
-
----
-
-## Faza 8 — Detail / “Më shumë” / advanced handoff
-
-Ky është një nga momentet ku përdoruesi e vëren më së shumti lag-un.
+Tablet duhet trajtuar si kategori më vete.
 
 Audit:
 
-- click → visible feedback;
-- click → detail ready;
-- a po ngarkohet full runtime për funksion që mund të kryhet lightweight;
-- a po bëhet replay i click-ut pa double-action;
-- focus restoration;
-- scroll restoration;
-- data request count;
-- modal/detail layout cost;
-- close/reopen memory behavior.
+- renderer breakpoint;
+- sidebar width;
+- toolbar wrapping;
+- table column crowding;
+- touch targets;
+- horizontal scroll owner;
+- filter layout;
+- modal width;
+- landscape vs portrait;
+- sticky header.
 
-Në desktop, full-runtime handoff ruhet për funksionet që realisht e kërkojnë. Objektivi është që funksionet e zakonshme të mos e zgjojnë runtime-in e plotë pa nevojë.
-
----
-
-## Faza 9 — Observer, listener dhe lifecycle audit
-
-Kontrollo të gjithë:
-
-- `MutationObserver`;
-- `ResizeObserver`;
-- scroll listeners;
-- resize listeners;
-- global click listeners;
-- timers;
-- intervals;
-- custom `medindex:*` events.
-
-Për secilin:
-
-- kush e krijon;
-- sa herë krijohet;
-- kur disconnect/remove bëhet;
-- çfarë subtree observon;
-- sa callbacks prodhon gjatë 1 minute përdorimi aktiv;
-- a mund të zëvendësohet me event më specifik.
-
-`registry-unified-table.js` tashmë ka bounded observer strategy; kjo duhet të mbetet standard për komponentët e tjerë.
+**Breakpoint ndryshohet vetëm me geometry evidence.**
 
 ---
 
-## Faza 10 — Memory dhe long-session stability
+## 8.3 Desktop — 1024 / 1280 / 1440 / 1920 px
 
-MedIndex duhet të mbetet i shpejtë edhe pas përdorimit të gjatë.
+Audit:
 
-Scenario:
+- content max-width;
+- whitespace;
+- table density;
+- column widths;
+- sticky table header;
+- horizontal overflow;
+- filter row alignment;
+- pagination position;
+- detail/modal max-width/max-height;
+- keyboard navigation;
+- focus indicator.
 
-- 20 search changes;
-- 20 pagination changes;
-- 10 detail open/close;
-- 10 category/filter switches;
-- 5 resize/orientation changes;
-- navigation registry → ICD → registry;
-- online → offline → online.
+## Definition of Done — Responsive
+
+- zero accidental horizontal page overflow;
+- asnjë control jashtë viewport-it;
+- asnjë overlap;
+- controlled table scrolling kur duhet;
+- clinical text accessible;
+- touch + keyboard workflows të plota.
+
+---
+
+# 9. Faza 4 — Main-thread startup dhe initial load
+
+Qëllimi: UI bazë të bëhet interactive para punës jo-kritike.
+
+## Audit
 
 Kontrollo:
 
-- detached DOM nodes;
-- listener accumulation;
-- controllers/timers të vjetër;
-- unreleased detail state;
-- duplicated custom event subscriptions;
-- memory që rritet vazhdimisht pa u kthyer.
+- script order;
+- blocking JS;
+- auth-ready path;
+- mobile/desktop lightweight owner selection;
+- registry runtime loader;
+- fallback runtime conditions;
+- worker creation;
+- dosage loader;
+- idle callbacks;
+- timers;
+- requestAnimationFrame chains;
+- synchronous storage reads;
+- JSON transformations;
+- DOM queries në startup;
+- font/image work.
+
+## Optimization rules
+
+- critical UI first;
+- optional features later;
+- CPU-heavy parsing jashtë main thread kur ka evidence;
+- chunk long synchronous work;
+- yield mes batch-eve;
+- mos preload full registry runtime në normal lightweight startup;
+- mos krijo delayed heavy task që godet user-in pas 2–5 sekondash.
+
+## Definition of Done
+
+- no avoidable long task në critical startup;
+- registry shell responsive;
+- full fallback runtime ngarkohet vetëm kur duhet;
+- first interaction nuk bllokohet nga dosage/advanced features.
 
 ---
 
-# Strategjia e implementimit
+# 10. Faza 5 — “Më shumë”, detail dhe advanced handoff
 
-Nuk bëjmë një mega-commit. Ndryshimet ndahen në PR të vegjël dhe të matshëm.
+Ky interaction duhet të ketë feedback të menjëhershëm.
 
-### PR 1 — Baseline + instrumentation
+## Audit
 
-- measurement harness;
-- viewport matrix;
-- request counters;
-- browser performance traces;
-- before report.
+- click → visual feedback;
+- click → request start;
+- click → detail visible;
+- detail data source;
+- repeated detail request;
+- full runtime handoff;
+- replay behavior;
+- double activation;
+- scroll position;
+- focus trap;
+- focus restoration;
+- close latency;
+- Escape/back behavior;
+- mobile scroll owner.
 
-### PR 2 — Search/control hot path
+## Qëllimi
 
-- vetëm bottleneck-et e provuara;
-- desktop count strategy nëse matja e justifikon;
-- stale/duplicate request hardening;
-- interaction regression tests.
+Mos zgjo full runtime për një action lightweight nëse funksionaliteti i njëjtë mund të bëhet sigurt me payload të vogël — **por vetëm nëse kontrata klinike dhe testet e lejojnë**.
 
-### PR 3 — Registry DOM/render lifecycle
+## Acceptance
 
-- event delegation ose render simplification vetëm nëse profiler e justifikon;
-- header/pagination churn;
-- focus/scroll stability.
-
-### PR 4 — Responsive V2
-
-- 320–1440+ geometry fixes;
-- mobile/table/detail/keyboard;
-- tablet-specific audit;
-- zero overflow gates.
-
-### PR 5 — CSS + patch consolidation
-
-- conflict cleanup;
-- materializim i patch-eve të superseduara në source;
-- build chain simplification me regression proof.
-
-### PR 6 — Long-session + final audit
-
-- memory;
-- observers/listeners;
-- offline/online;
-- final before/after report.
+- feedback <100 ms target;
+- zero double action;
+- zero lost focus;
+- zero stuck body scroll;
+- zero duplicate detail fetch;
+- detail content identik klinikisht.
 
 ---
 
-# Definition of Done
+# 11. Faza 6 — CSS dhe layout cleanup
 
-V2 quhet i përfunduar vetëm kur:
+Nuk është redesign. Është reduktim konfliktesh dhe paint/layout cost.
 
-- të gjitha testet ekzistuese kalojnë;
-- rezultatet klinike dhe registry contract mbeten të njëjta;
-- search/filter/sort/pagination japin të njëjtën sjellje funksionale;
-- nuk ka rritje të panevojshme të Neon/API traffic;
-- nuk ka duplicate requests për të njëjtin state;
-- nuk ka page-level horizontal overflow në viewport-et e testuara;
-- nuk ka clipped/overlapping controls;
-- detail/modal punon me keyboard dhe mobile keyboard;
-- startup normal nuk zgjon full registry runtime pa arsye;
-- main-thread traces tregojnë përmirësim ose së paku zero regression;
-- request counts tregojnë zero regression;
-- memory test nuk tregon accumulation progresiv;
-- çdo ndryshim performance ka before/after evidence.
+## Audit
 
----
+- duplicated selectors;
+- multiple overrides për të njëjtin component;
+- `!important` chains;
+- deep selectors;
+- global selectors;
+- large shadows;
+- blur/backdrop-filter;
+- transitions që prekin layout;
+- hidden elements që ende marrin layout space;
+- duplicate responsive rules;
+- dead CSS;
+- font families/weights;
+- repeated style patches.
 
-# Prioriteti real
+## Rregull pune
 
-## P0 — më së pari
+Para se të shtohet CSS i ri:
 
-1. baseline me browser traces;
-2. search typing latency;
-3. desktop exact-count behavior;
-4. registry row render/listener cost;
-5. mobile 320–430 geometry + detail scroll/focus;
-6. tablet 768–1024;
-7. main-thread startup;
-8. duplicate requests.
+1. gjej existing rule;
+2. identifiko konfliktin;
+3. hiq redundancy kur është safe;
+4. konsolido shared pattern;
+5. vetëm pastaj shto rregull të ri.
 
-## P1
+## Animation policy
 
-1. CSS conflict cleanup;
-2. observer/listener lifecycle;
-3. advanced handoff latency;
-4. long-session memory;
-5. patch-chain consolidation.
+Prefero:
 
-## P2
+- `transform`;
+- `opacity`.
 
-1. micro-optimizations;
-2. cosmetic animation tuning;
-3. non-critical asset polish.
+Shmang animimin e panevojshëm të:
 
----
+- width;
+- height;
+- top/left;
+- expensive shadows/filters.
 
-# Gjëra që nuk duhen bërë
+## Definition of Done
 
-- mos migro në React/Next vetëm për performance;
-- mos e shkarko registry-n e plotë në startup;
-- mos shto prefetch masiv;
-- mos shto request për çdo keystroke;
-- mos përdor virtualization pa profiler evidence;
-- mos konverto desktop table në cards;
-- mos fsheh të dhëna klinike për mobile;
-- mos shto CSS override pas override;
-- mos krijo patch script të ri për çdo simptomë pa provuar fillimisht ta rregullosh source-of-truth;
-- mos deklaro përmirësim pa before/after measurements.
+- më pak override layers;
+- responsive styles më të parashikueshme;
+- paint/layout cost jo më i keq;
+- zero visual regression serioz.
 
 ---
 
-## Rezultati i synuar
+# 12. Faza 7 — Observers, listeners, timers dhe memory
 
-MedIndex duhet të mbetet klinikisht identik, por të ndihet më “native”: input i menjëhershëm, scroll i qetë, tabela e qëndrueshme, mobile pa overflow, detail pa vonesë të dukshme dhe desktop pa punë të panevojshme në main thread. Përmirësimi duhet të vijë nga **më pak punë**, **më pak DOM churn**, **më pak request-e të panevojshme** dhe **layout më i pastër** — jo nga shtimi i më shumë backend load-it.
+## Audit
+
+- `MutationObserver`;
+- `ResizeObserver`;
+- scroll handlers;
+- resize handlers;
+- document-level click handlers;
+- media-query listeners;
+- timers;
+- intervals;
+- custom event listeners;
+- abort controllers;
+- modal/detail listeners;
+- listeners të rreshtave pas rerender.
+
+## Kontrollo lifecycle
+
+Çdo listener/observer duhet të ketë:
+
+- owner të qartë;
+- reason për ekzistencë;
+- bounded scope;
+- cleanup kur component/runtime largohet;
+- idempotent initialization.
+
+## Stress test
+
+Bëj 20–50 cikle:
+
+- search;
+- filter;
+- pagination;
+- detail open/close;
+- resize;
+- navigation back/forward.
+
+Pastaj krahaso memory dhe active listeners.
+
+## Definition of Done
+
+- zero obvious listener leak;
+- zero observer loop;
+- memory stabilizohet pas GC;
+- interactions nuk bëhen gradualisht më të ngadalta.
+
+---
+
+# 13. Faza 8 — Network discipline dhe Neon efficiency
+
+Frontend speed nuk duhet të blihet me database load.
+
+## Audit
+
+- request waterfall;
+- duplicate endpoint calls;
+- exact count calls;
+- payload fields;
+- repeated detail requests;
+- page navigation requests;
+- cache headers;
+- service worker behavior;
+- browser cache behavior;
+- ETag/304 aty ku kontrata e lejon;
+- canceled requests;
+- request retry behavior.
+
+## Kontroll i detyrueshëm
+
+Për çdo optimization:
+
+`requests_after <= requests_before`
+
+për të njëjtin normal user flow, përveç nëse ka arsye funksionale të dokumentuar.
+
+## Definition of Done
+
+- zero accidental duplicate requests;
+- payload minimal për lightweight views;
+- no polling;
+- no unnecessary full dataset request;
+- Neon transfer nuk rritet për shkak të frontend optimization.
+
+---
+
+# 14. Faza 9 — Build/runtime patch consolidation
+
+Build chain aktual ka shumë patch scripts. Kjo duhet trajtuar si maintainability/performance-risk work, jo si delete spree.
+
+## Audit map
+
+Krijo tabelë:
+
+| Patch | File që prek | Function/selector | Arsye | Ende nevojitet? | Mund të integrohet në source? |
+|---|---|---|---|---|---|
+
+## Procesi i konsolidimit
+
+1. mapo çdo patch;
+2. identifiko patches që prekin të njëjtin file;
+3. identifiko superseded phases;
+4. krahaso source me final generated runtime;
+5. integro vetëm një grup të vogël në source;
+6. build;
+7. full tests;
+8. compare generated artifacts;
+9. hiq patch vetëm kur output-i mbetet korrekt.
+
+## Nuk lejohet
+
+- heqje masive e patches në një commit;
+- ndryshim i runtime behavior pa regression tests;
+- manual edits vetëm në generated artifact kur source mbetet gabim.
+
+## Definition of Done
+
+- chain më i shkurtër;
+- source-of-truth më i qartë;
+- build determinist;
+- zero regression.
+
+---
+
+# 15. Faza 10 — Assets, fonts dhe page weight
+
+## Audit
+
+- JS files që ngarkohen në registry page;
+- CSS files;
+- fonts;
+- unused weights;
+- duplicate icons;
+- images;
+- preload/prefetch hints;
+- service worker precache list;
+- cache-busting versions;
+- dead legacy assets.
+
+## Qëllimi
+
+- mos ngarko asset para se të nevojitet;
+- mos preload heavy fallback runtime;
+- mbaj critical CSS/JS të vogël;
+- prefero browser-native capabilities kur janë të mjaftueshme.
+
+---
+
+# 16. Regression matrix e detyrueshme
+
+Pas çdo faze testohen përsëri:
+
+## Registry
+
+- page load;
+- table load;
+- search;
+- search clear;
+- filter;
+- ATC category;
+- sort;
+- pagination;
+- page size;
+- row detail;
+- dosage columns;
+- personal note;
+- prescription selection;
+- column picker;
+- form picker.
+
+## Responsive
+
+- 320;
+- 375;
+- 390;
+- 430;
+- 768;
+- 1024;
+- 1280;
+- 1440+.
+
+## Navigation/PWA
+
+- authenticated load;
+- refresh;
+- back/forward;
+- offline supported path;
+- online recovery;
+- cache revision;
+- session expiry.
+
+## Clinical safety
+
+- adult dose;
+- pediatric dose;
+- population label;
+- source links;
+- verification state;
+- prescription notation;
+- ATC mapping;
+- drug identity.
+
+---
+
+# 17. Standardi për çdo performance fix
+
+Asnjë fix nuk merge-ohet pa këto 7 pika:
+
+1. **Problem** — çfarë lag-u po ndodh?
+2. **Evidence** — trace, timing, request count, screenshot ose test.
+3. **Root cause** — pse po ndodh?
+4. **Smallest safe fix** — ndryshimi minimal.
+5. **Before/after** — çfarë u përmirësua?
+6. **Regression verification** — çfarë testuam?
+7. **Network/clinical check** — traffic dhe data behavior të pandryshuara.
+
+Template:
+
+```md
+### Problem
+...
+
+### Evidence before
+...
+
+### Root cause
+...
+
+### Change
+...
+
+### Evidence after
+...
+
+### Regression tests
+...
+
+### Neon/API impact
+No increase / ...
+
+### Clinical impact
+None / ...
+```
+
+---
+
+# 18. Rend implementimi i rekomanduar
+
+## Sprint A — Measure + fastest wins
+
+1. baseline;
+2. desktop search exact-count audit;
+3. duplicate/stale request audit;
+4. row listener/render audit;
+5. mobile 320–430 geometry fixes;
+6. tablet geometry audit.
+
+## Sprint B — Interaction performance
+
+7. search/filter optimization;
+8. table render optimization;
+9. detail open/close optimization;
+10. pagination/sort optimization;
+11. focus/scroll fixes.
+
+## Sprint C — Main thread + CSS
+
+12. startup trace;
+13. defer/chunk non-critical work;
+14. CSS conflict cleanup;
+15. observers/listeners cleanup;
+16. memory stress test.
+
+## Sprint D — Maintainability
+
+17. patch map;
+18. patch consolidation small batches;
+19. asset cleanup;
+20. automated budgets;
+21. full regression.
+
+---
+
+# 19. Performance budget për CI
+
+Pas baseline-it, shto thresholds që kapin regresionet.
+
+Candidates:
+
+- lightweight registry normal path nuk duhet të preload full runtime;
+- page API size duhet të mbetet bounded;
+- mobile page size maksimum 50;
+- desktop server request cap maksimum 50;
+- no body-wide MutationObserver;
+- no full registry parse në normal lightweight startup;
+- no duplicate listener initialization;
+- no accidental new registry API call gjatë typing për çdo keystroke;
+- no new page-level horizontal overflow në test viewports.
+
+Threshold-et numerike finale caktohen **pas baseline**, jo arbitrarisht.
+
+---
+
+# 20. Definition of Done — V2 i plotë
+
+Performance & Responsive V2 konsiderohet i përfunduar vetëm kur:
+
+- [ ] baseline ekziston;
+- [ ] P0 bottlenecks janë matur dhe adresuar;
+- [ ] search typing është responsive;
+- [ ] stale/duplicate requests janë eliminuar;
+- [ ] table rendering nuk ka unnecessary churn të provuar;
+- [ ] detail open/close ndihet i menjëhershëm;
+- [ ] mobile 320–430 px kalon;
+- [ ] tablet 768–1024 px kalon;
+- [ ] desktop 1280–1440+ kalon;
+- [ ] zero accidental page overflow;
+- [ ] zero modal clipping;
+- [ ] zero observer/listener leak i njohur;
+- [ ] main-thread startup është audituar;
+- [ ] CSS conflicts kryesore janë konsoliduar;
+- [ ] patch chain është mapuar dhe reduktuar vetëm kur safe;
+- [ ] Neon/API traffic nuk është rritur;
+- [ ] clinical behavior është identik;
+- [ ] full test suite kalon;
+- [ ] before/after evidence është dokumentuar.
+
+---
+
+# 21. Rregulli final
+
+**Mos optimizo atë që nuk është matur. Mos ndrysho backend-in për të fshehur frontend lag. Mos sakrifiko clinical correctness për performance.**
+
+Rendi i punës është gjithmonë:
+
+> Measure → identify root cause → smallest safe fix → verify → measure again → regression test.
+
+Ky është master plan-i që duhet ndjekur për Performance & Responsive V2.
