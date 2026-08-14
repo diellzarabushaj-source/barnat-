@@ -220,7 +220,7 @@
 
   function sourceMarkup(card, regimen) {
     const sources = linkedSources(card, regimen);
-    if (!sources.length) return '<span class="dosage-card-chip is-unverified">Pa burim të lidhur</span>';
+    if (!sources.length) return '<span class="dosage-card-chip is-unverified">PA BURIM TË LIDHUR</span>';
     return sources.slice(0, 3).map((url, index) => `<a href="${esc(url)}" target="_blank" rel="noopener noreferrer">Burimi${sources.length > 1 ? ` ${index + 1}` : ''}</a>`).join('');
   }
 
