@@ -24,6 +24,8 @@ assert.match(fast, /querySelector\('\.mi-app-shell'\)/, 'interactive release mus
 assert.match(fast, /loader\.style\.pointerEvents = 'none'/, 'loader must stop intercepting input before removal');
 assert.match(fast, /Regjistri po përgatitet në sfond/, 'background loading state must remain visible');
 assert.match(fast, /MutationObserver/, 'fast-start must detect the first rendered registry rows');
+assert.match(fast, /observer\.observe\(tbody, \{ childList:true \}\)/, 'fast-start must observe only direct row replacement');
+assert.doesNotMatch(fast, /observer\.observe\(tbody, \{[^}]*subtree\s*:\s*true|observer\.observe\(tbody, \{[^}]*characterData\s*:\s*true/, 'fast-start must not observe nested row/cell text churn');
 assert.doesNotMatch(fast, /location\.reload|caches\.delete|unregister\(/, 'fast-start must not reset the browser or force a reload');
 
 const index = read('index.html');
@@ -36,7 +38,7 @@ assert.ok(index.indexOf('registry-mobile-lite.js') < index.indexOf('registry-des
 assert.ok(index.indexOf('registry-desktop-lite.js') < index.indexOf('registry-runtime-loader.js'), 'desktop lightweight path must register before the full runtime loader');
 assert.doesNotMatch(index, /<script src="app-performance\.js"/, 'heavy registry startup must remain dynamically loaded');
 assert.doesNotMatch(index, /rel="preload" href="app-runtime-performance\.js/, 'deferred full-registry runtime must not be preloaded during normal lightweight startup');
-assert.match(index, /registry-quality\.js\?v=20260723-2[^>]+as="script"/, 'current quality layer must remain preloaded');
+assert.doesNotMatch(index, /rel="preload" href="data\/registry-quality\.js/, 'fallback-only quality runtime must not compete with normal lightweight startup bandwidth');
 
 const mobile = read('registry-mobile-lite.js');
 assert.match(mobile, /registry-mobile-lite-v2/, 'built mobile lightweight runtime must include the current server-filter contract');
@@ -85,4 +87,4 @@ assert.match(part, /if\(existing\)[\s\S]*existing\.addEventListener\('load', fin
 assert.match(part, /script\.async = true/, 'quality fallback runtime must not block document parsing');
 assert.doesNotMatch(part, /existing\.addEventListener\('error', reject/, 'quality bootstrap must not remain rejected or unresolved');
 
-console.log('Registry fast-start, single-owner mobile lightweight v2, desktop lightweight and authenticated loader v10 audit passed.');
+console.log('Registry fast-start, bandwidth-aware quality fallback, single-owner mobile lightweight v2, desktop lightweight and authenticated loader v10 audit passed.');
