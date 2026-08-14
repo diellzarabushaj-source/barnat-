@@ -30,6 +30,15 @@
   --lv-blue:#3d6fe0;
   --lv-blue-deep:#2450b8;
   --lv-blue-wash:#eef3ff;
+
+  /* Paleta aqua/teal me theks korall. */
+  --lv-aqua-pale:#e2f6f6;
+  --lv-aqua:#a9e6e7;
+  --lv-aqua-bright:#3fc9cc;
+  --lv-teal-deep:#0c5559;
+  --lv-coral:#f2776a;
+  --lv-coral-deep:#d95a4d;
+
   --lv-teal:#0f7779;
   --lv-violet:#6a5ae0;
   --lv-pink:#c2497f;
@@ -207,6 +216,14 @@ input,summary{font:inherit}
 
 /* ── Parallax: çdo shtresë lëviz me thellësi tjetër ────────────────────── */
 .lv-hero-canvas{position:absolute;inset:0;z-index:-1;pointer-events:none;overflow:hidden}
+
+/* Kanavaca WebGL: shtresa më e ulët, nën sferat dhe rrjetën. */
+.lv-webgl{
+  position:absolute;inset:0;
+  width:100%;height:100%;
+  display:block;
+  opacity:.92;
+}
 .lv-orb{position:absolute;border-radius:50%;filter:blur(70px);opacity:.5;will-change:transform}
 .lv-orb-a{
   top:-140px;left:-90px;width:460px;height:460px;
@@ -371,9 +388,47 @@ input,summary{font:inherit}
 }
 
 /* ── KARTAT E MODULEVE ──────────────────────────────────────────────────── */
+/* ── Vitrina: rrethi i ngjitur majtas, lista rrëshqet djathtas ─────────── */
+.lv-showcase{
+  display:grid;gap:clamp(28px,4vw,64px);align-items:start;
+  grid-template-columns:minmax(280px,.85fr) minmax(0,1.15fr);
+}
+
+.lv-showcase-visual{
+  position:sticky;top:120px;
+  display:grid;justify-items:center;gap:20px;
+}
+.lv-showcase-circle{
+  position:relative;
+  display:grid;place-items:center;
+  width:min(360px,80%);aspect-ratio:1;
+  border-radius:50%;
+  background:
+    radial-gradient(circle at 30% 25%,rgba(255,255,255,.9),transparent 55%),
+    linear-gradient(150deg,var(--lv-aqua) 0%,var(--lv-aqua-bright) 45%,var(--lv-teal) 100%);
+  box-shadow:0 30px 80px rgba(12,85,89,.28),inset 0 2px 0 rgba(255,255,255,.6);
+  /* Ngadalë rrotullohet sa vjen përpjetë. */
+  transform:rotate(calc(var(--lv-showcase, 0) * 8deg));
+  transition:transform .6s cubic-bezier(.2,.8,.2,1);
+}
+.lv-showcase-ring{
+  position:absolute;inset:14px;
+  border:1px solid rgba(255,255,255,.55);border-radius:50%;
+}
+.lv-showcase-circle img{
+  width:44%;height:auto;
+  filter:drop-shadow(0 10px 24px rgba(6,50,53,.28));
+  transform:rotate(calc(var(--lv-showcase, 0) * -8deg));
+  transition:transform .6s cubic-bezier(.2,.8,.2,1);
+}
+.lv-showcase-caption{
+  margin:0;color:var(--lv-muted);
+  font-size:12px;font-weight:740;letter-spacing:.11em;text-transform:uppercase;
+}
+
 .lv-modules{
   display:grid;gap:18px;
-  grid-template-columns:repeat(auto-fit,minmax(268px,1fr));
+  grid-template-columns:repeat(auto-fit,minmax(240px,1fr));
   perspective:1400px;
 }
 .lv-card{
@@ -780,6 +835,10 @@ input,summary{font:inherit}
 @media(max-width:1080px){
   .lv-plan-wrap{grid-template-columns:minmax(0,1fr)}
   .lv-plan-card{max-width:460px;margin-inline:auto}
+  /* Nën këtë gjerësi rrethi i ngjitur ha shumë hapësirë; kalon sipër listës. */
+  .lv-showcase{grid-template-columns:minmax(0,1fr)}
+  .lv-showcase-visual{position:static;margin-bottom:8px}
+  .lv-showcase-circle{width:min(240px,60%)}
 }
 
 @media(max-width:900px){

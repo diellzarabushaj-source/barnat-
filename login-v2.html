@@ -47,8 +47,8 @@
 
     <!-- ── HERO ───────────────────────────────────────────────────────── -->
     <section class="lv-hero">
-      <canvas class="lv-gl" id="lvCanvas" aria-hidden="true"></canvas>
       <div class="lv-hero-canvas" aria-hidden="true">
+        <canvas id="lvCanvas" class="lv-webgl"></canvas>
         <span class="lv-orb lv-orb-a"></span>
         <span class="lv-orb lv-orb-b"></span>
         <span class="lv-orb lv-orb-c"></span>
@@ -147,6 +147,16 @@
           </p>
         </header>
 
+        <div class="lv-showcase">
+          <!-- Kolona e majtë rri e ngjitur; lista djathtas rrëshqet pranë saj. -->
+          <div class="lv-showcase-visual" aria-hidden="true">
+            <div class="lv-showcase-circle">
+              <span class="lv-showcase-ring"></span>
+              <img src="/brand/medindex-mark-on-light.webp" alt="" width="223" height="219" loading="lazy" decoding="async">
+            </div>
+            <p class="lv-showcase-caption">Tetë module · një hapësirë</p>
+          </div>
+
         <div class="lv-modules">
           <article class="lv-card lv-reveal">
             <span class="lv-card-icon lv-icon-blue">
@@ -211,6 +221,7 @@
             <h3>Urgjencat</h3>
             <p>Qasje e shpejtë te gjendjet urgjente dhe dozat kritike, pa e humbur kontekstin e pacientit.</p>
           </article>
+        </div>
         </div>
       </div>
     </section>
