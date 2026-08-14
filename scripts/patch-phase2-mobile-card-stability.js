@@ -142,6 +142,11 @@ if (!css.includes(explicitActionMarker)) {
   css += `\n\n${explicitActionMarker}\n@media (max-width:767px){\n  html.medindex-tailadmin[data-mi-page=\"barnat\"][data-registry-mobile-lite][data-registry-mobile-phase8] body #dataTable[data-registry-unified-table] #tbody>.mobile-lite-row .mobile-lite-card:has(.mobile-lite-actions){\n    display:grid!important;\n    grid-template-columns:minmax(0,1fr) auto!important;\n    align-items:center!important;\n    gap:8px!important;\n    min-height:108px!important;\n    padding:10px 10px 10px 13px!important;\n  }\n  html[data-registry-mobile-lite][data-registry-mobile-phase8] #tbody .mobile-lite-card:has(.mobile-lite-actions) .mobile-lite-open{\n    display:flex!important;\n    min-width:0!important;\n    min-height:58px!important;\n    width:100%!important;\n    padding:0!important;\n    pointer-events:none!important;\n  }\n  html[data-registry-mobile-lite][data-registry-mobile-phase8] #tbody .mobile-lite-actions{\n    display:grid!important;\n    grid-template-columns:44px 78px!important;\n    align-items:center!important;\n    gap:6px!important;\n    min-width:128px!important;\n    margin:0!important;\n    padding:0!important;\n  }\n  html[data-registry-mobile-lite][data-registry-mobile-phase8] #tbody .mobile-lite-actions .mi-mobile-favorite-toggle{\n    position:static!important;\n    inset:auto!important;\n    width:44px!important;\n    height:44px!important;\n    margin:0!important;\n  }\n  html[data-registry-mobile-lite][data-registry-mobile-phase8] #tbody .mobile-lite-actions .mobile-lite-more{\n    position:static!important;\n    inset:auto!important;\n    width:78px!important;\n    min-width:78px!important;\n    min-height:44px!important;\n    margin:0!important;\n    padding:0 10px!important;\n  }\n}\n`;
 }
 
+const narrowPhoneCardMarker = '/* MedIndex revised Phase 2: compact narrow-phone card spacing */';
+if (!css.includes(narrowPhoneCardMarker)) {
+  css += `\n\n${narrowPhoneCardMarker}\n@media (max-width:340px){\n  html.medindex-tailadmin[data-mi-page=\"barnat\"][data-registry-mobile-lite][data-registry-mobile-phase8] body #dataTable[data-registry-unified-table] #tbody>.mobile-lite-row .mobile-lite-card:has(.mobile-lite-actions){\n    padding-top:4px!important;\n    padding-bottom:4px!important;\n  }\n}\n`;
+}
+
 const shellClearanceMarker = '/* MedIndex revised Phase 4: fixed-nav end-of-list clearance */';
 if (!shellCss.includes(shellClearanceMarker)) {
   shellCss += `\n\n${shellClearanceMarker}\n@media (max-width:767px){\n  html[data-registry-mobile-lite][data-registry-mobile-phase3]{\n    --mi-registry-bottom-nav-clearance:calc(80px + env(safe-area-inset-bottom));\n  }\n  html[data-registry-mobile-lite][data-registry-mobile-phase3] .mi-main{\n    scroll-padding-bottom:var(--mi-registry-bottom-nav-clearance)!important;\n  }\n  html[data-registry-mobile-lite][data-registry-mobile-phase3] #pagination{\n    margin-bottom:var(--mi-registry-bottom-nav-clearance)!important;\n  }\n  html[data-registry-mobile-lite][data-registry-mobile-phase3][data-mi-keyboard-open=\"true\"] #pagination{\n    margin-bottom:calc(18px + env(safe-area-inset-bottom))!important;\n  }\n}\n`;
@@ -153,6 +158,9 @@ if (!css.includes('.mobile-lite-card:has(.mobile-lite-actions){')) {
 }
 if (!css.includes('.mobile-lite-actions .mobile-lite-more{')) {
   throw new Error('Phase 2 detail action slot contract is missing.');
+}
+if (!css.includes(narrowPhoneCardMarker) || !css.includes('padding-top:4px!important;') || !css.includes('padding-bottom:4px!important;')) {
+  throw new Error('Phase 2 narrow-phone compact spacing contract is missing.');
 }
 if (!phase8Js.includes("passiveSummary.className = summary.className;")) {
   throw new Error('Phase 2 single-detail-trigger contract is missing.');
@@ -189,4 +197,4 @@ fs.writeFileSync(cssFile, css, 'utf8');
 fs.writeFileSync(phase8JsFile, phase8Js, 'utf8');
 fs.writeFileSync(shellCssFile, shellCss, 'utf8');
 fs.writeFileSync(jsFile, js, 'utf8');
-console.log('Phase 2/3/4 mobile stability passed: delegated detail interaction, explicit collision-free card actions, one detail trigger, true vertical card flow, canonical detail scroll restoration and fixed-nav clearance.');
+console.log('Phase 2/3/4 mobile stability passed: delegated detail interaction, compact narrow-phone spacing, explicit collision-free card actions, one detail trigger, true vertical card flow, canonical detail scroll restoration and fixed-nav clearance.');
