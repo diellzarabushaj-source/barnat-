@@ -8,6 +8,8 @@ const read = file => fs.readFileSync(path.join(root, file), 'utf8');
 const index = read('index.html');
 const script = read('registry-unified-table.js');
 const css = read('registry-unified-table.css');
+const rowExpand = read('registry-row-expand.js');
+const dosage = read('registry-dosage-columns-v3.js');
 
 assert.match(index, /registry-unified-table\.css\?v=20260812-population-column-1/);
 assert.match(index, /registry-unified-table\.js\?v=20260812-population-column-1/);
@@ -36,6 +38,12 @@ assert.doesNotMatch(script, /registry-dose-dialog|showModal\(/);
 assert.doesNotMatch(script, /subtree\s*:\s*true|observe\(document\.body/);
 assert.doesNotMatch(script, /wrapper\.scrollTop\s*=/);
 
+assert.match(rowExpand, /tableObserver\.observe\(tbody, \{ childList:true \}\)/, 'Row expansion must react to direct page-row replacement only.');
+assert.doesNotMatch(rowExpand, /tableObserver\.observe\(tbody,[\s\S]{0,100}subtree\s*:\s*true/, 'Row expansion must not watch all nested table mutations.');
+assert.match(rowExpand, /medindex:registry-row-expanded-change/, 'Row expansion must publish targeted expansion changes.');
+assert.match(dosage, /let rowContentChanged = false/, 'Dosage reconciliation must track whether nested row content actually changed.');
+assert.match(dosage, /if \(rowContentChanged\) window\.MedIndexRegistryRows\?\.refresh\?\.\(\)/, 'Dosage must explicitly refresh row expansion only after a real nested content change.');
+
 assert.match(css, /table-layout:fixed!important/);
 assert.match(css, /#dataTable\[data-registry-unified-table\] :is\(th,td\)\[data-registry-column-key\][\s\S]*position:relative!important/);
 assert.match(css, /scrollbar-gutter:stable!important/);
@@ -45,4 +53,4 @@ assert.match(css, /:is\(\.registry-dose-dialog,\.registry-cell-preview-dialog\)[
 assert.match(css, /@media \(max-width:760px\)/);
 assert.doesNotMatch(css, /tbody td[\s\S]{0,180}position:sticky!important/);
 
-console.log('Single-controller registry columns, one colgroup and fixed row geometry audit passed.');
+console.log('Registry table controllers use direct-row observation; nested dosage changes refresh row expansion explicitly.');

@@ -68,7 +68,10 @@
     attributeFilter:['class'],
   });
 
-  if (tbody) observer.observe(tbody, { childList:true, subtree:true, characterData:true });
+  // The lightweight renderers replace direct tbody children. Watching nested
+  // cell/text mutations adds startup observer work without improving readiness
+  // detection, so keep this observer scoped to row replacement only.
+  if (tbody) observer.observe(tbody, { childList:true });
 
   window.addEventListener('medindex:tailadmin-ready', releaseInteractiveShell);
   window.addEventListener('medindex:registry-ready', () => {

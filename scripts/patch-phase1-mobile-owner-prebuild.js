@@ -10,6 +10,12 @@ const write = (file, value) => fs.writeFileSync(path.join(ROOT, file), value.rep
 const LOADER_VERSION = 'registry-runtime-loader-v10';
 const LOADER_ASSET_VERSION = '20260813-10';
 
+function replaceOnce(source, before, after, label) {
+  if (source.includes(after)) return source;
+  if (!source.includes(before)) throw new Error(`Phase 1 prebuild could not find ${label}.`);
+  return source.replace(before, after);
+}
+
 function patchIndex() {
   let source = read('index.html');
   if (!/registry-runtime-loader\.js\?v=/.test(source)) {
@@ -52,6 +58,35 @@ function patchMobileOwnerClients() {
   }
 }
 
+function patchMobileRequestOwnership() {
+  let source = read('registry-mobile-lite.js');
+  source = replaceOnce(
+    source,
+    `    pageController?.abort();\n    pageController = new AbortController();\n    setBusy(true);`,
+    `    pageController?.abort();\n    const controller = new AbortController();\n    pageController = controller;\n    setBusy(true);`,
+    'mobile page request controller ownership',
+  );
+  source = replaceOnce(
+    source,
+    `        signal:pageController.signal,`,
+    `        signal:controller.signal,`,
+    'mobile page request owned signal',
+  );
+  source = replaceOnce(
+    source,
+    `    } finally {\n      setBusy(false);\n    }\n  }\n\n  function resolveDetailScrollOwner()`,
+    `    } finally {\n      if (pageController === controller) {\n        pageController = null;\n        setBusy(false);\n      }\n    }\n  }\n\n  function resolveDetailScrollOwner()`,
+    'mobile page request busy-state ownership',
+  );
+  if (!source.includes('if (pageController === controller)')) {
+    throw new Error('Phase 1 mobile request ownership guard is missing.');
+  }
+  if (source.includes('signal:pageController.signal')) {
+    throw new Error('Phase 1 mobile request must use its captured AbortController signal.');
+  }
+  write('registry-mobile-lite.js', source);
+}
+
 function normalizeMobileLitePublicApi() {
   let source = read('registry-mobile-lite.js');
   const extended = `    version:VERSION,\n    reload:() => loadPage({ includeTotal:true, scroll:false }),\n    handoff:requestFullRegistry,\n    closeDetail,\n    getState:() => ({ ...state }),`;
@@ -86,8 +121,9 @@ function verifyLoader() {
 
 patchIndex();
 patchMobileOwnerClients();
+patchMobileRequestOwnership();
 normalizeMobileLitePublicApi();
 verifyLoader();
 require('./patch-registry-default-sort-fastpath.js');
 require('./patch-registry-filter-single-pass.js');
-console.log(`Phase 1 prebuild activated ${LOADER_VERSION} with asset version ${LOADER_ASSET_VERSION}; mobile shell ownership and downstream public API compatibility are preserved.`);
+console.log(`Phase 1 prebuild activated ${LOADER_VERSION} with asset version ${LOADER_ASSET_VERSION}; mobile shell ownership, request busy-state ownership and downstream public API compatibility are preserved.`);

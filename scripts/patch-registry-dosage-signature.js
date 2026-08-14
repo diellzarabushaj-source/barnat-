@@ -25,14 +25,35 @@ if (!source.includes('function dosageCellSignature(')) {
   source = source.replace(before, after);
 }
 
+if (!source.includes('let rowContentChanged = false;')) {
+  const before = `  function ensureRows() {\n    const headerIndex = buildHeaderIndex();`;
+  const after = `  function ensureRows() {\n    let rowContentChanged = false;\n    const headerIndex = buildHeaderIndex();`;
+  if (!source.includes(before)) throw new Error('Dosage signature patch: ensureRows change-tracking anchor missing.');
+  source = source.replace(before, after);
+}
+
 const oldReconcile = `        const existing = matches[0];\n        const desired = createDosageCell(column, row, card);\n        if (!existing) tableRow.appendChild(desired);\n        else if (existing.innerHTML !== desired.innerHTML) existing.replaceWith(desired);`;
 const signatureReplaceReconcile = `        const existing = matches[0];\n        const signature = dosageCellSignature(column, row, card);\n        const desired = createDosageCell(column, row, card, signature);\n        if (!existing) tableRow.appendChild(desired);\n        else if (existing.dataset.registryDosageSignature !== signature) existing.replaceWith(desired);`;
-const stableReconcile = `        const existing = matches[0];\n        const signature = dosageCellSignature(column, row, card);\n        const desired = createDosageCell(column, row, card, signature);\n        if (!existing) tableRow.appendChild(desired);\n        else if (existing.dataset.registryDosageSignature !== signature) {\n          existing.className = desired.className;\n          existing.dataset.registryDosageColumn = column.key;\n          existing.dataset.registryDosageSignature = signature;\n          existing.dataset.label = column.label;\n          existing.innerHTML = desired.innerHTML;\n          existing.title = desired.title || '';\n        }`;
+const stableReconcile = `        const existing = matches[0];\n        const signature = dosageCellSignature(column, row, card);\n        const desired = createDosageCell(column, row, card, signature);\n        if (!existing) {\n          tableRow.appendChild(desired);\n          rowContentChanged = true;\n        } else if (existing.dataset.registryDosageSignature !== signature) {\n          existing.className = desired.className;\n          existing.dataset.registryDosageColumn = column.key;\n          existing.dataset.registryDosageSignature = signature;\n          existing.dataset.label = column.label;\n          existing.innerHTML = desired.innerHTML;\n          existing.title = desired.title || '';\n          rowContentChanged = true;\n        }`;
 
 if (!source.includes(stableReconcile)) {
   if (source.includes(signatureReplaceReconcile)) source = source.replace(signatureReplaceReconcile, stableReconcile);
   else if (source.includes(oldReconcile)) source = source.replace(oldReconcile, stableReconcile);
   else throw new Error('Dosage signature patch: ensureRows reconciliation anchor missing.');
+}
+
+if (!source.includes('return rowContentChanged;')) {
+  const before = `    queueVisibleClinicalData(visibleRows);\n  }\n\n  function pickerLabel(column) {`;
+  const after = `    queueVisibleClinicalData(visibleRows);\n    return rowContentChanged;\n  }\n\n  function pickerLabel(column) {`;
+  if (!source.includes(before)) throw new Error('Dosage signature patch: ensureRows return anchor missing.');
+  source = source.replace(before, after);
+}
+
+if (!source.includes('const rowContentChanged = ensureRows();')) {
+  const before = `      ensureHeader();\n      ensureRows();\n      ensurePicker();\n      applyVisibility();\n      document.documentElement.dataset.registryDosagePerformance = VERSION;`;
+  const after = `      ensureHeader();\n      const rowContentChanged = ensureRows();\n      ensurePicker();\n      applyVisibility();\n      if (rowContentChanged) window.MedIndexRegistryRows?.refresh?.();\n      document.documentElement.dataset.registryDosagePerformance = VERSION;`;
+  if (!source.includes(before)) throw new Error('Dosage signature patch: enhance explicit row-refresh anchor missing.');
+  source = source.replace(before, after);
 }
 
 if (!source.includes('cell.dataset.registryDosageSignature = signature;')) {
@@ -49,6 +70,9 @@ if (!source.includes("existing.dataset.registryDosageColumn = column.key;")) {
 }
 if (!source.includes(stableFailureFilter)) {
   throw new Error('Dosage signature patch: failed batches can still auto-retry during idle.');
+}
+if (!source.includes('if (rowContentChanged) window.MedIndexRegistryRows?.refresh?.();')) {
+  throw new Error('Dosage signature patch: nested dosage mutations must explicitly refresh row expansion once.');
 }
 
 fs.writeFileSync(TARGET, source, 'utf8');
@@ -72,7 +96,13 @@ if (fs.existsSync(TEST)) {
     if (!test.includes(marker)) throw new Error('Dosage signature patch: failed-batch regression test anchor missing.');
     test = test.replace(marker, assertion);
   }
+  if (!test.includes('nested dosage changes must explicitly refresh row expansion')) {
+    const marker = `assert.match(script, /REQUEST_BATCH_SIZE = 100/);`;
+    const assertion = `${marker}\nassert.match(script, /if \\(rowContentChanged\\) window\\.MedIndexRegistryRows\\?\\.refresh\\?\\.\\(\\);/, 'nested dosage changes must explicitly refresh row expansion');`;
+    if (!test.includes(marker)) throw new Error('Dosage signature patch: explicit row refresh regression-test anchor missing.');
+    test = test.replace(marker, assertion);
+  }
   fs.writeFileSync(TEST, test, 'utf8');
 }
 
-console.log('Deterministic dosage cells active; failed batches stay stable until an explicit retry or refresh.');
+console.log('Deterministic dosage cells active; nested dosage changes explicitly refresh row expansion and failed batches stay stable.');

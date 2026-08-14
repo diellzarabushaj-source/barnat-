@@ -57,7 +57,7 @@ function patchDesktopLargePages() {
 
   async function fetchRegistryChunk(serverPage, { includeTotal = false, signal } = {}) {
     const response = await fetch(buildPageUrl({ includeTotal, page:serverPage, pageSize:SERVER_PAGE_SIZE }), {
-      credentials:'same-origin', cache:'no-store', signal,
+      credentials:'same-origin', cache:'default', signal,
       headers:{ Accept:'application/json' },
     });
     if (response.status === 401) throw new Error('Sesioni ka skaduar.');
@@ -72,7 +72,8 @@ function patchDesktopLargePages() {
     const serverStart = firstServerPage();
     const first = await fetchRegistryChunk(serverStart, { includeTotal, signal });
     const payloads = [first];
-    const payloadTotal = Number(first.pagination?.total);
+    const rawPayloadTotal = first.pagination?.total;
+    const payloadTotal = rawPayloadTotal === null || rawPayloadTotal === undefined ? null : Number(rawPayloadTotal);
     const knownTotal = Number.isFinite(payloadTotal) ? payloadTotal : state.total;
     let chunksToFetch = requestedChunks;
 
@@ -121,10 +122,11 @@ function patchDesktopLargePages() {
   const loadPageBlock = `  async function loadPage({ includeTotal = false, scroll = false } = {}) {
     if (state.disabled) return;
     pageController?.abort();
-    pageController = new AbortController();
+    const controller = new AbortController();
+    pageController = controller;
     setBusy(true);
     try {
-      const logical = await fetchLogicalPage({ includeTotal, signal:pageController.signal });
+      const logical = await fetchLogicalPage({ includeTotal, signal:controller.signal });
       state.hasNext = Number.isFinite(logical.total)
         ? state.page * state.pageSize < logical.total
         : Boolean(logical.last?.pagination?.hasNext);
@@ -158,7 +160,10 @@ function patchDesktopLargePages() {
         if (badge) badge.textContent = 'Gabim · provo përsëri';
       }
     } finally {
-      setBusy(false);
+      if (pageController === controller) {
+        pageController = null;
+        setBusy(false);
+      }
     }
   }
 
@@ -177,11 +182,38 @@ function patchDesktopLargePages() {
   if (!source.includes('const MAX_LOGICAL_PAGE_SIZE = 500;')) throw new Error('Phase 11 500-row logical cap is missing.');
   if (!source.includes('const MAX_PAGE_CHUNKS = 10;')) throw new Error('Phase 11 bounded chunk cap is missing.');
   if (!source.includes('pageSize:String(boundedPageSize)')) throw new Error('Phase 11 server page-size bound is missing.');
+  if (!source.includes("credentials:'same-origin', cache:'default', signal")) {
+    throw new Error('Phase 11 desktop page requests must honor the private server cache contract.');
+  }
   if (!source.includes('payloads.flatMap(payload => payload.rows).slice(0, state.pageSize)')) {
     throw new Error('Phase 11 logical page composition is missing.');
   }
+  if (!source.includes('rawPayloadTotal === null || rawPayloadTotal === undefined ? null : Number(rawPayloadTotal)')) {
+    throw new Error('Phase 11 count-free pages must preserve unknown totals instead of coercing null to zero.');
+  }
+  if (!source.includes('if (pageController === controller)')) {
+    throw new Error('Phase 11 desktop request busy-state must remain owned by the newest request.');
+  }
 
   write('registry-desktop-lite.js', source);
+}
+
+function patchDesktopSearchCounting() {
+  const file = 'registry-desktop-lite.js';
+  let source = read(file);
+  source = replaceOnce(
+    source,
+    `    const search = document.getElementById('search');\n    search?.addEventListener('input', () => {\n      window.clearTimeout(searchTimer);\n      searchTimer = window.setTimeout(() => {\n        state.q = clean(search.value).slice(0, 80);\n        state.page = 1;\n        void loadPage({ includeTotal:true, scroll:false });\n      }, SEARCH_DEBOUNCE_MS);\n    });`,
+    `    const search = document.getElementById('search');\n    search?.addEventListener('input', () => {\n      window.clearTimeout(searchTimer);\n      searchTimer = window.setTimeout(() => {\n        const nextQuery = clean(search.value).slice(0, 80);\n        if (nextQuery.length === 1) return;\n        state.q = nextQuery;\n        state.page = 1;\n        state.total = null;\n        state.totalPages = null;\n        // Search results need a bounded page and hasNext, not an exact count on\n        // every settled term. Clearing search restores the exact total.\n        void loadPage({ includeTotal:nextQuery.length === 0, scroll:false });\n      }, SEARCH_DEBOUNCE_MS);\n    });`,
+    'desktop search without exact-count work while typing',
+  );
+  if (!source.includes('includeTotal:nextQuery.length === 0')) {
+    throw new Error('Phase 11 desktop search must skip exact totals for non-empty queries.');
+  }
+  if (!source.includes('state.total = null;') || !source.includes('state.totalPages = null;')) {
+    throw new Error('Phase 11 desktop search must clear stale totals before count-free queries.');
+  }
+  write(file, source);
 }
 
 function removeLegacyFormHandoff() {
@@ -192,7 +224,8 @@ function removeLegacyFormHandoff() {
 }
 
 patchDesktopLargePages();
+patchDesktopSearchCounting();
 removeLegacyFormHandoff();
 require('./patch-phase11-form-picker-lite.js');
 require('./patch-phase12-targeted-detail-wiring.js');
-console.log('Phase 11 desktop logical page sizes 50/100/250/500 use bounded 50-row Neon chunks without full-registry handoff.');
+console.log('Phase 11 desktop logical page sizes 50/100/250/500 use bounded 50-row Neon chunks; private browser cache is honored, search skips exact counts, unknown-total pagination stays correct and loading state remains request-owned.');

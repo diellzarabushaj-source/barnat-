@@ -30,6 +30,10 @@ assert.match(mobile, /view:'registry-detail'/, 'mobile detail must remain target
 assert.match(mobile, /DEFAULT_PAGE_SIZE = 25/, 'mobile normal mode must remain bounded at 25 rows by default');
 assert.match(mobile, /MAX_PAGE_SIZE = 50/, 'mobile lightweight requests must remain capped at 50 rows');
 assert.match(mobile, /fatal-mobile-lite-recovery/, 'mobile must retain an explicit fatal recovery path');
+assert.match(mobile, /const controller = new AbortController\(\);\s*pageController = controller;/, 'mobile page loads must capture ownership of the active request');
+assert.match(mobile, /signal:controller\.signal/, 'mobile page fetch must use the captured request signal');
+assert.match(mobile, /if \(pageController === controller\) \{\s*pageController = null;\s*setBusy\(false\);\s*\}/, 'an aborted mobile request must not clear loading state owned by a newer request');
+assert.doesNotMatch(mobile, /signal:pageController\.signal/, 'mobile page fetch must not read a mutable shared controller after request start');
 assert.doesNotMatch(mobile, /requestFullRegistry\('mobile-lite-error'\)|requestFullRegistry\('drug-full-detail'\)/, 'ordinary mobile interaction/error paths must not wake the full registry');
 assert.doesNotMatch(mobile, /DRUG_DATA_PARTS|app-performance\.js|NEON_DATA_API|apirest\./i, 'mobile client must not load or access the full registry or Neon directly');
 
@@ -37,6 +41,10 @@ assert.match(desktop, /registry-desktop-lite-v1/, 'desktop lightweight client mu
 assert.match(desktop, /credentials:'same-origin'/, 'desktop registry requests must retain private session credentials');
 assert.match(desktop, /view:'registry-page'/, 'desktop registry must use bounded server pagination');
 assert.match(desktop, /DEFAULT_PAGE_SIZE = 50/, 'desktop normal mode must remain bounded at 50 rows by default');
+assert.match(desktop, /const controller = new AbortController\(\);\s*pageController = controller;/, 'desktop page loads must capture ownership of the active request');
+assert.match(desktop, /signal:controller\.signal/, 'desktop logical-page fetch must use the captured request signal');
+assert.match(desktop, /if \(pageController === controller\) \{\s*pageController = null;\s*setBusy\(false\);\s*\}/, 'an aborted desktop request must not clear loading state owned by a newer request');
+assert.doesNotMatch(desktop, /signal:pageController\.signal/, 'desktop page fetch must not read a mutable shared controller after request start');
 assert.match(desktop, /medindex:request-full-registry/, 'advanced desktop functions must retain an explicit full-runtime handoff');
 assert.doesNotMatch(desktop, /\/api\/registry(?:\?|['"`])|DRUG_DATA_PARTS|NEON_DATA_API|apirest\./i, 'normal desktop lightweight mode must not read the full registry or Neon directly');
 
@@ -114,4 +122,4 @@ assert.match(index, /registry-dosage-loader\.js\?v=20260812-1/, 'index must load
 assert.doesNotMatch(index, /src="registry-dosage-columns-v3\.js/, 'visible-row dosage integration must not be in the critical parser path');
 assert.match(builder, /app-runtime-performance\.js/, 'build must still generate the cache-isolated full fallback runtime artifact');
 
-console.log('Registry interaction resilience, single-owner mobile + desktop lightweight paths and visible-row dosage audit passed.');
+console.log('Registry interaction resilience, request-owned loading states, single-owner mobile + desktop lightweight paths and visible-row dosage audit passed.');

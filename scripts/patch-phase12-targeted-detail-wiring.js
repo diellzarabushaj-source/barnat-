@@ -5,6 +5,7 @@ const path = require('node:path');
 
 const ROOT = path.resolve(__dirname, '..');
 const INDEX = path.join(ROOT, 'index.html');
+const DETAIL_FILE = path.join(ROOT, 'registry-desktop-targeted-detail.js');
 
 const DETAIL_SRC = 'registry-desktop-targeted-detail.js?v=20260812-1';
 const PRESCRIPTION_SRC = 'registry-desktop-prescription-lite.js?v=20260812-1';
@@ -35,6 +36,66 @@ function ensureAfter(anchorPattern, targetPattern, targetSrc, missingAnchorMessa
   source = source.replace(anchorPattern, `${anchorMatch[0]}\n${desired}`);
 }
 
+function patchTargetedDetailObserver() {
+  let detail = fs.readFileSync(DETAIL_FILE, 'utf8').replace(/\r\n?/g, '\n');
+  const oldObserver = `    const observer = new MutationObserver(records => {\n      let needsScan = false;\n      records.forEach(record => {\n        if (record.type === 'attributes') syncRow(record.target);\n        else if (record.type === 'childList' && record.target === tbody) needsScan = true;\n      });\n      if (needsScan) queueMicrotask(scan);\n    });\n    observer.observe(tbody, {\n      childList:true, subtree:true, attributes:true,\n      attributeFilter:['data-registry-row-expanded'],\n    });\n    scan();`;
+  const leanObserver = `    const observer = new MutationObserver(records => {\n      if (records.some(record => record.type === 'childList' && record.target === tbody)) queueMicrotask(scan);\n    });\n    observer.observe(tbody, { childList:true });\n    window.addEventListener('medindex:registry-row-expanded-change', event => {\n      const row = event.detail?.row;\n      if (!row?.isConnected || row.parentElement !== tbody) return;\n      syncRow(row);\n    });\n    scan();`;
+
+  if (!detail.includes(leanObserver)) {
+    if (!detail.includes(oldObserver)) throw new Error('Phase 12 could not find the targeted-detail subtree observer contract.');
+    detail = detail.replace(oldObserver, leanObserver);
+  }
+
+  if (!detail.includes("window.addEventListener('medindex:registry-row-expanded-change'")) {
+    throw new Error('Phase 12 targeted detail must react to the canonical row-expanded change event.');
+  }
+  if (/observer\.observe\(tbody, \{[\s\S]*?subtree\s*:\s*true/.test(detail)) {
+    throw new Error('Phase 12 targeted detail must not observe the entire tbody subtree.');
+  }
+  if (/attributeFilter:\s*\['data-registry-row-expanded'\]/.test(detail)) {
+    throw new Error('Phase 12 targeted detail must not retain the old row-attribute observer.');
+  }
+
+  fs.writeFileSync(DETAIL_FILE, detail, 'utf8');
+}
+
+function patchTargetedDetailCache() {
+  let detail = fs.readFileSync(DETAIL_FILE, 'utf8').replace(/\r\n?/g, '\n');
+
+  if (!detail.includes('const DETAIL_CACHE_LIMIT = 96;')) {
+    const anchor = `  const UUID_RE = /^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i;\n  const cache = new Map();`;
+    const replacement = `  const UUID_RE = /^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i;\n  const DETAIL_CACHE_LIMIT = 96;\n  const cache = new Map();`;
+    if (!detail.includes(anchor)) throw new Error('Phase 12 could not find targeted-detail cache constant anchor.');
+    detail = detail.replace(anchor, replacement);
+  }
+
+  if (!detail.includes('function readDetailCache(id)')) {
+    const anchor = `  function loadDetail(id) {`;
+    const helpers = `  function readDetailCache(id) {\n    if (!cache.has(id)) return null;\n    const payload = cache.get(id);\n    cache.delete(id);\n    cache.set(id, payload);\n    return payload;\n  }\n\n  function rememberDetail(id, payload) {\n    cache.delete(id);\n    cache.set(id, payload);\n    while (cache.size > DETAIL_CACHE_LIMIT) {\n      const oldestId = cache.keys().next().value;\n      if (!oldestId) break;\n      cache.delete(oldestId);\n    }\n    return payload;\n  }\n\n${anchor}`;
+    if (!detail.includes(anchor)) throw new Error('Phase 12 could not find targeted-detail loadDetail anchor.');
+    detail = detail.replace(anchor, helpers);
+  }
+
+  detail = detail.replace(
+    `    if (cache.has(id)) return Promise.resolve(cache.get(id));`,
+    `    const cached = readDetailCache(id);\n    if (cached) return Promise.resolve(cached);`,
+  );
+  detail = detail.replace(`      cache.set(id, payload);`, `      rememberDetail(id, payload);`);
+  detail = detail.replace(
+    `    if (cache.has(id)) {\n      renderDetail(row, cache.get(id));\n      return true;\n    }`,
+    `    const cached = readDetailCache(id);\n    if (cached) {\n      renderDetail(row, cached);\n      return true;\n    }`,
+  );
+
+  if (!detail.includes('const DETAIL_CACHE_LIMIT = 96;')) throw new Error('Phase 12 detail cache limit is missing.');
+  if (!detail.includes('while (cache.size > DETAIL_CACHE_LIMIT)')) throw new Error('Phase 12 detail cache eviction is missing.');
+  if (!detail.includes('const cached = readDetailCache(id);')) throw new Error('Phase 12 detail cache must refresh recency on reads.');
+  if (detail.includes('cache.set(id, payload);') && !detail.includes('function rememberDetail(id, payload)')) {
+    throw new Error('Phase 12 unbounded detail cache write remains.');
+  }
+
+  fs.writeFileSync(DETAIL_FILE, detail, 'utf8');
+}
+
 ensureAfter(
   ROW_PATTERN,
   DETAIL_PATTERN,
@@ -62,8 +123,10 @@ if (rowIndex < 0 || detailIndex <= rowIndex) throw new Error('Phase 12 targeted 
 if (prescriptionIndex <= detailIndex) throw new Error('Phase 13 prescription bridge must load after targeted detail.');
 if (columnIndex <= prescriptionIndex) throw new Error('Phase 14 column-lite runtime must load after prescription bridge.');
 
+patchTargetedDetailObserver();
+patchTargetedDetailCache();
 fs.writeFileSync(INDEX, source, 'utf8');
 require('./patch-phase13-prescription-lite.js');
 require('./patch-phase14-column-lite.js');
 
-console.log('Phase 12-14 targeted detail, prescription and visible-column lightweight runtimes wired after the canonical row expander with one build cohort.');
+console.log('Phase 12-14 targeted detail is event-driven with a bounded 96-entry session LRU; prescription and visible-column lightweight runtimes remain in one build cohort.');

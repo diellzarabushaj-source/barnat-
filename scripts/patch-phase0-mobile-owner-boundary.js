@@ -83,7 +83,32 @@ function patchCellPreview() {
     'cell preview mobile-lite cleanup guard',
   );
 
+  source = replaceOnce(
+    source,
+    `    tableObserver.observe(tbody, {\n      childList:true,\n      subtree:true,\n      characterData:true,\n      attributes:true,\n      attributeFilter:['class', 'data-registry-row-expanded'],\n    });`,
+    `    // Nested child insertion is still needed for dosage/clinical controls, but\n    // text/class/aria churn must not retrigger a full visible-cell scan.\n    tableObserver.observe(tbody, { childList:true, subtree:true });`,
+    'cell preview lean mutation observer',
+  );
+
+  const initAnchor = `    window.addEventListener('medindex:registry-table-stable', activate);\n    ['medindex:registry-data-ready', 'medindex:tailadmin-ready']`;
+  const eventDriven = `    window.addEventListener('medindex:registry-table-stable', activate);\n    window.addEventListener('medindex:registry-row-expanded-change', event => {\n      const row = event.detail?.row;\n      if (!row?.isConnected) return;\n      row.querySelectorAll(\`.\${TRIGGER_CLASS}\`).forEach(syncTriggerState);\n    });\n    ['medindex:registry-data-ready', 'medindex:tailadmin-ready']`;
+  source = replaceOnce(
+    source,
+    initAnchor,
+    eventDriven,
+    'cell preview row-expanded event sync',
+  );
+
   if (!source.includes("cell.closest('.mobile-lite-row')")) throw new Error('Phase 0 cell-preview phone guard is missing.');
+  if (!source.includes('tableObserver.observe(tbody, { childList:true, subtree:true });')) {
+    throw new Error('Phase 0 cell-preview must retain only child-list subtree observation.');
+  }
+  if (/characterData\s*:\s*true|attributes\s*:\s*true|attributeFilter\s*:/.test(source.slice(source.indexOf('function connectObserver()'), source.indexOf('function enhanceVisibleCells()')))) {
+    throw new Error('Phase 0 cell-preview observer must not watch text or attribute churn.');
+  }
+  if (!source.includes("window.addEventListener('medindex:registry-row-expanded-change'")) {
+    throw new Error('Phase 0 cell-preview must sync expansion state from the canonical row event.');
+  }
   write('registry-cell-preview.js', source);
 }
 
@@ -108,4 +133,4 @@ patchUnifiedTable();
 patchCellPreview();
 patchSharedPersonalization();
 
-console.log('Phase 0 phone owner boundary: shared unified-table chrome/cells, cell previews and desktop personalization remain deferred while mobile-lite owns the phone list.');
+console.log('Phase 0 phone owner + long-session preview boundary: shared table UI stays deferred on phones and cell previews ignore text/attribute mutation churn.');

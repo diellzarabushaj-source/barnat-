@@ -68,10 +68,10 @@ assert.match(nameDisplay, /\[data-nav="classification"\],\[data-medical-nav="cla
 assert.match(shell, /class="mi-page-heading-title"/, 'The shell title must not create a second page H1');
 assert.doesNotMatch(shell, /Burime të kontrolluara/, 'The shell must not claim every source is controlled');
 assert.match(shell, /Të dhëna klinike/, 'The shell needs a neutral clinical-data label');
-// Dozologjia became pediatric-only and selection-driven, so these check the
-// behaviour that matters rather than the exact wording the old page used.
+// Dozologjia is pediatric-only and selection-driven, so test the safety behavior
+// rather than stale wording and summary variables from the previous page.
 assert.match(dosagePage, /pa burim të lidhur/i, 'Dosage cards must expose missing provenance');
-assert.match(dosagePage, /function linkedSources\(card, regimen\)/, 'Provenance must still be derived from linked sources');
+assert.match(dosagePage, /function linkedSources\(card, regimen\)/, 'Provenance must be derived from linked sources');
 assert.match(dosagePage, /const sources = linkedSources\(card, regimen\);/, 'Source chips must read from linkedSources');
 assert.match(dosagePage, /const urls = new Set\([^\n]*sourceUrls[^\n]*https[^\n]*\)/, 'Only https sources may count as linked provenance');
 assert.doesNotMatch(dosagePage, /kartel(?:a|at) (?:e )?verifikuara|dataset-in e verifikuar/i, 'Dosage UI must not claim the dataset as a whole is verified');
