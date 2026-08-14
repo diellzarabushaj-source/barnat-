@@ -7,11 +7,16 @@ const navFile = path.resolve(__dirname, '..', 'registry-mobile-phase3.js');
 let navSource = fs.readFileSync(navFile, 'utf8').replace(/\r\n?/g, '\n');
 
 const before = `    nav.style.visibility = blocked ? 'hidden' : 'visible';\n    nav.style.opacity = blocked ? '0' : '1';\n    nav.style.pointerEvents = blocked ? 'none' : '';`;
-const after = `    nav.style.setProperty('visibility', blocked ? 'hidden' : 'visible', 'important');\n    nav.style.setProperty('opacity', blocked ? '0' : '1', 'important');\n    nav.style.setProperty('pointer-events', blocked ? 'none' : 'auto', 'important');\n    nav.style.setProperty('transform', blocked ? 'translateY(calc(100% + 24px))' : 'translateY(0)', 'important');`;
+const priorAfter = `    nav.style.setProperty('visibility', blocked ? 'hidden' : 'visible', 'important');\n    nav.style.setProperty('opacity', blocked ? '0' : '1', 'important');\n    nav.style.setProperty('pointer-events', blocked ? 'none' : 'auto', 'important');\n    nav.style.setProperty('transform', blocked ? 'translateY(calc(100% + 24px))' : 'translateY(0)', 'important');`;
+const after = `    if (blocked) {\n      nav.style.setProperty('visibility', 'hidden', 'important');\n      nav.style.setProperty('opacity', '0', 'important');\n      nav.style.setProperty('pointer-events', 'none', 'important');\n      nav.style.setProperty('transform', 'translateY(calc(100% + 24px))', 'important');\n    } else {\n      nav.style.removeProperty('visibility');\n      nav.style.removeProperty('opacity');\n      nav.style.removeProperty('pointer-events');\n      nav.style.removeProperty('transform');\n    }`;
 
 if (!navSource.includes(after)) {
-  if (!navSource.includes(before)) throw new Error('Bottom nav style synchronization block changed.');
-  navSource = navSource.replace(before, after);
+  if (navSource.includes(priorAfter)) navSource = navSource.replace(priorAfter, after);
+  else if (navSource.includes(before)) navSource = navSource.replace(before, after);
+  else throw new Error('Bottom nav style synchronization block changed.');
+}
+if (!navSource.includes("nav.style.removeProperty('visibility')")) {
+  throw new Error('Idle bottom-nav state must release inline visibility authority back to modal CSS.');
 }
 
 fs.writeFileSync(navFile, navSource, 'utf8');
@@ -59,4 +64,4 @@ if (!phoneCss.includes('padding:4px 9px 4px 12px;')) {
 }
 fs.writeFileSync(phoneCssFile, phoneCss, 'utf8');
 
-console.log('Late mobile styles now preserve blocked-nav priority and keep all phone card widths inside the audited geometry budget without shrinking 44px actions.');
+console.log('Late mobile styles now preserve modal CSS authority, blocked-nav safety and audited phone card geometry without shrinking 44px actions.');
