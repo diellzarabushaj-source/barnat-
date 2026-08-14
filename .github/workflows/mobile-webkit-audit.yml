@@ -39,7 +39,7 @@ jobs:
       - name: Build audited runtime once
         run: pnpm run build:runtime
 
-      - name: Verify mobile audit syntax
+      - name: Verify mobile and tablet audit syntax
         run: |
           node --check scripts/audit-mobile-phase0-runtime.js
           node --check scripts/audit-mobile-card-geometry.js
@@ -47,6 +47,7 @@ jobs:
           node --check scripts/audit-mobile-shell-state.js
           node --check scripts/run-mobile-shell-webkit-audit.js
           node --check scripts/audit-mobile-network-phase5.js
+          node --check scripts/audit-tablet-registry-geometry.js
 
       - name: Install Playwright WebKit
         shell: bash
@@ -55,24 +56,27 @@ jobs:
           pnpm exec playwright install --with-deps webkit > /tmp/playwright-webkit-install.log 2>&1 || { tail -200 /tmp/playwright-webkit-install.log; exit 1; }
           echo "Playwright WebKit installed."
 
-      - name: Run iPhone ownership, geometry, detail, shell and network gates
+      - name: Run phone and tablet ownership, geometry, detail, shell and network gates
         shell: bash
         run: |
           set -euo pipefail
           : > /tmp/mobile-webkit-audit.log
+          : > /tmp/tablet-webkit-audit.log
           PHASE0_SKIP_BUILD=1 pnpm run audit:mobile-runtime 2>&1 | tee -a /tmp/mobile-webkit-audit.log
           MOBILE_GEOMETRY_SKIP_BUILD=1 pnpm run audit:mobile-geometry 2>&1 | tee -a /tmp/mobile-webkit-audit.log
           MOBILE_DETAIL_SKIP_BUILD=1 node scripts/audit-mobile-detail-phase3.js 2>&1 | tee -a /tmp/mobile-webkit-audit.log
           MOBILE_SHELL_SKIP_BUILD=1 node scripts/run-mobile-shell-webkit-audit.js 2>&1 | tee -a /tmp/mobile-webkit-audit.log
           MOBILE_NETWORK_SKIP_BUILD=1 node scripts/audit-mobile-network-phase5.js 2>&1 | tee -a /tmp/mobile-webkit-audit.log
+          TABLET_GEOMETRY_SKIP_BUILD=1 node scripts/audit-tablet-registry-geometry.js 2>&1 | tee -a /tmp/tablet-webkit-audit.log
 
       - name: Upload WebKit diagnostics
         if: always()
         uses: actions/upload-artifact@v4
         with:
-          name: mobile-webkit-diagnostics
+          name: mobile-tablet-webkit-diagnostics
           path: |
             /tmp/mobile-webkit-audit.log
+            /tmp/tablet-webkit-audit.log
             /tmp/playwright-webkit-install.log
             test-results
             playwright-report
