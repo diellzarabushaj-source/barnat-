@@ -30,10 +30,14 @@ assert.match(desktop, /function logicalChunkCount\(/);
 assert.match(desktop, /function firstServerPage\(/);
 assert.match(desktop, /async function fetchRegistryChunk\(/);
 assert.match(desktop, /async function fetchLogicalPage\(/);
+assert.match(desktop, /const rawPayloadTotal = first\.pagination\?\.total;/, 'Count-free page responses must keep raw total state explicit.');
+assert.match(desktop, /rawPayloadTotal === null \|\| rawPayloadTotal === undefined \? null : Number\(rawPayloadTotal\)/, 'A null server total must remain unknown instead of becoming numeric zero.');
+assert.doesNotMatch(desktop, /const payloadTotal = Number\(first\.pagination\?\.total\);/, 'Count-free responses must never coerce null totals with Number(null).');
 assert.match(desktop, /pageSize:String\(boundedPageSize\)/, 'Every server request must pass the bounded 50-row page size.');
 assert.match(desktop, /payloads\.flatMap\(payload => payload\.rows\)\.slice\(0, state\.pageSize\)/, 'Only the requested logical page may be composed in memory.');
 assert.match(desktop, /Math\.ceil\(logical\.total \/ state\.pageSize\)/, 'Logical pagination must be computed from the user-selected page size.');
 assert.match(desktop, /state\.page \* state\.pageSize < logical\.total/, 'Next-page state must be based on the logical page, not an internal 50-row chunk.');
+assert.match(desktop, /Boolean\(logical\.last\?\.pagination\?\.hasNext\)/, 'Unknown-total pages must preserve server look-ahead pagination.');
 assert.match(desktop, /chunks:logical\.chunks/, 'Runtime diagnostics must expose the number of bounded chunks used.');
 assert.doesNotMatch(desktop, /requestFullRegistry\('desktop-large-page-size'/, '100/250/500 must not trigger the full registry anymore.');
 assert.doesNotMatch(desktop, /\/api\/registry(?:\?|['"`])|DRUG_DATA_PARTS/, 'Large desktop pages must stay on the lightweight gateway.');
@@ -44,6 +48,7 @@ assert.doesNotMatch(api, /params\.set\('select', '\*'\)/, 'Large-page support mu
 assert.match(patch, /MAX_LOGICAL_PAGE_SIZE = 500/);
 assert.match(patch, /MAX_PAGE_CHUNKS = 10/);
 assert.match(patch, /CHUNK_CONCURRENCY = 3/);
+assert.match(patch, /rawPayloadTotal === null \|\| rawPayloadTotal === undefined \? null : Number\(rawPayloadTotal\)/, 'Build patch must preserve unknown totals for count-free search.');
 assert.match(patch, /require\('\.\/patch-phase11-form-picker-lite\.js'\)/, 'Phase 11 form picker hardening must compose with the main Phase 11 build patch.');
 assert.match(patch, /require\('\.\/patch-phase12-targeted-detail-wiring\.js'\)/, 'Phase 12 targeted detail wiring must compose with the existing desktop build chain.');
 assert.match(packageJson.scripts['build:runtime'], /patch-phase11-desktop-advanced-lite\.js/, 'Phase 11 patch must execute deterministically in build:runtime.');
@@ -51,4 +56,4 @@ assert.match(packageJson.scripts.test, /registry-desktop-large-page-lite-test\.j
 
 require('./registry-desktop-form-lite-test.js');
 require('./registry-desktop-targeted-detail-test.js');
-console.log('Phase 11/12 desktop bounded pages, lightweight form filtering and targeted one-drug detail remain off the full-registry path.');
+console.log('Phase 11/12 desktop bounded pages, count-free unknown-total pagination, lightweight form filtering and targeted one-drug detail remain off the full-registry path.');
