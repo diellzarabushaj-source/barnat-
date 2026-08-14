@@ -40,6 +40,11 @@ assert(controller.includes('data-lineicons-icon="expand-square-4"'), 'Lineicons 
 assert(controller.includes('rowController.toggleRow(row)'), 'Cell trigger must expand the table row inline.');
 assert(controller.includes("trigger.setAttribute('aria-expanded'"), 'Inline trigger must expose its expanded state.');
 assert(controller.includes("window.addEventListener('medindex:registry-table-stable', activate)"), 'Cell triggers must be rebuilt whenever the unified table stabilizes.');
+assert(controller.includes("window.addEventListener('medindex:registry-row-expanded-change'"), 'Cell trigger state must follow the canonical row-expanded event without attribute observation.');
+assert(controller.includes('tableObserver.observe(tbody, { childList:true, subtree:true });'), 'Cell preview must retain nested child insertion detection for dosage/clinical controls.');
+const observerBlock = controller.slice(controller.indexOf('function connectObserver()'), controller.indexOf('function enhanceVisibleCells()'));
+assert(!/characterData\s*:\s*true/.test(observerBlock), 'Cell preview must not rescan on every nested text mutation.');
+assert(!/attributes\s*:\s*true|attributeFilter\s*:/.test(observerBlock), 'Cell preview must not rescan on every nested class/aria/expanded attribute mutation.');
 assert(controller.includes('function refreshNow()'), 'Manual cell-preview refresh must be synchronous.');
 assert(controller.includes('refresh:refreshNow'), 'Public refresh must use the synchronous path.');
 assert(controller.includes("['select', 'trade-name', 'clinical-status', 'clinical-action', 'dose-calculator'].includes(key)"), 'Preview exclusions must protect canonical action columns.');
@@ -78,9 +83,10 @@ assert(rowExpand.includes("button, input, select, textarea"), 'Row expansion mus
 assert(rowExpand.includes('syncPreviewTriggers(row, expanded)'), 'Row expansion must synchronize every trigger in the row.');
 assert(rowExpand.includes('function syncDosageDisclosures(row, expanded)'), 'Row expansion must synchronize dosage disclosure controls.');
 assert(rowExpand.includes("regimen.classList.toggle('is-expanded', expanded)"), 'All dosage regimens must follow the canonical row state.');
+assert(rowExpand.includes('medindex:registry-row-expanded-change'), 'Row expansion must publish one targeted expansion-change event.');
 assert(dosageRuntime.includes("rowController.toggleRow(row)"), 'The Më shumë control must release the containing table row.');
 assert(!dosageRuntime.includes("regimen?.classList.toggle('is-expanded')"), 'The dosage control must not expand only a clipped inner element.');
 assert(!styles.includes('height:132px!important;\n  min-height:132px!important'), 'Expanded desktop rows must not have a fixed height ceiling.');
 assert(fullTextStyles.includes('.registry-dosage-regimen.is-expanded .registry-dosage-dose-text'), 'Expanded dosage text must have an explicit unclamped contract.');
 
-console.log('Full-row zoom restores canonical active-substance text, population-aware unified geometry, verified dose actions and every textual column without modal or clamp.');
+console.log('Full-row zoom keeps canonical content while cell-preview ignores long-session text/attribute mutation churn.');
