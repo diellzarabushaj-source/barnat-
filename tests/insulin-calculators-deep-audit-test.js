@@ -13,28 +13,44 @@ const compile = file => {
 };
 
 const index = read('index.html');
+const lazyLoader = compile('registry-dose-interaction-loader.js');
 const novoRapid = compile('registry-novorapid-simple-calculator.js');
 const novoMix = compile('registry-novomix30-simple-calculator.js');
 const others = compile('registry-other-insulins-simple-calculator.js');
 const finalSafety = compile('registry-insulin-final-safety.js');
 const bridge = compile('registry-insulin-row-bridge.js');
 
-// Only the audited simple stack should be active on the registry page.
+// Visible row controls stay eager; modal-specific insulin runtimes are interaction-gated.
+assert(index.includes('registry-dose-interaction-loader.js'), 'index must load the small dose interaction loader');
+assert(index.includes('registry-insulin-row-bridge.js'), 'index must keep the visible insulin row bridge');
 for (const asset of [
   'registry-novorapid-simple-calculator.js',
   'registry-novomix30-simple-calculator.js',
   'registry-other-insulins-simple-calculator.js',
   'registry-insulin-final-safety.js',
-  'registry-insulin-row-bridge.js'
-]) assert(index.includes(asset), `index must load ${asset}`);
+]) {
+  assert(!index.includes(`<script src="${asset}`), `index must not eagerly execute ${asset}`);
+  assert(lazyLoader.includes(asset), `lazy interaction loader must retain ${asset}`);
+}
+for (const asset of [
+  'registry-novorapid-simple-calculator.css',
+  'registry-novomix30-simple-calculator.css',
+  'registry-other-insulins-simple-calculator.css',
+]) {
+  assert(!index.includes(`<link rel="stylesheet" href="${asset}`), `index must not eagerly load ${asset}`);
+  assert(lazyLoader.includes(asset), `lazy interaction loader must retain ${asset}`);
+}
 for (const legacy of [
   'registry-insulin-smart-calculator.js',
   'registry-insulin-pediatric-guards.js',
   'registry-insulin-language-polish.js'
 ]) assert(!index.includes(`<script src="${legacy}`), `index must not load legacy ${legacy}`);
 assert(!index.includes('registry-insulin-smart-calculator.css'), 'legacy Smart Insulin CSS must not remain loaded');
-assert(index.indexOf('registry-other-insulins-simple-calculator.js') < index.indexOf('registry-insulin-final-safety.js'), 'final insulin guard must load after calculators');
-assert(index.indexOf('registry-insulin-final-safety.js') < index.indexOf('registry-insulin-row-bridge.js'), 'final insulin guard must be active before row bridge interactions');
+assert(index.includes('registry-insulin-deep-audit.css'), 'visible Smart Insulin row styling must remain eager');
+assert(index.indexOf('registry-dose-interaction-loader.js') < index.indexOf('registry-insulin-row-bridge.js'),
+  'interaction loader must intercept the first Smart Insulin click before row interactions continue');
+assert(lazyLoader.indexOf('registry-other-insulins-simple-calculator.js') < lazyLoader.indexOf('registry-insulin-final-safety.js'),
+  'final insulin guard must load after calculators');
 
 // Registry bridge coverage: all insulin products currently in this registry group.
 for (const id of ['2508','2509','2510','2511','2512','2965','3730']) {
@@ -93,4 +109,4 @@ assert(finalSafety.includes("value === 'premix'"), 'Tresiba premix switch must b
 assert(finalSafety.includes('jo te i gjithë totali i premix-it'), 'Tresiba must not use whole premix total as prior basal dose');
 assert(finalSafety.includes('Verifiko prezantimin e Tresiba'), 'Tresiba planned fractional dose must not be silently rounded');
 
-console.log('Insulin calculators deep audit + final fail-closed guard: OK');
+console.log('Insulin calculators deep audit + interaction-gated final fail-closed guard: OK');
