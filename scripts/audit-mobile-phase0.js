@@ -77,25 +77,23 @@ if (nonfatalErrorHandoff || fullDetailHandoff || liteHandoffReasons.length) {
 }
 
 const phase2Geometry = {
-  reservedContentRail:/mobile-lite-card:has\(\.mi-mobile-favorite-toggle\) \.mobile-lite-open\s*\{[\s\S]*?padding-right:96px/.test(phase8Css),
-  favoriteTopSlot:/\.mi-mobile-favorite-toggle\s*\{[\s\S]*?position:absolute;[\s\S]*?top:8px;[\s\S]*?right:8px;[\s\S]*?width:44px;[\s\S]*?height:44px/.test(phase8Css),
-  detailBottomSlot:/mobile-lite-card:has\(\.mi-mobile-favorite-toggle\) \.mobile-lite-more\s*\{[\s\S]*?position:absolute;[\s\S]*?right:8px;[\s\S]*?bottom:8px/.test(phase8Css),
-  cardHeightReserve:/mobile-lite-card:has\(\.mi-mobile-favorite-toggle\)\s*\{[\s\S]*?min-height:108px/.test(phase8Css),
+  explicitActionRegion:/MedIndex revised Phase 2: explicit mobile card action region/.test(phase8Css),
+  cardActionGrid:/mobile-lite-card:has\(\.mobile-lite-actions\)[\s\S]*?display:grid!important;[\s\S]*?grid-template-columns:minmax\(0,1fr\) auto!important/.test(phase8Css),
+  actionRegionColumns:/\.mobile-lite-actions\s*\{[\s\S]*?display:grid!important;[\s\S]*?grid-template-columns:44px 78px!important;[\s\S]*?gap:6px!important/.test(phase8Css),
+  favoriteStaticSlot:/\.mobile-lite-actions \.mi-mobile-favorite-toggle\s*\{[\s\S]*?position:static!important;[\s\S]*?width:44px!important;[\s\S]*?height:44px!important/.test(phase8Css),
+  detailStaticSlot:/\.mobile-lite-actions \.mobile-lite-more\s*\{[\s\S]*?position:static!important;[\s\S]*?width:78px!important;[\s\S]*?min-height:44px!important/.test(phase8Css),
+  cardHeightReserve:/mobile-lite-card:has\(\.mobile-lite-actions\)[\s\S]*?min-height:108px!important/.test(phase8Css),
 };
 const phase2GeometryReady = Object.values(phase2Geometry).every(Boolean);
 
-if (/grid-template-columns:minmax\(0,1fr\) auto/.test(liteCss)
-    && /position:absolute/.test(phase8Css)
-    && /right:8px/.test(phase8Css)
-    && /\.mobile-lite-more/.test(designCss)
-    && !phase2GeometryReady) {
+if (!phase2GeometryReady) {
   findings.push(finding(
     'P0-GEOMETRY-003',
     'high',
-    'Favorite control can occupy the same right-side geometry as “Më shumë”',
-    'The base card uses a 1fr/auto grid while the favorite control and detail action do not have independently reserved action slots.',
-    'This allows the star and “Më shumë” to overlap on narrow cards, matching the supplied iPhone screenshot.',
-    'Phase 2 must reserve independent top/bottom action hitboxes and protect the content width.'
+    'Card v2 explicit action-region contract is incomplete',
+    `Phase 2 Card v2 geometry contract: ${JSON.stringify(phase2Geometry)}.`,
+    'Without an explicit action region, favorite and “Më shumë” can drift back into absolute/colliding geometry or escape the compact card on narrow phones.',
+    'Phase 2 must keep one in-flow action region with a 44px favorite slot, a 78px Më shumë slot, and a compact card height reserve.'
   ));
 }
 
@@ -271,6 +269,6 @@ if (process.argv.includes('--assert-phase1-ready') && !phase1EntryGateReady) {
   process.exitCode = 2;
 }
 if (process.argv.includes('--assert-phase2-ready') && !phase2GeometryReady) {
-  console.error('Phase 2 static geometry gate is not satisfied. Keep favorite/detail actions in independent hitboxes.');
+  console.error('Phase 2 static geometry gate is not satisfied. Keep one explicit in-flow action region for favorite and Më shumë.');
   process.exitCode = 3;
 }
