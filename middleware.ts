@@ -33,6 +33,7 @@ const PUBLIC_PATHS = new Set([
   '/manifest.webmanifest',
   '/medindex-icon.svg',
   '/images/brand/medindex-mark-mplus.svg',
+  '/images/brand/diellza-avatar.svg',
   '/brand/medindex-mark-on-light.webp',
   '/brand/medindex-full-on-dark.png',
   '/brand/medindex-mark-on-dark.png',

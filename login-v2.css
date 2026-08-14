@@ -100,7 +100,13 @@ input,summary{font:inherit}
 }
 .lv-nav-inner{display:flex;align-items:center;gap:28px;min-height:74px}
 
-.lv-brand{display:flex;align-items:center;gap:11px;flex:0 0 auto}
+.lv-brand{display:flex;align-items:center;flex:0 0 auto}
+
+/* Logo zyrtare horizontale: lartësia komandon, gjerësia e ndjek raportin. */
+.lv-logo-horizontal{width:auto;height:36px}
+.lv-footer-brand .lv-logo-horizontal{height:32px}
+.lv-logo-on-dark{height:38px;margin-bottom:20px}
+
 .lv-brand-mark{
   display:grid;place-items:center;
   width:42px;height:42px;flex:0 0 42px;
@@ -373,6 +379,43 @@ input,summary{font:inherit}
 .lv-flow-step h3{margin:0 0 10px;font-size:20px;font-weight:760;letter-spacing:-.03em}
 .lv-flow-step p{margin:0;color:var(--lv-body);font-size:14.5px;line-height:1.65}
 
+/* ── THEMELUESJA ────────────────────────────────────────────────────────── */
+.lv-ceo{
+  position:relative;overflow:hidden;
+  display:grid;gap:clamp(24px,4vw,48px);align-items:center;
+  grid-template-columns:auto minmax(0,1fr);
+  margin:0;padding:clamp(32px,4vw,48px);
+  border:1px solid var(--lv-line);border-radius:var(--lv-radius-lg);
+  background:
+    radial-gradient(90% 140% at 0% 0%,var(--lv-blue-wash) 0%,transparent 62%),
+    linear-gradient(140deg,#fff 0%,#fbfcff 100%);
+  box-shadow:var(--lv-shadow);
+}
+.lv-ceo::before{
+  content:"";position:absolute;inset:0 auto 0 0;width:4px;
+  background:linear-gradient(180deg,var(--lv-blue),var(--lv-teal));
+}
+
+.lv-ceo-portrait{position:relative;display:grid;place-items:center;flex:0 0 auto}
+.lv-ceo-portrait img{
+  width:96px;height:96px;
+  border-radius:50%;
+  background:#fff;
+  box-shadow:0 0 0 4px #fff,0 0 0 6px rgba(61,111,224,.28),0 16px 36px rgba(13,22,44,.16);
+}
+
+.lv-ceo-body{min-width:0}
+.lv-ceo blockquote{margin:0}
+.lv-ceo blockquote p{
+  position:relative;margin:0;
+  color:var(--lv-ink-soft);
+  font-size:clamp(17px,1.9vw,22px);font-weight:520;
+  letter-spacing:-.015em;line-height:1.52;text-wrap:pretty;
+}
+.lv-ceo-meta{display:grid;gap:3px;margin-top:22px}
+.lv-ceo-meta strong{font-size:15.5px;font-weight:760;letter-spacing:-.02em}
+.lv-ceo-meta span{color:var(--lv-muted);font-size:12.5px;font-weight:620;letter-spacing:.02em}
+
 /* ── PLANI ──────────────────────────────────────────────────────────────── */
 .lv-plan-wrap{
   display:grid;gap:clamp(32px,5vw,64px);align-items:center;
@@ -611,6 +654,10 @@ input,summary{font:inherit}
   :root{--lv-shell:calc(100% - 32px)}
   .lv-preview-flag{font-size:11px;padding:8px 14px;line-height:1.4}
   .lv-brand-copy small{display:none}
+  .lv-logo-horizontal{height:30px}
+  .lv-ceo{grid-template-columns:minmax(0,1fr);justify-items:center;text-align:center}
+  .lv-ceo::before{inset:0 0 auto 0;width:auto;height:4px;background:linear-gradient(90deg,var(--lv-blue),var(--lv-teal))}
+  .lv-ceo-meta{justify-items:center}
   .lv-hero{padding:56px 0 76px}
   .lv-hero-actions{flex-direction:column;align-items:stretch}
   .lv-hero-actions .lv-btn{width:100%}
