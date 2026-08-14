@@ -122,10 +122,11 @@ function patchDesktopLargePages() {
   const loadPageBlock = `  async function loadPage({ includeTotal = false, scroll = false } = {}) {
     if (state.disabled) return;
     pageController?.abort();
-    pageController = new AbortController();
+    const controller = new AbortController();
+    pageController = controller;
     setBusy(true);
     try {
-      const logical = await fetchLogicalPage({ includeTotal, signal:pageController.signal });
+      const logical = await fetchLogicalPage({ includeTotal, signal:controller.signal });
       state.hasNext = Number.isFinite(logical.total)
         ? state.page * state.pageSize < logical.total
         : Boolean(logical.last?.pagination?.hasNext);
@@ -159,7 +160,10 @@ function patchDesktopLargePages() {
         if (badge) badge.textContent = 'Gabim · provo përsëri';
       }
     } finally {
-      setBusy(false);
+      if (pageController === controller) {
+        pageController = null;
+        setBusy(false);
+      }
     }
   }
 
@@ -183,6 +187,9 @@ function patchDesktopLargePages() {
   }
   if (!source.includes('rawPayloadTotal === null || rawPayloadTotal === undefined ? null : Number(rawPayloadTotal)')) {
     throw new Error('Phase 11 count-free pages must preserve unknown totals instead of coercing null to zero.');
+  }
+  if (!source.includes('if (pageController === controller)')) {
+    throw new Error('Phase 11 desktop request busy-state must remain owned by the newest request.');
   }
 
   write('registry-desktop-lite.js', source);
@@ -218,4 +225,4 @@ patchDesktopSearchCounting();
 removeLegacyFormHandoff();
 require('./patch-phase11-form-picker-lite.js');
 require('./patch-phase12-targeted-detail-wiring.js');
-console.log('Phase 11 desktop logical page sizes 50/100/250/500 use bounded 50-row Neon chunks without full-registry handoff; non-empty search skips exact count work without losing unknown-total pagination.');
+console.log('Phase 11 desktop logical page sizes 50/100/250/500 use bounded 50-row Neon chunks; search skips exact counts, unknown-total pagination stays correct and loading state remains request-owned.');
