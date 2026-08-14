@@ -9,6 +9,9 @@ const PUBLIC_INFO_PATHS = new Set([
 
 const PUBLIC_PATHS = new Set([
   '/login.html',
+  '/login-v2.html',
+  '/login-v2.css',
+  '/login-v2.js',
   '/login.css',
   '/login-editorial.css',
   '/landing-effects.css',
