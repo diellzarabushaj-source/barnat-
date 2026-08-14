@@ -184,6 +184,24 @@ function patchDesktopLargePages() {
   write('registry-desktop-lite.js', source);
 }
 
+function patchDesktopSearchCounting() {
+  const file = 'registry-desktop-lite.js';
+  let source = read(file);
+  source = replaceOnce(
+    source,
+    `    const search = document.getElementById('search');\n    search?.addEventListener('input', () => {\n      window.clearTimeout(searchTimer);\n      searchTimer = window.setTimeout(() => {\n        state.q = clean(search.value).slice(0, 80);\n        state.page = 1;\n        void loadPage({ includeTotal:true, scroll:false });\n      }, SEARCH_DEBOUNCE_MS);\n    });`,
+    `    const search = document.getElementById('search');\n    search?.addEventListener('input', () => {\n      window.clearTimeout(searchTimer);\n      searchTimer = window.setTimeout(() => {\n        const nextQuery = clean(search.value).slice(0, 80);\n        if (nextQuery.length === 1) return;\n        state.q = nextQuery;\n        state.page = 1;\n        state.total = null;\n        state.totalPages = null;\n        // Search results need a bounded page and hasNext, not an exact count on\n        // every settled term. Clearing search restores the exact total.\n        void loadPage({ includeTotal:nextQuery.length === 0, scroll:false });\n      }, SEARCH_DEBOUNCE_MS);\n    });`,
+    'desktop search without exact-count work while typing',
+  );
+  if (!source.includes('includeTotal:nextQuery.length === 0')) {
+    throw new Error('Phase 11 desktop search must skip exact totals for non-empty queries.');
+  }
+  if (!source.includes('state.total = null;') || !source.includes('state.totalPages = null;')) {
+    throw new Error('Phase 11 desktop search must clear stale totals before count-free queries.');
+  }
+  write(file, source);
+}
+
 function removeLegacyFormHandoff() {
   const file = 'registry-desktop-lite.js';
   const handoffLine = "      ['formPickerBtn', 'form-picker'],\n";
@@ -192,7 +210,8 @@ function removeLegacyFormHandoff() {
 }
 
 patchDesktopLargePages();
+patchDesktopSearchCounting();
 removeLegacyFormHandoff();
 require('./patch-phase11-form-picker-lite.js');
 require('./patch-phase12-targeted-detail-wiring.js');
-console.log('Phase 11 desktop logical page sizes 50/100/250/500 use bounded 50-row Neon chunks without full-registry handoff.');
+console.log('Phase 11 desktop logical page sizes 50/100/250/500 use bounded 50-row Neon chunks without full-registry handoff; non-empty search skips exact count work.');
