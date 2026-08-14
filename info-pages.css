@@ -1,1 +1,255 @@
-:root{--page:#cfd3d8;--surface:#f6f6f3;--ink:#111214;--muted:#74777e;--line:#d9dad8;--blue:#4777e5;--font:Inter,ui-sans-serif,-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;color-scheme:light}*,*::before,*::after{box-sizing:border-box}html,body{min-height:100%;margin:0}body{background:var(--page);color:var(--ink);font-family:var(--font);text-rendering:optimizeLegibility;-webkit-font-smoothing:antialiased}a{color:inherit}.info-shell{min-height:calc(100dvh - 36px);margin:18px;overflow:hidden;border:1px solid rgba(255,255,255,.72);border-radius:30px;background:var(--surface);box-shadow:0 20px 55px rgba(38,43,51,.08)}.info-container{width:min(1180px,calc(100% - 72px));margin:0 auto}.info-nav{display:flex;min-height:96px;align-items:center;gap:42px;border-bottom:1px solid var(--line)}.info-brand{display:flex;align-items:center;gap:12px;text-decoration:none}.info-brand img{display:block;width:42px;height:42px;border:1px solid rgba(17,18,20,.08);border-radius:13px;background:#fff;object-fit:cover}.info-brand-copy{display:grid;gap:2px}.info-brand strong{font-size:19px;font-weight:840;letter-spacing:-.045em;line-height:1}.info-brand small{color:#92949a;font-size:8px;font-weight:760;letter-spacing:.15em;text-transform:uppercase}.info-links{display:flex;align-items:center;gap:38px;margin-left:auto}.info-links a{position:relative;padding:38px 0 34px;color:#7f8187;font-size:11px;font-weight:780;letter-spacing:.035em;text-decoration:none;text-transform:uppercase}.info-links a:hover,.info-links a[aria-current="page"]{color:var(--ink)}.info-links a[aria-current="page"]::after{content:"";position:absolute;right:0;bottom:-1px;left:0;height:2px;background:var(--blue)}.login-link{display:inline-flex;min-height:46px;align-items:center;justify-content:center;margin-left:8px;padding:0 18px;border-radius:12px;background:#111214;color:#fff!important;box-shadow:0 7px 18px rgba(16,17,18,.16);text-decoration:none!important}.info-main{padding:72px 0 90px}.info-kicker{margin:0 0 18px;color:var(--blue);font-size:11px;font-weight:820;letter-spacing:.14em;text-transform:uppercase}.info-title{max-width:850px;margin:0;font-size:clamp(54px,7vw,92px);font-weight:420;letter-spacing:-.065em;line-height:.94}.info-lead{max-width:700px;margin:30px 0 0;color:var(--muted);font-size:17px;line-height:1.7}.info-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:18px;margin-top:56px}.info-card{min-height:210px;padding:28px;border:1px solid var(--line);border-radius:22px;background:#fff}.info-card span{display:block;margin-bottom:42px;color:var(--blue);font-size:11px;font-weight:820;letter-spacing:.1em;text-transform:uppercase}.info-card h2{margin:0;font-size:23px;font-weight:720;letter-spacing:-.035em}.info-card p{margin:12px 0 0;color:var(--muted);font-size:14px;line-height:1.65}.contact-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:18px;margin-top:56px}.contact-card{display:grid;min-height:180px;align-content:space-between;padding:28px;border:1px solid var(--line);border-radius:22px;background:#fff;text-decoration:none;transition:transform .18s ease,box-shadow .18s ease}.contact-card:hover{transform:translateY(-3px);box-shadow:0 18px 38px rgba(38,43,51,.09)}.contact-card small{color:#909298;font-size:10px;font-weight:800;letter-spacing:.12em;text-transform:uppercase}.contact-card strong{font-size:clamp(20px,3vw,32px);font-weight:620;letter-spacing:-.04em;overflow-wrap:anywhere}.blog-empty{display:grid;min-height:340px;margin-top:56px;place-items:center;padding:42px;border:1px solid var(--line);border-radius:28px;background:linear-gradient(135deg,#d8d9dc,#ececeb);text-align:center}.blog-empty div{max-width:520px}.blog-empty strong{display:block;font-size:34px;font-weight:620;letter-spacing:-.045em}.blog-empty p{margin:14px 0 0;color:var(--muted);font-size:15px;line-height:1.65}@media(max-width:820px){.info-shell{margin:10px;border-radius:24px;min-height:calc(100dvh - 20px)}.info-container{width:calc(100% - 32px)}.info-nav{min-height:82px;gap:18px}.info-brand-copy small{display:none}.info-links{gap:18px}.login-link{display:none}.info-main{padding:52px 0 70px}.info-grid{grid-template-columns:1fr}.contact-grid{grid-template-columns:1fr}}@media(max-width:560px){.info-shell{margin:0;border:0;border-radius:0;min-height:100dvh}.info-container{width:calc(100% - 28px)}.info-nav{min-height:74px;align-items:center}.info-brand img{width:40px;height:40px}.info-brand-copy strong{font-size:17px}.info-links{gap:14px}.info-links a{padding:28px 0 25px;font-size:9px}.info-title{font-size:49px;line-height:.96}.info-lead{font-size:14px;line-height:1.6}.info-main{padding:42px 0 56px}.info-grid,.contact-grid,.blog-empty{margin-top:38px}.info-card,.contact-card{padding:22px}.blog-empty{min-height:280px;padding:28px}.blog-empty strong{font-size:28px}}
+/* ============================================================================
+   MedIndex — faqet publike (Rreth nesh, Kontakt, Blog)
+   E njëjta gjuhë vizuale si faqja hyrëse te login-v2.css: Inter i vetë-strehuar,
+   të njëjtat tokena ngjyrash, rreze dhe hije. Markup-i i faqeve nuk ndryshon —
+   ky skedar i mbulon të treja përmes klasave që ato tashmë i kanë.
+   ========================================================================= */
+
+@font-face{
+  font-family:"Inter";
+  font-style:normal;
+  font-display:swap;
+  font-weight:100 900;
+  src:url("fonts/inter-latin-variable-normal.woff2") format("woff2");
+  unicode-range:U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6,
+    U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122,
+    U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+}
+
+:root{
+  --ip-ink:#0b1220;
+  --ip-ink-soft:#1b2436;
+  --ip-body:#55607a;
+  --ip-muted:#8b94a8;
+
+  --ip-page:#ffffff;
+  --ip-tint:#f5f7fb;
+  --ip-line:#e6e9f0;
+  --ip-line-soft:#eef1f6;
+
+  --ip-blue:#3d6fe0;
+  --ip-blue-deep:#2450b8;
+  --ip-blue-wash:#eef3ff;
+  --ip-teal:#0f7779;
+
+  --ip-radius:20px;
+  --ip-radius-lg:28px;
+  --ip-shadow-sm:0 2px 6px rgba(13,22,44,.05);
+  --ip-shadow:0 14px 40px rgba(13,22,44,.08);
+
+  --ip-shell:min(1180px,calc(100% - 48px));
+  --ip-font:"Inter",-apple-system,BlinkMacSystemFont,"Segoe UI Variable","Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+
+  color-scheme:light;
+}
+
+*,*::before,*::after{box-sizing:border-box}
+
+html{-webkit-text-size-adjust:100%;text-size-adjust:100%;scroll-behavior:smooth}
+
+body{
+  margin:0;
+  background:var(--ip-page);
+  color:var(--ip-ink);
+  font-family:var(--ip-font);
+  font-size:16px;
+  line-height:1.6;
+  /* Pa këtë, elementët e gjerë e shtynin faqen anash dhe butoni "Hyr"
+     dilte i prerë jashtë kornizës. */
+  overflow-x:hidden;
+  -webkit-font-smoothing:antialiased;
+  font-feature-settings:"cv05" 1,"cv08" 1,"ss03" 1;
+}
+
+img{max-width:100%;display:block}
+a{color:inherit;text-decoration:none;-webkit-tap-highlight-color:transparent}
+:focus-visible{outline:3px solid var(--ip-blue);outline-offset:3px;border-radius:6px}
+
+/* ── Skeleti ────────────────────────────────────────────────────────────── */
+.info-shell{display:block;min-height:100dvh;background:var(--ip-page)}
+.info-container{width:var(--ip-shell);margin-inline:auto}
+
+/* ── Navigimi ───────────────────────────────────────────────────────────── */
+.info-nav{
+  display:flex;align-items:center;justify-content:space-between;
+  flex-wrap:wrap;gap:16px 28px;
+  min-height:78px;
+  padding-block:14px;
+  border-bottom:1px solid var(--ip-line-soft);
+}
+
+.info-brand{display:flex;align-items:center;gap:11px;flex:0 0 auto}
+.info-brand img{
+  width:42px;height:42px;flex:0 0 42px;
+  overflow:hidden;border:1px solid var(--ip-line);border-radius:13px;
+  background:#fff;object-fit:cover;
+  box-shadow:var(--ip-shadow-sm);
+}
+.info-brand-copy{display:grid;gap:1px}
+.info-brand-copy strong{font-size:17px;font-weight:800;letter-spacing:-.035em;line-height:1.1}
+.info-brand-copy small{
+  color:var(--ip-muted);font-size:9px;font-weight:700;
+  letter-spacing:.13em;text-transform:uppercase;
+}
+
+.info-links{display:flex;align-items:center;flex-wrap:wrap;gap:10px 26px;min-width:0}
+.info-links a{
+  position:relative;
+  color:var(--ip-body);
+  font-size:13px;font-weight:640;letter-spacing:.06em;text-transform:uppercase;
+  transition:color .2s ease;
+}
+.info-links a::after{
+  content:"";position:absolute;left:0;right:0;bottom:-7px;height:2px;
+  border-radius:2px;background:var(--ip-blue);
+  transform:scaleX(0);transform-origin:left;transition:transform .22s ease;
+}
+.info-links a:hover{color:var(--ip-ink)}
+.info-links a:hover::after{transform:scaleX(1)}
+.info-links a[aria-current="page"]{color:var(--ip-ink)}
+.info-links a[aria-current="page"]::after{transform:scaleX(1)}
+
+/* CTA-ja: pilulë e plotë, pa nënvizim, dhe pa dalë nga korniza.
+   medindex-tailwind-ui.css ngarkohet pas këtij skedari dhe i detyron këto
+   veti me `!important` (ngjyrë teal, rreze tjetër, dhe display:none nën
+   479px). `!important` fiton pavarësisht renditjes, prandaj mbishkrimi
+   këtu është i vetmi rrugëdalje pa e hequr atë stylesheet — të cilin
+   tests/tailwind-site-ui-test.js e kërkon shprehimisht te këto tri faqe. */
+.info-nav .info-links a.login-link{
+  display:inline-flex!important;align-items:center;justify-content:center;
+  min-height:44px!important;padding:0 22px!important;flex:0 0 auto;
+  border:0!important;border-radius:12px!important;
+  background:var(--ip-ink)!important;color:#fff!important;
+  font-size:13px;font-weight:700;letter-spacing:.04em;
+  box-shadow:0 8px 20px rgba(11,18,32,.18)!important;
+  transition:transform .2s ease,box-shadow .2s ease;
+}
+.info-nav .info-links a.login-link::after{content:none}
+.info-nav .info-links a.login-link:hover{
+  color:#fff!important;
+  transform:translateY(-2px);
+  box-shadow:0 14px 30px rgba(11,18,32,.26)!important;
+}
+
+/* ── Trupi i faqes ──────────────────────────────────────────────────────── */
+.info-main{padding:clamp(52px,7vw,92px) 0 clamp(64px,8vw,110px)}
+
+/* Specifikë e ngritur: sistemi i përbashkët i detyron këto me `!important`
+   në teal. Faqja hyrëse i ka theksat në blu, prandaj barazohen këtu. */
+.info-main .info-kicker{
+  margin:0 0 14px!important;
+  color:var(--ip-blue)!important;font-size:12px!important;font-weight:760!important;
+  letter-spacing:.14em!important;text-transform:uppercase!important;
+}
+
+.info-title{
+  max-width:20ch;
+  margin:0;
+  font-size:clamp(34px,5.4vw,62px);font-weight:780;
+  letter-spacing:-.045em;line-height:1.05;
+  text-wrap:balance;
+}
+
+.info-lead{
+  max-width:62ch;
+  margin:22px 0 0;
+  color:var(--ip-body);
+  font-size:clamp(15px,1.5vw,18px);line-height:1.68;
+  text-wrap:pretty;
+}
+
+/* ── Kartat ─────────────────────────────────────────────────────────────── */
+.info-grid,
+.contact-grid{
+  display:grid;gap:18px;
+  margin-top:clamp(40px,5vw,60px);
+  grid-template-columns:repeat(auto-fit,minmax(268px,1fr));
+}
+
+.info-card,
+.contact-card{
+  position:relative;overflow:hidden;
+  padding:28px 26px 30px;
+  border:1px solid var(--ip-line);border-radius:var(--ip-radius);
+  background:#fff;
+  transition:transform .26s cubic-bezier(.2,.8,.2,1),box-shadow .26s ease,border-color .26s ease;
+}
+.info-card::before,
+.contact-card::before{
+  content:"";position:absolute;inset:0 0 auto;height:3px;
+  background:linear-gradient(90deg,var(--ip-blue),var(--ip-teal));
+  transform:scaleX(0);transform-origin:left;
+  transition:transform .32s cubic-bezier(.2,.8,.2,1);
+}
+.info-card:hover,
+.contact-card:hover{
+  transform:translateY(-4px);
+  border-color:transparent;
+  box-shadow:var(--ip-shadow);
+}
+.info-card:hover::before,
+.contact-card:hover::before{transform:scaleX(1)}
+
+.info-grid .info-card span{
+  display:block;margin-bottom:16px;
+  color:var(--ip-blue)!important;font-size:11.5px!important;font-weight:780!important;
+  letter-spacing:.12em!important;text-transform:uppercase!important;
+}
+.info-card h2{
+  margin:0 0 10px;
+  font-size:19px;font-weight:760;letter-spacing:-.028em;line-height:1.3;
+}
+.info-card p{margin:0;color:var(--ip-body);font-size:14.5px;line-height:1.62}
+
+/* Kontakti: etiketë e vogël sipër, vlera poshtë. */
+.contact-card{display:grid;gap:8px;align-content:start}
+.contact-card small{
+  color:var(--ip-muted);font-size:11px;font-weight:780;
+  letter-spacing:.12em;text-transform:uppercase;
+}
+.contact-card strong{
+  font-size:16px;font-weight:680;letter-spacing:-.02em;line-height:1.4;
+  /* Emaili dhe URL-të e gjata nuk guxojnë ta zgjerojnë kartën. */
+  overflow-wrap:anywhere;
+}
+
+/* ── Blogu bosh ─────────────────────────────────────────────────────────── */
+.blog-empty{
+  margin-top:clamp(40px,5vw,60px);
+  padding:clamp(32px,5vw,52px);
+  border:1px dashed var(--ip-line);border-radius:var(--ip-radius-lg);
+  background:var(--ip-tint);
+  color:var(--ip-body);
+  font-size:15px;line-height:1.7;
+  text-align:center;
+}
+.blog-empty strong{display:block;margin-bottom:8px;color:var(--ip-ink);font-size:18px;font-weight:740}
+
+/* ── Responsive ─────────────────────────────────────────────────────────── */
+@media(max-width:760px){
+  :root{--ip-shell:calc(100% - 32px)}
+  .info-nav{min-height:0;gap:14px 18px;padding-block:16px}
+  .info-links{gap:10px 18px;width:100%}
+  .info-links .login-link{margin-left:auto}
+  .info-brand-copy small{display:none}
+}
+
+/* Nën 479px medindex-tailwind-ui.css e fsheh krejt butonin. Dy rregulla me
+   `!important` dhe specifikë të njëjtë zgjidhen nga radha, dhe ai skedar
+   ngarkohet i fundit — prandaj këtu duhet specifikë më e lartë. Pa këtë,
+   në telefon nuk mbetet asnjë mënyrë e dukshme për të hyrë. */
+@media(max-width:479px){
+  .info-nav .info-links a.login-link{display:inline-flex!important}
+}
+
+@media(max-width:420px){
+  .info-links a{font-size:12px}
+  .info-nav .info-links a.login-link{width:100%;margin-left:0}
+}
+
+/* ── Preferenca ─────────────────────────────────────────────────────────── */
+@media(prefers-reduced-motion:reduce){
+  html{scroll-behavior:auto}
+  .info-card,.contact-card,.info-links .login-link{transition:none}
+  .info-card:hover,.contact-card:hover,.info-links .login-link:hover{transform:none}
+}
