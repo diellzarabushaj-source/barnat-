@@ -5,9 +5,11 @@ const path = require('node:path');
 
 const ROOT = path.resolve(__dirname, '..');
 const cssFile = path.join(ROOT, 'registry-mobile-phase8.css');
+const phase8JsFile = path.join(ROOT, 'registry-mobile-phase8.js');
 const shellCssFile = path.join(ROOT, 'registry-mobile-phase3.css');
 const jsFile = path.join(ROOT, 'registry-mobile-lite.js');
 let css = fs.readFileSync(cssFile, 'utf8').replace(/\r\n?/g, '\n');
+let phase8Js = fs.readFileSync(phase8JsFile, 'utf8').replace(/\r\n?/g, '\n');
 let shellCss = fs.readFileSync(shellCssFile, 'utf8').replace(/\r\n?/g, '\n');
 let js = fs.readFileSync(jsFile, 'utf8').replace(/\r\n?/g, '\n');
 
@@ -77,17 +79,56 @@ if (!js.includes(stableRestore)) {
   js = js.replace(oldRestore, stableRestore);
 }
 
+const decoratorAnchor = `      const row = rowForCard(card);\n      if (!row) return;\n      let button = card.querySelector('[data-mi-mobile-favorite]');`;
+const explicitDecoratorAnchor = `      const row = rowForCard(card);\n      if (!row) return;\n      let summary = card.querySelector('.mobile-lite-open');\n      if (summary?.tagName === 'BUTTON') {`;
+if (!phase8Js.includes(explicitDecoratorAnchor)) {
+  if (!phase8Js.includes(decoratorAnchor)) throw new Error('Phase 2 could not find the Phase 8 card decorator anchor.');
+  phase8Js = phase8Js.replace(
+    decoratorAnchor,
+    `      const row = rowForCard(card);\n      if (!row) return;\n\n      // Card v2 has one explicit detail action only. Replace the legacy summary\n      // button after mobile-lite binds its listeners; moving the actual Më shumë\n      // control preserves its listener while removing the second detail trigger.\n      let summary = card.querySelector('.mobile-lite-open');\n      if (summary?.tagName === 'BUTTON') {\n        const passiveSummary = document.createElement('div');\n        passiveSummary.className = summary.className;\n        passiveSummary.innerHTML = summary.innerHTML;\n        passiveSummary.setAttribute('aria-label', clean(row.tradeName) || 'Përmbledhja e barit');\n        summary.replaceWith(passiveSummary);\n        summary = passiveSummary;\n      }\n\n      let actions = card.querySelector('.mobile-lite-actions');\n      if (!actions) {\n        actions = document.createElement('div');\n        actions.className = 'mobile-lite-actions';\n        actions.dataset.mobileLiteActions = 'true';\n        const more = card.querySelector('.mobile-lite-more');\n        if (more) actions.appendChild(more);\n        card.appendChild(actions);\n      }\n\n      let button = actions.querySelector('[data-mi-mobile-favorite]');`,
+  );
+
+  const oldAppend = `        card.appendChild(button);`;
+  const newAppend = `        actions.insertBefore(button, actions.firstChild);`;
+  if (!phase8Js.includes(oldAppend)) throw new Error('Phase 2 could not find the Phase 8 favorite append point.');
+  phase8Js = phase8Js.replace(oldAppend, newAppend);
+
+  const activeAnchor = `      const active = isFavorite(row, favorites);`;
+  if (!phase8Js.includes(activeAnchor)) throw new Error('Phase 2 could not find the Phase 8 favorite state anchor.');
+  phase8Js = phase8Js.replace(
+    activeAnchor,
+    `      if (button.parentElement !== actions) actions.insertBefore(button, actions.firstChild);\n      const active = isFavorite(row, favorites);`,
+  );
+}
+
+const legacyActionComment = `  /* Favorite and detail action get separate 44px touch slots. The content\n     reserves the rail width, so neither control can overlap text or the other\n     action even on narrow iPhones. */`;
+const darkThemeAnchor = `  [data-theme=\"dark\"] .mi-registry-personalization-bar button,`;
+const explicitActionMarker = '/* MedIndex revised Phase 2: explicit mobile card action region */';
+if (!css.includes(explicitActionMarker)) {
+  const legacyStart = css.indexOf(legacyActionComment);
+  const legacyEnd = css.indexOf(darkThemeAnchor, legacyStart);
+  if (legacyStart < 0 || legacyEnd < 0) throw new Error('Phase 2 could not isolate the legacy absolute card action rail.');
+  css = css.slice(0, legacyStart) + css.slice(legacyEnd);
+  css += `\n\n${explicitActionMarker}\n@media (max-width:767px){\n  html.medindex-tailadmin[data-mi-page=\"barnat\"][data-registry-mobile-lite][data-registry-mobile-phase8] body #dataTable[data-registry-unified-table] #tbody>.mobile-lite-row .mobile-lite-card:has(.mobile-lite-actions){\n    display:grid!important;\n    grid-template-columns:minmax(0,1fr) auto!important;\n    align-items:center!important;\n    gap:8px!important;\n    min-height:108px!important;\n    padding:10px 10px 10px 13px!important;\n  }\n  html[data-registry-mobile-lite][data-registry-mobile-phase8] #tbody .mobile-lite-card:has(.mobile-lite-actions) .mobile-lite-open{\n    display:flex!important;\n    min-width:0!important;\n    min-height:58px!important;\n    width:100%!important;\n    padding:0!important;\n    pointer-events:none!important;\n  }\n  html[data-registry-mobile-lite][data-registry-mobile-phase8] #tbody .mobile-lite-actions{\n    display:grid!important;\n    grid-template-columns:44px 78px!important;\n    align-items:center!important;\n    gap:6px!important;\n    min-width:128px!important;\n    margin:0!important;\n    padding:0!important;\n  }\n  html[data-registry-mobile-lite][data-registry-mobile-phase8] #tbody .mobile-lite-actions .mi-mobile-favorite-toggle{\n    position:static!important;\n    inset:auto!important;\n    width:44px!important;\n    height:44px!important;\n    margin:0!important;\n  }\n  html[data-registry-mobile-lite][data-registry-mobile-phase8] #tbody .mobile-lite-actions .mobile-lite-more{\n    position:static!important;\n    inset:auto!important;\n    width:78px!important;\n    min-width:78px!important;\n    min-height:44px!important;\n    margin:0!important;\n    padding:0 10px!important;\n  }\n}\n`;
+}
+
 const shellClearanceMarker = '/* MedIndex revised Phase 4: fixed-nav end-of-list clearance */';
 if (!shellCss.includes(shellClearanceMarker)) {
   shellCss += `\n\n${shellClearanceMarker}\n@media (max-width:767px){\n  html[data-registry-mobile-lite][data-registry-mobile-phase3]{\n    --mi-registry-bottom-nav-clearance:calc(80px + env(safe-area-inset-bottom));\n  }\n  html[data-registry-mobile-lite][data-registry-mobile-phase3] .mi-main{\n    scroll-padding-bottom:var(--mi-registry-bottom-nav-clearance)!important;\n  }\n  html[data-registry-mobile-lite][data-registry-mobile-phase3] #pagination{\n    margin-bottom:var(--mi-registry-bottom-nav-clearance)!important;\n  }\n  html[data-registry-mobile-lite][data-registry-mobile-phase3][data-mi-keyboard-open=\"true\"] #pagination{\n    margin-bottom:calc(18px + env(safe-area-inset-bottom))!important;\n  }\n}\n`;
 }
 
 if (!css.includes('min-height:108px!important')) throw new Error('Phase 2 stable card reserve is missing.');
-if (!css.includes('#tbody .mobile-lite-card:has(.mi-mobile-favorite-toggle) .mobile-lite-open{')) {
-  throw new Error('Phase 2 content action-rail contract is missing.');
+if (!css.includes('.mobile-lite-card:has(.mobile-lite-actions){')) {
+  throw new Error('Phase 2 explicit card action-region contract is missing.');
 }
-if (!css.includes('#tbody .mobile-lite-card:has(.mi-mobile-favorite-toggle) .mobile-lite-more{')) {
+if (!css.includes('.mobile-lite-actions .mobile-lite-more{')) {
   throw new Error('Phase 2 detail action slot contract is missing.');
+}
+if (!phase8Js.includes("passiveSummary.className = summary.className;")) {
+  throw new Error('Phase 2 single-detail-trigger contract is missing.');
+}
+if (!phase8Js.includes("actions.className = 'mobile-lite-actions';")) {
+  throw new Error('Phase 2 explicit action-region DOM contract is missing.');
 }
 if (!css.includes('#dataTable[data-registry-unified-table] #tbody{\n    display:flex!important;')) {
   throw new Error('Phase 4 mobile list flex-flow ownership is missing.');
@@ -106,6 +147,7 @@ if (!shellCss.includes('--mi-registry-bottom-nav-clearance:calc(80px + env(safe-
 }
 
 fs.writeFileSync(cssFile, css, 'utf8');
+fs.writeFileSync(phase8JsFile, phase8Js, 'utf8');
 fs.writeFileSync(shellCssFile, shellCss, 'utf8');
 fs.writeFileSync(jsFile, js, 'utf8');
-console.log('Phase 2/3/4 mobile stability passed: true vertical card flow, canonical detail scroll restoration and fixed-nav end-of-list clearance.');
+console.log('Phase 2/3/4 mobile stability passed: explicit collision-free card actions, one detail trigger, true vertical card flow, canonical detail scroll restoration and fixed-nav clearance.');
