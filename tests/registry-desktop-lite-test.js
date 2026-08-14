@@ -45,6 +45,8 @@ assert.match(desktop, /const DEFAULT_PAGE_SIZE = 50/);
 assert.match(desktop, /const SERVER_PAGE_SIZE = 50/);
 assert.match(desktop, /const MAX_LOGICAL_PAGE_SIZE = 500/);
 assert.match(desktop, /pageSize:String\(boundedPageSize\)/, 'Every Neon registry-page request must remain capped to the bounded server page size.');
+assert.match(desktop, /credentials:'same-origin', cache:'default', signal/, 'Desktop page requests must honor the private short-lived browser cache contract.');
+assert.doesNotMatch(desktop, /credentials:'same-origin', cache:'no-store', signal/, 'Desktop lightweight page requests must not bypass the server-authorized private cache.');
 assert.match(desktop, /sort:state\.sort/);
 assert.match(desktop, /direction:state\.direction/);
 assert.match(desktop, /params\.set\('q', state\.q\)/);
@@ -55,6 +57,10 @@ assert.match(desktop, /const nextQuery = clean\(search\.value\)\.slice\(0, 80\)/
 assert.match(desktop, /if \(nextQuery\.length === 1\) return;/, 'One-character desktop search must not trigger an unfiltered registry request.');
 assert.match(desktop, /state\.total = null;\s*state\.totalPages = null;/, 'Count-free desktop searches must clear stale totals.');
 assert.match(desktop, /loadPage\(\{ includeTotal:nextQuery\.length === 0, scroll:false \}\)/, 'Non-empty desktop search must skip exact total counting; clearing search restores it.');
+assert.match(desktop, /desktopLiteHeaderSignature/, 'Desktop header rebuilds must be deduplicated by sort state.');
+assert.match(desktop, /function onDesktopLitePaginationClick\(event\)/, 'Desktop pagination must use one delegated interaction handler.');
+assert.match(desktop, /document\.getElementById\('pagination'\)\?\.addEventListener\('click', onDesktopLitePaginationClick\)/, 'Desktop pagination delegation must be bound once during control setup.');
+assert.doesNotMatch(desktop, /pagination\.querySelector\('\[data-desktop-lite-page="(?:prev|next)"\]'\)\?\.addEventListener/, 'Desktop pagination must not rebind buttons on every render.');
 assert.match(desktop, /medindex:registry-page-ready/);
 assert.match(desktop, /MEDINDEX_REGISTRY_ROWS = canonical/);
 assert.match(desktop, /medindex:request-full-registry/);
@@ -89,6 +95,7 @@ assert.match(dosage, /REQUEST_BATCH_SIZE = 100/, 'Visible dosage reads must rema
 assert.match(api, /REGISTRY_MAX_PAGE_SIZE = 50/);
 assert.match(api, /REGISTRY_LIST_SELECT/);
 assert.match(api, /request\.includeTotal \? \{ prefer:'count=exact' \} : \{\}/, 'Exact Neon count work must remain conditional on includeTotal.');
+assert.match(api, /Cache-Control', 'private, max-age=30, stale-while-revalidate=120'/, 'Registry pages must remain private and short-lived when browser caching is enabled.');
 assert.doesNotMatch(api, /params\.set\('select', '\*'\)/, 'Registry-page API must never regress to SELECT *.');
 
 assert.match(phase10Patch, /ApprovedPopulation = require\('\.\.\/lib\/approved-population-handler\.js'\)/,
@@ -102,7 +109,10 @@ assert.match(phase10Patch, /'Popullata e aprovuar':clean\(row\.approvedPopulatio
 assert.match(phase10Patch, /registry-runtime-loader-v10/, 'Phase 10 build patch must preserve the single-owner v10 loader.');
 assert.doesNotMatch(phase10Patch, /MOBILE_LITE_GRACE_MS = 5000/, 'Phase 10 build patch must not recreate the removed mobile timeout contract.');
 assert.match(phase11Patch, /function patchDesktopSearchCounting\(\)/, 'Phase 11 must own the desktop search count optimization deterministically.');
+assert.match(phase11Patch, /credentials:'same-origin', cache:'default', signal/, 'Phase 11 build must preserve private cache-friendly desktop page requests.');
 assert.match(phase11Patch, /includeTotal:nextQuery\.length === 0/, 'Phase 11 build must preserve count-free non-empty desktop search.');
+assert.match(phase13Patch, /patchHeaderRenderChurn/, 'Phase 13 must own desktop header rebuild deduplication.');
+assert.match(phase13Patch, /patchPaginationDelegation/, 'Phase 13 must own delegated desktop pagination.');
 assert.match(phase13Patch, /redundant per-row trade-name detail listeners/, 'Phase 13 must explicitly remove redundant row detail listeners during runtime build.');
 assert.match(phase13Patch, /desktop-full-detail/, 'Phase 13 must fail the build if the old full-detail handoff returns.');
 assert.match(marker, /medindex:registry-page-ready/,
@@ -119,4 +129,4 @@ assert.match(packageJson.scripts['build:runtime'], /patch-phase11-desktop-advanc
 assert.match(packageJson.scripts.test, /registry-desktop-lite-test\.js/, 'Desktop lightweight regression test must run in the main test suite.');
 assert.match(packageJson.scripts.test, /registry-desktop-large-page-lite-test\.js/, 'Phase 11-14 composed regression gate must run in the main test suite.');
 
-console.log('Phase 14 desktop bounded pagination, count-efficient search, delegated row interactions, single-owner mobile loader, form filtering, inline population, targeted dosage, prescription and column customization contract passed.');
+console.log('Phase 14 desktop bounded pagination, private cache-aware requests, count-efficient search, stable header/pagination delegation, delegated row interactions, single-owner mobile loader, form filtering, inline population, targeted dosage, prescription and column customization contract passed.');
