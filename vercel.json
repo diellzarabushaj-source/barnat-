@@ -179,6 +179,15 @@
       ]
     },
     {
+      "source": "/login-v2.html",
+      "headers": [
+        {
+          "key": "Cache-Control",
+          "value": "private, no-cache, no-store, must-revalidate"
+        }
+      ]
+    },
+    {
       "source": "/recovery.html",
       "headers": [
         {

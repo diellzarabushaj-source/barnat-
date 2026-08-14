@@ -54,6 +54,13 @@ export const config = {
   matcher: '/:path*',
 };
 
+/* Faqja e hyrjes që u shërbehet vizitorëve. Origjinali mbetet i arritshëm te
+   /login.html; ndryshimi i kësaj vlere e kthen atë si faqe hyrëse. */
+const LOGIN_PAGE = '/login-v2.html';
+
+/* Të dyja faqet sillen njësoj kur përdoruesi është tashmë i kyçur. */
+const LOGIN_PAGES = new Set(['/login.html', LOGIN_PAGE]);
+
 function isPublicPath(pathname) {
   return PUBLIC_PATHS.has(pathname) || PUBLIC_SECRET_APIS.has(pathname) || pathname === '/api/auth';
 }
@@ -80,7 +87,7 @@ export default async function middleware(request) {
       return Response.redirect(new URL('/index.html', request.url), 302);
     }
 
-    if (pathname === '/login.html' && authenticated) {
+    if (LOGIN_PAGES.has(pathname) && authenticated) {
       const target = new URL(url.searchParams.get('return') || '/index.html', request.url);
       if (target.origin !== url.origin
         || target.pathname.startsWith('/api/')
@@ -108,7 +115,7 @@ export default async function middleware(request) {
     });
   }
 
-  const loginUrl = new URL('/login.html', request.url);
+  const loginUrl = new URL(LOGIN_PAGE, request.url);
   loginUrl.searchParams.set('return', safeReturnPath(url));
   return Response.redirect(loginUrl, 302);
 }
