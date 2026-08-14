@@ -301,18 +301,26 @@
     });
   }
 
-  function syncPatientInputs(card) {
+    function syncPatientInputs(card) {
     const ageInput = $('#patientAgeMonths');
+    const weightInput = $('#patientWeightKg');
     const ageLabel = ageInput?.closest('label');
-    if (!ageLabel) return;
+    const weightLabel = weightInput?.closest('label');
+    if (!ageLabel || !weightLabel) return;
     if (!card) {
       ageLabel.hidden = true;
+      weightLabel.hidden = true;
       return;
     }
     const matches = exactRegimens(card);
     const regimen = selectedRegimen(card, matches);
     const needsAge = Boolean(regimen && (finite(regimen.minAgeMonths) || finite(regimen.maxAgeMonths)));
+    const needsWeight = Boolean(regimen && (
+      finite(regimen.mgPerKg) || finite(regimen.mgPerKgMin) || finite(regimen.mgPerKgMax)
+      || finite(regimen.minWeightKg) || finite(regimen.maxWeightKg)
+    ));
     ageLabel.hidden = !needsAge;
+    weightLabel.hidden = !needsWeight;
   }
 
   function render() {
