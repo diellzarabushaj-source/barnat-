@@ -9,6 +9,11 @@ const PUBLIC_INFO_PATHS = new Set([
 
 const PUBLIC_PATHS = new Set([
   '/login.html',
+  '/login-v2.html',
+  '/login-v2.css',
+  '/login-v2.js',
+  '/login-v2-canvas.js',
+  '/fonts/inter-latin-variable-normal.woff2',
   '/login.css',
   '/login-editorial.css',
   '/landing-effects.css',
@@ -30,6 +35,7 @@ const PUBLIC_PATHS = new Set([
   '/manifest.webmanifest',
   '/medindex-icon.svg',
   '/images/brand/medindex-mark-mplus.svg',
+  '/images/brand/diellza-avatar.svg',
   '/brand/medindex-mark-on-light.webp',
   '/brand/medindex-full-on-dark.png',
   '/brand/medindex-mark-on-dark.png',
@@ -47,6 +53,13 @@ const PUBLIC_SECRET_APIS = new Set([
 export const config = {
   matcher: '/:path*',
 };
+
+/* Faqja e hyrjes që u shërbehet vizitorëve. Origjinali mbetet i arritshëm te
+   /login.html; ndryshimi i kësaj vlere e kthen atë si faqe hyrëse. */
+const LOGIN_PAGE = '/login-v2.html';
+
+/* Të dyja faqet sillen njësoj kur përdoruesi është tashmë i kyçur. */
+const LOGIN_PAGES = new Set(['/login.html', LOGIN_PAGE]);
 
 function isPublicPath(pathname) {
   return PUBLIC_PATHS.has(pathname) || PUBLIC_SECRET_APIS.has(pathname) || pathname === '/api/auth';
@@ -74,7 +87,7 @@ export default async function middleware(request) {
       return Response.redirect(new URL('/index.html', request.url), 302);
     }
 
-    if (pathname === '/login.html' && authenticated) {
+    if (LOGIN_PAGES.has(pathname) && authenticated) {
       const target = new URL(url.searchParams.get('return') || '/index.html', request.url);
       if (target.origin !== url.origin
         || target.pathname.startsWith('/api/')
@@ -102,7 +115,7 @@ export default async function middleware(request) {
     });
   }
 
-  const loginUrl = new URL('/login.html', request.url);
+  const loginUrl = new URL(LOGIN_PAGE, request.url);
   loginUrl.searchParams.set('return', safeReturnPath(url));
   return Response.redirect(loginUrl, 302);
 }

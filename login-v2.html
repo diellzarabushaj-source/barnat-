@@ -1,0 +1,406 @@
+<!doctype html>
+<html lang="sq" class="medindex-landing-v2" data-mi-page="landing-v2" data-mi-landing-version="v2-20260814-1">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+  <meta name="robots" content="noindex,nofollow,noarchive">
+  <meta name="theme-color" content="#0b1220">
+  <meta name="color-scheme" content="light">
+  <meta name="format-detection" content="telephone=no">
+  <meta name="description" content="MedIndex — hapësirë klinike private për barnat, ATC, ICD, analizat, dozologjinë, protokollet dhe recetat.">
+  <title>MedIndex | Hyrje e sigurt</title>
+  <link rel="preconnect" href="https://accounts.google.com" crossorigin>
+  <link rel="dns-prefetch" href="https://accounts.google.com">
+  <link rel="preload" href="/brand/medindex-horizontal-on-light.webp" as="image" type="image/webp" fetchpriority="high">
+  <link rel="stylesheet" href="login-v2.css?v=v2-20260814-2">
+  <noscript><style>.lv-reveal{opacity:1!important;translate:none!important}</style></noscript>
+  <script src="https://accounts.google.com/gsi/client" async defer></script>
+</head>
+<body>
+  <a class="lv-skip" href="#lvMain">Kalo te përmbajtja</a>
+  <div class="lv-progress" aria-hidden="true"></div>
+
+  <header class="lv-nav" id="lvNav">
+    <div class="lv-shell lv-nav-inner">
+      <a class="lv-brand" href="/login-v2.html" aria-label="MedIndex — faqja kryesore">
+        <img class="lv-logo-horizontal" src="/brand/medindex-horizontal-on-light.webp" alt="MedIndex — by Dr. Diellza Rabushaj" width="320" height="76" decoding="async" fetchpriority="high">
+      </a>
+
+      <nav class="lv-nav-links" aria-label="Seksionet e faqes">
+        <a class="lv-nav-link" href="#modulet">Modulet</a>
+        <a class="lv-nav-link" href="#rrjedha">Si funksionon</a>
+        <a class="lv-nav-link" href="#plani">Plani</a>
+        <a class="lv-nav-link" href="/rreth-nesh.html">Rreth nesh</a>
+        <a class="lv-nav-link" href="/kontakt.html">Kontakt</a>
+      </nav>
+
+      <button class="lv-btn lv-btn-dark lv-nav-cta" type="button" popovertarget="loginPanel">Hyr në MedIndex</button>
+    </div>
+  </header>
+
+  <main id="lvMain">
+
+    <!-- ── HERO ───────────────────────────────────────────────────────── -->
+    <section class="lv-hero">
+      <div class="lv-hero-canvas" aria-hidden="true">
+        <canvas id="lvCanvas" class="lv-webgl"></canvas>
+        <span class="lv-orb lv-orb-a"></span>
+        <span class="lv-orb lv-orb-b"></span>
+        <span class="lv-orb lv-orb-c"></span>
+        <span class="lv-grid-lines"></span>
+        <img class="lv-hero-mark" src="/brand/medindex-mark-on-light.webp" alt="" width="223" height="219" loading="lazy" decoding="async">
+      </div>
+
+      <div class="lv-shell lv-hero-inner">
+        <p class="lv-eyebrow lv-reveal">
+          <span class="lv-eyebrow-dot" aria-hidden="true"></span>
+          Hapësirë private klinike · Dr. Diellza Rabushaj
+        </p>
+
+        <h1 class="lv-hero-title lv-reveal">
+          Gjithçka klinike,<br>
+          në <span class="lv-accent">një vend të vetëm</span>.
+        </h1>
+
+        <p class="lv-hero-lede lv-reveal">
+          Barnat e Kosovës, klasifikimi ATC, diagnozat ICD‑10, analizat laboratorike,
+          dozologjia pediatrike, protokollet dhe recetat — të lidhura mes vete
+          dhe të gatshme brenda sekondave.
+        </p>
+
+        <div class="lv-hero-actions lv-reveal">
+          <button class="lv-btn lv-btn-primary lv-btn-lg" type="button" popovertarget="loginPanel">
+            Hyr në MedIndex
+            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12h13M13 6l6 6-6 6"/></svg>
+          </button>
+          <a class="lv-btn lv-btn-ghost lv-btn-lg" href="#modulet">Shiko modulet</a>
+        </div>
+
+        <ul class="lv-hero-trust lv-reveal" aria-label="Siguria e hyrjes">
+          <li>
+            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3l7 3v6c0 4.4-3 8.1-7 9-4-.9-7-4.6-7-9V6l7-3z"/></svg>
+            Verifikim në server
+          </li>
+          <li>
+            <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg>
+            Sesion 8 orë
+          </li>
+          <li>
+            <svg viewBox="0 0 24 24" aria-hidden="true"><rect x="4" y="10" width="16" height="10" rx="2"/><path d="M8 10V7a4 4 0 0 1 8 0v3"/></svg>
+            Cookie HttpOnly
+          </li>
+        </ul>
+
+        <!-- vija EKG: një cikël i vetëm që përsëritet pafund pa këputje -->
+        <div class="lv-ekg" aria-hidden="true">
+          <svg viewBox="0 0 2400 120" preserveAspectRatio="none">
+            <defs>
+              <path id="lvEkgBeat" d="M0 60 H150 q16 0 26-18 t26 18 H340 l16 9 l18-54 l20 86 l22-41 h26 H520 q20 0 30-22 t32 22 H1200"/>
+            </defs>
+            <g class="lv-ekg-track">
+              <use class="lv-ekg-line" href="#lvEkgBeat" x="0"/>
+              <use class="lv-ekg-line" href="#lvEkgBeat" x="1200"/>
+              <use class="lv-ekg-line" href="#lvEkgBeat" x="2400"/>
+            </g>
+          </svg>
+        </div>
+      </div>
+    </section>
+
+    <!-- ── SHIFRAT ────────────────────────────────────────────────────── -->
+    <!-- Numrat janë fotografi e bazës në 14.08.2026. Përditësoji kur rritet regjistri. -->
+    <section class="lv-stats" aria-label="Përmbajtja e regjistrit në shifra">
+      <div class="lv-shell lv-stats-grid">
+        <div class="lv-stat lv-reveal">
+          <strong>4.014</strong>
+          <span>barna të regjistruara</span>
+        </div>
+        <div class="lv-stat lv-reveal">
+          <strong>902</strong>
+          <span>kode ATC të klasifikuara</span>
+        </div>
+        <div class="lv-stat lv-reveal">
+          <strong>701</strong>
+          <span>diagnoza ICD‑10 në shqip</span>
+        </div>
+        <div class="lv-stat lv-reveal">
+          <strong>111</strong>
+          <span>analiza në 14 panele</span>
+        </div>
+      </div>
+    </section>
+
+    <!-- ── MODULET ────────────────────────────────────────────────────── -->
+    <section class="lv-section" id="modulet">
+      <div class="lv-shell">
+        <header class="lv-section-head lv-reveal">
+          <p class="lv-kicker">Modulet</p>
+          <h2>Tetë mjete klinike që flasin me njëra‑tjetrën</h2>
+          <p class="lv-section-lede">
+            Zgjedh një barnë te regjistri dhe ajo e ndjek rrugën deri te receta:
+            doza llogaritet, diagnoza bashkëngjitet, protokolli hapet aty ku duhet.
+          </p>
+        </header>
+
+        <div class="lv-showcase">
+          <!-- Kolona e majtë rri e ngjitur; lista djathtas rrëshqet pranë saj. -->
+          <div class="lv-showcase-visual" aria-hidden="true">
+            <div class="lv-showcase-circle">
+              <span class="lv-showcase-ring"></span>
+              <img src="/brand/medindex-mark-on-light.webp" alt="" width="223" height="219" loading="lazy" decoding="async">
+            </div>
+            <p class="lv-showcase-caption">Tetë module · një hapësirë</p>
+          </div>
+
+        <div class="lv-modules">
+          <article class="lv-card lv-reveal">
+            <span class="lv-card-icon lv-icon-blue">
+              <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4.6 13.2 10.8 7a3.9 3.9 0 0 1 5.5 5.5l-6.2 6.2a3.9 3.9 0 0 1-5.5-5.5Z"/><path d="m7.4 10.2 5.5 5.5"/></svg>
+            </span>
+            <h3>Regjistri i barnave <span class="lv-card-count">4.014</span></h3>
+            <p>Kërkim i menjëhershëm sipas emrit, substancës, formës ose klasës. Kolona që i zgjedh vetë dhe rreshta që hapen me detajet e plota.</p>
+          </article>
+
+          <article class="lv-card lv-reveal">
+            <span class="lv-card-icon lv-icon-teal">
+              <svg viewBox="0 0 24 24" aria-hidden="true"><rect x="9.5" y="2.5" width="5" height="4" rx="1"/><rect x="2.5" y="17.5" width="5" height="4" rx="1"/><rect x="9.5" y="17.5" width="5" height="4" rx="1"/><rect x="16.5" y="17.5" width="5" height="4" rx="1"/><path d="M12 6.5v5M5 17.5v-3h14v3M12 11.5v6"/></svg>
+            </span>
+            <h3>Klasifikimi ATC <span class="lv-card-count">902</span></h3>
+            <p>Pema e plotë anatomike‑terapeutike me numërim real për çdo grup, e lidhur drejtpërdrejt me barnat e regjistrit.</p>
+          </article>
+
+          <article class="lv-card lv-reveal">
+            <span class="lv-card-icon lv-icon-violet">
+              <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M14 3H7a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2v-9"/><path d="M14 3v5h5"/><circle cx="10.5" cy="13.5" r="2.8"/><path d="m12.6 15.6 2.4 2.4"/></svg>
+            </span>
+            <h3>Diagnozat ICD‑10 <span class="lv-card-count">701</span></h3>
+            <p>Kërkim i avancuar, favoritë, lista e problemeve dhe krahasim kodesh — me përshkrime në shqip.</p>
+          </article>
+
+          <article class="lv-card lv-reveal">
+            <span class="lv-card-icon lv-icon-pink">
+              <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3.5c3.6 4.2 5.5 7 5.5 9.5a5.5 5.5 0 0 1-11 0c0-2.5 1.9-5.3 5.5-9.5Z"/><path d="M12 11v4M10 13h4"/></svg>
+            </span>
+            <h3>Dozologjia pediatrike</h3>
+            <p>Llogaritje mg/kg sipas moshës dhe peshës, me kufij sigurie që ndalojnë dozat jashtë intervalit të aprovuar.</p>
+          </article>
+
+          <article class="lv-card lv-reveal">
+            <span class="lv-card-icon lv-icon-amber">
+              <svg viewBox="0 0 24 24" aria-hidden="true"><rect x="4.5" y="2.5" width="15" height="19" rx="2"/><path d="M8.5 7.5h4a2.2 2.2 0 0 1 0 4.4h-4V7.5Z"/><path d="M8.5 11.9V16"/><path d="m11.8 11.9 3.7 4.6"/></svg>
+            </span>
+            <h3>Recetat</h3>
+            <p>Nga zgjedhja e barnave te receta e formatuar dhe e printueshme, me nënshkrim dhe diagnozë të bashkëngjitur.</p>
+          </article>
+
+          <article class="lv-card lv-reveal">
+            <span class="lv-card-icon lv-icon-green">
+              <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M9.5 5h11M9.5 12h11M9.5 19h11"/><path d="m3 4.8 1.4 1.4L7 3.6"/><path d="m3 11.8 1.4 1.4L7 10.6"/><path d="m3 18.8 1.4 1.4L7 17.6"/></svg>
+            </span>
+            <h3>Protokollet</h3>
+            <p>Protokolle interaktive që ndiqen hap pas hapi dhe dorëzohen direkt te receta ose te plani i trajtimit.</p>
+          </article>
+
+          <article class="lv-card lv-reveal">
+            <span class="lv-card-icon lv-icon-blue">
+              <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M9.5 2.5v14a3 3 0 0 0 6 0v-14"/><path d="M8 2.5h9"/><path d="M9.5 10.5c1.6 1.1 4.4-1.1 6 0"/></svg>
+            </span>
+            <h3>Analizat laboratorike <span class="lv-card-count">111</span></h3>
+            <p>Vlerat referente të organizuara sipas panelit, me interpretim klinik pranë çdo rezultati.</p>
+          </article>
+
+          <article class="lv-card lv-reveal">
+            <span class="lv-card-icon lv-icon-red">
+              <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2.6 4.5 5.6v6.2c0 4.6 3.1 8.4 7.5 9.6 4.4-1.2 7.5-5 7.5-9.6V5.6Z"/><path d="M7.6 12h2.2l1.4-3 1.8 5.4 1.3-2.4h2.1"/></svg>
+            </span>
+            <h3>Urgjencat</h3>
+            <p>Qasje e shpejtë te gjendjet urgjente dhe dozat kritike, pa e humbur kontekstin e pacientit.</p>
+          </article>
+        </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ── RRJEDHA ────────────────────────────────────────────────────── -->
+    <section class="lv-section lv-section-tint" id="rrjedha">
+      <div class="lv-shell">
+        <header class="lv-section-head lv-reveal">
+          <p class="lv-kicker">Si funksionon</p>
+          <h2>Tri hapa nga pyetja te receta</h2>
+        </header>
+
+        <ol class="lv-flow">
+          <li class="lv-flow-step lv-reveal">
+            <span class="lv-flow-num">01</span>
+            <h3>Kërko</h3>
+            <p>Shkruaj emrin e barit, substancën ose diagnozën. Rezultatet dalin ndërsa shkruan, pa pritje dhe pa faqe të reja.</p>
+          </li>
+          <li class="lv-flow-step lv-reveal">
+            <span class="lv-flow-num">02</span>
+            <h3>Llogarit</h3>
+            <p>Vendos moshën dhe peshën. Doza pediatrike llogaritet menjëherë dhe bllokohet nëse del jashtë kufijve të aprovuar.</p>
+          </li>
+          <li class="lv-flow-step lv-reveal">
+            <span class="lv-flow-num">03</span>
+            <h3>Lësho recetën</h3>
+            <p>Barnat e zgjedhura kalojnë te receta bashkë me diagnozën ICD dhe protokollin, gati për printim.</p>
+          </li>
+        </ol>
+      </div>
+    </section>
+
+    <!-- ── THEMELUESJA ────────────────────────────────────────────────── -->
+    <section class="lv-section" id="themeluesja">
+      <div class="lv-shell">
+        <!-- Teksti i citatit është draft redaksional — zëvendësoje me fjalët e sakta të Dr. Rabushaj para publikimit. -->
+        <figure class="lv-ceo lv-reveal">
+          <div class="lv-ceo-aside">
+            <div class="lv-ceo-portrait">
+              <img src="/images/brand/diellza-avatar.svg" alt="Dr. Diellza Rabushaj" width="96" height="96" loading="lazy" decoding="async">
+              <span class="lv-ceo-badge" aria-hidden="true">
+                <img src="/brand/medindex-mark-on-light.webp" alt="" width="34" height="34" loading="lazy" decoding="async">
+              </span>
+            </div>
+            <figcaption class="lv-ceo-meta">
+              <strong>Dr. Diellza Rabushaj</strong>
+              <span>Themeluese &amp; CEO</span>
+            </figcaption>
+          </div>
+
+          <div class="lv-ceo-body">
+            <p class="lv-kicker">Pas MedIndex</p>
+            <blockquote>
+              <p>„MedIndex lindi nga një problem krejt praktik: informacioni për barnat ishte i shpërndarë nëpër dhjetëra burime, dhe secili prej tyre kërkonte kohë. Një mjek nuk duhet ta humbë atë kohë për një dozë që duhet ta ketë para syve."</p>
+            </blockquote>
+          </div>
+        </figure>
+      </div>
+    </section>
+
+    <!-- ── PLANI ──────────────────────────────────────────────────────── -->
+    <section class="lv-section" id="plani">
+      <div class="lv-shell lv-plan-wrap">
+        <div class="lv-plan-copy lv-reveal">
+          <p class="lv-kicker">Plani</p>
+          <h2>MedIndex Clinical+</h2>
+          <p class="lv-section-lede">
+            Një abonim i vetëm që hap të gjitha modulet, pa nivele dhe pa shtesa
+            të fshehura. Hapësira mbetet private dhe e mbrojtur me llogari të aprovuar.
+          </p>
+          <ul class="lv-plan-notes">
+            <li>Pa kontratë afatgjatë — anulohet në çdo kohë.</li>
+            <li>Të dhënat klinike nuk ndahen me palë të treta.</li>
+            <li>Përditësime të regjistrit të përfshira në çmim.</li>
+          </ul>
+        </div>
+
+        <article class="lv-plan-card lv-reveal" aria-labelledby="lvPlanTitle">
+          <div class="lv-plan-badge">Paketa e plotë</div>
+          <h3 id="lvPlanTitle">Clinical+</h3>
+          <p class="lv-plan-price" aria-label="19 euro e 99 cent në muaj">
+            <strong>19.99&nbsp;€</strong><span>/ muaj</span>
+          </p>
+          <ul class="lv-plan-list">
+            <li>Regjistri i plotë i barnave</li>
+            <li>Klasifikimi ATC dhe ICD‑10</li>
+            <li>Kërkim klinik i shpejtë</li>
+            <li>Receta dhe protokolle</li>
+            <li>Dozologji pediatrike e strukturuar</li>
+            <li>Analizat dhe urgjencat</li>
+            <li>Hapësirë private klinike</li>
+          </ul>
+          <button class="lv-btn lv-btn-primary lv-btn-block" type="button" popovertarget="loginPanel">
+            Fillo tani
+            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12h13M13 6l6 6-6 6"/></svg>
+          </button>
+          <p class="lv-plan-foot">Hyrja bëhet me llogari Google të aprovuar.</p>
+        </article>
+      </div>
+    </section>
+
+    <!-- ── THIRRJA E FUNDIT ───────────────────────────────────────────── -->
+    <section class="lv-cta">
+      <div class="lv-shell lv-cta-inner lv-reveal">
+        <div>
+          <img class="lv-logo-horizontal lv-logo-on-dark" src="/brand/medindex-horizontal-on-dark.webp" alt="MedIndex" width="320" height="86" loading="lazy" decoding="async">
+          <h2>Gati për ta hapur hapësirën klinike?</h2>
+          <p>Identiteti verifikohet në server para se të hapet çdo modul.</p>
+        </div>
+        <button class="lv-btn lv-btn-light lv-btn-lg" type="button" popovertarget="loginPanel">
+          Hyr në MedIndex
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12h13M13 6l6 6-6 6"/></svg>
+        </button>
+      </div>
+    </section>
+  </main>
+
+  <footer class="lv-footer">
+    <div class="lv-shell lv-footer-inner">
+      <div class="lv-footer-brand">
+        <span class="lv-footer-mark"><img src="/brand/medindex-mark-on-light.webp" alt="" width="223" height="219" loading="lazy" decoding="async"></span>
+        <span class="lv-brand-copy">
+          <strong>MedIndex</strong>
+          <small>Dr. Diellza Rabushaj</small>
+        </span>
+      </div>
+      <nav class="lv-footer-links" aria-label="Faqet publike">
+        <a href="/rreth-nesh.html">Rreth nesh</a>
+        <a href="/kontakt.html">Kontakt</a>
+        <a href="/blog.html">Blog</a>
+      </nav>
+      <p class="lv-footer-note">© 2026 MedIndex · Hapësirë private klinike</p>
+    </div>
+  </footer>
+
+  <!-- ── MODALI I HYRJES (id‑të janë ato që i pret login.js) ──────────── -->
+  <section class="lv-login-modal" id="loginPanel" popover aria-labelledby="loginTitle">
+    <div class="login-stage">
+      <section class="login-card" aria-labelledby="loginTitle">
+        <button class="login-modal-close" type="button" popovertarget="loginPanel" popovertargetaction="hide" aria-label="Mbyll hyrjen">×</button>
+        <div class="login-card-brand" aria-hidden="true">
+          <img src="/brand/medindex-mark-on-light.webp" alt="" width="40" height="40" decoding="async">
+          <span><strong>MedIndex</strong><small>Clinical Workspace</small></span>
+        </div>
+
+        <div class="status">Mjedis privat dhe i mbrojtur</div>
+
+        <header>
+          <h2 id="loginTitle">Hyr në MedIndex</h2>
+          <p class="login-copy">Vazhdo me llogarinë e aprovuar Google. Identiteti verifikohet në server para hapjes së hapësirës klinike.</p>
+        </header>
+
+        <noscript><p class="noscript" role="alert">JavaScript duhet të jetë aktiv për hyrjen e sigurt në MedIndex.</p></noscript>
+
+        <section class="google-login-panel" id="googleLoginPanel" aria-labelledby="googleLoginHeading">
+          <h3 class="google-login-heading" id="googleLoginHeading">Vazhdo me Google</h3>
+          <div class="google-login-button" id="googleLoginButton" aria-label="Butoni për hyrje me Google"></div>
+          <p class="google-login-status" id="googleLoginStatus" role="status" aria-live="polite" aria-atomic="true">Po përgatitet hyrja e sigurt…</p>
+        </section>
+
+        <p class="account"><strong>Lejohet vetëm diellzarabushaj@gmail.com</strong></p>
+
+        <details class="password-fallback" id="passwordFallback" hidden>
+          <summary>Hyrje rezervë me password</summary>
+          <div class="login-divider"><span>Rezervë</span></div>
+          <form id="loginForm" autocomplete="on" novalidate>
+            <label for="password">Password‑i</label>
+            <div class="password-row">
+              <input id="password" name="password" type="password" autocomplete="current-password" autocapitalize="none" spellcheck="false" enterkeyhint="go" required minlength="6" maxlength="128" aria-describedby="capsLockHint loginMessage">
+              <button id="togglePassword" type="button" aria-label="Shfaq password-in" aria-pressed="false">Shfaq</button>
+            </div>
+            <p class="caps-lock-hint" id="capsLockHint" hidden>Caps Lock është aktiv.</p>
+            <button class="login-submit" id="loginSubmit" type="submit"><span>Hyr me password</span><span aria-hidden="true">→</span></button>
+          </form>
+        </details>
+
+        <p class="login-message" id="loginMessage" role="status" aria-live="polite" aria-atomic="true"></p>
+        <div class="login-meta" aria-label="Siguria e sesionit"><span>Google ID</span><span>Sesion 8 orë</span><span>Cookie HttpOnly</span></div>
+      </section>
+    </div>
+  </section>
+
+  <script src="login-v2-canvas.js?v=v2-20260814-2" defer></script>
+  <script src="login-v2.js?v=v2-20260814-2" defer></script>
+  <script src="login.js?v=google-auth-audit-5" defer></script>
+</body>
+</html>

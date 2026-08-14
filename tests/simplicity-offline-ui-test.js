@@ -75,6 +75,7 @@ assert.match(dosagePage, /function linkedSources\(card, regimen\)/, 'Provenance 
 assert.match(dosagePage, /const sources = linkedSources\(card, regimen\);/, 'Source chips must read from linkedSources');
 assert.match(dosagePage, /const urls = new Set\([^\n]*sourceUrls[^\n]*https[^\n]*\)/, 'Only https sources may count as linked provenance');
 assert.doesNotMatch(dosagePage, /kartel(?:a|at) (?:e )?verifikuara|dataset-in e verifikuar/i, 'Dosage UI must not claim the dataset as a whole is verified');
+assert.match(dosagePage, /regimenVerified\(regimen\) \? 'SKEMË E VERIFIKUAR' : 'PA KALKULIM AUTOMATIK'/, 'The verified chip must stay conditional on regimenVerified');
 assert.match(dosagePage, /function regimenVerified\(regimen\)\s*\{\s*return[^\n]*'VERIFIKUAR'[^\n]*https[^\n]*;/, 'regimenVerified must require both a VERIFIKUAR status and an https source');
 assert.doesNotMatch(shell, /Skema të verifikuara/, 'Dosage page subtitle must stay source-neutral');
 assert.ok(
