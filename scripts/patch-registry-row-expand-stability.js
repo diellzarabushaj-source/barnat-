@@ -31,5 +31,28 @@ source = replacePattern(
   'dosage disclosure label rewrite'
 );
 
+source = replacePattern(
+  source,
+  /([ \t]*row\.classList\.toggle\('registry-row-expanded', expanded\);\r?\n)[ \t]*row\.dataset\.registryRowExpanded = String\(expanded\);/,
+  "$1    const expandedState = String(expanded);\n    const expansionChanged = row.dataset.registryRowExpanded !== expandedState;\n    if (expansionChanged) row.dataset.registryRowExpanded = expandedState;",
+  'const expansionChanged = row.dataset.registryRowExpanded !== expandedState',
+  'row-expanded idempotent state write'
+);
+
+source = replacePattern(
+  source,
+  /([ \t]*syncDetailsToggle\(row, expanded\);)\r?\n([ \t]*)\}/,
+  "$1\n    if (expansionChanged) {\n      window.dispatchEvent(new CustomEvent('medindex:registry-row-expanded-change', {\n        detail:{ row, expanded, key },\n      }));\n    }\n$2}",
+  "medindex:registry-row-expanded-change",
+  'row-expanded change event'
+);
+
+if (!source.includes("medindex:registry-row-expanded-change")) {
+  throw new Error('Row expansion stability patch must publish targeted expansion changes.');
+}
+if (!source.includes('if (expansionChanged) row.dataset.registryRowExpanded = expandedState;')) {
+  throw new Error('Row expansion stability patch must avoid duplicate expanded-state attribute writes.');
+}
+
 fs.writeFileSync(TARGET, source);
-console.log('Registry row expansion mutation writes made idempotent.');
+console.log('Registry row expansion writes are idempotent and publish one targeted expansion-change event instead of relying on subtree attribute observers.');
