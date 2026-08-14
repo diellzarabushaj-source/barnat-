@@ -79,13 +79,43 @@ if (!js.includes(stableRestore)) {
   js = js.replace(oldRestore, stableRestore);
 }
 
+const perControlDetailListeners = `    tbody.querySelectorAll('[data-mobile-lite-detail]').forEach(control => {
+      control.addEventListener('click', event => {
+        event.preventDefault();
+        event.stopPropagation();
+        void openDetail(control.dataset.mobileLiteDetail, control);
+      });
+    });`;
+
+if (js.includes(perControlDetailListeners)) {
+  js = js.replace(perControlDetailListeners, '');
+}
+
+if (!js.includes('function onMobileLiteDetailClick(event)')) {
+  const renderRowsAnchor = `  function renderRows(rows) {`;
+  if (!js.includes(renderRowsAnchor)) throw new Error('Phase 2 mobile detail delegation could not find renderRows.');
+  js = js.replace(
+    renderRowsAnchor,
+    `  function onMobileLiteDetailClick(event) {\n    const control = event.target.closest?.('[data-mobile-lite-detail]');\n    const tbody = document.getElementById('tbody');\n    if (!control || !tbody?.contains(control)) return;\n    event.preventDefault();\n    event.stopPropagation();\n    void openDetail(control.dataset.mobileLiteDetail, control);\n  }\n\n${renderRowsAnchor}`,
+  );
+}
+
+if (!js.includes("document.getElementById('tbody')?.addEventListener('click', onMobileLiteDetailClick);")) {
+  const controlsAnchor = `  function configureMobileControls() {\n    const pageSize = document.getElementById('pageSize');`;
+  if (!js.includes(controlsAnchor)) throw new Error('Phase 2 mobile detail delegation could not find control setup.');
+  js = js.replace(
+    controlsAnchor,
+    `  function configureMobileControls() {\n    document.getElementById('tbody')?.addEventListener('click', onMobileLiteDetailClick);\n    const pageSize = document.getElementById('pageSize');`,
+  );
+}
+
 const decoratorAnchor = `      const row = rowForCard(card);\n      if (!row) return;\n      let button = card.querySelector('[data-mi-mobile-favorite]');`;
 const explicitDecoratorAnchor = `      const row = rowForCard(card);\n      if (!row) return;\n      let summary = card.querySelector('.mobile-lite-open');\n      if (summary?.tagName === 'BUTTON') {`;
 if (!phase8Js.includes(explicitDecoratorAnchor)) {
   if (!phase8Js.includes(decoratorAnchor)) throw new Error('Phase 2 could not find the Phase 8 card decorator anchor.');
   phase8Js = phase8Js.replace(
     decoratorAnchor,
-    `      const row = rowForCard(card);\n      if (!row) return;\n\n      // Card v2 has one explicit detail action only. Replace the legacy summary\n      // button after mobile-lite binds its listeners; moving the actual Më shumë\n      // control preserves its listener while removing the second detail trigger.\n      let summary = card.querySelector('.mobile-lite-open');\n      if (summary?.tagName === 'BUTTON') {\n        const passiveSummary = document.createElement('div');\n        passiveSummary.className = summary.className;\n        passiveSummary.innerHTML = summary.innerHTML;\n        passiveSummary.setAttribute('aria-label', clean(row.tradeName) || 'Përmbledhja e barit');\n        summary.replaceWith(passiveSummary);\n        summary = passiveSummary;\n      }\n\n      let actions = card.querySelector('.mobile-lite-actions');\n      if (!actions) {\n        actions = document.createElement('div');\n        actions.className = 'mobile-lite-actions';\n        actions.dataset.mobileLiteActions = 'true';\n        const more = card.querySelector('.mobile-lite-more');\n        if (more) actions.appendChild(more);\n        card.appendChild(actions);\n      }\n\n      let button = actions.querySelector('[data-mi-mobile-favorite]');`,
+    `      const row = rowForCard(card);\n      if (!row) return;\n\n      // Card v2 has one explicit detail action only. Mobile-lite delegates the\n      // detail click at tbody, so moving Më shumë preserves behavior without\n      // creating or retaining a second per-card detail listener.\n      let summary = card.querySelector('.mobile-lite-open');\n      if (summary?.tagName === 'BUTTON') {\n        const passiveSummary = document.createElement('div');\n        passiveSummary.className = summary.className;\n        passiveSummary.innerHTML = summary.innerHTML;\n        passiveSummary.setAttribute('aria-label', clean(row.tradeName) || 'Përmbledhja e barit');\n        summary.replaceWith(passiveSummary);\n        summary = passiveSummary;\n      }\n\n      let actions = card.querySelector('.mobile-lite-actions');\n      if (!actions) {\n        actions = document.createElement('div');\n        actions.className = 'mobile-lite-actions';\n        actions.dataset.mobileLiteActions = 'true';\n        const more = card.querySelector('.mobile-lite-more');\n        if (more) actions.appendChild(more);\n        card.appendChild(actions);\n      }\n\n      let button = actions.querySelector('[data-mi-mobile-favorite]');`,
   );
 
   const oldAppend = `        card.appendChild(button);`;
@@ -130,6 +160,15 @@ if (!phase8Js.includes("passiveSummary.className = summary.className;")) {
 if (!phase8Js.includes("actions.className = 'mobile-lite-actions';")) {
   throw new Error('Phase 2 explicit action-region DOM contract is missing.');
 }
+if (!js.includes('function onMobileLiteDetailClick(event)')) {
+  throw new Error('Phase 2 delegated mobile detail handler is missing.');
+}
+if (!js.includes("document.getElementById('tbody')?.addEventListener('click', onMobileLiteDetailClick);")) {
+  throw new Error('Phase 2 delegated mobile detail listener is not bound.');
+}
+if (js.includes("tbody.querySelectorAll('[data-mobile-lite-detail]').forEach")) {
+  throw new Error('Phase 2 per-control mobile detail listeners must not return.');
+}
 if (!css.includes('#dataTable[data-registry-unified-table] #tbody{\n    display:flex!important;')) {
   throw new Error('Phase 4 mobile list flex-flow ownership is missing.');
 }
@@ -150,4 +189,4 @@ fs.writeFileSync(cssFile, css, 'utf8');
 fs.writeFileSync(phase8JsFile, phase8Js, 'utf8');
 fs.writeFileSync(shellCssFile, shellCss, 'utf8');
 fs.writeFileSync(jsFile, js, 'utf8');
-console.log('Phase 2/3/4 mobile stability passed: explicit collision-free card actions, one detail trigger, true vertical card flow, canonical detail scroll restoration and fixed-nav clearance.');
+console.log('Phase 2/3/4 mobile stability passed: delegated detail interaction, explicit collision-free card actions, one detail trigger, true vertical card flow, canonical detail scroll restoration and fixed-nav clearance.');
