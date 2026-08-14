@@ -12,6 +12,7 @@ const PUBLIC_PATHS = new Set([
   '/login-v2.html',
   '/login-v2.css',
   '/login-v2.js',
+  '/fonts/inter-latin-variable-normal.woff2',
   '/login.css',
   '/login-editorial.css',
   '/landing-effects.css',
