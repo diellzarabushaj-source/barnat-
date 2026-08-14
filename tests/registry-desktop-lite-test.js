@@ -15,6 +15,7 @@ const dosage = read('registry-dosage-columns-v3.js');
 const marker = read('registry-dose-clinical-row-markers.js');
 const phase10Patch = read('scripts/patch-phase10-desktop-lite.js');
 const phase11Patch = read('scripts/patch-phase11-desktop-advanced-lite.js');
+const phase13Patch = read('scripts/patch-phase13-prescription-lite.js');
 const api = read('api/drug-search.js');
 const packageJson = JSON.parse(read('package.json'));
 
@@ -25,6 +26,7 @@ for (const file of [
   'registry-dose-clinical-row-markers.js',
   'scripts/patch-phase10-desktop-lite.js',
   'scripts/patch-phase11-desktop-advanced-lite.js',
+  'scripts/patch-phase13-prescription-lite.js',
 ]) {
   execFileSync(process.execPath, ['--check', path.join(ROOT, file)], { stdio:'pipe' });
 }
@@ -57,6 +59,8 @@ assert.match(desktop, /medindex:registry-page-ready/);
 assert.match(desktop, /MEDINDEX_REGISTRY_ROWS = canonical/);
 assert.match(desktop, /medindex:request-full-registry/);
 assert.doesNotMatch(desktop, /prescription-builder|prescription-selection|select-page-for-prescription/, 'Phase 13 prescription flow must remain lightweight until an explicit advanced handoff.');
+assert.doesNotMatch(desktop, /desktop-full-detail/, 'Delegated row expansion/targeted detail must own normal desktop detail clicks without per-row full-runtime listeners.');
+assert.doesNotMatch(desktop, /tbody\.querySelectorAll\('\[data-registry-column-key="trade-name"\]'\)\.forEach/, 'Desktop rendering must not attach one trade-name click listener per rendered row.');
 assert.doesNotMatch(desktop, /\['colPickerBtn', 'column-picker'\]|column-picker/, 'Phase 14 column picker must stay on the bounded lightweight column runtime.');
 assert.doesNotMatch(desktop, /\['formPickerBtn', 'form-picker'\]/, 'Form picker must not trigger the full registry in Phase 11.');
 assert.doesNotMatch(desktop, /desktop-large-page-size/, '50/100/250/500 page-size selection must remain lightweight in Phase 11.');
@@ -73,7 +77,7 @@ assert.match(loader, /MOBILE_LITE_STALL_MS = 12000/);
 assert.match(loader, /medindex:mobile-lite-stalled/);
 assert.match(loader, /medindex:mobile-full-registry-blocked/);
 assert.doesNotMatch(loader, /scheduleRuntime\('mobile-lite-timeout'\)/, 'Desktop Phase 10 patch must never restore the old mobile takeover.');
-assert.doesNotMatch(loader, /scheduleRuntime\('desktop-or-legacy'\)/, 'Authenticated desktop must not eagerly launch the full registry runtime.');
+assert.doesNotMatch(loader, /scheduleRuntime\('desktop-or-legacy'\)/, 'Authenticated desktop must not eagerly launch the full desktop registry.');
 
 assert.match(dosage, /registryIndexSource/);
 assert.match(dosage, /function indexRegistryRows\(rows\)/);
@@ -99,6 +103,8 @@ assert.match(phase10Patch, /registry-runtime-loader-v10/, 'Phase 10 build patch 
 assert.doesNotMatch(phase10Patch, /MOBILE_LITE_GRACE_MS = 5000/, 'Phase 10 build patch must not recreate the removed mobile timeout contract.');
 assert.match(phase11Patch, /function patchDesktopSearchCounting\(\)/, 'Phase 11 must own the desktop search count optimization deterministically.');
 assert.match(phase11Patch, /includeTotal:nextQuery\.length === 0/, 'Phase 11 build must preserve count-free non-empty desktop search.');
+assert.match(phase13Patch, /redundant per-row trade-name detail listeners/, 'Phase 13 must explicitly remove redundant row detail listeners during runtime build.');
+assert.match(phase13Patch, /desktop-full-detail/, 'Phase 13 must fail the build if the old full-detail handoff returns.');
 assert.match(marker, /medindex:registry-page-ready/,
   'Clinical row markers must rebuild population state whenever the lightweight page changes.');
 assert.match(marker, /item\['Popullata e aprovuar'\]/,
@@ -113,4 +119,4 @@ assert.match(packageJson.scripts['build:runtime'], /patch-phase11-desktop-advanc
 assert.match(packageJson.scripts.test, /registry-desktop-lite-test\.js/, 'Desktop lightweight regression test must run in the main test suite.');
 assert.match(packageJson.scripts.test, /registry-desktop-large-page-lite-test\.js/, 'Phase 11-14 composed regression gate must run in the main test suite.');
 
-console.log('Phase 14 desktop bounded pagination, count-efficient search, single-owner mobile loader, form filtering, inline population, targeted dosage, prescription and column customization contract passed.');
+console.log('Phase 14 desktop bounded pagination, count-efficient search, delegated row interactions, single-owner mobile loader, form filtering, inline population, targeted dosage, prescription and column customization contract passed.');
