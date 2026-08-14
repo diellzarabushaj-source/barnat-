@@ -18,8 +18,20 @@ if (!navSource.includes(after)) {
 if (!navSource.includes("nav.style.removeProperty('visibility')")) {
   throw new Error('Idle bottom-nav state must release inline visibility authority back to modal CSS.');
 }
-
 fs.writeFileSync(navFile, navSource, 'utf8');
+
+const phase3CssFile = path.resolve(__dirname, '..', 'registry-mobile-phase3.css');
+let phase3Css = fs.readFileSync(phase3CssFile, 'utf8').replace(/\r\n?/g, '\n');
+const blockedNavBefore = `  .mi-registry-bottom-nav[data-mi-registry-nav-blocked="true"],\n  body.mi-sidebar-open .mi-registry-bottom-nav,\n  body.mi-mobile-search-open .mi-registry-bottom-nav,\n  body.mi-registry-filter-open .mi-registry-bottom-nav,\n  body.mobile-lite-detail-open .mi-registry-bottom-nav,\n  html[data-mi-keyboard-open="true"] .mi-registry-bottom-nav{\n    opacity:0!important;\n    visibility:hidden!important;\n    pointer-events:none!important;\n    transform:translateY(calc(100% + 24px))!important;\n  }`;
+const blockedNavAfter = `  .mi-registry-bottom-nav[data-mi-registry-nav-blocked="true"],\n  body.mi-sidebar-open .mi-registry-bottom-nav,\n  body.mi-mobile-search-open .mi-registry-bottom-nav,\n  body.mi-registry-filter-open .mi-registry-bottom-nav,\n  body.mobile-lite-detail-open .mi-registry-bottom-nav,\n  html[data-mi-keyboard-open="true"] .mi-registry-bottom-nav{\n    transition:none!important;\n    opacity:0!important;\n    visibility:hidden!important;\n    pointer-events:none!important;\n    transform:translateY(calc(100% + 24px))!important;\n  }`;
+if (!phase3Css.includes(blockedNavAfter)) {
+  if (!phase3Css.includes(blockedNavBefore)) throw new Error('Blocked bottom-nav CSS state block changed.');
+  phase3Css = phase3Css.replace(blockedNavBefore, blockedNavAfter);
+}
+if (!phase3Css.includes('transition:none!important;\n    opacity:0!important;\n    visibility:hidden!important;')) {
+  throw new Error('Blocked bottom-nav state must disable the visibility transition immediately.');
+}
+fs.writeFileSync(phase3CssFile, phase3Css, 'utf8');
 
 const designCssFile = path.resolve(__dirname, '..', 'registry-mobile-design-audit.css');
 let designCss = fs.readFileSync(designCssFile, 'utf8').replace(/\r\n?/g, '\n');
@@ -64,4 +76,4 @@ if (!phoneCss.includes('padding:4px 9px 4px 12px;')) {
 }
 fs.writeFileSync(phoneCssFile, phoneCss, 'utf8');
 
-console.log('Late mobile styles now preserve modal CSS authority, blocked-nav safety and audited phone card geometry without shrinking 44px actions.');
+console.log('Late mobile styles now make modal blocking immediate, preserve CSS authority and keep audited phone card geometry without shrinking 44px actions.');
