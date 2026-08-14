@@ -14,10 +14,12 @@ const rowExpand = read('registry-row-expand.js');
 const drugSearch = read('api/drug-search.js');
 const dosageCard = read('lib/dosage-card-handler.js');
 const wiring = read('scripts/patch-phase12-targeted-detail-wiring.js');
+const rowStability = read('scripts/patch-registry-row-expand-stability.js');
 
 for (const file of [
   'registry-desktop-targeted-detail.js',
   'scripts/patch-phase12-targeted-detail-wiring.js',
+  'scripts/patch-registry-row-expand-stability.js',
 ]) execFileSync(process.execPath, ['--check', path.join(ROOT, file)], { stdio:'pipe' });
 
 const rowScript = 'registry-row-expand.js?v=20260810-1';
@@ -40,11 +42,17 @@ assert.match(runtime, /const inflight = new Map\(\)/);
 assert.match(runtime, /cache\.has\(id\)/, 'Reopening the same drug must reuse its in-memory detail.');
 assert.match(runtime, /Riprovo/);
 assert.match(runtime, /desktop-targeted-detail-advanced/, 'Full runtime must be an explicit advanced action only.');
+assert.match(runtime, /observer\.observe\(tbody, \{ childList:true \}\)/, 'Targeted detail must observe only direct tbody row replacement.');
+assert.match(runtime, /medindex:registry-row-expanded-change/, 'Targeted detail must consume the canonical row expansion event.');
+assert.doesNotMatch(runtime, /observer\.observe\(tbody, \{[\s\S]*?subtree\s*:\s*true/, 'Targeted detail must not observe nested table mutations for the full session.');
+assert.doesNotMatch(runtime, /attributeFilter:\s*\['data-registry-row-expanded'\]/, 'Targeted detail must not keep the old attribute subtree observer.');
 assert.doesNotMatch(runtime, /\/api\/registry(?:\?|['"`])|DRUG_DATA_PARTS|DecompressionStream|\batob\s*\(/, 'Phase 12 normal detail path must never load or parse the full registry.');
 assert.doesNotMatch(runtime, /localStorage|indexedDB/i, 'One-drug detail cache must stay session-memory only.');
 
 assert.match(rowExpand, /registry-row-details-toggle/);
 assert.match(rowExpand, /Shiko detajet/);
+assert.match(rowExpand, /const expansionChanged = row\.dataset\.registryRowExpanded !== expandedState/, 'Row-expanded state writes must be idempotent.');
+assert.match(rowExpand, /medindex:registry-row-expanded-change/, 'Canonical row controller must publish a targeted expansion-change event.');
 assert.match(runtime, /data-registry-row-expanded|registryRowExpanded/, 'Phase 12 must follow the existing row-expanded state instead of inventing a second interaction model.');
 assert.match(runtime, /registry-targeted-detail-row/);
 
@@ -56,7 +64,9 @@ assert.match(dosageCard, /params\.set\('drug_id', `eq\.\$\{drugId\}`\)/, 'Clinic
 assert.match(dosageCard, /editorial_status', 'eq\.published/);
 assert.match(dosageCard, /calculation_status', 'in\.\(text_verified,calculable_verified\)/);
 assert.match(wiring, /registry-desktop-targeted-detail\.js\?v=20260812-1/);
+assert.match(wiring, /patchTargetedDetailObserver/, 'Phase 12 build must deterministically remove the subtree observer.');
+assert.match(rowStability, /medindex:registry-row-expanded-change/, 'Row-expansion build must preserve the dedicated expansion event.');
 assert.match(wiring, /registry-desktop-prescription-lite\.js\?v=20260812-1/);
 
 require('./registry-desktop-prescription-lite-test.js');
-console.log('Phase 12/13 desktop targeted detail and lightweight prescription selection remain off the full-registry normal path.');
+console.log('Phase 12/13 desktop targeted detail is event-driven, direct-row observed and remains off the full-registry normal path.');
