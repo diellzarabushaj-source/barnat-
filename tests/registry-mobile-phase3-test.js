@@ -8,13 +8,27 @@ const { execFileSync } = require('node:child_process');
 const ROOT = path.resolve(__dirname, '..');
 const read = file => fs.readFileSync(path.join(ROOT, file), 'utf8');
 
-for (const file of ['registry-mobile-phase3.js', 'registry-mobile-phase3.css', 'index.html']) {
+for (const file of [
+  'registry-mobile-phase3.js',
+  'registry-mobile-phase3.css',
+  'registry-mobile-lite.js',
+  'scripts/patch-phase2-mobile-card-stability.js',
+  'index.html',
+]) {
   assert.ok(fs.existsSync(path.join(ROOT, file)), `${file} is missing`);
 }
-execFileSync(process.execPath, ['--check', path.join(ROOT, 'registry-mobile-phase3.js')], { stdio:'pipe' });
+for (const file of [
+  'registry-mobile-phase3.js',
+  'registry-mobile-lite.js',
+  'scripts/patch-phase2-mobile-card-stability.js',
+]) {
+  execFileSync(process.execPath, ['--check', path.join(ROOT, file)], { stdio:'pipe' });
+}
 
 const js = read('registry-mobile-phase3.js');
 const css = read('registry-mobile-phase3.css');
+const mobileLite = read('registry-mobile-lite.js');
+const phase2Patch = read('scripts/patch-phase2-mobile-card-stability.js');
 const index = read('index.html');
 
 assert.match(js, /registry-mobile-phase3-v1/, 'Phase 3 runtime version is missing');
@@ -44,6 +58,13 @@ assert.match(js, /MedIndexRegistryMobilePhase3 = Object\.freeze/, 'Phase 3 must 
 assert.doesNotMatch(js, /\bfetch\s*\(|\/api\//, 'Phase 3 must not create an independent data-fetching path');
 assert.doesNotMatch(js, /MEDINDEX_REGISTRY_ROWS|DRUG_DATA_PARTS|DecompressionStream|Uint8Array\.from\(atob/, 'Phase 3 must not wake or rebuild the full registry dataset');
 
+assert.match(mobileLite, /function onMobileLiteDetailClick\(event\)/, 'mobile detail interactions must use one delegated tbody handler');
+assert.match(mobileLite, /event\.target\.closest\?\.\('\[data-mobile-lite-detail\]'\)/, 'delegated detail handler must resolve the clicked detail control');
+assert.match(mobileLite, /getElementById\('tbody'\)\?\.addEventListener\('click', onMobileLiteDetailClick\)/, 'tbody must own the single mobile detail click listener');
+assert.doesNotMatch(mobileLite, /querySelectorAll\('\[data-mobile-lite-detail\]'\)\.forEach/, 'row renders must not bind one detail listener per control');
+assert.match(phase2Patch, /perControlDetailListeners/, 'Phase 2 build patch must remove legacy per-control detail listeners deterministically');
+assert.match(phase2Patch, /onMobileLiteDetailClick/, 'Phase 2 build patch must preserve delegated mobile detail handling');
+
 assert.match(css, /^@media \(max-width:767px\)/, 'Phase 3 CSS must be scoped to phones');
 assert.match(css, /safe-area-inset-bottom/, 'bottom navigation must respect device safe areas');
 assert.match(css, /\.mi-registry-bottom-nav/, 'bottom navigation styles are missing');
@@ -65,4 +86,4 @@ assert.ok(index.indexOf('registry-mobile-lite.js') < index.indexOf('registry-mob
 assert.ok(index.indexOf('registry-mobile-phase3.js') < index.indexOf('registry-runtime-loader.js'), 'Phase 3 must load before the full runtime loader');
 assert.ok(index.indexOf('registry-mobile-lite.css') < index.indexOf('registry-mobile-phase3.css'), 'Phase 3 CSS must refine Phase 2 mobile-lite');
 
-console.log('Phase 3 phone navigation, single-surface modal ownership, keyboard coordination, filter sheet and lightweight handoff contract passed.');
+console.log('Phase 3 phone navigation, delegated mobile detail handling, single-surface modal ownership, keyboard coordination, filter sheet and lightweight handoff contract passed.');
