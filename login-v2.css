@@ -92,6 +92,13 @@ input,summary{font:inherit}
 
 .lv-shell{width:var(--lv-shell);margin-inline:auto}
 
+/* Mbetet në pemën e arritshmërisë, del nga pamja. */
+.lv-sr-only{
+  position:absolute;width:1px;height:1px;
+  margin:-1px;padding:0;overflow:hidden;
+  clip-path:inset(50%);white-space:nowrap;border:0;
+}
+
 .lv-skip{
   position:absolute;left:-9999px;top:0;z-index:100;
   padding:12px 18px;border-radius:0 0 12px 0;
@@ -133,22 +140,8 @@ input,summary{font:inherit}
 /* Logo zyrtare horizontale: lartësia komandon, gjerësia e ndjek raportin. */
 .lv-logo-horizontal{width:auto;height:36px}
 .lv-footer-brand .lv-logo-horizontal{height:32px}
-.lv-logo-on-dark{height:38px;margin-bottom:20px}
+.lv-logo-on-dark{height:40px;margin-bottom:26px}
 
-.lv-brand-mark{
-  display:grid;place-items:center;
-  width:42px;height:42px;flex:0 0 42px;
-  overflow:hidden;border-radius:13px;
-  border:1px solid var(--lv-line);background:#fff;
-  box-shadow:var(--lv-shadow-sm);
-}
-.lv-brand-mark img{width:100%;height:100%;object-fit:cover}
-.lv-brand-copy{display:grid;gap:1px}
-.lv-brand-copy strong{font-size:17px;font-weight:800;letter-spacing:-.035em;line-height:1.1}
-.lv-brand-copy small{
-  color:var(--lv-muted);font-size:9px;font-weight:700;
-  letter-spacing:.13em;text-transform:uppercase;
-}
 
 .lv-nav-links{display:flex;align-items:center;gap:30px;margin-inline:auto}
 .lv-nav-link{
@@ -687,29 +680,45 @@ input,summary{font:inherit}
     linear-gradient(120deg,#0d1730,#0b1220);
   color:#fff;
 }
+/* Një kolonë e vetme e qendërzuar. Rreshtimi i mëparshëm majtas-djathtas e
+   linte titullin në njërin skaj dhe butonin në tjetrin, me një hapësirë të
+   zbrazët mes tyre që zgjerohej sa më i gjerë ekrani. */
 .lv-cta-inner{
-  display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:28px;
+  display:grid;justify-items:center;gap:0;
+  max-width:660px;margin-inline:auto;text-align:center;
 }
-.lv-cta h2{margin:0;font-size:clamp(24px,3vw,34px);font-weight:780;letter-spacing:-.035em;line-height:1.18}
-.lv-cta p{margin:10px 0 0;color:rgba(255,255,255,.6);font-size:15px}
+.lv-cta h2{margin:0;font-size:clamp(26px,3.2vw,38px);font-weight:780;letter-spacing:-.035em;line-height:1.15;text-wrap:balance}
+.lv-cta p{margin:14px 0 0;color:rgba(255,255,255,.62);font-size:15px;line-height:1.6}
+.lv-cta .lv-btn{margin-top:30px}
 
 /* ── FOOTER ─────────────────────────────────────────────────────────────── */
-.lv-footer{padding:44px 0;border-top:1px solid var(--lv-line);background:var(--lv-tint)}
-.lv-footer-inner{
-  display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:22px;
+.lv-footer{padding:40px 0 30px;border-top:1px solid var(--lv-line);background:var(--lv-tint)}
+.lv-footer-inner{display:grid;gap:26px}
+
+/* Rreshti i sipërm mban markën dhe faqet; ai i poshtmi shënimet, i ndarë me
+   një vijë. Më parë të treja rrinin në një rresht të vetëm dhe në ekran të
+   gjerë shpërndaheshin aq larg sa nuk dukeshin më si një njësi. */
+.lv-footer-top{
+  display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:20px;
 }
-.lv-footer-brand{display:flex;align-items:center;gap:11px}
-.lv-footer-mark{
-  display:grid;place-items:center;
-  width:40px;height:40px;flex:0 0 40px;
-  overflow:hidden;border-radius:12px;
-  border:1px solid var(--lv-line);background:#fff;
-  box-shadow:var(--lv-shadow-sm);
+.lv-footer-brand{display:inline-flex;align-items:center}
+.lv-footer-links{display:flex;flex-wrap:wrap;gap:26px}
+.lv-footer-links a{
+  position:relative;color:var(--lv-body);font-size:14px;font-weight:560;
+  transition:color .2s ease;
 }
-.lv-footer-mark img{width:100%;height:100%;object-fit:cover}
-.lv-footer-links{display:flex;flex-wrap:wrap;gap:24px}
-.lv-footer-links a{color:var(--lv-body);font-size:14px;font-weight:560;transition:color .2s ease}
-.lv-footer-links a:hover{color:var(--lv-blue)}
+.lv-footer-links a::after{
+  content:"";position:absolute;left:0;right:0;bottom:-5px;height:1.5px;
+  background:var(--lv-blue);
+  transform:scaleX(0);transform-origin:left;transition:transform .22s ease;
+}
+.lv-footer-links a:hover{color:var(--lv-ink)}
+.lv-footer-links a:hover::after{transform:scaleX(1)}
+
+.lv-footer-base{
+  display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:8px 20px;
+  padding-top:22px;border-top:1px solid var(--lv-line);
+}
 .lv-footer-note{margin:0;color:var(--lv-muted);font-size:12.5px}
 
 /* ── MODALI I HYRJES ────────────────────────────────────────────────────── */
@@ -758,14 +767,8 @@ input,summary{font:inherit}
   transform:rotate(90deg);
 }
 
-.login-card-brand{display:flex;align-items:center;gap:11px;margin-bottom:20px}
-.login-card-brand img{
-  width:40px;height:40px;flex:0 0 40px;
-  border:1px solid var(--lv-line);border-radius:12px;background:#fff;object-fit:cover;
-}
-.login-card-brand span{display:grid;gap:1px}
-.login-card-brand strong{font-size:15px;font-weight:800;letter-spacing:-.03em;line-height:1.1}
-.login-card-brand small{color:var(--lv-muted);font-size:8.5px;font-weight:720;letter-spacing:.14em;text-transform:uppercase}
+.login-card-brand{display:flex;align-items:center;margin-bottom:22px}
+.login-card-brand .lv-logo-horizontal{height:34px}
 
 .status{
   display:inline-flex;align-items:center;gap:8px;
@@ -781,22 +784,17 @@ input,summary{font:inherit}
 .login-card h2{margin:0;font-size:32px;font-weight:800;letter-spacing:-.045em;line-height:1.08}
 .login-copy{margin:12px 0 0;color:var(--lv-body);font-size:13.5px;line-height:1.6}
 
-/* Paneli i Google-it si bllok i veçantë, që të mos përzihet me tekstin. */
-.google-login-panel{
-  display:grid;gap:11px;
-  margin-top:24px;padding:18px 16px;
-  border:1px solid var(--lv-line-soft);border-radius:16px;
-  background:rgba(255,255,255,.7);
-}
-.google-login-heading{
-  margin:0;color:var(--lv-muted);
-  font-size:10.5px;font-weight:780;letter-spacing:.12em;text-transform:uppercase;
-  text-align:center;
-}
+/* Butoni i Google-it e sjell kornizën e vet, prandaj paneli nuk shton një të
+   dytë rreth tij — dy korniza të ngjashme njëra brenda tjetrës e bëjnë kartën
+   të duket e mbushur pa i dhënë asgjë lexueshmërisë. */
+.google-login-panel{display:grid;gap:10px;margin-top:26px}
 .google-login-button{
   display:flex;width:100%;min-height:52px;align-items:center;justify-content:center;
   overflow:hidden;border:1px solid var(--lv-line);border-radius:12px;background:#fff;
+  box-shadow:var(--lv-shadow-sm);
+  transition:border-color .2s ease,box-shadow .2s ease;
 }
+.google-login-button:hover{border-color:#cfd7e4;box-shadow:0 6px 18px rgba(13,22,44,.08)}
 .google-login-button>div,.google-login-button iframe{max-width:100%!important;margin-inline:auto!important}
 .google-login-status{min-height:17px;margin:0;color:var(--lv-muted);font-size:11px;line-height:1.45;text-align:center}
 .google-login-status.is-error{color:var(--lv-red)}
@@ -805,12 +803,19 @@ input,summary{font:inherit}
   padding:9px;border-radius:10px;background:#fdf1f2;color:#963b44;font-size:11.5px;text-align:center;
 }
 
+/* Vetëm një rresht, pa kuti: distinktivi i gjelbër lart e mbulon tashmë
+   rolin e "sinjalit të sigurisë", dhe dy blloqe të gjelbra në të njëjtën
+   kartë e ndajnë vëmendjen mes vetes. */
 .account{
-  display:flex;align-items:center;gap:9px;
-  min-height:46px;margin:14px 0 0;padding:10px 13px;
-  border:1px solid #d8e8e5;border-radius:12px;background:#f0f8f6;
-  color:#33605f;font-size:11.5px;font-weight:640;line-height:1.35;
+  display:flex;align-items:center;gap:8px;
+  margin:16px 0 0;
+  color:var(--lv-body);font-size:12px;font-weight:560;line-height:1.4;
 }
+.account::before{
+  content:"";width:6px;height:6px;flex:0 0 6px;border-radius:50%;
+  background:#16867f;box-shadow:0 0 0 3px rgba(22,134,127,.14);
+}
+.account strong{font-weight:660;color:var(--lv-ink-soft)}
 
 .noscript{
   margin:14px 0 0;padding:12px 14px;
@@ -930,8 +935,10 @@ input,summary{font:inherit}
 @media(max-width:640px){
   :root{--lv-shell:calc(100% - 32px)}
   .lv-preview-flag{font-size:11px;padding:8px 14px;line-height:1.4}
-  .lv-brand-copy small{display:none}
+  /* Të tria vendet e logos zbresin bashkë; rregulla e footer-it ka specifikë
+     më të lartë, prandaj përmendet veçmas ose do të mbetej 32px. */
   .lv-logo-horizontal{height:30px}
+  .lv-footer-brand .lv-logo-horizontal{height:30px}
   .lv-ceo{grid-template-columns:minmax(0,1fr);justify-items:center;text-align:center}
   .lv-ceo::before{inset:0 0 auto 0;width:auto;height:4px;background:linear-gradient(90deg,var(--lv-blue),var(--lv-teal))}
   .lv-hero{padding:56px 0 76px}
