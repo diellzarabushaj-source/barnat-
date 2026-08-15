@@ -11,9 +11,14 @@ const MAX_QUERY_RESPONSES = 40;
 const MAX_DOCUMENTS = 16;
 
 const CORE_SHELL = [
+  '/login-v2.html', '/login-v2.css', '/login-v2.js', '/login-v2-canvas.js',
   '/login.html', '/recovery.html', '/login.css', '/login.js', '/recovery.js',
   '/auth-client.js', '/offline-runtime.js', '/manifest.webmanifest', '/medindex-icon.svg',
 ];
+
+/* Faqet ku përfundon një vizitor i pakyçur. Përdoret për të dalluar një
+   ridrejtim drejt hyrjes nga faqja private që u kërkua. */
+const LOGIN_PAGES = new Set(['/login-v2.html', '/login.html', '/recovery.html']);
 const PRIVATE_PAGES = new Set([
   '/index.html', '/klasifikimi.html', '/icd.html', '/analizat.html',
   '/dozologjia.html', '/protokollet.html', '/recetat.html',
@@ -65,7 +70,7 @@ function validHtmlResponse(response, expectedPath) {
   let finalPath = '';
   try { finalPath = canonicalPagePath(new URL(response.url).pathname); } catch { return false; }
   const expected = canonicalPagePath(expectedPath);
-  if (PRIVATE_PAGES.has(expected) && (finalPath === '/login.html' || finalPath === '/recovery.html')) return false;
+  if (PRIVATE_PAGES.has(expected) && LOGIN_PAGES.has(finalPath)) return false;
   if (response.redirected && finalPath !== expected) return false;
   return finalPath === expected || (expected === '/index.html' && finalPath === '/');
 }
@@ -191,7 +196,10 @@ async function navigationResponse(event, url) {
   }
   const response = await refreshNavigation(request, key, expectedPath);
   if (response) return cloneWithHeader(response, 'page-network');
-  return await caches.match('/login.html') || await caches.match('/recovery.html') || Response.error();
+  return await caches.match('/login-v2.html')
+    || await caches.match('/login.html')
+    || await caches.match('/recovery.html')
+    || Response.error();
 }
 
 async function refreshStatic(request) {

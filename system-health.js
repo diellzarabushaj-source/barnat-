@@ -228,7 +228,7 @@
         headers:{ Accept:'application/json' },
       });
       if (response.status === 401) {
-        location.href = `/login.html?return=${encodeURIComponent(location.pathname)}`;
+        location.href = `/login-v2.html?return=${encodeURIComponent(location.pathname)}`;
         return;
       }
       const payload = await response.json().catch(() => ({}));

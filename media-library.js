@@ -61,7 +61,7 @@
       headers:{ Accept:'application/json', ...(options.headers || {}) },
     });
     if (response.status === 401) {
-      location.href = `/login.html?return=${encodeURIComponent(location.pathname)}`;
+      location.href = `/login-v2.html?return=${encodeURIComponent(location.pathname)}`;
       throw new Error('Sesioni ka skaduar.');
     }
     const payload = await response.json().catch(() => ({}));
