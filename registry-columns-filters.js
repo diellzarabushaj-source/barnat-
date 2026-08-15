@@ -540,7 +540,7 @@
     const description = toolbar?.querySelector('[data-registry-view-description]');
     if (description) {
       const countText = clean(document.getElementById('countBadge')?.textContent);
-      const count = countText.match(/[\d.,]+/)?.[0];
+      const count = countText.match(/\d[\d.,]*/)?.[0];
       const prefix = count ? `${count} barna · ` : '';
       description.textContent = view === 'clinical'
         ? `${prefix}dozat, rruga dhe verifikimi janë të prioritizuara.`

@@ -589,6 +589,10 @@ html.medindex-tailadmin :where(input[type="text"],input[type="search"],input[typ
   transition: border-color .15s ease, box-shadow .15s ease, background .15s ease;
 }
 html.medindex-tailadmin :where(input[type="text"],input[type="search"],input[type="password"],input[type="number"],select) { height: 44px; padding: 10px 12px !important; }
+/* Kërkimi global e mban ikonën brenda fushës, në 16px nga e majta dhe 20px e
+   gjerë. Rregulla e mësipërme e shtyp paddingun e çdo inputi me !important,
+   prandaj pa këtë përjashtim ikona binte mbi shkronjën e parë të tekstit. */
+html.medindex-tailadmin .mi-global-search input { padding: 10px 58px 10px 46px !important; }
 html.medindex-tailadmin textarea { padding: 12px !important; line-height: 1.55 !important; }
 html.medindex-tailadmin :where(input,textarea)::placeholder { color: var(--mi-gray-400) !important; }
 html.medindex-tailadmin :where(input,select,textarea):focus { border-color: var(--mi-brand-300) !important; box-shadow: var(--mi-focus) !important; }
