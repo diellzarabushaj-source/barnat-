@@ -425,7 +425,7 @@ input,summary{font:inherit}
 /* Kartat mbeten të bardha por marrin hije më të thellë mbi blu. */
 .lv-morph .lv-card{transition:box-shadow .5s ease,border-color .3s ease,transform .4s cubic-bezier(.2,.8,.2,1)}
 .lv-morph.is-deep .lv-card{box-shadow:0 20px 50px rgba(5,11,26,.38)}
-.lv-morph.is-deep .lv-showcase-circle{box-shadow:0 30px 80px rgba(5,11,26,.5),inset 0 2px 0 rgba(255,255,255,.6)}
+.lv-morph.is-deep .lv-showcase-photo{box-shadow:0 30px 80px rgba(5,11,26,.55)}
 
 /* ── Vitrina: rrethi i ngjitur majtas, lista rrëshqet djathtas ─────────── */
 .lv-showcase{
@@ -437,28 +437,22 @@ input,summary{font:inherit}
   position:sticky;top:120px;
   display:grid;justify-items:center;gap:20px;
 }
-.lv-showcase-circle{
-  position:relative;
-  display:grid;place-items:center;
-  width:min(360px,80%);aspect-ratio:1;
-  border-radius:50%;
-  background:
-    radial-gradient(circle at 30% 25%,rgba(255,255,255,.9),transparent 55%),
-    linear-gradient(150deg,var(--lv-aqua) 0%,var(--lv-aqua-bright) 45%,var(--lv-teal) 100%);
-  box-shadow:0 30px 80px rgba(12,85,89,.28),inset 0 2px 0 rgba(255,255,255,.6);
-  /* Ngadalë rrotullohet sa vjen përpjetë. */
-  transform:rotate(calc(var(--lv-showcase, 0) * 8deg));
-  transition:transform .6s cubic-bezier(.2,.8,.2,1);
+/* Fotoja pa kënde të rrumbullakosura, si pjesa tjetër e faqes. */
+.lv-showcase-photo{
+  position:relative;margin:0;overflow:hidden;
+  width:min(360px,100%);
+  background:var(--lv-tint);
+  box-shadow:0 30px 80px rgba(9,16,34,.22);
+  transition:box-shadow .5s ease;
 }
-.lv-showcase-ring{
-  position:absolute;inset:14px;
-  border:1px solid rgba(255,255,255,.55);border-radius:50%;
-}
-.lv-showcase-circle img{
-  width:44%;height:auto;
-  filter:drop-shadow(0 10px 24px rgba(6,50,53,.28));
-  transform:rotate(calc(var(--lv-showcase, 0) * -8deg));
-  transition:transform .6s cubic-bezier(.2,.8,.2,1);
+.lv-showcase-photo img{display:block;width:100%;height:auto}
+
+/* Sa më e errët sfondi, aq më shumë fotoja shkrihet me të nga poshtë:
+   e njëjta --lv-sect që e ushqen shtresën e sfondit, e trashëguar këtu. */
+.lv-showcase-photo::after{
+  content:"";position:absolute;inset:auto 0 0;height:42%;
+  background:linear-gradient(180deg,transparent 0%,#0b1220 100%);
+  opacity:calc(var(--lv-sect,0) * .85);
 }
 .lv-showcase-caption{
   margin:0;color:var(--lv-muted);
@@ -500,26 +494,16 @@ input,summary{font:inherit}
 .lv-card:hover::after{opacity:1}
 .lv-card>*{position:relative;z-index:2}
 
+/* Ikonat e vizatuara sjellin pllakën dhe hijen e vet, prandaj kutia këtu
+   nuk ka më sfond as ngjyrë — vetëm masën dhe ngritjen 3D. */
 .lv-card-icon{
   display:grid;place-items:center;
-  width:48px;height:48px;margin-bottom:18px;
-  border-radius:15px;
+  width:60px;height:60px;margin-bottom:16px;
   transform:translateZ(28px);
   transition:transform .4s cubic-bezier(.2,.8,.2,1);
 }
 .lv-card:hover .lv-card-icon{transform:translateZ(46px) scale(1.06)}
-.lv-card-icon svg{
-  width:23px;height:23px;
-  fill:none;stroke:currentColor;stroke-width:1.6;
-  stroke-linecap:round;stroke-linejoin:round;
-}
-.lv-icon-blue{background:var(--lv-blue-wash);color:var(--lv-blue-deep)}
-.lv-icon-teal{background:#e6f4f4;color:var(--lv-teal)}
-.lv-icon-violet{background:#eeecfd;color:var(--lv-violet)}
-.lv-icon-pink{background:#fceef4;color:var(--lv-pink)}
-.lv-icon-amber{background:#fdf3e3;color:var(--lv-amber)}
-.lv-icon-green{background:#e6f5ee;color:var(--lv-green)}
-.lv-icon-red{background:#fceded;color:var(--lv-red)}
+.lv-card-icon img{width:100%;height:100%;object-fit:contain}
 
 .lv-card h3{
   display:flex;align-items:center;flex-wrap:wrap;gap:8px;
@@ -898,7 +882,7 @@ input,summary{font:inherit}
   /* Nën këtë gjerësi rrethi i ngjitur ha shumë hapësirë; kalon sipër listës. */
   .lv-showcase{grid-template-columns:minmax(0,1fr)}
   .lv-showcase-visual{position:static;margin-bottom:8px}
-  .lv-showcase-circle{width:min(240px,60%)}
+  .lv-showcase-photo{width:min(320px,72%)}
 }
 
 @media(max-width:900px){
