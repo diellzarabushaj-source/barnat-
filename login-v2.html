@@ -157,8 +157,14 @@
         <div class="lv-showcase">
           <!-- Kolona e majtë rri e ngjitur; lista djathtas rrëshqet pranë saj. -->
           <div class="lv-showcase-visual" aria-hidden="true">
-            <figure class="lv-showcase-photo">
-              <img src="/images/marketing/mjekja-ne-pune.webp" alt="" width="720" height="900" loading="lazy" decoding="async">
+            <!-- Prerja rri te korniza e brendshme, jo te figura: figura është
+                 ajo që e vëzhgon IntersectionObserver-i, dhe një clip-path mbi
+                 të vetë e zvogëlon sipërfaqen e prerjes në zero — atëherë
+                 vëzhguesi s'e sheh kurrë dhe zbulimi s'niset dot. -->
+            <figure class="lv-showcase-photo lv-reveal">
+              <span class="lv-photo-frame">
+                <img src="/images/marketing/mjekja-ne-pune.webp" alt="" width="1000" height="1250" loading="lazy" decoding="async">
+              </span>
             </figure>
             <p class="lv-showcase-caption">Tetë module · një hapësirë</p>
           </div>
