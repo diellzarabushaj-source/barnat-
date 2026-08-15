@@ -78,6 +78,37 @@
     stats.forEach(item => statObserver.observe(item.node));
   }
 
+  /* ── Ngjyra e seksionit sipas skrollimit ──────────────────────────────
+     Progresi është 0 kur maja e seksionit arrin fundin e ekranit dhe 1 kur
+     fundi i tij kalon majën, pra kalimi ndodh pikërisht sa ai është në
+     pamje. Vlera shkon te CSS-ja si --lv-sect. */
+  const morphs = [...document.querySelectorAll('.lv-morph')];
+  if (morphs.length && !reduced) {
+    let morphQueued = false;
+
+    const syncMorphs = () => {
+      morphQueued = false;
+      for (const section of morphs) {
+        const box = section.getBoundingClientRect();
+        const span = box.height + window.innerHeight;
+        const raw = (window.innerHeight - box.top) / span;
+        const progress = Math.min(Math.max(raw, 0), 1);
+        // Ndalet para skajeve, që seksioni të mos nisë e mbarojë krejt i errët.
+        const eased = Math.min(Math.max((progress - 0.12) / 0.5, 0), 1);
+        section.style.setProperty('--lv-sect', eased.toFixed(3));
+        section.classList.toggle('is-deep', eased > 0.55);
+      }
+    };
+
+    window.addEventListener('scroll', () => {
+      if (morphQueued) return;
+      morphQueued = true;
+      requestAnimationFrame(syncMorphs);
+    }, { passive: true });
+    window.addEventListener('resize', () => requestAnimationFrame(syncMorphs), { passive: true });
+    syncMorphs();
+  }
+
   if (reduced) return;
 
   /* ── Parallax i hero-s ────────────────────────────────────────────────
