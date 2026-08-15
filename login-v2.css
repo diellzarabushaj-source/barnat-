@@ -668,7 +668,7 @@ input,summary{font:inherit}
 
 .login-card{
   position:relative;isolation:isolate;overflow:hidden;
-  width:min(460px,100%);padding:34px 34px 28px;
+  width:min(464px,100%);padding:36px 34px 28px;
   border:1px solid rgba(255,255,255,.9);border-radius:var(--lv-radius-lg);
   background:linear-gradient(160deg,#fff 0%,#f9fbff 100%);
   box-shadow:0 44px 110px rgba(6,12,28,.42);
@@ -677,17 +677,28 @@ input,summary{font:inherit}
   content:"";position:absolute;inset:0 0 auto;height:4px;
   background:linear-gradient(90deg,#7fb2ff,var(--lv-blue) 55%,var(--lv-blue-deep));
 }
+/* Shkëlqim i butë pas markës, si te kartat e faqes. */
+.login-card::after{
+  content:"";position:absolute;z-index:-1;top:-120px;right:-90px;
+  width:280px;height:280px;border-radius:50%;
+  background:radial-gradient(circle,var(--lv-blue-wash),transparent 70%);
+  pointer-events:none;
+}
 
 .login-modal-close{
-  position:absolute;top:16px;right:16px;z-index:3;
+  position:absolute;top:18px;right:18px;z-index:3;
   display:grid;place-items:center;
-  width:42px;height:42px;
-  border-radius:12px;
-  background:rgba(11,18,32,.06);color:var(--lv-ink-soft);
-  font-size:23px;line-height:1;
-  transition:background .2s ease,transform .2s ease;
+  width:40px;height:40px;
+  border:1px solid var(--lv-line);border-radius:50%;
+  background:#fff;color:var(--lv-body);
+  font-size:21px;line-height:1;
+  box-shadow:var(--lv-shadow-sm);
+  transition:background .2s ease,color .2s ease,transform .25s ease,border-color .2s ease;
 }
-.login-modal-close:hover{background:rgba(11,18,32,.12);transform:rotate(90deg)}
+.login-modal-close:hover{
+  background:var(--lv-ink);border-color:var(--lv-ink);color:#fff;
+  transform:rotate(90deg);
+}
 
 .login-card-brand{display:flex;align-items:center;gap:11px;margin-bottom:20px}
 .login-card-brand img{
@@ -712,8 +723,18 @@ input,summary{font:inherit}
 .login-card h2{margin:0;font-size:32px;font-weight:800;letter-spacing:-.045em;line-height:1.08}
 .login-copy{margin:12px 0 0;color:var(--lv-body);font-size:13.5px;line-height:1.6}
 
-.google-login-panel{display:grid;gap:10px;margin-top:24px}
-.google-login-heading{margin:0;font-size:12px;font-weight:760;color:var(--lv-ink-soft)}
+/* Paneli i Google-it si bllok i veçantë, që të mos përzihet me tekstin. */
+.google-login-panel{
+  display:grid;gap:11px;
+  margin-top:24px;padding:18px 16px;
+  border:1px solid var(--lv-line-soft);border-radius:16px;
+  background:rgba(255,255,255,.7);
+}
+.google-login-heading{
+  margin:0;color:var(--lv-muted);
+  font-size:10.5px;font-weight:780;letter-spacing:.12em;text-transform:uppercase;
+  text-align:center;
+}
 .google-login-button{
   display:flex;width:100%;min-height:52px;align-items:center;justify-content:center;
   overflow:hidden;border:1px solid var(--lv-line);border-radius:12px;background:#fff;
