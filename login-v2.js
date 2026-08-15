@@ -78,11 +78,15 @@
     stats.forEach(item => statObserver.observe(item.node));
   }
 
-  /* ── Ngjyra e seksionit sipas skrollimit ──────────────────────────────
+  /* ── Progresi i seksionit sipas skrollimit ────────────────────────────
      Progresi është 0 kur maja e seksionit arrin fundin e ekranit dhe 1 kur
      fundi i tij kalon majën, pra kalimi ndodh pikërisht sa ai është në
-     pamje. Vlera shkon te CSS-ja si --lv-sect. */
-  const morphs = [...document.querySelectorAll('.lv-morph')];
+     pamje. Vlera shkon te CSS-ja si --lv-sect.
+
+     Çdo seksion me `data-lv-progress` e merr: modulet e përdorin për ngjyrën
+     e sfondit, rrjedha për thellësinë e kartave. Një cikël i vetëm i ushqen
+     të gjitha, sepse llogaritja është e njëjtë. */
+  const morphs = [...document.querySelectorAll('[data-lv-progress]')];
   if (morphs.length && !reduced) {
     let morphQueued = false;
 
@@ -165,11 +169,12 @@
 
   /* ── Prekja 3D e kartave ─────────────────────────────────────────────
      Vetëm me maus. Në prekje me gisht rrotullimi pengon më shumë sesa
-     ndihmon, prandaj kartat mbeten të sheshta atje. */
+     ndihmon, prandaj kartat mbeten të sheshta atje. Të njëjtat variabla
+     ushqejnë edhe hapat e rrjedhës. */
   if (finePointer) {
     const MAX_TILT = 7;
 
-    document.querySelectorAll('.lv-card').forEach(card => {
+    document.querySelectorAll('.lv-card, .lv-flow-step').forEach(card => {
       let queued = false;
 
       card.addEventListener('pointerenter', () => card.classList.add('is-tilting'));

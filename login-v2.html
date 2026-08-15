@@ -135,7 +135,7 @@
     <!-- Sfondi i këtij seksioni kalon nga e çelëta te i njëjti sfond i hero-s
          sipas sa ke skrolluar brenda tij; login-v2.js e ushqen me --lv-sect.
          Shtresat janë të njëjtat: kanavaca WebGL, sferat dhe rrjeta. -->
-    <section class="lv-section lv-morph" id="modulet">
+    <section class="lv-section lv-morph" id="modulet" data-lv-progress>
       <div class="lv-morph-canvas" aria-hidden="true">
         <canvas class="lv-webgl" data-lv-canvas></canvas>
         <span class="lv-orb lv-orb-a"></span>
@@ -239,25 +239,30 @@
     </section>
 
     <!-- ── RRJEDHA ────────────────────────────────────────────────────── -->
-    <section class="lv-section lv-section-tint" id="rrjedha">
+    <section class="lv-section lv-section-tint" id="rrjedha" data-lv-progress>
       <div class="lv-shell">
         <header class="lv-section-head lv-reveal">
           <p class="lv-kicker">Si funksionon</p>
           <h2>Tri hapa nga pyetja te receta</h2>
         </header>
 
+        <span class="lv-flow-rail" aria-hidden="true"></span>
+
         <ol class="lv-flow">
-          <li class="lv-flow-step lv-reveal">
+          <li class="lv-flow-step lv-reveal" style="--lv-depth:20px">
+            <span class="lv-flow-ghost" aria-hidden="true">01</span>
             <span class="lv-flow-num">01</span>
             <h3>Kërko</h3>
             <p>Shkruaj emrin e barit, substancën ose diagnozën. Rezultatet dalin ndërsa shkruan, pa pritje dhe pa faqe të reja.</p>
           </li>
-          <li class="lv-flow-step lv-reveal">
+          <li class="lv-flow-step lv-reveal" style="--lv-depth:44px">
+            <span class="lv-flow-ghost" aria-hidden="true">02</span>
             <span class="lv-flow-num">02</span>
             <h3>Llogarit</h3>
             <p>Vendos moshën dhe peshën. Doza pediatrike llogaritet menjëherë dhe bllokohet nëse del jashtë kufijve të aprovuar.</p>
           </li>
-          <li class="lv-flow-step lv-reveal">
+          <li class="lv-flow-step lv-reveal" style="--lv-depth:68px">
+            <span class="lv-flow-ghost" aria-hidden="true">03</span>
             <span class="lv-flow-num">03</span>
             <h3>Lësho recetën</h3>
             <p>Barnat e zgjedhura kalojnë te receta bashkë me diagnozën ICD dhe protokollin, gati për printim.</p>
