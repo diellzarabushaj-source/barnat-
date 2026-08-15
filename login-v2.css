@@ -494,26 +494,16 @@ input,summary{font:inherit}
 .lv-card:hover::after{opacity:1}
 .lv-card>*{position:relative;z-index:2}
 
+/* Ikonat e vizatuara sjellin pllakën dhe hijen e vet, prandaj kutia këtu
+   nuk ka më sfond as ngjyrë — vetëm masën dhe ngritjen 3D. */
 .lv-card-icon{
   display:grid;place-items:center;
-  width:48px;height:48px;margin-bottom:18px;
-  border-radius:15px;
+  width:60px;height:60px;margin-bottom:16px;
   transform:translateZ(28px);
   transition:transform .4s cubic-bezier(.2,.8,.2,1);
 }
 .lv-card:hover .lv-card-icon{transform:translateZ(46px) scale(1.06)}
-.lv-card-icon svg{
-  width:23px;height:23px;
-  fill:none;stroke:currentColor;stroke-width:1.6;
-  stroke-linecap:round;stroke-linejoin:round;
-}
-.lv-icon-blue{background:var(--lv-blue-wash);color:var(--lv-blue-deep)}
-.lv-icon-teal{background:#e6f4f4;color:var(--lv-teal)}
-.lv-icon-violet{background:#eeecfd;color:var(--lv-violet)}
-.lv-icon-pink{background:#fceef4;color:var(--lv-pink)}
-.lv-icon-amber{background:#fdf3e3;color:var(--lv-amber)}
-.lv-icon-green{background:#e6f5ee;color:var(--lv-green)}
-.lv-icon-red{background:#fceded;color:var(--lv-red)}
+.lv-card-icon img{width:100%;height:100%;object-fit:contain}
 
 .lv-card h3{
   display:flex;align-items:center;flex-wrap:wrap;gap:8px;
