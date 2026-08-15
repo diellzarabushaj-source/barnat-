@@ -506,7 +506,7 @@
       badge.hidden = count === 0;
     }
     const description = toolbar.querySelector('[data-registry-view-description]');
-    const countText = clean(document.getElementById('countBadge')?.textContent).match(/[\d.,]+/)?.[0];
+    const countText = clean(document.getElementById('countBadge')?.textContent).match(/\d[\d.,]*/)?.[0];
     if (description) description.textContent = currentView() === 'clinical'
       ? `${countText ? `${countText} barna · ` : ''}dozat dhe rruga e përdorimit janë të prioritizuara.`
       : `${countText ? `${countText} barna · ` : ''}kolonat e zgjedhura shfaqen në rend të qëndrueshëm.`;
