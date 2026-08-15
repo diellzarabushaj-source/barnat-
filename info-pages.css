@@ -113,7 +113,6 @@ body .info-shell > .info-container{display:flex;flex-direction:column;flex:1}
   content:"";position:absolute;z-index:-1;
   top:0;bottom:0;left:50%;
   width:100vw;transform:translateX(-50%);
-  border-radius:var(--ip-radius-lg) var(--ip-radius-lg) 0 0;
   background:var(--ip-page);
 }
 
@@ -144,7 +143,14 @@ body .info-shell > .info-container{display:flex;flex-direction:column;flex:1}
   object-fit:contain!important;
 }
 
-.info-links{display:flex;align-items:center;flex-wrap:wrap;gap:10px 26px;min-width:0}
+/* Lidhjet në qendër dhe butoni djathtas — i njëjti rregullim si te faqja
+   hyrëse, që navbar-i të lexohet njësoj në çdo faqe. */
+.info-links{
+  display:flex;align-items:center;flex-wrap:wrap;
+  gap:10px 26px;min-width:0;
+  margin-inline:auto;
+}
+.info-nav .info-links a.login-link{margin-left:26px}
 /* Njësoj si te faqja hyrëse: shkronja normale, jo të mëdha, ngjyrë trupi. */
 .info-nav .info-links a{
   position:relative;
@@ -260,9 +266,9 @@ body .info-shell > .info-container{display:flex;flex-direction:column;flex:1}
 
 /* Kontakti: etiketë e vogël sipër, vlera poshtë. */
 .contact-card{display:grid;gap:8px;align-content:start}
-.contact-card small{
-  color:var(--ip-muted);font-size:11px;font-weight:780;
-  letter-spacing:.12em;text-transform:uppercase;
+.info-body .contact-card small{
+  color:var(--ip-blue)!important;font-size:11px!important;font-weight:780!important;
+  letter-spacing:.12em!important;text-transform:uppercase!important;
 }
 .info-body .contact-card strong{
   color:var(--ip-ink)!important;
