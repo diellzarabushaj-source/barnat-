@@ -44,7 +44,7 @@
     <!-- ── HERO ───────────────────────────────────────────────────────── -->
     <section class="lv-hero">
       <div class="lv-hero-canvas" aria-hidden="true">
-        <canvas id="lvCanvas" class="lv-webgl"></canvas>
+        <canvas id="lvCanvas" class="lv-webgl" data-lv-canvas></canvas>
         <span class="lv-orb lv-orb-a"></span>
         <span class="lv-orb lv-orb-b"></span>
         <span class="lv-orb lv-orb-c"></span>
@@ -132,9 +132,18 @@
     </section>
 
     <!-- ── MODULET ────────────────────────────────────────────────────── -->
-    <!-- Sfondi i këtij seksioni kalon nga e çelëta te teal-i i thellë sipas
-         sa ke skrolluar brenda tij; login-v2.js e ushqen me --lv-sect. -->
+    <!-- Sfondi i këtij seksioni kalon nga e çelëta te i njëjti sfond i hero-s
+         sipas sa ke skrolluar brenda tij; login-v2.js e ushqen me --lv-sect.
+         Shtresat janë të njëjtat: kanavaca WebGL, sferat dhe rrjeta. -->
     <section class="lv-section lv-morph" id="modulet">
+      <div class="lv-morph-canvas" aria-hidden="true">
+        <canvas class="lv-webgl" data-lv-canvas></canvas>
+        <span class="lv-orb lv-orb-a"></span>
+        <span class="lv-orb lv-orb-b"></span>
+        <span class="lv-orb lv-orb-c"></span>
+        <span class="lv-grid-lines"></span>
+      </div>
+
       <div class="lv-shell">
         <header class="lv-section-head lv-reveal">
           <p class="lv-kicker">Modulet</p>

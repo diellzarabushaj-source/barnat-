@@ -395,8 +395,14 @@ input,summary{font:inherit}
    Shtresa është pikërisht sfondi i hero-s, që faqja të mbarojë me të njëjtën
    blu me të cilën nis — jo me një ngjyrë të dytë. */
 .lv-morph{position:relative;isolation:isolate;--lv-sect:0}
-.lv-morph::before{
-  content:"";position:absolute;z-index:-1;inset:0;
+.lv-morph > *{position:relative}
+
+/* E gjithë pirgja e hero-s — gradientët, kanavaca, sferat, rrjeta — vjen si
+   një shtresë e vetme që zbehet bashkë. Kështu s'ka nevojë të sinkronizohen
+   disa opacitete dhe seksioni s'del kurrë gjysmë i veshur. */
+.lv-morph > .lv-morph-canvas{
+  position:absolute;inset:0;z-index:-1;
+  overflow:hidden;pointer-events:none;
   background:
     radial-gradient(115% 90% at 12% 0%,#1c2c53 0%,transparent 55%),
     radial-gradient(100% 80% at 92% 8%,#173f52 0%,transparent 52%),
@@ -404,7 +410,6 @@ input,summary{font:inherit}
   opacity:var(--lv-sect);
   will-change:opacity;
 }
-.lv-morph > *{position:relative}
 
 /* Teksti ndriçohet ndërsa sfondi errësohet. Kalimi është i butë, që të mos
    ndërrojë befas kur kalohet pragu. */
