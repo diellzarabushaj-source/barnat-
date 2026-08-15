@@ -16,7 +16,8 @@ const MAX_QUERY_RESPONSES = 40;
 
 const APP_SHELL = [
   '/', '/index.html', '/klasifikimi.html', '/icd.html', '/analizat.html',
-  '/dozologjia.html', '/urgjencat.html', '/protokollet.html', '/medical-hub.html', '/recetat.html', '/login.html',
+  '/dozologjia.html', '/urgjencat.html', '/protokollet.html', '/medical-hub.html', '/recetat.html',
+  '/login-v2.html', '/login-v2.css', '/login-v2.js', '/login-v2-canvas.js', '/login.html',
   '/manifest.webmanifest', '/medindex-icon.svg',
   '/styles.css', '/ui-controls.css', '/loader.css', '/app-polish.css',
   '/performance.css', '/clean-medindex-ui.css', '/tailadmin-medindex.css',
@@ -236,7 +237,10 @@ async function navigationResponse(event) {
     const cache = await caches.open(PAGE_CACHE);
     const cached = await cache.match(key) || await caches.match(key, { ignoreSearch:true });
     if (cached) return cloneWithHeader(cached, 'X-MedIndex-Cache', 'page-hit');
-    return await caches.match('/index.html') || await caches.match('/login.html') || Response.error();
+    return await caches.match('/index.html')
+      || await caches.match('/login-v2.html')
+      || await caches.match('/login.html')
+      || Response.error();
   }
 }
 

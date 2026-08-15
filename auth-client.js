@@ -2,6 +2,9 @@
   'use strict';
 
   const RETURN_KEY = 'medindex_return_after_login';
+  /* Faqja hyrëse. Duhet të përputhet me LOGIN_PAGE te middleware.ts —
+     ndryshimi i njërës pa tjetrën i çon vizitorët te dy dizajne të ndryshme. */
+  const LOGIN_PAGE = '/login-v2.html';
   const OFFLINE_LEASE_KEY = 'medindex_offline_lease_v2';
   const LEGACY_OFFLINE_LEASE_KEYS = ['medindex_offline_lease_v1'];
   const OFFLINE_RUNTIME_SRC = '/offline-runtime-performance.js?v=low-bandwidth-v3';
@@ -158,7 +161,7 @@
     settleAuth(false, { reason });
     const returnPath = safeReturnPath();
     try { sessionStorage.setItem(RETURN_KEY, returnPath); } catch {}
-    const loginUrl = new URL('/login.html', location.origin);
+    const loginUrl = new URL(LOGIN_PAGE, location.origin);
     loginUrl.searchParams.set('return', returnPath);
     location.replace(loginUrl.pathname + loginUrl.search);
   }
@@ -217,7 +220,7 @@
     });
     try { await authRequest({ method:'DELETE' }); } catch {}
     await clearPrivateBrowserData();
-    location.replace('/login.html');
+    location.replace(LOGIN_PAGE);
   }
 
   function buttonMarkup(className) {
