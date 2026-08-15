@@ -42,6 +42,7 @@ const PUBLIC_PATHS = new Set([
   '/brand/medindex-full-on-light.png',
   '/brand/medindex-horizontal-on-light.webp',
   '/brand/medindex-horizontal-on-dark.webp',
+  '/images/marketing/mjeku-ne-pune.webp',
   '/favicon.ico',
   '/robots.txt',
 ]);
