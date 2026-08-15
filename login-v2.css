@@ -582,21 +582,25 @@ input,summary{font:inherit}
 
 .lv-ceo-aside{display:grid;justify-items:center;gap:16px;flex:0 0 auto}
 
+/* Korniza mban të njëjtën masë 112px, po nuk është më rreth: rrethi i priste
+   qoshet e fotos, dhe qoshet e një portreti janë flokët e supet. Në sipërfaqe
+   të barabartë, rrethi tregon vetëm 78.5% të imazhit — pjesa tjetër fshihej
+   pa qenë nevoja. */
 .lv-ceo-portrait{position:relative;width:112px;height:112px;display:grid;place-items:center}
 .lv-ceo-portrait::before{
-  content:"";position:absolute;inset:-9px;border-radius:50%;
+  content:"";position:absolute;inset:-9px;border-radius:22px;
   background:conic-gradient(from 200deg,var(--lv-blue),var(--lv-teal) 40%,#a9c6ff 70%,var(--lv-blue));
   opacity:.5;filter:blur(7px);
 }
 .lv-ceo-portrait img{
   position:relative;
   width:112px;height:112px;
-  border-radius:50%;
+  border-radius:16px;
   background:#fff;object-fit:cover;
   box-shadow:0 0 0 4px #fff,0 14px 32px rgba(13,22,44,.2);
 }
 .lv-ceo-badge{
-  position:absolute;right:-2px;bottom:-2px;z-index:2;
+  position:absolute;right:-10px;bottom:-10px;z-index:2;
   display:grid;place-items:center;
   width:40px;height:40px;
   border-radius:50%;
