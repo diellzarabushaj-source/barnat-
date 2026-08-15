@@ -338,11 +338,9 @@
     <!-- ── THIRRJA E FUNDIT ───────────────────────────────────────────── -->
     <section class="lv-cta">
       <div class="lv-shell lv-cta-inner lv-reveal">
-        <div>
-          <img class="lv-logo-horizontal lv-logo-on-dark" src="/brand/medindex-horizontal-on-dark.webp" alt="MedIndex" width="320" height="86" loading="lazy" decoding="async">
-          <h2>Gati për ta hapur hapësirën klinike?</h2>
-          <p>Identiteti verifikohet në server para se të hapet çdo modul.</p>
-        </div>
+        <img class="lv-logo-horizontal lv-logo-on-dark" src="/brand/medindex-horizontal-on-dark.webp" alt="MedIndex — by Dr. Diellza Rabushaj" width="320" height="86" loading="lazy" decoding="async">
+        <h2>Gati për ta hapur hapësirën klinike?</h2>
+        <p>Identiteti verifikohet në server para se të hapet çdo modul.</p>
         <button class="lv-btn lv-btn-light lv-btn-lg" type="button" popovertarget="loginPanel">
           Hyr në MedIndex
           <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12h13M13 6l6 6-6 6"/></svg>
@@ -353,19 +351,20 @@
 
   <footer class="lv-footer">
     <div class="lv-shell lv-footer-inner">
-      <div class="lv-footer-brand">
-        <span class="lv-footer-mark"><img src="/brand/medindex-mark-on-light.webp" alt="" width="223" height="219" loading="lazy" decoding="async"></span>
-        <span class="lv-brand-copy">
-          <strong>MedIndex</strong>
-          <small>Dr. Diellza Rabushaj</small>
-        </span>
+      <div class="lv-footer-top">
+        <a class="lv-footer-brand" href="/login-v2.html" aria-label="MedIndex — faqja kryesore">
+          <img class="lv-logo-horizontal" src="/brand/medindex-horizontal-on-light.webp" alt="MedIndex — by Dr. Diellza Rabushaj" width="320" height="76" loading="lazy" decoding="async">
+        </a>
+        <nav class="lv-footer-links" aria-label="Faqet publike">
+          <a href="/rreth-nesh.html">Rreth nesh</a>
+          <a href="/kontakt.html">Kontakt</a>
+          <a href="/blog.html">Blog</a>
+        </nav>
       </div>
-      <nav class="lv-footer-links" aria-label="Faqet publike">
-        <a href="/rreth-nesh.html">Rreth nesh</a>
-        <a href="/kontakt.html">Kontakt</a>
-        <a href="/blog.html">Blog</a>
-      </nav>
-      <p class="lv-footer-note">© 2026 MedIndex · Hapësirë private klinike</p>
+      <div class="lv-footer-base">
+        <p class="lv-footer-note">© 2026 MedIndex · Hapësirë private klinike</p>
+        <p class="lv-footer-note">Hyrja verifikohet në server · Sesion 8 orë</p>
+      </div>
     </div>
   </footer>
 
@@ -374,9 +373,8 @@
     <div class="login-stage">
       <section class="login-card" aria-labelledby="loginTitle">
         <button class="login-modal-close" type="button" popovertarget="loginPanel" popovertargetaction="hide" aria-label="Mbyll hyrjen">×</button>
-        <div class="login-card-brand" aria-hidden="true">
-          <img src="/brand/medindex-mark-on-light.webp" alt="" width="40" height="40" decoding="async">
-          <span><strong>MedIndex</strong><small>Clinical Workspace</small></span>
+        <div class="login-card-brand">
+          <img class="lv-logo-horizontal" src="/brand/medindex-horizontal-on-light.webp" alt="MedIndex — by Dr. Diellza Rabushaj" width="320" height="76" decoding="async">
         </div>
 
         <div class="status">Mjedis privat dhe i mbrojtur</div>
@@ -389,7 +387,9 @@
         <noscript><p class="noscript" role="alert">JavaScript duhet të jetë aktiv për hyrjen e sigurt në MedIndex.</p></noscript>
 
         <section class="google-login-panel" id="googleLoginPanel" aria-labelledby="googleLoginHeading">
-          <h3 class="google-login-heading" id="googleLoginHeading">Vazhdo me Google</h3>
+          <!-- Titulli mbetet për `aria-labelledby`, po fshihet nga pamja: butoni
+               poshtë tij i thotë të njëjtat fjalë, dhe dy herë e njëjta gjë. -->
+          <h3 class="google-login-heading lv-sr-only" id="googleLoginHeading">Vazhdo me Google</h3>
           <div class="google-login-button" id="googleLoginButton" aria-label="Butoni për hyrje me Google"></div>
           <p class="google-login-status" id="googleLoginStatus" role="status" aria-live="polite" aria-atomic="true">Po përgatitet hyrja e sigurt…</p>
         </section>
