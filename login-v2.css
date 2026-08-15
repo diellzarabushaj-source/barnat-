@@ -389,13 +389,18 @@ input,summary{font:inherit}
 
 /* ── KARTAT E MODULEVE ──────────────────────────────────────────────────── */
 /* ── Kalimi i ngjyrës gjatë skrollimit ─────────────────────────────────
-   --lv-sect shkon 0 → 1 ndërsa seksioni kalon nëpër ekran. Teal-i vjen si
+   --lv-sect shkon 0 → 1 ndërsa seksioni kalon nëpër ekran. Blu-ja vjen si
    shtresë mbi të bardhën në vend që të përzihen ngjyrat, sepse kështu punon
-   edhe pa `color-mix` dhe nuk ka nevojë për rillogaritje ngjyrash. */
+   edhe pa `color-mix` dhe nuk ka nevojë për rillogaritje ngjyrash.
+   Shtresa është pikërisht sfondi i hero-s, që faqja të mbarojë me të njëjtën
+   blu me të cilën nis — jo me një ngjyrë të dytë. */
 .lv-morph{position:relative;isolation:isolate;--lv-sect:0}
 .lv-morph::before{
   content:"";position:absolute;z-index:-1;inset:0;
-  background:linear-gradient(170deg,#0f5f63 0%,var(--lv-teal-deep) 55%,#08373a 100%);
+  background:
+    radial-gradient(115% 90% at 12% 0%,#1c2c53 0%,transparent 55%),
+    radial-gradient(100% 80% at 92% 8%,#173f52 0%,transparent 52%),
+    linear-gradient(168deg,#0d1730 0%,#0b1220 58%,#080d19 100%);
   opacity:var(--lv-sect);
   will-change:opacity;
 }
@@ -409,13 +414,13 @@ input,summary{font:inherit}
 .lv-morph .lv-showcase-caption{transition:color .5s ease}
 .lv-morph.is-deep .lv-section-head h2{color:#fff}
 .lv-morph.is-deep .lv-section-lede{color:rgba(255,255,255,.72)}
-.lv-morph.is-deep .lv-kicker{color:#8fe3e5}
+.lv-morph.is-deep .lv-kicker{color:#8fb6f5}
 .lv-morph.is-deep .lv-showcase-caption{color:rgba(255,255,255,.6)}
 
-/* Kartat mbeten të bardha por marrin hije më të thellë mbi teal. */
+/* Kartat mbeten të bardha por marrin hije më të thellë mbi blu. */
 .lv-morph .lv-card{transition:box-shadow .5s ease,border-color .3s ease,transform .4s cubic-bezier(.2,.8,.2,1)}
-.lv-morph.is-deep .lv-card{box-shadow:0 20px 50px rgba(3,32,34,.32)}
-.lv-morph.is-deep .lv-showcase-circle{box-shadow:0 30px 80px rgba(3,32,34,.45),inset 0 2px 0 rgba(255,255,255,.6)}
+.lv-morph.is-deep .lv-card{box-shadow:0 20px 50px rgba(5,11,26,.38)}
+.lv-morph.is-deep .lv-showcase-circle{box-shadow:0 30px 80px rgba(5,11,26,.5),inset 0 2px 0 rgba(255,255,255,.6)}
 
 /* ── Vitrina: rrethi i ngjitur majtas, lista rrëshqet djathtas ─────────── */
 .lv-showcase{
