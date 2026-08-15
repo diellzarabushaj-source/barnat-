@@ -437,15 +437,50 @@ input,summary{font:inherit}
   position:sticky;top:120px;
   display:grid;justify-items:center;gap:20px;
 }
-/* Fotoja pa kënde të rrumbullakosura, si pjesa tjetër e faqes. */
+/* Fotoja pa kënde të rrumbullakosura, si pjesa tjetër e faqes. Mban tërë
+   gjerësinë e kolonës; raporti 4:5 është ai i vetë fotografisë, prandaj
+   `cover` nuk pret asgjë përveç asaj që i lë vend parallax-it. */
 .lv-showcase-photo{
   position:relative;margin:0;overflow:hidden;
-  width:min(360px,100%);
+  width:100%;aspect-ratio:4/5;
   background:var(--lv-tint);
   box-shadow:0 30px 80px rgba(9,16,34,.22);
   transition:box-shadow .5s ease;
 }
-.lv-showcase-photo img{display:block;width:100%;height:auto}
+
+/* Zbulimi: korniza hapet nga poshtë lart, dhe fotoja brenda saj shtendoset.
+   Opaciteti dhe zhvendosja që vijnë me `.lv-reveal` hiqen — dy efekte hyrëse
+   mbi njëri-tjetrin e turbullojnë pamjen; këtu duhet vetëm njëri.
+
+   Prerja qëndron te `.lv-photo-frame`, kurrë te vetë figura: figurën e
+   vëzhgon IntersectionObserver-i, dhe një clip-path mbi elementin e vëzhguar
+   e bën sipërfaqen e prerjes zero — vëzhguesi s'do ta shihte kurrë dhe
+   fotoja do të mbetej përgjithmonë e mbyllur. */
+.lv-showcase-photo.lv-reveal{opacity:1;translate:none}
+.lv-photo-frame{
+  position:absolute;inset:0;display:block;overflow:hidden;
+  clip-path:inset(0 0 100% 0);
+  transition:clip-path .95s cubic-bezier(.16,.84,.28,1);
+}
+.lv-showcase-photo.is-visible .lv-photo-frame{clip-path:inset(0 0 0 0)}
+
+/* `scale` dhe `transform` ndahen qëllimisht: e para i takon zbulimit, e
+   dyta parallax-it brenda kornizës. Po t'i vendosje të dyja te `transform`,
+   njëra do ta fshinte tjetrën.
+
+   Lëvizja matet në përqindje, jo në piksela: zmadhimi 1.14 lë 7% hapësirë
+   mbi e nën, dhe rrezja ±2.5% qëndron brenda saj në çdo gjerësi ekrani.
+   Me piksela të fiksuar, korniza e ngushtë e telefonit do ta zbulonte
+   skajin e fotos. Vlera e paracaktuar .5 do të thotë "në qendër", pra pa
+   JavaScript fotoja rri ku duhet. */
+.lv-photo-frame img{
+  display:block;width:100%;height:100%;object-fit:cover;
+  scale:1.26;
+  transform:translate3d(0,calc((var(--lv-sect,.5) - .5) * -5%),0);
+  transition:scale 1.2s cubic-bezier(.16,.84,.28,1);
+  will-change:transform;
+}
+.lv-showcase-photo.is-visible .lv-photo-frame img{scale:1.14}
 
 /* Sa më e errët sfondi, aq më shumë fotoja shkrihet me të nga poshtë:
    e njëjta --lv-sect që e ushqen shtresën e sfondit, e trashëguar këtu. */
@@ -882,7 +917,7 @@ input,summary{font:inherit}
   /* Nën këtë gjerësi rrethi i ngjitur ha shumë hapësirë; kalon sipër listës. */
   .lv-showcase{grid-template-columns:minmax(0,1fr)}
   .lv-showcase-visual{position:static;margin-bottom:8px}
-  .lv-showcase-photo{width:min(320px,72%)}
+  .lv-showcase-photo{width:min(520px,100%)}
 }
 
 @media(max-width:900px){
@@ -928,6 +963,8 @@ input,summary{font:inherit}
   .lv-orb,.lv-grid-lines,.lv-hero-mark,.lv-hero-inner{transform:none!important}
   .lv-card{transform:none!important}
   .lv-card:hover .lv-card-icon{transform:none}
+  .lv-photo-frame{clip-path:none;transition:none}
+  .lv-photo-frame img{scale:1;transform:none;transition:none}
   .lv-progress{display:none!important}
   .lv-hero-inner,.lv-card{animation:none!important;opacity:1!important;scale:none!important;filter:none!important}
 }
