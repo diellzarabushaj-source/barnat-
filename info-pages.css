@@ -72,23 +72,30 @@ a{color:inherit;text-decoration:none;-webkit-tap-highlight-color:transparent}
    fundit dhe i detyron këto me `!important` si kartë e bardhë. Këto klasa
    `.info-*` ekzistojnë vetëm te tri faqet publike, prandaj mbishkrimi këtu
    nuk prek asnjë faqe tjetër. */
-body:has(.info-shell){background:#080d19!important}
+/* E bardhë, jo e errët: çdo hapësirë nën përmbajtjen e shkurtër duhet të
+   vazhdojë fletën, jo të nxjerrë një brez të zi. */
+html body:has(.info-shell){background:var(--ip-page)!important}
 
+/* Sistemi i përbashkët e bën `.info-shell` kartë me margjinë dhe qoshe të
+   rrumbullakosura, çka linte një kornizë të errët rreth faqes në desktop
+   dhe e priste fletën e bardhë poshtë. Këtu shtrihet skaj më skaj. */
 body .info-shell{
-  display:block;
-  width:min(1440px,calc(100% - 24px))!important;
-  min-height:calc(100dvh - 24px)!important;
-  margin:12px auto!important;
-  overflow:hidden;
-  border:1px solid rgba(255,255,255,.08)!important;
-  border-radius:24px!important;
+  display:flex;flex-direction:column;
+  width:100%!important;max-width:none!important;
+  min-height:100dvh!important;
+  margin:0!important;
+  border:0!important;border-radius:0!important;
   background:
     radial-gradient(115% 90% at 12% 0%,#1c2c53 0%,transparent 55%),
     radial-gradient(100% 80% at 92% 8%,#173f52 0%,transparent 52%),
     linear-gradient(168deg,#0d1730 0%,#0b1220 58%,#080d19 100%)!important;
   color:#fff;
-  box-shadow:0 30px 80px rgba(4,9,20,.45)!important;
+  box-shadow:none!important;
 }
+/* Kontejneri i fundit merr hapësirën e mbetur, që fleta e bardhë të shkojë
+   deri poshtë edhe kur përmbajtja është e shkurtër. */
+body .info-shell > .info-container{display:flex;flex-direction:column;flex:1}
+.info-body{flex:1}
 .info-container{width:var(--ip-shell);margin-inline:auto}
 
 /* Fleta e bardhë: del përtej kontejnerit deri në skajet e ekranit dhe
@@ -100,9 +107,11 @@ body .info-shell{
   color:var(--ip-ink);
   padding-bottom:clamp(64px,8vw,110px);
 }
+/* `bottom:-100vh` e zgjaste fletën poshtë faqes; tash ndalon te fundi i
+   vetë bllokut, i cili shtrihet vetë deri në fund përmes `flex:1`. */
 .info-body::before{
   content:"";position:absolute;z-index:-1;
-  top:0;bottom:-100vh;left:50%;
+  top:0;bottom:0;left:50%;
   width:100vw;transform:translateX(-50%);
   border-radius:var(--ip-radius-lg) var(--ip-radius-lg) 0 0;
   background:var(--ip-page);
