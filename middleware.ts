@@ -42,7 +42,7 @@ const PUBLIC_PATHS = new Set([
   '/brand/medindex-full-on-light.png',
   '/brand/medindex-horizontal-on-light.webp',
   '/brand/medindex-horizontal-on-dark.webp',
-  '/images/marketing/mjeku-ne-pune.webp',
+  '/images/marketing/mjekja-ne-pune.webp',
   '/images/icons/regjistri-barnave.webp',
   '/images/icons/klasifikimi-atc.webp',
   '/images/icons/diagnozat-icd10.webp',
