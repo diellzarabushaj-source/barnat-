@@ -1,0 +1,123 @@
+/* MedIndex Journal — final refinement layer */
+
+/* Calm the composition: fewer competing surfaces, stronger hierarchy. */
+.blog-body{padding-top:clamp(34px,4vw,58px)!important}
+.blog-library-bar{margin-bottom:18px!important}
+.blog-discovery{margin-bottom:18px!important}
+.blog-journal-pulse{margin-bottom:30px!important}
+
+/* Hero refinements */
+.blog-hero{min-height:min(760px,78vh)}
+.blog-hero__visual{max-width:520px;justify-self:end;width:100%}
+.blog-hero__image-frame{transform:none!important;border-radius:28px!important}
+.blog-hero__float{right:-10px!important;top:18px!important;transform:rotate(-2deg)!important}
+.blog-hero__author-card{left:-22px!important;bottom:28px!important;transform:none!important;border-radius:16px!important}
+.blog-hero__glass{left:20px!important;right:20px!important;bottom:20px!important}
+.blog-shell .info-main .info-title{max-width:14.5ch!important;line-height:.98!important;letter-spacing:-.05em!important}
+.blog-shell .info-main .info-lead{font-size:clamp(16px,1.4vw,19px)!important;line-height:1.66!important}
+
+/* Stronger editorial featured story without over-sized typography. */
+.blog-card--featured{min-height:460px!important;grid-template-columns:minmax(0,1.08fr) minmax(0,.92fr)!important}
+.blog-card--featured .blog-card__media{min-height:460px!important}
+.blog-card--featured .blog-card__content{padding:clamp(32px,4vw,52px)!important}
+.blog-card--featured h2{max-width:15.5ch!important;font-size:clamp(32px,3.25vw,46px)!important;line-height:1.045!important;letter-spacing:-.047em!important}
+.blog-card--featured .blog-card__excerpt{font-size:15px!important;line-height:1.72!important}
+.blog-card__media-note{bottom:20px!important}
+.blog-card__feature-label{top:18px!important;left:18px!important}
+
+/* Crisp interaction states. */
+.blog-card:focus-within{outline:3px solid rgba(79,124,243,.14);outline-offset:3px}
+.blog-card__link:focus-visible,.blog-filter:focus-visible,.blog-search input:focus-visible,.info-links a:focus-visible{
+  outline:2px solid #5e89f6;outline-offset:3px
+}
+.blog-card__media::before{content:"";position:absolute;z-index:3;inset:0;box-shadow:inset 0 0 0 1px rgba(255,255,255,.08);pointer-events:none}
+
+/* With only a few stories, search is noise. Keep only quick topic filters and metrics. */
+.blog-compact-library .blog-discovery{
+  grid-template-columns:1fr!important;padding:10px 12px!important;background:linear-gradient(180deg,#fff,#fbfcff)!important
+}
+.blog-compact-library .blog-search{display:none!important}
+.blog-compact-library .blog-filter-list{justify-content:flex-start!important}
+.blog-compact-library .blog-journal-pulse{
+  grid-template-columns:minmax(0,1.45fr) repeat(3,minmax(110px,.55fr))!important
+}
+.blog-compact-library .blog-journal-pulse>div{padding:16px 18px!important}
+.blog-compact-library .blog-journal-pulse__intro strong{max-width:40ch}
+
+/* Give a two-story edition a deliberate magazine rhythm instead of two similar cards. */
+.blog-has-two-stories .blog-grid{gap:28px!important}
+.blog-has-two-stories .blog-grid .blog-card:nth-child(2):not(.blog-card--featured){
+  border-radius:28px!important;box-shadow:0 18px 52px rgba(8,17,32,.075)!important
+}
+.blog-has-two-stories .blog-grid .blog-card:nth-child(2):not(.blog-card--featured) .blog-card__content{
+  padding:clamp(30px,4vw,46px)!important
+}
+.blog-has-two-stories .blog-grid .blog-card:nth-child(2):not(.blog-card--featured) h2{
+  max-width:20ch!important;font-size:clamp(27px,2.8vw,38px)!important
+}
+
+/* Article detail: do not repeat a full marketing hero above the article. */
+.blog-detail-mode .blog-hero{
+  min-height:0!important;grid-template-columns:1fr!important;gap:0!important;
+  padding-top:clamp(34px,4vw,54px)!important;padding-bottom:clamp(66px,6vw,88px)!important
+}
+.blog-detail-mode .blog-hero__visual{display:none!important}
+.blog-detail-mode .blog-hero__copy{max-width:760px}
+.blog-detail-mode .blog-shell .info-main .info-title{max-width:none!important;font-size:clamp(34px,4vw,50px)!important;line-height:1!important}
+.blog-detail-mode .blog-shell .info-main .info-lead{max-width:58ch!important;font-size:16px!important}
+.blog-detail-mode .blog-article{margin-top:clamp(-52px,-4vw,-38px)!important}
+.blog-detail-mode .blog-library-bar,.blog-detail-mode .blog-discovery,.blog-detail-mode .blog-journal-pulse{display:none!important}
+
+/* Article typography and hero image become the visual focus. */
+.blog-article__title{max-width:18ch!important;text-wrap:balance}
+.blog-article__lede{max-width:64ch!important}
+.blog-article__hero-image{border-radius:24px!important;overflow:hidden;background:#eef3f9}
+.blog-article__hero-image img{display:block;width:100%;max-height:680px;object-fit:cover}
+.blog-article__body{max-width:780px;margin-left:auto;margin-right:auto}
+.blog-author-box{max-width:780px;margin-left:auto;margin-right:auto}
+.blog-article__tags{max-width:780px;margin-left:auto;margin-right:auto}
+
+/* Subtle finish to the page. */
+.blog-body::after{
+  content:"MedIndex Journal · Clinical knowledge for practice";display:block;margin:64px auto 6px;padding-top:24px;
+  border-top:1px solid #e7ecf4;color:#9aa4b5;font-size:10px;font-weight:760;letter-spacing:.12em;text-align:center;text-transform:uppercase
+}
+
+@media (max-width:1080px){
+  .blog-hero{min-height:0}
+  .blog-hero__visual{max-width:470px}
+  .blog-hero__author-card{left:-6px!important;bottom:18px!important}
+  .blog-compact-library .blog-journal-pulse{grid-template-columns:1.2fr repeat(3,minmax(90px,.55fr))!important}
+}
+
+@media (max-width:900px){
+  .blog-card--featured{grid-template-columns:1fr!important;min-height:0!important}
+  .blog-card--featured .blog-card__media{min-height:360px!important;aspect-ratio:16/10!important}
+  .blog-card--featured h2{max-width:18ch!important}
+  .blog-compact-library .blog-journal-pulse{grid-template-columns:1fr 1fr!important}
+  .blog-compact-library .blog-journal-pulse__intro{grid-column:1/-1}
+}
+
+@media (max-width:760px){
+  .blog-hero__visual{max-width:none}
+  .blog-hero__author-card{left:12px!important;right:12px!important;bottom:12px!important}
+  .blog-hero__float{right:10px!important;top:10px!important;transform:none!important}
+  .blog-hero__glass{left:14px!important;right:14px!important;bottom:76px!important}
+  .blog-card--featured .blog-card__media{min-height:300px!important}
+  .blog-card--featured .blog-card__content{padding:28px 22px!important}
+  .blog-card--featured h2{font-size:clamp(30px,9vw,40px)!important}
+  .blog-detail-mode .blog-hero{padding-bottom:64px!important}
+  .blog-detail-mode .blog-article{border-radius:22px!important;padding:26px 20px!important}
+  .blog-body::after{margin-top:44px}
+}
+
+@media (max-width:520px){
+  .blog-compact-library .blog-journal-pulse{grid-template-columns:1fr!important}
+  .blog-compact-library .blog-journal-pulse__intro{grid-column:auto}
+  .blog-hero__float{display:none!important}
+  .blog-card--featured .blog-card__media{min-height:260px!important}
+}
+
+@media (prefers-reduced-motion:reduce){
+  .blog-card,.blog-card__media img,.blog-card__link{transition:none!important}
+}
