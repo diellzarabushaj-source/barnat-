@@ -100,23 +100,16 @@
     const name = clean(row?.tradeName);
     const atc = clean(row?.atc).toUpperCase();
     const values = new Set();
-    [
-      desktopDrugKey(row),
-      nr,
-      name,
-      nr && name ? `${nr}|${name}` : '',
-      name && atc ? `${name}|${atc}` : '',
-    ].forEach(value => {
-      const normalized = clean(value);
-      if (normalized) values.add(normalized);
-    });
+    [desktopDrugKey(row), nr, name, nr && name ? `${nr}|${name}` : '', name && atc ? `${name}|${atc}` : '']
+      .forEach(value => {
+        const normalized = clean(value);
+        if (normalized) values.add(normalized);
+      });
     return values;
   }
 
   function isFavorite(row, favorites = loadFavorites()) {
-    for (const candidate of favoriteCandidates(row)) {
-      if (favorites.has(candidate)) return true;
-    }
+    for (const candidate of favoriteCandidates(row)) if (favorites.has(candidate)) return true;
     return false;
   }
 
@@ -144,8 +137,7 @@
     if (!item) return;
     const meta = favoriteMeta();
     meta[itemKey(item)] = item;
-    const entries = Object.entries(meta).slice(-MAX_FAVORITE_META);
-    writeJson(FAVORITE_META_KEY, Object.fromEntries(entries));
+    writeJson(FAVORITE_META_KEY, Object.fromEntries(Object.entries(meta).slice(-MAX_FAVORITE_META)));
   }
 
   function forgetFavorite(row) {
@@ -191,7 +183,6 @@
       controller.setView(next);
       return true;
     }
-
     try {
       const hash = next === 'favorites' ? '#favoritet' : '#shenimet';
       history.replaceState(null, '', `${location.pathname}${location.search}${hash}`);
@@ -204,7 +195,6 @@
     mode = next;
     root.dataset.registryMobilePersonalizationMode = mode;
     syncControls();
-
     if (mode === 'favorites' || mode === 'notes') {
       handoffPersonalView(mode);
       return;
@@ -234,7 +224,6 @@
     if (!item) return;
     const primary = desktopDrugKey(item) || clean(item.registryNumber) || `${item.tradeName}|${item.atc}`;
     if (!primary || favoriteInFlight.has(primary)) return;
-
     favoriteInFlight.add(primary);
     if (button) {
       button.disabled = true;
@@ -278,7 +267,8 @@
     button.className = className;
     button.dataset[dataName] = 'true';
     button.innerHTML = svg;
-    card.appendChild(button);
+    const host = card.querySelector('.mobile-lite-actions') || card;
+    host.appendChild(button);
     return button;
   }
 
@@ -287,6 +277,25 @@
     document.querySelectorAll('#tbody .mobile-lite-card').forEach(card => {
       const row = rowForCard(card);
       if (!row) return;
+      let summary = card.querySelector('.mobile-lite-open');
+      if (summary?.tagName === 'BUTTON') {
+        const passiveSummary = document.createElement('div');
+        passiveSummary.className = summary.className;
+        passiveSummary.innerHTML = summary.innerHTML;
+        passiveSummary.setAttribute('aria-label', clean(row.tradeName) || 'Përmbledhja e barit');
+        summary.replaceWith(passiveSummary);
+        summary = passiveSummary;
+      }
+
+      let actions = card.querySelector('.mobile-lite-actions');
+      if (!actions) {
+        actions = document.createElement('div');
+        actions.className = 'mobile-lite-actions';
+        actions.dataset.mobileLiteActions = 'true';
+        const more = card.querySelector('.mobile-lite-more');
+        if (more) actions.appendChild(more);
+        card.appendChild(actions);
+      }
 
       const favorite = ensureCardButton(
         card,
@@ -295,6 +304,7 @@
         'miMobileFavorite',
         '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="m12 3 2.8 5.7 6.2.9-4.5 4.4 1.1 6.2-5.6-2.9-5.6 2.9 1.1-6.2L3 9.6l6.2-.9L12 3Z"/></svg>',
       );
+      if (favorite.parentElement !== actions) actions.appendChild(favorite);
       const favoriteKey = desktopDrugKey(row) || clean(row.registryNumber) || `${row.tradeName}|${row.atc}`;
       const favoriteActive = isFavorite(row, favorites);
       const favoriteBusy = favoriteInFlight.has(favoriteKey);
@@ -312,6 +322,7 @@
         'miMobileNote',
         '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 20h4l10.7-10.7a2.1 2.1 0 0 0-3-3L5 17v3Z"/><path d="m14.5 7.5 3 3"/></svg>',
       );
+      if (note.parentElement !== actions) actions.appendChild(note);
       const noteActive = hasNote(row);
       note.classList.toggle('has-note', noteActive);
       note.setAttribute('aria-pressed', String(noteActive));
@@ -412,9 +423,7 @@
   function onServerRows() {
     const rows = api()?.getRows?.();
     currentRows = Array.isArray(rows) ? rows.map(snapshot).filter(Boolean) : [];
-    currentRows.forEach(row => {
-      if (isFavorite(row)) rememberFavorite(row);
-    });
+    currentRows.forEach(row => { if (isFavorite(row)) rememberFavorite(row); });
     ensureBar();
     if (mode === 'all') decorateRows();
     else renderMode();
