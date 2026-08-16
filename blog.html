@@ -5,11 +5,12 @@
   <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
   <meta name="robots" content="noindex,nofollow,noarchive">
   <meta name="theme-color" content="#f1f5f9">
-  <meta name="description" content="Blogu i MedIndex për qartësi klinike, farmakologji dhe praktikë profesionale.">
+  <meta name="description" content="Blogu i MedIndex për praktikë klinike, Clinical Decision Support, teknologji shëndetësore dhe përdorim të sigurt të informacionit.">
   <title>Blog | MedIndex</title>
   <link rel="preload" href="brand/medindex-mark-on-light.webp" as="image" type="image/webp">
   <link rel="stylesheet" href="info-pages.css?v=20260814-1">
   <link rel="stylesheet" href="medindex-tailwind-ui.css?v=20260805-1" data-medindex-tailwind-ui>
+  <link rel="stylesheet" href="blog.css?v=20260816-1">
 </head>
 <body>
   <main class="info-shell">
@@ -25,7 +26,6 @@
           <a href="rreth-nesh.html">Rreth nesh</a>
           <a href="kontakt.html">Kontakt</a>
           <a href="blog.html" aria-current="page">Blog</a>
-
           <a class="login-link" href="login-v2.html">Hyr në MedIndex</a>
         </div>
       </nav>
@@ -33,16 +33,24 @@
       <section class="info-main" aria-labelledby="pageTitle">
         <p class="info-kicker">Blog</p>
         <h1 class="info-title" id="pageTitle">Shënime për praktikë klinike më të qartë.</h1>
-        <p class="info-lead">Këtu do të publikohen materiale të shkurtra profesionale rreth barnave, klasifikimeve, dozologjisë, protokolleve dhe përdorimit të sigurt të informacionit klinik.</p>
-
+        <p class="info-lead">Materiale profesionale rreth vendimmarrjes klinike, barnave, teknologjisë shëndetësore dhe përdorimit të sigurt të informacionit në praktikë.</p>
       </section>
 
-      <section class="info-body">
-        <div class="blog-empty">
-          <div><strong>Artikujt e parë po përgatiten.</strong><p>Blogu do të hapet me përmbajtje të kuruar nga Dr. Diellza Rabushaj.</p></div>
+      <section class="info-body" aria-label="Artikujt e MedIndex">
+        <div id="blogStatus" class="blog-state" role="status" aria-live="polite">
+          <strong>Duke ngarkuar artikujt…</strong>
+          <p>Përmbajtja po merret nga MedIndex Clinical Knowledge.</p>
         </div>
+
+        <div id="blogListView">
+          <div id="blogGrid" class="blog-grid"></div>
+        </div>
+
+        <article id="blogArticleView" class="blog-article" hidden></article>
       </section>
     </div>
   </main>
+
+  <script src="blog.js?v=20260816-1" defer></script>
 </body>
 </html>
