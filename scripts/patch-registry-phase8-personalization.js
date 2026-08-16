@@ -71,17 +71,17 @@ function patchIndex() {
     source = source.replace(scriptMatch[0], `${scriptMatch[0]}\n${scriptTag}`);
   }
 
-  /* Personalization v3 changes behavior and CSS, while UX Phase 1 now reuses
-     the canonical toolbar control instead of creating a second Favorites button. */
-  source = source.replace(/registry-user-personalization\.css\?v=[^&"]+/g, 'registry-user-personalization.css?v=20260816-5');
-  source = source.replace(/registry-user-personalization\.js\?v=[^&"]+/g, 'registry-user-personalization.js?v=20260816-5');
+  /* v3.2 adds mutation locks and explicit pending-persistence state. Keep both
+     assets cache-busted so stale clients cannot keep the previous behavior. */
+  source = source.replace(/registry-user-personalization\.css\?v=[^&"]+/g, 'registry-user-personalization.css?v=20260816-6');
+  source = source.replace(/registry-user-personalization\.js\?v=[^&"]+/g, 'registry-user-personalization.js?v=20260816-6');
   source = source.replace(/registry-ux-phase1\.js\?v=[^&"]+/g, 'registry-ux-phase1.js?v=20260816-2');
 
   if (source.indexOf('registry-mobile-phase8.js') > source.indexOf('registry-runtime-loader.js')) {
     throw new Error('Phase 8 must initialize before the full registry loader.');
   }
-  if (!source.includes('registry-user-personalization.css?v=20260816-5')) throw new Error('Personalization CSS version was not published.');
-  if (!source.includes('registry-user-personalization.js?v=20260816-5')) throw new Error('Personalization JS version was not published.');
+  if (!source.includes('registry-user-personalization.css?v=20260816-6')) throw new Error('Hardened personalization CSS version was not published.');
+  if (!source.includes('registry-user-personalization.js?v=20260816-6')) throw new Error('Hardened personalization JS version was not published.');
   if (!source.includes('registry-ux-phase1.js?v=20260816-2')) throw new Error('Canonical toolbar UX version was not published.');
   write('index.html', source);
 }
@@ -105,4 +105,4 @@ patchMobileLite();
 patchIndex();
 verifyAddon();
 
-console.log('Phase 8 mobile favorites + recents preserved; canonical personalization and toolbar UX assets published.');
+console.log('Phase 8 mobile favorites + recents preserved; hardened canonical personalization and toolbar UX assets published.');
