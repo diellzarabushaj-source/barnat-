@@ -9,7 +9,7 @@ const unifiedTableFile = 'registry-unified-table.js';
 const unifiedCssFile = 'registry-unified-table.css';
 const columnContractFile = 'registry-column-contract.js';
 const indexFile = 'index.html';
-const ASSET_VERSION = '20260812-population-column-1';
+const ASSET_VERSION = '20260816-default-columns-1';
 
 function read(relative) {
   return fs.readFileSync(path.join(root, relative), 'utf8');
@@ -32,10 +32,26 @@ function patchRuntime(relative) {
   let source = read(relative);
   if (source.includes("key:'Popullata e aprovuar'")) return;
 
+  // Default-i klinik i picker-it: 6 kolona bazë + Popullata + 2 kolonat e dozimit.
+  // Dy kolonat e dozimit mbahen default ON nga registry-dosage-loader.js.
+  source = replaceOnce(
+    source,
+    "  { key:'Si të shënohet në recetë', label:'Si shënohet në recetë', mobileLabel:'Shënimi në recetë', type:'str', cls:'wrap', visible:false },\n",
+    "  { key:'Si të shënohet në recetë', label:'Si shënohet në recetë', mobileLabel:'Shënimi në recetë', type:'str', cls:'wrap', visible:true },\n",
+    'COLUMNS/prescription default',
+  );
+
+  source = replaceOnce(
+    source,
+    "  { key:'Statusi', label:'Statusi', mobileLabel:'Statusi', type:'str', cls:'', visible:true },\n",
+    "  { key:'Statusi', label:'Statusi', mobileLabel:'Statusi', type:'str', cls:'', visible:false },\n",
+    'COLUMNS/status default',
+  );
+
   source = replaceOnce(
     source,
     "  { key:'Forma farmaceutike', label:'Forma', mobileLabel:'Forma', type:'str', cls:'wrap', visible:true },\n",
-    "  { key:'Forma farmaceutike', label:'Forma', mobileLabel:'Forma', type:'str', cls:'wrap', visible:true },\n  { key:'Popullata e aprovuar', label:'Popullata (Adult/Pediatric)', mobileLabel:'Popullata', type:'str', cls:'registry-population-column', visible:false },\n",
+    "  { key:'Forma farmaceutike', label:'Forma', mobileLabel:'Forma', type:'str', cls:'wrap', visible:true },\n  { key:'Popullata e aprovuar', label:'Popullata (Adult/Pediatric)', mobileLabel:'Popullata', type:'str', cls:'registry-population-column', visible:true },\n",
     'COLUMNS/forma',
   );
 
@@ -154,8 +170,12 @@ patchAssetVersions();
 
 for (const relative of runtimeFiles) {
   const source = read(relative);
-  if (!source.includes("key:'Popullata e aprovuar'") || !source.includes('registry-population-badge')) {
-    throw new Error(`Population column patch nuk u aplikua në ${relative}.`);
+  if (!source.includes("key:'Popullata e aprovuar'")
+      || !source.includes("key:'Popullata e aprovuar', label:'Popullata (Adult/Pediatric)', mobileLabel:'Popullata', type:'str', cls:'registry-population-column', visible:true")
+      || !source.includes("key:'Si të shënohet në recetë', label:'Si shënohet në recetë', mobileLabel:'Shënimi në recetë', type:'str', cls:'wrap', visible:true")
+      || !source.includes("key:'Statusi', label:'Statusi', mobileLabel:'Statusi', type:'str', cls:'', visible:false")
+      || !source.includes('registry-population-badge')) {
+    throw new Error(`Population/default column patch nuk u aplikua në ${relative}.`);
   }
 }
 const unified = read(unifiedTableFile);
@@ -171,7 +191,7 @@ if (!indexSource.includes(`registry-unified-table.css?v=${ASSET_VERSION}`)
     || !indexSource.includes(`registry-unified-table.js?v=${ASSET_VERSION}`)
     || !indexSource.includes(`registry-dose-clinical-row-markers.js?v=${ASSET_VERSION}`)
     || !indexSource.includes(`registry-column-picker-tailwind.js?v=${ASSET_VERSION}`)) {
-  throw new Error('Population column asset versions nuk u përditësuan.');
+  throw new Error('Population/default column asset versions nuk u përditësuan.');
 }
 
-console.log('Approved population column added to picker/runtime/unified table.');
+console.log('Approved population column and requested 9-column clinical default applied.');
