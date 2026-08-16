@@ -4,16 +4,17 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
   <meta name="robots" content="noindex,nofollow,noarchive">
-  <meta name="theme-color" content="#f1f5f9">
-  <meta name="description" content="Blogu i MedIndex për praktikë klinike, Clinical Decision Support, teknologji shëndetësore dhe përdorim të sigurt të informacionit.">
-  <title>Blog | MedIndex</title>
+  <meta name="theme-color" content="#0b1220">
+  <meta name="description" content="MedIndex Journal — analiza klinike, Clinical Decision Support, inteligjencë artificiale dhe teknologji shëndetësore për praktikë më të qartë.">
+  <title>MedIndex Journal | Blog</title>
   <link rel="preload" href="brand/medindex-mark-on-light.webp" as="image" type="image/webp">
   <link rel="stylesheet" href="info-pages.css?v=20260814-1">
   <link rel="stylesheet" href="medindex-tailwind-ui.css?v=20260805-1" data-medindex-tailwind-ui>
-  <link rel="stylesheet" href="blog.css?v=20260816-1">
+  <link rel="stylesheet" href="blog.css?v=20260816-2">
 </head>
 <body>
-  <main class="info-shell">
+  <div id="blogReadingProgress" class="blog-reading-progress" hidden aria-hidden="true"><span></span></div>
+  <main class="info-shell blog-shell">
     <div class="info-container">
       <nav class="info-nav" aria-label="Navigimi publik">
         <a class="info-brand" href="login-v2.html" aria-label="MedIndex — faqja kryesore">
@@ -30,19 +31,36 @@
         </div>
       </nav>
 
-      <section class="info-main" aria-labelledby="pageTitle">
-        <p class="info-kicker">Blog</p>
-        <h1 class="info-title" id="pageTitle">Shënime për praktikë klinike më të qartë.</h1>
-        <p class="info-lead">Materiale profesionale rreth vendimmarrjes klinike, barnave, teknologjisë shëndetësore dhe përdorimit të sigurt të informacionit në praktikë.</p>
+      <section class="info-main blog-hero" aria-labelledby="pageTitle">
+        <div class="blog-hero__badge"><span></span> MedIndex Journal</div>
+        <p class="info-kicker">Evidencë · Praktikë · Teknologji</p>
+        <h1 class="info-title" id="pageTitle">Mjekësi, evidencë dhe teknologji — pa zhurmë.</h1>
+        <p class="info-lead">Analiza të qarta për vendimmarrjen klinike, barnat, Clinical Decision Support dhe AI në shëndetësi — të shkruara për t'u lexuar shpejt dhe për t'u përdorur me mendim klinik.</p>
+        <div class="blog-hero__facts" aria-label="Karakteristikat e blogut">
+          <span><i></i> Fokus klinik</span>
+          <span><i></i> Lexim i përmbledhur</span>
+          <span><i></i> Përditësime profesionale</span>
+        </div>
       </section>
 
-      <section class="info-body" aria-label="Artikujt e MedIndex">
+      <section class="info-body blog-body" aria-label="Artikujt e MedIndex">
         <div id="blogStatus" class="blog-state" role="status" aria-live="polite">
           <strong>Duke ngarkuar artikujt…</strong>
           <p>Përmbajtja po merret nga MedIndex Clinical Knowledge.</p>
         </div>
 
         <div id="blogListView">
+          <div class="blog-library-bar">
+            <div>
+              <span class="blog-library-bar__eyebrow">Biblioteka</span>
+              <strong><span id="blogArticleCount">—</span> artikuj të publikuar</strong>
+            </div>
+            <div class="blog-library-bar__topics" aria-label="Temat kryesore">
+              <span>Clinical Decision Support</span>
+              <span>Digital Health</span>
+              <span>AI në mjekësi</span>
+            </div>
+          </div>
           <div id="blogGrid" class="blog-grid"></div>
         </div>
 
@@ -51,6 +69,6 @@
     </div>
   </main>
 
-  <script src="blog.js?v=20260816-1" defer></script>
+  <script src="blog.js?v=20260816-2" defer></script>
 </body>
 </html>
