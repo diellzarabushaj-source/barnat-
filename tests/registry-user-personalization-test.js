@@ -90,12 +90,14 @@ assert.match(css, /prefers-reduced-motion/, 'Personalization must respect reduce
 assert.match(uxPhase1, /requestIdleCallback/, 'Phase 1 noncritical polish must be deferred off the critical path');
 assert.match(uxPhase1, /Control\+K Meta\+K/, 'Phase 1 must expose a fast keyboard search shortcut');
 assert.match(uxPhase1, /event\.key === '\/'/, 'Phase 1 must support slash-to-search when the user is not editing');
-assert.match(uxPhase1, /registryQuickFavorites/, 'Phase 1 must provide a one-click toolbar favorites control');
-assert.match(uxPhase1, /MedIndexRegistryPersonalization/, 'Quick favorites must reuse the audited personalization controller');
+assert.match(uxPhase1, /canonicalFavoritesButton/, 'Phase 1 must resolve the canonical Favorites toolbar control');
+assert.match(uxPhase1, /#registryPersonalViews \[data-personal-view="favorites"\]/, 'Phase 1 must reuse the shared Favorites/Notes toolbar group');
+assert.match(uxPhase1, /retireLegacyQuickFavorites/, 'Any legacy quick-favorites duplicate must be actively retired');
+assert.match(uxPhase1, /MedIndexRegistryPersonalization/, 'Phase 1 must reuse the audited personalization controller');
+assert.doesNotMatch(uxPhase1, /button\.id = 'registryQuickFavorites'|createElement\('button'\).*registryQuickFavorites/, 'Phase 1 must not create another Favorites toolbar button');
 assert.doesNotMatch(uxPhase1, /MutationObserver|setInterval\s*\(/, 'Phase 1 must remain deterministic and event-driven');
 assert.match(uxPhase1Css, /position:sticky!important/, 'The registry command surface should stay reachable while scanning');
 assert.match(uxPhase1Css, /mi-registry-search-shell/, 'Phase 1 must visually prioritize search');
-assert.match(uxPhase1Css, /registry-quick-favorites/, 'Phase 1 quick favorites styling is missing');
 assert.match(uxPhase1Css, /prefers-reduced-motion/, 'Phase 1 must respect reduced-motion preferences');
 
 assert.match(client, /regjistriBarnave_shenime_v1/, 'Per-user notes local cache is missing');
@@ -126,4 +128,4 @@ assert.throws(() => library._test.normalizedFavorite({
   payload:{ kind:'drug-note', text:'x'.repeat(2001) },
 }), /maksimum 2000/i, 'Oversized personal notes must fail closed');
 
-console.log('Canonical Favorites + Notes actions, native personal views and persistent user-library audit passed.');
+console.log('Canonical Favorites + Notes actions, one toolbar control, native personal views and persistent user-library audit passed.');
