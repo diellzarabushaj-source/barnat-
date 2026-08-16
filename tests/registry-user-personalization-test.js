@@ -25,8 +25,8 @@ assert.doesNotThrow(() => new Function(client), 'User library client must parse 
 assert.doesNotThrow(() => new Function(server), 'User library server must parse as JavaScript');
 assert.doesNotThrow(() => new Function(runtimePatch), 'Registry personalization runtime patch must parse as JavaScript');
 
-assert.match(html, /registry-user-personalization\.css\?v=20260816-5/, 'Latest personalization CSS is not loaded');
-assert.match(html, /registry-user-personalization\.js\?v=20260816-5/, 'Latest personalization JS is not loaded');
+assert.match(html, /registry-user-personalization\.css\?v=20260816-6/, 'Latest hardened personalization CSS is not loaded');
+assert.match(html, /registry-user-personalization\.js\?v=20260816-6/, 'Latest hardened personalization JS is not loaded');
 assert.match(html, /registry-ux-phase1\.css\?v=20260810-1/, 'Phase 1 premium registry CSS is not loaded');
 assert.match(html, /registry-ux-phase1\.js\?v=20260816-2/, 'Latest canonical toolbar UX is not loaded');
 assert.doesNotMatch(html, /registry-personalization-polish\.js|registry-favorites-control\.js|registry-favorites-control\.css/, 'Duplicate personalization controllers must not be loaded');
@@ -51,7 +51,7 @@ assert.match(runtime, /window\.MedIndexRegistryRuntime = Object\.freeze/, 'Gener
 assert.match(runtime, /state\.pageSize = sanitizeRegistryPageSize\(requested\)/, 'Generated runtime still accepts arbitrary page sizes');
 assert.doesNotMatch(runtime, /REGISTRY_ALLOWED_PAGE_SIZES = new Set\(\[50, 100, 250, 500, 4006\]\)/, 'Generated runtime must not retain the 4006-row favorites path');
 
-assert.match(ui, /VERSION = 'registry-user-personalization-v3\.1\.0'/, 'Canonical v3 personalization controller is not active');
+assert.match(ui, /VERSION = 'registry-user-personalization-v3\.2\.0'/, 'Canonical hardened v3 personalization controller is not active');
 assert.match(ui, /VIEW_ALL = 'all'/, 'All view is missing');
 assert.match(ui, /VIEW_FAVORITES = 'favorites'/, 'Favorites view is missing');
 assert.match(ui, /VIEW_NOTES = 'notes'/, 'Notes view is missing');
@@ -71,17 +71,26 @@ assert.match(ui, /#shenimet/, 'Notes URL state is missing');
 assert.match(ui, /data-toolbar-note-count/, 'Toolbar notes count is missing');
 assert.match(ui, /notesNavCount/, 'Sidebar notes count is missing');
 assert.match(ui, /metaKey \|\| event\.ctrlKey/, 'Personal note keyboard save shortcut is missing');
+assert.match(ui, /const favoriteInFlight = new Set\(\)/, 'Favorite mutations need an in-flight lock');
+assert.match(ui, /const noteInFlight = new Set\(\)/, 'Note mutations need an in-flight lock');
+assert.match(ui, /const pendingSync = new Set\(\)/, 'Local-first mutations need explicit pending persistence state');
+assert.match(ui, /async function syncMutation/, 'Personal mutations need one synchronization path');
+assert.match(ui, /aria-busy/, 'In-flight row actions must expose busy state to assistive technology');
+assert.match(ui, /is-pending-sync/, 'Pending persistence must remain visible after the request finishes');
 assert.doesNotMatch(ui, /ALL_ROWS_PAGE_SIZE|10000/, 'Personal views must never force a page-size sentinel into the DOM');
 assert.doesNotMatch(ui, /setInterval\s*\(/, 'Personalization must be event-driven, not poll the page continuously');
 assert.doesNotMatch(ui, /MutationObserver/, 'Deterministic registry render events make a personalization DOM observer unnecessary');
 
 assert.match(css, /\[data-registry-column-key="personal-note"\]/, 'Legacy note-column retirement rule is missing');
-assert.match(css, /display:none!important/, 'Legacy note column must not remain a second editing surface');
+assert.match(css, /\.registry-quick-favorites\s*\{?/, 'Legacy quick Favorites control must be suppressed if a stale client creates it');
+assert.match(css, /display:none!important/, 'Legacy note/quick-favorites surfaces must not remain interactive');
 assert.match(css, /registry-row-favorite-toggle/, 'One-click favorite styling is missing');
 assert.match(css, /registry-row-note-toggle/, 'One-click note pencil styling is missing');
 assert.match(css, /registry-note-dialog/, 'Note dialog styling is missing');
 assert.match(css, /registry-personal-view-actions/, 'Shared Favorites/Notes toolbar styling is missing');
 assert.match(css, /registry-personal-view-banner/, 'Shared personal-view banner styling is missing');
+assert.match(css, /is-pending-sync::after/, 'Pending persistence indicator styling is missing');
+assert.match(css, /:disabled/, 'Mutation lock styling is missing');
 assert.match(css, /drug-action-item\.favorite\{display:none!important\}/, 'Legacy duplicate favorite control must be retired from the menu');
 assert.doesNotMatch(css, /medindex-favorites-only[^\n]*#pagination|medindex-favorites-only[^\n]*\.pagination/, 'Favorites pagination must stay available when a user has more than one page');
 assert.match(css, /@media\(max-width:767px\)/, 'Personalization must keep a dedicated phone treatment');
@@ -128,4 +137,4 @@ assert.throws(() => library._test.normalizedFavorite({
   payload:{ kind:'drug-note', text:'x'.repeat(2001) },
 }), /maksimum 2000/i, 'Oversized personal notes must fail closed');
 
-console.log('Canonical Favorites + Notes actions, one toolbar control, native personal views and persistent user-library audit passed.');
+console.log('Canonical Favorites + Notes, native personal views, mutation locks and pending persistent sync audit passed.');
