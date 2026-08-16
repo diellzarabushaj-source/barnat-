@@ -1,25 +1,34 @@
 (() => {
   'use strict';
 
-  const VERSION = 'registry-user-personalization-v2.0.0';
+  const VERSION = 'registry-user-personalization-v3.0.0';
   const FAVORITES_KEY = 'regjistriBarnave_favoritet_v1';
   const NOTES_KEY = 'regjistriBarnave_shenime_v1';
-  const PERSONAL_COLUMN_KEY = 'personal-note';
   const NOTE_MAX = 2000;
-  const NOTE_SAVE_DELAY = 280;
-  const NOTE_SYNC_DELAY = 650;
+  const PERSONAL_COLUMN_KEY = 'personal-note';
+  const VIEW_ALL = 'all';
+  const VIEW_FAVORITES = 'favorites';
+  const VIEW_NOTES = 'notes';
 
-  let favoritesMode = location.hash.toLowerCase() === '#favoritet';
   let favorites = loadFavorites();
   let notes = loadNotes();
+  let activeView = viewFromLocation();
   let scheduled = false;
-  let noteSyncTimer = 0;
-  const noteTimers = new Map();
+  let syncTimer = 0;
+  let activeNoteKey = '';
+  let activeNoteRow = null;
 
   const clean = value => String(value ?? '').replace(/\s+/g, ' ').trim();
   const escapeHtml = value => String(value ?? '').replace(/[&<>"']/g, ch => ({
     '&':'&amp;', '<':'&lt;', '>':'&gt;', '"':'&quot;', "'":'&#39;'
   }[ch]));
+
+  function viewFromLocation() {
+    const hash = location.hash.toLowerCase();
+    if (hash === '#favoritet') return VIEW_FAVORITES;
+    if (hash === '#shenimet' || hash === '#shënimet') return VIEW_NOTES;
+    return VIEW_ALL;
+  }
 
   function loadFavorites() {
     try {
@@ -31,7 +40,9 @@
   }
 
   function saveFavorites() {
-    try { localStorage.setItem(FAVORITES_KEY, JSON.stringify([...favorites])); } catch {}
+    try { localStorage.setItem(FAVORITES_KEY, JSON.stringify([...favorites])); }
+    catch { return false; }
+    return true;
   }
 
   function loadNotes() {
@@ -40,12 +51,13 @@
       if (!value || typeof value !== 'object' || Array.isArray(value)) return {};
       const output = {};
       Object.entries(value).forEach(([key, entry]) => {
-        if (!key) return;
+        const safeKey = clean(key).slice(0, 300);
+        if (!safeKey) return;
         const raw = typeof entry === 'string' ? { text:entry, updatedAt:'' } : entry;
         if (!raw || typeof raw !== 'object') return;
         const text = String(raw.text ?? '').slice(0, NOTE_MAX);
         if (!text.trim()) return;
-        output[key] = { text, updatedAt:clean(raw.updatedAt) };
+        output[safeKey] = { text, updatedAt:clean(raw.updatedAt) };
       });
       return output;
     } catch {
@@ -54,12 +66,13 @@
   }
 
   function saveNotes() {
-    try { localStorage.setItem(NOTES_KEY, JSON.stringify(notes)); } catch {}
+    try { localStorage.setItem(NOTES_KEY, JSON.stringify(notes)); }
+    catch { return false; }
+    return true;
   }
 
-  function headerIndex(matcher) {
-    const headers = [...document.querySelectorAll('#headerRow > th')];
-    return headers.findIndex(th => matcher(clean(th.dataset.registryColumnKey || th.dataset.columnKey || th.textContent).toLowerCase()));
+  function runtime() {
+    return window.MedIndexRegistryRuntime || null;
   }
 
   function registryNumber(row) {
@@ -69,9 +82,8 @@
       || row?.querySelector?.('[data-registry-number]')?.dataset?.registryNumber
     );
     if (direct) return direct;
-    const index = headerIndex(value => value === 'number' || value === 'nr' || value === 'nr.' || value.includes('rendor'));
-    if (index >= 0) return clean(row.children[index]?.textContent).match(/\d+/)?.[0] || '';
-    return '';
+    const first = clean(row?.querySelector?.('[data-registry-column-key="number"],[data-column-key="Nr rendor"]')?.textContent);
+    return first.match(/\d+/)?.[0] || '';
   }
 
   function nameCell(row) {
@@ -91,27 +103,24 @@
   function atc(row) {
     const direct = clean(row?.dataset?.atcCode || row?.querySelector?.('[data-atc-code]')?.dataset?.atcCode);
     if (direct) return direct.toUpperCase();
-    const cell = row?.querySelector?.('[data-registry-column-key="atc"],[data-registry-column-key="atc-code"],[data-column-key="ATC Code"],[data-column-key="atc"]');
-    return clean(cell?.textContent).toUpperCase();
+    return clean(row?.querySelector?.('[data-registry-column-key="atc"],[data-registry-column-key="atc-code"],[data-column-key="ATC Code"],[data-column-key="atc"]')?.textContent).toUpperCase();
+  }
+
+  function drugKey(row) {
+    return clean(row?.querySelector?.('.drug-select')?.dataset?.drugKey || row?.dataset?.drugKey);
   }
 
   function primaryFavoriteKey(row) {
-    return clean(
-      row?.querySelector?.('.drug-select')?.dataset?.drugKey
-      || row?.dataset?.drugKey
-      || row?.dataset?.registryNumber
-      || row?.querySelector?.('.drug-select')?.dataset?.registryNumber
+    return drugKey(row)
       || registryNumber(row)
-      || (drugName(row) && atc(row) ? `${drugName(row)}|${atc(row)}` : drugName(row))
-    );
+      || (drugName(row) && atc(row) ? `${drugName(row)}|${atc(row)}` : drugName(row));
   }
 
   function favoriteCandidates(row) {
     const values = new Set();
     const add = value => { const item = clean(value); if (item) values.add(item); };
     add(primaryFavoriteKey(row));
-    add(row?.dataset?.drugKey);
-    add(row?.querySelector?.('.drug-select')?.dataset?.drugKey);
+    add(drugKey(row));
     add(row?.dataset?.registryNumber);
     add(row?.querySelector?.('.drug-select')?.dataset?.registryNumber);
     const nr = registryNumber(row);
@@ -134,9 +143,18 @@
   function noteKey(row) {
     const nr = registryNumber(row);
     if (nr) return `registry:${nr}`;
-    const drugKey = clean(row?.querySelector?.('.drug-select')?.dataset?.drugKey || row?.dataset?.drugKey);
-    if (drugKey) return `drug:${drugKey}`.slice(0, 300);
+    const key = drugKey(row);
+    if (key) return `drug:${key}`.slice(0, 300);
     return `fallback:${drugName(row)}|${atc(row)}`.slice(0, 300);
+  }
+
+  function hasNoteRow(row) {
+    const entry = notes[noteKey(row)];
+    return Boolean(entry && String(entry.text || '').trim());
+  }
+
+  function noteCount() {
+    return Object.values(notes).filter(entry => String(entry?.text || '').trim()).length;
   }
 
   function favoriteButton(row) {
@@ -150,242 +168,146 @@
     button.dataset.rowFavoriteToggle = 'true';
     button.dataset.registryUiOnly = 'true';
     button.innerHTML = '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="m12 3 2.8 5.7 6.2.9-4.5 4.4 1.1 6.2-5.6-2.9-5.6 2.9 1.1-6.2L3 9.6l6.2-.9L12 3Z"/></svg>';
-    const actions = cell.querySelector('.drug-actions-trigger');
-    if (actions) actions.insertAdjacentElement('beforebegin', button);
-    else cell.appendChild(button);
+    cell.appendChild(button);
     return button;
   }
 
-  function paintFavorite(row) {
-    const button = favoriteButton(row);
-    if (!button) return;
-    const active = isFavoriteRow(row);
-    const name = drugName(row) || 'barin';
-    button.classList.toggle('is-favorite', active);
-    button.setAttribute('aria-pressed', active ? 'true' : 'false');
-    button.setAttribute('aria-label', active ? `Hiqe ${name} nga Favoritet` : `Shto ${name} te Favoritet`);
-    button.title = active ? 'Hiqe nga Favoritet' : 'Shto te Favoritet';
-    row.classList.toggle('is-favorite', active);
+  function noteButton(row) {
+    const cell = nameCell(row);
+    if (!cell) return null;
+    let button = cell.querySelector(':scope > [data-row-note-toggle]');
+    if (button) return button;
+    button = document.createElement('button');
+    button.type = 'button';
+    button.className = 'registry-row-note-toggle';
+    button.dataset.rowNoteToggle = 'true';
+    button.dataset.registryUiOnly = 'true';
+    button.innerHTML = '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 20h4l10.7-10.7a2.1 2.1 0 0 0-3-3L5 17v3Z"/><path d="m14.5 7.5 3 3"/></svg>';
+    cell.appendChild(button);
+    return button;
   }
 
-  function ensureNoteHeader() {
-    const header = document.getElementById('headerRow');
-    if (!header) return;
-    let th = header.querySelector(`[data-registry-column-key="${PERSONAL_COLUMN_KEY}"]`);
-    if (th) return;
-    th = document.createElement('th');
-    th.scope = 'col';
-    th.className = 'registry-personal-note-head';
-    th.dataset.registryColumnKey = PERSONAL_COLUMN_KEY;
-    th.dataset.columnKey = PERSONAL_COLUMN_KEY;
-    th.dataset.registryUiOnly = 'true';
-    th.innerHTML = '<span>Shënime personale</span><small>ruhen automatikisht</small>';
-    header.appendChild(th);
-  }
-
-  function noteCell(row) {
-    let cell = row.querySelector(`:scope > td[data-registry-column-key="${PERSONAL_COLUMN_KEY}"]`);
-    if (cell) return cell;
-    cell = document.createElement('td');
-    cell.className = 'registry-personal-note-cell';
-    cell.dataset.registryColumnKey = PERSONAL_COLUMN_KEY;
-    cell.dataset.columnKey = PERSONAL_COLUMN_KEY;
-    cell.dataset.registryUiOnly = 'true';
-    row.appendChild(cell);
-    return cell;
-  }
-
-  function autoSizeTextarea(textarea) {
-    if (!textarea) return;
-    textarea.style.height = 'auto';
-    const max = matchMedia?.('(max-width:720px)')?.matches ? 92 : 104;
-    textarea.style.height = `${Math.min(max, Math.max(38, textarea.scrollHeight))}px`;
-    textarea.classList.toggle('has-content', Boolean(String(textarea.value || '').trim()));
-  }
-
-  function noteState(textarea, text, status = '') {
-    const state = textarea?.closest('.registry-personal-note-wrap')?.querySelector('[data-personal-note-state]');
-    if (!state) return;
-    state.textContent = text;
-    if (status) state.dataset.status = status;
-    else delete state.dataset.status;
-  }
-
-  function updateClearButton(textarea) {
-    const button = textarea?.closest('.registry-personal-note-wrap')?.querySelector('[data-clear-personal-note]');
-    if (button) button.hidden = !String(textarea.value || '').trim();
-  }
-
-  function renderNoteCell(row) {
+  function paintRowActions(row) {
     if (!(row instanceof HTMLElement) || row.querySelector('.empty-state')) return;
+    const favorite = favoriteButton(row);
+    if (favorite) {
+      const active = isFavoriteRow(row);
+      const name = drugName(row) || 'barin';
+      favorite.classList.toggle('is-favorite', active);
+      favorite.setAttribute('aria-pressed', active ? 'true' : 'false');
+      favorite.setAttribute('aria-label', active ? `Hiqe ${name} nga Favoritet` : `Shto ${name} te Favoritet`);
+      favorite.title = active ? 'Hiqe nga Favoritet' : 'Shto te Favoritet';
+      row.classList.toggle('is-favorite', active);
+    }
+
+    const note = noteButton(row);
+    if (note) {
+      const active = hasNoteRow(row);
+      const name = drugName(row) || 'barin';
+      note.classList.toggle('has-note', active);
+      note.setAttribute('aria-label', active ? `Shiko ose ndrysho shënimin për ${name}` : `Shto shënim për ${name}`);
+      note.title = active ? 'Shiko/ndrysho shënimin' : 'Shto shënim';
+    }
+  }
+
+  function stripLegacyNoteColumn() {
+    document.querySelectorAll(`[data-registry-column-key="${PERSONAL_COLUMN_KEY}"], [data-column-key="${PERSONAL_COLUMN_KEY}"]`).forEach(node => {
+      node.hidden = true;
+      node.setAttribute('aria-hidden', 'true');
+    });
+  }
+
+  function ensureNoteDialog() {
+    let dialog = document.getElementById('registryNoteDialog');
+    if (dialog) return dialog;
+    dialog = document.createElement('dialog');
+    dialog.id = 'registryNoteDialog';
+    dialog.className = 'registry-note-dialog';
+    dialog.innerHTML = `
+      <form method="dialog" class="registry-note-dialog-card" data-note-dialog-form>
+        <div class="registry-note-dialog-head">
+          <div><small>Shënim personal</small><h2 data-note-dialog-title>Shënim</h2></div>
+          <button type="button" class="registry-note-dialog-close" data-note-dialog-close aria-label="Mbyll">×</button>
+        </div>
+        <textarea rows="6" maxlength="${NOTE_MAX}" data-note-dialog-text placeholder="Shkruaj shënimin tënd personal…"></textarea>
+        <div class="registry-note-dialog-meta"><span data-note-dialog-status></span><span data-note-dialog-length>0 / ${NOTE_MAX}</span></div>
+        <div class="registry-note-dialog-actions">
+          <button type="button" class="registry-note-delete" data-note-dialog-delete>Fshije</button>
+          <span></span>
+          <button type="button" class="registry-note-cancel" data-note-dialog-close>Anulo</button>
+          <button type="button" class="registry-note-save" data-note-dialog-save>Ruaj shënimin</button>
+        </div>
+      </form>`;
+    document.body.appendChild(dialog);
+    return dialog;
+  }
+
+  function closeNoteDialog() {
+    const dialog = document.getElementById('registryNoteDialog');
+    if (!dialog) return;
+    if (typeof dialog.close === 'function' && dialog.open) dialog.close();
+    else dialog.removeAttribute('open');
+    activeNoteKey = '';
+    activeNoteRow = null;
+  }
+
+  function openNoteDialog(row) {
+    if (!(row instanceof HTMLElement)) return;
     const key = noteKey(row);
     if (!key) return;
-    const cell = noteCell(row);
+    activeNoteKey = key;
+    activeNoteRow = row;
+    const dialog = ensureNoteDialog();
+    const textarea = dialog.querySelector('[data-note-dialog-text]');
     const existing = notes[key]?.text || '';
-    const current = cell.querySelector('[data-personal-note]');
-    if (cell.dataset.noteReady === key && current) {
-      if (document.activeElement !== current && current.value !== existing) {
-        current.value = existing;
-        autoSizeTextarea(current);
-        updateClearButton(current);
-      }
-      return;
-    }
-    cell.dataset.noteReady = key;
-    cell.innerHTML = `<div class="registry-personal-note-wrap">
-      <textarea rows="1" maxlength="${NOTE_MAX}" data-personal-note="${escapeHtml(key)}" aria-label="Shënim personal për ${escapeHtml(drugName(row) || 'barin')}" placeholder="Shkruaj shënim…">${escapeHtml(existing)}</textarea>
-      <button type="button" class="registry-personal-note-clear" data-clear-personal-note aria-label="Fshije shënimin" ${existing ? '' : 'hidden'}>×</button>
-      <span class="registry-personal-note-state" data-personal-note-state>${existing ? 'Ruajtur' : ''}</span>
-    </div>`;
-    const textarea = cell.querySelector('[data-personal-note]');
-    autoSizeTextarea(textarea);
+    textarea.value = existing;
+    dialog.querySelector('[data-note-dialog-title]').textContent = drugName(row) || 'Bari';
+    dialog.querySelector('[data-note-dialog-status]').textContent = existing ? 'Shënimi ruhet vetëm në bibliotekën tënde.' : 'Vetëm për ty.';
+    dialog.querySelector('[data-note-dialog-length]').textContent = `${textarea.value.length} / ${NOTE_MAX}`;
+    dialog.querySelector('[data-note-dialog-delete]').hidden = !existing.trim();
+    if (typeof dialog.showModal === 'function') dialog.showModal();
+    else dialog.setAttribute('open', '');
+    requestAnimationFrame(() => textarea.focus({ preventScroll:true }));
   }
 
-  function markFilledNotes(text, status) {
-    document.querySelectorAll('[data-personal-note]').forEach(textarea => {
-      if (!String(textarea.value || '').trim()) return;
-      noteState(textarea, text, status);
-    });
+  function dispatchStateChanged(kind, detail = {}) {
+    window.dispatchEvent(new CustomEvent(`medindex:${kind}-changed`, { detail }));
   }
 
-  function scheduleUserLibrarySync() {
-    clearTimeout(noteSyncTimer);
-    noteSyncTimer = window.setTimeout(async () => {
+  function scheduleLibrarySync(delay = 120) {
+    clearTimeout(syncTimer);
+    syncTimer = window.setTimeout(async () => {
       try {
         const synced = await window.MedIndexUserLibrary?.syncNow?.();
-        if (synced) markFilledNotes('Sinkronizuar', 'synced');
-      } catch {}
-    }, NOTE_SYNC_DELAY);
+        const status = document.querySelector('#registryNoteDialog [data-note-dialog-status]');
+        if (status && activeNoteKey) status.textContent = synced ? 'Sinkronizuar.' : 'Ruajtur lokalisht · sinkronizimi është në pritje.';
+      } catch {
+        const status = document.querySelector('#registryNoteDialog [data-note-dialog-status]');
+        if (status && activeNoteKey) status.textContent = 'Ruajtur lokalisht · sinkronizimi është në pritje.';
+      }
+    }, delay);
   }
 
-  function persistNote(textarea, { sync = true } = {}) {
-    const key = clean(textarea?.dataset?.personalNote);
-    if (!key) return;
-    const text = String(textarea.value || '').slice(0, NOTE_MAX);
-    if (text.trim()) notes[key] = { text, updatedAt:new Date().toISOString() };
-    else delete notes[key];
-    saveNotes();
-    autoSizeTextarea(textarea);
-    updateClearButton(textarea);
-    noteState(textarea, text.trim() ? 'Ruajtur' : '', text.trim() ? 'saved' : '');
-    window.dispatchEvent(new CustomEvent('medindex:personal-note-saved', { detail:{ key, hasText:Boolean(text.trim()) } }));
-    if (sync) scheduleUserLibrarySync();
+  function persistActiveNote({ remove = false } = {}) {
+    if (!activeNoteKey) return;
+    const dialog = ensureNoteDialog();
+    const textarea = dialog.querySelector('[data-note-dialog-text]');
+    const text = remove ? '' : String(textarea.value || '').slice(0, NOTE_MAX);
+    if (text.trim()) notes[activeNoteKey] = { text, updatedAt:new Date().toISOString() };
+    else delete notes[activeNoteKey];
+    if (!saveNotes()) return;
+    const changedKey = activeNoteKey;
+    const changedRow = activeNoteRow;
+    dispatchStateChanged('notes', { count:noteCount(), key:changedKey, hasNote:Boolean(text.trim()) });
+    window.dispatchEvent(new CustomEvent('medindex:personal-note-saved', { detail:{ key:changedKey, hasText:Boolean(text.trim()) } }));
+    scheduleLibrarySync();
+    closeNoteDialog();
+    if (changedRow?.isConnected) paintRowActions(changedRow);
+    schedule(1);
   }
 
-  function queueNoteSave(textarea) {
-    const key = clean(textarea?.dataset?.personalNote);
-    if (!key) return;
-    noteState(textarea, 'Duke ruajtur…', 'saving');
-    autoSizeTextarea(textarea);
-    updateClearButton(textarea);
-    const old = noteTimers.get(key);
-    if (old) clearTimeout(old);
-    const timer = window.setTimeout(() => {
-      noteTimers.delete(key);
-      persistNote(textarea);
-    }, NOTE_SAVE_DELAY);
-    noteTimers.set(key, timer);
-  }
-
-  function flushNote(textarea) {
-    const key = clean(textarea?.dataset?.personalNote);
-    const timer = noteTimers.get(key);
-    if (timer) clearTimeout(timer);
-    noteTimers.delete(key);
-    persistNote(textarea);
-  }
-
-  function runtime() {
-    return window.MedIndexRegistryRuntime || null;
-  }
-
-  function filteredFavoriteCount() {
-    if (!favoritesMode) return 0;
-    try { return Number(runtime()?.getFilteredCount?.() || 0); }
-    catch { return document.querySelectorAll('#tbody > tr:not([hidden])').length; }
-  }
-
-  function updateFavoriteCounters() {
-    const count = favorites.size;
-    document.querySelectorAll('#favoriteNavCount,[data-mi-fav-count],[data-favorite-count],.nav-mini-count[data-favorites-count]').forEach(node => {
-      node.textContent = String(count);
-      node.setAttribute('aria-label', `${count} favorite`);
-    });
-  }
-
-  function updateFavoriteNavState() {
-    document.querySelectorAll('[data-nav="favorites"],[data-mi-shell-action="favorites"]').forEach(button => {
-      button.classList.toggle('active', favoritesMode);
-      button.classList.toggle('is-active', favoritesMode);
-      button.setAttribute('aria-pressed', favoritesMode ? 'true' : 'false');
-      if (favoritesMode) button.setAttribute('aria-current', 'true');
-      else if (button.getAttribute('aria-current') === 'true') button.removeAttribute('aria-current');
-    });
-    document.body.classList.toggle('medindex-favorites-only', favoritesMode);
-  }
-
-  function ensureFavoritesBanner() {
-    let banner = document.getElementById('registryFavoritesBanner');
-    if (!favoritesMode) {
-      banner?.remove();
-      return;
-    }
-    if (!banner) {
-      const toolbar = document.querySelector('.toolbar');
-      if (!toolbar) return;
-      banner = document.createElement('div');
-      banner.id = 'registryFavoritesBanner';
-      banner.className = 'registry-favorites-banner';
-      banner.innerHTML = '<span><b>★ Favoritet</b><small data-favorites-banner-copy></small></span><button type="button" data-exit-favorites>Të gjitha barnat</button>';
-      toolbar.insertAdjacentElement('afterend', banner);
-    }
-    const total = favorites.size;
-    const filtered = filteredFavoriteCount();
-    const copy = banner.querySelector('[data-favorites-banner-copy]');
-    if (copy) {
-      copy.textContent = filtered !== total
-        ? `${filtered} në këtë filtër · ${total} gjithsej`
-        : `${total} ${total === 1 ? 'bar i ruajtur' : 'barna të ruajtura'} · vetëm të tuat`;
-    }
-  }
-
-  function updateFavoriteResultCopy() {
-    if (!favoritesMode) return;
-    const filtered = filteredFavoriteCount();
-    const total = favorites.size;
-    const badge = document.getElementById('countBadge');
-    if (badge) badge.textContent = filtered === total ? `${filtered} favorite` : `${filtered} nga ${total} favorite`;
-    const empty = document.querySelector('#tbody .empty-state');
-    if (empty && filtered === 0) {
-      empty.textContent = total === 0
-        ? 'Nuk ke ende favorite. Shto një bar me ★ dhe do të shfaqet këtu.'
-        : 'Asnjë nga favoritet nuk përputhet me filtrat aktualë.';
-    }
-  }
-
-  function enterFavorites() {
-    if (!favoritesMode) favoritesMode = true;
-    updateFavoriteNavState();
-    try { history.replaceState(null, '', `${location.pathname}${location.search}#favoritet`); } catch {}
-    const api = runtime();
-    if (api?.setFavoritesOnly) api.setFavoritesOnly(true);
-    else schedule(2);
-    ensureFavoritesBanner();
-  }
-
-  function exitFavorites() {
-    if (!favoritesMode) return;
-    favoritesMode = false;
-    updateFavoriteNavState();
-    ensureFavoritesBanner();
-    try { history.replaceState(null, '', `${location.pathname}${location.search}`); } catch {}
-    const api = runtime();
-    if (api?.setFavoritesOnly) api.setFavoritesOnly(false);
-    else schedule(2);
-  }
-
-  function toggleFavorite(row) {
-    if (!(row instanceof HTMLElement)) return;
+  function toggleFavorite(row, button) {
+    if (!(row instanceof HTMLElement) || button?.disabled) return;
     const active = isFavoriteRow(row);
     if (active) favoriteCandidates(row).forEach(key => favorites.delete(key));
     else {
@@ -393,30 +315,189 @@
       if (!key) return;
       favorites.add(key);
     }
-    saveFavorites();
-    paintFavorite(row);
-    updateFavoriteCounters();
-    ensureFavoritesBanner();
-    window.dispatchEvent(new CustomEvent('medindex:favorites-changed', {
-      detail:{ count:favorites.size, favorite:!active, key:primaryFavoriteKey(row) }
-    }));
+    if (!saveFavorites()) return;
+    paintRowActions(row);
+    updateCounts();
+    updateViewBanner();
+    dispatchStateChanged('favorites', { count:favorites.size, favorite:!active, key:primaryFavoriteKey(row) });
     if (runtime()?.refreshFavorites) runtime().refreshFavorites();
-    else schedule(1);
-    scheduleUserLibrarySync();
+    scheduleLibrarySync();
+    if (activeView === VIEW_FAVORITES && active) row.hidden = true;
+  }
+
+  function ensureSidebarNotes() {
+    const favorite = document.querySelector('[data-nav="favorites"]');
+    if (!favorite || document.querySelector('[data-nav="notes"]')) return;
+    const item = document.createElement('button');
+    item.type = 'button';
+    item.className = favorite.className;
+    item.dataset.nav = 'notes';
+    item.setAttribute('aria-label', 'Shënimet');
+    item.innerHTML = `<span class="app-menu-icon mi-menu-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 4h14v16H5z"/><path d="M8 8h8M8 12h8M8 16h5"/></svg></span><span class="app-menu-title mi-menu-label">Shënimet</span><span class="nav-mini-count mi-menu-badge" id="notesNavCount">${noteCount()}</span>`;
+    favorite.insertAdjacentElement('afterend', item);
+  }
+
+  function ensureToolbarViews() {
+    if (document.getElementById('registryPersonalViews')) return;
+    const toolbar = document.querySelector('.toolbar');
+    if (!toolbar) return;
+    const group = document.createElement('div');
+    group.id = 'registryPersonalViews';
+    group.className = 'registry-personal-view-actions';
+    group.setAttribute('aria-label', 'Pamja personale');
+    group.innerHTML = `<button type="button" data-personal-view="favorites"><span aria-hidden="true">☆</span> Favoritet <b data-toolbar-favorite-count>${favorites.size}</b></button><button type="button" data-personal-view="notes"><span aria-hidden="true">✎</span> Shënimet <b data-toolbar-note-count>${noteCount()}</b></button>`;
+    const countBadge = document.getElementById('countBadge');
+    if (countBadge) countBadge.insertAdjacentElement('beforebegin', group);
+    else toolbar.appendChild(group);
+  }
+
+  function updateCounts() {
+    const favCount = favorites.size;
+    const notesTotal = noteCount();
+    document.querySelectorAll('#favoriteNavCount,[data-mi-fav-count],[data-favorite-count],[data-toolbar-favorite-count]').forEach(node => {
+      node.textContent = String(favCount);
+      node.setAttribute('aria-label', `${favCount} favorite`);
+    });
+    document.querySelectorAll('#notesNavCount,[data-note-count],[data-toolbar-note-count]').forEach(node => {
+      node.textContent = String(notesTotal);
+      node.setAttribute('aria-label', `${notesTotal} shënime`);
+    });
+  }
+
+  function updateViewNav() {
+    document.querySelectorAll('[data-nav="favorites"],[data-mi-shell-action="favorites"],[data-personal-view="favorites"]').forEach(button => {
+      const active = activeView === VIEW_FAVORITES;
+      button.classList.toggle('active', active);
+      button.classList.toggle('is-active', active);
+      button.setAttribute('aria-pressed', String(active));
+      if (active) button.setAttribute('aria-current', 'true');
+      else button.removeAttribute('aria-current');
+    });
+    document.querySelectorAll('[data-nav="notes"],[data-mi-shell-action="notes"],[data-personal-view="notes"]').forEach(button => {
+      const active = activeView === VIEW_NOTES;
+      button.classList.toggle('active', active);
+      button.classList.toggle('is-active', active);
+      button.setAttribute('aria-pressed', String(active));
+      if (active) button.setAttribute('aria-current', 'true');
+      else button.removeAttribute('aria-current');
+    });
+    document.body.classList.toggle('medindex-favorites-only', activeView === VIEW_FAVORITES);
+    document.body.classList.toggle('medindex-notes-only', activeView === VIEW_NOTES);
+  }
+
+  function visibleRows() {
+    return [...document.querySelectorAll('#tbody > tr')].filter(row => !row.querySelector('.empty-state'));
+  }
+
+  function applyNotesScope() {
+    if (activeView !== VIEW_NOTES) return;
+    visibleRows().forEach(row => { row.hidden = !hasNoteRow(row); });
+    const visible = visibleRows().filter(row => !row.hidden).length;
+    const badge = document.getElementById('countBadge');
+    if (badge) badge.textContent = `${visible} shënime në këtë pamje`;
+  }
+
+  function restoreNotesScope() {
+    visibleRows().forEach(row => {
+      if (row.hidden && activeView !== VIEW_FAVORITES) row.hidden = false;
+    });
+  }
+
+  function ensureViewBanner() {
+    let banner = document.getElementById('registryPersonalViewBanner');
+    if (activeView === VIEW_ALL) {
+      banner?.remove();
+      return null;
+    }
+    if (!banner) {
+      const toolbar = document.querySelector('.toolbar');
+      if (!toolbar) return null;
+      banner = document.createElement('div');
+      banner.id = 'registryPersonalViewBanner';
+      banner.className = 'registry-personal-view-banner';
+      banner.innerHTML = '<span><b data-personal-banner-title></b><small data-personal-banner-copy></small></span><button type="button" data-personal-view="all">Të gjitha barnat</button>';
+      toolbar.insertAdjacentElement('afterend', banner);
+    }
+    return banner;
+  }
+
+  function updateViewBanner() {
+    const banner = ensureViewBanner();
+    if (!banner) return;
+    const title = banner.querySelector('[data-personal-banner-title]');
+    const copy = banner.querySelector('[data-personal-banner-copy]');
+    if (activeView === VIEW_FAVORITES) {
+      title.textContent = '★ Favoritet';
+      copy.textContent = `${favorites.size} ${favorites.size === 1 ? 'bar i ruajtur' : 'barna të ruajtura'} · vetëm të tuat`;
+    } else {
+      const total = noteCount();
+      title.textContent = '✎ Shënimet';
+      copy.textContent = total ? `${total} ${total === 1 ? 'bar me shënim' : 'barna me shënime'} · vetëm të tuat` : 'Nuk ke ende shënime.';
+    }
+  }
+
+  function updateNotesEmptyState() {
+    if (activeView !== VIEW_NOTES) return;
+    const rows = visibleRows();
+    const shown = rows.filter(row => !row.hidden).length;
+    let empty = document.getElementById('registryNotesEmpty');
+    if (shown || noteCount()) {
+      empty?.remove();
+      return;
+    }
+    if (!empty) {
+      empty = document.createElement('div');
+      empty.id = 'registryNotesEmpty';
+      empty.className = 'registry-personal-empty';
+      empty.innerHTML = '<strong>Nuk ke ende shënime.</strong><span>Kliko ikonën e lapsit pranë një bari për të shtuar një shënim personal.</span><button type="button" data-personal-view="all">Të gjitha barnat</button>';
+      document.getElementById('registryContent')?.insertAdjacentElement('beforebegin', empty);
+    }
+  }
+
+  function setView(view) {
+    const next = [VIEW_ALL, VIEW_FAVORITES, VIEW_NOTES].includes(view) ? view : VIEW_ALL;
+    const previous = activeView;
+    activeView = next;
+    document.getElementById('registryNotesEmpty')?.remove();
+
+    try {
+      const suffix = next === VIEW_FAVORITES ? '#favoritet' : next === VIEW_NOTES ? '#shenimet' : '';
+      history.replaceState(null, '', `${location.pathname}${location.search}${suffix}`);
+    } catch {}
+
+    const api = runtime();
+    if (next === VIEW_FAVORITES) {
+      restoreNotesScope();
+      api?.setFavoritesOnly?.(true);
+    } else {
+      if (previous === VIEW_FAVORITES) api?.setFavoritesOnly?.(false);
+      if (next === VIEW_ALL) restoreNotesScope();
+      else {
+        api?.setFavoritesOnly?.(false);
+        /* Faza 2 mban Notes si scope të UI-së. Faza 3 e lidh këtë scope direkt
+           me query/pagination server-side, pa e ndryshuar kontratën e butonit. */
+        applyNotesScope();
+      }
+    }
+    updateViewNav();
+    updateViewBanner();
+    updateNotesEmptyState();
+    schedule(2);
   }
 
   function refresh() {
     scheduled = false;
-    ensureNoteHeader();
-    document.querySelectorAll('#tbody > tr').forEach(row => {
-      if (row.querySelector('.empty-state')) return;
-      paintFavorite(row);
-      renderNoteCell(row);
-    });
-    updateFavoriteCounters();
-    updateFavoriteNavState();
-    ensureFavoritesBanner();
-    updateFavoriteResultCopy();
+    favorites = loadFavorites();
+    notes = loadNotes();
+    ensureSidebarNotes();
+    ensureToolbarViews();
+    stripLegacyNoteColumn();
+    visibleRows().forEach(paintRowActions);
+    updateCounts();
+    updateViewNav();
+    if (activeView === VIEW_NOTES) applyNotesScope();
+    updateViewBanner();
+    updateNotesEmptyState();
     document.documentElement.dataset.registryPersonalization = VERSION;
   }
 
@@ -433,106 +514,100 @@
   }
 
   function bind() {
+    ensureNoteDialog();
     document.addEventListener('click', event => {
       const favorite = event.target.closest('[data-row-favorite-toggle]');
       if (favorite) {
         event.preventDefault();
         event.stopImmediatePropagation();
-        toggleFavorite(favorite.closest('tr'));
+        toggleFavorite(favorite.closest('tr'), favorite);
         return;
       }
-      const clear = event.target.closest('[data-clear-personal-note]');
-      if (clear) {
+
+      const note = event.target.closest('[data-row-note-toggle]');
+      if (note) {
         event.preventDefault();
         event.stopImmediatePropagation();
-        const textarea = clear.closest('.registry-personal-note-wrap')?.querySelector('[data-personal-note]');
-        if (textarea) {
-          textarea.value = '';
-          flushNote(textarea);
-          textarea.focus({ preventScroll:true });
-        }
+        openNoteDialog(note.closest('tr'));
         return;
       }
-      if (event.target.closest('[data-personal-note]')) {
-        event.stopPropagation();
+
+      if (event.target.closest('[data-note-dialog-close]')) {
+        event.preventDefault();
+        closeNoteDialog();
         return;
       }
-      const favNav = event.target.closest('[data-nav="favorites"],[data-mi-shell-action="favorites"]');
-      if (favNav) {
+      if (event.target.closest('[data-note-dialog-save]')) {
+        event.preventDefault();
+        persistActiveNote();
+        return;
+      }
+      if (event.target.closest('[data-note-dialog-delete]')) {
+        event.preventDefault();
+        persistActiveNote({ remove:true });
+        return;
+      }
+
+      const viewButton = event.target.closest('[data-personal-view]');
+      if (viewButton) {
+        event.preventDefault();
+        setView(viewButton.dataset.personalView || VIEW_ALL);
+        return;
+      }
+      if (event.target.closest('[data-nav="favorites"],[data-mi-shell-action="favorites"]')) {
         event.preventDefault();
         event.stopImmediatePropagation();
-        enterFavorites();
+        setView(VIEW_FAVORITES);
         return;
       }
-      if (event.target.closest('[data-exit-favorites]')) {
+      if (event.target.closest('[data-nav="notes"],[data-mi-shell-action="notes"]')) {
         event.preventDefault();
-        exitFavorites();
+        event.stopImmediatePropagation();
+        setView(VIEW_NOTES);
         return;
       }
       const home = event.target.closest('[data-nav="home"]');
-      if (home && favoritesMode) {
+      if (home && activeView !== VIEW_ALL) {
         event.preventDefault();
         event.stopImmediatePropagation();
-        exitFavorites();
+        setView(VIEW_ALL);
       }
     }, true);
 
     document.addEventListener('input', event => {
-      if (event.target.matches?.('[data-personal-note]')) queueNoteSave(event.target);
-    }, true);
-
-    document.addEventListener('blur', event => {
-      if (event.target.matches?.('[data-personal-note]')) flushNote(event.target);
+      if (!event.target.matches?.('[data-note-dialog-text]')) return;
+      const length = document.querySelector('#registryNoteDialog [data-note-dialog-length]');
+      if (length) length.textContent = `${event.target.value.length} / ${NOTE_MAX}`;
     }, true);
 
     document.addEventListener('keydown', event => {
-      if (!event.target.matches?.('[data-personal-note]')) return;
+      if (!event.target.matches?.('[data-note-dialog-text]')) return;
       if ((event.metaKey || event.ctrlKey) && event.key === 'Enter') {
         event.preventDefault();
-        flushNote(event.target);
-        event.target.blur();
+        persistActiveNote();
       } else if (event.key === 'Escape') {
         event.preventDefault();
-        event.target.blur();
+        closeNoteDialog();
       }
     }, true);
 
+    window.addEventListener('medindex:tailadmin-ready', () => schedule(1));
     window.addEventListener('medindex:registry-rendered', () => schedule(1));
+    window.addEventListener('medindex:registry-page-ready', () => schedule(1));
+    window.addEventListener('medindex:desktop-lite-ready', () => schedule(1));
     window.addEventListener('medindex:registry-ready', () => {
-      if (favoritesMode) runtime()?.setFavoritesOnly?.(true);
+      if (activeView === VIEW_FAVORITES) runtime()?.setFavoritesOnly?.(true);
       schedule(1);
     });
-    window.addEventListener('medindex:library-ready', () => {
-      favorites = loadFavorites();
-      notes = loadNotes();
-      if (favoritesMode) runtime()?.refreshFavorites?.();
-      schedule(1);
-    });
-    window.addEventListener('medindex:library-synced', () => {
-      favorites = loadFavorites();
-      notes = loadNotes();
-      markFilledNotes('Sinkronizuar', 'synced');
-      schedule(1);
-    });
-    window.addEventListener('medindex:library-pending', event => {
-      markFilledNotes(event.detail?.offline ? 'Offline · ruajtur' : 'Ruajtur lokalisht', 'local');
-    });
-    window.addEventListener('online', () => markFilledNotes('Duke sinkronizuar…', 'saving'));
-    window.addEventListener('offline', () => markFilledNotes('Offline · ruajtur', 'local'));
+    window.addEventListener('medindex:library-ready', () => schedule(1));
+    window.addEventListener('medindex:library-synced', () => schedule(1));
     window.addEventListener('storage', event => {
-      if (event.key === FAVORITES_KEY) {
-        favorites = loadFavorites();
-        runtime()?.refreshFavorites?.();
-        schedule(1);
-      }
-      if (event.key === NOTES_KEY) {
-        notes = loadNotes();
-        schedule(1);
-      }
+      if (event.key === FAVORITES_KEY || event.key === NOTES_KEY) schedule(1);
     });
+    window.addEventListener('hashchange', () => setView(viewFromLocation()));
 
     schedule(1);
-    if (favoritesMode) window.setTimeout(enterFavorites, 80);
+    if (activeView !== VIEW_ALL) window.setTimeout(() => setView(activeView), 80);
   }
 
   if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', bind, { once:true });
@@ -541,8 +616,14 @@
   window.MedIndexRegistryPersonalization = Object.freeze({
     version:VERSION,
     refresh:() => schedule(1),
-    showFavorites:enterFavorites,
-    showAll:exitFavorites,
-    isFavoritesMode:() => favoritesMode,
+    showFavorites:() => setView(VIEW_FAVORITES),
+    showNotes:() => setView(VIEW_NOTES),
+    showAll:() => setView(VIEW_ALL),
+    setView,
+    getView:() => activeView,
+    isFavoritesMode:() => activeView === VIEW_FAVORITES,
+    isNotesMode:() => activeView === VIEW_NOTES,
+    favoriteCount:() => favorites.size,
+    noteCount,
   });
 })();
