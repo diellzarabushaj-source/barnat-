@@ -32,10 +32,7 @@ function patchMobileLite() {
     ];
     const guard = payloadGuards.find(candidate => source.includes(candidate));
     if (!guard) throw new Error('Phase 8 personalization patch could not find mobile-lite page payload guard.');
-    source = source.replace(
-      guard,
-      `${guard}\n      state.rows = payload.rows.map(row => ({ ...row }));`,
-    );
+    source = source.replace(guard, `${guard}\n      state.rows = payload.rows.map(row => ({ ...row }));`);
   }
 
   if (!source.includes("function renderLocalRows(rows, label = '')")) {
@@ -74,9 +71,16 @@ function patchIndex() {
     source = source.replace(scriptMatch[0], `${scriptMatch[0]}\n${scriptTag}`);
   }
 
+  /* Personalization v3 changes both behavior and CSS. Keep the version bump in
+     the build pipeline so production never serves the old cached two-surface UI. */
+  source = source.replace(/registry-user-personalization\.css\?v=[^&"]+/g, 'registry-user-personalization.css?v=20260816-5');
+  source = source.replace(/registry-user-personalization\.js\?v=[^&"]+/g, 'registry-user-personalization.js?v=20260816-5');
+
   if (source.indexOf('registry-mobile-phase8.js') > source.indexOf('registry-runtime-loader.js')) {
     throw new Error('Phase 8 must initialize before the full registry loader.');
   }
+  if (!source.includes('registry-user-personalization.css?v=20260816-5')) throw new Error('Personalization CSS version was not published.');
+  if (!source.includes('registry-user-personalization.js?v=20260816-5')) throw new Error('Personalization JS version was not published.');
   write('index.html', source);
 }
 
@@ -99,4 +103,4 @@ patchMobileLite();
 patchIndex();
 verifyAddon();
 
-console.log('Phase 8 mobile favorites + recent medicines are local-first, desktop-key compatible and restore without refetch.');
+console.log('Phase 8 mobile favorites + recents preserved; registry personalization v3 assets published.');
