@@ -36,6 +36,20 @@
   content:"";position:absolute;z-index:-1;left:-120px;bottom:-180px;width:420px;height:420px;border-radius:50%;
   background:radial-gradient(circle,rgba(75,213,208,.10),rgba(75,213,208,0) 70%);pointer-events:none;
 }
+
+/* Të dy rrathët e mësipërm janë dekor: 520px me `right:-180px` dhe 420px me
+   `left:-120px`. Ata dalin me qëllim përtej heroit, po pa asnjë kufizim dilnin
+   edhe përtej faqes dhe e zgjeronin dokumentin. Aritmetika përputhet me matjen:
+   në një ekran 390px kontejneri është 362px, plus 180px dalje djathtas jep 542px
+   — saktësisht `scrollWidth`-i i matur, dhe faqja skrollonte anash 166px.
+
+   `overflow-x:clip` te guaska e pret vetëm në skajin e faqes: dekori mbetet i
+   plotë brenda asaj që shihet, po nuk krijon më gjerësi. `clip` e jo `hidden`,
+   sepse `hidden` do ta kthente guaskën në kontejner skrollimi dhe do të prishte
+   çdo `position:sticky` brenda. */
+.blog-shell{
+  overflow-x:clip;
+}
 .blog-hero__copy{min-width:0}
 .blog-hero__badge{
   width:max-content;max-width:100%;display:inline-flex;align-items:center;gap:9px;margin-bottom:18px;padding:8px 12px 8px 10px;
