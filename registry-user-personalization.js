@@ -1,11 +1,11 @@
 (() => {
   'use strict';
 
-  const VERSION = 'registry-user-personalization-v3.0.0';
+  const VERSION = 'registry-user-personalization-v3.1.0';
   const FAVORITES_KEY = 'regjistriBarnave_favoritet_v1';
   const NOTES_KEY = 'regjistriBarnave_shenime_v1';
-  const NOTE_MAX = 2000;
   const PERSONAL_COLUMN_KEY = 'personal-note';
+  const NOTE_MAX = 2000;
   const VIEW_ALL = 'all';
   const VIEW_FAVORITES = 'favorites';
   const VIEW_NOTES = 'notes';
@@ -17,11 +17,9 @@
   let syncTimer = 0;
   let activeNoteKey = '';
   let activeNoteRow = null;
+  let personalRuntimeRequested = false;
 
   const clean = value => String(value ?? '').replace(/\s+/g, ' ').trim();
-  const escapeHtml = value => String(value ?? '').replace(/[&<>"']/g, ch => ({
-    '&':'&amp;', '<':'&lt;', '>':'&gt;', '"':'&quot;', "'":'&#39;'
-  }[ch]));
 
   function viewFromLocation() {
     const hash = location.hash.toLowerCase();
@@ -34,15 +32,12 @@
     try {
       const value = JSON.parse(localStorage.getItem(FAVORITES_KEY) || '[]');
       return new Set(Array.isArray(value) ? value.map(String).filter(Boolean) : []);
-    } catch {
-      return new Set();
-    }
+    } catch { return new Set(); }
   }
 
   function saveFavorites() {
-    try { localStorage.setItem(FAVORITES_KEY, JSON.stringify([...favorites])); }
+    try { localStorage.setItem(FAVORITES_KEY, JSON.stringify([...favorites])); return true; }
     catch { return false; }
-    return true;
   }
 
   function loadNotes() {
@@ -60,20 +55,15 @@
         output[safeKey] = { text, updatedAt:clean(raw.updatedAt) };
       });
       return output;
-    } catch {
-      return {};
-    }
+    } catch { return {}; }
   }
 
   function saveNotes() {
-    try { localStorage.setItem(NOTES_KEY, JSON.stringify(notes)); }
+    try { localStorage.setItem(NOTES_KEY, JSON.stringify(notes)); return true; }
     catch { return false; }
-    return true;
   }
 
-  function runtime() {
-    return window.MedIndexRegistryRuntime || null;
-  }
+  function runtime() { return window.MedIndexRegistryRuntime || null; }
 
   function registryNumber(row) {
     const direct = clean(
@@ -82,8 +72,8 @@
       || row?.querySelector?.('[data-registry-number]')?.dataset?.registryNumber
     );
     if (direct) return direct;
-    const first = clean(row?.querySelector?.('[data-registry-column-key="number"],[data-column-key="Nr rendor"]')?.textContent);
-    return first.match(/\d+/)?.[0] || '';
+    const cell = row?.querySelector?.('[data-registry-column-key="number"],[data-column-key="Nr rendor"]');
+    return clean(cell?.textContent).match(/\d+/)?.[0] || '';
   }
 
   function nameCell(row) {
@@ -126,17 +116,14 @@
     const nr = registryNumber(row);
     const name = drugName(row);
     const code = atc(row);
-    add(nr);
-    add(name);
+    add(nr); add(name);
     if (nr && name) add(`${nr}|${name}`);
     if (name && code) add(`${name}|${code}`);
     return values;
   }
 
   function isFavoriteRow(row) {
-    for (const candidate of favoriteCandidates(row)) {
-      if (favorites.has(candidate)) return true;
-    }
+    for (const candidate of favoriteCandidates(row)) if (favorites.has(candidate)) return true;
     return false;
   }
 
@@ -194,17 +181,17 @@
       const active = isFavoriteRow(row);
       const name = drugName(row) || 'barin';
       favorite.classList.toggle('is-favorite', active);
-      favorite.setAttribute('aria-pressed', active ? 'true' : 'false');
+      favorite.setAttribute('aria-pressed', String(active));
       favorite.setAttribute('aria-label', active ? `Hiqe ${name} nga Favoritet` : `Shto ${name} te Favoritet`);
       favorite.title = active ? 'Hiqe nga Favoritet' : 'Shto te Favoritet';
       row.classList.toggle('is-favorite', active);
     }
-
     const note = noteButton(row);
     if (note) {
       const active = hasNoteRow(row);
       const name = drugName(row) || 'barin';
       note.classList.toggle('has-note', active);
+      note.setAttribute('aria-pressed', String(active));
       note.setAttribute('aria-label', active ? `Shiko ose ndrysho shënimin për ${name}` : `Shto shënim për ${name}`);
       note.title = active ? 'Shiko/ndrysho shënimin' : 'Shto shënim';
     }
@@ -223,30 +210,28 @@
     dialog = document.createElement('dialog');
     dialog.id = 'registryNoteDialog';
     dialog.className = 'registry-note-dialog';
-    dialog.innerHTML = `
-      <form method="dialog" class="registry-note-dialog-card" data-note-dialog-form>
-        <div class="registry-note-dialog-head">
-          <div><small>Shënim personal</small><h2 data-note-dialog-title>Shënim</h2></div>
-          <button type="button" class="registry-note-dialog-close" data-note-dialog-close aria-label="Mbyll">×</button>
-        </div>
-        <textarea rows="6" maxlength="${NOTE_MAX}" data-note-dialog-text placeholder="Shkruaj shënimin tënd personal…"></textarea>
-        <div class="registry-note-dialog-meta"><span data-note-dialog-status></span><span data-note-dialog-length>0 / ${NOTE_MAX}</span></div>
-        <div class="registry-note-dialog-actions">
-          <button type="button" class="registry-note-delete" data-note-dialog-delete>Fshije</button>
-          <span></span>
-          <button type="button" class="registry-note-cancel" data-note-dialog-close>Anulo</button>
-          <button type="button" class="registry-note-save" data-note-dialog-save>Ruaj shënimin</button>
-        </div>
-      </form>`;
+    dialog.innerHTML = `<form method="dialog" class="registry-note-dialog-card" data-note-dialog-form>
+      <div class="registry-note-dialog-head">
+        <div><small>Shënim personal</small><h2 data-note-dialog-title>Shënim</h2></div>
+        <button type="button" class="registry-note-dialog-close" data-note-dialog-close aria-label="Mbyll">×</button>
+      </div>
+      <textarea rows="6" maxlength="${NOTE_MAX}" data-note-dialog-text placeholder="Shkruaj shënimin tënd personal…"></textarea>
+      <div class="registry-note-dialog-meta"><span data-note-dialog-status></span><span data-note-dialog-length>0 / ${NOTE_MAX}</span></div>
+      <div class="registry-note-dialog-actions">
+        <button type="button" class="registry-note-delete" data-note-dialog-delete>Fshije</button>
+        <span></span>
+        <button type="button" class="registry-note-cancel" data-note-dialog-close>Anulo</button>
+        <button type="button" class="registry-note-save" data-note-dialog-save>Ruaj shënimin</button>
+      </div>
+    </form>`;
     document.body.appendChild(dialog);
     return dialog;
   }
 
   function closeNoteDialog() {
     const dialog = document.getElementById('registryNoteDialog');
-    if (!dialog) return;
-    if (typeof dialog.close === 'function' && dialog.open) dialog.close();
-    else dialog.removeAttribute('open');
+    if (dialog?.open && typeof dialog.close === 'function') dialog.close();
+    else dialog?.removeAttribute('open');
     activeNoteKey = '';
     activeNoteRow = null;
   }
@@ -270,21 +255,11 @@
     requestAnimationFrame(() => textarea.focus({ preventScroll:true }));
   }
 
-  function dispatchStateChanged(kind, detail = {}) {
-    window.dispatchEvent(new CustomEvent(`medindex:${kind}-changed`, { detail }));
-  }
-
   function scheduleLibrarySync(delay = 120) {
     clearTimeout(syncTimer);
     syncTimer = window.setTimeout(async () => {
-      try {
-        const synced = await window.MedIndexUserLibrary?.syncNow?.();
-        const status = document.querySelector('#registryNoteDialog [data-note-dialog-status]');
-        if (status && activeNoteKey) status.textContent = synced ? 'Sinkronizuar.' : 'Ruajtur lokalisht · sinkronizimi është në pritje.';
-      } catch {
-        const status = document.querySelector('#registryNoteDialog [data-note-dialog-status]');
-        if (status && activeNoteKey) status.textContent = 'Ruajtur lokalisht · sinkronizimi është në pritje.';
-      }
+      try { await window.MedIndexUserLibrary?.syncNow?.(); }
+      catch {}
     }, delay);
   }
 
@@ -296,14 +271,18 @@
     if (text.trim()) notes[activeNoteKey] = { text, updatedAt:new Date().toISOString() };
     else delete notes[activeNoteKey];
     if (!saveNotes()) return;
+
     const changedKey = activeNoteKey;
     const changedRow = activeNoteRow;
-    dispatchStateChanged('notes', { count:noteCount(), key:changedKey, hasNote:Boolean(text.trim()) });
-    window.dispatchEvent(new CustomEvent('medindex:personal-note-saved', { detail:{ key:changedKey, hasText:Boolean(text.trim()) } }));
-    scheduleLibrarySync();
     closeNoteDialog();
-    if (changedRow?.isConnected) paintRowActions(changedRow);
-    schedule(1);
+    paintRowActions(changedRow);
+    updateCounts();
+    updateViewBanner();
+    window.dispatchEvent(new CustomEvent('medindex:personal-note-saved', { detail:{ key:changedKey, hasText:Boolean(text.trim()) } }));
+    window.dispatchEvent(new CustomEvent('medindex:notes-changed', { detail:{ key:changedKey, count:noteCount(), hasNote:Boolean(text.trim()) } }));
+    runtime()?.refreshNotes?.();
+    scheduleLibrarySync();
+    schedule(2);
   }
 
   function toggleFavorite(row, button) {
@@ -319,10 +298,11 @@
     paintRowActions(row);
     updateCounts();
     updateViewBanner();
-    dispatchStateChanged('favorites', { count:favorites.size, favorite:!active, key:primaryFavoriteKey(row) });
-    if (runtime()?.refreshFavorites) runtime().refreshFavorites();
+    window.dispatchEvent(new CustomEvent('medindex:favorites-changed', {
+      detail:{ count:favorites.size, favorite:!active, key:primaryFavoriteKey(row) }
+    }));
+    runtime()?.refreshFavorites?.();
     scheduleLibrarySync();
-    if (activeView === VIEW_FAVORITES && active) row.hidden = true;
   }
 
   function ensureSidebarNotes() {
@@ -352,63 +332,34 @@
   }
 
   function updateCounts() {
-    const favCount = favorites.size;
-    const notesTotal = noteCount();
     document.querySelectorAll('#favoriteNavCount,[data-mi-fav-count],[data-favorite-count],[data-toolbar-favorite-count]').forEach(node => {
-      node.textContent = String(favCount);
-      node.setAttribute('aria-label', `${favCount} favorite`);
+      node.textContent = String(favorites.size);
+      node.setAttribute('aria-label', `${favorites.size} favorite`);
     });
+    const total = noteCount();
     document.querySelectorAll('#notesNavCount,[data-note-count],[data-toolbar-note-count]').forEach(node => {
-      node.textContent = String(notesTotal);
-      node.setAttribute('aria-label', `${notesTotal} shënime`);
+      node.textContent = String(total);
+      node.setAttribute('aria-label', `${total} shënime`);
     });
   }
 
   function updateViewNav() {
-    document.querySelectorAll('[data-nav="favorites"],[data-mi-shell-action="favorites"],[data-personal-view="favorites"]').forEach(button => {
-      const active = activeView === VIEW_FAVORITES;
+    const set = (selector, active) => document.querySelectorAll(selector).forEach(button => {
       button.classList.toggle('active', active);
       button.classList.toggle('is-active', active);
       button.setAttribute('aria-pressed', String(active));
       if (active) button.setAttribute('aria-current', 'true');
       else button.removeAttribute('aria-current');
     });
-    document.querySelectorAll('[data-nav="notes"],[data-mi-shell-action="notes"],[data-personal-view="notes"]').forEach(button => {
-      const active = activeView === VIEW_NOTES;
-      button.classList.toggle('active', active);
-      button.classList.toggle('is-active', active);
-      button.setAttribute('aria-pressed', String(active));
-      if (active) button.setAttribute('aria-current', 'true');
-      else button.removeAttribute('aria-current');
-    });
+    set('[data-nav="favorites"],[data-mi-shell-action="favorites"],[data-personal-view="favorites"]', activeView === VIEW_FAVORITES);
+    set('[data-nav="notes"],[data-mi-shell-action="notes"],[data-personal-view="notes"]', activeView === VIEW_NOTES);
     document.body.classList.toggle('medindex-favorites-only', activeView === VIEW_FAVORITES);
     document.body.classList.toggle('medindex-notes-only', activeView === VIEW_NOTES);
   }
 
-  function visibleRows() {
-    return [...document.querySelectorAll('#tbody > tr')].filter(row => !row.querySelector('.empty-state'));
-  }
-
-  function applyNotesScope() {
-    if (activeView !== VIEW_NOTES) return;
-    visibleRows().forEach(row => { row.hidden = !hasNoteRow(row); });
-    const visible = visibleRows().filter(row => !row.hidden).length;
-    const badge = document.getElementById('countBadge');
-    if (badge) badge.textContent = `${visible} shënime në këtë pamje`;
-  }
-
-  function restoreNotesScope() {
-    visibleRows().forEach(row => {
-      if (row.hidden && activeView !== VIEW_FAVORITES) row.hidden = false;
-    });
-  }
-
   function ensureViewBanner() {
     let banner = document.getElementById('registryPersonalViewBanner');
-    if (activeView === VIEW_ALL) {
-      banner?.remove();
-      return null;
-    }
+    if (activeView === VIEW_ALL) { banner?.remove(); return null; }
     if (!banner) {
       const toolbar = document.querySelector('.toolbar');
       if (!toolbar) return null;
@@ -426,62 +377,70 @@
     if (!banner) return;
     const title = banner.querySelector('[data-personal-banner-title]');
     const copy = banner.querySelector('[data-personal-banner-copy]');
+    const loading = document.body.classList.contains('medindex-personal-view-loading');
     if (activeView === VIEW_FAVORITES) {
       title.textContent = '★ Favoritet';
-      copy.textContent = `${favorites.size} ${favorites.size === 1 ? 'bar i ruajtur' : 'barna të ruajtura'} · vetëm të tuat`;
+      copy.textContent = loading ? 'Duke përgatitur Favoritet…' : `${favorites.size} ${favorites.size === 1 ? 'bar i ruajtur' : 'barna të ruajtura'} · vetëm të tuat`;
     } else {
       const total = noteCount();
       title.textContent = '✎ Shënimet';
-      copy.textContent = total ? `${total} ${total === 1 ? 'bar me shënim' : 'barna me shënime'} · vetëm të tuat` : 'Nuk ke ende shënime.';
+      copy.textContent = loading ? 'Duke përgatitur Shënimet…' : total ? `${total} ${total === 1 ? 'bar me shënim' : 'barna me shënime'} · vetëm të tuat` : 'Nuk ke ende shënime.';
     }
   }
 
-  function updateNotesEmptyState() {
-    if (activeView !== VIEW_NOTES) return;
-    const rows = visibleRows();
-    const shown = rows.filter(row => !row.hidden).length;
-    let empty = document.getElementById('registryNotesEmpty');
-    if (shown || noteCount()) {
-      empty?.remove();
-      return;
+  function updateEmptyState() {
+    document.getElementById('registryPersonalEmpty')?.remove();
+    if (activeView === VIEW_ALL || document.body.classList.contains('medindex-personal-view-loading')) return;
+    const total = activeView === VIEW_FAVORITES ? favorites.size : noteCount();
+    if (total) return;
+    const empty = document.createElement('div');
+    empty.id = 'registryPersonalEmpty';
+    empty.className = 'registry-personal-empty';
+    empty.innerHTML = activeView === VIEW_FAVORITES
+      ? '<strong>Ende nuk ke barna të ruajtura.</strong><span>Kliko yllin pranë një bari për ta shtuar në Favoritet.</span><button type="button" data-personal-view="all">Të gjitha barnat</button>'
+      : '<strong>Nuk ke ende shënime.</strong><span>Kliko ikonën e lapsit pranë një bari për të shtuar një shënim personal.</span><button type="button" data-personal-view="all">Të gjitha barnat</button>';
+    document.getElementById('registryContent')?.insertAdjacentElement('beforebegin', empty);
+  }
+
+  function applyRuntimeView() {
+    const api = runtime();
+    if (!api) return false;
+    document.body.classList.remove('medindex-personal-view-loading');
+    if (api.setPersonalView) api.setPersonalView(activeView);
+    else {
+      api.setFavoritesOnly?.(activeView === VIEW_FAVORITES);
+      api.setNotesOnly?.(activeView === VIEW_NOTES);
     }
-    if (!empty) {
-      empty = document.createElement('div');
-      empty.id = 'registryNotesEmpty';
-      empty.className = 'registry-personal-empty';
-      empty.innerHTML = '<strong>Nuk ke ende shënime.</strong><span>Kliko ikonën e lapsit pranë një bari për të shtuar një shënim personal.</span><button type="button" data-personal-view="all">Të gjitha barnat</button>';
-      document.getElementById('registryContent')?.insertAdjacentElement('beforebegin', empty);
-    }
+    personalRuntimeRequested = false;
+    updateViewBanner();
+    updateEmptyState();
+    return true;
+  }
+
+  function requestPersonalRuntime() {
+    if (activeView === VIEW_ALL || runtime()) return;
+    document.body.classList.add('medindex-personal-view-loading');
+    updateViewBanner();
+    if (personalRuntimeRequested) return;
+    personalRuntimeRequested = true;
+    const requested = window.MEDINDEX_LOAD_FULL_REGISTRY?.(`personal-view-${activeView}`);
+    if (requested === false) personalRuntimeRequested = false;
   }
 
   function setView(view) {
-    const next = [VIEW_ALL, VIEW_FAVORITES, VIEW_NOTES].includes(view) ? view : VIEW_ALL;
-    const previous = activeView;
-    activeView = next;
-    document.getElementById('registryNotesEmpty')?.remove();
-
+    activeView = [VIEW_ALL, VIEW_FAVORITES, VIEW_NOTES].includes(view) ? view : VIEW_ALL;
     try {
-      const suffix = next === VIEW_FAVORITES ? '#favoritet' : next === VIEW_NOTES ? '#shenimet' : '';
+      const suffix = activeView === VIEW_FAVORITES ? '#favoritet' : activeView === VIEW_NOTES ? '#shenimet' : '';
       history.replaceState(null, '', `${location.pathname}${location.search}${suffix}`);
     } catch {}
-
-    const api = runtime();
-    if (next === VIEW_FAVORITES) {
-      restoreNotesScope();
-      api?.setFavoritesOnly?.(true);
-    } else {
-      if (previous === VIEW_FAVORITES) api?.setFavoritesOnly?.(false);
-      if (next === VIEW_ALL) restoreNotesScope();
-      else {
-        api?.setFavoritesOnly?.(false);
-        /* Faza 2 mban Notes si scope të UI-së. Faza 3 e lidh këtë scope direkt
-           me query/pagination server-side, pa e ndryshuar kontratën e butonit. */
-        applyNotesScope();
-      }
-    }
+    document.getElementById('registryPersonalEmpty')?.remove();
     updateViewNav();
     updateViewBanner();
-    updateNotesEmptyState();
+    if (!applyRuntimeView()) {
+      if (activeView === VIEW_ALL) document.body.classList.remove('medindex-personal-view-loading');
+      else requestPersonalRuntime();
+    }
+    updateEmptyState();
     schedule(2);
   }
 
@@ -492,12 +451,11 @@
     ensureSidebarNotes();
     ensureToolbarViews();
     stripLegacyNoteColumn();
-    visibleRows().forEach(paintRowActions);
+    document.querySelectorAll('#tbody > tr').forEach(paintRowActions);
     updateCounts();
     updateViewNav();
-    if (activeView === VIEW_NOTES) applyNotesScope();
     updateViewBanner();
-    updateNotesEmptyState();
+    updateEmptyState();
     document.documentElement.dataset.registryPersonalization = VERSION;
   }
 
@@ -505,10 +463,8 @@
     if (scheduled) return;
     scheduled = true;
     const run = () => {
-      if (frames > 1) {
-        frames -= 1;
-        requestAnimationFrame(run);
-      } else requestAnimationFrame(refresh);
+      if (frames > 1) { frames -= 1; requestAnimationFrame(run); }
+      else requestAnimationFrame(refresh);
     };
     run();
   }
@@ -518,59 +474,28 @@
     document.addEventListener('click', event => {
       const favorite = event.target.closest('[data-row-favorite-toggle]');
       if (favorite) {
-        event.preventDefault();
-        event.stopImmediatePropagation();
-        toggleFavorite(favorite.closest('tr'), favorite);
-        return;
+        event.preventDefault(); event.stopImmediatePropagation();
+        toggleFavorite(favorite.closest('tr'), favorite); return;
       }
-
       const note = event.target.closest('[data-row-note-toggle]');
       if (note) {
-        event.preventDefault();
-        event.stopImmediatePropagation();
-        openNoteDialog(note.closest('tr'));
-        return;
+        event.preventDefault(); event.stopImmediatePropagation();
+        openNoteDialog(note.closest('tr')); return;
       }
-
-      if (event.target.closest('[data-note-dialog-close]')) {
-        event.preventDefault();
-        closeNoteDialog();
-        return;
-      }
-      if (event.target.closest('[data-note-dialog-save]')) {
-        event.preventDefault();
-        persistActiveNote();
-        return;
-      }
-      if (event.target.closest('[data-note-dialog-delete]')) {
-        event.preventDefault();
-        persistActiveNote({ remove:true });
-        return;
-      }
-
+      if (event.target.closest('[data-note-dialog-close]')) { event.preventDefault(); closeNoteDialog(); return; }
+      if (event.target.closest('[data-note-dialog-save]')) { event.preventDefault(); persistActiveNote(); return; }
+      if (event.target.closest('[data-note-dialog-delete]')) { event.preventDefault(); persistActiveNote({ remove:true }); return; }
       const viewButton = event.target.closest('[data-personal-view]');
-      if (viewButton) {
-        event.preventDefault();
-        setView(viewButton.dataset.personalView || VIEW_ALL);
-        return;
-      }
+      if (viewButton) { event.preventDefault(); setView(viewButton.dataset.personalView || VIEW_ALL); return; }
       if (event.target.closest('[data-nav="favorites"],[data-mi-shell-action="favorites"]')) {
-        event.preventDefault();
-        event.stopImmediatePropagation();
-        setView(VIEW_FAVORITES);
-        return;
+        event.preventDefault(); event.stopImmediatePropagation(); setView(VIEW_FAVORITES); return;
       }
       if (event.target.closest('[data-nav="notes"],[data-mi-shell-action="notes"]')) {
-        event.preventDefault();
-        event.stopImmediatePropagation();
-        setView(VIEW_NOTES);
-        return;
+        event.preventDefault(); event.stopImmediatePropagation(); setView(VIEW_NOTES); return;
       }
       const home = event.target.closest('[data-nav="home"]');
       if (home && activeView !== VIEW_ALL) {
-        event.preventDefault();
-        event.stopImmediatePropagation();
-        setView(VIEW_ALL);
+        event.preventDefault(); event.stopImmediatePropagation(); setView(VIEW_ALL);
       }
     }, true);
 
@@ -582,27 +507,29 @@
 
     document.addEventListener('keydown', event => {
       if (!event.target.matches?.('[data-note-dialog-text]')) return;
-      if ((event.metaKey || event.ctrlKey) && event.key === 'Enter') {
-        event.preventDefault();
-        persistActiveNote();
-      } else if (event.key === 'Escape') {
-        event.preventDefault();
-        closeNoteDialog();
-      }
+      if ((event.metaKey || event.ctrlKey) && event.key === 'Enter') { event.preventDefault(); persistActiveNote(); }
+      else if (event.key === 'Escape') { event.preventDefault(); closeNoteDialog(); }
     }, true);
 
     window.addEventListener('medindex:tailadmin-ready', () => schedule(1));
     window.addEventListener('medindex:registry-rendered', () => schedule(1));
     window.addEventListener('medindex:registry-page-ready', () => schedule(1));
-    window.addEventListener('medindex:desktop-lite-ready', () => schedule(1));
+    window.addEventListener('medindex:desktop-lite-ready', () => {
+      if (activeView !== VIEW_ALL) requestPersonalRuntime();
+      schedule(1);
+    });
     window.addEventListener('medindex:registry-ready', () => {
-      if (activeView === VIEW_FAVORITES) runtime()?.setFavoritesOnly?.(true);
+      applyRuntimeView();
       schedule(1);
     });
     window.addEventListener('medindex:library-ready', () => schedule(1));
     window.addEventListener('medindex:library-synced', () => schedule(1));
     window.addEventListener('storage', event => {
-      if (event.key === FAVORITES_KEY || event.key === NOTES_KEY) schedule(1);
+      if (event.key === FAVORITES_KEY || event.key === NOTES_KEY) {
+        if (event.key === FAVORITES_KEY) runtime()?.refreshFavorites?.();
+        if (event.key === NOTES_KEY) runtime()?.refreshNotes?.();
+        schedule(1);
+      }
     });
     window.addEventListener('hashchange', () => setView(viewFromLocation()));
 
