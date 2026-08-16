@@ -21,17 +21,9 @@
   const desktopMedia = window.matchMedia?.(DESKTOP_QUERY);
   html.dataset.registryRuntimeLoader = VERSION;
 
-  function authReady() {
-    return html.classList.contains('auth-ready');
-  }
-
-  function mobileLiteCandidate() {
-    return Boolean(mobileMedia?.matches && html.dataset.registryMobileLite);
-  }
-
-  function desktopLiteCandidate() {
-    return Boolean(desktopMedia?.matches && html.dataset.registryDesktopLite);
-  }
+  function authReady() { return html.classList.contains('auth-ready'); }
+  function mobileLiteCandidate() { return Boolean(mobileMedia?.matches && html.dataset.registryMobileLite); }
+  function desktopLiteCandidate() { return Boolean(desktopMedia?.matches && html.dataset.registryDesktopLite); }
 
   function clearMobileWatch() {
     window.clearTimeout(mobileWatchTimer);
@@ -47,6 +39,9 @@
     window.clearTimeout(desktopGraceTimer);
     html.dataset.registryRuntimeMode = 'full';
     html.dataset.registryRuntimeReason = reason;
+    /* Tell lightweight owners to relinquish their local personalization rails
+       even when the full runtime was requested through the direct loader API. */
+    window.dispatchEvent(new CustomEvent('medindex:request-full-registry', { detail:{ reason, ownerHandoff:true } }));
     window.dispatchEvent(new CustomEvent('medindex:full-registry-started', { detail:{ reason } }));
 
     const script = document.createElement('script');
@@ -66,7 +61,6 @@
     scheduled = true;
     authObserver?.disconnect();
     window.clearTimeout(authTimer);
-
     requestAnimationFrame(() => {
       scheduled = false;
       loadRuntime(reason);
@@ -97,33 +91,19 @@
   }
 
   function onAuthenticated() {
-    if (mobileLiteCandidate()) {
-      deferForMobileLite();
-      return;
-    }
-    if (desktopLiteCandidate()) {
-      deferForDesktopLite();
-      return;
-    }
+    if (mobileLiteCandidate()) { deferForMobileLite(); return; }
+    if (desktopLiteCandidate()) { deferForDesktopLite(); return; }
     scheduleRuntime('legacy-no-lite');
   }
 
   function waitForAuthenticatedShell() {
-    if (authReady()) {
-      onAuthenticated();
-      return;
-    }
-
+    if (authReady()) { onAuthenticated(); return; }
     authObserver = new MutationObserver(() => {
       if (!authReady()) return;
       authObserver?.disconnect();
       onAuthenticated();
     });
-    authObserver.observe(html, {
-      attributes:true,
-      attributeFilter:['class'],
-    });
-
+    authObserver.observe(html, { attributes:true, attributeFilter:['class'] });
     authTimer = window.setTimeout(() => {
       if (authReady()) onAuthenticated();
       else html.dataset.registryRuntimeLoaderError = 'auth-timeout';
@@ -151,7 +131,6 @@
     const message = String(event.detail?.message || '').toLocaleLowerCase('sq');
     const invalidContract = message.includes('përgjigjja e regjistrit') && message.includes('pavlefshme');
     if (!invalidContract) return;
-
     html.dataset.registryRuntimeReason = 'fatal-mobile-lite-contract-mismatch';
     const handedOff = window.MEDINDEX_MOBILE_LITE?.handoff?.('fatal-mobile-lite-contract-mismatch', { fatal:true });
     if (handedOff === false) scheduleRuntime('fatal-mobile-lite-contract-mismatch');
@@ -177,7 +156,6 @@
   });
 
   window.addEventListener('medindex:mobile-lite-load-error', recoverInvalidMobileLiteContract);
-
   window.addEventListener('medindex:mobile-lite-ready', () => {
     if (!mobileMedia?.matches || loaded) return;
     clearMobileWatch();
@@ -189,9 +167,6 @@
     if (!event.matches && html.dataset.registryMobileLiteReady === '1') scheduleRuntime('viewport-desktop');
   });
 
-  if (document.readyState === 'loading') {
-    document.addEventListener('DOMContentLoaded', waitForAuthenticatedShell, { once:true });
-  } else {
-    waitForAuthenticatedShell();
-  }
+  if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', waitForAuthenticatedShell, { once:true });
+  else waitForAuthenticatedShell();
 })();
