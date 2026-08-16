@@ -18,8 +18,12 @@ function patchUnifiedTable() {
 
   source = replaceOnce(
     source,
-    `  const MOBILE_BREAKPOINT = 760;`,
-    `  const MOBILE_BREAKPOINT = 760;\n  const PHONE_OWNER_QUERY = '(max-width: 767px)';`,
+    // MOBILE_BREAKPOINT është kufiri i gjeometrisë së tabelës (deri ku nuk
+    // shkruhet colgroup as gjerësi në piksela) dhe qëndron te 1199px.
+    // PHONE_OWNER_QUERY është diçka tjetër: kufiri ku regjistri i telefonit e
+    // merr faqen. Të dy janë të pavarur, prandaj kjo shtesë vjen pas tij.
+    `  const MOBILE_BREAKPOINT = 1199;`,
+    `  const MOBILE_BREAKPOINT = 1199;\n  const PHONE_OWNER_QUERY = '(max-width: 767px)';`,
     'unified table phone owner constant',
   );
 
