@@ -9,17 +9,20 @@
   const readingProgress = document.getElementById('blogReadingProgress');
   const API_URL = '/api/clinical-editor?blog=1';
   const AUTHOR_IMAGE = 'images/brand/diellza-portret.webp';
+  const LOCAL_COVER = 'images/marketing/mjekja-ne-pune.webp';
 
   const FALLBACK_COVERS = Object.freeze({
     clinical: {
-      url: 'https://images.unsplash.com/photo-1758691463620-188ca7c1a04f?auto=format&fit=crop&w=1800&q=84',
-      alt: 'Mjek duke zhvilluar një konsultë digjitale përmes laptopit.',
-      credit: 'Vitaly Gariev · Unsplash',
+      url: LOCAL_COVER,
+      alt: 'Mjeke duke përdorur teknologjinë gjatë punës klinike.',
+      credit: 'MedIndex',
+      position: 'center 32%',
     },
     technology: {
-      url: 'https://images.unsplash.com/photo-1758691737643-f4ce254290af?auto=format&fit=crop&w=1800&q=84',
-      alt: 'Mjek duke punuar në laptop në një ambient klinik.',
-      credit: 'Vitaly Gariev · Unsplash',
+      url: LOCAL_COVER,
+      alt: 'Mjeke duke punuar me laptop në një ambient klinik.',
+      credit: 'MedIndex',
+      position: 'center 42%',
     },
   });
 
@@ -83,6 +86,7 @@
   }
 
   function coverFor(post) {
+    const fallback = fallbackCover(post);
     const configured = post?.coverImage || {};
     const configuredUrl = safeImageUrl(configured.url);
     if (configuredUrl) {
@@ -91,9 +95,23 @@
         alt: configured.alt || post?.title || 'MedIndex Journal',
         caption: configured.caption || '',
         credit: configured.credit || '',
+        position: 'center',
       };
     }
-    return { ...fallbackCover(post), caption: '' };
+    return { ...fallback, caption: '' };
+  }
+
+  function bindImageFallbacks(root = document) {
+    root.querySelectorAll('img[data-blog-fallback]').forEach((img) => {
+      if (img.dataset.fallbackBound === '1') return;
+      img.dataset.fallbackBound = '1';
+      img.addEventListener('error', () => {
+        if (img.dataset.fallbackApplied === '1') return;
+        img.dataset.fallbackApplied = '1';
+        img.src = LOCAL_COVER;
+        img.style.objectPosition = img.dataset.fallbackPosition || 'center';
+      }, { once: true });
+    });
   }
 
   async function fetchJson(url) {
@@ -107,9 +125,7 @@
         signal: controller.signal,
       });
       const payload = await response.json().catch(() => ({}));
-      if (!response.ok || !payload.ok) {
-        throw new Error(payload.error || `HTTP ${response.status}`);
-      }
+      if (!response.ok || !payload.ok) throw new Error(payload.error || `HTTP ${response.status}`);
       return payload;
     } finally {
       window.clearTimeout(timeout);
@@ -140,9 +156,13 @@
     return `
       <article class="blog-card${featured ? ' blog-card--featured' : ''}">
         <a class="blog-card__media" href="blog.html?slug=${slug}" aria-label="Lexo ${title}">
-          <img src="${escapeHtml(cover.url)}" alt="${escapeHtml(cover.alt)}" width="1200" height="760" ${featured ? 'fetchpriority="high"' : 'loading="lazy"'} decoding="async">
+          <img src="${escapeHtml(cover.url)}" alt="${escapeHtml(cover.alt)}" width="1200" height="760"
+            style="object-position:${escapeHtml(cover.position || 'center')}"
+            data-blog-fallback="1" data-fallback-position="${escapeHtml(cover.position || 'center')}"
+            ${featured ? 'fetchpriority="high"' : 'loading="lazy"'} decoding="async">
           <span class="blog-card__media-overlay" aria-hidden="true"></span>
-          ${featured ? '<span class="blog-card__feature-label">Zgjedhja e redaksisë</span>' : ''}
+          ${featured ? '<span class="blog-card__feature-label"><i></i>Zgjedhja e redaksisë</span>' : ''}
+          <span class="blog-card__media-note"><b>MedIndex Journal</b><small>Evidencë → praktikë</small></span>
           ${cover.credit ? `<span class="blog-card__credit">${escapeHtml(cover.credit)}</span>` : ''}
         </a>
         <div class="blog-card__content">
@@ -160,7 +180,7 @@
                 <span class="blog-card__date">${escapeHtml(date)}</span>
               </span>
             </div>
-            <a class="blog-card__link" href="blog.html?slug=${slug}" aria-label="Lexo ${title}">Lexo artikullin <span aria-hidden="true">→</span></a>
+            <a class="blog-card__link" href="blog.html?slug=${slug}" aria-label="Lexo ${title}">Lexo <span aria-hidden="true">↗</span></a>
           </div>
         </div>
       </article>`;
@@ -170,7 +190,6 @@
     let html = escapeHtml(child?.text || '');
     const marks = Array.isArray(child?.marks) ? child.marks : [];
     const markDefs = Array.isArray(block?.markDefs) ? block.markDefs : [];
-
     marks.forEach((mark) => {
       if (mark === 'strong') html = `<strong>${html}</strong>`;
       else if (mark === 'em') html = `<em>${html}</em>`;
@@ -205,7 +224,6 @@
     if (!Array.isArray(blocks)) return '';
     let html = '';
     let openList = '';
-
     blocks.forEach((block) => {
       if (!block || block._type !== 'block') return;
       if (block.listItem) {
@@ -221,14 +239,12 @@
         if (content) html += `<li>${content}</li>`;
         return;
       }
-
       if (openList) {
         html += `</${openList}>`;
         openList = '';
       }
       html += blockHtml(block);
     });
-
     if (openList) html += `</${openList}>`;
     return html;
   }
@@ -296,7 +312,10 @@
         <span class="blog-article__verified">MedIndex editorial</span>
       </div>
       <figure class="blog-article__hero-image">
-        <img src="${escapeHtml(cover.url)}" alt="${escapeHtml(cover.alt)}" width="1600" height="920" fetchpriority="high" decoding="async">
+        <img src="${escapeHtml(cover.url)}" alt="${escapeHtml(cover.alt)}" width="1600" height="920"
+          style="object-position:${escapeHtml(cover.position || 'center')}"
+          data-blog-fallback="1" data-fallback-position="${escapeHtml(cover.position || 'center')}"
+          fetchpriority="high" decoding="async">
         ${figureCaption ? `<figcaption>${escapeHtml(figureCaption)}</figcaption>` : ''}
       </figure>
       <div class="blog-article__body">${renderPortableText(post.body)}</div>
@@ -309,6 +328,7 @@
         <span>MedIndex Journal</span>
         <a href="blog.html">Shiko të gjithë artikujt <b aria-hidden="true">→</b></a>
       </div>`;
+    bindImageFallbacks(articleView);
     setupReadingProgress();
   }
 
@@ -327,6 +347,7 @@
         return;
       }
       grid.innerHTML = posts.map(renderCard).join('');
+      bindImageFallbacks(grid);
     } catch (error) {
       console.error('[blog]', error);
       showStatus('Artikujt nuk mund të ngarkohen për momentin.', 'Provo ta rifreskosh faqen pas pak.');
