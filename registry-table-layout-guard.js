@@ -3,7 +3,10 @@
 
   const VERSION = 'registry-table-layout-guard-v6';
   const ROOT = document.documentElement;
-  const MOBILE_BREAKPOINT = 760;
+  // Deri këtu faqja i jep rreshtat si kartela shumërreshtore, pa colgroup dhe pa
+  // gjerësi të fiksuar. Duhet të përputhet me MOBILE_BREAKPOINT te
+  // registry-unified-table.js dhe me kufirin 1199px te registry-tablet-rows.css.
+  const MOBILE_BREAKPOINT = 1199;
   const TOLERANCE_PX = 2;
   const VISIBILITY_STYLE_ID = 'registry-layout-body-visibility';
   const REMOVED_KEYS = new Set(['clinical-status', 'clinical-action', 'personal-note']);
