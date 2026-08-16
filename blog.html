@@ -12,6 +12,7 @@
   <link rel="stylesheet" href="info-pages.css?v=20260814-1">
   <link rel="stylesheet" href="medindex-tailwind-ui.css?v=20260805-1" data-medindex-tailwind-ui>
   <link rel="stylesheet" href="blog.css?v=20260816-3">
+  <link rel="stylesheet" href="blog-enhance.css?v=20260816-1">
 </head>
 <body>
   <div id="blogReadingProgress" class="blog-reading-progress" hidden aria-hidden="true"><span></span></div>
@@ -58,6 +59,14 @@
             <b>01</b>
             <span>Clinical insight</span>
           </div>
+          <div class="blog-hero__author-card" aria-label="Autorja e MedIndex Journal">
+            <img src="images/brand/diellza-portret.webp" alt="" width="92" height="92" decoding="async">
+            <div>
+              <small>Editor & author</small>
+              <strong>Dr. Diellza Rabushaj</strong>
+              <span>Clinical knowledge</span>
+            </div>
+          </div>
         </div>
       </section>
 
@@ -79,7 +88,32 @@
               <span>AI në mjekësi</span>
             </div>
           </div>
+
+          <div class="blog-discovery" aria-label="Kërko dhe filtro artikujt">
+            <label class="blog-search" for="blogSearchInput">
+              <svg class="blog-search__icon" viewBox="0 0 24 24" fill="none" aria-hidden="true"><circle cx="11" cy="11" r="7" stroke="currentColor" stroke-width="1.8"/><path d="m16.2 16.2 4 4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>
+              <input id="blogSearchInput" type="search" autocomplete="off" placeholder="Kërko sipas temës, titullit ose fjalës kyçe…" aria-label="Kërko në MedIndex Journal">
+              <kbd>Ctrl K</kbd>
+            </label>
+            <div id="blogFilterList" class="blog-filter-list" aria-label="Filtro sipas kategorisë"></div>
+          </div>
+
+          <div class="blog-journal-pulse" aria-label="Përmbledhje e MedIndex Journal">
+            <div class="blog-journal-pulse__intro">
+              <small>MedIndex Journal</small>
+              <strong>Përmbajtje e kuruar për vendime klinike më të qarta.</strong>
+            </div>
+            <div class="blog-journal-pulse__stat"><span>Rezultate</span><strong id="blogVisibleCount">—</strong></div>
+            <div class="blog-journal-pulse__stat"><span>Lexim total</span><strong id="blogTotalReading">—</strong></div>
+            <div class="blog-journal-pulse__stat"><span>Tema</span><strong id="blogTopicCount">—</strong></div>
+            <span id="blogPublishedCount" hidden></span>
+          </div>
+
           <div id="blogGrid" class="blog-grid"></div>
+          <div id="blogFilterEmpty" class="blog-empty-filter" hidden>
+            <strong>Nuk u gjet asnjë artikull.</strong>
+            <p>Provo një fjalë tjetër ose zgjidh “Të gjitha”.</p>
+          </div>
         </div>
 
         <article id="blogArticleView" class="blog-article" hidden></article>
@@ -88,5 +122,6 @@
   </main>
 
   <script src="blog.js?v=20260816-3" defer></script>
+  <script src="blog-enhance.js?v=20260816-1" defer></script>
 </body>
 </html>
