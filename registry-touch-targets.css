@@ -1,0 +1,79 @@
+/* MedIndex — Faza 03: objektivat e prekjes.
+
+   Matja mbi runtime-in e ndërtuar nxori 63 kontrolle nën 40px në desktop, dhe
+   50 prej tyre ishin i njëjti element: emri i barit, 22px i lartë. Pjesa tjetër
+   janë grupe me nga një deri në katër.
+
+   Pragu i punës është 44px — masa e rekomanduar për gisht. Kjo faqe përdoret
+   edhe në tablet me dorë, jo vetëm me mi, dhe një emër bari 22px i lartë është
+   objektivi kryesor i çdo rreshti: aty klikohet për të hapur barin.
+
+   Rregull i përgjithshëm: rritet vetëm zona e prekjes, jo pamja. Prandaj
+   përdoret `min-height` me `align-items:center` në vend të `height`, që teksti
+   të mos zhvendoset dhe rreshtat të mos rriten kur ka tashmë hapësirë. */
+
+html.medindex-tailadmin[data-mi-page="barnat"]{
+  --mi-touch:44px;
+}
+
+/* Emri i barit — 50 nga 63 rastet, 22px i lartë.
+
+   Provova `min-height:44px` dhe matja e refuzoi menjëherë: rreshti u rrit nga
+   92px në 124px, sepse qeliza e emrit mban edhe elemente të tjera nën të dhe
+   stiva doli mbi lartësinë e rreshtit. Tridhjetë e pesë për qind rreshta më të
+   lartë do të thotë një të tretën më pak barna në ekran — çmim i papranueshëm
+   për një regjistër që skanohet me sy.
+
+   Prandaj zgjerohet vetëm zona e prekjes: mbushje vertikale për gishtin, dhe
+   margjinë negative e barabartë që rrjedha të mbetet e paprekur. 22px tekst +
+   2×12px = 46px zonë prekjeje, me rreshtin pikërisht aty ku ishte.
+
+   Pa `display:flex`. Provova edhe atë dhe pamja e refuzoi: emri e humbi
+   kufizimin e qelizës dhe dilte mbi kolonën e substancës. Mbushja e zgjeron
+   zonën pa e prekur mënyrën si vizatohet elementi. */
+html.medindex-tailadmin[data-mi-page="barnat"] body #registryContent #dataTable[data-registry-unified-table] tbody .drug-name-text{
+  padding-block:12px!important;
+  margin-block:-12px!important;
+}
+
+/* Faqosja: butonat ishin 35px. Gjerësia 35px është nën 44 po mbi pragun 24 të
+   portës; këtu rregullohet lartësia dhe gjerësia minimale bashkë. */
+html.medindex-tailadmin[data-mi-page="barnat"] body #pagination.pagination :is(button, a){
+  min-width:var(--mi-touch)!important;
+  min-height:var(--mi-touch)!important;
+}
+
+/* Shiriti i regjistrit: çelësi i filtrave dhe butonat e pamjes ishin 38px. */
+html.medindex-tailadmin[data-mi-page="barnat"] body #registryViewToolbar.registry-view-toolbar :is(
+  .registry-filter-toggle,
+  .registry-view-actions button,
+  [data-registry-view]
+){
+  min-height:var(--mi-touch)!important;
+}
+
+/* Treguesi i auditimit është buton i vërtetë — hap panelin e verifikimit. */
+html.medindex-tailadmin[data-mi-page="barnat"] body :is(#registryFilterPanel.toolbar, .toolbar, .registry-toolbar) .clinical-editor-progress{
+  min-height:var(--mi-touch)!important;
+}
+
+/* Statusi offline dhe marka e krerëve: të dy klikohen, të dy ishin 34px. */
+html.medindex-tailadmin[data-mi-page="barnat"] body :is(.mi-offline-status, .mi-mobile-brand, .mi-brand){
+  min-height:var(--mi-touch)!important;
+}
+
+/* `.skip-link` mbetet jashtë me qëllim: është lidhja e kapërcimit që rri e
+   fshehur derisa merr fokusin nga tastiera. Ajo nuk preket me gisht kurrë, dhe
+   rritja e saj do ta bënte të dukshme ose do të kërkonte pozicionim të ri. */
+
+/* Thërrimet janë lidhje teksti inline: një `min-height` do t'i shtynte poshtë
+   dhe do ta prishte rreshtin. Në vend të saj zgjerohet vetëm zona e prekjes me
+   mbushje vertikale, dhe një margjinë negative e barabartë e mban rreshtin
+   pikërisht aty ku ishte. 19px tekst + 2×13px mbushje = 45px zonë prekjeje,
+   me pamje të pandryshuar. */
+html.medindex-tailadmin[data-mi-page="barnat"] body .mi-breadcrumb a{
+  display:inline-flex!important;
+  align-items:center!important;
+  padding-block:13px!important;
+  margin-block:-13px!important;
+}

@@ -114,6 +114,9 @@
       event.stopPropagation();
       toggle(button, key, name);
     });
+    /* Shtohet i fundit. Provova edhe `insertBefore` që ylli të pluskonte pranë
+       emrit, po pamja doli më keq: floati zinte rreshtin e parë dhe e shtynte
+       emrin poshtë. Kështu emri lexohet i pari dhe ylli rri poshtë tij djathtas. */
     host.appendChild(button);
   }
 

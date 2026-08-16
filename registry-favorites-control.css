@@ -4,17 +4,22 @@
    butonat nën 40px. Një yll 20px do ta kalonte pamjen po do ta shtonte listën
    e objektivave të vegjël me një zë për çdo rresht.
 
-   Rri lart-djathtas te qeliza e emrit tregtar: aty ku syri shkon i pari kur
-   kërkon një bar, dhe pa e ngushtuar tekstin, sepse është jashtë rrjedhës. */
+   Rri djathtas te qeliza e emrit tregtar: aty ku syri shkon i pari kur kërkon
+   një bar. */
 
-html.medindex-tailadmin[data-mi-page="barnat"] body #registryContent #dataTable[data-registry-unified-table] tbody td[data-registry-column-key="trade-name"]{
-  position:relative!important;
-}
+/* Ylli nuk pozicionohet në mënyrë absolute, dhe qeliza nuk bëhet `relative`.
 
+   Versioni i parë e bënte pikërisht atë dhe matja e kapi një zhvendosje që nuk
+   e prisja: me `position:relative` mbi një `<td>` në një tabelë me
+   `table-layout:fixed`, qeliza e emrit lëvizte 44px djathtas dhe mbulonte
+   kolonën e substancës. E izolova me tri prova — heqja e `relative`-it e
+   rregullonte, heqja e yllit jo — pra shkaku ishte pozicionimi i qelizës, jo
+   butoni.
+
+   Prandaj ylli rri thjesht i pluskuar djathtas brenda rrjedhës. Kolona është
+   210px, emri zë rreth 164px, ylli 44px — hyjnë saktësisht. */
 html.medindex-tailadmin[data-mi-page="barnat"] body .registry-favorite-toggle{
-  position:absolute;
-  top:50%;
-  right:6px;
+  float:right;
   display:grid;
   width:44px;
   height:44px;
@@ -25,7 +30,6 @@ html.medindex-tailadmin[data-mi-page="barnat"] body .registry-favorite-toggle{
   background:transparent;
   color:#cbd5e1;
   cursor:pointer;
-  transform:translateY(-50%);
   transition:color .16s ease, background-color .16s ease;
 }
 
@@ -57,17 +61,6 @@ html.medindex-tailadmin[data-mi-page="barnat"] body .registry-favorite-toggle.is
 html.medindex-tailadmin[data-mi-page="barnat"] body .registry-favorite-toggle.is-favorite:hover{
   background:#fdf5e3;
   color:#b8800f;
-}
-
-/* Në brezin e kartelës emri zë tërë rreshtin dhe kutiza e përzgjedhjes rri
-   lart-djathtas, prandaj ylli zbret pak që të mos përplaset me të. */
-@media (min-width:768px) and (max-width:1199px){
-  html.medindex-tailadmin[data-mi-page="barnat"] body .registry-favorite-toggle{
-    top:auto;
-    bottom:2px;
-    right:64px;
-    transform:none;
-  }
 }
 
 /* Telefoni: kartelat e `mobile-lite` kanë strukturë tjetër dhe kontrollin e
