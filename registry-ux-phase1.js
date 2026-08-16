@@ -1,7 +1,7 @@
 (() => {
   'use strict';
 
-  const VERSION = 'registry-ux-phase1-v1.0.1';
+  const VERSION = 'registry-ux-phase1-v1.1.0';
   const FAVORITES_KEY = 'regjistriBarnave_favoritet_v1';
 
   const scheduleIdle = callback => {
@@ -15,6 +15,8 @@
 
   function favoritesCount() {
     try {
+      const controllerCount = window.MedIndexRegistryPersonalization?.favoriteCount?.();
+      if (Number.isFinite(Number(controllerCount))) return Number(controllerCount);
       const value = JSON.parse(localStorage.getItem(FAVORITES_KEY) || '[]');
       return Array.isArray(value) ? value.length : 0;
     } catch {
@@ -57,44 +59,28 @@
     search.setAttribute('aria-keyshortcuts', 'Control+K Meta+K');
   }
 
-  function quickFavoritesButton() {
-    // Favorites on <=767px are already owned by registry-mobile-phase8. Do not
-    // insert the desktop quick-favorites control into the compact phone toolbar.
+  function canonicalFavoritesButton() {
     if (phoneRegistryOwnsViewport()) return null;
-    let button = document.getElementById('registryQuickFavorites');
-    if (button) return button;
-    const toolbar = document.querySelector('.toolbar');
-    if (!toolbar) return null;
+    const canonical = document.querySelector('#registryPersonalViews [data-personal-view="favorites"]');
+    if (canonical) return canonical;
+    try { window.MedIndexRegistryPersonalization?.refresh?.(); } catch {}
+    return document.querySelector('#registryPersonalViews [data-personal-view="favorites"]');
+  }
 
-    button = document.createElement('button');
-    button.id = 'registryQuickFavorites';
-    button.type = 'button';
-    button.className = 'registry-quick-favorites';
-    button.dataset.registryQuickFavorites = 'true';
-    button.setAttribute('aria-label', 'Shfaq Favoritet');
-    button.innerHTML = '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="m12 3 2.8 5.7 6.2.9-4.5 4.4 1.1 6.2-5.6-2.9-5.6 2.9 1.1-6.2L3 9.6l6.2-.9L12 3Z"></path></svg><span class="registry-quick-favorites-label">Favoritet</span><span class="registry-quick-favorites-count" data-registry-quick-favorites-count>0</span>';
-
-    const pageSize = document.getElementById('pageSize');
-    if (pageSize) pageSize.insertAdjacentElement('beforebegin', button);
-    else toolbar.appendChild(button);
-
-    button.addEventListener('click', () => {
-      const personalization = window.MedIndexRegistryPersonalization;
-      if (favoritesActive()) personalization?.showAll?.();
-      else personalization?.showFavorites?.();
-      window.setTimeout(updateQuickFavorites, 0);
-    });
-    return button;
+  function retireLegacyQuickFavorites() {
+    document.getElementById('registryQuickFavorites')?.remove();
   }
 
   function updateQuickFavorites() {
-    const button = quickFavoritesButton();
+    retireLegacyQuickFavorites();
+    const button = canonicalFavoritesButton();
     if (!button) return;
     const count = favoritesCount();
     const active = favoritesActive();
-    const badge = button.querySelector('[data-registry-quick-favorites-count]');
+    const badge = button.querySelector('[data-toolbar-favorite-count]');
     if (badge) badge.textContent = String(count);
     button.classList.toggle('is-active', active);
+    button.classList.toggle('active', active);
     button.setAttribute('aria-pressed', active ? 'true' : 'false');
     button.setAttribute('aria-label', active ? 'Dil nga Favoritet dhe shfaq të gjitha barnat' : `Shfaq Favoritet · ${count}`);
     button.title = active ? 'Shfaq të gjitha barnat' : 'Shfaq vetëm Favoritet';
