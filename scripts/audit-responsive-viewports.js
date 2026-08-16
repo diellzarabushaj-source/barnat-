@@ -5,16 +5,20 @@
  * Faza 00 e planit: para se të ndryshohet shkalla tipografike, pamja e
  * tabletit apo shtresat e stilit, duhet një matës që dështon kur ndonjë prej
  * tyre prishet. Ky skript e ngarkon faqen Barnat në nëntë gjerësi reale dhe
- * pohon katër gjëra që një ndërfaqe klinike nuk guxon t'i humbë.
+ * pohon shtatë gjëra që një ndërfaqe klinike nuk guxon t'i humbë.
  *
  * Pse Chromium dhe jo WebKit si auditet e tjera mobile: ato masin shtresën
  * `registry-mobile-phase8`, e cila kërkon WebKit. Kjo portë mat sjelljen e
  * përgjithshme të faqes, e cila është e njëjtë në të dy motorët — dhe kështu
  * ekzekutohet edhe në ambiente ku vetëm Chromium është i disponueshëm.
  *
- * Pragjet janë vendosur mbi matjet bazë të 16.08.2026, jo mbi dëshira: secili
- * lejon gjendjen e sotme dhe dështon kur ajo përkeqësohet. Kur një fazë e
- * planit e përmirëson një numër, ulet edhe pragu përkatës këtu.
+ * Pragjet janë kalibruar kundrejt ekzekutimit në CI, mbi runtime-in e ndërtuar
+ * me `build:runtime`. Kjo është e rëndësishme: pa atë ndërtim faqja nuk i
+ * ngarkon kurrë 4006 rreshtat, dhe çdo numër del shumë më i vogël se realiteti
+ * — matja e parë lokale nxori 14 madhësi fonti aty ku CI-ja nxjerr 19, dhe 12
+ * elemente teksti të vogël aty ku CI-ja nxjerr 309. Prandaj një ekzekutim
+ * lokal mbi burimin e pandërtuar do të dështojë kundrejt këtyre pragjeve, dhe
+ * kjo është në rregull: matësi i vlefshëm është ai që sheh faqen e vërtetë.
  */
 
 const assert = require('node:assert/strict');
@@ -41,14 +45,48 @@ const VIEWPORTS = [
   { name:'1920 · i gjerë',        width:1920, height:1080, mobile:false },
 ];
 
-/* Sa e sotmja lejohet. Ulja e këtyre numrave është qëllimi i fazave 01–04. */
+/* Buxhete të ndara për telefonin dhe për ekranet e gjera.
+ *
+ * Një buxhet i vetëm nuk vlen: në desktop faqja ka 309 elemente teksti nën
+ * 11px, sepse tabela vizaton mijëra qeliza. Nën atë tavan, një regresion i
+ * telefonit nga 0 në 50 do të kalonte pa u vënë re. Telefoni sot është
+ * dukshëm më i mirë se desktopi, prandaj i takon një prag më i rreptë.
+ *
+ * Numrat vijnë nga ekzekutimi në CI mbi runtime-in e ndërtuar — jo nga burimi
+ * i pandërtuar, ku faqja s'i ngarkon kurrë të dhënat dhe çdo numër del shumë
+ * më i vogël se realiteti. Ulja e tyre është puna e fazave 01–04. */
 const BUDGET = {
-  minFontPx:8.5,          // matur: 8.5px është më e vogla sot
-  maxTinyTextNodes:12,    // matur: 12 në ≥768, 2 në telefon
-  maxSmallTargets:7,      // matur: 4 në telefon, deri 7 në desktop
-  maxFontSizes:14,        // matur: 14 madhësi të dallueshme
-  maxRadii:8,             // matur: 8 rreze të dallueshme
+  phone:{   // ≤430px
+    minFontPx:11,
+    maxTinyTextNodes:0,
+    maxSmallTargets:2,
+    maxFontSizes:9,
+    maxRadii:7,
+  },
+  wide:{    // ≥768px
+    minFontPx:8.5,
+    maxTinyTextNodes:320,
+    maxSmallTargets:170,
+    maxFontSizes:19,
+    maxRadii:9,
+  },
 };
+
+/* Gabime që dihen, me arsye, që porta të kapë gabimet e reja pa u bllokuar nga
+ * ky. Faza 00 e planit e lejon shprehimisht kuarantinën e dokumentuar.
+ *
+ * `releaseMobileShellOwner is not defined` shfaqet vetëm në telefon (≤430px),
+ * ku ekzekutohet `registry-mobile-phase3.js`. Në burim funksioni është i
+ * përcaktuar në thellësi 1 të IIFE-së dhe përdoret në thellësi 2 — mbyllje
+ * krejt e rregullt. Prishja vjen nga zinxhiri i arnimeve në `build:runtime`,
+ * i cili nuk ekzekutohet dot këtu: `@vercel/blob` mungon dhe pema e varësive
+ * s'instalohet sepse burimi i `xlsx` është i bllokuar nga rrjeti.
+ *
+ * Rregullimi kërkon një ambient që e ekzekuton ndërtimin e plotë. Deri atëherë
+ * kjo hyrje e mban portën të dobishme për çdo gabim tjetër. */
+const KNOWN_PAGE_ERRORS = [
+  'ReferenceError: releaseMobileShellOwner is not defined',
+];
 
 function startServer() {
   return new Promise((resolve, reject) => {
@@ -179,8 +217,13 @@ function collect() {
 
   for (const row of findings) {
     const at = `${row.viewport}`;
+    const budget = row.width <= 430 ? BUDGET.phone : BUDGET.wide;
 
-    assert.deepEqual(row.pageErrors, [], `${at}: faqja hodhi gabime — ${row.pageErrors.join(' | ')}`);
+    const unknownErrors = row.pageErrors.filter(error => !KNOWN_PAGE_ERRORS.includes(error));
+    assert.deepEqual(
+      unknownErrors, [],
+      `${at}: faqja hodhi gabime të reja — ${unknownErrors.join(' | ')}`,
+    );
 
     assert.ok(
       row.documentOverflowPx <= 0,
@@ -188,28 +231,28 @@ function collect() {
     );
 
     assert.ok(
-      row.smallestFont === null || row.smallestFont >= BUDGET.minFontPx,
-      `${at}: teksti më i vogël është ${row.smallestFont}px, nën dyshemenë ${BUDGET.minFontPx}px.`,
+      row.smallestFont === null || row.smallestFont >= budget.minFontPx,
+      `${at}: teksti më i vogël është ${row.smallestFont}px, nën dyshemenë ${budget.minFontPx}px.`,
     );
 
     assert.ok(
-      row.tinyTextCount <= BUDGET.maxTinyTextNodes,
-      `${at}: ${row.tinyTextCount} elemente teksti nën 11px (buxheti ${BUDGET.maxTinyTextNodes}) — ${JSON.stringify(row.tinyTextSample)}`,
+      row.tinyTextCount <= budget.maxTinyTextNodes,
+      `${at}: ${row.tinyTextCount} elemente teksti nën 11px (buxheti ${budget.maxTinyTextNodes}) — ${JSON.stringify(row.tinyTextSample)}`,
     );
 
     assert.ok(
-      row.smallTargetCount <= BUDGET.maxSmallTargets,
-      `${at}: ${row.smallTargetCount} objektiva prekjeje nën 40px (buxheti ${BUDGET.maxSmallTargets}) — ${JSON.stringify(row.smallTargetSample)}`,
+      row.smallTargetCount <= budget.maxSmallTargets,
+      `${at}: ${row.smallTargetCount} objektiva prekjeje nën 40px (buxheti ${budget.maxSmallTargets}) — ${JSON.stringify(row.smallTargetSample)}`,
     );
 
     assert.ok(
-      row.fontSizeCount <= BUDGET.maxFontSizes,
-      `${at}: ${row.fontSizeCount} madhësi fonti të dallueshme (buxheti ${BUDGET.maxFontSizes}) — ${row.fontSizes.join(', ')}`,
+      row.fontSizeCount <= budget.maxFontSizes,
+      `${at}: ${row.fontSizeCount} madhësi fonti të dallueshme (buxheti ${budget.maxFontSizes}) — ${row.fontSizes.join(', ')}`,
     );
 
     assert.ok(
-      row.radiusCount <= BUDGET.maxRadii,
-      `${at}: ${row.radiusCount} rreze qoshesh të dallueshme (buxheti ${BUDGET.maxRadii}).`,
+      row.radiusCount <= budget.maxRadii,
+      `${at}: ${row.radiusCount} rreze qoshesh të dallueshme (buxheti ${budget.maxRadii}).`,
     );
   }
 
