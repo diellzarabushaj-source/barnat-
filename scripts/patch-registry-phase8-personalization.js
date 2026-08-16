@@ -57,31 +57,37 @@ function patchMobileLite() {
 function patchIndex() {
   let source = read('index.html');
 
-  const cssTag = `<link rel="stylesheet" href="registry-mobile-phase8.css?v=20260812-1" data-registry-mobile-phase8-css>`;
+  const cssTag = `<link rel="stylesheet" href="registry-mobile-phase8.css?v=20260816-2" data-registry-mobile-phase8-css>`;
   if (!source.includes('registry-mobile-phase8.css')) {
     const cssMatch = source.match(/<link rel="stylesheet" href="registry-mobile-phase4\.css\?v=[^"]+"[^>]*>/);
     if (!cssMatch) throw new Error('Phase 8 personalization patch could not find current Phase 4 CSS anchor.');
     source = source.replace(cssMatch[0], `${cssMatch[0]}\n${cssTag}`);
+  } else {
+    source = source.replace(/registry-mobile-phase8\.css\?v=[^&"]+/g, 'registry-mobile-phase8.css?v=20260816-2');
   }
 
-  const scriptTag = `<script src="registry-mobile-phase8.js?v=20260812-1" defer></script>`;
+  const scriptTag = `<script src="registry-mobile-phase8.js?v=20260816-2" defer></script>`;
   if (!source.includes('registry-mobile-phase8.js')) {
     const scriptMatch = source.match(/<script src="registry-mobile-phase4\.js\?v=[^"]+"[^>]*><\/script>/);
     if (!scriptMatch) throw new Error('Phase 8 personalization patch could not find current Phase 4 script anchor.');
     source = source.replace(scriptMatch[0], `${scriptMatch[0]}\n${scriptTag}`);
+  } else {
+    source = source.replace(/registry-mobile-phase8\.js\?v=[^&"]+/g, 'registry-mobile-phase8.js?v=20260816-2');
   }
 
-  /* v3.2 adds mutation locks and explicit pending-persistence state. Keep both
-     assets cache-busted so stale clients cannot keep the previous behavior. */
-  source = source.replace(/registry-user-personalization\.css\?v=[^&"]+/g, 'registry-user-personalization.css?v=20260816-6');
-  source = source.replace(/registry-user-personalization\.js\?v=[^&"]+/g, 'registry-user-personalization.js?v=20260816-6');
+  /* v3.3 keeps the canonical controller alive as a non-visual mobile bridge;
+     Phase 8 v2 adds the single mobile note pencil and correct full-view handoff. */
+  source = source.replace(/registry-user-personalization\.css\?v=[^&"]+/g, 'registry-user-personalization.css?v=20260816-7');
+  source = source.replace(/registry-user-personalization\.js\?v=[^&"]+/g, 'registry-user-personalization.js?v=20260816-7');
   source = source.replace(/registry-ux-phase1\.js\?v=[^&"]+/g, 'registry-ux-phase1.js?v=20260816-2');
 
   if (source.indexOf('registry-mobile-phase8.js') > source.indexOf('registry-runtime-loader.js')) {
     throw new Error('Phase 8 must initialize before the full registry loader.');
   }
-  if (!source.includes('registry-user-personalization.css?v=20260816-6')) throw new Error('Hardened personalization CSS version was not published.');
-  if (!source.includes('registry-user-personalization.js?v=20260816-6')) throw new Error('Hardened personalization JS version was not published.');
+  if (!source.includes('registry-mobile-phase8.css?v=20260816-2')) throw new Error('Mobile Notes CSS version was not published.');
+  if (!source.includes('registry-mobile-phase8.js?v=20260816-2')) throw new Error('Mobile Notes JS version was not published.');
+  if (!source.includes('registry-user-personalization.css?v=20260816-7')) throw new Error('Mobile-bridge personalization CSS version was not published.');
+  if (!source.includes('registry-user-personalization.js?v=20260816-7')) throw new Error('Mobile-bridge personalization JS version was not published.');
   if (!source.includes('registry-ux-phase1.js?v=20260816-2')) throw new Error('Canonical toolbar UX version was not published.');
   write('index.html', source);
 }
@@ -89,12 +95,22 @@ function patchIndex() {
 function verifyAddon() {
   const source = read('registry-mobile-phase8.js');
   const css = read('registry-mobile-phase8.css');
+  const shared = read('registry-user-personalization.js');
+
   if (!source.includes("const FAVORITES_KEY = 'regjistriBarnave_favoritet_v1'")) throw new Error('Phase 8 must share the desktop favorites key.');
+  if (!source.includes("const NOTES_KEY = 'regjistriBarnave_shenime_v1'")) throw new Error('Phase 4 mobile Notes must share the canonical notes key.');
   if (!source.includes('`${pdid}|${name}|${strength}`')) throw new Error('Phase 8 must share the exact desktop drugKey format.');
   if (!source.includes("const RECENTS_KEY = 'regjistriBarnave_teFundit_v1'")) throw new Error('Phase 8 recents store is missing.');
   if (!source.includes('const MAX_RECENTS = 20')) throw new Error('Phase 8 recents must remain bounded.');
-  if (/\bfetch\s*\(|\/api\//.test(source)) throw new Error('Phase 8 personalization addon must not add backend/network reads.');
+  if (!source.includes('data-mi-mobile-note')) throw new Error('Phase 4 mobile note pencil is missing.');
+  if (!source.includes('MedIndexRegistryPersonalization?.editNoteForData')) throw new Error('Mobile note pencil must reuse the canonical note editor bridge.');
+  if (!source.includes('personal-view-${next}')) throw new Error('Mobile Favorites/Notes must explicitly hand off to the full pre-pagination view.');
+  if (!shared.includes('function phoneLiteOwnsViewport()') || !shared.includes('editNoteForData')) {
+    throw new Error('Canonical personalization mobile bridge is incomplete.');
+  }
+  if (/\bfetch\s*\(|\/api\//.test(source)) throw new Error('Phase 8 personalization addon must not add direct backend/network reads.');
   if (!css.includes('min-height:44px') || !css.includes('width:44px') || !css.includes('height:44px')) throw new Error('Phase 8 touch targets must remain at least 44px.');
+  if (!css.includes('.mi-mobile-note-toggle')) throw new Error('Phase 4 mobile note action styling is missing.');
   if (!css.includes('body #registryViewToolbar.registry-view-toolbar-unified')) throw new Error('Phase 0 mobile-lite boundary must suppress the shared registry view toolbar on phones.');
   if (!css.includes('body #registryFilterPanel.registry-filter-panel-unified')) throw new Error('Phase 0 mobile-lite boundary must own compact search/count toolbar geometry.');
   if (!css.includes('.mobile-lite-row>td:not(:has(.mobile-lite-card))')) throw new Error('Phase 0 mobile-lite boundary must suppress shared synthetic table cells.');
@@ -105,4 +121,4 @@ patchMobileLite();
 patchIndex();
 verifyAddon();
 
-console.log('Phase 8 mobile favorites + recents preserved; hardened canonical personalization and toolbar UX assets published.');
+console.log('Phase 4 mobile Favorites/Notes bridge, canonical note pencil, bounded recents and touch ownership published.');
