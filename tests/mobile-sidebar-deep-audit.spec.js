@@ -7,7 +7,13 @@ async function waitForSidebarReady(page) {
   await page.goto(`${BASE}/index.html`, { waitUntil:'domcontentloaded' });
   await expect.poll(() => page.evaluate(() => document.documentElement.classList.contains('auth-ready')), { timeout:10000 }).toBe(true);
   await expect.poll(() => page.evaluate(() => document.documentElement.dataset.miMobileExperience), { timeout:10000 }).toBe('production-audit-v2');
-  await expect.poll(() => page.evaluate(() => document.documentElement.dataset.miMobileSidebarHardening), { timeout:10000 }).toBe('mobile-sidebar-deep-audit-v3');
+  /* Ky poll është portë gatishmërie: pret derisa shtresa e forcimit të anështyllës
+     të jetë montuar. Më parë pohonte numrin e saktë `v3`, prandaj kur versioni u
+     ngrit në `v4` e pastaj në `v5` (commit-et b57eb70 dhe 1883b4b), të gjashtë
+     testet ndaluan së ekzekutuari pohimet e tyre të vërteta dhe porta mbeti e kuqe
+     pa lidhje me sjelljen. Tani pohohet vetë kontrata — shtresa u montua dhe e
+     deklaroi veten — që ngritja e ardhshme e versionit të mos e rrëzojë portën. */
+  await expect.poll(() => page.evaluate(() => document.documentElement.dataset.miMobileSidebarHardening), { timeout:10000 }).toMatch(/^mobile-sidebar-deep-audit-v\d+$/);
   await expect(page.locator('.mi-app-shell')).toBeVisible();
   await expect(page.locator('#miSidebar')).toBeAttached();
 }
