@@ -1,0 +1,63 @@
+name: Responsive viewport audit
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  responsive-viewports:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          version: 10.28.0
+          run_install: false
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: pnpm
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile --ignore-scripts
+
+      - name: Build audited runtime
+        run: pnpm run build:runtime
+
+      # Vetëm Chromium: kjo portë mat sjelljen e përgjithshme të faqes nëpër
+      # gjerësi, e cila nuk varet nga motori. Auditet e shtresës mobile-lite
+      # mbeten në WebKit te punët e tjera.
+      - name: Install Chromium
+        shell: bash
+        run: |
+          set -euo pipefail
+          pnpm exec playwright install --with-deps chromium > /tmp/responsive-playwright-install.log 2>&1 \
+            || { tail -200 /tmp/responsive-playwright-install.log; exit 1; }
+
+      - name: Run responsive viewport gate
+        shell: bash
+        run: |
+          set -euo pipefail
+          node scripts/audit-responsive-viewports.js | tee /tmp/responsive-viewports.log
+
+      - name: Upload measurements
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: responsive-viewport-measurements
+          path: |
+            /tmp/responsive-viewports.log
+            /tmp/responsive-playwright-install.log
+          if-no-files-found: warn
+          retention-days: 7
