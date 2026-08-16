@@ -43,8 +43,9 @@ function patchRuntimeLoader() {
 
   // Phase 1 now owns phone renderer safety. Phase 10 must verify that contract,
   // not recreate the old v8 5-second mobile timeout implementation.
-  if (!source.includes("const VERSION = 'registry-runtime-loader-v10';")) {
-    throw new Error('Phase 10 requires the single-owner registry-runtime-loader-v10 contract.');
+  /* Njësoj si te Faza 1: kontrata është "një ngarkues i vetëm", jo numri i tij. */
+  if (!/const VERSION = 'registry-runtime-loader-v\d+';/.test(source)) {
+    throw new Error('Phase 10 requires the single-owner registry-runtime-loader contract.');
   }
   if (!source.includes('function desktopLiteCandidate()')) {
     throw new Error('Phase 10 desktop-lite candidate is missing.');

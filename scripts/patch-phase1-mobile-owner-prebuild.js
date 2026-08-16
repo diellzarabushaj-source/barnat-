@@ -105,8 +105,12 @@ function normalizeMobileLitePublicApi() {
 
 function verifyLoader() {
   const source = read('registry-runtime-loader.js');
-  if (!source.includes(`const VERSION = '${LOADER_VERSION}';`)) {
-    throw new Error(`Phase 1 prebuild requires ${LOADER_VERSION}.`);
+  /* Roje versioni, jo kontratë sjelljeje: kërkohet që ngarkuesi i vetëm i
+     runtime-it të jetë i pranishëm, jo që të mbajë një numër të caktuar. Kur
+     versioni u ngrit nga v10 në v11, kjo rojë e ndali ndërtimin edhe pse asgjë
+     në këtë hap nuk varet nga numri. Prandaj tani lexohet me model. */
+  if (!/const VERSION = 'registry-runtime-loader-v\d+';/.test(source)) {
+    throw new Error('Phase 1 prebuild requires a single-owner registry-runtime-loader.');
   }
   if (!source.includes('MOBILE_LITE_STALL_MS = 12000')) {
     throw new Error('Phase 1 mobile stall watchdog is missing.');

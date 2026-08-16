@@ -86,7 +86,7 @@ tr.is-favorite td.name{
   min-height:38px;
   padding:7px 10px;
   border:1px solid #dbe4ea;
-  border-radius:9px;
+  border-radius:8px;
   background:#fff;
   color:#475569;
   font:inherit;
@@ -124,7 +124,7 @@ tr.is-favorite td.name{
   min-height:44px;
   padding:7px 9px 7px 12px;
   border:1px solid #bee9e4;
-  border-radius:9px;
+  border-radius:8px;
   background:#f0fdfa;
   color:#134e4a;
   display:flex;
@@ -293,7 +293,7 @@ tr.is-favorite td.name{
 .registry-note-dialog-actions button{
   min-height:40px;
   padding:8px 12px;
-  border-radius:9px;
+  border-radius:8px;
   font:inherit;
   font-size:.74rem;
   font-weight:850;
