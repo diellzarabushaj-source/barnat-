@@ -28,7 +28,7 @@ assert.doesNotThrow(() => new Function(runtimePatch), 'Registry personalization 
 assert.match(html, /registry-user-personalization\.css\?v=20260816-5/, 'Latest personalization CSS is not loaded');
 assert.match(html, /registry-user-personalization\.js\?v=20260816-5/, 'Latest personalization JS is not loaded');
 assert.match(html, /registry-ux-phase1\.css\?v=20260810-1/, 'Phase 1 premium registry CSS is not loaded');
-assert.match(html, /registry-ux-phase1\.js\?v=20260810-1/, 'Phase 1 instant interaction layer is not loaded');
+assert.match(html, /registry-ux-phase1\.js\?v=20260816-2/, 'Latest canonical toolbar UX is not loaded');
 assert.doesNotMatch(html, /registry-personalization-polish\.js|registry-favorites-control\.js|registry-favorites-control\.css/, 'Duplicate personalization controllers must not be loaded');
 assert.ok(html.indexOf('registry-unified-table.js') < html.indexOf('registry-user-personalization.js'), 'Personalization must run after unified table');
 assert.ok(html.indexOf('registry-user-personalization.js') < html.indexOf('registry-ux-phase1.js'), 'Phase 1 UX must enhance the stable personalization layer, not race it');
