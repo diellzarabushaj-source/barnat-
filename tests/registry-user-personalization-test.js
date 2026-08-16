@@ -25,8 +25,8 @@ assert.doesNotThrow(() => new Function(client), 'User library client must parse 
 assert.doesNotThrow(() => new Function(server), 'User library server must parse as JavaScript');
 assert.doesNotThrow(() => new Function(runtimePatch), 'Registry personalization runtime patch must parse as JavaScript');
 
-assert.match(html, /registry-user-personalization\.css\?v=20260816-6/, 'Latest hardened personalization CSS is not loaded');
-assert.match(html, /registry-user-personalization\.js\?v=20260816-6/, 'Latest hardened personalization JS is not loaded');
+assert.match(html, /registry-user-personalization\.css\?v=20260816-7/, 'Latest mobile-bridge personalization CSS is not loaded');
+assert.match(html, /registry-user-personalization\.js\?v=20260816-7/, 'Latest mobile-bridge personalization JS is not loaded');
 assert.match(html, /registry-ux-phase1\.css\?v=20260810-1/, 'Phase 1 premium registry CSS is not loaded');
 assert.match(html, /registry-ux-phase1\.js\?v=20260816-2/, 'Latest canonical toolbar UX is not loaded');
 assert.doesNotMatch(html, /registry-personalization-polish\.js|registry-favorites-control\.js|registry-favorites-control\.css/, 'Duplicate personalization controllers must not be loaded');
@@ -51,12 +51,12 @@ assert.match(runtime, /window\.MedIndexRegistryRuntime = Object\.freeze/, 'Gener
 assert.match(runtime, /state\.pageSize = sanitizeRegistryPageSize\(requested\)/, 'Generated runtime still accepts arbitrary page sizes');
 assert.doesNotMatch(runtime, /REGISTRY_ALLOWED_PAGE_SIZES = new Set\(\[50, 100, 250, 500, 4006\]\)/, 'Generated runtime must not retain the 4006-row favorites path');
 
-assert.match(ui, /VERSION = 'registry-user-personalization-v3\.2\.0'/, 'Canonical hardened v3 personalization controller is not active');
+assert.match(ui, /VERSION = 'registry-user-personalization-v3\.3\.0'/, 'Canonical v3.3 personalization controller is not active');
 assert.match(ui, /VIEW_ALL = 'all'/, 'All view is missing');
 assert.match(ui, /VIEW_FAVORITES = 'favorites'/, 'Favorites view is missing');
 assert.match(ui, /VIEW_NOTES = 'notes'/, 'Notes view is missing');
-assert.match(ui, /data-row-favorite-toggle/, 'Exactly one canonical favorite action must be available in each visible row');
-assert.match(ui, /data-row-note-toggle/, 'Exactly one canonical note pencil must be available in each visible row');
+assert.match(ui, /data-row-favorite-toggle/, 'Exactly one canonical favorite action must be available in each visible full-runtime row');
+assert.match(ui, /data-row-note-toggle/, 'Exactly one canonical note pencil must be available in each visible full-runtime row');
 assert.match(ui, /registryNoteDialog/, 'Canonical personal-note dialog is missing');
 assert.match(ui, /data-note-dialog-text/, 'Note dialog editor is missing');
 assert.match(ui, /data-note-dialog-save/, 'Note save action is missing');
@@ -77,6 +77,17 @@ assert.match(ui, /const pendingSync = new Set\(\)/, 'Local-first mutations need 
 assert.match(ui, /async function syncMutation/, 'Personal mutations need one synchronization path');
 assert.match(ui, /aria-busy/, 'In-flight row actions must expose busy state to assistive technology');
 assert.match(ui, /is-pending-sync/, 'Pending persistence must remain visible after the request finishes');
+
+assert.match(ui, /const PHONE_OWNER_QUERY = '\(max-width: 767px\)'/, 'Canonical controller must know the phone ownership boundary');
+assert.match(ui, /function phoneLiteOwnsViewport\(\)/, 'Canonical controller must stay alive as a phone bridge');
+assert.match(ui, /dataset\.registryMobileLiteState !== 'handoff'/, 'Canonical controller must activate fully after mobile handoff');
+assert.match(ui, /dataset\.registryPersonalization = 'mobile-lite-bridge'/, 'Phone bridge must be explicitly observable');
+assert.match(ui, /function noteKeyForData\(data\)/, 'Mobile card notes must use the canonical note identity contract');
+assert.match(ui, /function editNoteForData\(data\)/, 'Mobile cards must reuse the canonical note editor');
+assert.match(ui, /editNoteForData,/, 'Canonical mobile note editor must be exported');
+assert.match(ui, /hasNoteForData,/, 'Canonical mobile note state resolver must be exported');
+assert.doesNotMatch(ui, /registry-personalization-phone-deferred-v1/, 'Canonical controller must not disappear on phone before handoff');
+
 assert.doesNotMatch(ui, /ALL_ROWS_PAGE_SIZE|10000/, 'Personal views must never force a page-size sentinel into the DOM');
 assert.doesNotMatch(ui, /setInterval\s*\(/, 'Personalization must be event-driven, not poll the page continuously');
 assert.doesNotMatch(ui, /MutationObserver/, 'Deterministic registry render events make a personalization DOM observer unnecessary');
@@ -137,4 +148,4 @@ assert.throws(() => library._test.normalizedFavorite({
   payload:{ kind:'drug-note', text:'x'.repeat(2001) },
 }), /maksimum 2000/i, 'Oversized personal notes must fail closed');
 
-console.log('Canonical Favorites + Notes, native personal views, mutation locks and pending persistent sync audit passed.');
+console.log('Canonical Favorites + Notes, mobile bridge, native personal views, mutation locks and pending persistent sync audit passed.');
