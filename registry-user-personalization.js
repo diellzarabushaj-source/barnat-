@@ -1,7 +1,7 @@
 (() => {
   'use strict';
 
-  const VERSION = 'registry-user-personalization-v3.2.0';
+  const VERSION = 'registry-user-personalization-v3.3.0';
   const FAVORITES_KEY = 'regjistriBarnave_favoritet_v1';
   const NOTES_KEY = 'regjistriBarnave_shenime_v1';
   const PERSONAL_COLUMN_KEY = 'personal-note';
@@ -9,6 +9,7 @@
   const VIEW_ALL = 'all';
   const VIEW_FAVORITES = 'favorites';
   const VIEW_NOTES = 'notes';
+  const PHONE_OWNER_QUERY = '(max-width: 767px)';
 
   let favorites = loadFavorites();
   let notes = loadNotes();
@@ -16,6 +17,7 @@
   let scheduled = false;
   let activeNoteKey = '';
   let activeNoteRow = null;
+  let activeNoteLabel = '';
   let personalRuntimeRequested = false;
 
   const favoriteInFlight = new Set();
@@ -24,6 +26,12 @@
 
   const clean = value => String(value ?? '').replace(/\s+/g, ' ').trim();
   const syncToken = (kind, key) => `${kind}:${clean(key)}`;
+
+  function phoneLiteOwnsViewport() {
+    return window.matchMedia?.(PHONE_OWNER_QUERY)?.matches === true
+      && document.documentElement.dataset.registryMobileLiteState !== 'handoff'
+      && (window.MEDINDEX_MOBILE_LITE_ACTIVE === true || Boolean(document.documentElement.dataset.registryMobileLite));
+  }
 
   function viewFromLocation() {
     const hash = location.hash.toLowerCase();
@@ -139,14 +147,29 @@
     return `fallback:${drugName(row)}|${atc(row)}`.slice(0, 300);
   }
 
-  function hasNoteRow(row) {
-    const entry = notes[noteKey(row)];
+  function mobileDrugKey(data) {
+    const pdid = clean(data?.pdid);
+    const name = clean(data?.tradeName);
+    const strength = clean(data?.strength);
+    return pdid || name || strength ? `${pdid}|${name}|${strength}` : '';
+  }
+
+  function noteKeyForData(data) {
+    const nr = clean(data?.registryNumber);
+    if (nr) return `registry:${nr}`;
+    const key = mobileDrugKey(data) || clean(data?.id);
+    if (key) return `drug:${key}`.slice(0, 300);
+    return `fallback:${clean(data?.tradeName)}|${clean(data?.atc).toUpperCase()}`.slice(0, 300);
+  }
+
+  function hasNoteKey(key) {
+    const entry = notes[clean(key)];
     return Boolean(entry && String(entry.text || '').trim());
   }
 
-  function noteCount() {
-    return Object.values(notes).filter(entry => String(entry?.text || '').trim()).length;
-  }
+  function hasNoteRow(row) { return hasNoteKey(noteKey(row)); }
+  function hasNoteForData(data) { return hasNoteKey(noteKeyForData(data)); }
+  function noteCount() { return Object.values(notes).filter(entry => String(entry?.text || '').trim()).length; }
 
   function favoriteButton(row) {
     const cell = nameCell(row);
@@ -179,7 +202,7 @@
   }
 
   function paintRowActions(row) {
-    if (!(row instanceof HTMLElement) || row.querySelector('.empty-state')) return;
+    if (phoneLiteOwnsViewport() || !(row instanceof HTMLElement) || row.querySelector('.empty-state')) return;
     const favoriteKey = primaryFavoriteKey(row);
     const favorite = favoriteButton(row);
     if (favorite) {
@@ -203,7 +226,7 @@
     const key = noteKey(row);
     const note = noteButton(row);
     if (note) {
-      const active = hasNoteRow(row);
+      const active = hasNoteKey(key);
       const name = drugName(row) || 'barin';
       const inFlight = noteInFlight.has(key);
       const pending = pendingSync.has(syncToken('note', key));
@@ -221,6 +244,7 @@
   }
 
   function stripLegacyNoteColumn() {
+    if (phoneLiteOwnsViewport()) return;
     document.querySelectorAll(`[data-registry-column-key="${PERSONAL_COLUMN_KEY}"], [data-column-key="${PERSONAL_COLUMN_KEY}"]`).forEach(node => {
       node.hidden = true;
       node.setAttribute('aria-hidden', 'true');
@@ -268,20 +292,19 @@
     setDialogBusy(false);
     activeNoteKey = '';
     activeNoteRow = null;
+    activeNoteLabel = '';
   }
 
-  function openNoteDialog(row) {
-    if (!(row instanceof HTMLElement)) return;
-    const key = noteKey(row);
-    if (!key || noteInFlight.has(key)) return;
+  function primeNoteDialog(key, label) {
+    if (!key) return;
     activeNoteKey = key;
-    activeNoteRow = row;
+    activeNoteLabel = clean(label) || 'Bari';
     const dialog = ensureNoteDialog();
     const textarea = dialog.querySelector('[data-note-dialog-text]');
     const existing = notes[key]?.text || '';
     textarea.readOnly = false;
     textarea.value = existing;
-    dialog.querySelector('[data-note-dialog-title]').textContent = drugName(row) || 'Bari';
+    dialog.querySelector('[data-note-dialog-title]').textContent = activeNoteLabel;
     dialog.querySelector('[data-note-dialog-status]').textContent = pendingSync.has(syncToken('note', key))
       ? 'Ruajtur lokalisht · sinkronizimi është në pritje.'
       : existing ? 'Shënimi ruhet vetëm në bibliotekën tënde.' : 'Vetëm për ty.';
@@ -290,6 +313,23 @@
     if (typeof dialog.showModal === 'function') dialog.showModal();
     else dialog.setAttribute('open', '');
     requestAnimationFrame(() => textarea.focus({ preventScroll:true }));
+  }
+
+  function openNoteDialog(row) {
+    if (!(row instanceof HTMLElement)) return;
+    const key = noteKey(row);
+    if (!key || noteInFlight.has(key)) return;
+    activeNoteRow = row;
+    primeNoteDialog(key, drugName(row));
+  }
+
+  function editNoteForData(data) {
+    notes = loadNotes();
+    const key = noteKeyForData(data);
+    if (!key || noteInFlight.has(key)) return false;
+    activeNoteRow = null;
+    primeNoteDialog(key, clean(data?.tradeName) || clean(data?.name));
+    return true;
   }
 
   async function syncMutation(kind, key) {
@@ -302,11 +342,8 @@
       const synced = await sync();
       if (synced) pendingSync.delete(token);
       return Boolean(synced);
-    } catch {
-      return false;
-    } finally {
-      schedule(1);
-    }
+    } catch { return false; }
+    finally { schedule(1); }
   }
 
   async function persistActiveNote({ remove = false } = {}) {
@@ -336,7 +373,7 @@
     paintRowActions(row);
     runtime()?.refreshNotes?.();
     window.dispatchEvent(new CustomEvent('medindex:personal-note-saved', { detail:{ key, hasText:Boolean(text.trim()) } }));
-    window.dispatchEvent(new CustomEvent('medindex:notes-changed', { detail:{ key, count:noteCount(), hasNote:Boolean(text.trim()) } }));
+    window.dispatchEvent(new CustomEvent('medindex:notes-changed', { detail:{ key, count:noteCount(), hasNote:Boolean(text.trim()), source:phoneLiteOwnsViewport() ? 'mobile-lite' : 'registry' } }));
 
     const synced = await syncMutation('note', key);
     noteInFlight.delete(key);
@@ -350,28 +387,22 @@
     if (!(row instanceof HTMLElement)) return;
     const key = primaryFavoriteKey(row);
     if (!key || favoriteInFlight.has(key) || button?.disabled) return;
-
     const before = new Set(favorites);
     const active = isFavoriteRow(row);
     favoriteInFlight.add(key);
     if (active) favoriteCandidates(row).forEach(candidate => favorites.delete(candidate));
     else favorites.add(key);
-
     if (!saveFavorites()) {
       favorites = before;
       favoriteInFlight.delete(key);
       paintRowActions(row);
       return;
     }
-
     paintRowActions(row);
     updateCounts();
     updateViewBanner();
     runtime()?.refreshFavorites?.();
-    window.dispatchEvent(new CustomEvent('medindex:favorites-changed', {
-      detail:{ count:favorites.size, favorite:!active, key }
-    }));
-
+    window.dispatchEvent(new CustomEvent('medindex:favorites-changed', { detail:{ count:favorites.size, favorite:!active, key } }));
     await syncMutation('favorite', key);
     favoriteInFlight.delete(key);
     paintRowActions(row);
@@ -379,6 +410,7 @@
   }
 
   function ensureSidebarNotes() {
+    if (phoneLiteOwnsViewport()) return;
     const favorite = document.querySelector('[data-nav="favorites"]');
     if (!favorite || document.querySelector('[data-nav="notes"]')) return;
     const item = document.createElement('button');
@@ -391,7 +423,7 @@
   }
 
   function ensureToolbarViews() {
-    if (document.getElementById('registryPersonalViews')) return;
+    if (phoneLiteOwnsViewport() || document.getElementById('registryPersonalViews')) return;
     const toolbar = document.querySelector('.toolbar');
     if (!toolbar) return;
     const group = document.createElement('div');
@@ -432,7 +464,7 @@
 
   function ensureViewBanner() {
     let banner = document.getElementById('registryPersonalViewBanner');
-    if (activeView === VIEW_ALL) { banner?.remove(); return null; }
+    if (activeView === VIEW_ALL || phoneLiteOwnsViewport()) { banner?.remove(); return null; }
     if (!banner) {
       const toolbar = document.querySelector('.toolbar');
       if (!toolbar) return null;
@@ -463,7 +495,7 @@
 
   function updateEmptyState() {
     document.getElementById('registryPersonalEmpty')?.remove();
-    if (activeView === VIEW_ALL || document.body.classList.contains('medindex-personal-view-loading')) return;
+    if (phoneLiteOwnsViewport() || activeView === VIEW_ALL || document.body.classList.contains('medindex-personal-view-loading')) return;
     const total = activeView === VIEW_FAVORITES ? favorites.size : noteCount();
     if (total) return;
     const empty = document.createElement('div');
@@ -521,11 +553,20 @@
     scheduled = false;
     favorites = loadFavorites();
     notes = loadNotes();
+    updateCounts();
+
+    if (phoneLiteOwnsViewport()) {
+      document.getElementById('registryPersonalViews')?.remove();
+      document.getElementById('registryPersonalViewBanner')?.remove();
+      document.getElementById('registryPersonalEmpty')?.remove();
+      document.documentElement.dataset.registryPersonalization = 'mobile-lite-bridge';
+      return;
+    }
+
     ensureSidebarNotes();
     ensureToolbarViews();
     stripLegacyNoteColumn();
     document.querySelectorAll('#tbody > tr').forEach(paintRowActions);
-    updateCounts();
     updateViewNav();
     updateViewBanner();
     updateEmptyState();
@@ -591,6 +632,7 @@
       if (activeView !== VIEW_ALL) requestPersonalRuntime();
       schedule(1);
     });
+    window.addEventListener('medindex:request-full-registry', () => schedule(2));
     window.addEventListener('medindex:registry-ready', () => {
       applyRuntimeView();
       schedule(1);
@@ -630,5 +672,9 @@
     favoriteCount:() => favorites.size,
     noteCount,
     pendingSyncCount:() => pendingSync.size,
+    editNoteForData,
+    hasNoteForData,
+    noteKeyForData,
+    phoneLiteOwnsViewport,
   });
 })();
