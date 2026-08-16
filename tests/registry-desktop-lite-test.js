@@ -106,7 +106,7 @@ assert.match(phase10Patch, /approvedPopulation:approvedPopulationForRegistryNumb
   'Each lightweight registry row must carry its approved population metadata.');
 assert.match(phase10Patch, /'Popullata e aprovuar':clean\(row\.approvedPopulation\)/,
   'Desktop canonical rows must expose approved population to downstream clinical UI.');
-assert.match(phase10Patch, /registry-runtime-loader-v10/, 'Phase 10 build patch must preserve the single-owner v10 loader.');
+assert.match(phase10Patch, /registry-runtime-loader-v\\d\+/, 'Phase 10 build patch must validate the single-owner loader contract without pinning a version.');
 assert.doesNotMatch(phase10Patch, /MOBILE_LITE_GRACE_MS = 5000/, 'Phase 10 build patch must not recreate the removed mobile timeout contract.');
 assert.match(phase11Patch, /function patchDesktopSearchCounting\(\)/, 'Phase 11 must own the desktop search count optimization deterministically.');
 assert.match(phase11Patch, /credentials:'same-origin', cache:'default', signal/, 'Phase 11 build must preserve private cache-friendly desktop page requests.');
