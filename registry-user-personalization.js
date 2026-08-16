@@ -1,7 +1,7 @@
 (() => {
   'use strict';
 
-  const VERSION = 'registry-user-personalization-v3.1.0';
+  const VERSION = 'registry-user-personalization-v3.2.0';
   const FAVORITES_KEY = 'regjistriBarnave_favoritet_v1';
   const NOTES_KEY = 'regjistriBarnave_shenime_v1';
   const PERSONAL_COLUMN_KEY = 'personal-note';
@@ -14,12 +14,16 @@
   let notes = loadNotes();
   let activeView = viewFromLocation();
   let scheduled = false;
-  let syncTimer = 0;
   let activeNoteKey = '';
   let activeNoteRow = null;
   let personalRuntimeRequested = false;
 
+  const favoriteInFlight = new Set();
+  const noteInFlight = new Set();
+  const pendingSync = new Set();
+
   const clean = value => String(value ?? '').replace(/\s+/g, ' ').trim();
+  const syncToken = (kind, key) => `${kind}:${clean(key)}`;
 
   function viewFromLocation() {
     const hash = location.hash.toLowerCase();
@@ -176,24 +180,43 @@
 
   function paintRowActions(row) {
     if (!(row instanceof HTMLElement) || row.querySelector('.empty-state')) return;
+    const favoriteKey = primaryFavoriteKey(row);
     const favorite = favoriteButton(row);
     if (favorite) {
       const active = isFavoriteRow(row);
       const name = drugName(row) || 'barin';
+      const inFlight = favoriteInFlight.has(favoriteKey);
+      const pending = pendingSync.has(syncToken('favorite', favoriteKey));
+      favorite.disabled = inFlight;
       favorite.classList.toggle('is-favorite', active);
+      favorite.classList.toggle('is-syncing', inFlight);
+      favorite.classList.toggle('is-pending-sync', pending && !inFlight);
+      favorite.setAttribute('aria-busy', String(inFlight));
       favorite.setAttribute('aria-pressed', String(active));
-      favorite.setAttribute('aria-label', active ? `Hiqe ${name} nga Favoritet` : `Shto ${name} te Favoritet`);
-      favorite.title = active ? 'Hiqe nga Favoritet' : 'Shto te Favoritet';
+      favorite.setAttribute('aria-label', inFlight
+        ? `Duke ruajtur Favoritet për ${name}`
+        : active ? `Hiqe ${name} nga Favoritet${pending ? ' · sinkronizimi në pritje' : ''}` : `Shto ${name} te Favoritet${pending ? ' · sinkronizimi në pritje' : ''}`);
+      favorite.title = inFlight ? 'Duke ruajtur…' : pending ? 'Ruajtur lokalisht · sinkronizimi në pritje' : active ? 'Hiqe nga Favoritet' : 'Shto te Favoritet';
       row.classList.toggle('is-favorite', active);
     }
+
+    const key = noteKey(row);
     const note = noteButton(row);
     if (note) {
       const active = hasNoteRow(row);
       const name = drugName(row) || 'barin';
+      const inFlight = noteInFlight.has(key);
+      const pending = pendingSync.has(syncToken('note', key));
+      note.disabled = inFlight;
       note.classList.toggle('has-note', active);
+      note.classList.toggle('is-syncing', inFlight);
+      note.classList.toggle('is-pending-sync', pending && !inFlight);
+      note.setAttribute('aria-busy', String(inFlight));
       note.setAttribute('aria-pressed', String(active));
-      note.setAttribute('aria-label', active ? `Shiko ose ndrysho shënimin për ${name}` : `Shto shënim për ${name}`);
-      note.title = active ? 'Shiko/ndrysho shënimin' : 'Shto shënim';
+      note.setAttribute('aria-label', inFlight
+        ? `Duke ruajtur shënimin për ${name}`
+        : active ? `Shiko ose ndrysho shënimin për ${name}${pending ? ' · sinkronizimi në pritje' : ''}` : `Shto shënim për ${name}`);
+      note.title = inFlight ? 'Duke ruajtur…' : pending ? 'Ruajtur lokalisht · sinkronizimi në pritje' : active ? 'Shiko/ndrysho shënimin' : 'Shto shënim';
     }
   }
 
@@ -216,7 +239,7 @@
         <button type="button" class="registry-note-dialog-close" data-note-dialog-close aria-label="Mbyll">×</button>
       </div>
       <textarea rows="6" maxlength="${NOTE_MAX}" data-note-dialog-text placeholder="Shkruaj shënimin tënd personal…"></textarea>
-      <div class="registry-note-dialog-meta"><span data-note-dialog-status></span><span data-note-dialog-length>0 / ${NOTE_MAX}</span></div>
+      <div class="registry-note-dialog-meta"><span data-note-dialog-status aria-live="polite"></span><span data-note-dialog-length>0 / ${NOTE_MAX}</span></div>
       <div class="registry-note-dialog-actions">
         <button type="button" class="registry-note-delete" data-note-dialog-delete>Fshije</button>
         <span></span>
@@ -228,10 +251,21 @@
     return dialog;
   }
 
+  function setDialogBusy(busy, message = '') {
+    const dialog = ensureNoteDialog();
+    dialog.querySelectorAll('[data-note-dialog-save],[data-note-dialog-delete],[data-note-dialog-close]').forEach(button => { button.disabled = Boolean(busy); });
+    const textarea = dialog.querySelector('[data-note-dialog-text]');
+    if (textarea) textarea.readOnly = Boolean(busy);
+    const status = dialog.querySelector('[data-note-dialog-status]');
+    if (status && message) status.textContent = message;
+    dialog.setAttribute('aria-busy', String(Boolean(busy)));
+  }
+
   function closeNoteDialog() {
     const dialog = document.getElementById('registryNoteDialog');
     if (dialog?.open && typeof dialog.close === 'function') dialog.close();
     else dialog?.removeAttribute('open');
+    setDialogBusy(false);
     activeNoteKey = '';
     activeNoteRow = null;
   }
@@ -239,15 +273,18 @@
   function openNoteDialog(row) {
     if (!(row instanceof HTMLElement)) return;
     const key = noteKey(row);
-    if (!key) return;
+    if (!key || noteInFlight.has(key)) return;
     activeNoteKey = key;
     activeNoteRow = row;
     const dialog = ensureNoteDialog();
     const textarea = dialog.querySelector('[data-note-dialog-text]');
     const existing = notes[key]?.text || '';
+    textarea.readOnly = false;
     textarea.value = existing;
     dialog.querySelector('[data-note-dialog-title]').textContent = drugName(row) || 'Bari';
-    dialog.querySelector('[data-note-dialog-status]').textContent = existing ? 'Shënimi ruhet vetëm në bibliotekën tënde.' : 'Vetëm për ty.';
+    dialog.querySelector('[data-note-dialog-status]').textContent = pendingSync.has(syncToken('note', key))
+      ? 'Ruajtur lokalisht · sinkronizimi është në pritje.'
+      : existing ? 'Shënimi ruhet vetëm në bibliotekën tënde.' : 'Vetëm për ty.';
     dialog.querySelector('[data-note-dialog-length]').textContent = `${textarea.value.length} / ${NOTE_MAX}`;
     dialog.querySelector('[data-note-dialog-delete]').hidden = !existing.trim();
     if (typeof dialog.showModal === 'function') dialog.showModal();
@@ -255,54 +292,90 @@
     requestAnimationFrame(() => textarea.focus({ preventScroll:true }));
   }
 
-  function scheduleLibrarySync(delay = 120) {
-    clearTimeout(syncTimer);
-    syncTimer = window.setTimeout(async () => {
-      try { await window.MedIndexUserLibrary?.syncNow?.(); }
-      catch {}
-    }, delay);
+  async function syncMutation(kind, key) {
+    const token = syncToken(kind, key);
+    pendingSync.add(token);
+    schedule(1);
+    try {
+      const sync = window.MedIndexUserLibrary?.syncNow;
+      if (typeof sync !== 'function') return false;
+      const synced = await sync();
+      if (synced) pendingSync.delete(token);
+      return Boolean(synced);
+    } catch {
+      return false;
+    } finally {
+      schedule(1);
+    }
   }
 
-  function persistActiveNote({ remove = false } = {}) {
-    if (!activeNoteKey) return;
+  async function persistActiveNote({ remove = false } = {}) {
+    if (!activeNoteKey || noteInFlight.has(activeNoteKey)) return;
+    const key = activeNoteKey;
+    const row = activeNoteRow;
     const dialog = ensureNoteDialog();
     const textarea = dialog.querySelector('[data-note-dialog-text]');
     const text = remove ? '' : String(textarea.value || '').slice(0, NOTE_MAX);
-    if (text.trim()) notes[activeNoteKey] = { text, updatedAt:new Date().toISOString() };
-    else delete notes[activeNoteKey];
-    if (!saveNotes()) return;
+    const previous = notes[key] ? { ...notes[key] } : null;
 
-    const changedKey = activeNoteKey;
-    const changedRow = activeNoteRow;
-    closeNoteDialog();
-    paintRowActions(changedRow);
+    noteInFlight.add(key);
+    setDialogBusy(true, 'Duke ruajtur…');
+    if (text.trim()) notes[key] = { text, updatedAt:new Date().toISOString() };
+    else delete notes[key];
+
+    if (!saveNotes()) {
+      if (previous) notes[key] = previous;
+      else delete notes[key];
+      noteInFlight.delete(key);
+      setDialogBusy(false, 'Shënimi nuk u ruajt në këtë pajisje. Provo përsëri.');
+      return;
+    }
+
     updateCounts();
     updateViewBanner();
-    window.dispatchEvent(new CustomEvent('medindex:personal-note-saved', { detail:{ key:changedKey, hasText:Boolean(text.trim()) } }));
-    window.dispatchEvent(new CustomEvent('medindex:notes-changed', { detail:{ key:changedKey, count:noteCount(), hasNote:Boolean(text.trim()) } }));
+    paintRowActions(row);
     runtime()?.refreshNotes?.();
-    scheduleLibrarySync();
+    window.dispatchEvent(new CustomEvent('medindex:personal-note-saved', { detail:{ key, hasText:Boolean(text.trim()) } }));
+    window.dispatchEvent(new CustomEvent('medindex:notes-changed', { detail:{ key, count:noteCount(), hasNote:Boolean(text.trim()) } }));
+
+    const synced = await syncMutation('note', key);
+    noteInFlight.delete(key);
+    paintRowActions(row);
+    setDialogBusy(false, synced ? 'Sinkronizuar.' : 'Ruajtur lokalisht · sinkronizimi është në pritje.');
+    closeNoteDialog();
     schedule(2);
   }
 
-  function toggleFavorite(row, button) {
-    if (!(row instanceof HTMLElement) || button?.disabled) return;
+  async function toggleFavorite(row, button) {
+    if (!(row instanceof HTMLElement)) return;
+    const key = primaryFavoriteKey(row);
+    if (!key || favoriteInFlight.has(key) || button?.disabled) return;
+
+    const before = new Set(favorites);
     const active = isFavoriteRow(row);
-    if (active) favoriteCandidates(row).forEach(key => favorites.delete(key));
-    else {
-      const key = primaryFavoriteKey(row);
-      if (!key) return;
-      favorites.add(key);
+    favoriteInFlight.add(key);
+    if (active) favoriteCandidates(row).forEach(candidate => favorites.delete(candidate));
+    else favorites.add(key);
+
+    if (!saveFavorites()) {
+      favorites = before;
+      favoriteInFlight.delete(key);
+      paintRowActions(row);
+      return;
     }
-    if (!saveFavorites()) return;
+
     paintRowActions(row);
     updateCounts();
     updateViewBanner();
-    window.dispatchEvent(new CustomEvent('medindex:favorites-changed', {
-      detail:{ count:favorites.size, favorite:!active, key:primaryFavoriteKey(row) }
-    }));
     runtime()?.refreshFavorites?.();
-    scheduleLibrarySync();
+    window.dispatchEvent(new CustomEvent('medindex:favorites-changed', {
+      detail:{ count:favorites.size, favorite:!active, key }
+    }));
+
+    await syncMutation('favorite', key);
+    favoriteInFlight.delete(key);
+    paintRowActions(row);
+    schedule(2);
   }
 
   function ensureSidebarNotes() {
@@ -475,7 +548,7 @@
       const favorite = event.target.closest('[data-row-favorite-toggle]');
       if (favorite) {
         event.preventDefault(); event.stopImmediatePropagation();
-        toggleFavorite(favorite.closest('tr'), favorite); return;
+        void toggleFavorite(favorite.closest('tr'), favorite); return;
       }
       const note = event.target.closest('[data-row-note-toggle]');
       if (note) {
@@ -483,8 +556,8 @@
         openNoteDialog(note.closest('tr')); return;
       }
       if (event.target.closest('[data-note-dialog-close]')) { event.preventDefault(); closeNoteDialog(); return; }
-      if (event.target.closest('[data-note-dialog-save]')) { event.preventDefault(); persistActiveNote(); return; }
-      if (event.target.closest('[data-note-dialog-delete]')) { event.preventDefault(); persistActiveNote({ remove:true }); return; }
+      if (event.target.closest('[data-note-dialog-save]')) { event.preventDefault(); void persistActiveNote(); return; }
+      if (event.target.closest('[data-note-dialog-delete]')) { event.preventDefault(); void persistActiveNote({ remove:true }); return; }
       const viewButton = event.target.closest('[data-personal-view]');
       if (viewButton) { event.preventDefault(); setView(viewButton.dataset.personalView || VIEW_ALL); return; }
       if (event.target.closest('[data-nav="favorites"],[data-mi-shell-action="favorites"]')) {
@@ -507,8 +580,8 @@
 
     document.addEventListener('keydown', event => {
       if (!event.target.matches?.('[data-note-dialog-text]')) return;
-      if ((event.metaKey || event.ctrlKey) && event.key === 'Enter') { event.preventDefault(); persistActiveNote(); }
-      else if (event.key === 'Escape') { event.preventDefault(); closeNoteDialog(); }
+      if ((event.metaKey || event.ctrlKey) && event.key === 'Enter') { event.preventDefault(); void persistActiveNote(); }
+      else if (event.key === 'Escape' && !noteInFlight.has(activeNoteKey)) { event.preventDefault(); closeNoteDialog(); }
     }, true);
 
     window.addEventListener('medindex:tailadmin-ready', () => schedule(1));
@@ -523,7 +596,11 @@
       schedule(1);
     });
     window.addEventListener('medindex:library-ready', () => schedule(1));
-    window.addEventListener('medindex:library-synced', () => schedule(1));
+    window.addEventListener('medindex:library-synced', () => {
+      pendingSync.clear();
+      schedule(1);
+    });
+    window.addEventListener('medindex:library-pending', () => schedule(1));
     window.addEventListener('storage', event => {
       if (event.key === FAVORITES_KEY || event.key === NOTES_KEY) {
         if (event.key === FAVORITES_KEY) runtime()?.refreshFavorites?.();
@@ -552,5 +629,6 @@
     isNotesMode:() => activeView === VIEW_NOTES,
     favoriteCount:() => favorites.size,
     noteCount,
+    pendingSyncCount:() => pendingSync.size,
   });
 })();
