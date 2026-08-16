@@ -423,5 +423,9 @@ self.addEventListener('fetch', event => {
   if (QUERY_DATA_PATHS.has(url.pathname)) return event.respondWith(queryDataResponse(event, url));
   if (url.pathname === '/data/protocols.json') return event.respondWith(manifestResponse(event));
   if (request.mode === 'navigate') return event.respondWith(navigationResponse(event));
-  if (/\.(?:css|js|json|txt|svg|png|jpe?g|webp|ico|webmanifest)$/i.test(url.pathname)) event.respondWith(staticResponse(event));
+  /* Fontet duhen këtu bashkë me pjesën tjetër. Pa `woff2` në këtë listë,
+     kërkesa e `@font-face` nuk kalon fare nga shërbyesi: shkon drejt rrjetit
+     dhe offline dështon, sado e plotë të jetë lista e para-ruajtjes. Rezultati
+     ishte se offline faqja e humbte Inter-in dhe binte te fonti i sistemit. */
+  if (/\.(?:css|js|json|txt|svg|png|jpe?g|webp|ico|webmanifest|woff2?|ttf|otf)$/i.test(url.pathname)) event.respondWith(staticResponse(event));
 });
