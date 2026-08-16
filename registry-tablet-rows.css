@@ -86,6 +86,13 @@
     height:auto!important;
     min-height:0!important;
     max-height:none!important;
+    /* Parazgjedhja është rresht i plotë. Kolonat e projektuara më poshtë e
+       mbishkruajnë atë me vendin e tyre të saktë; çdo kolonë tjetër — e
+       shtuar nga zgjedhësi i kolonave, nga pamja e plotë, ose e ndezur si
+       parazgjedhje më vonë — bie në një rresht të tërin, në vend që të zërë
+       një çerek të vetmuar poshtë kartelës. Kartela mbetet e lexueshme pa e
+       ditur paraprakisht se cilat kolona janë të dukshme. */
+    grid-column:1/-1!important;
     padding:10px 14px!important;
     overflow:hidden!important;
     border:0!important;
@@ -238,6 +245,20 @@
     [data-registry-column-key="clinical-status"],
     [data-registry-column-key="dose-calculator"],
     [data-registry-column-key="clinical-action"]
+  ){
+    padding-top:11px!important;
+    padding-bottom:13px!important;
+    border-top:1px solid #eef1f4!important;
+  }
+
+  /* Kolonat opsionale që zgjedhësi i kolonave mund t'i ndezë. Ato bien nën
+     rreshtin e katërt, secila si brez i vetin. Nëse shtohet ndonjë kolonë e re,
+     ajo merr gjerësinë e plotë nga parazgjedhja më lart dhe këtu i shtohet
+     vetëm vija ndarëse — asgjë nuk prishet pa këtë rregull. */
+  html.medindex-tailadmin[data-mi-page="barnat"] body #registryContent #dataTable[data-registry-unified-table] tbody td:is(
+    [data-registry-column-key="personal-note"],
+    [data-registry-column-key="population"],
+    [data-registry-column-key="prescription-label"]
   ){
     padding-top:11px!important;
     padding-bottom:13px!important;
