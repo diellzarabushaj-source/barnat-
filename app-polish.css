@@ -62,7 +62,7 @@ button:disabled{cursor:not-allowed}
   z-index:3000;
   max-width:min(560px,calc(100vw - 28px));
   padding:10px 14px;
-  border-radius:11px;
+  border-radius:12px;
   color:#fff;
   font-size:.76rem;
   font-weight:800;

@@ -207,7 +207,7 @@ html.medindex-tailadmin.mi-first-page-audited .registry-search-shortcut{
   align-items:center;
   padding:0 7px;
   border:1px solid var(--registry-line);
-  border-radius:7px;
+  border-radius:8px;
   background:#fff;
   color:#72817f;
   font-family:var(--mi-mono,"DM Mono",monospace);
@@ -523,7 +523,7 @@ html.medindex-tailadmin.mi-first-page-audited #dataTable [data-column-key="Forma
 html.medindex-tailadmin.mi-first-page-audited #dataTable [data-column-key="Statusi"]{width:var(--registry-status-width)!important;min-width:var(--registry-status-width)!important;max-width:var(--registry-status-width)!important}
 html.medindex-tailadmin.mi-first-page-audited #dataTable td.code{color:#5e6d6f!important;font-size:.69rem!important}
 html.medindex-tailadmin.mi-first-page-audited #dataTable input[type=checkbox]{width:18px;height:18px;accent-color:var(--registry-teal);cursor:pointer}
-html.medindex-tailadmin.mi-first-page-audited #dataTable .registry-selection-control{display:grid;width:44px;height:44px;margin:auto;place-items:center;border-radius:9px;cursor:pointer}
+html.medindex-tailadmin.mi-first-page-audited #dataTable .registry-selection-control{display:grid;width:44px;height:44px;margin:auto;place-items:center;border-radius:8px;cursor:pointer}
 html.medindex-tailadmin.mi-first-page-audited #dataTable .registry-selection-control:focus-within{background:var(--registry-teal-soft);box-shadow:0 0 0 3px rgba(21,95,99,.16)}
 html.medindex-tailadmin.mi-first-page-audited #dataTable .drug-actions-trigger{
   width:29px!important;
@@ -746,7 +746,7 @@ html[data-theme=dark].medindex-tailadmin.mi-first-page-audited #dataTable td.nam
     padding:0!important;
     place-items:center!important;
     border:1px solid var(--registry-line-strong)!important;
-    border-radius:10px!important;
+    border-radius:8px!important;
     background:var(--registry-surface)!important;
   }
   html.medindex-tailadmin.mi-first-page-audited #dataTable tbody td.select-col::before{display:none}

@@ -49,7 +49,7 @@ html[data-mi-page="barnat"] #colPanel.col-panel {
   overscroll-behavior: contain;
   scrollbar-gutter: stable;
   border: 1px solid var(--cp-slate-200) !important;
-  border-radius: 18px !important;
+  border-radius: 16px !important;
   background: rgba(255, 255, 255, 0.98) !important;
   box-shadow:
     0 24px 64px rgba(15, 23, 42, 0.18),
@@ -99,7 +99,7 @@ html[data-mi-page="barnat"] #colPanel .mi-column-picker-head-icon {
   width: 42px;
   height: 42px;
   border: 1px solid var(--cp-teal-100);
-  border-radius: 13px;
+  border-radius: 12px;
   background: linear-gradient(145deg, #ffffff, var(--cp-teal-50));
   color: var(--cp-teal-700);
   box-shadow: 0 4px 12px rgba(13, 148, 136, 0.10);
@@ -230,7 +230,7 @@ html[data-mi-page="barnat"] #colPanel > .col-panel-actions button {
   margin: 0 !important;
   padding: 0 13px !important;
   border: 1px solid var(--cp-slate-200) !important;
-  border-radius: 10px !important;
+  border-radius: 8px !important;
   background: #ffffff !important;
   color: var(--cp-slate-700) !important;
   font-size: 12px !important;
@@ -315,7 +315,7 @@ html[data-mi-page="barnat"] #colPanel label input[type="checkbox"] {
   margin: 0 !important;
   padding: 0 !important;
   border: 1.5px solid #94a3b8 !important;
-  border-radius: 6px !important;
+  border-radius: 8px !important;
   background: #ffffff !important;
   box-shadow: none !important;
   cursor: pointer !important;
@@ -371,7 +371,7 @@ html[data-mi-page="barnat"] #colPanel .registry-dosage-picker-group {
   margin: 0 !important;
   padding: 12px !important;
   border: 1px solid var(--cp-teal-100) !important;
-  border-radius: 14px !important;
+  border-radius: 12px !important;
   background: linear-gradient(145deg, #ffffff 0%, var(--cp-teal-50) 100%) !important;
   box-shadow: none !important;
 }
@@ -454,7 +454,7 @@ html[data-mi-page="barnat"] #colPanel .mi-column-picker-close {
   min-height: 38px !important;
   padding: 0 14px !important;
   border: 1px solid var(--cp-teal-700) !important;
-  border-radius: 10px !important;
+  border-radius: 8px !important;
   background: var(--cp-teal-700) !important;
   color: #ffffff !important;
   font-size: 12px !important;
@@ -558,7 +558,7 @@ html[data-theme="dark"][data-mi-page="barnat"] #colPanel .mi-column-picker-foote
     max-height: calc(100dvh - 82px - env(safe-area-inset-top, 0px) - env(safe-area-inset-bottom, 0px)) !important;
     grid-template-columns: 1fr !important;
     padding: 10px !important;
-    border-radius: 17px !important;
+    border-radius: 16px !important;
     transform-origin: top center;
   }
 
@@ -570,7 +570,7 @@ html[data-theme="dark"][data-mi-page="barnat"] #colPanel .mi-column-picker-foote
   html[data-mi-page="barnat"] #colPanel .mi-column-picker-head-icon {
     width: 38px;
     height: 38px;
-    border-radius: 11px;
+    border-radius: 12px;
   }
 
   html[data-mi-page="barnat"] #colPanel > label,

@@ -54,21 +54,25 @@ const VIEWPORTS = [
  *
  * Numrat vijnë nga ekzekutimi në CI mbi runtime-in e ndërtuar — jo nga burimi
  * i pandërtuar, ku faqja s'i ngarkon kurrë të dhënat dhe çdo numër del shumë
- * më i vogël se realiteti. Ulja e tyre është puna e fazave 01–04. */
+ * më i vogël se realiteti.
+ *
+ * `maxRadii` u ul nga 7/9 në 4 me Fazën 01: shkalla e rrezeve tashmë është
+ * 8/12/16 dhe faqja llogarit vetëm 8px, 12px dhe një vlerë të përbërë që
+ * përdor 12. Ulja e madhësive të fontit mbetet për fazat pasuese. */
 const BUDGET = {
   phone:{   // ≤430px
     minFontPx:11,
     maxTinyTextNodes:0,
     maxSmallTargets:2,
     maxFontSizes:9,
-    maxRadii:7,
+    maxRadii:4,
   },
   wide:{    // ≥768px
     minFontPx:8.5,
     maxTinyTextNodes:320,
     maxSmallTargets:170,
     maxFontSizes:19,
-    maxRadii:9,
+    maxRadii:4,
   },
 };
 
@@ -128,8 +132,8 @@ function collect() {
 
   /* Rrethet dhe pilulat nuk numërohen: `50%` te një avatar dhe `999px` te një
    * distinktiv janë forma të qëllimshme, jo devijim nga shkalla. Numërohen
-   * vetëm rrezet e matura në piksela, ku 6, 7, 9, 13 dhe 14 tregojnë se s'ka
-   * shkallë të përbashkët. */
+   * vetëm rrezet e matura në piksela; pas Fazës 01 faqja duhet të përdorë
+   * vetëm 8, 12 dhe 16. */
   const ROUND = new Set(['50%', '999px', '9999px']);
 
   for (const el of nodes) {

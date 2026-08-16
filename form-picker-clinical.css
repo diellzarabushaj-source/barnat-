@@ -1,16 +1,16 @@
 /* Doctor-style pharmaceutical form picker: strict groups, preserved category colours, minimal visual weight. */
 html.medindex-tailadmin .form-picker{position:relative}
-html.medindex-tailadmin .form-picker>button{min-height:40px!important;padding:0 12px!important;border:1px solid var(--mi-line2,#c8d7d2)!important;border-radius:10px!important;background:#fff!important;color:var(--mi-ink,#14262a)!important;box-shadow:none!important;font-size:.76rem!important;font-weight:700!important}
+html.medindex-tailadmin .form-picker>button{min-height:40px!important;padding:0 12px!important;border:1px solid var(--mi-line2,#c8d7d2)!important;border-radius:8px!important;background:#fff!important;color:var(--mi-ink,#14262a)!important;box-shadow:none!important;font-size:.76rem!important;font-weight:700!important}
 html.medindex-tailadmin .form-picker>button:hover,html.medindex-tailadmin .form-picker>button[aria-expanded=true]{border-color:var(--mi-teal,#155f63)!important;background:#f8fbfa!important}
 html.medindex-tailadmin .form-panel{width:min(390px,calc(100vw - 24px))!important;padding:10px!important;border:1px solid var(--mi-line,#dce5e1)!important;border-radius:16px!important;background:#fff!important;box-shadow:0 20px 50px rgba(11,55,58,.16)!important}
-html.medindex-tailadmin .form-panel input[type=search],html.medindex-tailadmin .form-panel input[type=text]{position:sticky;top:0;z-index:4;width:100%!important;min-height:42px!important;margin:0 0 8px!important;padding:0 12px!important;border:1px solid var(--mi-line2,#c8d7d2)!important;border-radius:10px!important;background:#f8faf9!important;color:var(--mi-ink,#14262a)!important;font-size:.76rem!important;box-shadow:none!important}
+html.medindex-tailadmin .form-panel input[type=search],html.medindex-tailadmin .form-panel input[type=text]{position:sticky;top:0;z-index:4;width:100%!important;min-height:42px!important;margin:0 0 8px!important;padding:0 12px!important;border:1px solid var(--mi-line2,#c8d7d2)!important;border-radius:8px!important;background:#f8faf9!important;color:var(--mi-ink,#14262a)!important;font-size:.76rem!important;box-shadow:none!important}
 html.medindex-tailadmin .form-panel input:focus{outline:0!important;border-color:var(--mi-teal,#155f63)!important;box-shadow:0 0 0 3px rgba(21,95,99,.12)!important}
 html.medindex-tailadmin #formList{max-height:min(470px,calc(100vh - 190px))!important;padding:1px 2px 4px!important;overflow-y:auto!important;overscroll-behavior:contain;scrollbar-width:thin;scrollbar-color:#b8c7c2 transparent}
 html.medindex-tailadmin #formList::-webkit-scrollbar{width:8px}html.medindex-tailadmin #formList::-webkit-scrollbar-thumb{border-radius:99px;background:#b8c7c2}
 html.medindex-tailadmin #formList .form-item-all{display:grid!important;grid-template-columns:34px minmax(0,1fr) auto!important;align-items:center!important;gap:10px!important;margin:0 0 10px!important;padding:9px 10px!important;border:1px solid var(--mi-line,#dce5e1)!important;border-radius:12px!important;background:#f8faf9!important;color:var(--mi-ink,#14262a)!important}
 html.medindex-tailadmin #formList .form-item-all:hover{border-color:#aac2ba!important;background:#f1f6f4!important}
 html.medindex-tailadmin #formList .form-item-all.active{border-color:var(--mi-teal,#155f63)!important;background:#eaf4f1!important;color:var(--mi-teal-dark,#0c3f43)!important}
-html.medindex-tailadmin .form-all-icon{display:grid;place-items:center;width:34px;height:34px;border:1px solid #dbe5e1;border-radius:10px;background:#fff;color:var(--mi-teal,#155f63)}
+html.medindex-tailadmin .form-all-icon{display:grid;place-items:center;width:34px;height:34px;border:1px solid #dbe5e1;border-radius:8px;background:#fff;color:var(--mi-teal,#155f63)}
 html.medindex-tailadmin .form-all-icon svg{width:18px;height:18px}
 html.medindex-tailadmin .form-all-copy{display:flex;min-width:0;flex-direction:column;gap:2px;text-align:left}
 html.medindex-tailadmin .form-all-copy strong{font-size:.76rem;font-weight:800;line-height:1.2}
@@ -20,7 +20,7 @@ html.medindex-tailadmin #formList .form-cat-header{position:relative;display:gri
 html.medindex-tailadmin #formList .form-cat-header:first-of-type{margin-top:0!important}
 html.medindex-tailadmin #formList .form-cat-header:hover{border-color:color-mix(in srgb,var(--form-accent) 46%,#dce5e1)!important;background:color-mix(in srgb,var(--form-accent) 10%,#fff)!important}
 html.medindex-tailadmin #formList .form-cat-header.active{border-color:var(--form-accent)!important;background:color-mix(in srgb,var(--form-accent) 14%,#fff)!important;color:color-mix(in srgb,var(--form-accent) 76%,#13262a)!important;box-shadow:0 0 0 2px color-mix(in srgb,var(--form-accent) 12%,transparent)!important}
-html.medindex-tailadmin .form-category-icon{display:grid;place-items:center;width:40px;height:40px;border:1px solid color-mix(in srgb,var(--form-accent) 24%,#dce5e1);border-radius:11px;background:#fff;color:var(--form-accent);box-shadow:0 3px 8px color-mix(in srgb,var(--form-accent) 8%,transparent)}
+html.medindex-tailadmin .form-category-icon{display:grid;place-items:center;width:40px;height:40px;border:1px solid color-mix(in srgb,var(--form-accent) 24%,#dce5e1);border-radius:12px;background:#fff;color:var(--form-accent);box-shadow:0 3px 8px color-mix(in srgb,var(--form-accent) 8%,transparent)}
 html.medindex-tailadmin .form-category-icon svg{width:22px;height:22px}
 html.medindex-tailadmin .form-category-copy{display:flex;min-width:0;flex-direction:column;gap:3px;text-align:left}
 html.medindex-tailadmin .form-category-copy strong{overflow:hidden;color:#1a2d31;font-size:.72rem;font-weight:850;line-height:1.2;text-overflow:ellipsis;white-space:nowrap}

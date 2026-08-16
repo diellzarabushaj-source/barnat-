@@ -68,7 +68,7 @@
 }
 
 .registry-dosage-dose:focus-visible {
-  border-radius: 5px;
+  border-radius: 8px;
   outline: 2px solid rgba(21, 95, 99, 0.32);
   outline-offset: 3px;
 }
@@ -163,7 +163,7 @@
   margin: 5px 0 7px;
   padding: 7px 5px 8px;
   border: 1px solid rgba(13, 95, 99, 0.14);
-  border-radius: 9px;
+  border-radius: 8px;
   background: rgba(13, 95, 99, 0.045);
 }
 
@@ -191,7 +191,7 @@
   min-height: 38px;
   margin: 0;
   padding: 6px 7px;
-  border-radius: 7px;
+  border-radius: 8px;
   line-height: 1.25;
 }
 
@@ -364,7 +364,7 @@ body.dose-calculator-modal-open {
   place-items: center;
   padding: 0;
   border: 1px solid #d8e0df;
-  border-radius: 10px;
+  border-radius: 8px;
   background: #fff;
   color: #344054;
   font-size: 1.5rem;
@@ -374,7 +374,7 @@ body.dose-calculator-modal-open {
 .dose-calculator-product {
   margin-bottom: 17px;
   padding: 10px 12px;
-  border-radius: 9px;
+  border-radius: 8px;
   background: #edf7f6;
   color: #0d5f63;
   font-size: 0.84rem;
@@ -408,7 +408,7 @@ body.dose-calculator-modal-open {
   box-sizing: border-box;
   padding: 9px 11px;
   border: 1px solid #cfd9d7;
-  border-radius: 9px;
+  border-radius: 8px;
   background: #fff;
   color: #172326;
   font: inherit;
