@@ -92,6 +92,16 @@ function patchIndex() {
   write('index.html', source);
 }
 
+function patchMobileActionRegion() {
+  let css = read('registry-mobile-phase8.css');
+  const marker = '/* MedIndex revised Phase 2: explicit mobile card action region */';
+  if (css.includes(marker)) return;
+
+  css += `\n\n${marker}\n@media (max-width:767px){\n  html.medindex-tailadmin[data-mi-page="barnat"][data-registry-mobile-lite][data-registry-mobile-phase8] body #dataTable[data-registry-unified-table] #tbody>.mobile-lite-row .mobile-lite-card:has(.mobile-lite-actions){\n    display:grid!important;\n    grid-template-columns:minmax(0,1fr) auto!important;\n    align-items:center!important;\n    gap:8px!important;\n    min-height:108px!important;\n    padding:10px 10px 10px 13px!important;\n  }\n  html[data-registry-mobile-lite][data-registry-mobile-phase8] #tbody .mobile-lite-card:has(.mobile-lite-actions) .mobile-lite-open{\n    display:flex!important;\n    min-width:0!important;\n    min-height:58px!important;\n    width:100%!important;\n    padding:0!important;\n    pointer-events:none!important;\n  }\n  html[data-registry-mobile-lite][data-registry-mobile-phase8] #tbody .mobile-lite-actions{\n    display:grid!important;\n    grid-template-columns:44px 44px 78px!important;\n    align-items:center!important;\n    gap:6px!important;\n    min-width:178px!important;\n    margin:0!important;\n    padding:0!important;\n  }\n  html[data-registry-mobile-lite][data-registry-mobile-phase8] #tbody .mobile-lite-actions .mi-mobile-favorite-toggle,\n  html[data-registry-mobile-lite][data-registry-mobile-phase8] #tbody .mobile-lite-actions .mi-mobile-note-toggle{\n    position:static!important;\n    inset:auto!important;\n    width:44px!important;\n    height:44px!important;\n    margin:0!important;\n  }\n  html[data-registry-mobile-lite][data-registry-mobile-phase8] #tbody .mobile-lite-actions .mi-mobile-favorite-toggle{order:1}\n  html[data-registry-mobile-lite][data-registry-mobile-phase8] #tbody .mobile-lite-actions .mi-mobile-note-toggle{order:2}\n  html[data-registry-mobile-lite][data-registry-mobile-phase8] #tbody .mobile-lite-actions .mobile-lite-more{\n    order:3;\n    position:static!important;\n    inset:auto!important;\n    width:78px!important;\n    min-width:78px!important;\n    min-height:44px!important;\n    margin:0!important;\n    padding:0 10px!important;\n  }\n}\n`;
+
+  write('registry-mobile-phase8.css', css);
+}
+
 function verifyAddon() {
   const source = read('registry-mobile-phase8.js');
   const css = read('registry-mobile-phase8.css');
@@ -111,6 +121,8 @@ function verifyAddon() {
   if (/\bfetch\s*\(|\/api\//.test(source)) throw new Error('Phase 8 personalization addon must not add direct backend/network reads.');
   if (!css.includes('min-height:44px') || !css.includes('width:44px') || !css.includes('height:44px')) throw new Error('Phase 8 touch targets must remain at least 44px.');
   if (!css.includes('.mi-mobile-note-toggle')) throw new Error('Phase 4 mobile note action styling is missing.');
+  if (!css.includes('.mobile-lite-card:has(.mobile-lite-actions){')) throw new Error('Phase 4 mobile action region is missing.');
+  if (!css.includes('grid-template-columns:44px 44px 78px!important')) throw new Error('Phase 4 favorite/note/detail action slots are incomplete.');
   if (!css.includes('body #registryViewToolbar.registry-view-toolbar-unified')) throw new Error('Phase 0 mobile-lite boundary must suppress the shared registry view toolbar on phones.');
   if (!css.includes('body #registryFilterPanel.registry-filter-panel-unified')) throw new Error('Phase 0 mobile-lite boundary must own compact search/count toolbar geometry.');
   if (!css.includes('.mobile-lite-row>td:not(:has(.mobile-lite-card))')) throw new Error('Phase 0 mobile-lite boundary must suppress shared synthetic table cells.');
@@ -119,6 +131,7 @@ function verifyAddon() {
 
 patchMobileLite();
 patchIndex();
+patchMobileActionRegion();
 verifyAddon();
 
 console.log('Phase 4 mobile Favorites/Notes bridge, canonical note pencil, bounded recents and touch ownership published.');
