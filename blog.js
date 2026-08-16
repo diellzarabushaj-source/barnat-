@@ -5,7 +5,7 @@
   const grid = document.getElementById('blogGrid');
   const articleView = document.getElementById('blogArticleView');
   const statusView = document.getElementById('blogStatus');
-  const API_URL = '/api/blog';
+  const API_URL = '/api/clinical-editor?blog=1';
   const AUTHOR_IMAGE = 'images/brand/diellza-portret.webp';
 
   const escapeHtml = (value) => String(value ?? '')
@@ -183,7 +183,7 @@
   async function loadArticle(slug) {
     showStatus('Duke hapur artikullin…', 'Përmbajtja po ngarkohet.');
     try {
-      const payload = await fetchJson(`${API_URL}?slug=${encodeURIComponent(slug)}`);
+      const payload = await fetchJson(`${API_URL}&slug=${encodeURIComponent(slug)}`);
       hideStatus();
       renderArticle(payload.post);
     } catch (error) {
