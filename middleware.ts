@@ -22,6 +22,8 @@ const PUBLIC_PATHS = new Set([
   '/google-login.css',
   '/login.js',
   '/info-pages.css',
+  '/blog.css',
+  '/blog.js',
   ...PUBLIC_INFO_PATHS,
   '/theme-preload.js',
   '/tailadmin-medindex.css',
@@ -74,6 +76,15 @@ function isPublicPath(pathname) {
   return PUBLIC_PATHS.has(pathname) || PUBLIC_SECRET_APIS.has(pathname) || pathname === '/api/auth';
 }
 
+/* Blogu është publik, por ndan të njëjtin Vercel Function me editorin klinik.
+   Lejohet vetëm leximi GET me flamurin e saktë `blog=1`; çdo kërkesë tjetër
+   ndaj /api/clinical-editor mbetet nën autentikim. */
+function isPublicBlogApi(request, url) {
+  return request.method === 'GET'
+    && url.pathname === '/api/clinical-editor'
+    && url.searchParams.get('blog') === '1';
+}
+
 function safeReturnPath(url) {
   const value = `${url.pathname}${url.search}`;
   return value.startsWith('/')
@@ -91,7 +102,7 @@ export default async function middleware(request) {
   const pathname = url.pathname;
   const authenticated = await verifySessionToken(sessionFromRequest(request));
 
-  if (isPublicPath(pathname)) {
+  if (isPublicPath(pathname) || isPublicBlogApi(request, url)) {
     if (authenticated && PUBLIC_INFO_PATHS.has(pathname)) {
       return Response.redirect(new URL('/index.html', request.url), 302);
     }
