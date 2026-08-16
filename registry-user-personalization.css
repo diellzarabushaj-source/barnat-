@@ -1,95 +1,17 @@
-.registry-personal-note-head{
-  min-width:220px;
-  width:220px;
-  vertical-align:middle;
-}
-.registry-personal-note-head>span{
-  display:block;
-  font-weight:850;
-  white-space:nowrap;
-}
-.registry-personal-note-head>small{
-  display:block;
-  margin-top:2px;
-  color:#64748b;
-  font-size:.6rem;
-  font-weight:650;
-  white-space:nowrap;
-}
-.registry-personal-note-cell{
-  min-width:220px;
-  width:220px;
-  padding:5px 7px!important;
-  vertical-align:middle;
-}
-.registry-personal-note-wrap{
-  position:relative;
-  min-width:206px;
-}
-.registry-personal-note-wrap textarea{
-  display:block;
-  width:100%;
-  height:38px;
-  min-height:38px;
-  max-height:104px;
-  box-sizing:border-box;
-  resize:none;
-  overflow:auto;
-  border:1px solid #d8e0df;
-  border-radius:8px;
-  padding:8px 28px 15px 9px;
-  background:#fff;
-  color:#172b2d;
-  font:inherit;
-  font-size:.72rem;
-  line-height:1.28;
-  outline:none;
-  transition:border-color .12s ease,box-shadow .12s ease,background .12s ease;
-}
-.registry-personal-note-wrap textarea::placeholder{color:#94a3b8}
-.registry-personal-note-wrap textarea:hover{border-color:#b8c9c7}
-.registry-personal-note-wrap textarea:focus{
-  border-color:#168c86;
-  box-shadow:0 0 0 3px rgba(22,140,134,.11);
-  background:#fff;
-}
-.registry-personal-note-wrap textarea.has-content{background:#fbfefd}
-.registry-personal-note-state{
-  position:absolute;
-  right:7px;
-  bottom:3px;
-  min-height:10px;
-  color:#64748b;
-  font-size:.54rem;
-  font-weight:750;
-  line-height:1;
-  pointer-events:none;
-  transition:color .12s ease,opacity .12s ease;
-}
-.registry-personal-note-state[data-status="saved"],
-.registry-personal-note-state[data-status="synced"]{color:#0f766e}
-.registry-personal-note-state[data-status="saving"]{color:#64748b}
-.registry-personal-note-state[data-status="local"]{color:#b45309}
-.registry-personal-note-clear{
-  position:absolute;
-  top:5px;
-  right:5px;
-  width:22px;
-  height:22px;
-  padding:0;
-  border:0;
-  border-radius:8px;
-  background:transparent;
-  color:#94a3b8;
-  font:700 16px/1 system-ui,sans-serif;
-  cursor:pointer;
-  display:grid;
-  place-items:center;
-}
-.registry-personal-note-clear:hover{background:#f1f5f4;color:#475569}
-.registry-personal-note-clear:focus-visible{outline:2px solid rgba(22,140,134,.28);outline-offset:1px}
+/* MedIndex — personal registry controls v3.
+   One favorite star + one personal-note pencil per drug row. */
 
-.registry-row-favorite-toggle{
+/* The old personal-note table column is no longer an interaction surface.
+   Notes now live behind the single pencil action and dialog. */
+[data-registry-column-key="personal-note"],
+[data-column-key="personal-note"],
+.registry-personal-note-head,
+.registry-personal-note-cell{
+  display:none!important;
+}
+
+.registry-row-favorite-toggle,
+.registry-row-note-toggle{
   width:44px;
   height:44px;
   margin-left:4px;
@@ -105,23 +27,29 @@
   touch-action:manipulation;
   transition:transform .12s ease,color .12s ease,background .12s ease,border-color .12s ease,box-shadow .12s ease;
 }
-.registry-row-favorite-toggle svg{
+.registry-row-favorite-toggle svg,
+.registry-row-note-toggle svg{
   width:20px;
   height:20px;
   fill:transparent;
   stroke:currentColor;
   stroke-width:1.7;
+  stroke-linecap:round;
+  stroke-linejoin:round;
 }
-.registry-row-favorite-toggle:hover{
+.registry-row-favorite-toggle:hover,
+.registry-row-note-toggle:hover{
   transform:translateY(-1px);
-  color:#b36a10;
-  background:#fff8ed;
-  border-color:#f0d4ad;
+  background:#f8fafc;
+  border-color:#dbe4ea;
+  color:#64748b;
 }
-.registry-row-favorite-toggle:active{transform:scale(.94)}
-.registry-row-favorite-toggle:focus-visible{
+.registry-row-favorite-toggle:active,
+.registry-row-note-toggle:active{transform:scale(.95)}
+.registry-row-favorite-toggle:focus-visible,
+.registry-row-note-toggle:focus-visible{
   outline:none;
-  box-shadow:0 0 0 3px rgba(199,125,31,.18);
+  box-shadow:0 0 0 3px rgba(37,99,235,.18);
 }
 .registry-row-favorite-toggle.is-favorite{
   color:#b36a10;
@@ -132,19 +60,71 @@
   fill:#f4b44e;
   stroke:#b36a10;
 }
+.registry-row-note-toggle.has-note{
+  color:#0f766e;
+  background:#ecfdf9;
+  border-color:#b9e8e2;
+}
+.registry-row-note-toggle.has-note svg{
+  fill:rgba(15,118,110,.08);
+  stroke:#0f766e;
+}
 .favorite-marker,
 .drug-action-item.favorite{display:none!important}
 .drug-row.is-favorite td.name,
 tr.is-favorite td.name{
-  background:linear-gradient(90deg,rgba(199,125,31,.075),transparent);
+  background:linear-gradient(90deg,rgba(199,125,31,.065),transparent);
 }
 
-.registry-favorites-banner{
+.registry-personal-view-actions{
+  display:inline-flex;
+  align-items:center;
+  gap:5px;
+  flex:0 0 auto;
+}
+.registry-personal-view-actions button{
+  min-height:38px;
+  padding:7px 10px;
+  border:1px solid #dbe4ea;
+  border-radius:9px;
+  background:#fff;
+  color:#475569;
+  font:inherit;
+  font-size:.72rem;
+  font-weight:800;
+  cursor:pointer;
+  display:inline-flex;
+  align-items:center;
+  gap:6px;
+  white-space:nowrap;
+}
+.registry-personal-view-actions button>b{
+  min-width:19px;
+  min-height:19px;
+  padding:2px 5px;
+  border-radius:999px;
+  background:#f1f5f9;
+  color:#64748b;
+  font-size:.64rem;
+  line-height:15px;
+  text-align:center;
+}
+.registry-personal-view-actions button:hover{background:#f8fafc;border-color:#cbd5e1}
+.registry-personal-view-actions button.active,
+.registry-personal-view-actions button.is-active{
+  border-color:#99d9d3;
+  background:#ecfdf9;
+  color:#0f766e;
+}
+.registry-personal-view-actions button.active>b,
+.registry-personal-view-actions button.is-active>b{background:#d9f5f0;color:#0f766e}
+
+.registry-personal-view-banner{
   margin:8px 14px 7px;
-  min-height:42px;
+  min-height:44px;
   padding:7px 9px 7px 12px;
   border:1px solid #bee9e4;
-  border-radius:8px;
+  border-radius:9px;
   background:#f0fdfa;
   color:#134e4a;
   display:flex;
@@ -154,87 +134,226 @@ tr.is-favorite td.name{
   font-size:.74rem;
   box-shadow:0 4px 14px rgba(15,118,110,.05);
 }
-.registry-favorites-banner span{
+.registry-personal-view-banner>span{
   display:flex;
   align-items:baseline;
   gap:7px;
   min-width:0;
 }
-.registry-favorites-banner b{font-weight:900;white-space:nowrap}
-.registry-favorites-banner small{
+.registry-personal-view-banner b{font-weight:900;white-space:nowrap}
+.registry-personal-view-banner small{
   overflow:hidden;
   color:#3f6f6b;
-  font-size:.66rem;
+  font-size:.67rem;
   font-weight:700;
   text-overflow:ellipsis;
   white-space:nowrap;
 }
-.registry-favorites-banner button{
+.registry-personal-view-banner button,
+.registry-personal-empty button{
   flex:0 0 auto;
-  min-height:30px;
+  min-height:34px;
   border:1px solid #99d9d3;
   border-radius:8px;
   background:#fff;
   color:#0f766e;
-  padding:5px 9px;
+  padding:6px 10px;
   font:inherit;
-  font-size:.68rem;
-  font-weight:800;
+  font-size:.69rem;
+  font-weight:850;
   cursor:pointer;
-  touch-action:manipulation;
 }
-.registry-favorites-banner button:hover{background:#e6fffb}
-.registry-favorites-banner button:focus-visible{outline:none;box-shadow:0 0 0 3px rgba(15,118,110,.15)}
+.registry-personal-view-banner button:hover,
+.registry-personal-empty button:hover{background:#e6fffb}
+
+.registry-personal-empty{
+  margin:10px 14px;
+  padding:20px;
+  border:1px dashed #cbd5e1;
+  border-radius:12px;
+  background:#fbfdfd;
+  color:#475569;
+  display:grid;
+  justify-items:start;
+  gap:7px;
+}
+.registry-personal-empty strong{color:#0f172a;font-size:.9rem}
+.registry-personal-empty span{font-size:.76rem;line-height:1.45}
+.registry-personal-empty button{margin-top:3px}
 
 [data-nav="favorites"].active,
+[data-nav="notes"].active,
 [data-mi-shell-action="favorites"].active,
+[data-mi-shell-action="notes"].active,
 [data-nav="favorites"].is-active,
-[data-mi-shell-action="favorites"].is-active{
+[data-nav="notes"].is-active,
+[data-mi-shell-action="favorites"].is-active,
+[data-mi-shell-action="notes"].is-active{
   background:#ecfdf9!important;
   color:#0f766e!important;
   font-weight:800;
 }
 
-html[data-theme="dark"] .registry-personal-note-head>small{color:#9fb4b7}
-html[data-theme="dark"] .registry-personal-note-wrap textarea{
-  background:#121b1d;
-  border-color:#344749;
-  color:#e8f0ee;
+.registry-note-dialog{
+  width:min(560px,calc(100vw - 28px));
+  max-width:560px;
+  padding:0;
+  border:0;
+  border-radius:16px;
+  background:transparent;
+  color:#0f172a;
+  box-shadow:0 24px 70px rgba(15,23,42,.25);
 }
-html[data-theme="dark"] .registry-personal-note-wrap textarea.has-content{background:#152123}
-html[data-theme="dark"] .registry-personal-note-wrap textarea:hover{border-color:#456064}
-html[data-theme="dark"] .registry-personal-note-wrap textarea:focus{background:#172426;border-color:#2f9c96}
-html[data-theme="dark"] .registry-personal-note-state{color:#9fb4b7}
-html[data-theme="dark"] .registry-personal-note-state[data-status="saved"],
-html[data-theme="dark"] .registry-personal-note-state[data-status="synced"]{color:#72d8cf}
-html[data-theme="dark"] .registry-personal-note-state[data-status="local"]{color:#f0b55f}
-html[data-theme="dark"] .registry-personal-note-clear{color:#819699}
-html[data-theme="dark"] .registry-personal-note-clear:hover{background:#253235;color:#d7e5e3}
-html[data-theme="dark"] .registry-row-favorite-toggle{color:#7f9295}
-html[data-theme="dark"] .registry-row-favorite-toggle:hover,
-html[data-theme="dark"] .registry-row-favorite-toggle.is-favorite{
-  color:#f0b55f;
-  background:#332819;
-  border-color:#61451f;
+.registry-note-dialog::backdrop{
+  background:rgba(15,23,42,.42);
+  backdrop-filter:blur(3px);
 }
-html[data-theme="dark"] .registry-row-favorite-toggle.is-favorite svg{fill:#d99538;stroke:#f0b55f}
-html[data-theme="dark"] .registry-favorites-banner{background:#12302e;border-color:#255a56;color:#d8f5f0}
-html[data-theme="dark"] .registry-favorites-banner small{color:#a8ccc8}
-html[data-theme="dark"] .registry-favorites-banner button{background:#182628;border-color:#3a6d69;color:#d8f5f0}
+.registry-note-dialog[open]{animation:miNoteIn .14s ease-out}
+@keyframes miNoteIn{from{opacity:0;transform:translateY(8px) scale(.985)}to{opacity:1;transform:none}}
+.registry-note-dialog-card{
+  padding:18px;
+  border:1px solid #dbe4ea;
+  border-radius:16px;
+  background:#fff;
+}
+.registry-note-dialog-head{
+  display:flex;
+  align-items:flex-start;
+  justify-content:space-between;
+  gap:16px;
+  margin-bottom:13px;
+}
+.registry-note-dialog-head small{
+  display:block;
+  margin-bottom:3px;
+  color:#0f766e;
+  font-size:.68rem;
+  font-weight:900;
+  letter-spacing:.04em;
+  text-transform:uppercase;
+}
+.registry-note-dialog-head h2{
+  margin:0;
+  color:#0f172a;
+  font-size:1.02rem;
+  line-height:1.28;
+  font-weight:900;
+}
+.registry-note-dialog-close{
+  width:40px;
+  height:40px;
+  flex:0 0 auto;
+  border:0;
+  border-radius:10px;
+  background:#f8fafc;
+  color:#64748b;
+  font:700 22px/1 system-ui,sans-serif;
+  cursor:pointer;
+}
+.registry-note-dialog-close:hover{background:#eef2f6;color:#334155}
+.registry-note-dialog textarea{
+  display:block;
+  width:100%;
+  min-height:150px;
+  max-height:42vh;
+  box-sizing:border-box;
+  resize:vertical;
+  border:1px solid #cfdbe2;
+  border-radius:11px;
+  padding:12px 13px;
+  background:#fff;
+  color:#172b2d;
+  font:inherit;
+  font-size:.86rem;
+  line-height:1.5;
+  outline:none;
+  transition:border-color .12s ease,box-shadow .12s ease;
+}
+.registry-note-dialog textarea:focus{
+  border-color:#168c86;
+  box-shadow:0 0 0 3px rgba(22,140,134,.12);
+}
+.registry-note-dialog-meta{
+  min-height:24px;
+  padding:6px 2px 0;
+  display:flex;
+  justify-content:space-between;
+  gap:12px;
+  color:#64748b;
+  font-size:.66rem;
+  font-weight:700;
+}
+.registry-note-dialog-actions{
+  margin-top:10px;
+  display:grid;
+  grid-template-columns:auto 1fr auto auto;
+  gap:8px;
+  align-items:center;
+}
+.registry-note-dialog-actions button{
+  min-height:40px;
+  padding:8px 12px;
+  border-radius:9px;
+  font:inherit;
+  font-size:.74rem;
+  font-weight:850;
+  cursor:pointer;
+}
+.registry-note-delete{border:1px solid #fecaca;background:#fff;color:#b91c1c}
+.registry-note-delete:hover{background:#fff1f2}
+.registry-note-cancel{border:1px solid #dbe4ea;background:#fff;color:#475569}
+.registry-note-cancel:hover{background:#f8fafc}
+.registry-note-save{border:1px solid #0f766e;background:#0f766e;color:#fff}
+.registry-note-save:hover{background:#0b655f}
 
-@media(max-width:720px){
-  .registry-personal-note-head,.registry-personal-note-cell{min-width:190px;width:190px}
-  .registry-personal-note-wrap{min-width:176px}
-  .registry-personal-note-wrap textarea{max-height:92px;font-size:.75rem}
-  .registry-row-favorite-toggle{width:44px;height:44px;margin-left:2px;padding:10px;border-radius:10px}
-  .registry-row-favorite-toggle svg{width:20px;height:20px}
-  .registry-favorites-banner{margin:7px 8px 6px;align-items:stretch;flex-direction:column}
-  .registry-favorites-banner span{align-items:flex-start;flex-direction:column;gap:2px}
-  .registry-favorites-banner small{white-space:normal}
-  .registry-favorites-banner button{width:100%;min-height:38px}
+html[data-theme="dark"] .registry-row-favorite-toggle,
+html[data-theme="dark"] .registry-row-note-toggle{color:#7f9295}
+html[data-theme="dark"] .registry-row-favorite-toggle:hover,
+html[data-theme="dark"] .registry-row-note-toggle:hover{background:#1e293b;border-color:#334155;color:#a8b7ba}
+html[data-theme="dark"] .registry-row-favorite-toggle.is-favorite{color:#f0b55f;background:#332819;border-color:#61451f}
+html[data-theme="dark"] .registry-row-favorite-toggle.is-favorite svg{fill:#d99538;stroke:#f0b55f}
+html[data-theme="dark"] .registry-row-note-toggle.has-note{color:#72d8cf;background:#12302e;border-color:#255a56}
+html[data-theme="dark"] .registry-personal-view-actions button{background:#172124;border-color:#334749;color:#cbd8d8}
+html[data-theme="dark"] .registry-personal-view-actions button>b{background:#243236;color:#aebfc1}
+html[data-theme="dark"] .registry-personal-view-actions button.active,
+html[data-theme="dark"] .registry-personal-view-actions button.is-active{background:#12302e;border-color:#255a56;color:#d8f5f0}
+html[data-theme="dark"] .registry-personal-view-banner{background:#12302e;border-color:#255a56;color:#d8f5f0}
+html[data-theme="dark"] .registry-personal-view-banner small{color:#a8ccc8}
+html[data-theme="dark"] .registry-personal-view-banner button{background:#182628;border-color:#3a6d69;color:#d8f5f0}
+html[data-theme="dark"] .registry-personal-empty{background:#121b1d;border-color:#344749;color:#aebfc1}
+html[data-theme="dark"] .registry-personal-empty strong{color:#e8f0ee}
+html[data-theme="dark"] .registry-note-dialog-card{background:#121b1d;border-color:#344749;color:#e8f0ee}
+html[data-theme="dark"] .registry-note-dialog-head h2{color:#e8f0ee}
+html[data-theme="dark"] .registry-note-dialog-close{background:#1d292c;color:#9fb4b7}
+html[data-theme="dark"] .registry-note-dialog textarea{background:#172426;border-color:#3b5155;color:#e8f0ee}
+html[data-theme="dark"] .registry-note-dialog-meta{color:#9fb4b7}
+html[data-theme="dark"] .registry-note-cancel{background:#182628;border-color:#3a4d50;color:#d8e4e3}
+html[data-theme="dark"] .registry-note-delete{background:#2b1a1a;border-color:#713838;color:#fca5a5}
+
+@media(max-width:767px){
+  .registry-row-favorite-toggle,
+  .registry-row-note-toggle{width:44px;height:44px;margin-left:2px;padding:10px}
+  .registry-personal-view-actions{width:100%;display:grid;grid-template-columns:1fr 1fr}
+  .registry-personal-view-actions button{justify-content:center;min-height:44px}
+  .registry-personal-view-banner{margin:7px 8px 6px;align-items:stretch;flex-direction:column}
+  .registry-personal-view-banner>span{align-items:flex-start;flex-direction:column;gap:2px}
+  .registry-personal-view-banner small{white-space:normal}
+  .registry-personal-view-banner button{width:100%;min-height:42px}
+  .registry-personal-empty{margin:8px;padding:16px}
+  .registry-note-dialog-card{padding:15px}
+  .registry-note-dialog textarea{min-height:180px}
+  .registry-note-dialog-actions{grid-template-columns:1fr 1fr}
+  .registry-note-dialog-actions>span{display:none}
+  .registry-note-dialog-actions button{min-height:44px}
+  .registry-note-delete{grid-column:1/-1;order:3}
 }
 
 @media(prefers-reduced-motion:reduce){
-  .registry-row-favorite-toggle,.registry-personal-note-wrap textarea{transition:none}
-  .registry-row-favorite-toggle:hover,.registry-row-favorite-toggle:active{transform:none}
+  .registry-row-favorite-toggle,
+  .registry-row-note-toggle,
+  .registry-note-dialog{transition:none;animation:none!important}
+  .registry-row-favorite-toggle:hover,
+  .registry-row-favorite-toggle:active,
+  .registry-row-note-toggle:hover,
+  .registry-row-note-toggle:active{transform:none}
 }
