@@ -14,6 +14,8 @@ const phase8 = read('registry-mobile-phase8.js');
 const css = read('registry-mobile-phase8.css');
 const sharedPersonalization = read('registry-user-personalization.js');
 const desktopRuntime = read('app-parts/part-02.txt');
+const phase8Patch = read('scripts/patch-registry-phase8-personalization.js');
+const phase2Patch = read('scripts/patch-phase2-mobile-card-stability.js');
 const phase0Patch = read('scripts/patch-phase0-mobile-owner-boundary.js');
 const packageJson = JSON.parse(read('package.json'));
 
@@ -22,6 +24,7 @@ for (const file of [
   'registry-mobile-phase8.js',
   'registry-user-personalization.js',
   'scripts/patch-registry-phase8-personalization.js',
+  'scripts/patch-phase2-mobile-card-stability.js',
   'scripts/patch-phase0-mobile-owner-boundary.js',
 ]) {
   execFileSync(process.execPath, ['--check', path.join(ROOT, file)], { stdio:'pipe' });
@@ -80,25 +83,34 @@ assert.match(sharedPersonalization, /function noteKeyForData\(data\)/);
 assert.match(sharedPersonalization, /editNoteForData,/);
 assert.doesNotMatch(sharedPersonalization, /registry-personalization-phone-deferred-v1/);
 
-assert.match(phase0Patch, /canonical personalization controller must remain alive as a non-visual bridge/i);
 assert.match(phase0Patch, /phoneLiteOwnsViewport/);
 assert.match(phase0Patch, /editNoteForData/);
+assert.match(phase0Patch, /registryMobileLiteState !== 'handoff'/, 'Phase 0 must verify explicit handoff instead of killing the shared controller.');
 assert.doesNotMatch(phase0Patch, /const marker = 'registry-personalization-phone-deferred-v1'/, 'Phase 0 must not inject an early-return controller on phones.');
+
+assert.match(phase8Patch, /function patchMobileActionRegion\(\)/, 'Phase 8 must publish the composed mobile action region before legacy stability auditing.');
+assert.match(phase8Patch, /MedIndex revised Phase 2: explicit mobile card action region/, 'Phase 8 and Phase 2 must share one action-region compatibility marker.');
+assert.match(phase8Patch, /grid-template-columns:44px 44px 78px!important/, 'Favorite, note and detail must each own a distinct mobile action slot.');
+assert.match(phase8Patch, /patchMobileActionRegion\(\);\s*verifyAddon\(\);/, 'Action-region composition must run before the Phase 8 verification gate.');
+assert.match(phase2Patch, /const explicitActionMarker = '\/\* MedIndex revised Phase 2: explicit mobile card action region \*\/'/, 'Legacy Phase 2 patch must recognize the composed action-region marker.');
 
 assert.match(css, /@media \(max-width:767px\)/);
 assert.match(css, /min-height:44px/);
 assert.match(css, /width:44px/);
 assert.match(css, /height:44px/);
-assert.match(css, /\.mi-mobile-favorite-toggle\{right:8px\}/);
-assert.match(css, /\.mi-mobile-note-toggle\{right:60px\}/);
 assert.match(css, /\.mi-mobile-note-toggle\.has-note/);
 assert.match(css, /focus-visible/);
 assert.match(css, /:disabled/);
-assert.match(css, /padding-right:112px/, 'Two top-right actions must reserve text space and not overlap card content.');
+assert.match(css, /MedIndex revised Phase 2: explicit mobile card action region/, 'Built mobile CSS must carry the composed action-region contract.');
+assert.match(css, /grid-template-columns:44px 44px 78px!important/, 'Built mobile CSS must reserve independent favorite, note and detail slots.');
+assert.match(css, /\.mobile-lite-actions \.mi-mobile-favorite-toggle\{order:1\}/);
+assert.match(css, /\.mobile-lite-actions \.mi-mobile-note-toggle\{order:2\}/);
+assert.match(css, /\.mobile-lite-actions \.mobile-lite-more\{/);
 assert.match(css, /@media \(min-width:768px\)/, 'Phase 8 UI must be hidden on desktop.');
 
 assert.match(packageJson.scripts['build:runtime'], /patch-registry-phase8-personalization\.js/, 'Phase 8 patch must be deterministic in the build chain.');
+assert.match(packageJson.scripts['build:runtime'], /patch-registry-phase8-personalization\.js && node scripts\/patch-phase2-mobile-card-stability\.js/, 'Phase 8 composition must run immediately before the legacy Phase 2 compatibility audit.');
 assert.equal(fs.existsSync(path.join(ROOT, 'api', 'mobile-favorites.js')), false, 'Phase 8 must not consume a Vercel function for favorites.');
 assert.equal(fs.existsSync(path.join(ROOT, 'api', 'recent-medicines.js')), false, 'Phase 8 must not consume a Vercel function for recents.');
 
-console.log('Phase 4 mobile canonical Favorites/Notes bridge, single star/pencil actions, bounded recents and 44px accessibility targets passed.');
+console.log('Phase 5 regression gate: mobile canonical Favorites/Notes bridge, composed three-slot action region, bounded recents and 44px accessibility targets passed.');
