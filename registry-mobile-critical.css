@@ -276,7 +276,7 @@
     margin:0!important;
     padding:13px 14px!important;
     border:1px solid #e4e7ec!important;
-    border-radius:15px!important;
+    border-radius:16px!important;
     background:linear-gradient(145deg,#fff,#fbfcfd)!important;
     box-shadow:0 5px 18px rgba(16,24,40,.035)!important;
   }
@@ -379,7 +379,13 @@
     padding:0 11px!important;
     border:1px solid #d0d5dd!important;
     border-radius:12px!important;
-    background:#fff!impor„›Ì¢Gß≤⁄Óù∆≠y—important;
+    background:#fff!important;
+    color:#101828!important;
+    font-size:13px!important;
+    font-weight:600!important;
+  }
+  html.medindex-tailadmin[data-mi-page="barnat"].mi-first-page-audited body .registry-action-group :is(.selection-badge,.protocol-toolbar-btn){
+    display:inline-flex!important;
     width:100%!important;
     min-width:0!important;
     min-height:50px!important;
@@ -495,7 +501,7 @@
     min-width:0!important;
     overflow:hidden!important;
     border:1px solid #e4e7ec!important;
-    border-radius:15px!important;
+    border-radius:16px!important;
     background:#fff!important;
     box-shadow:0 5px 18px rgba(16,24,40,.045)!important;
   }
@@ -577,7 +583,7 @@
     min-height:130px!important;
     padding:30px 18px!important;
     border:1px dashed #d0d5dd!important;
-    border-radius:15px!important;
+    border-radius:16px!important;
     color:#667085!important;
     text-align:center!important;
   }
@@ -596,7 +602,7 @@
     padding:11px 8px!important;
     overflow-x:auto!important;
     border:1px solid #e4e7ec!important;
-    border-radius:15px!important;
+    border-radius:16px!important;
     background:#fff!important;
     box-shadow:0 4px 16px rgba(16,24,40,.035)!important;
     scrollbar-width:none!important;

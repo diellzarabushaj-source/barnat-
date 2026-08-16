@@ -4,7 +4,11 @@
   const VERSION = 'registry-unified-table-20260801-1';
   const VIEW_STORAGE_KEY = 'medindex.registry.view.v2';
   const FILTER_STORAGE_KEY = 'medindex.registry.filters.open.v3';
-  const MOBILE_BREAKPOINT = 760;
+  // Nën këtë kufi tabela nuk vizatohet si tabelë por si rreshta shumërreshtorë,
+  // prandaj asnjë gjerësi në piksela nuk guxon të fiksohet. Duhet të përputhet me
+  // TABLE_BREAKPOINT te registry-table-layout-guard.js dhe me kufirin 1199px te
+  // registry-tablet-rows.css.
+  const MOBILE_BREAKPOINT = 1199;
 
   const FULL_ORDER = Object.freeze([
     'select', 'number', 'trade-name', 'active-substance', 'atc', 'drug-class', 'use',
