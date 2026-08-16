@@ -18,10 +18,6 @@ function patchUnifiedTable() {
 
   source = replaceOnce(
     source,
-    // MOBILE_BREAKPOINT është kufiri i gjeometrisë së tabelës (deri ku nuk
-    // shkruhet colgroup as gjerësi në piksela) dhe qëndron te 1199px.
-    // PHONE_OWNER_QUERY është diçka tjetër: kufiri ku regjistri i telefonit e
-    // merr faqen. Të dy janë të pavarur, prandaj kjo shtesë vjen pas tij.
     `  const MOBILE_BREAKPOINT = 1199;`,
     `  const MOBILE_BREAKPOINT = 1199;\n  const PHONE_OWNER_QUERY = '(max-width: 767px)';`,
     'unified table phone owner constant',
@@ -96,12 +92,7 @@ function patchCellPreview() {
 
   const initAnchor = `    window.addEventListener('medindex:registry-table-stable', activate);\n    ['medindex:registry-data-ready', 'medindex:tailadmin-ready']`;
   const eventDriven = `    window.addEventListener('medindex:registry-table-stable', activate);\n    window.addEventListener('medindex:registry-row-expanded-change', event => {\n      const row = event.detail?.row;\n      if (!row?.isConnected) return;\n      row.querySelectorAll(\`.\${TRIGGER_CLASS}\`).forEach(syncTriggerState);\n    });\n    ['medindex:registry-data-ready', 'medindex:tailadmin-ready']`;
-  source = replaceOnce(
-    source,
-    initAnchor,
-    eventDriven,
-    'cell preview row-expanded event sync',
-  );
+  source = replaceOnce(source, initAnchor, eventDriven, 'cell preview row-expanded event sync');
 
   if (!source.includes("cell.closest('.mobile-lite-row')")) throw new Error('Phase 0 cell-preview phone guard is missing.');
   if (!source.includes('tableObserver.observe(tbody, { childList:true, subtree:true });')) {
@@ -122,9 +113,9 @@ function patchSharedPersonalization() {
   const guard = `  const PHONE_OWNER_QUERY = '(max-width: 767px)';\n  const phoneRegistryOwnsViewport = window.matchMedia?.(PHONE_OWNER_QUERY)?.matches === true\n    && document.documentElement.dataset.registryMobileLiteState !== 'handoff'\n    && (window.MEDINDEX_MOBILE_LITE_ACTIVE === true || Boolean(document.documentElement.dataset.registryMobileLite));\n  if (phoneRegistryOwnsViewport) {\n    document.documentElement.dataset.registryPersonalization = '${marker}';\n    return;\n  }\n\n`;
 
   if (!source.includes(marker)) {
-    const anchor = `  const VERSION = 'registry-user-personalization-v2.0.0';\n`;
-    if (!source.includes(anchor)) throw new Error('Phase 0 shared personalization version anchor changed.');
-    source = source.replace(anchor, `${anchor}${guard}`);
+    const versionMatch = source.match(/  const VERSION = 'registry-user-personalization-v[^']+';\n/);
+    if (!versionMatch) throw new Error('Phase 0 shared personalization version declaration is missing.');
+    source = source.replace(versionMatch[0], `${versionMatch[0]}${guard}`);
   }
 
   if (!source.includes("document.documentElement.dataset.registryPersonalization = 'registry-personalization-phone-deferred-v1'")) {
