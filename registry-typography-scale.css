@@ -1,0 +1,195 @@
+/* MedIndex — Faza 01b: një shkallë e vetme tipografike për regjistrin.
+
+   Matja mbi runtime-in e ndërtuar nxori 19 madhësi të dallueshme fonti në një
+   faqe të vetme, me tekstin më të vogël në 8.5px. Shumica nuk ishin as të
+   zgjedhura: vinin nga vlera `rem` pa shkallë — 0.64rem del 10.24px, 0.66rem
+   del 10.56px, 0.88rem del 14.08px, 1.8rem del 28.8px. Askush nuk e ka menduar
+   ndonjëherë "kjo etiketë le të jetë 10.24 piksela".
+
+   Shkalla është gjashtë hapa. Dyshemeja është 12px: kjo faqe lexohet nga një
+   mjeke që kontrollon dozime, shpesh në tablet, dhe 9.5px për rrugën e
+   administrimit apo 10.24px për popullatën e aprovuar nuk është zgjedhje
+   estetike — është tekst që duhet lexuar saktë.
+
+   Pse një shtresë e vetme dhe jo redaktim i 34 fletëve: secila prej këtyre
+   klasave e ka madhësinë e deklaruar në tri deri në pesë fletë njëherësh, të
+   gjitha me `!important`, ku fiton ajo që ngarkohet e fundit. Ndreqja në burim
+   kërkon zgjidhjen e asaj rrëmuje — që është Faza 04, projekt më vete. Deri
+   atëherë kjo shtresë e mban shkallën në një vend të vetëm, të lexueshëm.
+
+   Specifika këtu është 2 id + 3 klasa/atribute, sa duhet për t'i mundur
+   shtresat ekzistuese pa iu qasur `!important`-it të tyre me trikë. */
+
+html.medindex-tailadmin[data-mi-page="barnat"]{
+  --mi-type-xs:12px;   /* dyshemeja: etiketa, meta, ndihmëse */
+  --mi-type-sm:13px;   /* teksti i tabelës */
+  --mi-type-md:14px;   /* teksti bazë */
+  --mi-type-lg:16px;   /* theksim, tituj kartelash */
+  --mi-type-xl:20px;   /* tituj seksionesh */
+  --mi-type-2xl:28px;  /* titulli i faqes */
+}
+
+/* ————— Trupi i tabelës ————— */
+
+/* Qeliza e tabelës rrinte në 12.5px (0.78rem). Teksti kryesor klinik shkon te
+   hapi `sm`; nën të nuk zbret asgjë brenda tabelës. */
+html.medindex-tailadmin[data-mi-page="barnat"] body #registryContent #dataTable[data-registry-unified-table] tbody td{
+  font-size:var(--mi-type-sm)!important;
+}
+
+/* Emri tregtar është ankora e rreshtit — një hap mbi trupin. */
+html.medindex-tailadmin[data-mi-page="barnat"] body #registryContent #dataTable[data-registry-unified-table] tbody .drug-name-text{
+  font-size:var(--mi-type-md)!important;
+}
+
+/* Dozimi lexohet sa trupi i tabelës, jo më pak — ishte 11.5px. Doza është
+   përmbajtja që lexohet më shumë në këtë faqe; nuk ka arsye të jetë më e vogël
+   se emri i barit pranë saj.
+
+   E kontrollova nëse 13px del jashtë qelizës 250px: mbi dhjetë rreshta,
+   `scrollHeight - clientHeight` është 0 si në 12px ashtu edhe në 13px. Teksti
+   që duket i prerë në pamje nuk pritet nga qeliza — është skaji i skrollimit
+   horizontal të tabelës, i njëjtë para dhe pas kësaj shtrese. */
+html.medindex-tailadmin[data-mi-page="barnat"] body #registryContent #dataTable[data-registry-unified-table] tbody :is(
+  .registry-dosage-dose-text,
+  .registry-dosage-muted,
+  .registry-dosage-details,
+  .registry-dosage-grid
+){
+  font-size:var(--mi-type-sm)!important;
+}
+
+/* Etiketat ndihmëse brenda rreshtit: rruga e administrimit (ishte 9.5px),
+   popullata e aprovuar (10.24px), çelësi i dozimit dhe treguesi i redaktimit
+   (10.56px), nënkreu i dozimit (8.5px). Të gjitha bien te dyshemeja. */
+html.medindex-tailadmin[data-mi-page="barnat"] body #registryContent #dataTable[data-registry-unified-table] :is(
+  .registry-dosage-route,
+  .registry-dosage-subhead,
+  .registry-dosage-toggle,
+  .population-verification-label,
+  .population-verification-value,
+  .clinical-editor-progress,
+  .clinical-editor-status-column,
+  .registry-population-badge
+){
+  font-size:var(--mi-type-xs)!important;
+}
+
+/* Etiketa e gjeneruar mbi çdo qelizë në brezin e kartelës. */
+html.medindex-tailadmin[data-mi-page="barnat"] body #registryContent #dataTable[data-registry-unified-table] tbody td::before{
+  font-size:var(--mi-type-xs)!important;
+}
+
+/* Kreu i tabelës mbetet i vogël por i lexueshëm, jo nën dysheme. */
+html.medindex-tailadmin[data-mi-page="barnat"] body #registryContent #dataTable[data-registry-unified-table] thead th{
+  font-size:var(--mi-type-xs)!important;
+}
+
+/* ————— Shtresa rreth tabelës ————— */
+
+/* Shkurtorja e kërkimit ishte 0.55rem = 8.8px, shigjetat 0.7rem = 11.2px,
+   dhe disa etiketa 0.71rem = 11.36px. Asnjë prej tyre nuk ishte vlerë e
+   menduar; të gjitha shkojnë te dyshemeja. */
+html.medindex-tailadmin[data-mi-page="barnat"] body :is(
+  .registry-search-shortcut,
+  .registry-control-label,
+  .registry-eyebrow,
+  .registry-result-count,
+  .registry-filter-state,
+  .nav-mini-count,
+  .mini-count
+){
+  font-size:var(--mi-type-xs)!important;
+}
+
+/* Titulli i faqes ishte 28.8px (1.8rem). */
+html.medindex-tailadmin[data-mi-page="barnat"] body :is(.mi-page-heading-title, .mi-page-heading h1){
+  font-size:var(--mi-type-2xl)!important;
+}
+
+/* Nën 600px titulli zbret një hap, që të mos e hajë gjerësinë e ekranit. */
+@media (max-width:599px){
+  html.medindex-tailadmin[data-mi-page="barnat"] body :is(.mi-page-heading-title, .mi-page-heading h1){
+    font-size:var(--mi-type-xl)!important;
+  }
+}
+
+/* ————— Mbetjet e shtresës së jashtme —————
+
+   Matja me CSS.getMatchedStylesForNode tregoi pse gjysma e rregullave të para
+   nuk zbatohej: rregullat fituese ankorohen te id-të — `#pagination`,
+   `#registryViewToolbar`, `#registryFilterPanel` — dhe një selektor me klasa,
+   sado i gjatë, nuk e mund dot një id. Prandaj këtu përdoret e njëjta id plus
+   një kualifikues, jo më shumë klasa. */
+
+/* Kreu i seksionit: titulli ishte 0.88rem = 14.08px, përmbledhja dhe butonat
+   e pamjes 0.68rem = 10.88px. */
+html.medindex-tailadmin[data-mi-page="barnat"] body #registryViewToolbar.registry-view-toolbar .registry-view-heading strong{
+  font-size:var(--mi-type-md)!important;
+}
+html.medindex-tailadmin[data-mi-page="barnat"] body #registryViewToolbar.registry-view-toolbar :is(
+  .registry-view-heading span,
+  .registry-view-actions button,
+  .registry-filter-toggle,
+  [data-registry-view]
+){
+  font-size:var(--mi-type-xs)!important;
+}
+
+/* Treguesi i auditimit rri te shiriti i filtrave, ku rregulli fitues ishte
+   0.66rem = 10.56px. */
+html.medindex-tailadmin[data-mi-page="barnat"] body #registryFilterPanel.toolbar :is(
+  .clinical-editor-progress,
+  select,
+  .form-picker > button,
+  .col-picker > button
+){
+  font-size:var(--mi-type-xs)!important;
+}
+
+/* Shigjeta e renditjes në kre ishte 0.7rem = 11.2px. */
+html.medindex-tailadmin[data-mi-page="barnat"] body .registry-column-header .registry-sort-trigger .arrow{
+  font-size:var(--mi-type-xs)!important;
+}
+
+/* Faqosja: butonat ishin 0.71rem = 11.36px, ndarësi "…" 0.85rem = 13.6px. */
+html.medindex-tailadmin[data-mi-page="barnat"] body #pagination.pagination :is(button, a){
+  font-size:var(--mi-type-xs)!important;
+}
+html.medindex-tailadmin[data-mi-page="barnat"] body #pagination.pagination span{
+  font-size:var(--mi-type-sm)!important;
+}
+
+/* Shiriti i sipërm dhe anështylla: numri i favoriteve, roli i përdoruesit,
+   distinktivi i numërimit dhe shkurtorja e tastierës rrinin në 11px. */
+html.medindex-tailadmin[data-mi-page="barnat"] body :is(
+  .mi-menu-item .nav-mini-count.mi-menu-badge,
+  .mi-user-card .mi-user-copy small,
+  .mi-profile-chip small,
+  .mi-global-search kbd
+){
+  font-size:var(--mi-type-xs)!important;
+}
+html.medindex-tailadmin[data-mi-page="barnat"] body #countBadge.count-badge,
+html.medindex-tailadmin[data-mi-page="barnat"] body #savedProtocolCount.mini-count{
+  font-size:var(--mi-type-xs)!important;
+}
+
+/* Distinktivi i menysë ankorohet te `#appMenu` (tailadmin-medindex.css:293),
+   prandaj edhe këtu duhet e njëjta id. Ishte 11px — nën dysheme. */
+html.medindex-tailadmin[data-mi-page="barnat"] body #appMenu :is(.mi-menu-badge, .nav-mini-count){
+  font-size:var(--mi-type-xs)!important;
+}
+
+/* Në telefon treguesi i auditimit nuk rri te `#registryFilterPanel`, prandaj i
+   duhet edhe një rregull pa id — ishte 0.76rem = 12.16px, jashtë shkallës. */
+html.medindex-tailadmin[data-mi-page="barnat"] body .toolbar .clinical-editor-progress,
+html.medindex-tailadmin[data-mi-page="barnat"] body .registry-toolbar .clinical-editor-progress{
+  font-size:var(--mi-type-xs)!important;
+}
+
+/* Distinktivi i numërimit në telefon kishte ende 11px nga një shtresë tjetër. */
+html.medindex-tailadmin[data-mi-page="barnat"] body :is(.count-badge, .selection-badge),
+html.medindex-tailadmin[data-mi-page="barnat"] body .registry-toolbar :is(.count-badge, .selection-badge){
+  font-size:var(--mi-type-xs)!important;
+}

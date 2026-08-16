@@ -100,10 +100,32 @@ function enforceFullRuntimeDefaults() {
       "{ key:'Popullata e aprovuar', label:'Popullata (Adult/Pediatric)', mobileLabel:'Popullata', type:'str', cls:'registry-population-column', visible:true }",
     );
 
+    /* Klasa dhe Përdorimi hyjnë në parazgjedhje, kurse ATC del. Kjo pason
+       zgjedhësin e kolonave siç e kërkoi mjekja: gjatë shkrimit të recetës
+       "çka është bari" dhe "për çka përdoret" janë ato që lexohen, kurse kodi
+       ATC shihet rrallë dhe zë një kolonë të tërë. */
+    runtime = replaceIfPresent(
+      runtime,
+      "{ key:'Klasa / Çka është', label:'Klasa / Çka është', mobileLabel:'Klasa', type:'str', cls:'wrap', visible:false }",
+      "{ key:'Klasa / Çka është', label:'Klasa / Çka është', mobileLabel:'Klasa', type:'str', cls:'wrap', visible:true }",
+    );
+    runtime = replaceIfPresent(
+      runtime,
+      "{ key:'Përdorimi (fjalë kyçe)', label:'Përdorimi / fjalë kyçe', mobileLabel:'Përdorimi', type:'str', cls:'wrap', visible:false }",
+      "{ key:'Përdorimi (fjalë kyçe)', label:'Përdorimi / fjalë kyçe', mobileLabel:'Përdorimi', type:'str', cls:'wrap', visible:true }",
+    );
+    runtime = replaceIfPresent(
+      runtime,
+      "{ key:'ATC Code', label:'ATC', mobileLabel:'ATC', type:'str', cls:'code', visible:true }",
+      "{ key:'ATC Code', label:'ATC', mobileLabel:'ATC', type:'str', cls:'code', visible:false }",
+    );
+
     const required = [
       "key:'Emri tregtar', label:'Emri Tregtar', mobileLabel:'Emri tregtar', type:'str', cls:'name', visible:true",
       "key:'Substanca aktive', label:'Substanca Aktive', mobileLabel:'Substanca aktive', type:'str', cls:'', visible:true",
-      "key:'ATC Code', label:'ATC', mobileLabel:'ATC', type:'str', cls:'code', visible:true",
+      "key:'ATC Code', label:'ATC', mobileLabel:'ATC', type:'str', cls:'code', visible:false",
+      "key:'Klasa / Çka është', label:'Klasa / Çka është', mobileLabel:'Klasa', type:'str', cls:'wrap', visible:true",
+      "key:'Përdorimi (fjalë kyçe)', label:'Përdorimi / fjalë kyçe', mobileLabel:'Përdorimi', type:'str', cls:'wrap', visible:true",
       "key:'Fortësia', label:'Fort&euml;sia', mobileLabel:'Fortësia', type:'str', cls:'', visible:true",
       "key:'Forma farmaceutike', label:'Forma', mobileLabel:'Forma', type:'str', cls:'wrap', visible:true",
       "key:'Si të shënohet në recetë', label:'Si shënohet në recetë', mobileLabel:'Shënimi në recetë', type:'str', cls:'wrap', visible:true",
