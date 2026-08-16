@@ -90,12 +90,12 @@
 .registry-personal-note-clear:focus-visible{outline:2px solid rgba(22,140,134,.28);outline-offset:1px}
 
 .registry-row-favorite-toggle{
-  width:32px;
-  height:32px;
-  margin-left:5px;
-  padding:6px;
+  width:44px;
+  height:44px;
+  margin-left:4px;
+  padding:10px;
   border:1px solid transparent;
-  border-radius:8px;
+  border-radius:10px;
   background:transparent;
   color:#94a3b8;
   cursor:pointer;
@@ -106,8 +106,8 @@
   transition:transform .12s ease,color .12s ease,background .12s ease,border-color .12s ease,box-shadow .12s ease;
 }
 .registry-row-favorite-toggle svg{
-  width:18px;
-  height:18px;
+  width:20px;
+  height:20px;
   fill:transparent;
   stroke:currentColor;
   stroke-width:1.7;
@@ -226,7 +226,7 @@ html[data-theme="dark"] .registry-favorites-banner button{background:#182628;bor
   .registry-personal-note-head,.registry-personal-note-cell{min-width:190px;width:190px}
   .registry-personal-note-wrap{min-width:176px}
   .registry-personal-note-wrap textarea{max-height:92px;font-size:.75rem}
-  .registry-row-favorite-toggle{width:40px;height:40px;margin-left:2px;padding:9px;border-radius:8px}
+  .registry-row-favorite-toggle{width:44px;height:44px;margin-left:2px;padding:10px;border-radius:10px}
   .registry-row-favorite-toggle svg{width:20px;height:20px}
   .registry-favorites-banner{margin:7px 8px 6px;align-items:stretch;flex-direction:column}
   .registry-favorites-banner span{align-items:flex-start;flex-direction:column;gap:2px}
