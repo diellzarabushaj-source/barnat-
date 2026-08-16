@@ -108,19 +108,34 @@ function patchCellPreview() {
 }
 
 function patchSharedPersonalization() {
-  let source = read('registry-user-personalization.js');
-  const marker = 'registry-personalization-phone-deferred-v1';
-  const guard = `  const PHONE_OWNER_QUERY = '(max-width: 767px)';\n  const phoneRegistryOwnsViewport = window.matchMedia?.(PHONE_OWNER_QUERY)?.matches === true\n    && document.documentElement.dataset.registryMobileLiteState !== 'handoff'\n    && (window.MEDINDEX_MOBILE_LITE_ACTIVE === true || Boolean(document.documentElement.dataset.registryMobileLite));\n  if (phoneRegistryOwnsViewport) {\n    document.documentElement.dataset.registryPersonalization = '${marker}';\n    return;\n  }\n\n`;
+  const source = read('registry-user-personalization.js');
 
-  if (!source.includes(marker)) {
-    const versionMatch = source.match(/  const VERSION = 'registry-user-personalization-v[^']+';\n/);
-    if (!versionMatch) throw new Error('Phase 0 shared personalization version declaration is missing.');
-    source = source.replace(versionMatch[0], `${versionMatch[0]}${guard}`);
+  /* Mobile-lite owns phone cards and compact chrome, but the canonical
+     personalization controller must remain alive as a non-visual bridge. It
+     provides the shared note editor and requests an explicit full-runtime
+     handoff for Favorites/Notes views. Do not reintroduce the old early return. */
+  if (!/const VERSION = 'registry-user-personalization-v[^']+';/.test(source)) {
+    throw new Error('Phase 0 shared personalization version declaration is missing.');
+  }
+  if (!source.includes("const PHONE_OWNER_QUERY = '(max-width: 767px)'")) {
+    throw new Error('Phase 4 canonical personalization phone-owner contract is missing.');
+  }
+  if (!source.includes('function phoneLiteOwnsViewport()')) {
+    throw new Error('Phase 4 canonical personalization phone bridge is missing.');
+  }
+  if (!source.includes("document.documentElement.dataset.registryMobileLiteState !== 'handoff'")) {
+    throw new Error('Phase 4 personalization must relinquish phone-lite ownership after explicit handoff.');
+  }
+  if (!source.includes("document.documentElement.dataset.registryPersonalization = 'mobile-lite-bridge'")) {
+    throw new Error('Phase 4 mobile-lite bridge state is missing.');
+  }
+  if (!source.includes('editNoteForData')) {
+    throw new Error('Phase 4 mobile note editor bridge is missing.');
+  }
+  if (source.includes('registry-personalization-phone-deferred-v1')) {
+    throw new Error('Phase 4 must not early-return the canonical personalization controller on phones.');
   }
 
-  if (!source.includes("document.documentElement.dataset.registryPersonalization = 'registry-personalization-phone-deferred-v1'")) {
-    throw new Error('Phase 0 shared personalization phone guard is missing.');
-  }
   write('registry-user-personalization.js', source);
 }
 
@@ -128,4 +143,4 @@ patchUnifiedTable();
 patchCellPreview();
 patchSharedPersonalization();
 
-console.log('Phase 0 phone owner + long-session preview boundary: shared table UI stays deferred on phones and cell previews ignore text/attribute mutation churn.');
+console.log('Phase 0/4 phone owner boundary: mobile-lite owns phone chrome while canonical personalization stays alive as a non-visual Favorites/Notes bridge.');
