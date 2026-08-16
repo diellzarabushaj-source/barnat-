@@ -262,6 +262,26 @@
     min-height:44px!important;
   }
 
+  /* Shkasi i parapamjes së qelizës hiqet, njësoj si te kartela e telefonit ku
+     `registry-cell-preview.js` e ndalon me `cell.closest('.mobile-lite-row')`.
+     Arsyeja është e njëjta: kartela e tregon tekstin të plotë, prandaj një
+     buton "shfaq më shumë" mbi të njëjtin tekst është zhurmë — dhe do të shtonte
+     një objektiv prekjeje për çdo qelizë të çdo rreshti. */
+  html.medindex-tailadmin[data-mi-page="barnat"] body #registryContent #dataTable[data-registry-unified-table] tbody .registry-cell-preview-trigger{
+    display:none!important;
+  }
+
+  /* Butoni i dozës është kontroll i vërtetë: e hap dozimin e plotë të kufizuar
+     në dy rreshta. Në tabelë rri brenda një qelize 250px dhe teksti dydimensional
+     e mban lartësinë; brenda kartelës bie nën 40px, prandaj i jepet lartësi e
+     mjaftueshme për gisht. */
+  html.medindex-tailadmin[data-mi-page="barnat"] body #registryContent #dataTable[data-registry-unified-table] tbody .registry-dosage-dose{
+    display:flex!important;
+    min-height:40px!important;
+    align-items:center!important;
+    padding:4px 0!important;
+  }
+
   /* Gjendja bosh mbetet një bllok i vetëm, jo një kartelë me katër kolona. */
   html.medindex-tailadmin[data-mi-page="barnat"] body #registryContent #dataTable[data-registry-unified-table] tbody tr:has(td[colspan]){
     display:block!important;
