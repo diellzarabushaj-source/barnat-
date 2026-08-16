@@ -20,7 +20,7 @@ html.medindex-tailadmin .toolbar{
   margin-bottom:10px!important;
   padding:8px!important;
   border:1px solid rgba(113,132,135,.18)!important;
-  border-radius:14px!important;
+  border-radius:12px!important;
   background:rgba(255,255,255,.98)!important;
   box-shadow:0 8px 24px rgba(24,48,50,.055)!important;
   transform:translateZ(0);
@@ -50,7 +50,7 @@ html.medindex-tailadmin .toolbar .mi-registry-search-shell #search{
   min-height:46px!important;
   padding:0 58px 0 42px!important;
   border:1px solid #cfdcda!important;
-  border-radius:11px!important;
+  border-radius:12px!important;
   background:#fbfdfd!important;
   color:var(--mi-registry-ink)!important;
   font-size:.86rem!important;
@@ -79,7 +79,7 @@ html.medindex-tailadmin .toolbar .mi-registry-search-shell #search:focus{
   padding:0 7px;
   border:1px solid #d9e2e1;
   border-bottom-color:#c8d4d2;
-  border-radius:6px;
+  border-radius:8px;
   background:#fff;
   color:#748487;
   font:700 .61rem/1 ui-sans-serif,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
@@ -97,7 +97,7 @@ html.medindex-tailadmin .toolbar .mi-registry-search-shell #search:focus{
   gap:7px!important;
   padding:0 12px!important;
   border:1px solid #d4dfde!important;
-  border-radius:10px!important;
+  border-radius:8px!important;
   background:#fff!important;
   color:#46595b!important;
   font:750 .72rem/1 ui-sans-serif,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif!important;
@@ -126,7 +126,7 @@ html.medindex-tailadmin .toolbar .mi-registry-search-shell #search:focus{
 .registry-quick-favorites.is-active .registry-quick-favorites-count{background:#fff0d3;color:#8b5711}
 
 html.medindex-tailadmin .toolbar :where(select,button:not(.registry-quick-favorites)){
-  border-radius:10px!important;
+  border-radius:8px!important;
 }
 html.medindex-tailadmin .toolbar #countBadge{
   margin-left:auto!important;

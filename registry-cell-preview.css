@@ -23,7 +23,7 @@ html.medindex-tailadmin[data-mi-page="barnat"] body .registry-cell-preview-trigg
   padding:0!important;
   place-items:center!important;
   border:1px solid #cbdcf3!important;
-  border-radius:9px!important;
+  border-radius:8px!important;
   background:rgba(255,255,255,.96)!important;
   color:#2563eb!important;
   box-shadow:0 1px 2px rgba(15,23,42,.06),0 5px 16px rgba(37,99,235,.08)!important;
@@ -138,7 +138,7 @@ html.medindex-tailadmin:is(.dark,[data-theme="dark"])[data-mi-page="barnat"] bod
     height:30px!important;
     min-width:30px!important;
     min-height:30px!important;
-    border-radius:10px!important;
+    border-radius:8px!important;
     opacity:.92!important;
   }
 

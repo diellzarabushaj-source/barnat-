@@ -78,7 +78,7 @@
   height:22px;
   padding:0;
   border:0;
-  border-radius:6px;
+  border-radius:8px;
   background:transparent;
   color:#94a3b8;
   font:700 16px/1 system-ui,sans-serif;
@@ -144,7 +144,7 @@ tr.is-favorite td.name{
   min-height:42px;
   padding:7px 9px 7px 12px;
   border:1px solid #bee9e4;
-  border-radius:10px;
+  border-radius:8px;
   background:#f0fdfa;
   color:#134e4a;
   display:flex;
@@ -173,7 +173,7 @@ tr.is-favorite td.name{
   flex:0 0 auto;
   min-height:30px;
   border:1px solid #99d9d3;
-  border-radius:7px;
+  border-radius:8px;
   background:#fff;
   color:#0f766e;
   padding:5px 9px;
@@ -226,7 +226,7 @@ html[data-theme="dark"] .registry-favorites-banner button{background:#182628;bor
   .registry-personal-note-head,.registry-personal-note-cell{min-width:190px;width:190px}
   .registry-personal-note-wrap{min-width:176px}
   .registry-personal-note-wrap textarea{max-height:92px;font-size:.75rem}
-  .registry-row-favorite-toggle{width:40px;height:40px;margin-left:2px;padding:9px;border-radius:10px}
+  .registry-row-favorite-toggle{width:40px;height:40px;margin-left:2px;padding:9px;border-radius:8px}
   .registry-row-favorite-toggle svg{width:20px;height:20px}
   .registry-favorites-banner{margin:7px 8px 6px;align-items:stretch;flex-direction:column}
   .registry-favorites-banner span{align-items:flex-start;flex-direction:column;gap:2px}

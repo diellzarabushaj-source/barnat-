@@ -127,7 +127,7 @@ html.medindex-tailadmin[data-mi-page="barnat"] #dataTable[data-registry-unified-
 }
 html.medindex-tailadmin[data-mi-page="barnat"] #dataTable .dose-calculator-open{
   min-height:34px!important;
-  border-radius:9px!important;
+  border-radius:8px!important;
   box-shadow:none!important;
   transform:none!important;
 }

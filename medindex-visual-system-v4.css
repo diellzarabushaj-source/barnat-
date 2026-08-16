@@ -22,11 +22,11 @@
   --mi-v4-danger:#b33b38;
   --mi-v4-warning:#9d691b;
   --mi-v4-success:#17756f;
-  --mi-v4-radius-xs:7px;
-  --mi-v4-radius-sm:10px;
-  --mi-v4-radius-md:14px;
-  --mi-v4-radius-lg:18px;
-  --mi-v4-radius-xl:22px;
+  --mi-v4-radius-xs:8px;
+  --mi-v4-radius-sm:8px;
+  --mi-v4-radius-md:12px;
+  --mi-v4-radius-lg:16px;
+  --mi-v4-radius-xl:16px;
   --mi-v4-shadow-1:0 1px 2px rgba(18,45,47,.035),0 5px 16px rgba(18,45,47,.035);
   --mi-v4-shadow-2:0 10px 28px rgba(18,45,47,.07),0 2px 7px rgba(18,45,47,.035);
   --mi-v4-control-h:42px;

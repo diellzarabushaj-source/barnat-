@@ -28,7 +28,7 @@
   height:48px;
   display:grid;
   place-items:center;
-  border-radius:14px;
+  border-radius:12px;
   background:var(--mi-brand-50, #eff8ff);
   color:var(--mi-brand-700, #175cd3);
   font-size:.72rem;
@@ -83,7 +83,7 @@
   justify-content:center;
   gap:7px;
   padding:0 14px;
-  border-radius:10px;
+  border-radius:8px;
   font:inherit;
   font-size:.8rem;
   font-weight:750;

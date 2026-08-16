@@ -14,8 +14,8 @@ html.medindex-workspace-final{
   --mw-gold:#b97820;
   --mw-gold-soft:#fbf0dc;
   --mw-danger:#b54747;
-  --mw-radius:14px;
-  --mw-radius-sm:10px;
+  --mw-radius:12px;
+  --mw-radius-sm:8px;
   --mw-shadow:0 12px 34px rgba(17,65,67,.07);
   --mw-shadow-soft:0 4px 16px rgba(17,65,67,.055);
 }
