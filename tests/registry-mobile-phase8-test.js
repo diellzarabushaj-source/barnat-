@@ -113,4 +113,8 @@ assert.match(packageJson.scripts['build:runtime'], /patch-registry-phase8-person
 assert.equal(fs.existsSync(path.join(ROOT, 'api', 'mobile-favorites.js')), false, 'Phase 8 must not consume a Vercel function for favorites.');
 assert.equal(fs.existsSync(path.join(ROOT, 'api', 'recent-medicines.js')), false, 'Phase 8 must not consume a Vercel function for recents.');
 
+// Phase 5: this file is already part of pnpm test, so use it as the aggregate
+// gate for the complete desktop/mobile/backend personalization audit as well.
+require('./registry-user-personalization-test.js');
+
 console.log('Phase 5 regression gate: mobile canonical Favorites/Notes bridge, composed three-slot action region, bounded recents and 44px accessibility targets passed.');
