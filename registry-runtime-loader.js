@@ -1,7 +1,7 @@
 (() => {
   'use strict';
 
-  const VERSION = 'registry-runtime-loader-v10';
+  const VERSION = 'registry-runtime-loader-v11';
   const RUNTIME_SRC = '/app-performance.js?v=20260801-2';
   const AUTH_WAIT_LIMIT_MS = 8000;
   const MOBILE_LITE_STALL_MS = 12000;
@@ -132,7 +132,11 @@
 
   function isExplicitMobileFullRequest(reason, detail = {}) {
     const value = String(reason || '');
-    return detail.fatal === true || value === 'viewport-desktop' || value.startsWith('fatal-');
+    return detail.fatal === true
+      || value === 'viewport-desktop'
+      || value === 'personal-view-favorites'
+      || value === 'personal-view-notes'
+      || value.startsWith('fatal-');
   }
 
   function blockMobileFullRequest(reason) {
