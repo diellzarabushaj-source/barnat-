@@ -9,7 +9,7 @@ const unifiedTableFile = 'registry-unified-table.js';
 const unifiedCssFile = 'registry-unified-table.css';
 const columnContractFile = 'registry-column-contract.js';
 const indexFile = 'index.html';
-const ASSET_VERSION = '20260816-default-columns-1';
+const ASSET_VERSION = '20260812-population-column-1';
 
 function read(relative) {
   return fs.readFileSync(path.join(root, relative), 'utf8');
