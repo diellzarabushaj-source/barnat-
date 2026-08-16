@@ -19,6 +19,15 @@ const BLOG_PROJECT_ID = '4wdtp8cz';
 const BLOG_DATASET = 'production';
 const BLOG_API_VERSION = '2026-08-16';
 const BLOG_SANITY_URL = `https://${BLOG_PROJECT_ID}.apicdn.sanity.io/v${BLOG_API_VERSION}/data/query/${BLOG_DATASET}`;
+const BLOG_COVER_PROJECTION = `
+  "coverImage": coverImage {
+    "url": asset->url,
+    alt,
+    caption,
+    credit,
+    hotspot { x, y, width, height },
+    crop { top, bottom, left, right }
+  }`;
 const BLOG_LIST_QUERY = `*[_type == "blogPost" && defined(slug.current)] | order(publishedAt desc) {
   _id,
   title,
@@ -29,6 +38,7 @@ const BLOG_LIST_QUERY = `*[_type == "blogPost" && defined(slug.current)] | order
   language,
   publishedAt,
   readingTimeMinutes,
+  ${BLOG_COVER_PROJECTION},
   "author": author->{name, credentials, role, "slug": slug.current}
 }`;
 const BLOG_DETAIL_QUERY = `*[_type == "blogPost" && slug.current == $slug][0] {
@@ -44,6 +54,7 @@ const BLOG_DETAIL_QUERY = `*[_type == "blogPost" && slug.current == $slug][0] {
   seoTitle,
   seoDescription,
   body,
+  ${BLOG_COVER_PROJECTION},
   "author": author->{name, credentials, role, bio, "slug": slug.current}
 }`;
 
