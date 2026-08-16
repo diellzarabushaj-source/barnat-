@@ -1,7 +1,7 @@
 (() => {
   'use strict';
 
-  const VERSION = 'registry-runtime-loader-v11';
+  const VERSION = 'registry-runtime-loader-v10';
   const RUNTIME_SRC = '/app-performance.js?v=20260801-2';
   const AUTH_WAIT_LIMIT_MS = 8000;
   const MOBILE_LITE_STALL_MS = 12000;
