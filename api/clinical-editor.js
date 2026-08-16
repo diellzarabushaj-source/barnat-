@@ -15,6 +15,38 @@ const OFFICIAL_BRAND = Object.freeze({
   horizontalOnDark:{ pathname:'medindex/brand/v1/medindex-horizontal-on-dark.webp', contentType:'image/webp' },
 });
 
+const BLOG_PROJECT_ID = '4wdtp8cz';
+const BLOG_DATASET = 'production';
+const BLOG_API_VERSION = '2026-08-16';
+const BLOG_SANITY_URL = `https://${BLOG_PROJECT_ID}.apicdn.sanity.io/v${BLOG_API_VERSION}/data/query/${BLOG_DATASET}`;
+const BLOG_LIST_QUERY = `*[_type == "blogPost" && defined(slug.current)] | order(publishedAt desc) {
+  _id,
+  title,
+  "slug": slug.current,
+  excerpt,
+  category,
+  tags,
+  language,
+  publishedAt,
+  readingTimeMinutes,
+  "author": author->{name, credentials, role, "slug": slug.current}
+}`;
+const BLOG_DETAIL_QUERY = `*[_type == "blogPost" && slug.current == $slug][0] {
+  _id,
+  title,
+  "slug": slug.current,
+  excerpt,
+  category,
+  tags,
+  language,
+  publishedAt,
+  readingTimeMinutes,
+  seoTitle,
+  seoDescription,
+  body,
+  "author": author->{name, credentials, role, bio, "slug": slug.current}
+}`;
+
 function queryValue(req, name) {
   if (req.query?.[name] !== undefined) {
     const value = Array.isArray(req.query[name]) ? req.query[name][0] : req.query[name];
@@ -61,8 +93,56 @@ async function officialBrand(req, res) {
   }
 }
 
+async function querySanityBlog(query, params = {}) {
+  const url = new URL(BLOG_SANITY_URL);
+  url.searchParams.set('query', query);
+  Object.entries(params).forEach(([key, value]) => {
+    url.searchParams.set(`$${key}`, JSON.stringify(value));
+  });
+
+  const response = await fetch(url, {
+    method:'GET',
+    headers:{ Accept:'application/json' },
+  });
+  if (!response.ok) throw new Error(`Sanity request failed with ${response.status}`);
+  const payload = await response.json();
+  if (payload.error) throw new Error(payload.error.description || 'Sanity query failed');
+  return payload.result;
+}
+
+async function publicBlog(req, res) {
+  res.setHeader('X-Content-Type-Options', 'nosniff');
+  res.setHeader('Content-Type', 'application/json; charset=utf-8');
+  res.setHeader('Cache-Control', 'public, max-age=60, s-maxage=300, stale-while-revalidate=86400');
+
+  if (req.method !== 'GET') {
+    res.setHeader('Allow', 'GET');
+    return res.status(405).json({ ok:false, error:'Method not allowed' });
+  }
+
+  try {
+    const slug = queryValue(req, 'slug').trim();
+    if (slug) {
+      if (!/^[a-z0-9-]{1,140}$/i.test(slug)) {
+        return res.status(400).json({ ok:false, error:'Slug i pavlefshëm.' });
+      }
+      const post = await querySanityBlog(BLOG_DETAIL_QUERY, { slug });
+      if (!post) return res.status(404).json({ ok:false, error:'Artikulli nuk u gjet.' });
+      return res.status(200).json({ ok:true, post });
+    }
+
+    const posts = await querySanityBlog(BLOG_LIST_QUERY);
+    return res.status(200).json({ ok:true, posts:Array.isArray(posts) ? posts : [] });
+  } catch (error) {
+    console.error('[blog-api]', error?.message || error);
+    res.setHeader('Cache-Control', 'no-store');
+    return res.status(502).json({ ok:false, error:'Përmbajtja e blogut nuk mund të ngarkohet për momentin.' });
+  }
+}
+
 module.exports = async function handler(req, res) {
   if (queryFlag(req, 'officialBrand')) return officialBrand(req, res);
+  if (queryFlag(req, 'blog')) return publicBlog(req, res);
   if (queryFlag(req, 'populationVerification')) return PopulationVerification.handle(req, res);
   if (queryFlag(req, 'mediaLibrary')) return MediaLibrary.handle(req, res);
   return ClinicalEditor.handle(req, res);
