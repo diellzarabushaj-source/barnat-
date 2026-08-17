@@ -11,20 +11,19 @@ const read = file => fs.readFileSync(path.join(ROOT, file), 'utf8');
 const ui = read('registry-user-personalization.js');
 const css = read('registry-user-personalization.css');
 const html = read('index.html');
-const patch = read('scripts/patch-registry-phase16-personal-ux-v2.js');
 const finalizer = read('scripts/patch-registry-personal-final.js');
 const offlineManifestPatch = read('scripts/patch-offline-shell-manifest.js');
 
 for (const file of [
   'registry-user-personalization.js',
-  'scripts/patch-registry-phase16-personal-ux-v2.js',
+  'scripts/audit-registry-personal-source.js',
   'scripts/patch-registry-personal-final.js',
   'scripts/patch-offline-shell-manifest.js',
 ]) {
   execFileSync(process.execPath, ['--check', path.join(ROOT, file)], { stdio:'pipe' });
 }
 
-assert.match(ui, /PHASE8_UX_VERSION = 'registry-personal-ux-phase8-v1'/, 'Built personalization controller must carry the Phase 8 UX marker.');
+assert.match(ui, /PHASE8_UX_VERSION = 'registry-personal-ux-phase8-v1'/, 'Canonical personalization controller must carry the Phase 8 UX marker.');
 assert.match(ui, /let libraryReady = false/);
 assert.match(ui, /let librarySyncState = 'loading'/);
 assert.match(ui, /function settleLibrary\(detail = \{\}\)/, 'Library readiness must be explicit rather than inferred from cached counts.');
@@ -46,7 +45,6 @@ assert.match(ui, /role="status" aria-live="polite"/, 'Sync feedback must be anno
 assert.match(ui, /Ruajtur lokalisht · sinkronizimi në pritje/, 'Pending persistence copy is missing.');
 assert.match(ui, /Ruajtur lokalisht · offline/, 'Offline persistence copy is missing.');
 assert.match(ui, /✓ Sinkronizuar/, 'Synced confirmation copy is missing.');
-
 assert.match(ui, /data-mi-phase8-favorite-count/, 'Mobile Favorite count must share the canonical update path.');
 assert.match(ui, /data-mi-phase8-note-count/, 'Mobile Notes count must share the canonical update path.');
 
@@ -72,11 +70,13 @@ assert.match(css, /prefers-reduced-motion:reduce/, 'Loading polish must respect 
 assert.match(html, /registry-user-personalization\.css\?v=20260816-7&ux=20260817-1/, 'Phase 8 CSS cache-buster is missing.');
 assert.match(html, /registry-user-personalization\.js\?v=20260816-7&ux=20260817-1/, 'Phase 8 JS cache-buster is missing.');
 assert.match(offlineManifestPatch, /require\('\.\/patch-registry-personal-final\.js'\)/, 'Offline packaging must invoke the canonical personalization finalizer.');
-assert.match(finalizer, /require\('\.\/patch-registry-phase16-personal-ux-v2\.js'\)/, 'Canonical finalizer must compose the Phase 8 UX patch deterministically.');
-assert.match(patch, /Phase 8 personal UX polish passed/, 'Phase 8 patch needs its own build audit.');
+assert.match(finalizer, /require\('\.\/audit-registry-personal-source\.js'\)/, 'Canonical finalizer must verify source-owned personalization directly.');
+assert.doesNotMatch(finalizer, /patch-registry-phase16-personal-ux-v2|patch-registry-personal-long-session/, 'Finalizer must not depend on obsolete late patch stages.');
 assert.equal(fs.existsSync(path.join(ROOT, 'scripts', 'patch-registry-phase16-personal-ux.js')), false, 'Superseded broken Phase 8 patch must stay deleted.');
+assert.equal(fs.existsSync(path.join(ROOT, 'scripts', 'patch-registry-phase16-personal-ux-v2.js')), false, 'Phase 14 must remove the obsolete Phase 8 late patch stage.');
+assert.equal(fs.existsSync(path.join(ROOT, 'scripts', 'patch-registry-personal-long-session.js')), false, 'Phase 14 must remove the obsolete Phase 10 late patch stage.');
 
 assert.doesNotMatch(ui, /setInterval\s*\(/, 'Phase 8 UX must remain event-driven.');
 assert.doesNotMatch(ui, /MutationObserver/, 'Phase 8 UX must not add DOM polling/observers.');
 
-console.log('Phase 9 regression lock passed: Phase 8 personal-view loading, empty/filter states, unified counts and sync feedback are protected by CI through the canonical finalizer.');
+console.log('Phase 9 regression lock passed: source-owned Phase 8 personal-view loading, empty/filter states, unified counts and sync feedback remain protected after Phase 14 build cleanup.');

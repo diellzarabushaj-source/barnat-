@@ -11,12 +11,13 @@ const read = file => fs.readFileSync(path.join(ROOT, file), 'utf8');
 const ui = read('registry-user-personalization.js');
 const client = read('user-library-client.js');
 const html = read('index.html');
-const patch = read('scripts/patch-registry-personal-long-session.js');
+const finalizer = read('scripts/patch-registry-personal-final.js');
 
 for (const file of [
   'registry-user-personalization.js',
   'user-library-client.js',
-  'scripts/patch-registry-personal-long-session.js',
+  'scripts/audit-registry-personal-source.js',
+  'scripts/patch-registry-personal-final.js',
 ]) {
   execFileSync(process.execPath, ['--check', path.join(ROOT, file)], { stdio:'pipe' });
 }
@@ -75,9 +76,11 @@ assert.match(client, /diagnostics:\(\) => \(\{[\s\S]*localRevision[\s\S]*syncedR
 assert.match(ui, /diagnostics:\(\) => \(\{[\s\S]*pendingSync/);
 assert.match(html, /registry-user-personalization\.js\?v=[^"']+&ls=20260817-1/);
 assert.match(html, /user-library-client\.js\?v=[^"']+&ls=20260817-1/);
-assert.match(patch, /Phase 10 long-session hardening passed/);
+assert.match(finalizer, /require\('\.\/audit-registry-personal-source\.js'\)/, 'Long-session behavior must be verified from canonical source, not reconstructed by a late patch.');
+assert.doesNotMatch(finalizer, /patch-registry-personal-long-session/, 'Obsolete Phase 10 late patch must not return to the finalizer.');
+assert.equal(fs.existsSync(path.join(ROOT, 'scripts', 'patch-registry-personal-long-session.js')), false, 'Phase 14 must keep the obsolete Phase 10 late patch deleted.');
 
 assert.doesNotMatch(ui, /setInterval\s*\(/, 'Personalization controller must stay event-driven.');
 assert.doesNotMatch(ui, /MutationObserver/, 'Long-session personalization must not introduce DOM observers.');
 
-console.log('Phase 10 regression gate passed: rapid mutations wait for their own revision, transient syncs recover, hidden tabs avoid legacy parsing and personalization caches cannot retain old rows.');
+console.log('Phase 10 regression gate passed: source-owned rapid-mutation safety, transient recovery, hidden-tab efficiency and bounded caches remain protected after Phase 14 build cleanup.');
