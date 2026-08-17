@@ -98,25 +98,31 @@
    i barit zë dy rreshta, teksti dhe butonat përfundojnë njëri mbi tjetrin —
    pikërisht mbivendosja që duket te rreshtat "Dasatinib - 1A Pharma …".
 
-   Zgjidhja: layout-i bëhet `inline-grid` dhe i lihet vend butonave, që të tre
-   të rrinë në të njëjtin rresht. 112px = 2×44 butoni + 2×4 margjina + hapësira
-   midis elementeve inline.
+   Zgjidhja: butonat futen brenda `.drug-name-layout` (shih `actionHost` te
+   `registry-user-personalization.js`), jo si fëmijë të qelizës.
 
-   Provova dy rrugë më të drejtpërdrejta dhe matja i refuzoi të dyja: `display:flex`
-   dhe `display:grid` mbi vetë `td.name` e nxjerrin qelizën nga faqosja e tabelës,
-   dhe gjerësitë e kolonave fqinje lëvizën nga 287px në 300px — pra e prishnin
-   rreshtimin e gjithë tabelës. Kjo rrugë e lë `td`-në qelizë tabele dhe
-   gjerësitë mbeten të pandryshuara.
-
-   `:has()` e mban rregullin të kufizuar te qelizat që vërtet i kanë butonat;
-   te telefoni, ku pronësinë e mban mobile-lite dhe butonat nuk shtohen, emri e
-   ruan tërë gjerësinë. */
-td.name:has(> [data-row-favorite-toggle]) > .drug-name-layout,
-td.name:has(> [data-row-note-toggle]) > .drug-name-layout{
-  display:inline-grid;
-  width:calc(100% - 112px);
-  vertical-align:middle;
+   Provova tri rrugë të tjera dhe matja i refuzoi të gjitha. `display:flex` dhe
+   `display:grid` mbi vetë `td.name` e nxjerrin qelizën nga faqosja e tabelës:
+   gjerësitë e kolonave fqinje lëvizën nga 287px në 300px, pra prishej
+   rreshtimi i gjithë tabelës. E treta ishte t'u rezervohej butonave gjerësi
+   fikse prej 112px brenda qelizës; ajo e zgjidhi mbivendosjen po e ngushtoi
+   kolonën e emrit aq sa "DULCOLAX" thyhej në "DULCOL / AX".
+   Butonat futen brenda grid-it si një kolonë e vetme dhe zënë vetëm gjerësinë
+   e vet; emri merr `minmax(0,1fr)`, pra gjithë pjesën tjetër. Kështu nuk ka
+   numër fiks për t'u zgjedhur gabim: kolona e emrit mund të jetë e ngushtë a e
+   gjerë, dhe teksti gjithmonë merr atë që mbetet. */
+td.name > .drug-name-layout:has(> .registry-row-actions){
+  grid-template-columns:minmax(0, 1fr) auto;
+  align-items:center;
 }
+td.name > .drug-name-layout > .drug-name-text{ grid-column:1; }
+td.name > .drug-name-layout > .registry-row-actions{
+  grid-column:2;
+  display:inline-flex;
+  align-items:center;
+  gap:2px;
+}
+td.name > .drug-name-layout > .registry-row-actions > button{ margin-left:0; }
 
 .favorite-marker,
 .drug-action-item.favorite{display:none!important}

@@ -201,9 +201,10 @@
       button.dataset.rowNoteJump = 'true';
       button.dataset.registryUiOnly = 'true';
       button.innerHTML = '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 19h4l10-10a2.8 2.8 0 0 0-4-4L5 15v4Z"/><path d="m13.5 6.5 4 4"/></svg><span class="registry-row-note-dot" aria-hidden="true"></span>';
-      const favorite = nameCell.querySelector(':scope > [data-row-favorite-toggle]');
+      /* Ylli tani rri brenda `.drug-name-layout`, jo si fëmijë i qelizës. */
+      const favorite = nameCell.querySelector('[data-row-favorite-toggle]');
       if (favorite) favorite.insertAdjacentElement('afterend', button);
-      else nameCell.appendChild(button);
+      else (nameCell.querySelector(':scope > .drug-name-layout') || nameCell).appendChild(button);
     }
 
     const hasNote = Boolean(String(textarea.value || '').trim());

@@ -204,10 +204,30 @@
     schedule(1);
   }
 
+  /* Butonat rrinë brenda `.drug-name-layout`, jo si fëmijë të drejtpërdrejtë të
+     qelizës. Si fëmijë të qelizës ata binin nën emrin e barit — layout-i është
+     grid në nivel blloku dhe e zë tërë gjerësinë — dhe kur emri zinte dy
+     rreshta, teksti dhe butonat mbivendoseshin.
+     Provova më parë t'u rezervoja gjerësi fikse butonave; ajo e ngushtoi
+     kolonën e emrit aq sa "DULCOLAX" thyhej në "DULCOL / AX". Brenda grid-it
+     ata zënë vetëm gjerësinë e vet dhe emri merr gjithë pjesën tjetër. */
+  function actionHost(cell) {
+    const layout = cell.querySelector(':scope > .drug-name-layout');
+    if (!layout) return cell;
+    let host = layout.querySelector(':scope > .registry-row-actions');
+    if (!host) {
+      host = document.createElement('span');
+      host.className = 'registry-row-actions';
+      host.dataset.registryUiOnly = 'true';
+      layout.appendChild(host);
+    }
+    return host;
+  }
+
   function favoriteButton(row) {
     const cell = nameCell(row);
     if (!cell) return null;
-    let button = cell.querySelector(':scope > [data-row-favorite-toggle]');
+    let button = cell.querySelector('[data-row-favorite-toggle]');
     if (button) return button;
     button = document.createElement('button');
     button.type = 'button';
@@ -215,14 +235,14 @@
     button.dataset.rowFavoriteToggle = 'true';
     button.dataset.registryUiOnly = 'true';
     button.innerHTML = '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="m12 3 2.8 5.7 6.2.9-4.5 4.4 1.1 6.2-5.6-2.9-5.6 2.9 1.1-6.2L3 9.6l6.2-.9L12 3Z"/></svg>';
-    cell.appendChild(button);
+    actionHost(cell).appendChild(button);
     return button;
   }
 
   function noteButton(row) {
     const cell = nameCell(row);
     if (!cell) return null;
-    let button = cell.querySelector(':scope > [data-row-note-toggle]');
+    let button = cell.querySelector('[data-row-note-toggle]');
     if (button) return button;
     button = document.createElement('button');
     button.type = 'button';
@@ -230,7 +250,7 @@
     button.dataset.rowNoteToggle = 'true';
     button.dataset.registryUiOnly = 'true';
     button.innerHTML = '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 20h4l10.7-10.7a2.1 2.1 0 0 0-3-3L5 17v3Z"/><path d="m14.5 7.5 3 3"/></svg>';
-    cell.appendChild(button);
+    actionHost(cell).appendChild(button);
     return button;
   }
 
