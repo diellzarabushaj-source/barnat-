@@ -14,6 +14,7 @@
   <link rel="preload" href="dozologjia-simple-workflow.css?v=20260801-1" as="style">
   <link rel="preload" href="dozologjia-safety-enhancements.css?v=20260801-1" as="style">
   <link rel="preload" href="dozologjia-clinical-readiness.css?v=20260801-1" as="style">
+  <link rel="stylesheet" href="pediatric-calculator.css?v=20260817-1">
   <link rel="stylesheet" href="tailadmin-professional.css?v=20260728-1" data-tailadmin-professional-css>
   <script src="tailadmin-shell.js?v=production-audit-v2" defer></script>
   <script src="tailadmin-professional.js?v=production-audit-v2" defer></script>
@@ -67,10 +68,18 @@
           <div class="dosage-calculator-copy">
             <p class="clinical-kicker">2 · Pacienti</p>
             <strong>Të dhënat pediatrike</strong>
-            <span>Pesha përdoret vetëm nga skemat që e kërkojnë. Mosha merret parasysh vetëm kur skema ka kufij të deklaruar sipas moshës.</span>
+            <span id="pediatricInputsHint">Fushat shfaqen sipas skemës së barit të zgjedhur. Kërkohet vetëm ajo që hyn vërtet në llogaritje.</span>
           </div>
-          <label>Pesha e fëmijës (kg)<input id="patientWeightKg" type="number" min="0.1" step="0.1" inputmode="decimal" placeholder="p.sh. 18"></label>
-          <label>Mosha (muaj, kur kërkohet)<input id="patientAgeMonths" type="number" min="0" step="1" inputmode="numeric" placeholder="p.sh. 48"></label>
+          <label data-patient-field="weight">Pesha e fëmijës (kg)<input id="patientWeightKg" type="number" min="0.1" step="0.1" inputmode="decimal" placeholder="p.sh. 18" autocomplete="off"></label>
+          <label data-patient-field="age">Mosha<input id="patientAgeMonths" type="number" min="0" step="1" inputmode="numeric" placeholder="p.sh. 48" autocomplete="off"></label>
+          <label data-patient-field="age-unit">Njësia e moshës<select id="patientAgeUnit">
+            <option value="ditë">ditë</option>
+            <option value="javë">javë</option>
+            <option value="muaj" selected>muaj</option>
+            <option value="vjet">vjet</option>
+          </select></label>
+          <label data-patient-field="height">Gjatësia (cm)<input id="patientHeightCm" type="number" min="20" step="0.5" inputmode="decimal" placeholder="p.sh. 130" autocomplete="off"></label>
+          <button type="button" id="pediatricCalculate" class="pediatric-calculate-button" hidden>Llogarit dozën</button>
         </div>
       </section>
 
@@ -94,6 +103,10 @@
   <script src="dosage-engine.js?v=20260726-3" defer></script>
   <script src="auth-client.js?v=production-audit-v2" defer></script>
   <script src="dozologjia-deep-audit.js?v=20260726-2" defer></script>
+  <!-- Kalkulatori me llogaritje në server ngarkohet para kontrolluesit të
+       vjetër: skriptat me `defer` xhirojnë sipas radhës së dokumentit, dhe
+       shenja e pronësisë duhet vendosur para se ai të niset. -->
+  <script src="pediatric-calculator-client.js?v=20260817-1" defer></script>
   <script src="dozologjia.js?v=20260728-1" defer></script>
   <script src="app-stability.js?v=20260724-2" defer></script>
 </body>

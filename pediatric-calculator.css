@@ -1,0 +1,292 @@
+/* Kalkulatori pediatrik — pamja e rrjedhës bar → pacient → rezultat.
+   Fazat 3, 4, 8 dhe 9 bashkë: paraqitja dhe prekshmëria janë e njëjta punë.
+
+   Objektivat e prekjes janë 44px që nga fillimi, jo të shtuara më vonë me një
+   shtresë korrigjuese. Kjo faqe përdoret me gisht, shpesh me një fëmijë në
+   krah, dhe një buton 32px aty është gabim që kushton kohë pikërisht kur nuk ka. */
+
+html.medindex-tailadmin[data-mi-page="dozologjia"]{
+  --pk-touch:44px;
+  --pk-radius:16px;
+  --pk-gap:12px;
+}
+
+/* ------------------------------------------------------------- 3 · Bari */
+
+html.medindex-tailadmin[data-mi-page="dozologjia"] .pediatric-result-list{
+  list-style:none;
+  margin:0;
+  padding:0;
+  display:grid;
+  gap:8px;
+}
+
+html.medindex-tailadmin[data-mi-page="dozologjia"] .pediatric-result-button{
+  width:100%;
+  min-height:var(--pk-touch);
+  display:grid;
+  grid-template-columns:1fr auto;
+  grid-template-areas:"name badge" "meta badge";
+  align-items:center;
+  gap:2px var(--pk-gap);
+  padding:10px 14px;
+  border:1px solid var(--mi-border, #d7dee6);
+  border-radius:var(--pk-radius);
+  background:var(--mi-surface, #fff);
+  color:inherit;
+  text-align:left;
+  cursor:pointer;
+}
+
+html.medindex-tailadmin[data-mi-page="dozologjia"] .pediatric-result-button:hover,
+html.medindex-tailadmin[data-mi-page="dozologjia"] .pediatric-result-button:focus-visible{
+  border-color:var(--mi-accent, #0d3d40);
+}
+
+html.medindex-tailadmin[data-mi-page="dozologjia"] .pediatric-result-name{
+  grid-area:name;
+  font-weight:600;
+}
+
+html.medindex-tailadmin[data-mi-page="dozologjia"] .pediatric-result-meta{
+  grid-area:meta;
+  font-size:13px;
+  opacity:.75;
+}
+
+html.medindex-tailadmin[data-mi-page="dozologjia"] .pediatric-badge{
+  grid-area:badge;
+  justify-self:end;
+  padding:4px 10px;
+  border-radius:999px;
+  font-size:12px;
+  font-weight:600;
+  white-space:nowrap;
+}
+
+/* Ngjyra e gjendjes mban edhe kuptim, prandaj nuk mbetet vetëm te ngjyra:
+   teksti i etiketës e thotë të njëjtën gjë për këdo që nuk i dallon. */
+html.medindex-tailadmin[data-mi-page="dozologjia"] .pediatric-badge[data-readiness="CALCULATOR_READY"]{
+  background:#e7f5ec; color:#12693c;
+}
+html.medindex-tailadmin[data-mi-page="dozologjia"] .pediatric-badge[data-readiness="TEXT_ONLY"]{
+  background:#eef1f5; color:#455063;
+}
+html.medindex-tailadmin[data-mi-page="dozologjia"] .pediatric-badge[data-readiness="NOT_RECOMMENDED"],
+html.medindex-tailadmin[data-mi-page="dozologjia"] .pediatric-badge[data-readiness="INSUFFICIENT_DATA"]{
+  background:#fdf1e2; color:#8a4b08;
+}
+html.medindex-tailadmin[data-mi-page="dozologjia"] .pediatric-badge[data-readiness="CONTRAINDICATED"]{
+  background:#fdeaea; color:#96201f;
+}
+
+/* --------------------------------------------------------- 2 · Pacienti */
+
+html.medindex-tailadmin[data-mi-page="dozologjia"] .pediatric-patient-panel label[hidden]{
+  display:none!important;
+}
+
+html.medindex-tailadmin[data-mi-page="dozologjia"] .pediatric-patient-panel :is(input, select){
+  min-height:var(--pk-touch);
+}
+
+html.medindex-tailadmin[data-mi-page="dozologjia"] .pediatric-calculate-button{
+  min-height:var(--pk-touch);
+  padding:0 20px;
+  border:0;
+  border-radius:var(--pk-radius);
+  background:var(--mi-accent, #0d3d40);
+  color:#fff;
+  font-weight:600;
+  cursor:pointer;
+}
+
+html.medindex-tailadmin[data-mi-page="dozologjia"] .pediatric-calculate-button[disabled]{
+  opacity:.6;
+  cursor:progress;
+}
+
+/* -------------------------------------------------------- 3 · Rezultati */
+
+html.medindex-tailadmin[data-mi-page="dozologjia"] .pediatric-product-header{
+  display:flex;
+  flex-wrap:wrap;
+  align-items:center;
+  gap:var(--pk-gap);
+  margin-bottom:12px;
+}
+
+html.medindex-tailadmin[data-mi-page="dozologjia"] .pediatric-product-name{
+  margin:0;
+  flex:1 1 220px;
+  /* Emrat e barnave janë të gjatë dhe pa hapësira; pa këtë ata e shtynin
+     kartën përtej ekranit në telefon. */
+  overflow-wrap:anywhere;
+}
+
+html.medindex-tailadmin[data-mi-page="dozologjia"] .pediatric-product-meta{
+  margin:0;
+  flex:1 1 100%;
+  font-size:13px;
+  opacity:.75;
+}
+
+html.medindex-tailadmin[data-mi-page="dozologjia"] .pediatric-back-button{
+  min-height:var(--pk-touch);
+  padding:0 16px;
+  border:1px solid var(--mi-border, #d7dee6);
+  border-radius:var(--pk-radius);
+  background:transparent;
+  color:inherit;
+  cursor:pointer;
+}
+
+html.medindex-tailadmin[data-mi-page="dozologjia"] .pediatric-calculation{
+  margin-top:16px;
+  padding:16px;
+  border:1px solid var(--mi-border, #d7dee6);
+  border-radius:var(--pk-radius);
+  background:var(--mi-surface, #fff);
+}
+
+html.medindex-tailadmin[data-mi-page="dozologjia"] .pediatric-dose-primary{
+  margin:4px 0 0;
+  /* Numri është arsyeja pse ekziston kjo faqe; asgjë tjetër në të nuk duhet të
+     jetë më e madhe. */
+  font-size:32px;
+  font-weight:700;
+  line-height:1.15;
+  overflow-wrap:anywhere;
+}
+
+html.medindex-tailadmin[data-mi-page="dozologjia"] .pediatric-dose-secondary,
+html.medindex-tailadmin[data-mi-page="dozologjia"] .pediatric-dose-daily{
+  margin:2px 0 0;
+  font-size:14px;
+  opacity:.8;
+}
+
+html.medindex-tailadmin[data-mi-page="dozologjia"] .pediatric-dose-measure{
+  margin:6px 0 0;
+  font-size:20px;
+  font-weight:600;
+}
+
+html.medindex-tailadmin[data-mi-page="dozologjia"] .pediatric-kicker{
+  margin:0;
+  font-size:12px;
+  letter-spacing:.08em;
+  text-transform:uppercase;
+  opacity:.7;
+}
+
+html.medindex-tailadmin[data-mi-page="dozologjia"] .pediatric-warning,
+html.medindex-tailadmin[data-mi-page="dozologjia"] .pediatric-restriction{
+  margin:8px 0 0;
+  padding:10px 12px;
+  border-left:3px solid #d99100;
+  border-radius:4px;
+  background:#fdf6e9;
+  color:#6b4708;
+  font-size:14px;
+}
+
+html.medindex-tailadmin[data-mi-page="dozologjia"] .pediatric-not-calculable{
+  margin:12px 0;
+  padding:12px 14px;
+  border:1px solid #e5c9c9;
+  border-radius:var(--pk-radius);
+  background:#fdf3f3;
+}
+
+html.medindex-tailadmin[data-mi-page="dozologjia"] .pediatric-reason-list{
+  margin:6px 0 0;
+  padding-left:20px;
+  font-size:14px;
+}
+
+html.medindex-tailadmin[data-mi-page="dozologjia"] .pediatric-text-regimen{
+  margin-top:10px;
+  padding:12px 14px;
+  border:1px solid var(--mi-border, #d7dee6);
+  border-radius:var(--pk-radius);
+}
+
+html.medindex-tailadmin[data-mi-page="dozologjia"] .pediatric-text-meta{
+  margin:4px 0 0;
+  font-size:13px;
+  opacity:.75;
+}
+
+html.medindex-tailadmin[data-mi-page="dozologjia"] .pediatric-explain{
+  margin-top:14px;
+}
+
+html.medindex-tailadmin[data-mi-page="dozologjia"] .pediatric-explain summary{
+  min-height:var(--pk-touch);
+  display:flex;
+  align-items:center;
+  cursor:pointer;
+  font-weight:600;
+}
+
+html.medindex-tailadmin[data-mi-page="dozologjia"] .pediatric-explain-list{
+  display:grid;
+  grid-template-columns:minmax(0, 1fr) auto;
+  gap:4px var(--pk-gap);
+  margin:8px 0 0;
+  font-size:14px;
+}
+
+html.medindex-tailadmin[data-mi-page="dozologjia"] .pediatric-explain-list dt{
+  opacity:.75;
+}
+
+html.medindex-tailadmin[data-mi-page="dozologjia"] .pediatric-explain-list dd{
+  margin:0;
+  justify-self:end;
+  font-variant-numeric:tabular-nums;
+  overflow-wrap:anywhere;
+}
+
+html.medindex-tailadmin[data-mi-page="dozologjia"] .pediatric-source{
+  margin:12px 0 0;
+  font-size:13px;
+  opacity:.8;
+}
+
+html.medindex-tailadmin[data-mi-page="dozologjia"] .pediatric-empty{
+  margin:0;
+  padding:16px;
+  text-align:center;
+  opacity:.75;
+}
+
+/* ------------------------------------------------------------- telefoni */
+
+@media (max-width: 767px){
+  html.medindex-tailadmin[data-mi-page="dozologjia"] .pediatric-result-button{
+    /* Në telefon etiketa zbret nën emrin, që emri të mos ngushtohet në dy
+       shkronja për rresht kur bari quhet gjatë. */
+    grid-template-columns:1fr;
+    grid-template-areas:"name" "meta" "badge";
+    gap:4px;
+  }
+  html.medindex-tailadmin[data-mi-page="dozologjia"] .pediatric-badge{
+    justify-self:start;
+  }
+  html.medindex-tailadmin[data-mi-page="dozologjia"] .pediatric-dose-primary{
+    font-size:28px;
+  }
+  html.medindex-tailadmin[data-mi-page="dozologjia"] .pediatric-calculate-button{
+    width:100%;
+  }
+}
+
+/* Kur lëvizja është e padëshiruar, asgjë këtu nuk animohet gjithsesi — po
+   `details` hapet me animim në disa shfletues. */
+@media (prefers-reduced-motion: reduce){
+  html.medindex-tailadmin[data-mi-page="dozologjia"] .pediatric-explain{
+    transition:none;
+  }
+}

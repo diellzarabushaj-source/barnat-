@@ -427,6 +427,12 @@
 
   function init() {
     initTheme();
+    /* Kalkulatori me llogaritje në server e merr pronësinë e kësaj faqeje kur
+       është i pranishëm. Ky kontrollues e ngarkonte të gjithë katalogun e
+       dozimit në shfletues dhe llogariste vendi; të dy bashkë do të shkruanin
+       mbi të njëjtin `#dosageList` dhe do të tregonin dy të vërteta. Tema
+       mbetet këtu sepse është e faqes, jo e kalkulatorit. */
+    if (document.documentElement.dataset.pediatricCalculator === 'server') return;
     $('#dosageSearch')?.addEventListener('input', () => {
       state.selectedCardKey = '';
       render();
