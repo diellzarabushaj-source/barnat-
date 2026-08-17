@@ -187,7 +187,16 @@ assert.ok(regimenPath(READY_ROW.id).includes('calculation_status=in.%28text_veri
 assert.ok(regimenPath(READY_ROW.id).includes('population=ilike.*pediatric*'),
   'Faqja e produktit pediatrik nuk guxon të tërheqë regjime të të rriturve.');
 
+/* Një sesion i vërtetë, jo një dyfish: porta e autentikimit duhet provuar me
+   të njëjtin nënshkrim që përdor prodhimi. Sekreti vihet vetëm për këtë proces. */
+process.env.SESSION_SECRET = process.env.SESSION_SECRET
+  || 'test-session-secret-qe-eshte-mjaftueshem-i-gjate-32';
+
 async function main() {
+const auth = await import(path.join(ROOT, 'lib/auth.mjs'));
+const sessionCookie = auth.createSessionToken({ email:'diellzarabushaj@gmail.com', role:'editor' });
+assert.equal(auth.verifySessionToken(sessionCookie), true, 'Sesioni i testit duhet të jetë i vlefshëm.');
+
 // ------------------------------------------------------------------ kërkimi
 
 requestedPaths.length = 0;
@@ -260,6 +269,75 @@ const noConcentration = typedRegimen(
 );
 assert.equal(noConcentration.concentration, null);
 
+// ---------------------------------------------------------------- llogaritja
+
+drugRows = [READY_ROW];
+regimenRows = [REGIMEN_ROW];
+
+/* 18 kg me 25–50 mg/kg/ditë e ndarë në 3 doza = 450–900 mg/ditë, 150–300 mg për
+   dozë. Numrat vijnë nga baza; kërkesa mban vetëm pacientin.
+   Mosha jepet sepse ky rresht deklaron një kufi moshe — dhe kur skema ka kufi,
+   motori e kërkon moshën për ta kontrolluar atë. */
+const calculated = await handler.calculateDose({
+  drugId:READY_ROW.id, weightKg:18, age:{ value:5, unit:'vjet' },
+});
+assert.equal(calculated.calculation.outcome, 'CALCULATED');
+assert.equal(calculated.calculation.daily.min, 450);
+assert.equal(calculated.calculation.daily.max, 900);
+assert.equal(calculated.calculation.perDose.min, 150);
+assert.equal(calculated.calculation.drug.registryNumber, 42);
+assert.equal(calculated.calculation.regimenId, 'reg-42');
+assert.ok(Array.isArray(calculated.calculation.steps) && calculated.calculation.steps.length);
+
+// Forma alternative e emrave që përshkruan plani: `weight`, `height`, `age`.
+const aliased = await handler.calculateDose({
+  drugId:READY_ROW.id, weight:18, age:{ value:5, unit:'vjet' },
+});
+assert.equal(aliased.calculation.daily.min, 450);
+
+/* Pika e gjithë Fazës 5: një klient që dërgon numra dozimi refuzohet, jo
+   injorohet. Po t'i injoronim, një klient i prishur do të vazhdonte të dërgonte
+   doza të sajuara dhe askush s'do ta merrte vesh derisa dikush t'i besonte. */
+for (const forbidden of [
+  { pediatric_dose_min:9999 },
+  { doseMin:9999 },
+  { dose_max:9999 },
+  { concentration:'1000 mg/mL' },
+  { maxSingle:99999 },
+]) {
+  const rejected = await handler.calculateDose({ drugId:READY_ROW.id, weightKg:18, ...forbidden });
+  assert.equal(rejected.status, 400, `Duhej refuzuar ${JSON.stringify(forbidden)}.`);
+  assert.match(rejected.error, /Dozimi vjen nga baza/);
+}
+
+/* Të dhënat që mungojnë nuk janë gabim kërkese — janë një rezultat i
+   papërfunduar, dhe formulari ka nevojë ta dijë saktësisht cilat. */
+const needsData = await handler.calculateDose({ drugId:READY_ROW.id });
+assert.equal(needsData.calculation.outcome, 'NEEDS_PATIENT_DATA');
+assert.deepEqual(needsData.calculation.missing, ['weightKg', 'age']);
+assert.equal(needsData.calculation.requires.weight, true);
+
+// Një regjim nga një bar tjetër nuk kalon.
+const foreignRegimen = await handler.calculateDose({
+  drugId:READY_ROW.id, weightKg:18, regimenId:'reg-999',
+});
+assert.equal(foreignRegimen.status, 400);
+assert.match(foreignRegimen.error, /nuk i përket këtij bari/);
+
+// Bari i paverifikuar nuk llogaritet, po e thotë pse.
+drugRows = [TEXT_ROW];
+const textOnly = await handler.calculateDose({ drugId:TEXT_ROW.id, weightKg:18 });
+assert.equal(textOnly.calculation.outcome, 'NOT_CALCULABLE');
+assert.equal(textOnly.calculation.readiness, STATUS.TEXT_ONLY);
+assert.ok(textOnly.calculation.reasons.some(r => /verifikimit/.test(r)));
+drugRows = [READY_ROW];
+
+/* Përgjigjja HTTP nuk guxon ta nxjerrë rreshtin e papërpunuar. `loadProduct` e
+   kthen brenda serverit sepse motori e do të tërin; jashtë del vetëm
+   `product`. */
+const productOutcome = await handler.loadProduct('42');
+assert.ok(productOutcome.row, 'Thirrësit brenda serverit e marrin rreshtin.');
+
 // --------------------------------------------------------------- porta HTTP
 
 function fakeRes() {
@@ -275,6 +353,35 @@ const rejected = fakeRes();
 await handler({ method:'POST', url:'/api/dosage?view=pediatric-search', headers:{} }, rejected);
 assert.equal(rejected.statusCode, 405);
 assert.equal(rejected.headers.Allow, 'GET, HEAD');
+
+/* Llogaritja është e kundërta: vetëm POST, sepse merr një trup. */
+const wrongMethod = fakeRes();
+await handler({ method:'GET', url:'/api/dosage?view=pediatric-calculate', headers:{} }, wrongMethod);
+assert.equal(wrongMethod.statusCode, 405);
+assert.equal(wrongMethod.headers.Allow, 'POST');
+
+/* Përgjigjja e produktit nuk mban `row`. Ky pohim është arsyeja pse përgjigjja
+   ndërtohet fushë për fushë dhe jo me shpërndarje të gjithë rezultatit. */
+const productResponse = fakeRes();
+await handler({
+  method:'GET',
+  url:'/api/dosage?view=pediatric-product&drugId=42',
+  headers:{ cookie:`medindex_session=${sessionCookie}` },
+}, productResponse);
+assert.equal(productResponse.statusCode, 200);
+assert.ok(productResponse.body.product, 'Përgjigjja duhet ta ketë produktin.');
+assert.equal(productResponse.body.row, undefined, 'Rreshti i papërpunuar nuk guxon të dalë jashtë.');
+
+/* Trupi tepër i madh ndalet para se të analizohet. */
+const oversized = fakeRes();
+await handler({
+  method:'POST',
+  url:'/api/dosage?view=pediatric-calculate',
+  headers:{ cookie:`medindex_session=${sessionCookie}` },
+  body:'x'.repeat(handler._test.MAX_BODY_BYTES + 1),
+}, oversized);
+assert.equal(oversized.statusCode, 400);
+assert.match(oversized.body.error, /shumë i madh/);
 
 /* Pa sesion nuk kthehet asnjë e dhënë bari. Kjo mbrohet edhe te
    `middleware.ts`, po porta e dytë këtu e mban të vërtetë edhe nëse rishkrimi

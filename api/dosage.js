@@ -41,7 +41,9 @@ function isApprovedPopulationRequest(req) {
    është 12 dhe janë zënë 11. */
 function isPediatricRequest(req) {
   const view = requestView(req);
-  return view === pediatricDosageHandler.SEARCH_VIEW || view === pediatricDosageHandler.PRODUCT_VIEW;
+  return view === pediatricDosageHandler.SEARCH_VIEW
+    || view === pediatricDosageHandler.PRODUCT_VIEW
+    || view === pediatricDosageHandler.CALCULATE_VIEW;
 }
 
 async function handler(req, res) {
