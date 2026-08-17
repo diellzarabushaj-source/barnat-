@@ -1,0 +1,56 @@
+name: Materialize registry personal source
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'scripts/materialize-registry-personal-source.js'
+      - '.github/workflows/materialize-registry-personal-source.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  materialize:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout main
+        uses: actions/checkout@v4
+        with:
+          ref: main
+          fetch-depth: 0
+
+      - name: Setup Node 22
+        uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+
+      - name: Materialize canonical Favorites and Notes source
+        run: node scripts/materialize-registry-personal-source.js
+
+      - name: Syntax checks
+        run: |
+          node --check registry-user-personalization.js
+          node --check user-library-client.js
+          node --check scripts/patch-registry-phase16-personal-ux-v2.js
+          node --check scripts/patch-registry-personal-long-session.js
+
+      - name: Focused regression gates
+        run: |
+          node tests/registry-personal-ux-phase8-test.js
+          node tests/registry-personal-long-session-test.js
+          node tests/registry-personal-finalizer-test.js
+
+      - name: Commit canonical source only
+        shell: bash
+        run: |
+          git add registry-user-personalization.js registry-user-personalization.css user-library-client.js index.html
+          if git diff --cached --quiet; then
+            echo 'Canonical personalization source is already materialized.'
+            exit 0
+          fi
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git commit -m 'refactor(registry): materialize canonical personal source'
+          git push origin HEAD:main
