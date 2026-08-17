@@ -1,17 +1,10 @@
 (() => {
   'use strict';
 
-  /* Fazat 3, 4 dhe 8 — zgjedhja e barit, formulari i pacientit dhe rezultati.
-   *
-   * Ky skedar nuk llogarit asgjë. Nuk ka as një shumëzim brenda tij. Kërkon,
-   * mbledh të dhënat e pacientit, ia dërgon serverit dhe tregon çka u kthye.
-   * Kjo është e gjithë pika: doza nuk udhëton nga shfletuesi, dhe as nuk
-   * llogaritet aty ku dikush mund ta ndryshojë me konsolë.
-   *
-   * Merr pronësinë e faqes. `dozologjia.js` e ngarkonte të gjithë katalogun e
-   * dozimit në shfletues dhe llogariste vendi — dy pronarë mbi të njëjtin DOM
-   * është pikërisht gabimi që ky repo e ka paguar tashmë te regjistri, prandaj
-   * shenja vihet para se ai të niset dhe ai tërhiqet.
+  /* Klienti i kalkulatorit pediatrik. Nuk bën aritmetikë klinike: kërkon barin,
+   * mbledh matjet e pacientit dhe renderon rezultatin që kthen serveri.
+   * Regjimi/indikacioni për llogaritje vjen i lidhur nga serveri dhe, kur është
+   * unik, zgjidhet automatikisht. Nuk ka fushë free-text për indikacionin.
    */
 
   const OWNER_FLAG = 'server';
@@ -19,7 +12,6 @@
 
   const SEARCH_DEBOUNCE_MS = 220;
   const MIN_QUERY = 2;
-
   const $ = selector => document.querySelector(selector);
   const text = value => String(value ?? '').replace(/\s+/g, ' ').trim();
 
@@ -53,9 +45,6 @@
     if (elements.status) elements.status.textContent = message;
   }
 
-  /* Teksti shkruhet me `textContent`, kurrë me `innerHTML`, sepse emrat e
-     barnave dhe arsyet klinike vijnë nga baza. Kjo është edhe arsyeja pse
-     ndërtimi bëhet me elemente dhe jo me vargje HTML. */
   function element(tag, className, content) {
     const node = document.createElement(tag);
     if (className) node.className = className;
@@ -76,8 +65,6 @@
     }
     return payload;
   }
-
-  // ------------------------------------------------------------ Faza 3: bari
 
   const READINESS_LABEL = {
     CALCULATOR_READY:'Llogaritet',
@@ -116,10 +103,7 @@
       const heading = element('span', 'pediatric-result-name', item.name || '(pa emër)');
       const meta = element('span', 'pediatric-result-meta',
         [item.substance, item.strength, item.form].filter(Boolean).join(' · '));
-
       button.append(heading, meta, readinessBadge(item.readiness));
-      /* Emri i barit bashkë me gjendjen, që një lexues ekrani ta dëgjojë pa e
-         kërkuar veçmas — statusi është informacioni kryesor i kësaj liste. */
       button.setAttribute('aria-label',
         `${item.name}. ${READINESS_LABEL[item.readiness] || item.readiness}.`);
       row.append(button);
@@ -143,8 +127,6 @@
     announce('Duke kërkuar…');
     try {
       const payload = await requestJson(`/api/dosage/search?q=${encodeURIComponent(query)}`);
-      /* Përgjigjet e vonuara nuk guxojnë ta mbishkruajnë një kërkim më të ri —
-         ndryshe shkrimi i shpejtë e lë ekranin me rezultatet e gabuara. */
       if (token !== state.searchToken) return;
       state.results = Array.isArray(payload.results) ? payload.results : [];
       renderResults();
@@ -160,11 +142,6 @@
     }
   }
 
-  // ------------------------------------------------------- Faza 4: pacienti
-
-  /* Formulari ndërtohet nga `requires` i serverit, jo nga hamendje e klientit.
-     Nëse skema nuk e përdor gjatësinë, fusha nuk shfaqet fare — një fushë boshe
-     që s'hyn askund është ftesë për ta mbushur gabim. */
   function applyPatientFields(requires) {
     const wanted = {
       weight:Boolean(requires?.weight),
@@ -197,8 +174,29 @@
     if (Number.isFinite(age) && age >= 0) {
       payload.age = { value:age, unit:elements.ageUnit?.value || 'muaj' };
     }
-    if (state.product?.regimen?.primaryRegimenId) payload.regimenId = state.product.regimen.primaryRegimenId;
+    const selectionId = state.product?.calculationRegimen?.selectionId;
+    if (selectionId) payload.regimenId = selectionId;
     return payload;
+  }
+
+  function calculationContext(product) {
+    const binding = product?.calculationRegimen;
+    if (!binding?.valid) return null;
+
+    const card = element('div', 'pediatric-text-regimen pediatric-calculation-context');
+    card.dataset.calculationContext = 'primary';
+    card.append(element('strong', null, 'Indikacioni i kësaj llogaritjeje'));
+    card.append(element('p', 'pediatric-calculation-indication', binding.indication || 'Indikacion i lidhur'));
+    const meta = [binding.route, 'Regjimi u zgjodh automatikisht nga serveri'].filter(Boolean).join(' · ');
+    if (meta) card.append(element('p', 'pediatric-text-meta', meta));
+
+    const linked = (product.textRegimens || []).find(item => item.sourceKey === binding.selectionId);
+    if (linked?.dose) card.append(element('p', null, linked.dose));
+    const line = [linked?.frequency, linked?.duration].filter(Boolean).join(' · ');
+    if (line) card.append(element('p', 'pediatric-text-meta', line));
+    if (linked?.maximum) card.append(element('p', 'pediatric-text-meta', `Maksimumi: ${linked.maximum}`));
+    if (linked?.warnings) card.append(element('p', 'pediatric-warning', linked.warnings));
+    return card;
   }
 
   function renderProduct() {
@@ -219,15 +217,12 @@
     header.append(back);
     list.append(header);
 
-    if (product.summary) {
-      list.append(element('p', 'pediatric-product-summary', product.summary));
-    }
-    if (product.restriction) {
-      list.append(element('p', 'pediatric-restriction', product.restriction));
-    }
+    if (product.summary) list.append(element('p', 'pediatric-product-summary', product.summary));
+    if (product.restriction) list.append(element('p', 'pediatric-restriction', product.restriction));
 
-    /* Kur bari nuk llogaritet, arsyet janë përmbajtja kryesore, jo një shënim i
-       vogël. Mjeku duhet ta dijë pse nuk ka numër — dhe teksti klinik mbetet. */
+    const context = calculationContext(product);
+    if (context) list.append(context);
+
     if (!product.calculable) {
       const block = element('div', 'pediatric-not-calculable');
       block.append(element('strong', null, 'Ky bar nuk llogaritet automatikisht.'));
@@ -240,9 +235,12 @@
       list.append(block);
     }
 
+    const primaryKey = product.calculationRegimen?.selectionId || '';
     for (const regimen of product.textRegimens || []) {
-      const card = element('div', 'pediatric-text-regimen');
-      if (regimen.indication) card.append(element('strong', null, regimen.indication));
+      if (regimen.sourceKey === primaryKey) continue;
+      const card = element('div', 'pediatric-text-regimen pediatric-informational-regimen');
+      card.append(element('strong', null, regimen.indication || 'Regjim pediatrik informues'));
+      card.append(element('p', 'pediatric-text-meta', 'Nuk përdoret nga kalkulatori i këtij regjimi typed.'));
       if (regimen.dose) card.append(element('p', null, regimen.dose));
       const line = [regimen.route, regimen.frequency, regimen.duration].filter(Boolean).join(' · ');
       if (line) card.append(element('p', 'pediatric-text-meta', line));
@@ -255,11 +253,14 @@
 
     if (product.calculable) {
       applyPatientFields(product.requires);
+      if (elements.hint && product.calculationRegimen?.indication) {
+        elements.hint.textContent = `Regjimi është lidhur automatikisht me: ${product.calculationRegimen.indication}. Plotëso vetëm të dhënat e pacientit.`;
+      }
       announce('Plotëso të dhënat e pacientit dhe llogarit dozën.');
       elements.weight?.focus();
     } else {
       hidePatientFields();
-      announce('Ky bar shfaqet si tekst klinik; kalkulatori nuk aktivizohet.');
+      announce('Kalkulatori u mbyll sepse regjimi/indikacioni nuk është i sigurt për llogaritje.');
     }
   }
 
@@ -290,8 +291,6 @@
       announce(error.message);
     }
   }
-
-  // ----------------------------------------------------- Faza 8: rezultati
 
   function amountText(range, unit) {
     if (!range || range.min === null || range.min === undefined) return '';
@@ -330,10 +329,12 @@
 
     const unit = calculation.doseUnit || '';
     block.append(element('p', 'pediatric-kicker', '3 · Rezultati'));
+    if (calculation.indication) {
+      block.append(element('p', 'pediatric-calculation-indication', `Indikacioni: ${calculation.indication}`));
+    }
 
     if (calculation.isRate) {
-      block.append(element('p', 'pediatric-dose-primary',
-        `${amountText(calculation.ratePerHour, `${unit}/orë`)}`));
+      block.append(element('p', 'pediatric-dose-primary', amountText(calculation.ratePerHour, `${unit}/orë`)));
     } else {
       block.append(element('p', 'pediatric-dose-primary', amountText(calculation.perDose, unit)));
       block.append(element('p', 'pediatric-dose-secondary',
@@ -355,9 +356,6 @@
       block.append(element('p', 'pediatric-warning', warning));
     }
 
-    /* "Si u llogarit?" — hapat vijnë nga serveri, aty ku numrat ekzistuan
-       vërtet. Klienti nuk i rindërton, sepse një rindërtim mund të thoshte
-       diçka tjetër nga ajo që ndodhi. */
     if (calculation.steps?.length) {
       const details = element('details', 'pediatric-explain');
       details.append(element('summary', null, 'Si u llogarit?'));
@@ -372,7 +370,7 @@
 
     block.append(sourceBlock(calculation.source));
     elements.list.append(block);
-    announce('Doza u llogarit.');
+    announce('Doza u llogarit për regjimin dhe indikacionin e lidhur.');
   }
 
   async function calculateDose() {
@@ -394,8 +392,6 @@
       if (elements.calculate) elements.calculate.disabled = false;
     }
   }
-
-  // ------------------------------------------------------------------ lidhjet
 
   function init() {
     if (!cacheElements()) {
@@ -429,7 +425,6 @@
     });
 
     elements.calculate?.addEventListener('click', calculateDose);
-    /* Enter brenda formularit llogarit, që rrjedha të mbarojë me tastierë. */
     elements.panel?.addEventListener('keydown', event => {
       if (event.key === 'Enter' && event.target.matches('input')) {
         event.preventDefault();
