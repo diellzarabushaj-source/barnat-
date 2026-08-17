@@ -1,7 +1,9 @@
 'use strict';
 
 require('./patch-registry-phase16-personal-ux-v2.js');
+require('./patch-registry-personal-long-session.js');
 require('../tests/registry-personal-ux-phase8-test.js');
+require('../tests/registry-personal-long-session-test.js');
 
 /* Lista e aseteve që shërbyesi offline i ruan gjatë instalimit ka qenë e
  * shkruar me dorë te `sw.js`, dhe një e dytë e shkurtër shtohej me dorë te
