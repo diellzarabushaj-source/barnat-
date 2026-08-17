@@ -108,49 +108,79 @@ function patchClinicalNeonEndpoint(file, errorLabel, publicMessage) {
 
 function patchUserLibraryClient() {
   let source = read('user-library-client.js');
-  source = mustReplace(source, '  const POLL_MS = 1200;', '  const POLL_MS = 5000;', 'library polling interval');
-  source = mustReplace(
-    source,
-    '  let dirty = false;\n  let online = navigator.onLine;',
-    '  let dirty = false;\n  let online = navigator.onLine;\n  let retryUntil = 0;',
-    'library retry state',
-  );
-  source = mustReplace(
-    source,
-    "    const payload = await response.json().catch(() => ({}));\n    if (!response.ok) throw Object.assign(new Error(payload.error || `Library API ${response.status}`), { status:response.status });",
-    "    const payload = await response.json().catch(() => ({}));\n    if (!response.ok) {\n      const retryHeader = Number(response.headers.get('retry-after') || payload.retryAfter || 0);\n      throw Object.assign(new Error(payload.error || `Library API ${response.status}`), {\n        status:response.status,\n        retryAfterMs:Number.isFinite(retryHeader) && retryHeader > 0 ? retryHeader * 1000 : 0,\n      });\n    }",
-    'library Retry-After parsing',
-  );
-  source = mustReplace(
-    source,
-    "  async function flush({ keepalive = false } = {}) {\n    if (!online || !navigator.onLine) return false;",
-    "  async function flush({ keepalive = false } = {}) {\n    if (!online || !navigator.onLine || Date.now() < retryUntil) return false;",
-    'library backoff gate',
-  );
-  source = mustReplace(
-    source,
-    "      } catch (error) {\n        if (error.status === 401 || error.status === 403) return false;\n        dirty = true;\n        dispatch('medindex:library-pending', { offline:!navigator.onLine });\n        return false;",
-    "      } catch (error) {\n        if (error.status === 401 || error.status === 403) return false;\n        if ([429, 503].includes(Number(error.status))) {\n          retryUntil = Date.now() + Math.max(30_000, Number(error.retryAfterMs || 0));\n        }\n        dirty = true;\n        dispatch('medindex:library-pending', { offline:!navigator.onLine, retryAt:retryUntil || 0 });\n        return false;",
-    'library failed sync backoff',
-  );
-  source = mustReplace(
-    source,
-    "    } catch {\n      dispatch('medindex:library-ready', { offline:false, local:true, pending:true });",
-    "    } catch (error) {\n      if ([429, 503].includes(Number(error?.status))) retryUntil = Date.now() + Math.max(30_000, Number(error?.retryAfterMs || 0));\n      dispatch('medindex:library-ready', { offline:false, local:true, pending:true, retryAt:retryUntil || 0 });",
-    'library initialize backoff',
-  );
-  source = mustReplace(
-    source,
-    "  function poll() {\n    const current = readState();",
-    "  function poll() {\n    if (document.visibilityState === 'hidden') return;\n    const current = readState();",
-    'library hidden-tab pause',
-  );
-  source = mustReplace(
-    source,
-    "  window.addEventListener('online', () => {\n    online = true;\n    scheduleSync(100);\n  });",
-    "  window.addEventListener('online', () => {\n    online = true;\n    retryUntil = 0;\n    scheduleSync(100);\n  });\n  window.addEventListener('medindex:favorites-changed', () => { poll(); scheduleSync(80); });\n  window.addEventListener('medindex:personal-note-saved', () => { poll(); scheduleSync(80); });",
-    'library event-driven sync',
-  );
+  const phase6 = source.includes("EVENT_SYNC_VERSION = 'user-library-event-sync-v1'");
+
+  if (!phase6) {
+    source = mustReplace(source, '  const POLL_MS = 1200;', '  const POLL_MS = 5000;', 'library polling interval');
+  }
+
+  if (!source.includes('  let retryUntil = 0;')) {
+    source = mustReplace(
+      source,
+      '  let dirty = false;\n  let online = navigator.onLine;',
+      '  let dirty = false;\n  let online = navigator.onLine;\n  let retryUntil = 0;',
+      'library retry state',
+    );
+  }
+
+  if (!source.includes('retryAfterMs:Number.isFinite(retryHeader)')) {
+    source = mustReplace(
+      source,
+      "    const payload = await response.json().catch(() => ({}));\n    if (!response.ok) throw Object.assign(new Error(payload.error || `Library API ${response.status}`), { status:response.status });",
+      "    const payload = await response.json().catch(() => ({}));\n    if (!response.ok) {\n      const retryHeader = Number(response.headers.get('retry-after') || payload.retryAfter || 0);\n      throw Object.assign(new Error(payload.error || `Library API ${response.status}`), {\n        status:response.status,\n        retryAfterMs:Number.isFinite(retryHeader) && retryHeader > 0 ? retryHeader * 1000 : 0,\n      });\n    }",
+      'library Retry-After parsing',
+    );
+  }
+
+  if (!source.includes('Date.now() < retryUntil')) {
+    source = mustReplace(
+      source,
+      "  async function flush({ keepalive = false } = {}) {\n    if (!online || !navigator.onLine) return false;",
+      "  async function flush({ keepalive = false } = {}) {\n    if (!online || !navigator.onLine || Date.now() < retryUntil) return false;",
+      'library backoff gate',
+    );
+  }
+
+  if (!source.includes('retryUntil = Date.now() + Math.max(30_000')) {
+    source = mustReplace(
+      source,
+      "      } catch (error) {\n        if (error.status === 401 || error.status === 403) return false;\n        dirty = true;\n        dispatch('medindex:library-pending', { offline:!navigator.onLine });\n        return false;",
+      "      } catch (error) {\n        if (error.status === 401 || error.status === 403) return false;\n        if ([429, 503].includes(Number(error.status))) {\n          retryUntil = Date.now() + Math.max(30_000, Number(error.retryAfterMs || 0));\n        }\n        dirty = true;\n        dispatch('medindex:library-pending', { offline:!navigator.onLine, retryAt:retryUntil || 0 });\n        return false;",
+      'library failed sync backoff',
+    );
+  }
+
+  if (!source.includes("pending:true, retryAt:retryUntil || 0")) {
+    source = mustReplace(
+      source,
+      "    } catch {\n      dispatch('medindex:library-ready', { offline:false, local:true, pending:true });",
+      "    } catch (error) {\n      if ([429, 503].includes(Number(error?.status))) retryUntil = Date.now() + Math.max(30_000, Number(error?.retryAfterMs || 0));\n      dispatch('medindex:library-ready', { offline:false, local:true, pending:true, retryAt:retryUntil || 0 });",
+      'library initialize backoff',
+    );
+  }
+
+  if (!phase6) {
+    source = mustReplace(
+      source,
+      "  function poll() {\n    const current = readState();",
+      "  function poll() {\n    if (document.visibilityState === 'hidden') return;\n    const current = readState();",
+      'library hidden-tab pause',
+    );
+    source = mustReplace(
+      source,
+      "  window.addEventListener('online', () => {\n    online = true;\n    scheduleSync(100);\n  });",
+      "  window.addEventListener('online', () => {\n    online = true;\n    retryUntil = 0;\n    scheduleSync(100);\n  });\n  window.addEventListener('medindex:favorites-changed', () => { poll(); scheduleSync(80); });\n  window.addEventListener('medindex:personal-note-saved', () => { poll(); scheduleSync(80); });",
+      'library event-driven sync',
+    );
+  } else if (!source.includes('retryUntil = 0;\n    scheduleSync(100);')) {
+    source = mustReplace(
+      source,
+      "  window.addEventListener('online', () => {\n    online = true;\n    scheduleSync(100);\n  });",
+      "  window.addEventListener('online', () => {\n    online = true;\n    retryUntil = 0;\n    scheduleSync(100);\n  });",
+      'Phase 6 online backoff reset',
+    );
+  }
+
   write('user-library-client.js', source);
 }
 
@@ -167,14 +197,21 @@ function audit() {
 
   if (!drive.includes("code:'NEON_TEMPORARILY_UNAVAILABLE'") || !drive.includes("res.status(503)")) throw new Error('Drive sync degraded contract missing.');
   if (!library.includes("retryAfter:unavailable") || !library.includes('NeonResilience.safeLog')) throw new Error('User library degraded contract missing.');
-  if (!client.includes('const POLL_MS = 5000;') || !client.includes('retryUntil') || !client.includes("medindex:favorites-changed") || !client.includes("medindex:personal-note-saved")) throw new Error('User library client backoff/event contract missing.');
+  const eventDrivenLibrary = client.includes("EVENT_SYNC_VERSION = 'user-library-event-sync-v1'")
+    && client.includes('LEGACY_PRESCRIPTION_POLL_MS = 5000')
+    && client.includes("'medindex:favorites-changed', 'medindex:notes-changed', 'medindex:personal-note-saved'")
+    && client.includes("window.addEventListener('storage', event =>");
+  const legacyReducedPolling = client.includes('const POLL_MS = 5000;')
+    && client.includes("medindex:favorites-changed")
+    && client.includes("medindex:personal-note-saved");
+  if ((!eventDrivenLibrary && !legacyReducedPolling) || !client.includes('retryUntil')) throw new Error('User library client backoff/event contract missing.');
   if (!calc.includes('res.status(degraded ? 503 : 500)') || !safety.includes('res.status(degraded ? 503 : 500)')) throw new Error('Dose degraded response contract missing.');
   if (!dosage.includes("NeonResilience.safeLog('Neon dosage read fallback'") || dosage.includes("console.error('Neon dosage read failed; using Sheets fallback:'")) throw new Error('Dosage Sheets fallback still logs Neon quota as an error.');
   if (!clinicalEditor.includes("code:degraded ? 'NEON_TEMPORARILY_UNAVAILABLE'") || !clinicalEditor.includes('NeonResilience.applyRetryHeaders')) throw new Error('Clinical editor degraded contract missing.');
   if (!population.includes("code:degraded ? 'NEON_TEMPORARILY_UNAVAILABLE'") || !population.includes('NeonResilience.applyRetryHeaders')) throw new Error('Population verification degraded contract missing.');
   if (!revision.includes('NeonResilience.retryAfterSeconds(error)')) throw new Error('Registry revision outage backoff missing.');
   if (/POLL_MS = 1200/.test(client)) throw new Error('Aggressive 1.2s user-library polling returned.');
-  console.log('Final production resilience audit passed: Neon outage backoff, controlled Sheets fallback, clinical 503 Retry-After, local-first library and reduced polling are active.');
+  console.log('Final production resilience audit passed: Neon outage backoff, controlled Sheets fallback, clinical 503 Retry-After, local-first library and event-driven personal sync are active.');
 }
 
 patchDriveSync();
