@@ -1,6 +1,6 @@
 'use strict';
 
-require('./patch-registry-phase16-personal-ux.js');
+require('./patch-registry-phase16-personal-ux-v2.js');
 
 /* Lista e aseteve që shërbyesi offline i ruan gjatë instalimit ka qenë e
  * shkruar me dorë te `sw.js`, dhe një e dytë e shkurtër shtohej me dorë te
