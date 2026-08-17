@@ -104,7 +104,7 @@ assert.match(userLibraryClient, /EVENT_SYNC_DELAY_MS = 40/, 'Personal mutations 
 assert.match(userLibraryClient, /function captureLocalChanges\(/, 'Event-driven local change capture is missing.');
 assert.match(userLibraryClient, /'medindex:favorites-changed', 'medindex:notes-changed', 'medindex:personal-note-saved'/, 'Favorite/note mutation events must drive persistence.');
 assert.match(userLibraryClient, /window\.addEventListener\('storage', event =>/, 'Cross-tab localStorage mutations must drive persistence.');
-assert.match(userLibraryClient, /syncNow:\(\) => \{ captureLocalChanges\(\{ schedule:false \}\); return flush\(\); \}/, 'syncNow must capture state before the backend flush.');
+assert.match(userLibraryClient, /syncNow:\(\) => \{[\s\S]{0,220}captureLocalChanges\(\{ schedule:false \}\);[\s\S]{0,220}const targetRevision = localRevision;[\s\S]{0,220}return flushThroughRevision\(targetRevision\);[\s\S]{0,80}\}/, 'syncNow must capture state and wait until its own revision reaches the backend.');
 assert.match(userLibraryClient, /window\.setInterval\(pollLegacyPrescriptions, LEGACY_PRESCRIPTION_POLL_MS\)/, 'Legacy prescriptions must retain a narrow compatibility fallback.');
 assert.doesNotMatch(userLibraryClient, /const POLL_MS = 1200|window\.setInterval\(poll, POLL_MS\)/, 'Favorites/Notes must never return to the 1.2-second polling loop.');
 
