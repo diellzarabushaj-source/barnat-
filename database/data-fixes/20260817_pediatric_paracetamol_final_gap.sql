@@ -8,6 +8,8 @@
 --   #466 PAROL PLUS 250 mg/5 mL
 --     Atabay KÜB / SmPC-equivalent, section 4.2
 --     https://www.atabay.com/wp-content/uploads/2022/12/PAROL-PLUS-250-KUB.pdf
+--     10–15 mg/kg q6h; minimum interval 4h; <=4 administrations/day;
+--     daily target <=60 mg/kg; >30 kg max 500 mg/dose and 2 g/day.
 --
 -- #467 PAROL 120 mg/5 mL is deliberately quarantined as in_review until a
 -- directly retrievable primary KÜB/RCP can be bound to the product. Existing
@@ -61,11 +63,13 @@ WHERE drug_id = (SELECT id FROM drugs WHERE registry_number = 4013)
 
 UPDATE drugs
 SET pediatric_dose_summary = 'Fëmijë ≥6 vjeç: 10–15 mg/kg për dozë PO çdo 6 orë; minimumi 4 orë ndërmjet dozave; maksimumi 4 doza/24 orë dhe 60 mg/kg/ditë. Nën 6 vjeç përdoret formulimi 120 mg/5 mL.',
-    pediatric_max_daily_value = 60,
-    pediatric_max_daily_unit = 'mg/kg/ditë',
+    pediatric_max_single_value = 500,
+    pediatric_max_single_unit = 'mg',
+    pediatric_max_daily_value = 2000,
+    pediatric_max_daily_unit = 'mg',
     pediatric_max_doses_per_day = 4,
     pediatric_min_interval_hours = 4,
-    pediatric_restriction = 'Tunde para përdorimit; mos e përdor më gjatë se 3 ditë rresht pa rekomandim mjeku dhe llogarit të gjithë paracetamolin nga barnat e tjera.',
+    pediatric_restriction = 'Tunde para përdorimit; mos e përdor më gjatë se 3 ditë rresht pa rekomandim mjeku. Formula 10–15 mg/kg çdo 6 orë nuk duhet të kalojë 500 mg për dozë, 2000 mg/24h, 4 doza/24h ose intervalin minimal 4 orë; llogarit të gjithë paracetamolin nga barnat e tjera.',
     pediatric_verification_status = 'verified',
     pediatric_verified_at = NOW()
 WHERE registry_number = 466;
@@ -73,7 +77,7 @@ WHERE registry_number = 466;
 UPDATE dosage_regimens
 SET frequency_text = 'çdo 6 orë',
     duration_text = 'Pa rekomandim mjeku, jo më gjatë se 3 ditë rresht.',
-    maximum_text = 'Maksimumi 60 mg/kg/ditë; minimumi 4 orë ndërmjet dozave; jo më shumë se 4 doza/24 orë.',
+    maximum_text = 'Maksimumi 60 mg/kg/ditë; mbi 30 kg maksimum 500 mg për dozë dhe 2 g/ditë; minimumi 4 orë ndërmjet dozave; jo më shumë se 4 doza/24 orë.',
     warnings = 'Tunde para përdorimit dhe llogarit të gjithë paracetamolin nga produktet e tjera.',
     reviewed_by = 'MedIndex clinical audit 2026-08-17',
     reviewed_at = NOW(),
