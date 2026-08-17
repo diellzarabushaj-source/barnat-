@@ -1,5 +1,7 @@
 'use strict';
 
+require('./patch-registry-phase16-personal-ux.js');
+
 /* Lista e aseteve që shërbyesi offline i ruan gjatë instalimit ka qenë e
  * shkruar me dorë te `sw.js`, dhe një e dytë e shkurtër shtohej me dorë te
  * `patch-phase9-pwa-targeted-cache.js`. Të dyja kishin mbetur prapa: nga 36
