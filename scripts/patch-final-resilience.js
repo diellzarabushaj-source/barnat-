@@ -181,6 +181,85 @@ function patchUserLibraryClient() {
     );
   }
 
+  if (phase6 && !source.includes("RECOVERY_VERSION = 'user-library-recovery-v1'")) {
+    source = mustReplace(
+      source,
+      "  const EVENT_SYNC_VERSION = 'user-library-event-sync-v1';",
+      "  const EVENT_SYNC_VERSION = 'user-library-event-sync-v1';\n  const RECOVERY_VERSION = 'user-library-recovery-v1';",
+      'Phase 7 recovery version marker',
+    );
+
+    source = mustReplace(
+      source,
+      '  let retryUntil = 0;',
+      '  let retryUntil = 0;\n  let retryTimer = 0;',
+      'Phase 7 retry timer state',
+    );
+
+    source = mustReplace(
+      source,
+      "      const localItem = prescriptions.get(id);\n      const localUpdated = time(meta.prescriptions[id] || localItem?.updatedAt || localItem?.createdAt);\n      const remoteUpdated = time(row.clientUpdatedAt || row.serverUpdatedAt);\n      if (!localItem || remoteUpdated > localUpdated) {\n        prescriptions.set(id, row.payload);\n        meta.prescriptions[id] = row.clientUpdatedAt || row.serverUpdatedAt || nowIso();\n      }\n      delete meta.deletedPrescriptions[id];",
+      "      const localItem = prescriptions.get(id);\n      const localUpdated = time(meta.prescriptions[id] || localItem?.updatedAt || localItem?.createdAt);\n      const remoteUpdated = time(row.clientUpdatedAt || row.serverUpdatedAt);\n      const localDeleted = time(meta.deletedPrescriptions[id]);\n      if (localDeleted && localDeleted >= remoteUpdated) return;\n      if (!localItem || remoteUpdated > localUpdated) {\n        prescriptions.set(id, row.payload);\n        meta.prescriptions[id] = row.clientUpdatedAt || row.serverUpdatedAt || nowIso();\n      }\n      delete meta.deletedPrescriptions[id];",
+      'Phase 7 prescription tombstone conflict guard',
+    );
+
+    source = mustReplace(
+      source,
+      "      const id = favoriteId(type, key);\n      const remoteUpdated = time(row.clientUpdatedAt || row.serverUpdatedAt);\n      if (type === 'drug') {",
+      "      const id = favoriteId(type, key);\n      const remoteUpdated = time(row.clientUpdatedAt || row.serverUpdatedAt);\n      const localDeleted = time(meta.deletedFavorites[id]);\n      if (localDeleted && localDeleted >= remoteUpdated) return;\n      if (type === 'drug') {",
+      'Phase 7 favorite/note tombstone conflict guard',
+    );
+
+    source = mustReplace(
+      source,
+      "  function scheduleSync(delay = SYNC_DELAY_MS) {",
+      "  function scheduleRecoveryRetry(at) {\n    clearTimeout(retryTimer);\n    retryTimer = 0;\n    const target = Number(at || 0);\n    if (!target) return;\n    const delay = Math.max(0, Math.min(2_147_483_000, target - Date.now() + 25));\n    retryTimer = window.setTimeout(() => {\n      retryTimer = 0;\n      retryUntil = 0;\n      if (online && navigator.onLine) scheduleSync(EVENT_SYNC_DELAY_MS);\n    }, delay);\n  }\n\n  function scheduleSync(delay = SYNC_DELAY_MS) {",
+      'Phase 7 automatic retry scheduler',
+    );
+
+    source = mustReplace(
+      source,
+      "        const meta = readMeta();\n        meta.lastSyncedAt = payload.generatedAt || nowIso();\n        writeMeta(meta);\n        success = true;\n        if (!resyncAfterFlight) dirty = false;\n        dispatch('medindex:library-synced', { generatedAt:meta.lastSyncedAt });",
+      "        const reconciled = mergeRemote(payload);\n        const meta = readMeta();\n        meta.lastSyncedAt = payload.generatedAt || nowIso();\n        writeMeta(meta);\n        success = true;\n        if (!resyncAfterFlight) dirty = false;\n        dispatch('medindex:library-synced', { generatedAt:meta.lastSyncedAt, reconciled });\n        if (reconciled) dispatch('medindex:library-reconciled', { generatedAt:meta.lastSyncedAt });",
+      'Phase 7 PUT-response reconciliation',
+    );
+
+    source = mustReplace(
+      source,
+      "        if ([429, 503].includes(Number(error.status))) {\n          retryUntil = Date.now() + Math.max(30_000, Number(error.retryAfterMs || 0));\n        }\n        dirty = true;",
+      "        if ([429, 503].includes(Number(error.status))) {\n          retryUntil = Date.now() + Math.max(30_000, Number(error.retryAfterMs || 0));\n          scheduleRecoveryRetry(retryUntil);\n        }\n        dirty = true;",
+      'Phase 7 failed-sync retry scheduling',
+    );
+
+    source = mustReplace(
+      source,
+      "      if ([429, 503].includes(Number(error?.status))) retryUntil = Date.now() + Math.max(30_000, Number(error?.retryAfterMs || 0));\n      dispatch('medindex:library-ready', { offline:false, local:true, pending:true, retryAt:retryUntil || 0 });",
+      "      if ([429, 503].includes(Number(error?.status))) {\n        retryUntil = Date.now() + Math.max(30_000, Number(error?.retryAfterMs || 0));\n        scheduleRecoveryRetry(retryUntil);\n      }\n      dispatch('medindex:library-ready', { offline:false, local:true, pending:true, retryAt:retryUntil || 0 });",
+      'Phase 7 initialize retry scheduling',
+    );
+
+    source = mustReplace(
+      source,
+      "  window.addEventListener('online', () => {\n    online = true;\n    retryUntil = 0;\n    scheduleSync(100);\n  });",
+      "  window.addEventListener('online', () => {\n    online = true;\n    retryUntil = 0;\n    clearTimeout(retryTimer);\n    retryTimer = 0;\n    scheduleSync(100);\n  });",
+      'Phase 7 online recovery reset',
+    );
+
+    source = mustReplace(
+      source,
+      "  document.addEventListener('visibilitychange', () => {\n    if (document.visibilityState === 'hidden') {\n      captureLocalChanges({ schedule:false });\n      if (dirty) void flush({ keepalive:true });\n    }\n  });",
+      "  document.addEventListener('visibilitychange', () => {\n    if (document.visibilityState === 'hidden') {\n      captureLocalChanges({ schedule:false });\n      if (dirty) void flush({ keepalive:true });\n    } else if (dirty && Date.now() >= retryUntil) {\n      scheduleSync(EVENT_SYNC_DELAY_MS);\n    }\n  });",
+      'Phase 7 visible-tab recovery',
+    );
+
+    source = mustReplace(
+      source,
+      '    version:EVENT_SYNC_VERSION,',
+      '    version:EVENT_SYNC_VERSION,\n    recoveryVersion:RECOVERY_VERSION,',
+      'Phase 7 public recovery version',
+    );
+  }
+
   write('user-library-client.js', source);
 }
 
@@ -205,13 +284,24 @@ function audit() {
     && client.includes("medindex:favorites-changed")
     && client.includes("medindex:personal-note-saved");
   if ((!eventDrivenLibrary && !legacyReducedPolling) || !client.includes('retryUntil')) throw new Error('User library client backoff/event contract missing.');
+  if (eventDrivenLibrary) {
+    const phase7Recovery = client.includes("RECOVERY_VERSION = 'user-library-recovery-v1'")
+      && client.includes('const localDeleted = time(meta.deletedPrescriptions[id]);')
+      && client.includes('const localDeleted = time(meta.deletedFavorites[id]);')
+      && client.includes('const reconciled = mergeRemote(payload);')
+      && client.includes('function scheduleRecoveryRetry(at)')
+      && client.includes('scheduleRecoveryRetry(retryUntil);')
+      && client.includes("dispatch('medindex:library-reconciled'")
+      && client.includes('recoveryVersion:RECOVERY_VERSION');
+    if (!phase7Recovery) throw new Error('Phase 7 user-library conflict/recovery contract missing.');
+  }
   if (!calc.includes('res.status(degraded ? 503 : 500)') || !safety.includes('res.status(degraded ? 503 : 500)')) throw new Error('Dose degraded response contract missing.');
   if (!dosage.includes("NeonResilience.safeLog('Neon dosage read fallback'") || dosage.includes("console.error('Neon dosage read failed; using Sheets fallback:'")) throw new Error('Dosage Sheets fallback still logs Neon quota as an error.');
   if (!clinicalEditor.includes("code:degraded ? 'NEON_TEMPORARILY_UNAVAILABLE'") || !clinicalEditor.includes('NeonResilience.applyRetryHeaders')) throw new Error('Clinical editor degraded contract missing.');
   if (!population.includes("code:degraded ? 'NEON_TEMPORARILY_UNAVAILABLE'") || !population.includes('NeonResilience.applyRetryHeaders')) throw new Error('Population verification degraded contract missing.');
   if (!revision.includes('NeonResilience.retryAfterSeconds(error)')) throw new Error('Registry revision outage backoff missing.');
   if (/POLL_MS = 1200/.test(client)) throw new Error('Aggressive 1.2s user-library polling returned.');
-  console.log('Final production resilience audit passed: Neon outage backoff, controlled Sheets fallback, clinical 503 Retry-After, local-first library and event-driven personal sync are active.');
+  console.log('Final production resilience audit passed: Neon outage backoff, controlled Sheets fallback, clinical 503 Retry-After, local-first library, event-driven personal sync and Phase 7 conflict-safe recovery are active.');
 }
 
 patchDriveSync();
