@@ -155,6 +155,20 @@ function materializeUserLibraryRecovery() {
   write('user-library-client.js', source);
 }
 
+function materializePublishedAssetVersions() {
+  let source = read('index.html');
+  source = source.replace(/registry-mobile-phase8\.css\?v=[^&"]+/g, 'registry-mobile-phase8.css?v=20260816-2');
+  source = source.replace(/registry-mobile-phase8\.js\?v=[^&"]+/g, 'registry-mobile-phase8.js?v=20260816-2');
+  source = source.replace(/registry-user-personalization\.css\?v=[^&"]+/g, 'registry-user-personalization.css?v=20260816-7');
+  source = source.replace(/registry-user-personalization\.js\?v=[^&"]+/g, 'registry-user-personalization.js?v=20260816-7');
+  source = source.replace(/registry-ux-phase1\.js\?v=[^&"]+/g, 'registry-ux-phase1.js?v=20260816-2');
+  source = source.replace(/user-library-client\.js\?v=[^&"]+/g, 'user-library-client.js?v=20260817-event-sync-1');
+  if (!source.includes('registry-user-personalization.css?v=20260816-7')) throw new Error('Phase 12 failed to publish canonical personalization CSS version.');
+  if (!source.includes('registry-user-personalization.js?v=20260816-7')) throw new Error('Phase 12 failed to publish canonical personalization JS version.');
+  if (!source.includes('user-library-client.js?v=20260817-event-sync-1')) throw new Error('Phase 12 failed to publish canonical user-library version.');
+  write('index.html', source);
+}
+
 function auditMaterializedSource() {
   const client = read('user-library-client.js');
   const ui = read('registry-user-personalization.js');
@@ -170,7 +184,7 @@ function auditMaterializedSource() {
 }
 
 materializeUserLibraryRecovery();
-require('./patch-registry-phase8-personalization.js');
+materializePublishedAssetVersions();
 require('./patch-registry-phase16-personal-ux-v2.js');
 require('./patch-registry-personal-long-session.js');
 auditMaterializedSource();
