@@ -56,6 +56,28 @@ assert.ok(dafalgan10kg.steps.some(step => step.label === 'Intervali minimal' && 
 assert.equal(calculate(dafalgan4013, { weightKg:2.9 }).outcome, OUTCOME.OUT_OF_RANGE);
 assert.equal(calculate(dafalgan4013, { weightKg:32.1 }).outcome, OUTCOME.OUT_OF_RANGE);
 
+// EFFERALGAN 30 mg/mL (#3287) is the same official CIS/formulation family and
+// must keep the same PRN semantics rather than turning max 4/day into a schedule.
+const efferalgan3287 = {
+  ...dafalgan4013,
+  pediatric_indication:'dhimbje e lehtë–mesatare dhe/ose temperaturë te fëmijët 3–32 kg',
+};
+const efferalganReady = classify(efferalgan3287);
+assert.equal(efferalganReady.readiness, STATUS.CALCULATOR_READY);
+assert.equal(efferalganReady.schedule.mode, 'prn-limit');
+assert.equal(efferalganReady.schedule.maxDosesPerDay, 4);
+assert.equal(efferalganReady.schedule.minIntervalHours, 6);
+
+const efferalgan12kg = calculate(efferalgan3287, { weightKg:12 });
+assert.equal(efferalgan12kg.outcome, OUTCOME.CALCULATED);
+assert.deepEqual(efferalgan12kg.perDose, { min:180, max:180 });
+assert.equal(efferalgan12kg.dosesPerDay, null);
+assert.equal(efferalgan12kg.daily, null);
+assert.ok(efferalgan12kg.steps.some(step => step.label === 'Maks. administrime / 24h' && step.value === 4));
+assert.ok(efferalgan12kg.steps.some(step => step.label === 'Intervali minimal' && step.value === 6));
+assert.equal(calculate(efferalgan3287, { weightKg:2.99 }).outcome, OUTCOME.OUT_OF_RANGE);
+assert.equal(calculate(efferalgan3287, { weightKg:32.01 }).outcome, OUTCOME.OUT_OF_RANGE);
+
 // PAROL PLUS 250 mg/5 mL (#466).
 // Manufacturer KÜB explicitly recommends q6h 10–15 mg/kg/dose, while also
 // defining a 4 h absolute minimum interval and <=4 administrations/day.
@@ -146,6 +168,6 @@ assert.equal(classify(parol120_467).readiness, STATUS.TEXT_ONLY);
 assert.equal(calculate(parol120_467, { weightKg:10 }).outcome, OUTCOME.NOT_CALCULABLE);
 
 console.log(
-  'Pediatric paracetamol final-gap regression passed: DAFALGAN PRN ceilings remain limits, '
+  'Pediatric paracetamol final-gap regression passed: DAFALGAN/EFFERALGAN PRN ceilings remain limits, '
   + 'PAROL PLUS preserves q6h plus 500 mg/2 g hard caps, and PAROL 120 stays quarantined.',
 );
