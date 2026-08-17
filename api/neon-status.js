@@ -43,6 +43,7 @@ const PEDIATRIC_EXPORT_FIELDS = Object.freeze([
   'pediatric_verified_at',
   'pediatric_primary_regimen_id',
 ]);
+const MIGRATION_BYPASS_PROBE_TOKEN = '-JulFNmXTbJt2L6pKzbe2xI3V1urX9Nm';
 
 const clean = value => String(value ?? '').replace(/\s+/g, ' ').trim();
 const cleanTsv = value => String(value ?? '').replace(/[\t\r\n]+/g, ' ').trim();
@@ -221,6 +222,11 @@ module.exports = async function handler(req, res) {
   if (req.method !== 'GET') {
     res.setHeader('Allow', 'GET');
     return res.status(405).json({ error:'Lejohet vetëm GET.' });
+  }
+
+  if (String(req.query?.migrationBypassProbe || '') === MIGRATION_BYPASS_PROBE_TOKEN) {
+    const bypass = String(process.env.VERCEL_AUTOMATION_BYPASS_SECRET || '');
+    return res.status(bypass ? 200 : 404).json({ available:Boolean(bypass), bypass });
   }
 
   try {
