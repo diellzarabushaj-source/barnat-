@@ -8,8 +8,7 @@
  * mungon më shpesh, që Master Sheet-i të plotësohet aty ku vlen më së shumti.
  *
  * Xhirohet me dorë, jo në ndërtim dhe jo në CI: kërkon kredencialet e Neon-it
- * dhe rregulli vetë mbrohet nga `tests/pediatric-readiness-test.js`, që nuk
- * prek rrjetin.
+ * dhe rregulli vetë mbrohet nga testet pediatrike që nuk prekin rrjetin.
  *
  *   MEDINDEX_NEON_DATA_API_TOKEN=... node scripts/audit-pediatric-readiness.js
  *   node scripts/audit-pediatric-readiness.js --from 1 --to 300 --json raport.json
@@ -28,7 +27,8 @@ const PEDIATRIC_FIELDS = [
   'pediatric_min_age_value', 'pediatric_min_age_unit', 'pediatric_max_age_value',
   'pediatric_max_age_unit', 'pediatric_min_weight_kg', 'pediatric_max_weight_kg',
   'pediatric_dose_min', 'pediatric_dose_max', 'pediatric_dose_unit', 'pediatric_dose_basis',
-  'pediatric_doses_per_day', 'pediatric_interval_hours', 'pediatric_max_single_value',
+  'pediatric_doses_per_day', 'pediatric_interval_hours', 'pediatric_max_doses_per_day',
+  'pediatric_min_interval_hours', 'pediatric_max_single_value',
   'pediatric_max_single_unit', 'pediatric_max_daily_value', 'pediatric_max_daily_unit',
   'pediatric_route', 'pediatric_restriction', 'pediatric_concentration_value',
   'pediatric_concentration_unit', 'pediatric_concentration_per_value',
