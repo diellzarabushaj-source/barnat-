@@ -1,16 +1,13 @@
 'use strict';
 
-/* Canonical late-stage personalization verifier.
+/* Canonical personalization release verifier.
  *
- * Phase 12 moved Favorites/Notes behavior into canonical source files. Phase 14
- * removes the obsolete late patch stages entirely: one canonical source audit
- * and the focused regression gates now verify the source-owned behavior before
- * offline packaging.
+ * Phase 15 keeps exactly two ownership checkpoints: the build starts with the
+ * canonical source audit, then this postbuild finalizer runs one consolidated
+ * release gate before the offline manifest is emitted. No late patch stage is
+ * allowed to reconstruct Favorites/Notes behavior.
  */
 
-require('./audit-registry-personal-source.js');
-require('../tests/registry-personal-ux-phase8-test.js');
-require('../tests/registry-personal-long-session-test.js');
-require('../tests/registry-personal-finalizer-test.js');
+require('../tests/registry-personal-release-gate.js');
 
-console.log('Canonical registry personalization finalizer passed: source-owned UX, recovery and long-session behavior were verified without late patch stages.');
+console.log('Canonical registry personalization finalizer passed: one consolidated Phase 15 release gate verified source-owned Favorites/Notes behavior before offline packaging.');
