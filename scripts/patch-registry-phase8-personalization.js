@@ -54,6 +54,77 @@ function patchMobileLite() {
   write('registry-mobile-lite.js', source);
 }
 
+function patchUserLibraryEventSync() {
+  let source = read('user-library-client.js');
+  const marker = `  const EVENT_SYNC_VERSION = 'user-library-event-sync-v1';`;
+
+  if (!source.includes(marker)) {
+    source = replaceOnce(
+      source,
+      `  const POLL_MS = 1200;\n  const SYNC_DELAY_MS = 700;`,
+      `${marker}\n  const LEGACY_PRESCRIPTION_POLL_MS = 5000;\n  const EVENT_SYNC_DELAY_MS = 40;\n  const SYNC_DELAY_MS = 700;`,
+      'user-library polling constants',
+    );
+
+    source = replaceOnce(
+      source,
+      `  let pollTimer = 0;`,
+      `  let legacyPrescriptionPollTimer = 0;`,
+      'user-library polling timer',
+    );
+
+    const oldPoll = `  function poll() {\n    const current = readState();\n    if (!lastState) {\n      lastState = current;\n      return;\n    }\n    if (stableState(lastState) === stableState(current)) return;\n    recordLocalChanges(lastState, current);\n    lastState = current;\n    scheduleSync();\n  }`;
+    const eventDrivenCapture = `  function captureLocalChanges({ schedule = true, delay = SYNC_DELAY_MS } = {}) {\n    const current = readState();\n    if (!lastState) {\n      lastState = current;\n      return false;\n    }\n    if (stableState(lastState) === stableState(current)) return false;\n    recordLocalChanges(lastState, current);\n    lastState = current;\n    if (schedule) scheduleSync(delay);\n    return true;\n  }\n\n  function stablePrescriptions(state) {\n    return JSON.stringify([...(state?.prescriptions || [])]\n      .sort((a, b) => protocolId(a).localeCompare(protocolId(b))));\n  }\n\n  function pollLegacyPrescriptions() {\n    const current = readState();\n    if (!lastState) {\n      lastState = current;\n      return;\n    }\n    if (stablePrescriptions(lastState) === stablePrescriptions(current)) return;\n    captureLocalChanges();\n  }\n\n  function onPersonalLibraryMutation() {\n    const changed = captureLocalChanges({ schedule:false });\n    if (changed) scheduleSync(EVENT_SYNC_DELAY_MS);\n  }`;
+    source = replaceOnce(source, oldPoll, eventDrivenCapture, 'user-library polling loop');
+
+    source = replaceOnce(
+      source,
+      `      poll();\n      await Promise.race([flush(), new Promise(resolve => setTimeout(resolve, 1500))]);`,
+      `      captureLocalChanges({ schedule:false });\n      await Promise.race([flush(), new Promise(resolve => setTimeout(resolve, 1500))]);`,
+      'logout pre-flush capture',
+    );
+
+    source = replaceOnce(
+      source,
+      `    syncNow:() => { poll(); return flush(); },`,
+      `    syncNow:() => { captureLocalChanges({ schedule:false }); return flush(); },`,
+      'immediate library synchronization API',
+    );
+
+    source = replaceOnce(
+      source,
+      `  window.addEventListener('pagehide', () => {\n    poll();\n    if (dirty) void flush({ keepalive:true });\n  });`,
+      `  window.addEventListener('pagehide', () => {\n    captureLocalChanges({ schedule:false });\n    if (dirty) void flush({ keepalive:true });\n  });`,
+      'pagehide library capture',
+    );
+
+    source = replaceOnce(
+      source,
+      `    if (document.visibilityState === 'hidden') {\n      poll();\n      if (dirty) void flush({ keepalive:true });\n    }`,
+      `    if (document.visibilityState === 'hidden') {\n      captureLocalChanges({ schedule:false });\n      if (dirty) void flush({ keepalive:true });\n    }`,
+      'visibility library capture',
+    );
+
+    source = replaceOnce(
+      source,
+      `  pollTimer = window.setInterval(poll, POLL_MS);\n  void initialize();`,
+      `  ['medindex:favorites-changed', 'medindex:notes-changed', 'medindex:personal-note-saved']\n    .forEach(name => window.addEventListener(name, onPersonalLibraryMutation));\n\n  window.addEventListener('storage', event => {\n    if (![PRESCRIPTIONS_KEY, FAVORITES_KEY, NOTES_KEY].includes(event.key)) return;\n    onPersonalLibraryMutation();\n  });\n\n  legacyPrescriptionPollTimer = window.setInterval(pollLegacyPrescriptions, LEGACY_PRESCRIPTION_POLL_MS);\n  void initialize();`,
+      'event-driven library listeners',
+    );
+  }
+
+  if (!source.includes(marker)) throw new Error('Phase 6 event-sync marker is missing.');
+  if (!source.includes("window.addEventListener(name, onPersonalLibraryMutation)")) throw new Error('Phase 6 personal mutation listeners are missing.');
+  if (!source.includes("window.addEventListener('storage', event =>")) throw new Error('Phase 6 cross-tab storage listener is missing.');
+  if (!source.includes('syncNow:() => { captureLocalChanges({ schedule:false }); return flush(); }')) throw new Error('Phase 6 syncNow must capture the mutation before flushing.');
+  if (!source.includes('pollLegacyPrescriptions')) throw new Error('Phase 6 legacy prescription fallback is missing.');
+  if (source.includes('const POLL_MS = 1200') || source.includes('window.setInterval(poll, POLL_MS)')) {
+    throw new Error('Phase 6 must not poll Favorites/Notes every 1.2 seconds.');
+  }
+
+  write('user-library-client.js', source);
+}
+
 function patchIndex() {
   let source = read('index.html');
 
@@ -80,6 +151,7 @@ function patchIndex() {
   source = source.replace(/registry-user-personalization\.css\?v=[^&"]+/g, 'registry-user-personalization.css?v=20260816-7');
   source = source.replace(/registry-user-personalization\.js\?v=[^&"]+/g, 'registry-user-personalization.js?v=20260816-7');
   source = source.replace(/registry-ux-phase1\.js\?v=[^&"]+/g, 'registry-ux-phase1.js?v=20260816-2');
+  source = source.replace(/user-library-client\.js\?v=[^&"]+/g, 'user-library-client.js?v=20260817-event-sync-1');
 
   if (source.indexOf('registry-mobile-phase8.js') > source.indexOf('registry-runtime-loader.js')) {
     throw new Error('Phase 8 must initialize before the full registry loader.');
@@ -89,6 +161,7 @@ function patchIndex() {
   if (!source.includes('registry-user-personalization.css?v=20260816-7')) throw new Error('Mobile-bridge personalization CSS version was not published.');
   if (!source.includes('registry-user-personalization.js?v=20260816-7')) throw new Error('Mobile-bridge personalization JS version was not published.');
   if (!source.includes('registry-ux-phase1.js?v=20260816-2')) throw new Error('Canonical toolbar UX version was not published.');
+  if (!source.includes('user-library-client.js?v=20260817-event-sync-1')) throw new Error('Phase 6 event-driven user-library asset version was not published.');
   write('index.html', source);
 }
 
@@ -106,6 +179,7 @@ function verifyAddon() {
   const source = read('registry-mobile-phase8.js');
   const css = read('registry-mobile-phase8.css');
   const shared = read('registry-user-personalization.js');
+  const library = read('user-library-client.js');
 
   if (!source.includes("const FAVORITES_KEY = 'regjistriBarnave_favoritet_v1'")) throw new Error('Phase 8 must share the desktop favorites key.');
   if (!source.includes("const NOTES_KEY = 'regjistriBarnave_shenime_v1'")) throw new Error('Phase 4 mobile Notes must share the canonical notes key.');
@@ -127,11 +201,16 @@ function verifyAddon() {
   if (!css.includes('body #registryFilterPanel.registry-filter-panel-unified')) throw new Error('Phase 0 mobile-lite boundary must own compact search/count toolbar geometry.');
   if (!css.includes('.mobile-lite-row>td:not(:has(.mobile-lite-card))')) throw new Error('Phase 0 mobile-lite boundary must suppress shared synthetic table cells.');
   if (!css.includes('.mobile-lite-row>td:has(.mobile-lite-card)')) throw new Error('Phase 0 mobile-lite boundary must preserve exactly the canonical card cell.');
+  if (!library.includes("EVENT_SYNC_VERSION = 'user-library-event-sync-v1'")) throw new Error('Phase 6 event-driven library sync is missing.');
+  if (!library.includes("'medindex:favorites-changed', 'medindex:notes-changed'")) throw new Error('Phase 6 Favorites/Notes mutation listeners are missing.');
+  if (!library.includes("window.addEventListener('storage', event =>")) throw new Error('Phase 6 cross-tab synchronization listener is missing.');
+  if (library.includes('const POLL_MS = 1200') || library.includes('window.setInterval(poll, POLL_MS)')) throw new Error('Phase 6 legacy 1.2s personal-state polling must not return.');
 }
 
 patchMobileLite();
+patchUserLibraryEventSync();
 patchIndex();
 patchMobileActionRegion();
 verifyAddon();
 
-console.log('Phase 4 mobile Favorites/Notes bridge, canonical note pencil, bounded recents and touch ownership published.');
+console.log('Phase 6 Favorites/Notes event sync + Phase 4 mobile bridge, canonical note pencil, bounded recents and touch ownership published.');
