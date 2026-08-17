@@ -2,7 +2,7 @@
 
 /* Porta e Fazës 1: rregulli që vendos cili regjim pediatrik bëhet kalkulator.
  *
- * Ky test nuk prek Neon-in. Auditi i barnave 1–300 xhirohet me kredencialet e
+ * Ky test nuk prek Neon-in. Auditi i barnave xhirohet me kredencialet e
  * prodhimit; ajo që mbrohet këtu është *rregulli* me të cilin ai audit numëron,
  * që rezultati i tij të mos ndryshojë pa u parë. Çdo degë e klasifikuesit ka
  * këtu një rresht shembull, i shkruar me emrat e vërtetë të fushave nga
@@ -19,7 +19,7 @@ const fs = require('node:fs');
 const path = require('node:path');
 
 const ROOT = path.resolve(__dirname, '..');
-const { STATUS, classify, summarize, _test } = require('../lib/pediatric-readiness.js');
+const { STATUS, CAP_STATUS, classify, summarize, _test } = require('../lib/pediatric-readiness.js');
 const contract = JSON.parse(fs.readFileSync(path.join(ROOT, 'data/pediatric-master-contract.json'), 'utf8'));
 
 /* Një regjim i plotë dhe i verifikuar: paracetamol oral sipas peshës. Të gjitha
@@ -62,7 +62,12 @@ assert.deepEqual(ready.requires, { weight:true, height:false, age:true, indicati
 assert.equal(ready.volume.canConvertToVolume, true);
 assert.equal(ready.volume.perUnitValue, 24, '120 mg / 5 mL duhet të japë 24 mg për mL.');
 assert.deepEqual(ready.caps, {
-  maxSingle:1000, maxSingleUnit:'mg', maxDaily:4000, maxDailyUnit:'mg',
+  maxSingle:1000,
+  maxSingleUnit:'mg',
+  maxDaily:4000,
+  maxDailyUnit:'mg',
+  status:{ maxSingle:CAP_STATUS.SPECIFIED, maxDaily:CAP_STATUS.SPECIFIED },
+  issues:[],
 });
 
 // Doza pa përqendrim mbetet e llogaritshme — thjesht nuk kthehet në mL.
@@ -122,7 +127,7 @@ assert.ok(restricted.warnings.includes('Vetëm në mjedis spitalor, nën monitor
 
 // ------------------------------------------------------------------ bazat e dozës
 
-// Bandat e peshës nuk reduktohen dot në formulë me projeksionin prej 30 fushash.
+// Bandat e peshës nuk reduktohen dot në formulë me projeksionin typed.
 const bands = classify(withRow({ pediatric_dose_basis:'bandë peshe' }));
 assert.equal(bands.readiness, STATUS.TEXT_ONLY);
 assert.ok(bands.reasons.some(reason => /banda peshe/i.test(reason)));
@@ -149,16 +154,23 @@ assert.equal(
   'Intervali e ndan dozën ditore edhe pa numrin e dozave.',
 );
 
-// Doza fikse nuk kërkon as peshë as gjatësi.
+// Doza fikse nuk kërkon as peshë as gjatësi, dhe mund të jetë pa cap.
 const fixed = classify(withRow({ pediatric_dose_basis:'dozë fikse' }));
 assert.equal(fixed.readiness, STATUS.CALCULATOR_READY);
 assert.equal(fixed.requires.weight, false);
 assert.equal(fixed.requires.height, false);
+const fixedUncapped = classify(withRow({
+  pediatric_dose_basis:'dozë fikse',
+  pediatric_max_single_value:null,
+  pediatric_max_single_unit:'',
+  pediatric_max_daily_value:null,
+  pediatric_max_daily_unit:'',
+}));
+assert.equal(fixedUncapped.readiness, STATUS.CALCULATOR_READY,
+  'Doza fikse nuk rritet me pacientin, prandaj mungesa e cap-it nuk bllokon vetvetiu.');
 
 /* Sipërfaqja trupore kërkon të dyja, sepse Mosteller-i është
-   √(gjatësi × peshë / 3600). Kjo është arsyeja pse `requires` ekziston fare:
-   forma e pacientit te Faza 4 ndërtohet prej saj, dhe një `weight:false` këtu
-   do të prodhonte një formular që nuk e mbledh dot atë që i duhet formulës. */
+   √(gjatësi × peshë / 3600). */
 const bsa = classify(withRow({ pediatric_dose_basis:'m²/dozë' }));
 assert.equal(bsa.readiness, STATUS.CALCULATOR_READY);
 assert.equal(bsa.requires.height, true);
@@ -170,8 +182,7 @@ assert.equal(unknownBasis.readiness, STATUS.TEXT_ONLY);
 assert.ok(unknownBasis.reasons.some(reason => /nuk është në listën e lejuar/.test(reason)));
 
 /* Kontrata dhe klasifikuesi duhet të mbeten të lidhur: çdo bazë e lejuar në
-   `pediatric-master-contract.json` duhet të ketë një trajtim këtu, ndryshe një
-   bazë e re e shtuar nesër do të binte heshtazi te "jo e lejuar". */
+   `pediatric-master-contract.json` duhet të ketë një trajtim këtu. */
 for (const basis of contract.allowed.doseBasis) {
   const verdict = classify(withRow({
     pediatric_dose_basis:basis,
@@ -197,7 +208,7 @@ assert.ok(noUnit.missing.includes('pediatric_dose_unit'));
 // Vetëm minimumi mjafton: shumë regjime kanë një dozë të vetme, jo interval.
 const singleDose = classify(withRow({ pediatric_dose_max:null }));
 assert.equal(singleDose.readiness, STATUS.CALCULATOR_READY);
-assert.deepEqual(singleDose.missing, [], 'Doza maksimale nuk është e detyrueshme.');
+assert.deepEqual(singleDose.missing, [], 'Doza maksimale e intervalit nuk është e detyrueshme.');
 
 // Intervali i përmbysur është gabim të dhënash, jo regjim.
 const inverted = classify(withRow({ pediatric_dose_min:15, pediatric_dose_max:10 }));
@@ -217,17 +228,56 @@ assert.ok(
   'Kontrata duhet ta mbajë "verified" si statusin që e hap kalkulatorin.',
 );
 
-// ------------------------------------------------------- paralajmërimi i tavanit
+// ------------------------------------------------------- semantika e tavaneve
 
+/* `NULL` nuk do të thotë më "s'ka maksimum". Për një dozë që rritet me kg/m²,
+   dy cap-e bosh janë mungesë e paverifikuar dhe llogaritja mbyllet. */
 const uncapped = classify(withRow({
   pediatric_max_single_value:null,
   pediatric_max_single_unit:'',
   pediatric_max_daily_value:null,
   pediatric_max_daily_unit:'',
 }));
-assert.equal(uncapped.readiness, STATUS.CALCULATOR_READY, 'Mungesa e tavanit nuk bllokon.');
-assert.ok(uncapped.warnings.some(warning => /kufi maksimal/.test(warning)));
-assert.deepEqual(ready.warnings, [], 'Një regjim me tavan nuk duhet të paralajmërojë.');
+assert.equal(uncapped.readiness, STATUS.TEXT_ONLY, 'Mungesa e të dy tavaneve duhet të bllokojë dozimin sipas kg.');
+assert.deepEqual(uncapped.caps.status, {
+  maxSingle:CAP_STATUS.ABSENT,
+  maxDaily:CAP_STATUS.ABSENT,
+});
+assert.ok(uncapped.reasons.some(reason => /nuk ka asnjë kufi maksimal të dokumentuar/.test(reason)));
+
+// Një tavan i dokumentuar mjafton që mungesa e tjetrit të mos interpretohet si gabim.
+const oneCap = classify(withRow({
+  pediatric_max_single_value:null,
+  pediatric_max_single_unit:'',
+}));
+assert.equal(oneCap.readiness, STATUS.CALCULATOR_READY);
+assert.equal(oneCap.caps.status.maxSingle, CAP_STATUS.ABSENT);
+assert.equal(oneCap.caps.status.maxDaily, CAP_STATUS.SPECIFIED);
+
+// Gjysmë-cap nuk lejohet: vlera pa njësi ose njësia pa vlerë janë të paplota.
+const incompleteCap = classify(withRow({ pediatric_max_single_unit:'' }));
+assert.equal(incompleteCap.readiness, STATUS.TEXT_ONLY);
+assert.equal(incompleteCap.caps.status.maxSingle, CAP_STATUS.INCOMPLETE);
+assert.ok(incompleteCap.reasons.some(reason => /është i paplotë/.test(reason)));
+
+// Periudha e cap-it duhet të përputhet me kolonën.
+const wrongPeriod = classify(withRow({ pediatric_max_single_unit:'mg/ditë' }));
+assert.equal(wrongPeriod.readiness, STATUS.TEXT_ONLY);
+assert.equal(wrongPeriod.caps.status.maxSingle, CAP_STATUS.INVALID);
+assert.ok(wrongPeriod.reasons.some(reason => /periudhë/.test(reason)));
+
+// Dimensioni i cap-it duhet të jetë i njëjtë me njësinë e dozës.
+const wrongDimension = classify(withRow({ pediatric_max_single_unit:'mL' }));
+assert.equal(wrongDimension.readiness, STATUS.TEXT_ONLY);
+assert.equal(wrongDimension.caps.status.maxSingle, CAP_STATUS.INVALID);
+assert.ok(wrongDimension.reasons.some(reason => /nuk është kompatibil/.test(reason)));
+
+// Zero nuk është një cap i vlefshëm dhe nuk duhet të injorohet në heshtje.
+const zeroCap = classify(withRow({ pediatric_max_single_value:0 }));
+assert.equal(zeroCap.readiness, STATUS.TEXT_ONLY);
+assert.equal(zeroCap.caps.status.maxSingle, CAP_STATUS.INVALID);
+assert.ok(zeroCap.reasons.some(reason => /vlerë pozitive/.test(reason)));
+assert.deepEqual(ready.warnings, [], 'Një regjim me tavane të plota nuk duhet të paralajmërojë.');
 
 // --------------------------------------------------------------------- numrat
 
@@ -270,12 +320,10 @@ assert.equal(audit.missingCounts.pediatric_dose_unit, 1);
 assert.equal(audit.withWarnings, 1);
 assert.equal(audit.results.length, 7);
 
-/* I njëjti rresht duhet të japë gjithmonë të njëjtin verdikt: auditi i 1–300
-   nuk ka kuptim nëse numërimi i sotëm nuk përsëritet nesër. */
+/* I njëjti rresht duhet të japë gjithmonë të njëjtin verdikt. */
 assert.deepEqual(classify(READY_ROW), classify({ ...READY_ROW }));
 
-/* Dhe klasifikuesi nuk guxon ta prekë rreshtin që i jepet — Faza 2 ia kalon
-   drejtpërdrejt rreshtin e Neon-it. */
+/* Dhe klasifikuesi nuk guxon ta prekë rreshtin që i jepet. */
 const snapshot = JSON.stringify(READY_ROW);
 classify(READY_ROW);
 assert.equal(JSON.stringify(READY_ROW), snapshot, 'Klasifikuesi nuk duhet ta modifikojë rreshtin.');
@@ -288,6 +336,6 @@ assert.ok(
 );
 
 console.log(
-  'Pediatric readiness passed: 5 statuse, 8 baza doze sipas kontratës, verifikim i detyrueshëm, '
-  + 'kufizimet ndahen nga bllokuesit, dhe përqendrimi kurrë nuk e prodhon dozën.',
+  'Pediatric readiness passed: statuse klinike, baza doze, verifikim i detyrueshëm, '
+  + 'cap completeness fail-closed, dhe përqendrimi kurrë nuk e prodhon dozën.',
 );
