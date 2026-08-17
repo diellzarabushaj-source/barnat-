@@ -1,0 +1,13 @@
+{
+  "release": "favorites-notes-v1.0.0",
+  "status": "frozen",
+  "acceptedAt": "2026-08-17",
+  "scope": ["favorites", "notes"],
+  "canonicalSources": [
+    "registry-user-personalization.js",
+    "registry-user-personalization.css",
+    "user-library-client.js"
+  ],
+  "releaseGate": "tests/registry-personal-release-gate.js",
+  "productionAlias": "barnat-six.vercel.app"
+}

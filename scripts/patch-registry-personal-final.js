@@ -1,13 +1,19 @@
 'use strict';
 
-/* Canonical personalization release verifier.
+const path = require('node:path');
+const { execFileSync } = require('node:child_process');
+
+/* Canonical Favorites/Notes release verifier.
  *
- * Phase 15 keeps exactly two ownership checkpoints: the build starts with the
- * canonical source audit, then this postbuild finalizer runs one consolidated
- * release gate before the offline manifest is emitted. No late patch stage is
- * allowed to reconstruct Favorites/Notes behavior.
+ * Phase 16 keeps the build contract deterministic: source ownership is audited
+ * once before build patches, then this finalizer executes exactly one blocking
+ * release gate with both static invariants and behavior-level recovery tests.
  */
 
-require('../tests/registry-personal-release-gate.js');
+const ROOT = path.resolve(__dirname, '..');
+execFileSync(process.execPath, [path.join(ROOT, 'tests', 'registry-personal-release-gate.js')], {
+  cwd:ROOT,
+  stdio:'inherit',
+});
 
-console.log('Canonical registry personalization finalizer passed: one consolidated Phase 15 release gate verified source-owned Favorites/Notes behavior before offline packaging.');
+console.log('Canonical registry personalization finalizer passed: frozen favorites-notes-v1.0.0 acceptance gate completed before offline packaging.');
