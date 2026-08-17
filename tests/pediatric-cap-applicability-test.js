@@ -3,3 +3,4 @@
 /* Full cap-safety gate: legacy applicability + PRN envelope semantics. */
 require('./pediatric-cap-applicability-core-test.js');
 require('./pediatric-prn-safety-test.js');
+require('./pediatric-faringobloc-94-test.js');
