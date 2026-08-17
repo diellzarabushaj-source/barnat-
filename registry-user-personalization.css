@@ -385,3 +385,25 @@ html[data-theme="dark"] .registry-note-delete{background:#2b1a1a;border-color:#7
   .registry-row-note-toggle:hover,
   .registry-row-note-toggle:active{transform:none}
 }
+
+/* registry-personal-ux-phase8-v1 */
+.registry-personal-view-banner>span{flex-wrap:wrap}
+.registry-personal-view-banner [data-personal-banner-sync]{display:inline-flex;align-items:center;min-height:20px;padding:2px 7px;border-radius:999px;background:#eef6f5;color:#52706d;font-style:normal;font-size:.62rem;font-weight:850;white-space:nowrap}
+.registry-personal-view-banner [data-personal-banner-sync][hidden]{display:none!important}
+.registry-personal-view-banner [data-personal-banner-sync][data-state="saving"],.registry-personal-view-banner [data-personal-banner-sync][data-state="loading"]{background:#eff6ff;color:#1d4ed8}
+.registry-personal-view-banner [data-personal-banner-sync][data-state="pending"]{background:#fff7ed;color:#b45309}
+.registry-personal-view-banner [data-personal-banner-sync][data-state="synced"]{background:#ecfdf5;color:#047857}
+.registry-personal-empty.is-filtered-empty{border-style:solid;background:#f8fafc}
+body.medindex-personal-empty-visible #dataTable,body.medindex-personal-empty-visible #pagination{display:none!important}
+body.medindex-personal-view-loading #registryContent{position:relative;min-height:150px}
+body.medindex-personal-view-loading #registryContent #tbody{visibility:hidden!important}
+body.medindex-personal-view-loading #registryContent::after{content:"Duke përgatitur pamjen personale…";position:absolute;inset:18px 12px auto;min-height:92px;display:grid;place-items:center;border:1px dashed #cbd5e1;border-radius:12px;background:linear-gradient(100deg,#f8fafc 20%,#eef5f5 50%,#f8fafc 80%);background-size:220% 100%;color:#64748b;font-size:.76rem;font-weight:800;animation:miPersonalLoading 1.35s linear infinite}
+@keyframes miPersonalLoading{to{background-position:-220% 0}}
+html[data-theme="dark"] .registry-personal-view-banner [data-personal-banner-sync]{background:#1d2b2d;color:#b7c8c8}
+html[data-theme="dark"] .registry-personal-view-banner [data-personal-banner-sync][data-state="saving"],html[data-theme="dark"] .registry-personal-view-banner [data-personal-banner-sync][data-state="loading"]{background:#172554;color:#bfdbfe}
+html[data-theme="dark"] .registry-personal-view-banner [data-personal-banner-sync][data-state="pending"]{background:#3b2a16;color:#fdba74}
+html[data-theme="dark"] .registry-personal-view-banner [data-personal-banner-sync][data-state="synced"]{background:#12342a;color:#86efac}
+html[data-theme="dark"] .registry-personal-empty.is-filtered-empty{background:#131d20}
+html[data-theme="dark"] body.medindex-personal-view-loading #registryContent::after{background:linear-gradient(100deg,#121b1d 20%,#1b2a2d 50%,#121b1d 80%);background-size:220% 100%;border-color:#344749;color:#aebfc1}
+@media(max-width:767px){.registry-personal-view-banner [data-personal-banner-sync]{white-space:normal}}
+@media(prefers-reduced-motion:reduce){body.medindex-personal-view-loading #registryContent::after{animation:none}}

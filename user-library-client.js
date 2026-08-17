@@ -1,6 +1,11 @@
 (() => {
   'use strict';
 
+  const LONG_SESSION_VERSION = 'registry-personal-long-session-v1';
+  const LIBRARY_INSTANCE_KEY = '__medindexUserLibraryClientLongSession';
+  if (window[LIBRARY_INSTANCE_KEY]) return;
+  window[LIBRARY_INSTANCE_KEY] = { version:LONG_SESSION_VERSION, startedAt:Date.now() };
+
   const API_URL = '/api/user-library';
   const PRESCRIPTIONS_KEY = 'regjistriBarnave_protokollet_v1';
   const FAVORITES_KEY = 'regjistriBarnave_favoritet_v1';
@@ -11,6 +16,10 @@
   const NOTE_ENTITY_PREFIX = 'drug-note:';
   const NOTE_KEY_MAX = 290;
   const EVENT_SYNC_VERSION = 'user-library-event-sync-v1';
+  const RECOVERY_VERSION = 'user-library-recovery-v1';
+  const API_TIMEOUT_MS = 15_000;
+  const NETWORK_RETRY_MS = 15_000;
+  const MAX_SYNC_ROUNDS = 3;
   const LEGACY_PRESCRIPTION_POLL_MS = 5000;
   const EVENT_SYNC_DELAY_MS = 40;
   const SYNC_DELAY_MS = 700;
@@ -25,6 +34,10 @@
   let resyncAfterFlight = false;
   let dirty = false;
   let online = navigator.onLine;
+  let retryUntil = 0;
+  let retryTimer = 0;
+  let localRevision = 0;
+  let syncedRevision = 0;
   let resolveReady;
 
   window.MEDINDEX_LIBRARY_READY = new Promise(resolve => { resolveReady = resolve; });
@@ -253,6 +266,8 @@
       const localItem = prescriptions.get(id);
       const localUpdated = time(meta.prescriptions[id] || localItem?.updatedAt || localItem?.createdAt);
       const remoteUpdated = time(row.clientUpdatedAt || row.serverUpdatedAt);
+      const localDeleted = time(meta.deletedPrescriptions[id]);
+      if (localDeleted && localDeleted >= remoteUpdated) return;
       if (!localItem || remoteUpdated > localUpdated) {
         prescriptions.set(id, row.payload);
         meta.prescriptions[id] = row.clientUpdatedAt || row.serverUpdatedAt || nowIso();
@@ -280,6 +295,8 @@
       if (!key) return;
       const id = favoriteId(type, key);
       const remoteUpdated = time(row.clientUpdatedAt || row.serverUpdatedAt);
+      const localDeleted = time(meta.deletedFavorites[id]);
+      if (localDeleted && localDeleted >= remoteUpdated) return;
       if (type === 'drug') {
         if (!favorites.has(key) || remoteUpdated > time(meta.favorites[id])) {
           favorites.add(key);
@@ -331,19 +348,51 @@
   }
 
   async function api(url, options = {}) {
-    const response = await nativeFetch(url, {
-      cache:'no-store',
-      credentials:'same-origin',
-      headers:{ Accept:'application/json', ...(options.body ? { 'Content-Type':'application/json' } : {}), ...(options.headers || {}) },
-      ...options,
-    });
-    const payload = await response.json().catch(() => ({}));
-    if (!response.ok) throw Object.assign(new Error(payload.error || `Library API ${response.status}`), { status:response.status });
-    return payload;
+    const canAbort = typeof AbortController === 'function' && !options.signal && !options.keepalive;
+    const controller = canAbort ? new AbortController() : null;
+    const requestOptions = { ...options };
+    if (controller) requestOptions.signal = controller.signal;
+    const timeout = controller ? window.setTimeout(() => controller.abort(), API_TIMEOUT_MS) : 0;
+    try {
+      const response = await nativeFetch(url, {
+        cache:'no-store',
+        credentials:'same-origin',
+        headers:{ Accept:'application/json', ...(options.body ? { 'Content-Type':'application/json' } : {}), ...(options.headers || {}) },
+        ...requestOptions,
+      });
+      const payload = await response.json().catch(() => ({}));
+      if (!response.ok) {
+        const retryHeader = Number(response.headers.get('retry-after') || payload.retryAfter || 0);
+        throw Object.assign(new Error(payload.error || `Library API ${response.status}`), {
+          status:response.status,
+          retryAfterMs:Number.isFinite(retryHeader) && retryHeader > 0 ? retryHeader * 1000 : 0,
+        });
+      }
+      return payload;
+    } catch (error) {
+      if (error?.name === 'AbortError') {
+        throw Object.assign(new Error('Library API timeout'), { status:408, code:'LIBRARY_SYNC_TIMEOUT', retryAfterMs:NETWORK_RETRY_MS });
+      }
+      throw error;
+    } finally {
+      if (timeout) clearTimeout(timeout);
+    }
   }
-
   function dispatch(name, detail = {}) {
     window.dispatchEvent(new CustomEvent(name, { detail }));
+  }
+
+  function scheduleRecoveryRetry(at) {
+    clearTimeout(retryTimer);
+    retryTimer = 0;
+    const target = Number(at || 0);
+    if (!target) return;
+    const delay = Math.max(0, Math.min(2_147_483_000, target - Date.now() + 25));
+    retryTimer = window.setTimeout(() => {
+      retryTimer = 0;
+      retryUntil = 0;
+      if (online && navigator.onLine) scheduleSync(EVENT_SYNC_DELAY_MS);
+    }, delay);
   }
 
   function scheduleSync(delay = SYNC_DELAY_MS) {
@@ -357,9 +406,10 @@
   }
 
   async function flush({ keepalive = false } = {}) {
-    if (!online || !navigator.onLine) return false;
+    if (!online || !navigator.onLine || Date.now() < retryUntil) return false;
     if (syncPromise) return syncPromise;
     clearTimeout(syncTimer);
+    const revisionAtStart = localRevision;
     const payloadBody = JSON.stringify(buildBody());
     syncPromise = (async () => {
       let success = false;
@@ -369,17 +419,24 @@
           body:payloadBody,
           keepalive,
         });
+        const reconciled = mergeRemote(payload);
         const meta = readMeta();
         meta.lastSyncedAt = payload.generatedAt || nowIso();
         writeMeta(meta);
         success = true;
-        if (!resyncAfterFlight) dirty = false;
-        dispatch('medindex:library-synced', { generatedAt:meta.lastSyncedAt });
+        syncedRevision = Math.max(syncedRevision, revisionAtStart);
+        if (!resyncAfterFlight && syncedRevision >= localRevision) dirty = false;
+        dispatch('medindex:library-synced', { generatedAt:meta.lastSyncedAt, reconciled, syncedRevision, localRevision });
+        if (reconciled) dispatch('medindex:library-reconciled', { generatedAt:meta.lastSyncedAt });
         return true;
       } catch (error) {
         if (error.status === 401 || error.status === 403) return false;
+        if ([408, 429, 503].includes(Number(error.status))) {
+          retryUntil = Date.now() + Math.max(NETWORK_RETRY_MS, Number(error.retryAfterMs || 0));
+          scheduleRecoveryRetry(retryUntil);
+        }
         dirty = true;
-        dispatch('medindex:library-pending', { offline:!navigator.onLine });
+        dispatch('medindex:library-pending', { offline:!navigator.onLine, retryAt:retryUntil || 0, localRevision, syncedRevision });
         return false;
       } finally {
         syncPromise = null;
@@ -392,6 +449,18 @@
     return syncPromise;
   }
 
+  async function flushThroughRevision(targetRevision) {
+    const target = Math.max(0, Number(targetRevision || 0));
+    let rounds = 0;
+    do {
+      rounds += 1;
+      const synced = await flush();
+      if (!synced) return false;
+      if (syncedRevision >= target) return true;
+    } while (rounds < MAX_SYNC_ROUNDS);
+    scheduleSync(EVENT_SYNC_DELAY_MS);
+    return false;
+  }
   function reloadForRemoteChange() {
     const signature = stableState(readState());
     try {
@@ -418,8 +487,12 @@
       dispatch('medindex:library-ready', { offline:false, local:false, user:snapshot.user });
       resolveReady?.({ offline:false, local:false, user:snapshot.user });
       if (changed) window.setTimeout(reloadForRemoteChange, 40);
-    } catch {
-      dispatch('medindex:library-ready', { offline:false, local:true, pending:true });
+    } catch (error) {
+      if ([408, 429, 503].includes(Number(error?.status))) {
+        retryUntil = Date.now() + Math.max(30_000, Number(error?.retryAfterMs || 0));
+        scheduleRecoveryRetry(retryUntil);
+      }
+      dispatch('medindex:library-ready', { offline:false, local:true, pending:true, retryAt:retryUntil || 0 });
       resolveReady?.({ offline:false, local:true, pending:true });
     }
   }
@@ -433,31 +506,41 @@
     if (stableState(lastState) === stableState(current)) return false;
     recordLocalChanges(lastState, current);
     lastState = current;
+    localRevision += 1;
     if (syncPromise) resyncAfterFlight = true;
     if (schedule) scheduleSync(delay);
     return true;
   }
-
   function stablePrescriptions(state) {
     return JSON.stringify([...(state?.prescriptions || [])]
       .sort((a, b) => protocolId(a).localeCompare(protocolId(b))));
   }
 
   function pollLegacyPrescriptions() {
-    const current = readState();
+    if (document.visibilityState === 'hidden') return;
+    const prescriptions = parseArray(PRESCRIPTIONS_KEY);
     if (!lastState) {
-      lastState = current;
+      lastState = { ...readState(), prescriptions };
       return;
     }
-    if (stablePrescriptions(lastState) === stablePrescriptions(current)) return;
+    if (stablePrescriptions(lastState) === stablePrescriptions({ prescriptions })) return;
     captureLocalChanges();
   }
-
   function onPersonalLibraryMutation() {
     const changed = captureLocalChanges({ schedule:false });
     if (changed) scheduleSync(EVENT_SYNC_DELAY_MS);
   }
 
+  function startLegacyPrescriptionPoll() {
+    if (legacyPrescriptionPollTimer || document.visibilityState === 'hidden') return;
+    legacyPrescriptionPollTimer = window.setInterval(pollLegacyPrescriptions, LEGACY_PRESCRIPTION_POLL_MS);
+  }
+
+  function stopLegacyPrescriptionPoll() {
+    if (!legacyPrescriptionPollTimer) return;
+    clearInterval(legacyPrescriptionPollTimer);
+    legacyPrescriptionPollTimer = 0;
+  }
   window.fetch = async (...args) => {
     const request = args[0];
     const options = args[1] || {};
@@ -480,14 +563,31 @@
 
   window.MedIndexUserLibrary = {
     flush,
-    syncNow:() => { captureLocalChanges({ schedule:false }); return flush(); },
+    syncNow:() => {
+      captureLocalChanges({ schedule:false });
+      const targetRevision = localRevision;
+      return flushThroughRevision(targetRevision);
+    },
     state:readState,
     meta:readMeta,
     version:EVENT_SYNC_VERSION,
+    recoveryVersion:RECOVERY_VERSION,
+    longSessionVersion:LONG_SESSION_VERSION,
+    diagnostics:() => ({
+      localRevision,
+      syncedRevision,
+      dirty,
+      syncInFlight:Boolean(syncPromise),
+      retryUntil,
+      legacyPrescriptionPollActive:Boolean(legacyPrescriptionPollTimer),
+    }),
   };
 
   window.addEventListener('online', () => {
     online = true;
+    retryUntil = 0;
+    clearTimeout(retryTimer);
+    retryTimer = 0;
     scheduleSync(100);
   });
   window.addEventListener('offline', () => {
@@ -500,11 +600,14 @@
   });
   document.addEventListener('visibilitychange', () => {
     if (document.visibilityState === 'hidden') {
+      stopLegacyPrescriptionPoll();
       captureLocalChanges({ schedule:false });
       if (dirty) void flush({ keepalive:true });
+    } else {
+      startLegacyPrescriptionPoll();
+      if (dirty && Date.now() >= retryUntil) scheduleSync(EVENT_SYNC_DELAY_MS);
     }
   });
-
   ['medindex:favorites-changed', 'medindex:notes-changed', 'medindex:personal-note-saved']
     .forEach(name => window.addEventListener(name, onPersonalLibraryMutation));
 
@@ -513,6 +616,6 @@
     onPersonalLibraryMutation();
   });
 
-  legacyPrescriptionPollTimer = window.setInterval(pollLegacyPrescriptions, LEGACY_PRESCRIPTION_POLL_MS);
+  startLegacyPrescriptionPoll();
   void initialize();
 })();

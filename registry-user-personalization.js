@@ -1,6 +1,11 @@
 (() => {
   'use strict';
 
+  const LONG_SESSION_VERSION = 'registry-personal-long-session-v1';
+  const PERSONALIZATION_INSTANCE_KEY = '__medindexRegistryPersonalizationLongSession';
+  if (window[PERSONALIZATION_INSTANCE_KEY]) return;
+  window[PERSONALIZATION_INSTANCE_KEY] = { version:LONG_SESSION_VERSION, startedAt:Date.now() };
+
   const VERSION = 'registry-user-personalization-v3.3.0';
   const FAVORITES_KEY = 'regjistriBarnave_favoritet_v1';
   const NOTES_KEY = 'regjistriBarnave_shenime_v1';
@@ -10,7 +15,10 @@
   const VIEW_FAVORITES = 'favorites';
   const VIEW_NOTES = 'notes';
   const PHONE_OWNER_QUERY = '(max-width: 767px)';
+  const PHASE8_UX_VERSION = 'registry-personal-ux-phase8-v1';
 
+  let favoritesStorageRaw = null;
+  let notesStorageRaw = null;
   let favorites = loadFavorites();
   let notes = loadNotes();
   let activeView = viewFromLocation();
@@ -19,6 +27,9 @@
   let activeNoteRow = null;
   let activeNoteLabel = '';
   let personalRuntimeRequested = false;
+  let libraryReady = false;
+  let librarySyncState = 'loading';
+  let libraryRetryAt = 0;
 
   const favoriteInFlight = new Set();
   const noteInFlight = new Set();
@@ -40,21 +51,35 @@
     return VIEW_ALL;
   }
 
+  function readLocalRaw(key, fallback) {
+    try { return localStorage.getItem(key) || fallback; }
+    catch { return fallback; }
+  }
+
   function loadFavorites() {
+    const raw = readLocalRaw(FAVORITES_KEY, '[]');
+    if (raw === favoritesStorageRaw && favorites instanceof Set) return favorites;
+    favoritesStorageRaw = raw;
     try {
-      const value = JSON.parse(localStorage.getItem(FAVORITES_KEY) || '[]');
+      const value = JSON.parse(raw);
       return new Set(Array.isArray(value) ? value.map(String).filter(Boolean) : []);
     } catch { return new Set(); }
   }
 
   function saveFavorites() {
-    try { localStorage.setItem(FAVORITES_KEY, JSON.stringify([...favorites])); return true; }
-    catch { return false; }
-  }
-
-  function loadNotes() {
+    const raw = JSON.stringify([...favorites]);
     try {
-      const value = JSON.parse(localStorage.getItem(NOTES_KEY) || '{}');
+      localStorage.setItem(FAVORITES_KEY, raw);
+      favoritesStorageRaw = raw;
+      return true;
+    } catch { return false; }
+  }
+  function loadNotes() {
+    const rawStorage = readLocalRaw(NOTES_KEY, '{}');
+    if (rawStorage === notesStorageRaw && notes && typeof notes === 'object') return notes;
+    notesStorageRaw = rawStorage;
+    try {
+      const value = JSON.parse(rawStorage);
       if (!value || typeof value !== 'object' || Array.isArray(value)) return {};
       const output = {};
       Object.entries(value).forEach(([key, entry]) => {
@@ -71,10 +96,13 @@
   }
 
   function saveNotes() {
-    try { localStorage.setItem(NOTES_KEY, JSON.stringify(notes)); return true; }
-    catch { return false; }
+    const raw = JSON.stringify(notes);
+    try {
+      localStorage.setItem(NOTES_KEY, raw);
+      notesStorageRaw = raw;
+      return true;
+    } catch { return false; }
   }
-
   function runtime() { return window.MedIndexRegistryRuntime || null; }
 
   function registryNumber(row) {
@@ -112,41 +140,34 @@
     return clean(row?.querySelector?.('.drug-select')?.dataset?.drugKey || row?.dataset?.drugKey);
   }
 
-  function primaryFavoriteKey(row) {
-    return drugKey(row)
-      || registryNumber(row)
-      || (drugName(row) && atc(row) ? `${drugName(row)}|${atc(row)}` : drugName(row));
-  }
-
-  function favoriteCandidates(row) {
-    const values = new Set();
-    const add = value => { const item = clean(value); if (item) values.add(item); };
-    add(primaryFavoriteKey(row));
-    add(drugKey(row));
-    add(row?.dataset?.registryNumber);
-    add(row?.querySelector?.('.drug-select')?.dataset?.registryNumber);
+  const rowProfileCache = new WeakMap();
+  function rowProfile(row) {
+    if (!(row instanceof HTMLElement)) return { favoriteKey:'', favoriteCandidates:new Set(), noteKey:'', name:'', code:'' };
+    const cached = rowProfileCache.get(row);
+    if (cached) return cached;
     const nr = registryNumber(row);
     const name = drugName(row);
     const code = atc(row);
-    add(nr); add(name);
+    const key = drugKey(row);
+    const favoriteKey = key || nr || (name && code ? `${name}|${code}` : name);
+    const candidates = new Set();
+    const add = value => { const item = clean(value); if (item) candidates.add(item); };
+    add(favoriteKey); add(key); add(row?.dataset?.registryNumber); add(row?.querySelector?.('.drug-select')?.dataset?.registryNumber); add(nr); add(name);
     if (nr && name) add(`${nr}|${name}`);
     if (name && code) add(`${name}|${code}`);
-    return values;
+    const noteKeyValue = nr ? `registry:${nr}` : key ? `drug:${key}`.slice(0, 300) : `fallback:${name}|${code}`.slice(0, 300);
+    const profile = { nr, name, code, key, favoriteKey, favoriteCandidates:candidates, noteKey:noteKeyValue };
+    rowProfileCache.set(row, profile);
+    return profile;
   }
 
+  function primaryFavoriteKey(row) { return rowProfile(row).favoriteKey; }
+  function favoriteCandidates(row) { return rowProfile(row).favoriteCandidates; }
   function isFavoriteRow(row) {
-    for (const candidate of favoriteCandidates(row)) if (favorites.has(candidate)) return true;
+    for (const candidate of rowProfile(row).favoriteCandidates) if (favorites.has(candidate)) return true;
     return false;
   }
-
-  function noteKey(row) {
-    const nr = registryNumber(row);
-    if (nr) return `registry:${nr}`;
-    const key = drugKey(row);
-    if (key) return `drug:${key}`.slice(0, 300);
-    return `fallback:${drugName(row)}|${atc(row)}`.slice(0, 300);
-  }
-
+  function noteKey(row) { return rowProfile(row).noteKey; }
   function mobileDrugKey(data) {
     const pdid = clean(data?.pdid);
     const name = clean(data?.tradeName);
@@ -170,6 +191,18 @@
   function hasNoteRow(row) { return hasNoteKey(noteKey(row)); }
   function hasNoteForData(data) { return hasNoteKey(noteKeyForData(data)); }
   function noteCount() { return Object.values(notes).filter(entry => String(entry?.text || '').trim()).length; }
+  function personalTotal() { return activeView === VIEW_FAVORITES ? favorites.size : activeView === VIEW_NOTES ? noteCount() : 0; }
+  function personalFilteredCount() {
+    const value = Number(runtime()?.getFilteredCount?.());
+    return Number.isFinite(value) && value >= 0 ? value : null;
+  }
+  function settleLibrary(detail = {}) {
+    libraryReady = true;
+    libraryRetryAt = Number(detail?.retryAt || 0) || 0;
+    if (detail?.pending) librarySyncState = 'pending';
+    else if (librarySyncState === 'loading') librarySyncState = 'idle';
+    schedule(1);
+  }
 
   function favoriteButton(row) {
     const cell = nameCell(row);
@@ -203,11 +236,12 @@
 
   function paintRowActions(row) {
     if (phoneLiteOwnsViewport() || !(row instanceof HTMLElement) || row.querySelector('.empty-state')) return;
-    const favoriteKey = primaryFavoriteKey(row);
+    const profile = rowProfile(row);
+    const favoriteKey = profile.favoriteKey;
     const favorite = favoriteButton(row);
     if (favorite) {
-      const active = isFavoriteRow(row);
-      const name = drugName(row) || 'barin';
+      const active = [...profile.favoriteCandidates].some(candidate => favorites.has(candidate));
+      const name = profile.name || 'barin';
       const inFlight = favoriteInFlight.has(favoriteKey);
       const pending = pendingSync.has(syncToken('favorite', favoriteKey));
       favorite.disabled = inFlight;
@@ -223,11 +257,11 @@
       row.classList.toggle('is-favorite', active);
     }
 
-    const key = noteKey(row);
+    const key = profile.noteKey;
     const note = noteButton(row);
     if (note) {
       const active = hasNoteKey(key);
-      const name = drugName(row) || 'barin';
+      const name = profile.name || 'barin';
       const inFlight = noteInFlight.has(key);
       const pending = pendingSync.has(syncToken('note', key));
       note.disabled = inFlight;
@@ -335,17 +369,25 @@
   async function syncMutation(kind, key) {
     const token = syncToken(kind, key);
     pendingSync.add(token);
+    librarySyncState = 'saving';
+    libraryRetryAt = 0;
     schedule(1);
     try {
       const sync = window.MedIndexUserLibrary?.syncNow;
-      if (typeof sync !== 'function') return false;
+      if (typeof sync !== 'function') { librarySyncState = 'pending'; return false; }
       const synced = await sync();
-      if (synced) pendingSync.delete(token);
+      if (synced) {
+        pendingSync.delete(token);
+        librarySyncState = 'synced';
+      } else {
+        librarySyncState = 'pending';
+      }
       return Boolean(synced);
-    } catch { return false; }
-    finally { schedule(1); }
+    } catch {
+      librarySyncState = 'pending';
+      return false;
+    } finally { schedule(1); }
   }
-
   async function persistActiveNote({ remove = false } = {}) {
     if (!activeNoteKey || noteInFlight.has(activeNoteKey)) return;
     const key = activeNoteKey;
@@ -437,12 +479,12 @@
   }
 
   function updateCounts() {
-    document.querySelectorAll('#favoriteNavCount,[data-mi-fav-count],[data-favorite-count],[data-toolbar-favorite-count]').forEach(node => {
+    document.querySelectorAll('#favoriteNavCount,[data-mi-fav-count],[data-favorite-count],[data-toolbar-favorite-count],[data-mi-phase8-favorite-count]').forEach(node => {
       node.textContent = String(favorites.size);
       node.setAttribute('aria-label', `${favorites.size} favorite`);
     });
     const total = noteCount();
-    document.querySelectorAll('#notesNavCount,[data-note-count],[data-toolbar-note-count]').forEach(node => {
+    document.querySelectorAll('#notesNavCount,[data-note-count],[data-toolbar-note-count],[data-mi-phase8-note-count]').forEach(node => {
       node.textContent = String(total);
       node.setAttribute('aria-label', `${total} shënime`);
     });
@@ -471,7 +513,7 @@
       banner = document.createElement('div');
       banner.id = 'registryPersonalViewBanner';
       banner.className = 'registry-personal-view-banner';
-      banner.innerHTML = '<span><b data-personal-banner-title></b><small data-personal-banner-copy></small></span><button type="button" data-personal-view="all">Të gjitha barnat</button>';
+      banner.innerHTML = '<span><b data-personal-banner-title></b><small data-personal-banner-copy></small><em data-personal-banner-sync role="status" aria-live="polite"></em></span><button type="button" data-personal-view="all">Të gjitha barnat</button>';
       toolbar.insertAdjacentElement('afterend', banner);
     }
     return banner;
@@ -482,46 +524,80 @@
     if (!banner) return;
     const title = banner.querySelector('[data-personal-banner-title]');
     const copy = banner.querySelector('[data-personal-banner-copy]');
-    const loading = document.body.classList.contains('medindex-personal-view-loading');
-    if (activeView === VIEW_FAVORITES) {
-      title.textContent = '★ Favoritet';
-      copy.textContent = loading ? 'Duke përgatitur Favoritet…' : `${favorites.size} ${favorites.size === 1 ? 'bar i ruajtur' : 'barna të ruajtura'} · vetëm të tuat`;
+    const sync = banner.querySelector('[data-personal-banner-sync]');
+    const runtimeLoading = document.body.classList.contains('medindex-personal-view-loading');
+    const loading = runtimeLoading || !libraryReady;
+    const total = personalTotal();
+    const filtered = loading ? null : personalFilteredCount();
+    const one = activeView === VIEW_FAVORITES ? 'bar i ruajtur' : 'bar me shënim';
+    const many = activeView === VIEW_FAVORITES ? 'barna të ruajtura' : 'barna me shënime';
+    title.textContent = activeView === VIEW_FAVORITES ? '★ Favoritet' : '✎ Shënimet';
+    if (loading) {
+      copy.textContent = activeView === VIEW_FAVORITES ? 'Duke përgatitur Favoritet…' : 'Duke përgatitur Shënimet…';
+    } else if (total > 0 && filtered === 0) {
+      copy.textContent = `Ke ${total} ${total === 1 ? one : many}, por asnjë nuk përputhet me kërkimin/filtrat aktualë.`;
+    } else if (total > 0 && filtered !== null && filtered < total) {
+      copy.textContent = `${filtered} nga ${total} ${total === 1 ? one : many} shfaqen me filtrat aktualë.`;
+    } else if (total > 0) {
+      copy.textContent = `${total} ${total === 1 ? one : many} · vetëm të tuat`;
     } else {
-      const total = noteCount();
-      title.textContent = '✎ Shënimet';
-      copy.textContent = loading ? 'Duke përgatitur Shënimet…' : total ? `${total} ${total === 1 ? 'bar me shënim' : 'barna me shënime'} · vetëm të tuat` : 'Nuk ke ende shënime.';
+      copy.textContent = activeView === VIEW_FAVORITES ? 'Nuk ke ende barna të ruajtura.' : 'Nuk ke ende shënime.';
     }
-  }
 
+    const saving = favoriteInFlight.size > 0 || noteInFlight.size > 0 || librarySyncState === 'saving';
+    let syncText = '';
+    let syncState = 'idle';
+    if (!libraryReady) { syncText = 'Po lexohet biblioteka…'; syncState = 'loading'; }
+    else if (saving) { syncText = 'Duke ruajtur…'; syncState = 'saving'; }
+    else if (pendingSync.size || librarySyncState === 'pending') {
+      syncText = navigator.onLine ? 'Ruajtur lokalisht · sinkronizimi në pritje' : 'Ruajtur lokalisht · offline';
+      syncState = 'pending';
+    } else if (librarySyncState === 'synced') { syncText = '✓ Sinkronizuar'; syncState = 'synced'; }
+    if (sync) {
+      sync.textContent = syncText;
+      sync.dataset.state = syncState;
+      sync.hidden = !syncText;
+      sync.title = libraryRetryAt > Date.now() ? 'Sinkronizimi do të riprovohet automatikisht.' : '';
+    }
+    banner.setAttribute('aria-busy', String(loading || saving));
+  }
   function updateEmptyState() {
     document.getElementById('registryPersonalEmpty')?.remove();
-    if (phoneLiteOwnsViewport() || activeView === VIEW_ALL || document.body.classList.contains('medindex-personal-view-loading')) return;
-    const total = activeView === VIEW_FAVORITES ? favorites.size : noteCount();
-    if (total) return;
+    document.body.classList.remove('medindex-personal-empty-visible', 'medindex-personal-filtered-empty');
+    if (phoneLiteOwnsViewport() || activeView === VIEW_ALL || !libraryReady || document.body.classList.contains('medindex-personal-view-loading')) return;
+    const total = personalTotal();
+    const filtered = personalFilteredCount();
+    if (total > 0 && filtered !== 0) return;
     const empty = document.createElement('div');
     empty.id = 'registryPersonalEmpty';
     empty.className = 'registry-personal-empty';
-    empty.innerHTML = activeView === VIEW_FAVORITES
-      ? '<strong>Ende nuk ke barna të ruajtura.</strong><span>Kliko yllin pranë një bari për ta shtuar në Favoritet.</span><button type="button" data-personal-view="all">Të gjitha barnat</button>'
-      : '<strong>Nuk ke ende shënime.</strong><span>Kliko ikonën e lapsit pranë një bari për të shtuar një shënim personal.</span><button type="button" data-personal-view="all">Të gjitha barnat</button>';
+    if (total > 0 && filtered === 0) {
+      empty.classList.add('is-filtered-empty');
+      document.body.classList.add('medindex-personal-filtered-empty');
+      const noun = activeView === VIEW_FAVORITES ? (total === 1 ? 'favorit' : 'favorite') : (total === 1 ? 'shënim' : 'shënime');
+      empty.innerHTML = `<strong>Asnjë rezultat me filtrat aktualë.</strong><span>Ke ${total} ${noun} të ruajtur. Ndrysho kërkimin ose filtrat për t’i shfaqur.</span><button type="button" data-personal-view="all">Shiko të gjitha barnat</button>`;
+    } else {
+      empty.innerHTML = activeView === VIEW_FAVORITES
+        ? '<strong>Ende nuk ke barna të ruajtura.</strong><span>Kliko yllin pranë një bari për ta shtuar në Favoritet.</span><button type="button" data-personal-view="all">Të gjitha barnat</button>'
+        : '<strong>Nuk ke ende shënime.</strong><span>Kliko ikonën e lapsit pranë një bari për të shtuar një shënim personal.</span><button type="button" data-personal-view="all">Të gjitha barnat</button>';
+    }
+    document.body.classList.add('medindex-personal-empty-visible');
     document.getElementById('registryContent')?.insertAdjacentElement('beforebegin', empty);
   }
-
   function applyRuntimeView() {
     const api = runtime();
     if (!api) return false;
-    document.body.classList.remove('medindex-personal-view-loading');
     if (api.setPersonalView) api.setPersonalView(activeView);
     else {
       api.setFavoritesOnly?.(activeView === VIEW_FAVORITES);
       api.setNotesOnly?.(activeView === VIEW_NOTES);
     }
+    document.body.classList.remove('medindex-personal-view-loading');
     personalRuntimeRequested = false;
     updateViewBanner();
     updateEmptyState();
     return true;
   }
-
   function requestPersonalRuntime() {
     if (activeView === VIEW_ALL || runtime()) return;
     document.body.classList.add('medindex-personal-view-loading');
@@ -539,16 +615,15 @@
       history.replaceState(null, '', `${location.pathname}${location.search}${suffix}`);
     } catch {}
     document.getElementById('registryPersonalEmpty')?.remove();
+    document.body.classList.remove('medindex-personal-empty-visible', 'medindex-personal-filtered-empty');
+    if (activeView !== VIEW_ALL && !runtime()) document.body.classList.add('medindex-personal-view-loading');
+    else if (activeView === VIEW_ALL) document.body.classList.remove('medindex-personal-view-loading');
     updateViewNav();
     updateViewBanner();
-    if (!applyRuntimeView()) {
-      if (activeView === VIEW_ALL) document.body.classList.remove('medindex-personal-view-loading');
-      else requestPersonalRuntime();
-    }
+    if (!applyRuntimeView() && activeView !== VIEW_ALL) requestPersonalRuntime();
     updateEmptyState();
     schedule(2);
   }
-
   function refresh() {
     scheduled = false;
     favorites = loadFavorites();
@@ -559,6 +634,7 @@
       document.getElementById('registryPersonalViews')?.remove();
       document.getElementById('registryPersonalViewBanner')?.remove();
       document.getElementById('registryPersonalEmpty')?.remove();
+      document.body.classList.remove('medindex-personal-empty-visible', 'medindex-personal-filtered-empty');
       document.documentElement.dataset.registryPersonalization = 'mobile-lite-bridge';
       return;
     }
@@ -637,12 +713,23 @@
       applyRuntimeView();
       schedule(1);
     });
-    window.addEventListener('medindex:library-ready', () => schedule(1));
-    window.addEventListener('medindex:library-synced', () => {
-      pendingSync.clear();
+    window.addEventListener('medindex:library-ready', event => settleLibrary(event.detail || {}));
+    window.addEventListener('medindex:library-synced', event => {
+      libraryReady = true;
+      const synced = Number(event.detail?.syncedRevision);
+      const local = Number(event.detail?.localRevision);
+      const settled = !Number.isFinite(synced) || !Number.isFinite(local) || synced >= local;
+      librarySyncState = settled ? 'synced' : 'saving';
+      libraryRetryAt = 0;
+      if (settled) pendingSync.clear();
       schedule(1);
     });
-    window.addEventListener('medindex:library-pending', () => schedule(1));
+    window.addEventListener('medindex:library-pending', event => {
+      libraryReady = true;
+      librarySyncState = 'pending';
+      libraryRetryAt = Number(event.detail?.retryAt || 0) || 0;
+      schedule(1);
+    });
     window.addEventListener('storage', event => {
       if (event.key === FAVORITES_KEY || event.key === NOTES_KEY) {
         if (event.key === FAVORITES_KEY) runtime()?.refreshFavorites?.();
@@ -651,6 +738,13 @@
       }
     });
     window.addEventListener('hashchange', () => setView(viewFromLocation()));
+
+    const libraryPromise = window.MEDINDEX_LIBRARY_READY;
+    if (libraryPromise && typeof libraryPromise.then === 'function') {
+      libraryPromise.then(detail => settleLibrary(detail || {}), () => settleLibrary({ pending:true }));
+    } else {
+      window.setTimeout(() => { if (!libraryReady) settleLibrary({ local:true }); }, 900);
+    }
 
     schedule(1);
     if (activeView !== VIEW_ALL) window.setTimeout(() => setView(activeView), 80);
@@ -672,6 +766,17 @@
     favoriteCount:() => favorites.size,
     noteCount,
     pendingSyncCount:() => pendingSync.size,
+    libraryReady:() => libraryReady,
+    syncState:() => librarySyncState,
+    phase8UxVersion:PHASE8_UX_VERSION,
+    longSessionVersion:LONG_SESSION_VERSION,
+    diagnostics:() => ({
+      pendingSync:pendingSync.size,
+      favoriteInFlight:favoriteInFlight.size,
+      noteInFlight:noteInFlight.size,
+      libraryReady,
+      librarySyncState,
+    }),
     editNoteForData,
     hasNoteForData,
     noteKeyForData,
