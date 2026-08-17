@@ -1,9 +1,6 @@
 'use strict';
 
-require('./patch-registry-phase16-personal-ux-v2.js');
-require('./patch-registry-personal-long-session.js');
-require('../tests/registry-personal-ux-phase8-test.js');
-require('../tests/registry-personal-long-session-test.js');
+require('./patch-registry-personal-final.js');
 
 /* Lista e aseteve që shërbyesi offline i ruan gjatë instalimit ka qenë e
  * shkruar me dorë te `sw.js`, dhe një e dytë e shkurtër shtohej me dorë te
@@ -19,7 +16,8 @@ require('../tests/registry-personal-long-session-test.js');
  * shtohet një fletë stili e re, ajo hyn vetvetiu — nuk ka listë për ta harruar.
  *
  * Ekzekutohet i fundit në `build:runtime`, pasi hapat e tjerë e kanë mbaruar
- * shkrimin te `sw.js` dhe te faqet.
+ * shkrimin te `sw.js` dhe te faqet. Personalizimi kompozohet nga një finalizer
+ * i vetëm para paketimit offline; ky skedar nuk njeh fazat e tij individuale.
  */
 
 const fs = require('node:fs');
