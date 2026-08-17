@@ -4,9 +4,12 @@ const assert = require('node:assert/strict');
 const { STATUS, classify } = require('../lib/pediatric-readiness.js');
 const { OUTCOME, calculate } = require('../lib/pediatric-calculation.js');
 
-// DAFALGAN PEDIATRIE / current same-CIS EFFERALGAN PEDIATRIQUE 30 mg/mL (#4013).
-// Official ANSM/BDPM regimen: 3–32 kg, 15 mg/kg/dose, renew only if needed
-// after >=6 h, max 4 administrations/day, approx 60 mg/kg/day.
+// DAFALGAN PEDIATRIE 30 mg/mL (#4013) must remain fail-closed until the
+// country/marketing-authorisation identity of the registry row is known.
+// The French same-CIS historical DAFALGAN -> EFFERALGAN product is 3–32 kg,
+// while the currently marketed Belgian DAFALGAN PEDIATRIE 30 mg/mL has a
+// different product population. The local row has no manufacturer/MA holder,
+// so choosing one market's limits would be an unsafe identity inference.
 const dafalgan4013 = {
   pediatric_indication:'dhimbje e lehtë–mesatare; temperaturë',
   pediatric_use_status:'KUFIZUAR',
@@ -20,48 +23,24 @@ const dafalgan4013 = {
   pediatric_interval_hours:null,
   pediatric_max_doses_per_day:4,
   pediatric_min_interval_hours:6,
-  pediatric_max_single_value:null,
-  pediatric_max_single_unit:null,
   pediatric_max_daily_value:60,
   pediatric_max_daily_unit:'mg/kg/ditë',
   pediatric_concentration_value:30,
   pediatric_concentration_unit:'mg',
   pediatric_concentration_per_value:1,
   pediatric_concentration_per_unit:'mL',
-  pediatric_verification_status:'verified',
-  pediatric_source_url:'https://base-donnees-publique.medicaments.gouv.fr/medicament/63390065/extrait',
-  pediatric_verified_at:'2026-08-17',
+  pediatric_verification_status:'in_review',
+  pediatric_source_url:'https://base-donnees-publique.medicaments.gouv.fr/medicament/63390065/extrait; https://dafalgan.be/nl/dafalgan-voor-babys-en-kinderen/',
+  pediatric_verified_at:null,
 };
-
-const dafalganReady = classify(dafalgan4013);
-assert.equal(dafalganReady.readiness, STATUS.CALCULATOR_READY);
-assert.equal(dafalganReady.requires.weight, true);
-assert.equal(dafalganReady.schedule.mode, 'prn-limit');
-assert.equal(dafalganReady.schedule.maxDosesPerDay, 4);
-assert.equal(dafalganReady.schedule.minIntervalHours, 6);
-
-const dafalgan10kg = calculate(dafalgan4013, { weightKg:10 });
-assert.equal(dafalgan10kg.outcome, OUTCOME.CALCULATED);
-assert.equal(dafalgan10kg.perDose.min, 150);
-assert.equal(dafalgan10kg.perDose.max, 150);
-assert.equal(dafalgan10kg.dosesPerDay, null,
-  'PRN ceiling must not become a routine four-times-daily prescription.');
-assert.equal(dafalgan10kg.daily, null,
-  'PRN safety envelope must not be exposed as a prescribed daily total.');
-assert.equal(dafalgan10kg.schedule.maxDosesPerDay, 4);
-assert.equal(dafalgan10kg.schedule.minIntervalHours, 6);
-assert.ok(dafalgan10kg.steps.some(step => step.label === 'Maks. administrime / 24h' && step.value === 4));
-assert.ok(dafalgan10kg.steps.some(step => step.label === 'Intervali minimal' && step.value === 6));
-
-assert.equal(calculate(dafalgan4013, { weightKg:2.9 }).outcome, OUTCOME.OUT_OF_RANGE);
-assert.equal(calculate(dafalgan4013, { weightKg:32.1 }).outcome, OUTCOME.OUT_OF_RANGE);
+assert.equal(classify(dafalgan4013).readiness, STATUS.TEXT_ONLY,
+  'Ambiguous market identity must block automatic DAFALGAN calculation.');
+assert.equal(calculate(dafalgan4013, { weightKg:10 }).outcome, OUTCOME.NOT_CALCULABLE);
 
 // PAROL PLUS 250 mg/5 mL (#466).
-// Manufacturer KÜB explicitly recommends q6h 10–15 mg/kg/dose, while also
-// defining a 4 h absolute minimum interval and <=4 administrations/day.
-// The formula itself enforces <=60 mg/kg/day at four doses. For >30 kg the KÜB
-// adds absolute ceilings of 500 mg/dose and 2 g/day; storing those ceilings
-// globally is conservative and non-binding for <=30 kg.
+// Manufacturer KÜB explicitly recommends q6h 10–15 mg/kg/dose, with an
+// absolute minimum 4 h interval and <=4 administrations/day. For >30 kg the
+// KÜB adds 500 mg/dose and 2 g/day ceilings.
 const parolPlus466 = {
   pediatric_indication:'dhimbje; temperaturë; ethe',
   pediatric_use_status:'KUFIZUAR',
@@ -124,8 +103,8 @@ assert.ok(parolPlus40kg.cappedBy.includes('maxSingle'));
 assert.ok(parolPlus40kg.steps.some(step => step.label === 'Maks. për dozë' && step.value === 500));
 assert.ok(parolPlus40kg.steps.some(step => step.label === 'Maks. në 24h' && step.value === 2000));
 
-// PAROL 120 mg/5 mL (#467) stays fail-closed until the primary product KÜB/RCP
-// is directly bound. Keeping historical typed values must never bypass status.
+// PAROL 120 mg/5 mL (#467) stays fail-closed until a directly retrievable
+// primary KÜB/RCP is bound to this exact product record.
 const parol120_467 = {
   pediatric_indication:'dhimbje; temperaturë; ethe',
   pediatric_use_status:'KUFIZUAR',
@@ -146,6 +125,6 @@ assert.equal(classify(parol120_467).readiness, STATUS.TEXT_ONLY);
 assert.equal(calculate(parol120_467, { weightKg:10 }).outcome, OUTCOME.NOT_CALCULABLE);
 
 console.log(
-  'Pediatric paracetamol final-gap regression passed: DAFALGAN PRN ceilings remain limits, '
-  + 'PAROL PLUS preserves q6h plus 500 mg/2 g hard caps, and PAROL 120 stays quarantined.',
+  'Pediatric paracetamol final-gap regression passed: ambiguous DAFALGAN identity is fail-closed, '
+  + 'PAROL PLUS preserves manufacturer KÜB caps, and PAROL 120 stays quarantined.',
 );
