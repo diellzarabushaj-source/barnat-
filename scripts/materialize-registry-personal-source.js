@@ -4,7 +4,6 @@ const fs = require('node:fs');
 const path = require('node:path');
 
 const ROOT = path.resolve(__dirname, '..');
-const TARGET = path.join(ROOT, 'user-library-client.js');
 const read = file => fs.readFileSync(path.join(ROOT, file), 'utf8').replace(/\r\n?/g, '\n');
 const write = (file, value) => fs.writeFileSync(path.join(ROOT, file), value.replace(/\r\n?/g, '\n'), 'utf8');
 
@@ -162,16 +161,16 @@ function auditMaterializedSource() {
   const css = read('registry-user-personalization.css');
   if (!client.includes("RECOVERY_VERSION = 'user-library-recovery-v1'")) throw new Error('Phase 12 recovery marker missing.');
   if (!client.includes("LONG_SESSION_VERSION = 'registry-personal-long-session-v1'")) throw new Error('Phase 12 long-session client marker missing.');
+  if (!client.includes('flushThroughRevision(targetRevision)')) throw new Error('Phase 12 revision-safe sync is not materialized.');
   if (!ui.includes("PHASE8_UX_VERSION = 'registry-personal-ux-phase8-v1'")) throw new Error('Phase 12 UX marker missing from canonical controller.');
   if (!ui.includes("LONG_SESSION_VERSION = 'registry-personal-long-session-v1'")) throw new Error('Phase 12 long-session UI marker missing.');
+  if (!ui.includes('const rowProfileCache = new WeakMap();')) throw new Error('Phase 12 weak row cache is not materialized.');
   if (!css.includes('/* registry-personal-ux-phase8-v1 */')) throw new Error('Phase 12 UX CSS is not materialized.');
-  if (!client.includes('flushThroughRevision(targetRevision)') || !client.includes('const row') === false) {
-    // marker-only check below is intentionally explicit; keep materializer simple.
-  }
   console.log('Phase 12 canonical source materialization audit passed.');
 }
 
 materializeUserLibraryRecovery();
+require('./patch-registry-phase8-personalization.js');
 require('./patch-registry-phase16-personal-ux-v2.js');
 require('./patch-registry-personal-long-session.js');
 auditMaterializedSource();
