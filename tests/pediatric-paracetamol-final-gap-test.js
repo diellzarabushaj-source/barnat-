@@ -59,7 +59,7 @@ assert.equal(calculate(dafalgan4013, { weightKg:32.1 }).outcome, OUTCOME.OUT_OF_
 // PAROL PLUS 250 mg/5 mL (#466).
 // Manufacturer KÜB explicitly recommends q6h 10–15 mg/kg/dose, while also
 // defining a 4 h absolute minimum interval, <=4 administrations/day and a
-// 60 mg/kg/day ceiling. Exact q6h therefore remains the regimen; 4 h is safety.
+// 60 mg/kg/day ceiling. Fixed q6h therefore remains the regimen; 4 h is safety.
 const parolPlus466 = {
   pediatric_indication:'dhimbje; temperaturë; ethe',
   pediatric_use_status:'KUFIZUAR',
@@ -90,7 +90,7 @@ const parolPlus466 = {
 
 const parolPlusReady = classify(parolPlus466);
 assert.equal(parolPlusReady.readiness, STATUS.CALCULATOR_READY);
-assert.equal(parolPlusReady.schedule.mode, 'exact');
+assert.equal(parolPlusReady.schedule.mode, 'fixed');
 assert.equal(parolPlusReady.schedule.maxDosesPerDay, 4);
 assert.equal(parolPlusReady.schedule.minIntervalHours, 4);
 
