@@ -172,7 +172,10 @@ function patchUserLibraryClient() {
       "  window.addEventListener('online', () => {\n    online = true;\n    retryUntil = 0;\n    scheduleSync(100);\n  });\n  window.addEventListener('medindex:favorites-changed', () => { poll(); scheduleSync(80); });\n  window.addEventListener('medindex:personal-note-saved', () => { poll(); scheduleSync(80); });",
       'library event-driven sync',
     );
-  } else if (!source.includes('retryUntil = 0;\n    scheduleSync(100);')) {
+  } else if (
+    !source.includes('retryUntil = 0;\n    scheduleSync(100);')
+    && !source.includes('retryUntil = 0;\n    clearTimeout(retryTimer);')
+  ) {
     source = mustReplace(
       source,
       "  window.addEventListener('online', () => {\n    online = true;\n    scheduleSync(100);\n  });",
