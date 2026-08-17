@@ -7,6 +7,9 @@ const { neonRequest } = require('../lib/neon-data-api.js');
 const MIN_REGISTRY = 501;
 const MAX_REGISTRY = 4012;
 const CHUNK_SIZE = 250;
+/* Release-gated snapshot for the contiguous Sheet-owned registry range.
+   Update these counts only together with an audited verification-status change;
+   `needs_source` is a valid fail-closed state, not an export error. */
 const EXPECTED_VERIFIED = 3386;
 const EXPECTED_IN_REVIEW = 124;
 const EXPECTED_NEEDS_SOURCE = 2;
