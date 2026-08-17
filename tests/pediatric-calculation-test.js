@@ -176,6 +176,15 @@ assert.equal(incompatibleConcentration.measure, null,
   'mmol nuk guxon të shndërrohet në mg pa ekuivalencë klinike të koduar.');
 assert.ok(incompatibleConcentration.warnings.some(w => /nuk është dimensionisht kompatibile/.test(w)));
 
+/* Unknown administration units must remain unknown. Prefix matching such as
+   treating "njësi e panjohur" as generic `unit` is unsafe. */
+const strangeUnit = calculate(
+  { ...PER_DOSE_ROW, pediatric_concentration_per_unit:'njësi e panjohur' },
+  patient(20),
+);
+assert.equal(strangeUnit.measure, null);
+assert.equal(strangeUnit.perDose.min, 300);
+
 /* A configured safety cap that cannot be reconciled is different: ignoring it
    could expose an uncapped dose, so the calculation must stop. */
 const badCap = calculate({
@@ -292,6 +301,7 @@ assert.equal(_test.convertValue(4, 'g', 'mg'), 4000);
 assert.equal(_test.convertValue(1, 'tabletë', 'unit'), 1);
 assert.equal(_test.convertValue(1, 'mmol', 'mg'), null);
 assert.equal(_test.unitDescriptor('mg sodium alginate').dimension, 'mass');
+assert.equal(_test.unitDescriptor('njësi e panjohur'), null);
 assert.equal(_test.ageInDays(2, 'vjet'), 730.5);
 assert.equal(_test.bodySurfaceArea(30, 130).toFixed(4), '1.0408');
 assert.equal(_test.round(0.0625), 0.0625);
