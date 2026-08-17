@@ -13,6 +13,7 @@ const lite = read('registry-mobile-lite.js');
 const phase8 = read('registry-mobile-phase8.js');
 const css = read('registry-mobile-phase8.css');
 const sharedPersonalization = read('registry-user-personalization.js');
+const userLibraryClient = read('user-library-client.js');
 const desktopRuntime = read('app-parts/part-02.txt');
 const phase8Patch = read('scripts/patch-registry-phase8-personalization.js');
 const phase2Patch = read('scripts/patch-phase2-mobile-card-stability.js');
@@ -23,6 +24,7 @@ for (const file of [
   'registry-mobile-lite.js',
   'registry-mobile-phase8.js',
   'registry-user-personalization.js',
+  'user-library-client.js',
   'scripts/patch-registry-phase8-personalization.js',
   'scripts/patch-phase2-mobile-card-stability.js',
   'scripts/patch-phase0-mobile-owner-boundary.js',
@@ -33,6 +35,7 @@ for (const file of [
 assert.match(index, /registry-mobile-phase8\.css\?v=20260816-2/);
 assert.match(index, /registry-mobile-phase8\.js\?v=20260816-2/);
 assert.match(index, /registry-user-personalization\.js\?v=20260816-7/);
+assert.match(index, /user-library-client\.js\?v=20260817-event-sync-1/, 'Phase 6 user-library asset must be cache-busted.');
 assert(index.indexOf('registry-mobile-phase8.js') < index.indexOf('registry-runtime-loader.js'), 'Phase 8 must initialize before the full registry loader.');
 
 assert.match(lite, /rows:\[\], \/\/ phase8-current-page/);
@@ -91,8 +94,19 @@ assert.doesNotMatch(phase0Patch, /const marker = 'registry-personalization-phone
 assert.match(phase8Patch, /function patchMobileActionRegion\(\)/, 'Phase 8 must publish the composed mobile action region before legacy stability auditing.');
 assert.match(phase8Patch, /MedIndex revised Phase 2: explicit mobile card action region/, 'Phase 8 and Phase 2 must share one action-region compatibility marker.');
 assert.match(phase8Patch, /grid-template-columns:44px 44px 78px!important/, 'Favorite, note and detail must each own a distinct mobile action slot.');
-assert.match(phase8Patch, /patchMobileActionRegion\(\);\s*verifyAddon\(\);/, 'Action-region composition must run before the Phase 8 verification gate.');
+assert.match(phase8Patch, /function patchUserLibraryEventSync\(\)/, 'Phase 6 event-driven user-library patch must be part of the deterministic build.');
+assert.match(phase8Patch, /patchUserLibraryEventSync\(\);\s*patchIndex\(\);/, 'Phase 6 library sync must be patched before its cache-busted asset is published.');
 assert.match(phase2Patch, /const explicitActionMarker = '\/\* MedIndex revised Phase 2: explicit mobile card action region \*\/'/, 'Legacy Phase 2 patch must recognize the composed action-region marker.');
+
+assert.match(userLibraryClient, /EVENT_SYNC_VERSION = 'user-library-event-sync-v1'/, 'Phase 6 event-sync marker is missing from the built client.');
+assert.match(userLibraryClient, /LEGACY_PRESCRIPTION_POLL_MS = 5000/, 'Only the legacy prescription fallback may keep a bounded poll.');
+assert.match(userLibraryClient, /EVENT_SYNC_DELAY_MS = 40/, 'Personal mutations should be queued immediately rather than waiting for the legacy poll.');
+assert.match(userLibraryClient, /function captureLocalChanges\(/, 'Event-driven local change capture is missing.');
+assert.match(userLibraryClient, /'medindex:favorites-changed', 'medindex:notes-changed', 'medindex:personal-note-saved'/, 'Favorite/note mutation events must drive persistence.');
+assert.match(userLibraryClient, /window\.addEventListener\('storage', event =>/, 'Cross-tab localStorage mutations must drive persistence.');
+assert.match(userLibraryClient, /syncNow:\(\) => \{ captureLocalChanges\(\{ schedule:false \}\); return flush\(\); \}/, 'syncNow must capture state before the backend flush.');
+assert.match(userLibraryClient, /window\.setInterval\(pollLegacyPrescriptions, LEGACY_PRESCRIPTION_POLL_MS\)/, 'Legacy prescriptions must retain a narrow compatibility fallback.');
+assert.doesNotMatch(userLibraryClient, /const POLL_MS = 1200|window\.setInterval\(poll, POLL_MS\)/, 'Favorites/Notes must never return to the 1.2-second polling loop.');
 
 assert.match(css, /@media \(max-width:767px\)/);
 assert.match(css, /min-height:44px/);
@@ -113,8 +127,8 @@ assert.match(packageJson.scripts['build:runtime'], /patch-registry-phase8-person
 assert.equal(fs.existsSync(path.join(ROOT, 'api', 'mobile-favorites.js')), false, 'Phase 8 must not consume a Vercel function for favorites.');
 assert.equal(fs.existsSync(path.join(ROOT, 'api', 'recent-medicines.js')), false, 'Phase 8 must not consume a Vercel function for recents.');
 
-// Phase 5: this file is already part of pnpm test, so use it as the aggregate
+// Phase 5/6: this file is already part of pnpm test, so use it as the aggregate
 // gate for the complete desktop/mobile/backend personalization audit as well.
 require('./registry-user-personalization-test.js');
 
-console.log('Phase 5 regression gate: mobile canonical Favorites/Notes bridge, composed three-slot action region, bounded recents and 44px accessibility targets passed.');
+console.log('Phase 6 regression gate: event-driven Favorites/Notes persistence, cross-tab sync, mobile canonical bridge and three-slot action region passed.');
