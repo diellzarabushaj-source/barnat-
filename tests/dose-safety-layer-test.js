@@ -44,3 +44,4 @@ require('./insulin-calculators-deep-audit-test.js');
 require('./registry-user-personalization-test.js');
 require('./registry-ux-phase2-test.js');
 require('./registry-ux-phase3-test.js');
+require('./pediatric-master-neon-contract-test.js');
