@@ -8,8 +8,44 @@ const IcdHealth = require('../lib/icd-health-audit.js');
 const CURRENT_DOSAGE_SPREADSHEET_ID = '1T7XsfkXLQfEomFL4DmXoA8PheiR6s3Qmu36hTqklOMo';
 const REQUIRED_DOSAGE_SHEETS = Object.freeze(['KARTELA_BARNAVE', 'DOZA_TE_RRITUR', 'DOZA_PEDIATRIKE']);
 const STALE_AFTER_MS = 15 * 60 * 1000;
+const PEDIATRIC_EXPORT_MIN = 501;
+const PEDIATRIC_EXPORT_MAX = 4012;
+const PEDIATRIC_EXPORT_LIMIT = 250;
+const PEDIATRIC_EXPORT_FIELDS = Object.freeze([
+  'pediatric_dose_summary',
+  'pediatric_indication',
+  'pediatric_use_status',
+  'pediatric_min_age_value',
+  'pediatric_min_age_unit',
+  'pediatric_max_age_value',
+  'pediatric_max_age_unit',
+  'pediatric_min_weight_kg',
+  'pediatric_max_weight_kg',
+  'pediatric_dose_min',
+  'pediatric_dose_max',
+  'pediatric_dose_unit',
+  'pediatric_dose_basis',
+  'pediatric_doses_per_day',
+  'pediatric_interval_hours',
+  'pediatric_max_single_value',
+  'pediatric_max_single_unit',
+  'pediatric_max_daily_value',
+  'pediatric_max_daily_unit',
+  'pediatric_route',
+  'pediatric_restriction',
+  'pediatric_concentration_value',
+  'pediatric_concentration_unit',
+  'pediatric_concentration_per_value',
+  'pediatric_concentration_per_unit',
+  'pediatric_source_url',
+  'pediatric_source_section',
+  'pediatric_verification_status',
+  'pediatric_verified_at',
+  'pediatric_primary_regimen_id',
+]);
 
 const clean = value => String(value ?? '').replace(/\s+/g, ' ').trim();
+const cleanTsv = value => String(value ?? '').replace(/[\t\r\n]+/g, ' ').trim();
 
 async function tableCount(table) {
   const { response } = await neonRequest(`${table}?select=id&limit=1`, {
@@ -148,6 +184,37 @@ async function healthPayload(now = Date.now()) {
   };
 }
 
+function exportInteger(value) {
+  const parsed = Number(value);
+  return Number.isInteger(parsed) ? parsed : null;
+}
+
+async function pediatricMasterExport(req, res) {
+  const start = exportInteger(req.query?.start);
+  const end = exportInteger(req.query?.end);
+  if (start === null || end === null || start < PEDIATRIC_EXPORT_MIN || end > PEDIATRIC_EXPORT_MAX || end < start || (end - start + 1) > PEDIATRIC_EXPORT_LIMIT) {
+    return res.status(400).send(`Use start/end inside ${PEDIATRIC_EXPORT_MIN}-${PEDIATRIC_EXPORT_MAX}, maximum ${PEDIATRIC_EXPORT_LIMIT} rows.`);
+  }
+
+  const select = ['registry_number', ...PEDIATRIC_EXPORT_FIELDS].join(',');
+  const path = `drugs?select=${encodeURIComponent(select)}&registry_number=gte.${start}&registry_number=lte.${end}&order=registry_number.asc&limit=${PEDIATRIC_EXPORT_LIMIT}`;
+  const { data } = await neonRequest(path, { timeoutMs:12000, label:'Pediatric master export' });
+  const rows = Array.isArray(data) ? data : [];
+  const expected = end - start + 1;
+  if (rows.length !== expected) return res.status(409).send(`Expected ${expected} rows, received ${rows.length}.`);
+  for (let index = 0; index < rows.length; index += 1) {
+    if (Number(rows[index].registry_number) !== start + index) {
+      return res.status(409).send(`Registry sequence mismatch at ${start + index}.`);
+    }
+  }
+
+  const tsv = rows.map(row => PEDIATRIC_EXPORT_FIELDS.map(field => cleanTsv(row[field])).join('\t')).join('\n');
+  res.setHeader('Content-Type', 'text/tab-separated-values; charset=utf-8');
+  res.setHeader('Cache-Control', 'no-store, max-age=0');
+  res.setHeader('X-MedIndex-Migration', 'pediatric-master-20260817');
+  return res.status(200).send(tsv);
+}
+
 module.exports = async function handler(req, res) {
   res.setHeader('Cache-Control', 'private, no-store, max-age=0');
   res.setHeader('X-Content-Type-Options', 'nosniff');
@@ -157,8 +224,13 @@ module.exports = async function handler(req, res) {
   }
 
   try {
+    if (String(req.query?.pediatricMasterExport || '') === '1') return await pediatricMasterExport(req, res);
     return res.status(200).json(await healthPayload());
   } catch (error) {
+    if (String(req.query?.pediatricMasterExport || '') === '1') {
+      console.error('[pediatric-master-export]', error);
+      return res.status(503).send('Pediatric master export unavailable.');
+    }
     return res.status(503).json({
       connected:false,
       provider:'neon',
