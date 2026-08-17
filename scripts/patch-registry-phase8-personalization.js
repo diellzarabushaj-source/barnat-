@@ -116,7 +116,11 @@ function patchUserLibraryEventSync() {
   if (!source.includes(marker)) throw new Error('Phase 6 event-sync marker is missing.');
   if (!source.includes("window.addEventListener(name, onPersonalLibraryMutation)")) throw new Error('Phase 6 personal mutation listeners are missing.');
   if (!source.includes("window.addEventListener('storage', event =>")) throw new Error('Phase 6 cross-tab storage listener is missing.');
-  if (!source.includes('syncNow:() => { captureLocalChanges({ schedule:false }); return flush(); }')) throw new Error('Phase 6 syncNow must capture the mutation before flushing.');
+  const phase6SyncNow = source.includes('syncNow:() => { captureLocalChanges({ schedule:false }); return flush(); }');
+  const revisionSafeSyncNow = source.includes("LONG_SESSION_VERSION = 'registry-personal-long-session-v1'")
+    && source.includes('const targetRevision = localRevision;')
+    && source.includes('return flushThroughRevision(targetRevision);');
+  if (!phase6SyncNow && !revisionSafeSyncNow) throw new Error('Phase 6 syncNow must capture state and wait for its backend flush revision.');
   if (!source.includes('pollLegacyPrescriptions')) throw new Error('Phase 6 legacy prescription fallback is missing.');
   if (source.includes('const POLL_MS = 1200') || source.includes('window.setInterval(poll, POLL_MS)')) {
     throw new Error('Phase 6 must not poll Favorites/Notes every 1.2 seconds.');
