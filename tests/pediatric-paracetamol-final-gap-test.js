@@ -58,8 +58,10 @@ assert.equal(calculate(dafalgan4013, { weightKg:32.1 }).outcome, OUTCOME.OUT_OF_
 
 // PAROL PLUS 250 mg/5 mL (#466).
 // Manufacturer KÜB explicitly recommends q6h 10–15 mg/kg/dose, while also
-// defining a 4 h absolute minimum interval, <=4 administrations/day and a
-// 60 mg/kg/day ceiling. Fixed q6h therefore remains the regimen; 4 h is safety.
+// defining a 4 h absolute minimum interval and <=4 administrations/day.
+// The formula itself enforces <=60 mg/kg/day at four doses. For >30 kg the KÜB
+// adds absolute ceilings of 500 mg/dose and 2 g/day; storing those ceilings
+// globally is conservative and non-binding for <=30 kg.
 const parolPlus466 = {
   pediatric_indication:'dhimbje; temperaturë; ethe',
   pediatric_use_status:'KUFIZUAR',
@@ -75,10 +77,10 @@ const parolPlus466 = {
   pediatric_interval_hours:6,
   pediatric_max_doses_per_day:4,
   pediatric_min_interval_hours:4,
-  pediatric_max_single_value:null,
-  pediatric_max_single_unit:null,
-  pediatric_max_daily_value:60,
-  pediatric_max_daily_unit:'mg/kg/ditë',
+  pediatric_max_single_value:500,
+  pediatric_max_single_unit:'mg',
+  pediatric_max_daily_value:2000,
+  pediatric_max_daily_unit:'mg',
   pediatric_concentration_value:250,
   pediatric_concentration_unit:'mg',
   pediatric_concentration_per_value:5,
@@ -105,8 +107,22 @@ assert.deepEqual(parolPlus20kg.daily, { min:800, max:1200 });
 assert.equal(parolPlus20kg.dosesPerDay, 4);
 assert.equal(parolPlus20kg.schedule.minIntervalHours, 4);
 assert.equal(parolPlus20kg.schedule.maxDosesPerDay, 4);
-assert.ok(parolPlus20kg.cappedBy.length === 0,
-  'At 20 kg the verified 15 mg/kg x4 regimen exactly reaches, but does not exceed, 60 mg/kg/day.');
+assert.deepEqual(parolPlus20kg.cappedBy, [],
+  'Absolute >30 kg caps must not alter a 20 kg child dose.');
+
+const parolPlus40kg = calculate(parolPlus466, {
+  weightKg:40,
+  ageValue:12,
+  ageUnit:'vjet',
+});
+assert.equal(parolPlus40kg.outcome, OUTCOME.CALCULATED);
+assert.deepEqual(parolPlus40kg.perDose, { min:400, max:500 },
+  'At >30 kg the upper dose must be capped at 500 mg.');
+assert.deepEqual(parolPlus40kg.daily, { min:1600, max:2000 },
+  'At >30 kg the daily upper bound must not exceed 2 g.');
+assert.ok(parolPlus40kg.cappedBy.includes('maxSingle'));
+assert.ok(parolPlus40kg.steps.some(step => step.label === 'Maks. për dozë' && step.value === 500));
+assert.ok(parolPlus40kg.steps.some(step => step.label === 'Maks. në 24h' && step.value === 2000));
 
 // PAROL 120 mg/5 mL (#467) stays fail-closed until the primary product KÜB/RCP
 // is directly bound. Keeping historical typed values must never bypass status.
@@ -131,5 +147,5 @@ assert.equal(calculate(parol120_467, { weightKg:10 }).outcome, OUTCOME.NOT_CALCU
 
 console.log(
   'Pediatric paracetamol final-gap regression passed: DAFALGAN PRN ceilings remain limits, '
-  + 'PAROL PLUS preserves source-backed q6h plus hard safety caps, and PAROL 120 stays quarantined.',
+  + 'PAROL PLUS preserves q6h plus 500 mg/2 g hard caps, and PAROL 120 stays quarantined.',
 );
