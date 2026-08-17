@@ -7,8 +7,8 @@ const { neonRequest } = require('../lib/neon-data-api.js');
 const MIN_REGISTRY = 501;
 const MAX_REGISTRY = 4012;
 const CHUNK_SIZE = 250;
-const EXPECTED_VERIFIED = 3391;
-const EXPECTED_IN_REVIEW = 121;
+const EXPECTED_VERIFIED = 3389;
+const EXPECTED_IN_REVIEW = 123;
 const MASTER_FILE = path.resolve(__dirname, '..', 'ped-sync-master.tsv');
 
 const FIELDS = Object.freeze([
