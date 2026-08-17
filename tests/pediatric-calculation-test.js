@@ -31,13 +31,15 @@ const PER_DOSE_ROW = Object.freeze({
   pediatric_source_url:'https://www.bnf.org/', pediatric_verified_at:'2026-08-01',
 });
 
+/* Skema ditore ruan një tavan shumë të lartë vetëm për ta bërë fixture-in
+   semantikisht të plotë; testet që provojnë cap-in real e mbishkruajnë atë. */
 const PER_DAY_ROW = Object.freeze({
   ...PER_DOSE_ROW,
   pediatric_dose_min:25, pediatric_dose_max:50,
   pediatric_dose_basis:'kg/ditë',
   pediatric_doses_per_day:3,
   pediatric_max_single_value:null, pediatric_max_single_unit:'',
-  pediatric_max_daily_value:null, pediatric_max_daily_unit:'',
+  pediatric_max_daily_value:10000, pediatric_max_daily_unit:'mg',
   pediatric_concentration_value:250, pediatric_concentration_per_value:5,
 });
 
@@ -73,6 +75,16 @@ const oddInterval = calculate(
   patient(18),
 );
 assert.ok(oddInterval.warnings.some(w => /nuk është numër i plotë/.test(w)));
+
+/* Një formulë që shkallëzohet me pacientin dhe nuk ka asnjë tavan të
+   dokumentuar ndalet para aritmetikës. */
+const uncappedScaled = calculate({
+  ...PER_DOSE_ROW,
+  pediatric_max_single_value:null, pediatric_max_single_unit:'',
+  pediatric_max_daily_value:null, pediatric_max_daily_unit:'',
+}, patient(20));
+assert.equal(uncappedScaled.outcome, OUTCOME.NOT_CALCULABLE);
+assert.ok(uncappedScaled.reasons.some(reason => /nuk ka asnjë kufi maksimal të dokumentuar/.test(reason)));
 
 // --------------------------------------------------------- caps në të njëjtën njësi
 
@@ -129,7 +141,7 @@ const fentanylLike = calculate({
   ...PER_DOSE_ROW,
   pediatric_dose_min:2, pediatric_dose_max:2, pediatric_dose_unit:'mcg',
   pediatric_doses_per_day:null, pediatric_interval_hours:null,
-  pediatric_max_single_value:null, pediatric_max_single_unit:'',
+  pediatric_max_single_value:1000, pediatric_max_single_unit:'mcg',
   pediatric_max_daily_value:null, pediatric_max_daily_unit:'',
   pediatric_concentration_value:0.1, pediatric_concentration_unit:'mg',
   pediatric_concentration_per_value:2, pediatric_concentration_per_unit:'mL',
@@ -149,7 +161,7 @@ const directVolume = calculate({
   ...PER_DOSE_ROW,
   pediatric_dose_min:20, pediatric_dose_max:20, pediatric_dose_unit:'mL',
   pediatric_doses_per_day:null, pediatric_interval_hours:null,
-  pediatric_max_single_value:null, pediatric_max_single_unit:'',
+  pediatric_max_single_value:1000, pediatric_max_single_unit:'mL',
   pediatric_max_daily_value:null, pediatric_max_daily_unit:'',
   pediatric_concentration_value:9, pediatric_concentration_unit:'mg',
   pediatric_concentration_per_value:1, pediatric_concentration_per_unit:'mL',
@@ -165,7 +177,7 @@ assert.ok(directVolume.steps.some(step => /tashmë vëllim/.test(String(step.val
 const incompatibleConcentration = calculate({
   ...PER_DOSE_ROW,
   pediatric_dose_min:1, pediatric_dose_max:1, pediatric_dose_unit:'mmol',
-  pediatric_max_single_value:null, pediatric_max_single_unit:'',
+  pediatric_max_single_value:100, pediatric_max_single_unit:'mmol',
   pediatric_max_daily_value:null, pediatric_max_daily_unit:'',
   pediatric_concentration_value:840, pediatric_concentration_unit:'mg',
   pediatric_concentration_per_value:10, pediatric_concentration_per_unit:'mL',
@@ -215,7 +227,8 @@ const BSA_ROW = {
   ...PER_DOSE_ROW,
   pediatric_dose_basis:'m²/dozë',
   pediatric_dose_min:100, pediatric_dose_max:100,
-  pediatric_max_single_value:null, pediatric_max_daily_value:null,
+  pediatric_max_single_value:10000, pediatric_max_single_unit:'mg',
+  pediatric_max_daily_value:null, pediatric_max_daily_unit:'',
 };
 const bsa = calculate(BSA_ROW, patient(30, { heightCm:130 }));
 assert.equal(bsa.outcome, OUTCOME.CALCULATED);
@@ -229,7 +242,7 @@ const INFUSION_ROW = {
   pediatric_dose_min:0.1, pediatric_dose_max:0.1,
   pediatric_doses_per_day:null, pediatric_interval_hours:null,
   pediatric_max_single_value:null, pediatric_max_single_unit:'',
-  pediatric_max_daily_value:null, pediatric_max_daily_unit:'',
+  pediatric_max_daily_value:1000, pediatric_max_daily_unit:'mg',
 };
 const infusion = calculate(INFUSION_ROW, patient(20));
 assert.equal(infusion.ratePerHour.min, 2);
@@ -322,6 +335,6 @@ assert.equal(injected.perDose.min, 300,
 
 console.log(
   'Pediatric calculation passed: server-only dosing, automatic mcg/mg/g conversion, '
-  + 'weight-normalized and absolute caps, direct-volume doses, BSA/infusion safety, '
-  + 'and no guessed cross-dimension conversions.',
+  + 'cap completeness fail-closed, weight-normalized and absolute caps, direct-volume doses, '
+  + 'BSA/infusion safety, and no guessed cross-dimension conversions.',
 );
