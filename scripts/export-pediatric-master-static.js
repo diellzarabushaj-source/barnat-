@@ -7,8 +7,9 @@ const { neonRequest } = require('../lib/neon-data-api.js');
 const MIN_REGISTRY = 501;
 const MAX_REGISTRY = 4012;
 const CHUNK_SIZE = 250;
-const EXPECTED_VERIFIED = 3389;
-const EXPECTED_IN_REVIEW = 123;
+const EXPECTED_VERIFIED = 3386;
+const EXPECTED_IN_REVIEW = 124;
+const EXPECTED_NEEDS_SOURCE = 2;
 const MASTER_FILE = path.resolve(__dirname, '..', 'ped-sync-master.tsv');
 
 const FIELDS = Object.freeze([
@@ -84,6 +85,7 @@ async function loadChunk(start, end) {
   let total = 0;
   let verified = 0;
   let inReview = 0;
+  let needsSource = 0;
   const lines = [];
 
   for (let start = MIN_REGISTRY; start <= MAX_REGISTRY; start += CHUNK_SIZE) {
@@ -95,6 +97,7 @@ async function loadChunk(start, end) {
       const status = cleanTsv(row.pediatric_verification_status).toLowerCase();
       if (status === 'verified') verified += 1;
       else if (status === 'in_review') inReview += 1;
+      else if (status === 'needs_source') needsSource += 1;
       else throw new Error(`Unexpected verification status '${status}' at registry ${row.registry_number}.`);
     }
   }
@@ -103,12 +106,20 @@ async function loadChunk(start, end) {
   if (total !== expectedTotal || lines.length !== expectedTotal) {
     throw new Error(`Pediatric export row count mismatch: ${total}/${expectedTotal}.`);
   }
-  if (verified !== EXPECTED_VERIFIED || inReview !== EXPECTED_IN_REVIEW) {
-    throw new Error(`Pediatric export verification counts mismatch: verified=${verified}, in_review=${inReview}.`);
+  if (verified !== EXPECTED_VERIFIED
+    || inReview !== EXPECTED_IN_REVIEW
+    || needsSource !== EXPECTED_NEEDS_SOURCE) {
+    throw new Error(
+      `Pediatric export verification counts mismatch: verified=${verified}, `
+      + `in_review=${inReview}, needs_source=${needsSource}.`,
+    );
   }
 
   fs.writeFileSync(MASTER_FILE, lines.join('\n'), 'utf8');
-  console.log(`Temporary tracked pediatric static export ready: ${total} rows, ${verified} verified, ${inReview} in_review, ${FIELDS.length} columns.`);
+  console.log(
+    `Temporary tracked pediatric static export ready: ${total} rows, ${verified} verified, `
+    + `${inReview} in_review, ${needsSource} needs_source, ${FIELDS.length} columns.`,
+  );
 })().catch(error => {
   console.error(error.stack || error);
   process.exitCode = 1;
