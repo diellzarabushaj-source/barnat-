@@ -1,11 +1,11 @@
 'use strict';
 
-/* Canonical late-stage personalization finalizer.
+/* Canonical late-stage personalization verifier.
  *
- * Keep the ordering explicit in one place. Phase 8 establishes the visual/state
- * contract first; Phase 10 then hardens that contract for long sessions and
- * rapid mutations. Regression gates run against the composed output before the
- * offline manifest is generated.
+ * Phase 12 moved the behavior into canonical source files. These compatibility
+ * stages are intentionally read-only audits now: Phase 8 verifies UX/state,
+ * Phase 10 verifies long-session and revision-safety invariants, then the
+ * regression gates run before offline packaging.
  */
 
 require('./patch-registry-phase16-personal-ux-v2.js');
@@ -14,4 +14,4 @@ require('../tests/registry-personal-ux-phase8-test.js');
 require('../tests/registry-personal-long-session-test.js');
 require('../tests/registry-personal-finalizer-test.js');
 
-console.log('Canonical registry personalization finalizer passed: UX, long-session hardening and regression gates are composed before offline packaging.');
+console.log('Canonical registry personalization finalizer passed: source-owned UX and long-session behavior were verified read-only before offline packaging.');
