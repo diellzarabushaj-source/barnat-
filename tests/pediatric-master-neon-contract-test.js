@@ -39,7 +39,7 @@ assert.equal(new Set(contract.columns.map(item => item.db)).size, 30);
 // The Apps Script must read the live header width, so U:AX is automatically included.
 assert.match(appsScript, /const lastColumn = sheet\.getLastColumn\(\)/);
 assert.match(appsScript, /getRange\(config\.headerRow, 1, 1, lastColumn\)/);
-assert.match(appsScript, /headers\.map/);
+assert.match(appsScript, /headers\.forEach\(\(header, index\)/);
 
 // mapDrug keeps the complete Sheet row in source_payload; the DB trigger performs typed projection.
 assert.match(syncSource, /source_payload:values/);
