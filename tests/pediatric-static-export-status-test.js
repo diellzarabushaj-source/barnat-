@@ -16,7 +16,11 @@ assert.match(source, /status === 'needs_source'/,
   'Static pediatric export must accept the official fail-closed needs_source state.');
 assert.match(source, /needsSource !== EXPECTED_NEEDS_SOURCE/,
   'Static pediatric export must verify the needs_source count, not silently ignore it.');
-assert.doesNotMatch(source, /else throw new Error\(`Unexpected verification status '\$\{status\}'/,
-  'This assertion only guards against the old two-state branch pattern.');
+assert.ok(
+  source.indexOf("status === 'needs_source'") < source.indexOf('Unexpected verification status'),
+  'needs_source must be handled before the unknown-status fail-closed branch.',
+);
+assert.match(source, /Unexpected verification status/,
+  'Truly unknown verification states must still fail the export closed.');
 
-console.log('Pediatric static export status contract passed: verified, in_review and needs_source are all first-class gated states.');
+console.log('Pediatric static export status contract passed: verified, in_review and needs_source are all first-class gated states; unknown states still fail closed.');
