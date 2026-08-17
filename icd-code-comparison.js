@@ -300,7 +300,6 @@
       <div>
         <p class="med-kicker">ICD-10-WHO 2019 · diferencimi strukturor</p>
         <h2 id="icdComparisonTitle">Krahasimi profesional i kodeve</h2>
-        <p>Vendos deri në ${MAX_ITEMS} kategori ose nënkategori për të krahasuar hierarkinë, specifikësinë dhe terminologjinë.</p>
       </div>
       <div class="icd-comparison-head-actions">
         <span id="icdComparisonCount" aria-label="0 nga ${MAX_ITEMS} kode">0/${MAX_ITEMS}</span>
@@ -312,7 +311,7 @@
     <div class="icd-comparison-body" id="icdComparisonBody">
       <div class="icd-comparison-empty" id="icdComparisonEmpty">
         <span aria-hidden="true">1–3</span>
-        <div><strong>Nuk ka kode në krahasim</strong><p>Zgjidh një kategori ose nënkategori në workspace dhe përdor “Shto në krahasim”.</p></div>
+        <div><strong>Shto deri në ${MAX_ITEMS} kode nga workspace-i për t'i krahasuar</strong></div>
       </div>
       <section class="icd-comparison-summary" id="icdComparisonSummary" aria-label="Përmbledhja e dallimeve" hidden></section>
       <div class="icd-comparison-grid" id="icdComparisonGrid" role="list"></div>

@@ -216,7 +216,6 @@
       <div>
         <p class="med-kicker">Google Sheet klinik · mjekësi familjare & urgjencë</p>
         <h2 id="icdClinicalGuidanceTitle">Konteksti klinik dhe kodimi i sigurt</h2>
-        <p>Lidh hierarkinë e plotë ICD-10 me listën e përzgjedhur të kodeve të përdorura në MF, urgjencë dhe gjendje kritike.</p>
       </div>
       <span id="icdClinicalGuidanceState" class="icd-clinical-guidance-state" role="status" aria-live="polite">Pa kod aktiv</span>
     </header>

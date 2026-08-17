@@ -176,13 +176,16 @@
       <div>
         <p class="med-kicker">ICD-10-WHO 2019 · kodimi aktual</p>
         <h2 id="icdCodingWorkspaceTitle">Workspace klinik i kodimit</h2>
-        <p>Zgjidh një nyje nga hierarkia ose kërkimi. Paneli tregon nivelin, specifikësinë dhe gatishmërinë për përdorim klinik.</p>
       </div>
       <span class="icd-coding-workspace-state" id="icdCodingWorkspaceState" role="status" aria-live="polite">Pa kod aktiv</span>
     </header>
+    <!-- Udhëzimi jepet një herë, te gjendja bosh. Më parë ishte edhe si
+         nëntitull i kartës edhe këtu, dhe faqja i thoshte të njëjtat fjalë dy
+         herë me radhë. Kur karta ka një kod aktiv, gjendja bosh zhduket dhe
+         udhëzimi nuk ka pse të mbetet në ekran. -->
     <div class="icd-coding-workspace-empty" id="icdCodingWorkspaceEmpty">
       <span aria-hidden="true">ICD</span>
-      <div><strong>Zgjidh një kod për ta inspektuar</strong><p>Kërko sipas kodit, termit shqip, anglishtes ose sinonimit klinik.</p></div>
+      <div><strong>Zgjidh një kod nga hierarkia ose kërkimi</strong></div>
     </div>
     <div class="icd-coding-workspace-content" id="icdCodingWorkspaceContent" hidden>
       <div class="icd-coding-workspace-primary">
