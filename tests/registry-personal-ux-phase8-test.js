@@ -12,11 +12,13 @@ const ui = read('registry-user-personalization.js');
 const css = read('registry-user-personalization.css');
 const html = read('index.html');
 const patch = read('scripts/patch-registry-phase16-personal-ux-v2.js');
+const finalizer = read('scripts/patch-registry-personal-final.js');
 const offlineManifestPatch = read('scripts/patch-offline-shell-manifest.js');
 
 for (const file of [
   'registry-user-personalization.js',
   'scripts/patch-registry-phase16-personal-ux-v2.js',
+  'scripts/patch-registry-personal-final.js',
   'scripts/patch-offline-shell-manifest.js',
 ]) {
   execFileSync(process.execPath, ['--check', path.join(ROOT, file)], { stdio:'pipe' });
@@ -69,11 +71,12 @@ assert.match(css, /prefers-reduced-motion:reduce/, 'Loading polish must respect 
 
 assert.match(html, /registry-user-personalization\.css\?v=20260816-7&ux=20260817-1/, 'Phase 8 CSS cache-buster is missing.');
 assert.match(html, /registry-user-personalization\.js\?v=20260816-7&ux=20260817-1/, 'Phase 8 JS cache-buster is missing.');
-assert.match(offlineManifestPatch, /require\('\.\/patch-registry-phase16-personal-ux-v2\.js'\)/, 'Phase 8 UX patch must run deterministically before the final offline manifest.');
+assert.match(offlineManifestPatch, /require\('\.\/patch-registry-personal-final\.js'\)/, 'Offline packaging must invoke the canonical personalization finalizer.');
+assert.match(finalizer, /require\('\.\/patch-registry-phase16-personal-ux-v2\.js'\)/, 'Canonical finalizer must compose the Phase 8 UX patch deterministically.');
 assert.match(patch, /Phase 8 personal UX polish passed/, 'Phase 8 patch needs its own build audit.');
 assert.equal(fs.existsSync(path.join(ROOT, 'scripts', 'patch-registry-phase16-personal-ux.js')), false, 'Superseded broken Phase 8 patch must stay deleted.');
 
 assert.doesNotMatch(ui, /setInterval\s*\(/, 'Phase 8 UX must remain event-driven.');
 assert.doesNotMatch(ui, /MutationObserver/, 'Phase 8 UX must not add DOM polling/observers.');
 
-console.log('Phase 9 regression lock passed: Phase 8 personal-view loading, empty/filter states, unified counts and sync feedback are protected by CI.');
+console.log('Phase 9 regression lock passed: Phase 8 personal-view loading, empty/filter states, unified counts and sync feedback are protected by CI through the canonical finalizer.');
