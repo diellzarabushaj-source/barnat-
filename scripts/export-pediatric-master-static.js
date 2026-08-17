@@ -9,7 +9,7 @@ const MAX_REGISTRY = 4012;
 const CHUNK_SIZE = 250;
 const EXPECTED_VERIFIED = 3391;
 const EXPECTED_IN_REVIEW = 121;
-const EXPORT_PREFIX = 'ped-sync';
+const MASTER_FILE = path.resolve(__dirname, '..', 'ped-sync-master.tsv');
 
 const FIELDS = Object.freeze([
   'pediatric_dose_summary',
@@ -48,10 +48,6 @@ function cleanTsv(value) {
   return String(value ?? '').replace(/[\t\r\n]+/g, ' ').trim();
 }
 
-function outputPath(start, end) {
-  return path.resolve(__dirname, '..', `${EXPORT_PREFIX}-${start}-${end}.tsv`);
-}
-
 async function loadChunk(start, end) {
   const select = ['registry_number', ...FIELDS].join(',');
   const query = `drugs?select=${encodeURIComponent(select)}`
@@ -83,20 +79,19 @@ async function loadChunk(start, end) {
     return;
   }
 
+  if (!fs.existsSync(MASTER_FILE)) throw new Error('Tracked ped-sync-master.tsv placeholder is missing.');
+
   let total = 0;
   let verified = 0;
   let inReview = 0;
-  const files = [];
+  const lines = [];
 
   for (let start = MIN_REGISTRY; start <= MAX_REGISTRY; start += CHUNK_SIZE) {
     const end = Math.min(MAX_REGISTRY, start + CHUNK_SIZE - 1);
     const rows = await loadChunk(start, end);
-    const tsv = rows.map(row => FIELDS.map(field => cleanTsv(row[field])).join('\t')).join('\n');
-    const file = outputPath(start, end);
-    fs.writeFileSync(file, tsv, 'utf8');
-    files.push(path.basename(file));
-    total += rows.length;
     for (const row of rows) {
+      lines.push(FIELDS.map(field => cleanTsv(row[field])).join('\t'));
+      total += 1;
       const status = cleanTsv(row.pediatric_verification_status).toLowerCase();
       if (status === 'verified') verified += 1;
       else if (status === 'in_review') inReview += 1;
@@ -105,17 +100,15 @@ async function loadChunk(start, end) {
   }
 
   const expectedTotal = MAX_REGISTRY - MIN_REGISTRY + 1;
-  if (total !== expectedTotal) throw new Error(`Pediatric export row count mismatch: ${total}/${expectedTotal}.`);
+  if (total !== expectedTotal || lines.length !== expectedTotal) {
+    throw new Error(`Pediatric export row count mismatch: ${total}/${expectedTotal}.`);
+  }
   if (verified !== EXPECTED_VERIFIED || inReview !== EXPECTED_IN_REVIEW) {
     throw new Error(`Pediatric export verification counts mismatch: verified=${verified}, in_review=${inReview}.`);
   }
 
-  fs.writeFileSync(
-    path.resolve(__dirname, '..', `${EXPORT_PREFIX}-manifest.json`),
-    JSON.stringify({ min:MIN_REGISTRY, max:MAX_REGISTRY, total, verified, in_review:inReview, fields:FIELDS.length, files }, null, 2),
-    'utf8',
-  );
-  console.log(`Temporary pediatric static export ready: ${total} rows, ${verified} verified, ${inReview} in_review, ${files.length} TSV files.`);
+  fs.writeFileSync(MASTER_FILE, lines.join('\n'), 'utf8');
+  console.log(`Temporary tracked pediatric static export ready: ${total} rows, ${verified} verified, ${inReview} in_review, ${FIELDS.length} columns.`);
 })().catch(error => {
   console.error(error.stack || error);
   process.exitCode = 1;
