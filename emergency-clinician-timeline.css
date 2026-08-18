@@ -1,0 +1,36 @@
+/* Urgjencat · clinician-first time rail. Progressive enhancement only. */
+.ck-clinician-timeline{display:grid;gap:10px;margin-top:11px;padding:12px;border:1px solid rgba(39,75,145,.13);border-radius:15px;background:#fff;box-shadow:0 10px 24px rgba(35,58,101,.035)}
+.ck-time-head{display:flex;align-items:flex-start;justify-content:space-between;gap:12px}
+.ck-time-head>div:first-child{display:grid;gap:3px;min-width:0}
+.ck-time-head strong{color:#17233b;font-size:11px;font-weight:900;letter-spacing:.05em;text-transform:uppercase}
+.ck-time-head span{color:#738096;font-size:9px;font-weight:680;line-height:1.45}
+.ck-time-safety{display:flex;flex-wrap:wrap;justify-content:flex-end;gap:6px}
+.ck-time-safety button,.ck-time-foot button{min-height:30px;padding:0 9px;border:1px solid rgba(57,78,116,.13);border-radius:8px;background:#fff;color:#556177;font:inherit;font-size:8.5px;font-weight:850;cursor:pointer}
+.ck-time-safety button:first-child{border-color:rgba(183,53,53,.18);background:#fff7f7;color:#a43131}
+.ck-time-safety button:hover,.ck-time-safety button:focus-visible,.ck-time-foot button:hover,.ck-time-foot button:focus-visible{outline:none;border-color:rgba(49,95,200,.34);box-shadow:0 0 0 3px rgba(49,95,200,.07)}
+.ck-time-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px}
+.ck-time-phase{display:grid;align-content:start;gap:8px;min-width:0;padding:11px;border:1px solid rgba(62,78,113,.11);border-radius:12px;background:#fbfcfe}
+.ck-time-phase header{display:grid;gap:2px;padding-bottom:7px;border-bottom:1px solid rgba(62,78,113,.08)}
+.ck-time-phase header span{font-size:8px;font-weight:950;letter-spacing:.1em;text-transform:uppercase}
+.ck-time-phase header strong{color:#202d45;font-size:11.5px;line-height:1.35}
+.ck-time-phase.is-zero{border-color:rgba(183,53,53,.16);background:#fffafa}
+.ck-time-phase.is-zero header span{color:#b73535}
+.ck-time-phase.is-five{border-color:rgba(154,99,21,.16);background:#fffdf8}
+.ck-time-phase.is-five header span{color:#946018}
+.ck-time-phase.is-after{border-color:rgba(49,95,200,.14);background:#f9fbff}
+.ck-time-phase.is-after header span{color:#315fc8}
+.ck-time-actions{display:grid;gap:7px;margin:0;padding:0;list-style:none;counter-reset:cktime}
+.ck-time-actions li{position:relative;display:grid;gap:2px;padding-left:22px;counter-increment:cktime}
+.ck-time-actions li::before{content:counter(cktime);position:absolute;left:0;top:1px;display:grid;width:16px;height:16px;place-items:center;border-radius:999px;background:#eef2f8;color:#5e6b80;font-size:7px;font-weight:900}
+.ck-time-actions strong{color:#26334a;font-size:10px;font-weight:850;line-height:1.35}
+.ck-time-actions span{color:#5d697d;font-size:9.5px;line-height:1.42}
+.ck-time-empty{margin:0;color:#7c8798;font-size:9.5px;line-height:1.45}
+.ck-time-foot{display:flex;align-items:center;justify-content:space-between;gap:10px;padding-top:2px}
+.ck-time-foot span{color:#7b8698;font-size:8.5px;font-weight:650}
+html[data-theme="dark"] .ck-clinician-timeline{background:#111a2c;border-color:rgba(96,133,220,.18)}
+html[data-theme="dark"] .ck-time-head strong,html[data-theme="dark"] .ck-time-phase header strong,html[data-theme="dark"] .ck-time-actions strong{color:#f0f4fa}
+html[data-theme="dark"] .ck-time-phase{background:#172036;border-color:rgba(148,163,184,.14)}
+html[data-theme="dark"] .ck-time-phase.is-zero{background:#25171c}html[data-theme="dark"] .ck-time-phase.is-five{background:#261f14}html[data-theme="dark"] .ck-time-phase.is-after{background:#14203a}
+html[data-theme="dark"] .ck-time-safety button,html[data-theme="dark"] .ck-time-foot button{background:#172036;border-color:rgba(148,163,184,.16);color:#d6deea}
+@media(max-width:980px){.ck-time-grid{grid-template-columns:1fr 1fr}.ck-time-phase.is-after{grid-column:1/-1}}
+@media(max-width:640px){.ck-clinician-timeline{padding:9px;border-radius:13px}.ck-time-head{flex-direction:column}.ck-time-safety{justify-content:flex-start}.ck-time-grid{grid-template-columns:1fr}.ck-time-phase.is-after{grid-column:auto}.ck-time-foot{align-items:flex-start;flex-direction:column}.ck-time-foot button{width:100%;min-height:36px}}
