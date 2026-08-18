@@ -36,6 +36,17 @@
     return `${clean.slice(0, Math.max(0, limit - 1)).trimEnd()}…`;
   }
 
+  function humanValue(value) {
+    const clean = String(value || '').trim();
+    return TOKEN_LABELS.get(normalize(clean)) || clean;
+  }
+
+  function escapeHtml(value) {
+    return String(value ?? '').replace(/[&<>"']/g, char => ({
+      '&':'&amp;', '<':'&lt;', '>':'&gt;', '"':'&quot;', "'":'&#39;',
+    }[char]));
+  }
+
   function findSection(fragment) {
     const needle = normalize(fragment);
     return [...detail.querySelectorAll('.ck-section')].find(section =>
@@ -55,6 +66,13 @@
     const clone = row.cloneNode(true);
     clone.querySelector('strong')?.remove();
     return text(clone).replace(/^[:\s]+/, '');
+  }
+
+  function infoTexts(section) {
+    if (!section) return [];
+    return [...section.querySelectorAll('.ck-info-card')]
+      .map(card => text(card.querySelectorAll('span')[1] || card))
+      .filter(Boolean);
   }
 
   function translateVisibleTokens() {
@@ -100,11 +118,48 @@
   }
 
   function reviewState() {
+    const reviewButton = detail.querySelector('.ck-review-button');
+    const reviewDate = text(reviewButton?.querySelector('small'));
     if (detail.querySelector('.ck-meta .ck-chip.is-verified')) {
-      return {verified:true, label:'E verifikuar'};
+      return {verified:true, label:'E verifikuar', date:reviewDate};
     }
     const reviewChip = detail.querySelector('.ck-meta .ck-chip.is-review');
-    return {verified:false, label:text(reviewChip) || 'Për verifikim'};
+    return {verified:false, label:text(reviewChip) || 'Për verifikim', date:reviewDate};
+  }
+
+  function navButton(section, label) {
+    if (!section?.id) return '';
+    return `<button type="button" data-ck-doctor-target="${escapeHtml(section.id)}">${escapeHtml(label)}</button>`;
+  }
+
+  function redFlagPreview(items) {
+    if (!items.length) return '<p class="ck-doctor-emptyline">Nuk ka red flags të listuara.</p>';
+    return `<ul class="ck-doctor-redflag-preview">${items.slice(0, 2).map(item => `<li>${escapeHtml(compact(item, 105))}</li>`).join('')}</ul>`;
+  }
+
+  async function copyText(value) {
+    const clean = String(value || '').trim();
+    if (!clean) return false;
+    try {
+      if (navigator.clipboard?.writeText) {
+        await navigator.clipboard.writeText(clean);
+        return true;
+      }
+    } catch {}
+    try {
+      const textarea = document.createElement('textarea');
+      textarea.value = clean;
+      textarea.setAttribute('readonly', '');
+      textarea.style.position = 'fixed';
+      textarea.style.opacity = '0';
+      document.body.appendChild(textarea);
+      textarea.select();
+      const ok = document.execCommand('copy');
+      textarea.remove();
+      return ok;
+    } catch {
+      return false;
+    }
   }
 
   function buildDoctorConsole() {
@@ -122,10 +177,16 @@
     const secondary = findSection('Kujdesi sekondar');
     const review = reviewState();
 
-    const firstAction = text(primary?.querySelector('.ck-step-action')) || 'Shiko hapat e kujdesit parësor.';
-    const redFlagCount = alerts?.querySelectorAll('.ck-info-card').length || 0;
+    const primaryActions = [...(primary?.querySelectorAll('.ck-step-action') || [])]
+      .map(node => text(node)).filter(Boolean);
+    const firstAction = primaryActions[0] || 'Shiko hapat e kujdesit parësor.';
+    const nextAction = primaryActions[1] || '';
+    const redFlags = infoTexts(alerts);
     const referralUrgency = summaryValue(referral, 'Urgjenca') || summaryValue(referral, 'Kur referohet');
     const referralDestination = summaryValue(referral, 'Destinacioni');
+    const referralWhen = summaryValue(referral, 'Kur referohet');
+    const handover = summaryValue(referral, 'Handover');
+    const beforeTransfer = infoTexts(referral);
 
     const consoleEl = document.createElement('section');
     consoleEl.className = 'ck-doctor-console';
@@ -134,9 +195,12 @@
       <div class="ck-doctor-console-head">
         <div>
           <strong>Pamja e mjekut · 10 sekonda</strong>
-          <span>Veprimi i parë, alarmi dhe referimi në një vend.</span>
+          <span>Veprimi, red flags dhe referimi pa humbur kohë.</span>
         </div>
-        <span class="ck-doctor-triage">Triazh · ${escapeHtml(triageLabel())}</span>
+        <div class="ck-doctor-head-badges">
+          <span class="ck-doctor-review-pill ${review.verified ? 'is-verified' : 'is-review'}">${escapeHtml(review.label)}</span>
+          <span class="ck-doctor-triage">Triazh · ${escapeHtml(triageLabel())}</span>
+        </div>
       </div>
       ${review.verified ? '' : `
         <div class="ck-doctor-review-warning" role="note">
@@ -144,29 +208,47 @@
           <span>Ky dokument nuk ka ende status “Verifikuar”. Kontrollo burimin dhe statusin klinik para përdorimit në vendimmarrje.</span>
         </div>`}
       <div class="ck-doctor-console-grid">
-        <article class="ck-doctor-glance">
-          <small>01 · Çfarë bëj tani?</small>
+        <article class="ck-doctor-glance is-now">
+          <small>01 · Tani</small>
           <strong>${escapeHtml(compact(firstAction, 190))}</strong>
-          <p>Hap “Veprimi tani” për rendin e plotë të hapave.</p>
+          ${nextAction ? `<p><b>Pastaj:</b> ${escapeHtml(compact(nextAction, 125))}</p>` : '<p>Hap seksionin për rendin e plotë të hapave.</p>'}
         </article>
         <article class="ck-doctor-glance is-alert">
-          <small>02 · Red flags</small>
-          <strong>${redFlagCount ? `${redFlagCount} shenja alarmuese` : 'Pa red flags të listuara'}</strong>
-          <p>${redFlagCount ? 'Kontrolloji para se të vazhdosh.' : 'Kontrollo dokumentin e plotë klinik.'}</p>
+          <small>02 · Red flags · ${redFlags.length}</small>
+          ${redFlagPreview(redFlags)}
         </article>
         <article class="ck-doctor-glance is-referral">
           <small>03 · Referimi</small>
-          <strong>${escapeHtml(compact(referralUrgency || 'Shiko kriteret e referimit', 95))}</strong>
-          <p>${escapeHtml(compact(referralDestination || 'Destinacioni sipas protokollit.', 120))}</p>
+          <strong>${escapeHtml(compact(humanValue(referralUrgency) || 'Shiko kriteret e referimit', 105))}</strong>
+          <p>${escapeHtml(compact(referralDestination || referralWhen || 'Destinacioni sipas protokollit.', 130))}</p>
         </article>
       </div>
-      <nav class="ck-doctor-nav" aria-label="Shko te seksioni klinik">
-        ${navButton(primary, 'Veprimi tani')}
-        ${navButton(alerts, 'Red flags')}
-        ${navButton(referral, 'Referimi')}
-        ${navButton(safety, 'Mos bëj')}
-        ${navButton(secondary, 'Sekondar')}
-      </nav>`;
+      ${(beforeTransfer.length || handover) ? `
+        <div class="ck-doctor-transfer-strip">
+          <div>
+            <small>Para transferimit</small>
+            <strong>${escapeHtml(compact(beforeTransfer[0] || 'Përgatit transferimin sipas protokollit.', 150))}</strong>
+          </div>
+          ${handover ? `<div class="ck-doctor-handover">
+            <small>Handover</small>
+            <span>${escapeHtml(compact(handover, 165))}</span>
+            <button type="button" data-ck-copy-handover>Kopjo handover</button>
+          </div>` : ''}
+        </div>` : ''}
+      <div class="ck-doctor-console-foot">
+        <nav class="ck-doctor-nav" aria-label="Shko te seksioni klinik">
+          ${navButton(primary, 'Veprimi tani')}
+          ${navButton(alerts, 'Red flags')}
+          ${navButton(referral, 'Referimi')}
+          ${navButton(safety, 'Mos bëj')}
+          ${navButton(secondary, 'Sekondar')}
+        </nav>
+        <div class="ck-doctor-source-actions">
+          ${review.date ? `<span>${escapeHtml(review.date)}</span>` : ''}
+          <button type="button" data-ck-review-open>Burimi & verifikimi</button>
+          <span class="ck-doctor-copy-status" aria-live="polite"></span>
+        </div>
+      </div>`;
 
     summary.insertAdjacentElement('afterend', consoleEl);
 
@@ -179,17 +261,21 @@
         window.setTimeout(() => target.focus({preventScroll:true}), 280);
       });
     });
-  }
 
-  function navButton(section, label) {
-    if (!section?.id) return '';
-    return `<button type="button" data-ck-doctor-target="${escapeHtml(section.id)}">${escapeHtml(label)}</button>`;
-  }
+    consoleEl.querySelector('[data-ck-review-open]')?.addEventListener('click', () => {
+      detail.querySelector('[data-ck-review]')?.click();
+    });
 
-  function escapeHtml(value) {
-    return String(value ?? '').replace(/[&<>"']/g, char => ({
-      '&':'&amp;', '<':'&lt;', '>':'&gt;', '"':'&quot;', "'":'&#39;',
-    }[char]));
+    consoleEl.querySelector('[data-ck-copy-handover]')?.addEventListener('click', async event => {
+      const ok = await copyText(handover);
+      const status = consoleEl.querySelector('.ck-doctor-copy-status');
+      if (status) status.textContent = ok ? 'Handover u kopjua.' : 'Kopjimi dështoi.';
+      event.currentTarget.textContent = ok ? 'U kopjua ✓' : 'Provo përsëri';
+      window.setTimeout(() => {
+        if (status) status.textContent = '';
+        if (event.currentTarget?.isConnected) event.currentTarget.textContent = 'Kopjo handover';
+      }, 2200);
+    });
   }
 
   function enhanceDetail() {
@@ -215,7 +301,7 @@
       toolbar.insertAdjacentHTML('afterend', `
         <p class="ck-doctor-hint">
           <span>Kërko me emër, ICD ose sinonim klinik.</span>
-          <span><kbd>/</kbd> fokuson kërkimin</span>
+          <span><kbd>/</kbd> kërko · <kbd>Esc</kbd> pastro</span>
         </p>`);
     }
 
@@ -223,6 +309,11 @@
   }
 
   document.addEventListener('keydown', event => {
+    if (event.key === 'Escape' && document.activeElement === search && search.value) {
+      search.value = '';
+      search.dispatchEvent(new Event('input', {bubbles:true}));
+      return;
+    }
     if (event.key !== '/' || event.ctrlKey || event.metaKey || event.altKey) return;
     const tag = document.activeElement?.tagName;
     if (tag === 'INPUT' || tag === 'TEXTAREA' || document.activeElement?.isContentEditable) return;
