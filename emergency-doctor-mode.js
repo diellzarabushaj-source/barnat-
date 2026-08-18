@@ -99,6 +99,14 @@
     return chip ? text(chip) : 'Sipas protokollit';
   }
 
+  function reviewState() {
+    if (detail.querySelector('.ck-meta .ck-chip.is-verified')) {
+      return {verified:true, label:'E verifikuar'};
+    }
+    const reviewChip = detail.querySelector('.ck-meta .ck-chip.is-review');
+    return {verified:false, label:text(reviewChip) || 'Për verifikim'};
+  }
+
   function buildDoctorConsole() {
     detail.querySelector('.ck-doctor-console')?.remove();
 
@@ -112,6 +120,7 @@
     const referral = findSection('Referimi');
     const safety = findSection('Çfarë të mos bëhet');
     const secondary = findSection('Kujdesi sekondar');
+    const review = reviewState();
 
     const firstAction = text(primary?.querySelector('.ck-step-action')) || 'Shiko hapat e kujdesit parësor.';
     const redFlagCount = alerts?.querySelectorAll('.ck-info-card').length || 0;
@@ -129,6 +138,11 @@
         </div>
         <span class="ck-doctor-triage">Triazh · ${escapeHtml(triageLabel())}</span>
       </div>
+      ${review.verified ? '' : `
+        <div class="ck-doctor-review-warning" role="note">
+          <strong>${escapeHtml(review.label)}</strong>
+          <span>Ky dokument nuk ka ende status “Verifikuar”. Kontrollo burimin dhe statusin klinik para përdorimit në vendimmarrje.</span>
+        </div>`}
       <div class="ck-doctor-console-grid">
         <article class="ck-doctor-glance">
           <small>01 · Çfarë bëj tani?</small>
