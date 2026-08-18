@@ -1,0 +1,98 @@
+/* MedIndex · Urgjencat · Doctor-first clarity layer
+   Progressive enhancement only: clinical content remains Sanity-owned. */
+
+html.medindex-tailadmin[data-mi-page="urgjencat"]{
+  --ckd-ink:#13203a;
+  --ckd-muted:#657188;
+  --ckd-blue:#315fc8;
+  --ckd-blue-soft:#eef4ff;
+  --ckd-red:#b73535;
+  --ckd-red-soft:#fff4f4;
+  --ckd-amber:#9a6315;
+  --ckd-amber-soft:#fff8e8;
+  --ckd-green:#126e67;
+  --ckd-green-soft:#eef9f7;
+  --ckd-line:rgba(45,67,109,.13);
+}
+
+/* The page is a working surface, not a marketing page. */
+html.medindex-tailadmin[data-mi-page="urgjencat"] .clinical-knowledge-page{gap:16px}
+html.medindex-tailadmin[data-mi-page="urgjencat"] .ck-hero{padding:22px 26px;border-radius:20px;box-shadow:0 12px 30px rgba(31,50,87,.06)}
+html.medindex-tailadmin[data-mi-page="urgjencat"] .ck-hero h1{font-size:clamp(34px,4vw,50px)}
+html.medindex-tailadmin[data-mi-page="urgjencat"] .ck-hero p{margin-top:9px;font-size:13px}
+
+.ck-doctor-flow{display:flex;flex-wrap:wrap;align-items:center;gap:8px;margin-top:15px}
+.ck-doctor-flow span{display:inline-flex;min-height:28px;align-items:center;gap:7px;padding:0 10px;border:1px solid var(--ckd-line);border-radius:999px;background:#fff;color:#5e6b81;font-size:10px;font-weight:780}
+.ck-doctor-flow b{display:grid;width:17px;height:17px;place-items:center;border-radius:999px;background:var(--ckd-blue-soft);color:var(--ckd-blue);font-size:9px}
+
+html.medindex-tailadmin[data-mi-page="urgjencat"] .ck-toolbar{position:sticky;top:8px;z-index:35;padding:10px;border-radius:15px;box-shadow:0 10px 28px rgba(26,45,82,.08)}
+html.medindex-tailadmin[data-mi-page="urgjencat"] .ck-toolbar input,
+html.medindex-tailadmin[data-mi-page="urgjencat"] .ck-toolbar select{min-height:45px;font-size:13px}
+html.medindex-tailadmin[data-mi-page="urgjencat"] .ck-status{padding:3px 8px 1px;text-align:left;font-size:10px;font-weight:700}
+
+/* Doctor glance: the first 10 seconds. */
+.ck-doctor-console{display:grid;gap:10px;margin-top:18px;padding:14px;border:1px solid rgba(49,95,200,.16);border-radius:17px;background:linear-gradient(145deg,#f8fbff,#f2f6ff)}
+.ck-doctor-console-head{display:flex;align-items:center;justify-content:space-between;gap:12px}
+.ck-doctor-console-head>div{display:flex;align-items:center;gap:8px;min-width:0}
+.ck-doctor-console-head strong{color:var(--ckd-ink);font-size:11px;font-weight:900;letter-spacing:.02em;text-transform:uppercase}
+.ck-doctor-console-head span{color:#7b8799;font-size:9px;font-weight:700}
+.ck-doctor-triage{display:inline-flex;min-height:27px;align-items:center;padding:0 9px;border:1px solid rgba(183,53,53,.18);border-radius:999px;background:#fff;color:var(--ckd-red);font-size:9px;font-weight:900;letter-spacing:.04em;text-transform:uppercase}
+.ck-doctor-console-grid{display:grid;grid-template-columns:minmax(0,1.3fr) minmax(170px,.7fr) minmax(0,1fr);gap:8px}
+.ck-doctor-glance{display:grid;align-content:start;gap:5px;min-height:86px;padding:11px 12px;border:1px solid rgba(45,67,109,.11);border-radius:13px;background:#fff}
+.ck-doctor-glance small{color:#8993a3;font-size:8px;font-weight:900;letter-spacing:.11em;text-transform:uppercase}
+.ck-doctor-glance strong{color:var(--ckd-ink);font-size:12px;line-height:1.45}
+.ck-doctor-glance p{margin:0;color:#647086;font-size:10px;line-height:1.45}
+.ck-doctor-glance.is-alert{border-color:rgba(183,53,53,.15);background:#fffafa}
+.ck-doctor-glance.is-alert strong{color:#a82d2d}
+.ck-doctor-glance.is-referral{border-color:rgba(154,99,21,.15);background:#fffdf8}
+.ck-doctor-glance.is-referral strong{color:#80500e}
+
+.ck-doctor-nav{display:flex;flex-wrap:wrap;gap:6px;padding-top:1px}
+.ck-doctor-nav button{min-height:31px;padding:0 10px;border:1px solid var(--ckd-line);border-radius:9px;background:#fff;color:#5c697e;font:inherit;font-size:9px;font-weight:850;cursor:pointer}
+.ck-doctor-nav button:hover,.ck-doctor-nav button:focus-visible{border-color:rgba(49,95,200,.34);color:var(--ckd-blue);outline:none;box-shadow:0 0 0 3px rgba(49,95,200,.08)}
+
+/* Clinical hierarchy: immediate actions dominate the viewport. */
+html.medindex-tailadmin[data-mi-page="urgjencat"] .ck-detail{padding:22px}
+html.medindex-tailadmin[data-mi-page="urgjencat"] .ck-detail-head{padding-bottom:17px}
+html.medindex-tailadmin[data-mi-page="urgjencat"] .ck-summary{font-size:13px;line-height:1.62}
+html.medindex-tailadmin[data-mi-page="urgjencat"] .ck-sections{gap:14px;margin-top:17px}
+html.medindex-tailadmin[data-mi-page="urgjencat"] .ck-section{padding:16px;border-radius:16px}
+html.medindex-tailadmin[data-mi-page="urgjencat"] .ck-primary-section{border-color:rgba(49,95,200,.17);box-shadow:0 12px 26px rgba(49,95,200,.055)}
+html.medindex-tailadmin[data-mi-page="urgjencat"] .ck-primary-section .ck-section-title h3{font-size:17px}
+html.medindex-tailadmin[data-mi-page="urgjencat"] .ck-step-copy strong{font-size:13px}
+html.medindex-tailadmin[data-mi-page="urgjencat"] .ck-step-action{color:#46546a;font-size:12.5px;line-height:1.55}
+html.medindex-tailadmin[data-mi-page="urgjencat"] .ck-alert-section{border-color:rgba(183,53,53,.2);background:linear-gradient(180deg,#fff,#fffafa)}
+html.medindex-tailadmin[data-mi-page="urgjencat"] .ck-safety-section{border-color:rgba(183,53,53,.15)}
+
+/* Translate importance visually even before reading text. */
+.ck-doctor-urgent-label{display:inline-flex;min-height:23px;align-items:center;padding:0 7px;border-radius:7px;background:var(--ckd-red-soft);color:var(--ckd-red);font-size:8px;font-weight:900;letter-spacing:.06em;text-transform:uppercase}
+.ck-doctor-minute-label{display:inline-flex;min-height:23px;align-items:center;padding:0 7px;border-radius:7px;background:var(--ckd-amber-soft);color:var(--ckd-amber);font-size:8px;font-weight:900;letter-spacing:.06em;text-transform:uppercase}
+
+html.medindex-tailadmin[data-mi-page="urgjencat"] .ck-list-button{padding:12px 13px;border-radius:12px}
+html.medindex-tailadmin[data-mi-page="urgjencat"] .ck-list-button strong{font-size:13px}
+html.medindex-tailadmin[data-mi-page="urgjencat"] .ck-list-button span{font-size:10px}
+html.medindex-tailadmin[data-mi-page="urgjencat"] .ck-directory{padding:8px;border-radius:18px}
+
+.ck-doctor-hint{display:flex;align-items:center;justify-content:space-between;gap:12px;margin:0 2px;color:#8490a2;font-size:9px}
+.ck-doctor-hint kbd{display:inline-grid;min-width:24px;height:22px;place-items:center;padding:0 5px;border:1px solid rgba(77,96,132,.16);border-bottom-width:2px;border-radius:6px;background:#fff;color:#59657a;font:inherit;font-size:8px;font-weight:850}
+
+html[data-theme="dark"] .ck-doctor-console{background:linear-gradient(145deg,#111a2d,#101827);border-color:rgba(96,133,220,.2)}
+html[data-theme="dark"] .ck-doctor-glance,html[data-theme="dark"] .ck-doctor-flow span,html[data-theme="dark"] .ck-doctor-nav button,html[data-theme="dark"] .ck-doctor-hint kbd{background:#172036;border-color:rgba(148,163,184,.16);color:#dce4ef}
+html[data-theme="dark"] .ck-doctor-glance strong,html[data-theme="dark"] .ck-doctor-console-head strong{color:#f8fafc}
+html[data-theme="dark"] .ck-doctor-glance.is-alert{background:#26171c}html[data-theme="dark"] .ck-doctor-glance.is-referral{background:#271f13}
+
+@media(max-width:1080px){.ck-doctor-console-grid{grid-template-columns:1fr 1fr}.ck-doctor-glance:first-child{grid-column:1/-1}}
+@media(max-width:900px){html.medindex-tailadmin[data-mi-page="urgjencat"] .ck-toolbar{top:6px}.ck-doctor-console-grid{grid-template-columns:1fr 1fr}.ck-doctor-glance:first-child{grid-column:1/-1}}
+@media(max-width:640px){
+  html.medindex-tailadmin[data-mi-page="urgjencat"] .ck-hero{padding:18px}
+  .ck-doctor-flow{gap:6px}.ck-doctor-flow span{font-size:9px}
+  html.medindex-tailadmin[data-mi-page="urgjencat"] .ck-detail{padding:15px}
+  .ck-doctor-console{margin-top:14px;padding:10px;border-radius:14px}
+  .ck-doctor-console-head{align-items:flex-start;flex-direction:column}
+  .ck-doctor-console-grid{grid-template-columns:1fr}
+  .ck-doctor-glance:first-child{grid-column:auto}
+  .ck-doctor-glance{min-height:0}
+  .ck-doctor-nav{display:grid;grid-template-columns:repeat(2,minmax(0,1fr))}
+  .ck-doctor-nav button{width:100%}
+  html.medindex-tailadmin[data-mi-page="urgjencat"] .ck-step-action{font-size:12px}
+}
