@@ -11,6 +11,7 @@ const html = read('urgjencat.html');
 const core = read('urgjencat.js');
 const doctor = read('emergency-doctor-mode.js');
 const assist = read('emergency-directory-assist.js');
+const priority = read('emergency-directory-priority.js');
 const assistCss = read('emergency-directory-assist.css');
 const timeline = read('emergency-clinician-timeline.js');
 const timelineCss = read('emergency-clinician-timeline.css');
@@ -23,11 +24,13 @@ assert.ok(
 assert.ok(
   html.indexOf('urgjencat.js') < html.indexOf('emergency-doctor-mode.js')
   && html.indexOf('emergency-doctor-mode.js') < html.indexOf('emergency-directory-assist.js')
-  && html.indexOf('emergency-directory-assist.js') < html.indexOf('emergency-clinician-timeline.js'),
+  && html.indexOf('emergency-directory-assist.js') < html.indexOf('emergency-directory-priority.js')
+  && html.indexOf('emergency-directory-priority.js') < html.indexOf('emergency-clinician-timeline.js'),
   'Clinician enhancements must run after the core Sanity renderer in deterministic order.',
 );
 assert.match(html, /emergency-directory-assist\.css\?v=20260818-2/);
 assert.match(html, /emergency-directory-assist\.js\?v=20260818-2/);
+assert.match(html, /emergency-directory-priority\.js\?v=20260818-1/);
 assert.match(html, /emergency-clinician-timeline\.css\?v=20260818-1/);
 assert.match(html, /emergency-clinician-timeline\.js\?v=20260818-1/);
 
@@ -56,6 +59,13 @@ assert.match(assist, /event\.key === 'ArrowUp'/);
 assert.match(assist, /Kopjo protokollin/);
 assert.match(assist, /jo handover specifik i pacientit/);
 assert.match(assist, /Publikuar:/);
+
+assert.match(priority, /TRIAGE_RANK/);
+assert.match(priority, /critical: 0/);
+assert.match(priority, /'very-urgent': 1/);
+assert.match(priority, /urgent: 2/);
+assert.match(priority, /localeCompare/);
+assert.match(priority, /Renditja sipas triazhit|renditja sipas triazhit/i);
 
 assert.match(timeline, /0–1 min/);
 assert.match(timeline, /1–5 min/);
