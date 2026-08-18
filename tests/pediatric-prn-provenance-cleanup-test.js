@@ -81,16 +81,54 @@ const pantenolCream = {
 assert.equal(scheduleOf(pantenolCream).mode, 'unspecified');
 assert.equal(classify(pantenolCream).readiness, STATUS.TEXT_ONLY);
 
-// PANTENOL ointment: official product page exists, but posology remains under review.
+// PANTENOL ointment (#2927): product-specific KÜB is verified, but directions
+// vary by indication and are not represented as one universal pediatric formula.
 const pantenolOintment = {
   ...base,
-  pediatric_verification_status:'in_review',
-  pediatric_verified_at:null,
+  pediatric_verification_status:'verified',
+  pediatric_verified_at:'2026-08-18',
   pediatric_doses_per_day:null,
   pediatric_interval_hours:null,
   pediatric_route:'TOP',
+  pediatric_source_url:'https://sabailac.com.tr/assets/urunler/kub/pantenol-5-pomad-kub-26082014.pdf',
 };
-assert.equal(classify(pantenolOintment).readiness, STATUS.TEXT_ONLY);
+assert.equal(scheduleOf(pantenolOintment).mode, 'unspecified');
+assert.equal(classify(pantenolOintment).readiness, STATUS.TEXT_ONLY,
+  'Verified topical directions must remain text-only without a universal typed dose model.');
+
+// Ibum Sport gel (#1686) and IBUM EXPRESS 400 mg (#1688): source-backed text
+// is verified, while ambiguous >12-year boundaries / non-formula directions stay TEXT_ONLY.
+for (const row of [
+  {
+    ...base,
+    pediatric_verification_status:'verified',
+    pediatric_verified_at:'2026-08-18',
+    pediatric_route:'TOP',
+    pediatric_source_url:'https://www.hasco-lek.pl/produkty/ibum-sport-zel/',
+  },
+  {
+    ...base,
+    pediatric_verification_status:'verified',
+    pediatric_verified_at:'2026-08-18',
+    pediatric_route:'PO',
+    pediatric_source_url:'https://www.hasco-lek.pl/produkty/ibum-express-forte/',
+  },
+]) {
+  assert.equal(scheduleOf(row).mode, 'unspecified');
+  assert.equal(classify(row).readiness, STATUS.TEXT_ONLY,
+    'Verified narrative directions must not become formulas just because the source is official.');
+}
+
+// SOSARIA (#2151): regulator-backed adult-only FDC status is verified, so the
+// classifier must block calculation as NOT_RECOMMENDED before any arithmetic.
+const sosaria = {
+  ...base,
+  pediatric_use_status:'NUK REKOMANDOHET',
+  pediatric_verification_status:'verified',
+  pediatric_verified_at:'2026-08-18',
+  pediatric_source_url:'https://www.aifa.gov.it/en/-/modifica-di-indicazioni-e-popolazione-autorizzata-dei-medicinali-a-base-dell-associazione-fissa-fdc',
+};
+assert.equal(classify(sosaria).readiness, STATUS.NOT_RECOMMENDED);
 
 // DOLOKIDS and Minamol: product-specific pediatric dose provenance is missing.
 for (const row of [
@@ -136,5 +174,6 @@ assert.equal(classify(pirofen).readiness, STATUS.TEXT_ONLY,
 
 console.log(
   'Pediatric PRN/provenance cleanup passed: ranges stay ranges, PRN stays non-fixed, '
-  + 'unsupported inherited sources remain fail-closed, and Pirofen metadata does not auto-activate calculation.',
+  + 'official text-only promotions remain non-calculable, unsupported inherited sources stay fail-closed, '
+  + 'and Pirofen metadata does not auto-activate calculation.',
 );
