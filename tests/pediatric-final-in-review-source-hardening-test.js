@@ -196,8 +196,83 @@ assert.match(verifiedFix, /interval_hours = NULL/);
 assert.match(verifiedFix, /min_weight_kg = NULL/);
 assert.match(verifiedFix, /max_weight_kg = NULL/);
 
+// Remaining needs_source rows must not inherit dosing from official-but-different
+// products. Exact ingredients or strength are insufficient when the brand,
+// manufacturer or presentation is different.
+function needsSourceRow(route, sourceUrl) {
+  return {
+    pediatric_indication:'Product-specific indication pending exact label',
+    pediatric_use_status:'PA TË DHËNA',
+    pediatric_min_age_value:null,
+    pediatric_min_age_unit:null,
+    pediatric_max_age_value:null,
+    pediatric_max_age_unit:null,
+    pediatric_min_weight_kg:null,
+    pediatric_max_weight_kg:null,
+    pediatric_dose_min:null,
+    pediatric_dose_max:null,
+    pediatric_dose_unit:null,
+    pediatric_dose_basis:null,
+    pediatric_doses_per_day:null,
+    pediatric_interval_hours:null,
+    pediatric_max_doses_per_day:null,
+    pediatric_min_interval_hours:null,
+    pediatric_max_single_value:null,
+    pediatric_max_single_unit:null,
+    pediatric_max_daily_value:null,
+    pediatric_max_daily_unit:null,
+    pediatric_concentration_value:null,
+    pediatric_concentration_unit:null,
+    pediatric_concentration_per_value:null,
+    pediatric_concentration_per_unit:null,
+    pediatric_route:route,
+    pediatric_verification_status:'needs_source',
+    pediatric_source_url:sourceUrl,
+    pediatric_verified_at:null,
+  };
+}
+
+const provenanceBlocked = [
+  ['ROZAMEX mismatch', needsSourceRow('TOP', 'https://lekovi.zdravstvo.gov.mk/drugsregister/detailview/2446308917')],
+  ['Meclozol mismatch', needsSourceRow('VAGINAL', 'https://lekovi.zdravstvo.gov.mk/drugsregister/detailview/3477217023')],
+  ['Empiget-M mismatch', needsSourceRow('PO', 'https://getzpharma.com/product/diampa-m/')],
+  ['CINARIZINE Profarma mismatch', needsSourceRow('PO', 'https://nomenclator.anm.ro/medicamente?cim=W10590001')],
+];
+provenanceBlocked.forEach(([label, row]) => {
+  assert.equal(row.pediatric_use_status, 'PA TË DHËNA');
+  assert.equal(scheduleOf(row).mode, 'unspecified');
+  assertFailClosed(row, label);
+});
+
+const provenanceFix = fs.readFileSync(
+  path.resolve(__dirname, '..', 'database/data-fixes/20260818_zzz_pediatric_needs_source_provenance_hardening.sql'),
+  'utf8',
+);
+assert.match(provenanceFix, /Statusi i përdorimit pediatrik', 'PA TË DHËNA'/);
+assert.match(provenanceFix, /Statusi i verifikimit pediatrik', 'needs_source'/);
+assert.match(provenanceFix, /trigger_safe_payload_sync/,
+  'Sheet-owned provenance hardening must mirror pediatric source_payload keys for the sync trigger.');
+assert.match(provenanceFix, /ROZAMET 10 mg\/g/);
+assert.match(provenanceFix, /GINOFIX 500 mg\+200 mg/);
+assert.match(provenanceFix, /DIAMPA-M/);
+assert.match(provenanceFix, /STUGERON 25 mg/);
+assert.match(provenanceFix, /pediatric_max_doses_per_day = NULL/);
+assert.match(provenanceFix, /pediatric_min_interval_hours = NULL/);
+assert.match(provenanceFix, /calculation_status = 'pending'/);
+assert.match(provenanceFix, /editorial_status = 'in_review'/);
+assert.match(provenanceFix, /dose_value_min = NULL/);
+assert.match(provenanceFix, /dose_value_max = NULL/);
+assert.match(provenanceFix, /doses_per_day = NULL/);
+assert.match(provenanceFix, /interval_hours = NULL/);
+assert.match(provenanceFix, /max_single_mg = NULL/);
+assert.match(provenanceFix, /max_daily_mg = NULL/);
+assert.doesNotMatch(provenanceFix, /pediatric_verification_status\s*=\s*'verified'/,
+  'Known product mismatches must never be promoted by this migration.');
+assert.doesNotMatch(provenanceFix, /calculation_status\s*=\s*'calculable_verified'/,
+  'Known product mismatches must never become calculator-ready.');
+
 console.log(
   'Final pediatric source-hardening passed: Coldaway and Colistin stay verified TEXT_ONLY, '
-  + 'Mucosoft and Ketonal remain genuine in-review blockers, and exact Belgian DAFALGAN BE123776 '
-  + 'is verified narratively while all automatic dose fields remain fail-closed.',
+  + 'Mucosoft and Ketonal remain genuine in-review blockers, exact Belgian DAFALGAN BE123776 '
+  + 'stays verified narratively, and four known product-mismatch needs_source rows remain fail-closed.',
 );
