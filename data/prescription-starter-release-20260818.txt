@@ -1,0 +1,5 @@
+MedIndex prescription starter release 2026-08-18
+- Herpes zoster adult starter template
+- Exact catalog products: Cicloviral 800 mg, BEN-U-RON 500 mg, ALCET 10 mg
+- Calamine is not present in the current MedIndex catalog; cetirizine is optional symptomatic pruritus relief, not a topical equivalent.
+- Clinical review remains required before save/copy/print.
