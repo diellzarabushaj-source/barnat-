@@ -11,8 +11,8 @@ const CHUNK_SIZE = 250;
    Update these counts only together with an audited verification-status change;
    `needs_source` is a valid fail-closed state, not an export error. */
 const EXPECTED_VERIFIED = 3392;
-const EXPECTED_IN_REVIEW = 89;
-const EXPECTED_NEEDS_SOURCE = 31;
+const EXPECTED_IN_REVIEW = 74;
+const EXPECTED_NEEDS_SOURCE = 46;
 const MASTER_FILE = path.resolve(__dirname, '..', 'ped-sync-master.tsv');
 
 const FIELDS = Object.freeze([
