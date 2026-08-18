@@ -141,6 +141,20 @@ const paroxetinaGp = {
 };
 assert.equal(classify(paroxetinaGp).readiness, STATUS.NOT_RECOMMENDED);
 
+// Diurocard 50/20 mg (#2142): exact ANMDMR product + official leaflet explicitly
+// say the fixed spironolactone/furosemide combination is not suitable/recommended
+// for children and adolescents. Verification must never create a dose formula.
+const diurocard = {
+  ...base,
+  pediatric_use_status:'NUK REKOMANDOHET',
+  pediatric_verification_status:'verified',
+  pediatric_verified_at:'2026-08-18',
+  pediatric_source_url:'https://www.anm.ro/_/_PRO/pro_12842_13.12.19.pdf',
+};
+assert.equal(scheduleOf(diurocard).mode, 'unspecified');
+assert.equal(classify(diurocard).readiness, STATUS.NOT_RECOMMENDED,
+  'Exact adult-only product evidence must block calculation, not manufacture a pediatric dose.');
+
 // Biolis (#2227) and TYLOLFEN HOT (#2419): linked sources belong to a different
 // product form/composition. needs_source must remain fail-closed even if someone
 // later adds numbers to editorial fields without resolving product identity.
