@@ -22,13 +22,12 @@
     const buttons = [...list.querySelectorAll('.ck-list-button[data-id]')];
     if (!buttons.length) return;
 
-    list.setAttribute('role', 'listbox');
     list.setAttribute('aria-label', 'Urgjencat e disponueshme');
 
     buttons.forEach(button => {
       const isActive = button.classList.contains('is-active');
-      button.setAttribute('role', 'option');
-      button.setAttribute('aria-selected', isActive ? 'true' : 'false');
+      if (isActive) button.setAttribute('aria-current', 'true');
+      else button.removeAttribute('aria-current');
 
       if (!button.querySelector('.ck-directory-tags')) {
         const metaLine = [...button.children].find(node =>
