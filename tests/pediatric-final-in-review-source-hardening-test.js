@@ -122,7 +122,7 @@ assert.equal(classify(colistin).readiness, STATUS.TEXT_ONLY,
 assertFailClosed(colistin, 'Colistin/Norma exact-SPC text-only regimen');
 
 const dafalgan = {
-  pediatric_indication:'Dhimbje e lehtë–mesatare; temperaturë',
+  pediatric_indication:'Trajtim simptomatik i dhimbjes dhe temperaturës',
   pediatric_use_status:'KUFIZUAR',
   pediatric_min_age_value:null,
   pediatric_min_age_unit:null,
@@ -147,38 +147,57 @@ const dafalgan = {
   pediatric_concentration_per_value:1,
   pediatric_concentration_per_unit:'mL',
   pediatric_route:'PO',
-  pediatric_verification_status:'in_review',
-  pediatric_source_url:'https://dafalgan.be/nl/dafalgan-voor-babys-en-kinderen/',
-  pediatric_verified_at:null,
+  pediatric_verification_status:'verified',
+  pediatric_source_url:'https://dafalgan.be/nl/product/dafalgan-pediatrie-30mgml/; https://cms.dafalgan.be/s3fs-public/2025-04/250307-be-pil_dafsolution-nl_clean-last.pdf',
+  pediatric_verified_at:'2026-08-18',
 };
 assert.equal(dafalgan.pediatric_min_weight_kg, null);
 assert.equal(dafalgan.pediatric_max_weight_kg, null);
 assert.equal(dafalgan.pediatric_dose_basis, null,
-  'Belgian external-reference DAFALGAN must not inherit the historical French 3–32 kg typed model.');
-assertFailClosed(dafalgan, 'DAFALGAN market-identity/weight-boundary blocker');
+  'Belgian external-reference DAFALGAN must not infer a typed model beyond the exact dosing-device instructions.');
+assert.equal(scheduleOf(dafalgan).mode, 'unspecified');
+assert.equal(classify(dafalgan).readiness, STATUS.TEXT_ONLY,
+  'Exact Belgian DAFALGAN leaflet may be verified narratively while automatic calculation remains disabled.');
+assertFailClosed(dafalgan, 'DAFALGAN exact Belgian leaflet text-only external reference');
 
-// The Neon-only legacy regimen binding must be explicitly scrubbed too. This
-// static gate prevents a later replay of the data-fix chain from restoring the
-// historical French 3–32 kg / 15 mg/kg narrative behind an otherwise fail-closed drug card.
+// The older cleanup must scrub the inherited French model before the final
+// exact-Belgian promotion runs.
 const bindingFix = fs.readFileSync(
   path.resolve(__dirname, '..', 'database/data-fixes/20260818_pediatric_dafalgan_legacy_binding_cleanup.sql'),
   'utf8',
 );
 assert.match(bindingFix, /WHERE source_key = 'extra-4013-pediatric'/);
-assert.match(bindingFix, /calculation_status = 'pending'/);
 assert.match(bindingFix, /dose_value_min = NULL/);
 assert.match(bindingFix, /dose_value_max = NULL/);
 assert.match(bindingFix, /doses_per_day = NULL/);
 assert.match(bindingFix, /interval_hours = NULL/);
 assert.match(bindingFix, /min_weight_kg = NULL/);
 assert.match(bindingFix, /max_weight_kg = NULL/);
-assert.match(bindingFix, /frequency_text = NULL/);
-assert.match(bindingFix, /maximum_text = NULL/);
 assert.doesNotMatch(bindingFix, /SET dose_text = '15 mg\/kg/,
   'Legacy DAFALGAN quantitative dose text must not return in the cleanup migration.');
 
+// The final Belgian leaflet promotion must preserve the scrubbed typed fields
+// and use the standard verified TEXT_ONLY regimen state.
+const verifiedFix = fs.readFileSync(
+  path.resolve(__dirname, '..', 'database/data-fixes/20260818_zzz_pediatric_dafalgan_be123776_verified_text_only.sql'),
+  'utf8',
+);
+assert.match(verifiedFix, /pediatric_verification_status = 'verified'/);
+assert.match(verifiedFix, /BE123776/);
+assert.match(verifiedFix, /calculation_status = 'text_verified'/);
+assert.match(verifiedFix, /editorial_status = 'published'/);
+assert.match(verifiedFix, /pediatric_dose_basis = NULL/);
+assert.match(verifiedFix, /pediatric_doses_per_day = NULL/);
+assert.match(verifiedFix, /pediatric_interval_hours = NULL/);
+assert.match(verifiedFix, /dose_value_min = NULL/);
+assert.match(verifiedFix, /dose_value_max = NULL/);
+assert.match(verifiedFix, /doses_per_day = NULL/);
+assert.match(verifiedFix, /interval_hours = NULL/);
+assert.match(verifiedFix, /min_weight_kg = NULL/);
+assert.match(verifiedFix, /max_weight_kg = NULL/);
+
 console.log(
-  'Final pediatric source-hardening passed: Coldaway stays verified TEXT_ONLY, '
-  + 'Mucosoft keeps its unresolved official-source contradiction, Ketonal/DAFALGAN stay fail-closed, '
-  + 'Colistin/Norma is exact-SPC verified but TEXT_ONLY, and the DAFALGAN legacy binding remains scrubbed.',
+  'Final pediatric source-hardening passed: Coldaway and Colistin stay verified TEXT_ONLY, '
+  + 'Mucosoft and Ketonal remain genuine in-review blockers, and exact Belgian DAFALGAN BE123776 '
+  + 'is verified narratively while all automatic dose fields remain fail-closed.',
 );
