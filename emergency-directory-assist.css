@@ -1,0 +1,22 @@
+/* Urgjencat · compact clinician directory assistance. */
+html.medindex-tailadmin[data-mi-page="urgjencat"] .ck-list-button{position:relative}
+.ck-directory-tags{display:flex!important;flex-wrap:wrap;gap:5px;margin-top:8px!important}
+.ck-directory-tag{display:inline-flex!important;min-height:22px;align-items:center;margin:0!important;padding:0 7px;border:1px solid rgba(74,91,126,.13);border-radius:999px;background:#fff;color:#6b7689!important;font-size:8px!important;font-weight:800;line-height:1!important}
+.ck-directory-tag.is-icd{border-color:rgba(49,95,200,.16);background:#f2f6ff;color:#315fc8!important;letter-spacing:.03em}
+.ck-directory-active{position:absolute;top:9px;right:9px;display:inline-flex!important;min-height:20px;align-items:center;margin:0!important;padding:0 6px;border:1px solid rgba(18,110,103,.15);border-radius:999px;background:#eef9f7;color:#126e67!important;font-size:7px!important;font-weight:900;letter-spacing:.06em;text-transform:uppercase}
+html.medindex-tailadmin[data-mi-page="urgjencat"] .ck-list-button:focus-visible{outline:none;border-color:rgba(49,95,200,.34);box-shadow:0 0 0 3px rgba(49,95,200,.09),inset 3px 0 0 #315fc8}
+html.medindex-tailadmin[data-mi-page="urgjencat"] .ck-list-button.is-active strong{padding-right:42px}
+
+.ck-doctor-source-actions [data-ck-copy-protocol]{border-color:rgba(49,95,200,.16);background:#f7f9ff;color:#315fc8}
+.ck-doctor-source-actions [data-ck-copy-protocol]:hover,.ck-doctor-source-actions [data-ck-copy-protocol]:focus-visible{background:#eef4ff}
+
+html[data-theme="dark"] .ck-directory-tag{background:#172036;border-color:rgba(148,163,184,.16);color:#cbd5e1!important}
+html[data-theme="dark"] .ck-directory-tag.is-icd{background:#14213c;border-color:rgba(96,133,220,.22);color:#9db8f2!important}
+html[data-theme="dark"] .ck-directory-active{background:#102c2b;border-color:rgba(45,212,191,.18);color:#9ee8df!important}
+html[data-theme="dark"] .ck-doctor-source-actions [data-ck-copy-protocol]{background:#14213c;color:#a9c0f4;border-color:rgba(96,133,220,.22)}
+
+@media(max-width:640px){
+  .ck-directory-tags{gap:4px;margin-top:7px!important}
+  .ck-directory-tag{min-height:21px;padding:0 6px;font-size:7.5px!important}
+  .ck-directory-active{top:8px;right:8px}
+}
