@@ -9,8 +9,8 @@ const source = fs.readFileSync(
   'utf8',
 );
 
-assert.match(source, /const EXPECTED_VERIFIED = 3392;/);
-assert.match(source, /const EXPECTED_IN_REVIEW = 2;/);
+assert.match(source, /const EXPECTED_VERIFIED = 3393;/);
+assert.match(source, /const EXPECTED_IN_REVIEW = 1;/);
 assert.match(source, /const EXPECTED_NEEDS_SOURCE = 118;/);
 assert.match(source, /status === 'needs_source'/,
   'Static pediatric export must accept the official fail-closed needs_source state.');
