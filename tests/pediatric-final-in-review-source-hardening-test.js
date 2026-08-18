@@ -97,7 +97,7 @@ assert.equal(scheduleOf(ketonal).mode, 'unspecified');
 assertFailClosed(ketonal, 'Ketonal forte primary-SPC blocker');
 
 const colistin = {
-  pediatric_indication:'Infeksione sistemike — exact pediatric product posology pending primary RCP ingestion',
+  pediatric_indication:'Infeksione serioze Gram-negative me mundësi të kufizuara trajtimi',
   pediatric_use_status:'KUFIZUAR',
   pediatric_dose_min:null,
   pediatric_dose_max:null,
@@ -112,12 +112,14 @@ const colistin = {
   pediatric_max_daily_value:null,
   pediatric_max_daily_unit:null,
   pediatric_route:'IV',
-  pediatric_verification_status:'in_review',
-  pediatric_source_url:'https://www.normahellas.gr/en/Products/antiinfectives-systemic-use/colistin-norma2',
-  pediatric_verified_at:null,
+  pediatric_verification_status:'verified',
+  pediatric_source_url:'https://www.normahellas.gr/en/Products/antiinfectives-systemic-use/colistin-norma2; https://www.normahellas.gr/images/products/63engfile.pdf',
+  pediatric_verified_at:'2026-08-18',
 };
 assert.equal(scheduleOf(colistin).mode, 'unspecified');
-assertFailClosed(colistin, 'Colistin/Norma primary-RCP blocker');
+assert.equal(classify(colistin).readiness, STATUS.TEXT_ONLY,
+  'Exact Colistin/Norma SPC is verified, but the piecewise high-risk regimen must remain TEXT_ONLY.');
+assertFailClosed(colistin, 'Colistin/Norma exact-SPC text-only regimen');
 
 const dafalgan = {
   pediatric_indication:'Dhimbje e lehtë–mesatare; temperaturë',
@@ -177,6 +179,6 @@ assert.doesNotMatch(bindingFix, /SET dose_text = '15 mg\/kg/,
 
 console.log(
   'Final pediatric source-hardening passed: Coldaway stays verified TEXT_ONLY, '
-  + 'Mucosoft keeps its unresolved official-source contradiction, Ketonal/Colistin/DAFALGAN '
-  + 'remain fail-closed, and the DAFALGAN legacy extra-regimen binding is explicitly scrubbed.',
+  + 'Mucosoft keeps its unresolved official-source contradiction, Ketonal/DAFALGAN stay fail-closed, '
+  + 'Colistin/Norma is exact-SPC verified but TEXT_ONLY, and the DAFALGAN legacy binding remains scrubbed.',
 );
