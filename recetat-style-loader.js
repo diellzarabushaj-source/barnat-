@@ -34,7 +34,7 @@
   function ensureStarterLibrary() {
     if (document.querySelector('script[data-recetat-starter-library]')) return;
     const script = document.createElement('script');
-    script.src = '/prescription-starter-library.js?v=20260818-1';
+    script.src = '/prescription-starter-library.js?v=20260818-2';
     script.async = false;
     script.dataset.recetatStarterLibrary = '1';
     document.head.appendChild(script);
