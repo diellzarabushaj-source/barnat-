@@ -120,8 +120,50 @@ assert.equal(coldawaySchedule.minIntervalHours, 4);
 assert.equal(classify(coldaway).readiness, STATUS.TEXT_ONLY,
   'A verified initial + PRN multi-phase regimen must stay TEXT_ONLY without one universal dose basis.');
 
+// Mucosoft complex #95: the exact product page simultaneously states 1 sachet
+// 3–4x/day and pediatric component ceilings that four sachets would exceed.
+// MedIndex must preserve the contradiction rather than manufacture an undocumented
+// max-three-sachets/day rule from arithmetic.
+const mucosoft = {
+  pediatric_indication:'Kollë/ftohje me temperaturë dhe sekrecione',
+  pediatric_use_status:'KUFIZUAR',
+  pediatric_min_age_value:12,
+  pediatric_min_age_unit:'vjet',
+  pediatric_max_age_value:null,
+  pediatric_max_age_unit:null,
+  pediatric_dose_min:null,
+  pediatric_dose_max:null,
+  pediatric_dose_unit:null,
+  pediatric_dose_basis:null,
+  pediatric_doses_per_day:null,
+  pediatric_interval_hours:null,
+  pediatric_max_doses_per_day:null,
+  pediatric_min_interval_hours:null,
+  pediatric_max_single_value:1,
+  pediatric_max_single_unit:'qese',
+  pediatric_max_daily_value:null,
+  pediatric_max_daily_unit:null,
+  pediatric_route:'PO',
+  pediatric_concentration_value:null,
+  pediatric_concentration_unit:null,
+  pediatric_concentration_per_value:null,
+  pediatric_concentration_per_unit:null,
+  pediatric_verification_status:'in_review',
+  pediatric_source_url:'https://adipharm.com/en/product/mukosoft-kompleks-200-mg',
+  pediatric_verified_at:null,
+};
+const mucosoftSchedule = scheduleOf(mucosoft);
+assert.equal(mucosoftSchedule.mode, 'unspecified');
+assert.equal(mucosoft.pediatric_max_daily_value, null,
+  'Do not infer an undocumented three-sachet daily maximum from ingredient arithmetic.');
+assert.equal(mucosoft.pediatric_concentration_value, null,
+  'A powder sachet must not inherit a stale liquid concentration such as 2 mg/5 mL.');
+assert.notEqual(classify(mucosoft).readiness, STATUS.CALCULATOR_READY,
+  'An internally contradictory in-review product source must stay fail-closed.');
+
 console.log(
   'Pediatric schedule-range safety passed: verified 2–3/day regimens remain ranges, '
   + 'daily-dose math stays intact, Coldaway tablet ceilings never become administration counts, '
+  + 'Mucosoft keeps its source contradiction without an inferred sachet cap, '
   + 'and the server never invents one exact frequency.',
 );
