@@ -31,9 +31,19 @@
     document.head.appendChild(script);
   }
 
+  function ensureStarterLibrary() {
+    if (document.querySelector('script[data-recetat-starter-library]')) return;
+    const script = document.createElement('script');
+    script.src = '/prescription-starter-library.js?v=20260818-1';
+    script.async = false;
+    script.dataset.recetatStarterLibrary = '1';
+    document.head.appendChild(script);
+  }
+
   function ensure() {
     ensureStyles();
     ensureProtocolHandoff();
+    ensureStarterLibrary();
   }
 
   ensure();
