@@ -125,7 +125,7 @@ const parol120_467 = {
   pediatric_verification_status:'needs_source',
   pediatric_source_url:'https://www.atabay.com/ilac/parol-120-mg-5-ml-oral-suspansiyon/',
 };
-assert.equal(classify(parol120_467).readiness, STATUS.INSUFFICIENT_DATA);
+assert.equal(classify(parol120_467).readiness, STATUS.TEXT_ONLY);
 assert.equal(calculate(parol120_467, { weightKg:10 }).outcome, OUTCOME.NOT_CALCULABLE);
 
 console.log(
