@@ -1,0 +1,35 @@
+/* Urgjencat · compact physician triage controls. */
+.ck-triage-filter{display:grid;grid-template-columns:minmax(150px,.7fr) minmax(0,1.9fr);gap:10px 16px;align-items:center;margin:8px 0 13px;padding:10px 12px;border:1px solid rgba(74,91,126,.13);border-radius:14px;background:rgba(255,255,255,.82);box-shadow:0 7px 22px rgba(28,43,68,.045);backdrop-filter:blur(10px)}
+.ck-triage-filter-copy{display:flex;min-width:0;flex-direction:column;gap:2px}
+.ck-triage-filter-copy strong{color:#202b3c;font-size:11px;font-weight:900;letter-spacing:.015em}
+.ck-triage-filter-copy span{color:#7a8495;font-size:8.5px;font-weight:650;line-height:1.35}
+.ck-triage-filter-group{display:flex;min-width:0;gap:6px;overflow-x:auto;padding:2px;scrollbar-width:none}
+.ck-triage-filter-group::-webkit-scrollbar{display:none}
+.ck-triage-filter-group button{display:inline-flex;min-height:34px;flex:0 0 auto;align-items:center;justify-content:center;gap:7px;padding:0 10px;border:1px solid rgba(74,91,126,.12);border-radius:10px;background:#fff;color:#5f6979;font:800 9px/1 inherit;white-space:nowrap;cursor:pointer;transition:border-color .15s ease,background .15s ease,color .15s ease,box-shadow .15s ease,transform .15s ease}
+.ck-triage-filter-group button:hover{border-color:rgba(49,95,200,.22);background:#f7f9ff;color:#315fc8}
+.ck-triage-filter-group button:active{transform:translateY(1px)}
+.ck-triage-filter-group button:focus-visible{outline:none;box-shadow:0 0 0 3px rgba(49,95,200,.11)}
+.ck-triage-filter-group button[aria-pressed="true"],.ck-triage-filter-group button.is-active{border-color:rgba(49,95,200,.24);background:#eef4ff;color:#244ea9;box-shadow:inset 0 0 0 1px rgba(49,95,200,.04)}
+.ck-triage-filter-group button[data-ck-triage="critical"][aria-pressed="true"]{border-color:rgba(190,52,63,.2);background:#fff2f3;color:#a52834}
+.ck-triage-filter-group button[data-ck-triage="very-urgent"][aria-pressed="true"]{border-color:rgba(198,111,23,.2);background:#fff7ec;color:#a95e13}
+.ck-triage-filter-group button[data-ck-triage="urgent"][aria-pressed="true"]{border-color:rgba(32,128,105,.18);background:#effaf6;color:#16745e}
+.ck-triage-filter-group b{display:inline-grid;min-width:20px;height:20px;place-items:center;padding:0 5px;border-radius:999px;background:rgba(91,105,128,.08);font-size:8px;font-weight:900}
+.ck-triage-filter-group button[aria-pressed="true"] b{background:rgba(255,255,255,.72)}
+.ck-triage-filter-status{grid-column:1/-1;min-height:12px;color:#8a93a2;font-size:8px;font-weight:700;line-height:1.25}
+.ck-list-button[hidden]{display:none!important}
+
+html[data-theme="dark"] .ck-triage-filter{border-color:rgba(148,163,184,.14);background:rgba(16,24,40,.84);box-shadow:none}
+html[data-theme="dark"] .ck-triage-filter-copy strong{color:#e5e7eb}
+html[data-theme="dark"] .ck-triage-filter-copy span,html[data-theme="dark"] .ck-triage-filter-status{color:#94a3b8}
+html[data-theme="dark"] .ck-triage-filter-group button{border-color:rgba(148,163,184,.14);background:#172036;color:#cbd5e1}
+html[data-theme="dark"] .ck-triage-filter-group button:hover,html[data-theme="dark"] .ck-triage-filter-group button[aria-pressed="true"]{background:#14213c;color:#b9ccf6}
+html[data-theme="dark"] .ck-triage-filter-group button[data-ck-triage="critical"][aria-pressed="true"]{background:#351b24;color:#ffb2bd}
+html[data-theme="dark"] .ck-triage-filter-group button[data-ck-triage="very-urgent"][aria-pressed="true"]{background:#342616;color:#ffd0a0}
+html[data-theme="dark"] .ck-triage-filter-group button[data-ck-triage="urgent"][aria-pressed="true"]{background:#102c2b;color:#9ee8df}
+
+@media(max-width:760px){
+  .ck-triage-filter{grid-template-columns:1fr;gap:8px;margin:7px 0 11px;padding:9px 10px}
+  .ck-triage-filter-group{margin:0 -2px;padding-bottom:3px}
+  .ck-triage-filter-group button{min-height:36px;padding:0 10px;font-size:8.5px}
+  .ck-triage-filter-status{grid-column:auto}
+}
