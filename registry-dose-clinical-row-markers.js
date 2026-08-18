@@ -1,10 +1,11 @@
 (() => {
   'use strict';
 
-  const VERSION = 'dose-clinical-row-markers-v5-page-metadata';
+  const VERSION = 'dose-clinical-row-markers-v6-population-authority';
   const ROW_SELECTOR = '#tbody > tr';
   const EMPTY_SELECTOR = '.empty-state';
   const FORM_CELL_SELECTOR = '[data-registry-column-key="form"]';
+  const POPULATION_CELL_SELECTOR = '[data-registry-column-key="population"], [data-column-key="Popullata e aprovuar"], .registry-population-column';
   const ROUTE_SELECTOR = '.registry-dosage-route';
   const FRAME_BUDGET_MS = 6;
   const IDLE_TIMEOUT_MS = 120;
@@ -90,17 +91,32 @@
 
   function approvedPopulationValue(item) {
     if (!item) return '';
-    const direct = clean(item['Popullata e aprovuar'] || item.approvedPopulation);
+    const direct = clean(item['Popullata e aprovuar'] || item.approvedPopulation || item.approved_population);
     if (APPROVED_POPULATIONS.has(direct)) return direct;
     return clean(item['Pediatric only']) === 'Pediatric only' ? 'Pediatric only' : '';
   }
 
+  function approvedPopulationFromCell(row) {
+    if (!(row instanceof HTMLTableRowElement)) return '';
+    const cell = row.querySelector(POPULATION_CELL_SELECTOR);
+    if (!cell) return '';
+    const direct = clean(cell.dataset.approvedPopulation || cell.textContent);
+    if (APPROVED_POPULATIONS.has(direct)) return direct;
+    for (const population of APPROVED_POPULATIONS) {
+      if (direct.includes(population)) return population;
+    }
+    return '';
+  }
+
   function approvedPopulationForRow(row) {
     const number = registryNumber(row);
-    if (!number) return '';
-    const indexed = approvedPopulationByRegistryNumber.get(number);
-    if (APPROVED_POPULATIONS.has(indexed)) return indexed;
-    return approvedPopulationValue(rawRowByRegistryNumber(number));
+    if (number) {
+      const indexed = approvedPopulationByRegistryNumber.get(number);
+      if (APPROVED_POPULATIONS.has(indexed)) return indexed;
+      const raw = approvedPopulationValue(rawRowByRegistryNumber(number));
+      if (APPROVED_POPULATIONS.has(raw)) return raw;
+    }
+    return approvedPopulationFromCell(row);
   }
 
   function approvedPediatricOnly(row) {
