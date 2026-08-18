@@ -164,6 +164,30 @@ for (const row of [
   assert.equal(classify(row).readiness, STATUS.INSUFFICIENT_DATA);
 }
 
+// Gentipharm identity-only catalog rows and ETOLAX 500/8 mg source mismatch:
+// official identity evidence is not pediatric dosing evidence.
+for (const row of [
+  {
+    ...base,
+    pediatric_use_status:'PA TË DHËNA',
+    pediatric_verification_status:'needs_source',
+    pediatric_verified_at:null,
+    pediatric_source_url:'https://www.gentipharm.com/registered-drugs',
+  },
+  {
+    ...base,
+    pediatric_use_status:'PA TË DHËNA',
+    pediatric_verification_status:'needs_source',
+    pediatric_verified_at:null,
+    pediatric_route:'PO',
+    pediatric_source_url:'https://www.nobel.com.tr/urunler/ilaclar/etolax-500-8mg-film-tablet',
+  },
+]) {
+  assert.equal(scheduleOf(row).mode, 'unspecified');
+  assert.equal(classify(row).readiness, STATUS.INSUFFICIENT_DATA,
+    'Product identity or mismatched first-party documents must not activate pediatric calculation.');
+}
+
 // DOLOKIDS and Minamol: product-specific pediatric dose provenance is missing.
 for (const row of [
   {
@@ -208,6 +232,6 @@ assert.equal(classify(pirofen).readiness, STATUS.TEXT_ONLY,
 
 console.log(
   'Pediatric PRN/provenance cleanup passed: ranges stay ranges, PRN stays non-fixed, '
-  + 'official text-only promotions remain non-calculable, product mismatches stay fail-closed, '
-  + 'unsupported inherited sources remain blocked, and Pirofen metadata does not auto-activate calculation.',
+  + 'official text-only promotions remain non-calculable, product/source mismatches stay fail-closed, '
+  + 'identity-only catalogs do not count as pediatric dosing evidence, and Pirofen metadata does not auto-activate calculation.',
 );
