@@ -4,38 +4,42 @@ const assert = require('node:assert/strict');
 const { STATUS, classify } = require('../lib/pediatric-readiness.js');
 const { OUTCOME, calculate } = require('../lib/pediatric-calculation.js');
 
-// DAFALGAN PEDIATRIE 30 mg/mL (#4013) must remain fail-closed until the
-// country/marketing-authorisation identity of the registry row is known.
-// The French same-CIS historical DAFALGAN -> EFFERALGAN product is 3–32 kg,
-// while the currently marketed Belgian DAFALGAN PEDIATRIE 30 mg/mL has a
-// different product population. The local row has no manufacturer/MA holder,
-// so choosing one market's limits would be an unsafe identity inference.
+// DAFALGAN PEDIATRIE 30 mg/mL (#4013) is an exact Belgian external reference.
+// The primary UPSA Belgium leaflet (BE123776, approved 03/2025) verifies the
+// narrative regimen, but the dosing-device instructions are explicit for 4–32 kg
+// while the product is generally reserved for children <50 kg. MedIndex therefore
+// verifies the source as TEXT_ONLY and keeps every typed dose/schedule/cap field empty.
 const dafalgan4013 = {
-  pediatric_indication:'dhimbje e lehtë–mesatare; temperaturë',
+  pediatric_indication:'Trajtim simptomatik i dhimbjes dhe temperaturës',
   pediatric_use_status:'KUFIZUAR',
-  pediatric_min_weight_kg:3,
-  pediatric_max_weight_kg:32,
-  pediatric_dose_min:15,
-  pediatric_dose_max:15,
-  pediatric_dose_unit:'mg',
-  pediatric_dose_basis:'kg/dozë',
+  pediatric_min_weight_kg:null,
+  pediatric_max_weight_kg:null,
+  pediatric_dose_min:null,
+  pediatric_dose_max:null,
+  pediatric_dose_unit:null,
+  pediatric_dose_basis:null,
   pediatric_doses_per_day:null,
   pediatric_interval_hours:null,
-  pediatric_max_doses_per_day:4,
-  pediatric_min_interval_hours:6,
-  pediatric_max_daily_value:60,
-  pediatric_max_daily_unit:'mg/kg/ditë',
+  pediatric_max_doses_per_day:null,
+  pediatric_min_interval_hours:null,
+  pediatric_max_single_value:null,
+  pediatric_max_single_unit:null,
+  pediatric_max_daily_value:null,
+  pediatric_max_daily_unit:null,
   pediatric_concentration_value:30,
   pediatric_concentration_unit:'mg',
   pediatric_concentration_per_value:1,
   pediatric_concentration_per_unit:'mL',
-  pediatric_verification_status:'in_review',
-  pediatric_source_url:'https://base-donnees-publique.medicaments.gouv.fr/medicament/63390065/extrait; https://dafalgan.be/nl/dafalgan-voor-babys-en-kinderen/',
-  pediatric_verified_at:null,
+  pediatric_route:'PO',
+  pediatric_verification_status:'verified',
+  pediatric_source_url:'https://dafalgan.be/nl/product/dafalgan-pediatrie-30mgml/; https://cms.dafalgan.be/s3fs-public/2025-04/250307-be-pil_dafsolution-nl_clean-last.pdf',
+  pediatric_verified_at:'2026-08-18',
 };
 assert.equal(classify(dafalgan4013).readiness, STATUS.TEXT_ONLY,
-  'Ambiguous market identity must block automatic DAFALGAN calculation.');
+  'Exact Belgian DAFALGAN may be verified narratively without activating a typed dosing formula.');
 assert.equal(calculate(dafalgan4013, { weightKg:10 }).outcome, OUTCOME.NOT_CALCULABLE);
+assert.equal(calculate(dafalgan4013, { weightKg:35 }).outcome, OUTCOME.NOT_CALCULABLE,
+  'The >32 kg band must not be inferred from the general <50 kg product population.');
 
 // PAROL PLUS 250 mg/5 mL (#466).
 // Manufacturer KÜB explicitly recommends q6h 10–15 mg/kg/dose, with an
@@ -118,13 +122,13 @@ const parol120_467 = {
   pediatric_concentration_unit:'mg',
   pediatric_concentration_per_value:5,
   pediatric_concentration_per_unit:'mL',
-  pediatric_verification_status:'in_review',
+  pediatric_verification_status:'needs_source',
   pediatric_source_url:'https://www.atabay.com/ilac/parol-120-mg-5-ml-oral-suspansiyon/',
 };
 assert.equal(classify(parol120_467).readiness, STATUS.TEXT_ONLY);
 assert.equal(calculate(parol120_467, { weightKg:10 }).outcome, OUTCOME.NOT_CALCULABLE);
 
 console.log(
-  'Pediatric paracetamol final-gap regression passed: ambiguous DAFALGAN identity is fail-closed, '
-  + 'PAROL PLUS preserves manufacturer KÜB caps, and PAROL 120 stays quarantined.',
+  'Pediatric paracetamol final-gap regression passed: exact Belgian DAFALGAN is verified TEXT_ONLY with no typed dose model, '
+  + 'PAROL PLUS preserves manufacturer KÜB caps, and PAROL 120 stays needs_source.',
 );
