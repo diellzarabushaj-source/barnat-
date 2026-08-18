@@ -26,28 +26,36 @@
     list.setAttribute('aria-label', 'Urgjencat e disponueshme');
 
     buttons.forEach(button => {
+      const isActive = button.classList.contains('is-active');
       button.setAttribute('role', 'option');
-      button.setAttribute('aria-selected', button.classList.contains('is-active') ? 'true' : 'false');
-      const metaLine = button.querySelector('span:not(.ck-directory-tags):not(.ck-directory-active)');
-      if (!metaLine || button.querySelector('.ck-directory-tags')) return;
+      button.setAttribute('aria-selected', isActive ? 'true' : 'false');
 
-      const {codes, labels} = splitMeta(text(metaLine));
-      const tags = document.createElement('span');
-      tags.className = 'ck-directory-tags';
-      tags.innerHTML = [
-        ...codes.map(code => `<span class="ck-directory-tag is-icd">${esc(code)}</span>`),
-        ...labels.map(label => `<span class="ck-directory-tag">${esc(label)}</span>`),
-      ].join('');
-      metaLine.hidden = true;
-      button.appendChild(tags);
+      if (!button.querySelector('.ck-directory-tags')) {
+        const metaLine = [...button.children].find(node =>
+          node.tagName === 'SPAN'
+          && !node.classList.contains('ck-directory-tags')
+          && !node.classList.contains('ck-directory-active')
+        );
+        if (metaLine) {
+          const {codes, labels} = splitMeta(text(metaLine));
+          const tags = document.createElement('span');
+          tags.className = 'ck-directory-tags';
+          tags.innerHTML = [
+            ...codes.map(code => `<span class="ck-directory-tag is-icd">${esc(code)}</span>`),
+            ...labels.map(label => `<span class="ck-directory-tag">${esc(label)}</span>`),
+          ].join('');
+          metaLine.hidden = true;
+          button.appendChild(tags);
+        }
+      }
+
+      const activeLabel = button.querySelector('.ck-directory-active');
+      if (isActive && !activeLabel) {
+        button.insertAdjacentHTML('beforeend', '<span class="ck-directory-active">Hapur</span>');
+      } else if (!isActive && activeLabel) {
+        activeLabel.remove();
+      }
     });
-
-    const active = list.querySelector('.ck-list-button.is-active');
-    list.querySelectorAll('.ck-directory-active').forEach(node => node.remove());
-    if (active) {
-      active.insertAdjacentHTML('beforeend', '<span class="ck-directory-active">Hapur</span>');
-      active.setAttribute('aria-selected', 'true');
-    }
   }
 
   function visibleButtons() {
@@ -155,10 +163,18 @@
     button.addEventListener('click', () => copyProtocol(button, status));
   }
 
-  const listObserver = new MutationObserver(() => requestAnimationFrame(decorateDirectory));
-  listObserver.observe(list, {childList:true});
+  let listFrame = 0;
+  const listObserver = new MutationObserver(() => {
+    cancelAnimationFrame(listFrame);
+    listFrame = requestAnimationFrame(decorateDirectory);
+  });
+  listObserver.observe(list, {childList:true, subtree:true});
 
-  const detailObserver = new MutationObserver(() => requestAnimationFrame(installCopyAction));
+  let detailFrame = 0;
+  const detailObserver = new MutationObserver(() => {
+    cancelAnimationFrame(detailFrame);
+    detailFrame = requestAnimationFrame(installCopyAction);
+  });
   detailObserver.observe(detail, {childList:true, subtree:false});
 
   decorateDirectory();
