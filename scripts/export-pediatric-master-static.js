@@ -10,8 +10,8 @@ const CHUNK_SIZE = 250;
 /* Release-gated snapshot for the contiguous Sheet-owned registry range.
    Update these counts only together with an audited verification-status change;
    `needs_source` is a valid fail-closed state, not an export error. */
-const EXPECTED_VERIFIED = 3392;
-const EXPECTED_IN_REVIEW = 2;
+const EXPECTED_VERIFIED = 3393;
+const EXPECTED_IN_REVIEW = 1;
 const EXPECTED_NEEDS_SOURCE = 118;
 const MASTER_FILE = path.resolve(__dirname, '..', 'ped-sync-master.tsv');
 
