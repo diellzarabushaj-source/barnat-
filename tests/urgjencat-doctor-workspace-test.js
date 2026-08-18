@@ -12,6 +12,8 @@ const core = read('urgjencat.js');
 const doctor = read('emergency-doctor-mode.js');
 const assist = read('emergency-directory-assist.js');
 const assistCss = read('emergency-directory-assist.css');
+const timeline = read('emergency-clinician-timeline.js');
+const timelineCss = read('emergency-clinician-timeline.css');
 const safetyCss = read('emergency-doctor-safety.css');
 
 assert.ok(
@@ -20,11 +22,14 @@ assert.ok(
 );
 assert.ok(
   html.indexOf('urgjencat.js') < html.indexOf('emergency-doctor-mode.js')
-  && html.indexOf('emergency-doctor-mode.js') < html.indexOf('emergency-directory-assist.js'),
-  'Doctor-first enhancements must run after the core Sanity renderer.',
+  && html.indexOf('emergency-doctor-mode.js') < html.indexOf('emergency-directory-assist.js')
+  && html.indexOf('emergency-directory-assist.js') < html.indexOf('emergency-clinician-timeline.js'),
+  'Clinician enhancements must run after the core Sanity renderer in deterministic order.',
 );
 assert.match(html, /emergency-directory-assist\.css\?v=20260818-2/);
 assert.match(html, /emergency-directory-assist\.js\?v=20260818-2/);
+assert.match(html, /emergency-clinician-timeline\.css\?v=20260818-1/);
+assert.match(html, /emergency-clinician-timeline\.js\?v=20260818-1/);
 
 assert.match(core, /reviewStatus != "archived"/);
 assert.match(core, /reviewStatus,reviewedBy,lastReviewedAt,reviewDueAt,version/);
@@ -51,6 +56,18 @@ assert.match(assist, /event\.key === 'ArrowUp'/);
 assert.match(assist, /Kopjo protokollin/);
 assert.match(assist, /jo handover specifik i pacientit/);
 assert.match(assist, /Publikuar:/);
+
+assert.match(timeline, /0–1 min/);
+assert.match(timeline, /1–5 min/);
+assert.match(timeline, /Pas stabilizimit/);
+assert.match(timeline, /Nuk ka hap të etiketuar “Menjëherë”/);
+assert.match(timeline, /nuk shtohen veprime të supozuara/);
+assert.match(timeline, /Rendi klinik mbetet ai i dokumentit në Sanity/);
+assert.match(timeline, /ck-doctor-redflags/);
+assert.match(timeline, /ck-doctor-referral/);
+assert.match(timelineCss, /ck-time-phase\.is-zero/);
+assert.match(timelineCss, /ck-time-phase\.is-five/);
+assert.match(timelineCss, /ck-time-phase\.is-after/);
 
 assert.match(assistCss, /ck-directory-review\.is-verified/);
 assert.match(assistCss, /ck-directory-review\.is-draft/);
