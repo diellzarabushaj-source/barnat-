@@ -1,6 +1,8 @@
 'use strict';
 
 const assert = require('node:assert/strict');
+const fs = require('node:fs');
+const path = require('node:path');
 const { STATUS, classify } = require('../lib/pediatric-readiness.js');
 const { OUTCOME, calculate } = require('../lib/pediatric-calculation.js');
 const { scheduleOf } = require('../lib/pediatric-schedule.js');
@@ -153,8 +155,28 @@ assert.equal(dafalgan.pediatric_dose_basis, null,
   'Belgian external-reference DAFALGAN must not inherit the historical French 3–32 kg typed model.');
 assertFailClosed(dafalgan, 'DAFALGAN market-identity/weight-boundary blocker');
 
+// The Neon-only legacy regimen binding must be explicitly scrubbed too. This
+// static gate prevents a later replay of the data-fix chain from restoring the
+// historical French 3–32 kg / 15 mg/kg narrative behind an otherwise fail-closed drug card.
+const bindingFix = fs.readFileSync(
+  path.resolve(__dirname, '..', 'database/data-fixes/20260818_pediatric_dafalgan_legacy_binding_cleanup.sql'),
+  'utf8',
+);
+assert.match(bindingFix, /WHERE source_key = 'extra-4013-pediatric'/);
+assert.match(bindingFix, /calculation_status = 'pending'/);
+assert.match(bindingFix, /dose_value_min = NULL/);
+assert.match(bindingFix, /dose_value_max = NULL/);
+assert.match(bindingFix, /doses_per_day = NULL/);
+assert.match(bindingFix, /interval_hours = NULL/);
+assert.match(bindingFix, /min_weight_kg = NULL/);
+assert.match(bindingFix, /max_weight_kg = NULL/);
+assert.match(bindingFix, /frequency_text = NULL/);
+assert.match(bindingFix, /maximum_text = NULL/);
+assert.doesNotMatch(bindingFix, /SET dose_text = '15 mg\/kg/,
+  'Legacy DAFALGAN quantitative dose text must not return in the cleanup migration.');
+
 console.log(
   'Final pediatric source-hardening passed: Coldaway stays verified TEXT_ONLY, '
-  + 'Mucosoft keeps its unresolved official-source contradiction, and Ketonal/Colistin/DAFALGAN '
-  + 'remain fail-closed until exact primary quantitative evidence is ingested.',
+  + 'Mucosoft keeps its unresolved official-source contradiction, Ketonal/Colistin/DAFALGAN '
+  + 'remain fail-closed, and the DAFALGAN legacy extra-regimen binding is explicitly scrubbed.',
 );
