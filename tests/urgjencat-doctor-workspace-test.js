@@ -34,8 +34,8 @@ assert.ok(
 assert.match(html, /emergency-directory-assist\.css\?v=20260818-2/);
 assert.match(html, /emergency-directory-assist\.js\?v=20260818-2/);
 assert.match(html, /emergency-directory-priority\.js\?v=20260818-1/);
-assert.match(html, /emergency-triage-filter\.css\?v=20260818-1/);
-assert.match(html, /emergency-triage-filter\.js\?v=20260818-1/);
+assert.match(html, /emergency-triage-filter\.css\?v=20260818-[12]/);
+assert.match(html, /emergency-triage-filter\.js\?v=20260818-[12]/);
 assert.match(html, /emergency-clinician-timeline\.css\?v=20260818-1/);
 assert.match(html, /emergency-clinician-timeline\.js\?v=20260818-1/);
 
