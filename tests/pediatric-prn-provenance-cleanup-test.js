@@ -130,6 +130,40 @@ const sosaria = {
 };
 assert.equal(classify(sosaria).readiness, STATUS.NOT_RECOMMENDED);
 
+// Paroxetina GP (#1679): exact product identity + EMA paediatric referral support
+// a verified NOT_RECOMMENDED record, never a paediatric formula.
+const paroxetinaGp = {
+  ...base,
+  pediatric_use_status:'NUK REKOMANDOHET',
+  pediatric_verification_status:'verified',
+  pediatric_verified_at:'2026-08-18',
+  pediatric_source_url:'https://www.ema.europa.eu/en/medicines/human/referrals/paroxetine',
+};
+assert.equal(classify(paroxetinaGp).readiness, STATUS.NOT_RECOMMENDED);
+
+// Biolis (#2227) and TYLOLFEN HOT (#2419): linked sources belong to a different
+// product form/composition. needs_source must remain fail-closed even if someone
+// later adds numbers to editorial fields without resolving product identity.
+for (const row of [
+  {
+    ...base,
+    pediatric_use_status:'PA TË DHËNA',
+    pediatric_verification_status:'needs_source',
+    pediatric_verified_at:null,
+    pediatric_source_url:'https://biolisgel.com/',
+  },
+  {
+    ...base,
+    pediatric_use_status:'PA TË DHËNA',
+    pediatric_verification_status:'needs_source',
+    pediatric_verified_at:null,
+    pediatric_source_url:'https://kosova.nobel.com.tr/produkte/barna/tylol-hot-500mg-4mg-60mg-12-qeska',
+  },
+]) {
+  assert.equal(scheduleOf(row).mode, 'unspecified');
+  assert.equal(classify(row).readiness, STATUS.INSUFFICIENT_DATA);
+}
+
 // DOLOKIDS and Minamol: product-specific pediatric dose provenance is missing.
 for (const row of [
   {
@@ -174,6 +208,6 @@ assert.equal(classify(pirofen).readiness, STATUS.TEXT_ONLY,
 
 console.log(
   'Pediatric PRN/provenance cleanup passed: ranges stay ranges, PRN stays non-fixed, '
-  + 'official text-only promotions remain non-calculable, unsupported inherited sources stay fail-closed, '
-  + 'and Pirofen metadata does not auto-activate calculation.',
+  + 'official text-only promotions remain non-calculable, product mismatches stay fail-closed, '
+  + 'unsupported inherited sources remain blocked, and Pirofen metadata does not auto-activate calculation.',
 );
