@@ -27,9 +27,12 @@ const requirements = [
   [client, 'let syncedRevision = 0', 'Canonical synced revision state is missing.'],
   [client, 'async function flushThroughRevision(targetRevision)', 'Revision-safe sync must live in canonical source.'],
   [client, 'const prescriptions = parseArray(PRESCRIPTIONS_KEY);', 'Legacy poll must remain prescription-only in canonical source.'],
+  [client, 'if (synced !== true)', 'Logout must fail closed when the current library revision is not synced.'],
+  [client, "code:'library_sync_required'", 'Protected logout must expose its deterministic sync error code.'],
   [css, '/* registry-personal-ux-phase8-v1 */', 'Phase 8 personal UX CSS must be materialized.'],
   [html, 'registry-user-personalization.css?v=20260816-7&ux=20260817-1', 'Canonical Phase 8 CSS asset publication is missing.'],
-  [html, 'user-library-client.js?v=20260817-event-sync-1', 'Canonical user-library asset publication is missing.'],
+  [html, 'user-library-client.js?v=20260819-logout-safety-1&ls=20260819-1', 'Protected user-library asset publication is missing.'],
+  [html, 'auth-client.js?v=20260819-logout-safety-1', 'Protected auth-client asset publication is missing.'],
 ];
 
 for (const [source, needle, message] of requirements) {
@@ -43,4 +46,4 @@ if (/rowProfileCache\s*=\s*new Map/.test(ui)) {
   throw new Error('Canonical personalization must not strongly retain removed rows.');
 }
 
-console.log('Phase 12 canonical source gate passed before build patches: Favorites/Notes UX, recovery and long-session behavior are source-owned.');
+console.log('Phase 12 canonical source gate passed before build patches: Favorites/Notes UX, protected logout, recovery and long-session behavior are source-owned.');
