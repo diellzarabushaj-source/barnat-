@@ -27,7 +27,7 @@
 
   async function bootstrap(credential) {
     setStatus('Google u verifikua. Po krijohet/verifikohet Supabase Auth…');
-    const response = await fetch('/api/phase4-auth-bootstrap', {
+    const response = await fetch('/api/auth?scope=phase4-auth-bootstrap', {
       method:'POST',
       credentials:'same-origin',
       cache:'no-store',
