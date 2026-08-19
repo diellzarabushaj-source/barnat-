@@ -2,12 +2,9 @@
 
 const fs = require('node:fs');
 const path = require('node:path');
-const { execFileSync } = require('node:child_process');
 
 const ROOT = path.resolve(__dirname, '..');
 const read = file => fs.readFileSync(path.join(ROOT, file), 'utf8');
-
-execFileSync(process.execPath, [path.join(ROOT, 'scripts/phase3-private-copy.js')], { stdio:'inherit' });
 
 const ui = read('registry-user-personalization.js');
 const client = read('user-library-client.js');
