@@ -13,6 +13,7 @@ on:
       - 'phase4-auth-test.js'
       - 'tests/supabase-auth-guards-test.js'
       - 'tests/supabase-auth-bootstrap-test.js'
+      - 'tests/phase4-legacy-owner-claim-test.js'
       - 'supabase/migrations/**'
       - '.github/workflows/phase4-supabase-auth.yml'
   pull_request:
@@ -27,6 +28,7 @@ on:
       - 'phase4-auth-test.js'
       - 'tests/supabase-auth-guards-test.js'
       - 'tests/supabase-auth-bootstrap-test.js'
+      - 'tests/phase4-legacy-owner-claim-test.js'
       - 'supabase/migrations/**'
       - '.github/workflows/phase4-supabase-auth.yml'
 
@@ -48,3 +50,4 @@ jobs:
         run: |
           node tests/supabase-auth-guards-test.js
           node tests/supabase-auth-bootstrap-test.js
+          node tests/phase4-legacy-owner-claim-test.js
