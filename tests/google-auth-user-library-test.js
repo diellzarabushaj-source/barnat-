@@ -45,6 +45,7 @@ function jwt(privateKey, payload, kid = 'medindex-test-key') {
   const request = { headers:{ cookie:`${auth.CSRF_COOKIE_NAME}=${encodeURIComponent(csrf)}` } };
   assert.equal(auth.verifyCsrfToken(request, csrf), true, 'CSRF double-submit token failed');
   assert.equal(auth.verifyCsrfToken(request, `${csrf}x`), false, 'Invalid CSRF token was accepted');
+  const googleNonce = crypto.createHash('sha256').update(csrf, 'utf8').digest('hex');
 
   const { privateKey, publicKey } = crypto.generateKeyPairSync('rsa', { modulusLength:2048 });
   const jwk = publicKey.export({ format:'jwk' });
@@ -57,7 +58,7 @@ function jwt(privateKey, payload, kid = 'medindex-test-key') {
     aud:process.env.GOOGLE_CLIENT_ID,
     exp:now + 300,
     iat:now - 5,
-    nonce:csrf,
+    nonce:googleNonce,
     sub:'google-subject-123',
     email:'diellzarabushaj@gmail.com',
     email_verified:true,
@@ -66,7 +67,7 @@ function jwt(privateKey, payload, kid = 'medindex-test-key') {
   const { verifyGoogleIdToken } = require('../lib/google-id-token.js');
   const verified = await verifyGoogleIdToken(jwt(privateKey, googlePayload), {
     clientId:process.env.GOOGLE_CLIENT_ID,
-    nonce:csrf,
+    nonce:googleNonce,
     nowSeconds:now,
     jwks:{ keys:[jwk] },
   });
@@ -76,7 +77,7 @@ function jwt(privateKey, payload, kid = 'medindex-test-key') {
   await assert.rejects(
     verifyGoogleIdToken(jwt(privateKey, { ...googlePayload, aud:'other.apps.googleusercontent.com' }), {
       clientId:process.env.GOOGLE_CLIENT_ID,
-      nonce:csrf,
+      nonce:googleNonce,
       nowSeconds:now,
       jwks:{ keys:[jwk] },
     }),
@@ -86,7 +87,7 @@ function jwt(privateKey, payload, kid = 'medindex-test-key') {
   await assert.rejects(
     verifyGoogleIdToken(jwt(privateKey, { ...googlePayload, nonce:'wrong' }), {
       clientId:process.env.GOOGLE_CLIENT_ID,
-      nonce:csrf,
+      nonce:googleNonce,
       nowSeconds:now,
       jwks:{ keys:[jwk] },
     }),
@@ -96,7 +97,7 @@ function jwt(privateKey, payload, kid = 'medindex-test-key') {
   await assert.rejects(
     verifyGoogleIdToken(jwt(privateKey, { ...googlePayload, email_verified:false }), {
       clientId:process.env.GOOGLE_CLIENT_ID,
-      nonce:csrf,
+      nonce:googleNonce,
       nowSeconds:now,
       jwks:{ keys:[jwk] },
     }),
@@ -140,7 +141,10 @@ function jwt(privateKey, payload, kid = 'medindex-test-key') {
 
   assert.match(loginHtml, /accounts\.google\.com\/gsi\/client/, 'Official Google Identity script is missing');
   assert.match(loginHtml, /diellzarabushaj@gmail\.com/, 'Allowed login email is not shown');
-  assert.match(loginJs, /nonce:csrfToken/, 'Google nonce is not connected to CSRF state');
+  assert.match(loginJs, /crypto\.subtle\.digest\('SHA-256'/, 'Google nonce is not derived securely from the CSRF state');
+  assert.match(loginJs, /nonce,\s*auto_select:false/, 'The SHA-256 nonce is not connected to Google Identity Services');
+  assert.match(authApi, /nonce:sha256Hex\(suppliedCsrf\)/, 'Server Google verification is not bound to SHA-256(CSRF)');
+  assert.match(authApi, /exchangeGoogleIdToken\(\{ credential, nonce:suppliedCsrf \}\)/, 'Supabase exchange must receive the raw CSRF nonce');
   assert.match(authApi, /verifyGoogleIdToken/, 'Server does not verify the Google ID token');
   assert.match(authApi, /verifyCsrfToken/, 'Auth endpoint does not verify CSRF');
   assert.match(authApi, /UserStore\.ensureUser/, 'Auth endpoint does not enforce the user allowlist');
