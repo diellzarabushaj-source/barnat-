@@ -1,6 +1,7 @@
 'use strict';
 
 require('./patch-registry-personal-final.js');
+require('./patch-pr157-merge-readiness.js');
 
 /* Lista e aseteve që shërbyesi offline i ruan gjatë instalimit ka qenë e
  * shkruar me dorë te `sw.js`, dhe një e dytë e shkurtër shtohej me dorë te

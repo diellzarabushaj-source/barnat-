@@ -157,71 +157,6 @@
     first.focus();
   });
 
-  function protocolSummary() {
-    const title = text(detail.querySelector('.ck-detail-head h2'));
-    const summary = text(detail.querySelector('.ck-detail-head > div > .ck-summary')) || text(detail.querySelector('.ck-detail-head .ck-summary'));
-    const firstActions = [...detail.querySelectorAll('#ck-doctor-now .ck-step-action')].map(text).filter(Boolean);
-    const redFlags = [...detail.querySelectorAll('#ck-doctor-redflags .ck-info-card')]
-      .map(card => text(card.querySelectorAll('span')[1] || card)).filter(Boolean);
-    const referralRows = [...detail.querySelectorAll('#ck-doctor-referral .ck-summary')].map(text).filter(Boolean);
-    const doNotDo = [...detail.querySelectorAll('#ck-doctor-donotdo .ck-info-card')]
-      .map(card => text(card.querySelectorAll('span')[1] || card)).filter(Boolean);
-
-    const blocks = [
-      title ? `PROTOKOLLI: ${title}` : '',
-      summary ? `Përmbledhje: ${summary}` : '',
-      firstActions.length ? `\nVEPRIMI TANI\n${firstActions.map((item, index) => `${index + 1}. ${item}`).join('\n')}` : '',
-      redFlags.length ? `\nRED FLAGS\n${redFlags.map(item => `• ${item}`).join('\n')}` : '',
-      referralRows.length ? `\nREFERIMI\n${referralRows.join('\n')}` : '',
-      doNotDo.length ? `\nMOS BËJ\n${doNotDo.map(item => `• ${item}`).join('\n')}` : '',
-      '\n— Përmbledhje e protokollit, jo handover specifik i pacientit.',
-    ].filter(Boolean);
-    return blocks.join('\n');
-  }
-
-  async function copyProtocol(button, status) {
-    const value = protocolSummary();
-    if (!value.trim()) return;
-    let ok = false;
-    try {
-      await navigator.clipboard.writeText(value);
-      ok = true;
-    } catch {
-      try {
-        const area = document.createElement('textarea');
-        area.value = value;
-        area.setAttribute('readonly', '');
-        area.style.position = 'fixed';
-        area.style.opacity = '0';
-        document.body.appendChild(area);
-        area.select();
-        ok = document.execCommand('copy');
-        area.remove();
-      } catch {}
-    }
-    button.textContent = ok ? 'U kopjua ✓' : 'Kopjimi dështoi';
-    if (status) status.textContent = ok ? 'Përmbledhja e protokollit u kopjua.' : 'Nuk u kopjua.';
-    window.setTimeout(() => {
-      if (button.isConnected) button.textContent = 'Kopjo protokollin';
-      if (status?.isConnected) status.textContent = '';
-    }, 2200);
-  }
-
-  function installCopyAction() {
-    const consoleEl = detail.querySelector('.ck-doctor-console');
-    const actions = consoleEl?.querySelector('.ck-doctor-source-actions');
-    if (!actions || actions.querySelector('[data-ck-copy-protocol]')) return;
-
-    const button = document.createElement('button');
-    button.type = 'button';
-    button.dataset.ckCopyProtocol = '1';
-    button.textContent = 'Kopjo protokollin';
-    button.title = 'Kopjon vetëm përmbledhjen e protokollit; jo të dhëna të pacientit.';
-    const status = actions.querySelector('.ck-doctor-copy-status');
-    actions.insertBefore(button, status || null);
-    button.addEventListener('click', () => copyProtocol(button, status));
-  }
-
   function enhanceSourceDrawer() {
     document.querySelectorAll('#ckDetailOverlay .ck-source-list li').forEach(item => {
       const link = item.querySelector('a[href]');
@@ -265,14 +200,6 @@
   });
   listObserver.observe(list, {childList:true, subtree:true});
 
-  let detailFrame = 0;
-  const detailObserver = new MutationObserver(() => {
-    cancelAnimationFrame(detailFrame);
-    detailFrame = requestAnimationFrame(installCopyAction);
-  });
-  detailObserver.observe(detail, {childList:true, subtree:false});
-
   decorateDirectory();
-  installCopyAction();
   loadClinicalMeta();
 })();

@@ -7,6 +7,7 @@ const { neonRequest } = require('../lib/neon-data-api.js');
 const MIN_REGISTRY = 501;
 const MAX_REGISTRY = 4012;
 const CHUNK_SIZE = 250;
+const EXPORT_OPT_IN = 'MEDINDEX_PEDIATRIC_STATIC_EXPORT';
 /* Release-gated snapshot for the contiguous Sheet-owned registry range.
    Update these counts only together with an audited verification-status change;
    `needs_source` is a valid fail-closed state, not an export error. */
@@ -50,8 +51,12 @@ async function loadChunk(start, end) {
 }
 
 (async () => {
-  if (!process.env.VERCEL) {
-    console.log('Temporary pediatric static export skipped outside Vercel.');
+  /* This exporter is a temporary release bridge, not a normal application build step.
+     The clinical dataset must never be manufactured merely to make a preview green.
+     Keep the strict row/regimen/status gates below, but execute them only when a
+     release operator explicitly opts in after the pediatric Neon master is ready. */
+  if (process.env[EXPORT_OPT_IN] !== '1') {
+    console.log(`Temporary pediatric static export skipped; set ${EXPORT_OPT_IN}=1 only for an audited pediatric master export.`);
     return;
   }
   if (!fs.existsSync(MASTER_FILE)) throw new Error('Tracked ped-sync-master.tsv placeholder is missing.');

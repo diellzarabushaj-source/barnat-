@@ -1,0 +1,92 @@
+'use strict';
+
+const fs = require('node:fs');
+const path = require('node:path');
+
+const ROOT = path.resolve(__dirname, '..');
+const read = file => fs.readFileSync(path.join(ROOT, file), 'utf8').replace(/\r\n?/g, '\n');
+const write = (file, value) => fs.writeFileSync(path.join(ROOT, file), value.replace(/\r\n?/g, '\n'), 'utf8');
+
+function replaceOnce(source, before, after, label) {
+  if (source.includes(after)) return source;
+  if (!source.includes(before)) throw new Error(`PR157 merge-readiness patch could not find ${label}.`);
+  return source.replace(before, after);
+}
+
+function patchMobilePhase3Owner() {
+  let source = read('registry-mobile-phase3.js');
+
+  const directListener = "    window.addEventListener('medindex:full-registry-started', releaseMobileShellOwner, { once:true });";
+  const inlineListener = `    window.addEventListener('medindex:full-registry-started', () => {\n      closeFilters();\n      bodyClassObserver?.disconnect();\n      bodyClassObserver = null;\n      document.getElementById('miRegistryBottomNav')?.remove();\n      document.getElementById('miRegistryMobileFilterBar')?.remove();\n      root.dataset.registryMobilePhase3State = 'handoff';\n    }, { once:true });`;
+
+  if (!source.includes(inlineListener)) {
+    if (!source.includes(directListener)) {
+      throw new Error('Phase 3 accepted full-runtime listener is missing.');
+    }
+    source = source.replace(directListener, inlineListener);
+  }
+
+  if (source.includes("'medindex:full-registry-started', releaseMobileShellOwner")) {
+    throw new Error('Phase 3 still registers a free releaseMobileShellOwner reference.');
+  }
+  write('registry-mobile-phase3.js', source);
+}
+
+function patchPhonePersonalControls() {
+  let source = read('registry-user-personalization.css');
+  const marker = '/* PR157 merge readiness: phone personal views remain readable and touch-safe. */';
+  if (!source.includes(marker)) {
+    source += `\n\n${marker}\n@media (max-width:767px){\n  html[data-registry-mobile-lite] .registry-personal-view-actions button{\n    min-height:44px!important;\n    font-size:12px!important;\n  }\n  html[data-registry-mobile-lite] .registry-personal-view-actions button>b{\n    font-size:11px!important;\n  }\n}\n`;
+  }
+  if (!source.includes('min-height:44px!important;') || !source.includes('font-size:11px!important;')) {
+    throw new Error('Phone personal-view touch/font floor was not materialized.');
+  }
+  write('registry-user-personalization.css', source);
+}
+
+function patchPhoneCardDensity() {
+  let design = read('registry-mobile-design-audit.css');
+  design = replaceOnce(
+    design,
+    'padding:3px 12px 3px 15px;',
+    'padding:2px 12px 2px 15px;',
+    'final phone card vertical padding',
+  );
+  design = replaceOnce(
+    design,
+    'padding:3px 10px 3px 13px;',
+    'padding:2px 10px 2px 13px;',
+    'final sub-390 card vertical padding',
+  );
+  write('registry-mobile-design-audit.css', design);
+
+  let phone = read('registry-mobile-phone-hardening.css');
+  phone = replaceOnce(
+    phone,
+    'padding:4px 9px 4px 12px;',
+    'padding:2px 9px 2px 12px;',
+    'final narrow-phone card vertical padding',
+  );
+  write('registry-mobile-phone-hardening.css', phone);
+}
+
+function patchFullDesktopColumnMaterialization() {
+  let source = read('registry-unified-table.js');
+  source = replaceOnce(
+    source,
+    `    const required = new Set(DYNAMIC_KEYS);\n    if (currentView() === 'clinical') CLINICAL_BASE_KEYS.forEach(key => required.add(key));`,
+    `    const required = new Set(currentView() === 'full' ? FULL_ORDER : DYNAMIC_KEYS);\n    if (currentView() === 'clinical') CLINICAL_BASE_KEYS.forEach(key => required.add(key));`,
+    'full-view required-column set',
+  );
+  if (!source.includes("new Set(currentView() === 'full' ? FULL_ORDER : DYNAMIC_KEYS)")) {
+    throw new Error('Full desktop view does not materialize its canonical columns.');
+  }
+  write('registry-unified-table.js', source);
+}
+
+patchMobilePhase3Owner();
+patchPhonePersonalControls();
+patchPhoneCardDensity();
+patchFullDesktopColumnMaterialization();
+
+console.log('PR157 merge-readiness patch passed: composed mobile owner, touch/font floor, card density and full desktop columns are deterministic.');
