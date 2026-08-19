@@ -548,14 +548,39 @@
     const method = String(options.method || request?.method || 'GET').toUpperCase();
     if (method === 'DELETE' && /\/api\/auth(?:\?|$)/.test(String(target))) {
       captureLocalChanges({ schedule:false });
-      await Promise.race([flush(), new Promise(resolve => setTimeout(resolve, 1500))]);
+      const targetRevision = localRevision;
+      const synced = await Promise.race([
+        flushThroughRevision(targetRevision),
+        new Promise(resolve => setTimeout(() => resolve(false), 1500)),
+      ]);
+      if (synced !== true) {
+        const message = 'Ruajtja e Favoriteve dhe Shënimeve nuk u konfirmua. Dalja u anulua për të mos humbur të dhëna.';
+        dispatch('medindex:library-sync-error', {
+          error:message,
+          logoutBlocked:true,
+          localRevision,
+          syncedRevision,
+        });
+        return new Response(JSON.stringify({
+          error:message,
+          code:'library_sync_required',
+        }), {
+          status:503,
+          headers:{
+            'Content-Type':'application/json',
+            'Cache-Control':'no-store',
+          },
+        });
+      }
       const response = await nativeFetch(...args);
-      try {
-        localStorage.removeItem(PRESCRIPTIONS_KEY);
-        localStorage.removeItem(FAVORITES_KEY);
-        localStorage.removeItem(NOTES_KEY);
-        localStorage.removeItem(META_KEY);
-      } catch {}
+      if (response.ok) {
+        try {
+          localStorage.removeItem(PRESCRIPTIONS_KEY);
+          localStorage.removeItem(FAVORITES_KEY);
+          localStorage.removeItem(NOTES_KEY);
+          localStorage.removeItem(META_KEY);
+        } catch {}
+      }
       return response;
     }
     return nativeFetch(...args);
