@@ -9,6 +9,7 @@ const read = file => fs.readFileSync(path.join(ROOT, file), 'utf8');
 
 const html = read('urgjencat.html');
 const core = read('urgjencat.js');
+const sanityClient = read('sanity-clinical-client.js');
 const learning = read('emergency-summary-learn.js');
 const learningCss = read('emergency-summary-learn.css');
 const polishCss = read('emergency-summary-learn-polish.css');
@@ -44,6 +45,7 @@ assert.match(core, /reviewStatus,reviewedBy,lastReviewedAt,reviewDueAt,version/)
 assert.match(core, /primaryCareSteps/);
 assert.match(core, /secondaryCareSteps/);
 assert.match(core, /sources/);
+assert.match(sanityClient, /window\.MedIndexSanity = Object\.freeze/);
 
 assert.match(learning, /value === 'learn' \? 'learn' : 'summary'/);
 assert.match(learning, /data-ck-mode="summary"/);
@@ -66,6 +68,9 @@ assert.match(learning, /aria-live="polite"/);
 assert.match(learning, /#emergencyList \.ck-list-button\.is-active\[data-id\]/);
 assert.match(learning, /String\(item\?\._id \|\| ''\) === String\(activeId\)/);
 assert.match(learning, /new Set\(stored\.known\.filter/);
+assert.match(learning, /window\.MedIndexSanity = Object\.freeze/);
+assert.doesNotMatch(learning, /client\.query\s*=/);
+assert.doesNotMatch(learning, /client\.__summaryLearnWrapped\s*=/);
 assert.match(learning, /sourceLabel/);
 assert.match(learning, /item\.primaryCareSteps/);
 assert.match(learning, /item\.secondaryCareSteps/);
