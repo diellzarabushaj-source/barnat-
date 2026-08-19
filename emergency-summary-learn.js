@@ -12,6 +12,10 @@
     ['after-stabilization', 'Pas stabilizimit'],
     ['primary', 'Kujdes parësor'],
     ['secondary', 'Kujdes sekondar'],
+    ['draft', 'Draft'],
+    ['review', 'Për verifikim'],
+    ['verified', 'Verifikuar'],
+    ['archived', 'Arkivuar'],
   ]);
 
   const normalize = value => String(value || '')
@@ -54,8 +58,13 @@
   }
 
   function currentItem(detail) {
-    const title = detail.querySelector('.ck-detail-head h2')?.textContent?.trim();
     const items = Array.isArray(window.__medIndexEmergencyItems) ? window.__medIndexEmergencyItems : [];
+    const activeId = document.querySelector('#emergencyList .ck-list-button.is-active[data-id]')?.dataset.id;
+    if (activeId) {
+      const byId = items.find(item => String(item?._id || '') === String(activeId));
+      if (byId) return byId;
+    }
+    const title = detail.querySelector('.ck-detail-head h2')?.textContent?.trim();
     if (!title) return null;
     return items.find(item => item?.title === title) || null;
   }
@@ -66,12 +75,24 @@
       ...(Array.isArray(item?.clinicalSources) ? item.clinicalSources : []),
       ...(Array.isArray(item?.references) ? item.references : []),
     ];
-    return sources.length;
+    const seen = new Set();
+    return sources.filter(source => {
+      const key = `${String(source?.url || '').trim()}|${String(source?.title || source?.label || '').trim()}`;
+      if (key === '|' || seen.has(key)) return false;
+      seen.add(key);
+      return true;
+    }).length;
   }
 
   function medicationStep(item) {
     const steps = Array.isArray(item?.primaryCareSteps) ? item.primaryCareSteps : [];
-    return steps.find(step => /(adrenalin|epinefr|nalokson|glukoz|aspirin|nitroglic|salbutamol|midazolam|diazepam|atropin|amiodaron)/i.test(step?.action || ''))
+    const medicationPattern = /(adrenalin|epinefr|nalokson|glukoz|aspirin|nitroglic|salbutamol|ipratrop|midazolam|diazepam|lorazepam|atropin|amiodaron|adenozin|magnesium|furosemid|hidrokortizon|dexametazon)/i;
+    return steps.find(step => medicationPattern.test(`${step?.title || ''} ${step?.action || ''}`)) || null;
+  }
+
+  function firstActionStep(item) {
+    const steps = Array.isArray(item?.primaryCareSteps) ? item.primaryCareSteps : [];
+    return medicationStep(item)
       || steps.find(step => normalize(step?.priority) === 'immediate')
       || steps[0]
       || null;
@@ -84,7 +105,7 @@
 
   function quickStepMarkup(step, index) {
     return `<article class="ck-sl-step${normalize(step?.priority) === 'immediate' ? ' is-immediate' : ''}">
-      <span class="ck-sl-step-number">${index + 1}</span>
+      <span class="ck-sl-step-number" aria-hidden="true">${index + 1}</span>
       <div>
         <div class="ck-sl-step-head">
           <strong>${esc(step?.title || `Hapi ${index + 1}`)}</strong>
@@ -97,19 +118,22 @@
 
   function quickSummaryMarkup(item) {
     const steps = Array.isArray(item?.primaryCareSteps) ? item.primaryCareSteps : [];
-    const therapy = medicationStep(item);
+    const medication = medicationStep(item);
+    const firstAction = firstActionStep(item);
     const doNotDo = Array.isArray(item?.doNotDo) ? item.doNotDo : [];
     const referral = item?.referral || {};
+    const leadLabel = medication && firstAction === medication ? 'Trajtimi i parë' : 'Veprimi i parë';
+    const leadIcon = medication && firstAction === medication ? 'Rx' : '!';
 
-    return `<section class="ck-sl-panel ck-sl-summary" data-ck-sl-panel="summary">
-      ${therapy ? `<article class="ck-sl-therapy">
-        <div class="ck-sl-therapy-icon" aria-hidden="true">Rx</div>
+    return `<section class="ck-sl-panel ck-sl-summary" data-ck-sl-panel="summary" aria-label="Përmbledhje praktike">
+      ${firstAction ? `<article class="ck-sl-therapy">
+        <div class="ck-sl-therapy-icon" aria-hidden="true">${leadIcon}</div>
         <div class="ck-sl-therapy-copy">
-          <span>Trajtimi i parë</span>
-          <h3>${esc(therapy.title || 'Veprimi i menjëhershëm')}</h3>
-          <p>${esc(therapy.action || '')}</p>
+          <span>${leadLabel}</span>
+          <h3>${esc(firstAction.title || 'Veprimi i menjëhershëm')}</h3>
+          <p>${esc(firstAction.action || '')}</p>
         </div>
-        ${timing(therapy) ? `<strong class="ck-sl-now">${esc(timing(therapy))}</strong>` : ''}
+        ${timing(firstAction) ? `<strong class="ck-sl-now">${esc(timing(firstAction))}</strong>` : ''}
       </article>` : ''}
 
       <div class="ck-sl-section-heading">
@@ -123,7 +147,7 @@
         <ul>${doNotDo.slice(0, 4).map(text => `<li>${esc(text)}</li>`).join('')}</ul>
       </aside>` : ''}
 
-      ${(referral.when || referral.destination) ? `<div class="ck-sl-transfer">
+      ${(referral.when || referral.destination) ? `<div class="ck-sl-transfer" role="note" aria-label="Transferimi ose referimi">
         <div><span>Transferimi / referimi</span><strong>${esc(referral.when || 'Vlerëso nevojën për referim.')}</strong></div>
         ${referral.destination ? `<p>${esc(referral.destination)}</p>` : ''}
       </div>` : ''}
@@ -132,7 +156,7 @@
 
   function lessonStepMarkup(step, index, kind) {
     return `<article class="ck-sl-lesson-step">
-      <div class="ck-sl-lesson-index">${index + 1}</div>
+      <div class="ck-sl-lesson-index" aria-hidden="true">${index + 1}</div>
       <div>
         <div class="ck-sl-lesson-title">
           <h4>${esc(step?.title || `${kind} ${index + 1}`)}</h4>
@@ -174,16 +198,19 @@
     const secondary = Array.isArray(item?.secondaryCareSteps) ? item.secondaryCareSteps : [];
     const redFlags = Array.isArray(item?.redFlags) ? item.redFlags : [];
     const doNotDo = Array.isArray(item?.doNotDo) ? item.doNotDo : [];
-    const therapy = medicationStep(item);
+    const medication = medicationStep(item);
+    const firstAction = firstActionStep(item);
 
-    if (therapy) cards.push({
-      q: `Cili është trajtimi i parë te “${item.title}”?`,
-      a: therapy.action,
-      tag: 'Trajtimi',
+    if (firstAction) cards.push({
+      q: medication && firstAction === medication
+        ? `Cili është trajtimi i parë te “${item.title}”?`
+        : `Cili është veprimi i parë te “${item.title}”?`,
+      a: firstAction.action,
+      tag: medication && firstAction === medication ? 'Trajtimi' : 'Veprimi i parë',
     });
 
     primary.forEach((step, index) => {
-      if (step === therapy) return;
+      if (step === firstAction) return;
       cards.push({
         q: `Çfarë bëhet te hapi ${index + 1}: ${step.title || 'veprimi klinik'}?`,
         a: step.action,
@@ -231,7 +258,9 @@
       return {
         index: Math.min(Math.max(stored.index, 0), Math.max(count - 1, 0)),
         revealed: Boolean(stored.revealed),
-        known: Array.isArray(stored.known) ? stored.known : [],
+        known: Array.isArray(stored.known)
+          ? [...new Set(stored.known.filter(value => Number.isInteger(value) && value >= 0 && value < count))]
+          : [],
       };
     } catch {
       return fallback;
@@ -242,33 +271,40 @@
     try { sessionStorage.setItem(`${FLASH_KEY}${itemId}`, JSON.stringify(state)); } catch {}
   }
 
+  function flashAnswerId(itemId, index) {
+    const safe = String(itemId || 'item').replace(/[^a-zA-Z0-9_-]/g, '-');
+    return `ck-flash-answer-${safe}-${index}`;
+  }
+
   function flashMarkup(item, cards) {
     if (!cards.length) return '';
     const state = flashState(item._id, cards.length);
     const card = cards[state.index];
     const known = new Set(state.known);
-    return `<section class="ck-sl-flashcards" data-ck-sl-flashcards data-item-id="${esc(item._id)}">
+    const answerId = flashAnswerId(item._id, state.index);
+    const progress = Math.round(((state.index + 1) / cards.length) * 100);
+    return `<section class="ck-sl-flashcards" data-ck-sl-flashcards data-item-id="${esc(item._id)}" aria-label="Flashcards për këtë mësim">
       <div class="ck-sl-flash-head">
         <div><span>FLASHCARDS</span><h3>Mbaje mend aktivisht</h3><p>Pyetje të krijuara vetëm nga ky mësim.</p></div>
-        <strong>${state.index + 1} / ${cards.length}</strong>
+        <strong aria-label="Karta ${state.index + 1} nga ${cards.length}">${state.index + 1} / ${cards.length}</strong>
       </div>
-      <div class="ck-sl-flash-progress"><span style="width:${Math.round(((state.index + 1) / cards.length) * 100)}%"></span></div>
+      <div class="ck-sl-flash-progress" role="progressbar" aria-label="Progresi i flashcards" aria-valuemin="0" aria-valuemax="100" aria-valuenow="${progress}"><span style="width:${progress}%"></span></div>
       <article class="ck-sl-flashcard ${state.revealed ? 'is-revealed' : ''}" data-flash-card>
         <span>${esc(card.tag || 'Pyetje')}</span>
         <h4>${esc(card.q)}</h4>
-        <div class="ck-sl-flash-answer" ${state.revealed ? '' : 'hidden'}>
+        <div class="ck-sl-flash-answer" id="${esc(answerId)}" role="region" aria-live="polite" ${state.revealed ? '' : 'hidden'}>
           <small>Përgjigjja</small>
           <p>${esc(card.a)}</p>
         </div>
-        <button type="button" data-flash-reveal>${state.revealed ? 'Fshih përgjigjen' : 'Shfaq përgjigjen'}</button>
+        <button type="button" data-flash-reveal aria-expanded="${state.revealed ? 'true' : 'false'}" aria-controls="${esc(answerId)}">${state.revealed ? 'Fshih përgjigjen' : 'Shfaq përgjigjen'}</button>
       </article>
-      <div class="ck-sl-flash-controls">
-        <button type="button" data-flash-prev ${state.index === 0 ? 'disabled' : ''}>← Para</button>
-        ${state.revealed ? `<div class="ck-sl-recall">
+      <div class="ck-sl-flash-controls ${state.revealed ? 'is-revealed' : 'is-hidden-answer'}">
+        <button type="button" data-flash-prev ${state.index === 0 ? 'disabled' : ''} aria-label="Flashcard paraprak">← Para</button>
+        ${state.revealed ? `<div class="ck-sl-recall" aria-label="Vlerëso rikujtimin">
           <button type="button" data-flash-repeat>Përsërite</button>
           <button type="button" data-flash-known class="is-known">${known.has(state.index) ? 'E dija ✓' : 'E dija'}</button>
-        </div>` : '<span></span>'}
-        <button type="button" data-flash-next ${state.index === cards.length - 1 ? 'disabled' : ''}>Tjetra →</button>
+        </div>` : '<span aria-hidden="true"></span>'}
+        <button type="button" data-flash-next ${state.index === cards.length - 1 ? 'disabled' : ''} aria-label="Flashcard tjetër">Tjetra →</button>
       </div>
     </section>`;
   }
@@ -278,7 +314,7 @@
     const secondary = Array.isArray(item?.secondaryCareSteps) ? item.secondaryCareSteps : [];
     const cards = buildFlashcards(item);
 
-    return `<section class="ck-sl-panel ck-sl-learn" data-ck-sl-panel="learn">
+    return `<section class="ck-sl-panel ck-sl-learn" data-ck-sl-panel="learn" aria-label="Mësimi i plotë">
       <div class="ck-sl-learn-intro">
         <span>MËSIMI I PLOTË</span>
         <h3>${esc(item.title)}</h3>
@@ -307,23 +343,39 @@
     const flash = root.querySelector('[data-ck-sl-flashcards]');
     if (!flash) return;
 
-    const rerender = next => {
+    const rerender = (next, focusSelector) => {
       saveFlashState(item._id, next);
       const wrapper = root.querySelector('[data-ck-sl-panel="learn"]');
       if (!wrapper) return;
       wrapper.outerHTML = learnMarkup(item);
       bindFlashcards(root, item);
+      if (focusSelector) requestAnimationFrame(() => root.querySelector(focusSelector)?.focus({preventScroll:true}));
     };
 
     const state = flashState(item._id, cards.length);
-    flash.querySelector('[data-flash-reveal]')?.addEventListener('click', () => rerender({...state, revealed: !state.revealed}));
-    flash.querySelector('[data-flash-prev]')?.addEventListener('click', () => rerender({...state, index: Math.max(0, state.index - 1), revealed: false}));
-    flash.querySelector('[data-flash-next]')?.addEventListener('click', () => rerender({...state, index: Math.min(cards.length - 1, state.index + 1), revealed: false}));
-    flash.querySelector('[data-flash-repeat]')?.addEventListener('click', () => rerender({...state, revealed: false}));
+    flash.querySelector('[data-flash-reveal]')?.addEventListener('click', () => rerender(
+      {...state, revealed: !state.revealed},
+      '[data-flash-reveal]',
+    ));
+    flash.querySelector('[data-flash-prev]')?.addEventListener('click', () => rerender(
+      {...state, index: Math.max(0, state.index - 1), revealed: false},
+      '[data-flash-reveal]',
+    ));
+    flash.querySelector('[data-flash-next]')?.addEventListener('click', () => rerender(
+      {...state, index: Math.min(cards.length - 1, state.index + 1), revealed: false},
+      '[data-flash-reveal]',
+    ));
+    flash.querySelector('[data-flash-repeat]')?.addEventListener('click', () => rerender(
+      {...state, revealed: false},
+      '[data-flash-reveal]',
+    ));
     flash.querySelector('[data-flash-known]')?.addEventListener('click', () => {
       const known = new Set(state.known);
       known.add(state.index);
-      rerender({...state, known: [...known], index: Math.min(cards.length - 1, state.index + 1), revealed: false});
+      rerender(
+        {...state, known: [...known], index: Math.min(cards.length - 1, state.index + 1), revealed: false},
+        '[data-flash-reveal]',
+      );
     });
   }
 
@@ -386,7 +438,9 @@
     bindModeButtons(detail);
     bindFlashcards(experience, item);
 
-    detail.querySelector('.ck-review-button')?.setAttribute('title', `${sourceCount(item)} burime klinike · ${human(item.reviewStatus || '') || 'status klinik'}`);
+    const count = sourceCount(item);
+    const sourceLabel = `${count} ${count === 1 ? 'burim klinik' : 'burime klinike'}`;
+    detail.querySelector('.ck-review-button')?.setAttribute('title', `${sourceLabel} · ${human(item.reviewStatus || '') || 'Status klinik'}`);
   }
 
   function observe() {
