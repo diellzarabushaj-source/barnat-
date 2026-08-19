@@ -6,7 +6,12 @@ on:
       - phase4-auth-main-20260819
     paths:
       - 'lib/supabase-auth.js'
+      - 'lib/supabase-auth-bootstrap.js'
+      - 'api/phase4-auth-bootstrap.js'
+      - 'phase4-auth-test.html'
+      - 'phase4-auth-test.js'
       - 'tests/supabase-auth-guards-test.js'
+      - 'tests/supabase-auth-bootstrap-test.js'
       - 'supabase/migrations/**'
       - '.github/workflows/phase4-supabase-auth.yml'
   pull_request:
@@ -14,7 +19,12 @@ on:
       - main
     paths:
       - 'lib/supabase-auth.js'
+      - 'lib/supabase-auth-bootstrap.js'
+      - 'api/phase4-auth-bootstrap.js'
+      - 'phase4-auth-test.html'
+      - 'phase4-auth-test.js'
       - 'tests/supabase-auth-guards-test.js'
+      - 'tests/supabase-auth-bootstrap-test.js'
       - 'supabase/migrations/**'
       - '.github/workflows/phase4-supabase-auth.yml'
 
@@ -33,4 +43,6 @@ jobs:
         with:
           node-version: '22'
       - name: Run Phase 4 Auth guard tests
-        run: node tests/supabase-auth-guards-test.js
+        run: |
+          node tests/supabase-auth-guards-test.js
+          node tests/supabase-auth-bootstrap-test.js
