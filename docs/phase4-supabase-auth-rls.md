@@ -2,9 +2,11 @@
 
 ## Status
 
-**IN PROGRESS — STACKED ON PHASE 3. DO NOT MERGE TO `main` BEFORE PR #160 IS COMPLETE.**
+**IN PROGRESS — BASED DIRECTLY ON MERGED `main`.**
 
-The additive database foundation has been applied to the Supabase project and recorded in:
+Phase 3 / PR #160 is already merged to `main`, so this Phase 4 branch starts from the current production source of truth rather than from the old Phase 3 branch.
+
+The additive database foundation has already been applied to Supabase and is recorded in:
 
 `supabase/migrations/20260819145700_phase4_auth_roles_rls_foundation.sql`
 
@@ -13,167 +15,76 @@ The server-side Auth guard foundation is recorded in:
 - `lib/supabase-auth.js`
 - `tests/supabase-auth-guards-test.js`
 
-Production frontend/auth has **not** been switched. Medical reads continue to use the already-live Supabase medical path, while the current login/Neon rollback path remains unchanged.
+Production frontend login has not been switched yet. Phase 3 runtime remains live while Phase 4 Auth is validated.
 
-## Final authorization model
+## Authorization model
 
-There are only two application roles:
+Application roles are only:
 
-- `doctor` — default for every normal MedIndex account.
-- `admin` — privileged administrative role.
+- `doctor` — default normal account
+- `admin` — privileged administrative account
 
-There is no `user`, `editor`, `super_admin`, or client-side role elevation.
-
-Account status is separate from role:
+Account status is separate:
 
 - `active`
 - `suspended`
 - `disabled`
 
-## Implemented database foundation
+Authorization is read from `public.profiles`, never from user-editable Auth metadata.
 
-### `public.profiles`
+## Implemented foundation
 
-`profiles.id` is a foreign key to `auth.users.id`.
-
-The profile stores MedIndex-specific metadata only:
-
-- `full_name`
-- `avatar_url`
-- `specialty`
-- `license_number`
-- `role`
-- `status`
-- timestamps
-
-Authorization is **not** read from `raw_user_meta_data`. New Auth users are inserted into `profiles` with the database default role `doctor`.
-
-Authenticated users can read their own profile. An active admin can read all profiles. Doctors can update only non-authorization profile columns; `role` and `status` are not granted as client-updatable columns.
-
-### Private authorization helpers
-
-Security-definer helpers live in the non-exposed `private` schema:
-
-- `private.is_active_user()`
-- `private.is_admin()`
-- `private.handle_new_auth_user()`
-
-All security-definer functions use an explicit empty `search_path` and fully-qualified relation names.
-
-### Auth profile trigger
-
-`medindex_auth_user_profile_created` runs after insertion into `auth.users` and creates the matching `profiles` row.
-
-It copies display/avatar metadata only. It never accepts a role from user-editable Auth metadata.
-
-### Personal data RLS
-
-Authenticated own-row policies are prepared for:
-
-- `user_favorites`
-- `user_prescriptions`
-- `user_notes`
+- `public.profiles` keyed 1:1 to `auth.users.id`
+- automatic Auth-user → profile trigger
+- default role `doctor`
+- `private.is_active_user()` and `private.is_admin()` security-definer helpers with explicit `search_path`
+- RLS on profiles and personal-data tables
+- clean `user_notes`
 - `user_preferences`
+- doctor own-row access only
+- suspended/disabled account blocking
+- no client-side role or status update privilege
+- server `requireDoctor()` and `requireAdmin()` guards
+- isolated Auth guard CI tests
 
-All personal-data policies require:
+## Verified security behavior
 
-1. `user_id = auth.uid()`
-2. the profile to be `active`
+Database tests already proved:
 
-Legacy `protocol` rows inside `user_favorites` are not exposed to authenticated clients; Phase 4 treats `user_favorites` as drug favorites only and introduces `user_notes` as the clean note store.
+- a user cannot self-promote through `user_metadata.role='admin'`
+- Doctor A cannot read Doctor B personal data
+- an active admin can read all profiles
+- a suspended account cannot read personal data
+- authenticated users cannot update `role` or `status`
 
-### New tables
+## Google Auth configuration
 
-`user_notes` links a note to `auth.users` and a canonical `drugs.id`, with a unique `(user_id, drug_id)` constraint.
+Google Cloud is configured as an External production OAuth app.
 
-`user_preferences` is one JSON preferences row per Auth user.
+Expected Google Web OAuth configuration:
 
-Both have RLS and automatic `updated_at` triggers.
+- Authorized JavaScript origin: `https://barnat-six.vercel.app`
+- Authorized redirect URI: `https://ftuchtmolddhhsdcwnqe.supabase.co/auth/v1/callback`
 
-## Implemented server Auth foundation
+Supabase Google provider should use the matching Web Client ID and Client Secret, with nonce checks enabled and users-without-email disabled.
 
-`lib/supabase-auth.js` provides server-only request guards without changing the current production login flow:
+## Remaining Phase 4 gates
 
-- parses a strict `Authorization: Bearer <token>` header;
-- verifies the access token against Supabase Auth `/auth/v1/user` using the publishable key;
-- loads the live MedIndex `profiles` row using the same user JWT, so RLS remains part of authorization;
-- derives `role` and `status` only from `profiles`, never from user-editable Auth metadata;
-- rejects missing/invalid profiles and inactive accounts;
-- exposes `requireDoctor()` and `requireAdmin()` guards;
-- uses bounded upstream timeouts and maps Auth/upstream failures to explicit status/error codes;
-- never requires or exposes the Supabase server secret for normal identity verification.
+1. Verify Supabase Google provider is enabled with the correct Web client credentials.
+2. Run a real Google sign-in and confirm exactly one `auth.users` row and one `profiles` row are created.
+3. Confirm the first normal account receives `role='doctor'`.
+4. Promote the owner/admin account only through a trusted database/server operation.
+5. Verify a real Supabase access token passes `requireDoctor()` and admin enforcement works.
+6. Map the legacy Phase 3 personal-data owner UUID to the new Auth user before frontend personal-data cutover.
+7. Re-run Security Advisor and full CI.
+8. Keep the current production login path unchanged until the Phase 4 gates are green.
 
-`tests/supabase-auth-guards-test.js` covers the critical contract:
+## Not part of this branch yet
 
-- malformed/missing Bearer headers are rejected;
-- a fake `user_metadata.role='admin'` cannot override a `profiles.role='doctor'` value;
-- doctors pass `requireDoctor()` but fail `requireAdmin()`;
-- active admins pass `requireAdmin()`;
-- suspended users are rejected;
-- missing profiles are rejected;
-- invalid Supabase access tokens are rejected.
+- frontend Auth cutover
+- replacing `auth-client.js`
+- moving Favorites/Notes/Prescriptions browser flows to Supabase Auth sessions
+- Admin Dashboard UI
+- removal of legacy login/session code
 
-No new public API endpoint is exposed yet. The guards are intentionally prepared for Phase 5 and future `/api/admin/*` routes rather than adding an unused production attack surface.
-
-## Current data state
-
-At the time Phase 4 was created:
-
-- `auth.users`: 0
-- `profiles`: 0
-- `user_notes`: 0
-- `user_preferences`: 0
-- `user_favorites`: 82 copied Phase 3 rows
-- `user_prescriptions`: 2 copied Phase 3 rows
-
-The 82 copied favorite/note-history rows remain untouched. Their legacy user UUID must be mapped to the future `auth.users.id` before frontend personal-data cutover.
-
-## Security verification completed
-
-After the migration:
-
-- expected RLS policies exist on `profiles`, `user_favorites`, `user_prescriptions`, `user_notes`, and `user_preferences`;
-- `anon` has no grants on the Phase 4 user layer;
-- authenticated `profiles` UPDATE privilege exists only for `full_name`, `avatar_url`, `specialty`, and `license_number`;
-- authenticated users have no client UPDATE privilege on `role` or `status`;
-- security-definer Auth helpers have an explicit empty `search_path`;
-- the Auth-user → profile trigger exists on `auth.users`;
-- the 82 legacy favorite/history rows and 2 prescriptions were unchanged by the Phase 4 migration;
-- Supabase Security Advisor reported no new Phase 4 warning; its remaining `RLS enabled/no policy` INFO items are the intentionally fail-closed legacy/server-only Phase 3 relations.
-
-## Security properties
-
-- `anon` gets no access to profiles or personal tables.
-- The browser never receives a Supabase secret key.
-- A doctor cannot update `role` or `status` through the normal client grant.
-- A doctor cannot read or write another doctor's personal rows.
-- Suspended/disabled profiles fail the active-user RLS check.
-- Admin write actions such as role/status changes remain server-side operations for a later phase.
-
-## Intentionally not changed yet
-
-Phase 4 does **not** yet:
-
-- switch the frontend login to Supabase Auth;
-- configure the production Google OAuth UI flow;
-- create/promote the real admin Auth account;
-- remap legacy Phase 3 user UUIDs to `auth.users.id`;
-- switch personal-data frontend calls to Supabase;
-- remove the current custom Google/Neon auth path;
-- remove Neon rollback;
-- remove anonymous medical-read access needed by the current production frontend.
-
-Those are cutover tasks and must occur only after the new Auth flow is tested.
-
-## Gates before Phase 4 is considered complete
-
-1. Phase 3 / PR #160 gates are green and its copied data is verified.
-2. Supabase Google Auth provider and redirect URLs are configured for Preview and Production.
-3. A real test doctor can sign in and receives exactly one `profiles` row with `role='doctor'`.
-4. The owner/admin account signs in and is promoted to `role='admin'` through a trusted server/database operation.
-5. RLS tests prove doctor A cannot read/write doctor B data.
-6. RLS tests prove a doctor cannot self-promote to admin or change account status.
-7. Suspended/disabled accounts cannot access personal tables.
-8. Legacy favorite/prescription user IDs are mapped before personal-data frontend cutover.
-9. Supabase Security Advisor has no new Phase 4 security warnings.
-10. Production medical reads and the current login remain unaffected until Phase 5.
+Those belong to the next cutover step after Phase 4 Auth is proven with real users.
