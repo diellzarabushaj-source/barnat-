@@ -1,0 +1,23 @@
+<!doctype html>
+<html lang="sq">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="robots" content="noindex,nofollow,noarchive">
+  <title>MedIndex — Phase 4 Auth Test</title>
+  <style>
+    :root{color-scheme:dark}*{box-sizing:border-box}body{margin:0;min-height:100vh;display:grid;place-items:center;padding:24px;background:#101514;color:#f3f6f5;font:16px/1.5 Arial,sans-serif}.card{width:min(560px,100%);padding:28px;border:1px solid #2e3b38;border-radius:20px;background:#171d1c;box-shadow:0 24px 80px #0008}h1{margin:0 0 8px;font-size:26px}p{color:#b8c4c1}.status{margin:20px 0;padding:14px;border-radius:12px;background:#0f1413;border:1px solid #2e3b38;white-space:pre-wrap}.ok{border-color:#2c7a63;color:#c7f5e7}.bad{border-color:#8c4949;color:#ffd4d4}.note{font-size:13px;color:#91a09c}#googleButton{min-height:44px;margin-top:18px}
+  </style>
+  <script src="https://accounts.google.com/gsi/client" async></script>
+</head>
+<body>
+  <main class="card">
+    <h1>Phase 4 — Supabase Auth Test</h1>
+    <p>Kjo faqe teston Google → Supabase Auth → profile → doctor guard. Login-i normal i MedIndex nuk ndryshohet.</p>
+    <div id="googleButton"></div>
+    <div id="status" class="status">Po përgatitet testi…</div>
+    <p class="note">Mos e përdor këtë faqe si login normal. Do të hiqet pasi Faza 4 të verifikohet.</p>
+  </main>
+  <script src="/phase4-auth-test.js"></script>
+</body>
+</html>

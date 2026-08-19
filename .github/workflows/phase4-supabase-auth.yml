@@ -1,0 +1,53 @@
+name: Phase 4 Supabase Auth
+
+on:
+  push:
+    branches:
+      - phase4-auth-main-20260819
+    paths:
+      - 'lib/supabase-auth.js'
+      - 'lib/supabase-auth-bootstrap.js'
+      - 'lib/phase4-auth-bootstrap-route.js'
+      - 'api/auth.js'
+      - 'phase4-auth-test.html'
+      - 'phase4-auth-test.js'
+      - 'tests/supabase-auth-guards-test.js'
+      - 'tests/supabase-auth-bootstrap-test.js'
+      - 'tests/phase4-legacy-owner-claim-test.js'
+      - 'supabase/migrations/**'
+      - '.github/workflows/phase4-supabase-auth.yml'
+  pull_request:
+    branches:
+      - main
+    paths:
+      - 'lib/supabase-auth.js'
+      - 'lib/supabase-auth-bootstrap.js'
+      - 'lib/phase4-auth-bootstrap-route.js'
+      - 'api/auth.js'
+      - 'phase4-auth-test.html'
+      - 'phase4-auth-test.js'
+      - 'tests/supabase-auth-guards-test.js'
+      - 'tests/supabase-auth-bootstrap-test.js'
+      - 'tests/phase4-legacy-owner-claim-test.js'
+      - 'supabase/migrations/**'
+      - '.github/workflows/phase4-supabase-auth.yml'
+
+permissions:
+  contents: read
+
+jobs:
+  auth-foundation:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Run Phase 4 Auth guard tests
+        run: |
+          node tests/supabase-auth-guards-test.js
+          node tests/supabase-auth-bootstrap-test.js
+          node tests/phase4-legacy-owner-claim-test.js

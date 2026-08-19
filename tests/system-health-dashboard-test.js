@@ -70,7 +70,7 @@ assert.match(endpoint, /audit_logs/);
 assert.match(endpoint, /sync_runs/);
 assert.match(endpoint, /STALE_AFTER_MS = 15 \* 60 \* 1000/);
 assert.match(endpoint, /IcdHealth\.loadHealth\(IcdPublicSource, now\)/);
-assert.match(endpoint, /statusVersion:3/);
+assert.match(endpoint, /statusVersion:4/);
 assert.match(endpoint, /state:dosageState/);
 assert.match(endpoint, /overallState\(\[dosageState, icd\.state\]\)/);
 assert.match(icdAudit, /auditCache = new WeakMap/);

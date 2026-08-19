@@ -8,6 +8,11 @@ const { pathToFileURL } = require('node:url');
   delete process.env.ACCESS_CODE_SCRYPT;
   delete process.env.GEMINI_API_KEY;
   delete process.env.GEMINI_API_KEY1;
+  // Keep this test deterministic in Vercel Preview, where Google login may be
+  // configured globally. This case intentionally verifies a session secret
+  // with no access verifier of any kind.
+  delete process.env.GOOGLE_CLIENT_ID;
+  delete process.env.MEDINDEX_GOOGLE_CLIENT_ID;
   process.env.SESSION_SECRET = 'medindex-default-auth-test-secret-that-is-private';
 
   const baseUrl = pathToFileURL(path.resolve(__dirname, '../lib/auth.mjs')).href;
