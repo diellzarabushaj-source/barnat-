@@ -74,8 +74,9 @@ assert.equal(exists('api/release.js'), false, 'release identity must reuse the e
 
 const auth = read('auth-client.js');
 [
-  /medindex_offline_lease_v2/, /LEGACY_OFFLINE_LEASE_KEYS/, /MAX_OFFLINE_LEASE_MS = 8 \* 60 \* 60 \* 1000/,
-  /lease\.version !== 2/, /lease\.hardened !== true/, /payload\.hardened !== true/,
+  /medindex_offline_lease_v3/, /medindex_offline_lease_v2/, /LEGACY_OFFLINE_LEASE_KEYS/, /MAX_OFFLINE_LEASE_MS = 8 \* 60 \* 60 \* 1000/,
+  /lease\.version !== 3/, /lease\.hardened !== true/, /payload\.hardened !== true/,
+  /payload\.supabaseAuthenticated === true \|\| payload\.rollbackSession === true/,
   /AUTH_TIMEOUT_MS = 3200/, /activateOfflineLease/, /auth-offline/, /CLEAR_PRIVATE_DATA/,
   /deleteDatabase\('medindex-registry-v1'\)/, /offline-runtime\.js\?v=/, /revalidateOnlineSession/,
   /medindex:offline-auth-invalid/, /AUTH_NOT_CONFIGURED/, /configurationUnavailable/,
