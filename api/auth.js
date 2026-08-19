@@ -3,6 +3,7 @@
 const { verifyGoogleIdToken } = require('../lib/google-id-token.js');
 const UserStore = require('../lib/user-store.js');
 const UserLibrary = require('../lib/user-library.js');
+const Phase4AuthBootstrap = require('../lib/phase4-auth-bootstrap-route.js');
 
 const attempts = new Map();
 const WINDOW_MS = 15 * 60 * 1000;
@@ -138,6 +139,8 @@ async function ensureLoginUser(identity = {}) {
 
 module.exports = async function handler(req, res) {
   securityHeaders(res);
+
+  if (Phase4AuthBootstrap.requested(req)) return Phase4AuthBootstrap.handle(req, res);
 
   if (resetRequested(req)) {
     res.setHeader('Clear-Site-Data', '"cache", "cookies", "storage"');
