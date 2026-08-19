@@ -1,5 +1,5 @@
 /* MedIndex Emergency — final typography and visual polish.
-   Loaded after the shared TailAdmin/clinical styles so Urgjencat uses the same font system. */
+   Page-specific rules stay scoped to Urgjencat while TailAdmin remains the final static stylesheet. */
 
 html.medindex-tailadmin[data-mi-page="urgjencat"] .clinical-knowledge-page,
 html.medindex-tailadmin[data-mi-page="urgjencat"] #emergencyDetail,
@@ -10,7 +10,6 @@ html.medindex-tailadmin[data-mi-page="urgjencat"] #emergencyDetail select{
   font-feature-settings:"liga" 1,"kern" 1;
 }
 
-/* Keep the two main modes visually dominant and readable. */
 #emergencyDetail .ck-mode-wrap{
   margin-top:20px;
   padding:6px;
@@ -27,24 +26,36 @@ html.medindex-tailadmin[data-mi-page="urgjencat"] #emergencyDetail select{
   line-height:1.2;
   letter-spacing:-.005em;
 }
-#emergencyDetail .ck-mode-caption{font-size:12px;line-height:1.4}
+#emergencyDetail .ck-mode-caption{font-size:12px;line-height:1.45}
 #emergencyDetail .ck-meta{gap:7px}
 #emergencyDetail .ck-meta .ck-chip{
-  min-height:28px;
+  min-height:29px;
   padding:0 10px;
-  font-size:10.5px;
+  font-size:11px;
   font-weight:700;
 }
 
-.ck-sl-experience{font-family:var(--mi-font)!important;color:var(--sl-ink)}
+.ck-sl-experience{
+  min-width:0;
+  font-family:var(--mi-font)!important;
+  color:var(--sl-ink);
+}
+.ck-sl-experience :where(p,li,h3,h4,strong,span){overflow-wrap:anywhere}
+.ck-sl-experience :where(button,a[href]):focus-visible,
+#emergencyDetail .ck-mode-toggle button:focus-visible,
+#emergencyDetail .ck-review-button:focus-visible{
+  outline:3px solid rgba(71,119,229,.34);
+  outline-offset:2px;
+}
 
-/* SUMMARY — compact, but never micro-sized. */
+/* SUMMARY */
 .ck-sl-therapy{
   grid-template-columns:54px minmax(0,1fr) auto;
   gap:16px;
   padding:20px;
   border-radius:19px;
 }
+.ck-sl-therapy>*,.ck-sl-step>*,.ck-sl-lesson-step>*{min-width:0}
 .ck-sl-therapy-icon{width:50px;height:50px;border-radius:15px;font-size:17px}
 .ck-sl-therapy-copy>span,
 .ck-sl-section-heading span,
@@ -53,7 +64,7 @@ html.medindex-tailadmin[data-mi-page="urgjencat"] #emergencyDetail select{
 .ck-sl-flash-head span{
   font-size:11px;
   font-weight:750;
-  line-height:1.3;
+  line-height:1.35;
   letter-spacing:.075em;
 }
 .ck-sl-therapy-copy h3{
@@ -70,6 +81,7 @@ html.medindex-tailadmin[data-mi-page="urgjencat"] #emergencyDetail select{
 }
 .ck-sl-now{
   min-height:32px;
+  align-items:center;
   padding:0 11px;
   font-size:11px;
   font-weight:700;
@@ -101,7 +113,7 @@ html.medindex-tailadmin[data-mi-page="urgjencat"] #emergencyDetail select{
 }
 .ck-sl-step-head span{
   padding:5px 8px;
-  font-size:10.5px;
+  font-size:11px;
   font-weight:700;
 }
 .ck-sl-step p{
@@ -130,14 +142,14 @@ html.medindex-tailadmin[data-mi-page="urgjencat"] #emergencyDetail select{
   padding:16px;
   border-radius:16px;
 }
-.ck-sl-transfer span{font-size:10.5px;font-weight:750}
+.ck-sl-transfer span{font-size:11px;font-weight:750}
 .ck-sl-transfer strong,.ck-sl-transfer p{
   margin-top:5px;
   font-size:13px;
   line-height:1.6;
 }
 
-/* LEARN — same information density as the rest of MedIndex, with comfortable reading size. */
+/* LEARN */
 .ck-sl-learn-intro{padding:22px 23px;border-radius:19px}
 .ck-sl-learn-intro h3{
   margin:6px 0 9px;
@@ -176,7 +188,7 @@ html.medindex-tailadmin[data-mi-page="urgjencat"] #emergencyDetail select{
 }
 .ck-sl-lesson-title>span{
   padding:5px 8px;
-  font-size:10.5px;
+  font-size:11px;
   font-weight:700;
 }
 .ck-sl-lesson-action{
@@ -204,13 +216,15 @@ html.medindex-tailadmin[data-mi-page="urgjencat"] #emergencyDetail select{
   line-height:1.62;
 }
 .ck-sl-referral-grid{gap:10px}
-.ck-sl-referral-grid>div{padding:13px;border-radius:13px}
-.ck-sl-referral-grid span{font-size:10.5px;font-weight:750}
+.ck-sl-referral-grid>div{min-width:0;padding:13px;border-radius:13px}
+.ck-sl-referral-grid span{font-size:11px;font-weight:750}
 .ck-sl-referral-grid p{margin-top:5px;font-size:13px;line-height:1.62}
 .ck-sl-mini-title{margin:16px 0 9px;font-size:13px;font-weight:700}
 
-/* FLASHCARDS — readable enough for active recall on desktop and phone. */
+/* FLASHCARDS */
 .ck-sl-flashcards{margin-top:20px;padding:21px;border-radius:20px}
+.ck-sl-flash-head{min-width:0}
+.ck-sl-flash-head>div{min-width:0}
 .ck-sl-flash-head h3{
   margin:5px 0 4px;
   font-size:19px;
@@ -220,7 +234,7 @@ html.medindex-tailadmin[data-mi-page="urgjencat"] #emergencyDetail select{
 .ck-sl-flash-head>strong{padding:7px 10px;font-size:11px;font-weight:700}
 .ck-sl-flash-progress{height:5px;margin:15px 0 17px}
 .ck-sl-flashcard{min-height:225px;padding:24px;border-radius:18px}
-.ck-sl-flashcard>span{padding:6px 9px;font-size:10.5px;font-weight:750}
+.ck-sl-flashcard>span{padding:6px 9px;font-size:11px;font-weight:750}
 .ck-sl-flashcard h4{
   margin-top:19px;
   font-size:19px;
@@ -228,29 +242,105 @@ html.medindex-tailadmin[data-mi-page="urgjencat"] #emergencyDetail select{
   line-height:1.45;
 }
 .ck-sl-flash-answer{margin-top:19px;padding:14px 15px;border-radius:13px}
-.ck-sl-flash-answer small{font-size:10.5px;font-weight:750}
+.ck-sl-flash-answer small{font-size:11px;font-weight:750}
 .ck-sl-flash-answer p{margin-top:6px;font-size:14px;line-height:1.68}
-.ck-sl-flashcard>button{margin-top:22px;font-size:12px;font-weight:750}
+.ck-sl-flashcard>button{
+  display:inline-flex;
+  min-height:44px;
+  align-items:center;
+  justify-content:center;
+  margin-top:20px;
+  padding:0 13px;
+  border:1px solid rgba(66,111,227,.16);
+  border-radius:10px;
+  background:#f8faff;
+  font-size:12px;
+  font-weight:750;
+  text-decoration:none;
+}
 .ck-sl-flash-controls{gap:9px;margin-top:12px}
 .ck-sl-flash-controls>button,.ck-sl-recall button{
-  min-height:40px;
+  min-height:44px;
   padding:0 14px;
   font-size:12px;
   font-weight:700;
 }
+.ck-sl-flash-controls>span:empty{min-width:1px;min-height:1px}
 
-/* Shared source/review text from the original emergency renderer should match the same scale. */
+/* Shared source/review text from the original emergency renderer. */
 #emergencyDetail .ck-review-button>span:last-child{font-size:12px}
-#emergencyDetail .ck-review-button small{font-size:10.5px}
+#emergencyDetail .ck-review-button small{font-size:11px}
 #emergencyDetail .ck-source-list a,
 #emergencyDetail .ck-source-list>li>span{font-size:12px}
-#emergencyDetail .ck-source-list small{font-size:10.5px}
+#emergencyDetail .ck-source-list small{font-size:11px}
 #emergencyDetail .ck-drawer-review span{font-size:12px}
-#emergencyDetail .ck-drawer-review b{font-size:10px}
+#emergencyDetail .ck-drawer-review b{font-size:11px}
 #emergencyDetail .ck-drawer-section h3,
 #emergencyDetail .ck-drawer-source h3{font-size:13px}
 #emergencyDetail .ck-drawer-section p{font-size:13.5px}
 #emergencyDetail .ck-drawer-section ul{font-size:13px}
+
+/* Dark theme: keep clinical hierarchy and contrast intact. */
+html[data-theme="dark"] #emergencyDetail .ck-mode-wrap{
+  border-color:rgba(148,163,184,.16);
+  background:#0f172a;
+}
+html[data-theme="dark"] #emergencyDetail .ck-mode-toggle{background:#111b2f}
+html[data-theme="dark"] #emergencyDetail .ck-mode-toggle button[aria-pressed="true"]{
+  background:#1e293b;
+  color:#f8fafc;
+}
+html[data-theme="dark"] #emergencyDetail .ck-mode-caption{color:#aab4c5}
+html[data-theme="dark"] .ck-sl-experience{color:#e7edf6}
+html[data-theme="dark"] .ck-sl-step,
+html[data-theme="dark"] .ck-sl-lesson-block,
+html[data-theme="dark"] .ck-sl-learn-intro,
+html[data-theme="dark"] .ck-sl-flashcard{
+  border-color:rgba(148,163,184,.16);
+  background:#111827;
+}
+html[data-theme="dark"] .ck-sl-step.is-immediate,
+html[data-theme="dark"] .ck-sl-lesson-block.is-danger{
+  border-color:rgba(248,113,113,.24);
+  background:#201416;
+}
+html[data-theme="dark"] .ck-sl-therapy{
+  border-color:rgba(248,113,113,.24);
+  background:linear-gradient(145deg,#171a22,#241619);
+}
+html[data-theme="dark"] .ck-sl-therapy-copy h3,
+html[data-theme="dark"] .ck-sl-section-heading h3,
+html[data-theme="dark"] .ck-sl-learn-intro h3,
+html[data-theme="dark"] .ck-sl-lesson-block-head h3,
+html[data-theme="dark"] .ck-sl-lesson-title h4,
+html[data-theme="dark"] .ck-sl-flash-head h3,
+html[data-theme="dark"] .ck-sl-flashcard h4{color:#f8fafc}
+html[data-theme="dark"] .ck-sl-therapy-copy p,
+html[data-theme="dark"] .ck-sl-step p,
+html[data-theme="dark"] .ck-sl-learn-intro p,
+html[data-theme="dark"] .ck-sl-lesson-action,
+html[data-theme="dark"] .ck-sl-lesson-list,
+html[data-theme="dark"] .ck-sl-referral-grid p{color:#b8c2d2}
+html[data-theme="dark"] .ck-sl-why{border-left-color:rgba(96,165,250,.46);background:#15213a}
+html[data-theme="dark"] .ck-sl-why p{color:#b9c8df}
+html[data-theme="dark"] .ck-sl-pearl,
+html[data-theme="dark"] .ck-sl-flash-answer{background:#102825}
+html[data-theme="dark"] .ck-sl-pearl p,
+html[data-theme="dark"] .ck-sl-flash-answer p{color:#b9d7d2}
+html[data-theme="dark"] .ck-sl-dont{border-color:rgba(248,113,113,.22);background:#241719}
+html[data-theme="dark"] .ck-sl-dont ul{color:#e1b8b8}
+html[data-theme="dark"] .ck-sl-transfer{border-color:rgba(245,190,85,.20);background:#231f15}
+html[data-theme="dark"] .ck-sl-transfer strong,
+html[data-theme="dark"] .ck-sl-transfer p{color:#dfcfaa}
+html[data-theme="dark"] .ck-sl-referral-grid>div{border-color:rgba(148,163,184,.14);background:#172033}
+html[data-theme="dark"] .ck-sl-flashcards{border-color:rgba(96,132,225,.24);background:linear-gradient(150deg,#111827,#151d32)}
+html[data-theme="dark"] .ck-sl-flashcard>button,
+html[data-theme="dark"] .ck-sl-flash-controls>button,
+html[data-theme="dark"] .ck-sl-recall button{
+  border-color:rgba(148,163,184,.18);
+  background:#172036;
+  color:#d8e2f0;
+}
 
 @media(max-width:760px){
   #emergencyDetail .ck-mode-toggle button{min-height:46px;font-size:13px}
@@ -260,6 +350,7 @@ html.medindex-tailadmin[data-mi-page="urgjencat"] #emergencyDetail select{
   .ck-sl-therapy-copy h3{font-size:16px}
   .ck-sl-therapy-copy p{font-size:13.5px}
   .ck-sl-now{grid-column:2;justify-self:start}
+  .ck-sl-section-heading{align-items:flex-start}
   .ck-sl-step{grid-template-columns:34px minmax(0,1fr);padding:14px}
   .ck-sl-step-number,.ck-sl-lesson-index{width:30px;height:30px}
   .ck-sl-step-head{display:block}
@@ -275,7 +366,21 @@ html.medindex-tailadmin[data-mi-page="urgjencat"] #emergencyDetail select{
   .ck-sl-flashcard{min-height:205px;padding:18px}
   .ck-sl-flashcard h4{font-size:17px}
   .ck-sl-flash-controls{grid-template-columns:1fr 1fr}
+  .ck-sl-flash-controls.is-hidden-answer>span{display:none}
   .ck-sl-recall{grid-column:1/-1;grid-row:1;justify-content:center}
   .ck-sl-flash-controls>button:first-child,
-  .ck-sl-flash-controls>button:last-child{justify-self:stretch}
+  .ck-sl-flash-controls>button:last-child{width:100%;justify-self:stretch}
+}
+
+@media(max-width:430px){
+  .ck-sl-section-heading{align-items:flex-start}
+  .ck-sl-flash-head{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:10px}
+  .ck-sl-flash-head>strong{align-self:start}
+  .ck-sl-flash-controls>button,.ck-sl-recall button{padding:0 10px}
+}
+
+@media(prefers-reduced-motion:reduce){
+  .ck-sl-panel{animation:none!important}
+  .ck-sl-experience *,
+  #emergencyDetail .ck-mode-toggle button{scroll-behavior:auto!important;transition:none!important}
 }
