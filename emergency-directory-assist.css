@@ -1,24 +1,69 @@
-/* Urgjencat · compact clinician directory assistance. */
+/* Urgjencat · readable clinician directory assistance. */
 html.medindex-tailadmin[data-mi-page="urgjencat"] .ck-list-button{position:relative}
-.ck-directory-tags{display:flex!important;flex-wrap:wrap;gap:5px;margin-top:8px!important}
-.ck-directory-tag{display:inline-flex!important;min-height:22px;align-items:center;margin:0!important;padding:0 7px;border:1px solid rgba(74,91,126,.13);border-radius:999px;background:#fff;color:#6b7689!important;font-size:8px!important;font-weight:800;line-height:1!important}
-.ck-directory-tag.is-icd{border-color:rgba(49,95,200,.16);background:#f2f6ff;color:#315fc8!important;letter-spacing:.03em}
-.ck-directory-active{position:absolute;top:9px;right:9px;display:inline-flex!important;min-height:20px;align-items:center;margin:0!important;padding:0 6px;border:1px solid rgba(18,110,103,.15);border-radius:999px;background:#eef9f7;color:#126e67!important;font-size:7px!important;font-weight:900;letter-spacing:.06em;text-transform:uppercase}
-html.medindex-tailadmin[data-mi-page="urgjencat"] .ck-list-button:focus-visible{outline:none;border-color:rgba(49,95,200,.34);box-shadow:0 0 0 3px rgba(49,95,200,.09),inset 3px 0 0 #315fc8}
-html.medindex-tailadmin[data-mi-page="urgjencat"] .ck-list-button.is-active strong{padding-right:42px}
+.ck-directory-tags{display:flex!important;flex-wrap:wrap;gap:6px;margin-top:8px!important}
+.ck-directory-tag{
+  display:inline-flex!important;
+  min-height:26px;
+  align-items:center;
+  margin:0!important;
+  padding:0 8px;
+  border:1px solid rgba(74,91,126,.13);
+  border-radius:999px;
+  background:#fff;
+  color:#6b7689!important;
+  font-size:10.5px!important;
+  font-weight:700;
+  line-height:1.2!important;
+}
+.ck-directory-tag.is-icd{border-color:rgba(49,95,200,.16);background:#f2f6ff;color:#315fc8!important;letter-spacing:.02em}
+.ck-directory-active{
+  position:absolute;
+  top:9px;
+  right:9px;
+  display:inline-flex!important;
+  min-height:25px;
+  align-items:center;
+  margin:0!important;
+  padding:0 8px;
+  border:1px solid rgba(18,110,103,.15);
+  border-radius:999px;
+  background:#eef9f7;
+  color:#126e67!important;
+  font-size:10.5px!important;
+  font-weight:700;
+  letter-spacing:.035em;
+  text-transform:uppercase;
+}
+html.medindex-tailadmin[data-mi-page="urgjencat"] .ck-list-button:focus-visible{
+  outline:2px solid rgba(49,95,200,.42);
+  outline-offset:2px;
+  border-color:rgba(49,95,200,.34);
+  box-shadow:inset 3px 0 0 #315fc8;
+}
+html.medindex-tailadmin[data-mi-page="urgjencat"] .ck-list-button.is-active strong{padding-right:58px}
 
-.ck-directory-safety{display:flex!important;flex-wrap:wrap;align-items:center;gap:5px;margin-top:7px!important;padding-top:7px;border-top:1px solid rgba(74,91,126,.08)}
-.ck-directory-review,.ck-directory-source-count{display:inline-flex!important;min-height:21px;align-items:center;margin:0!important;padding:0 7px;border:1px solid rgba(74,91,126,.12);border-radius:7px;background:#f7f9fc;color:#667287!important;font-size:7.5px!important;font-weight:900;line-height:1!important}
+.ck-directory-safety{display:flex!important;flex-wrap:wrap;align-items:center;gap:6px;margin-top:8px!important;padding-top:8px;border-top:1px solid rgba(74,91,126,.08)}
+.ck-directory-review,.ck-directory-source-count{
+  display:inline-flex!important;
+  min-height:25px;
+  align-items:center;
+  margin:0!important;
+  padding:0 8px;
+  border:1px solid rgba(74,91,126,.12);
+  border-radius:8px;
+  background:#f7f9fc;
+  color:#667287!important;
+  font-size:10.5px!important;
+  font-weight:700;
+  line-height:1.2!important;
+}
 .ck-directory-review.is-verified{border-color:rgba(18,110,103,.17);background:#eef9f7;color:#126e67!important}
 .ck-directory-review.is-review{border-color:rgba(154,99,21,.18);background:#fff8e8;color:#8d5911!important}
 .ck-directory-review.is-draft{border-color:rgba(183,53,53,.14);background:#fff5f5;color:#9b4040!important}
 .ck-directory-review.is-overdue{border-color:rgba(183,53,53,.2);background:#fff0f0;color:#a92f2f!important}
 .ck-directory-source-count.has-sources{border-color:rgba(49,95,200,.14);background:#f3f6ff;color:#4d68a6!important}
 .ck-directory-source-count.has-no-sources{border-color:rgba(183,53,53,.16);background:#fff7f7;color:#9b4040!important}
-
-.ck-doctor-source-actions [data-ck-copy-protocol]{border-color:rgba(49,95,200,.16);background:#f7f9ff;color:#315fc8}
-.ck-doctor-source-actions [data-ck-copy-protocol]:hover,.ck-doctor-source-actions [data-ck-copy-protocol]:focus-visible{background:#eef4ff}
-.ck-source-published{color:#66758b!important;font-weight:750!important}
+.ck-source-published{color:#66758b!important;font-size:11px!important;font-weight:650!important}
 
 html[data-theme="dark"] .ck-directory-tag{background:#172036;border-color:rgba(148,163,184,.16);color:#cbd5e1!important}
 html[data-theme="dark"] .ck-directory-tag.is-icd{background:#14213c;border-color:rgba(96,133,220,.22);color:#9db8f2!important}
@@ -28,12 +73,11 @@ html[data-theme="dark"] .ck-directory-review,html[data-theme="dark"] .ck-directo
 html[data-theme="dark"] .ck-directory-review.is-verified{background:#102c2b;color:#9ee8df!important;border-color:rgba(45,212,191,.18)}
 html[data-theme="dark"] .ck-directory-review.is-review{background:#2b2415;color:#f2c879!important;border-color:rgba(245,158,11,.2)}
 html[data-theme="dark"] .ck-directory-review.is-draft,html[data-theme="dark"] .ck-directory-review.is-overdue,html[data-theme="dark"] .ck-directory-source-count.has-no-sources{background:#2a171c;color:#f3b1b7!important;border-color:rgba(248,113,113,.2)}
-html[data-theme="dark"] .ck-doctor-source-actions [data-ck-copy-protocol]{background:#14213c;color:#a9c0f4;border-color:rgba(96,133,220,.22)}
 
 @media(max-width:640px){
-  .ck-directory-tags{gap:4px;margin-top:7px!important}
-  .ck-directory-tag{min-height:21px;padding:0 6px;font-size:7.5px!important}
-  .ck-directory-safety{gap:4px;margin-top:6px!important;padding-top:6px}
-  .ck-directory-review,.ck-directory-source-count{min-height:20px;padding:0 6px;font-size:7px!important}
-  .ck-directory-active{top:8px;right:8px}
+  .ck-directory-tags{gap:5px;margin-top:7px!important}
+  .ck-directory-tag{min-height:25px;padding:0 7px;font-size:10.5px!important}
+  .ck-directory-safety{gap:5px;margin-top:7px!important;padding-top:7px}
+  .ck-directory-review,.ck-directory-source-count{min-height:25px;padding:0 7px;font-size:10.5px!important}
+  .ck-directory-active{top:8px;right:8px;min-height:24px;font-size:10.5px!important}
 }
