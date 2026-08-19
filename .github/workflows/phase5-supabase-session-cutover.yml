@@ -9,10 +9,12 @@ on:
       - 'auth-client.js'
       - 'login.js'
       - 'lib/auth.mjs'
+      - 'lib/auth-edge.mjs'
       - 'lib/supabase-auth.js'
       - 'lib/supabase-auth-bootstrap.js'
       - 'lib/user-library.js'
       - 'tests/phase5-session-cutover-test.js'
+      - 'tests/google-auth-user-library-test.js'
       - 'tests/auth-default-test.js'
       - 'tests/supabase-auth-guards-test.js'
       - 'tests/supabase-auth-bootstrap-test.js'
@@ -26,10 +28,12 @@ on:
       - 'auth-client.js'
       - 'login.js'
       - 'lib/auth.mjs'
+      - 'lib/auth-edge.mjs'
       - 'lib/supabase-auth.js'
       - 'lib/supabase-auth-bootstrap.js'
       - 'lib/user-library.js'
       - 'tests/phase5-session-cutover-test.js'
+      - 'tests/google-auth-user-library-test.js'
       - 'tests/auth-default-test.js'
       - 'tests/supabase-auth-guards-test.js'
       - 'tests/supabase-auth-bootstrap-test.js'
@@ -52,6 +56,8 @@ jobs:
           node-version: '22'
       - name: Phase 5 dual-identity contract
         run: node tests/phase5-session-cutover-test.js
+      - name: Existing Google and encrypted-library contract
+        run: node tests/google-auth-user-library-test.js
       - name: Existing auth fail-closed behavior
         run: node tests/auth-default-test.js
       - name: Phase 4 regression guards
