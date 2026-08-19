@@ -109,7 +109,7 @@ function contrastRatio(foreground, background) {
 test.describe('Urgjencat Summary / Learn QA', () => {
   test.use({serviceWorkers:'block'});
 
-  test('desktop: dy modalitete, terapi precize, tipografi, flashcards dhe dark mode', async ({page}) => {
+  test('desktop: dy modalitete, terapi precize, tipografi, triage, flashcards dhe dark mode', async ({page}) => {
     await page.setViewportSize({width:1440,height:1000});
     const pageErrors = await openEmergency(page);
 
@@ -132,6 +132,9 @@ test.describe('Urgjencat Summary / Learn QA', () => {
     await expect(page.locator('.ck-directory-source-count')).toHaveText('2 burime');
     await expect(page.locator('.ck-directory-review')).toHaveText('Për verifikim');
     await expect(page.locator('.ck-directory-tag.is-icd')).toHaveText('T78.2');
+    await expect(page.locator('.ck-triage-filter')).toBeVisible();
+    await expect(page.locator('.ck-triage-filter-group button')).toHaveCount(4);
+    await expect(page.locator('[data-ck-triage="critical"] [data-ck-triage-count="critical"]')).toHaveText('1');
 
     const typeMetrics = await page.evaluate(() => ({
       fontLoaded:document.fonts.check('14px Inter'),
@@ -142,6 +145,9 @@ test.describe('Urgjencat Summary / Learn QA', () => {
       directoryTag:Number.parseFloat(getComputedStyle(document.querySelector('.ck-directory-tag')).fontSize),
       directoryStatus:Number.parseFloat(getComputedStyle(document.querySelector('.ck-directory-review')).fontSize),
       directoryTitle:Number.parseFloat(getComputedStyle(document.querySelector('.ck-list-button strong')).fontSize),
+      triageText:Number.parseFloat(getComputedStyle(document.querySelector('.ck-triage-filter-copy span')).fontSize),
+      triageButton:Number.parseFloat(getComputedStyle(document.querySelector('.ck-triage-filter-group button')).fontSize),
+      triageHeight:document.querySelector('.ck-triage-filter-group button').getBoundingClientRect().height,
       modeHeight:document.querySelector('[data-ck-mode="summary"]').getBoundingClientRect().height,
     }));
     expect(typeMetrics.fontLoaded).toBe(true);
@@ -152,7 +158,16 @@ test.describe('Urgjencat Summary / Learn QA', () => {
     expect(typeMetrics.directoryTag).toBeGreaterThanOrEqual(11);
     expect(typeMetrics.directoryStatus).toBeGreaterThanOrEqual(11);
     expect(typeMetrics.directoryTitle).toBeGreaterThanOrEqual(14);
+    expect(typeMetrics.triageText).toBeGreaterThanOrEqual(11.5);
+    expect(typeMetrics.triageButton).toBeGreaterThanOrEqual(12);
+    expect(typeMetrics.triageHeight).toBeGreaterThanOrEqual(44);
     expect(typeMetrics.modeHeight).toBeGreaterThanOrEqual(44);
+
+    const allTriage = page.locator('[data-ck-triage="all"]');
+    const criticalTriage = page.locator('[data-ck-triage="critical"]');
+    await allTriage.focus();
+    await allTriage.press('ArrowRight');
+    await expect(criticalTriage).toBeFocused();
 
     await page.getByRole('button',{name:'Mëso'}).click();
     await expect(page.locator('.ck-sl-summary')).toBeHidden();
@@ -195,6 +210,10 @@ test.describe('Urgjencat Summary / Learn QA', () => {
         label:node.textContent.trim(),
         rect:node.getBoundingClientRect().toJSON(),
       }));
+      const triageControls = [...document.querySelectorAll('.ck-triage-filter-group button')].map(node => ({
+        font:Number.parseFloat(getComputedStyle(node).fontSize),
+        height:node.getBoundingClientRect().height,
+      }));
       const recall = root.querySelector('.ck-sl-recall')?.getBoundingClientRect();
       const prev = root.querySelector('[data-flash-prev]')?.getBoundingClientRect();
       const next = root.querySelector('[data-flash-next]')?.getBoundingClientRect();
@@ -203,6 +222,7 @@ test.describe('Urgjencat Summary / Learn QA', () => {
         minFont:Math.min(...fonts),
         directoryTag:Number.parseFloat(getComputedStyle(document.querySelector('.ck-directory-tag')).fontSize),
         directoryStatus:Number.parseFloat(getComputedStyle(document.querySelector('.ck-directory-review')).fontSize),
+        triageControls,
         controls,
         rows:{recall:recall && {top:recall.top,bottom:recall.bottom},prev:prev && {top:prev.top,bottom:prev.bottom},next:next && {top:next.top,bottom:next.bottom}},
       };
@@ -212,6 +232,10 @@ test.describe('Urgjencat Summary / Learn QA', () => {
     expect(metrics.minFont).toBeGreaterThanOrEqual(11);
     expect(metrics.directoryTag).toBeGreaterThanOrEqual(11);
     expect(metrics.directoryStatus).toBeGreaterThanOrEqual(11);
+    for (const control of metrics.triageControls) {
+      expect(control.font).toBeGreaterThanOrEqual(12);
+      expect(control.height).toBeGreaterThanOrEqual(44);
+    }
     for (const control of metrics.controls) expect(control.rect.height, control.label).toBeGreaterThanOrEqual(44);
     expect(Math.abs(metrics.rows.prev.top - metrics.rows.next.top)).toBeLessThan(2);
     expect(metrics.rows.prev.top).toBeGreaterThanOrEqual(metrics.rows.recall.bottom - 1);
