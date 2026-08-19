@@ -47,14 +47,18 @@
     const client = window.MedIndexSanity;
     if (!client || typeof client.query !== 'function' || client.__summaryLearnWrapped) return;
     const original = client.query.bind(client);
-    client.query = async (...args) => {
+    const wrappedQuery = async (...args) => {
       const result = await original(...args);
       if (Array.isArray(result) && result.some(item => Array.isArray(item?.primaryCareSteps))) {
         window.__medIndexEmergencyItems = result;
       }
       return result;
     };
-    client.__summaryLearnWrapped = true;
+    window.MedIndexSanity = Object.freeze({
+      ...client,
+      query: wrappedQuery,
+      __summaryLearnWrapped: true,
+    });
   }
 
   function currentItem(detail) {
