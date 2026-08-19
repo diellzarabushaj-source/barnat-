@@ -1,6 +1,6 @@
 # Phase 5 — Supabase session cutover with legacy data bridge
 
-Status: **implementation branch** after merged Phase 4.
+Status: **implementation complete; validation green; Preview login gate pending**.
 
 ## Goal
 
@@ -41,7 +41,9 @@ A normal Google session is marked `provider=supabase-google` and includes:
 - Supabase `authStatus=active`
 - legacy compatibility role/name fields used by current UI/API code
 
-The old v1/v2 cookies can still be decoded long enough to route the browser through a clean re-authentication, but protected pages no longer accept them as the current online identity contract.
+Node and Edge now share the same v3 validation contract. The dedicated Phase 5 regression gate verifies that a Node-minted Supabase session is accepted by the Edge verifier and that tampered sessions are rejected.
+
+The old v1/v2 cookies can still be decoded by the Node auth endpoint long enough to route the browser through a clean re-authentication, but protected Edge pages no longer accept them as the current online identity contract.
 
 The emergency password path remains available only as an explicit `legacy-password` rollback session inside the new v3 signed envelope. It does not pretend to be Supabase-authenticated.
 
@@ -73,17 +75,37 @@ Rollback remains possible because:
 - old session versions are read only to force re-authentication, not trusted as the Phase 5 contract;
 - Phase 4 trusted mapping rollback support is not removed.
 
+## Validation completed on 2026-08-19
+
+The current branch has passed:
+
+- dedicated Phase 5 dual-identity + Node/Edge parity gate;
+- existing Google authentication + encrypted-library audit updated for the Supabase nonce contract;
+- auth fail-closed regression tests;
+- all Phase 4 Auth regression guards;
+- full MedIndex validation, including JavaScript syntax, complete `pnpm test`, prescription dashboard, TailAdmin UI/navigation and Gemini clinical guardrails.
+
+The live Supabase owner invariant was rechecked after these changes:
+
+- profile: `admin + active`;
+- legacy UUID: **82 Favorites + 2 Prescriptions**;
+- Supabase Auth UUID: **0 Favorites + 0 Prescriptions**.
+
+The remaining pre-merge gate is an actual Preview Google login on the final code. Vercel Git integration is currently reporting `build-rate-limit` for new Preview attempts; this is a deployment-plan gate, not a failing code test. Production remains on the merged Phase 4 deployment until the final Phase 5 Preview is verified.
+
 ## Phase 5 gates
 
 - normal Google login must exchange through Supabase Auth;
 - active doctor/admin profile guard must pass;
 - owner `legacy_user_id` must exist and match the private storage user;
 - signed session must be v3;
+- Node and Edge must verify the same v3 envelope;
 - `authUid` and storage `uid` must remain independently represented;
 - protected pages must reject old online v1/v2 sessions and rotate old offline leases;
 - Phase 4 auth tests must remain green;
 - Favorites and Prescriptions counts must remain 82 / 2 on the legacy UUID and 0 / 0 on the Auth UUID;
-- no prescription re-encryption or owner-ID move is allowed in this phase.
+- no prescription re-encryption or owner-ID move is allowed in this phase;
+- final Preview Google login must succeed before merge.
 
 ## Not part of Phase 5
 
