@@ -61,7 +61,7 @@
       .auth-logout{flex:0 0 auto;min-width:0;border:0;background:transparent;color:inherit;cursor:pointer}
       .auth-logout:hover{background:rgba(255,255,255,.13)!important;color:#fff!important}
       .auth-logout svg{fill:none;stroke:currentColor;stroke-width:16;stroke-linecap:round;stroke-linejoin:round}
-      .session-expired-banner{position:fixed;left:50%;bottom:22px;z-index:2000;max-width:min(520px,calc(100vw - 28px));padding:11px 15px;border-radius:11px;background:#8e2f32;color:#fff;box-shadow:0 16px 45px rgba(0,0,0,.32);font-size:.78rem;font-weight:750;transform:translateX(-50%)}
+      .session-expired-banner,.library-sync-error-banner{position:fixed;left:50%;bottom:22px;z-index:2000;max-width:min(520px,calc(100vw - 28px));padding:11px 15px;border-radius:11px;background:#8e2f32;color:#fff;box-shadow:0 16px 45px rgba(0,0,0,.32);font-size:.78rem;font-weight:750;transform:translateX(-50%)}
       #miAuthBootstrap{position:fixed;inset:0;z-index:3999;display:grid;place-content:center;gap:6px;padding:24px;background:#f6f9f8;color:#566a6d;text-align:center;font:500 14px/1.5 Inter,ui-sans-serif,system-ui,sans-serif;visibility:visible!important;opacity:1!important}
       #miAuthBootstrap strong{color:#155f63;font-size:20px;letter-spacing:-.02em}
       html[data-theme="dark"] #miAuthBootstrap{background:#101d20;color:#aebfbc}
@@ -212,13 +212,37 @@
     } catch {}
   }
 
-  async function logout() {
-    const buttons = document.querySelectorAll('.auth-logout');
-    buttons.forEach(button => {
-      button.disabled = true;
-      button.setAttribute('aria-busy', 'true');
+  function setLogoutBusy(busy) {
+    document.querySelectorAll('.auth-logout').forEach(button => {
+      button.disabled = busy;
+      button.setAttribute('aria-busy', busy ? 'true' : 'false');
     });
-    try { await authRequest({ method:'DELETE' }); } catch {}
+  }
+
+  function showLogoutError(message) {
+    document.querySelector('.library-sync-error-banner')?.remove();
+    const banner = document.createElement('div');
+    banner.className = 'library-sync-error-banner';
+    banner.setAttribute('role', 'alert');
+    banner.textContent = message;
+    document.body.appendChild(banner);
+    window.setTimeout(() => banner.remove(), 7000);
+  }
+
+  async function logout() {
+    setLogoutBusy(true);
+    document.querySelector('.library-sync-error-banner')?.remove();
+    try {
+      const response = await authRequest({ method:'DELETE' });
+      if (!response.ok) {
+        const payload = await response.json().catch(() => ({}));
+        throw new Error(payload.error || 'Dalja nuk u krye. Provo përsëri.');
+      }
+    } catch (error) {
+      setLogoutBusy(false);
+      showLogoutError(error?.message || 'Dalja nuk u krye. Provo përsëri.');
+      return;
+    }
     await clearPrivateBrowserData();
     location.replace(LOGIN_PAGE);
   }
