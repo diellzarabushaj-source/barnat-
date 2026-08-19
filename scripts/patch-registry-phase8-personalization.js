@@ -155,7 +155,8 @@ function patchIndex() {
   source = source.replace(/registry-user-personalization\.css\?v=[^&"]+/g, 'registry-user-personalization.css?v=20260816-7');
   source = source.replace(/registry-user-personalization\.js\?v=[^&"]+/g, 'registry-user-personalization.js?v=20260816-7');
   source = source.replace(/registry-ux-phase1\.js\?v=[^&"]+/g, 'registry-ux-phase1.js?v=20260816-2');
-  source = source.replace(/user-library-client\.js\?v=[^&"]+/g, 'user-library-client.js?v=20260817-event-sync-1');
+  source = source.replace(/user-library-client\.js\?v=[^&"]+/g, 'user-library-client.js?v=20260819-logout-safety-1');
+  source = source.replace(/(user-library-client\.js\?v=[^&"]+)&ls=[^&"]+/g, '$1&ls=20260817-1');
 
   if (source.indexOf('registry-mobile-phase8.js') > source.indexOf('registry-runtime-loader.js')) {
     throw new Error('Phase 8 must initialize before the full registry loader.');
@@ -165,7 +166,7 @@ function patchIndex() {
   if (!source.includes('registry-user-personalization.css?v=20260816-7')) throw new Error('Mobile-bridge personalization CSS version was not published.');
   if (!source.includes('registry-user-personalization.js?v=20260816-7')) throw new Error('Mobile-bridge personalization JS version was not published.');
   if (!source.includes('registry-ux-phase1.js?v=20260816-2')) throw new Error('Canonical toolbar UX version was not published.');
-  if (!source.includes('user-library-client.js?v=20260817-event-sync-1')) throw new Error('Phase 6 event-driven user-library asset version was not published.');
+  if (!source.includes('user-library-client.js?v=20260819-logout-safety-1&ls=20260817-1')) throw new Error('Protected event-driven user-library asset version was not published.');
   write('index.html', source);
 }
 
