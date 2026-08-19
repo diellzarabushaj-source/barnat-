@@ -1,0 +1,281 @@
+/* MedIndex Emergency — final typography and visual polish.
+   Loaded after the shared TailAdmin/clinical styles so Urgjencat uses the same font system. */
+
+html.medindex-tailadmin[data-mi-page="urgjencat"] .clinical-knowledge-page,
+html.medindex-tailadmin[data-mi-page="urgjencat"] #emergencyDetail,
+html.medindex-tailadmin[data-mi-page="urgjencat"] #emergencyDetail button,
+html.medindex-tailadmin[data-mi-page="urgjencat"] #emergencyDetail input,
+html.medindex-tailadmin[data-mi-page="urgjencat"] #emergencyDetail select{
+  font-family:var(--mi-font)!important;
+  font-feature-settings:"liga" 1,"kern" 1;
+}
+
+/* Keep the two main modes visually dominant and readable. */
+#emergencyDetail .ck-mode-wrap{
+  margin-top:20px;
+  padding:6px;
+  border:1px solid rgba(71,91,128,.10);
+  border-radius:16px;
+  background:#f4f6fa;
+}
+#emergencyDetail .ck-mode-toggle{width:min(460px,100%);gap:6px;padding:4px}
+#emergencyDetail .ck-mode-toggle button{
+  min-height:44px;
+  padding:0 18px;
+  font-size:13px;
+  font-weight:700;
+  line-height:1.2;
+  letter-spacing:-.005em;
+}
+#emergencyDetail .ck-mode-caption{font-size:12px;line-height:1.4}
+#emergencyDetail .ck-meta{gap:7px}
+#emergencyDetail .ck-meta .ck-chip{
+  min-height:28px;
+  padding:0 10px;
+  font-size:10.5px;
+  font-weight:700;
+}
+
+.ck-sl-experience{font-family:var(--mi-font)!important;color:var(--sl-ink)}
+
+/* SUMMARY — compact, but never micro-sized. */
+.ck-sl-therapy{
+  grid-template-columns:54px minmax(0,1fr) auto;
+  gap:16px;
+  padding:20px;
+  border-radius:19px;
+}
+.ck-sl-therapy-icon{width:50px;height:50px;border-radius:15px;font-size:17px}
+.ck-sl-therapy-copy>span,
+.ck-sl-section-heading span,
+.ck-sl-learn-intro>span,
+.ck-sl-lesson-block-head>span,
+.ck-sl-flash-head span{
+  font-size:11px;
+  font-weight:750;
+  line-height:1.3;
+  letter-spacing:.075em;
+}
+.ck-sl-therapy-copy h3{
+  margin:5px 0 7px;
+  font-size:17px;
+  font-weight:750;
+  line-height:1.35;
+  letter-spacing:-.015em;
+}
+.ck-sl-therapy-copy p{
+  font-size:14px;
+  font-weight:500;
+  line-height:1.65;
+}
+.ck-sl-now{
+  min-height:32px;
+  padding:0 11px;
+  font-size:11px;
+  font-weight:700;
+}
+
+.ck-sl-section-heading{margin:27px 1px 13px}
+.ck-sl-section-heading h3{
+  font-size:20px;
+  font-weight:720;
+  line-height:1.25;
+}
+.ck-sl-section-heading small{
+  padding:6px 9px;
+  font-size:11px;
+  font-weight:700;
+}
+.ck-sl-step-list{gap:10px}
+.ck-sl-step{
+  grid-template-columns:38px minmax(0,1fr);
+  gap:12px;
+  padding:16px;
+  border-radius:16px;
+}
+.ck-sl-step-number{width:32px;height:32px;font-size:12px;font-weight:800}
+.ck-sl-step-head strong{
+  font-size:14px;
+  font-weight:700;
+  line-height:1.4;
+}
+.ck-sl-step-head span{
+  padding:5px 8px;
+  font-size:10.5px;
+  font-weight:700;
+}
+.ck-sl-step p{
+  margin-top:7px;
+  font-size:13.5px;
+  line-height:1.65;
+}
+
+.ck-sl-dont{
+  grid-template-columns:124px minmax(0,1fr);
+  gap:18px;
+  margin-top:17px;
+  padding:17px;
+  border-radius:16px;
+}
+.ck-sl-dont>div{font-size:13px;font-weight:700}
+.ck-sl-dont>div span{width:28px;height:28px}
+.ck-sl-dont ul{
+  gap:7px;
+  font-size:13px;
+  line-height:1.6;
+}
+.ck-sl-transfer{
+  gap:16px;
+  margin-top:12px;
+  padding:16px;
+  border-radius:16px;
+}
+.ck-sl-transfer span{font-size:10.5px;font-weight:750}
+.ck-sl-transfer strong,.ck-sl-transfer p{
+  margin-top:5px;
+  font-size:13px;
+  line-height:1.6;
+}
+
+/* LEARN — same information density as the rest of MedIndex, with comfortable reading size. */
+.ck-sl-learn-intro{padding:22px 23px;border-radius:19px}
+.ck-sl-learn-intro h3{
+  margin:6px 0 9px;
+  font-size:23px;
+  font-weight:720;
+  line-height:1.2;
+}
+.ck-sl-learn-intro p{
+  max-width:900px;
+  font-size:14px;
+  line-height:1.7;
+}
+.ck-sl-lesson-block{
+  margin-top:14px;
+  padding:20px;
+  border-radius:18px;
+}
+.ck-sl-lesson-block-head{margin-bottom:16px}
+.ck-sl-lesson-block-head h3{
+  margin-top:5px;
+  font-size:18px;
+  font-weight:720;
+  line-height:1.3;
+}
+.ck-sl-lesson-steps{gap:11px}
+.ck-sl-lesson-step{
+  grid-template-columns:38px minmax(0,1fr);
+  gap:13px;
+  padding:15px 0;
+}
+.ck-sl-lesson-index{width:32px;height:32px;font-size:12px;font-weight:800}
+.ck-sl-lesson-title h4{
+  font-size:14px;
+  font-weight:700;
+  line-height:1.45;
+}
+.ck-sl-lesson-title>span{
+  padding:5px 8px;
+  font-size:10.5px;
+  font-weight:700;
+}
+.ck-sl-lesson-action{
+  margin-top:7px;
+  font-size:13.5px;
+  line-height:1.7;
+}
+.ck-sl-why,.ck-sl-pearl{
+  margin-top:10px;
+  padding:11px 12px;
+}
+.ck-sl-why strong,.ck-sl-pearl strong{
+  margin-bottom:4px;
+  font-size:11px;
+  font-weight:750;
+}
+.ck-sl-why p,.ck-sl-pearl p{
+  font-size:12.5px;
+  line-height:1.62;
+}
+.ck-sl-lesson-list{
+  gap:8px;
+  padding-left:21px;
+  font-size:13px;
+  line-height:1.62;
+}
+.ck-sl-referral-grid{gap:10px}
+.ck-sl-referral-grid>div{padding:13px;border-radius:13px}
+.ck-sl-referral-grid span{font-size:10.5px;font-weight:750}
+.ck-sl-referral-grid p{margin-top:5px;font-size:13px;line-height:1.62}
+.ck-sl-mini-title{margin:16px 0 9px;font-size:13px;font-weight:700}
+
+/* FLASHCARDS — readable enough for active recall on desktop and phone. */
+.ck-sl-flashcards{margin-top:20px;padding:21px;border-radius:20px}
+.ck-sl-flash-head h3{
+  margin:5px 0 4px;
+  font-size:19px;
+  font-weight:720;
+}
+.ck-sl-flash-head p{font-size:12.5px;line-height:1.5}
+.ck-sl-flash-head>strong{padding:7px 10px;font-size:11px;font-weight:700}
+.ck-sl-flash-progress{height:5px;margin:15px 0 17px}
+.ck-sl-flashcard{min-height:225px;padding:24px;border-radius:18px}
+.ck-sl-flashcard>span{padding:6px 9px;font-size:10.5px;font-weight:750}
+.ck-sl-flashcard h4{
+  margin-top:19px;
+  font-size:19px;
+  font-weight:700;
+  line-height:1.45;
+}
+.ck-sl-flash-answer{margin-top:19px;padding:14px 15px;border-radius:13px}
+.ck-sl-flash-answer small{font-size:10.5px;font-weight:750}
+.ck-sl-flash-answer p{margin-top:6px;font-size:14px;line-height:1.68}
+.ck-sl-flashcard>button{margin-top:22px;font-size:12px;font-weight:750}
+.ck-sl-flash-controls{gap:9px;margin-top:12px}
+.ck-sl-flash-controls>button,.ck-sl-recall button{
+  min-height:40px;
+  padding:0 14px;
+  font-size:12px;
+  font-weight:700;
+}
+
+/* Shared source/review text from the original emergency renderer should match the same scale. */
+#emergencyDetail .ck-review-button>span:last-child{font-size:12px}
+#emergencyDetail .ck-review-button small{font-size:10.5px}
+#emergencyDetail .ck-source-list a,
+#emergencyDetail .ck-source-list>li>span{font-size:12px}
+#emergencyDetail .ck-source-list small{font-size:10.5px}
+#emergencyDetail .ck-drawer-review span{font-size:12px}
+#emergencyDetail .ck-drawer-review b{font-size:10px}
+#emergencyDetail .ck-drawer-section h3,
+#emergencyDetail .ck-drawer-source h3{font-size:13px}
+#emergencyDetail .ck-drawer-section p{font-size:13.5px}
+#emergencyDetail .ck-drawer-section ul{font-size:13px}
+
+@media(max-width:760px){
+  #emergencyDetail .ck-mode-toggle button{min-height:46px;font-size:13px}
+  #emergencyDetail .ck-mode-caption{padding:8px 6px 3px;font-size:11.5px}
+  .ck-sl-therapy{grid-template-columns:44px minmax(0,1fr);gap:12px;padding:16px}
+  .ck-sl-therapy-icon{width:42px;height:42px;font-size:15px}
+  .ck-sl-therapy-copy h3{font-size:16px}
+  .ck-sl-therapy-copy p{font-size:13.5px}
+  .ck-sl-now{grid-column:2;justify-self:start}
+  .ck-sl-step{grid-template-columns:34px minmax(0,1fr);padding:14px}
+  .ck-sl-step-number,.ck-sl-lesson-index{width:30px;height:30px}
+  .ck-sl-step-head{display:block}
+  .ck-sl-step-head span{display:inline-flex;margin-top:6px}
+  .ck-sl-dont,.ck-sl-transfer,.ck-sl-referral-grid{grid-template-columns:1fr}
+  .ck-sl-dont{gap:11px}
+  .ck-sl-learn-intro,.ck-sl-lesson-block{padding:17px}
+  .ck-sl-learn-intro h3{font-size:21px}
+  .ck-sl-lesson-step{grid-template-columns:34px minmax(0,1fr);gap:10px}
+  .ck-sl-lesson-title{display:block}
+  .ck-sl-lesson-title>span{display:inline-flex;margin-top:6px}
+  .ck-sl-flashcards{padding:16px}
+  .ck-sl-flashcard{min-height:205px;padding:18px}
+  .ck-sl-flashcard h4{font-size:17px}
+  .ck-sl-flash-controls{grid-template-columns:1fr 1fr}
+  .ck-sl-recall{grid-column:1/-1;grid-row:1;justify-content:center}
+  .ck-sl-flash-controls>button:first-child,
+  .ck-sl-flash-controls>button:last-child{justify-self:stretch}
+}
