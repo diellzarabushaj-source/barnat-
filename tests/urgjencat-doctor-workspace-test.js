@@ -33,7 +33,9 @@ assert.match(core, /primaryCareSteps/);
 assert.match(core, /secondaryCareSteps/);
 assert.match(core, /sources/);
 
-assert.match(learning, /\['summary', 'learn'\]/);
+assert.match(learning, /value === 'learn' \? 'learn' : 'summary'/);
+assert.match(learning, /data-ck-mode="summary"/);
+assert.match(learning, /data-ck-mode="learn"/);
 assert.match(learning, /Përmbledhje/);
 assert.match(learning, /Mëso/);
 assert.match(learning, /Çfarë bëj tani\?/);
