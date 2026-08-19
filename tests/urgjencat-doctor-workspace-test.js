@@ -14,6 +14,7 @@ const learning = read('emergency-summary-learn.js');
 const learningCss = read('emergency-summary-learn.css');
 const polishCss = read('emergency-summary-learn-polish.css');
 const assist = read('emergency-directory-assist.js');
+const assistCss = read('emergency-directory-assist.css');
 const priority = read('emergency-directory-priority.js');
 const triageFilter = read('emergency-triage-filter.js');
 
@@ -26,6 +27,8 @@ assert.doesNotMatch(html, /emergency-doctor-mode\.(?:js|css)/);
 assert.doesNotMatch(html, /emergency-clinician-timeline\.(?:js|css)/);
 assert.match(html, /emergency-summary-learn\.css\?v=20260819-1/);
 assert.match(html, /emergency-summary-learn-polish\.css\?v=20260819-2/);
+assert.match(html, /emergency-directory-assist\.css\?v=20260819-2/);
+assert.match(html, /emergency-directory-assist\.js\?v=20260819-1/);
 assert.ok(
   html.indexOf('emergency-summary-learn-polish.css') < html.indexOf('tailadmin-professional.css'),
   'Emergency polish must stay before the canonical final TailAdmin stylesheet.',
@@ -103,6 +106,20 @@ assert.doesNotMatch(polishCss, /font-size:(?:8|9|10)(?:\.\d+)?px/);
 
 assert.match(assist, /META_QUERY/);
 assert.match(assist, /sources\[\]\{title,url,publishedAt\}/);
+assert.match(assist, /event\.key === 'ArrowDown'/);
+assert.match(assist, /event\.key === 'ArrowUp'/);
+assert.match(assist, /aria-current/);
+assert.doesNotMatch(assist, /ck-doctor-console/);
+assert.doesNotMatch(assist, /installCopyAction/);
+assert.doesNotMatch(assist, /Kopjo protokollin/);
+
+assert.match(assistCss, /\.ck-directory-tag\{[\s\S]*font-size:11px!important/);
+assert.match(assistCss, /\.ck-directory-review,\.ck-directory-source-count\{[\s\S]*font-size:11px!important/);
+assert.match(assistCss, /min-height:25px/);
+assert.match(assistCss, /:focus-visible/);
+assert.doesNotMatch(assistCss, /font-size:(?:7|7\.5|8|9|10|10\.5)px/);
+assert.doesNotMatch(assistCss, /ck-doctor-source-actions/);
+
 assert.match(priority, /TRIAGE_RANK/);
 assert.match(triageFilter, /triageLevel/);
 assert.match(triageFilter, /sessionStorage/);
