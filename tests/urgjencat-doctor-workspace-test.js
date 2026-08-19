@@ -17,6 +17,7 @@ const assist = read('emergency-directory-assist.js');
 const assistCss = read('emergency-directory-assist.css');
 const priority = read('emergency-directory-priority.js');
 const triageFilter = read('emergency-triage-filter.js');
+const triageFilterCss = read('emergency-triage-filter.css');
 
 assert.ok(
   html.indexOf('sanity-clinical-client.js') < html.indexOf('emergency-summary-learn.js')
@@ -29,6 +30,7 @@ assert.match(html, /emergency-summary-learn\.css\?v=20260819-1/);
 assert.match(html, /emergency-summary-learn-polish\.css\?v=20260819-2/);
 assert.match(html, /emergency-directory-assist\.css\?v=20260819-2/);
 assert.match(html, /emergency-directory-assist\.js\?v=20260819-1/);
+assert.match(html, /emergency-triage-filter\.css\?v=20260819-1/);
 assert.ok(
   html.indexOf('emergency-summary-learn-polish.css') < html.indexOf('tailadmin-professional.css'),
   'Emergency polish must stay before the canonical final TailAdmin stylesheet.',
@@ -123,5 +125,12 @@ assert.doesNotMatch(assistCss, /ck-doctor-source-actions/);
 assert.match(priority, /TRIAGE_RANK/);
 assert.match(triageFilter, /triageLevel/);
 assert.match(triageFilter, /sessionStorage/);
+assert.match(triageFilterCss, /\.ck-triage-filter-copy strong\{[\s\S]*font-size:13px/);
+assert.match(triageFilterCss, /\.ck-triage-filter-copy span\{[\s\S]*font-size:11\.5px/);
+assert.match(triageFilterCss, /\.ck-triage-filter-group button\{[\s\S]*min-height:44px[\s\S]*font:700 12px/);
+assert.match(triageFilterCss, /\.ck-triage-filter-group b\{[\s\S]*font-size:11px/);
+assert.match(triageFilterCss, /\.ck-triage-filter-status\{[\s\S]*font-size:11px/);
+assert.match(triageFilterCss, /:focus-visible/);
+assert.doesNotMatch(triageFilterCss, /font-size:(?:7|7\.5|8|8\.5|9|10|10\.5)px/);
 
 console.log('Urgjencat two-mode Summary / Learn workspace contract passed.');
