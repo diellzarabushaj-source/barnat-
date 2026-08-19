@@ -63,7 +63,7 @@ function response(status, payload) {
     assert.equal(Endpoint.sameOrigin({ headers:{ origin:'https://evil.example', host:'preview.example' } }), false);
     assert.equal(
       Endpoint.sha256Hex('nonce'),
-      '78377b525757b494427f862e57345f6d4bbfce329b320830e7078bed719e9a9b'
+      '78377b525757b494427f89014f97d79928f3938d14eb51e20fb5dec9834eb304'
     );
 
     console.log('Phase 4 Google → Supabase Auth bootstrap tests passed.');
