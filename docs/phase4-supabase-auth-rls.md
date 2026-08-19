@@ -1,136 +1,138 @@
-# Phase 4 — Supabase Auth, roles and RLS
+# Phase 4 — Supabase Auth, roles, RLS and safe legacy identity mapping
 
-## Status
+Status: **in progress on top of merged Phase 3 / PR #160**.
 
-**IN PROGRESS — BASED DIRECTLY ON MERGED `main`.**
+Phase 3 already moved the private runtime database to Supabase. Phase 4 adds Supabase Auth identity, profiles, roles, RLS and a safe bridge from the historical MedIndex owner UUID to the future Supabase Auth UUID.
 
-Phase 3 / PR #160 is already merged to `main`, so this Phase 4 branch starts from the current production source of truth rather than from the old Phase 3 branch.
+## Database foundation
 
-The additive database foundation has already been applied to Supabase and is recorded in:
+Applied/recorded migrations:
 
 - `supabase/migrations/20260819145700_phase4_auth_roles_rls_foundation.sql`
 - `supabase/migrations/20260819161200_phase4_add_legacy_user_mapping.sql`
-- `supabase/migrations/20260819165505_phase4_trusted_legacy_owner_claim.sql`
+- `supabase/migrations/20260819165505_phase4_trusted_legacy_owner_claim.sql` — historical first implementation
+- `supabase/migrations/20260819193000_phase4_safe_owner_claim_mapping_only.sql` — **required safety override and current source of truth**
 
-The server-side Auth guard foundation is recorded in:
+The server-side Auth guard foundation is implemented in `lib/supabase-auth.js`.
 
-- `lib/supabase-auth.js`
-- `tests/supabase-auth-guards-test.js`
+The Google ID-token bootstrap is implemented through the existing `/api/auth` function using:
 
-Production frontend login has not been switched yet. Phase 3 runtime remains live while Phase 4 Auth is validated.
+- `lib/supabase-auth-bootstrap.js`
+- `lib/phase4-auth-bootstrap-route.js`
+- `phase4-auth-test.html`
+- `phase4-auth-test.js`
 
-## Authorization model
+No extra Vercel Function is created for Phase 4.
 
-Application roles are only:
+## Identity model
 
-- `doctor` — default normal account
-- `admin` — privileged administrative account
+`public.profiles.id` is the canonical Supabase Auth UUID and references `auth.users(id)`.
 
-Account status is separate:
+Roles:
+
+- `doctor`
+- `admin`
+
+Statuses:
 
 - `active`
 - `suspended`
 - `disabled`
 
+The default profile created after a new Auth user is `doctor + active`.
+
 Authorization is read from `public.profiles`, never from user-editable Auth metadata.
 
-## Implemented foundation
+`profiles.legacy_user_id` is nullable and trusted-only. It exists to bridge the historical private-data owner UUID without changing encrypted data prematurely.
 
-- `public.profiles` keyed 1:1 to `auth.users.id`
-- automatic Auth-user → profile trigger
-- default role `doctor`
-- `private.is_active_user()` and `private.is_admin()` security-definer helpers with explicit `search_path`
-- RLS on profiles and personal-data tables
-- clean `user_notes`
-- `user_preferences`
-- doctor own-row access only
-- suspended/disabled account blocking
-- no client-side role or status update privilege
+## RLS and privileges
+
+Phase 4 includes:
+
+- RLS on `profiles`
+- RLS on `user_favorites`
+- RLS on `user_prescriptions`
+- RLS on `user_notes`
+- RLS on `user_preferences`
+- own-row isolation for authenticated users
+- admin profile visibility
+- active-user checks
+- no client-side role, status, legacy mapping or id update privilege
 - server `requireDoctor()` and `requireAdmin()` guards
 - isolated Auth guard CI tests
-- trusted, private owner-claim helper for the one-time legacy personal-data remap
-- trusted, private pre-cutover rollback helper
+- trusted private owner mapping helper
+- trusted private pre-cutover rollback helper
 
 ## Verified security behavior
 
 Database tests already proved:
 
-- a user cannot self-promote through `user_metadata.role='admin'`
 - Doctor A cannot read Doctor B personal data
 - an active admin can read all profiles
 - a suspended account cannot read personal data
 - authenticated users cannot update `role`, `status`, `legacy_user_id`, or `id`
-- browser roles cannot execute the one-time legacy owner claim or rollback helpers
-- the owner claim rejects an unknown Auth UUID before changing any data
-- a rejected claim leaves legacy personal-data counts unchanged
+- browser roles cannot execute the trusted owner mapping or rollback helpers
+- an unknown Auth UUID is rejected before changing profile state
+- rejected mapping attempts leave private-data counts unchanged
 
-## Trusted owner claim
+## Critical encryption safety rule
 
-`private.claim_legacy_owner(...)` is intentionally **not an API endpoint**. It is a `SECURITY INVOKER` function in the non-exposed `private` schema and `EXECUTE` is revoked from `public`, `anon`, and `authenticated`.
+`user_prescriptions.payload` is encrypted with AES-256-GCM. Its AAD context includes the user UUID:
 
-It is only run after a real Google → Supabase login has created the owner `auth.users` + `profiles` rows.
+`<userId>:prescription:<clientId>`
 
-The trusted call requires all of these values explicitly:
+Therefore **changing only `user_prescriptions.user_id` would make existing ciphertext unreadable**.
 
-- the real Supabase Auth user UUID
-- the expected owner email
-- the existing Phase 3 legacy user UUID
-- the exact expected Favorite count
-- the exact expected Prescription count
+For this reason the historical migration `20260819165505_phase4_trusted_legacy_owner_claim.sql` is superseded by `20260819193000_phase4_safe_owner_claim_mapping_only.sql` before any real owner claim is executed.
 
-Before moving anything it verifies:
+The current `private.claim_legacy_owner(...)` function:
 
-1. the Auth UUID exists;
-2. the Auth email matches exactly;
-3. the profile exists and is active;
-4. the profile is not mapped to a different legacy UUID;
-5. the legacy UUID is not claimed by another profile;
-6. legacy Favorite/Prescription counts match the expected baseline;
-7. the new Auth UUID owns zero Favorite/Prescription rows before the claim.
+1. verifies the real Supabase Auth UUID exists;
+2. verifies the exact expected owner email;
+3. verifies the profile exists and is active;
+4. rejects conflicting legacy mappings;
+5. verifies the exact legacy Favorite and Prescription counts;
+6. verifies the new Auth UUID owns zero legacy private rows;
+7. promotes the verified owner profile to `admin`;
+8. attaches `profiles.legacy_user_id`;
+9. verifies the private rows **did not move**;
+10. writes an audit event.
 
-Only then, in the same database transaction, it:
+It deliberately does **not** update `user_favorites.user_id` or `user_prescriptions.user_id`.
 
-1. promotes the verified profile to `admin`;
-2. attaches `profiles.legacy_user_id`;
-3. remaps Favorites to the real Auth UUID;
-4. remaps Prescriptions to the real Auth UUID;
-5. recounts source and target rows;
-6. aborts the entire statement if any post-move count differs;
-7. writes the successful claim to `audit_logs`.
+The current `private.rollback_legacy_owner_claim(...)` clears only the trusted profile mapping/admin promotion after proving the same exact no-move count state.
 
-No owner email, Auth UUID, or legacy UUID is hardcoded into the public repository.
-
-`private.rollback_legacy_owner_claim(...)` is the pre-Phase-5 emergency reverse path. It only runs if the profile and exact expected counts still match the freshly claimed state; otherwise it refuses to move anything.
+Any future physical owner-ID migration of prescriptions must be **encryption-aware**: decrypt with the legacy AAD, re-encrypt with the new Auth UUID AAD, verify every payload, then move ownership transactionally. Phase 4 does not perform that operation.
 
 ## Google Auth configuration
 
-Google Cloud is configured as an External production OAuth app.
+Expected Web origin(s) include the production domain and any explicit Preview alias used for the real browser test.
 
-Expected Google Web OAuth configuration:
+Supabase Google provider must be enabled with the matching Web Client ID and Client Secret.
 
-- Authorized JavaScript origin: `https://barnat-six.vercel.app`
-- Authorized redirect URI: `https://ftuchtmolddhhsdcwnqe.supabase.co/auth/v1/callback`
+The bootstrap keeps nonce validation enabled. The client sends the SHA-256 hexadecimal nonce to Google and the raw nonce to Supabase Auth.
 
-Supabase Google provider should use the matching Web Client ID and Client Secret, with nonce checks enabled and users-without-email disabled.
+## Final Phase 4 gates
 
-## Remaining Phase 4 gates
+1. Run a real Google → Supabase sign-in with the owner account.
+2. Confirm exactly one matching `auth.users` row and one `profiles` row are created.
+3. Confirm the new profile starts as `doctor + active`.
+4. Run the trusted mapping-only owner claim with the real Auth UUID, exact owner email, legacy UUID and verified baseline counts.
+5. Confirm the profile is now `admin + active` with the expected `legacy_user_id`.
+6. Confirm the legacy private-data counts are unchanged and the Auth UUID still owns zero migrated legacy rows.
+7. Verify a real Supabase access token passes `requireDoctor()` and admin enforcement works.
+8. Re-run Security Advisor and full CI.
+9. Run final Preview/browser smoke tests.
+10. Merge Phase 4 only after all gates are green.
 
-1. Verify Supabase Google provider is enabled with the correct Web client credentials.
-2. Run a real Google sign-in and confirm exactly one `auth.users` row and one `profiles` row are created.
-3. Confirm the first normal account receives `role='doctor'`.
-4. Run the trusted owner claim with the real Auth UUID, expected email, legacy UUID and verified baseline counts.
-5. Confirm the owner is `admin`, legacy source counts are zero and the Auth UUID owns the exact migrated counts.
-6. Verify a real Supabase access token passes `requireDoctor()` and admin enforcement works.
-7. Re-run Security Advisor and full CI.
-8. Run the final Preview/browser smoke test once Vercel build capacity is available.
-9. Keep the current production login path unchanged until all Phase 4 gates are green.
+## Not part of Phase 4
 
-## Not part of this branch yet
+Phase 4 does not yet:
 
-- frontend Auth cutover
-- replacing `auth-client.js`
-- moving Favorites/Notes/Prescriptions browser flows to Supabase Auth sessions
-- Admin Dashboard UI
-- removal of legacy login/session code
+- replace the normal MedIndex frontend login/session everywhere
+- move Favorites/Notes/Prescriptions browser flows to a new identity contract
+- re-encrypt prescriptions under a new Auth UUID
+- remove the legacy session/login compatibility path
+- retire rollback support
 
-Those belong to the next cutover step after Phase 4 Auth is proven with real users.
+Those are handled incrementally in the following cutover phases so production remains recoverable.
