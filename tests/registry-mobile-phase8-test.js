@@ -35,7 +35,7 @@ for (const file of [
 assert.match(index, /registry-mobile-phase8\.css\?v=20260816-2/);
 assert.match(index, /registry-mobile-phase8\.js\?v=20260816-2/);
 assert.match(index, /registry-user-personalization\.js\?v=20260816-7/);
-assert.match(index, /user-library-client\.js\?v=20260817-event-sync-1/, 'Phase 6 user-library asset must be cache-busted.');
+assert.match(index, /user-library-client\.js\?v=20260819-logout-safety-1/, 'Protected user-library asset must be cache-busted.');
 assert(index.indexOf('registry-mobile-phase8.js') < index.indexOf('registry-runtime-loader.js'), 'Phase 8 must initialize before the full registry loader.');
 
 assert.match(lite, /rows:\[\], \/\/ phase8-current-page/);
