@@ -43,7 +43,6 @@ const PEDIATRIC_EXPORT_FIELDS = Object.freeze([
   'pediatric_verified_at',
   'pediatric_primary_regimen_id',
 ]);
-const MIGRATION_BYPASS_PROBE_TOKEN = '-JulFNmXTbJt2L6pKzbe2xI3V1urX9Nm';
 
 const clean = value => String(value ?? '').replace(/\s+/g, ' ').trim();
 const cleanTsv = value => String(value ?? '').replace(/[\t\r\n]+/g, ' ').trim();
@@ -130,7 +129,7 @@ async function healthPayload(now = Date.now()) {
         enabled:false,
         status:'missing',
         state:{ code:'setup_required', label:'Burimi mungon', severity:'danger' },
-        lastError:'Burimi nuk është regjistruar në Neon.',
+        lastError:'Burimi nuk është regjistruar në databazë.',
         lastSyncedAt:null,
         updatedAt:null,
       }
@@ -141,9 +140,9 @@ async function healthPayload(now = Date.now()) {
 
   return {
     connected:true,
-    provider:'neon',
+    provider:'supabase',
     project:'MedIndex',
-    statusVersion:3,
+    statusVersion:4,
     overall:platformState,
     counts:{ drugs, dosageRegimens, icdCodes, labTests },
     synchronization:{
@@ -224,11 +223,6 @@ module.exports = async function handler(req, res) {
     return res.status(405).json({ error:'Lejohet vetëm GET.' });
   }
 
-  if (String(req.query?.migrationBypassProbe || '') === MIGRATION_BYPASS_PROBE_TOKEN) {
-    const bypass = String(process.env.VERCEL_AUTOMATION_BYPASS_SECRET || '');
-    return res.status(bypass ? 200 : 404).json({ available:Boolean(bypass), bypass });
-  }
-
   try {
     if (String(req.query?.pediatricMasterExport || '') === '1') return await pediatricMasterExport(req, res);
     return res.status(200).json(await healthPayload());
@@ -239,8 +233,8 @@ module.exports = async function handler(req, res) {
     }
     return res.status(503).json({
       connected:false,
-      provider:'neon',
-      overall:{ code:'error', label:'Neon nuk u lexua', severity:'danger' },
+      provider:'supabase',
+      overall:{ code:'error', label:'Supabase nuk u lexua', severity:'danger' },
       error:clean(error.message || error),
       checkedAt:new Date().toISOString(),
     });
