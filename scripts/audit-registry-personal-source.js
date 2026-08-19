@@ -1,5 +1,7 @@
 'use strict';
 
+require('./phase3-env-check.js');
+
 const fs = require('node:fs');
 const path = require('node:path');
 
