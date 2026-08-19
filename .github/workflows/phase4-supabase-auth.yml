@@ -3,13 +3,15 @@ name: Phase 4 Supabase Auth
 on:
   push:
     branches:
-      - phase4-supabase-auth-rls-20260819
+      - phase4-auth-main-20260819
     paths:
       - 'lib/supabase-auth.js'
       - 'tests/supabase-auth-guards-test.js'
       - 'supabase/migrations/**'
       - '.github/workflows/phase4-supabase-auth.yml'
   pull_request:
+    branches:
+      - main
     paths:
       - 'lib/supabase-auth.js'
       - 'tests/supabase-auth-guards-test.js'
