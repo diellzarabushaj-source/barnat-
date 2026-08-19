@@ -43,7 +43,8 @@ html.medindex-tailadmin[data-mi-page="urgjencat"] #emergencyDetail select{
 .ck-sl-experience :where(p,li,h3,h4,strong,span){overflow-wrap:anywhere}
 .ck-sl-experience :where(button,a[href]):focus-visible,
 #emergencyDetail .ck-mode-toggle button:focus-visible,
-#emergencyDetail .ck-review-button:focus-visible{
+#emergencyDetail .ck-review-button:focus-visible,
+html.medindex-tailadmin[data-mi-page="urgjencat"] #ckDetailOverlay :where(button,a[href]):focus-visible{
   outline:3px solid rgba(71,119,229,.34);
   outline-offset:2px;
 }
@@ -267,18 +268,22 @@ html.medindex-tailadmin[data-mi-page="urgjencat"] #emergencyDetail select{
 }
 .ck-sl-flash-controls>span:empty{min-width:1px;min-height:1px}
 
-/* Shared source/review text from the original emergency renderer. */
+/* Shared review + drawer: the drawer is appended to body, not inside #emergencyDetail. */
 #emergencyDetail .ck-review-button>span:last-child{font-size:12px}
 #emergencyDetail .ck-review-button small{font-size:11px}
-#emergencyDetail .ck-source-list a,
-#emergencyDetail .ck-source-list>li>span{font-size:12px}
-#emergencyDetail .ck-source-list small{font-size:11px}
-#emergencyDetail .ck-drawer-review span{font-size:12px}
-#emergencyDetail .ck-drawer-review b{font-size:11px}
-#emergencyDetail .ck-drawer-section h3,
-#emergencyDetail .ck-drawer-source h3{font-size:13px}
-#emergencyDetail .ck-drawer-section p{font-size:13.5px}
-#emergencyDetail .ck-drawer-section ul{font-size:13px}
+html.medindex-tailadmin[data-mi-page="urgjencat"] #ckDetailOverlay .ck-drawer-head>div>span{font-size:11px;font-weight:750}
+html.medindex-tailadmin[data-mi-page="urgjencat"] #ckDetailOverlay .ck-drawer-close{width:44px;height:44px}
+html.medindex-tailadmin[data-mi-page="urgjencat"] #ckDetailOverlay .ck-source-list a,
+html.medindex-tailadmin[data-mi-page="urgjencat"] #ckDetailOverlay .ck-source-list>li>span{font-size:12px}
+html.medindex-tailadmin[data-mi-page="urgjencat"] #ckDetailOverlay .ck-source-list small{font-size:11px}
+html.medindex-tailadmin[data-mi-page="urgjencat"] #ckDetailOverlay .ck-source-missing{font-size:12px;line-height:1.55}
+html.medindex-tailadmin[data-mi-page="urgjencat"] #ckDetailOverlay .ck-drawer-review span{font-size:12px}
+html.medindex-tailadmin[data-mi-page="urgjencat"] #ckDetailOverlay .ck-drawer-review b{font-size:11px}
+html.medindex-tailadmin[data-mi-page="urgjencat"] #ckDetailOverlay .ck-drawer-section h3,
+html.medindex-tailadmin[data-mi-page="urgjencat"] #ckDetailOverlay .ck-drawer-source h3{font-size:13px}
+html.medindex-tailadmin[data-mi-page="urgjencat"] #ckDetailOverlay .ck-drawer-section p{font-size:13.5px}
+html.medindex-tailadmin[data-mi-page="urgjencat"] #ckDetailOverlay .ck-drawer-section ul{font-size:13px}
+html.medindex-tailadmin[data-mi-page="urgjencat"] #ckDetailOverlay .ck-chip{min-height:28px;font-size:11px}
 
 /* Dark theme: keep clinical hierarchy and contrast intact. */
 html[data-theme="dark"] #emergencyDetail .ck-mode-wrap{
