@@ -11,7 +11,7 @@ html.medindex-tailadmin[data-mi-page="urgjencat"] .ck-list-button{position:relat
   border-radius:999px;
   background:#fff;
   color:#6b7689!important;
-  font-size:10.5px!important;
+  font-size:11px!important;
   font-weight:700;
   line-height:1.2!important;
 }
@@ -29,7 +29,7 @@ html.medindex-tailadmin[data-mi-page="urgjencat"] .ck-list-button{position:relat
   border-radius:999px;
   background:#eef9f7;
   color:#126e67!important;
-  font-size:10.5px!important;
+  font-size:11px!important;
   font-weight:700;
   letter-spacing:.035em;
   text-transform:uppercase;
@@ -53,7 +53,7 @@ html.medindex-tailadmin[data-mi-page="urgjencat"] .ck-list-button.is-active stro
   border-radius:8px;
   background:#f7f9fc;
   color:#667287!important;
-  font-size:10.5px!important;
+  font-size:11px!important;
   font-weight:700;
   line-height:1.2!important;
 }
@@ -76,8 +76,8 @@ html[data-theme="dark"] .ck-directory-review.is-draft,html[data-theme="dark"] .c
 
 @media(max-width:640px){
   .ck-directory-tags{gap:5px;margin-top:7px!important}
-  .ck-directory-tag{min-height:25px;padding:0 7px;font-size:10.5px!important}
+  .ck-directory-tag{min-height:25px;padding:0 7px;font-size:11px!important}
   .ck-directory-safety{gap:5px;margin-top:7px!important;padding-top:7px}
-  .ck-directory-review,.ck-directory-source-count{min-height:25px;padding:0 7px;font-size:10.5px!important}
-  .ck-directory-active{top:8px;right:8px;min-height:24px;font-size:10.5px!important}
+  .ck-directory-review,.ck-directory-source-count{min-height:25px;padding:0 7px;font-size:11px!important}
+  .ck-directory-active{top:8px;right:8px;min-height:24px;font-size:11px!important}
 }
