@@ -78,7 +78,7 @@ for (const viewport of viewports) {
 
     for (const file of clinicalPages) {
       await page.goto(`http://127.0.0.1:4173/${file}`, { waitUntil:'domcontentloaded' });
-      await page.waitForFunction(() => document.documentElement.classList.contains('auth-ready'), null, { timeout:20000 });
+      await expect(page.locator('html')).toHaveClass(/auth-ready/, { timeout:20000 });
       await expect(page.locator('.mi-app-shell')).toBeVisible({ timeout:20000 });
       await auditViewport(page, `${file} / ${viewport.name}`, { requireControls:true });
 
@@ -134,7 +134,7 @@ for (const viewport of viewports) {
     });
 
     await page.goto('http://127.0.0.1:4173/login.html', { waitUntil:'domcontentloaded' });
-    await page.waitForFunction(() => document.documentElement.dataset.miTailwindUi === '20260805-1');
+    await expect(page.locator('html')).toHaveAttribute('data-mi-tailwind-ui', '20260805-1', { timeout:20000 });
     await expect(page.locator('.plan-block')).toBeVisible();
     await auditViewport(page, `login.html / ${viewport.name}`, { requireControls:true });
     const ctaBox = await page.locator('.plan-cta').boundingBox();
@@ -143,7 +143,7 @@ for (const viewport of viewports) {
 
     await page.unroute('**/api/auth');
     await page.goto('http://127.0.0.1:4173/recovery.html', { waitUntil:'domcontentloaded' });
-    await page.waitForFunction(() => document.documentElement.dataset.miTailwindUi === '20260805-1');
+    await expect(page.locator('html')).toHaveAttribute('data-mi-tailwind-ui', '20260805-1', { timeout:20000 });
     await expect(page.locator('.recovery-card')).toBeVisible();
     await auditViewport(page, `recovery.html / ${viewport.name}`);
   });
