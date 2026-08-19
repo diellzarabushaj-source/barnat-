@@ -13,7 +13,7 @@ delete process.env.MEDINDEX_SUPABASE_URL;
 delete process.env.MEDINDEX_SUPABASE_PUBLISHABLE_KEY;
 
 const Bootstrap = require('../lib/supabase-auth-bootstrap.js');
-const Endpoint = require('../api/phase4-auth-bootstrap.js')._test;
+const Endpoint = require('../lib/phase4-auth-bootstrap-route.js')._test;
 
 function response(status, payload) {
   return {
@@ -59,6 +59,8 @@ function response(status, payload) {
       error => error?.code === 'SUPABASE_GOOGLE_EXCHANGE_FAILED' && error?.status === 401
     );
 
+    assert.equal(Endpoint.requested({ query:{ scope:'phase4-auth-bootstrap' }, url:'/api/auth' }), true);
+    assert.equal(Endpoint.requested({ query:{ scope:'library' }, url:'/api/auth' }), false);
     assert.equal(Endpoint.sameOrigin({ headers:{ origin:'https://preview.example', host:'preview.example' } }), true);
     assert.equal(Endpoint.sameOrigin({ headers:{ origin:'https://evil.example', host:'preview.example' } }), false);
     assert.equal(
