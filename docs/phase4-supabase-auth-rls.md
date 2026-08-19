@@ -8,6 +8,11 @@ The additive database foundation has been applied to the Supabase project and re
 
 `supabase/migrations/20260819145700_phase4_auth_roles_rls_foundation.sql`
 
+The server-side Auth guard foundation is recorded in:
+
+- `lib/supabase-auth.js`
+- `tests/supabase-auth-guards-test.js`
+
 Production frontend/auth has **not** been switched. Medical reads continue to use the already-live Supabase medical path, while the current login/Neon rollback path remains unchanged.
 
 ## Final authorization model
@@ -85,6 +90,31 @@ Legacy `protocol` rows inside `user_favorites` are not exposed to authenticated 
 
 Both have RLS and automatic `updated_at` triggers.
 
+## Implemented server Auth foundation
+
+`lib/supabase-auth.js` provides server-only request guards without changing the current production login flow:
+
+- parses a strict `Authorization: Bearer <token>` header;
+- verifies the access token against Supabase Auth `/auth/v1/user` using the publishable key;
+- loads the live MedIndex `profiles` row using the same user JWT, so RLS remains part of authorization;
+- derives `role` and `status` only from `profiles`, never from user-editable Auth metadata;
+- rejects missing/invalid profiles and inactive accounts;
+- exposes `requireDoctor()` and `requireAdmin()` guards;
+- uses bounded upstream timeouts and maps Auth/upstream failures to explicit status/error codes;
+- never requires or exposes the Supabase server secret for normal identity verification.
+
+`tests/supabase-auth-guards-test.js` covers the critical contract:
+
+- malformed/missing Bearer headers are rejected;
+- a fake `user_metadata.role='admin'` cannot override a `profiles.role='doctor'` value;
+- doctors pass `requireDoctor()` but fail `requireAdmin()`;
+- active admins pass `requireAdmin()`;
+- suspended users are rejected;
+- missing profiles are rejected;
+- invalid Supabase access tokens are rejected.
+
+No new public API endpoint is exposed yet. The guards are intentionally prepared for Phase 5 and future `/api/admin/*` routes rather than adding an unused production attack surface.
+
 ## Current data state
 
 At the time Phase 4 was created:
@@ -97,6 +127,19 @@ At the time Phase 4 was created:
 - `user_prescriptions`: 2 copied Phase 3 rows
 
 The 82 copied favorite/note-history rows remain untouched. Their legacy user UUID must be mapped to the future `auth.users.id` before frontend personal-data cutover.
+
+## Security verification completed
+
+After the migration:
+
+- expected RLS policies exist on `profiles`, `user_favorites`, `user_prescriptions`, `user_notes`, and `user_preferences`;
+- `anon` has no grants on the Phase 4 user layer;
+- authenticated `profiles` UPDATE privilege exists only for `full_name`, `avatar_url`, `specialty`, and `license_number`;
+- authenticated users have no client UPDATE privilege on `role` or `status`;
+- security-definer Auth helpers have an explicit empty `search_path`;
+- the Auth-user → profile trigger exists on `auth.users`;
+- the 82 legacy favorite/history rows and 2 prescriptions were unchanged by the Phase 4 migration;
+- Supabase Security Advisor reported no new Phase 4 warning; its remaining `RLS enabled/no policy` INFO items are the intentionally fail-closed legacy/server-only Phase 3 relations.
 
 ## Security properties
 
