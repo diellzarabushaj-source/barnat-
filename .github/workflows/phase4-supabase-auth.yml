@@ -7,7 +7,8 @@ on:
     paths:
       - 'lib/supabase-auth.js'
       - 'lib/supabase-auth-bootstrap.js'
-      - 'api/phase4-auth-bootstrap.js'
+      - 'lib/phase4-auth-bootstrap-route.js'
+      - 'api/auth.js'
       - 'phase4-auth-test.html'
       - 'phase4-auth-test.js'
       - 'tests/supabase-auth-guards-test.js'
@@ -20,7 +21,8 @@ on:
     paths:
       - 'lib/supabase-auth.js'
       - 'lib/supabase-auth-bootstrap.js'
-      - 'api/phase4-auth-bootstrap.js'
+      - 'lib/phase4-auth-bootstrap-route.js'
+      - 'api/auth.js'
       - 'phase4-auth-test.html'
       - 'phase4-auth-test.js'
       - 'tests/supabase-auth-guards-test.js'
