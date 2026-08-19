@@ -36,7 +36,7 @@ assert.equal(
   'tailadmin-professional.css?v=20260728-1',
   'Professional TailAdmin must remain the final static stylesheet.',
 );
-assert.match(html, /emergency-summary-learn\.js\?v=20260819-1/);
+assert.match(html, /emergency-summary-learn\.js\?v=20260819-2/);
 assert.match(html, /Përmbledhje/);
 assert.match(html, /Mëso/);
 
