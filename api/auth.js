@@ -1,6 +1,9 @@
 'use strict';
 
+const crypto = require('node:crypto');
 const { verifyGoogleIdToken } = require('../lib/google-id-token.js');
+const { exchangeGoogleIdToken, SupabaseBootstrapError } = require('../lib/supabase-auth-bootstrap.js');
+const SupabaseAuth = require('../lib/supabase-auth.js');
 const UserStore = require('../lib/user-store.js');
 const UserLibrary = require('../lib/user-library.js');
 const Phase4AuthBootstrap = require('../lib/phase4-auth-bootstrap-route.js');
@@ -106,9 +109,13 @@ function publicUser(session) {
   return session ? { email:session.email, role:session.role, name:session.name || '' } : null;
 }
 
+function sha256Hex(value) {
+  return crypto.createHash('sha256').update(String(value || ''), 'utf8').digest('hex');
+}
+
 function ownerFallbackUser(identity = {}) {
   return {
-    id:'',
+    id:String(identity.id || identity.uid || '').trim().slice(0, 80),
     sub:String(identity.sub || '').trim().slice(0, 255),
     email:UserStore.OWNER_EMAIL,
     name:String(identity.name || 'Diellza Rabushaj').trim().slice(0, 160),
@@ -137,6 +144,10 @@ async function ensureLoginUser(identity = {}) {
   }
 }
 
+function cutoverError(code, message, status = 409) {
+  return Object.assign(new Error(message), { code, status });
+}
+
 module.exports = async function handler(req, res) {
   securityHeaders(res);
 
@@ -157,10 +168,24 @@ module.exports = async function handler(req, res) {
 
   if (req.method === 'GET') {
     const csrfToken = auth.createCsrfToken();
+    const supabaseAuthenticated = auth.isSupabaseSession(session);
+    const rollbackSession = auth.isRollbackSession(session);
+    const identityContract = supabaseAuthenticated
+      ? 'supabase-v1'
+      : (rollbackSession ? 'legacy-password-rollback' : (session ? `legacy-v${session.v}` : ''));
     res.setHeader('Set-Cookie', auth.csrfCookie(csrfToken));
     return res.status(200).json({
       authenticated:Boolean(session),
       user:publicUser(session),
+      sessionVersion:Number(session?.v || 0),
+      identityContract,
+      supabaseAuthenticated,
+      rollbackSession,
+      authUser:supabaseAuthenticated ? {
+        id:session.authUid,
+        role:session.authRole,
+        status:session.authStatus,
+      } : null,
       sessionHours:auth.SESSION_TTL_SECONDS / 3600,
       hardened:auth.secureConfigurationEnabled(),
       accessConfigured:auth.accessConfigurationEnabled(),
@@ -212,14 +237,40 @@ module.exports = async function handler(req, res) {
 
     let user;
     let provider;
+    let canonicalIdentity = null;
     if (String(body.credential || '').trim()) {
       if (!auth.googleConfigurationEnabled()) return res.status(503).json({ code:'GOOGLE_NOT_CONFIGURED', error:'Hyrja me Google nuk është konfiguruar ende.' });
-      const identity = await verifyGoogleIdToken(body.credential, {
+      const credential = String(body.credential || '').trim();
+      const googleIdentity = await verifyGoogleIdToken(credential, {
         clientId:auth.googleClientId(),
-        nonce:suppliedCsrf,
+        nonce:sha256Hex(suppliedCsrf),
       });
-      user = await ensureLoginUser(identity);
-      provider = 'google';
+      const exchanged = await exchangeGoogleIdToken({ credential, nonce:suppliedCsrf });
+      if (String(exchanged.user.email || '').toLowerCase() !== String(googleIdentity.email || '').toLowerCase()) {
+        throw cutoverError('AUTH_IDENTITY_MISMATCH', 'Google dhe Supabase kthyen identitete të ndryshme.');
+      }
+      canonicalIdentity = await SupabaseAuth.requireDoctor({
+        headers:{ authorization:`Bearer ${exchanged.accessToken}` },
+      });
+      if (canonicalIdentity.id !== exchanged.user.id || canonicalIdentity.email !== String(googleIdentity.email || '').toLowerCase()) {
+        throw cutoverError('PROFILE_IDENTITY_MISMATCH', 'Profili MedIndex nuk përputhet me identitetin Supabase.');
+      }
+
+      const legacyUserId = String(canonicalIdentity.profile?.legacyUserId || '').trim();
+      if (canonicalIdentity.email === UserStore.OWNER_EMAIL && !legacyUserId) {
+        throw cutoverError('LEGACY_OWNER_MAPPING_MISSING', 'Lidhja e sigurt me të dhënat ekzistuese të pronarit mungon.');
+      }
+      user = await ensureLoginUser({
+        id:legacyUserId || canonicalIdentity.id,
+        sub:googleIdentity.sub,
+        email:canonicalIdentity.email,
+        name:googleIdentity.name,
+        picture:googleIdentity.picture,
+      });
+      if (legacyUserId && String(user.id) !== legacyUserId) {
+        throw cutoverError('LEGACY_OWNER_MAPPING_MISMATCH', 'Identiteti Supabase nuk përputhet me pronarin e të dhënave ekzistuese.');
+      }
+      provider = 'supabase-google';
     } else {
       if (!auth.accessConfigurationEnabled()) return res.status(403).json({ error:'Hyrja me password rezervë nuk është aktive.' });
       const password = String(body.password || '').slice(0, MAX_PASSWORD_CHARS);
@@ -231,16 +282,20 @@ module.exports = async function handler(req, res) {
         return res.status(401).json({ error:'Password-i nuk është i saktë.' });
       }
       user = await ensureLoginUser({ email:UserStore.OWNER_EMAIL, name:'Diellza Rabushaj' });
-      provider = 'password';
+      provider = 'legacy-password';
     }
 
     attempts.delete(ip);
     const sessionToken = auth.createSessionToken({
       uid:user.id,
-      sub:user.sub || (provider === 'password' ? 'password-owner' : ''),
+      authUid:canonicalIdentity?.id || '',
+      sub:user.sub || (provider === 'legacy-password' ? 'password-owner' : ''),
       email:user.email,
       role:user.role,
       name:user.name,
+      authRole:canonicalIdentity?.role || '',
+      authStatus:canonicalIdentity?.status || '',
+      provider,
     });
     const nextCsrf = auth.createCsrfToken();
     res.setHeader('Set-Cookie', [auth.sessionCookie(sessionToken), auth.csrfCookie(nextCsrf)]);
@@ -249,8 +304,17 @@ module.exports = async function handler(req, res) {
       ok:true,
       expiresIn:auth.SESSION_TTL_SECONDS,
       hardened:true,
-      provider,
+      provider:provider === 'supabase-google' ? 'google' : 'password',
+      sessionVersion:auth.SESSION_VERSION,
+      identityContract:provider === 'supabase-google' ? 'supabase-v1' : 'legacy-password-rollback',
+      supabaseAuthenticated:provider === 'supabase-google',
+      rollbackSession:provider === 'legacy-password',
       user:{ email:user.email, role:user.role, name:user.name },
+      authUser:canonicalIdentity ? {
+        id:canonicalIdentity.id,
+        role:canonicalIdentity.role,
+        status:canonicalIdentity.status,
+      } : null,
     });
   } catch (error) {
     console.error('Auth error:', error?.code || error?.message || error);
@@ -258,7 +322,13 @@ module.exports = async function handler(req, res) {
     if (error?.code === 'EMAIL_NOT_ALLOWED' || error?.code === 'USER_DISABLED') return res.status(403).json({ code:error.code, error:error.message });
     if (error?.code === 'GOOGLE_KEYS_UNAVAILABLE') return res.status(503).json({ code:error.code, error:'Google nuk u përgjigj për verifikim. Provo përsëri.' });
     if (/^GOOGLE_/.test(String(error?.code || ''))) return res.status(401).json({ code:error.code, error:error.message });
-    const configurationError = /SESSION_SECRET|ACCESS_CODE|GOOGLE_CLIENT_ID|çelësi privat/i.test(String(error?.message || ''));
+    if (error instanceof SupabaseBootstrapError || error instanceof SupabaseAuth.SupabaseAuthError) {
+      return res.status(Number(error.status) || 400).json({ code:error.code, error:error.message });
+    }
+    if (/^(AUTH_IDENTITY_MISMATCH|PROFILE_IDENTITY_MISMATCH|LEGACY_OWNER_MAPPING_MISSING|LEGACY_OWNER_MAPPING_MISMATCH)$/.test(String(error?.code || ''))) {
+      return res.status(Number(error.status) || 409).json({ code:error.code, error:error.message });
+    }
+    const configurationError = /SESSION_SECRET|ACCESS_CODE|GOOGLE_CLIENT_ID|SUPABASE|çelësi privat/i.test(String(error?.message || ''));
     return res.status(configurationError ? 503 : 400).json({
       error:configurationError ? 'Konfigurimi privat i hyrjes mungon në server.' : 'Kërkesa e hyrjes nuk u përfundua.',
     });
@@ -273,9 +343,11 @@ module.exports._test = {
   libraryRequested,
   resetRequested,
   browserResetPage,
+  sha256Hex,
   ownerFallbackUser,
   ownerStoreUnavailable,
   ensureLoginUser,
+  cutoverError,
   MAX_ATTEMPTS,
   MAX_BODY_BYTES,
   MAX_PASSWORD_CHARS,
