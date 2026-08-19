@@ -49,7 +49,7 @@ const emergencyFixture = {
   ],
   sources:[
     {title:'RCUK anaphylaxis guideline', url:'https://example.test/rcuk'},
-    {title:'RCUK anaphylaxis guideline duplicate', url:'https://example.test/rcuk'},
+    {title:'RCUK anaphylaxis guideline', url:'https://example.test/rcuk'},
     {title:'Secondary guideline', url:'https://example.test/secondary'},
   ],
   reviewStatus:'review',
@@ -133,7 +133,7 @@ test.describe('Urgjencat Summary / Learn QA', () => {
     await expect(page.locator('.ck-sl-flash-answer')).toContainText('500 mikrogram');
     await expect(page.locator('.ck-sl-recall')).toBeVisible();
     await page.locator('[data-flash-known]').click();
-    await expect(page.locator('.ck-sl-flash-head>strong')).toHaveText('2 / 10');
+    await expect(page.locator('.ck-sl-flash-head>strong')).toHaveText('2 / 9');
     await expect(page.locator('[data-flash-reveal]')).toBeFocused();
 
     await page.evaluate(() => { document.documentElement.dataset.theme = 'dark'; });
