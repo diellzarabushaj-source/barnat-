@@ -13,6 +13,7 @@ const css = read('registry-user-personalization.css');
 const uxPhase1 = read('registry-ux-phase1.js');
 const uxPhase1Css = read('registry-ux-phase1.css');
 const client = read('user-library-client.js');
+const authClient = read('auth-client.js');
 const server = read('lib/user-library.js');
 const shell = read('tailadmin-shell-core.js');
 const pkg = read('package.json');
@@ -22,6 +23,7 @@ const runtime = read('app-runtime.js');
 assert.doesNotThrow(() => new Function(ui), 'Personalization UI must parse as JavaScript');
 assert.doesNotThrow(() => new Function(uxPhase1), 'Registry UX phase 1 must parse as JavaScript');
 assert.doesNotThrow(() => new Function(client), 'User library client must parse as JavaScript');
+assert.doesNotThrow(() => new Function(authClient), 'Auth client must parse as JavaScript');
 assert.doesNotThrow(() => new Function(server), 'User library server must parse as JavaScript');
 assert.doesNotThrow(() => new Function(runtimePatch), 'Registry personalization runtime patch must parse as JavaScript');
 
@@ -124,7 +126,30 @@ assert.match(client, /regjistriBarnave_shenime_v1/, 'Per-user notes local cache 
 assert.match(client, /NOTE_ENTITY_TYPE = 'protocol'/, 'Notes must stay compatible with the existing user_favorites schema');
 assert.match(client, /NOTE_ENTITY_PREFIX = 'drug-note:'/, 'Notes must use an isolated namespaced entity key');
 assert.match(client, /payload:\{ kind:'drug-note'/, 'Synced notes must be distinguishable from real protocol favorites');
-assert.match(client, /localStorage\.removeItem\(NOTES_KEY\)/, 'Notes must be removed from the browser on logout');
+assert.match(client, /localStorage\.removeItem\(NOTES_KEY\)/, 'Notes must be removed from the browser on confirmed logout');
+assert.match(client, /const targetRevision = localRevision;/, 'Logout must capture the exact local library revision before syncing');
+assert.match(client, /const synced = await Promise\.race\(/, 'Logout must explicitly observe the bounded sync result');
+assert.match(client, /flushThroughRevision\(targetRevision\)/, 'Logout must sync through the captured local revision');
+assert.match(client, /if \(synced !== true\)/, 'Logout must fail closed when Favorites/Notes sync is not confirmed');
+assert.match(client, /code:'library_sync_required'/, 'Blocked logout must expose a deterministic library-sync error code');
+assert.match(client, /medindex:library-sync-error/, 'Blocked logout must expose a user-library sync error event');
+assert.match(client, /if \(response\.ok\) \{[\s\S]*?localStorage\.removeItem\(FAVORITES_KEY\)[\s\S]*?localStorage\.removeItem\(NOTES_KEY\)/, 'Local Favorites/Notes may only be cleared after a successful auth logout response');
+assert.doesNotMatch(client, /Promise\.race\(\[flush\(\),\s*new Promise\(resolve => setTimeout\(resolve, 1500\)\)\]\)/, 'Logout must not ignore the result of the old best-effort flush race');
+const librarySyncGate = client.indexOf('if (synced !== true)');
+const authDeleteAfterSync = client.indexOf('const response = await nativeFetch(...args);', librarySyncGate);
+const localFavoritesClear = client.indexOf('localStorage.removeItem(FAVORITES_KEY);', authDeleteAfterSync);
+assert.ok(librarySyncGate >= 0 && authDeleteAfterSync > librarySyncGate, 'Auth DELETE must happen only after the library sync gate');
+assert.ok(localFavoritesClear > authDeleteAfterSync, 'Local Favorites must not be cleared before the auth DELETE completes');
+
+assert.match(authClient, /if \(!response\.ok\)/, 'Auth logout must check the protected DELETE response before redirecting');
+assert.match(authClient, /showLogoutError\(/, 'A blocked logout must surface a visible, accessible error');
+assert.match(authClient, /setLogoutBusy\(false\)/, 'A blocked logout must re-enable the logout control');
+const authLogoutCheck = authClient.indexOf('if (!response.ok)');
+const clearPrivateAfterLogout = authClient.indexOf('await clearPrivateBrowserData();', authLogoutCheck);
+const redirectAfterLogout = authClient.indexOf('location.replace(LOGIN_PAGE);', authLogoutCheck);
+assert.ok(authLogoutCheck >= 0 && clearPrivateAfterLogout > authLogoutCheck, 'Private browser data must only clear after a successful logout response');
+assert.ok(redirectAfterLogout > authLogoutCheck, 'Login redirect must only happen after a successful logout response');
+
 assert.match(server, /NOTE_ENTITY_PREFIX = 'drug-note:'/, 'Server note namespace is missing');
 assert.match(server, /payload\.kind === 'drug-note'/, 'Server does not validate namespaced drug notes');
 assert.match(server, /user_id=eq\./, 'User library reads must stay scoped to authenticated user ID');
@@ -148,4 +173,4 @@ assert.throws(() => library._test.normalizedFavorite({
   payload:{ kind:'drug-note', text:'x'.repeat(2001) },
 }), /maksimum 2000/i, 'Oversized personal notes must fail closed');
 
-console.log('Canonical Favorites + Notes, mobile bridge, native personal views, mutation locks and pending persistent sync audit passed.');
+console.log('Canonical Favorites + Notes, mobile bridge, native personal views, mutation locks, protected logout and pending persistent sync audit passed.');
