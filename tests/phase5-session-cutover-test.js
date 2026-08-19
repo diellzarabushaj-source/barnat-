@@ -7,7 +7,9 @@ const { pathToFileURL } = require('node:url');
   process.env.SESSION_SECRET = 'phase5-session-cutover-test-secret-at-least-32-characters';
 
   const authUrl = pathToFileURL(path.resolve(__dirname, '../lib/auth.mjs')).href;
+  const edgeUrl = pathToFileURL(path.resolve(__dirname, '../lib/auth-edge.mjs')).href;
   const auth = await import(`${authUrl}?phase5=${Date.now()}`);
+  const edgeAuth = await import(`${edgeUrl}?phase5=${Date.now()}`);
 
   const legacyUserId = '2c363cb4-fcbe-4d31-9a58-a3512d23d32f';
   const authUserId = '081163dc-04fa-4693-97cf-bfd887c841cd';
@@ -25,6 +27,7 @@ const { pathToFileURL } = require('node:url');
   const session = auth.sessionData(token);
 
   assert.equal(auth.SESSION_VERSION, 3, 'Phase 5 must mint v3 sessions');
+  assert.equal(edgeAuth.SESSION_VERSION, 3, 'Edge verifier must use the same v3 contract');
   assert.equal(session.v, 3, 'Supabase session did not use v3');
   assert.equal(session.uid, legacyUserId, 'Storage/AAD UUID changed during session cutover');
   assert.equal(session.authUid, authUserId, 'Canonical Supabase Auth UUID is missing');
@@ -34,6 +37,7 @@ const { pathToFileURL } = require('node:url');
   assert.equal(session.provider, 'supabase-google');
   assert.equal(auth.isSupabaseSession(session), true, 'Canonical Supabase session was not recognized');
   assert.equal(auth.isRollbackSession(session), false);
+  assert.equal(await edgeAuth.verifySessionToken(token), true, 'Edge could not verify the Node v3 Supabase session');
 
   const rollbackToken = auth.createSessionToken({
     uid:legacyUserId,
@@ -48,6 +52,8 @@ const { pathToFileURL } = require('node:url');
   assert.equal(rollbackSession.authUid, '', 'Rollback session must not pretend to be Supabase-authenticated');
   assert.equal(auth.isRollbackSession(rollbackSession), true);
   assert.equal(auth.isSupabaseSession(rollbackSession), false);
+  assert.equal(await edgeAuth.verifySessionToken(rollbackToken), true, 'Edge could not verify the explicit v3 rollback session');
+  assert.equal(await edgeAuth.verifySessionToken(`${token}tampered`), false, 'Edge accepted a tampered v3 session');
 
   const apiAuth = fs.readFileSync(path.resolve(__dirname, '../api/auth.js'), 'utf8');
   const loginClient = fs.readFileSync(path.resolve(__dirname, '../login.js'), 'utf8');
