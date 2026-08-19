@@ -1,0 +1,61 @@
+name: Phase 5 Supabase Session Cutover
+
+on:
+  push:
+    branches:
+      - phase5-supabase-session-cutover-20260819
+    paths:
+      - 'api/auth.js'
+      - 'auth-client.js'
+      - 'login.js'
+      - 'lib/auth.mjs'
+      - 'lib/supabase-auth.js'
+      - 'lib/supabase-auth-bootstrap.js'
+      - 'lib/user-library.js'
+      - 'tests/phase5-session-cutover-test.js'
+      - 'tests/auth-default-test.js'
+      - 'tests/supabase-auth-guards-test.js'
+      - 'tests/supabase-auth-bootstrap-test.js'
+      - 'tests/phase4-legacy-owner-claim-test.js'
+      - '.github/workflows/phase5-supabase-session-cutover.yml'
+  pull_request:
+    branches:
+      - main
+    paths:
+      - 'api/auth.js'
+      - 'auth-client.js'
+      - 'login.js'
+      - 'lib/auth.mjs'
+      - 'lib/supabase-auth.js'
+      - 'lib/supabase-auth-bootstrap.js'
+      - 'lib/user-library.js'
+      - 'tests/phase5-session-cutover-test.js'
+      - 'tests/auth-default-test.js'
+      - 'tests/supabase-auth-guards-test.js'
+      - 'tests/supabase-auth-bootstrap-test.js'
+      - 'tests/phase4-legacy-owner-claim-test.js'
+      - '.github/workflows/phase5-supabase-session-cutover.yml'
+
+permissions:
+  contents: read
+
+jobs:
+  session-cutover:
+    runs-on: ubuntu-latest
+    timeout-minutes: 8
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Phase 5 dual-identity contract
+        run: node tests/phase5-session-cutover-test.js
+      - name: Existing auth fail-closed behavior
+        run: node tests/auth-default-test.js
+      - name: Phase 4 regression guards
+        run: |
+          node tests/supabase-auth-guards-test.js
+          node tests/supabase-auth-bootstrap-test.js
+          node tests/phase4-legacy-owner-claim-test.js
