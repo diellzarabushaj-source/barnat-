@@ -109,7 +109,7 @@ function contrastRatio(foreground, background) {
 test.describe('Urgjencat Summary / Learn QA', () => {
   test.use({serviceWorkers:'block'});
 
-  test('desktop: dy modalitete, terapi precize, tipografi, triage, flashcards dhe dark mode', async ({page}) => {
+  test('desktop: dy modalitete, terapi precize, tipografi, triage, drawer, flashcards dhe dark mode', async ({page}) => {
     await page.setViewportSize({width:1440,height:1000});
     const pageErrors = await openEmergency(page);
 
@@ -168,6 +168,26 @@ test.describe('Urgjencat Summary / Learn QA', () => {
     await allTriage.focus();
     await allTriage.press('ArrowRight');
     await expect(criticalTriage).toBeFocused();
+
+    const reviewButton = page.locator('.ck-review-button');
+    await reviewButton.click();
+    await expect(page.locator('#ckDetailOverlay')).toHaveClass(/is-open/);
+    await expect(page.locator('#ckDetailOverlay .ck-source-list li')).toHaveCount(2);
+    await expect(page.locator('#ckDetailOverlay .ck-source-published')).toHaveCount(2);
+    const drawerMetrics = await page.evaluate(() => ({
+      family:getComputedStyle(document.querySelector('#ckDetailOverlay .ck-drawer')).fontFamily,
+      kicker:Number.parseFloat(getComputedStyle(document.querySelector('#ckDetailOverlay .ck-drawer-head>div>span')).fontSize),
+      closeHeight:document.querySelector('#ckDetailOverlay .ck-drawer-close').getBoundingClientRect().height,
+      sourceMeta:Number.parseFloat(getComputedStyle(document.querySelector('#ckDetailOverlay .ck-source-published')).fontSize),
+      sourceLink:Number.parseFloat(getComputedStyle(document.querySelector('#ckDetailOverlay .ck-source-list a')).fontSize),
+    }));
+    expect(drawerMetrics.family).toBe(typeMetrics.pageFamily);
+    expect(drawerMetrics.kicker).toBeGreaterThanOrEqual(11);
+    expect(drawerMetrics.closeHeight).toBeGreaterThanOrEqual(44);
+    expect(drawerMetrics.sourceMeta).toBeGreaterThanOrEqual(11);
+    expect(drawerMetrics.sourceLink).toBeGreaterThanOrEqual(12);
+    await page.keyboard.press('Escape');
+    await expect(reviewButton).toBeFocused();
 
     await page.getByRole('button',{name:'Mëso'}).click();
     await expect(page.locator('.ck-sl-summary')).toBeHidden();
