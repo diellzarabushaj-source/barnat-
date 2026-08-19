@@ -24,10 +24,16 @@ assert.ok(
 assert.doesNotMatch(html, /emergency-doctor-mode\.(?:js|css)/);
 assert.doesNotMatch(html, /emergency-clinician-timeline\.(?:js|css)/);
 assert.match(html, /emergency-summary-learn\.css\?v=20260819-1/);
-assert.match(html, /emergency-summary-learn-polish\.css\?v=20260819-1/);
+assert.match(html, /emergency-summary-learn-polish\.css\?v=20260819-2/);
 assert.ok(
-  html.indexOf('tailadmin-professional.css') < html.indexOf('emergency-summary-learn-polish.css'),
-  'Emergency polish must load after shared TailAdmin styles.',
+  html.indexOf('emergency-summary-learn-polish.css') < html.indexOf('tailadmin-professional.css'),
+  'Emergency polish must stay before the canonical final TailAdmin stylesheet.',
+);
+const stylesheets = [...html.matchAll(/<link\s+rel="stylesheet"\s+href="([^"]+)"/g)].map(match => match[1]);
+assert.equal(
+  stylesheets.at(-1),
+  'tailadmin-professional.css?v=20260728-1',
+  'Professional TailAdmin must remain the final static stylesheet.',
 );
 assert.match(html, /emergency-summary-learn\.js\?v=20260819-1/);
 assert.match(html, /Përmbledhje/);
@@ -46,12 +52,21 @@ assert.match(learning, /Përmbledhje/);
 assert.match(learning, /Mëso/);
 assert.match(learning, /Çfarë bëj tani\?/);
 assert.match(learning, /Trajtimi i parë/);
+assert.match(learning, /Veprimi i parë/);
 assert.match(learning, /MËSIMI I PLOTË/);
 assert.match(learning, /FLASHCARDS/);
 assert.match(learning, /Pyetje të krijuara vetëm nga ky mësim/);
 assert.match(learning, /data-flash-reveal/);
 assert.match(learning, /data-flash-known/);
 assert.match(learning, /data-flash-repeat/);
+assert.match(learning, /aria-expanded/);
+assert.match(learning, /aria-controls/);
+assert.match(learning, /role="progressbar"/);
+assert.match(learning, /aria-live="polite"/);
+assert.match(learning, /#emergencyList \.ck-list-button\.is-active\[data-id\]/);
+assert.match(learning, /String\(item\?\._id \|\| ''\) === String\(activeId\)/);
+assert.match(learning, /new Set\(stored\.known\.filter/);
+assert.match(learning, /sourceLabel/);
 assert.match(learning, /item\.primaryCareSteps/);
 assert.match(learning, /item\.secondaryCareSteps/);
 assert.match(learning, /item\.redFlags/);
@@ -73,7 +88,13 @@ assert.match(polishCss, /\.ck-sl-therapy-copy p\{[\s\S]*font-size:14px/);
 assert.match(polishCss, /\.ck-sl-step p\{[\s\S]*font-size:13\.5px/);
 assert.match(polishCss, /\.ck-sl-lesson-action\{[\s\S]*font-size:13\.5px/);
 assert.match(polishCss, /\.ck-sl-flash-answer p\{[\s\S]*font-size:14px/);
-assert.doesNotMatch(polishCss, /font-size:(?:8|9|9\.5|10)px/);
+assert.match(polishCss, /\.ck-sl-flash-controls>button,\.ck-sl-recall button\{[\s\S]*min-height:44px/);
+assert.match(polishCss, /:focus-visible/);
+assert.match(polishCss, /html\[data-theme="dark"\]/);
+assert.match(polishCss, /prefers-reduced-motion:reduce/);
+assert.match(polishCss, /\.ck-sl-flash-controls\.is-hidden-answer>span\{display:none\}/);
+assert.match(polishCss, /overflow-wrap:anywhere/);
+assert.doesNotMatch(polishCss, /font-size:(?:8|9|10)(?:\.\d+)?px/);
 
 assert.match(assist, /META_QUERY/);
 assert.match(assist, /sources\[\]\{title,url,publishedAt\}/);
