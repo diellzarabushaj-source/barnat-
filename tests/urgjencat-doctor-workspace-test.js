@@ -11,6 +11,7 @@ const html = read('urgjencat.html');
 const core = read('urgjencat.js');
 const learning = read('emergency-summary-learn.js');
 const learningCss = read('emergency-summary-learn.css');
+const polishCss = read('emergency-summary-learn-polish.css');
 const assist = read('emergency-directory-assist.js');
 const priority = read('emergency-directory-priority.js');
 const triageFilter = read('emergency-triage-filter.js');
@@ -23,6 +24,11 @@ assert.ok(
 assert.doesNotMatch(html, /emergency-doctor-mode\.(?:js|css)/);
 assert.doesNotMatch(html, /emergency-clinician-timeline\.(?:js|css)/);
 assert.match(html, /emergency-summary-learn\.css\?v=20260819-1/);
+assert.match(html, /emergency-summary-learn-polish\.css\?v=20260819-1/);
+assert.ok(
+  html.indexOf('tailadmin-professional.css') < html.indexOf('emergency-summary-learn-polish.css'),
+  'Emergency polish must load after shared TailAdmin styles.',
+);
 assert.match(html, /emergency-summary-learn\.js\?v=20260819-1/);
 assert.match(html, /Përmbledhje/);
 assert.match(html, /Mëso/);
@@ -61,6 +67,13 @@ assert.match(learningCss, /data-ck-learning-mode="learn"/);
 assert.match(learningCss, /ck-sl-therapy/);
 assert.match(learningCss, /ck-sl-flashcard/);
 assert.match(learningCss, /@media\(max-width:760px\)/);
+
+assert.match(polishCss, /font-family:var\(--mi-font\)!important/);
+assert.match(polishCss, /\.ck-sl-therapy-copy p\{[\s\S]*font-size:14px/);
+assert.match(polishCss, /\.ck-sl-step p\{[\s\S]*font-size:13\.5px/);
+assert.match(polishCss, /\.ck-sl-lesson-action\{[\s\S]*font-size:13\.5px/);
+assert.match(polishCss, /\.ck-sl-flash-answer p\{[\s\S]*font-size:14px/);
+assert.doesNotMatch(polishCss, /font-size:(?:8|9|9\.5|10)px/);
 
 assert.match(assist, /META_QUERY/);
 assert.match(assist, /sources\[\]\{title,url,publishedAt\}/);
