@@ -1,6 +1,8 @@
 # Phase 3 — Supabase-only runtime cutover
 
-Status: **ready for production merge**.
+Status: **merged to `main`; production deployment verification pending.**
+
+Main source cutover commit: `54d60a40992c046cf3545231eb6f55570fd3e5e0`.
 
 ## Runtime architecture
 
