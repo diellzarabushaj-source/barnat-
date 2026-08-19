@@ -56,11 +56,28 @@ const emergencyFixture = {
   version:'0.11',
 };
 
+const metadataFixture = [{
+  _id:emergencyFixture._id,
+  reviewStatus:'review',
+  lastReviewedAt:null,
+  reviewDueAt:null,
+  sourceCount:2,
+  sources:[
+    {title:'RCUK anaphylaxis guideline',url:'https://example.test/rcuk',publishedAt:'2025-10-27'},
+    {title:'Secondary guideline',url:'https://example.test/secondary',publishedAt:'2025-01-01'},
+  ],
+}];
+
 async function installFrozenSanityFixture(page) {
   await page.route('**/sanity-clinical-client.js*', route => route.fulfill({
     status:200,
     contentType:'application/javascript; charset=utf-8',
-    body:`window.MedIndexSanity = Object.freeze({projectId:'test',dataset:'test',studioUrl:'#',query:async()=>${JSON.stringify([emergencyFixture])}});`,
+    body:`window.MedIndexSanity = Object.freeze({
+      projectId:'test',dataset:'test',studioUrl:'#',
+      query:async groq => String(groq).includes('"sourceCount":count(sources)')
+        ? ${JSON.stringify(metadataFixture)}
+        : ${JSON.stringify([emergencyFixture])}
+    });`,
   }));
 }
 
@@ -71,6 +88,7 @@ async function openEmergency(page) {
   await page.goto('http://127.0.0.1:4173/urgjencat.html', {waitUntil:'domcontentloaded'});
   await page.waitForFunction(() => document.documentElement.classList.contains('auth-ready'));
   await expect(page.locator('#emergencyDetail .ck-sl-experience')).toBeVisible({timeout:10000});
+  await page.evaluate(() => document.fonts.ready);
   return pageErrors;
 }
 
@@ -91,7 +109,7 @@ function contrastRatio(foreground, background) {
 test.describe('Urgjencat Summary / Learn QA', () => {
   test.use({serviceWorkers:'block'});
 
-  test('desktop: dy modalitete, terapi precize, flashcards dhe dark mode', async ({page}) => {
+  test('desktop: dy modalitete, terapi precize, tipografi, flashcards dhe dark mode', async ({page}) => {
     await page.setViewportSize({width:1440,height:1000});
     const pageErrors = await openEmergency(page);
 
@@ -111,15 +129,29 @@ test.describe('Urgjencat Summary / Learn QA', () => {
     await expect(page.locator('.ck-sl-step')).toHaveCount(3);
     await expect(page.locator('.ck-review-button')).toHaveAttribute('title','2 burime klinike · Për verifikim');
 
+    await expect(page.locator('.ck-directory-source-count')).toHaveText('2 burime');
+    await expect(page.locator('.ck-directory-review')).toHaveText('Për verifikim');
+    await expect(page.locator('.ck-directory-tag.is-icd')).toHaveText('T78.2');
+
     const typeMetrics = await page.evaluate(() => ({
+      fontLoaded:document.fonts.check('14px Inter'),
+      pageFamily:getComputedStyle(document.body).fontFamily,
       family:getComputedStyle(document.querySelector('.ck-sl-therapy-copy p')).fontFamily,
       body:Number.parseFloat(getComputedStyle(document.querySelector('.ck-sl-therapy-copy p')).fontSize),
       step:Number.parseFloat(getComputedStyle(document.querySelector('.ck-sl-step p')).fontSize),
+      directoryTag:Number.parseFloat(getComputedStyle(document.querySelector('.ck-directory-tag')).fontSize),
+      directoryStatus:Number.parseFloat(getComputedStyle(document.querySelector('.ck-directory-review')).fontSize),
+      directoryTitle:Number.parseFloat(getComputedStyle(document.querySelector('.ck-list-button strong')).fontSize),
       modeHeight:document.querySelector('[data-ck-mode="summary"]').getBoundingClientRect().height,
     }));
-    expect(typeMetrics.family.toLowerCase()).toContain('inter');
+    expect(typeMetrics.fontLoaded).toBe(true);
+    expect(typeMetrics.pageFamily.toLowerCase()).toContain('inter');
+    expect(typeMetrics.family).toBe(typeMetrics.pageFamily);
     expect(typeMetrics.body).toBeGreaterThanOrEqual(13.5);
     expect(typeMetrics.step).toBeGreaterThanOrEqual(13);
+    expect(typeMetrics.directoryTag).toBeGreaterThanOrEqual(11);
+    expect(typeMetrics.directoryStatus).toBeGreaterThanOrEqual(11);
+    expect(typeMetrics.directoryTitle).toBeGreaterThanOrEqual(14);
     expect(typeMetrics.modeHeight).toBeGreaterThanOrEqual(44);
 
     await page.getByRole('button',{name:'Mëso'}).click();
@@ -169,6 +201,8 @@ test.describe('Urgjencat Summary / Learn QA', () => {
       return {
         overflow:document.documentElement.scrollWidth - document.documentElement.clientWidth,
         minFont:Math.min(...fonts),
+        directoryTag:Number.parseFloat(getComputedStyle(document.querySelector('.ck-directory-tag')).fontSize),
+        directoryStatus:Number.parseFloat(getComputedStyle(document.querySelector('.ck-directory-review')).fontSize),
         controls,
         rows:{recall:recall && {top:recall.top,bottom:recall.bottom},prev:prev && {top:prev.top,bottom:prev.bottom},next:next && {top:next.top,bottom:next.bottom}},
       };
@@ -176,6 +210,8 @@ test.describe('Urgjencat Summary / Learn QA', () => {
 
     expect(metrics.overflow).toBeLessThanOrEqual(0);
     expect(metrics.minFont).toBeGreaterThanOrEqual(11);
+    expect(metrics.directoryTag).toBeGreaterThanOrEqual(11);
+    expect(metrics.directoryStatus).toBeGreaterThanOrEqual(11);
     for (const control of metrics.controls) expect(control.rect.height, control.label).toBeGreaterThanOrEqual(44);
     expect(Math.abs(metrics.rows.prev.top - metrics.rows.next.top)).toBeLessThan(2);
     expect(metrics.rows.prev.top).toBeGreaterThanOrEqual(metrics.rows.recall.bottom - 1);
