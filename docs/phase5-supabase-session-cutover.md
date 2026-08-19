@@ -116,3 +116,7 @@ The remaining pre-merge gate is an actual Preview Google login on the final code
 - fixing unrelated pre-existing Mobile WebKit / CLS audit debt.
 
 Those belong to later migration/cleanup phases and must not be mixed into the authentication cutover.
+
+## Preview retry after quota recovery
+
+2026-08-19: Vercel accepted new `main` deployments again and reported them READY. This documentation-only update intentionally triggers exactly one fresh Phase 5 Preview after quota recovery. It does not modify application runtime, authentication logic, database logic, or encrypted personal-data handling.
