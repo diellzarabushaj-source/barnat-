@@ -8,12 +8,17 @@ const { execFileSync } = require('node:child_process');
 const ROOT = path.resolve(__dirname, '..');
 const read = file => fs.readFileSync(path.join(ROOT, file), 'utf8');
 
-for (const file of ['registry-dose-interaction-loader.js', 'scripts/patch-phase15-lazy-dose-runtimes.js']) {
+for (const file of [
+  'registry-dose-interaction-loader.js',
+  'registry-dosage-loader.js',
+  'scripts/patch-phase15-lazy-dose-runtimes.js',
+]) {
   execFileSync(process.execPath, ['--check', path.join(ROOT, file)], { stdio:'pipe' });
 }
 
 const index = read('index.html');
 const loader = read('registry-dose-interaction-loader.js');
+const dosageLoader = read('registry-dosage-loader.js');
 const patch = read('scripts/patch-phase15-lazy-dose-runtimes.js');
 const packageJson = JSON.parse(read('package.json'));
 
@@ -70,6 +75,17 @@ for (const asset of lazyScripts) {
   lastIndex = indexInManifest;
 }
 
+assert.match(
+  dosageLoader,
+  /DEFAULT_VISIBILITY_MIGRATION_KEY = 'medindex-registry-dosage-defaults-20260816-v1'/,
+  'Adult and pediatric dosage defaults must be versioned in committed source.',
+);
+assert.match(
+  dosageLoader,
+  /localStorage\.getItem\(DEFAULT_VISIBILITY_MIGRATION_KEY\) !== '1'[\s\S]*JSON\.stringify\(\{ adult:true, pediatric:true \}\)[\s\S]*localStorage\.setItem\(DEFAULT_VISIBILITY_MIGRATION_KEY, '1'\)/,
+  'The requested adult+pediatric default must run once, then preserve explicit user preferences.',
+);
+
 assert.match(patch, /INSULIN_STYLES/);
 assert.match(patch, /INSULIN_SCRIPTS/);
 assert.match(patch, /registry-insulin-row-bridge\.js/);
@@ -79,4 +95,4 @@ assert.match(packageJson.scripts['build:runtime'], /patch-phase15-lazy-dose-runt
 assert.match(packageJson.scripts.test, /registry-dose-lazy-runtime-test\.js/,
   'The lazy insulin startup regression must run in the main suite.');
 
-console.log('Phase 15 insulin modal runtimes are interaction-gated without changing visible registry controls or clinical execution order.');
+console.log('Phase 15 insulin modal runtimes are interaction-gated and dosage visibility defaults are canonical in source without changing user choices after migration.');
