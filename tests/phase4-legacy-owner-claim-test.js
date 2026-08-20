@@ -16,7 +16,7 @@ const safeOverridePath = path.join(
   '..',
   'supabase',
   'migrations',
-  '20260819193000_phase4_safe_owner_claim_mapping_only.sql'
+  '20260819173053_phase4_safe_owner_claim_mapping_only.sql'
 );
 
 const historicalSql = fs.readFileSync(historicalPath, 'utf8');

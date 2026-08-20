@@ -77,13 +77,84 @@
   // A brand-new Google account is registered but not yet approved. That is not a
   // failed login, so it must not read like one: state plainly what happened, and
   // stop offering a retry that would fail the same way.
-  function showPendingApproval(detail) {
+  function verificationPanel() {
+    let panel = document.getElementById('professionalVerificationPanel');
+    if (panel) return panel;
+    panel = document.createElement('form');
+    panel.id = 'professionalVerificationPanel';
+    panel.setAttribute('aria-label', 'Dokumenti i verifikimit profesional');
+    panel.innerHTML = `
+      <label for="professionalVerificationFile"><strong>Dokumenti profesional</strong><br><small>Licencë, kartelë profesionale ose vërtetim — PDF, JPEG ose PNG, maksimumi 3 MB.</small></label>
+      <input id="professionalVerificationFile" name="verificationFile" type="file" accept="application/pdf,image/jpeg,image/png" required>
+      <button class="login-submit" type="submit"><span>Dërgo dokumentin privatisht</span><span aria-hidden="true">→</span></button>
+      <p role="status" aria-live="polite"></p>`;
+    message.insertAdjacentElement('afterend', panel);
+    panel.addEventListener('submit', event => {
+      event.preventDefault();
+      void submitProfessionalVerification(panel);
+    });
+    return panel;
+  }
+
+  function fileDataUrl(file) {
+    return new Promise((resolve, reject) => {
+      const reader = new FileReader();
+      reader.onload = () => resolve(String(reader.result || ''));
+      reader.onerror = () => reject(new Error('Dokumenti nuk u lexua.'));
+      reader.readAsDataURL(file);
+    });
+  }
+
+  async function submitProfessionalVerification(panel) {
+    const input = panel.querySelector('input[type="file"]');
+    const button = panel.querySelector('button[type="submit"]');
+    const status = panel.querySelector('[role="status"]');
+    const file = input?.files?.[0];
+    if (!file) return;
+    if (file.size > 3 * 1024 * 1024) {
+      status.textContent = 'Dokumenti duhet të jetë më i vogël se 3 MB.';
+      return;
+    }
+    button.disabled = true;
+    input.disabled = true;
+    status.textContent = 'Dokumenti po verifikohet dhe po ruhet privatisht…';
+    try {
+      const base64 = await fileDataUrl(file);
+      const response = await timedFetch('/api/auth?scope=verification', {
+        method:'POST',
+        headers:{ 'Content-Type':'application/json', Accept:'application/json', 'X-CSRF-Token':csrfToken },
+        body:JSON.stringify({ filename:file.name, mimeType:file.type, base64 }),
+        cache:'no-store',
+        credentials:'same-origin',
+      }, 60000, 90000);
+      const payload = await response.json().catch(() => ({}));
+      if (!response.ok) throw new Error(payload.error || 'Dokumenti nuk u dërgua.');
+      panel.replaceChildren();
+      const completion = document.createElement('p');
+      completion.setAttribute('role', 'status');
+      completion.textContent = payload.message || 'Dokumenti u dërgua dhe pret shqyrtimin e administratorit.';
+      panel.append(completion);
+      setGoogleStatus('Dokumenti profesional është në shqyrtim.');
+      setMessage('Regjistrimi u përfundua. Do të kesh qasje vetëm pasi administratori ta aprovojë.', true);
+    } catch (error) {
+      button.disabled = false;
+      input.disabled = false;
+      status.textContent = error?.name === 'AbortError'
+        ? 'Dërgimi zgjati tepër. Provo përsëri.'
+        : error.message || 'Dokumenti nuk u dërgua.';
+    }
+  }
+
+  function showPendingApproval(detail, payload = {}) {
     pendingApproval = true;
     setBusy(false);
     googleButton.style.pointerEvents = 'none';
     googleButton.style.opacity = '.5';
-    setGoogleStatus('Llogaria pret aprovimin e administratorit.');
+    setGoogleStatus(payload.verificationRequired
+      ? 'Kërkohet dokumenti i verifikimit profesional.'
+      : 'Llogaria pret aprovimin e administratorit.');
     setMessage(detail || 'Llogaria jote u regjistrua dhe pret aprovimin e administratorit. Do të kesh qasje sapo të aprovohet.', true);
+    if (payload.verificationRequired) verificationPanel();
   }
 
   function clearLegacyOfflineLeases() {
@@ -182,8 +253,8 @@
           blockForConfiguration();
           return;
         }
-        if (payload.code === 'ACCOUNT_PENDING_APPROVAL') {
-          showPendingApproval(payload.error);
+        if (payload.code === 'ACCOUNT_PENDING_APPROVAL' || payload.code === 'PROFESSIONAL_VERIFICATION_REQUIRED') {
+          showPendingApproval(payload.error, payload);
           return;
         }
         if (payload.code === 'CSRF_INVALID') location.reload();

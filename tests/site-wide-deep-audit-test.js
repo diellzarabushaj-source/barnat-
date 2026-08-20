@@ -106,6 +106,15 @@ assert.doesNotMatch(JSON.stringify(scriptStyleHeader.headers), /immutable/, 'non
 const pkg = JSON.parse(read('package.json'));
 assert.ok(!pkg.scripts.postbuild, 'production build must not mutate Neon or external datasets');
 assert.match(pkg.scripts['build:runtime'] || '', /build-static-runtime/, 'static registry runtime generation must run explicitly');
-assert.match(pkg.scripts['sync:neon'] || '', /sync-neon-from-sheets/, 'manual Neon sync command must remain available');
+assert.match(pkg.scripts['sync:supabase'] || '', /sync-neon-from-sheets/, 'manual Supabase sync command must remain available');
+assert.ok(!pkg.scripts['sync:neon'], 'a Neon sync command must not remain after the Supabase-only cutover');
+
+const pediatricAudit = read('scripts/audit-pediatric-readiness.js');
+assert.doesNotMatch(pediatricAudit, /MEDINDEX_NEON_DATA_API_TOKEN|NEON_DATA_API_TOKEN/,
+  'manual pediatric audit must not require legacy Neon credentials');
+const hierarchyWorkflow = read('.github/workflows/icd-hierarchy-neon-sync.yml');
+assert.match(hierarchyWorkflow, /ICD hierarchy Supabase sync/);
+assert.doesNotMatch(hierarchyWorkflow, /MEDINDEX_NEON|NEON_DATA_API|VERCEL_OIDC_TOKEN/,
+  'scheduled hierarchy sync must be Supabase-only');
 
 console.log('Site-wide deep single-version audit passed.');

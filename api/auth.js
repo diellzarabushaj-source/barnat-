@@ -7,6 +7,7 @@ const SupabaseAuth = require('../lib/supabase-auth.js');
 const UserStore = require('../lib/user-store.js');
 const UserLibrary = require('../lib/user-library.js');
 const AdminUsers = require('../lib/admin-users.js');
+const ProfessionalVerification = require('../lib/professional-verification.js');
 const Phase4AuthBootstrap = require('../lib/phase4-auth-bootstrap-route.js');
 
 const attempts = new Map();
@@ -102,6 +103,20 @@ function resetRequested(req) {
   return req.method === 'GET' && queryValue(req, 'reset') === '1';
 }
 
+// single-version-release-endpoint-v1
+function releaseRequested(req) {
+  return req.method === 'GET' && queryValue(req, 'release') === '1';
+}
+
+function deploymentRelease() {
+  return String(
+    process.env.VERCEL_GIT_COMMIT_SHA
+    || process.env.GITHUB_SHA
+    || process.env.VERCEL_DEPLOYMENT_ID
+    || 'local-1.8.0'
+  ).trim().replace(/[^a-zA-Z0-9._-]/g, '').slice(0, 96);
+}
+
 function browserResetPage() {
   return `<!doctype html><html lang="sq"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><meta name="robots" content="noindex,nofollow,noarchive"><meta http-equiv="refresh" content="3;url=/login.html?reset-complete=1"><title>Po pastrohet MedIndex</title><style>*{box-sizing:border-box}html,body{min-height:100%;margin:0}body{display:grid;place-items:center;padding:20px;background:#eef4f2;color:#173238;font-family:Arial,sans-serif}.card{width:min(440px,100%);padding:28px;border:1px solid #d8e2df;border-radius:18px;background:#fff;box-shadow:0 20px 60px rgba(13,71,75,.18)}.mark{width:54px;height:54px;display:grid;place-items:center;margin-bottom:18px;border-radius:14px;background:#0d474b;color:#fff;font-size:24px;font-weight:800}.mark span{color:#efb660}h1{margin:0 0 10px;font-size:25px;line-height:1.2;color:#0d474b}p{margin:0 0 16px;color:#607277;line-height:1.55}.bar{height:8px;overflow:hidden;border-radius:999px;background:#e4efec}.bar::after{content:"";display:block;width:55%;height:100%;border-radius:inherit;background:#155f64;animation:move 1s ease-in-out infinite alternate}a{display:inline-block;margin-top:18px;color:#0d474b;font-weight:700}@keyframes move{to{transform:translateX(82%)}}@media(prefers-reduced-motion:reduce){.bar::after{animation:none;width:100%}}</style></head><body><main class="card"><div class="mark">M<span>+</span></div><h1>Po pastrohet cache-i i dëmtuar</h1><p>MedIndex po heq Service Worker-in, cache-in, sesionin dhe ruajtjen lokale të vjetër. Pas pak do të hapet hyrja e pastër.</p><div class="bar" aria-hidden="true"></div><a href="/login.html?reset-complete=1">Hape hyrjen tani</a></main></body></html>`;
 }
@@ -154,6 +169,10 @@ module.exports = async function handler(req, res) {
 
   if (Phase4AuthBootstrap.requested(req)) return Phase4AuthBootstrap.handle(req, res);
 
+  if (releaseRequested(req)) {
+    return res.status(200).json({ id:deploymentRelease(), strategy:'single-version-v1' });
+  }
+
   if (resetRequested(req)) {
     res.setHeader('Clear-Site-Data', '"cache", "cookies", "storage"');
     res.setHeader('Content-Type', 'text/html; charset=utf-8');
@@ -169,6 +188,11 @@ module.exports = async function handler(req, res) {
   if (AdminUsers.requested(req, queryValue)) {
     if (!sameOrigin(req)) return res.status(403).json({ ok:false, error:'Origjina e kërkesës nuk lejohet.' });
     return AdminUsers.handle(req, res, { parseBody:readBody });
+  }
+
+  if (ProfessionalVerification.requested(req, queryValue)) {
+    if (!sameOrigin(req)) return res.status(403).json({ ok:false, error:'Origjina e kërkesës nuk lejohet.' });
+    return ProfessionalVerification.handle(req, res, { queryValue });
   }
 
   const auth = await import('../lib/auth.mjs');
@@ -207,7 +231,7 @@ module.exports = async function handler(req, res) {
 
   if (req.method === 'DELETE') {
     if (!sameOrigin(req)) return res.status(403).json({ error:'Origjina e kërkesës nuk lejohet.' });
-    res.setHeader('Set-Cookie', [auth.expiredSessionCookie(), auth.expiredCsrfCookie()]);
+    res.setHeader('Set-Cookie', [auth.expiredSessionCookie(), auth.expiredEnrollmentCookie(), auth.expiredCsrfCookie()]);
     return res.status(200).json({ ok:true });
   }
 
@@ -257,12 +281,37 @@ module.exports = async function handler(req, res) {
       if (String(exchanged.user.email || '').toLowerCase() !== String(googleIdentity.email || '').toLowerCase()) {
         throw cutoverError('AUTH_IDENTITY_MISMATCH', 'Google dhe Supabase kthyen identitete të ndryshme.');
       }
-      canonicalIdentity = await SupabaseAuth.requireDoctor({
+      canonicalIdentity = await SupabaseAuth.identityFromRequest({
         headers:{ authorization:`Bearer ${exchanged.accessToken}` },
       });
       if (canonicalIdentity.id !== exchanged.user.id || canonicalIdentity.email !== String(googleIdentity.email || '').toLowerCase()) {
         throw cutoverError('PROFILE_IDENTITY_MISMATCH', 'Profili MedIndex nuk përputhet me identitetin Supabase.');
       }
+
+      if (canonicalIdentity.status === 'pending') {
+        attempts.delete(ip);
+        const verificationStatus = String(canonicalIdentity.profile?.verificationStatus || 'missing');
+        const verificationRequired = !['submitted', 'verified'].includes(verificationStatus);
+        const enrollmentToken = auth.createEnrollmentToken({
+          authUid:canonicalIdentity.id,
+          email:canonicalIdentity.email,
+        });
+        res.setHeader('Set-Cookie', [
+          auth.expiredSessionCookie(),
+          auth.enrollmentCookie(enrollmentToken),
+        ]);
+        return res.status(403).json({
+          ok:false,
+          code:verificationRequired ? 'PROFESSIONAL_VERIFICATION_REQUIRED' : 'ACCOUNT_PENDING_APPROVAL',
+          error:verificationRequired
+            ? 'Ngarko dokumentin profesional para se administratori ta shqyrtojë regjistrimin.'
+            : 'Dokumenti profesional u dërgua dhe llogaria pret aprovimin e administratorit.',
+          verificationRequired,
+          verificationStatus,
+          enrollmentExpiresIn:auth.ENROLLMENT_TTL_SECONDS,
+        });
+      }
+      SupabaseAuth.assertActive(canonicalIdentity);
 
       const legacyUserId = String(canonicalIdentity.profile?.legacyUserId || '').trim();
       if (canonicalIdentity.email === UserStore.OWNER_EMAIL && !legacyUserId) {
@@ -310,7 +359,7 @@ module.exports = async function handler(req, res) {
       provider,
     });
     const nextCsrf = auth.createCsrfToken();
-    res.setHeader('Set-Cookie', [auth.sessionCookie(sessionToken), auth.csrfCookie(nextCsrf)]);
+    res.setHeader('Set-Cookie', [auth.sessionCookie(sessionToken), auth.expiredEnrollmentCookie(), auth.csrfCookie(nextCsrf)]);
     res.setHeader('RateLimit-Remaining', String(MAX_ATTEMPTS));
     return res.status(200).json({
       ok:true,
@@ -354,6 +403,8 @@ module.exports._test = {
   queryValue,
   libraryRequested,
   resetRequested,
+  releaseRequested,
+  deploymentRelease,
   browserResetPage,
   sha256Hex,
   ownerFallbackUser,

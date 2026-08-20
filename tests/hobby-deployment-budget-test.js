@@ -27,7 +27,7 @@ assert.ok(functions.includes('api/gemini-prescription-secure.js'), 'secure Gemin
 assert.ok(fs.existsSync(path.join(root, 'lib/gemini-prescription.js')), 'Gemini core library is missing');
 
 const pkg = JSON.parse(fs.readFileSync(path.join(root, 'package.json'), 'utf8'));
-assert.equal(pkg.engines?.node, '22.x', 'Node runtime must be pinned to the audited LTS major');
+assert.equal(pkg.engines?.node, '24.x', 'Node runtime must match the audited Vercel production major');
 assert.match(pkg.packageManager || '', /^pnpm@10\./, 'pnpm major must be pinned for reproducible Vercel builds');
 
 console.log(`Hobby deployment budget passed: ${functions.length}/${HOBBY_FUNCTION_LIMIT} functions with ${HOBBY_FUNCTION_LIMIT - functions.length} slot(s) free.`);

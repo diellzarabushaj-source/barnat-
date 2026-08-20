@@ -1,4 +1,4 @@
-name: ICD hierarchy Neon sync
+name: ICD hierarchy Supabase sync
 
 on:
   push:
@@ -19,18 +19,15 @@ on:
 
 permissions:
   contents: read
-  id-token: write
 
 env:
   FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: 'true'
-  MEDINDEX_NEON_DATA_API_URL: ${{ secrets.MEDINDEX_NEON_DATA_API_URL }}
-  NEON_DATA_API_URL: ${{ secrets.NEON_DATA_API_URL }}
-  MEDINDEX_NEON_DATA_API_TOKEN: ${{ secrets.MEDINDEX_NEON_DATA_API_TOKEN }}
-  NEON_DATA_API_TOKEN: ${{ secrets.NEON_DATA_API_TOKEN }}
-  VERCEL_OIDC_TOKEN: ${{ secrets.VERCEL_OIDC_TOKEN }}
+  MEDINDEX_SUPABASE_URL: ${{ secrets.MEDINDEX_SUPABASE_URL }}
+  MEDINDEX_SUPABASE_PUBLISHABLE_KEY: ${{ secrets.MEDINDEX_SUPABASE_PUBLISHABLE_KEY }}
+  MEDINDEX_SUPABASE_SECRET_KEY: ${{ secrets.MEDINDEX_SUPABASE_SECRET_KEY }}
 
 concurrency:
-  group: icd-hierarchy-neon-sync
+  group: icd-hierarchy-supabase-sync
   cancel-in-progress: false
 
 jobs:
@@ -50,7 +47,7 @@ jobs:
       - name: Setup Node
         uses: actions/setup-node@v4
         with:
-          node-version: 22
+          node-version: 24
           cache: pnpm
 
       - name: Install dependencies

@@ -41,7 +41,7 @@ async function fetchWorkbook(url, label) {
       redirect: 'follow',
       cache: 'no-store',
       signal: controller.signal,
-      headers: { 'User-Agent':'MedIndex-Neon-Sync/1.0' },
+      headers: { 'User-Agent':'MedIndex-Supabase-Sync/1.0' },
     });
     if (!response.ok) throw new Error(`${label}: HTTP ${response.status}`);
     const buffer = Buffer.from(await response.arrayBuffer());
@@ -445,12 +445,12 @@ async function tableCount(table) {
 
 async function sync() {
   if (!process.env.VERCEL) {
-    console.log('MedIndex Neon sync skipped outside Vercel.');
+    console.log('MedIndex Supabase sync skipped outside Vercel.');
     return;
   }
   if (process.env.VERCEL_ENV && process.env.VERCEL_ENV !== 'production') {
     await tableCount('lab_tests');
-    console.log('MedIndex Neon preview connection verified; data sync runs only in production.');
+    console.log('MedIndex Supabase preview connection verified; data sync runs only in production.');
     return;
   }
 
@@ -495,10 +495,10 @@ async function sync() {
       icdCodes:await tableCount('icd_codes'),
       labTests:await tableCount('lab_tests'),
     };
-    console.log(`MedIndex Neon sync completed: ${JSON.stringify({ totals, counts })}`);
+    console.log(`MedIndex Supabase sync completed: ${JSON.stringify({ totals, counts })}`);
   } catch (error) {
     await finishSyncRun(syncRunId, 'failed', totals, error).catch(() => {});
-    console.warn(`MedIndex Neon sync limited: ${error.message}`);
+    console.warn(`MedIndex Supabase sync limited: ${error.message}`);
   }
 }
 

@@ -8,6 +8,7 @@
 const assert = require('node:assert/strict');
 const fs = require('node:fs');
 const path = require('node:path');
+const { pathToFileURL } = require('node:url');
 
 const ROOT = path.resolve(__dirname, '..');
 const dataApiPath = require.resolve(path.join(ROOT, 'lib/neon-data-api.js'));
@@ -179,7 +180,7 @@ process.env.SESSION_SECRET = process.env.SESSION_SECRET
   || 'test-session-secret-qe-eshte-mjaftueshem-i-gjate-32';
 
 async function main() {
-  const auth = await import(path.join(ROOT, 'lib/auth.mjs'));
+  const auth = await import(pathToFileURL(path.join(ROOT, 'lib/auth.mjs')).href);
   const sessionCookie = auth.createSessionToken({ email:'diellzarabushaj@gmail.com', role:'editor' });
   assert.equal(auth.verifySessionToken(sessionCookie), true);
 

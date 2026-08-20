@@ -12,7 +12,7 @@ const indexFile = 'index.html';
 const ASSET_VERSION = '20260812-population-column-1';
 
 function read(relative) {
-  return fs.readFileSync(path.join(root, relative), 'utf8');
+  return fs.readFileSync(path.join(root, relative), 'utf8').replace(/\r\n?/g, '\n');
 }
 
 function write(relative, source) {

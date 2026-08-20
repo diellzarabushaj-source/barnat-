@@ -3,14 +3,13 @@
 /* Faza 1 — auditi i gatishmërisë së kalkulatorit pediatrik për barnat 1–300.
  *
  * Klasifikuesi te `lib/pediatric-readiness.js` është rregulli; ky skedar është
- * numëruesi. Lexon fushat `pediatric_*` nga Neon dhe nxjerr raportin: sa barna
+ * numëruesi. Lexon fushat `pediatric_*` nga Supabase dhe nxjerr raportin: sa barna
  * llogariten sot, sa mbeten tekst, dhe — pjesa më e dobishme — cila fushë
  * mungon më shpesh, që Master Sheet-i të plotësohet aty ku vlen më së shumti.
  *
- * Xhirohet me dorë, jo në ndërtim dhe jo në CI: kërkon kredencialet e Neon-it
- * dhe rregulli vetë mbrohet nga testet pediatrike që nuk prekin rrjetin.
+ * Xhirohet me dorë, jo në ndërtim dhe jo në CI. Përdor konfigurimin publik
+ * read-only të Supabase; rregulli vetë mbrohet nga testet që nuk prekin rrjetin.
  *
- *   MEDINDEX_NEON_DATA_API_TOKEN=... node scripts/audit-pediatric-readiness.js
  *   node scripts/audit-pediatric-readiness.js --from 1 --to 300 --json raport.json
  *
  * Lexon vetëm; nuk shkruan asnjë rresht te baza.
@@ -19,7 +18,7 @@
 const fs = require('node:fs');
 const path = require('node:path');
 
-const { neonRequest, dataOf, configuredToken, maximumReadRows } = require('../lib/neon-data-api.js');
+const { neonRequest, dataOf, maximumReadRows } = require('../lib/neon-data-api.js');
 const { STATUS, classify, summarize } = require('../lib/pediatric-readiness.js');
 
 const PEDIATRIC_FIELDS = [
@@ -65,7 +64,7 @@ async function fetchRange(from, to) {
       + `&order=registry_number.asc&limit=${pageSize}`;
     const { data } = await neonRequest(query, { timeoutMs:30000, label:'Pediatric readiness audit' });
     const page = dataOf(data);
-    if (!Array.isArray(page)) throw new Error('Neon ktheu një përgjigje që nuk është listë rreshtash.');
+    if (!Array.isArray(page)) throw new Error('Supabase ktheu një përgjigje që nuk është listë rreshtash.');
     rows.push(...page);
     if (page.length < end - start + 1) break;
   }
@@ -79,15 +78,6 @@ function percent(count, total) {
 async function main() {
   const args = parseArgs(process.argv.slice(2));
 
-  if (!configuredToken()) {
-    console.error(
-      'Mungon kredenciali i Neon-it. Cakto MEDINDEX_NEON_DATA_API_TOKEN (ose NEON_DATA_API_TOKEN)\n'
-      + 'dhe xhiroje sërish. Ky audit lexon të dhëna reale pacientësh-bari, prandaj nuk ka rrugë pa të.',
-    );
-    process.exitCode = 1;
-    return;
-  }
-
   const rows = await fetchRange(args.from, args.to);
   const audit = summarize(rows);
   const expected = args.to - args.from + 1;
@@ -95,7 +85,7 @@ async function main() {
   console.log(`\nAudit i gatishmërisë pediatrike — barnat ${args.from}–${args.to}`);
   console.log(`Rreshta të gjetur: ${audit.total} nga ${expected} të pritur.`);
   if (audit.total < expected) {
-    console.log(`  ${expected - audit.total} numra regjistri mungojnë te Neon-i në këtë diapazon.`);
+    console.log(`  ${expected - audit.total} numra regjistri mungojnë te Supabase në këtë diapazon.`);
   }
 
   console.log('\nGatishmëria:');
