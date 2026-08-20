@@ -86,13 +86,28 @@ assert.match(cellPreview, /input,select,textarea,\.drug-actions-trigger/, 'cell 
 assert.doesNotMatch(cellPreview, /input,select,textarea,button,\.drug-actions-trigger/, 'cell preview must not delete dosage button content');
 assert.match(cellPreview, /\['dosage-adult', 'dosage-pediatric'\]\.includes\(key\)/, 'adult and pediatric dosage cells must remain previewable');
 
-/* The Tailwind-style column picker must size itself and clamp to every viewport. */
-assert.match(columnPicker, /column-picker-tailwind-20260820-clean-columns-2/);
+/* The Tailwind-style column picker must size itself, clamp to every viewport and own persistent desktop defaults. */
+assert.match(columnPicker, /column-picker-tailwind-20260820-clean-columns-3/);
 assert.match(columnPicker, /function resetPanelPosition\(root\)/);
 assert.match(columnPicker, /function keepPanelInsideViewport\(root\)/);
 assert.match(columnPicker, /setProperty\('left',[\s\S]*'important'\)/);
 assert.match(columnPicker, /setProperty\('right',[\s\S]*'important'\)/);
 assert.match(columnPicker, /optionText === 'verifikimi' \|\| optionText === 'redakto'/, 'technical verification/editor columns must stay out of the user picker');
+assert.match(columnPicker, /medindex\.registry\.desktop-columns\.v20260820/, 'desktop lightweight column choices must persist');
+assert.match(columnPicker, /medindex\.registry\.columns\.v20260820/, 'lightweight and full-registry preferences must share one durable contract');
+assert.match(columnPicker, /persistLiteColumnPreference/, 'explicit user column changes must be persisted');
+assert.doesNotMatch(columnPicker, /fetch\s*\(|\/api\//, 'column preference ownership must stay local and zero-network');
+const defaultColumnBlock = columnPicker.match(/const DEFAULT_LITE_COLUMNS = Object\.freeze\(\[[\s\S]*?\]\);/)?.[0] || '';
+assert(defaultColumnBlock, 'requested desktop default-column block is missing');
+for (const key of ['number','active-substance','trade-name','drug-class','use','strength','form','population']) {
+  assert(defaultColumnBlock.includes(`'${key}'`), `default desktop columns are missing ${key}`);
+}
+assert.doesNotMatch(defaultColumnBlock, /'atc'|'status'|'pdid'|'protocol'/, 'optional columns must not become active until the user chooses them');
+assert.ok(
+  defaultColumnBlock.indexOf("'number'") < defaultColumnBlock.indexOf("'active-substance'")
+    && defaultColumnBlock.indexOf("'active-substance'") < defaultColumnBlock.indexOf("'trade-name'"),
+  'default data-column order must begin Nr → Substanca aktive → Emri tregtar',
+);
 assert.match(columnPickerCss, /#colPanel\.col-panel \*/);
 assert.match(columnPickerCss, /box-sizing: border-box/);
 assert.match(columnPickerCss, /position: fixed !important/);
@@ -137,4 +152,4 @@ assert.match(workflow, /column-picker-tailwind\.spec\.js/, 'browser workflow mus
   /context\.setOffline\(true\)/,
 ].forEach(pattern => assert.match(browserSpec, pattern, `mobile browser audit missing ${pattern}`));
 
-console.log('Mobile, tablet, touch, safe-area, shared warm-set, immutable drug-name, clean Tailwind population column picker, dosage preview and orientation audit passed.');
+console.log('Mobile, tablet, touch, safe-area, shared warm-set, persistent requested desktop column defaults, immutable drug-name, clean Tailwind population column picker, dosage preview and orientation audit passed.');
