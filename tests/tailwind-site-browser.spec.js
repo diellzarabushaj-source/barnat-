@@ -1,4 +1,8 @@
 const { test, expect } = require('@playwright/test');
+const os = require('node:os');
+const path = require('node:path');
+
+const OUTPUT = os.tmpdir();
 
 test.use({ serviceWorkers:'block' });
 test.setTimeout(120000);
@@ -41,7 +45,7 @@ async function mockPhase5AuthenticatedSession(page) {
         rollbackSession:true,
         user:{
           email:'diellzarabushaj@gmail.com',
-          role:'editor',
+          role:'doctor',
           name:'Diellza Rabushaj',
         },
       }),
@@ -62,13 +66,19 @@ async function auditViewport(page, label, { requireControls = false } = {}) {
           && computed.visibility !== 'hidden'
           && computed.opacity !== '0';
       })
-      .slice(0, 40)
       .map(node => ({
         tag:node.tagName,
         id:node.id || '',
+        className:typeof node.className === 'string' ? node.className.trim().slice(0, 120) : '',
+        label:(node.getAttribute('aria-label') || node.textContent || '').trim().replace(/\s+/g, ' ').slice(0, 80),
         href:node.getAttribute('href') || '',
         width:node.getBoundingClientRect().width,
-        height:node.getBoundingClientRect().height,
+        height:Math.max(
+          node.getBoundingClientRect().height,
+          node.matches('input,select,textarea')
+            ? (node.closest('label')?.getBoundingClientRect().height || 0)
+            : 0,
+        ),
       }));
 
     return {
@@ -93,7 +103,8 @@ async function auditViewport(page, label, { requireControls = false } = {}) {
   }
 
   for (const control of audit.controls) {
-    expect(control.height, `${label}: ${control.tag}#${control.id} is below the compact 28px floor`).toBeGreaterThanOrEqual(28);
+    const identity = `${control.tag}#${control.id}.${control.className} "${control.label}"`;
+    expect(control.height, `${label}: ${identity} is below the compact 28px floor`).toBeGreaterThanOrEqual(28);
   }
 
   return audit;
@@ -108,6 +119,9 @@ for (const viewport of viewports) {
       await page.goto(`http://127.0.0.1:4173/${file}`, { waitUntil:'domcontentloaded' });
       await expect(page.locator('html')).toHaveClass(/auth-ready/, { timeout:20000 });
       await expect(page.locator('.mi-app-shell')).toBeVisible({ timeout:20000 });
+      if (file === 'index.html') {
+        await page.waitForTimeout(1500);
+      }
       await auditViewport(page, `${file} / ${viewport.name}`, { requireControls:true });
 
       if (file === 'icd.html') {
@@ -121,7 +135,7 @@ for (const viewport of viewports) {
     }
 
     await page.screenshot({
-      path:`/tmp/tailwind-clinical-${viewport.name}.png`,
+      path:path.join(OUTPUT, `tailwind-clinical-${viewport.name}.png`),
       fullPage:false,
     });
   });
@@ -138,7 +152,7 @@ for (const viewport of viewports) {
     }
 
     await page.screenshot({
-      path:`/tmp/tailwind-public-${viewport.name}.png`,
+      path:path.join(OUTPUT, `tailwind-public-${viewport.name}.png`),
       fullPage:true,
     });
   });

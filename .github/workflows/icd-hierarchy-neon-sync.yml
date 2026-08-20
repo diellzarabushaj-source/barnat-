@@ -58,5 +58,10 @@ jobs:
           node tests/icd-public-source-test.js
           node tests/icd-hierarchy-neon-sync-test.js
 
+      - name: Supabase write credentials unavailable
+        if: ${{ env.MEDINDEX_SUPABASE_SECRET_KEY == '' }}
+        run: echo "::notice::ICD hierarchy validation passed; sync skipped because MEDINDEX_SUPABASE_SECRET_KEY is not configured."
+
       - name: Import and atomically activate hierarchy revision
+        if: ${{ env.MEDINDEX_SUPABASE_SECRET_KEY != '' }}
         run: node scripts/sync-icd-hierarchy-to-neon.js
