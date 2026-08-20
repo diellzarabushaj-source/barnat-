@@ -4,6 +4,7 @@ const crypto = require('node:crypto');
 const { verifyGoogleIdToken } = require('../lib/google-id-token.js');
 const { exchangeGoogleIdToken, SupabaseBootstrapError } = require('../lib/supabase-auth-bootstrap.js');
 const SupabaseAuth = require('../lib/supabase-auth.js');
+const SupabasePassword = require('../lib/supabase-password-auth.js');
 const UserStore = require('../lib/user-store.js');
 const UserLibrary = require('../lib/user-library.js');
 const AdminUsers = require('../lib/admin-users.js');
@@ -164,6 +165,56 @@ function cutoverError(code, message, status = 409) {
   return Object.assign(new Error(message), { code, status });
 }
 
+// A pending account never receives a session. It receives a short-lived
+// enrollment proof instead, which is only good for uploading the professional
+// document — and the answer says which of the two things it still owes: the
+// document, or the administrator's decision.
+async function pendingEnrollment(res, canonicalIdentity) {
+  const auth = await import('../lib/auth.mjs');
+  const verificationStatus = String(canonicalIdentity.profile?.verificationStatus || 'missing');
+  const verificationRequired = !['submitted', 'verified'].includes(verificationStatus);
+  const enrollmentToken = auth.createEnrollmentToken({
+    authUid:canonicalIdentity.id,
+    email:canonicalIdentity.email,
+  });
+  res.setHeader('Set-Cookie', [auth.expiredSessionCookie(), auth.enrollmentCookie(enrollmentToken)]);
+  return res.status(403).json({
+    ok:false,
+    code:verificationRequired ? 'PROFESSIONAL_VERIFICATION_REQUIRED' : 'ACCOUNT_PENDING_APPROVAL',
+    error:verificationRequired
+      ? 'Ngarko dokumentin profesional para se administratori ta shqyrtojë regjistrimin.'
+      : 'Dokumenti profesional u dërgua dhe llogaria pret aprovimin e administratorit.',
+    verificationRequired,
+    verificationStatus,
+    enrollmentExpiresIn:auth.ENROLLMENT_TTL_SECONDS,
+  });
+}
+
+// Shared by both Supabase doors. Approved profiles authorize themselves: a
+// doctor gets a private library and an admin keeps shared clinical write access.
+// New accounts have no legacy bridge, so their private storage UUID is their
+// Supabase Auth UUID.
+async function approvedSupabaseUser(canonicalIdentity, hints = {}) {
+  SupabaseAuth.assertActive(canonicalIdentity);
+
+  const legacyUserId = String(canonicalIdentity.profile?.legacyUserId || '').trim();
+  if (canonicalIdentity.email === UserStore.OWNER_EMAIL && !legacyUserId) {
+    throw cutoverError('LEGACY_OWNER_MAPPING_MISSING', 'Lidhja e sigurt me të dhënat ekzistuese të pronarit mungon.');
+  }
+  const user = await ensureLoginUser({
+    id:legacyUserId || canonicalIdentity.id,
+    sub:hints.sub,
+    email:canonicalIdentity.email,
+    name:hints.name,
+    picture:hints.picture,
+    authorizedRole:canonicalIdentity.role,
+  });
+  if (legacyUserId && String(user.id) !== legacyUserId) {
+    throw cutoverError('LEGACY_OWNER_MAPPING_MISMATCH', 'Identiteti Supabase nuk përputhet me pronarin e të dhënave ekzistuese.');
+  }
+  return user;
+}
+
 module.exports = async function handler(req, res) {
   securityHeaders(res);
 
@@ -243,10 +294,13 @@ module.exports = async function handler(req, res) {
 
   const contentType = String(req.headers['content-type'] || '').toLowerCase();
   if (!contentType.startsWith('application/json')) return res.status(415).json({ error:'Kërkohet Content-Type application/json.' });
-  if (!auth.sessionConfigurationEnabled() || (!auth.googleConfigurationEnabled() && !auth.accessConfigurationEnabled())) {
+  const anyDoorConfigured = auth.googleConfigurationEnabled()
+    || SupabasePassword.configurationEnabled()
+    || auth.accessConfigurationEnabled();
+  if (!auth.sessionConfigurationEnabled() || !anyDoorConfigured) {
     return res.status(503).json({
       code:'AUTH_NOT_CONFIGURED',
-      error:'Konfigurimi privat i hyrjes mungon në server. Vendos SESSION_SECRET dhe GOOGLE_CLIENT_ID; password-i rezervë mbetet opsional.',
+      error:'Konfigurimi privat i hyrjes mungon në server. Vendos SESSION_SECRET dhe së paku një hyrje: GOOGLE_CLIENT_ID ose çelësin publik të Supabase.',
     });
   }
 
@@ -265,6 +319,33 @@ module.exports = async function handler(req, res) {
       state.count += 1;
       setRateLimitHeaders(res, state);
       return res.status(403).json({ code:'CSRF_INVALID', error:'Kontrolli i sigurisë së hyrjes skadoi. Rifresko faqen.' });
+    }
+
+    // Registration with an email address. It creates nothing but a pending
+    // Supabase account: the professional document and the admin's approval are
+    // still ahead of it, exactly as with Google.
+    if (String(body.action || '').trim() === 'signup') {
+      const created = await SupabasePassword.signUp(body);
+      attempts.delete(ip);
+      return res.status(201).json({
+        ok:true,
+        code:created.confirmationRequired ? 'EMAIL_CONFIRMATION_SENT' : 'SIGNUP_COMPLETE',
+        email:created.email,
+        confirmationRequired:created.confirmationRequired,
+        message:created.confirmationRequired
+          ? 'Nëse ky email është i lirë, të dërguam një mesazh konfirmimi. Hape atë dhe pastaj hyr për të ngarkuar dokumentin profesional.'
+          : 'Llogaria u krijua. Hyr për të ngarkuar dokumentin profesional.',
+      });
+    }
+
+    if (String(body.action || '').trim() === 'reset') {
+      await SupabasePassword.requestPasswordReset(body);
+      attempts.delete(ip);
+      return res.status(200).json({
+        ok:true,
+        code:'PASSWORD_RESET_SENT',
+        message:'Nëse ky email ka llogari, të dërguam një lidhje për ta ndryshuar fjalëkalimin.',
+      });
     }
 
     let user;
@@ -290,48 +371,36 @@ module.exports = async function handler(req, res) {
 
       if (canonicalIdentity.status === 'pending') {
         attempts.delete(ip);
-        const verificationStatus = String(canonicalIdentity.profile?.verificationStatus || 'missing');
-        const verificationRequired = !['submitted', 'verified'].includes(verificationStatus);
-        const enrollmentToken = auth.createEnrollmentToken({
-          authUid:canonicalIdentity.id,
-          email:canonicalIdentity.email,
-        });
-        res.setHeader('Set-Cookie', [
-          auth.expiredSessionCookie(),
-          auth.enrollmentCookie(enrollmentToken),
-        ]);
-        return res.status(403).json({
-          ok:false,
-          code:verificationRequired ? 'PROFESSIONAL_VERIFICATION_REQUIRED' : 'ACCOUNT_PENDING_APPROVAL',
-          error:verificationRequired
-            ? 'Ngarko dokumentin profesional para se administratori ta shqyrtojë regjistrimin.'
-            : 'Dokumenti profesional u dërgua dhe llogaria pret aprovimin e administratorit.',
-          verificationRequired,
-          verificationStatus,
-          enrollmentExpiresIn:auth.ENROLLMENT_TTL_SECONDS,
-        });
+        return pendingEnrollment(res, canonicalIdentity);
       }
-      SupabaseAuth.assertActive(canonicalIdentity);
-
-      const legacyUserId = String(canonicalIdentity.profile?.legacyUserId || '').trim();
-      if (canonicalIdentity.email === UserStore.OWNER_EMAIL && !legacyUserId) {
-        throw cutoverError('LEGACY_OWNER_MAPPING_MISSING', 'Lidhja e sigurt me të dhënat ekzistuese të pronarit mungon.');
-      }
-      // Approved profiles authorize themselves: a doctor gets a private library and
-      // an admin keeps shared clinical write access. New accounts have no legacy
-      // bridge, so their private storage UUID is their Supabase Auth UUID.
-      user = await ensureLoginUser({
-        id:legacyUserId || canonicalIdentity.id,
+      user = await approvedSupabaseUser(canonicalIdentity, {
         sub:googleIdentity.sub,
-        email:canonicalIdentity.email,
         name:googleIdentity.name,
         picture:googleIdentity.picture,
-        authorizedRole:canonicalIdentity.role,
       });
-      if (legacyUserId && String(user.id) !== legacyUserId) {
-        throw cutoverError('LEGACY_OWNER_MAPPING_MISMATCH', 'Identiteti Supabase nuk përputhet me pronarin e të dhënave ekzistuese.');
-      }
       provider = 'supabase-google';
+    } else if (String(body.email || '').trim() && String(body.password || '')) {
+      // The second Supabase door. Once the access token is in hand this path is
+      // identical to Google's: the same profile lookup, the same pending gate,
+      // the same approval requirement. Only the proof of identity differs.
+      const signedIn = await SupabasePassword.signIn(body);
+      canonicalIdentity = await SupabaseAuth.identityFromRequest({
+        headers:{ authorization:`Bearer ${signedIn.accessToken}` },
+      });
+      if (canonicalIdentity.id !== signedIn.userId || canonicalIdentity.email !== signedIn.email) {
+        throw cutoverError('PROFILE_IDENTITY_MISMATCH', 'Profili MedIndex nuk përputhet me identitetin Supabase.');
+      }
+
+      if (canonicalIdentity.status === 'pending') {
+        attempts.delete(ip);
+        return pendingEnrollment(res, canonicalIdentity);
+      }
+      user = await approvedSupabaseUser(canonicalIdentity, {
+        sub:`supabase:${canonicalIdentity.id}`,
+        name:signedIn.fullName || canonicalIdentity.profile?.fullName || '',
+        picture:canonicalIdentity.profile?.avatarUrl || '',
+      });
+      provider = 'supabase-password';
     } else {
       if (!auth.accessConfigurationEnabled()) return res.status(403).json({ error:'Hyrja me password rezervë nuk është aktive.' });
       const password = String(body.password || '').slice(0, MAX_PASSWORD_CHARS);
@@ -365,10 +434,10 @@ module.exports = async function handler(req, res) {
       ok:true,
       expiresIn:auth.SESSION_TTL_SECONDS,
       hardened:true,
-      provider:provider === 'supabase-google' ? 'google' : 'password',
+      provider:{ 'supabase-google':'google', 'supabase-password':'email' }[provider] || 'password',
       sessionVersion:auth.SESSION_VERSION,
-      identityContract:provider === 'supabase-google' ? 'supabase-v1' : 'legacy-password-rollback',
-      supabaseAuthenticated:provider === 'supabase-google',
+      identityContract:auth.SUPABASE_PROVIDERS.includes(provider) ? 'supabase-v1' : 'legacy-password-rollback',
+      supabaseAuthenticated:auth.SUPABASE_PROVIDERS.includes(provider),
       rollbackSession:provider === 'legacy-password',
       user:{ email:user.email, role:user.role, name:user.name },
       authUser:canonicalIdentity ? {
@@ -383,6 +452,18 @@ module.exports = async function handler(req, res) {
     if (error?.code === 'EMAIL_NOT_ALLOWED' || error?.code === 'USER_DISABLED') return res.status(403).json({ code:error.code, error:error.message });
     if (error?.code === 'GOOGLE_KEYS_UNAVAILABLE') return res.status(503).json({ code:error.code, error:'Google nuk u përgjigj për verifikim. Provo përsëri.' });
     if (/^GOOGLE_/.test(String(error?.code || ''))) return res.status(401).json({ code:error.code, error:error.message });
+    if (error instanceof SupabasePassword.SupabasePasswordError) {
+      // A wrong password has to cost the same as a wrong access code, or the
+      // per-IP limiter never trips and the email door is the soft one.
+      if (error.code === 'INVALID_CREDENTIALS') {
+        const state = activeAttemptState(ip);
+        state.count += 1;
+        attempts.set(ip, state);
+        setRateLimitHeaders(res, state);
+        await new Promise(resolve => setTimeout(resolve, 250));
+      }
+      return res.status(Number(error.status) || 400).json({ code:error.code, error:error.message });
+    }
     if (error instanceof SupabaseBootstrapError || error instanceof SupabaseAuth.SupabaseAuthError) {
       return res.status(Number(error.status) || 400).json({ code:error.code, error:error.message });
     }
