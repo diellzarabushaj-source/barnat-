@@ -19,9 +19,9 @@ assert.match(index, /registry-desktop-lite\.js\?v=20260812-1/, 'index.html: Phas
 assert.match(index, /registry-runtime-loader\.js\?v=20260813-10/, 'index.html: current single-owner mobile-and-desktop-aware registry loader is missing');
 assert.ok(index.indexOf('registry-mobile-lite.js') < index.indexOf('registry-desktop-lite.js'), 'mobile lightweight client must register before desktop lightweight startup');
 assert.ok(index.indexOf('registry-desktop-lite.js') < index.indexOf('registry-runtime-loader.js'), 'desktop lightweight client must register before the full loader');
-assert.match(index, /registry-unified-table\.js\?v=20260812-population-column-1/, 'index.html: population-aware unified table controller is missing');
-assert.match(index, /registry-unified-table\.css\?v=20260812-population-column-1/, 'index.html: population-aware unified table stylesheet is missing');
-assert.match(index, /registry-dose-clinical-row-markers\.js\?v=20260812-population-column-1/, 'index.html: approved-population row marker runtime is missing');
+assert.match(index, /registry-unified-table\.js\?v=20260820-registry-columns-v2/, 'index.html: population-aware unified table controller is missing');
+assert.match(index, /registry-unified-table\.css\?v=20260820-registry-columns-v2/, 'index.html: population-aware unified table stylesheet is missing');
+assert.match(index, /registry-dose-clinical-row-markers\.js\?v=20260820-registry-columns-v2/, 'index.html: approved-population row marker runtime is missing');
 assert.match(index, /registry-full-text-expansion\.css\?v=20260805-2/, 'index.html: full-row text reveal stylesheet is missing');
 assert.doesNotMatch(index, /(?:registry-table-integrity|registry-clinical-view|registry-tailgrids-refinement|registry-columns-filters|registry-table-final)\.(?:js|css)/, 'index.html: a legacy table controller is still loaded');
 assert.doesNotMatch(index, /<script src="app-performance\.js"/, 'index.html: heavy registry bootstrap must not be parser ordered');
