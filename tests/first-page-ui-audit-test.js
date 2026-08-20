@@ -14,7 +14,7 @@ const headerSource = read('app-parts/part-02.txt');
 const rowSource = read('app-parts/part-03.txt') + read('app-parts/part-04.txt');
 
 assert.match(html, /rel="preload" href="first-page-clinical\.css\?v=20260731-1" as="style"/);
-assert.match(html, /first-page-style-loader\.js\?v=20260731-1/);
+assert.match(html, /first-page-style-loader\.js\?v=20260820-2/);
 assert.match(html, /first-page-clinical\.js\?v=20260731-1/);
 const staticStylesheets = [...html.matchAll(/<link[^>]+rel="stylesheet"[^>]+href="([^"]+)"/g)].map(match => match[1]);
 const professionalCssIndex = staticStylesheets.findIndex(href => /tailadmin-professional\.css/.test(href));
@@ -28,6 +28,7 @@ assert.ok(
   html.indexOf('form-picker-clinical.js') < html.indexOf('first-page-clinical.js'),
   'The first-page runtime must enhance the completed pharmaceutical form picker.'
 );
+assert.match(loader, /VERSION = 'first-page-style-loader-20260820-2'/, 'First-page style owner must expose its cache-safe release.');
 assert.match(loader, /PHONE_QUERY = '\(max-width:767px\)'/, 'First-page stylesheet loader must have an explicit phone cascade contract.');
 assert.match(loader, /data-registry-mobile-critical-css/, 'Phone first-page CSS must anchor before the mobile registry cascade.');
 assert.match(loader, /anchor\.before\(link\)/, 'Phone first-page CSS must be inserted before mobile-lite layers, not appended after them.');
@@ -36,6 +37,7 @@ assert.match(loader, /phone\?\.addEventListener\?\.\('change', ensure\)/, 'Style
 assert.match(loader, /first-page-clinical\.css\?v=20260731-1/);
 assert.match(loader, /registry-frozen-columns\.css\?v=20260820-1/, 'The final frozen-column cascade must be loaded by the first-page style owner.');
 assert.ok(loader.indexOf('place(clinical)') < loader.indexOf('place(frozen)'), 'Frozen-column CSS must follow first-page clinical CSS in the cascade.');
+assert.match(loader, /dataset\.firstPageStyleLoader = VERSION/, 'The active first-page style release must be observable in browser audits.');
 assert.match(loader, /medindex:tailadmin-ready/);
 
 for (const marker of [
