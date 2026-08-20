@@ -11,8 +11,8 @@ const css = read('registry-unified-table.css');
 const rowExpand = read('registry-row-expand.js');
 const dosage = read('registry-dosage-columns-v3.js');
 
-assert.match(index, /registry-unified-table\.css\?v=20260812-population-column-1/);
-assert.match(index, /registry-unified-table\.js\?v=20260812-population-column-1/);
+assert.match(index, /registry-unified-table\.css\?v=20260820-registry-columns-v2/);
+assert.match(index, /registry-unified-table\.js\?v=20260820-registry-columns-v2/);
 assert.ok(
   index.indexOf('registry-dosage-loader.js') < index.indexOf('registry-unified-table.js'),
   'The unified controller must reconcile dosage columns after the idle dosage loader is wired.'
@@ -31,6 +31,7 @@ assert.match(script, /registryNumber/);
 assert.match(script, /MEDINDEX_REGISTRY_TABLE_AUDIT/);
 assert.match(script, /dosage-adult/);
 assert.match(script, /clinical-status/);
+assert.match(script, /--registry-frozen-active-left/);
 assert.match(script, /table\.querySelectorAll\(':scope > colgroup'\)\.forEach\(group => group\.remove\(\)\)/);
 assert.match(script, /observer\.observe\(header, \{ childList:true \}\)/);
 assert.match(script, /observer\.observe\(tbody, \{ childList:true \}\)/);
@@ -51,6 +52,9 @@ assert.match(css, /height:92px!important/);
 assert.match(css, /registry-unified-skeleton/);
 assert.match(css, /:is\(\.registry-dose-dialog,\.registry-cell-preview-dialog\)[\s\S]*display:none!important/);
 assert.match(css, /@media \(max-width:760px\)/);
-assert.doesNotMatch(css, /tbody td[\s\S]{0,180}position:sticky!important/);
+assert.match(css, /registry-frozen-columns-v2/, 'desktop frozen-column contract must be explicit');
+assert.match(css, /\[data-registry-column-key="number"\][\s\S]{0,180}position:sticky!important[\s\S]{0,120}left:0!important/, 'Nr must be the first frozen data column');
+assert.match(css, /\[data-registry-column-key="active-substance"\][\s\S]{0,220}position:sticky!important/, 'active substance must be the second frozen data column');
+assert.doesNotMatch(css, /\[data-registry-column-key="trade-name"\]\s*\{[^}]*position:sticky!important/, 'trade name must remain horizontally scrollable');
 
-console.log('Registry table controllers use direct-row observation; nested dosage changes refresh row expansion explicitly.');
+console.log('Registry table controllers use direct-row observation; nested dosage changes refresh row expansion explicitly; only Nr + active substance freeze on desktop.');
