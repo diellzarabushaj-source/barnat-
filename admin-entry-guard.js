@@ -6,7 +6,7 @@
 
   function loadWorkspace() {
     const script = document.createElement('script');
-    script.src = '/admin-dashboard.js?v=admin-v5';
+    script.src = '/admin-dashboard.js?v=admin-v6';
     script.defer = true;
     document.body.appendChild(script);
   }
