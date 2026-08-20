@@ -77,127 +77,53 @@ function write(file, value) {
 
 function replaceRequired(value, before, after, label) {
   if (value.includes(after)) return value;
-  if (!value.includes(before)) throw new Error(`Phase 15 final registry contract could not find ${label}.`);
+  if (!value.includes(before)) throw new Error(`Phase 15 could not find ${label}.`);
   return value.replace(before, after);
 }
 
-function replaceIfPresent(value, before, after) {
-  if (value.includes(after)) return value;
-  return value.includes(before) ? value.replace(before, after) : value;
-}
-
-const FULL_COLUMN_PRIORITY = Object.freeze([
-  'Nr rendor',
-  'Substanca aktive',
-  'Emri tregtar',
-  'ATC Code',
-  'Klasa / Çka është',
-  'Përdorimi (fjalë kyçe)',
-  'PDID',
-  'ProtocolNo',
-  'Fortësia',
-  'Forma farmaceutike',
-  'Si të shënohet në recetë',
-  'Popullata e aprovuar',
-  'Madhësia e paketimit',
-  'Bartësi i Autorizim Marketingut',
-  'Prodhuesi',
-  'MA certifikata',
-  'Statusi',
-  'Çmimi me shumicë',
-  'Çmimi me marzhë',
-  'TVSH',
-  'Çmimi me pakicë',
-  'Afati i vlefshmërisë',
-]);
-
-const FULL_DEFAULT_VISIBILITY = Object.freeze({
-  'Nr rendor':true,
-  'Substanca aktive':true,
-  'Emri tregtar':true,
-  'ATC Code':false,
-  'Klasa / Çka është':true,
-  'Përdorimi (fjalë kyçe)':true,
-  'PDID':false,
-  ProtocolNo:false,
-  'Fortësia':true,
-  'Forma farmaceutike':true,
-  'Si të shënohet në recetë':true,
-  'Popullata e aprovuar':true,
-  'Madhësia e paketimit':false,
-  'Bartësi i Autorizim Marketingut':false,
-  Prodhuesi:false,
-  'MA certifikata':false,
-  Statusi:false,
-  'Çmimi me shumicë':false,
-  'Çmimi me marzhë':false,
-  TVSH:false,
-  'Çmimi me pakicë':false,
-  'Afati i vlefshmërisë':false,
-});
-
-function rewriteColumnArray(value, label) {
-  const marker = 'const COLUMNS = [';
-  const start = value.indexOf(marker);
-  const end = start >= 0 ? value.indexOf('\n];', start) : -1;
-  if (start < 0 || end < 0) throw new Error(`Phase 15 could not locate COLUMNS in ${label}.`);
-
-  const bodyStart = start + marker.length;
-  const lines = value.slice(bodyStart, end).split('\n').filter(line => line.trim());
-  const keyed = [];
-  const other = [];
-
-  for (let line of lines) {
-    const match = line.match(/key:'([^']+)'/);
-    if (!match) {
-      other.push(line);
-      continue;
-    }
-    const key = match[1];
-    if (Object.prototype.hasOwnProperty.call(FULL_DEFAULT_VISIBILITY, key)) {
-      const nextVisible = FULL_DEFAULT_VISIBILITY[key] ? 'true' : 'false';
-      if (/visible:(?:true|false)/.test(line)) line = line.replace(/visible:(?:true|false)/, `visible:${nextVisible}`);
-    }
-    keyed.push({ key, line });
-  }
-
-  const byKey = new Map(keyed.map(item => [item.key, item.line]));
-  const ordered = [];
-  FULL_COLUMN_PRIORITY.forEach(key => {
-    const line = byKey.get(key);
-    if (!line) return;
-    ordered.push(line);
-    byKey.delete(key);
-  });
-  keyed.forEach(item => {
-    if (!byKey.has(item.key)) return;
-    ordered.push(byKey.get(item.key));
-    byKey.delete(item.key);
-  });
-
-  const rebuilt = `${marker}\n${[...ordered, ...other].join('\n')}`;
-  return value.slice(0, start) + rebuilt + value.slice(end);
-}
-
-function enforceFullRuntimeDefaults() {
-  for (const file of ['app-parts/part-01.txt', 'app-runtime.js', 'app-runtime-performance.js']) {
-    const absolute = path.join(ROOT, file);
-    if (!fs.existsSync(absolute)) continue;
-    const runtime = rewriteColumnArray(read(file), file);
+function validateCanonicalTableOwner() {
+  for (const file of ['app-runtime.js', 'app-runtime-performance.js']) {
+    const runtime = read(file);
     const nr = runtime.indexOf("key:'Nr rendor'");
     const substance = runtime.indexOf("key:'Substanca aktive'");
     const trade = runtime.indexOf("key:'Emri tregtar'");
     if (!(nr >= 0 && substance > nr && trade > substance)) {
-      throw new Error(`Phase 15 ${file} order must be Nr → Substanca aktive → Emri tregtar.`);
+      throw new Error(`${file}: canonical order must be Nr → Substanca aktive → Emri tregtar.`);
     }
-    for (const [key, visible] of Object.entries(FULL_DEFAULT_VISIBILITY)) {
-      if (!runtime.includes(`key:'${key}'`)) continue;
-      const line = runtime.split('\n').find(item => item.includes(`key:'${key}'`)) || '';
-      if (!line.includes(`visible:${visible ? 'true' : 'false'}`)) {
-        throw new Error(`Phase 15 ${file} visibility mismatch for ${key}.`);
-      }
+    for (const fragment of [
+      "key:'Nr rendor', label:'Nr', mobileLabel:'Nr', type:'num', cls:'code', visible:true",
+      "key:'Substanca aktive', label:'Substanca Aktive', mobileLabel:'Substanca aktive', type:'str', cls:'', visible:true",
+      "key:'Emri tregtar', label:'Emri Tregtar', mobileLabel:'Emri tregtar', type:'str', cls:'name', visible:true",
+      "key:'ATC Code', label:'ATC', mobileLabel:'ATC', type:'str', cls:'code', visible:false",
+      "key:'Klasa / Çka është', label:'Klasa / Çka është', mobileLabel:'Klasa', type:'str', cls:'wrap', visible:true",
+      "key:'Përdorimi (fjalë kyçe)', label:'Përdorimi / fjalë kyçe', mobileLabel:'Përdorimi', type:'str', cls:'wrap', visible:true",
+      "key:'Forma farmaceutike', label:'Forma', mobileLabel:'Forma', type:'str', cls:'wrap', visible:true",
+      "key:'Popullata e aprovuar', label:'Popullata (Adult/Pediatric)', mobileLabel:'Popullata', type:'str', cls:'registry-population-column', visible:true",
+      "key:'Si të shënohet në recetë', label:'Si shënohet në recetë', mobileLabel:'Shënimi në recetë', type:'str', cls:'wrap', visible:true",
+      "key:'Statusi', label:'Statusi', mobileLabel:'Statusi', type:'str', cls:'', visible:false",
+      'REGISTRY_COLUMN_VISIBILITY_KEY',
+      'saveRegistryColumnVisibility()',
+    ]) {
+      if (!runtime.includes(fragment)) throw new Error(`${file}: missing canonical registry fragment ${fragment}.`);
     }
-    write(file, runtime);
+  }
+
+  const unified = read('registry-unified-table.js');
+  if (!unified.includes("population:'Popullata e aprovuar'")
+      || !unified.includes("'select', 'number', 'active-substance', 'trade-name'")
+      || !unified.includes("'strength', 'form', 'population'")
+      || !unified.includes("key === 'clinical-status' || key === 'clinical-action'")
+      || !unified.includes('--registry-frozen-active-left')
+      || !unified.includes("let storedView = 'full'")) {
+    throw new Error('Phase 15: canonical unified-table order/default/frozen contract is missing.');
+  }
+
+  const css = read('registry-unified-table.css');
+  if (!css.includes('registry-frozen-columns-v2')
+      || !css.includes('[data-registry-column-key="number"]')
+      || !css.includes('[data-registry-column-key="active-substance"]')
+      || !css.includes('left:var(--registry-frozen-active-left,68px)!important')) {
+    throw new Error('Phase 15: frozen Nr + active-substance CSS contract is missing.');
   }
 }
 
@@ -208,15 +134,17 @@ function ensurePrescriptionListData() {
   const listMatch = api.match(/const REGISTRY_LIST_SELECT = \[([\s\S]*?)\]\.join\(','\);/);
   if (!listMatch) throw new Error('Phase 15 registry list projection is missing.');
   if (!listMatch[1].includes("'packaging'")) {
-    api = api.replace(
+    api = replaceRequired(
+      api,
       "  'pharmaceutical_form',\n  'product_status',",
       "  'pharmaceutical_form',\n  'packaging',\n  'product_status',",
+      'lightweight packaging projection',
     );
   }
 
   if (!api.includes('function registryPrescriptionNotation(row)')) {
     const anchor = 'function rowForRegistryList(row) {';
-    const helper = `function registryPrescriptionNotation(row) {\n  const notation = PrescriptionNotation.build({\n    'Emri tregtar':clean(row?.trade_name),\n    'Substanca aktive':clean(row?.active_substance),\n    Fortësia:clean(row?.strength),\n    'Forma farmaceutike':clean(row?.pharmaceutical_form),\n    'Madhësia e paketimit':clean(row?.packaging),\n  });\n  return clean(notation?.line);\n}\n\n${anchor}`;
+    const helper = `function registryPrescriptionNotation(row) {\n  const notation = PrescriptionNotation.build({\n    'Emri tregtar':clean(row?.trade_name),\n    'Substanca aktive':clean(row?.active_substance),\n    'Fortësia':clean(row?.strength),\n    'Forma farmaceutike':clean(row?.pharmaceutical_form),\n    'Madhësia e paketimit':clean(row?.packaging),\n  });\n  return clean(notation?.line);\n}\n\n${anchor}`;
     api = replaceRequired(api, anchor, helper, 'lightweight prescription notation helper');
   }
 
@@ -229,9 +157,8 @@ function ensurePrescriptionListData() {
     );
   }
 
-  if (!api.includes("'packaging'")) throw new Error('Phase 15 lightweight registry list must select packaging for notation formatting.');
-  if (!api.includes('prescriptionNotation:registryPrescriptionNotation(row)')) {
-    throw new Error('Phase 15 lightweight registry list must expose prescription notation.');
+  if (!api.includes("'packaging'") || !api.includes('prescriptionNotation:registryPrescriptionNotation(row)')) {
+    throw new Error('Phase 15 lightweight registry list must expose prescription notation without source_payload.');
   }
   write(file, api);
 }
@@ -250,32 +177,14 @@ function enforceDesktopCanonicalPrescription() {
   write(file, desktop);
 }
 
-const LITE_COLUMN_PRIORITY = Object.freeze([
-  'number',
-  'active-substance',
-  'trade-name',
-  'atc',
-  'drug-class',
-  'use',
-  'pdid',
-  'protocol',
-  'strength',
-  'form',
-  'prescription-label',
-  'population',
-  'packaging',
-  'mah',
-  'manufacturer',
-  'ma-certificate',
-  'status',
-  'wholesale-price',
-  'margin-price',
-  'vat',
-  'retail-price',
-  'validity',
+const LITE_PRIORITY = Object.freeze([
+  'number', 'active-substance', 'trade-name', 'atc', 'drug-class', 'use',
+  'pdid', 'protocol', 'strength', 'form', 'population', 'prescription-label',
+  'packaging', 'mah', 'manufacturer', 'ma-certificate', 'status',
+  'wholesale-price', 'margin-price', 'vat', 'retail-price', 'validity',
 ]);
 
-const LITE_DEFAULT_VISIBILITY = Object.freeze({
+const LITE_DEFAULTS = Object.freeze({
   number:true,
   'active-substance':true,
   'trade-name':true,
@@ -286,8 +195,8 @@ const LITE_DEFAULT_VISIBILITY = Object.freeze({
   protocol:false,
   strength:true,
   form:true,
-  'prescription-label':true,
   population:true,
+  'prescription-label':true,
   packaging:false,
   mah:false,
   manufacturer:false,
@@ -300,24 +209,21 @@ const LITE_DEFAULT_VISIBILITY = Object.freeze({
   validity:false,
 });
 
-function rewriteLiteColumnArray(value) {
+function rewriteLiteColumns(value) {
   if (!value.includes("key:'population'")) {
-    const formColumn = "    { key:'form', label:'Forma', raw:'Forma farmaceutike', sort:'form', default:true, cls:'wrap registry-form-cell' },\n";
-    const populationColumn = "    { key:'population', label:'Popullata (Adult/Pediatric)', raw:'Popullata e aprovuar', default:true, cls:'registry-population-column' },\n";
-    value = replaceRequired(value, formColumn, formColumn + populationColumn, 'desktop-lite population column');
+    const form = "    { key:'form', label:'Forma', raw:'Forma farmaceutike', sort:'form', default:true, cls:'wrap registry-form-cell' },\n";
+    const population = "    { key:'population', label:'Popullata (Adult/Pediatric)', raw:'Popullata e aprovuar', default:true, cls:'registry-population-column' },\n";
+    value = replaceRequired(value, form, form + population, 'desktop-lite population column');
   }
 
   const marker = '  const columns = Object.freeze([';
   const start = value.indexOf(marker);
   const end = start >= 0 ? value.indexOf('\n  ]);', start) : -1;
-  if (start < 0 || end < 0) throw new Error('Phase 15 could not locate desktop-lite columns.');
+  if (start < 0 || end < 0) throw new Error('Phase 15 desktop-lite column block is missing.');
 
-  const bodyStart = start + marker.length;
-  const lines = value.slice(bodyStart, end).split('\n').filter(line => line.trim());
-  const keyed = [];
+  const items = [];
   const other = [];
-
-  for (let line of lines) {
+  for (let line of value.slice(start + marker.length, end).split('\n').filter(line => line.trim())) {
     const match = line.match(/key:'([^']+)'/);
     if (!match) {
       other.push(line);
@@ -326,48 +232,40 @@ function rewriteLiteColumnArray(value) {
     const key = match[1];
     if (key === 'prescription-label') {
       line = "    { key:'prescription-label', label:'Si shënohet në recetë', raw:'Si të shënohet në recetë', default:true, cls:'wrap' },";
-    } else if (Object.prototype.hasOwnProperty.call(LITE_DEFAULT_VISIBILITY, key)) {
-      const nextVisible = LITE_DEFAULT_VISIBILITY[key] ? 'true' : 'false';
-      if (/default:(?:true|false)/.test(line)) line = line.replace(/default:(?:true|false)/, `default:${nextVisible}`);
+    } else if (Object.prototype.hasOwnProperty.call(LITE_DEFAULTS, key)) {
+      line = line.replace(/default:(?:true|false)/, `default:${LITE_DEFAULTS[key] ? 'true' : 'false'}`);
     }
-    keyed.push({ key, line });
+    items.push({ key, line });
   }
 
-  const byKey = new Map(keyed.map(item => [item.key, item.line]));
+  const byKey = new Map(items.map(item => [item.key, item.line]));
   const ordered = [];
-  LITE_COLUMN_PRIORITY.forEach(key => {
-    const line = byKey.get(key);
-    if (!line) return;
-    ordered.push(line);
+  LITE_PRIORITY.forEach(key => {
+    if (!byKey.has(key)) return;
+    ordered.push(byKey.get(key));
     byKey.delete(key);
   });
-  keyed.forEach(item => {
+  items.forEach(item => {
     if (!byKey.has(item.key)) return;
     ordered.push(byKey.get(item.key));
     byKey.delete(item.key);
   });
 
-  const rebuilt = `${marker}\n${[...ordered, ...other].join('\n')}`;
-  return value.slice(0, start) + rebuilt + value.slice(end);
+  return value.slice(0, start) + `${marker}\n${[...ordered, ...other].join('\n')}` + value.slice(end);
 }
 
-function enforceDesktopLiteDefaults() {
+function enforceDesktopLiteColumns() {
   const file = 'registry-desktop-column-lite.js';
-  let desktop = rewriteLiteColumnArray(read(file));
+  let desktop = rewriteLiteColumns(read(file));
 
-  desktop = replaceIfPresent(
-    desktop,
-    "      if (column.advanced) return;\n        changed = (visible.has(column.key)",
-    "      changed = (visible.has(column.key)",
-  );
-  desktop = replaceIfPresent(
-    desktop,
+  desktop = desktop.replace(
     "    next.forEach(key => { if (byKey.has(key) && !byKey.get(key).advanced) visible.add(key); });",
     "    next.forEach(key => { if (byKey.has(key)) visible.add(key); });",
   );
-
-  const advancedHandler = `  function handleAdvanced(column, checkbox) {\n    checkbox.checked = false;\n    window.MEDINDEX_DESKTOP_LITE?.handoff?.('column-prescription-notation');\n  }\n\n`;
-  desktop = desktop.replace(advancedHandler, '');
+  desktop = desktop.replace(
+    `  function handleAdvanced(column, checkbox) {\n    checkbox.checked = false;\n    window.MEDINDEX_DESKTOP_LITE?.handoff?.('column-prescription-notation');\n  }\n\n`,
+    '',
+  );
   desktop = desktop.replace("      setVisible(columns.filter(column => !column.advanced).map(column => column.key));", "      setVisible(columns.map(column => column.key));");
   desktop = desktop.replace("      if (column.advanced) checkbox.title = 'Kërkon funksionet e plota';\n", '');
   desktop = desktop.replace("        if (column.advanced) return handleAdvanced(column, checkbox);\n", '');
@@ -381,26 +279,26 @@ function enforceDesktopLiteDefaults() {
     throw new Error('Phase 15 desktop-lite order must be Nr → Substanca aktive → Emri tregtar.');
   }
   if (!desktop.includes("key:'prescription-label', label:'Si shënohet në recetë', raw:'Si të shënohet në recetë', default:true")) {
-    throw new Error('Phase 15 prescription notation must remain a normal lightweight default column.');
+    throw new Error('Phase 15 prescription notation must be a normal lightweight default column.');
   }
   if (/advanced:true/.test(desktop) || desktop.includes('column-prescription-notation')) {
-    throw new Error('Phase 15 prescription notation must not trigger a full-registry handoff.');
+    throw new Error('Phase 15 prescription notation must not hand off to the full registry.');
   }
-  for (const [key, visible] of Object.entries(LITE_DEFAULT_VISIBILITY)) {
+  for (const [key, expected] of Object.entries(LITE_DEFAULTS)) {
     if (!desktop.includes(`key:'${key}'`)) continue;
     const line = desktop.split('\n').find(item => item.includes(`key:'${key}'`)) || '';
-    if (!line.includes(`default:${visible ? 'true' : 'false'}`)) {
-      throw new Error(`Phase 15 desktop-lite visibility mismatch for ${key}.`);
+    if (!line.includes(`default:${expected ? 'true' : 'false'}`)) {
+      throw new Error(`Phase 15 desktop-lite default mismatch for ${key}.`);
     }
   }
   write(file, desktop);
 }
 
-function enforcePickerPreferenceContract() {
+function enforcePickerPreferences() {
   const file = 'registry-column-picker-tailwind.js';
   let picker = read(file);
-  const defaultBlock = `const DEFAULT_LITE_COLUMNS = Object.freeze([\n    'number',\n    'active-substance',\n    'trade-name',\n    'drug-class',\n    'use',\n    'strength',\n    'form',\n    'prescription-label',\n    'population',\n  ]);`;
-  picker = picker.replace(/const DEFAULT_LITE_COLUMNS = Object\.freeze\(\[[\s\S]*?\]\);/, defaultBlock);
+  const defaults = `const DEFAULT_LITE_COLUMNS = Object.freeze([\n    'number',\n    'active-substance',\n    'trade-name',\n    'drug-class',\n    'use',\n    'strength',\n    'form',\n    'population',\n    'prescription-label',\n  ]);`;
+  picker = picker.replace(/const DEFAULT_LITE_COLUMNS = Object\.freeze\(\[[\s\S]*?\]\);/, defaults);
   picker = picker.replace(
     "const KNOWN_LITE_COLUMNS = new Set(Object.keys(LITE_TO_FULL).filter(key => key !== PRESCRIPTION_KEY));",
     "const KNOWN_LITE_COLUMNS = new Set(Object.keys(LITE_TO_FULL));",
@@ -409,71 +307,14 @@ function enforcePickerPreferenceContract() {
     "      if (event.target.dataset.columnLiteKey && event.target.dataset.columnLiteKey !== PRESCRIPTION_KEY) {\n        queueMicrotask(persistLiteColumnPreference);\n      }",
     "      if (event.target.dataset.columnLiteKey) queueMicrotask(persistLiteColumnPreference);",
   );
-  if (!picker.includes("'prescription-label',\n    'population'")) {
-    throw new Error('Phase 15 picker defaults must include prescription notation before population.');
+
+  if (!picker.includes("'population',\n    'prescription-label'")) {
+    throw new Error('Phase 15 picker defaults must include population and prescription notation.');
   }
   if (!picker.includes('const KNOWN_LITE_COLUMNS = new Set(Object.keys(LITE_TO_FULL));')) {
-    throw new Error('Phase 15 picker must persist prescription notation like every normal column.');
+    throw new Error('Phase 15 picker must persist prescription notation as a normal column.');
   }
   write(file, picker);
-}
-
-function enforceUnifiedTableContract() {
-  const file = 'registry-unified-table.js';
-  let runtime = read(file);
-
-  const fullOrder = `const FULL_ORDER = Object.freeze([\n    'select', 'number', 'active-substance', 'trade-name', 'atc', 'drug-class', 'use',\n    'pdid', 'protocol', 'strength', 'form', 'prescription-label', 'packaging', 'mah',\n    'manufacturer', 'ma-certificate', 'status', 'wholesale-price', 'margin-price', 'vat',\n    'retail-price', 'validity', 'dosage-adult', 'dosage-pediatric', 'clinical-status',\n    'clinical-action', 'dose-calculator',\n  ]);`;
-  const clinicalOrder = `const CLINICAL_ORDER = Object.freeze([\n    'select', 'number', 'active-substance', 'trade-name', 'strength', 'form',\n    'dosage-adult', 'dosage-pediatric', 'clinical-status', 'clinical-action', 'dose-calculator',\n  ]);`;
-  runtime = runtime.replace(/const FULL_ORDER = Object\.freeze\(\[[\s\S]*?\]\);/, fullOrder);
-  runtime = runtime.replace(/const CLINICAL_ORDER = Object\.freeze\(\[[\s\S]*?\]\);/, clinicalOrder);
-
-  if (!runtime.includes("if (key === 'clinical-status' || key === 'clinical-action') return false;")) {
-    runtime = replaceRequired(
-      runtime,
-      "  function keyVisible(key) {\n    if (currentView() === 'clinical' && !CLINICAL_ORDER.includes(key)) return false;",
-      "  function keyVisible(key) {\n    if (key === 'clinical-status' || key === 'clinical-action') return false;\n    if (currentView() === 'clinical' && !CLINICAL_ORDER.includes(key)) return false;",
-      'hidden technical column gate',
-    );
-  }
-
-  if (!runtime.includes('--registry-frozen-active-left')) {
-    runtime = replaceRequired(
-      runtime,
-      "    const visible = order.filter(key => keyVisible(key));\n    const width = Math.max(",
-      "    const visible = order.filter(key => keyVisible(key));\n    const frozenActiveLeft = visible.includes('number') ? (WIDTHS.number || 68) : 0;\n    table.style.setProperty('--registry-frozen-active-left', `${frozenActiveLeft}px`);\n    const width = Math.max(",
-      'frozen active-substance offset',
-    );
-  }
-
-  runtime = replaceIfPresent(
-    runtime,
-    "    let storedView = 'clinical';\n    let storedFilters = false;\n    try {\n      storedView = localStorage.getItem(VIEW_STORAGE_KEY) === 'full' ? 'full' : 'clinical';",
-    "    let storedView = 'full';\n    let storedFilters = false;\n    try {\n      storedView = localStorage.getItem(VIEW_STORAGE_KEY) === 'clinical' ? 'clinical' : 'full';",
-  );
-
-  if (!runtime.includes("'select', 'number', 'active-substance', 'trade-name'")) {
-    throw new Error('Phase 15 unified table must order Nr and active substance before trade name.');
-  }
-  if (!runtime.includes("let storedView = 'full'")) {
-    throw new Error('Phase 15 first visit must open the user-configurable full table.');
-  }
-  if (!runtime.includes('--registry-frozen-active-left')) {
-    throw new Error('Phase 15 frozen active-substance offset is missing.');
-  }
-  write(file, runtime);
-}
-
-function enforceFrozenColumnCss() {
-  const file = 'registry-unified-table.css';
-  let css = read(file);
-  const marker = 'registry-frozen-columns-v2';
-  if (!css.includes(marker)) {
-    css += `\n\n/* ${marker} — only Nr + Substanca aktive are frozen on table layouts. */\n@media (min-width:1200px) {\n  html.medindex-tailadmin[data-mi-page="barnat"] body #dataTable[data-registry-unified-table] :is(th,td)[data-registry-column-key="number"] {\n    position:sticky!important;\n    left:0!important;\n    z-index:9!important;\n    background:var(--ru-row)!important;\n  }\n  html.medindex-tailadmin[data-mi-page="barnat"] body #dataTable[data-registry-unified-table] :is(th,td)[data-registry-column-key="active-substance"] {\n    position:sticky!important;\n    left:var(--registry-frozen-active-left,68px)!important;\n    z-index:9!important;\n    background:var(--ru-row)!important;\n    box-shadow:1px 0 0 var(--ru-line-strong),8px 0 14px rgba(15,23,42,.045)!important;\n  }\n  html.medindex-tailadmin[data-mi-page="barnat"] body #dataTable[data-registry-unified-table] thead th[data-registry-column-key="number"],\n  html.medindex-tailadmin[data-mi-page="barnat"] body #dataTable[data-registry-unified-table] thead th[data-registry-column-key="active-substance"] {\n    z-index:13!important;\n    background:#f8fbff!important;\n  }\n  html.medindex-tailadmin[data-mi-page="barnat"] body #dataTable[data-registry-unified-table] tbody tr:nth-child(even)>td[data-registry-column-key="number"],\n  html.medindex-tailadmin[data-mi-page="barnat"] body #dataTable[data-registry-unified-table] tbody tr:nth-child(even)>td[data-registry-column-key="active-substance"] {\n    background:var(--ru-row-alt)!important;\n  }\n  html.medindex-tailadmin[data-mi-page="barnat"] body #dataTable[data-registry-unified-table] tbody tr:hover>td[data-registry-column-key="number"],\n  html.medindex-tailadmin[data-mi-page="barnat"] body #dataTable[data-registry-unified-table] tbody tr:hover>td[data-registry-column-key="active-substance"] {\n    background:var(--ru-row-hover)!important;\n  }\n}\n`;
-  }
-  if (!css.includes(marker) || !css.includes('left:var(--registry-frozen-active-left,68px)!important')) {
-    throw new Error('Phase 15 frozen-column stylesheet contract is incomplete.');
-  }
-  write(file, css);
 }
 
 function updateColumnLiteRegression() {
@@ -507,15 +348,13 @@ function enforceDosageDefaultsMigration() {
   write(file, loader);
 }
 
-enforceFullRuntimeDefaults();
+validateCanonicalTableOwner();
 ensurePrescriptionListData();
 enforceDesktopCanonicalPrescription();
-enforceDesktopLiteDefaults();
-enforcePickerPreferenceContract();
-enforceUnifiedTableContract();
-enforceFrozenColumnCss();
+enforceDesktopLiteColumns();
+enforcePickerPreferences();
 updateColumnLiteRegression();
 enforceDosageDefaultsMigration();
 
 console.log('Phase 15 lazy dose runtime: insulin modal CSS/JS is interaction-gated while visible table controls stay eager.');
-console.log('Phase 15 final registry table: Nr → Substanca aktive → Emri tregtar, exact user defaults, persistent lightweight prescription notation and frozen Nr + active substance are enforced.');
+console.log('Phase 15 registry consistency: canonical table ownership stays in patch-registry-population-column; lightweight prescription/default preferences are aligned without a second table owner.');
