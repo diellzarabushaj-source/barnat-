@@ -10,6 +10,7 @@ const css = read('first-page-clinical.css');
 const frozenCss = read('registry-frozen-columns.css');
 const js = read('first-page-clinical.js');
 const loader = read('first-page-style-loader.js');
+const offlineManifest = read('scripts/patch-offline-shell-manifest.js');
 const headerSource = read('app-parts/part-02.txt');
 const rowSource = read('app-parts/part-03.txt') + read('app-parts/part-04.txt');
 
@@ -39,6 +40,8 @@ assert.match(loader, /registry-frozen-columns\.css\?v=20260820-1/, 'The final fr
 assert.ok(loader.indexOf('place(clinical)') < loader.indexOf('place(frozen)'), 'Frozen-column CSS must follow first-page clinical CSS in the cascade.');
 assert.match(loader, /dataset\.firstPageStyleLoader = VERSION/, 'The active first-page style release must be observable in browser audits.');
 assert.match(loader, /medindex:tailadmin-ready/);
+assert.match(offlineManifest, /DYNAMIC_SHELL_ASSETS[\s\S]*'\/registry-frozen-columns\.css'/, 'Dynamically loaded frozen-column CSS must be seeded into the offline shell manifest.');
+assert.match(offlineManifest, /const required = \[[\s\S]*'\/registry-frozen-columns\.css'/, 'Offline manifest generation must fail if the final frozen-column CSS disappears.');
 
 for (const marker of [
   'registry-overview',
