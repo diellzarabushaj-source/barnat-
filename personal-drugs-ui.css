@@ -1,5 +1,5 @@
 /* Full-width block launcher: it spans its container and can never widen the page. */
-.pd-launch{display:block;box-sizing:border-box;width:100%;max-width:100%;min-height:40px;margin:8px 0 0;padding:0 14px;border:1px solid var(--mi-border,#d8e6e3);border-radius:10px;background:var(--mi-surface,#fff);color:var(--mi-brand-600,#15484b);font:inherit;font-size:.84rem;font-weight:600;text-align:left;cursor:pointer}
+.pd-launch{display:block;box-sizing:border-box;width:100%;max-width:100%;min-height:40px;margin:8px 0 0;padding:0 14px;border:1px solid var(--mi-border,#d8e6e3);border-radius:12px;background:var(--mi-surface,#fff);color:var(--mi-brand-600,#15484b);font:inherit;font-size:14px;font-weight:600;text-align:left;cursor:pointer}
 .pd-launch:hover{background:var(--mi-gray-50,#f4faf8)}
 .pd-launch:focus-visible{outline:none;box-shadow:var(--mi-focus,0 0 0 4px rgba(21,95,99,.18))}
 html[data-theme="dark"] .pd-launch,html.dark .pd-launch{background:var(--mi-surface-soft,#183033);border-color:var(--mi-border,#385457);color:var(--mi-gray-100,#e8f4f2)}
