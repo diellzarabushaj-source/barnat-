@@ -2,9 +2,11 @@ const http = require('node:http');
 const fs = require('node:fs');
 const path = require('node:path');
 const zlib = require('node:zlib');
+const { phase5AuthenticatedSession, emptyUserLibrarySnapshot } = require('./phase5-browser-fixture.js');
 
 const ROOT = path.resolve(__dirname, '..');
 const PORT = Number(process.env.PORT || 4173);
+const userLibrarySnapshot = emptyUserLibrarySnapshot();
 const rows = [
   {
     'Nr rendor':1, PDID:'1001', ProtocolNo:'TEST-1', 'Emri tregtar':'PARACETAMOL TEST',
@@ -168,8 +170,12 @@ function safeFile(urlPath) {
 const server = http.createServer((req, res) => {
   const url = new URL(req.url, `http://${req.headers.host}`);
   if (url.pathname === '/api/auth') {
-    if (req.method === 'GET') return send(res, 200, JSON.stringify({ authenticated:true, sessionHours:8, hardened:true }), 'application/json; charset=utf-8');
+    if (req.method === 'GET') return send(res, 200, JSON.stringify(phase5AuthenticatedSession()), 'application/json; charset=utf-8');
     if (req.method === 'DELETE') return send(res, 200, JSON.stringify({ ok:true }), 'application/json; charset=utf-8');
+  }
+  if (url.pathname === '/api/user-library') {
+    if (req.method === 'GET' || req.method === 'PUT') return send(res, 200, JSON.stringify(userLibrarySnapshot), 'application/json; charset=utf-8');
+    return send(res, 405, JSON.stringify({ error:'Method not allowed in browser fixture' }), 'application/json; charset=utf-8', { Allow:'GET, PUT' });
   }
   if (url.pathname === '/api/registry' || url.pathname === '/data/registry-data.js') {
     return send(res, 200, registryBody, 'application/javascript; charset=utf-8', { ETag:'"browser-registry"' });
