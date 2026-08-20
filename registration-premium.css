@@ -1,0 +1,493 @@
+/* Registration-only polish for MedIndex.
+   Kept separate from auth-shell.css so login and other auth surfaces stay untouched. */
+
+html[data-mi-page="register"] {
+  min-height: 100%;
+  background: var(--mi-page, #f9fafb);
+}
+
+html[data-mi-page="register"] body.mi-auth {
+  --mi-auth-card: 600px;
+  width: 100%;
+  min-height: 100vh;
+  min-height: 100dvh;
+  grid-auto-rows: minmax(100vh, auto);
+  overflow-x: hidden;
+  background:
+    radial-gradient(circle at 7% 8%, rgba(31, 119, 121, .08), transparent 28rem),
+    var(--mi-page, #f9fafb);
+}
+
+@supports (height: 100dvh) {
+  html[data-mi-page="register"] body.mi-auth {
+    grid-auto-rows: minmax(100dvh, auto);
+  }
+}
+
+html[data-mi-page="register"] .mi-auth-main {
+  min-height: 100vh;
+  min-height: 100dvh;
+  padding: clamp(28px, 4vw, 64px) clamp(22px, 5vw, 80px);
+  background:
+    radial-gradient(circle at 0 0, rgba(31, 119, 121, .07), transparent 26rem),
+    linear-gradient(180deg, #fbfcfc 0%, var(--mi-page, #f9fafb) 100%);
+}
+
+html[data-mi-page="register"] .mi-auth-card {
+  position: relative;
+  width: min(100%, var(--mi-auth-card));
+  max-width: var(--mi-auth-card);
+  padding: clamp(24px, 3vw, 38px);
+  border: 1px solid rgba(208, 213, 221, .76);
+  border-radius: 24px;
+  background: color-mix(in srgb, var(--mi-surface, #fff) 96%, transparent);
+  box-shadow:
+    0 1px 2px rgba(16, 24, 40, .03),
+    0 22px 60px -28px rgba(16, 24, 40, .24);
+  backdrop-filter: blur(10px);
+}
+
+html[data-mi-page="register"] .mi-auth-card::before {
+  content: "";
+  position: absolute;
+  inset: 0 auto 0 0;
+  width: 4px;
+  border-radius: 24px 0 0 24px;
+  background: linear-gradient(
+    180deg,
+    var(--mi-brand-400, #4f958d),
+    var(--mi-brand-600, #155f63)
+  );
+  opacity: .86;
+  pointer-events: none;
+}
+
+html[data-mi-page="register"] .mi-auth-brandline {
+  gap: 12px;
+  margin-bottom: 24px;
+}
+
+html[data-mi-page="register"] .mi-auth-brandline img {
+  width: 42px;
+  height: 42px;
+  border-radius: 12px;
+  box-shadow: 0 8px 20px -10px rgba(13, 65, 69, .45);
+}
+
+html[data-mi-page="register"] .mi-auth-brandline strong {
+  font-size: 17px;
+  font-weight: 750;
+  letter-spacing: -.025em;
+}
+
+html[data-mi-page="register"] .mi-auth-brandline small {
+  margin-top: 2px;
+  font-size: 12.5px;
+}
+
+html[data-mi-page="register"] .mi-auth-steps {
+  display: grid;
+  grid-template-columns: .78fr 1.35fr .72fr;
+  gap: 6px;
+  margin-bottom: 30px;
+  padding: 6px;
+  border: 1px solid var(--mi-border, #e4e7ec);
+  border-radius: 14px;
+  background: var(--mi-surface-soft, #f9fafb);
+}
+
+html[data-mi-page="register"] .mi-auth-steps li {
+  display: flex;
+  min-width: 0;
+  gap: 8px;
+  padding: 7px 8px;
+  border-radius: 10px;
+  font-size: 12.5px;
+  font-weight: 600;
+  transition: background .18s ease, color .18s ease, box-shadow .18s ease;
+}
+
+html[data-mi-page="register"] .mi-auth-steps li::before {
+  width: 25px;
+  height: 25px;
+  border-color: var(--mi-gray-300, #d0d5dd);
+  background: var(--mi-surface, #fff);
+}
+
+html[data-mi-page="register"] .mi-auth-steps li span {
+  min-width: 0;
+  overflow: visible;
+  text-overflow: clip;
+  white-space: nowrap;
+}
+
+html[data-mi-page="register"] .mi-auth-steps li[aria-current="step"] {
+  background: var(--mi-surface, #fff);
+  box-shadow: var(--mi-shadow-xs, 0 1px 2px rgba(16, 24, 40, .05));
+}
+
+html[data-mi-page="register"] .mi-auth-head {
+  margin-bottom: 24px;
+}
+
+html[data-mi-page="register"] .mi-auth-head h1 {
+  margin-bottom: 8px;
+  font-size: clamp(28px, 2.25vw, 34px);
+  line-height: 1.12;
+  font-weight: 760;
+  letter-spacing: -.035em;
+}
+
+html[data-mi-page="register"] .mi-auth-head p {
+  max-width: 58ch;
+  font-size: 14.5px;
+  line-height: 1.65;
+}
+
+html[data-mi-page="register"] .mi-field {
+  margin-bottom: 17px;
+}
+
+html[data-mi-page="register"] .mi-field > span,
+html[data-mi-page="register"] .mi-choices > legend {
+  margin-bottom: 7px;
+  font-size: 13px;
+  font-weight: 650;
+}
+
+html[data-mi-page="register"] .mi-input,
+html[data-mi-page="register"] .mi-select {
+  min-height: 50px;
+  padding: 12px 14px;
+  border-color: var(--mi-gray-300, #d0d5dd);
+  border-radius: 12px;
+  background: var(--mi-surface, #fff);
+  box-shadow: 0 1px 2px rgba(16, 24, 40, .025);
+}
+
+html[data-mi-page="register"] .mi-input:hover,
+html[data-mi-page="register"] .mi-select:hover {
+  border-color: var(--mi-gray-400, #98a2b3);
+}
+
+html[data-mi-page="register"] .mi-input:focus,
+html[data-mi-page="register"] .mi-select:focus {
+  border-color: var(--mi-brand-500, #1f7779);
+  box-shadow:
+    0 0 0 4px rgba(31, 119, 121, .12),
+    0 1px 2px rgba(16, 24, 40, .04);
+}
+
+html[data-mi-page="register"] .mi-password button {
+  right: 7px;
+  min-height: 38px;
+  border-radius: 9px;
+  color: var(--mi-gray-600, #475467);
+}
+
+html[data-mi-page="register"] .mi-password button:hover {
+  background: var(--mi-brand-50, #eaf4f1);
+}
+
+html[data-mi-page="register"] #googleSignupButton {
+  display: flex;
+  width: 100%;
+  min-height: 44px;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  border-radius: 12px;
+}
+
+html[data-mi-page="register"] #googleSignupButton > div,
+html[data-mi-page="register"] #googleSignupButton iframe {
+  width: 100% !important;
+  max-width: 100% !important;
+}
+
+html[data-mi-page="register"] .mi-note {
+  border-radius: 12px;
+  background: color-mix(in srgb, var(--mi-surface-soft, #f9fafb) 88%, var(--mi-surface, #fff));
+}
+
+html[data-mi-page="register"] #googleSignupStatus:not(:empty) {
+  margin-top: 10px;
+}
+
+html[data-mi-page="register"] .mi-divider {
+  margin: 22px 0 18px;
+}
+
+html[data-mi-page="register"] .mi-divider span {
+  padding: 0 4px;
+  font-weight: 550;
+}
+
+html[data-mi-page="register"] .mi-btn {
+  min-height: 50px;
+  border-radius: 12px;
+  background: linear-gradient(
+    135deg,
+    var(--mi-brand-600, #155f63),
+    var(--mi-brand-500, #1f7779)
+  );
+  box-shadow: 0 10px 22px -13px rgba(13, 65, 69, .7);
+  font-size: 14px;
+  font-weight: 700;
+}
+
+html[data-mi-page="register"] .mi-btn:hover {
+  background: linear-gradient(
+    135deg,
+    var(--mi-brand-700, #0d4145),
+    var(--mi-brand-600, #155f63)
+  );
+  transform: translateY(-1px);
+}
+
+html[data-mi-page="register"] .mi-btn:active {
+  transform: translateY(0);
+}
+
+html[data-mi-page="register"] .mi-btn.is-quiet {
+  background: var(--mi-surface, #fff);
+  box-shadow: none;
+}
+
+html[data-mi-page="register"] .mi-auth-alt {
+  margin-top: 18px;
+}
+
+html[data-mi-page="register"] .mi-auth-alt a {
+  border-radius: 8px;
+}
+
+html[data-mi-page="register"] .mi-choice > span {
+  min-height: 62px;
+  padding: 13px 14px;
+  border-radius: 13px;
+  box-shadow: 0 1px 2px rgba(16, 24, 40, .02);
+}
+
+html[data-mi-page="register"] .mi-choice input:checked + span {
+  border-color: var(--mi-brand-400, #4f958d);
+  background: var(--mi-brand-25, #f7fbfa);
+  box-shadow: 0 0 0 3px rgba(31, 119, 121, .08);
+}
+
+html[data-mi-page="register"] .mi-drop {
+  padding: 24px 18px;
+  border-radius: 14px;
+  background:
+    linear-gradient(180deg, rgba(255, 255, 255, .72), rgba(249, 250, 251, .86)),
+    var(--mi-surface-soft, #f9fafb);
+}
+
+html[data-mi-page="register"] .mi-drop-icon {
+  width: 46px;
+  height: 46px;
+  border-radius: 12px;
+  color: var(--mi-brand-600, #155f63);
+  box-shadow: var(--mi-shadow-xs, 0 1px 2px rgba(16, 24, 40, .05));
+}
+
+@media (min-width: 1024px) {
+  html[data-mi-page="register"] body.mi-auth {
+    grid-template-columns: minmax(560px, 1.08fr) minmax(430px, .92fr);
+  }
+
+  html[data-mi-page="register"] .mi-auth-main,
+  html[data-mi-page="register"] .mi-auth-aside {
+    min-height: 100vh;
+    min-height: 100dvh;
+  }
+
+  html[data-mi-page="register"] .mi-auth-aside {
+    position: relative;
+    isolation: isolate;
+    justify-content: center;
+    gap: 22px;
+    overflow: hidden;
+    padding: clamp(52px, 5vw, 88px);
+    background:
+      radial-gradient(circle at 82% 16%, rgba(255, 255, 255, .14), transparent 24rem),
+      radial-gradient(circle at 9% 89%, rgba(96, 207, 198, .16), transparent 26rem),
+      linear-gradient(145deg, #0b3f43 0%, #155f63 48%, #1f7779 100%);
+  }
+
+  html[data-mi-page="register"] .mi-auth-aside::before {
+    content: "";
+    position: absolute;
+    z-index: -2;
+    width: 500px;
+    height: 500px;
+    top: -190px;
+    right: -170px;
+    border: 1px solid rgba(255, 255, 255, .12);
+    border-radius: 50%;
+    box-shadow:
+      0 0 0 74px rgba(255, 255, 255, .025),
+      0 0 0 148px rgba(255, 255, 255, .018);
+  }
+
+  html[data-mi-page="register"] .mi-auth-aside::after {
+    content: "";
+    position: absolute;
+    z-index: -1;
+    inset: 0;
+    opacity: .22;
+    background-image:
+      linear-gradient(rgba(255, 255, 255, .07) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(255, 255, 255, .07) 1px, transparent 1px);
+    background-size: 42px 42px;
+    mask-image: linear-gradient(to bottom right, transparent 8%, #000 46%, transparent 96%);
+    pointer-events: none;
+  }
+
+  html[data-mi-page="register"] .mi-auth-aside > * {
+    position: relative;
+    z-index: 1;
+    width: min(100%, 560px);
+  }
+
+  html[data-mi-page="register"] .mi-auth-aside h2 {
+    max-width: 12ch;
+    font-size: clamp(38px, 3.2vw, 52px);
+    line-height: 1.03;
+    font-weight: 760;
+    letter-spacing: -.045em;
+    text-wrap: balance;
+  }
+
+  html[data-mi-page="register"] .mi-auth-aside > p {
+    max-width: 52ch;
+    color: rgba(255, 255, 255, .82);
+    font-size: 15.5px;
+    line-height: 1.72;
+  }
+
+  html[data-mi-page="register"] .mi-auth-points {
+    gap: 10px;
+    margin-top: 8px;
+  }
+
+  html[data-mi-page="register"] .mi-auth-points li {
+    gap: 12px;
+    padding: 13px 14px;
+    border: 1px solid rgba(255, 255, 255, .11);
+    border-radius: 14px;
+    background: rgba(255, 255, 255, .07);
+    box-shadow: inset 0 1px 0 rgba(255, 255, 255, .05);
+    backdrop-filter: blur(8px);
+    color: rgba(255, 255, 255, .92);
+    font-size: 14px;
+    line-height: 1.55;
+  }
+
+  html[data-mi-page="register"] .mi-auth-points li::before {
+    width: 24px;
+    height: 24px;
+    border: 1px solid rgba(255, 255, 255, .15);
+    background: rgba(255, 255, 255, .13);
+    font-size: 12px;
+  }
+}
+
+@media (min-width: 1024px) and (max-height: 850px) {
+  html[data-mi-page="register"] .mi-auth-main {
+    justify-content: flex-start;
+    padding-top: 28px;
+    padding-bottom: 28px;
+  }
+
+  html[data-mi-page="register"] .mi-auth-card {
+    padding: 26px 30px;
+  }
+
+  html[data-mi-page="register"] .mi-auth-brandline {
+    margin-bottom: 18px;
+  }
+
+  html[data-mi-page="register"] .mi-auth-steps {
+    margin-bottom: 22px;
+  }
+
+  html[data-mi-page="register"] .mi-auth-head {
+    margin-bottom: 18px;
+  }
+}
+
+@media (max-width: 720px) {
+  html[data-mi-page="register"] .mi-auth-main {
+    min-height: 100vh;
+    min-height: 100dvh;
+    justify-content: flex-start;
+    padding: 18px 14px 28px;
+    background: var(--mi-page, #f9fafb);
+  }
+
+  html[data-mi-page="register"] .mi-auth-card {
+    padding: 22px 18px 24px;
+    border-radius: 18px;
+    box-shadow: 0 12px 30px -26px rgba(16, 24, 40, .4);
+  }
+
+  html[data-mi-page="register"] .mi-auth-card::before {
+    width: 3px;
+    border-radius: 18px 0 0 18px;
+  }
+
+  html[data-mi-page="register"] .mi-auth-brandline {
+    margin-bottom: 20px;
+  }
+
+  html[data-mi-page="register"] .mi-auth-brandline img {
+    width: 38px;
+    height: 38px;
+  }
+
+  html[data-mi-page="register"] .mi-auth-steps {
+    grid-template-columns: repeat(3, 1fr);
+    margin-bottom: 24px;
+  }
+
+  html[data-mi-page="register"] .mi-auth-steps li {
+    justify-content: center;
+    padding: 7px 6px;
+  }
+
+  html[data-mi-page="register"] .mi-auth-steps li span {
+    display: none;
+  }
+
+  html[data-mi-page="register"] .mi-auth-head h1 {
+    font-size: 28px;
+  }
+}
+
+html[data-theme="dark"][data-mi-page="register"] .mi-auth-main {
+  background:
+    radial-gradient(circle at 0 0, rgba(79, 149, 141, .10), transparent 25rem),
+    var(--mi-page, #101828);
+}
+
+html[data-theme="dark"][data-mi-page="register"] .mi-auth-card {
+  border-color: var(--mi-border, #344054);
+  background: rgba(16, 24, 40, .94);
+  box-shadow: 0 22px 60px -30px rgba(0, 0, 0, .7);
+}
+
+html[data-theme="dark"][data-mi-page="register"] .mi-input,
+html[data-theme="dark"][data-mi-page="register"] .mi-select {
+  border-color: var(--mi-border, #344054);
+}
+
+html[data-theme="dark"][data-mi-page="register"] .mi-drop {
+  background: var(--mi-surface-soft, #1d2939);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html[data-mi-page="register"] .mi-btn:hover {
+    transform: none;
+  }
+}
