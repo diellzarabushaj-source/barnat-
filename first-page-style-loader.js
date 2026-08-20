@@ -3,6 +3,8 @@
 
   const ID = 'firstPageClinicalStyles';
   const HREF = '/first-page-clinical.css?v=20260731-1';
+  const FROZEN_ID = 'registryFrozenColumnStyles';
+  const FROZEN_HREF = '/registry-frozen-columns.css?v=20260820-1';
   const PHONE_QUERY = '(max-width:767px)';
   const phone = window.matchMedia?.(PHONE_QUERY);
 
@@ -19,16 +21,27 @@
     if (document.head.lastElementChild !== link) document.head.appendChild(link);
   }
 
-  function ensure() {
-    let link = document.getElementById(ID);
+  function ensureLink(id, href, datasetKey) {
+    let link = document.getElementById(id);
     if (!link) {
       link = document.createElement('link');
-      link.id = ID;
+      link.id = id;
       link.rel = 'stylesheet';
-      link.href = HREF;
-      link.dataset.firstPageClinical = '1';
+      link.href = href;
+      link.dataset[datasetKey] = '1';
     }
-    place(link);
+    return link;
+  }
+
+  function ensure() {
+    const clinical = ensureLink(ID, HREF, 'firstPageClinical');
+    place(clinical);
+
+    // This tiny final layer owns only the horizontal freeze contract. It must
+    // follow first-page-clinical.css because that legacy layer still contains
+    // older selection/trade-name pinning rules.
+    const frozen = ensureLink(FROZEN_ID, FROZEN_HREF, 'registryFrozenColumns');
+    place(frozen);
   }
 
   ensure();
