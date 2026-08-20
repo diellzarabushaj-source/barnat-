@@ -3,8 +3,8 @@
    first-page pinning cannot override the canonical table contract.
 
    Contract:
-   - only Nr and Substanca aktive are horizontally frozen;
-   - the prescription-selection cell and Emri tregtar always scroll normally;
+   - only Nr and Si shënohet në recetë are horizontally frozen;
+   - selection, Emri tregtar and Substanca aktive always scroll normally;
    - tablets/cards are not forced into desktop sticky geometry. */
 
 @media (min-width:821px) {
@@ -12,7 +12,9 @@
     [data-registry-column-key="select"],
     [data-column-key="__select"],
     [data-registry-column-key="trade-name"],
-    [data-column-key="Emri tregtar"]
+    [data-column-key="Emri tregtar"],
+    [data-registry-column-key="active-substance"],
+    [data-column-key="Substanca aktive"]
   ) {
     position:relative!important;
     left:auto!important;
@@ -37,11 +39,11 @@
   }
 
   html.medindex-tailadmin[data-mi-page="barnat"] body #registryContent #dataTable :is(th,td):is(
-    [data-registry-column-key="active-substance"],
-    [data-column-key="Substanca aktive"]
+    [data-registry-column-key="prescription-label"],
+    [data-column-key="Si të shënohet në recetë"]
   ) {
     position:sticky!important;
-    left:var(--registry-frozen-active-left,68px)!important;
+    left:var(--registry-frozen-prescription-left,68px)!important;
     right:auto!important;
     z-index:17!important;
     border-right:1px solid var(--ru-line-strong,#c9d7e8)!important;
@@ -51,8 +53,8 @@
   html.medindex-tailadmin[data-mi-page="barnat"] body #registryContent #dataTable thead th:is(
     [data-registry-column-key="number"],
     [data-column-key="Nr rendor"],
-    [data-registry-column-key="active-substance"],
-    [data-column-key="Substanca aktive"]
+    [data-registry-column-key="prescription-label"],
+    [data-column-key="Si të shënohet në recetë"]
   ) {
     top:0!important;
     z-index:42!important;
@@ -62,8 +64,8 @@
   html.medindex-tailadmin[data-mi-page="barnat"] body #registryContent #dataTable tbody td:is(
     [data-registry-column-key="number"],
     [data-column-key="Nr rendor"],
-    [data-registry-column-key="active-substance"],
-    [data-column-key="Substanca aktive"]
+    [data-registry-column-key="prescription-label"],
+    [data-column-key="Si të shënohet në recetë"]
   ) {
     background:var(--ru-current-row,var(--registry-row-bg,#fff))!important;
   }
@@ -71,8 +73,8 @@
   html[data-theme="dark"].medindex-tailadmin[data-mi-page="barnat"] body #registryContent #dataTable thead th:is(
     [data-registry-column-key="number"],
     [data-column-key="Nr rendor"],
-    [data-registry-column-key="active-substance"],
-    [data-column-key="Substanca aktive"]
+    [data-registry-column-key="prescription-label"],
+    [data-column-key="Si të shënohet në recetë"]
   ) {
     background:#142033!important;
   }
