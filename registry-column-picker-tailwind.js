@@ -14,6 +14,7 @@
   const DESKTOP_QUERY = '(min-width: 768px)';
   const LITE_STORAGE_KEY = 'medindex.registry.desktop-columns.v20260820';
   const FULL_STORAGE_KEY = 'medindex.registry.columns.v20260820';
+  const DOSAGE_STORAGE_KEY = 'medindex-registry-dosage-columns-v2';
   const PRESCRIPTION_FULL_KEY = 'Si të shënohet në recetë';
   const DEFAULT_LITE_COLUMNS = Object.freeze([
     'number',
@@ -304,6 +305,23 @@
     document.documentElement.dataset.registryColumnPreferences = COLUMN_PREFERENCE_VERSION;
   }
 
+  function writeDosageBulkPreference(enabled) {
+    const next = { adult:Boolean(enabled), pediatric:Boolean(enabled) };
+    try {
+      const stored = JSON.parse(localStorage.getItem(DOSAGE_STORAGE_KEY) || '{}');
+      if (stored && typeof stored === 'object' && !Array.isArray(stored)) Object.assign(next, stored, {
+        adult:Boolean(enabled), pediatric:Boolean(enabled),
+      });
+      localStorage.setItem(DOSAGE_STORAGE_KEY, JSON.stringify(next));
+    } catch {
+      try { localStorage.setItem(DOSAGE_STORAGE_KEY, JSON.stringify(next)); } catch {}
+    }
+    document.querySelectorAll(`#${PANEL_ID} [data-registry-dosage-picker] input[type="checkbox"]`).forEach(input => {
+      input.checked = Boolean(enabled);
+      input.dispatchEvent(new Event('change', { bubbles:true }));
+    });
+  }
+
   function persistLiteColumnPreference() {
     const controller = liteColumns();
     if (!controller || !liteActive() || preferenceApplying) return;
@@ -359,6 +377,7 @@
     event.stopImmediatePropagation();
     const showAll = label.includes('shfaqi');
     applyLiteColumnPreference(showAll ? litePanelColumnKeys() : []);
+    writeDosageBulkPreference(showAll);
     requestAnimationFrame(() => updateSelection());
   }
 
