@@ -1,0 +1,87 @@
+<!doctype html>
+<html lang="sq" data-mi-page="admin-login">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+  <meta name="robots" content="noindex,nofollow,noarchive">
+  <meta name="color-scheme" content="light">
+  <title>Hyrje Admin — MedIndex</title>
+  <link rel="stylesheet" href="/admin-login.css?v=admin-login-v1">
+  <script src="https://accounts.google.com/gsi/client" async defer></script>
+</head>
+<body class="mi-admin-login">
+  <main class="mi-admin-login-shell">
+    <section class="mi-admin-login-brand" aria-label="MedIndex Admin">
+      <div class="mi-admin-login-brand-inner">
+        <a class="mi-admin-login-wordmark" href="/" aria-label="MedIndex">
+          <span class="mi-admin-login-mark" aria-hidden="true">M<span>+</span></span>
+          <span><strong>MedIndex</strong><small>Admin Console</small></span>
+        </a>
+        <div class="mi-admin-login-brand-copy">
+          <span class="mi-admin-login-eyebrow"><i></i> Hapësirë e kufizuar</span>
+          <h1>Kontrolli administrativ, <em>i ndarë nga klinika.</em></h1>
+          <p>Kjo hyrje është vetëm për administrimin e barnave, përdoruesve dhe aprovimeve profesionale.</p>
+        </div>
+        <div class="mi-admin-login-security" aria-label="Siguria e hyrjes">
+          <span>Admin-only</span><span>Verifikim në server</span><span>Sesion HttpOnly</span>
+        </div>
+      </div>
+    </section>
+
+    <section class="mi-admin-login-panel" aria-labelledby="adminLoginTitle">
+      <div class="mi-admin-login-card">
+        <div class="mi-admin-login-mobile-brand" aria-hidden="true">
+          <span class="mi-admin-login-mark">M<span>+</span></span>
+          <span><strong>MedIndex</strong><small>Admin Console</small></span>
+        </div>
+        <div class="mi-admin-login-heading">
+          <span class="mi-admin-login-badge">ADMIN ACCESS</span>
+          <h2 id="adminLoginTitle">Hyr në panelin administrativ</h2>
+          <p>Përdor vetëm llogarinë e autorizuar të administratorit.</p>
+        </div>
+
+        <div class="mi-admin-login-message" id="loginMessage" role="status" aria-live="polite"></div>
+
+        <form id="emailLoginForm" class="mi-admin-login-form" novalidate>
+          <label for="loginEmail">Email</label>
+          <input id="loginEmail" name="email" type="email" autocomplete="username" inputmode="email" placeholder="admin@medindex…" required>
+
+          <div class="mi-admin-login-label-row">
+            <label for="loginPassword">Fjalëkalimi</label>
+            <button type="button" class="mi-admin-login-text-btn" id="forgotPassword">Ke harruar fjalëkalimin?</button>
+          </div>
+          <div class="mi-admin-login-password">
+            <input id="loginPassword" name="password" type="password" autocomplete="current-password" required>
+            <button type="button" id="toggleLoginPassword" aria-pressed="false" aria-label="Shfaq fjalëkalimin">Shfaq</button>
+          </div>
+
+          <button class="mi-admin-login-submit" id="emailLoginSubmit" type="submit">Hyr në Admin Console</button>
+        </form>
+
+        <div class="mi-admin-login-separator"><span>ose</span></div>
+        <div id="googleLoginButton" class="mi-admin-google"></div>
+        <p id="googleLoginStatus" class="mi-admin-google-status" aria-live="polite"></p>
+
+        <details id="passwordFallback" class="mi-admin-login-fallback" hidden>
+          <summary>Hyrje rezervë</summary>
+          <form id="loginForm">
+            <label for="password">Password rezervë</label>
+            <div class="mi-admin-login-password">
+              <input id="password" type="password" autocomplete="current-password" minlength="6">
+              <button type="button" id="togglePassword" aria-pressed="false" aria-label="Shfaq password-in">Shfaq</button>
+            </div>
+            <small id="capsLockHint" hidden>Caps Lock është aktiv.</small>
+            <button class="mi-admin-login-submit is-secondary" id="loginSubmit" type="submit"><span>Hyr me password</span></button>
+          </form>
+        </details>
+
+        <div class="mi-admin-login-foot">
+          <a href="/">← Kthehu te MedIndex</a>
+          <span>Qasja verifikohet përsëri brenda panelit.</span>
+        </div>
+      </div>
+    </section>
+  </main>
+  <script src="/login.js?v=admin-login-v1" defer></script>
+</body>
+</html>
