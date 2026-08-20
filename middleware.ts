@@ -8,6 +8,12 @@ const PUBLIC_INFO_PATHS = new Set([
 ]);
 
 const PUBLIC_PATHS = new Set([
+  // Registration is by definition reachable without a session: the person
+  // filling it in does not have one yet, and will not until an admin approves.
+  '/regjistrimi.html',
+  '/regjistrimi.js',
+  '/auth-shell.css',
+  '/login-email.css',
   '/login.html',
   '/login-v2.html',
   '/login-v2.css',

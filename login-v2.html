@@ -15,6 +15,7 @@
   <link rel="stylesheet" href="login-v2.css?v=v2-20260814-2">
   <noscript><style>.lv-reveal{opacity:1!important;translate:none!important}</style></noscript>
   <script src="https://accounts.google.com/gsi/client" async defer></script>
+  <link rel="stylesheet" href="login-email.css?v=multiuser-v2">
 </head>
 <body>
   <a class="lv-skip" href="#lvMain">Kalo te përmbajtja</a>
@@ -386,7 +387,7 @@
 
         <header>
           <h2 id="loginTitle">Hyr në MedIndex</h2>
-          <p class="login-copy">Vazhdo me llogarinë e aprovuar Google. Identiteti verifikohet në server para hapjes së hapësirës klinike.</p>
+          <p class="login-copy">Vazhdo me Google ose me emailin tënd. Identiteti verifikohet në server para hapjes së hapësirës klinike.</p>
         </header>
 
         <noscript><p class="noscript" role="alert">JavaScript duhet të jetë aktiv për hyrjen e sigurt në MedIndex.</p></noscript>
@@ -399,7 +400,26 @@
           <p class="google-login-status" id="googleLoginStatus" role="status" aria-live="polite" aria-atomic="true">Po përgatitet hyrja e sigurt…</p>
         </section>
 
-        <p class="account"><strong>Lejohet vetëm diellzarabushaj@gmail.com</strong></p>
+        <div class="login-divider"><span>ose me email</span></div>
+
+        <form class="login-email-form" id="emailLoginForm" autocomplete="on" novalidate>
+          <label class="login-email-label" for="loginEmail">Email</label>
+          <input class="login-email-input" id="loginEmail" name="email" type="email" autocomplete="email"
+                 autocapitalize="none" spellcheck="false" required maxlength="320" placeholder="emri@shembull.com">
+
+          <label class="login-email-label" for="loginPassword">Fjalëkalimi</label>
+          <div class="login-email-row">
+            <input class="login-email-input" id="loginPassword" name="password" type="password"
+                   autocomplete="current-password" autocapitalize="none" spellcheck="false"
+                   enterkeyhint="go" required minlength="10" maxlength="200">
+            <button type="button" id="toggleLoginPassword" aria-pressed="false" aria-label="Shfaq fjalëkalimin">Shfaq</button>
+          </div>
+
+          <button class="login-email-submit" id="emailLoginSubmit" type="submit">Hyr me email</button>
+          <button class="login-email-link" id="forgotPassword" type="button">Ke harruar fjalëkalimin?</button>
+        </form>
+
+        <p class="login-register">Nuk ke llogari? <a href="/regjistrimi.html">Regjistrohu këtu</a><br>Çdo regjistrim verifikohet nga administratori para se të hapet.</p>
 
         <details class="password-fallback" id="passwordFallback" hidden>
           <summary>Hyrje rezervë me password</summary>
