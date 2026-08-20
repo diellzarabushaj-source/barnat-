@@ -31,6 +31,11 @@ const read = file => fs.readFileSync(path.join(root, file), 'utf8');
   assert.match(js, /error\.status === 403[\s\S]{0,200}location\.replace/,
     'a refusal from the server must also send a non-admin away');
 
+  // Administration is limited to named addresses, so the promotion is only
+  // offered where the server and the database would both accept it.
+  assert.match(js, /else if \(user\.canBeAdmin\) actions\.push\(\{ label:'Bëje admin'/,
+    'the admin promotion must be gated on the allowlist, not offered to every active account');
+
   // Approval is refused without a document, so the button must say so rather
   // than failing after the click.
   assert.match(js, /const hasDocument = Boolean\(user\.verificationDocument\)/);
