@@ -110,10 +110,14 @@ assert.doesNotMatch(decorator, /if \(persist\) persistLiteColumnPreference\(\)/,
   'Bulk actions must not call the guarded controller-based persistence path while preferenceApplying is true.');
 assert.match(decorator, /DOSAGE_STORAGE_KEY = 'medindex-registry-dosage-columns-v2'/,
   'Bulk column actions must share the canonical dosage visibility storage key.');
+assert.match(decorator, /DOSAGE_DEFAULT_MIGRATION_KEY = 'medindex-registry-dosage-defaults-20260816-v1'/,
+  'Explicit dosage choices must share the dosage loader migration key.');
 assert.match(decorator, /function writeDosageBulkPreference\(enabled\)/,
   'Bulk actions must have an explicit dosage preference writer even before the lazy dosage runtime is ready.');
 assert.match(decorator, /writeDosageBulkPreference\(showAll\)/,
   'Show-all/hide-all must update adult and pediatric dosage columns together with the lightweight columns.');
+assert.match(decorator, /localStorage\.setItem\(DOSAGE_DEFAULT_MIGRATION_KEY, '1'\)/,
+  'An explicit bulk dosage choice must win over the later one-time default migration.');
 assert.match(decorator, /data-registry-dosage-picker[\s\S]{0,180}dispatchEvent\(new Event\('change', \{ bubbles:true \}\)\)/,
   'When dosage controls are mounted, bulk changes must synchronize their live runtime state as well as storage.');
 
@@ -128,4 +132,4 @@ for (const forbidden of [
   'select-page-for-prescription', 'prescription-builder',
 ]) assert(!desktop.includes(forbidden), `Normal desktop path must not retain ${forbidden} full-registry handoff.`);
 
-console.log('Phase 14 final desktop column customization uses bounded whitelisted visible-row reads; bulk picker actions persist lightweight and dosage visibility deterministically, and Phase 15 validates canonical source without rewriting tests.');
+console.log('Phase 14 final desktop column customization uses bounded whitelisted visible-row reads; bulk picker actions persist lightweight and dosage visibility deterministically, explicit dosage choices beat default migration, and Phase 15 validates canonical source without rewriting tests.');
