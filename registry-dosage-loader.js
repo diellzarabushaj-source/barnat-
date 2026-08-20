@@ -4,6 +4,7 @@
   const VERSION = 'registry-dosage-idle-loader-v5';
   const SRC = '/registry-dosage-columns-v3.js?v=20260812-2';
   const VISIBILITY_STORAGE_KEY = 'medindex-registry-dosage-columns-v2';
+  const DEFAULT_VISIBILITY_MIGRATION_KEY = 'medindex-registry-dosage-defaults-20260816-v1';
   const BUILD_ID = String(
     document.querySelector('meta[name="medindex-build-id"]')?.content
       || document.documentElement.dataset.medindexBuildId
@@ -16,6 +17,11 @@
 
   function ensureDefaultDoseVisibility() {
     try {
+      if (localStorage.getItem(DEFAULT_VISIBILITY_MIGRATION_KEY) !== '1') {
+        localStorage.setItem(VISIBILITY_STORAGE_KEY, JSON.stringify({ adult:true, pediatric:true }));
+        localStorage.setItem(DEFAULT_VISIBILITY_MIGRATION_KEY, '1');
+        return;
+      }
       const raw = localStorage.getItem(VISIBILITY_STORAGE_KEY);
       if (!raw) {
         localStorage.setItem(VISIBILITY_STORAGE_KEY, JSON.stringify({ adult:true, pediatric:true }));
@@ -37,6 +43,7 @@
     } catch {
       try {
         localStorage.setItem(VISIBILITY_STORAGE_KEY, JSON.stringify({ adult:true, pediatric:true }));
+        localStorage.setItem(DEFAULT_VISIBILITY_MIGRATION_KEY, '1');
       } catch {}
     }
   }
