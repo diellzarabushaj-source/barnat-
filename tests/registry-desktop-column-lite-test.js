@@ -42,10 +42,13 @@ assert.match(runtime, /if \(changed\) window\.MedIndexRegistryUnified\?\.refresh
 assert.doesNotMatch(runtime, /addEventListener\('medindex:registry-table-stable'/, 'Phase 14 must not create stable→refresh feedback loops.');
 
 const numberPosition = runtime.indexOf("key:'number'");
-const substancePosition = runtime.indexOf("key:'active-substance'");
+const prescriptionPosition = runtime.indexOf("key:'prescription-label'");
 const tradePosition = runtime.indexOf("key:'trade-name'");
-assert.ok(numberPosition >= 0 && substancePosition > numberPosition && tradePosition > substancePosition,
-  'Lightweight source order must be Nr → Substanca aktive → Emri tregtar.');
+const substancePosition = runtime.indexOf("key:'active-substance'");
+assert.ok(
+  numberPosition >= 0 && prescriptionPosition > numberPosition && tradePosition > prescriptionPosition && substancePosition > tradePosition,
+  'Lightweight final order must be Nr → Si shënohet në recetë → Emri tregtar → Substanca aktive.',
+);
 for (const [key, expected] of Object.entries({
   number:true,
   'active-substance':true,
@@ -144,4 +147,4 @@ for (const forbidden of [
   'select-page-for-prescription', 'prescription-builder',
 ]) assert(!desktop.includes(forbidden), `Normal desktop path must not retain ${forbidden} full-registry handoff.`);
 
-console.log('Phase 14 final desktop column customization uses bounded whitelisted visible-row reads; bulk picker actions persist lightweight, dosage and dose-calculator visibility deterministically, explicit dosage choices beat default migration, and Phase 15 validates canonical source without rewriting tests.');
+console.log('Desktop registry final order is Nr → prescription notation → trade name → active substance; bulk preferences remain deterministic.');
