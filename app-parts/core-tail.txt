@@ -344,6 +344,11 @@ window.addEventListener('popstate', () => {
   queueMicrotask(() => syncRegistryUrlState());
 });
 
+window.MEDINDEX_REFRESH_REGISTRY = function refreshRegistryFromExternalMetadata(){
+  resetRegistryFilterCaches();
+  render();
+};
+
 initFormPicker();
 buildColPanel();
 initPrescriptionBridge();
