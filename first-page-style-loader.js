@@ -1,6 +1,7 @@
 (() => {
   'use strict';
 
+  const VERSION = 'first-page-style-loader-20260820-2';
   const ID = 'firstPageClinicalStyles';
   const HREF = '/first-page-clinical.css?v=20260731-1';
   const FROZEN_ID = 'registryFrozenColumnStyles';
@@ -42,6 +43,7 @@
     // older selection/trade-name pinning rules.
     const frozen = ensureLink(FROZEN_ID, FROZEN_HREF, 'registryFrozenColumns');
     place(frozen);
+    document.documentElement.dataset.firstPageStyleLoader = VERSION;
   }
 
   ensure();

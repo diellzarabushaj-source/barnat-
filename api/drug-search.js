@@ -37,6 +37,7 @@ const REGISTRY_LIST_SELECT = [
   'use_text',
   'strength',
   'pharmaceutical_form',
+  'packaging',
   'product_status',
   'retail_price',
 ].join(',');
@@ -298,6 +299,17 @@ function rankedResults(rows, query) {
   return rankedRows(rows, query).map(resultFromRow);
 }
 
+function registryPrescriptionNotation(row) {
+  const notation = PrescriptionNotation.build({
+    'Emri tregtar':clean(row?.trade_name),
+    'Substanca aktive':clean(row?.active_substance),
+    'Fortësia':clean(row?.strength),
+    'Forma farmaceutike':clean(row?.pharmaceutical_form),
+    'Madhësia e paketimit':clean(row?.packaging),
+  });
+  return clean(notation?.line);
+}
+
 function rowForRegistryList(row) {
   return {
     id:clean(row.id),
@@ -310,6 +322,7 @@ function rowForRegistryList(row) {
     use:clean(row.use_text),
     strength:clean(row.strength),
     form:clean(row.pharmaceutical_form),
+    prescriptionNotation:registryPrescriptionNotation(row),
     productStatus:clean(row.product_status),
     retailPrice:row.retail_price ?? null,
   };
