@@ -7,6 +7,7 @@ const read = file => fs.readFileSync(path.join(root, file), 'utf8');
 
 const html = read('index.html');
 const css = read('first-page-clinical.css');
+const frozenCss = read('registry-frozen-columns.css');
 const js = read('first-page-clinical.js');
 const loader = read('first-page-style-loader.js');
 const headerSource = read('app-parts/part-02.txt');
@@ -33,6 +34,8 @@ assert.match(loader, /anchor\.before\(link\)/, 'Phone first-page CSS must be ins
 assert.match(loader, /document\.head\.appendChild\(link\)/, 'Desktop first-page CSS must retain its last-layer behavior.');
 assert.match(loader, /phone\?\.addEventListener\?\.\('change', ensure\)/, 'Stylesheet ordering must follow responsive viewport transitions.');
 assert.match(loader, /first-page-clinical\.css\?v=20260731-1/);
+assert.match(loader, /registry-frozen-columns\.css\?v=20260820-1/, 'The final frozen-column cascade must be loaded by the first-page style owner.');
+assert.ok(loader.indexOf('place(clinical)') < loader.indexOf('place(frozen)'), 'Frozen-column CSS must follow first-page clinical CSS in the cascade.');
 assert.match(loader, /medindex:tailadmin-ready/);
 
 for (const marker of [
@@ -42,8 +45,6 @@ for (const marker of [
   'registry-search-shell',
   'registry-table-bar',
   'registry-result-count',
-  'Pin only selection',
-  'data-column-key="Emri tregtar"',
   'registry-selection-control',
   'registry-sort-trigger',
   'has-horizontal-scroll',
@@ -54,6 +55,34 @@ for (const marker of [
 ]) {
   assert.ok(css.includes(marker), `first-page clinical CSS is missing ${marker}`);
 }
+
+for (const marker of [
+  'MedIndex registry frozen-column cascade',
+  '[data-registry-column-key="number"]',
+  '[data-column-key="Nr rendor"]',
+  '[data-registry-column-key="active-substance"]',
+  '[data-column-key="Substanca aktive"]',
+  '[data-registry-column-key="select"]',
+  '[data-registry-column-key="trade-name"]',
+  'left:var(--registry-frozen-active-left,68px)!important',
+]) {
+  assert.ok(frozenCss.includes(marker), `final frozen-column CSS is missing ${marker}`);
+}
+assert.match(
+  frozenCss,
+  /\[data-registry-column-key="select"\][\s\S]*\[data-registry-column-key="trade-name"\][\s\S]*position:relative!important;[\s\S]*left:auto!important;/,
+  'Selection and trade-name columns must be explicitly released from legacy first-page pinning.',
+);
+assert.match(
+  frozenCss,
+  /\[data-registry-column-key="number"\][\s\S]*position:sticky!important;[\s\S]*left:0!important;/,
+  'Nr must be the first frozen data column.',
+);
+assert.match(
+  frozenCss,
+  /\[data-registry-column-key="active-substance"\][\s\S]*position:sticky!important;[\s\S]*left:var\(--registry-frozen-active-left,68px\)!important/,
+  'Substanca aktive must be the second frozen data column.',
+);
 
 for (const marker of [
   'medindex:first-page-audit-ready',
@@ -77,6 +106,8 @@ assert.doesNotMatch(js, /\/api\//, 'The visual audit layer must remain frontend-
 assert.doesNotMatch(js, /innerHTML\s*=\s*[^;]*(?:RAW|DRUG_DATA_PARTS)/, 'The visual layer must not render a substitute dataset.');
 assert.doesNotMatch(loader, /fetch\s*\(/, 'The stylesheet loader must not perform network data requests.');
 assert.doesNotMatch(css, /nth-child\(2\)\{position:sticky/, 'Trade-name pinning must not depend on a dynamic column index.');
+assert.doesNotMatch(frozenCss, /data-registry-column-key="trade-name"[^}]*position:sticky/i, 'Emri tregtar must never become a frozen column in the final cascade.');
+assert.doesNotMatch(frozenCss, /data-registry-column-key="select"[^}]*position:sticky/i, 'Prescription selection must scroll normally in the final cascade.');
 assert.doesNotMatch(css, /(?:linear|radial)-gradient|backdrop-filter:\s*blur/, 'The compact registry workspace must not use gradients or glass effects.');
 assert.match(css, /\.registry-toolbar\{[\s\S]*position:sticky!important;[\s\S]*grid-template-columns:minmax\(300px,1fr\) auto!important;/, 'The working toolbar must stay compact and sticky on desktop.');
 assert.match(css, /#dataTable thead th\{[\s\S]*background:#f9fafb!important;[\s\S]*text-transform:none!important;/, 'The table header must use a neutral sentence-case treatment.');
@@ -89,4 +120,4 @@ assert.match(headerSource, /th\.dataset\.columnKey = col\.key/, 'Headers need st
 assert.match(rowSource, /data-column-key="' \+ columnKey \+ '"/, 'Cells need stable column keys.');
 assert.match(rowSource, /registry-selection-control/, 'Row selection needs a 44px hit target.');
 
-console.log('First-page doctor-style UI audit passed.');
+console.log('First-page doctor-style UI and final Nr + active-substance freeze audit passed.');
