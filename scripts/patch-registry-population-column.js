@@ -21,6 +21,7 @@ function write(relative, source) {
 }
 
 function replaceOnce(source, needle, replacement, label) {
+  if (source.includes(replacement)) return source;
   const first = source.indexOf(needle);
   if (first < 0) throw new Error(`Population column patch: mungon pattern-i ${label}.`);
   if (source.indexOf(needle, first + needle.length) >= 0) {
