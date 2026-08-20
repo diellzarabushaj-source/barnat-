@@ -119,6 +119,11 @@ test('reduced desktop columns fill the registry surface without a blank gutter o
   const adultCell = page.locator('#tbody > tr td[data-registry-column-key="dosage-adult"]').first();
   await expect(adultCell).toBeVisible({ timeout:10000 });
   const adultRow = adultCell.locator('xpath=ancestor::tr');
+  await adultRow.evaluate(row => {
+    if (row.dataset.registryNumber || row.querySelector('.drug-select')?.dataset.drugKey) return;
+    const renderedNumber = row.querySelector('[data-registry-column-key="number"]')?.textContent?.trim();
+    row.dataset.registryNumber = renderedNumber || 'layout-regression-fixture';
+  });
   await expect.poll(() => adultRow.evaluate(() => typeof window.MedIndexRegistryRows?.toggleRow === 'function'), { timeout:10000 }).toBe(true);
   expect(await adultRow.evaluate(row => window.MedIndexRegistryRows.toggleRow(row, true))).toBe(true);
   await expect(adultRow).toHaveAttribute('data-registry-row-expanded', 'true');

@@ -100,6 +100,9 @@ async function mockSafety(page, payload = safetyPayload) {
 async function openRegistry(page, payload = safePayload) {
   await mockCatalog(page, payload);
   await mockSafety(page);
+  await page.addInitScript(() => {
+    try { localStorage.setItem('medindex.registry.dose-calculator.visible.v1', 'true'); } catch {}
+  });
   await page.goto(BASE, { waitUntil:'domcontentloaded' });
   await expect.poll(() => page.evaluate(() => document.documentElement.classList.contains('auth-ready')), { timeout:10000 }).toBe(true);
   await expect.poll(() => page.evaluate(() => window.MedIndexDoseCalculator?.catalogStatus?.() || 'loading'), { timeout:15000 }).toBe('ready');

@@ -1,7 +1,7 @@
 const { test, expect } = require('@playwright/test');
 
 const BASE = 'http://127.0.0.1:4173';
-const PICKER_VERSION = 'column-picker-tailwind-20260812-population-1';
+const PICKER_VERSION = 'column-picker-tailwind-20260820-clean-columns-3';
 const REPRESENTATIVE_COLUMNS = [
   'Nr',
   'Emri tregtar',
@@ -26,7 +26,6 @@ async function mountHarness(page) {
     .map((text, index) => optionMarkup(text, index < 6 || index === 8 || index === 9))
     .join('');
 
-  // Isolated harness: validates the picker component without depending on registry data timing.
   await page.setContent(`<!DOCTYPE html>
     <html lang="sq" data-mi-page="barnat">
       <head>
@@ -66,7 +65,7 @@ async function mountHarness(page) {
     </html>`);
 
   await page.addStyleTag({ url:`${BASE}/registry-column-picker-tailwind.css?v=20260805-3` });
-  await page.addScriptTag({ url:`${BASE}/registry-column-picker-tailwind.js?v=20260812-population-column-1` });
+  await page.addScriptTag({ url:`${BASE}/registry-column-picker-tailwind.js?v=20260820-clean-columns-3` });
 
   await expect.poll(() => page.evaluate(() => document.documentElement.dataset.miColumnPicker), { timeout:5000 })
     .toBe(PICKER_VERSION);

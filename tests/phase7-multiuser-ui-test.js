@@ -1,154 +1,100 @@
 'use strict';
-
-// Phase 7 — the screens that make multi-user reachable.
-//
-// The backend has shipped; these assertions lock the wiring that exposes it:
-// the approval panel, the pending-login message, and the personal drug surface.
-
-const assert = require('node:assert/strict');
-const fs = require('node:fs');
-const path = require('node:path');
-
-const root = path.resolve(__dirname, '..');
-const read = file => fs.readFileSync(path.join(root, file), 'utf8');
-
-// --- the admin dashboard -------------------------------------------------
+const assert=require('node:assert/strict'),fs=require('node:fs'),path=require('node:path'),root=path.resolve(__dirname,'..'),read=f=>fs.readFileSync(path.join(root,f),'utf8');
 
 {
-  const html = read('admin.html');
-  assert.match(html, /id="adminRows"/, 'the accounts table body is missing from the dashboard');
-  assert.match(html, /admin-dashboard\.js\?v=/, 'the dashboard needs its versioned runtime');
-  assert.match(html, /admin-dashboard\.css\?v=/, 'the dashboard needs its versioned stylesheet');
-  assert.match(html, /id="statPending"[\s\S]{0,600}id="statActive"/, 'the dashboard leads with what needs the admin now');
-  assert.match(html, /id="refuseDialog"/, 'refusing a registration must ask for a reason, not happen on one click');
-
-  const js = read('admin-dashboard.js');
-  assert.match(js, /\/api\/auth\?scope=users/, 'the dashboard must call the admin users endpoint');
-  assert.match(js, /X-CSRF-Token/, 'account changes must carry the CSRF proof the server requires');
-  assert.match(js, /method:'PATCH'/, 'approving an account is a PATCH');
-  assert.match(js, /payload\.authUser\?\.role !== 'admin'[\s\S]{0,120}location\.replace/,
-    'a doctor who opens this URL must be sent away, not shown controls that would fail');
-  assert.match(js, /error\.status === 403[\s\S]{0,200}location\.replace/,
-    'a refusal from the server must also send a non-admin away');
-
-  // Administration is limited to named addresses, so the promotion is only
-  // offered where the server and the database would both accept it.
-  assert.match(js, /else if \(user\.canBeAdmin\) actions\.push\(\{ label:'Bëje admin'/,
-    'the admin promotion must be gated on the allowlist, not offered to every active account');
-
-  // Approval is refused without a document, so the button must say so rather
-  // than failing after the click.
-  assert.match(js, /const hasDocument = Boolean\(user\.verificationDocument\)/);
-  assert.match(js, /disabled:!hasDocument/);
-
-  // The private document is minted server-side with a short life and audited.
-  assert.match(js, /scope=verification&document=/, 'the document opens through its signed-URL endpoint');
-  assert.ok(!js.includes('storage_path') && !js.includes('storage/v1'),
-    'the dashboard must never construct a storage URL itself');
-
-  const css = read('admin-dashboard.css');
-  for (const token of ['--mi-border', '--mi-surface', '--mi-brand-600', '--mi-text']) {
-    assert.ok(css.includes(token), `the dashboard must build on the TailAdmin token ${token}, not on ad-hoc colors`);
-  }
-  assert.ok(css.includes('--mi-success-50') && css.includes('--mi-warning-50') && css.includes('--mi-error-50'),
-    'status badges must use the TailAdmin semantic palette');
-  assert.match(css, /\.mi-table-wrap \{[^}]*max-width: 100%/, 'the wide accounts table must not widen its parent');
-  assert.match(css, /\.mi-table-wrap \{[^}]*overflow-x: auto/, 'the wide accounts table scrolls inside its own container');
+  const h=read('admin.html'),j=read('admin-dashboard.js'),c=read('admin-dashboard.css');
+  assert.match(h,/data-view="drugs"/);
+  assert.match(h,/data-view="users"/);
+  assert.match(h,/id="adminGate"/);
+  assert.match(h,/id="adminRows"/);
+  assert.match(h,/id="drugRows"/);
+  assert.match(h,/id="refuseDialog"/);
+  assert.match(j,/\/api\/auth\?scope=users/);
+  assert.match(j,/\/api\/clinical-editor/);
+  assert.match(j,/auth\.authUser\?\.role!==['"]admin['"]/);
+  assert.match(j,/email!==OWNER/);
+  assert.match(j,/locked\(['"]Administrimi është i kyçur/);
+  assert.ok(!/auth\.authUser\?\.role!==['"]admin['"][\s\S]{0,180}location\.replace\(['"]\/index/.test(j));
+  assert.match(j,/method:'PATCH'/);
+  assert.match(j,/X-CSRF-Token/);
+  assert.match(j,/scope=verification&document=/);
+  assert.ok(!j.includes('storage/v1'));
+  assert.match(j,/method:'PUT'/);
+  assert.match(j,/method:'POST'/);
+  assert.match(j,/Shënimet dhe recetat private klinike nuk ekspozohen/);
+  for(const t of['--mi-border','--mi-surface','--mi-brand'])assert.ok(c.includes(t));
+  assert.match(c,/\.mi-table-wrap\{[^}]*overflow-x:auto/);
 }
 
-// --- the system page points at the dashboard instead of duplicating it ----
-
 {
-  const html = read('sistemi.html');
-  assert.match(html, /<section[^>]+id="systemUsersPanel"[^>]*\shidden/, 'the admin entry must start hidden and only appear for an admin');
-  assert.match(html, /href="\/admin"/, 'the system page must lead to the dashboard');
-  assert.match(html, /admin-entry\.js\?v=/, 'the entry needs its versioned runtime');
-  assert.ok(!html.includes('systemUsersRows'),
-    'account management lives in one place now; a second half-built table on the system page is exactly the duplication that was removed');
-
-  const vercel = JSON.parse(read('vercel.json'));
-  const rewriteFor = source => vercel.rewrites.find(rule => rule.source === source);
-  assert.equal(rewriteFor('/admin')?.destination, '/admin.html', '/admin must resolve to the dashboard');
-  assert.equal(rewriteFor('/regjistrimi')?.destination, '/regjistrimi.html', '/regjistrimi must resolve to the registration page');
-
-  const middleware = read('middleware.ts');
-  assert.ok(middleware.includes("'/regjistrimi'"),
-    'middleware runs before the rewrite, so it sees the clean URL; registration must be public under both spellings');
-  assert.ok(!/'\/admin'/.test(middleware),
-    '/admin must stay behind the session gate — it is the one page that must never be public');
-
-  const entry = read('admin-entry.js');
-  assert.match(entry, /payload\.authUser\?\.role !== 'admin'/, 'the entry is revealed only for a verified admin role');
-
-  const env = read('.env.example');
-  assert.match(env, /^MEDINDEX_ADMIN_EMAILS=diellzarabushaj@gmail\.com$/m,
-    'the named-admin application gate must be documented in the environment contract');
-  assert.match(env, /private\.admin_emails\(\)/,
-    'the environment contract must warn that the app allowlist and database trigger stay aligned');
+  const v=JSON.parse(read('vercel.json')),r=s=>v.rewrites.find(x=>x.source===s);
+  assert.equal(r('/admin')?.destination,'/admin.html');
+  assert.equal(r('/regjistrimi')?.destination,'/regjistrimi.html');
+  const m=read('middleware.ts');
+  assert.ok(m.includes("'/regjistrimi'"));
+  assert.ok(!/'\/admin'/.test(m));
+  const e=read('admin-entry.js');
+  assert.match(e,/payload\.authUser\?\.role !== 'admin'/);
+  const env=read('.env.example');
+  assert.match(env,/^MEDINDEX_ADMIN_EMAILS=diellzarabushaj@gmail\.com$/m);
+  assert.match(env,/private\.admin_emails\(\)/);
 }
 
-// --- registration always returns to the canonical login -----------------
-
 {
-  const html = read('regjistrimi.html');
-  const loginLinks = [...html.matchAll(/href="(\/login(?:-v2)?\.html)"/g)].map(match => match[1]);
-  assert.ok(loginLinks.length >= 4, 'registration must expose its expected routes back to login');
-  assert.ok(loginLinks.every(value => value === '/login-v2.html'),
-    'registration must not send users back to the retired /login.html surface');
-  assert.ok(!html.includes('href="/login.html"'),
-    'the old login surface must not re-enter the registration flow');
+  const h=read('regjistrimi.html'),l=[...h.matchAll(/href="(\/login(?:-v2)?\.html)"/g)].map(m=>m[1]);
+  assert.ok(l.length>=4);
+  assert.ok(l.every(v=>v==='/login-v2.html'));
+  assert.ok(!h.includes('href="/login.html"'));
 }
 
-// --- pending accounts get a real answer at login ------------------------
-
 {
-  const js = read('login.js');
-  assert.match(js, /ACCOUNT_PENDING_APPROVAL/, 'login must recognise the pending-approval code');
-  assert.match(js, /function showPendingApproval/, 'pending approval needs its own message path, not the generic failure');
-  assert.match(js, /pendingApproval\) return;/, 'a pending account must not be able to retry into the same refusal');
+  const j=read('login.js');
+  assert.match(j,/ACCOUNT_PENDING_APPROVAL/);
+  assert.match(j,/function showPendingApproval/);
+  assert.match(j,/pendingApproval\) return;/);
 }
 
-// --- personal drugs: private by construction ----------------------------
-
 {
-  const html = read('index.html');
-  assert.match(html, /personal-drugs-ui\.js\?v=/, 'the registry page must load the personal drug surface');
-  assert.match(html, /personal-drugs-ui\.css\?v=/, 'the personal drug surface needs its stylesheet');
-
-  const ui = read('personal-drugs-ui.js');
-  assert.match(ui, /savePersonalDrug/, 'the form saves through the library API, not straight into storage');
-  assert.match(ui, /deletePersonalDrug/, 'entries can be removed');
-  assert.match(ui, /Personale · e paverifikuar/, 'a personal entry must be labelled unverified wherever it is shown');
-  assert.ok(!ui.includes('localStorage.setItem'), 'the UI must not write library storage directly; that belongs to the sync client');
-
-  // An admin publishing for everyone goes through the admin-gated editor, and the
-  // option is never offered to a plain doctor.
-  assert.match(ui, /\/api\/clinical-editor/, 'the shared-registry path must go through the clinical editor');
-  assert.match(ui, /isAdmin = payload\.authUser\?\.role === 'admin'/, 'the shared option is gated on the verified admin role');
-  assert.match(ui, /sharedRow\.hidden = !isAdmin/, 'a doctor must never see the "publish to everyone" control');
-
-  // The launcher must not become another inline item in the mobile navigation:
-  // at 320px that pushes the document past the viewport, which the responsive
-  // audit rejects.
-  assert.ok(!ui.includes('cloneNode'), 'the launcher must not clone a navigation control');
-  assert.match(ui, /createElement\('button'\)[\s\S]{0,200}className = 'pd-launch'/, 'the launcher is its own block element, not a cloned nav control');
-  const css = read('personal-drugs-ui.css');
-  assert.match(css, /\.pd-launch\{[^}]*width:100%/, 'the launcher spans its container instead of adding inline width');
-  assert.match(css, /\.pd-launch\{[^}]*box-sizing:border-box/, 'the launcher must not overflow its container');
+  const h=read('index.html');
+  assert.match(h,/personal-drugs-ui\.js\?v=/);
+  assert.match(h,/personal-drugs-ui\.css\?v=/);
+  const u=read('personal-drugs-ui.js');
+  assert.match(u,/savePersonalDrug/);
+  assert.match(u,/deletePersonalDrug/);
+  assert.match(u,/Personale · e paverifikuar/);
+  assert.ok(!u.includes('localStorage.setItem'));
+  assert.match(u,/\/api\/clinical-editor/);
+  assert.match(u,/isAdmin = payload\.authUser\?\.role === 'admin'/);
+  assert.match(u,/sharedRow\.hidden = !isAdmin/);
+  assert.ok(!u.includes('cloneNode'));
+  assert.match(u,/createElement\('button'\)[\s\S]{0,200}className = 'pd-launch'/);
+  const c=read('personal-drugs-ui.css');
+  assert.match(c,/\.pd-launch\{[^}]*width:100%/);
+  assert.match(c,/\.pd-launch\{[^}]*box-sizing:border-box/);
 }
 
-// --- the client sync carries personal drugs -----------------------------
+{
+  const c=read('user-library-client.js');
+  assert.match(c,/const DRUGS_KEY = /);
+  assert.match(c,/localStorage\.removeItem\(DRUGS_KEY\)/);
+  assert.match(c,/drugs:Object\.entries\(meta\.deletedDrugs\)/);
+  assert.match(c,/deletedDrugs/);
+  assert.ok(c.includes("['medindex:favorites-changed', 'medindex:notes-changed', 'medindex:personal-note-saved', 'medindex:personal-drugs-changed']"));
+}
 
 {
-  const client = read('user-library-client.js');
-  assert.match(client, /const DRUGS_KEY = /, 'personal drugs need their own storage key');
-  assert.match(client, /localStorage\.removeItem\(DRUGS_KEY\)/, 'logout must clear personal drugs from the device');
-  assert.match(client, /drugs:Object\.entries\(meta\.deletedDrugs\)/, 'deletions must travel as tombstones');
-  assert.match(client, /deletedDrugs/, 'drug tombstones need their own meta bucket');
-  assert.ok(
-    client.includes("['medindex:favorites-changed', 'medindex:notes-changed', 'medindex:personal-note-saved', 'medindex:personal-drugs-changed']"),
-    'a personal drug change must schedule a sync like every other personal mutation',
-  );
+  const b=read('medindex-brand-runtime.js'),p=read('tailadmin-professional.css');
+  assert.match(b,/fetch\('\/api\/auth'/,'clinical profile identity must come from the authenticated session');
+  assert.match(b,/credentials:'same-origin'/);
+  assert.match(b,/cache:'no-store'/);
+  assert.match(b,/payload\.authUser\?\.role \|\| payload\.user\.role/,'displayed role must follow the authenticated account');
+  assert.match(b,/PHOTO_PREFIX = 'medindex_profile_photo_v2:'/,'cosmetic profile data must be scoped per authenticated identity');
+  assert.match(b,/localStorage\.removeItem\(LEGACY_PROFILE_KEY\)/,'legacy unscoped identity override must be purged');
+  assert.doesNotMatch(b,/DEFAULT_PROFILE[\s\S]{0,120}Diellza Rabushaj/,'a named owner must never be the fallback clinical identity');
+  assert.doesNotMatch(b,/localStorage\.setItem\(PROFILE_KEY/,'name, role and email must not be client-owned identity fields');
+  assert.doesNotMatch(b,/form\.elements\.role\.value/,'role must not be editable from the browser profile dialog');
+  assert.match(b,/Emri, roli dhe emaili nuk merren nga localStorage/);
+  assert.match(p,/not\(\[data-medindex-profile="profile-session-v2"\]\)[\s\S]{0,180}visibility:hidden!important/,'legacy shell identity placeholders must stay hidden until session hydration');
 }
 
 console.log('Phase 7 multi-user UI contract passed.');

@@ -12,6 +12,13 @@
 @import url("mobile-row-stability.css?v=20260813-1");
 @import url("dashboard-typography.css?v=20260812-1");
 
+/* Multi-user identity safety: the legacy shell contains presentation-only
+   placeholders. Never render them before the authenticated session runtime has
+   replaced them with the current account (or a neutral fail-closed state). */
+html.medindex-tailadmin:not([data-medindex-profile="profile-session-v2"]) :is(.mi-sidebar .mi-user-card,.mi-topbar .mi-profile-chip){
+  visibility:hidden!important;
+}
+
 @media (max-width:767px){
   html[data-registry-mobile-lite] #dataTable #tbody{
     display:flex!important;
