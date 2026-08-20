@@ -11,6 +11,8 @@ const read = file => fs.readFileSync(path.join(ROOT, file), 'utf8');
 for (const file of [
   'registry-mobile-phase3.js',
   'registry-mobile-phase3.css',
+  'registry-mobile-phone-hardening.css',
+  'registry-mobile-phone-hardening.js',
   'registry-mobile-lite.js',
   'scripts/patch-phase2-mobile-card-stability.js',
   'index.html',
@@ -27,6 +29,8 @@ for (const file of [
 
 const js = read('registry-mobile-phase3.js');
 const css = read('registry-mobile-phase3.css');
+const phoneHardening = read('registry-mobile-phone-hardening.css');
+const phoneHardeningRuntime = read('registry-mobile-phone-hardening.js');
 const mobileLite = read('registry-mobile-lite.js');
 const phase2Patch = read('scripts/patch-phase2-mobile-card-stability.js');
 const index = read('index.html');
@@ -41,6 +45,7 @@ assert.match(js, /statusFilter/, 'Phase 3 filters must reuse the existing server
 assert.match(js, /pageSize/, 'Phase 3 filters must reuse the existing server-side page-size control');
 assert.match(js, /data-mi-phase3-search-mode="atc"/, 'ATC search shortcut is missing');
 assert.match(js, /data-mi-phase3-search-mode="form"/, 'pharmaceutical-form search shortcut is missing');
+assert.match(js, /sheet\.parentElement !== document\.body[\s\S]*document\.body\.appendChild\(sheet\)/, 'filter sheet must escape the inert application shell before opening');
 
 assert.match(js, /function modalSurfaceOpen\(\)/, 'Phase 3 must have one canonical transient-surface detector');
 assert.match(js, /mi-sidebar-open[\s\S]*mi-mobile-search-open[\s\S]*mi-registry-filter-open[\s\S]*mobile-lite-detail-open/, 'all mobile modal surfaces must participate in navigation ownership');
@@ -79,6 +84,10 @@ assert.match(css, /visibility:hidden!important/, 'hidden bottom navigation must 
 assert.match(css, /pointer-events:none!important/, 'hidden bottom navigation must not intercept touches');
 assert.match(css, /data-registry-mobile-lite-state="handoff"/, 'mobile controls must disappear on full-runtime handoff');
 assert.doesNotMatch(css, /https?:\/\//, 'Phase 3 styles must not load third-party assets');
+assert.match(phoneHardening, /body\.mi-registry-filter-open > #miRegistryFilterSheet\.mi-registry-filter-sheet\{[\s\S]*z-index:2147483646!important;[\s\S]*pointer-events:auto!important;/, 'WebKit filter sheet must own the top hit-testing layer');
+assert.match(phoneHardening, /#miRegistryFilterSheet :is\([\s\S]*button,[\s\S]*select[\s\S]*\)\{[\s\S]*pointer-events:auto!important;/, 'WebKit filter controls must remain pointer-interactive');
+assert.match(phoneHardeningRuntime, /MedIndexRegistryMobilePhase3\.syncNavigation\(\)/, 'modal cleanup must return bottom-navigation ownership to Phase 3');
+assert.doesNotMatch(phoneHardeningRuntime, /navWasInert/, 'modal cleanup must not restore a stale blocked-navigation snapshot');
 
 assert.match(index, /registry-mobile-phase3\.css\?v=20260812-1/, 'Phase 3 stylesheet is not wired');
 assert.match(index, /registry-mobile-phase3\.js\?v=20260812-1/, 'Phase 3 runtime is not wired');

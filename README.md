@@ -10,7 +10,7 @@ Faqja **Sistemi** përmban edhe Media Library të lidhur me Vercel Blob. Ajo pë
 
 ## Nisja lokale
 
-Kërkohen Node.js 22 dhe pnpm 10.
+Kërkohen Node.js 24 dhe pnpm 10+.
 
 ```bash
 pnpm install
@@ -68,7 +68,10 @@ Kopjo `.env.example` në konfigurimin e ambientit të Vercel-it. Minimumi i nevo
 
 ```text
 SESSION_SECRET=<vlerë e rastësishme, së paku 32 karaktere>
-ACCESS_CODE=<kodi privat i qasjes>
+GOOGLE_CLIENT_ID=<Google Web Client ID>
+MEDINDEX_SUPABASE_URL=https://ftuchtmolddhhsdcwnqe.supabase.co
+MEDINDEX_SUPABASE_PUBLISHABLE_KEY=<publishable key>
+MEDINDEX_SUPABASE_SECRET_KEY=<server-only secret key>
 ```
 
 Për Media Library, lidhe një **Public Vercel Blob store** me projektin `barnat`. Vercel krijon automatikisht:
@@ -77,7 +80,11 @@ Për Media Library, lidhe një **Public Vercel Blob store** me projektin `barnat
 BLOB_READ_WRITE_TOKEN=<tokeni i menaxhuar nga Vercel>
 ```
 
-Mund të përdoret `ACCESS_CODE_SCRYPT` në vend të `ACCESS_CODE`. `GEMINI_API_KEY` dhe parametrat e sinkronizimit janë opsionalë. Sekretet nuk duhet të futen në skedarët e frontend-it apo në Git.
+`ACCESS_CODE` ose `ACCESS_CODE_SCRYPT` mund të përdoret vetëm si hyrje emergjente e pronarit; llogaritë normale autorizohen nga profili live në Supabase. `GEMINI_API_KEY` dhe parametrat e sinkronizimit janë opsionalë. Sekretet nuk duhet të futen në skedarët e frontend-it apo në Git.
+
+Supabase është i vetmi database/runtime provider. Neon nuk përdoret nga aplikacioni, build-i ose komandat e publikimit. Emri historik `lib/neon-data-api.js` mbetet vetëm si adapter kompatibil dhe testet garantojnë se asnjë flag ambienti nuk mund ta riaktivizojë Neon-in.
+
+Regjistrimet e reja krijohen `pending`. Para shqyrtimit duhet të dërgohet një PDF/JPEG/PNG profesional deri në 3 MB. Dokumenti ruhet në bucket privat, admini e hap vetëm me URL 60-sekondëshe dhe çdo hapje auditohet. Aktivizimi pa dokument bllokohet në transaksionin e databazës.
 
 ## Offline dhe internet i dobët
 
@@ -91,7 +98,7 @@ Mund të përdoret `ACCESS_CODE_SCRYPT` në vend të `ACCESS_CODE`. `GEMINI_API_
 
 ```bash
 pnpm sync:protocols
-pnpm sync:neon
+pnpm sync:supabase
 pnpm sync:all
 ```
 

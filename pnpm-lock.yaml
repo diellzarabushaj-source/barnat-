@@ -14,9 +14,6 @@ importers:
       '@vercel/functions':
         specifier: 3.7.5
         version: 3.7.5
-      '@vercel/oidc':
-        specifier: 3.8.0
-        version: 3.8.0
       xlsx:
         specifier: https://cdn.sheetjs.com/xlsx-0.20.3/xlsx-0.20.3.tgz
         version: https://cdn.sheetjs.com/xlsx-0.20.3/xlsx-0.20.3.tgz

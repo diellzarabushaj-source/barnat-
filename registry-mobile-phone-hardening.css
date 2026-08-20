@@ -179,6 +179,25 @@
     overscroll-behavior:contain;
   }
 
+  /* The filter sheet is a body-level modal, outside the inert application
+     shell. Keep its complete hit-testing layer above every fixed shell aid;
+     otherwise WebKit can paint the close control while sending the tap to the
+     body underneath it. */
+  body.mi-registry-filter-open > #miRegistryFilterSheet.mi-registry-filter-sheet{
+    z-index:2147483646!important;
+    isolation:isolate;
+    pointer-events:auto!important;
+  }
+  body.mi-registry-filter-open > #miRegistryFilterSheet :is(
+    .mi-registry-filter-backdrop,
+    .mi-registry-filter-panel,
+    .mi-registry-filter-head,
+    button,
+    select
+  ){
+    pointer-events:auto!important;
+  }
+
   .mobile-lite-detail-body,
   .mi-registry-filter-body{
     overscroll-behavior-y:contain;

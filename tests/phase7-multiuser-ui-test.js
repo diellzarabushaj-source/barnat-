@@ -27,6 +27,15 @@ const read = file => fs.readFileSync(path.join(root, file), 'utf8');
   assert.match(js, /X-CSRF-Token/, 'account changes must carry the CSRF proof the server now requires');
   assert.match(js, /method:'PATCH'/, 'approving an account is a PATCH');
   assert.match(js, /error\.status === 403[\s\S]{0,200}hidden = true/, 'a non-admin must get a hidden panel, not a broken one');
+
+  // The panel carries a wide table. It must only appear when the server really
+  // returned an accounts list, and its scroller must never widen the page —
+  // otherwise it pushes the whole system dashboard past a phone viewport.
+  assert.match(js, /if \(!Array\.isArray\(payload\.users\)\)[\s\S]{0,160}hidden = true/,
+    'the panel must stay hidden unless the response is a real accounts payload');
+  const panelCss = read('admin-users.css');
+  assert.match(panelCss, /\.mi-users-table-wrap\{[^}]*max-width:100%/, 'the accounts table scroller must not widen its parent');
+  assert.match(panelCss, /\.mi-users-table-wrap\{[^}]*overflow-x:auto/, 'the wide accounts table scrolls inside its own container');
 }
 
 // --- the panel follows the TailAdmin design system -----------------------

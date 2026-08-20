@@ -8,10 +8,10 @@ Phase 3 already moved the private runtime database to Supabase. Phase 4 adds Sup
 
 Applied/recorded migrations:
 
-- `supabase/migrations/20260819145700_phase4_auth_roles_rls_foundation.sql`
-- `supabase/migrations/20260819161200_phase4_add_legacy_user_mapping.sql`
+- `supabase/migrations/20260819150331_phase4_auth_roles_rls_foundation.sql`
+- `supabase/migrations/20260819160916_phase4_add_legacy_user_mapping.sql`
 - `supabase/migrations/20260819165505_phase4_trusted_legacy_owner_claim.sql` — historical first implementation
-- `supabase/migrations/20260819193000_phase4_safe_owner_claim_mapping_only.sql` — **required safety override and current source of truth**
+- `supabase/migrations/20260819173053_phase4_safe_owner_claim_mapping_only.sql` — **required safety override and current source of truth**
 
 The server-side Auth guard foundation is implemented in `lib/supabase-auth.js`.
 
@@ -83,7 +83,7 @@ Database tests already proved:
 
 Therefore **changing only `user_prescriptions.user_id` would make existing ciphertext unreadable**.
 
-For this reason the historical migration `20260819165505_phase4_trusted_legacy_owner_claim.sql` is superseded by `20260819193000_phase4_safe_owner_claim_mapping_only.sql` before any real owner claim is executed.
+For this reason the historical migration `20260819165505_phase4_trusted_legacy_owner_claim.sql` is superseded by `20260819173053_phase4_safe_owner_claim_mapping_only.sql` before any real owner claim is executed.
 
 The current `private.claim_legacy_owner(...)` function:
 

@@ -1,7 +1,7 @@
 /* Admin accounts panel — built on the TailAdmin design tokens the MedIndex shell
    already ships (--mi-*), so it inherits the same brand, spacing and dark theme. */
 .mi-users-summary{margin:0 0 16px;color:var(--mi-muted,#667085);font-size:.86rem;line-height:1.55}
-.mi-users-table-wrap{width:100%;overflow-x:auto;border:1px solid var(--mi-border,#e4e7ec);border-radius:var(--mi-card-radius,12px);background:var(--mi-surface,#fff)}
+.mi-users-table-wrap{width:100%;max-width:100%;min-width:0;overflow-x:auto;border:1px solid var(--mi-border,#e4e7ec);border-radius:var(--mi-card-radius,12px);background:var(--mi-surface,#fff)}
 .mi-users-table{width:100%;min-width:720px;border-collapse:collapse;font-family:var(--mi-font,inherit)}
 .mi-users-table th{padding:11px 14px;border-bottom:1px solid var(--mi-border,#e4e7ec);background:var(--mi-gray-50,#f9fafb);color:var(--mi-gray-500,#667085);font-size:.72rem;font-weight:600;letter-spacing:.04em;text-align:left;text-transform:uppercase;white-space:nowrap}
 .mi-users-table td{padding:13px 14px;border-bottom:1px solid var(--mi-border,#e4e7ec);color:var(--mi-text,#101828);font-size:.86rem;vertical-align:middle}

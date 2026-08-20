@@ -71,6 +71,22 @@ async function waitRegistry(page) {
     { timeout:20000, message:'registry rows did not render' }
   ).toBeGreaterThan(0);
   await expect(page.locator('#search')).toBeVisible();
+
+  // The dosage layer is intentionally loaded after the first registry paint. The
+  // post-ready interaction budget must start after that bounded hydration has
+  // settled; otherwise the same build can include the background hydration in
+  // one run and exclude it in the retry, producing a flaky CLS result.
+  await page.evaluate(() => window.MedIndexRegistryDosageLoader?.schedule?.());
+  await expect.poll(
+    () => page.evaluate(() => window.MedIndexRegistryDosage?.registryStatus?.() || 'loading'),
+    { timeout:15000, message:'registry dosage index did not settle' }
+  ).toBe('ready');
+  await page.evaluate(() => new Promise(resolve => requestAnimationFrame(() => requestAnimationFrame(resolve))));
+  await expect.poll(
+    () => page.evaluate(() => window.MedIndexRegistryDosage?.clinicalStatus?.() || 'loading'),
+    { timeout:15000, message:'visible registry dosage hydration did not settle' }
+  ).toMatch(/^(?:ready|degraded)$/);
+  await page.evaluate(() => new Promise(resolve => requestAnimationFrame(() => requestAnimationFrame(resolve))));
 }
 
 async function documentGeometry(page) {

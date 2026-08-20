@@ -20,7 +20,7 @@ function jwt(privateKey, payload, kid = 'medindex-test-key') {
   delete process.env.ACCESS_CODE_SCRYPT;
   process.env.SESSION_SECRET = 'medindex-google-auth-test-secret-that-is-private-and-long';
   process.env.GOOGLE_CLIENT_ID = '1234567890-medindex.apps.googleusercontent.com';
-  process.env.MEDINDEX_ALLOWED_EMAILS = 'diellzarabushaj@gmail.com';
+  process.env.MEDINDEX_ALLOWED_EMAILS = 'attacker@example.com';
 
   const authUrl = pathToFileURL(path.join(root, 'lib/auth.mjs')).href;
   const auth = await import(`${authUrl}?google-library=${Date.now()}`);
@@ -108,7 +108,8 @@ function jwt(privateKey, payload, kid = 'medindex-test-key') {
   const UserStore = require('../lib/user-store.js');
   assert.equal(UserStore.isAllowedEmail('diellzarabushaj@gmail.com'), true, 'Owner email is not allowlisted');
   assert.equal(UserStore.roleForEmail('diellzarabushaj@gmail.com'), 'editor', 'Owner is not assigned editor role');
-  assert.equal(UserStore.isAllowedEmail('attacker@example.com'), false, 'Unknown email was allowlisted');
+  assert.equal(UserStore.isAllowedEmail('attacker@example.com'), false,
+    'legacy environment allowlists must not bypass Supabase profile approval');
 
   const { encryptJson, decryptJson } = require('../lib/user-data-crypto.js');
   const prescription = {

@@ -191,7 +191,12 @@
     backdrop-filter:blur(12px) saturate(1.05);
     -webkit-backdrop-filter:blur(12px) saturate(1.05);
     transform:translateY(0);
-    transition:opacity .16s ease,transform .18s ease,visibility .18s ease;
+    /* The blocked state is deterministic: opacity and visibility flip with no
+       transition. The way back must be deterministic too, or the navigation is
+       interactive again while still invisible or half transparent — a real
+       wrinkle for a control a clinician can tap before they can see it, and one
+       the mobile shell gate rejects. Only the slide is animated. */
+    transition:transform .18s ease;
   }
 
   .mi-registry-bottom-nav :is(a,button){

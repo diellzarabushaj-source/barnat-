@@ -21,7 +21,7 @@ jobs:
       - name: Setup Node
         uses: actions/setup-node@v4
         with:
-          node-version: 22
+          node-version: 24
       - name: Validate private audit runner
         run: |
           node --check tests/icd-live-sheet-audit.js

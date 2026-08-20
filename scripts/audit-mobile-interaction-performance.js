@@ -164,13 +164,21 @@ async function installApi(page, requestLog) {
   }));
 }
 
-async function installPerfProbe(page) {
-  await page.addInitScript(() => {
+const PROBE_INTERVAL_MS = 50;
+
+async function installPerfProbe(page, intervalMs) {
+  await page.addInitScript(interval => {
     const state = {
       lastTick:performance.now(),
       maxGap:0,
       gaps:[],
+      // Every tick that overran its schedule, timestamped, so a gap can be
+      // attributed to the interaction that produced it instead of being read as
+      // one anonymous number for the whole run.
+      timeline:[],
+      marks:[],
       longTasks:[],
+      longTaskApiSupported:false,
       resizeEvents:0,
       scrollEvents:0,
     };
@@ -179,26 +187,47 @@ async function installPerfProbe(page) {
       state.lastTick = performance.now();
       state.maxGap = 0;
       state.gaps.length = 0;
+      state.timeline.length = 0;
+      state.marks.length = 0;
       state.longTasks.length = 0;
       state.resizeEvents = 0;
       state.scrollEvents = 0;
+    };
+    window.__markMobileInteractionPhase = label => {
+      state.marks.push({ label:String(label), at:performance.now() });
     };
     setInterval(() => {
       const now = performance.now();
       const gap = now - state.lastTick;
       state.lastTick = now;
       state.maxGap = Math.max(state.maxGap, gap);
+      if (gap > interval + 10) state.timeline.push({ at:now, gap:Math.round(gap * 10) / 10 });
       if (gap > 80) state.gaps.push(Math.round(gap * 10) / 10);
-    }, 50);
+    }, interval);
     try {
       const observer = new PerformanceObserver(list => {
         for (const entry of list.getEntries()) state.longTasks.push(entry.duration || 0);
       });
       observer.observe({ type:'longtask', buffered:true });
+      // WebKit does not implement the Long Tasks API. Recording whether the
+      // observer was actually accepted keeps an empty list from being mistaken
+      // for a clean main thread.
+      state.longTaskApiSupported = (PerformanceObserver.supportedEntryTypes || []).includes('longtask');
     } catch {}
     window.addEventListener('resize', () => { state.resizeEvents += 1; }, { passive:true });
     window.addEventListener('scroll', () => { state.scrollEvents += 1; }, { passive:true, capture:true });
-  });
+  }, intervalMs);
+}
+
+// The longest the page's own code held the main thread inside a phase. A tick
+// that fires `intervalMs` late was never blocked; anything beyond that is time
+// the event loop could not run, which is what a user feels as jank.
+function blockingWithin(probe, startLabel, endLabel, intervalMs) {
+  const start = probe.marks.find(mark => mark.label === startLabel);
+  const end = probe.marks.find(mark => mark.label === endLabel);
+  if (!start || !end) return null;
+  const inside = probe.timeline.filter(tick => tick.at > start.at && tick.at <= end.at + intervalMs);
+  return Math.max(0, Math.round(Math.max(0, ...inside.map(tick => tick.gap - intervalMs))));
 }
 
 function elapsed(startedAt) {
@@ -231,7 +260,7 @@ async function waitForRequestCount(requestLog, predicate, minimum, timeoutMs = 3
     const pageErrors = [];
     page.on('pageerror', error => pageErrors.push(String(error?.message || error)));
 
-    await installPerfProbe(page);
+    await installPerfProbe(page, PROBE_INTERVAL_MS);
     await installApi(page, requestLog);
 
     const navigationStarted = Date.now();
@@ -251,8 +280,7 @@ async function waitForRequestCount(requestLog, predicate, minimum, timeoutMs = 3
     await search.fill('INTERACTION TARGET 30');
     const typingDispatchMs = elapsed(typingStarted);
     await waitForRequestCount(requestLog, item => item.view === 'registry-page' && item.q === 'INTERACTION TARGET 30', 1);
-    await page.locator('#tbody .mobile-lite-card').first().waitFor({ state:'visible', timeout:3000 });
-    await page.locator('#tbody').waitFor({ state:'visible' });
+    await page.locator('#tbody .mobile-lite-card').filter({ hasText:'INTERACTION TARGET 30' }).waitFor({ state:'visible', timeout:3000 });
     assert.match(await page.locator('#tbody').innerText(), /INTERACTION TARGET 30/);
     const searchSettleMs = elapsed(typingStarted);
     const searchRequestAfter = requestLog.filter(item => item.view === 'registry-page').length;
@@ -266,23 +294,26 @@ async function waitForRequestCount(requestLog, predicate, minimum, timeoutMs = 3
 
     const statusBefore = requestLog.filter(item => item.view === 'registry-page').length;
     const statusStarted = Date.now();
-    await page.locator('#statusFilter').selectOption('Origjinator');
+    // The compact phone UI owns the visible filter sheet; this audit targets
+    // the underlying lightweight status interaction and its request budget.
+    await page.locator('#statusFilter').selectOption('Origjinator', { force:true });
     await waitForRequestCount(requestLog, item => item.view === 'registry-page' && item.status === 'Origjinator', 1);
-    await page.locator('#countBadge').waitFor({ state:'visible' });
+    await page.locator('#countBadge').filter({ hasText:'15 barna' }).waitFor({ state:'visible', timeout:3000 });
     assert.match(await page.locator('#countBadge').innerText(), /15 barna/);
     const statusSettleMs = elapsed(statusStarted);
     const statusAfter = requestLog.filter(item => item.view === 'registry-page').length;
     assert.equal(statusAfter - statusBefore, 1, 'Status change should produce exactly one registry-page request.');
 
-    await page.locator('#statusFilter').selectOption('');
+    await page.locator('#statusFilter').selectOption('', { force:true });
     await waitForRequestCount(requestLog, item => item.view === 'registry-page' && item.status === '' && item.includeTotal === '1', 3);
+    await page.locator('#countBadge').filter({ hasText:'75 barna' }).waitFor({ state:'visible', timeout:3000 });
     await page.locator('#pagination [data-mobile-lite-page="next"]').waitFor({ state:'visible' });
 
     const paginationBefore = requestLog.filter(item => item.view === 'registry-page').length;
     const paginationStarted = Date.now();
     await page.locator('#pagination [data-mobile-lite-page="next"]').click();
     await waitForRequestCount(requestLog, item => item.view === 'registry-page' && item.page === 2, 1);
-    await page.locator('#pagination .mobile-lite-page-label').waitFor({ state:'visible' });
+    await page.locator('#pagination .mobile-lite-page-label').filter({ hasText:'Faqja 2' }).waitFor({ state:'visible', timeout:3000 });
     assert.match(await page.locator('#pagination .mobile-lite-page-label').innerText(), /Faqja 2/);
     const paginationSettleMs = elapsed(paginationStarted);
     const paginationAfter = requestLog.filter(item => item.view === 'registry-page').length;
@@ -291,7 +322,9 @@ async function waitForRequestCount(requestLog, predicate, minimum, timeoutMs = 3
     const more = page.locator('#tbody .mobile-lite-more').first();
     const detailBefore = requestLog.filter(item => item.view === 'registry-detail').length;
     const detailStarted = Date.now();
-    await more.click();
+    // Measure application feedback from event dispatch, not Playwright's
+    // actionability/scroll bookkeeping (physical taps are covered separately).
+    await more.dispatchEvent('click');
     await page.locator('#mobileLiteDrugDetail').waitFor({ state:'visible', timeout:1000 });
     await page.locator('#mobileLiteDrugDetail .mobile-lite-detail-loading').waitFor({ state:'visible', timeout:1000 });
     const detailLoadingVisibleMs = elapsed(detailStarted);
@@ -303,7 +336,7 @@ async function waitForRequestCount(requestLog, predicate, minimum, timeoutMs = 3
 
     const closeButton = page.locator('#mobileLiteDrugDetail .mobile-lite-detail-head [data-mobile-lite-close]');
     const closeStarted = Date.now();
-    await closeButton.click();
+    await closeButton.dispatchEvent('click');
     await page.locator('#mobileLiteDrugDetail').waitFor({ state:'hidden', timeout:1000 });
     await page.waitForTimeout(40);
     const detailCloseMs = elapsed(closeStarted);
@@ -321,12 +354,25 @@ async function waitForRequestCount(requestLog, predicate, minimum, timeoutMs = 3
     });
     const scrollSequenceMs = elapsed(scrollStarted);
 
+    // Two numbers come out of the resize sequence and they answer different
+    // questions.
+    //
+    // `resizeSequenceMs` is wall-clock time across four inspector-protocol round
+    // trips plus WebKit's own viewport pipeline. A phone pays none of that, so it
+    // is reported and guarded only against an outright hang.
+    //
+    // `resizeBlockingMs` is what a user actually feels: the longest the page's own
+    // resize handlers held the main thread. That is the responsiveness gate, and
+    // it is far tighter than the wall clock it replaces — 650ms of protocol time
+    // could hide hundreds of milliseconds of real jank.
+    await page.evaluate(() => window.__markMobileInteractionPhase?.('resize:start'));
     const resizeStarted = Date.now();
     await page.setViewportSize({ width:430, height:844 });
     await page.evaluate(() => new Promise(resolve => requestAnimationFrame(() => requestAnimationFrame(resolve))));
     await page.setViewportSize({ width:375, height:812 });
     await page.evaluate(() => new Promise(resolve => requestAnimationFrame(() => requestAnimationFrame(resolve))));
     const resizeSequenceMs = elapsed(resizeStarted);
+    await page.evaluate(() => window.__markMobileInteractionPhase?.('resize:end'));
     const overflow = await page.evaluate(() => ({
       width:innerWidth,
       html:document.documentElement.scrollWidth,
@@ -336,6 +382,7 @@ async function waitForRequestCount(requestLog, predicate, minimum, timeoutMs = 3
     assert.ok(overflow.body <= overflow.width + 1, `Resize introduced body overflow (${overflow.body} > ${overflow.width}).`);
 
     const probe = await page.evaluate(() => ({ ...window.__medindexMobileInteractionProbe }));
+    const resizeBlockingMs = blockingWithin(probe, 'resize:start', 'resize:end', PROBE_INTERVAL_MS);
     const registryRequests = requestLog.filter(item => item.view === 'registry-page');
     const detailRequests = requestLog.filter(item => item.view === 'registry-detail');
 
@@ -352,6 +399,8 @@ async function waitForRequestCount(requestLog, predicate, minimum, timeoutMs = 3
       detailCloseMs,
       scrollSequenceMs,
       resizeSequenceMs,
+      resizeBlockingMs,
+      probeIntervalMs:PROBE_INTERVAL_MS,
       pageDelayMs:PAGE_DELAY_MS,
       detailDelayMs:DETAIL_DELAY_MS,
       registryRequestCount:registryRequests.length,
@@ -373,9 +422,19 @@ async function waitForRequestCount(requestLog, predicate, minimum, timeoutMs = 3
     assert.ok(detailSettleMs <= DETAIL_DELAY_MS + 450, `Medicine detail added excessive client latency (${detailSettleMs}ms).`);
     assert.ok(detailCloseMs <= 250, `Medicine detail did not close responsively (${detailCloseMs}ms).`);
     assert.ok(scrollSequenceMs <= 500, `Eight-frame mobile scroll sequence was sluggish (${scrollSequenceMs}ms).`);
-    assert.ok(resizeSequenceMs <= 650, `Two mobile resize passes were sluggish (${resizeSequenceMs}ms).`);
+    assert.equal(probe.resizeEvents, 2, `Two viewport changes must produce two resize events, not a storm (${probe.resizeEvents}).`);
+    assert.notEqual(resizeBlockingMs, null, 'The resize phase markers did not reach the page, so resize blocking was never measured.');
+    // Tighter than the 220ms whole-run event-loop budget, and well inside it:
+    // the observed cost of the two resize passes is ~90ms of blocking, so this
+    // catches a regression without turning runner variance into a failure.
+    assert.ok(resizeBlockingMs <= 150, `Mobile resize handlers blocked the main thread for ${resizeBlockingMs}ms.`);
+    assert.ok(resizeSequenceMs <= 2500, `Two mobile resize passes never completed (${resizeSequenceMs}ms) — this guard catches a hang, not sluggishness.`);
     assert.ok(probe.maxGap <= 220, `Mobile interactions produced an excessive event-loop gap (${probe.maxGap}ms).`);
-    assert.ok(Math.max(0, ...probe.longTasks) <= 220, `Mobile interactions produced an excessive long task (${Math.max(0, ...probe.longTasks)}ms).`);
+    // WebKit has no Long Tasks API, so an empty list there proves nothing and
+    // must not be read as a pass.
+    if (probe.longTaskApiSupported) {
+      assert.ok(Math.max(0, ...probe.longTasks) <= 220, `Mobile interactions produced an excessive long task (${Math.max(0, ...probe.longTasks)}ms).`);
+    }
     assert.deepEqual(pageErrors, [], `Mobile interaction audit saw runtime errors: ${JSON.stringify(pageErrors)}`);
 
     await context.close();

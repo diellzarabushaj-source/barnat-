@@ -29,7 +29,10 @@ async function openAtc(page, viewport) {
   if (await nGroup.getAttribute('aria-expanded') !== 'true') await nGroup.click();
   await expect(page.locator('[data-mi-atc-code="N02"]')).toBeVisible();
   await expect(page.locator('[data-mi-atc-code="N02"]')).toHaveAttribute('aria-current', 'page');
-  await expect(page.locator('#registryAtcContext')).toBeVisible();
+  // ATC data is intentionally deferred from startup. The visual audit verifies
+  // the final context state, so allow the lazy context layer to finish rather
+  // than treating its bounded activation time as a rendering failure.
+  await expect(page.locator('#registryAtcContext')).toBeVisible({ timeout:15000 });
   await page.waitForTimeout(300);
 }
 

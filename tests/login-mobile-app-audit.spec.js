@@ -1,9 +1,10 @@
 const { test, expect } = require('@playwright/test');
 const fs = require('node:fs');
+const os = require('node:os');
 const path = require('node:path');
 
 const BASE = 'http://127.0.0.1:4173';
-const OUTPUT = '/tmp/login-mobile-app';
+const OUTPUT = path.join(os.tmpdir(), 'login-mobile-app');
 
 const phones = [
   { name:'phone-320', width:320, height:700 },

@@ -36,6 +36,30 @@ html.medindex-tailadmin[data-mi-page="barnat"] body #registryContent #dataTable[
   margin-block:-12px!important;
 }
 
+/* Përzgjedhja e barit mund të materializohet para klasës së auditimit të faqes.
+   Mbaje etiketën 44px në çdo fazë të runtime-it; kutia vizuale brenda mbetet e
+   vogël, ndërsa zona reale e prekjes është e sigurt për telefon dhe tablet. */
+html.medindex-tailadmin[data-mi-page="barnat"] body #registryContent #dataTable .registry-selection-control{
+  display:grid!important;
+  width:var(--mi-touch)!important;
+  min-width:var(--mi-touch)!important;
+  height:var(--mi-touch)!important;
+  min-height:var(--mi-touch)!important;
+  margin:auto!important;
+  place-items:center!important;
+  cursor:pointer!important;
+}
+
+/* CSS-i i kartelave mobile mund ta ngushtojë këtë kontroll në 25px pasi ai
+   krijohet me vonesë. Ky është kontroll real (jo vetëm ikonë), prandaj ruaje
+   mbi dyshemenë kompakte të auditit në të gjitha gjendjet. */
+html.medindex-tailadmin[data-mi-page="barnat"] body #registryContent #dataTable .registry-cell-preview-trigger{
+  width:30px!important;
+  min-width:30px!important;
+  height:30px!important;
+  min-height:30px!important;
+}
+
 /* Faqosja: butonat ishin 35px. Gjerësia 35px është nën 44 po mbi pragun 24 të
    portës; këtu rregullohet lartësia dhe gjerësia minimale bashkë. */
 html.medindex-tailadmin[data-mi-page="barnat"] body #pagination.pagination :is(button, a){

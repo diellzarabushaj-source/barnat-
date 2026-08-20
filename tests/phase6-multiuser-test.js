@@ -217,8 +217,14 @@ await expectCode(
     loaded:true,
     exports:{
       neonRequest:async (path, options = {}) => {
-        requests.push({ path, method:options.method || 'GET' });
+        requests.push({ path, method:options.method || 'GET', body:options.body });
         if (path.startsWith('profiles?select=id&role=eq.admin')) return { data:activeAdmins };
+        if (path.startsWith('profiles?select=id,full_name,role,status,legacy_user_id,verification_status&id=eq.')) {
+          return { data:[{ id:'doctor-1', full_name:'Doctor', role:'doctor', status:'pending', verification_status:'submitted' }] };
+        }
+        if (path === 'rpc/review_medindex_registration') {
+          return { data:{ id:'doctor-1', role:'doctor', status:'active', verificationStatus:'verified' } };
+        }
         return { data:[] };
       },
     },
@@ -248,6 +254,13 @@ await expectCode(
 
   await expectCode(AdminUsers.updateUser(actor, {}), 'USER_ID_MISSING', 400);
 
+  const approved = await AdminUsers.updateUser(actor, { userId:'doctor-1', status:'active' });
+  assert.equal(approved.user.status, 'active');
+  const reviewCall = requests.find(request => request.path === 'rpc/review_medindex_registration');
+  assert.equal(reviewCall.method, 'POST', 'approval must call the transactional review RPC');
+  assert.equal(reviewCall.body.p_actor_id, actor.authUid);
+  assert.equal(reviewCall.body.p_target_id, 'doctor-1');
+
   assert.equal(AdminUsers._test.storageUidOf({ id:'auth-1', legacy_user_id:'' }), 'auth-1',
     'a new account stores its library under its own Auth UUID');
   assert.equal(AdminUsers._test.storageUidOf({ id:'auth-1', legacy_user_id:'legacy-9' }), 'legacy-9',
@@ -262,7 +275,7 @@ await expectCode(
 
 {
   const DataApi = require('../lib/neon-data-api.js');
-  for (const relation of ['profiles', 'user_drugs', 'user_favorites', 'user_prescriptions']) {
+  for (const relation of ['profiles', 'verification_documents', 'user_drugs', 'user_favorites', 'user_prescriptions']) {
     assert.ok(DataApi._test.isPrivateServerRelation(relation),
       `${relation} must be read through the server-only key, never the publishable key`);
     assert.ok(DataApi._test.shouldUseSupabaseServer(`${relation}?select=id`),

@@ -53,6 +53,56 @@ assert.match(coreTail, /const matches = window\.MedIndexATC\?\.matchesCategory/,
 assert.match(coreTail, /RAW\.filter\(row => matches\(row\['ATC Code'\], activeAtc\)\)/, 'The canonical matcher must filter the registry rows');
 assert.match(coreTail, /medindex:registry-atc-state/, 'Registry must publish the active category state for later UI integration');
 
+// `atc-shared.js` is intent-deferred below the desktop breakpoint, so on a tablet
+// the registry boots with no `window.MedIndexATC` at all. Before this fallback a
+// shared `index.html?atc=N02` link simply lost its category there: the state read
+// returned an empty ATC, the context panel stayed hidden and every row was listed.
+// These assertions run the shipped source with the helper absent.
+{
+  const vm = require('node:vm');
+  const extract = name => {
+    const start = coreTail.indexOf(`function ${name}(`);
+    assert.ok(start >= 0, `${name} must exist in the registry runtime`);
+    const end = coreTail.indexOf('\n}\n', start);
+    assert.ok(end > start, `${name} must be a complete declaration`);
+    return coreTail.slice(start, end + 3);
+  };
+
+  const sandbox = {
+    REGISTRY_DEFAULT_PAGE_SIZE:50,
+    REGISTRY_ALLOWED_PAGE_SIZES:new Set([25, 50, 100]),
+    URLSearchParams,
+    window:{ location:{ href:'https://medindex.test/index.html?atc=N02&q=parac&page=3', search:'?atc=N02&q=parac&page=3' } },
+  };
+  vm.createContext(sandbox);
+  vm.runInContext(
+    [
+      extract('sanitizeRegistryPageSize'),
+      extract('normalizeRegistryAtcCode'),
+      extract('readRegistryUrlState'),
+      extract('matchesRegistryAtcCategory'),
+      'globalThis.urlState = readRegistryUrlState();',
+      'globalThis.matchesAtc = matchesRegistryAtcCategory;',
+    ].join('\n'),
+    sandbox,
+  );
+
+  assert.equal(sandbox.urlState.atc, 'N02', 'A deep link must keep its ATC category when the shared helper has not loaded yet');
+  assert.equal(sandbox.urlState.query, 'parac', 'A deep link must keep its search term without the shared helper');
+  assert.equal(sandbox.urlState.page, 3, 'A deep link must keep its page without the shared helper');
+  assert.equal(sandbox.urlState.pageSize, 50, 'A missing pageSize must fall back to the registry default');
+
+  // The panel announces an active category; the rows must actually be filtered to
+  // it, or the registry would claim a filter it never applied.
+  assert.equal(sandbox.matchesAtc('N02BE01', 'N02'), true);
+  assert.equal(sandbox.matchesAtc('N03AX14', 'N02'), false);
+  assert.equal(sandbox.matchesAtc('', 'N02'), false);
+  assert.equal(sandbox.matchesAtc('N02BE01', ''), false, 'An empty category must never match every row');
+
+  assert.match(coreTail, /const matches = window\.MedIndexATC\?\.matchesCategory \|\| matchesRegistryAtcCategory/,
+    'ATC row filtering must fall back to the local matcher while the shared helper is deferred');
+}
+
 const atcFilterPosition = coreTail.indexOf('let rows = getRegistryAtcRows();');
 const searchPosition = coreTail.indexOf('const q = normalizeSearchText(state.search);', atcFilterPosition);
 const renderSource = read('app-parts/part-03.txt') + read('app-parts/part-04.txt');

@@ -54,7 +54,7 @@ assert.match(desktop, /params\.set\('status', state\.status\)/);
 assert.match(desktop, /params\.set\('formExact', state\.formValue\)/, 'Exact pharmaceutical form must stay on the lightweight server filter.');
 assert.match(desktop, /params\.set\('formCategory', state\.formValue\)/, 'Pharmaceutical-form categories must stay on the lightweight server filter.');
 assert.match(desktop, /const nextQuery = clean\(search\.value\)\.slice\(0, 80\)/, 'Desktop search must resolve a bounded settled query before requesting data.');
-assert.match(desktop, /if \(nextQuery\.length === 1\) return;/, 'One-character desktop search must not trigger an unfiltered registry request.');
+assert.match(desktop, /if \(nextQuery\.length === 1\) \{\s*setBusy\(false\);\s*return;\s*\}/, 'One-character desktop search must clear pending state without triggering an unfiltered registry request.');
 assert.match(desktop, /state\.total = null;\s*state\.totalPages = null;/, 'Count-free desktop searches must clear stale totals.');
 assert.match(desktop, /loadPage\(\{ includeTotal:nextQuery\.length === 0, scroll:false \}\)/, 'Non-empty desktop search must skip exact total counting; clearing search restores it.');
 assert.match(desktop, /desktopLiteHeaderSignature/, 'Desktop header rebuilds must be deduplicated by sort state.');

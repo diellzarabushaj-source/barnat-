@@ -21,7 +21,6 @@
   let activeOverlay = null;
   let returnFocus = null;
   let shellWasInert = false;
-  let navWasInert = false;
   let keyboardFrame = 0;
 
   root.dataset.registryPhoneHardening = VERSION;
@@ -51,13 +50,16 @@
     const nav = document.getElementById('miRegistryBottomNav');
     if (enabled) {
       shellWasInert = Boolean(shell?.inert);
-      navWasInert = Boolean(nav?.inert);
       if (shell) shell.inert = true;
       if (nav) nav.inert = true;
       return;
     }
     if (shell) shell.inert = shellWasInert;
-    if (nav) nav.inert = navWasInert;
+    if (typeof window.MedIndexRegistryMobilePhase3?.syncNavigation === 'function') {
+      window.MedIndexRegistryMobilePhase3.syncNavigation();
+    } else if (nav) {
+      nav.inert = false;
+    }
   }
 
   function restoreTrigger() {

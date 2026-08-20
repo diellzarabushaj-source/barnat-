@@ -1,6 +1,6 @@
 # Phase 3 — Supabase-only runtime cutover
 
-Status: **merged to `main`; production deployment verification pending.**
+Status: **Supabase-only runtime active; Supabase Auth and multi-user approval are active.**
 
 Main source cutover commit: `54d60a40992c046cf3545231eb6f55570fd3e5e0`.
 
@@ -11,7 +11,7 @@ Main source cutover commit: `54d60a40992c046cf3545231eb6f55570fd3e5e0`.
 - Clinical editor writes: Supabase.
 - Favorites and saved prescriptions: Supabase.
 - Drive sync state, sync runs and sync outbox: Supabase.
-- Existing MedIndex signed-cookie / Google login remains the identity layer for now.
+- Supabase Auth verifies Google identity; `public.profiles` is the single source of truth for role, approval and verification state.
 - Neon is no longer a runtime database provider. The old Neon project is retained only as a detached safety backup.
 
 The legacy module name `lib/neon-data-api.js` is intentionally retained as a compatibility adapter so the cutover does not require a risky repo-wide import rename. Its runtime implementation is Supabase-only and provider environment flags cannot re-enable Neon traffic.
@@ -68,7 +68,9 @@ MEDINDEX_SUPABASE_SECRET_KEY=<server secret key>
 
 ## Identity continuity
 
-Supabase Auth remains a separate future migration. Current MedIndex auth stays active. If the Supabase `medindex_users` row is absent during cutover, `userFromSession()` recreates the authorized row from the verified signed session and preserves `session.uid`, so existing favorites/prescriptions continue to point to the same user UUID.
+Supabase Auth is the canonical identity provider. The signed HttpOnly MedIndex session stores the verified Auth UUID plus the approved profile role/status. Every shared write rechecks the live profile, while `medindex_users.enabled` remains an immediate private-library revocation switch. If the private row is absent, `userFromSession()` recreates it only from an already approved Supabase session and preserves `session.uid`, so existing favorites/prescriptions remain attached.
+
+Professional registration documents are stored only in the private `professional-verifications` bucket. The metadata table denies direct browser access. A short-lived enrollment cookie can submit a document but can never become an application session; only an active admin can generate a 60-second signed document URL. Approval and rejection run through `review_medindex_registration()` as a single audited transaction.
 
 ## Regression contract
 

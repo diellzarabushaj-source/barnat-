@@ -48,7 +48,7 @@ assert.match(labsSource, /NEON_TIMEOUT_MS/, 'laboratory network timeout is missi
 
 assert.match(publishSource, /MINIMUM_REGISTRY_ROWS = 3500/, 'registry publication minimum gate is missing');
 assert.match(publishSource, /editorial_status:'published', is_published:true/, 'complete registry publication is missing');
-assert.match(packageJson.scripts['sync:neon'], /publish-neon-registry\.js/, 'registry publication must run after sync');
+assert.match(packageJson.scripts['sync:supabase'], /publish-neon-registry\.js/, 'Supabase registry publication must run after sync');
 assert.match(packageJson.scripts['build:runtime'], /patch-neon-offline\.js/, 'single-version cache cutover must run during build');
 
 assert.match(serviceWorker, /QUERY_DATA_PATHS = new Set\(\['\/api\/drug-search', '\/api\/icd'\]\)/, 'ICD and labs query caches are not isolated');

@@ -7,7 +7,7 @@ const vm = require('node:vm');
 const { execFileSync } = require('node:child_process');
 
 const ROOT = path.resolve(__dirname, '..');
-const read = file => fs.readFileSync(path.join(ROOT, file), 'utf8');
+const read = file => fs.readFileSync(path.join(ROOT, file), 'utf8').replace(/\r\n?/g, '\n');
 
 const ui = read('registry-user-personalization.js');
 const client = read('user-library-client.js');

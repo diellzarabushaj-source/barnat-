@@ -136,7 +136,7 @@ function patchApi() {
   );
 
   if (!source.includes("params.set('atc_code', `ilike.${atc}*`)")) {
-    throw new Error('Registry-page API is not applying the ATC prefix in Neon.');
+    throw new Error('Registry-page API is not applying the ATC prefix in Supabase.');
   }
   write('api/drug-search.js', source);
 }
@@ -261,7 +261,27 @@ function patchMobile() {
   write('registry-mobile-lite.js', source);
 }
 
+function rewriteSupabaseSourceLabels() {
+  const replacements = new Map([
+    ['registry-desktop-lite.js', [
+      ['· Neon lightweight', '· Supabase'],
+      ['Rezultate lightweight nga Neon', 'Rezultate nga Supabase'],
+    ]],
+    ['registry-mobile-lite.js', []],
+    ['registry-mobile-phase4.js', []],
+  ]);
+  for (const [file, labels] of replacements) {
+    let source = read(file).replaceAll("source:'neon'", "source:'supabase'");
+    for (const [before, after] of labels) source = source.replaceAll(before, after);
+    if (/source:'neon'|Neon lightweight|nga Neon/.test(source)) {
+      throw new Error(`${file} still exposes the retired Neon runtime source.`);
+    }
+    write(file, source);
+  }
+}
+
 patchApi();
 patchDesktop();
 patchMobile();
-console.log('Registry ATC URL state now filters bounded Neon pages on desktop and mobile; count invalidation survives the composed build.');
+rewriteSupabaseSourceLabels();
+console.log('Registry ATC URL state now filters bounded Supabase pages on desktop and mobile; count invalidation survives the composed build.');

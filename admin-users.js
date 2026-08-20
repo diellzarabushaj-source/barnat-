@@ -34,7 +34,10 @@
     suspended:'is-suspended',
     disabled:'is-disabled',
   };
-  const ROLE_LABELS = { admin:'Administrator', doctor:'Mjek' };
+  const ROLE_LABELS = { admin:'Administrator', doctor:'Mjek / student i mjekësisë' };
+  const VERIFICATION_LABELS = {
+    missing:'pa dokument', submitted:'dokument në shqyrtim', verified:'dokument i verifikuar', rejected:'dokument i refuzuar',
+  };
 
   let csrfToken = '';
   let busy = false;
@@ -71,8 +74,8 @@
     return payload;
   }
 
-  async function request(options = {}) {
-    const response = await fetch(ENDPOINT, {
+  async function request(options = {}, endpoint = ENDPOINT) {
+    const response = await fetch(endpoint, {
       credentials:'same-origin', cache:'no-store', ...options,
       headers:{ Accept:'application/json', ...(options.headers || {}) },
     });
@@ -95,15 +98,21 @@
   function actionsFor(user) {
     const actions = [];
     if (user.status === 'pending') {
-      actions.push({ label:'Aprovo', status:'active', primary:true });
+      if (user.verificationDocument?.status === 'uploaded' || user.verificationDocument?.status === 'approved') {
+        actions.push({ label:'Aprovo', status:'active', primary:true });
+      }
+      actions.push({ label:'Refuzo', status:'disabled', danger:true, rejection:true });
     }
     if (user.status === 'active') {
       actions.push({ label:'Pezullo', status:'suspended', danger:true });
       if (user.role !== 'admin') actions.push({ label:'Bëje admin', role:'admin' });
       else actions.push({ label:'Bëje mjek', role:'doctor' });
     }
-    if (user.status === 'suspended' || user.status === 'disabled') {
+    if (user.status === 'suspended' || (user.status === 'disabled' && user.verificationStatus === 'verified')) {
       actions.push({ label:'Riaktivizo', status:'active', primary:true });
+    }
+    if (user.status === 'disabled' && user.verificationStatus !== 'verified') {
+      actions.push({ label:'Kthe në pritje', status:'pending', primary:true });
     }
     return actions;
   }
@@ -117,6 +126,7 @@
         `data-user-id="${escapeHtml(user.id)}"`,
         action.status ? `data-status="${escapeHtml(action.status)}"` : '',
         action.role ? `data-role="${escapeHtml(action.role)}"` : '',
+        action.rejection ? 'data-rejection="1"' : '',
       ].filter(Boolean).join(' ');
       return `<button type="button" class="${classes.join(' ')}" ${attrs}>${escapeHtml(action.label)}</button>`;
     }).join('');
@@ -135,6 +145,8 @@
             <strong>${escapeHtml(user.email || '—')}</strong>
             ${user.fullName ? `<small>${escapeHtml(user.fullName)}</small>` : ''}
             ${user.hasLegacyData ? '<small class="mi-users-tag">bibliotekë e migruar</small>' : ''}
+            <small>${escapeHtml(VERIFICATION_LABELS[user.verificationStatus] || user.verificationStatus || 'pa dokument')}</small>
+            ${user.verificationDocument ? `<button type="button" class="mi-users-action" data-document-id="${escapeHtml(user.verificationDocument.id)}">Hap ${escapeHtml(user.verificationDocument.filename || 'dokumentin')}</button>` : ''}
           </td>
           <td>${escapeHtml(ROLE_LABELS[user.role] || user.role || '—')}</td>
           <td><span class="mi-badge ${STATUS_BADGE[user.status] || 'is-disabled'}">${escapeHtml(STATUS_LABELS[user.status] || user.status)}</span></td>
@@ -156,6 +168,14 @@
     try {
       await session();
       const payload = await request();
+      // Only a real accounts payload reveals the panel. Anything else — an
+      // endpoint that answers with something other than a user list — leaves it
+      // hidden rather than rendering an empty admin surface on a page that is
+      // not meant to show one.
+      if (!Array.isArray(payload.users)) {
+        elements.panel.hidden = true;
+        return;
+      }
       elements.panel.hidden = false;
       render(payload);
     } catch (error) {
@@ -175,6 +195,10 @@
     if (busy) return;
     const userId = button.dataset.userId;
     if (!userId) return;
+    const rejectionReason = button.dataset.rejection === '1'
+      ? window.prompt('Arsyeja e refuzimit (opsionale):', '')
+      : '';
+    if (rejectionReason === null) return;
 
     busy = true;
     const original = button.textContent;
@@ -186,6 +210,7 @@
       const body = { userId };
       if (button.dataset.status) body.status = button.dataset.status;
       if (button.dataset.role) body.role = button.dataset.role;
+      if (button.dataset.rejection === '1') body.rejectionReason = rejectionReason;
       await request({
         method:'PATCH',
         body:JSON.stringify(body),
@@ -204,7 +229,24 @@
 
   elements.rows?.addEventListener('click', event => {
     const button = event.target.closest('.mi-users-action');
-    if (button) void applyChange(button);
+    if (!button) return;
+    if (button.dataset.documentId) {
+      const preview = window.open('', '_blank', 'noopener');
+      void request({
+        method:'GET',
+        headers:{ Accept:'application/json' },
+      }, `/api/auth?scope=verification&document=${encodeURIComponent(button.dataset.documentId)}`)
+        .then(payload => {
+          if (preview) preview.location.replace(payload.url);
+          else location.href = payload.url;
+        })
+        .catch(error => {
+          preview?.close();
+          setMessage(error.message, true);
+        });
+      return;
+    }
+    void applyChange(button);
   });
 
   elements.refresh?.addEventListener('click', () => void load());

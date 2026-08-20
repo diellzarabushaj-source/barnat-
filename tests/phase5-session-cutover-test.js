@@ -62,7 +62,9 @@ const { pathToFileURL } = require('node:url');
   const library = fs.readFileSync(path.resolve(__dirname, '../lib/user-library.js'), 'utf8');
 
   assert.match(apiAuth, /exchangeGoogleIdToken/, 'Normal Google login must exchange through Supabase Auth');
-  assert.match(apiAuth, /SupabaseAuth\.requireDoctor/, 'Normal Google login must enforce the active doctor/admin profile');
+  assert.match(apiAuth, /SupabaseAuth\.identityFromRequest/, 'Normal Google login must verify the canonical Supabase profile');
+  assert.match(apiAuth, /SupabaseAuth\.assertActive\(canonicalIdentity\)/,
+    'Only an active doctor/admin profile may receive an application session after the pending enrollment branch');
   assert.match(apiAuth, /nonce:sha256Hex\(suppliedCsrf\)/, 'Server-side Google nonce verification must use SHA-256');
   assert.match(apiAuth, /LEGACY_OWNER_MAPPING_MISSING/, 'Owner login must fail closed without the trusted legacy mapping');
   assert.match(apiAuth, /LEGACY_OWNER_MAPPING_MISMATCH/, 'Owner login must fail closed on a mapping mismatch');
