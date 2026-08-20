@@ -10,6 +10,9 @@ const PUBLIC_INFO_PATHS = new Set([
 const PUBLIC_PATHS = new Set([
   // Registration is by definition reachable without a session: the person
   // filling it in does not have one yet, and will not until an admin approves.
+  // Both spellings: `vercel.json` rewrites the clean URL to the file, and
+  // middleware runs before that rewrite, so it sees the path the visitor typed.
+  '/regjistrimi',
   '/regjistrimi.html',
   '/regjistrimi.js',
   '/auth-shell.css',
