@@ -53,7 +53,7 @@ jobs:
       - name: Setup Node
         uses: actions/setup-node@v4
         with:
-          node-version: '22'
+          node-version: '24'
       - name: Phase 5 dual-identity contract
         run: node tests/phase5-session-cutover-test.js
       - name: Existing Google and encrypted-library contract

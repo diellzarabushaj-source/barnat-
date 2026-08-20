@@ -36,7 +36,7 @@ jobs:
       - name: Setup Node
         uses: actions/setup-node@v4
         with:
-          node-version: 22
+          node-version: 24
 
       - name: Verify pediatric, parenteral and adaptive calculator rules
         run: node tests/dose-row-visual-rules-test.js
