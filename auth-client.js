@@ -5,8 +5,8 @@
   /* Faqja hyrëse. Duhet të përputhet me LOGIN_PAGE te middleware.ts —
      ndryshimi i njërës pa tjetrën i çon vizitorët te dy dizajne të ndryshme. */
   const LOGIN_PAGE = '/login-v2.html';
-  const OFFLINE_LEASE_KEY = 'medindex_offline_lease_v2';
-  const LEGACY_OFFLINE_LEASE_KEYS = ['medindex_offline_lease_v1'];
+  const OFFLINE_LEASE_KEY = 'medindex_offline_lease_v3';
+  const LEGACY_OFFLINE_LEASE_KEYS = ['medindex_offline_lease_v2', 'medindex_offline_lease_v1'];
   const OFFLINE_RUNTIME_SRC = '/offline-runtime-performance.js?v=low-bandwidth-v3';
   const PROFESSIONAL_RUNTIME_SRC = '/tailadmin-professional.js?v=production-audit-v2';
   const PROFESSIONAL_VERSION = 'production-audit-v2';
@@ -83,12 +83,18 @@
     try { LEGACY_OFFLINE_LEASE_KEYS.forEach(key => localStorage.removeItem(key)); } catch {}
   }
 
+  function phase5Session(payload = {}) {
+    return Number(payload.sessionVersion) === 3
+      && (payload.supabaseAuthenticated === true || payload.rollbackSession === true);
+  }
+
   function readOfflineLease() {
     removeLegacyOfflineLeases();
     try {
       const lease = JSON.parse(localStorage.getItem(OFFLINE_LEASE_KEY) || 'null');
       const now = Date.now();
-      if (!lease || lease.version !== 2 || lease.hardened !== true) return null;
+      if (!lease || lease.version !== 3 || lease.hardened !== true) return null;
+      if (lease.supabaseAuthenticated !== true && lease.rollbackSession !== true) return null;
       if (!Number.isFinite(lease.verifiedAt) || !Number.isFinite(lease.expiresAt)) return null;
       if (lease.verifiedAt > now + 5 * 60 * 1000) return null;
       if (lease.expiresAt <= now || lease.expiresAt - lease.verifiedAt > MAX_OFFLINE_LEASE_MS) return null;
@@ -97,12 +103,15 @@
   }
 
   function saveOfflineLease(payload = {}) {
-    if (payload.authenticated !== true || payload.hardened !== true) return null;
+    if (payload.authenticated !== true || payload.hardened !== true || !phase5Session(payload)) return null;
     const sessionHours = Math.min(8, Math.max(1, Number(payload.sessionHours || 8)));
     const verifiedAt = Date.now();
     const lease = {
-      version:2,
+      version:3,
       hardened:true,
+      identityContract:String(payload.identityContract || ''),
+      supabaseAuthenticated:payload.supabaseAuthenticated === true,
+      rollbackSession:payload.rollbackSession === true,
       verifiedAt,
       expiresAt:verifiedAt + sessionHours * 60 * 60 * 1000,
     };
@@ -157,7 +166,7 @@
 
   function goToLogin(reason = 'unauthenticated') {
     clearOfflineLease();
-    setAuthBootstrapMessage('Po hapet faqja e hyrjes…');
+    setAuthBootstrapMessage(reason === 'phase5-session-upgrade' ? 'Po përditësohet hyrja në Supabase Auth…' : 'Po hapet faqja e hyrjes…');
     settleAuth(false, { reason });
     const returnPath = safeReturnPath();
     try { sessionStorage.setItem(RETURN_KEY, returnPath); } catch {}
@@ -285,7 +294,15 @@
     if (!lease) return false;
     document.documentElement.classList.add('auth-ready', 'auth-offline');
     document.documentElement.classList.remove('auth-checking');
-    settleAuth(true, { offline:true, hardened:true, reason, expiresAt:lease.expiresAt });
+    settleAuth(true, {
+      offline:true,
+      hardened:true,
+      reason,
+      identityContract:lease.identityContract,
+      supabaseAuthenticated:lease.supabaseAuthenticated === true,
+      rollbackSession:lease.rollbackSession === true,
+      expiresAt:lease.expiresAt,
+    });
     installLogoutWhenReady();
     ensureProfessionalRuntime();
     startOfflineRuntime();
@@ -306,11 +323,19 @@
       const response = await authRequest();
       const payload = await response.json().catch(() => ({}));
       if (configurationUnavailable(response, payload)) return goToLogin('auth-not-configured');
-      if (response.status === 401 || response.status === 403 || !response.ok || !payload.authenticated || payload.hardened !== true) return showExpired();
+      if (response.status === 401 || response.status === 403 || !response.ok || !payload.authenticated || payload.hardened !== true || !phase5Session(payload)) return showExpired();
       const lease = saveOfflineLease(payload);
       if (!lease) return showExpired();
       document.documentElement.classList.remove('auth-offline');
-      window.dispatchEvent(new CustomEvent('medindex:auth-revalidated', { detail:{ authenticated:true, hardened:true } }));
+      window.dispatchEvent(new CustomEvent('medindex:auth-revalidated', {
+        detail:{
+          authenticated:true,
+          hardened:true,
+          identityContract:payload.identityContract,
+          supabaseAuthenticated:payload.supabaseAuthenticated === true,
+          rollbackSession:payload.rollbackSession === true,
+        },
+      }));
       window.MedIndexOffline?.warm?.();
     } catch {}
   }
@@ -340,7 +365,10 @@
       const payload = await response.json().catch(() => ({}));
       if (configurationUnavailable(response, payload)) return goToLogin('auth-not-configured');
       if (response.status === 401 || response.status === 403) return goToLogin('unauthenticated');
-      if (!response.ok || !payload.authenticated || payload.hardened !== true) {
+      if (response.ok && payload.authenticated && Number(payload.sessionVersion || 0) < 3) {
+        return goToLogin('phase5-session-upgrade');
+      }
+      if (!response.ok || !payload.authenticated || payload.hardened !== true || !phase5Session(payload)) {
         if (response.status >= 500 && activateOfflineLease('server-unavailable')) return;
         return goToLogin('unauthenticated');
       }

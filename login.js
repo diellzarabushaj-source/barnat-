@@ -2,7 +2,8 @@
   'use strict';
 
   const RETURN_KEY = 'medindex_return_after_login';
-  const OFFLINE_LEASE_KEY = 'medindex_offline_lease_v2';
+  const OFFLINE_LEASE_KEY = 'medindex_offline_lease_v3';
+  const LEGACY_OFFLINE_LEASE_KEYS = ['medindex_offline_lease_v2', 'medindex_offline_lease_v1'];
   const MAX_OFFLINE_LEASE_MS = 8 * 60 * 60 * 1000;
   const form = document.getElementById('loginForm');
   const password = document.getElementById('password');
@@ -62,25 +63,37 @@
     form?.setAttribute('aria-busy', String(value));
     googleButton.style.pointerEvents = value ? 'none' : '';
     googleButton.style.opacity = value ? '.65' : '';
-    if (value && provider === 'google') setGoogleStatus('Google po verifikon identitetin…');
+    if (value && provider === 'google') setGoogleStatus('Google dhe Supabase po verifikojnë identitetin…');
   }
 
   function blockForConfiguration() {
     configurationBlocked = true;
     setBusy(false);
     setGoogleStatus('Hyrja private nuk është konfiguruar ende në server.', true);
-    setMessage('Vendos SESSION_SECRET dhe GOOGLE_CLIENT_ID në Vercel. Password-i rezervë është opsional.');
+    setMessage('Vendos SESSION_SECRET, GOOGLE_CLIENT_ID dhe konfigurimin Supabase Auth në Vercel. Password-i rezervë është opsional.');
+  }
+
+  function clearLegacyOfflineLeases() {
+    try { LEGACY_OFFLINE_LEASE_KEYS.forEach(key => localStorage.removeItem(key)); } catch {}
+  }
+
+  function phase5Session(payload = {}) {
+    return Number(payload.sessionVersion) === 3
+      && (payload.supabaseAuthenticated === true || payload.rollbackSession === true);
   }
 
   function saveBootstrapLease(payload = {}) {
-    if (payload.hardened !== true) return;
+    if (payload.hardened !== true || !phase5Session(payload)) return;
     const duration = Math.min(MAX_OFFLINE_LEASE_MS, Math.max(60 * 60 * 1000, Number(payload.expiresIn || 8 * 60 * 60) * 1000));
     const verifiedAt = Date.now();
     try {
+      clearLegacyOfflineLeases();
       localStorage.setItem(OFFLINE_LEASE_KEY, JSON.stringify({
-        version:2,
+        version:3,
         hardened:true,
-        bootstrap:true,
+        identityContract:String(payload.identityContract || ''),
+        supabaseAuthenticated:payload.supabaseAuthenticated === true,
+        rollbackSession:payload.rollbackSession === true,
         verifiedAt,
         expiresAt:verifiedAt + duration,
       }));
@@ -117,11 +130,21 @@
     finally { clearTimeout(timeout); }
   }
 
+  async function sha256Hex(value) {
+    if (!window.crypto?.subtle || typeof TextEncoder !== 'function') throw new Error('Shfletuesi nuk e mbështet nonce-in e sigurt të hyrjes.');
+    const bytes = new TextEncoder().encode(String(value || ''));
+    const digest = await window.crypto.subtle.digest('SHA-256', bytes);
+    return Array.from(new Uint8Array(digest), byte => byte.toString(16).padStart(2, '0')).join('');
+  }
+
   async function completeLogin(payload) {
+    if (!phase5Session(payload)) throw new Error('Serveri nuk krijoi sesionin e ri të sigurt.');
     saveBootstrapLease(payload);
     redirecting = true;
     setMessage('U verifikua. Po hapet MedIndex…', true);
-    setGoogleStatus(`U verifikua ${payload.user?.email || 'llogaria Google'}.`);
+    setGoogleStatus(payload.supabaseAuthenticated === true
+      ? `Supabase verifikoi ${payload.user?.email || 'llogarinë Google'}.`
+      : 'U aktivizua hyrja rezervë.');
     if (password) password.value = '';
     try { sessionStorage.removeItem(RETURN_KEY); } catch {}
     await Promise.race([purgeOnlyStaleRuntimeEntries(), new Promise(resolve => setTimeout(resolve, 1200))]);
@@ -208,7 +231,7 @@
   async function initializeGoogle(config) {
     if (googleInitialized || !config.googleConfigured || !config.googleClientId) return;
     try {
-      const identity = await waitForGoogle();
+      const [identity, nonce] = await Promise.all([waitForGoogle(), sha256Hex(csrfToken)]);
       identity.initialize({
         client_id:config.googleClientId,
         callback:response => {
@@ -216,7 +239,7 @@
           if (!credential) return setGoogleStatus('Google nuk ktheu credential-in e hyrjes.', true);
           void submitCredential({ credential }, 'google');
         },
-        nonce:csrfToken,
+        nonce,
         auto_select:false,
         cancel_on_tap_outside:true,
         use_fedcm_for_prompt:true,
@@ -261,14 +284,30 @@
     void initializeGoogle(config);
   }
 
+  async function clearLegacyServerSession() {
+    try {
+      await timedFetch('/api/auth', {
+        method:'DELETE',
+        cache:'no-store',
+        credentials:'same-origin',
+        headers:{ Accept:'application/json' },
+      }, 10000, 24000);
+    } catch {}
+  }
+
   async function checkExistingSession() {
     try {
       const response = await timedFetch('/api/auth', { cache:'no-store', credentials:'same-origin', headers:{ Accept:'application/json' } }, 10000, 24000);
       const payload = await response.json().catch(() => ({}));
-      if (response.ok && payload.authenticated) {
+      if (response.ok && payload.authenticated && phase5Session(payload)) {
         redirecting = true;
         location.replace(destination());
         return;
+      }
+      if (response.ok && payload.authenticated && Number(payload.sessionVersion || 0) < 3) {
+        setGoogleStatus('Po përditësohet sesioni i vjetër në Supabase Auth…');
+        await clearLegacyServerSession();
+        return checkExistingSession();
       }
       if (!response.ok || payload.sessionConfigured === false || payload.hardened === false) {
         if (!payload.googleConfigured && !payload.passwordFallbackConfigured) blockForConfiguration();
@@ -282,6 +321,7 @@
 
   function init() {
     setBusy(false);
+    clearLegacyOfflineLeases();
     refreshWorkerInBackground();
     checkExistingSession();
   }

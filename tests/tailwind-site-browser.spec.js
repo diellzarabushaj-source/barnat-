@@ -22,6 +22,33 @@ const clinicalPages = [
 
 const publicPages = ['rreth-nesh.html', 'kontakt.html', 'blog.html'];
 
+async function mockPhase5AuthenticatedSession(page) {
+  await page.route('**/api/auth*', async route => {
+    const request = route.request();
+    const url = new URL(request.url());
+    if (request.method() !== 'GET' || url.pathname !== '/api/auth' || url.search) return route.continue();
+    await route.fulfill({
+      status:200,
+      contentType:'application/json',
+      body:JSON.stringify({
+        authenticated:true,
+        hardened:true,
+        sessionConfigured:true,
+        sessionVersion:3,
+        sessionHours:8,
+        identityContract:'phase5-ui-audit-v3',
+        supabaseAuthenticated:false,
+        rollbackSession:true,
+        user:{
+          email:'diellzarabushaj@gmail.com',
+          role:'editor',
+          name:'Diellza Rabushaj',
+        },
+      }),
+    });
+  });
+}
+
 async function auditViewport(page, label, { requireControls = false } = {}) {
   const audit = await page.evaluate(() => {
     const style = getComputedStyle(document.documentElement);
@@ -75,10 +102,11 @@ async function auditViewport(page, label, { requireControls = false } = {}) {
 for (const viewport of viewports) {
   test(`all authenticated clinical pages share the Tailwind system on ${viewport.name}`, async ({ page }) => {
     await page.setViewportSize(viewport);
+    await mockPhase5AuthenticatedSession(page);
 
     for (const file of clinicalPages) {
       await page.goto(`http://127.0.0.1:4173/${file}`, { waitUntil:'domcontentloaded' });
-      await page.waitForFunction(() => document.documentElement.classList.contains('auth-ready'), null, { timeout:20000 });
+      await expect(page.locator('html')).toHaveClass(/auth-ready/, { timeout:20000 });
       await expect(page.locator('.mi-app-shell')).toBeVisible({ timeout:20000 });
       await auditViewport(page, `${file} / ${viewport.name}`, { requireControls:true });
 
@@ -134,7 +162,7 @@ for (const viewport of viewports) {
     });
 
     await page.goto('http://127.0.0.1:4173/login.html', { waitUntil:'domcontentloaded' });
-    await page.waitForFunction(() => document.documentElement.dataset.miTailwindUi === '20260805-1');
+    await expect(page.locator('html')).toHaveAttribute('data-mi-tailwind-ui', '20260805-1', { timeout:20000 });
     await expect(page.locator('.plan-block')).toBeVisible();
     await auditViewport(page, `login.html / ${viewport.name}`, { requireControls:true });
     const ctaBox = await page.locator('.plan-cta').boundingBox();
@@ -143,7 +171,7 @@ for (const viewport of viewports) {
 
     await page.unroute('**/api/auth');
     await page.goto('http://127.0.0.1:4173/recovery.html', { waitUntil:'domcontentloaded' });
-    await page.waitForFunction(() => document.documentElement.dataset.miTailwindUi === '20260805-1');
+    await expect(page.locator('html')).toHaveAttribute('data-mi-tailwind-ui', '20260805-1', { timeout:20000 });
     await expect(page.locator('.recovery-card')).toBeVisible();
     await auditViewport(page, `recovery.html / ${viewport.name}`);
   });
