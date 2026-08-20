@@ -8,6 +8,7 @@ const read = file => fs.readFileSync(path.join(root, file), 'utf8');
 const html = read('index.html');
 const css = read('first-page-clinical.css');
 const frozenCss = read('registry-frozen-columns.css');
+const tableToolsCss = read('registry-table-tools.css');
 const js = read('first-page-clinical.js');
 const loader = read('first-page-style-loader.js');
 const offlineManifest = read('scripts/patch-offline-shell-manifest.js');
@@ -15,7 +16,8 @@ const headerSource = read('app-parts/part-02.txt');
 const rowSource = read('app-parts/part-03.txt') + read('app-parts/part-04.txt');
 
 assert.match(html, /rel="preload" href="first-page-clinical\.css\?v=20260731-1" as="style"/);
-assert.match(html, /first-page-style-loader\.js\?v=20260820-2/);
+assert.match(html, /first-page-style-loader\.js\?v=20260820-3/);
+assert.match(html, /registry-table-tools\.css\?v=20260820-3/);
 assert.match(html, /first-page-clinical\.js\?v=20260731-1/);
 const staticStylesheets = [...html.matchAll(/<link[^>]+rel="stylesheet"[^>]+href="([^"]+)"/g)].map(match => match[1]);
 const professionalCssIndex = staticStylesheets.findIndex(href => /tailadmin-professional\.css/.test(href));
@@ -29,14 +31,14 @@ assert.ok(
   html.indexOf('form-picker-clinical.js') < html.indexOf('first-page-clinical.js'),
   'The first-page runtime must enhance the completed pharmaceutical form picker.'
 );
-assert.match(loader, /VERSION = 'first-page-style-loader-20260820-2'/, 'First-page style owner must expose its cache-safe release.');
+assert.match(loader, /VERSION = 'first-page-style-loader-20260820-3'/, 'First-page style owner must expose its cache-safe release.');
 assert.match(loader, /PHONE_QUERY = '\(max-width:767px\)'/, 'First-page stylesheet loader must have an explicit phone cascade contract.');
 assert.match(loader, /data-registry-mobile-critical-css/, 'Phone first-page CSS must anchor before the mobile registry cascade.');
 assert.match(loader, /anchor\.before\(link\)/, 'Phone first-page CSS must be inserted before mobile-lite layers, not appended after them.');
 assert.match(loader, /document\.head\.appendChild\(link\)/, 'Desktop first-page CSS must retain its last-layer behavior.');
 assert.match(loader, /phone\?\.addEventListener\?\.\('change', ensure\)/, 'Stylesheet ordering must follow responsive viewport transitions.');
 assert.match(loader, /first-page-clinical\.css\?v=20260731-1/);
-assert.match(loader, /registry-frozen-columns\.css\?v=20260820-1/, 'The final frozen-column cascade must be loaded by the first-page style owner.');
+assert.match(loader, /registry-frozen-columns\.css\?v=20260820-2/, 'The final frozen-column cascade must be loaded by the first-page style owner.');
 assert.ok(loader.indexOf('place(clinical)') < loader.indexOf('place(frozen)'), 'Frozen-column CSS must follow first-page clinical CSS in the cascade.');
 assert.match(loader, /dataset\.firstPageStyleLoader = VERSION/, 'The active first-page style release must be observable in browser audits.');
 assert.match(loader, /medindex:tailadmin-ready/);
@@ -65,18 +67,20 @@ for (const marker of [
   'MedIndex registry frozen-column cascade',
   '[data-registry-column-key="number"]',
   '[data-column-key="Nr rendor"]',
+  '[data-registry-column-key="prescription-label"]',
+  '[data-column-key="Si të shënohet në recetë"]',
   '[data-registry-column-key="active-substance"]',
   '[data-column-key="Substanca aktive"]',
   '[data-registry-column-key="select"]',
   '[data-registry-column-key="trade-name"]',
-  'left:var(--registry-frozen-active-left,68px)!important',
+  'left:var(--registry-frozen-prescription-left,68px)!important',
 ]) {
   assert.ok(frozenCss.includes(marker), `final frozen-column CSS is missing ${marker}`);
 }
 assert.match(
   frozenCss,
-  /\[data-registry-column-key="select"\][\s\S]*\[data-registry-column-key="trade-name"\][\s\S]*position:relative!important;[\s\S]*left:auto!important;/,
-  'Selection and trade-name columns must be explicitly released from legacy first-page pinning.',
+  /\[data-registry-column-key="select"\][\s\S]*\[data-registry-column-key="trade-name"\][\s\S]*\[data-registry-column-key="active-substance"\][\s\S]*position:relative!important;[\s\S]*left:auto!important;/,
+  'Selection, trade-name and active-substance columns must be explicitly released from legacy pinning.',
 );
 assert.match(
   frozenCss,
@@ -85,9 +89,10 @@ assert.match(
 );
 assert.match(
   frozenCss,
-  /\[data-registry-column-key="active-substance"\][\s\S]*position:sticky!important;[\s\S]*left:var\(--registry-frozen-active-left,68px\)!important/,
-  'Substanca aktive must be the second frozen data column.',
+  /\[data-registry-column-key="prescription-label"\][\s\S]*position:sticky!important;[\s\S]*left:var\(--registry-frozen-prescription-left,68px\)!important/,
+  'Prescription notation must be the second frozen data column.',
 );
+assert.doesNotMatch(frozenCss, /data-registry-column-key="active-substance"[^}]*position:sticky/i, 'Substanca aktive must scroll normally in the final cascade.');
 
 for (const marker of [
   'medindex:first-page-audit-ready',
@@ -104,6 +109,11 @@ for (const marker of [
   'MutationObserver',
 ]) {
   assert.ok(js.includes(marker), `first-page clinical runtime is missing ${marker}`);
+}
+
+assert.match(tableToolsCss, /registry-legacy-toolbar-hidden-v2/, 'Retired toolbar controls need an explicit final visibility contract.');
+for (const control of ['#statusFilter', '#pageSize', '.selection-badge', '#protocolsBtn']) {
+  assert.ok(tableToolsCss.includes(control), `Retired toolbar control must stay hidden: ${control}`);
 }
 
 assert.doesNotMatch(js, /fetch\s*\(/, 'The visual audit layer must not fetch or replace registry data.');
@@ -125,4 +135,4 @@ assert.match(headerSource, /th\.dataset\.columnKey = col\.key/, 'Headers need st
 assert.match(rowSource, /data-column-key="' \+ columnKey \+ '"/, 'Cells need stable column keys.');
 assert.match(rowSource, /registry-selection-control/, 'Row selection needs a 44px hit target.');
 
-console.log('First-page doctor-style UI and final Nr + active-substance freeze audit passed.');
+console.log('First-page UI: retired toolbar controls hidden and final Nr + prescription-notation freeze audit passed.');
