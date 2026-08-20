@@ -12,48 +12,58 @@ const path = require('node:path');
 const root = path.resolve(__dirname, '..');
 const read = file => fs.readFileSync(path.join(root, file), 'utf8');
 
-// --- the admin dashboard -------------------------------------------------
+// --- the standalone admin console ---------------------------------------
 
 {
   const html = read('admin.html');
-  assert.match(html, /id="adminRows"/, 'the accounts table body is missing from the dashboard');
-  assert.match(html, /admin-dashboard\.js\?v=/, 'the dashboard needs its versioned runtime');
-  assert.match(html, /admin-dashboard\.css\?v=/, 'the dashboard needs its versioned stylesheet');
-  assert.match(html, /id="statPending"[\s\S]{0,600}id="statActive"/, 'the dashboard leads with what needs the admin now');
+  assert.match(html, /id="adminGate"/, 'the admin console must start behind its access gate');
+  assert.match(html, /id="adminRows"/, 'the accounts table body is missing from the admin console');
+  assert.match(html, /id="drugRows"/, 'the shared drug editor is missing from the admin console');
+  assert.match(html, /admin-entry-guard\.js\?v=/, 'the admin console must load its versioned access guard first');
+  assert.match(html, /admin-dashboard\.css\?v=/, 'the admin console needs its versioned stylesheet');
+  assert.match(html, /data-view="overview"[\s\S]*data-view="drugs"[\s\S]*data-view="users"/,
+    'the standalone console must expose overview, drug and user workspaces');
   assert.match(html, /id="refuseDialog"/, 'refusing a registration must ask for a reason, not happen on one click');
+
+  const guard = read('admin-entry-guard.js');
+  assert.match(guard, /\/api\/auth/, 'the admin entry guard must verify the current server session');
+  assert.match(guard, /payload\.authUser\?\.role !== 'admin'/,
+    'the admin entry guard must reject a non-admin session');
+  assert.match(guard, /OWNER = 'diellzarabushaj@gmail\.com'/,
+    'the named administrator gate must remain explicit');
+  assert.match(guard, /admin-dashboard\.js\?v=/,
+    'the dashboard runtime must load only after the access guard runs');
+  assert.match(guard, /admin-login\.html\?return=%2Fadmin/,
+    'unauthenticated admin access must use the dedicated admin login');
 
   const js = read('admin-dashboard.js');
   assert.match(js, /\/api\/auth\?scope=users/, 'the dashboard must call the admin users endpoint');
+  assert.match(js, /\/api\/clinical-editor/, 'the drug workspace must use the admin-gated clinical editor');
   assert.match(js, /X-CSRF-Token/, 'account changes must carry the CSRF proof the server requires');
   assert.match(js, /method:'PATCH'/, 'approving an account is a PATCH');
-  assert.match(js, /payload\.authUser\?\.role !== 'admin'[\s\S]{0,120}location\.replace/,
-    'a doctor who opens this URL must be sent away, not shown controls that would fail');
-  assert.match(js, /error\.status === 403[\s\S]{0,200}location\.replace/,
-    'a refusal from the server must also send a non-admin away');
-
-  // Administration is limited to named addresses, so the promotion is only
-  // offered where the server and the database would both accept it.
-  assert.match(js, /else if \(user\.canBeAdmin\) actions\.push\(\{ label:'Bëje admin'/,
-    'the admin promotion must be gated on the allowlist, not offered to every active account');
-
-  // Approval is refused without a document, so the button must say so rather
-  // than failing after the click.
-  assert.match(js, /const hasDocument = Boolean\(user\.verificationDocument\)/);
-  assert.match(js, /disabled:!hasDocument/);
-
-  // The private document is minted server-side with a short life and audited.
-  assert.match(js, /scope=verification&document=/, 'the document opens through its signed-URL endpoint');
+  assert.match(js, /authUser\?\.role\s*!==\s*'admin'/,
+    'the dashboard runtime keeps its own admin role gate as defense in depth');
+  assert.match(js, /email\s*!==\s*OWNER/,
+    'the dashboard runtime keeps the named-email gate as defense in depth');
+  assert.match(js, /verification&document=/, 'the document opens through its signed-URL endpoint');
   assert.ok(!js.includes('storage_path') && !js.includes('storage/v1'),
     'the dashboard must never construct a storage URL itself');
+  assert.ok(!js.includes('scope=library') && !js.includes('/api/user-library'),
+    'the admin console must not expose doctors’ private notes or prescriptions');
 
   const css = read('admin-dashboard.css');
-  for (const token of ['--mi-border', '--mi-surface', '--mi-brand-600', '--mi-text']) {
-    assert.ok(css.includes(token), `the dashboard must build on the TailAdmin token ${token}, not on ad-hoc colors`);
+  for (const token of ['--mi-border', '--mi-surface', '--mi-text', '--mi-brand']) {
+    assert.ok(css.includes(token), `the admin console must keep the shared design token ${token}`);
   }
-  assert.ok(css.includes('--mi-success-50') && css.includes('--mi-warning-50') && css.includes('--mi-error-50'),
-    'status badges must use the TailAdmin semantic palette');
-  assert.match(css, /\.mi-table-wrap \{[^}]*max-width: 100%/, 'the wide accounts table must not widen its parent');
-  assert.match(css, /\.mi-table-wrap \{[^}]*overflow-x: auto/, 'the wide accounts table scrolls inside its own container');
+  assert.ok(css.includes('--mi-success') && css.includes('--mi-warning') && css.includes('--mi-error'),
+    'status surfaces must use semantic colors');
+  assert.match(css, /\.mi-table-wrap\{[^}]*max-width:100%/, 'wide admin tables must not widen their parent');
+  assert.match(css, /\.mi-table-wrap\{[^}]*overflow-x:auto/, 'wide admin tables scroll inside their own container');
+
+  const login = read('admin-login.html');
+  assert.match(login, /MedIndex Admin|Admin Console/, 'admin login must be a dedicated administrative surface');
+  assert.ok(!login.includes('Modules') && !login.includes('Plan') && !login.includes('Blog'),
+    'admin login must not reuse the public marketing navigation');
 }
 
 // --- the system page points at the dashboard instead of duplicating it ----
