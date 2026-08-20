@@ -38,7 +38,7 @@ assert.match(index, /registry-desktop-lite\.js\?v=20260812-1/);
 assert.match(index, /registry-runtime-loader\.js\?v=20260813-10/);
 assert.ok(index.indexOf('registry-mobile-lite.js') < index.indexOf('registry-desktop-lite.js'), 'mobile lightweight path must register before desktop lightweight startup');
 assert.ok(index.indexOf('registry-desktop-lite.js') < index.indexOf('registry-runtime-loader.js'), 'desktop lightweight path must run before the full runtime loader');
-assert.match(index, /registry-unified-table\.js\?v=20260812-population-column-1/);
+assert.match(index, /registry-unified-table\.js\?v=20260820-registry-columns-v2/);
 assert.doesNotMatch(index, /<script src="app-performance\.js"/);
 assert.doesNotMatch(index, /rel="preload" href="app-runtime-performance\.js/, 'normal lightweight startup must not preload the full generated registry runtime');
 assert.match(index, /registry-dosage-loader\.js\?v=20260812-1/);
