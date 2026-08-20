@@ -11,6 +11,7 @@ const client = read('user-library-client.js');
 const css = read('registry-user-personalization.css');
 const html = read('index.html');
 const registrySource = read('app-parts/part-01.txt');
+const registryRenderSource = read('app-parts/part-04.txt');
 
 const requirements = [
   [ui, "PHASE8_UX_VERSION = 'registry-personal-ux-phase8-v1'", 'Phase 8 UX must live in canonical personalization source.'],
@@ -39,6 +40,14 @@ const requirements = [
   [registrySource, "key:'Përdorimi (fjalë kyçe)', label:'Përdorimi / fjalë kyçe', mobileLabel:'Përdorimi', type:'str', cls:'wrap', visible:true", 'Full-registry source must default use/keywords ON.'],
   [registrySource, "key:'Si të shënohet në recetë', label:'Si shënohet në recetë', mobileLabel:'Shënimi në recetë', type:'str', cls:'wrap', visible:true", 'Full-registry source must default prescription notation ON.'],
   [registrySource, "key:'Statusi', label:'Statusi', mobileLabel:'Statusi', type:'str', cls:'', visible:false", 'Full-registry source must keep Statusi opt-in.'],
+  [registrySource, "const REGISTRY_COLUMN_VISIBILITY_KEY = 'medindex.registry.columns.v20260820';", 'Full-registry source must own the canonical visibility storage key.'],
+  [registrySource, 'function restoreRegistryColumnVisibility()', 'Full-registry source must restore explicit user column choices before render.'],
+  [registrySource, 'function saveRegistryColumnVisibility()', 'Full-registry source must own persistence of explicit user column choices.'],
+  [registryRenderSource, "if(col.key === 'Popullata e aprovuar')", 'Full-registry source must render approved population without a build-only injection.'],
+  [registryRenderSource, 'registry-population-badge', 'Approved-population source rendering must keep its semantic badge.'],
+  [registryRenderSource, 'COLUMNS.forEach(c => c.visible = true); saveRegistryColumnVisibility();', 'Full-registry show-all must persist at source.'],
+  [registryRenderSource, 'COLUMNS.forEach(c => { c.visible = false; });', 'Full-registry hide-all must be source-owned.'],
+  [registryRenderSource, 'col.visible = cb.checked;\n      saveRegistryColumnVisibility();', 'Full-registry individual column toggles must persist at source.'],
 ];
 
 for (const [source, needle, message] of requirements) {
@@ -59,4 +68,4 @@ if (/rowProfileCache\s*=\s*new Map/.test(ui)) {
   throw new Error('Canonical personalization must not strongly retain removed rows.');
 }
 
-console.log('Canonical source gate passed before build patches: registry column defaults/order, Favorites/Notes UX, recovery and long-session behavior are source-owned.');
+console.log('Canonical source gate passed before build patches: registry defaults/order/persistence/population rendering, Favorites/Notes UX, recovery and long-session behavior are source-owned.');
