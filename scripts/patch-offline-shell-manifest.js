@@ -13,8 +13,9 @@ require('./patch-pr157-merge-readiness.js');
  *
  * Prandaj lista nuk shkruhet më me dorë. Ky hap e nxjerr nga vetë faqet: lexon
  * çdo `<link rel=stylesheet>` dhe `<script src>` të faqeve reale, gjurmon
- * fontet e referuara brenda CSS-së, dhe i shton te `APP_SHELL`. Nëse nesër
- * shtohet një fletë stili e re, ajo hyn vetvetiu — nuk ka listë për ta harruar.
+ * fontet e referuara brenda CSS-së, dhe i shton te `APP_SHELL`. Asetet që
+ * ngarkohen vetëm nga JS deklarohen te DYNAMIC_SHELL_ASSETS që të mos mbeten
+ * jashtë cold/offline cache-it.
  *
  * Ekzekutohet i fundit në `build:runtime`, pasi hapat e tjerë e kanë mbaruar
  * shkrimin te `sw.js` dhe te faqet. Personalizimi kompozohet nga një finalizer
@@ -34,6 +35,10 @@ const PAGES = [
   'medical-hub.html', 'recetat.html', 'login-v2.html', 'login.html',
   'recovery.html', 'sistemi.html', 'blog.html',
 ];
+
+const DYNAMIC_SHELL_ASSETS = Object.freeze([
+  '/registry-frozen-columns.css',
+]);
 
 const read = file => fs.readFileSync(path.join(ROOT, file), 'utf8');
 const exists = file => fs.existsSync(path.join(ROOT, file.replace(/^\//, '')));
@@ -85,7 +90,7 @@ function collectFontsFromCss(cssAssets) {
   return fonts;
 }
 
-const collected = new Set();
+const collected = new Set(DYNAMIC_SHELL_ASSETS);
 for (const page of PAGES) {
   if (!exists(page)) continue;
   for (const asset of collectFromHtml(read(page))) collected.add(asset);
@@ -100,7 +105,11 @@ const manifest = [...collected].filter(exists).sort();
 
 if (!manifest.length) throw new Error('Offline shell manifest doli bosh.');
 
-const required = ['/registry-tablet-rows.css', '/fonts/inter-latin-variable-normal.woff2'];
+const required = [
+  '/registry-frozen-columns.css',
+  '/registry-tablet-rows.css',
+  '/fonts/inter-latin-variable-normal.woff2',
+];
 for (const asset of required) {
   if (!manifest.includes(asset)) {
     throw new Error(`Offline shell manifest nuk e kapi ${asset}.`);
