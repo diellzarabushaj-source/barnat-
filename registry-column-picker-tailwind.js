@@ -1,7 +1,7 @@
 (() => {
   'use strict';
 
-  const VERSION = 'column-picker-tailwind-20260812-population-1';
+  const VERSION = 'column-picker-tailwind-20260820-clean-columns-2';
   const PANEL_ID = 'colPanel';
   const BUTTON_ID = 'colPickerBtn';
   const SEARCH_ICON = '<svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="11" cy="11" r="7"></circle><path d="m16.5 16.5 4 4"></path></svg>';
@@ -231,7 +231,14 @@
 
       placePopulationWithDosage(root);
       decorateActions(root);
+      // data-mi-technical-column-hidden: build marker + UX contract.
       allColumnLabels(root).forEach(label => {
+        const optionText = clean(label.textContent).toLocaleLowerCase('sq');
+        if (optionText === 'verifikimi' || optionText === 'redakto') {
+          label.dataset.miTechnicalColumnHidden = '1';
+          label.remove();
+          return;
+        }
         label.dataset.miColumnOption = '1';
         const input = label.querySelector('input[type="checkbox"]');
         if (input && !input.getAttribute('aria-label')) input.setAttribute('aria-label', clean(label.textContent));
