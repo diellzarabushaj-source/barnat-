@@ -1,11 +1,11 @@
 (() => {
   'use strict';
 
-  const VERSION = 'first-page-style-loader-20260820-2';
+  const VERSION = 'first-page-style-loader-20260820-3';
   const ID = 'firstPageClinicalStyles';
   const HREF = '/first-page-clinical.css?v=20260731-1';
   const FROZEN_ID = 'registryFrozenColumnStyles';
-  const FROZEN_HREF = '/registry-frozen-columns.css?v=20260820-1';
+  const FROZEN_HREF = '/registry-frozen-columns.css?v=20260820-2';
   const PHONE_QUERY = '(max-width:767px)';
   const phone = window.matchMedia?.(PHONE_QUERY);
 
