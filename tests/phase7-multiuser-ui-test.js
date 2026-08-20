@@ -74,6 +74,15 @@ const read = file => fs.readFileSync(path.join(root, file), 'utf8');
   assert.match(ui, /\/api\/clinical-editor/, 'the shared-registry path must go through the clinical editor');
   assert.match(ui, /isAdmin = payload\.authUser\?\.role === 'admin'/, 'the shared option is gated on the verified admin role');
   assert.match(ui, /sharedRow\.hidden = !isAdmin/, 'a doctor must never see the "publish to everyone" control');
+
+  // The launcher must not become another inline item in the mobile navigation:
+  // at 320px that pushes the document past the viewport, which the responsive
+  // audit rejects.
+  assert.ok(!ui.includes('cloneNode'), 'the launcher must not clone a navigation control');
+  assert.match(ui, /createElement\('button'\)[\s\S]{0,200}className = 'pd-launch'/, 'the launcher is its own block element, not a cloned nav control');
+  const css = read('personal-drugs-ui.css');
+  assert.match(css, /\.pd-launch\{[^}]*width:100%/, 'the launcher spans its container instead of adding inline width');
+  assert.match(css, /\.pd-launch\{[^}]*box-sizing:border-box/, 'the launcher must not overflow its container');
 }
 
 // --- the client sync carries personal drugs -----------------------------

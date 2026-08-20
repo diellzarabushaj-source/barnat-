@@ -263,21 +263,26 @@
     }
   }
 
+  // The launcher is deliberately a full-width block placed *after* the personal
+  // navigation, not another control inside it. The mobile navigation is already
+  // tight at 320px, and an extra inline item there can push the document wider
+  // than the viewport — which the responsive audit rejects, rightly.
   function attachLauncher() {
     const anchor = document.querySelector('[data-personal-view="favorites"], [data-nav="favorites"], [data-mi-shell-action="favorites"]');
-    if (!anchor || document.querySelector('[data-personal-view="my-drugs"]')) return;
-    const button = anchor.cloneNode(false);
-    button.removeAttribute('data-nav');
-    button.removeAttribute('data-mi-shell-action');
-    button.setAttribute('data-personal-view', 'my-drugs');
-    button.setAttribute('type', 'button');
-    button.classList.remove('is-active');
+    if (!anchor || document.querySelector('[data-pd-launch]')) return;
+    const host = anchor.parentElement;
+    if (!host) return;
+
+    const button = document.createElement('button');
+    button.type = 'button';
+    button.className = 'pd-launch';
+    button.setAttribute('data-pd-launch', '');
     button.textContent = 'Barnat e mia';
     button.addEventListener('click', event => {
       event.preventDefault();
       open();
     });
-    anchor.insertAdjacentElement('afterend', button);
+    host.insertAdjacentElement('afterend', button);
   }
 
   window.addEventListener('hashchange', () => {
