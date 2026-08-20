@@ -10,22 +10,23 @@
   if (!media?.matches) return;
 
   const columns = Object.freeze([
-    { key:'number', label:'Nr', raw:'Nr rendor', sort:'registry', default:false },
-    { key:'trade-name', label:'Emri Tregtar', raw:'Emri tregtar', sort:'name', default:true, cls:'name' },
+    { key:'number', label:'Nr', raw:'Nr rendor', sort:'registry', default:true },
     { key:'active-substance', label:'Substanca Aktive', raw:'Substanca aktive', sort:'substance', default:true, cls:'quality-substance' },
-    { key:'atc', label:'ATC', raw:'ATC Code', sort:'atc', default:true, cls:'code' },
-    { key:'drug-class', label:'Klasa / Çka është', raw:'Klasa / Çka është', sort:'class', default:false, cls:'wrap' },
-    { key:'use', label:'Përdorimi / fjalë kyçe', raw:'Përdorimi (fjalë kyçe)', sort:'use', default:false, cls:'wrap' },
+    { key:'trade-name', label:'Emri Tregtar', raw:'Emri tregtar', sort:'name', default:true, cls:'name' },
+    { key:'atc', label:'ATC', raw:'ATC Code', sort:'atc', default:false, cls:'code' },
+    { key:'drug-class', label:'Klasa / Çka është', raw:'Klasa / Çka është', sort:'class', default:true, cls:'wrap' },
+    { key:'use', label:'Përdorimi / fjalë kyçe', raw:'Përdorimi (fjalë kyçe)', sort:'use', default:true, cls:'wrap' },
     { key:'pdid', label:'PDID', raw:'PDID', sort:'pdid', default:false, cls:'code' },
     { key:'protocol', label:'Protokolli', remote:'protocol', sort:'protocol', default:false, cls:'code' },
     { key:'strength', label:'Fortësia', raw:'Fortësia', sort:'strength', default:true },
     { key:'form', label:'Forma', raw:'Forma farmaceutike', sort:'form', default:true, cls:'wrap registry-form-cell' },
-    { key:'prescription-label', label:'Si shënohet në recetë', advanced:true, default:false, cls:'wrap' },
+    { key:'population', label:'Popullata (Adult/Pediatric)', raw:'Popullata e aprovuar', default:true, cls:'registry-population-column' },
+    { key:'prescription-label', label:'Si shënohet në recetë', raw:'Si të shënohet në recetë', default:true, cls:'wrap' },
     { key:'packaging', label:'Paketimi', remote:'packaging', sort:'packaging', default:false, cls:'wrap' },
     { key:'mah', label:'Bartësi i Autorizimit', remote:'mah', sort:'mah', default:false, cls:'wrap' },
     { key:'manufacturer', label:'Prodhuesi', remote:'manufacturer', sort:'manufacturer', default:false, cls:'wrap' },
     { key:'ma-certificate', label:'Certifikata MA', remote:'ma-certificate', sort:'certificate', default:false, cls:'code' },
-    { key:'status', label:'Statusi', raw:'Statusi', sort:'status', default:true },
+    { key:'status', label:'Statusi', raw:'Statusi', sort:'status', default:false },
     { key:'wholesale-price', label:'Çmimi me shumicë', remote:'wholesale-price', sort:'wholesale', default:false, cls:'price', price:true },
     { key:'margin-price', label:'Çmimi me marzhë', remote:'margin-price', sort:'margin', default:false, cls:'price', price:true },
     { key:'vat', label:'TVSH', remote:'vat', sort:'vat', default:false },
@@ -189,7 +190,6 @@
       const rowMap = rawById();
       let changed = false;
       columns.forEach(column => {
-        if (column.advanced) return;
         changed = (visible.has(column.key)
           ? ensureColumn(column, rowMap)
           : removeColumn(column.key)) || changed;
@@ -260,15 +260,10 @@
 
   function setVisible(next) {
     visible.clear();
-    next.forEach(key => { if (byKey.has(key) && !byKey.get(key).advanced) visible.add(key); });
+    next.forEach(key => { if (byKey.has(key)) visible.add(key); });
     window.MedIndexRegistryUnified?.setView?.('full');
     applyColumnsNow();
     void hydrateVisibleColumns();
-  }
-
-  function handleAdvanced(column, checkbox) {
-    checkbox.checked = false;
-    window.MEDINDEX_DESKTOP_LITE?.handoff?.('column-prescription-notation');
   }
 
   function buildPanel() {
@@ -285,7 +280,7 @@
     all.textContent = 'Shfaqi të gjitha';
     all.addEventListener('click', event => {
       event.preventDefault();
-      setVisible(columns.filter(column => !column.advanced).map(column => column.key));
+      setVisible(columns.map(column => column.key));
     });
     const none = document.createElement('button');
     none.type = 'button';
@@ -304,15 +299,13 @@
       checkbox.type = 'checkbox';
       checkbox.checked = visible.has(column.key);
       checkbox.dataset.columnLiteKey = column.key;
-      if (column.advanced) checkbox.title = 'Kërkon funksionet e plota';
       checkbox.addEventListener('change', () => {
-        if (column.advanced) return handleAdvanced(column, checkbox);
         const next = new Set(visible);
         if (checkbox.checked) next.add(column.key); else next.delete(column.key);
         setVisible([...next]);
       });
       const span = document.createElement('span');
-      span.textContent = column.label + (column.advanced ? ' · avancuar' : '');
+      span.textContent = column.label;
       label.append(checkbox, span);
       panel.appendChild(label);
     });
@@ -340,7 +333,7 @@
   function syncPanelChecks() {
     document.querySelectorAll('#colPanel input[data-column-lite-key]').forEach(input => {
       const column = byKey.get(input.dataset.columnLiteKey);
-      if (!column?.advanced) input.checked = visible.has(column.key);
+      if (column) input.checked = visible.has(column.key);
     });
   }
 
