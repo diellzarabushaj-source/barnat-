@@ -14,7 +14,6 @@
   const DESKTOP_QUERY = '(min-width: 768px)';
   const LITE_STORAGE_KEY = 'medindex.registry.desktop-columns.v20260820';
   const FULL_STORAGE_KEY = 'medindex.registry.columns.v20260820';
-  const PRESCRIPTION_KEY = 'prescription-label';
   const PRESCRIPTION_FULL_KEY = 'Si të shënohet në recetë';
   const DEFAULT_LITE_COLUMNS = Object.freeze([
     'number',
@@ -25,6 +24,7 @@
     'strength',
     'form',
     'population',
+    'prescription-label',
   ]);
   const LITE_TO_FULL = Object.freeze({
     number:'Nr rendor',
@@ -53,7 +53,7 @@
   const FULL_TO_LITE = Object.freeze(Object.fromEntries(
     Object.entries(LITE_TO_FULL).map(([lite, full]) => [full, lite]),
   ));
-  const KNOWN_LITE_COLUMNS = new Set(Object.keys(LITE_TO_FULL).filter(key => key !== PRESCRIPTION_KEY));
+  const KNOWN_LITE_COLUMNS = new Set(Object.keys(LITE_TO_FULL));
 
   let observer = null;
   let enhancing = false;
@@ -285,42 +285,33 @@
   function storedColumnPreference() {
     const full = readStoredArray(FULL_STORAGE_KEY);
     if (full !== null) {
-      return {
-        keys:uniqueKnownLiteColumns(full.map(key => FULL_TO_LITE[key]).filter(Boolean)),
-        prescription:full.includes(PRESCRIPTION_FULL_KEY),
-      };
+      return uniqueKnownLiteColumns(full.map(key => FULL_TO_LITE[key]).filter(Boolean));
     }
     const lite = readStoredArray(LITE_STORAGE_KEY);
-    if (lite !== null) return { keys:uniqueKnownLiteColumns(lite), prescription:true };
-    return { keys:[...DEFAULT_LITE_COLUMNS], prescription:true };
-  }
-
-  function prescriptionInput() {
-    return document.querySelector(`#${PANEL_ID} input[data-column-lite-key="${PRESCRIPTION_KEY}"]`);
+    if (lite !== null) return uniqueKnownLiteColumns(lite);
+    return [...DEFAULT_LITE_COLUMNS];
   }
 
   function persistLiteColumnPreference() {
     const controller = liteColumns();
     if (!controller || !liteActive() || preferenceApplying) return;
     const keys = uniqueKnownLiteColumns(controller.visible?.() || []);
-    const prescription = prescriptionInput()?.checked ?? true;
     try {
       localStorage.setItem(LITE_STORAGE_KEY, JSON.stringify(keys));
-      const fullKeys = keys.map(key => LITE_TO_FULL[key]).filter(Boolean);
-      if (prescription) fullKeys.push(PRESCRIPTION_FULL_KEY);
-      localStorage.setItem(FULL_STORAGE_KEY, JSON.stringify([...new Set(fullKeys)]));
+      localStorage.setItem(
+        FULL_STORAGE_KEY,
+        JSON.stringify(keys.map(key => LITE_TO_FULL[key]).filter(Boolean)),
+      );
     } catch {}
     document.documentElement.dataset.registryColumnPreferences = COLUMN_PREFERENCE_VERSION;
   }
 
-  function applyLiteColumnPreference(preference, { persist = true } = {}) {
+  function applyLiteColumnPreference(keys, { persist = true } = {}) {
     const controller = liteColumns();
     if (!controller || !liteActive() || preferenceApplying) return false;
     preferenceApplying = true;
     try {
-      controller.setVisible?.(uniqueKnownLiteColumns(preference?.keys));
-      const prescription = prescriptionInput();
-      if (prescription) prescription.checked = preference?.prescription !== false;
+      controller.setVisible?.(uniqueKnownLiteColumns(keys));
       scheduleEnhance();
       if (persist) persistLiteColumnPreference();
       document.documentElement.dataset.registryColumnPreferences = COLUMN_PREFERENCE_VERSION;
@@ -362,10 +353,7 @@
     event.preventDefault();
     event.stopImmediatePropagation();
     const showAll = label.includes('shfaqi');
-    applyLiteColumnPreference({
-      keys:showAll ? litePanelColumnKeys() : [],
-      prescription:showAll,
-    });
+    applyLiteColumnPreference(showAll ? litePanelColumnKeys() : []);
     requestAnimationFrame(() => updateSelection());
   }
 
@@ -444,9 +432,7 @@
     document.addEventListener('change', event => {
       if (!event.target.matches?.(`#${PANEL_ID} input[type="checkbox"]`)) return;
       requestAnimationFrame(() => updateSelection());
-      if (event.target.dataset.columnLiteKey && event.target.dataset.columnLiteKey !== PRESCRIPTION_KEY) {
-        queueMicrotask(persistLiteColumnPreference);
-      }
+      if (event.target.dataset.columnLiteKey) queueMicrotask(persistLiteColumnPreference);
     });
     document.addEventListener('keydown', event => {
       if (event.key === 'Escape' && panel()?.classList.contains('open')) {
