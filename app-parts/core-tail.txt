@@ -15,17 +15,28 @@ function sanitizeRegistryPageSize(value){
   return REGISTRY_ALLOWED_PAGE_SIZES.has(numeric) ? numeric : REGISTRY_DEFAULT_PAGE_SIZE;
 }
 
+// `atc-shared.js` is intent-deferred below the desktop breakpoint, so the ATC
+// helper is routinely still absent when this runtime boots on a tablet. Reading
+// the URL directly as a fallback keeps a shared `?atc=…&q=…` link working there
+// instead of silently dropping the filter — the phone-lite runtime already
+// normalizes the same way.
+function normalizeRegistryAtcCode(value){
+  const resolved = window.MedIndexATC?.resolveCategoryCode?.(value);
+  if(resolved) return resolved;
+  const compact = String(value ?? '').trim().toUpperCase().replace(/\s+/g, '');
+  return /^[A-Z](?:\d{2})?$/.test(compact) ? compact : '';
+}
+
 function readRegistryUrlState(){
+  const params = new URLSearchParams(window.location.search);
   const reader = window.MedIndexATC?.readRegistryUrlState;
-  if(typeof reader !== 'function'){
-    return { atc:'', query:'', page:1, pageSize:REGISTRY_DEFAULT_PAGE_SIZE };
-  }
-  const value = reader(window.location.href);
+  const value = typeof reader === 'function' ? reader(window.location.href) : {};
+  const page = Number(value.page ?? params.get('page'));
   return {
-    atc:String(value.atc || ''),
-    query:String(value.query || ''),
-    page:Number.isInteger(Number(value.page)) && Number(value.page) > 0 ? Number(value.page) : 1,
-    pageSize:sanitizeRegistryPageSize(value.pageSize),
+    atc:normalizeRegistryAtcCode(value.atc ?? params.get('atc')),
+    query:String(value.query ?? params.get('q') ?? ''),
+    page:Number.isInteger(page) && page > 0 ? page : 1,
+    pageSize:sanitizeRegistryPageSize(value.pageSize ?? params.get('pageSize')),
   };
 }
 
@@ -76,15 +87,23 @@ function syncRegistryUrlState(options = {}){
   window.history[method]({ medindexRegistry:true }, '', next);
 }
 
+// Prefix match over the same normalization the shared helper uses, for the
+// window before `atc-shared.js` arrives. Without it the registry would announce
+// an active ATC category while still listing every row — a filter claimed and
+// not applied, which is the one outcome a clinician must never be shown.
+function matchesRegistryAtcCategory(value, categoryValue){
+  const code = String(value ?? '').trim().toUpperCase().replace(/\s+/g, '');
+  const category = String(categoryValue ?? '').trim().toUpperCase().replace(/\s+/g, '');
+  return Boolean(code && category && code.startsWith(category));
+}
+
 function getRegistryAtcRows(){
   const activeAtc = String(state.activeAtc || '');
   if(!activeAtc) return RAW;
   if(activeAtc === registryAtcRowsCacheCode) return registryAtcRowsCache;
-  const matches = window.MedIndexATC?.matchesCategory;
+  const matches = window.MedIndexATC?.matchesCategory || matchesRegistryAtcCategory;
   registryAtcRowsCacheCode = activeAtc;
-  registryAtcRowsCache = typeof matches === 'function'
-    ? RAW.filter(row => matches(row['ATC Code'], activeAtc))
-    : RAW;
+  registryAtcRowsCache = RAW.filter(row => matches(row['ATC Code'], activeAtc));
   return registryAtcRowsCache;
 }
 
