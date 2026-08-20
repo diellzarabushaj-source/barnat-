@@ -4,6 +4,20 @@
   const RELEASE = 'registry-ui-20260812-1';
   const STORAGE_KEY = 'medindex.registry.ui.release';
   const SESSION_KEY = 'medindex.registry.ui.cache-cleared';
+  const VIEW_STORAGE_KEY = 'medindex.registry.view.v2';
+  const COLUMN_PREFERENCE_STORAGE_KEY = 'medindex.registry.columns.v20260820';
+  const VIEW_DEFAULT_MIGRATION_KEY = 'medindex.registry.view-defaults.20260820-v1';
+
+  function migrateRegistryViewDefault() {
+    try {
+      if (localStorage.getItem(VIEW_DEFAULT_MIGRATION_KEY) === '1') return;
+      const hasCurrentColumnPreferences = localStorage.getItem(COLUMN_PREFERENCE_STORAGE_KEY) !== null;
+      if (!hasCurrentColumnPreferences && localStorage.getItem(VIEW_STORAGE_KEY) === 'clinical') {
+        localStorage.removeItem(VIEW_STORAGE_KEY);
+      }
+      localStorage.setItem(VIEW_DEFAULT_MIGRATION_KEY, '1');
+    } catch {}
+  }
 
   function storedRelease() {
     try { return localStorage.getItem(STORAGE_KEY) || ''; }
@@ -56,6 +70,7 @@
     else window.addEventListener('load', scheduleCleanup, { once:true });
   }
 
+  migrateRegistryViewDefault();
   if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', start, { once:true });
   else start();
 })();
