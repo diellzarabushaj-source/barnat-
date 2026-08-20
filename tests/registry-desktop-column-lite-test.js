@@ -13,12 +13,14 @@ const runtime = read('registry-desktop-column-lite.js');
 const desktop = read('registry-desktop-lite.js');
 const api = read('api/drug-search.js');
 const patch = read('scripts/patch-phase14-column-lite.js');
+const phase15 = read('scripts/patch-phase15-lazy-dose-runtimes.js');
 const wiring = read('scripts/patch-phase12-targeted-detail-wiring.js');
 const decorator = read('registry-column-picker-tailwind.js');
 
 for (const file of [
   'registry-desktop-column-lite.js',
   'scripts/patch-phase14-column-lite.js',
+  'scripts/patch-phase15-lazy-dose-runtimes.js',
 ]) execFileSync(process.execPath, ['--check', path.join(ROOT, file)], { stdio:'pipe' });
 
 assert.match(index, /registry-desktop-column-lite\.js\?v=20260812-1/);
@@ -101,9 +103,15 @@ assert.match(wiring, /patch-phase14-column-lite\.js/);
 assert.match(wiring, /registry-desktop-column-lite\.js\?v=20260812-1/);
 assert.doesNotMatch(decorator, /fetch\s*\(/, 'Tailwind column picker decoration must remain presentation-only.');
 
+assert.match(phase15, /function validateDesktopLiteColumns\(\)/, 'Phase 15 must validate committed lightweight column source.');
+assert.match(phase15, /function validatePickerPreferences\(\)/, 'Phase 15 must validate committed picker preferences.');
+assert.match(phase15, /function validateColumnLiteRegression\(\)/, 'Phase 15 must validate the regression test instead of rewriting it.');
+assert.doesNotMatch(phase15, /function updateColumnLiteRegression\(\)|function enforcePickerPreferences\(\)|function ensurePrescriptionListData\(\)/,
+  'Phase 15 must never rewrite the column regression, picker preferences, or lightweight API source.');
+
 for (const forbidden of [
   'desktop-large-page-size', 'prescription-selection',
   'select-page-for-prescription', 'prescription-builder',
 ]) assert(!desktop.includes(forbidden), `Normal desktop path must not retain ${forbidden} full-registry handoff.`);
 
-console.log('Phase 14 final desktop column customization uses bounded whitelisted visible-row reads; normal registry interactions stay off the full-registry path.');
+console.log('Phase 14 final desktop column customization uses bounded whitelisted visible-row reads; Phase 15 validates canonical source without rewriting tests.');
