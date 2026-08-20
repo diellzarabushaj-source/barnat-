@@ -6,6 +6,7 @@ const { exchangeGoogleIdToken, SupabaseBootstrapError } = require('../lib/supaba
 const SupabaseAuth = require('../lib/supabase-auth.js');
 const UserStore = require('../lib/user-store.js');
 const UserLibrary = require('../lib/user-library.js');
+const AdminUsers = require('../lib/admin-users.js');
 const Phase4AuthBootstrap = require('../lib/phase4-auth-bootstrap-route.js');
 
 const attempts = new Map();
@@ -163,6 +164,13 @@ module.exports = async function handler(req, res) {
 
   if (libraryRequested(req)) return UserLibrary.handle(req, res);
 
+  // Admin user management shares this function instead of claiming another Vercel
+  // Hobby function slot; it enforces its own live admin check.
+  if (AdminUsers.requested(req, queryValue)) {
+    if (!sameOrigin(req)) return res.status(403).json({ ok:false, error:'Origjina e kërkesës nuk lejohet.' });
+    return AdminUsers.handle(req, res, { parseBody:readBody });
+  }
+
   const auth = await import('../lib/auth.mjs');
   const session = auth.sessionData(auth.sessionFromRequest(req));
 
@@ -260,12 +268,16 @@ module.exports = async function handler(req, res) {
       if (canonicalIdentity.email === UserStore.OWNER_EMAIL && !legacyUserId) {
         throw cutoverError('LEGACY_OWNER_MAPPING_MISSING', 'Lidhja e sigurt me të dhënat ekzistuese të pronarit mungon.');
       }
+      // Approved profiles authorize themselves: a doctor gets a private library and
+      // an admin keeps shared clinical write access. New accounts have no legacy
+      // bridge, so their private storage UUID is their Supabase Auth UUID.
       user = await ensureLoginUser({
         id:legacyUserId || canonicalIdentity.id,
         sub:googleIdentity.sub,
         email:canonicalIdentity.email,
         name:googleIdentity.name,
         picture:googleIdentity.picture,
+        authorizedRole:canonicalIdentity.role,
       });
       if (legacyUserId && String(user.id) !== legacyUserId) {
         throw cutoverError('LEGACY_OWNER_MAPPING_MISMATCH', 'Identiteti Supabase nuk përputhet me pronarin e të dhënave ekzistuese.');
