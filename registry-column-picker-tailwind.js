@@ -15,6 +15,7 @@
   const LITE_STORAGE_KEY = 'medindex.registry.desktop-columns.v20260820';
   const FULL_STORAGE_KEY = 'medindex.registry.columns.v20260820';
   const DOSAGE_STORAGE_KEY = 'medindex-registry-dosage-columns-v2';
+  const DOSAGE_DEFAULT_MIGRATION_KEY = 'medindex-registry-dosage-defaults-20260816-v1';
   const PRESCRIPTION_FULL_KEY = 'Si të shënohet në recetë';
   const DEFAULT_LITE_COLUMNS = Object.freeze([
     'number',
@@ -313,8 +314,12 @@
         adult:Boolean(enabled), pediatric:Boolean(enabled),
       });
       localStorage.setItem(DOSAGE_STORAGE_KEY, JSON.stringify(next));
+      localStorage.setItem(DOSAGE_DEFAULT_MIGRATION_KEY, '1');
     } catch {
-      try { localStorage.setItem(DOSAGE_STORAGE_KEY, JSON.stringify(next)); } catch {}
+      try {
+        localStorage.setItem(DOSAGE_STORAGE_KEY, JSON.stringify(next));
+        localStorage.setItem(DOSAGE_DEFAULT_MIGRATION_KEY, '1');
+      } catch {}
     }
     document.querySelectorAll(`#${PANEL_ID} [data-registry-dosage-picker] input[type="checkbox"]`).forEach(input => {
       input.checked = Boolean(enabled);
