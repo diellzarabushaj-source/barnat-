@@ -292,28 +292,33 @@
     return [...DEFAULT_LITE_COLUMNS];
   }
 
-  function persistLiteColumnPreference() {
-    const controller = liteColumns();
-    if (!controller || !liteActive() || preferenceApplying) return;
-    const keys = uniqueKnownLiteColumns(controller.visible?.() || []);
+  function writeLiteColumnPreference(keys) {
+    const normalized = uniqueKnownLiteColumns(keys);
     try {
-      localStorage.setItem(LITE_STORAGE_KEY, JSON.stringify(keys));
+      localStorage.setItem(LITE_STORAGE_KEY, JSON.stringify(normalized));
       localStorage.setItem(
         FULL_STORAGE_KEY,
-        JSON.stringify(keys.map(key => LITE_TO_FULL[key]).filter(Boolean)),
+        JSON.stringify(normalized.map(key => LITE_TO_FULL[key]).filter(Boolean)),
       );
     } catch {}
     document.documentElement.dataset.registryColumnPreferences = COLUMN_PREFERENCE_VERSION;
   }
 
+  function persistLiteColumnPreference() {
+    const controller = liteColumns();
+    if (!controller || !liteActive() || preferenceApplying) return;
+    writeLiteColumnPreference(controller.visible?.() || []);
+  }
+
   function applyLiteColumnPreference(keys, { persist = true } = {}) {
     const controller = liteColumns();
     if (!controller || !liteActive() || preferenceApplying) return false;
+    const normalized = uniqueKnownLiteColumns(keys);
     preferenceApplying = true;
     try {
-      controller.setVisible?.(uniqueKnownLiteColumns(keys));
+      controller.setVisible?.(normalized);
       scheduleEnhance();
-      if (persist) persistLiteColumnPreference();
+      if (persist) writeLiteColumnPreference(normalized);
       document.documentElement.dataset.registryColumnPreferences = COLUMN_PREFERENCE_VERSION;
       return true;
     } finally {
