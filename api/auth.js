@@ -8,6 +8,7 @@ const SupabasePassword = require('../lib/supabase-password-auth.js');
 const UserStore = require('../lib/user-store.js');
 const UserLibrary = require('../lib/user-library.js');
 const AdminUsers = require('../lib/admin-users.js');
+const AdminAccess = require('../lib/admin-access.js');
 const ProfessionalVerification = require('../lib/professional-verification.js');
 const Phase4AuthBootstrap = require('../lib/phase4-auth-bootstrap-route.js');
 
@@ -268,6 +269,12 @@ module.exports = async function handler(req, res) {
         id:session.authUid,
         role:session.authRole,
         status:session.authStatus,
+        // Whether this session may open the admin console. The address list
+        // lives on the server, so the console never has to carry its own copy —
+        // a copy that would lock out a co-administrator the server allows.
+        adminConsole:session.authRole === 'admin'
+          && session.authStatus === 'active'
+          && AdminAccess.isAdminEmail(session.email),
       } : null,
       sessionHours:auth.SESSION_TTL_SECONDS / 3600,
       hardened:auth.secureConfigurationEnabled(),
