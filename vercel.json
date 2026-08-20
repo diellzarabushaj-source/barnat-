@@ -27,8 +27,6 @@
     }
   ],
   "rewrites": [
-    { "source": "/admin", "destination": "/admin.html" },
-    { "source": "/regjistrimi", "destination": "/regjistrimi.html" },
     {
       "source": "/data/registry-data.js",
       "destination": "/api/registry"
@@ -96,6 +94,14 @@
     {
       "source": "/brand/medindex-horizontal-on-dark.webp",
       "destination": "/api/clinical-editor?officialBrand=horizontalOnDark"
+    },
+    {
+      "source": "/admin",
+      "destination": "/admin.html"
+    },
+    {
+      "source": "/regjistrimi",
+      "destination": "/regjistrimi.html"
     }
   ],
   "headers": [
