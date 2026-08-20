@@ -1,5 +1,17 @@
           return '<td class="' + col.cls + '" data-column-key="' + columnKey + '" data-label="' + mobileLabel + '" title="' + escapeHtml(cat || '') + '"><span class="cat-dot" style="background:' + color + '"></span>' + escapeHtml(val) + '</td>';
         }
+        if(col.key === 'Popullata e aprovuar'){
+          const population = String(val ?? '').trim();
+          const populationClass = population === 'Pediatric only'
+            ? ' pediatric-only'
+            : population === 'Adult only'
+              ? ' adult-only'
+              : population === 'Pediatric and adult both'
+                ? ' pediatric-adult-both'
+                : ' unknown';
+          const display = population || '—';
+          return '<td class="' + col.cls + '" data-column-key="' + columnKey + '" data-label="' + mobileLabel + '" title="' + escapeHtml(population) + '"><span class="registry-population-badge' + populationClass + '">' + escapeHtml(display) + '</span></td>';
+        }
         if(col.type === 'num' && (col.cls === 'price')){
           const numericValue = Number(val);
           val = (val === '' || val == null || !Number.isFinite(numericValue)) ? '' : numericValue.toLocaleString('de-DE', {minimumFractionDigits:2, maximumFractionDigits:2}) + ' &euro;';
@@ -71,11 +83,12 @@ function buildColPanel(){
   actions.className = 'col-panel-actions';
   const btnAll = document.createElement('button');
   btnAll.type = 'button'; btnAll.textContent = 'Shfaqi t\u00EB gjitha';
-  btnAll.addEventListener('click', () => { COLUMNS.forEach(c => c.visible = true); buildColPanel(); render(); });
+  btnAll.addEventListener('click', () => { COLUMNS.forEach(c => c.visible = true); saveRegistryColumnVisibility(); buildColPanel(); render(); });
   const btnNone = document.createElement('button');
   btnNone.type = 'button'; btnNone.textContent = 'Fshihi t\u00EB gjitha';
   btnNone.addEventListener('click', () => {
-    COLUMNS.forEach((c,i) => c.visible = i === 0);
+    COLUMNS.forEach(c => { c.visible = false; });
+    saveRegistryColumnVisibility();
     buildColPanel(); render();
   });
   actions.appendChild(btnAll); actions.appendChild(btnNone);
@@ -88,6 +101,7 @@ function buildColPanel(){
     cb.checked = col.visible;
     cb.addEventListener('change', () => {
       col.visible = cb.checked;
+      saveRegistryColumnVisibility();
       render();
     });
     label.appendChild(cb);
