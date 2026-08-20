@@ -16,9 +16,12 @@ const patch = read('scripts/patch-phase14-column-lite.js');
 const phase15 = read('scripts/patch-phase15-lazy-dose-runtimes.js');
 const wiring = read('scripts/patch-phase12-targeted-detail-wiring.js');
 const decorator = read('registry-column-picker-tailwind.js');
+const release = read('registry-ui-release.js');
 
 for (const file of [
   'registry-desktop-column-lite.js',
+  'registry-column-picker-tailwind.js',
+  'registry-ui-release.js',
   'scripts/patch-phase14-column-lite.js',
   'scripts/patch-phase15-lazy-dose-runtimes.js',
 ]) execFileSync(process.execPath, ['--check', path.join(ROOT, file)], { stdio:'pipe' });
@@ -132,6 +135,29 @@ assert.match(decorator, /data-registry-dose-column-toggle[\s\S]{0,220}dispatchEv
   'A mounted dose-calculator toggle must receive the same bulk state and run its canonical change handler.');
 assert.match(decorator, /MEDINDEX_DESKTOP_LITE\?\.handoff\?\.\('column-dose-calculator'\)/,
   'Showing all columns before the dose toggle mounts must still request the audited full-runtime handoff.');
+const bulkHandler = decorator.match(/function handleLitePanelAction\(event\)[\s\S]*?function enhance\(\)/)?.[0] || '';
+assert(bulkHandler, 'Column picker bulk handler must exist.');
+assert.doesNotMatch(bulkHandler, /if \(!liteActive\(\)\) return/,
+  'Full-registry show-all/hide-all must still synchronize dosage and dose-calculator preferences.');
+assert.match(bulkHandler, /if \(liteActive\(\)\) \{[\s\S]*event\.preventDefault\(\)[\s\S]*event\.stopImmediatePropagation\(\)[\s\S]*applyLiteColumnPreference/,
+  'Only lightweight mode may take exclusive ownership of the bulk click.');
+assert.match(bulkHandler, /writeDosageBulkPreference\(showAll\);[\s\S]*writeDoseCalculatorBulkPreference\(showAll\);/,
+  'Both lightweight and full-registry bulk actions must synchronize external column preferences.');
+
+assert.match(release, /VIEW_STORAGE_KEY = 'medindex\.registry\.view\.v2'/,
+  'The release guard must know the legacy unified-table view preference key.');
+assert.match(release, /COLUMN_PREFERENCE_STORAGE_KEY = 'medindex\.registry\.columns\.v20260820'/,
+  'View migration must recognize current column preferences and preserve users who already customized the new release.');
+assert.match(release, /VIEW_DEFAULT_MIGRATION_KEY = 'medindex\.registry\.view-defaults\.20260820-v1'/,
+  'The new default-full transition must be one-time.');
+assert.match(release, /!hasCurrentColumnPreferences && localStorage\.getItem\(VIEW_STORAGE_KEY\) === 'clinical'[\s\S]{0,120}localStorage\.removeItem\(VIEW_STORAGE_KEY\)/,
+  'Only stale pre-release clinical view state may be cleared.');
+assert.match(release, /localStorage\.setItem\(VIEW_DEFAULT_MIGRATION_KEY, '1'\)/,
+  'View-default migration must remember completion so later user choices are never reset.');
+assert.match(release, /migrateRegistryViewDefault\(\);[\s\S]{0,180}DOMContentLoaded/,
+  'View migration must run synchronously before deferred unified-table startup.');
+assert.ok(index.indexOf('registry-ui-release.js') < index.indexOf('registry-unified-table.js'),
+  'The view-default migration script must execute before the unified-table controller.');
 
 assert.match(phase15, /function validateDesktopLiteColumns\(\)/, 'Phase 15 must validate committed lightweight column source.');
 assert.match(phase15, /function validatePickerPreferences\(\)/, 'Phase 15 must validate committed picker preferences.');
@@ -144,4 +170,4 @@ for (const forbidden of [
   'select-page-for-prescription', 'prescription-builder',
 ]) assert(!desktop.includes(forbidden), `Normal desktop path must not retain ${forbidden} full-registry handoff.`);
 
-console.log('Phase 14 final desktop column customization uses bounded whitelisted visible-row reads; bulk picker actions persist lightweight, dosage and dose-calculator visibility deterministically, explicit dosage choices beat default migration, and Phase 15 validates canonical source without rewriting tests.');
+console.log('Phase 14 final desktop column customization uses bounded whitelisted visible-row reads; bulk actions stay coherent in lightweight/full modes, old clinical-view state migrates once to the new default-full contract, and Phase 15 validates canonical source without rewriting tests.');
