@@ -9,7 +9,8 @@ const read = relative => fs.readFileSync(path.join(ROOT, relative), 'utf8');
 const columns = read('app-parts/part-01.txt');
 const counters = read('app-parts/part-02.txt');
 const render = read('app-parts/part-03.txt') + read('app-parts/part-04.txt');
-const dosage = read('registry-dosage-columns-v2.js');
+const dosage = read('registry-dosage-columns-v3.js');
+const dosageLoader = read('registry-dosage-loader.js');
 const mobileCss = read('first-page-clinical.css');
 const readme = read('README.md');
 const auth = read('auth-client.js');
@@ -25,22 +26,45 @@ const clinicalPages = [
   'dozologjia.html', 'protokollet.html', 'recetat.html',
 ];
 
-[
-  /key:'Nr rendor'[\s\S]*?visible:false/,
-  /key:'Emri tregtar'[\s\S]*?visible:true/,
-  /key:'Substanca aktive'[\s\S]*?visible:true/,
-  /key:'ATC Code'[\s\S]*?visible:true/,
-  /key:'Fortësia'[\s\S]*?visible:true/,
-  /key:'Forma farmaceutike'[\s\S]*?visible:true/,
-  /key:'Statusi'[\s\S]*?visible:true/,
-  /key:'Çmimi me pakicë'[\s\S]*?visible:false/,
-].forEach(pattern => assert.match(columns, pattern, `Default registry columns missing ${pattern}`));
+const expectedColumnVisibility = Object.freeze({
+  'Nr rendor':true,
+  'Substanca aktive':true,
+  'Emri tregtar':true,
+  'ATC Code':false,
+  'Klasa / Çka është':true,
+  'Përdorimi (fjalë kyçe)':true,
+  'Fortësia':true,
+  'Forma farmaceutike':true,
+  'Si të shënohet në recetë':true,
+  'Statusi':false,
+  'Çmimi me pakicë':false,
+});
+
+for (const [key, expected] of Object.entries(expectedColumnVisibility)) {
+  const line = columns.split('\n').find(item => item.includes(`key:'${key}'`)) || '';
+  assert.ok(line, `Default registry column is missing: ${key}`);
+  assert.ok(
+    line.includes(`visible:${expected ? 'true' : 'false'}`),
+    `Default registry visibility mismatch for ${key}: expected ${expected ? 'ON' : 'OFF'}`,
+  );
+}
+
+const numberPosition = columns.indexOf("key:'Nr rendor'");
+const substancePosition = columns.indexOf("key:'Substanca aktive'");
+const tradePosition = columns.indexOf("key:'Emri tregtar'");
+assert.ok(
+  numberPosition >= 0 && substancePosition > numberPosition && tradePosition > substancePosition,
+  'Canonical registry source order must be Nr → Substanca aktive → Emri tregtar.',
+);
 
 assert.match(counters, /if\(pc\) pc\.textContent = selected;/, 'The prescription CTA must show the current selection count');
 assert.match(render, /data-label="Për recetë"/, 'Registry selection cells need a mobile label');
 assert.match(render, /data-label="' \+ mobileLabel \+ '"/, 'Registry data cells need mobile labels');
-assert.match(dosage, /return \{ adult:stored\.adult === true, pediatric:stored\.pediatric === true \};/, 'Dosage columns must be opt-in');
-assert.match(dosage, /return \{ adult:false, pediatric:false \};/, 'Dosage columns must have a compact fallback');
+assert.match(dosage, /return \{ adult:stored\.adult === true, pediatric:stored\.pediatric === true \};/, 'Dosage runtime must read the persisted adult/pediatric visibility contract');
+assert.match(dosage, /return \{ adult:false, pediatric:false \};/, 'Dosage runtime must retain a safe local fallback if storage cannot be read');
+assert.match(dosageLoader, /DEFAULT_VISIBILITY_MIGRATION_KEY = 'medindex-registry-dosage-defaults-20260816-v1'/, 'Dosage defaults must use the canonical one-time migration key');
+assert.match(dosageLoader, /JSON\.stringify\(\{ adult:true, pediatric:true \}\)/, 'First-use dosage visibility must default Adult and Pediatric ON');
+assert.match(dosageLoader, /ensureDefaultDoseVisibility\(\);[\s\S]{0,260}script\.src = SRC/, 'Dosage defaults must be resolved before the dosage runtime is mounted');
 assert.match(dosage, /cell\.dataset\.label = column\.label;/, 'Dosage cells need mobile labels');
 
 [
@@ -89,7 +113,7 @@ assert.match(auth, /id = 'miAuthBootstrap'|id='miAuthBootstrap'|authBootstrap\.i
 assert.equal(manifest.theme_color, '#155f63');
 assert.equal(manifest.background_color, '#f6f9f8');
 
-['registry-dosage-columns-v2.js', 'tailadmin-shell-core.js'].forEach(file => {
+['registry-dosage-columns-v3.js', 'registry-dosage-loader.js', 'tailadmin-shell-core.js'].forEach(file => {
   execFileSync(process.execPath, ['--check', path.join(ROOT, file)], { stdio:'pipe' });
 });
 
