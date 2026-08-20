@@ -13,6 +13,7 @@ const css = read('registry-user-personalization.css');
 const uxPhase1 = read('registry-ux-phase1.js');
 const uxPhase1Css = read('registry-ux-phase1.css');
 const client = read('user-library-client.js');
+const authClient = read('auth-client.js');
 const server = read('lib/user-library.js');
 const shell = read('tailadmin-shell-core.js');
 const pkg = read('package.json');
@@ -22,6 +23,7 @@ const runtime = read('app-runtime.js');
 assert.doesNotThrow(() => new Function(ui), 'Personalization UI must parse as JavaScript');
 assert.doesNotThrow(() => new Function(uxPhase1), 'Registry UX phase 1 must parse as JavaScript');
 assert.doesNotThrow(() => new Function(client), 'User library client must parse as JavaScript');
+assert.doesNotThrow(() => new Function(authClient), 'Auth client must parse as JavaScript');
 assert.doesNotThrow(() => new Function(server), 'User library server must parse as JavaScript');
 assert.doesNotThrow(() => new Function(runtimePatch), 'Registry personalization runtime patch must parse as JavaScript');
 
@@ -125,6 +127,22 @@ assert.match(client, /NOTE_ENTITY_TYPE = 'protocol'/, 'Notes must stay compatibl
 assert.match(client, /NOTE_ENTITY_PREFIX = 'drug-note:'/, 'Notes must use an isolated namespaced entity key');
 assert.match(client, /payload:\{ kind:'drug-note'/, 'Synced notes must be distinguishable from real protocol favorites');
 assert.match(client, /localStorage\.removeItem\(NOTES_KEY\)/, 'Notes must be removed from the browser on logout');
+
+assert.match(authClient, /async function syncPersonalLibraryBeforeLogout\(\)/, 'Logout must have an explicit personal-library sync gate');
+assert.match(authClient, /MedIndexUserLibrary\?\.syncNow/, 'Logout must use the current revision-aware user-library sync API');
+assert.match(authClient, /LOGOUT_SYNC_TIMEOUT_MS = 5000/, 'Logout sync must be bounded instead of hanging indefinitely');
+assert.match(authClient, /if \(!synced\)[\s\S]{0,320}Dalja u anulua/, 'A failed personal-library sync must block logout and preserve local data');
+assert.match(authClient, /if \(!response\.ok\)/, 'Private browser data must not be cleared when the auth logout fails');
+assert.match(authClient, /regjistriBarnave_favoritet_v1/, 'Favorites must be cleared locally after a confirmed logout');
+assert.match(authClient, /regjistriBarnave_shenime_v1/, 'Notes must be cleared locally after a confirmed logout');
+assert.match(authClient, /regjistriBarnave_barnat_personale_v1/, 'Personal drugs must be cleared locally after a confirmed logout');
+assert.match(authClient, /medindex_user_library_meta_v1/, 'User-library sync metadata must be cleared after a confirmed logout');
+const logoutSync = authClient.indexOf('const synced = await syncPersonalLibraryBeforeLogout()');
+const logoutDelete = authClient.indexOf("authRequest({ method:'DELETE' })");
+const logoutClear = authClient.indexOf('await clearPrivateBrowserData()');
+assert.ok(logoutSync >= 0 && logoutDelete > logoutSync && logoutClear > logoutDelete,
+  'Logout order must be sync gate → auth DELETE → private local clear');
+
 assert.match(server, /NOTE_ENTITY_PREFIX = 'drug-note:'/, 'Server note namespace is missing');
 assert.match(server, /payload\.kind === 'drug-note'/, 'Server does not validate namespaced drug notes');
 assert.match(server, /user_id=eq\./, 'User library reads must stay scoped to authenticated user ID');
@@ -148,4 +166,4 @@ assert.throws(() => library._test.normalizedFavorite({
   payload:{ kind:'drug-note', text:'x'.repeat(2001) },
 }), /maksimum 2000/i, 'Oversized personal notes must fail closed');
 
-console.log('Canonical Favorites + Notes, mobile bridge, native personal views, mutation locks and pending persistent sync audit passed.');
+console.log('Canonical Favorites + Notes, mobile bridge, native personal views, mutation locks, fail-closed logout and pending persistent sync audit passed.');
