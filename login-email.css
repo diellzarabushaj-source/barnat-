@@ -48,8 +48,10 @@
   top: 50%;
   right: 6px;
   transform: translateY(-50%);
-  min-height: 34px;
-  padding: 0 10px;
+  /* Every visible control on this card is a phone tap target, so it clears the
+     44px floor the mobile login audit enforces. It sits inside a 46px field. */
+  min-height: 44px;
+  padding: 0 12px;
   border: 0;
   border-radius: 7px;
   background: transparent;
@@ -83,8 +85,9 @@
 
 .login-email-link {
   justify-self: center;
+  min-height: 44px;
   margin-top: 4px;
-  padding: 6px 4px;
+  padding: 6px 12px;
   border: 0;
   background: transparent;
   color: var(--mi-muted, #667085);
@@ -95,6 +98,30 @@
 }
 
 .login-email-link:hover { color: var(--mi-brand-600, #155f63); }
+
+/* The way to registration is its own control rather than a link buried in a
+   sentence: on a phone that made it both hard to see and too small to hit. */
+.login-register-cta {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 46px;
+  margin: 10px 0 0;
+  padding: 12px 18px;
+  border: 1px solid var(--mi-border, #e4e7ec);
+  border-radius: 10px;
+  background: var(--mi-surface, #fff);
+  color: var(--mi-brand-700, #0d4145);
+  font-size: 14px;
+  font-weight: 700;
+  text-align: center;
+  text-decoration: none;
+}
+
+.login-register-cta:hover {
+  border-color: var(--mi-brand-500, #1f7779);
+  background: var(--mi-brand-25, #f7fbfa);
+}
 
 .login-register {
   margin: 16px 0 0;

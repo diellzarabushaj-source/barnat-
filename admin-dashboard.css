@@ -328,8 +328,8 @@
 }
 
 .mi-action {
-  min-height: 32px;
-  padding: 6px 12px;
+  min-height: 40px;
+  padding: 8px 12px;
   border: 1px solid var(--mi-border, #e4e7ec);
   border-radius: 7px;
   background: var(--mi-surface, #fff);
@@ -449,6 +449,9 @@
 }
 
 @media (max-width: 560px) {
+  /* Row actions are the only way to approve an account, and on a phone they
+     have to be reachable with a thumb. */
+  .mi-action, .mi-tab { min-height: 44px; }
   .mi-admin-page { padding: 18px 14px 48px; }
   .mi-admin-head h1 { font-size: 22px; }
   .mi-stat-value { font-size: 26px; }
