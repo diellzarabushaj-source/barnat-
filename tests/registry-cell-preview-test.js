@@ -23,9 +23,9 @@ assert(
 );
 assert(index.includes('data-registry-ui-release="20260812-1"'), 'Registry UI release was not bumped.');
 assert(index.includes('registry-column-contract.js?v=20260801-2'), 'Column contract v2 is not wired.');
-assert(index.includes('registry-unified-table.js?v=20260812-population-column-1'), 'Unified table population controller is not wired.');
+assert(index.includes('registry-unified-table.js?v=20260820-registry-columns-v2'), 'Unified table population controller is not wired.');
 assert(
-  index.indexOf('registry-unified-table.css?v=20260812-population-column-1') < index.indexOf('registry-full-text-expansion.css?v=20260805-2'),
+  index.indexOf('registry-unified-table.css?v=20260820-registry-columns-v2') < index.indexOf('registry-full-text-expansion.css?v=20260805-2'),
   'Full-row reveal must load after the unified compact population geometry.'
 );
 assert(
