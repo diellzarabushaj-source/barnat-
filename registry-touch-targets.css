@@ -86,9 +86,47 @@ html.medindex-tailadmin[data-mi-page="barnat"] body :is(.mi-offline-status, .mi-
   min-height:var(--mi-touch)!important;
 }
 
-/* `.skip-link` mbetet jashtë me qëllim: është lidhja e kapërcimit që rri e
-   fshehur derisa merr fokusin nga tastiera. Ajo nuk preket me gisht kurrë, dhe
-   rritja e saj do ta bënte të dukshme ose do të kërkonte pozicionim të ri. */
+/* `.skip-link` fshihej derisa merrte fokusin — por vetëm nën 1024px, sepse
+   rregulli i vetëm që e pozicionon rri brenda një media query te
+   `registry-mobile-critical.css`. Mbi atë prag ajo nuk fshihej fare: mbetej një
+   lidhje e dukshme 162×17px në krye të çdo faqeje desktop, dhe auditi i
+   viewport-eve e raportonte me të drejtë si objektiv prekjeje nën pragun.
+
+   Kjo është e njëjta sjellje, e zgjeruar te desktopi: jashtë ekranit derisa
+   merr fokus, dhe 44px e lartë kur shfaqet, që kur të jetë e dukshme të jetë
+   vërtet e përdorshme. */
+@media (min-width:1024px){
+  html.medindex-tailadmin[data-mi-page="barnat"] body .skip-link{
+    position:fixed!important;
+    z-index:2147483640!important;
+    top:12px!important;
+    left:12px!important;
+    width:auto!important;
+    max-width:calc(100vw - 24px)!important;
+    min-height:44px!important;
+    padding:0 16px!important;
+    border:0!important;
+    border-radius:12px!important;
+    background:#101828!important;
+    color:#fff!important;
+    font-size:14px!important;
+    font-weight:650!important;
+    line-height:44px!important;
+    text-decoration:none!important;
+    box-shadow:0 14px 35px rgba(16,24,40,.24)!important;
+    transform:translateY(calc(-100% - 24px))!important;
+    transition:transform .2s ease!important;
+  }
+  html.medindex-tailadmin[data-mi-page="barnat"] body .skip-link:focus{
+    transform:translateY(0)!important;
+    outline:3px solid #f5b942!important;
+    outline-offset:3px!important;
+  }
+}
+
+@media (min-width:1024px) and (prefers-reduced-motion:reduce){
+  html.medindex-tailadmin[data-mi-page="barnat"] body .skip-link{ transition:none!important; }
+}
 
 /* Thërrimet janë lidhje teksti inline: një `min-height` do t'i shtynte poshtë
    dhe do ta prishte rreshtin. Në vend të saj zgjerohet vetëm zona e prekjes me
