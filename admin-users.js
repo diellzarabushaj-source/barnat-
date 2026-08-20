@@ -156,6 +156,14 @@
     try {
       await session();
       const payload = await request();
+      // Only a real accounts payload reveals the panel. Anything else — an
+      // endpoint that answers with something other than a user list — leaves it
+      // hidden rather than rendering an empty admin surface on a page that is
+      // not meant to show one.
+      if (!Array.isArray(payload.users)) {
+        elements.panel.hidden = true;
+        return;
+      }
       elements.panel.hidden = false;
       render(payload);
     } catch (error) {
