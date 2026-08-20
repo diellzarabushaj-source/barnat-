@@ -84,8 +84,21 @@ const read = file => fs.readFileSync(path.join(root, file), 'utf8');
   const middleware = read('middleware.ts');
   assert.ok(middleware.includes("'/regjistrimi'"),
     'middleware runs before the rewrite, so it sees the clean URL; registration must be public under both spellings');
-  assert.ok(!/'\/admin'/.test(middleware),
-    '/admin must stay behind the session gate — it is the one page that must never be public');
+  for (const adminShellPath of [
+    '/admin',
+    '/admin.html',
+    '/admin-login.html',
+    '/admin-login.css',
+    '/admin-entry-guard.js',
+    '/admin-dashboard.css',
+  ]) {
+    assert.ok(middleware.includes(`'${adminShellPath}'`),
+      `${adminShellPath} must pass middleware so the dedicated admin gate/login can run`);
+  }
+  assert.ok(!middleware.includes("'/api/auth?scope=users'"),
+    'the admin users endpoint must never be made a public middleware path');
+  assert.ok(!middleware.includes("'/api/clinical-editor'"),
+    'the clinical editor must remain behind server authentication');
 
   const entry = read('admin-entry.js');
   assert.match(entry, /payload\.authUser\?\.role !== 'admin'/, 'the entry is revealed only for a verified admin role');
