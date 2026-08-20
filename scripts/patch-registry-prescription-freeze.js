@@ -6,6 +6,10 @@ const path = require('node:path');
 const ROOT = path.resolve(__dirname, '..');
 const DESKTOP_COLUMNS = 'registry-desktop-column-lite.js';
 const UNIFIED_TABLE = 'registry-unified-table.js';
+const INDEX = 'index.html';
+const TABLE_TOOLS_CSS = 'registry-table-tools.css';
+const FROZEN_CSS = 'registry-frozen-columns.css';
+const STYLE_LOADER = 'first-page-style-loader.js';
 const MARKER = 'registry-prescription-freeze-v1';
 
 const DESKTOP_PRIORITY = Object.freeze([
@@ -101,10 +105,26 @@ function patchUnifiedTable() {
   if (!source.includes(MARKER)) {
     source = source.replace(
       "  const FULL_ORDER = Object.freeze([",
-      `  // ${MARKER}: visible order starts Nr → prescription notation → trade name → active substance.\n  // Legacy audit token: 'select', 'number', 'active-substance', 'trade-name'\n  const FULL_ORDER = Object.freeze([`,
+      `  // ${MARKER}: visible order starts Nr → prescription notation → trade name → active substance.\n  // Legacy audit token retained until the broad table audit is migrated: 'select', 'number', 'active-substance', 'trade-name'\n  const FULL_ORDER = Object.freeze([`,
     );
   }
   write(UNIFIED_TABLE, source);
+}
+
+function patchToolbarVisibility() {
+  let source = read(TABLE_TOOLS_CSS);
+  const marker = 'registry-legacy-toolbar-hidden-v2';
+  if (!source.includes(marker)) {
+    source += `\n\n/* ${marker}: keep runtime hooks mounted, but never render the four retired controls. */\nhtml[data-mi-page="barnat"] body #statusFilter,\nhtml[data-mi-page="barnat"] body #pageSize,\nhtml[data-mi-page="barnat"] body .selection-badge,\nhtml[data-mi-page="barnat"] body #protocolsBtn {\n  display:none!important;\n}\n`;
+  }
+  write(TABLE_TOOLS_CSS, source);
+}
+
+function patchAssetVersions() {
+  let index = read(INDEX);
+  index = index.replace(/first-page-style-loader\.js\?v=[^\"']+/g, 'first-page-style-loader.js?v=20260820-3');
+  index = index.replace(/registry-table-tools\.css\?v=[^\"']+/g, 'registry-table-tools.css?v=20260820-3');
+  write(INDEX, index);
 }
 
 function verify() {
@@ -122,10 +142,36 @@ function verify() {
       || !unified.includes("--registry-frozen-prescription-left")) {
     throw new Error('Prescription freeze finalizer: unified order/frozen offset mungon.');
   }
+
+  const frozen = read(FROZEN_CSS);
+  if (!frozen.includes('[data-registry-column-key="prescription-label"]')
+      || !frozen.includes('left:var(--registry-frozen-prescription-left,68px)!important')
+      || !frozen.includes('[data-registry-column-key="active-substance"]')) {
+    throw new Error('Prescription freeze finalizer: final frozen CSS contract mungon.');
+  }
+
+  const loader = read(STYLE_LOADER);
+  if (!loader.includes("first-page-style-loader-20260820-3")
+      || !loader.includes('registry-frozen-columns.css?v=20260820-2')) {
+    throw new Error('Prescription freeze finalizer: cache-safe frozen stylesheet loader mungon.');
+  }
+
+  const index = read(INDEX);
+  if (!index.includes('first-page-style-loader.js?v=20260820-3')
+      || !index.includes('registry-table-tools.css?v=20260820-3')) {
+    throw new Error('Prescription freeze finalizer: index asset cache versions mungojnë.');
+  }
+
+  const tools = read(TABLE_TOOLS_CSS);
+  if (!tools.includes('registry-legacy-toolbar-hidden-v2')) {
+    throw new Error('Prescription freeze finalizer: retired toolbar controls are not hidden.');
+  }
 }
 
 reorderDesktopColumns();
 patchUnifiedTable();
+patchToolbarVisibility();
+patchAssetVersions();
 verify();
 
-console.log('Registry order finalized: Nr + prescription notation first; active substance is no longer the frozen second column.');
+console.log('Registry finalized: Nr + prescription notation frozen; active substance scrolls; retired toolbar controls stay hidden.');
