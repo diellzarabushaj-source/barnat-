@@ -1,0 +1,111 @@
+<!doctype html>
+<html lang="sq" data-mi-page="admin">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="robots" content="noindex,nofollow">
+<meta name="color-scheme" content="light dark">
+<title>Administrimi — MedIndex</title>
+<link rel="icon" href="/brand/medindex-mark-on-light.webp">
+<link rel="stylesheet" href="tailadmin-medindex.css?v=multiuser-v2">
+<link rel="stylesheet" href="admin-dashboard.css?v=multiuser-v2">
+<script src="theme-preload.js?v=multiuser-v2"></script>
+</head>
+<body class="mi-admin">
+
+<header class="mi-admin-top">
+  <a class="mi-admin-brand" href="/index.html">
+    <img src="/brand/medindex-mark-on-light.webp" alt="" width="32" height="32" decoding="async">
+    <span><strong>MedIndex</strong><small>Administrimi</small></span>
+  </a>
+  <div class="mi-admin-top-actions">
+    <span class="mi-admin-who" id="adminWho"></span>
+    <a class="mi-action" href="/sistemi.html">Sistemi</a>
+    <a class="mi-action" href="/index.html">Regjistri</a>
+  </div>
+</header>
+
+<main class="mi-admin-page">
+  <div class="mi-admin-head">
+    <h1>Llogaritë dhe aprovimet</h1>
+    <p>Çdo regjistrim i ri qëndron i mbyllur derisa ta aprovosh këtu. Dokumenti profesional hapet me një lidhje private që skadon për 60 sekonda dhe çdo hapje regjistrohet në auditim.</p>
+  </div>
+
+  <section class="mi-stats" aria-label="Përmbledhje e llogarive">
+    <article class="mi-stat" data-tone="pending">
+      <p class="mi-stat-label"><span class="mi-stat-dot" aria-hidden="true"></span>Në pritje</p>
+      <p class="mi-stat-value" id="statPending">—</p>
+      <p class="mi-stat-hint">Presin aprovimin tënd</p>
+    </article>
+    <article class="mi-stat" data-tone="active">
+      <p class="mi-stat-label"><span class="mi-stat-dot" aria-hidden="true"></span>Aktive</p>
+      <p class="mi-stat-value" id="statActive">—</p>
+      <p class="mi-stat-hint">Me qasje të plotë klinike</p>
+    </article>
+    <article class="mi-stat" data-tone="blocked">
+      <p class="mi-stat-label"><span class="mi-stat-dot" aria-hidden="true"></span>Të bllokuara</p>
+      <p class="mi-stat-value" id="statBlocked">—</p>
+      <p class="mi-stat-hint">Të pezulluara ose të çaktivizuara</p>
+    </article>
+    <article class="mi-stat" data-tone="total">
+      <p class="mi-stat-label"><span class="mi-stat-dot" aria-hidden="true"></span>Gjithsej</p>
+      <p class="mi-stat-value" id="statTotal">—</p>
+      <p class="mi-stat-hint">Llogari të regjistruara</p>
+    </article>
+  </section>
+
+  <section class="mi-panel" aria-labelledby="accountsTitle">
+    <div class="mi-panel-head">
+      <h2 id="accountsTitle">Llogaritë</h2>
+      <span class="mi-admin-state" id="adminState">Duke kontrolluar…</span>
+      <div class="mi-panel-tools">
+        <div class="mi-tabs" role="tablist" aria-label="Filtro sipas statusit" id="adminTabs">
+          <button class="mi-tab" type="button" role="tab" data-filter="pending" aria-selected="true">Në pritje</button>
+          <button class="mi-tab" type="button" role="tab" data-filter="active" aria-selected="false">Aktive</button>
+          <button class="mi-tab" type="button" role="tab" data-filter="blocked" aria-selected="false">Të bllokuara</button>
+          <button class="mi-tab" type="button" role="tab" data-filter="all" aria-selected="false">Të gjitha</button>
+        </div>
+        <input class="mi-search" id="adminSearch" type="search" placeholder="Kërko email ose emër" aria-label="Kërko llogari" autocomplete="off">
+        <button class="mi-action" type="button" id="adminRefresh">Rifresko</button>
+      </div>
+    </div>
+
+    <div class="mi-table-wrap">
+      <table class="mi-table">
+        <thead>
+          <tr>
+            <th scope="col">Përdoruesi</th>
+            <th scope="col">Titulli</th>
+            <th scope="col">Statusi</th>
+            <th scope="col">Dokumenti</th>
+            <th scope="col">Aktiviteti</th>
+            <th scope="col">Veprime</th>
+          </tr>
+        </thead>
+        <tbody id="adminRows">
+          <tr><td class="is-empty" colspan="6">Duke ngarkuar llogaritë…</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <p class="mi-admin-message" id="adminMessage" role="status" aria-live="polite"></p>
+</main>
+
+<dialog class="mi-dialog" id="refuseDialog" aria-labelledby="refuseTitle">
+  <form method="dialog" id="refuseForm">
+    <h3 id="refuseTitle">Refuzo regjistrimin</h3>
+    <p id="refuseWho"></p>
+    <label>
+      <textarea id="refuseReason" maxlength="1000" placeholder="Arsyeja e refuzimit — ruhet në auditim dhe e ndihmon personin ta rregullojë dërgimin."></textarea>
+    </label>
+    <div class="mi-dialog-actions">
+      <button class="mi-action" type="button" data-refuse-cancel>Anulo</button>
+      <button class="mi-action is-danger" type="submit">Refuzo llogarinë</button>
+    </div>
+  </form>
+</dialog>
+
+<script src="admin-dashboard.js?v=multiuser-v2" defer></script>
+</body>
+</html>
