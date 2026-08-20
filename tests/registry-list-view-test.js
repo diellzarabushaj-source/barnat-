@@ -237,9 +237,28 @@ assert.ok(api, 'the list view must publish its API');
   assert.match(js, /ROOT\.dataset\.miRegistryView = next/,
     'the switch is a root attribute, so CSS decides what is shown rather than the script tearing anything down');
 
+  // The phone toolbar has a height budget (94px) that two separate mobile gates
+  // enforce. A control added inside it takes a whole row there and blows both,
+  // so the toggle lives above the registry instead — it must never move back.
+  assert.ok(!/toolbar\.appendChild/.test(js),
+    'the view toggle must not be added into the search toolbar: it has a height budget on phones');
+  assert.match(js, /registry\.insertAdjacentElement\('beforebegin', bar\)/,
+    'the toggle sits above the registry, outside the toolbar');
+
   const css = read('registry-list-view.css');
   assert.match(css, /html\[data-mi-registry-view="list"\] #registryContent \{ display: none !important; \}/,
     'the table is hidden by CSS rather than dismantled');
+
+  // The switch belongs to the screens that show a table. On a phone the
+  // registry is already a card list, and two mobile gates budget that layout
+  // tightly — so the surface starts hidden and is only turned on from the table
+  // breakpoint up. Hiding the table must be scoped the same way, or a
+  // preference set on a desktop would leave a phone with no registry at all.
+  assert.match(css, /\.rlv-bar,\s*\n\.rlv-panel \{ display: none; \}/,
+    'the list surface is off by default and opted into by width');
+  const desktopOnly = css.slice(css.indexOf('@media (min-width: 768px)'));
+  assert.ok(desktopOnly.includes('html[data-mi-registry-view="list"] #registryContent'),
+    'the rule that hides the table lives inside the width query, not outside it');
   for (const token of ['--mi-border', '--mi-surface', '--mi-brand-600', '--mi-text']) {
     assert.ok(css.includes(token), `the list must build on the shared token ${token}`);
   }

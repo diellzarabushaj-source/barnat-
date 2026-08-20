@@ -454,6 +454,12 @@
     const toolbar = document.querySelector('.toolbar');
     if (!registry || !toolbar || state.mounted) return;
 
+    // The toggle sits above the registry rather than inside the search toolbar.
+    // On a phone it would take a row of its own there, and the toolbar has a
+    // height budget it must stay inside — a switch belongs next to the thing it
+    // switches, not among the filters.
+    const bar = document.createElement('div');
+    bar.className = 'rlv-bar';
     const toggle = document.createElement('div');
     toggle.className = 'rlv-toggle';
     toggle.setAttribute('role', 'group');
@@ -461,7 +467,8 @@
     toggle.innerHTML = `
       <button type="button" data-rlv-view="list" aria-pressed="false"><span aria-hidden="true">☷</span>Listë</button>
       <button type="button" data-rlv-view="table" aria-pressed="true"><span aria-hidden="true">▦</span>Tabelë</button>`;
-    toolbar.appendChild(toggle);
+    bar.appendChild(toggle);
+    registry.insertAdjacentElement('beforebegin', bar);
 
     const panel = document.createElement('section');
     panel.className = 'rlv-panel';
