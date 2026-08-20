@@ -394,16 +394,17 @@
   }
 
   function handleLitePanelAction(event) {
-    if (!liteActive()) return;
     const action = event.target.closest?.(`#${PANEL_ID} .col-panel-actions button`);
     if (!action) return;
     const label = clean(action.textContent).toLocaleLowerCase('sq');
     if (!label.includes('shfaqi') && !label.includes('fshihi')) return;
 
-    event.preventDefault();
-    event.stopImmediatePropagation();
     const showAll = label.includes('shfaqi');
-    applyLiteColumnPreference(showAll ? litePanelColumnKeys() : []);
+    if (liteActive()) {
+      event.preventDefault();
+      event.stopImmediatePropagation();
+      applyLiteColumnPreference(showAll ? litePanelColumnKeys() : []);
+    }
     writeDosageBulkPreference(showAll);
     writeDoseCalculatorBulkPreference(showAll);
     requestAnimationFrame(() => updateSelection());
