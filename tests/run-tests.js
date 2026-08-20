@@ -46,7 +46,9 @@ async function main() {
 
   console.log('2/11 JSON and JavaScript syntax');
   const vercel = JSON.parse(file('vercel.json'));
-  assert.equal(vercel.rewrites?.[0]?.destination, '/api/registry');
+  // Matched by source, not by position: the array grows, and a rule moving
+  // down it is not a regression.
+  assert.ok(vercel.rewrites.some(item => item.source === '/data/registry-data.js' && item.destination === '/api/registry'));
   assert.ok(vercel.rewrites.some(item => item.source === '/api/gemini-prescription' && item.destination === '/api/gemini-prescription-secure'));
   [
     'app.js','app-runtime.js','login.js','theme-preload.js','auth-client.js','app-stability.js','tailadmin-shell.js','main-navigation-extension.js',

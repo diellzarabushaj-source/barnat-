@@ -144,9 +144,10 @@
     }
     if (user.status === 'active') {
       actions.push({ label:'Pezullo', status:'suspended', danger:true });
-      actions.push(user.role === 'admin'
-        ? { label:'Bëje mjek', role:'doctor' }
-        : { label:'Bëje admin', role:'admin' });
+      // Administration is limited to named addresses, so the promotion is only
+      // offered where it could actually succeed.
+      if (user.role === 'admin') actions.push({ label:'Bëje mjek', role:'doctor' });
+      else if (user.canBeAdmin) actions.push({ label:'Bëje admin', role:'admin' });
     }
     if (user.status === 'suspended' || user.status === 'disabled') {
       actions.push({ label:'Riaktivizo', status:'active', primary:true });

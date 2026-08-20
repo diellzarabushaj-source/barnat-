@@ -14,7 +14,10 @@ const Module = require('node:module');
 const PersonalDrugs = require('../lib/user-drugs.js');
 const AdminAccess = require('../lib/admin-access.js');
 const AdminDrugs = require('../lib/admin-drugs.js');
+const AdminUsersModule = require('../lib/admin-users.js');
 const SupabaseAuth = require('../lib/supabase-auth.js');
+
+const OWNER_EMAIL = 'diellzarabushaj@gmail.com';
 
 function session(overrides = {}) {
   return {
@@ -95,13 +98,40 @@ assert.throws(() => PersonalDrugs.assertWithinLimit(PersonalDrugs.MAX_PERSONAL_D
 {
   const adminProfile = { id:session().authUid, role:'admin', status:'active', legacy_user_id:'' };
   const deps = {
-    readSession:async () => session({ authRole:'admin' }),
+    readSession:async () => session({ authRole:'admin', email:OWNER_EMAIL }),
     readProfile:async () => adminProfile,
   };
   const identity = await AdminAccess.requireAdminSession({}, deps);
   assert.equal(identity.role, 'admin');
   assert.equal(identity.authUid, session().authUid);
+  assert.equal(identity.email, OWNER_EMAIL);
 }
+
+// Administration belongs to named addresses. `role = 'admin'` alone is not
+// enough: a row edited straight in the database, or a promotion that slipped
+// past review, still cannot open an admin surface.
+await expectCode(
+  AdminAccess.requireAdminSession({}, {
+    readSession:async () => session({ authRole:'admin', email:'dikush.tjeter@example.com' }),
+    readProfile:async () => ({ id:session().authUid, role:'admin', status:'active', legacy_user_id:'' }),
+  }),
+  'ADMIN_EMAIL_NOT_ALLOWED', 403,
+);
+
+assert.equal(AdminAccess.isAdminEmail(OWNER_EMAIL), true);
+assert.equal(AdminAccess.isAdminEmail(' DiellzaRabushaj@Gmail.com '), true, 'the address is compared case- and space-insensitively');
+assert.equal(AdminAccess.isAdminEmail('dikush.tjeter@example.com'), false);
+assert.equal(AdminAccess.isAdminEmail(''), false);
+
+// Promoting an address that could never use the role is refused before it is
+// written: an account marked admin that no admin surface accepts is worse than
+// no promotion at all.
+await expectCode(
+  AdminUsersModule._test.assertAdminEmailAllowed('u-2', 'admin', [{ id:'u-2', email:'dikush.tjeter@example.com' }]),
+  'ADMIN_EMAIL_NOT_ALLOWED', 403,
+);
+await AdminUsersModule._test.assertAdminEmailAllowed('u-1', 'admin', [{ id:'u-1', email:OWNER_EMAIL }]);
+await AdminUsersModule._test.assertAdminEmailAllowed('u-2', 'doctor', [{ id:'u-2', email:'dikush.tjeter@example.com' }]);
 
 await expectCode(
   AdminAccess.requireAdminSession({}, { readSession:async () => null }),

@@ -31,6 +31,11 @@ const read = file => fs.readFileSync(path.join(root, file), 'utf8');
   assert.match(js, /error\.status === 403[\s\S]{0,200}location\.replace/,
     'a refusal from the server must also send a non-admin away');
 
+  // Administration is limited to named addresses, so the promotion is only
+  // offered where the server and the database would both accept it.
+  assert.match(js, /else if \(user\.canBeAdmin\) actions\.push\(\{ label:'Bëje admin'/,
+    'the admin promotion must be gated on the allowlist, not offered to every active account');
+
   // Approval is refused without a document, so the button must say so rather
   // than failing after the click.
   assert.match(js, /const hasDocument = Boolean\(user\.verificationDocument\)/);
@@ -56,10 +61,21 @@ const read = file => fs.readFileSync(path.join(root, file), 'utf8');
 {
   const html = read('sistemi.html');
   assert.match(html, /<section[^>]+id="systemUsersPanel"[^>]*\shidden/, 'the admin entry must start hidden and only appear for an admin');
-  assert.match(html, /href="\/admin\.html"/, 'the system page must lead to the dashboard');
+  assert.match(html, /href="\/admin"/, 'the system page must lead to the dashboard');
   assert.match(html, /admin-entry\.js\?v=/, 'the entry needs its versioned runtime');
   assert.ok(!html.includes('systemUsersRows'),
     'account management lives in one place now; a second half-built table on the system page is exactly the duplication that was removed');
+
+  const vercel = JSON.parse(read('vercel.json'));
+  const rewriteFor = source => vercel.rewrites.find(rule => rule.source === source);
+  assert.equal(rewriteFor('/admin')?.destination, '/admin.html', '/admin must resolve to the dashboard');
+  assert.equal(rewriteFor('/regjistrimi')?.destination, '/regjistrimi.html', '/regjistrimi must resolve to the registration page');
+
+  const middleware = read('middleware.ts');
+  assert.ok(middleware.includes("'/regjistrimi'"),
+    'middleware runs before the rewrite, so it sees the clean URL; registration must be public under both spellings');
+  assert.ok(!/'\/admin'/.test(middleware),
+    '/admin must stay behind the session gate — it is the one page that must never be public');
 
   const entry = read('admin-entry.js');
   assert.match(entry, /payload\.authUser\?\.role !== 'admin'/, 'the entry is revealed only for a verified admin role');
