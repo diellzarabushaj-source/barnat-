@@ -16,6 +16,7 @@
   const FULL_STORAGE_KEY = 'medindex.registry.columns.v20260820';
   const DOSAGE_STORAGE_KEY = 'medindex-registry-dosage-columns-v2';
   const DOSAGE_DEFAULT_MIGRATION_KEY = 'medindex-registry-dosage-defaults-20260816-v1';
+  const DOSE_CALCULATOR_STORAGE_KEY = 'medindex.registry.dose-calculator.visible.v1';
   const PRESCRIPTION_FULL_KEY = 'Si të shënohet në recetë';
   const DEFAULT_LITE_COLUMNS = Object.freeze([
     'number',
@@ -327,6 +328,27 @@
     });
   }
 
+  function writeDoseCalculatorBulkPreference(enabled) {
+    const next = Boolean(enabled);
+    try { localStorage.setItem(DOSE_CALCULATOR_STORAGE_KEY, String(next)); } catch {}
+    document.documentElement.dataset.registryDoseColumnVisible = String(next);
+
+    let mounted = false;
+    document.querySelectorAll(`#${PANEL_ID} [data-registry-dose-column-toggle]`).forEach(input => {
+      mounted = true;
+      if (input.checked === next) return;
+      input.checked = next;
+      input.dispatchEvent(new Event('change', { bubbles:true }));
+    });
+
+    if (next && !mounted && window.MEDINDEX_DESKTOP_LITE_ACTIVE) {
+      window.MEDINDEX_DESKTOP_LITE?.handoff?.('column-dose-calculator');
+    }
+    window.dispatchEvent(new CustomEvent('medindex:registry-dose-column-changed', {
+      detail:{ visible:next },
+    }));
+  }
+
   function persistLiteColumnPreference() {
     const controller = liteColumns();
     if (!controller || !liteActive() || preferenceApplying) return;
@@ -383,6 +405,7 @@
     const showAll = label.includes('shfaqi');
     applyLiteColumnPreference(showAll ? litePanelColumnKeys() : []);
     writeDosageBulkPreference(showAll);
+    writeDoseCalculatorBulkPreference(showAll);
     requestAnimationFrame(() => updateSelection());
   }
 
