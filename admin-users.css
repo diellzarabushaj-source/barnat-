@@ -1,0 +1,41 @@
+/* Admin accounts panel — built on the TailAdmin design tokens the MedIndex shell
+   already ships (--mi-*), so it inherits the same brand, spacing and dark theme. */
+.mi-users-summary{margin:0 0 16px;color:var(--mi-muted,#667085);font-size:.86rem;line-height:1.55}
+.mi-users-table-wrap{width:100%;overflow-x:auto;border:1px solid var(--mi-border,#e4e7ec);border-radius:var(--mi-card-radius,12px);background:var(--mi-surface,#fff)}
+.mi-users-table{width:100%;min-width:720px;border-collapse:collapse;font-family:var(--mi-font,inherit)}
+.mi-users-table th{padding:11px 14px;border-bottom:1px solid var(--mi-border,#e4e7ec);background:var(--mi-gray-50,#f9fafb);color:var(--mi-gray-500,#667085);font-size:.72rem;font-weight:600;letter-spacing:.04em;text-align:left;text-transform:uppercase;white-space:nowrap}
+.mi-users-table td{padding:13px 14px;border-bottom:1px solid var(--mi-border,#e4e7ec);color:var(--mi-text,#101828);font-size:.86rem;vertical-align:middle}
+.mi-users-table tr:last-child td{border-bottom:0}
+.mi-users-table td strong{display:block;font-weight:600}
+.mi-users-table td small{display:block;margin-top:2px;color:var(--mi-muted,#667085);font-size:.75rem;line-height:1.4}
+.mi-users-tag{display:inline-block!important;margin-top:5px!important;padding:2px 8px;border-radius:999px;background:var(--mi-brand-50,#eaf4f1);color:var(--mi-brand-600,#155f63)!important;font-weight:600}
+
+/* TailAdmin badge: tinted surface, saturated label, dot for state at a glance. */
+.mi-badge{display:inline-flex;align-items:center;gap:6px;padding:3px 10px;border-radius:999px;font-size:.74rem;font-weight:600;white-space:nowrap}
+.mi-badge::before{content:"";width:6px;height:6px;border-radius:50%;background:currentColor}
+.mi-badge.is-pending{background:var(--mi-warning-50,#fffaeb);color:var(--mi-warning-700,#b54708)}
+.mi-badge.is-active{background:var(--mi-success-50,#ecfdf3);color:var(--mi-success-700,#027a48)}
+.mi-badge.is-suspended{background:var(--mi-error-50,#fef3f2);color:var(--mi-error-700,#b42318)}
+.mi-badge.is-disabled{background:var(--mi-gray-100,#f2f4f7);color:var(--mi-gray-600,#475467)}
+
+.mi-users-actions{white-space:nowrap}
+.mi-users-action{min-height:36px;margin:2px 6px 2px 0;padding:0 13px;border:1px solid var(--mi-gray-300,#d0d5dd);border-radius:8px;background:var(--mi-surface,#fff);color:var(--mi-gray-700,#344054);font-family:inherit;font-size:.78rem;font-weight:600;cursor:pointer;transition:background .15s ease,border-color .15s ease}
+.mi-users-action:hover{background:var(--mi-gray-50,#f9fafb)}
+.mi-users-action:focus-visible{outline:none;box-shadow:var(--mi-focus,0 0 0 4px rgba(21,95,99,.18))}
+.mi-users-action:disabled{opacity:.55;cursor:wait}
+.mi-users-action.is-primary{border-color:var(--mi-brand-600,#155f63);background:var(--mi-brand-600,#155f63);color:#fff}
+.mi-users-action.is-primary:hover{background:var(--mi-brand-700,#0d4145)}
+.mi-users-action.is-danger{border-color:var(--mi-error-500,#f04438);color:var(--mi-error-700,#b42318)}
+.mi-users-action.is-danger:hover{background:var(--mi-error-50,#fef3f2)}
+
+html[data-theme="dark"] .mi-users-table th,html.dark .mi-users-table th{background:var(--mi-surface-soft,#1d2939);color:var(--mi-gray-400,#98a2b3)}
+html[data-theme="dark"] .mi-badge.is-pending,html.dark .mi-badge.is-pending{background:rgba(247,144,9,.16);color:var(--mi-warning-500,#f79009)}
+html[data-theme="dark"] .mi-badge.is-active,html.dark .mi-badge.is-active{background:rgba(18,183,106,.16);color:var(--mi-success-500,#12b76a)}
+html[data-theme="dark"] .mi-badge.is-suspended,html.dark .mi-badge.is-suspended{background:rgba(240,68,56,.16);color:var(--mi-error-500,#f04438)}
+html[data-theme="dark"] .mi-badge.is-disabled,html.dark .mi-badge.is-disabled{background:rgba(152,162,179,.16);color:var(--mi-gray-400,#98a2b3)}
+html[data-theme="dark"] .mi-users-tag,html.dark .mi-users-tag{background:rgba(21,95,99,.24);color:var(--mi-brand-300,#83b9ae)!important}
+html[data-theme="dark"] .mi-users-action,html.dark .mi-users-action{background:var(--mi-surface-soft,#1d2939);border-color:var(--mi-border,#344054);color:var(--mi-gray-100,#f2f4f7)}
+html[data-theme="dark"] .mi-users-action.is-primary,html.dark .mi-users-action.is-primary{background:var(--mi-brand-500,#1f7779);border-color:var(--mi-brand-500,#1f7779);color:#04211f}
+
+@media(max-width:640px){.mi-users-actions{white-space:normal}.mi-users-action{width:100%;margin-right:0}}
+@media(forced-colors:active){.mi-users-table-wrap,.mi-badge,.mi-users-action{border:1px solid CanvasText}}

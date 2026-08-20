@@ -10,6 +10,7 @@
   const PRESCRIPTIONS_KEY = 'regjistriBarnave_protokollet_v1';
   const FAVORITES_KEY = 'regjistriBarnave_favoritet_v1';
   const NOTES_KEY = 'regjistriBarnave_shenime_v1';
+  const DRUGS_KEY = 'regjistriBarnave_barnat_personale_v1';
   const META_KEY = 'medindex_user_library_meta_v1';
   const RELOAD_KEY = 'medindex_user_library_reload_v1';
   const NOTE_ENTITY_TYPE = 'protocol';
@@ -24,6 +25,22 @@
   const EVENT_SYNC_DELAY_MS = 40;
   const SYNC_DELAY_MS = 700;
   const NOTE_MAX = 2000;
+  const DRUG_NAME_MAX = 300;
+  // Mirrors the closed field set the server accepts; anything else is dropped on
+  // both sides so a personal entry can never smuggle extra structure through.
+  const DRUG_FIELDS = Object.freeze({
+    activeSubstance:400,
+    strength:200,
+    form:200,
+    manufacturer:200,
+    atcCode:20,
+    classification:200,
+    indications:2000,
+    adultDose:2000,
+    pediatricDose:2000,
+    contraindications:2000,
+    notes:4000,
+  });
   const TOMBSTONE_MAX_AGE_MS = 180 * 24 * 60 * 60 * 1000;
   const nativeFetch = window.fetch.bind(window);
 
@@ -83,12 +100,38 @@
     }
   }
 
+  function normalizeDrugFields(value) {
+    const source = value && typeof value === 'object' && !Array.isArray(value) ? value : {};
+    const fields = {};
+    Object.entries(DRUG_FIELDS).forEach(([name, max]) => {
+      const entry = String(source[name] ?? '').trim().slice(0, max);
+      if (entry) fields[name] = entry;
+    });
+    return fields;
+  }
+
+  function parsePersonalDrugs() {
+    return parseArray(DRUGS_KEY).flatMap(entry => {
+      if (!entry || typeof entry !== 'object') return [];
+      const clientId = text(entry.clientId);
+      const name = text(entry.name).slice(0, DRUG_NAME_MAX);
+      if (!clientId || !name) return [];
+      return [{ clientId, name, fields:normalizeDrugFields(entry.fields), updatedAt:text(entry.updatedAt) }];
+    });
+  }
+
+  function drugId(item) {
+    return text(item?.clientId);
+  }
+
   function readMeta() {
     try {
       const value = JSON.parse(localStorage.getItem(META_KEY) || '{}');
       return value && typeof value === 'object' ? {
         prescriptions:value.prescriptions && typeof value.prescriptions === 'object' ? value.prescriptions : {},
         favorites:value.favorites && typeof value.favorites === 'object' ? value.favorites : {},
+        drugs:value.drugs && typeof value.drugs === 'object' ? value.drugs : {},
+        deletedDrugs:value.deletedDrugs && typeof value.deletedDrugs === 'object' ? value.deletedDrugs : {},
         deletedPrescriptions:value.deletedPrescriptions && typeof value.deletedPrescriptions === 'object' ? value.deletedPrescriptions : {},
         deletedFavorites:value.deletedFavorites && typeof value.deletedFavorites === 'object' ? value.deletedFavorites : {},
         lastSyncedAt:text(value.lastSyncedAt),
@@ -99,7 +142,7 @@
   }
 
   function emptyMeta() {
-    return { prescriptions:{}, favorites:{}, deletedPrescriptions:{}, deletedFavorites:{}, lastSyncedAt:'' };
+    return { prescriptions:{}, favorites:{}, drugs:{}, deletedPrescriptions:{}, deletedFavorites:{}, deletedDrugs:{}, lastSyncedAt:'' };
   }
 
   function writeMeta(meta) {
@@ -114,6 +157,9 @@
     Object.keys(meta.deletedFavorites || {}).forEach(key => {
       if (time(meta.deletedFavorites[key]) < cutoff) delete meta.deletedFavorites[key];
     });
+    Object.keys(meta.deletedDrugs || {}).forEach(key => {
+      if (time(meta.deletedDrugs[key]) < cutoff) delete meta.deletedDrugs[key];
+    });
     return meta;
   }
 
@@ -122,6 +168,7 @@
       prescriptions:parseArray(PRESCRIPTIONS_KEY),
       favorites:parseArray(FAVORITES_KEY).map(String).filter(Boolean),
       notes:parseNotes(),
+      drugs:parsePersonalDrugs(),
     };
   }
 
@@ -130,6 +177,7 @@
       prescriptions:[...(state.prescriptions || [])].sort((a, b) => text(a?.id).localeCompare(text(b?.id))),
       favorites:[...(state.favorites || [])].map(String).sort(),
       notes:Object.entries(state.notes || {}).sort(([a], [b]) => a.localeCompare(b)),
+      drugs:[...(state.drugs || [])].sort((a, b) => drugId(a).localeCompare(drugId(b))),
     });
   }
 
@@ -161,6 +209,12 @@
       const id = noteMetaId(key);
       meta.favorites[id] = meta.favorites[id] || entry.updatedAt || stamp;
       delete meta.deletedFavorites[id];
+    });
+    (state.drugs || []).forEach(item => {
+      const id = drugId(item);
+      if (!id) return;
+      meta.drugs[id] = meta.drugs[id] || item.updatedAt || stamp;
+      delete meta.deletedDrugs[id];
     });
     return meta;
   }
@@ -216,6 +270,21 @@
         delete meta.deletedFavorites[id];
       }
     });
+
+    const previousDrugs = new Map((previous?.drugs || []).map(item => [drugId(item), item]).filter(([id]) => id));
+    const currentDrugs = new Map((current.drugs || []).map(item => [drugId(item), item]).filter(([id]) => id));
+    previousDrugs.forEach((item, id) => {
+      if (currentDrugs.has(id)) return;
+      meta.deletedDrugs[id] = stamp;
+      delete meta.drugs[id];
+    });
+    currentDrugs.forEach((item, id) => {
+      const before = previousDrugs.get(id);
+      if (!before || JSON.stringify(before) !== JSON.stringify(item)) {
+        meta.drugs[id] = item.updatedAt || stamp;
+        delete meta.deletedDrugs[id];
+      }
+    });
     writeMeta(meta);
   }
 
@@ -245,7 +314,14 @@
         return clientId ? [{ clientId, payload, clientUpdatedAt:meta.prescriptions[clientId] || payload.updatedAt || nowIso() }] : [];
       }),
       favorites:[...favoriteRows, ...noteRows],
+      drugs:state.drugs.map(item => ({
+        clientId:item.clientId,
+        name:item.name,
+        fields:item.fields,
+        clientUpdatedAt:meta.drugs[item.clientId] || item.updatedAt || nowIso(),
+      })),
       tombstones:{
+        drugs:Object.entries(meta.deletedDrugs).map(([clientId, deletedAt]) => ({ clientId, deletedAt })),
         prescriptions:Object.entries(meta.deletedPrescriptions).map(([clientId, deletedAt]) => ({ clientId, deletedAt })),
         favorites:Object.entries(meta.deletedFavorites).map(([id, deletedAt]) => {
           const separator = id.indexOf('|');
@@ -335,12 +411,41 @@
       meta.deletedFavorites[id] = row.deletedAt;
     });
 
-    const merged = { prescriptions:[...prescriptions.values()], favorites:[...favorites], notes };
+    const drugs = new Map(local.drugs.map(item => [drugId(item), item]).filter(([id]) => id));
+    (snapshot.drugs || []).forEach(row => {
+      const id = text(row.clientId);
+      const name = text(row.name).slice(0, DRUG_NAME_MAX);
+      if (!id || !name) return;
+      const localItem = drugs.get(id);
+      const localUpdated = time(meta.drugs[id] || localItem?.updatedAt);
+      const remoteUpdated = time(row.clientUpdatedAt || row.serverUpdatedAt);
+      const localDeleted = time(meta.deletedDrugs[id]);
+      if (localDeleted && localDeleted >= remoteUpdated) return;
+      if (!localItem || remoteUpdated > localUpdated) {
+        const stamp = row.clientUpdatedAt || row.serverUpdatedAt || nowIso();
+        drugs.set(id, { clientId:id, name, fields:normalizeDrugFields(row.fields), updatedAt:stamp });
+        meta.drugs[id] = stamp;
+      }
+      delete meta.deletedDrugs[id];
+    });
+
+    (snapshot.tombstones?.drugs || []).forEach(row => {
+      const id = text(row.clientId);
+      if (!id) return;
+      const localItem = drugs.get(id);
+      if (time(row.deletedAt) < time(meta.drugs[id] || localItem?.updatedAt)) return;
+      drugs.delete(id);
+      delete meta.drugs[id];
+      meta.deletedDrugs[id] = row.deletedAt;
+    });
+
+    const merged = { prescriptions:[...prescriptions.values()], favorites:[...favorites], notes, drugs:[...drugs.values()] };
     const changed = stableState(local) !== stableState(merged);
     try {
       localStorage.setItem(PRESCRIPTIONS_KEY, JSON.stringify(merged.prescriptions));
       localStorage.setItem(FAVORITES_KEY, JSON.stringify(merged.favorites));
       localStorage.setItem(NOTES_KEY, JSON.stringify(merged.notes));
+      localStorage.setItem(DRUGS_KEY, JSON.stringify(merged.drugs));
     } catch {}
     writeMeta(meta);
     lastState = merged;
@@ -526,6 +631,35 @@
     if (stablePrescriptions(lastState) === stablePrescriptions({ prescriptions })) return;
     captureLocalChanges();
   }
+  // Public mutation helpers. The UI goes through these instead of writing
+  // localStorage itself, so the stored shape and the sync trigger stay in one place.
+  function writePersonalDrugs(list) {
+    try { localStorage.setItem(DRUGS_KEY, JSON.stringify(list)); } catch {}
+    window.dispatchEvent(new CustomEvent('medindex:personal-drugs-changed'));
+  }
+
+  function savePersonalDrug(input) {
+    const name = text(input?.name).slice(0, DRUG_NAME_MAX);
+    if (!name) throw new Error('Bari personal duhet të ketë së paku emrin.');
+    const clientId = text(input?.clientId)
+      || `pd-${Date.now().toString(36)}-${Math.random().toString(36).slice(2, 8)}`;
+    const entry = { clientId, name, fields:normalizeDrugFields(input?.fields), updatedAt:nowIso() };
+    const list = parsePersonalDrugs().filter(item => item.clientId !== clientId);
+    list.push(entry);
+    writePersonalDrugs(list);
+    return entry;
+  }
+
+  function deletePersonalDrug(clientId) {
+    const id = text(clientId);
+    if (!id) return false;
+    const list = parsePersonalDrugs();
+    const next = list.filter(item => item.clientId !== id);
+    if (next.length === list.length) return false;
+    writePersonalDrugs(next);
+    return true;
+  }
+
   function onPersonalLibraryMutation() {
     const changed = captureLocalChanges({ schedule:false });
     if (changed) scheduleSync(EVENT_SYNC_DELAY_MS);
@@ -554,6 +688,7 @@
         localStorage.removeItem(PRESCRIPTIONS_KEY);
         localStorage.removeItem(FAVORITES_KEY);
         localStorage.removeItem(NOTES_KEY);
+        localStorage.removeItem(DRUGS_KEY);
         localStorage.removeItem(META_KEY);
       } catch {}
       return response;
@@ -570,6 +705,10 @@
     },
     state:readState,
     meta:readMeta,
+    personalDrugs:parsePersonalDrugs,
+    savePersonalDrug,
+    deletePersonalDrug,
+    personalDrugFields:DRUG_FIELDS,
     version:EVENT_SYNC_VERSION,
     recoveryVersion:RECOVERY_VERSION,
     longSessionVersion:LONG_SESSION_VERSION,
@@ -608,11 +747,11 @@
       if (dirty && Date.now() >= retryUntil) scheduleSync(EVENT_SYNC_DELAY_MS);
     }
   });
-  ['medindex:favorites-changed', 'medindex:notes-changed', 'medindex:personal-note-saved']
+  ['medindex:favorites-changed', 'medindex:notes-changed', 'medindex:personal-note-saved', 'medindex:personal-drugs-changed']
     .forEach(name => window.addEventListener(name, onPersonalLibraryMutation));
 
   window.addEventListener('storage', event => {
-    if (![PRESCRIPTIONS_KEY, FAVORITES_KEY, NOTES_KEY].includes(event.key)) return;
+    if (![PRESCRIPTIONS_KEY, FAVORITES_KEY, NOTES_KEY, DRUGS_KEY].includes(event.key)) return;
     onPersonalLibraryMutation();
   });
 

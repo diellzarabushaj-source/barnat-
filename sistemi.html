@@ -11,6 +11,7 @@
   <link rel="stylesheet" href="tailadmin-medindex.css?v=20260728-1" data-tailadmin-medindex-css>
   <link rel="stylesheet" href="system-health.css?v=system-health-v2">
   <link rel="stylesheet" href="media-library.css?v=vercel-blob-media-v1">
+  <link rel="stylesheet" href="admin-users.css?v=multiuser-v1">
   <link rel="stylesheet" href="tailadmin-professional.css?v=20260728-1" data-tailadmin-professional-css>
   <script src="tailadmin-shell.js?v=system-health-v1" defer></script>
   <script src="tailadmin-professional.js?v=production-audit-v2" defer></script>
@@ -31,7 +32,7 @@
     </section>
 
     <section class="system-metrics" aria-label="Numrat e databazës">
-      <article><span>Barnat</span><strong id="systemDrugCount">—</strong><small>prezantime në Neon</small></article>
+      <article><span>Barnat</span><strong id="systemDrugCount">—</strong><small>prezantime në Supabase</small></article>
       <article><span>Skemat e dozimit</span><strong id="systemDosageCount">—</strong><small>të rritur dhe pediatri</small></article>
       <article><span>Kodet ICD</span><strong id="systemIcdCount">—</strong><small>diagnoza të strukturuara</small></article>
       <article><span>Analizat</span><strong id="systemLabCount">—</strong><small>referenca laboratorike</small></article>
@@ -125,6 +126,27 @@
       <div class="media-gallery" id="mediaGallery" aria-live="polite"></div>
     </section>
 
+    <section class="system-panel system-users-panel" id="systemUsersPanel" aria-labelledby="systemUsersTitle" hidden>
+      <header>
+        <div>
+          <p class="system-kicker">Llogaritë e MedIndex</p>
+          <h2 id="systemUsersTitle">Kush ka qasje</h2>
+        </div>
+        <div class="system-hero-actions">
+          <span class="system-state is-loading" id="systemUsersState">Duke kontrolluar…</span>
+          <button class="system-refresh" id="systemUsersRefresh" type="button">Rifresko</button>
+        </div>
+      </header>
+      <p class="mi-users-summary" id="systemUsersSummary">Çdo llogari e re mbetet në pritje derisa ta aprovosh këtu.</p>
+      <div class="mi-users-table-wrap">
+        <table class="mi-users-table">
+          <thead><tr><th>Llogaria</th><th>Roli</th><th>Statusi</th><th>Hyrja e fundit</th><th>Veprime</th></tr></thead>
+          <tbody id="systemUsersRows"><tr><td colspan="5">Duke ngarkuar llogaritë…</td></tr></tbody>
+        </table>
+      </div>
+      <p class="system-message" id="systemUsersMessage" role="status" aria-live="polite"></p>
+    </section>
+
     <section class="system-panel system-audit-panel">
       <header>
         <div><p class="system-kicker">Audit operacional</p><h2>Importet e fundit të plota</h2></div>
@@ -145,6 +167,7 @@
   <script src="auth-client.js?v=production-audit-v2" defer></script>
   <script src="system-health.js?v=system-health-v2" defer></script>
   <script src="media-library.js?v=vercel-blob-media-v1" defer></script>
+  <script src="admin-users.js?v=multiuser-v1" defer></script>
   <script src="app-stability.js?v=20260724-2" defer></script>
 </body>
 </html>

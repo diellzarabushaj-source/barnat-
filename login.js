@@ -17,6 +17,7 @@
   let busy = false;
   let redirecting = false;
   let configurationBlocked = false;
+  let pendingApproval = false;
   let csrfToken = '';
   let googleInitialized = false;
 
@@ -71,6 +72,18 @@
     setBusy(false);
     setGoogleStatus('Hyrja private nuk është konfiguruar ende në server.', true);
     setMessage('Vendos SESSION_SECRET, GOOGLE_CLIENT_ID dhe konfigurimin Supabase Auth në Vercel. Password-i rezervë është opsional.');
+  }
+
+  // A brand-new Google account is registered but not yet approved. That is not a
+  // failed login, so it must not read like one: state plainly what happened, and
+  // stop offering a retry that would fail the same way.
+  function showPendingApproval(detail) {
+    pendingApproval = true;
+    setBusy(false);
+    googleButton.style.pointerEvents = 'none';
+    googleButton.style.opacity = '.5';
+    setGoogleStatus('Llogaria pret aprovimin e administratorit.');
+    setMessage(detail || 'Llogaria jote u regjistrua dhe pret aprovimin e administratorit. Do të kesh qasje sapo të aprovohet.', true);
   }
 
   function clearLegacyOfflineLeases() {
@@ -152,7 +165,7 @@
   }
 
   async function submitCredential(body, provider) {
-    if (busy || configurationBlocked) return;
+    if (busy || configurationBlocked || pendingApproval) return;
     setBusy(true, provider);
     setMessage(connectionProfile().slow ? 'Lidhja është e dobët; verifikimi mund të zgjasë pak…' : '');
     try {
@@ -167,6 +180,10 @@
       if (!response.ok) {
         if (response.status === 503 && payload.code === 'AUTH_NOT_CONFIGURED') {
           blockForConfiguration();
+          return;
+        }
+        if (payload.code === 'ACCOUNT_PENDING_APPROVAL') {
+          showPendingApproval(payload.error);
           return;
         }
         if (payload.code === 'CSRF_INVALID') location.reload();
