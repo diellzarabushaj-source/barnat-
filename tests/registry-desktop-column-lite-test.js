@@ -120,6 +120,18 @@ assert.match(decorator, /localStorage\.setItem\(DOSAGE_DEFAULT_MIGRATION_KEY, '1
   'An explicit bulk dosage choice must win over the later one-time default migration.');
 assert.match(decorator, /data-registry-dosage-picker[\s\S]{0,180}dispatchEvent\(new Event\('change', \{ bubbles:true \}\)\)/,
   'When dosage controls are mounted, bulk changes must synchronize their live runtime state as well as storage.');
+assert.match(decorator, /DOSE_CALCULATOR_STORAGE_KEY = 'medindex\.registry\.dose-calculator\.visible\.v1'/,
+  'Bulk actions must share the dose-calculator visibility storage key used by registry table tools.');
+assert.match(decorator, /function writeDoseCalculatorBulkPreference\(enabled\)/,
+  'Bulk actions must explicitly synchronize the optional dose-calculator column.');
+assert.match(decorator, /writeDoseCalculatorBulkPreference\(showAll\)/,
+  'Show-all/hide-all must include the optional dose-calculator column.');
+assert.match(decorator, /dataset\.registryDoseColumnVisible = String\(next\)/,
+  'Dose-calculator bulk visibility must update the live root contract immediately.');
+assert.match(decorator, /data-registry-dose-column-toggle[\s\S]{0,220}dispatchEvent\(new Event\('change', \{ bubbles:true \}\)\)/,
+  'A mounted dose-calculator toggle must receive the same bulk state and run its canonical change handler.');
+assert.match(decorator, /MEDINDEX_DESKTOP_LITE\?\.handoff\?\.\('column-dose-calculator'\)/,
+  'Showing all columns before the dose toggle mounts must still request the audited full-runtime handoff.');
 
 assert.match(phase15, /function validateDesktopLiteColumns\(\)/, 'Phase 15 must validate committed lightweight column source.');
 assert.match(phase15, /function validatePickerPreferences\(\)/, 'Phase 15 must validate committed picker preferences.');
@@ -132,4 +144,4 @@ for (const forbidden of [
   'select-page-for-prescription', 'prescription-builder',
 ]) assert(!desktop.includes(forbidden), `Normal desktop path must not retain ${forbidden} full-registry handoff.`);
 
-console.log('Phase 14 final desktop column customization uses bounded whitelisted visible-row reads; bulk picker actions persist lightweight and dosage visibility deterministically, explicit dosage choices beat default migration, and Phase 15 validates canonical source without rewriting tests.');
+console.log('Phase 14 final desktop column customization uses bounded whitelisted visible-row reads; bulk picker actions persist lightweight, dosage and dose-calculator visibility deterministically, explicit dosage choices beat default migration, and Phase 15 validates canonical source without rewriting tests.');
