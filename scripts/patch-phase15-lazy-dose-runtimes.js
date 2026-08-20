@@ -127,40 +127,19 @@ function validateCanonicalTableOwner() {
   }
 }
 
-function ensurePrescriptionListData() {
-  const file = 'api/drug-search.js';
-  let api = read(file);
-
+function validatePrescriptionListData() {
+  const api = read('api/drug-search.js');
   const listMatch = api.match(/const REGISTRY_LIST_SELECT = \[([\s\S]*?)\]\.join\(','\);/);
   if (!listMatch) throw new Error('Phase 15 registry list projection is missing.');
   if (!listMatch[1].includes("'packaging'")) {
-    api = replaceRequired(
-      api,
-      "  'pharmaceutical_form',\n  'product_status',",
-      "  'pharmaceutical_form',\n  'packaging',\n  'product_status',",
-      'lightweight packaging projection',
-    );
+    throw new Error('Phase 15 lightweight registry list must include packaging in committed source.');
   }
-
   if (!api.includes('function registryPrescriptionNotation(row)')) {
-    const anchor = 'function rowForRegistryList(row) {';
-    const helper = `function registryPrescriptionNotation(row) {\n  const notation = PrescriptionNotation.build({\n    'Emri tregtar':clean(row?.trade_name),\n    'Substanca aktive':clean(row?.active_substance),\n    'Fortësia':clean(row?.strength),\n    'Forma farmaceutike':clean(row?.pharmaceutical_form),\n    'Madhësia e paketimit':clean(row?.packaging),\n  });\n  return clean(notation?.line);\n}\n\n${anchor}`;
-    api = replaceRequired(api, anchor, helper, 'lightweight prescription notation helper');
+    throw new Error('Phase 15 prescription notation helper must exist in committed source.');
   }
-
   if (!api.includes('prescriptionNotation:registryPrescriptionNotation(row)')) {
-    api = replaceRequired(
-      api,
-      "    form:clean(row.pharmaceutical_form),\n    productStatus:clean(row.product_status),",
-      "    form:clean(row.pharmaceutical_form),\n    prescriptionNotation:registryPrescriptionNotation(row),\n    productStatus:clean(row.product_status),",
-      'lightweight prescription notation result',
-    );
+    throw new Error('Phase 15 registry-page rows must expose prescription notation in committed source.');
   }
-
-  if (!api.includes("'packaging'") || !api.includes('prescriptionNotation:registryPrescriptionNotation(row)')) {
-    throw new Error('Phase 15 lightweight registry list must expose prescription notation without source_payload.');
-  }
-  write(file, api);
 }
 
 function enforceDesktopCanonicalPrescription() {
@@ -209,7 +188,7 @@ const LITE_DEFAULTS = Object.freeze({
   validity:false,
 });
 
-function rewriteLiteColumns(value) {
+function canonicalizeLiteColumns(value) {
   if (!value.includes("key:'population'")) {
     const form = "    { key:'form', label:'Forma', raw:'Forma farmaceutike', sort:'form', default:true, cls:'wrap registry-form-cell' },\n";
     const population = "    { key:'population', label:'Popullata (Adult/Pediatric)', raw:'Popullata e aprovuar', default:true, cls:'registry-population-column' },\n";
@@ -254,23 +233,32 @@ function rewriteLiteColumns(value) {
   return value.slice(0, start) + `${marker}\n${[...ordered, ...other].join('\n')}` + value.slice(end);
 }
 
-function enforceDesktopLiteColumns() {
-  const file = 'registry-desktop-column-lite.js';
-  let desktop = rewriteLiteColumns(read(file));
-
-  desktop = desktop.replace(
+function expectedDesktopLiteSource(value) {
+  let expected = canonicalizeLiteColumns(value);
+  expected = expected.replace(
     "    next.forEach(key => { if (byKey.has(key) && !byKey.get(key).advanced) visible.add(key); });",
     "    next.forEach(key => { if (byKey.has(key)) visible.add(key); });",
   );
-  desktop = desktop.replace(
+  expected = expected.replace(
     `  function handleAdvanced(column, checkbox) {\n    checkbox.checked = false;\n    window.MEDINDEX_DESKTOP_LITE?.handoff?.('column-prescription-notation');\n  }\n\n`,
     '',
   );
-  desktop = desktop.replace("      setVisible(columns.filter(column => !column.advanced).map(column => column.key));", "      setVisible(columns.map(column => column.key));");
-  desktop = desktop.replace("      if (column.advanced) checkbox.title = 'Kërkon funksionet e plota';\n", '');
-  desktop = desktop.replace("        if (column.advanced) return handleAdvanced(column, checkbox);\n", '');
-  desktop = desktop.replace("      span.textContent = column.label + (column.advanced ? ' · avancuar' : '');", "      span.textContent = column.label;");
-  desktop = desktop.replace("      if (!column?.advanced) input.checked = visible.has(column.key);", "      if (column) input.checked = visible.has(column.key);");
+  expected = expected.replace("      setVisible(columns.filter(column => !column.advanced).map(column => column.key));", "      setVisible(columns.map(column => column.key));");
+  expected = expected.replace("      if (column.advanced) checkbox.title = 'Kërkon funksionet e plota';\n", '');
+  expected = expected.replace("        if (column.advanced) return handleAdvanced(column, checkbox);\n", '');
+  expected = expected.replace("      span.textContent = column.label + (column.advanced ? ' · avancuar' : '');", "      span.textContent = column.label;");
+  expected = expected.replace("      if (!column?.advanced) input.checked = visible.has(column.key);", "      if (column) input.checked = visible.has(column.key);");
+  expected = expected.replace("        if (column.advanced) return;\n", '');
+  return expected;
+}
+
+function validateDesktopLiteColumns() {
+  const file = 'registry-desktop-column-lite.js';
+  const desktop = read(file);
+  const expected = expectedDesktopLiteSource(desktop);
+  if (expected !== desktop) {
+    throw new Error('Phase 15: registry-desktop-column-lite.js is not canonical in committed source; build will not rewrite it.');
+  }
 
   const number = desktop.indexOf("key:'number'");
   const substance = desktop.indexOf("key:'active-substance'");
@@ -284,48 +272,39 @@ function enforceDesktopLiteColumns() {
   if (/advanced:true/.test(desktop) || desktop.includes('column-prescription-notation')) {
     throw new Error('Phase 15 prescription notation must not hand off to the full registry.');
   }
-  for (const [key, expected] of Object.entries(LITE_DEFAULTS)) {
+  for (const [key, expectedDefault] of Object.entries(LITE_DEFAULTS)) {
     if (!desktop.includes(`key:'${key}'`)) continue;
     const line = desktop.split('\n').find(item => item.includes(`key:'${key}'`)) || '';
-    if (!line.includes(`default:${expected ? 'true' : 'false'}`)) {
+    if (!line.includes(`default:${expectedDefault ? 'true' : 'false'}`)) {
       throw new Error(`Phase 15 desktop-lite default mismatch for ${key}.`);
     }
   }
-  write(file, desktop);
 }
 
-function enforcePickerPreferences() {
-  const file = 'registry-column-picker-tailwind.js';
-  let picker = read(file);
+function validatePickerPreferences() {
+  const picker = read('registry-column-picker-tailwind.js');
   const defaults = `const DEFAULT_LITE_COLUMNS = Object.freeze([\n    'number',\n    'active-substance',\n    'trade-name',\n    'drug-class',\n    'use',\n    'strength',\n    'form',\n    'population',\n    'prescription-label',\n  ]);`;
-  picker = picker.replace(/const DEFAULT_LITE_COLUMNS = Object\.freeze\(\[[\s\S]*?\]\);/, defaults);
-  picker = picker.replace(
-    "const KNOWN_LITE_COLUMNS = new Set(Object.keys(LITE_TO_FULL).filter(key => key !== PRESCRIPTION_KEY));",
-    "const KNOWN_LITE_COLUMNS = new Set(Object.keys(LITE_TO_FULL));",
-  );
-  picker = picker.replace(
-    "      if (event.target.dataset.columnLiteKey && event.target.dataset.columnLiteKey !== PRESCRIPTION_KEY) {\n        queueMicrotask(persistLiteColumnPreference);\n      }",
-    "      if (event.target.dataset.columnLiteKey) queueMicrotask(persistLiteColumnPreference);",
-  );
-
-  if (!picker.includes("'population',\n    'prescription-label'")) {
-    throw new Error('Phase 15 picker defaults must include population and prescription notation.');
+  if (!picker.includes(defaults)) {
+    throw new Error('Phase 15 picker defaults must be canonical in committed source.');
   }
   if (!picker.includes('const KNOWN_LITE_COLUMNS = new Set(Object.keys(LITE_TO_FULL));')) {
     throw new Error('Phase 15 picker must persist prescription notation as a normal column.');
   }
-  write(file, picker);
+  if (!picker.includes("if (event.target.dataset.columnLiteKey) queueMicrotask(persistLiteColumnPreference);")) {
+    throw new Error('Phase 15 picker must persist every explicit lightweight column change.');
+  }
 }
 
-function updateColumnLiteRegression() {
+function validateColumnLiteRegression() {
   const file = 'tests/registry-desktop-column-lite-test.js';
   if (!fs.existsSync(path.join(ROOT, file))) return;
-  let test = read(file);
-  test = test.replace(
-    "assert.match(runtime, /column-prescription-notation/, 'Only the unstructured prescription-label column may explicitly request full mode.');",
-    "assert.doesNotMatch(runtime, /column-prescription-notation|advanced:true/, 'Prescription notation must remain on the lightweight path.');\nassert.match(runtime, /key:'prescription-label'[\\s\\S]{0,180}raw:'Si të shënohet në recetë'[\\s\\S]{0,120}default:true/, 'Prescription notation must be a normal default lightweight column.');",
-  );
-  write(file, test);
+  const test = read(file);
+  if (!test.includes("assert.doesNotMatch(runtime, /column-prescription-notation|advanced:true/")) {
+    throw new Error('Phase 15 column regression must assert that prescription notation stays lightweight.');
+  }
+  if (test.includes("assert.match(runtime, /column-prescription-notation/")) {
+    throw new Error('Phase 15 column regression still contains the retired advanced-handoff expectation.');
+  }
 }
 
 function enforceDosageDefaultsMigration() {
@@ -349,12 +328,12 @@ function enforceDosageDefaultsMigration() {
 }
 
 validateCanonicalTableOwner();
-ensurePrescriptionListData();
+validatePrescriptionListData();
 enforceDesktopCanonicalPrescription();
-enforceDesktopLiteColumns();
-enforcePickerPreferences();
-updateColumnLiteRegression();
+validateDesktopLiteColumns();
+validatePickerPreferences();
+validateColumnLiteRegression();
 enforceDosageDefaultsMigration();
 
 console.log('Phase 15 lazy dose runtime: insulin modal CSS/JS is interaction-gated while visible table controls stay eager.');
-console.log('Phase 15 registry consistency: canonical table ownership stays in patch-registry-population-column; lightweight prescription/default preferences are aligned without a second table owner.');
+console.log('Phase 15 registry consistency: table and column preference source is canonical before build; Phase 15 validates instead of rewriting tests or column source.');
