@@ -15,6 +15,7 @@ const PUBLIC_PATHS = new Set([
   '/regjistrimi',
   '/regjistrimi.html',
   '/regjistrimi.js',
+  '/registration-premium.css',
   // The admin HTML is a data-free shell. It must reach its dedicated client
   // gate before auth so unauthenticated visitors land on the admin login rather
   // than the public clinical/marketing login. Admin APIs remain protected.
