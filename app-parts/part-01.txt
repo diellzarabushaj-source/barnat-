@@ -266,3 +266,25 @@ const COLUMNS = [
   { key:'Çmimi me pakicë', label:'&Ccedil;m. Pakic&euml;', mobileLabel:'Çmimi me pakicë', type:'num', cls:'price', visible:false },
   { key:'Afati i vlefshmërisë', label:'Afati', type:'str', cls:'wrap', visible:false },
 ];
+
+const REGISTRY_COLUMN_VISIBILITY_KEY = 'medindex.registry.columns.v20260820';
+
+function restoreRegistryColumnVisibility(){
+  try{
+    const stored = JSON.parse(localStorage.getItem(REGISTRY_COLUMN_VISIBILITY_KEY) || 'null');
+    if(!Array.isArray(stored)) return;
+    const selected = new Set(stored.map(String));
+    COLUMNS.forEach(column => { column.visible = selected.has(column.key); });
+  }catch(e){}
+}
+
+function saveRegistryColumnVisibility(){
+  try{
+    localStorage.setItem(
+      REGISTRY_COLUMN_VISIBILITY_KEY,
+      JSON.stringify(COLUMNS.filter(column => column.visible).map(column => column.key))
+    );
+  }catch(e){}
+}
+
+restoreRegistryColumnVisibility();
