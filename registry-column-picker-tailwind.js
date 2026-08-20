@@ -1,7 +1,7 @@
 (() => {
   'use strict';
 
-  const VERSION = 'column-picker-tailwind-20260820-clean-columns-2';
+  const VERSION = 'column-picker-tailwind-20260820-clean-columns-3';
   const PANEL_ID = 'colPanel';
   const BUTTON_ID = 'colPickerBtn';
   const SEARCH_ICON = '<svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="11" cy="11" r="7"></circle><path d="m16.5 16.5 4 4"></path></svg>';
@@ -10,13 +10,66 @@
   const CLEAR_ICON = '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 5l14 14M19 5 5 19"></path></svg>';
   const CLOSE_ICON = '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="m7 12 3 3 7-7"></path></svg>';
 
+  const COLUMN_PREFERENCE_VERSION = 'registry-column-preferences-20260820-1';
+  const DESKTOP_QUERY = '(min-width: 768px)';
+  const LITE_STORAGE_KEY = 'medindex.registry.desktop-columns.v20260820';
+  const FULL_STORAGE_KEY = 'medindex.registry.columns.v20260820';
+  const PRESCRIPTION_KEY = 'prescription-label';
+  const PRESCRIPTION_FULL_KEY = 'Si të shënohet në recetë';
+  const DEFAULT_LITE_COLUMNS = Object.freeze([
+    'number',
+    'active-substance',
+    'trade-name',
+    'drug-class',
+    'use',
+    'strength',
+    'form',
+    'population',
+  ]);
+  const LITE_TO_FULL = Object.freeze({
+    number:'Nr rendor',
+    'active-substance':'Substanca aktive',
+    'trade-name':'Emri tregtar',
+    atc:'ATC Code',
+    'drug-class':'Klasa / Çka është',
+    use:'Përdorimi (fjalë kyçe)',
+    pdid:'PDID',
+    protocol:'ProtocolNo',
+    strength:'Fortësia',
+    form:'Forma farmaceutike',
+    population:'Popullata e aprovuar',
+    'prescription-label':PRESCRIPTION_FULL_KEY,
+    packaging:'Madhësia e paketimit',
+    mah:'Bartësi i Autorizim Marketingut',
+    manufacturer:'Prodhuesi',
+    'ma-certificate':'MA certifikata',
+    status:'Statusi',
+    'wholesale-price':'Çmimi me shumicë',
+    'margin-price':'Çmimi me marzhë',
+    vat:'TVSH',
+    'retail-price':'Çmimi me pakicë',
+    validity:'Afati i vlefshmërisë',
+  });
+  const FULL_TO_LITE = Object.freeze(Object.fromEntries(
+    Object.entries(LITE_TO_FULL).map(([lite, full]) => [full, lite]),
+  ));
+  const KNOWN_LITE_COLUMNS = new Set(Object.keys(LITE_TO_FULL).filter(key => key !== PRESCRIPTION_KEY));
+
   let observer = null;
   let enhancing = false;
   let enhanceFrame = 0;
+  let preferenceApplied = false;
+  let preferenceApplying = false;
+  let preferenceTimer = 0;
 
   const panel = () => document.getElementById(PANEL_ID);
   const button = () => document.getElementById(BUTTON_ID);
   const clean = value => String(value ?? '').replace(/\s+/g, ' ').trim();
+  const desktop = () => window.matchMedia?.(DESKTOP_QUERY)?.matches === true;
+  const liteActive = () => desktop()
+    && window.MEDINDEX_DESKTOP_LITE_ACTIVE === true
+    && document.documentElement.dataset.registryDesktopLiteState !== 'handoff';
+  const liteColumns = () => window.MedIndexDesktopColumnLite || null;
 
   function directColumnLabels(root = panel()) {
     return root ? [...root.querySelectorAll(':scope > label:not([data-mi-column-picker-chrome])')] : [];
@@ -109,7 +162,7 @@
     if (hideAll && hideAll.dataset.miColumnAction !== 'none') {
       hideAll.dataset.miColumnAction = 'none';
       hideAll.innerHTML = `${CLEAR_ICON}<span>Fshihi të gjitha</span>`;
-      hideAll.setAttribute('aria-label', 'Fshih kolonat jo të domosdoshme');
+      hideAll.setAttribute('aria-label', 'Fshih të gjitha kolonat opsionale');
     }
   }
 
@@ -211,6 +264,111 @@
     if (restoreFocus && wasOpen) button()?.focus({ preventScroll:true });
   }
 
+  function readStoredArray(key) {
+    try {
+      const value = JSON.parse(localStorage.getItem(key) || 'null');
+      return Array.isArray(value) ? value.map(String) : null;
+    } catch {
+      return null;
+    }
+  }
+
+  function uniqueKnownLiteColumns(keys) {
+    const seen = new Set();
+    return (Array.isArray(keys) ? keys : []).map(clean).filter(key => {
+      if (!KNOWN_LITE_COLUMNS.has(key) || seen.has(key)) return false;
+      seen.add(key);
+      return true;
+    });
+  }
+
+  function storedColumnPreference() {
+    const full = readStoredArray(FULL_STORAGE_KEY);
+    if (full !== null) {
+      return {
+        keys:uniqueKnownLiteColumns(full.map(key => FULL_TO_LITE[key]).filter(Boolean)),
+        prescription:full.includes(PRESCRIPTION_FULL_KEY),
+      };
+    }
+    const lite = readStoredArray(LITE_STORAGE_KEY);
+    if (lite !== null) return { keys:uniqueKnownLiteColumns(lite), prescription:true };
+    return { keys:[...DEFAULT_LITE_COLUMNS], prescription:true };
+  }
+
+  function prescriptionInput() {
+    return document.querySelector(`#${PANEL_ID} input[data-column-lite-key="${PRESCRIPTION_KEY}"]`);
+  }
+
+  function persistLiteColumnPreference() {
+    const controller = liteColumns();
+    if (!controller || !liteActive() || preferenceApplying) return;
+    const keys = uniqueKnownLiteColumns(controller.visible?.() || []);
+    const prescription = prescriptionInput()?.checked ?? true;
+    try {
+      localStorage.setItem(LITE_STORAGE_KEY, JSON.stringify(keys));
+      const fullKeys = keys.map(key => LITE_TO_FULL[key]).filter(Boolean);
+      if (prescription) fullKeys.push(PRESCRIPTION_FULL_KEY);
+      localStorage.setItem(FULL_STORAGE_KEY, JSON.stringify([...new Set(fullKeys)]));
+    } catch {}
+    document.documentElement.dataset.registryColumnPreferences = COLUMN_PREFERENCE_VERSION;
+  }
+
+  function applyLiteColumnPreference(preference, { persist = true } = {}) {
+    const controller = liteColumns();
+    if (!controller || !liteActive() || preferenceApplying) return false;
+    preferenceApplying = true;
+    try {
+      controller.setVisible?.(uniqueKnownLiteColumns(preference?.keys));
+      const prescription = prescriptionInput();
+      if (prescription) prescription.checked = preference?.prescription !== false;
+      scheduleEnhance();
+      if (persist) persistLiteColumnPreference();
+      document.documentElement.dataset.registryColumnPreferences = COLUMN_PREFERENCE_VERSION;
+      return true;
+    } finally {
+      preferenceApplying = false;
+    }
+  }
+
+  function applyInitialLiteColumnPreference() {
+    if (preferenceApplied || !desktop()) return preferenceApplied;
+    if (!liteColumns() || !liteActive()) return false;
+    preferenceApplied = applyLiteColumnPreference(storedColumnPreference());
+    return preferenceApplied;
+  }
+
+  function scheduleLiteColumnPreference(attempt = 0) {
+    window.clearTimeout(preferenceTimer);
+    if (applyInitialLiteColumnPreference() || attempt >= 80 || !desktop()) return;
+    preferenceTimer = window.setTimeout(
+      () => scheduleLiteColumnPreference(attempt + 1),
+      Math.min(250, 40 + attempt * 4),
+    );
+  }
+
+  function litePanelColumnKeys() {
+    return [...document.querySelectorAll(`#${PANEL_ID} input[data-column-lite-key]`)]
+      .map(input => clean(input.dataset.columnLiteKey))
+      .filter(key => KNOWN_LITE_COLUMNS.has(key));
+  }
+
+  function handleLitePanelAction(event) {
+    if (!liteActive()) return;
+    const action = event.target.closest?.(`#${PANEL_ID} .col-panel-actions button`);
+    if (!action) return;
+    const label = clean(action.textContent).toLocaleLowerCase('sq');
+    if (!label.includes('shfaqi') && !label.includes('fshihi')) return;
+
+    event.preventDefault();
+    event.stopImmediatePropagation();
+    const showAll = label.includes('shfaqi');
+    applyLiteColumnPreference({
+      keys:showAll ? litePanelColumnKeys() : [],
+      prescription:showAll,
+    });
+    requestAnimationFrame(() => updateSelection());
+  }
+
   function enhance() {
     const root = panel();
     const trigger = button();
@@ -282,8 +440,13 @@
         requestAnimationFrame(() => { scheduleEnhance(); updateSelection(); });
       }
     });
+    document.addEventListener('click', handleLitePanelAction, true);
     document.addEventListener('change', event => {
-      if (event.target.matches?.(`#${PANEL_ID} input[type="checkbox"]`)) requestAnimationFrame(() => updateSelection());
+      if (!event.target.matches?.(`#${PANEL_ID} input[type="checkbox"]`)) return;
+      requestAnimationFrame(() => updateSelection());
+      if (event.target.dataset.columnLiteKey && event.target.dataset.columnLiteKey !== PRESCRIPTION_KEY) {
+        queueMicrotask(persistLiteColumnPreference);
+      }
     });
     document.addEventListener('keydown', event => {
       if (event.key === 'Escape' && panel()?.classList.contains('open')) {
@@ -291,9 +454,24 @@
         closePanel({ restoreFocus:true });
       }
     }, true);
-    window.addEventListener('resize', syncOpenState, { passive:true });
-    window.addEventListener('pageshow', scheduleEnhance, { passive:true });
+    ['medindex:desktop-lite-ready', 'medindex:registry-page-ready'].forEach(name => {
+      window.addEventListener(name, () => scheduleLiteColumnPreference(), { passive:true });
+    });
+    window.addEventListener('storage', event => {
+      if (event.key !== LITE_STORAGE_KEY && event.key !== FULL_STORAGE_KEY) return;
+      preferenceApplied = false;
+      scheduleLiteColumnPreference();
+    });
+    window.addEventListener('resize', () => {
+      syncOpenState();
+      if (desktop()) scheduleLiteColumnPreference();
+    }, { passive:true });
+    window.addEventListener('pageshow', () => {
+      scheduleEnhance();
+      scheduleLiteColumnPreference();
+    }, { passive:true });
     scheduleEnhance();
+    scheduleLiteColumnPreference();
     setTimeout(scheduleEnhance, 600);
     setTimeout(scheduleEnhance, 1800);
   }
@@ -302,6 +480,12 @@
     version:VERSION,
     refresh:scheduleEnhance,
     close:closePanel,
+    columnPreferences:Object.freeze({
+      version:COLUMN_PREFERENCE_VERSION,
+      defaults:[...DEFAULT_LITE_COLUMNS],
+      persist:persistLiteColumnPreference,
+      refresh(){ preferenceApplied = false; scheduleLiteColumnPreference(); },
+    }),
   };
 
   if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', init, { once:true });
