@@ -79,6 +79,24 @@ const read = file => fs.readFileSync(path.join(root, file), 'utf8');
 
   const entry = read('admin-entry.js');
   assert.match(entry, /payload\.authUser\?\.role !== 'admin'/, 'the entry is revealed only for a verified admin role');
+
+  const env = read('.env.example');
+  assert.match(env, /^MEDINDEX_ADMIN_EMAILS=diellzarabushaj@gmail\.com$/m,
+    'the named-admin application gate must be documented in the environment contract');
+  assert.match(env, /private\.admin_emails\(\)/,
+    'the environment contract must warn that the app allowlist and database trigger stay aligned');
+}
+
+// --- registration always returns to the canonical login -----------------
+
+{
+  const html = read('regjistrimi.html');
+  const loginLinks = [...html.matchAll(/href="(\/login(?:-v2)?\.html)"/g)].map(match => match[1]);
+  assert.ok(loginLinks.length >= 4, 'registration must expose its expected routes back to login');
+  assert.ok(loginLinks.every(value => value === '/login-v2.html'),
+    'registration must not send users back to the retired /login.html surface');
+  assert.ok(!html.includes('href="/login.html"'),
+    'the old login surface must not re-enter the registration flow');
 }
 
 // --- pending accounts get a real answer at login ------------------------
