@@ -1,0 +1,554 @@
+/* MedIndex auth shell — TailAdmin's split sign-in layout, built on the --mi-*
+   tokens the rest of the workspace already uses.
+
+   Two panels above 1024px: the form on the left where the eye lands, the brand
+   panel on the right. Below that the brand panel collapses to a single header
+   line, because on a phone the form is the only thing worth the screen. */
+
+.mi-auth {
+  --mi-auth-card: 480px;
+  min-height: 100dvh;
+  min-height: 100vh;
+  display: grid;
+  grid-template-columns: 1fr;
+  margin: 0;
+  background: var(--mi-page, #f9fafb);
+  color: var(--mi-text, #101828);
+  font-family: var(--mi-font, Inter, system-ui, sans-serif);
+  -webkit-font-smoothing: antialiased;
+}
+
+.mi-auth *,
+.mi-auth *::before,
+.mi-auth *::after { box-sizing: border-box; }
+
+/* --- form side ---------------------------------------------------------- */
+
+.mi-auth-main {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 24px;
+  min-width: 0;
+  padding: 32px 20px 48px;
+}
+
+.mi-auth-card {
+  width: 100%;
+  max-width: var(--mi-auth-card);
+  min-width: 0;
+}
+
+.mi-auth-brandline {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin: 0 0 28px;
+  color: var(--mi-text, #101828);
+  text-decoration: none;
+}
+
+.mi-auth-brandline img { width: 36px; height: 36px; border-radius: 9px; }
+
+.mi-auth-brandline strong {
+  display: block;
+  font-size: 16px;
+  font-weight: 700;
+  letter-spacing: -0.01em;
+}
+
+.mi-auth-brandline small {
+  display: block;
+  color: var(--mi-muted, #667085);
+  font-size: 12px;
+}
+
+.mi-auth-head { margin: 0 0 24px; }
+
+.mi-auth-head h1 {
+  margin: 0 0 6px;
+  font-size: 28px;
+  line-height: 1.2;
+  font-weight: 700;
+  letter-spacing: -0.02em;
+}
+
+.mi-auth-head p {
+  margin: 0;
+  color: var(--mi-muted, #667085);
+  font-size: 14px;
+  line-height: 1.6;
+}
+
+/* --- step indicator ------------------------------------------------------ */
+
+.mi-auth-steps {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin: 0 0 24px;
+  padding: 0;
+  list-style: none;
+}
+
+.mi-auth-steps li {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex: 1 1 0;
+  min-width: 0;
+  color: var(--mi-muted, #667085);
+  font-size: 13px;
+  font-weight: 500;
+}
+
+.mi-auth-steps li::before {
+  content: attr(data-step);
+  flex: 0 0 auto;
+  display: grid;
+  place-items: center;
+  width: 24px;
+  height: 24px;
+  border: 1px solid var(--mi-border, #e4e7ec);
+  border-radius: 999px;
+  background: var(--mi-surface, #fff);
+  font-size: 12px;
+  font-weight: 700;
+}
+
+.mi-auth-steps li span {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.mi-auth-steps li[aria-current="step"] { color: var(--mi-text, #101828); }
+
+.mi-auth-steps li[aria-current="step"]::before {
+  border-color: var(--mi-brand-600, #155f63);
+  background: var(--mi-brand-600, #155f63);
+  color: #fff;
+}
+
+.mi-auth-steps li[data-complete="1"]::before {
+  content: "✓";
+  border-color: var(--mi-success-500, #12b76a);
+  background: var(--mi-success-500, #12b76a);
+  color: #fff;
+}
+
+/* --- fields -------------------------------------------------------------- */
+
+.mi-field { display: block; margin: 0 0 16px; }
+
+.mi-field > span {
+  display: block;
+  margin: 0 0 6px;
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--mi-text, #101828);
+}
+
+.mi-field > span em {
+  color: var(--mi-error-500, #f04438);
+  font-style: normal;
+}
+
+.mi-field small {
+  display: block;
+  margin: 6px 0 0;
+  color: var(--mi-muted, #667085);
+  font-size: 12px;
+  line-height: 1.5;
+}
+
+.mi-input,
+.mi-select {
+  width: 100%;
+  min-height: 44px;
+  padding: 10px 14px;
+  border: 1px solid var(--mi-border, #e4e7ec);
+  border-radius: var(--mi-radius-sm, 8px);
+  background: var(--mi-surface, #fff);
+  color: var(--mi-text, #101828);
+  font: inherit;
+  font-size: 14px;
+  transition: border-color .15s ease, box-shadow .15s ease;
+  /* 16px on iOS stops Safari zooming the page when a field takes focus. */
+  -webkit-appearance: none;
+  appearance: none;
+}
+
+.mi-select {
+  padding-right: 40px;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='20' height='20' fill='none' stroke='%23667085' stroke-width='1.6' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M5 7.5 10 12.5 15 7.5'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 12px center;
+}
+
+.mi-input::placeholder { color: var(--mi-gray-400, #98a2b3); }
+
+.mi-input:focus,
+.mi-select:focus,
+.mi-choice input:focus-visible + span,
+.mi-drop:focus-within {
+  outline: none;
+  border-color: var(--mi-brand-500, #1f7779);
+  box-shadow: var(--mi-focus, 0 0 0 4px rgba(21, 95, 99, .18));
+}
+
+.mi-input[aria-invalid="true"] {
+  border-color: var(--mi-error-500, #f04438);
+}
+
+.mi-field-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+}
+
+.mi-password { position: relative; }
+.mi-password .mi-input { padding-right: 76px; }
+
+.mi-password button {
+  position: absolute;
+  top: 50%;
+  right: 6px;
+  transform: translateY(-50%);
+  /* 44px is the tap-target floor the mobile audits enforce on the login card;
+     the same floor applies here. It sits inside a 44px field. */
+  min-height: 44px;
+  padding: 0 12px;
+  border: 0;
+  border-radius: 6px;
+  background: transparent;
+  color: var(--mi-muted, #667085);
+  font: inherit;
+  font-size: 12px;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.mi-password button:hover { color: var(--mi-brand-600, #155f63); }
+
+/* --- title choice cards --------------------------------------------------- */
+
+.mi-choices {
+  display: grid;
+  gap: 10px;
+  margin: 0 0 16px;
+  padding: 0;
+  border: 0;
+}
+
+.mi-choices > legend {
+  margin: 0 0 8px;
+  padding: 0;
+  font-size: 13px;
+  font-weight: 500;
+}
+
+.mi-choice { position: relative; display: block; }
+
+.mi-choice input {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  margin: -1px;
+  padding: 0;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+.mi-choice > span {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  min-height: 56px;
+  padding: 12px 14px;
+  border: 1px solid var(--mi-border, #e4e7ec);
+  border-radius: var(--mi-radius, 12px);
+  background: var(--mi-surface, #fff);
+  cursor: pointer;
+  transition: border-color .15s ease, background .15s ease;
+}
+
+.mi-choice > span::before {
+  content: "";
+  flex: 0 0 auto;
+  width: 18px;
+  height: 18px;
+  margin-top: 2px;
+  border: 1px solid var(--mi-gray-300, #d0d5dd);
+  border-radius: 999px;
+  background: var(--mi-surface, #fff);
+  transition: border-color .15s ease, box-shadow .15s ease;
+}
+
+.mi-choice input:checked + span {
+  border-color: var(--mi-brand-500, #1f7779);
+  background: var(--mi-brand-25, #f7fbfa);
+}
+
+.mi-choice input:checked + span::before {
+  border-color: var(--mi-brand-600, #155f63);
+  box-shadow: inset 0 0 0 4px var(--mi-brand-600, #155f63);
+}
+
+.mi-choice strong {
+  display: block;
+  font-size: 14px;
+  font-weight: 600;
+}
+
+.mi-choice small {
+  display: block;
+  margin-top: 2px;
+  color: var(--mi-muted, #667085);
+  font-size: 12.5px;
+  line-height: 1.5;
+}
+
+/* --- file drop ------------------------------------------------------------ */
+
+.mi-drop {
+  position: relative;
+  display: block;
+  padding: 22px 18px;
+  border: 1px dashed var(--mi-gray-300, #d0d5dd);
+  border-radius: var(--mi-radius, 12px);
+  background: var(--mi-surface-soft, #f9fafb);
+  text-align: center;
+  cursor: pointer;
+  transition: border-color .15s ease, background .15s ease;
+}
+
+.mi-drop:hover,
+.mi-drop[data-dragging="1"] {
+  border-color: var(--mi-brand-500, #1f7779);
+  background: var(--mi-brand-25, #f7fbfa);
+}
+
+.mi-drop input[type="file"] {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  opacity: 0;
+  cursor: pointer;
+}
+
+.mi-drop-icon {
+  display: grid;
+  place-items: center;
+  width: 44px;
+  height: 44px;
+  margin: 0 auto 10px;
+  border: 1px solid var(--mi-border, #e4e7ec);
+  border-radius: var(--mi-radius-sm, 8px);
+  background: var(--mi-surface, #fff);
+  font-size: 18px;
+}
+
+.mi-drop strong { display: block; font-size: 14px; font-weight: 600; }
+
+.mi-drop small {
+  display: block;
+  margin-top: 4px;
+  color: var(--mi-muted, #667085);
+  font-size: 12.5px;
+  line-height: 1.5;
+}
+
+.mi-drop[data-selected="1"] {
+  border-style: solid;
+  border-color: var(--mi-success-500, #12b76a);
+  background: var(--mi-success-50, #ecfdf3);
+}
+
+/* --- buttons -------------------------------------------------------------- */
+
+.mi-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  width: 100%;
+  min-height: 46px;
+  padding: 12px 18px;
+  border: 1px solid transparent;
+  border-radius: var(--mi-radius-sm, 8px);
+  background: var(--mi-brand-600, #155f63);
+  color: #fff;
+  font: inherit;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background .15s ease, border-color .15s ease, color .15s ease;
+}
+
+.mi-btn:hover { background: var(--mi-brand-700, #0d4145); }
+
+.mi-btn:focus-visible {
+  outline: none;
+  box-shadow: var(--mi-focus, 0 0 0 4px rgba(21, 95, 99, .18));
+}
+
+.mi-btn[disabled] { opacity: .6; cursor: not-allowed; }
+
+.mi-btn.is-quiet {
+  border-color: var(--mi-border, #e4e7ec);
+  background: var(--mi-surface, #fff);
+  color: var(--mi-text, #101828);
+}
+
+.mi-btn.is-quiet:hover {
+  border-color: var(--mi-gray-300, #d0d5dd);
+  background: var(--mi-gray-50, #f9fafb);
+}
+
+.mi-divider {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin: 20px 0;
+  color: var(--mi-muted, #667085);
+  font-size: 12px;
+}
+
+.mi-divider::before,
+.mi-divider::after {
+  content: "";
+  flex: 1 1 auto;
+  height: 1px;
+  background: var(--mi-border, #e4e7ec);
+}
+
+.mi-auth-alt {
+  margin: 20px 0 0;
+  color: var(--mi-muted, #667085);
+  font-size: 14px;
+  text-align: center;
+}
+
+.mi-auth-alt a {
+  display: inline-flex;
+  align-items: center;
+  min-height: 44px;
+  padding: 0 8px;
+  color: var(--mi-brand-600, #155f63);
+  font-weight: 600;
+  text-decoration: none;
+}
+
+.mi-auth-alt a:hover { text-decoration: underline; }
+
+/* --- messages -------------------------------------------------------------- */
+
+.mi-note {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  margin: 0 0 18px;
+  padding: 12px 14px;
+  border: 1px solid var(--mi-border, #e4e7ec);
+  border-radius: var(--mi-radius-sm, 8px);
+  background: var(--mi-surface-soft, #f9fafb);
+  color: var(--mi-text, #101828);
+  font-size: 13px;
+  line-height: 1.6;
+}
+
+.mi-note::before { content: "i"; font-weight: 700; color: var(--mi-muted, #667085); }
+.mi-note.is-success { border-color: #a6f4c5; background: var(--mi-success-50, #ecfdf3); color: var(--mi-success-700, #027a48); }
+.mi-note.is-success::before { content: "✓"; color: inherit; }
+.mi-note.is-warning { border-color: #fedf89; background: var(--mi-warning-50, #fffaeb); color: var(--mi-warning-700, #b54708); }
+.mi-note.is-warning::before { content: "!"; color: inherit; }
+.mi-note.is-error { border-color: #fecdca; background: var(--mi-error-50, #fef3f2); color: var(--mi-error-700, #b42318); }
+.mi-note.is-error::before { content: "!"; color: inherit; }
+.mi-note:empty { display: none; }
+
+/* --- brand side ------------------------------------------------------------ */
+
+.mi-auth-aside { display: none; }
+
+@media (min-width: 1024px) {
+  .mi-auth { grid-template-columns: 1fr 1fr; }
+
+  .mi-auth-aside {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    gap: 20px;
+    overflow: hidden;
+    padding: 56px;
+    background:
+      radial-gradient(120% 90% at 100% 0%, rgba(255, 255, 255, .14), transparent 60%),
+      linear-gradient(160deg, var(--mi-brand-700, #0d4145), var(--mi-brand-500, #1f7779));
+    color: #fff;
+  }
+
+  .mi-auth-aside h2 {
+    margin: 0;
+    max-width: 15ch;
+    font-size: 34px;
+    line-height: 1.15;
+    font-weight: 700;
+    letter-spacing: -0.02em;
+  }
+
+  .mi-auth-aside > p {
+    margin: 0;
+    max-width: 44ch;
+    color: rgba(255, 255, 255, .82);
+    font-size: 15px;
+    line-height: 1.65;
+  }
+
+  .mi-auth-points {
+    display: grid;
+    gap: 12px;
+    margin: 8px 0 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  .mi-auth-points li {
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
+    color: rgba(255, 255, 255, .9);
+    font-size: 14px;
+    line-height: 1.55;
+  }
+
+  .mi-auth-points li::before {
+    content: "✓";
+    flex: 0 0 auto;
+    display: grid;
+    place-items: center;
+    width: 22px;
+    height: 22px;
+    border-radius: 999px;
+    background: rgba(255, 255, 255, .16);
+    font-size: 12px;
+  }
+}
+
+@media (max-width: 560px) {
+  .mi-auth-main { padding: 24px 16px 40px; }
+  .mi-auth-head h1 { font-size: 24px; }
+  .mi-field-row { grid-template-columns: 1fr; }
+  /* Below 16px iOS Safari zooms the viewport on focus and never zooms back. */
+  .mi-input, .mi-select { font-size: 16px; }
+  .mi-auth-steps li span { display: none; }
+  .mi-auth-steps li { flex: 0 0 auto; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .mi-auth * { transition: none !important; }
+}

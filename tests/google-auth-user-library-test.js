@@ -141,7 +141,12 @@ function jwt(privateKey, payload, kid = 'medindex-test-key') {
   const env = read('.env.example');
 
   assert.match(loginHtml, /accounts\.google\.com\/gsi\/client/, 'Official Google Identity script is missing');
-  assert.match(loginHtml, /diellzarabushaj@gmail\.com/, 'Allowed login email is not shown');
+  // MedIndex is multi-user: the login page carries both doors and a way to
+  // register, and must not claim a single allowed address any more.
+  assert.match(loginHtml, /id="emailLoginForm"/, 'The email door is missing from the login page');
+  assert.match(loginHtml, /href="\/regjistrimi\.html"/, 'A new clinician cannot find registration');
+  assert.ok(!loginHtml.includes('Lejohet vetëm diellzarabushaj@gmail.com'),
+    'The single-allowed-account claim stopped being true when MedIndex became multi-user');
   assert.match(loginJs, /crypto\.subtle\.digest\('SHA-256'/, 'Google nonce is not derived securely from the CSRF state');
   assert.match(loginJs, /nonce,\s*auto_select:false/, 'The SHA-256 nonce is not connected to Google Identity Services');
   assert.match(authApi, /nonce:sha256Hex\(suppliedCsrf\)/, 'Server Google verification is not bound to SHA-256(CSRF)');

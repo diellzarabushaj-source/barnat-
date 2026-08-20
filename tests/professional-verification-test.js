@@ -105,7 +105,10 @@ const { pathToFileURL } = require('node:url');
       cookie:`medindex_enrollment=${encodeURIComponent(enrollment)}; medindex_csrf=csrf-proof`,
       'x-csrf-token':'csrf-proof', 'content-type':'application/json',
     },
-    body:{ filename:'licenca.pdf', mimeType:'application/pdf', base64:pdf.toString('base64') },
+    body:{
+      filename:'licenca.pdf', mimeType:'application/pdf', base64:pdf.toString('base64'),
+      firstName:'Arta', lastName:'Krasniqi', professionalTitle:'specialist', specialty:'Kardiologji',
+    },
   };
   const uploaded = await Verification.uploadVerification(request, { fetchImpl });
   assert.equal(uploaded.status, 'submitted');
@@ -113,10 +116,55 @@ const { pathToFileURL } = require('node:url');
   assert.ok(uploadCall.url.includes('/storage/v1/object/professional-verifications/'));
   assert.ok(!uploadCall.url.includes('/public/'), 'verification uploads never use a public object URL');
   assert.equal(uploadCall.options.headers['x-upsert'], 'false');
+  const rpcOf = () => requests.filter(item => item.path === 'rpc/record_professional_verification').at(-1).options.body;
   const rpc = requests.find(item => item.path === 'rpc/record_professional_verification');
   assert.equal(rpc.options.body.p_user_id, userId);
   assert.equal(rpc.options.body.p_byte_size, pdf.length);
   assert.ok(!Object.hasOwn(rpc.options.body, 'base64'), 'database stores metadata and hash, never file bytes');
+  assert.equal(rpc.options.body.p_full_name, 'Arta Krasniqi');
+  assert.equal(rpc.options.body.p_professional_title, 'specialist');
+  assert.equal(rpc.options.body.p_specialty, 'Kardiologji');
+  assert.equal(rpc.options.body.p_document_kind, 'licence',
+    'the proof a specialist owes is a licence, and the server decides that — not the form');
+
+  // The title decides the document, so the client never gets to name the kind.
+  // Each of these is a registration a crafted request could otherwise smuggle
+  // through: a claim with no proof behind it.
+  const withBody = extra => ({ ...request, body:{ ...request.body, ...extra } });
+  await assert.rejects(
+    Verification.uploadVerification(withBody({ professionalTitle:'kirurg' }), { fetchImpl }),
+    error => error.code === 'PROFESSIONAL_TITLE_INVALID',
+    'a title outside the catalogue is refused',
+  );
+  await assert.rejects(
+    Verification.uploadVerification(withBody({ specialty:'' }), { fetchImpl }),
+    error => error.code === 'SPECIALTY_REQUIRED',
+    'a specialist must name a specialty',
+  );
+  await assert.rejects(
+    Verification.uploadVerification(withBody({ firstName:'A' }), { fetchImpl }),
+    error => error.code === 'FULL_NAME_REQUIRED',
+    'a one-letter name is not a name',
+  );
+  await Verification.uploadVerification(withBody({ documentKind:'id' }), { fetchImpl });
+  assert.equal(rpcOf().p_document_kind, 'licence',
+    'a client-supplied document kind is ignored; the title decides the proof');
+
+  // A refused registration must not leave a file behind in private storage.
+  const beforeRejected = fetchCalls.length;
+  await assert.rejects(Verification.uploadVerification(withBody({ professionalTitle:'' }), { fetchImpl }));
+  assert.equal(
+    fetchCalls.slice(beforeRejected).filter(call => call.options.method === 'POST').length, 0,
+    'identity is validated before anything is written to storage',
+  );
+
+  const studentRequest = withBody({ professionalTitle:'student', specialty:'' });
+  await Verification.uploadVerification(studentRequest, { fetchImpl });
+  assert.equal(rpcOf().p_document_kind, 'id', 'a student proves enrolment with an ID');
+  assert.equal(rpcOf().p_specialty, '', 'a student carries no specialty');
+
+  await Verification.uploadVerification(withBody({ professionalTitle:'mjek', specialty:'' }), { fetchImpl });
+  assert.equal(rpcOf().p_document_kind, 'diplome', 'a doctor proves qualification with a diploma');
 
   rpcFailure = new Error('database unavailable');
   await assert.rejects(Verification.uploadVerification(request, { fetchImpl }), /database unavailable/);

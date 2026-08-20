@@ -12,48 +12,57 @@ const path = require('node:path');
 const root = path.resolve(__dirname, '..');
 const read = file => fs.readFileSync(path.join(root, file), 'utf8');
 
-// --- admin approval panel ------------------------------------------------
+// --- the admin dashboard -------------------------------------------------
 
 {
-  const html = read('sistemi.html');
-  assert.match(html, /id="systemUsersPanel"/, 'the accounts panel is missing from the system page');
-  assert.match(html, /<section[^>]+id="systemUsersPanel"[^>]*\shidden/, 'the accounts panel must start hidden and only appear for an admin');
-  assert.match(html, /admin-users\.js\?v=/, 'the accounts panel needs its versioned runtime');
-  assert.match(html, /admin-users\.css\?v=/, 'the accounts panel needs its versioned stylesheet');
-  assert.match(html, /id="systemUsersRows"/, 'the accounts table body is missing');
+  const html = read('admin.html');
+  assert.match(html, /id="adminRows"/, 'the accounts table body is missing from the dashboard');
+  assert.match(html, /admin-dashboard\.js\?v=/, 'the dashboard needs its versioned runtime');
+  assert.match(html, /admin-dashboard\.css\?v=/, 'the dashboard needs its versioned stylesheet');
+  assert.match(html, /id="statPending"[\s\S]{0,600}id="statActive"/, 'the dashboard leads with what needs the admin now');
+  assert.match(html, /id="refuseDialog"/, 'refusing a registration must ask for a reason, not happen on one click');
 
-  const js = read('admin-users.js');
-  assert.match(js, /\/api\/auth\?scope=users/, 'the panel must call the admin users endpoint');
-  assert.match(js, /X-CSRF-Token/, 'account changes must carry the CSRF proof the server now requires');
+  const js = read('admin-dashboard.js');
+  assert.match(js, /\/api\/auth\?scope=users/, 'the dashboard must call the admin users endpoint');
+  assert.match(js, /X-CSRF-Token/, 'account changes must carry the CSRF proof the server requires');
   assert.match(js, /method:'PATCH'/, 'approving an account is a PATCH');
-  assert.match(js, /error\.status === 403[\s\S]{0,200}hidden = true/, 'a non-admin must get a hidden panel, not a broken one');
+  assert.match(js, /payload\.authUser\?\.role !== 'admin'[\s\S]{0,120}location\.replace/,
+    'a doctor who opens this URL must be sent away, not shown controls that would fail');
+  assert.match(js, /error\.status === 403[\s\S]{0,200}location\.replace/,
+    'a refusal from the server must also send a non-admin away');
 
-  // The panel carries a wide table. It must only appear when the server really
-  // returned an accounts list, and its scroller must never widen the page —
-  // otherwise it pushes the whole system dashboard past a phone viewport.
-  assert.match(js, /if \(!Array\.isArray\(payload\.users\)\)[\s\S]{0,160}hidden = true/,
-    'the panel must stay hidden unless the response is a real accounts payload');
-  const panelCss = read('admin-users.css');
-  assert.match(panelCss, /\.mi-users-table-wrap\{[^}]*max-width:100%/, 'the accounts table scroller must not widen its parent');
-  assert.match(panelCss, /\.mi-users-table-wrap\{[^}]*overflow-x:auto/, 'the wide accounts table scrolls inside its own container');
-}
+  // Approval is refused without a document, so the button must say so rather
+  // than failing after the click.
+  assert.match(js, /const hasDocument = Boolean\(user\.verificationDocument\)/);
+  assert.match(js, /disabled:!hasDocument/);
 
-// --- the panel follows the TailAdmin design system -----------------------
+  // The private document is minted server-side with a short life and audited.
+  assert.match(js, /scope=verification&document=/, 'the document opens through its signed-URL endpoint');
+  assert.ok(!js.includes('storage_path') && !js.includes('storage/v1'),
+    'the dashboard must never construct a storage URL itself');
 
-{
-  const css = read('admin-users.css');
-  const js = read('admin-users.js');
-
+  const css = read('admin-dashboard.css');
   for (const token of ['--mi-border', '--mi-surface', '--mi-brand-600', '--mi-text']) {
-    assert.ok(css.includes(token), `the admin panel must build on the TailAdmin token ${token}, not on ad-hoc colors`);
+    assert.ok(css.includes(token), `the dashboard must build on the TailAdmin token ${token}, not on ad-hoc colors`);
   }
   assert.ok(css.includes('--mi-success-50') && css.includes('--mi-warning-50') && css.includes('--mi-error-50'),
     'status badges must use the TailAdmin semantic palette');
-  assert.match(css, /html\[data-theme="dark"\]/, 'the panel must follow the shell dark theme');
+  assert.match(css, /\.mi-table-wrap \{[^}]*max-width: 100%/, 'the wide accounts table must not widen its parent');
+  assert.match(css, /\.mi-table-wrap \{[^}]*overflow-x: auto/, 'the wide accounts table scrolls inside its own container');
+}
 
-  assert.match(js, /class="mi-badge/, 'statuses render as TailAdmin badges');
-  assert.match(js, /mi-users-action/, 'row actions use the TailAdmin button class');
-  assert.ok(!js.includes('system-user-action'), 'the earlier ad-hoc button styling must be gone');
+// --- the system page points at the dashboard instead of duplicating it ----
+
+{
+  const html = read('sistemi.html');
+  assert.match(html, /<section[^>]+id="systemUsersPanel"[^>]*\shidden/, 'the admin entry must start hidden and only appear for an admin');
+  assert.match(html, /href="\/admin\.html"/, 'the system page must lead to the dashboard');
+  assert.match(html, /admin-entry\.js\?v=/, 'the entry needs its versioned runtime');
+  assert.ok(!html.includes('systemUsersRows'),
+    'account management lives in one place now; a second half-built table on the system page is exactly the duplication that was removed');
+
+  const entry = read('admin-entry.js');
+  assert.match(entry, /payload\.authUser\?\.role !== 'admin'/, 'the entry is revealed only for a verified admin role');
 }
 
 // --- pending accounts get a real answer at login ------------------------
