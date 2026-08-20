@@ -102,6 +102,12 @@ assert.match(patch, /source = source\.replace\("      \['colPickerBtn', 'column-
 assert.match(wiring, /patch-phase14-column-lite\.js/);
 assert.match(wiring, /registry-desktop-column-lite\.js\?v=20260812-1/);
 assert.doesNotMatch(decorator, /fetch\s*\(/, 'Tailwind column picker decoration must remain presentation-only.');
+assert.match(decorator, /function writeLiteColumnPreference\(keys\)/,
+  'Column picker must have a direct storage writer for deterministic bulk-action persistence.');
+assert.match(decorator, /if \(persist\) writeLiteColumnPreference\(normalized\)/,
+  'Show-all/hide-all application must persist the exact normalized set even while preference application is guarded.');
+assert.doesNotMatch(decorator, /if \(persist\) persistLiteColumnPreference\(\)/,
+  'Bulk actions must not call the guarded controller-based persistence path while preferenceApplying is true.');
 
 assert.match(phase15, /function validateDesktopLiteColumns\(\)/, 'Phase 15 must validate committed lightweight column source.');
 assert.match(phase15, /function validatePickerPreferences\(\)/, 'Phase 15 must validate committed picker preferences.');
@@ -114,4 +120,4 @@ for (const forbidden of [
   'select-page-for-prescription', 'prescription-builder',
 ]) assert(!desktop.includes(forbidden), `Normal desktop path must not retain ${forbidden} full-registry handoff.`);
 
-console.log('Phase 14 final desktop column customization uses bounded whitelisted visible-row reads; Phase 15 validates canonical source without rewriting tests.');
+console.log('Phase 14 final desktop column customization uses bounded whitelisted visible-row reads; bulk picker actions persist deterministically and Phase 15 validates canonical source without rewriting tests.');
