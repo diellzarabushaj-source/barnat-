@@ -31,19 +31,42 @@ assert.match(runtime, /ids:ids\.join\(','\)/);
 assert.match(runtime, /remoteCache = new Map\(\)/);
 assert.match(runtime, /MEDINDEX_DESKTOP_LITE\?\.sortBy/);
 assert.match(runtime, /MedIndexRegistryUnified\?\.setView\?\.\('full'\)/);
-assert.match(runtime, /column-prescription-notation/, 'Only the unstructured prescription-label column may explicitly request full mode.');
+assert.doesNotMatch(runtime, /column-prescription-notation|advanced:true/, 'Prescription notation must remain on the lightweight path.');
+assert.match(runtime, /key:'prescription-label'[\s\S]{0,180}raw:'Si të shënohet në recetë'[\s\S]{0,120}default:true/, 'Prescription notation must be a normal default lightweight column.');
 assert.doesNotMatch(runtime, /\/api\/registry(?:\?|['"`])|DRUG_DATA_PARTS|source_payload|indexedDB/, 'Column customization must never read the full registry or source payload.');
 assert.match(runtime, /cell\.dataset\.columnLiteValue === signature/, 'Remote column DOM writes must be signature-idempotent.');
 assert.match(runtime, /if \(!existed \|\| column\.remote\)/, 'Existing base cells must be preserved instead of rewritten.');
 assert.match(runtime, /if \(changed\) window\.MedIndexRegistryUnified\?\.refresh\?\.\(\)/, 'Unified table refresh must happen only after a real structural/value change.');
 assert.doesNotMatch(runtime, /addEventListener\('medindex:registry-table-stable'/, 'Phase 14 must not create stable→refresh feedback loops.');
 
+const numberPosition = runtime.indexOf("key:'number'");
+const substancePosition = runtime.indexOf("key:'active-substance'");
+const tradePosition = runtime.indexOf("key:'trade-name'");
+assert.ok(numberPosition >= 0 && substancePosition > numberPosition && tradePosition > substancePosition,
+  'Lightweight source order must be Nr → Substanca aktive → Emri tregtar.');
+for (const [key, expected] of Object.entries({
+  number:true,
+  'active-substance':true,
+  'trade-name':true,
+  atc:false,
+  'drug-class':true,
+  use:true,
+  strength:true,
+  form:true,
+  population:true,
+  'prescription-label':true,
+  status:false,
+})) {
+  const line = runtime.split('\n').find(item => item.includes(`key:'${key}'`)) || '';
+  assert.ok(line.includes(`default:${expected ? 'true' : 'false'}`), `Default mismatch for ${key}.`);
+}
+
 const buildPanel = runtime.match(/function buildPanel\(\)[\s\S]*?function syncPanelChecks/)?.[0] || '';
 assert(buildPanel, 'Column picker builder must exist.');
 assert.doesNotMatch(buildPanel, /fetch\s*\(/, 'Opening/building the column picker must be zero-network.');
 assert.match(buildPanel, /Shfaqi të gjitha/);
 assert.match(buildPanel, /Fshihi të gjitha/);
-assert.match(runtime, /Si shënohet në recetë/, 'Advanced prescription-notation column must remain represented in the Phase 14 column configuration.');
+assert.match(runtime, /Si shënohet në recetë/, 'Prescription-notation column must remain represented in the lightweight configuration.');
 
 assert.match(api, /REGISTRY_COLUMN_LITE_RUNTIME = 'phase14-column-lite-v1'/);
 assert.match(api, /REGISTRY_COLUMN_BATCH_MAX_IDS = 50/);
@@ -61,6 +84,10 @@ assert.match(api, /validity:'validity_text'/);
 assert.match(api, /view === 'registry-columns'/);
 assert.match(api, /params\.set\('select', \['id', \.\.\.fields\]\.join\(','\)\)/);
 assert.match(api, /params\.set\('limit', String\(ids\.length\)\)/);
+assert.match(api, /function registryPrescriptionNotation\(row\)/, 'Lightweight list source must build prescription notation without source_payload.');
+assert.match(api, /prescriptionNotation:registryPrescriptionNotation\(row\)/, 'Registry-page rows must expose prescription notation directly.');
+const listProjection = api.match(/const REGISTRY_LIST_SELECT = \[[\s\S]*?\]\.join\(','\);/)?.[0] || '';
+assert.match(listProjection, /'packaging'/, 'Registry-page projection must include packaging for prescription notation.');
 const batchBuilder = api.match(/function buildRegistryColumnsPath[\s\S]*?function rowForRegistryColumns/)?.[0] || '';
 assert(batchBuilder, 'Registry column batch builder must exist.');
 assert.doesNotMatch(batchBuilder, /source_payload|SELECT \*|select.*\*/, 'Visible-column batch must remain explicit and lightweight.');
@@ -79,4 +106,4 @@ for (const forbidden of [
   'select-page-for-prescription', 'prescription-builder',
 ]) assert(!desktop.includes(forbidden), `Normal desktop path must not retain ${forbidden} full-registry handoff.`);
 
-console.log('Phase 14 final desktop column customization uses bounded whitelisted visible-row Neon reads; normal registry interactions stay off the full-registry path.');
+console.log('Phase 14 final desktop column customization uses bounded whitelisted visible-row reads; normal registry interactions stay off the full-registry path.');
