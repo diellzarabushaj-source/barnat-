@@ -149,7 +149,10 @@
   }
 
   function ensureSheet() {
-    if (sheet?.isConnected) return sheet;
+    if (sheet?.isConnected) {
+      if (sheet.parentElement !== document.body) document.body.appendChild(sheet);
+      return sheet;
+    }
     sheet = document.createElement('div');
     sheet.id = 'miRegistryFilterSheet';
     sheet.className = 'mi-registry-filter-sheet';
