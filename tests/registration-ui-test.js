@@ -38,7 +38,10 @@ const read = file => fs.readFileSync(path.join(ROOT, file), 'utf8');
   assert.match(html, /id="signupEmail"[\s\S]{0,400}id="signupPassword"/,
     'an account can be created with an email, not only with Google');
   assert.match(html, /minlength="10"/, 'the password floor shown must match the one the server enforces');
-  assert.match(html, /<a href="\/login\.html">/, 'someone who already has an account must be able to leave for the login page');
+  assert.match(html, /<a href="\/login-v2\.html">/,
+    'someone who already has an account must be able to leave for the canonical login page');
+  assert.ok(!html.includes('href="/login.html"'),
+    'registration must not route users back to the retired login surface');
 
   const js = read('regjistrimi.js');
   assert.match(js, /scope=verification/, 'registration submits through the verification endpoint');
