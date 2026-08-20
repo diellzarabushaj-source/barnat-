@@ -118,7 +118,7 @@ assert.match(index, /registry-desktop-lite\.js\?v=20260812-1/, 'index must load 
 assert.match(index, /registry-runtime-loader\.js\?v=20260813-10/, 'index must request the single-owner mobile-and-desktop aware bootstrap');
 assert.ok(index.indexOf('registry-mobile-lite.js') < index.indexOf('registry-desktop-lite.js'), 'mobile lightweight client must register before desktop lightweight startup');
 assert.ok(index.indexOf('registry-desktop-lite.js') < index.indexOf('registry-runtime-loader.js'), 'desktop lightweight client must register before the full loader');
-assert.match(index, /registry-unified-table\.js\?v=20260812-population-column-1/, 'index must load the current population-aware single table controller');
+assert.match(index, /registry-unified-table\.js\?v=20260820-registry-columns-v2/, 'index must load the current population-aware single table controller');
 assert.doesNotMatch(index, /(?:registry-table-integrity|registry-clinical-view|registry-tailgrids-refinement|registry-columns-filters|registry-table-final)\.js/, 'legacy table controllers must not load');
 assert.doesNotMatch(index, /<script src="app-performance\.js"/, 'heavy registry application must not be parser ordered');
 assert.doesNotMatch(index, /rel="preload" href="app-runtime-performance\.js/, 'normal lightweight startup must not preload the full generated runtime');
