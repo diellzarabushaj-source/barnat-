@@ -33,7 +33,8 @@ function emptyUserLibrarySnapshot(overrides = {}) {
     user:{ ...TEST_USER },
     prescriptions:[],
     favorites:[],
-    tombstones:{ prescriptions:[], favorites:[] },
+    drugs:[],
+    tombstones:{ prescriptions:[], favorites:[], drugs:[] },
     generatedAt:'2026-08-20T00:00:00.000Z',
     ...overrides,
   };
