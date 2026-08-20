@@ -1,0 +1,344 @@
+/* Registry list view.
+   A reading surface, not a second table: rows carry no borders of their own, and
+   the only rules on the page are the hairlines between them. Built on the same
+   --mi-* tokens as the rest of the workspace so it follows the shell theme. */
+
+/* The switch sits with the registry it switches, not inside the search toolbar:
+   the toolbar has a height budget on phones that a second row would blow. */
+.rlv-bar {
+  display: flex;
+  justify-content: flex-end;
+  margin: 0 0 10px;
+}
+
+.rlv-toggle {
+  display: inline-flex;
+  gap: 2px;
+  padding: 3px;
+  border: 1px solid var(--mi-border, #e4e7ec);
+  border-radius: 999px;
+  background: var(--mi-surface-soft, #f9fafb);
+}
+
+.rlv-toggle button {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  min-height: 38px;
+  padding: 0 15px;
+  border: 0;
+  border-radius: 999px;
+  background: transparent;
+  color: var(--mi-muted, #667085);
+  font: inherit;
+  font-size: 13px;
+  font-weight: 650;
+  white-space: nowrap;
+  cursor: pointer;
+  transition: background .15s ease, color .15s ease;
+}
+
+.rlv-toggle button span { font-size: 14px; line-height: 1; }
+
+.rlv-toggle button[aria-pressed="true"] {
+  background: var(--mi-surface, #fff);
+  color: var(--mi-text, #101828);
+  box-shadow: var(--mi-shadow-xs, 0 1px 2px rgba(16, 24, 40, .05));
+}
+
+.rlv-toggle button:focus-visible {
+  outline: none;
+  box-shadow: var(--mi-focus, 0 0 0 4px rgba(21, 95, 99, .18));
+}
+
+/* --- panel ---------------------------------------------------------------- */
+
+.rlv-panel {
+  margin: 14px 0 0;
+  border: 1px solid var(--mi-border, #e4e7ec);
+  border-radius: var(--mi-radius-lg, 16px);
+  background: var(--mi-surface, #fff);
+  overflow: hidden;
+}
+
+.rlv-panel[hidden] { display: none !important; }
+
+.rlv-head {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 13px 18px;
+  border-bottom: 1px solid var(--mi-border, #e4e7ec);
+  background: var(--mi-surface-soft, #f9fafb);
+}
+
+.rlv-crumb {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 4px;
+  min-width: 0;
+  font-size: 13px;
+}
+
+.rlv-crumb button {
+  min-height: 32px;
+  padding: 0 9px;
+  border: 0;
+  border-radius: 7px;
+  background: transparent;
+  color: var(--mi-brand-600, #155f63);
+  font: inherit;
+  font-size: 13px;
+  font-weight: 650;
+  cursor: pointer;
+}
+
+.rlv-crumb button:hover { background: var(--mi-brand-25, #f7fbfa); }
+
+/* The separator lives on the crumb rather than in the markup, so the trail
+   reads correctly however many levels deep it goes. */
+.rlv-crumb button + button::before,
+.rlv-crumb button + .rlv-crumb-current::before {
+  content: "›";
+  margin-right: 6px;
+  color: var(--mi-gray-400, #98a2b3);
+  font-weight: 400;
+}
+
+.rlv-crumb-current {
+  padding: 0 4px;
+  overflow: hidden;
+  color: var(--mi-text, #101828);
+  font-weight: 650;
+  text-overflow: ellipsis;
+}
+
+.rlv-count {
+  margin-left: auto;
+  color: var(--mi-muted, #667085);
+  font-size: 12.5px;
+  font-weight: 600;
+  white-space: nowrap;
+  font-variant-numeric: tabular-nums;
+}
+
+/* --- rows ------------------------------------------------------------------ */
+
+.rlv-list {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  max-height: min(70vh, 780px);
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
+}
+
+.rlv-list > li + li { border-top: 1px solid var(--mi-gray-100, #f2f4f7); }
+
+.rlv-category-open,
+.rlv-drug-open {
+  display: grid;
+  width: 100%;
+  padding: 13px 18px;
+  border: 0;
+  background: transparent;
+  color: inherit;
+  font: inherit;
+  text-align: left;
+  cursor: pointer;
+  transition: background .12s ease;
+}
+
+.rlv-category-open:hover,
+.rlv-drug-open:hover { background: var(--mi-surface-soft, #f9fafb); }
+
+.rlv-category-open:focus-visible,
+.rlv-drug-open:focus-visible {
+  outline: none;
+  background: var(--mi-brand-25, #f7fbfa);
+  box-shadow: inset 3px 0 0 var(--mi-brand-500, #1f7779);
+}
+
+/* --- category row ----------------------------------------------------------- */
+
+.rlv-category-open {
+  /* code · name · count · chevron */
+  grid-template-columns: auto minmax(0, 1fr) auto auto;
+  align-items: center;
+  gap: 12px;
+}
+
+.rlv-category-code {
+  padding: 3px 9px;
+  border-radius: 7px;
+  background: var(--mi-brand-50, #eaf4f1);
+  color: var(--mi-brand-700, #0d4145);
+  font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: .02em;
+}
+
+.rlv-category-name {
+  min-width: 0;
+  overflow: hidden;
+  font-size: 14px;
+  font-weight: 600;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.rlv-category-name em { color: var(--mi-muted, #667085); font-weight: 500; }
+
+.rlv-category-count {
+  color: var(--mi-muted, #667085);
+  font-size: 12.5px;
+  font-weight: 650;
+  font-variant-numeric: tabular-nums;
+}
+
+/* An affordance that the row goes somewhere, without an icon column. */
+.rlv-category-open::after {
+  content: "›";
+  grid-column: 4;
+  color: var(--mi-gray-400, #98a2b3);
+  font-size: 17px;
+  line-height: 1;
+}
+
+
+/* --- drug row ---------------------------------------------------------------- */
+
+.rlv-drug-open { gap: 3px; }
+
+.rlv-drug-name {
+  font-size: 14.5px;
+  font-weight: 700;
+  letter-spacing: -0.01em;
+}
+
+.rlv-drug-meta {
+  color: var(--mi-gray-600, #475467);
+  font-size: 13px;
+  line-height: 1.5;
+}
+
+/* The pharmaceutical form is the part a doctor scans for, so it carries the
+   weight even inside the secondary line. */
+.rlv-drug-meta strong { color: var(--mi-text, #101828); font-weight: 650; }
+
+.rlv-drug-atc {
+  justify-self: start;
+  margin-top: 3px;
+  padding: 2px 7px;
+  border-radius: 6px;
+  background: var(--mi-gray-100, #f2f4f7);
+  color: var(--mi-gray-700, #344054);
+  font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+  font-size: 11.5px;
+  font-weight: 600;
+}
+
+.rlv-drug-trail {
+  margin-top: 4px;
+  color: var(--mi-muted, #667085);
+  font-size: 12px;
+}
+
+.rlv-drug-snippet {
+  margin-top: 5px;
+  color: var(--mi-gray-600, #475467);
+  font-size: 12.5px;
+  line-height: 1.55;
+}
+
+.rlv-drug-snippet mark {
+  padding: 0 2px;
+  border-radius: 3px;
+  background: var(--mi-warning-50, #fffaeb);
+  color: var(--mi-warning-700, #b54708);
+  font-weight: 650;
+}
+
+/* --- the opened record ------------------------------------------------------- */
+
+/* The full stored record, exactly as the registry holds it. Two columns on a
+   desktop so a label and its value stay on one line; stacked on a phone. */
+.rlv-drug-detail {
+  display: grid;
+  grid-template-columns: minmax(120px, 190px) minmax(0, 1fr);
+  gap: 7px 16px;
+  margin: 0;
+  padding: 4px 18px 17px;
+  border-top: 1px dashed var(--mi-gray-200, #e4e7ec);
+  background: var(--mi-surface-soft, #f9fafb);
+}
+
+.rlv-drug-detail[hidden] { display: none; }
+
+.rlv-drug-detail dt {
+  padding-top: 1px;
+  color: var(--mi-muted, #667085);
+  font-size: 12px;
+  font-weight: 650;
+}
+
+.rlv-drug-detail dd {
+  margin: 0;
+  color: var(--mi-gray-700, #344054);
+  font-size: 13px;
+  line-height: 1.55;
+  /* Clinical text is shown whole — never clipped, never summarised. */
+  overflow-wrap: anywhere;
+}
+
+/* An opened row keeps the tint of the record below it, so the two read as one
+   block rather than a row and an unrelated panel. */
+.rlv-drug-open[aria-expanded="true"] { background: var(--mi-surface-soft, #f9fafb); }
+
+.rlv-empty {
+  padding: 40px 18px;
+  color: var(--mi-muted, #667085);
+  font-size: 13.5px;
+  text-align: center;
+}
+
+/* --- where the choice is offered --------------------------------------------
+   The switch is for the screens that actually show a table. On a phone the
+   registry is not a table at all — the mobile-lite layer owns it and already
+   renders a card list — so there are not two things to choose between, and the
+   phone layout has a height budget that a second control would spend for
+   nothing. Below the table breakpoint the surface stays out of the way and the
+   phone is left exactly as it was. */
+
+.rlv-bar,
+.rlv-panel { display: none; }
+
+@media (min-width: 768px) {
+  .rlv-bar { display: flex; }
+  .rlv-panel { display: block; }
+  .rlv-panel[hidden] { display: none; }
+
+  /* The table gives way to the list only where the toggle exists to bring it
+     back. Unscoped, a preference set on a desktop would follow the doctor to a
+     phone and leave them with neither view. */
+  html[data-mi-registry-view="list"] #registryContent { display: none !important; }
+  html[data-mi-registry-view="list"] #pagination { display: none !important; }
+}
+
+/* Tablets: roomier touch targets, and the opened record in a single column. */
+@media (min-width: 768px) and (max-width: 900px) {
+  .rlv-toggle button { min-height: 44px; }
+  .rlv-head { padding: 11px 13px; }
+  .rlv-category-open, .rlv-drug-open { padding: 13px; }
+  .rlv-category-name { white-space: normal; }
+  .rlv-drug-detail { grid-template-columns: minmax(0, 1fr); gap: 2px; padding: 4px 13px 15px; }
+  .rlv-drug-detail dd + dt { margin-top: 9px; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .rlv-toggle button,
+  .rlv-category-open,
+  .rlv-drug-open { transition: none; }
+}

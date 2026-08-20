@@ -7,7 +7,19 @@ const PUBLIC_INFO_PATHS = new Set([
   '/blog.html',
 ]);
 
+// The admin console has its own sign-in page, and a sign-in page that requires a
+// session is unreachable by anyone who needs it. Without these the guard sends a
+// signed-out admin to /admin-login.html, which bounces straight back to the
+// clinical login — the admin door could never be opened.
+const ADMIN_LOGIN_PAGE = '/admin-login.html';
+const ADMIN_CONSOLE_PATHS = new Set(['/admin', '/admin.html']);
+
 const PUBLIC_PATHS = new Set([
+  // Spelled out rather than referenced through ADMIN_LOGIN_PAGE so this list
+  // stays greppable: every audit that checks what is public reads it literally.
+  '/admin-login.html',
+  '/admin-login',
+  '/admin-login.css',
   // Registration is by definition reachable without a session: the person
   // filling it in does not have one yet, and will not until an admin approves.
   // Both spellings: `vercel.json` rewrites the clean URL to the file, and
@@ -16,15 +28,6 @@ const PUBLIC_PATHS = new Set([
   '/regjistrimi.html',
   '/regjistrimi.js',
   '/registration-premium.css',
-  // The admin HTML is a data-free shell. It must reach its dedicated client
-  // gate before auth so unauthenticated visitors land on the admin login rather
-  // than the public clinical/marketing login. Admin APIs remain protected.
-  '/admin',
-  '/admin.html',
-  '/admin-login.html',
-  '/admin-login.css',
-  '/admin-entry-guard.js',
-  '/admin-dashboard.css',
   '/auth-shell.css',
   '/login-email.css',
   '/login.html',
@@ -94,7 +97,7 @@ export const config = {
 const LOGIN_PAGE = '/login-v2.html';
 
 /* Të dyja faqet sillen njësoj kur përdoruesi është tashmë i kyçur. */
-const LOGIN_PAGES = new Set(['/login.html', LOGIN_PAGE]);
+const LOGIN_PAGES = new Set(['/login.html', LOGIN_PAGE, ADMIN_LOGIN_PAGE, '/admin-login']);
 
 function isPublicPath(pathname) {
   return PUBLIC_PATHS.has(pathname) || PUBLIC_SECRET_APIS.has(pathname) || pathname === '/api/auth';
@@ -159,7 +162,9 @@ export default async function middleware(request) {
     });
   }
 
-  const loginUrl = new URL(LOGIN_PAGE, request.url);
+  // Someone reaching for the admin console is sent to the admin sign-in, not the
+  // clinical one, so the page they land on is the page they were trying to use.
+  const loginUrl = new URL(ADMIN_CONSOLE_PATHS.has(pathname) ? ADMIN_LOGIN_PAGE : LOGIN_PAGE, request.url);
   loginUrl.searchParams.set('return', safeReturnPath(url));
   return Response.redirect(loginUrl, 302);
 }

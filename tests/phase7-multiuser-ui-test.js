@@ -27,10 +27,17 @@ const read = file => fs.readFileSync(path.join(root, file), 'utf8');
 
   const guard = read('admin-entry-guard.js');
   assert.match(guard, /\/api\/auth/, 'the admin entry guard must verify the current server session');
-  assert.match(guard, /payload\.authUser\?\.role !== 'admin'/,
-    'the admin entry guard must reject a non-admin session');
-  assert.match(guard, /OWNER = 'diellzarabushaj@gmail\.com'/,
-    'the named administrator gate must remain explicit');
+  // The named-administrator gate is still explicit — it just lives on the server
+  // now, in `AdminAccess.isAdminEmail`, and is reported to the page as
+  // `authUser.adminConsole`. A copy of the address list in the browser would
+  // lock out a co-administrator the server allows, and could never be the thing
+  // enforcing it anyway.
+  assert.match(guard, /payload\.authUser\?\.adminConsole !== true/,
+    'the admin entry guard must reject any session the server does not clear for the console');
+  assert.ok(!guard.includes('diellzarabushaj@gmail.com'),
+    'the guard must read the server verdict rather than carrying its own address list');
+  assert.match(read('api/auth.js'), /adminConsole:session\.authRole === 'admin'/,
+    'the server must be the one deciding who may open the console');
   assert.match(guard, /admin-dashboard\.js\?v=/,
     'the dashboard runtime must load only after the access guard runs');
   assert.match(guard, /admin-login\.html\?return=%2Fadmin/,
@@ -41,10 +48,10 @@ const read = file => fs.readFileSync(path.join(root, file), 'utf8');
   assert.match(js, /\/api\/clinical-editor/, 'the drug workspace must use the admin-gated clinical editor');
   assert.match(js, /X-CSRF-Token/, 'account changes must carry the CSRF proof the server requires');
   assert.match(js, /method:'PATCH'/, 'approving an account is a PATCH');
-  assert.match(js, /authUser\?\.role\s*!==\s*'admin'/,
-    'the dashboard runtime keeps its own admin role gate as defense in depth');
-  assert.match(js, /email\s*!==\s*OWNER/,
-    'the dashboard runtime keeps the named-email gate as defense in depth');
+  assert.match(js, /authUser\?\.adminConsole\s*!==\s*true/,
+    'the dashboard runtime keeps its own gate as defense in depth, on the server verdict');
+  assert.ok(!js.includes('diellzarabushaj@gmail.com'),
+    'the dashboard must not carry its own address list either');
   assert.match(js, /verification&document=/, 'the document opens through its signed-URL endpoint');
   assert.ok(!js.includes('storage_path') && !js.includes('storage/v1'),
     'the dashboard must never construct a storage URL itself');
@@ -84,21 +91,33 @@ const read = file => fs.readFileSync(path.join(root, file), 'utf8');
   const middleware = read('middleware.ts');
   assert.ok(middleware.includes("'/regjistrimi'"),
     'middleware runs before the rewrite, so it sees the clean URL; registration must be public under both spellings');
-  for (const adminShellPath of [
-    '/admin',
-    '/admin.html',
-    '/admin-login.html',
-    '/admin-login.css',
-    '/admin-entry-guard.js',
-    '/admin-dashboard.css',
-  ]) {
-    assert.ok(middleware.includes(`'${adminShellPath}'`),
-      `${adminShellPath} must pass middleware so the dedicated admin gate/login can run`);
+  // The admin sign-in must be public: a sign-in page behind the session gate is
+  // unreachable by exactly the people who need it. The console itself must not
+  // be — middleware routes a signed-out visitor from /admin straight to the
+  // admin sign-in, so opening the shell to anonymous requests buys nothing and
+  // leaves the page's own gate to client JavaScript.
+  const publicBlock = /PUBLIC_PATHS = new Set\(\[([\s\S]*?)\]\)/.exec(middleware)?.[1] || '';
+  for (const openPath of ['/admin-login', '/admin-login.html', '/admin-login.css']) {
+    assert.ok(publicBlock.includes(`'${openPath}'`),
+      `${openPath} must pass middleware, or a signed-out administrator can never sign in`);
   }
-  assert.ok(!middleware.includes("'/api/auth?scope=users'"),
-    'the admin users endpoint must never be made a public middleware path');
-  assert.ok(!middleware.includes("'/api/clinical-editor'"),
-    'the clinical editor must remain behind server authentication');
+  assert.ok(!/'\/admin'|'\/admin\.html'/.test(publicBlock),
+    '/admin must stay behind the session gate; the dedicated sign-in is reached by redirect, not by opening the console');
+  assert.match(middleware, /ADMIN_CONSOLE_PATHS\.has\(pathname\) \? ADMIN_LOGIN_PAGE : LOGIN_PAGE/,
+    'someone reaching for the console must land on the admin sign-in, not the clinical one');
+
+  // Scoped to the allowlists. `/api/clinical-editor` legitimately appears in the
+  // blog carve-out below them, which admits only `GET …?blog=1` and leaves every
+  // other request to that shared function under authentication.
+  const secretApiBlock = /PUBLIC_SECRET_APIS = new Set\(\[([\s\S]*?)\]\)/.exec(middleware)?.[1] || '';
+  for (const block of [publicBlock, secretApiBlock]) {
+    assert.ok(!block.includes('/api/auth?scope=users'),
+      'the admin users endpoint must never be made a public middleware path');
+    assert.ok(!block.includes('/api/clinical-editor'),
+      'the clinical editor must remain behind server authentication');
+  }
+  assert.match(middleware, /isPublicBlogApi[\s\S]{0,400}searchParams\.get\('blog'\) === '1'/,
+    'the only public window into the clinical editor is the blog read, and it must stay that narrow');
 
   const entry = read('admin-entry.js');
   assert.match(entry, /payload\.authUser\?\.role !== 'admin'/, 'the entry is revealed only for a verified admin role');

@@ -177,8 +177,46 @@ function resultFromRow(row) {
     allowedRoutes:administration.routes,
     sheetPrescriptionNotation:clean(row.__sheetPrescriptionNotation),
     atc:clean(row['ATC Code']), pdid, protocolNo,
+    drugClass:clean(row['Klasa / Çka është']),
+    use:clean(row['Përdorimi (fjalë kyçe)']),
     qualityStatus:clean(row.__qualityStatus || 'verified'),
   };
+}
+
+// Why a row matched, so the result can say so instead of appearing unexplained.
+// A doctor searching "kollë" needs to see that it was the indication that
+// matched, not guess.
+const MATCH_FIELDS = Object.freeze([
+  { key:'tradeName', column:'Emri tregtar', label:'Emri tregtar' },
+  { key:'substance', column:'Substanca aktive', label:'Substanca aktive' },
+  { key:'atc', column:'ATC Code', label:'Kodi ATC' },
+  { key:'use', column:'Përdorimi (fjalë kyçe)', label:'Përdorimi' },
+  { key:'drugClass', column:'Klasa / Çka është', label:'Klasa terapeutike' },
+  { key:'form', column:'Forma farmaceutike', label:'Forma farmaceutike' },
+  { key:'strength', column:'Fortësia', label:'Fortësia' },
+]);
+
+// The snippet is lifted verbatim from the stored text, only trimmed to the
+// sentence around the hit. Clinical content is never rewritten.
+function matchSnippet(value, query) {
+  const text = clean(value);
+  if (!text) return '';
+  const at = normalize(text).indexOf(query);
+  if (at < 0) return text.length <= 120 ? text : `${text.slice(0, 117)}…`;
+  const sentences = text.split(/(?<=[.;])\s+/);
+  const hit = sentences.find(part => normalize(part).includes(query)) || text;
+  const trimmed = hit.trim();
+  return trimmed.length <= 160 ? trimmed : `${trimmed.slice(0, 157)}…`;
+}
+
+function matchReason(row, query) {
+  for (const field of MATCH_FIELDS) {
+    const value = row[field.column];
+    if (value && normalize(value).includes(query)) {
+      return { field:field.key, label:field.label, snippet:matchSnippet(value, query) };
+    }
+  }
+  return null;
 }
 
 function rank(row, query, tokens) {
@@ -189,7 +227,13 @@ function rank(row, query, tokens) {
   const atc = normalize(row['ATC Code']);
   const prescription = normalize(row['Si të shënohet në recetë']);
   const packaging = normalize(row['Madhësia e paketimit']);
-  const haystack = `${substance} ${trade} ${strength} ${form} ${atc} ${prescription} ${packaging}`;
+  // The SQL candidate query already searches the indication text and the
+  // therapeutic class. Leaving them out of this haystack meant every row found
+  // by an indication was fetched and then silently discarded here, so searching
+  // for a symptom returned nothing at all.
+  const use = normalize(row['Përdorimi (fjalë kyçe)']);
+  const drugClass = normalize(row['Klasa / Çka është']);
+  const haystack = `${substance} ${trade} ${strength} ${form} ${atc} ${prescription} ${packaging} ${use} ${drugClass}`;
   if (!tokens.every(token => haystack.includes(token))) return -1;
   let score = 0;
   if (substance === query) score += 120;
@@ -200,6 +244,10 @@ function rank(row, query, tokens) {
   else if (trade.includes(query)) score += 50;
   if (prescription.startsWith(query)) score += 40;
   if (atc.startsWith(query)) score += 35;
+  // Ranked below every identity match: an indication or class hit is a real
+  // reason to show a drug, but never a stronger one than its own name.
+  if (use.includes(query)) score += 20;
+  if (drugClass.includes(query)) score += 16;
   if (strength.includes(query)) score += 12;
   if (String(row.__qualityStatus || '') === 'blocked') score -= 1000;
   return score;
@@ -296,7 +344,11 @@ async function hydrateSearchRows(rows) {
 }
 
 function rankedResults(rows, query) {
-  return rankedRows(rows, query).map(resultFromRow);
+  return rankedRows(rows, query).map(row => {
+    const result = resultFromRow(row);
+    const match = matchReason(row, query);
+    return match ? { ...result, match } : result;
+  });
 }
 
 function registryPrescriptionNotation(row) {

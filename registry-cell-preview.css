@@ -9,6 +9,15 @@ html.medindex-tailadmin[data-mi-page="barnat"] body #dataTable td[data-registry-
   padding-right:42px!important;
 }
 
+/* The dosage columns are kept out of that padding, because it would push their
+   two-line dose text off balance. But the expand button still lands in the
+   top-right corner — which is exactly where the route badge sits, so "PO" ended
+   up underneath it. The corner is reserved on the badge instead: same clearance,
+   no change to the column's width or to the dose text beside it. */
+html.medindex-tailadmin[data-mi-page="barnat"] body #dataTable td[data-registry-cell-preview="true"].registry-dosage-column .registry-dosage-route {
+  margin-right:42px!important;
+}
+
 html.medindex-tailadmin[data-mi-page="barnat"] body .registry-cell-preview-trigger {
   position:absolute!important;
   z-index:5!important;

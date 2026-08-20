@@ -2,7 +2,6 @@
   'use strict';
 
   const ADMIN_LOGIN = '/admin-login.html?return=%2Fadmin';
-  const OWNER = 'diellzarabushaj@gmail.com';
 
   function loadWorkspace() {
     const script = document.createElement('script');
@@ -69,8 +68,10 @@
         return;
       }
       if (response.ok && payload.authenticated) {
-        const email = String(payload.user?.email || '').trim().toLowerCase();
-        if (payload.authUser?.role !== 'admin' || email !== OWNER) {
+        // The server decides who may open this console; the page only reads the
+        // verdict. Carrying its own address list here would lock out a
+        // co-administrator the server allows.
+        if (payload.authUser?.adminConsole !== true) {
           showLockedAccount();
           return;
         }
