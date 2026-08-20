@@ -9,12 +9,14 @@ const read = relativePath => fs.readFileSync(path.join(ROOT, relativePath), 'utf
 const shell = read('tailadmin-shell.js');
 const search = read('atc-global-search.js');
 const styles = read('atc-global-search.css');
+const index = read('index.html');
 
 assert.match(shell, /ATC_SEARCH_SRC = '\/atc-global-search\.js\?v=atc-global-search-v1'/, 'TailAdmin must expose the ATC-aware global search runtime');
 assert.match(shell, /loadRuntime\(ATC_SEARCH_SRC, 'data-medindex-atc-global-search'/, 'Global search must still use the canonical shell loader');
 assert.match(shell, /if \(!isMobileLayout\(\)\) assets\.push\(ATC_NAV_SRC, ATC_SEARCH_SRC\)/, 'ATC global search must not be warmed during phone startup');
 assert.match(shell, /data-mi-mobile-search.*data-mi-registry-nav="search"/, 'Phone ATC search must start loading from explicit search intent');
 assert.match(shell, /medindex:mobile-search-opened/, 'Phone ATC search needs a semantic open-event fallback');
+assert.doesNotMatch(index, /<script[^>]+src="(?:classification-data|atc-shared)\.js/i, 'Phone startup must leave shared ATC data to the intent-loaded navigation/search runtimes');
 
 assert.match(search, /document\.getElementById\('miGlobalSearch'\)/, 'The existing header search input must be enhanced');
 assert.doesNotMatch(search, /createElement\(['"]input['"]\)/, 'Global ATC search must not create a duplicate search input');

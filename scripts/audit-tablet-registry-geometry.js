@@ -80,6 +80,15 @@ function rows() {
   });
 }
 
+async function waitUntil(predicate, label, timeoutMs = 10000) {
+  const deadline = Date.now() + timeoutMs;
+  while (Date.now() < deadline) {
+    if (await predicate()) return;
+    await new Promise(resolve => setTimeout(resolve, 25));
+  }
+  throw new Error(`Timed out waiting for ${label}.`);
+}
+
 async function installApiRoute(page, requestUrls) {
   await page.route('**/api/drug-search**', async route => {
     const url = new URL(route.request().url());
@@ -129,11 +138,20 @@ async function auditWidth(browser, width) {
     await page.goto(`${BASE}/index.html`, { waitUntil:'domcontentloaded', timeout:30000 });
     await page.locator('html.auth-ready').waitFor({ state:'attached', timeout:10000 });
     await page.locator('#tbody > tr[data-desktop-lite-row]').nth(9).waitFor({ state:'attached', timeout:10000 });
-    await page.waitForFunction(() => document.documentElement.dataset.registryDesktopLiteState === 'ready', null, { timeout:10000 });
+    await waitUntil(
+      async () => (await page.locator('html').getAttribute('data-registry-desktop-lite-state')) === 'ready',
+      `${width}px desktop-lite ready state`,
+    );
 
     await page.locator('#search').fill('para');
-    await page.waitForTimeout(450);
-    await page.waitForFunction(() => document.getElementById('dataTable')?.getAttribute('aria-busy') !== 'true', null, { timeout:10000 });
+    await waitUntil(
+      () => requestUrls.some(value => new URL(value).searchParams.get('q') === 'para'),
+      `${width}px settled search request`,
+    );
+    await waitUntil(
+      async () => (await page.locator('#dataTable').getAttribute('aria-busy')) !== 'true',
+      `${width}px settled table idle state`,
+    );
 
     const result = await page.evaluate(() => {
       const rect = node => {

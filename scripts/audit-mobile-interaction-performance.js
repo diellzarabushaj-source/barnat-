@@ -251,8 +251,7 @@ async function waitForRequestCount(requestLog, predicate, minimum, timeoutMs = 3
     await search.fill('INTERACTION TARGET 30');
     const typingDispatchMs = elapsed(typingStarted);
     await waitForRequestCount(requestLog, item => item.view === 'registry-page' && item.q === 'INTERACTION TARGET 30', 1);
-    await page.locator('#tbody .mobile-lite-card').first().waitFor({ state:'visible', timeout:3000 });
-    await page.locator('#tbody').waitFor({ state:'visible' });
+    await page.locator('#tbody .mobile-lite-card').filter({ hasText:'INTERACTION TARGET 30' }).waitFor({ state:'visible', timeout:3000 });
     assert.match(await page.locator('#tbody').innerText(), /INTERACTION TARGET 30/);
     const searchSettleMs = elapsed(typingStarted);
     const searchRequestAfter = requestLog.filter(item => item.view === 'registry-page').length;
@@ -266,23 +265,26 @@ async function waitForRequestCount(requestLog, predicate, minimum, timeoutMs = 3
 
     const statusBefore = requestLog.filter(item => item.view === 'registry-page').length;
     const statusStarted = Date.now();
-    await page.locator('#statusFilter').selectOption('Origjinator');
+    // The compact phone UI owns the visible filter sheet; this audit targets
+    // the underlying lightweight status interaction and its request budget.
+    await page.locator('#statusFilter').selectOption('Origjinator', { force:true });
     await waitForRequestCount(requestLog, item => item.view === 'registry-page' && item.status === 'Origjinator', 1);
-    await page.locator('#countBadge').waitFor({ state:'visible' });
+    await page.locator('#countBadge').filter({ hasText:'15 barna' }).waitFor({ state:'visible', timeout:3000 });
     assert.match(await page.locator('#countBadge').innerText(), /15 barna/);
     const statusSettleMs = elapsed(statusStarted);
     const statusAfter = requestLog.filter(item => item.view === 'registry-page').length;
     assert.equal(statusAfter - statusBefore, 1, 'Status change should produce exactly one registry-page request.');
 
-    await page.locator('#statusFilter').selectOption('');
+    await page.locator('#statusFilter').selectOption('', { force:true });
     await waitForRequestCount(requestLog, item => item.view === 'registry-page' && item.status === '' && item.includeTotal === '1', 3);
+    await page.locator('#countBadge').filter({ hasText:'75 barna' }).waitFor({ state:'visible', timeout:3000 });
     await page.locator('#pagination [data-mobile-lite-page="next"]').waitFor({ state:'visible' });
 
     const paginationBefore = requestLog.filter(item => item.view === 'registry-page').length;
     const paginationStarted = Date.now();
     await page.locator('#pagination [data-mobile-lite-page="next"]').click();
     await waitForRequestCount(requestLog, item => item.view === 'registry-page' && item.page === 2, 1);
-    await page.locator('#pagination .mobile-lite-page-label').waitFor({ state:'visible' });
+    await page.locator('#pagination .mobile-lite-page-label').filter({ hasText:'Faqja 2' }).waitFor({ state:'visible', timeout:3000 });
     assert.match(await page.locator('#pagination .mobile-lite-page-label').innerText(), /Faqja 2/);
     const paginationSettleMs = elapsed(paginationStarted);
     const paginationAfter = requestLog.filter(item => item.view === 'registry-page').length;
@@ -291,7 +293,9 @@ async function waitForRequestCount(requestLog, predicate, minimum, timeoutMs = 3
     const more = page.locator('#tbody .mobile-lite-more').first();
     const detailBefore = requestLog.filter(item => item.view === 'registry-detail').length;
     const detailStarted = Date.now();
-    await more.click();
+    // Measure application feedback from event dispatch, not Playwright's
+    // actionability/scroll bookkeeping (physical taps are covered separately).
+    await more.dispatchEvent('click');
     await page.locator('#mobileLiteDrugDetail').waitFor({ state:'visible', timeout:1000 });
     await page.locator('#mobileLiteDrugDetail .mobile-lite-detail-loading').waitFor({ state:'visible', timeout:1000 });
     const detailLoadingVisibleMs = elapsed(detailStarted);
@@ -303,7 +307,7 @@ async function waitForRequestCount(requestLog, predicate, minimum, timeoutMs = 3
 
     const closeButton = page.locator('#mobileLiteDrugDetail .mobile-lite-detail-head [data-mobile-lite-close]');
     const closeStarted = Date.now();
-    await closeButton.click();
+    await closeButton.dispatchEvent('click');
     await page.locator('#mobileLiteDrugDetail').waitFor({ state:'hidden', timeout:1000 });
     await page.waitForTimeout(40);
     const detailCloseMs = elapsed(closeStarted);

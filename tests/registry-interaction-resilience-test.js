@@ -45,6 +45,10 @@ assert.match(desktop, /const controller = new AbortController\(\);\s*pageControl
 assert.match(desktop, /signal:controller\.signal/, 'desktop logical-page fetch must use the captured request signal');
 assert.match(desktop, /if \(pageController === controller\) \{\s*pageController = null;\s*setBusy\(false\);\s*\}/, 'an aborted desktop request must not clear loading state owned by a newer request');
 assert.doesNotMatch(desktop, /signal:pageController\.signal/, 'desktop page fetch must not read a mutable shared controller after request start');
+assert.match(desktop, /pageController\?\.abort\(\);\s*pageController = null;\s*if \(nextQuery\.length === 1\)/, 'desktop search must cancel stale page ownership before its debounce');
+assert.match(desktop, /setBusy\(true\);\s*searchTimer = window\.setTimeout/, 'desktop search must expose pending work throughout its debounce');
+assert.doesNotMatch(desktop, /source:'neon'|Neon lightweight|nga Neon/, 'desktop runtime must identify Supabase as its only live registry source');
+assert.doesNotMatch(mobile, /source:'neon'/, 'mobile runtime must identify Supabase as its only live registry source');
 assert.match(desktop, /medindex:request-full-registry/, 'advanced desktop functions must retain an explicit full-runtime handoff');
 assert.doesNotMatch(desktop, /\/api\/registry(?:\?|['"`])|DRUG_DATA_PARTS|NEON_DATA_API|apirest\./i, 'normal desktop lightweight mode must not read the full registry or Neon directly');
 
