@@ -35,6 +35,10 @@ assert.match(runtime, /MEDINDEX_DESKTOP_LITE\?\.sortBy/);
 assert.match(runtime, /MedIndexRegistryUnified\?\.setView\?\.\('full'\)/);
 assert.doesNotMatch(runtime, /column-prescription-notation|advanced:true/, 'Prescription notation must remain on the lightweight path.');
 assert.match(runtime, /key:'prescription-label'[\s\S]{0,180}raw:'Si të shënohet në recetë'[\s\S]{0,120}default:true/, 'Prescription notation must be a normal default lightweight column.');
+assert.match(runtime, /key:'status'[\s\S]{0,100}remote:'status'[\s\S]{0,100}default:false/, 'Hidden status must hydrate only when selected.');
+assert.match(runtime, /key:'retail-price'[\s\S]{0,120}remote:'retail'[\s\S]{0,120}default:false/, 'Hidden retail price must hydrate only when selected.');
+assert.doesNotMatch(runtime, /key:'status'[^\n]*raw:'Statusi'/, 'Status must not depend on the initial list payload.');
+assert.doesNotMatch(runtime, /key:'retail-price'[^\n]*raw:'Çmimi me pakicë'/, 'Retail price must not depend on the initial list payload.');
 assert.doesNotMatch(runtime, /\/api\/registry(?:\?|['"`])|DRUG_DATA_PARTS|source_payload|indexedDB/, 'Column customization must never read the full registry or source payload.');
 assert.match(runtime, /cell\.dataset\.columnLiteValue === signature/, 'Remote column DOM writes must be signature-idempotent.');
 assert.match(runtime, /if \(!existed \|\| column\.remote\)/, 'Existing base cells must be preserved instead of rewritten.');
@@ -82,9 +86,11 @@ assert.match(api, /packaging:'packaging'/);
 assert.match(api, /mah:'marketing_authorization_holder'/);
 assert.match(api, /manufacturer:'manufacturer'/);
 assert.match(api, /'ma-certificate':'ma_certificate'/);
+assert.match(api, /status:'product_status'/, 'Status must be available through the visible-column batch.');
 assert.match(api, /'wholesale-price':'wholesale_price'/);
 assert.match(api, /'margin-price':'wholesale_with_margin'/);
 assert.match(api, /vat:'vat_text'/);
+assert.match(api, /retail:'retail_price'/, 'Retail price must be available through the visible-column batch.');
 assert.match(api, /validity:'validity_text'/);
 assert.match(api, /view === 'registry-columns'/);
 assert.match(api, /params\.set\('select', \['id', \.\.\.fields\]\.join\(','\)\)/);
@@ -93,6 +99,9 @@ assert.match(api, /function registryPrescriptionNotation\(row\)/, 'Lightweight l
 assert.match(api, /prescriptionNotation:registryPrescriptionNotation\(row\)/, 'Registry-page rows must expose prescription notation directly.');
 const listProjection = api.match(/const REGISTRY_LIST_SELECT = \[[\s\S]*?\]\.join\(','\);/)?.[0] || '';
 assert.match(listProjection, /'packaging'/, 'Registry-page projection must include packaging for prescription notation.');
+assert.doesNotMatch(listProjection, /'product_status'|'retail_price'/, 'Hidden status/retail fields must stay off the initial registry projection.');
+const listMapper = api.match(/function rowForRegistryList\(row\)[\s\S]*?\n\}/)?.[0] || '';
+assert.doesNotMatch(listMapper, /productStatus|retailPrice/, 'Hidden status/retail values must not be serialized into every initial row.');
 const batchBuilder = api.match(/function buildRegistryColumnsPath[\s\S]*?function rowForRegistryColumns/)?.[0] || '';
 assert(batchBuilder, 'Registry column batch builder must exist.');
 assert.doesNotMatch(batchBuilder, /source_payload|SELECT \*|select.*\*/, 'Visible-column batch must remain explicit and lightweight.');
@@ -102,6 +111,8 @@ assert.match(desktop, /sortBy:sortByColumn/);
 assert.doesNotMatch(desktop, /\['formPickerBtn', 'form-picker'\]/, 'Opening Forma farmaceutike must not hand off to full registry.');
 assert.doesNotMatch(desktop, /\['colPickerBtn', 'column-picker'\]/, 'Opening Kolonat must not hand off to full registry.');
 assert.match(patch, /source = source\.replace\("      \['colPickerBtn', 'column-picker'\],\\n", ''\)/);
+assert.match(patch, /status:'product_status'/, 'Build owner must preserve remote status hydration.');
+assert.match(patch, /retail:'retail_price'/, 'Build owner must preserve remote retail hydration.');
 assert.match(wiring, /patch-phase14-column-lite\.js/);
 assert.match(wiring, /registry-desktop-column-lite\.js\?v=20260812-1/);
 assert.doesNotMatch(decorator, /fetch\s*\(/, 'Tailwind column picker decoration must remain presentation-only.');
@@ -147,4 +158,4 @@ for (const forbidden of [
   'select-page-for-prescription', 'prescription-builder',
 ]) assert(!desktop.includes(forbidden), `Normal desktop path must not retain ${forbidden} full-registry handoff.`);
 
-console.log('Desktop registry final order is Nr → prescription notation → trade name → active substance; bulk preferences remain deterministic.');
+console.log('Desktop registry keeps hidden status/retail off the initial payload while preserving on-demand columns and deterministic preferences.');
