@@ -31,7 +31,36 @@ function patchDesktopLargePages() {
     'bounded large-page constants',
   );
 
-  const pageUrlBlock = `  function buildPageUrl({ includeTotal = false, page = state.page, pageSize = SERVER_PAGE_SIZE } = {}) {
+  source = replaceOnce(
+    source,
+    `  let pageController = null;\n  let searchTimer = 0;`,
+    `  let pageController = null;\n  let pageRequestGeneration = 0;\n  let activePageRequestKey = '';\n  let searchTimer = 0;`,
+    'request ownership state',
+  );
+
+  const pageUrlBlock = `  function pageRequestFingerprint({ includeTotal = false } = {}) {
+    return [
+      state.page,
+      state.pageSize,
+      state.q,
+      state.status,
+      state.formType || '',
+      state.formValue || '',
+      state.atc || '',
+      state.sort,
+      state.direction,
+      includeTotal ? 'count' : 'nocount',
+    ].join('\\u001f');
+  }
+
+  function invalidatePageRequest() {
+    pageRequestGeneration += 1;
+    pageController?.abort();
+    pageController = null;
+    activePageRequestKey = '';
+  }
+
+  function buildPageUrl({ includeTotal = false, page = state.page, pageSize = SERVER_PAGE_SIZE } = {}) {
     const boundedPageSize = Math.min(SERVER_PAGE_SIZE, Math.max(1, Number(pageSize) || SERVER_PAGE_SIZE));
     const params = new URLSearchParams({
       view:'registry-page',
@@ -119,14 +148,22 @@ function patchDesktopLargePages() {
     'large page-size control without full-registry handoff',
   );
 
-  const loadPageBlock = `  async function loadPage({ includeTotal = false, scroll = false } = {}) {
+  const loadPageBlock = `  async function loadPage({ includeTotal = false, scroll = false, force = false } = {}) {
     if (state.disabled) return;
+    const requestKey = pageRequestFingerprint({ includeTotal });
+    if (!force && pageController && activePageRequestKey === requestKey) return;
+
+    const generation = ++pageRequestGeneration;
     pageController?.abort();
     const controller = new AbortController();
     pageController = controller;
+    activePageRequestKey = requestKey;
+    html.dataset.registryDesktopLiteRequestGeneration = String(generation);
     setBusy(true);
     try {
       const logical = await fetchLogicalPage({ includeTotal, signal:controller.signal });
+      if (generation !== pageRequestGeneration || pageController !== controller || controller.signal.aborted) return;
+
       state.hasNext = Number.isFinite(logical.total)
         ? state.page * state.pageSize < logical.total
         : Boolean(logical.last?.pagination?.hasNext);
@@ -146,12 +183,12 @@ function patchDesktopLargePages() {
       html.dataset.registryDesktopLiteChunks = String(logical.chunks);
       window.MedIndexRegistryDosageLoader?.schedule?.();
       window.dispatchEvent(new CustomEvent('medindex:desktop-lite-ready', {
-        detail:{ page:state.page, pageSize:state.pageSize, total:state.total, chunks:logical.chunks, source:'supabase' }
+        detail:{ page:state.page, pageSize:state.pageSize, total:state.total, chunks:logical.chunks, source:'supabase', requestGeneration:generation }
       }));
       hidePageLoader();
       if (scroll) document.getElementById('registryContent')?.scrollIntoView({ block:'start', behavior:'smooth' });
     } catch (error) {
-      if (error?.name === 'AbortError') return;
+      if (error?.name === 'AbortError' || generation !== pageRequestGeneration || pageController !== controller) return;
       console.error('Desktop lightweight registry failed:', error);
       html.dataset.registryDesktopLiteState = 'error';
       if (!state.ready) requestFullRegistry('desktop-lite-error');
@@ -160,8 +197,9 @@ function patchDesktopLargePages() {
         if (badge) badge.textContent = 'Gabim · provo përsëri';
       }
     } finally {
-      if (pageController === controller) {
+      if (generation === pageRequestGeneration && pageController === controller) {
         pageController = null;
+        activePageRequestKey = '';
         setBusy(false);
       }
     }
@@ -191,8 +229,14 @@ function patchDesktopLargePages() {
   if (!source.includes('rawPayloadTotal === null || rawPayloadTotal === undefined ? null : Number(rawPayloadTotal)')) {
     throw new Error('Phase 11 count-free pages must preserve unknown totals instead of coercing null to zero.');
   }
-  if (!source.includes('if (pageController === controller)')) {
-    throw new Error('Phase 11 desktop request busy-state must remain owned by the newest request.');
+  if (!source.includes('generation === pageRequestGeneration && pageController === controller')) {
+    throw new Error('Phase 11 desktop request busy-state must remain owned by the newest request generation.');
+  }
+  if (!source.includes('activePageRequestKey === requestKey')) {
+    throw new Error('Phase 11 duplicate in-flight registry requests must be coalesced.');
+  }
+  if (!source.includes('generation !== pageRequestGeneration || pageController !== controller || controller.signal.aborted')) {
+    throw new Error('Phase 11 stale request completions must never commit rows to the table.');
   }
 
   write('registry-desktop-lite.js', source);
@@ -204,7 +248,7 @@ function patchDesktopSearchCounting() {
   source = replaceOnce(
     source,
     `    const search = document.getElementById('search');\n    search?.addEventListener('input', () => {\n      window.clearTimeout(searchTimer);\n      searchTimer = window.setTimeout(() => {\n        state.q = clean(search.value).slice(0, 80);\n        state.page = 1;\n        void loadPage({ includeTotal:true, scroll:false });\n      }, SEARCH_DEBOUNCE_MS);\n    });`,
-    `    const search = document.getElementById('search');\n    search?.addEventListener('input', () => {\n      window.clearTimeout(searchTimer);\n      const nextQuery = clean(search.value).slice(0, 80);\n      // A new term owns the loading state immediately. Abort the previous page\n      // before the debounce so its completion cannot render stale rows or clear\n      // the busy state reserved for the pending search.\n      pageController?.abort();\n      pageController = null;\n      if (nextQuery.length === 1) {\n        setBusy(false);\n        return;\n      }\n      setBusy(true);\n      searchTimer = window.setTimeout(() => {\n        state.q = nextQuery;\n        state.page = 1;\n        state.total = null;\n        state.totalPages = null;\n        // Search results need a bounded page and hasNext, not an exact count on\n        // every settled term. Clearing search restores the exact total.\n        void loadPage({ includeTotal:nextQuery.length === 0, scroll:false });\n      }, SEARCH_DEBOUNCE_MS);\n    });`,
+    `    const search = document.getElementById('search');\n    search?.addEventListener('input', () => {\n      window.clearTimeout(searchTimer);\n      const nextQuery = clean(search.value).slice(0, 80);\n      if (nextQuery === state.q) return;\n      // Invalidate ownership immediately, before debounce. Even a transport that\n      // resolves after abort cannot publish stale rows over the newer query.\n      invalidatePageRequest();\n      if (nextQuery.length === 1) {\n        setBusy(false);\n        return;\n      }\n      setBusy(true);\n      searchTimer = window.setTimeout(() => {\n        state.q = nextQuery;\n        state.page = 1;\n        state.total = null;\n        state.totalPages = null;\n        // Search results need a bounded page and hasNext, not an exact count on\n        // every settled term. Clearing search restores the exact total.\n        void loadPage({ includeTotal:nextQuery.length === 0, scroll:false });\n      }, SEARCH_DEBOUNCE_MS);\n    });`,
     'desktop search without exact-count work while typing',
   );
   if (!source.includes('includeTotal:nextQuery.length === 0')) {
@@ -213,8 +257,11 @@ function patchDesktopSearchCounting() {
   if (!source.includes('state.total = null;') || !source.includes('state.totalPages = null;')) {
     throw new Error('Phase 11 desktop search must clear stale totals before count-free queries.');
   }
-  if (!source.includes('pageController?.abort();\n      pageController = null;') || !source.includes('setBusy(true);\n      searchTimer')) {
-    throw new Error('Phase 11 desktop search must own busy state across its debounce and abort stale page work.');
+  if (!source.includes('invalidatePageRequest();') || !source.includes('setBusy(true);\n      searchTimer')) {
+    throw new Error('Phase 11 desktop search must invalidate stale request ownership before its debounce.');
+  }
+  if (!source.includes('if (nextQuery === state.q) return;')) {
+    throw new Error('Phase 11 desktop search must ignore duplicate input events for the committed query.');
   }
   write(file, source);
 }
@@ -231,4 +278,4 @@ patchDesktopSearchCounting();
 removeLegacyFormHandoff();
 require('./patch-phase11-form-picker-lite.js');
 require('./patch-phase12-targeted-detail-wiring.js');
-console.log('Phase 11 desktop logical page sizes 50/100/250/500 use bounded 50-row Supabase pages; private browser cache is honored, search skips exact counts, unknown-total pagination stays correct and loading state remains request-owned.');
+console.log('Phase 11 desktop logical page sizes 50/100/250/500 use bounded 50-row Supabase pages; latest-request-wins ownership, in-flight dedupe, private browser cache, count-free search and stable loading state are active.');
