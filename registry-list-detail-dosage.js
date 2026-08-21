@@ -10,7 +10,6 @@
   const CACHE_LIMIT = 128;
   const UUID_RE = /^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i;
   const cache = new Map();
-  const registryIdCache = new Map();
   const requests = new WeakMap();
   let requestSerial = 0;
 
@@ -29,30 +28,28 @@
       '.rlv-dosage-line{display:grid;grid-template-columns:minmax(78px,.34fr) minmax(0,1fr);gap:6px;margin-top:4px;font-size:12.5px;line-height:1.5}',
       '.rlv-dosage-line b{color:var(--mi-muted,#667085);font-size:11.5px;font-weight:650}',
       '.rlv-dosage-line span{min-width:0;color:var(--mi-gray-700,#344054);overflow-wrap:anywhere}',
-      '.rlv-dosage-source{margin-top:5px;color:var(--mi-muted,#667085);font-size:11px}',
       '@media(max-width:1000px){.rlv-dosage-groups{grid-template-columns:minmax(0,1fr)}}',
-      '@media(prefers-reduced-motion:reduce){.rlv-dosage-group{scroll-behavior:auto}}',
     ].join('');
     document.head.appendChild(style);
   }
 
-  function remember(map, key, value, limit = CACHE_LIMIT) {
+  function remember(key, value) {
     if (!key) return value;
-    map.delete(key);
-    map.set(key, value);
-    while (map.size > limit) {
-      const oldest = map.keys().next().value;
+    cache.delete(key);
+    cache.set(key, value);
+    while (cache.size > CACHE_LIMIT) {
+      const oldest = cache.keys().next().value;
       if (oldest == null) break;
-      map.delete(oldest);
+      cache.delete(oldest);
     }
     return value;
   }
 
-  function readCache(map, key) {
-    if (!map.has(key)) return null;
-    const value = map.get(key);
-    map.delete(key);
-    map.set(key, value);
+  function readCache(key) {
+    if (!cache.has(key)) return null;
+    const value = cache.get(key);
+    cache.delete(key);
+    cache.set(key, value);
     return value;
   }
 
@@ -71,11 +68,6 @@
     return '';
   }
 
-  function registryNumber(row) {
-    const value = clean(row?.['Nr rendor'] ?? row?.registryNumber);
-    return /^\d{1,6}$/.test(value) ? value : '';
-  }
-
   async function fetchJson(url, signal) {
     const response = await fetch(url, {
       credentials:'same-origin', cache:'no-store', signal,
@@ -85,23 +77,6 @@
     const payload = await response.json();
     if (!payload?.ok) throw new Error('Përgjigjja e dozimit është e pavlefshme.');
     return payload;
-  }
-
-  async function resolveDrugId(row, signal) {
-    const direct = directDrugId(row);
-    if (direct) return direct;
-
-    const nr = registryNumber(row);
-    if (!nr) return '';
-    const cached = readCache(registryIdCache, nr);
-    if (cached) return cached;
-
-    const payload = await fetchJson(API + '?view=cards&nr=' + encodeURIComponent(nr), signal);
-    const card = Array.isArray(payload.cards)
-      ? payload.cards.find(item => clean(item?.registryNumber) === nr) || payload.cards[0]
-      : null;
-    const id = clean(card?.drugId);
-    return UUID_RE.test(id) ? remember(registryIdCache, nr, id, 256) : '';
   }
 
   function dosageSlot(detail) {
@@ -207,26 +182,33 @@
   async function ensureDosage(open, detail, row) {
     ensureStyles();
     const { value } = dosageSlot(detail);
+    const id = directDrugId(row);
+    if (!id) {
+      abortDetail(detail);
+      stateText(value, 'Dozimi nuk është i disponueshëm ende.', 'empty');
+      return;
+    }
+
+    detail.dataset.rlvDosageDrugId = id;
+    const cached = readCache(id);
+    if (cached) {
+      abortDetail(detail);
+      renderDosage(value, cached);
+      return;
+    }
+
     abortDetail(detail);
     stateText(value, 'Duke ngarkuar dozimin…', 'loading');
-
     const controller = new AbortController();
     const token = ++requestSerial;
-    requests.set(detail, { controller, token });
+    requests.set(detail, { controller, token, id });
 
     try {
-      const id = await resolveDrugId(row, controller.signal);
-      if (!requestIsCurrent(detail, token)) return;
-      if (!id) {
-        stateText(value, 'Dozimi nuk është i disponueshëm ende.', 'empty');
-        return;
-      }
-      detail.dataset.rlvDosageDrugId = id;
-      const cached = readCache(cache, id);
-      const payload = cached || await fetchJson(API + '?view=card&id=' + encodeURIComponent(id), controller.signal);
+      const payload = await fetchJson(API + '?view=card&id=' + encodeURIComponent(id), controller.signal);
       if (!requestIsCurrent(detail, token)) return;
       if (open.getAttribute('aria-expanded') !== 'true' || open.getAttribute('aria-controls') !== detail.id) return;
-      if (!cached) remember(cache, id, payload);
+      if (detail.dataset.rlvDosageDrugId !== id) return;
+      remember(id, payload);
       renderDosage(value, payload);
     } catch (error) {
       if (error?.name === 'AbortError' || !requestIsCurrent(detail, token)) return;
@@ -253,17 +235,16 @@
   document.addEventListener('click', event => {
     const open = event.target.closest?.('#registryListView [data-rlv-open]');
     if (!open) return;
-    // The list-view panel handles the same bubbling click first: by the time this
-    // microtask runs, its static key/value detail has been filled and the
-    // aria-expanded state is final. Dosage can therefore append without owning
-    // or duplicating the list renderer.
+    // The list renderer owns the stored key/value fields. It handles this same
+    // bubbling click at the panel first; this microtask runs only after the
+    // static detail and aria-expanded state are final, then appends dosage.
     queueMicrotask(() => handleDrugToggle(open));
   });
 
   window.MedIndexRegistryListDetailDosage = Object.freeze({
     version:VERSION,
     cacheSize:() => cache.size,
-    clearCache() { cache.clear(); registryIdCache.clear(); },
-    _test:{ directDrugId, registryNumber, regimenHasData },
+    clearCache() { cache.clear(); },
+    _test:{ directDrugId, regimenHasData },
   });
 })();
