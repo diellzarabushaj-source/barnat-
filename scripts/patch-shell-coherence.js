@@ -85,12 +85,13 @@ function pinCriticalHtmlAssets(html) {
 }
 
 function patchClinicalPages() {
+  /* Only pages that actually load tailadmin-shell.js are boot-guarded. A page
+     that merely reuses a TailAdmin class but has no shell runtime must never
+     be hidden by a guard that nobody can clear. */
+  const shellScript = /\bsrc=["']\/?tailadmin-shell\.js(?:\?[^"']*)?["']/i;
   const files = fs.readdirSync(ROOT)
     .filter(file => file.endsWith('.html'))
-    .filter(file => {
-      const html = read(file);
-      return html.includes('tailadmin-shell.js') || /class="[^"]*medindex-tailadmin/.test(html);
-    });
+    .filter(file => shellScript.test(read(file)));
 
   for (const file of files) {
     let html = read(file);
