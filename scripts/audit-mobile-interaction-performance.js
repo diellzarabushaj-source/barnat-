@@ -351,6 +351,15 @@ async function waitForRequestCount(requestLog, predicate, minimum, timeoutMs = 3
     await page.waitForTimeout(40);
     const detailCloseMs = elapsed(closeStarted);
     assert.equal(await more.getAttribute('aria-expanded'), 'false', 'Detail trigger aria-expanded did not reset on close.');
+
+    // The 40ms above is a settle, not a guarantee. Focus restoration runs in a
+    // task the runner schedules, and on a loaded runner that task can land after
+    // the settle expires — failing a page that does restore focus. Wait for the
+    // condition instead, bounded, so this still fails a page that never restores
+    // it. What is asserted does not change; only the racing does.
+    const moreHandle = await more.elementHandle();
+    await page.waitForFunction(node => document.activeElement === node, moreHandle, { timeout:1500 })
+      .catch(() => {});
     assert.equal(await more.evaluate(node => document.activeElement === node), true, 'Focus was not restored to the “Më shumë” trigger after close.');
 
     const main = page.locator('.mi-main');
