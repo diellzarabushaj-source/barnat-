@@ -9,11 +9,14 @@ const ROOT = path.resolve(__dirname, '..');
 const read = file => fs.readFileSync(path.join(ROOT, file), 'utf8');
 
 const desktop = read('registry-desktop-lite.js');
+const api = read('api/drug-search.js');
 const patch = read('scripts/patch-phase17-desktop-filter-stability.js');
+const migration = read('supabase/migrations/20260821141518_optimize_drug_registry_search_and_sort.sql');
 const packageJson = JSON.parse(read('package.json'));
 
 execFileSync(process.execPath, ['--check', path.join(ROOT, 'scripts/patch-phase17-desktop-filter-stability.js')], { stdio:'pipe' });
 execFileSync(process.execPath, ['--check', path.join(ROOT, 'registry-desktop-lite.js')], { stdio:'pipe' });
+execFileSync(process.execPath, ['--check', path.join(ROOT, 'api/drug-search.js')], { stdio:'pipe' });
 
 assert.match(desktop, /let pageRequestEpoch = 0/, 'Desktop registry must track a monotonic request epoch.');
 assert.match(desktop, /const requestEpoch = \+\+pageRequestEpoch/, 'Every page/filter load must claim a new request epoch.');
@@ -53,7 +56,37 @@ assert.match(
   'Form filtering must coalesce with pending search and skip exact counts for combined search.',
 );
 
-assert.match(patch, /Phase 17 desktop table stability passed/);
+const builderStart = api.indexOf('function buildRegistryPagePath(query = {}) {');
+const builderEnd = api.indexOf('\n  return {', builderStart);
+assert.ok(builderStart >= 0 && builderEnd > builderStart, 'Registry-page query builder must be present.');
+const builder = api.slice(builderStart, builderEnd);
+assert.match(
+  builder,
+  /params\.set\('registry_search_text', `ilike\.\$\{pattern\}`\)/,
+  'Registry table free-text search must use the generated trigram-indexed search column.',
+);
+assert.doesNotMatch(
+  builder,
+  /params\.set\('or'/,
+  'Registry table free-text search must not regress to nine-column OR ILIKE sequential scans.',
+);
+
+assert.match(migration, /create extension if not exists pg_trgm with schema extensions/i, 'Trigram support must be reproducible from migrations.');
+assert.match(migration, /registry_search_text text[\s\S]*generated always as/i, 'Registry search text must be a stored generated column.');
+assert.match(migration, /drugs_published_registry_search_trgm_idx[\s\S]*gin \(registry_search_text extensions\.gin_trgm_ops\)/i, 'Published registry search must have a partial trigram GIN index.');
+for (const indexName of [
+  'drugs_published_trade_name_registry_idx',
+  'drugs_published_active_substance_registry_idx',
+  'drugs_published_atc_registry_idx',
+  'drugs_published_strength_registry_idx',
+  'drugs_published_form_registry_idx',
+  'drugs_published_status_registry_idx',
+  'drugs_published_retail_price_registry_idx',
+]) {
+  assert.match(migration, new RegExp(indexName), `Missing registry sort/filter index ${indexName}.`);
+}
+
+assert.match(patch, /table search uses the indexed registry text path/);
 assert.match(
   packageJson.scripts['build:runtime'],
   /patch-phase17-desktop-filter-stability\.js/,
@@ -65,4 +98,4 @@ assert.match(
   'The filter concurrency regression gate must run in the main suite.',
 );
 
-console.log('Registry filter concurrency audit passed: newest request owns state, pending search coalesces with filters, and no-op form selections do not refetch.');
+console.log('Registry filter concurrency + indexed search audit passed: newest request owns state and table search stays on the trigram-indexed path.');
