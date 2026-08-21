@@ -89,4 +89,5 @@ Gate-i verifikon gjithashtu:
 - Kontrollohen build logs dhe full test suite.
 - Kontrollohet në preview: Listë, Tabelë, Table → List → Table → List, hard refresh me List të ruajtur dhe loading i dataset-it.
 - Kontrollohen desktop widths 1366, 1440, 1680 px dhe tablet breakpoint.
+- Acceptance final: asnjë frame me `registryViewToolbar` të dukshëm kur owner=`list`, asnjë `medindex:request-full-registry` nga List data path, dataset List i plotë me UUID stabile dhe kthim determinist te Table.
 - Vetëm pasi head-i final të jetë `READY` dhe regression gate të kalojë bëhet PR ready/merge në `main`.
