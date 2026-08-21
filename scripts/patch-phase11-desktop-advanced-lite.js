@@ -148,10 +148,10 @@ function patchDesktopLargePages() {
     'large page-size control without full-registry handoff',
   );
 
-  const loadPageBlock = `  async function loadPage({ includeTotal = false, scroll = false, force = false } = {}) {
+  const loadPageBlock = `  async function loadPage({ includeTotal = false, scroll = false } = {}) {
     if (state.disabled) return;
     const requestKey = pageRequestFingerprint({ includeTotal });
-    if (!force && pageController && activePageRequestKey === requestKey) return;
+    if (pageController && activePageRequestKey === requestKey) return;
 
     const generation = ++pageRequestGeneration;
     pageController?.abort();
