@@ -173,39 +173,7 @@ const server = http.createServer((req, res) => {
     return setTimeout(() => streamSlowly(res, dosageBody, 'application/json; charset=utf-8', 8, 32 * 1024), 900);
   }
   if (url.pathname === '/api/icd') return send(res, 503, JSON.stringify({ error:'embedded fixture' }), 'application/json; charset=utf-8');
-  if (url.pathname === '/api/drug-search') {
-    // registry-desktop-lite asks this endpoint for a page of the registry and
-    // requires { ok, rows, pagination }. The stub only ever answered with the
-    // generic search shape ({ results }), so every desktop run threw
-    // "Përgjigjja e regjistrit është e pavlefshme" and fell back — which is why
-    // the fixture was exercising a degraded path rather than the real one.
-    if (url.searchParams.get('view') === 'registry-page') {
-      const page = Math.max(1, Number(url.searchParams.get('page')) || 1);
-      const pageSize = Math.min(500, Math.max(1, Number(url.searchParams.get('pageSize')) || 50));
-      const query = String(url.searchParams.get('q') || '').trim().toLowerCase();
-      const status = String(url.searchParams.get('status') || '').trim();
-
-      const matched = rows.filter(row => {
-        if (status && String(row.Statusi) !== status) return false;
-        if (query.length < 2) return true;
-        return [row['Emri tregtar'], row['Substanca aktive'], row['ATC Code']]
-          .some(value => String(value ?? '').toLowerCase().includes(query));
-      });
-
-      const start = (page - 1) * pageSize;
-      const pageRows = matched.slice(start, start + pageSize);
-      const totalPages = Math.max(1, Math.ceil(matched.length / pageSize));
-      return send(res, 200, JSON.stringify({
-        ok:true,
-        rows:pageRows,
-        pagination:{
-          page, pageSize, total:matched.length, totalPages,
-          hasNext:start + pageRows.length < matched.length,
-        },
-      }), 'application/json; charset=utf-8');
-    }
-    return send(res, 200, JSON.stringify({ ok:true, results:[] }), 'application/json; charset=utf-8');
-  }
+  if (url.pathname === '/api/drug-search') return send(res, 200, JSON.stringify({ ok:true, results:[] }), 'application/json; charset=utf-8');
   if (url.pathname === '/api/gemini-prescription') return send(res, 503, JSON.stringify({ code:'GEMINI_NOT_CONFIGURED' }), 'application/json; charset=utf-8');
 
   const file = safeFile(url.pathname);
