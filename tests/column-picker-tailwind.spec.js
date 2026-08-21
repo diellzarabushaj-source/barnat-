@@ -1,7 +1,10 @@
 const { test, expect } = require('@playwright/test');
 
 const BASE = 'http://127.0.0.1:4173';
-const PICKER_VERSION = 'column-picker-tailwind-20260812-population-1';
+// Must track the VERSION constant in registry-column-picker-tailwind.js. The
+// harness polls for it, so a stale pin fails every test in this file at mount
+// rather than at whatever it was actually checking.
+const PICKER_VERSION = 'column-picker-tailwind-20260820-clean-columns-3';
 const REPRESENTATIVE_COLUMNS = [
   'Nr',
   'Emri tregtar',
