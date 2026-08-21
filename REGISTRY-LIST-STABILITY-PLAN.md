@@ -85,7 +85,7 @@ Gate-i verifikon gjithashtu:
 ## Faza 6 — Preview, polish dhe merge
 **Status:** Në verifikim
 
-- Presim Vercel preview të **head-it final**, jo një commit të ndërmjetëm.
+- Presim Vercel preview të **head-it final**, jo një commit të ndërmjetëm. Git integration kishte prodhuar një preview `READY` për commit-in e hershëm të data bridge, por jo ende për kompletimin e Phase 19–22; ai preview i hershëm nuk llogaritet si verifikim final.
 - Kontrollohen build logs dhe full test suite.
 - Kontrollohet në preview: Listë, Tabelë, Table → List → Table → List, hard refresh me List të ruajtur dhe loading i dataset-it.
 - Kontrollohen desktop widths 1366, 1440, 1680 px dhe tablet breakpoint.
