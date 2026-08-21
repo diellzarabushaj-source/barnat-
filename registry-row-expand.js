@@ -108,6 +108,11 @@
     const nameCell = row.querySelector('td[data-registry-column-key="trade-name"], td.name');
     if (!nameCell) return;
     let button = nameCell.querySelector(':scope > .registry-row-details-toggle');
+    if (!rowKey(row)) {
+      // Placeholder rows carry no drug, so toggleRow refuses them; never offer a control that cannot act.
+      button?.remove();
+      return;
+    }
     if (!button) {
       button = document.createElement('button');
       button.type = 'button';
