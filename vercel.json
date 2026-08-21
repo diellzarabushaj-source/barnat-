@@ -2,10 +2,8 @@
   "$schema": "https://openapi.vercel.sh/vercel.json",
   "framework": null,
   "outputDirectory": ".",
+  "regions": ["lhr1"],
   "functions": {
-    "api/drug-search.js": {
-      "regions": ["lhr1"]
-    },
     "api/icd.js": {
       "includeFiles": "data/icd-hierarchy-snapshot.json.gz"
     }
