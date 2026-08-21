@@ -36,6 +36,21 @@ assert.match(authClient, /OFFLINE_RUNTIME_SRC = '\/offline-runtime\.js\?v=/);
 assert.match(index, /offline-runtime\.js\?v=[^\"]+[^>]+data-medindex-offline-runtime/);
 assert.doesNotMatch(index, /offline-runtime-performance\.js/);
 
+/* A partially loaded or stale clinical shell must never expose the raw source
+   page (the screenshot-like legacy toolbar/table). The build installs an inline
+   boot guard before external CSS can fail, release-pins the shell assets, and
+   keeps the guard up until .mi-app-shell is mounted. If the shell still cannot
+   mount, the user gets a controlled recovery screen instead of raw HTML. */
+assert.match(shell, /never-raw-shell-fallback-v1/, 'raw-shell fail-closed patch is missing');
+assert.match(shell, /miShellRecovery/, 'shell recovery surface is missing');
+assert.match(shell, /classList\.add\('mi-shell-booting', 'mi-shell-recovery'\)/, 'failed shell must stay behind boot guard');
+assert.doesNotMatch(shell, /dataset\.miShellError \|\|= 'fallback-visible'/, 'legacy raw fallback must never be reachable');
+assert.match(index, /id="miShellBootGuard"/, 'registry must have an inline boot guard independent of cached CSS');
+assert.match(index, /\bmi-shell-booting\b/, 'registry document must start guarded');
+assert.match(index, /tailadmin-shell\.js[^\"]*build=[^\"]+/, 'registry shell loader must be pinned to the deployment release');
+assert.match(index, /tailadmin-medindex\.css[^\"]*build=[^\"]+/, 'registry shell CSS must be pinned to the deployment release');
+assert.match(shell, /tailadmin-shell-core\.js[^'\"]*build=[^'\"]+/, 'dynamically loaded shell core must be pinned to the deployment release');
+
 const runtimeShim = read('offline-runtime-performance.js');
 assert.match(runtimeShim, /offline-runtime\.js\?v=/);
 assert.doesNotMatch(runtimeShim, /serviceWorker\.register/);
@@ -58,4 +73,4 @@ const vercel = read('vercel.json');
 assert.match(vercel, /max-age=31536000, immutable/, 'immutable asset policy changed unexpectedly');
 assert.match(vercel, /no-cache, no-store, must-revalidate/, 'service worker must remain non-cacheable');
 
-console.log('Single-version production cache coherence and post-merge audit gate passed.');
+console.log('Single-version production cache coherence, fail-closed clinical shell and post-merge audit gate passed.');
