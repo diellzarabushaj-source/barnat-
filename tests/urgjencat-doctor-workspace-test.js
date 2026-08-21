@@ -36,9 +36,12 @@ assert.ok(
   'Emergency polish must stay before the canonical final TailAdmin stylesheet.',
 );
 const stylesheets = [...html.matchAll(/<link\s+rel="stylesheet"\s+href="([^"]+)"/g)].map(match => match[1]);
-assert.equal(
+// The build pins page assets to the release, so the href carries a `&build=`
+// token afterwards and none before. What is asserted is which stylesheet comes
+// last, not how the build stamped it.
+assert.match(
   stylesheets.at(-1),
-  'tailadmin-professional.css?v=20260728-1',
+  /^tailadmin-professional\.css\?v=20260728-1(?:&build=[^"]+)?$/,
   'Professional TailAdmin must remain the final static stylesheet.',
 );
 assert.match(html, /emergency-summary-learn\.js\?v=20260819-2/);
