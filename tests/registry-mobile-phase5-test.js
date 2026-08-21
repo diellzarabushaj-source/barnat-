@@ -43,10 +43,33 @@ for (const field of ['atc', 'form', 'substance', 'indication', 'population']) {
 assert.match(lite, /function setFilters\(next = \{\}, options = \{\}\)/, 'single-request filter API is missing');
 assert.match(lite, /medindex:mobile-lite-filters-changed/, 'filter state event is missing');
 assert.match(lite, /function clearKnownTotal\(\)/, 'search/filter count invalidation helper is missing');
-assert.match(lite, /if \(nextQuery\.length === 1\) return;/, 'single-character searches must not refetch the unfiltered registry');
+assert.match(
+  lite,
+  /search\?\.addEventListener\('input',[\s\S]{0,500}pageController\?\.abort\(\);\s*pageController = null;\s*clearKnownTotal\(\);/,
+  'typing must invalidate an in-flight mobile result set immediately, before the debounce expires',
+);
+assert.match(
+  lite,
+  /if \(nextQuery\.length === 1\) \{\s*state\.q = '';\s*setBusy\(false\);\s*return;\s*\}/,
+  'single-character search must clear stale query state without refetching the unfiltered registry',
+);
+assert.match(lite, /setBusy\(true\);\s*searchTimer = window\.setTimeout/, 'mobile search must expose pending debounce work after invalidating stale results');
 assert.match(lite, /includeTotal:nextQuery\.length === 0/, 'typing search must skip exact counts and restore totals only when search clears');
-assert.ok((lite.match(/cache:'default'/g) || []).length >= 2, 'mobile list and detail fetches must honor bounded HTTP cache headers');
-assert.doesNotMatch(lite, /cache:'no-store'/, 'mobile bounded list/detail requests must not defeat their server cache policy');
+assert.ok((lite.match(/cache:'default'/g) || []).length >= 3, 'mobile row, count and detail fetches must honor bounded HTTP cache headers');
+assert.doesNotMatch(lite, /cache:'no-store'/, 'mobile bounded list/count/detail requests must not defeat their server cache policy');
+
+assert.match(lite, /let pageRequestEpoch = 0/, 'mobile row requests must have monotonic ownership.');
+assert.match(lite, /let countRequestEpoch = 0/, 'mobile exact-count refreshes must have independent ownership.');
+assert.match(lite, /function mobileCountContextKey\(\)/, 'mobile exact counts must be tied to the active filter context.');
+assert.match(lite, /function mobileExactCountUrl\(\)/, 'mobile exact counts must use a dedicated bounded request URL.');
+assert.match(lite, /url\.searchParams\.set\('pageSize', '1'\)/, 'mobile exact-count requests must transfer only the minimum row payload.');
+assert.match(lite, /fetch\(buildPageUrl\(\{ includeTotal:false \}\)/, 'mobile visible rows must always use the count-free critical path.');
+assert.doesNotMatch(lite, /fetch\(buildPageUrl\(\{ includeTotal \}\)/, 'mobile rows must never wait for count=exact.');
+assert.match(lite, /if \(includeTotal\) scheduleMobileExactTotal\(\)/, 'mobile requested totals must be scheduled only after rows render.');
+assert.match(lite, /contextKey !== mobileCountContextKey\(\)/, 'stale mobile exact counts must not publish into a newer filter context.');
+assert.match(lite, /requestEpoch !== pageRequestEpoch \|\| pageController !== controller \|\| controller\.signal\.aborted/, 'stale mobile row responses must not commit.');
+assert.match(lite, /if \(pageController === controller\)/, 'only the newest mobile row request may clear the busy state.');
+assert.match(lite, /medindex:mobile-lite-count-ready/, 'mobile exact-count completion must publish independently of row readiness.');
 
 assert.match(phase3, /registry-mobile-phase3-v2/, 'advanced filter sheet version is missing');
 for (const id of ['miPhase3Population', 'miPhase3Atc', 'miPhase3Substance', 'miPhase3Form', 'miPhase3Indication']) {
@@ -62,4 +85,4 @@ assert.match(css, /min-height:48px/, 'mobile filter controls must preserve touch
 assert.match(index, /registry-mobile-lite\.js\?v=20260812-2/, 'mobile-lite Phase 5 cache key is missing');
 assert.match(index, /registry-mobile-phase3\.js\?v=20260812-2/, 'advanced filter cache key is missing');
 
-console.log('Phase 5 advanced filters, bounded search counts and mobile HTTP cache contract passed.');
+console.log('Phase 5/17 advanced filters + immediate search invalidation + non-blocking mobile count + bounded HTTP cache contract passed.');
