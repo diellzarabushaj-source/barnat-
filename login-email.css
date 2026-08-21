@@ -183,3 +183,24 @@
 .medindex-landing-v2 .lv-flow-step p {
   color: rgba(229, 236, 248, .74);
 }
+
+/* Whole lower landing zone uses the same CursorGrid language: white base,
+   70px navy lattice always visible, while login-v2-canvas.js adds the stronger
+   cursor-reactive cells above it. This removes the old pale-gray rrjedha block
+   so rrjedha + themeluesja + plani read as one continuous white grid surface. */
+.medindex-landing-v2 #rrjedha,
+.medindex-landing-v2 #themeluesja,
+.medindex-landing-v2 #plani {
+  background-color: #fff !important;
+  background-image:
+    linear-gradient(rgba(10, 19, 34, .045) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(10, 19, 34, .045) 1px, transparent 1px) !important;
+  background-size: 70px 70px !important;
+  background-position: center top !important;
+}
+
+.medindex-landing-v2 #rrjedha .lv-cursor-grid__canvas,
+.medindex-landing-v2 #themeluesja .lv-cursor-grid__canvas,
+.medindex-landing-v2 #plani .lv-cursor-grid__canvas {
+  opacity: 1 !important;
+}
