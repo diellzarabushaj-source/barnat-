@@ -33,6 +33,29 @@ assert.match(
   'Errors from superseded requests must stay silent and must not replace a newer table state.',
 );
 
+assert.match(desktop, /let countRequestEpoch = 0/, 'Exact-count refreshes must have independent request ownership.');
+assert.match(desktop, /function countContextKey\(\)/, 'Exact counts must be bound to the current filter context.');
+assert.match(desktop, /function scheduleDesktopExactTotal\(\)/, 'Exact counts must be scheduled after row rendering instead of sharing the row request.');
+assert.match(
+  desktop,
+  /fetchLogicalPage\(\{ includeTotal:false, signal:controller\.signal \}\)/,
+  'The visible-row critical path must always be count-free.',
+);
+assert.doesNotMatch(
+  desktop,
+  /fetchLogicalPage\(\{ includeTotal, signal:controller\.signal \}\)/,
+  'Visible rows must never wait on an exact count request.',
+);
+assert.match(
+  desktop,
+  /buildPageUrl\(\{ includeTotal:true, page:1, pageSize:1 \}\)/,
+  'Background exact counts must use a minimal bounded registry-page request.',
+);
+assert.match(desktop, /if \(includeTotal\) scheduleDesktopExactTotal\(\)/, 'A requested total must be scheduled only after the row response commits.');
+assert.match(desktop, /contextKey !== countContextKey\(\)/, 'A count from an obsolete filter context must never publish.');
+assert.match(desktop, /countController\?\.abort\(\)/, 'A superseded exact count must be abortable.');
+assert.match(desktop, /medindex:registry-count-ready/, 'Exact-count completion must publish a dedicated non-blocking event.');
+
 assert.match(desktop, /function syncDesktopSearchState\(\)/, 'Filters must share one settled search-state synchronizer.');
 assert.match(desktop, /window\.clearTimeout\(searchTimer\);\s*searchTimer = 0;/, 'A filter change must cancel pending search debounce work before requesting rows.');
 assert.match(desktop, /state\.q = raw\.length >= 2 \? raw : ''/, 'One-character search input must not leave a stale older query active.');
@@ -40,12 +63,12 @@ assert.match(desktop, /state\.q = raw\.length >= 2 \? raw : ''/, 'One-character 
 assert.match(
   desktop,
   /status\?\.addEventListener\('change',[\s\S]{0,260}syncDesktopSearchState\(\)[\s\S]{0,260}includeTotal:state\.q\.length === 0/,
-  'Status filtering must coalesce with pending search and avoid exact count work for combined search.',
+  'Status filtering must coalesce with pending search and request a deferred total only outside text search.',
 );
 assert.match(
   desktop,
   /state\.pageSize = [\s\S]{0,300}includeTotal:state\.q\.length === 0/,
-  'Page-size changes must retain the settled search and avoid count work while searching.',
+  'Page-size changes must retain the settled search and avoid exact-count work while searching.',
 );
 assert.match(
   desktop,
@@ -55,7 +78,7 @@ assert.match(
 assert.match(
   desktop,
   /selectDesktopForm\(type, value\)[\s\S]{0,520}syncDesktopSearchState\(\)[\s\S]{0,520}includeTotal:state\.q\.length === 0/,
-  'Form filtering must coalesce with pending search and skip exact counts for combined search.',
+  'Form filtering must coalesce with pending search and keep exact counting off text-search requests.',
 );
 
 const builderStart = api.indexOf('function buildRegistryPagePath(query = {}) {');
@@ -135,6 +158,7 @@ assert.match(
   'Global candidate search must have a partial trigram GIN index.',
 );
 
+assert.match(patch, /rows never wait for exact counts/);
 assert.match(patch, /table\/global candidate searches use trigram-indexed paths/);
 assert.match(
   packageJson.scripts['build:runtime'],
@@ -147,4 +171,4 @@ assert.match(
   'The registry concurrency/performance regression gate must run in the main suite.',
 );
 
-console.log('Registry request ownership + indexed table/global search audit passed: hot filters and candidate search stay on bounded trigram-indexed paths.');
+console.log('Registry request ownership + non-blocking exact-count + indexed search audit passed: rows render first, stale totals cannot commit, and hot filters stay bounded.');
