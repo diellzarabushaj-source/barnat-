@@ -59,8 +59,7 @@
         vec2 u = f * f * (3.0 - 2.0 * f);
         return mix(
           mix(hash(i),                hash(i + vec2(1.0, 0.0)), u.x),
-          mix(hash(i + vec2(0.0,1.0)), hash(i + vec2(1.0, 1.0)), u.x),
-          u.y
+          mix(hash(i + vec2(0.0,1.0)), hash(i + vec2(1.0, 1.0)), u.y)
         );
       }
 
@@ -231,10 +230,9 @@
   }
 })();
 
-/* CursorGrid për dy seksionet e bardha: themeluesja + plani.
-   Adaptim i të njëjtës logjikë të React Bits në Canvas 2D, pa React, që faqja
-   statike e MedIndex të mos marrë dependency të ri. Sfondi mbetet i bardhë;
-   rrjeta është transparente dhe ndizet vetëm rreth kursorit / klikimit. */
+/* CursorGrid navy për seksionet e bardha. Rrjeta tani shtrihet edhe te
+   "Si funksionon" më lart në faqe dhe ndez dukshëm më shumë katrorë rreth
+   kursorit, ndërsa sfondi bazë mbetet i bardhë. */
 (() => {
   const FALLOFF_CURVES = {
     linear: t => t,
@@ -244,21 +242,21 @@
 
   const config = {
     cellSize: 70,
-    color: '#10dcff',
-    radius: 100,
+    color: '#0a1322',
+    radius: 210,
     falloff: 'smooth',
-    holdTime: 400,
-    fadeDuration: 400,
-    lineWidth: 1.7,
-    maxOpacity: 1,
-    fillOpacity: 0.06,
-    gridOpacity: 0.01,
+    holdTime: 450,
+    fadeDuration: 550,
+    lineWidth: 1.55,
+    maxOpacity: 0.78,
+    fillOpacity: 0.035,
+    gridOpacity: 0.02,
     cellRadius: 2,
     clickPulse: true,
-    pulseSpeed: 350,
+    pulseSpeed: 360,
   };
 
-  const hosts = ['#themeluesja', '#plani']
+  const hosts = ['#rrjedha', '#themeluesja', '#plani']
     .map(selector => document.querySelector(selector))
     .filter(Boolean);
 
