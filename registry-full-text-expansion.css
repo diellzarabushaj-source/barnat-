@@ -170,6 +170,13 @@ html.medindex-tailadmin[data-mi-page="barnat"] body #registryContent.table-wrap:
   background:#edf4fc!important;
 }
 
+/* Keep the table headings visually stronger without changing the current font,
+   size or spacing. */
+html.medindex-tailadmin[data-mi-page="barnat"] body #registryContent #dataTable[data-registry-unified-table] thead th[data-registry-column-key] {
+  color:var(--ru-blue-dark)!important;
+  font-weight:800!important;
+}
+
 /* Keep the header row visible while scrolling vertically. Every column except
    the two frozen ones also scrolls horizontally with the body.
 
