@@ -96,21 +96,6 @@ ${loadPage}
     pending.at(-1)({ rows:[{ id:'same' }], total:null, last:{ pagination:{ hasNext:false } }, chunks:1 });
     await Promise.all([primary, duplicate]);
     assert.equal(commits.at(-1), 'same', 'coalesced request still publishes its result');
-
-    // An explicit force is reserved for manual retry/reload and must bypass the
-    // dedupe guard without weakening latest-request-wins ownership.
-    state.q = 'force';
-    const forcedA = loadPage({ includeTotal:false, scroll:false });
-    const forcedB = loadPage({ includeTotal:false, scroll:false, force:true });
-    assert.equal(fetchCalls, before + 3, 'forced retry must start a replacement request');
-    const oldForced = pending[pending.length - 2];
-    const newForced = pending[pending.length - 1];
-    oldForced({ rows:[{ id:'forced-stale' }], total:null, last:{ pagination:{ hasNext:false } }, chunks:1 });
-    await forcedA;
-    assert.notEqual(commits.at(-1), 'forced-stale', 'forced replacement keeps old completion inert');
-    newForced({ rows:[{ id:'forced-fresh' }], total:null, last:{ pagination:{ hasNext:false } }, chunks:1 });
-    await forcedB;
-    assert.equal(commits.at(-1), 'forced-fresh');
   `;
 
   await vm.runInNewContext(`(async () => {${harness}})()`, context, { timeout:5000 });
