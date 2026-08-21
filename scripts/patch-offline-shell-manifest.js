@@ -3,6 +3,7 @@
 require('./patch-registry-personal-final.js');
 require('./patch-pr157-merge-readiness.js');
 require('./patch-registry-prescription-freeze.js');
+require('./patch-phase19-registry-list-owner.js');
 
 /* Lista e aseteve që shërbyesi offline i ruan gjatë instalimit ka qenë e
  * shkruar me dorë te `sw.js`, dhe një e dytë e shkurtër shtohej me dorë te
@@ -109,6 +110,8 @@ if (!manifest.length) throw new Error('Offline shell manifest doli bosh.');
 const required = [
   '/registry-frozen-columns.css',
   '/registry-tablet-rows.css',
+  '/registry-list-owner-guard.css',
+  '/registry-list-owner-guard.js',
   '/fonts/inter-latin-variable-normal.woff2',
 ];
 for (const asset of required) {
