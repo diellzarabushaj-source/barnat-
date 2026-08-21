@@ -230,3 +230,292 @@
     canvas.dataset.lvCanvasReady = '1';
   }
 })();
+
+/* CursorGrid për dy seksionet e bardha: themeluesja + plani.
+   Adaptim i të njëjtës logjikë të React Bits në Canvas 2D, pa React, që faqja
+   statike e MedIndex të mos marrë dependency të ri. Sfondi mbetet i bardhë;
+   rrjeta është transparente dhe ndizet vetëm rreth kursorit / klikimit. */
+(() => {
+  const FALLOFF_CURVES = {
+    linear: t => t,
+    smooth: t => t * t * (3 - 2 * t),
+    sharp: t => t * t * t,
+  };
+
+  const config = {
+    cellSize: 70,
+    color: '#10dcff',
+    radius: 100,
+    falloff: 'smooth',
+    holdTime: 400,
+    fadeDuration: 400,
+    lineWidth: 1.7,
+    maxOpacity: 1,
+    fillOpacity: 0.06,
+    gridOpacity: 0.01,
+    cellRadius: 2,
+    clickPulse: true,
+    pulseSpeed: 350,
+  };
+
+  const hosts = ['#themeluesja', '#plani']
+    .map(selector => document.querySelector(selector))
+    .filter(Boolean);
+
+  if (!hosts.length) return;
+
+  const style = document.createElement('style');
+  style.textContent = `
+    .lv-section[data-lv-cursor-grid-host]{
+      position:relative;
+      isolation:isolate;
+      background:#fff;
+    }
+    .lv-section[data-lv-cursor-grid-host] > .lv-shell{
+      position:relative;
+      z-index:1;
+    }
+    .lv-cursor-grid__canvas{
+      position:absolute;
+      inset:0;
+      z-index:0;
+      display:block;
+      width:100%;
+      height:100%;
+      pointer-events:none;
+    }
+  `;
+  document.head.appendChild(style);
+
+  const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  hosts.forEach(host => mountCursorGrid(host, reducedMotion));
+
+  function hexToRgb(hex) {
+    const h = hex.replace('#', '');
+    const v = h.length === 3 ? h.split('').map(c => c + c).join('') : h;
+    const num = parseInt(v.slice(0, 6), 16);
+    return [(num >> 16) & 255, (num >> 8) & 255, num & 255];
+  }
+
+  function mountCursorGrid(host, staticOnly) {
+    host.dataset.lvCursorGridHost = '1';
+
+    const canvas = document.createElement('canvas');
+    canvas.className = 'lv-cursor-grid__canvas';
+    canvas.setAttribute('aria-hidden', 'true');
+    host.prepend(canvas);
+
+    const ctx = canvas.getContext('2d');
+    if (!ctx) { canvas.remove(); return; }
+
+    const dpr = Math.min(window.devicePixelRatio || 1, 2);
+    const [cr, cg, cb] = hexToRgb(config.color);
+
+    let cols = 0;
+    let rows = 0;
+    let offX = 0;
+    let offY = 0;
+    let alphas = new Float32Array(0);
+    let touched = new Float64Array(0);
+    let width = 0;
+    let height = 0;
+    const pulses = [];
+    let raf = 0;
+    let running = false;
+    let lastFrame = 0;
+
+    function rebuild() {
+      width = host.offsetWidth;
+      height = host.offsetHeight;
+      canvas.width = Math.max(1, Math.round(width * dpr));
+      canvas.height = Math.max(1, Math.round(height * dpr));
+      canvas.style.width = `${width}px`;
+      canvas.style.height = `${height}px`;
+      ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+      cols = Math.ceil(width / config.cellSize) + 1;
+      rows = Math.ceil(height / config.cellSize) + 1;
+      offX = (width - cols * config.cellSize) / 2;
+      offY = (height - rows * config.cellSize) / 2;
+      alphas = new Float32Array(cols * rows);
+      touched = new Float64Array(cols * rows);
+    }
+
+    function cellCenter(index) {
+      const cx = offX + (index % cols) * config.cellSize + config.cellSize / 2;
+      const cy = offY + Math.floor(index / cols) * config.cellSize + config.cellSize / 2;
+      return [cx, cy];
+    }
+
+    function energize(x, y, boost) {
+      const radius = Math.max(config.radius, 1);
+      const ease = FALLOFF_CURVES[config.falloff] || FALLOFF_CURVES.linear;
+      const now = performance.now();
+      const minCol = Math.max(0, Math.floor((x - radius - offX) / config.cellSize));
+      const maxCol = Math.min(cols - 1, Math.floor((x + radius - offX) / config.cellSize));
+      const minRow = Math.max(0, Math.floor((y - radius - offY) / config.cellSize));
+      const maxRow = Math.min(rows - 1, Math.floor((y + radius - offY) / config.cellSize));
+
+      for (let row = minRow; row <= maxRow; row++) {
+        for (let col = minCol; col <= maxCol; col++) {
+          const index = row * cols + col;
+          const [cx, cy] = cellCenter(index);
+          const dist = Math.hypot(cx - x, cy - y);
+          if (dist > radius) continue;
+          const level = ease(1 - dist / radius) * config.maxOpacity * (boost ?? 1);
+          if (level > alphas[index]) {
+            alphas[index] = level;
+            touched[index] = now;
+          } else if (level > 0) {
+            touched[index] = now;
+          }
+        }
+      }
+    }
+
+    function draw(now) {
+      const dt = Math.min(now - lastFrame, 50);
+      lastFrame = now;
+      ctx.clearRect(0, 0, width, height);
+
+      if (config.gridOpacity > 0) {
+        ctx.strokeStyle = `rgba(${cr}, ${cg}, ${cb}, ${config.gridOpacity})`;
+        ctx.lineWidth = 1;
+        ctx.beginPath();
+        for (let col = 0; col <= cols; col++) {
+          const x = Math.round(offX + col * config.cellSize) + 0.5;
+          ctx.moveTo(x, 0);
+          ctx.lineTo(x, height);
+        }
+        for (let row = 0; row <= rows; row++) {
+          const y = Math.round(offY + row * config.cellSize) + 0.5;
+          ctx.moveTo(0, y);
+          ctx.lineTo(width, y);
+        }
+        ctx.stroke();
+      }
+
+      for (let pi = pulses.length - 1; pi >= 0; pi--) {
+        const pulse = pulses[pi];
+        const age = (now - pulse.t0) / 1000;
+        const ringR = age * config.pulseSpeed;
+        if (ringR > Math.hypot(width, height)) {
+          pulses.splice(pi, 1);
+          continue;
+        }
+
+        const band = config.cellSize;
+        const minCol = Math.max(0, Math.floor((pulse.x - ringR - band - offX) / config.cellSize));
+        const maxCol = Math.min(cols - 1, Math.floor((pulse.x + ringR + band - offX) / config.cellSize));
+        const minRow = Math.max(0, Math.floor((pulse.y - ringR - band - offY) / config.cellSize));
+        const maxRow = Math.min(rows - 1, Math.floor((pulse.y + ringR + band - offY) / config.cellSize));
+
+        for (let row = minRow; row <= maxRow; row++) {
+          for (let col = minCol; col <= maxCol; col++) {
+            const index = row * cols + col;
+            const [cx, cy] = cellCenter(index);
+            const dist = Math.hypot(cx - pulse.x, cy - pulse.y);
+            if (Math.abs(dist - ringR) < band / 2 && config.maxOpacity > alphas[index]) {
+              alphas[index] = config.maxOpacity;
+              touched[index] = now;
+            }
+          }
+        }
+      }
+
+      let anyVisible = pulses.length > 0;
+      const fadeStep = dt / Math.max(config.fadeDuration, 16);
+      const half = config.cellSize / 2;
+
+      for (let index = 0; index < alphas.length; index++) {
+        let alpha = alphas[index];
+        if (alpha <= 0) continue;
+        if (now - touched[index] > config.holdTime) {
+          alpha = Math.max(0, alpha - fadeStep);
+          alphas[index] = alpha;
+          if (alpha <= 0) continue;
+        }
+
+        anyVisible = true;
+        const [cx, cy] = cellCenter(index);
+        const gradient = ctx.createRadialGradient(cx, cy, half * 0.1, cx, cy, config.cellSize);
+        gradient.addColorStop(0, `rgba(${cr}, ${cg}, ${cb}, ${alpha})`);
+        gradient.addColorStop(1, `rgba(${cr}, ${cg}, ${cb}, 0)`);
+
+        const x = cx - half + 0.5;
+        const y = cy - half + 0.5;
+        const size = config.cellSize - 1;
+
+        ctx.beginPath();
+        if (config.cellRadius > 0 && typeof ctx.roundRect === 'function') {
+          ctx.roundRect(x, y, size, size, config.cellRadius);
+        } else {
+          ctx.rect(x, y, size, size);
+        }
+
+        if (config.fillOpacity > 0) {
+          ctx.fillStyle = `rgba(${cr}, ${cg}, ${cb}, ${alpha * config.fillOpacity})`;
+          ctx.fill();
+        }
+
+        ctx.strokeStyle = gradient;
+        ctx.lineWidth = config.lineWidth;
+        ctx.stroke();
+      }
+
+      if (anyVisible) {
+        raf = requestAnimationFrame(draw);
+      } else {
+        running = false;
+      }
+    }
+
+    function wake() {
+      if (running) return;
+      running = true;
+      lastFrame = performance.now();
+      raf = requestAnimationFrame(draw);
+    }
+
+    function toLocal(event) {
+      const rect = host.getBoundingClientRect();
+      return [event.clientX - rect.left, event.clientY - rect.top];
+    }
+
+    function onPointerMove(event) {
+      const [x, y] = toLocal(event);
+      energize(x, y);
+      wake();
+    }
+
+    function onPointerDown(event) {
+      if (!config.clickPulse) return;
+      const [x, y] = toLocal(event);
+      pulses.push({ x, y, t0: performance.now() });
+      wake();
+    }
+
+    const resizeObserver = typeof ResizeObserver === 'function'
+      ? new ResizeObserver(() => { rebuild(); wake(); })
+      : null;
+
+    resizeObserver?.observe(host);
+    if (!resizeObserver) window.addEventListener('resize', () => { rebuild(); wake(); }, { passive: true });
+
+    rebuild();
+    wake();
+
+    if (!staticOnly) {
+      host.addEventListener('pointermove', onPointerMove, { passive: true });
+      host.addEventListener('pointerdown', onPointerDown, { passive: true });
+    }
+
+    document.addEventListener('visibilitychange', () => {
+      if (document.hidden) {
+        cancelAnimationFrame(raf);
+        running = false;
+      } else {
+        wake();
+      }
+    });
+  }
+})();
