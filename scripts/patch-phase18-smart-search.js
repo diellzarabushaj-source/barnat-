@@ -18,8 +18,9 @@ function write(file, source) {
 
 function tightenDesktopDebounce(source) {
   if (source.includes('const SEARCH_DEBOUNCE_MS = 80;')) return source;
-  if (source.includes('const SEARCH_DEBOUNCE_MS = 180;')) {
-    return source.replace('const SEARCH_DEBOUNCE_MS = 180;', 'const SEARCH_DEBOUNCE_MS = 80;');
+  for (const value of [250, 180]) {
+    const anchor = `const SEARCH_DEBOUNCE_MS = ${value};`;
+    if (source.includes(anchor)) return source.replace(anchor, 'const SEARCH_DEBOUNCE_MS = 80;');
   }
   if (source.includes('const DEBOUNCE_MS = 320;')) {
     return source.replace('const DEBOUNCE_MS = 320;', 'const DEBOUNCE_MS = 80;');
@@ -41,9 +42,6 @@ if (!/AbortController|\.abort\(\)/.test(desktop)) {
 }
 
 const api = read(API);
-// In the composed build Phase 17 has already promoted these generated indexed
-// search fields. Keep this as a hard gate there, while still allowing the file
-// to be syntax-tested directly from source before Phase 17 runs.
 if (desktop.includes('SEARCH_DEBOUNCE_MS')) {
   for (const required of ['registry_search_text', 'global_search_text']) {
     if (!api.includes(required)) throw new Error(`Phase 18 requires indexed ${required}.`);
