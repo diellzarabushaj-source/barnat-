@@ -6,14 +6,18 @@ const path = require('node:path');
 const ROOT = path.resolve(__dirname, '..');
 const INDEX = path.join(ROOT, 'index.html');
 const DETAIL_FILE = path.join(ROOT, 'registry-desktop-targeted-detail.js');
+const LIST_DETAIL_DOSAGE_FILE = path.join(ROOT, 'registry-list-detail-dosage.js');
 
 const DETAIL_SRC = 'registry-desktop-targeted-detail.js?v=20260812-1';
 const PRESCRIPTION_SRC = 'registry-desktop-prescription-lite.js?v=20260812-1';
 const COLUMN_SRC = 'registry-desktop-column-lite.js?v=20260812-1';
+const LIST_DETAIL_DOSAGE_SRC = 'registry-list-detail-dosage.js?v=20260821-1';
 const ROW_PATTERN = /<script src="registry-row-expand\.js\?v=20260810-1(?:&[^"]*)?" defer><\/script>/;
 const DETAIL_PATTERN = /<script src="registry-desktop-targeted-detail\.js\?v=20260812-1(?:&[^"]*)?" defer><\/script>/;
 const PRESCRIPTION_PATTERN = /<script src="registry-desktop-prescription-lite\.js\?v=20260812-1(?:&[^"]*)?" defer><\/script>/;
 const COLUMN_PATTERN = /<script src="registry-desktop-column-lite\.js\?v=20260812-1(?:&[^"]*)?" defer><\/script>/;
+const LIST_VIEW_PATTERN = /<script src="registry-list-view\.js\?v=list-view-v1(?:&[^"]*)?" defer><\/script>/;
+const LIST_DETAIL_DOSAGE_PATTERN = /<script src="registry-list-detail-dosage\.js\?v=20260821-1(?:&[^"]*)?" defer><\/script>/;
 
 let source = fs.readFileSync(INDEX, 'utf8').replace(/\r\n?/g, '\n');
 
@@ -96,6 +100,37 @@ function patchTargetedDetailCache() {
   fs.writeFileSync(DETAIL_FILE, detail, 'utf8');
 }
 
+function validateListDetailDosage() {
+  if (!fs.existsSync(LIST_DETAIL_DOSAGE_FILE)) {
+    throw new Error('Phase 12 list-detail dosage runtime is missing.');
+  }
+  const runtime = fs.readFileSync(LIST_DETAIL_DOSAGE_FILE, 'utf8').replace(/\r\n?/g, '\n');
+  for (const required of [
+    "const API = '/api/dosage';",
+    "API + '?view=card&id='",
+    "API + '?view=cards&nr='",
+    "const cache = new Map();",
+    'const requests = new WeakMap();',
+    'new AbortController()',
+    'requestIsCurrent(detail, token)',
+    "label.textContent = 'Dozimi';",
+    "'Duke ngarkuar dozimin…'",
+    "'Dozimi nuk është i disponueshëm ende.'",
+    "'Dozimi nuk u ngarkua.'",
+    "regimenGroup('Të rriturit'",
+    "regimenGroup('Pediatrik'",
+    "clean(node.textContent) === 'Si të shënohet në recetë'",
+  ]) {
+    if (!runtime.includes(required)) throw new Error(`Phase 12 list-detail dosage contract missing: ${required}`);
+  }
+  if (/medindex:request-full-registry|\/api\/registry(?:\?|['"`])|source_payload|DRUG_DATA_PARTS/.test(runtime)) {
+    throw new Error('Phase 12 list-detail dosage must remain targeted and must never request the full registry.');
+  }
+  if (!/while \(map\.size > limit\)/.test(runtime)) {
+    throw new Error('Phase 12 list-detail dosage caches must remain bounded.');
+  }
+}
+
 ensureAfter(
   ROW_PATTERN,
   DETAIL_PATTERN,
@@ -114,19 +149,29 @@ ensureAfter(
   COLUMN_SRC,
   'Phase 14 wiring could not find prescription-lite anchor.',
 );
+ensureAfter(
+  LIST_VIEW_PATTERN,
+  LIST_DETAIL_DOSAGE_PATTERN,
+  LIST_DETAIL_DOSAGE_SRC,
+  'Phase 12 list-detail dosage wiring could not find registry-list-view.js anchor.',
+);
 
 const rowIndex = source.search(ROW_PATTERN);
 const detailIndex = source.search(DETAIL_PATTERN);
 const prescriptionIndex = source.search(PRESCRIPTION_PATTERN);
 const columnIndex = source.search(COLUMN_PATTERN);
+const listViewIndex = source.search(LIST_VIEW_PATTERN);
+const listDosageIndex = source.search(LIST_DETAIL_DOSAGE_PATTERN);
 if (rowIndex < 0 || detailIndex <= rowIndex) throw new Error('Phase 12 targeted detail must load after the existing row expander.');
 if (prescriptionIndex <= detailIndex) throw new Error('Phase 13 prescription bridge must load after targeted detail.');
 if (columnIndex <= prescriptionIndex) throw new Error('Phase 14 column-lite runtime must load after prescription bridge.');
+if (listViewIndex < 0 || listDosageIndex <= listViewIndex) throw new Error('Phase 12 list-detail dosage must load after registry list view.');
 
 patchTargetedDetailObserver();
 patchTargetedDetailCache();
+validateListDetailDosage();
 fs.writeFileSync(INDEX, source, 'utf8');
 require('./patch-phase13-prescription-lite.js');
 require('./patch-phase14-column-lite.js');
 
-console.log('Phase 12-14 targeted detail is event-driven with a bounded 96-entry session LRU; prescription and visible-column lightweight runtimes remain in one build cohort.');
+console.log('Phase 12-14 targeted details stay bounded and event-driven; list-view drug details now lazy-load targeted adult/pediatric dosage without touching the registry critical path.');
