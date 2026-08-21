@@ -9,7 +9,7 @@ const { execFileSync } = require('node:child_process');
  * once before build patches, then this finalizer executes exactly one blocking
  * release gate with both static invariants and behavior-level recovery tests.
  *
- * Registry List Phase 19-21 also run here because this finalizer is invoked by
+ * Registry List Phase 19-22 also run here because this finalizer is invoked by
  * the final offline-packaging step, after all registry runtime patches have
  * settled but before the service-worker asset manifest is derived from
  * index.html.
@@ -18,6 +18,7 @@ const { execFileSync } = require('node:child_process');
 require('./patch-phase19-registry-list-owner.js');
 require('./patch-phase20-registry-list-controller.js');
 require('./patch-phase21-registry-list-cache-coherence.js');
+require('./patch-phase22-registry-list-release-gate.js');
 
 const ROOT = path.resolve(__dirname, '..');
 execFileSync(process.execPath, [path.join(ROOT, 'tests', 'registry-personal-release-gate.js')], {
@@ -25,4 +26,4 @@ execFileSync(process.execPath, [path.join(ROOT, 'tests', 'registry-personal-rele
   stdio:'inherit',
 });
 
-console.log('Canonical registry personalization finalizer passed: frozen favorites-notes-v1.0.0 acceptance gate completed before offline packaging; Registry List Phase 19-21 were applied first.');
+console.log('Canonical registry personalization finalizer passed: frozen favorites-notes-v1.0.0 acceptance gate completed before offline packaging; Registry List Phase 19-22 were applied first.');
