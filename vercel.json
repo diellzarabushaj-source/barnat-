@@ -3,6 +3,9 @@
   "framework": null,
   "outputDirectory": ".",
   "functions": {
+    "api/drug-search.js": {
+      "regions": ["lhr1"]
+    },
     "api/icd.js": {
       "includeFiles": "data/icd-hierarchy-snapshot.json.gz"
     }
