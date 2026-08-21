@@ -32,7 +32,8 @@ const request = api.buildRegistryPagePath({ atc:'N02', q:'para', page:'2', pageS
 const params = new URLSearchParams(request.path.split('?')[1]);
 assert.equal(request.atc, 'N02');
 assert.equal(params.get('atc_code'), 'ilike.N02*');
-assert.match(params.get('or'), /active_substance\.ilike\.\*para\*/, 'Text search must compose with the ATC category filter');
+assert.equal(params.get('registry_search_text'), 'ilike.*para*', 'Indexed text search must compose with the ATC category filter');
+assert.equal(params.get('or'), null, 'ATC + text search must not restore the multi-column OR ILIKE scan');
 assert.equal(params.get('offset'), '25');
 assert.equal(params.get('limit'), '25');
 
@@ -48,7 +49,8 @@ for (const [name, source] of [['desktop', desktop], ['mobile', mobile]]) {
 }
 
 assert.match(apiSource, /params\.set\('atc_code', `ilike\.\$\{atc\}\*`\)/);
+assert.match(apiSource, /params\.set\('registry_search_text', `ilike\.\$\{pattern\}`\)/, 'ATC routing must compose with the indexed text-search predicate');
 assert.match(patch, /patchApi\(\);[\s\S]*patchDesktop\(\);[\s\S]*patchMobile\(\);/);
 assert.match(packageJson.scripts['build:runtime'], /patch-registry-atc-lite-filter\.js/, 'ATC routing fix must run after every deterministic runtime build');
 
-console.log('ATC category URLs filter bounded Neon pages on desktop/mobile and survive clear/back/forward navigation.');
+console.log('ATC category URLs filter bounded indexed-search pages on desktop/mobile and survive clear/back/forward navigation.');
