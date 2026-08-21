@@ -126,8 +126,17 @@
   // Built once. 4006 rows folded on every keystroke would show up in the
   // interaction budget, so each row is normalized here and reused.
   function buildIndex() {
-    if (state.index) return state.index;
-    state.index = sourceRows().map((row, uid) => {
+    const rows = sourceRows();
+    // Keyed on the array itself, not on its length. The desktop registry swaps
+    // this array wholesale — a page, then the full register — and there is a
+    // moment during that handoff when it is empty. Caching by length meant an
+    // index built in that moment stayed cached forever, because 0 === 0 always
+    // looked unchanged, and the tree reported an empty register.
+    if (state.index && state.indexSource === rows) return state.index;
+    state.indexSource = rows;
+    state.tree = null;
+    state.proseReady = false;
+    state.index = rows.map((row, uid) => {
       // The index position is the handle. The register's own "Nr rendor" repeats
       // across the sheet, so it cannot address a row on its own.
       const entry = { row, uid, atc:atcOf(row), fields:{} };
@@ -482,9 +491,15 @@
     const entries = (flatten ? scope : (node ? node.entries : [])).filter(matchesFilters);
 
     if (!children.length && !entries.length) {
-      elements.list.innerHTML = `<li class="rlv-empty">${filtering
-        ? 'Asnjë bar nuk i plotëson filtrat e zgjedhur.'
-        : 'Kjo kategori nuk ka barna në regjistër.'}</li>`;
+      // An empty register is not an empty category. On desktop the rows arrive
+      // after the page does, so saying "this category has no drugs" before they
+      // land tells the doctor something untrue about the register.
+      const waiting = !sourceRows().length;
+      elements.list.innerHTML = `<li class="rlv-empty">${waiting
+        ? 'Regjistri po ngarkohet…'
+        : filtering
+          ? 'Asnjë bar nuk i plotëson filtrat e zgjedhur.'
+          : 'Kjo kategori nuk ka barna në regjistër.'}</li>`;
       elements.count.textContent = '';
       return;
     }
@@ -690,13 +705,13 @@
 
     // The table publishes this whenever its rows change; the tree is rebuilt
     // only when the underlying dataset actually changed identity.
-    window.addEventListener('medindex:registry-rendered', () => {
-      if (state.index && state.index.length === sourceRows().length) return;
-      state.index = null;
-      state.tree = null;
-      state.proseReady = false;
-      if (activeView() === 'list') render();
-    });
+    // The registry publishes these as its rows change: a page at a time first,
+    // then the whole register once an advanced surface asks for it. buildIndex
+    // notices the swap by identity, so re-rendering is enough here.
+    ['medindex:registry-rendered', 'medindex:registry-page-ready', 'medindex:registry-ready']
+      .forEach(name => window.addEventListener(name, () => {
+        if (activeView() === 'list') render();
+      }));
 
     setView(storedView(), false);
   }
