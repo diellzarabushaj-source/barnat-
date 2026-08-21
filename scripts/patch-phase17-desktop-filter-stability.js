@@ -104,8 +104,8 @@ replaceMobileOnce(
 );
 
 replaceMobileOnce(
-  `  function clearKnownTotal() {\n    state.total = null;\n    state.totalPages = null;\n  }`,
-  `  function clearKnownTotal() {\n    window.clearTimeout(countTimer);\n    countTimer = 0;\n    countController?.abort();\n    countController = null;\n    state.total = null;\n    state.totalPages = null;\n  }`,
+  `function clearKnownTotal() {\n    state.total = null;\n    state.totalPages = null;\n    state.hasNext = false;\n  }`,
+  `function clearKnownTotal() {\n    window.clearTimeout(countTimer);\n    countTimer = 0;\n    countController?.abort();\n    countController = null;\n    state.total = null;\n    state.totalPages = null;\n    state.hasNext = false;\n  }`,
   'mobile count invalidation',
 );
 
@@ -129,8 +129,8 @@ replaceMobileOnce(
 );
 
 replaceMobileOnce(
-  `      renderRows(payload.rows);\n      renderCount();\n      renderPagination();\n      state.ready = true;`,
-  `      renderRows(payload.rows);\n      renderCount();\n      renderPagination();\n      if (includeTotal) scheduleMobileExactTotal();\n      state.ready = true;`,
+  `      renderPagination();\n      state.ready = true;`,
+  `      renderPagination();\n      if (includeTotal) scheduleMobileExactTotal();\n      state.ready = true;`,
   'mobile deferred count scheduling',
 );
 
