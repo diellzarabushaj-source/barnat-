@@ -10,7 +10,10 @@ const shell = read('tailadmin-shell.js');
 const sidebar = read('atc-sidebar.js');
 const styles = read('atc-sidebar.css');
 
-assert.match(shell, /ATC_NAV_SRC = '\/atc-sidebar\.js\?v=atc-sidebar-v2'/, 'TailAdmin must expose the polished ATC navigation runtime');
+// The build pins shell runtime assets to the release, so this constant carries
+// a `&build=` token after build:runtime and none before it. The contract is the
+// canonical path and version; the pin is allowed, not required.
+assert.match(shell, /ATC_NAV_SRC = '\/atc-sidebar\.js\?v=atc-sidebar-v2(?:&build=[^']+)?'/, 'TailAdmin must expose the polished ATC navigation runtime');
 assert.match(shell, /loadRuntime\(ATC_NAV_SRC, 'data-medindex-atc-sidebar'/, 'ATC navigation must still use the canonical shell loader');
 assert.match(shell, /if \(!isMobileLayout\(\)\) assets\.push\(ATC_NAV_SRC, ATC_SEARCH_SRC\)/, 'ATC navigation must not be warmed during phone startup');
 assert.match(shell, /data-mi-sidebar-toggle.*data-mi-registry-nav="more"/, 'Phone ATC navigation must start loading from explicit sidebar intent');

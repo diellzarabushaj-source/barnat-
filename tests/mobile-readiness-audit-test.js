@@ -63,7 +63,9 @@ assert.equal(fs.existsSync(path.join(ROOT, '.github/workflows/fix-mobile-search-
 assert.equal(fs.existsSync(path.join(ROOT, '.github/workflows/fix-landscape-brand.yml')), false, 'temporary landscape patch workflow must be removed');
 assert.equal(fs.existsSync(path.join(ROOT, '.github/workflows/finalize-column-picker-viewport.yml')), false, 'temporary column picker viewport workflow must be removed');
 assert.equal(fs.existsSync(path.join(ROOT, '.github/workflows/harden-column-picker-clamp.yml')), false, 'temporary column picker clamp workflow must be removed');
-assert.match(shell, /MOBILE_SRC = '\/mobile-experience\.js\?v=production-audit-v2'/, 'shell must load the audited mobile runtime');
+// The build pins shell runtime assets to the release; both the pinned and the
+// source spelling satisfy the contract.
+assert.match(shell, /MOBILE_SRC = '\/mobile-experience\.js\?v=production-audit-v2(?:&build=[^']+)?'/, 'shell must load the audited mobile runtime');
 assert.match(shell, /loadMobileExperience\(\)/, 'mobile runtime loader is missing');
 assert.match(
   shell,

@@ -269,13 +269,22 @@ async function waitForRequestCount(requestLog, predicate, minimum, timeoutMs = 3
     await page.locator('#tbody .mobile-lite-card').first().waitFor({ state:'visible', timeout:10000 });
     const firstCardsReadyMs = elapsed(navigationStarted);
 
-    assert.equal(requestLog.filter(item => item.view === 'registry-page').length, 1, 'Initial phone startup made duplicate registry-page requests.');
+    // Rows and counts are separate reads: the page request carries rows only,
+    // and the exact total follows in its own one-row request so the register can
+    // paint without it. Request budgets below are counted per kind, otherwise a
+    // count landing a few milliseconds earlier or later reads as a duplicate.
+    const registryPageRequests = () => requestLog.filter(item => item.view === 'registry-page');
+    const rowRequests = () => registryPageRequests().filter(item => item.includeTotal !== '1');
+    const countRequests = () => registryPageRequests().filter(item => item.includeTotal === '1');
+
+    assert.equal(rowRequests().length, 1, 'Initial phone startup made duplicate registry-page requests.');
     assert.equal(requestLog.some(item => item.view === 'registry-detail'), false, 'Phone startup fetched medicine detail before user intent.');
 
     await page.evaluate(() => window.__resetMobileInteractionProbe?.());
 
     const search = page.locator('#search');
-    const searchRequestBefore = requestLog.filter(item => item.view === 'registry-page').length;
+    const searchRowsBefore = rowRequests().length;
+    const searchCountsBefore = countRequests().length;
     // `typingDispatchMs` is wall-clock around a single inspector-protocol call.
     // `fill` is one round trip that sets the value and dispatches one input
     // event; almost all of that number is the driver, not the page, which is why
@@ -293,8 +302,8 @@ async function waitForRequestCount(requestLog, predicate, minimum, timeoutMs = 3
     await page.locator('#tbody .mobile-lite-card').filter({ hasText:'INTERACTION TARGET 30' }).waitFor({ state:'visible', timeout:3000 });
     assert.match(await page.locator('#tbody').innerText(), /INTERACTION TARGET 30/);
     const searchSettleMs = elapsed(typingStarted);
-    const searchRequestAfter = requestLog.filter(item => item.view === 'registry-page').length;
-    assert.equal(searchRequestAfter - searchRequestBefore, 1, 'One settled search term should produce exactly one registry-page request.');
+    assert.equal(rowRequests().length - searchRowsBefore, 1, 'One settled search term should produce exactly one registry-page request.');
+    assert.equal(countRequests().length - searchCountsBefore, 0, 'A search term must not be counted exactly while the doctor is still typing.');
 
     const clearStarted = Date.now();
     await search.fill('');
@@ -302,7 +311,8 @@ async function waitForRequestCount(requestLog, predicate, minimum, timeoutMs = 3
     await page.locator('#pagination .mobile-lite-page-label').waitFor({ state:'visible', timeout:3000 });
     const clearSearchSettleMs = elapsed(clearStarted);
 
-    const statusBefore = requestLog.filter(item => item.view === 'registry-page').length;
+    const statusRowsBefore = rowRequests().length;
+    const statusCountsBefore = countRequests().length;
     const statusStarted = Date.now();
     // The compact phone UI owns the visible filter sheet; this audit targets
     // the underlying lightweight status interaction and its request budget.
@@ -311,23 +321,24 @@ async function waitForRequestCount(requestLog, predicate, minimum, timeoutMs = 3
     await page.locator('#countBadge').filter({ hasText:'15 barna' }).waitFor({ state:'visible', timeout:3000 });
     assert.match(await page.locator('#countBadge').innerText(), /15 barna/);
     const statusSettleMs = elapsed(statusStarted);
-    const statusAfter = requestLog.filter(item => item.view === 'registry-page').length;
-    assert.equal(statusAfter - statusBefore, 1, 'Status change should produce exactly one registry-page request.');
+    assert.equal(rowRequests().length - statusRowsBefore, 1, 'Status change should produce exactly one registry-page request.');
+    assert.equal(countRequests().length - statusCountsBefore, 1, 'A settled status filter may be counted exactly once.');
 
     await page.locator('#statusFilter').selectOption('', { force:true });
     await waitForRequestCount(requestLog, item => item.view === 'registry-page' && item.status === '' && item.includeTotal === '1', 3);
     await page.locator('#countBadge').filter({ hasText:'75 barna' }).waitFor({ state:'visible', timeout:3000 });
     await page.locator('#pagination [data-mobile-lite-page="next"]').waitFor({ state:'visible' });
 
-    const paginationBefore = requestLog.filter(item => item.view === 'registry-page').length;
+    const paginationRowsBefore = rowRequests().length;
+    const paginationCountsBefore = countRequests().length;
     const paginationStarted = Date.now();
     await page.locator('#pagination [data-mobile-lite-page="next"]').click();
     await waitForRequestCount(requestLog, item => item.view === 'registry-page' && item.page === 2, 1);
     await page.locator('#pagination .mobile-lite-page-label').filter({ hasText:'Faqja 2' }).waitFor({ state:'visible', timeout:3000 });
     assert.match(await page.locator('#pagination .mobile-lite-page-label').innerText(), /Faqja 2/);
     const paginationSettleMs = elapsed(paginationStarted);
-    const paginationAfter = requestLog.filter(item => item.view === 'registry-page').length;
-    assert.equal(paginationAfter - paginationBefore, 1, 'Pagination should produce exactly one registry-page request.');
+    assert.equal(rowRequests().length - paginationRowsBefore, 1, 'Pagination should produce exactly one registry-page request.');
+    assert.equal(countRequests().length - paginationCountsBefore, 0, 'Turning a page must reuse the count already known.');
 
     const more = page.locator('#tbody .mobile-lite-more').first();
     const detailBefore = requestLog.filter(item => item.view === 'registry-detail').length;

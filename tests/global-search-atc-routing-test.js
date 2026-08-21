@@ -11,7 +11,9 @@ const search = read('atc-global-search.js');
 const styles = read('atc-global-search.css');
 const index = read('index.html');
 
-assert.match(shell, /ATC_SEARCH_SRC = '\/atc-global-search\.js\?v=atc-global-search-v1'/, 'TailAdmin must expose the ATC-aware global search runtime');
+// Release-pinned by the build, unpinned in source: both spellings satisfy the
+// contract, which is the canonical path and version.
+assert.match(shell, /ATC_SEARCH_SRC = '\/atc-global-search\.js\?v=atc-global-search-v1(?:&build=[^']+)?'/, 'TailAdmin must expose the ATC-aware global search runtime');
 assert.match(shell, /loadRuntime\(ATC_SEARCH_SRC, 'data-medindex-atc-global-search'/, 'Global search must still use the canonical shell loader');
 assert.match(shell, /if \(!isMobileLayout\(\)\) assets\.push\(ATC_NAV_SRC, ATC_SEARCH_SRC\)/, 'ATC global search must not be warmed during phone startup');
 assert.match(shell, /data-mi-mobile-search.*data-mi-registry-nav="search"/, 'Phone ATC search must start loading from explicit search intent');
