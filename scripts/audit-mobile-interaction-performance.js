@@ -276,9 +276,19 @@ async function waitForRequestCount(requestLog, predicate, minimum, timeoutMs = 3
 
     const search = page.locator('#search');
     const searchRequestBefore = requestLog.filter(item => item.view === 'registry-page').length;
+    // `typingDispatchMs` is wall-clock around a single inspector-protocol call.
+    // `fill` is one round trip that sets the value and dispatches one input
+    // event; almost all of that number is the driver, not the page, which is why
+    // it drifts past a 180ms budget on a loaded runner while the app is
+    // unchanged. It is kept, reported, and guarded only against an outright hang.
+    //
+    // `typingBlockingMs` is what a doctor actually feels: the longest the page's
+    // own input handlers held the main thread. That is the responsiveness gate.
+    await page.evaluate(() => window.__markMobileInteractionPhase?.('typing:start'));
     const typingStarted = Date.now();
     await search.fill('INTERACTION TARGET 30');
     const typingDispatchMs = elapsed(typingStarted);
+    await page.evaluate(() => window.__markMobileInteractionPhase?.('typing:end'));
     await waitForRequestCount(requestLog, item => item.view === 'registry-page' && item.q === 'INTERACTION TARGET 30', 1);
     await page.locator('#tbody .mobile-lite-card').filter({ hasText:'INTERACTION TARGET 30' }).waitFor({ state:'visible', timeout:3000 });
     assert.match(await page.locator('#tbody').innerText(), /INTERACTION TARGET 30/);
@@ -341,6 +351,15 @@ async function waitForRequestCount(requestLog, predicate, minimum, timeoutMs = 3
     await page.waitForTimeout(40);
     const detailCloseMs = elapsed(closeStarted);
     assert.equal(await more.getAttribute('aria-expanded'), 'false', 'Detail trigger aria-expanded did not reset on close.');
+
+    // The 40ms above is a settle, not a guarantee. Focus restoration runs in a
+    // task the runner schedules, and on a loaded runner that task can land after
+    // the settle expires — failing a page that does restore focus. Wait for the
+    // condition instead, bounded, so this still fails a page that never restores
+    // it. What is asserted does not change; only the racing does.
+    const moreHandle = await more.elementHandle();
+    await page.waitForFunction(node => document.activeElement === node, moreHandle, { timeout:1500 })
+      .catch(() => {});
     assert.equal(await more.evaluate(node => document.activeElement === node), true, 'Focus was not restored to the “Më shumë” trigger after close.');
 
     const main = page.locator('.mi-main');
@@ -383,6 +402,7 @@ async function waitForRequestCount(requestLog, predicate, minimum, timeoutMs = 3
 
     const probe = await page.evaluate(() => ({ ...window.__medindexMobileInteractionProbe }));
     const resizeBlockingMs = blockingWithin(probe, 'resize:start', 'resize:end', PROBE_INTERVAL_MS);
+    const typingBlockingMs = blockingWithin(probe, 'typing:start', 'typing:end', PROBE_INTERVAL_MS);
     const registryRequests = requestLog.filter(item => item.view === 'registry-page');
     const detailRequests = requestLog.filter(item => item.view === 'registry-detail');
 
@@ -400,6 +420,7 @@ async function waitForRequestCount(requestLog, predicate, minimum, timeoutMs = 3
       scrollSequenceMs,
       resizeSequenceMs,
       resizeBlockingMs,
+      typingBlockingMs,
       probeIntervalMs:PROBE_INTERVAL_MS,
       pageDelayMs:PAGE_DELAY_MS,
       detailDelayMs:DETAIL_DELAY_MS,
@@ -413,7 +434,9 @@ async function waitForRequestCount(requestLog, predicate, minimum, timeoutMs = 3
     };
     console.log(`\nMOBILE_INTERACTION_PERF_REPORT ${JSON.stringify(report, null, 2)}\n`);
 
-    assert.ok(typingDispatchMs <= 180, `Search typing dispatch is sluggish (${typingDispatchMs}ms).`);
+    assert.notEqual(typingBlockingMs, null, 'The typing phase markers did not reach the page, so typing blocking was never measured.');
+    assert.ok(typingBlockingMs <= 150, `Search typing handlers blocked the main thread for ${typingBlockingMs}ms.`);
+    assert.ok(typingDispatchMs <= 2500, `Typing into the search box never completed (${typingDispatchMs}ms) — this guard catches a hang, not sluggishness.`);
     assert.ok(searchSettleMs <= 750, `Debounced search did not repaint quickly enough (${searchSettleMs}ms).`);
     assert.ok(clearSearchSettleMs <= 750, `Clearing search did not repaint quickly enough (${clearSearchSettleMs}ms).`);
     assert.ok(statusSettleMs <= 500, `Status filter did not repaint quickly enough (${statusSettleMs}ms).`);

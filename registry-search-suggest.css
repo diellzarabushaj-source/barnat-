@@ -1,0 +1,83 @@
+/* Registry search suggestions.
+   A fixed overlay anchored under the search box. It lives on the body and is
+   out of flow, so it adds nothing to the toolbar's height budget. Built on the
+   same --mi-* tokens as the rest of the workspace. */
+
+.rss-panel {
+  position: fixed;
+  z-index: 900;
+  max-height: min(58vh, 470px);
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
+  border: 1px solid var(--mi-border, #e4e7ec);
+  border-radius: var(--mi-radius, 12px);
+  background: var(--mi-surface, #fff);
+  box-shadow: var(--mi-shadow-lg, 0 12px 34px rgba(16, 24, 40, .13));
+}
+
+.rss-panel[hidden] { display: none !important; }
+
+.rss-list { margin: 0; padding: 5px 0; list-style: none; }
+
+/* The category a suggestion belongs to, so a name and an indication are never
+   mistaken for one another. */
+.rss-head {
+  padding: 9px 14px 4px;
+  color: var(--mi-muted, #667085);
+  font-size: 10.5px;
+  font-weight: 750;
+  letter-spacing: .07em;
+  text-transform: uppercase;
+}
+
+.rss-head + .rss-item { margin-top: 0; }
+
+.rss-item {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  padding: 8px 14px;
+  cursor: pointer;
+}
+
+.rss-item:hover,
+.rss-item[aria-selected="true"] { background: var(--mi-surface-soft, #f9fafb); }
+
+.rss-item[aria-selected="true"] { box-shadow: inset 3px 0 0 var(--mi-brand-500, #1f7779); }
+
+.rss-primary {
+  color: var(--mi-text, #101828);
+  font-size: 14px;
+  font-weight: 600;
+}
+
+.rss-primary mark,
+.rss-snippet mark {
+  padding: 0 1px;
+  border-radius: 3px;
+  background: var(--mi-warning-50, #fffaeb);
+  color: var(--mi-warning-700, #b54708);
+  font-weight: 700;
+}
+
+.rss-secondary {
+  color: var(--mi-gray-600, #475467);
+  font-size: 12.5px;
+}
+
+/* The stored sentence that caused an indication match, shown as it is written. */
+.rss-snippet {
+  color: var(--mi-gray-600, #475467);
+  font-size: 12px;
+  line-height: 1.5;
+}
+
+@media (max-width: 640px) {
+  .rss-panel { max-height: 46vh; }
+  /* A comfortable target on a phone without turning the list into a wall. */
+  .rss-item { padding: 11px 14px; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .rss-item { transition: none; }
+}

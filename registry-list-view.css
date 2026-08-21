@@ -123,6 +123,92 @@
   font-variant-numeric: tabular-nums;
 }
 
+/* --- filters ----------------------------------------------------------------
+   A compact row inside the panel, never in the page toolbar: the toolbar has a
+   height budget on phones that this would spend several times over. */
+
+.rlv-filters {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 18px;
+  border-bottom: 1px solid var(--mi-gray-100, #f2f4f7);
+}
+
+.rlv-filters:empty { display: none; }
+
+.rlv-filter {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  min-width: 0;
+  padding: 4px 4px 4px 10px;
+  border: 1px solid var(--mi-border, #e4e7ec);
+  border-radius: 999px;
+  background: var(--mi-surface, #fff);
+}
+
+/* A filter that is doing something should look like it is. */
+.rlv-filter.is-set {
+  border-color: var(--mi-brand-500, #1f7779);
+  background: var(--mi-brand-25, #f7fbfa);
+}
+
+.rlv-filter-label {
+  color: var(--mi-muted, #667085);
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: .03em;
+  text-transform: uppercase;
+  white-space: nowrap;
+}
+
+.rlv-filter.is-set .rlv-filter-label { color: var(--mi-brand-700, #0d4145); }
+
+.rlv-filter select {
+  max-width: 190px;
+  min-height: 30px;
+  padding: 0 6px;
+  border: 0;
+  border-radius: 999px;
+  background: transparent;
+  color: var(--mi-text, #101828);
+  font: inherit;
+  font-size: 13px;
+  cursor: pointer;
+}
+
+.rlv-filter select:focus-visible {
+  outline: none;
+  box-shadow: var(--mi-focus, 0 0 0 4px rgba(21, 95, 99, .18));
+}
+
+.rlv-filter-clear {
+  min-height: 32px;
+  padding: 0 12px;
+  border: 0;
+  border-radius: 999px;
+  background: transparent;
+  color: var(--mi-brand-600, #155f63);
+  font: inherit;
+  font-size: 12.5px;
+  font-weight: 650;
+  cursor: pointer;
+}
+
+.rlv-filter-clear:hover { background: var(--mi-brand-25, #f7fbfa); }
+
+/* Says plainly that the list is showing part of what matched, rather than
+   letting a truncated list look complete. */
+.rlv-more {
+  padding: 14px 18px;
+  border-top: 1px dashed var(--mi-gray-200, #e4e7ec);
+  color: var(--mi-muted, #667085);
+  font-size: 12.5px;
+  text-align: center;
+}
+
 /* --- rows ------------------------------------------------------------------ */
 
 .rlv-list {
@@ -335,6 +421,8 @@
   .rlv-category-name { white-space: normal; }
   .rlv-drug-detail { grid-template-columns: minmax(0, 1fr); gap: 2px; padding: 4px 13px 15px; }
   .rlv-drug-detail dd + dt { margin-top: 9px; }
+  .rlv-filters { padding: 9px 13px; gap: 6px; }
+  .rlv-filter select { max-width: 130px; min-height: 36px; }
 }
 
 @media (prefers-reduced-motion: reduce) {

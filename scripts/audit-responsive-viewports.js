@@ -128,7 +128,9 @@ function collect() {
 
   const tinyText = [];
   const fontSizes = new Set();
-  const radii = new Set();
+  /* Rrezja → elementi i parë që e mban. Numri vetëm thotë se buxheti u tejkalua;
+   * kjo thotë se cila rreze e tejkaloi dhe ku, që rregullimi të mos jetë hamendje. */
+  const radii = new Map();
 
   /* Rrethet dhe pilulat nuk numërohen: `50%` te një avatar dhe `999px` te një
    * distinktiv janë forma të qëllimshme, jo devijim nga shkalla. Numërohen
@@ -138,8 +140,15 @@ function collect() {
 
   for (const el of nodes) {
     const cs = getComputedStyle(el);
-    if (cs.borderRadius && cs.borderRadius !== '0px' && !ROUND.has(cs.borderRadius)) {
-      radii.add(cs.borderRadius);
+    if (cs.borderRadius && cs.borderRadius !== '0px' && !ROUND.has(cs.borderRadius)
+      && !radii.has(cs.borderRadius)) {
+      /* `className` te SVG-të është objekt, jo varg — prandaj merret vetëm kur
+       * është varg, që raporti të mbetet i lexueshëm. */
+      const names = typeof el.className === 'string' ? el.className.trim() : '';
+      const where = el.id
+        ? `#${el.id}`
+        : el.tagName.toLowerCase() + (names ? '.' + names.split(/\s+/).slice(0, 2).join('.') : '');
+      radii.set(cs.borderRadius, where);
     }
     const leaf = el.children.length === 0 && String(el.textContent || '').trim().length > 0;
     if (!leaf) continue;
@@ -180,6 +189,7 @@ function collect() {
     fontSizeCount:fontSizes.size,
     fontSizes:[...fontSizes].sort((a, b) => parseFloat(a) - parseFloat(b)),
     radiusCount:radii.size,
+    radii:[...radii].map(([value, where]) => `${value} · ${where}`).sort(),
   };
 }
 
@@ -256,7 +266,7 @@ function collect() {
 
     assert.ok(
       row.radiusCount <= budget.maxRadii,
-      `${at}: ${row.radiusCount} rreze qoshesh të dallueshme (buxheti ${budget.maxRadii}).`,
+      `${at}: ${row.radiusCount} rreze qoshesh të dallueshme (buxheti ${budget.maxRadii}) — ${row.radii.join(', ')}`,
     );
   }
 

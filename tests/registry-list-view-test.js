@@ -168,6 +168,53 @@ assert.ok(api, 'the list view must publish its API');
   assert.equal(byForm[0].entry.row['Emri tregtar'], 'Levotuss', 'the pharmaceutical form is searchable in full');
 }
 
+// --- the filter row narrows without lying ---------------------------------
+
+{
+  const { setFilter, clearFilters, filtered, optionsFor } = api._test;
+
+  // Options are counted from the rows in play, so a doctor can see how much a
+  // filter would leave before choosing it.
+  const forms = [...optionsFor('form', '')];
+  assert.ok(forms.includes('Tabletë:1'), `each distinct form is offered with its count, got ${forms.join(', ')}`);
+  assert.ok(forms.includes('Tabletë e veshur me film:1'),
+    'a coated tablet is its own form, not folded into the plain one');
+  assert.ok(!forms.some(entry => entry.startsWith(':')), 'a blank value is never offered as a filter');
+
+  // The empty strength on the unclassified row must not become an option.
+  const strengths = [...optionsFor('strength', '')];
+  assert.equal(strengths.length, 3, `only the three rows that state a strength are offered, got ${strengths.join(', ')}`);
+
+  // Filtering applies to everything the search matched, not just the first page
+  // of it — otherwise a filter would only search the top of the list.
+  clearFilters();
+  assert.deepEqual([...filtered('tablet')].sort(), ['Pa klasifikim', 'Panadol'],
+    'both tablets match before filtering');
+
+  setFilter('substance', 'Paracetamol');
+  assert.deepEqual([...filtered('tablet')], ['Panadol'], 'the substance filter narrows the result');
+  assert.deepEqual([...filtered('kolle')], [], 'a filter that excludes everything returns nothing, not everything');
+
+  // Combining filters narrows further; clearing restores.
+  setFilter('form', 'Shurup oral');
+  assert.deepEqual([...filtered('tablet')], [], 'contradictory filters return nothing');
+  clearFilters();
+  assert.deepEqual([...filtered('tablet')].sort(), ['Pa klasifikim', 'Panadol'], 'clearing restores everything');
+
+  // A drug with no ATC is still reachable by filtering — the tree excludes it,
+  // but the register still holds it.
+  setFilter('form', 'Tabletë');
+  assert.ok([...filtered('tablet')].includes('Pa klasifikim'),
+    'a row the ATC tree cannot file is still reachable through search and filters');
+
+  // A chosen value must stay in its own dropdown even when the other filters
+  // would otherwise exclude it, or it would keep filtering while looking unset.
+  setFilter('substance', 'Levodropropizine');
+  assert.ok([...optionsFor('form', '')].includes('Tabletë:0'),
+    'the chosen form stays listed, counted honestly at zero, rather than looking unset while it filters');
+  clearFilters();
+}
+
 // --- the snippet is the stored text, marked and never rewritten ----------
 
 {

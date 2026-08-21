@@ -53,6 +53,12 @@
   const PROSE_RULES = MATCH_ORDER.filter(rule => rule.prose);
 
   const MAX_RESULTS = 60;
+  // Browsing may legitimately show a lot at once; this only stops a filtered
+  // view of the whole register from putting thousands of rows on the page.
+  const BROWSE_MAX = 250;
+  // A select copes with a long list — the browser gives it type-ahead — so this
+  // is generous enough that a real value is never out of reach.
+  const OPTION_MAX = 400;
 
   const clean = value => String(value ?? '').replace(/\s+/g, ' ').trim();
   const escapeHtml = value => String(value ?? '').replace(/[&<>"']/g, character => ({
@@ -84,6 +90,7 @@
     tree:null,
     path:[],
     query:'',
+    filters:{},
     mounted:false,
   };
 
@@ -223,7 +230,9 @@
     return score ? { score, rule:best } : null;
   }
 
-  function search(query) {
+  // Every match, best first. The cap is applied by the caller, after filtering —
+  // capping first would let a filter search only the top of the list.
+  function ranked(query) {
     const needle = normalize(query);
     if (needle.length < 2) return [];
     ensureProseIndex();
@@ -234,8 +243,11 @@
       })
       .filter(Boolean)
       .sort((a, b) => b.score - a.score
-        || clean(a.entry.row[FIELD.name]).localeCompare(clean(b.entry.row[FIELD.name]), 'sq'))
-      .slice(0, MAX_RESULTS);
+        || clean(a.entry.row[FIELD.name]).localeCompare(clean(b.entry.row[FIELD.name]), 'sq'));
+  }
+
+  function search(query) {
+    return ranked(query).slice(0, MAX_RESULTS);
   }
 
   // The sentence around the hit, lifted verbatim. Only the matched run is
@@ -295,6 +307,78 @@
       .map(level => labelFor(level))
       .filter(Boolean)
       .join(' › ');
+  }
+
+  // --- filters -----------------------------------------------------------------
+
+  // The compact filter row. Each one narrows what is already on screen, and its
+  // options are read from those very rows — so a filter never offers a value
+  // that would empty the list, and the counts stay honest.
+  const FILTERS = Object.freeze([
+    { key:'substance', field:FIELD.substance, label:'Substanca' },
+    { key:'form', field:FIELD.form, label:'Forma' },
+    { key:'strength', field:FIELD.strength, label:'Doza' },
+    { key:'atc', field:FIELD.atc, label:'ATC' },
+    { key:'manufacturer', field:FIELD.manufacturer, label:'Prodhuesi' },
+  ]);
+
+  function matchesFilters(entry) {
+    return FILTERS.every(filter => {
+      const chosen = state.filters[filter.key];
+      return !chosen || clean(entry.row[filter.field]) === chosen;
+    });
+  }
+
+  // Options come from the rows that would show if this one filter were cleared,
+  // so opening a filter always shows what is still reachable given the others.
+  function optionsFor(filter, pool) {
+    const others = FILTERS.filter(other => other.key !== filter.key);
+    const counts = new Map();
+    pool.forEach(entry => {
+      const allowed = others.every(other => {
+        const chosen = state.filters[other.key];
+        return !chosen || clean(entry.row[other.field]) === chosen;
+      });
+      if (!allowed) return;
+      const value = clean(entry.row[filter.field]);
+      if (!value) return;
+      counts.set(value, (counts.get(value) || 0) + 1);
+    });
+    const sorted = [...counts]
+      .sort((a, b) => b[1] - a[1] || a[0].localeCompare(b[0], 'sq'));
+    const shown = sorted.slice(0, OPTION_MAX);
+    // Whatever is currently chosen always stays in its own list. Without this a
+    // value past the cap would keep filtering while appearing unset.
+    const chosen = state.filters[filter.key];
+    if (chosen && !shown.some(([value]) => value === chosen)) {
+      // It may be past the cap, or excluded outright by the other filters. Either
+      // way it keeps filtering, so it is shown — with a count of zero when the
+      // combination really does match nothing, which is the honest number.
+      shown.unshift(sorted.find(([value]) => value === chosen) || [chosen, 0]);
+    }
+    return shown;
+  }
+
+  function renderFilters(pool) {
+    if (!elements.filters) return;
+    const active = FILTERS.filter(filter => state.filters[filter.key]).length;
+    elements.filters.innerHTML = FILTERS.map(filter => {
+      const chosen = state.filters[filter.key] || '';
+      const options = optionsFor(filter, pool);
+      // A filter with nothing to choose between is not a choice; it is noise.
+      if (!options.length && !chosen) return '';
+      return `<label class="rlv-filter${chosen ? ' is-set' : ''}">
+        <span class="rlv-filter-label">${escapeHtml(filter.label)}</span>
+        <select data-rlv-filter="${filter.key}" aria-label="${escapeHtml(filter.label)}">
+          <option value="">Të gjitha</option>
+          ${options.map(([value, count]) => `<option value="${escapeHtml(value)}"${
+            value === chosen ? ' selected' : ''
+          }>${escapeHtml(value)} (${count})</option>`).join('')}
+        </select>
+      </label>`;
+    }).join('') + (active
+      ? '<button type="button" class="rlv-filter-clear" data-rlv-clear-filters>Pastro filtrat</button>'
+      : '');
   }
 
   // --- rendering -------------------------------------------------------------
@@ -373,44 +457,72 @@
     elements.crumb.innerHTML = `<button type="button" data-rlv-crumb="-1">Të gjitha</button>${parts.join('')}`;
   }
 
+  // Everything filed at or beneath the current place in the tree — what the
+  // filters describe, and what they narrow.
+  function browseScope(node) {
+    return node ? collectEntries(node) : buildIndex().filter(entry => levelsOf(entry.atc).length);
+  }
+
+  function anyFilter() {
+    return FILTERS.some(filter => state.filters[filter.key]);
+  }
+
   function renderBrowse() {
     renderBreadcrumb();
     const node = state.path.length ? nodeAt(state.path) : null;
-    // The top level always lists categories; below it, a node either opens to its
-    // drugs or offers the next ATC level to narrow by.
-    const flatten = Boolean(node) && shouldFlatten(node);
+    const scope = browseScope(node);
+    renderFilters(scope);
+
+    // A filter makes the category counts wrong — they count everything beneath,
+    // filter or no filter. So while one is set the tree gives way to the drugs
+    // that actually match, and the number shown is the number of those.
+    const filtering = anyFilter();
+    const flatten = filtering || (Boolean(node) && shouldFlatten(node));
     const children = flatten ? [] : childrenAt(state.path);
-    const entries = flatten ? collectEntries(node) : (node ? node.entries : []);
+    const entries = (flatten ? scope : (node ? node.entries : [])).filter(matchesFilters);
 
     if (!children.length && !entries.length) {
-      elements.list.innerHTML = '<li class="rlv-empty">Kjo kategori nuk ka barna në regjistër.</li>';
+      elements.list.innerHTML = `<li class="rlv-empty">${filtering
+        ? 'Asnjë bar nuk i plotëson filtrat e zgjedhur.'
+        : 'Kjo kategori nuk ka barna në regjistër.'}</li>`;
       elements.count.textContent = '';
       return;
     }
 
-    elements.count.textContent = node
-      ? `${node.count} ${node.count === 1 ? 'bar' : 'barna'}`
-      : `${sourceRows().length} barna`;
+    const shown = entries.slice(0, BROWSE_MAX);
+    elements.count.textContent = filtering
+      ? `${entries.length} ${entries.length === 1 ? 'bar' : 'barna'}`
+      : (node ? `${node.count} ${node.count === 1 ? 'bar' : 'barna'}` : `${sourceRows().length} barna`);
 
     elements.list.innerHTML = [
       ...children.map(categoryRow),
-      ...entries.map(entry => drugRow(entry, '', null)),
+      ...shown.map(entry => drugRow(entry, '', null)),
+      entries.length > shown.length
+        ? `<li class="rlv-more">Shfaqen ${shown.length} nga ${entries.length}. Ngushtoni me filtra ose me kërkim.</li>`
+        : '',
     ].join('');
   }
 
   function renderResults() {
     const needle = normalize(state.query);
-    const hits = search(state.query);
+    const matches = ranked(state.query);
+    const all = matches.filter(hit => matchesFilters(hit.entry));
+    const hits = all.slice(0, MAX_RESULTS);
     elements.crumb.innerHTML = `<span class="rlv-crumb-current">Rezultatet për “${escapeHtml(clean(state.query))}”</span>`;
+    // The filters describe everything the search found, not just the page of it
+    // that is shown, so narrowing by one never hides what the others could reach.
+    renderFilters(matches.map(hit => hit.entry));
 
     if (!hits.length) {
-      elements.list.innerHTML = '<li class="rlv-empty">Asnjë bar nuk përputhet me këtë kërkim.</li>';
+      elements.list.innerHTML = `<li class="rlv-empty">${anyFilter()
+        ? 'Asnjë bar nuk i plotëson filtrat për këtë kërkim.'
+        : 'Asnjë bar nuk përputhet me këtë kërkim.'}</li>`;
       elements.count.textContent = '';
       return;
     }
 
-    elements.count.textContent = hits.length >= MAX_RESULTS
-      ? `${MAX_RESULTS}+ rezultate`
+    elements.count.textContent = all.length > hits.length
+      ? `${hits.length} nga ${all.length} rezultate`
       : `${hits.length} ${hits.length === 1 ? 'rezultat' : 'rezultate'}`;
     elements.list.innerHTML = hits.map(hit => drugRow(hit.entry, needle, hit.rule)).join('');
   }
@@ -480,6 +592,7 @@
         <nav class="rlv-crumb" id="registryListCrumb" aria-label="Rruga e kategorive"></nav>
         <span class="rlv-count" id="registryListCount"></span>
       </div>
+      <div class="rlv-filters" id="registryListFilters" role="group" aria-label="Filtrat e listës"></div>
       <ul class="rlv-list" id="registryListRows"></ul>`;
     registry.insertAdjacentElement('afterend', panel);
 
@@ -488,6 +601,7 @@
       toggle,
       crumb:panel.querySelector('#registryListCrumb'),
       count:panel.querySelector('#registryListCount'),
+      filters:panel.querySelector('#registryListFilters'),
       list:panel.querySelector('#registryListRows'),
     };
     state.mounted = true;
@@ -497,7 +611,21 @@
       if (button) setView(button.dataset.rlvView);
     });
 
+    panel.addEventListener('change', event => {
+      const select = event.target.closest('[data-rlv-filter]');
+      if (!select) return;
+      const value = select.value;
+      if (value) state.filters[select.dataset.rlvFilter] = value;
+      else delete state.filters[select.dataset.rlvFilter];
+      render();
+    });
+
     panel.addEventListener('click', event => {
+      if (event.target.closest('[data-rlv-clear-filters]')) {
+        state.filters = {};
+        render();
+        return;
+      }
       const enter = event.target.closest('[data-rlv-enter]');
       if (enter) {
         state.path = [...state.path, enter.dataset.rlvEnter];
@@ -579,6 +707,21 @@
     _test:{
       levelsOf, normalize, snippet, detailFields,
       search:query => search(query),
+      // Filters are state, so a test drives them the way the panel does.
+      setFilter(key, value) {
+        if (value) state.filters[key] = value;
+        else delete state.filters[key];
+      },
+      clearFilters() { state.filters = {}; },
+      filtered(query) {
+        return ranked(query).filter(hit => matchesFilters(hit.entry))
+          .map(hit => clean(hit.entry.row[FIELD.name]));
+      },
+      optionsFor(key, query) {
+        const filter = FILTERS.find(item => item.key === key);
+        const pool = query ? ranked(query).map(hit => hit.entry) : buildIndex();
+        return optionsFor(filter, pool).map(([value, count]) => `${value}:${count}`);
+      },
       // What a given breadcrumb path would show: the categories offered next and
       // the drugs listed outright.
       browseAt(path) {
