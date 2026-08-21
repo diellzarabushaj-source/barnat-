@@ -22,7 +22,7 @@ assert.match(index, /<option value="100">100 \/ faqe<\/option>/);
 assert.match(index, /<option value="250">250 \/ faqe<\/option>/);
 assert.match(index, /<option value="500">500 \/ faqe<\/option>/);
 
-assert.match(desktop, /const SERVER_PAGE_SIZE = 50;/, 'Phase 11 must keep each Neon list request bounded to 50 rows.');
+assert.match(desktop, /const SERVER_PAGE_SIZE = 50;/, 'Phase 11 must keep each Supabase list request bounded to 50 rows.');
 assert.match(desktop, /const MAX_LOGICAL_PAGE_SIZE = 500;/, 'Existing desktop 500-row option must remain supported without full-registry mode.');
 assert.match(desktop, /const MAX_PAGE_CHUNKS = 10;/, 'A logical desktop page must never fan out beyond ten 50-row chunks.');
 assert.match(desktop, /const CHUNK_CONCURRENCY = 3;/, 'Large logical pages must use bounded request concurrency.');
@@ -42,18 +42,36 @@ assert.match(desktop, /chunks:logical\.chunks/, 'Runtime diagnostics must expose
 assert.doesNotMatch(desktop, /requestFullRegistry\('desktop-large-page-size'/, '100/250/500 must not trigger the full registry anymore.');
 assert.doesNotMatch(desktop, /\/api\/registry(?:\?|['"`])|DRUG_DATA_PARTS/, 'Large desktop pages must stay on the lightweight gateway.');
 
-assert.match(api, /REGISTRY_MAX_PAGE_SIZE = 50/, 'Server-side hard cap must remain 50 rows per Neon request.');
+// Rapid search/filter changes are a correctness contract, not only a speed
+// optimization. Abort is advisory: a stale transport completion must still be
+// unable to commit rows or clear the busy state owned by the newer request.
+assert.match(desktop, /let pageRequestGeneration = 0;/, 'Desktop registry needs monotonic request ownership.');
+assert.match(desktop, /let activePageRequestKey = '';/, 'Desktop registry needs an active request fingerprint.');
+assert.match(desktop, /function pageRequestFingerprint\(/, 'Filter/page/sort state must form a stable request identity.');
+assert.match(desktop, /function invalidatePageRequest\(/, 'Search input must be able to invalidate ownership before debounce.');
+assert.match(desktop, /activePageRequestKey === requestKey/, 'Identical in-flight loads must be coalesced.');
+assert.match(desktop, /generation !== pageRequestGeneration \|\| pageController !== controller \|\| controller\.signal\.aborted/, 'Stale completions must be rejected before rendering.');
+assert.match(desktop, /generation === pageRequestGeneration && pageController === controller/, 'Only the active generation may release the table busy state.');
+assert.match(desktop, /if \(nextQuery === state\.q\) return;/, 'Duplicate search input events must not refetch the committed query.');
+assert.match(desktop, /invalidatePageRequest\(\);[\s\S]{0,360}searchTimer = window\.setTimeout/, 'Search must invalidate old ownership before waiting for debounce.');
+
+assert.match(api, /REGISTRY_MAX_PAGE_SIZE = 50/, 'Server-side hard cap must remain 50 rows per Supabase request.');
 assert.doesNotMatch(api, /params\.set\('select', '\*'\)/, 'Large-page support must never weaken explicit projections.');
 
 assert.match(patch, /MAX_LOGICAL_PAGE_SIZE = 500/);
 assert.match(patch, /MAX_PAGE_CHUNKS = 10/);
 assert.match(patch, /CHUNK_CONCURRENCY = 3/);
+assert.match(patch, /pageRequestGeneration/);
+assert.match(patch, /pageRequestFingerprint/);
+assert.match(patch, /activePageRequestKey === requestKey/);
+assert.match(patch, /generation !== pageRequestGeneration/);
 assert.match(patch, /rawPayloadTotal === null \|\| rawPayloadTotal === undefined \? null : Number\(rawPayloadTotal\)/, 'Build patch must preserve unknown totals for count-free search.');
 assert.match(patch, /require\('\.\/patch-phase11-form-picker-lite\.js'\)/, 'Phase 11 form picker hardening must compose with the main Phase 11 build patch.');
 assert.match(patch, /require\('\.\/patch-phase12-targeted-detail-wiring\.js'\)/, 'Phase 12 targeted detail wiring must compose with the existing desktop build chain.');
 assert.match(packageJson.scripts['build:runtime'], /patch-phase11-desktop-advanced-lite\.js/, 'Phase 11 patch must execute deterministically in build:runtime.');
 assert.match(packageJson.scripts.test, /registry-desktop-large-page-lite-test\.js/, 'Phase 11 regression test must run in the main test suite.');
 
+require('./registry-request-race-test.js');
 require('./registry-desktop-form-lite-test.js');
 require('./registry-desktop-targeted-detail-test.js');
-console.log('Phase 11/12 desktop bounded pages, count-free unknown-total pagination, lightweight form filtering and targeted one-drug detail remain off the full-registry path.');
+console.log('Phase 11/12 desktop bounded pages, latest-request-wins filtering, in-flight dedupe, count-free pagination, lightweight form filtering and targeted one-drug detail remain stable.');
