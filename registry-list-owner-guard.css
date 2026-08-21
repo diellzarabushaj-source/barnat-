@@ -1,0 +1,22 @@
+/* Registry list single-owner fail-safe.
+   This layer is intentionally tiny and loads in <head>. Its only job is to make
+   the visual ownership contract impossible to violate during a desktop
+   table -> list handoff, even if deferred runtimes finish in an unexpected
+   order. Search/filter controls stay available because both views share them. */
+
+@media (min-width: 768px) {
+  html[data-mi-page="barnat"][data-mi-registry-view="list"] body #registryViewToolbar {
+    display: none !important;
+    visibility: hidden !important;
+    pointer-events: none !important;
+  }
+
+  html[data-mi-page="barnat"][data-mi-registry-view="list"] body #registryContent,
+  html[data-mi-page="barnat"][data-mi-registry-view="list"] body #pagination {
+    display: none !important;
+  }
+
+  html[data-mi-page="barnat"][data-mi-registry-view="list"] body #registryListView:not([hidden]) {
+    display: block !important;
+  }
+}
