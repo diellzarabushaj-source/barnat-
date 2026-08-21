@@ -276,6 +276,10 @@
 }
 
 .rlv-category-name em { color: var(--mi-muted, #667085); font-weight: 500; }
+/* Substances stand in where the ATC catalog has no name for a code. They are
+   the register's own words, not an official subgroup name, so they read a shade
+   quieter than a catalogued one. */
+.rlv-category-substances { color: var(--mi-gray-600, #475467); font-weight: 550; }
 
 .rlv-category-count {
   color: var(--mi-muted, #667085);

@@ -52,6 +52,20 @@
     return code ? clean(groups()[code]) : '';
   }
 
+  function subdivisions() {
+    const value = root.MEDINDEX_ATC_SUBDIVISIONS;
+    return value && typeof value === 'object' ? value : {};
+  }
+
+  // Levels 4 and 5 — the pharmacological and chemical subgroups. The catalog
+  // names them the same way it names groups and categories; a code it does not
+  // carry returns nothing rather than a name invented for it.
+  function getSubdivisionName(value) {
+    const code = normalizeCode(value);
+    if (code.length !== 4 && code.length !== 5) return '';
+    return clean(subdivisions()[code]);
+  }
+
   function getCategoryName(value) {
     const code = resolveCategoryCode(value);
     if (!code) return '';
@@ -292,6 +306,8 @@
     getAtcGroupName:getGroupName,
     getCategoryName,
     getAtcCategoryName:getCategoryName,
+    getSubdivisionName,
+    getAtcSubdivisionName:getSubdivisionName,
     getCategoryLabel,
     getAtcLabel:getCategoryLabel,
     getChildren,

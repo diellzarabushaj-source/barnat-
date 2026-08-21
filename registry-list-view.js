@@ -119,8 +119,45 @@
   function labelFor(code) {
     const groups = window.MEDINDEX_ATC_GROUPS || {};
     const subgroups = window.MEDINDEX_ATC_SUBGROUPS || {};
-    const named = code.length === 1 ? groups[code] : subgroups[code];
+    const subdivisions = window.MEDINDEX_ATC_SUBDIVISIONS || {};
+    const named = code.length === 1 ? groups[code]
+      : code.length === 3 ? subgroups[code]
+      : subdivisions[code];
     return clean(named);
+  }
+
+  // A code the catalog does not name is still not nameless. The substances
+  // filed beneath it are the register's own words for what it holds, and they
+  // are what the doctor is choosing between — worth more than a row saying only
+  // that this is a subdivision. Computed once per node and kept on it: the tree
+  // is rebuilt whenever the dataset changes, so the label cannot outlive it.
+  const SUBSTANCE_SAMPLE = 3;
+
+  function substanceLabel(node) {
+    if (!node) return '';
+    if (typeof node.derivedLabel === 'string') return node.derivedLabel;
+
+    const seen = new Map();
+    const stack = [node];
+    while (stack.length && seen.size <= SUBSTANCE_SAMPLE) {
+      const current = stack.pop();
+      for (const entry of current.entries) {
+        // Combination products name every component; the first one is what the
+        // product is filed under, and the whole list would not fit on a row.
+        const name = clean(clean(entry.row[FIELD.substance]).split(/[;+]/)[0]);
+        if (!name) continue;
+        const key = normalize(name);
+        if (!seen.has(key)) seen.set(key, name.charAt(0).toLocaleUpperCase('sq') + name.slice(1));
+        if (seen.size > SUBSTANCE_SAMPLE) break;
+      }
+      current.children.forEach(child => stack.push(child));
+    }
+
+    const names = [...seen.values()];
+    node.derivedLabel = names.length
+      ? names.slice(0, SUBSTANCE_SAMPLE).join(' · ') + (names.length > SUBSTANCE_SAMPLE ? ' …' : '')
+      : '';
+    return node.derivedLabel;
   }
 
   // Built once. 4006 rows folded on every keystroke would show up in the
@@ -442,10 +479,14 @@
 
   function categoryRow(node) {
     const label = labelFor(node.code);
+    const substances = label ? '' : substanceLabel(node);
+    const name = label || substances;
     return `<li class="rlv-category">
       <button type="button" class="rlv-category-open" data-rlv-enter="${escapeHtml(node.code)}">
         <span class="rlv-category-code">${escapeHtml(node.code)}</span>
-        <span class="rlv-category-name">${label ? escapeHtml(label) : '<em>Nënndarje ATC</em>'}</span>
+        <span class="rlv-category-name${substances ? ' rlv-category-substances' : ''}">${name
+          ? escapeHtml(name)
+          : '<em>Nënndarje ATC</em>'}</span>
         <span class="rlv-category-count">${node.count}</span>
       </button>
     </li>`;
@@ -457,9 +498,13 @@
       return;
     }
     const parts = state.path.map((code, index) => {
-      const label = labelFor(code);
+      const last = index === state.path.length - 1;
+      // Only the last crumb carries a name; the ones behind it are codes the
+      // doctor clicks to step back, so a subdivision is described only where
+      // the description is actually read.
+      const label = labelFor(code) || (last ? substanceLabel(nodeAt(state.path)) : '');
       const text = label ? `${code} — ${label}` : code;
-      return index === state.path.length - 1
+      return last
         ? `<span class="rlv-crumb-current">${escapeHtml(text)}</span>`
         : `<button type="button" data-rlv-crumb="${index}">${escapeHtml(code)}</button>`;
     });
@@ -745,6 +790,14 @@
     _test:{
       levelsOf, normalize, snippet, detailFields,
       search:query => search(query),
+      // What a category row would show at a given path: the catalogued ATC
+      // name, or — where the catalog is silent — the substances the register
+      // itself files beneath the code.
+      categoryLabel(path) {
+        const node = nodeAt(path);
+        const code = path[path.length - 1] || '';
+        return labelFor(code) || substanceLabel(node);
+      },
       // Filters are state, so a test drives them the way the panel does.
       setFilter(key, value) {
         if (value) state.filters[key] = value;
