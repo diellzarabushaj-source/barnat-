@@ -9,6 +9,7 @@ const html = read('index.html');
 const css = read('first-page-clinical.css');
 const frozenCss = read('registry-frozen-columns.css');
 const tableToolsCss = read('registry-table-tools.css');
+const touchCss = read('registry-touch-targets.css');
 const js = read('first-page-clinical.js');
 const loader = read('first-page-style-loader.js');
 const offlineManifest = read('scripts/patch-offline-shell-manifest.js');
@@ -94,6 +95,21 @@ assert.match(
 );
 assert.doesNotMatch(frozenCss, /data-registry-column-key="active-substance"[^}]*position:sticky/i, 'Substanca aktive must scroll normally in the final cascade.');
 
+/* The final accessibility layer owns interactive target size and the compact
+   mobile panel radius. Guard the source values so later cascade patches cannot
+   silently re-introduce the 30px preview target or the off-scale 15px radius. */
+assert.match(touchCss, /--mi-touch:44px/, 'Registry touch contract must remain 44px.');
+assert.match(
+  touchCss,
+  /\.registry-cell-preview-trigger\s*\{[\s\S]*width:var\(--mi-touch\)!important;[\s\S]*min-width:var\(--mi-touch\)!important;[\s\S]*height:var\(--mi-touch\)!important;[\s\S]*min-height:var\(--mi-touch\)!important;/,
+  'Cell preview must expose the full 44px touch target in the final cascade.',
+);
+assert.match(
+  touchCss,
+  /@media\s*\(max-width:760px\)[\s\S]*:is\(\.form-panel,\.col-panel\)\s*\{[\s\S]*border-radius:16px!important;/,
+  'Mobile floating panels must stay on the 8/12/16 radius scale.',
+);
+
 for (const marker of [
   'medindex:first-page-audit-ready',
   'Kërko në regjistër',
@@ -135,4 +151,4 @@ assert.match(headerSource, /th\.dataset\.columnKey = col\.key/, 'Headers need st
 assert.match(rowSource, /data-column-key="' \+ columnKey \+ '"/, 'Cells need stable column keys.');
 assert.match(rowSource, /registry-selection-control/, 'Row selection needs a 44px hit target.');
 
-console.log('First-page UI: retired toolbar controls hidden and final Nr + prescription-notation freeze audit passed.');
+console.log('First-page UI: retired toolbar controls hidden, final Nr + prescription-notation freeze, touch targets and mobile radius audit passed.');
