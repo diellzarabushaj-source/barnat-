@@ -108,7 +108,6 @@ function validateListDetailDosage() {
   for (const required of [
     "const API = '/api/dosage';",
     "API + '?view=card&id='",
-    "API + '?view=cards&nr='",
     "const cache = new Map();",
     'const requests = new WeakMap();',
     'new AbortController()',
@@ -120,14 +119,18 @@ function validateListDetailDosage() {
     "regimenGroup('Të rriturit'",
     "regimenGroup('Pediatrik'",
     "clean(node.textContent) === 'Si të shënohet në recetë'",
+    'detail.dataset.rlvDosageDrugId !== id',
   ]) {
     if (!runtime.includes(required)) throw new Error(`Phase 12 list-detail dosage contract missing: ${required}`);
   }
-  if (/medindex:request-full-registry|\/api\/registry(?:\?|['"`])|source_payload|DRUG_DATA_PARTS/.test(runtime)) {
-    throw new Error('Phase 12 list-detail dosage must remain targeted and must never request the full registry.');
+  if (/medindex:request-full-registry|\/api\/registry(?:\?|['"`])|source_payload|DRUG_DATA_PARTS|view=cards&nr=/.test(runtime)) {
+    throw new Error('Phase 12 list-detail dosage must stay exact-ID targeted and must never request the full registry or use ambiguous registry-number fallback.');
   }
-  if (!/while \(map\.size > limit\)/.test(runtime)) {
-    throw new Error('Phase 12 list-detail dosage caches must remain bounded.');
+  if (!runtime.includes('while (cache.size > CACHE_LIMIT)')) {
+    throw new Error('Phase 12 list-detail dosage cache must remain bounded.');
+  }
+  if (!runtime.includes('const candidates = [row?.__neonDrugId, row?.drugId, row?.id];')) {
+    throw new Error('Phase 12 list-detail dosage must resolve an exact UUID from the registry row.');
   }
 }
 
@@ -174,4 +177,4 @@ fs.writeFileSync(INDEX, source, 'utf8');
 require('./patch-phase13-prescription-lite.js');
 require('./patch-phase14-column-lite.js');
 
-console.log('Phase 12-14 targeted details stay bounded and event-driven; list-view drug details now lazy-load targeted adult/pediatric dosage without touching the registry critical path.');
+console.log('Phase 12-14 targeted details stay bounded and event-driven; list-view drug details lazy-load exact-ID adult/pediatric dosage, fail closed on missing identity, and never touch the registry critical path.');
