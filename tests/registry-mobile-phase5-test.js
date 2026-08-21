@@ -43,7 +43,17 @@ for (const field of ['atc', 'form', 'substance', 'indication', 'population']) {
 assert.match(lite, /function setFilters\(next = \{\}, options = \{\}\)/, 'single-request filter API is missing');
 assert.match(lite, /medindex:mobile-lite-filters-changed/, 'filter state event is missing');
 assert.match(lite, /function clearKnownTotal\(\)/, 'search/filter count invalidation helper is missing');
-assert.match(lite, /if \(nextQuery\.length === 1\) return;/, 'single-character searches must not refetch the unfiltered registry');
+assert.match(
+  lite,
+  /search\?\.addEventListener\('input',[\s\S]{0,500}pageController\?\.abort\(\);\s*pageController = null;\s*clearKnownTotal\(\);/,
+  'typing must invalidate an in-flight mobile result set immediately, before the debounce expires',
+);
+assert.match(
+  lite,
+  /if \(nextQuery\.length === 1\) \{\s*state\.q = '';\s*setBusy\(false\);\s*return;\s*\}/,
+  'single-character search must clear stale query state without refetching the unfiltered registry',
+);
+assert.match(lite, /setBusy\(true\);\s*searchTimer = window\.setTimeout/, 'mobile search must expose pending debounce work after invalidating stale results');
 assert.match(lite, /includeTotal:nextQuery\.length === 0/, 'typing search must skip exact counts and restore totals only when search clears');
 assert.ok((lite.match(/cache:'default'/g) || []).length >= 3, 'mobile row, count and detail fetches must honor bounded HTTP cache headers');
 assert.doesNotMatch(lite, /cache:'no-store'/, 'mobile bounded list/count/detail requests must not defeat their server cache policy');
@@ -75,4 +85,4 @@ assert.match(css, /min-height:48px/, 'mobile filter controls must preserve touch
 assert.match(index, /registry-mobile-lite\.js\?v=20260812-2/, 'mobile-lite Phase 5 cache key is missing');
 assert.match(index, /registry-mobile-phase3\.js\?v=20260812-2/, 'advanced filter cache key is missing');
 
-console.log('Phase 5/17 advanced filters + non-blocking mobile count + bounded HTTP cache contract passed.');
+console.log('Phase 5/17 advanced filters + immediate search invalidation + non-blocking mobile count + bounded HTTP cache contract passed.');
