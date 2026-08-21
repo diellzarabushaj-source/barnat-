@@ -75,7 +75,7 @@ fs.writeFileSync(FILE, source, 'utf8');
 // full-text index existed, because that index does not accelerate substring
 // ILIKE. The Supabase migration adds a generated registry_search_text column
 // backed by a partial pg_trgm GIN index. Keep the table query on that one indexed
-// predicate while leaving the separate ranked/global search path unchanged.
+// predicate.
 let apiSource = fs.readFileSync(API_FILE, 'utf8').replace(/\r\n?/g, '\n');
 const builderStart = apiSource.indexOf('function buildRegistryPagePath(query = {}) {');
 if (builderStart < 0) throw new Error('Phase 17 indexed search could not find registry-page builder.');
@@ -103,6 +103,38 @@ if (!finalBuilder.includes("params.set('registry_search_text', `ilike.${pattern}
 if (finalBuilder.includes("params.set('or'")) {
   throw new Error('Phase 17 registry-page search must not regress to multi-column OR ILIKE scans.');
 }
+
+// Ranked/global search keeps its existing candidate fields and JS ranking, but
+// its candidate fetch should not scan eight ILIKE predicates. The generated
+// global_search_text column contains exactly trade name, active substance, ATC,
+// class, indication, strength, pharmaceutical form and packaging, so replacing
+// the OR only changes the execution path, not which rows are eligible.
+const globalStart = apiSource.indexOf('async function neonSearchRows(rawQuery) {');
+const globalEnd = globalStart >= 0 ? apiSource.indexOf('\n}\n\nfunction rankedRows', globalStart) : -1;
+if (globalStart < 0 || globalEnd < 0) throw new Error('Phase 17 indexed global search could not find candidate function.');
+let globalBlock = apiSource.slice(globalStart, globalEnd);
+if (!globalBlock.includes("params.set('global_search_text', `ilike.*${token}*`)")) {
+  const filterStart = globalBlock.indexOf("  params.set('or', `(");
+  const orderStart = globalBlock.indexOf("  params.set('order', 'registry_number.asc');");
+  if (filterStart < 0 || orderStart < 0 || orderStart <= filterStart) {
+    throw new Error('Phase 17 indexed global search could not isolate candidate OR filter.');
+  }
+  globalBlock = globalBlock.slice(0, filterStart)
+    + "  params.set('global_search_text', `ilike.*${token}*`);\n"
+    + globalBlock.slice(orderStart);
+  apiSource = apiSource.slice(0, globalStart) + globalBlock + apiSource.slice(globalEnd);
+}
+
+const finalGlobalStart = apiSource.indexOf('async function neonSearchRows(rawQuery) {');
+const finalGlobalEnd = apiSource.indexOf('\n}\n\nfunction rankedRows', finalGlobalStart);
+const finalGlobalBlock = apiSource.slice(finalGlobalStart, finalGlobalEnd);
+if (!finalGlobalBlock.includes("params.set('global_search_text', `ilike.*${token}*`)")) {
+  throw new Error('Phase 17 indexed global candidate predicate is missing.');
+}
+if (finalGlobalBlock.includes("params.set('or'")) {
+  throw new Error('Phase 17 global candidate search must not regress to multi-column OR ILIKE scans.');
+}
+
 fs.writeFileSync(API_FILE, apiSource, 'utf8');
 
-console.log('Phase 17 desktop table stability passed: stale responses cannot commit, pending search is coalesced into filters, repeated form selections do not refetch, and table search uses the indexed registry text path.');
+console.log('Phase 17 registry stability/performance passed: stale responses cannot commit, pending search is coalesced into filters, repeated form selections do not refetch, and table/global candidate searches use trigram-indexed paths.');
