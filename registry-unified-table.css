@@ -639,8 +639,7 @@ html.medindex-tailadmin[data-mi-page="barnat"] body .registry-unified-skeleton {
     [data-registry-column-key="select"],[data-registry-column-key="trade-name"],
     [data-registry-column-key="active-substance"],[data-registry-column-key="strength"],
     [data-registry-column-key="form"],[data-registry-column-key="dosage-adult"],
-    [data-registry-column-key="dosage-pediatric"],[data-registry-column-key="clinical-status"],
-    [data-registry-column-key="clinical-action"]
+    [data-registry-column-key="dosage-pediatric"]
   ) {
     display:table-cell!important;
   }

@@ -119,7 +119,10 @@
 }
 
 @media (min-width: 761px) {
-  html.medindex-tailadmin[data-mi-page="barnat"][data-registry-ux-view="clinical"] body
+  /* Clinical view keeps the calculator beside the doses, but only once the doctor
+     has opted the column in. Without the gate this outranks the opt-in rule in
+     registry-table-tools.css and the column is reserved whether it is wanted or not. */
+  html.medindex-tailadmin[data-mi-page="barnat"][data-registry-ux-view="clinical"][data-registry-dose-column-visible="true"] body
   #dataTable[data-registry-unified-table]
   :is(th,td).registry-dose-calculator-column[data-registry-column-key="dose-calculator"] {
     display: table-cell !important;

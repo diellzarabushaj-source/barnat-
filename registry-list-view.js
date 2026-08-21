@@ -552,7 +552,19 @@
     if (persist) {
       try { localStorage.setItem(VIEW_KEY, next); } catch {}
     }
-    if (next === 'list') render();
+    if (next === 'list') {
+      // Browsing and searching answer over the whole register, not the page the
+      // table happens to be showing. On desktop the registry arrives one page at
+      // a time, so announce that this surface needs all of it; whoever owns the
+      // data decides how to satisfy that, and the rebuild happens on the
+      // registry-rendered event as it does for any other dataset change.
+      if (window.MEDINDEX_REGISTRY_PARTIAL) {
+        window.dispatchEvent(new CustomEvent('medindex:registry-full-dataset-needed', {
+          detail:{ reason:'registry-list-view' },
+        }));
+      }
+      render();
+    }
   }
 
   function storedView() {

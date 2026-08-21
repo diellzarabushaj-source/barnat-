@@ -36,6 +36,12 @@
   html.dataset.registryDesktopLite = VERSION;
   window.MEDINDEX_DESKTOP_LITE_ACTIVE = true;
   window.MEDINDEX_REGISTRY_PARTIAL = true;
+  // The flag says the rows on the page are one page, not the register. It was
+  // only ever set, never cleared, so it kept reporting a complete dataset as
+  // partial once the handoff finished. The full runtime announces itself here.
+  window.addEventListener('medindex:registry-ready', () => {
+    window.MEDINDEX_REGISTRY_PARTIAL = false;
+  }, { once:true });
 
   const clean = value => String(value ?? '').replace(/\s+/g, ' ').trim();
   const escapeHtml = value => String(value ?? '').replace(/[&<>"']/g, character => ({
@@ -289,6 +295,14 @@
         event.stopImmediatePropagation();
         requestFullRegistry(reason, () => document.getElementById(id)?.click());
       }, true);
+    });
+
+    // Surfaces that answer over the whole register rather than the visible page
+    // ask for it here. The list view is the first: its ATC tree and its search
+    // both count every drug, so a paged window would under-report them.
+    window.addEventListener('medindex:registry-full-dataset-needed', event => {
+      if (state.disabled) return;
+      requestFullRegistry(clean(event?.detail?.reason) || 'full-dataset-requested');
     });
   }
 
