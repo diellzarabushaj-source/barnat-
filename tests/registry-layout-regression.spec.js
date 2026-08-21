@@ -15,6 +15,9 @@ async function waitForRegistryLayout(page) {
       guard:window.MedIndexRegistryLayoutGuard?.version || '',
       adult:Boolean(document.querySelector('#headerRow th[data-registry-column-key="dosage-adult"]')),
       pediatric:Boolean(document.querySelector('#headerRow th[data-registry-column-key="dosage-pediatric"]')),
+      // The header settles while the body still holds the loading placeholder, which carries no drug.
+      // Measuring geometry or expanding a row before real rows land reads the placeholder instead.
+      drugRows:document.querySelectorAll('#tbody > tr[data-registry-number]').length > 0,
     })),
     { timeout:30000, message:'registry table and layout guard did not reach the dosage-column ready state' },
   ).toEqual({
@@ -22,6 +25,7 @@ async function waitForRegistryLayout(page) {
     guard:LAYOUT_VERSION,
     adult:true,
     pediatric:true,
+    drugRows:true,
   });
 }
 
@@ -116,7 +120,7 @@ test('reduced desktop columns fill the registry surface without a blank gutter o
   expect(geometry.audit.excessReservedWidth).toBe(0);
   expect(geometry.audit.removedColumnsStillVisible).toEqual([]);
 
-  const adultCell = page.locator('#tbody > tr td[data-registry-column-key="dosage-adult"]').first();
+  const adultCell = page.locator('#tbody > tr[data-registry-number] td[data-registry-column-key="dosage-adult"]').first();
   await expect(adultCell).toBeVisible({ timeout:10000 });
   const adultRow = adultCell.locator('xpath=ancestor::tr');
   await expect.poll(() => adultRow.evaluate(() => typeof window.MedIndexRegistryRows?.toggleRow === 'function'), { timeout:10000 }).toBe(true);
