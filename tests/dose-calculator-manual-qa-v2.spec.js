@@ -193,6 +193,17 @@ test('desktop physician flow: table, filter, calculation, safety and keyboard', 
   }
   await page.screenshot({ path:`${OUT}/desktop-table.png` });
 
+  // The dose column is opt-in by design: registry-table-tools.css hides it
+  // unless the root carries data-registry-dose-column-visible="true", and
+  // registry-table-tools-test asserts that default deliberately. The column
+  // picker is what sets the flag. Without it the button is in the DOM — every
+  // assertion above passes, since computed styles resolve for hidden elements —
+  // but its cell is display:none, so the click never lands.
+  await page.evaluate(() => {
+    document.documentElement.dataset.registryDoseColumnVisible = 'true';
+  });
+  await expect(adultButton).toBeVisible();
+
   await adultButton.click();
   const modal = page.locator('#doseCalculatorModal');
   const age = modal.locator('[data-dose-age]');
