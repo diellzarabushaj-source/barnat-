@@ -25,6 +25,10 @@ if (!releaseId) throw new Error('Shell coherence release ID could not be resolve
 const read = file => fs.readFileSync(path.join(ROOT, file), 'utf8').replace(/\r\n?/g, '\n');
 const write = (file, source) => fs.writeFileSync(path.join(ROOT, file), source.replace(/\r\n?/g, '\n'), 'utf8');
 
+function escapeForRegExp(value) {
+  return String(value).replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+}
+
 function withBuildToken(url) {
   const [base, query = ''] = String(url).split('?');
   const params = query
@@ -172,7 +176,14 @@ function patchShellLoader() {
       || !written.includes('miShellRecovery')) {
     throw new Error('Shell coherence did not close the raw fallback path.');
   }
-  if (!written.includes(`tailadmin-shell-core.js?v=production-audit-v2&build=${releaseId}`)) {
+  // Phase 7 runs earlier in the same build and rewrites this constant to
+  // `?v=<release>`, so the source spelling `?v=production-audit-v2` is already
+  // gone by the time coherence sees the file. What matters is the property, not
+  // the spelling: the shell core must carry this build's release token.
+  const pinnedShellCore = new RegExp(
+    `tailadmin-shell-core\\.js\\?[^'"]*\\bbuild=${escapeForRegExp(releaseId)}(?=['"&])`,
+  );
+  if (!pinnedShellCore.test(written)) {
     throw new Error('Shell core runtime is not release-pinned.');
   }
 }

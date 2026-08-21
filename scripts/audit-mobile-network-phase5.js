@@ -58,6 +58,15 @@ function startServer() {
   });
 }
 
+async function waitForRequestCount(requestLog, predicate, minimum, timeoutMs = 3000) {
+  const startedAt = Date.now();
+  while (Date.now() - startedAt < timeoutMs) {
+    if (requestLog.filter(predicate).length >= minimum) return;
+    await new Promise(resolve => setTimeout(resolve, 20));
+  }
+  throw new Error(`Timed out waiting for ${minimum} matching registry requests.`);
+}
+
 function fixtureRows(query = '') {
   const needle = String(query || '').toUpperCase();
   const rows = Array.from({ length:26 }, (_, index) => ({
@@ -156,42 +165,88 @@ function fixtureRows(query = '') {
     await page.locator('html.auth-ready').waitFor({ state:'attached', timeout:10000 });
     await page.locator('#tbody .mobile-lite-card').first().waitFor({ state:'attached', timeout:10000 });
 
+    // Counting is no longer part of fetching rows. A page request asks for rows
+    // and nothing else; the exact total follows in a request of its own, one
+    // row wide, so the register can paint before the count is known. The two
+    // are told apart by that shape rather than by arrival order, because the
+    // count is deliberately allowed to land late.
     const pageRequests = () => requests.filter(item => item.view === 'registry-page');
-    assert.equal(pageRequests().length, 1, 'initial mobile boot must issue one bounded registry-page request');
-    assert.equal(pageRequests()[0].includeTotal, '1', 'initial mobile boot may request the exact total once');
-    assert.equal(pageRequests()[0].pageSize, 25, 'initial mobile boot must stay bounded to 25 rows');
+    const rowRequests = () => pageRequests().filter(item => item.includeTotal !== '1');
+    const countRequests = () => pageRequests().filter(item => item.includeTotal === '1');
+    const isCountRequest = item => item.view === 'registry-page' && item.includeTotal === '1';
+
+    assert.equal(rowRequests().length, 1, 'initial mobile boot must issue one bounded registry-page request');
+    assert.equal(rowRequests()[0].includeTotal, '', 'the rows a doctor sees must never wait behind an exact count');
+    assert.equal(rowRequests()[0].pageSize, 25, 'initial mobile boot must stay bounded to 25 rows');
     assert.equal(await page.locator('#tbody .mobile-lite-card').count(), 25, 'initial DOM must render only the bounded first page');
+
+    // The count is still fetched — separately, after the rows, and without
+    // pulling a second page of the register along with it.
+    await waitForRequestCount(requests, isCountRequest, 1);
+    assert.equal(countRequests().length, 1, 'the exact total must be asked for exactly once per boot');
+    assert.equal(countRequests()[0].pageSize, 1, 'the count request must not fetch rows as well');
+    assert.equal(countRequests()[0].q, '', 'the boot count must describe the unfiltered register');
+    assert.ok(countRequests()[0].at >= rowRequests()[0].at,
+      'the count must follow the rows it annotates, never precede them');
 
     const search = page.locator('#search');
     await search.fill('B');
     await page.waitForTimeout(360);
-    assert.equal(pageRequests().length, 1, 'one-character search must not refetch the unfiltered registry');
+    assert.equal(rowRequests().length, 1, 'one-character search must not refetch the unfiltered registry');
+    assert.equal(countRequests().length, 1, 'one-character search must not re-count the registry');
 
     await search.fill('BI');
     await page.waitForTimeout(360);
-    assert.equal(pageRequests().length, 2, 'two-character search must issue exactly one bounded request');
-    assert.equal(pageRequests()[1].q, 'BI', 'server-side search query was not forwarded');
-    assert.equal(pageRequests()[1].includeTotal, '', 'typing search must skip exact count queries');
-    assert.equal(pageRequests()[1].pageSize, 25, 'search results must remain bounded to 25 rows');
+    assert.equal(rowRequests().length, 2, 'two-character search must issue exactly one bounded request');
+    assert.equal(rowRequests()[1].q, 'BI', 'server-side search query was not forwarded');
+    assert.equal(rowRequests()[1].pageSize, 25, 'search results must remain bounded to 25 rows');
+    assert.equal(countRequests().length, 1, 'typing search must skip exact count queries');
 
     await search.fill('BIS');
     await page.waitForTimeout(360);
-    assert.equal(pageRequests().length, 3, 'next debounced search must issue one additional bounded request');
-    assert.equal(pageRequests()[2].q, 'BIS', 'latest debounced search term was not used');
-    assert.equal(pageRequests()[2].includeTotal, '', 'continued typing must keep exact counts disabled');
+    assert.equal(rowRequests().length, 3, 'next debounced search must issue one additional bounded request');
+    assert.equal(rowRequests()[2].q, 'BIS', 'latest debounced search term was not used');
+    assert.equal(countRequests().length, 1, 'continued typing must keep exact counts disabled');
 
     await search.fill('');
     await page.waitForTimeout(360);
-    assert.equal(pageRequests().length, 4, 'clearing search must restore the default registry page once');
-    assert.equal(pageRequests()[3].q, '', 'clearing search must remove q from the request');
-    assert.equal(pageRequests()[3].includeTotal, '1', 'clearing search may restore the exact total once');
+    assert.equal(rowRequests().length, 4, 'clearing search must restore the default registry page once');
+    assert.equal(rowRequests()[3].q, '', 'clearing search must remove q from the request');
+    assert.equal(rowRequests()[3].includeTotal, '', 'restored rows must still paint before any count');
+
+    await waitForRequestCount(requests, isCountRequest, 2);
+    assert.equal(countRequests().length, 2, 'clearing search may restore the exact total once');
+    assert.equal(countRequests()[1].q, '', 'the restored count must describe the unfiltered register');
+    assert.equal(countRequests()[1].pageSize, 1, 'the restored count must not fetch rows as well');
 
     await page.locator('#tbody .mobile-lite-more').first().click();
     await page.locator('body.mobile-lite-detail-open').waitFor({ state:'attached', timeout:5000 });
     const detailRequests = requests.filter(item => item.view === 'registry-detail');
     assert.equal(detailRequests.length, 1, 'opening one medicine must issue one targeted detail request');
 
-    assert.equal(requests.some(item => item.view === ''), false, 'mobile registry audit unexpectedly used the legacy generic drug-search path');
+    // A request without a view is the bounded global search behind the
+    // suggestion panel — indexed server-side and capped, not the old unbounded
+    // registry read. What must not happen is it standing in for the register:
+    // rows and counts always come from the bounded registry-page route, and a
+    // suggestion is asked for only once the doctor has typed enough to mean
+    // something. The full-registry payload staying untouched is asserted below.
+    const suggestionRequests = requests.filter(item => item.view === '');
+    assert.ok(suggestionRequests.length, 'the bounded global search must still back the suggestion panel');
+    assert.deepEqual(
+      suggestionRequests.filter(item => item.q.length < 2),
+      [],
+      'a one-character term must never reach the global search',
+    );
+    assert.deepEqual(
+      suggestionRequests.filter(item => !['BI', 'BIS'].includes(item.q)),
+      [],
+      'the global search must run only for the terms the doctor actually typed',
+    );
+    assert.equal(
+      suggestionRequests.some(item => item.at < rowRequests()[0].at),
+      false,
+      'booting the register must not trigger a global search',
+    );
     assert.equal(requests.some(item => item.pageSize > 50), false, 'mobile registry requested more than the hard page-size ceiling');
     assert.deepEqual(fullRegistryRequests, [], 'normal mobile boot/search/detail flow woke the full registry payload');
 
