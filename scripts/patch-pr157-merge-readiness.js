@@ -71,17 +71,15 @@ function patchPhoneCardDensity() {
 }
 
 function patchFullDesktopColumnMaterialization() {
-  let source = read('registry-unified-table.js');
-  source = replaceOnce(
-    source,
-    `    const required = new Set(DYNAMIC_KEYS);\n    if (currentView() === 'clinical') CLINICAL_BASE_KEYS.forEach(key => required.add(key));`,
-    `    const required = new Set(currentView() === 'full' ? FULL_ORDER : DYNAMIC_KEYS);\n    if (currentView() === 'clinical') CLINICAL_BASE_KEYS.forEach(key => required.add(key));`,
-    'full-view required-column set',
-  );
-  if (!source.includes("new Set(currentView() === 'full' ? FULL_ORDER : DYNAMIC_KEYS)")) {
-    throw new Error('Full desktop view does not materialize its canonical columns.');
+  const source = read('registry-unified-table.js');
+  // The full view used to materialize every key in FULL_ORDER. That put back
+  // every column the doctor had unticked in the column picker — the register
+  // has no value for most of them, so they arrived as columns of "—" and the
+  // table reserved width for all of them. The renderer publishes the chosen
+  // columns and the dynamic ones are added on top; the picker decides the rest.
+  if (!source.includes('    const required = new Set(DYNAMIC_KEYS);\n')) {
+    throw new Error('Full desktop view must not force columns the column picker excluded.');
   }
-  write('registry-unified-table.js', source);
 }
 
 patchMobilePhase3Owner();
@@ -89,4 +87,4 @@ patchPhonePersonalControls();
 patchPhoneCardDensity();
 patchFullDesktopColumnMaterialization();
 
-console.log('PR157 merge-readiness patch passed: composed mobile owner, touch/font floor, card density and full desktop columns are deterministic.');
+console.log('PR157 merge-readiness patch passed: composed mobile owner, touch/font floor, card density and picker-owned full desktop columns.');

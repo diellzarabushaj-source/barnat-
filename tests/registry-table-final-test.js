@@ -136,7 +136,13 @@ assert.match(css,/#registryFilterPanel #search/,'search must remain visible in t
 assert.match(css,/\.col-panel\.open[\s\S]*grid-template-columns:repeat\(2,minmax\(0,1fr\)\)/,'desktop multi-column picker must remain compact');
 assert.match(css,/registry-frozen-columns-v2/,'the frozen-column contract must be explicit and auditable');
 assert.match(css,/\[data-registry-column-key="number"\][\s\S]{0,180}position:sticky!important[\s\S]{0,120}left:0!important/,'Nr must be frozen at the left edge on desktop');
-assert.match(css,/\[data-registry-column-key="active-substance"\][\s\S]{0,220}position:sticky!important[\s\S]{0,140}left:var\(--registry-frozen-active-left,68px\)!important/,'active substance must freeze immediately after Nr');
+// A doctor reads a row by what goes on the prescription, so that is the column
+// that stays put while the rest of the register scrolls sideways. This used to
+// pin the active substance; registry-frozen-columns.css and the first-page
+// audit had already moved to the prescription notation, and the two halves
+// disagreed until now.
+assert.match(css,/\[data-registry-column-key="prescription-label"\][\s\S]{0,220}position:sticky!important[\s\S]{0,140}left:var\(--registry-frozen-prescription-left,68px\)!important/,'the prescription notation must freeze immediately after Nr');
+assert.doesNotMatch(css,/\[data-registry-column-key="active-substance"\]\s*\{[^}]*position:sticky!important/,'the active substance scrolls with the rest of the register');
 assert.doesNotMatch(css,/\[data-registry-column-key="trade-name"\]\s*\{[^}]*position:sticky!important/,'trade name must never be frozen');
 assert.doesNotMatch(css,/https?:\/\//,'unified table styles must not load third-party assets');
 

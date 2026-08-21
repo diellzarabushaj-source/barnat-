@@ -172,14 +172,14 @@ function patchUnifiedTable() {
   source = replaceOnce(
     source,
     "      table.style.removeProperty('--registry-unified-width');\n      table.style.removeProperty('width');\n",
-    "      table.style.removeProperty('--registry-unified-width');\n      table.style.removeProperty('--registry-frozen-active-left');\n      table.style.removeProperty('width');\n",
+    "      table.style.removeProperty('--registry-unified-width');\n      table.style.removeProperty('--registry-frozen-active-left');\n      table.style.removeProperty('--registry-frozen-prescription-left');\n      table.style.removeProperty('width');\n",
     'unified/mobile frozen reset',
   );
 
   source = replaceOnce(
     source,
     "    table.style.setProperty('--registry-unified-width', `${width}px`);\n    table.style.setProperty('width', `${width}px`, 'important');\n",
-    "    table.style.setProperty('--registry-unified-width', `${width}px`);\n    table.style.setProperty('--registry-frozen-active-left', visible.includes('number') ? `${WIDTHS.number}px` : '0px');\n    table.style.setProperty('width', `${width}px`, 'important');\n",
+    "    table.style.setProperty('--registry-unified-width', `${width}px`);\n    table.style.setProperty('--registry-frozen-active-left', visible.includes('number') ? `${WIDTHS.number}px` : '0px');\n    table.style.setProperty('--registry-frozen-prescription-left', visible.includes('number') ? `${WIDTHS.number}px` : '0px');\n    table.style.setProperty('width', `${width}px`, 'important');\n",
     'unified/frozen offset',
   );
 
@@ -212,7 +212,7 @@ function patchUnifiedCss() {
   }
 
   if (!source.includes('registry-frozen-columns-v2')) {
-    source += `\n\n/* registry-frozen-columns-v2 — only Nr + Substanca aktive are frozen. */\n@media (min-width:1200px) {\n  html.medindex-tailadmin[data-mi-page="barnat"] body #dataTable[data-registry-unified-table] :is(th,td)[data-registry-column-key="number"] {\n    position:sticky!important;\n    left:0!important;\n    z-index:18!important;\n  }\n\n  html.medindex-tailadmin[data-mi-page="barnat"] body #dataTable[data-registry-unified-table] :is(th,td)[data-registry-column-key="active-substance"] {\n    position:sticky!important;\n    left:var(--registry-frozen-active-left,68px)!important;\n    z-index:17!important;\n    border-right:1px solid #bfd1e7!important;\n    box-shadow:9px 0 14px -14px rgba(15,23,42,.52)!important;\n  }\n\n  html.medindex-tailadmin[data-mi-page="barnat"] body #dataTable[data-registry-unified-table] thead :is(\n    th[data-registry-column-key="number"],\n    th[data-registry-column-key="active-substance"]\n  ) {\n    z-index:38!important;\n    background:#f8fbff!important;\n  }\n\n  html.medindex-tailadmin[data-mi-page="barnat"] body #dataTable[data-registry-unified-table] tbody td[data-registry-column-key="number"],\n  html.medindex-tailadmin[data-mi-page="barnat"] body #dataTable[data-registry-unified-table] tbody td[data-registry-column-key="active-substance"] {\n    background:var(--ru-current-row)!important;\n  }\n\n  html[data-theme="dark"].medindex-tailadmin[data-mi-page="barnat"] body #dataTable[data-registry-unified-table] thead :is(\n    th[data-registry-column-key="number"],\n    th[data-registry-column-key="active-substance"]\n  ) {\n    background:#142033!important;\n  }\n}\n`;
+    source += `\n\n/* registry-frozen-columns-v2 — only Nr + prescription notation are frozen. */\n@media (min-width:1200px) {\n  html.medindex-tailadmin[data-mi-page="barnat"] body #dataTable[data-registry-unified-table] :is(th,td)[data-registry-column-key="number"] {\n    position:sticky!important;\n    left:0!important;\n    z-index:18!important;\n  }\n\n  html.medindex-tailadmin[data-mi-page="barnat"] body #dataTable[data-registry-unified-table] :is(th,td)[data-registry-column-key="prescription-label"] {\n    position:sticky!important;\n    left:var(--registry-frozen-prescription-left,68px)!important;\n    z-index:17!important;\n    border-right:1px solid #bfd1e7!important;\n    box-shadow:9px 0 14px -14px rgba(15,23,42,.52)!important;\n  }\n\n  html.medindex-tailadmin[data-mi-page="barnat"] body #dataTable[data-registry-unified-table] thead :is(\n    th[data-registry-column-key="number"],\n    th[data-registry-column-key="prescription-label"]\n  ) {\n    z-index:38!important;\n    background:#f8fbff!important;\n  }\n\n  html.medindex-tailadmin[data-mi-page="barnat"] body #dataTable[data-registry-unified-table] tbody td[data-registry-column-key="number"],\n  html.medindex-tailadmin[data-mi-page="barnat"] body #dataTable[data-registry-unified-table] tbody td[data-registry-column-key="prescription-label"] {\n    background:var(--ru-current-row)!important;\n  }\n\n  html[data-theme="dark"].medindex-tailadmin[data-mi-page="barnat"] body #dataTable[data-registry-unified-table] thead :is(\n    th[data-registry-column-key="number"],\n    th[data-registry-column-key="prescription-label"]\n  ) {\n    background:#142033!important;\n  }\n}\n`;
   }
 
   write(unifiedCssFile, source);

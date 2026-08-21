@@ -35,8 +35,8 @@ test('reduced desktop columns fill the registry surface without a blank gutter o
   await page.evaluate(() => window.MedIndexRegistryUnified?.setView?.('full'));
   await expect.poll(() => page.evaluate(() => ({
     view:document.documentElement.dataset.registryUxView,
-    status:Boolean(document.querySelector('#headerRow th[data-registry-column-key="status"]')),
-  })), { timeout:10000 }).toEqual({ view:'full', status:true });
+    prescriptionLabel:Boolean(document.querySelector('#headerRow th[data-registry-column-key="prescription-label"]')),
+  })), { timeout:10000 }).toEqual({ view:'full', prescriptionLabel:true });
 
   await page.evaluate(() => {
     const root = document.documentElement;
@@ -47,12 +47,12 @@ test('reduced desktop columns fill the registry surface without a blank gutter o
     const style = document.createElement('style');
     style.id = 'registry-layout-regression-visible-columns';
     style.textContent = `
-      #dataTable :is(th,td)[data-registry-column-key]:not([data-registry-column-key="strength"]):not([data-registry-column-key="form"]):not([data-registry-column-key="status"]):not([data-registry-column-key="dosage-adult"]):not([data-registry-column-key="dosage-pediatric"]) {
+      #dataTable :is(th,td)[data-registry-column-key]:not([data-registry-column-key="strength"]):not([data-registry-column-key="form"]):not([data-registry-column-key="prescription-label"]):not([data-registry-column-key="dosage-adult"]):not([data-registry-column-key="dosage-pediatric"]) {
         display:none!important;
       }
       #dataTable :is(th,td)[data-registry-column-key="strength"],
       #dataTable :is(th,td)[data-registry-column-key="form"],
-      #dataTable :is(th,td)[data-registry-column-key="status"],
+      #dataTable :is(th,td)[data-registry-column-key="prescription-label"],
       #dataTable :is(th,td)[data-registry-column-key="dosage-adult"],
       #dataTable :is(th,td)[data-registry-column-key="dosage-pediatric"] {
         display:table-cell!important;
@@ -98,7 +98,7 @@ test('reduced desktop columns fill the registry surface without a blank gutter o
     overflow:0,
     scrollLeft:0,
     widthDelta:0,
-    visibleHeaders:['strength', 'form', 'status', 'dosage-adult', 'dosage-pediatric'],
+    visibleHeaders:['prescription-label', 'strength', 'form', 'dosage-adult', 'dosage-pediatric'],
   });
 
   const geometry = await page.evaluate(() => {
