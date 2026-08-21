@@ -117,8 +117,14 @@ if (!mobileSource.includes('function mobileCountContextKey()')) {
 }
 
 replaceMobileOnce(
-  `    pageController?.abort();\n    pageController = new AbortController();\n    setBusy(true);\n    try {\n      const response = await fetch(buildPageUrl({ includeTotal }), {\n        credentials:'same-origin',\n        cache:'default',\n        signal:pageController.signal,`,
-  `    pageController?.abort();\n    const controller = new AbortController();\n    pageController = controller;\n    const requestEpoch = ++pageRequestEpoch;\n    if (includeTotal) clearKnownTotal();\n    setBusy(true);\n    try {\n      const response = await fetch(buildPageUrl({ includeTotal:false }), {\n        credentials:'same-origin',\n        cache:'default',\n        signal:controller.signal,`,
+  `    pageController?.abort();\n    const controller = new AbortController();\n    pageController = controller;\n    setBusy(true);`,
+  `    pageController?.abort();\n    const controller = new AbortController();\n    pageController = controller;\n    const requestEpoch = ++pageRequestEpoch;\n    if (includeTotal) clearKnownTotal();\n    setBusy(true);`,
+  'mobile row request epoch',
+);
+
+replaceMobileOnce(
+  `      const response = await fetch(buildPageUrl({ includeTotal }), {`,
+  `      const response = await fetch(buildPageUrl({ includeTotal:false }), {`,
   'mobile count-free row request',
 );
 
