@@ -197,7 +197,11 @@ const mobileDosage = (() => {
 
   // The real block, run as written — helpers included — rather than a copy of
   // it that could drift away from what ships.
+  const endpoint = mobile.match(/^ {2}const DOSAGE_API = '[^']+';$/m);
+  assert.ok(endpoint, 'the phone detail must name the dosage endpoint it reads');
+
   const script = 'let detailSession = null;\n(() => {\n'
+    + `${endpoint[0]}\n`
     + mobile.slice(helpersStart, helpersEnd)
     + mobile.slice(start, end)
     + '  return { regimenHasText, dosageMarkup, loadDosage, applyDosage,\n'
