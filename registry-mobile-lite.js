@@ -4,6 +4,7 @@
   const VERSION = 'registry-mobile-lite-v1';
   const MOBILE_QUERY = '(max-width: 767px)';
   const API = '/api/drug-search';
+  const DOSAGE_API = '/api/dosage';
   const DEFAULT_PAGE_SIZE = 25;
   const MAX_PAGE_SIZE = 50;
   const SEARCH_DEBOUNCE_MS = 250;
@@ -421,6 +422,70 @@
     return `<div class="mobile-lite-detail-item"><dt>${escapeHtml(label)}</dt><dd>${escapeHtml(text)}</dd></div>`;
   }
 
+  // --- clinical dosage -------------------------------------------------------
+  //
+  // The record and its dosage are two different reads: the record is the row the
+  // register carries, the dosage is what the clinical tables hold for that exact
+  // drug id. They are fetched together and rendered independently, so a missing
+  // or slow dosage never delays the drug the doctor just opened, and nothing is
+  // ever shown for a drug other than the one addressed by its UUID.
+
+  const DOSAGE_FIELDS = Object.freeze([
+    ['Indikacioni', 'indication'],
+    ['Doza', 'dose'],
+    ['Rruga', 'route'],
+    ['Frekuenca', 'frequency'],
+    ['Kohëzgjatja', 'duration'],
+    ['Maksimumi', 'maximum'],
+    ['Paralajmërime', 'warnings'],
+  ]);
+
+  function regimenHasText(regimen) {
+    return DOSAGE_FIELDS.some(([, key]) => clean(regimen?.[key]));
+  }
+
+  function regimenBlock(title, regimen) {
+    if (!regimenHasText(regimen)) return '';
+    const lines = DOSAGE_FIELDS
+      .map(([label, key]) => [label, clean(regimen?.[key])])
+      .filter(([, value]) => value)
+      .map(([label, value]) => `<div class="mobile-lite-dosage-line"><dt>${escapeHtml(label)}</dt><dd>${escapeHtml(value)}</dd></div>`)
+      .join('');
+    return `<section class="mobile-lite-dosage-group">
+      <h4>${escapeHtml(title)}</h4>
+      <dl class="mobile-lite-dosage-lines">${lines}</dl>
+    </section>`;
+  }
+
+  function dosageState(text) {
+    return `<p class="mobile-lite-dosage-state">${escapeHtml(text)}</p>`;
+  }
+
+  function dosageMarkup(payload) {
+    const adult = regimenBlock('Të rriturit', payload?.adult);
+    const pediatric = regimenBlock('Fëmijët', payload?.pediatric);
+    if (!adult && !pediatric) return dosageState('Dozimi nuk është i disponueshëm ende.');
+    return `<div class="mobile-lite-dosage-groups">${adult}${pediatric}</div>`;
+  }
+
+  async function loadDosage(id, signal) {
+    const params = new URLSearchParams({ view:'card', id });
+    const response = await fetch(`${DOSAGE_API}?${params.toString()}`, {
+      credentials:'same-origin', cache:'default', signal, headers:{ Accept:'application/json' }
+    });
+    if (!response.ok) throw new Error(`Dozimi nuk u ngarkua (${response.status}).`);
+    const payload = await response.json();
+    if (!payload?.ok || clean(payload.drugId) !== id) throw new Error('Dozimi është i pavlefshëm.');
+    return payload;
+  }
+
+  function applyDosage(dialog, session, markup) {
+    if (detailSession !== session) return;
+    const host = dialog.querySelector('[data-mobile-lite-dosage]');
+    if (!host) return;
+    host.innerHTML = markup;
+  }
+
   async function openDetail(id, trigger) {
     if (!id || state.disabled) return;
     const dialog = ensureDetailDialog();
@@ -446,6 +511,11 @@
     detailController?.abort();
     detailController = new AbortController();
     requestAnimationFrame(() => dialog.querySelector('.mobile-lite-detail-head [data-mobile-lite-close]')?.focus({ preventScroll:true }));
+
+    const session = detailSession;
+    // Started here, not after the record renders: on a phone the two reads then
+    // overlap instead of queueing, and the abort above cancels both together.
+    const dosage = loadDosage(id, detailController.signal).catch(error => error);
 
     try {
       const params = new URLSearchParams({ view:'registry-detail', id });
@@ -473,8 +543,19 @@
           ${detailItem('Statusi', row.productStatus)}
           ${detailItem('Çmimi me pakicë', row.retailPrice)}
           ${detailItem('Afati i vlefshmërisë', row.validity)}
-        </dl>`;
+        </dl>
+        <section class="mobile-lite-dosage" data-mobile-lite-dosage aria-live="polite">
+          <h3>Dozimi klinik</h3>
+          ${dosageState('Duke ngarkuar dozimin…')}
+        </section>`;
       window.dispatchEvent(new CustomEvent('medindex:mobile-lite-detail-opened', { detail:{ id, row } }));
+
+      const resolved = await dosage;
+      if (resolved instanceof Error) {
+        if (resolved.name !== 'AbortError') applyDosage(dialog, session, dosageState('Dozimi nuk u ngarkua.'));
+      } else {
+        applyDosage(dialog, session, dosageMarkup(resolved));
+      }
     } catch (error) {
       if (error?.name === 'AbortError') return;
       body.innerHTML = `<div class="mobile-lite-detail-error">${escapeHtml(error?.message || 'Detajet nuk u ngarkuan.')}</div>`;

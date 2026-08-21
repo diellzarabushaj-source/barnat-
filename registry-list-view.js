@@ -731,6 +731,17 @@
   window.MedIndexRegistryListView = Object.freeze({
     setView,
     activeView,
+    // The list owns which dataset is on screen: the paged rows the table
+    // happens to hold, or the dedicated List dataset covering the whole
+    // register. A `data-rlv-open` position only means something against that
+    // dataset, so anything enriching an open detail must resolve the row
+    // through here rather than indexing a global of its own.
+    rowAt(uid) {
+      const index = Number(uid);
+      if (!Number.isInteger(index) || index < 0) return null;
+      const entry = buildIndex()[index];
+      return entry ? entry.row : null;
+    },
     _test:{
       levelsOf, normalize, snippet, detailFields,
       search:query => search(query),

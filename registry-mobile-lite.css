@@ -308,6 +308,65 @@
     font-size:14px;
     font-weight:750;
   }
+  .mobile-lite-dosage{
+    margin-top:18px;
+    padding-top:14px;
+    border-top:1px solid #eaecf0;
+  }
+  .mobile-lite-dosage h3{
+    margin:0 0 10px;
+    color:#101828;
+    font-size:14px;
+    font-weight:750;
+  }
+  .mobile-lite-dosage-state{
+    margin:0;
+    color:#667085;
+    font-size:13px;
+    line-height:1.45;
+  }
+  .mobile-lite-dosage-groups{
+    display:grid;
+    gap:10px;
+  }
+  .mobile-lite-dosage-group{
+    padding:12px;
+    border:1px solid #e4e7ec;
+    border-radius:12px;
+    background:#fff;
+  }
+  .mobile-lite-dosage-group h4{
+    margin:0 0 8px;
+    color:#101828;
+    font-size:13px;
+    font-weight:720;
+  }
+  .mobile-lite-dosage-lines{
+    display:grid;
+    gap:0;
+    margin:0;
+  }
+  .mobile-lite-dosage-line{
+    display:grid;
+    grid-template-columns:minmax(96px,32%) 1fr;
+    gap:10px;
+    padding:7px 0;
+  }
+  .mobile-lite-dosage-line + .mobile-lite-dosage-line{
+    border-top:1px solid #f2f4f7;
+  }
+  .mobile-lite-dosage-line dt{
+    color:#667085;
+    font-size:12px;
+    font-weight:650;
+  }
+  .mobile-lite-dosage-line dd{
+    margin:0;
+    color:#1d2939;
+    font-size:13px;
+    line-height:1.45;
+    overflow-wrap:anywhere;
+  }
   .mobile-lite-detail-loading,
   .mobile-lite-detail-error{
     min-height:140px;

@@ -7,6 +7,7 @@ const ROOT = path.resolve(__dirname, '..');
 const INDEX = path.join(ROOT, 'index.html');
 const DETAIL_FILE = path.join(ROOT, 'registry-desktop-targeted-detail.js');
 const LIST_DETAIL_DOSAGE_FILE = path.join(ROOT, 'registry-list-detail-dosage.js');
+const LIST_VIEW_FILE = path.join(ROOT, 'registry-list-view.js');
 
 const DETAIL_SRC = 'registry-desktop-targeted-detail.js?v=20260812-1';
 const PRESCRIPTION_SRC = 'registry-desktop-prescription-lite.js?v=20260812-1';
@@ -131,6 +132,17 @@ function validateListDetailDosage() {
   }
   if (!runtime.includes('const candidates = [row?.__neonDrugId, row?.drugId, row?.id];')) {
     throw new Error('Phase 12 list-detail dosage must resolve an exact UUID from the registry row.');
+  }
+  if (!runtime.includes('window.MedIndexRegistryListView?.rowAt?.(index)')) {
+    throw new Error('Phase 12 list-detail dosage must read the opened row from the list that owns the dataset.');
+  }
+  if (!runtime.includes('window.MEDINDEX_REGISTRY_LIST_ROWS')) {
+    throw new Error('Phase 12 list-detail dosage must fall back to the List dataset, never to a paged table window alone.');
+  }
+
+  const listView = fs.readFileSync(LIST_VIEW_FILE, 'utf8').replace(/\r\n?/g, '\n');
+  if (!/rowAt\(uid\) \{[\s\S]*?buildIndex\(\)\[index\]/.test(listView)) {
+    throw new Error('Phase 12 requires the list view to publish the row behind a data-rlv-open position.');
   }
 }
 

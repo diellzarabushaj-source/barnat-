@@ -53,10 +53,29 @@
     return value;
   }
 
+  // The dataset the list is showing, in the list's own order. In List mode the
+  // register is served by its dedicated dataset; the table's paged rows are a
+  // 50-row window of it, so the two cannot be indexed interchangeably.
+  function listRows() {
+    if (ROOT.dataset.miRegistryView === 'list'
+      && window.MEDINDEX_REGISTRY_LIST_READY === true
+      && Array.isArray(window.MEDINDEX_REGISTRY_LIST_ROWS)) {
+      return window.MEDINDEX_REGISTRY_LIST_ROWS;
+    }
+    return Array.isArray(window.MEDINDEX_REGISTRY_ROWS) ? window.MEDINDEX_REGISTRY_ROWS : [];
+  }
+
   function rowForOpen(open) {
     const index = Number(open?.dataset?.rlvOpen);
-    const rows = Array.isArray(window.MEDINDEX_REGISTRY_ROWS) ? window.MEDINDEX_REGISTRY_ROWS : [];
-    return Number.isInteger(index) && index >= 0 && index < rows.length ? rows[index] : null;
+    if (!Number.isInteger(index) || index < 0) return null;
+    // Ask the list itself first. Reading the table's global directly meant a
+    // position from the full List dataset was looked up in a 50-row page: the
+    // lookup fell off the end, no row was found, and the dosage was silently
+    // never added to the record the doctor had just opened.
+    const owned = window.MedIndexRegistryListView?.rowAt?.(index);
+    if (owned) return owned;
+    const rows = listRows();
+    return index < rows.length ? rows[index] : null;
   }
 
   function directDrugId(row) {
@@ -245,6 +264,6 @@
     version:VERSION,
     cacheSize:() => cache.size,
     clearCache() { cache.clear(); },
-    _test:{ directDrugId, regimenHasData },
+    _test:{ directDrugId, regimenHasData, listRows, rowForOpen },
   });
 })();
