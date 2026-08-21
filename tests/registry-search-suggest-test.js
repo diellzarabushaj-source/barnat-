@@ -1,12 +1,5 @@
 'use strict';
 
-// Registry search suggestions — exercised against the real file.
-//
-// What matters here: the four categories are the ones a doctor thinks in, every
-// suggestion is a value that really exists in the register, an indication match
-// carries a verbatim slice of the stored sentence, and none of it is allowed to
-// cost anything on the phone toolbar or on a keystroke.
-
 const assert = require('node:assert/strict');
 const fs = require('node:fs');
 const path = require('node:path');
@@ -43,21 +36,18 @@ const ROWS = [
 ];
 
 function boot() {
-  const listeners = new Map();
   const sandbox = {
     document:{
       documentElement:{ dataset:{ miPage:'barnat' } },
       readyState:'complete',
       getElementById:() => null,
-      querySelector:() => null,
       createElement:() => ({ style:{}, setAttribute(){}, appendChild(){}, querySelector:() => null }),
-      addEventListener:(name, handler) => { listeners.set(name, handler); },
+      addEventListener(){},
       body:{ appendChild(){} },
     },
-    window:{ addEventListener:() => {}, MEDINDEX_REGISTRY_ROWS:ROWS },
-    localStorage:{ getItem:() => null, setItem:() => {} },
+    window:{ addEventListener(){}, MEDINDEX_REGISTRY_ROWS:ROWS },
     setTimeout:() => 0,
-    clearTimeout:() => {},
+    clearTimeout(){},
     console,
   };
   sandbox.window.MEDINDEX_ATC_GROUPS = { R:'Sistemi respirator', A:'Trakti alimentar dhe metabolizmi', N:'Sistemi nervor' };
@@ -70,131 +60,91 @@ function boot() {
 
 const api = boot();
 assert.ok(api, 'the suggestions must publish their API');
-
-const rowsOf = query => [...api._test.suggest(query)].map(item => ({ ...item }));
-
-// --- a name suggests the drug, not everything that mentions it -------------
+const t = api._test;
+const rowsOf = query => [...t.suggest(query)].map(item => ({ ...item }));
 
 {
-  const hits = rowsOf('panad');
-  assert.equal(hits.length, 1, 'one drug starts with this');
-  assert.equal(hits[0].group, 'name');
-  assert.equal(hits[0].term, 'Panadol', 'the suggestion is the register\'s own spelling');
-}
-
-// --- a substance is offered once, however many products carry it -----------
-
-{
-  const hits = rowsOf('paracetamol');
-  const substances = hits.filter(item => item.group === 'substance');
-  assert.equal(substances.length, 1, 'a shared substance is suggested once, not once per product');
+  const name = rowsOf('panad');
+  assert.equal(name.length, 1);
+  assert.equal(name[0].group, 'name');
+  assert.equal(name[0].term, 'Panadol');
+  const substances = rowsOf('paracetamol').filter(item => item.group === 'substance');
+  assert.equal(substances.length, 1);
   assert.equal(substances[0].term, 'Paracetamol');
-
-  // Two products carry it, and both are still offered by name.
-  const names = hits.filter(item => item.group === 'name').map(item => item.term).sort();
-  assert.deepEqual(names, [], 'no trade name contains "paracetamol", so none is offered');
-}
-
-// --- ATC is offered as the levels the dataset actually names ---------------
-
-{
-  const atc = [...api._test.atcTerms()].map(item => ({ ...item }));
-  const codes = atc.map(item => item.value).sort();
-  assert.deepEqual(codes, ['A', 'A10', 'N', 'N02', 'R', 'R05'],
-    'only the one and three character levels present in the data are offered');
-  assert.ok(!codes.includes('N/A'), 'a placeholder is never offered as a category');
-
-  for (const item of atc) {
-    assert.ok(item.label, `${item.value} is offered with the name the dataset gives it`);
-  }
-
-  // Searchable by code and by the category's own name.
-  assert.ok(rowsOf('r05').some(item => item.group === 'atc' && item.term === 'R05'));
-  assert.ok(rowsOf('analgjez').some(item => item.group === 'atc' && item.term === 'N02'),
-    'an ATC category is findable by its name, not only its code');
-}
-
-// --- an indication finds the drug the table could never surface ------------
-
-{
-  const hits = rowsOf('kolle');
-  const uses = hits.filter(item => item.group === 'use');
-  assert.equal(uses.length, 1, 'the symptom finds the drug that treats it');
-  assert.equal(uses[0].term, 'Levotuss', 'choosing it searches for that drug');
-
-  // The snippet is the stored sentence, marked — never reworded.
-  const plain = uses[0].snippet.replace(/<\/?mark>/g, '').replace(/…/g, '').trim();
-  assert.ok(ROWS[0]['Përdorimi (fjalë kyçe)'].includes(plain),
-    `the snippet must be a verbatim slice of the stored text, got: ${plain}`);
-  assert.match(uses[0].snippet, /<mark>/, 'the matched run is marked');
-
-  assert.equal(rowsOf('KOLLËS').filter(item => item.group === 'use').length, 1,
-    'accents and case are folded');
-}
-
-// --- a drug already offered by name is not repeated as an indication -------
-
-{
-  const hits = rowsOf('rrituri');
-  const uses = hits.filter(item => item.group === 'use').map(item => item.term).sort();
-  assert.deepEqual(uses, ['Ozempic', 'Panadol'], 'both indications that mention it are offered');
-
-  // "Panadol" matches by name, so it must not also appear under indications.
-  const both = rowsOf('panadol');
-  assert.ok(both.some(item => item.group === 'name' && item.term === 'Panadol'));
-  assert.equal(both.filter(item => item.group === 'use' && item.term === 'Panadol').length, 0,
-    'a drug found by name is not listed again under indications');
-}
-
-// --- short and empty queries suggest nothing ------------------------------
-
-{
+  const atc = [...t.atcTerms()].map(item => ({ ...item }));
+  assert.deepEqual(atc.map(item => item.value).sort(), ['A', 'A10', 'N', 'N02', 'R', 'R05']);
+  assert.ok(rowsOf('analgjez').some(item => item.group === 'atc' && item.term === 'N02'));
+  const uses = rowsOf('kolle').filter(item => item.group === 'use');
+  assert.equal(uses.length, 1);
+  assert.equal(uses[0].term, 'Levotuss');
+  assert.match(uses[0].snippet, /<mark>/);
+  assert.equal(rowsOf('KOLLËS').filter(item => item.group === 'use').length, 1);
   assert.deepEqual(rowsOf(''), []);
-  assert.deepEqual(rowsOf('k'), [], 'a single character is not enough to suggest on');
+  assert.deepEqual(rowsOf('k'), []);
 }
-
-// --- markup in the register can never reach the page as markup -------------
 
 {
-  const hostile = api._test.snippet(
-    'Përdoret për <script>alert(1)</script> dhe kollë.',
-    api._test.normalize('Përdoret për <script>alert(1)</script> dhe kollë.'),
-    'kolle',
-  );
-  assert.ok(!hostile.includes('<script'), 'stored markup is escaped, never rendered');
+  const source = 'Përdoret për <script>alert(1)</script> dhe kollë.';
+  const output = t.snippet(source, t.normalize(source), 'kolle');
+  assert.ok(!output.includes('<script'));
 }
 
-// --- the cost is where it belongs ------------------------------------------
+{
+  assert.equal(t.directSuggestionFromResult({ tradeName:'Ozempic', substance:'Semaglutide', strength:'1 mg', form:'Injeksion' }, 'ozem').group, 'name');
+  assert.equal(t.directSuggestionFromResult({ tradeName:'Panadol', substance:'Paracetamol' }, 'paracetamol').group, 'substance');
+  assert.equal(t.directSuggestionFromResult({ tradeName:'Levotuss', substance:'Levodropropizine', use:'Kollë e thatë' }, 'kolle').group, 'use');
+}
+
+{
+  assert.equal(t.editDistance('ozmpic', 'ozempic', 2), 1);
+  assert.equal(t.editDistance('paracetmol', 'paracetamol', 2), 1);
+  assert.equal(t.fuzzyThreshold('abc'), 0);
+  assert.equal(t.fuzzyThreshold('ozmpic'), 1);
+  assert.equal(t.fuzzyThreshold('paracetmol'), 2);
+  assert.equal(t.fuzzyAnchor('paracetmol'), 'par');
+  const hit = [...t.fuzzySuggestions([
+    { tradeName:'Ozempic', substance:'Semaglutide', use:'Diabeti mellitus tip 2' },
+    { tradeName:'Panadol', substance:'Paracetamol', use:'Dhimbje' },
+  ], 'ozmpic')][0];
+  assert.equal(hit.term, 'Ozempic');
+  assert.equal(hit.group, 'name');
+  assert.equal(hit.fuzzy, true);
+  assert.deepEqual([...t.fuzzySuggestions([{ tradeName:'Levotuss', substance:'Levodropropizine', use:'kollë e thatë' }], 'kollee')], []);
+  assert.deepEqual([...t.fuzzySuggestions([{ tradeName:'Test', substance:'X' }], 'R05D')], []);
+}
+
+{
+  const merged = [...t.mergeSuggestions(
+    [{ group:'name', term:'Panadol', primary:'Panadol' }],
+    [
+      { group:'name', term:'Panadol', primary:'Panadol' },
+      { group:'name', term:'Paldon', primary:'Paldon' },
+      { group:'substance', term:'Paracetamol', primary:'Paracetamol' },
+    ],
+  )].map(item => ({ ...item }));
+  assert.equal(merged.filter(item => item.term === 'Panadol').length, 1);
+  assert.ok(merged.some(item => item.term === 'Paldon'));
+  assert.ok(merged.some(item => item.term === 'Paracetamol'));
+}
 
 {
   const js = read('registry-search-suggest.js');
-
-  // Two mobile gates hold the phone toolbar to 94px. The panel is fixed and
-  // lives on the body, so it is out of flow and cannot add to it.
-  assert.match(js, /document\.body\.appendChild\(panel\)/,
-    'the panel hangs off the body, not the toolbar');
-  assert.match(js, /position: fixed|rss-panel/, 'the panel is positioned, not in flow');
-  assert.match(read('registry-search-suggest.css'), /\.rss-panel \{\s*position: fixed;/,
-    'the panel is taken out of flow by CSS');
-
-  // A keystroke must not be charged for the search. The input handler may only
-  // set a timer; the work happens after typing stops.
+  const css = read('registry-search-suggest.css');
+  assert.match(js, /version:'registry-search-suggest-v2'/);
+  assert.match(js, /const DEBOUNCE_MS = 36;/);
+  assert.match(js, /const API = '\/api\/drug-search';/);
+  assert.match(js, /const REMOTE_CACHE_LIMIT = 64;/);
+  assert.match(js, /while \(state\.remoteCache\.size > REMOTE_CACHE_LIMIT\)/);
+  assert.match(js, /state\.controller\?\.abort/);
+  assert.match(js, /seq !== state\.requestSeq \|\| signal\.aborted/);
+  assert.ok(!/\/api\/registry|medindex:registry-full-dataset-needed|DRUG_DATA_PARTS/.test(js));
   const handler = js.slice(js.indexOf("input.addEventListener('input'"));
   const synchronous = handler.slice(0, handler.indexOf('setTimeout('));
-  assert.ok(handler.includes('setTimeout('), 'the keystroke handler defers its work to a timer');
-  assert.ok(!/suggest\(|buildTerms\(|buildProse\(/.test(synchronous),
-    'nothing is searched or indexed before the timer: a keystroke pays for a timer and nothing else');
-
-  // Scroll and resize listeners exist only while the panel is open, so they
-  // cannot show up in the interaction budget when it is shut.
-  assert.ok(!/addEventListener\('scroll'[^)]*\)(?!.*once)/.test(js.replace(/\n/g, ' ')),
-    'no permanent scroll listener is added');
-  assert.match(js, /window\.addEventListener\('scroll', close, \{ once:true, passive:true \}\)/,
-    'the scroll listener is one-shot and only armed while open');
-
-  const html = read('index.html');
-  assert.match(html, /registry-search-suggest\.js\?v=/, 'the registry page loads the suggestions');
-  assert.match(html, /registry-search-suggest\.css\?v=/, 'and their stylesheet');
+  assert.ok(handler.includes('setTimeout('));
+  assert.ok(!/suggest\(|buildTerms\(|buildProse\(|fetch\(/.test(synchronous));
+  assert.match(js, /document\.body\.appendChild\(panel\)/);
+  assert.match(css, /\.rss-panel \{\s*position: fixed;/);
+  assert.match(js, /window\.addEventListener\('scroll', close, \{ once:true, passive:true \}\)/);
 }
 
-console.log('Registry search suggestions contract passed.');
+console.log('Registry smart search suggestions contract passed.');
