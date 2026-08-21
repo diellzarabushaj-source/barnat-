@@ -12,6 +12,7 @@ const desktop = read('registry-desktop-lite.js');
 const api = read('api/drug-search.js');
 const patch = read('scripts/patch-phase17-desktop-filter-stability.js');
 const migration = read('supabase/migrations/20260821141518_optimize_drug_registry_search_and_sort.sql');
+const advancedFilterMigration = read('supabase/migrations/20260821142422_optimize_drug_registry_advanced_filters.sql');
 const packageJson = JSON.parse(read('package.json'));
 
 execFileSync(process.execPath, ['--check', path.join(ROOT, 'scripts/patch-phase17-desktop-filter-stability.js')], { stdio:'pipe' });
@@ -70,6 +71,9 @@ assert.doesNotMatch(
   /params\.set\('or'/,
   'Registry table free-text search must not regress to nine-column OR ILIKE sequential scans.',
 );
+assert.match(builder, /params\.set\('active_substance', `ilike\.\*\$\{substance\}\*`\)/, 'Substance filtering must remain server-side.');
+assert.match(builder, /params\.set\('use_text', `ilike\.\*\$\{indication\}\*`\)/, 'Indication filtering must remain server-side.');
+assert.match(builder, /params\.set\('atc_code', `ilike\.\$\{atc\}\*`\)/, 'ATC filtering must remain server-side.');
 
 assert.match(migration, /create extension if not exists pg_trgm with schema extensions/i, 'Trigram support must be reproducible from migrations.');
 assert.match(migration, /registry_search_text text[\s\S]*generated always as/i, 'Registry search text must be a stored generated column.');
@@ -86,6 +90,24 @@ for (const indexName of [
   assert.match(migration, new RegExp(indexName), `Missing registry sort/filter index ${indexName}.`);
 }
 
+for (const [column, indexName] of [
+  ['active_substance', 'drugs_published_active_substance_trgm_idx'],
+  ['use_text', 'drugs_published_use_text_trgm_idx'],
+  ['atc_code', 'drugs_published_atc_trgm_idx'],
+]) {
+  assert.match(advancedFilterMigration, new RegExp(indexName), `Missing advanced filter trigram index ${indexName}.`);
+  assert.match(
+    advancedFilterMigration,
+    new RegExp(`gin \\(${column} extensions\\.gin_trgm_ops\\)`, 'i'),
+    `${column} advanced filter must use pg_trgm GIN.`,
+  );
+}
+assert.match(
+  advancedFilterMigration,
+  /where is_published = true and editorial_status = 'published'/i,
+  'Advanced filter indexes must stay partial to the published registry working set.',
+);
+
 assert.match(patch, /table search uses the indexed registry text path/);
 assert.match(
   packageJson.scripts['build:runtime'],
@@ -98,4 +120,4 @@ assert.match(
   'The filter concurrency regression gate must run in the main suite.',
 );
 
-console.log('Registry filter concurrency + indexed search audit passed: newest request owns state and table search stays on the trigram-indexed path.');
+console.log('Registry filter concurrency + indexed search/advanced-filter audit passed: newest request owns state and hot table filters stay on trigram-indexed paths.');
