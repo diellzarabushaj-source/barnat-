@@ -6,6 +6,7 @@ const { execFileSync } = require('node:child_process');
 const root = path.resolve(__dirname, '..');
 const runtimePath = path.join(root, 'offline-runtime.js');
 const source = fs.readFileSync(runtimePath, 'utf8');
+const vercelConfig = JSON.parse(fs.readFileSync(path.join(root, 'vercel.json'), 'utf8'));
 
 execFileSync(process.execPath, ['--check', runtimePath], { stdio:'pipe' });
 
@@ -18,5 +19,6 @@ assert.match(source, /slow-2g\|2g/, 'background warm must avoid slow connections
 assert.match(source, /GET_CACHE_STATUS/, 'startup must inspect cache before warming APIs');
 assert.match(source, /warmPrivateData\(\{ force:true \}\)/, 'manual sync must remain available');
 assert.doesNotMatch(source, /await warmPrivateData\(\);\s*if \(!navigator\.onLine\)/, 'startup must not block on a full private-data warm');
+assert.deepEqual(vercelConfig.regions, ['lhr1'], 'Vercel functions must stay in London near the eu-west-2 Supabase database.');
 
-console.log('Hobby runtime efficiency audit passed.');
+console.log('Hobby runtime efficiency and London data-region audit passed.');
