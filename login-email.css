@@ -148,3 +148,38 @@
   .login-email-input,
   .login-email-submit { transition: none; }
 }
+
+/* Landing v2 — the three workflow cards stay in the exact same position and
+   dimensions, but use the user's deep navy reference instead of the pale card
+   fill. Only their visual palette changes; the section around them is untouched. */
+.medindex-landing-v2 .lv-flow-step {
+  border-color: rgba(143, 177, 232, .14);
+  background: linear-gradient(145deg, #0a1322 0%, #060d19 100%);
+  box-shadow: 0 16px 36px rgba(6, 13, 25, .18), inset 0 1px 0 rgba(255, 255, 255, .035);
+}
+
+.medindex-landing-v2 .lv-flow-step::after {
+  background: radial-gradient(320px circle at var(--lv-mx, 50%) var(--lv-my, 0%), rgba(87, 139, 236, .18), transparent 62%);
+}
+
+.medindex-landing-v2 .lv-flow-step:hover {
+  border-color: rgba(143, 177, 232, .28);
+  box-shadow: 0 22px 55px rgba(6, 13, 25, .30), inset 0 1px 0 rgba(255, 255, 255, .045);
+}
+
+.medindex-landing-v2 .lv-flow-ghost {
+  color: #a9c6ff;
+  opacity: .10;
+}
+
+.medindex-landing-v2 .lv-flow-num {
+  color: #8fb6f5;
+}
+
+.medindex-landing-v2 .lv-flow-step h3 {
+  color: #f7faff;
+}
+
+.medindex-landing-v2 .lv-flow-step p {
+  color: rgba(229, 236, 248, .74);
+}
