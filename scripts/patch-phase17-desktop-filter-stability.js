@@ -139,6 +139,12 @@ replaceMobileOnce(
   'mobile stale error guard',
 );
 
+replaceMobileOnce(
+  `    search?.addEventListener('input', () => {\n      window.clearTimeout(searchTimer);\n      searchTimer = window.setTimeout(() => {\n        const nextQuery = clean(search.value).slice(0, 80);\n        if (nextQuery.length === 1) return;\n        state.q = nextQuery;`,
+  `    search?.addEventListener('input', () => {\n      window.clearTimeout(searchTimer);\n      const nextQuery = clean(search.value).slice(0, 80);\n      // Invalidate the old result set immediately. Waiting for the debounce to\n      // start the next request left a window where an older response could\n      // briefly publish under the new input value.\n      pageController?.abort();\n      pageController = null;\n      clearKnownTotal();\n      if (nextQuery.length === 1) {\n        state.q = '';\n        setBusy(false);\n        return;\n      }\n      setBusy(true);\n      searchTimer = window.setTimeout(() => {\n        state.q = nextQuery;`,
+  'mobile immediate search invalidation',
+);
+
 for (const invariant of [
   'let pageRequestEpoch = 0',
   'let countRequestEpoch = 0',
@@ -151,6 +157,8 @@ for (const invariant of [
   'contextKey !== mobileCountContextKey()',
   'medindex:mobile-lite-count-ready',
   'if (pageController === controller)',
+  "pageController?.abort();\n      pageController = null;\n      clearKnownTotal();",
+  "if (nextQuery.length === 1) {\n        state.q = '';\n        setBusy(false);",
 ]) {
   if (!mobileSource.includes(invariant)) throw new Error(`Phase 17 mobile invariant missing: ${invariant}`);
 }
@@ -195,4 +203,4 @@ if (!finalGlobalBlock.includes("params.set('global_search_text', `ilike.*${token
 if (finalGlobalBlock.includes("params.set('or'")) throw new Error('Global candidate search regressed to multi-column OR ILIKE.');
 fs.writeFileSync(API_FILE, apiSource, 'utf8');
 
-console.log('Phase 17 registry stability/performance passed: desktop/mobile rows never wait for exact counts, stale responses cannot commit, filters coalesce safely, and table/global candidate searches use trigram-indexed paths.');
+console.log('Phase 17 registry stability/performance passed: desktop/mobile rows never wait for exact counts, stale responses cannot commit, mobile debounce invalidates immediately, filters coalesce safely, and table/global candidate searches use trigram-indexed paths.');
