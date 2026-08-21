@@ -317,4 +317,51 @@ assert.ok(api, 'the list view must publish its API');
   assert.match(html, /id="dataTable"/, 'the table itself is still there, untouched');
 }
 
+{
+  // The register arrives one page at a time on desktop, so the rows the table is
+  // showing are not the register. Browsing and searching answer over all of it,
+  // and a paged window silently under-reports every count: the tree said "50
+  // barna" against a register of 4012. The list asks for the whole dataset, and
+  // the module that owns the paging answers.
+  const listView = read('registry-list-view.js');
+  assert.match(listView, /window\.MEDINDEX_REGISTRY_PARTIAL/,
+    'the list must notice when it has been given a page instead of the register');
+  assert.match(listView, /medindex:registry-full-dataset-needed/,
+    'the list asks for the full dataset rather than reaching for the network itself');
+
+  const lite = read('registry-desktop-lite.js');
+  assert.match(lite, /medindex:registry-full-dataset-needed/,
+    'the paging owner listens for that request');
+  assert.match(lite, /requestFullRegistry\(clean\(event\?\.detail\?\.reason\)/,
+    'and satisfies it through the existing handoff instead of a second fetch');
+  assert.match(
+    lite,
+    /addEventListener\('medindex:registry-ready',\s*\(\)\s*=>\s*\{\s*\n?\s*window\.MEDINDEX_REGISTRY_PARTIAL = false;/,
+    'the partial flag is cleared once the full registry lands, or it lies forever',
+  );
+}
+
+{
+  // Verification and editing are retired from the table, and the calculator is
+  // opt-in. Each was hidden at the <col> while its th/td kept rendering, so the
+  // registry carried three columns nobody asked for — one of them blank — and
+  // reserved 336px for them.
+  const unified = read('registry-unified-table.css');
+  const clinicalShow = unified.slice(unified.indexOf('[data-registry-ux-view="clinical"] body #dataTable :is(th,td):is('));
+  const whitelist = clinicalShow.slice(0, clinicalShow.indexOf('}'));
+  for (const key of ['clinical-status', 'clinical-action']) {
+    assert.ok(
+      !whitelist.includes(`"${key}"`),
+      `clinical view must not force ${key} back on top of the rule that retires it`,
+    );
+  }
+
+  const doseCss = read('registry-dose-table-button.css');
+  assert.match(
+    doseCss,
+    /\[data-registry-ux-view="clinical"\]\[data-registry-dose-column-visible="true"\]/,
+    'the clinical-view dose column follows the opt-in flag instead of outranking it',
+  );
+}
+
 console.log('Registry list view contract passed.');
