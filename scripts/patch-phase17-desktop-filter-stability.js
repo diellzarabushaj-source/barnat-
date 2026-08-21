@@ -16,14 +16,20 @@ function replaceOnce(before, after, label) {
 
 replaceOnce(
   `  let pageController = null;\n  let searchTimer = 0;`,
-  `  let pageController = null;\n  let pageRequestEpoch = 0;\n  let searchTimer = 0;`,
-  'request epoch state',
+  `  let pageController = null;\n  let pageRequestEpoch = 0;\n  let countController = null;\n  let countRequestEpoch = 0;\n  let countTimer = 0;\n  let searchTimer = 0;`,
+  'request epoch and non-blocking count state',
 );
 
 replaceOnce(
   `    const controller = new AbortController();\n    pageController = controller;\n    setBusy(true);\n    try {\n      const logical = await fetchLogicalPage({ includeTotal, signal:controller.signal });\n      state.hasNext = Number.isFinite(logical.total)`,
-  `    const controller = new AbortController();\n    pageController = controller;\n    const requestEpoch = ++pageRequestEpoch;\n    setBusy(true);\n    try {\n      const logical = await fetchLogicalPage({ includeTotal, signal:controller.signal });\n      // AbortController is the first line of defence. The epoch is the final\n      // commit gate: even if an older response has already crossed the network\n      // abort boundary, it cannot publish rows or pagination after a newer\n      // filter/page request owns the table.\n      if (requestEpoch !== pageRequestEpoch || pageController !== controller || controller.signal.aborted) return;\n      state.hasNext = Number.isFinite(logical.total)`,
-  'late-response commit gate',
+  `    const controller = new AbortController();\n    pageController = controller;\n    const requestEpoch = ++pageRequestEpoch;\n    // Exact count used to share the first row request and made a ~sub-ms page\n    // wait tens of milliseconds for COUNT(*). A caller can still request a\n    // refreshed total, but rows always stay on the count-free critical path.\n    if (includeTotal) {\n      window.clearTimeout(countTimer);\n      countTimer = 0;\n      countController?.abort();\n      countController = null;\n      state.total = null;\n      state.totalPages = null;\n    }\n    setBusy(true);\n    try {\n      const logical = await fetchLogicalPage({ includeTotal:false, signal:controller.signal });\n      // AbortController is the first line of defence. The epoch is the final\n      // commit gate: even if an older response has already crossed the network\n      // abort boundary, it cannot publish rows or pagination after a newer\n      // filter/page request owns the table.\n      if (requestEpoch !== pageRequestEpoch || pageController !== controller || controller.signal.aborted) return;\n      state.hasNext = Number.isFinite(logical.total)`,
+  'late-response commit gate and count-free row path',
+);
+
+replaceOnce(
+  `      renderCount();\n      renderPagination();\n      state.ready = true;`,
+  `      renderCount();\n      renderPagination();\n      // Render and publish rows first. Exact totals are useful metadata, not a\n      // prerequisite for interacting with the registry.\n      if (includeTotal) scheduleDesktopExactTotal();\n      state.ready = true;`,
+  'deferred exact count scheduling',
 );
 
 replaceOnce(
@@ -33,10 +39,10 @@ replaceOnce(
 );
 
 const controlsAnchor = `  function configureControls() {`;
-const searchSyncHelper = `  function syncDesktopSearchState() {\n    window.clearTimeout(searchTimer);\n    searchTimer = 0;\n    const search = document.getElementById('search');\n    const raw = clean(search?.value || '').slice(0, 80);\n    // Registry search intentionally starts at two characters. A one-character\n    // input must never leave state.q pointing at an older multi-character term.\n    state.q = raw.length >= 2 ? raw : '';\n    state.total = null;\n    state.totalPages = null;\n    return state.q;\n  }\n\n${controlsAnchor}`;
-if (!source.includes('function syncDesktopSearchState()')) {
+const countAndSearchHelpers = `  function countContextKey() {\n    const url = new URL(buildPageUrl({ includeTotal:false, page:1, pageSize:1 }), window.location.origin);\n    for (const key of ['page', 'pageSize', 'sort', 'direction', 'includeTotal']) url.searchParams.delete(key);\n    return url.searchParams.toString();\n  }\n\n  async function refreshDesktopExactTotal(contextKey) {\n    if (state.disabled || state.q.length >= 2 || contextKey !== countContextKey()) return;\n    countController?.abort();\n    const controller = new AbortController();\n    countController = controller;\n    const requestEpoch = ++countRequestEpoch;\n    try {\n      const response = await fetch(buildPageUrl({ includeTotal:true, page:1, pageSize:1 }), {\n        credentials:'same-origin', cache:'default', signal:controller.signal,\n        headers:{ Accept:'application/json' },\n      });\n      if (response.status === 401) return;\n      if (!response.ok) throw new Error('Numri i barnave nuk u rifreskua (' + response.status + ').');\n      const payload = await response.json();\n      const rawTotal = payload?.pagination?.total;\n      const total = rawTotal === null || rawTotal === undefined ? null : Number(rawTotal);\n      if (!Number.isFinite(total)) return;\n      if (controller.signal.aborted || countController !== controller || requestEpoch !== countRequestEpoch || contextKey !== countContextKey()) return;\n      state.total = total;\n      state.totalPages = Math.max(1, Math.ceil(total / state.pageSize));\n      renderCount();\n      renderPagination();\n      window.dispatchEvent(new CustomEvent('medindex:registry-count-ready', {\n        detail:{ total, totalPages:state.totalPages, pageSize:state.pageSize, source:'supabase-exact' }\n      }));\n    } catch (error) {\n      if (error?.name !== 'AbortError' && requestEpoch === countRequestEpoch) {\n        console.warn('Desktop registry exact count refresh failed:', error);\n      }\n    } finally {\n      if (countController === controller) countController = null;\n    }\n  }\n\n  function scheduleDesktopExactTotal() {\n    window.clearTimeout(countTimer);\n    countTimer = 0;\n    if (state.disabled || state.q.length >= 2) return;\n    const contextKey = countContextKey();\n    countTimer = window.setTimeout(() => {\n      countTimer = 0;\n      if (state.disabled || state.q.length >= 2 || contextKey !== countContextKey()) return;\n      void refreshDesktopExactTotal(contextKey);\n    }, 40);\n  }\n\n  function syncDesktopSearchState() {\n    window.clearTimeout(searchTimer);\n    searchTimer = 0;\n    window.clearTimeout(countTimer);\n    countTimer = 0;\n    countController?.abort();\n    countController = null;\n    const search = document.getElementById('search');\n    const raw = clean(search?.value || '').slice(0, 80);\n    // Registry search intentionally starts at two characters. A one-character\n    // input must never leave state.q pointing at an older multi-character term.\n    state.q = raw.length >= 2 ? raw : '';\n    state.total = null;\n    state.totalPages = null;\n    return state.q;\n  }\n\n${controlsAnchor}`;
+if (!source.includes('function countContextKey()')) {
   if (!source.includes(controlsAnchor)) throw new Error('Phase 17 could not find control setup anchor.');
-  source = source.replace(controlsAnchor, searchSyncHelper);
+  source = source.replace(controlsAnchor, countAndSearchHelpers);
 }
 
 replaceOnce(
@@ -59,13 +65,23 @@ replaceOnce(
 
 for (const invariant of [
   'let pageRequestEpoch = 0',
+  'let countRequestEpoch = 0',
   'const requestEpoch = ++pageRequestEpoch',
+  'fetchLogicalPage({ includeTotal:false, signal:controller.signal })',
   'requestEpoch !== pageRequestEpoch || pageController !== controller || controller.signal.aborted',
+  'function countContextKey()',
+  'function scheduleDesktopExactTotal()',
+  "buildPageUrl({ includeTotal:true, page:1, pageSize:1 })",
+  'contextKey !== countContextKey()',
+  'if (includeTotal) scheduleDesktopExactTotal()',
   'function syncDesktopSearchState()',
   'includeTotal:state.q.length === 0',
   'if (state.formType === nextType && state.formValue === nextValue) return',
 ]) {
   if (!source.includes(invariant)) throw new Error(`Phase 17 invariant missing: ${invariant}`);
+}
+if (source.includes('fetchLogicalPage({ includeTotal, signal:controller.signal })')) {
+  throw new Error('Phase 17 row critical path must never wait for exact count work.');
 }
 
 fs.writeFileSync(FILE, source, 'utf8');
@@ -137,4 +153,4 @@ if (finalGlobalBlock.includes("params.set('or'")) {
 
 fs.writeFileSync(API_FILE, apiSource, 'utf8');
 
-console.log('Phase 17 registry stability/performance passed: stale responses cannot commit, pending search is coalesced into filters, repeated form selections do not refetch, and table/global candidate searches use trigram-indexed paths.');
+console.log('Phase 17 registry stability/performance passed: rows never wait for exact counts, stale responses cannot commit, filters coalesce safely, and table/global candidate searches use trigram-indexed paths.');
