@@ -146,6 +146,15 @@ function patchShellLoader() {
   let source = read(file);
   source = pinShellRuntimeAssets(source);
 
+  // Phase 7 renames the shell loader from `loadLegacyShell` to `loadCoreShell`
+  // earlier in the same build. The recovery path added below calls it, so the
+  // name is read from the file rather than assumed: hardcoding the source
+  // spelling left the built bundle calling a function it does not define, and
+  // the recovery UI threw the moment it appeared.
+  const loaderName = ['loadCoreShell', 'loadLegacyShell']
+    .find(name => new RegExp(`function ${name}\\s*\\(`).test(source)) || '';
+  if (!loaderName) throw new Error('Shell coherence could not find the shell loader function.');
+
   if (!source.includes(MARKER)) {
     const clearBefore = `  function clearBootState() {\n    clearTimeout(shellFallback);\n    document.documentElement.classList.remove('mi-shell-booting', 'mi-shell-fallback');\n  }`;
     const clearAfter = `  // ${MARKER}\n  function clearBootState() {\n    clearTimeout(shellFallback);\n    document.documentElement.classList.remove('mi-shell-booting', 'mi-shell-fallback', 'mi-shell-recovery');\n    document.getElementById('miShellRecovery')?.remove();\n  }`;
@@ -153,7 +162,7 @@ function patchShellLoader() {
     source = source.replace(clearBefore, clearAfter);
 
     const fallbackBefore = `  function revealSafeFallback() {\n    if (document.querySelector('.mi-app-shell') || document.body?.dataset.tailadminReady === '1') return;\n    document.documentElement.classList.remove('mi-shell-booting');\n    document.documentElement.classList.add('mi-shell-fallback');\n    document.documentElement.dataset.miShellError ||= 'fallback-visible';\n    document.getElementById('pageLoader')?.classList.add('is-hidden');\n  }`;
-    const fallbackAfter = `  function revealSafeFallback() {\n    if (document.querySelector('.mi-app-shell') || document.body?.dataset.tailadminReady === '1') return;\n    document.documentElement.classList.add('mi-shell-booting', 'mi-shell-recovery');\n    document.documentElement.classList.remove('mi-shell-fallback');\n    document.documentElement.dataset.miShellError ||= 'shell-recovery-visible';\n\n    let recovery = document.getElementById('miShellRecovery');\n    if (!recovery) {\n      recovery = document.createElement('section');\n      recovery.id = 'miShellRecovery';\n      recovery.setAttribute('role', 'alert');\n      recovery.setAttribute('aria-live', 'assertive');\n      recovery.innerHTML = '<div class="mi-shell-recovery-card"><strong>MedIndex po rifreskon ndërfaqen</strong><p>Nuk po shfaqet versioni i vjetër i faqes. Po ngarkohet versioni aktual i hapësirës klinike.</p><button type="button">Provo përsëri</button></div>';\n      recovery.querySelector('button')?.addEventListener('click', event => {\n        const button = event.currentTarget;\n        button.disabled = true;\n        button.textContent = 'Po provohet…';\n        document.documentElement.dataset.miShellError = 'manual-shell-retry';\n        loadLegacyShell(true);\n        window.setTimeout(() => {\n          if (document.querySelector('.mi-app-shell') || document.body?.dataset.tailadminReady === '1') return;\n          button.disabled = false;\n          button.textContent = 'Provo përsëri';\n        }, 3200);\n      });\n      document.body.appendChild(recovery);\n    } else {\n      recovery.hidden = false;\n    }\n\n    loadLegacyShell(true);\n  }`;
+    const fallbackAfter = `  function revealSafeFallback() {\n    if (document.querySelector('.mi-app-shell') || document.body?.dataset.tailadminReady === '1') return;\n    document.documentElement.classList.add('mi-shell-booting', 'mi-shell-recovery');\n    document.documentElement.classList.remove('mi-shell-fallback');\n    document.documentElement.dataset.miShellError ||= 'shell-recovery-visible';\n\n    let recovery = document.getElementById('miShellRecovery');\n    if (!recovery) {\n      recovery = document.createElement('section');\n      recovery.id = 'miShellRecovery';\n      recovery.setAttribute('role', 'alert');\n      recovery.setAttribute('aria-live', 'assertive');\n      recovery.innerHTML = '<div class="mi-shell-recovery-card"><strong>MedIndex po rifreskon ndërfaqen</strong><p>Nuk po shfaqet versioni i vjetër i faqes. Po ngarkohet versioni aktual i hapësirës klinike.</p><button type="button">Provo përsëri</button></div>';\n      recovery.querySelector('button')?.addEventListener('click', event => {\n        const button = event.currentTarget;\n        button.disabled = true;\n        button.textContent = 'Po provohet…';\n        document.documentElement.dataset.miShellError = 'manual-shell-retry';\n        ${loaderName}(true);\n        window.setTimeout(() => {\n          if (document.querySelector('.mi-app-shell') || document.body?.dataset.tailadminReady === '1') return;\n          button.disabled = false;\n          button.textContent = 'Provo përsëri';\n        }, 3200);\n      });\n      document.body.appendChild(recovery);\n    } else {\n      recovery.hidden = false;\n    }\n\n    ${loaderName}(true);\n  }`;
     if (!source.includes(fallbackBefore)) throw new Error('Shell coherence could not find revealSafeFallback().');
     source = source.replace(fallbackBefore, fallbackAfter);
 
@@ -164,7 +173,7 @@ function patchShellLoader() {
 
     source = source.replace(
       `  window.addEventListener('medindex:tailadmin-ready', finalizeShellReady);`,
-      `  window.addEventListener('medindex:tailadmin-ready', finalizeShellReady);\n  window.addEventListener('online', () => {\n    if (document.getElementById('miShellRecovery') && !document.querySelector('.mi-app-shell')) loadLegacyShell(true);\n  }, { passive:true });`
+      `  window.addEventListener('medindex:tailadmin-ready', finalizeShellReady);\n  window.addEventListener('online', () => {\n    if (document.getElementById('miShellRecovery') && !document.querySelector('.mi-app-shell')) ${loaderName}(true);\n  }, { passive:true });`
     );
   }
 
@@ -185,6 +194,13 @@ function patchShellLoader() {
   );
   if (!pinnedShellCore.test(written)) {
     throw new Error('Shell core runtime is not release-pinned.');
+  }
+  // A recovery path that calls a loader this build does not define is worse
+  // than no recovery path: it throws exactly when the shell has already failed.
+  for (const called of new Set([...written.matchAll(/\b(loadCoreShell|loadLegacyShell)\s*\(/g)].map(match => match[1]))) {
+    if (!new RegExp(`function ${called}\\s*\\(`).test(written)) {
+      throw new Error(`Shell coherence left a call to ${called}(), which this build does not define.`);
+    }
   }
 }
 
