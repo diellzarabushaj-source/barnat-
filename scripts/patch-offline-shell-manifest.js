@@ -109,6 +109,11 @@ if (!manifest.length) throw new Error('Offline shell manifest doli bosh.');
 const required = [
   '/registry-frozen-columns.css',
   '/registry-tablet-rows.css',
+  '/registry-list-owner-guard.css',
+  '/registry-list-owner-guard.js',
+  '/registry-list-data-bridge.js',
+  '/registry-list-view.js',
+  '/registry-list-detail-dosage.js',
   '/fonts/inter-latin-variable-normal.woff2',
 ];
 for (const asset of required) {
