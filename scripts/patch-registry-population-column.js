@@ -198,8 +198,11 @@ function patchUnifiedCss() {
   if (!source.includes('[data-registry-column-key="population"]')) {
     source = replaceOnce(
       source,
-      '    [data-registry-column-key="form"],[data-registry-column-key="dosage-adult"],\n    [data-registry-column-key="dosage-pediatric"],[data-registry-column-key="clinical-status"],',
-      '    [data-registry-column-key="form"],[data-registry-column-key="population"],\n    [data-registry-column-key="dosage-adult"],[data-registry-column-key="dosage-pediatric"],\n    [data-registry-column-key="clinical-status"],',
+      // Verification and editing are retired from the table, so the clinical
+      // whitelist no longer names them and neither does this patch: re-adding
+      // them here would put the blank pencil column back on every build.
+      '    [data-registry-column-key="form"],[data-registry-column-key="dosage-adult"],\n    [data-registry-column-key="dosage-pediatric"]\n',
+      '    [data-registry-column-key="form"],[data-registry-column-key="population"],\n    [data-registry-column-key="dosage-adult"],[data-registry-column-key="dosage-pediatric"]\n',
       'unified css/clinical population visibility',
     );
   }

@@ -123,8 +123,10 @@ function patchColumnContract(source) {
 }
 
 function patchUnifiedCss(source) {
-  const before = '    [data-registry-column-key="dosage-pediatric"],[data-registry-column-key="clinical-status"],\n    [data-registry-column-key="clinical-action"]';
-  const after = '    [data-registry-column-key="dosage-pediatric"],[data-registry-column-key="pediatric-only"],\n    [data-registry-column-key="clinical-status"],[data-registry-column-key="clinical-action"]';
+  // Verification and editing are retired from the table, so the clinical
+  // whitelist ends at the paediatric dose and this patch must not name them.
+  const before = '    [data-registry-column-key="dosage-pediatric"]\n';
+  const after = '    [data-registry-column-key="dosage-pediatric"],[data-registry-column-key="pediatric-only"]\n';
   source = replaceOnce(source, before, after, 'clinical-view visibility');
 
   if (!source.includes('.mi-pediatric-only-column-value')) {
