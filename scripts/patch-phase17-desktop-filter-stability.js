@@ -5,6 +5,7 @@ const path = require('node:path');
 
 const ROOT = path.resolve(__dirname, '..');
 const FILE = path.join(ROOT, 'registry-desktop-lite.js');
+const API_FILE = path.join(ROOT, 'api', 'drug-search.js');
 let source = fs.readFileSync(FILE, 'utf8').replace(/\r\n?/g, '\n');
 
 function replaceOnce(before, after, label) {
@@ -68,4 +69,40 @@ for (const invariant of [
 }
 
 fs.writeFileSync(FILE, source, 'utf8');
-console.log('Phase 17 desktop table stability passed: stale responses cannot commit, pending search is coalesced into filters, and repeated form selections do not refetch.');
+
+// The registry table previously expressed free-text search as an OR across nine
+// ILIKE clauses. PostgreSQL therefore performed a sequential scan even though a
+// full-text index existed, because that index does not accelerate substring
+// ILIKE. The Supabase migration adds a generated registry_search_text column
+// backed by a partial pg_trgm GIN index. Keep the table query on that one indexed
+// predicate while leaving the separate ranked/global search path unchanged.
+let apiSource = fs.readFileSync(API_FILE, 'utf8').replace(/\r\n?/g, '\n');
+const builderStart = apiSource.indexOf('function buildRegistryPagePath(query = {}) {');
+if (builderStart < 0) throw new Error('Phase 17 indexed search could not find registry-page builder.');
+const returnStart = apiSource.indexOf('\n  return {', builderStart);
+if (returnStart < 0) throw new Error('Phase 17 indexed search could not find registry-page return block.');
+const builder = apiSource.slice(builderStart, returnStart);
+
+if (!builder.includes("params.set('registry_search_text', `ilike.${pattern}`)")) {
+  const searchStart = apiSource.indexOf('  if (q.length >= 2) {', builderStart);
+  const searchEndMarker = '\n  }\n\n  return {';
+  const searchEnd = searchStart >= 0 ? apiSource.indexOf(searchEndMarker, searchStart) : -1;
+  if (searchStart < 0 || searchEnd < 0 || searchEnd > returnStart) {
+    throw new Error('Phase 17 indexed search could not isolate the registry-page free-text block.');
+  }
+  const replacement = `  if (q.length >= 2) {\n    const pattern = \`*\${q}*\`;\n    params.set('registry_search_text', \`ilike.\${pattern}\`);\n  }`;
+  apiSource = apiSource.slice(0, searchStart) + replacement + apiSource.slice(searchEnd + '\n  }'.length);
+}
+
+const finalBuilderStart = apiSource.indexOf('function buildRegistryPagePath(query = {}) {');
+const finalReturnStart = apiSource.indexOf('\n  return {', finalBuilderStart);
+const finalBuilder = apiSource.slice(finalBuilderStart, finalReturnStart);
+if (!finalBuilder.includes("params.set('registry_search_text', `ilike.${pattern}`)")) {
+  throw new Error('Phase 17 indexed registry search predicate is missing.');
+}
+if (finalBuilder.includes("params.set('or'")) {
+  throw new Error('Phase 17 registry-page search must not regress to multi-column OR ILIKE scans.');
+}
+fs.writeFileSync(API_FILE, apiSource, 'utf8');
+
+console.log('Phase 17 desktop table stability passed: stale responses cannot commit, pending search is coalesced into filters, repeated form selections do not refetch, and table search uses the indexed registry text path.');
