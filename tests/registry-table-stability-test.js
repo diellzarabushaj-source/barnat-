@@ -54,7 +54,10 @@ assert.match(css, /:is\(\.registry-dose-dialog,\.registry-cell-preview-dialog\)[
 assert.match(css, /@media \(max-width:760px\)/);
 assert.match(css, /registry-frozen-columns-v2/, 'desktop frozen-column contract must be explicit');
 assert.match(css, /\[data-registry-column-key="number"\][\s\S]{0,180}position:sticky!important[\s\S]{0,120}left:0!important/, 'Nr must be the first frozen data column');
-assert.match(css, /\[data-registry-column-key="active-substance"\][\s\S]{0,220}position:sticky!important/, 'active substance must be the second frozen data column');
+// The prescription notation is what a doctor reads a row by, so it is the
+// column that stays put; the active substance scrolls with the rest.
+assert.match(css, /\[data-registry-column-key="prescription-label"\][\s\S]{0,220}position:sticky!important/, 'the prescription notation must be the second frozen data column');
+assert.doesNotMatch(css, /\[data-registry-column-key="active-substance"\]\s*\{[^}]*position:sticky!important/, 'active substance must remain horizontally scrollable');
 assert.doesNotMatch(css, /\[data-registry-column-key="trade-name"\]\s*\{[^}]*position:sticky!important/, 'trade name must remain horizontally scrollable');
 
-console.log('Registry table controllers use direct-row observation; nested dosage changes refresh row expansion explicitly; only Nr + active substance freeze on desktop.');
+console.log('Registry table controllers use direct-row observation; nested dosage changes refresh row expansion explicitly; only Nr + prescription notation freeze on desktop.');

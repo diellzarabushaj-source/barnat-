@@ -50,14 +50,23 @@ html.medindex-tailadmin[data-mi-page="barnat"] body #registryContent #dataTable 
   cursor:pointer!important;
 }
 
-/* CSS-i i kartelave mobile mund ta ngushtojë këtë kontroll në 25px pasi ai
-   krijohet me vonesë. Ky është kontroll real (jo vetëm ikonë), prandaj ruaje
-   mbi dyshemenë kompakte të auditit në të gjitha gjendjet. */
+/* CSS-i i kartelave mobile mund ta ngushtojë këtë kontroll në 25–30px pasi ai
+   krijohet me vonesë. Ky është kontroll real (jo vetëm ikonë), prandaj përdor të
+   njëjtin kontrakt 44px si kontrollet e tjera, në desktop, tablet dhe telefon. */
 html.medindex-tailadmin[data-mi-page="barnat"] body #registryContent #dataTable .registry-cell-preview-trigger{
-  width:30px!important;
-  min-width:30px!important;
-  height:30px!important;
-  min-height:30px!important;
+  width:var(--mi-touch)!important;
+  min-width:var(--mi-touch)!important;
+  height:var(--mi-touch)!important;
+  min-height:var(--mi-touch)!important;
+}
+
+/* Panelët floating në telefon duhet të ndjekin të njëjtën shkallë të radius-it
+   si pjesa tjetër e regjistrit. Shtresat më të hershme përdorin 15px; kjo është
+   shtresa finale e auditit dhe e fikson në hapin 16px të shkallës 8/12/16. */
+@media (max-width:760px){
+  html.medindex-tailadmin[data-mi-page="barnat"] body :is(.form-panel,.col-panel){
+    border-radius:16px!important;
+  }
 }
 
 /* Faqosja: butonat ishin 35px. Gjerësia 35px është nën 44 po mbi pragun 24 të

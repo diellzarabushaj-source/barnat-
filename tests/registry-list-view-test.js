@@ -339,6 +339,21 @@ assert.ok(api, 'the list view must publish its API');
     /addEventListener\('medindex:registry-ready',\s*\(\)\s*=>\s*\{\s*\n?\s*window\.MEDINDEX_REGISTRY_PARTIAL = false;/,
     'the partial flag is cleared once the full registry lands, or it lies forever',
   );
+
+  // The desktop registry swaps the rows array wholesale — a page, then the
+  // whole register — and there is a moment in that handoff when it is empty.
+  // Caching the index by row count made an index built in that moment look
+  // unchanged forever (0 === 0), and the tree reported an empty register.
+  assert.match(listView, /state\.indexSource === rows/,
+    'the index is keyed on the rows array itself, not on how many rows it had');
+  assert.doesNotMatch(listView, /state\.index\.length === sourceRows\(\)\.length/,
+    'row count must never stand in for dataset identity');
+  assert.match(listView, /'medindex:registry-rendered', 'medindex:registry-page-ready', 'medindex:registry-ready'/,
+    'the list re-renders on every event that can change the dataset');
+  // An empty register is not an empty category, and telling a doctor the
+  // register has no drugs in this category is a claim about the data.
+  assert.match(listView, /Regjistri po ngarkohet…/,
+    'a dataset that has not arrived reads as loading, not as an empty category');
 }
 
 {

@@ -121,9 +121,9 @@ function validateCanonicalTableOwner() {
   const css = read('registry-unified-table.css');
   if (!css.includes('registry-frozen-columns-v2')
       || !css.includes('[data-registry-column-key="number"]')
-      || !css.includes('[data-registry-column-key="active-substance"]')
-      || !css.includes('left:var(--registry-frozen-active-left,68px)!important')) {
-    throw new Error('Phase 15: frozen Nr + active-substance CSS contract is missing.');
+      || !css.includes('[data-registry-column-key="prescription-label"]')
+      || !css.includes('left:var(--registry-frozen-prescription-left,68px)!important')) {
+    throw new Error('Phase 15: frozen Nr + prescription-notation CSS contract is missing.');
   }
 }
 
