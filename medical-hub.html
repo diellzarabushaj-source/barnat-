@@ -10,6 +10,7 @@
   <link rel="stylesheet" href="medical-hub.css?v=20260723-1">
   <link rel="stylesheet" href="tailadmin-medindex.css?v=20260728-1" data-tailadmin-medindex-css>
   <link rel="stylesheet" href="clinical-knowledge.css?v=20260805-1">
+  <link rel="stylesheet" href="medical-hub-v2.css?v=20260818-2">
   <link rel="stylesheet" href="tailadmin-professional.css?v=20260728-1" data-tailadmin-professional-css>
   <script src="tailadmin-shell.js?v=production-audit-v2" defer></script>
   <script src="tailadmin-professional.js?v=production-audit-v2" defer></script>
@@ -26,37 +27,74 @@
       <a class="med-nav-link" href="recetat.html"><span class="med-nav-icon">Rx</span><span class="med-nav-title">Recetat</span></a>
       <div class="med-theme"><span>Tema</span><button id="themeButton" type="button" aria-label="Ndërro temën">☾</button></div>
     </nav>
+
     <main class="med-main" id="medicalHubContent" tabindex="-1">
-      <div class="clinical-knowledge-page">
-        <header class="ck-hero">
+      <div class="medical-hub-v2">
+        <header class="mh-head">
           <div>
-            <p class="ck-kicker">Pyetje · Trajtim · Receta</p>
+            <p class="mh-eyebrow">Clinical Knowledge & Learning</p>
             <h1>Medical Hub</h1>
-            <p>Shkruaj pyetjen klinike dhe merr një përgjigje të strukturuar: red flags, trajtimi hap pas hapi, receta dhe referimi.</p>
+            <p>Bibliotekë klinike e strukturuar në kapituj dhe nënkapituj. Zgjidh një fushë, pastaj shto mësimet kur të jenë gati.</p>
           </div>
-          <a class="ck-studio-link" href="https://medindex-clinical-knowledge.sanity.studio/" target="_blank" rel="noopener noreferrer">Menaxho në Sanity ↗</a>
+          <a class="mh-studio-link" href="https://medindex-clinical-knowledge.sanity.studio/" target="_blank" rel="noopener noreferrer">Menaxho në Sanity ↗</a>
         </header>
 
-        <div class="ck-toolbar" role="search" aria-label="Kërkimi në Medical Hub">
-          <input id="learningSearch" type="search" autocomplete="off" placeholder="P.sh. qysh trajtohet migrena…" aria-label="Shkruaj pyetjen klinike">
-          <select id="learningCategory" aria-label="Kategoria"><option value="">Të gjitha temat</option></select>
-        </div>
+        <section class="mh-search-shell" aria-label="Kërkimi dhe filtrat e Medical Hub">
+          <div class="mh-search-row">
+            <div class="mh-search-box">
+              <span class="mh-search-icon" aria-hidden="true">⌕</span>
+              <input id="learningSearch" type="search" autocomplete="off" placeholder="Kërko kapitull, nënkapitull, simptomë, diagnozë ose mësim..." aria-label="Kërko në Medical Hub">
+              <span class="mh-search-shortcut" aria-hidden="true">Ctrl K</span>
+            </div>
+            <div class="mh-stats" aria-label="Përmbledhja e Medical Hub">
+              <span class="mh-stat"><strong id="chapterCount">0</strong> kapituj</span>
+              <span class="mh-stat"><strong id="subchapterCount">0</strong> nënkapituj</span>
+              <span class="mh-stat"><strong id="lessonCount">0</strong> mësime</span>
+            </div>
+          </div>
 
-        <p class="ck-status" id="learningStatus" role="status" aria-live="polite">Duke i ngarkuar temat…</p>
-        <div class="ck-layout">
-          <aside class="ck-directory" aria-label="Temat mësimore">
-            <div class="ck-list" id="learningList"></div>
+          <div class="mh-filter-row" id="hubFilters" aria-label="Filtro kapitujt">
+            <button class="mh-filter" type="button" data-group="all" aria-pressed="true">Të gjitha</button>
+            <button class="mh-filter" type="button" data-group="foundation" aria-pressed="false">Bazat klinike</button>
+            <button class="mh-filter" type="button" data-group="symptoms" aria-pressed="false">Simptomat</button>
+            <button class="mh-filter" type="button" data-group="specialties" aria-pressed="false">Specialitetet</button>
+            <button class="mh-filter" type="button" data-group="practice" aria-pressed="false">Praktika</button>
+          </div>
+
+          <select id="learningCategory" hidden aria-hidden="true" tabindex="-1"><option value="">Të gjitha</option></select>
+          <div class="mh-search-results" id="hubSearchResults" hidden></div>
+        </section>
+
+        <p class="ck-status" id="learningStatus" role="status" aria-live="polite">Duke përgatitur strukturën…</p>
+
+        <section class="mh-workspace" aria-label="Struktura e Medical Hub">
+          <aside class="mh-panel mh-chapters" aria-label="Kapitujt">
+            <div class="mh-panel-head">
+              <p class="mh-panel-kicker">Niveli 1</p>
+              <h2>Kapitujt</h2>
+              <p>Bazat, simptomat, specialitetet dhe praktika klinike.</p>
+            </div>
+            <div class="mh-chapter-body" id="learningList"></div>
           </aside>
-          <article class="ck-detail" id="learningDetail" aria-live="polite">
-            <div class="ck-empty">Shkruaj një pyetje ose zgjidh një temë.</div>
+
+          <section class="mh-panel mh-subchapters" aria-label="Nënkapitujt">
+            <div id="chapterOverview"></div>
+            <div class="mh-subchapter-list" id="subchapterList"></div>
+          </section>
+
+          <article class="mh-panel mh-lessons" id="learningDetail" aria-live="polite">
+            <nav class="mh-breadcrumbs" id="hubBreadcrumbs" aria-label="Pozicioni në Medical Hub"></nav>
+            <div class="mh-lesson-stage" id="lessonStage"></div>
           </article>
-        </div>
+        </section>
       </div>
     </main>
   </div>
+
   <script src="auth-client.js?v=production-audit-v2" defer></script>
   <script src="sanity-clinical-client.js?v=20260805-1" defer></script>
-  <script src="medical-hub.js?v=20260805-1" defer></script>
+  <script src="medical-hub-curriculum.js?v=20260818-2" defer></script>
+  <script src="medical-hub.js?v=20260818-2" defer></script>
   <script src="app-stability.js?v=20260724-2" defer></script>
 </body>
 </html>
