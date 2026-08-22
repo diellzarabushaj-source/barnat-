@@ -263,6 +263,17 @@
         const next = nextUnknown(state.index, count, known);
         saveFlash(itemId, {...state, known: [...known], index: next, revealed: false});
         refreshLearn();
+        return;
+      }
+
+      const knownButton = event.target.closest('[data-flash-known]');
+      if (knownButton) {
+        event.preventDefault();
+        event.stopImmediatePropagation();
+        known.add(state.index);
+        const next = nextUnknown(state.index, count, known);
+        saveFlash(itemId, {...state, known: [...known], index: next, revealed: false});
+        refreshLearn();
       }
     }, true);
 
