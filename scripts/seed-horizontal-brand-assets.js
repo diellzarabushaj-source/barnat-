@@ -46,15 +46,29 @@ async function main() {
     return;
   }
 
+  // The pages serve the files materialized above, straight from /brand/. The
+  // Blob copy is a mirror, so the store being unreachable — suspended, out of
+  // quota, or simply down — must not take the whole deployment with it. A bad
+  // source still fails, above, before anything is uploaded.
+  const failures = [];
   for (const asset of prepared) {
-    const blob = await put(asset.pathname, asset.buffer, {
-      access:'private',
-      contentType:'image/webp',
-      addRandomSuffix:false,
-      allowOverwrite:true,
-      cacheControlMaxAge:31536000,
-    });
-    console.log(`MEDINDEX_HORIZONTAL_BRAND ${asset.key} uploaded ${blob.pathname}`);
+    try {
+      const blob = await put(asset.pathname, asset.buffer, {
+        access:'private',
+        contentType:'image/webp',
+        addRandomSuffix:false,
+        allowOverwrite:true,
+        cacheControlMaxAge:31536000,
+      });
+      console.log(`MEDINDEX_HORIZONTAL_BRAND ${asset.key} uploaded ${blob.pathname}`);
+    } catch (error) {
+      failures.push(`${asset.key}: ${error?.message || error}`);
+    }
+  }
+
+  if (failures.length) {
+    console.warn('MEDINDEX_HORIZONTAL_BRAND Blob mirror unavailable; pages ship the materialized files instead.');
+    failures.forEach(line => console.warn(`  - ${line}`));
   }
 }
 

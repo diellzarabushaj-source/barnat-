@@ -305,4 +305,30 @@ function bootLibrary(seed = {}) {
     'the static allowlist rollback path must remain');
 }
 
+
+// --- a suspended asset mirror must not take the deployment with it ----------
+//
+// Not an identity rule, but the deployment gate that carried this change: the
+// brand mirror runs inside build:runtime, and a suspended Blob store failed the
+// whole build even though the pages serve the materialized files from /brand/.
+
+{
+  const seed = read('scripts/seed-horizontal-brand-assets.js');
+  const brandRuntime = read('medindex-brand-runtime.js');
+
+  assert.match(brandRuntime, /const ROOT = '\/brand\/';/,
+    'the pages must serve the brand files materialized into the repository');
+  assert.match(seed, /verifyWebp\(buffer, asset\.key\);/,
+    'a bad brand source must still fail the build');
+  assert.match(seed, /catch \(error\) \{\n\s*failures\.push/,
+    'an unreachable Blob mirror must be collected, not thrown');
+  assert.match(seed, /Blob mirror unavailable/,
+    'an unreachable mirror must say so loudly in the build log');
+
+  const uploadAt = seed.indexOf('await put(');
+  const verifyAt = seed.indexOf('verifyWebp(buffer, asset.key);');
+  assert.ok(verifyAt >= 0 && verifyAt < uploadAt,
+    'sources are verified before anything is mirrored, so leniency never covers a bad file');
+}
+
 console.log('Account identity passed: the card is the signed-in account and follows a switch, the photo is filed per account, sign-out leaves nothing behind, and a device library is discarded before it can be merged into another doctor\'s account.');
