@@ -10,15 +10,21 @@ const read = file => fs.readFileSync(path.join(ROOT, file), 'utf8');
 const html = read('urgjencat.html');
 const js = read('emergency-doctor-plan-v3.js');
 const css = read('emergency-doctor-plan-v3.css');
+const readability = read('emergency-doctor-readability-v3.css');
 
 assert.match(html, /emergency-doctor-plan-v3\.css\?v=20260822-1/);
+assert.match(html, /emergency-doctor-readability-v3\.css\?v=20260822-1/);
 assert.match(html, /emergency-doctor-plan-v3\.js\?v=20260822-1/);
 assert.ok(
   html.indexOf('emergency-doctor-ux-v2.js') < html.indexOf('emergency-doctor-plan-v3.js'),
   'Doctor plan v3 must enhance the existing v2 layer, not race it.',
 );
 assert.ok(
-  html.indexOf('emergency-doctor-plan-v3.css') < html.indexOf('tailadmin-professional.css'),
+  html.indexOf('emergency-doctor-plan-v3.css') < html.indexOf('emergency-doctor-readability-v3.css'),
+  'Readability guardrails must load after the v3 visual layer.',
+);
+assert.ok(
+  html.indexOf('emergency-doctor-readability-v3.css') < html.indexOf('tailadmin-professional.css'),
   'Canonical TailAdmin must remain the final stylesheet.',
 );
 
@@ -53,5 +59,13 @@ assert.match(css, /@media\(pointer:coarse\)/);
 assert.match(css, /html\[data-theme="dark"\]/);
 assert.match(css, /prefers-reduced-motion:reduce/);
 assert.doesNotMatch(css, /font-weight:(?:700|800|900)/, 'v3 should preserve the lighter Inter hierarchy.');
+
+assert.match(readability, /\.ck-directory-tag/);
+assert.match(readability, /\.ck-list-button strong/);
+assert.match(readability, /font-size:11px!important/);
+assert.match(readability, /font-size:14px!important/);
+assert.match(readability, /\.ck-sl-experience button/);
+assert.match(readability, /min-height:44px/);
+assert.doesNotMatch(readability, /font-size:(?:[0-9](?:\.[0-9]+)?|10(?:\.[0-9]+)?)px/, 'Readability layer must not introduce sub-11px type.');
 
 console.log('Urgjencat doctor plan v3 contract passed.');
