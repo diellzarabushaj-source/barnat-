@@ -3,6 +3,7 @@
 
   const QUERY = `*[_type == "emergencyProtocol" && reviewStatus != "archived"] | order(title asc){
     _id,title,"slug":slug.current,icdCodes,aliases,category,triageLevel,summary,
+    chapterKey,chapterTitle,chapterOrder,subchapterKey,subchapterTitle,subchapterOrder,
     primaryCareSteps[]{_key,title,action,why,setting,priority,note},
     redFlags,doNotDo,
     referral{when,destination,urgency,beforeTransfer,handover,secondaryCareOverview},
@@ -15,10 +16,13 @@
 
   const MODE_KEY = 'medindex_emergency_mode_v1';
   const SIM_PREFIX = 'medindex_emergency_sim_v1:';
+  const TRIAGE_RANK = {critical: 0, 'very-urgent': 1, urgent: 2};
   const state = {
     items: [],
     filtered: [],
     selectedId: '',
+    chapterKey: '',
+    subchapterKey: '',
     mode: readMode(),
     detailEntries: new Map(),
     lastFocus: null,
@@ -61,6 +65,77 @@
 
   function saveSimulation(itemId, values) {
     try { sessionStorage.setItem(simulationKey(itemId), JSON.stringify([...values])); } catch {}
+  }
+
+  function fallbackTaxonomy(item) {
+    const category = String(item?.category || '').trim();
+    const [root, ...rest] = category.split('/').map(part => part.trim()).filter(Boolean);
+    const chapterTitle = item?.chapterTitle || root || 'Urgjenca të tjera';
+    const subchapterTitle = item?.subchapterTitle || rest.join(' / ') || item?.title || 'Tjetër';
+    const slugify = value => normalize(value)
+      .replace(/[^a-z0-9]+/g, '-')
+      .replace(/^-+|-+$/g, '') || 'pa-kategori';
+    return {
+      chapterKey: item?.chapterKey || slugify(chapterTitle),
+      chapterOrder: Number.isFinite(Number(item?.chapterOrder)) ? Number(item.chapterOrder) : 99,
+      chapterTitle,
+      chapterShortTitle: chapterTitle,
+      subchapterKey: item?.subchapterKey || slugify(subchapterTitle),
+      subchapterOrder: Number.isFinite(Number(item?.subchapterOrder)) ? Number(item.subchapterOrder) : 99,
+      subchapterTitle,
+    };
+  }
+
+  function taxonomyFor(item) {
+    if (item?.__taxonomy) return item.__taxonomy;
+    try {
+      return window.MedIndexEmergencyTaxonomy?.resolve?.(item) || fallbackTaxonomy(item);
+    } catch {
+      return fallbackTaxonomy(item);
+    }
+  }
+
+  function chapterInventory(items = state.items) {
+    try {
+      const summary = window.MedIndexEmergencyTaxonomy?.summarize?.(items);
+      if (Array.isArray(summary)) return summary;
+    } catch {}
+
+    const chapters = new Map();
+    items.forEach(item => {
+      const taxonomy = taxonomyFor(item);
+      let chapter = chapters.get(taxonomy.chapterKey);
+      if (!chapter) {
+        chapter = {
+          key: taxonomy.chapterKey,
+          order: taxonomy.chapterOrder,
+          title: taxonomy.chapterTitle,
+          shortTitle: taxonomy.chapterShortTitle,
+          count: 0,
+          subchapters: new Map(),
+        };
+        chapters.set(chapter.key, chapter);
+      }
+      chapter.count += 1;
+      let subchapter = chapter.subchapters.get(taxonomy.subchapterKey);
+      if (!subchapter) {
+        subchapter = {
+          key: taxonomy.subchapterKey,
+          order: taxonomy.subchapterOrder,
+          title: taxonomy.subchapterTitle,
+          count: 0,
+        };
+        chapter.subchapters.set(subchapter.key, subchapter);
+      }
+      subchapter.count += 1;
+    });
+
+    return [...chapters.values()].map(chapter => ({
+      ...chapter,
+      subchapters: [...chapter.subchapters.values()].sort((a, b) =>
+        a.order - b.order || a.title.localeCompare(b.title, 'sq')
+      ),
+    })).sort((a, b) => a.order - b.order || a.title.localeCompare(b.title, 'sq'));
   }
 
   function chip(label, className = '') {
@@ -277,6 +352,16 @@
     </div>`;
   }
 
+  function breadcrumbMarkup(item) {
+    const taxonomy = taxonomyFor(item);
+    const chapterNumber = taxonomy.chapterOrder < 99 ? `Kapitulli ${taxonomy.chapterOrder}` : 'Kapitulli';
+    return `<nav class="ck-emergency-breadcrumb" aria-label="Pozicioni në strukturën e urgjencave">
+      <span>${esc(chapterNumber)}</span>
+      <span class="is-chapter"><b>${esc(taxonomy.chapterTitle)}</b></span>
+      <span><b>${esc(taxonomy.subchapterTitle)}</b></span>
+    </nav>`;
+  }
+
   function renderDetail(item) {
     const detail = $('#emergencyDetail');
     state.detailEntries.clear();
@@ -302,6 +387,7 @@
     detail.innerHTML = `
       <header class="ck-detail-head">
         <div>
+          ${breadcrumbMarkup(item)}
           <div class="ck-title-row">
             <div>
               <h2>${esc(item.title)}</h2>
@@ -509,19 +595,88 @@
     });
   }
 
+  function compareItems(a, b) {
+    const at = taxonomyFor(a);
+    const bt = taxonomyFor(b);
+    return at.chapterOrder - bt.chapterOrder
+      || at.subchapterOrder - bt.subchapterOrder
+      || (TRIAGE_RANK[a.triageLevel] ?? 99) - (TRIAGE_RANK[b.triageLevel] ?? 99)
+      || String(a.title || '').localeCompare(String(b.title || ''), 'sq');
+  }
+
+  function groupFilteredItems() {
+    const chapters = new Map();
+    [...state.filtered].sort(compareItems).forEach(item => {
+      const taxonomy = taxonomyFor(item);
+      let chapter = chapters.get(taxonomy.chapterKey);
+      if (!chapter) {
+        chapter = {
+          key: taxonomy.chapterKey,
+          order: taxonomy.chapterOrder,
+          title: taxonomy.chapterTitle,
+          count: 0,
+          subchapters: new Map(),
+        };
+        chapters.set(chapter.key, chapter);
+      }
+      chapter.count += 1;
+      let subchapter = chapter.subchapters.get(taxonomy.subchapterKey);
+      if (!subchapter) {
+        subchapter = {
+          key: taxonomy.subchapterKey,
+          order: taxonomy.subchapterOrder,
+          title: taxonomy.subchapterTitle,
+          items: [],
+        };
+        chapter.subchapters.set(subchapter.key, subchapter);
+      }
+      subchapter.items.push(item);
+    });
+
+    return [...chapters.values()].map(chapter => ({
+      ...chapter,
+      subchapters: [...chapter.subchapters.values()].sort((a, b) =>
+        a.order - b.order || a.title.localeCompare(b.title, 'sq')
+      ),
+    })).sort((a, b) => a.order - b.order || a.title.localeCompare(b.title, 'sq'));
+  }
+
+  function listButtonMarkup(item) {
+    const taxonomy = taxonomyFor(item);
+    return `<button class="ck-list-button${item._id === state.selectedId ? ' is-active' : ''}" type="button"
+      data-id="${esc(item._id)}" data-chapter-key="${esc(taxonomy.chapterKey)}" data-subchapter-key="${esc(taxonomy.subchapterKey)}"
+      aria-pressed="${item._id === state.selectedId ? 'true' : 'false'}">
+      <strong>${esc(item.title)}</strong>
+      <span>${esc((item.icdCodes || []).join(' · '))}${item.category ? ` · ${esc(item.category)}` : ''}</span>
+    </button>`;
+  }
+
   function renderList() {
     const list = $('#emergencyList');
-    list.innerHTML = state.filtered.map(item => `
-      <button class="ck-list-button${item._id === state.selectedId ? ' is-active' : ''}" type="button" data-id="${esc(item._id)}" aria-pressed="${item._id === state.selectedId ? 'true' : 'false'}">
-        <strong>${esc(item.title)}</strong>
-        <span>${esc((item.icdCodes || []).join(' · '))}${item.category ? ` · ${esc(item.category)}` : ''}</span>
-      </button>`).join('') || '<p class="ck-status">Nuk u gjet asnjë urgjencë.</p>';
+    const groups = groupFilteredItems();
+    list.innerHTML = groups.map(chapter => `
+      <section class="ck-directory-chapter" data-ck-chapter-group="${esc(chapter.key)}">
+        <header class="ck-directory-chapter-head">
+          <div>
+            <span>${chapter.order < 99 ? `Kapitulli ${String(chapter.order).padStart(2, '0')}` : 'Kapitulli'}</span>
+            <strong>${esc(chapter.title)}</strong>
+          </div>
+          <b>${chapter.count}</b>
+        </header>
+        ${chapter.subchapters.map(subchapter => `
+          <div class="ck-directory-subchapter" data-ck-subchapter-group="${esc(subchapter.key)}">
+            <div class="ck-directory-subchapter-title">${esc(subchapter.title)}</div>
+            ${subchapter.items.map(listButtonMarkup).join('')}
+          </div>`).join('')}
+      </section>`).join('') || '<p class="ck-status">Nuk u gjet asnjë urgjencë.</p>';
 
     list.querySelectorAll('[data-id]').forEach(button => {
       button.addEventListener('click', () => {
         state.selectedId = button.dataset.id;
         renderList();
-        renderDetail(state.items.find(item => item._id === state.selectedId));
+        const item = state.items.find(candidate => candidate._id === state.selectedId);
+        renderDetail(item);
+        syncUrlState(item);
         if (matchMedia('(max-width: 900px)').matches) {
           $('#emergencyDetail')?.scrollIntoView({behavior:'smooth', block:'start'});
         }
@@ -529,33 +684,189 @@
     });
   }
 
-  function applyFilters() {
+  function chapterByKey(key) {
+    return chapterInventory().find(chapter => chapter.key === key) || null;
+  }
+
+  function renderChapterNavigation() {
+    const explorer = $('#emergencyChapterExplorer');
+    const chapterNav = $('#emergencyChapterNav');
+    const subchapterWrap = $('#emergencySubchapterWrap');
+    const subchapterNav = $('#emergencySubchapterNav');
+    const summary = $('#emergencyChapterSummary');
+    if (!explorer || !chapterNav || !subchapterWrap || !subchapterNav || !summary) return;
+
+    const chapters = chapterInventory();
+    explorer.hidden = !chapters.length;
+    summary.textContent = `${chapters.length} ${chapters.length === 1 ? 'kapitull aktiv' : 'kapituj aktivë'} · ${state.items.length} ${state.items.length === 1 ? 'protokoll' : 'protokolle'}`;
+
+    chapterNav.innerHTML = chapters.map(chapter => `
+      <button type="button" data-ck-chapter="${esc(chapter.key)}" aria-pressed="${state.chapterKey === chapter.key ? 'true' : 'false'}">
+        <span>${chapter.order < 99 ? String(chapter.order).padStart(2, '0') : '•'}</span>
+        <strong>${esc(chapter.shortTitle || chapter.title)}</strong>
+        <b>${chapter.count}</b>
+      </button>`).join('');
+
+    const active = chapterByKey(state.chapterKey);
+    if (!active) {
+      subchapterWrap.hidden = true;
+      subchapterNav.innerHTML = '';
+      return;
+    }
+
+    subchapterWrap.hidden = false;
+    subchapterNav.innerHTML = `
+      <button type="button" data-ck-subchapter="" aria-pressed="${state.subchapterKey ? 'false' : 'true'}">Të gjitha <b>${active.count}</b></button>
+      ${active.subchapters.map(subchapter => `
+        <button type="button" data-ck-subchapter="${esc(subchapter.key)}" aria-pressed="${state.subchapterKey === subchapter.key ? 'true' : 'false'}">
+          ${esc(subchapter.title)} <b>${subchapter.count}</b>
+        </button>`).join('')}`;
+  }
+
+  function activeFilterLabel() {
+    const chapter = chapterByKey(state.chapterKey);
+    if (!chapter) return '';
+    const subchapter = chapter.subchapters.find(item => item.key === state.subchapterKey);
+    return subchapter ? `${chapter.shortTitle || chapter.title} · ${subchapter.title}` : (chapter.shortTitle || chapter.title);
+  }
+
+  function syncUrlState(item) {
+    try {
+      const url = new URL(window.location.href);
+      if (state.chapterKey) url.searchParams.set('chapter', state.chapterKey);
+      else url.searchParams.delete('chapter');
+      if (state.subchapterKey) url.searchParams.set('subchapter', state.subchapterKey);
+      else url.searchParams.delete('subchapter');
+      if (item?.slug) url.searchParams.set('emergency', item.slug);
+      else url.searchParams.delete('emergency');
+      history.replaceState(null, '', `${url.pathname}${url.search}${url.hash}`);
+    } catch {}
+  }
+
+  function restoreUrlState() {
+    try {
+      const url = new URL(window.location.href);
+      const chapterKey = url.searchParams.get('chapter') || '';
+      const subchapterKey = url.searchParams.get('subchapter') || '';
+      const emergencySlug = url.searchParams.get('emergency') || '';
+      const chapters = chapterInventory();
+      const chapter = chapters.find(item => item.key === chapterKey);
+      state.chapterKey = chapter ? chapter.key : '';
+      state.subchapterKey = chapter?.subchapters.some(item => item.key === subchapterKey) ? subchapterKey : '';
+      const item = state.items.find(candidate => candidate.slug === emergencySlug);
+      if (item) state.selectedId = item._id;
+    } catch {}
+  }
+
+  function applyFilters({syncUrl = true} = {}) {
     const term = normalize($('#emergencySearch').value);
     const category = $('#emergencyCategory').value;
     state.filtered = state.items.filter(item => {
-      const haystack = normalize([item.title,item.summary,item.category,...(item.icdCodes || []),...(item.aliases || [])].join(' '));
-      return (!term || haystack.includes(term)) && (!category || item.category === category);
-    });
+      const taxonomy = taxonomyFor(item);
+      const haystack = normalize([
+        item.title,item.summary,item.category,taxonomy.chapterTitle,taxonomy.subchapterTitle,
+        ...(item.icdCodes || []),...(item.aliases || []),
+      ].join(' '));
+      return (!term || haystack.includes(term))
+        && (!category || item.category === category)
+        && (!state.chapterKey || taxonomy.chapterKey === state.chapterKey)
+        && (!state.subchapterKey || taxonomy.subchapterKey === state.subchapterKey);
+    }).sort(compareItems);
+
     if (!state.filtered.some(item => item._id === state.selectedId)) state.selectedId = state.filtered[0]?._id || '';
+    renderChapterNavigation();
     renderList();
-    renderDetail(state.items.find(item => item._id === state.selectedId));
-    $('#emergencyStatus').textContent = `${state.filtered.length} urgjenca`;
+    const item = state.items.find(candidate => candidate._id === state.selectedId);
+    renderDetail(item);
+
+    const status = $('#emergencyStatus');
+    const filterLabel = activeFilterLabel();
+    status.textContent = `${state.filtered.length} ${state.filtered.length === 1 ? 'urgjencë' : 'urgjenca'}${filterLabel ? ` · ${filterLabel}` : ''}`;
+    status.dataset.ckFiltered = state.chapterKey || state.subchapterKey || term ? 'true' : 'false';
+    if (syncUrl) syncUrlState(item);
+  }
+
+  function setChapterFilter(chapterKey) {
+    state.chapterKey = chapterKey || '';
+    state.subchapterKey = '';
+    applyFilters();
+    requestAnimationFrame(() => {
+      const selector = state.chapterKey
+        ? `[data-ck-chapter="${CSS.escape(state.chapterKey)}"]`
+        : '#emergencyChapterReset';
+      $(selector)?.focus({preventScroll:true});
+    });
+  }
+
+  function setSubchapterFilter(subchapterKey) {
+    state.subchapterKey = subchapterKey || '';
+    applyFilters();
+    requestAnimationFrame(() => {
+      const escaped = CSS.escape(state.subchapterKey);
+      $(`[data-ck-subchapter="${escaped}"]`)?.focus({preventScroll:true});
+    });
+  }
+
+  function moveFilterFocus(event, selector) {
+    if (!['ArrowLeft', 'ArrowRight', 'Home', 'End'].includes(event.key)) return;
+    const current = event.target.closest(selector);
+    if (!current) return;
+    const root = current.parentElement;
+    const buttons = [...root.querySelectorAll(selector)];
+    if (!buttons.length) return;
+    event.preventDefault();
+    let index = buttons.indexOf(current);
+    if (event.key === 'Home') index = 0;
+    else if (event.key === 'End') index = buttons.length - 1;
+    else index = (index + (event.key === 'ArrowRight' ? 1 : -1) + buttons.length) % buttons.length;
+    buttons[index]?.focus({preventScroll:true});
+  }
+
+  function bindChapterNavigation() {
+    $('#emergencyChapterNav')?.addEventListener('click', event => {
+      const button = event.target.closest('[data-ck-chapter]');
+      if (!button) return;
+      setChapterFilter(button.dataset.ckChapter || '');
+    });
+    $('#emergencyChapterNav')?.addEventListener('keydown', event => moveFilterFocus(event, '[data-ck-chapter]'));
+
+    $('#emergencySubchapterNav')?.addEventListener('click', event => {
+      const button = event.target.closest('[data-ck-subchapter]');
+      if (!button) return;
+      setSubchapterFilter(button.dataset.ckSubchapter || '');
+    });
+    $('#emergencySubchapterNav')?.addEventListener('keydown', event => moveFilterFocus(event, '[data-ck-subchapter]'));
+
+    $('#emergencyChapterReset')?.addEventListener('click', () => {
+      state.chapterKey = '';
+      state.subchapterKey = '';
+      applyFilters();
+      requestAnimationFrame(() => $('#emergencyChapterReset')?.focus({preventScroll:true}));
+    });
   }
 
   async function init() {
     try {
       ensureDrawer();
-      state.items = await window.MedIndexSanity.query(QUERY);
+      const rows = await window.MedIndexSanity.query(QUERY);
+      state.items = (Array.isArray(rows) ? rows : []).map(item => ({
+        ...item,
+        __taxonomy: taxonomyFor(item),
+      }));
+
       const categories = [...new Set(state.items.map(item => item.category).filter(Boolean))]
         .sort((a,b) => a.localeCompare(b,'sq'));
       $('#emergencyCategory').insertAdjacentHTML(
         'beforeend',
         categories.map(category => `<option value="${esc(category)}">${esc(category)}</option>`).join('')
       );
+
       state.selectedId = state.items[0]?._id || '';
-      $('#emergencySearch').addEventListener('input', applyFilters);
-      $('#emergencyCategory').addEventListener('change', applyFilters);
-      applyFilters();
+      restoreUrlState();
+      bindChapterNavigation();
+      $('#emergencySearch').addEventListener('input', () => applyFilters());
+      $('#emergencyCategory').addEventListener('change', () => applyFilters());
+      applyFilters({syncUrl:false});
     } catch (error) {
       console.error(error);
       $('#emergencyStatus').textContent = 'Urgjencat nuk u ngarkuan.';
