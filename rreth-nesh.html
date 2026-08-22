@@ -11,6 +11,22 @@
   <link rel="stylesheet" href="info-pages.css?v=20260814-1">
   <link rel="stylesheet" href="medindex-tailwind-ui.css?v=20260805-1" data-medindex-tailwind-ui>
   <link rel="stylesheet" href="public-footer.css?v=20260822-1">
+  <style id="mi-footer-critical">
+    body:has(.mi-site-footer){min-height:100dvh;display:flex;flex-direction:column}
+    body:has(.mi-site-footer) .info-shell{min-height:0!important;flex:1 0 auto}
+    .mi-site-footer{width:100%!important;border-top:1px solid #e5e9f1!important;background:#f7f9fc!important;color:#0b1220!important;font-family:"Inter",-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Arial,sans-serif!important}
+    .mi-site-footer__inner{width:min(1240px,calc(100% - 48px))!important;margin:0 auto!important;padding:38px 0 26px!important}
+    .mi-site-footer__top{display:flex!important;align-items:center!important;justify-content:space-between!important;gap:24px 36px!important;padding-bottom:29px!important}
+    .mi-site-footer__brand{display:inline-flex!important;align-items:center!important;flex:0 0 auto!important}
+    .mi-site-footer__logo{display:block!important;width:auto!important;height:34px!important;max-width:190px!important;object-fit:contain!important;border:0!important;border-radius:0!important;box-shadow:none!important;background:transparent!important}
+    .mi-site-footer__nav{display:flex!important;align-items:center!important;justify-content:flex-end!important;flex-wrap:wrap!important;gap:12px 30px!important}
+    .mi-site-footer__nav a{color:#59647d!important;font-size:14px!important;font-weight:620!important;line-height:1.4!important;text-decoration:none!important}
+    .mi-site-footer__nav a:hover{color:#0b1220!important}
+    .mi-site-footer__base{display:flex!important;align-items:center!important;justify-content:space-between!important;gap:12px 28px!important;padding-top:23px!important;border-top:1px solid #e2e7ef!important}
+    .mi-site-footer__note{margin:0!important;color:#8a94aa!important;font-size:13px!important;font-weight:520!important;line-height:1.55!important}
+    .mi-site-footer__note:last-child{text-align:right!important}
+    @media(max-width:720px){.mi-site-footer__inner{width:calc(100% - 32px)!important;padding:30px 0 22px!important}.mi-site-footer__top{align-items:flex-start!important;flex-direction:column!important;padding-bottom:23px!important}.mi-site-footer__nav{justify-content:flex-start!important;gap:11px 22px!important}.mi-site-footer__base{align-items:flex-start!important;flex-direction:column!important;padding-top:19px!important}.mi-site-footer__note:last-child{text-align:left!important}}
+  </style>
 </head>
 <body>
   <main class="info-shell">
@@ -26,7 +42,6 @@
           <a href="rreth-nesh.html" aria-current="page">Rreth nesh</a>
           <a href="kontakt.html">Kontakt</a>
           <a href="blog.html">Blog</a>
-
           <a class="login-link" href="login-v2.html">Hyr në MedIndex</a>
         </div>
       </nav>
@@ -35,7 +50,6 @@
         <p class="info-kicker">Rreth MedIndex</p>
         <h1 class="info-title" id="pageTitle">Informacion klinik, i organizuar me qartësi.</h1>
         <p class="info-lead">MedIndex është një hapësirë private pune e krijuar për ta bërë informacionin klinik më të shpejtë, më të qartë dhe më të përdorshëm në praktikën e përditshme.</p>
-
       </section>
 
       <section class="info-body">
@@ -61,8 +75,8 @@
         </nav>
       </div>
       <div class="mi-site-footer__base">
-        <p class="mi-site-footer__note">© 2026 MedIndex · Dr. Diellza Rabushaj</p>
-        <p class="mi-site-footer__note">Hapësirë private klinike · Për profesionistë shëndetësorë</p>
+        <p class="mi-site-footer__note">© 2026 MedIndex · Hapësirë private klinike</p>
+        <p class="mi-site-footer__note">Hyrja verifikohet në server · Sesion 8 orë</p>
       </div>
     </div>
   </footer>
