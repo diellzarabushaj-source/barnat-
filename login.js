@@ -349,15 +349,46 @@
         use_fedcm_for_prompt:true,
       });
       const dark = document.documentElement.dataset.theme === 'dark';
-      identity.renderButton(googleButton, {
-        type:'standard',
-        theme:dark ? 'filled_black' : 'outline',
-        size:'large',
-        text:'continue_with',
-        shape:'rectangular',
-        logo_alignment:'left',
-        width:320,
-      });
+
+      // Google e vizaton vetë butonin dhe pranon gjerësi vetëm 200–400px. Nëse
+      // e lëmë të palëvizshme, ai noton brenda kolonës dhe duket sikur kutia
+      // rreth tij është e gabuar. Matet kolona dhe i jepet asaj gjerësi.
+      const googleButtonWidth = () => {
+        const measured = Math.round(googleButton.getBoundingClientRect().width);
+        return Math.max(200, Math.min(400, measured || 320));
+      };
+
+      let renderedWidth = 0;
+      const renderGoogleButton = () => {
+        const width = googleButtonWidth();
+        if (width === renderedWidth) return;
+        renderedWidth = width;
+        identity.renderButton(googleButton, {
+          type:'standard',
+          theme:dark ? 'filled_black' : 'outline',
+          size:'large',
+          text:'continue_with',
+          shape:'rectangular',
+          logo_alignment:'left',
+          width,
+        });
+      };
+
+      renderGoogleButton();
+
+      // Modali hapet si popover dhe ndryshon gjerësi me pikat e thyerjes, prandaj
+      // butoni rivizatohet kur kolona ndryshon — po vetëm kur ndryshimi ka rëndësi.
+      if (typeof ResizeObserver === 'function') {
+        let pending = 0;
+        const observer = new ResizeObserver(() => {
+          cancelAnimationFrame(pending);
+          pending = requestAnimationFrame(() => {
+            if (Math.abs(googleButtonWidth() - renderedWidth) >= 8) renderGoogleButton();
+          });
+        });
+        observer.observe(googleButton);
+      }
+
       googleInitialized = true;
       setGoogleStatus('Zgjidh llogarinë e aprovuar Google.');
     } catch (error) {
