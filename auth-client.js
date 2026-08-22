@@ -115,6 +115,15 @@
       rollbackSession:payload.rollbackSession === true,
       verifiedAt,
       expiresAt:verifiedAt + sessionHours * 60 * 60 * 1000,
+      // The account this lease was issued for. Offline the profile card would
+      // otherwise have no identity to show, and the one thing it must never do
+      // is fall back to whoever used this browser before.
+      account:{
+        id:String(payload.authUser?.id || ''),
+        email:String(payload.user?.email || ''),
+        name:String(payload.user?.name || ''),
+        role:String(payload.authUser?.role || payload.user?.role || ''),
+      },
     };
     try {
       localStorage.setItem(OFFLINE_LEASE_KEY, JSON.stringify(lease));
@@ -199,7 +208,17 @@
       'medindex_user_library_meta_v1',
       'medindex_user_library_reload_v1',
       'medindex_rx_autodraft_v1',
+      // The profile card: the legacy device-wide key, whoever it belonged to.
+      'medindex_profile_v1',
     ];
+    // Per-account profile photos. They are personal images, so signing out
+    // leaves none of them on the device for the next person who signs in.
+    try {
+      for (let index = localStorage.length - 1; index >= 0; index -= 1) {
+        const key = localStorage.key(index);
+        if (key && key.startsWith('medindex_profile_v2:')) localKeys.push(key);
+      }
+    } catch {}
     const sessionKeys = [
       RETURN_KEY,
       'medindex_labs_cache_v3',
@@ -353,6 +372,8 @@
       identityContract:lease.identityContract,
       supabaseAuthenticated:lease.supabaseAuthenticated === true,
       rollbackSession:lease.rollbackSession === true,
+      user:lease.account?.email ? { email:lease.account.email, name:lease.account.name, role:lease.account.role } : null,
+      authUser:lease.account?.id ? { id:lease.account.id, role:lease.account.role } : null,
       expiresAt:lease.expiresAt,
     });
     installLogoutWhenReady();
