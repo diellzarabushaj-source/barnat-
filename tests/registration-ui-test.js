@@ -119,9 +119,26 @@ const read = file => fs.readFileSync(path.join(ROOT, file), 'utf8');
   assert.match(css, /\.mi-input, \.mi-select \{ font-size: 16px; \}/,
     'inputs must reach 16px on small screens, or iOS Safari zooms the viewport on focus and never zooms back');
 
-  const email = read('login-email.css');
-  assert.match(email, /\.login-email-input \{ font-size: 16px; \}/, 'the same iOS zoom rule applies to the login card');
-  assert.ok(email.includes('--mi-brand-600'), 'the email form must follow the shell palette');
+  // The login card's stylesheet was split: login-email.css now carries the
+  // landing showcase and @imports the card rules from login-email-base.css.
+  // Follow the import so this contract keeps holding wherever the rules live,
+  // rather than passing only while they sit in one particular file.
+  const emailSheets = (entry => {
+    const seen = new Set();
+    const parts = [];
+    const walk = file => {
+      if (seen.has(file)) return;
+      seen.add(file);
+      const css = read(file);
+      parts.push(css);
+      for (const match of css.matchAll(/@import\s+url\(\s*["']?\/?([^"')?]+\.css)/g)) walk(match[1]);
+    };
+    walk(entry);
+    return parts.join('\n');
+  })('login-email.css');
+
+  assert.match(emailSheets, /\.login-email-input \{ font-size: 16px; \}/, 'the same iOS zoom rule applies to the login card');
+  assert.ok(emailSheets.includes('--mi-brand-600'), 'the email form must follow the shell palette');
 }
 
 console.log('Registration and login UI contract passed.');
