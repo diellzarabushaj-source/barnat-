@@ -8,6 +8,12 @@
   const reducedMotion = () => window.matchMedia?.('(prefers-reduced-motion: reduce)')?.matches;
   const isTyping = target => Boolean(target?.closest?.('input,textarea,select,[contenteditable="true"]'));
   const text = (root, selector) => root?.querySelector(selector)?.textContent?.trim() || '';
+  const esc = value => String(value ?? '')
+    .replaceAll('&', '&amp;')
+    .replaceAll('<', '&lt;')
+    .replaceAll('>', '&gt;')
+    .replaceAll('"', '&quot;')
+    .replaceAll("'", '&#039;');
 
   function currentItem() {
     const items = Array.isArray(window.__medIndexEmergencyItems) ? window.__medIndexEmergencyItems : [];
@@ -66,8 +72,8 @@
 
   function metric(label, value, action = '') {
     const tag = action ? 'button' : 'div';
-    const actionAttr = action ? ` type="button" data-ck-scan-action="${action}"` : '';
-    return `<${tag} class="ck-doctor-scan-metric"${actionAttr}><span>${label}</span><strong>${value}</strong></${tag}>`;
+    const actionAttr = action ? ` type="button" data-ck-scan-action="${esc(action)}"` : '';
+    return `<${tag} class="ck-doctor-scan-metric"${actionAttr}><span>${esc(label)}</span><strong>${esc(value)}</strong></${tag}>`;
   }
 
   function installClinicalScan() {
@@ -94,8 +100,8 @@
     scan.innerHTML = `
       <div class="ck-doctor-scan-main">
         <span>TANI · ORIENTIM 5–10 SEKONDA</span>
-        <strong>${firstTitle}</strong>
-        ${firstAction ? `<p>${short(firstAction)}</p>` : ''}
+        <strong>${esc(firstTitle)}</strong>
+        ${firstAction ? `<p>${esc(short(firstAction))}</p>` : ''}
       </div>
       <div class="ck-doctor-scan-metrics">
         ${metric('Hapa', String(steps), 'steps')}
@@ -166,6 +172,7 @@
     if (!flash) return;
     const delta = flash.getBoundingClientRect().top - anchor.top;
     if (Math.abs(delta) > 1) window.scrollBy({top: delta, behavior: 'auto'});
+    flash.querySelector('[data-flash-reveal]')?.focus({preventScroll: true});
     window.__ckEmergencyFlashAnchor = null;
   }
 
