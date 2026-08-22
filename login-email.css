@@ -1,774 +1,224 @@
-/* Email + password sign-in, added beside the Google button on both login pages.
-   Scoped to its own class names so neither login stylesheet has to change, and
-   built on the --mi-* tokens so it follows the shell theme. */
+@import url("/login-email-base.css?v=20260822-showcase-1");
 
-.login-email-form {
-  display: grid;
-  gap: 6px;
-  margin: 18px 0 0;
-  text-align: left;
-}
-
-.login-email-label {
-  margin: 6px 0 0;
-  color: var(--mi-muted, #667085);
-  font-size: 12.5px;
-  font-weight: 600;
-  letter-spacing: .01em;
-}
-
-.login-email-input {
-  width: 100%;
-  min-height: 46px;
-  padding: 11px 14px;
-  border: 1px solid var(--mi-border, #e4e7ec);
-  border-radius: 10px;
-  background: var(--mi-surface, #fff);
-  color: var(--mi-text, #101828);
-  font: inherit;
-  font-size: 15px;
-  -webkit-appearance: none;
-  appearance: none;
-  transition: border-color .15s ease, box-shadow .15s ease;
-}
-
-.login-email-input::placeholder { color: var(--mi-gray-400, #98a2b3); }
-
-.login-email-input:focus {
-  outline: none;
-  border-color: var(--mi-brand-500, #1f7779);
-  box-shadow: var(--mi-focus, 0 0 0 4px rgba(21, 95, 99, .18));
-}
-
-.login-email-row { position: relative; }
-.login-email-row .login-email-input { padding-right: 74px; }
-
-.login-email-row button {
-  position: absolute;
-  top: 50%;
-  right: 6px;
-  transform: translateY(-50%);
-  /* Every visible control on this card is a phone tap target, so it clears the
-     44px floor the mobile login audit enforces. It sits inside a 46px field. */
-  min-height: 44px;
-  padding: 0 12px;
-  border: 0;
-  border-radius: 7px;
-  background: transparent;
-  color: var(--mi-muted, #667085);
-  font: inherit;
-  font-size: 12.5px;
-  font-weight: 600;
-  cursor: pointer;
-}
-
-.login-email-row button:hover { color: var(--mi-brand-600, #155f63); }
-
-.login-email-submit {
-  min-height: 48px;
-  margin-top: 12px;
-  padding: 12px 18px;
-  border: 0;
-  border-radius: 10px;
-  background: var(--mi-brand-600, #155f63);
-  color: #fff;
-  font: inherit;
-  font-size: 15px;
-  font-weight: 700;
-  cursor: pointer;
-  transition: background .15s ease;
-}
-
-.login-email-submit:hover { background: var(--mi-brand-700, #0d4145); }
-
-.login-email-submit[disabled] { opacity: .6; cursor: not-allowed; }
-
-.login-email-link {
-  justify-self: center;
-  min-height: 44px;
-  margin-top: 4px;
-  padding: 6px 12px;
-  border: 0;
-  background: transparent;
-  color: var(--mi-muted, #667085);
-  font: inherit;
-  font-size: 13px;
-  text-decoration: underline;
-  cursor: pointer;
-}
-
-.login-email-link:hover { color: var(--mi-brand-600, #155f63); }
-
-/* The way to registration is its own control rather than a link buried in a
-   sentence: on a phone that made it both hard to see and too small to hit. */
-.login-register-cta {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  min-height: 46px;
-  margin: 10px 0 0;
-  padding: 12px 18px;
-  border: 1px solid var(--mi-border, #e4e7ec);
-  border-radius: 10px;
-  background: var(--mi-surface, #fff);
-  color: var(--mi-brand-700, #0d4145);
-  font-size: 14px;
-  font-weight: 700;
-  text-align: center;
-  text-decoration: none;
-}
-
-.login-register-cta:hover {
-  border-color: var(--mi-brand-500, #1f7779);
-  background: var(--mi-brand-25, #f7fbfa);
-}
-
-.login-register {
-  margin: 16px 0 0;
-  color: var(--mi-muted, #667085);
-  font-size: 13.5px;
-  line-height: 1.6;
-  text-align: center;
-}
-
-.login-register a {
-  color: var(--mi-brand-600, #155f63);
-  font-weight: 700;
-  text-decoration: none;
-}
-
-.login-register a:hover { text-decoration: underline; }
-
-@media (max-width: 560px) {
-  /* Below 16px iOS Safari zooms the viewport on focus and never zooms back. */
-  .login-email-input { font-size: 16px; }
-}
-
-@media (prefers-reduced-motion: reduce) {
-  .login-email-input,
-  .login-email-submit { transition: none; }
-}
-
-/* Landing v2 — the three workflow cards stay in the exact same position and
-   dimensions, but use the user's deep navy reference instead of the pale card
-   fill. Only their visual palette changes; the section around them is untouched. */
-.medindex-landing-v2 .lv-flow-step {
-  border-color: rgba(143, 177, 232, .14);
-  background: linear-gradient(145deg, #0a1322 0%, #060d19 100%);
-  box-shadow: 0 16px 36px rgba(6, 13, 25, .18), inset 0 1px 0 rgba(255, 255, 255, .035);
-}
-
-.medindex-landing-v2 .lv-flow-step::after {
-  background: radial-gradient(320px circle at var(--lv-mx, 50%) var(--lv-my, 0%), rgba(87, 139, 236, .18), transparent 62%);
-}
-
-.medindex-landing-v2 .lv-flow-step:hover {
-  border-color: rgba(143, 177, 232, .28);
-  box-shadow: 0 22px 55px rgba(6, 13, 25, .30), inset 0 1px 0 rgba(255, 255, 255, .045);
-}
-
-.medindex-landing-v2 .lv-flow-ghost {
-  color: #a9c6ff;
-  opacity: .10;
-}
-
-.medindex-landing-v2 .lv-flow-num {
-  color: #8fb6f5;
-}
-
-.medindex-landing-v2 .lv-flow-step h3 {
-  color: #f7faff;
-}
-
-.medindex-landing-v2 .lv-flow-step p {
-  color: rgba(229, 236, 248, .74);
-}
-
-/* Whole lower landing zone uses the same CursorGrid language: white base,
-   70px navy lattice always visible, while login-v2-canvas.js adds the stronger
-   cursor-reactive cells above it. This removes the old pale-gray rrjedha block
-   so rrjedha + themeluesja + plani read as one continuous white grid surface. */
-.medindex-landing-v2 #rrjedha,
-.medindex-landing-v2 #themeluesja,
-.medindex-landing-v2 #plani {
+/* Landing product showcase — replaces the old boxed “Pse ekziston MedIndex”
+   presentation without changing the page markup. The section now reads like a
+   product demo: one large platform view followed by three focused views and
+   concise clinical explanations. */
+.medindex-landing-v2 #themeluesja {
+  padding-block: clamp(76px, 8vw, 124px) !important;
   background-color: #fff !important;
-  background-image:
-    linear-gradient(rgba(10, 19, 34, .045) 1px, transparent 1px),
-    linear-gradient(90deg, rgba(10, 19, 34, .045) 1px, transparent 1px) !important;
-  background-size: 70px 70px !important;
-  background-position: center top !important;
 }
 
-.medindex-landing-v2 #rrjedha .lv-cursor-grid__canvas,
-.medindex-landing-v2 #themeluesja .lv-cursor-grid__canvas,
-.medindex-landing-v2 #plani .lv-cursor-grid__canvas {
-  opacity: 1 !important;
-}
-/* ==========================================================================
-   Landing v2 — paneli i hyrjes
-
-   Karta është dy panele, jo një rrjetë e sheshtë me rreshta të numëruar:
-   `.login-aside` mban identitetin, `.login-main` mban hyrjen. Të dyja janë
-   kolona që rrjedhin, prandaj çdo gjë që shfaqet me kusht — fallback-u i
-   password-it, njoftimi `noscript`, rreshti i mesazhit — ulet brenda kolonës
-   në vend që t'i shtojë kartës një rresht të nëntë që ajo s'e mban dot.
-
-   Butoni i Google-it vizatohet nga vetë Google dhe s'kalon dot 400px. Prandaj
-   kolona e hyrjes e ka përmbajtjen të kufizuar në atë gjerësi: butoni i
-   Google-it, fushat dhe butoni i dorëzimit dalin saktësisht sa njëri-tjetri
-   në vend që butoni të notojë brenda një kutie më të gjerë se vetja.
-   ========================================================================== */
-
-.medindex-landing-v2 .lv-login-modal {
-  overflow: auto;
-  overscroll-behavior: contain;
+.medindex-landing-v2 #themeluesja .lv-shell > .lv-reveal {
+  display: grid !important;
+  grid-template-columns: minmax(0, 1fr) !important;
+  gap: 0 !important;
+  overflow: visible !important;
+  border: 0 !important;
+  border-radius: 0 !important;
+  background: transparent !important;
+  box-shadow: none !important;
+  padding: 0 !important;
 }
 
-.medindex-landing-v2 .lv-login-modal::backdrop {
-  background:
-    radial-gradient(900px 520px at 18% -10%, rgba(61, 111, 224, .20), transparent 58%),
-    radial-gradient(720px 460px at 92% 110%, rgba(22, 13, 94, .22), transparent 60%),
-    rgba(5, 11, 24, .76);
-  backdrop-filter: blur(20px) saturate(.92);
-  -webkit-backdrop-filter: blur(20px) saturate(.92);
+.medindex-landing-v2 #themeluesja .lv-shell > .lv-reveal > div[aria-hidden="true"]:first-child {
+  display: none !important;
 }
 
-.medindex-landing-v2 .login-stage {
-  display: grid;
-  place-items: center;
-  min-height: 100dvh;
-  padding: 20px;
+.medindex-landing-v2 #themeluesja .lv-kicker {
+  grid-row: 1;
+  margin: 0 0 16px !important;
+  color: #3561d8 !important;
+  font-size: 12px !important;
+  font-weight: 820 !important;
+  letter-spacing: .13em !important;
+  text-transform: uppercase !important;
 }
 
-.medindex-landing-v2 .login-card {
-  position: relative;
-  isolation: isolate;
-  display: grid;
-  grid-template-columns: minmax(300px, .84fr) minmax(430px, 1.16fr);
-  /* `minmax(0, 1fr)` e lejon rreshtin të zvogëlohet nën përmbajtjen e vet. Pa
-     të, karta pritet në ekrane të ulëta në vend që kolona të rrëshqasë brenda. */
-  grid-template-rows: minmax(0, 1fr);
-  align-items: stretch;
-  width: min(960px, calc(100vw - 40px));
-  max-height: min(700px, calc(100dvh - 40px));
-  padding: 0;
-  /* Karta nuk rrëshqet — kolona e hyrjes rrëshqet brenda saj, kështu që ana e
-     majtë mbetet e qetë dhe asgjë s'pritet në buzë. */
-  overflow: hidden;
-  border: 1px solid rgba(255, 255, 255, .72);
-  border-radius: 28px;
-  background:
-    radial-gradient(500px 360px at -5% 0%, rgba(61, 111, 224, .13), transparent 66%),
-    linear-gradient(90deg, #f6f8ff 0 42%, #ffffff 42% 100%);
-  box-shadow:
-    0 40px 110px rgba(3, 9, 24, .42),
-    0 2px 10px rgba(3, 9, 24, .08),
-    inset 0 1px 0 rgba(255, 255, 255, .9);
-}
-
-.medindex-landing-v2 .login-card::before {
-  content: "";
-  position: absolute;
-  inset: 0 0 auto;
-  height: 3px;
-  z-index: 4;
-  background: linear-gradient(90deg, #6f97f7 0%, #3d6fe0 38%, #160d5e 100%);
-}
-
-.medindex-landing-v2 .lv-login-modal:popover-open .login-card {
-  animation: miLoginCardIn .34s cubic-bezier(.2, .82, .2, 1) both;
-}
-
-@keyframes miLoginCardIn {
-  from { opacity: 0; transform: translateY(12px) scale(.985); }
-  to { opacity: 1; transform: translateY(0) scale(1); }
-}
-
-/* Mbyllja rri në brezin bosh djathtas kolonës së hyrjes. Më parë ulej mbi
-   butonin e Google-it dhe e mbulonte cepin e tij. */
-.medindex-landing-v2 .login-modal-close {
-  position: absolute;
-  top: 14px;
-  right: 14px;
-  z-index: 5;
-  width: 40px;
-  height: 40px;
-  border: 1px solid rgba(20, 34, 62, .10);
-  border-radius: 50%;
-  background: rgba(255, 255, 255, .92);
-  color: #63708a;
-  box-shadow: 0 8px 26px rgba(13, 22, 44, .10);
-  backdrop-filter: blur(10px);
-  -webkit-backdrop-filter: blur(10px);
-}
-
-.medindex-landing-v2 .login-modal-close:hover {
-  background: #0b1220;
-  border-color: #0b1220;
-  color: #fff;
-  transform: rotate(90deg) scale(1.03);
-}
-
-/* Ana e identitetit ------------------------------------------------------ */
-.medindex-landing-v2 .login-aside {
-  display: flex;
-  flex-direction: column;
-  gap: 0;
-  min-width: 0;
-  min-height: 0;
-  padding: 40px 38px;
-  border-right: 1px solid rgba(19, 33, 68, .055);
-}
-
-.medindex-landing-v2 .login-card-brand {
-  margin: 0;
-  padding: 0;
-}
-
-.medindex-landing-v2 .login-card-brand .lv-logo-horizontal {
-  display: block;
-  height: 38px;
-  width: auto;
-}
-
-.medindex-landing-v2 .login-aside .status {
-  align-self: start;
-  min-height: 28px;
-  /* `auto` këtu dhe te `.login-meta` e ndajnë hapësirën e lirë në dy pjesë:
-     marka lart, premtimi në mes, garancitë poshtë — në vend të një zbrazëtie
-     të vetme nën tekst. */
-  margin: auto 0 0;
-  padding: 0 11px;
-  border-color: rgba(17, 132, 115, .16);
-  background: rgba(235, 249, 245, .86);
-  color: #31675f;
-  font-size: 9.5px;
-  letter-spacing: .095em;
-  box-shadow: inset 0 1px 0 rgba(255, 255, 255, .75);
-}
-
-.medindex-landing-v2 .login-aside > header {
-  margin: 20px 0 0;
-  padding: 0;
-}
-
-.medindex-landing-v2 .login-card h2 {
-  margin: 0;
-  color: #091225;
-  font-size: clamp(32px, 2.9vw, 40px);
-  font-weight: 820;
-  letter-spacing: -.05em;
-  line-height: 1.04;
+.medindex-landing-v2 #themeluesja .lv-kicker + h2 {
+  grid-row: 2;
+  max-width: 900px !important;
+  margin: 0 !important;
+  color: #0a1222 !important;
+  font-size: clamp(42px, 5.8vw, 78px) !important;
+  line-height: .98 !important;
+  letter-spacing: -.055em !important;
   text-wrap: balance;
 }
 
-.medindex-landing-v2 .login-copy {
-  margin: 14px 0 0;
-  color: #64708a;
-  font-size: 14.5px;
-  line-height: 1.62;
-  text-wrap: pretty;
+.medindex-landing-v2 #themeluesja .lv-kicker + h2 + p {
+  grid-row: 3;
+  max-width: 880px !important;
+  margin: 24px 0 0 !important;
+  color: #66738a !important;
+  font-size: clamp(17px, 1.45vw, 21px) !important;
+  line-height: 1.72 !important;
 }
 
-/* Garancitë e sesionit zbresin në fund të panelit; `auto` e ha hapësirën e
-   mbetur, prandaj s'ka më një zbrazëti prej dyqind pikselash nën to. */
-.medindex-landing-v2 .login-meta {
-  display: grid;
-  gap: 10px;
-  margin: auto 0 0;
-  padding: 28px 0 0;
-  border-top: 1px solid rgba(19, 33, 68, .07);
-}
-
-.medindex-landing-v2 .login-meta span {
-  position: relative;
-  display: flex;
-  align-items: center;
-  min-height: 22px;
-  padding-left: 22px;
-  color: #68758d;
-  font-size: 10.5px;
-  font-weight: 700;
-  letter-spacing: .075em;
-  text-transform: uppercase;
-}
-
-.medindex-landing-v2 .login-meta span::before {
+/* The large platform canvas is deliberately a real product-shaped view rather
+   than a generic browser mockup. It is reconstructed from the actual Urgjencat
+   screen so no account name or email appears on the marketing page. */
+.medindex-landing-v2 #themeluesja .lv-shell > .lv-reveal::after {
   content: "";
-  position: absolute;
-  left: 0;
-  width: 8px;
-  height: 8px;
-  border-radius: 50%;
-  background: #3d6fe0;
-  box-shadow: 0 0 0 4px rgba(61, 111, 224, .10);
-}
-
-/* Ana e hyrjes ----------------------------------------------------------- */
-.medindex-landing-v2 .login-main {
-  display: flex;
-  flex-direction: column;
-  /* Rreshtimi vjen nga kolona, jo nga margjina e secilit fëmijë: rregullat më
-     poshtë vendosin `margin: 0` dhe do ta prishnin atë pa u vënë re. */
-  align-items: center;
-  min-width: 0;
-  min-height: 0;
-  padding: 40px 38px;
-  overflow-y: auto;
-  overscroll-behavior: contain;
-}
-
-/* Çdo fëmijë i kolonës del sa butoni i Google-it dhe rreshtohet me të. */
-.medindex-landing-v2 .login-main > * {
-  flex: none;
-  width: 100%;
-  max-width: 400px;
-}
-
-.medindex-landing-v2 .google-login-panel {
-  display: grid;
-  gap: 7px;
-  margin: 0;
-  padding: 0;
-}
-
-/* Google e vizaton butonin e vet me kornizën e vet. Kutia jonë rreth tij
-   ishte një kornizë e dytë, më e gjerë se ai, dhe ajo dukej si gabim. */
-.medindex-landing-v2 .google-login-button {
+  grid-row: 4;
   display: block;
   width: 100%;
-  min-height: 44px;
-  overflow: visible;
-  border: 0;
-  border-radius: 0;
-  background: none;
-  box-shadow: none;
-  color-scheme: light;
+  aspect-ratio: 1440 / 820;
+  margin-top: clamp(40px, 5vw, 66px);
+  border: 1px solid #dce4ee;
+  border-radius: 24px;
+  background: #f6f9fc url("/images/marketing/platform-showcase-main.svg") center / cover no-repeat;
+  box-shadow:
+    0 28px 70px rgba(18, 35, 66, .13),
+    0 2px 8px rgba(18, 35, 66, .05),
+    inset 0 1px 0 rgba(255, 255, 255, .9);
 }
 
-.medindex-landing-v2 .google-login-button:hover {
-  border: 0;
-  box-shadow: none;
+.medindex-landing-v2 #themeluesja .lv-shell > .lv-reveal > div:last-child {
+  grid-row: 5;
+  display: grid !important;
+  grid-template-columns: repeat(3, minmax(0, 1fr)) !important;
+  gap: clamp(18px, 2.2vw, 30px) !important;
+  margin-top: clamp(24px, 3vw, 36px) !important;
 }
 
-.medindex-landing-v2 .google-login-button > div,
-.medindex-landing-v2 .google-login-button iframe {
-  width: 100% !important;
-  max-width: 100% !important;
-  margin-inline: 0 !important;
-  color-scheme: light;
+.medindex-landing-v2 #themeluesja .lv-shell > .lv-reveal > div:last-child > article {
+  position: relative !important;
+  display: grid !important;
+  align-content: start !important;
+  min-width: 0 !important;
+  overflow: visible !important;
+  border: 0 !important;
+  border-radius: 0 !important;
+  background: transparent !important;
+  box-shadow: none !important;
+  padding: 0 !important;
 }
 
-.medindex-landing-v2 .google-login-status {
-  min-height: 15px;
-  margin: 0;
-  color: #97a1b4;
-  font-size: 10.5px;
-  text-align: center;
+.medindex-landing-v2 #themeluesja .lv-shell > .lv-reveal > div:last-child > article::before {
+  content: "";
+  display: block;
+  width: 100%;
+  aspect-ratio: 16 / 9;
+  margin-bottom: 22px;
+  border: 1px solid #dfe6ef;
+  border-radius: 17px;
+  background-color: #f6f9fc;
+  background-position: center;
+  background-size: cover;
+  background-repeat: no-repeat;
+  box-shadow: 0 14px 32px rgba(18, 35, 66, .08);
+  transition: transform .2s ease, box-shadow .2s ease, border-color .2s ease;
 }
 
-.medindex-landing-v2 .login-divider {
-  margin: 18px auto;
-  color: #9aa5b7;
-  font-size: 9px;
-  letter-spacing: .13em;
+.medindex-landing-v2 #themeluesja .lv-shell > .lv-reveal > div:last-child > article:nth-child(1)::before {
+  background-image: url("/images/marketing/platform-showcase-search.svg");
 }
 
-.medindex-landing-v2 .login-divider::before,
-.medindex-landing-v2 .login-divider::after {
-  background: #e9edf4;
+.medindex-landing-v2 #themeluesja .lv-shell > .lv-reveal > div:last-child > article:nth-child(2)::before {
+  background-image: url("/images/marketing/platform-showcase-list.svg");
+  background-position: center 17%;
 }
 
-.medindex-landing-v2 .login-email-form {
-  display: grid;
-  gap: 7px;
-  margin: 0;
-  padding: 0;
+.medindex-landing-v2 #themeluesja .lv-shell > .lv-reveal > div:last-child > article:nth-child(3)::before {
+  background-image: url("/images/marketing/platform-showcase-detail.svg");
 }
 
-.medindex-landing-v2 .login-email-label {
-  margin: 3px 0 1px;
-  color: #58657d;
-  font-size: 11.5px;
-  font-weight: 700;
-  letter-spacing: .015em;
+.medindex-landing-v2 #themeluesja .lv-shell > .lv-reveal > div:last-child > article:hover::before {
+  transform: translateY(-3px);
+  border-color: #cad7e7;
+  box-shadow: 0 20px 42px rgba(18, 35, 66, .12);
 }
 
-.medindex-landing-v2 .login-email-input {
-  min-height: 48px;
-  padding: 0 15px;
-  border: 1px solid #e0e5ee;
-  border-radius: 13px;
-  background: #fbfcfe;
-  color: #111a2b;
-  font-size: 14.5px;
-  box-shadow: inset 0 1px 1px rgba(11, 18, 32, .02);
-  transition: border-color .18s ease, box-shadow .18s ease, background .18s ease;
+.medindex-landing-v2 #themeluesja .lv-shell > .lv-reveal > div:last-child > article > span {
+  margin: 0 0 10px !important;
+  color: #3561d8 !important;
+  font-size: 11px !important;
+  font-weight: 820 !important;
+  letter-spacing: .11em !important;
+  line-height: 1.35 !important;
+  text-transform: uppercase !important;
 }
 
-.medindex-landing-v2 .login-email-input:hover {
-  border-color: #cfd7e4;
-  background: #fff;
+.medindex-landing-v2 #themeluesja .lv-shell > .lv-reveal > div:last-child > article:nth-child(3) > span {
+  color: #138789 !important;
 }
 
-.medindex-landing-v2 .login-email-input:focus {
-  border-color: #6488e8;
-  background: #fff;
-  box-shadow: 0 0 0 4px rgba(61, 111, 224, .12), 0 8px 22px rgba(61, 111, 224, .06);
+.medindex-landing-v2 #themeluesja .lv-shell > .lv-reveal > div:last-child > article > h3 {
+  margin: 0 0 9px !important;
+  color: #0c1424 !important;
+  font-size: clamp(18px, 1.45vw, 22px) !important;
+  font-weight: 760 !important;
+  line-height: 1.18 !important;
+  letter-spacing: -.025em !important;
 }
 
-.medindex-landing-v2 .login-email-input::placeholder {
-  color: #a0aabd;
+.medindex-landing-v2 #themeluesja .lv-shell > .lv-reveal > div:last-child > article > p {
+  margin: 0 !important;
+  color: #69768b !important;
+  font-size: 14.5px !important;
+  line-height: 1.65 !important;
 }
 
-.medindex-landing-v2 .login-email-row .login-email-input {
-  padding-right: 78px;
-}
-
-.medindex-landing-v2 .login-email-row button {
-  right: 8px;
-  min-height: 34px;
-  padding: 0 10px;
-  border-radius: 9px;
-  color: #6f7b92;
-  font-size: 11.5px;
-  font-weight: 700;
-}
-
-.medindex-landing-v2 .login-email-row button:hover {
-  background: #f0f4fb;
-  color: #2450b8;
-}
-
-.medindex-landing-v2 .login-email-submit {
-  min-height: 48px;
-  margin-top: 9px;
-  border-radius: 13px;
-  background: linear-gradient(135deg, #3d6fe0 0%, #2450b8 55%, #160d5e 125%);
-  color: #fff;
-  font-size: 14.5px;
-  font-weight: 760;
-  letter-spacing: -.01em;
-  box-shadow: 0 11px 26px rgba(45, 88, 200, .22);
-  transition: transform .18s ease, box-shadow .18s ease, filter .18s ease;
-}
-
-.medindex-landing-v2 .login-email-submit:hover {
-  background: linear-gradient(135deg, #4678e7 0%, #2857c4 58%, #160d5e 130%);
-  transform: translateY(-1px);
-  box-shadow: 0 15px 30px rgba(45, 88, 200, .27);
-}
-
-.medindex-landing-v2 .login-email-submit:active {
-  transform: translateY(0);
-  box-shadow: 0 8px 20px rgba(45, 88, 200, .20);
-}
-
-.medindex-landing-v2 .login-email-link {
-  justify-self: center;
-  min-height: 32px;
-  margin-top: 2px;
-  padding: 3px 8px;
-  color: #6d7890;
-  font-size: 11.5px;
-  text-decoration: none;
-  text-underline-offset: 3px;
-}
-
-.medindex-landing-v2 .login-email-link:hover {
-  color: #2450b8;
-  text-decoration: underline;
-}
-
-/* Mesazhi rri ngjitur me formën që e prodhon, jo poshtë regjistrimit. Kur
-   s'ka çfarë të thotë, nuk zë as hapësirë. */
-.medindex-landing-v2 .login-message {
-  min-height: 0;
-  margin: 0;
-  font-size: 11.5px;
-  line-height: 1.45;
-  text-align: left;
-}
-
-.medindex-landing-v2 .login-message:not(:empty) {
-  margin-top: 10px;
-}
-
-/* Regjistrimi ndahet nga hyrja me një vijë, që të mos duket si hapi tjetër
-   i së njëjtës formë. */
-.medindex-landing-v2 .login-register {
-  margin-top: 20px;
-  padding-top: 18px;
-  border-top: 1px solid #edf0f5;
-  color: #7b869a;
-  font-size: 11.5px;
-  line-height: 1.5;
-  text-align: left;
-}
-
-.medindex-landing-v2 .login-register-cta {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  min-height: 44px;
-  margin-top: 9px;
-  padding: 9px 14px;
-  border: 1px solid #dfe5ef;
-  border-radius: 12px;
-  background: #f8faff;
-  color: #1d3f89;
-  font-size: 12.5px;
-  font-weight: 740;
-  text-align: center;
-  text-decoration: none;
-  box-shadow: inset 0 1px 0 rgba(255, 255, 255, .75);
-  transition: border-color .18s ease, background .18s ease, color .18s ease, transform .18s ease;
-}
-
-.medindex-landing-v2 .login-register-cta:hover {
-  border-color: #bfd0f4;
-  background: #eef3ff;
-  color: #143678;
-  transform: translateY(-1px);
-}
-
-.medindex-landing-v2 .password-fallback {
-  margin-top: 14px;
-}
-
-.medindex-landing-v2 .password-fallback[hidden] {
-  display: none;
-}
-
-.medindex-landing-v2 .noscript {
-  margin-bottom: 12px;
-}
-
-/* Tablet: dy kolonat mbeten, po ngushtohen. */
-@media (max-width: 960px) {
-  .medindex-landing-v2 .login-card {
-    grid-template-columns: minmax(270px, .82fr) minmax(400px, 1.18fr);
-    width: min(880px, calc(100vw - 32px));
+@media (max-width: 900px) {
+  .medindex-landing-v2 #themeluesja .lv-shell > .lv-reveal > div:last-child {
+    grid-template-columns: 1fr !important;
+    gap: 34px !important;
   }
 
-  .medindex-landing-v2 .login-aside,
-  .medindex-landing-v2 .login-main {
-    padding: 34px 30px;
+  .medindex-landing-v2 #themeluesja .lv-shell > .lv-reveal > div:last-child > article {
+    grid-template-columns: minmax(0, 1.15fr) minmax(0, .85fr) !important;
+    column-gap: 22px !important;
+  }
+
+  .medindex-landing-v2 #themeluesja .lv-shell > .lv-reveal > div:last-child > article::before {
+    grid-row: 1 / span 3;
+    margin: 0 !important;
+    aspect-ratio: 16 / 10;
+  }
+
+  .medindex-landing-v2 #themeluesja .lv-shell > .lv-reveal > div:last-child > article > span,
+  .medindex-landing-v2 #themeluesja .lv-shell > .lv-reveal > div:last-child > article > h3,
+  .medindex-landing-v2 #themeluesja .lv-shell > .lv-reveal > div:last-child > article > p {
+    grid-column: 2;
   }
 }
 
-/* Telefon dhe tablet i vogël: një kolonë e vetme, pa kartë gjigante dhe pa
-   rrëshqitje horizontale. */
-@media (max-width: 780px) {
-  .medindex-landing-v2 .login-stage {
-    align-items: start;
-    padding: 10px;
+@media (max-width: 640px) {
+  .medindex-landing-v2 #themeluesja {
+    padding-block: 68px 78px !important;
   }
 
-  .medindex-landing-v2 .login-card {
-    grid-template-columns: 1fr;
-    width: min(520px, calc(100vw - 20px));
-    max-height: none;
-    overflow: visible;
-    overflow-x: clip;
-    border-radius: 22px;
-    background:
-      radial-gradient(420px 210px at 0% 0%, rgba(61, 111, 224, .10), transparent 68%),
-      #fff;
+  .medindex-landing-v2 #themeluesja .lv-kicker + h2 {
+    font-size: clamp(40px, 13vw, 56px) !important;
   }
 
-  .medindex-landing-v2 .login-aside {
-    padding: 28px 24px 22px;
-    border-right: 0;
-  }
-
-  .medindex-landing-v2 .login-card-brand .lv-logo-horizontal {
-    height: 34px;
-  }
-
-  .medindex-landing-v2 .login-aside .status {
-    margin-top: 20px;
-  }
-
-  .medindex-landing-v2 .login-card h2 {
-    font-size: clamp(28px, 7.4vw, 36px);
-  }
-
-  .medindex-landing-v2 .login-copy {
-    margin-top: 11px;
-    font-size: 13.5px;
-  }
-
-  /* Në telefon garancitë rrinë në një rresht të vetëm si tri fisha, sepse
-     kolona këtu s'ka fund të lirë ku të zbresin. */
-  .medindex-landing-v2 .login-meta {
-    grid-template-columns: repeat(3, minmax(0, 1fr));
-    gap: 6px;
-    margin-top: 22px;
-    padding-top: 20px;
-  }
-
-  .medindex-landing-v2 .login-meta span {
-    justify-content: center;
-    min-height: 32px;
-    padding: 0 6px;
-    border-radius: 9px;
-    background: #f7f9fc;
-    font-size: 8.5px;
-    text-align: center;
-  }
-
-  .medindex-landing-v2 .login-meta span::before {
-    display: none;
-  }
-
-  .medindex-landing-v2 .login-main {
-    padding: 4px 24px 28px;
-    overflow-y: visible;
-  }
-
-  .medindex-landing-v2 .login-main > * {
-    max-width: none;
-  }
-}
-
-@media (max-width: 420px) {
-  .medindex-landing-v2 .login-stage { padding: 6px; }
-
-  .medindex-landing-v2 .login-card {
-    width: calc(100vw - 12px);
+  .medindex-landing-v2 #themeluesja .lv-shell > .lv-reveal::after {
+    aspect-ratio: 4 / 3;
     border-radius: 18px;
+    background-size: auto 100%;
+    background-position: 18% center;
   }
 
-  .medindex-landing-v2 .login-modal-close {
-    top: 10px;
-    right: 10px;
-    width: 38px;
-    height: 38px;
+  .medindex-landing-v2 #themeluesja .lv-shell > .lv-reveal > div:last-child > article {
+    grid-template-columns: 1fr !important;
   }
 
-  .medindex-landing-v2 .login-aside {
-    padding: 24px 18px 20px;
+  .medindex-landing-v2 #themeluesja .lv-shell > .lv-reveal > div:last-child > article::before {
+    grid-row: auto;
+    aspect-ratio: 16 / 9;
+    margin-bottom: 18px !important;
   }
 
-  .medindex-landing-v2 .login-main {
-    padding: 4px 18px 24px;
-  }
-
-  .medindex-landing-v2 .login-meta {
-    grid-template-columns: 1fr;
-  }
-
-  .medindex-landing-v2 .login-meta span {
-    justify-content: flex-start;
-    padding-left: 10px;
-    text-align: left;
+  .medindex-landing-v2 #themeluesja .lv-shell > .lv-reveal > div:last-child > article > span,
+  .medindex-landing-v2 #themeluesja .lv-shell > .lv-reveal > div:last-child > article > h3,
+  .medindex-landing-v2 #themeluesja .lv-shell > .lv-reveal > div:last-child > article > p {
+    grid-column: 1;
   }
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .medindex-landing-v2 .lv-login-modal:popover-open .login-card { animation: none; }
-  .medindex-landing-v2 .login-email-submit,
-  .medindex-landing-v2 .login-register-cta,
-  .medindex-landing-v2 .login-modal-close { transition: none; }
+  .medindex-landing-v2 #themeluesja .lv-shell > .lv-reveal > div:last-child > article::before {
+    transition: none;
+  }
 }
