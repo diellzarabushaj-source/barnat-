@@ -4,6 +4,8 @@ html.medindex-tailadmin[data-mi-page="urgjencat"]{
   --ck-taxonomy-line:rgba(71,119,229,.14);
 }
 
+html.medindex-tailadmin[data-mi-page="urgjencat"] .ck-toolbar{grid-template-columns:minmax(0,1fr)}
+
 .ck-chapter-explorer{display:grid;gap:12px;padding:14px;border:1px solid var(--ck-line);border-radius:20px;background:linear-gradient(145deg,rgba(255,255,255,.99),rgba(247,249,255,.96));box-shadow:0 12px 32px rgba(33,53,96,.055)}
 .ck-chapter-explorer[hidden]{display:none!important}
 .ck-chapter-explorer-head{display:flex;align-items:center;justify-content:space-between;gap:16px}
