@@ -1,0 +1,214 @@
+/* Urgjencat typography layer — Inter only, restrained hierarchy.
+   Loaded after emergency-specific styles and before the canonical TailAdmin stylesheet. */
+
+html.medindex-tailadmin[data-mi-page="urgjencat"]{
+  --mi-font:"Inter",sans-serif;
+  --ck-fw-regular:400;
+  --ck-fw-medium:500;
+  --ck-fw-semibold:600;
+  --ck-fw-bold:700;
+}
+
+html.medindex-tailadmin[data-mi-page="urgjencat"] body{
+  font-family:"Inter",sans-serif!important;
+  font-weight:var(--ck-fw-regular);
+  font-synthesis:none;
+  text-rendering:optimizeLegibility;
+  -webkit-font-smoothing:antialiased;
+  -moz-osx-font-smoothing:grayscale;
+}
+
+html.medindex-tailadmin[data-mi-page="urgjencat"] #emergencyContent,
+html.medindex-tailadmin[data-mi-page="urgjencat"] #emergencyContent *,
+html.medindex-tailadmin[data-mi-page="urgjencat"] #ckDetailOverlay,
+html.medindex-tailadmin[data-mi-page="urgjencat"] #ckDetailOverlay *{
+  font-family:"Inter",sans-serif!important;
+}
+
+/* Default copy stays regular. */
+html.medindex-tailadmin[data-mi-page="urgjencat"] #emergencyContent :where(p,li,dd,dt,small,input,textarea),
+html.medindex-tailadmin[data-mi-page="urgjencat"] #ckDetailOverlay :where(p,li,dd,dt,small){
+  font-weight:var(--ck-fw-regular)!important;
+}
+
+/* Emphasis is semibold, never extra-bold. */
+html.medindex-tailadmin[data-mi-page="urgjencat"] #emergencyContent :where(strong,b),
+html.medindex-tailadmin[data-mi-page="urgjencat"] #ckDetailOverlay :where(strong,b){
+  font-weight:var(--ck-fw-semibold)!important;
+}
+
+/* Primary headings: 700 only where visual hierarchy truly needs it. */
+html.medindex-tailadmin[data-mi-page="urgjencat"] .ck-hero h1,
+html.medindex-tailadmin[data-mi-page="urgjencat"] .ck-detail-head h2{
+  font-weight:var(--ck-fw-bold)!important;
+  letter-spacing:-.042em!important;
+}
+
+html.medindex-tailadmin[data-mi-page="urgjencat"] .ck-detail-head h2{
+  line-height:1.06!important;
+}
+
+/* Section and learning headings use semibold. */
+html.medindex-tailadmin[data-mi-page="urgjencat"] :where(
+  .ck-section h3,
+  .ck-sl-therapy-copy h3,
+  .ck-sl-section-heading h3,
+  .ck-sl-learn-intro h3,
+  .ck-sl-lesson-block-head h3,
+  .ck-sl-lesson-title h4,
+  .ck-sl-flash-head h3,
+  .ck-sl-flashcard h4,
+  #ckDetailOverlay .ck-drawer-section h3,
+  #ckDetailOverlay .ck-drawer-source h3
+){
+  font-weight:var(--ck-fw-semibold)!important;
+  letter-spacing:-.018em!important;
+}
+
+/* Directory hierarchy: quiet labels, clear names. */
+html.medindex-tailadmin[data-mi-page="urgjencat"] .ck-directory-chapter-head span{
+  font-weight:var(--ck-fw-semibold)!important;
+  letter-spacing:.055em!important;
+}
+html.medindex-tailadmin[data-mi-page="urgjencat"] .ck-directory-chapter-head strong,
+html.medindex-tailadmin[data-mi-page="urgjencat"] .ck-list-button strong{
+  font-weight:var(--ck-fw-semibold)!important;
+  letter-spacing:-.012em!important;
+}
+html.medindex-tailadmin[data-mi-page="urgjencat"] .ck-directory-subchapter-title,
+html.medindex-tailadmin[data-mi-page="urgjencat"] .ck-list-button span{
+  font-weight:var(--ck-fw-medium)!important;
+}
+html.medindex-tailadmin[data-mi-page="urgjencat"] .ck-directory-chapter-head b{
+  font-weight:var(--ck-fw-semibold)!important;
+}
+
+/* Chapter/subchapter dropdowns. */
+html.medindex-tailadmin[data-mi-page="urgjencat"] .ck-chapter-explorer-copy span,
+html.medindex-tailadmin[data-mi-page="urgjencat"] .ck-chapter-picker>span{
+  font-weight:var(--ck-fw-semibold)!important;
+  letter-spacing:.055em!important;
+}
+html.medindex-tailadmin[data-mi-page="urgjencat"] .ck-chapter-explorer-copy strong{
+  font-weight:var(--ck-fw-semibold)!important;
+}
+html.medindex-tailadmin[data-mi-page="urgjencat"] .ck-chapter-explorer-copy small{
+  font-weight:var(--ck-fw-regular)!important;
+}
+html.medindex-tailadmin[data-mi-page="urgjencat"] .ck-chapter-picker select{
+  font-weight:var(--ck-fw-medium)!important;
+  letter-spacing:-.005em!important;
+}
+
+/* Search and controls. */
+html.medindex-tailadmin[data-mi-page="urgjencat"] .ck-toolbar input,
+html.medindex-tailadmin[data-mi-page="urgjencat"] .ck-toolbar select{
+  font-weight:var(--ck-fw-regular)!important;
+}
+html.medindex-tailadmin[data-mi-page="urgjencat"] :where(
+  .ck-studio-link,
+  .ck-chapter-reset,
+  #emergencyDetail button,
+  #ckDetailOverlay button
+){
+  font-weight:var(--ck-fw-medium)!important;
+}
+
+/* Metadata and microcopy should not compete with the clinical title. */
+html.medindex-tailadmin[data-mi-page="urgjencat"] :where(
+  .ck-kicker,
+  .ck-chip,
+  .ck-section-kicker,
+  .ck-section-count,
+  .ck-mode-caption,
+  .ck-directory-tag,
+  .ck-directory-review,
+  .ck-directory-source-count,
+  .ck-triage-filter-copy span,
+  .ck-triage-filter-status,
+  .ck-review-button small
+){
+  font-weight:var(--ck-fw-medium)!important;
+}
+
+html.medindex-tailadmin[data-mi-page="urgjencat"] :where(
+  .ck-mode-toggle button,
+  .ck-triage-filter-group button,
+  .ck-review-button,
+  .ck-sl-now,
+  .ck-sl-step-head span,
+  .ck-sl-lesson-title>span,
+  .ck-sl-flashcard>button,
+  .ck-sl-flash-controls>button,
+  .ck-sl-recall button
+){
+  font-weight:var(--ck-fw-semibold)!important;
+}
+
+/* Breadcrumb stays subtle; only the current hierarchy gets semibold emphasis. */
+html.medindex-tailadmin[data-mi-page="urgjencat"] .ck-emergency-breadcrumb,
+html.medindex-tailadmin[data-mi-page="urgjencat"] .ck-emergency-breadcrumb span{
+  font-weight:var(--ck-fw-regular)!important;
+  letter-spacing:-.004em!important;
+}
+html.medindex-tailadmin[data-mi-page="urgjencat"] .ck-emergency-breadcrumb b{
+  font-weight:var(--ck-fw-semibold)!important;
+}
+
+/* Summary / Learn: remove the heavy visual wall of bold text. */
+html.medindex-tailadmin[data-mi-page="urgjencat"] :where(
+  .ck-sl-therapy-copy p,
+  .ck-sl-step p,
+  .ck-sl-dont ul,
+  .ck-sl-transfer p,
+  .ck-sl-learn-intro p,
+  .ck-sl-lesson-action,
+  .ck-sl-why p,
+  .ck-sl-pearl p,
+  .ck-sl-lesson-list,
+  .ck-sl-referral-grid p,
+  .ck-sl-flash-head p,
+  .ck-sl-flash-answer p
+){
+  font-weight:var(--ck-fw-regular)!important;
+}
+
+html.medindex-tailadmin[data-mi-page="urgjencat"] :where(
+  .ck-sl-therapy-copy>span,
+  .ck-sl-section-heading span,
+  .ck-sl-learn-intro>span,
+  .ck-sl-lesson-block-head>span,
+  .ck-sl-flash-head span,
+  .ck-sl-transfer span,
+  .ck-sl-referral-grid span,
+  .ck-sl-why strong,
+  .ck-sl-pearl strong,
+  .ck-sl-flash-answer small,
+  .ck-sl-flashcard>span,
+  .ck-sl-mini-title,
+  .ck-sl-step-head strong,
+  .ck-sl-lesson-title h4
+){
+  font-weight:var(--ck-fw-semibold)!important;
+}
+
+html.medindex-tailadmin[data-mi-page="urgjencat"] .ck-sl-step-number,
+html.medindex-tailadmin[data-mi-page="urgjencat"] .ck-sl-lesson-index{
+  font-weight:var(--ck-fw-semibold)!important;
+}
+
+/* Drawer/review typography follows the same restrained scale. */
+html.medindex-tailadmin[data-mi-page="urgjencat"] #ckDetailOverlay .ck-drawer-head>div>span,
+html.medindex-tailadmin[data-mi-page="urgjencat"] #ckDetailOverlay .ck-drawer-review b,
+html.medindex-tailadmin[data-mi-page="urgjencat"] #ckDetailOverlay .ck-chip{
+  font-weight:var(--ck-fw-medium)!important;
+}
+
+/* Preserve accessible selected states without making the whole interface bold. */
+html.medindex-tailadmin[data-mi-page="urgjencat"] :where(
+  .ck-mode-toggle button[aria-pressed="true"],
+  .ck-triage-filter-group button[aria-pressed="true"],
+  .ck-list-button.is-active strong
+){
+  font-weight:var(--ck-fw-semibold)!important;
+}
