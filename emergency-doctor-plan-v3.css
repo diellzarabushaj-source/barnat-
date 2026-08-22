@@ -1,0 +1,230 @@
+/* MedIndex Urgjencat — doctor plan v3: 5–10 second scan + frictionless recall */
+html.medindex-tailadmin[data-mi-page="urgjencat"] .ck-doctor-scan{
+  display:grid;
+  grid-template-columns:minmax(0,1.7fr) minmax(280px,.9fr);
+  gap:12px;
+  margin:0 0 14px;
+  padding:13px;
+  border:1px solid rgba(51,83,149,.11);
+  border-radius:16px;
+  background:linear-gradient(145deg,#fbfdff,#f5f8ff);
+  box-shadow:0 8px 22px rgba(37,57,101,.045);
+}
+html.medindex-tailadmin[data-mi-page="urgjencat"] .ck-doctor-scan-main{
+  min-width:0;
+  padding:4px 5px;
+}
+html.medindex-tailadmin[data-mi-page="urgjencat"] .ck-doctor-scan-main>span{
+  display:block;
+  margin-bottom:6px;
+  color:#4b6fc7;
+  font-size:10.5px;
+  font-weight:600!important;
+  letter-spacing:.055em;
+}
+html.medindex-tailadmin[data-mi-page="urgjencat"] .ck-doctor-scan-main>strong{
+  display:block;
+  color:#17233b;
+  font-size:15px;
+  font-weight:600!important;
+  line-height:1.38;
+  letter-spacing:-.015em;
+}
+html.medindex-tailadmin[data-mi-page="urgjencat"] .ck-doctor-scan-main>p{
+  margin:5px 0 0;
+  color:#66748b;
+  font-size:12.5px;
+  font-weight:400!important;
+  line-height:1.5;
+}
+html.medindex-tailadmin[data-mi-page="urgjencat"] .ck-doctor-scan-metrics{
+  display:grid;
+  grid-template-columns:repeat(2,minmax(0,1fr));
+  gap:7px;
+}
+html.medindex-tailadmin[data-mi-page="urgjencat"] .ck-doctor-scan-metric{
+  display:flex;
+  min-width:0;
+  min-height:49px;
+  flex-direction:column;
+  justify-content:center;
+  gap:2px;
+  padding:7px 10px;
+  border:1px solid rgba(62,82,122,.09);
+  border-radius:11px;
+  background:#fff;
+  color:#273753;
+  text-align:left;
+  font-family:var(--mi-font,"Inter",sans-serif)!important;
+}
+html.medindex-tailadmin[data-mi-page="urgjencat"] button.ck-doctor-scan-metric{
+  cursor:pointer;
+  transition:border-color .16s ease,background .16s ease,transform .16s ease;
+}
+html.medindex-tailadmin[data-mi-page="urgjencat"] button.ck-doctor-scan-metric:hover{
+  border-color:rgba(66,111,227,.18);
+  background:#f8faff;
+}
+html.medindex-tailadmin[data-mi-page="urgjencat"] button.ck-doctor-scan-metric:active{transform:translateY(1px)}
+html.medindex-tailadmin[data-mi-page="urgjencat"] .ck-doctor-scan-metric>span{
+  color:#8a95a8;
+  font-size:10.5px;
+  font-weight:400!important;
+  line-height:1.2;
+}
+html.medindex-tailadmin[data-mi-page="urgjencat"] .ck-doctor-scan-metric>strong{
+  color:#31415f;
+  font-size:13px;
+  font-weight:600!important;
+  line-height:1.2;
+}
+html.medindex-tailadmin[data-mi-page="urgjencat"] .ck-doctor-scan-metric:focus-visible{
+  outline:3px solid rgba(66,111,227,.22);
+  outline-offset:1px;
+}
+
+html.medindex-tailadmin[data-mi-page="urgjencat"] .ck-toolbar{
+  position:relative;
+}
+html.medindex-tailadmin[data-mi-page="urgjencat"] .ck-doctor-search-hint{
+  position:absolute;
+  top:50%;
+  right:13px;
+  z-index:2;
+  display:inline-flex;
+  align-items:center;
+  gap:5px;
+  transform:translateY(-50%);
+  color:#939daf;
+  pointer-events:none;
+  font-size:10.5px;
+  font-weight:400!important;
+}
+html.medindex-tailadmin[data-mi-page="urgjencat"] .ck-doctor-search-hint kbd,
+html.medindex-tailadmin[data-mi-page="urgjencat"] .ck-doctor-shortcuts kbd{
+  display:inline-grid;
+  min-width:22px;
+  height:22px;
+  place-items:center;
+  padding:0 5px;
+  border:1px solid rgba(69,85,119,.12);
+  border-bottom-color:rgba(69,85,119,.20);
+  border-radius:6px;
+  background:#fff;
+  color:#68758d;
+  font:500 10px/1 var(--mi-font,"Inter",sans-serif)!important;
+  box-shadow:0 1px 1px rgba(24,39,71,.04);
+}
+html.medindex-tailadmin[data-mi-page="urgjencat"] #emergencySearch{
+  padding-right:72px!important;
+}
+
+html.medindex-tailadmin[data-mi-page="urgjencat"] .ck-doctor-shortcuts{
+  display:flex;
+  flex-wrap:wrap;
+  gap:5px 10px;
+  margin-top:8px;
+  color:#8a94a6;
+  font-size:10.5px;
+  font-weight:400!important;
+}
+html.medindex-tailadmin[data-mi-page="urgjencat"] .ck-doctor-shortcuts>span{
+  display:inline-flex;
+  align-items:center;
+  gap:4px;
+}
+html.medindex-tailadmin[data-mi-page="urgjencat"] .ck-doctor-shortcuts kbd{
+  min-width:20px;
+  height:20px;
+  font-size:9.5px!important;
+}
+
+html.medindex-tailadmin[data-mi-page="urgjencat"] .ck-sl-flashcard[data-flash-card]{
+  cursor:pointer;
+}
+html.medindex-tailadmin[data-mi-page="urgjencat"] .ck-sl-flashcard[data-flash-card].is-revealed{
+  cursor:default;
+}
+html.medindex-tailadmin[data-mi-page="urgjencat"] .ck-sl-flashcard[data-flash-card]:not(.is-revealed)::after{
+  content:'Kliko kartën ose shtyp Enter / Space për përgjigjen';
+  display:block;
+  margin-top:11px;
+  color:#9aa3b3;
+  font-size:10.5px;
+  font-weight:400!important;
+  line-height:1.35;
+}
+html.medindex-tailadmin[data-mi-page="urgjencat"] .ck-sl-flashcard[data-flash-card]:not(.is-revealed):hover{
+  border-color:rgba(66,111,227,.20);
+  background:#fdfefe;
+}
+
+html[data-theme="dark"].medindex-tailadmin[data-mi-page="urgjencat"] .ck-doctor-scan{
+  border-color:rgba(148,163,184,.14)!important;
+  background:linear-gradient(145deg,#111827,#101726)!important;
+}
+html[data-theme="dark"].medindex-tailadmin[data-mi-page="urgjencat"] .ck-doctor-scan-main>strong{color:#eef3fa!important}
+html[data-theme="dark"].medindex-tailadmin[data-mi-page="urgjencat"] .ck-doctor-scan-main>p{color:#aeb9ca!important}
+html[data-theme="dark"].medindex-tailadmin[data-mi-page="urgjencat"] .ck-doctor-scan-metric{
+  border-color:rgba(148,163,184,.13)!important;
+  background:#151f32!important;
+}
+html[data-theme="dark"].medindex-tailadmin[data-mi-page="urgjencat"] .ck-doctor-scan-metric>span{color:#9da9ba!important}
+html[data-theme="dark"].medindex-tailadmin[data-mi-page="urgjencat"] .ck-doctor-scan-metric>strong{color:#e4ebf5!important}
+html[data-theme="dark"].medindex-tailadmin[data-mi-page="urgjencat"] .ck-doctor-search-hint,
+html[data-theme="dark"].medindex-tailadmin[data-mi-page="urgjencat"] .ck-doctor-shortcuts{color:#9ca8ba!important}
+html[data-theme="dark"].medindex-tailadmin[data-mi-page="urgjencat"] .ck-doctor-search-hint kbd,
+html[data-theme="dark"].medindex-tailadmin[data-mi-page="urgjencat"] .ck-doctor-shortcuts kbd{
+  border-color:rgba(148,163,184,.16)!important;
+  background:#162034!important;
+  color:#c8d2e1!important;
+}
+
+@media(max-width:900px){
+  html.medindex-tailadmin[data-mi-page="urgjencat"] .ck-doctor-scan{
+    grid-template-columns:1fr;
+  }
+  html.medindex-tailadmin[data-mi-page="urgjencat"] .ck-doctor-scan-metrics{
+    grid-template-columns:repeat(4,minmax(0,1fr));
+  }
+}
+
+@media(max-width:620px){
+  html.medindex-tailadmin[data-mi-page="urgjencat"] .ck-doctor-scan{
+    gap:9px;
+    margin-bottom:11px;
+    padding:10px;
+    border-radius:14px;
+  }
+  html.medindex-tailadmin[data-mi-page="urgjencat"] .ck-doctor-scan-main{
+    padding:2px;
+  }
+  html.medindex-tailadmin[data-mi-page="urgjencat"] .ck-doctor-scan-main>strong{
+    font-size:14px;
+  }
+  html.medindex-tailadmin[data-mi-page="urgjencat"] .ck-doctor-scan-main>p{
+    font-size:12px;
+  }
+  html.medindex-tailadmin[data-mi-page="urgjencat"] .ck-doctor-scan-metrics{
+    grid-template-columns:repeat(2,minmax(0,1fr));
+  }
+  html.medindex-tailadmin[data-mi-page="urgjencat"] .ck-doctor-scan-metric{
+    min-height:45px;
+    padding:6px 9px;
+  }
+  html.medindex-tailadmin[data-mi-page="urgjencat"] .ck-doctor-search-hint span{display:none}
+  html.medindex-tailadmin[data-mi-page="urgjencat"] #emergencySearch{padding-right:45px!important}
+  html.medindex-tailadmin[data-mi-page="urgjencat"] .ck-doctor-shortcuts{display:none}
+  html.medindex-tailadmin[data-mi-page="urgjencat"] .ck-sl-flashcard[data-flash-card]:not(.is-revealed)::after{
+    content:'Preke kartën për ta shfaqur përgjigjen';
+  }
+}
+
+@media(pointer:coarse){
+  html.medindex-tailadmin[data-mi-page="urgjencat"] .ck-doctor-search-hint{display:none}
+  html.medindex-tailadmin[data-mi-page="urgjencat"] #emergencySearch{padding-right:14px!important}
+}
+
+@media(prefers-reduced-motion:reduce){
+  html.medindex-tailadmin[data-mi-page="urgjencat"] button.ck-doctor-scan-metric{transition:none!important}
+}
