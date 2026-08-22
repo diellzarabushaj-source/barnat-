@@ -379,65 +379,75 @@
     <div class="login-stage">
       <section class="login-card" aria-labelledby="loginTitle">
         <button class="login-modal-close" type="button" popovertarget="loginPanel" popovertargetaction="hide" aria-label="Mbyll hyrjen">×</button>
-        <div class="login-card-brand">
-          <img class="lv-logo-horizontal" src="/brand/medindex-horizontal-on-light.webp" alt="MedIndex — by Dr. Diellza Rabushaj" width="320" height="76" decoding="async">
-        </div>
 
-        <div class="status">Mjedis privat dhe i mbrojtur</div>
-
-        <header>
-          <h2 id="loginTitle">Hyr në MedIndex</h2>
-          <p class="login-copy">Vazhdo me Google ose me emailin tënd. Identiteti verifikohet në server para hapjes së hapësirës klinike.</p>
-        </header>
-
-        <noscript><p class="noscript" role="alert">JavaScript duhet të jetë aktiv për hyrjen e sigurt në MedIndex.</p></noscript>
-
-        <section class="google-login-panel" id="googleLoginPanel" aria-labelledby="googleLoginHeading">
-          <!-- Titulli mbetet për `aria-labelledby`, po fshihet nga pamja: butoni
-               poshtë tij i thotë të njëjtat fjalë, dhe dy herë e njëjta gjë. -->
-          <h3 class="google-login-heading lv-sr-only" id="googleLoginHeading">Vazhdo me Google</h3>
-          <div class="google-login-button" id="googleLoginButton" aria-label="Butoni për hyrje me Google"></div>
-          <p class="google-login-status" id="googleLoginStatus" role="status" aria-live="polite" aria-atomic="true">Po përgatitet hyrja e sigurt…</p>
-        </section>
-
-        <div class="login-divider"><span>ose me email</span></div>
-
-        <form class="login-email-form" id="emailLoginForm" autocomplete="on" novalidate>
-          <label class="login-email-label" for="loginEmail">Email</label>
-          <input class="login-email-input" id="loginEmail" name="email" type="email" autocomplete="email"
-                 autocapitalize="none" spellcheck="false" required maxlength="320" placeholder="emri@shembull.com">
-
-          <label class="login-email-label" for="loginPassword">Fjalëkalimi</label>
-          <div class="login-email-row">
-            <input class="login-email-input" id="loginPassword" name="password" type="password"
-                   autocomplete="current-password" autocapitalize="none" spellcheck="false"
-                   enterkeyhint="go" required minlength="10" maxlength="200">
-            <button type="button" id="toggleLoginPassword" aria-pressed="false" aria-label="Shfaq fjalëkalimin">Shfaq</button>
+        <!-- Kush je duke hyrë: marka, premtimi dhe garancitë e sesionit. -->
+        <aside class="login-aside">
+          <div class="login-card-brand">
+            <img class="lv-logo-horizontal" src="/brand/medindex-horizontal-on-light.webp" alt="MedIndex — by Dr. Diellza Rabushaj" width="320" height="76" decoding="async">
           </div>
 
-          <button class="login-email-submit" id="emailLoginSubmit" type="submit">Hyr me email</button>
-          <button class="login-email-link" id="forgotPassword" type="button">Ke harruar fjalëkalimin?</button>
-        </form>
+          <div class="status">Mjedis privat dhe i mbrojtur</div>
 
-        <p class="login-register">Nuk ke llogari? Çdo regjistrim verifikohet nga administratori para se të hapet.</p>
-        <a class="login-register-cta" href="/regjistrimi.html">Regjistrohu si profesionist shëndetësor</a>
+          <header>
+            <h2 id="loginTitle">Hyr në MedIndex</h2>
+            <p class="login-copy">Vazhdo me Google ose me emailin tënd. Identiteti verifikohet në server para hapjes së hapësirës klinike.</p>
+          </header>
 
-        <details class="password-fallback" id="passwordFallback" hidden>
-          <summary>Hyrje rezervë me password</summary>
-          <div class="login-divider"><span>Rezervë</span></div>
-          <form id="loginForm" autocomplete="on" novalidate>
-            <label for="password">Password‑i</label>
-            <div class="password-row">
-              <input id="password" name="password" type="password" autocomplete="current-password" autocapitalize="none" spellcheck="false" enterkeyhint="go" required minlength="6" maxlength="128" aria-describedby="capsLockHint loginMessage">
-              <button id="togglePassword" type="button" aria-label="Shfaq password-in" aria-pressed="false">Shfaq</button>
+          <div class="login-meta" aria-label="Siguria e sesionit"><span>Google ID</span><span>Sesion 8 orë</span><span>Cookie HttpOnly</span></div>
+        </aside>
+
+        <!-- Si hyn. Një kolonë e vetme që rrjedh: çdo gjë që shtohet më vonë
+             (fallback-u, njoftimi noscript, rreshti i statusit) ulet brenda saj
+             dhe nuk e detyron kartën të nxjerrë një rresht që s'e mban dot. -->
+        <div class="login-main">
+          <noscript><p class="noscript" role="alert">JavaScript duhet të jetë aktiv për hyrjen e sigurt në MedIndex.</p></noscript>
+
+          <section class="google-login-panel" id="googleLoginPanel" aria-labelledby="googleLoginHeading">
+            <!-- Titulli mbetet për `aria-labelledby`, po fshihet nga pamja: butoni
+                 poshtë tij i thotë të njëjtat fjalë, dhe dy herë e njëjta gjë. -->
+            <h3 class="google-login-heading lv-sr-only" id="googleLoginHeading">Vazhdo me Google</h3>
+            <div class="google-login-button" id="googleLoginButton" aria-label="Butoni për hyrje me Google"></div>
+            <p class="google-login-status" id="googleLoginStatus" role="status" aria-live="polite" aria-atomic="true">Po përgatitet hyrja e sigurt…</p>
+          </section>
+
+          <div class="login-divider"><span>ose me email</span></div>
+
+          <form class="login-email-form" id="emailLoginForm" autocomplete="on" novalidate>
+            <label class="login-email-label" for="loginEmail">Email</label>
+            <input class="login-email-input" id="loginEmail" name="email" type="email" autocomplete="email"
+                   autocapitalize="none" spellcheck="false" required maxlength="320" placeholder="emri@shembull.com">
+
+            <label class="login-email-label" for="loginPassword">Fjalëkalimi</label>
+            <div class="login-email-row">
+              <input class="login-email-input" id="loginPassword" name="password" type="password"
+                     autocomplete="current-password" autocapitalize="none" spellcheck="false"
+                     enterkeyhint="go" required minlength="10" maxlength="200">
+              <button type="button" id="toggleLoginPassword" aria-pressed="false" aria-label="Shfaq fjalëkalimin">Shfaq</button>
             </div>
-            <p class="caps-lock-hint" id="capsLockHint" hidden>Caps Lock është aktiv.</p>
-            <button class="login-submit" id="loginSubmit" type="submit"><span>Hyr me password</span><span aria-hidden="true">→</span></button>
-          </form>
-        </details>
 
-        <p class="login-message" id="loginMessage" role="status" aria-live="polite" aria-atomic="true"></p>
-        <div class="login-meta" aria-label="Siguria e sesionit"><span>Google ID</span><span>Sesion 8 orë</span><span>Cookie HttpOnly</span></div>
+            <button class="login-email-submit" id="emailLoginSubmit" type="submit">Hyr me email</button>
+            <button class="login-email-link" id="forgotPassword" type="button">Ke harruar fjalëkalimin?</button>
+          </form>
+
+          <p class="login-message" id="loginMessage" role="status" aria-live="polite" aria-atomic="true"></p>
+
+          <p class="login-register">Nuk ke llogari? Çdo regjistrim verifikohet nga administratori para se të hapet.</p>
+          <a class="login-register-cta" href="/regjistrimi.html">Regjistrohu si profesionist shëndetësor</a>
+
+          <details class="password-fallback" id="passwordFallback" hidden>
+            <summary>Hyrje rezervë me password</summary>
+            <div class="login-divider"><span>Rezervë</span></div>
+            <form id="loginForm" autocomplete="on" novalidate>
+              <label for="password">Password‑i</label>
+              <div class="password-row">
+                <input id="password" name="password" type="password" autocomplete="current-password" autocapitalize="none" spellcheck="false" enterkeyhint="go" required minlength="6" maxlength="128" aria-describedby="capsLockHint loginMessage">
+                <button id="togglePassword" type="button" aria-label="Shfaq password-in" aria-pressed="false">Shfaq</button>
+              </div>
+              <p class="caps-lock-hint" id="capsLockHint" hidden>Caps Lock është aktiv.</p>
+              <button class="login-submit" id="loginSubmit" type="submit"><span>Hyr me password</span><span aria-hidden="true">→</span></button>
+            </form>
+          </details>
+        </div>
       </section>
     </div>
   </section>
