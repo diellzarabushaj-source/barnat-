@@ -202,3 +202,11 @@
     });
   }
 })();
+
+/* Load the single continuous ShapeGrid after the landing DOM is ready. */
+(() => {
+  const script = document.createElement('script');
+  script.src = '/login-v2-shape-grid.js?v=shape-grid-v1';
+  script.defer = true;
+  document.head.appendChild(script);
+})();
