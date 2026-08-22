@@ -13,24 +13,10 @@ html:not(.auth-ready) body{
   visibility:visible!important;
   opacity:1!important;
 }
-html.auth-checking body>:not(#miAuthBootstrap){
-  visibility:hidden!important;
-}
-html.auth-checking body::before{
-  content:"Po verifikohet sesioni…";
-  position:fixed;
-  inset:0;
-  z-index:3998;
-  display:grid;
-  place-items:center;
-  background:#f6f9f8;
-  color:#155f63;
-  font:700 14px/1.5 Inter,ui-sans-serif,system-ui,sans-serif;
-}
-html[data-theme=dark].auth-checking body::before{
-  background:#101d20;
-  color:#d9ece8;
-}
+/* The session check used to draw its own bare panel here, on top of the boot
+   screen, the page loader and the auth overlay — four loading screens stacked.
+   The boot screen in the document head owns this phase now: one mark, one set
+   of rings, one line of text, from first paint until the workspace is ready. */
 html.auth-ready body{
   visibility:visible;
   opacity:1;
