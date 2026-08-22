@@ -7,7 +7,7 @@
   const LOGIN_PAGE = '/login-v2.html';
   const OFFLINE_LEASE_KEY = 'medindex_offline_lease_v3';
   const LEGACY_OFFLINE_LEASE_KEYS = ['medindex_offline_lease_v2', 'medindex_offline_lease_v1'];
-  const OFFLINE_RUNTIME_SRC = '/offline-runtime-performance.js?v=low-bandwidth-v3';
+  const OFFLINE_RUNTIME_SRC = '/offline-runtime.js?v=local-1.8.0';
   const PROFESSIONAL_RUNTIME_SRC = '/tailadmin-professional.js?v=production-audit-v2';
   const PROFESSIONAL_VERSION = 'production-audit-v2';
   const MAX_OFFLINE_LEASE_MS = 8 * 60 * 60 * 1000;
@@ -26,21 +26,46 @@
 
   function ensureAuthBootstrap() {
     if (authBootstrap?.isConnected) return authBootstrap;
+    // The page already opened on the boot screen. Reuse it rather than stacking
+    // a second one on top: the doctor sees one loader whose line of text changes,
+    // not two that hand over to each other.
+    const bootScreen = document.getElementById('miShellBoot');
+    if (bootScreen) {
+      authBootstrap = bootScreen;
+      return authBootstrap;
+    }
     authBootstrap = document.getElementById('miAuthBootstrap') || document.createElement('div');
     authBootstrap.id = 'miAuthBootstrap';
     authBootstrap.setAttribute('role', 'status');
     authBootstrap.setAttribute('aria-live', 'polite');
-    authBootstrap.innerHTML = '<strong>MedIndex</strong><span>Po verifikohet sesioni…</span>';
+    // The same screen the page opened with: the mark, the four rings, and a
+    // line that changes with what is happening. A doctor sees one loader, not
+    // two different ones handing over to each other.
+    const dark = document.documentElement.dataset.theme === 'dark'
+      || document.documentElement.classList.contains('dark');
+    authBootstrap.className = 'mi-boot-screen';
+    authBootstrap.innerHTML = `<img class="mi-boot-logo" src="/brand/medindex-horizontal-on-${dark ? 'dark' : 'light'}.webp" alt="MedIndex" width="188" height="52" decoding="async">`
+      + '<svg class="mi-boot-rings" viewBox="0 0 240 240" aria-hidden="true" focusable="false">'
+      + '<circle class="mi-boot-ring mi-boot-ring--a" cx="120" cy="120" r="105"></circle>'
+      + '<circle class="mi-boot-ring mi-boot-ring--b" cx="120" cy="120" r="35"></circle>'
+      + '<circle class="mi-boot-ring mi-boot-ring--c" cx="85" cy="120" r="70"></circle>'
+      + '<circle class="mi-boot-ring mi-boot-ring--d" cx="155" cy="120" r="70"></circle>'
+      + '</svg>'
+      + '<span class="mi-boot-text">Po verifikohet sesioni…</span>';
     if (!authBootstrap.isConnected) (document.body || document.documentElement).appendChild(authBootstrap);
     return authBootstrap;
   }
 
   function setAuthBootstrapMessage(message) {
-    ensureAuthBootstrap().querySelector('span').textContent = message;
+    const node = ensureAuthBootstrap().querySelector('.mi-boot-text');
+    if (node) node.textContent = message;
   }
 
   function removeAuthBootstrap() {
-    authBootstrap?.remove();
+    // The boot screen belongs to the document, not to this module: it is cleared
+    // by dropping `auth-checking`, never by removing the element other runtimes
+    // still expect to find.
+    if (authBootstrap && authBootstrap.id !== 'miShellBoot') authBootstrap.remove();
     authBootstrap = null;
   }
 
@@ -63,7 +88,7 @@
       .auth-logout:hover{background:rgba(255,255,255,.13)!important;color:#fff!important}
       .auth-logout svg{fill:none;stroke:currentColor;stroke-width:16;stroke-linecap:round;stroke-linejoin:round}
       .session-expired-banner,.library-sync-error-banner{position:fixed;left:50%;bottom:22px;z-index:2000;max-width:min(520px,calc(100vw - 28px));padding:11px 15px;border-radius:11px;background:#8e2f32;color:#fff;box-shadow:0 16px 45px rgba(0,0,0,.32);font-size:.78rem;font-weight:750;transform:translateX(-50%)}
-      #miAuthBootstrap{position:fixed;inset:0;z-index:3999;display:grid;place-content:center;gap:6px;padding:24px;background:#f6f9f8;color:#566a6d;text-align:center;font:500 14px/1.5 Inter,ui-sans-serif,system-ui,sans-serif;visibility:visible!important;opacity:1!important}
+      #miAuthBootstrap{position:fixed;inset:0;z-index:3999;display:grid;place-content:center;justify-items:center;gap:28px;padding:24px;background:#f8fafc;color:#566a6d;text-align:center;font:500 14px/1.5 Inter,ui-sans-serif,system-ui,sans-serif;visibility:visible!important;opacity:1!important}
       #miAuthBootstrap strong{color:#155f63;font-size:20px;letter-spacing:-.02em}
       html[data-theme="dark"] #miAuthBootstrap{background:#101d20;color:#aebfbc}
       html[data-theme="dark"] #miAuthBootstrap strong{color:#d9ece8}
