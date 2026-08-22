@@ -135,6 +135,7 @@
         deletedPrescriptions:value.deletedPrescriptions && typeof value.deletedPrescriptions === 'object' ? value.deletedPrescriptions : {},
         deletedFavorites:value.deletedFavorites && typeof value.deletedFavorites === 'object' ? value.deletedFavorites : {},
         lastSyncedAt:text(value.lastSyncedAt),
+        owner:text(value.owner),
       } : emptyMeta();
     } catch {
       return emptyMeta();
@@ -142,7 +143,7 @@
   }
 
   function emptyMeta() {
-    return { prescriptions:{}, favorites:{}, drugs:{}, deletedPrescriptions:{}, deletedFavorites:{}, deletedDrugs:{}, lastSyncedAt:'' };
+    return { prescriptions:{}, favorites:{}, drugs:{}, deletedPrescriptions:{}, deletedFavorites:{}, deletedDrugs:{}, lastSyncedAt:'', owner:'' };
   }
 
   function writeMeta(meta) {
@@ -575,6 +576,53 @@
     location.reload();
   }
 
+  // --- account ownership -----------------------------------------------------
+  //
+  // The local library lives in this browser under fixed keys, so a second
+  // account signing in on the same device inherits whatever the first one left
+  // behind — and `flush()` then writes it into the second account. The snapshot
+  // names the account it belongs to; that name is stamped locally, and a
+  // mismatch wipes the device copy before anything is merged or pushed.
+
+  function ownerKey(user) {
+    const id = text(user?.id);
+    if (id) return id;
+    const email = text(user?.email).toLowerCase();
+    return email;
+  }
+
+  function wipeLocalLibrary() {
+    for (const key of [PRESCRIPTIONS_KEY, FAVORITES_KEY, NOTES_KEY, DRUGS_KEY, META_KEY]) {
+      try { localStorage.removeItem(key); } catch {}
+    }
+    lastState = null;
+    localRevision = 0;
+    syncedRevision = 0;
+    dirty = false;
+  }
+
+  // Returns true when the device copy belonged to a different account and was
+  // discarded, so the caller re-reads a clean state before merging.
+  function adoptOwner(user) {
+    const owner = ownerKey(user);
+    if (!owner) return false;
+    const meta = readMeta();
+    const stored = text(meta.owner);
+    if (stored && stored !== owner) {
+      wipeLocalLibrary();
+      const fresh = emptyMeta();
+      fresh.owner = owner;
+      writeMeta(fresh);
+      dispatch('medindex:library-owner-changed', { owner });
+      return true;
+    }
+    if (stored !== owner) {
+      meta.owner = owner;
+      writeMeta(meta);
+    }
+    return false;
+  }
+
   async function initialize() {
     const local = readState();
     const meta = ensureMetaForState(local, readMeta());
@@ -587,6 +635,9 @@
     }
     try {
       const snapshot = await api(API_URL);
+      // Before a single item is merged or pushed: does this device copy belong
+      // to the account that just answered?
+      if (adoptOwner(snapshot.user)) lastState = readState();
       const changed = mergeRemote(snapshot);
       await flush();
       dispatch('medindex:library-ready', { offline:false, local:false, user:snapshot.user });
@@ -705,6 +756,8 @@
     },
     state:readState,
     meta:readMeta,
+    ownerKey,
+    adoptOwner,
     personalDrugs:parsePersonalDrugs,
     savePersonalDrug,
     deletePersonalDrug,

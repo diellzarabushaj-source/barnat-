@@ -3,7 +3,13 @@
 
   const VERSION = 'medindex-brand-v4';
   const PROFILE_VERSION = 'profile-portal-v1';
-  const PROFILE_KEY = 'medindex_profile_v1';
+  // The photo is a device preference, so it is stored per account: one browser
+  // may be used by two doctors, and neither may ever see the other's card.
+  const PROFILE_KEY_PREFIX = 'medindex_profile_v2:';
+  // A single global key that belonged to whoever used the browser last. It is
+  // removed on sight; nothing is migrated out of it, because it cannot be said
+  // whose it was.
+  const LEGACY_PROFILE_KEY = 'medindex_profile_v1';
   const ROOT = '/brand/';
   const ASSETS = Object.freeze({
     horizontalLight:`${ROOT}medindex-horizontal-on-light.webp`,
@@ -13,8 +19,13 @@
     iconLight:`${ROOT}medindex-mark-on-light.webp`,
     iconDark:`${ROOT}medindex-mark-on-dark.png`,
   });
-  const DEFAULT_PROFILE = Object.freeze({ name:'Diellza Rabushaj', role:'Administratore', email:'', photo:'' });
-  let profile = readProfile();
+  // Until the session answers, the card names nobody. It used to default to a
+  // real person, so every account that opened MedIndex on this device was shown
+  // that person's name and role as if it were their own.
+  const SIGNED_OUT_PROFILE = Object.freeze({ name:'Llogaria', role:'', email:'', photo:'' });
+  const ROLE_LABELS = Object.freeze({ admin:'Administrim', doctor:'Mjekësi' });
+  let account = null;
+  let profile = { ...SIGNED_OUT_PROFILE };
   let faviconsInstalled = false;
 
   const clean = (value, max = 120) => String(value ?? '').replace(/\s+/g, ' ').trim().slice(0, max);
@@ -29,29 +40,72 @@
     close:'<svg viewBox="0 0 24 24"><path d="m6 6 12 12M18 6 6 18"/></svg>',
   }[name] || '');
 
-  function readProfile() {
-    try {
-      const value = JSON.parse(localStorage.getItem(PROFILE_KEY) || 'null');
-      if (!value || typeof value !== 'object') return { ...DEFAULT_PROFILE };
-      return {
-        name:clean(value.name, 80) || DEFAULT_PROFILE.name,
-        role:clean(value.role, 80) || DEFAULT_PROFILE.role,
-        email:clean(value.email, 120),
-        photo:typeof value.photo === 'string' && value.photo.startsWith('data:image/') ? value.photo : '',
-      };
-    } catch { return { ...DEFAULT_PROFILE }; }
+  function accountKey(value) {
+    const id = clean(value?.id, 80);
+    if (id) return id;
+    return clean(value?.email, 120).toLowerCase();
   }
 
-  function saveProfile(next) {
-    const safe = {
-      name:clean(next.name, 80) || DEFAULT_PROFILE.name,
-      role:clean(next.role, 80) || DEFAULT_PROFILE.role,
-      email:clean(next.email, 120),
-      photo:typeof next.photo === 'string' && next.photo.startsWith('data:image/') ? next.photo : '',
+  function profileStorageKey() {
+    const key = accountKey(account);
+    return key ? `${PROFILE_KEY_PREFIX}${key}` : '';
+  }
+
+  function roleLabel(value) {
+    const role = clean(value, 80);
+    return ROLE_LABELS[role.toLowerCase()] || role;
+  }
+
+  // Name, email and role are the account's, read from the session on every
+  // load. Only the photo is a device preference, and it is filed under the
+  // account it belongs to.
+  function readProfile() {
+    if (!account) return { ...SIGNED_OUT_PROFILE };
+    const identity = {
+      name:clean(account.name, 80) || clean(account.email, 120).split('@')[0] || SIGNED_OUT_PROFILE.name,
+      role:roleLabel(account.role),
+      email:clean(account.email, 120),
+      photo:'',
     };
-    try { localStorage.setItem(PROFILE_KEY, JSON.stringify(safe)); }
-    catch { throw new Error('Profili nuk mund të ruhej në këtë pajisje.'); }
-    profile = safe;
+    const key = profileStorageKey();
+    if (!key) return identity;
+    try {
+      const value = JSON.parse(localStorage.getItem(key) || 'null');
+      const photo = typeof value?.photo === 'string' && value.photo.startsWith('data:image/') ? value.photo : '';
+      return { ...identity, photo };
+    } catch { return identity; }
+  }
+
+  function savePhoto(photo) {
+    const key = profileStorageKey();
+    if (!key) throw new Error('Fotografia ruhet vetëm pasi të hapet llogaria.');
+    const safe = typeof photo === 'string' && photo.startsWith('data:image/') ? photo : '';
+    try {
+      if (safe) localStorage.setItem(key, JSON.stringify({ photo:safe }));
+      else localStorage.removeItem(key);
+    } catch { throw new Error('Fotografia nuk mund të ruhej në këtë pajisje.'); }
+    profile = { ...profile, photo:safe };
+    applyProfile();
+  }
+
+  function forgetLegacyProfile() {
+    try { localStorage.removeItem(LEGACY_PROFILE_KEY); } catch {}
+  }
+
+  // The session is the only source of identity. Offline the lease carries none,
+  // so the card stays neutral rather than showing whoever was here last.
+  function adoptAccount(payload) {
+    const user = payload?.user && typeof payload.user === 'object' ? payload.user : null;
+    const authUser = payload?.authUser && typeof payload.authUser === 'object' ? payload.authUser : null;
+    const next = payload?.authenticated && user ? {
+      id:clean(authUser?.id, 80),
+      email:clean(user.email, 120),
+      name:clean(user.name, 80),
+      role:clean(authUser?.role || user.role, 80),
+    } : null;
+    if (accountKey(next) === accountKey(account)) return;
+    account = next;
+    profile = readProfile();
     applyProfile();
   }
 
@@ -102,7 +156,8 @@
   function applyProfile() {
     document.querySelectorAll('.mi-user-avatar,.mi-profile-photo').forEach(setAvatar);
     document.querySelectorAll('.mi-user-copy strong,.mi-profile-chip strong,.mi-profile-menu-copy strong').forEach(node => { node.textContent = profile.name; });
-    document.querySelectorAll('.mi-user-copy small,.mi-profile-chip small,.mi-profile-menu-copy small').forEach(node => { node.textContent = profile.role; });
+    const secondary = profile.email || profile.role;
+    document.querySelectorAll('.mi-user-copy small,.mi-profile-chip small,.mi-profile-menu-copy small').forEach(node => { node.textContent = secondary; });
     document.querySelectorAll('[data-profile-remove]').forEach(button => { button.disabled = !profile.photo; });
   }
 
@@ -124,13 +179,13 @@
             <form class="mi-profile-form" id="miProfileForm" novalidate>
               <div class="mi-profile-photo-row"><span class="mi-profile-photo"></span><div class="mi-profile-photo-copy"><strong>Fotografia e profilit</strong><small>PNG, JPG ose WebP, maksimumi 5 MB.</small><div class="mi-profile-photo-actions"><button class="mi-profile-secondary" type="button" data-profile-upload>Zgjidh fotografi</button><button class="mi-profile-danger" type="button" data-profile-remove>Hiq fotografinë</button></div></div></div>
               <div class="mi-profile-fields">
-                <div class="mi-profile-field"><label for="miProfileName">Emri dhe mbiemri</label><input id="miProfileName" name="name" maxlength="80" required></div>
-                <div class="mi-profile-field"><label for="miProfileRole">Roli</label><input id="miProfileRole" name="role" maxlength="80" required></div>
-                <div class="mi-profile-field mi-profile-field-wide"><label for="miProfileEmail">Emaili</label><input id="miProfileEmail" name="email" type="email" maxlength="120" placeholder="email@shembull.com"></div>
+                <div class="mi-profile-field"><label for="miProfileName">Emri dhe mbiemri</label><input id="miProfileName" name="name" maxlength="80" readonly></div>
+                <div class="mi-profile-field"><label for="miProfileRole">Roli</label><input id="miProfileRole" name="role" maxlength="80" readonly></div>
+                <div class="mi-profile-field mi-profile-field-wide"><label for="miProfileEmail">Emaili</label><input id="miProfileEmail" name="email" type="email" maxlength="120" readonly></div>
               </div>
-              <div class="mi-profile-note">Këto ndryshime ruhen vetëm në këtë shfletues dhe nuk ndryshojnë llogarinë e autentikimit.</div>
+              <div class="mi-profile-note">Emri, roli dhe emaili vijnë nga llogaria me të cilën ke hyrë dhe ndryshohen vetëm atje. Fotografia ruhet vetëm në këtë shfletues, e lidhur me këtë llogari.</div>
               <p class="mi-profile-status" id="miProfileStatus" role="status" aria-live="polite"></p>
-              <div class="mi-profile-actions"><button class="mi-profile-cancel" type="button" data-profile-close>Anulo</button><button class="mi-profile-save" type="submit">Ruaj ndryshimet</button></div>
+              <div class="mi-profile-actions"><button class="mi-profile-save" type="submit">Mbyll</button></div>
             </form>
           </section>
         </div>`);
@@ -220,7 +275,7 @@
     const overlay = document.getElementById('miProfileOverlay');
     const file = document.getElementById('miProfileFile');
     const upload = () => { file.value = ''; file.click(); };
-    const remove = () => { try { saveProfile({ ...profile, photo:'' }); status('Fotografia u hoq.', 'success'); } catch (error) { status(error.message, 'error'); } };
+    const remove = () => { try { savePhoto(''); status('Fotografia u hoq.', 'success'); } catch (error) { status(error.message, 'error'); } };
 
     document.addEventListener('click', event => {
       const trigger = event.target.closest('[data-mi-profile-trigger]');
@@ -243,22 +298,17 @@
       if (event.target.closest('[data-profile-upload]')) upload();
       if (event.target.closest('[data-profile-remove]')) remove();
     });
+    // Identity is the account's and is not editable here: a local override was
+    // exactly how one doctor's card came to carry another's name.
     document.getElementById('miProfileForm').addEventListener('submit', event => {
       event.preventDefault();
-      const form = event.currentTarget;
-      const name = clean(form.elements.name.value, 80);
-      const role = clean(form.elements.role.value, 80);
-      const email = clean(form.elements.email.value, 120);
-      if (!name || !role) return status('Emri dhe roli janë të detyrueshëm.', 'error');
-      if (email && !form.elements.email.checkValidity()) return status('Shkruaj një email të vlefshëm.', 'error');
-      try { saveProfile({ ...profile, name, role, email }); status('Ndryshimet u ruajtën.', 'success'); setTimeout(closeDialog, 650); }
-      catch (error) { status(error.message, 'error'); }
+      closeDialog();
     });
     file.addEventListener('change', async () => {
       const selected = file.files?.[0];
       if (!selected) return;
       status('Duke përpunuar fotografinë…');
-      try { saveProfile({ ...profile, photo:await resizePhoto(selected) }); status('Fotografia u përditësua.', 'success'); }
+      try { savePhoto(await resizePhoto(selected)); status('Fotografia u përditësua.', 'success'); }
       catch (error) { status(error.message, 'error'); }
       file.value = '';
     });
@@ -312,6 +362,24 @@
   const start = () => { if (!apply()) observer.observe(document.body, { childList:true, subtree:true }); };
   window.addEventListener('medindex:tailadmin-ready', apply);
   window.addEventListener('pageshow', apply, { passive:true });
-  window.addEventListener('storage', event => { if (event.key === PROFILE_KEY) { profile = readProfile(); applyProfile(); } });
+  window.addEventListener('storage', event => {
+    if (event.key && event.key !== profileStorageKey()) return;
+    profile = readProfile();
+    applyProfile();
+  });
+
+  // The identity surface, so a test can drive the same code the card runs on.
+  window.MedIndexProfile = Object.freeze({
+    version:PROFILE_VERSION,
+    account:() => (account ? { ...account } : null),
+    current:() => ({ ...profile }),
+    adoptAccount,
+    _test:{ accountKey, roleLabel, profileStorageKey, readProfile, savePhoto, forgetLegacyProfile },
+  });
+
+  forgetLegacyProfile();
+  window.addEventListener('medindex:auth-ready', event => adoptAccount(event.detail));
+  window.addEventListener('medindex:auth-failed', () => adoptAccount(null));
+  window.MEDINDEX_AUTH_READY?.then?.(adoptAccount, () => adoptAccount(null));
   if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', start, { once:true }); else start();
 })();
