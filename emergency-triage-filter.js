@@ -148,7 +148,7 @@
       rows.forEach(row => {
         if (row?._id) triageById.set(row._id, row.triageLevel || '');
       });
-      applyFilter();
+      applyFilter({moveSelection:true});
     } catch (error) {
       console.warn('Urgjencat: filtri i triazhit nuk u ngarkua.', error);
     }
@@ -157,9 +157,9 @@
   const observer = new MutationObserver(() => {
     if (applying) return;
     cancelAnimationFrame(frame);
-    frame = requestAnimationFrame(() => applyFilter());
+    frame = requestAnimationFrame(() => applyFilter({moveSelection:true}));
   });
-  observer.observe(list, {childList: true});
+  observer.observe(list, {childList: true, subtree: true});
 
   ensureControls();
   applyFilter();
