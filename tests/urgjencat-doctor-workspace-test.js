@@ -11,6 +11,7 @@ const html = read('urgjencat.html');
 const core = read('urgjencat.js');
 const sanityClient = read('sanity-clinical-client.js');
 const taxonomy = read('emergency-taxonomy.js');
+const chapterSelect = read('emergency-chapter-select.js');
 const chaptersCss = read('emergency-chapters.css');
 const learning = read('emergency-summary-learn.js');
 const learningCss = read('emergency-summary-learn.css');
@@ -24,8 +25,9 @@ const triageFilterCss = read('emergency-triage-filter.css');
 assert.ok(
   html.indexOf('sanity-clinical-client.js') < html.indexOf('emergency-taxonomy.js')
   && html.indexOf('emergency-taxonomy.js') < html.indexOf('emergency-summary-learn.js')
-  && html.indexOf('emergency-summary-learn.js') < html.indexOf('urgjencat.js'),
-  'Sanity, taxonomy and learning layers must be ready before the emergency core query runs.',
+  && html.indexOf('emergency-summary-learn.js') < html.indexOf('urgjencat.js')
+  && html.indexOf('urgjencat.js') < html.indexOf('emergency-chapter-select.js'),
+  'Sanity, taxonomy, learning, core and dropdown layers must load in the required order.',
 );
 assert.doesNotMatch(html, /emergency-doctor-mode\.(?:js|css)/);
 assert.doesNotMatch(html, /emergency-clinician-timeline\.(?:js|css)/);
@@ -35,9 +37,10 @@ assert.match(html, /emergency-summary-learn-polish\.css\?v=20260819-3/);
 assert.match(html, /emergency-directory-assist\.css\?v=20260819-2/);
 assert.match(html, /emergency-directory-assist\.js\?v=20260819-1/);
 assert.match(html, /emergency-triage-filter\.css\?v=20260819-1/);
-assert.match(html, /emergency-chapters\.css\?v=20260822-1/);
+assert.match(html, /emergency-chapters\.css\?v=20260822-2/);
 assert.match(html, /emergency-taxonomy\.js\?v=20260822-1/);
 assert.match(html, /urgjencat\.js\?v=20260822-1/);
+assert.match(html, /emergency-chapter-select\.js\?v=20260822-1/);
 assert.ok(
   html.indexOf('emergency-summary-learn-polish.css') < html.indexOf('tailadmin-professional.css'),
   'Emergency polish must stay before the canonical final TailAdmin stylesheet.',
@@ -51,11 +54,15 @@ assert.match(
 assert.match(html, /emergency-summary-learn\.js\?v=20260819-2/);
 assert.match(html, /Përmbledhje/);
 assert.match(html, /Mëso/);
-assert.match(html, /Kapituj dhe nënkapituj/);
+assert.match(html, /Zgjidh kapitullin/);
 assert.match(html, /id="emergencyChapterExplorer"/);
-assert.match(html, /id="emergencyChapterNav"/);
-assert.match(html, /id="emergencySubchapterNav"/);
-assert.match(html, /id="emergencyChapterReset"/);
+assert.match(html, /id="emergencyChapterSelect"/);
+assert.match(html, /id="emergencySubchapterSelect"/);
+assert.match(html, /id="emergencyChapterNav"[^>]*hidden/);
+assert.match(html, /id="emergencySubchapterNav"[^>]*hidden/);
+assert.match(html, /id="emergencyChapterReset"[^>]*hidden/);
+assert.match(html, /Të gjithë kapitujt/);
+assert.match(html, /Të gjithë nënkapitujt/);
 assert.match(html, /class="ck-legacy-category-filter"/);
 
 assert.match(core, /reviewStatus != "archived"/);
@@ -75,8 +82,6 @@ assert.match(core, /data-subchapter-key=/);
 assert.match(core, /searchParams\.set\('chapter'/);
 assert.match(core, /searchParams\.set\('subchapter'/);
 assert.match(core, /searchParams\.set\('emergency'/);
-assert.match(core, /\['ArrowLeft', 'ArrowRight', 'Home', 'End'\]\.includes\(event\.key\)/);
-assert.match(core, /event\.key === 'ArrowRight'/);
 assert.match(core, /state\.chapterKey/);
 assert.match(core, /state\.subchapterKey/);
 assert.match(core, /taxonomy\.chapterTitle,taxonomy\.subchapterTitle/);
@@ -102,14 +107,26 @@ assert.match(taxonomy, /item\?\.chapterKey/);
 assert.match(taxonomy, /item\?\.subchapterKey/);
 assert.equal((taxonomy.match(/\n\s*key: '[^']+', order: \d+,\n\s*title:/g) || []).length, 18, 'Taxonomy must expose exactly 18 canonical top-level chapters.');
 
+assert.match(chapterSelect, /emergencyChapterSelect/);
+assert.match(chapterSelect, /emergencySubchapterSelect/);
+assert.match(chapterSelect, /MutationObserver/);
+assert.match(chapterSelect, /\[data-ck-chapter\]/);
+assert.match(chapterSelect, /\[data-ck-subchapter\]/);
+assert.match(chapterSelect, /Të gjithë kapitujt/);
+assert.match(chapterSelect, /Të gjithë nënkapitujt/);
+assert.match(chapterSelect, /reset\.click\(\)/);
+assert.match(chapterSelect, /chapterSelect\.addEventListener\('change'/);
+assert.match(chapterSelect, /subchapterSelect\.addEventListener\('change'/);
+assert.match(chapterSelect, /focus\(\{preventScroll: true\}\)/);
+
 assert.match(chaptersCss, /\.ck-chapter-explorer/);
-assert.match(chaptersCss, /\.ck-chapter-tabs/);
-assert.match(chaptersCss, /\.ck-subchapter-tabs/);
+assert.match(chaptersCss, /\.ck-chapter-picker-grid/);
+assert.match(chaptersCss, /\.ck-chapter-picker/);
+assert.match(chaptersCss, /\.ck-chapter-select-shell select\{[\s\S]*min-height:50px/);
+assert.match(chaptersCss, /\.ck-chapter-reset,\.ck-chapter-tabs,\.ck-subchapter-tabs\{display:none!important\}/);
 assert.match(chaptersCss, /\.ck-directory-chapter/);
 assert.match(chaptersCss, /\.ck-directory-subchapter/);
 assert.match(chaptersCss, /\.ck-emergency-breadcrumb/);
-assert.match(chaptersCss, /\.ck-chapter-reset\{[\s\S]*min-height:44px/);
-assert.match(chaptersCss, /\.ck-subchapter-tabs button\{[\s\S]*min-height:44px/);
 assert.match(chaptersCss, /html\[data-theme="dark"\]/);
 assert.match(chaptersCss, /@media\(max-width:760px\)/);
 assert.match(chaptersCss, /prefers-reduced-motion:reduce/);
@@ -206,4 +223,4 @@ assert.match(triageFilterCss, /\.ck-triage-filter-status\{[\s\S]*font-size:11px/
 assert.match(triageFilterCss, /:focus-visible/);
 assert.doesNotMatch(triageFilterCss, /font-size:(?:7|7\.5|8|8\.5|9|10|10\.5)px/);
 
-console.log('Urgjencat chaptered Summary / Learn workspace contract passed.');
+console.log('Urgjencat dropdown chaptered Summary / Learn workspace contract passed.');
