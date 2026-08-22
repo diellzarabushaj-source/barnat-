@@ -151,37 +151,29 @@
     const reading = Number(post.readingTimeMinutes) > 0 ? `${Number(post.readingTimeMinutes)} min lexim` : '';
     const date = formatDate(post.publishedAt);
     const cover = coverFor(post);
-    const featured = index === 0;
 
     return `
-      <article class="blog-card${featured ? ' blog-card--featured' : ''}">
-        <a class="blog-card__media" href="blog.html?slug=${slug}" aria-label="Lexo ${title}">
+      <article class="blog-card">
+        <a class="blog-card__media" href="blog.html?slug=${slug}" aria-label="Lexo ${title}" tabindex="-1" aria-hidden="true">
           <img src="${escapeHtml(cover.url)}" alt="${escapeHtml(cover.alt)}" width="1200" height="760"
             style="object-position:${escapeHtml(cover.position || 'center')}"
             data-blog-fallback="1" data-fallback-position="${escapeHtml(cover.position || 'center')}"
-            ${featured ? 'fetchpriority="high"' : 'loading="lazy"'} decoding="async">
-          <span class="blog-card__media-overlay" aria-hidden="true"></span>
-          ${featured ? '<span class="blog-card__feature-label"><i></i>Zgjedhja e redaksisë</span>' : ''}
-          <span class="blog-card__media-note"><b>MedIndex Journal</b><small>Evidencë → praktikë</small></span>
-          ${cover.credit ? `<span class="blog-card__credit">${escapeHtml(cover.credit)}</span>` : ''}
+            ${index < 3 ? 'fetchpriority="high"' : 'loading="lazy"'} decoding="async">
+          <span class="blog-card__category">${category}</span>
+          <span class="blog-card__byline">
+            <img src="${AUTHOR_IMAGE}" alt="" width="30" height="30" loading="lazy" decoding="async">
+            <span class="blog-card__author-name">${author}</span>
+          </span>
         </a>
         <div class="blog-card__content">
-          <div class="blog-card__top">
-            <span class="blog-card__category">${category}</span>
-            <span class="blog-card__time">${escapeHtml(reading)}</span>
-          </div>
+          <p class="blog-card__meta">
+            <svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><rect x="3.4" y="5" width="17.2" height="15.6" rx="3" stroke="currentColor" stroke-width="1.7"/><path d="M3.4 9.6h17.2M8 3.4v3.4M16 3.4v3.4" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/></svg>
+            <span>${escapeHtml(date)}</span>
+            ${reading ? `<span class="blog-card__time">${escapeHtml(reading)}</span>` : '<span class="blog-card__time" hidden></span>'}
+          </p>
           <h2><a href="blog.html?slug=${slug}">${title}</a></h2>
           <p class="blog-card__excerpt">${excerpt}</p>
-          <div class="blog-card__footer">
-            <div class="blog-card__author">
-              <img class="blog-card__avatar" src="${AUTHOR_IMAGE}" alt="" width="38" height="38" loading="lazy" decoding="async">
-              <span class="blog-card__author-copy">
-                <span class="blog-card__author-name">${author}</span>
-                <span class="blog-card__date">${escapeHtml(date)}</span>
-              </span>
-            </div>
-            <a class="blog-card__link" href="blog.html?slug=${slug}" aria-label="Lexo ${title}">Lexo <span aria-hidden="true">↗</span></a>
-          </div>
+          <a class="blog-card__link" href="blog.html?slug=${slug}" aria-label="Lexo ${title}">Lexo më shumë <span aria-hidden="true">→</span></a>
         </div>
       </article>`;
   }

@@ -8,12 +8,9 @@
   <meta name="description" content="MedIndex Journal — analiza klinike, Clinical Decision Support, inteligjencë artificiale dhe teknologji shëndetësore për praktikë më të qartë.">
   <title>MedIndex Journal | Blog</title>
   <link rel="preload" href="brand/medindex-mark-on-light.webp" as="image" type="image/webp">
-  <link rel="preload" href="images/marketing/mjekja-ne-pune.webp" as="image" type="image/webp">
   <link rel="stylesheet" href="info-pages.css?v=20260814-1">
   <link rel="stylesheet" href="medindex-tailwind-ui.css?v=20260805-1" data-medindex-tailwind-ui>
-  <link rel="stylesheet" href="blog.css?v=20260816-3">
-  <link rel="stylesheet" href="blog-enhance.css?v=20260816-1">
-  <link rel="stylesheet" href="blog-final.css?v=20260816-1">
+  <link rel="stylesheet" href="blog.css?v=20260822-1">
 </head>
 <body>
   <div id="blogReadingProgress" class="blog-reading-progress" hidden aria-hidden="true"><span></span></div>
@@ -34,42 +31,12 @@
         </div>
       </nav>
 
-      <section class="info-main blog-hero" aria-labelledby="pageTitle">
-        <div class="blog-hero__copy">
-          <div class="blog-hero__badge"><span></span> MedIndex Journal</div>
-          <p class="info-kicker">Evidencë · Praktikë · Teknologji</p>
-          <h1 class="info-title" id="pageTitle">Mjekësi, evidencë dhe teknologji — pa zhurmë.</h1>
-          <p class="info-lead">Analiza të qarta për vendimmarrjen klinike, barnat, Clinical Decision Support dhe AI në shëndetësi — të shkruara për t'u lexuar shpejt dhe për t'u përdorur me mendim klinik.</p>
-          <div class="blog-hero__facts" aria-label="Karakteristikat e blogut">
-            <span><i></i> Fokus klinik</span>
-            <span><i></i> Lexim i përmbledhur</span>
-            <span><i></i> Përditësime profesionale</span>
-          </div>
-        </div>
-
-        <div class="blog-hero__visual" aria-label="MedIndex Clinical Knowledge">
-          <div class="blog-hero__image-frame">
-            <img src="images/marketing/mjekja-ne-pune.webp" alt="Mjeke duke punuar me laptop në një ambient klinik." width="900" height="980" fetchpriority="high" decoding="async">
-            <div class="blog-hero__glass">
-              <span>MedIndex Clinical Knowledge</span>
-              <strong>Evidence into practice.</strong>
-              <small>Clinical Decision Support · AI · Digital Health</small>
-            </div>
-          </div>
-          <div class="blog-hero__float" aria-hidden="true">
-            <b>01</b>
-            <span>Clinical insight</span>
-          </div>
-          <div class="blog-hero__author-card" aria-label="Autorja e MedIndex Journal">
-            <img src="images/brand/diellza-portret.webp" alt="" width="92" height="92" decoding="async">
-            <div>
-              <small>Editor & author</small>
-              <strong>Dr. Diellza Rabushaj</strong>
-              <span>Clinical knowledge</span>
-            </div>
-          </div>
-        </div>
-      </section>
+      <header class="blog-head" aria-labelledby="pageTitle">
+        <p class="blog-head__kicker">MedIndex Journal</p>
+        <h1 class="blog-head__title" id="pageTitle">Mjekësi, evidencë dhe teknologji — pa zhurmë.</h1>
+        <p class="blog-head__lead">Analiza të qarta për vendimmarrjen klinike, barnat, Clinical Decision Support dhe AI në shëndetësi — të shkruara për t'u lexuar shpejt dhe për t'u përdorur me mendim klinik.</p>
+        <p class="blog-head__count"><span id="blogArticleCount">—</span> artikuj të publikuar</p>
+      </header>
 
       <section class="info-body blog-body" aria-label="Artikujt e MedIndex">
         <div id="blogStatus" class="blog-state" role="status" aria-live="polite">
@@ -78,36 +45,16 @@
         </div>
 
         <div id="blogListView">
-          <div class="blog-library-bar">
-            <div>
-              <span class="blog-library-bar__eyebrow">Biblioteka</span>
-              <strong><span id="blogArticleCount">—</span> artikuj të publikuar</strong>
-            </div>
-            <div class="blog-library-bar__topics" aria-label="Temat kryesore">
-              <span>Clinical Decision Support</span>
-              <span>Digital Health</span>
-              <span>AI në mjekësi</span>
-            </div>
-          </div>
-
-          <div class="blog-discovery" aria-label="Kërko dhe filtro artikujt">
+          <!-- Kërkimi dhe kategoritë rrinë në një shirit të vetëm mbi rrjetin,
+               ashtu si i pret `blog-enhance.js`: ai i ndërton vetë kopsat te
+               `#blogFilterList` dhe filtron kartat sipas `.blog-card__category`. -->
+          <div class="blog-toolbar" aria-label="Kërko dhe filtro artikujt">
             <label class="blog-search" for="blogSearchInput">
               <svg class="blog-search__icon" viewBox="0 0 24 24" fill="none" aria-hidden="true"><circle cx="11" cy="11" r="7" stroke="currentColor" stroke-width="1.8"/><path d="m16.2 16.2 4 4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>
               <input id="blogSearchInput" type="search" autocomplete="off" placeholder="Kërko sipas temës, titullit ose fjalës kyçe…" aria-label="Kërko në MedIndex Journal">
               <kbd>Ctrl K</kbd>
             </label>
             <div id="blogFilterList" class="blog-filter-list" aria-label="Filtro sipas kategorisë"></div>
-          </div>
-
-          <div class="blog-journal-pulse" aria-label="Përmbledhje e MedIndex Journal">
-            <div class="blog-journal-pulse__intro">
-              <small>MedIndex Journal</small>
-              <strong>Përmbajtje e kuruar për vendime klinike më të qarta.</strong>
-            </div>
-            <div class="blog-journal-pulse__stat"><span>Rezultate</span><strong id="blogVisibleCount">—</strong></div>
-            <div class="blog-journal-pulse__stat"><span>Lexim total</span><strong id="blogTotalReading">—</strong></div>
-            <div class="blog-journal-pulse__stat"><span>Tema</span><strong id="blogTopicCount">—</strong></div>
-            <span id="blogPublishedCount" hidden></span>
           </div>
 
           <div id="blogGrid" class="blog-grid"></div>
@@ -122,8 +69,7 @@
     </div>
   </main>
 
-  <script src="blog.js?v=20260816-3" defer></script>
-  <script src="blog-enhance.js?v=20260816-1" defer></script>
-  <script src="blog-final.js?v=20260816-1" defer></script>
+  <script src="blog.js?v=20260822-1" defer></script>
+  <script src="blog-enhance.js?v=20260822-1" defer></script>
 </body>
 </html>
