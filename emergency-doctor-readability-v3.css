@@ -26,4 +26,43 @@ html.medindex-tailadmin[data-mi-page="urgjencat"] .ck-list-button strong{
   html.medindex-tailadmin[data-mi-page="urgjencat"] .ck-sl-experience button{
     min-height:44px;
   }
+
+  html.medindex-tailadmin[data-mi-page="urgjencat"] .ck-sl-flash-controls{
+    grid-template-columns:minmax(0,1fr) minmax(0,1fr)!important;
+    grid-auto-flow:row;
+  }
+
+  html.medindex-tailadmin[data-mi-page="urgjencat"] .ck-sl-flash-controls.is-hidden-answer>span[aria-hidden="true"]{
+    display:none;
+  }
+
+  html.medindex-tailadmin[data-mi-page="urgjencat"] .ck-sl-flash-controls.is-hidden-answer>[data-flash-prev]{
+    grid-column:1;
+    grid-row:1;
+  }
+
+  html.medindex-tailadmin[data-mi-page="urgjencat"] .ck-sl-flash-controls.is-hidden-answer>[data-flash-next]{
+    grid-column:2;
+    grid-row:1;
+  }
+
+  html.medindex-tailadmin[data-mi-page="urgjencat"] .ck-sl-flash-controls.is-revealed>.ck-flash-rating-label{
+    grid-column:1/-1;
+    grid-row:1;
+  }
+
+  html.medindex-tailadmin[data-mi-page="urgjencat"] .ck-sl-flash-controls.is-revealed>.ck-sl-recall{
+    grid-column:1/-1;
+    grid-row:2;
+  }
+
+  html.medindex-tailadmin[data-mi-page="urgjencat"] .ck-sl-flash-controls.is-revealed>[data-flash-prev]{
+    grid-column:1;
+    grid-row:3;
+  }
+
+  html.medindex-tailadmin[data-mi-page="urgjencat"] .ck-sl-flash-controls.is-revealed>[data-flash-next]{
+    grid-column:2;
+    grid-row:3;
+  }
 }
