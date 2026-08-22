@@ -1,0 +1,91 @@
+/* MedIndex — footer i përbashkët për faqet publike */
+.mi-site-footer{
+  width:100%;
+  border-top:1px solid #e7eaf0;
+  background:#f7f9fc;
+  color:#0b1220;
+  font-family:"Inter",-apple-system,BlinkMacSystemFont,"Segoe UI Variable","Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+}
+.mi-site-footer__inner{
+  width:min(1180px,calc(100% - 48px));
+  margin-inline:auto;
+  padding:38px 0 26px;
+}
+.mi-site-footer__top{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:24px 36px;
+  padding-bottom:30px;
+}
+.mi-site-footer__brand{
+  display:inline-flex;
+  align-items:center;
+  flex:0 0 auto;
+}
+.mi-site-footer__logo{
+  width:auto;
+  height:34px;
+  display:block;
+  object-fit:contain;
+}
+.mi-site-footer__nav{
+  display:flex;
+  align-items:center;
+  justify-content:flex-end;
+  flex-wrap:wrap;
+  gap:12px 30px;
+}
+.mi-site-footer__nav a{
+  position:relative;
+  color:#59647d;
+  font-size:14px;
+  font-weight:620;
+  line-height:1.4;
+  text-decoration:none;
+  transition:color .2s ease;
+}
+.mi-site-footer__nav a::after{
+  content:"";
+  position:absolute;
+  left:0;
+  right:0;
+  bottom:-7px;
+  height:2px;
+  border-radius:999px;
+  background:#3d6fe0;
+  transform:scaleX(0);
+  transform-origin:left;
+  transition:transform .2s ease;
+}
+.mi-site-footer__nav a:hover,
+.mi-site-footer__nav a:focus-visible{color:#0b1220}
+.mi-site-footer__nav a:hover::after,
+.mi-site-footer__nav a:focus-visible::after{transform:scaleX(1)}
+.mi-site-footer__base{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:12px 28px;
+  padding-top:24px;
+  border-top:1px solid #e3e7ee;
+}
+.mi-site-footer__note{
+  margin:0;
+  color:#8a94aa;
+  font-size:13px;
+  font-weight:520;
+  line-height:1.55;
+}
+.mi-site-footer__note:last-child{text-align:right}
+@media (max-width:720px){
+  .mi-site-footer__inner{width:min(100% - 32px,1180px);padding:30px 0 22px}
+  .mi-site-footer__top{align-items:flex-start;flex-direction:column;padding-bottom:24px}
+  .mi-site-footer__nav{justify-content:flex-start;gap:11px 22px}
+  .mi-site-footer__base{align-items:flex-start;flex-direction:column;padding-top:20px}
+  .mi-site-footer__note:last-child{text-align:left}
+}
+@media (max-width:420px){
+  .mi-site-footer__logo{height:31px}
+  .mi-site-footer__nav{display:grid;grid-template-columns:1fr 1fr;gap:14px 22px;width:100%}
+}
