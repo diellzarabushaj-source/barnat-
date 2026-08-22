@@ -14,6 +14,7 @@
   <link rel="stylesheet" href="emergency-summary-learn.css?v=20260819-1">
   <link rel="stylesheet" href="emergency-directory-assist.css?v=20260819-2">
   <link rel="stylesheet" href="emergency-triage-filter.css?v=20260819-1">
+  <link rel="stylesheet" href="emergency-chapters.css?v=20260822-1">
   <link rel="stylesheet" href="emergency-summary-learn-polish.css?v=20260819-3">
   <link rel="stylesheet" href="tailadmin-professional.css?v=20260728-1" data-tailadmin-professional-css>
   <script src="tailadmin-shell.js?v=production-audit-v2" defer></script>
@@ -35,21 +36,37 @@
       <div class="clinical-knowledge-page">
         <header class="ck-hero">
           <div>
-            <p class="ck-kicker">Urgjencë · Vendimmarrje + mësim</p>
+            <p class="ck-kicker">Urgjencë · Kapituj · Vendimmarrje + mësim</p>
             <h1>Urgjencat</h1>
-            <p>Dy mënyra të qarta: <strong>Përmbledhje</strong> për veprimin e menjëhershëm dhe <strong>Mëso</strong> për arsyetimin e plotë me flashcards.</p>
+            <p>Zgjidh <strong>kapitullin</strong> dhe <strong>nënkapitullin</strong>, pastaj përdor <strong>Përmbledhje</strong> për veprimin e menjëhershëm ose <strong>Mëso</strong> për arsyetimin e plotë me flashcards.</p>
           </div>
           <a class="ck-studio-link" href="https://medindex-clinical-knowledge.sanity.studio/" target="_blank" rel="noopener noreferrer">Menaxho në Sanity ↗</a>
         </header>
 
+        <section class="ck-chapter-explorer" id="emergencyChapterExplorer" aria-label="Kapitujt dhe nënkapitujt e urgjencave" hidden>
+          <div class="ck-chapter-explorer-head">
+            <div class="ck-chapter-explorer-copy">
+              <span>STRUKTURA KLINIKE</span>
+              <strong>Kapituj dhe nënkapituj</strong>
+              <small id="emergencyChapterSummary">Duke organizuar protokollet…</small>
+            </div>
+            <button class="ck-chapter-reset" id="emergencyChapterReset" type="button">Të gjitha</button>
+          </div>
+          <div class="ck-chapter-tabs" id="emergencyChapterNav" role="group" aria-label="Filtro sipas kapitullit"></div>
+          <div class="ck-subchapter-wrap" id="emergencySubchapterWrap" hidden>
+            <span class="ck-subchapter-label">Nënkapitulli</span>
+            <div class="ck-subchapter-tabs" id="emergencySubchapterNav" role="group" aria-label="Filtro sipas nënkapitullit"></div>
+          </div>
+        </section>
+
         <div class="ck-toolbar" role="search" aria-label="Kërkimi i urgjencave">
           <input id="emergencySearch" type="search" autocomplete="off" placeholder="Kërko urgjencën, ICD ose fjalën kyçe…" aria-label="Kërko urgjencën">
-          <select id="emergencyCategory" aria-label="Kategoria"><option value="">Të gjitha kategoritë</option></select>
+          <select id="emergencyCategory" class="ck-legacy-category-filter" aria-label="Kategoria klinike" tabindex="-1"><option value="">Të gjitha kategoritë</option></select>
         </div>
 
         <p class="ck-status" id="emergencyStatus" role="status" aria-live="polite">Duke i ngarkuar urgjencat…</p>
         <div class="ck-layout">
-          <aside class="ck-directory" aria-label="Lista e urgjencave">
+          <aside class="ck-directory" aria-label="Lista e urgjencave sipas kapitujve">
             <div class="ck-list" id="emergencyList"></div>
           </aside>
           <article class="ck-detail" id="emergencyDetail" aria-live="polite">
@@ -61,10 +78,10 @@
   </div>
   <script src="auth-client.js?v=production-audit-v2" defer></script>
   <script src="sanity-clinical-client.js?v=20260805-1" defer></script>
+  <script src="emergency-taxonomy.js?v=20260822-1" defer></script>
   <script src="emergency-summary-learn.js?v=20260819-2" defer></script>
-  <script src="urgjencat.js?v=20260816-1" defer></script>
+  <script src="urgjencat.js?v=20260822-1" defer></script>
   <script src="emergency-directory-assist.js?v=20260819-1" defer></script>
-  <script src="emergency-directory-priority.js?v=20260818-1" defer></script>
   <script src="emergency-triage-filter.js?v=20260818-2" defer></script>
   <script src="app-stability.js?v=20260724-2" defer></script>
 </body>
