@@ -1,4 +1,4 @@
 Redeploy trigger for current main build.
-Date: 2026-08-01
-Source merge: f12844dd7d3bf6ecd295ecc66cfc83c68c0449c0
-Reason: publish the table-only ATC classification routing after validation and physician browser audits passed.
+Date: 2026-08-22
+Source main: 3a1a4bf358414eefc0d82c36814065a288757608
+Reason: republish the landing page CursorGrid update from main — white base background, navy 70px grid across #rrjedha, #themeluesja and #plani, plus the interactive navy CursorGrid layer and dark navy workflow cards.
