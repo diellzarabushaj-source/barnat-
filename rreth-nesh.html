@@ -27,9 +27,67 @@
     .mi-site-footer__note:last-child{text-align:right!important}
     @media(max-width:720px){.mi-site-footer__inner{width:calc(100% - 32px)!important;padding:30px 0 22px!important}.mi-site-footer__top{align-items:flex-start!important;flex-direction:column!important;padding-bottom:23px!important}.mi-site-footer__nav{justify-content:flex-start!important;gap:11px 22px!important}.mi-site-footer__base{align-items:flex-start!important;flex-direction:column!important;padding-top:19px!important}.mi-site-footer__note:last-child{text-align:left!important}}
   </style>
+  <style id="mi-about-modern">
+    .about-modern .info-main{padding:clamp(52px,7vw,88px) 0 clamp(74px,8vw,108px)}
+    .about-hero{display:grid;grid-template-columns:minmax(0,1.14fr) minmax(330px,.86fr);gap:clamp(42px,7vw,92px);align-items:center}
+    .about-copy .info-title{max-width:13.5ch!important;font-size:clamp(42px,6vw,72px)!important}
+    .about-copy .info-lead{max-width:58ch!important}
+    .about-preview{position:relative;padding:18px;border:1px solid rgba(255,255,255,.14);border-radius:28px;background:linear-gradient(145deg,rgba(255,255,255,.10),rgba(255,255,255,.045));box-shadow:0 28px 70px rgba(0,0,0,.22);backdrop-filter:blur(16px)}
+    .about-preview::before{content:"";position:absolute;inset:-1px;border-radius:inherit;padding:1px;background:linear-gradient(145deg,rgba(126,181,255,.7),rgba(255,255,255,.04),rgba(15,119,121,.55));-webkit-mask:linear-gradient(#000 0 0) content-box,linear-gradient(#000 0 0);-webkit-mask-composite:xor;mask-composite:exclude;pointer-events:none}
+    .about-preview__top{display:flex;align-items:center;justify-content:space-between;gap:16px;padding:4px 4px 18px}
+    .about-preview__brand{display:flex;align-items:center;gap:11px;font-size:13px;font-weight:720;color:#fff}
+    .about-preview__mark{width:30px;height:30px;object-fit:contain}
+    .about-preview__status{display:inline-flex;align-items:center;gap:7px;color:rgba(255,255,255,.68);font-size:11px;font-weight:650}
+    .about-preview__status::before{content:"";width:7px;height:7px;border-radius:50%;background:#6bd5c5;box-shadow:0 0 0 4px rgba(107,213,197,.12)}
+    .about-preview__panel{padding:22px;border:1px solid rgba(255,255,255,.10);border-radius:20px;background:rgba(5,12,27,.42)}
+    .about-preview__eyebrow{margin:0 0 8px;color:#7fb2ff;font-size:10px;font-weight:780;letter-spacing:.13em;text-transform:uppercase}
+    .about-preview__title{margin:0;color:#fff;font-size:22px;font-weight:760;letter-spacing:-.035em;line-height:1.2}
+    .about-preview__rows{display:grid;gap:10px;margin-top:22px}
+    .about-preview__row{display:flex;align-items:center;justify-content:space-between;gap:16px;padding:13px 14px;border:1px solid rgba(255,255,255,.08);border-radius:14px;background:rgba(255,255,255,.055)}
+    .about-preview__row-main{display:flex;align-items:center;gap:11px;min-width:0}
+    .about-preview__icon{display:grid;place-items:center;width:31px;height:31px;flex:0 0 auto;border-radius:10px;background:rgba(127,178,255,.14);color:#9bc5ff}
+    .about-preview__icon svg{width:16px;height:16px}
+    .about-preview__row strong{display:block;color:#fff;font-size:12.5px;font-weight:680}
+    .about-preview__row small{display:block;margin-top:1px;color:rgba(255,255,255,.46);font-size:10.5px}
+    .about-preview__arrow{color:rgba(255,255,255,.38);font-size:17px}
+
+    .about-modern .info-body{padding-top:0;padding-bottom:clamp(72px,9vw,120px)}
+    .about-section{padding-top:clamp(58px,7vw,86px)}
+    .about-section__head{display:grid;grid-template-columns:minmax(0,.8fr) minmax(280px,.55fr);justify-content:space-between;gap:32px 70px;align-items:end;margin-bottom:34px}
+    .about-section__label{display:block;margin-bottom:12px;color:#3d6fe0;font-size:11px;font-weight:800;letter-spacing:.14em;text-transform:uppercase}
+    .about-section__head h2{max-width:15ch;margin:0;color:#0b1220;font-size:clamp(30px,4vw,46px);font-weight:770;letter-spacing:-.045em;line-height:1.06}
+    .about-section__head p{max-width:47ch;margin:0;color:#68738a;font-size:15px;line-height:1.7}
+
+    .about-bento{display:grid;grid-template-columns:1.12fr .88fr;grid-template-areas:"clarity security" "clarity direction";gap:18px}
+    .about-card{position:relative;overflow:hidden;border:1px solid #e4e9f1;border-radius:24px;background:#fff;box-shadow:0 1px 2px rgba(12,24,48,.02);transition:transform .25s ease,box-shadow .25s ease,border-color .25s ease}
+    .about-card:hover{transform:translateY(-3px);border-color:#d7dfec;box-shadow:0 20px 48px rgba(18,33,61,.09)}
+    .about-card--clarity{grid-area:clarity;min-height:430px;padding:34px;background:linear-gradient(155deg,#f7faff 0%,#fff 52%,#f3fbfa 100%)}
+    .about-card--security{grid-area:security;padding:28px 30px;background:#0d1730;color:#fff;border-color:#0d1730}
+    .about-card--direction{grid-area:direction;padding:28px 30px;background:#fff}
+    .about-card__top{display:flex;align-items:center;justify-content:space-between;gap:16px}
+    .about-card__index{color:#3d6fe0;font-size:11px;font-weight:800;letter-spacing:.14em;text-transform:uppercase}
+    .about-card--security .about-card__index{color:#8dbbff}
+    .about-card__icon{display:grid;place-items:center;width:44px;height:44px;border-radius:14px;background:#edf3ff;color:#2450b8}
+    .about-card--security .about-card__icon{background:rgba(255,255,255,.09);color:#9bc5ff}
+    .about-card__icon svg{width:21px;height:21px}
+    .about-card h3{margin:clamp(46px,7vw,76px) 0 14px;color:#0b1220;font-size:clamp(27px,3.2vw,40px);font-weight:760;letter-spacing:-.04em;line-height:1.08}
+    .about-card--security h3,.about-card--direction h3{margin:34px 0 10px;font-size:24px}
+    .about-card--security h3{color:#fff}
+    .about-card p{max-width:48ch;margin:0;color:#657188;font-size:14.5px;line-height:1.7}
+    .about-card--security p{color:rgba(255,255,255,.64)}
+    .about-card__chips{display:flex;flex-wrap:wrap;gap:8px;margin-top:30px}
+    .about-card__chip{padding:8px 10px;border:1px solid #e2e8f2;border-radius:999px;background:rgba(255,255,255,.72);color:#536079;font-size:11px;font-weight:650}
+    .about-card__footer{display:flex;align-items:center;justify-content:space-between;gap:14px;margin-top:26px;padding-top:18px;border-top:1px solid #e8edf4;color:#7d879a;font-size:11px;font-weight:650}
+    .about-card--security .about-card__footer{border-top-color:rgba(255,255,255,.1);color:rgba(255,255,255,.45)}
+    .about-card__dot{display:inline-flex;align-items:center;gap:8px}
+    .about-card__dot::before{content:"";width:7px;height:7px;border-radius:50%;background:#26a69a}
+
+    @media(max-width:900px){.about-hero{grid-template-columns:1fr}.about-preview{max-width:620px}.about-section__head{grid-template-columns:1fr}.about-bento{grid-template-columns:1fr;grid-template-areas:"clarity" "security" "direction"}.about-card--clarity{min-height:0}.about-card h3{margin-top:42px}}
+    @media(max-width:640px){.about-preview{padding:12px;border-radius:22px}.about-preview__panel{padding:18px}.about-section{padding-top:48px}.about-card--clarity,.about-card--security,.about-card--direction{padding:24px;border-radius:20px}.about-card h3,.about-card--security h3,.about-card--direction h3{font-size:25px}.about-card__chips{gap:7px}.about-card__chip{font-size:10.5px}}
+  </style>
 </head>
 <body>
-  <main class="info-shell">
+  <main class="info-shell about-modern">
     <div class="info-container">
       <nav class="info-nav" aria-label="Navigimi publik">
         <a class="info-brand" href="login-v2.html" aria-label="MedIndex — faqja kryesore">
@@ -46,17 +104,71 @@
         </div>
       </nav>
 
-      <section class="info-main" aria-labelledby="pageTitle">
-        <p class="info-kicker">Rreth MedIndex</p>
-        <h1 class="info-title" id="pageTitle">Informacion klinik, i organizuar me qartësi.</h1>
-        <p class="info-lead">MedIndex është një hapësirë private pune e krijuar për ta bërë informacionin klinik më të shpejtë, më të qartë dhe më të përdorshëm në praktikën e përditshme.</p>
+      <section class="info-main about-hero" aria-labelledby="pageTitle">
+        <div class="about-copy">
+          <p class="info-kicker">Rreth MedIndex</p>
+          <h1 class="info-title" id="pageTitle">Informacion klinik, i organizuar me qartësi.</h1>
+          <p class="info-lead">MedIndex është një hapësirë private pune e krijuar për ta bërë informacionin klinik më të shpejtë, më të qartë dhe më të përdorshëm në praktikën e përditshme.</p>
+        </div>
+
+        <div class="about-preview" aria-label="Pamje konceptuale e hapësirës klinike MedIndex">
+          <div class="about-preview__top">
+            <div class="about-preview__brand">
+              <img class="about-preview__mark" src="brand/medindex-mark-on-light.webp" alt="" width="48" height="48" decoding="async">
+              <span>MedIndex workspace</span>
+            </div>
+            <span class="about-preview__status">Private</span>
+          </div>
+          <div class="about-preview__panel">
+            <p class="about-preview__eyebrow">Clinical workspace</p>
+            <h2 class="about-preview__title">Një rrjedhë pune për informacionin klinik.</h2>
+            <div class="about-preview__rows">
+              <div class="about-preview__row">
+                <div class="about-preview__row-main"><span class="about-preview__icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><path d="M7 3h10v18H7z"/><path d="M9.5 7h5M9.5 11h5M9.5 15h3"/></svg></span><div><strong>Barnat</strong><small>Kërkim dhe organizim klinik</small></div></div><span class="about-preview__arrow">›</span>
+              </div>
+              <div class="about-preview__row">
+                <div class="about-preview__row-main"><span class="about-preview__icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><circle cx="12" cy="12" r="8"/><path d="M12 8v4l3 2"/></svg></span><div><strong>Dozologjia</strong><small>Informacion i strukturuar për përdorim</small></div></div><span class="about-preview__arrow">›</span>
+              </div>
+              <div class="about-preview__row">
+                <div class="about-preview__row-main"><span class="about-preview__icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><path d="M5 4h14v16H5z"/><path d="M8 8h8M8 12h8M8 16h5"/></svg></span><div><strong>Protokollet</strong><small>Referencë në të njëjtën hapësirë pune</small></div></div><span class="about-preview__arrow">›</span>
+              </div>
+            </div>
+          </div>
+        </div>
       </section>
 
       <section class="info-body">
-        <div class="info-grid">
-          <article class="info-card"><span>01 · Qëllimi</span><h2>Qartësi klinike</h2><p>Barnat, klasifikimet, analizat, dozologjia, protokollet dhe recetat organizohen në një rrjedhë të vetme pune.</p></article>
-          <article class="info-card"><span>02 · Siguria</span><h2>Hapësirë private</h2><p>Qasja lejohet vetëm përmes llogarisë së aprovuar Google dhe një sesioni të mbrojtur në server.</p></article>
-          <article class="info-card"><span>03 · Drejtimi</span><h2>Ndërtuar nga klinika</h2><p>MedIndex udhëhiqet nga Dr. Diellza Rabushaj me fokus në përdorshmëri, saktësi dhe vendimmarrje profesionale.</p></article>
+        <div class="about-section">
+          <div class="about-section__head">
+            <div>
+              <span class="about-section__label">Si është ndërtuar</span>
+              <h2>Tre parime që udhëheqin MedIndex.</h2>
+            </div>
+            <p>Produkti është menduar si një mjet pune klinik: informacioni duhet të jetë i organizuar, qasja e kontrolluar dhe ndërfaqja e përdorshme në praktikë.</p>
+          </div>
+
+          <div class="about-bento">
+            <article class="about-card about-card--clarity">
+              <div class="about-card__top"><span class="about-card__index">01 · Qëllimi</span><span class="about-card__icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><path d="M4 6h16M4 12h10M4 18h7"/><circle cx="18" cy="12" r="2"/><circle cx="15" cy="18" r="2"/></svg></span></div>
+              <h3>Qartësi klinike në një rrjedhë të vetme.</h3>
+              <p>Barnat, klasifikimet, analizat, dozologjia, protokollet dhe recetat organizohen në një hapësirë të vetme pune, me fokus në gjetjen dhe përdorimin e informacionit pa hapa të panevojshëm.</p>
+              <div class="about-card__chips"><span class="about-card__chip">Barnat</span><span class="about-card__chip">ATC</span><span class="about-card__chip">ICD-10</span><span class="about-card__chip">Dozologjia</span><span class="about-card__chip">Protokollet</span><span class="about-card__chip">Recetat</span></div>
+            </article>
+
+            <article class="about-card about-card--security">
+              <div class="about-card__top"><span class="about-card__index">02 · Siguria</span><span class="about-card__icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><path d="M12 3l7 3v5c0 4.6-2.8 8.1-7 10-4.2-1.9-7-5.4-7-10V6l7-3z"/><path d="M9.5 12l1.7 1.7 3.5-3.7"/></svg></span></div>
+              <h3>Hapësirë private.</h3>
+              <p>Qasja lejohet vetëm përmes llogarisë së aprovuar Google dhe një sesioni të mbrojtur në server.</p>
+              <div class="about-card__footer"><span class="about-card__dot">Qasje e kontrolluar</span><span>MedIndex</span></div>
+            </article>
+
+            <article class="about-card about-card--direction">
+              <div class="about-card__top"><span class="about-card__index">03 · Drejtimi</span><span class="about-card__icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><circle cx="12" cy="8" r="3"/><path d="M5.5 20c.8-4 3-6 6.5-6s5.7 2 6.5 6"/><path d="M18 5l1.2 1.2L22 3.5"/></svg></span></div>
+              <h3>Ndërtuar nga klinika.</h3>
+              <p>MedIndex udhëhiqet nga Dr. Diellza Rabushaj me fokus në përdorshmëri, saktësi dhe vendimmarrje profesionale.</p>
+              <div class="about-card__footer"><span>Clinical-first product</span><span>2026</span></div>
+            </article>
+          </div>
         </div>
       </section>
     </div>
