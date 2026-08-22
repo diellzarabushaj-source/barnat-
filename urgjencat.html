@@ -14,7 +14,7 @@
   <link rel="stylesheet" href="emergency-summary-learn.css?v=20260819-1">
   <link rel="stylesheet" href="emergency-directory-assist.css?v=20260819-2">
   <link rel="stylesheet" href="emergency-triage-filter.css?v=20260819-1">
-  <link rel="stylesheet" href="emergency-chapters.css?v=20260822-1">
+  <link rel="stylesheet" href="emergency-chapters.css?v=20260822-2">
   <link rel="stylesheet" href="emergency-summary-learn-polish.css?v=20260819-3">
   <link rel="stylesheet" href="tailadmin-professional.css?v=20260728-1" data-tailadmin-professional-css>
   <script src="tailadmin-shell.js?v=production-audit-v2" defer></script>
@@ -38,25 +38,43 @@
           <div>
             <p class="ck-kicker">Urgjencë · Kapituj · Vendimmarrje + mësim</p>
             <h1>Urgjencat</h1>
-            <p>Zgjidh <strong>kapitullin</strong> dhe <strong>nënkapitullin</strong>, pastaj përdor <strong>Përmbledhje</strong> për veprimin e menjëhershëm ose <strong>Mëso</strong> për arsyetimin e plotë me flashcards.</p>
+            <p>Zgjidh <strong>kapitullin</strong> nga lista, pastaj <strong>nënkapitullin</strong> kur të duhet. Përdor <strong>Përmbledhje</strong> për veprimin e menjëhershëm ose <strong>Mëso</strong> për arsyetimin e plotë me flashcards.</p>
           </div>
           <a class="ck-studio-link" href="https://medindex-clinical-knowledge.sanity.studio/" target="_blank" rel="noopener noreferrer">Menaxho në Sanity ↗</a>
         </header>
 
-        <section class="ck-chapter-explorer" id="emergencyChapterExplorer" aria-label="Kapitujt dhe nënkapitujt e urgjencave" hidden>
+        <section class="ck-chapter-explorer" id="emergencyChapterExplorer" aria-label="Zgjedhja e kapitullit dhe nënkapitullit" hidden>
           <div class="ck-chapter-explorer-head">
             <div class="ck-chapter-explorer-copy">
               <span>STRUKTURA KLINIKE</span>
-              <strong>Kapituj dhe nënkapituj</strong>
+              <strong>Zgjidh kapitullin</strong>
               <small id="emergencyChapterSummary">Duke organizuar protokollet…</small>
             </div>
-            <button class="ck-chapter-reset" id="emergencyChapterReset" type="button">Të gjitha</button>
           </div>
-          <div class="ck-chapter-tabs" id="emergencyChapterNav" role="group" aria-label="Filtro sipas kapitullit"></div>
-          <div class="ck-subchapter-wrap" id="emergencySubchapterWrap" hidden>
-            <span class="ck-subchapter-label">Nënkapitulli</span>
-            <div class="ck-subchapter-tabs" id="emergencySubchapterNav" role="group" aria-label="Filtro sipas nënkapitullit"></div>
+
+          <div class="ck-chapter-picker-grid">
+            <label class="ck-chapter-picker" for="emergencyChapterSelect">
+              <span>Kapitulli</span>
+              <div class="ck-chapter-select-shell">
+                <select id="emergencyChapterSelect" aria-label="Zgjidh kapitullin e urgjencave">
+                  <option value="">Të gjithë kapitujt</option>
+                </select>
+              </div>
+            </label>
+
+            <label class="ck-chapter-picker" id="emergencySubchapterWrap" for="emergencySubchapterSelect" hidden>
+              <span>Nënkapitulli</span>
+              <div class="ck-chapter-select-shell">
+                <select id="emergencySubchapterSelect" aria-label="Zgjidh nënkapitullin e urgjencave">
+                  <option value="">Të gjithë nënkapitujt</option>
+                </select>
+              </div>
+            </label>
           </div>
+
+          <button class="ck-chapter-reset" id="emergencyChapterReset" type="button" hidden>Të gjitha</button>
+          <div class="ck-chapter-tabs" id="emergencyChapterNav" aria-hidden="true" hidden></div>
+          <div class="ck-subchapter-tabs" id="emergencySubchapterNav" aria-hidden="true" hidden></div>
         </section>
 
         <div class="ck-toolbar" role="search" aria-label="Kërkimi i urgjencave">
@@ -81,6 +99,7 @@
   <script src="emergency-taxonomy.js?v=20260822-1" defer></script>
   <script src="emergency-summary-learn.js?v=20260819-2" defer></script>
   <script src="urgjencat.js?v=20260822-1" defer></script>
+  <script src="emergency-chapter-select.js?v=20260822-1" defer></script>
   <script src="emergency-directory-assist.js?v=20260819-1" defer></script>
   <script src="emergency-triage-filter.js?v=20260818-2" defer></script>
   <script src="app-stability.js?v=20260724-2" defer></script>

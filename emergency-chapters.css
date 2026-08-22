@@ -6,34 +6,26 @@ html.medindex-tailadmin[data-mi-page="urgjencat"]{
 
 html.medindex-tailadmin[data-mi-page="urgjencat"] .ck-toolbar{grid-template-columns:minmax(0,1fr)}
 
-.ck-chapter-explorer{display:grid;gap:12px;padding:14px;border:1px solid var(--ck-line);border-radius:20px;background:linear-gradient(145deg,rgba(255,255,255,.99),rgba(247,249,255,.96));box-shadow:0 12px 32px rgba(33,53,96,.055)}
+.ck-chapter-explorer{display:grid;gap:14px;padding:16px;border:1px solid var(--ck-line);border-radius:20px;background:linear-gradient(145deg,rgba(255,255,255,.99),rgba(247,249,255,.96));box-shadow:0 12px 32px rgba(33,53,96,.055)}
 .ck-chapter-explorer[hidden]{display:none!important}
 .ck-chapter-explorer-head{display:flex;align-items:center;justify-content:space-between;gap:16px}
 .ck-chapter-explorer-copy{min-width:0}
 .ck-chapter-explorer-copy span{display:block;color:var(--ck-blue);font-size:11px;font-weight:850;letter-spacing:.11em;text-transform:uppercase}
-.ck-chapter-explorer-copy strong{display:block;margin-top:4px;color:var(--ck-ink);font-size:15px;line-height:1.35}
-.ck-chapter-explorer-copy small{display:block;margin-top:3px;color:var(--ck-muted);font-size:11.5px;line-height:1.45}
-.ck-chapter-reset{display:inline-flex;min-height:44px;flex:0 0 auto;align-items:center;justify-content:center;padding:0 14px;border:1px solid var(--ck-line);border-radius:12px;background:#fff;color:#526078;font:750 12px/1 var(--mi-font,Inter,system-ui,sans-serif);cursor:pointer}
-.ck-chapter-reset:hover{border-color:rgba(71,119,229,.28);background:var(--ck-taxonomy-soft);color:#315fc8}
-.ck-chapter-reset:focus-visible,.ck-chapter-tabs button:focus-visible,.ck-subchapter-tabs button:focus-visible{outline:3px solid rgba(71,119,229,.2);outline-offset:2px}
+.ck-chapter-explorer-copy strong{display:block;margin-top:4px;color:var(--ck-ink);font-size:16px;line-height:1.35}
+.ck-chapter-explorer-copy small{display:block;margin-top:4px;color:var(--ck-muted);font-size:12px;line-height:1.45}
 
-.ck-chapter-tabs{display:grid;grid-auto-flow:column;grid-auto-columns:minmax(168px,1fr);gap:9px;overflow-x:auto;padding:2px 2px 5px;scrollbar-width:thin;overscroll-behavior-inline:contain;scroll-snap-type:x proximity}
-.ck-chapter-tabs button{position:relative;display:grid;grid-template-columns:auto minmax(0,1fr) auto;align-items:center;gap:9px;min-height:58px;padding:10px 11px;border:1px solid var(--ck-line);border-radius:15px;background:#fff;color:var(--ck-ink);text-align:left;cursor:pointer;scroll-snap-align:start;transition:border-color .16s ease,background .16s ease,box-shadow .16s ease,transform .16s ease}
-.ck-chapter-tabs button:hover{border-color:rgba(71,119,229,.25);background:#fbfcff;transform:translateY(-1px)}
-.ck-chapter-tabs button[aria-pressed="true"]{border-color:rgba(71,119,229,.28);background:linear-gradient(145deg,#f8faff,#edf3ff);box-shadow:0 8px 20px rgba(49,95,200,.09)}
-.ck-chapter-tabs button>span:first-child{display:grid;width:30px;height:30px;place-items:center;border-radius:10px;background:var(--ck-taxonomy-soft);color:#315fc8;font-size:11px;font-weight:900}
-.ck-chapter-tabs button[aria-pressed="true"]>span:first-child{background:#315fc8;color:#fff}
-.ck-chapter-tabs button strong{min-width:0;font-size:12.5px;font-weight:800;line-height:1.28}
-.ck-chapter-tabs button b{display:grid;min-width:25px;height:25px;place-items:center;padding:0 6px;border-radius:999px;background:#f1f4f9;color:#667085;font-size:11px;font-weight:850}
+.ck-chapter-picker-grid{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:12px}
+.ck-chapter-picker{display:grid;gap:7px;min-width:0}
+.ck-chapter-picker[hidden]{display:none!important}
+.ck-chapter-picker>span{color:#667085;font-size:11.5px;font-weight:800;letter-spacing:.02em}
+.ck-chapter-select-shell{position:relative;min-width:0}
+.ck-chapter-select-shell::after{content:"⌄";position:absolute;top:50%;right:15px;transform:translateY(-54%);color:#718096;font-size:16px;font-weight:800;pointer-events:none}
+.ck-chapter-select-shell select{width:100%;min-height:50px;appearance:none;border:1px solid rgba(83,103,143,.16);border-radius:14px;background:#fff;color:var(--ck-ink);padding:0 44px 0 14px;font:750 13px/1.25 var(--mi-font,Inter,system-ui,sans-serif);outline:none;cursor:pointer;box-shadow:0 5px 15px rgba(32,50,88,.035);transition:border-color .16s ease,box-shadow .16s ease,background .16s ease}
+.ck-chapter-select-shell select:hover{border-color:rgba(71,119,229,.27);background:#fbfcff}
+.ck-chapter-select-shell select:focus-visible{border-color:rgba(71,119,229,.48);box-shadow:0 0 0 4px rgba(71,119,229,.10)}
+.ck-chapter-select-shell select:disabled{cursor:not-allowed;opacity:.58;background:#f6f7f9}
 
-.ck-subchapter-wrap{display:flex;align-items:center;gap:10px;min-width:0;padding-top:1px}
-.ck-subchapter-label{flex:0 0 auto;color:var(--ck-muted);font-size:11px;font-weight:800}
-.ck-subchapter-tabs{display:flex;min-width:0;gap:7px;overflow-x:auto;padding:2px 2px 4px;scrollbar-width:thin}
-.ck-subchapter-tabs button{display:inline-flex;min-height:44px;flex:0 0 auto;align-items:center;gap:7px;padding:0 12px;border:1px solid var(--ck-line);border-radius:12px;background:#fff;color:#59657a;font:750 11.5px/1.25 var(--mi-font,Inter,system-ui,sans-serif);cursor:pointer}
-.ck-subchapter-tabs button:hover{border-color:rgba(71,119,229,.22);background:#fbfcff}
-.ck-subchapter-tabs button[aria-pressed="true"]{border-color:rgba(71,119,229,.28);background:#eef3ff;color:#315fc8}
-.ck-subchapter-tabs button b{font-size:11px;color:#7b8494}
-
+.ck-chapter-reset,.ck-chapter-tabs,.ck-subchapter-tabs{display:none!important}
 .ck-legacy-category-filter{display:none!important}
 
 .ck-directory-chapter{display:grid;gap:8px}
@@ -61,27 +53,21 @@ html.medindex-tailadmin[data-mi-page="urgjencat"] .ck-toolbar{grid-template-colu
 
 html[data-theme="dark"] .ck-chapter-explorer{background:linear-gradient(145deg,#111827,#111a2d);border-color:rgba(148,163,184,.16)}
 html[data-theme="dark"] .ck-chapter-explorer-copy strong,html[data-theme="dark"] .ck-directory-chapter-head strong{color:#f8fafc}
-html[data-theme="dark"] .ck-chapter-reset,html[data-theme="dark"] .ck-chapter-tabs button,html[data-theme="dark"] .ck-subchapter-tabs button{background:#0f172a;color:#e5e7eb;border-color:rgba(148,163,184,.17)}
-html[data-theme="dark"] .ck-chapter-tabs button[aria-pressed="true"],html[data-theme="dark"] .ck-subchapter-tabs button[aria-pressed="true"]{background:#172342;color:#dbe7ff;border-color:rgba(113,154,245,.34)}
-html[data-theme="dark"] .ck-chapter-tabs button>span:first-child{background:#1b2741;color:#b9ccff}
-html[data-theme="dark"] .ck-chapter-tabs button[aria-pressed="true"]>span:first-child{background:#4777e5;color:#fff}
-html[data-theme="dark"] .ck-chapter-tabs button b{background:#1b2435;color:#bdc5d2}
+html[data-theme="dark"] .ck-chapter-picker>span{color:#b7c0cf}
+html[data-theme="dark"] .ck-chapter-select-shell select{background:#0f172a;color:#eef2f7;border-color:rgba(148,163,184,.2);box-shadow:none}
+html[data-theme="dark"] .ck-chapter-select-shell select:hover{background:#141e32;border-color:rgba(113,154,245,.32)}
+html[data-theme="dark"] .ck-chapter-select-shell::after{color:#aeb9ca}
 html[data-theme="dark"] .ck-emergency-breadcrumb b{color:#d3d9e4}
 html[data-theme="dark"] .ck-emergency-breadcrumb .is-chapter{color:#9eb9ff}
 
 @media(max-width:760px){
-  .ck-chapter-explorer{padding:12px;border-radius:17px}
-  .ck-chapter-explorer-head{align-items:flex-start}
-  .ck-chapter-explorer-copy strong{font-size:14px}
-  .ck-chapter-reset{min-width:78px;padding:0 11px}
-  .ck-chapter-tabs{grid-auto-columns:minmax(154px,78vw)}
-  .ck-chapter-tabs button{min-height:60px}
-  .ck-subchapter-wrap{align-items:flex-start;flex-direction:column;gap:5px}
-  .ck-subchapter-tabs{width:100%}
+  .ck-chapter-explorer{padding:13px;border-radius:17px}
+  .ck-chapter-explorer-copy strong{font-size:15px}
+  .ck-chapter-picker-grid{grid-template-columns:1fr;gap:10px}
+  .ck-chapter-select-shell select{min-height:50px;font-size:13px}
   .ck-directory-chapter-head{padding-inline:4px}
 }
 
 @media(prefers-reduced-motion:reduce){
-  .ck-chapter-tabs button{transition:none}
-  .ck-chapter-tabs{scroll-behavior:auto}
+  .ck-chapter-select-shell select{transition:none}
 }
