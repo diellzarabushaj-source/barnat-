@@ -4,15 +4,21 @@ html.medindex-tailadmin[data-mi-page="urgjencat"] .ck-directory-tag{
   font-size:11px!important;
 }
 
+html.medindex-tailadmin[data-mi-page="urgjencat"] .ck-list-button strong{
+  font-size:14px!important;
+}
+
 html.medindex-tailadmin[data-mi-page="urgjencat"] .ck-learning-path-v3,
 html.medindex-tailadmin[data-mi-page="urgjencat"] .ck-learning-path-v3 b,
 html.medindex-tailadmin[data-mi-page="urgjencat"] .ck-flash-v3-head>div:first-child>span,
+html.medindex-tailadmin[data-mi-page="urgjencat"] .ck-flash-v3-head>strong,
 html.medindex-tailadmin[data-mi-page="urgjencat"] .ck-flash-v3-score span,
 html.medindex-tailadmin[data-mi-page="urgjencat"] .ck-flash-v3-meta>span,
 html.medindex-tailadmin[data-mi-page="urgjencat"] .ck-flash-v3-meta>button,
 html.medindex-tailadmin[data-mi-page="urgjencat"] .ck-flash-v3-tag,
 html.medindex-tailadmin[data-mi-page="urgjencat"] .ck-flash-v3-level,
 html.medindex-tailadmin[data-mi-page="urgjencat"] .ck-flash-v3-answer>span,
+html.medindex-tailadmin[data-mi-page="urgjencat"] .ck-flash-v3-answer>small,
 html.medindex-tailadmin[data-mi-page="urgjencat"] .ck-flash-v3-reveal span,
 html.medindex-tailadmin[data-mi-page="urgjencat"] .ck-flash-v3-rating button span,
 html.medindex-tailadmin[data-mi-page="urgjencat"] .ck-flash-v3-nav button,
@@ -39,10 +45,12 @@ html.medindex-tailadmin[data-mi-page="urgjencat"] .ck-flash-v3-level{
   }
 
   html.medindex-tailadmin[data-mi-page="urgjencat"] .ck-flash-v3-head>div:first-child>span,
+  html.medindex-tailadmin[data-mi-page="urgjencat"] .ck-flash-v3-head>strong,
   html.medindex-tailadmin[data-mi-page="urgjencat"] .ck-flash-v3-score span,
   html.medindex-tailadmin[data-mi-page="urgjencat"] .ck-flash-v3-tag,
   html.medindex-tailadmin[data-mi-page="urgjencat"] .ck-flash-v3-level,
   html.medindex-tailadmin[data-mi-page="urgjencat"] .ck-flash-v3-answer>span,
+  html.medindex-tailadmin[data-mi-page="urgjencat"] .ck-flash-v3-answer>small,
   html.medindex-tailadmin[data-mi-page="urgjencat"] .ck-flash-v3-reveal span,
   html.medindex-tailadmin[data-mi-page="urgjencat"] .ck-flash-v3-rating button span,
   html.medindex-tailadmin[data-mi-page="urgjencat"] .ck-flash-v3-nav>span,
