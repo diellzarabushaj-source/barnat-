@@ -259,7 +259,7 @@
 
     const commit = next => {
       saveState(item._id, next);
-      requestAnimationFrame(() => enhance());
+      requestAnimationFrame(() => renderFlashcards(flash, item));
     };
 
     flash.addEventListener('click', event => {
@@ -267,7 +267,7 @@
       if (reset) {
         event.preventDefault();
         try { localStorage.removeItem(`${STORAGE_KEY}${item._id}`); } catch {}
-        requestAnimationFrame(() => enhance());
+        requestAnimationFrame(() => renderFlashcards(flash, item));
         return;
       }
 
@@ -323,18 +323,23 @@
       if (event.target.closest('button,a,input,textarea,select,[contenteditable="true"]')) return;
       if (event.code === 'Space' && !state.revealed) {
         event.preventDefault();
+        event.stopPropagation();
         flash.querySelector('[data-flash-reveal]')?.click();
       } else if (event.key === '1' && state.revealed) {
         event.preventDefault();
+        event.stopPropagation();
         flash.querySelector('[data-flash-repeat]')?.click();
       } else if (event.key === '2' && state.revealed) {
         event.preventDefault();
+        event.stopPropagation();
         flash.querySelector('[data-flash-known]')?.click();
       } else if (event.key === 'ArrowLeft') {
         event.preventDefault();
+        event.stopPropagation();
         flash.querySelector('[data-flash-prev]')?.click();
       } else if (event.key === 'ArrowRight') {
         event.preventDefault();
+        event.stopPropagation();
         flash.querySelector('[data-flash-next]')?.click();
       }
     });
