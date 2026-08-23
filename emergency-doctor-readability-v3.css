@@ -1,0 +1,53 @@
+/* Urgjencat v3 — physician readability floor.
+   Keep the workspace compact with spacing, never with micro-text. */
+html.medindex-tailadmin[data-mi-page="urgjencat"] .ck-directory-tag{
+  font-size:11px!important;
+}
+
+html.medindex-tailadmin[data-mi-page="urgjencat"] .ck-learning-path-v3,
+html.medindex-tailadmin[data-mi-page="urgjencat"] .ck-learning-path-v3 b,
+html.medindex-tailadmin[data-mi-page="urgjencat"] .ck-flash-v3-head>div:first-child>span,
+html.medindex-tailadmin[data-mi-page="urgjencat"] .ck-flash-v3-score span,
+html.medindex-tailadmin[data-mi-page="urgjencat"] .ck-flash-v3-meta>span,
+html.medindex-tailadmin[data-mi-page="urgjencat"] .ck-flash-v3-meta>button,
+html.medindex-tailadmin[data-mi-page="urgjencat"] .ck-flash-v3-tag,
+html.medindex-tailadmin[data-mi-page="urgjencat"] .ck-flash-v3-level,
+html.medindex-tailadmin[data-mi-page="urgjencat"] .ck-flash-v3-answer>span,
+html.medindex-tailadmin[data-mi-page="urgjencat"] .ck-flash-v3-reveal span,
+html.medindex-tailadmin[data-mi-page="urgjencat"] .ck-flash-v3-rating button span,
+html.medindex-tailadmin[data-mi-page="urgjencat"] .ck-flash-v3-nav button,
+html.medindex-tailadmin[data-mi-page="urgjencat"] .ck-flash-v3-nav>span,
+html.medindex-tailadmin[data-mi-page="urgjencat"] .ck-flash-v3-complete-actions button{
+  font-size:11px!important;
+}
+
+/* Keep small status text readable without making the cards visually heavy. */
+html.medindex-tailadmin[data-mi-page="urgjencat"] .ck-flash-v3-meta>span,
+html.medindex-tailadmin[data-mi-page="urgjencat"] .ck-flash-v3-tag,
+html.medindex-tailadmin[data-mi-page="urgjencat"] .ck-flash-v3-level{
+  line-height:1.2;
+}
+
+@media(max-width:760px){
+  html.medindex-tailadmin[data-mi-page="urgjencat"] .ck-doctor-jumpbar[data-ck-v3="1"] button,
+  html.medindex-tailadmin[data-mi-page="urgjencat"] .ck-flash-v3-reveal,
+  html.medindex-tailadmin[data-mi-page="urgjencat"] .ck-flash-v3-rating button,
+  html.medindex-tailadmin[data-mi-page="urgjencat"] .ck-flash-v3-nav button,
+  html.medindex-tailadmin[data-mi-page="urgjencat"] .ck-flash-v3-meta>button,
+  html.medindex-tailadmin[data-mi-page="urgjencat"] .ck-flash-v3-complete-actions button{
+    min-height:44px!important;
+  }
+
+  html.medindex-tailadmin[data-mi-page="urgjencat"] .ck-flash-v3-head>div:first-child>span,
+  html.medindex-tailadmin[data-mi-page="urgjencat"] .ck-flash-v3-score span,
+  html.medindex-tailadmin[data-mi-page="urgjencat"] .ck-flash-v3-tag,
+  html.medindex-tailadmin[data-mi-page="urgjencat"] .ck-flash-v3-level,
+  html.medindex-tailadmin[data-mi-page="urgjencat"] .ck-flash-v3-answer>span,
+  html.medindex-tailadmin[data-mi-page="urgjencat"] .ck-flash-v3-reveal span,
+  html.medindex-tailadmin[data-mi-page="urgjencat"] .ck-flash-v3-rating button span,
+  html.medindex-tailadmin[data-mi-page="urgjencat"] .ck-flash-v3-nav>span,
+  html.medindex-tailadmin[data-mi-page="urgjencat"] .ck-learning-path-v3,
+  html.medindex-tailadmin[data-mi-page="urgjencat"] .ck-learning-path-v3 b{
+    font-size:11px!important;
+  }
+}
