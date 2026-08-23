@@ -163,7 +163,7 @@ html.medindex-tailadmin[data-mi-page="urgjencat"] .ck-sl-recall [data-flash-know
   padding-inline:13px;
 }
 html.medindex-tailadmin[data-mi-page="urgjencat"] .ck-flash-hard-review{
-  min-height:40px!important;
+  min-height:44px!important;
   padding:0 12px!important;
   border:1px solid rgba(183,119,48,.15)!important;
   border-radius:9px!important;
@@ -228,7 +228,7 @@ html[data-theme="dark"] .ck-sl-flashcard[data-ck-difficulty="hard"]{border-color
   }
   html.medindex-tailadmin[data-mi-page="urgjencat"] .ck-doctor-jumpbar>span{display:none}
   html.medindex-tailadmin[data-mi-page="urgjencat"] .ck-doctor-jumpbar button{
-    min-height:40px;
+    min-height:44px!important;
     padding:0 9px;
   }
   html.medindex-tailadmin[data-mi-page="urgjencat"] .ck-doctor-jumpbar button::before{
@@ -259,6 +259,14 @@ html[data-theme="dark"] .ck-sl-flashcard[data-ck-difficulty="hard"]{border-color
   html.medindex-tailadmin[data-mi-page="urgjencat"] .ck-flash-v3-cardmeta{
     align-items:flex-start;
     flex-direction:column;
+  }
+  html.medindex-tailadmin[data-mi-page="urgjencat"] .ck-sl-flash-controls>button,
+  html.medindex-tailadmin[data-mi-page="urgjencat"] .ck-sl-recall button,
+  html.medindex-tailadmin[data-mi-page="urgjencat"] .ck-flash-session-tools>button,
+  html.medindex-tailadmin[data-mi-page="urgjencat"] .ck-flash-review-remaining,
+  html.medindex-tailadmin[data-mi-page="urgjencat"] .ck-flash-hard-review,
+  html.medindex-tailadmin[data-mi-page="urgjencat"] .ck-flash-complete button{
+    min-height:44px!important;
   }
   html.medindex-tailadmin[data-mi-page="urgjencat"] .ck-sl-flash-controls.is-revealed{
     display:grid;
