@@ -8,8 +8,6 @@
   const META_KEY = 'medindex_emergency_flashcards_v3meta:';
   const FEEDBACK_KEY = 'medindex_emergency_flashcards_v3feedback:';
 
-  const reducedMotion = () => window.matchMedia?.('(prefers-reduced-motion: reduce)')?.matches;
-
   function flashCount(flash) {
     const text = flash?.querySelector('.ck-sl-flash-head>strong')?.textContent || '';
     const match = text.match(/\d+\s*\/\s*(\d+)/);
@@ -101,14 +99,21 @@
     return pool[0] ?? candidates[0] ?? current;
   }
 
+  function lessonBlockCount(panel, pattern) {
+    const block = [...panel.querySelectorAll('.ck-sl-lesson-block')]
+      .find(node => pattern.test(node.textContent || ''));
+    return block?.querySelectorAll('li').length || 0;
+  }
+
   function sectionCount(panel, label) {
     if (!panel) return 0;
     if (label === 'Hapat') return panel.querySelectorAll('.ck-sl-step,.ck-sl-lesson-step').length;
-    if (label === 'Red flags') {
-      const block = [...panel.querySelectorAll('.ck-sl-lesson-block')].find(node => /red flags|shenjat alarmuese/i.test(node.textContent || ''));
-      return block?.querySelectorAll('li').length || 0;
+    if (label === 'Red flags') return lessonBlockCount(panel, /red flags|shenjat alarmuese/i);
+    if (label === 'Mos bëj') {
+      const summaryCount = panel.querySelectorAll('.ck-sl-dont li').length;
+      if (summaryCount) return summaryCount;
+      return lessonBlockCount(panel, /siguria|gabimet (?:që|qe) duhen shmangur|mos bëj/i);
     }
-    if (label === 'Mos bëj') return panel.querySelectorAll('.ck-sl-dont li,.ck-sl-lesson-block.is-danger li').length;
     if (label === 'Flashcards') return flashCount(panel.querySelector('[data-ck-sl-flashcards]'));
     return 0;
   }
