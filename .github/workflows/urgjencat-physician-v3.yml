@@ -1,0 +1,37 @@
+name: Urgjencat Physician UX v3
+
+on:
+  pull_request:
+    paths:
+      - 'urgjencat.html'
+      - 'emergency-doctor-ux-v2.js'
+      - 'emergency-doctor-keyboard-v2.js'
+      - 'emergency-doctor-ux-v3.js'
+      - 'emergency-doctor-ux-v3.css'
+      - 'emergency-summary-learn.js'
+      - 'tests/urgjencat-doctor-v3-test.js'
+      - '.github/workflows/urgjencat-physician-v3.yml'
+  push:
+    branches:
+      - main
+    paths:
+      - 'urgjencat.html'
+      - 'emergency-doctor-ux-v3.js'
+      - 'emergency-doctor-ux-v3.css'
+      - 'tests/urgjencat-doctor-v3-test.js'
+
+permissions:
+  contents: read
+
+jobs:
+  contract:
+    name: Physician UX v3 contract
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '24'
+      - name: Run Urgjencat v3 regression contract
+        run: node tests/urgjencat-doctor-v3-test.js
