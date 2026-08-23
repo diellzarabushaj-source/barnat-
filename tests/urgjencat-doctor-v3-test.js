@@ -27,7 +27,8 @@ assert.ok(
 
 assert.match(v3, /Rruga klinike/);
 assert.match(v3, /Vepro shpejt/);
-assert.match(v3, /data-ck-route-step/);
+assert.match(v3, /dataset\.ckRouteStep/);
+assert.match(css, /attr\(data-ck-route-step\)/);
 assert.match(v3, /ck-doctor-nav-count/);
 assert.match(v3, /ArrowLeft/);
 assert.match(v3, /ArrowRight/);
