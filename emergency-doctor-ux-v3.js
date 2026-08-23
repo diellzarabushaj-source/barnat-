@@ -41,90 +41,78 @@
       || null;
   }
 
+  // Keep the canonical card order/count from Summary/Learn so existing physician flows,
+  // QA and learned muscle-memory stay stable. V3 adds mastery and hard-card state on top.
   function buildDeck(item) {
-    const deck = [];
+    const cards = [];
     const primary = Array.isArray(item?.primaryCareSteps) ? item.primaryCareSteps : [];
     const secondary = Array.isArray(item?.secondaryCareSteps) ? item.secondaryCareSteps : [];
     const redFlags = Array.isArray(item?.redFlags) ? item.redFlags.filter(Boolean) : [];
     const doNotDo = Array.isArray(item?.doNotDo) ? item.doNotDo.filter(Boolean) : [];
-    const firstAction = firstActionStep(item);
     const medication = medicationStep(item);
+    const firstAction = firstActionStep(item);
 
-    if (firstAction) {
-      deck.push({
-        id: 'first-action',
-        tag: medication && firstAction === medication ? 'TRAJTIMI I PARË' : 'VEPRIMI I PARË',
-        level: 'must',
-        q: medication && firstAction === medication
-          ? `Pa parë protokollin: cili është trajtimi i parë te “${item.title}”?`
-          : `Pa parë protokollin: cili është veprimi i parë te “${item.title}”?`,
-        a: firstAction.action || firstAction.title || '',
-      });
-    }
+    if (firstAction) cards.push({
+      id: 'first-action',
+      q: medication && firstAction === medication
+        ? `Cili është trajtimi i parë te “${item.title}”?`
+        : `Cili është veprimi i parë te “${item.title}”?`,
+      a: firstAction.action || firstAction.title || '',
+      tag: medication && firstAction === medication ? 'TRAJTIMI I PARË' : 'VEPRIMI I PARË',
+      level: 'must',
+    });
 
     primary.forEach((step, index) => {
       if (!step || step === firstAction) return;
-      deck.push({
+      cards.push({
         id: `primary-${index + 1}`,
+        q: `Çfarë bëhet te hapi ${index + 1}: ${step.title || 'veprimi klinik'}?`,
+        a: step.action || '',
         tag: `HAPI ${index + 1}`,
         level: index < 3 ? 'must' : 'core',
-        q: `Çfarë duhet të bësh te “${step.title || `Hapi ${index + 1}`}”?`,
-        a: step.action || '',
       });
-      if (step.why && deck.length < 8) {
-        deck.push({
-          id: `why-${index + 1}`,
-          tag: 'ARSYETIMI',
-          level: 'reasoning',
-          q: `Pse ka rëndësi “${step.title || `Hapi ${index + 1}`}”?`,
-          a: step.why,
-        });
-      }
-    });
-
-    if (redFlags.length) {
-      deck.push({
-        id: 'red-flags',
-        tag: 'RED FLAGS',
-        level: 'safety',
-        q: 'Cilat shenja alarmuese duhet t’i njohësh menjëherë?',
-        a: redFlags.slice(0, 5).join(' • '),
-      });
-    }
-
-    if (doNotDo.length) {
-      deck.push({
-        id: 'do-not-do',
-        tag: 'MOS BËJ',
-        level: 'safety',
-        q: 'Cilat janë gabimet kryesore që duhet t’i shmangësh?',
-        a: doNotDo.slice(0, 4).join(' • '),
-      });
-    }
-
-    const referral = item?.referral || {};
-    if (referral.when || referral.destination || referral.handover) {
-      deck.push({
-        id: 'transfer',
-        tag: 'TRANSFERIMI',
-        level: 'core',
-        q: 'Kur dhe ku duhet të transferohet/referohet pacienti, dhe çfarë duhet të përmbajë handover-i?',
-        a: [referral.when, referral.destination, referral.handover].filter(Boolean).join(' • '),
-      });
-    }
-
-    secondary.slice(0, 2).forEach((step, index) => {
-      if (!step?.action && !step?.note) return;
-      deck.push({
-        id: `secondary-${index + 1}`,
-        tag: 'THELLIMI',
+      if (step.why && cards.length < 9) cards.push({
+        id: `why-${index + 1}`,
+        q: `Pse ka rëndësi “${step.title || `hapi ${index + 1}`}”?`,
+        a: step.why,
+        tag: 'ARSYETIMI',
         level: 'reasoning',
-        q: `Si vazhdon menaxhimi te “${step.title || `kujdesi sekondar ${index + 1}`}”?`,
-        a: [step.action, step.note].filter(Boolean).join(' '),
       });
     });
 
-    return deck.filter(card => card.a).slice(0, 10);
+    if (redFlags.length) cards.push({
+      id: 'red-flags',
+      q: 'Cilat janë shenjat alarmuese kryesore?',
+      a: redFlags.slice(0, 5).join(' • '),
+      tag: 'RED FLAGS',
+      level: 'safety',
+    });
+
+    secondary.slice(0, 3).forEach((step, index) => cards.push({
+      id: `secondary-${index + 1}`,
+      q: `Si menaxhohet më tej: ${step?.title || 'kujdesi sekondar'}?`,
+      a: [step?.action, step?.note].filter(Boolean).join(' '),
+      tag: 'THELLIMI',
+      level: 'reasoning',
+    }));
+
+    if (doNotDo.length) cards.push({
+      id: 'do-not-do',
+      q: 'Cilat gabime duhet të shmangen?',
+      a: doNotDo.slice(0, 4).join(' • '),
+      tag: 'MOS BËJ',
+      level: 'safety',
+    });
+
+    if (item?.referral?.handover) cards.push({
+      id: 'handover',
+      q: 'Çfarë duhet të përmbajë handover-i?',
+      a: item.referral.handover,
+      tag: 'HANDOVER',
+      level: 'core',
+    });
+
+    return cards.filter(card => card.a).slice(0, 12);
   }
 
   function readState(itemId, deck) {
@@ -140,10 +128,13 @@
       const misses = {};
       if (stored.misses && typeof stored.misses === 'object') {
         Object.entries(stored.misses).forEach(([id, value]) => {
-          if (ids.has(id) && Number.isFinite(Number(value)) && Number(value) > 0) misses[id] = Math.min(Number(value), 99);
+          const count = Number(value);
+          if (ids.has(id) && Number.isFinite(count) && count > 0) misses[id] = Math.min(count, 99);
         });
       }
-      const currentId = ids.has(stored.currentId) ? stored.currentId : (deck.find(card => !mastered.includes(card.id))?.id || deck[0]?.id || '');
+      const currentId = ids.has(stored.currentId)
+        ? stored.currentId
+        : (deck.find(card => !mastered.includes(card.id))?.id || deck[0]?.id || '');
       return {currentId, revealed: Boolean(stored.revealed), mastered, misses};
     } catch {
       return fallback;
@@ -154,22 +145,6 @@
     try { localStorage.setItem(`${STORAGE_KEY}${itemId}`, JSON.stringify(state)); } catch {}
   }
 
-  function nextUnmastered(deck, state, currentId) {
-    const mastered = new Set(state.mastered);
-    const candidates = deck.filter(card => !mastered.has(card.id) && card.id !== currentId);
-    if (!candidates.length) return deck.find(card => !mastered.has(card.id))?.id || currentId || deck[0]?.id || '';
-    return [...candidates].sort((a, b) => {
-      const missDiff = Number(state.misses[b.id] || 0) - Number(state.misses[a.id] || 0);
-      if (missDiff) return missDiff;
-      return deck.indexOf(a) - deck.indexOf(b);
-    })[0].id;
-  }
-
-  function masteryLabel(count, total) {
-    if (!total) return '0%';
-    return `${Math.round((count / total) * 100)}%`;
-  }
-
   function levelLabel(level) {
     if (level === 'must') return 'Duhet ditur';
     if (level === 'safety') return 'Siguri';
@@ -177,7 +152,32 @@
     return 'Thelbësore';
   }
 
-  function renderFlashcards(existing, item) {
+  function nextUnmastered(deck, state, currentId) {
+    const mastered = new Set(state.mastered);
+    const currentIndex = Math.max(deck.findIndex(card => card.id === currentId), 0);
+    const unresolved = deck.filter(card => !mastered.has(card.id) && card.id !== currentId);
+    if (!unresolved.length) return deck.find(card => !mastered.has(card.id))?.id || currentId || deck[0]?.id || '';
+
+    // Prefer the normal clinical sequence unless a card has previously been missed.
+    // Hard cards are surfaced earlier without making the deck feel random.
+    return [...unresolved].sort((a, b) => {
+      const missDiff = Number(state.misses[b.id] || 0) - Number(state.misses[a.id] || 0);
+      if (missDiff) return missDiff;
+      const ai = deck.indexOf(a);
+      const bi = deck.indexOf(b);
+      const aDistance = ai > currentIndex ? ai - currentIndex : deck.length + ai - currentIndex;
+      const bDistance = bi > currentIndex ? bi - currentIndex : deck.length + bi - currentIndex;
+      return aDistance - bDistance;
+    })[0].id;
+  }
+
+  function answerId(itemId, cardId) {
+    const safeItem = String(itemId || 'item').replace(/[^a-zA-Z0-9_-]/g, '-');
+    const safeCard = String(cardId || 'card').replace(/[^a-zA-Z0-9_-]/g, '-');
+    return `ck-flash-v3-answer-${safeItem}-${safeCard}`;
+  }
+
+  function renderFlashcards(existing, item, focusSelector = '') {
     const deck = buildDeck(item);
     if (!existing || !deck.length) return;
 
@@ -187,8 +187,10 @@
     const remaining = deck.filter(card => !mastered.has(card.id));
     const done = remaining.length === 0;
     const current = deck.find(card => card.id === state.currentId) || remaining[0] || deck[0];
-    const currentNumber = Math.max(deck.findIndex(card => card.id === current.id) + 1, 1);
-    const progress = deck.length ? Math.round((mastered.size / deck.length) * 100) : 0;
+    const currentIndex = Math.max(deck.findIndex(card => card.id === current.id), 0);
+    const currentNumber = currentIndex + 1;
+    const masteryPercent = deck.length ? Math.round((mastered.size / deck.length) * 100) : 0;
+    const currentAnswerId = answerId(item._id, current.id);
 
     const flash = document.createElement('section');
     flash.className = 'ck-sl-flashcards ck-flash-v3';
@@ -199,21 +201,19 @@
     flash.setAttribute('aria-label', `Përsëritje aktive për ${item.title}`);
 
     flash.innerHTML = `
-      <div class="ck-flash-v3-head">
+      <div class="ck-sl-flash-head ck-flash-v3-head">
         <div>
           <span>PËRSËRITJE AKTIVE</span>
           <h3>Mbaje mend pa e parë përgjigjen</h3>
           <p>Fokus te veprimi i parë, siguria dhe vendimet që duhen rikujtuar shpejt.</p>
         </div>
-        <div class="ck-flash-v3-score" aria-label="${mastered.size} nga ${deck.length} karta të ditura">
-          <strong>${mastered.size}/${deck.length}</strong>
-          <span>${masteryLabel(mastered.size, deck.length)}</span>
-        </div>
+        <strong aria-label="Karta ${currentNumber} nga ${deck.length}">${currentNumber} / ${deck.length}</strong>
       </div>
 
-      <div class="ck-flash-v3-progress" role="progressbar" aria-valuemin="0" aria-valuemax="100" aria-valuenow="${progress}" aria-label="Progresi i kartave të mësuara"><span style="width:${progress}%"></span></div>
+      <div class="ck-sl-flash-progress ck-flash-v3-progress" role="progressbar" aria-valuemin="0" aria-valuemax="100" aria-valuenow="${masteryPercent}" aria-label="${mastered.size} nga ${deck.length} karta të ditura"><span style="width:${masteryPercent}%"></span></div>
 
       <div class="ck-flash-v3-meta">
+        <span><strong>${mastered.size}</strong> të ditura</span>
         <span><strong>${remaining.length}</strong> për përsëritje</span>
         <span class="${hardIds.length ? 'is-hard' : ''}"><strong>${hardIds.length}</strong> të vështira</span>
         ${hardIds.length ? '<button type="button" data-ck-v3-review-hard>Rishiko të vështirat</button>' : ''}
@@ -223,43 +223,42 @@
       ${done ? `
         <div class="ck-flash-v3-complete" role="status">
           <div class="ck-flash-v3-check" aria-hidden="true">✓</div>
-          <div><strong>Seti u përfundua</strong><p>I ke rikujtuar të gjitha ${deck.length} pikat kryesore. ${hardIds.length ? 'Mund t’i kalosh edhe një herë vetëm kartat e vështira.' : 'Mund ta rifillosh setin për një raund të ri.'}</p></div>
+          <div><strong>Seti u përfundua</strong><p>I ke rikujtuar të gjitha ${deck.length} pikat kryesore. ${hardIds.length ? 'Kalo edhe një herë vetëm kartat që të kanë nxjerrë problem.' : 'Mund ta rifillosh setin për një raund të ri.'}</p></div>
           <div class="ck-flash-v3-complete-actions">
             ${hardIds.length ? '<button type="button" data-ck-v3-review-hard>Vetëm të vështirat</button>' : ''}
             <button type="button" data-ck-v3-reset>Rifillo setin</button>
           </div>
         </div>` : `
-        <article class="ck-flash-v3-card ${state.revealed ? 'is-revealed' : ''}" tabindex="0" data-flash-card aria-label="Flashcard ${currentNumber} nga ${deck.length}">
+        <article class="ck-sl-flashcard ck-flash-v3-card ${state.revealed ? 'is-revealed' : ''}" tabindex="0" data-flash-card aria-label="Flashcard ${currentNumber} nga ${deck.length}">
           <div class="ck-flash-v3-card-top">
             <span class="ck-flash-v3-tag">${esc(current.tag)}</span>
             <span class="ck-flash-v3-level is-${esc(current.level)}">${esc(levelLabel(current.level))}</span>
           </div>
           <h4>${esc(current.q)}</h4>
           <p class="ck-flash-v3-prompt">Thuaje përgjigjen me vete. Pastaj krahasoje me protokollin.</p>
-          <div class="ck-flash-v3-answer" role="region" aria-live="polite" ${state.revealed ? '' : 'hidden'}>
-            <span>PËRGJIGJJA</span>
+          <div class="ck-sl-flash-answer ck-flash-v3-answer" id="${esc(currentAnswerId)}" role="region" aria-live="polite" ${state.revealed ? '' : 'hidden'}>
+            <small>PËRGJIGJJA</small>
             <p>${esc(current.a)}</p>
           </div>
-          ${state.revealed ? `
-            <div class="ck-flash-v3-rating" aria-label="Vlerëso rikujtimin">
-              <button type="button" data-flash-repeat><span>1</span>Nuk e dija — përsërite</button>
-              <button type="button" data-flash-known><span>2</span>E dija</button>
-            </div>` : `
-            <button class="ck-flash-v3-reveal" type="button" data-flash-reveal aria-keyshortcuts="Space">Shfaq përgjigjen <span>Space</span></button>`}
+          <button class="ck-flash-v3-reveal" type="button" data-flash-reveal aria-expanded="${state.revealed ? 'true' : 'false'}" aria-controls="${esc(currentAnswerId)}" aria-keyshortcuts="Space">${state.revealed ? 'Fshih përgjigjen' : 'Shfaq përgjigjen'} <span>Space</span></button>
         </article>
 
-        <div class="ck-flash-v3-nav" aria-label="Navigimi i flashcards">
-          <button type="button" data-flash-prev aria-label="Flashcard paraprak">← Para</button>
-          <span>Karta ${currentNumber} nga ${deck.length}</span>
-          <button type="button" data-flash-next aria-label="Flashcard tjetër">Tjetra →</button>
+        <div class="ck-sl-flash-controls ck-flash-v3-nav" aria-label="Navigimi i flashcards">
+          <button type="button" data-flash-prev ${currentIndex === 0 ? 'disabled' : ''} aria-label="Flashcard paraprak">← Para</button>
+          ${state.revealed ? `<div class="ck-sl-recall ck-flash-v3-rating" aria-label="Vlerëso rikujtimin">
+            <button type="button" data-flash-repeat><span>1</span>Nuk e dija — përsërite</button>
+            <button type="button" data-flash-known class="is-known"><span>2</span>${mastered.has(current.id) ? 'E dija ✓' : 'E dija'}</button>
+          </div>` : '<span class="ck-flash-v3-nav-status" aria-hidden="true"></span>'}
+          <button type="button" data-flash-next ${currentIndex === deck.length - 1 ? 'disabled' : ''} aria-label="Flashcard tjetër">Tjetra →</button>
         </div>`}
     `;
 
     existing.replaceWith(flash);
+    if (focusSelector) requestAnimationFrame(() => flash.querySelector(focusSelector)?.focus({preventScroll: true}));
 
-    const commit = next => {
+    const commit = (next, nextFocus = '[data-flash-reveal]') => {
       saveState(item._id, next);
-      requestAnimationFrame(() => renderFlashcards(flash, item));
+      requestAnimationFrame(() => renderFlashcards(flash, item, nextFocus));
     };
 
     flash.addEventListener('click', event => {
@@ -267,7 +266,7 @@
       if (reset) {
         event.preventDefault();
         try { localStorage.removeItem(`${STORAGE_KEY}${item._id}`); } catch {}
-        requestAnimationFrame(() => renderFlashcards(flash, item));
+        requestAnimationFrame(() => renderFlashcards(flash, item, '[data-flash-reveal]'));
         return;
       }
 
@@ -283,7 +282,7 @@
       const reveal = event.target.closest('[data-flash-reveal]');
       if (reveal) {
         event.preventDefault();
-        commit({...state, currentId: current.id, revealed: true});
+        commit({...state, currentId: current.id, revealed: !state.revealed});
         return;
       }
 
@@ -312,16 +311,17 @@
       const next = event.target.closest('[data-flash-next]');
       if (prev || next) {
         event.preventDefault();
-        const index = deck.findIndex(card => card.id === current.id);
-        const delta = prev ? -1 : 1;
-        const target = deck[(index + delta + deck.length) % deck.length];
+        const targetIndex = prev
+          ? Math.max(0, currentIndex - 1)
+          : Math.min(deck.length - 1, currentIndex + 1);
+        const target = deck[targetIndex];
         commit({...state, currentId: target.id, revealed: false});
       }
     });
 
     flash.addEventListener('keydown', event => {
       if (event.target.closest('button,a,input,textarea,select,[contenteditable="true"]')) return;
-      if (event.code === 'Space' && !state.revealed) {
+      if (event.code === 'Space') {
         event.preventDefault();
         event.stopPropagation();
         flash.querySelector('[data-flash-reveal]')?.click();
@@ -336,11 +336,11 @@
       } else if (event.key === 'ArrowLeft') {
         event.preventDefault();
         event.stopPropagation();
-        flash.querySelector('[data-flash-prev]')?.click();
+        flash.querySelector('[data-flash-prev]:not(:disabled)')?.click();
       } else if (event.key === 'ArrowRight') {
         event.preventDefault();
         event.stopPropagation();
-        flash.querySelector('[data-flash-next]')?.click();
+        flash.querySelector('[data-flash-next]:not(:disabled)')?.click();
       }
     });
   }
@@ -357,8 +357,11 @@
     if (!panel || panel.querySelector('[data-ck-v3-learning-path]')) return;
     const nav = panel.querySelector('[data-ck-doctor-nav="learn"]');
     if (!nav) return;
-    const steps = [...nav.querySelectorAll('[data-ck-jump]')].map(button => button.textContent.trim()).filter(Boolean);
+    const steps = [...nav.querySelectorAll('[data-ck-jump]')]
+      .map(button => button.textContent.trim())
+      .filter(Boolean);
     if (steps.length < 3) return;
+
     const path = document.createElement('div');
     path.className = 'ck-learning-path-v3';
     path.dataset.ckV3LearningPath = '1';
