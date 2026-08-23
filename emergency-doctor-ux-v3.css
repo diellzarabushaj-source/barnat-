@@ -8,7 +8,7 @@ html.medindex-tailadmin[data-mi-page="urgjencat"] .ck-doctor-jumpbar{
 html.medindex-tailadmin[data-mi-page="urgjencat"] .ck-doctor-jumpbar>span{
   padding:0 8px 0 6px;
   color:#8a94a5;
-  font-size:10.5px;
+  font-size:11px;
   font-weight:500!important;
   letter-spacing:.01em;
 }
@@ -33,7 +33,7 @@ html.medindex-tailadmin[data-mi-page="urgjencat"] .ck-doctor-jumpbar button::bef
   border-radius:6px;
   background:#fff;
   color:#8390a7;
-  font-size:10.5px;
+  font-size:11px;
   font-weight:600;
 }
 html.medindex-tailadmin[data-mi-page="urgjencat"] .ck-doctor-jumpbar button[aria-current="true"]::before{
@@ -50,7 +50,7 @@ html.medindex-tailadmin[data-mi-page="urgjencat"] .ck-doctor-nav-count{
   border-radius:999px;
   background:rgba(61,82,124,.07);
   color:#7d899e;
-  font-size:10.5px;
+  font-size:11px;
   font-weight:600;
 }
 html.medindex-tailadmin[data-mi-page="urgjencat"] .ck-doctor-jumpbar button[aria-current="true"] .ck-doctor-nav-count{
@@ -91,7 +91,7 @@ html.medindex-tailadmin[data-mi-page="urgjencat"] .ck-flash-v3-session span{
   border-radius:999px;
   background:#fff;
   color:#7a8598;
-  font-size:10.5px;
+  font-size:11px;
   font-weight:400!important;
 }
 html.medindex-tailadmin[data-mi-page="urgjencat"] .ck-flash-v3-session span.has-hard{
@@ -134,8 +134,15 @@ html.medindex-tailadmin[data-mi-page="urgjencat"] .ck-flash-v3-cardmeta{
   gap:6px 12px;
   margin:12px 0 -5px;
   color:#8a94a6;
-  font-size:10.5px;
+  font-size:11px;
   font-weight:400!important;
+}
+html.medindex-tailadmin[data-mi-page="urgjencat"] :where(
+  .ck-sl-flashcard>span,
+  .ck-sl-flash-answer small,
+  .ck-flash-rating-label
+){
+  font-size:11px!important;
 }
 html.medindex-tailadmin[data-mi-page="urgjencat"] .ck-sl-flashcard[data-ck-difficulty="review"] .ck-flash-v3-cardmeta span:last-child,
 html.medindex-tailadmin[data-mi-page="urgjencat"] .ck-sl-flashcard[data-ck-difficulty="hard"] .ck-flash-v3-cardmeta span:last-child{
