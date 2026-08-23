@@ -34,6 +34,32 @@ html.medindex-tailadmin[data-mi-page="urgjencat"] .ck-flash-v3-level{
   line-height:1.2;
 }
 
+/* The nav's generic button rule must never flatten the recall decision buttons. */
+html:not([data-theme="dark"]).medindex-tailadmin[data-mi-page="urgjencat"] .ck-flash-v3-nav .ck-flash-v3-rating [data-flash-repeat]{
+  border:1px solid rgba(177,75,75,.13)!important;
+  background:#fff6f6!important;
+  color:#9b4a4a!important;
+  text-align:center!important;
+}
+html:not([data-theme="dark"]).medindex-tailadmin[data-mi-page="urgjencat"] .ck-flash-v3-nav .ck-flash-v3-rating [data-flash-known]{
+  border:1px solid rgba(19,119,111,.14)!important;
+  background:#f0faf8!important;
+  color:#176f68!important;
+  text-align:center!important;
+}
+html[data-theme="dark"].medindex-tailadmin[data-mi-page="urgjencat"] .ck-flash-v3-nav .ck-flash-v3-rating [data-flash-repeat]{
+  border:1px solid rgba(248,113,113,.18)!important;
+  background:#2a181c!important;
+  color:#efb6ba!important;
+  text-align:center!important;
+}
+html[data-theme="dark"].medindex-tailadmin[data-mi-page="urgjencat"] .ck-flash-v3-nav .ck-flash-v3-rating [data-flash-known]{
+  border:1px solid rgba(45,212,191,.16)!important;
+  background:#102824!important;
+  color:#9fe0d7!important;
+  text-align:center!important;
+}
+
 @media(max-width:760px){
   html.medindex-tailadmin[data-mi-page="urgjencat"] .ck-doctor-jumpbar[data-ck-v3="1"] button,
   html.medindex-tailadmin[data-mi-page="urgjencat"] .ck-flash-v3-reveal,
