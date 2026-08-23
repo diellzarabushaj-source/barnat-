@@ -1,0 +1,9 @@
+/* Urgjencat v3 mobile/tablet touch target guardrail */
+@media(max-width:760px){
+  html.medindex-tailadmin[data-mi-page="urgjencat"] .ck-doctor-jumpbar button,
+  html.medindex-tailadmin[data-mi-page="urgjencat"] .ck-flash-session-tools>button,
+  html.medindex-tailadmin[data-mi-page="urgjencat"] .ck-flash-review-footer button,
+  html.medindex-tailadmin[data-mi-page="urgjencat"] .ck-flash-complete button{
+    min-height:44px!important;
+  }
+}
