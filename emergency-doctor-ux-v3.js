@@ -77,8 +77,13 @@
     }
   }
 
-  function refreshLearn() {
-    requestAnimationFrame(() => detail.querySelector('[data-ck-mode="learn"]')?.click());
+  function refreshLearn(focusSelector = '[data-flash-reveal]') {
+    requestAnimationFrame(() => {
+      detail.querySelector('[data-ck-mode="learn"]')?.click();
+      requestAnimationFrame(() => {
+        detail.querySelector(focusSelector)?.focus({preventScroll: true});
+      });
+    });
   }
 
   function nextPriority(current, count, known, misses) {
