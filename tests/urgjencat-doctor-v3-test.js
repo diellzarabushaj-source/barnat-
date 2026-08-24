@@ -14,19 +14,24 @@ const css = read('emergency-doctor-ux-v3.css');
 const learning = read('emergency-summary-learn.js');
 const v4 = read('emergency-learning-v4.js');
 const v4css = read('emergency-learning-v4.css');
+const v5 = read('emergency-trainers-v5.js');
+const v5css = read('emergency-trainers-v5.css');
 
 assert.match(html, /emergency-doctor-ux-v3\.css\?v=20260823-1/);
 assert.match(html, /emergency-doctor-ux-v3\.js\?v=20260823-1/);
 assert.match(html, /emergency-learning-v4\.css\?v=20260824-1/);
 assert.match(html, /emergency-learning-v4\.js\?v=20260824-1/);
+assert.match(html, /emergency-trainers-v5\.css\?v=20260824-1/);
+assert.match(html, /emergency-trainers-v5\.js\?v=20260824-1/);
 assert.ok(
   html.indexOf('emergency-doctor-ux-v2.js') < html.indexOf('emergency-doctor-keyboard-v2.js')
   && html.indexOf('emergency-doctor-keyboard-v2.js') < html.indexOf('emergency-doctor-ux-v3.js')
-  && html.indexOf('emergency-doctor-ux-v3.js') < html.indexOf('emergency-learning-v4.js'),
-  'Physician v4 must load after the stable v2, keyboard and v3 layers.',
+  && html.indexOf('emergency-doctor-ux-v3.js') < html.indexOf('emergency-learning-v4.js')
+  && html.indexOf('emergency-learning-v4.js') < html.indexOf('emergency-trainers-v5.js'),
+  'Physician v5 must load after the stable v2, keyboard, v3 and v4 layers.',
 );
 assert.ok(
-  html.indexOf('emergency-learning-v4.css') < html.indexOf('tailadmin-professional.css'),
+  html.indexOf('emergency-trainers-v5.css') < html.indexOf('tailadmin-professional.css'),
   'TailAdmin professional remains the final canonical stylesheet.',
 );
 
@@ -98,4 +103,19 @@ assert.match(v4css, /@media\(max-width:760px\)/);
 assert.match(v4css, /prefers-reduced-motion:reduce/);
 assert.doesNotMatch(v4, /mg\/kg|adrenalin|epinefrin|nalokson|atropin|amiodaron|adenozin/i);
 
-console.log('Urgjencat physician-first UX v3 + learning workspace v4 regression contract passed.');
+assert.match(v5, /Smart review/);
+assert.match(v5, /Case klinik/);
+assert.match(v5, /DOSE TRAINER/);
+assert.match(v5, /maskedDoseText/);
+assert.match(v5, /primaryCareSteps/);
+assert.match(v5, /secondaryCareSteps/);
+assert.match(v5, /Teksti i saktë nga protokolli/);
+assert.match(v5, /medindex_emergency_flashcards_v4schedule:/);
+assert.match(v5css, /\.ck-v5-session-bar/);
+assert.match(v5css, /\.ck-v5-trainers/);
+assert.match(v5css, /grid-template-columns:repeat\(2,minmax\(0,1fr\)\)/);
+assert.match(v5css, /@media\(max-width:760px\)/);
+assert.match(v5css, /prefers-reduced-motion:reduce/);
+assert.doesNotMatch(v5, /adrenalin|epinefrin|nalokson|atropin|amiodaron|adenozin/i);
+
+console.log('Urgjencat physician-first UX v3 + learning v4 + clinical trainers v5 regression contract passed.');
