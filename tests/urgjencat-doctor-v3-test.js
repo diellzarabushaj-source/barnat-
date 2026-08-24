@@ -16,6 +16,8 @@ const v4 = read('emergency-learning-v4.js');
 const v4css = read('emergency-learning-v4.css');
 const v5 = read('emergency-trainers-v5.js');
 const v5css = read('emergency-trainers-v5.css');
+const v6 = read('emergency-readiness-v6.js');
+const v6css = read('emergency-readiness-v6.css');
 
 assert.match(html, /emergency-doctor-ux-v3\.css\?v=20260823-1/);
 assert.match(html, /emergency-doctor-ux-v3\.js\?v=20260823-1/);
@@ -23,15 +25,18 @@ assert.match(html, /emergency-learning-v4\.css\?v=20260824-1/);
 assert.match(html, /emergency-learning-v4\.js\?v=20260824-1/);
 assert.match(html, /emergency-trainers-v5\.css\?v=20260824-1/);
 assert.match(html, /emergency-trainers-v5\.js\?v=20260824-1/);
+assert.match(html, /emergency-readiness-v6\.css\?v=20260824-1/);
+assert.match(html, /emergency-readiness-v6\.js\?v=20260824-1/);
 assert.ok(
   html.indexOf('emergency-doctor-ux-v2.js') < html.indexOf('emergency-doctor-keyboard-v2.js')
   && html.indexOf('emergency-doctor-keyboard-v2.js') < html.indexOf('emergency-doctor-ux-v3.js')
   && html.indexOf('emergency-doctor-ux-v3.js') < html.indexOf('emergency-learning-v4.js')
-  && html.indexOf('emergency-learning-v4.js') < html.indexOf('emergency-trainers-v5.js'),
-  'Physician v5 must load after the stable v2, keyboard, v3 and v4 layers.',
+  && html.indexOf('emergency-learning-v4.js') < html.indexOf('emergency-trainers-v5.js')
+  && html.indexOf('emergency-trainers-v5.js') < html.indexOf('emergency-readiness-v6.js'),
+  'Physician v6 must load after the stable v2, keyboard, v3, v4 and v5 layers.',
 );
 assert.ok(
-  html.indexOf('emergency-trainers-v5.css') < html.indexOf('tailadmin-professional.css'),
+  html.indexOf('emergency-readiness-v6.css') < html.indexOf('tailadmin-professional.css'),
   'TailAdmin professional remains the final canonical stylesheet.',
 );
 
@@ -118,4 +123,22 @@ assert.match(v5css, /@media\(max-width:760px\)/);
 assert.match(v5css, /prefers-reduced-motion:reduce/);
 assert.doesNotMatch(v5, /adrenalin|epinefrin|nalokson|atropin|amiodaron|adenozin/i);
 
-console.log('Urgjencat physician-first UX v3 + learning v4 + clinical trainers v5 regression contract passed.');
+assert.match(v6, /PARA NDËRRIMIT/);
+assert.match(v6, /Review kritik/);
+assert.match(v6, /reviewStatus \|\| ''\) === 'verified'/);
+assert.match(v6, /CRITICAL_LEVELS/);
+assert.match(v6, /critical/);
+assert.match(v6, /very-urgent/);
+assert.match(v6, /Fillo review/);
+assert.match(v6, /Tjetra kritike/);
+assert.match(v6, /Nuk është vlerësim i kompetencës klinike/);
+assert.match(v6, /medindex_emergency_flashcards_v4schedule:/);
+assert.match(v6, /localStorage/);
+assert.match(v6css, /\.ck-v6-readiness/);
+assert.match(v6css, /\.ck-v6-queue-item/);
+assert.match(v6css, /\.ck-v6-progress/);
+assert.match(v6css, /@media\(max-width:760px\)/);
+assert.match(v6css, /prefers-reduced-motion:reduce/);
+assert.doesNotMatch(v6, /mg\/kg|adrenalin|epinefrin|nalokson|atropin|amiodaron|adenozin/i);
+
+console.log('Urgjencat physician-first UX v3 + learning v4 + trainers v5 + verified critical review v6 regression contract passed.');
