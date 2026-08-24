@@ -1,4 +1,4 @@
-name: Urgjencat Physician UX v15
+name: Urgjencat Physician UX v16
 
 on:
   pull_request:
@@ -33,6 +33,10 @@ on:
       - 'emergency-consistency-core-v15.js'
       - 'emergency-consistency-v15.js'
       - 'emergency-consistency-v15.css'
+      - 'emergency-review-loader-v16.js'
+      - 'emergency-evidence-core-v16.js'
+      - 'emergency-evidence-v16.js'
+      - 'emergency-evidence-v16.css'
       - 'emergency-symptom-chips-v9.js'
       - 'emergency-symptom-chips-v9.css'
       - 'tests/urgjencat-doctor-v3-test.js'
@@ -44,6 +48,7 @@ on:
       - 'tests/emergency-action-deeplink-v13-test.js'
       - 'tests/emergency-verification-queue-v14-test.js'
       - 'tests/emergency-consistency-v15-test.js'
+      - 'tests/emergency-evidence-v16-test.js'
       - '.github/workflows/urgjencat-physician-v3.yml'
   push:
     branches:
@@ -76,6 +81,10 @@ on:
       - 'emergency-consistency-core-v15.js'
       - 'emergency-consistency-v15.js'
       - 'emergency-consistency-v15.css'
+      - 'emergency-review-loader-v16.js'
+      - 'emergency-evidence-core-v16.js'
+      - 'emergency-evidence-v16.js'
+      - 'emergency-evidence-v16.css'
       - 'emergency-symptom-chips-v9.js'
       - 'emergency-symptom-chips-v9.css'
       - 'tests/urgjencat-doctor-v3-test.js'
@@ -87,13 +96,14 @@ on:
       - 'tests/emergency-action-deeplink-v13-test.js'
       - 'tests/emergency-verification-queue-v14-test.js'
       - 'tests/emergency-consistency-v15-test.js'
+      - 'tests/emergency-evidence-v16-test.js'
 
 permissions:
   contents: read
 
 jobs:
   contract:
-    name: Physician UX v15 contract
+    name: Physician UX v16 contract
     runs-on: ubuntu-latest
     timeout-minutes: 5
     steps:
@@ -111,11 +121,13 @@ jobs:
         run: node tests/emergency-search-quality-v10-test.js
       - name: Run physician search quality v11 benchmark
         run: node tests/emergency-search-quality-v11-test.js
-      - name: Run verified action search v12 contract
+      - name: Run governed action search v12 contract
         run: node tests/emergency-action-search-v12-test.js
-      - name: Run action deep-link readiness v13 contract
+      - name: Run governance-aware deep-link readiness v13 contract
         run: node tests/emergency-action-deeplink-v13-test.js
       - name: Run clinical verification queue v14 contract
         run: node tests/emergency-verification-queue-v14-test.js
       - name: Run deterministic consistency guard v15 contract
         run: node tests/emergency-consistency-v15-test.js
+      - name: Run evidence traceability and lazy review v16 contract
+        run: node tests/emergency-evidence-v16-test.js
