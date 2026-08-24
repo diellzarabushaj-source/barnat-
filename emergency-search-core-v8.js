@@ -101,23 +101,44 @@
     return count * 3 + recent;
   }
 
+  function identitySignals(index, query) {
+    const exactTitle = index.title === query;
+    const exactAlias = index.aliases.some(alias => alias === query);
+    const exactIcd = index.icd.some(code => code === query);
+    const partialTitle = !exactTitle && Boolean(query) && (index.title.startsWith(query) || index.title.includes(query));
+    const partialAlias = !exactAlias && index.aliases.some(alias => alias.startsWith(query) || alias.includes(query));
+    const prefixIcd = !exactIcd && index.icd.some(code => code.startsWith(query));
+    const nearTitle = !exactTitle && query.length >= 4 && index.title.length >= 4 && levenshtein(index.title, query) <= (Math.max(index.title.length, query.length) >= 8 ? 2 : 1);
+    return {exactTitle, exactAlias, exactIcd, partialTitle, partialAlias, prefixIcd, nearTitle};
+  }
+
+  function classifyStrength(signals, matched, tokenCount, coverage) {
+    if (signals.exactTitle || signals.exactAlias || signals.exactIcd) return 'exact';
+    if (signals.partialTitle || signals.partialAlias || signals.prefixIcd || signals.nearTitle) return 'strong';
+    if (matched >= 2 && coverage >= .67) return 'strong';
+    if (tokenCount === 1 && matched === 1) return 'supporting';
+    return 'supporting';
+  }
+
   function rankItem(item, rawQuery, usage = {}, options = {}) {
     const query = normalize(rawQuery);
     if (!query) return null;
     const index = options.index || indexItem(item);
     const tokens = options.tokens || displayTokens(rawQuery, options.stopWords || DEFAULT_STOP_WORDS);
     const now = Number(options.now || Date.now());
+    const signals = identitySignals(index, query);
     let score = 0;
     let reason = '';
 
-    if (index.title === query) { score += 1300; reason = 'Diagnozë e saktë'; }
+    if (signals.exactTitle) { score += 1300; reason = 'Diagnozë e saktë'; }
     else if (index.title.startsWith(query)) { score += 1050; reason = 'Diagnozë'; }
     else if (index.title.includes(query)) { score += 850; reason = 'Diagnozë'; }
 
-    if (index.aliases.some(alias => alias === query)) { score += 1150; reason ||= 'Sinonim'; }
-    else if (index.aliases.some(alias => alias.startsWith(query) || alias.includes(query))) { score += 820; reason ||= 'Sinonim'; }
+    if (signals.exactAlias) { score += 1150; reason ||= 'Sinonim'; }
+    else if (signals.partialAlias) { score += 820; reason ||= 'Sinonim'; }
 
-    if (index.icd.some(code => code === query || code.startsWith(query))) { score += 1200; reason = 'ICD'; }
+    if (signals.exactIcd) { score += 1200; reason = 'ICD i saktë'; }
+    else if (signals.prefixIcd) { score += 1040; reason = 'ICD'; }
 
     let matched = 0;
     let highMatches = 0;
@@ -140,8 +161,8 @@
       else clinicalMatches += 1;
     });
 
+    const coverage = tokens.length ? matched / tokens.length : 0;
     if (tokens.length) {
-      const coverage = matched / tokens.length;
       score += Math.round(coverage * 330);
       if (!reason && matched) reason = clinicalMatches > highMatches ? 'Shenja / përmbajtje' : 'Përputhje klinike';
       if (matched === 0 && score < 700) return null;
@@ -159,6 +180,10 @@
       item,
       score,
       reason:reason || 'Përputhje',
+      strength:classifyStrength(signals, matched, tokens.length, coverage),
+      coverage,
+      matchedCount:matched,
+      tokenCount:tokens.length,
       matchedTerms:[...new Set(matchedTerms)].slice(0, 4),
       clinicalTerms:[...new Set(clinicalTerms)].slice(0, 3),
     };
@@ -179,5 +204,5 @@
     return rankPrepared(prepare(items), rawQuery, usage, options);
   }
 
-  return {normalize, displayTokens, levenshtein, indexItem, prepare, tokenScore, rankItem, rankPrepared, rank};
+  return {normalize, displayTokens, levenshtein, indexItem, prepare, tokenScore, identitySignals, classifyStrength, rankItem, rankPrepared, rank};
 });
