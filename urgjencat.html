@@ -21,6 +21,7 @@
   <link rel="stylesheet" href="emergency-doctor-ux-v2.css?v=20260822-1">
   <link rel="stylesheet" href="emergency-doctor-ux-v3.css?v=20260823-1">
   <link rel="stylesheet" href="tailadmin-professional.css?v=20260728-1" data-tailadmin-professional-css>
+  <link rel="stylesheet" href="emergency-rapid-search.css?v=20260824-1">
   <script src="tailadmin-shell.js?v=production-audit-v2" defer></script>
   <script src="tailadmin-professional.js?v=production-audit-v2" defer></script>
 </head>
@@ -37,62 +38,71 @@
       <div class="med-theme"><span>Tema</span><button id="themeButton" type="button" aria-label="Ndërro temën">☾</button></div>
     </nav>
     <main class="med-main" id="emergencyContent" tabindex="-1">
-      <div class="clinical-knowledge-page">
-        <header class="ck-hero">
+      <div class="clinical-knowledge-page" data-ck-rapid-searching="false">
+        <header class="ck-hero ck-rapid-hero">
           <div>
-            <p class="ck-kicker">Urgjencë · Kapituj · Vendimmarrje + mësim</p>
+            <p class="ck-kicker">Për pacientin tani</p>
             <h1>Urgjencat</h1>
-            <p>Zgjidh <strong>kapitullin</strong> nga lista, pastaj <strong>nënkapitullin</strong> kur të duhet. Përdor <strong>Përmbledhje</strong> për veprimin e menjëhershëm ose <strong>Mëso</strong> për arsyetimin e plotë me flashcards.</p>
+            <p class="ck-rapid-subtitle">Kërko diagnozën, simptomën ose ICD. Protokolli hapet menjëherë.</p>
           </div>
-          <a class="ck-studio-link" href="https://medindex-clinical-knowledge.sanity.studio/" target="_blank" rel="noopener noreferrer">Menaxho në Sanity ↗</a>
         </header>
 
-        <section class="ck-chapter-explorer" id="emergencyChapterExplorer" aria-label="Zgjedhja e kapitullit dhe nënkapitullit" hidden>
-          <div class="ck-chapter-explorer-head">
-            <div class="ck-chapter-explorer-copy">
-              <span>STRUKTURA KLINIKE</span>
-              <strong>Zgjidh kapitullin</strong>
-              <small id="emergencyChapterSummary">Duke organizuar protokollet…</small>
-            </div>
+        <section class="ck-rapid-search-panel" aria-label="Kërkim i shpejtë i urgjencave">
+          <div class="ck-rapid-search-topline">
+            <span>Gjeje brenda sekondave</span>
+            <kbd aria-label="Shkurtorja slash">/</kbd>
           </div>
-
-          <div class="ck-chapter-picker-grid">
-            <label class="ck-chapter-picker" for="emergencyChapterSelect">
-              <span>Kapitulli</span>
-              <div class="ck-chapter-select-shell">
-                <select id="emergencyChapterSelect" aria-label="Zgjidh kapitullin e urgjencave">
-                  <option value="">Të gjithë kapitujt</option>
-                </select>
-              </div>
-            </label>
-
-            <label class="ck-chapter-picker" id="emergencySubchapterWrap" for="emergencySubchapterSelect" hidden>
-              <span>Nënkapitulli</span>
-              <div class="ck-chapter-select-shell">
-                <select id="emergencySubchapterSelect" aria-label="Zgjidh nënkapitullin e urgjencave">
-                  <option value="">Të gjithë nënkapitujt</option>
-                </select>
-              </div>
-            </label>
+          <div class="ck-toolbar" role="search" aria-label="Kërkimi i urgjencave">
+            <input id="emergencySearch" type="search" autocomplete="off" placeholder="Shkruaj simptomën, diagnozën ose ICD…" aria-label="Kërko urgjencën">
+            <select id="emergencyCategory" class="ck-legacy-category-filter" aria-label="Kategoria klinike" tabindex="-1"><option value="">Të gjitha kategoritë</option></select>
           </div>
-
-          <button class="ck-chapter-reset" id="emergencyChapterReset" type="button" hidden>Të gjitha</button>
-          <div class="ck-chapter-tabs" id="emergencyChapterNav" aria-hidden="true" hidden></div>
-          <div class="ck-subchapter-tabs" id="emergencySubchapterNav" aria-hidden="true" hidden></div>
+          <div class="ck-quick-search" id="emergencyQuickSearch" aria-label="Kërkime të shpejta" hidden></div>
+          <p class="ck-status" id="emergencyStatus" role="status" aria-live="polite">Duke i ngarkuar urgjencat…</p>
         </section>
 
-        <div class="ck-toolbar" role="search" aria-label="Kërkimi i urgjencave">
-          <input id="emergencySearch" type="search" autocomplete="off" placeholder="Kërko urgjencën, ICD ose fjalën kyçe…" aria-label="Kërko urgjencën">
-          <select id="emergencyCategory" class="ck-legacy-category-filter" aria-label="Kategoria klinike" tabindex="-1"><option value="">Të gjitha kategoritë</option></select>
-        </div>
+        <details class="ck-browse-secondary" id="emergencyBrowse" hidden>
+          <summary class="ck-browse-summary">Shfleto sipas kapitullit</summary>
+          <section class="ck-chapter-explorer" id="emergencyChapterExplorer" aria-label="Zgjedhja e kapitullit dhe nënkapitullit" hidden>
+            <div class="ck-chapter-explorer-head">
+              <div class="ck-chapter-explorer-copy">
+                <span>STRUKTURA KLINIKE</span>
+                <strong>Zgjidh kapitullin</strong>
+                <small id="emergencyChapterSummary">Duke organizuar protokollet…</small>
+              </div>
+            </div>
 
-        <p class="ck-status" id="emergencyStatus" role="status" aria-live="polite">Duke i ngarkuar urgjencat…</p>
+            <div class="ck-chapter-picker-grid">
+              <label class="ck-chapter-picker" for="emergencyChapterSelect">
+                <span>Kapitulli</span>
+                <div class="ck-chapter-select-shell">
+                  <select id="emergencyChapterSelect" aria-label="Zgjidh kapitullin e urgjencave">
+                    <option value="">Të gjithë kapitujt</option>
+                  </select>
+                </div>
+              </label>
+
+              <label class="ck-chapter-picker" id="emergencySubchapterWrap" for="emergencySubchapterSelect" hidden>
+                <span>Nënkapitulli</span>
+                <div class="ck-chapter-select-shell">
+                  <select id="emergencySubchapterSelect" aria-label="Zgjidh nënkapitullin e urgjencave">
+                    <option value="">Të gjithë nënkapitujt</option>
+                  </select>
+                </div>
+              </label>
+            </div>
+
+            <button class="ck-chapter-reset" id="emergencyChapterReset" type="button" hidden>Të gjitha</button>
+            <div class="ck-chapter-tabs" id="emergencyChapterNav" aria-hidden="true" hidden></div>
+            <div class="ck-subchapter-tabs" id="emergencySubchapterNav" aria-hidden="true" hidden></div>
+          </section>
+        </details>
+
         <div class="ck-layout">
-          <aside class="ck-directory" aria-label="Lista e urgjencave sipas kapitujve">
+          <aside class="ck-directory" aria-label="Rezultatet e urgjencave">
             <div class="ck-list" id="emergencyList"></div>
           </aside>
           <article class="ck-detail" id="emergencyDetail" aria-live="polite">
-            <div class="ck-empty">Zgjidh një urgjencë.</div>
+            <div class="ck-empty">Kërko ose zgjidh një urgjencë.</div>
           </article>
         </div>
       </div>
@@ -109,6 +119,7 @@
   <script src="emergency-doctor-ux-v2.js?v=20260822-1" defer></script>
   <script src="emergency-doctor-keyboard-v2.js?v=20260822-1" defer></script>
   <script src="emergency-doctor-ux-v3.js?v=20260823-1" defer></script>
+  <script src="emergency-rapid-search.js?v=20260824-1" defer></script>
   <script src="app-stability.js?v=20260724-2" defer></script>
 </body>
 </html>
