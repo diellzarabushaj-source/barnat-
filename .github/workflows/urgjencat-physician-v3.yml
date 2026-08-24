@@ -1,4 +1,4 @@
-name: Urgjencat Physician UX v13
+name: Urgjencat Physician UX v14
 
 on:
   pull_request:
@@ -27,14 +27,19 @@ on:
       - 'emergency-action-deeplink-core-v13.js'
       - 'emergency-action-deeplink-v13.js'
       - 'emergency-action-deeplink-v13.css'
+      - 'emergency-verification-queue-core-v14.js'
+      - 'emergency-verification-queue-v14.js'
+      - 'emergency-verification-queue-v14.css'
       - 'emergency-symptom-chips-v9.js'
       - 'emergency-symptom-chips-v9.css'
       - 'tests/urgjencat-doctor-v3-test.js'
       - 'tests/urgjencat-learning-flow-v7-test.js'
+      - 'tests/urgjencat-symptom-chips-v9-test.js'
       - 'tests/emergency-search-quality-v10-test.js'
       - 'tests/emergency-search-quality-v11-test.js'
       - 'tests/emergency-action-search-v12-test.js'
       - 'tests/emergency-action-deeplink-v13-test.js'
+      - 'tests/emergency-verification-queue-v14-test.js'
       - '.github/workflows/urgjencat-physician-v3.yml'
   push:
     branches:
@@ -61,21 +66,26 @@ on:
       - 'emergency-action-deeplink-core-v13.js'
       - 'emergency-action-deeplink-v13.js'
       - 'emergency-action-deeplink-v13.css'
+      - 'emergency-verification-queue-core-v14.js'
+      - 'emergency-verification-queue-v14.js'
+      - 'emergency-verification-queue-v14.css'
       - 'emergency-symptom-chips-v9.js'
       - 'emergency-symptom-chips-v9.css'
       - 'tests/urgjencat-doctor-v3-test.js'
       - 'tests/urgjencat-learning-flow-v7-test.js'
+      - 'tests/urgjencat-symptom-chips-v9-test.js'
       - 'tests/emergency-search-quality-v10-test.js'
       - 'tests/emergency-search-quality-v11-test.js'
       - 'tests/emergency-action-search-v12-test.js'
       - 'tests/emergency-action-deeplink-v13-test.js'
+      - 'tests/emergency-verification-queue-v14-test.js'
 
 permissions:
   contents: read
 
 jobs:
   contract:
-    name: Physician UX v13 contract
+    name: Physician UX v14 contract
     runs-on: ubuntu-latest
     timeout-minutes: 5
     steps:
@@ -87,6 +97,8 @@ jobs:
         run: node tests/urgjencat-doctor-v3-test.js
       - name: Run guided learning flow v7 contract
         run: node tests/urgjencat-learning-flow-v7-test.js
+      - name: Run multi-symptom chips v9 contract
+        run: node tests/urgjencat-symptom-chips-v9-test.js
       - name: Run search quality v10 benchmark
         run: node tests/emergency-search-quality-v10-test.js
       - name: Run physician search quality v11 benchmark
@@ -95,3 +107,5 @@ jobs:
         run: node tests/emergency-action-search-v12-test.js
       - name: Run action deep-link readiness v13 contract
         run: node tests/emergency-action-deeplink-v13-test.js
+      - name: Run clinical verification queue v14 contract
+        run: node tests/emergency-verification-queue-v14-test.js
