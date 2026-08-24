@@ -11,10 +11,11 @@ const ui = fs.readFileSync(path.join(ROOT, 'emergency-action-search-v12.js'), 'u
 const css = fs.readFileSync(path.join(ROOT, 'emergency-action-search-v12.css'), 'utf8');
 
 const source = {title:'Guideline',url:'https://example.org/guideline'};
+const governance = {reviewedBy:'Dr Test',lastReviewedAt:'2026-08-24',reviewDueAt:'2099-08-24'};
 const fixtures = [
   {
     _id:'ana', title:'Anafilaksia', aliases:['reaksion anafilaktik'], icdCodes:['T78.2'],
-    reviewStatus:'verified', version:'3.1', sources:[source],
+    reviewStatus:'verified', version:'3.1', sources:[source], ...governance,
     primaryCareSteps:[
       {_key:'abc-step',title:'ABC',action:'Vlerëso menjëherë rrugët e frymëmarrjes dhe qarkullimin.'},
       {_key:'dose-step',title:'Trajtimi i parë',action:'Adrenalinë 0.5 mg IM sipas protokollit të verifikuar.'},
@@ -25,19 +26,27 @@ const fixtures = [
   },
   {
     _id:'status', title:'Status epilepticus', aliases:['kriza epileptike e zgjatur'],
-    reviewStatus:'verified', version:'2.0', clinicalSources:[source],
+    reviewStatus:'verified', version:'2.0', clinicalSources:[source], ...governance,
     primaryCareSteps:[
       {_key:'first-step',title:'Hapi i parë',action:'Siguro ABC dhe mat glukozën.'},
       {_key:'therapy-step',title:'Trajtimi',action:'Jep terapinë e dokumentuar në protokoll.'},
     ],
   },
   {
-    _id:'draft', title:'Protokoll draft', reviewStatus:'review', version:'1', sources:[source],
+    _id:'draft', title:'Protokoll draft', reviewStatus:'review', version:'1', sources:[source], ...governance,
     primaryCareSteps:[{title:'Hapi',action:'Ky tekst nuk duhet të dalë në action search.'}],
   },
   {
-    _id:'nosource', title:'Pa burim', reviewStatus:'verified', version:'1',
+    _id:'nosource', title:'Pa burim', reviewStatus:'verified', version:'1', ...governance,
     primaryCareSteps:[{title:'Hapi',action:'As ky tekst nuk duhet të dalë.'}],
+  },
+  {
+    _id:'nogovernance', title:'Pa governance', reviewStatus:'verified', version:'1', sources:[source],
+    primaryCareSteps:[{title:'Hapi',action:'Edhe ky tekst duhet të mbetet jashtë kërkimit direkt.'}],
+  },
+  {
+    _id:'expired', title:'Rishikim i skaduar', reviewStatus:'verified', version:'1', sources:[source], reviewedBy:'Dr Test', lastReviewedAt:'2024-01-01', reviewDueAt:'2024-12-31',
+    primaryCareSteps:[{title:'Hapi',action:'Ky tekst duhet të dështojë fail-closed.'}],
   },
 ];
 
@@ -45,6 +54,11 @@ const prepared = search.buildEntries(fixtures);
 assert.ok(prepared.length > 0);
 assert.equal(prepared.some(row => row.itemId === 'draft'), false, 'Non-verified protocols must fail closed.');
 assert.equal(prepared.some(row => row.itemId === 'nosource'), false, 'Verified protocols without a source must fail closed.');
+assert.equal(prepared.some(row => row.itemId === 'nogovernance'), false, 'Verified protocols without reviewer governance must fail closed.');
+assert.equal(prepared.some(row => row.itemId === 'expired'), false, 'Expired review governance must fail closed.');
+assert.equal(search.reviewGovernanceReady(fixtures[0]), true);
+assert.equal(search.reviewGovernanceReady(fixtures[4]), false);
+assert.equal(search.reviewGovernanceReady(fixtures[5]), false);
 assert.ok(prepared.some(row => row.id === 'ana:primary:dose-step'), 'Sanity step _key must produce a reorder-stable action ID.');
 assert.ok(prepared.some(row => row.kind === 'redFlag' && /^ana:redFlag:t[a-z0-9]+$/.test(row.id)), 'Scalar clinical rows should use a content fingerprint instead of an array index.');
 
@@ -75,7 +89,7 @@ assert.equal(result?.kind, 'referral');
 assert.deepEqual(search.searchPrepared(prepared, 'tekst krejt i palidhur', {limit:3}), [], 'Unrelated text must not force a deep clinical action.');
 
 assert.match(html, /emergency-action-search-v12\.css\?v=20260824-1/);
-assert.match(html, /emergency-action-search-core-v12\.js\?v=20260824-2/);
+assert.match(html, /emergency-action-search-core-v12\.js\?v=20260824-3/);
 assert.match(html, /emergency-action-search-v12\.js\?v=20260824-2/);
 assert.ok(html.indexOf('emergency-action-search-v12.css') < html.indexOf('tailadmin-professional.css'), 'TailAdmin professional must remain the final canonical stylesheet.');
 assert.ok(html.indexOf('emergency-action-search-core-v12.js') < html.indexOf('emergency-smart-search-v8.js'), 'Action core must load before smart-search UI.');
@@ -91,4 +105,4 @@ assert.doesNotMatch(ui, /fetch\(|XMLHttpRequest|gemini|generative/i);
 assert.match(css, /@media\(max-width:760px\)/);
 assert.match(css, /prefers-reduced-motion:reduce/);
 
-console.log('Emergency verified deep action search v12 contract passed.');
+console.log('Emergency governed verified deep action search v12 contract passed.');
