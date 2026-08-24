@@ -1,6 +1,11 @@
 (() => {
   'use strict';
 
+  const reviewMode = (() => {
+    try { return new URL(window.location.href).searchParams.get('review') === '1'; } catch { return false; }
+  })();
+  if (!reviewMode) return;
+
   const core = window.MedIndexEmergencyEvidenceV16;
   const client = window.MedIndexSanity;
   if (!core?.packet || !client?.query) return;
@@ -15,6 +20,8 @@
 
   let richerItems = [];
   let loading = false;
+  let authorized = false;
+  let observer = null;
   let frame = 0;
   const esc = value => String(value ?? '').replace(/[&<>"']/g, char => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[char]));
 
@@ -42,7 +49,7 @@
   }
 
   function enhance(card) {
-    if (!card || card.querySelector('[data-ck-v16-evidence]')) return;
+    if (!authorized || !card || card.querySelector('[data-ck-v16-evidence]')) return;
     const id = String(card.dataset.ckV14Card || '').trim();
     const item = richerItems.find(row => String(row?._id || '') === id);
     if (!item) return;
@@ -62,12 +69,17 @@
   }
 
   function render() {
+    if (!authorized) return;
     document.querySelectorAll('.ck-v14-review-card[data-ck-v14-card]').forEach(enhance);
   }
-  function schedule() { cancelAnimationFrame(frame); frame = requestAnimationFrame(render); }
+  function schedule() {
+    if (!authorized) return;
+    cancelAnimationFrame(frame);
+    frame = requestAnimationFrame(render);
+  }
 
   async function load() {
-    if (loading) return;
+    if (!authorized || loading) return;
     loading = true;
     try {
       const result = await client.query(QUERY, {}, {timeout:9000, cache:'no-cache'});
@@ -81,8 +93,14 @@
     }
   }
 
-  const root = document.querySelector('.clinical-knowledge-page') || document.body;
-  const observer = new MutationObserver(schedule);
-  observer.observe(root, {childList:true, subtree:true});
-  load();
+  function start(authState) {
+    if (authState?.authenticated !== true || authState?.offline === true || authState?.authUser?.adminConsole !== true) return;
+    authorized = true;
+    const root = document.querySelector('.clinical-knowledge-page') || document.body;
+    observer = new MutationObserver(schedule);
+    observer.observe(root, {childList:true, subtree:true});
+    load();
+  }
+
+  Promise.resolve(window.MEDINDEX_AUTH_READY).then(start).catch(() => {});
 })();
