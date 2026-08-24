@@ -7,10 +7,12 @@
   const list = document.getElementById('emergencyList');
   const quickHost = document.getElementById('emergencyQuickSearch');
   const engine = window.MedIndexEmergencySearchCore;
-  if (!page || !search || !searchPanel || !list || !engine?.rank) return;
+  if (!page || !search || !searchPanel || !list || !engine?.rankPrepared || !engine?.prepare) return;
 
   const USAGE_KEY = 'medindex_emergency_search_usage_v1';
   const MAX_RESULTS = 7;
+  let indexedSource = null;
+  let preparedCorpus = [];
 
   const esc = value => String(value ?? '').replace(/[&<>"']/g, char => ({
     '&':'&amp;', '<':'&lt;', '>':'&gt;', '"':'&quot;', "'":'&#39;',
@@ -18,6 +20,15 @@
 
   function items() {
     return Array.isArray(window.__medIndexEmergencyItems) ? window.__medIndexEmergencyItems : [];
+  }
+
+  function preparedItems() {
+    const source = items();
+    if (source !== indexedSource || preparedCorpus.length !== source.length) {
+      indexedSource = source;
+      preparedCorpus = engine.prepare(source);
+    }
+    return preparedCorpus;
   }
 
   function readUsage() {
@@ -50,7 +61,7 @@
   }
 
   function ranked(query) {
-    return engine.rank(items(), query, readUsage(), {limit:MAX_RESULTS});
+    return engine.rankPrepared(preparedItems(), query, readUsage(), {limit:MAX_RESULTS});
   }
 
   let host = null;
