@@ -11,6 +11,7 @@
 
   const USAGE_KEY = 'medindex_emergency_search_usage_v1';
   const MAX_RESULTS = 7;
+  const QUICK_LIMIT = 4;
   let indexedSource = null;
   let preparedCorpus = [];
 
@@ -49,7 +50,7 @@
       lastAt:Date.now(),
     };
     try { localStorage.setItem(USAGE_KEY, JSON.stringify(usage)); } catch {}
-    renderFrequent();
+    renderQuickAccess();
   }
 
   function triageLabel(value) {
@@ -69,7 +70,7 @@
   }
 
   let host = null;
-  let frequentHost = null;
+  let quickAccessHost = null;
   let activeIndex = -1;
   let results = [];
 
@@ -87,44 +88,71 @@
     host.addEventListener('mousedown', event => event.preventDefault());
     host.addEventListener('click', event => {
       const button = event.target.closest('[data-ck-v8-id]');
-      if (button) openResult(button.dataset.ckV8Id || '');
+      if (button) {
+        openResult(button.dataset.ckV8Id || '');
+        return;
+      }
+      const rescue = event.target.closest('[data-ck-v8-rescue-id]');
+      if (rescue) openResult(rescue.dataset.ckV8RescueId || '');
     });
     return host;
   }
 
-  function ensureFrequentHost() {
-    if (frequentHost?.isConnected) return frequentHost;
-    frequentHost = document.createElement('div');
-    frequentHost.className = 'ck-v8-frequent';
-    frequentHost.hidden = true;
-    frequentHost.setAttribute('aria-label', 'Diagnozat e përdorura shpesh');
+  function ensureQuickAccessHost() {
+    if (quickAccessHost?.isConnected) return quickAccessHost;
+    quickAccessHost = document.createElement('div');
+    quickAccessHost.className = 'ck-v8-frequent ck-v8-quick-access';
+    quickAccessHost.hidden = true;
+    quickAccessHost.setAttribute('aria-label', 'Qasje e shpejtë te urgjencat');
     const anchor = quickHost || searchPanel.querySelector('.ck-status');
-    if (anchor) anchor.insertAdjacentElement('beforebegin', frequentHost);
-    else searchPanel.appendChild(frequentHost);
-    frequentHost.addEventListener('click', event => {
-      const button = event.target.closest('[data-ck-v8-frequent]');
-      if (button) openResult(button.dataset.ckV8Frequent || '');
+    if (anchor) anchor.insertAdjacentElement('beforebegin', quickAccessHost);
+    else searchPanel.appendChild(quickAccessHost);
+    quickAccessHost.addEventListener('click', event => {
+      const button = event.target.closest('[data-ck-v8-quick]');
+      if (button) openResult(button.dataset.ckV8Quick || '');
     });
-    return frequentHost;
+    return quickAccessHost;
   }
 
-  function frequentItems() {
+  function usageRows() {
     const usage = readUsage();
     const byId = new Map(items().map(item => [String(item?._id || ''), item]));
     return Object.entries(usage)
-      .map(([id, data]) => ({item:byId.get(id), count:Number(data?.count || 0), lastAt:Number(data?.lastAt || 0)}))
-      .filter(row => row.item && row.count > 0)
-      .sort((a, b) => b.count - a.count || b.lastAt - a.lastAt)
-      .slice(0, 4);
+      .map(([id, data]) => ({item:byId.get(id), id, count:Number(data?.count || 0), lastAt:Number(data?.lastAt || 0)}))
+      .filter(row => row.item && row.count > 0 && row.lastAt > 0);
   }
 
-  function renderFrequent() {
-    ensureFrequentHost();
-    const rows = frequentItems();
-    frequentHost.hidden = Boolean(search.value.trim()) || rows.length === 0;
-    frequentHost.innerHTML = rows.length ? `
-      <span>Të shpeshtat</span>
-      <div>${rows.map(row => `<button type="button" data-ck-v8-frequent="${esc(row.item?._id || '')}">${esc(row.item?.title || 'Urgjencë')}</button>`).join('')}</div>` : '';
+  function frequentItems(rows = usageRows()) {
+    return rows
+      .filter(row => row.count >= 2)
+      .sort((a, b) => b.count - a.count || b.lastAt - a.lastAt)
+      .slice(0, QUICK_LIMIT);
+  }
+
+  function recentItems(rows = usageRows(), excludeIds = new Set()) {
+    return rows
+      .filter(row => !excludeIds.has(row.id))
+      .sort((a, b) => b.lastAt - a.lastAt)
+      .slice(0, QUICK_LIMIT);
+  }
+
+  function quickSection(label, rows) {
+    if (!rows.length) return '';
+    return `<div class="ck-v8-quick-section"><span>${esc(label)}</span><div>${rows.map(row => `<button type="button" data-ck-v8-quick="${esc(row.item?._id || '')}">${esc(row.item?.title || 'Urgjencë')}</button>`).join('')}</div></div>`;
+  }
+
+  function renderQuickAccess() {
+    ensureQuickAccessHost();
+    const rows = usageRows();
+    const frequent = frequentItems(rows);
+    const frequentIds = new Set(frequent.map(row => row.id));
+    const recent = recentItems(rows, frequentIds);
+    const markup = [
+      quickSection('Të fundit', recent),
+      quickSection('Të shpeshtat', frequent),
+    ].filter(Boolean).join('');
+    quickAccessHost.hidden = Boolean(search.value.trim()) || !markup;
+    quickAccessHost.innerHTML = markup;
   }
 
   function evidenceMarkup(result) {
@@ -149,6 +177,17 @@
     </button>`;
   }
 
+  function renderRescue(query) {
+    if (!engine?.suggestPrepared) return '';
+    const suggestions = engine.suggestPrepared(preparedItems(), query, {limit:3});
+    if (!suggestions.length) return '';
+    return `<div class="ck-v8-rescue" aria-label="Sugjerime drejtshkrimore">
+      <span>Ndoshta kërkoje:</span>
+      <div>${suggestions.map(result => `<button type="button" data-ck-v8-rescue-id="${esc(result.item?._id || '')}">${esc(result.item?.title || 'Urgjencë')}</button>`).join('')}</div>
+      <small>Sugjerime drejtshkrimore · jo diagnozë automatike.</small>
+    </div>`;
+  }
+
   function setActive(index) {
     if (!host || !results.length) return;
     activeIndex = Math.max(0, Math.min(index, results.length - 1));
@@ -162,7 +201,7 @@
 
   function render() {
     ensureHost();
-    renderFrequent();
+    renderQuickAccess();
     const query = search.value.trim();
     if (!query) {
       results = [];
@@ -175,7 +214,8 @@
 
     results = ranked(query);
     if (!results.length) {
-      host.innerHTML = '<div class="ck-v8-empty"><strong>Asnjë përputhje e fortë.</strong><span>Provo emrin e diagnozës, ICD ose 2–3 shenja kryesore.</span></div>';
+      const rescue = renderRescue(query);
+      host.innerHTML = `<div class="ck-v8-empty"><strong>Asnjë përputhje e fortë.</strong><span>Provo emrin e diagnozës, ICD ose 2–3 shenja kryesore.</span></div>${rescue}`;
       host.hidden = false;
       activeIndex = -1;
       search.removeAttribute('aria-activedescendant');
@@ -196,7 +236,7 @@
     recordOpen(itemId);
     search.value = item.title || '';
     if (host) host.hidden = true;
-    if (frequentHost) frequentHost.hidden = true;
+    if (quickAccessHost) quickAccessHost.hidden = true;
     search.removeAttribute('aria-activedescendant');
     search.dispatchEvent(new Event('input', {bubbles:true}));
 
@@ -213,6 +253,14 @@
   search.addEventListener('focus', render);
   search.addEventListener('blur', () => window.setTimeout(() => { if (host) host.hidden = true; }, 120));
   search.addEventListener('keydown', event => {
+    if (event.key === 'Escape') {
+      if (host && !host.hidden) {
+        event.preventDefault();
+        host.hidden = true;
+        search.removeAttribute('aria-activedescendant');
+      }
+      return;
+    }
     if (!host || host.hidden || !results.length) return;
     if (event.key === 'ArrowDown') {
       event.preventDefault();
@@ -236,7 +284,7 @@
   });
 
   ensureHost();
-  ensureFrequentHost();
-  renderFrequent();
-  window.setTimeout(renderFrequent, 220);
+  ensureQuickAccessHost();
+  renderQuickAccess();
+  window.setTimeout(renderQuickAccess, 220);
 })();
