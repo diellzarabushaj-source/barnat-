@@ -80,6 +80,7 @@ assert.match(ui, /Jo gjenerim AI/);
 assert.match(ui, /Verifikuar/);
 assert.match(ui, /tekst nga protokolli/);
 assert.match(ui, /ck-v12-jump-highlight/);
+assert.doesNotMatch(ui, /MutationObserver/, 'Action search must not observe and mutate the same results host.');
 assert.doesNotMatch(ui, /fetch\(|XMLHttpRequest|gemini|generative/i);
 assert.match(css, /@media\(max-width:760px\)/);
 assert.match(css, /prefers-reduced-motion:reduce/);
