@@ -1,4 +1,4 @@
-name: Urgjencat Physician UX v9
+name: Urgjencat Physician UX v10
 
 on:
   pull_request:
@@ -21,6 +21,7 @@ on:
       - 'emergency-symptom-chips-v9.js'
       - 'emergency-symptom-chips-v9.css'
       - 'tests/urgjencat-doctor-v3-test.js'
+      - 'tests/emergency-search-quality-v10-test.js'
       - '.github/workflows/urgjencat-physician-v3.yml'
   push:
     branches:
@@ -41,13 +42,14 @@ on:
       - 'emergency-symptom-chips-v9.js'
       - 'emergency-symptom-chips-v9.css'
       - 'tests/urgjencat-doctor-v3-test.js'
+      - 'tests/emergency-search-quality-v10-test.js'
 
 permissions:
   contents: read
 
 jobs:
   contract:
-    name: Physician UX v9 contract
+    name: Physician UX v10 contract
     runs-on: ubuntu-latest
     timeout-minutes: 5
     steps:
@@ -55,5 +57,7 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: '24'
-      - name: Run Urgjencat v9 regression contract
+      - name: Run Urgjencat regression contract
         run: node tests/urgjencat-doctor-v3-test.js
+      - name: Run search quality benchmark
+        run: node tests/emergency-search-quality-v10-test.js
