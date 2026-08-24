@@ -32,6 +32,11 @@
     return prepared;
   }
 
+  function resultById(actionId) {
+    const id = String(actionId || '').trim();
+    return id ? preparedEntries().find(result => String(result?.id || '') === id) || null : null;
+  }
+
   function trimPreview(text) {
     const value = String(text || '').replace(/\s+/g, ' ').trim();
     return value.length > 170 ? `${value.slice(0, 167).trim()}…` : value;
@@ -135,8 +140,19 @@
     });
   }
 
-  function openAction(result) {
-    if (!result?.itemId) return;
+  function notifyOpened(result, source) {
+    window.dispatchEvent(new CustomEvent('medindex:emergency-action-opened', {
+      detail:{
+        actionId:String(result?.id || ''),
+        itemId:String(result?.itemId || ''),
+        slug:String(result?.item?.slug || ''),
+        source:String(source || 'search'),
+      },
+    }));
+  }
+
+  function openAction(result, options = {}) {
+    if (!result?.itemId) return false;
     search.value = result.item?.title || '';
     search.dispatchEvent(new Event('input', {bubbles:true}));
     const open = () => {
@@ -144,9 +160,11 @@
       if (!button) return false;
       button.click();
       jumpWhenReady(result);
+      notifyOpened(result, options.source || 'search');
       return true;
     };
     if (!open()) window.setTimeout(open, 70);
+    return true;
   }
 
   host.addEventListener('click', event => {
@@ -155,7 +173,13 @@
     event.preventDefault();
     event.stopPropagation();
     const result = latest[Number(button.dataset.ckV12Index || 0)];
-    if (result) openAction(result);
+    if (result) openAction(result, {source:'search'});
+  });
+
+  window.addEventListener('medindex:emergency-action-open', event => {
+    const actionId = event?.detail?.actionId || '';
+    const result = resultById(actionId);
+    if (result) openAction(result, {source:event?.detail?.source || 'external'});
   });
 
   search.addEventListener('input', scheduleRender, {capture:true});
