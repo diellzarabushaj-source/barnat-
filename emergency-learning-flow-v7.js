@@ -25,9 +25,10 @@
     Object.entries(modeLabels).forEach(([mode, labels]) => {
       const button = modeButton(mode);
       if (!button) return;
-      button.textContent = compact ? labels.mobile : labels.desktop;
-      button.setAttribute('aria-label', labels.aria);
-      button.dataset.ckV7Label = '1';
+      const label = compact ? labels.mobile : labels.desktop;
+      if (button.textContent !== label) button.textContent = label;
+      if (button.getAttribute('aria-label') !== labels.aria) button.setAttribute('aria-label', labels.aria);
+      if (button.dataset.ckV7Label !== '1') button.dataset.ckV7Label = '1';
     });
   }
 
@@ -41,9 +42,14 @@
     const index = Math.max(buttons.indexOf(current), 0);
     const strong = context.querySelector('strong');
     const small = context.querySelector('small');
-    if (strong) strong.textContent = current.textContent?.trim() || 'Seksioni';
-    if (small) small.textContent = `${index + 1} / ${buttons.length}`;
-    context.style.setProperty('--ck-v3-progress', `${Math.round(((index + 1) / buttons.length) * 100)}%`);
+    const label = current.textContent?.trim() || 'Seksioni';
+    const counter = `${index + 1} / ${buttons.length}`;
+    const progress = `${Math.round(((index + 1) / buttons.length) * 100)}%`;
+    if (strong && strong.textContent !== label) strong.textContent = label;
+    if (small && small.textContent !== counter) small.textContent = counter;
+    if (context.style.getPropertyValue('--ck-v3-progress') !== progress) {
+      context.style.setProperty('--ck-v3-progress', progress);
+    }
   }
 
   function fixLearnJumpbar() {
@@ -57,7 +63,7 @@
       if (label === 'flashcards' || (target && test.contains(target))) button.remove();
     });
 
-    nav.dataset.ckV7Clean = '1';
+    if (nav.dataset.ckV7Clean !== '1') nav.dataset.ckV7Clean = '1';
     syncNavContext(nav);
   }
 
@@ -134,8 +140,9 @@
 
     entries.forEach(([button, key, label]) => {
       if (!button) return;
-      button.setAttribute('aria-keyshortcuts', key);
-      button.setAttribute('title', `${label} · tasti ${key}`);
+      if (button.getAttribute('aria-keyshortcuts') !== key) button.setAttribute('aria-keyshortcuts', key);
+      const title = `${label} · tasti ${key}`;
+      if (button.getAttribute('title') !== title) button.setAttribute('title', title);
     });
 
     const recall = flash.querySelector('.ck-sl-recall');
