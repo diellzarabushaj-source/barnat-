@@ -54,10 +54,20 @@
     });
   }
 
-  function eligible(item) {
+  function reviewGovernanceReady(item, now = Date.now()) {
+    const reviewedBy = String(item?.reviewedBy || '').trim();
+    const lastReviewedAt = String(item?.lastReviewedAt || '').trim();
+    const reviewDueAt = String(item?.reviewDueAt || '').trim();
+    if (!reviewedBy || !lastReviewedAt || !reviewDueAt) return false;
+    const dueAt = Date.parse(reviewDueAt.length === 10 ? `${reviewDueAt}T23:59:59Z` : reviewDueAt);
+    return Number.isFinite(dueAt) && dueAt >= now;
+  }
+
+  function eligible(item, now = Date.now()) {
     return String(item?.reviewStatus || '') === 'verified'
       && Boolean(String(item?.version || '').trim())
-      && uniqueSources(item).length > 0;
+      && uniqueSources(item).length > 0
+      && reviewGovernanceReady(item, now);
   }
 
   function identityText(item) {
@@ -94,10 +104,11 @@
     };
   }
 
-  function buildEntries(items) {
+  function buildEntries(items, options = {}) {
     const out = [];
+    const now = Number.isFinite(Number(options.now)) ? Number(options.now) : Date.now();
     (Array.isArray(items) ? items : []).forEach(item => {
-      if (!eligible(item)) return;
+      if (!eligible(item, now)) return;
       asList(item?.primaryCareSteps).forEach((step, index) => {
         const row = entry(item, 'primary', 'Veprimi', 'summary', step?.title || `Hapi ${index + 1}`, step?.action, index, step?._key || index);
         if (row) out.push(row);
@@ -222,8 +233,8 @@
   }
 
   function search(items, rawQuery, options = {}) {
-    return searchPrepared(buildEntries(items), rawQuery, options);
+    return searchPrepared(buildEntries(items, options), rawQuery, options);
   }
 
-  return {normalize, fingerprint, uniqueSources, eligible, buildEntries, intentKinds, queryTokens, scoreEntry, searchPrepared, search};
+  return {normalize, fingerprint, uniqueSources, reviewGovernanceReady, eligible, buildEntries, intentKinds, queryTokens, scoreEntry, searchPrepared, search};
 });
