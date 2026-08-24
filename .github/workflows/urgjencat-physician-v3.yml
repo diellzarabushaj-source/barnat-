@@ -1,4 +1,4 @@
-name: Urgjencat Physician UX v12
+name: Urgjencat Physician UX v13
 
 on:
   pull_request:
@@ -24,6 +24,9 @@ on:
       - 'emergency-action-search-core-v12.js'
       - 'emergency-action-search-v12.js'
       - 'emergency-action-search-v12.css'
+      - 'emergency-action-deeplink-core-v13.js'
+      - 'emergency-action-deeplink-v13.js'
+      - 'emergency-action-deeplink-v13.css'
       - 'emergency-symptom-chips-v9.js'
       - 'emergency-symptom-chips-v9.css'
       - 'tests/urgjencat-doctor-v3-test.js'
@@ -31,6 +34,7 @@ on:
       - 'tests/emergency-search-quality-v10-test.js'
       - 'tests/emergency-search-quality-v11-test.js'
       - 'tests/emergency-action-search-v12-test.js'
+      - 'tests/emergency-action-deeplink-v13-test.js'
       - '.github/workflows/urgjencat-physician-v3.yml'
   push:
     branches:
@@ -54,6 +58,9 @@ on:
       - 'emergency-action-search-core-v12.js'
       - 'emergency-action-search-v12.js'
       - 'emergency-action-search-v12.css'
+      - 'emergency-action-deeplink-core-v13.js'
+      - 'emergency-action-deeplink-v13.js'
+      - 'emergency-action-deeplink-v13.css'
       - 'emergency-symptom-chips-v9.js'
       - 'emergency-symptom-chips-v9.css'
       - 'tests/urgjencat-doctor-v3-test.js'
@@ -61,13 +68,14 @@ on:
       - 'tests/emergency-search-quality-v10-test.js'
       - 'tests/emergency-search-quality-v11-test.js'
       - 'tests/emergency-action-search-v12-test.js'
+      - 'tests/emergency-action-deeplink-v13-test.js'
 
 permissions:
   contents: read
 
 jobs:
   contract:
-    name: Physician UX v12 contract
+    name: Physician UX v13 contract
     runs-on: ubuntu-latest
     timeout-minutes: 5
     steps:
@@ -85,3 +93,5 @@ jobs:
         run: node tests/emergency-search-quality-v11-test.js
       - name: Run verified action search v12 contract
         run: node tests/emergency-action-search-v12-test.js
+      - name: Run action deep-link readiness v13 contract
+        run: node tests/emergency-action-deeplink-v13-test.js
