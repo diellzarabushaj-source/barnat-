@@ -1,4 +1,4 @@
-name: Urgjencat Physician UX v7
+name: Urgjencat Physician UX v8
 
 on:
   pull_request:
@@ -15,8 +15,9 @@ on:
       - 'emergency-trainers-v5.css'
       - 'emergency-readiness-v6.js'
       - 'emergency-readiness-v6.css'
-      - 'emergency-smart-search-v7.js'
-      - 'emergency-smart-search-v7.css'
+      - 'emergency-search-core-v8.js'
+      - 'emergency-smart-search-v8.js'
+      - 'emergency-smart-search-v8.css'
       - 'tests/urgjencat-doctor-v3-test.js'
       - '.github/workflows/urgjencat-physician-v3.yml'
   push:
@@ -32,8 +33,9 @@ on:
       - 'emergency-trainers-v5.css'
       - 'emergency-readiness-v6.js'
       - 'emergency-readiness-v6.css'
-      - 'emergency-smart-search-v7.js'
-      - 'emergency-smart-search-v7.css'
+      - 'emergency-search-core-v8.js'
+      - 'emergency-smart-search-v8.js'
+      - 'emergency-smart-search-v8.css'
       - 'tests/urgjencat-doctor-v3-test.js'
 
 permissions:
@@ -41,7 +43,7 @@ permissions:
 
 jobs:
   contract:
-    name: Physician UX v7 contract
+    name: Physician UX v8 contract
     runs-on: ubuntu-latest
     timeout-minutes: 5
     steps:
@@ -49,5 +51,5 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: '24'
-      - name: Run Urgjencat v7 regression contract
+      - name: Run Urgjencat v8 regression contract
         run: node tests/urgjencat-doctor-v3-test.js
