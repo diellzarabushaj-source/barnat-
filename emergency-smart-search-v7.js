@@ -5,6 +5,7 @@
   const search = document.getElementById('emergencySearch');
   const searchPanel = page?.querySelector('.ck-rapid-search-panel');
   const list = document.getElementById('emergencyList');
+  const quickHost = document.getElementById('emergencyQuickSearch');
   if (!page || !search || !searchPanel || !list) return;
 
   const USAGE_KEY = 'medindex_emergency_search_usage_v1';
@@ -13,6 +14,7 @@
     'pacient','pacienti','pacientes','eshte','është','jane','janë','dhe','apo','ose','por','me','ne','në','te','të','tek','nga','per','për','nje','një','që','qe','ka','kam','kemi','po','spo','nuk','pa','si','i','e','a',
     'patient','the','and','or','with','without','has','have','is','are','to','of','in','on','for','from'
   ]);
+  const INDEX_CACHE = new Map();
 
   const esc = value => String(value ?? '').replace(/[&<>"']/g, char => ({
     '&':'&amp;', '<':'&lt;', '>':'&gt;', '"':'&quot;', "'":'&#39;',
@@ -52,6 +54,7 @@
       lastAt: Date.now(),
     };
     writeUsage(usage);
+    renderFrequent();
   }
 
   function meaningfulTokens(value) {
@@ -87,22 +90,27 @@
   }
 
   function itemIndex(item) {
+    const cacheKey = String(item?._id || item?.title || '');
+    if (cacheKey && INDEX_CACHE.has(cacheKey)) return INDEX_CACHE.get(cacheKey);
     const primary = Array.isArray(item?.primaryCareSteps) ? item.primaryCareSteps : [];
     const secondary = Array.isArray(item?.secondaryCareSteps) ? item.secondaryCareSteps : [];
-    const title = normalize(item?.title || '');
-    const aliases = (item?.aliases || []).map(normalize).filter(Boolean);
-    const icd = (item?.icdCodes || []).map(normalize).filter(Boolean);
-    const high = textTokens([item?.title, ...(item?.aliases || []), ...(item?.icdCodes || []), item?.category, item?.chapterTitle, item?.subchapterTitle]);
-    const clinical = textTokens([
-      item?.summary,
-      ...(item?.redFlags || []),
-      ...(item?.doNotDo || []),
-      ...primary.flatMap(step => [step?.title, step?.action, step?.why, step?.note]),
-      ...secondary.flatMap(step => [step?.title, step?.action, step?.why, step?.note]),
-      item?.referral?.when,
-      item?.referral?.destination,
-    ]);
-    return {title, aliases, icd, high, clinical};
+    const index = {
+      title: normalize(item?.title || ''),
+      aliases: (item?.aliases || []).map(normalize).filter(Boolean),
+      icd: (item?.icdCodes || []).map(normalize).filter(Boolean),
+      high: textTokens([item?.title, ...(item?.aliases || []), ...(item?.icdCodes || []), item?.category, item?.chapterTitle, item?.subchapterTitle]),
+      clinical: textTokens([
+        item?.summary,
+        ...(item?.redFlags || []),
+        ...(item?.doNotDo || []),
+        ...primary.flatMap(step => [step?.title, step?.action, step?.why, step?.note]),
+        ...secondary.flatMap(step => [step?.title, step?.action, step?.why, step?.note]),
+        item?.referral?.when,
+        item?.referral?.destination,
+      ]),
+    };
+    if (cacheKey) INDEX_CACHE.set(cacheKey, index);
+    return index;
   }
 
   function tokenMatchScore(queryToken, candidate, weight) {
@@ -191,6 +199,7 @@
   }
 
   let host = null;
+  let frequentHost = null;
   let activeIndex = -1;
   let results = [];
 
@@ -214,6 +223,42 @@
     return host;
   }
 
+  function ensureFrequentHost() {
+    if (frequentHost?.isConnected) return frequentHost;
+    frequentHost = document.createElement('div');
+    frequentHost.className = 'ck-v7-frequent';
+    frequentHost.hidden = true;
+    frequentHost.setAttribute('aria-label', 'Diagnozat e përdorura shpesh');
+    const anchor = quickHost || searchPanel.querySelector('.ck-status');
+    if (anchor) anchor.insertAdjacentElement('beforebegin', frequentHost);
+    else searchPanel.appendChild(frequentHost);
+    frequentHost.addEventListener('click', event => {
+      const button = event.target.closest('[data-ck-v7-frequent]');
+      if (!button) return;
+      openResult(button.dataset.ckV7Frequent || '');
+    });
+    return frequentHost;
+  }
+
+  function frequentItems() {
+    const usage = readUsage();
+    const byId = new Map(allItems().map(item => [String(item?._id || ''), item]));
+    return Object.entries(usage)
+      .map(([id, data]) => ({item:byId.get(id), count:Number(data?.count || 0), lastAt:Number(data?.lastAt || 0)}))
+      .filter(row => row.item && row.count > 0)
+      .sort((a, b) => b.count - a.count || b.lastAt - a.lastAt)
+      .slice(0, 4);
+  }
+
+  function renderFrequent() {
+    ensureFrequentHost();
+    const rows = frequentItems();
+    frequentHost.hidden = Boolean(search.value.trim()) || rows.length === 0;
+    frequentHost.innerHTML = rows.length ? `
+      <span>Të shpeshtat</span>
+      <div>${rows.map(row => `<button type="button" data-ck-v7-frequent="${esc(row.item?._id || '')}">${esc(row.item?.title || 'Urgjencë')}</button>`).join('')}</div>` : '';
+  }
+
   function setActive(index) {
     if (!host || !results.length) return;
     activeIndex = Math.max(0, Math.min(index, results.length - 1));
@@ -228,6 +273,7 @@
   function render() {
     ensureHost();
     const query = search.value.trim();
+    renderFrequent();
     if (!query) {
       results = [];
       activeIndex = -1;
@@ -268,6 +314,7 @@
     recordOpen(itemId);
     search.value = item.title || '';
     host.hidden = true;
+    if (frequentHost) frequentHost.hidden = true;
     search.removeAttribute('aria-activedescendant');
     search.dispatchEvent(new Event('input', {bubbles:true}));
     const open = () => {
@@ -280,7 +327,7 @@
   }
 
   search.addEventListener('input', () => requestAnimationFrame(render), {capture:true});
-  search.addEventListener('focus', () => { if (search.value.trim()) render(); });
+  search.addEventListener('focus', () => render());
   search.addEventListener('blur', () => window.setTimeout(() => { if (host) host.hidden = true; }, 120));
   search.addEventListener('keydown', event => {
     if (!host || host.hidden || !results.length) return;
@@ -306,4 +353,7 @@
   });
 
   ensureHost();
+  ensureFrequentHost();
+  renderFrequent();
+  window.setTimeout(renderFrequent, 220);
 })();
