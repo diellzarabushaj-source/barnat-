@@ -34,7 +34,22 @@
         .some(value => String(value || '').trim());
   }
 
-  function readiness(item) {
+  function governanceReasons(item, now = Date.now()) {
+    const reasons = [];
+    const reviewedBy = String(item?.reviewedBy || '').trim();
+    const lastReviewedAt = String(item?.lastReviewedAt || '').trim();
+    const reviewDueAt = String(item?.reviewDueAt || '').trim();
+    if (!reviewedBy) reasons.push('missing-reviewer');
+    if (!lastReviewedAt) reasons.push('missing-last-reviewed');
+    if (!reviewDueAt) reasons.push('missing-review-due');
+    if (reviewDueAt) {
+      const dueAt = Date.parse(reviewDueAt.length === 10 ? `${reviewDueAt}T23:59:59Z` : reviewDueAt);
+      if (!Number.isFinite(dueAt) || dueAt < now) reasons.push('review-overdue');
+    }
+    return reasons;
+  }
+
+  function readiness(item, now = Date.now()) {
     const reviewStatus = String(item?.reviewStatus || '').trim();
     const version = String(item?.version || '').trim();
     const sourceCount = uniqueSources(item).length;
@@ -43,6 +58,7 @@
     if (!version) reasons.push('missing-version');
     if (!sourceCount) reasons.push('missing-source');
     if (!hasActionContent(item)) reasons.push('no-action-content');
+    reasons.push(...governanceReasons(item, now));
     return {
       id:String(item?._id || ''),
       title:String(item?.title || 'Urgjencë'),
@@ -54,8 +70,8 @@
     };
   }
 
-  function audit(items) {
-    const rows = (Array.isArray(items) ? items : []).map(readiness);
+  function audit(items, now = Date.now()) {
+    const rows = (Array.isArray(items) ? items : []).map(item => readiness(item, now));
     return {
       total:rows.length,
       ready:rows.filter(row => row.ready).length,
@@ -65,6 +81,10 @@
       missingVersion:rows.filter(row => row.reasons.includes('missing-version')).length,
       missingSource:rows.filter(row => row.reasons.includes('missing-source')).length,
       noActionContent:rows.filter(row => row.reasons.includes('no-action-content')).length,
+      missingReviewer:rows.filter(row => row.reasons.includes('missing-reviewer')).length,
+      missingLastReviewed:rows.filter(row => row.reasons.includes('missing-last-reviewed')).length,
+      missingReviewDue:rows.filter(row => row.reasons.includes('missing-review-due')).length,
+      reviewOverdue:rows.filter(row => row.reasons.includes('review-overdue')).length,
       issues:rows.filter(row => !row.ready),
       rows,
     };
@@ -108,16 +128,17 @@
     }
   }
 
-  function resolveAction(items, actionId, actionEngine) {
+  function resolveAction(items, actionId, actionEngine, options = {}) {
     const id = String(actionId || '').trim();
     if (!id || !actionEngine?.buildEntries) return null;
-    return actionEngine.buildEntries(Array.isArray(items) ? items : [])
+    return actionEngine.buildEntries(Array.isArray(items) ? items : [], options)
       .find(entry => String(entry?.id || '') === id) || null;
   }
 
   return {
     uniqueSources,
     hasActionContent,
+    governanceReasons,
     readiness,
     audit,
     actionFromUrl,
