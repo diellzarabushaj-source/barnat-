@@ -8,9 +8,9 @@ const ROOT = path.resolve(__dirname, '..');
 const read = file => fs.readFileSync(path.join(ROOT, file), 'utf8');
 
 const html = read('urgjencat.html');
-const v2 = read('emergency-doctor-ux-v2.js');
 const v3 = read('emergency-doctor-ux-v3.js');
 const css = read('emergency-doctor-ux-v3.css');
+const v17css = read('emergency-physician-v17.css');
 const learning = read('emergency-summary-learn.js');
 const v4 = read('emergency-learning-v4.js');
 const v4css = read('emergency-learning-v4.css');
@@ -24,7 +24,10 @@ const v11css = read('emergency-search-personalization-v11.css');
 const searchCore = require('../emergency-search-core-v8.js');
 
 assert.match(html, /emergency-doctor-ux-v3\.css\?v=20260823-1/);
-assert.match(html, /emergency-doctor-ux-v3\.js\?v=20260823-1/);
+assert.match(html, /emergency-doctor-ux-v3\.js\?v=20260824-17/);
+assert.match(html, /emergency-physician-v17\.css\?v=20260824-1/);
+assert.doesNotMatch(html, /<script[^>]+emergency-doctor-ux-v2\.js/);
+assert.doesNotMatch(html, /<script[^>]+emergency-doctor-keyboard-v2\.js/);
 assert.match(html, /emergency-learning-v4\.css\?v=20260824-1/);
 assert.match(html, /emergency-learning-v4\.js\?v=20260824-1/);
 assert.match(html, /emergency-trainers-v5\.css\?v=20260824-1/);
@@ -37,24 +40,25 @@ assert.match(html, /emergency-search-core-v8\.js\?v=20260824-2/);
 assert.match(html, /emergency-smart-search-v8\.js\?v=20260824-2/);
 assert.doesNotMatch(html, /emergency-smart-search-v7\.(?:js|css)/);
 assert.ok(
-  html.indexOf('emergency-doctor-ux-v2.js') < html.indexOf('emergency-doctor-keyboard-v2.js')
-  && html.indexOf('emergency-doctor-keyboard-v2.js') < html.indexOf('emergency-doctor-ux-v3.js')
-  && html.indexOf('emergency-doctor-ux-v3.js') < html.indexOf('emergency-learning-v4.js')
+  html.indexOf('emergency-doctor-ux-v3.js') < html.indexOf('emergency-learning-v4.js')
   && html.indexOf('emergency-learning-v4.js') < html.indexOf('emergency-trainers-v5.js')
   && html.indexOf('emergency-trainers-v5.js') < html.indexOf('emergency-search-core-v8.js')
   && html.indexOf('emergency-search-core-v8.js') < html.indexOf('emergency-smart-search-v8.js')
   && html.indexOf('emergency-smart-search-v8.js') < html.indexOf('emergency-readiness-v6.js'),
-  'Physician search core must load before the UI and before readiness.',
+  'Physician UX must load once before learning/review layers, with search core before search UI and readiness.',
 );
 assert.ok(
   html.indexOf('emergency-readiness-v6.css') < html.indexOf('tailadmin-professional.css')
   && html.indexOf('emergency-smart-search-v8.css') < html.indexOf('tailadmin-professional.css')
-  && html.indexOf('emergency-search-personalization-v11.css') < html.indexOf('tailadmin-professional.css'),
+  && html.indexOf('emergency-search-personalization-v11.css') < html.indexOf('tailadmin-professional.css')
+  && html.indexOf('emergency-physician-v17.css') < html.indexOf('tailadmin-professional.css'),
   'TailAdmin professional remains the final canonical stylesheet.',
 );
 
 assert.match(v3, /Rruga klinike/);
 assert.match(v3, /Vepro shpejt/);
+assert.match(v3, /function installJumpbar/);
+assert.match(v3, /function addSummaryRedFlags/);
 assert.match(v3, /dataset\.ckRouteStep/);
 assert.match(css, /attr\(data-ck-route-step\)/);
 assert.match(v3, /ck-doctor-nav-count/);
@@ -62,20 +66,27 @@ assert.match(v3, /ArrowLeft/);
 assert.match(v3, /ArrowRight/);
 assert.match(v3, /Home/);
 assert.match(v3, /End/);
-assert.match(v3, /preventScroll: true/);
+assert.match(v3, /preventScroll\s*:\s*true/);
 assert.match(v3, /medindex_emergency_flashcards_v3meta:/);
 assert.match(v3, /misses/);
 assert.match(v3, /ratings/);
-assert.match(v3, /function nextPriority/);
+assert.match(v3, /function recordRating/);
 assert.match(v3, /data-ck-flash-hard-review/);
 assert.match(v3, /aria-live/);
 assert.match(v3, /MutationObserver/);
+assert.match(v3, /data-ck-rating/);
+assert.match(v3, /rating === 'again'/);
+assert.match(v3, /rating === 'hard'/);
+assert.match(v3, /rating === 'easy'/);
 assert.match(css, /\.ck-doctor-jumpbar button::before/);
 assert.match(css, /\.ck-flash-v3-session/);
 assert.match(css, /@media\(max-width:760px\)/);
 assert.match(css, /html\[data-theme="dark"\]/);
 assert.match(css, /prefers-reduced-motion:reduce/);
 assert.doesNotMatch(css, /font-size:(?:7|8|9)(?:\.\d+)?px/);
+assert.match(v17css, /\.ck-v3-nav-context/);
+assert.match(v17css, /--ck-v3-progress/);
+assert.match(v17css, /min-height:44px/);
 
 assert.match(learning, /item\.primaryCareSteps/);
 assert.match(learning, /item\.secondaryCareSteps/);
@@ -83,7 +94,6 @@ assert.match(learning, /item\.redFlags/);
 assert.match(learning, /item\.doNotDo/);
 assert.match(learning, /item\.referral/);
 assert.doesNotMatch(v3, /primaryCareSteps|secondaryCareSteps|dose|dosage|mg\/kg|adrenalin|epinefrin/i);
-assert.match(v2, /data-ck-doctor-nav/);
 
 assert.match(v4, /Testo veten/);
 assert.match(v4, /Mëso hap pas hapi/);
@@ -201,4 +211,4 @@ assert.equal(searchCore.suggest(fixtures, 'tekst palidhur').length, 0, 'Rescue m
 const usage = {hypo:{count:20,lastAt:Date.now()}};
 assert.equal(searchCore.rank(fixtures, 'Anafilaksia', usage)[0]?.item?._id, 'ana', 'Personal frequency must not overpower an exact diagnosis match.');
 
-console.log('Urgjencat physician-first UX + verified learning + personalized deterministic search v11 regression contract passed.');
+console.log('Urgjencat physician-first UX + verified learning + personalized deterministic search v17 regression contract passed.');
