@@ -1,0 +1,125 @@
+/* MedIndex Urgjencat — physician-first search personalization v11 */
+html.medindex-tailadmin[data-mi-page="urgjencat"] .ck-v8-quick-access{
+  display:grid;
+  gap:8px;
+  margin-top:9px;
+}
+html.medindex-tailadmin[data-mi-page="urgjencat"] .ck-v8-quick-section{
+  display:flex;
+  align-items:center;
+  gap:8px;
+  min-width:0;
+}
+html.medindex-tailadmin[data-mi-page="urgjencat"] .ck-v8-quick-section>span{
+  flex:0 0 72px;
+  color:#7f8a9c;
+  font-size:10.5px;
+  font-weight:650!important;
+}
+html.medindex-tailadmin[data-mi-page="urgjencat"] .ck-v8-quick-section>div{
+  display:flex;
+  min-width:0;
+  flex-wrap:wrap;
+  gap:5px;
+}
+html.medindex-tailadmin[data-mi-page="urgjencat"] .ck-v8-quick-access button{
+  min-height:32px;
+  padding:0 10px;
+  border:1px solid rgba(63,84,123,.10);
+  border-radius:999px;
+  background:#fff;
+  color:#4f607b;
+  font:600 10.5px/1.1 var(--mi-font,"Inter",sans-serif);
+  cursor:pointer;
+}
+html.medindex-tailadmin[data-mi-page="urgjencat"] .ck-v8-quick-access button:hover{
+  border-color:rgba(49,95,200,.18);
+  background:#f3f6ff;
+  color:#315fc8;
+}
+html.medindex-tailadmin[data-mi-page="urgjencat"] .ck-v8-strength.is-exact{
+  background:#edf8f4!important;
+  color:#236a60!important;
+}
+html.medindex-tailadmin[data-mi-page="urgjencat"] .ck-v8-strength.is-strong{
+  background:#eef3ff!important;
+  color:#355da8!important;
+}
+html.medindex-tailadmin[data-mi-page="urgjencat"] .ck-v8-strength.is-supporting{
+  background:#f5f6f8!important;
+  color:#687488!important;
+}
+html.medindex-tailadmin[data-mi-page="urgjencat"] .ck-v8-rescue{
+  display:grid;
+  gap:7px;
+  margin:0 7px 7px;
+  padding:10px;
+  border:1px solid rgba(63,84,123,.08);
+  border-radius:10px;
+  background:#fafbfe;
+}
+html.medindex-tailadmin[data-mi-page="urgjencat"] .ck-v8-rescue>span{
+  color:#56647b;
+  font-size:10.5px;
+  font-weight:700!important;
+}
+html.medindex-tailadmin[data-mi-page="urgjencat"] .ck-v8-rescue>div{
+  display:flex;
+  flex-wrap:wrap;
+  gap:6px;
+}
+html.medindex-tailadmin[data-mi-page="urgjencat"] .ck-v8-rescue button{
+  min-height:34px;
+  padding:0 10px;
+  border:1px solid rgba(49,95,200,.12);
+  border-radius:9px;
+  background:#fff;
+  color:#385a9a;
+  font:650 10.5px/1.1 var(--mi-font,"Inter",sans-serif);
+  cursor:pointer;
+}
+html.medindex-tailadmin[data-mi-page="urgjencat"] .ck-v8-rescue button:hover{
+  border-color:rgba(49,95,200,.22);
+  background:#f3f6ff;
+}
+html.medindex-tailadmin[data-mi-page="urgjencat"] .ck-v8-rescue small{
+  color:#8a94a6;
+  font-size:10px;
+  line-height:1.4;
+}
+html.medindex-tailadmin[data-mi-page="urgjencat"] .ck-v8-rescue button:focus-visible,
+html.medindex-tailadmin[data-mi-page="urgjencat"] .ck-v8-quick-access button:focus-visible{
+  outline:3px solid rgba(49,95,200,.18);
+  outline-offset:1px;
+}
+html[data-theme="dark"].medindex-tailadmin[data-mi-page="urgjencat"] .ck-v8-quick-access button,
+html[data-theme="dark"].medindex-tailadmin[data-mi-page="urgjencat"] .ck-v8-rescue button{
+  border-color:rgba(148,163,184,.13);
+  background:#151f31;
+  color:#c4d0e3;
+}
+html[data-theme="dark"].medindex-tailadmin[data-mi-page="urgjencat"] .ck-v8-rescue{
+  border-color:rgba(148,163,184,.11);
+  background:#111a2a;
+}
+html[data-theme="dark"].medindex-tailadmin[data-mi-page="urgjencat"] .ck-v8-rescue>span{color:#d7e0ef}
+html[data-theme="dark"].medindex-tailadmin[data-mi-page="urgjencat"] .ck-v8-rescue small,
+html[data-theme="dark"].medindex-tailadmin[data-mi-page="urgjencat"] .ck-v8-quick-section>span{color:#9eabbe}
+@media(max-width:760px){
+  html.medindex-tailadmin[data-mi-page="urgjencat"] .ck-v8-quick-section{
+    align-items:flex-start;
+    flex-direction:column;
+    gap:6px;
+  }
+  html.medindex-tailadmin[data-mi-page="urgjencat"] .ck-v8-quick-section>span{flex:0 0 auto}
+  html.medindex-tailadmin[data-mi-page="urgjencat"] .ck-v8-quick-section>div{
+    width:100%;
+    flex-wrap:nowrap;
+    overflow-x:auto;
+    padding-bottom:2px;
+    scrollbar-width:none;
+  }
+  html.medindex-tailadmin[data-mi-page="urgjencat"] .ck-v8-quick-section>div::-webkit-scrollbar{display:none}
+  html.medindex-tailadmin[data-mi-page="urgjencat"] .ck-v8-quick-access button{flex:0 0 auto;min-height:38px}
+  html.medindex-tailadmin[data-mi-page="urgjencat"] .ck-v8-rescue button{min-height:40px}
+}
