@@ -7,6 +7,7 @@ const queue = require('../emergency-verification-queue-core-v14.js');
 
 const ROOT = path.resolve(__dirname, '..');
 const html = fs.readFileSync(path.join(ROOT, 'urgjencat.html'), 'utf8');
+const loader = fs.readFileSync(path.join(ROOT, 'emergency-review-loader-v16.js'), 'utf8');
 const ui = fs.readFileSync(path.join(ROOT, 'emergency-verification-queue-v14.js'), 'utf8');
 const css = fs.readFileSync(path.join(ROOT, 'emergency-verification-queue-v14.css'), 'utf8');
 const source = {title:'Guideline', url:'https://example.org/guideline', year:'2026'};
@@ -59,11 +60,18 @@ assert.equal(queue.reviewKey(fixtures[0]), 'critical-review:2.0');
 assert.deepEqual(queue.sourceRows(fixtures[0])[0], source);
 assert.match(queue.studioIntent('https://studio.example/', fixtures[0]), /intent\/edit\/id=critical-review;type=emergencyProtocol$/);
 
-assert.match(html, /emergency-verification-queue-v14\.css\?v=20260824-1/);
-assert.match(html, /emergency-verification-queue-core-v14\.js\?v=20260824-1/);
-assert.match(html, /emergency-verification-queue-v14\.js\?v=20260824-1/);
-assert.ok(html.indexOf('emergency-verification-queue-v14.css') < html.indexOf('tailadmin-professional.css'), 'TailAdmin professional must remain the final stylesheet.');
-assert.ok(html.indexOf('emergency-verification-queue-core-v14.js') < html.indexOf('emergency-verification-queue-v14.js'), 'Verification queue core must load before its browser UI.');
+assert.match(html, /emergency-review-loader-v16\.js\?v=20260824-1/);
+assert.doesNotMatch(html, /<link[^>]+emergency-verification-queue-v14\.css/);
+assert.doesNotMatch(html, /<script[^>]+emergency-verification-queue-core-v14\.js/);
+assert.doesNotMatch(html, /<script[^>]+emergency-verification-queue-v14\.js/);
+const stylesheets = [...html.matchAll(/<link\s+rel="stylesheet"\s+href="([^"]+)"/g)].map(match => match[1]);
+assert.match(stylesheets.at(-1), /^tailadmin-professional\.css/, 'TailAdmin professional must remain the final static stylesheet.');
+assert.match(loader, /emergency-verification-queue-v14\.css/);
+assert.match(loader, /emergency-verification-queue-core-v14\.js/);
+assert.match(loader, /emergency-verification-queue-v14\.js/);
+assert.ok(loader.indexOf('emergency-verification-queue-core-v14.js') < loader.indexOf('emergency-verification-queue-v14.js'), 'Lazy reviewer core must load before its browser UI.');
+assert.match(loader, /data-tailadmin-professional-css/);
+
 assert.match(ui, /searchParams\.get\('review'\) === '1'/, 'Reviewer queue must stay out of the normal bedside hot path unless review=1 is explicit.');
 assert.match(ui, /MEDINDEX_AUTH_READY/);
 assert.match(ui, /authUser\?\.adminConsole !== true/);
@@ -78,4 +86,4 @@ assert.doesNotMatch(ui, /patch_documents|reviewStatus\s*=|fetch\(|XMLHttpRequest
 assert.match(css, /@media\(max-width:760px\)/);
 assert.match(css, /prefers-reduced-motion:reduce/);
 
-console.log('Emergency admin-only clinical verification queue v14 contract passed.');
+console.log('Emergency admin-only lazy clinical verification queue v14 contract passed.');
