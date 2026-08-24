@@ -21,6 +21,10 @@ const fixture = {
   version:'1.0',
 };
 
+const FLASH_KEY = 'medindex_emergency_flashcards_v1:emergency-v17-test';
+const META_KEY = 'medindex_emergency_flashcards_v3meta:emergency-v17-test';
+const SCHEDULE_KEY = 'medindex_emergency_flashcards_v4schedule:emergency-v17-test';
+
 async function openEmergency(page, width = 1360, height = 900) {
   const errors = [];
   page.on('pageerror', error => errors.push(String(error)));
@@ -36,15 +40,38 @@ async function openEmergency(page, width = 1360, height = 900) {
   return errors;
 }
 
+async function currentIndex(page) {
+  return page.evaluate(key => JSON.parse(sessionStorage.getItem(key) || '{"index":0}').index || 0, FLASH_KEY);
+}
+
+async function rate(page, selector, expectedRating, minDays) {
+  let flash = page.locator('[data-ck-sl-panel="test"] [data-ck-sl-flashcards]');
+  await expect(flash).toBeVisible();
+  await flash.locator('[data-flash-reveal]').click();
+  const index = await currentIndex(page);
+  await flash.locator(selector).click();
+  await expect(page.locator('[data-ck-sl-panel="test"] [data-flash-reveal]')).toBeVisible();
+
+  const entry = await page.evaluate(({key,index}) => {
+    const schedule = JSON.parse(localStorage.getItem(key) || '{}');
+    return schedule[index] || null;
+  }, {key:SCHEDULE_KEY,index});
+  expect(entry?.rating).toBe(expectedRating);
+  expect(Number(entry?.intervalDays || 0)).toBeGreaterThanOrEqual(minDays);
+  return {index,entry};
+}
+
 test.describe('Urgjencat physician v17', () => {
   test.use({serviceWorkers:'block'});
 
-  test('navigation is self-contained and v4 owns spaced-review ratings', async ({page}) => {
+  test('navigation is self-contained and v17 preserves all four spaced-review ratings', async ({page}) => {
     const errors = await openEmergency(page);
 
     const loadedScripts = await page.locator('script[src]').evaluateAll(nodes => nodes.map(node => node.getAttribute('src')));
     expect(loadedScripts.some(src => /emergency-doctor-ux-v2\.js/.test(src || ''))).toBeFalsy();
     expect(loadedScripts.some(src => /emergency-doctor-keyboard-v2\.js/.test(src || ''))).toBeFalsy();
+    expect(loadedScripts.some(src => /emergency-review-controller-v17\.js/.test(src || ''))).toBeTruthy();
+    await expect.poll(() => page.evaluate(() => window.MedIndexEmergencyReviewV17?.version || '')).toBe('17.0');
 
     await expect(page.locator('[data-ck-doctor-nav="summary"]')).toBeVisible();
     await expect(page.locator('.ck-v3-nav-context')).toBeVisible();
@@ -55,21 +82,16 @@ test.describe('Urgjencat physician v17', () => {
     await expect(flash).toBeVisible();
     await expect(flash.locator('.ck-flash-session-stats')).toBeVisible();
 
-    await flash.locator('[data-flash-reveal]').click();
-    await flash.locator('[data-flash-repeat]').click();
+    await rate(page, '[data-flash-repeat]', 'again', 0);
+    const afterAgain = await page.evaluate(key => JSON.parse(sessionStorage.getItem(key) || '{}'), META_KEY);
+    expect(Object.values(afterAgain?.misses || {}).some(value => Number(value) > 0)).toBeTruthy();
 
-    const afterAgain = await page.evaluate(() => ({
-      schedule:JSON.parse(localStorage.getItem('medindex_emergency_flashcards_v4schedule:emergency-v17-test') || '{}'),
-      meta:JSON.parse(sessionStorage.getItem('medindex_emergency_flashcards_v3meta:emergency-v17-test') || '{}'),
-    }));
-    expect(Object.values(afterAgain.schedule).some(entry => entry?.rating === 'again')).toBeTruthy();
-    expect(Object.values(afterAgain.meta?.misses || {}).some(value => Number(value) > 0)).toBeTruthy();
+    await rate(page, '[data-ck-rating="hard"]', 'hard', 1);
+    await rate(page, '[data-flash-known]', 'good', 3);
+    await rate(page, '[data-ck-rating="easy"]', 'easy', 7);
 
-    const testFlash = page.locator('[data-ck-sl-panel="test"] [data-ck-sl-flashcards]');
-    await testFlash.locator('[data-flash-reveal]').click();
-    await testFlash.locator('[data-flash-known]').click();
-    const afterGood = await page.evaluate(() => JSON.parse(localStorage.getItem('medindex_emergency_flashcards_v4schedule:emergency-v17-test') || '{}'));
-    expect(Object.values(afterGood).some(entry => entry?.rating === 'good')).toBeTruthy();
+    const ratings = await page.evaluate(key => Object.values(JSON.parse(localStorage.getItem(key) || '{}')).map(entry => entry?.rating), SCHEDULE_KEY);
+    expect(ratings).toEqual(expect.arrayContaining(['again','hard','good','easy']));
     expect(errors).toEqual([]);
   });
 
