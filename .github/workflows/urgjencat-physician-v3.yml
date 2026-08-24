@@ -1,4 +1,4 @@
-name: Urgjencat Physician UX v5
+name: Urgjencat Physician UX v6
 
 on:
   pull_request:
@@ -13,6 +13,8 @@ on:
       - 'emergency-learning-v4.css'
       - 'emergency-trainers-v5.js'
       - 'emergency-trainers-v5.css'
+      - 'emergency-readiness-v6.js'
+      - 'emergency-readiness-v6.css'
       - 'tests/urgjencat-doctor-v3-test.js'
       - '.github/workflows/urgjencat-physician-v3.yml'
   push:
@@ -26,6 +28,8 @@ on:
       - 'emergency-learning-v4.css'
       - 'emergency-trainers-v5.js'
       - 'emergency-trainers-v5.css'
+      - 'emergency-readiness-v6.js'
+      - 'emergency-readiness-v6.css'
       - 'tests/urgjencat-doctor-v3-test.js'
 
 permissions:
@@ -33,7 +37,7 @@ permissions:
 
 jobs:
   contract:
-    name: Physician UX v5 contract
+    name: Physician UX v6 contract
     runs-on: ubuntu-latest
     timeout-minutes: 5
     steps:
@@ -41,5 +45,5 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: '24'
-      - name: Run Urgjencat v5 regression contract
+      - name: Run Urgjencat v6 regression contract
         run: node tests/urgjencat-doctor-v3-test.js
