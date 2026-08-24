@@ -11,7 +11,7 @@
   const asList = value => Array.isArray(value) ? value : value == null || value === '' ? [] : [value];
   const text = value => String(value ?? '').trim();
 
-  function sourceCount(item) {
+  function sourceRows(item) {
     const rows = [
       ...asList(item?.sources),
       ...asList(item?.clinicalSources),
@@ -23,7 +23,15 @@
       if (key === '|' || seen.has(key)) return false;
       seen.add(key);
       return true;
-    }).length;
+    }).map(source => ({
+      title:text(source?.title || source?.label || source?.organization) || 'Burim klinik',
+      url:text(source?.url),
+      year:text(source?.year),
+    }));
+  }
+
+  function sourceCount(item) {
+    return sourceRows(item).length;
   }
 
   function actionTexts(item) {
@@ -80,8 +88,10 @@
       slug:text(item?.slug),
       triageLevel:text(item?.triageLevel) || 'urgent',
       reviewStatus,
+      inReview:reviewStatus === 'review',
       version:text(item?.version),
       sourceCount:sourceCount(item),
+      sources:sourceRows(item),
       structuralIssues:issues,
       structurallyReady:issues.length === 0,
       clinicallyVerified:reviewStatus === 'verified',
@@ -96,7 +106,7 @@
   function queue(items) {
     return (Array.isArray(items) ? items : [])
       .map(item => ({item, ...status(item)}))
-      .filter(row => !row.clinicallyVerified)
+      .filter(row => row.inReview)
       .sort((a, b) => {
         const triage = (TRIAGE_WEIGHT[a.triageLevel] ?? 9) - (TRIAGE_WEIGHT[b.triageLevel] ?? 9);
         if (triage) return triage;
@@ -108,13 +118,15 @@
 
   function summary(items) {
     const rows = (Array.isArray(items) ? items : []).map(status);
+    const pendingRows = rows.filter(row => row.inReview);
     return {
       total:rows.length,
       verified:rows.filter(row => row.clinicallyVerified).length,
-      pending:rows.filter(row => !row.clinicallyVerified).length,
-      structurallyReady:rows.filter(row => !row.clinicallyVerified && row.structurallyReady).length,
-      blocked:rows.filter(row => !row.clinicallyVerified && !row.structurallyReady).length,
-      criticalPending:rows.filter(row => !row.clinicallyVerified && row.triageLevel === 'critical').length,
+      pending:pendingRows.length,
+      structurallyReady:pendingRows.filter(row => row.structurallyReady).length,
+      blocked:pendingRows.filter(row => !row.structurallyReady).length,
+      criticalPending:pendingRows.filter(row => row.triageLevel === 'critical').length,
+      otherUnverified:rows.filter(row => !row.clinicallyVerified && !row.inReview).length,
       rows,
     };
   }
@@ -128,6 +140,7 @@
   }
 
   return {
+    sourceRows,
     sourceCount,
     hasDoseLikeContent,
     structuralIssues,
