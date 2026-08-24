@@ -183,7 +183,7 @@
     }
 
     host.innerHTML = `
-      <div class="ck-v8-head"><span>${results.length === 1 ? 'Përputhja më e mirë' : 'Përputhjet më të mira'}</span><small>Forca e kërkimit · jo diagnozë automatike</small></div>
+      <div class="ck-v8-head"><span>${results.length === 1 ? 'Përputhja më e mirë' : 'Përputhjet më të mira'}</span><small>Forca e kërkimit · Nuk është diagnozë automatike</small></div>
       ${results.map(renderResult).join('')}
       <div class="ck-v8-keyhint"><span>↑↓ zgjidh</span><span>Enter hape</span></div>`;
     host.hidden = false;
