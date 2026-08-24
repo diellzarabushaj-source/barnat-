@@ -34,6 +34,7 @@
   let quickMatches = [];
   let quickBuilt = false;
   let quickFrame = 0;
+  let initialTriageResetDone = false;
 
   function browseIsFiltered() {
     return Boolean(chapterSelect?.value || subchapterSelect?.value);
@@ -44,6 +45,29 @@
     reset.click();
     if (browse) browse.open = false;
     requestAnimationFrame(() => search.focus({preventScroll: true}));
+  }
+
+  function triageControls() {
+    return document.querySelector('.ck-triage-filter');
+  }
+
+  function setTriageToAll() {
+    const controls = triageControls();
+    const all = controls?.querySelector('[data-ck-triage="all"]');
+    if (!all || all.getAttribute('aria-pressed') === 'true') return;
+    all.click();
+    requestAnimationFrame(() => search.focus({preventScroll: true}));
+  }
+
+  function keepAdvancedControlsSecondary() {
+    const controls = triageControls();
+    if (!controls) return;
+    if (browse && controls.parentElement !== browse) browse.appendChild(controls);
+    if (!initialTriageResetDone) {
+      initialTriageResetDone = true;
+      const all = controls.querySelector('[data-ck-triage="all"]');
+      if (all && all.getAttribute('aria-pressed') !== 'true') all.click();
+    }
   }
 
   function syncSearchState() {
@@ -87,13 +111,17 @@
 
   function runSearch(value) {
     clearBrowseFilterWithoutLosingSearchFocus();
+    if (value) setTriageToAll();
     search.value = value;
     search.focus({preventScroll: true});
     search.dispatchEvent(new Event('input', {bubbles: true}));
   }
 
   search.addEventListener('input', () => {
-    if (search.value.trim()) clearBrowseFilterWithoutLosingSearchFocus();
+    if (search.value.trim()) {
+      clearBrowseFilterWithoutLosingSearchFocus();
+      setTriageToAll();
+    }
     syncSearchState();
   }, {capture: true});
 
@@ -130,6 +158,10 @@
   const listObserver = new MutationObserver(buildQuickSearches);
   listObserver.observe(list, {childList: true, subtree: true});
 
+  const controlsObserver = new MutationObserver(keepAdvancedControlsSecondary);
+  controlsObserver.observe(document.body, {childList: true, subtree: true});
+
+  keepAdvancedControlsSecondary();
   syncSearchState();
   buildQuickSearches();
 })();
