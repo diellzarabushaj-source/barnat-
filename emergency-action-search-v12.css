@@ -1,0 +1,47 @@
+/* MedIndex Urgjencat — verified deep action search v12 */
+html.medindex-tailadmin[data-mi-page="urgjencat"] .ck-v12-actions{
+  margin:2px 0 7px;
+  padding:7px;
+  border:1px solid rgba(28,122,111,.12);
+  border-radius:11px;
+  background:linear-gradient(145deg,#fbfffe,#f7fbff);
+}
+html.medindex-tailadmin[data-mi-page="urgjencat"] .ck-v12-actions-head{
+  display:flex;align-items:center;justify-content:space-between;gap:10px;padding:4px 4px 7px;
+}
+html.medindex-tailadmin[data-mi-page="urgjencat"] .ck-v12-actions-head>div{display:flex;align-items:center;gap:7px;min-width:0}
+html.medindex-tailadmin[data-mi-page="urgjencat"] .ck-v12-actions-head span{
+  color:#23746c;font-size:9px;font-weight:800!important;letter-spacing:.08em
+}
+html.medindex-tailadmin[data-mi-page="urgjencat"] .ck-v12-actions-head strong{color:#42526a;font-size:10.5px;font-weight:650!important}
+html.medindex-tailadmin[data-mi-page="urgjencat"] .ck-v12-actions-head small{color:#8a96a8;font-size:9px;white-space:nowrap}
+html.medindex-tailadmin[data-mi-page="urgjencat"] .ck-v12-action-row{
+  display:grid;grid-template-columns:minmax(0,1fr) auto;gap:12px;align-items:center;width:100%;min-height:68px;
+  padding:10px;border:1px solid transparent;border-radius:9px;background:transparent;color:inherit;text-align:left;cursor:pointer
+}
+html.medindex-tailadmin[data-mi-page="urgjencat"] .ck-v12-action-row:hover,
+html.medindex-tailadmin[data-mi-page="urgjencat"] .ck-v12-action-row:focus-visible{border-color:rgba(28,122,111,.15);background:#fff}
+html.medindex-tailadmin[data-mi-page="urgjencat"] .ck-v12-action-row:focus-visible{outline:3px solid rgba(28,122,111,.16);outline-offset:1px}
+html.medindex-tailadmin[data-mi-page="urgjencat"] .ck-v12-action-main{display:grid;gap:3px;min-width:0}
+html.medindex-tailadmin[data-mi-page="urgjencat"] .ck-v12-action-eyebrow{color:#358078;font-size:9.5px;font-weight:700!important}
+html.medindex-tailadmin[data-mi-page="urgjencat"] .ck-v12-action-main strong{color:#22314b;font-size:11.5px;font-weight:700!important}
+html.medindex-tailadmin[data-mi-page="urgjencat"] .ck-v12-action-main>span:not(.ck-v12-action-eyebrow){color:#5f6d82;font-size:10.5px;line-height:1.45}
+html.medindex-tailadmin[data-mi-page="urgjencat"] .ck-v12-action-main small{color:#8b95a6;font-size:9px}
+html.medindex-tailadmin[data-mi-page="urgjencat"] .ck-v12-action-row>b{color:#26736a;font-size:9.5px;font-weight:700!important;white-space:nowrap}
+html.medindex-tailadmin[data-mi-page="urgjencat"] .ck-v12-jump-highlight{
+  outline:3px solid rgba(30,132,120,.20)!important;outline-offset:4px!important;border-radius:10px!important;
+  box-shadow:0 0 0 8px rgba(30,132,120,.06)!important
+}
+html[data-theme="dark"].medindex-tailadmin[data-mi-page="urgjencat"] .ck-v12-actions{border-color:rgba(80,181,167,.17);background:linear-gradient(145deg,#121e2b,#111827)}
+html[data-theme="dark"].medindex-tailadmin[data-mi-page="urgjencat"] .ck-v12-action-row:hover,
+html[data-theme="dark"].medindex-tailadmin[data-mi-page="urgjencat"] .ck-v12-action-row:focus-visible{background:#172335;border-color:rgba(80,181,167,.18)}
+html[data-theme="dark"].medindex-tailadmin[data-mi-page="urgjencat"] .ck-v12-action-main strong{color:#edf3fb}
+html[data-theme="dark"].medindex-tailadmin[data-mi-page="urgjencat"] .ck-v12-action-main>span:not(.ck-v12-action-eyebrow){color:#b1bccd}
+@media(max-width:760px){
+  html.medindex-tailadmin[data-mi-page="urgjencat"] .ck-v12-action-row{grid-template-columns:minmax(0,1fr);gap:6px;min-height:74px}
+  html.medindex-tailadmin[data-mi-page="urgjencat"] .ck-v12-action-row>b{justify-self:start}
+  html.medindex-tailadmin[data-mi-page="urgjencat"] .ck-v12-actions-head small{display:none}
+}
+@media(prefers-reduced-motion:reduce){
+  html.medindex-tailadmin[data-mi-page="urgjencat"] .ck-v12-jump-highlight{scroll-behavior:auto!important}
+}
