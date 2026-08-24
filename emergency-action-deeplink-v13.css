@@ -1,0 +1,43 @@
+/* MedIndex Urgjencat — action deep links + live readiness audit v13 */
+html.medindex-tailadmin[data-mi-page="urgjencat"] .ck-v13-integrity{
+  display:flex;
+  align-items:center;
+  gap:7px;
+  min-height:24px;
+  margin:6px 0 0;
+  color:#7a879a;
+  font-size:10.5px;
+  font-weight:500!important;
+  line-height:1.35;
+}
+html.medindex-tailadmin[data-mi-page="urgjencat"] .ck-v13-integrity::before{
+  content:"";
+  width:7px;
+  height:7px;
+  flex:0 0 7px;
+  border-radius:999px;
+  background:#98a5b7;
+  box-shadow:0 0 0 3px rgba(120,139,166,.10);
+}
+html.medindex-tailadmin[data-mi-page="urgjencat"] .ck-v13-integrity[data-ck-v13-ready="true"]{
+  color:#547466;
+}
+html.medindex-tailadmin[data-mi-page="urgjencat"] .ck-v13-integrity[data-ck-v13-ready="true"]::before{
+  background:#36a173;
+  box-shadow:0 0 0 3px rgba(54,161,115,.11);
+}
+html[data-theme="dark"] .ck-v13-integrity{
+  color:#94a3b8!important;
+}
+html[data-theme="dark"] .ck-v13-integrity[data-ck-v13-ready="true"]{
+  color:#9fcdbb!important;
+}
+@media(max-width:760px){
+  html.medindex-tailadmin[data-mi-page="urgjencat"] .ck-v13-integrity{
+    margin-top:5px;
+    font-size:10px;
+  }
+}
+@media(prefers-reduced-motion:reduce){
+  html.medindex-tailadmin[data-mi-page="urgjencat"] .ck-v13-integrity::before{transition:none!important}
+}
