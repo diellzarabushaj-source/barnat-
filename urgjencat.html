@@ -23,6 +23,7 @@
   <link rel="stylesheet" href="emergency-rapid-search.css?v=20260824-1">
   <link rel="stylesheet" href="emergency-smart-search-v8.css?v=20260824-1">
   <link rel="stylesheet" href="emergency-search-personalization-v11.css?v=20260824-1">
+  <link rel="stylesheet" href="emergency-action-search-v12.css?v=20260824-1">
   <link rel="stylesheet" href="emergency-symptom-chips-v9.css?v=20260824-1">
   <link rel="stylesheet" href="emergency-learning-v4.css?v=20260824-1">
   <link rel="stylesheet" href="emergency-trainers-v5.css?v=20260824-1">
@@ -50,7 +51,7 @@
           <div>
             <p class="ck-kicker">Për pacientin tani</p>
             <h1>Urgjencat</h1>
-            <p class="ck-rapid-subtitle">Kërko diagnozën, simptomën ose ICD. Protokolli hapet menjëherë.</p>
+            <p class="ck-rapid-subtitle">Kërko diagnozën, simptomën, ICD ose veprimin. Protokolli hapet menjëherë.</p>
           </div>
         </header>
 
@@ -60,7 +61,7 @@
             <kbd aria-label="Shkurtorja slash">/</kbd>
           </div>
           <div class="ck-toolbar" role="search" aria-label="Kërkimi i urgjencave">
-            <input id="emergencySearch" type="search" autocomplete="off" enterkeyhint="search" spellcheck="false" placeholder="p.sh. dhimbje gjoksi, STEMI, hipoglikemi, E16.2…" aria-label="Kërko urgjencën">
+            <input id="emergencySearch" type="search" autocomplete="off" enterkeyhint="search" spellcheck="false" placeholder="p.sh. STEMI, E16.2, çka bëj tani, referim…" aria-label="Kërko urgjencën">
             <select id="emergencyCategory" class="ck-legacy-category-filter" aria-label="Kategoria klinike" tabindex="-1"><option value="">Të gjitha kategoritë</option></select>
           </div>
           <div class="ck-quick-search" id="emergencyQuickSearch" aria-label="Kërkime të shpejta" hidden></div>
@@ -130,7 +131,9 @@
   <script src="emergency-trainers-v5.js?v=20260824-1" defer></script>
   <script src="emergency-rapid-search.js?v=20260824-1" defer></script>
   <script src="emergency-search-core-v8.js?v=20260824-2" defer></script>
+  <script src="emergency-action-search-core-v12.js?v=20260824-1" defer></script>
   <script src="emergency-smart-search-v8.js?v=20260824-2" defer></script>
+  <script src="emergency-action-search-v12.js?v=20260824-1" defer></script>
   <script src="emergency-symptom-chips-v9.js?v=20260824-1" defer></script>
   <script src="emergency-readiness-v6.js?v=20260824-1" defer></script>
   <script src="emergency-learning-flow-v7.js?v=20260824-1" defer></script>
