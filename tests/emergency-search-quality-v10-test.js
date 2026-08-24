@@ -1,7 +1,12 @@
 'use strict';
 
 const assert = require('node:assert/strict');
+const fs = require('node:fs');
+const path = require('node:path');
 const search = require('../emergency-search-core-v8.js');
+
+const ROOT = path.resolve(__dirname, '..');
+const read = file => fs.readFileSync(path.join(ROOT, file), 'utf8');
 
 const fixtures = [
   {
@@ -94,7 +99,17 @@ const abusiveUsage = {
 assert.equal(top('Anafilaksia', abusiveUsage).item._id, 'ana', 'Personal usage must never override an exact diagnosis.');
 assert.equal(top('T78.2', abusiveUsage).item._id, 'ana', 'Personal usage must never override an exact ICD.');
 
+const symptomRuntime = read('emergency-symptom-chips-v9.js');
+assert.match(symptomRuntime, /engine\.prepare\(corpus\)/, 'Symptom shortcuts must prepare the corpus once per dataset.');
+assert.match(symptomRuntime, /engine\.rankPrepared\(prepared/, 'Symptom availability must reuse the prepared index.');
+assert.match(symptomRuntime, /if \(writing \|\| !selected\.size\) return;/, 'Normal typing must bypass symptom-chip recomputation.');
+assert.doesNotMatch(symptomRuntime, /engine\.rank\(corpus/, 'Symptom shortcuts must not rebuild the index for every candidate.');
+
+const searchUi = read('emergency-smart-search-v8.js');
+assert.match(searchUi, /data-ck-v8-strength/, 'Search results must expose neutral match strength.');
+assert.match(searchUi, /Nuk është diagnozë automatike/, 'Search UI must keep the non-diagnostic safety disclaimer.');
+
 const hitAt1 = hitAt1Cases.filter(([query, expected]) => top(query)?.item?._id === expected).length / hitAt1Cases.length;
 assert.equal(hitAt1, 1, 'Curated emergency search benchmark must keep 100% Hit@1.');
 
-console.log(`Emergency search quality v10 passed: Hit@1 ${(hitAt1 * 100).toFixed(0)}% across ${hitAt1Cases.length} curated queries.`);
+console.log(`Emergency search quality v10 passed: Hit@1 ${(hitAt1 * 100).toFixed(0)}% across ${hitAt1Cases.length} curated queries; hot-path guards passed.`);
