@@ -72,7 +72,7 @@ assert.deepEqual(search.searchPrepared(prepared, 'tekst krejt i palidhur', {limi
 
 assert.match(html, /emergency-action-search-v12\.css\?v=20260824-1/);
 assert.match(html, /emergency-action-search-core-v12\.js\?v=20260824-1/);
-assert.match(html, /emergency-action-search-v12\.js\?v=20260824-1/);
+assert.match(html, /emergency-action-search-v12\.js\?v=20260824-2/);
 assert.ok(html.indexOf('emergency-action-search-v12.css') < html.indexOf('tailadmin-professional.css'), 'TailAdmin professional must remain the final canonical stylesheet.');
 assert.ok(html.indexOf('emergency-action-search-core-v12.js') < html.indexOf('emergency-smart-search-v8.js'), 'Action core must load before smart-search UI.');
 assert.ok(html.indexOf('emergency-smart-search-v8.js') < html.indexOf('emergency-action-search-v12.js'), 'Deep-link enhancement must load after smart-search host creation.');
@@ -80,6 +80,8 @@ assert.match(ui, /Jo gjenerim AI/);
 assert.match(ui, /Verifikuar/);
 assert.match(ui, /tekst nga protokolli/);
 assert.match(ui, /ck-v12-jump-highlight/);
+assert.match(ui, /medindex:emergency-action-opened/);
+assert.match(ui, /medindex:emergency-action-open/);
 assert.doesNotMatch(ui, /MutationObserver/, 'Action search must not observe and mutate the same results host.');
 assert.doesNotMatch(ui, /fetch\(|XMLHttpRequest|gemini|generative/i);
 assert.match(css, /@media\(max-width:760px\)/);
