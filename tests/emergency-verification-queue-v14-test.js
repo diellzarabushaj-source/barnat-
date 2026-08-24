@@ -57,6 +57,7 @@ assert.match(html, /emergency-verification-queue-core-v14\.js\?v=20260824-1/);
 assert.match(html, /emergency-verification-queue-v14\.js\?v=20260824-1/);
 assert.ok(html.indexOf('emergency-verification-queue-v14.css') < html.indexOf('tailadmin-professional.css'), 'TailAdmin professional must remain the final stylesheet.');
 assert.ok(html.indexOf('emergency-verification-queue-core-v14.js') < html.indexOf('emergency-verification-queue-v14.js'), 'Verification queue core must load before its browser UI.');
+assert.match(ui, /searchParams\.get\('review'\) === '1'/, 'Reviewer queue must stay out of the normal bedside hot path unless review=1 is explicit.');
 assert.match(ui, /medindex_emergency_verification_v14:/);
 assert.match(ui, /nuk<\/strong> e ndryshon statusin klinik/);
 assert.match(ui, /Hape në Sanity për aprovim/);
