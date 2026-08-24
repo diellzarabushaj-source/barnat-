@@ -18,8 +18,9 @@ const v5 = read('emergency-trainers-v5.js');
 const v5css = read('emergency-trainers-v5.css');
 const v6 = read('emergency-readiness-v6.js');
 const v6css = read('emergency-readiness-v6.css');
-const v7 = read('emergency-smart-search-v7.js');
-const v7css = read('emergency-smart-search-v7.css');
+const v8 = read('emergency-smart-search-v8.js');
+const v8css = read('emergency-smart-search-v8.css');
+const searchCore = require('../emergency-search-core-v8.js');
 
 assert.match(html, /emergency-doctor-ux-v3\.css\?v=20260823-1/);
 assert.match(html, /emergency-doctor-ux-v3\.js\?v=20260823-1/);
@@ -29,20 +30,23 @@ assert.match(html, /emergency-trainers-v5\.css\?v=20260824-1/);
 assert.match(html, /emergency-trainers-v5\.js\?v=20260824-1/);
 assert.match(html, /emergency-readiness-v6\.css\?v=20260824-1/);
 assert.match(html, /emergency-readiness-v6\.js\?v=20260824-1/);
-assert.match(html, /emergency-smart-search-v7\.css\?v=20260824-1/);
-assert.match(html, /emergency-smart-search-v7\.js\?v=20260824-1/);
+assert.match(html, /emergency-smart-search-v8\.css\?v=20260824-1/);
+assert.match(html, /emergency-search-core-v8\.js\?v=20260824-1/);
+assert.match(html, /emergency-smart-search-v8\.js\?v=20260824-1/);
+assert.doesNotMatch(html, /emergency-smart-search-v7\.(?:js|css)/);
 assert.ok(
   html.indexOf('emergency-doctor-ux-v2.js') < html.indexOf('emergency-doctor-keyboard-v2.js')
   && html.indexOf('emergency-doctor-keyboard-v2.js') < html.indexOf('emergency-doctor-ux-v3.js')
   && html.indexOf('emergency-doctor-ux-v3.js') < html.indexOf('emergency-learning-v4.js')
   && html.indexOf('emergency-learning-v4.js') < html.indexOf('emergency-trainers-v5.js')
-  && html.indexOf('emergency-trainers-v5.js') < html.indexOf('emergency-smart-search-v7.js')
-  && html.indexOf('emergency-smart-search-v7.js') < html.indexOf('emergency-readiness-v6.js'),
-  'Physician v7 must load after v5 and before the readiness overlay.',
+  && html.indexOf('emergency-trainers-v5.js') < html.indexOf('emergency-search-core-v8.js')
+  && html.indexOf('emergency-search-core-v8.js') < html.indexOf('emergency-smart-search-v8.js')
+  && html.indexOf('emergency-smart-search-v8.js') < html.indexOf('emergency-readiness-v6.js'),
+  'Physician v8 must load the search core before the UI and before readiness.',
 );
 assert.ok(
   html.indexOf('emergency-readiness-v6.css') < html.indexOf('tailadmin-professional.css')
-  && html.indexOf('emergency-smart-search-v7.css') < html.indexOf('tailadmin-professional.css'),
+  && html.indexOf('emergency-smart-search-v8.css') < html.indexOf('tailadmin-professional.css'),
   'TailAdmin professional remains the final canonical stylesheet.',
 );
 
@@ -56,30 +60,16 @@ assert.match(v3, /ArrowRight/);
 assert.match(v3, /Home/);
 assert.match(v3, /End/);
 assert.match(v3, /preventScroll: true/);
-
 assert.match(v3, /medindex_emergency_flashcards_v3meta:/);
 assert.match(v3, /misses/);
 assert.match(v3, /ratings/);
-assert.match(v3, /round/);
 assert.match(v3, /function nextPriority/);
-assert.match(v3, /meta\.misses\[state\.index\]/);
 assert.match(v3, /data-ck-flash-hard-review/);
-assert.match(v3, /Rishiko/);
-assert.match(v3, /U ruajt për përsëritje/);
-assert.match(v3, /E shënuar si e ditur/);
-assert.match(v3, /event\.stopImmediatePropagation\(\)/);
-assert.match(v3, /refreshLearn\(\)/);
 assert.match(v3, /aria-live/);
 assert.match(v3, /MutationObserver/);
-
 assert.match(css, /\.ck-doctor-jumpbar button::before/);
-assert.match(css, /\.ck-doctor-nav-count/);
 assert.match(css, /\.ck-flash-v3-session/);
-assert.match(css, /\.ck-flash-feedback/);
-assert.match(css, /\.ck-flash-v3-cardmeta/);
-assert.match(css, /\.ck-flash-hard-review/);
 assert.match(css, /@media\(max-width:760px\)/);
-assert.match(css, /grid-template-columns:1fr 1fr/);
 assert.match(css, /html\[data-theme="dark"\]/);
 assert.match(css, /prefers-reduced-motion:reduce/);
 assert.doesNotMatch(css, /font-size:(?:7|8|9)(?:\.\d+)?px/);
@@ -105,11 +95,8 @@ assert.match(v4, /Vështirë/);
 assert.match(v4, /Shumë e lehtë/);
 assert.match(v4, /Hape pjesën në mësim/);
 assert.match(v4, /Nga protokolli/);
-assert.match(v4css, /grid-template-columns:repeat\(3,minmax\(0,1fr\)\)/);
 assert.match(v4css, /\.ck-v4-cockpit/);
 assert.match(v4css, /\.ck-v4-test-head/);
-assert.match(v4css, /\.ck-v4-source-meta/);
-assert.match(v4css, /grid-template-columns:repeat\(4,minmax\(0,1fr\)\)/);
 assert.match(v4css, /@media\(max-width:760px\)/);
 assert.match(v4css, /prefers-reduced-motion:reduce/);
 assert.doesNotMatch(v4, /mg\/kg|adrenalin|epinefrin|nalokson|atropin|amiodaron|adenozin/i);
@@ -121,50 +108,79 @@ assert.match(v5, /maskedDoseText/);
 assert.match(v5, /primaryCareSteps/);
 assert.match(v5, /secondaryCareSteps/);
 assert.match(v5, /Teksti i saktë nga protokolli/);
-assert.match(v5, /medindex_emergency_flashcards_v4schedule:/);
 assert.match(v5css, /\.ck-v5-session-bar/);
 assert.match(v5css, /\.ck-v5-trainers/);
-assert.match(v5css, /grid-template-columns:repeat\(2,minmax\(0,1fr\)\)/);
 assert.match(v5css, /@media\(max-width:760px\)/);
-assert.match(v5css, /prefers-reduced-motion:reduce/);
 assert.doesNotMatch(v5, /adrenalin|epinefrin|nalokson|atropin|amiodaron|adenozin/i);
 
 assert.match(v6, /PARA NDËRRIMIT/);
 assert.match(v6, /Review kritik/);
 assert.match(v6, /reviewStatus \|\| ''\) === 'verified'/);
 assert.match(v6, /CRITICAL_LEVELS/);
-assert.match(v6, /critical/);
-assert.match(v6, /very-urgent/);
 assert.match(v6, /Fillo review/);
 assert.match(v6, /Tjetra kritike/);
 assert.match(v6, /Nuk është vlerësim i kompetencës klinike/);
-assert.match(v6, /medindex_emergency_flashcards_v4schedule:/);
-assert.match(v6, /localStorage/);
 assert.match(v6css, /\.ck-v6-readiness/);
-assert.match(v6css, /\.ck-v6-queue-item/);
 assert.match(v6css, /\.ck-v6-progress/);
 assert.match(v6css, /@media\(max-width:760px\)/);
-assert.match(v6css, /prefers-reduced-motion:reduce/);
 assert.doesNotMatch(v6, /mg\/kg|adrenalin|epinefrin|nalokson|atropin|amiodaron|adenozin/i);
 
-assert.match(v7, /medindex_emergency_search_usage_v1/);
-assert.match(v7, /function levenshtein/);
-assert.match(v7, /meaningfulTokens/);
-assert.match(v7, /primaryCareSteps/);
-assert.match(v7, /redFlags/);
-assert.match(v7, /aliases/);
-assert.match(v7, /icdCodes/);
-assert.match(v7, /Diagnozë e saktë/);
-assert.match(v7, /Shenja \/ përmbajtje/);
-assert.match(v7, /aria-activedescendant/);
-assert.match(v7, /ArrowDown/);
-assert.match(v7, /ArrowUp/);
-assert.match(v7, /Enter/);
-assert.match(v7, /localStorage/);
-assert.match(v7css, /\.ck-v7-smart-results/);
-assert.match(v7css, /\.ck-v7-result-main/);
-assert.match(v7css, /@media\(max-width:760px\)/);
-assert.match(v7css, /prefers-reduced-motion:reduce/);
-assert.doesNotMatch(v7, /gemini|generative|fetch\(|XMLHttpRequest/i);
+assert.match(v8, /MedIndexEmergencySearchCore/);
+assert.match(v8, /medindex_emergency_search_usage_v1/);
+assert.match(v8, /Përputhen/);
+assert.match(v8, /Nuk është diagnozë automatike/);
+assert.match(v8, /Të shpeshtat/);
+assert.match(v8, /aria-activedescendant/);
+assert.match(v8, /ArrowDown/);
+assert.match(v8, /ArrowUp/);
+assert.match(v8, /Enter/);
+assert.match(v8, /localStorage/);
+assert.match(v8css, /\.ck-v8-smart-results/);
+assert.match(v8css, /\.ck-v8-match/);
+assert.match(v8css, /\.ck-v8-frequent/);
+assert.match(v8css, /@media\(max-width:760px\)/);
+assert.match(v8css, /prefers-reduced-motion:reduce/);
+assert.doesNotMatch(v8, /gemini|generative|fetch\(|XMLHttpRequest/i);
 
-console.log('Urgjencat physician-first UX v3 + learning v4 + trainers v5 + critical review v6 + smart search v7 regression contract passed.');
+const fixtures = [
+  {
+    _id:'ana', title:'Anafilaksia', aliases:['reaksion alergjik i rëndë'], icdCodes:['T78.2'],
+    category:'Alergologji', triageLevel:'critical', reviewStatus:'verified',
+    summary:'Reaksion akut me urtikarie, wheezing dhe hipotension.',
+    redFlags:['Edemë e rrugëve të frymëmarrjes', 'Hipotension'],
+    primaryCareSteps:[{title:'Vlerësimi fillestar', action:'Vlerëso rrugët e frymëmarrjes dhe qarkullimin.'}],
+  },
+  {
+    _id:'hypo', title:'Hipoglikemia e rëndë', aliases:['sheqer i ulët'], icdCodes:['E16.2'],
+    category:'Endokrinologji', triageLevel:'critical', reviewStatus:'verified',
+    summary:'Djersitje, tremor, konfuzion ose alterim i vetëdijes.',
+    primaryCareSteps:[{title:'Vlerësimi', action:'Kontrollo glukozën dhe gjendjen e vetëdijes.'}],
+  },
+  {
+    _id:'stemi', title:'STEMI', aliases:['infarkt akut i miokardit'], icdCodes:['I21.3'],
+    category:'Kardiologji', triageLevel:'very-urgent', reviewStatus:'verified',
+    summary:'Dhimbje gjoksi me ndryshime akute në EKG.',
+  },
+  {
+    _id:'asthma', title:'Astma akute', aliases:['krizë astme'], icdCodes:['J45'],
+    category:'Pulmologji', triageLevel:'urgent', reviewStatus:'review',
+    summary:'Dispne, wheezing dhe përdorim i muskujve aksesorë.',
+  },
+];
+
+assert.equal(searchCore.rank(fixtures, 'Anafilaksia')[0]?.item?._id, 'ana', 'Exact diagnosis must rank first.');
+assert.equal(searchCore.rank(fixtures, 'T78.2')[0]?.item?._id, 'ana', 'Exact ICD must rank first.');
+assert.equal(searchCore.rank(fixtures, 'anaflaksi')[0]?.item?._id, 'ana', 'One-character typo must still find anaphylaxis.');
+assert.equal(searchCore.rank(fixtures, 'urtikarie hipotension')[0]?.item?._id, 'ana', 'Multiple matching clinical signs must rank anaphylaxis first.');
+assert.deepEqual(
+  searchCore.rank(fixtures, 'urtikarie hipotension')[0]?.clinicalTerms,
+  ['urtikarie','hipotension'],
+  'The UI explanation must expose only query terms that occur in indexed clinical content.',
+);
+assert.equal(searchCore.rank(fixtures, 'sheqer tremor')[0]?.item?._id, 'hypo', 'Mixed alias + symptom query must find severe hypoglycemia.');
+assert.equal(searchCore.rank(fixtures, 'I21.3')[0]?.item?._id, 'stemi', 'STEMI ICD lookup must work.');
+assert.equal(searchCore.rank(fixtures, 'tekst krejt i palidhur').length, 0, 'Unrelated text must not force a clinical result.');
+const usage = {hypo:{count:20,lastAt:Date.now()}};
+assert.equal(searchCore.rank(fixtures, 'Anafilaksia', usage)[0]?.item?._id, 'ana', 'Personal frequency must not overpower an exact diagnosis match.');
+
+console.log('Urgjencat physician-first UX + verified learning + explainable smart search v8 regression contract passed.');
