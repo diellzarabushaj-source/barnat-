@@ -1,6 +1,11 @@
 (() => {
   'use strict';
 
+  const reviewMode = (() => {
+    try { return new URL(window.location.href).searchParams.get('review') === '1'; } catch { return false; }
+  })();
+  if (!reviewMode) return;
+
   const searchPanel = document.querySelector('[data-mi-page="urgjencat"] .ck-rapid-search-panel');
   const search = document.getElementById('emergencySearch');
   const list = document.getElementById('emergencyList');
@@ -60,6 +65,7 @@
     panel = document.createElement('details');
     panel.className = 'ck-v14-review';
     panel.dataset.ckV14Review = '1';
+    panel.open = true;
     searchPanel.insertAdjacentElement('afterend', panel);
     return panel;
   }
@@ -137,7 +143,7 @@
         <div class="ck-v14-overview">
           <div><span>NË RADHË</span><strong>${summary.pending}</strong></div>
           <div><span>STRUKTURË E PLOTË</span><strong>${summary.structurallyReady}</strong></div>
-          <div><span>BLLokuara</span><strong>${summary.blocked}</strong></div>
+          <div><span>BLLOKUARA</span><strong>${summary.blocked}</strong></div>
           <div><span>VERIFIED</span><strong>${summary.verified}</strong></div>
         </div>
         <p class="ck-v14-safety">Prioriteti është kritik → urgjent. Ky panel organizon rishikimin; nuk aprovon automatikisht asnjë protokoll.</p>
