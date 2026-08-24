@@ -18,6 +18,9 @@
     .replace(/\s+/g, ' ')
     .trim();
 
+  const asList = value => Array.isArray(value) ? value : value == null || value === '' ? [] : [value];
+  const cleanList = values => values.map(normalize).filter(Boolean);
+
   function displayTokens(value, stopWords = DEFAULT_STOP_WORDS) {
     return String(value ?? '')
       .trim()
@@ -53,19 +56,43 @@
   function indexItem(item) {
     const primary = Array.isArray(item?.primaryCareSteps) ? item.primaryCareSteps : [];
     const secondary = Array.isArray(item?.secondaryCareSteps) ? item.secondaryCareSteps : [];
+    const aliases = cleanList([
+      ...asList(item?.aliases),
+      ...asList(item?.searchAliases),
+    ]);
+    const abbreviations = cleanList(asList(item?.abbreviations));
+    const icd = cleanList(asList(item?.icdCodes));
+    const discovery = [
+      ...asList(item?.keywords),
+      ...asList(item?.searchTerms),
+      ...asList(item?.chiefComplaints),
+      ...asList(item?.signatureSymptoms),
+    ];
+    const signature = [
+      ...asList(item?.chiefComplaints),
+      ...asList(item?.signatureSymptoms),
+    ];
+    const title = normalize(item?.title);
+
     return {
-      title: normalize(item?.title),
-      aliases: (item?.aliases || []).map(normalize).filter(Boolean),
-      icd: (item?.icdCodes || []).map(normalize).filter(Boolean),
+      title,
+      aliases,
+      abbreviations,
+      icd,
+      identities:[title, ...aliases, ...abbreviations].filter(Boolean),
       high: words([
         item?.title,
-        ...(item?.aliases || []),
-        ...(item?.icdCodes || []),
+        ...asList(item?.aliases),
+        ...asList(item?.searchAliases),
+        ...asList(item?.abbreviations),
+        ...asList(item?.icdCodes),
+        ...discovery,
         item?.category,
         item?.chapterTitle,
         item?.subchapterTitle,
       ]),
       clinical: words([
+        ...signature,
         item?.summary,
         ...(item?.redFlags || []),
         ...(item?.doNotDo || []),
@@ -101,20 +128,28 @@
     return count * 3 + recent;
   }
 
+  function globalPopularityBoost(item) {
+    const value = Number(item?.searchPopularity ?? item?.popularity ?? 0);
+    if (!Number.isFinite(value) || value <= 0) return 0;
+    return Math.min(Math.round(value), 20);
+  }
+
   function identitySignals(index, query) {
     const exactTitle = index.title === query;
     const exactAlias = index.aliases.some(alias => alias === query);
+    const exactAbbreviation = index.abbreviations.some(value => value === query);
     const exactIcd = index.icd.some(code => code === query);
     const partialTitle = !exactTitle && Boolean(query) && (index.title.startsWith(query) || index.title.includes(query));
     const partialAlias = !exactAlias && index.aliases.some(alias => alias.startsWith(query) || alias.includes(query));
+    const partialAbbreviation = !exactAbbreviation && index.abbreviations.some(value => value.startsWith(query) || value.includes(query));
     const prefixIcd = !exactIcd && index.icd.some(code => code.startsWith(query));
     const nearTitle = !exactTitle && query.length >= 4 && index.title.length >= 4 && levenshtein(index.title, query) <= (Math.max(index.title.length, query.length) >= 8 ? 2 : 1);
-    return {exactTitle, exactAlias, exactIcd, partialTitle, partialAlias, prefixIcd, nearTitle};
+    return {exactTitle, exactAlias, exactAbbreviation, exactIcd, partialTitle, partialAlias, partialAbbreviation, prefixIcd, nearTitle};
   }
 
   function classifyStrength(signals, matched, tokenCount, coverage) {
-    if (signals.exactTitle || signals.exactAlias || signals.exactIcd) return 'exact';
-    if (signals.partialTitle || signals.partialAlias || signals.prefixIcd || signals.nearTitle) return 'strong';
+    if (signals.exactTitle || signals.exactAlias || signals.exactAbbreviation || signals.exactIcd) return 'exact';
+    if (signals.partialTitle || signals.partialAlias || signals.partialAbbreviation || signals.prefixIcd || signals.nearTitle) return 'strong';
     if (matched >= 2 && coverage >= .67) return 'strong';
     if (tokenCount === 1 && matched === 1) return 'supporting';
     return 'supporting';
@@ -133,6 +168,9 @@
     if (signals.exactTitle) { score += 1300; reason = 'Diagnozë e saktë'; }
     else if (index.title.startsWith(query)) { score += 1050; reason = 'Diagnozë'; }
     else if (index.title.includes(query)) { score += 850; reason = 'Diagnozë'; }
+
+    if (signals.exactAbbreviation) { score += 1180; reason ||= 'Shkurtim'; }
+    else if (signals.partialAbbreviation) { score += 840; reason ||= 'Shkurtim'; }
 
     if (signals.exactAlias) { score += 1150; reason ||= 'Sinonim'; }
     else if (signals.partialAlias) { score += 820; reason ||= 'Sinonim'; }
@@ -174,6 +212,7 @@
     if (item?.triageLevel === 'critical') score += 38;
     else if (item?.triageLevel === 'very-urgent') score += 24;
     if (item?.reviewStatus === 'verified') score += 12;
+    score += globalPopularityBoost(item);
     score += usageBoost(String(item?._id || ''), usage, now);
 
     return {
@@ -204,5 +243,72 @@
     return rankPrepared(prepare(items), rawQuery, usage, options);
   }
 
-  return {normalize, displayTokens, levenshtein, indexItem, prepare, tokenScore, identitySignals, classifyStrength, rankItem, rankPrepared, rank};
+  function rescueIdentityScore(index, rawQuery, options = {}) {
+    const query = normalize(rawQuery);
+    if (!query || query.length < 4 || /\d/.test(query)) return null;
+    const tokens = displayTokens(rawQuery, options.stopWords || DEFAULT_STOP_WORDS);
+    if (!tokens.length || tokens.length > 3) return null;
+
+    let best = null;
+    for (const identity of index.identities || []) {
+      if (!identity) continue;
+      const threshold = Math.max(identity.length, query.length) >= 7 ? 2 : 1;
+      const distance = levenshtein(query, identity);
+      if (Math.abs(identity.length - query.length) <= threshold && distance <= threshold) {
+        const score = 520 - distance * 80 + Math.min(identity.length, 80);
+        if (!best || score > best.score) best = {score, distance, coverage:1};
+      }
+
+      const candidateTokens = identity.split(' ').filter(Boolean);
+      let matched = 0;
+      let tokenQuality = 0;
+      for (const token of tokens) {
+        let bestToken = 0;
+        for (const candidate of candidateTokens) bestToken = Math.max(bestToken, tokenScore(token.norm, candidate, 100));
+        if (bestToken >= 48) {
+          matched += 1;
+          tokenQuality += bestToken;
+        }
+      }
+      const coverage = matched / tokens.length;
+      if (coverage === 1 && matched >= Math.min(2, tokens.length)) {
+        const score = 360 + Math.round(tokenQuality / matched) + matched * 20;
+        if (!best || score > best.score) best = {score, distance:null, coverage};
+      }
+    }
+    return best;
+  }
+
+  function suggestPrepared(prepared, rawQuery, options = {}) {
+    const limit = Math.max(1, Math.min(Number(options.limit || 3), 5));
+    return (Array.isArray(prepared) ? prepared : [])
+      .map(entry => {
+        const rescue = rescueIdentityScore(entry.index, rawQuery, options);
+        return rescue ? {item:entry.item, score:rescue.score, reason:'Drejtshkrim i afërt', coverage:rescue.coverage} : null;
+      })
+      .filter(Boolean)
+      .sort((a, b) => b.score - a.score || String(a.item?.title || '').localeCompare(String(b.item?.title || ''), 'sq'))
+      .slice(0, limit);
+  }
+
+  function suggest(items, rawQuery, options = {}) {
+    return suggestPrepared(prepare(items), rawQuery, options);
+  }
+
+  return {
+    normalize,
+    displayTokens,
+    levenshtein,
+    indexItem,
+    prepare,
+    tokenScore,
+    identitySignals,
+    classifyStrength,
+    rescueIdentityScore,
+    rankItem,
+    rankPrepared,
+    rank,
+    suggestPrepared,
+    suggest,
+  };
 });
