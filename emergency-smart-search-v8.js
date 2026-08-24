@@ -60,6 +60,10 @@
     return ({verified:'Verifikuar',review:'Për verifikim',draft:'Draft'})[value] || '';
   }
 
+  function strengthLabel(value) {
+    return ({exact:'E saktë',strong:'Përputhje e fortë',supporting:'Mbështetëse'})[value] || '';
+  }
+
   function ranked(query) {
     return engine.rankPrepared(preparedItems(), query, readUsage(), {limit:MAX_RESULTS});
   }
@@ -125,7 +129,7 @@
 
   function evidenceMarkup(result) {
     const terms = result.clinicalTerms?.length ? result.clinicalTerms : result.matchedTerms;
-    if (!terms?.length || ['Diagnozë e saktë','ICD'].includes(result.reason)) return '';
+    if (!terms?.length || ['Diagnozë e saktë','ICD i saktë','ICD'].includes(result.reason)) return '';
     return `<span class="ck-v8-match"><span>Përputhen</span>${terms.slice(0,3).map(term => `<b>${esc(term)}</b>`).join('')}</span>`;
   }
 
@@ -134,13 +138,14 @@
     const meta = [...(item.icdCodes || []).slice(0,2), item.category].filter(Boolean).join(' · ');
     const triage = triageLabel(item.triageLevel);
     const review = reviewLabel(item.reviewStatus);
-    return `<button type="button" id="ck-v8-result-${index}" role="option" aria-selected="false" data-ck-v8-id="${esc(item._id || '')}">
+    const strength = strengthLabel(result.strength);
+    return `<button type="button" id="ck-v8-result-${index}" role="option" aria-selected="false" data-ck-v8-id="${esc(item._id || '')}" data-ck-v8-strength="${esc(result.strength || '')}">
       <span class="ck-v8-result-body">
         <span class="ck-v8-result-title"><strong>${esc(item.title || 'Urgjencë')}</strong>${triage ? `<em>${esc(triage)}</em>` : ''}</span>
         ${meta ? `<small class="ck-v8-meta">${esc(meta)}</small>` : ''}
         ${evidenceMarkup(result)}
       </span>
-      <span class="ck-v8-result-side"><small>${esc(result.reason)}</small>${review ? `<b class="is-${esc(item.reviewStatus || 'unknown')}">${esc(review)}</b>` : ''}</span>
+      <span class="ck-v8-result-side"><small>${esc(result.reason)}</small>${strength ? `<b class="ck-v8-strength is-${esc(result.strength || 'supporting')}">${esc(strength)}</b>` : ''}${review ? `<b class="is-${esc(item.reviewStatus || 'unknown')}">${esc(review)}</b>` : ''}</span>
     </button>`;
   }
 
@@ -178,7 +183,7 @@
     }
 
     host.innerHTML = `
-      <div class="ck-v8-head"><span>${results.length === 1 ? 'Përputhja më e mirë' : 'Përputhjet më të mira'}</span><small>Nuk është diagnozë automatike</small></div>
+      <div class="ck-v8-head"><span>${results.length === 1 ? 'Përputhja më e mirë' : 'Përputhjet më të mira'}</span><small>Forca e kërkimit · jo diagnozë automatike</small></div>
       ${results.map(renderResult).join('')}
       <div class="ck-v8-keyhint"><span>↑↓ zgjidh</span><span>Enter hape</span></div>`;
     host.hidden = false;
