@@ -12,16 +12,21 @@ const v2 = read('emergency-doctor-ux-v2.js');
 const v3 = read('emergency-doctor-ux-v3.js');
 const css = read('emergency-doctor-ux-v3.css');
 const learning = read('emergency-summary-learn.js');
+const v4 = read('emergency-learning-v4.js');
+const v4css = read('emergency-learning-v4.css');
 
 assert.match(html, /emergency-doctor-ux-v3\.css\?v=20260823-1/);
 assert.match(html, /emergency-doctor-ux-v3\.js\?v=20260823-1/);
+assert.match(html, /emergency-learning-v4\.css\?v=20260824-1/);
+assert.match(html, /emergency-learning-v4\.js\?v=20260824-1/);
 assert.ok(
   html.indexOf('emergency-doctor-ux-v2.js') < html.indexOf('emergency-doctor-keyboard-v2.js')
-  && html.indexOf('emergency-doctor-keyboard-v2.js') < html.indexOf('emergency-doctor-ux-v3.js'),
-  'Physician v3 must load after the stable v2 and keyboard layers.',
+  && html.indexOf('emergency-doctor-keyboard-v2.js') < html.indexOf('emergency-doctor-ux-v3.js')
+  && html.indexOf('emergency-doctor-ux-v3.js') < html.indexOf('emergency-learning-v4.js'),
+  'Physician v4 must load after the stable v2, keyboard and v3 layers.',
 );
 assert.ok(
-  html.indexOf('emergency-doctor-ux-v3.css') < html.indexOf('tailadmin-professional.css'),
+  html.indexOf('emergency-learning-v4.css') < html.indexOf('tailadmin-professional.css'),
   'TailAdmin professional remains the final canonical stylesheet.',
 );
 
@@ -71,4 +76,26 @@ assert.match(learning, /item\.referral/);
 assert.doesNotMatch(v3, /primaryCareSteps|secondaryCareSteps|dose|dosage|mg\/kg|adrenalin|epinefrin/i);
 assert.match(v2, /data-ck-doctor-nav/);
 
-console.log('Urgjencat physician-first UX v3 regression contract passed.');
+assert.match(v4, /Testo veten/);
+assert.match(v4, /Mëso hap pas hapi/);
+assert.match(v4, /ck-v4-cockpit/);
+assert.match(v4, /RED FLAGS/);
+assert.match(v4, /REFERIMI/);
+assert.match(v4, /medindex_emergency_flashcards_v4schedule:/);
+assert.match(v4, /scheduleRating/);
+assert.match(v4, /localStorage/);
+assert.match(v4, /Përsërite/);
+assert.match(v4, /Vështirë/);
+assert.match(v4, /Shumë e lehtë/);
+assert.match(v4, /Hape pjesën në mësim/);
+assert.match(v4, /Nga protokolli/);
+assert.match(v4css, /grid-template-columns:repeat\(3,minmax\(0,1fr\)\)/);
+assert.match(v4css, /\.ck-v4-cockpit/);
+assert.match(v4css, /\.ck-v4-test-head/);
+assert.match(v4css, /\.ck-v4-source-meta/);
+assert.match(v4css, /grid-template-columns:repeat\(4,minmax\(0,1fr\)\)/);
+assert.match(v4css, /@media\(max-width:760px\)/);
+assert.match(v4css, /prefers-reduced-motion:reduce/);
+assert.doesNotMatch(v4, /mg\/kg|adrenalin|epinefrin|nalokson|atropin|amiodaron|adenozin/i);
+
+console.log('Urgjencat physician-first UX v3 + learning workspace v4 regression contract passed.');
