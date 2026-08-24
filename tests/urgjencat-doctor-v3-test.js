@@ -20,6 +20,7 @@ const v6 = read('emergency-readiness-v6.js');
 const v6css = read('emergency-readiness-v6.css');
 const v8 = read('emergency-smart-search-v8.js');
 const v8css = read('emergency-smart-search-v8.css');
+const v11css = read('emergency-search-personalization-v11.css');
 const searchCore = require('../emergency-search-core-v8.js');
 
 assert.match(html, /emergency-doctor-ux-v3\.css\?v=20260823-1/);
@@ -31,8 +32,9 @@ assert.match(html, /emergency-trainers-v5\.js\?v=20260824-1/);
 assert.match(html, /emergency-readiness-v6\.css\?v=20260824-1/);
 assert.match(html, /emergency-readiness-v6\.js\?v=20260824-1/);
 assert.match(html, /emergency-smart-search-v8\.css\?v=20260824-1/);
-assert.match(html, /emergency-search-core-v8\.js\?v=20260824-1/);
-assert.match(html, /emergency-smart-search-v8\.js\?v=20260824-1/);
+assert.match(html, /emergency-search-personalization-v11\.css\?v=20260824-1/);
+assert.match(html, /emergency-search-core-v8\.js\?v=20260824-2/);
+assert.match(html, /emergency-smart-search-v8\.js\?v=20260824-2/);
 assert.doesNotMatch(html, /emergency-smart-search-v7\.(?:js|css)/);
 assert.ok(
   html.indexOf('emergency-doctor-ux-v2.js') < html.indexOf('emergency-doctor-keyboard-v2.js')
@@ -42,11 +44,12 @@ assert.ok(
   && html.indexOf('emergency-trainers-v5.js') < html.indexOf('emergency-search-core-v8.js')
   && html.indexOf('emergency-search-core-v8.js') < html.indexOf('emergency-smart-search-v8.js')
   && html.indexOf('emergency-smart-search-v8.js') < html.indexOf('emergency-readiness-v6.js'),
-  'Physician v8 must load the search core before the UI and before readiness.',
+  'Physician search core must load before the UI and before readiness.',
 );
 assert.ok(
   html.indexOf('emergency-readiness-v6.css') < html.indexOf('tailadmin-professional.css')
-  && html.indexOf('emergency-smart-search-v8.css') < html.indexOf('tailadmin-professional.css'),
+  && html.indexOf('emergency-smart-search-v8.css') < html.indexOf('tailadmin-professional.css')
+  && html.indexOf('emergency-search-personalization-v11.css') < html.indexOf('tailadmin-professional.css'),
   'TailAdmin professional remains the final canonical stylesheet.',
 );
 
@@ -129,17 +132,26 @@ assert.match(v8, /MedIndexEmergencySearchCore/);
 assert.match(v8, /medindex_emergency_search_usage_v1/);
 assert.match(v8, /Përputhen/);
 assert.match(v8, /Nuk është diagnozë automatike/);
+assert.match(v8, /Të fundit/);
 assert.match(v8, /Të shpeshtat/);
+assert.match(v8, /Sugjerime drejtshkrimore/);
+assert.match(v8, /suggestPrepared/);
+assert.match(v8, /renderQuickAccess/);
 assert.match(v8, /aria-activedescendant/);
 assert.match(v8, /ArrowDown/);
 assert.match(v8, /ArrowUp/);
 assert.match(v8, /Enter/);
+assert.match(v8, /Escape/);
 assert.match(v8, /localStorage/);
 assert.match(v8css, /\.ck-v8-smart-results/);
 assert.match(v8css, /\.ck-v8-match/);
 assert.match(v8css, /\.ck-v8-frequent/);
 assert.match(v8css, /@media\(max-width:760px\)/);
 assert.match(v8css, /prefers-reduced-motion:reduce/);
+assert.match(v11css, /\.ck-v8-quick-access/);
+assert.match(v11css, /\.ck-v8-rescue/);
+assert.match(v11css, /\.ck-v8-strength\.is-exact/);
+assert.match(v11css, /@media\(max-width:760px\)/);
 assert.doesNotMatch(v8, /gemini|generative|fetch\(|XMLHttpRequest/i);
 
 const fixtures = [
@@ -157,7 +169,8 @@ const fixtures = [
     primaryCareSteps:[{title:'Vlerësimi', action:'Kontrollo glukozën dhe gjendjen e vetëdijes.'}],
   },
   {
-    _id:'stemi', title:'STEMI', aliases:['infarkt akut i miokardit'], icdCodes:['I21.3'],
+    _id:'stemi', title:'STEMI', aliases:['infarkt akut i miokardit'], searchAliases:['infarkt me ST elevim'], abbreviations:['IAM-ST'], icdCodes:['I21.3'],
+    signatureSymptoms:['dhimbje retrosternale'], keywords:['ST elevim'],
     category:'Kardiologji', triageLevel:'very-urgent', reviewStatus:'verified',
     summary:'Dhimbje gjoksi me ndryshime akute në EKG.',
   },
@@ -179,8 +192,13 @@ assert.deepEqual(
 );
 assert.equal(searchCore.rank(fixtures, 'sheqer tremor')[0]?.item?._id, 'hypo', 'Mixed alias + symptom query must find severe hypoglycemia.');
 assert.equal(searchCore.rank(fixtures, 'I21.3')[0]?.item?._id, 'stemi', 'STEMI ICD lookup must work.');
+assert.equal(searchCore.rank(fixtures, 'IAM-ST')[0]?.item?._id, 'stemi', 'Editorial abbreviations must be searchable without an AI call.');
+assert.equal(searchCore.rank(fixtures, 'infarkt me ST elevim')[0]?.item?._id, 'stemi', 'Editorial search aliases must be searchable.');
+assert.equal(searchCore.rank(fixtures, 'dhimbje retrosternale')[0]?.item?._id, 'stemi', 'Signature symptoms must participate in deterministic search.');
 assert.equal(searchCore.rank(fixtures, 'tekst krejt i palidhur').length, 0, 'Unrelated text must not force a clinical result.');
+assert.equal(searchCore.suggest(fixtures, 'anafilaksiaa')[0]?.item?._id, 'ana', 'Safe zero-result rescue must suggest a nearby diagnosis spelling.');
+assert.equal(searchCore.suggest(fixtures, 'tekst palidhur').length, 0, 'Rescue must not invent unrelated diagnosis suggestions.');
 const usage = {hypo:{count:20,lastAt:Date.now()}};
 assert.equal(searchCore.rank(fixtures, 'Anafilaksia', usage)[0]?.item?._id, 'ana', 'Personal frequency must not overpower an exact diagnosis match.');
 
-console.log('Urgjencat physician-first UX + verified learning + explainable smart search v8 regression contract passed.');
+console.log('Urgjencat physician-first UX + verified learning + personalized deterministic search v11 regression contract passed.');
