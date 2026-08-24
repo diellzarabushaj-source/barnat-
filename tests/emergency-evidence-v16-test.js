@@ -65,6 +65,11 @@ assert.ok(loader.indexOf('emergency-evidence-core-v16.js') < loader.indexOf('eme
 assert.ok(loader.indexOf('emergency-verification-queue-v14.js') < loader.indexOf('emergency-consistency-v15.js'));
 assert.ok(loader.indexOf('emergency-consistency-v15.js') < loader.indexOf('emergency-evidence-v16.js'));
 
+assert.match(ui, /searchParams\.get\('review'\) === '1'/);
+assert.match(ui, /MEDINDEX_AUTH_READY/);
+assert.match(ui, /authenticated !== true/);
+assert.match(ui, /offline === true/);
+assert.match(ui, /authUser\?\.adminConsole !== true/);
 assert.match(ui, /MedIndexSanity/);
 assert.match(ui, /reviewedBy,lastReviewedAt,reviewDueAt/);
 assert.match(ui, /Gjurmueshmëri në nivel protokolli/);
@@ -75,4 +80,4 @@ assert.doesNotMatch(ui, /patch_documents|reviewStatus\s*=|gemini|generative/i);
 assert.match(css, /@media\(max-width:760px\)/);
 assert.match(css, /prefers-reduced-motion:reduce/);
 
-console.log('Emergency evidence traceability + admin lazy review v16 contract passed.');
+console.log('Emergency evidence traceability + explicit admin lazy review v16 contract passed.');
