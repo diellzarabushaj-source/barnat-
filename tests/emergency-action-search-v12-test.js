@@ -16,8 +16,8 @@ const fixtures = [
     _id:'ana', title:'Anafilaksia', aliases:['reaksion anafilaktik'], icdCodes:['T78.2'],
     reviewStatus:'verified', version:'3.1', sources:[source],
     primaryCareSteps:[
-      {title:'ABC',action:'Vlerëso menjëherë rrugët e frymëmarrjes dhe qarkullimin.'},
-      {title:'Trajtimi i parë',action:'Adrenalinë 0.5 mg IM sipas protokollit të verifikuar.'},
+      {_key:'abc-step',title:'ABC',action:'Vlerëso menjëherë rrugët e frymëmarrjes dhe qarkullimin.'},
+      {_key:'dose-step',title:'Trajtimi i parë',action:'Adrenalinë 0.5 mg IM sipas protokollit të verifikuar.'},
     ],
     redFlags:['Hipotension i rëndë'],
     doNotDo:['Mos vono trajtimin urgjent.'],
@@ -27,8 +27,8 @@ const fixtures = [
     _id:'status', title:'Status epilepticus', aliases:['kriza epileptike e zgjatur'],
     reviewStatus:'verified', version:'2.0', clinicalSources:[source],
     primaryCareSteps:[
-      {title:'Hapi i parë',action:'Siguro ABC dhe mat glukozën.'},
-      {title:'Trajtimi',action:'Jep terapinë e dokumentuar në protokoll.'},
+      {_key:'first-step',title:'Hapi i parë',action:'Siguro ABC dhe mat glukozën.'},
+      {_key:'therapy-step',title:'Trajtimi',action:'Jep terapinë e dokumentuar në protokoll.'},
     ],
   },
   {
@@ -45,10 +45,13 @@ const prepared = search.buildEntries(fixtures);
 assert.ok(prepared.length > 0);
 assert.equal(prepared.some(row => row.itemId === 'draft'), false, 'Non-verified protocols must fail closed.');
 assert.equal(prepared.some(row => row.itemId === 'nosource'), false, 'Verified protocols without a source must fail closed.');
+assert.ok(prepared.some(row => row.id === 'ana:primary:dose-step'), 'Sanity step _key must produce a reorder-stable action ID.');
+assert.ok(prepared.some(row => row.kind === 'redFlag' && /^ana:redFlag:t[a-z0-9]+$/.test(row.id)), 'Scalar clinical rows should use a content fingerprint instead of an array index.');
 
 let result = search.searchPrepared(prepared, 'doza adrenaline', {limit:3})[0];
 assert.equal(result?.itemId, 'ana');
 assert.equal(result?.kind, 'primary');
+assert.equal(result?.id, 'ana:primary:dose-step');
 assert.match(result?.text || '', /Adrenalin/i);
 
 result = search.searchPrepared(prepared, 'çka jap në anafilaksi', {limit:3})[0];
@@ -59,6 +62,7 @@ result = search.searchPrepared(prepared, 'status epilepticus first line', {limit
 assert.equal(result?.itemId, 'status');
 assert.equal(result?.kind, 'primary');
 assert.equal(result?.index, 0, 'First-line intent should prefer the first verified primary step.');
+assert.equal(result?.id, 'status:primary:first-step');
 
 result = search.searchPrepared(prepared, 'red flags anafilaksi', {limit:3})[0];
 assert.equal(result?.itemId, 'ana');
@@ -71,7 +75,7 @@ assert.equal(result?.kind, 'referral');
 assert.deepEqual(search.searchPrepared(prepared, 'tekst krejt i palidhur', {limit:3}), [], 'Unrelated text must not force a deep clinical action.');
 
 assert.match(html, /emergency-action-search-v12\.css\?v=20260824-1/);
-assert.match(html, /emergency-action-search-core-v12\.js\?v=20260824-1/);
+assert.match(html, /emergency-action-search-core-v12\.js\?v=20260824-2/);
 assert.match(html, /emergency-action-search-v12\.js\?v=20260824-2/);
 assert.ok(html.indexOf('emergency-action-search-v12.css') < html.indexOf('tailadmin-professional.css'), 'TailAdmin professional must remain the final canonical stylesheet.');
 assert.ok(html.indexOf('emergency-action-search-core-v12.js') < html.indexOf('emergency-smart-search-v8.js'), 'Action core must load before smart-search UI.');
