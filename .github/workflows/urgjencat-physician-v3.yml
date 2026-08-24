@@ -1,4 +1,4 @@
-name: Urgjencat Physician UX v10
+name: Urgjencat Physician UX v11
 
 on:
   pull_request:
@@ -18,10 +18,12 @@ on:
       - 'emergency-search-core-v8.js'
       - 'emergency-smart-search-v8.js'
       - 'emergency-smart-search-v8.css'
+      - 'emergency-search-personalization-v11.css'
       - 'emergency-symptom-chips-v9.js'
       - 'emergency-symptom-chips-v9.css'
       - 'tests/urgjencat-doctor-v3-test.js'
       - 'tests/emergency-search-quality-v10-test.js'
+      - 'tests/emergency-search-quality-v11-test.js'
       - '.github/workflows/urgjencat-physician-v3.yml'
   push:
     branches:
@@ -39,17 +41,19 @@ on:
       - 'emergency-search-core-v8.js'
       - 'emergency-smart-search-v8.js'
       - 'emergency-smart-search-v8.css'
+      - 'emergency-search-personalization-v11.css'
       - 'emergency-symptom-chips-v9.js'
       - 'emergency-symptom-chips-v9.css'
       - 'tests/urgjencat-doctor-v3-test.js'
       - 'tests/emergency-search-quality-v10-test.js'
+      - 'tests/emergency-search-quality-v11-test.js'
 
 permissions:
   contents: read
 
 jobs:
   contract:
-    name: Physician UX v10 contract
+    name: Physician UX v11 contract
     runs-on: ubuntu-latest
     timeout-minutes: 5
     steps:
@@ -59,5 +63,7 @@ jobs:
           node-version: '24'
       - name: Run Urgjencat regression contract
         run: node tests/urgjencat-doctor-v3-test.js
-      - name: Run search quality benchmark
+      - name: Run search quality v10 benchmark
         run: node tests/emergency-search-quality-v10-test.js
+      - name: Run physician search quality v11 benchmark
+        run: node tests/emergency-search-quality-v11-test.js
