@@ -23,6 +23,22 @@
   const asList = value => Array.isArray(value) ? value : value == null || value === '' ? [] : [value];
   const words = value => normalize(value).split(' ').filter(Boolean);
 
+  function fingerprint(value) {
+    const text = normalize(value);
+    let hash = 2166136261;
+    for (let index = 0; index < text.length; index += 1) {
+      hash ^= text.charCodeAt(index);
+      hash = Math.imul(hash, 16777619);
+    }
+    return `t${(hash >>> 0).toString(36)}`;
+  }
+
+  function stableKey(value, fallback) {
+    const raw = String(value ?? '').trim();
+    const safe = raw.replace(/[^a-zA-Z0-9_-]+/g, '-').replace(/^-+|-+$/g, '').slice(0, 80);
+    return safe || String(fallback ?? '0');
+  }
+
   function uniqueSources(item) {
     const merged = [
       ...asList(item?.sources),
@@ -56,11 +72,13 @@
     ].filter(Boolean).join(' ');
   }
 
-  function entry(item, kind, label, mode, heading, text, index = 0) {
+  function entry(item, kind, label, mode, heading, text, index = 0, key = index) {
     const value = String(text || '').trim();
     if (!value) return null;
+    const actionKey = stableKey(key, index);
     return {
-      id:`${String(item?._id || 'item')}:${kind}:${index}`,
+      id:`${String(item?._id || 'item')}:${kind}:${actionKey}`,
+      actionKey,
       item,
       itemId:String(item?._id || ''),
       kind,
@@ -81,32 +99,32 @@
     (Array.isArray(items) ? items : []).forEach(item => {
       if (!eligible(item)) return;
       asList(item?.primaryCareSteps).forEach((step, index) => {
-        const row = entry(item, 'primary', 'Veprimi', 'summary', step?.title || `Hapi ${index + 1}`, step?.action, index);
+        const row = entry(item, 'primary', 'Veprimi', 'summary', step?.title || `Hapi ${index + 1}`, step?.action, index, step?._key || index);
         if (row) out.push(row);
       });
       asList(item?.redFlags).forEach((text, index) => {
-        const row = entry(item, 'redFlag', 'Red flag', 'learn', 'Shenjat alarmuese', text, index);
+        const row = entry(item, 'redFlag', 'Red flag', 'learn', 'Shenjat alarmuese', text, index, fingerprint(text));
         if (row) out.push(row);
       });
       asList(item?.doNotDo).forEach((text, index) => {
-        const row = entry(item, 'doNotDo', 'Mos bëj', 'summary', 'Çfarë të mos bëhet', text, index);
+        const row = entry(item, 'doNotDo', 'Mos bëj', 'summary', 'Çfarë të mos bëhet', text, index, fingerprint(text));
         if (row) out.push(row);
       });
       const referral = item?.referral || {};
       [
-        ['Kur referohet', referral.when],
-        ['Ku referohet', referral.destination],
-        ['Handover', referral.handover],
-      ].forEach(([heading, text], index) => {
-        const row = entry(item, 'referral', 'Referim', heading === 'Handover' ? 'learn' : 'summary', heading, text, index);
+        ['Kur referohet', referral.when, 'when'],
+        ['Ku referohet', referral.destination, 'destination'],
+        ['Handover', referral.handover, 'handover'],
+      ].forEach(([heading, text, key], index) => {
+        const row = entry(item, 'referral', 'Referim', heading === 'Handover' ? 'learn' : 'summary', heading, text, index, key);
         if (row) out.push(row);
       });
       asList(referral.beforeTransfer).forEach((text, index) => {
-        const row = entry(item, 'referral', 'Referim', 'learn', 'Para transferimit', text, index + 10);
+        const row = entry(item, 'referral', 'Referim', 'learn', 'Para transferimit', text, index + 10, `before-${fingerprint(text)}`);
         if (row) out.push(row);
       });
       asList(item?.secondaryCareSteps).forEach((step, index) => {
-        const row = entry(item, 'secondary', 'Kujdes sekondar', 'learn', step?.title || `Hapi ${index + 1}`, step?.action, index);
+        const row = entry(item, 'secondary', 'Kujdes sekondar', 'learn', step?.title || `Hapi ${index + 1}`, step?.action, index, step?._key || index);
         if (row) out.push(row);
       });
     });
@@ -207,5 +225,5 @@
     return searchPrepared(buildEntries(items), rawQuery, options);
   }
 
-  return {normalize, uniqueSources, eligible, buildEntries, intentKinds, queryTokens, scoreEntry, searchPrepared, search};
+  return {normalize, fingerprint, uniqueSources, eligible, buildEntries, intentKinds, queryTokens, scoreEntry, searchPrepared, search};
 });
