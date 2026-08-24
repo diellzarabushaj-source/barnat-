@@ -77,6 +77,10 @@
     };
   }
 
+  function prepare(items) {
+    return (Array.isArray(items) ? items : []).map(item => ({item, index:indexItem(item)}));
+  }
+
   function tokenScore(queryToken, candidate, weight) {
     if (!candidate) return 0;
     if (candidate === queryToken) return weight;
@@ -101,7 +105,7 @@
     const query = normalize(rawQuery);
     if (!query) return null;
     const index = options.index || indexItem(item);
-    const tokens = displayTokens(rawQuery, options.stopWords || DEFAULT_STOP_WORDS);
+    const tokens = options.tokens || displayTokens(rawQuery, options.stopWords || DEFAULT_STOP_WORDS);
     const now = Number(options.now || Date.now());
     let score = 0;
     let reason = '';
@@ -160,15 +164,20 @@
     };
   }
 
-  function rank(items, rawQuery, usage = {}, options = {}) {
+  function rankPrepared(prepared, rawQuery, usage = {}, options = {}) {
     const limit = Math.max(1, Number(options.limit || 7));
-    const indexed = Array.isArray(items) ? items : [];
-    return indexed
-      .map(item => rankItem(item, rawQuery, usage, options))
+    const tokens = displayTokens(rawQuery, options.stopWords || DEFAULT_STOP_WORDS);
+    const now = Number(options.now || Date.now());
+    return (Array.isArray(prepared) ? prepared : [])
+      .map(entry => rankItem(entry.item, rawQuery, usage, {...options, index:entry.index, tokens, now}))
       .filter(Boolean)
       .sort((a, b) => b.score - a.score || String(a.item?.title || '').localeCompare(String(b.item?.title || ''), 'sq'))
       .slice(0, limit);
   }
 
-  return {normalize, displayTokens, levenshtein, indexItem, tokenScore, rankItem, rank};
+  function rank(items, rawQuery, usage = {}, options = {}) {
+    return rankPrepared(prepare(items), rawQuery, usage, options);
+  }
+
+  return {normalize, displayTokens, levenshtein, indexItem, prepare, tokenScore, rankItem, rankPrepared, rank};
 });
