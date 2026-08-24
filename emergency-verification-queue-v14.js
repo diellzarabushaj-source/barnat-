@@ -17,6 +17,8 @@
   let panel = null;
   let selectedId = '';
   let frame = 0;
+  let authorized = false;
+  let observer = null;
 
   const esc = value => String(value ?? '').replace(/[&<>"']/g, char => ({
     '&':'&amp;', '<':'&lt;', '>':'&gt;', '"':'&quot;', "'":'&#39;',
@@ -93,6 +95,16 @@
     }).join('');
   }
 
+  function sourcesMarkup(row) {
+    if (!Array.isArray(row.sources) || !row.sources.length) return '<p class="ck-v14-source-empty">Burimet klinike mungojnë.</p>';
+    return `<div class="ck-v14-sources" aria-label="Burimet klinike">${row.sources.map((source, index) => {
+      const label = `${index + 1}. ${source.title}${source.year ? ` (${source.year})` : ''}`;
+      return source.url
+        ? `<a href="${esc(source.url)}" target="_blank" rel="noopener noreferrer">${esc(label)}</a>`
+        : `<span>${esc(label)}</span>`;
+    }).join('')}</div>`;
+  }
+
   function checklistMarkup(row) {
     const state = readState(row);
     const isDone = completed(row, state);
@@ -107,13 +119,14 @@
         <span>v${esc(row.version || '—')}</span><span>${row.sourceCount} burime</span><span>${esc(row.triageLevel)}</span><span>Status: ${esc(row.reviewStatus || '—')}</span>
       </div>
       ${issues.length ? `<p class="ck-v14-warning">Bllokues strukturorë: ${esc(issues.map(issueLabel).join(' · '))}</p>` : ''}
+      ${sourcesMarkup(row)}
       <div class="ck-v14-checks">
         ${row.checklist.map(check => `<label><input type="checkbox" data-ck-v14-check="${esc(check.id)}" ${state?.checks?.[check.id] ? 'checked' : ''}><span>${esc(check.label)}</span></label>`).join('')}
       </div>
       <p class="ck-v14-note">Kjo checklistë ruhet vetëm në këtë browser. Plotësimi i saj <strong>nuk</strong> e ndryshon statusin klinik në “verified”.</p>
       <div class="ck-v14-actions">
         <button type="button" data-ck-v14-open>Hape protokollin</button>
-        ${studioUrl ? `<a href="${esc(studioUrl)}" target="_blank" rel="noopener">Hape në Sanity për aprovim</a>` : ''}
+        ${studioUrl ? `<a href="${esc(studioUrl)}" target="_blank" rel="noopener noreferrer">Hape në Sanity për aprovim</a>` : ''}
         <button type="button" class="is-secondary" data-ck-v14-reset>Rivendos checklistën</button>
       </div>
       <div class="ck-v14-ready ${isDone && row.structurallyReady ? 'is-ready' : ''}">
@@ -124,13 +137,14 @@
   }
 
   function render() {
+    if (!authorized) return;
     const all = items();
     if (!all.length) return;
     const queue = rows();
     const summary = engine.summary(all);
     const root = ensurePanel();
     if (!queue.length) {
-      root.innerHTML = `<summary><span>Verifikimi klinik</span><b>${summary.verified}/${summary.total} verified</b></summary><div class="ck-v14-empty">Nuk ka protokolle në radhë për rishikim.</div>`;
+      root.innerHTML = `<summary><span>Verifikimi klinik</span><b>${summary.verified}/${summary.total} verified</b></summary><div class="ck-v14-empty">Nuk ka protokolle në statusin “Për verifikim”.</div>`;
       return;
     }
     const active = selectedRow(queue);
@@ -146,7 +160,7 @@
           <div><span>BLLOKUARA</span><strong>${summary.blocked}</strong></div>
           <div><span>VERIFIED</span><strong>${summary.verified}</strong></div>
         </div>
-        <p class="ck-v14-safety">Prioriteti është kritik → urgjent. Ky panel organizon rishikimin; nuk aprovon automatikisht asnjë protokoll.</p>
+        <p class="ck-v14-safety">Panel vetëm për administratorin. Prioriteti është kritik → urgjent. Organizon rishikimin, por nuk aprovon automatikisht asnjë protokoll.</p>
         <div class="ck-v14-workspace">
           <nav class="ck-v14-queue" aria-label="Radha e protokolleve për verifikim">${queueMarkup(queue, active)}</nav>
           ${checklistMarkup(active)}
@@ -155,6 +169,7 @@
   }
 
   function scheduleRender() {
+    if (!authorized) return;
     cancelAnimationFrame(frame);
     frame = requestAnimationFrame(render);
   }
@@ -176,6 +191,7 @@
   }
 
   document.addEventListener('click', event => {
+    if (!authorized) return;
     const root = event.target.closest('[data-ck-v14-review]');
     if (!root) return;
     const queue = rows();
@@ -198,6 +214,7 @@
   });
 
   document.addEventListener('change', event => {
+    if (!authorized) return;
     const input = event.target.closest('[data-ck-v14-check]');
     if (!input || !event.target.closest('[data-ck-v14-review]')) return;
     const row = rows().find(item => item.id === selectedId);
@@ -209,9 +226,15 @@
     render();
   });
 
-  const observer = new MutationObserver(scheduleRender);
-  observer.observe(list, {childList:true});
-  render();
-  window.setTimeout(render, 300);
-  window.setTimeout(render, 1000);
+  function startAdminQueue(authState) {
+    if (authState?.authenticated !== true || authState?.offline === true || authState?.authUser?.adminConsole !== true) return;
+    authorized = true;
+    observer = new MutationObserver(scheduleRender);
+    observer.observe(list, {childList:true});
+    render();
+    window.setTimeout(render, 300);
+    window.setTimeout(render, 1000);
+  }
+
+  Promise.resolve(window.MEDINDEX_AUTH_READY).then(startAdminQueue).catch(() => {});
 })();
