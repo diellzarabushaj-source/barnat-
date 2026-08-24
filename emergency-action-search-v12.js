@@ -97,8 +97,9 @@
     const needle = normalize(result.text);
     if (!needle) return null;
     const prefix = needle.slice(0, Math.min(72, needle.length));
-    return textCandidates(result).find(node => normalize(node.textContent || '').includes(prefix))
-      || textCandidates(result).find(node => {
+    const candidates = textCandidates(result);
+    return candidates.find(node => normalize(node.textContent || '').includes(prefix))
+      || candidates.find(node => {
         const text = normalize(node.textContent || '');
         return result.matchedTerms?.some(term => text.includes(normalize(term)));
       })
@@ -159,7 +160,5 @@
 
   search.addEventListener('input', scheduleRender, {capture:true});
   search.addEventListener('focus', scheduleRender);
-  const observer = new MutationObserver(scheduleRender);
-  observer.observe(host, {childList:true});
   window.setTimeout(scheduleRender, 260);
 })();
