@@ -1,0 +1,77 @@
+/* MedIndex Urgjencat — multi-symptom rapid lookup v9 */
+html.medindex-tailadmin[data-mi-page="urgjencat"] .ck-v9-symptoms{
+  display:flex;
+  align-items:flex-start;
+  gap:9px;
+  margin-top:10px;
+}
+html.medindex-tailadmin[data-mi-page="urgjencat"] .ck-v9-symptoms[hidden]{display:none!important}
+html.medindex-tailadmin[data-mi-page="urgjencat"] .ck-v9-label{
+  flex:0 0 auto;
+  padding-top:8px;
+  color:#8993a4;
+  font-size:10.5px;
+  white-space:nowrap;
+}
+html.medindex-tailadmin[data-mi-page="urgjencat"] .ck-v9-chip-row{
+  display:flex;
+  min-width:0;
+  flex-wrap:wrap;
+  gap:5px;
+}
+html.medindex-tailadmin[data-mi-page="urgjencat"] .ck-v9-chip-row button{
+  min-height:32px;
+  padding:0 9px;
+  border:1px solid rgba(63,84,123,.10);
+  border-radius:999px;
+  background:#fff;
+  color:#56657e;
+  font:550 10.5px/1.1 var(--mi-font,"Inter",sans-serif);
+  cursor:pointer;
+}
+html.medindex-tailadmin[data-mi-page="urgjencat"] .ck-v9-chip-row button:hover{
+  border-color:rgba(49,95,200,.15);
+  background:#f6f8ff;
+  color:#315fc8;
+}
+html.medindex-tailadmin[data-mi-page="urgjencat"] .ck-v9-chip-row button[aria-pressed="true"]{
+  border-color:rgba(49,95,200,.22);
+  background:#edf3ff;
+  color:#315fc8;
+  font-weight:700!important;
+}
+html.medindex-tailadmin[data-mi-page="urgjencat"] .ck-v9-chip-row button.ck-v9-clear{
+  border-style:dashed;
+  color:#7e899b;
+}
+html.medindex-tailadmin[data-mi-page="urgjencat"] .ck-v9-chip-row button:focus-visible{
+  outline:3px solid rgba(49,95,200,.18);
+  outline-offset:1px;
+}
+html.medindex-tailadmin[data-mi-page="urgjencat"] #emergencyQuickSearch{display:none!important}
+html[data-theme="dark"].medindex-tailadmin[data-mi-page="urgjencat"] .ck-v9-chip-row button{
+  border-color:rgba(148,163,184,.12);
+  background:#151f31;
+  color:#bdc8da;
+}
+html[data-theme="dark"].medindex-tailadmin[data-mi-page="urgjencat"] .ck-v9-chip-row button[aria-pressed="true"]{
+  border-color:rgba(99,130,218,.28);
+  background:#1c2a47;
+  color:#c9d6f7;
+}
+@media(max-width:760px){
+  html.medindex-tailadmin[data-mi-page="urgjencat"] .ck-v9-symptoms{
+    flex-direction:column;
+    gap:5px;
+  }
+  html.medindex-tailadmin[data-mi-page="urgjencat"] .ck-v9-label{padding-top:0}
+  html.medindex-tailadmin[data-mi-page="urgjencat"] .ck-v9-chip-row{
+    width:100%;
+    flex-wrap:nowrap;
+    overflow-x:auto;
+    padding-bottom:3px;
+    scrollbar-width:none;
+  }
+  html.medindex-tailadmin[data-mi-page="urgjencat"] .ck-v9-chip-row::-webkit-scrollbar{display:none}
+  html.medindex-tailadmin[data-mi-page="urgjencat"] .ck-v9-chip-row button{flex:0 0 auto;min-height:38px}
+}
