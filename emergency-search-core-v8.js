@@ -51,7 +51,9 @@
     return prev[b.length];
   }
 
-  const words = values => normalize(values.filter(Boolean).join(' ')).split(' ').filter(Boolean);
+  const words = values => normalize(values.filter(Boolean).join(' '))
+    .split(' ')
+    .filter(value => value.length >= 3 && !DEFAULT_STOP_WORDS.has(value));
 
   function indexItem(item) {
     const primary = Array.isArray(item?.primaryCareSteps) ? item.primaryCareSteps : [];
@@ -109,7 +111,7 @@
   }
 
   function tokenScore(queryToken, candidate, weight) {
-    if (!candidate) return 0;
+    if (!candidate || queryToken.length < 3 || candidate.length < 3) return 0;
     if (candidate === queryToken) return weight;
     if (candidate.startsWith(queryToken) || queryToken.startsWith(candidate)) return Math.round(weight * .84);
     if (candidate.includes(queryToken) || queryToken.includes(candidate)) return Math.round(weight * .68);
@@ -259,7 +261,7 @@
         if (!best || score > best.score) best = {score, distance, coverage:1};
       }
 
-      const candidateTokens = identity.split(' ').filter(Boolean);
+      const candidateTokens = identity.split(' ').filter(value => value.length >= 3 && !DEFAULT_STOP_WORDS.has(value));
       let matched = 0;
       let tokenQuality = 0;
       for (const token of tokens) {
