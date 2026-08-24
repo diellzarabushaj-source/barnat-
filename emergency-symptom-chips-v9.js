@@ -6,7 +6,7 @@
   const panel = page?.querySelector('.ck-rapid-search-panel');
   const legacyQuick = document.getElementById('emergencyQuickSearch');
   const engine = window.MedIndexEmergencySearchCore;
-  if (!page || !search || !panel || !engine?.rank) return;
+  if (!page || !search || !panel || !engine?.rankPrepared || !engine?.prepare) return;
 
   const CANDIDATES = [
     {key:'chest', label:'Dhimbje gjoksi', query:'dhimbje gjoksi'},
@@ -24,6 +24,9 @@
   const selected = new Set();
   let writing = false;
   let host = null;
+  let availabilitySource = null;
+  let availabilityLength = -1;
+  let cachedAvailable = [];
 
   function items() {
     return Array.isArray(window.__medIndexEmergencyItems) ? window.__medIndexEmergencyItems : [];
@@ -31,11 +34,22 @@
 
   function availableCandidates() {
     const corpus = items();
-    if (!corpus.length) return [];
-    return CANDIDATES
-      .map(candidate => ({...candidate, hits:engine.rank(corpus, candidate.query, {}, {limit:20}).length}))
+    if (!corpus.length) {
+      availabilitySource = corpus;
+      availabilityLength = 0;
+      cachedAvailable = [];
+      return cachedAvailable;
+    }
+    if (corpus === availabilitySource && corpus.length === availabilityLength) return cachedAvailable;
+
+    availabilitySource = corpus;
+    availabilityLength = corpus.length;
+    const prepared = engine.prepare(corpus);
+    cachedAvailable = CANDIDATES
+      .map(candidate => ({...candidate, hits:engine.rankPrepared(prepared, candidate.query, {}, {limit:20}).length}))
       .filter(candidate => candidate.hits > 0)
       .slice(0, MAX_VISIBLE);
+    return cachedAvailable;
   }
 
   function ensureHost() {
@@ -102,10 +116,9 @@
   }
 
   search.addEventListener('input', () => {
-    if (writing) return;
-    const available = availableCandidates();
-    const generated = selectionQuery(available);
-    if (selected.size && search.value.trim() !== generated) {
+    if (writing || !selected.size) return;
+    const generated = selectionQuery(availableCandidates());
+    if (search.value.trim() !== generated) {
       selected.clear();
       render();
     }
