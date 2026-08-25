@@ -1,4 +1,4 @@
-name: Urgjencat Physician UX v16
+name: Urgjencat Physician UX v21
 
 on:
   pull_request:
@@ -39,6 +39,9 @@ on:
       - 'emergency-evidence-v16.css'
       - 'emergency-symptom-chips-v9.js'
       - 'emergency-symptom-chips-v9.css'
+      - 'emergency-memory-v21.js'
+      - 'emergency-memory-v21.css'
+      - 'tailadmin-professional.css'
       - 'tests/urgjencat-doctor-v3-test.js'
       - 'tests/urgjencat-learning-flow-v7-test.js'
       - 'tests/urgjencat-symptom-chips-v9-test.js'
@@ -49,6 +52,7 @@ on:
       - 'tests/emergency-verification-queue-v14-test.js'
       - 'tests/emergency-consistency-v15-test.js'
       - 'tests/emergency-evidence-v16-test.js'
+      - 'tests/emergency-memory-v21-test.js'
       - '.github/workflows/urgjencat-physician-v3.yml'
   push:
     branches:
@@ -87,6 +91,9 @@ on:
       - 'emergency-evidence-v16.css'
       - 'emergency-symptom-chips-v9.js'
       - 'emergency-symptom-chips-v9.css'
+      - 'emergency-memory-v21.js'
+      - 'emergency-memory-v21.css'
+      - 'tailadmin-professional.css'
       - 'tests/urgjencat-doctor-v3-test.js'
       - 'tests/urgjencat-learning-flow-v7-test.js'
       - 'tests/urgjencat-symptom-chips-v9-test.js'
@@ -97,13 +104,14 @@ on:
       - 'tests/emergency-verification-queue-v14-test.js'
       - 'tests/emergency-consistency-v15-test.js'
       - 'tests/emergency-evidence-v16-test.js'
+      - 'tests/emergency-memory-v21-test.js'
 
 permissions:
   contents: read
 
 jobs:
   contract:
-    name: Physician UX v16 contract
+    name: Physician UX v21 contract
     runs-on: ubuntu-latest
     timeout-minutes: 5
     steps:
@@ -131,3 +139,5 @@ jobs:
         run: node tests/emergency-consistency-v15-test.js
       - name: Run evidence traceability and lazy review v16 contract
         run: node tests/emergency-evidence-v16-test.js
+      - name: Run evidence-informed memory loop v21 contract
+        run: node tests/emergency-memory-v21-test.js
