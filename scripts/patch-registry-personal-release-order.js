@@ -7,6 +7,8 @@ const ROOT = path.resolve(__dirname, '..');
 const FILE = path.join(ROOT, 'registry-user-personalization.js');
 const MARKER = 'registry-personal-release-order-v1';
 const STABILITY_MARKER = 'registry-shell-favorites-stability-v2: resilient personal runtime handoff';
+const SAME_TABLE_MARKER = 'registry-personal-same-table-v1: capture visible main-table contract';
+const VISIBLE_CONTRACT_MARKER = 'registry-personal-visible-columns-v2';
 let source = fs.readFileSync(FILE, 'utf8').replace(/\r\n?/g, '\n');
 
 if (!source.includes(MARKER)) {
@@ -60,12 +62,10 @@ if (!source.includes(MARKER)) {
   source = source.slice(0, start) + replacement + source.slice(end);
 }
 
-// The canonical-owner patch intentionally replaces the applyRuntimeView region.
-// Stability v2 originally placed its retry helpers in that same region, so a
-// composed build can otherwise retain calls to these helpers while deleting the
-// helper definitions. Restore the exact stability contract before the legacy
-// request function. This keeps the canonical Barnat path first, while making
-// the fallback idempotent and safe for BFCache/loader recovery tests.
+// Canonical-owner replaces the applyRuntimeView region. Older stability helpers
+// lived in that region, while requestPersonalRuntime still calls them. Restore
+// them before the fallback request function so the canonical Barnat path stays
+// first and the legacy recovery path remains idempotent and safe.
 if (!source.includes(STABILITY_MARKER)) {
   const requestNeedle = '  function requestPersonalRuntime() {';
   const requestStart = source.indexOf(requestNeedle);
@@ -97,6 +97,70 @@ if (!source.includes(STABILITY_MARKER)) {
   source = source.slice(0, requestStart) + stabilityHelpers + source.slice(requestStart);
 }
 
+// Same-table v1 is now only a legacy fallback contract: the normal Favorites
+// path never hands off from desktop-lite. Keep its captured-column helper alive
+// nevertheless so old/full-runtime fallbacks cannot resurrect hidden columns or
+// change widths if they are ever used.
+if (!source.includes(SAME_TABLE_MARKER)) {
+  const requestNeedle = '  function requestPersonalRuntime() {';
+  const requestStart = source.indexOf(requestNeedle);
+  if (requestStart < 0) throw new Error(`${MARKER}: same-table request boundary not found.`);
+
+  const sameTableHelper = [
+    `  // ${SAME_TABLE_MARKER}`,
+    '  // Favorites and Notes normally stay inside desktop-lite. If a legacy',
+    '  // fallback is ever required, capture exactly the visible Barnat columns.',
+    '  function lockVisibleMainTableContract() {',
+    "    const header = document.getElementById('headerRow');",
+    "    const table = document.getElementById('dataTable');",
+    '    if (!header || !table) return false;',
+    '    const sourceToUnified = {',
+    "      '__select':'select', 'Nr rendor':'number', 'Emri tregtar':'trade-name',",
+    "      'Substanca aktive':'active-substance', 'ATC Code':'atc',",
+    "      'Klasa / Çka është':'drug-class', 'Përdorimi (fjalë kyçe)':'use',",
+    "      'PDID':'pdid', 'ProtocolNo':'protocol', 'Fortësia':'strength',",
+    "      'Forma farmaceutike':'form', 'Si të shënohet në recetë':'prescription-label',",
+    "      'Madhësia e paketimit':'packaging', 'Bartësi i Autorizim Marketingut':'mah',",
+    "      'Prodhuesi':'manufacturer', 'MA certifikata':'ma-certificate',",
+    "      'Statusi':'status', 'Çmimi me shumicë':'wholesale-price',",
+    "      'Çmimi me marzhë':'margin-price', 'TVSH':'vat',",
+    "      'Çmimi me pakicë':'retail-price', 'Afati i vlefshmërisë':'validity'",
+    '    };',
+    `    // ${VISIBLE_CONTRACT_MARKER}: capture rendered header cells only.`,
+    '    const seen = new Set();',
+    '    const columns = Array.from(header.children).flatMap(cell => {',
+    "      const raw = String(cell.dataset.registryColumnKey || cell.dataset.columnKey || '').trim();",
+    '      const key = sourceToUnified[raw] || raw;',
+    '      if (!key || seen.has(key)) return [];',
+    '      const rect = cell.getBoundingClientRect();',
+    "      const style = typeof window.getComputedStyle === 'function' ? window.getComputedStyle(cell) : null;",
+    '      const visible = !cell.hidden',
+    "        && cell.getAttribute('aria-hidden') !== 'true'",
+    "        && (!style || (style.display !== 'none' && style.visibility !== 'hidden'))",
+    '        && rect.width >= 1',
+    '        && rect.height >= 1;',
+    '      if (!visible) return [];',
+    '      seen.add(key);',
+    "      return [{ key, width:Math.max(44, Math.round(rect.width)), label:String(cell.textContent || '').replace(/[▲▼↕]/g, '').replace(/\\s+/g, ' ').trim() }];",
+    '    });',
+    '    if (columns.length < 2) return false;',
+    '    window.MEDINDEX_MAIN_TABLE_CONTRACT = Object.freeze({',
+    `      version:'${VISIBLE_CONTRACT_MARKER}',`,
+    '      columns:Object.freeze(columns.map(column => Object.freeze(column))),',
+    '      keys:Object.freeze(columns.map(column => column.key)),',
+    '      width:Math.max(0, Math.round(table.getBoundingClientRect().width || 0)),',
+    '      capturedAt:Date.now(),',
+    '    });',
+    '    window.MEDINDEX_PERSONAL_TABLE_CONTRACT_LOCK = true;',
+    "    window.dispatchEvent(new CustomEvent('medindex:main-table-contract', { detail:window.MEDINDEX_MAIN_TABLE_CONTRACT }));",
+    '    return true;',
+    '  }',
+    '',
+  ].join('\n');
+
+  source = source.slice(0, requestStart) + sameTableHelper + source.slice(requestStart);
+}
+
 fs.writeFileSync(FILE, source, 'utf8');
 
 const final = fs.readFileSync(FILE, 'utf8');
@@ -119,5 +183,11 @@ if (!final.includes('function clearPersonalRuntimeRecovery({ resetCount = false 
 if (!final.includes('function schedulePersonalRuntimeRetry()')) {
   throw new Error(`${MARKER}: schedulePersonalRuntimeRetry helper is missing.`);
 }
+if (!final.includes(SAME_TABLE_MARKER) || !final.includes(VISIBLE_CONTRACT_MARKER)) {
+  throw new Error(`${MARKER}: legacy same-table capture contract is missing.`);
+}
+if (!final.includes('function lockVisibleMainTableContract()')) {
+  throw new Error(`${MARKER}: lockVisibleMainTableContract helper is missing.`);
+}
 
-console.log('Personal release safety ordering preserved: legacy fallback remains gated; Barnat desktop-lite still owns Favorites/Notes and stability recovery stays idempotent.');
+console.log('Personal release safety ordering preserved: Barnat desktop-lite owns Favorites/Notes; stability recovery and legacy same-table fallback stay idempotent.');
