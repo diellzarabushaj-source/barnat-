@@ -30,7 +30,7 @@ require('./patch-registry-personal-same-table.js');
 // The normal desktop path must never need that fallback: Favorites and Notes
 // are server-bounded row filters rendered by the exact same Barnat desktop-lite
 // owner, with the same DOM, toolbar, columns, widths and scroll container.
-require('./patch-registry-personal-desktop-lite.js');
+require('./patch-registry-personal-canonical-owner.js');
 // Must run before the offline manifest is derived so the privacy guard and its
 // CSS become first-class production shell assets, not a late runtime injection.
 require('./patch-user-library-account-isolation.js');
