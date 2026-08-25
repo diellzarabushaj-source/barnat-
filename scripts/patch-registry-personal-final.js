@@ -4,6 +4,7 @@ const path = require('node:path');
 const { execFileSync } = require('node:child_process');
 
 /* Canonical Favorites/Notes release verifier.
+ * Release: registry-personal-desktop-lite-v1.
  *
  * Phase 16 keeps the build contract deterministic: source ownership is audited
  * once before build patches, then this finalizer executes exactly one blocking
