@@ -1,0 +1,32 @@
+/* MedIndex per-user personal-library privacy gate. */
+html.medindex-library-owner-pending [data-nav="favorites"],
+html.medindex-library-owner-pending [data-nav="notes"],
+html.medindex-library-owner-pending [data-mi-shell-action="favorites"],
+html.medindex-library-owner-pending [data-mi-shell-action="notes"],
+html.medindex-library-owner-pending [data-personal-view="favorites"],
+html.medindex-library-owner-pending [data-personal-view="notes"],
+html.medindex-library-owner-pending [data-row-favorite-toggle],
+html.medindex-library-owner-pending [data-row-note-toggle],
+html.medindex-library-owner-pending #registryPersonalViews,
+html.medindex-library-owner-pending #registryPersonalViewBanner,
+html.medindex-library-owner-pending #registryPersonalEmpty,
+html.medindex-library-owner-pending #favoriteNavCount,
+html.medindex-library-owner-pending #notesNavCount,
+html.medindex-library-owner-pending [data-mi-fav-count],
+html.medindex-library-owner-pending [data-favorite-count],
+html.medindex-library-owner-pending [data-note-count] {
+  visibility: hidden !important;
+  pointer-events: none !important;
+}
+
+html.medindex-library-owner-pending body.medindex-favorites-only #registryContent,
+html.medindex-library-owner-pending body.medindex-notes-only #registryContent {
+  visibility: hidden !important;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  html:not(.medindex-library-owner-pending) [data-row-favorite-toggle],
+  html:not(.medindex-library-owner-pending) [data-row-note-toggle] {
+    transition: opacity .12s ease;
+  }
+}
