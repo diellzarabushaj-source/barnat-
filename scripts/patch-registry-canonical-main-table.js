@@ -27,6 +27,18 @@ function replaceRegexOnce(source, pattern, replacement, label) {
   return source.replace(pattern, replacement);
 }
 
+function removeFunctionBefore(source, functionName, nextFunctionName, label) {
+  const startNeedle = `function ${functionName}`;
+  const nextNeedle = `function ${nextFunctionName}`;
+  const start = source.indexOf(startNeedle);
+  if (start < 0) return source;
+  const lineStart = source.lastIndexOf('\n', start) + 1;
+  const next = source.indexOf(nextNeedle, start + startNeedle.length);
+  if (next < 0) throw new Error(`${label}: next function boundary was not found.`);
+  const nextLineStart = source.lastIndexOf('\n', next) + 1;
+  return source.slice(0, lineStart) + source.slice(nextLineStart);
+}
+
 let js = read(JS_FILE);
 
 if (!js.includes(`const VERSION = '${RELEASE}';`)) {
@@ -54,18 +66,11 @@ if (!js.includes("const currentView = () => 'full';")) {
 js = js.replace("    if (currentView() === 'clinical') CLINICAL_BASE_KEYS.forEach(key => required.add(key));\n", '');
 js = js.replace("    if (currentView() === 'clinical' && !CLINICAL_ORDER.includes(key)) return false;\n", '');
 
-// Remove the dead alternate-view toolbar source completely. It was already
-// prevented from mounting, but retaining its markup/labels left a future
-// regression path for "Fokus klinik / Tabela e plotë" if shell composition
-// changed. The canonical registry has one visual owner only.
-if (js.includes('function buildToolbar()')) {
-  js = replaceRegexOnce(
-    js,
-    /  function buildToolbar\(\) \{[\s\S]*?\n  \}\n\n  function filtersOpen\(\) \{/,
-    '  function filtersOpen() {',
-    'remove alternate registry toolbar source',
-  );
-}
+// Remove the dead alternate-view toolbar source by function boundaries rather
+// than by its historical body. Earlier build phases are allowed to reformat or
+// enrich that function, but none of them may preserve a second visible table
+// controller in the final runtime.
+js = removeFunctionBefore(js, 'buildToolbar', 'filtersOpen', 'remove alternate registry toolbar source');
 
 if (js.includes('tableWrap.before(replacement)')) {
   js = replaceRegexOnce(
@@ -113,7 +118,7 @@ js = js.replace(/document\.documentElement\.dataset\.registryUxView\s*=\s*stored
 js = js.replace(/document\.documentElement\.dataset\.registryFiltersOpen\s*=\s*String\(storedFilters\);/g, "document.documentElement.dataset.registryFiltersOpen = 'true';");
 
 if (js.includes('tableWrap.before(replacement)')) throw new Error('Legacy registry view toolbar can still be mounted.');
-if (js.includes('function buildToolbar()') || js.includes('Fokus klinik') || js.includes('Tabela e plotë')) {
+if (/function\s+buildToolbar\b/.test(js) || js.includes('Fokus klinik') || js.includes('Tabela e plotë')) {
   throw new Error('Legacy clinical/full toolbar source still exists in the canonical runtime.');
 }
 if (!js.includes("const currentView = () => 'full';")) throw new Error('Canonical full-table mode was not frozen.');
