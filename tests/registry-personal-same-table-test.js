@@ -10,8 +10,14 @@ const personal = read('registry-user-personalization.js');
 const unified = read('registry-unified-table.js');
 const css = read('registry-user-personalization.css');
 const MARKER = 'registry-personal-same-table-v1';
+const VISIBLE_CONTRACT_MARKER = 'registry-personal-visible-columns-v2';
 
 assert.ok(personal.includes(`${MARKER}: capture visible main-table contract`), 'Favorites must capture the table visible before handoff');
+assert.ok(personal.includes(VISIBLE_CONTRACT_MARKER), 'Favorites/Notes must use the visible-only column capture contract');
+assert.ok(personal.includes("style.display !== 'none'"), 'display:none columns must never enter the personal table contract');
+assert.ok(personal.includes("style.visibility !== 'hidden'"), 'visibility:hidden columns must never enter the personal table contract');
+assert.ok(personal.includes('rect.width >= 1') && personal.includes('rect.height >= 1'), 'zero-box columns must never be revived as synthetic personal columns');
+assert.ok(personal.includes('const seen = new Set();'), 'captured main columns must be deduplicated before handoff');
 assert.ok(personal.includes('window.MEDINDEX_PERSONAL_TABLE_CONTRACT_LOCK = true'), 'Favorites must lock the visible table contract before loading full data');
 assert.ok(personal.includes('window.MEDINDEX_MAIN_TABLE_CONTRACT'), 'captured column contract must be published');
 assert.ok(personal.includes("favorite.dataset.nav = 'favorites'"), 'desktop Favorites navigation must recover if the shell omitted it');
@@ -26,4 +32,4 @@ assert.ok(unified.includes("window.MEDINDEX_PERSONAL_TABLE_CONTRACT_LOCK = false
 assert.ok(css.includes(MARKER), 'Favorites/Notes desktop navigation visibility CSS missing');
 assert.ok(!unified.includes('tableWrap.before(replacement)'), 'alternate clinical/full registry toolbar must not be mountable');
 
-console.log('✓ Favorites/Notes same-table contract passed: the personal filter keeps the visible main table through full-data handoff.');
+console.log('✓ Favorites/Notes same-table contract passed: only visible main-table columns survive the full-data handoff; hidden columns cannot reappear.');
