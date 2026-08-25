@@ -5,6 +5,7 @@
     ['emergency-readiness-v6.js?v=20260824-1', 'readiness'],
     ['emergency-learning-flow-v7.js?v=20260824-1', 'learning-flow'],
     ['emergency-review-controller-v17.js?v=20260824-1', 'review-controller'],
+    ['emergency-shift-v18.js?v=20260825-1', 'ready-for-shift'],
   ];
 
   function loadModule(src, name) {
@@ -44,7 +45,7 @@
     await Promise.all(MODULES.map(([src, name]) => loadModule(src, name)));
     document.documentElement.dataset.ckPhysicianBootstrap = 'ready';
     window.dispatchEvent(new CustomEvent('medindex:emergency-physician-ready', {
-      detail:{ version:'18.0', modules:MODULES.map(([, name]) => name) },
+      detail:{ version:'18.1', modules:MODULES.map(([, name]) => name) },
     }));
   }
 

@@ -4,6 +4,7 @@ on:
   pull_request:
     paths:
       - 'urgjencat.html'
+      - 'emergency-physician-bootstrap-v18.js'
       - 'emergency-shift-core-v18.js'
       - 'emergency-shift-v18.js'
       - 'emergency-shift-v18.css'
@@ -14,6 +15,7 @@ on:
       - main
     paths:
       - 'urgjencat.html'
+      - 'emergency-physician-bootstrap-v18.js'
       - 'emergency-shift-core-v18.js'
       - 'emergency-shift-v18.js'
       - 'emergency-shift-v18.css'
@@ -34,6 +36,6 @@ jobs:
         with:
           node-version: '24'
       - name: Check v18 JavaScript syntax
-        run: node --check emergency-shift-core-v18.js && node --check emergency-shift-v18.js
+        run: node --check emergency-physician-bootstrap-v18.js && node --check emergency-shift-core-v18.js && node --check emergency-shift-v18.js
       - name: Run Ready for Shift v18 contract
         run: node tests/emergency-shift-v18-test.js

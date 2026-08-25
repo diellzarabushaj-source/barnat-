@@ -9,6 +9,7 @@ const ROOT = path.resolve(__dirname, '..');
 const html = fs.readFileSync(path.join(ROOT, 'urgjencat.html'), 'utf8');
 const ui = fs.readFileSync(path.join(ROOT, 'emergency-shift-v18.js'), 'utf8');
 const css = fs.readFileSync(path.join(ROOT, 'emergency-shift-v18.css'), 'utf8');
+const bootstrap = fs.readFileSync(path.join(ROOT, 'emergency-physician-bootstrap-v18.js'), 'utf8');
 const now = Date.parse('2026-08-25T08:00:00Z');
 const source = {title:'Guideline', url:'https://example.org/guideline'};
 
@@ -55,10 +56,15 @@ assert.ok(session.questions.length <= 12);
 
 assert.match(html, /emergency-shift-v18\.css\?v=20260825-1/);
 assert.match(html, /emergency-shift-core-v18\.js\?v=20260825-1/);
-assert.match(html, /emergency-shift-v18\.js\?v=20260825-1/);
+assert.match(html, /emergency-physician-bootstrap-v18\.js\?v=20260825-1/);
+assert.match(html, /data-physician-modules="[^"]*emergency-shift-v18\.js\?v=20260825-1/);
+assert.match(bootstrap, /emergency-shift-v18\.js\?v=20260825-1/);
+assert.match(bootstrap, /DOMContentLoaded/);
 assert.ok(html.indexOf('emergency-shift-v18.css') < html.indexOf('tailadmin-professional.css'), 'TailAdmin professional must remain the final stylesheet.');
-assert.ok(html.indexOf('emergency-shift-core-v18.js') < html.indexOf('emergency-shift-v18.js'), 'Shift core must load before its browser UI.');
-assert.ok(html.indexOf('emergency-readiness-v6.js') < html.indexOf('emergency-shift-v18.js'), 'Ready for Shift should enhance the existing critical readiness panel.');
+assert.ok(html.indexOf('emergency-shift-core-v18.js') < html.indexOf('emergency-shift-v18.js'), 'Shift core must be available before the post-DCL browser UI is requested.');
+assert.ok(html.indexOf('emergency-readiness-v6.js') < html.indexOf('emergency-shift-v18.js'), 'Ready for Shift should hydrate after the critical readiness module is declared.');
+assert.doesNotMatch(html, /<script src="emergency-shift-v18\.js[^>]*\sdefer/);
+assert.match(html, /app-stability\.js\?v=20260724-2" async/);
 
 assert.match(ui, /Ready for Shift/);
 assert.match(ui, /medindex_emergency_shift_v18/);
