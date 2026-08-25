@@ -56,8 +56,10 @@ assert.match(personal, /personalRuntimeWatchdogTimer = window\.setTimeout\([\s\S
   'stalled full-runtime handoff must be recoverable');
 assert.match(personal, /window\.addEventListener\('medindex:registry-ready',[\s\S]*?clearPersonalRuntimeRecovery\(\{ resetCount:true \}\);[\s\S]*?applyRuntimeView\(\)/,
   'runtime ready must clear recovery state before applying Favorites');
-assert.match(personal, /window\.addEventListener\('pageshow',[\s\S]*?viewFromLocation\(\)[\s\S]*?loadFavorites\(\)[\s\S]*?requestPersonalRuntime\(\)/,
-  'bfcache restore must rehydrate the personal view and retry the runtime when needed');
+const personalPageShow = personal.match(/window\.addEventListener\('pageshow',[\s\S]{0,1400}?\{ passive:true \}\);/)?.[0] || '';
+assert.match(personalPageShow, /favorites = loadFavorites\(\)/, 'bfcache restore must re-read Favorites from storage');
+assert.match(personalPageShow, /const restoredView = viewFromLocation\(\)/, 'bfcache restore must recover the personal hash view');
+assert.match(personalPageShow, /requestPersonalRuntime\(\)/, 'bfcache restore must retry full runtime for a personal view');
 assert.match(personal, /document\.addEventListener\('click',[\s\S]*?\[data-nav="favorites"\],[\s\S]*?setView\(VIEW_FAVORITES\)/,
   'Favorites navigation must remain delegated across shell rerenders');
 
