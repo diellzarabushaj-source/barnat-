@@ -31,6 +31,10 @@ require('./patch-registry-personal-same-table.js');
 // are server-bounded row filters rendered by the exact same Barnat desktop-lite
 // owner, with the same DOM, toolbar, columns, widths and scroll container.
 require('./patch-registry-personal-canonical-owner.js');
+// Keep the frozen Favorites/Notes release gate's safety ordering without
+// changing ownership: the legacy branch is evaluated only when desktop-lite is
+// absent, while the normal Barnat/Favorites path stays on one table owner.
+require('./patch-registry-personal-release-order.js');
 // Must run before the offline manifest is derived so the privacy guard and its
 // CSS become first-class production shell assets, not a late runtime injection.
 require('./patch-user-library-account-isolation.js');
