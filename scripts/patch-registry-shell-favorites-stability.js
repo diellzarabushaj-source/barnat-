@@ -99,8 +99,8 @@ function patchPersonalization() {
   write(file, source);
 }
 
-function patchOfflineRuntime(file) {
-  if (!fs.existsSync(path.join(ROOT, file))) return;
+function patchOfflineRuntime() {
+  const file = 'offline-runtime.js';
   let source = read(file);
 
   if (!source.includes(`${MARKER}: controller coherence constants`)) {
@@ -108,20 +108,20 @@ function patchOfflineRuntime(file) {
       source,
       `  const NETWORK_FAILURE_REASONS = new Set(['network', 'timeout', 'offline', 'offline-no-lease', 'server-unavailable']);`,
       `  const NETWORK_FAILURE_REASONS = new Set(['network', 'timeout', 'offline', 'offline-no-lease', 'server-unavailable']);\n  // ${MARKER}: controller coherence constants\n  const CONTROLLER_BOOT_RELOAD_WINDOW_MS = 20000;\n  const CONTROLLER_RELOAD_KEY = 'medindex_controller_boot_reload_v1';\n  const RUNTIME_STARTED_AT = Date.now();\n  const HAD_CONTROLLER_AT_START = Boolean(navigator.serviceWorker?.controller);`,
-      `${file} controller constants`,
+      'offline runtime controller constants',
     );
     source = replaceOnce(
       source,
       `  let reachabilityPromise = null;`,
       `  let reachabilityPromise = null;\n  let controllerReloadScheduled = false;`,
-      `${file} controller state`,
+      'offline runtime controller state',
     );
   }
 
   if (!source.includes(`${MARKER}: one-shot boot reload`)) {
     const listener = `    navigator.serviceWorker?.addEventListener('controllerchange', () => {\n      updateActivated = true;\n      setStatus('update', 'Përditësimi është aktiv · kliko për rifreskim');\n      window.dispatchEvent(new CustomEvent('medindex:offline-controller-ready'));\n    });`;
-    const replacement = `    // ${MARKER}: one-shot boot reload\n    function reloadForFreshControllerDuringBoot() {\n      if (controllerReloadScheduled || !HAD_CONTROLLER_AT_START || !navigator.onLine) return false;\n      if (Date.now() - RUNTIME_STARTED_AT > CONTROLLER_BOOT_RELOAD_WINDOW_MS) return false;\n      if (document.visibilityState === 'hidden') return false;\n      const build = document.documentElement.dataset.medindexBuildId\n        || document.querySelector('meta[name="medindex-build-id"]')?.content\n        || RESILIENCE_VERSION;\n      const token = \`\${build}|\${RESILIENCE_VERSION}|\${location.pathname}\`;\n      try {\n        if (sessionStorage.getItem(CONTROLLER_RELOAD_KEY) === token) return false;\n        sessionStorage.setItem(CONTROLLER_RELOAD_KEY, token);\n      } catch {}\n      controllerReloadScheduled = true;\n      window.setTimeout(() => location.reload(), 0);\n      return true;\n    }\n\n    navigator.serviceWorker?.addEventListener('controllerchange', () => {\n      updateActivated = true;\n      window.dispatchEvent(new CustomEvent('medindex:offline-controller-ready'));\n      if (reloadForFreshControllerDuringBoot()) {\n        setStatus('update', 'Po aktivizohet versioni i ri…');\n        return;\n      }\n      // Outside the boot window we preserve the clinician's in-progress work and\n      // keep the existing explicit refresh affordance.\n      setStatus('update', 'Përditësimi është aktiv · kliko për rifreskim');\n    });`;
-    source = replaceOnce(source, listener, replacement, `${file} controllerchange listener`);
+    const replacement = `    // ${MARKER}: one-shot boot reload\n    function reloadForFreshControllerDuringBoot() {\n      if (controllerReloadScheduled || !HAD_CONTROLLER_AT_START || !navigator.onLine) return false;\n      if (Date.now() - RUNTIME_STARTED_AT > CONTROLLER_BOOT_RELOAD_WINDOW_MS) return false;\n      if (document.visibilityState === 'hidden') return false;\n      const controllerRuntimeId = document.documentElement.dataset.miRelease\n        || document.documentElement.dataset.medindexBuildId\n        || 'medindex-runtime';\n      const token = \`\${controllerRuntimeId}|\${location.pathname}\`;\n      try {\n        if (sessionStorage.getItem(CONTROLLER_RELOAD_KEY) === token) return false;\n        sessionStorage.setItem(CONTROLLER_RELOAD_KEY, token);\n      } catch {}\n      controllerReloadScheduled = true;\n      window.setTimeout(() => location.reload(), 0);\n      return true;\n    }\n\n    navigator.serviceWorker?.addEventListener('controllerchange', () => {\n      updateActivated = true;\n      window.dispatchEvent(new CustomEvent('medindex:offline-controller-ready'));\n      if (reloadForFreshControllerDuringBoot()) {\n        setStatus('update', 'Po aktivizohet versioni i ri…');\n        return;\n      }\n      // Outside the boot window we preserve the clinician's in-progress work and\n      // keep the existing explicit refresh affordance.\n      setStatus('update', 'Përditësimi është aktiv · kliko për rifreskim');\n    });`;
+    source = replaceOnce(source, listener, replacement, 'offline runtime controllerchange listener');
   }
 
   write(file, source);
@@ -150,8 +150,7 @@ function verify() {
 patchShellCore();
 patchProfessionalLayer();
 patchPersonalization();
-patchOfflineRuntime('offline-runtime.js');
-patchOfflineRuntime('offline-runtime-performance.js');
+patchOfflineRuntime();
 verify();
 
 console.log('Registry shell + Favorites stability patch applied: bfcache state, professional CSS order, resilient Favorites handoff and one-shot controller coherence.');
