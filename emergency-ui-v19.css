@@ -1,0 +1,535 @@
+/* MedIndex Urgjencat — premium clinical UI v19
+   Pure presentation layer. No clinical data, ranking or governance behavior changes. */
+
+html.medindex-tailadmin[data-mi-page="urgjencat"]{
+  --ck19-font:"Inter",ui-sans-serif,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
+  --ck19-ink:#15213a;
+  --ck19-muted:#6f7c91;
+  --ck19-soft:#8b96a8;
+  --ck19-blue:#315fc8;
+  --ck19-blue-strong:#2853b4;
+  --ck19-line:rgba(53,75,112,.10);
+  --ck19-line-strong:rgba(53,75,112,.15);
+  --ck19-surface:#ffffff;
+  --ck19-surface-soft:#f8faff;
+  --ck19-shadow:0 18px 48px rgba(24,40,72,.065),0 2px 8px rgba(24,40,72,.035);
+}
+
+html.medindex-tailadmin[data-mi-page="urgjencat"] body,
+html.medindex-tailadmin[data-mi-page="urgjencat"] #emergencyContent,
+html.medindex-tailadmin[data-mi-page="urgjencat"] #emergencyContent *,
+html.medindex-tailadmin[data-mi-page="urgjencat"] #ckDetailOverlay,
+html.medindex-tailadmin[data-mi-page="urgjencat"] #ckDetailOverlay *{
+  font-family:var(--ck19-font)!important;
+  font-optical-sizing:auto;
+  font-synthesis:none;
+}
+
+html.medindex-tailadmin[data-mi-page="urgjencat"] body{
+  text-rendering:optimizeLegibility;
+  -webkit-font-smoothing:antialiased;
+  -moz-osx-font-smoothing:grayscale;
+}
+
+html.medindex-tailadmin[data-mi-page="urgjencat"] .clinical-knowledge-page{
+  width:min(100%,1460px);
+  margin-inline:auto;
+  padding-top:4px;
+}
+
+/* Hero — quieter, sharper, more deliberate. */
+html.medindex-tailadmin[data-mi-page="urgjencat"] .ck-hero.ck-rapid-hero{
+  margin-bottom:16px!important;
+  padding:8px 2px 0!important;
+}
+html.medindex-tailadmin[data-mi-page="urgjencat"] .ck-rapid-hero .ck-kicker{
+  margin-bottom:7px!important;
+  color:#7d8799!important;
+  font-size:10px!important;
+  font-weight:600!important;
+  line-height:1.2!important;
+  letter-spacing:.105em!important;
+}
+html.medindex-tailadmin[data-mi-page="urgjencat"] .ck-rapid-hero h1{
+  color:var(--ck19-ink)!important;
+  font-size:clamp(32px,3.1vw,42px)!important;
+  font-weight:700!important;
+  line-height:1.02!important;
+  letter-spacing:-.052em!important;
+}
+html.medindex-tailadmin[data-mi-page="urgjencat"] .ck-rapid-subtitle{
+  max-width:720px!important;
+  margin-top:9px!important;
+  color:var(--ck19-muted)!important;
+  font-size:13.5px!important;
+  font-weight:400!important;
+  line-height:1.55!important;
+  letter-spacing:-.008em!important;
+}
+
+/* Search cockpit. */
+html.medindex-tailadmin[data-mi-page="urgjencat"] .ck-rapid-search-panel{
+  margin-bottom:14px!important;
+  padding:15px!important;
+  overflow:visible;
+  border:1px solid var(--ck19-line)!important;
+  border-radius:20px!important;
+  background:linear-gradient(180deg,#fff 0%,#fcfdff 100%)!important;
+  box-shadow:var(--ck19-shadow)!important;
+}
+html.medindex-tailadmin[data-mi-page="urgjencat"] .ck-rapid-search-topline{
+  margin:0 3px 9px!important;
+}
+html.medindex-tailadmin[data-mi-page="urgjencat"] .ck-rapid-search-topline>span{
+  color:#7f8a9c!important;
+  font-size:10px!important;
+  font-weight:600!important;
+  letter-spacing:.075em!important;
+}
+html.medindex-tailadmin[data-mi-page="urgjencat"] .ck-rapid-search-topline kbd{
+  min-width:26px!important;
+  height:26px!important;
+  border-color:rgba(64,82,116,.12)!important;
+  border-radius:7px!important;
+  background:#f8fafc!important;
+  color:#6f7c91!important;
+  font:600 11px/1 var(--ck19-font)!important;
+  box-shadow:0 1px 2px rgba(24,40,72,.04)!important;
+}
+html.medindex-tailadmin[data-mi-page="urgjencat"] .ck-rapid-search-panel .ck-toolbar::before{
+  left:19px!important;
+  color:#7a879b!important;
+  font-size:23px!important;
+}
+html.medindex-tailadmin[data-mi-page="urgjencat"] #emergencySearch{
+  min-height:64px!important;
+  padding:0 20px 0 54px!important;
+  border:1px solid rgba(53,75,112,.14)!important;
+  border-radius:14px!important;
+  background:#fbfcff!important;
+  color:var(--ck19-ink)!important;
+  font:500 15.5px/1.3 var(--ck19-font)!important;
+  letter-spacing:-.012em!important;
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.95),0 1px 2px rgba(24,40,72,.02)!important;
+}
+html.medindex-tailadmin[data-mi-page="urgjencat"] #emergencySearch::placeholder{
+  color:#9aa5b5!important;
+  font-weight:400!important;
+  letter-spacing:-.006em!important;
+}
+html.medindex-tailadmin[data-mi-page="urgjencat"] #emergencySearch:focus{
+  border-color:rgba(49,95,200,.46)!important;
+  background:#fff!important;
+  box-shadow:0 0 0 4px rgba(49,95,200,.075),0 8px 22px rgba(49,95,200,.055)!important;
+}
+html.medindex-tailadmin[data-mi-page="urgjencat"] .ck-rapid-search-panel .ck-status{
+  margin:10px 3px 0!important;
+  color:#7e899b!important;
+  font-size:11.5px!important;
+  line-height:1.4!important;
+}
+
+/* Symptom / personalization chips — consistent compact clinical controls. */
+html.medindex-tailadmin[data-mi-page="urgjencat"] :where(
+  .ck-symptom-chip,
+  .ck-personal-chip,
+  .ck-action-chip,
+  .ck-quick-buttons button
+){
+  min-height:34px!important;
+  border:1px solid rgba(53,75,112,.10)!important;
+  border-radius:999px!important;
+  background:#f8faff!important;
+  color:#5d6a80!important;
+  font-family:var(--ck19-font)!important;
+  font-size:11.5px!important;
+  font-weight:500!important;
+  letter-spacing:-.006em!important;
+  box-shadow:none!important;
+}
+html.medindex-tailadmin[data-mi-page="urgjencat"] :where(
+  .ck-symptom-chip:hover,
+  .ck-personal-chip:hover,
+  .ck-action-chip:hover,
+  .ck-quick-buttons button:hover
+){
+  border-color:rgba(49,95,200,.18)!important;
+  background:#f2f5ff!important;
+  color:var(--ck19-blue)!important;
+}
+html.medindex-tailadmin[data-mi-page="urgjencat"] :where(
+  .ck-symptom-chip[aria-pressed="true"],
+  .ck-personal-chip[aria-pressed="true"],
+  .ck-action-chip[aria-pressed="true"]
+){
+  border-color:rgba(49,95,200,.24)!important;
+  background:#edf2ff!important;
+  color:#2853b4!important;
+  font-weight:600!important;
+}
+
+/* Main workspace. */
+html.medindex-tailadmin[data-mi-page="urgjencat"] .ck-layout{
+  grid-template-columns:minmax(250px,310px) minmax(0,1fr)!important;
+  gap:14px!important;
+  align-items:start;
+}
+html.medindex-tailadmin[data-mi-page="urgjencat"] .ck-directory,
+html.medindex-tailadmin[data-mi-page="urgjencat"] .ck-detail{
+  border:1px solid var(--ck19-line)!important;
+  background:var(--ck19-surface)!important;
+  box-shadow:0 10px 32px rgba(24,40,72,.045)!important;
+}
+html.medindex-tailadmin[data-mi-page="urgjencat"] .ck-directory{
+  padding:8px!important;
+  border-radius:18px!important;
+}
+html.medindex-tailadmin[data-mi-page="urgjencat"] .ck-detail{
+  min-width:0;
+  overflow:hidden;
+  border-radius:20px!important;
+}
+
+/* Directory: less visual noise, clearer active row. */
+html.medindex-tailadmin[data-mi-page="urgjencat"] .ck-directory-chapter-head{
+  min-height:46px!important;
+  padding:8px 10px!important;
+  border-color:rgba(53,75,112,.07)!important;
+  border-radius:12px!important;
+  background:linear-gradient(145deg,#fbfcff,#f7f9fd)!important;
+}
+html.medindex-tailadmin[data-mi-page="urgjencat"] .ck-directory-chapter-head span{
+  color:#8a95a7!important;
+  font-size:9.5px!important;
+  font-weight:600!important;
+  letter-spacing:.075em!important;
+}
+html.medindex-tailadmin[data-mi-page="urgjencat"] .ck-directory-chapter-head strong{
+  color:#4a5972!important;
+  font-size:12.5px!important;
+  font-weight:600!important;
+  letter-spacing:-.012em!important;
+}
+html.medindex-tailadmin[data-mi-page="urgjencat"] .ck-directory-subchapter-title{
+  color:#8490a3!important;
+  font-size:10.75px!important;
+  font-weight:500!important;
+}
+html.medindex-tailadmin[data-mi-page="urgjencat"] .ck-list-button{
+  min-height:46px;
+  padding:9px 10px!important;
+  border:1px solid transparent!important;
+  border-radius:11px!important;
+  background:transparent!important;
+}
+html.medindex-tailadmin[data-mi-page="urgjencat"] .ck-list-button:hover{
+  border-color:rgba(53,75,112,.075)!important;
+  background:#f8faff!important;
+}
+html.medindex-tailadmin[data-mi-page="urgjencat"] .ck-list-button strong{
+  color:#334158!important;
+  font-size:13.5px!important;
+  font-weight:550!important;
+  line-height:1.32!important;
+  letter-spacing:-.014em!important;
+}
+html.medindex-tailadmin[data-mi-page="urgjencat"] .ck-list-button.is-active{
+  border-color:rgba(49,95,200,.15)!important;
+  background:linear-gradient(145deg,#f7f9ff,#eff4ff)!important;
+  box-shadow:inset 3px 0 0 var(--ck19-blue),0 5px 14px rgba(49,95,200,.045)!important;
+}
+html.medindex-tailadmin[data-mi-page="urgjencat"] .ck-list-button.is-active strong{
+  color:#244894!important;
+  font-weight:600!important;
+}
+html.medindex-tailadmin[data-mi-page="urgjencat"] .ck-directory-tag,
+html.medindex-tailadmin[data-mi-page="urgjencat"] .ck-chip{
+  border-radius:999px!important;
+  font-weight:500!important;
+  letter-spacing:-.003em!important;
+}
+
+/* Detail header and mode controls. */
+html.medindex-tailadmin[data-mi-page="urgjencat"] .ck-detail-head{
+  padding:24px 26px 20px!important;
+  border-bottom:1px solid rgba(53,75,112,.075)!important;
+  background:linear-gradient(180deg,#fff 0%,#fcfdff 100%)!important;
+}
+html.medindex-tailadmin[data-mi-page="urgjencat"] .ck-emergency-breadcrumb{
+  margin-bottom:12px!important;
+  color:#8a95a7!important;
+  font-size:10.75px!important;
+  line-height:1.35!important;
+}
+html.medindex-tailadmin[data-mi-page="urgjencat"] .ck-title-row{
+  gap:18px!important;
+}
+html.medindex-tailadmin[data-mi-page="urgjencat"] .ck-detail-head h2{
+  margin:0!important;
+  color:var(--ck19-ink)!important;
+  font-size:clamp(26px,2.45vw,36px)!important;
+  font-weight:700!important;
+  line-height:1.04!important;
+  letter-spacing:-.048em!important;
+}
+html.medindex-tailadmin[data-mi-page="urgjencat"] .ck-meta{
+  gap:6px!important;
+  margin-top:10px!important;
+}
+html.medindex-tailadmin[data-mi-page="urgjencat"] .ck-chip{
+  min-height:25px!important;
+  padding:0 8px!important;
+  border-color:rgba(53,75,112,.09)!important;
+  background:#f7f9fc!important;
+  color:#637087!important;
+  font-size:10.75px!important;
+}
+html.medindex-tailadmin[data-mi-page="urgjencat"] .ck-chip.is-critical{
+  border-color:rgba(188,61,75,.12)!important;
+  background:#fff4f5!important;
+  color:#a93749!important;
+}
+html.medindex-tailadmin[data-mi-page="urgjencat"] .ck-chip.is-verified{
+  border-color:rgba(31,137,94,.12)!important;
+  background:#f1faf6!important;
+  color:#277c59!important;
+}
+html.medindex-tailadmin[data-mi-page="urgjencat"] .ck-detail-head>.ck-summary,
+html.medindex-tailadmin[data-mi-page="urgjencat"] .ck-detail-head .ck-summary{
+  max-width:900px;
+  margin-top:15px!important;
+  color:#5f6d83!important;
+  font-size:13.5px!important;
+  font-weight:400!important;
+  line-height:1.62!important;
+  letter-spacing:-.007em!important;
+}
+html.medindex-tailadmin[data-mi-page="urgjencat"] .ck-review-button{
+  min-height:48px!important;
+  padding:7px 10px!important;
+  border:1px solid rgba(53,75,112,.09)!important;
+  border-radius:12px!important;
+  background:#fafbfd!important;
+  color:#526079!important;
+  box-shadow:none!important;
+}
+html.medindex-tailadmin[data-mi-page="urgjencat"] .ck-review-button:hover{
+  border-color:rgba(49,95,200,.14)!important;
+  background:#f5f8ff!important;
+}
+html.medindex-tailadmin[data-mi-page="urgjencat"] .ck-mode-wrap{
+  margin-top:18px!important;
+  padding-top:14px!important;
+  border-top:1px solid rgba(53,75,112,.07)!important;
+}
+html.medindex-tailadmin[data-mi-page="urgjencat"] .ck-mode-toggle{
+  padding:3px!important;
+  border:1px solid rgba(53,75,112,.08)!important;
+  border-radius:11px!important;
+  background:#f6f8fc!important;
+}
+html.medindex-tailadmin[data-mi-page="urgjencat"] .ck-mode-toggle button{
+  min-height:34px!important;
+  padding:0 12px!important;
+  border-radius:8px!important;
+  color:#6a778c!important;
+  font-size:11.5px!important;
+  font-weight:550!important;
+  letter-spacing:-.006em!important;
+}
+html.medindex-tailadmin[data-mi-page="urgjencat"] .ck-mode-toggle button[aria-pressed="true"]{
+  background:#fff!important;
+  color:#284f9f!important;
+  box-shadow:0 1px 4px rgba(24,40,72,.07)!important;
+}
+html.medindex-tailadmin[data-mi-page="urgjencat"] .ck-mode-caption{
+  color:#8b96a8!important;
+  font-size:10.75px!important;
+}
+
+/* Clinical sections and cards. */
+html.medindex-tailadmin[data-mi-page="urgjencat"] .ck-sections{
+  gap:14px!important;
+  padding:16px!important;
+  background:#f8fafc!important;
+}
+html.medindex-tailadmin[data-mi-page="urgjencat"] .ck-section{
+  padding:18px!important;
+  border:1px solid rgba(53,75,112,.085)!important;
+  border-radius:16px!important;
+  background:#fff!important;
+  box-shadow:0 3px 12px rgba(24,40,72,.025)!important;
+}
+html.medindex-tailadmin[data-mi-page="urgjencat"] .ck-section-title{
+  margin-bottom:13px!important;
+}
+html.medindex-tailadmin[data-mi-page="urgjencat"] .ck-section-kicker{
+  color:#8995a7!important;
+  font-size:9.5px!important;
+  font-weight:600!important;
+  letter-spacing:.085em!important;
+}
+html.medindex-tailadmin[data-mi-page="urgjencat"] .ck-section h3{
+  margin-top:3px!important;
+  color:#26344c!important;
+  font-size:16px!important;
+  font-weight:650!important;
+  line-height:1.2!important;
+  letter-spacing:-.024em!important;
+}
+html.medindex-tailadmin[data-mi-page="urgjencat"] .ck-section-count{
+  min-height:25px!important;
+  padding:0 8px!important;
+  border:1px solid rgba(53,75,112,.08)!important;
+  border-radius:999px!important;
+  background:#f8fafc!important;
+  color:#7c899b!important;
+  font-size:10.5px!important;
+}
+html.medindex-tailadmin[data-mi-page="urgjencat"] .ck-steps{
+  gap:9px!important;
+}
+html.medindex-tailadmin[data-mi-page="urgjencat"] .ck-step-card{
+  overflow:hidden;
+  border:1px solid rgba(53,75,112,.085)!important;
+  border-radius:14px!important;
+  background:#fcfdff!important;
+  box-shadow:none!important;
+}
+html.medindex-tailadmin[data-mi-page="urgjencat"] .ck-step-card:hover{
+  border-color:rgba(49,95,200,.14)!important;
+  background:#fff!important;
+}
+html.medindex-tailadmin[data-mi-page="urgjencat"] .ck-step-number{
+  font-weight:650!important;
+}
+html.medindex-tailadmin[data-mi-page="urgjencat"] .ck-step-copy>strong{
+  color:#2c3b53!important;
+  font-size:13px!important;
+  font-weight:600!important;
+  letter-spacing:-.014em!important;
+}
+html.medindex-tailadmin[data-mi-page="urgjencat"] .ck-step-action{
+  color:#56657c!important;
+  font-size:12.5px!important;
+  font-weight:400!important;
+  line-height:1.55!important;
+  letter-spacing:-.005em!important;
+}
+html.medindex-tailadmin[data-mi-page="urgjencat"] .ck-step-why{
+  color:#7d899b!important;
+  font-size:11.25px!important;
+  line-height:1.5!important;
+}
+html.medindex-tailadmin[data-mi-page="urgjencat"] .ck-info-card{
+  min-height:46px!important;
+  padding:10px 12px!important;
+  border:1px solid rgba(53,75,112,.08)!important;
+  border-radius:12px!important;
+  background:#fbfcfe!important;
+  color:#536178!important;
+  font-size:12px!important;
+  font-weight:400!important;
+  line-height:1.45!important;
+  box-shadow:none!important;
+}
+html.medindex-tailadmin[data-mi-page="urgjencat"] .ck-info-card:hover{
+  border-color:rgba(49,95,200,.14)!important;
+  background:#fff!important;
+}
+html.medindex-tailadmin[data-mi-page="urgjencat"] :where(.ck-alert-section,.ck-safety-section,.ck-referral){
+  border-color:rgba(188,61,75,.10)!important;
+}
+
+/* Browse control remains secondary. */
+html.medindex-tailadmin[data-mi-page="urgjencat"] .ck-browse-secondary{
+  margin-bottom:14px!important;
+  border:1px solid rgba(53,75,112,.08)!important;
+  border-radius:14px!important;
+  background:#fafbfd!important;
+}
+html.medindex-tailadmin[data-mi-page="urgjencat"] .ck-browse-summary{
+  min-height:44px!important;
+  padding:0 13px!important;
+  color:#68758a!important;
+  font-size:11.5px!important;
+  font-weight:550!important;
+}
+
+/* Focus treatment is unified and visible without being loud. */
+html.medindex-tailadmin[data-mi-page="urgjencat"] #emergencyContent :where(button,a,input,select):focus-visible,
+html.medindex-tailadmin[data-mi-page="urgjencat"] #ckDetailOverlay :where(button,a):focus-visible{
+  outline:3px solid rgba(49,95,200,.16)!important;
+  outline-offset:2px!important;
+}
+
+/* Dark mode. */
+html[data-theme="dark"].medindex-tailadmin[data-mi-page="urgjencat"]{
+  --ck19-ink:#edf2fa;
+  --ck19-muted:#aab6c8;
+  --ck19-soft:#8f9db2;
+  --ck19-line:rgba(148,163,184,.12);
+  --ck19-line-strong:rgba(148,163,184,.17);
+  --ck19-surface:#111827;
+  --ck19-surface-soft:#0f1726;
+  --ck19-shadow:none;
+}
+html[data-theme="dark"].medindex-tailadmin[data-mi-page="urgjencat"] .ck-rapid-search-panel,
+html[data-theme="dark"].medindex-tailadmin[data-mi-page="urgjencat"] .ck-detail-head,
+html[data-theme="dark"].medindex-tailadmin[data-mi-page="urgjencat"] .ck-directory,
+html[data-theme="dark"].medindex-tailadmin[data-mi-page="urgjencat"] .ck-detail,
+html[data-theme="dark"].medindex-tailadmin[data-mi-page="urgjencat"] .ck-section{
+  border-color:rgba(148,163,184,.12)!important;
+  background:#111827!important;
+  box-shadow:none!important;
+}
+html[data-theme="dark"].medindex-tailadmin[data-mi-page="urgjencat"] .ck-sections{background:#0d1421!important}
+html[data-theme="dark"].medindex-tailadmin[data-mi-page="urgjencat"] #emergencySearch{
+  border-color:rgba(148,163,184,.15)!important;
+  background:#0d1625!important;
+  color:#edf2fa!important;
+}
+html[data-theme="dark"].medindex-tailadmin[data-mi-page="urgjencat"] .ck-directory-chapter-head,
+html[data-theme="dark"].medindex-tailadmin[data-mi-page="urgjencat"] .ck-list-button:hover,
+html[data-theme="dark"].medindex-tailadmin[data-mi-page="urgjencat"] .ck-step-card,
+html[data-theme="dark"].medindex-tailadmin[data-mi-page="urgjencat"] .ck-info-card,
+html[data-theme="dark"].medindex-tailadmin[data-mi-page="urgjencat"] .ck-browse-secondary{
+  border-color:rgba(148,163,184,.11)!important;
+  background:#141d2e!important;
+}
+html[data-theme="dark"].medindex-tailadmin[data-mi-page="urgjencat"] .ck-list-button strong,
+html[data-theme="dark"].medindex-tailadmin[data-mi-page="urgjencat"] .ck-section h3,
+html[data-theme="dark"].medindex-tailadmin[data-mi-page="urgjencat"] .ck-step-copy>strong{color:#e6edf8!important}
+html[data-theme="dark"].medindex-tailadmin[data-mi-page="urgjencat"] .ck-step-action,
+html[data-theme="dark"].medindex-tailadmin[data-mi-page="urgjencat"] .ck-info-card{color:#b7c3d4!important}
+
+@media(max-width:900px){
+  html.medindex-tailadmin[data-mi-page="urgjencat"] .clinical-knowledge-page{padding-top:0}
+  html.medindex-tailadmin[data-mi-page="urgjencat"] .ck-layout{grid-template-columns:1fr!important;gap:12px!important}
+  html.medindex-tailadmin[data-mi-page="urgjencat"] .ck-detail-head{padding:20px 18px 17px!important}
+  html.medindex-tailadmin[data-mi-page="urgjencat"] .ck-sections{padding:12px!important}
+  html.medindex-tailadmin[data-mi-page="urgjencat"] #emergencySearch{font-size:16px!important}
+}
+
+@media(max-width:620px){
+  html.medindex-tailadmin[data-mi-page="urgjencat"] .ck-hero.ck-rapid-hero{margin-bottom:12px!important;padding-top:3px!important}
+  html.medindex-tailadmin[data-mi-page="urgjencat"] .ck-rapid-hero h1{font-size:31px!important}
+  html.medindex-tailadmin[data-mi-page="urgjencat"] .ck-rapid-subtitle{font-size:12.75px!important;line-height:1.5!important}
+  html.medindex-tailadmin[data-mi-page="urgjencat"] .ck-rapid-search-panel{padding:11px!important;border-radius:16px!important}
+  html.medindex-tailadmin[data-mi-page="urgjencat"] #emergencySearch{min-height:56px!important;padding-left:48px!important;border-radius:12px!important}
+  html.medindex-tailadmin[data-mi-page="urgjencat"] .ck-rapid-search-panel .ck-toolbar::before{left:16px!important}
+  html.medindex-tailadmin[data-mi-page="urgjencat"] .ck-detail{border-radius:16px!important}
+  html.medindex-tailadmin[data-mi-page="urgjencat"] .ck-detail-head{padding:18px 15px 15px!important}
+  html.medindex-tailadmin[data-mi-page="urgjencat"] .ck-detail-head h2{font-size:27px!important}
+  html.medindex-tailadmin[data-mi-page="urgjencat"] .ck-sections{gap:10px!important;padding:9px!important}
+  html.medindex-tailadmin[data-mi-page="urgjencat"] .ck-section{padding:14px!important;border-radius:14px!important}
+  html.medindex-tailadmin[data-mi-page="urgjencat"] .ck-title-row{gap:10px!important}
+}
+
+@media(prefers-reduced-motion:reduce){
+  html.medindex-tailadmin[data-mi-page="urgjencat"] #emergencyContent *,
+  html.medindex-tailadmin[data-mi-page="urgjencat"] #ckDetailOverlay *{
+    scroll-behavior:auto!important;
+    transition-duration:.001ms!important;
+  }
+}
