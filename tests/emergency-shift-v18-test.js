@@ -56,7 +56,7 @@ assert.ok(session.questions.length <= 12);
 
 assert.match(html, /emergency-shift-v18\.css\?v=20260825-1/);
 assert.match(html, /emergency-shift-core-v18\.js\?v=20260825-1/);
-assert.match(html, /emergency-physician-bootstrap-v18\.js\?v=20260825-1/);
+assert.match(html, /emergency-physician-bootstrap-v18\.js\?v=20260825-2/);
 assert.match(html, /data-physician-modules="[^"]*emergency-shift-v18\.js\?v=20260825-1/);
 assert.match(bootstrap, /emergency-shift-v18\.js\?v=20260825-1/);
 assert.match(bootstrap, /DOMContentLoaded/);

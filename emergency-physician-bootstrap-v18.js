@@ -1,12 +1,19 @@
 (() => {
   'use strict';
 
-  const MODULES = [
+  const CORE_MODULES = [
+    ['tailadmin-shell.js?v=production-audit-v2', 'shell'],
+    ['auth-client.js?v=production-audit-v2', 'auth'],
+  ];
+
+  const PHYSICIAN_MODULES = [
     ['emergency-readiness-v6.js?v=20260824-1', 'readiness'],
     ['emergency-learning-flow-v7.js?v=20260824-1', 'learning-flow'],
     ['emergency-review-controller-v17.js?v=20260824-1', 'review-controller'],
     ['emergency-shift-v18.js?v=20260825-1', 'ready-for-shift'],
   ];
+
+  const MODULES = [...CORE_MODULES, ...PHYSICIAN_MODULES];
 
   function loadModule(src, name) {
     return new Promise(resolve => {
@@ -42,10 +49,15 @@
   async function boot() {
     if (['loading', 'ready'].includes(document.documentElement.dataset.ckPhysicianBootstrap || '')) return;
     document.documentElement.dataset.ckPhysicianBootstrap = 'loading';
+
+    // The emergency DOM must become interactive first. Shell/auth and advanced
+    // physician learning/review modules hydrate immediately after DCL in parallel,
+    // so offline/shell runtimes cannot block the bedside critical path.
     await Promise.all(MODULES.map(([src, name]) => loadModule(src, name)));
+
     document.documentElement.dataset.ckPhysicianBootstrap = 'ready';
     window.dispatchEvent(new CustomEvent('medindex:emergency-physician-ready', {
-      detail:{ version:'18.1', modules:MODULES.map(([, name]) => name) },
+      detail:{ version:'18.2', modules:MODULES.map(([, name]) => name) },
     }));
   }
 

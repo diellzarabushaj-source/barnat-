@@ -6,6 +6,8 @@
   <meta name="robots" content="noindex,nofollow,noarchive">
   <meta name="theme-color" content="#0d3d40">
   <link rel="manifest" href="manifest.webmanifest">
+  <link rel="preload" as="script" href="tailadmin-shell.js?v=production-audit-v2">
+  <link rel="preload" as="script" href="auth-client.js?v=production-audit-v2">
   <title>MedIndex | Urgjencat</title>
   <link rel="stylesheet" href="medical-hub.css?v=20260723-1">
   <link rel="stylesheet" href="tailadmin-medindex.css?v=20260728-1" data-tailadmin-medindex-css>
@@ -34,7 +36,6 @@
   <link rel="stylesheet" href="emergency-physician-v17.css?v=20260824-1">
   <link rel="stylesheet" href="emergency-shift-v18.css?v=20260825-1">
   <link rel="stylesheet" href="tailadmin-professional.css?v=20260728-1" data-tailadmin-professional-css>
-  <script src="tailadmin-shell.js?v=production-audit-v2" defer></script>
   <script src="tailadmin-professional.js?v=production-audit-v2" defer></script>
 </head>
 <body>
@@ -120,7 +121,6 @@
       </div>
     </main>
   </div>
-  <script src="auth-client.js?v=production-audit-v2" defer></script>
   <script src="sanity-clinical-client.js?v=20260805-1" defer></script>
   <script src="emergency-taxonomy.js?v=20260822-1" defer></script>
   <script src="emergency-summary-learn.js?v=20260819-2" defer></script>
@@ -141,7 +141,7 @@
   <script src="emergency-action-deeplink-v13.js?v=20260824-1" defer></script>
   <script src="emergency-review-loader-v16.js?v=20260824-1" defer></script>
   <script src="emergency-symptom-chips-v9.js?v=20260824-1" defer></script>
-  <script src="emergency-physician-bootstrap-v18.js?v=20260825-1" async data-physician-modules="emergency-readiness-v6.js?v=20260824-1 emergency-learning-flow-v7.js?v=20260824-1 emergency-review-controller-v17.js?v=20260824-1 emergency-shift-v18.js?v=20260825-1"></script>
+  <script src="emergency-physician-bootstrap-v18.js?v=20260825-2" async data-bootstrap-modules="tailadmin-shell.js?v=production-audit-v2 auth-client.js?v=production-audit-v2" data-physician-modules="emergency-readiness-v6.js?v=20260824-1 emergency-learning-flow-v7.js?v=20260824-1 emergency-review-controller-v17.js?v=20260824-1 emergency-shift-v18.js?v=20260825-1"></script>
   <script src="app-stability.js?v=20260724-2" async></script>
 </body>
 </html>
