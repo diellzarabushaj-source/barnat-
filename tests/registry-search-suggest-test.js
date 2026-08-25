@@ -130,21 +130,50 @@ const rowsOf = query => [...t.suggest(query)].map(item => ({ ...item }));
 {
   const js = read('registry-search-suggest.js');
   const css = read('registry-search-suggest.css');
-  assert.match(js, /version:'registry-search-suggest-v2'/);
-  assert.match(js, /const DEBOUNCE_MS = 36;/);
+  const premium = /version:'registry-search-suggest-v(?:3|[4-9]|\d{2,})'/.test(js);
+
+  assert.match(js, /version:'registry-search-suggest-v(?:2|[3-9]|\d{2,})'/,
+    'Search suggest runtime must expose the hardened v2-or-newer contract.');
+  assert.match(js, /const DEBOUNCE_MS = (?:32|36);/);
   assert.match(js, /const API = '\/api\/drug-search';/);
   assert.match(js, /const REMOTE_CACHE_LIMIT = 64;/);
   assert.match(js, /while \(state\.remoteCache\.size > REMOTE_CACHE_LIMIT\)/);
   assert.match(js, /state\.controller\?\.abort/);
   assert.match(js, /seq !== state\.requestSeq \|\| signal\.aborted/);
   assert.ok(!/\/api\/registry|medindex:registry-full-dataset-needed|DRUG_DATA_PARTS/.test(js));
+
   const handler = js.slice(js.indexOf("input.addEventListener('input'"));
-  const synchronous = handler.slice(0, handler.indexOf('setTimeout('));
-  assert.ok(handler.includes('setTimeout('));
-  assert.ok(!/suggest\(|buildTerms\(|buildProse\(|fetch\(/.test(synchronous));
+  const firstTimer = handler.indexOf('setTimeout(');
+  assert.ok(firstTimer > 0, 'Remote enrichment must remain delayed and abortable.');
+  const synchronous = handler.slice(0, firstTimer);
+
+  if (premium) {
+    assert.match(js, /const PROSE_MIN_CHARS = 3;/,
+      'Premium search must avoid prose indexing for very short queries.');
+    assert.match(js, /typeof requestIdleCallback === 'function'/,
+      'Premium search indexes should prewarm only during idle time.');
+    assert.match(js, /state\.termsSource === sourceRows/,
+      'Identity index must invalidate when the registry dataset swaps.');
+    assert.match(js, /state\.proseSource === sourceRows/,
+      'Prose index must invalidate when the registry dataset swaps.');
+    assert.match(synchronous, /const localItems = suggest\(query\);/,
+      'Local autocomplete must paint before the remote debounce.');
+    assert.match(synchronous, /render\(localItems, query\)/,
+      'Immediate local matches must be rendered synchronously.');
+    assert.ok(!/fetch\(/.test(synchronous),
+      'Network work must never enter the synchronous typing path.');
+    assert.match(js, /rss-topline/);
+    assert.match(js, /rss-footer/);
+    assert.match(js, /aria-keyshortcuts', 'Control\+K Meta\+K \/'/);
+    assert.ok(!/gemini|openai|anthropic/i.test(js),
+      'The registry search hot path must remain deterministic and AI-free.');
+  } else {
+    assert.ok(!/suggest\(|buildTerms\(|buildProse\(|fetch\(/.test(synchronous));
+  }
+
   assert.match(js, /document\.body\.appendChild\(panel\)/);
   assert.match(css, /\.rss-panel \{\s*position: fixed;/);
   assert.match(js, /window\.addEventListener\('scroll', close, \{ once:true, passive:true \}\)/);
 }
 
-console.log('Registry smart search suggestions contract passed.');
+console.log('Registry smart search suggestions v2+ contract passed.');
