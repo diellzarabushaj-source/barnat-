@@ -39,6 +39,10 @@ require('./patch-registry-personal-release-order.js');
 // Personal responses still ship private,no-store, while the lightweight client
 // uses the same default/server-authorized cache policy as the Barnat table.
 require('./patch-registry-personal-cache-policy.js');
+// List view still legitimately requests the full dataset through the existing
+// desktop-lite owner. Preserve that exact handoff contract while keeping the
+// personal-view guard ahead of it so Favorites/Notes never invoke it.
+require('./patch-registry-list-handoff-compat.js');
 // Must run before the offline manifest is derived so the privacy guard and its
 // CSS become first-class production shell assets, not a late runtime injection.
 require('./patch-user-library-account-isolation.js');
