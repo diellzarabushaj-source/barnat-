@@ -1,11 +1,16 @@
 (() => {
   'use strict';
 
-  const MODULES = [
+  const CORE_MODULES = [
+    ['tailadmin-shell.js?v=production-audit-v2', 'shell'],
+    ['auth-client.js?v=production-audit-v2', 'auth'],
+  ];
+  const PHYSICIAN_MODULES = [
     ['emergency-readiness-v6.js?v=20260824-1', 'readiness'],
     ['emergency-learning-flow-v7.js?v=20260824-1', 'learning-flow'],
     ['emergency-review-controller-v17.js?v=20260824-1', 'review-controller'],
   ];
+  const MODULES = [...CORE_MODULES, ...PHYSICIAN_MODULES];
 
   function loadModule(src, name) {
     return new Promise(resolve => {
@@ -41,7 +46,12 @@
   async function boot() {
     if (['loading', 'ready'].includes(document.documentElement.dataset.ckPhysicianBootstrap || '')) return;
     document.documentElement.dataset.ckPhysicianBootstrap = 'loading';
+
+    // Core shell/auth plus learning/review enhancements are deliberately requested
+    // only after DOMContentLoaded. They can hydrate in parallel without delaying
+    // the physician's first usable emergency-protocol DOM.
     await Promise.all(MODULES.map(([src, name]) => loadModule(src, name)));
+
     document.documentElement.dataset.ckPhysicianBootstrap = 'ready';
     window.dispatchEvent(new CustomEvent('medindex:emergency-physician-ready', {
       detail:{ version:'18.0', modules:MODULES.map(([, name]) => name) },
