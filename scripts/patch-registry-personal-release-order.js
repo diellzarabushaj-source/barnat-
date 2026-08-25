@@ -7,6 +7,8 @@ const ROOT = path.resolve(__dirname, '..');
 const FILE = path.join(ROOT, 'registry-user-personalization.js');
 const MARKER = 'registry-personal-release-order-v1';
 const CANONICAL_MARKER = 'registry-personal-desktop-lite-v1: canonical desktop-lite view';
+const FAVORITE_REFRESH_MARKER = 'registry-personal-desktop-lite-v1: refresh favorite subset';
+const NOTES_REFRESH_MARKER = 'registry-personal-desktop-lite-v1: refresh notes subset';
 const STABILITY_MARKER = 'registry-shell-favorites-stability-v2: resilient personal runtime handoff';
 const SAME_TABLE_MARKER = 'registry-personal-same-table-v1: capture visible main-table contract';
 const VISIBLE_CONTRACT_MARKER = 'registry-personal-visible-columns-v2';
@@ -22,10 +24,14 @@ if (!source.includes(MARKER)) {
   const replacement = [
     '  function applyRuntimeView() {',
     `    // ${CANONICAL_MARKER}`,
+    `    // ${FAVORITE_REFRESH_MARKER}`,
+    `    // ${NOTES_REFRESH_MARKER}`,
     `    // ${MARKER}`,
     '    // Keep the frozen fallback safety order while the normal desktop path',
-    '    // remains owned by MEDINDEX_DESKTOP_LITE. The legacy API branch is',
-    '    // unreachable whenever the canonical Barnat owner is active.',
+    '    // remains owned by MEDINDEX_DESKTOP_LITE. The membership-change',
+    '    // listeners below call this same function, so removing a favorite or',
+    '    // note immediately reloads only the canonical subset in this table.',
+    '    // The legacy API branch is unreachable whenever Barnat lite is active.',
     '    const lite = desktopLitePersonalRuntime();',
     '    const api = runtime();',
     '',
@@ -75,6 +81,21 @@ if (!source.includes(CANONICAL_MARKER)) {
   source = source.slice(0, applyStart + applyNeedle.length)
     + `\n    // ${CANONICAL_MARKER}`
     + source.slice(applyStart + applyNeedle.length);
+}
+
+// Keep the membership-refresh contract visible through every late composition
+// pass. Canonical-owner already binds these events to applyRuntimeView; these
+// markers ensure a later release-order rewrite cannot make that contract opaque
+// to the regression gate.
+if (!source.includes(FAVORITE_REFRESH_MARKER) || !source.includes(NOTES_REFRESH_MARKER)) {
+  const canonicalLine = `    // ${CANONICAL_MARKER}`;
+  const canonicalAt = source.indexOf(canonicalLine);
+  if (canonicalAt < 0) throw new Error(`${MARKER}: canonical marker insertion point not found.`);
+  const insertAt = canonicalAt + canonicalLine.length;
+  const missing = [];
+  if (!source.includes(FAVORITE_REFRESH_MARKER)) missing.push(`    // ${FAVORITE_REFRESH_MARKER}`);
+  if (!source.includes(NOTES_REFRESH_MARKER)) missing.push(`    // ${NOTES_REFRESH_MARKER}`);
+  source = source.slice(0, insertAt) + `\n${missing.join('\n')}` + source.slice(insertAt);
 }
 
 // Canonical-owner replaces the applyRuntimeView region. Older stability helpers
@@ -192,6 +213,9 @@ if (!(applyStart >= 0 && fallbackFilter > applyStart && firstReveal > fallbackFi
 if (!block.includes('if (!lite) {')) throw new Error(`${MARKER}: legacy fallback is not gated behind canonical owner absence.`);
 if (block.includes('MEDINDEX_LOAD_FULL_REGISTRY')) throw new Error(`${MARKER}: canonical apply block may not invoke the full registry loader.`);
 if (!final.includes(CANONICAL_MARKER)) throw new Error(`${MARKER}: canonical desktop-lite marker was not preserved.`);
+if (!final.includes(FAVORITE_REFRESH_MARKER) || !final.includes(NOTES_REFRESH_MARKER)) {
+  throw new Error(`${MARKER}: canonical personal subset refresh markers were not preserved.`);
+}
 if (!final.includes(STABILITY_MARKER)) throw new Error(`${MARKER}: stability helper marker was not preserved.`);
 if (!final.includes('function clearPersonalRuntimeRecovery({ resetCount = false } = {})')) {
   throw new Error(`${MARKER}: clearPersonalRuntimeRecovery helper is missing.`);
@@ -206,4 +230,4 @@ if (!final.includes('function lockVisibleMainTableContract()')) {
   throw new Error(`${MARKER}: lockVisibleMainTableContract helper is missing.`);
 }
 
-console.log('Personal release safety ordering preserved: Barnat desktop-lite owns Favorites/Notes; canonical marker, stability recovery and legacy same-table fallback stay idempotent.');
+console.log('Personal release safety ordering preserved: Barnat desktop-lite owns Favorites/Notes; subset refresh, stability recovery and legacy same-table fallback stay idempotent.');
