@@ -13,9 +13,17 @@ function patchHtml(file) {
   if (!source.includes('user-library-client.js')) return false;
 
   if (!source.includes('user-library-account-guard.css')) {
-    const preferred = '<link rel="stylesheet" href="registry-user-personalization.css';
-    let index = source.indexOf(preferred);
-    if (index < 0) index = source.indexOf('</head>');
+    const anchors = [
+      '<link rel="stylesheet" href="registry-user-personalization.css',
+      '<link rel="stylesheet" href="tailadmin-professional.css',
+      '<script src="tailadmin-shell.js',
+      '</head>',
+    ];
+    let index = -1;
+    for (const anchor of anchors) {
+      index = source.indexOf(anchor);
+      if (index >= 0) break;
+    }
     if (index < 0) throw new Error(`${file}: no safe head anchor for account-isolation CSS.`);
     source = `${source.slice(0, index)}<link rel="stylesheet" href="${CSS_ASSET}" data-user-library-account-guard-css>\n${source.slice(index)}`;
   }
