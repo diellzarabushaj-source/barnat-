@@ -19,11 +19,16 @@ require('./patch-phase19-registry-list-owner.js');
 require('./patch-phase20-registry-list-controller.js');
 require('./patch-phase21-registry-list-cache-coherence.js');
 require('./patch-phase22-registry-list-release-gate.js');
+require('./patch-registry-shell-favorites-stability.js');
 
 const ROOT = path.resolve(__dirname, '..');
 execFileSync(process.execPath, [path.join(ROOT, 'tests', 'registry-personal-release-gate.js')], {
   cwd:ROOT,
   stdio:'inherit',
 });
+execFileSync(process.execPath, [path.join(ROOT, 'tests', 'registry-shell-favorites-stability-test.js')], {
+  cwd:ROOT,
+  stdio:'inherit',
+});
 
-console.log('Canonical registry personalization finalizer passed: frozen favorites-notes-v1.0.0 acceptance gate completed before offline packaging; Registry List Phase 19-22 were applied first.');
+console.log('Canonical registry personalization finalizer passed: frozen favorites-notes-v1.0.0 acceptance gate plus shell/Favorites stability gate completed before offline packaging; Registry List Phase 19-22 were applied first.');
