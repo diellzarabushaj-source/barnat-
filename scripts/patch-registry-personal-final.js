@@ -35,6 +35,10 @@ require('./patch-registry-personal-canonical-owner.js');
 // changing ownership: the legacy branch is evaluated only when desktop-lite is
 // absent, while the normal Barnat/Favorites path stays on one table owner.
 require('./patch-registry-personal-release-order.js');
+// The browser must not override the authenticated endpoint's cache contract.
+// Personal responses still ship private,no-store, while the lightweight client
+// uses the same default/server-authorized cache policy as the Barnat table.
+require('./patch-registry-personal-cache-policy.js');
 // Must run before the offline manifest is derived so the privacy guard and its
 // CSS become first-class production shell assets, not a late runtime injection.
 require('./patch-user-library-account-isolation.js');
