@@ -24,9 +24,12 @@ require('./patch-registry-shell-favorites-stability.js');
 // packaging. This deliberately runs after list/shell composition so no later
 // layer can re-introduce the alternate clinical/full projection.
 require('./patch-registry-canonical-main-table.js');
-// Personal filters may need the full dataset, but that is a data handoff only:
-// the exact table the clinician was already viewing remains the visual contract.
+// Preserve the visible main-table contract for legacy fallback paths.
 require('./patch-registry-personal-same-table.js');
+// The normal desktop path must never need that fallback: Favorites and Notes
+// are server-bounded row filters rendered by the exact same Barnat desktop-lite
+// owner, with the same DOM, toolbar, columns, widths and scroll container.
+require('./patch-registry-personal-desktop-lite.js');
 // Must run before the offline manifest is derived so the privacy guard and its
 // CSS become first-class production shell assets, not a late runtime injection.
 require('./patch-user-library-account-isolation.js');
@@ -52,5 +55,9 @@ execFileSync(process.execPath, [path.join(ROOT, 'tests', 'registry-personal-same
   cwd:ROOT,
   stdio:'inherit',
 });
+execFileSync(process.execPath, [path.join(ROOT, 'tests', 'registry-personal-desktop-lite-test.js')], {
+  cwd:ROOT,
+  stdio:'inherit',
+});
 
-console.log('Canonical registry personalization finalizer passed: Favorites/Notes keep the same main table, one registry owner is visible, favorites-notes-v1.0.0 remains frozen, and per-user account isolation is gated before offline packaging.');
+console.log('Canonical registry personalization finalizer passed: Favorites/Notes stay inside the Barnat desktop-lite owner, one registry table is visible, favorites-notes-v1.0.0 remains frozen, and per-user account isolation is gated before offline packaging.');
