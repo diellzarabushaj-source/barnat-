@@ -29,48 +29,36 @@ function replaceRegexOnce(source, pattern, replacement, label) {
 
 let js = read(JS_FILE);
 
-js = replaceOnce(
-  js,
-  "const VERSION = 'registry-unified-table-20260801-1';",
-  `const VERSION = '${RELEASE}';`,
-  'registry unified release marker',
-);
+if (!js.includes(`const VERSION = '${RELEASE}';`)) {
+  js = js.replace(/const VERSION = 'registry-unified-table-[^']+';/, `const VERSION = '${RELEASE}';`);
+}
+if (!js.includes(`const VERSION = '${RELEASE}';`)) throw new Error('registry unified release marker was not replaced.');
 
-// The user-facing registry has one canonical table. The previous controller
-// defaulted to a second “clinical focus” projection and could therefore make the
-// same page look like a different registry after reload/account restore.
-js = replaceOnce(
-  js,
+// Keep the canonical source order used by the main registry. This is only a
+// fallback order: the same-table personal-view gate captures the real visible
+// header before any handoff and preserves that exact contract.
+js = js.replace(
   "    'select', 'number', 'trade-name', 'active-substance', 'atc', 'drug-class', 'use',",
   "    'select', 'number', 'active-substance', 'trade-name', 'atc', 'drug-class', 'use',",
-  'canonical Nr → active substance → trade name order',
 );
 
-js = replaceOnce(
-  js,
-  "  const currentView = () => document.documentElement.dataset.registryUxView === 'full' ? 'full' : 'clinical';\n  const currentOrder = () => currentView() === 'full' ? FULL_ORDER : CLINICAL_ORDER;",
-  "  const currentView = () => 'full';\n  const currentOrder = () => FULL_ORDER;",
-  'single canonical registry view',
-);
+if (!js.includes("const currentView = () => 'full';")) {
+  js = replaceOnce(
+    js,
+    "  const currentView = () => document.documentElement.dataset.registryUxView === 'full' ? 'full' : 'clinical';\n  const currentOrder = () => currentView() === 'full' ? FULL_ORDER : CLINICAL_ORDER;",
+    "  const currentView = () => 'full';\n  const currentOrder = () => FULL_ORDER;",
+    'single canonical registry view',
+  );
+}
 
-js = replaceOnce(
-  js,
-  "    if (currentView() === 'clinical') CLINICAL_BASE_KEYS.forEach(key => required.add(key));\n",
-  "",
-  'remove clinical-only synthetic columns',
-);
+js = js.replace("    if (currentView() === 'clinical') CLINICAL_BASE_KEYS.forEach(key => required.add(key));\n", '');
+js = js.replace("    if (currentView() === 'clinical' && !CLINICAL_ORDER.includes(key)) return false;\n", '');
 
-js = replaceOnce(
-  js,
-  "    if (currentView() === 'clinical' && !CLINICAL_ORDER.includes(key)) return false;\n",
-  "",
-  'remove clinical projection visibility filter',
-);
-
-js = replaceRegexOnce(
-  js,
-  /  function ensureShell\(\) \{[\s\S]*?\n  \}\n\n  function setView\(view\) \{[\s\S]*?\n  \}\n\n  function bindControls\(\) \{/,
-  `  function ensureShell() {
+if (js.includes('tableWrap.before(replacement)')) {
+  js = replaceRegexOnce(
+    js,
+    /  function ensureShell\(\) \{[\s\S]*?\n  \}\n\n  function setView\(view\) \{[\s\S]*?\n  \}\n\n  function bindControls\(\) \{/,
+    `  function ensureShell() {
     const tableWrap = document.getElementById('registryContent');
     const panel = document.querySelector('.toolbar.registry-toolbar, body > .toolbar, .registry-page-workspace > .toolbar');
     if (!tableWrap || !panel) {
@@ -79,8 +67,9 @@ js = replaceRegexOnce(
       return;
     }
 
-    // Never mount a second table/view switch above the real registry. The
-    // existing registry toolbar + #dataTable remain the only visible owner.
+    // One visible registry owner: keep the real search/filter toolbar and the
+    // real #dataTable. The old clinical/full switch was a second UI laid over
+    // the same registry and is intentionally removed.
     document.getElementById('registryViewToolbar')?.remove();
     panel.id = 'registryFilterPanel';
     panel.classList.add('registry-filter-panel-unified');
@@ -101,32 +90,17 @@ js = replaceRegexOnce(
   }
 
   function bindControls() {`,
-  'canonical table shell ownership',
-);
-
-js = replaceRegexOnce(
-  js,
-  /  function start\(\) \{\n    let storedView = 'clinical';\n    let storedFilters = false;\n    try \{\n      storedView = localStorage\.getItem\(VIEW_STORAGE_KEY\) === 'full' \? 'full' : 'clinical';\n      storedFilters = localStorage\.getItem\(FILTER_STORAGE_KEY\) === 'true';\n    \} catch \{\}\n    document\.documentElement\.dataset\.registryUxView = storedView;\n    document\.documentElement\.dataset\.registryFiltersOpen = String\(storedFilters\);/,
-  `  function start() {
-    document.documentElement.dataset.registryUxView = 'full';
-    document.documentElement.dataset.registryFiltersOpen = 'true';
-    try {
-      localStorage.setItem(VIEW_STORAGE_KEY, 'full');
-      localStorage.setItem(FILTER_STORAGE_KEY, 'true');
-    } catch {}`,
-  'canonical startup mode',
-);
-
-// The old toolbar can still exist in source for backwards API compatibility, but
-// it must never be mounted or become visible. Its first-number parsing was also
-// the exact reason “1 barna” appeared when the real count was a range such as
-// 1–50 from the canonical pager.
-if (js.includes('tableWrap.before(replacement)')) {
-  throw new Error('Legacy registry view toolbar can still be mounted.');
+    'canonical table shell ownership',
+  );
 }
-if (!js.includes("const currentView = () => 'full';")) {
-  throw new Error('Canonical full-table mode was not frozen.');
-}
+
+// Build composition may already have rewritten start(), so do not depend on one
+// exact historical block. Freeze any surviving assignments instead.
+js = js.replace(/document\.documentElement\.dataset\.registryUxView\s*=\s*storedView;/g, "document.documentElement.dataset.registryUxView = 'full';");
+js = js.replace(/document\.documentElement\.dataset\.registryFiltersOpen\s*=\s*String\(storedFilters\);/g, "document.documentElement.dataset.registryFiltersOpen = 'true';");
+
+if (js.includes('tableWrap.before(replacement)')) throw new Error('Legacy registry view toolbar can still be mounted.');
+if (!js.includes("const currentView = () => 'full';")) throw new Error('Canonical full-table mode was not frozen.');
 fs.writeFileSync(JS_FILE, js, 'utf8');
 
 let css = read(CSS_FILE);
@@ -140,9 +114,9 @@ if (!css.includes(RELEASE)) css = canonicalCss + '\n' + css;
 fs.writeFileSync(CSS_FILE, css, 'utf8');
 
 let html = read(HTML_FILE);
-html = html.replace('data-registry-ux-view="clinical"', 'data-registry-ux-view="full"');
+html = html.replace(/data-registry-ux-view="(?:clinical|full)"/, 'data-registry-ux-view="full"');
 html = html.replace(/registry-unified-table\.css\?v=[^"&]+/g, `registry-unified-table.css?v=${RELEASE}`);
 html = html.replace(/registry-unified-table\.js\?v=[^"&]+/g, `registry-unified-table.js?v=${RELEASE}`);
 fs.writeFileSync(HTML_FILE, html, 'utf8');
 
-console.log('Canonical registry owner restored: one main table, full canonical columns, no clinical/full duplicate view, coherent JS/CSS release.');
+console.log('Canonical registry owner restored: one main table, no clinical/full duplicate toolbar, coherent JS/CSS release.');
