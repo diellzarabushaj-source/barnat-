@@ -108,7 +108,7 @@ assert.doesNotMatch(dosage, /fetch\('\/api\/dosage'\s*,/, 'desktop dosage column
 assert.doesNotMatch(dosage, /DRUG_DATA_PARTS|\batob\s*\(|DecompressionStream|Uint8Array/, 'dosage columns must never parse the registry again');
 assert.doesNotMatch(dosage, /subtree\s*:\s*true/, 'dosage observers must not watch their own subtree mutations');
 
-assert.match(unified, /registry-unified-table-20260801-1/, 'single table controller must be active');
+assert.match(unified, /registry-canonical-main-table-v1/, 'canonical single table controller must be active');
 assert.doesNotMatch(unified, /observe\(document\.body|subtree\s*:\s*true/, 'single controller must not scan the whole page or table subtree');
 assert.match(unified, /observer\.observe\(tbody, \{ childList:true \}\)/, 'table body observer must react only to page-row replacement');
 
@@ -118,7 +118,7 @@ assert.match(index, /registry-desktop-lite\.js\?v=20260812-1/, 'index must load 
 assert.match(index, /registry-runtime-loader\.js\?v=20260813-10/, 'index must request the single-owner mobile-and-desktop aware bootstrap');
 assert.ok(index.indexOf('registry-mobile-lite.js') < index.indexOf('registry-desktop-lite.js'), 'mobile lightweight client must register before desktop lightweight startup');
 assert.ok(index.indexOf('registry-desktop-lite.js') < index.indexOf('registry-runtime-loader.js'), 'desktop lightweight client must register before the full loader');
-assert.match(index, /registry-unified-table\.js\?v=20260820-registry-columns-v2/, 'index must load the current population-aware single table controller');
+assert.match(index, /registry-unified-table\.js\?v=registry-canonical-main-table-v1/, 'index must load the canonical single table controller');
 assert.doesNotMatch(index, /(?:registry-table-integrity|registry-clinical-view|registry-tailgrids-refinement|registry-columns-filters|registry-table-final)\.js/, 'legacy table controllers must not load');
 assert.doesNotMatch(index, /<script src="app-performance\.js"/, 'heavy registry application must not be parser ordered');
 assert.doesNotMatch(index, /rel="preload" href="app-runtime-performance\.js/, 'normal lightweight startup must not preload the full generated runtime');
@@ -126,4 +126,4 @@ assert.match(index, /registry-dosage-loader\.js\?v=20260812-1/, 'index must load
 assert.doesNotMatch(index, /src="registry-dosage-columns-v3\.js/, 'visible-row dosage integration must not be in the critical parser path');
 assert.match(builder, /app-runtime-performance\.js/, 'build must still generate the cache-isolated full fallback runtime artifact');
 
-console.log('Registry interaction resilience, request-owned loading states, single-owner mobile + desktop lightweight paths and visible-row dosage audit passed.');
+console.log('Registry interaction resilience, request-owned loading states, canonical single-owner mobile + desktop lightweight paths and visible-row dosage audit passed.');
