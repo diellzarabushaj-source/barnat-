@@ -13,9 +13,10 @@ function patchHtml(file) {
   if (!source.includes('user-library-client.js')) return false;
 
   if (!source.includes('user-library-account-guard.css')) {
-    const anchor = '<link rel="stylesheet" href="registry-user-personalization.css';
-    const index = source.indexOf(anchor);
-    if (index < 0) throw new Error(`${file}: personalization CSS anchor not found.`);
+    const preferred = '<link rel="stylesheet" href="registry-user-personalization.css';
+    let index = source.indexOf(preferred);
+    if (index < 0) index = source.indexOf('</head>');
+    if (index < 0) throw new Error(`${file}: no safe head anchor for account-isolation CSS.`);
     source = `${source.slice(0, index)}<link rel="stylesheet" href="${CSS_ASSET}" data-user-library-account-guard-css>\n${source.slice(index)}`;
   }
 
@@ -29,8 +30,11 @@ function patchHtml(file) {
   const guardPosition = source.indexOf('user-library-account-guard.js');
   const clientPosition = source.indexOf('user-library-client.js');
   const personalizationPosition = source.indexOf('registry-user-personalization.js');
-  if (!(guardPosition >= 0 && clientPosition > guardPosition && personalizationPosition > clientPosition)) {
-    throw new Error(`${file}: personal account guard must run before library sync and personalization.`);
+  if (!(guardPosition >= 0 && clientPosition > guardPosition)) {
+    throw new Error(`${file}: account guard must run before user-library sync.`);
+  }
+  if (personalizationPosition >= 0 && personalizationPosition < clientPosition) {
+    throw new Error(`${file}: personalization must not run before user-library sync.`);
   }
 
   fs.writeFileSync(full, source, 'utf8');
