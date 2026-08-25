@@ -20,6 +20,10 @@ require('./patch-phase20-registry-list-controller.js');
 require('./patch-phase21-registry-list-cache-coherence.js');
 require('./patch-phase22-registry-list-release-gate.js');
 require('./patch-registry-shell-favorites-stability.js');
+// Restore the actual main registry as the only visible table before offline
+// packaging. This deliberately runs after list/shell composition so no later
+// layer can re-introduce the alternate clinical/full projection.
+require('./patch-registry-canonical-main-table.js');
 // Must run before the offline manifest is derived so the privacy guard and its
 // CSS become first-class production shell assets, not a late runtime injection.
 require('./patch-user-library-account-isolation.js');
@@ -37,5 +41,9 @@ execFileSync(process.execPath, [path.join(ROOT, 'tests', 'user-library-account-i
   cwd:ROOT,
   stdio:'inherit',
 });
+execFileSync(process.execPath, [path.join(ROOT, 'tests', 'registry-canonical-main-table-test.js')], {
+  cwd:ROOT,
+  stdio:'inherit',
+});
 
-console.log('Canonical registry personalization finalizer passed: frozen favorites-notes-v1.0.0, shell/Favorites stability and per-user account-isolation gates completed before offline packaging; Registry List Phase 19-22 were applied first.');
+console.log('Canonical registry personalization finalizer passed: one main registry table, frozen favorites-notes-v1.0.0, shell/Favorites stability and per-user account-isolation gates completed before offline packaging; Registry List Phase 19-22 were applied first.');
