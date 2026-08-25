@@ -54,6 +54,19 @@ if (!js.includes("const currentView = () => 'full';")) {
 js = js.replace("    if (currentView() === 'clinical') CLINICAL_BASE_KEYS.forEach(key => required.add(key));\n", '');
 js = js.replace("    if (currentView() === 'clinical' && !CLINICAL_ORDER.includes(key)) return false;\n", '');
 
+// Remove the dead alternate-view toolbar source completely. It was already
+// prevented from mounting, but retaining its markup/labels left a future
+// regression path for "Fokus klinik / Tabela e plotë" if shell composition
+// changed. The canonical registry has one visual owner only.
+if (js.includes('function buildToolbar()')) {
+  js = replaceRegexOnce(
+    js,
+    /  function buildToolbar\(\) \{[\s\S]*?\n  \}\n\n  function filtersOpen\(\) \{/,
+    '  function filtersOpen() {',
+    'remove alternate registry toolbar source',
+  );
+}
+
 if (js.includes('tableWrap.before(replacement)')) {
   js = replaceRegexOnce(
     js,
@@ -100,11 +113,15 @@ js = js.replace(/document\.documentElement\.dataset\.registryUxView\s*=\s*stored
 js = js.replace(/document\.documentElement\.dataset\.registryFiltersOpen\s*=\s*String\(storedFilters\);/g, "document.documentElement.dataset.registryFiltersOpen = 'true';");
 
 if (js.includes('tableWrap.before(replacement)')) throw new Error('Legacy registry view toolbar can still be mounted.');
+if (js.includes('function buildToolbar()') || js.includes('Fokus klinik') || js.includes('Tabela e plotë')) {
+  throw new Error('Legacy clinical/full toolbar source still exists in the canonical runtime.');
+}
 if (!js.includes("const currentView = () => 'full';")) throw new Error('Canonical full-table mode was not frozen.');
 fs.writeFileSync(JS_FILE, js, 'utf8');
 
 let css = read(CSS_FILE);
 const canonicalCss = `/* ${RELEASE} — one visible registry table owner. */
+html.medindex-tailadmin[data-mi-page="barnat"] body #registryViewToolbar.registry-view-toolbar-unified,
 html.medindex-tailadmin[data-mi-page="barnat"] body #registryViewToolbar,
 html.medindex-tailadmin[data-mi-page="barnat"] body .registry-view-toolbar-unified {
   display:none!important;
