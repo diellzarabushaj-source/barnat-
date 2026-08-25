@@ -61,8 +61,8 @@ assert(!ui.includes("tableObserver.observe(tbody, { childList:true, subtree:true
 assert(ui.includes('endpointBackoffUntil'), 'Dështimi i endpoint-it duhet të bllokojë retry storm-in.');
 assert(ui.includes('metrics:() => Object.freeze'), 'UI-ja duhet të ekspozojë metrikat e retry-ve për audit browser.');
 assert(index.includes('data-registry-ui-release="20260812-1"'), 'Release-i unik i tabelës nuk u rrit.');
-assert(index.includes('registry-unified-table.js?v=20260820-registry-columns-v2'), 'Kontrolluesi unik i tabelës me kolonën Popullata mungon.');
-assert(index.includes('registry-unified-table.css?v=20260820-registry-columns-v2'), 'CSS-ja e tabelës me kolonën Popullata mungon.');
+assert(index.includes('registry-unified-table.js?v=registry-canonical-main-table-v1'), 'Kontrolluesi unik i tabelës me kolonën Popullata mungon.');
+assert(index.includes('registry-unified-table.css?v=registry-canonical-main-table-v1'), 'CSS-ja e tabelës me kolonën Popullata mungon.');
 assert(index.includes('registry-dose-clinical-row-markers.js?v=20260820-registry-columns-v2'), 'Runtime-i i klasifikimit të popullatës mungon.');
 assert(index.includes('registry-full-text-expansion.css?v=20260805-2'), 'Kontrata e tekstit të plotë mungon.');
 assert(ui.includes('data-population-pencil'), 'Ikona e vetme e lapsit mungon.');
