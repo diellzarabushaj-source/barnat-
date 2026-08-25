@@ -39,9 +39,9 @@
   }
 
   async function boot() {
-    if (document.documentElement.dataset.ckPhysicianBootstrap === 'ready') return;
+    if (['loading', 'ready'].includes(document.documentElement.dataset.ckPhysicianBootstrap || '')) return;
     document.documentElement.dataset.ckPhysicianBootstrap = 'loading';
-    for (const [src, name] of MODULES) await loadModule(src, name);
+    await Promise.all(MODULES.map(([src, name]) => loadModule(src, name)));
     document.documentElement.dataset.ckPhysicianBootstrap = 'ready';
     window.dispatchEvent(new CustomEvent('medindex:emergency-physician-ready', {
       detail:{ version:'18.0', modules:MODULES.map(([, name]) => name) },
