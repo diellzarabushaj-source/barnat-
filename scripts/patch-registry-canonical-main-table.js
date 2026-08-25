@@ -130,9 +130,15 @@ html.medindex-tailadmin[data-mi-page="barnat"] body #registryViewToolbar.registr
 html.medindex-tailadmin[data-mi-page="barnat"] body #registryViewToolbar,
 html.medindex-tailadmin[data-mi-page="barnat"] body .registry-view-toolbar-unified {
   display:none!important;
+}`;
+// This guard must be the LAST table-view rule in the stylesheet. The legacy
+// stylesheet contains an equally specific `display:flex!important`; prepending
+// this block made the old rule win the cascade even though the JS normally
+// removed the toolbar. Keeping the canonical guard last also protects stale DOM
+// restored from BFCache/service-worker transitions.
+if (!css.trimEnd().endsWith(canonicalCss)) {
+  css = `${css.trimEnd()}\n\n${canonicalCss}\n`;
 }
-`;
-if (!css.includes(RELEASE)) css = canonicalCss + '\n' + css;
 fs.writeFileSync(CSS_FILE, css, 'utf8');
 
 let html = read(HTML_FILE);
@@ -141,4 +147,4 @@ html = html.replace(/registry-unified-table\.css\?v=[^"&]+/g, `registry-unified-
 html = html.replace(/registry-unified-table\.js\?v=[^"&]+/g, `registry-unified-table.js?v=${RELEASE}`);
 fs.writeFileSync(HTML_FILE, html, 'utf8');
 
-console.log('Canonical registry owner restored: one main table, no clinical/full duplicate toolbar, coherent JS/CSS release.');
+console.log('Canonical registry owner restored: one main table, no clinical/full duplicate toolbar, coherent JS/CSS release, and the hide guard owns the final CSS cascade.');
