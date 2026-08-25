@@ -365,10 +365,10 @@
 
   function enhanceFlash(flash) {
     if (!flash || flash.dataset.ckV3Ready === '1') return;
-    flash.dataset.ckV3Ready = '1';
     const itemId = flash.dataset.itemId || '';
     const count = flashCount(flash);
     if (!itemId || !count) return;
+    flash.dataset.ckV3Ready = '1';
 
     const state = readState(itemId, count);
     const meta = readMeta(itemId, count);
@@ -564,9 +564,14 @@
     frame = requestAnimationFrame(enhance);
   };
   const observer = new MutationObserver(mutations => {
-    if (mutations.some(mutation => mutation.addedNodes.length || mutation.type === 'attributes')) schedule();
+    if (mutations.some(mutation => [...mutation.addedNodes].some(node =>
+      node.nodeType === 1 && (
+        node.matches?.('.ck-sl-experience,[data-ck-sl-panel],[data-ck-sl-flashcards]')
+        || node.querySelector?.('.ck-sl-experience,[data-ck-sl-panel],[data-ck-sl-flashcards]')
+      )
+    ))) schedule();
   });
-  observer.observe(detail, {childList:true, subtree:true, attributes:true, attributeFilter:['aria-current','data-ck-learning-mode']});
+  observer.observe(detail, {childList:true, subtree:true});
 
   schedule();
   window.setTimeout(schedule, 160);
