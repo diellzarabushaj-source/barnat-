@@ -118,3 +118,8 @@ const index = read('index.html');
 }
 
 console.log(`Boot screen passed: one screen owns the wait — the mark enters first, the four rings turn in the MedIndex palette, and the page loader, the session-check panel and the second overlay no longer stack behind it.`);
+
+// This is intentionally last. package.json runs boot-screen-test.js as the final
+// test entry, so the registry audit below sees the fully composed production
+// artifacts after every runtime patch and shell/offline finalizer has finished.
+require('./registry-post-compose-release-test.js');
