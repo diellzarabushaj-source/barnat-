@@ -72,13 +72,18 @@ function patchPhoneCardDensity() {
 
 function patchFullDesktopColumnMaterialization() {
   const source = read('registry-unified-table.js');
-  // The full view used to materialize every key in FULL_ORDER. That put back
-  // every column the doctor had unticked in the column picker — the register
-  // has no value for most of them, so they arrived as columns of "—" and the
-  // table reserved width for all of them. The renderer publishes the chosen
-  // columns and the dynamic ones are added on top; the picker decides the rest.
-  if (!source.includes('    const required = new Set(DYNAMIC_KEYS);\n')) {
+  // The full view must never materialize every FULL_ORDER key. Normally only
+  // dynamic columns are added. During a Favorites/Notes handoff the exact main
+  // table contract is allowed instead: it re-materializes only columns that were
+  // already visible before the handoff, so it preserves (rather than overrides)
+  // the doctor's visible table.
+  const dynamicOnly = source.includes('    const required = new Set(DYNAMIC_KEYS);\n');
+  const capturedMainTable = source.includes('    const required = contractLocked() ? new Set(mainTableContract().keys) : new Set(DYNAMIC_KEYS);\n');
+  if (!dynamicOnly && !capturedMainTable) {
     throw new Error('Full desktop view must not force columns the column picker excluded.');
+  }
+  if (capturedMainTable && !source.includes('MEDINDEX_MAIN_TABLE_CONTRACT')) {
+    throw new Error('Captured main-table materialization is missing its ownership contract.');
   }
 }
 
@@ -87,4 +92,4 @@ patchPhonePersonalControls();
 patchPhoneCardDensity();
 patchFullDesktopColumnMaterialization();
 
-console.log('PR157 merge-readiness patch passed: composed mobile owner, touch/font floor, card density and picker-owned full desktop columns.');
+console.log('PR157 merge-readiness patch passed: composed mobile owner, touch/font floor, card density and picker-owned/captured-main-table desktop columns.');
