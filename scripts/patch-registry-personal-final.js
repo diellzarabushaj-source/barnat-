@@ -43,6 +43,10 @@ require('./patch-registry-personal-cache-policy.js');
 // desktop-lite owner. Preserve that exact handoff contract while keeping the
 // personal-view guard ahead of it so Favorites/Notes never invoke it.
 require('./patch-registry-list-handoff-compat.js');
+// Fix the two visible regressions after all registry/auth composition has
+// settled: secondary API authorization errors must be confirmed by /api/auth
+// before logout, and desktop pagination may scroll only the table container.
+require('./patch-auth-pagination-regressions.js');
 // Must run before the offline manifest is derived so the privacy guard and its
 // CSS become first-class production shell assets, not a late runtime injection.
 require('./patch-user-library-account-isolation.js');
@@ -72,5 +76,9 @@ execFileSync(process.execPath, [path.join(ROOT, 'tests', 'registry-personal-desk
   cwd:ROOT,
   stdio:'inherit',
 });
+execFileSync(process.execPath, [path.join(ROOT, 'tests', 'auth-pagination-regression-test.js')], {
+  cwd:ROOT,
+  stdio:'inherit',
+});
 
-console.log('Canonical registry personalization finalizer passed: Favorites/Notes stay inside the Barnat desktop-lite owner, one registry table is visible, favorites-notes-v1.0.0 remains frozen, and per-user account isolation is gated before offline packaging.');
+console.log('Canonical registry personalization finalizer passed: Favorites/Notes stay inside the Barnat desktop-lite owner, one registry table is visible, favorites-notes-v1.0.0 remains frozen, per-user account isolation is gated, secondary API auth failures are confirmed before logout, and pagination keeps the document viewport stable before offline packaging.');
