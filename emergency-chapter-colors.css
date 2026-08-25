@@ -1,1 +1,90 @@
-placeholder
+/* MedIndex Urgjencat — chapter color system
+   Faster visual orientation without changing clinical hierarchy or content. */
+
+html.medindex-tailadmin[data-mi-page="urgjencat"] .ck-directory-chapter{
+  --ck-chapter-accent:#4777e5;
+  --ck-chapter-rgb:71,119,229;
+}
+
+/* Stable accents for the 18 canonical chapters. */
+html.medindex-tailadmin[data-mi-page="urgjencat"] .ck-directory-chapter[data-ck-chapter-group="qasja-reanimimi"]{--ck-chapter-accent:#3f72d8;--ck-chapter-rgb:63,114,216}
+html.medindex-tailadmin[data-mi-page="urgjencat"] .ck-directory-chapter[data-ck-chapter-group="kardiovaskulare"]{--ck-chapter-accent:#c95359;--ck-chapter-rgb:201,83,89}
+html.medindex-tailadmin[data-mi-page="urgjencat"] .ck-directory-chapter[data-ck-chapter-group="respiratore"]{--ck-chapter-accent:#1689a8;--ck-chapter-rgb:22,137,168}
+html.medindex-tailadmin[data-mi-page="urgjencat"] .ck-directory-chapter[data-ck-chapter-group="shoku-infektive"]{--ck-chapter-accent:#bd7626;--ck-chapter-rgb:189,118,38}
+html.medindex-tailadmin[data-mi-page="urgjencat"] .ck-directory-chapter[data-ck-chapter-group="alergjike"]{--ck-chapter-accent:#8558c7;--ck-chapter-rgb:133,88,199}
+html.medindex-tailadmin[data-mi-page="urgjencat"] .ck-directory-chapter[data-ck-chapter-group="neurologjike"]{--ck-chapter-accent:#5a64c7;--ck-chapter-rgb:90,100,199}
+html.medindex-tailadmin[data-mi-page="urgjencat"] .ck-directory-chapter[data-ck-chapter-group="endokrine-metabolike"]{--ck-chapter-accent:#218b7f;--ck-chapter-rgb:33,139,127}
+html.medindex-tailadmin[data-mi-page="urgjencat"] .ck-directory-chapter[data-ck-chapter-group="toksikologjia"]{--ck-chapter-accent:#9a56b6;--ck-chapter-rgb:154,86,182}
+html.medindex-tailadmin[data-mi-page="urgjencat"] .ck-directory-chapter[data-ck-chapter-group="gastro-abdominale"]{--ck-chapter-accent:#ad7927;--ck-chapter-rgb:173,121,39}
+html.medindex-tailadmin[data-mi-page="urgjencat"] .ck-directory-chapter[data-ck-chapter-group="urologjike-renale"]{--ck-chapter-accent:#377f9f;--ck-chapter-rgb:55,127,159}
+html.medindex-tailadmin[data-mi-page="urgjencat"] .ck-directory-chapter[data-ck-chapter-group="trauma"]{--ck-chapter-accent:#c66b32;--ck-chapter-rgb:198,107,50}
+html.medindex-tailadmin[data-mi-page="urgjencat"] .ck-directory-chapter[data-ck-chapter-group="djegiet-ambientale"]{--ck-chapter-accent:#c65373;--ck-chapter-rgb:198,83,115}
+html.medindex-tailadmin[data-mi-page="urgjencat"] .ck-directory-chapter[data-ck-chapter-group="obstetrike-gjinekologjike"]{--ck-chapter-accent:#ad528d;--ck-chapter-rgb:173,82,141}
+html.medindex-tailadmin[data-mi-page="urgjencat"] .ck-directory-chapter[data-ck-chapter-group="pediatrike"]{--ck-chapter-accent:#3d8d62;--ck-chapter-rgb:61,141,98}
+html.medindex-tailadmin[data-mi-page="urgjencat"] .ck-directory-chapter[data-ck-chapter-group="orl-oftalmo-stomatologjike"]{--ck-chapter-accent:#178f88;--ck-chapter-rgb:23,143,136}
+html.medindex-tailadmin[data-mi-page="urgjencat"] .ck-directory-chapter[data-ck-chapter-group="psikiatrike"]{--ck-chapter-accent:#7559ad;--ck-chapter-rgb:117,89,173}
+html.medindex-tailadmin[data-mi-page="urgjencat"] .ck-directory-chapter[data-ck-chapter-group="procedurat"]{--ck-chapter-accent:#66758a;--ck-chapter-rgb:102,117,138}
+html.medindex-tailadmin[data-mi-page="urgjencat"] .ck-directory-chapter[data-ck-chapter-group="barnat-urgjences"]{--ck-chapter-accent:#248269;--ck-chapter-rgb:36,130,105}
+
+/* Header: soft tint + one strong orientation cue. */
+html.medindex-tailadmin[data-mi-page="urgjencat"] .ck-directory-chapter .ck-directory-chapter-head{
+  border-color:rgba(var(--ck-chapter-rgb),.15);
+  background:linear-gradient(145deg,rgba(var(--ck-chapter-rgb),.075),rgba(var(--ck-chapter-rgb),.028));
+  box-shadow:inset 3px 0 0 rgba(var(--ck-chapter-rgb),.72);
+}
+
+html.medindex-tailadmin[data-mi-page="urgjencat"] .ck-directory-chapter .ck-directory-chapter-head span{
+  color:var(--ck-chapter-accent);
+}
+
+html.medindex-tailadmin[data-mi-page="urgjencat"] .ck-directory-chapter .ck-directory-chapter-head b{
+  border-color:rgba(var(--ck-chapter-rgb),.14);
+  background:rgba(var(--ck-chapter-rgb),.075);
+  color:var(--ck-chapter-accent);
+}
+
+/* Subchapter guide follows the parent chapter accent. */
+html.medindex-tailadmin[data-mi-page="urgjencat"] .ck-directory-chapter .ck-directory-subchapter{
+  border-left-color:rgba(var(--ck-chapter-rgb),.20);
+}
+
+html.medindex-tailadmin[data-mi-page="urgjencat"] .ck-directory-chapter .ck-directory-subchapter-title::before{
+  background:rgba(var(--ck-chapter-rgb),.62);
+}
+
+/* Selected protocol inherits its chapter identity. */
+html.medindex-tailadmin[data-mi-page="urgjencat"] .ck-directory-chapter .ck-list-button.is-active{
+  border-color:rgba(var(--ck-chapter-rgb),.19);
+  background:linear-gradient(145deg,rgba(var(--ck-chapter-rgb),.072),rgba(var(--ck-chapter-rgb),.026));
+  box-shadow:inset 2px 0 0 var(--ck-chapter-accent),0 4px 12px rgba(var(--ck-chapter-rgb),.05)!important;
+}
+
+/* Dark mode keeps the same chapter identity without over-saturation. */
+html[data-theme="dark"].medindex-tailadmin[data-mi-page="urgjencat"] .ck-directory-chapter .ck-directory-chapter-head{
+  border-color:rgba(var(--ck-chapter-rgb),.25);
+  background:linear-gradient(145deg,rgba(var(--ck-chapter-rgb),.16),rgba(var(--ck-chapter-rgb),.065));
+  box-shadow:inset 3px 0 0 rgba(var(--ck-chapter-rgb),.82);
+}
+
+html[data-theme="dark"].medindex-tailadmin[data-mi-page="urgjencat"] .ck-directory-chapter .ck-directory-chapter-head span,
+html[data-theme="dark"].medindex-tailadmin[data-mi-page="urgjencat"] .ck-directory-chapter .ck-directory-chapter-head b{
+  color:color-mix(in srgb,var(--ck-chapter-accent) 67%,white);
+}
+
+html[data-theme="dark"].medindex-tailadmin[data-mi-page="urgjencat"] .ck-directory-chapter .ck-directory-chapter-head b{
+  border-color:rgba(var(--ck-chapter-rgb),.24);
+  background:rgba(var(--ck-chapter-rgb),.12);
+}
+
+html[data-theme="dark"].medindex-tailadmin[data-mi-page="urgjencat"] .ck-directory-chapter .ck-directory-subchapter{
+  border-left-color:rgba(var(--ck-chapter-rgb),.28);
+}
+
+html[data-theme="dark"].medindex-tailadmin[data-mi-page="urgjencat"] .ck-directory-chapter .ck-list-button.is-active{
+  border-color:rgba(var(--ck-chapter-rgb),.30);
+  background:linear-gradient(145deg,rgba(var(--ck-chapter-rgb),.15),rgba(var(--ck-chapter-rgb),.065));
+}
+
+@media(prefers-reduced-motion:reduce){
+  html.medindex-tailadmin[data-mi-page="urgjencat"] .ck-directory-chapter .ck-list-button{transition:none}
+}
