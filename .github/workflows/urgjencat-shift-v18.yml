@@ -1,0 +1,39 @@
+name: Urgjencat Ready for Shift v18
+
+on:
+  pull_request:
+    paths:
+      - 'urgjencat.html'
+      - 'emergency-shift-core-v18.js'
+      - 'emergency-shift-v18.js'
+      - 'emergency-shift-v18.css'
+      - 'tests/emergency-shift-v18-test.js'
+      - '.github/workflows/urgjencat-shift-v18.yml'
+  push:
+    branches:
+      - main
+    paths:
+      - 'urgjencat.html'
+      - 'emergency-shift-core-v18.js'
+      - 'emergency-shift-v18.js'
+      - 'emergency-shift-v18.css'
+      - 'tests/emergency-shift-v18-test.js'
+      - '.github/workflows/urgjencat-shift-v18.yml'
+
+permissions:
+  contents: read
+
+jobs:
+  contract:
+    name: Ready for Shift v18 contract
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '24'
+      - name: Check v18 JavaScript syntax
+        run: node --check emergency-shift-core-v18.js && node --check emergency-shift-v18.js
+      - name: Run Ready for Shift v18 contract
+        run: node tests/emergency-shift-v18-test.js
