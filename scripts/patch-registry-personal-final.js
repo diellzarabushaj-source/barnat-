@@ -6,7 +6,7 @@ const { execFileSync } = require('node:child_process');
 /* Canonical Favorites/Notes release verifier.
  * Release: registry-personal-desktop-lite-v1.
  * Production trigger: auth-pagination-regressions-v1 is part of the final gate.
- * Deployment retry: 2026-08-26 — no behavior change, force production rebuild from main.
+ * Supabase personal owner: authenticated membership + complete Barnat rows.
  *
  * Phase 16 keeps the build contract deterministic: source ownership is audited
  * once before build patches, then this finalizer executes exactly one blocking
@@ -33,6 +33,10 @@ require('./patch-registry-personal-same-table.js');
 // are server-bounded row filters rendered by the exact same Barnat desktop-lite
 // owner, with the same DOM, toolbar, columns, widths and scroll container.
 require('./patch-registry-personal-canonical-owner.js');
+// Replace the legacy in-memory personal row source with authenticated Supabase
+// membership and targeted Supabase drug hydration. This also carries the full
+// Barnat static row contract, including prescription notation, into Favorites.
+require('./patch-registry-personal-supabase-owner.js');
 // Keep the frozen Favorites/Notes release gate's safety ordering without
 // changing ownership: the legacy branch is evaluated only when desktop-lite is
 // absent, while the normal Barnat/Favorites path stays on one table owner.
@@ -78,9 +82,13 @@ execFileSync(process.execPath, [path.join(ROOT, 'tests', 'registry-personal-desk
   cwd:ROOT,
   stdio:'inherit',
 });
+execFileSync(process.execPath, [path.join(ROOT, 'tests', 'registry-personal-supabase-owner-test.js')], {
+  cwd:ROOT,
+  stdio:'inherit',
+});
 execFileSync(process.execPath, [path.join(ROOT, 'tests', 'auth-pagination-regression-test.js')], {
   cwd:ROOT,
   stdio:'inherit',
 });
 
-console.log('Canonical registry personalization finalizer passed: Favorites/Notes stay inside the Barnat desktop-lite owner, one registry table is visible, favorites-notes-v1.0.0 remains frozen, per-user account isolation is gated, secondary API auth failures are confirmed before logout, and pagination keeps the document viewport stable before offline packaging.');
+console.log('Canonical registry personalization finalizer passed: Favorites/Notes stay inside the Barnat desktop-lite owner, personal membership and row hydration come from authenticated Supabase reads, one registry table is visible, favorites-notes-v1.0.0 remains frozen, per-user account isolation is gated, secondary API auth failures are confirmed before logout, and pagination keeps the document viewport stable before offline packaging.');
