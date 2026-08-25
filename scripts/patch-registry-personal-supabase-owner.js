@@ -23,6 +23,35 @@ function replaceBlock(source, startNeedle, endNeedle, replacement, label) {
   return source.slice(0, start) + replacement + source.slice(end);
 }
 
+function enrichListProjection(source) {
+  const startNeedle = 'const REGISTRY_LIST_SELECT = [';
+  const closing = "].join(',');";
+  const start = source.indexOf(startNeedle);
+  if (start < 0) throw new Error(`${MARKER}: registry list projection start not found.`);
+  const end = source.indexOf(closing, start + startNeedle.length);
+  if (end < 0) throw new Error(`${MARKER}: registry list projection end not found.`);
+
+  const existing = source.slice(start, end);
+  const required = [
+    'id', 'registry_number', 'protocol_no', 'pdid', 'trade_name', 'active_substance',
+    'atc_code', 'drug_class', 'use_text', 'strength', 'pharmaceutical_form', 'packaging',
+    'marketing_authorization_holder', 'manufacturer', 'ma_certificate', 'product_status',
+    'wholesale_price', 'wholesale_with_margin', 'vat_text', 'retail_price', 'validity_text',
+    'approved_population', 'pediatric_dose_summary', 'pediatric_use_status',
+    'pediatric_verification_status',
+  ];
+  const additions = required
+    .filter(field => !existing.includes(`'${field}'`))
+    .map(field => `  '${field}',\n`)
+    .join('');
+  if (!additions) return source;
+
+  // Insert only inside REGISTRY_LIST_SELECT. Phase 14 intentionally places its
+  // column-lite runtime marker between this projection and REGISTRY_DETAIL_SELECT;
+  // never replace that interstitial build-owned region.
+  return source.slice(0, end) + additions + source.slice(end);
+}
+
 function patchApi() {
   const file = 'api/drug-search.js';
   let source = read(file);
@@ -36,41 +65,7 @@ function patchApi() {
     );
   }
 
-  const richerListSelect = `const REGISTRY_LIST_SELECT = [
-  'id',
-  'registry_number',
-  'protocol_no',
-  'pdid',
-  'trade_name',
-  'active_substance',
-  'atc_code',
-  'drug_class',
-  'use_text',
-  'strength',
-  'pharmaceutical_form',
-  'packaging',
-  'marketing_authorization_holder',
-  'manufacturer',
-  'ma_certificate',
-  'product_status',
-  'wholesale_price',
-  'wholesale_with_margin',
-  'vat_text',
-  'retail_price',
-  'validity_text',
-  'approved_population',
-  'pediatric_dose_summary',
-  'pediatric_use_status',
-  'pediatric_verification_status',
-].join(',');
-`;
-  source = replaceBlock(
-    source,
-    'const REGISTRY_LIST_SELECT = [',
-    'const REGISTRY_DETAIL_SELECT = [',
-    richerListSelect,
-    'rich registry list select',
-  );
+  source = enrichListProjection(source);
 
   const richerRowMapper = `function rowForRegistryList(row) {
   return {
@@ -210,6 +205,7 @@ async function sendRegistryPersonal(req, res, startedAt) {
   if (personalBlock.includes('registryHandler.getRegistryDataset()')) throw new Error(`${MARKER}: personal endpoint still depends on the legacy registry dataset.`);
   if (personalBlock.includes('personalIdentifiers(req)')) throw new Error(`${MARKER}: browser identifiers still authorize personal membership.`);
   if (!personalBlock.includes('PersonalRegistry.resolvePersonalDrugRows(req, mode)')) throw new Error(`${MARKER}: Supabase personal resolver is not authoritative.`);
+  if (!source.includes("REGISTRY_COLUMN_LITE_RUNTIME = 'phase14-column-lite-v1'")) throw new Error(`${MARKER}: Phase 14 column-lite marker was lost.`);
 
   write(file, source);
 }
