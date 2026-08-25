@@ -6,6 +6,7 @@ const path = require('node:path');
 const ROOT = path.resolve(__dirname, '..');
 const FILE = path.join(ROOT, 'registry-user-personalization.js');
 const MARKER = 'registry-personal-release-order-v1';
+const CANONICAL_MARKER = 'registry-personal-desktop-lite-v1: canonical desktop-lite view';
 const STABILITY_MARKER = 'registry-shell-favorites-stability-v2: resilient personal runtime handoff';
 const SAME_TABLE_MARKER = 'registry-personal-same-table-v1: capture visible main-table contract';
 const VISIBLE_CONTRACT_MARKER = 'registry-personal-visible-columns-v2';
@@ -20,6 +21,7 @@ if (!source.includes(MARKER)) {
 
   const replacement = [
     '  function applyRuntimeView() {',
+    `    // ${CANONICAL_MARKER}`,
     `    // ${MARKER}`,
     '    // Keep the frozen fallback safety order while the normal desktop path',
     '    // remains owned by MEDINDEX_DESKTOP_LITE. The legacy API branch is',
@@ -60,6 +62,19 @@ if (!source.includes(MARKER)) {
   ].join('\n');
 
   source = source.slice(0, start) + replacement + source.slice(end);
+}
+
+// If this release composer is re-run over a source that already owns the
+// release-order marker, ensure the canonical marker still survives. The desktop
+// lite regression gate intentionally keys off that marker to prove Favorites do
+// not fall back to the historical full registry UI.
+if (!source.includes(CANONICAL_MARKER)) {
+  const applyNeedle = '  function applyRuntimeView() {';
+  const applyStart = source.indexOf(applyNeedle);
+  if (applyStart < 0) throw new Error(`${MARKER}: canonical applyRuntimeView boundary not found.`);
+  source = source.slice(0, applyStart + applyNeedle.length)
+    + `\n    // ${CANONICAL_MARKER}`
+    + source.slice(applyStart + applyNeedle.length);
 }
 
 // Canonical-owner replaces the applyRuntimeView region. Older stability helpers
@@ -176,6 +191,7 @@ if (!(applyStart >= 0 && fallbackFilter > applyStart && firstReveal > fallbackFi
 }
 if (!block.includes('if (!lite) {')) throw new Error(`${MARKER}: legacy fallback is not gated behind canonical owner absence.`);
 if (block.includes('MEDINDEX_LOAD_FULL_REGISTRY')) throw new Error(`${MARKER}: canonical apply block may not invoke the full registry loader.`);
+if (!final.includes(CANONICAL_MARKER)) throw new Error(`${MARKER}: canonical desktop-lite marker was not preserved.`);
 if (!final.includes(STABILITY_MARKER)) throw new Error(`${MARKER}: stability helper marker was not preserved.`);
 if (!final.includes('function clearPersonalRuntimeRecovery({ resetCount = false } = {})')) {
   throw new Error(`${MARKER}: clearPersonalRuntimeRecovery helper is missing.`);
@@ -190,4 +206,4 @@ if (!final.includes('function lockVisibleMainTableContract()')) {
   throw new Error(`${MARKER}: lockVisibleMainTableContract helper is missing.`);
 }
 
-console.log('Personal release safety ordering preserved: Barnat desktop-lite owns Favorites/Notes; stability recovery and legacy same-table fallback stay idempotent.');
+console.log('Personal release safety ordering preserved: Barnat desktop-lite owns Favorites/Notes; canonical marker, stability recovery and legacy same-table fallback stay idempotent.');
