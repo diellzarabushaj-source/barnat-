@@ -1,0 +1,163 @@
+'use strict';
+
+const fs = require('node:fs');
+const path = require('node:path');
+
+const ROOT = path.resolve(__dirname, '..');
+const MARKER = 'registry-personal-same-table-v1';
+const read = file => fs.readFileSync(path.join(ROOT, file), 'utf8').replace(/\r\n?/g, '\n');
+const write = (file, source) => fs.writeFileSync(path.join(ROOT, file), source.replace(/\r\n?/g, '\n'), 'utf8');
+
+function replaceOnce(source, before, after, label) {
+  if (source.includes(after)) return source;
+  const first = source.indexOf(before);
+  if (first < 0) throw new Error(`${MARKER}: ${label} anchor not found.`);
+  return source.slice(0, first) + after + source.slice(first + before.length);
+}
+
+function replaceRegex(source, pattern, replacement, label) {
+  if (source.includes(replacement)) return source;
+  if (!pattern.test(source)) throw new Error(`${MARKER}: ${label} block not found.`);
+  pattern.lastIndex = 0;
+  return source.replace(pattern, replacement);
+}
+
+function patchPersonalization() {
+  const file = 'registry-user-personalization.js';
+  let source = read(file);
+
+  if (!source.includes(`${MARKER}: capture visible main-table contract`)) {
+    source = replaceOnce(
+      source,
+      `  function requestPersonalRuntime() {`,
+      `  // ${MARKER}: capture visible main-table contract\n  // Favorites and Notes are filters of the registry, not separate registries.\n  // Capture exactly what the clinician is looking at before the full-data\n  // runtime is requested, then make the handoff preserve those same columns.\n  function lockVisibleMainTableContract() {\n    const header = document.getElementById('headerRow');\n    const table = document.getElementById('dataTable');\n    if (!header || !table) return false;\n    const sourceToUnified = {\n      '__select':'select', 'Nr rendor':'number', 'Emri tregtar':'trade-name',\n      'Substanca aktive':'active-substance', 'ATC Code':'atc',\n      'Klasa / Çka është':'drug-class', 'Përdorimi (fjalë kyçe)':'use',\n      'PDID':'pdid', 'ProtocolNo':'protocol', 'Fortësia':'strength',\n      'Forma farmaceutike':'form', 'Si të shënohet në recetë':'prescription-label',\n      'Madhësia e paketimit':'packaging', 'Bartësi i Autorizim Marketingut':'mah',\n      'Prodhuesi':'manufacturer', 'MA certifikata':'ma-certificate',\n      'Statusi':'status', 'Çmimi me shumicë':'wholesale-price',\n      'Çmimi me marzhë':'margin-price', 'TVSH':'vat',\n      'Çmimi me pakicë':'retail-price', 'Afati i vlefshmërisë':'validity'\n    };\n    const columns = Array.from(header.children).flatMap(cell => {\n      const raw = String(cell.dataset.registryColumnKey || cell.dataset.columnKey || '').trim();\n      const key = sourceToUnified[raw] || raw;\n      if (!key) return [];\n      const rect = cell.getBoundingClientRect();\n      return [{ key, width:Math.max(44, Math.round(rect.width || 0)), label:String(cell.textContent || '').replace(/[▲▼↕]/g, '').replace(/\\s+/g, ' ').trim() }];\n    });\n    if (columns.length < 2) return false;\n    window.MEDINDEX_MAIN_TABLE_CONTRACT = Object.freeze({\n      version:'${MARKER}',\n      columns:Object.freeze(columns.map(column => Object.freeze(column))),\n      keys:Object.freeze(columns.map(column => column.key)),\n      width:Math.max(0, Math.round(table.getBoundingClientRect().width || 0)),\n      capturedAt:Date.now(),\n    });\n    window.MEDINDEX_PERSONAL_TABLE_CONTRACT_LOCK = true;\n    window.dispatchEvent(new CustomEvent('medindex:main-table-contract', { detail:window.MEDINDEX_MAIN_TABLE_CONTRACT }));\n    return true;\n  }\n\n  function requestPersonalRuntime() {`,
+      'personal runtime entry',
+    );
+  }
+
+  // The resilience patch runs before this patch and owns the loader line. Lock
+  // the visible table immediately before that loader is consulted. Idempotent on
+  // retries: every retry re-captures the still-visible canonical table.
+  if (!source.includes(`${MARKER}: lock before full-data handoff`)) {
+    source = replaceOnce(
+      source,
+      `    const loader = window.MEDINDEX_LOAD_FULL_REGISTRY;`,
+      `    // ${MARKER}: lock before full-data handoff\n    lockVisibleMainTableContract();\n    const loader = window.MEDINDEX_LOAD_FULL_REGISTRY;`,
+      'resilient full registry loader',
+    );
+  }
+
+  // The shell normally provides Favorites, but a delayed/legacy shell can omit
+  // it. Personal state must never depend on which shell won a race during boot.
+  source = replaceRegex(
+    source,
+    /  function ensureSidebarNotes\(\) \{[\s\S]*?\n  \}\n\n  function ensureToolbarViews\(\) \{/,
+    `  function ensureSidebarNotes() {\n    if (phoneLiteOwnsViewport()) return;\n    const tools = document.querySelector('.mi-menu-group-tools');\n    if (!tools) return;\n\n    let favorite = document.querySelector('[data-nav="favorites"]');\n    if (!favorite) {\n      favorite = document.createElement('button');\n      favorite.type = 'button';\n      favorite.className = 'app-menu-link mi-menu-item';\n      favorite.dataset.nav = 'favorites';\n      favorite.setAttribute('aria-label', 'Favoritet');\n      favorite.innerHTML = '<span class="app-menu-icon mi-menu-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="m12 3 2.8 5.7 6.2.9-4.5 4.4 1.1 6.2-5.6-2.9-5.6 2.9 1.1-6.2L3 9.6l6.2-.9L12 3Z"/></svg></span><span class="app-menu-title mi-menu-label">Favoritet</span><span class="nav-mini-count mi-menu-badge" id="favoriteNavCount">' + favorites.size + '</span>';\n      const search = tools.querySelector('[data-nav="search"]');\n      if (search) tools.insertBefore(favorite, search);\n      else tools.appendChild(favorite);\n    }\n\n    if (document.querySelector('[data-nav="notes"]')) return;\n    const item = document.createElement('button');\n    item.type = 'button';\n    item.className = favorite.className;\n    item.dataset.nav = 'notes';\n    item.setAttribute('aria-label', 'Shënimet');\n    item.innerHTML = '<span class="app-menu-icon mi-menu-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 4h14v16H5z"/><path d="M8 8h8M8 12h8M8 16h5"/></svg></span><span class="app-menu-title mi-menu-label">Shënimet</span><span class="nav-mini-count mi-menu-badge" id="notesNavCount">' + noteCount() + '</span>';\n    favorite.insertAdjacentElement('afterend', item);\n  }\n\n  function ensureToolbarViews() {`,
+    'sidebar personal navigation',
+  );
+
+  write(file, source);
+}
+
+function patchUnifiedTable() {
+  const file = 'registry-unified-table.js';
+  let source = read(file);
+
+  if (!source.includes(`${MARKER}: exact main-table contract`)) {
+    source = replaceOnce(
+      source,
+      `  const currentView = () => 'full';\n  const currentOrder = () => FULL_ORDER;\n  const isMobile = () => window.innerWidth <= MOBILE_BREAKPOINT;`,
+      `  const currentView = () => 'full';\n  // ${MARKER}: exact main-table contract\n  function mainTableContract() {\n    const value = window.MEDINDEX_MAIN_TABLE_CONTRACT;\n    const columns = Array.isArray(value?.columns) ? value.columns : [];\n    const keys = columns.map(column => clean(column?.key)).filter(key => VALID_KEYS.has(key));\n    return keys.length >= 2 ? { ...value, columns, keys } : null;\n  }\n  function contractLocked() {\n    return Boolean(window.MEDINDEX_PERSONAL_TABLE_CONTRACT_LOCK && mainTableContract());\n  }\n  function contractWidth(key) {\n    const contract = mainTableContract();\n    const width = Number(contract?.columns?.find(column => column.key === key)?.width || 0);\n    return Number.isFinite(width) && width >= 44 ? width : (WIDTHS[key] || 150);\n  }\n  const currentOrder = () => {\n    if (!contractLocked()) return FULL_ORDER;\n    const keys = mainTableContract().keys;\n    return [...keys, ...FULL_ORDER.filter(key => !keys.includes(key))];\n  };\n  const isMobile = () => window.innerWidth <= MOBILE_BREAKPOINT;`,
+      'unified current-order contract',
+    );
+  }
+
+  source = replaceOnce(
+    source,
+    `    const required = new Set(DYNAMIC_KEYS);`,
+    `    const required = contractLocked() ? new Set(mainTableContract().keys) : new Set(DYNAMIC_KEYS);`,
+    'required-column contract',
+  );
+
+  if (!source.includes(`${MARKER}: visibility follows captured main table`)) {
+    source = replaceOnce(
+      source,
+      `  function keyVisible(key) {\n    if (key === 'dosage-adult'`,
+      `  function keyVisible(key) {\n    // ${MARKER}: visibility follows captured main table\n    if (contractLocked() && !mainTableContract().keys.includes(key)) return false;\n    if (key === 'dosage-adult'`,
+      'column visibility contract',
+    );
+  }
+
+  // Use the exact measured widths of the main table while Favorites/Notes own
+  // the data filter. This prevents the handoff from visibly resizing columns.
+  source = source.replace(
+    `visible.reduce((sum, key) => sum + (WIDTHS[key] || 150), 0)`,
+    `visible.reduce((sum, key) => sum + (contractLocked() ? contractWidth(key) : (WIDTHS[key] || 150)), 0)`,
+  );
+  source = source.replace(
+    `if (keyVisible(key)) col.style.width = \`${'${WIDTHS[key] || 150}'}px\`;`,
+    `if (keyVisible(key)) col.style.width = \`${'${contractLocked() ? contractWidth(key) : (WIDTHS[key] || 150)}'}px\`;`,
+  );
+
+  if (!source.includes(`${MARKER}: non-destructive contract visibility`)) {
+    source = replaceOnce(
+      source,
+      `  function normalizePencils(tbody) {`,
+      `  // ${MARKER}: non-destructive contract visibility\n  function applyContractVisibility(header, tbody) {\n    const locked = contractLocked();\n    const visible = new Set(locked ? mainTableContract().keys : FULL_ORDER);\n    [header, ...Array.from(tbody.children)].forEach(container => {\n      Array.from(container.children).forEach(cell => {\n        const key = directKey(cell) || (cell.tagName === 'TH' ? headerKey(cell) : '');\n        if (!VALID_KEYS.has(key)) return;\n        if (locked && !visible.has(key)) {\n          cell.dataset.registryPersonalContractHidden = '${MARKER}';\n          cell.style.setProperty('display', 'none', 'important');\n        } else if (cell.dataset.registryPersonalContractHidden === '${MARKER}') {\n          delete cell.dataset.registryPersonalContractHidden;\n          cell.style.removeProperty('display');\n        }\n      });\n    });\n  }\n\n  function normalizePencils(tbody) {`,
+      'contract visibility function',
+    );
+  }
+
+  source = replaceOnce(
+    source,
+    `      updateCellLabels(header, tbody);\n      normalizePencils(tbody);`,
+    `      updateCellLabels(header, tbody);\n      applyContractVisibility(header, tbody);\n      normalizePencils(tbody);`,
+    'contract visibility reconcile call',
+  );
+
+  if (!source.includes(`${MARKER}: contract lifecycle`)) {
+    source = replaceOnce(
+      source,
+      `    document.addEventListener('click', event => {`,
+      `    // ${MARKER}: contract lifecycle\n    window.addEventListener('medindex:main-table-contract', () => { lastGeometry = ''; schedule(); });\n    document.addEventListener('click', event => {\n      // Column customization is an explicit request to leave the captured main\n      // layout. Only then may the full runtime expose a different column set.\n      if (event.target.closest?.('#colPickerBtn,#colPanel')) {\n        window.MEDINDEX_PERSONAL_TABLE_CONTRACT_LOCK = false;\n        lastGeometry = '';\n        schedule();\n      }`,
+      'unified click binding',
+    );
+  }
+
+  write(file, source);
+}
+
+function patchPersonalCss() {
+  const file = 'registry-user-personalization.css';
+  let source = read(file);
+  if (source.includes(MARKER)) return;
+  source += `\n\n/* ${MARKER}: personal navigation is a first-class desktop tool. */\n@media (min-width:768px){\n  html.medindex-tailadmin body .mi-menu-group-tools > [data-nav="favorites"],\n  html.medindex-tailadmin body .mi-menu-group-tools > [data-nav="notes"]{\n    display:flex!important;\n    visibility:visible!important;\n  }\n}\n`;
+  write(file, source);
+}
+
+function verify() {
+  const personal = read('registry-user-personalization.js');
+  const unified = read('registry-unified-table.js');
+  const css = read('registry-user-personalization.css');
+  const required = [
+    [personal, `${MARKER}: capture visible main-table contract`, 'main table capture'],
+    [personal, `${MARKER}: lock before full-data handoff`, 'pre-handoff lock'],
+    [personal, `window.MEDINDEX_MAIN_TABLE_CONTRACT`, 'captured table contract'],
+    [personal, `data-nav = 'favorites'`, 'Favorites navigation recovery'],
+    [unified, `${MARKER}: exact main-table contract`, 'unified table contract'],
+    [unified, `contractLocked() ? new Set(mainTableContract().keys)`, 'contract columns synthesized'],
+    [unified, `${MARKER}: non-destructive contract visibility`, 'same-column visibility'],
+    [unified, `contractWidth(key)`, 'captured width preservation'],
+    [css, MARKER, 'personal navigation CSS'],
+  ];
+  for (const [source, needle, label] of required) {
+    if (!source.includes(needle)) throw new Error(`${MARKER}: missing ${label}.`);
+  }
+}
+
+patchPersonalization();
+patchUnifiedTable();
+patchPersonalCss();
+verify();
+
+console.log('Favorites/Notes same-table gate applied: personal filters keep the exact visible main registry columns and widths; no alternate registry UI is introduced.');
