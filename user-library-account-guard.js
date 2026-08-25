@@ -100,7 +100,9 @@
 
   function publishVerified(owner) {
     verifiedOwner = owner;
-    setPending(false);
+    // Identity verification and data reconciliation are deliberately separate.
+    // Keep personal UI hidden until the library controller has merged the clean
+    // snapshot and emits library-ready/library-synced.
     window.dispatchEvent(new CustomEvent('medindex:library-owner-verified', { detail:{ owner } }));
   }
 
@@ -157,9 +159,9 @@
   }
 
   // If an old build left personal data under the historical fixed keys without
-  // an owner stamp, quarantine-by-deletion happens synchronously before the
-  // personalization controller can read it. The server snapshot is the source
-  // that may safely restore data after identity verification.
+  // an owner stamp, deletion happens synchronously before the personalization
+  // controller can read it. The verified server snapshot is the only source that
+  // may safely restore personal data after that point.
   if (!clean(readMeta().owner) && hasPersonalData()) wipePersonalData();
 
   setPending(navigator.onLine);
@@ -197,6 +199,14 @@
     return response;
   };
 
+  window.addEventListener('medindex:library-ready', event => {
+    const eventOwner = ownerKey(event.detail?.user);
+    if (verifiedOwner && eventOwner === verifiedOwner) setPending(false);
+    else if (event.detail?.offline && clean(readMeta().owner)) setPending(false);
+  });
+  window.addEventListener('medindex:library-synced', () => {
+    if (verifiedOwner) setPending(false);
+  });
   window.addEventListener('offline', () => {
     // Offline work is allowed only when this browser already carries an explicit
     // owner stamp. Unowned personal storage has already been removed above.
