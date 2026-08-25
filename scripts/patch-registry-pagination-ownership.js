@@ -91,4 +91,5 @@ patchListOwnership();
 patchPaginationCss();
 verifyUiLogicContract();
 require('./patch-registry-pagination-v4.js');
+require('./patch-registry-pagination-v5.js');
 console.log('Registry pagination ownership passed: table-only footer, DOM + CSS visibility sync, visible-ATC-panel fail-safe and reversible accessibility state.');
