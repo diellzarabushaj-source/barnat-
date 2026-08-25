@@ -7,7 +7,7 @@ const ROOT = path.resolve(__dirname, '..');
 const read = file => fs.readFileSync(path.join(ROOT, file), 'utf8').replace(/\r\n?/g, '\n');
 const write = (file, value) => fs.writeFileSync(path.join(ROOT, file), value.replace(/\r\n?/g, '\n'), 'utf8');
 
-const PAGINATION_IMPORT = '@import url("registry-pagination-v2.css?v=20260825-1");';
+const PAGINATION_IMPORT = '@import url("registry-pagination-v2.css?v=20260825-2");';
 
 function bridgePaginationStyles() {
   let index = read('index.html');
@@ -15,7 +15,8 @@ function bridgePaginationStyles() {
   write('index.html', index);
 
   let tools = read('registry-table-tools.css');
-  if (!tools.includes(PAGINATION_IMPORT)) tools = `${PAGINATION_IMPORT}\n\n${tools}`;
+  tools = tools.replace(/^@import url\("registry-pagination-v2\.css\?v=[^"]+"\);\n*/m, '');
+  tools = `${PAGINATION_IMPORT}\n\n${tools.replace(/^\n+/, '')}`;
   write('registry-table-tools.css', tools);
 }
 
@@ -35,4 +36,4 @@ function verifyTailAdminOrder() {
 
 bridgePaginationStyles();
 verifyTailAdminOrder();
-console.log('Registry pagination v2 TailAdmin bridge passed: the numbered pagination stays inside the single authorized table-tools stylesheet layer.');
+console.log('Registry pagination v3 TailAdmin bridge passed: refined pagination remains inside the single authorized table-tools stylesheet layer.');
