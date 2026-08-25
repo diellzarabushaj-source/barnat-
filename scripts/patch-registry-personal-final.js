@@ -6,6 +6,7 @@ const { execFileSync } = require('node:child_process');
 /* Canonical Favorites/Notes release verifier.
  * Release: registry-personal-desktop-lite-v1.
  * Production trigger: auth-pagination-regressions-v1 is part of the final gate.
+ * Deployment retry: 2026-08-26 — no behavior change, force production rebuild from main.
  *
  * Phase 16 keeps the build contract deterministic: source ownership is audited
  * once before build patches, then this finalizer executes exactly one blocking
