@@ -27,14 +27,39 @@ const SCHEDULE_KEY = 'medindex_emergency_flashcards_v4schedule:emergency-v17-tes
 
 async function openEmergency(page, width = 1360, height = 900) {
   const errors = [];
+  const pending = new Map();
+  const completed = [];
+  const tracked = request => ['document','script','stylesheet'].includes(request.resourceType());
   page.on('pageerror', error => errors.push(String(error)));
+  page.on('request', request => {
+    if (tracked(request)) pending.set(request.url(), request.resourceType());
+  });
+  page.on('requestfinished', request => {
+    if (!tracked(request)) return;
+    pending.delete(request.url());
+    completed.push(`${request.resourceType()}:${new URL(request.url()).pathname}`);
+    if (completed.length > 16) completed.shift();
+  });
+  page.on('requestfailed', request => {
+    if (!tracked(request)) return;
+    pending.delete(request.url());
+    completed.push(`FAILED ${request.resourceType()}:${new URL(request.url()).pathname} ${request.failure()?.errorText || ''}`);
+    if (completed.length > 16) completed.shift();
+  });
   await page.setViewportSize({width,height});
   await page.route('**/sanity-clinical-client.js*', route => route.fulfill({
     status:200,
     contentType:'application/javascript; charset=utf-8',
     body:`window.MedIndexSanity=Object.freeze({projectId:'test',dataset:'test',studioUrl:'#',query:async groq=>String(groq).includes('"sourceCount":count(sources)')?[{_id:'emergency-v17-test',reviewStatus:'verified',sourceCount:1,sources:[{title:'Guideline',url:'https://example.test/guideline'}]}]:${JSON.stringify([fixture])}});`,
   }));
-  await page.goto('http://127.0.0.1:4173/urgjencat.html', {waitUntil:'domcontentloaded'});
+  await page.goto('http://127.0.0.1:4173/urgjencat.html', {waitUntil:'commit', timeout:10000});
+  try {
+    await page.waitForLoadState('domcontentloaded', {timeout:7000});
+  } catch (error) {
+    console.log('URGJENCAT_DCL_PENDING', JSON.stringify([...pending.entries()].map(([url,type]) => ({type,path:new URL(url).pathname}))));
+    console.log('URGJENCAT_DCL_LAST_COMPLETED', JSON.stringify(completed));
+    throw error;
+  }
   await page.waitForFunction(() => document.documentElement.classList.contains('auth-ready'));
   await expect(page.locator('#emergencyDetail .ck-sl-experience')).toBeVisible({timeout:10000});
   return errors;
