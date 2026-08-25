@@ -8,7 +8,11 @@ on:
       - 'emergency-shift-core-v18.js'
       - 'emergency-shift-v18.js'
       - 'emergency-shift-v18.css'
+      - 'emergency-shift-governance-v18.js'
+      - 'emergency-shift-governance-v18.css'
+      - 'emergency-review-loader-v16.js'
       - 'tests/emergency-shift-v18-test.js'
+      - 'tests/emergency-shift-governance-v18-test.js'
       - '.github/workflows/urgjencat-shift-v18.yml'
   push:
     branches:
@@ -19,7 +23,11 @@ on:
       - 'emergency-shift-core-v18.js'
       - 'emergency-shift-v18.js'
       - 'emergency-shift-v18.css'
+      - 'emergency-shift-governance-v18.js'
+      - 'emergency-shift-governance-v18.css'
+      - 'emergency-review-loader-v16.js'
       - 'tests/emergency-shift-v18-test.js'
+      - 'tests/emergency-shift-governance-v18-test.js'
       - '.github/workflows/urgjencat-shift-v18.yml'
 
 permissions:
@@ -36,6 +44,8 @@ jobs:
         with:
           node-version: '24'
       - name: Check v18 JavaScript syntax
-        run: node --check emergency-physician-bootstrap-v18.js && node --check emergency-shift-core-v18.js && node --check emergency-shift-v18.js
+        run: node --check emergency-physician-bootstrap-v18.js && node --check emergency-shift-core-v18.js && node --check emergency-shift-v18.js && node --check emergency-shift-governance-v18.js
       - name: Run Ready for Shift v18 contract
         run: node tests/emergency-shift-v18-test.js
+      - name: Run reviewer governance summary contract
+        run: node tests/emergency-shift-governance-v18-test.js

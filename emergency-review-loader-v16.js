@@ -6,10 +6,12 @@
   if (!reviewMode) return;
 
   const VERSION = '20260824-1';
+  const SHIFT_VERSION = '20260825-1';
   const CSS = [
     `emergency-verification-queue-v14.css?v=${VERSION}`,
     `emergency-consistency-v15.css?v=${VERSION}`,
     `emergency-evidence-v16.css?v=${VERSION}`,
+    `emergency-shift-governance-v18.css?v=${SHIFT_VERSION}`,
   ];
   const JS = [
     `emergency-verification-queue-core-v14.js?v=${VERSION}`,
@@ -18,6 +20,7 @@
     `emergency-verification-queue-v14.js?v=${VERSION}`,
     `emergency-consistency-v15.js?v=${VERSION}`,
     `emergency-evidence-v16.js?v=${VERSION}`,
+    `emergency-shift-governance-v18.js?v=${SHIFT_VERSION}`,
   ];
 
   function loadCss(href) {
