@@ -20,9 +20,9 @@ const fast = read('registry-fast-start.js');
 const release = read('registry-ui-release.js');
 
 assert.match(index,/data-registry-ui-release="20260812-1"/,'index must use the current audited dose release');
-assert.match(index,/registry-unified-table\.css\?v=20260820-registry-columns-v2/,'unified population-aware table stylesheet must be wired');
+assert.match(index,/registry-unified-table\.css\?v=registry-canonical-main-table-v1/,'unified population-aware table stylesheet must be wired');
 assert.match(index,/registry-full-text-expansion\.css\?v=20260805-2/,'full-row text stylesheet must be wired');
-assert.match(index,/registry-unified-table\.js\?v=20260820-registry-columns-v2/,'unified population-aware table controller must be wired');
+assert.match(index,/registry-unified-table\.js\?v=registry-canonical-main-table-v1/,'unified population-aware table controller must be wired');
 assert.match(index,/registry-mobile-lite\.js\?v=20260812-2/,'current phone lightweight registry client must be wired');
 assert.match(index,/registry-mobile-lite\.css\?v=20260812-2/,'current phone lightweight registry stylesheet must be wired');
 assert.match(index,/registry-desktop-lite\.js\?v=20260812-1/,'Phase 10 desktop lightweight registry client must be wired');
@@ -86,9 +86,9 @@ assert.doesNotMatch(loader,/scheduleRuntime\('desktop-or-legacy'\)/,'normal auth
 assert.doesNotMatch(loader,/FIRST_INTERACTION_FALLBACK_MS|POST_INTERACTION_GRACE_MS|INTERACTION_EVENTS/,'legacy interaction gates must remain removed');
 assert.doesNotMatch(loader,/MEDINDEX_REGISTRY_UI_READY\s*=\s*new Promise/,'loader must not create a circular readiness promise');
 
-assert.match(runtime,/registry-unified-table-20260801-1/,'unified controller version is missing');
+assert.match(runtime,/registry-canonical-main-table-v1/,'canonical unified controller version is missing');
 assert.match(runtime,/const FULL_ORDER = Object\.freeze/,'one canonical full-column order is required');
-assert.match(runtime,/const CLINICAL_ORDER = Object\.freeze/,'one canonical clinical-column order is required');
+assert.match(runtime,/const CLINICAL_ORDER = Object\.freeze/,'legacy clinical order may remain as compatibility metadata but must not own a second view');
 assert.match(runtime,/'select', 'number', 'active-substance', 'trade-name'/,'Nr and active substance must precede the trade name');
 assert.match(runtime,/'clinical-action', 'dose-calculator'/,'verified dose must be part of canonical clinical order');
 assert.match(runtime,/DYNAMIC_KEYS = new Set\([\s\S]*'dose-calculator'/,'verified dose must be a canonical dynamic column');
@@ -96,7 +96,7 @@ assert.match(runtime,/clinical-action':54[\s\S]*'dose-calculator':128/,'edit and
 assert.match(runtime,/dataset\.registryDoseCalculatorColumn === 'dose-calculator'/,'unified controller must recognize the dose column');
 assert.match(runtime,/key === 'clinical-status' \|\| key === 'clinical-action'/,'verification/editor columns must stay out of the visible registry surface');
 assert.match(runtime,/--registry-frozen-active-left/,'runtime must calculate the frozen active-substance offset');
-assert.match(runtime,/let storedView = 'full'/,'the first visit must use the user-configurable full table view');
+assert.match(runtime,/document\.documentElement\.dataset\.registryUxView = 'full'/,'the registry must be frozen to the one canonical main-table view');
 assert.match(runtime,/table\.querySelectorAll\(':scope > colgroup'\)\.forEach\(group => group\.remove\(\)\)/,'only one colgroup may survive');
 assert.match(runtime,/observer\.observe\(header, \{ childList:true \}\)/,'header observer must be shallow');
 assert.match(runtime,/observer\.observe\(tbody, \{ childList:true \}\)/,'body observer must watch only row replacement');
