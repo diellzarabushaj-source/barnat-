@@ -76,7 +76,7 @@ assert.match(ui, /Gjurmueshmëri në nivel protokolli/);
 assert.match(ui, /Burimet janë në nivel protokolli/);
 assert.match(ui, /nuk po lidh automatikisht një burim me një hap apo pohim specifik/);
 assert.match(ui, /Ky panel nuk aprovon dhe nuk ndryshon Sanity/);
-assert.doesNotMatch(ui, /patch_documents|reviewStatus\s*=|gemini|generative/i);
+assert.doesNotMatch(ui, /patch_documents|reviewStatus\s*=(?!=)|gemini|generative/i);
 assert.match(css, /@media\(max-width:760px\)/);
 assert.match(css, /prefers-reduced-motion:reduce/);
 

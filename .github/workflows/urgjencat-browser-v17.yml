@@ -1,0 +1,69 @@
+name: Urgjencat browser v17
+
+on:
+  pull_request:
+    paths:
+      - 'urgjencat.html'
+      - 'emergency-*.js'
+      - 'emergency-*.css'
+      - 'tests/urgjencat-*-browser.spec.js'
+      - 'tests/clinical-smoke-server.js'
+      - '.github/workflows/urgjencat-browser-v17.yml'
+  push:
+    branches: [main]
+    paths:
+      - 'urgjencat.html'
+      - 'emergency-*.js'
+      - 'emergency-*.css'
+      - 'tests/urgjencat-*-browser.spec.js'
+      - 'tests/clinical-smoke-server.js'
+      - '.github/workflows/urgjencat-browser-v17.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  bedside-browser:
+    runs-on: ubuntu-latest
+    timeout-minutes: 12
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          version: 10.28.0
+          run_install: false
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          cache: pnpm
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile --ignore-scripts
+
+      - name: Build and run static gates
+        run: pnpm test
+
+      - name: Install Playwright Chromium
+        run: pnpm exec playwright install --with-deps chromium
+
+      - name: Run focused Urgjencat browser regression
+        shell: bash
+        run: |
+          set -euo pipefail
+          node tests/clinical-smoke-server.js > /tmp/urgjencat-browser-server.log 2>&1 &
+          SERVER_PID=$!
+          trap 'kill "$SERVER_PID" 2>/dev/null || true; cat /tmp/urgjencat-browser-server.log' EXIT
+          for attempt in {1..30}; do
+            if curl -fsS http://127.0.0.1:4173/urgjencat.html >/dev/null; then break; fi
+            sleep 1
+          done
+          pnpm exec playwright test \
+            tests/urgjencat-summary-learn-browser.spec.js \
+            tests/urgjencat-physician-v17-browser.spec.js \
+            --reporter=line --workers=1 --retries=0
