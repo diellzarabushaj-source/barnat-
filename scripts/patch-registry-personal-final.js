@@ -20,6 +20,9 @@ require('./patch-phase20-registry-list-controller.js');
 require('./patch-phase21-registry-list-cache-coherence.js');
 require('./patch-phase22-registry-list-release-gate.js');
 require('./patch-registry-shell-favorites-stability.js');
+// Must run before the offline manifest is derived so the privacy guard and its
+// CSS become first-class production shell assets, not a late runtime injection.
+require('./patch-user-library-account-isolation.js');
 
 const ROOT = path.resolve(__dirname, '..');
 execFileSync(process.execPath, [path.join(ROOT, 'tests', 'registry-personal-release-gate.js')], {
@@ -30,5 +33,9 @@ execFileSync(process.execPath, [path.join(ROOT, 'tests', 'registry-shell-favorit
   cwd:ROOT,
   stdio:'inherit',
 });
+execFileSync(process.execPath, [path.join(ROOT, 'tests', 'user-library-account-isolation-test.js')], {
+  cwd:ROOT,
+  stdio:'inherit',
+});
 
-console.log('Canonical registry personalization finalizer passed: frozen favorites-notes-v1.0.0 acceptance gate plus shell/Favorites stability gate completed before offline packaging; Registry List Phase 19-22 were applied first.');
+console.log('Canonical registry personalization finalizer passed: frozen favorites-notes-v1.0.0, shell/Favorites stability and per-user account-isolation gates completed before offline packaging; Registry List Phase 19-22 were applied first.');
