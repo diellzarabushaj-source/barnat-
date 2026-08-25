@@ -57,6 +57,10 @@
     return ({critical:'Kritike','very-urgent':'Shumë urgjente',urgent:'Urgjente'})[value] || '';
   }
 
+  function triageClass(value) {
+    return ['critical','very-urgent','urgent'].includes(value) ? `is-${value}` : '';
+  }
+
   function reviewLabel(value) {
     return ({verified:'Verifikuar',review:'Për verifikim',draft:'Draft'})[value] || '';
   }
@@ -165,11 +169,12 @@
     const item = result.item || {};
     const meta = [...(item.icdCodes || []).slice(0,2), item.category].filter(Boolean).join(' · ');
     const triage = triageLabel(item.triageLevel);
+    const triageTone = triageClass(item.triageLevel);
     const review = reviewLabel(item.reviewStatus);
     const strength = strengthLabel(result.strength);
-    return `<button type="button" id="ck-v8-result-${index}" role="option" aria-selected="false" data-ck-v8-id="${esc(item._id || '')}" data-ck-v8-strength="${esc(result.strength || '')}">
+    return `<button type="button" id="ck-v8-result-${index}" role="option" aria-selected="false" data-ck-v8-id="${esc(item._id || '')}" data-ck-v8-strength="${esc(result.strength || '')}" data-ck-v8-triage="${esc(item.triageLevel || '')}">
       <span class="ck-v8-result-body">
-        <span class="ck-v8-result-title"><strong>${esc(item.title || 'Urgjencë')}</strong>${triage ? `<em>${esc(triage)}</em>` : ''}</span>
+        <span class="ck-v8-result-title"><strong>${esc(item.title || 'Urgjencë')}</strong>${triage ? `<em class="${esc(triageTone)}">${esc(triage)}</em>` : ''}</span>
         ${meta ? `<small class="ck-v8-meta">${esc(meta)}</small>` : ''}
         ${evidenceMarkup(result)}
       </span>
