@@ -11,8 +11,8 @@ const css = read('registry-unified-table.css');
 const rowExpand = read('registry-row-expand.js');
 const dosage = read('registry-dosage-columns-v3.js');
 
-assert.match(index, /registry-unified-table\.css\?v=20260820-registry-columns-v2/);
-assert.match(index, /registry-unified-table\.js\?v=20260820-registry-columns-v2/);
+assert.match(index, /registry-unified-table\.css\?v=registry-canonical-main-table-v1/);
+assert.match(index, /registry-unified-table\.js\?v=registry-canonical-main-table-v1/);
 assert.ok(
   index.indexOf('registry-dosage-loader.js') < index.indexOf('registry-unified-table.js'),
   'The unified controller must reconcile dosage columns after the idle dosage loader is wired.'
@@ -23,7 +23,7 @@ assert.ok(
 );
 assert.doesNotMatch(index, /registry-table-integrity\.(?:css|js)/, 'legacy integrity controller must not load');
 
-assert.match(script, /registry-unified-table-20260801-1/);
+assert.match(script, /registry-canonical-main-table-v1/);
 assert.match(script, /const FULL_ORDER = Object\.freeze/);
 assert.match(script, /const CLINICAL_ORDER = Object\.freeze/);
 assert.match(script, /data-registry-column-key|registryColumnKey/);
@@ -54,10 +54,8 @@ assert.match(css, /:is\(\.registry-dose-dialog,\.registry-cell-preview-dialog\)[
 assert.match(css, /@media \(max-width:760px\)/);
 assert.match(css, /registry-frozen-columns-v2/, 'desktop frozen-column contract must be explicit');
 assert.match(css, /\[data-registry-column-key="number"\][\s\S]{0,180}position:sticky!important[\s\S]{0,120}left:0!important/, 'Nr must be the first frozen data column');
-// The prescription notation is what a doctor reads a row by, so it is the
-// column that stays put; the active substance scrolls with the rest.
 assert.match(css, /\[data-registry-column-key="prescription-label"\][\s\S]{0,220}position:sticky!important/, 'the prescription notation must be the second frozen data column');
 assert.doesNotMatch(css, /\[data-registry-column-key="active-substance"\]\s*\{[^}]*position:sticky!important/, 'active substance must remain horizontally scrollable');
 assert.doesNotMatch(css, /\[data-registry-column-key="trade-name"\]\s*\{[^}]*position:sticky!important/, 'trade name must remain horizontally scrollable');
 
-console.log('Registry table controllers use direct-row observation; nested dosage changes refresh row expansion explicitly; only Nr + prescription notation freeze on desktop.');
+console.log('Registry canonical table controller uses direct-row observation; nested dosage changes refresh row expansion explicitly; only Nr + prescription notation freeze on desktop.');
