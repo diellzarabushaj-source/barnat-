@@ -49,9 +49,13 @@ if (desktop.includes('SEARCH_DEBOUNCE_MS')) {
 }
 
 const suggest = read(SUGGEST);
+if (!/version:'registry-search-suggest-v(?:2|[3-9]|\d{2,})'/.test(suggest)) {
+  throw new Error('Phase 18 requires registry-search-suggest v2 or newer.');
+}
+if (!/const DEBOUNCE_MS = (?:32|36);/.test(suggest)) {
+  throw new Error('Phase 18 smart autocomplete debounce must remain at or below the audited 36ms budget.');
+}
 for (const required of [
-  "version:'registry-search-suggest-v2'",
-  'const DEBOUNCE_MS = 36;',
   "const API = '/api/drug-search';",
   'const REMOTE_CACHE_LIMIT = 64;',
   'function abortRemote()',
@@ -77,10 +81,13 @@ if (!fuzzyBlock || /result\?\.(?:use|drugClass|form)|indication/i.test(fuzzyBloc
 let html = read(INDEX);
 const scriptPattern = /registry-search-suggest\.js\?v=[^"&]+/;
 if (!scriptPattern.test(html)) throw new Error('Phase 18 could not find the registry suggestion script tag.');
-html = html.replace(scriptPattern, 'registry-search-suggest.js?v=smart-v2');
-write(INDEX, html);
-if (!read(INDEX).includes('registry-search-suggest.js?v=smart-v2')) {
+if (!html.includes('registry-search-suggest.js?v=search-premium-v3')) {
+  html = html.replace(scriptPattern, 'registry-search-suggest.js?v=smart-v2');
+  write(INDEX, html);
+}
+const wired = read(INDEX);
+if (!wired.includes('registry-search-suggest.js?v=search-premium-v3') && !wired.includes('registry-search-suggest.js?v=smart-v2')) {
   throw new Error('Phase 18 smart-search cache version was not wired into index.html.');
 }
 
-console.log('Phase 18 smart search passed: 36ms local autocomplete, whole-registry bounded remote enrichment, identity-only typo rescue, 80ms stale-safe table search, and indexed non-blocking candidate paths.');
+console.log('Phase 18 smart search passed: <=36ms local autocomplete budget, whole-registry bounded remote enrichment, identity-only typo rescue, 80ms stale-safe table search, and indexed non-blocking candidate paths.');
