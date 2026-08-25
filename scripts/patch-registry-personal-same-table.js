@@ -35,9 +35,6 @@ function patchPersonalization() {
     );
   }
 
-  // The resilience patch runs before this patch and owns the loader line. Lock
-  // the visible table immediately before that loader is consulted. Idempotent on
-  // retries: every retry re-captures the still-visible canonical table.
   if (!source.includes(`${MARKER}: lock before full-data handoff`)) {
     source = replaceOnce(
       source,
@@ -47,8 +44,6 @@ function patchPersonalization() {
     );
   }
 
-  // The shell normally provides Favorites, but a delayed/legacy shell can omit
-  // it. Personal state must never depend on which shell won a race during boot.
   source = replaceRegex(
     source,
     /  function ensureSidebarNotes\(\) \{[\s\S]*?\n  \}\n\n  function ensureToolbarViews\(\) \{/,
@@ -80,23 +75,23 @@ function patchUnifiedTable() {
   );
 
   if (!source.includes(`${MARKER}: visibility follows captured main table`)) {
-    source = replaceOnce(
+    source = replaceRegex(
       source,
-      `  function keyVisible(key) {\n    if (key === 'dosage-adult'`,
-      `  function keyVisible(key) {\n    // ${MARKER}: visibility follows captured main table\n    if (contractLocked() && !mainTableContract().keys.includes(key)) return false;\n    if (key === 'dosage-adult'`,
+      /  function keyVisible\(key\) \{\n/,
+      `  function keyVisible(key) {\n    // ${MARKER}: visibility follows captured main table\n    if (contractLocked() && !mainTableContract().keys.includes(key)) return false;\n`,
       'column visibility contract',
     );
   }
 
-  // Use the exact measured widths of the main table while Favorites/Notes own
-  // the data filter. This prevents the handoff from visibly resizing columns.
+  // Preserve the measured geometry of the table that was visible before the
+  // Favorites/Notes data handoff.
   source = source.replace(
-    `visible.reduce((sum, key) => sum + (WIDTHS[key] || 150), 0)`,
-    `visible.reduce((sum, key) => sum + (contractLocked() ? contractWidth(key) : (WIDTHS[key] || 150)), 0)`,
+    /visible\.reduce\(\(sum, key\) => sum \+ \(WIDTHS\[key\] \|\| 150\), 0\)/,
+    'visible.reduce((sum, key) => sum + (contractLocked() ? contractWidth(key) : (WIDTHS[key] || 150)), 0)',
   );
   source = source.replace(
-    `if (keyVisible(key)) col.style.width = \`${'${WIDTHS[key] || 150}'}px\`;`,
-    `if (keyVisible(key)) col.style.width = \`${'${contractLocked() ? contractWidth(key) : (WIDTHS[key] || 150)}'}px\`;`,
+    /if \(keyVisible\(key\)\) col\.style\.width = `\$\{WIDTHS\[key\] \|\| 150\}px`;/,
+    'if (keyVisible(key)) col.style.width = `${contractLocked() ? contractWidth(key) : (WIDTHS[key] || 150)}px`;',
   );
 
   if (!source.includes(`${MARKER}: non-destructive contract visibility`)) {
@@ -119,7 +114,7 @@ function patchUnifiedTable() {
     source = replaceOnce(
       source,
       `    document.addEventListener('click', event => {`,
-      `    // ${MARKER}: contract lifecycle\n    window.addEventListener('medindex:main-table-contract', () => { lastGeometry = ''; schedule(); });\n    document.addEventListener('click', event => {\n      // Column customization is an explicit request to leave the captured main\n      // layout. Only then may the full runtime expose a different column set.\n      if (event.target.closest?.('#colPickerBtn,#colPanel')) {\n        window.MEDINDEX_PERSONAL_TABLE_CONTRACT_LOCK = false;\n        lastGeometry = '';\n        schedule();\n      }`,
+      `    // ${MARKER}: contract lifecycle\n    window.addEventListener('medindex:main-table-contract', () => { lastGeometry = ''; schedule(); });\n    document.addEventListener('click', event => {\n      if (event.target.closest?.('#colPickerBtn,#colPanel')) {\n        window.MEDINDEX_PERSONAL_TABLE_CONTRACT_LOCK = false;\n        lastGeometry = '';\n        schedule();\n      }`,
       'unified click binding',
     );
   }
@@ -143,11 +138,11 @@ function verify() {
     [personal, `${MARKER}: capture visible main-table contract`, 'main table capture'],
     [personal, `${MARKER}: lock before full-data handoff`, 'pre-handoff lock'],
     [personal, `window.MEDINDEX_MAIN_TABLE_CONTRACT`, 'captured table contract'],
-    [personal, `data-nav = 'favorites'`, 'Favorites navigation recovery'],
+    [personal, `favorite.dataset.nav = 'favorites'`, 'Favorites navigation recovery'],
     [unified, `${MARKER}: exact main-table contract`, 'unified table contract'],
     [unified, `contractLocked() ? new Set(mainTableContract().keys)`, 'contract columns synthesized'],
     [unified, `${MARKER}: non-destructive contract visibility`, 'same-column visibility'],
-    [unified, `contractWidth(key)`, 'captured width preservation'],
+    [unified, `contractLocked() ? contractWidth(key)`, 'captured width preservation'],
     [css, MARKER, 'personal navigation CSS'],
   ];
   for (const [source, needle, label] of required) {
