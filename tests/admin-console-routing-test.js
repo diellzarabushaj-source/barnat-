@@ -127,6 +127,8 @@ const rewriteFor = source => vercel.rewrites.find(rule => rule.source === source
     'admin dialogs must own vertical overflow inside the 90dvh mobile viewport instead of pushing the dashboard');
   assert.match(css, /html:has\(\.mi-dialog\[open\]\),body:has\(\.mi-dialog\[open\]\)\{overflow:hidden\}/,
     'the document behind an open admin dialog must be scroll-locked');
+  assert.match(css, /\.mi-dialog-actions\{[\s\S]*?position:sticky;[\s\S]*?bottom:-?\d+px/,
+    'the long DRx drug editor must keep its actions sticky and reachable while the dialog scrolls');
   assert.match(css, /@media\(max-width:650px\)\{[\s\S]*?\.mi-form-grid,\.mi-detail-list\{grid-template-columns:1fr\}/,
     'drug forms and detail lists must collapse to one column on phones');
 
