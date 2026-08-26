@@ -8,6 +8,7 @@ const ROOT = path.resolve(__dirname, '..');
 const MARKER = 'auth-pagination-regressions-v1';
 const DEDUPE_MARKER = 'auth-read-dedupe-v1';
 const HANDOFF_BUSY_MARKER = 'desktop-handoff-busy-release-v1';
+const READY_CUTOVER_MARKER = 'desktop-full-runtime-ready-cutover-v1';
 const read = file => fs.readFileSync(path.join(ROOT, file), 'utf8').replace(/\r\n?/g, '\n');
 const write = (file, source) => fs.writeFileSync(path.join(ROOT, file), source.replace(/\r\n?/g, '\n'), 'utf8');
 
@@ -200,10 +201,34 @@ function patchDesktopPagination() {
     throw new Error(`${MARKER}: pagination viewport reset was not wired.`);
   }
 
-  // When desktop-lite hands ownership to the full registry it must also release
-  // every transient state it owns. Otherwise an in-flight lightweight request
-  // can leave the shared #pagination with `.is-loading` / pointer-events:none
-  // after the numbered full-runtime pagination has already rendered into it.
+  // Any path that makes the full runtime authoritative must terminate the
+  // lightweight owner. `requestFullRegistry()` is one path, but other features
+  // may load the full runtime directly and only announce `medindex:registry-ready`.
+  // Both transitions release the shared #pagination busy state before the full
+  // runtime's numbered pagination can become interactive.
+  if (!source.includes(READY_CUTOVER_MARKER)) {
+    const readyAnchor = [
+      "  window.addEventListener('medindex:registry-ready', () => {",
+      '    window.MEDINDEX_REGISTRY_PARTIAL = false;',
+      '  }, { once:true });',
+    ].join('\n');
+    const readyReplacement = [
+      "  window.addEventListener('medindex:registry-ready', () => {",
+      `    // ${READY_CUTOVER_MARKER}: full runtime readiness is the authoritative owner boundary.`,
+      '    state.disabled = true;',
+      '    window.clearTimeout(searchTimer);',
+      '    searchTimer = 0;',
+      '    pageController?.abort();',
+      '    pageController = null;',
+      '    setBusy(false);',
+      '    window.MEDINDEX_DESKTOP_LITE_ACTIVE = false;',
+      '    window.MEDINDEX_REGISTRY_PARTIAL = false;',
+      "    html.dataset.registryDesktopLiteState = 'full-runtime';",
+      '  }, { once:true });',
+    ].join('\n');
+    source = replaceOnce(source, readyAnchor, readyReplacement, 'full-runtime-ready owner cutover');
+  }
+
   if (!source.includes(HANDOFF_BUSY_MARKER)) {
     const handoffAnchor = [
       '    state.disabled = true;',
@@ -221,10 +246,13 @@ function patchDesktopPagination() {
     ].join('\n');
     source = replaceOnce(source, handoffAnchor, handoffReplacement, 'desktop handoff busy-state release');
   }
-  if (!source.includes(HANDOFF_BUSY_MARKER)
+
+  if (!source.includes(READY_CUTOVER_MARKER)
+      || !source.includes(HANDOFF_BUSY_MARKER)
+      || !source.includes("html.dataset.registryDesktopLiteState = 'full-runtime';")
       || !source.includes('pageController?.abort();')
       || !source.includes('setBusy(false);')) {
-    throw new Error(`${HANDOFF_BUSY_MARKER}: desktop owner does not release pagination busy state.`);
+    throw new Error(`${READY_CUTOVER_MARKER}: desktop owner cutover does not release all lightweight state.`);
   }
   write(file, source);
 }
@@ -234,4 +262,4 @@ patchDesktopPagination();
 for (const file of ['auth-client.js', 'registry-desktop-lite.js']) {
   execFileSync(process.execPath, ['--check', path.join(ROOT, file)], { stdio:'pipe' });
 }
-console.log('Auth + pagination regression patch applied: secondary API 401/403 is auth-confirmed before logout, table paging keeps the document viewport stable, and desktop-lite releases shared pagination busy state before full-runtime handoff.');
+console.log('Auth + pagination regression patch applied: secondary API 401/403 is auth-confirmed before logout, table paging keeps the document viewport stable, and every full-runtime owner cutover terminates desktop-lite busy/request state.');
