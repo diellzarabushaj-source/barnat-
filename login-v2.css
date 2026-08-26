@@ -1039,15 +1039,13 @@ input,summary{font:inherit}
 }
 
 /* --- Marka DRx ----------------------------------------------------------- */
-/* Shenja vektoriale zëvendëson logon raster: merr `currentColor`, prandaj e
-   njëjta shenjë punon mbi guaskën e ndritur dhe mbi footer-in e errët, pa
-   sfond dhe pa një skedë të dytë. */
+/* Wordmark-i vjen si <img>: të dy variantet me gradient e përdorin të njëjtin
+   `id` brenda, prandaj inline-imi i tyre në të njëjtën faqe do t'i përplaste.
+   Varianti i argjendtë rri mbi sipërfaqe të ndritura, i bardhi mbi bandën navy. */
 
-.lv-drx-logo{display:inline-flex;align-items:center;gap:10px;color:#0d253d;}
-.lv-drx-mark{width:30px;height:30px;flex:0 0 auto;display:block;}
-.lv-drx-word{font-size:26px;font-weight:300;line-height:1;letter-spacing:.7px;color:inherit;}
-.lv-logo-on-dark .lv-drx-logo,.lv-drx-logo.lv-logo-on-dark{color:#fff;}
-.lv-footer .lv-drx-logo,.lv-footer-brand .lv-drx-logo{color:inherit;}
+.lv-drx-img{height:44px;width:auto;display:block;}
+.lv-drx-hero-img{width:min(208px,34vw);height:auto;display:block;opacity:.42;max-width:100%;}
 
-.lv-drx-hero{display:inline-flex;color:rgba(13,37,61,.16);}
-.lv-drx-hero .lv-drx-mark{width:200px;height:200px;}
+@media (max-width:767px){
+  .lv-drx-img{height:34px;}
+}
