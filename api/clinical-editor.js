@@ -104,6 +104,34 @@ async function officialBrand(req, res) {
   }
 }
 
+function rowActionsRelease(req, res) {
+  if (!['GET', 'HEAD'].includes(req.method || 'GET')) {
+    res.setHeader('Allow', 'GET, HEAD');
+    return res.status(405).end();
+  }
+
+  const kind = queryValue(req, 'rowActionsRelease');
+  let payload;
+  if (kind === 'manifest') {
+    payload = require('../registry-row-actions-release.json');
+    if (payload?.schema !== 'medindex.registry.row-actions.release.v1') return res.status(503).end();
+  } else if (kind === 'evidence') {
+    payload = require('../registry-row-actions-build-evidence.json');
+    if (payload?.schema !== 'medindex.registry.row-actions.build-evidence.v1') return res.status(503).end();
+  } else {
+    return res.status(404).end();
+  }
+
+  const body = `${JSON.stringify(payload, null, 2)}\n`;
+  res.setHeader('Content-Type', 'application/json; charset=utf-8');
+  res.setHeader('Cache-Control', 'public, max-age=0, must-revalidate');
+  res.setHeader('X-Content-Type-Options', 'nosniff');
+  res.setHeader('Content-Length', String(Buffer.byteLength(body)));
+  if (req.method === 'HEAD') return res.status(200).end();
+  res.statusCode = 200;
+  return res.end(body);
+}
+
 async function querySanityBlog(query, params = {}) {
   const url = new URL(BLOG_SANITY_URL);
   url.searchParams.set('query', query);
@@ -152,6 +180,7 @@ async function publicBlog(req, res) {
 }
 
 module.exports = async function handler(req, res) {
+  if (queryFlag(req, 'rowActionsRelease')) return rowActionsRelease(req, res);
   if (queryFlag(req, 'officialBrand')) return officialBrand(req, res);
   if (queryFlag(req, 'blog')) return publicBlog(req, res);
   if (queryFlag(req, 'populationVerification')) return PopulationVerification.handle(req, res);
@@ -159,4 +188,4 @@ module.exports = async function handler(req, res) {
   return ClinicalEditor.handle(req, res);
 };
 
-module.exports._test = { OFFICIAL_BRAND, queryValue, queryFlag };
+module.exports._test = { OFFICIAL_BRAND, queryValue, queryFlag, rowActionsRelease };
