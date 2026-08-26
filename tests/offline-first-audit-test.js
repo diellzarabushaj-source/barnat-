@@ -34,7 +34,13 @@ const worker = read('sw.js');
 assert.match(worker, /url\.pathname === '\/api\/auth'[\s\S]*fetch\(request\)/, 'auth must remain network-only');
 assert.match(worker, /url\.pathname === '\/api\/gemini-prescription'[\s\S]*geminiResponse/, 'Gemini POST must have an explicit offline route');
 assert.match(worker, /privateCacheStatus/, 'offline readiness must validate the exact required datasets');
-assert.match(worker, /'\/index\.html',[\s\S]*'\/analizat\.html',[\s\S]*'\/recetat\.html'/, 'clinical pages must remain in the install-time offline shell');
+const appShellStart = worker.indexOf('const APP_SHELL = [');
+const appShellEnd = worker.indexOf('];', appShellStart);
+assert.ok(appShellStart >= 0 && appShellEnd > appShellStart, 'critical APP_SHELL block is missing');
+const appShell = worker.slice(appShellStart, appShellEnd + 2);
+for (const page of ['/index.html', '/analizat.html', '/recetat.html']) {
+  assert.ok(appShell.includes(`'${page}'`), `${page} must remain in the install-time clinical shell`);
+}
 assert.doesNotMatch(worker, /await refreshSafeClinicalPages\(\)/, 'activation must not force-refresh clinical pages');
 assert.doesNotMatch(worker, /cache\.put\([^\n]*api\/auth/, 'auth responses must never be cached');
 assert.doesNotMatch(worker, /self\.waitUntil/, 'waitUntil must be called on the fetch event');
@@ -42,7 +48,8 @@ assert.doesNotMatch(worker, /self\.waitUntil/, 'waitUntil must be called on the 
 const navigation = worker.slice(worker.indexOf('async function navigationResponse'), worker.indexOf('async function staticResponse'));
 assert.ok(navigation.indexOf('timeoutFetch') < navigation.indexOf('cache.match'), 'HTML must be network-first while online');
 const staticRuntime = worker.slice(worker.indexOf('async function staticResponse'), worker.indexOf('async function refreshPrivate'));
-assert.ok(staticRuntime.indexOf('timeoutFetch') < staticRuntime.indexOf('caches.match'), 'CSS/JS must be network-first while online');
+assert.ok(staticRuntime.indexOf('timeoutFetch') < staticRuntime.indexOf('caches.match'), 'unversioned CSS/JS must retain a network-first fallback while versioned assets may hit cache first');
+assert.match(staticRuntime, /static-versioned-hit/, 'versioned static assets must support immediate cache hits');
 
 const workerShim = read('sw-resilient-v3.js');
 assert.match(workerShim, /importScripts\('\/sw\.js\?v=/);
@@ -108,4 +115,4 @@ assert.match(serializedHeaders, /Service-Worker-Allowed/, 'service worker scope 
 assert.match(serializedHeaders, /worker-src/, 'CSP worker-src is missing');
 assert.match(serializedHeaders, /manifest-src/, 'CSP manifest-src is missing');
 
-console.log('Offline-first single-version, network-first UI, private-cache and PWA audit passed.');
+console.log('Offline-first single-version, tiered install shell, versioned static cache, private-cache and PWA audit passed.');
