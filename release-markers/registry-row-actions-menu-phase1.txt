@@ -1,0 +1,2 @@
+registry-row-actions-menu-phase1-v1
+Canonical hidden three-dot trigger is wired by the final personalization build gate.
