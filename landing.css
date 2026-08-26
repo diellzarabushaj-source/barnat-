@@ -221,16 +221,15 @@ body.lp{
 
 /* Logoja DRx: shenja merr `currentColor`, prandaj e njëjta shenjë punon
    mbi kanavacë të bardhë dhe mbi bandën navy pa një skedë të dytë. */
-.drx-logo{display:inline-flex;align-items:center;gap:9px;color:var(--lp-ink);}
-.drx-logo__mark{width:27px;height:27px;flex:0 0 auto;display:block;}
-.drx-logo__word{
-  font-size:23px;font-weight:300;line-height:1;
-  letter-spacing:.6px;color:var(--lp-ink);
-  font-feature-settings:"ss01";
+/* Prefiksi `.lp` është i domosdoshëm: `.lp img{height:auto}` më lart ka
+   specificitet më të lartë se një klasë e vetme dhe do ta anulonte lartësinë. */
+.lp .drx-logo__img{height:30px;width:auto;max-width:none;display:block;}
+.lp .au-brand .drx-logo__img{height:38px;}
+
+@media (max-width:767px){
+  .lp .drx-logo__img{height:26px;}
+  .lp .au-brand .drx-logo__img{height:32px;}
 }
-.drx-logo--onDark,.drx-logo--onDark .drx-logo__word{color:#fff;}
-.drx-logo--lg .drx-logo__mark{width:34px;height:34px;}
-.drx-logo--lg .drx-logo__word{font-size:29px;}
 
 .lp-sr{
   position:absolute;width:1px;height:1px;padding:0;margin:-1px;
