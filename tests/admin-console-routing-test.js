@@ -136,6 +136,20 @@ const rewriteFor = source => vercel.rewrites.find(rule => rule.source === source
     'changing admin workspace on mobile must close the navigation drawer');
   assert.match(dashboard, /\$\('adminMenu'\)\.addEventListener\('click',[\s\S]*?mi-admin-nav-open/,
     'the admin mobile menu must keep a single explicit drawer owner');
+  assert.match(html, /id="adminMenu"[^>]*aria-controls="adminSidebar"[^>]*aria-expanded="false"/,
+    'the mobile menu button must expose drawer ownership to assistive technology');
+  assert.match(html, /id="adminBackdrop"/,
+    'the mobile drawer must have a real dismissible backdrop rather than a decorative pseudo-element');
+  assert.match(dashboard, /sidebar\.inert=mobile&&!active/,
+    'an off-screen mobile sidebar must leave the keyboard tab order');
+  assert.match(dashboard, /e\.key==='Escape'[\s\S]*?setAdminNavOpen\(false\)/,
+    'Escape must close the mobile admin drawer');
+  assert.match(html, /for="drugSearch"[\s\S]*for="drugStatus"[\s\S]*for="adminSearch"/,
+    'admin search and filter controls must have accessible labels');
+  assert.match(html, /id="drugDialog" aria-labelledby="drugDialogTitle"/,
+    'the drug editor dialog must expose its visible title as the accessible name');
+  assert.match(dashboard, /setBusy\(button,true\)[\s\S]*?saveDrug/,
+    'long-running admin mutations must expose a busy/disabled state');
 }
 
 console.log('Admin console routing contract passed.');

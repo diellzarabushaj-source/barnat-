@@ -98,6 +98,7 @@ a{color:inherit}
 .mi-notification-card:last-child{border-bottom:0}
 .mi-notification-card:hover{background:var(--stripe-soft)}
 .mi-notification-icon{width:34px;height:34px;display:grid;place-items:center;border-radius:9999px;background:#f0efff;color:var(--stripe-primary);font-size:12px;font-weight:400}
+.mi-notification-icon svg{width:17px;height:17px;fill:none;stroke:currentColor;stroke-width:1.7;stroke-linecap:round;stroke-linejoin:round}
 .mi-notification-head{display:flex;align-items:center;justify-content:space-between;gap:12px}
 .mi-notification-head strong{color:var(--stripe-ink);font-size:13px;font-weight:400}
 .mi-notification-head small{color:var(--stripe-muted);font-size:10px;font-feature-settings:"tnum"}
@@ -115,7 +116,7 @@ a{color:inherit}
 .mi-tabs{display:flex;gap:4px;align-items:center}
 .mi-tabs button{min-height:34px;padding:7px 12px;border:0;border-radius:9999px;background:transparent;color:var(--stripe-muted);font-size:12px;font-weight:400}
 .mi-tabs button:hover{background:var(--stripe-soft);color:var(--stripe-ink)}
-.mi-tabs button[aria-selected=true]{background:#f0efff;color:var(--stripe-primary-deep)}
+.mi-tabs button[aria-pressed=true]{background:#f0efff;color:var(--stripe-primary-deep)}
 
 .mi-table-wrap{width:100%;max-width:100%;overflow-x:auto;background:#fff}
 .mi-table{width:100%;min-width:860px;border-collapse:collapse;font-feature-settings:"tnum","ss01";font-variant-numeric:tabular-nums}
@@ -240,3 +241,8 @@ html:has(.mi-dialog[open]),body:has(.mi-dialog[open]){overflow:hidden}
 .mi-dialog-head>button svg{width:17px;height:17px}
 .mi-verification-mark{display:inline-flex;align-items:center;justify-content:center;min-width:34px;padding:3px 7px;border-radius:9999px;background:var(--stripe-soft);color:var(--stripe-muted);font-size:10px;font-weight:400}
 .mi-verification-mark.is-yes{background:var(--stripe-success-bg);color:var(--stripe-success)}
+
+.mi-sr-only{position:absolute!important;width:1px!important;height:1px!important;padding:0!important;margin:-1px!important;overflow:hidden!important;clip:rect(0,0,0,0)!important;white-space:nowrap!important;border:0!important}
+:is(.mi-btn-primary,.mi-btn-secondary,.mi-btn-danger,.mi-row-btn)[aria-busy="true"]{position:relative;pointer-events:none}
+:is(.mi-btn-primary,.mi-btn-secondary,.mi-btn-danger,.mi-row-btn)[aria-busy="true"]::after{content:"";width:12px;height:12px;border:1.5px solid currentColor;border-right-color:transparent;border-radius:50%;animation:mi-admin-spin .7s linear infinite}
+@keyframes mi-admin-spin{to{transform:rotate(360deg)}}
