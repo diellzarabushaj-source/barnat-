@@ -56,9 +56,16 @@ assert.doesNotMatch(runtime, /REGISTRY_ALLOWED_PAGE_SIZES = new Set\(\[50, 100, 
 assert.match(ui, /VERSION = 'registry-user-personalization-v3\.3\.0'/, 'Canonical v3.3 personalization controller is not active');
 assert.match(ui, /VIEW_ALL = 'all'/, 'All view is missing');
 assert.match(ui, /VIEW_FAVORITES = 'favorites'/, 'Favorites view is missing');
-assert.match(ui, /VIEW_NOTES = 'notes'/, 'Notes view is missing');
-assert.match(ui, /data-row-favorite-toggle/, 'Exactly one canonical favorite action must be available in each visible full-runtime row');
-assert.match(ui, /data-row-note-toggle/, 'Exactly one canonical note pencil must be available in each visible full-runtime row');
+assert.match(ui, /data-row-actions-menu/, 'Each visible full-runtime row must expose the stable canonical three-dot action trigger');
+assert.match(ui, /registryRowActionsMenu/, 'The canonical singleton row-actions menu is missing');
+assert.match(ui, /data-row-menu-favorite/, 'The singleton menu must expose the canonical favorite action');
+assert.match(ui, /data-row-menu-note/, 'The singleton menu must expose the canonical note action');
+assert.doesNotMatch(ui, /function favoriteButton\(/, 'Legacy per-row favorite button injection must stay retired after Phase 2');
+assert.doesNotMatch(ui, /function noteButton\(/, 'Legacy per-row note button injection must stay retired after Phase 2');
+assert.doesNotMatch(ui, /data-row-favorite-toggle/, 'Legacy per-row favorite controls must not return after Phase 2');
+assert.doesNotMatch(ui, /data-row-note-toggle/, 'Legacy per-row note controls must not return after Phase 2');
+assert.match(ui, /tbody\.addEventListener\('click', handleTableActionsClick\)/, 'Row actions must use one delegated tbody listener');
+assert.match(ui, /dataset\.registryRowActionsBound === 'true'/, 'Delegated row-action binding must be idempotent');
 assert.match(ui, /registryNoteDialog/, 'Canonical personal-note dialog is missing');
 assert.match(ui, /data-note-dialog-text/, 'Note dialog editor is missing');
 assert.match(ui, /data-note-dialog-save/, 'Note save action is missing');
@@ -77,8 +84,9 @@ assert.match(ui, /const favoriteInFlight = new Set\(\)/, 'Favorite mutations nee
 assert.match(ui, /const noteInFlight = new Set\(\)/, 'Note mutations need an in-flight lock');
 assert.match(ui, /const pendingSync = new Set\(\)/, 'Local-first mutations need explicit pending persistence state');
 assert.match(ui, /async function syncMutation/, 'Personal mutations need one synchronization path');
-assert.match(ui, /aria-busy/, 'In-flight row actions must expose busy state to assistive technology');
-assert.match(ui, /is-pending-sync/, 'Pending persistence must remain visible after the request finishes');
+assert.match(ui, /favoriteAction\.disabled = favoriteBusy/, 'In-flight favorite actions must be locked in the singleton menu');
+assert.match(ui, /noteAction\.disabled = noteBusy/, 'In-flight note actions must be locked in the singleton menu');
+assert.match(ui, /Ruajtur lokalisht/, 'Pending local-first persistence must stay visible in the singleton menu');
 
 assert.match(ui, /const PHONE_OWNER_QUERY = '\(max-width: 767px\)'/, 'Canonical controller must know the phone ownership boundary');
 assert.match(ui, /function phoneLiteOwnsViewport\(\)/, 'Canonical controller must stay alive as a phone bridge');
@@ -97,12 +105,13 @@ assert.doesNotMatch(ui, /MutationObserver/, 'Deterministic registry render event
 assert.match(css, /\[data-registry-column-key="personal-note"\]/, 'Legacy note-column retirement rule is missing');
 assert.match(css, /\.registry-quick-favorites\s*\{?/, 'Legacy quick Favorites control must be suppressed if a stale client creates it');
 assert.match(css, /display:none!important/, 'Legacy note/quick-favorites surfaces must not remain interactive');
-assert.match(css, /registry-row-favorite-toggle/, 'One-click favorite styling is missing');
-assert.match(css, /registry-row-note-toggle/, 'One-click note pencil styling is missing');
+assert.match(css, /registry-row-more-toggle/, 'Stable three-dot row-action styling is missing');
+assert.match(css, /registry-row-actions-menu/, 'Singleton row-action menu styling is missing');
+assert.match(css, /registry-row-actions-menu-item/, 'Singleton menu item styling is missing');
 assert.match(css, /registry-note-dialog/, 'Note dialog styling is missing');
 assert.match(css, /registry-personal-view-actions/, 'Shared Favorites/Notes toolbar styling is missing');
 assert.match(css, /registry-personal-view-banner/, 'Shared personal-view banner styling is missing');
-assert.match(css, /is-pending-sync::after/, 'Pending persistence indicator styling is missing');
+assert.match(css, /registry-row-actions-menu-status/, 'Pending persistence status styling is missing from the singleton menu');
 assert.match(css, /:disabled/, 'Mutation lock styling is missing');
 assert.match(css, /drug-action-item\.favorite\{display:none!important\}/, 'Legacy duplicate favorite control must be retired from the menu');
 assert.doesNotMatch(css, /medindex-favorites-only[^\n]*#pagination|medindex-favorites-only[^\n]*\.pagination/, 'Favorites pagination must stay available when a user has more than one page');
@@ -166,4 +175,4 @@ assert.throws(() => library._test.normalizedFavorite({
   payload:{ kind:'drug-note', text:'x'.repeat(2001) },
 }), /maksimum 2000/i, 'Oversized personal notes must fail closed');
 
-console.log('Canonical Favorites + Notes, mobile bridge, native personal views, mutation locks, fail-closed logout and pending persistent sync audit passed.');
+console.log('Canonical Favorites + Notes singleton row menu, mobile bridge, native personal views, mutation locks, fail-closed logout and pending persistent sync audit passed.');
