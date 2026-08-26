@@ -7,6 +7,11 @@
  * runs against the composed build:runtime output and the same deterministic
  * 4006-row fixture used by registry performance audits. The frozen mobile
  * owner is not touched; this gate exercises the desktop singleton menu only.
+ *
+ * The app intentionally ships with script-src 'self'. This audit therefore
+ * avoids Playwright waitForFunction(), which relies on eval-like execution and
+ * would require weakening the production CSP. Locator/polling reads are used
+ * instead so the test runs under the real security policy.
  */
 
 const assert = require('node:assert/strict');
@@ -19,6 +24,7 @@ const ROOT = path.resolve(__dirname, '..');
 const PORT = Number(process.env.ROW_ACTIONS_PHASE4_PORT || 4193);
 const BASE = `http://127.0.0.1:${PORT}`;
 const BROWSER_PATH = process.env.ROW_ACTIONS_PHASE4_BROWSER_PATH || undefined;
+const sleep = ms => new Promise(resolve => setTimeout(resolve, ms));
 
 function startServer() {
   return new Promise((resolve, reject) => {
@@ -53,25 +59,53 @@ function startServer() {
   });
 }
 
+async function poll(label, predicate, { timeout = 10000, interval = 100 } = {}) {
+  const deadline = Date.now() + timeout;
+  let lastError = null;
+  while (Date.now() < deadline) {
+    try {
+      const value = await predicate();
+      if (value) return value;
+    } catch (error) {
+      lastError = error;
+    }
+    await sleep(interval);
+  }
+  const detail = lastError ? ` Last error: ${lastError.message || lastError}` : '';
+  throw new Error(`Phase 4 timeout waiting for ${label}.${detail}`);
+}
+
 async function waitForRegistry(page) {
-  await page.waitForFunction(() => {
-    const rows = [...document.querySelectorAll('#tbody > tr')];
-    return rows.some(row => !row.querySelector('.empty-state') && row.querySelector('[data-row-actions-menu]'));
-  }, null, { timeout:60000 });
+  const trigger = page.locator('#tbody > tr [data-row-actions-menu]').first();
+  await trigger.waitFor({ state:'attached', timeout:60000 });
+  await trigger.waitFor({ state:'visible', timeout:60000 });
 }
 
 async function waitMenuState(page, open) {
-  await page.waitForFunction(expected => {
-    const menu = document.getElementById('registryRowActionsMenu');
-    return Boolean(menu && !menu.hidden) === expected;
-  }, open, { timeout:10000 });
+  const menu = page.locator('#registryRowActionsMenu');
+  await menu.waitFor({ state:open ? 'visible' : 'hidden', timeout:10000 });
 }
 
 async function waitFavoriteState(page, checked) {
-  await page.waitForFunction(expected => {
-    const action = document.querySelector('#registryRowActionsMenu [data-row-menu-favorite]');
-    return action && action.getAttribute('aria-checked') === String(expected) && !action.disabled;
-  }, checked, { timeout:15000 });
+  const action = page.locator('#registryRowActionsMenu [data-row-menu-favorite]');
+  await poll(`favorite aria-checked=${checked}`, async () => {
+    if ((await action.count()) !== 1) return false;
+    return (await action.getAttribute('aria-checked')) === String(checked) && !(await action.isDisabled());
+  }, { timeout:15000 });
+}
+
+async function waitForText(page, selector, text, timeout = 20000) {
+  await poll(`${selector} to contain ${text}`, async () => {
+    const content = await page.locator(selector).textContent();
+    return String(content || '').includes(text);
+  }, { timeout });
+}
+
+async function waitForHash(page, hash, timeout = 10000) {
+  await poll(`URL hash ${hash}`, async () => {
+    try { return new URL(page.url()).hash === hash; }
+    catch { return false; }
+  }, { timeout });
 }
 
 async function visibleRowName(page) {
@@ -257,7 +291,7 @@ async function assertMenuInViewport(page) {
     const search = page.locator('#search');
     await search.fill('STRESS DRUG 3999');
     await waitMenuState(page, false);
-    await page.waitForFunction(() => /STRESS DRUG 3999/.test(document.querySelector('#tbody')?.textContent || ''), null, { timeout:20000 });
+    await waitForText(page, '#tbody', 'STRESS DRUG 3999', 20000);
     assert.equal(await page.locator('#registryRowActionsMenu').count(), 1,
       'Phase 4: search rerender must not duplicate the singleton menu.');
     report.searchRerender = true;
@@ -295,17 +329,17 @@ async function assertMenuInViewport(page) {
     assert.ok(await notesView.count(), 'Phase 4: Notes view control is missing.');
 
     await favoritesView.click();
-    await page.waitForFunction(() => location.hash === '#favoritet', null, { timeout:10000 });
+    await waitForHash(page, '#favoritet');
     await waitForRegistry(page);
-    assert.match((await page.locator('#tbody').textContent()) || '', /MEDINDEX STRESS 0001/,
+    assert.ok(((await page.locator('#tbody').textContent()) || '').includes(firstName),
       'Phase 4: favorited canonical row must survive in Favorites view.');
     assert.equal(await page.locator('#dataTable').count(), 1);
     report.favoritesView = true;
 
     await notesView.click();
-    await page.waitForFunction(() => location.hash === '#shenimet', null, { timeout:10000 });
+    await waitForHash(page, '#shenimet');
     await waitForRegistry(page);
-    assert.match((await page.locator('#tbody').textContent()) || '', /MEDINDEX STRESS 0001/,
+    assert.ok(((await page.locator('#tbody').textContent()) || '').includes(firstName),
       'Phase 4: noted canonical row must survive in Notes view.');
     assert.equal(await page.locator('#dataTable').count(), 1);
     report.notesView = true;
