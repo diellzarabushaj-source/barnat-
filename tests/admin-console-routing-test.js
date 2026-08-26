@@ -36,8 +36,8 @@ const rewriteFor = source => vercel.rewrites.find(rule => rule.source === source
     'an authenticated visitor must be moved off the admin sign-in page, not shown a form they do not need');
 
   // Reaching for the console sends you to the console's own sign-in.
-  assert.match(middleware, /ADMIN_CONSOLE_PATHS\.has\(pathname\) \? ADMIN_LOGIN_PAGE : LOGIN_PAGE/,
-    'someone reaching for the admin console must land on the admin sign-in, not the clinical one');
+  assert.match(middleware, /ADMIN_CONSOLE_PATHS\.has\(pathname\) \? ADMIN_LOGIN_PAGE : ENTRY_PAGE/,
+    'someone reaching for the admin console must land on the admin sign-in, not the public entry page');
 }
 
 // --- the console itself stays behind the gate ----------------------------
