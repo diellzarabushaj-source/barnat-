@@ -7,6 +7,7 @@ const { execFileSync } = require('node:child_process');
 const ROOT = path.resolve(__dirname, '..');
 const MARKER = 'auth-pagination-regressions-v1';
 const DEDUPE_MARKER = 'auth-read-dedupe-v1';
+const HANDOFF_BUSY_MARKER = 'desktop-handoff-busy-release-v1';
 const read = file => fs.readFileSync(path.join(ROOT, file), 'utf8').replace(/\r\n?/g, '\n');
 const write = (file, source) => fs.writeFileSync(path.join(ROOT, file), source.replace(/\r\n?/g, '\n'), 'utf8');
 
@@ -198,6 +199,33 @@ function patchDesktopPagination() {
   if (!source.includes('if (scroll) resetDesktopTableViewport();')) {
     throw new Error(`${MARKER}: pagination viewport reset was not wired.`);
   }
+
+  // When desktop-lite hands ownership to the full registry it must also release
+  // every transient state it owns. Otherwise an in-flight lightweight request
+  // can leave the shared #pagination with `.is-loading` / pointer-events:none
+  // after the numbered full-runtime pagination has already rendered into it.
+  if (!source.includes(HANDOFF_BUSY_MARKER)) {
+    const handoffAnchor = [
+      '    state.disabled = true;',
+      '    window.MEDINDEX_DESKTOP_LITE_ACTIVE = false;',
+    ].join('\n');
+    const handoffReplacement = [
+      '    state.disabled = true;',
+      `    // ${HANDOFF_BUSY_MARKER}: the outgoing owner cannot leave shared UI busy.`,
+      '    window.clearTimeout(searchTimer);',
+      '    searchTimer = 0;',
+      '    pageController?.abort();',
+      '    pageController = null;',
+      '    setBusy(false);',
+      '    window.MEDINDEX_DESKTOP_LITE_ACTIVE = false;',
+    ].join('\n');
+    source = replaceOnce(source, handoffAnchor, handoffReplacement, 'desktop handoff busy-state release');
+  }
+  if (!source.includes(HANDOFF_BUSY_MARKER)
+      || !source.includes('pageController?.abort();')
+      || !source.includes('setBusy(false);')) {
+    throw new Error(`${HANDOFF_BUSY_MARKER}: desktop owner does not release pagination busy state.`);
+  }
   write(file, source);
 }
 
@@ -206,4 +234,4 @@ patchDesktopPagination();
 for (const file of ['auth-client.js', 'registry-desktop-lite.js']) {
   execFileSync(process.execPath, ['--check', path.join(ROOT, file)], { stdio:'pipe' });
 }
-console.log('Auth + pagination regression patch applied: secondary API 401/403 is auth-confirmed before logout, concurrent plain auth reads are deduplicated, and table paging no longer scrolls the whole document.');
+console.log('Auth + pagination regression patch applied: secondary API 401/403 is auth-confirmed before logout, table paging keeps the document viewport stable, and desktop-lite releases shared pagination busy state before full-runtime handoff.');
