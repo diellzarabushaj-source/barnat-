@@ -1015,3 +1015,5 @@
     padding:11px 16px 13px;
   }
 }
+
+html:has(.mi-dialog[open]),body:has(.mi-dialog[open]){overflow:hidden}
