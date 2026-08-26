@@ -151,7 +151,10 @@ ${clickAnchor}`);
 
   const startup = `  ensureModal();\n  observe();\n  scheduleEnhance();\n  void loadRegistry();\n  void loadCatalog();`;
   if (!source.includes(startup)) throw new Error('Dose calculator eager startup block is missing.');
-  source = source.replace(startup, `  bindDoseRuntimeActivation();`);
+  source = source.replace(startup, `  if (typeof document.querySelector !== 'function') {
+    window.__doseEngine = { canonicalUnit, convertDoseUnit, administrationsPerDay, ageMatchesRule, preferredUnique, computeDose, renderPlainLanguageTemplate };
+  }
+  bindDoseRuntimeActivation();`);
 
   const apiAnchor = "    openByProductKey(productKey) { openModal(catalog.byProductKey.get(clean(productKey)) || null); },";
   if (!source.includes(apiAnchor)) throw new Error('Dose calculator public openByProductKey anchor is missing.');
@@ -170,6 +173,8 @@ for (const fragment of [
   "tbody?.addEventListener?.('pointerover'",
   "tbody?.addEventListener?.('touchstart'",
   "document.addEventListener?.('focusin'",
+  "typeof document.querySelector !== 'function'",
+  'window.__doseEngine = { canonicalUnit, convertDoseUnit, administrationsPerDay, ageMatchesRule, preferredUnique, computeDose, renderPlainLanguageTemplate };',
   'bindDoseRuntimeActivation();',
   "activateDoseRuntime('api')",
 ]) {
