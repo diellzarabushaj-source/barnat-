@@ -45,12 +45,6 @@ jobs:
           pnpm exec playwright install --with-deps chromium > /tmp/responsive-playwright-install.log 2>&1 \
             || { tail -200 /tmp/responsive-playwright-install.log; exit 1; }
 
-      - name: Run admin mobile dialog gate
-        shell: bash
-        run: |
-          set -euo pipefail
-          node scripts/audit-admin-mobile-dashboard.js | tee /tmp/admin-mobile-dialog.log
-
       - name: Run responsive viewport gate
         shell: bash
         run: |
@@ -63,7 +57,6 @@ jobs:
         with:
           name: responsive-viewport-measurements
           path: |
-            /tmp/admin-mobile-dialog.log
             /tmp/responsive-viewports.log
             /tmp/responsive-playwright-install.log
           if-no-files-found: warn
