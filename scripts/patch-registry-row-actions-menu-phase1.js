@@ -59,4 +59,7 @@ execFileSync(process.execPath, [path.join(ROOT, 'tests', 'registry-row-actions-m
   cwd:ROOT,
   stdio:'inherit',
 });
-console.log('Registry row actions menu Phase 1 applied: every desktop canonical row owns a stable hidden three-dot trigger while star/note controls remain as fallback.');
+// Phase 2 intentionally runs only after the migration-safe Phase 1 gate has
+// proven that the canonical trigger exists while the legacy actions still work.
+require('./patch-registry-row-actions-menu-phase2.js');
+console.log('Registry row actions menu Phase 1 foundation validated and Phase 2 singleton-menu cutover chained.');
