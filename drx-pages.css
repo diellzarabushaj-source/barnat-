@@ -1,0 +1,216 @@
+/* ============================================================================
+   DRx — faqet publike përtej landing-ut: Journal-i dhe format e llogarisë.
+
+   Ky skedar ngarkohet PAS `landing.css` dhe i trashëgon tokenat, butonat pill,
+   tipografinë me peshë 300 dhe mesh-in prej andej. Këtu rrinë vetëm gjërat që
+   landing-u nuk i ka: kartelat e artikujve, kartela e autentikimit dhe fushat.
+
+   Format ndjekin të njëjtin sistem si te `design-md/stripe/DESIGN.md`: kartelë
+   e vetme e përqendruar mbi kanavacë afër të bardhës, input-e me rreze 6px dhe
+   kufi `hairline-input`, kufi që kalon në teal kur fokusohet, dhe një buton i
+   vetëm i mbushur për bandë.
+   ========================================================================= */
+
+/* --- Guaska e faqeve të brendshme --------------------------------------- */
+
+.lp-page{padding:56px 0 96px;}
+.lp-page__head{max-width:760px;}
+.lp-page__head h1{margin:16px 0 0;}
+.lp-page__head p{margin-top:18px;}
+
+/* --- Journal ------------------------------------------------------------- */
+
+.jr-grid{
+  display:grid;grid-template-columns:repeat(3,minmax(0,1fr));
+  gap:24px;margin-top:48px;
+}
+
+.jr-card{
+  display:flex;flex-direction:column;
+  background:var(--lp-canvas);
+  border:1px solid var(--lp-hairline);
+  border-radius:var(--lp-r-lg);
+  overflow:hidden;
+  box-shadow:var(--lp-shadow-1);
+  transition:border-color .15s ease, box-shadow .15s ease;
+}
+.jr-card:hover{border-color:#cfd8e3;box-shadow:var(--lp-shadow-2);}
+
+.jr-card__cover{
+  aspect-ratio:16 / 9;width:100%;object-fit:cover;
+  background:var(--lp-canvas-soft);
+  border-bottom:1px solid var(--lp-hairline);
+}
+.jr-card__cover--empty{
+  display:block;
+  background:
+    radial-gradient(60% 90% at 18% 8%, rgba(245,233,212,.9) 0%, rgba(245,233,212,0) 60%),
+    radial-gradient(64% 96% at 78% 4%, rgba(31,119,121,.30) 0%, rgba(31,119,121,0) 62%),
+    var(--lp-canvas-soft);
+}
+
+.jr-card__body{padding:24px;display:flex;flex-direction:column;gap:10px;flex:1 1 auto;}
+.jr-card__meta{display:flex;flex-wrap:wrap;align-items:center;gap:8px;}
+.jr-card h2,.jr-card h3{
+  font-size:20px;line-height:1.25;letter-spacing:-.3px;margin:2px 0 0;
+}
+.jr-card h3 a{color:var(--lp-ink);}
+.jr-card h3 a:hover{color:var(--lp-brand-press);}
+.jr-card__excerpt{
+  font-size:14.5px;line-height:1.55;color:var(--lp-ink-2);margin:0;
+  display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;overflow:hidden;
+}
+.jr-card__foot{
+  margin-top:auto;padding-top:14px;border-top:1px solid var(--lp-hairline);
+  display:flex;flex-wrap:wrap;align-items:baseline;gap:6px 10px;
+  font-size:12.5px;color:var(--lp-mute);
+}
+.jr-card__author{color:var(--lp-ink-2);}
+
+/* Artikulli kryesor merr gjithë gjerësinë, si banda e parë e Stripe-it */
+.jr-lead{
+  display:grid;grid-template-columns:minmax(0,1.15fr) minmax(0,1fr);
+  gap:0;margin-top:44px;
+  background:var(--lp-canvas);
+  border:1px solid var(--lp-hairline);
+  border-radius:var(--lp-r-xl);
+  overflow:hidden;
+  box-shadow:var(--lp-shadow-2);
+}
+.jr-lead__media{order:2;min-height:280px;}
+.jr-lead__cover{width:100%;height:100%;object-fit:cover;display:block;}
+.jr-lead__body{order:1;padding:40px;display:flex;flex-direction:column;gap:14px;justify-content:center;}
+.jr-lead__body h2{font-size:32px;line-height:1.12;letter-spacing:-.64px;margin:4px 0 0;}
+.jr-lead__body h2 a{color:var(--lp-ink);}
+.jr-lead__body h2 a:hover{color:var(--lp-brand-press);}
+.jr-lead__body p{font-size:16px;line-height:1.55;color:var(--lp-ink-2);margin:0;}
+
+/* Gjendjet: ngarkim, zbrazëti, gabim — përmasat mbeten të qëndrueshme */
+.jr-state{
+  margin-top:44px;padding:56px 32px;text-align:center;
+  border:1px solid var(--lp-hairline);border-radius:var(--lp-r-lg);
+  background:var(--lp-canvas);
+}
+.jr-state h2{font-size:20px;letter-spacing:-.2px;margin:0 0 8px;}
+.jr-state p{margin:0 auto;max-width:460px;font-size:14.5px;color:var(--lp-ink-2);}
+.jr-state[hidden]{display:none;}
+
+.jr-skeleton{background:var(--lp-canvas-soft);border-radius:var(--lp-r-xs);display:block;}
+.jr-skeleton--line{height:12px;margin-bottom:10px;}
+.jr-skeleton--title{height:20px;width:78%;margin-bottom:14px;}
+
+/* --- Autentikimi --------------------------------------------------------- */
+
+.lp-auth .lp-mesh{height:560px;opacity:.58;}
+.lp-auth .lp-scrollbg{background:var(--lp-canvas);}
+
+.au-wrap{
+  min-height:100vh;
+  display:flex;flex-direction:column;align-items:center;
+  padding:40px var(--lp-gutter) 64px;
+}
+.au-brand{margin-bottom:34px;display:inline-flex;}
+
+.au-card{
+  width:100%;max-width:412px;
+  background:var(--lp-canvas);
+  border:1px solid var(--lp-hairline);
+  border-radius:var(--lp-r-lg);
+  box-shadow:var(--lp-shadow-2);
+  padding:34px;
+}
+.au-card h1{font-size:24px;line-height:1.2;letter-spacing:-.4px;margin:0;}
+.au-card__sub{margin:10px 0 0;font-size:14.5px;line-height:1.5;color:var(--lp-ink-2);}
+
+.au-form{margin-top:26px;display:grid;gap:18px;}
+.au-field{display:grid;gap:7px;}
+.au-field__row{display:flex;align-items:baseline;justify-content:space-between;gap:12px;}
+.au-label{font-size:13px;color:var(--lp-ink);letter-spacing:-.1px;}
+.au-hint{font-size:12.5px;color:var(--lp-brand-deep);}
+
+.au-input{
+  width:100%;
+  font-family:inherit;font-size:15px;font-weight:300;line-height:1.4;color:var(--lp-ink);
+  background:var(--lp-canvas);
+  border:1px solid var(--lp-hairline-input);
+  border-radius:var(--lp-r-sm);
+  padding:11px 13px;
+  min-height:42px;
+  transition:border-color .15s ease, box-shadow .15s ease;
+}
+.au-input::placeholder{color:#98a2b3;}
+.au-input:hover{border-color:#8fb0d0;}
+.au-input:focus{
+  outline:none;
+  border-color:var(--lp-brand);
+  box-shadow:0 0 0 3px rgba(31,119,121,.16);
+}
+.au-input:focus-visible{outline:none;}
+.au-input[aria-invalid="true"]{border-color:#b42318;}
+
+.au-error{font-size:12.5px;color:#b42318;margin:0;}
+.au-error[hidden]{display:none;}
+
+.au-check{display:flex;align-items:flex-start;gap:10px;font-size:13.5px;color:var(--lp-ink-2);}
+.au-check input{
+  width:17px;height:17px;margin:1px 0 0;flex:0 0 auto;
+  accent-color:var(--lp-brand);
+}
+
+.au-submit{width:100%;margin-top:2px;}
+
+.au-divider{
+  display:flex;align-items:center;gap:14px;
+  margin:22px 0;font-size:12px;color:var(--lp-mute);
+}
+.au-divider::before,.au-divider::after{
+  content:"";flex:1 1 auto;height:1px;background:var(--lp-hairline);
+}
+
+.au-alt{
+  display:flex;align-items:center;justify-content:center;gap:10px;
+  width:100%;min-height:44px;
+  border:1px solid var(--lp-hairline-input);border-radius:var(--lp-r-pill);
+  background:var(--lp-canvas);color:var(--lp-ink);
+  font-family:inherit;font-size:15px;
+  transition:background-color .15s ease, border-color .15s ease;
+}
+.au-alt:hover{background:var(--lp-canvas-soft);border-color:#8fb0d0;color:var(--lp-ink);}
+
+.au-foot{
+  margin-top:24px;padding-top:20px;border-top:1px solid var(--lp-hairline);
+  font-size:13.5px;color:var(--lp-ink-2);text-align:center;
+}
+.au-legal{
+  margin:22px auto 0;max-width:412px;text-align:center;
+  font-size:12px;line-height:1.5;color:var(--lp-mute);
+}
+
+/* Forca e fjalëkalimit — tregohet me tekst dhe me shirit, kurrë vetëm me ngjyrë */
+.au-meter{display:grid;gap:6px;margin-top:2px;}
+.au-meter__track{display:flex;gap:4px;}
+.au-meter__seg{height:4px;flex:1 1 0;border-radius:2px;background:var(--lp-hairline);}
+.au-meter__seg.is-on{background:var(--lp-brand-soft);}
+.au-meter__seg.is-strong{background:var(--lp-brand);}
+.au-meter__label{font-size:12px;color:var(--lp-mute);}
+
+/* --- Responsive ---------------------------------------------------------- */
+
+@media (max-width:1023px){
+  .jr-grid{grid-template-columns:repeat(2,minmax(0,1fr));}
+  .jr-lead{grid-template-columns:minmax(0,1fr);}
+  .jr-lead__media{order:1;min-height:220px;}
+  .jr-lead__body{order:2;padding:32px;}
+}
+
+@media (max-width:767px){
+  .lp-page{padding:36px 0 64px;}
+  .jr-grid{grid-template-columns:minmax(0,1fr);gap:20px;}
+  .jr-lead__body{padding:24px;}
+  .jr-lead__body h2{font-size:25px;letter-spacing:-.4px;}
+  .au-card{padding:26px 22px;}
+  .lp-auth .lp-mesh{height:560px;opacity:.58;}
+.lp-auth .lp-scrollbg{background:var(--lp-canvas);}
+
+.au-wrap{padding-top:28px;}
+}

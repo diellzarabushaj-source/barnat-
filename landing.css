@@ -1,11 +1,11 @@
 /* ============================================================================
-   MedIndex — faqja hyrëse publike (landing)
+   DRx — faqja hyrëse publike (landing)
 
    Gjuha vizuale ndjek `design-md/stripe/DESIGN.md`: mesh gradient në të tretën
    e sipërme, tipografi display me peshë 300 dhe tracking negativ, butona pill
    me gjeometri 8px/16px, kartela 12px mbi kanavacë të bardhë, dhe një bandë e
    errët navy për provenienicën. Ngjyra e CTA-së nuk është indigoja e Stripe-it
-   por teal-i i MedIndex-it, që faqja të mbetet e produktit dhe jo e markës së
+   por teal-i i DRx-së, që faqja të mbetet e produktit dhe jo e markës së
    huazuar; ink-u navy `#0d253d` mbahet, sepse pikërisht ai e bën teal-in të
    duket klinik e jo dekorativ.
 
@@ -35,7 +35,7 @@
   --lp-mute-2:#61718a;
   --lp-on-dark:#ffffff;
 
-  /* Brand — teal-i i MedIndex-it zë vendin e indigos si e vetmja ngjyrë CTA */
+  /* Brand — teal-i i DRx-së zë vendin e indigos si e vetmja ngjyrë CTA */
   --lp-brand:#1f7779;
   --lp-brand-deep:#155f63;
   --lp-brand-press:#0d4145;
@@ -218,6 +218,24 @@ body.lp{
 .lp-nav__row{display:flex;align-items:center;gap:24px;}
 .lp-nav__brand{display:inline-flex;align-items:center;gap:10px;flex:0 0 auto;}
 .lp .lp-nav__logo{height:30px;width:auto;max-width:none;}
+
+/* Logoja DRx: shenja merr `currentColor`, prandaj e njëjta shenjë punon
+   mbi kanavacë të bardhë dhe mbi bandën navy pa një skedë të dytë. */
+.drx-logo{display:inline-flex;align-items:center;gap:9px;color:var(--lp-ink);}
+.drx-logo__mark{width:27px;height:27px;flex:0 0 auto;display:block;}
+.drx-logo__word{
+  font-size:23px;font-weight:300;line-height:1;
+  letter-spacing:.6px;color:var(--lp-ink);
+  font-feature-settings:"ss01";
+}
+.drx-logo--onDark,.drx-logo--onDark .drx-logo__word{color:#fff;}
+.drx-logo--lg .drx-logo__mark{width:34px;height:34px;}
+.drx-logo--lg .drx-logo__word{font-size:29px;}
+
+.lp-sr{
+  position:absolute;width:1px;height:1px;padding:0;margin:-1px;
+  overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap;border:0;
+}
 .lp-nav__wordmark{font-size:18px;letter-spacing:-.3px;color:var(--lp-ink);font-weight:400;}
 
 .lp-nav__links{display:flex;align-items:center;gap:4px;margin-left:8px;flex:1 1 auto;}
