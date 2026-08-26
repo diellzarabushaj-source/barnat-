@@ -80,3 +80,7 @@ execFileSync(process.execPath, [path.join(ROOT, 'tests', 'registry-row-actions-m
   stdio:'inherit',
 });
 console.log(`Registry row actions Phase 7: deploy-verifiable provenance written to ${path.basename(OUT)}.`);
+
+// Phase 9 binds this already-validated manifest to the release-gate inputs and
+// emits deterministic CI/deployment evidence without changing browser assets.
+require('./patch-registry-row-actions-menu-phase9-build-evidence.js');
