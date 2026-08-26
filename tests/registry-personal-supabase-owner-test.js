@@ -6,6 +6,7 @@ const path = require('node:path');
 
 const ROOT = path.resolve(__dirname, '..');
 const read = file => fs.readFileSync(path.join(ROOT, file), 'utf8');
+const resolver = require('../lib/personal-registry-supabase.js');
 const helper = read('lib/personal-registry-supabase.js');
 const api = read('api/drug-search.js');
 const lite = read('registry-desktop-lite.js');
@@ -18,6 +19,15 @@ assert.ok(helper.includes("params.set('deleted_at', 'is.null')"), 'Deleted/tombs
 assert.ok(helper.includes("fetchDrugsBy('pdid'"), 'Current composite favorite keys must resolve through the indexed Supabase PDID path.');
 assert.ok(helper.includes('exactMembershipMatch(row, wanted)'), 'Targeted drug candidates must be revalidated against the full favorite identity.');
 assert.ok(helper.includes("payload.kind === 'drug-note'"), 'Notes must use the canonical encrypted-library note membership contract.');
+
+const compositeHints = resolver.lookupHints([
+  '300|Enjomin|50 mg',
+  'EDITOR-ORS-2026|ORS (Oral Rehydration Salts)|Për 1 L: NaCl 2.6 g + KCl 1.5 g',
+]);
+assert.deepEqual(compositeHints.pdids.sort(), ['300', 'EDITOR-ORS-2026'], 'Composite favorite keys must treat their first component as PDID regardless of numeric length or textual format.');
+assert.deepEqual(compositeHints.registryNumbers, [], 'Composite PDID keys must never be reinterpreted as registry numbers.');
+const legacyNumericHints = resolver.lookupHints(['300']);
+assert.ok(legacyNumericHints.pdids.includes('300') && legacyNumericHints.registryNumbers.includes('300'), 'Ambiguous legacy one-part numeric keys must remain recoverable through both bounded indexes.');
 
 const personalStart = api.indexOf(`${marker}: Supabase-owned personal rows`);
 const pageStart = api.indexOf('async function sendRegistryPage', personalStart);
@@ -40,4 +50,4 @@ const fetchBlock = lite.slice(fetchStart, fetchEnd);
 assert.ok(!fetchBlock.includes('identifiers:state.personalIdentifiers'), 'The browser must not send its local membership list as server authority.');
 assert.ok(lite.includes(`${marker}: self-heal restored personal view`), 'BFCache/tab restore must refresh the active personal subset automatically.');
 
-console.log('✓ Supabase personal registry owner passed: authenticated per-user membership, indexed drug hydration, complete Barnat row contract, and no hard-refresh dependency.');
+console.log('✓ Supabase personal registry owner passed: authenticated per-user membership, canonical composite-PDID hydration, complete Barnat row contract, and no hard-refresh dependency.');
