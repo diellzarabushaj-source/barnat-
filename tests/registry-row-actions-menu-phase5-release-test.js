@@ -48,7 +48,10 @@ assert.match(personal, /data-row-menu-note/);
 assert.match(personal, /toggleFavorite\(row, menuFavorite\)/);
 assert.match(personal, /openNoteDialog\(row\)/);
 
-assert.match(personal, /async function toggleFavorite\([\s\S]*?favoriteKeys\.(?:add|delete)\(key\)[\s\S]*?await syncMutation\('favorite', key\)/,
+const toggleStart = personal.indexOf('async function toggleFavorite');
+const optimisticMutation = personal.indexOf('favorites.add(key)', toggleStart);
+const networkSync = personal.indexOf("await syncMutation('favorite', key)", toggleStart);
+assert.ok(toggleStart >= 0 && optimisticMutation > toggleStart && networkSync > optimisticMutation,
   'Favorite persistence must remain optimistic/local-first before network sync.');
 assert.match(personal, /trigger\.setAttribute\('aria-controls', 'registryRowActionsMenu'\)/);
 assert.match(personal, /\['Enter', ' ', 'ArrowDown', 'ArrowUp'\]\.includes\(event\.key\)/);
@@ -72,7 +75,7 @@ assert.match(unified, /button\.setAttribute\('aria-controls', 'registryRowAction
 assert.match(css, /\.registry-row-actions-menu/);
 assert.match(css, /\.registry-row-more-toggle/);
 assert.match(css, /prefers-reduced-motion:reduce/);
-assert.match(css, /@media \(max-width:767px\)[\s\S]*?\.registry-row-actions-menu[\s\S]*?display:none/,
+assert.match(css, /@media\(max-width:767px\)\{[\s\S]*\.registry-row-actions-menu,[\s\S]*\.registry-row-more-toggle\{display:none!important\}/,
   'Desktop row-actions menu must remain outside the frozen phone owner.');
 
 console.log('✓ Registry row actions Phase 5 release gate passed: singleton ownership, optimistic Favorite/Note persistence, ARIA/keyboard hardening, first-render trigger ownership, frozen mobile v3.3.0, and pagination-owner dependency are locked.');
