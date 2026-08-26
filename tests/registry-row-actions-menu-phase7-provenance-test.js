@@ -10,7 +10,8 @@ const read = file => fs.readFileSync(path.join(ROOT, file), 'utf8').replace(/\r\
 const sha256 = value => crypto.createHash('sha256').update(value).digest('hex');
 
 const marker = read('release-markers/registry-row-actions-menu-phase7.txt');
-const chain = read('scripts/patch-registry-row-actions-menu-phase1.js');
+const phase1Chain = read('scripts/patch-registry-row-actions-menu-phase1.js');
+const phase6Gate = read('scripts/patch-registry-row-actions-menu-phase6-idempotence-gate.js');
 const personal = read('registry-user-personalization.js');
 const manifest = JSON.parse(read('registry-row-actions-release.json'));
 
@@ -20,9 +21,11 @@ assert.match(marker, /^sha256-final-assets$/m);
 assert.match(marker, /^optional-deploy-commit-identity$/m);
 assert.match(marker, /^frozen-mobile-v3\.3\.0$/m);
 
+assert.match(phase1Chain, /require\('\.\/patch-registry-row-actions-menu-phase6-idempotence-gate\.js'\);/,
+  'The canonical row-actions chain must reach Phase 6 before provenance handoff.');
 assert.match(
-  chain,
-  /require\('\.\/patch-registry-row-actions-menu-phase6-idempotence-gate\.js'\);[\s\S]*?require\('\.\/patch-registry-row-actions-menu-phase7-provenance\.js'\);/,
+  phase6Gate,
+  /deterministic double-build gate passed[\s\S]*?require\('\.\/patch-registry-row-actions-menu-phase7-provenance\.js'\);/,
   'Phase 7 provenance must be generated only after Phase 6 deterministic-build validation.'
 );
 
