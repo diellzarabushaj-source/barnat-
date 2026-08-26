@@ -66,4 +66,8 @@ require('./patch-registry-row-actions-menu-phase2-mobile-contract.js');
 // Phase 3 is intentionally last: it only hardens the already-validated singleton
 // menu and must never change the frozen phone-owner contract or persistence path.
 require('./patch-registry-row-actions-menu-phase3.js');
-console.log('Registry row actions menu Phase 1 foundation validated; Phase 2 cutover and Phase 3 accessibility/focus hardening are active with the frozen mobile personalization contract preserved.');
+// Browser acceptance proved that aria-controls must exist on the trigger before
+// personalization gets a chance to repaint it. Keep this as a source-path fix,
+// after the singleton exists and without touching the frozen mobile owner.
+require('./patch-registry-row-actions-first-render-aria.js');
+console.log('Registry row actions menu Phase 1 foundation validated; Phase 2 cutover, Phase 3 accessibility/focus hardening and first-render ARIA ownership are active with the frozen mobile personalization contract preserved.');
