@@ -1,0 +1,80 @@
+name: Admin mobile dashboard audit
+
+on:
+  push:
+    branches:
+      - main
+      - 'admin-mobile-dialog-contract-*'
+    paths:
+      - admin.html
+      - admin-dashboard.css
+      - admin-dashboard.js
+      - admin-entry-guard.js
+      - scripts/audit-admin-mobile-dashboard.js
+      - tests/admin-console-routing-test.js
+      - .github/workflows/admin-mobile-dashboard-audit.yml
+  pull_request:
+    paths:
+      - admin.html
+      - admin-dashboard.css
+      - admin-dashboard.js
+      - admin-entry-guard.js
+      - scripts/audit-admin-mobile-dashboard.js
+      - tests/admin-console-routing-test.js
+      - .github/workflows/admin-mobile-dashboard-audit.yml
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  admin-mobile:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          version: 10.28.0
+          run_install: false
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          cache: pnpm
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile --ignore-scripts
+
+      - name: Verify admin mobile contracts
+        run: |
+          node --check scripts/audit-admin-mobile-dashboard.js
+          node tests/admin-console-routing-test.js
+
+      - name: Install Chromium
+        shell: bash
+        run: |
+          set -euo pipefail
+          pnpm exec playwright install --with-deps chromium > /tmp/admin-mobile-playwright-install.log 2>&1 \
+            || { tail -200 /tmp/admin-mobile-playwright-install.log; exit 1; }
+
+      - name: Run admin mobile browser gate
+        shell: bash
+        run: |
+          set -euo pipefail
+          node scripts/audit-admin-mobile-dashboard.js | tee /tmp/admin-mobile-dialog.log
+
+      - name: Upload admin mobile measurements
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: admin-mobile-dashboard-measurements
+          path: |
+            /tmp/admin-mobile-dialog.log
+            /tmp/admin-mobile-playwright-install.log
+          if-no-files-found: warn
+          retention-days: 7
