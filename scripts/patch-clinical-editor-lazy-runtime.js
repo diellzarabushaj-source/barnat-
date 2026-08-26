@@ -142,5 +142,6 @@ execFileSync(process.execPath, [path.join(ROOT, 'tests', 'clinical-editor-lazy-r
 });
 
 require('./patch-dose-modal-accessibility-lazy-runtime.js');
+require('./patch-dose-calculator-visibility-lazy.js');
 
 console.log('Clinical editor startup cleanup applied: lightweight Auditimi trigger stays eager; full editor JS, MutationObserver and summary API are interaction-only.');
