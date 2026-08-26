@@ -1,0 +1,5 @@
+registry-row-actions-menu-phase8-v1
+deployment-attestation
+manifest-and-live-asset-hashes
+expected-commit-verification
+https-or-localhost-only
