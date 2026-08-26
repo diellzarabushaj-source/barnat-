@@ -25,6 +25,16 @@ assert.match(fast, /pageSize:mobile \? '25' : '50'/, 'startup prefetch must pres
 assert.match(fast, /registry-prefetch-reused/, 'the initial lightweight renderer must be able to reuse the in-flight prefetch');
 assert.match(fast, /abortableClone/, 'prefetch reuse must preserve AbortSignal cancellation semantics');
 assert.match(fast, /contentType\.includes\('application\/json'\)/, 'only successful JSON responses may be reused');
+assert.match(fast, /DEDUP_PATHS = new Set\(\['\/api\/auth', '\/api\/icd', '\/api\/user-library'\]\)/, 'critical same-origin GET endpoints must have a bounded browser in-flight dedup set');
+assert.match(fast, /function dedupDescriptor/, 'browser request dedup must validate request identity before sharing work');
+assert.match(fast, /method !== 'GET'/, 'browser request dedup must never merge writes');
+assert.match(fast, /headers\.has\('Authorization'\)/, 'authorization-bearing requests must never be merged');
+assert.match(fast, /url\.searchParams\.sort\(\)/, 'equivalent query strings must share a stable dedup key');
+assert.match(fast, /networkInit:\{ \.\.\.init, signal:undefined \}/, 'shared network work must not inherit a single consumer AbortSignal');
+assert.match(fast, /abortableClone\(pending, descriptor\.signal\)/, 'each deduplicated caller must retain independent abort semantics and a cloned response');
+assert.match(fast, /requestDedupHits/, 'dedup hits must remain observable in performance telemetry');
+assert.match(fast, /browser-inflight-v1/, 'the request coordinator must expose a versioned runtime contract');
+assert.doesNotMatch(fast, /setTimeout\([^\n]*requestDedup|requestDedupCache|responseCache/, 'browser dedup must remain in-flight only and must not become a stale response cache');
 assert.match(fast, /MEDINDEX_PERFORMANCE/, 'startup performance telemetry must remain locally observable');
 assert.match(fast, /PerformanceObserver/, 'startup must collect browser performance entries when supported');
 assert.match(fast, /largest-contentful-paint/, 'LCP telemetry must be collected');
@@ -102,4 +112,4 @@ assert.match(part, /if\(existing\)[\s\S]*existing\.addEventListener\('load', fin
 assert.match(part, /script\.async = true/, 'quality fallback runtime must not block document parsing');
 assert.doesNotMatch(part, /existing\.addEventListener\('error', reject/, 'quality bootstrap must not remain rejected or unresolved');
 
-console.log('Registry fast-start prefetch, performance telemetry, bandwidth-aware quality fallback, single-owner mobile lightweight v2, desktop lightweight and authenticated loader v10 audit passed.');
+console.log('Registry fast-start prefetch, browser in-flight request dedup, performance telemetry, bandwidth-aware quality fallback, single-owner mobile lightweight v2, desktop lightweight and authenticated loader v10 audit passed.');
