@@ -63,4 +63,7 @@ execFileSync(process.execPath, [path.join(ROOT, 'tests', 'registry-row-actions-m
 // proven that the canonical trigger exists while the legacy actions still work.
 require('./patch-registry-row-actions-menu-phase2.js');
 require('./patch-registry-row-actions-menu-phase2-mobile-contract.js');
-console.log('Registry row actions menu Phase 1 foundation validated; Phase 2 singleton-menu cutover is active with the frozen mobile personalization contract preserved.');
+// Phase 3 is intentionally last: it only hardens the already-validated singleton
+// menu and must never change the frozen phone-owner contract or persistence path.
+require('./patch-registry-row-actions-menu-phase3.js');
+console.log('Registry row actions menu Phase 1 foundation validated; Phase 2 cutover and Phase 3 accessibility/focus hardening are active with the frozen mobile personalization contract preserved.');
