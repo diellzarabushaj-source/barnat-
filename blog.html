@@ -3,69 +3,77 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-  <meta name="robots" content="noindex,nofollow,noarchive">
-  <meta name="theme-color" content="#0b1220">
-  <meta name="description" content="MedIndex Journal — analiza klinike, Clinical Decision Support, inteligjencë artificiale dhe teknologji shëndetësore për praktikë më të qartë.">
-  <title>MedIndex Journal | Blog</title>
-  <link rel="preload" href="brand/medindex-mark-on-light.webp" as="image" type="image/webp">
-  <link rel="stylesheet" href="info-pages.css?v=20260814-1">
+  <meta name="theme-color" content="#ffffff">
+  <meta name="description" content="DRx Journal — analiza klinike, Clinical Decision Support, inteligjencë artificiale dhe teknologji shëndetësore për praktikë më të qartë.">
+  <title>DRx Journal | Blog</title>
+  <link rel="icon" href="brand/drx-icon-silver.svg" type="image/svg+xml">
+  <link rel="preload" href="fonts/inter-latin-variable-normal.woff2" as="font" type="font/woff2" crossorigin>
+  <!-- Bundle-i i përbashkët mbetet i ngarkuar; `drx-blog.css` vjen i fundit
+       dhe e merr përsipër fjalorin `blog-*` që gjeneron blog.js. -->
   <link rel="stylesheet" href="medindex-tailwind-ui.css?v=20260805-1" data-medindex-tailwind-ui>
-  <link rel="stylesheet" href="blog.css?v=20260822-1">
-  <link rel="stylesheet" href="public-footer.css?v=20260822-1">
-  <style id="mi-footer-critical">
-    body:has(.mi-site-footer){min-height:100dvh;display:flex;flex-direction:column}
-    body:has(.mi-site-footer) .info-shell{min-height:0!important;flex:1 0 auto}
-    .mi-site-footer{width:100%!important;border-top:1px solid #e5e9f1!important;background:#f7f9fc!important;color:#0b1220!important;font-family:"Inter",-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Arial,sans-serif!important}
-    .mi-site-footer__inner{width:min(1240px,calc(100% - 48px))!important;margin:0 auto!important;padding:38px 0 26px!important}
-    .mi-site-footer__top{display:flex!important;align-items:center!important;justify-content:space-between!important;gap:24px 36px!important;padding-bottom:29px!important}
-    .mi-site-footer__brand{display:inline-flex!important;align-items:center!important;flex:0 0 auto!important}
-    .mi-site-footer__logo{display:block!important;width:auto!important;height:34px!important;max-width:190px!important;object-fit:contain!important;border:0!important;border-radius:0!important;box-shadow:none!important;background:transparent!important}
-    .mi-site-footer__nav{display:flex!important;align-items:center!important;justify-content:flex-end!important;flex-wrap:wrap!important;gap:12px 30px!important}
-    .mi-site-footer__nav a{color:#59647d!important;font-size:14px!important;font-weight:620!important;line-height:1.4!important;text-decoration:none!important}
-    .mi-site-footer__nav a:hover{color:#0b1220!important}
-    .mi-site-footer__base{display:flex!important;align-items:center!important;justify-content:space-between!important;gap:12px 28px!important;padding-top:23px!important;border-top:1px solid #e2e7ef!important}
-    .mi-site-footer__note{margin:0!important;color:#8a94aa!important;font-size:13px!important;font-weight:520!important;line-height:1.55!important}
-    .mi-site-footer__note:last-child{text-align:right!important}
-    @media(max-width:720px){.mi-site-footer__inner{width:calc(100% - 32px)!important;padding:30px 0 22px!important}.mi-site-footer__top{align-items:flex-start!important;flex-direction:column!important;padding-bottom:23px!important}.mi-site-footer__nav{justify-content:flex-start!important;gap:11px 22px!important}.mi-site-footer__base{align-items:flex-start!important;flex-direction:column!important;padding-top:19px!important}.mi-site-footer__note:last-child{text-align:left!important}}
-  </style>
+  <link rel="stylesheet" href="landing.css">
+  <link rel="stylesheet" href="drx-pages.css">
+  <link rel="stylesheet" href="drx-blog.css">
 </head>
-<body>
+<body class="lp">
+  <div class="lp-scrollbg" aria-hidden="true"></div>
+  <div class="lp-mesh" aria-hidden="true"></div>
+
   <div id="blogReadingProgress" class="blog-reading-progress" hidden aria-hidden="true"><span></span></div>
-  <main class="info-shell blog-shell">
-    <div class="info-container">
-      <nav class="info-nav" aria-label="Navigimi publik">
-        <a class="info-brand" href="login-v2.html" aria-label="MedIndex — faqja kryesore">
-          <img class="info-logo" src="brand/medindex-horizontal-on-light.webp" alt="MedIndex — by Dr. Diellza Rabushaj" width="320" height="76" decoding="async">
-        </a>
-        <div class="info-links">
-          <a href="login-v2.html#modulet">Modulet</a>
-          <a href="login-v2.html#rrjedha">Si funksionon</a>
-          <a href="login-v2.html#plani">Plani</a>
-          <a href="rreth-nesh.html">Rreth nesh</a>
-          <a href="kontakt.html">Kontakt</a>
-          <a href="blog.html" aria-current="page">Blog</a>
-          <a class="login-link" href="login-v2.html">Hyr në MedIndex</a>
+
+  <a class="lp-skip" href="#permbajtja">Kalo te përmbajtja</a>
+
+  <nav class="lp-nav" aria-label="Navigimi kryesor">
+    <div class="lp-shell lp-nav__row">
+      <a class="lp-nav__brand" href="landing.html" aria-label="DRx — faqja hyrëse">
+        <img class="drx-logo__img" src="brand/drx-horizontal-dark.svg" alt="DRx" width="102" height="30" decoding="async">
+      </a>
+      <div class="lp-nav__links" id="menu">
+        <a class="lp-nav__close" href="#" aria-label="Mbyll menynë">×</a>
+        <a class="lp-nav__link" href="landing.html#regjistri">Regjistri</a>
+        <a class="lp-nav__link" href="landing.html#dozologjia">Dozologjia</a>
+        <a class="lp-nav__link" href="landing.html#protokollet">Protokollet</a>
+        <a class="lp-nav__link" href="blog.html" aria-current="page">Journal</a>
+        <a class="lp-nav__link" href="rreth-nesh.html">Rreth nesh</a>
+        <a class="lp-nav__link" href="kontakt.html">Kontakt</a>
+        <div class="lp-nav__cta">
+          <a class="lp-btn lp-btn--primary" href="login.html">Hap regjistrin</a>
+          <a class="lp-btn lp-btn--secondary" href="login.html">Hyr në llogari</a>
         </div>
-      </nav>
+      </div>
+      <div class="lp-nav__actions">
+        <a class="lp-nav__link" href="login.html">Hyr</a>
+        <a class="lp-btn lp-btn--primary lp-btn--sm" href="login.html">Hap regjistrin</a>
+        <a class="lp-nav__toggle" href="#menu" aria-label="Hap menynë">
+          <svg width="18" height="14" viewBox="0 0 18 14" fill="none" aria-hidden="true">
+            <path d="M1 1h16M1 7h16M1 13h16" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/>
+          </svg>
+        </a>
+      </div>
+    </div>
+  </nav>
+
+  <main class="info-shell blog-shell" id="permbajtja">
+    <div class="info-container">
 
       <header class="blog-head" aria-labelledby="pageTitle">
-        <p class="blog-head__kicker">MedIndex Journal</p>
+        <p class="blog-head__kicker">DRx Journal</p>
         <h1 class="blog-head__title" id="pageTitle">Mjekësi, evidencë dhe teknologji — pa zhurmë.</h1>
         <p class="blog-head__lead">Analiza të qarta për vendimmarrjen klinike, barnat, Clinical Decision Support dhe AI në shëndetësi — të shkruara për t'u lexuar shpejt dhe për t'u përdorur me mendim klinik.</p>
         <p class="blog-head__count"><span id="blogArticleCount">—</span> artikuj të publikuar</p>
       </header>
 
-      <section class="info-body blog-body" aria-label="Artikujt e MedIndex">
+      <section class="info-body blog-body" aria-label="Artikujt e DRx">
         <div id="blogStatus" class="blog-state" role="status" aria-live="polite">
           <strong>Duke ngarkuar artikujt…</strong>
-          <p>Përmbajtja po merret nga MedIndex Clinical Knowledge.</p>
+          <p>Përmbajtja po merret nga biblioteka klinike e DRx.</p>
         </div>
 
         <div id="blogListView">
           <div class="blog-toolbar" aria-label="Kërko dhe filtro artikujt">
             <label class="blog-search" for="blogSearchInput">
               <svg class="blog-search__icon" viewBox="0 0 24 24" fill="none" aria-hidden="true"><circle cx="11" cy="11" r="7" stroke="currentColor" stroke-width="1.8"/><path d="m16.2 16.2 4 4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>
-              <input id="blogSearchInput" type="search" autocomplete="off" placeholder="Kërko sipas temës, titullit ose fjalës kyçe…" aria-label="Kërko në MedIndex Journal">
+              <input id="blogSearchInput" type="search" autocomplete="off" placeholder="Kërko sipas temës, titullit ose fjalës kyçe…" aria-label="Kërko në DRx Journal">
               <kbd>Ctrl K</kbd>
             </label>
             <div id="blogFilterList" class="blog-filter-list" aria-label="Filtro sipas kategorisë"></div>
@@ -83,21 +91,41 @@
     </div>
   </main>
 
-  <footer class="mi-site-footer">
-    <div class="mi-site-footer__inner">
-      <div class="mi-site-footer__top">
-        <a class="mi-site-footer__brand" href="login-v2.html" aria-label="MedIndex — faqja kryesore">
-          <img class="mi-site-footer__logo" src="brand/medindex-horizontal-on-light.webp" alt="MedIndex — by Dr. Diellza Rabushaj" width="320" height="76" loading="lazy" decoding="async">
-        </a>
-        <nav class="mi-site-footer__nav" aria-label="Lidhjet e footer-it">
-          <a href="rreth-nesh.html">Rreth nesh</a>
-          <a href="kontakt.html">Kontakt</a>
-          <a href="blog.html">Blog</a>
-        </nav>
+  <footer class="lp-footer">
+    <div class="lp-shell">
+      <div class="lp-footer__grid">
+        <div class="lp-footer__brand">
+          <img class="drx-logo__img" src="brand/drx-horizontal-dark.svg" alt="DRx" width="102" height="30" loading="lazy" decoding="async">
+          <p class="lp-caption">Regjistri klinik i barnave, klasifikimeve, dozologjisë dhe protokolleve për mjekët në Kosovë.</p>
+        </div>
+        <div>
+          <h3>Hapësira klinike</h3>
+          <ul>
+            <li><a href="landing.html#regjistri">Regjistri</a></li>
+            <li><a href="landing.html#dozologjia">Dozologjia</a></li>
+            <li><a href="landing.html#protokollet">Protokollet</a></li>
+          </ul>
+        </div>
+        <div>
+          <h3>Projekti</h3>
+          <ul>
+            <li><a href="rreth-nesh.html">Rreth nesh</a></li>
+            <li><a href="blog.html">Journal</a></li>
+            <li><a href="kontakt.html">Kontakt</a></li>
+          </ul>
+        </div>
+        <div>
+          <h3>Llogaria</h3>
+          <ul>
+            <li><a href="login.html">Hyr</a></li>
+            <li><a href="regjistrimi.html">Regjistrohu</a></li>
+            <li><a href="recovery.html">Rikthim qasjeje</a></li>
+          </ul>
+        </div>
       </div>
-      <div class="mi-site-footer__base">
-        <p class="mi-site-footer__note">© 2026 MedIndex · Hapësirë private klinike</p>
-        <p class="mi-site-footer__note">Hyrja verifikohet në server · Sesion 8 orë</p>
+      <div class="lp-footer__legal">
+        <p class="lp-micro">© 2026 DRx · Dr. Diellza Rabushaj</p>
+        <p class="lp-micro">DRx nuk zëvendëson gjykimin klinik. Dokumenti zyrtar i Ministrisë së Shëndetësisë mbizotëron.</p>
       </div>
     </div>
   </footer>
