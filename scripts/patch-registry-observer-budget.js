@@ -18,6 +18,11 @@ function replaceOnce(source, needle, replacement, label) {
   if (!source.includes(needle)) throw new Error(`Observer budget patch could not find ${label}.`);
   return source.replace(needle, replacement);
 }
+function replacePattern(source, pattern, replacement, label) {
+  if (!pattern.test(source)) throw new Error(`Observer budget patch could not find ${label}.`);
+  pattern.lastIndex = 0;
+  return source.replace(pattern, replacement);
+}
 
 let calculator = read(DOSE_CALCULATOR);
 if (!calculator.includes(`// ${MARKER}: calculator activation publishes one explicit downstream invalidation.`)) {
@@ -51,9 +56,9 @@ write(DOSE_COLUMNS, dosage);
 
 let preview = read(CELL_PREVIEW);
 if (!preview.includes(`// ${MARKER}: only direct row replacement is observed; nested updates are explicit events.`)) {
-  const observerBlock = `    tableObserver.observe(tbody, {\n      childList:true,\n      subtree:true,\n      characterData:true,\n      attributes:true,\n      attributeFilter:['class', 'data-registry-row-expanded'],\n    });`;
-  preview = replaceOnce(preview, observerBlock, `    // ${MARKER}: only direct row replacement is observed; nested updates are explicit events.
-    tableObserver.observe(tbody, { childList:true });`, 'cell-preview broad tbody observer');
+  const observerPattern = /[ \t]*tableObserver\.observe\(tbody,\s*\{[\s\S]*?\}\);/;
+  preview = replacePattern(preview, observerPattern, `    // ${MARKER}: only direct row replacement is observed; nested updates are explicit events.
+    tableObserver.observe(tbody, { childList:true });`, 'cell-preview tbody observer');
 
   const eventAnchor = `    window.addEventListener('medindex:registry-table-stable', activate);`;
   preview = replaceOnce(preview, eventAnchor, `${eventAnchor}
@@ -67,8 +72,8 @@ if (!doseTable.includes(`// ${MARKER}: dose-table observers are armed only after
   doseTable = replaceOnce(doseTable, `  let maxRunMs = 0;`, `  let maxRunMs = 0;
   let active = false;`, 'dose-table active state');
 
-  const startBlock = `  function start() {\n    observeTable();\n    scanVisiblePage();\n    document.documentElement.dataset.doseTableButtonAudit = VERSION;\n  }`;
-  doseTable = replaceOnce(doseTable, startBlock, `  function activate() {
+  const startPattern = /  function start\(\) \{\s*observeTable\(\);\s*scanVisiblePage\(\);\s*document\.documentElement\.dataset\.doseTableButtonAudit = VERSION;\s*\}/;
+  doseTable = replacePattern(doseTable, startPattern, `  function activate() {
     if (active) return;
     active = true;
     observeTable();
