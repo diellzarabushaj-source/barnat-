@@ -1,0 +1,722 @@
+/* ============================================================================
+   MedIndex — faqja hyrëse publike (landing)
+
+   Gjuha vizuale ndjek `design-md/stripe/DESIGN.md`: mesh gradient në të tretën
+   e sipërme, tipografi display me peshë 300 dhe tracking negativ, butona pill
+   me gjeometri 8px/16px, kartela 12px mbi kanavacë të bardhë, dhe një bandë e
+   errët navy për provenienicën. Ngjyra e CTA-së nuk është indigoja e Stripe-it
+   por teal-i i MedIndex-it, që faqja të mbetet e produktit dhe jo e markës së
+   huazuar; ink-u navy `#0d253d` mbahet, sepse pikërisht ai e bën teal-in të
+   duket klinik e jo dekorativ.
+
+   Kufizimet e projektit respektohen: Inter i vetë-strehuar (asnjë CDN fontesh),
+   asnjë varësi runtime, asnjë bibliotekë animacioni, dhe `prefers-reduced-motion`
+   e ndal çdo lëvizje. Nuk ka JavaScript — navigimi mobil punon me `:target`.
+   ========================================================================= */
+
+@font-face{
+  font-family:"Inter";
+  font-style:normal;
+  font-display:swap;
+  font-weight:100 900;
+  src:url("fonts/inter-latin-variable-normal.woff2") format("woff2");
+  unicode-range:U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6,
+    U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122,
+    U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+}
+
+/* --- Tokenat ------------------------------------------------------------- */
+
+:root{
+  /* Ink — navy i thellë, kurrë e zezë e pastër (nga sistemi i Stripe-it) */
+  --lp-ink:#0d253d;
+  --lp-ink-2:#273951;
+  --lp-mute:#64748d;
+  --lp-mute-2:#61718a;
+  --lp-on-dark:#ffffff;
+
+  /* Brand — teal-i i MedIndex-it zë vendin e indigos si e vetmja ngjyrë CTA */
+  --lp-brand:#1f7779;
+  --lp-brand-deep:#155f63;
+  --lp-brand-press:#0d4145;
+  --lp-brand-soft:#4f958d;
+  --lp-brand-subtle:#d6eae5;
+  --lp-brand-wash:#eaf4f1;
+
+  /* Sipërfaqet */
+  --lp-canvas:#ffffff;
+  --lp-canvas-soft:#f6f9fc;
+  --lp-cream:#f5e9d4;
+  --lp-hairline:#e3e8ee;
+  --lp-hairline-input:#a8c3de;
+  --lp-dark:#0d253d;
+  --lp-dark-2:#12314f;
+
+  /* Vetëm për mesh-in dhe grafikat — kurrë si ngjyrë butoni */
+  --lp-ruby:#ea2261;
+  --lp-magenta:#f96bee;
+  --lp-lavender:#b9b9f9;
+  --lp-sherbet:#f6c88a;
+
+  /* Semantikë klinike — e trashëguar nga sistemi i aplikacionit */
+  --lp-ok:#027a48;
+  --lp-ok-bg:#ecfdf3;
+  --lp-warn:#b54708;
+  --lp-warn-bg:#fffaeb;
+  --lp-stop:#b42318;
+  --lp-stop-bg:#fef3f2;
+
+  /* Rrezet — shkalla e Stripe-it */
+  --lp-r-xs:4px;
+  --lp-r-sm:6px;
+  --lp-r-md:8px;
+  --lp-r-lg:12px;
+  --lp-r-xl:16px;
+  --lp-r-pill:9999px;
+
+  /* Hijet — vetëm dy nivele, të dyja të buta */
+  --lp-shadow-1:0 1px 3px rgba(0,55,112,.08);
+  --lp-shadow-2:0 8px 24px rgba(0,55,112,.08), 0 2px 6px rgba(0,55,112,.04);
+
+  --lp-font:"Inter", ui-sans-serif, -apple-system, BlinkMacSystemFont,
+    "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  --lp-mono:ui-monospace, SFMono-Regular, Consolas, "Liberation Mono", monospace;
+
+  --lp-container:1200px;
+  --lp-gutter:24px;
+}
+
+/* --- Bazat --------------------------------------------------------------- */
+
+*,*::before,*::after{box-sizing:border-box;}
+
+html{-webkit-text-size-adjust:100%;scroll-behavior:smooth;}
+
+body.lp{
+  margin:0;
+  background:var(--lp-canvas);
+  color:var(--lp-ink);
+  font-family:var(--lp-font);
+  /* ss01 globalisht — pjesë e nënshkrimit tipografik të sistemit burimor */
+  font-feature-settings:"ss01";
+  font-size:15px;
+  font-weight:300;
+  line-height:1.4;
+  -webkit-font-smoothing:antialiased;
+  -moz-osx-font-smoothing:grayscale;
+}
+
+.lp img{max-width:100%;height:auto;display:block;}
+.lp a{color:var(--lp-brand-deep);text-decoration:none;}
+.lp a:hover{color:var(--lp-brand-press);}
+
+.lp :focus-visible{
+  outline:3px solid #f79009;
+  outline-offset:3px;
+  border-radius:var(--lp-r-xs);
+}
+
+.lp-skip{
+  position:absolute;left:-9999px;top:0;
+  background:var(--lp-canvas);color:var(--lp-ink);
+  padding:12px 16px;border-radius:var(--lp-r-md);
+  box-shadow:var(--lp-shadow-2);z-index:60;
+}
+.lp-skip:focus{left:16px;top:16px;}
+
+.lp-shell{width:100%;max-width:var(--lp-container);margin:0 auto;padding:0 var(--lp-gutter);}
+
+/* --- Tipografia ---------------------------------------------------------- */
+
+.lp h1,.lp h2,.lp h3,.lp h4{margin:0;font-weight:300;color:var(--lp-ink);}
+.lp-footer h3{font-weight:400;}
+
+.lp-display-xxl{font-size:56px;line-height:1.03;letter-spacing:-1.4px;}
+.lp-display-xl{font-size:48px;line-height:1.15;letter-spacing:-.96px;}
+.lp-display-lg{font-size:32px;line-height:1.1;letter-spacing:-.64px;}
+.lp-display-md{font-size:26px;line-height:1.12;letter-spacing:-.26px;}
+.lp-heading-lg{font-size:22px;line-height:1.1;letter-spacing:-.22px;}
+.lp-heading-md{font-size:20px;line-height:1.4;letter-spacing:-.2px;}
+.lp-heading-sm{font-size:18px;line-height:1.4;}
+
+.lp-lead{font-size:16px;line-height:1.55;color:var(--lp-ink-2);margin:0;}
+.lp-body{font-size:15px;line-height:1.55;color:var(--lp-ink-2);margin:0;}
+.lp-caption{font-size:13px;line-height:1.4;letter-spacing:-.39px;color:var(--lp-mute);margin:0;}
+.lp-micro{font-size:12px;line-height:1.45;color:var(--lp-mute);margin:0;}
+
+/* tnum kudo ku ka numra klinikë ose sasiorë */
+.lp-num{font-feature-settings:"ss01","tnum";font-variant-numeric:tabular-nums;}
+.lp-code{font-family:var(--lp-mono);font-size:12.5px;letter-spacing:-.2px;}
+
+.lp-eyebrow{
+  display:inline-flex;align-items:center;gap:8px;
+  font-size:11px;font-weight:400;line-height:1.2;letter-spacing:.4px;
+  text-transform:uppercase;
+  color:var(--lp-brand-deep);
+  background:var(--lp-brand-subtle);
+  border-radius:var(--lp-r-pill);
+  padding:5px 10px;
+}
+.lp-eyebrow--onDark{color:#bfe3dd;background:rgba(214,234,229,.14);}
+
+/* --- Butonat — pill 9999px, mbushje 8px/16px ---------------------------- */
+
+.lp-btn{
+  display:inline-flex;align-items:center;justify-content:center;gap:8px;
+  font-family:inherit;font-size:16px;font-weight:400;line-height:1;
+  padding:12px 20px;
+  border-radius:var(--lp-r-pill);
+  border:1px solid transparent;
+  cursor:pointer;
+  transition:background-color .15s ease, border-color .15s ease, color .15s ease;
+  min-height:44px;
+}
+.lp .lp-btn--primary{background:var(--lp-brand);color:#fff;}
+.lp .lp-btn--primary:hover{background:var(--lp-brand-deep);color:#fff;}
+.lp .lp-btn--primary:active{background:var(--lp-brand-press);color:#fff;}
+.lp .lp-btn--secondary{background:var(--lp-canvas);color:var(--lp-brand-deep);border-color:var(--lp-brand);}
+.lp .lp-btn--secondary:hover{background:var(--lp-brand-wash);color:var(--lp-brand-press);}
+.lp .lp-btn--onDark{background:#fff;color:var(--lp-ink);}
+.lp .lp-btn--onDark:hover{background:#e9eef4;color:var(--lp-ink);}
+.lp .lp-btn--ghostDark{background:transparent;color:#fff;border-color:rgba(255,255,255,.34);}
+.lp .lp-btn--ghostDark:hover{background:rgba(255,255,255,.08);color:#fff;}
+.lp-btn--sm{font-size:14px;padding:9px 16px;min-height:40px;}
+
+.lp-textlink{
+  display:inline-flex;align-items:center;gap:6px;
+  font-size:15px;color:var(--lp-brand-deep);
+}
+.lp-textlink::after{content:"→";transition:transform .15s ease;}
+.lp-textlink:hover::after{transform:translateX(3px);}
+
+/* --- Mesh-i i heroit ----------------------------------------------------- */
+
+.lp-hero{position:relative;}
+
+.lp-mesh{
+  position:absolute;top:0;left:0;right:0;
+  height:820px;
+  z-index:-2;
+  pointer-events:none;
+  background:
+    radial-gradient(58% 68% at 8% 6%, rgba(245,233,212,.95) 0%, rgba(245,233,212,0) 62%),
+    radial-gradient(52% 62% at 30% 0%, rgba(246,200,138,.72) 0%, rgba(246,200,138,0) 60%),
+    radial-gradient(58% 72% at 58% 4%, rgba(185,185,249,.72) 0%, rgba(185,185,249,0) 64%),
+    radial-gradient(64% 78% at 84% 0%, rgba(31,119,121,.42) 0%, rgba(31,119,121,0) 66%),
+    radial-gradient(46% 60% at 98% 22%, rgba(234,34,97,.30) 0%, rgba(234,34,97,0) 62%),
+    linear-gradient(180deg, #ffffff 0%, #fbfcfe 58%, #ffffff 100%);
+}
+/* Butësim i tranzicionit poshtë mesh-it, që bandat të mos presin ashpër */
+.lp-mesh::after{
+  content:"";position:absolute;left:0;right:0;bottom:0;height:220px;
+  background:linear-gradient(180deg, rgba(255,255,255,0) 0%, #ffffff 92%);
+}
+
+/* --- Navigimi ------------------------------------------------------------ */
+
+.lp-nav{position:relative;z-index:20;padding:18px 0;}
+.lp-nav__row{display:flex;align-items:center;gap:24px;}
+.lp-nav__brand{display:inline-flex;align-items:center;gap:10px;flex:0 0 auto;}
+.lp .lp-nav__logo{height:30px;width:auto;max-width:none;}
+.lp-nav__wordmark{font-size:18px;letter-spacing:-.3px;color:var(--lp-ink);font-weight:400;}
+
+.lp-nav__links{display:flex;align-items:center;gap:4px;margin-left:8px;flex:1 1 auto;}
+.lp-nav__link{
+  font-size:15px;color:var(--lp-ink-2);
+  padding:8px 12px;border-radius:var(--lp-r-md);
+  transition:color .15s ease, background-color .15s ease;
+}
+.lp-nav__link:hover{color:var(--lp-brand-press);background:rgba(255,255,255,.66);}
+.lp-nav__actions{display:flex;align-items:center;gap:10px;flex:0 0 auto;}
+
+.lp-nav__toggle,.lp-nav__close,.lp-nav__cta{display:none;}
+
+/* --- Heroi --------------------------------------------------------------- */
+
+.lp-hero__body{padding-top:64px;}
+.lp-hero__grid{display:grid;grid-template-columns:minmax(0,1fr);gap:28px;max-width:760px;}
+.lp-hero h1{margin:18px 0 0;}
+.lp-hero__lead{margin-top:20px;font-size:19px;line-height:1.5;color:var(--lp-ink-2);max-width:640px;}
+.lp-hero__cta{display:flex;flex-wrap:wrap;align-items:center;gap:12px;margin-top:28px;}
+.lp-hero__note{margin-top:14px;display:flex;flex-wrap:wrap;gap:8px 18px;}
+.lp-hero__note span{display:inline-flex;align-items:center;gap:7px;font-size:13px;color:var(--lp-mute);}
+.lp-hero__note span::before{
+  content:"";width:5px;height:5px;border-radius:50%;
+  background:var(--lp-brand-soft);flex:0 0 auto;
+}
+
+/* --- Vija ECG — nënshkrimi i faqes -------------------------------------- */
+/* Vendi: buza e poshtme e heroit, aty ku mesh-i dorëzohet te përmbajtja.
+   Dy shtresa: gjurma e plotë e qetë, plus një segment i ndritur që kalon
+   majtas-djathtas si në monitor. Rrahja e pikës sinkronizohet me kalimin. */
+
+.lp-ecg{
+  position:relative;
+  margin-top:52px;
+  height:140px;
+  width:100%;
+  /* Tretet në të dy skajet, që të mos duket si vijë e prerë */
+  -webkit-mask-image:linear-gradient(90deg,transparent 0,#000 12%,#000 88%,transparent 100%);
+  mask-image:linear-gradient(90deg,transparent 0,#000 12%,#000 88%,transparent 100%);
+  pointer-events:none;
+}
+.lp-ecg__svg{display:block;width:100%;height:140px;}
+
+.lp-ecg__trace{
+  fill:none;
+  stroke:rgba(31,119,121,.26);
+  stroke-width:1.6;
+  stroke-linecap:round;
+  stroke-linejoin:round;
+}
+.lp-ecg__pulse{
+  fill:none;
+  stroke:var(--lp-brand);
+  stroke-width:2.1;
+  stroke-linecap:round;
+  stroke-linejoin:round;
+  stroke-dasharray:180 3000;
+  stroke-dashoffset:180;
+  animation:lp-ecg-sweep 5.2s linear infinite;
+}
+.lp-ecg__glow{
+  fill:none;
+  stroke:rgba(31,119,121,.28);
+  stroke-width:7;
+  stroke-linecap:round;
+  stroke-linejoin:round;
+  stroke-dasharray:180 3000;
+  stroke-dashoffset:180;
+  filter:blur(5px);
+  animation:lp-ecg-sweep 5.2s linear infinite;
+}
+@keyframes lp-ecg-sweep{
+  from{stroke-dashoffset:180;}
+  to{stroke-dashoffset:-3000;}
+}
+
+.lp-ecg__baseline{stroke:var(--lp-hairline);stroke-width:1;}
+
+.lp-ecg__beat{
+  transform-origin:center;
+  animation:lp-beat 5.2s ease-in-out infinite;
+}
+@keyframes lp-beat{
+  0%,54%{transform:scale(1);opacity:.34;}
+  60%{transform:scale(1.9);opacity:.9;}
+  66%{transform:scale(1);opacity:.34;}
+  100%{transform:scale(1);opacity:.34;}
+}
+
+/* --- Mockup-i i produktit ------------------------------------------------ */
+
+.lp-mock{
+  position:relative;margin-top:-30px;z-index:2;
+  display:grid;grid-template-columns:minmax(0,1.62fr) minmax(0,1fr);
+  gap:20px;align-items:start;
+}
+.lp-panel{
+  background:var(--lp-canvas);
+  border:1px solid var(--lp-hairline);
+  border-radius:var(--lp-r-xl);
+  box-shadow:var(--lp-shadow-2);
+  overflow:hidden;
+}
+.lp-panel__bar{
+  display:flex;align-items:center;gap:10px;
+  padding:12px 16px;border-bottom:1px solid var(--lp-hairline);
+  background:#fcfdfe;
+}
+.lp-panel__dot{width:8px;height:8px;border-radius:50%;background:var(--lp-hairline-input);flex:0 0 auto;}
+.lp-panel__title{font-size:13px;color:var(--lp-mute);letter-spacing:-.2px;}
+.lp-panel__spacer{flex:1 1 auto;}
+.lp-panel__body{padding:16px;}
+
+.lp-mockbar{
+  display:flex;align-items:center;gap:10px;
+  border:1px solid var(--lp-hairline-input);
+  border-radius:var(--lp-r-sm);
+  padding:9px 12px;font-size:14px;color:var(--lp-ink-2);
+  background:#fff;
+}
+.lp-mockbar svg{flex:0 0 auto;}
+.lp-mockbar__hint{
+  margin-left:auto;font-size:11px;color:var(--lp-mute);
+  border:1px solid var(--lp-hairline);border-radius:var(--lp-r-xs);
+  padding:2px 6px;
+}
+
+.lp-table{width:100%;border-collapse:collapse;margin-top:14px;}
+.lp-table th{
+  text-align:left;font-size:12px;font-weight:500;color:var(--lp-mute);
+  padding:8px 10px;border-bottom:1px solid var(--lp-hairline);white-space:nowrap;
+}
+.lp-table td{
+  font-size:13px;color:var(--lp-ink-2);
+  padding:11px 10px;border-bottom:1px solid var(--lp-hairline);
+  vertical-align:middle;
+}
+.lp-table tr:last-child td{border-bottom:0;}
+.lp-table__name{color:var(--lp-ink);font-weight:400;}
+.lp-table__sub{display:block;font-size:11.5px;color:var(--lp-mute);margin-top:2px;}
+.lp-table tbody tr.is-selected{background:var(--lp-brand-wash);}
+
+.lp-badge{
+  display:inline-flex;align-items:center;gap:5px;
+  font-size:11px;line-height:1;padding:4px 8px;border-radius:var(--lp-r-pill);
+  white-space:nowrap;
+}
+.lp-badge::before{content:"";width:5px;height:5px;border-radius:50%;flex:0 0 auto;}
+.lp-badge--ok{color:var(--lp-ok);background:var(--lp-ok-bg);}
+.lp-badge--ok::before{background:#12b76a;}
+.lp-badge--warn{color:var(--lp-warn);background:var(--lp-warn-bg);}
+.lp-badge--warn::before{background:#f79009;}
+.lp-badge--none{color:#556074;background:#f2f4f7;}
+.lp-badge--none::before{background:#98a2b3;}
+
+.lp-side{display:grid;gap:20px;}
+
+.lp-dose__row{display:flex;align-items:baseline;justify-content:space-between;gap:12px;}
+.lp-dose__value{font-size:26px;letter-spacing:-.26px;color:var(--lp-ink);}
+.lp-dose__unit{font-size:13px;color:var(--lp-mute);}
+.lp-dose__meta{margin-top:12px;display:grid;gap:8px;}
+.lp-dose__meta div{display:flex;justify-content:space-between;gap:12px;font-size:12.5px;}
+.lp-dose__meta dt,.lp-dose__meta span:first-child{color:var(--lp-mute);}
+.lp-dose__meta span:last-child{color:var(--lp-ink-2);}
+.lp-dose__source{
+  margin-top:14px;padding-top:12px;border-top:1px solid var(--lp-hairline);
+  display:flex;align-items:center;gap:8px;font-size:11.5px;color:var(--lp-mute);
+}
+
+/* --- Bandat -------------------------------------------------------------- */
+
+.lp-band{padding:88px 0;}
+.lp-band--soft{background:var(--lp-canvas-soft);}
+.lp-band--cream{background:var(--lp-cream);}
+.lp-band--dark{background:var(--lp-dark);color:#e6edf5;}
+.lp-band--tight{padding:56px 0;}
+.lp-band--flushBottom{padding-bottom:24px;}
+.lp-band--flushTop{padding-top:32px;}
+
+.lp-band__head{max-width:720px;}
+.lp-band__head h2{margin:14px 0 0;}
+.lp-band__head p{margin-top:16px;}
+.lp-band--dark .lp-band__head h2{color:#fff;}
+.lp-band--dark .lp-band__head p{color:#b6c6d8;}
+
+/* Rripi i burimeve */
+.lp-sources{
+  display:flex;flex-wrap:wrap;align-items:center;gap:14px 34px;
+  padding:26px 0;border-top:1px solid var(--lp-hairline);border-bottom:1px solid var(--lp-hairline);
+}
+.lp-sources__label{font-size:11.5px;text-transform:uppercase;letter-spacing:.1px;color:var(--lp-mute);}
+.lp-sources__item{display:inline-flex;align-items:center;gap:9px;font-size:14px;color:var(--lp-ink-2);}
+.lp-sources__item svg{flex:0 0 auto;color:var(--lp-brand);}
+
+/* Statistikat */
+.lp-stats{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:1px;background:var(--lp-hairline);
+  border:1px solid var(--lp-hairline);border-radius:var(--lp-r-lg);overflow:hidden;margin-top:40px;}
+.lp-stat{background:var(--lp-canvas);padding:28px 24px;}
+.lp-stat__value{font-size:40px;line-height:1.05;letter-spacing:-1px;color:var(--lp-ink);}
+.lp-stat__label{margin-top:8px;font-size:13px;color:var(--lp-ink-2);}
+.lp-stat__note{margin-top:6px;font-size:12px;color:var(--lp-mute);}
+
+/* Kartelat e veçorive */
+.lp-grid{display:grid;gap:20px;margin-top:44px;}
+.lp-grid--3{grid-template-columns:repeat(3,minmax(0,1fr));}
+.lp-grid--2{grid-template-columns:repeat(2,minmax(0,1fr));}
+
+.lp-card{
+  background:var(--lp-canvas);
+  border:1px solid var(--lp-hairline);
+  border-radius:var(--lp-r-lg);
+  padding:32px;
+  box-shadow:var(--lp-shadow-1);
+  display:flex;flex-direction:column;gap:12px;
+}
+.lp-card__icon{
+  width:34px;height:34px;border-radius:var(--lp-r-pill);flex:0 0 auto;
+  background:var(--lp-brand-wash);color:var(--lp-brand-deep);
+  display:inline-flex;align-items:center;justify-content:center;
+}
+.lp-card h3{margin:0;}
+.lp-card__head{display:flex;align-items:center;gap:12px;}
+.lp-card p{margin:0;font-size:14.5px;line-height:1.55;color:var(--lp-ink-2);}
+.lp-card__list{margin:6px 0 0;padding:0;list-style:none;display:grid;gap:8px;}
+.lp-card__list li{position:relative;padding-left:20px;font-size:13.5px;color:var(--lp-ink-2);}
+.lp-card__list li::before{
+  content:"";position:absolute;left:2px;top:7px;
+  width:7px;height:7px;border-radius:2px;background:var(--lp-brand-soft);
+}
+.lp-card--cream{background:#fffaf0;border-color:#e8d9bd;}
+
+/* Rreshta veçorish me mockup anash */
+.lp-split{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.08fr);gap:56px;align-items:center;}
+.lp-split--flip .lp-split__media{order:-1;}
+.lp-split + .lp-split{margin-top:96px;}
+.lp-split__copy h3{margin:14px 0 0;}
+.lp-split__copy p{margin-top:14px;}
+.lp-split__copy .lp-textlink{margin-top:20px;}
+
+/* Bandë e errët — proveniencë */
+.lp-band--dark .lp-panel{background:var(--lp-dark-2);border-color:rgba(255,255,255,.12);box-shadow:none;}
+.lp-band--dark .lp-panel__bar{background:rgba(255,255,255,.04);border-bottom-color:rgba(255,255,255,.1);}
+.lp-band--dark .lp-panel__title{color:#93a7bd;}
+.lp-band--dark .lp-panel__dot{background:rgba(255,255,255,.24);}
+
+.lp-check{margin:36px 0 0;padding:0;list-style:none;display:grid;gap:16px;}
+.lp-check li{display:flex;gap:12px;align-items:flex-start;font-size:15px;color:#cfdcea;}
+.lp-check li strong{display:block;color:#fff;font-weight:400;margin-bottom:3px;}
+.lp-check svg{flex:0 0 auto;margin-top:2px;color:#5fbfae;}
+
+.lp-log{margin:0;padding:0;display:grid;gap:0;}
+.lp-log__row{
+  display:grid;grid-template-columns:auto 1fr auto;gap:12px;align-items:center;
+  padding:12px 16px;border-bottom:1px solid rgba(255,255,255,.08);
+  font-size:12.5px;color:#b6c6d8;
+}
+.lp-log__row:last-child{border-bottom:0;}
+.lp-log__key{color:#8fa6bd;}
+.lp-log__val{color:#e6edf5;}
+
+/* Protokollet — timeline */
+.lp-steps{margin:44px 0 0;padding:0;list-style:none;display:grid;gap:0;position:relative;}
+.lp-steps::before{
+  content:"";position:absolute;left:15px;top:12px;bottom:12px;width:2px;
+  background:linear-gradient(180deg,var(--lp-brand-subtle),var(--lp-hairline));
+}
+.lp-step{position:relative;padding:0 0 32px 52px;}
+.lp-step:last-child{padding-bottom:0;}
+.lp-step__marker{
+  position:absolute;left:0;top:0;width:32px;height:32px;border-radius:50%;
+  background:var(--lp-canvas);border:2px solid var(--lp-brand);
+  color:var(--lp-brand-deep);font-size:13px;
+  display:flex;align-items:center;justify-content:center;
+}
+.lp-step h3{margin:5px 0 0;font-size:17px;letter-spacing:-.2px;}
+.lp-step p{margin:8px 0 0;font-size:14px;color:var(--lp-ink-2);}
+.lp-step__cite{
+  display:inline-flex;align-items:center;gap:6px;margin-top:10px;
+  font-size:11.5px;color:var(--lp-mute);
+  border:1px solid var(--lp-hairline);border-radius:var(--lp-r-xs);padding:3px 8px;
+}
+
+/* FAQ */
+.lp-faq{margin-top:44px;display:grid;gap:0;}
+.lp-faq details{border-bottom:1px solid var(--lp-hairline);}
+.lp-faq details:first-of-type{border-top:1px solid var(--lp-hairline);}
+.lp-faq summary{
+  cursor:pointer;list-style:none;padding:22px 40px 22px 0;position:relative;
+  font-size:17px;letter-spacing:-.2px;color:var(--lp-ink);
+}
+.lp-faq summary::-webkit-details-marker{display:none;}
+.lp-faq summary::after{
+  content:"";position:absolute;right:8px;top:50%;width:9px;height:9px;
+  border-right:1.5px solid var(--lp-mute);border-bottom:1.5px solid var(--lp-mute);
+  transform:translateY(-70%) rotate(45deg);transition:transform .18s ease;
+}
+.lp-faq details[open] summary::after{transform:translateY(-30%) rotate(-135deg);}
+.lp-faq p{margin:0 0 22px;font-size:14.5px;line-height:1.6;color:var(--lp-ink-2);max-width:760px;}
+
+/* CTA përfundimtare */
+.lp-final{
+  border-radius:var(--lp-r-xl);
+  background:
+    radial-gradient(70% 140% at 12% 0%, rgba(185,185,249,.5) 0%, rgba(185,185,249,0) 62%),
+    radial-gradient(70% 130% at 88% 10%, rgba(31,119,121,.34) 0%, rgba(31,119,121,0) 66%),
+    radial-gradient(60% 120% at 60% 100%, rgba(245,233,212,.7) 0%, rgba(245,233,212,0) 60%),
+    var(--lp-canvas-soft);
+  border:1px solid var(--lp-hairline);
+  padding:64px 48px;
+  text-align:center;
+}
+.lp-final h2{margin:12px auto 0;max-width:720px;}
+.lp-final p{margin:16px auto 0;max-width:600px;}
+.lp-final__cta{display:flex;flex-wrap:wrap;gap:12px;justify-content:center;margin-top:28px;}
+
+/* Footer */
+.lp-footer{border-top:1px solid var(--lp-hairline);padding:64px 0 40px;}
+.lp-footer__grid{display:grid;grid-template-columns:1.4fr repeat(4,minmax(0,1fr));gap:32px;}
+.lp-footer__brand p{margin-top:14px;max-width:280px;}
+.lp-footer h3{
+  font-size:11px;text-transform:uppercase;letter-spacing:.5px;
+  color:var(--lp-mute);font-weight:400;margin:0 0 14px;
+}
+.lp-footer ul{margin:0;padding:0;list-style:none;display:grid;gap:10px;}
+.lp-footer li a{font-size:14px;color:var(--lp-ink-2);}
+.lp-footer li a:hover{color:var(--lp-brand-press);}
+.lp-footer__legal{
+  margin-top:48px;padding-top:24px;border-top:1px solid var(--lp-hairline);
+  display:flex;flex-wrap:wrap;gap:12px 24px;justify-content:space-between;
+}
+
+/* --- Responsive ---------------------------------------------------------- */
+
+@media (max-width:1023px){
+  .lp-mock{grid-template-columns:minmax(0,1fr);margin-top:-24px;}
+  .lp-split{grid-template-columns:minmax(0,1fr);gap:32px;}
+  .lp-split--flip .lp-split__media{order:0;}
+  .lp-split + .lp-split{margin-top:64px;}
+  .lp-grid--3{grid-template-columns:repeat(2,minmax(0,1fr));}
+  .lp-stats{grid-template-columns:repeat(2,minmax(0,1fr));}
+  .lp-footer__grid{grid-template-columns:repeat(3,minmax(0,1fr));}
+  .lp-footer__brand{grid-column:1 / -1;}
+
+  /* Navigim mobil me :target — pa JavaScript */
+  .lp-nav__links{
+    position:fixed;inset:0;z-index:40;
+    flex-direction:column;align-items:stretch;justify-content:flex-start;
+    gap:4px;margin:0;padding:88px 20px 20px;
+    background:var(--lp-canvas);
+    transform:translateX(100%);
+    transition:transform .22s ease;
+    overflow-y:auto;
+  }
+  .lp-nav__links:target{transform:translateX(0);}
+  .lp-nav__link{padding:14px 12px;font-size:17px;border-bottom:1px solid var(--lp-hairline);border-radius:0;}
+  .lp-nav__toggle{
+    display:inline-flex;align-items:center;justify-content:center;
+    width:44px;height:44px;border-radius:var(--lp-r-md);
+    border:1px solid var(--lp-hairline);background:rgba(255,255,255,.8);color:var(--lp-ink);
+  }
+  .lp-nav__close{
+    display:inline-flex;align-items:center;justify-content:center;
+    position:absolute;top:20px;right:20px;width:44px;height:44px;
+    border-radius:var(--lp-r-md);border:1px solid var(--lp-hairline);
+    background:var(--lp-canvas);color:var(--lp-ink);font-size:20px;line-height:1;
+  }
+  .lp-nav__actions .lp-btn--secondary{display:none;}
+
+  /* CTA-të zbresin brenda panelit të menysë, ku ka vend për to */
+  .lp-nav__cta{display:grid;gap:10px;margin-top:24px;}
+  .lp-nav__cta .lp-btn{width:100%;}
+}
+
+@media (max-width:767px){
+  :root{--lp-gutter:16px;}
+  /* Në 390px logo + «Hyr» + pill + hamburger nuk hyjnë; CTA-të rrinë në meny */
+  .lp-nav__actions > .lp-nav__link,
+  .lp-nav__actions > .lp-btn{display:none;}
+  .lp-nav__row{gap:12px;justify-content:space-between;}
+  .lp .lp-nav__logo{height:26px;}
+  .lp-band{padding:64px 0;}
+  .lp-display-xxl{font-size:36px;letter-spacing:-.9px;line-height:1.08;}
+  .lp-display-xl{font-size:30px;letter-spacing:-.6px;}
+  .lp-display-lg{font-size:25px;letter-spacing:-.4px;}
+  .lp-hero__body{padding-top:40px;}
+  .lp-hero__lead{font-size:17px;}
+  .lp-hero__cta .lp-btn{width:100%;}
+  .lp-ecg,.lp-ecg__svg{height:104px;}
+  .lp-grid--3,.lp-grid--2{grid-template-columns:minmax(0,1fr);}
+  .lp-stats{grid-template-columns:minmax(0,1fr);}
+  .lp-stat__value{font-size:34px;}
+  .lp-card{padding:24px;}
+  .lp-final{padding:44px 22px;}
+  .lp-footer__grid{grid-template-columns:repeat(2,minmax(0,1fr));}
+  .lp-mock-scroll{overflow-x:auto;-webkit-overflow-scrolling:touch;}
+  .lp-mock-scroll .lp-table{min-width:520px;}
+}
+
+/* --- Lëvizja e reduktuar ------------------------------------------------- */
+
+@media (prefers-reduced-motion:reduce){
+  html{scroll-behavior:auto;}
+  .lp *,.lp *::before,.lp *::after{
+    animation-duration:.001ms !important;
+    animation-iteration-count:1 !important;
+    transition-duration:.001ms !important;
+  }
+  /* Gjurma ECG mbetet e plotë dhe e palëvizshme, jo e zhdukur */
+  .lp-ecg__pulse{stroke-dasharray:none;stroke-dashoffset:0;opacity:.9;}
+  .lp-ecg__glow{display:none;}
+  .lp-ecg__beat{opacity:.6;}
+}
+
+/* --- Sfondi që ndryshon me scroll --------------------------------------- */
+/* Një shtresë fikse pas gjithçkaje ndërron ton ndërsa faqja rrëshqet: e bardhë
+   te heroi, e ftohtë te bandat e të dhënave, e ngrohtë para bandës krem, dhe
+   sërish e ftohtë te pyetjet. Bandat neutrale janë transparente që ajo të duket;
+   banda krem dhe ajo navy mbeten opake, sepse ato e mbajnë ritmin.
+
+   Zbatuar me `animation-timeline: scroll()` — pa JavaScript, pa listener scroll-i.
+   Aty ku shfletuesi nuk e mbështet, faqja mbetet e bardhë dhe krejt e lexueshme. */
+
+.lp-scrollbg{
+  position:fixed;inset:0;z-index:-3;
+  background:var(--lp-canvas);
+  pointer-events:none;
+}
+
+.lp-band--soft{background:var(--lp-canvas-soft);}
+
+@supports (animation-timeline: scroll()){
+  /* Bandat neutrale hapin rrugën, që shtresa e animuar të lexohet */
+  .lp-band:not(.lp-band--cream):not(.lp-band--dark){background:transparent;}
+
+  .lp-scrollbg{
+    animation:lp-bgshift linear both;
+    animation-timeline:scroll(root block);
+  }
+
+  /* Nav-i noton mbi mesh dhe ngurtësohet sapo faqja lëviz */
+  .lp-nav{
+    position:sticky;top:0;
+    background:rgba(255,255,255,0);
+    border-bottom:1px solid rgba(227,232,238,0);
+    animation:lp-navsolid linear both;
+    animation-timeline:scroll(root block);
+    animation-range:0 180px;
+  }
+
+  /* Vija ECG zbehet ndërsa lexuesi largohet prej saj */
+  .lp-ecg{
+    animation:lp-ecg-fade linear both;
+    animation-timeline:scroll(root block);
+    animation-range:0 620px;
+  }
+}
+
+@keyframes lp-bgshift{
+  0%{background-color:#ffffff;}
+  18%{background-color:#fbfcfe;}
+  34%{background-color:#f4f8fb;}
+  52%{background-color:#fdfaf4;}
+  70%{background-color:#f6f9fc;}
+  88%{background-color:#f8fafc;}
+  100%{background-color:#ffffff;}
+}
+
+@keyframes lp-navsolid{
+  from{
+    background-color:rgba(255,255,255,0);
+    border-bottom-color:rgba(227,232,238,0);
+  }
+  to{
+    background-color:rgba(255,255,255,.92);
+    border-bottom-color:rgba(227,232,238,1);
+  }
+}
+
+@keyframes lp-ecg-fade{
+  from{opacity:1;}
+  to{opacity:.32;}
+}
+
+@media (prefers-reduced-motion:reduce){
+  /* Sfondi mbetet i qetë dhe i bardhë; nav-i merr menjëherë bazën e ngurtë */
+  @supports (animation-timeline: scroll()){
+    .lp-scrollbg{animation:none;background:var(--lp-canvas);}
+    .lp-band:not(.lp-band--cream):not(.lp-band--dark){background:transparent;}
+    .lp-nav{
+      animation:none;
+      background-color:rgba(255,255,255,.94);
+      border-bottom-color:var(--lp-hairline);
+    }
+    .lp-ecg{animation:none;opacity:1;}
+  }
+}
+
+@media print{
+  .lp-nav,.lp-ecg,.lp-final__cta,.lp-scrollbg{display:none;}
+  .lp-band{padding:24px 0;}
+}
