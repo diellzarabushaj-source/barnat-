@@ -9,6 +9,7 @@ const INDEX = path.join(ROOT, 'index.html');
 const EDITOR = path.join(ROOT, 'clinical-editor.js');
 const LOADER = 'clinical-editor-interaction-loader.js?v=clinical-editor-interaction-lazy-v1';
 const MARKER = 'clinical-editor-interaction-lazy-v1';
+const PHONE_OWNER_MARKER = 'clinical-editor-phone-owner-guard-v1';
 
 const normalize = value => value.replace(/\r\n?/g, '\n');
 
@@ -122,8 +123,20 @@ ${startAnchor}`);
   );
 }
 
+// Mobile-lite owns the entire phone registry chrome. Even if another caller
+// explicitly loads the full clinical-editor runtime on a phone, the editor may
+// not reinsert its desktop Auditimi progress trigger into the shared
+// search/count toolbar and create a third 44px row.
+if (!editor.includes(PHONE_OWNER_MARKER)) {
+  const progressAnchor = '  function ensureProgressButton() {\n';
+  if (!editor.includes(progressAnchor)) throw new Error('Clinical editor phone owner guard could not find ensureProgressButton().');
+  editor = editor.replace(progressAnchor, `${progressAnchor}    // ${PHONE_OWNER_MARKER}\n    if (window.matchMedia?.('(max-width: 767px)')?.matches || window.MEDINDEX_MOBILE_LITE_ACTIVE) {\n      if (progressButton?.isConnected) progressButton.remove?.();\n      progressButton = null;\n      return;\n    }\n`);
+}
+
 for (const fragment of [
   MARKER,
+  PHONE_OWNER_MARKER,
+  "window.matchMedia?.('(max-width: 767px)')?.matches || window.MEDINDEX_MOBILE_LITE_ACTIVE",
   'let summaryPromise = null;',
   "document.querySelector('[data-clinical-editor-lazy-trigger]')",
   'progressButton.addEventListener(\'click\', () => void openNext())',
@@ -144,4 +157,4 @@ execFileSync(process.execPath, [path.join(ROOT, 'tests', 'clinical-editor-lazy-r
 require('./patch-dose-modal-accessibility-lazy-runtime.js');
 require('./patch-dose-calculator-visibility-lazy.js');
 
-console.log('Clinical editor startup cleanup applied: lightweight Auditimi trigger stays eager; full editor JS, MutationObserver and summary API are interaction-only.');
+console.log('Clinical editor startup cleanup applied: lightweight Auditimi trigger stays eager on desktop, stays outside mobile-lite toolbar ownership, and full editor JS, MutationObserver and summary API remain interaction-only.');
