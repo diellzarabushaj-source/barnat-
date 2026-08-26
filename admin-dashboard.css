@@ -246,3 +246,5 @@ html:has(.mi-dialog[open]),body:has(.mi-dialog[open]){overflow:hidden}
 :is(.mi-btn-primary,.mi-btn-secondary,.mi-btn-danger,.mi-row-btn)[aria-busy="true"]{position:relative;pointer-events:none}
 :is(.mi-btn-primary,.mi-btn-secondary,.mi-btn-danger,.mi-row-btn)[aria-busy="true"]::after{content:"";width:12px;height:12px;border:1.5px solid currentColor;border-right-color:transparent;border-radius:50%;animation:mi-admin-spin .7s linear infinite}
 @keyframes mi-admin-spin{to{transform:rotate(360deg)}}
+
+.mi-toast-icon svg{width:16px;height:16px;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}

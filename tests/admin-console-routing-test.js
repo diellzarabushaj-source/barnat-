@@ -158,6 +158,10 @@ const rewriteFor = source => vercel.rewrites.find(rule => rule.source === source
     'a successful mutation followed by a failed refresh must not be reported as a failed save');
   assert.match(dashboard, /Promise\.allSettled\(\[loadUsers\(\),loadDrugs\(\)\]\)/,
     'one failed admin data source must not relock the whole console after authorization succeeds');
+  assert.ok(![...dashboard.matchAll(/<button(?![^>]*\\btype=)[^>]*>/g)].length,
+    'buttons rendered by admin-dashboard.js must declare type="button" explicitly');
+  assert.ok([...html.matchAll(/<th scope="col">/g)].length >= 12,
+    'admin data tables must expose column-header scope to assistive technology');
 }
 
 console.log('Admin console routing contract passed.');
