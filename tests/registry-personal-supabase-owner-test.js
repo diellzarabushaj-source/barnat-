@@ -11,6 +11,7 @@ const helper = read('lib/personal-registry-supabase.js');
 const api = read('api/drug-search.js');
 const lite = read('registry-desktop-lite.js');
 const marker = 'registry-personal-supabase-owner-v1';
+const immediateMarker = 'registry-personal-supabase-immediate-v1';
 
 assert.ok(helper.includes("UserStore.userFromSession(request)"), 'Personal membership must be scoped from the authenticated MedIndex session.');
 assert.ok(helper.includes("user_favorites?${params.toString()}"), 'Favorites/Notes membership must come from Supabase user_favorites.');
@@ -42,7 +43,10 @@ assert.ok(lite.includes("'Si të shënohet në recetë':clean(row.prescriptionNo
 assert.ok(lite.includes("'ProtocolNo':clean(row.protocolNo)"), 'Canonical row must carry the protocol number.');
 assert.ok(lite.includes("'Popullata e aprovuar':clean(row.approvedPopulation)"), 'Canonical row must carry the approved population.');
 assert.ok(lite.includes(`${marker}: sync membership before read`), 'A local favorite/note mutation must sync before the authoritative Supabase read.');
-assert.ok(lite.includes('MedIndexUserLibrary?.syncNow'), 'Personal read must flush the user library without requiring Ctrl+Shift+R.');
+assert.ok(lite.includes(`${immediateMarker}: authoritative mutation barrier`), 'Personal read must use the deterministic Supabase revision barrier.');
+assert.ok(lite.includes('await library.syncNow()'), 'Pending personal revisions must flush before Supabase readback without requiring Ctrl+Shift+R.');
+assert.ok(lite.includes('localRevision > syncedRevision'), 'Personal read must wait only when a newer local revision is still pending.');
+assert.ok(!lite.includes('setTimeout(resolve, 1600)'), 'The stale fixed-time personal sync race must not return.');
 assert.ok(lite.includes('mode:state.personalMode'), 'Personal request must tell the server only which personal view is requested.');
 const fetchStart = lite.indexOf('async function fetchPersonalLogicalPage');
 const fetchEnd = lite.indexOf('function setBusy', fetchStart);
@@ -50,4 +54,4 @@ const fetchBlock = lite.slice(fetchStart, fetchEnd);
 assert.ok(!fetchBlock.includes('identifiers:state.personalIdentifiers'), 'The browser must not send its local membership list as server authority.');
 assert.ok(lite.includes(`${marker}: self-heal restored personal view`), 'BFCache/tab restore must refresh the active personal subset automatically.');
 
-console.log('✓ Supabase personal registry owner passed: authenticated per-user membership, canonical composite-PDID hydration, complete Barnat row contract, and no hard-refresh dependency.');
+console.log('✓ Supabase personal registry owner passed: authenticated per-user membership, canonical composite-PDID hydration, deterministic revision readback, complete Barnat row contract, and no hard-refresh dependency.');
