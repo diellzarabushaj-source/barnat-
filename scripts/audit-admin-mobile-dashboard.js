@@ -174,6 +174,7 @@ const drugDetail = {
         scrollWidth:dialog.scrollWidth,
         overflowY:style.overflowY,
         overscrollY:style.overscrollBehaviorY,
+        actionsPosition:getComputedStyle(document.querySelector('#drugDialog .mi-dialog-actions')).position,
         bodyOverflow:getComputedStyle(document.body).overflow,
         htmlOverflow:getComputedStyle(document.documentElement).overflow,
         documentOverflow:document.documentElement.scrollWidth - document.documentElement.clientWidth,
@@ -193,6 +194,7 @@ const drugDetail = {
       `drug dialog must not overflow horizontally: ${JSON.stringify(geometry)}`);
     assert.equal(geometry.overflowY, 'auto', 'drug dialog owns its vertical scroll');
     assert.equal(geometry.overscrollY, 'contain', 'dialog scroll must not chain to the admin dashboard');
+    assert.equal(geometry.actionsPosition, 'sticky', 'DRx dialog actions must stay sticky while the long drug form scrolls');
     assert.equal(geometry.bodyOverflow, 'hidden', 'background body must lock while a modal dialog is open');
     assert.equal(geometry.htmlOverflow, 'hidden', 'root scrolling must lock while a modal dialog is open');
     assert.equal(geometry.documentOverflow, 0, 'opening the dialog must not create page-level horizontal overflow');
