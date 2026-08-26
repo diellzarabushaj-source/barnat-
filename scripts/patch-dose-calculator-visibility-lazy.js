@@ -94,7 +94,7 @@ if (!source.includes(MARKER)) {
   source = source.replace(clickAnchor, `  function activateDoseRuntime(reason = 'intent') {
     if (activationPromise) return activationPromise;
     if (registry.status === 'ready' && catalog.status === 'ready') return Promise.resolve({ registry, catalog });
-    document.documentElement.dataset.doseCalculatorActivation = reason;
+    if (document.documentElement?.dataset) document.documentElement.dataset.doseCalculatorActivation = reason;
     activationPromise = Promise.all([loadRegistry(), loadCatalog()])
       .then(() => {
         observe();
@@ -112,16 +112,18 @@ if (!source.includes(MARKER)) {
   function bindDoseRuntimeActivation() {
     if (activationBound) return;
     activationBound = true;
-    const tbody = document.getElementById('tbody');
+    const tbody = document.getElementById?.('tbody') || null;
     const activateFromEvent = event => {
       if (doseColumnTarget(event.target)) void activateDoseRuntime(event.type);
     };
-    tbody?.addEventListener('pointerover', activateFromEvent, { passive:true });
-    tbody?.addEventListener('touchstart', activateFromEvent, { passive:true });
-    document.addEventListener('focusin', activateFromEvent, true);
+    tbody?.addEventListener?.('pointerover', activateFromEvent, { passive:true });
+    tbody?.addEventListener?.('touchstart', activateFromEvent, { passive:true });
+    document.addEventListener?.('focusin', activateFromEvent, true);
 
     const armVisibility = () => {
-      const header = document.querySelector('[data-registry-dose-calculator-column="dose-calculator"]');
+      const header = typeof document.querySelector === 'function'
+        ? document.querySelector('[data-registry-dose-calculator-column="dose-calculator"]')
+        : null;
       if (!header || typeof IntersectionObserver !== 'function') return;
       visibilityObserver?.disconnect();
       visibilityObserver = new IntersectionObserver(entries => {
@@ -130,7 +132,7 @@ if (!source.includes(MARKER)) {
         visibilityObserver = null;
         void activateDoseRuntime('visible');
       }, {
-        root:document.getElementById('registryContent') || null,
+        root:document.getElementById?.('registryContent') || null,
         rootMargin:'120px',
         threshold:0.01,
       });
@@ -138,9 +140,11 @@ if (!source.includes(MARKER)) {
     };
 
     armVisibility();
-    ['medindex:registry-ready', 'medindex:registry-data-ready', 'medindex:registry-table-stable']
-      .forEach(eventName => window.addEventListener(eventName, armVisibility));
-    document.documentElement.dataset.doseCalculatorStartup = STARTUP_VERSION;
+    if (typeof window.addEventListener === 'function') {
+      ['medindex:registry-ready', 'medindex:registry-data-ready', 'medindex:registry-table-stable']
+        .forEach(eventName => window.addEventListener(eventName, armVisibility));
+    }
+    if (document.documentElement?.dataset) document.documentElement.dataset.doseCalculatorStartup = STARTUP_VERSION;
   }
 
 ${clickAnchor}`);
@@ -163,9 +167,9 @@ for (const fragment of [
   'function activateDoseRuntime(reason = \'intent\')',
   "new IntersectionObserver(entries =>",
   "rootMargin:'120px'",
-  "tbody?.addEventListener('pointerover'",
-  "tbody?.addEventListener('touchstart'",
-  "document.addEventListener('focusin'",
+  "tbody?.addEventListener?.('pointerover'",
+  "tbody?.addEventListener?.('touchstart'",
+  "document.addEventListener?.('focusin'",
   'bindDoseRuntimeActivation();',
   "activateDoseRuntime('api')",
 ]) {
