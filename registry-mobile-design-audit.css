@@ -54,6 +54,12 @@
     border:0!important;
     background:transparent!important;
     box-shadow:none!important;
+    /* Mbështjellësi e humb kornizën, sfondin dhe hijen këtu sipër, prandaj
+       margjina e vjetër 10px e `.table-wrap` (clean-medindex-ui.css, media
+       780px) nuk ndan më asgjë — vetëm e shtyn barin e parë poshtë. Në
+       mobile-lite kartelat e mbajnë vetë ritmin e tyre, prandaj mjafton një
+       ndarje prej 4px nga paneli i kërkimit. */
+    margin-top:4px!important;
   }
 
   html[data-registry-mobile-lite] #dataTable tbody{
