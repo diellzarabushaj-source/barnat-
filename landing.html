@@ -1,0 +1,688 @@
+<!doctype html>
+<html lang="sq">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>DRx | Regjistri klinik i barnave për mjekët në Kosovë</title>
+<meta name="description" content="DRx është hapësira klinike ku mjeku gjen barin, dozën, kodin ICD-10 ose hapin e radhës të protokollit brenda sekondave — e lidhur me regjistrin e verifikuar të Kosovës dhe dokumentet zyrtare të Ministrisë së Shëndetësisë.">
+<meta name="theme-color" content="#ffffff">
+<link rel="icon" href="/brand/drx-mark.svg" type="image/svg+xml">
+<link rel="preload" href="fonts/inter-latin-variable-normal.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="stylesheet" href="landing.css">
+</head>
+<body class="lp">
+<div class="lp-scrollbg" aria-hidden="true"></div>
+
+<a class="lp-skip" href="#permbajtja">Kalo te përmbajtja</a>
+
+<div class="lp-mesh" aria-hidden="true"></div>
+
+<nav class="lp-nav" aria-label="Navigimi kryesor">
+    <div class="lp-shell lp-nav__row">
+      <a class="lp-nav__brand" href="landing.html" aria-label="DRx — faqja hyrëse">
+        <span class="drx-logo" aria-hidden="true"><svg class="drx-logo__mark" viewBox="0 0 512 512" focusable="false"><mask id="drxNav"><rect width="512" height="512" fill="#000"/><path fill="#fff" d="M205 105 H266 A145 145 0 0 1 266 395 H205 A20 20 0 0 1 185 375 V125 A20 20 0 0 1 205 105 Z"/><rect x="112" y="208" width="98" height="82" rx="22" fill="#fff"/><path fill="#000" d="M257 161 H292 A95 95 0 0 1 292 342 H257 A10 10 0 0 1 247 332 V171 A10 10 0 0 1 257 161 Z"/><rect x="210" y="216" width="50" height="66" rx="9" fill="#000"/></mask><rect width="512" height="512" fill="currentColor" mask="url(#drxNav)"/></svg><span class="drx-logo__word">DRx</span></span><span class="lp-sr">DRx</span>
+      </a>
+
+      <div class="lp-nav__links" id="menu">
+        <a class="lp-nav__close" href="#" aria-label="Mbyll menynë">×</a>
+        <a class="lp-nav__link" href="#regjistri">Regjistri</a>
+        <a class="lp-nav__link" href="#dozologjia">Dozologjia</a>
+        <a class="lp-nav__link" href="#icd">ICD-10</a>
+        <a class="lp-nav__link" href="#protokollet">Protokollet</a>
+        <a class="lp-nav__link" href="#siguria">Siguria</a>
+        <a class="lp-nav__link" href="#pyetjet">Pyetjet</a>
+        <div class="lp-nav__cta">
+          <a class="lp-btn lp-btn--primary" href="index.html">Hap regjistrin</a>
+          <a class="lp-btn lp-btn--secondary" href="login.html">Hyr në llogari</a>
+        </div>
+      </div>
+
+      <div class="lp-nav__actions">
+        <a class="lp-nav__link" href="login.html">Hyr</a>
+        <a class="lp-btn lp-btn--primary lp-btn--sm" href="index.html">Hap regjistrin</a>
+        <a class="lp-nav__toggle" href="#menu" aria-label="Hap menynë">
+          <svg width="18" height="14" viewBox="0 0 18 14" fill="none" aria-hidden="true">
+            <path d="M1 1h16M1 7h16M1 13h16" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/>
+          </svg>
+        </a>
+      </div>
+    </div>
+</nav>
+
+<header class="lp-hero">
+  <div class="lp-shell lp-hero__body">
+    <div class="lp-hero__grid">
+      <div>
+        <span class="lp-eyebrow">Regjistri i Kosovës</span>
+        <h1 class="lp-display-xxl">Përgjigjja klinike, para se pacienti ta vërejë pauzën.</h1>
+        <p class="lp-hero__lead">
+          DRx është hapësira ku mjeku gjen barin, dozën, kodin ICD-10 ose hapin e radhës
+          të protokollit brenda sekondave — i lidhur me regjistrin e verifikuar të Kosovës,
+          dhe i shpejtë edhe kur lidhja nuk është.
+        </p>
+        <div class="lp-hero__cta">
+          <a class="lp-btn lp-btn--primary" href="index.html">Hap regjistrin</a>
+          <a class="lp-btn lp-btn--secondary" href="#regjistri">Shiko si funksionon</a>
+        </div>
+        <p class="lp-hero__note">
+          <span>Verifikim fail-closed</span>
+          <span>Punon me lidhje të dobët</span>
+          <span>Burime zyrtare të MSh-së</span>
+          <span>Shqip, nga fillimi</span>
+        </p>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- Vija ECG: buza e poshtme e heroit, aty ku mesh-i dorëzohet te përmbajtja -->
+  <div class="lp-ecg" role="img" aria-label="Vijë elektrokardiografike që pulson">
+      <svg class="lp-ecg__svg" viewBox="0 0 1200 132" preserveAspectRatio="none" aria-hidden="true" focusable="false">
+        <line class="lp-ecg__baseline" x1="0" y1="66" x2="1200" y2="66"/>
+        <path class="lp-ecg__trace" d="M0 66 H92 l14 0 l9 -7 l8 14 l7 -7 H196 l22 0 l7 4 l6 -30 l9 62 l8 -40 l7 11 H360 l18 0 l9 -7 l8 14 l7 -7 H470 l24 0 l7 4 l6 -30 l9 62 l8 -40 l7 11 H640 l18 0 l9 -7 l8 14 l7 -7 H752 l22 0 l7 4 l6 -30 l9 62 l8 -40 l7 11 H920 l18 0 l9 -7 l8 14 l7 -7 H1032 l22 0 l7 4 l6 -30 l9 62 l8 -40 l7 11 H1200"/>
+        <path class="lp-ecg__glow"  d="M0 66 H92 l14 0 l9 -7 l8 14 l7 -7 H196 l22 0 l7 4 l6 -30 l9 62 l8 -40 l7 11 H360 l18 0 l9 -7 l8 14 l7 -7 H470 l24 0 l7 4 l6 -30 l9 62 l8 -40 l7 11 H640 l18 0 l9 -7 l8 14 l7 -7 H752 l22 0 l7 4 l6 -30 l9 62 l8 -40 l7 11 H920 l18 0 l9 -7 l8 14 l7 -7 H1032 l22 0 l7 4 l6 -30 l9 62 l8 -40 l7 11 H1200"/>
+        <path class="lp-ecg__pulse" d="M0 66 H92 l14 0 l9 -7 l8 14 l7 -7 H196 l22 0 l7 4 l6 -30 l9 62 l8 -40 l7 11 H360 l18 0 l9 -7 l8 14 l7 -7 H470 l24 0 l7 4 l6 -30 l9 62 l8 -40 l7 11 H640 l18 0 l9 -7 l8 14 l7 -7 H752 l22 0 l7 4 l6 -30 l9 62 l8 -40 l7 11 H920 l18 0 l9 -7 l8 14 l7 -7 H1032 l22 0 l7 4 l6 -30 l9 62 l8 -40 l7 11 H1200"/>
+        <circle class="lp-ecg__beat" cx="230" cy="66" r="4" fill="#1f7779"/>
+      </svg>
+  </div>
+
+  <!-- Mockup i produktit: regjistri + kartela e dozës -->
+  <div class="lp-shell">
+    <div class="lp-mock">
+      <section class="lp-panel" aria-label="Pamje e regjistrit të barnave">
+        <div class="lp-panel__bar">
+          <span class="lp-panel__dot"></span>
+          <span class="lp-panel__title">Regjistri i barnave</span>
+          <span class="lp-panel__spacer"></span>
+          <span class="lp-panel__title lp-num">1.604 barna</span>
+        </div>
+        <div class="lp-panel__body">
+          <div class="lp-mockbar">
+            <svg width="14" height="14" viewBox="0 0 14 14" fill="none" aria-hidden="true">
+              <circle cx="6" cy="6" r="4.6" stroke="#64748d" stroke-width="1.4"/>
+              <path d="M9.6 9.6 13 13" stroke="#64748d" stroke-width="1.4" stroke-linecap="round"/>
+            </svg>
+            <span>paracetamol</span>
+            <span class="lp-mockbar__hint">⌘K</span>
+          </div>
+
+          <div class="lp-mock-scroll">
+            <table class="lp-table">
+              <thead>
+                <tr>
+                  <th scope="col">Bari</th>
+                  <th scope="col">ATC</th>
+                  <th scope="col">Forma</th>
+                  <th scope="col">Të rritur</th>
+                  <th scope="col">Fëmijë</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr class="is-selected">
+                  <td>
+                    <span class="lp-table__name">Paracetamol</span>
+                    <span class="lp-table__sub">paracetamolum · 500 mg</span>
+                  </td>
+                  <td class="lp-code lp-num">N02BE01</td>
+                  <td>Tabletë</td>
+                  <td><span class="lp-badge lp-badge--ok">Po</span></td>
+                  <td><span class="lp-badge lp-badge--ok">Po</span></td>
+                </tr>
+                <tr>
+                  <td>
+                    <span class="lp-table__name">Ibuprofen</span>
+                    <span class="lp-table__sub">ibuprofenum · 400 mg</span>
+                  </td>
+                  <td class="lp-code lp-num">M01AE01</td>
+                  <td>Tabletë</td>
+                  <td><span class="lp-badge lp-badge--ok">Po</span></td>
+                  <td><span class="lp-badge lp-badge--warn">Me kufizim</span></td>
+                </tr>
+                <tr>
+                  <td>
+                    <span class="lp-table__name">Amoksicilinë</span>
+                    <span class="lp-table__sub">amoxicillinum · 500 mg</span>
+                  </td>
+                  <td class="lp-code lp-num">J01CA04</td>
+                  <td>Kapsulë</td>
+                  <td><span class="lp-badge lp-badge--ok">Po</span></td>
+                  <td><span class="lp-badge lp-badge--ok">Po</span></td>
+                </tr>
+                <tr>
+                  <td>
+                    <span class="lp-table__name">Preparat pa dozë të publikuar</span>
+                    <span class="lp-table__sub">evidenca nuk mjafton për verifikim</span>
+                  </td>
+                  <td class="lp-code lp-num">—</td>
+                  <td>Tretësirë</td>
+                  <td><span class="lp-badge lp-badge--none">Pa të dhëna</span></td>
+                  <td><span class="lp-badge lp-badge--none">Pa të dhëna</span></td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </section>
+
+      <div class="lp-side">
+        <section class="lp-panel" aria-label="Kartela e dozës">
+          <div class="lp-panel__bar">
+            <span class="lp-panel__dot"></span>
+            <span class="lp-panel__title">Dozë pediatrike</span>
+          </div>
+          <div class="lp-panel__body">
+            <div class="lp-dose__row">
+              <span class="lp-dose__value lp-num">15 mg/kg</span>
+              <span class="lp-dose__unit">për dozë</span>
+            </div>
+            <div class="lp-dose__meta">
+              <div><span>Pesha</span><span class="lp-num">18 kg</span></div>
+              <div><span>Doza e llogaritur</span><span class="lp-num">270 mg</span></div>
+              <div><span>Intervali</span><span class="lp-num">çdo 6 orë</span></div>
+              <div><span>Maksimumi ditor</span><span class="lp-num">60 mg/kg</span></div>
+            </div>
+            <p class="lp-dose__source">
+              <svg width="12" height="12" viewBox="0 0 12 12" fill="none" aria-hidden="true">
+                <path d="M6 1 10.5 3v3.2c0 2.4-1.9 4.2-4.5 4.8-2.6-.6-4.5-2.4-4.5-4.8V3L6 1Z" stroke="#12b76a" stroke-width="1.2" stroke-linejoin="round"/>
+              </svg>
+              Burim i publikuar · rrugë administrimi e konfirmuar
+            </p>
+          </div>
+        </section>
+
+        <section class="lp-panel" aria-label="Kodi ICD-10">
+          <div class="lp-panel__bar">
+            <span class="lp-panel__dot"></span>
+            <span class="lp-panel__title">ICD-10 · shqip</span>
+          </div>
+          <div class="lp-panel__body">
+            <div class="lp-dose__meta">
+              <div><span class="lp-code lp-num">J06.9</span><span>Infeksion akut i rrugëve të sipërme</span></div>
+              <div><span class="lp-code lp-num">J03.0</span><span>Tonsilit akut streptokoksik</span></div>
+              <div><span class="lp-code lp-num">R50.9</span><span>Temperaturë e paspecifikuar</span></div>
+            </div>
+          </div>
+        </section>
+      </div>
+    </div>
+  </div>
+</header>
+
+<main id="permbajtja">
+
+  <!-- Burimet -->
+  <section class="lp-band lp-band--tight lp-band--flushBottom" aria-label="Burimet e të dhënave">
+    <div class="lp-shell">
+      <div class="lp-sources">
+        <span class="lp-sources__label">Ndërtuar mbi</span>
+        <span class="lp-sources__item">
+          <svg width="15" height="15" viewBox="0 0 16 16" fill="none" aria-hidden="true"><path d="M8 1.5 14 4.4v4.3c0 3.2-2.5 5.6-6 6.4-3.5-.8-6-3.2-6-6.4V4.4L8 1.5Z" stroke="currentColor" stroke-width="1.3" stroke-linejoin="round"/></svg>
+          Ministria e Shëndetësisë, Prishtinë
+        </span>
+        <span class="lp-sources__item">
+          <svg width="15" height="15" viewBox="0 0 16 16" fill="none" aria-hidden="true"><rect x="2" y="2.5" width="12" height="11" rx="2" stroke="currentColor" stroke-width="1.3"/><path d="M2 6h12" stroke="currentColor" stroke-width="1.3"/></svg>
+          Regjistri i barnave i Kosovës
+        </span>
+        <span class="lp-sources__item">
+          <svg width="15" height="15" viewBox="0 0 16 16" fill="none" aria-hidden="true"><path d="M8 2v12M2.5 8h11" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/></svg>
+          Klasifikimi ATC
+        </span>
+        <span class="lp-sources__item">
+          <svg width="15" height="15" viewBox="0 0 16 16" fill="none" aria-hidden="true"><circle cx="8" cy="8" r="6" stroke="currentColor" stroke-width="1.3"/><path d="M8 5v3.4l2.2 1.3" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/></svg>
+          ICD-10, terminologji shqipe
+        </span>
+      </div>
+    </div>
+  </section>
+
+  <!-- Statistikat -->
+  <section class="lp-band lp-band--tight lp-band--flushTop" aria-labelledby="shifrat">
+    <div class="lp-shell">
+      <div class="lp-band__head">
+        <span class="lp-eyebrow">Shifrat</span>
+        <h2 class="lp-display-lg" id="shifrat">Shifra që dalin nga vetë të dhënat, jo nga marketingu.</h2>
+      </div>
+      <div class="lp-stats">
+        <div class="lp-stat">
+          <div class="lp-stat__value lp-num">1.604</div>
+          <div class="lp-stat__label">barna në fotografinë e regjistrit</div>
+          <div class="lp-stat__note">gjendja e 12 gushtit 2026</div>
+        </div>
+        <div class="lp-stat">
+          <div class="lp-stat__value lp-num">1.449</div>
+          <div class="lp-stat__label">të klasifikuara sipas popullatës</div>
+          <div class="lp-stat__note">të rritur, fëmijë, ose të dyja</div>
+        </div>
+        <div class="lp-stat">
+          <div class="lp-stat__value lp-num">841</div>
+          <div class="lp-stat__label">me dozë për të rritur dhe për fëmijë</div>
+          <div class="lp-stat__note">553 vetëm për të rritur · 55 vetëm pediatrike</div>
+        </div>
+        <div class="lp-stat">
+          <div class="lp-stat__value lp-num">55</div>
+          <div class="lp-stat__label">protokolle klinike zyrtare</div>
+          <div class="lp-stat__note">në 12 fusha · sinkronizuar më 24 korrik 2026</div>
+        </div>
+      </div>
+      <p class="lp-caption" style="margin-top:16px;">
+        Numrat lexohen nga të dhënat e vetë projektit: fotografia e popullatës së miratuar dhe
+        regjistri i protokolleve. Kur burimi përditësohet, përditësohen edhe këtu.
+      </p>
+    </div>
+  </section>
+
+  <!-- Regjistri -->
+  <section class="lp-band lp-band--flushTop" id="regjistri" aria-labelledby="regjistri-titull">
+    <div class="lp-shell">
+      <div class="lp-split">
+        <div class="lp-split__copy">
+          <span class="lp-eyebrow">Regjistri</span>
+          <h3 class="lp-display-xl" id="regjistri-titull">Kërko një herë. Përgjigjja del e para.</h3>
+          <p class="lp-lead">
+            Identiteti i barit, substanca dhe kodi ATC janë ankorimi vizual i rreshtit.
+            Dozat e gjata nuk e shtrijnë tabelën në pafundësi — qeliza zgjerohet brenda vetë
+            rreshtit dhe klikimi i dytë e kthen pamjen kompakte. Asnjë modal që të nxjerr
+            nga konteksti.
+          </p>
+          <ul class="lp-card__list" style="margin-top:20px;">
+            <li>Filtra ATC me numërime aktuale, jo etiketa dekorative</li>
+            <li>Kolonat e identitetit mbeten të dukshme kur tabela rrëshqet anash</li>
+            <li>Gjendjet e ngarkimit, zbrazëtisë dhe gabimit ruajnë përmasat — pa kërcime</li>
+            <li>Zgjedhja kalon drejt e te receta, pa e mbuluar tabelën</li>
+          </ul>
+          <a class="lp-textlink" href="index.html">Hap regjistrin</a>
+        </div>
+        <div class="lp-split__media">
+          <div class="lp-panel">
+            <div class="lp-panel__bar">
+              <span class="lp-panel__dot"></span>
+              <span class="lp-panel__title">Klasifikimi ATC</span>
+              <span class="lp-panel__spacer"></span>
+              <span class="lp-panel__title lp-num">14 grupe</span>
+            </div>
+            <div class="lp-panel__body">
+              <table class="lp-table">
+                <tbody>
+                  <tr>
+                    <td class="lp-code lp-num">J</td>
+                    <td>Antiinfektivë për përdorim sistemik</td>
+                    <td class="lp-num" style="text-align:right;color:var(--lp-mute);">218</td>
+                  </tr>
+                  <tr class="is-selected">
+                    <td class="lp-code lp-num">N</td>
+                    <td>Sistemi nervor</td>
+                    <td class="lp-num" style="text-align:right;color:var(--lp-mute);">196</td>
+                  </tr>
+                  <tr>
+                    <td class="lp-code lp-num">C</td>
+                    <td>Sistemi kardiovaskular</td>
+                    <td class="lp-num" style="text-align:right;color:var(--lp-mute);">184</td>
+                  </tr>
+                  <tr>
+                    <td class="lp-code lp-num">A</td>
+                    <td>Trakti tretës dhe metabolizmi</td>
+                    <td class="lp-num" style="text-align:right;color:var(--lp-mute);">171</td>
+                  </tr>
+                </tbody>
+              </table>
+              <p class="lp-micro" style="margin-top:12px;">
+                Numërimet janë ilustruese për këtë pamje; në aplikacion ato vijnë nga regjistri i publikuar.
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="lp-split lp-split--flip" id="dozologjia">
+        <div class="lp-split__copy">
+          <span class="lp-eyebrow">Dozologjia</span>
+          <h3 class="lp-display-xl">Doza që nuk e hamendëson kurrë.</h3>
+          <p class="lp-lead">
+            Verifikimi është fail-closed. <strong style="font-weight:400;">Po</strong> kërkon dozë
+            të publikuar, rrugë administrimi dhe burim HTTPS. <strong style="font-weight:400;">Jo</strong>
+            kërkon vendim eksplicit të dokumentuar. Kur evidenca nuk mjafton, shfaqet
+            <strong style="font-weight:400;">Pa të dhëna</strong> — jo një numër i afërt.
+          </p>
+          <ul class="lp-card__list" style="margin-top:20px;">
+            <li>Llogaritës pediatrik sipas peshës, me maksimum ditor dhe interval</li>
+            <li>Doza praktike vjen para burimit dhe detajeve, jo pas tyre</li>
+            <li>Paralajmërimet qëndrojnë ngjitur dozës dhe nuk fshihen nga animacioni</li>
+            <li>Statusi nuk komunikohet kurrë vetëm me ngjyrë</li>
+          </ul>
+          <a class="lp-textlink" href="dozologjia.html">Shiko dozologjinë</a>
+        </div>
+        <div class="lp-split__media">
+          <div class="lp-panel">
+            <div class="lp-panel__bar">
+              <span class="lp-panel__dot"></span>
+              <span class="lp-panel__title">Llogaritësi pediatrik</span>
+            </div>
+            <div class="lp-panel__body">
+              <div class="lp-dose__meta">
+                <div><span>Mosha</span><span class="lp-num">4 vjeç</span></div>
+                <div><span>Pesha</span><span class="lp-num">18 kg</span></div>
+                <div><span>Forma</span><span>Suspension oral</span></div>
+              </div>
+              <div class="lp-dose__row" style="margin-top:18px;padding-top:16px;border-top:1px solid var(--lp-hairline);">
+                <span class="lp-dose__value lp-num">270 mg</span>
+                <span class="lp-dose__unit">çdo 6 orë</span>
+              </div>
+              <p class="lp-caption" style="margin-top:10px;">
+                Maksimumi ditor <span class="lp-num">1.080 mg</span> · 4 doza
+              </p>
+              <p class="lp-dose__source">
+                <span class="lp-badge lp-badge--warn">Kontrollo kundërindikacionet</span>
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ICD-10 -->
+  <section class="lp-band lp-band--soft" id="icd" aria-labelledby="icd-titull">
+    <div class="lp-shell">
+      <div class="lp-band__head">
+        <span class="lp-eyebrow">ICD-10</span>
+        <h2 class="lp-display-xl" id="icd-titull">Kodimi në shqip, jo në përkthim të përafërt.</h2>
+        <p class="lp-lead">
+          Hierarkia e plotë, kërkimi klinik dhe terminologjia shqipe janë pjesë e të njëjtës
+          hapësirë pune ku qëndron edhe recepta — kodimi nuk të dërgon në një mjet tjetër.
+        </p>
+      </div>
+      <div class="lp-grid lp-grid--3">
+        <article class="lp-card">
+          <div class="lp-card__head">
+            <span class="lp-card__icon" aria-hidden="true">
+              <svg width="19" height="19" viewBox="0 0 20 20" fill="none"><path d="M3 5h14M3 10h14M3 15h9" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
+            </span>
+            <h3 class="lp-heading-lg">Hierarkia e plotë</h3>
+          </div>
+          <p>Kapitujt, kategoritë dhe nënkategoritë të hapen deri te kodi i faturueshëm, me rrugën e kthimit gjithmonë të dukshme.</p>
+        </article>
+        <article class="lp-card">
+          <div class="lp-card__head">
+            <span class="lp-card__icon" aria-hidden="true">
+              <svg width="19" height="19" viewBox="0 0 20 20" fill="none"><circle cx="9" cy="9" r="6" stroke="currentColor" stroke-width="1.5"/><path d="M13.5 13.5 17 17" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
+            </span>
+            <h3 class="lp-heading-lg">Kërkim klinik</h3>
+          </div>
+          <p>Kërko me simptomë, me term shqip ose drejt me kod. Rezultati i parë është ai që i duhet vizitës, jo ai që renditet alfabetikisht.</p>
+        </article>
+        <article class="lp-card">
+          <div class="lp-card__head">
+            <span class="lp-card__icon" aria-hidden="true">
+              <svg width="19" height="19" viewBox="0 0 20 20" fill="none"><path d="M10 3l2.1 4.3 4.7.7-3.4 3.3.8 4.7-4.2-2.2-4.2 2.2.8-4.7L3.2 8l4.7-.7L10 3Z" stroke="currentColor" stroke-width="1.4" stroke-linejoin="round"/></svg>
+            </span>
+            <h3 class="lp-heading-lg">Lista e problemeve</h3>
+          </div>
+          <p>Kodet e përdorura shpesh mbahen pranë, dhe kalojnë në dokumentin e diagnozës pa i rishkruar.</p>
+        </article>
+      </div>
+    </div>
+  </section>
+
+  <!-- Offline — banda krem -->
+  <section class="lp-band lp-band--cream" aria-labelledby="offline-titull">
+    <div class="lp-shell">
+      <div class="lp-split">
+        <div class="lp-split__copy">
+          <span class="lp-eyebrow" style="background:#fff;">Lidhja</span>
+          <h2 class="lp-display-xl" id="offline-titull">Ndërtuar për ambulantën ku interneti bie.</h2>
+          <p class="lp-lead">
+            Ndërfaqja është statike dhe e shpejtë. Service worker-i ruan guaskën dhe të dhënat
+            private vetëm pas autentikimit; kërkimi, filtrimi dhe formatimi bazë i recetës
+            punojnë lokalisht. Funksionet që kërkojnë rrjet janë të shënuara qartë, që të mos
+            zbulohen në mes të vizitës.
+          </p>
+        </div>
+        <div class="lp-split__media">
+          <div class="lp-grid lp-grid--2" style="margin-top:0;">
+            <article class="lp-card lp-card--cream">
+              <h3 class="lp-heading-md">Pa fonte nga rrjeti</h3>
+              <p>Inter vjen i vetë-strehuar. Asnjë CDN fontesh, ikonash apo animacionesh në kohë ekzekutimi.</p>
+            </article>
+            <article class="lp-card lp-card--cream">
+              <h3 class="lp-heading-md">Fillimi i shpejtë</h3>
+              <p>Faqja e regjistrit lexon së pari kopjen lokale, pastaj përditësohet nga API-ja.</p>
+            </article>
+            <article class="lp-card lp-card--cream">
+              <h3 class="lp-heading-md">Pa kërcime</h3>
+              <p>Gjendjet e ngarkimit ruajnë përmasat, që rreshti të mos zhvendoset nën gisht.</p>
+            </article>
+            <article class="lp-card lp-card--cream">
+              <h3 class="lp-heading-md">Lëvizje e matur</h3>
+              <p>150 ms për ngjyrë dhe kufi. <span style="white-space:nowrap;">prefers-reduced-motion</span> e ndal krejt.</p>
+            </article>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Siguria dhe provenienca — banda e errët -->
+  <section class="lp-band lp-band--dark" id="siguria" aria-labelledby="siguria-titull">
+    <div class="lp-shell">
+      <div class="lp-split">
+        <div class="lp-split__copy">
+          <span class="lp-eyebrow lp-eyebrow--onDark">Provenienca</span>
+          <h2 class="lp-display-xl" id="siguria-titull" style="color:#fff;">Çdo pohim klinik e ka burimin pas vetes.</h2>
+          <p class="lp-lead" style="color:#b6c6d8;">
+            Përmbajtja e protokolleve nxirret nga dokumenti zyrtar në kohën e ndërtimit. Nëse
+            hash-i i ruajtur i burimit nuk përputhet, lexuesi i elaboruar fshihet dhe mbetet
+            vetëm dokumenti zyrtar, me gjendje të bllokuar të dukshme.
+          </p>
+          <ul class="lp-check">
+            <li>
+              <svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true"><path d="m3.5 8.4 3 3 6-6.8" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/></svg>
+              <span><strong>Fail-closed në vend të hamendjes</strong>Kur evidenca nuk mjafton, shfaqet «Pa të dhëna».</span>
+            </li>
+            <li>
+              <svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true"><path d="m3.5 8.4 3 3 6-6.8" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/></svg>
+              <span><strong>Asgjë private nuk ruhet në cache</strong>Endpoint-et private dërgojnë <span class="lp-code">private, no-store</span>; autentikimi dhe përgjigjet e AI-së nuk ruhen.</span>
+            </li>
+            <li>
+              <svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true"><path d="m3.5 8.4 3 3 6-6.8" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/></svg>
+              <span><strong>Dokumenti zyrtar mbizotëron</strong>Lidhja drejt burimit të MSh-së është gjithmonë një klikim larg.</span>
+            </li>
+            <li>
+              <svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true"><path d="m3.5 8.4 3 3 6-6.8" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/></svg>
+              <span><strong>Media publike, e ndarë</strong>Biblioteka e medias mban vetëm logo dhe materiale vizuale publike — kurrë dokumente pacientësh.</span>
+            </li>
+          </ul>
+        </div>
+        <div class="lp-split__media">
+          <div class="lp-panel">
+            <div class="lp-panel__bar">
+              <span class="lp-panel__dot"></span>
+              <span class="lp-panel__title">Gjendja e burimit</span>
+            </div>
+            <div class="lp-log">
+              <div class="lp-log__row">
+                <span class="lp-log__key">dokumenti</span>
+                <span class="lp-log__val">Protokolli — Menaxhimi i osteoporozës</span>
+                <span class="lp-badge lp-badge--ok">i verifikuar</span>
+              </div>
+              <div class="lp-log__row">
+                <span class="lp-log__key">burimi</span>
+                <span class="lp-log__val lp-code">msh.rks-gov.net</span>
+                <span class="lp-log__key lp-num">HTTPS</span>
+              </div>
+              <div class="lp-log__row">
+                <span class="lp-log__key">sinkronizuar</span>
+                <span class="lp-log__val lp-num">24.07.2026</span>
+                <span class="lp-log__key">build</span>
+              </div>
+              <div class="lp-log__row">
+                <span class="lp-log__key">hash-i</span>
+                <span class="lp-log__val lp-code lp-num">22f872d6…3b20</span>
+                <span class="lp-badge lp-badge--ok">përputhet</span>
+              </div>
+              <div class="lp-log__row">
+                <span class="lp-log__key">i arkivuar</span>
+                <span class="lp-log__val">vetëm burimi, pa elaborim</span>
+                <span class="lp-badge lp-badge--none">rregull</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Protokollet -->
+  <section class="lp-band lp-band--flushBottom" id="protokollet" aria-labelledby="protokollet-titull">
+    <div class="lp-shell">
+      <div class="lp-band__head">
+        <span class="lp-eyebrow">Protokollet</span>
+        <h2 class="lp-display-xl" id="protokollet-titull">Një hapësirë pune klinike, jo imitim PDF-je.</h2>
+        <p class="lp-lead">
+          55 dokumente zyrtare në 12 fusha, të elaboruara si hapa të numëruar me objektiv,
+          detaje praktike, paralajmërime dhe citim të seksionit — me lidhjen te dokumenti
+          origjinal gjithmonë të dukshme.
+        </p>
+      </div>
+      <ol class="lp-steps">
+        <li class="lp-step">
+          <span class="lp-step__marker lp-num" aria-hidden="true">1</span>
+          <h3>Vlerëso gjendjen aktuale</h3>
+          <p>Hapi hapet me objektivin në një fjali, pastaj me detajet praktike që i duhen mjekut para se të vendosë.</p>
+          <span class="lp-step__cite">Seksioni 2 · faqe 7</span>
+        </li>
+        <li class="lp-step">
+          <span class="lp-step__marker lp-num" aria-hidden="true">2</span>
+          <h3>Zgjidh terapinë sipas protokollit</h3>
+          <p>Barnat e përmendura lidhen drejt te regjistri, që doza dhe forma të mos kërkohen veçmas.</p>
+          <span class="lp-step__cite">Seksioni 4 · faqe 12</span>
+        </li>
+        <li class="lp-step">
+          <span class="lp-step__marker lp-num" aria-hidden="true">3</span>
+          <h3>Cakto ndjekjen</h3>
+          <p>Hapi i fundit mban kriteret e referimit dhe paralajmërimet, të cilat nuk fshihen kurrë pas një animacioni.</p>
+          <span class="lp-step__cite">Seksioni 6 · faqe 18</span>
+        </li>
+      </ol>
+      <p class="lp-caption" style="margin-top:28px;">
+        Përmbajtja është elaboruar 100% mbi dokumentin zyrtar të Ministrisë së Shëndetësisë, Prishtinë.
+        Dokumenti zyrtar mbizotëron.
+      </p>
+    </div>
+  </section>
+
+  <!-- Pyetjet -->
+  <section class="lp-band lp-band--soft" id="pyetjet" aria-labelledby="pyetjet-titull">
+    <div class="lp-shell">
+      <div class="lp-band__head">
+        <span class="lp-eyebrow">Pyetjet</span>
+        <h2 class="lp-display-xl" id="pyetjet-titull">Çfarë pyesin mjekët përpara se ta provojnë.</h2>
+      </div>
+      <div class="lp-faq">
+        <details open>
+          <summary>A zëvendëson DRx gjykimin klinik?</summary>
+          <p>Jo. DRx e nxjerr shpejt informacionin e verifikuar dhe e tregon qartë kur ai mungon. Vendimi, doza përfundimtare dhe përgjegjësia mbeten te mjeku; dokumenti zyrtar mbizotëron gjithmonë mbi çdo elaborim brenda aplikacionit.</p>
+        </details>
+        <details>
+          <summary>Nga vijnë të dhënat?</summary>
+          <p>Nga regjistri i barnave i Kosovës dhe nga dokumentet zyrtare të Ministrisë së Shëndetësisë, me klasifikim ATC dhe ICD-10. Çdo protokoll e mban lidhjen drejt burimit të vet, datën e dokumentit dhe gjendjen e verifikimit.</p>
+        </details>
+        <details>
+          <summary>Çfarë ndodh kur nuk ka dozë të publikuar?</summary>
+          <p>Shfaqet «Pa të dhëna». Verifikimi është fail-closed: «Po» kërkon dozë të publikuar, rrugë administrimi dhe burim HTTPS, ndërsa «Jo» kërkon vendim eksplicit të dokumentuar. Asnjë vlerë nuk plotësohet me përafrim.</p>
+        </details>
+        <details>
+          <summary>A punon pa internet?</summary>
+          <p>Guaska dhe të dhënat e ruajtura punojnë edhe me lidhje të dobët; kërkimi, filtrimi dhe formatimi bazë i recetës janë lokale. Të dhënat private ruhen vetëm pas autentikimit, dhe funksionet që kërkojnë rrjet shënohen si të tilla.</p>
+        </details>
+        <details>
+          <summary>Ku ruhen të dhënat e mia?</summary>
+          <p>Autentikimi dhe të dhënat e llogarisë kalojnë përmes Supabase; aplikacioni strehohet në Vercel. Endpoint-et private dërgojnë <span class="lp-code">Cache-Control: private, no-store</span>, prandaj sesioni dhe përgjigjet e AI-së nuk ruhen në cache.</p>
+        </details>
+        <details>
+          <summary>A mund ta përdorë ekipi im?</summary>
+          <p>Po — DRx mban llogari, regjistrim dhe një konsolë administrimi. Çdo ekran është projektuar rreth mjekut që e përdor gjatë vizitës, prandaj rrjedha mbetet e shkurtër edhe kur llogaritë janë disa.</p>
+        </details>
+      </div>
+    </div>
+  </section>
+
+  <!-- CTA përfundimtare -->
+  <section class="lp-band" aria-labelledby="cta-titull">
+    <div class="lp-shell">
+      <div class="lp-final">
+        <span class="lp-eyebrow">Gati</span>
+        <h2 class="lp-display-xl" id="cta-titull">Hape regjistrin dhe kërko barin e parë.</h2>
+        <p class="lp-lead">
+          Pa instalim dhe pa konfigurim. Hyr me llogarinë tënde dhe hapësira e punës është aty
+          ku e le — edhe kur lidhja nuk bashkëpunon.
+        </p>
+        <div class="lp-final__cta">
+          <a class="lp-btn lp-btn--primary" href="index.html">Hap regjistrin</a>
+          <a class="lp-btn lp-btn--secondary" href="login.html">Hyr në llogari</a>
+        </div>
+      </div>
+    </div>
+  </section>
+</main>
+
+<footer class="lp-footer">
+  <div class="lp-shell">
+    <div class="lp-footer__grid">
+      <div class="lp-footer__brand">
+        <span class="drx-logo" aria-hidden="true"><svg class="drx-logo__mark" viewBox="0 0 512 512" focusable="false"><mask id="drxFoot"><rect width="512" height="512" fill="#000"/><path fill="#fff" d="M205 105 H266 A145 145 0 0 1 266 395 H205 A20 20 0 0 1 185 375 V125 A20 20 0 0 1 205 105 Z"/><rect x="112" y="208" width="98" height="82" rx="22" fill="#fff"/><path fill="#000" d="M257 161 H292 A95 95 0 0 1 292 342 H257 A10 10 0 0 1 247 332 V171 A10 10 0 0 1 257 161 Z"/><rect x="210" y="216" width="50" height="66" rx="9" fill="#000"/></mask><rect width="512" height="512" fill="currentColor" mask="url(#drxFoot)"/></svg><span class="drx-logo__word">DRx</span></span><span class="lp-sr">DRx</span>
+        <p class="lp-caption">
+          Regjistri klinik i barnave, klasifikimeve, dozologjisë dhe protokolleve për mjekët
+          në Kosovë.
+        </p>
+      </div>
+
+      <div>
+        <h3>Hapësira klinike</h3>
+        <ul>
+          <li><a href="index.html">Regjistri i barnave</a></li>
+          <li><a href="klasifikimi.html">Klasifikimi ATC</a></li>
+          <li><a href="icd.html">ICD-10</a></li>
+          <li><a href="analizat.html">Analizat</a></li>
+        </ul>
+      </div>
+
+      <div>
+        <h3>Vendimmarrja</h3>
+        <ul>
+          <li><a href="dozologjia.html">Dozologjia</a></li>
+          <li><a href="protokollet.html">Protokollet</a></li>
+          <li><a href="recetat.html">Recetat</a></li>
+          <li><a href="urgjencat.html">Urgjencat</a></li>
+        </ul>
+      </div>
+
+      <div>
+        <h3>Projekti</h3>
+        <ul>
+          <li><a href="rreth-nesh.html">Rreth nesh</a></li>
+          <li><a href="blog.html">Journal</a></li>
+          <li><a href="kontakt.html">Kontakt</a></li>
+          <li><a href="sistemi.html">Sistemi</a></li>
+        </ul>
+      </div>
+
+      <div>
+        <h3>Llogaria</h3>
+        <ul>
+          <li><a href="login.html">Hyr</a></li>
+          <li><a href="regjistrimi.html">Regjistrohu</a></li>
+          <li><a href="recovery.html">Rikthim qasjeje</a></li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="lp-footer__legal">
+      <p class="lp-micro">© 2026 DRx · Dr. Diellza Rabushaj</p>
+      <p class="lp-micro">
+        DRx nuk zëvendëson gjykimin klinik. Dokumenti zyrtar i Ministrisë së Shëndetësisë mbizotëron.
+      </p>
+    </div>
+  </div>
+</footer>
+</body>
+</html>
