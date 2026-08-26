@@ -45,6 +45,12 @@ jobs:
       - name: Build composed registry runtime
         run: pnpm run build:runtime
 
+      - name: Verify full-runtime pagination ownership
+        run: |
+          node tests/full-runtime-pagination-owner-test.js
+          grep -q "full-runtime-pagination-busy-reset-v1" app-runtime-performance.js
+          grep -q "pag.classList.remove('is-loading')" app-runtime-performance.js
+
       - name: Install Chromium
         shell: bash
         run: |
