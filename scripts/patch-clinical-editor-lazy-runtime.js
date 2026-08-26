@@ -12,15 +12,25 @@ const MARKER = 'clinical-editor-interaction-lazy-v1';
 
 const normalize = value => value.replace(/\r\n?/g, '\n');
 
+function functionBoundary(source, functionName, from = 0) {
+  const candidates = [
+    `  function ${functionName}`,
+    `  async function ${functionName}`,
+  ].map(needle => ({ needle, index:source.indexOf(needle, from) }))
+    .filter(candidate => candidate.index >= 0)
+    .sort((left, right) => left.index - right.index);
+  return candidates[0] || null;
+}
+
 function replaceFunction(source, functionName, nextFunctionName, replacement) {
-  const startNeedle = `  function ${functionName}`;
-  const nextNeedle = `  function ${nextFunctionName}`;
-  const start = source.indexOf(startNeedle);
-  const next = source.indexOf(nextNeedle, start + startNeedle.length);
-  if (start < 0 || next < 0 || next <= start) {
+  const startBoundary = functionBoundary(source, functionName);
+  const nextBoundary = startBoundary
+    ? functionBoundary(source, nextFunctionName, startBoundary.index + startBoundary.needle.length)
+    : null;
+  if (!startBoundary || !nextBoundary || nextBoundary.index <= startBoundary.index) {
     throw new Error(`Clinical editor lazy patch could not find ${functionName}() boundaries.`);
   }
-  return source.slice(0, start) + replacement.trimEnd() + '\n\n' + source.slice(next);
+  return source.slice(0, startBoundary.index) + replacement.trimEnd() + '\n\n' + source.slice(nextBoundary.index);
 }
 
 let html = normalize(fs.readFileSync(INDEX, 'utf8'));
