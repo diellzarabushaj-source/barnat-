@@ -27,6 +27,7 @@ const GATE_INPUTS = [
   'scripts/patch-registry-row-actions-menu-phase6-idempotence-gate.js',
   'scripts/patch-registry-row-actions-menu-phase7-provenance.js',
   'scripts/audit-registry-row-actions-deployment.js',
+  'scripts/patch-registry-personal-final.js',
 ];
 
 const read = file => fs.readFileSync(path.join(ROOT, file), 'utf8').replace(/\r\n?/g, '\n');
@@ -74,6 +75,7 @@ const evidence = {
     ...release.contracts,
     remoteDeploymentAttestationAvailable:true,
     deterministicBuildEvidence:true,
+    finalEvidenceRefreshOwnerBound:true,
     browserRuntimeMutatedByPhase9:false,
   },
   assets:release.assets,
