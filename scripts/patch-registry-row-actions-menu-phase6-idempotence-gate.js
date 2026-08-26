@@ -23,3 +23,7 @@ if (process.env.MEDINDEX_ROW_ACTIONS_PHASE6_PROBE === '1') {
   });
   console.log('Registry row actions Phase 6: deterministic double-build gate passed.');
 }
+
+// Phase 7 is a sidecar-only release handoff. It fingerprints the already-final
+// runtime after deterministic validation and never mutates the row-actions UI.
+require('./patch-registry-row-actions-menu-phase7-provenance.js');
