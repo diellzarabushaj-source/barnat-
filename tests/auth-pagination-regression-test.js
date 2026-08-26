@@ -43,10 +43,15 @@ assert.doesNotMatch(desktop, /registryContent'\)\?\.scrollIntoView/,
   'Pagination must not jump the whole document and hide the Barnat header/toolbars.');
 
 assert.match(desktop, /desktop-handoff-busy-release-v1: the outgoing owner cannot leave shared UI busy/,
-  'Desktop-lite must explicitly release shared pagination busy state at ownership handoff.');
-assert.match(desktop, /state\.disabled = true;[\s\S]*?window\.clearTimeout\(searchTimer\);[\s\S]*?pageController\?\.abort\(\);[\s\S]*?pageController = null;[\s\S]*?setBusy\(false\);[\s\S]*?window\.MEDINDEX_DESKTOP_LITE_ACTIVE = false;/,
-  'Handoff must disable the outgoing owner, cancel pending lightweight work, clear its controller and release busy before full-runtime ownership becomes active.');
+  'Explicit desktop-lite handoff must release shared pagination busy state.');
+assert.match(desktop, /state\.disabled = true;[\s\S]*?desktop-handoff-busy-release-v1[\s\S]*?window\.clearTimeout\(searchTimer\);[\s\S]*?pageController\?\.abort\(\);[\s\S]*?pageController = null;[\s\S]*?setBusy\(false\);[\s\S]*?window\.MEDINDEX_DESKTOP_LITE_ACTIVE = false;/,
+  'Explicit handoff must cancel pending lightweight work and release busy before full-runtime ownership.');
+
+assert.match(desktop, /desktop-full-runtime-ready-cutover-v1: full runtime readiness is the authoritative owner boundary/,
+  'A directly loaded full runtime must also terminate the lightweight owner.');
+assert.match(desktop, /window\.addEventListener\('medindex:registry-ready', \(\) => \{[\s\S]*?state\.disabled = true;[\s\S]*?window\.clearTimeout\(searchTimer\);[\s\S]*?pageController\?\.abort\(\);[\s\S]*?pageController = null;[\s\S]*?setBusy\(false\);[\s\S]*?window\.MEDINDEX_DESKTOP_LITE_ACTIVE = false;[\s\S]*?window\.MEDINDEX_REGISTRY_PARTIAL = false;[\s\S]*?registryDesktopLiteState = 'full-runtime'/,
+  'registry-ready must be an authoritative one-way owner cutover with no stale request/busy state.');
 assert.match(desktop, /document\.getElementById\('pagination'\)\?\.classList\.toggle\('is-loading', value\)/,
   'The regression gate must remain tied to the actual shared pagination busy-state owner.');
 
-console.log('✓ Auth + pagination regression contract passed: auxiliary API 401/403 cannot fake session expiry, paging keeps the document viewport stable, and desktop-lite cannot strand full-runtime pagination in loading state.');
+console.log('✓ Auth + pagination regression contract passed: auxiliary API 401/403 cannot fake session expiry, paging keeps document viewport stable, and explicit or direct full-runtime cutover cannot leave desktop-lite active or pagination busy.');
