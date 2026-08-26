@@ -12,6 +12,7 @@ const crypto = require('node:crypto');
 
 const RELEASE = 'registry-row-actions-menu-phase7-v1';
 const SCHEMA = 'medindex.registry.row-actions.release.v1';
+const MANIFEST_PATH = 'api/clinical-editor?rowActionsRelease=manifest';
 const REQUIRED_ASSETS = [
   'registry-user-personalization.js',
   'registry-user-personalization.css',
@@ -53,7 +54,7 @@ async function auditDeployment({ baseUrl, expectedSha, fetchImpl = globalThis.fe
   if (typeof fetchImpl !== 'function') throw new Error('Deployment attestation requires Fetch API support.');
   const base = normalizeBaseUrl(baseUrl);
   const expected = normalizeExpectedSha(expectedSha);
-  const manifestUrl = new URL('registry-row-actions-release.json', base);
+  const manifestUrl = new URL(MANIFEST_PATH, base);
   const manifestBytes = await fetchBytes(manifestUrl, fetchImpl);
 
   let manifest;
@@ -116,6 +117,7 @@ async function auditDeployment({ baseUrl, expectedSha, fetchImpl = globalThis.fe
     baseUrl:base.href,
     sourceRevision:deployedRevision,
     release:manifest.release,
+    manifestUrl:manifestUrl.href,
     assets:Object.fromEntries(REQUIRED_ASSETS.map(file => [file, manifest.assets[file].sha256])),
   };
 }
@@ -133,4 +135,4 @@ if (require.main === module) {
   });
 }
 
-module.exports = { auditDeployment, normalizeBaseUrl, normalizeExpectedSha, REQUIRED_ASSETS };
+module.exports = { auditDeployment, normalizeBaseUrl, normalizeExpectedSha, REQUIRED_ASSETS, MANIFEST_PATH };

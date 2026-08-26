@@ -9,6 +9,7 @@ const {
   normalizeBaseUrl,
   normalizeExpectedSha,
   REQUIRED_ASSETS,
+  MANIFEST_PATH,
 } = require('../scripts/audit-registry-row-actions-deployment.js');
 
 const sha256 = value => crypto.createHash('sha256').update(value).digest('hex');
@@ -49,6 +50,7 @@ function makeManifest() {
 }
 
 (async () => {
+  assert.equal(MANIFEST_PATH, 'api/clinical-editor?rowActionsRelease=manifest');
   assert.equal(normalizeExpectedSha(REVISION.slice(0, 12)), REVISION.slice(0, 12));
   assert.throws(() => normalizeExpectedSha('not-a-sha'), /hexadecimal Git revision/);
   assert.throws(() => normalizeBaseUrl('http://example.com'), /HTTPS only/);
@@ -56,8 +58,9 @@ function makeManifest() {
   let manifest = makeManifest();
   let tamperedFile = null;
   const server = http.createServer((request, response) => {
-    const pathname = new URL(request.url, 'http://localhost').pathname.replace(/^\//, '');
-    if (pathname === 'registry-row-actions-release.json') {
+    const url = new URL(request.url, 'http://localhost');
+    const pathname = url.pathname.replace(/^\//, '');
+    if (pathname === 'api/clinical-editor' && url.searchParams.get('rowActionsRelease') === 'manifest') {
       response.setHeader('content-type', 'application/json');
       response.end(`${JSON.stringify(manifest)}\n`);
       return;
@@ -81,6 +84,7 @@ function makeManifest() {
     assert.equal(ok.ok, true);
     assert.equal(ok.sourceRevision, REVISION);
     assert.equal(ok.release, 'registry-row-actions-menu-phase7-v1');
+    assert.match(ok.manifestUrl, /api\/clinical-editor\?rowActionsRelease=manifest$/);
 
     await assert.rejects(
       () => auditDeployment({ baseUrl, expectedSha:'aaaaaaaaaaaa' }),
@@ -104,7 +108,7 @@ function makeManifest() {
     await once(server, 'close');
   }
 
-  console.log('✓ Registry row actions Phase 8 passed: remote attestation accepts the exact manifest/assets, rejects commit mismatch, rejects live hash drift, requires deploy commit identity, and limits plaintext HTTP to localhost fixtures.');
+  console.log('✓ Registry row actions Phase 8 passed: remote attestation reads the release manifest through the existing read-only API, accepts exact live assets, rejects commit mismatch/hash drift, requires build identity, and limits plaintext HTTP to localhost fixtures.');
 })().catch(error => {
   console.error(error?.stack || error?.message || String(error));
   process.exitCode = 1;

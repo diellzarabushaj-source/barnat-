@@ -9,7 +9,9 @@ on:
       - scripts/audit-registry-row-actions-deployment.js
       - 'tests/registry-row-actions-menu-phase*.js'
       - tests/registry-row-actions-deployment-attestation-test.js
+      - tests/registry-row-actions-release-api-test.js
       - 'release-markers/registry-row-actions-menu-phase*.txt'
+      - api/clinical-editor.js
       - registry-user-personalization.js
       - registry-user-personalization.css
       - registry-desktop-lite.js
@@ -22,7 +24,9 @@ on:
       - scripts/audit-registry-row-actions-deployment.js
       - 'tests/registry-row-actions-menu-phase*.js'
       - tests/registry-row-actions-deployment-attestation-test.js
+      - tests/registry-row-actions-release-api-test.js
       - 'release-markers/registry-row-actions-menu-phase*.txt'
+      - api/clinical-editor.js
       - registry-user-personalization.js
       - registry-user-personalization.css
       - registry-desktop-lite.js
@@ -56,10 +60,14 @@ jobs:
       - name: Install dependencies
         run: pnpm install --frozen-lockfile --ignore-scripts
 
-      - name: Syntax-check Phase 9
+      - name: Syntax-check release evidence
         run: |
           node --check scripts/patch-registry-row-actions-menu-phase9-build-evidence.js
+          node --check scripts/audit-registry-row-actions-deployment.js
           node --check tests/registry-row-actions-menu-phase9-build-evidence-test.js
+          node --check tests/registry-row-actions-deployment-attestation-test.js
+          node --check tests/registry-row-actions-release-api-test.js
+          node --check api/clinical-editor.js
 
       - name: Build final registry runtime and evidence
         run: pnpm run build:runtime
@@ -67,6 +75,9 @@ jobs:
       - name: Verify exact build evidence
         run: |
           node tests/registry-row-actions-menu-phase9-build-evidence-test.js
+          node tests/registry-row-actions-deployment-attestation-test.js
+          node tests/registry-row-actions-release-api-test.js
+          node tests/hobby-deployment-budget-test.js
           node - <<'NODE'
           const fs = require('node:fs');
           const evidence = JSON.parse(fs.readFileSync('registry-row-actions-build-evidence.json', 'utf8'));
