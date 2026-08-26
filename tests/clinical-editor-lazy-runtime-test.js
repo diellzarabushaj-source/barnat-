@@ -18,8 +18,16 @@ assert.match(html, /data-clinical-editor-runtime="clinical-editor\.js\?[^\"]+"/,
   'The lazy bridge must retain the exact clinical editor runtime URL');
 assert.doesNotMatch(html, /<script\s+src="clinical-editor\.js[^\"]*"[^>]*><\/script>/,
   'The full clinical editor must not execute during Barnat startup');
+assert.match(loader, /const PHONE_QUERY = '\(max-width: 767px\)'/,
+  'The lazy Auditimi bridge must recognize the canonical phone ownership boundary');
+assert.match(loader, /phoneMedia\?\.matches \|\| window\.MEDINDEX_MOBILE_LITE_ACTIVE/,
+  'The lazy Auditimi bridge must defer to mobile-lite ownership before mounting a toolbar trigger');
+assert.match(loader, /phoneMedia\?\.addEventListener\?\.\('change', start\)/,
+  'The lazy Auditimi bridge must re-evaluate ownership when the viewport crosses the phone boundary');
 assert.match(editor, /clinical-editor-interaction-lazy-v1/,
   'The composed editor runtime must carry the lazy-release marker');
+assert.match(editor, /clinical-editor-phone-owner-guard-v1/,
+  'The full clinical editor runtime must not recreate its desktop progress trigger under phone ownership');
 assert.match(editor, /let summaryPromise = null;/,
   'Clinical summary requests must deduplicate after interaction');
 assert.match(editor, /data-clinical-editor-lazy-trigger/,
@@ -45,12 +53,13 @@ function element(tagName = 'div') {
     addEventListener(name, handler) { listeners.set(name, handler); },
     setAttribute(name, value) { attributes.set(name, String(value)); },
     removeAttribute(name) { attributes.delete(name); },
+    remove() { this.isConnected = false; this.parentElement = null; },
     _listeners:listeners,
     _attributes:attributes,
   };
 }
 
-async function behavior() {
+async function behavior({ mobile = false } = {}) {
   let trigger = null;
   let runtimeLoads = 0;
   let openNextCalls = 0;
@@ -61,6 +70,11 @@ async function behavior() {
   countBadge.parentElement = toolbar;
   const scripts = [];
   const windowListeners = new Map();
+  const mediaListeners = new Map();
+  const phoneMedia = {
+    matches:mobile,
+    addEventListener(name, handler) { mediaListeners.set(name, handler); },
+  };
 
   toolbar.insertBefore = node => {
     node.isConnected = true;
@@ -103,6 +117,11 @@ async function behavior() {
 
   const window = {
     MedIndexClinicalEditor:null,
+    MEDINDEX_MOBILE_LITE_ACTIVE:mobile,
+    matchMedia(query) {
+      assert.equal(query, '(max-width: 767px)');
+      return phoneMedia;
+    },
     addEventListener(name, handler) { windowListeners.set(name, handler); },
   };
 
@@ -110,7 +129,15 @@ async function behavior() {
   vm.createContext(context);
   vm.runInContext(loader, context, { filename:'clinical-editor-interaction-loader.js' });
 
-  assert.ok(trigger?.isConnected, 'The small Auditimi trigger must exist without loading the editor runtime');
+  if (mobile) {
+    assert.ok(!trigger?.isConnected, 'Auditimi must not consume a row inside the mobile-lite search/count toolbar');
+    assert.equal(runtimeLoads, 0, 'Phone ownership must not wake the full clinical editor runtime');
+    assert.equal(openNextCalls, 0, 'Phone startup must not open the clinical editor');
+    assert.equal(typeof mediaListeners.get('change'), 'function', 'Phone ownership must stay responsive to viewport changes');
+    return;
+  }
+
+  assert.ok(trigger?.isConnected, 'The small Auditimi trigger must exist on desktop without loading the editor runtime');
   assert.equal(trigger.textContent, 'Auditimi');
   assert.equal(runtimeLoads, 0, 'Opening Barnat alone must not request clinical-editor.js');
   assert.equal(openNextCalls, 0, 'Opening Barnat alone must not open or fetch the editor');
@@ -126,9 +153,11 @@ async function behavior() {
   assert.equal(runtimeLoads, 1, 'Repeated clicks must reuse the loaded editor runtime');
 }
 
-behavior().then(() => {
-  console.log('✓ Clinical editor lazy runtime passed: zero startup editor JS/API work, one interaction load, deduplicated summary, and direct first-click handoff.');
-}).catch(error => {
+(async () => {
+  await behavior();
+  await behavior({ mobile:true });
+  console.log('✓ Clinical editor lazy runtime passed: desktop keeps one eager Auditimi bridge with zero startup editor work, while mobile-lite owns the phone toolbar without an extra Auditimi row or editor wakeup.');
+})().catch(error => {
   console.error(error);
   process.exitCode = 1;
 });
