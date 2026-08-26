@@ -68,6 +68,10 @@ require('./patch-registry-prescription-notation-display.js');
 // Must run before the offline manifest is derived so the privacy guard and its
 // CSS become first-class production shell assets, not a late runtime injection.
 require('./patch-user-library-account-isolation.js');
+// After account ownership is settled, persist a per-account state+tombstone
+// fingerprint. Unchanged startups remain GET-only; offline/local edits still
+// force the same confirmed PUT before they are considered synchronized.
+require('./patch-user-library-startup-sync.js');
 
 const ROOT = path.resolve(__dirname, '..');
 execFileSync(process.execPath, [path.join(ROOT, 'tests', 'registry-personal-release-gate.js')], {
@@ -79,6 +83,10 @@ execFileSync(process.execPath, [path.join(ROOT, 'tests', 'registry-shell-favorit
   stdio:'inherit',
 });
 execFileSync(process.execPath, [path.join(ROOT, 'tests', 'user-library-account-isolation-test.js')], {
+  cwd:ROOT,
+  stdio:'inherit',
+});
+execFileSync(process.execPath, [path.join(ROOT, 'tests', 'user-library-startup-sync-test.js')], {
   cwd:ROOT,
   stdio:'inherit',
 });
@@ -115,4 +123,4 @@ execFileSync(process.execPath, [path.join(ROOT, 'tests', 'auth-pagination-regres
   stdio:'inherit',
 });
 
-console.log('Canonical registry personalization finalizer passed: Favorites/Notes stay inside the Barnat desktop-lite owner, composite favorite keys resolve through their real PDIDs, pending personal revisions reach authenticated Supabase before readback, stale Barnat search state cannot leak into personal views, prescription notation cannot collapse into a synthetic dash, one registry table is visible, favorites-notes-v1.0.0 remains frozen, per-user account isolation is gated, secondary API auth failures are confirmed before logout, and pagination keeps the document viewport stable before offline packaging.');
+console.log('Canonical registry personalization finalizer passed: Favorites/Notes stay inside the Barnat desktop-lite owner, composite favorite keys resolve through their real PDIDs, pending personal revisions reach authenticated Supabase before readback, unchanged per-account library startups stay read-only after their authoritative GET, stale Barnat search state cannot leak into personal views, prescription notation cannot collapse into a synthetic dash, one registry table is visible, favorites-notes-v1.0.0 remains frozen, per-user account isolation is gated, secondary API auth failures are confirmed before logout, and pagination keeps the document viewport stable before offline packaging.');
