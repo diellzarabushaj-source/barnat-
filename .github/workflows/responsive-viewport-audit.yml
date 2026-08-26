@@ -51,6 +51,12 @@ jobs:
           set -euo pipefail
           node scripts/audit-responsive-viewports.js | tee /tmp/responsive-viewports.log
 
+      - name: Run admin mobile dialog gate
+        shell: bash
+        run: |
+          set -euo pipefail
+          node scripts/audit-admin-mobile-dashboard.js | tee /tmp/admin-mobile-dialog.log
+
       - name: Upload measurements
         if: always()
         uses: actions/upload-artifact@v4
@@ -58,6 +64,7 @@ jobs:
           name: responsive-viewport-measurements
           path: |
             /tmp/responsive-viewports.log
+            /tmp/admin-mobile-dialog.log
             /tmp/responsive-playwright-install.log
           if-no-files-found: warn
           retention-days: 7
