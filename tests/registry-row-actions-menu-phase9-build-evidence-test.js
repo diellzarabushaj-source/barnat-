@@ -11,6 +11,7 @@ const sha256 = value => crypto.createHash('sha256').update(value).digest('hex');
 
 const marker = read('release-markers/registry-row-actions-menu-phase9.txt');
 const phase7 = read('scripts/patch-registry-row-actions-menu-phase7-provenance.js');
+const finalizer = read('scripts/patch-registry-personal-final.js');
 const releaseRaw = read('registry-row-actions-release.json');
 const release = JSON.parse(releaseRaw);
 const evidenceRaw = read('registry-row-actions-build-evidence.json');
@@ -31,6 +32,11 @@ assert.match(
   /deploy-verifiable provenance written[\s\S]*?require\('\.\/patch-registry-row-actions-menu-phase9-build-evidence\.js'\);/,
   'Phase 9 build evidence must run only after Phase 7 has written and validated release provenance.'
 );
+assert.match(
+  finalizer,
+  /patch-offline-shell-manifest\.js'[\s\S]*?process\.once\('beforeExit'[\s\S]*?execFileSync\(process\.execPath,[\s\S]*?patch-registry-row-actions-menu-phase7-provenance\.js/,
+  'The last build process must refresh Phase 7/9 evidence in a fresh child process after offline packaging, not through the Node require cache.'
+);
 
 assert.equal(evidence.schema, 'medindex.registry.row-actions.build-evidence.v1');
 assert.equal(evidence.phase, 'registry-row-actions-menu-phase9-v1');
@@ -50,6 +56,7 @@ assert.equal(evidence.contracts.frozenMobilePersonalization, true);
 assert.equal(evidence.contracts.deterministicDoubleBuild, true);
 assert.equal(evidence.contracts.remoteDeploymentAttestationAvailable, true);
 assert.equal(evidence.contracts.deterministicBuildEvidence, true);
+assert.equal(evidence.contracts.finalEvidenceRefreshOwnerBound, true);
 assert.equal(evidence.contracts.browserRuntimeMutatedByPhase9, false);
 assert.deepEqual(evidence.assets, release.assets,
   'Build evidence must carry the exact asset hash chain already frozen by Phase 7.');
@@ -68,6 +75,7 @@ const gateInputs = [
   'scripts/patch-registry-row-actions-menu-phase6-idempotence-gate.js',
   'scripts/patch-registry-row-actions-menu-phase7-provenance.js',
   'scripts/audit-registry-row-actions-deployment.js',
+  'scripts/patch-registry-personal-final.js',
 ];
 for (const file of gateInputs) {
   assert.equal(evidence.gateFingerprints?.[file]?.sha256, sha256(read(file)),
@@ -79,4 +87,4 @@ assert.ok(evidence.sourceRevision === null || /^[0-9a-f]{7,64}$/.test(evidence.s
 assert.doesNotMatch(evidenceRaw, /"(?:createdAt|generatedAt|timestamp)"\s*:/i,
   'Build evidence must remain deterministic and must not contain wall-clock timestamps.');
 
-console.log('✓ Registry row actions Phase 9 passed: build evidence binds the Phase 7 manifest, final asset hashes, Phase 5–8 gate fingerprints and optional commit identity without mutating browser runtime output; the complete Phase 1→9 release chain is integrated in main.');
+console.log('✓ Registry row actions Phase 9 passed: build evidence binds the Phase 7 manifest, final asset hashes, Phase 5–8 gate fingerprints, final post-packaging refresh owner and optional commit identity without mutating browser runtime output; the complete Phase 1→9 release chain is integrated in main.');
