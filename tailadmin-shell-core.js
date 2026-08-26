@@ -173,9 +173,8 @@
       <div class="mi-mobile-overlay" data-mi-sidebar-overlay></div>
       <aside class="mi-sidebar" id="miSidebar" aria-label="DRx">
         <div class="mi-sidebar-header">
-          <a class="mi-brand" href="/index.html" aria-label="MedIndex — Barnat">
-            <span class="mi-brand-mark">M<span>+</span></span>
-            <span class="mi-brand-copy"><strong>MedIndex</strong><small>Hapësirë klinike</small></span>
+          <a class="mi-brand" href="/index.html" aria-label="DRx — Barnat">
+            <img src="/brand/drx-horizontal-dark.svg" alt="DRx" width="112" height="33" decoding="async">
           </a>
           <button class="mi-sidebar-close" type="button" data-mi-sidebar-close aria-label="Mbyll menynë">${ICONS.close}</button>
         </div>
