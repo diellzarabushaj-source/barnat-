@@ -1,0 +1,76 @@
+name: Registry row actions build evidence
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - scripts/patch-registry-row-actions-menu-phase7-provenance.js
+      - scripts/patch-registry-row-actions-menu-phase9-build-evidence.js
+      - tests/registry-row-actions-menu-phase9-build-evidence-test.js
+      - release-markers/registry-row-actions-menu-phase9.txt
+      - .github/workflows/registry-row-actions-build-evidence.yml
+  pull_request:
+    paths:
+      - scripts/patch-registry-row-actions-menu-phase7-provenance.js
+      - scripts/patch-registry-row-actions-menu-phase9-build-evidence.js
+      - tests/registry-row-actions-menu-phase9-build-evidence-test.js
+      - release-markers/registry-row-actions-menu-phase9.txt
+      - .github/workflows/registry-row-actions-build-evidence.yml
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  evidence:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          version: 10.28.0
+          run_install: false
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          cache: pnpm
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile --ignore-scripts
+
+      - name: Syntax-check Phase 9
+        run: |
+          node --check scripts/patch-registry-row-actions-menu-phase9-build-evidence.js
+          node --check tests/registry-row-actions-menu-phase9-build-evidence-test.js
+
+      - name: Build final registry runtime and evidence
+        run: pnpm run build:runtime
+
+      - name: Verify exact build evidence
+        run: |
+          node tests/registry-row-actions-menu-phase9-build-evidence-test.js
+          node - <<'NODE'
+          const fs = require('node:fs');
+          const evidence = JSON.parse(fs.readFileSync('registry-row-actions-build-evidence.json', 'utf8'));
+          const expected = String(process.env.GITHUB_SHA || '').toLowerCase();
+          if (evidence.sourceRevision !== expected) {
+            throw new Error(`Phase 9 sourceRevision mismatch: ${evidence.sourceRevision} !== ${expected}`);
+          }
+          console.log(`Phase 9 evidence bound to ${evidence.sourceRevision}`);
+          NODE
+
+      - name: Upload row-actions build evidence
+        uses: actions/upload-artifact@v4
+        with:
+          name: registry-row-actions-build-evidence-${{ github.sha }}
+          path: |
+            registry-row-actions-release.json
+            registry-row-actions-build-evidence.json
+          if-no-files-found: error
+          retention-days: 30
