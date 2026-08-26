@@ -38,9 +38,8 @@ write(DOSE_CALCULATOR, calculator);
 
 let dosage = read(DOSE_COLUMNS);
 if (!dosage.includes(`// ${MARKER}: nested dosage DOM writes publish one explicit refresh event.`)) {
-  const applyAnchor = `      applyVisibility();\n      document.documentElement.dataset.registryDosagePerformance = VERSION;`;
-  dosage = replaceOnce(dosage, applyAnchor, `      applyVisibility();
-      document.documentElement.dataset.registryDosagePerformance = VERSION;
+  const performanceAnchor = `      document.documentElement.dataset.registryDosagePerformance = VERSION;`;
+  dosage = replaceOnce(dosage, performanceAnchor, `${performanceAnchor}
       if (typeof window.dispatchEvent === 'function' && typeof CustomEvent === 'function') {
         window.dispatchEvent(new CustomEvent('medindex:registry-content-changed', {
           detail:{ source:'dosage', version:VERSION },
