@@ -136,3 +136,14 @@ execFileSync(process.execPath, [path.join(ROOT, 'tests', 'auth-pagination-regres
 });
 
 console.log('Canonical registry personalization finalizer passed: Favorites/Notes stay inside the Barnat desktop-lite owner, composite favorite keys resolve through their real PDIDs, pending personal revisions reach authenticated Supabase before readback, unchanged per-account library startups stay read-only after their authoritative GET, the clinical editor stays interaction-only until Auditimi is requested, the dose calculator/catalog and its auxiliary observers stay off the critical path until visibility or intent, broad nested cell-preview observation is replaced by explicit events, the canonical row-actions trigger is present from first desktop render and remains migration-hidden until the singleton menu cutover, stale Barnat search state cannot leak into personal views, prescription notation cannot collapse into a synthetic dash, one registry table is visible, favorites-notes-v1.0.0 remains frozen, per-user account isolation is gated, secondary API auth failures are confirmed before logout, and pagination keeps the document viewport stable before offline packaging.');
+
+// This finalizer is required at the start of patch-offline-shell-manifest.js,
+// which is the last process in build:runtime. Phase 7/9 provenance must describe
+// the bytes *after* that packager has finished every late CSS/JS write, so defer
+// the final fingerprint until this parent process is otherwise ready to exit.
+if (path.basename(require.main?.filename || '') === 'patch-offline-shell-manifest.js') {
+  process.once('beforeExit', () => {
+    require('./patch-registry-row-actions-menu-phase7-provenance.js');
+    console.log('Registry row actions final evidence refreshed after offline packaging.');
+  });
+}
