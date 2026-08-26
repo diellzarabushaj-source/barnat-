@@ -1,169 +1,166 @@
 <!doctype html>
 <html lang="sq" data-mi-page="register">
 <head>
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-<meta name="robots" content="noindex,nofollow">
-<meta name="color-scheme" content="light dark">
-<title>Regjistrohu — MedIndex</title>
-<meta name="description" content="Regjistrohu në MedIndex si student i mjekësisë, mjek, specialist ose specializant. Regjistrimi verifikohet nga administratori.">
-<link rel="icon" href="/brand/medindex-mark-on-light.webp">
-<link rel="stylesheet" href="tailadmin-medindex.css?v=multiuser-v2">
-<link rel="stylesheet" href="auth-shell.css?v=multiuser-v2">
-<link rel="stylesheet" href="registration-premium.css?v=20260820-1">
-<link rel="stylesheet" href="public-footer.css?v=20260822-1">
-<script src="theme-preload.js?v=multiuser-v2"></script>
-<script src="https://accounts.google.com/gsi/client" async defer></script>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+  <meta name="robots" content="noindex,nofollow,noarchive">
+  <meta name="theme-color" content="#ffffff">
+  <meta name="color-scheme" content="light">
+  <meta name="description" content="Krijo llogarinë profesionale në DRx dhe dërgo të dhënat për verifikim të sigurt.">
+  <title>DRx | Krijo llogarinë</title>
+  <link rel="icon" href="/brand/drx-icon-silver.svg" type="image/svg+xml">
+  <link rel="preconnect" href="https://accounts.google.com" crossorigin>
+  <link rel="dns-prefetch" href="https://accounts.google.com">
+  <link rel="preload" href="/fonts/inter-latin-variable-normal.woff2" as="font" type="font/woff2" crossorigin>
+  <script src="https://accounts.google.com/gsi/client" async defer></script>
+  <link rel="stylesheet" href="/landing.css?v=drx-main-1">
+  <link rel="stylesheet" href="/drx-pages.css?v=drx-main-1">
+  <link rel="stylesheet" href="/drx-auth.css?v=drx-main-1">
 </head>
-<body class="mi-auth">
+<body class="lp lp-auth drx-register">
+  <div class="lp-scrollbg" aria-hidden="true"></div>
+  <div class="lp-mesh" aria-hidden="true"></div>
 
-<main class="mi-auth-main">
-  <div class="mi-auth-card">
-    <a class="mi-auth-brandline" href="/login-v2.html">
-      <img src="/brand/medindex-mark-on-light.webp" alt="" width="36" height="36" decoding="async">
-      <span><strong>MedIndex</strong><small>Regjistri klinik i barnave</small></span>
-    </a>
+  <a class="lp-skip" href="#registerMain">Kalo te regjistrimi</a>
 
-    <ol class="mi-auth-steps" id="registerSteps">
-      <li data-step="1" aria-current="step"><span>Llogaria</span></li>
-      <li data-step="2"><span>Të dhënat profesionale</span></li>
-      <li data-step="3"><span>Aprovimi</span></li>
-    </ol>
-
-    <noscript><p class="mi-note is-error">JavaScript duhet të jetë aktiv për regjistrimin e sigurt.</p></noscript>
-
-    <!-- Step 1 — create the account ---------------------------------------->
-    <section id="stepAccount" aria-labelledby="stepAccountTitle">
-      <header class="mi-auth-head">
-        <h1 id="stepAccountTitle">Krijo llogarinë</h1>
-        <p>Fillo me Google ose me email. Pas kësaj do të kërkohen të dhënat e tua profesionale dhe një dokument vërtetues.</p>
-      </header>
-
-      <div class="mi-note" id="accountNote" role="status" aria-live="polite"></div>
-
-      <div id="googleSignupButton" aria-label="Regjistrohu me Google"></div>
-      <p class="mi-note" id="googleSignupStatus" role="status" aria-live="polite">Po përgatitet regjistrimi me Google…</p>
-
-      <div class="mi-divider"><span>ose me email</span></div>
-
-      <form id="signupForm" novalidate autocomplete="on">
-        <label class="mi-field" for="signupEmail">
-          <span>Email <em aria-hidden="true">*</em></span>
-          <input class="mi-input" id="signupEmail" name="email" type="email" autocomplete="email"
-                 autocapitalize="none" spellcheck="false" required maxlength="320" placeholder="emri@shembull.com">
-        </label>
-
-        <label class="mi-field" for="signupPassword">
-          <span>Fjalëkalimi <em aria-hidden="true">*</em></span>
-          <span class="mi-password">
-            <input class="mi-input" id="signupPassword" name="password" type="password" autocomplete="new-password"
-                   autocapitalize="none" spellcheck="false" required minlength="10" maxlength="200">
-            <button type="button" data-toggle-password="signupPassword" aria-pressed="false">Shfaq</button>
-          </span>
-          <small>Së paku 10 shenja. Mos e përdor të njëjtin fjalëkalim si diku tjetër.</small>
-        </label>
-
-        <button class="mi-btn" type="submit" id="signupSubmit">Krijo llogarinë</button>
-      </form>
-
-      <p class="mi-auth-alt">Ke llogari? <a href="/login-v2.html">Hyr këtu</a></p>
-    </section>
-
-    <!-- Step 2 — professional identity + document -------------------------->
-    <section id="stepProfile" aria-labelledby="stepProfileTitle" hidden>
-      <header class="mi-auth-head">
-        <h1 id="stepProfileTitle">Të dhënat profesionale</h1>
-        <p id="stepProfileLead">Administratori i shqyrton këto para se llogaria të hapet. Dokumenti ruhet privatisht dhe nuk shihet nga përdoruesit e tjerë.</p>
-      </header>
-
-      <div class="mi-note" id="profileNote" role="status" aria-live="polite"></div>
-
-      <form id="profileForm" novalidate autocomplete="on">
-        <div class="mi-field-row">
-          <label class="mi-field" for="firstName">
-            <span>Emri <em aria-hidden="true">*</em></span>
-            <input class="mi-input" id="firstName" name="firstName" type="text" autocomplete="given-name"
-                   required minlength="2" maxlength="80">
-          </label>
-          <label class="mi-field" for="lastName">
-            <span>Mbiemri <em aria-hidden="true">*</em></span>
-            <input class="mi-input" id="lastName" name="lastName" type="text" autocomplete="family-name"
-                   required minlength="2" maxlength="80">
-          </label>
-        </div>
-
-        <fieldset class="mi-choices" id="titleChoices">
-          <legend>Unë jam <em aria-hidden="true">*</em></legend>
-        </fieldset>
-
-        <label class="mi-field" for="specialty" id="specialtyField" hidden>
-          <span id="specialtyLabel">Specialiteti <em aria-hidden="true">*</em></span>
-          <input class="mi-input" id="specialty" name="specialty" type="text" maxlength="120"
-                 placeholder="p.sh. Kardiologji, Pediatri, Mjekësi familjare">
-        </label>
-
-        <div class="mi-field">
-          <span id="documentLabel">Dokumenti vërtetues <em aria-hidden="true">*</em></span>
-          <label class="mi-drop" id="documentDrop">
-            <input id="documentInput" type="file" accept="application/pdf,image/jpeg,image/png" aria-describedby="documentHint">
-            <span class="mi-drop-icon" aria-hidden="true">↑</span>
-            <strong id="documentTitle">Zgjidh dokumentin</strong>
-            <small id="documentHint">PDF, JPG ose PNG · deri në 3 MB</small>
-          </label>
-        </div>
-
-        <button class="mi-btn" type="submit" id="profileSubmit">Dërgo për aprovim</button>
-      </form>
-
-      <p class="mi-auth-alt"><a href="/login-v2.html" id="profileSignOut">Dil dhe kthehu te hyrja</a></p>
-    </section>
-
-    <!-- Step 3 — waiting for the administrator ----------------------------->
-    <section id="stepPending" aria-labelledby="stepPendingTitle" hidden>
-      <header class="mi-auth-head">
-        <h1 id="stepPendingTitle">Regjistrimi u dërgua</h1>
-        <p id="stepPendingLead">Dokumenti yt u ruajt privatisht dhe pret shqyrtimin e administratorit. Do të mund të hysh sapo llogaria të aprovohet.</p>
-      </header>
-
-      <div class="mi-note is-success" id="pendingSummary" role="status" aria-live="polite"></div>
-
-      <a class="mi-btn is-quiet" href="/login-v2.html">Kthehu te hyrja</a>
-    </section>
-  </div>
-</main>
-
-<aside class="mi-auth-aside" aria-labelledby="asideTitle">
-  <h2 id="asideTitle">Regjistri klinik, i verifikuar para se të hapet</h2>
-  <p>MedIndex mban regjistrin zyrtar të barnave, dozimin pediatrik dhe ICD-10 në shqip. Qasja jepet vetëm pas verifikimit profesional.</p>
-  <ul class="mi-auth-points">
-    <li>Çdo llogari shqyrtohet nga administratori para se të hapet.</li>
-    <li>Dokumenti yt ruhet privatisht dhe nuk shihet nga përdoruesit e tjerë.</li>
-    <li>Barnat që shton vetë i sheh vetëm ti, të shënuara si të paverifikuara.</li>
-  </ul>
-</aside>
-
-
-<!-- I njëjti footer i faqeve publike (public-footer.css). Regjistrimi ishte e
-     vetmja faqe publike që mbaronte pa asnjë dalje. -->
-<footer class="mi-site-footer">
-  <div class="mi-site-footer__inner">
-    <div class="mi-site-footer__top">
-      <a class="mi-site-footer__brand" href="/login-v2.html" aria-label="MedIndex — faqja kryesore">
-        <img class="mi-site-footer__logo" src="/brand/medindex-horizontal-on-light.webp" alt="MedIndex — by Dr. Diellza Rabushaj" width="320" height="76" loading="lazy" decoding="async">
+  <nav class="lp-nav auth-nav" aria-label="Navigimi i regjistrimit">
+    <div class="lp-shell lp-nav__row auth-nav__row">
+      <a class="lp-nav__brand" href="/landing.html" aria-label="DRx — faqja hyrëse">
+        <img class="drx-logo__img" src="/brand/drx-horizontal-dark.svg" alt="DRx" width="102" height="30" decoding="async">
       </a>
-      <nav class="mi-site-footer__nav" aria-label="Lidhjet e footer-it">
-        <a href="/rreth-nesh.html">Rreth nesh</a>
-        <a href="/kontakt.html">Kontakt</a>
-        <a href="/blog.html">Blog</a>
-      </nav>
+      <div class="auth-nav__actions">
+        <span class="auth-nav__prompt">Ke llogari?</span>
+        <a class="lp-btn lp-btn--secondary lp-btn--sm" href="/login.html">Hyr</a>
+      </div>
     </div>
-    <div class="mi-site-footer__base">
-      <p class="mi-site-footer__note">© 2026 MedIndex · Hapësirë private klinike</p>
-      <p class="mi-site-footer__note">Hyrja verifikohet në server · Sesion 8 orë</p>
-    </div>
-  </div>
-</footer>
+  </nav>
 
-<script src="regjistrimi.js?v=multiuser-v2" defer></script>
+  <main class="register-stage" id="registerMain">
+    <section class="register-copy" aria-labelledby="registerIntroTitle">
+      <span class="lp-eyebrow">Qasje profesionale</span>
+      <h1 class="lp-display-xl" id="registerIntroTitle">Një verifikim i qartë para hapësirës klinike.</h1>
+      <p class="register-copy__lead">Krijo llogarinë, plotëso profilin profesional dhe dërgo dokumentin për aprovim. Çdo hap ruan kontekstin dhe tregon saktë çfarë pritet më pas.</p>
+
+      <ol class="register-explainer" aria-label="Hapat e regjistrimit">
+        <li><span class="lp-num">01</span><div><strong>Krijo llogarinë</strong><p>Google ose email profesional.</p></div></li>
+        <li><span class="lp-num">02</span><div><strong>Dokumento profesionin</strong><p>Të dhënat dhe dëshmia përkatëse.</p></div></li>
+        <li><span class="lp-num">03</span><div><strong>Prit aprovimin</strong><p>Administratori e shqyrton para hyrjes.</p></div></li>
+      </ol>
+    </section>
+
+    <section class="mi-auth-card register-card" aria-label="Regjistrimi profesional">
+      <a class="register-card__brand" href="/landing.html" aria-label="DRx — faqja hyrëse">
+        <img class="drx-logo__img" src="/brand/drx-horizontal-dark.svg" alt="DRx" width="102" height="30" decoding="async">
+      </a>
+
+      <ol class="mi-auth-steps" id="registerSteps">
+        <li data-step="1" aria-current="step"><span>Llogaria</span></li>
+        <li data-step="2"><span>Profili</span></li>
+        <li data-step="3"><span>Aprovimi</span></li>
+      </ol>
+
+      <noscript><p class="mi-note is-error">JavaScript duhet të jetë aktiv për regjistrimin e sigurt.</p></noscript>
+
+      <section id="stepAccount" aria-labelledby="stepAccountTitle">
+        <header class="mi-auth-head">
+          <p class="auth-card__index lp-num">01 / LLOGARIA</p>
+          <h2 id="stepAccountTitle">Krijo llogarinë.</h2>
+          <p>Fillo me Google ose email. Të dhënat profesionale plotësohen në hapin tjetër.</p>
+        </header>
+
+        <div class="mi-note" id="accountNote" role="status" aria-live="polite"></div>
+
+        <div id="googleSignupButton" class="auth-google__button" aria-label="Regjistrohu me Google"></div>
+        <p class="mi-note auth-provider-status" id="googleSignupStatus" role="status" aria-live="polite">Po përgatitet regjistrimi me Google…</p>
+
+        <div class="mi-divider auth-divider"><span>ose me email</span></div>
+
+        <form class="register-form" id="signupForm" novalidate autocomplete="on">
+          <label class="mi-field" for="signupEmail">
+            <span>Email <em aria-hidden="true">*</em></span>
+            <input class="mi-input" id="signupEmail" name="email" type="email" autocomplete="email"
+                   autocapitalize="none" spellcheck="false" required maxlength="320" placeholder="emri@shembull.com">
+          </label>
+
+          <label class="mi-field" for="signupPassword">
+            <span>Fjalëkalimi <em aria-hidden="true">*</em></span>
+            <span class="mi-password">
+              <input class="mi-input" id="signupPassword" name="password" type="password" autocomplete="new-password"
+                     autocapitalize="none" spellcheck="false" required minlength="10" maxlength="200">
+              <button type="button" data-toggle-password="signupPassword" aria-pressed="false">Shfaq</button>
+            </span>
+            <small>Së paku 10 shenja. Mos e përdor të njëjtin fjalëkalim si diku tjetër.</small>
+          </label>
+
+          <button class="lp-btn lp-btn--primary mi-btn" type="submit" id="signupSubmit">Krijo llogarinë</button>
+        </form>
+
+        <p class="mi-auth-alt">Ke llogari? <a href="/login.html">Hyr këtu</a></p>
+      </section>
+
+      <section id="stepProfile" aria-labelledby="stepProfileTitle" hidden>
+        <header class="mi-auth-head">
+          <p class="auth-card__index lp-num">02 / PROFILI</p>
+          <h2 id="stepProfileTitle">Të dhënat profesionale.</h2>
+          <p id="stepProfileLead">Administratori i shqyrton para se llogaria të hapet. Dokumenti ruhet privatisht.</p>
+        </header>
+
+        <div class="mi-note" id="profileNote" role="status" aria-live="polite"></div>
+
+        <form class="register-form" id="profileForm" novalidate autocomplete="on">
+          <div class="mi-field-row">
+            <label class="mi-field" for="firstName">
+              <span>Emri <em aria-hidden="true">*</em></span>
+              <input class="mi-input" id="firstName" name="firstName" type="text" autocomplete="given-name" required minlength="2" maxlength="80">
+            </label>
+            <label class="mi-field" for="lastName">
+              <span>Mbiemri <em aria-hidden="true">*</em></span>
+              <input class="mi-input" id="lastName" name="lastName" type="text" autocomplete="family-name" required minlength="2" maxlength="80">
+            </label>
+          </div>
+
+          <fieldset class="mi-choices" id="titleChoices">
+            <legend>Unë jam <em aria-hidden="true">*</em></legend>
+          </fieldset>
+
+          <label class="mi-field" for="specialty" id="specialtyField" hidden>
+            <span id="specialtyLabel">Specialiteti <em aria-hidden="true">*</em></span>
+            <input class="mi-input" id="specialty" name="specialty" type="text" maxlength="120" placeholder="p.sh. Kardiologji, Pediatri, Mjekësi familjare">
+          </label>
+
+          <div class="mi-field">
+            <span id="documentLabel">Dokumenti vërtetues <em aria-hidden="true">*</em></span>
+            <label class="mi-drop" id="documentDrop">
+              <input id="documentInput" type="file" accept="application/pdf,image/jpeg,image/png" aria-describedby="documentHint">
+              <strong id="documentTitle">Zgjidh dokumentin</strong>
+              <small id="documentHint">PDF, JPG ose PNG · deri në 3 MB</small>
+            </label>
+          </div>
+
+          <button class="lp-btn lp-btn--primary mi-btn" type="submit" id="profileSubmit">Dërgo për aprovim</button>
+        </form>
+
+        <p class="mi-auth-alt"><a href="/login.html" id="profileSignOut">Dil dhe kthehu te hyrja</a></p>
+      </section>
+
+      <section id="stepPending" aria-labelledby="stepPendingTitle" hidden>
+        <header class="mi-auth-head">
+          <p class="auth-card__index lp-num">03 / APROVIMI</p>
+          <h2 id="stepPendingTitle">Regjistrimi u dërgua.</h2>
+          <p id="stepPendingLead">Dokumenti yt u ruajt privatisht dhe pret shqyrtimin e administratorit.</p>
+        </header>
+
+        <div class="mi-note is-success" id="pendingSummary" role="status" aria-live="polite"></div>
+        <a class="lp-btn lp-btn--secondary mi-btn is-quiet" href="/login.html">Kthehu te hyrja</a>
+      </section>
+    </section>
+  </main>
+
+  <footer class="auth-footer">
+    <p>© 2026 DRx · Dr. Diellza Rabushaj</p>
+    <p>Dokumentet profesionale ruhen privatisht.</p>
+  </footer>
+
+  <script src="/regjistrimi.js?v=drx-main-1" defer></script>
 </body>
 </html>

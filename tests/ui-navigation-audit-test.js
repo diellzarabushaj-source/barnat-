@@ -173,11 +173,12 @@ const professionalCss = [
 assert.doesNotMatch(css, /--medindex-nav-width|bottom navigation/i, 'TailAdmin shell must not retain the legacy bottom-navigation geometry');
 
 const login = read('login.html');
-assert.match(login, /class="medindex-tailadmin-login"/);
 assert.match(login, /data-mi-page="login"/);
-assert.match(login, /class="login-side-panel"/);
+assert.match(login, /class="lp lp-auth"/);
+assert.match(login, /class="auth-stage"/);
+assert.match(login, /brand\/drx-horizontal-dark\.svg/);
 assert.match(login, /id="loginForm"/);
-assert.match(login, /login-editorial\.css/, 'Editorial login stylesheet must remain explicit and self-contained');
+assert.match(login, /drx-auth\.css/, 'The functional login must load the shared DRx auth system');
 
 assert.ok(fs.existsSync(path.join(ROOT, 'TAILADMIN-LICENSE')), 'TailAdmin license text is missing');
 assert.ok(fs.existsSync(path.join(ROOT, 'THIRD_PARTY_NOTICES.md')), 'Third-party notice is missing');

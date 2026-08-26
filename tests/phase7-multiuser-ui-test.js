@@ -135,10 +135,10 @@ const read = file => fs.readFileSync(path.join(root, file), 'utf8');
   const html = read('regjistrimi.html');
   const loginLinks = [...html.matchAll(/href="(\/login(?:-v2)?\.html)"/g)].map(match => match[1]);
   assert.ok(loginLinks.length >= 4, 'registration must expose its expected routes back to login');
-  assert.ok(loginLinks.every(value => value === '/login-v2.html'),
-    'registration must not send users back to the retired /login.html surface');
-  assert.ok(!html.includes('href="/login.html"'),
-    'the old login surface must not re-enter the registration flow');
+  assert.ok(loginLinks.every(value => value === '/login.html'),
+    'registration must return users to the canonical DRx login surface');
+  assert.ok(!html.includes('href="/login-v2.html"'),
+    'the retired login-v2 surface must not re-enter the registration flow');
 }
 
 // --- pending accounts get a real answer at login ------------------------

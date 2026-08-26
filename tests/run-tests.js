@@ -10,7 +10,7 @@ const vm = require('node:vm');
 const ROOT = path.resolve(__dirname, '..');
 const requiredFiles = [
   'index.html','klasifikimi.html','icd.html','analizat.html','dozologjia.html','protokollet.html','recetat.html','login.html',
-  'login.css','login.js','theme-preload.js','auth-client.js','app-stability.js','app-polish.css','performance.css','tailadmin-medindex.css','tailadmin-shell.js','TAILADMIN-LICENSE','THIRD_PARTY_NOTICES.md',
+  'login.css','login.js','drx-auth.css','theme-preload.js','auth-client.js','app-stability.js','app-polish.css','performance.css','tailadmin-medindex.css','tailadmin-shell.js','TAILADMIN-LICENSE','THIRD_PARTY_NOTICES.md',
   'medical-hub.css','analizat-polish.css','lab-sheet-data.js','medical-icons.js','section-icons.js',
   'recetat.css','recetat-audit.css','prescription-format-core.js','recetat.js','recetat-safe-print.js','app-runtime.js',
   'app-parts/part-01.txt','app-parts/part-02.txt','app-parts/part-03.txt','app-parts/part-04.txt','app-parts/core-tail.txt',

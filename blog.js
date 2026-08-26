@@ -15,13 +15,13 @@
     clinical: {
       url: LOCAL_COVER,
       alt: 'Mjeke duke përdorur teknologjinë gjatë punës klinike.',
-      credit: 'MedIndex',
+      credit: 'DRx',
       position: 'center 32%',
     },
     technology: {
       url: LOCAL_COVER,
       alt: 'Mjeke duke punuar me laptop në një ambient klinik.',
-      credit: 'MedIndex',
+      credit: 'DRx',
       position: 'center 42%',
     },
   });
@@ -92,7 +92,7 @@
     if (configuredUrl) {
       return {
         url: configuredUrl,
-        alt: configured.alt || post?.title || 'MedIndex Journal',
+        alt: configured.alt || post?.title || 'DRx Journal',
         caption: configured.caption || '',
         credit: configured.credit || '',
         position: 'center',
@@ -274,15 +274,15 @@
     const cover = coverFor(post);
     const figureCaption = [cover.caption, cover.credit].filter(Boolean).join(' · ');
 
-    document.title = `${post.seoTitle || post.title} | MedIndex Journal`;
-    setMeta('description', post.seoDescription || post.excerpt || 'MedIndex Journal.');
+    document.title = `${post.seoTitle || post.title} | DRx Journal`;
+    setMeta('description', post.seoDescription || post.excerpt || 'DRx Journal.');
 
     const heroTitle = document.getElementById('pageTitle');
     const heroLead = document.querySelector('.info-main .info-lead');
     const heroKicker = document.querySelector('.info-main .info-kicker');
     const heroBadge = document.querySelector('.blog-hero__badge');
     const heroFacts = document.querySelector('.blog-hero__facts');
-    if (heroTitle) heroTitle.textContent = 'MedIndex Journal';
+    if (heroTitle) heroTitle.textContent = 'DRx Journal';
     if (heroLead) heroLead.textContent = 'Lexim klinik i qartë, me fokus te ajo që ka rëndësi në praktikë.';
     if (heroKicker) heroKicker.textContent = 'Artikull';
     if (heroBadge) heroBadge.hidden = true;
@@ -301,7 +301,7 @@
       <div class="blog-article__byline">
         <img src="${AUTHOR_IMAGE}" alt="" width="48" height="48" decoding="async">
         <div><strong>${author}</strong><span>${role}</span></div>
-        <span class="blog-article__verified">MedIndex editorial</span>
+        <span class="blog-article__verified">DRx editorial</span>
       </div>
       <figure class="blog-article__hero-image">
         <img src="${escapeHtml(cover.url)}" alt="${escapeHtml(cover.alt)}" width="1600" height="920"
@@ -317,7 +317,7 @@
         <div><span class="blog-author-box__eyebrow">Rreth autores</span><strong>${author}</strong><p>${bio}</p></div>
       </aside>
       <div class="blog-article__end">
-        <span>MedIndex Journal</span>
+        <span>DRx Journal</span>
         <a href="blog.html">Shiko të gjithë artikujt <b aria-hidden="true">→</b></a>
       </div>`;
     bindImageFallbacks(articleView);
@@ -325,10 +325,10 @@
   }
 
   async function loadList() {
-    document.title = 'MedIndex Journal | Blog';
-    setMeta('description', 'MedIndex Journal — analiza klinike, Clinical Decision Support, inteligjencë artificiale dhe teknologji shëndetësore për praktikë më të qartë.');
+    document.title = 'DRx Journal | Blog';
+    setMeta('description', 'DRx Journal — analiza klinike, Clinical Decision Support, inteligjencë artificiale dhe teknologji shëndetësore për praktikë më të qartë.');
     if (readingProgress) readingProgress.hidden = true;
-    showStatus('Duke ngarkuar artikujt…', 'Përmbajtja po merret nga MedIndex Clinical Knowledge.');
+    showStatus('Duke ngarkuar artikujt…', 'Përmbajtja po merret nga biblioteka klinike e DRx.');
     try {
       const payload = await fetchJson(API_URL);
       const posts = Array.isArray(payload.posts) ? payload.posts : [];

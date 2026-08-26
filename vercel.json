@@ -19,6 +19,16 @@
   },
   "redirects": [
     {
+      "source": "/hyrje.html",
+      "destination": "/login.html",
+      "permanent": false
+    },
+    {
+      "source": "/regjistrohu.html",
+      "destination": "/regjistrimi.html",
+      "permanent": false
+    },
+    {
       "source": "/login-v2",
       "destination": "/landing.html",
       "permanent": false

@@ -114,9 +114,22 @@ assert.deepEqual(violations, [], `Non-approved MedIndex logo references found:\n
 const loginHtml = fs.readFileSync(path.join(ROOT, 'login.html'), 'utf8');
 const loginLogoReferences = (loginHtml.match(imageReferencePattern) || [])
   .map(reference => reference.startsWith('/') ? reference : `/${reference}`);
-assert.ok(loginLogoReferences.length > 0, 'Login must use an official MedIndex logo.');
 loginLogoReferences.forEach(reference => {
   assert.ok(allowedReferences.has(reference), `Login uses a non-approved logo: ${reference}`);
 });
 
-console.log('Official transparent MedIndex v1 logo policy passed: all six approved assets are allowed.');
+// The public DRx system has its own committed vector lockup. Login may use the
+// approved MedIndex assets above or the DRx lockup, but never a reconstructed
+// wordmark made from live text.
+const approvedDrxLoginLogos = [
+  '/brand/drx-horizontal-dark.svg',
+  '/brand/drx-horizontal-white.svg',
+];
+const drxLoginLogos = approvedDrxLoginLogos.filter(reference => loginHtml.includes(reference));
+assert.ok(loginLogoReferences.length > 0 || drxLoginLogos.length > 0,
+  'Login must use an approved MedIndex or DRx logo asset.');
+drxLoginLogos.forEach(reference => {
+  assert.ok(fs.existsSync(path.join(ROOT, reference.replace(/^\//, ''))), `Approved DRx logo is missing: ${reference}`);
+});
+
+console.log('Official logo policy passed: MedIndex v1 assets stay governed and login uses an approved brand lockup.');
