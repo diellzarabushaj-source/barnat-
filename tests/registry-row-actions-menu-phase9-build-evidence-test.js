@@ -23,6 +23,8 @@ assert.match(marker, /^final-asset-hash-chain$/m);
 assert.match(marker, /^gate-fingerprints-phase5-through-phase8$/m);
 assert.match(marker, /^optional-build-commit-identity$/m);
 assert.match(marker, /^no-runtime-ui-mutation$/m);
+assert.match(marker, /^main-release-chain-phase1-through-phase9$/m,
+  'Phase 9 is complete only when the full row-actions Phase 1→9 release chain is integrated in main.');
 
 assert.match(
   phase7,
@@ -77,4 +79,4 @@ assert.ok(evidence.sourceRevision === null || /^[0-9a-f]{7,64}$/.test(evidence.s
 assert.doesNotMatch(evidenceRaw, /"(?:createdAt|generatedAt|timestamp)"\s*:/i,
   'Build evidence must remain deterministic and must not contain wall-clock timestamps.');
 
-console.log('✓ Registry row actions Phase 9 passed: build evidence binds the Phase 7 manifest, final asset hashes, Phase 5–8 gate fingerprints and optional commit identity without mutating browser runtime output.');
+console.log('✓ Registry row actions Phase 9 passed: build evidence binds the Phase 7 manifest, final asset hashes, Phase 5–8 gate fingerprints and optional commit identity without mutating browser runtime output; the complete Phase 1→9 release chain is integrated in main.');
