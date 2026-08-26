@@ -1,0 +1,3 @@
+registry-row-actions-menu-phase2-v1
+visible-canonical-three-dot
+singleton-favorite-note-menu
