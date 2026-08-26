@@ -3,22 +3,26 @@
 
   const MAX_BLOCKING_MS = 2200;
   const PREFETCH_TTL_MS = 10000;
+  const DEDUP_PATHS = new Set(['/api/auth', '/api/icd', '/api/user-library']);
   const loader = document.getElementById('pageLoader');
   const badge = document.getElementById('countBadge');
   const tbody = document.getElementById('tbody');
   const nativeFetch = window.fetch.bind(window);
   const html = document.documentElement;
   const perf = window.MEDINDEX_PERFORMANCE = window.MEDINDEX_PERFORMANCE || {
-    version:'registry-startup-v1',
+    version:'registry-startup-v2',
     marks:{},
     metrics:{ longTaskCount:0, longTaskTotalMs:0, longTaskMaxMs:0, cls:0, lcp:0, maxInteractionMs:0 },
   };
+  perf.metrics.requestDedupStarted = Number(perf.metrics.requestDedupStarted || 0);
+  perf.metrics.requestDedupHits = Number(perf.metrics.requestDedupHits || 0);
   let released = false;
   let observer = null;
   let authObserver = null;
   let prefetchPromise = null;
   let prefetchStartedAt = 0;
   let prefetchReused = false;
+  const inflightGets = new Map();
 
   function mark(name, detail = {}) {
     const at = performance.now();
@@ -113,10 +117,72 @@
     if (!signal) return promise.then(response => response?.clone?.() || null);
     if (signal.aborted) return Promise.reject(new DOMException('The operation was aborted.', 'AbortError'));
     return new Promise((resolve, reject) => {
-      const onAbort = () => reject(new DOMException('The operation was aborted.', 'AbortError'));
+      let settled = false;
+      const cleanup = () => signal.removeEventListener('abort', onAbort);
+      const onAbort = () => {
+        if (settled) return;
+        settled = true;
+        cleanup();
+        reject(new DOMException('The operation was aborted.', 'AbortError'));
+      };
       signal.addEventListener('abort', onAbort, { once:true });
-      promise.then(response => resolve(response?.clone?.() || null), reject).finally(() => signal.removeEventListener('abort', onAbort));
+      promise.then(response => {
+        if (settled) return;
+        settled = true;
+        cleanup();
+        resolve(response?.clone?.() || null);
+      }, error => {
+        if (settled) return;
+        settled = true;
+        cleanup();
+        reject(error);
+      });
     });
+  }
+
+  function dedupDescriptor(input, init = {}) {
+    if (typeof Request !== 'undefined' && input instanceof Request) return null;
+    const method = String(init.method || 'GET').toUpperCase();
+    if (method !== 'GET' || init.body != null) return null;
+    let url;
+    try {
+      url = new URL(String(input), location.href);
+    } catch {
+      return null;
+    }
+    if (url.origin !== location.origin || !DEDUP_PATHS.has(url.pathname)) return null;
+    const headers = new Headers(init.headers || {});
+    if (headers.has('Authorization') || headers.has('Range')) return null;
+    url.hash = '';
+    url.searchParams.sort();
+    const credentials = String(init.credentials || 'same-origin');
+    const cache = String(init.cache || 'default');
+    const accept = String(headers.get('Accept') || '');
+    return {
+      key:`${url.pathname}${url.search}|${credentials}|${cache}|${accept}`,
+      signal:init.signal || null,
+      networkInit:{ ...init, signal:undefined },
+      path:url.pathname,
+    };
+  }
+
+  function deduplicatedFetch(input, init = {}) {
+    const descriptor = dedupDescriptor(input, init);
+    if (!descriptor) return nativeFetch(input, init);
+    let pending = inflightGets.get(descriptor.key);
+    if (!pending) {
+      perf.metrics.requestDedupStarted += 1;
+      pending = nativeFetch(input, descriptor.networkInit);
+      inflightGets.set(descriptor.key, pending);
+      const cleanup = () => {
+        if (inflightGets.get(descriptor.key) === pending) inflightGets.delete(descriptor.key);
+      };
+      pending.then(cleanup, cleanup);
+    } else {
+      perf.metrics.requestDedupHits += 1;
+      mark('request-dedup-hit', { path:descriptor.path });
+    }
+    return abortableClone(pending, descriptor.signal).then(response => response || nativeFetch(input, init));
   }
 
   function startRegistryPrefetch() {
@@ -144,18 +210,27 @@
   function installPrefetchReuse() {
     window.fetch = function medindexStartupFetch(input, init = {}) {
       const age = performance.now() - prefetchStartedAt;
-      if (!prefetchPromise || age > PREFETCH_TTL_MS || !isInitialRegistryPageRequest(input, init)) {
-        return nativeFetch(input, init);
+      if (prefetchPromise && age <= PREFETCH_TTL_MS && isInitialRegistryPageRequest(input, init)) {
+        const signal = init.signal || (typeof Request !== 'undefined' && input instanceof Request ? input.signal : null);
+        return abortableClone(prefetchPromise, signal).then(response => {
+          if (!response) return deduplicatedFetch(input, init);
+          prefetchReused = true;
+          perf.metrics.registryPrefetchReused = true;
+          mark('registry-prefetch-reused');
+          return response;
+        });
       }
-      const signal = init.signal || (typeof Request !== 'undefined' && input instanceof Request ? input.signal : null);
-      return abortableClone(prefetchPromise, signal).then(response => {
-        if (!response) return nativeFetch(input, init);
-        prefetchReused = true;
-        perf.metrics.registryPrefetchReused = true;
-        mark('registry-prefetch-reused');
-        return response;
-      });
+      return deduplicatedFetch(input, init);
     };
+    window.MedIndexRequestCoordinator = Object.freeze({
+      version:'browser-inflight-v1',
+      paths:[...DEDUP_PATHS],
+      stats:() => ({
+        inFlight:inflightGets.size,
+        started:perf.metrics.requestDedupStarted,
+        hits:perf.metrics.requestDedupHits,
+      }),
+    });
   }
 
   function releaseLoader(reason = 'background') {
