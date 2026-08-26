@@ -248,3 +248,28 @@ html:has(.mi-dialog[open]),body:has(.mi-dialog[open]){overflow:hidden}
 @keyframes mi-admin-spin{to{transform:rotate(360deg)}}
 
 .mi-toast-icon svg{width:16px;height:16px;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
+
+body{font-size:15px;line-height:1.4}
+.mi-row-btn,.mi-btn-primary,.mi-btn-secondary,.mi-btn-danger{min-height:40px;padding:8px 16px}
+.mi-row-btn{min-height:36px;padding:8px 16px}
+.mi-pagination{display:flex;align-items:center;justify-content:flex-end;gap:10px;padding:12px 14px;border-top:1px solid var(--stripe-hairline);background:#fff}
+.mi-pagination[hidden]{display:none!important}
+.mi-pagination span{min-width:150px;color:var(--stripe-muted);font-size:11px;text-align:center;font-feature-settings:"tnum";font-variant-numeric:tabular-nums}
+.mi-editor-section-title{display:flex;align-items:flex-start;justify-content:space-between;gap:16px;margin-bottom:12px}
+.mi-editor-section-title span{display:block;color:var(--stripe-ink);font-size:14px;font-weight:400}
+.mi-editor-section-title small{display:block;margin-top:3px;color:var(--stripe-muted);font-size:11px;font-weight:300;line-height:1.45}
+.mi-check-label{display:grid!important;grid-template-columns:18px minmax(0,1fr);align-items:center;gap:9px;min-height:40px;padding:9px 11px;border:1px solid var(--stripe-hairline);border-radius:8px;background:var(--stripe-soft);cursor:pointer}
+.mi-check-label input{width:16px;height:16px;min-height:0;padding:0;accent-color:var(--stripe-primary)}
+.mi-check-label span{font-size:12px;font-weight:400;color:var(--stripe-ink-2)}
+.mi-audit-list{display:grid;border:1px solid var(--stripe-hairline);border-radius:8px;overflow:hidden;background:#fff}
+.mi-audit-row{display:grid;grid-template-columns:minmax(120px,.8fr) minmax(160px,1.2fr) auto;gap:12px;align-items:center;padding:10px 12px;border-bottom:1px solid var(--stripe-hairline)}
+.mi-audit-row:last-child{border-bottom:0}
+.mi-audit-row strong{font-size:11px;font-weight:400;color:var(--stripe-ink)}
+.mi-audit-row span,.mi-audit-row time{font-size:10px;font-weight:300;color:var(--stripe-muted)}
+@media(max-width:650px){
+  .mi-row-btn,.mi-btn-primary,.mi-btn-secondary,.mi-btn-danger,.mi-tabs button,.mi-admin-nav button,.mi-admin-sidebar-foot a,.mi-admin-sidebar-foot button{min-height:44px}
+  .mi-form-grid input,.mi-form-grid select,.mi-form-grid textarea,.mi-dialog>form>textarea{font-size:16px}
+  .mi-pagination{justify-content:space-between;gap:8px;padding:10px}
+  .mi-pagination span{min-width:0;flex:1;font-size:10px}
+  .mi-audit-row{grid-template-columns:1fr;gap:3px}
+}

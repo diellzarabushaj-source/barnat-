@@ -165,3 +165,22 @@ const rewriteFor = source => vercel.rewrites.find(rule => rule.source === source
 }
 
 console.log('Admin console routing contract passed.');
+
+{
+  const html = read('admin.html');
+  const dashboard = read('admin-dashboard.js');
+  assert.match(html, /id="drugPregnancy"[\s\S]*id="drugRenal"[\s\S]*id="drugHepatic"[\s\S]*id="drugMonitoring"/,
+    'the admin drug editor must expose the clinical fields that the backend persists');
+  assert.match(html, /id="drugAdultNotes"[\s\S]*id="drugAdultVerified"[\s\S]*id="drugPedNotes"[\s\S]*id="drugPedVerified"/,
+    'the admin editor must preserve dosage notes and verification state');
+  assert.match(dashboard, /drugPageSize:100[\s\S]*?drugPageInfo/,
+    'the full shared registry must paginate instead of silently truncating at 500 rows');
+  assert.ok(!dashboard.includes('slice(0,500)'),
+    'the admin drug list must not silently hide matches after the first 500 rows');
+  assert.match(dashboard, /\/admin-login\.html\?return=%2Fadmin/,
+    'expired admin sessions must return to the dedicated DRx admin sign-in');
+  assert.match(dashboard, /window\.open\('about:blank','_blank'\)[\s\S]*?tab\.location\.replace/,
+    'verification documents must open a tab during the user gesture before awaiting the signed URL');
+  assert.match(html, /aria-current="page"/,
+    'the active admin workspace must expose its current navigation state');
+}
