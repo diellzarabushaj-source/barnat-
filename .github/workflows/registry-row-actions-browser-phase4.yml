@@ -40,6 +40,8 @@ jobs:
         run: |
           node --check scripts/prepare-registry-row-actions-browser-phase4.js
           node scripts/prepare-registry-row-actions-browser-phase4.js
+          node --check scripts/prepare-registry-row-actions-browser-phase4-canonical-filter.js
+          node scripts/prepare-registry-row-actions-browser-phase4-canonical-filter.js
           node --check scripts/audit-registry-row-actions-browser-phase4.js
 
       - name: Build composed registry runtime
