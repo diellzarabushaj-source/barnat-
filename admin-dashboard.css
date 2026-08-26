@@ -235,3 +235,8 @@ html:has(.mi-dialog[open]),body:has(.mi-dialog[open]){overflow:hidden}
 @media(prefers-reduced-motion:reduce){
   *,*::before,*::after{scroll-behavior:auto!important;transition-duration:.01ms!important;animation-duration:.01ms!important;animation-iteration-count:1!important}
 }
+
+.mi-inline-icon,.mi-btn-primary>svg,.mi-dialog-head>button svg{width:16px;height:16px;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
+.mi-dialog-head>button svg{width:17px;height:17px}
+.mi-verification-mark{display:inline-flex;align-items:center;justify-content:center;min-width:34px;padding:3px 7px;border-radius:9999px;background:var(--stripe-soft);color:var(--stripe-muted);font-size:10px;font-weight:400}
+.mi-verification-mark.is-yes{background:var(--stripe-success-bg);color:var(--stripe-success)}
