@@ -55,10 +55,10 @@ if (!dosage.includes(`// ${MARKER}: nested dosage DOM writes publish one explici
 write(DOSE_COLUMNS, dosage);
 
 let preview = read(CELL_PREVIEW);
-if (!preview.includes(`// ${MARKER}: only direct row replacement is observed; nested updates are explicit events.`)) {
+if (!preview.includes(`// ${MARKER}: nested child insertions stay observable; text/attribute updates are explicit events.`)) {
   const observerPattern = /[ \t]*tableObserver\.observe\(tbody,\s*\{[\s\S]*?\}\);/;
-  preview = replacePattern(preview, observerPattern, `    // ${MARKER}: only direct row replacement is observed; nested updates are explicit events.
-    tableObserver.observe(tbody, { childList:true });`, 'cell-preview tbody observer');
+  preview = replacePattern(preview, observerPattern, `    // ${MARKER}: nested child insertions stay observable; text/attribute updates are explicit events.
+    tableObserver.observe(tbody, { childList:true, subtree:true });`, 'cell-preview tbody observer');
 
   const eventAnchor = `    window.addEventListener('medindex:registry-table-stable', activate);`;
   preview = replaceOnce(preview, eventAnchor, `${eventAnchor}
@@ -94,4 +94,4 @@ execFileSync(process.execPath, [path.join(ROOT, 'tests', 'registry-observer-budg
   cwd:ROOT,
   stdio:'inherit',
 });
-console.log('Registry observer budget applied: direct-row preview observation, explicit dosage invalidation, and deferred dose-table observers replace broad startup churn.');
+console.log('Registry observer budget applied: nested node insertion recovery remains, text/attribute churn is removed, dosage invalidation is explicit, and dose-table observers are deferred.');
