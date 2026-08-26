@@ -8,14 +8,16 @@
 //  3) persistence settlement is read from runtime diagnostics, not from a menu
 //     node that may intentionally be hidden/stale after a row rerender;
 //  4) after settlement the canonical ⋯ is reopened and the new row must expose
-//     the persisted state as enabled UI.
+//     the persisted state as enabled UI;
+//  5) opening ⋯ itself is rerender-safe: a transient row handoff may close the
+//     first click, but the gate retries only against the current connected row.
 // No application source, CSP or timeout budget is weakened here.
 
 const fs = require('node:fs');
 const path = require('node:path');
 
 const FILE = path.resolve(__dirname, 'audit-registry-row-actions-browser-phase4.js');
-const MARKER = 'phase4-library-ready-and-rerender-aware-favorite-v2';
+const MARKER = 'phase4-rerender-aware-browser-gate-v3';
 let source = fs.readFileSync(FILE, 'utf8').replace(/\r\n?/g, '\n');
 
 if (!source.includes(MARKER)) {
@@ -25,6 +27,11 @@ if (!source.includes(MARKER)) {
 
   if (!source.includes(oldWait)) throw new Error('Phase 4 preparation could not find the original favorite wait helper.');
   source = source.replace(oldWait, newWait);
+
+  const oldOpen = `async function openFirstMenu(page) {\n  const trigger = page.locator('#tbody > tr [data-row-actions-menu]').first();\n  await trigger.waitFor({ state:'visible', timeout:15000 });\n  await trigger.click();\n  await waitMenuState(page, true);\n  return trigger;\n}`;
+  const newOpen = `async function openFirstMenu(page) {\n  const menu = page.locator('#registryRowActionsMenu');\n  const deadline = Date.now() + 12000;\n  let lastError = null;\n\n  while (Date.now() < deadline) {\n    try {\n      if (await menu.isVisible()) {\n        return page.locator('#tbody > tr [data-row-actions-menu]').first();\n      }\n      const trigger = page.locator('#tbody > tr [data-row-actions-menu]').first();\n      await trigger.waitFor({ state:'visible', timeout:2000 });\n      await trigger.click({ timeout:2000 });\n      await sleep(140);\n      if (await menu.isVisible()) {\n        const expanded = await trigger.getAttribute('aria-expanded');\n        if (expanded === 'true') return trigger;\n      }\n    } catch (error) {\n      lastError = error;\n    }\n    await sleep(120);\n  }\n\n  const detail = lastError ? \` Last error: \${lastError.message || lastError}\` : '';\n  throw new Error('Phase 4 could not open the canonical ⋯ menu on a settled connected row.' + detail);\n}`;
+  if (!source.includes(oldOpen)) throw new Error('Phase 4 preparation could not find the original openFirstMenu helper.');
+  source = source.replace(oldOpen, newOpen);
 
   const anchor = `    report.keyboard = true;\n\n    // Favorite optimistic write + authoritative acknowledgement + removal.`;
   const replacement = `    report.keyboard = true;\n\n    // First-render and keyboard semantics are intentionally independent from\n    // network state. Mutation acceptance begins only after the personal library\n    // has completed its authoritative startup handshake.\n    await waitPersonalLibraryReady(page);\n\n    // Favorite optimistic write + authoritative acknowledgement + removal.`;
@@ -49,12 +56,13 @@ if (!source.includes(MARKER)) {
   source = source.replace(later, laterReplacement);
 }
 
-if (!source.includes(MARKER)) throw new Error('Phase 4 v2 preparation marker missing after patch.');
+if (!source.includes(MARKER)) throw new Error('Phase 4 v3 preparation marker missing after patch.');
 if (!source.includes("diagnostics?.libraryReady === true")) throw new Error('Phase 4 library readiness gate missing after patch.');
 if (!source.includes("diagnostics?.favoriteInFlight === 0")) throw new Error('Phase 4 Favorite in-flight settlement gate missing after patch.');
 if (!source.includes("diagnostics?.librarySyncState === 'synced'")) throw new Error('Phase 4 authoritative Favorite sync gate missing after patch.');
 if (!source.includes("if (!(await menu.isVisible())) await openFirstMenu(page);")) throw new Error('Phase 4 rerender-aware menu reopen gate missing after patch.');
 if (!source.includes('settled favorite UI aria-checked=')) throw new Error('Phase 4 settled Favorite UI assertion missing after patch.');
+if (!source.includes('Phase 4 could not open the canonical ⋯ menu on a settled connected row.')) throw new Error('Phase 4 rerender-safe menu-open assertion missing after patch.');
 
 fs.writeFileSync(FILE, source, 'utf8');
-console.log('✓ Phase 4 audit prepared: library-ready start, optimistic Favorite state, authoritative sync settlement, rerender-aware ⋯ reopen and settled UI verification.');
+console.log('✓ Phase 4 audit prepared: authoritative library start, optimistic/persisted Favorite state and rerender-safe canonical ⋯ interaction.');
