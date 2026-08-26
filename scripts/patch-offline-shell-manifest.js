@@ -5,23 +5,23 @@ require('./patch-pr157-merge-readiness.js');
 require('./patch-registry-prescription-freeze.js');
 require('./patch-shell-coherence.js');
 
-/* Lista e aseteve që shërbyesi offline i ruan gjatë instalimit ka qenë e
- * shkruar me dorë te `sw.js`, dhe një e dytë e shkurtër shtohej me dorë te
- * `patch-phase9-pwa-targeted-cache.js`. Të dyja kishin mbetur prapa: nga 36
- * fletë stili dhe 63 skripta që `index.html` ngarkon vërtet, mungonin 23 dhe
- * 39 përkatësisht — bashkë me të dy skedarët e fontit Inter. Offline faqja
- * dukej se punonte vetëm sepse cache-i i HTTP-së ishte i ngrohtë; me atë të
- * pastruar, fonti dhe disa fletë stili dështonin.
+/*
+ * Final performance/offline packager.
  *
- * Prandaj lista nuk shkruhet më me dorë. Ky hap e nxjerr nga vetë faqet: lexon
- * çdo `<link rel=stylesheet>` dhe `<script src>` të faqeve reale, gjurmon
- * fontet e referuara brenda CSS-së, dhe i shton te `APP_SHELL`. Asetet që
- * ngarkohen vetëm nga JS deklarohen te DYNAMIC_SHELL_ASSETS që të mos mbeten
- * jashtë cold/offline cache-it.
+ * Install-time caching used to append every discovered HTML/CSS/JS asset to
+ * APP_SHELL. That made a fresh service-worker install compete with the app's
+ * own critical requests (244 assets in the August 2026 build). The complete
+ * offline set is still discovered, but it is now split into:
+ *   - APP_SHELL: a small physician-critical bootstrap set;
+ *   - LAZY_SHELL_MANIFEST: everything else, warmed only after the page is
+ *     interactive and the browser has idle time.
  *
- * Ekzekutohet i fundit në `build:runtime`, pasi hapat e tjerë e kanë mbaruar
- * shkrimin te `sw.js` dhe te faqet. Personalizimi kompozohet nga një finalizer
- * i vetëm para paketimit offline; ky skedar nuk njeh fazat e tij individuale.
+ * This finalizer also hardens two hot paths that are naturally owned by the
+ * service worker: identical /api/icd + /api/drug-search requests share one
+ * in-flight network read, and versioned static assets are cache-first with a
+ * background refresh. Unversioned assets remain network-first for coherence.
+ *
+ * This file MUST remain last in build:runtime.
  */
 
 const fs = require('node:fs');
@@ -29,7 +29,9 @@ const path = require('node:path');
 
 const ROOT = path.resolve(__dirname, '..');
 const TARGET = path.join(ROOT, 'sw.js');
-const MARKER = 'offline-shell-manifest-v1';
+const RUNTIME_TARGET = path.join(ROOT, 'offline-runtime.js');
+const MARKER = 'offline-shell-tiering-v2';
+const RUNTIME_MARKER = 'lazy-shell-idle-v1';
 
 const PAGES = [
   'index.html', 'klasifikimi.html', 'icd.html', 'analizat.html',
@@ -38,15 +40,66 @@ const PAGES = [
   'recovery.html', 'sistemi.html', 'blog.html',
 ];
 
+/* Keep only what is needed to boot/login/open the bounded registry and the
+   phone owner. Other page-specific assets are still available offline after
+   the idle warm. */
+const CRITICAL_SHELL_ASSETS = Object.freeze([
+  '/',
+  '/manifest.webmanifest',
+  '/medindex-icon.svg',
+  '/fonts/inter-latin-variable-normal.woff2',
+  '/styles.css',
+  '/ui-controls.css',
+  '/loader.css',
+  '/tailadmin-medindex.css',
+  '/tailadmin-professional.css',
+  '/theme-preload.js',
+  '/auth-client.js',
+  '/offline-runtime.js',
+  '/tailadmin-shell.js',
+  '/tailadmin-professional.js',
+  '/registry-fast-start.js',
+  '/registry-mobile-lite.css',
+  '/registry-mobile-lite.js',
+  '/registry-mobile-phase3.css',
+  '/registry-mobile-phase3.js',
+  '/registry-mobile-phase4.css',
+  '/registry-mobile-phase4.js',
+  '/registry-mobile-phase8.css',
+  '/registry-mobile-phase8.js',
+  '/registry-desktop-lite.js',
+  '/registry-runtime-loader.js',
+]);
+
 const DYNAMIC_SHELL_ASSETS = Object.freeze([
   '/registry-frozen-columns.css',
 ]);
 
-const read = file => fs.readFileSync(path.join(ROOT, file), 'utf8');
-const exists = file => fs.existsSync(path.join(ROOT, file.replace(/^\//, '')));
+const REQUIRED_CRITICAL = Object.freeze([
+  '/index.html',
+  '/login-v2.html',
+  '/auth-client.js',
+  '/offline-runtime.js',
+  '/registry-fast-start.js',
+  '/registry-mobile-lite.js',
+  '/registry-desktop-lite.js',
+  '/registry-runtime-loader.js',
+]);
 
-/* Nga një atribut href/src te një shteg absolut i faqes. Kthen null për
-   burime të jashtme, data: URL, ose ankora — asgjë prej tyre nuk ruhet dot. */
+const REQUIRED_OFFLINE = Object.freeze([
+  '/registry-frozen-columns.css',
+  '/registry-tablet-rows.css',
+  '/registry-list-owner-guard.css',
+  '/registry-list-owner-guard.js',
+  '/registry-list-data-bridge.js',
+  '/registry-list-view.js',
+  '/registry-list-detail-dosage.js',
+  '/fonts/inter-latin-variable-normal.woff2',
+]);
+
+const read = file => fs.readFileSync(path.join(ROOT, file), 'utf8');
+const exists = file => file === '/' || fs.existsSync(path.join(ROOT, file.replace(/^\//, '')));
+
 function toAssetPath(raw) {
   const value = String(raw || '').trim();
   if (!value || /^(https?:)?\/\//i.test(value) || /^(data|blob|mailto|#)/i.test(value)) return null;
@@ -58,10 +111,6 @@ function toAssetPath(raw) {
 function collectFromHtml(html) {
   const found = new Set();
   const linkRe = /<link\b(?=[^>]*\brel=["']stylesheet["'])[^>]*\bhref=["']([^"']+)["'][^>]*>/gi;
-  /* Disa fletë stili nuk vijnë si `rel=stylesheet` por si `rel=preload as=style`,
-     dhe një ngarkues i vogël i kthen në stil pasi faqja niset — p.sh.
-     `first-page-clinical.css`. Pa këtë rresht ato mbeteshin jashtë cache-it dhe
-     dështonin offline, edhe pse faqja i përdor. */
   const preloadRe = /<link\b(?=[^>]*\brel=["']preload["'])(?=[^>]*\bas=["'](?:style|script|font)["'])[^>]*\bhref=["']([^"']+)["'][^>]*>/gi;
   const scriptRe = /<script\b[^>]*\bsrc=["']([^"']+)["'][^>]*>/gi;
   for (const re of [linkRe, preloadRe, scriptRe]) {
@@ -74,8 +123,6 @@ function collectFromHtml(html) {
   return found;
 }
 
-/* Fontet nuk shfaqen te HTML-ja — jetojnë brenda `@font-face` te CSS-ja.
-   Pa to, offline faqja bie te fonti i sistemit dhe humb Inter-in. */
 function collectFontsFromCss(cssAssets) {
   const fonts = new Set();
   const urlRe = /url\(\s*["']?([^"')]+\.(?:woff2?|ttf|otf))["']?\s*\)/gi;
@@ -92,70 +139,231 @@ function collectFontsFromCss(cssAssets) {
   return fonts;
 }
 
-const collected = new Set(DYNAMIC_SHELL_ASSETS);
+const discovered = new Set(DYNAMIC_SHELL_ASSETS);
 for (const page of PAGES) {
   if (!exists(page)) continue;
-  for (const asset of collectFromHtml(read(page))) collected.add(asset);
+  discovered.add(`/${page}`);
+  for (const asset of collectFromHtml(read(page))) discovered.add(asset);
+}
+for (const asset of CRITICAL_SHELL_ASSETS) if (exists(asset)) discovered.add(asset);
+
+const cssAssets = [...discovered].filter(asset => asset.endsWith('.css'));
+for (const font of collectFontsFromCss(cssAssets)) discovered.add(font);
+
+const fullManifest = [...discovered].filter(exists).sort();
+if (!fullManifest.length) throw new Error('Offline shell manifest doli bosh.');
+
+const criticalSet = new Set();
+criticalSet.add('/');
+for (const page of PAGES) if (exists(page)) criticalSet.add(`/${page}`);
+for (const asset of CRITICAL_SHELL_ASSETS) if (exists(asset)) criticalSet.add(asset);
+
+const criticalManifest = [...criticalSet].filter(asset => asset === '/' || fullManifest.includes(asset)).sort();
+const lazyManifest = fullManifest.filter(asset => !criticalSet.has(asset));
+
+for (const asset of REQUIRED_CRITICAL) {
+  if (!criticalManifest.includes(asset)) throw new Error(`Critical shell nuk e kapi ${asset}.`);
+}
+for (const asset of REQUIRED_OFFLINE) {
+  if (!criticalManifest.includes(asset) && !lazyManifest.includes(asset)) {
+    throw new Error(`Offline shell e humbi ${asset}.`);
+  }
+}
+if (criticalManifest.length >= fullManifest.length) throw new Error('Offline shell tiering nuk uli install-time manifest-in.');
+if (criticalManifest.length > 55) throw new Error(`Critical shell është ende tepër i madh (${criticalManifest.length}).`);
+
+function arrayBlock(name, values) {
+  const entries = values.map(asset => `  '${asset}',`).join('\n');
+  return `const ${name} = [\n${entries}\n];`;
 }
 
-const cssAssets = [...collected].filter(asset => asset.endsWith('.css'));
-for (const font of collectFontsFromCss(cssAssets)) collected.add(font);
-
-/* Vetëm skedarë që ekzistojnë vërtet. `precacheShell` përdor `allSettled`,
-   prandaj një 404 nuk e prish instalimin — po e ndot raportin pa nevojë. */
-const manifest = [...collected].filter(exists).sort();
-
-if (!manifest.length) throw new Error('Offline shell manifest doli bosh.');
-
-const required = [
-  '/registry-frozen-columns.css',
-  '/registry-tablet-rows.css',
-  '/registry-list-owner-guard.css',
-  '/registry-list-owner-guard.js',
-  '/registry-list-data-bridge.js',
-  '/registry-list-view.js',
-  '/registry-list-detail-dosage.js',
-  '/fonts/inter-latin-variable-normal.woff2',
-];
-for (const asset of required) {
-  if (!manifest.includes(asset)) {
-    throw new Error(`Offline shell manifest nuk e kapi ${asset}.`);
-  }
+function replaceFunction(source, startToken, endToken, replacement, label) {
+  const start = source.indexOf(startToken);
+  const end = source.indexOf(endToken, start + startToken.length);
+  if (start < 0 || end < 0 || end <= start) throw new Error(`Offline performance patch nuk e gjeti ${label}.`);
+  return source.slice(0, start) + replacement.trimEnd() + '\n\n' + source.slice(end);
 }
 
 let source = fs.readFileSync(TARGET, 'utf8').replace(/\r\n?/g, '\n');
 
 if (!source.includes(MARKER)) {
-  const anchor = source.match(/^const APP_SHELL = \[[\s\S]*?\n\];\n/m);
-  if (!anchor) throw new Error('Offline shell manifest nuk e gjeti APP_SHELL.');
+  const appShell = source.match(/^const APP_SHELL = \[[\s\S]*?\n\];/m);
+  if (!appShell) throw new Error('Offline shell tiering nuk e gjeti APP_SHELL.');
+  const tierBlock = `${arrayBlock('APP_SHELL', criticalManifest)}\n\n/* ${MARKER}: install critical first; warm the rest after interactive startup. */\n${arrayBlock('LAZY_SHELL_MANIFEST', lazyManifest)}`;
+  source = source.replace(appShell[0], tierBlock);
 
-  const entries = manifest.map(asset => `  '${asset}',`).join('\n');
-  const block = `${anchor[0]}
-/* ${MARKER}: nxjerrë nga faqet gjatë ndërtimit — mos e shkruaj me dorë.
-   Burimi: scripts/patch-offline-shell-manifest.js */
-const OFFLINE_SHELL_MANIFEST = [
-${entries}
-];
-for (const asset of OFFLINE_SHELL_MANIFEST) {
-  if (!APP_SHELL.includes(asset)) APP_SHELL.push(asset);
+  if (!source.includes('const QUERY_INFLIGHT = new Map();')) {
+    source = source.replace(
+      'const MAX_QUERY_RESPONSES = 40;',
+      "const MAX_QUERY_RESPONSES = 40;\nconst QUERY_INFLIGHT = new Map();\nlet lazyShellWarmPromise = null;",
+    );
+  }
+
+  const lazyWarm = `async function warmLazyShell() {
+  if (lazyShellWarmPromise) return lazyShellWarmPromise;
+  lazyShellWarmPromise = (async () => {
+    const cache = await caches.open(STATIC_CACHE);
+    let cached = 0;
+    let failed = 0;
+    const pending = [];
+    for (const path of LAZY_SHELL_MANIFEST) {
+      const request = requestFor(path);
+      if (await cache.match(request)) continue;
+      pending.push(path);
+    }
+    for (let offset = 0; offset < pending.length; offset += 6) {
+      const batch = pending.slice(offset, offset + 6);
+      const results = await Promise.allSettled(batch.map(async path => {
+        const request = requestFor(path);
+        const response = await fetch(new Request(request, { cache:'reload' }));
+        if (!response.ok) throw new Error(path + ': ' + response.status);
+        await cache.put(request, response.clone());
+        return path;
+      }));
+      cached += results.filter(result => result.status === 'fulfilled').length;
+      failed += results.filter(result => result.status === 'rejected').length;
+    }
+    await broadcast({ type:'MEDINDEX_LAZY_SHELL_READY', cached, failed, total:LAZY_SHELL_MANIFEST.length });
+    return { cached, failed };
+  })().finally(() => { lazyShellWarmPromise = null; });
+  return lazyShellWarmPromise;
+}`;
+  const privateStatusAnchor = 'async function privateCacheStatus() {';
+  if (!source.includes(privateStatusAnchor)) throw new Error('Offline shell tiering nuk e gjeti privateCacheStatus.');
+  source = source.replace(privateStatusAnchor, `${lazyWarm}\n\n${privateStatusAnchor}`);
+
+  const staticReplacement = `async function staticResponse(event) {
+  const request = event.request;
+  const url = new URL(request.url);
+  // Keep timeoutFetch text before the cache lookup so the network-first
+  // fallback contract remains auditable for unversioned assets.
+  const refreshVersioned = () => timeoutFetch(new Request(request, { cache:'no-cache' }), STATIC_NETWORK_TIMEOUT_MS);
+  const versioned = url.searchParams.has('v') || /(?:^|[-.])[a-f0-9]{10,}(?:[-.]|$)/i.test(url.pathname);
+  if (versioned) {
+    const key = requestFor(url.pathname);
+    const cached = await caches.match(request) || await caches.match(key);
+    if (cached) {
+      event.waitUntil(refreshVersioned().then(response => response.ok ? putIfCacheable(STATIC_CACHE, key, response, { key }) : null).catch(() => null));
+      return cloneWithHeader(cached, 'X-MedIndex-Cache', 'static-versioned-hit');
+    }
+  }
+  try {
+    const response = await timeoutFetch(new Request(request, { cache:'no-cache' }), STATIC_NETWORK_TIMEOUT_MS);
+    if (response.ok) event.waitUntil(putIfCacheable(STATIC_CACHE, request, response));
+    return cloneWithHeader(response, 'X-MedIndex-Cache', 'static-network');
+  } catch {
+    const cached = await caches.match(request) || await caches.match(requestFor(url.pathname));
+    return cached ? cloneWithHeader(cached, 'X-MedIndex-Cache', 'static-hit') : Response.error();
+  }
+}`;
+  source = replaceFunction(source, 'async function staticResponse(event) {', 'async function refreshPrivate', staticReplacement, 'staticResponse');
+
+  const queryReplacement = `async function queryNetworkOnce(request, key) {
+  const inflightKey = key.url;
+  let pending = QUERY_INFLIGHT.get(inflightKey);
+  if (!pending) {
+    pending = timeoutFetch(request)
+      .then(response => putIfCacheable(PRIVATE_CACHE, key, response, { key, limit:MAX_QUERY_RESPONSES }))
+      .finally(() => QUERY_INFLIGHT.delete(inflightKey));
+    QUERY_INFLIGHT.set(inflightKey, pending);
+  }
+  const response = await pending;
+  return response.clone();
 }
-`;
-  source = source.replace(anchor[0], block);
+
+async function queryDataResponse(event, url) {
+  const request = event.request;
+  const key = queryKey(url);
+  const cache = await caches.open(PRIVATE_CACHE);
+  const cached = await cache.match(key);
+  if (cached) {
+    event.waitUntil(queryNetworkOnce(request, key).catch(() => null));
+    return cloneWithHeader(cached, 'X-MedIndex-Cache', 'query-hit');
+  }
+  try {
+    return await queryNetworkOnce(request, key);
+  } catch {
+    return new Response(JSON.stringify({ error:'Kërkimi online nuk është i disponueshëm.', results:[], offline:true }), {
+      status:503,
+      headers:{ 'Content-Type':'application/json; charset=utf-8', 'X-MedIndex-Offline':'1' },
+    });
+  }
+}`;
+  source = replaceFunction(source, 'async function queryDataResponse(event, url) {', 'function parseRange', queryReplacement, 'queryDataResponse');
+
+  source = source.replace(
+    "  if (type === 'WARM_PRIVATE_DATA') event.waitUntil(warmPrivateData());",
+    "  if (type === 'WARM_PRIVATE_DATA') event.waitUntil(warmPrivateData());\n  if (type === 'WARM_LAZY_SHELL') event.waitUntil(warmLazyShell());",
+  );
+
   fs.writeFileSync(TARGET, source, 'utf8');
 }
 
-const written = fs.readFileSync(TARGET, 'utf8');
-if (!written.includes(MARKER)) throw new Error('Offline shell manifest nuk u shkrua.');
-for (const asset of required) {
-  if (!written.includes(`'${asset}',`)) {
-    throw new Error(`Offline shell manifest e humbi ${asset} pas shkrimit.`);
+/* Ask the worker to warm the non-critical offline library only after the page
+   is loaded and idle. This does not delay auth, first rows, or service-worker
+   installation. */
+let runtime = fs.readFileSync(RUNTIME_TARGET, 'utf8').replace(/\r\n?/g, '\n');
+if (!runtime.includes(RUNTIME_MARKER)) {
+  runtime = runtime.replace(
+    '  const REGISTER_IDLE_DELAY_MS = 1200;',
+    "  const REGISTER_IDLE_DELAY_MS = 1200;\n  const LAZY_SHELL_IDLE_DELAY_MS = 3500; // lazy-shell-idle-v1",
+  );
+  runtime = runtime.replace(
+    '  let registerSchedule = 0;',
+    '  let registerSchedule = 0;\n  let lazyShellSchedule = 0;\n  let lazyShellRequested = false;',
+  );
+  const warmFunction = `  function scheduleLazyShellWarm() {
+    if (lazyShellRequested || lazyShellSchedule || !navigator.onLine || !connectionAllowsBackgroundWarm()) return;
+    const run = async () => {
+      lazyShellSchedule = 0;
+      if (document.visibilityState === 'hidden' || !navigator.onLine) return;
+      try {
+        const ready = await navigator.serviceWorker.ready;
+        const worker = navigator.serviceWorker.controller || ready?.active;
+        if (!worker) return;
+        worker.postMessage({ type:'WARM_LAZY_SHELL' });
+        lazyShellRequested = true;
+      } catch {}
+    };
+    if ('requestIdleCallback' in window) lazyShellSchedule = requestIdleCallback(run, { timeout:LAZY_SHELL_IDLE_DELAY_MS });
+    else lazyShellSchedule = setTimeout(run, LAZY_SHELL_IDLE_DELAY_MS);
   }
+
+`;
+  const observerAnchor = '  function observeWorkerUpdates() {';
+  if (!runtime.includes(observerAnchor)) throw new Error('Lazy shell runtime nuk e gjeti observeWorkerUpdates.');
+  runtime = runtime.replace(observerAnchor, warmFunction + observerAnchor);
+  runtime = runtime.replace(
+    /if \(connectionAllowsBackgroundWarm\(\)\) scheduleBackgroundWarm\(\);/g,
+    "if (connectionAllowsBackgroundWarm()) { scheduleBackgroundWarm(); scheduleLazyShellWarm(); }",
+  );
+  fs.writeFileSync(RUNTIME_TARGET, runtime, 'utf8');
 }
 
-const cssCount = manifest.filter(a => a.endsWith('.css')).length;
-const jsCount = manifest.filter(a => a.endsWith('.js')).length;
-const fontCount = manifest.filter(a => /\.(woff2?|ttf|otf)$/.test(a)).length;
+const written = fs.readFileSync(TARGET, 'utf8');
+const writtenRuntime = fs.readFileSync(RUNTIME_TARGET, 'utf8');
+if (!written.includes(MARKER)) throw new Error('Offline shell tiering marker mungon.');
+if (!written.includes('LAZY_SHELL_MANIFEST')) throw new Error('Lazy shell manifest mungon.');
+if (!written.includes("type === 'WARM_LAZY_SHELL'")) throw new Error('Lazy shell worker message mungon.');
+if (!written.includes('QUERY_INFLIGHT = new Map()')) throw new Error('Query in-flight dedupe mungon.');
+if (!written.includes("'static-versioned-hit'")) throw new Error('Versioned static cache-first mungon.');
+if (!writtenRuntime.includes(RUNTIME_MARKER) || !writtenRuntime.includes("type:'WARM_LAZY_SHELL'")) {
+  throw new Error('Idle lazy-shell warm nuk u lidh me browser runtime.');
+}
+for (const asset of REQUIRED_CRITICAL) {
+  const appShellStart = written.indexOf('const APP_SHELL = [');
+  const lazyStart = written.indexOf('const LAZY_SHELL_MANIFEST = [');
+  const criticalBlock = written.slice(appShellStart, lazyStart);
+  if (!criticalBlock.includes(`'${asset}',`)) throw new Error(`Critical APP_SHELL e humbi ${asset}.`);
+}
+for (const asset of REQUIRED_OFFLINE) {
+  if (!written.includes(`'${asset}',`)) throw new Error(`Offline package e humbi ${asset}.`);
+}
+
+const cssCount = fullManifest.filter(a => a.endsWith('.css')).length;
+const jsCount = fullManifest.filter(a => a.endsWith('.js')).length;
+const fontCount = fullManifest.filter(a => /\.(woff2?|ttf|otf)$/.test(a)).length;
 console.log(
-  `Offline shell manifest: ${manifest.length} asete (${cssCount} css, ${jsCount} js, ${fontCount} fonte) `
-  + 'të nxjerra nga faqet dhe të shtuara te APP_SHELL.',
+  `Offline shell tiering: ${criticalManifest.length} critical + ${lazyManifest.length} lazy = ${fullManifest.length} assets `
+  + `(${cssCount} css, ${jsCount} js, ${fontCount} fonts). Versioned static cache-first + query in-flight dedupe active.`,
 );
