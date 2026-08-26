@@ -75,6 +75,10 @@ require('./patch-user-library-startup-sync.js');
 // Keep the visible Auditimi entry point, but defer the full editor runtime,
 // table observer and summary API until the clinician explicitly asks for it.
 require('./patch-clinical-editor-lazy-runtime.js');
+// Final main-thread budget: broad nested preview observation is replaced by
+// explicit content events and dose-table observers stay asleep until the
+// visibility/intent-gated calculator has actually activated.
+require('./patch-registry-observer-budget.js');
 
 const ROOT = path.resolve(__dirname, '..');
 execFileSync(process.execPath, [path.join(ROOT, 'tests', 'registry-personal-release-gate.js')], {
@@ -126,4 +130,4 @@ execFileSync(process.execPath, [path.join(ROOT, 'tests', 'auth-pagination-regres
   stdio:'inherit',
 });
 
-console.log('Canonical registry personalization finalizer passed: Favorites/Notes stay inside the Barnat desktop-lite owner, composite favorite keys resolve through their real PDIDs, pending personal revisions reach authenticated Supabase before readback, unchanged per-account library startups stay read-only after their authoritative GET, the clinical editor stays interaction-only until Auditimi is requested, stale Barnat search state cannot leak into personal views, prescription notation cannot collapse into a synthetic dash, one registry table is visible, favorites-notes-v1.0.0 remains frozen, per-user account isolation is gated, secondary API auth failures are confirmed before logout, and pagination keeps the document viewport stable before offline packaging.');
+console.log('Canonical registry personalization finalizer passed: Favorites/Notes stay inside the Barnat desktop-lite owner, composite favorite keys resolve through their real PDIDs, pending personal revisions reach authenticated Supabase before readback, unchanged per-account library startups stay read-only after their authoritative GET, the clinical editor stays interaction-only until Auditimi is requested, the dose calculator/catalog and its auxiliary observers stay off the critical path until visibility or intent, broad nested cell-preview observation is replaced by explicit events, stale Barnat search state cannot leak into personal views, prescription notation cannot collapse into a synthetic dash, one registry table is visible, favorites-notes-v1.0.0 remains frozen, per-user account isolation is gated, secondary API auth failures are confirmed before logout, and pagination keeps the document viewport stable before offline packaging.');
