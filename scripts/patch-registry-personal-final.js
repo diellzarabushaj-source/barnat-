@@ -139,11 +139,15 @@ console.log('Canonical registry personalization finalizer passed: Favorites/Note
 
 // This finalizer is required at the start of patch-offline-shell-manifest.js,
 // which is the last process in build:runtime. Phase 7/9 provenance must describe
-// the bytes *after* that packager has finished every late CSS/JS write, so defer
-// the final fingerprint until this parent process is otherwise ready to exit.
+// the bytes *after* that packager has finished every late CSS/JS write. Execute
+// Phase 7 in a fresh child process so an earlier require in this same build
+// process cannot turn the final refresh into a Node module-cache no-op.
 if (path.basename(require.main?.filename || '') === 'patch-offline-shell-manifest.js') {
   process.once('beforeExit', () => {
-    require('./patch-registry-row-actions-menu-phase7-provenance.js');
+    execFileSync(process.execPath, [path.join(ROOT, 'scripts', 'patch-registry-row-actions-menu-phase7-provenance.js')], {
+      cwd:ROOT,
+      stdio:'inherit',
+    });
     console.log('Registry row actions final evidence refreshed after offline packaging.');
   });
 }
