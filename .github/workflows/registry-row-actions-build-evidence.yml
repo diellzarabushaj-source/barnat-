@@ -6,6 +6,7 @@ on:
     paths:
       - 'scripts/patch-registry-row-actions-menu-phase*.js'
       - scripts/patch-registry-row-actions-first-render-aria.js
+      - scripts/patch-registry-personal-final.js
       - scripts/audit-registry-row-actions-deployment.js
       - 'tests/registry-row-actions-menu-phase*.js'
       - tests/registry-row-actions-deployment-attestation-test.js
@@ -21,6 +22,7 @@ on:
     paths:
       - 'scripts/patch-registry-row-actions-menu-phase*.js'
       - scripts/patch-registry-row-actions-first-render-aria.js
+      - scripts/patch-registry-personal-final.js
       - scripts/audit-registry-row-actions-deployment.js
       - 'tests/registry-row-actions-menu-phase*.js'
       - tests/registry-row-actions-deployment-attestation-test.js
@@ -63,6 +65,7 @@ jobs:
       - name: Syntax-check release evidence
         run: |
           node --check scripts/patch-registry-row-actions-menu-phase9-build-evidence.js
+          node --check scripts/patch-registry-personal-final.js
           node --check scripts/audit-registry-row-actions-deployment.js
           node --check tests/registry-row-actions-menu-phase9-build-evidence-test.js
           node --check tests/registry-row-actions-deployment-attestation-test.js
