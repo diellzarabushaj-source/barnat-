@@ -1,6 +1,19 @@
 name: Registry row actions release attestation
 
 on:
+  push:
+    branches: [main]
+    paths:
+      - scripts/audit-registry-row-actions-deployment.js
+      - tests/registry-row-actions-deployment-attestation-test.js
+      - release-markers/registry-row-actions-menu-phase8.txt
+      - .github/workflows/registry-row-actions-release-attestation.yml
+  pull_request:
+    paths:
+      - scripts/audit-registry-row-actions-deployment.js
+      - tests/registry-row-actions-deployment-attestation-test.js
+      - release-markers/registry-row-actions-menu-phase8.txt
+      - .github/workflows/registry-row-actions-release-attestation.yml
   workflow_dispatch:
     inputs:
       base_url:
@@ -35,6 +48,7 @@ jobs:
           node tests/registry-row-actions-deployment-attestation-test.js
 
       - name: Attest deployed row-actions release
+        if: github.event_name == 'workflow_dispatch'
         env:
           AUDIT_BASE_URL: ${{ inputs.base_url }}
           AUDIT_EXPECTED_SHA: ${{ inputs.expected_sha }}
