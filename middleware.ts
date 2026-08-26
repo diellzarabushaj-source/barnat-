@@ -40,6 +40,7 @@ const PUBLIC_PATHS = new Set([
   '/landing.html',
   '/landing.css',
   '/drx-pages.css',
+  '/drx-auth.css',
   '/drx-blog.css',
   '/hyrje.html',
   '/regjistrohu.html',

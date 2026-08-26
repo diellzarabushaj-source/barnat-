@@ -9,6 +9,7 @@
 const assert = require('node:assert/strict');
 const fs = require('node:fs');
 const path = require('node:path');
+const { pathToFileURL } = require('node:url');
 
 const ROOT = path.resolve(__dirname, '..');
 process.env.MEDINDEX_SUPABASE_PUBLISHABLE_KEY = process.env.MEDINDEX_SUPABASE_PUBLISHABLE_KEY || 'sb_publishable_test';
@@ -153,7 +154,7 @@ function gotrueStub(handler) {
 // --- the session layer treats both Supabase doors identically -------------
 
 {
-  const auth = await import(path.join(ROOT, 'lib/auth.mjs'));
+  const auth = await import(pathToFileURL(path.join(ROOT, 'lib/auth.mjs')).href);
   assert.deepEqual([...auth.SUPABASE_PROVIDERS], ['supabase-google', 'supabase-password']);
 
   const edge = fs.readFileSync(path.join(ROOT, 'lib/auth-edge.mjs'), 'utf8');

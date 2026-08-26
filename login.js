@@ -179,7 +179,7 @@
     if (!phase5Session(payload)) throw new Error('Serveri nuk krijoi sesionin e ri të sigurt.');
     saveBootstrapLease(payload);
     redirecting = true;
-    setMessage('U verifikua. Po hapet MedIndex…', true);
+    setMessage('U verifikua. Po hapet DRx…', true);
     setGoogleStatus(payload.supabaseAuthenticated === true
       ? `Supabase verifikoi ${payload.user?.email || 'llogarinë Google'}.`
       : 'U aktivizua hyrja rezervë.');
