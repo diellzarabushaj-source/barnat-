@@ -1,0 +1,41 @@
+name: Registry row actions release attestation
+
+on:
+  workflow_dispatch:
+    inputs:
+      base_url:
+        description: Public deployment base URL, for example https://example.vercel.app/
+        required: true
+        type: string
+      expected_sha:
+        description: Expected Git commit SHA (7-64 hexadecimal characters)
+        required: true
+        type: string
+
+permissions:
+  contents: read
+
+jobs:
+  attest:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 24
+
+      - name: Verify Phase 8 audit locally
+        run: |
+          node --check scripts/audit-registry-row-actions-deployment.js
+          node --check tests/registry-row-actions-deployment-attestation-test.js
+          node tests/registry-row-actions-deployment-attestation-test.js
+
+      - name: Attest deployed row-actions release
+        env:
+          AUDIT_BASE_URL: ${{ inputs.base_url }}
+          AUDIT_EXPECTED_SHA: ${{ inputs.expected_sha }}
+        run: node scripts/audit-registry-row-actions-deployment.js "$AUDIT_BASE_URL" "$AUDIT_EXPECTED_SHA"
