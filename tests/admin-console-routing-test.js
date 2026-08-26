@@ -148,8 +148,16 @@ const rewriteFor = source => vercel.rewrites.find(rule => rule.source === source
     'admin search and filter controls must have accessible labels');
   assert.match(html, /id="drugDialog" aria-labelledby="drugDialogTitle"/,
     'the drug editor dialog must expose its visible title as the accessible name');
-  assert.match(dashboard, /setBusy\(button,true\)[\s\S]*?saveDrug/,
+  assert.match(dashboard, /async function saveDrug\(\)\{[\s\S]*?setBusy\(button,true\)/,
     'long-running admin mutations must expose a busy/disabled state');
+  assert.match(dashboard, /async function refuseSubmit\(\)[\s\S]*?\$\('refuseDialog'\)\.close\(\)[\s\S]*?loadUsers\(\)/,
+    'a refusal dialog must close only after the server accepts the mutation');
+  assert.ok(!dashboard.includes("e.preventDefault();$('refuseDialog').close();void refuseSubmit()"),
+    'the refusal form must preserve the entered reason when the request fails');
+  assert.match(dashboard, /U ruajt, por lista nuk u rifreskua/,
+    'a successful mutation followed by a failed refresh must not be reported as a failed save');
+  assert.match(dashboard, /Promise\.allSettled\(\[loadUsers\(\),loadDrugs\(\)\]\)/,
+    'one failed admin data source must not relock the whole console after authorization succeeds');
 }
 
 console.log('Admin console routing contract passed.');
