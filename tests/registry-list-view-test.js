@@ -336,8 +336,8 @@ assert.ok(api, 'the list view must publish its API');
     'and satisfies it through the existing handoff instead of a second fetch');
   assert.match(
     lite,
-    /addEventListener\('medindex:registry-ready',\s*\(\)\s*=>\s*\{\s*\n?\s*window\.MEDINDEX_REGISTRY_PARTIAL = false;/,
-    'the partial flag is cleared once the full registry lands, or it lies forever',
+    /addEventListener\('medindex:registry-ready',[\s\S]*?desktop-full-runtime-ready-cutover-v1[\s\S]*?state\.disabled = true;[\s\S]*?pageController\?\.abort\(\);[\s\S]*?setBusy\(false\);[\s\S]*?window\.MEDINDEX_DESKTOP_LITE_ACTIVE = false;[\s\S]*?window\.MEDINDEX_REGISTRY_PARTIAL = false;/,
+    'full-registry readiness must terminate the lightweight owner, release busy state and clear the partial flag',
   );
 
   // The desktop registry swaps the rows array wholesale — a page, then the
