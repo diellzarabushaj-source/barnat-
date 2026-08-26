@@ -61,6 +61,10 @@ require('./patch-registry-list-handoff-compat.js');
 // settled: secondary API authorization errors must be confirmed by /api/auth
 // before logout, and desktop pagination may scroll only the table container.
 require('./patch-auth-pagination-regressions.js');
+// The same-table composer can synthesize the prescription column before the
+// column-lite owner runs. Rehydrate that cell from the canonical API value and
+// keep a genuinely absent notation blank rather than rendering a misleading —.
+require('./patch-registry-prescription-notation-display.js');
 // Must run before the offline manifest is derived so the privacy guard and its
 // CSS become first-class production shell assets, not a late runtime injection.
 require('./patch-user-library-account-isolation.js');
@@ -94,6 +98,10 @@ execFileSync(process.execPath, [path.join(ROOT, 'tests', 'registry-personal-supa
   cwd:ROOT,
   stdio:'inherit',
 });
+execFileSync(process.execPath, [path.join(ROOT, 'tests', 'registry-prescription-notation-display-test.js')], {
+  cwd:ROOT,
+  stdio:'inherit',
+});
 execFileSync(process.execPath, [path.join(ROOT, 'tests', 'registry-personal-supabase-immediate-test.js')], {
   cwd:ROOT,
   stdio:'inherit',
@@ -107,4 +115,4 @@ execFileSync(process.execPath, [path.join(ROOT, 'tests', 'auth-pagination-regres
   stdio:'inherit',
 });
 
-console.log('Canonical registry personalization finalizer passed: Favorites/Notes stay inside the Barnat desktop-lite owner, composite favorite keys resolve through their real PDIDs, pending personal revisions reach authenticated Supabase before readback, stale Barnat search state cannot leak into personal views, one registry table is visible, favorites-notes-v1.0.0 remains frozen, per-user account isolation is gated, secondary API auth failures are confirmed before logout, and pagination keeps the document viewport stable before offline packaging.');
+console.log('Canonical registry personalization finalizer passed: Favorites/Notes stay inside the Barnat desktop-lite owner, composite favorite keys resolve through their real PDIDs, pending personal revisions reach authenticated Supabase before readback, stale Barnat search state cannot leak into personal views, prescription notation cannot collapse into a synthetic dash, one registry table is visible, favorites-notes-v1.0.0 remains frozen, per-user account isolation is gated, secondary API auth failures are confirmed before logout, and pagination keeps the document viewport stable before offline packaging.');
