@@ -52,7 +52,7 @@
       ['mobile-web-app-capable', 'yes'],
       ['apple-mobile-web-app-capable', 'yes'],
       ['apple-mobile-web-app-status-bar-style', 'default'],
-      ['apple-mobile-web-app-title', 'MedIndex'],
+      ['apple-mobile-web-app-title', 'DRx'],
     ];
     metadata.forEach(([name, content]) => {
       if (document.querySelector(`meta[name="${name}"]`)) return;
@@ -339,7 +339,7 @@
       event.preventDefault();
       deferredInstallPrompt = event;
       const node = ensureStatus();
-      node.title = 'Instalo MedIndex në pajisje';
+      node.title = 'Instalo DRx në pajisje';
       node.setAttribute('aria-label', node.title);
     });
     navigator.serviceWorker?.addEventListener('message', event => {

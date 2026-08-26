@@ -268,5 +268,5 @@ releaseStaleInteractionLock();
   const count = document.getElementById('countBadge');
   if (count) count.textContent = error?.name === 'AbortError' ? 'Ngarkimi zgjati tepër' : 'Gabim në databazë';
   const body = document.getElementById('tbody');
-  if (body) body.innerHTML = `<tr><td colspan="30" class="empty-state">${navigator.onLine ? 'Databaza e barnave nuk u ngarkua. Provo rifreskimin.' : 'Nuk ka ende kopje lokale. Lidhu një herë me internet që MedIndex ta ruajë databazën.'}</td></tr>`;
+  if (body) body.innerHTML = `<tr><td colspan="30" class="empty-state">${navigator.onLine ? 'Databaza e barnave nuk u ngarkua. Provo rifreskimin.' : 'Nuk ka ende kopje lokale. Lidhu një herë me internet që DRx ta ruajë databazën.'}</td></tr>`;
 });

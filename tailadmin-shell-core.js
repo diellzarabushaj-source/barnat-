@@ -45,7 +45,7 @@
   }
 
   function currentPage() {
-    return PAGE_META[normalizedPath()] || ['MedIndex', 'Platformë klinike'];
+    return PAGE_META[normalizedPath()] || ['DRx', 'Platformë klinike'];
   }
 
   function isIndexPage() {
@@ -171,7 +171,7 @@
     app.className = 'mi-app-shell';
     app.innerHTML = `
       <div class="mi-mobile-overlay" data-mi-sidebar-overlay></div>
-      <aside class="mi-sidebar" id="miSidebar" aria-label="MedIndex">
+      <aside class="mi-sidebar" id="miSidebar" aria-label="DRx">
         <div class="mi-sidebar-header">
           <a class="mi-brand" href="/index.html" aria-label="MedIndex — Barnat">
             <span class="mi-brand-mark">M<span>+</span></span>
@@ -192,7 +192,7 @@
         <header class="mi-topbar">
           <div class="mi-topbar-leading">
             <button class="mi-icon-button mi-sidebar-toggle" type="button" data-mi-sidebar-toggle aria-controls="miSidebar" aria-expanded="true" aria-label="Hap ose mbyll menynë">${ICONS.menu}</button>
-            <a class="mi-mobile-brand" href="/index.html"><span class="mi-brand-mark">M<span>+</span></span><strong>MedIndex</strong></a>
+            <a class="mi-mobile-brand" href="/index.html" aria-label="DRx"><img src="/brand/drx-icon-silver.svg" alt="" width="30" height="30" decoding="async"></a>
             <div class="mi-global-search">
               <span>${ICONS.search}</span>
               <input id="miGlobalSearch" type="search" autocomplete="off" placeholder="Kërko ose shkruaj komandën..." aria-label="Kërkim i shpejtë">
@@ -208,7 +208,7 @@
         <main class="mi-main" id="miMain">
           <div class="mi-content-container">
             <div class="mi-page-heading">
-              <div><div class="mi-breadcrumb"><a href="/index.html">MedIndex</a><span>/</span><strong>${esc(title)}</strong></div>${headingTitle}<p>${esc(subtitle)}</p></div>
+              <div><div class="mi-breadcrumb"><a href="/index.html">DRx</a><span>/</span><strong>${esc(title)}</strong></div>${headingTitle}<p>${esc(subtitle)}</p></div>
               <div class="mi-heading-badge" title="Kontrollo burimin në secilën kartelë"><span class="mi-status-dot"></span>Të dhëna klinike</div>
             </div>
             <div class="mi-page-slot" id="miPageSlot"></div>

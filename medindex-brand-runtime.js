@@ -12,12 +12,12 @@
   const LEGACY_PROFILE_KEY = 'medindex_profile_v1';
   const ROOT = '/brand/';
   const ASSETS = Object.freeze({
-    horizontalLight:`${ROOT}medindex-horizontal-on-light.webp`,
-    horizontalDark:`${ROOT}medindex-horizontal-on-dark.webp`,
-    fullLight:`${ROOT}medindex-full-on-light.png`,
-    fullDark:`${ROOT}medindex-full-on-dark.png`,
-    iconLight:`${ROOT}medindex-mark-on-light.webp`,
-    iconDark:`${ROOT}medindex-mark-on-dark.png`,
+    horizontalLight:`${ROOT}drx-horizontal-dark.svg`,
+    horizontalDark:`${ROOT}drx-horizontal-white.svg`,
+    fullLight:`${ROOT}drx-horizontal-dark.svg`,
+    fullDark:`${ROOT}drx-horizontal-white.svg`,
+    iconLight:`${ROOT}drx-icon-silver.svg`,
+    iconDark:`${ROOT}drx-icon-white.svg`,
   });
   // Until the session answers, the card names nobody. It used to default to a
   // real person, so every account that opened MedIndex on this device was shown
@@ -135,12 +135,12 @@
     const mobile = document.querySelector('.mi-mobile-brand');
     if (sidebar && sidebar.dataset.medindexBrand !== VERSION) {
       sidebar.dataset.medindexBrand = VERSION;
-      sidebar.setAttribute('aria-label', 'MedIndex by Dr. Diellza Rabushaj');
+      sidebar.setAttribute('aria-label', 'DRx by Dr. Diellza Rabushaj');
       sidebar.innerHTML = `${picture('full','medindex-brand-full')}${picture('icon','medindex-brand-icon')}`;
     }
     if (mobile && mobile.dataset.medindexBrand !== VERSION) {
       mobile.dataset.medindexBrand = VERSION;
-      mobile.setAttribute('aria-label', 'MedIndex');
+      mobile.setAttribute('aria-label', 'DRx');
       mobile.innerHTML = picture('icon','medindex-brand-icon');
     }
     return Boolean(sidebar && mobile);
@@ -175,7 +175,7 @@
         <input id="miProfileFile" type="file" accept="image/png,image/jpeg,image/webp" hidden>
         <div class="mi-profile-overlay" id="miProfileOverlay" hidden>
           <section class="mi-profile-dialog" role="dialog" aria-modal="true" aria-labelledby="miProfileTitle">
-            <header class="mi-profile-head"><div><h2 id="miProfileTitle">Profili im</h2><p>Përditëso fotografinë dhe të dhënat që shfaqen në MedIndex.</p></div><button class="mi-profile-close" type="button" data-profile-close aria-label="Mbyll">${svg('close')}</button></header>
+            <header class="mi-profile-head"><div><h2 id="miProfileTitle">Profili im</h2><p>Përditëso fotografinë dhe të dhënat që shfaqen në DRx.</p></div><button class="mi-profile-close" type="button" data-profile-close aria-label="Mbyll">${svg('close')}</button></header>
             <form class="mi-profile-form" id="miProfileForm" novalidate>
               <div class="mi-profile-photo-row"><span class="mi-profile-photo"></span><div class="mi-profile-photo-copy"><strong>Fotografia e profilit</strong><small>PNG, JPG ose WebP, maksimumi 5 MB.</small><div class="mi-profile-photo-actions"><button class="mi-profile-secondary" type="button" data-profile-upload>Zgjidh fotografi</button><button class="mi-profile-danger" type="button" data-profile-remove>Hiq fotografinë</button></div></div></div>
               <div class="mi-profile-fields">

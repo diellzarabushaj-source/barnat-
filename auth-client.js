@@ -44,7 +44,7 @@
     const dark = document.documentElement.dataset.theme === 'dark'
       || document.documentElement.classList.contains('dark');
     authBootstrap.className = 'mi-boot-screen';
-    authBootstrap.innerHTML = `<img class="mi-boot-logo" src="/brand/medindex-horizontal-on-${dark ? 'dark' : 'light'}.webp" alt="MedIndex" width="188" height="52" decoding="async">`
+    authBootstrap.innerHTML = `<img class="mi-boot-logo" src="/brand/${dark ? 'drx-horizontal-white.svg' : 'drx-horizontal-dark.svg'}" alt="DRx" width="188" height="55" decoding="async">`;
       + '<svg class="mi-boot-rings" viewBox="0 0 240 240" aria-hidden="true" focusable="false">'
       + '<circle class="mi-boot-ring mi-boot-ring--a" cx="120" cy="120" r="105"></circle>'
       + '<circle class="mi-boot-ring mi-boot-ring--b" cx="120" cy="120" r="35"></circle>'
@@ -332,8 +332,8 @@
     const button = document.createElement('button');
     button.type = 'button';
     button.className = `${className} auth-logout`;
-    button.setAttribute('aria-label', 'Dil nga MedIndex');
-    button.title = 'Dil nga MedIndex';
+    button.setAttribute('aria-label', 'Dil nga DRx');
+    button.title = 'Dil nga DRx';
     button.innerHTML = `<span class="${className.includes('med-') ? 'med-nav-icon' : className.includes('atc-') ? 'atc-nav-icon' : 'app-menu-icon'}"><svg viewBox="0 0 256 256" aria-hidden="true"><path d="M104 48H56a16 16 0 0 0-16 16v128a16 16 0 0 0 16 16h48M160 80l48 48-48 48M208 128H96"/></svg></span><span class="${className.includes('med-') ? 'med-nav-title' : className.includes('atc-') ? 'atc-nav-title' : 'app-menu-title'}">Dil</span>`;
     button.addEventListener('click', logout);
     return button;
