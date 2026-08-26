@@ -71,8 +71,13 @@ const CRITICAL_SHELL_ASSETS = Object.freeze([
   '/registry-runtime-loader.js',
 ]);
 
+/* Dynamic-only roots that are not guaranteed to appear directly in HTML.
+   Their transitive local dependencies are discovered recursively below. */
 const DYNAMIC_SHELL_ASSETS = Object.freeze([
   '/registry-frozen-columns.css',
+  '/clinical-workflow.js',
+  '/local-registry.js',
+  '/app-runtime.js',
 ]);
 
 const REQUIRED_CRITICAL = Object.freeze([
@@ -87,6 +92,9 @@ const REQUIRED_CRITICAL = Object.freeze([
 ]);
 
 const REQUIRED_OFFLINE = Object.freeze([
+  '/clinical-workflow.js',
+  '/local-registry.js',
+  '/app-runtime.js',
   '/registry-frozen-columns.css',
   '/registry-tablet-rows.css',
   '/registry-list-owner-guard.css',
@@ -100,12 +108,23 @@ const REQUIRED_OFFLINE = Object.freeze([
 const read = file => fs.readFileSync(path.join(ROOT, file), 'utf8');
 const exists = file => file === '/' || fs.existsSync(path.join(ROOT, file.replace(/^\//, '')));
 
-function toAssetPath(raw) {
+function resolveAssetPath(raw, baseAsset = '/') {
   const value = String(raw || '').trim();
   if (!value || /^(https?:)?\/\//i.test(value) || /^(data|blob|mailto|#)/i.test(value)) return null;
-  const clean = value.split('?')[0].split('#')[0];
-  if (!clean || clean.endsWith('/')) return null;
-  return clean.startsWith('/') ? clean : `/${clean}`;
+  try {
+    const base = new URL(baseAsset, 'https://medindex.local/');
+    const resolved = new URL(value, base);
+    if (resolved.origin !== 'https://medindex.local') return null;
+    const pathname = decodeURIComponent(resolved.pathname || '');
+    if (!pathname || pathname.endsWith('/') || pathname.split('/').includes('..')) return null;
+    return pathname.startsWith('/') ? pathname : `/${pathname}`;
+  } catch {
+    return null;
+  }
+}
+
+function toAssetPath(raw) {
+  return resolveAssetPath(String(raw || '').split('#')[0], '/');
 }
 
 function collectFromHtml(html) {
@@ -123,6 +142,38 @@ function collectFromHtml(html) {
   return found;
 }
 
+function collectRuntimeReferences(asset) {
+  if (!/\.(?:js|css)$/i.test(asset)) return [];
+  const relative = asset.replace(/^\//, '');
+  const absolute = path.join(ROOT, relative);
+  if (!fs.existsSync(absolute)) return [];
+  const source = fs.readFileSync(absolute, 'utf8');
+  const references = new Set();
+  const literalRe = /["'`]((?:\/|\.\.?\/)?[^"'`\s]+?\.(?:css|js|svg|png|jpe?g|webp|ico|webmanifest|woff2?|ttf|otf)(?:\?[^"'`]*)?)["'`]/gi;
+  let match;
+  while ((match = literalRe.exec(source))) {
+    const resolved = resolveAssetPath(match[1], asset);
+    if (resolved && exists(resolved)) references.add(resolved);
+  }
+  return [...references];
+}
+
+function expandRuntimeDependencies(discovered) {
+  const queue = [...discovered].filter(asset => /\.(?:js|css)$/i.test(asset));
+  const scanned = new Set();
+  while (queue.length) {
+    const asset = queue.shift();
+    if (!asset || scanned.has(asset)) continue;
+    scanned.add(asset);
+    for (const child of collectRuntimeReferences(asset)) {
+      if (!discovered.has(child)) {
+        discovered.add(child);
+        if (/\.(?:js|css)$/i.test(child)) queue.push(child);
+      }
+    }
+  }
+}
+
 function collectFontsFromCss(cssAssets) {
   const fonts = new Set();
   const urlRe = /url\(\s*["']?([^"')]+\.(?:woff2?|ttf|otf))["']?\s*\)/gi;
@@ -132,20 +183,24 @@ function collectFontsFromCss(cssAssets) {
     const css = fs.readFileSync(path.join(ROOT, relative), 'utf8');
     let match;
     while ((match = urlRe.exec(css))) {
-      const font = toAssetPath(match[1]);
-      if (font) fonts.add(font);
+      const font = resolveAssetPath(match[1], asset);
+      if (font && exists(font)) fonts.add(font);
     }
   }
   return fonts;
 }
 
-const discovered = new Set(DYNAMIC_SHELL_ASSETS);
+const discovered = new Set(DYNAMIC_SHELL_ASSETS.filter(exists));
 for (const page of PAGES) {
   if (!exists(page)) continue;
   discovered.add(`/${page}`);
-  for (const asset of collectFromHtml(read(page))) discovered.add(asset);
+  for (const asset of collectFromHtml(read(page))) if (exists(asset)) discovered.add(asset);
 }
 for (const asset of CRITICAL_SHELL_ASSETS) if (exists(asset)) discovered.add(asset);
+
+/* Dynamic imports/style loaders are part of offline coverage, but never get
+   promoted to the install-time critical tier simply because they are found. */
+expandRuntimeDependencies(discovered);
 
 const cssAssets = [...discovered].filter(asset => asset.endsWith('.css'));
 for (const font of collectFontsFromCss(cssAssets)) discovered.add(font);
