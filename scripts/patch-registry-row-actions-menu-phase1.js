@@ -70,4 +70,7 @@ require('./patch-registry-row-actions-menu-phase3.js');
 // personalization gets a chance to repaint it. Keep this as a source-path fix,
 // after the singleton exists and without touching the frozen mobile owner.
 require('./patch-registry-row-actions-first-render-aria.js');
-console.log('Registry row actions menu Phase 1 foundation validated; Phase 2 cutover, Phase 3 accessibility/focus hardening and first-render ARIA ownership are active with the frozen mobile personalization contract preserved.');
+// Phase 5 freezes the final desktop row-actions ownership contract only after all
+// output-mutating row-action patches have run. It intentionally makes no UI edits.
+require('./patch-registry-row-actions-menu-phase5-release-gate.js');
+console.log('Registry row actions menu Phase 1 foundation validated; Phase 2 cutover, Phase 3 accessibility/focus hardening, first-render ARIA ownership and Phase 5 final release gate are active with the frozen mobile personalization contract preserved.');
