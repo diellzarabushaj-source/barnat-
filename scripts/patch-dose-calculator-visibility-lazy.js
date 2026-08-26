@@ -32,7 +32,7 @@ let source = normalize(fs.readFileSync(FILE, 'utf8'));
 if (!source.includes(MARKER)) {
   const stateAnchor = "  let registry = { status:'loading', byNumber:new Map(), byDrugKey:new Map() };\n  let catalog = { status:'loading', byPdid:new Map(), byRegistryNumber:new Map(), byProductKey:new Map() };";
   if (!source.includes(stateAnchor)) throw new Error('Dose calculator lazy patch could not find registry/catalog state.');
-  source = source.replace(stateAnchor, `  // ${MARKER}: keep calculator network, modal and observers out of the registry critical path.\n  let registry = { status:'deferred', byNumber:new Map(), byDrugKey:new Map() };\n  let catalog = { status:'deferred', byPdid:new Map(), byRegistryNumber:new Map(), byProductKey:new Map() };\n  let registryPromise = null;\n  let catalogPromise = null;\n  let activationPromise = null;\n  let visibilityObserver = null;\n  let activationBound = false;`);
+  source = source.replace(stateAnchor, `  // ${MARKER}: keep calculator network, modal and observers out of the registry critical path.\n  const STARTUP_VERSION = '${MARKER}';\n  let registry = { status:'deferred', byNumber:new Map(), byDrugKey:new Map() };\n  let catalog = { status:'deferred', byPdid:new Map(), byRegistryNumber:new Map(), byProductKey:new Map() };\n  let registryPromise = null;\n  let catalogPromise = null;\n  let activationPromise = null;\n  let visibilityObserver = null;\n  let activationBound = false;`);
 
   source = replaceFunction(source, 'loadRegistry', 'loadCatalog', `  function loadRegistry() {
     if (registry.status === 'ready') return Promise.resolve(registry);
@@ -140,7 +140,7 @@ if (!source.includes(MARKER)) {
     armVisibility();
     ['medindex:registry-ready', 'medindex:registry-data-ready', 'medindex:registry-table-stable']
       .forEach(eventName => window.addEventListener(eventName, armVisibility));
-    document.documentElement.dataset.doseCalculatorStartup = MARKER;
+    document.documentElement.dataset.doseCalculatorStartup = STARTUP_VERSION;
   }
 
 ${clickAnchor}`);
@@ -156,6 +156,7 @@ ${clickAnchor}`);
 
 for (const fragment of [
   MARKER,
+  "const STARTUP_VERSION = 'dose-calculator-visibility-lazy-v1';",
   "status:'deferred'",
   'let registryPromise = null;',
   'let catalogPromise = null;',
