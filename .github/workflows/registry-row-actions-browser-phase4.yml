@@ -1,0 +1,67 @@
+name: Registry row actions browser Phase 4
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: registry-row-actions-phase4-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  row-actions-browser:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 10
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          version: 10.28.0
+          run_install: false
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          cache: pnpm
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile --ignore-scripts
+
+      - name: Syntax gate
+        run: node --check scripts/audit-registry-row-actions-browser-phase4.js
+
+      - name: Build composed registry runtime
+        run: pnpm run build:runtime
+
+      - name: Install Chromium
+        shell: bash
+        run: |
+          set -euo pipefail
+          pnpm exec playwright install --with-deps chromium > /tmp/row-actions-phase4-playwright-install.log 2>&1 \
+            || { tail -200 /tmp/row-actions-phase4-playwright-install.log; exit 1; }
+
+      - name: Run Phase 4 browser acceptance
+        shell: bash
+        run: |
+          set -euo pipefail
+          node scripts/audit-registry-row-actions-browser-phase4.js | tee /tmp/registry-row-actions-phase4.log
+
+      - name: Upload Phase 4 diagnostics
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: registry-row-actions-phase4-diagnostics
+          path: |
+            /tmp/registry-row-actions-phase4.log
+            /tmp/row-actions-phase4-playwright-install.log
+          if-no-files-found: ignore
+          retention-days: 7
