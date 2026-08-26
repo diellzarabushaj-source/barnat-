@@ -38,3 +38,31 @@ assert.match(driveSync, /auth_secret_hash/);
 assert.doesNotMatch(driveSync, /console\.log\([^\n]*secret/i);
 
 console.log('Clinical editor and permanent Neon override audit passed.');
+
+assert.equal(editor._test.normalizeRegistryNumber(900000), 900000);
+assert.throws(() => editor._test.normalizeRegistryNumber(Number.MAX_SAFE_INTEGER + 1), /Numri i barit/);
+assert.equal(
+  editor._test.normalizeProfilePayload(
+    { profile:{ verificationStatus:'in_review' } },
+    null,
+    { pregnancyLactation:'Ruaje këtë tekst', sourceUrls:['https://example.org/source'] },
+  ).pregnancy_lactation,
+  'Ruaje këtë tekst',
+);
+assert.deepEqual(
+  editor._test.normalizeDosePayload({}, 'adult', {
+    dose:'1 tabletë',
+    route:'Orale',
+    sourceUrl:'https://example.org/dose',
+    notes:'Ruaje shënimin',
+    verified:true,
+  }),
+  {
+    dose:'1 tabletë',
+    route:'Orale',
+    sourceUrl:'https://example.org/dose',
+    notes:'Ruaje shënimin',
+    verified:true,
+    population:'adult',
+  },
+);
