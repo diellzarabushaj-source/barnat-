@@ -42,4 +42,11 @@ assert.match(desktop, /if \(scroll\) resetDesktopTableViewport\(\);/,
 assert.doesNotMatch(desktop, /registryContent'\)\?\.scrollIntoView/,
   'Pagination must not jump the whole document and hide the Barnat header/toolbars.');
 
-console.log('✓ Auth + pagination regression contract passed: auxiliary API 401/403 cannot fake session expiry, and paging keeps the document viewport stable.');
+assert.match(desktop, /desktop-handoff-busy-release-v1: the outgoing owner cannot leave shared UI busy/,
+  'Desktop-lite must explicitly release shared pagination busy state at ownership handoff.');
+assert.match(desktop, /state\.disabled = true;[\s\S]*?window\.clearTimeout\(searchTimer\);[\s\S]*?pageController\?\.abort\(\);[\s\S]*?pageController = null;[\s\S]*?setBusy\(false\);[\s\S]*?window\.MEDINDEX_DESKTOP_LITE_ACTIVE = false;/,
+  'Handoff must disable the outgoing owner, cancel pending lightweight work, clear its controller and release busy before full-runtime ownership becomes active.');
+assert.match(desktop, /document\.getElementById\('pagination'\)\?\.classList\.toggle\('is-loading', value\)/,
+  'The regression gate must remain tied to the actual shared pagination busy-state owner.');
+
+console.log('✓ Auth + pagination regression contract passed: auxiliary API 401/403 cannot fake session expiry, paging keeps the document viewport stable, and desktop-lite cannot strand full-runtime pagination in loading state.');
