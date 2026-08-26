@@ -2,7 +2,9 @@
   "$schema": "https://openapi.vercel.sh/vercel.json",
   "framework": null,
   "outputDirectory": ".",
-  "regions": ["lhr1"],
+  "regions": [
+    "lhr1"
+  ],
   "functions": {
     "api/icd.js": {
       "includeFiles": "data/icd-hierarchy-snapshot.json.gz"
@@ -16,6 +18,16 @@
     "DOSAGE_SHEET_ID": "17cuXg5qORIIWkvAxLZ7uz2FMmGvzwjr850cubUcIgLE"
   },
   "redirects": [
+    {
+      "source": "/login-v2",
+      "destination": "/landing.html",
+      "permanent": false
+    },
+    {
+      "source": "/login-v2.html",
+      "destination": "/landing.html",
+      "permanent": false
+    },
     {
       "source": "/klasifikimi",
       "destination": "/index.html",

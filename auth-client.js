@@ -2,9 +2,9 @@
   'use strict';
 
   const RETURN_KEY = 'medindex_return_after_login';
-  /* Faqja hyrëse. Duhet të përputhet me LOGIN_PAGE te middleware.ts —
+  /* Faqja hyrëse. Duhet të përputhet me ENTRY_PAGE te middleware.ts —
      ndryshimi i njërës pa tjetrën i çon vizitorët te dy dizajne të ndryshme. */
-  const LOGIN_PAGE = '/login-v2.html';
+  const LOGIN_PAGE = '/landing.html';
   const OFFLINE_LEASE_KEY = 'medindex_offline_lease_v3';
   const LEGACY_OFFLINE_LEASE_KEYS = ['medindex_offline_lease_v2', 'medindex_offline_lease_v1'];
   const OFFLINE_RUNTIME_SRC = '/offline-runtime.js?v=local-1.8.0';

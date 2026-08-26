@@ -36,6 +36,15 @@ const PUBLIC_PATHS = new Set([
   '/login-v2.js',
   '/login-v2-canvas.js',
   '/fonts/inter-latin-variable-normal.woff2',
+  // Sipërfaqet publike DRx: faqja hyrëse, Journal-i dhe format e llogarisë.
+  '/landing.html',
+  '/landing.css',
+  '/drx-pages.css',
+  '/journal.html',
+  '/journal.js',
+  '/hyrje.html',
+  '/regjistrohu.html',
+  '/brand/drx-mark.svg',
   '/login.css',
   '/login-editorial.css',
   '/landing-effects.css',
@@ -95,6 +104,12 @@ export const config = {
 /* Faqja e hyrjes që u shërbehet vizitorëve. Origjinali mbetet i arritshëm te
    /login.html; ndryshimi i kësaj vlere e kthen atë si faqe hyrëse. */
 const LOGIN_PAGE = '/login-v2.html';
+
+/* Faqja publike ku dërgohet kushdo që nuk ka sesion. Ndryshe nga LOGIN_PAGE,
+   kjo nuk hyn te LOGIN_PAGES: një vizitor i kyçur duhet të mund ta shohë faqen
+   hyrëse pa u kthyer me forcë te regjistri. Duhet të përputhet me ENTRY_PAGE
+   te auth-client.js. */
+const ENTRY_PAGE = '/landing.html';
 
 /* Të dyja faqet sillen njësoj kur përdoruesi është tashmë i kyçur. */
 const LOGIN_PAGES = new Set(['/login.html', LOGIN_PAGE, ADMIN_LOGIN_PAGE, '/admin-login']);
@@ -164,7 +179,7 @@ export default async function middleware(request) {
 
   // Someone reaching for the admin console is sent to the admin sign-in, not the
   // clinical one, so the page they land on is the page they were trying to use.
-  const loginUrl = new URL(ADMIN_CONSOLE_PATHS.has(pathname) ? ADMIN_LOGIN_PAGE : LOGIN_PAGE, request.url);
+  const loginUrl = new URL(ADMIN_CONSOLE_PATHS.has(pathname) ? ADMIN_LOGIN_PAGE : ENTRY_PAGE, request.url);
   loginUrl.searchParams.set('return', safeReturnPath(url));
   return Response.redirect(loginUrl, 302);
 }

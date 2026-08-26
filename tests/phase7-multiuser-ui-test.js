@@ -103,8 +103,8 @@ const read = file => fs.readFileSync(path.join(root, file), 'utf8');
   }
   assert.ok(!/'\/admin'|'\/admin\.html'/.test(publicBlock),
     '/admin must stay behind the session gate; the dedicated sign-in is reached by redirect, not by opening the console');
-  assert.match(middleware, /ADMIN_CONSOLE_PATHS\.has\(pathname\) \? ADMIN_LOGIN_PAGE : LOGIN_PAGE/,
-    'someone reaching for the console must land on the admin sign-in, not the clinical one');
+  assert.match(middleware, /ADMIN_CONSOLE_PATHS\.has\(pathname\) \? ADMIN_LOGIN_PAGE : ENTRY_PAGE/,
+    'someone reaching for the console must land on the admin sign-in, not the public entry page');
 
   // Scoped to the allowlists. `/api/clinical-editor` legitimately appears in the
   // blog carve-out below them, which admits only `GET …?blog=1` and leaves every

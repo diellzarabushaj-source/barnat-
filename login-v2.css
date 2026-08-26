@@ -1037,3 +1037,17 @@ input,summary{font:inherit}
   .lv-hero{background:#fff;color:#000}
   .lv-reveal{opacity:1;transform:none}
 }
+
+/* --- Marka DRx ----------------------------------------------------------- */
+/* Shenja vektoriale zëvendëson logon raster: merr `currentColor`, prandaj e
+   njëjta shenjë punon mbi guaskën e ndritur dhe mbi footer-in e errët, pa
+   sfond dhe pa një skedë të dytë. */
+
+.lv-drx-logo{display:inline-flex;align-items:center;gap:10px;color:#0d253d;}
+.lv-drx-mark{width:30px;height:30px;flex:0 0 auto;display:block;}
+.lv-drx-word{font-size:26px;font-weight:300;line-height:1;letter-spacing:.7px;color:inherit;}
+.lv-logo-on-dark .lv-drx-logo,.lv-drx-logo.lv-logo-on-dark{color:#fff;}
+.lv-footer .lv-drx-logo,.lv-footer-brand .lv-drx-logo{color:inherit;}
+
+.lv-drx-hero{display:inline-flex;color:rgba(13,37,61,.16);}
+.lv-drx-hero .lv-drx-mark{width:200px;height:200px;}
