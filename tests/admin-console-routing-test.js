@@ -112,4 +112,28 @@ const rewriteFor = source => vercel.rewrites.find(rule => rule.source === source
     'a scratch file committed to force a deployment must not stay in the tree');
 }
 
+
+// --- mobile admin workspace and modal ownership ----------------------------
+
+{
+  const html = read('admin.html');
+  const css = read('admin-dashboard.css');
+  const dashboard = read('admin-dashboard.js');
+
+  assert.match(html, /<dialog class="mi-dialog mi-drug-dialog" id="drugDialog">[\s\S]*id="drugSave"/,
+    'the drug editor must remain a native modal dialog with an explicit save action');
+
+  assert.match(css, /\.mi-dialog\{[^}]*max-height:90dvh;[^}]*overflow-y:auto;[^}]*overscroll-behavior:contain;/,
+    'admin dialogs must own vertical overflow inside the 90dvh mobile viewport instead of pushing the dashboard');
+  assert.match(css, /html:has\(\.mi-dialog\[open\]\),body:has\(\.mi-dialog\[open\]\)\{overflow:hidden\}/,
+    'the document behind an open admin dialog must be scroll-locked');
+  assert.match(css, /@media\(max-width:650px\)\{[\s\S]*?\.mi-form-grid,\.mi-detail-list\{grid-template-columns:1fr\}/,
+    'drug forms and detail lists must collapse to one column on phones');
+
+  assert.match(dashboard, /function showView\(name\)\{[\s\S]*?document\.body\.classList\.remove\('mi-admin-nav-open'\)/,
+    'changing admin workspace on mobile must close the navigation drawer');
+  assert.match(dashboard, /\$\('adminMenu'\)\.addEventListener\('click',[\s\S]*?mi-admin-nav-open/,
+    'the admin mobile menu must keep a single explicit drawer owner');
+}
+
 console.log('Admin console routing contract passed.');
