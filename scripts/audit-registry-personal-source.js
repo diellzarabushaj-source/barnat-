@@ -12,6 +12,10 @@ const css = read('registry-user-personalization.css');
 const html = read('index.html');
 const registrySource = read('app-parts/part-01.txt');
 const registryRenderSource = read('app-parts/part-04.txt');
+const personalFinalizer = read('scripts/patch-registry-personal-final.js');
+const notationPatch = read('scripts/patch-registry-prescription-notation-display.js');
+const notationTest = read('tests/registry-prescription-notation-display-test.js');
+const offlineManifestPatch = read('scripts/patch-offline-shell-manifest.js');
 
 const requirements = [
   [ui, "PHASE8_UX_VERSION = 'registry-personal-ux-phase8-v1'", 'Phase 8 UX must live in canonical personalization source.'],
@@ -48,6 +52,16 @@ const requirements = [
   [registryRenderSource, 'COLUMNS.forEach(c => c.visible = true); saveRegistryColumnVisibility();', 'Full-registry show-all must persist at source.'],
   [registryRenderSource, 'COLUMNS.forEach(c => { c.visible = false; });', 'Full-registry hide-all must be source-owned.'],
   [registryRenderSource, 'col.visible = cb.checked;\n      saveRegistryColumnVisibility();', 'Full-registry individual column toggles must persist at source.'],
+  [personalFinalizer, "require('./patch-registry-prescription-notation-display.js');", 'Prescription notation hardening must remain wired into the canonical personal finalizer.'],
+  [personalFinalizer, 'registry-prescription-notation-display-test.js', 'Prescription notation regression gate must run in the canonical personal finalizer.'],
+  [notationPatch, "const MARKER = 'registry-prescription-notation-display-v2';", 'Prescription notation hardening v2 marker is missing.'],
+  [notationPatch, "return /^[-–—]+$/.test(text) ? '' : text;", 'Dash-only prescription placeholders must be normalized to blank.'],
+  [notationPatch, "!existed || column.remote || column.key === 'prescription-label'", 'Existing prescription cells must always rehydrate from canonical data.'],
+  [notationPatch, "cell.textContent = /^[-–—]+$/.test(value) ? '' : value;", 'Unified table must suppress dash-only prescription placeholders.'],
+  [notationPatch, 'return clean(notation?.line);', 'Prescription hardening must verify the canonical API builder line contract.'],
+  [notationTest, 'Prescription hardening patch must be idempotent', 'Prescription display test must freeze patch idempotence.'],
+  [notationTest, 'Dash-only prescription placeholders must normalize to blank.', 'Prescription display test must cover dash-only placeholders.'],
+  [offlineManifestPatch, "require('./patch-registry-personal-final.js');", 'Personal finalizer must execute before offline shell manifest derivation.'],
 ];
 
 for (const [source, needle, message] of requirements) {
@@ -61,6 +75,14 @@ if (!(nrPosition >= 0 && substancePosition > nrPosition && tradePosition > subst
   throw new Error('Full-registry canonical source order must be Nr → Substanca aktive → Emri tregtar.');
 }
 
+const sameTableAt = personalFinalizer.indexOf("require('./patch-registry-personal-same-table.js');");
+const supabaseAt = personalFinalizer.indexOf("require('./patch-registry-personal-supabase-owner.js');");
+const notationAt = personalFinalizer.indexOf("require('./patch-registry-prescription-notation-display.js');");
+const accountIsolationAt = personalFinalizer.indexOf("require('./patch-user-library-account-isolation.js');");
+if (!(sameTableAt >= 0 && supabaseAt > sameTableAt && notationAt > supabaseAt && accountIsolationAt > notationAt)) {
+  throw new Error('Prescription notation hardening must run after same-table/Supabase composition and be before final offline-safe account isolation packaging.');
+}
+
 if (/const POLL_MS = 1200|window\.setInterval\(poll, POLL_MS\)/.test(client)) {
   throw new Error('Legacy aggressive Favorites/Notes polling returned to canonical source.');
 }
@@ -68,4 +90,4 @@ if (/rowProfileCache\s*=\s*new Map/.test(ui)) {
   throw new Error('Canonical personalization must not strongly retain removed rows.');
 }
 
-console.log('Canonical source gate passed before build patches: registry defaults/order/persistence/population rendering, Favorites/Notes UX, recovery and long-session behavior are source-owned.');
+console.log('Canonical source gate passed before build patches: registry defaults/order/persistence/population rendering, Favorites/Notes UX, recovery, long-session behavior and prescription-notation hardening v2 are source-wired and release-gated.');
