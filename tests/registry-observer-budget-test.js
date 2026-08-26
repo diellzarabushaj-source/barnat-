@@ -25,10 +25,16 @@ const calculator = read(files[3]);
 const doseTable = read(files[4]);
 
 assert.match(preview, /registry-observer-budget-v1/);
-assert.match(preview, /tableObserver\.observe\(tbody, \{ childList:true \}\);/,
-  'Cell preview may observe direct row replacement only.');
-assert.doesNotMatch(preview, /tableObserver\.observe\(tbody,[\s\S]{0,180}(?:subtree|characterData|attributes)\s*:\s*true/,
-  'Cell preview must not retain a broad nested mutation observer.');
+assert.match(preview, /tableObserver\.observe\(tbody, \{ childList:true, subtree:true \}\);/,
+  'Cell preview must retain nested node insertion/removal recovery.');
+const previewObserverBlock = preview.slice(
+  preview.indexOf('function connectObserver()'),
+  preview.indexOf('function enhanceVisibleCells()'),
+);
+assert.doesNotMatch(previewObserverBlock, /characterData\s*:\s*true/,
+  'Cell preview must not rescan on nested text mutations.');
+assert.doesNotMatch(previewObserverBlock, /attributes\s*:\s*true|attributeFilter\s*:/,
+  'Cell preview must not rescan on nested attribute/class/aria mutations.');
 assert.match(preview, /medindex:registry-content-changed/);
 assert.match(preview, /medindex:registry-row-expanded-change/);
 
@@ -49,4 +55,4 @@ assert.match(doseTable, /function start\(\) \{[\s\S]*medindex:dose-calculator-ac
 assert.doesNotMatch(doseTable, /function start\(\) \{\s*observeTable\(\);\s*scanVisiblePage\(\);/,
   'Dose-table scanning/observers must not run unconditionally at startup.');
 
-console.log('✓ Final registry observer budget passed: broad preview mutation churn is gone, dosage changes are explicit events, and dose-table observers are activation-only.');
+console.log('✓ Final registry observer budget passed: nested insertion recovery remains, text/attribute mutation churn is gone, dosage changes are explicit events, and dose-table observers are activation-only.');
