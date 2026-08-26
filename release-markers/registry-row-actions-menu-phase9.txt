@@ -5,3 +5,4 @@ final-asset-hash-chain
 gate-fingerprints-phase5-through-phase8
 optional-build-commit-identity
 no-runtime-ui-mutation
+main-release-chain-phase1-through-phase9
