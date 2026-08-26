@@ -141,4 +141,6 @@ execFileSync(process.execPath, [path.join(ROOT, 'tests', 'clinical-editor-lazy-r
   stdio:'inherit',
 });
 
+require('./patch-dose-modal-accessibility-lazy-runtime.js');
+
 console.log('Clinical editor startup cleanup applied: lightweight Auditimi trigger stays eager; full editor JS, MutationObserver and summary API are interaction-only.');
