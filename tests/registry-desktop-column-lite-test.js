@@ -37,7 +37,8 @@ assert.doesNotMatch(runtime, /column-prescription-notation|advanced:true/, 'Pres
 assert.match(runtime, /key:'prescription-label'[\s\S]{0,180}raw:'Si të shënohet në recetë'[\s\S]{0,120}default:true/, 'Prescription notation must be a normal default lightweight column.');
 assert.doesNotMatch(runtime, /\/api\/registry(?:\?|['"`])|DRUG_DATA_PARTS|source_payload|indexedDB/, 'Column customization must never read the full registry or source payload.');
 assert.match(runtime, /cell\.dataset\.columnLiteValue === signature/, 'Remote column DOM writes must be signature-idempotent.');
-assert.match(runtime, /if \(!existed \|\| column\.remote\)/, 'Existing base cells must be preserved instead of rewritten.');
+assert.match(runtime, /if \(!existed \|\| column\.remote \|\| column\.key === 'prescription-label'\)/,
+  'Existing base cells must be preserved except prescription notation, which must rehydrate after unified-table synthesis.');
 assert.match(runtime, /if \(changed\) window\.MedIndexRegistryUnified\?\.refresh\?\.\(\)/, 'Unified table refresh must happen only after a real structural/value change.');
 assert.doesNotMatch(runtime, /addEventListener\('medindex:registry-table-stable'/, 'Phase 14 must not create stable→refresh feedback loops.');
 
