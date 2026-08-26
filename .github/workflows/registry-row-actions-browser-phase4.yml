@@ -43,6 +43,12 @@ jobs:
           node --check scripts/prepare-registry-row-actions-browser-phase4-canonical-filter.js
           node scripts/prepare-registry-row-actions-browser-phase4-canonical-filter.js
           node --check scripts/audit-registry-row-actions-browser-phase4.js
+          grep -q "phase4-canonical-visible-filter-v1" scripts/audit-registry-row-actions-browser-phase4.js
+          if grep -q "page.locator('#statusFilter').selectOption" scripts/audit-registry-row-actions-browser-phase4.js; then
+            echo "Phase 4 still targets hidden legacy #statusFilter" >&2
+            exit 1
+          fi
+          grep -q "formCategory.getAttribute('data-form-category')" scripts/audit-registry-row-actions-browser-phase4.js
 
       - name: Build composed registry runtime
         run: pnpm run build:runtime
