@@ -62,4 +62,5 @@ execFileSync(process.execPath, [path.join(ROOT, 'tests', 'registry-row-actions-m
 // Phase 2 intentionally runs only after the migration-safe Phase 1 gate has
 // proven that the canonical trigger exists while the legacy actions still work.
 require('./patch-registry-row-actions-menu-phase2.js');
-console.log('Registry row actions menu Phase 1 foundation validated and Phase 2 singleton-menu cutover chained.');
+require('./patch-registry-row-actions-menu-phase2-mobile-contract.js');
+console.log('Registry row actions menu Phase 1 foundation validated; Phase 2 singleton-menu cutover is active with the frozen mobile personalization contract preserved.');
