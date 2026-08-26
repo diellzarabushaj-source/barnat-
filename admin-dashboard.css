@@ -520,3 +520,5 @@
 @media(prefers-reduced-motion:reduce){
   .mi-admin *{scroll-behavior:auto!important;transition:none!important;}
 }
+
+html:has(.mi-dialog[open]),body:has(.mi-dialog[open]){overflow:hidden}
