@@ -73,4 +73,7 @@ require('./patch-registry-row-actions-first-render-aria.js');
 // Phase 5 freezes the final desktop row-actions ownership contract only after all
 // output-mutating row-action patches have run. It intentionally makes no UI edits.
 require('./patch-registry-row-actions-menu-phase5-release-gate.js');
-console.log('Registry row actions menu Phase 1 foundation validated; Phase 2 cutover, Phase 3 accessibility/focus hardening, first-render ARIA ownership and Phase 5 final release gate are active with the frozen mobile personalization contract preserved.');
+// Phase 6 re-enters this complete chain once in a guarded child process and
+// proves the generated row-actions assets are byte-identical on the second run.
+require('./patch-registry-row-actions-menu-phase6-idempotence-gate.js');
+console.log('Registry row actions menu Phase 1 foundation validated; Phase 2 cutover, Phase 3 accessibility/focus hardening, first-render ARIA ownership, Phase 5 final release freeze and Phase 6 deterministic double-build hardening are active with the frozen mobile personalization contract preserved.');
