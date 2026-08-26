@@ -44,7 +44,7 @@ assert.ok(loader.indexOf('place(clinical)') < loader.indexOf('place(frozen)'), '
 assert.match(loader, /dataset\.firstPageStyleLoader = VERSION/, 'The active first-page style release must be observable in browser audits.');
 assert.match(loader, /medindex:tailadmin-ready/);
 assert.match(offlineManifest, /DYNAMIC_SHELL_ASSETS[\s\S]*'\/registry-frozen-columns\.css'/, 'Dynamically loaded frozen-column CSS must be seeded into the offline shell manifest.');
-assert.match(offlineManifest, /const required = \[[\s\S]*'\/registry-frozen-columns\.css'/, 'Offline manifest generation must fail if the final frozen-column CSS disappears.');
+assert.match(offlineManifest, /REQUIRED_OFFLINE[\s\S]*'\/registry-frozen-columns\.css'/, 'Offline manifest generation must fail if the final frozen-column CSS disappears.');
 
 for (const marker of [
   'registry-overview',
