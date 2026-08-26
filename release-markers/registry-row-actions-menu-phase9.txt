@@ -1,0 +1,7 @@
+registry-row-actions-menu-phase9-v1
+build-evidence-sidecar
+release-manifest-digest
+final-asset-hash-chain
+gate-fingerprints-phase5-through-phase8
+optional-build-commit-identity
+no-runtime-ui-mutation
