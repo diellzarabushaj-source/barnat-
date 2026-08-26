@@ -4,17 +4,29 @@ on:
   push:
     branches: [main]
     paths:
-      - scripts/patch-registry-row-actions-menu-phase7-provenance.js
-      - scripts/patch-registry-row-actions-menu-phase9-build-evidence.js
-      - tests/registry-row-actions-menu-phase9-build-evidence-test.js
-      - release-markers/registry-row-actions-menu-phase9.txt
+      - 'scripts/patch-registry-row-actions-menu-phase*.js'
+      - scripts/patch-registry-row-actions-first-render-aria.js
+      - scripts/audit-registry-row-actions-deployment.js
+      - 'tests/registry-row-actions-menu-phase*.js'
+      - tests/registry-row-actions-deployment-attestation-test.js
+      - 'release-markers/registry-row-actions-menu-phase*.txt'
+      - registry-user-personalization.js
+      - registry-user-personalization.css
+      - registry-desktop-lite.js
+      - registry-unified-table.js
       - .github/workflows/registry-row-actions-build-evidence.yml
   pull_request:
     paths:
-      - scripts/patch-registry-row-actions-menu-phase7-provenance.js
-      - scripts/patch-registry-row-actions-menu-phase9-build-evidence.js
-      - tests/registry-row-actions-menu-phase9-build-evidence-test.js
-      - release-markers/registry-row-actions-menu-phase9.txt
+      - 'scripts/patch-registry-row-actions-menu-phase*.js'
+      - scripts/patch-registry-row-actions-first-render-aria.js
+      - scripts/audit-registry-row-actions-deployment.js
+      - 'tests/registry-row-actions-menu-phase*.js'
+      - tests/registry-row-actions-deployment-attestation-test.js
+      - 'release-markers/registry-row-actions-menu-phase*.txt'
+      - registry-user-personalization.js
+      - registry-user-personalization.css
+      - registry-desktop-lite.js
+      - registry-unified-table.js
       - .github/workflows/registry-row-actions-build-evidence.yml
   workflow_dispatch:
 
