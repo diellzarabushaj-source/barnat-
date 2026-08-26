@@ -132,6 +132,7 @@ require('./patch-registry-default-sort-fastpath.js');
 require('./patch-registry-filter-single-pass.js');
 require('./patch-registry-pagination-v2.js');
 require('./patch-registry-pagination-v3.js');
+require('./patch-full-runtime-pagination-owner.js');
 require('./patch-registry-pagination-ownership.js');
 require('./patch-registry-pagination-tailadmin-bridge.js');
 require('./patch-registry-search-premium-v3.js');
