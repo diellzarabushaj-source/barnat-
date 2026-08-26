@@ -36,8 +36,11 @@ jobs:
       - name: Install dependencies
         run: pnpm install --frozen-lockfile --ignore-scripts
 
-      - name: Syntax gate
-        run: node --check scripts/audit-registry-row-actions-browser-phase4.js
+      - name: Prepare and syntax-check Phase 4 gate
+        run: |
+          node --check scripts/prepare-registry-row-actions-browser-phase4.js
+          node scripts/prepare-registry-row-actions-browser-phase4.js
+          node --check scripts/audit-registry-row-actions-browser-phase4.js
 
       - name: Build composed registry runtime
         run: pnpm run build:runtime
