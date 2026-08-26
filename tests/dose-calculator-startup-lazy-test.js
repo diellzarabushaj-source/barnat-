@@ -17,9 +17,9 @@ assert.match(source, /let catalogPromise = null;/);
 assert.match(source, /function activateDoseRuntime\(reason = 'intent'\)/);
 assert.match(source, /new IntersectionObserver\(entries =>/);
 assert.match(source, /rootMargin:'120px'/);
-assert.match(source, /addEventListener\('pointerover'/);
-assert.match(source, /addEventListener\('touchstart'/);
-assert.match(source, /addEventListener\('focusin'/);
+assert.match(source, /addEventListener\?\.\('pointerover'/);
+assert.match(source, /addEventListener\?\.\('touchstart'/);
+assert.match(source, /addEventListener\?\.\('focusin'/);
 assert.match(source, /bindDoseRuntimeActivation\(\);/);
 assert.doesNotMatch(source, /ensureModal\(\);\s*observe\(\);\s*scheduleEnhance\(\);\s*void loadRegistry\(\);\s*void loadCatalog\(\);/s);
 
