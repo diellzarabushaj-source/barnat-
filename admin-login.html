@@ -4,84 +4,126 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
   <meta name="robots" content="noindex,nofollow,noarchive">
+  <meta name="theme-color" content="#ffffff">
   <meta name="color-scheme" content="light">
-  <title>Hyrje Admin — MedIndex</title>
-  <link rel="stylesheet" href="/admin-login.css?v=admin-login-v1">
+  <meta name="format-detection" content="telephone=no">
+  <meta name="description" content="Hyrje e sigurt në DRx Admin Console.">
+  <title>DRx Admin | Hyrje e sigurt</title>
+  <link rel="icon" href="/brand/drx-icon-silver.svg" type="image/svg+xml">
+  <link rel="preconnect" href="https://accounts.google.com" crossorigin>
+  <link rel="dns-prefetch" href="https://accounts.google.com">
+  <link rel="preload" href="/fonts/inter-latin-variable-normal.woff2" as="font" type="font/woff2" crossorigin>
+  <script src="/theme-preload.js?v=production-audit-v3"></script>
   <script src="https://accounts.google.com/gsi/client" async defer></script>
+  <link rel="stylesheet" href="/login-email.css?v=multiuser-v2">
+  <link rel="stylesheet" href="/landing.css?v=drx-main-1">
+  <link rel="stylesheet" href="/drx-pages.css?v=drx-main-1">
+  <link rel="stylesheet" href="/drx-auth.css?v=drx-main-1">
+  <link rel="stylesheet" href="/admin-login.css?v=drx-admin-stripe-v1">
 </head>
-<body class="mi-admin-login">
-  <main class="mi-admin-login-shell">
-    <section class="mi-admin-login-brand" aria-label="MedIndex Admin">
-      <div class="mi-admin-login-brand-inner">
-        <a class="mi-admin-login-wordmark" href="/" aria-label="MedIndex">
-          <span class="mi-admin-login-mark" aria-hidden="true">M<span>+</span></span>
-          <span><strong>MedIndex</strong><small>Admin Console</small></span>
-        </a>
-        <div class="mi-admin-login-brand-copy">
-          <span class="mi-admin-login-eyebrow"><i></i> Hapësirë e kufizuar</span>
-          <h1>Kontrolli administrativ, <em>i ndarë nga klinika.</em></h1>
-          <p>Kjo hyrje është vetëm për administrimin e barnave, përdoruesve dhe aprovimeve profesionale.</p>
-        </div>
-        <div class="mi-admin-login-security" aria-label="Siguria e hyrjes">
-          <span>Admin-only</span><span>Verifikim në server</span><span>Sesion HttpOnly</span>
-        </div>
+<body class="lp lp-auth mi-admin-auth">
+  <div class="lp-scrollbg" aria-hidden="true"></div>
+  <div class="lp-mesh" aria-hidden="true"></div>
+
+  <a class="lp-skip" href="#authMain">Kalo te hyrja</a>
+
+  <nav class="lp-nav auth-nav" aria-label="Navigimi i administratorit">
+    <div class="lp-shell lp-nav__row auth-nav__row">
+      <a class="lp-nav__brand" href="/landing.html" aria-label="DRx — faqja hyrëse">
+        <img class="drx-logo__img" src="/brand/drx-horizontal-dark.svg" alt="DRx" width="102" height="30" decoding="async">
+      </a>
+      <div class="auth-nav__actions">
+        <a class="lp-nav__link" href="/landing.html">DRx</a>
+        <a class="lp-btn lp-btn--secondary lp-btn--sm" href="/login.html">Hyrja klinike</a>
       </div>
+    </div>
+  </nav>
+
+  <main class="auth-stage" id="authMain">
+    <section class="auth-intro" aria-labelledby="authIntroTitle">
+      <span class="lp-eyebrow">Admin Console</span>
+      <h1 class="lp-display-xxl" id="authIntroTitle">Kontroll administrativ, me të njëjtën qartësi si DRx.</h1>
+      <p class="auth-intro__lead">Barnat, përdoruesit dhe aprovimet profesionale menaxhohen në një hapësirë të kufizuar, të ndarë nga workspace-i klinik.</p>
+
+      <dl class="auth-facts" aria-label="Siguria e hyrjes admin">
+        <div><dt>Qasja</dt><dd>Vetëm administratorë të autorizuar</dd></div>
+        <div><dt>Sesioni</dt><dd>Verifikim në server + cookie HttpOnly</dd></div>
+        <div><dt>Kontrolli</dt><dd>Qasja verifikohet përsëri në panel</dd></div>
+      </dl>
     </section>
 
-    <section class="mi-admin-login-panel" aria-labelledby="adminLoginTitle">
-      <div class="mi-admin-login-card">
-        <div class="mi-admin-login-mobile-brand" aria-hidden="true">
-          <span class="mi-admin-login-mark">M<span>+</span></span>
-          <span><strong>MedIndex</strong><small>Admin Console</small></span>
+    <section class="au-card auth-card" aria-labelledby="adminLoginTitle">
+      <header class="auth-card__head">
+        <p class="auth-card__index lp-num">01 / ADMIN</p>
+        <h2 id="adminLoginTitle">Hyr si administrator.</h2>
+        <p>Përdor vetëm llogarinë e autorizuar për DRx Admin Console.</p>
+      </header>
+
+      <noscript><p class="auth-note is-error" role="alert">JavaScript duhet të jetë aktiv për hyrjen e sigurt në DRx.</p></noscript>
+
+      <section class="auth-google" aria-labelledby="googleLoginHeading">
+        <h3 class="lp-sr" id="googleLoginHeading">Vazhdo me Google</h3>
+        <div id="googleLoginButton" class="auth-google__button" aria-label="Butoni për hyrje me Google"></div>
+        <p class="auth-provider-status" id="googleLoginStatus" role="status" aria-live="polite" aria-atomic="true">Po përgatitet hyrja e sigurt…</p>
+      </section>
+
+      <div class="login-divider auth-divider"><span>ose me email</span></div>
+
+      <form class="login-email-form auth-form" id="emailLoginForm" autocomplete="on" novalidate>
+        <label class="auth-field" for="loginEmail">
+          <span>Email</span>
+          <input class="au-input login-email-input" id="loginEmail" name="email" type="email" autocomplete="email"
+                 inputmode="email" autocapitalize="none" spellcheck="false" required maxlength="320"
+                 placeholder="admin@shembull.com">
+        </label>
+
+        <label class="auth-field" for="loginPassword">
+          <span>Fjalëkalimi</span>
+          <span class="auth-password-row">
+            <input class="au-input login-email-input" id="loginPassword" name="password" type="password"
+                   autocomplete="current-password" autocapitalize="none" spellcheck="false" required maxlength="200">
+            <button class="auth-password-toggle" type="button" id="toggleLoginPassword" aria-pressed="false" aria-label="Shfaq fjalëkalimin">Shfaq</button>
+          </span>
+        </label>
+
+        <div class="auth-form__meta">
+          <button class="auth-text-button" id="forgotPassword" type="button">Ke harruar fjalëkalimin?</button>
         </div>
-        <div class="mi-admin-login-heading">
-          <span class="mi-admin-login-badge">ADMIN ACCESS</span>
-          <h2 id="adminLoginTitle">Hyr në panelin administrativ</h2>
-          <p>Përdor vetëm llogarinë e autorizuar të administratorit.</p>
-        </div>
 
-        <div class="mi-admin-login-message" id="loginMessage" role="status" aria-live="polite"></div>
+        <p class="login-message auth-note" id="loginMessage" role="status" aria-live="polite" aria-atomic="true"></p>
 
-        <form id="emailLoginForm" class="mi-admin-login-form" novalidate>
-          <label for="loginEmail">Email</label>
-          <input id="loginEmail" name="email" type="email" autocomplete="username" inputmode="email" placeholder="admin@medindex…" required>
+        <button class="lp-btn lp-btn--primary au-submit login-email-submit" id="emailLoginSubmit" type="submit">Hyr në Admin Console</button>
+      </form>
 
-          <div class="mi-admin-login-label-row">
-            <label for="loginPassword">Fjalëkalimi</label>
-            <button type="button" class="mi-admin-login-text-btn" id="forgotPassword">Ke harruar fjalëkalimin?</button>
-          </div>
-          <div class="mi-admin-login-password">
-            <input id="loginPassword" name="password" type="password" autocomplete="current-password" required>
-            <button type="button" id="toggleLoginPassword" aria-pressed="false" aria-label="Shfaq fjalëkalimin">Shfaq</button>
-          </div>
-
-          <button class="mi-admin-login-submit" id="emailLoginSubmit" type="submit">Hyr në Admin Console</button>
+      <details class="password-fallback auth-fallback" id="passwordFallback" hidden>
+        <summary>Hyrje rezervë me password</summary>
+        <form id="loginForm" autocomplete="on" novalidate>
+          <label class="auth-field" for="password">
+            <span>Password-i rezervë</span>
+            <span class="auth-password-row">
+              <input class="au-input" id="password" name="password" type="password" autocomplete="current-password"
+                     autocapitalize="none" spellcheck="false" enterkeyhint="go" required minlength="6" maxlength="128"
+                     aria-describedby="capsLockHint loginMessage">
+              <button class="auth-password-toggle" id="togglePassword" type="button" aria-label="Shfaq password-in" aria-pressed="false">Shfaq</button>
+            </span>
+          </label>
+          <p class="auth-provider-status" id="capsLockHint" hidden>Caps Lock është aktiv.</p>
+          <button class="lp-btn lp-btn--secondary au-submit" id="loginSubmit" type="submit"><span>Hyr me password</span></button>
         </form>
+      </details>
 
-        <div class="mi-admin-login-separator"><span>ose</span></div>
-        <div id="googleLoginButton" class="mi-admin-google"></div>
-        <p id="googleLoginStatus" class="mi-admin-google-status" aria-live="polite"></p>
-
-        <details id="passwordFallback" class="mi-admin-login-fallback" hidden>
-          <summary>Hyrje rezervë</summary>
-          <form id="loginForm">
-            <label for="password">Password rezervë</label>
-            <div class="mi-admin-login-password">
-              <input id="password" type="password" autocomplete="current-password" minlength="6">
-              <button type="button" id="togglePassword" aria-pressed="false" aria-label="Shfaq password-in">Shfaq</button>
-            </div>
-            <small id="capsLockHint" hidden>Caps Lock është aktiv.</small>
-            <button class="mi-admin-login-submit is-secondary" id="loginSubmit" type="submit"><span>Hyr me password</span></button>
-          </form>
-        </details>
-
-        <div class="mi-admin-login-foot">
-          <a href="/">← Kthehu te MedIndex</a>
-          <span>Qasja verifikohet përsëri brenda panelit.</span>
-        </div>
+      <div class="mi-admin-auth-foot">
+        <a class="lp-textlink" href="/">Kthehu te DRx</a>
+        <span>Admin-only</span>
       </div>
     </section>
   </main>
-  <script src="/login.js?v=admin-login-v1" defer></script>
+
+  <footer class="auth-footer">
+    <p>© 2026 DRx · Admin Console</p>
+    <p>Qasja administrative verifikohet në server.</p>
+  </footer>
+
+  <script src="/login.js?v=drx-admin-stripe-v1" defer></script>
 </body>
 </html>
