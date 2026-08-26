@@ -17,6 +17,21 @@ execFileSync(process.execPath, ['--check', path.join(ROOT, 'app-performance.js')
 
 const fast = read('registry-fast-start.js');
 assert.match(fast, /MAX_BLOCKING_MS = 2200/, 'blocking loader window must remain bounded');
+assert.match(fast, /PREFETCH_TTL_MS = 10000/, 'startup registry prefetch must have a short bounded reuse window');
+assert.match(fast, /initialRegistryPageUrl/, 'fast-start must prefetch only the bounded initial registry page');
+assert.match(fast, /\/api\/drug-search/, 'startup prefetch must use the bounded drug-search gateway');
+assert.match(fast, /view:'registry-page'/, 'startup prefetch must use the registry-page contract');
+assert.match(fast, /pageSize:mobile \? '25' : '50'/, 'startup prefetch must preserve mobile and desktop page budgets');
+assert.match(fast, /registry-prefetch-reused/, 'the initial lightweight renderer must be able to reuse the in-flight prefetch');
+assert.match(fast, /abortableClone/, 'prefetch reuse must preserve AbortSignal cancellation semantics');
+assert.match(fast, /contentType\.includes\('application\/json'\)/, 'only successful JSON responses may be reused');
+assert.match(fast, /MEDINDEX_PERFORMANCE/, 'startup performance telemetry must remain locally observable');
+assert.match(fast, /PerformanceObserver/, 'startup must collect browser performance entries when supported');
+assert.match(fast, /largest-contentful-paint/, 'LCP telemetry must be collected');
+assert.match(fast, /layout-shift/, 'CLS telemetry must be collected');
+assert.match(fast, /longtask/, 'long-task telemetry must be collected');
+assert.match(fast, /medindex:performance-mark/, 'startup milestones must publish a local performance event');
+assert.match(fast, /first-registry-row/, 'time to first registry row must be measured');
 assert.match(fast, /releaseLoader\('background'\)/, 'loader must retain a bounded fallback release');
 assert.match(fast, /releaseInteractiveShell/, 'loader must release as soon as authentication and shell are ready');
 assert.match(fast, /classList\.contains\('auth-ready'\)/, 'interactive release must wait for authentication');
@@ -87,4 +102,4 @@ assert.match(part, /if\(existing\)[\s\S]*existing\.addEventListener\('load', fin
 assert.match(part, /script\.async = true/, 'quality fallback runtime must not block document parsing');
 assert.doesNotMatch(part, /existing\.addEventListener\('error', reject/, 'quality bootstrap must not remain rejected or unresolved');
 
-console.log('Registry fast-start, bandwidth-aware quality fallback, single-owner mobile lightweight v2, desktop lightweight and authenticated loader v10 audit passed.');
+console.log('Registry fast-start prefetch, performance telemetry, bandwidth-aware quality fallback, single-owner mobile lightweight v2, desktop lightweight and authenticated loader v10 audit passed.');
