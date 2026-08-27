@@ -22,7 +22,10 @@ assert.match(fast, /initialRegistryPageUrl/, 'fast-start must prefetch only the 
 assert.match(fast, /\/api\/drug-search/, 'startup prefetch must use the bounded drug-search gateway');
 assert.match(fast, /view:'registry-page'/, 'startup prefetch must use the registry-page contract');
 assert.match(fast, /pageSize:mobile \? '25' : '50'/, 'startup prefetch must preserve mobile and desktop page budgets');
+assert.doesNotMatch(fast, /initialRegistryPageUrl[\s\S]{0,420}includeTotal:'1'/, 'fast-start must prefetch rows only; exact count belongs to the post-render lightweight count owner');
+assert.match(fast, /!url\.searchParams\.has\('includeTotal'\)/, 'prefetch reuse must match the count-free lightweight row request');
 assert.match(fast, /registry-prefetch-reused/, 'the initial lightweight renderer must be able to reuse the in-flight prefetch');
+assert.match(fast, /!prefetchReused && prefetchPromise/, 'startup prefetch must be consumed once so later default-page restores reach the server');
 assert.match(fast, /abortableClone/, 'prefetch reuse must preserve AbortSignal cancellation semantics');
 assert.match(fast, /contentType\.includes\('application\/json'\)/, 'only successful JSON responses may be reused');
 assert.match(fast, /DEDUP_PATHS = new Set\(\['\/api\/auth', '\/api\/icd', '\/api\/user-library'\]\)/, 'critical same-origin GET endpoints must have a bounded browser in-flight dedup set');

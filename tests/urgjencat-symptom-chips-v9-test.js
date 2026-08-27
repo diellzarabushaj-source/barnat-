@@ -33,6 +33,17 @@ assert.match(js, /aria-pressed/);
 assert.match(js, /search\.dispatchEvent\(new Event\('input'/);
 assert.match(js, /availableCandidates/);
 assert.match(js, /hits > 0/);
+assert.match(js, /function hideLegacyQuick\(\) \{[\s\S]*!legacyQuick\.hidden[\s\S]*legacyQuick\.hidden = true/);
+assert.equal(
+  (js.match(/legacyQuick\.hidden\s*=\s*true/g) || []).length,
+  1,
+  'legacy quick-search visibility must be written through one guarded helper to avoid a MutationObserver feedback loop',
+);
+assert.doesNotMatch(
+  js,
+  /if \(legacyQuick\) legacyQuick\.hidden = true/,
+  'unguarded writes to the observed hidden attribute can self-trigger forever',
+);
 assert.doesNotMatch(js, /gemini|generative|fetch\(|XMLHttpRequest/i);
 assert.doesNotMatch(js, /mg\/kg|mcg\/kg|adrenalin|epinefrin|nalokson|atropin|amiodaron|adenozin/i);
 assert.match(css, /\.ck-v9-symptoms/);

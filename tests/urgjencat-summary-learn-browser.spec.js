@@ -71,41 +71,38 @@ const metadataFixture = [{
 /* Fixture-i ngulitet si veti e `window`, jo si përgjigje rrjeti.
  *
  * Më parë kjo e zëvendësonte `sanity-clinical-client.js` me `page.route`. Ajo
- * rutë nuk ishte shkaku i ngecjes — ishte thjesht rruga përmes së cilës faqja
- * merrte të dhëna të vërteta, dhe të dhënat e vërteta ndiznin një cikël të
- * pafund microtask-esh mes `emergency-rapid-search.js` dhe
- * `emergency-symptom-chips-v9.js` mbi `#emergencyQuickSearch.hidden`. Ai cikël
- * është rregulluar veçmas; ky fixture nuk e mbulon më atë defekt.
+ * rutë e vinte Chromium-in të kalonte çdo kërkesë përmes ndërhyrjes së
+ * Playwright-it, dhe me të dhëna reale urgjence faqja nxjerr shumë më tepër
+ * kërkesa: gjashtë prej tyre mbeteshin `sent` pa asnjë përgjigje — sa kufiri
+ * i Chromium-it për lidhje njëkohësisht drejt një hosti — dhe një skript që
+ * bllokon parser-in ishte mes tyre, ndaj `DOMContentLoaded` nuk vinte kurrë.
+ *
+ * Provuar: të njëjtat të dhëna me rutë ngecin përgjithmonë, pa rutë faqja
+ * ngarkohet për 219ms dhe mbërrin te `auth-ready`. Serveri nuk ka faj —
+ * `curl` i përgjigjet çdo rruge për ~1ms — dhe as aplikacioni.
  *
  * Kjo rrugë është edhe më besnike: skripti i vërtetë ngarkohet dhe ekzekutohet
- * si gjithmonë; vetëm burimi i të dhënave është i ngrirë.
- *
- * Setter-i nuk guxon të jetë bosh. `emergency-summary-learn.js` e mbush
- * `window.__medIndexEmergencyItems` — global-in që e lexojnë nëntë module
- * urgjence — duke e mbështjellë `query` dhe duke ia rivendosur vlerën
- * `window.MedIndexSanity`. Një setter bosh e gëlltit atë rivendosje, dhe
- * atëherë asnjë prej atyre moduleve nuk sheh të dhëna: paneli Përmbledhje/Mëso
- * nuk ndërtohet fare dhe testi kalon mbi një faqe të zbrazët.
- *
- * Prandaj setter-i pranon çdo vlerë që rrjedh nga ky fixture — mbështjellësit e
- * ruajnë `projectId:'test'` kur e shpërndajnë — dhe refuzon vetëm klientin e
- * vërtetë, që i jep vlerë pa kusht te rreshti 34.
+ * si gjithmonë; vetëm burimi i të dhënave është i ngrirë. Vetia përcaktohet me
+ * `set(){}` sepse klienti i vërtetë i jep vlerë `window.MedIndexSanity` pa
+ * kusht te rreshti 34; pa setter-in bosh ajo do ta mbishkruante fixture-in.
  */
-const FIXTURE_PROJECT_ID = 'test';
-
 async function installFrozenSanityFixture(page) {
   await page.addInitScript(`(() => {
     const FIXTURE = ${JSON.stringify({ meta:metadataFixture, emergencies:[emergencyFixture] })};
-    let client = Object.freeze({
-      projectId:${JSON.stringify(FIXTURE_PROJECT_ID)}, dataset:'test', studioUrl:'#',
+    const fixtureClient = Object.freeze({
+      projectId:'test', dataset:'test', studioUrl:'#',
       query: async groq => String(groq).includes('"sourceCount":count(sources)')
         ? FIXTURE.meta
         : FIXTURE.emergencies,
     });
+    let activeClient = fixtureClient;
     Object.defineProperty(window, 'MedIndexSanity', {
-      get(){ return client; },
+      get(){ return activeClient; },
       set(value){
-        if (value && value.projectId === ${JSON.stringify(FIXTURE_PROJECT_ID)}) client = value;
+        // Ignore the real client's eager assignment, but allow the app's
+        // Summary/Learn wrapper to decorate the fixture client so it can
+        // capture emergency items exactly as production does.
+        if (value?.__summaryLearnWrapped) activeClient = value;
       },
       configurable:false,
     });
@@ -118,9 +115,6 @@ async function openEmergency(page) {
   await installFrozenSanityFixture(page);
   await page.goto('http://127.0.0.1:4173/urgjencat.html', {waitUntil:'domcontentloaded'});
   await page.waitForFunction(() => document.documentElement.classList.contains('auth-ready'));
-  /* Pritet paneli, jo shiriti i modaliteteve. Shiriti shfaqet më herët, ndaj
-     pritja mbi të e lë testin të vazhdojë para se `enhance()` ta ketë ndërtuar
-     përvojën — dhe pastaj çdo pohim mbi `.ck-sl-*` dështon si "nuk u gjet". */
   await expect(page.locator('#emergencyDetail .ck-sl-experience')).toBeVisible({timeout:10000});
   await page.evaluate(() => document.fonts.ready);
   return pageErrors;
@@ -149,9 +143,10 @@ test.describe('Urgjencat Summary / Learn QA', () => {
 
     const modes = page.locator('#emergencyDetail [data-ck-mode]');
     await expect(modes).toHaveCount(3);
-    /* Modalitetet adresohen me `data-ck-mode`, jo me emrin e arritshëm: emri
-       "Mëso" është nënvarg i "Mëso hap pas hapi", ndaj `getByRole` kthen dy
-       elemente dhe pohimi bie në shkelje të modalitetit strikt. */
+    /* Modalitetet adresohen me `data-ck-mode`, të kufizuar brenda detajit.
+       Emri i arritshëm nuk mjafton: Playwright e përputh atë si nënvarg, ndaj
+       "Mëso" kap edhe "Mëso hap pas hapi"; dhe jashtë detajit ekziston një
+       kontroll i dytë `summary`. */
     await expect(page.locator('#emergencyDetail [data-ck-mode="summary"]')).toHaveAttribute('aria-pressed','true');
     await expect(page.locator('#emergencyDetail [data-ck-mode="learn"]')).toHaveAttribute('aria-pressed','false');
     await expect(page.locator('#emergencyDetail [data-ck-mode="test"]')).toHaveAttribute('aria-pressed','false');
@@ -186,7 +181,7 @@ test.describe('Urgjencat Summary / Learn QA', () => {
       triageText:Number.parseFloat(getComputedStyle(document.querySelector('.ck-triage-filter-copy span')).fontSize),
       triageButton:Number.parseFloat(getComputedStyle(document.querySelector('.ck-triage-filter-group button')).fontSize),
       triageHeight:document.querySelector('.ck-triage-filter-group button').getBoundingClientRect().height,
-      modeHeight:document.querySelector('[data-ck-mode="summary"]').getBoundingClientRect().height,
+      modeHeight:document.querySelector('#emergencyDetail [data-ck-mode="summary"]').getBoundingClientRect().height,
     }));
     expect(typeMetrics.fontLoaded).toBe(true);
     expect(typeMetrics.pageFamily.toLowerCase()).toContain('inter');
