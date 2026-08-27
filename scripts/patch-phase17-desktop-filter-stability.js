@@ -67,8 +67,6 @@ replaceOnce(
 for (const invariant of [
   'let pageRequestEpoch = 0',
   'let countRequestEpoch = 0',
-  "let countContextOwner = ''",
-  'clearKnownTotal({ resetCountOwner:false })',
   'fetchLogicalPage({ includeTotal:false, signal:controller.signal })',
   'requestEpoch !== pageRequestEpoch || pageController !== controller || controller.signal.aborted',
   'function countContextKey()',
@@ -150,6 +148,8 @@ replaceMobileOnce(
 for (const invariant of [
   'let pageRequestEpoch = 0',
   'let countRequestEpoch = 0',
+  "let countContextOwner = ''",
+  'clearKnownTotal({ resetCountOwner:false })',
   'function mobileCountContextKey()',
   'function mobileExactCountUrl()',
   "url.searchParams.set('pageSize', '1')",
