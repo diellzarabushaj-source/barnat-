@@ -101,7 +101,11 @@
         ${selected.size ? '<button type="button" class="ck-v9-clear" data-ck-v9-clear>Hiqi</button>' : ''}
       </div>`;
     host.hidden = false;
-    if (legacyQuick) legacyQuick.hidden = true;
+    /* Kërkimi i shpejtë fshihet vetëm kur këto shenja zënë vendin e tij, dhe
+       vetëm nëse s'është tashmë i fshehur. `emergency-rapid-search.js` e
+       zotëron të njëjtin atribut dhe e vëzhgon; një shkrim i pakushtëzuar këtu
+       e nis një ping-pong që s'mbaron. Shih shënimin te vëzhguesi më poshtë. */
+    if (legacyQuick && !legacyQuick.hidden) legacyQuick.hidden = true;
   }
 
   function applySelection() {
@@ -124,9 +128,18 @@
     }
   }, {capture:true});
 
+  /* Vëzhguesi rindërton shenjat kur kërkimi i shpejtë ndryshon, por nuk shkruan
+     vetë mbi `hidden`.
+     Shkrimi i mëparshëm ishte i pakushtëzuar dhe mbi pikërisht atributin që ky
+     vëzhgues dëgjon, ndërsa `emergency-rapid-search.js` e vendos të njëjtin
+     atribut në `false` sa herë ka përputhje — dhe e vëzhgon edhe ai. Të dy
+     shkrimet ushqenin njëri-tjetrin si microtask-e: fija kryesore nuk kthehej
+     kurrë te event loop-i, ndaj faqja nuk mbërrinte kurrë te DOMContentLoaded.
+     Ndizej vetëm kur kishte urgjenca reale, sepse pa to s'ka përputhje.
+     Tani `render()` është i vetmi shkrues, dhe vetëm kur shenjat vërtet e zënë
+     vendin e kërkimit të shpejtë. */
   const observer = new MutationObserver(() => {
     if (!host || host.hidden || !host.querySelector('[data-ck-v9-symptom]')) render();
-    if (legacyQuick) legacyQuick.hidden = true;
   });
   if (legacyQuick) observer.observe(legacyQuick, {childList:true, subtree:true, attributes:true, attributeFilter:['hidden']});
 
