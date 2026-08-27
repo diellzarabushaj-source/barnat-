@@ -193,6 +193,10 @@
     {
       "version": "20260827141131",
       "name": "p1_verified_long_tail_batch_three"
+    },
+    {
+      "version": "20260827141454",
+      "name": "p1_official_long_tail_batch_four"
     }
   ]
 }
