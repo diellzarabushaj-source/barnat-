@@ -227,16 +227,26 @@ test.describe('Urgjencat Summary / Learn QA', () => {
     await page.locator('#emergencyDetail [data-ck-mode="learn"]').click();
     await expect(page.locator('.ck-sl-summary')).toBeHidden();
     await expect(page.locator('.ck-sl-learn')).toBeVisible();
-    await expect(page.locator('.ck-sl-flashcards')).toBeVisible();
-    await expect(page.locator('[data-flash-reveal]')).toHaveAttribute('aria-expanded','false');
-    await page.locator('[data-flash-reveal]').click();
-    await expect(page.locator('[data-flash-reveal]')).toHaveAttribute('aria-expanded','true');
-    await expect(page.locator('.ck-sl-flash-answer')).toBeVisible();
-    await expect(page.locator('.ck-sl-flash-answer')).toContainText('500 mikrogram');
-    await expect(page.locator('.ck-sl-recall')).toBeVisible();
-    await page.locator('[data-flash-known]').click();
-    await expect(page.locator('.ck-sl-flash-head>strong')).toHaveText('2 / 9');
-    await expect(page.locator('[data-flash-reveal]')).toBeFocused();
+    /* Flashcard-et nuk janë më te "Mëso": jetojnë te modaliteti i tretë,
+       "Testo veten". Paneli i tyre `.ck-sl-panel` rri `display:none` derisa ai
+       modalitet të zgjidhet, dhe shiriti i kërcimit i Mësimit nuk e listën
+       fare. Testi kalon atje, siç do të bënte lexuesi. */
+    await page.locator('#emergencyDetail [data-ck-mode="test"]').click();
+    await expect(page.locator('#emergencyDetail [data-ck-mode="test"]')).toHaveAttribute('aria-pressed','true');
+    /* Ekzistojnë dy seksione flashcard-esh — një për Mësimin, një për Testin —
+       ndaj çdo pohim kufizohet te ai që është vërtet i dukshëm. */
+    const flashcards = page.locator('#emergencyDetail .ck-sl-flashcards').locator('visible=true');
+    await expect(flashcards).toBeVisible();
+    const reveal = flashcards.locator('[data-flash-reveal]');
+    await expect(reveal).toHaveAttribute('aria-expanded','false');
+    await reveal.click();
+    await expect(reveal).toHaveAttribute('aria-expanded','true');
+    await expect(flashcards.locator('.ck-sl-flash-answer')).toBeVisible();
+    await expect(flashcards.locator('.ck-sl-flash-answer')).toContainText('500 mikrogram');
+    await expect(flashcards.locator('.ck-sl-recall')).toBeVisible();
+    await flashcards.locator('[data-flash-known]').click();
+    await expect(flashcards.locator('.ck-sl-flash-head>strong')).toHaveText('2 / 9');
+    await expect(reveal).toBeFocused();
 
     await page.evaluate(() => { document.documentElement.dataset.theme = 'dark'; });
     const darkMetrics = await page.evaluate(() => {
