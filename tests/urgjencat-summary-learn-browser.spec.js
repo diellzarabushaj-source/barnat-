@@ -109,7 +109,7 @@ async function openEmergency(page) {
   await installFrozenSanityFixture(page);
   await page.goto('http://127.0.0.1:4173/urgjencat.html', {waitUntil:'domcontentloaded'});
   await page.waitForFunction(() => document.documentElement.classList.contains('auth-ready'));
-  await expect(page.locator('#emergencyDetail .ck-sl-experience')).toBeVisible({timeout:10000});
+  await expect(page.locator('#emergencyDetail [data-ck-mode="summary"]')).toBeVisible({timeout:10000});
   await page.evaluate(() => document.fonts.ready);
   return pageErrors;
 }
@@ -136,7 +136,7 @@ test.describe('Urgjencat Summary / Learn QA', () => {
     const pageErrors = await openEmergency(page);
 
     const modes = page.locator('#emergencyDetail [data-ck-mode]');
-    await expect(modes).toHaveCount(2);
+    await expect(modes).toHaveCount(3);
     await expect(page.getByRole('button',{name:'Përmbledhje'})).toHaveAttribute('aria-pressed','true');
     await expect(page.getByRole('button',{name:'Mëso'})).toHaveAttribute('aria-pressed','false');
     await expect(page.locator('.ck-sl-summary')).toBeVisible();
@@ -242,7 +242,7 @@ test.describe('Urgjencat Summary / Learn QA', () => {
     await page.locator('[data-flash-reveal]').click();
 
     const metrics = await page.evaluate(() => {
-      const root = document.querySelector('.ck-sl-experience');
+      const root = document.querySelector('#emergencyDetail');
       const visibleText = [...root.querySelectorAll('*')].filter(node => {
         const style = getComputedStyle(node);
         return node.textContent.trim() && style.display !== 'none' && style.visibility !== 'hidden' && node.getClientRects().length;
