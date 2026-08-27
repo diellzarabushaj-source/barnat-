@@ -68,17 +68,39 @@ const metadataFixture = [{
   ],
 }];
 
+/* Fixture-i ngulitet si veti e `window`, jo si përgjigje rrjeti.
+ *
+ * Më parë kjo e zëvendësonte `sanity-clinical-client.js` me `page.route`. Ajo
+ * rutë e vinte Chromium-in të kalonte çdo kërkesë përmes ndërhyrjes së
+ * Playwright-it, dhe me të dhëna reale urgjence faqja nxjerr shumë më tepër
+ * kërkesa: gjashtë prej tyre mbeteshin `sent` pa asnjë përgjigje — sa kufiri
+ * i Chromium-it për lidhje njëkohësisht drejt një hosti — dhe një skript që
+ * bllokon parser-in ishte mes tyre, ndaj `DOMContentLoaded` nuk vinte kurrë.
+ *
+ * Provuar: të njëjtat të dhëna me rutë ngecin përgjithmonë, pa rutë faqja
+ * ngarkohet për 219ms dhe mbërrin te `auth-ready`. Serveri nuk ka faj —
+ * `curl` i përgjigjet çdo rruge për ~1ms — dhe as aplikacioni.
+ *
+ * Kjo rrugë është edhe më besnike: skripti i vërtetë ngarkohet dhe ekzekutohet
+ * si gjithmonë; vetëm burimi i të dhënave është i ngrirë. Vetia përcaktohet me
+ * `set(){}` sepse klienti i vërtetë i jep vlerë `window.MedIndexSanity` pa
+ * kusht te rreshti 34; pa setter-in bosh ajo do ta mbishkruante fixture-in.
+ */
 async function installFrozenSanityFixture(page) {
-  await page.route('**/sanity-clinical-client.js*', route => route.fulfill({
-    status:200,
-    contentType:'application/javascript; charset=utf-8',
-    body:`window.MedIndexSanity = Object.freeze({
-      projectId:'test',dataset:'test',studioUrl:'#',
-      query:async groq => String(groq).includes('"sourceCount":count(sources)')
-        ? ${JSON.stringify(metadataFixture)}
-        : ${JSON.stringify([emergencyFixture])}
-    });`,
-  }));
+  await page.addInitScript(`(() => {
+    const FIXTURE = ${JSON.stringify({ meta:metadataFixture, emergencies:[emergencyFixture] })};
+    const client = Object.freeze({
+      projectId:'test', dataset:'test', studioUrl:'#',
+      query: async groq => String(groq).includes('"sourceCount":count(sources)')
+        ? FIXTURE.meta
+        : FIXTURE.emergencies,
+    });
+    Object.defineProperty(window, 'MedIndexSanity', {
+      get(){ return client; },
+      set(){},
+      configurable:false,
+    });
+  })();`);
 }
 
 async function openEmergency(page) {
