@@ -322,11 +322,17 @@ async function assertMenuInViewport(page) {
 
     // Personal views must reuse the same canonical table/chrome. Their switch
     // also proves stale Barnat search/filter state cannot strand the menu.
-    const favoritesView = page.locator('[data-personal-view="favorites"]').first();
-    const notesView = page.locator('[data-personal-view="notes"]').first();
-    const allView = page.locator('[data-personal-view="all"]').first();
+    //
+    // The switch these assertions used to click, `[data-personal-view]`, sits
+    // inside `.registry-table-bar`, which the canonical-table design hides
+    // outright — so it was present in the DOM and 0x0 forever. Favorites is a
+    // real sidebar button now; Notes kept no control of its own and is reached
+    // the way the app itself reaches it, by hash. What is asserted about each
+    // view is unchanged.
+    const favoritesView = page.locator('button[data-nav="favorites"]').first();
     assert.ok(await favoritesView.count(), 'Phase 4: Favorites view control is missing.');
-    assert.ok(await notesView.count(), 'Phase 4: Notes view control is missing.');
+    assert.ok(await favoritesView.isVisible(),
+      'Phase 4: the Favorites control must be reachable, not merely present in the DOM.');
 
     await favoritesView.click();
     await waitForHash(page, '#favoritet');
@@ -336,7 +342,7 @@ async function assertMenuInViewport(page) {
     assert.equal(await page.locator('#dataTable').count(), 1);
     report.favoritesView = true;
 
-    await notesView.click();
+    await page.evaluate(() => { location.hash = '#shenimet'; });
     await waitForHash(page, '#shenimet');
     await waitForRegistry(page);
     assert.ok(((await page.locator('#tbody').textContent()) || '').includes(firstName),
@@ -344,8 +350,7 @@ async function assertMenuInViewport(page) {
     assert.equal(await page.locator('#dataTable').count(), 1);
     report.notesView = true;
 
-    if (await allView.count()) await allView.click();
-    else await page.evaluate(() => history.replaceState(null, '', location.pathname));
+    await page.evaluate(() => history.replaceState(null, '', location.pathname));
     await waitForRegistry(page);
 
     // Back/forward lifecycle: pageshow recovery must leave no orphan menu and
