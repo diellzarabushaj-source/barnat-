@@ -14,12 +14,14 @@ const marker = 'registry-personal-supabase-owner-v1';
 const immediateMarker = 'registry-personal-supabase-immediate-v1';
 
 assert.ok(helper.includes("UserStore.userFromSession(request)"), 'Personal membership must be scoped from the authenticated MedIndex session.');
-assert.ok(helper.includes("user_favorites?${params.toString()}"), 'Favorites/Notes membership must come from Supabase user_favorites.');
+assert.ok(helper.includes("user_favorites?${params.toString()}"), 'Favorites and legacy note fallback must stay scoped to Supabase user_favorites.');
+assert.ok(helper.includes("user_notes?${params.toString()}"), 'Canonical Notes membership must come from Supabase user_notes.');
 assert.ok(helper.includes("params.set('user_id', `eq.${userId}`)"), 'Every personal membership query must explicitly filter user_id.');
 assert.ok(helper.includes("params.set('deleted_at', 'is.null')"), 'Deleted/tombstoned personal rows must never reappear.');
 assert.ok(helper.includes("fetchDrugsBy('pdid'"), 'Current composite favorite keys must resolve through the indexed Supabase PDID path.');
 assert.ok(helper.includes('exactMembershipMatch(row, wanted)'), 'Targeted drug candidates must be revalidated against the full favorite identity.');
-assert.ok(helper.includes("payload.kind === 'drug-note'"), 'Notes must use the canonical encrypted-library note membership contract.');
+assert.ok(helper.includes("payload.kind === 'drug-note'"), 'Legacy note rows must remain readable during the compatibility window.');
+assert.ok(helper.includes('nativeNoteKeysForUser'), 'Native note membership must resolve user_notes back to shared registry rows.');
 
 const compositeHints = resolver.lookupHints([
   '300|Enjomin|50 mg',
