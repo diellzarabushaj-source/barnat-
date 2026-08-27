@@ -561,10 +561,10 @@ body.lp{
   font-size:11px;text-transform:uppercase;letter-spacing:.5px;
   color:var(--lp-mute);font-weight:400;margin:0 0 14px;
 }
-.lp-footer ul{margin:0;padding:0;list-style:none;display:grid;gap:10px;}
-/* 44px zonë prekjeje. Teksti mbetet 14px; rritet vetëm sipërfaqja që preket,
-   sepse 17px është nën kufirin e gishtit në telefon. */
-.lp-footer li a{display:inline-flex;align-items:center;min-height:44px;font-size:14px;color:var(--lp-ink-2);}
+.lp-footer ul{margin:0;padding:0;list-style:none;display:grid;gap:7px;}
+/* Në desktop rreshtat rrinë të ngjeshur, si te Stripe: pa lartësi minimale,
+   vetëm teksti. Zona 44px e prekjes vlen aty ku ka gisht — shih kufirin 767px. */
+.lp-footer li a{display:inline-flex;align-items:center;min-height:24px;font-size:14px;line-height:1.5;color:var(--lp-ink-2);}
 .lp-footer li a:hover{color:var(--lp-brand-press);}
 .lp-footer__legal{
   margin-top:48px;padding-top:24px;border-top:1px solid var(--lp-hairline);
@@ -614,6 +614,10 @@ body.lp{
 }
 
 @media (max-width:767px){
+  /* Gishti kërkon 44px; hapësira e listës hiqet që rreshtat të mos dyfishohen. */
+  .lp-footer ul{gap:0;}
+  .lp-footer li a{min-height:44px;}
+
   :root{--lp-gutter:16px;}
   /* Në 390px logo + «Hyr» + pill + hamburger nuk hyjnë; CTA-të rrinë në meny */
   .lp-nav__actions > .lp-nav__link,
