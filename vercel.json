@@ -87,6 +87,10 @@
       "destination": "/api/auth?scope=library"
     },
     {
+      "source": "/api/profile-photo",
+      "destination": "/api/auth?scope=profile-photo"
+    },
+    {
       "source": "/api/population-verification",
       "destination": "/api/clinical-editor?populationVerification=1"
     },
