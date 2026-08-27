@@ -189,6 +189,10 @@
     {
       "version": "20260827140805",
       "name": "p1_verified_synonyms_and_precise_forms"
+    },
+    {
+      "version": "20260827141131",
+      "name": "p1_verified_long_tail_batch_three"
     }
   ]
 }
