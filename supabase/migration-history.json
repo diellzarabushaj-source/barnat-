@@ -225,6 +225,26 @@
     {
       "version": "20260827144718",
       "name": "p1_deterministic_alias_cleanup"
+    },
+    {
+      "version": "20260827145654",
+      "name": "p1_duplicate_component_identity_collapse"
+    },
+    {
+      "version": "20260827145710",
+      "name": "p1_base_ingredient_identities"
+    },
+    {
+      "version": "20260827155937",
+      "name": "p1_reviewed_equivalence_expressions"
+    },
+    {
+      "version": "20260827163438",
+      "name": "p1_long_tail_component_identities"
+    },
+    {
+      "version": "20260827164722",
+      "name": "p1_make_equivalence_guard_live"
     }
   ]
 }
