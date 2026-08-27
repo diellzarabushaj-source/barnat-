@@ -102,6 +102,9 @@ async function openRegistry(page, payload = safePayload) {
   await mockSafety(page);
   await page.goto(BASE, { waitUntil:'domcontentloaded' });
   await expect.poll(() => page.evaluate(() => document.documentElement.classList.contains('auth-ready')), { timeout:10000 }).toBe(true);
+  const doseHeader = page.locator('#headerRow [data-registry-dose-calculator-column="dose-calculator"]');
+  await expect(doseHeader).toHaveCount(1, { timeout:10000 });
+  await doseHeader.dispatchEvent('focusin');
   await expect.poll(() => page.evaluate(() => window.MedIndexDoseCalculator?.catalogStatus?.() || 'loading'), { timeout:15000 }).toBe('ready');
   await expect.poll(() => page.evaluate(() => window.MedIndexDoseSafety?.status?.() || 'loading'), { timeout:15000 }).toBe('ready');
   await expect.poll(() => page.locator('#tbody > tr').count(), { timeout:15000 }).toBe(3);
@@ -270,6 +273,10 @@ test('mobile physician flow: 44px action and no modal overflow', async ({ page }
 test('fail closed: unsafe catalog never exposes a dose button', async ({ page }) => {
   await mockCatalog(page, { ok:true, meta:{ failClosed:false, officialVerifiedOnly:false }, catalog });
   await page.goto(BASE, { waitUntil:'domcontentloaded' });
+  await expect.poll(() => page.evaluate(() => document.documentElement.classList.contains('auth-ready')), { timeout:10000 }).toBe(true);
+  const doseHeader = page.locator('#headerRow [data-registry-dose-calculator-column="dose-calculator"]');
+  await expect(doseHeader).toHaveCount(1, { timeout:10000 });
+  await doseHeader.dispatchEvent('focusin');
   await expect.poll(() => page.evaluate(() => window.MedIndexDoseCalculator?.catalogStatus?.() || 'loading'), { timeout:15000 }).toBe('error');
   await expect(page.locator('#tbody .dose-calculator-open')).toHaveCount(0);
   await expect(page.locator('#tbody [data-registry-dose-calculator-column="dose-calculator"] .registry-dosage-muted')).toHaveCount(3);
