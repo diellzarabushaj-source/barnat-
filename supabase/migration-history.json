@@ -201,6 +201,10 @@
     {
       "version": "20260827141828",
       "name": "p1_verified_typo_and_precise_salt_batch"
+    },
+    {
+      "version": "20260827142058",
+      "name": "p1_verified_exact_identity_batch_five"
     }
   ]
 }
