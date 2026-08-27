@@ -20,10 +20,15 @@ assert.equal(avatar._test.trustedRemoteAvatar('https://lh3.googleusercontent.com
 assert.equal(avatar._test.trustedRemoteAvatar('https://example.com/avatar.jpg'), false);
 
 const runtime = read('medindex-brand-runtime.js');
-const api = read('api/profile-photo.js');
+const authApi = read('api/auth.js');
+const vercel = JSON.parse(read('vercel.json'));
 const migration = read('supabase/migrations/20260827111357_native_user_notes_and_profile_avatars.sql');
 
-assert.match(api, /ProfileAvatar\.handle/);
+assert.match(authApi, /require\('\.\.\/lib\/profile-avatar\.js'\)/);
+assert.match(authApi, /profilePhotoRequested/);
+assert.match(authApi, /ProfileAvatar\.handle\(req, res\)/);
+assert.ok(vercel.rewrites.some(item => item.source === '/api/profile-photo' && item.destination === '/api/auth?scope=profile-photo'));
+assert.equal(fs.existsSync(path.join(ROOT, 'api/profile-photo.js')), false, 'profile photo must reuse api/auth.js to stay within the Vercel Hobby function budget');
 assert.match(runtime, /PROFILE_API = '\/api\/profile-photo'/);
 assert.match(runtime, /syncRemotePhoto/);
 assert.match(runtime, /persistPhoto/);
