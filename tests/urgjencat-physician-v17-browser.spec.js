@@ -36,20 +36,27 @@ async function installFrozenSanityFixture(page) {
       }],
       emergencies:[fixture],
     })};
-    const fixtureClient = Object.freeze({
-      projectId:'test', dataset:'test', studioUrl:'#',
-      query: async groq => String(groq).includes('"sourceCount":count(sources)')
-        ? FIXTURE.meta
-        : FIXTURE.emergencies,
-    });
-    let activeClient = fixtureClient;
-    Object.defineProperty(window, 'MedIndexSanity', {
-      get(){ return activeClient; },
-      set(value){
-        if (value?.__summaryLearnWrapped) activeClient = value;
-      },
-      configurable:false,
-    });
+    const nativeFetch = window.fetch.bind(window);
+    window.fetch = function medindexEmergencyFixtureFetch(input, init = {}) {
+      let url;
+      try {
+        const raw = typeof Request !== 'undefined' && input instanceof Request ? input.url : String(input);
+        url = new URL(raw, location.href);
+      } catch {
+        return nativeFetch(input, init);
+      }
+      if (url.hostname === '4wdtp8cz.apicdn.sanity.io' && url.pathname.includes('/data/query/production')) {
+        const groq = url.searchParams.get('query') || '';
+        const result = groq.includes('"sourceCount":count(sources)')
+          ? FIXTURE.meta
+          : FIXTURE.emergencies;
+        return Promise.resolve(new Response(JSON.stringify({ result }), {
+          status:200,
+          headers:{ 'Content-Type':'application/json; charset=utf-8' },
+        }));
+      }
+      return nativeFetch(input, init);
+    };
   })();`);
 }
 
