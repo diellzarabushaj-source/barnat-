@@ -209,7 +209,7 @@
   function installPrefetchReuse() {
     window.fetch = function medindexStartupFetch(input, init = {}) {
       const age = performance.now() - prefetchStartedAt;
-      if (prefetchPromise && age <= PREFETCH_TTL_MS && isInitialRegistryPageRequest(input, init)) {
+      if (!prefetchReused && prefetchPromise && age <= PREFETCH_TTL_MS && isInitialRegistryPageRequest(input, init)) {
         const signal = init.signal || (typeof Request !== 'undefined' && input instanceof Request ? input.signal : null);
         return abortableClone(prefetchPromise, signal).then(response => {
           if (!response) return deduplicatedFetch(input, init);
