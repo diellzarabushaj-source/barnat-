@@ -98,10 +98,10 @@ test.describe('Urgjencat physician v17', () => {
     await expect.poll(() => page.evaluate(() => window.MedIndexEmergencyReviewV17?.version || '')).toBe('17.0');
 
     await expect(page.locator('[data-ck-doctor-nav="summary"]')).toBeVisible();
-    await expect(page.locator('.ck-v3-nav-context')).toBeVisible();
+    await expect(page.locator('.ck-sl-summary .ck-v3-nav-context')).toBeVisible();
     await expect(page.locator('.ck-doctor-redflags-quick li')).toHaveCount(2);
 
-    await page.getByRole('button',{name:/Testo veten|Testo$/}).click();
+    await page.locator('#emergencyDetail [data-ck-mode="test"]').click();
     const flash = page.locator('[data-ck-sl-panel="test"] [data-ck-sl-flashcards]');
     await expect(flash).toBeVisible();
     await expect(flash.locator('.ck-flash-session-stats')).toBeVisible();
@@ -121,7 +121,7 @@ test.describe('Urgjencat physician v17', () => {
 
   test('320px remains navigable without horizontal overflow', async ({page}) => {
     const errors = await openEmergency(page, 320, 720);
-    await page.getByRole('button',{name:/Testo veten|Testo$/}).click();
+    await page.locator('#emergencyDetail [data-ck-mode="test"]').click();
     await page.locator('[data-ck-sl-panel="test"] [data-flash-reveal]').click();
 
     const metrics = await page.evaluate(() => {
