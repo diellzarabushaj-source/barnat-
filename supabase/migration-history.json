@@ -209,6 +209,10 @@
     {
       "version": "20260827142405",
       "name": "p1_verified_exact_compounds_batch_six"
+    },
+    {
+      "version": "20260827142650",
+      "name": "p1_precise_chlorhexidine_and_penicillin"
     }
   ]
 }
