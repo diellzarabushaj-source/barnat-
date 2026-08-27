@@ -169,6 +169,10 @@
     {
       "version": "20260827133439",
       "name": "p1_official_component_promotions"
+    },
+    {
+      "version": "20260827133920",
+      "name": "p1_official_component_batch_two"
     }
   ]
 }
