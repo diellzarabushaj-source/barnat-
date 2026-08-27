@@ -205,6 +205,10 @@
     {
       "version": "20260827142058",
       "name": "p1_verified_exact_identity_batch_five"
+    },
+    {
+      "version": "20260827142405",
+      "name": "p1_verified_exact_compounds_batch_six"
     }
   ]
 }
