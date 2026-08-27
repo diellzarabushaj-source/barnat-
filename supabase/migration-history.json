@@ -165,6 +165,10 @@
     {
       "version": "20260827132647",
       "name": "p1_safe_and_connector_resolution"
+    },
+    {
+      "version": "20260827133439",
+      "name": "p1_official_component_promotions"
     }
   ]
 }
