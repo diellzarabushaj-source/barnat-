@@ -153,6 +153,10 @@
     {
       "version": "20260827124402",
       "name": "p0_integrity_pipeline_coverage"
+    },
+    {
+      "version": "20260827130837",
+      "name": "p1_clinical_substance_identity_foundation"
     }
   ]
 }
