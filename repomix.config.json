@@ -1,0 +1,43 @@
+{
+  "$schema": "https://repomix.com/schemas/latest/schema.json",
+  "output": {
+    "filePath": "repomix-output.xml",
+    "style": "xml",
+    "removeComments": false,
+    "removeEmptyLines": false,
+    "showLineNumbers": true,
+    "copyToClipboard": false,
+    "fileSummary": true,
+    "directoryStructure": true
+  },
+  "include": [],
+  "ignore": {
+    "useGitignore": true,
+    "useDefaultPatterns": true,
+    "customPatterns": [
+      "repomix-output.*",
+      "node_modules/**",
+      "app-parts/**",
+      "app-runtime.js",
+      "data/*.json.gz",
+      "data/icd-hierarchy-snapshot.json",
+      "icd-data.js",
+      "fonts/**",
+      "brand/**",
+      "**/*.woff2",
+      "**/*.webp",
+      "**/*.png",
+      "**/*.jpg",
+      "**/*.svg",
+      ".impeccable/review/**",
+      ".agents/skills/**",
+      ".claude/skills/**",
+      ".superdesign/**",
+      "design-md/**",
+      "pnpm-lock.yaml"
+    ]
+  },
+  "security": {
+    "enableSecurityCheck": true
+  }
+}

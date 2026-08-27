@@ -10,3 +10,6 @@ sw-resilient-v3.js
 .superdesign/tmp/
 test-results/
 playwright-report/
+
+# Repomix packs the repo into a single file for AI tools; the output is a build artifact.
+repomix-output.*
