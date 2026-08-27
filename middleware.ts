@@ -42,6 +42,7 @@ const PUBLIC_PATHS = new Set([
   '/drx-pages.css',
   '/drx-auth.css',
   '/drx-blog.css',
+  '/drx-info.css',
   '/hyrje.html',
   '/regjistrohu.html',
   '/brand/drx-horizontal-dark.svg',
