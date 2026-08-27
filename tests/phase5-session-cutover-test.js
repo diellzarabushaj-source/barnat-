@@ -84,7 +84,8 @@ const { pathToFileURL } = require('node:url');
   assert.match(supabaseAuth, /legacyUserId:String\(profile\.legacy_user_id/, 'Legacy mapping must be normalized explicitly');
 
   assert.match(library, /prescriptionContext\(user\.id, item\.clientId\)/, 'Prescription encryption must still use storage/AAD uid in Phase 5');
-  assert.doesNotMatch(library, /authUid/, 'Phase 5 must not silently re-key prescription AAD to the Auth UUID');
+  assert.doesNotMatch(library, /prescriptionContext\(authUid[,)]/, 'Phase 5 must not silently re-key prescription AAD to the Auth UUID');
+  assert.match(library, /user_id:authUid/, 'Auth UUID may be used only for auth-bound native user_notes persistence');
 
   console.log('Phase 5 Supabase session cutover invariants passed.');
 })().catch(error => {
