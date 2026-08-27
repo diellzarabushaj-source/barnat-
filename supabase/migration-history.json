@@ -161,6 +161,10 @@
     {
       "version": "20260827131825",
       "name": "p1_component_aliases_and_refresh"
+    },
+    {
+      "version": "20260827132647",
+      "name": "p1_safe_and_connector_resolution"
     }
   ]
 }
