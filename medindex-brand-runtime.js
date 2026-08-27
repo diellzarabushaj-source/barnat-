@@ -2,10 +2,11 @@
   'use strict';
 
   const VERSION = 'medindex-brand-v4';
-  const PROFILE_VERSION = 'profile-portal-v1';
-  // The photo is a device preference, so it is stored per account: one browser
-  // may be used by two doctors, and neither may ever see the other's card.
+  const PROFILE_VERSION = 'profile-portal-v2';
+  // Legacy per-device photos are retained only as a one-time migration source.
+  // The canonical photo lives behind the authenticated same-origin profile API.
   const PROFILE_KEY_PREFIX = 'medindex_profile_v2:';
+  const PROFILE_API = '/api/profile-photo';
   // A single global key that belonged to whoever used the browser last. It is
   // removed on sight; nothing is migrated out of it, because it cannot be said
   // whose it was.
@@ -56,9 +57,8 @@
     return ROLE_LABELS[role.toLowerCase()] || role;
   }
 
-  // Name, email and role are the account's, read from the session on every
-  // load. Only the photo is a device preference, and it is filed under the
-  // account it belongs to.
+  // Name, email and role come from the session. A legacy device photo may be
+  // shown briefly while it is migrated to the account's persistent profile.
   function readProfile() {
     if (!account) return { ...SIGNED_OUT_PROFILE };
     const identity = {
@@ -88,6 +88,80 @@
     applyProfile();
   }
 
+  function clearLocalPhoto() {
+    const key = profileStorageKey();
+    if (!key) return;
+    try { localStorage.removeItem(key); } catch {}
+  }
+
+  async function profileApi(url = PROFILE_API, options = {}) {
+    if (typeof fetch !== 'function') throw new Error('Lidhja me profilin nuk është në dispozicion.');
+    const response = await fetch(url, {
+      credentials:'same-origin',
+      cache:'no-store',
+      ...options,
+      headers:{
+        Accept:'application/json',
+        ...(options.body !== undefined ? { 'Content-Type':'application/json' } : {}),
+        ...(options.headers || {}),
+      },
+    });
+    let payload = null;
+    try { payload = await response.json(); } catch {}
+    if (!response.ok) throw new Error(payload?.error || 'Profili nuk mund të përditësohej.');
+    return payload || {};
+  }
+
+  async function syncRemotePhoto() {
+    if (!account || typeof fetch !== 'function') return;
+    const owner = accountKey(account);
+    const local = profile.photo && profile.photo.startsWith('data:image/') ? profile.photo : '';
+    try {
+      const meta = await profileApi(`${PROFILE_API}?meta=1`);
+      if (!account || accountKey(account) !== owner) return;
+      if (meta.exists && meta.url) {
+        clearLocalPhoto();
+        profile = { ...profile, photo:String(meta.url) };
+        applyProfile();
+        return;
+      }
+      if (local.startsWith('data:image/jpeg;base64,')) {
+        const saved = await profileApi(PROFILE_API, {
+          method:'POST',
+          body:JSON.stringify({ dataUrl:local }),
+        });
+        if (!account || accountKey(account) !== owner) return;
+        clearLocalPhoto();
+        profile = { ...profile, photo:String(saved.url || '') };
+        applyProfile();
+      } else if (!local) {
+        profile = { ...profile, photo:'' };
+        applyProfile();
+      }
+    } catch {
+      // Offline or a temporary server failure keeps the account-scoped local fallback.
+    }
+  }
+
+  async function persistPhoto(photo) {
+    const safe = typeof photo === 'string' && photo.startsWith('data:image/jpeg;base64,') ? photo : '';
+    if (!safe) throw new Error('Fotografia nuk mund të përpunohej si JPEG.');
+    const saved = await profileApi(PROFILE_API, {
+      method:'POST',
+      body:JSON.stringify({ dataUrl:safe }),
+    });
+    clearLocalPhoto();
+    profile = { ...profile, photo:String(saved.url || '') };
+    applyProfile();
+  }
+
+  async function removePhoto() {
+    await profileApi(PROFILE_API, { method:'DELETE' });
+    clearLocalPhoto();
+    profile = { ...profile, photo:'' };
+    applyProfile();
+  }
+
   function forgetLegacyProfile() {
     try { localStorage.removeItem(LEGACY_PROFILE_KEY); } catch {}
   }
@@ -107,6 +181,7 @@
     account = next;
     profile = readProfile();
     applyProfile();
+    void syncRemotePhoto();
   }
 
   function installStyles() {
@@ -183,7 +258,7 @@
                 <div class="mi-profile-field"><label for="miProfileRole">Roli</label><input id="miProfileRole" name="role" maxlength="80" readonly></div>
                 <div class="mi-profile-field mi-profile-field-wide"><label for="miProfileEmail">Emaili</label><input id="miProfileEmail" name="email" type="email" maxlength="120" readonly></div>
               </div>
-              <div class="mi-profile-note">Emri, roli dhe emaili vijnë nga llogaria me të cilën ke hyrë dhe ndryshohen vetëm atje. Fotografia ruhet vetëm në këtë shfletues, e lidhur me këtë llogari.</div>
+              <div class="mi-profile-note">Emri, roli dhe emaili vijnë nga llogaria me të cilën ke hyrë dhe ndryshohen vetëm atje. Fotografia ruhet në profilin tënd DRx dhe sinkronizohet në pajisjet ku hyn me këtë llogari.</div>
               <p class="mi-profile-status" id="miProfileStatus" role="status" aria-live="polite"></p>
               <div class="mi-profile-actions"><button class="mi-profile-save" type="submit">Mbyll</button></div>
             </form>
@@ -275,7 +350,7 @@
     const overlay = document.getElementById('miProfileOverlay');
     const file = document.getElementById('miProfileFile');
     const upload = () => { file.value = ''; file.click(); };
-    const remove = () => { try { savePhoto(''); status('Fotografia u hoq.', 'success'); } catch (error) { status(error.message, 'error'); } };
+    const remove = async () => { status('Duke hequr fotografinë…'); try { await removePhoto(); status('Fotografia u hoq.', 'success'); } catch (error) { status(error.message, 'error'); } };
 
     document.addEventListener('click', event => {
       const trigger = event.target.closest('[data-mi-profile-trigger]');
@@ -291,12 +366,12 @@
     menu.addEventListener('click', event => {
       if (event.target.closest('[data-profile-open]')) openDialog();
       if (event.target.closest('[data-profile-upload]')) upload();
-      if (event.target.closest('[data-profile-remove]')) remove();
+      if (event.target.closest('[data-profile-remove]')) void remove();
     });
     overlay.addEventListener('click', event => {
       if (event.target === overlay || event.target.closest('[data-profile-close]')) closeDialog();
       if (event.target.closest('[data-profile-upload]')) upload();
-      if (event.target.closest('[data-profile-remove]')) remove();
+      if (event.target.closest('[data-profile-remove]')) void remove();
     });
     // Identity is the account's and is not editable here: a local override was
     // exactly how one doctor's card came to carry another's name.
@@ -308,7 +383,7 @@
       const selected = file.files?.[0];
       if (!selected) return;
       status('Duke përpunuar fotografinë…');
-      try { savePhoto(await resizePhoto(selected)); status('Fotografia u përditësua.', 'success'); }
+      try { await persistPhoto(await resizePhoto(selected)); status('Fotografia u ruajt në profil.', 'success'); }
       catch (error) { status(error.message, 'error'); }
       file.value = '';
     });
@@ -374,7 +449,7 @@
     account:() => (account ? { ...account } : null),
     current:() => ({ ...profile }),
     adoptAccount,
-    _test:{ accountKey, roleLabel, profileStorageKey, readProfile, savePhoto, forgetLegacyProfile },
+    _test:{ accountKey, roleLabel, profileStorageKey, readProfile, savePhoto, syncRemotePhoto, persistPhoto, removePhoto, forgetLegacyProfile },
   });
 
   forgetLegacyProfile();
