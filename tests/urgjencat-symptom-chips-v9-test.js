@@ -44,6 +44,21 @@ assert.doesNotMatch(
   /if \(legacyQuick\) legacyQuick\.hidden = true/,
   'unguarded writes to the observed hidden attribute can self-trigger forever',
 );
+assert.doesNotMatch(
+  js,
+  /observer\.observe\(legacyQuick, \{[^}]*attributes\s*:\s*true[^}]*\}\)/,
+  'symptom chips must not observe the same hidden attribute that rapid search owns',
+);
+assert.doesNotMatch(
+  js,
+  /const observer = new MutationObserver\(\(\) => \{[\s\S]{0,220}hideLegacyQuick\(\);/,
+  'the legacy visibility writer must not run from its own MutationObserver callback',
+);
+assert.match(
+  js,
+  /observer\.observe\(legacyQuick, \{childList:true, subtree:true\}\)/,
+  'symptom chips should observe only quick-search content changes',
+);
 assert.doesNotMatch(js, /gemini|generative|fetch\(|XMLHttpRequest/i);
 assert.doesNotMatch(js, /mg\/kg|mcg\/kg|adrenalin|epinefrin|nalokson|atropin|amiodaron|adenozin/i);
 assert.match(css, /\.ck-v9-symptoms/);
