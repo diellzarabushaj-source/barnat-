@@ -66,7 +66,9 @@ replaceOnce(
 
 for (const invariant of [
   'let pageRequestEpoch = 0',
-  'let countRequestEpoch = 0',\n  "let countContextOwner = ''",\n  'clearKnownTotal({ resetCountOwner:false })',
+  'let countRequestEpoch = 0',
+  "let countContextOwner = ''",
+  'clearKnownTotal({ resetCountOwner:false })',
   'fetchLogicalPage({ includeTotal:false, signal:controller.signal })',
   'requestEpoch !== pageRequestEpoch || pageController !== controller || controller.signal.aborted',
   'function countContextKey()',
