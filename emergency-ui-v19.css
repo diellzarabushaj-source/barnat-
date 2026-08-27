@@ -228,7 +228,9 @@ html.medindex-tailadmin[data-mi-page="urgjencat"] .ck-list-button:hover{
 }
 html.medindex-tailadmin[data-mi-page="urgjencat"] .ck-list-button strong{
   color:#334158!important;
-  font-size:13.5px!important;
+  /* Dyshemeja e lexueshmërisë për titullin e një urgjence është 14px, e mbrojtur
+     nga auditi responsive. 13.5px e kalonte atë kufi për gjysmë piksel. */
+  font-size:14px!important;
   font-weight:550!important;
   line-height:1.32!important;
   letter-spacing:-.014em!important;

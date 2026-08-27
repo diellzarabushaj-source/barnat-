@@ -165,6 +165,14 @@ test.describe('Urgjencat Summary / Learn QA', () => {
     await expect(page.locator('.ck-directory-source-count')).toHaveText('2 burime');
     await expect(page.locator('.ck-directory-review')).toHaveText('Për verifikim');
     await expect(page.locator('.ck-directory-tag.is-icd')).toHaveText('T78.2');
+    /* Filtri i triazhit jeton brenda `<details#emergencyBrowse>`, që nis i
+       mbyllur. Ai është vetë seksioni i palosshëm i shfletimit, ndaj testi e
+       hap si përdoruesi para se ta masë — përndryshe pohimi mat një element
+       që ekziston, është 1119×101, dhe thjesht rri brenda një disclosure të
+       mbyllur. */
+    const browse = page.locator('#emergencyBrowse');
+    await expect(browse).toHaveCount(1);
+    await browse.evaluate(node => { node.open = true; });
     await expect(page.locator('.ck-triage-filter')).toBeVisible();
     await expect(page.locator('.ck-triage-filter-group button')).toHaveCount(4);
     await expect(page.locator('[data-ck-triage="critical"] [data-ck-triage-count="critical"]')).toHaveText('1');
