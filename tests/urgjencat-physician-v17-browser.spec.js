@@ -36,15 +36,18 @@ async function installFrozenSanityFixture(page) {
       }],
       emergencies:[fixture],
     })};
-    const client = Object.freeze({
+    const fixtureClient = Object.freeze({
       projectId:'test', dataset:'test', studioUrl:'#',
       query: async groq => String(groq).includes('"sourceCount":count(sources)')
         ? FIXTURE.meta
         : FIXTURE.emergencies,
     });
+    let activeClient = fixtureClient;
     Object.defineProperty(window, 'MedIndexSanity', {
-      get(){ return client; },
-      set(){},
+      get(){ return activeClient; },
+      set(value){
+        if (value?.__summaryLearnWrapped) activeClient = value;
+      },
       configurable:false,
     });
   })();`);
@@ -57,7 +60,7 @@ async function openEmergency(page, width = 1360, height = 900) {
   await installFrozenSanityFixture(page);
   await page.goto('http://127.0.0.1:4173/urgjencat.html', {waitUntil:'domcontentloaded', timeout:15000});
   await page.locator('html.auth-ready').waitFor({state:'attached', timeout:10000});
-  await expect(page.locator('#emergencyDetail [data-ck-mode="test"]')).toBeVisible({timeout:10000});
+  await expect(page.locator('#emergencyDetail .ck-sl-experience')).toBeVisible({timeout:10000});
   return errors;
 }
 
