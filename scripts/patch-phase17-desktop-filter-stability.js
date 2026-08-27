@@ -98,7 +98,7 @@ replaceMobileOnce(
 
 replaceMobileOnce(
   `function clearKnownTotal() {\n    state.total = null;\n    state.totalPages = null;\n    state.hasNext = false;\n  }`,
-  `function clearKnownTotal({ resetCountOwner = true } = {}) {\n    window.clearTimeout(countTimer);\n    countTimer = 0;\n    countController?.abort();\n    countController = null;\n    if (resetCountOwner) countContextOwner = '';\n    state.total = null;\n    state.totalPages = null;\n    state.hasNext = false;\n  }`,
+  `function clearKnownTotal({ resetCountOwner = true } = {}) {\n    if (resetCountOwner) {\n      window.clearTimeout(countTimer);\n      countTimer = 0;\n      countController?.abort();\n      countController = null;\n      countContextOwner = '';\n    }\n    state.total = null;\n    state.totalPages = null;\n    state.hasNext = false;\n  }`,
   'mobile count invalidation',
 );
 
