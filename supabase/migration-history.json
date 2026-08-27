@@ -157,6 +157,10 @@
     {
       "version": "20260827130837",
       "name": "p1_clinical_substance_identity_foundation"
+    },
+    {
+      "version": "20260827131825",
+      "name": "p1_component_aliases_and_refresh"
     }
   ]
 }
