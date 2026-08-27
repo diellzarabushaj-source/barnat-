@@ -30,6 +30,6 @@ assert.match(runtime, /persistPhoto/);
 assert.match(runtime, /removePhoto/);
 assert.doesNotMatch(runtime, /Fotografia ruhet vetëm në këtë shfletues/);
 assert.match(migration, /'profile-avatars'/);
-assert.match(migration, /false, 1048576,/);
+assert.match(migration, /false,\s*1048576,/s);
 
 console.log('Persistent Supabase profile-avatar contract passed.');
