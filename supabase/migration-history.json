@@ -217,6 +217,10 @@
     {
       "version": "20260827143750",
       "name": "p1_security_and_verified_tail"
+    },
+    {
+      "version": "20260827144343",
+      "name": "p1_explicit_expression_normalization"
     }
   ]
 }
