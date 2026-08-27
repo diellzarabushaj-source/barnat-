@@ -68,44 +68,38 @@ const metadataFixture = [{
   ],
 }];
 
-/* Fixture-i ngulitet si veti e `window`, jo si përgjigje rrjeti.
+/* Fixture-i mbahet brenda browser-it pa Playwright network routing.
  *
- * Më parë kjo e zëvendësonte `sanity-clinical-client.js` me `page.route`. Ajo
- * rutë e vinte Chromium-in të kalonte çdo kërkesë përmes ndërhyrjes së
- * Playwright-it, dhe me të dhëna reale urgjence faqja nxjerr shumë më tepër
- * kërkesa: gjashtë prej tyre mbeteshin `sent` pa asnjë përgjigje — sa kufiri
- * i Chromium-it për lidhje njëkohësisht drejt një hosti — dhe një skript që
- * bllokon parser-in ishte mes tyre, ndaj `DOMContentLoaded` nuk vinte kurrë.
- *
- * Provuar: të njëjtat të dhëna me rutë ngecin përgjithmonë, pa rutë faqja
- * ngarkohet për 219ms dhe mbërrin te `auth-ready`. Serveri nuk ka faj —
- * `curl` i përgjigjet çdo rruge për ~1ms — dhe as aplikacioni.
- *
- * Kjo rrugë është edhe më besnike: skripti i vërtetë ngarkohet dhe ekzekutohet
- * si gjithmonë; vetëm burimi i të dhënave është i ngrirë. Vetia përcaktohet me
- * `set(){}` sepse klienti i vërtetë i jep vlerë `window.MedIndexSanity` pa
- * kusht te rreshti 34; pa setter-in bosh ajo do ta mbishkruante fixture-in.
+ * page.route mbi sanity-clinical-client.js e bllokonte parser-in në Chromium.
+ * Këtu skripti real i Sanity-t dhe wrapper-at realë të Summary/Learn ekzekutohen
+ * pa ndryshim; vetëm GET-i i Sanity Data API merr një Response deterministe.
+ * Kjo ruan sjelljen production të window.MedIndexSanity dhe shmang ndërhyrjen
+ * e CDP/network routing që shkaktonte DOMContentLoaded hang.
  */
 async function installFrozenSanityFixture(page) {
   await page.addInitScript(`(() => {
     const FIXTURE = ${JSON.stringify({ meta:metadataFixture, emergencies:[emergencyFixture] })};
-    const fixtureClient = Object.freeze({
-      projectId:'test', dataset:'test', studioUrl:'#',
-      query: async groq => String(groq).includes('"sourceCount":count(sources)')
-        ? FIXTURE.meta
-        : FIXTURE.emergencies,
-    });
-    let activeClient = fixtureClient;
-    Object.defineProperty(window, 'MedIndexSanity', {
-      get(){ return activeClient; },
-      set(value){
-        // Ignore the real client's eager assignment, but allow the app's
-        // Summary/Learn wrapper to decorate the fixture client so it can
-        // capture emergency items exactly as production does.
-        if (value?.__summaryLearnWrapped) activeClient = value;
-      },
-      configurable:false,
-    });
+    const nativeFetch = window.fetch.bind(window);
+    window.fetch = function medindexEmergencyFixtureFetch(input, init = {}) {
+      let url;
+      try {
+        const raw = typeof Request !== 'undefined' && input instanceof Request ? input.url : String(input);
+        url = new URL(raw, location.href);
+      } catch {
+        return nativeFetch(input, init);
+      }
+      if (url.hostname === '4wdtp8cz.apicdn.sanity.io' && url.pathname.includes('/data/query/production')) {
+        const groq = url.searchParams.get('query') || '';
+        const result = groq.includes('"sourceCount":count(sources)')
+          ? FIXTURE.meta
+          : FIXTURE.emergencies;
+        return Promise.resolve(new Response(JSON.stringify({ result }), {
+          status:200,
+          headers:{ 'Content-Type':'application/json; charset=utf-8' },
+        }));
+      }
+      return nativeFetch(input, init);
+    };
   })();`);
 }
 
