@@ -1,0 +1,158 @@
+{
+  "project_ref": "ftuchtmolddhhsdcwnqe",
+  "source": "supabase_migrations.schema_migrations",
+  "migrations": [
+    {
+      "version": "20260819122922",
+      "name": "test_neon_migration_bridge"
+    },
+    {
+      "version": "20260819123034",
+      "name": "import_neon_medical_content_bridge"
+    },
+    {
+      "version": "20260819123059",
+      "name": "test_local_table_from_neon_foreign"
+    },
+    {
+      "version": "20260819123129",
+      "name": "create_medical_content_tables_from_neon"
+    },
+    {
+      "version": "20260819123429",
+      "name": "restore_medindex_constraints"
+    },
+    {
+      "version": "20260819123453",
+      "name": "restore_medindex_indexes"
+    },
+    {
+      "version": "20260819123616",
+      "name": "add_neon_view_definition_bridge"
+    },
+    {
+      "version": "20260819123640",
+      "name": "restore_medindex_views_from_neon"
+    },
+    {
+      "version": "20260819123827",
+      "name": "restore_medindex_functions_and_triggers"
+    },
+    {
+      "version": "20260819123844",
+      "name": "secure_medical_content_rls"
+    },
+    {
+      "version": "20260819124037",
+      "name": "harden_functions_and_add_fk_indexes"
+    },
+    {
+      "version": "20260819124113",
+      "name": "cleanup_neon_migration_bridge"
+    },
+    {
+      "version": "20260819125926",
+      "name": "create_private_write_sync_schema"
+    },
+    {
+      "version": "20260819130038",
+      "name": "prepare_phase3_neon_bridge"
+    },
+    {
+      "version": "20260819135003",
+      "name": "phase3_defer_owner_foreign_keys"
+    },
+    {
+      "version": "20260819150331",
+      "name": "phase4_auth_roles_rls_foundation"
+    },
+    {
+      "version": "20260819160916",
+      "name": "phase4_add_legacy_user_mapping"
+    },
+    {
+      "version": "20260819165505",
+      "name": "phase4_trusted_legacy_owner_claim"
+    },
+    {
+      "version": "20260819173053",
+      "name": "phase4_safe_owner_claim_mapping_only"
+    },
+    {
+      "version": "20260820053342",
+      "name": "phase6_multiuser_approval_and_user_drugs"
+    },
+    {
+      "version": "20260820081645",
+      "name": "professional_verification_hardening"
+    },
+    {
+      "version": "20260820081750",
+      "name": "server_only_rls_and_verification_index"
+    },
+    {
+      "version": "20260820082755",
+      "name": "active_profiles_require_verified_document"
+    },
+    {
+      "version": "20260820103539",
+      "name": "professional_title_and_document_kind"
+    },
+    {
+      "version": "20260820110739",
+      "name": "restrict_admin_role_to_owner_email"
+    },
+    {
+      "version": "20260821141518",
+      "name": "optimize_drug_registry_search_and_sort"
+    },
+    {
+      "version": "20260821142422",
+      "name": "optimize_drug_registry_advanced_filters"
+    },
+    {
+      "version": "20260821143031",
+      "name": "optimize_drug_global_search_candidates"
+    },
+    {
+      "version": "20260825222814",
+      "name": "add_published_drugs_pdid_lookup_index"
+    },
+    {
+      "version": "20260827094126",
+      "name": "substance_canonical_key_and_aliases"
+    },
+    {
+      "version": "20260827094417",
+      "name": "seed_substance_aliases_reviewed"
+    },
+    {
+      "version": "20260827095121",
+      "name": "seed_substance_merge_rejections"
+    },
+    {
+      "version": "20260827095326",
+      "name": "substance_aliases_round_two"
+    },
+    {
+      "version": "20260827100011",
+      "name": "substance_canonical_views"
+    },
+    {
+      "version": "20260827111357",
+      "name": "native_user_notes_and_profile_avatars"
+    },
+    {
+      "version": "20260827122525",
+      "name": "substance_canonicalization_governance"
+    },
+    {
+      "version": "20260827123032",
+      "name": "substance_canonicalization_final_review"
+    },
+    {
+      "version": "20260827124402",
+      "name": "p0_integrity_pipeline_coverage"
+    }
+  ]
+}
