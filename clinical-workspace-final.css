@@ -77,7 +77,7 @@ html.medindex-workspace-final :is(input,select,textarea,button){
 }
 html.medindex-workspace-final :is(.clinical-toolbar,.registry-toolbar,.med-toolbar,.rx-command-bar,.atc-toolbar) :is(input,select,button){
   border-color:var(--mw-line-strong)!important;
-  border-radius:9px!important;
+  border-radius:8px!important;
   background:var(--mw-surface)!important;
   color:var(--mw-text)!important;
   box-shadow:none!important;
