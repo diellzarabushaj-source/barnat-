@@ -51,6 +51,29 @@
       </dl>
     </section>
 
+    <!-- Kartela Clinical+. Fjalori `plan-*` mbetet i njëjti që përdor
+         `theme-preload.js` dhe që auditojnë `login-plan-card-browser.spec.js`
+         dhe `tailwind-site-browser.spec.js`; vetëm veshja është e DRx-it.
+         Asnjë <svg> brenda kartelës — ikonat vijnë nga ::before, sepse
+         auditi kërkon zero SVG-ra të trashëguara në `.plan-kicker-icon`. -->
+    <aside class="plan-block auth-plan" aria-labelledby="planTitle">
+      <p class="plan-kicker">
+        <span class="plan-kicker-icon" aria-hidden="true"></span>
+        <span class="plan-eyebrow">Clinical+</span>
+      </p>
+      <h2 id="planTitle">Gjithë regjistri klinik, në një hapësirë pune.</h2>
+      <p class="plan-price"><strong>Falas</strong> <span>për mjekët e verifikuar në Kosovë</span></p>
+      <ul class="plan-list">
+        <li>Regjistri i barnave të autorizuara, me statusin zyrtar</li>
+        <li>Dozologji me kufij sigurie dhe kontroll pediatrik</li>
+        <li>ICD-10 dhe protokolle të lidhura me barnat</li>
+      </ul>
+      <a class="plan-cta" href="/regjistrimi.html">
+        <span>Krijo llogari profesionale</span>
+        <i aria-hidden="true"></i>
+      </a>
+    </aside>
+
     <section class="au-card auth-card" aria-labelledby="loginTitle">
       <header class="auth-card__head">
         <p class="auth-card__index lp-num">01 / HYRJA</p>

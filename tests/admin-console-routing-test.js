@@ -120,7 +120,10 @@ const rewriteFor = source => vercel.rewrites.find(rule => rule.source === source
   const css = read('admin-dashboard.css');
   const dashboard = read('admin-dashboard.js');
 
-  assert.match(html, /<dialog class="mi-dialog mi-drug-dialog" id="drugDialog">[\s\S]*id="drugSave"/,
+  // The tag may carry further attributes — the accessible-name assertion below
+  // requires aria-labelledby on this very element — so match the opening tag
+  // rather than demanding that id="drugDialog" be its last attribute.
+  assert.match(html, /<dialog class="mi-dialog mi-drug-dialog" id="drugDialog"[^>]*>[\s\S]*id="drugSave"/,
     'the drug editor must remain a native modal dialog with an explicit save action');
 
   assert.match(css, /\.mi-dialog\{[^}]*max-height:90dvh;[^}]*overflow-y:auto;[^}]*overscroll-behavior:contain;/,
@@ -158,7 +161,10 @@ const rewriteFor = source => vercel.rewrites.find(rule => rule.source === source
     'a successful mutation followed by a failed refresh must not be reported as a failed save');
   assert.match(dashboard, /Promise\.allSettled\(\[loadUsers\(\),loadDrugs\(\)\]\)/,
     'one failed admin data source must not relock the whole console after authorization succeeds');
-  assert.ok(![...dashboard.matchAll(/<button(?![^>]*\\btype=)[^>]*>/g)].length,
+  // \b, not \\b: inside a regex literal the doubled backslash matched a literal
+  // backslash, so the lookahead never fired and every button counted as a
+  // violation even when it declared type="button" correctly.
+  assert.ok(![...dashboard.matchAll(/<button(?![^>]*\btype=)[^>]*>/g)].length,
     'buttons rendered by admin-dashboard.js must declare type="button" explicitly');
   assert.ok([...html.matchAll(/<th scope="col">/g)].length >= 12,
     'admin data tables must expose column-header scope to assistive technology');

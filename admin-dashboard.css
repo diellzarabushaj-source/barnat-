@@ -42,10 +42,25 @@ a{color:inherit}
 
 .mi-admin-shell{min-height:100dvh;display:grid;grid-template-columns:238px minmax(0,1fr);background:#fff}
 .mi-admin-sidebar{position:sticky;top:0;height:100dvh;display:flex;flex-direction:column;padding:18px 14px 14px;background:var(--stripe-dark);color:#fff}
-.mi-admin-brand{display:flex;min-height:54px;align-items:center;gap:10px;padding:4px 10px 16px;text-decoration:none}
-.mi-admin-brand img{display:block;width:118px;height:auto;max-height:36px;object-fit:contain;object-position:left center}
-.mi-admin-brand>span{display:flex;align-items:center;padding-left:10px;border-left:1px solid rgba(255,255,255,.16)}
-.mi-admin-brand small{color:rgba(255,255,255,.62);font-size:10px;font-weight:300;line-height:1.4;letter-spacing:.02em}
+/* Prapavija e sirtarit është fëmijë i drejtpërdrejtë i rrjetit `.mi-admin-shell`
+   dhe `display:block` i jepej vetëm brenda kufirit ≤1050px — pa një rregull
+   bazë, në desktop mbetej `inline-block` dhe zinte kolonën e dytë, duke e
+   shtyrë `.mi-admin-main` në rreshtin e dytë brenda një kolone 238px. */
+.mi-admin-backdrop{display:none}
+
+.mi-admin-side-head{display:flex;align-items:center;justify-content:space-between;gap:4px;padding-bottom:12px}
+.mi-admin-brand{display:flex;min-height:54px;align-items:center;gap:9px;padding:4px 0 4px 10px;text-decoration:none}
+/* `.mi-admin-brand img` është (0,1,1), prandaj fshehja e shenjës duhet të jetë
+   të paktën po aq specifike. */
+.mi-admin-brand .mi-admin-brand-mark{display:none}
+/* Kontrolli i zvogëlimit shfaqet vetëm në desktop; në telefon sirtari
+   tashmë hapet e mbyllet nga `#adminMenu`. */
+.mi-admin-collapse{display:none;width:32px;height:32px;place-items:center;flex:0 0 32px;border:0;border-radius:6px;background:transparent;color:rgba(255,255,255,.62);cursor:pointer;transition:background .15s ease,color .15s ease}
+.mi-admin-collapse:hover{background:rgba(255,255,255,.075);color:#fff}
+.mi-admin-collapse svg{width:18px;height:18px;fill:none;stroke:currentColor;stroke-width:1.7;stroke-linecap:round;stroke-linejoin:round;transition:transform .18s ease}
+.mi-admin-brand img{display:block;width:104px;height:auto;max-height:32px;object-fit:contain;object-position:left center}
+.mi-admin-brand>span{display:flex;align-items:center;padding-left:9px;border-left:1px solid rgba(255,255,255,.16)}
+.mi-admin-brand small{display:block;max-width:56px;color:rgba(255,255,255,.62);font-size:9.5px;font-weight:300;line-height:1.35;letter-spacing:.02em}
 .mi-admin-nav{display:grid;gap:3px;padding-top:10px}
 .mi-admin-nav-label{margin:0;padding:0 11px 7px;color:rgba(255,255,255,.42);font-size:10px;font-weight:400;letter-spacing:.04em}
 .mi-admin-nav button{width:100%;min-height:40px;display:flex;align-items:center;gap:10px;padding:0 10px;border:0;border-radius:6px;background:transparent;color:rgba(255,255,255,.67);text-align:left;font-size:14px;font-weight:300;transition:background .15s ease,color .15s ease}
@@ -181,6 +196,32 @@ a{color:inherit}
 .mi-toast p{margin:3px 0 0;color:var(--stripe-muted);font-size:11px;line-height:1.45}
 
 html:has(.mi-dialog[open]),body:has(.mi-dialog[open]){overflow:hidden}
+
+/* ── Shiriti anësor i zvogëluar (vetëm desktop) ────────────────────────────
+   Kalon nga 238px në një shirit ikonash 76px. Etiketat fshihen, ikonat
+   qendërzohen dhe secili kontroll mban emrin e vet te `title`, që vendoset nga
+   `admin-dashboard.js`. Zgjedhja ruhet në localStorage. */
+@media(min-width:1051px){
+  .mi-admin-collapse{display:grid}
+  body.mi-admin-rail .mi-admin-collapse svg{transform:rotate(180deg)}
+
+  body.mi-admin-rail .mi-admin-shell{grid-template-columns:76px minmax(0,1fr)}
+  body.mi-admin-rail .mi-admin-sidebar{padding:18px 10px 14px}
+  body.mi-admin-rail .mi-admin-side-head{flex-direction:column;align-items:center;gap:2px}
+  body.mi-admin-rail .mi-admin-brand{gap:0;padding:4px 0 10px}
+  body.mi-admin-rail .mi-admin-brand .mi-admin-brand-full,
+  body.mi-admin-rail .mi-admin-brand>span{display:none}
+  body.mi-admin-rail .mi-admin-brand .mi-admin-brand-mark{display:block;width:30px;height:30px}
+
+  body.mi-admin-rail .mi-admin-nav-label{display:none}
+  body.mi-admin-rail .mi-admin-nav button,
+  body.mi-admin-rail .mi-admin-sidebar-foot a,
+  body.mi-admin-rail .mi-admin-sidebar-foot button{justify-content:center;gap:0;padding:0}
+  body.mi-admin-rail .mi-admin-nav button>span:not(.mi-nav-icon),
+  body.mi-admin-rail .mi-admin-sidebar-foot a>span,
+  body.mi-admin-rail .mi-admin-sidebar-foot button>span{display:none}
+  body.mi-admin-rail .mi-admin-sidebar-foot .mi-inline-icon{width:18px;height:18px}
+}
 
 @media(max-width:1050px){
   .mi-admin-shell{grid-template-columns:1fr}

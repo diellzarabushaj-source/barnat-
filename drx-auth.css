@@ -26,13 +26,24 @@ body.lp.lp-auth{
   padding:72px var(--lp-gutter) 96px;
 }
 
+/* Tri fusha: teksti hyrës dhe kartela Clinical+ rrinë njëra mbi tjetrën në
+   kolonën e majtë, ndërsa forma e hyrjes mban të djathtën përgjatë të dyja
+   rreshtave. Në telefon rendi ndryshon: forma vjen para ofertës. */
 .auth-stage{
   display:grid;
   grid-template-columns:minmax(0,1fr) minmax(360px,440px);
-  align-items:center;
-  gap:clamp(64px,9vw,138px);
+  grid-template-areas:
+    "intro card"
+    "plan  card";
+  grid-template-rows:auto auto;
+  align-content:center;
+  align-items:start;
+  gap:clamp(40px,5vw,64px) clamp(64px,9vw,138px);
   min-height:calc(100dvh - 80px);
 }
+.auth-stage > .auth-intro{grid-area:intro;align-self:end;}
+.auth-stage > .auth-card{grid-area:card;align-self:center;}
+.auth-stage > .auth-plan{grid-area:plan;align-self:start;}
 
 .auth-intro{max-width:620px;}
 .auth-intro h1{margin-top:20px;max-width:610px;}
@@ -181,8 +192,13 @@ body.lp.lp-auth{
 .auth-password-toggle:hover,
 .lp-auth .mi-password button:hover{background:var(--lp-brand-wash);}
 
-.auth-form__meta{display:flex;justify-content:flex-end;margin-top:-4px;}
+.auth-form__meta{display:flex;justify-content:flex-end;margin-top:-10px;}
+/* 44px lartësi: kufiri i prekjes në telefon dhe dyshemeja 28px e auditit të
+   kontrolleve. Teksti mbetet i vogël; vetëm zona e prekshme rritet. */
 .auth-text-button{
+  display:inline-flex;
+  align-items:center;
+  min-height:44px;
   border:0;
   padding:0;
   background:transparent;
@@ -361,7 +377,188 @@ body.lp.lp-auth{
 .lp-auth .mi-drop[data-selected]{border-style:solid;border-color:var(--lp-brand);background:var(--lp-brand-wash);}
 .lp-auth .mi-auth-alt{margin:20px 0 0;color:var(--lp-mute);font-size:12.5px;text-align:center;}
 
+/* ── Kartela Clinical+ ─────────────────────────────────────────────────────
+   `medindex-tailwind-ui.css` dhe mbrojtësi i ikonave në `theme-preload.js`
+   ngarkohen pas kësaj skede dhe shkruajnë me `!important` mbi `.plan-block`,
+   `.plan-cta` e `.plan-kicker-icon` në ngjyrën e vjetër blu. Prandaj çdo rregull
+   këtu është i lidhur me `.auth-plan` (0,3,0) — mjaft për t'i kaluar ata
+   selektorë (0,2,1) — dhe mban `!important` aty ku ata e përdorin. */
+.lp-auth .auth-plan.plan-block{
+  display:flex;
+  flex-direction:column;
+  align-items:stretch;
+  max-width:620px;
+  padding:30px 30px 28px!important;
+  overflow:hidden;
+  border:1px solid var(--lp-hairline)!important;
+  border-radius:var(--lp-r-lg)!important;
+  background:#fff!important;
+  box-shadow:0 1px 2px rgba(13,37,61,.05),0 12px 32px rgba(13,37,61,.06)!important;
+  transform:none!important;
+}
+.lp-auth .auth-plan.plan-block::before{
+  position:absolute;
+  inset:0 0 auto;
+  height:3px!important;
+  background:var(--lp-brand)!important;
+  content:"";
+}
+.lp-auth .auth-plan.plan-block{position:relative;}
+.lp-auth .auth-plan.plan-block::after{display:none!important;}
+.lp-auth .auth-plan.plan-block:hover{
+  border-color:var(--lp-brand-wash)!important;
+  box-shadow:0 1px 2px rgba(13,37,61,.05),0 18px 44px rgba(13,37,61,.09)!important;
+  transform:none!important;
+}
+
+.lp-auth .auth-plan .plan-kicker{
+  display:flex!important;
+  align-items:center!important;
+  gap:12px!important;
+  margin:0 0 18px!important;
+}
+.lp-auth .auth-plan .plan-kicker-icon{
+  width:34px!important;
+  height:34px!important;
+  border-radius:10px!important;
+  background:linear-gradient(150deg,var(--lp-brand) 0%,var(--lp-brand-deep) 100%)!important;
+}
+.lp-auth .auth-plan .plan-kicker-icon::before{
+  content:"+";
+  font-size:19px;
+  font-weight:400;
+}
+.lp-auth .auth-plan .plan-eyebrow{
+  margin:0!important;
+  color:var(--lp-brand-deep)!important;
+  font-size:12px;
+  font-weight:500;
+  letter-spacing:.5px!important;
+  text-transform:uppercase!important;
+}
+
+.lp-auth .auth-plan h2{
+  margin:0!important;
+  max-width:22ch;
+  color:var(--lp-ink)!important;
+  font-size:27px;
+  font-weight:300;
+  letter-spacing:-.6px;
+  line-height:1.18;
+}
+.lp-auth .auth-plan .plan-price{
+  margin:16px 0 0!important;
+  display:flex;
+  flex-wrap:wrap;
+  align-items:baseline;
+  gap:8px;
+}
+.lp-auth .auth-plan .plan-price strong{
+  color:var(--lp-ink)!important;
+  font-size:20px;
+  font-weight:500;
+  font-variant-numeric:tabular-nums;
+}
+.lp-auth .auth-plan .plan-price span{color:var(--lp-mute)!important;font-size:13.5px;}
+
+.lp-auth .auth-plan .plan-list{
+  margin:22px 0 0!important;
+  padding:0!important;
+  display:grid;
+  gap:11px;
+  list-style:none;
+}
+.lp-auth .auth-plan .plan-list li{
+  position:relative;
+  padding-left:26px;
+  color:var(--lp-ink-2)!important;
+  font-size:14px;
+  line-height:1.5;
+  transform:none!important;
+}
+.lp-auth .auth-plan .plan-list li::before{
+  position:absolute;
+  top:.42em;
+  left:0;
+  width:14px;
+  height:14px;
+  border:0!important;
+  border-radius:50%;
+  background:var(--lp-brand-wash)!important;
+  color:var(--lp-brand-deep)!important;
+  content:"✓";
+  font-size:9px;
+  line-height:14px;
+  text-align:center;
+}
+
+.lp-auth .auth-plan .plan-cta{
+  display:inline-flex!important;
+  align-self:flex-start;
+  align-items:center;
+  gap:10px;
+  margin-top:26px;
+  min-height:48px;
+  padding:0 10px 0 22px!important;
+  border:1px solid var(--lp-brand)!important;
+  border-radius:9999px!important;
+  background:var(--lp-brand)!important;
+  color:#fff!important;
+  font-size:14.5px;
+  font-weight:500;
+  text-decoration:none;
+  box-shadow:0 1px 2px rgba(13,37,61,.08)!important;
+}
+.lp-auth .auth-plan .plan-cta:hover{
+  border-color:var(--lp-brand-deep)!important;
+  background:var(--lp-brand-deep)!important;
+  color:#fff!important;
+  transform:none!important;
+}
+.lp-auth .auth-plan .plan-cta i{
+  display:grid!important;
+  width:26px!important;
+  height:26px!important;
+  flex:0 0 26px;
+  place-items:center;
+  border-radius:50%;
+  background:rgba(255,255,255,.18)!important;
+  color:#fff!important;
+  font-style:normal;
+}
+.lp-auth .auth-plan .plan-cta i::before{font-size:14px;}
+
+/* Caqet e prekjes në sipërfaqet e llogarisë. Këto kontrolle janë të vogla si
+   tekst — çelësi "Shfaq", përmbledhja e hyrjes rezervë, lidhjet — por gishti
+   kërkon 44px. Rritet vetëm zona e prekshme, jo shkronjat, dhe vetëm brenda
+   `.lp-auth`, që faqja hyrëse publike të mos ndryshojë. */
+.lp-auth .auth-password-toggle,
+.lp-auth .mi-password button{min-height:44px;}
+.lp-auth .auth-fallback summary{
+  display:flex;
+  align-items:center;
+  min-height:44px;
+}
+.lp-auth .lp-textlink{
+  display:inline-flex;
+  align-items:center;
+  gap:6px;
+  min-height:44px;
+}
+.lp-auth .lp-btn--sm{min-height:44px;}
+.lp-auth .auth-nav__actions .lp-nav__link,
+.lp-auth .lp-nav__brand{
+  display:inline-flex;
+  align-items:center;
+  min-height:44px;
+}
+
 @media (max-width:900px){
+  /* Një kolonë: hyrje → forma → oferta. Fushat hiqen që `order` të vlejë. */
+  .auth-stage{grid-template-areas:none;grid-template-rows:auto;}
+  .auth-stage > .auth-intro{grid-area:auto;order:1;align-self:auto;}
+  .auth-stage > .auth-card{grid-area:auto;order:2;}
+  .auth-stage > .auth-plan{grid-area:auto;order:3;max-width:560px;}
   .auth-stage{grid-template-columns:minmax(0,1fr);gap:44px;min-height:0;padding-top:48px;}
   .auth-intro{max-width:680px;}
   .auth-intro h1{font-size:48px;}
@@ -390,6 +587,9 @@ body.lp.lp-auth{
   .lp-auth .mi-field-row,
   .lp-auth .mi-choices{grid-template-columns:minmax(0,1fr);}
   .lp-auth .mi-auth-steps li span{font-size:10px;}
+  .lp-auth .auth-plan.plan-block{padding:24px 20px 22px!important;}
+  .lp-auth .auth-plan h2{max-width:none;font-size:24px;}
+  .lp-auth .auth-plan .plan-cta{align-self:stretch;justify-content:space-between;}
 }
 
 @media (prefers-reduced-motion:reduce){

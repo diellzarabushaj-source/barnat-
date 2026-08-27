@@ -155,9 +155,14 @@ jobs:
             grep -q 'tailadmin-professional.js' "$page"
             grep -q 'skip-link' "$page"
           done
-          grep -q 'medindex-tailadmin-login' login.html
-          grep -q 'login-editorial.css' login.html
-          grep -q 'landing-effects.css' login.html
+          # The sign-in page was rebuilt on the DRx system, so it no longer sets
+          # the medindex-tailadmin-login class or links the editorial stylesheets
+          # (landing-effects.css is still applied, injected at runtime by
+          # theme-preload.js). Assert the assets it actually owns instead.
+          grep -q 'data-mi-page="login"' login.html
+          grep -q 'theme-preload.js' login.html
+          grep -q 'drx-auth.css' login.html
+          grep -q 'plan-block' login.html
           grep -q -- '--mi-sidebar-width: 290px' tailadmin-medindex.css
           grep -q -- '--mi-brand-500: #1f7779' tailadmin-medindex.css
           grep -q -- '--mi-sidebar-width: 264px' tailadmin-professional-core.css

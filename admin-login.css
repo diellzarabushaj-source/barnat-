@@ -1,6 +1,12 @@
 /* DRx Admin login — uses the same Stripe-inspired DRx auth system. */
-.mi-admin-auth .auth-stage{
-  grid-template-columns:minmax(0,1fr) minmax(360px,440px);
+/* Kjo mbivendosje duhet të vlejë vetëm në desktop. Pa kufirin e medias ajo
+   ishte (0,2,0) përballë (0,1,0) të `drx-auth.css`, prandaj kolona e dytë
+   mbante minimumin 360px edhe në telefon dhe faqja dilte 421px e gjerë në një
+   ekran 390px. */
+@media (min-width:901px){
+  .mi-admin-auth .auth-stage{
+    grid-template-columns:minmax(0,1fr) minmax(360px,440px);
+  }
 }
 .mi-admin-auth .auth-intro{max-width:640px;}
 .mi-admin-auth .auth-intro h1{max-width:630px;}

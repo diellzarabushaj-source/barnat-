@@ -59,10 +59,14 @@ const read = file => fs.readFileSync(path.join(root, file), 'utf8');
     'the admin console must not expose doctors’ private notes or prescriptions');
 
   const css = read('admin-dashboard.css');
-  for (const token of ['--mi-border', '--mi-surface', '--mi-text', '--mi-brand']) {
+  // The console was rebuilt on the DRx/Stripe palette and owns its tokens under
+  // the --stripe-* prefix; it no longer inherits the clinical --mi-* set. What
+  // this guards is unchanged: a named token system rather than ad-hoc colors,
+  // including semantic status colors.
+  for (const token of ['--stripe-hairline', '--stripe-canvas', '--stripe-ink', '--stripe-primary']) {
     assert.ok(css.includes(token), `the admin console must keep the shared design token ${token}`);
   }
-  assert.ok(css.includes('--mi-success') && css.includes('--mi-warning') && css.includes('--mi-error'),
+  assert.ok(css.includes('--stripe-success') && css.includes('--stripe-warning') && css.includes('--stripe-danger'),
     'status surfaces must use semantic colors');
   assert.match(css, /\.mi-table-wrap\{[^}]*max-width:100%/, 'wide admin tables must not widen their parent');
   assert.match(css, /\.mi-table-wrap\{[^}]*overflow-x:auto/, 'wide admin tables scroll inside their own container');
