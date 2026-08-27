@@ -89,15 +89,21 @@ const metadataFixture = [{
 async function installFrozenSanityFixture(page) {
   await page.addInitScript(`(() => {
     const FIXTURE = ${JSON.stringify({ meta:metadataFixture, emergencies:[emergencyFixture] })};
-    const client = Object.freeze({
+    const fixtureClient = Object.freeze({
       projectId:'test', dataset:'test', studioUrl:'#',
       query: async groq => String(groq).includes('"sourceCount":count(sources)')
         ? FIXTURE.meta
         : FIXTURE.emergencies,
     });
+    let activeClient = fixtureClient;
     Object.defineProperty(window, 'MedIndexSanity', {
-      get(){ return client; },
-      set(){},
+      get(){ return activeClient; },
+      set(value){
+        // Ignore the real client's eager assignment, but allow the app's
+        // Summary/Learn wrapper to decorate the fixture client so it can
+        // capture emergency items exactly as production does.
+        if (value?.__summaryLearnWrapped) activeClient = value;
+      },
       configurable:false,
     });
   })();`);
@@ -109,7 +115,7 @@ async function openEmergency(page) {
   await installFrozenSanityFixture(page);
   await page.goto('http://127.0.0.1:4173/urgjencat.html', {waitUntil:'domcontentloaded'});
   await page.waitForFunction(() => document.documentElement.classList.contains('auth-ready'));
-  await expect(page.locator('#emergencyDetail [data-ck-mode="summary"]')).toBeVisible({timeout:10000});
+  await expect(page.locator('#emergencyDetail .ck-sl-experience')).toBeVisible({timeout:10000});
   await page.evaluate(() => document.fonts.ready);
   return pageErrors;
 }
