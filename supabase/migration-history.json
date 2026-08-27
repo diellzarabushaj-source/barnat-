@@ -245,6 +245,14 @@
     {
       "version": "20260827164722",
       "name": "p1_make_equivalence_guard_live"
+    },
+    {
+      "version": "20260827221057",
+      "name": "p1_exit_integrity_and_privileges"
+    },
+    {
+      "version": "20260827221219",
+      "name": "p1_exit_revoke_inert_view_write_grants"
     }
   ]
 }
