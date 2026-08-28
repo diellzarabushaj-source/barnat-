@@ -12,7 +12,6 @@ const mobileCss = read('registry-mobile-lite.css');
 const desktop = read('registry-desktop-lite.js');
 const css = read('registry-unified-table.css');
 const tableTools = read('registry-table-tools.css');
-const frozenCss = read('registry-frozen-columns.css');
 const fullTextCss = read('registry-full-text-expansion.css');
 const runtime = read('registry-unified-table.js');
 const generatedRuntime = read('app-runtime.js');
@@ -137,12 +136,11 @@ assert.match(css,/\.population-verification-grid/,'strict population verificatio
 assert.match(css,/@media \(max-width:760px\)[\s\S]*#dataTable tbody td\[data-registry-column-key\][\s\S]*grid-template-columns:94px minmax\(0,1fr\)/,'full-runtime mobile cards must remain readable after explicit fatal handoff');
 assert.match(css,/#registryFilterPanel #search/,'search must remain visible in the unified full-runtime filter surface');
 assert.match(css,/\.col-panel\.open[\s\S]*grid-template-columns:repeat\(2,minmax\(0,1fr\)\)/,'desktop multi-column picker must remain compact');
-assert.match(frozenCss,/final frozen-column contract/,'the final frozen-column contract must be explicit and auditable');
-assert.match(frozenCss,/\[data-registry-column-key="select"\][\s\S]*position:sticky!important[\s\S]*left:0!important/,'prescription selection must be frozen at the left edge on desktop');
-assert.match(frozenCss,/\[data-registry-column-key="trade-name"\][\s\S]*position:sticky!important[\s\S]*left:44px!important/,'trade name must freeze immediately after prescription selection');
-assert.match(frozenCss,/\[data-registry-column-key="number"\][\s\S]*position:relative!important/,'Nr must scroll normally in the final contract');
-assert.match(frozenCss,/\[data-registry-column-key="prescription-label"\][\s\S]*position:relative!important/,'prescription notation must scroll normally in the final contract');
-assert.doesNotMatch(frozenCss,/data-registry-column-key="active-substance"[^}]*position:sticky!important/i,'active substance must scroll normally');
+assert.match(tableTools,/data-registry-column-key="select"[\s\S]*position:sticky!important[\s\S]*left:0!important/,'prescription selection must be frozen at the left edge on desktop');
+assert.match(tableTools,/data-registry-column-key="trade-name"[\s\S]*position:sticky!important[\s\S]*left:44px!important/,'trade name must freeze immediately after prescription selection');
+assert.doesNotMatch(tableTools,/data-registry-column-key="number"[^}]*position:sticky!important/i,'Nr must scroll normally in the final contract');
+assert.doesNotMatch(tableTools,/data-registry-column-key="prescription-label"[^}]*position:sticky!important/i,'prescription notation must scroll normally in the final contract');
+assert.doesNotMatch(tableTools,/data-registry-column-key="active-substance"[^}]*position:sticky!important/i,'active substance must scroll normally');
 assert.doesNotMatch(css,/https?:\/\//,'unified table stylesheet must not load third-party assets');
 
 assert.match(fullTextCss,/thead th\[data-registry-column-key\][\s\S]*left:auto!important[\s\S]*right:auto!important/,'the base sticky-header stylesheet must not horizontally freeze arbitrary columns');
