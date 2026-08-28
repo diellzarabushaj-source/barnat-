@@ -12,33 +12,7 @@
   <link rel="stylesheet" href="medical-hub.css?v=20260828-stripe-v2">
   <link rel="stylesheet" href="dashboard-typography.css?v=20260828-stripe-v2">
   <link rel="stylesheet" href="tailadmin-medindex.css?v=20260728-1" data-tailadmin-medindex-css>
-  <link rel="stylesheet" href="clinical-knowledge.css?v=20260828-stripe-v2">
-  <link rel="stylesheet" href="emergency-interactive.css?v=20260816-1">
-  <link rel="stylesheet" href="emergency-summary-learn.css?v=20260819-1">
-  <link rel="stylesheet" href="emergency-directory-assist.css?v=20260819-2">
-  <link rel="stylesheet" href="emergency-triage-filter.css?v=20260819-1">
-  <link rel="stylesheet" href="emergency-chapters.css?v=20260822-2">
-  <link rel="stylesheet" href="emergency-summary-learn-polish.css?v=20260819-3">
-  <link rel="stylesheet" href="emergency-inter-typography.css?v=20260822-3">
-  <link rel="stylesheet" href="emergency-directory-compact.css?v=20260822-1">
-  <link rel="stylesheet" href="emergency-chapter-colors.css?v=20260825-1">
-  <link rel="stylesheet" href="emergency-doctor-ux-v2.css?v=20260822-1">
-  <link rel="stylesheet" href="emergency-doctor-ux-v3.css?v=20260823-1">
-  <link rel="stylesheet" href="emergency-rapid-search.css?v=20260824-1">
-  <link rel="stylesheet" href="emergency-smart-search-v8.css?v=20260824-1">
-  <link rel="stylesheet" href="emergency-search-personalization-v11.css?v=20260824-1">
-  <link rel="stylesheet" href="emergency-action-search-v12.css?v=20260824-1">
-  <link rel="stylesheet" href="emergency-action-deeplink-v13.css?v=20260824-1">
-  <link rel="stylesheet" href="emergency-symptom-chips-v9.css?v=20260824-1">
-  <link rel="stylesheet" href="emergency-learning-v4.css?v=20260824-1">
-  <link rel="stylesheet" href="emergency-trainers-v5.css?v=20260824-1">
-  <link rel="stylesheet" href="emergency-readiness-v6.css?v=20260824-1">
-  <link rel="stylesheet" href="emergency-learning-flow-v7.css?v=20260824-1">
-  <link rel="stylesheet" href="emergency-physician-v17.css?v=20260824-1">
-  <link rel="stylesheet" href="emergency-shift-v18.css?v=20260825-1">
-  <link rel="stylesheet" href="emergency-ui-v19.css?v=20260828-stripe-v2">
-  <link rel="stylesheet" href="drx-dashboard-stripe.css?v=drx-dashboard-stripe-v1">
-  <link rel="stylesheet" href="tailadmin-professional.css?v=20260728-1" data-tailadmin-professional-css>
+  <link rel="stylesheet" href="emergency-curriculum.css?v=20260828-curriculum-v1">
   <script src="tailadmin-shell.js?v=production-audit-v2" defer></script>
   <script src="tailadmin-professional.js?v=production-audit-v2" defer></script>
 </head>
@@ -54,99 +28,64 @@
       <a class="med-nav-link" href="recetat.html"><span class="med-nav-icon">Rx</span><span class="med-nav-title">Recetat</span></a>
       <div class="med-theme"><span>Tema</span><button id="themeButton" type="button" aria-label="Ndërro temën">☾</button></div>
     </nav>
+
     <main class="med-main" id="emergencyContent" tabindex="-1">
-      <div class="clinical-knowledge-page" data-ck-rapid-searching="false">
-        <header class="ck-hero ck-rapid-hero">
+      <div class="ec-page">
+        <header class="ec-hero">
           <div>
-            <p class="ck-kicker">Për pacientin tani</p>
+            <p class="ec-eyebrow">Emergency Medicine · Tintinalli 8e</p>
             <h1>Urgjencat</h1>
-            <p class="ck-rapid-subtitle">Kërko diagnozën, simptomën, ICD ose veprimin. Protokolli hapet menjëherë.</p>
+            <p>Struktura e re klinike: së pari kapitulli, pastaj mësimet e tij. Çdo mësim hapet me nëntituj relevantë, veprime të qarta <strong>Rx.</strong>, figura dhe fusnota.</p>
+          </div>
+          <div class="ec-summary-badge" aria-label="Përmbledhja e përmbajtjes">
+            <strong id="chapterTotal">23</strong><strong id="lessonTotal">—</strong>
+            <span>kapituj</span><span>mësime aktive</span>
           </div>
         </header>
 
-        <section class="ck-rapid-search-panel" aria-label="Kërkim i shpejtë i urgjencave">
-          <div class="ck-rapid-search-topline">
-            <span>Gjeje brenda sekondave</span>
-            <kbd aria-label="Shkurtorja slash">/</kbd>
-          </div>
-          <div class="ck-toolbar" role="search" aria-label="Kërkimi i urgjencave">
-            <input id="emergencySearch" type="search" autocomplete="off" enterkeyhint="search" spellcheck="false" placeholder="p.sh. STEMI, E16.2, çka bëj tani, referim…" aria-label="Kërko urgjencën">
-            <select id="emergencyCategory" class="ck-legacy-category-filter" aria-label="Kategoria klinike" tabindex="-1"><option value="">Të gjitha kategoritë</option></select>
-          </div>
-          <div class="ck-quick-search" id="emergencyQuickSearch" aria-label="Kërkime të shpejta" hidden></div>
-          <p class="ck-status" id="emergencyStatus" role="status" aria-live="polite">Duke i ngarkuar urgjencat…</p>
-        </section>
+        <div class="ec-search" role="search">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><circle cx="11" cy="11" r="7"></circle><path d="m20 20-3.5-3.5"></path></svg>
+          <input id="emergencySearch" type="search" autocomplete="off" spellcheck="false" placeholder="Kërko kapitull, mësim, veprim Rx. ose shkurtesë…" aria-label="Kërko në urgjenca">
+        </div>
 
-        <details class="ck-browse-secondary" id="emergencyBrowse" hidden>
-          <summary class="ck-browse-summary">Shfleto sipas kapitullit</summary>
-          <section class="ck-chapter-explorer" id="emergencyChapterExplorer" aria-label="Zgjedhja e kapitullit dhe nënkapitullit" hidden>
-            <div class="ck-chapter-explorer-head">
-              <div class="ck-chapter-explorer-copy">
-                <span>STRUKTURA KLINIKE</span>
-                <strong>Zgjidh kapitullin</strong>
-                <small id="emergencyChapterSummary">Duke organizuar protokollet…</small>
+        <section class="ec-workspace" aria-label="Kapitujt dhe mësimet e urgjencave">
+          <aside class="ec-pane" aria-label="Kapitujt">
+            <div class="ec-pane-head">
+              <span>Hapi 1</span>
+              <strong>Kapitujt</strong>
+              <small id="chapterStatus">Duke i ngarkuar…</small>
+            </div>
+            <div class="ec-scroll">
+              <div class="ec-chapter-list" id="emergencyChapterList">
+                <div class="ec-loading">Duke i ngarkuar kapitujt nga Sanity…</div>
               </div>
             </div>
-
-            <div class="ck-chapter-picker-grid">
-              <label class="ck-chapter-picker" for="emergencyChapterSelect">
-                <span>Kapitulli</span>
-                <div class="ck-chapter-select-shell">
-                  <select id="emergencyChapterSelect" aria-label="Zgjidh kapitullin e urgjencave">
-                    <option value="">Të gjithë kapitujt</option>
-                  </select>
-                </div>
-              </label>
-
-              <label class="ck-chapter-picker" id="emergencySubchapterWrap" for="emergencySubchapterSelect" hidden>
-                <span>Nënkapitulli</span>
-                <div class="ck-chapter-select-shell">
-                  <select id="emergencySubchapterSelect" aria-label="Zgjidh nënkapitullin e urgjencave">
-                    <option value="">Të gjithë nënkapitujt</option>
-                  </select>
-                </div>
-              </label>
-            </div>
-
-            <button class="ck-chapter-reset" id="emergencyChapterReset" type="button" hidden>Të gjitha</button>
-            <div class="ck-chapter-tabs" id="emergencyChapterNav" aria-hidden="true" hidden></div>
-            <div class="ck-subchapter-tabs" id="emergencySubchapterNav" aria-hidden="true" hidden></div>
-          </section>
-        </details>
-
-        <div class="ck-layout">
-          <aside class="ck-directory" aria-label="Rezultatet e urgjencave">
-            <div class="ck-list" id="emergencyList"></div>
           </aside>
-          <article class="ck-detail" id="emergencyDetail" aria-live="polite" data-ck-modes="Përmbledhje Mëso hap pas hapi Testo veten">
-            <div class="ck-empty">Kërko ose zgjidh një urgjencë.</div>
+
+          <aside class="ec-pane" aria-label="Nënkapitujt dhe mësimet">
+            <div class="ec-pane-head">
+              <span>Hapi 2</span>
+              <strong>Nënkapitujt / mësimet</strong>
+              <small id="lessonStatus">Zgjidh një kapitull</small>
+            </div>
+            <div class="ec-scroll">
+              <div class="ec-lesson-list" id="emergencyLessonList"></div>
+            </div>
+          </aside>
+
+          <article class="ec-detail" id="emergencyDetail" aria-live="polite">
+            <div class="ec-detail-placeholder">
+              <div><strong>Zgjidh një kapitull.</strong>Pastaj zgjidh mësimin që dëshiron të hapësh.</div>
+            </div>
           </article>
-        </div>
+        </section>
       </div>
     </main>
   </div>
+
   <script src="auth-client.js?v=production-audit-v2" defer></script>
   <script src="sanity-clinical-client.js?v=20260805-1" defer></script>
-  <script src="emergency-taxonomy.js?v=20260822-1" defer></script>
-  <script src="emergency-summary-learn.js?v=20260819-2" defer></script>
-  <script src="urgjencat.js?v=20260822-1" defer></script>
-  <script src="emergency-chapter-select.js?v=20260822-1" defer></script>
-  <script src="emergency-directory-assist.js?v=20260819-1" defer></script>
-  <script src="emergency-triage-filter.js?v=20260818-2" defer></script>
-  <script src="emergency-doctor-ux-v3.js?v=20260824-17" defer></script>
-  <script src="emergency-learning-v4.js?v=20260824-1" defer></script>
-  <script src="emergency-trainers-v5.js?v=20260824-1" defer></script>
-  <script src="emergency-rapid-search.js?v=20260824-1" defer></script>
-  <script src="emergency-search-core-v8.js?v=20260824-2" defer></script>
-  <script src="emergency-action-search-core-v12.js?v=20260824-3" defer></script>
-  <script src="emergency-action-deeplink-core-v13.js?v=20260824-2" defer></script>
-  <script src="emergency-shift-core-v18.js?v=20260825-1" defer></script>
-  <script src="emergency-smart-search-v8.js?v=20260824-2" defer></script>
-  <script src="emergency-action-search-v12.js?v=20260824-2" defer></script>
-  <script src="emergency-action-deeplink-v13.js?v=20260824-1" defer></script>
-  <script src="emergency-review-loader-v16.js?v=20260824-1" defer></script>
-  <script src="emergency-symptom-chips-v9.js?v=20260824-1" defer></script>
-  <script src="emergency-physician-bootstrap-v18.js?v=20260825-1" async data-physician-modules="emergency-readiness-v6.js?v=20260824-1 emergency-learning-flow-v7.js?v=20260824-1 emergency-review-controller-v17.js?v=20260824-1 emergency-shift-v18.js?v=20260825-1 emergency-memory-v21.js?v=20260825-1"></script>
+  <script src="urgjencat.js?v=20260828-curriculum-v1" defer></script>
   <script src="app-stability.js?v=20260724-2" async></script>
 </body>
 </html>
