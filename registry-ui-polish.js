@@ -2,8 +2,6 @@
   'use strict';
 
   const VERSION = 'registry-ui-polish-20260728-1';
-  const STYLE_ID = 'registryUiPolishStyles';
-  const STYLE_HREF = '/registry-ui-polish.css?v=20260728-1';
   const HEADER_CLASSES = ['registry-sticky-name', 'registry-active-substance'];
   let headerObserver = null;
   let tbodyObserver = null;
@@ -15,15 +13,9 @@
   const headerLabel = cell => clean(cell?.textContent).replace(/[▲▼↕]/g, '').trim();
 
   function ensureStyles() {
-    let link = document.getElementById(STYLE_ID);
-    if (!link) {
-      link = document.createElement('link');
-      link.id = STYLE_ID;
-      link.rel = 'stylesheet';
-      link.dataset.registryUiPolish = VERSION;
-    }
-    if (link.getAttribute('href') !== STYLE_HREF) link.href = STYLE_HREF;
-    if (document.head.lastElementChild !== link) document.head.appendChild(link);
+    const link = [...document.querySelectorAll('link[rel="stylesheet"]')]
+      .find(node => /registry-table-tools\.css/i.test(node.getAttribute('href') || ''));
+    document.documentElement.dataset.registryUiPolishCss = link ? 'final-authority' : 'missing';
   }
 
   function tagHeader() {
