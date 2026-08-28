@@ -33,7 +33,7 @@ function patchMobilePhase3Owner() {
 }
 
 function patchPhonePersonalControls() {
-  let source = read('registry-user-personalization.css');
+  let source = read('registry-table-tools.css');
   const marker = '/* PR157 merge readiness: phone personal views remain readable and touch-safe. */';
   if (!source.includes(marker)) {
     source += `\n\n${marker}\n@media (max-width:767px){\n  html[data-registry-mobile-lite] .registry-personal-view-actions button{\n    min-height:44px!important;\n    font-size:12px!important;\n  }\n  html[data-registry-mobile-lite] .registry-personal-view-actions button>b{\n    font-size:11px!important;\n  }\n}\n`;
@@ -41,11 +41,11 @@ function patchPhonePersonalControls() {
   if (!source.includes('min-height:44px!important;') || !source.includes('font-size:11px!important;')) {
     throw new Error('Phone personal-view touch/font floor was not materialized.');
   }
-  write('registry-user-personalization.css', source);
+  write('registry-table-tools.css', source);
 }
 
 function patchPhoneCardDensity() {
-  let design = read('registry-mobile-design-audit.css');
+  let design = read('registry-table-tools.css');
   design = replaceOnce(
     design,
     'padding:3px 12px 3px 15px;',
@@ -58,16 +58,16 @@ function patchPhoneCardDensity() {
     'padding:2px 10px 2px 13px;',
     'final sub-390 card vertical padding',
   );
-  write('registry-mobile-design-audit.css', design);
+  write('registry-table-tools.css', design);
 
-  let phone = read('registry-mobile-phone-hardening.css');
+  let phone = read('registry-table-tools.css');
   phone = replaceOnce(
     phone,
     'padding:4px 9px 4px 12px;',
     'padding:2px 9px 2px 12px;',
     'final narrow-phone card vertical padding',
   );
-  write('registry-mobile-phone-hardening.css', phone);
+  write('registry-table-tools.css', phone);
 }
 
 function patchFullDesktopColumnMaterialization() {
