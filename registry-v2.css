@@ -24,29 +24,7 @@ a{color:inherit}
 .app-shell[aria-busy="true"] .data-card{opacity:.72}
 
 /* Sidebar */
-.sidebar{position:fixed;inset:0 auto 0 0;z-index:50;width:var(--sidebar);display:flex;flex-direction:column;padding:18px 14px 14px;background:#1c1e54;color:#fff}
-.sidebar-head{min-height:54px;display:flex;align-items:center;justify-content:space-between;padding:0 10px 12px;border-bottom:0}
-.brand{display:flex;align-items:center;min-width:0}
-.brand img{display:block;width:104px;height:auto;max-height:32px;object-fit:contain;object-position:left center}
-.sidebar-close{display:none}
-.nav-stack{padding:10px 0 18px;overflow:auto;scrollbar-width:thin;scrollbar-color:rgba(255,255,255,.18) transparent}
-.nav-label{margin:6px 11px 7px;color:rgba(255,255,255,.62);font-size:11px;font-weight:400;letter-spacing:.04em;text-transform:uppercase}
-.nav-label-spaced{margin-top:19px}
-.nav-item{width:100%;min-height:40px;display:flex;align-items:center;gap:10px;padding:0 10px;border:0;border-radius:6px;background:transparent;color:rgba(255,255,255,.67);text-decoration:none;text-align:left;cursor:pointer;font-size:14px;font-weight:300;transition:background .15s,color .15s}
-.nav-item:hover{background:rgba(255,255,255,.075);color:#fff}
-.nav-item.is-active{background:rgba(102,94,253,.26);color:#fff;font-weight:300}
-.nav-icon{width:22px;height:22px;display:grid;place-items:center;flex:none;border:0;border-radius:6px;background:transparent;color:currentColor;opacity:.82}
-.nav-icon .icon{width:18px;height:18px}
-.nav-item:hover .nav-icon,.nav-item.is-active .nav-icon{opacity:1}
-.nav-item:hover .nav-icon{color:#fff}
 .nav-item.is-active .nav-icon{background:transparent;color:#fff;box-shadow:none}
-.sidebar-foot{margin-top:auto;padding:12px 0 0;border-top:1px solid rgba(255,255,255,.12)}
-.source-card{display:grid;grid-template-columns:8px 1fr;gap:9px;align-items:start;margin:0 0 6px;padding:9px 10px;border-radius:6px;background:rgba(255,255,255,.06)}
-.source-dot{width:7px;height:7px;margin-top:4px;border-radius:999px;background:#20b486;box-shadow:0 0 0 3px #def7ef}
-.source-card strong,.source-card small{display:block}
-.source-card strong{font-size:11.5px;font-weight:400;color:rgba(255,255,255,.86)}
-.source-card small{margin-top:2px;color:rgba(255,255,255,.62);font-size:10.5px}
-.logout-button{color:rgba(255,255,255,.62)}
 
 /* Main shell */
 .main-shell{min-width:0;margin-left:var(--sidebar)}
@@ -296,7 +274,6 @@ a{color:inherit}
 }
 @media(max-width:940px){
   :root{--sidebar:0px}
-  .sidebar{width:238px;transform:translateX(-102%);box-shadow:var(--shadow-lg);transition:transform .2s ease}
   .sidebar.is-open{transform:translateX(0)}
   .sidebar-close,.menu-button{display:grid}
   .sidebar-backdrop{position:fixed;inset:0;z-index:45;background:rgba(10,37,64,.2)}
@@ -427,49 +404,3 @@ a{color:inherit}
 @media(prefers-reduced-motion:reduce){
   *,*::before,*::after{scroll-behavior:auto;transition:none;animation-duration:.001ms;animation-iteration-count:1}
 }
-
-/* Klasifikimi ATC brenda shiritit anësor.
-   Katërmbëdhjetë grupet anatomike janë hyrja e vërtetë në regjistër: deri tani
-   duheshin dy klikime dhe një faqe e ndërmjetme për të mbërritur te njëri prej
-   tyre. `<details>` e mban hapjen te shfletuesi — pa JavaScript, me tastierë
-   dhe me lexues ekrani që funksionojnë vetë. */
-.nav-group{display:block}
-.nav-summary{list-style:none;cursor:pointer;-webkit-tap-highlight-color:transparent}
-.nav-summary::-webkit-details-marker{display:none}
-.nav-summary>span:nth-child(2){flex:1;min-width:0}
-.nav-summary-chevron{display:grid;place-items:center;flex:none;opacity:.6;transition:transform .18s ease,opacity .15s}
-.nav-summary-chevron .icon{width:15px;height:15px}
-.nav-group[open] .nav-summary-chevron{transform:rotate(180deg);opacity:.9}
-.nav-summary:hover .nav-summary-chevron{opacity:1}
-.atc-group-list{display:grid;gap:1px;margin:3px 0 6px;padding:3px 0 3px 21px;border-left:1px solid rgba(255,255,255,.14)}
-.atc-group-link{display:grid;grid-template-columns:26px minmax(0,1fr);align-items:center;gap:9px;min-height:32px;padding:4px 8px;border-radius:6px;color:rgba(255,255,255,.6);text-decoration:none;transition:background .13s,color .13s}
-.atc-group-link:hover{background:rgba(255,255,255,.075);color:#fff}
-.atc-group-link[aria-current="true"]{background:rgba(102,94,253,.26);color:#fff}
-.atc-group-code{display:grid;height:20px;place-items:center;border-radius:5px;background:rgba(255,255,255,.1);color:rgba(255,255,255,.82);font:500 10.5px/1 ui-monospace,SFMono-Regular,Menlo,monospace}
-.atc-group-link:hover .atc-group-code,.atc-group-link[aria-current="true"] .atc-group-code{background:rgba(255,255,255,.2);color:#fff}
-.atc-group-link.is-all .atc-group-code{font-size:10px}
-.atc-group-name{overflow:hidden;font-size:11.5px;text-overflow:ellipsis;white-space:nowrap}
-@media(max-width:760px){
-  .atc-group-link{min-height:40px}
-  .nav-summary{min-height:44px}
-}
-
-/* Rafinim i listës ATC në shirit: shenja e grupit merr peshën e vet vizuale,
-   rreshti aktiv ka një shenjë të majtë në vend të një sfondi të plotë, dhe
-   hapësira mes emrit e kodit lexohet si një kolonë, jo si dy. */
-.atc-group-list{gap:2px;padding:4px 0 5px 20px;border-left:1px solid rgba(255,255,255,.13)}
-.atc-group-link{position:relative;grid-template-columns:24px minmax(0,1fr);gap:10px;min-height:31px;padding:4px 9px;border-radius:7px;color:rgba(255,255,255,.62)}
-.atc-group-link::before{content:"";position:absolute;left:-21px;top:50%;width:2px;height:0;transform:translateY(-50%);border-radius:2px;background:#8b84ff;transition:height .16s ease}
-.atc-group-link:hover{background:rgba(255,255,255,.06);color:#fff}
-.atc-group-link:hover::before{height:14px}
-.atc-group-link[aria-current="true"]{background:rgba(102,94,253,.2);color:#fff}
-.atc-group-link[aria-current="true"]::before{height:20px;background:#a29bff}
-.atc-group-code{height:19px;border-radius:5px;background:rgba(255,255,255,.09);color:rgba(255,255,255,.78);font:600 10px/1 ui-monospace,SFMono-Regular,Menlo,monospace;letter-spacing:.02em}
-.atc-group-link:hover .atc-group-code{background:rgba(255,255,255,.17);color:#fff}
-.atc-group-link[aria-current="true"] .atc-group-code{background:rgba(162,155,255,.28);color:#fff}
-.atc-group-link.is-all{margin-bottom:3px}
-.atc-group-link.is-all .atc-group-code{background:rgba(255,255,255,.14);font-size:9.5px}
-.atc-group-name{font-size:11.5px;letter-spacing:-.01em}
-.nav-summary-chevron{opacity:.5}
-.nav-group[open] .nav-summary{color:#fff}
-.nav-group[open] .nav-summary .nav-icon{opacity:1}

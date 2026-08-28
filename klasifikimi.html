@@ -9,65 +9,14 @@
   <link rel="icon" href="/brand/drx-icon-silver.svg" type="image/svg+xml">
   <link rel="preload" href="/fonts/inter-latin-variable-normal.woff2" as="font" type="font/woff2" crossorigin>
   <link rel="stylesheet" href="/classification-v2.css?v=1">
+  <link rel="stylesheet" href="/drx-sidebar.css?v=1">
   <script src="/classification-data.js?v=atc-catalog-v2" defer></script>
+  <script src="/drx-sidebar.js?v=1" defer></script>
   <script src="/classification-v2.js?v=1" defer></script>
 </head>
 <body>
   <div class="app-shell" id="appShell" aria-busy="true">
-    <aside class="sidebar" id="sidebar" aria-label="Navigimi kryesor">
-      <div class="sidebar-head">
-        <a class="brand" href="/index.html" aria-label="DRx — Regjistri">
-          <img src="/brand/drx-horizontal-white.svg" alt="DRx" width="104" height="32">
-        </a>
-        <button class="icon-button sidebar-close" id="sidebarClose" type="button" aria-label="Mbyll menynë"><svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6.4 6.4 17.6 17.6M17.6 6.4 6.4 17.6"/></svg></button>
-      </div>
-
-      <nav class="nav-stack">
-        <p class="nav-label">Klinike</p>
-        <a class="nav-item" href="/index.html"><span class="nav-icon" aria-hidden="true"><svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7 20V9h3.6a2.9 2.9 0 0 1 0 5.8H7"/><path d="m11.4 14.8 4.1 5.2"/><path d="m15.2 9.4 4.4 4.4M19.6 9.4l-4.4 4.4"/><path d="M4 4h6"/></svg></span><span>Barnat</span></a>
-        <details class="nav-group" id="atcNavGroup" open>
-          <summary class="nav-item nav-summary">
-            <span class="nav-icon" aria-hidden="true"><svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3.5" y="3.5" width="7" height="7" rx="1.6"/><rect x="13.5" y="3.5" width="7" height="7" rx="1.6"/><rect x="3.5" y="13.5" width="7" height="7" rx="1.6"/><rect x="13.5" y="13.5" width="7" height="7" rx="1.6"/></svg></span>
-            <span>Klasifikimi ATC</span>
-            <span class="nav-summary-chevron" aria-hidden="true"><svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m7 10 5 5 5-5"/></svg></span>
-          </summary>
-          <div class="atc-group-list">
-            <a class="atc-group-link is-all" href="/klasifikimi.html"><span class="atc-group-code">14</span><span class="atc-group-name">Të gjitha grupet</span></a>
-            <a class="atc-group-link" href="/klasifikimi.html#A" data-atc-group="A"><span class="atc-group-code">A</span><span class="atc-group-name">Tretja dhe metabolizmi</span></a>
-            <a class="atc-group-link" href="/klasifikimi.html#B" data-atc-group="B"><span class="atc-group-code">B</span><span class="atc-group-name">Gjaku dhe organet gjakformuese</span></a>
-            <a class="atc-group-link" href="/klasifikimi.html#C" data-atc-group="C"><span class="atc-group-code">C</span><span class="atc-group-name">Sistemi kardiovaskular</span></a>
-            <a class="atc-group-link" href="/klasifikimi.html#D" data-atc-group="D"><span class="atc-group-code">D</span><span class="atc-group-name">Barna dermatologjike</span></a>
-            <a class="atc-group-link" href="/klasifikimi.html#G" data-atc-group="G"><span class="atc-group-code">G</span><span class="atc-group-name">Gjenitourinar dhe hormonet seksuale</span></a>
-            <a class="atc-group-link" href="/klasifikimi.html#H" data-atc-group="H"><span class="atc-group-code">H</span><span class="atc-group-name">Hormonet sistemike</span></a>
-            <a class="atc-group-link" href="/klasifikimi.html#J" data-atc-group="J"><span class="atc-group-code">J</span><span class="atc-group-name">Antiinfektivë sistemikë</span></a>
-            <a class="atc-group-link" href="/klasifikimi.html#L" data-atc-group="L"><span class="atc-group-code">L</span><span class="atc-group-name">Antineoplastikë dhe imunomodulues</span></a>
-            <a class="atc-group-link" href="/klasifikimi.html#M" data-atc-group="M"><span class="atc-group-code">M</span><span class="atc-group-name">Sistemi muskuloskeletal</span></a>
-            <a class="atc-group-link" href="/klasifikimi.html#N" data-atc-group="N"><span class="atc-group-code">N</span><span class="atc-group-name">Sistemi nervor</span></a>
-            <a class="atc-group-link" href="/klasifikimi.html#P" data-atc-group="P"><span class="atc-group-code">P</span><span class="atc-group-name">Barna antiparazitare</span></a>
-            <a class="atc-group-link" href="/klasifikimi.html#R" data-atc-group="R"><span class="atc-group-code">R</span><span class="atc-group-name">Sistemi respirator</span></a>
-            <a class="atc-group-link" href="/klasifikimi.html#S" data-atc-group="S"><span class="atc-group-code">S</span><span class="atc-group-name">Organet shqisore</span></a>
-            <a class="atc-group-link" href="/klasifikimi.html#V" data-atc-group="V"><span class="atc-group-code">V</span><span class="atc-group-name">Produkte të ndryshme</span></a>
-          </div>
-        </details>
-        <a class="nav-item" href="/icd.html"><span class="nav-icon" aria-hidden="true"><svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 4h9l4 4v12a1 1 0 0 1-1 1H6a1 1 0 0 1-1-1V5a1 1 0 0 1 1-1Z"/><path d="M14 4v5h5"/><path d="M8.5 13h7M8.5 16.5h4.5"/></svg></span><span>ICD‑10</span></a>
-        <a class="nav-item" href="/dozologjia.html"><span class="nav-icon" aria-hidden="true"><svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 4v16"/><path d="M6 8h12"/><path d="M6 8 3 15a3 3 0 0 0 6 0Z"/><path d="M18 8l-3 7a3 3 0 0 0 6 0Z"/></svg></span><span>Dozologjia</span></a>
-        <a class="nav-item" href="/protokollet.html"><span class="nav-icon" aria-hidden="true"><svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M8 4h8a1 1 0 0 1 1 1v15a1 1 0 0 1-1 1H8a1 1 0 0 1-1-1V5a1 1 0 0 1 1-1Z"/><path d="M10 3.5h4v2h-4z"/><path d="m9.8 12 1.6 1.6 3-3.2"/><path d="M9.8 17h4.6"/></svg></span><span>Protokollet</span></a>
-        <a class="nav-item" href="/urgjencat.html"><span class="nav-icon" aria-hidden="true"><svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 4.6 2.9 20a1 1 0 0 0 .87 1.5h16.46A1 1 0 0 0 21.1 20L12 4.6Z"/><path d="M12 10v4.4"/><path d="M12 18h.01"/></svg></span><span>Urgjencat</span></a>
-
-        <p class="nav-label nav-label-spaced">Puna ime</p>
-        <a class="nav-item" href="/recetat.html"><span class="nav-icon" aria-hidden="true"><svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 3h8l4.5 4.5V20a1 1 0 0 1-1 1H6a1 1 0 0 1-1-1V4a1 1 0 0 1 1-1Z"/><path d="M14 3v5h5"/><path d="M8.5 12.5h7M8.5 16h4.5"/></svg></span><span>Recetat</span></a>
-        <a class="nav-item" href="/analizat.html"><span class="nav-icon" aria-hidden="true"><svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9.5 3v6.2L4.8 17.6A2.4 2.4 0 0 0 6.9 21h10.2a2.4 2.4 0 0 0 2.1-3.4L14.5 9.2V3"/><path d="M8.5 3h7"/><path d="M7.3 14.5h9.4"/></svg></span><span>Analizat</span></a>
-        <a class="nav-item" href="/medical-hub.html"><span class="nav-icon" aria-hidden="true"><svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="8.4"/><path d="M12 8.4v7.2M8.4 12h7.2"/></svg></span><span>Medical Hub</span></a>
-      </nav>
-
-      <div class="sidebar-foot">
-        <div class="source-card">
-          <span class="source-dot" aria-hidden="true"></span>
-          <div><strong>ATC clinical catalog</strong><small id="sourceStatus">Duke u lidhur…</small></div>
-        </div>
-        <button class="nav-item logout-button" id="logoutButton" type="button"><span class="nav-icon" aria-hidden="true"><svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M14.5 4.5h3a2 2 0 0 1 2 2v11a2 2 0 0 1-2 2h-3"/><path d="M10 16.5 14.5 12 10 7.5"/><path d="M14.5 12h-10"/></svg></span><span>Dil</span></button>
-      </div>
-    </aside>
+    <aside class="sidebar" id="sidebar" aria-label="Navigimi kryesor"></aside>
 
     <div class="sidebar-backdrop" id="sidebarBackdrop" hidden></div>
 
@@ -102,36 +51,24 @@
           <article class="metric-card"><span>Pa klasifikim ATC</span><strong id="metricUnclassified">—</strong><small>Rreshta pa kategori të njohur</small></article>
         </div>
 
-        <nav class="atc-path" id="atcPath" aria-label="Rruga aktive e klasifikimit ATC">
-          <span class="atc-path-label">Rruga ATC</span>
-          <div class="atc-path-items" id="atcPathItems"></div>
-          <a class="atc-path-registry" id="atcPathRegistry" href="/index.html">Hap barnat <span aria-hidden="true">→</span></a>
-        </nav>
-
         <section class="atc-card">
+          <nav class="atc-path" id="atcPath" aria-label="Rruga aktive e klasifikimit ATC">
+            <span class="atc-path-label">Rruga ATC</span>
+            <div class="atc-path-items" id="atcPathItems"></div>
+            <a class="atc-path-registry" id="atcPathRegistry" href="/index.html">Hap barnat <span aria-hidden="true">→</span></a>
+          </nav>
+
           <div class="atc-toolbar">
             <div class="search-box">
               <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="11" cy="11" r="6.5"/><path d="m16 16 4 4"/></svg>
               <input id="atcSearch" type="search" autocomplete="off" spellcheck="false" placeholder="Kërko kodin ose emrin ATC (p.sh. N02, analgjezikë, diabet)…" aria-label="Kërko klasifikimin ATC">
               <kbd id="searchShortcut">Ctrl K</kbd>
             </div>
+            <p class="atc-status" id="atcStatusText" role="status" aria-live="polite">Duke ngarkuar klasifikimin…</p>
             <button class="button button-secondary" id="clearSearchButton" type="button" hidden>Pastro</button>
           </div>
 
-          <div class="atc-status" role="status" aria-live="polite">
-            <span id="atcStatusText">Duke ngarkuar klasifikimin…</span>
-            <span id="atcStatusMeta"></span>
-          </div>
-
           <div class="atc-workspace" id="atcWorkspace">
-            <aside class="group-panel" aria-label="Grupet anatomike">
-              <div class="panel-heading">
-                <div><span class="panel-kicker">Niveli kryesor</span><h2>Grupet anatomike</h2></div>
-                <span class="panel-count" id="groupCount">14</span>
-              </div>
-              <div class="group-list" id="groupList" role="listbox" aria-label="Zgjidh grupin ATC"></div>
-            </aside>
-
             <section class="category-panel" aria-labelledby="categoryPanelTitle">
               <div id="categoryView">
                 <div class="category-hero" id="categoryHero"></div>
