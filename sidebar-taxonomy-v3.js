@@ -1,22 +1,22 @@
 (() => {
   'use strict';
 
-  const STORAGE_KEY = 'drx_icd_sidebar_open_v1';
+  const ICD_STORAGE_KEY = 'drx_icd_sidebar_open_v1';
   const SCROLL_KEY = 'drx_sidebar_scroll_v2';
-  const CACHE_KEY = 'drx_icd_sidebar_nav_v1';
-  const CACHE_TTL = 10 * 60 * 1000;
-  const API = '/api/icd?view=nav';
+  const ICD_CACHE_KEY = 'drx_icd_sidebar_nav_v1';
+  const ICD_CACHE_TTL = 10 * 60 * 1000;
+  const ICD_API = '/api/icd?view=nav';
+  const ATC_DATA_SRC = '/classification-data.js?v=atc-catalog-v2';
 
   const clean = value => String(value ?? '').trim();
   const esc = value => String(value ?? '').replace(/[&<>"']/g, ch => ({
     '&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'
   }[ch]));
 
+  const CHEVRON = '<svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m7 10 5 5 5-5"/></svg>';
+
   const roman = number => {
-    const map = [
-      [1000,'M'],[900,'CM'],[500,'D'],[400,'CD'],[100,'C'],[90,'XC'],
-      [50,'L'],[40,'XL'],[10,'X'],[9,'IX'],[5,'V'],[4,'IV'],[1,'I'],
-    ];
+    const map = [[1000,'M'],[900,'CM'],[500,'D'],[400,'CD'],[100,'C'],[90,'XC'],[50,'L'],[40,'XL'],[10,'X'],[9,'IX'],[5,'V'],[4,'IV'],[1,'I']];
     let value = Math.max(1, Number(number) || 1);
     let out = '';
     for (const [n, glyph] of map) while (value >= n) { out += glyph; value -= n; }
@@ -32,17 +32,27 @@
     return decodeURIComponent(location.hash.slice(1) || '').trim();
   }
 
-  function readCache() {
+  function currentAtc() {
+    if (currentPath() !== '/klasifikimi.html') return { group:'', sub:'' };
+    const raw = decodeURIComponent(location.hash.slice(1) || '')
+      || new URLSearchParams(location.search).get('atc') || '';
+    const code = clean(raw).toUpperCase().replace(/\s+/g, '');
+    if (/^[A-Z]\d{2}/.test(code)) return { group:code.charAt(0), sub:code.slice(0, 3) };
+    if (/^[A-Z]$/.test(code)) return { group:code, sub:'' };
+    return { group:'', sub:'' };
+  }
+
+  function readIcdCache() {
     try {
-      const cached = JSON.parse(sessionStorage.getItem(CACHE_KEY) || 'null');
+      const cached = JSON.parse(sessionStorage.getItem(ICD_CACHE_KEY) || 'null');
       if (!cached?.savedAt || !Array.isArray(cached.chapters)) return null;
-      if (Date.now() - cached.savedAt > CACHE_TTL) return null;
+      if (Date.now() - cached.savedAt > ICD_CACHE_TTL) return null;
       return cached.chapters;
     } catch { return null; }
   }
 
-  function writeCache(chapters) {
-    try { sessionStorage.setItem(CACHE_KEY, JSON.stringify({ savedAt:Date.now(), chapters })); }
+  function writeIcdCache(chapters) {
+    try { sessionStorage.setItem(ICD_CACHE_KEY, JSON.stringify({ savedAt:Date.now(), chapters })); }
     catch {}
   }
 
@@ -50,7 +60,7 @@
     return clean(node?.displayTitle) || clean(node?.albanianDraft) || clean(node?.englishTitle) || clean(node?.code) || '—';
   }
 
-  function activeChapter(chapters) {
+  function activeIcdChapter(chapters) {
     const code = currentIcdCode();
     if (!code) return '';
     const exact = chapters.find(node => clean(node.code) === code);
@@ -82,18 +92,148 @@
 
     if (labelClinical) {
       let cursor = labelClinical;
-      for (const node of clinical) {
-        cursor.after(node);
-        cursor = node;
-      }
+      for (const node of clinical) { cursor.after(node); cursor = node; }
     }
     if (labelWork) {
       let cursor = labelWork;
-      for (const node of work) {
-        cursor.after(node);
-        cursor = node;
-      }
+      for (const node of work) { cursor.after(node); cursor = node; }
     }
+  }
+
+  function loadAtcData() {
+    if (window.MEDINDEX_ATC_GROUPS && window.MEDINDEX_ATC_SUBGROUPS) return Promise.resolve();
+    const existing = document.querySelector('script[data-drx-atc-sidebar-data]');
+    if (existing) {
+      return new Promise(resolve => {
+        if (window.MEDINDEX_ATC_GROUPS && window.MEDINDEX_ATC_SUBGROUPS) return resolve();
+        existing.addEventListener('load', resolve, { once:true });
+        existing.addEventListener('error', resolve, { once:true });
+      });
+    }
+    return new Promise(resolve => {
+      const script = document.createElement('script');
+      script.src = ATC_DATA_SRC;
+      script.defer = true;
+      script.dataset.drxAtcSidebarData = '1';
+      script.addEventListener('load', resolve, { once:true });
+      script.addEventListener('error', resolve, { once:true });
+      document.head.appendChild(script);
+    });
+  }
+
+  function atcGroups() {
+    return window.MEDINDEX_ATC_GROUPS && typeof window.MEDINDEX_ATC_GROUPS === 'object'
+      ? window.MEDINDEX_ATC_GROUPS : {};
+  }
+
+  function atcSubgroups() {
+    return window.MEDINDEX_ATC_SUBGROUPS && typeof window.MEDINDEX_ATC_SUBGROUPS === 'object'
+      ? window.MEDINDEX_ATC_SUBGROUPS : {};
+  }
+
+  function subgroupsOf(groupCode) {
+    return Object.entries(atcSubgroups())
+      .filter(([code]) => code.charAt(0) === groupCode && code.length === 3)
+      .sort(([left],[right]) => left.localeCompare(right, 'sq'));
+  }
+
+  function navigateAtc(code) {
+    const target = `/klasifikimi.html#${encodeURIComponent(code)}`;
+    if (currentPath() === '/klasifikimi.html') {
+      location.hash = encodeURIComponent(code);
+      return;
+    }
+    location.href = target;
+  }
+
+  function syncAtc(nav = document.querySelector('.sidebar .nav-stack')) {
+    if (!nav) return;
+    const { group, sub } = currentAtc();
+    const outer = nav.querySelector('#atcNavGroup');
+    if (outer && currentPath() === '/klasifikimi.html') outer.open = true;
+
+    nav.querySelectorAll('[data-atc-group]').forEach(summary => {
+      const current = summary.dataset.atcGroup === group && !sub;
+      if (current) summary.setAttribute('aria-current', 'true');
+      else summary.removeAttribute('aria-current');
+    });
+    nav.querySelectorAll('[data-atc-sub]').forEach(link => {
+      if (link.dataset.atcSub === sub) link.setAttribute('aria-current', 'true');
+      else link.removeAttribute('aria-current');
+    });
+
+    const all = nav.querySelector('.atc-group-link.is-all');
+    if (all) {
+      if (currentPath() === '/klasifikimi.html' && !group) all.setAttribute('aria-current', 'true');
+      else all.removeAttribute('aria-current');
+    }
+
+    if (currentPath() === '/klasifikimi.html' && group) {
+      nav.querySelectorAll('[data-atc-details]').forEach(details => {
+        details.open = details.dataset.atcDetails === group;
+      });
+    }
+  }
+
+  async function enhanceAtc(nav) {
+    const outer = nav.querySelector('#atcNavGroup');
+    const list = outer?.querySelector('.atc-group-list');
+    if (!outer || !list) return;
+
+    await loadAtcData();
+    const entries = Object.entries(atcGroups());
+    if (!entries.length) return;
+
+    const { group, sub } = currentAtc();
+    list.innerHTML = `
+      <a class="atc-group-link is-all" href="/klasifikimi.html"${currentPath() === '/klasifikimi.html' && !group ? ' aria-current="true"' : ''}>
+        <span class="atc-group-code">${entries.length}</span>
+        <span class="atc-group-name">Të gjitha grupet</span>
+      </a>
+      ${entries.map(([code, name]) => {
+        const children = subgroupsOf(code);
+        const current = code === group;
+        return `<details class="atc-group" data-atc-details="${esc(code)}"${current ? ' open' : ''}>
+          <summary class="atc-group-link" data-atc-group="${esc(code)}"${current && !sub ? ' aria-current="true"' : ''}>
+            <span class="atc-group-code">${esc(code)}</span>
+            <span class="atc-group-name">${esc(name)}</span>
+            <span class="atc-group-caret" aria-hidden="true">${CHEVRON}</span>
+          </summary>
+          <div class="atc-sub-list">
+            ${children.map(([subCode, subName]) => `<a class="atc-sub-link" href="/klasifikimi.html#${encodeURIComponent(subCode)}" data-atc-sub="${esc(subCode)}"${subCode === sub ? ' aria-current="true"' : ''} title="${esc(subName)}"><span class="atc-sub-code">${esc(subCode)}</span><span class="atc-sub-name">${esc(subName)}</span></a>`).join('')}
+          </div>
+        </details>`;
+      }).join('')}`;
+
+    list.querySelectorAll('[data-atc-group]').forEach(summary => {
+      summary.addEventListener('click', event => {
+        const details = summary.closest('[data-atc-details]');
+        const code = clean(summary.dataset.atcGroup);
+        const active = currentAtc();
+        if (!details || !code) return;
+
+        if (details.open && active.group === code) return;
+
+        event.preventDefault();
+        list.querySelectorAll('[data-atc-details]').forEach(other => {
+          if (other !== details) other.open = false;
+        });
+        details.open = true;
+        navigateAtc(code);
+      });
+    });
+
+    list.addEventListener('toggle', event => {
+      const details = event.target.closest?.('[data-atc-details]');
+      if (!details?.open) return;
+      list.querySelectorAll('[data-atc-details]').forEach(other => {
+        if (other !== details) other.open = false;
+      });
+    }, true);
+
+    if (currentPath() === '/klasifikimi.html') outer.open = true;
+    syncAtc(nav);
+    document.documentElement.dataset.drxAtcSidebar = 'ready';
   }
 
   function replaceIcdLink(nav) {
@@ -112,9 +252,7 @@
       <summary class="nav-item nav-summary">
         ${icon}
         <span>ICD‑10</span>
-        <span class="nav-summary-chevron" aria-hidden="true">
-          <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="m7 10 5 5 5-5"/></svg>
-        </span>
+        <span class="nav-summary-chevron" aria-hidden="true">${CHEVRON}</span>
       </summary>
       <div class="atc-group-list" data-icd-chapter-list>
         <a class="atc-group-link is-all" href="/icd.html">
@@ -129,22 +267,22 @@
 
     if (currentPath() === '/icd.html') details.open = true;
     else {
-      try { details.open = localStorage.getItem(STORAGE_KEY) === 'true'; }
+      try { details.open = localStorage.getItem(ICD_STORAGE_KEY) === 'true'; }
       catch {}
     }
 
     link.replaceWith(details);
     details.addEventListener('toggle', () => {
-      try { localStorage.setItem(STORAGE_KEY, String(details.open)); }
+      try { localStorage.setItem(ICD_STORAGE_KEY, String(details.open)); }
       catch {}
     });
     return details;
   }
 
-  function render(details, chapters) {
+  function renderIcd(details, chapters) {
     const list = details?.querySelector('[data-icd-chapter-list]');
     if (!list) return;
-    const active = activeChapter(chapters);
+    const active = activeIcdChapter(chapters);
     const rootActive = currentPath() === '/icd.html' && !currentIcdCode();
 
     details.querySelector('summary')?.classList.toggle('is-active', currentPath() === '/icd.html');
@@ -168,11 +306,11 @@
     if (activeLink) requestAnimationFrame(() => activeLink.scrollIntoView({ block:'nearest' }));
   }
 
-  async function load(details) {
-    const cached = readCache();
-    if (cached) render(details, cached);
+  async function loadIcd(details) {
+    const cached = readIcdCache();
+    if (cached) renderIcd(details, cached);
     try {
-      const response = await fetch(API, {
+      const response = await fetch(ICD_API, {
         credentials:'same-origin',
         cache:'no-store',
         headers:{ Accept:'application/json' },
@@ -181,8 +319,8 @@
       const payload = await response.json();
       const chapters = Array.isArray(payload?.data?.chapters) ? payload.data.chapters : [];
       if (!chapters.length) throw new Error('ICD nav empty');
-      writeCache(chapters);
-      render(details, chapters);
+      writeIcdCache(chapters);
+      renderIcd(details, chapters);
       document.documentElement.dataset.drxIcdSidebar = 'ready';
     } catch (error) {
       if (!cached) {
@@ -198,19 +336,25 @@
     const nav = document.querySelector('.sidebar .nav-stack');
     if (!nav || nav.dataset.sharedTaxonomy === '1') return;
     nav.dataset.sharedTaxonomy = '1';
-    const details = replaceIcdLink(nav);
+
+    const icdDetails = replaceIcdLink(nav);
     canonicalize(nav);
     restoreScroll(nav);
+    void enhanceAtc(nav);
+
     nav.addEventListener('scroll', () => saveScroll(nav), { passive:true });
     nav.addEventListener('click', event => {
       if (event.target.closest('a')) saveScroll(nav);
     });
     window.addEventListener('pagehide', () => saveScroll(nav), { passive:true });
     window.addEventListener('hashchange', () => {
-      const cached = readCache();
-      if (cached && details) render(details, cached);
+      syncAtc(nav);
+      const cached = readIcdCache();
+      if (cached && icdDetails) renderIcd(icdDetails, cached);
     });
-    if (details) void load(details);
+
+    if (icdDetails) void loadIcd(icdDetails);
+    window.DRxSidebarTaxonomy = Object.freeze({ syncAtc:() => syncAtc(nav), enhanceAtc:() => enhanceAtc(nav) });
     document.documentElement.dataset.drxSidebarStructure = 'taxonomy-v3';
   }
 
