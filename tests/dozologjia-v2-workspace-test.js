@@ -72,6 +72,10 @@ assert.match(js, /searchToken:0/);
 assert.match(js, /productToken:0/);
 assert.match(js, /calculationToken:0/);
 assert.doesNotThrow(() => new Function(js));
+assert.ok(
+  js.includes(client.trim()),
+  'Dozologjia bundle must embed the exact canonical pediatric calculator client',
+);
 
 const clientCode = client
   .replace(/\/\*[\s\S]*?\*\//g, ' ')
