@@ -211,8 +211,11 @@
       experience.appendChild(panel);
     }
 
-    const flash = learn.querySelector('[data-ck-sl-flashcards]') || panel.querySelector('[data-ck-sl-flashcards]');
+    const learnedFlash = learn.querySelector('[data-ck-sl-flashcards]');
+    const panelFlash = panel.querySelector('[data-ck-sl-flashcards]');
+    const flash = learnedFlash || panelFlash;
     if (!flash) return;
+    if (learnedFlash && panelFlash && learnedFlash !== panelFlash) panelFlash.remove();
     if (flash.parentElement !== panel) panel.appendChild(flash);
 
     const itemId = flash.dataset.itemId || item?._id || '';
