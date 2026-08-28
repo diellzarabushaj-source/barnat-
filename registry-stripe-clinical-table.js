@@ -8,7 +8,6 @@
   const COMFORTABLE = 'comfortable';
 
   let boundScroll = null;
-  let observer = null;
   let frame = 0;
 
   const storedDensity = () => {
@@ -125,10 +124,6 @@
       'medindex:tailadmin-ready'
     ].forEach(name => window.addEventListener(name, ensure));
 
-    observer = new MutationObserver(() => {
-      if (!document.querySelector('[data-registry-density-toggle]') || !boundScroll?.isConnected) ensure();
-    });
-    observer.observe(document.body, { childList:true, subtree:true });
   }
 
   function start() {
