@@ -1,16 +1,16 @@
 :root{
-  --protocol-source:#0d6668;
-  --protocol-source-strong:#094f51;
-  --protocol-source-soft:#e8f3f1;
-  --protocol-source-line:#c7ddda;
+  --protocol-source:#533afd;
+  --protocol-source-strong:#4434d4;
+  --protocol-source-soft:#f0efff;
+  --protocol-source-line:#d9d6ff;
   --protocol-danger:#963d35;
 }
 
 [data-theme="dark"]{
-  --protocol-source:#73cbc8;
-  --protocol-source-strong:#a8e0dd;
-  --protocol-source-soft:#17393a;
-  --protocol-source-line:#315557;
+  --protocol-source:#a9a4ff;
+  --protocol-source-strong:#c7c4ff;
+  --protocol-source-soft:#24204a;
+  --protocol-source-line:#514b88;
   --protocol-danger:#f0a39b;
 }
 
