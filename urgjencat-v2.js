@@ -555,17 +555,15 @@
         </div>
 
         <header class="ec-detail-title">
-          <h2>${esc(lesson.title)}</h2>
+          <div class="ec-detail-title-row">
+            <h2>${esc(lesson.title)}</h2>
+            <span class="ec-review-banner ec-review-badge ${review.className}" role="note" aria-label="${esc(review.detail)}">
+              <span class="ec-review-dot" aria-hidden="true"></span>
+              <span class="ec-review-copy"><strong>${esc(review.label)}</strong></span>
+            </span>
+          </div>
           ${lesson.sourceTitleEn ? `<p class="ec-source-title">${esc(lesson.sourceTitleEn)}</p>` : ''}
         </header>
-
-        <div class="ec-review-banner ${review.className}" role="note" aria-label="Statusi i rishikimit">
-          <span class="ec-review-dot" aria-hidden="true"></span>
-          <div class="ec-review-copy">
-            <strong>${esc(review.label)}</strong>
-            <small>${esc(review.detail)}</small>
-          </div>
-        </div>
 
         ${lesson.quickSummary ? `
           <div class="ec-quick-summary">
