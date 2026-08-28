@@ -482,3 +482,54 @@ body{overflow-x:hidden}
   .ec-document-pagination{grid-template-columns:1fr;gap:8px}
   .ec-document-page-next{text-align:left}
 }
+
+
+/* Emergency in-lesson index v6 */
+.ec-section-index{
+  margin:18px 0 6px;padding:12px 13px;
+  border:1px solid #e4e8ef;border-radius:9px;background:#fbfcfe;
+}
+.ec-section-index-head{
+  display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:8px;
+}
+.ec-section-index-head>span{
+  color:#526579;font-size:9.5px;font-weight:600;letter-spacing:.045em;text-transform:uppercase;
+}
+.ec-section-index-head>small{
+  color:#98a2b3;font-size:9px;font-weight:400;
+}
+.ec-section-index-list{
+  display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:6px;
+}
+.ec-section-index-list button{
+  min-width:0;min-height:34px;display:grid;grid-template-columns:26px minmax(0,1fr);
+  align-items:center;gap:8px;padding:6px 8px;
+  border:1px solid #e6eaf0;border-radius:7px;background:#fff;color:#526579;
+  text-align:left;cursor:pointer;
+}
+.ec-section-index-list button:hover{
+  border-color:#cfd7e2;background:#f8fafc;color:#263d54;
+}
+.ec-section-index-list button:focus-visible{
+  outline:0;box-shadow:0 0 0 3px rgba(83,58,253,.13);
+}
+.ec-section-index-list button>span{
+  display:grid;width:24px;height:20px;place-items:center;border-radius:5px;
+  background:#f0efff;color:#635bff;font:600 8.5px/1 Inter;
+}
+.ec-section-index-list button>strong{
+  min-width:0;overflow:hidden;color:inherit;font-size:10.5px;font-weight:500;
+  text-overflow:ellipsis;white-space:nowrap;
+}
+.ec-section{scroll-margin-top:138px}
+@media(max-width:760px){
+  .ec-section-index{padding:10px}
+  .ec-section-index-list{
+    display:flex;gap:6px;overflow-x:auto;padding-bottom:2px;
+    scroll-snap-type:x proximity;scrollbar-width:thin;
+  }
+  .ec-section-index-list button{
+    min-width:220px;flex:0 0 220px;scroll-snap-align:start;
+  }
+  .ec-section{scroll-margin-top:12px}
+}
