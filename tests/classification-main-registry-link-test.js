@@ -63,6 +63,10 @@ const group = drugSearch.buildPageRequest({ atc:'C', page:'1', pageSize:'25' });
 assert.equal(group.atc, 'C');
 assert.match(decodeURIComponent(group.path), /atc_code=ilike\.C\*/);
 
+const subdivision = drugSearch.buildPageRequest({ atc:'N02BE' });
+assert.equal(subdivision.atc, 'N02BE');
+assert.match(decodeURIComponent(subdivision.path), /atc_code=ilike\.N02BE\*/);
+
 const rejected = drugSearch.buildPageRequest({ atc:'N02BE01' });
 assert.equal(rejected.atc, '');
 assert.doesNotMatch(decodeURIComponent(rejected.path), /atc_code=/);
