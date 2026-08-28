@@ -9,84 +9,43 @@ fs.mkdirSync(OUTPUT, { recursive:true });
 test.use({ serviceWorkers:'block' });
 test.describe.configure({ mode:'serial' });
 
-async function openAtc(page, viewport) {
-  await page.setViewportSize(viewport);
-  await page.goto(`${BASE}/index.html?atc=N02`, { waitUntil:'domcontentloaded' });
-  await page.waitForFunction(() => document.documentElement.classList.contains('auth-ready'));
-  await expect(page.locator('.mi-app-shell')).toBeVisible();
-
-  if (viewport.width < 1024) {
-    await page.locator('[data-mi-sidebar-toggle]').click();
-    await expect(page.locator('body')).toHaveClass(/mi-sidebar-open/);
-  }
-
-  const root = page.locator('[data-mi-atc-root-trigger]');
-  await expect(root).toBeVisible();
-  if (await root.getAttribute('aria-expanded') !== 'true') await root.click();
-
-  const nGroup = page.locator('[data-mi-atc-group-trigger="N"]');
-  await expect(nGroup).toBeVisible();
-  if (await nGroup.getAttribute('aria-expanded') !== 'true') await nGroup.click();
-  await expect(page.locator('[data-mi-atc-code="N02"]')).toBeVisible();
-  await expect(page.locator('[data-mi-atc-code="N02"]')).toHaveAttribute('aria-current', 'page');
-  // ATC data is intentionally deferred from startup. The visual audit verifies
-  // the final context state, so allow the lazy context layer to finish rather
-  // than treating its bounded activation time as a rendering failure.
-  await expect(page.locator('#registryAtcContext')).toBeVisible({ timeout:15000 });
-  await page.waitForTimeout(300);
-}
-
-async function assertNoOverflow(page) {
-  const geometry = await page.evaluate(() => [
-    '[data-mi-atc-menu]',
-    '[data-mi-atc-root-panel]',
-    '[data-mi-atc-group="N"]',
-    '[data-mi-atc-code="N02"]',
-    '#registryAtcContext',
-  ].map(selector => {
-    const node = document.querySelector(selector);
-    const rect = node?.getBoundingClientRect();
-    return {
-      selector,
-      exists:Boolean(node),
-      left:rect?.left,
-      right:rect?.right,
-      viewportWidth:innerWidth,
-      scrollWidth:node?.scrollWidth,
-      clientWidth:node?.clientWidth,
-    };
-  }));
-
-  for (const item of geometry) {
-    expect(item.exists, `${item.selector} is missing`).toBeTruthy();
-    expect(item.left, `${item.selector} overflows left`).toBeGreaterThanOrEqual(-1);
-    expect(item.right, `${item.selector} overflows right`).toBeLessThanOrEqual(item.viewportWidth + 1);
-    expect(item.scrollWidth, `${item.selector} clips horizontally`).toBeLessThanOrEqual(item.clientWidth + 2);
-  }
-}
-
-async function assertMobileFocus(page) {
-  const state = await page.evaluate(() => {
-    const open = document.querySelector('[data-mi-atc-group="N"]');
-    const trigger = open?.querySelector('.mi-atc-group-trigger');
-    const label = open?.querySelector('.mi-atc-group-name');
-    const other = document.querySelector('[data-mi-atc-group="M"]');
-    const all = document.querySelector('[data-mi-atc-all-link]');
-    return {
-      openDisplay:getComputedStyle(open).display,
-      otherDisplay:getComputedStyle(other).display,
-      allDisplay:getComputedStyle(all).display,
-      triggerPosition:getComputedStyle(trigger).position,
-      backIcon:getComputedStyle(trigger, '::before').content,
-      backLabel:getComputedStyle(label, '::before').content,
-    };
+async function mockAtc(page) {
+  await page.route('**/api/auth*', async route => {
+    const url = new URL(route.request().url());
+    if (route.request().method() !== 'GET' || url.pathname !== '/api/auth' || url.search) return route.continue();
+    await route.fulfill({ status:200, contentType:'application/json', body:JSON.stringify({ authenticated:true, user:{ name:'Dr. Test User', email:'test@example.test' } }) });
   });
-  expect(state.openDisplay).not.toBe('none');
-  expect(state.otherDisplay).toBe('none');
-  expect(state.allDisplay).toBe('none');
-  expect(state.triggerPosition).toBe('sticky');
-  expect(state.backIcon).toContain('←');
-  expect(state.backLabel).toContain('Kthehu te grupet');
+  await page.route('**/api/atc-counts', async route => {
+    await route.fulfill({
+      status:200,
+      contentType:'application/json',
+      headers:{ 'X-MedIndex-Data-Source':'supabase-bounded-atc' },
+      body:JSON.stringify({
+        ok:true, total:4003, classifiedTotal:3920, unclassifiedTotal:83,
+        groupCounts:{ A:760,B:280,C:690,D:210,G:190,H:120,J:560,L:130,M:260,N:410,P:30,R:250,S:150,V:80 },
+        counts:{ A10:165,C09:188,J01:390,N02:126,N03:84,R03:110,S01:95 }
+      })
+    });
+  });
+}
+
+async function openClassification(page, viewport) {
+  await page.setViewportSize(viewport);
+  await mockAtc(page);
+  await page.goto(`${BASE}/klasifikimi.html#N02`, { waitUntil:'domcontentloaded' });
+  await expect(page.locator('html')).toHaveAttribute('data-drx-app', 'classification-v2');
+  await expect(page.locator('.app-shell')).toBeVisible();
+  await expect(page.locator('[data-group-code="N"]')).toHaveClass(/is-active/);
+  await expect(page.locator('[data-category-card="N02"]')).toHaveClass(/is-active/);
+  await expect(page.locator('[data-subdivision-code="N02A"]')).toBeVisible();
+  await expect(page.locator('#metricClassified')).toHaveText('3,920');
+  await expect(page.locator('#metricUnclassified')).toHaveText('83');
+}
+
+async function assertNoDocumentOverflow(page, label) {
+  const g = await page.evaluate(() => ({ body:document.body.scrollWidth, html:document.documentElement.scrollWidth, viewport:innerWidth }));
+  expect(g.body, `${label}: body overflow`).toBeLessThanOrEqual(g.viewport + 2);
+  expect(g.html, `${label}: html overflow`).toBeLessThanOrEqual(g.viewport + 2);
 }
 
 for (const profile of [
@@ -94,13 +53,30 @@ for (const profile of [
   { name:'tablet', width:820, height:1180 },
   { name:'mobile', width:390, height:844 },
 ]) {
-  test(`${profile.name} ATC visual audit`, async ({ page }) => {
-    await openAtc(page, profile);
-    await assertNoOverflow(page);
+  test(`${profile.name} ATC classification v2 visual audit`, async ({ page }) => {
+    await openClassification(page, profile);
+    await assertNoDocumentOverflow(page, profile.name);
 
-    await page.screenshot({ path:path.join(OUTPUT, `${profile.name}-full.png`), fullPage:true });
-    await page.locator('#miSidebar').screenshot({ path:path.join(OUTPUT, `${profile.name}-sidebar.png`) });
+    await expect(page.locator('#groupList [data-group-code]')).toHaveCount(14);
+    await expect(page.locator('#categoryPanelTitle')).toContainText('Sistemi nervor');
+    await expect(page.locator('[data-category-card="N02"] .category-count')).toHaveText('126');
+    await expect(page.locator('[data-category-card="N02"] a[href="/index.html?atc=N02"]')).toBeVisible();
 
-    if (profile.width < 1024) await assertMobileFocus(page);
+    await page.locator('#atcSearch').fill('diabet');
+    await expect(page.locator('#searchResultsView')).toBeVisible();
+    await expect(page.locator('[data-search-code="A10"]')).toBeVisible();
+    await page.locator('[data-search-code="A10"]').click();
+    await expect(page).toHaveURL(/#A10$/);
+    await expect(page.locator('[data-category-card="A10"]')).toHaveClass(/is-active/);
+    await expect(page.locator('[data-subdivision-code="A10A"]')).toBeVisible();
+
+    if (profile.width < 940) {
+      await page.locator('#menuButton').click();
+      await expect(page.locator('#sidebar')).toHaveClass(/is-open/);
+      await expect(page.locator('#sidebarBackdrop')).toBeVisible();
+      await page.locator('#sidebarClose').click();
+    }
+
+    await page.screenshot({ path:path.join(OUTPUT, `${profile.name}-classification-v2.png`), fullPage:true });
   });
 }
