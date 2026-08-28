@@ -337,6 +337,29 @@
     return result.slice(0,80);
   }
 
+
+  function resultCount(item) {
+    if (!state.counts || !item) return '';
+    if (item.code.length === 1) return groupCount(item.code);
+    if (item.code.length === 3) return categoryDrugCount(item.code);
+    return '';
+  }
+
+  function moveFocus(container, selector, key) {
+    const items = [...container.querySelectorAll(selector)].filter(node => node.offsetParent !== null);
+    if (!items.length) return false;
+    const current = items.indexOf(document.activeElement);
+    let next = current;
+    if (key === 'Home') next = 0;
+    else if (key === 'End') next = items.length - 1;
+    else if (key === 'ArrowDown' || key === 'ArrowRight') next = current < 0 ? 0 : Math.min(items.length - 1, current + 1);
+    else if (key === 'ArrowUp' || key === 'ArrowLeft') next = current < 0 ? items.length - 1 : Math.max(0, current - 1);
+    else return false;
+    items[next]?.focus({ preventScroll:true });
+    items[next]?.scrollIntoView({ block:'nearest', inline:'nearest' });
+    return true;
+  }
+
   function renderSearchResults() {
     const results = searchCatalog(state.query);
     el.categoryView.hidden = true;
@@ -350,7 +373,7 @@
       <button class="search-result" type="button" data-search-code="${escapeHtml(item.code)}" data-search-group="${escapeHtml(item.group)}" data-search-category="${escapeHtml(item.category)}" data-search-subdivision="${escapeHtml(item.subdivision)}" style="--group-accent:${colorFor(item.group)}">
         <span class="search-result-code">${escapeHtml(item.code)}</span>
         <span class="search-result-copy"><strong>${escapeHtml(item.name)}</strong><small>${item.category ? `${escapeHtml(groups()[item.group] || '')}` : `${categoryEntries(item.group).length} kategori terapeutike`}</small></span>
-        <span class="search-result-type">${escapeHtml(item.type)}</span>
+        <span class="search-result-meta"><b>${escapeHtml(item.type)}</b>${resultCount(item) !== '' ? `<small>${formatNumber(resultCount(item))} barna</small>` : ''}</span>
       </button>`).join('') : '<div class="empty-state">Provo një kod si <strong>N02</strong> ose një term si <strong>diabet</strong>, <strong>antibiotik</strong>, <strong>respirator</strong>.</div>';
   }
 
@@ -463,6 +486,10 @@
       const button = event.target.closest('[data-group-code]');
       if (button) selectGroup(button.dataset.groupCode);
     });
+    el.groupList.addEventListener('keydown', event => {
+      if (!['ArrowDown','ArrowUp','ArrowLeft','ArrowRight','Home','End'].includes(event.key)) return;
+      if (moveFocus(el.groupList, '[data-group-code]', event.key)) event.preventDefault();
+    });
 
     el.categoryList.addEventListener('click', event => {
       const sub = event.target.closest('[data-subdivision-code]');
@@ -477,6 +504,11 @@
       const code = button.dataset.pathCode;
       if (code.length === 1) selectGroup(code);
       else selectCategory(code.slice(0,3), code.length > 3 ? code : '');
+    });
+
+    el.searchResults.addEventListener('keydown', event => {
+      if (!['ArrowDown','ArrowUp','Home','End'].includes(event.key)) return;
+      if (moveFocus(el.searchResults, '[data-search-code]', event.key)) event.preventDefault();
     });
 
     el.searchResults.addEventListener('click', event => {
@@ -494,6 +526,14 @@
       if (event.key === 'Escape' && el.atcSearch.value) {
         el.atcSearch.value = '';
         applySearch();
+        return;
+      }
+      if (event.key === 'ArrowDown' && state.query) {
+        const first = el.searchResults.querySelector('[data-search-code]');
+        if (first) {
+          event.preventDefault();
+          first.focus();
+        }
       }
     });
     el.clearSearchButton.addEventListener('click', () => {
