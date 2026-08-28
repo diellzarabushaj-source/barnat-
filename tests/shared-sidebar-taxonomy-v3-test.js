@@ -66,7 +66,7 @@ for (const file of ['registry-v2.js','classification-v2.js','icd-v2.js','urgjenc
 
 for (const file of ['index.html','klasifikimi.html','icd.html']) {
   const html = read(file);
-  assert.match(html, /sidebar-taxonomy-v3/, `${file}: V2 runtime cache-bust missing`);
+  assert.match(html, /profile-columns-v4/, `${file}: V2 runtime cache-bust missing`);
 }
 for (const [htmlFile, runtime] of [['urgjencat.html','urgjencat-v2.js'],['medical-hub.html','medical-hub-v2.js']]) {
   const html = read(htmlFile);
@@ -77,7 +77,7 @@ for (const [htmlFile, runtime] of [['urgjencat.html','urgjencat-v2.js'],['medica
 
 for (const file of ['analizat.html','dozologjia.html','protokollet.html','recetat.html','sistemi.html']) {
   const html = read(file);
-  assert.match(html, /tailadmin-shell\.js\?v=sidebar-taxonomy-v3/, `${file}: shared TailAdmin sidebar cache-bust missing`);
+  assert.match(html, /tailadmin-shell\.js\?v=shell-profile-v4/, `${file}: shared TailAdmin sidebar cache-bust missing`);
 }
 
 assert.match(stripe, /Shared taxonomy sidebar — ATC and ICD use one identical navy language/);
