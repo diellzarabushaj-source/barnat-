@@ -4,7 +4,14 @@ const path = require('node:path');
 
 const ROOT = path.resolve(__dirname, '..');
 const read = file => fs.readFileSync(path.join(ROOT, file), 'utf8');
-const pages = ['index.html', 'klasifikimi.html', 'icd.html', 'analizat.html', 'dozologjia.html', 'protokollet.html', 'recetat.html'];
+const pages = ['index.html', 'klasifikimi.html', 'icd.html', 'dozologjia.html', 'protokollet.html', 'recetat.html'];
+
+
+const labs = read('analizat.html');
+assert.match(labs, /analizat-v2\.css\?v=1/, 'analizat.html: V2 stylesheet version is stale');
+assert.match(labs, /analizat-v2\.js\?v=1/, 'analizat.html: V2 runtime version is stale');
+assert.match(labs, /drx-dashboard-stripe\.css\?v=drx-dashboard-stripe-v4/, 'analizat.html: canonical Stripe shell is missing');
+assert.doesNotMatch(labs, /auth-client\.js|analizat-polish\.css|lab-sheet-data\.js|analizat\.js/, 'analizat.html: legacy laboratory runtime must stay removed');
 
 for (const page of pages) {
   const html = read(page);
