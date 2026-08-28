@@ -626,8 +626,39 @@
     '</section>';
   }
 
+  function normalizeFigureExternalUrl(value) {
+    const url = String(value || '').trim();
+    if (!url) return '';
+    const repoRawPrefix = 'https://raw.githubusercontent.com/diellzarabushaj-source/barnat-/main/';
+    if (url.startsWith(repoRawPrefix)) return '/' + url.slice(repoRawPrefix.length);
+    return url;
+  }
+
+  function figureSrcCandidates(figure) {
+    if (!figure) return [];
+    const candidates = [];
+    const add = value => {
+      const src = String(value || '').trim();
+      if (src && !candidates.includes(src)) candidates.push(src);
+    };
+
+    add(figure?.image?.asset?.url);
+
+    const external = normalizeFigureExternalUrl(figure?.externalUrl);
+    if (external.startsWith('/')) add(external);
+
+    add(figure?.imageDataUrl);
+
+    if ((figure?.imageDataChunks || []).length) {
+      add(figure.imageDataChunks.join(''));
+    }
+
+    add(external);
+    return candidates;
+  }
+
   function figureSrc(figure) {
-    return figure?.image?.asset?.url || figure?.externalUrl || figure?.imageDataUrl || ((figure?.imageDataChunks || []).length ? figure.imageDataChunks.join('') : '') || '';
+    return figureSrcCandidates(figure)[0] || '';
   }
 
   function figureMarkup(lesson, figure) {
@@ -638,11 +669,53 @@
       return `<span class="ec-figure-chip">${label} ${esc(figure.figureNumber)}${figure.sourcePdfPage ? ` · PDF f. ${esc(figure.sourcePdfPage)}` : ''}</span>`;
     }
     return `
-      <figure class="ec-figure-card">
-        <img src="${esc(src)}" alt="${esc(figure.alt || figure.caption || `${label} ${figure.figureNumber}`)}" loading="lazy" decoding="async">
+      <figure class="ec-figure-card" data-figure-card="${esc(figure._key || figure.figureNumber || '')}">
+        <img
+          src="${esc(src)}"
+          data-figure-key="${esc(figure._key || figure.figureNumber || '')}"
+          data-figure-src-index="0"
+          alt="${esc(figure.alt || figure.caption || `${label} ${figure.figureNumber}`)}"
+          loading="lazy"
+          decoding="async"
+        >
         <figcaption><strong>${label} ${esc(figure.figureNumber)}.</strong> ${inlineClinicalText(lesson, figure.caption || '')}</figcaption>
       </figure>
     `;
+  }
+
+  function bindFigureFallbacks(root, lesson) {
+    if (!root || !lesson) return;
+    root.querySelectorAll('img[data-figure-key]').forEach(image => {
+      image.addEventListener('error', () => {
+        const key = image.dataset.figureKey;
+        const figure = figuresForLesson(lesson).find(item =>
+          String(item?._key || item?.figureNumber || '') === String(key)
+        );
+        const candidates = figureSrcCandidates(figure);
+        const currentIndex = Number(image.dataset.figureSrcIndex || 0);
+        const nextIndex = currentIndex + 1;
+
+        if (nextIndex < candidates.length) {
+          image.dataset.figureSrcIndex = String(nextIndex);
+          image.src = candidates[nextIndex];
+          return;
+        }
+
+        const card = image.closest('.ec-figure-card');
+        image.hidden = true;
+        if (card && !card.querySelector('.ec-figure-error')) {
+          const fallback = document.createElement('div');
+          fallback.className = 'ec-figure-error ec-figure-chip';
+          fallback.textContent = `Figura ${figure?.figureNumber || ''} nuk u ngarkua. Burimi është ruajtur dhe mund të riprovohet pas rifreskimit.`;
+          card.insertBefore(fallback, card.firstChild);
+        }
+        console.warn('[Urgjencat v2] Të gjitha burimet e figurës dështuan:', {
+          lessonId: lesson._id,
+          figureNumber: figure?.figureNumber,
+          candidates: candidates.map(src => src.startsWith('data:') ? '[embedded-image]' : src),
+        });
+      });
+    });
   }
 
   function renderLessonSection(lesson, section, index) {
@@ -843,6 +916,7 @@
       </div>
     `;
 
+    bindFigureFallbacks(root, lesson);
     bindInlineAbbreviations(root);
 
     root.querySelectorAll('[data-section-jump]').forEach(button => {
