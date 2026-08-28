@@ -420,8 +420,39 @@
     status.textContent = `${lessons.length} mësime në ${section.title}`;
   }
 
+  function figuresForLesson(lesson) {
+    if (!lesson?._id) return lesson?.figures || [];
+    return figureCache.get(lesson._id) || lesson.figures || [];
+  }
+
+  async function ensureLessonFigures(lesson) {
+    const id = lesson?._id;
+    if (!id || !(lesson.figures || []).length) return [];
+    if (figureCache.has(id)) return figureCache.get(id);
+    if (figureRequests.has(id)) return figureRequests.get(id);
+
+    const request = window.MedIndexSanity
+      .query(FIGURE_DETAIL_QUERY, { id }, { timeout:15000, cache:'no-cache' })
+      .then(payload => {
+        const figures = Array.isArray(payload?.figures) ? payload.figures : [];
+        figureCache.set(id, figures);
+        return figures;
+      })
+      .catch(error => {
+        console.warn('[Urgjencat v2] Figura nuk u ngarkua:', error);
+        return lesson.figures || [];
+      })
+      .finally(() => {
+        figureRequests.delete(id);
+        if (state.selectedLessonId === id) renderDetail();
+      });
+
+    figureRequests.set(id, request);
+    return request;
+  }
+
   function figureByNumber(lesson, number) {
-    return (lesson.figures || []).find(item => String(item.figureNumber) === String(number));
+    return figuresForLesson(lesson).find(item => String(item.figureNumber) === String(number));
   }
 
   function tableByNumber(lesson, number) {
