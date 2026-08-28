@@ -18,7 +18,7 @@
       },
       abbreviations[]{_key,footnoteNumber,abbreviation,fullTermEn,explanationSq},
       figures[]{
-        _key,figureNumber,sourcePdfPage,caption,sourceCaptionEn,alt,
+        _key,figureNumber,sourcePdfPage,caption,sourceCaptionEn,alt,externalUrl,imageDataUrl,
         image{asset->{url},alt}
       }
     }
@@ -244,9 +244,13 @@
     return (lesson.figures || []).find(item => String(item.figureNumber) === String(number));
   }
 
+  function figureSrc(figure) {
+    return figure?.image?.asset?.url || figure?.externalUrl || figure?.imageDataUrl || '';
+  }
+
   function figureMarkup(figure) {
     if (!figure) return '';
-    const src = figure?.image?.asset?.url || '';
+    const src = figureSrc(figure);
     if (!src) {
       return `<span class="ec-figure-chip">Figura ${esc(figure.figureNumber)}${figure.sourcePdfPage ? ` · PDF f. ${esc(figure.sourcePdfPage)}` : ''}</span>`;
     }
@@ -288,9 +292,9 @@
 
         ${linkedFigures.length ? `
           <div class="ec-figure-strip">
-            ${linkedFigures.filter(f => !f?.image?.asset?.url).map(figureMarkup).join('')}
+            ${linkedFigures.filter(f => !figureSrc(f)).map(figureMarkup).join('')}
           </div>
-          ${linkedFigures.filter(f => f?.image?.asset?.url).map(figureMarkup).join('')}
+          ${linkedFigures.filter(f => figureSrc(f)).map(figureMarkup).join('')}
         ` : ''}
       </section>
     `;
