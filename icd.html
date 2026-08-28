@@ -1,130 +1,152 @@
 <!doctype html>
-<html lang="sq" class="auth-checking medindex-clean-ui medindex-tailadmin">
+<html lang="sq" data-drx-app="icd-v2">
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-  <meta name="description" content="DRx — shfletuesi hierarkik ICD-10-WHO 2019 me kërkim të avancuar dhe terminologji shqipe të standardizuar.">
   <meta name="robots" content="noindex,nofollow,noarchive">
   <meta name="theme-color" content="#1c1e54">
-  <link rel="manifest" href="manifest.webmanifest">
-  <title>DRx | ICD-10-WHO 2019 — Dr. Diellza Rabushaj</title>
+  <title>DRx | ICD-10</title>
+  <link rel="icon" href="/brand/drx-icon-silver.svg" type="image/svg+xml">
   <link rel="preload" href="/fonts/inter-latin-variable-normal.woff2" as="font" type="font/woff2" crossorigin>
-  <link rel="stylesheet" href="drx-clinical-system.css?v=drx-clinical-system-v1">
-  <link rel="stylesheet" href="medical-hub.css?v=20260723-1">
-  <link rel="stylesheet" href="app-polish.css?v=20260728-1">
-  <link rel="stylesheet" href="performance.css?v=20260723-1">
-  <link rel="stylesheet" href="clean-medindex-ui.css?v=20260723-1">
-  <link rel="stylesheet" href="clinical-density.css?v=20260724-1">
-  <link rel="stylesheet" href="tailadmin-medindex.css?v=20260728-1" data-tailadmin-medindex-css>
-  <link rel="stylesheet" href="icd-sidebar.css?v=icd-sidebar-v1" data-mi-icd-sidebar-css>
-  <link rel="stylesheet" href="icd-tree.css?v=icd-tree-v1">
-  <link rel="stylesheet" href="icd-advanced-search.css?v=sq-clinical-search-v3">
-  <link rel="stylesheet" href="icd-detail-panel.css?v=icd-detail-panel-v2">
-  <link rel="stylesheet" href="icd-terminology-detail.css?v=icd-terminology-detail-v1">
-  <link rel="stylesheet" href="icd-favorites.css?v=icd-favorites-v1">
-  <link rel="stylesheet" href="icd-tree-polish.css?v=icd-tree-polish-v5">
-  <link rel="stylesheet" href="icd-coding-workspace.css?v=icd-coding-workspace-v1">
-  <link rel="stylesheet" href="icd-code-comparison.css?v=icd-code-comparison-v2">
-  <link rel="stylesheet" href="icd-clinical-guidance.css?v=icd-clinical-guidance-v1">
-<link rel="stylesheet" href="tailadmin-professional.css?v=20260728-1" data-tailadmin-professional-css>
-  <link rel="stylesheet" href="drx-dashboard-stripe.css?v=drx-dashboard-stripe-v2">
-  <script src="tailadmin-shell.js?v=production-audit-v2" defer></script>
-  <script src="tailadmin-professional.js?v=production-audit-v2" defer></script>
+  <link rel="stylesheet" href="/icd-v2.css?v=1">
+  <script src="/icd-v2.js?v=1" defer></script>
 </head>
 <body>
-  <a class="skip-link" href="#icdContent">Kalo te përmbajtja ICD-10</a>
-  <div class="med-shell">
-    <nav class="med-nav" aria-label="Navigimi kryesor">
-      <a class="med-nav-link" href="index.html"><span class="med-nav-title">Barnat</span></a>
-      <a class="med-nav-link" href="klasifikimi.html"><span class="med-nav-title">Klasifikimi</span></a>
-      <a class="med-nav-link active" href="icd.html" aria-current="page"><span class="med-nav-title">ICD</span></a>
-      <a class="med-nav-link" href="analizat.html"><span class="med-nav-title">Analizat</span></a>
-      <a class="med-nav-link" href="recetat.html"><span class="med-nav-title">Recetat</span></a>
-    </nav>
+  <div class="app-shell" id="appShell" aria-busy="true">
+    <aside class="sidebar" id="sidebar" aria-label="Navigimi kryesor">
+      <div class="sidebar-head">
+        <a class="brand" href="/index.html" aria-label="DRx — Regjistri">
+          <img src="/brand/drx-horizontal-white.svg" alt="DRx" width="104" height="32">
+        </a>
+        <button class="icon-button sidebar-close" id="sidebarClose" type="button" aria-label="Mbyll menynë"><svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6.4 6.4 17.6 17.6M17.6 6.4 6.4 17.6"/></svg></button>
+      </div>
 
-    <main class="med-main icd-registry-main" id="icdContent" tabindex="-1">
-      <section class="icd-registry-intro" aria-labelledby="icdRegistryTitle">
-        <div>
-          <h2 id="icdRegistryTitle">ICD-10 — shfletuesi hierarkik</h2>
-          <p>Hap kapitullin, bllokun, kategorinë dhe nënkodin me klikim. Kërkimi njeh kodet me ose pa pikë, shqipen, anglishten, sinonimet dhe gabimet e vogla të shkrimit. Sugjerimet ndihmojnë kodimin; diagnoza përfundimtare mbetet vendim klinik.</p>
-        </div>
-        <div class="icd-registry-stats" aria-label="Përmbledhje ICD-10">
-          <span class="icd-registry-stat"><strong id="icdTotalNodes">12,542</strong><span>nyje</span></span>
-          <span class="icd-registry-stat"><strong id="icdTotalCategories">2,050</strong><span>kategori</span></span>
-          <span class="icd-registry-stat"><strong id="icdTotalSubcategories">10,196</strong><span>nënkategori</span></span>
-          <span class="icd-registry-stat"><strong id="icdTranslationCoverage">—</strong><span>standardizuar</span></span>
-        </div>
-      </section>
-
-      <section class="icd-tree-panel" aria-labelledby="icdTreeHeading">
-        <h2 class="sr-only" id="icdTreeHeading">Hierarkia e plotë ICD-10-WHO 2019</h2>
-        <div class="icd-tree-toolbar" role="search" aria-label="Kërko dhe shfleto ICD-10">
-          <div class="icd-search-wrap" id="icdSmartSearch">
-            <span class="icd-search-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"></circle><path d="m16.5 16.5 4 4"></path></svg></span>
-            <input id="icdSearch" type="search" autocomplete="off" placeholder="p.sh. I10, A001, tension i lartë ose hipertensjon…" aria-label="Kërko ICD-10 sipas kodit, titullit ose sinonimit" role="combobox" aria-autocomplete="list" aria-controls="icdSuggestions" aria-expanded="false">
-            <kbd class="icd-search-shortcut" aria-hidden="true">/</kbd>
-            <button class="icd-search-clear" id="icdSearchClear" type="button" aria-label="Pastro kërkimin" hidden>×</button>
-            <div class="icd-suggestions" id="icdSuggestions" role="listbox" aria-label="Sugjerime të avancuara ICD-10" aria-busy="false" hidden></div>
+      <nav class="nav-stack">
+        <p class="nav-label">Klinike</p>
+        <a class="nav-item" href="/index.html"><span class="nav-icon" aria-hidden="true"><svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7 20V9h3.6a2.9 2.9 0 0 1 0 5.8H7"/><path d="m11.4 14.8 4.1 5.2"/><path d="m15.2 9.4 4.4 4.4M19.6 9.4l-4.4 4.4"/><path d="M4 4h6"/></svg></span><span>Barnat</span></a>
+        <details class="nav-group" id="atcNavGroup">
+          <summary class="nav-item nav-summary">
+            <span class="nav-icon" aria-hidden="true"><svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3.5" y="3.5" width="7" height="7" rx="1.6"/><rect x="13.5" y="3.5" width="7" height="7" rx="1.6"/><rect x="3.5" y="13.5" width="7" height="7" rx="1.6"/><rect x="13.5" y="13.5" width="7" height="7" rx="1.6"/></svg></span>
+            <span>Klasifikimi ATC</span>
+            <span class="nav-summary-chevron" aria-hidden="true"><svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m7 10 5 5 5-5"/></svg></span>
+          </summary>
+          <div class="atc-group-list">
+            <a class="atc-group-link is-all" href="/klasifikimi.html"><span class="atc-group-code">14</span><span class="atc-group-name">Të gjitha grupet</span></a>
+            <a class="atc-group-link" href="/klasifikimi.html#A" data-atc-group="A"><span class="atc-group-code">A</span><span class="atc-group-name">Tretja dhe metabolizmi</span></a>
+            <a class="atc-group-link" href="/klasifikimi.html#B" data-atc-group="B"><span class="atc-group-code">B</span><span class="atc-group-name">Gjaku dhe organet gjakformuese</span></a>
+            <a class="atc-group-link" href="/klasifikimi.html#C" data-atc-group="C"><span class="atc-group-code">C</span><span class="atc-group-name">Sistemi kardiovaskular</span></a>
+            <a class="atc-group-link" href="/klasifikimi.html#D" data-atc-group="D"><span class="atc-group-code">D</span><span class="atc-group-name">Barna dermatologjike</span></a>
+            <a class="atc-group-link" href="/klasifikimi.html#G" data-atc-group="G"><span class="atc-group-code">G</span><span class="atc-group-name">Gjenitourinar dhe hormonet seksuale</span></a>
+            <a class="atc-group-link" href="/klasifikimi.html#H" data-atc-group="H"><span class="atc-group-code">H</span><span class="atc-group-name">Hormonet sistemike</span></a>
+            <a class="atc-group-link" href="/klasifikimi.html#J" data-atc-group="J"><span class="atc-group-code">J</span><span class="atc-group-name">Antiinfektivë sistemikë</span></a>
+            <a class="atc-group-link" href="/klasifikimi.html#L" data-atc-group="L"><span class="atc-group-code">L</span><span class="atc-group-name">Antineoplastikë dhe imunomodulues</span></a>
+            <a class="atc-group-link" href="/klasifikimi.html#M" data-atc-group="M"><span class="atc-group-code">M</span><span class="atc-group-name">Sistemi muskuloskeletal</span></a>
+            <a class="atc-group-link" href="/klasifikimi.html#N" data-atc-group="N"><span class="atc-group-code">N</span><span class="atc-group-name">Sistemi nervor</span></a>
+            <a class="atc-group-link" href="/klasifikimi.html#P" data-atc-group="P"><span class="atc-group-code">P</span><span class="atc-group-name">Barna antiparazitare</span></a>
+            <a class="atc-group-link" href="/klasifikimi.html#R" data-atc-group="R"><span class="atc-group-code">R</span><span class="atc-group-name">Sistemi respirator</span></a>
+            <a class="atc-group-link" href="/klasifikimi.html#S" data-atc-group="S"><span class="atc-group-code">S</span><span class="atc-group-name">Organet shqisore</span></a>
+            <a class="atc-group-link" href="/klasifikimi.html#V" data-atc-group="V"><span class="atc-group-code">V</span><span class="atc-group-name">Produkte të ndryshme</span></a>
           </div>
-          <button class="icd-tree-action" id="icdCollapseAll" type="button">Mbyll të gjitha</button>
-          <button class="icd-tree-action icd-favorites-toggle" id="icdFavoritesToggle" type="button" aria-expanded="false" aria-controls="icdFavoritesPanel" aria-label="Të preferuarat ICD, 0 kode">Të preferuarat <span id="icdFavoritesCount" aria-hidden="true">0</span></button>
-          <span class="icd-tree-status" id="icdTreeStatus" aria-live="polite">Duke u ngarkuar…</span>
-          <div class="icd-source-health" id="icdSourceHealth" data-state="loading" aria-busy="true">
-            <span class="icd-source-status" id="icdSourceStatus" data-source-status="loading" role="status" aria-live="polite" aria-atomic="true">Burimi: duke u verifikuar</span>
-            <small class="icd-source-health-detail" id="icdSourceHealthDetail">Google Sheet publik · hierarkia e plotë</small>
-            <button class="icd-source-health-refresh" id="icdSourceHealthRefresh" type="button" aria-label="Rifresko burimin dhe hierarkinë ICD-10">Rifresko</button>
+        </details>
+        <a class="nav-item is-active" href="/icd.html" aria-current="page"><span class="nav-icon" aria-hidden="true"><svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 4h9l4 4v12a1 1 0 0 1-1 1H6a1 1 0 0 1-1-1V5a1 1 0 0 1 1-1Z"/><path d="M14 4v5h5"/><path d="M8.5 13h7M8.5 16.5h4.5"/></svg></span><span>ICD‑10</span></a>
+        <a class="nav-item" href="/dozologjia.html"><span class="nav-icon" aria-hidden="true"><svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 4v16"/><path d="M6 8h12"/><path d="M6 8 3 15a3 3 0 0 0 6 0Z"/><path d="M18 8l-3 7a3 3 0 0 0 6 0Z"/></svg></span><span>Dozologjia</span></a>
+        <a class="nav-item" href="/protokollet.html"><span class="nav-icon" aria-hidden="true"><svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M8 4h8a1 1 0 0 1 1 1v15a1 1 0 0 1-1 1H8a1 1 0 0 1-1-1V5a1 1 0 0 1 1-1Z"/><path d="M10 3.5h4v2h-4z"/><path d="m9.8 12 1.6 1.6 3-3.2"/><path d="M9.8 17h4.6"/></svg></span><span>Protokollet</span></a>
+        <a class="nav-item" href="/urgjencat.html"><span class="nav-icon" aria-hidden="true"><svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 4.6 2.9 20a1 1 0 0 0 .87 1.5h16.46A1 1 0 0 0 21.1 20L12 4.6Z"/><path d="M12 10v4.4"/><path d="M12 18h.01"/></svg></span><span>Urgjencat</span></a>
+
+        <p class="nav-label nav-label-spaced">Puna ime</p>
+        <a class="nav-item" href="/recetat.html"><span class="nav-icon" aria-hidden="true"><svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 3h8l4.5 4.5V20a1 1 0 0 1-1 1H6a1 1 0 0 1-1-1V4a1 1 0 0 1 1-1Z"/><path d="M14 3v5h5"/><path d="M8.5 12.5h7M8.5 16h4.5"/></svg></span><span>Recetat</span></a>
+        <a class="nav-item" href="/analizat.html"><span class="nav-icon" aria-hidden="true"><svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9.5 3v6.2L4.8 17.6A2.4 2.4 0 0 0 6.9 21h10.2a2.4 2.4 0 0 0 2.1-3.4L14.5 9.2V3"/><path d="M8.5 3h7"/><path d="M7.3 14.5h9.4"/></svg></span><span>Analizat</span></a>
+        <a class="nav-item" href="/medical-hub.html"><span class="nav-icon" aria-hidden="true"><svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="8.4"/><path d="M12 8.4v7.2M8.4 12h7.2"/></svg></span><span>Medical Hub</span></a>
+      </nav>
+
+      <div class="sidebar-foot">
+        <div class="source-card">
+          <span class="source-dot" aria-hidden="true"></span>
+          <div><strong>ICD-10 clinical source</strong><small id="sourceStatus">Duke u lidhur…</small></div>
+        </div>
+        <button class="nav-item logout-button" id="logoutButton" type="button"><span class="nav-icon" aria-hidden="true"><svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M14.5 4.5h3a2 2 0 0 1 2 2v11a2 2 0 0 1-2 2h-3"/><path d="M10 16.5 14.5 12 10 7.5"/><path d="M14.5 12h-10"/></svg></span><span>Dil</span></button>
+      </div>
+    </aside>
+
+    <div class="sidebar-backdrop" id="sidebarBackdrop" hidden></div>
+
+    <main class="main-shell">
+      <header class="topbar">
+        <button class="icon-button menu-button" id="menuButton" type="button" aria-label="Hap menynë"><svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 7h16M4 12h16M4 17h16"/></svg></button>
+        <div class="breadcrumbs" aria-label="Pozicioni aktual">
+          <span>DRx</span><span class="crumb-sep">/</span><strong>ICD‑10</strong>
+        </div>
+        <div class="topbar-actions">
+          <span class="sync-pill"><span class="sync-dot"></span><span id="syncText">Supabase</span></span>
+          <span class="avatar-button" aria-label="Përdoruesi aktiv"><span id="avatarInitials">DR</span></span>
+        </div>
+      </header>
+
+      <section class="page-wrap" aria-labelledby="pageTitle">
+        <div class="page-heading">
+          <div>
+            <p class="eyebrow">International Classification of Diseases</p>
+            <h1 id="pageTitle">ICD‑10</h1>
+            <p class="page-subtitle">Shfleto kapitujt, blloqet, kategoritë dhe nënkategoritë. Kërkimi njeh kodin me ose pa pikë, shqipen dhe anglishten.</p>
+          </div>
+          <div class="heading-actions">
+            <a class="button button-secondary" href="/index.html">Hap regjistrin</a>
           </div>
         </div>
 
-        <aside class="icd-clinical-legend" aria-label="Shpjegimi i prioriteteve klinike">
-          <strong>Roli në MF</strong>
-          <span data-urgency-level="direct"><i aria-hidden="true"></i>Urgjencë në MF</span>
-          <span data-urgency-level="urgent"><i aria-hidden="true"></i>Urgjencë</span>
-          <span data-urgency-level="family-medicine"><i aria-hidden="true"></i>Menaxhim në MF</span>
-        </aside>
+        <div class="metrics-row" aria-label="Përmbledhje ICD-10">
+          <article class="metric-card"><span>Nyje gjithsej</span><strong id="metricNodes">—</strong><small>Hierarkia e plotë</small></article>
+          <article class="metric-card"><span>Kapituj</span><strong id="metricChapters">—</strong><small>Niveli kryesor</small></article>
+          <article class="metric-card"><span>Kategori</span><strong id="metricCategories">—</strong><small>Kode me tre karaktere</small></article>
+          <article class="metric-card"><span>Në shqip</span><strong id="metricCoverage">—</strong><small id="metricCoverageNote">Mbulimi i përkthimit</small></article>
+        </div>
 
-        <section class="icd-favorites-panel" id="icdFavoritesPanel" aria-labelledby="icdFavoritesHeading" hidden>
-          <header class="icd-favorites-head">
-            <div>
-              <h3 id="icdFavoritesHeading">Kodet e preferuara</h3>
-              <p>Shortcut-e personale për kategori dhe nënkategori ICD-10; nuk përfaqësojnë diagnozë automatike.</p>
+        <nav class="icd-path" id="icdPath" aria-label="Rruga aktive ICD-10" hidden>
+          <span class="icd-path-label">Rruga ICD</span>
+          <div class="icd-path-items" id="icdPathItems"></div>
+          <button class="icd-path-reset" id="icdPathReset" type="button">Pastro</button>
+        </nav>
+
+        <section class="icd-card">
+          <div class="icd-toolbar">
+            <div class="search-box">
+              <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="11" cy="11" r="6.5"/><path d="m16 16 4 4"/></svg>
+              <input id="icdSearch" type="search" autocomplete="off" spellcheck="false" placeholder="Kërko kodin ose diagnozën (p.sh. I10, hipertension, A00)…" aria-label="Kërko ICD-10">
+              <kbd>Ctrl K</kbd>
             </div>
-            <button class="icd-favorites-clear" id="icdFavoritesClear" type="button" hidden>Pastro të gjitha</button>
-          </header>
-          <div class="icd-favorites-list" id="icdFavoritesList" role="list"></div>
-          <p class="icd-favorites-empty" id="icdFavoritesEmpty">Nuk ke ruajtur ende kode. Hape një kategori ose nënkategori dhe zgjidh “Shto te të preferuarat”.</p>
-          <p class="sr-only" id="icdFavoritesStatus" role="status" aria-live="polite"></p>
-        </section>
-
-        <div class="icd-tree-wrap">
-          <div class="icd-tree" id="icdTree" role="tree" aria-label="Kapitujt, blloqet, kategoritë dhe nënkategoritë ICD-10" aria-busy="true">
-            <div class="icd-tree-loading"><span class="icd-tree-spinner" aria-hidden="true"></span><p>Po ngarkohet hierarkia ICD-10…</p></div>
           </div>
-          <button class="icd-tree-action" id="icdTreeRetry" type="button" hidden>Provo përsëri</button>
-        </div>
+
+          <div class="icd-status" role="status" aria-live="polite">
+            <span id="icdStatusText">Duke ngarkuar ICD-10…</span>
+            <span id="icdStatusMeta"></span>
+          </div>
+
+          <div class="icd-workspace">
+            <aside class="chapter-panel" aria-label="Kapitujt ICD-10">
+              <div class="panel-heading">
+                <div><span class="panel-kicker">Niveli kryesor</span><h2>Kapitujt</h2></div>
+                <span class="panel-count" id="chapterCount">—</span>
+              </div>
+              <div class="chapter-list" id="chapterList" role="listbox" aria-label="Zgjidh kapitullin ICD-10"></div>
+            </aside>
+
+            <section class="node-panel" aria-labelledby="nodeSectionTitle">
+              <div class="node-hero" id="nodeHero" hidden></div>
+              <div class="node-section-head">
+                <div>
+                  <span class="panel-kicker" id="nodeKicker">Fillo</span>
+                  <h2 id="nodeSectionTitle">Zgjidh një kapitull</h2>
+                </div>
+                <span class="panel-count" id="nodeCount">0</span>
+              </div>
+              <div class="node-list" id="nodeList"></div>
+            </section>
+          </div>
+        </section>
       </section>
     </main>
   </div>
 
-  <script src="medical-icons.js?v=20260723-1" defer></script>
-  <script src="section-icons.js?v=20260723-1" defer></script>
-  <script src="icd-sidebar.js?v=icd-sidebar-v1" defer></script>
-  <script src="icd-fetch-capture.js?v=icd-fetch-capture-v1" defer></script>
-  <script src="icd-advanced-search.js?v=sq-clinical-search-v3-ui1" defer></script>
-  <script src="icd-tree.js?v=icd-tree-v2" defer></script>
-  <script src="icd-coding-workspace.js?v=icd-coding-workspace-v1" defer></script>
-  <script src="icd-search-race-guard-v2.js?v=icd-race-guard-v5" defer></script>
-  <script src="icd-workspace-health.js?v=icd-workspace-health-v2" defer></script>
-  <script src="icd-detail-panel.js?v=icd-detail-panel-v3" defer></script>
-  <script src="icd-terminology-detail.js?v=icd-terminology-detail-v1" defer></script>
-  <script src="icd-prescription-roundtrip.js?v=icd-rx-roundtrip-v1" defer></script>
-  <script src="icd-favorites.js?v=icd-favorites-v1" defer></script>
-  <script src="icd-code-comparison.js?v=icd-code-comparison-v1" defer></script>
-  <script src="icd-code-comparison-bridge.js?v=icd-code-comparison-bridge-v1" defer></script>
-  <script src="icd-clinical-guidance.js?v=icd-clinical-guidance-v2" defer></script>
-  <script src="icd-clinical-retry-controller.js?v=icd-clinical-retry-controller-v3" defer></script>
-  <script src="icd-clinical-guidance-recovery.js?v=icd-clinical-guidance-recovery-v7" defer></script>
-  <script src="auth-client.js?v=production-audit-v2" defer></script>
-  <script src="app-stability.js?v=20260724-2" defer></script>
+  <div class="toast" id="toast" role="status" aria-live="polite" hidden></div>
 </body>
 </html>

@@ -1,0 +1,203 @@
+@font-face{font-family:Inter;src:url('/fonts/inter-latin-variable-normal.woff2') format('woff2');font-style:normal;font-weight:100 900;font-display:swap}
+:root{
+  --ink:#0d253d;--ink-2:#263d54;--muted:#64748d;--muted-2:#8492a3;
+  --surface:#fff;--canvas:#fff;--soft:#f6f9fc;--line:#e3e8ee;--line-strong:#cfd8e3;
+  --stripe:#533afd;--stripe-hover:#4434d4;--stripe-soft:#f0efff;--stripe-line:#d9d6ff;
+  --navy:#1c1e54;--success:#0e7c66;--success-soft:#ecf9f5;
+  --shadow-xs:0 1px 2px rgba(10,37,64,.04);--shadow-sm:0 1px 3px rgba(0,55,112,.04);--shadow-lg:0 24px 64px rgba(10,37,64,.16);
+  --sidebar:238px;--topbar:58px;
+}
+*{box-sizing:border-box}
+html,body{min-height:100%}
+html{background:var(--canvas)}
+body{margin:0;font-family:Inter,"SF Pro Display",system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;background:var(--canvas);color:var(--ink);font-size:14px;font-weight:300;line-height:1.45;font-feature-settings:"ss01";-webkit-font-smoothing:antialiased}
+button,input{font:inherit}button{color:inherit}a{color:inherit}[hidden]{display:none}
+.app-shell{min-height:100vh}
+.sidebar{position:fixed;inset:0 auto 0 0;z-index:50;width:var(--sidebar);display:flex;flex-direction:column;padding:18px 14px 14px;background:var(--navy);color:#fff}
+.sidebar-head{min-height:54px;display:flex;align-items:center;justify-content:space-between;padding:0 10px 12px}
+.brand{display:flex;align-items:center}.brand img{display:block;width:104px;height:auto;max-height:32px;object-fit:contain;object-position:left center}
+.sidebar-close{display:none}
+.nav-stack{padding:10px 0 18px;overflow:auto;scrollbar-width:thin;scrollbar-color:rgba(255,255,255,.18) transparent}
+.nav-label{margin:6px 11px 7px;color:rgba(255,255,255,.62);font-size:11px;font-weight:400;letter-spacing:.04em;text-transform:uppercase}.nav-label-spaced{margin-top:19px}
+.nav-item{width:100%;min-height:40px;display:flex;align-items:center;gap:10px;padding:0 10px;border:0;border-radius:6px;background:transparent;color:rgba(255,255,255,.67);text-decoration:none;text-align:left;cursor:pointer;font-size:14px;font-weight:300;transition:background .15s,color .15s}
+.nav-item:hover{background:rgba(255,255,255,.075);color:#fff}.nav-item.is-active{background:rgba(102,94,253,.26);color:#fff}
+.nav-icon{width:22px;height:22px;display:grid;place-items:center;flex:none;color:currentColor;opacity:.82}.nav-icon .icon{width:18px;height:18px}.nav-item:hover .nav-icon,.nav-item.is-active .nav-icon{opacity:1}.sidebar-foot{margin-top:auto;padding:12px 0 0;border-top:1px solid rgba(255,255,255,.12)}
+.source-card{display:grid;grid-template-columns:8px 1fr;gap:9px;align-items:start;margin:0 0 6px;padding:9px 10px;border-radius:6px;background:rgba(255,255,255,.06)}
+.source-dot{width:7px;height:7px;margin-top:4px;border-radius:999px;background:#20b486;box-shadow:0 0 0 3px rgba(32,180,134,.16)}
+.source-card strong,.source-card small{display:block}.source-card strong{font-size:10.5px;font-weight:400;color:rgba(255,255,255,.86)}.source-card small{margin-top:2px;color:rgba(255,255,255,.48);font-size:9.5px}.logout-button{color:rgba(255,255,255,.62)}
+.main-shell{min-width:0;margin-left:var(--sidebar)}
+.topbar{height:var(--topbar);position:sticky;top:0;z-index:35;display:flex;align-items:center;gap:12px;padding:0 28px;background:rgba(255,255,255,.97);border-bottom:1px solid var(--line)}
+.menu-button{display:none}.breadcrumbs{display:flex;align-items:center;gap:8px;color:var(--muted);font-size:12px}.breadcrumbs strong{color:#394b5f;font-weight:400}.crumb-sep{color:#c3cbd4}
+.topbar-actions{display:flex;align-items:center;gap:9px;margin-left:auto}.sync-pill{display:inline-flex;align-items:center;gap:7px;min-height:28px;padding:4px 9px;border:1px solid var(--line);border-radius:999px;background:#fff;color:#627286;font-size:10px}.sync-dot{width:6px;height:6px;border-radius:50%;background:#20b486}.avatar-button{width:30px;height:30px;border:0;border-radius:999px;background:#0a2540;color:#fff;font-size:9.5px;font-weight:700;cursor:pointer}
+.icon-button{display:grid;width:34px;height:34px;place-items:center;padding:0;border:1px solid var(--line);border-radius:8px;background:#fff;color:#5a6b80;cursor:pointer}
+/* E njëjta kurth i kaskadës si te Barnat: `display:none` mbi `.menu-button` dhe
+   `.sidebar-close` humbte ndaj `.icon-button{display:grid}`, që vjen më vonë me
+   të njëjtën specifikë. Fshehja e mban fjalën vetëm me specifikë të dyfishtë. */
+.icon-button.menu-button,.icon-button.sidebar-close{display:none}
+.icon{display:block;width:18px;height:18px;flex:none}.icon-button .icon{width:17px;height:17px}
+.page-wrap{width:100%;max-width:1360px;margin:0 auto;padding:32px 36px 64px}.page-heading{display:flex;align-items:flex-start;justify-content:space-between;gap:28px;margin-bottom:28px}.eyebrow{margin:0 0 6px;color:var(--muted);font-size:10px;font-weight:400;letter-spacing:.1px;text-transform:uppercase}.page-heading h1{margin:0;color:var(--ink);font-size:32px;font-weight:300;letter-spacing:-.64px;line-height:1.1}.page-subtitle{max-width:760px;margin:7px 0 0;color:var(--muted);font-size:14px;font-weight:300;line-height:1.55}.heading-actions{display:flex;gap:8px}
+.button{min-height:38px;display:inline-flex;align-items:center;justify-content:center;gap:7px;padding:8px 14px;border:1px solid transparent;border-radius:9999px;background:#fff;cursor:pointer;font-size:12px;font-weight:400;text-decoration:none;white-space:nowrap;transition:background .15s,border-color .15s,color .15s,box-shadow .15s}.button:focus-visible,.icon-button:focus-visible,input:focus-visible,.group-row:focus-visible,.category-row:focus-visible,.subdivision-row:focus-visible{outline:0;box-shadow:0 0 0 3px rgba(83,58,253,.15)}.button-secondary{border-color:var(--line-strong);color:#394b5f}.button-secondary:hover{background:var(--soft)}
+.metrics-row{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:0;margin-bottom:24px;border:1px solid var(--line);border-radius:12px;background:#fff;box-shadow:var(--shadow-sm);overflow:hidden}.metric-card{min-width:0;padding:20px 22px;border-right:1px solid var(--line)}.metric-card:last-child{border-right:0}.metric-card span,.metric-card strong,.metric-card small{display:block}.metric-card span{color:var(--muted);font-size:12px;font-weight:400}.metric-card strong{margin:12px 0 4px;color:var(--ink);font-size:28px;font-weight:300;line-height:1.05;font-variant-numeric:tabular-nums;letter-spacing:-.5px}.metric-card small{overflow:hidden;color:var(--muted);font-size:11px;text-overflow:ellipsis;white-space:nowrap}
+
+/* ICD-10 — e njëjta kartë, i njëjti ritëm si Barnat dhe Klasifikimi.
+   Faqja e vjetër ngarkonte nëntëmbëdhjetë fletë stili të mbivendosura mbi një
+   guaskë tjetër nga pjesa tjetër e produktit. Kjo është një shtresë e vetme. */
+
+.icd-path{display:flex;align-items:center;gap:9px;min-height:44px;margin-bottom:14px;padding:6px 7px 6px 12px;border:1px solid var(--line);border-radius:10px;background:#fbfcfe}
+.icd-path-label{flex:none;color:var(--muted);font-size:11px;font-weight:400}
+.icd-path-items{min-width:0;display:flex;align-items:center;gap:5px;overflow-x:auto;scrollbar-width:none}
+.icd-path-items::-webkit-scrollbar{display:none}
+.icd-path-node{min-width:0;display:flex;align-items:center;gap:6px;padding:5px 8px;border:0;border-radius:7px;background:transparent;color:#536579;cursor:pointer;white-space:nowrap}
+.icd-path-node:hover{background:#fff}
+.icd-path-node.is-current{background:var(--stripe-soft);color:var(--stripe)}
+.icd-path-node strong{font:600 11px/1 ui-monospace,SFMono-Regular,Menlo,monospace}
+.icd-path-node span{max-width:210px;overflow:hidden;font-size:11px;text-overflow:ellipsis}
+.icd-path-sep{display:grid;place-items:center;color:#9aa6b3}
+.icd-path-sep .icon{width:14px;height:14px}
+.icd-path-reset{flex:none;margin-left:auto;padding:7px 11px;border:0;border-radius:999px;background:#fff;color:var(--stripe);font-size:11.5px;cursor:pointer}
+.icd-path-reset:hover{background:var(--stripe-soft)}
+
+.icd-card{overflow:hidden;border:1px solid var(--line);border-radius:12px;background:#fff;box-shadow:var(--shadow-sm)}
+.icd-toolbar{display:flex;align-items:center;gap:10px;padding:9px 10px;border-bottom:1px solid var(--line)}
+.search-box{position:relative;flex:1 1 auto;max-width:760px}
+.search-box svg{position:absolute;left:11px;top:50%;width:15px;height:15px;transform:translateY(-50%);fill:none;stroke:#8794a3;stroke-width:1.8;stroke-linecap:round}
+.search-box input{width:100%;height:38px;padding:0 62px 0 35px;border:1px solid var(--line-strong);border-radius:7px;background:#fff;color:var(--ink);font-size:13px;transition:border-color .12s,box-shadow .12s}
+.search-box input::placeholder{color:var(--muted)}
+.search-box input:hover{border-color:#bcc7d3}
+.search-box input:focus{outline:0;border-color:var(--stripe);box-shadow:0 0 0 3px rgba(83,58,253,.14)}
+.search-box kbd{position:absolute;right:8px;top:50%;transform:translateY(-50%);padding:4px 7px;border:1px solid var(--line);border-bottom-color:#c4ccd6;border-radius:5px;background:var(--soft);color:var(--muted);font:500 10px/1 Inter}
+
+.icd-status{min-height:34px;display:flex;align-items:center;justify-content:space-between;gap:12px;padding:6px 12px;border-bottom:1px solid var(--line);background:#fcfdfe;color:var(--muted);font-size:11px}
+
+.icd-workspace{display:grid;grid-template-columns:290px minmax(0,1fr);min-height:620px}
+.chapter-panel{border-right:1px solid var(--line);background:#fbfcfe}
+.panel-heading{display:flex;align-items:flex-start;justify-content:space-between;gap:10px;padding:16px 16px 12px;border-bottom:1px solid var(--line)}
+.panel-kicker{display:block;margin-bottom:3px;color:var(--muted);font-size:11px}
+.panel-heading h2{margin:0;color:var(--ink);font-size:15px;font-weight:500}
+.panel-count{display:grid;min-width:30px;height:26px;place-items:center;padding:0 9px;border:1px solid var(--line);border-radius:999px;background:#fff;color:var(--muted);font-size:11px;font-variant-numeric:tabular-nums}
+.chapter-list{max-height:620px;padding:9px;overflow-y:auto;scrollbar-width:thin}
+.chapter-row{width:100%;display:grid;grid-template-columns:42px minmax(0,1fr);align-items:center;gap:10px;min-height:52px;margin-bottom:5px;padding:7px 9px;border:1px solid transparent;border-radius:9px;background:transparent;color:#3e5165;text-align:left;cursor:pointer;transition:border-color .12s,background .12s}
+.chapter-row:hover{border-color:var(--line);background:#fff}
+.chapter-row.is-active{border-color:var(--stripe-line);background:var(--stripe-soft)}
+.chapter-code{display:grid;height:30px;place-items:center;border:1px solid var(--line);border-radius:7px;background:#fff;color:var(--stripe);font:600 11px/1 ui-monospace,SFMono-Regular,Menlo,monospace}
+.chapter-row.is-active .chapter-code{border-color:var(--stripe-line)}
+.chapter-copy{min-width:0}
+.chapter-copy strong{display:block;overflow:hidden;color:#30465b;font-size:12.5px;font-weight:500;line-height:1.35;text-overflow:ellipsis;white-space:nowrap}
+.chapter-copy small{display:block;margin-top:2px;color:#5a6b80;font-size:11px}
+
+.node-panel{min-width:0;display:flex;flex-direction:column}
+.node-hero{display:grid;grid-template-columns:58px minmax(0,1fr) auto;align-items:center;gap:14px;padding:18px 16px;border-bottom:1px solid var(--line);background:linear-gradient(180deg,#fff,#fbfcff)}
+.node-hero[hidden]{display:none}
+.hero-code{display:grid;width:56px;height:56px;place-items:center;border:1px solid var(--stripe-line);border-radius:12px;background:var(--stripe-soft);color:var(--stripe);font:600 17px/1 ui-monospace,SFMono-Regular,Menlo,monospace}
+.hero-copy{min-width:0}
+.hero-kicker{display:block;margin-bottom:3px;color:var(--muted);font-size:11px}
+.hero-copy h2{margin:0;color:var(--ink);font-size:19px;font-weight:500;line-height:1.25}
+.hero-copy p{margin:5px 0 0;color:var(--muted);font-size:12px}
+.hero-actions{display:flex;align-items:center;gap:8px}
+
+.node-section-head{display:flex;align-items:flex-start;justify-content:space-between;gap:10px;padding:15px 16px 11px}
+.node-section-head h2{margin:0;color:var(--ink);font-size:15px;font-weight:500}
+.node-list{display:grid;gap:7px;padding:2px 16px 20px}
+.node-row{width:100%;display:grid;grid-template-columns:74px minmax(0,1fr) auto;align-items:center;gap:12px;min-height:58px;padding:9px 11px;border:1px solid var(--line);border-radius:9px;background:#fff;color:#3e5165;text-align:left;cursor:pointer;transition:border-color .12s,background .12s,box-shadow .12s}
+.node-row:hover{border-color:var(--stripe-line);background:#fcfcff}
+.node-row.is-active{border-color:var(--stripe-line);background:var(--stripe-soft);box-shadow:var(--shadow-xs)}
+.node-code{display:inline-flex;min-width:64px;align-items:center;justify-content:center;padding:5px 8px;border:1px solid var(--line);border-radius:7px;background:var(--soft);color:var(--stripe);font:600 11px/1 ui-monospace,SFMono-Regular,Menlo,monospace}
+.node-copy{min-width:0}
+.node-copy strong{display:block;color:#30465b;font-size:12.5px;font-weight:500;line-height:1.35}
+.node-copy small{display:block;margin-top:3px;color:#5a6b80;font-size:11px}
+.node-meta{display:flex;align-items:center;gap:7px}
+.node-level{padding:4px 9px;border:1px solid var(--line);border-radius:999px;background:#fff;color:var(--muted);font-size:10.5px;white-space:nowrap}
+.node-open{display:grid;width:28px;height:28px;place-items:center;border:0;border-radius:7px;background:transparent;color:#93a0ae}
+.node-row:hover .node-open{background:#f4f6f9;color:#536579}
+.node-open .icon{width:16px;height:16px}
+
+.icd-empty{padding:52px 20px 58px;text-align:center}
+.icd-empty-icon{display:grid;width:44px;height:44px;place-items:center;margin:0 auto 12px;border:1px solid var(--line);border-radius:10px;background:var(--soft);color:var(--muted-2)}
+.icd-empty-icon .icon{width:21px;height:21px}
+.icd-empty h3{margin:0;color:#1d3853;font-size:14px;font-weight:500}
+.icd-empty p{margin:6px 0 0;color:var(--muted);font-size:12px}
+.skeleton-row{height:58px;margin-bottom:7px;border-radius:9px;background:linear-gradient(90deg,#eef1f4 20%,#f7f8fa 45%,#eef1f4 70%);background-size:200% 100%;animation:icdskel 1.25s linear infinite}
+@keyframes icdskel{to{background-position:-200% 0}}
+.toast{position:fixed;right:18px;bottom:18px;z-index:120;max-width:min(360px,calc(100vw - 36px));padding:10px 12px;border:1px solid var(--stripe-line);border-radius:8px;background:#fff;color:#3f4f63;box-shadow:var(--shadow-lg);font-size:11.5px}
+
+@media(max-width:1180px){:root{--sidebar:208px}.page-wrap{padding-left:20px;padding-right:20px}.icd-workspace{grid-template-columns:250px minmax(0,1fr)}}
+@media(max-width:940px){
+  :root{--sidebar:0px}
+  .sidebar{width:238px;transform:translateX(-102%);box-shadow:var(--shadow-lg);transition:transform .2s ease}
+  .sidebar.is-open{transform:translateX(0)}
+  .icon-button.menu-button,.icon-button.sidebar-close{display:grid}
+  .sidebar-backdrop{position:fixed;inset:0;z-index:45;background:rgba(10,37,64,.2)}
+  .main-shell{margin-left:0}.topbar{padding:0 14px}.page-wrap{padding:20px 14px 34px}
+  .metrics-row{grid-template-columns:repeat(2,minmax(0,1fr))}
+  .metric-card:nth-child(2){border-right:0}.metric-card:nth-child(-n+2){border-bottom:1px solid var(--line)}
+  .icd-workspace{grid-template-columns:1fr}
+  .chapter-panel{border-right:0;border-bottom:1px solid var(--line)}
+  .chapter-list{max-height:none;display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:6px}
+}
+@media(max-width:760px){
+  .topbar{height:50px}.breadcrumbs,.sync-pill{display:none}
+  .page-wrap{padding:14px 10px 24px}
+  .page-heading{display:block;margin-bottom:16px}.page-heading h1{font-size:26px}.page-subtitle{font-size:12px}
+  .heading-actions{margin-top:12px}.heading-actions .button{width:100%;min-height:44px}
+  .metric-card{padding:12px}.metric-card strong{font-size:18px}.metric-card small{font-size:10.5px}
+  .icd-path{position:sticky;top:50px;z-index:26;margin:0 -1px 10px;padding:6px 8px;background:rgba(255,255,255,.97);backdrop-filter:blur(10px)}
+  .icd-path-label{display:none}.icd-path-node span{display:none}
+  .icd-toolbar{align-items:stretch;flex-direction:column;padding:9px}
+  .search-box{max-width:none}.search-box input{height:46px;font-size:16px}.search-box kbd{display:none}
+  .chapter-list{grid-template-columns:1fr}
+  .chapter-row{min-height:48px}
+  .node-hero{grid-template-columns:52px minmax(0,1fr);padding:15px 12px}
+  .hero-code{width:50px;height:50px;font-size:15px}
+  .hero-actions{grid-column:1/-1;width:100%}.hero-actions .button{min-height:42px;flex:1}
+  .node-section-head{padding:14px 12px 10px}.node-list{padding:2px 12px 18px}
+  .node-row{grid-template-columns:66px minmax(0,1fr);min-height:56px}
+  .node-meta{grid-column:1/-1;justify-content:flex-start}
+  .sidebar .nav-item{min-height:44px}
+}
+@media(prefers-reduced-motion:reduce){*,*::before,*::after{transition:none;animation-duration:.001ms}}
+
+/* Klasifikimi ATC brenda shiritit anësor.
+   Katërmbëdhjetë grupet anatomike janë hyrja e vërtetë në regjistër: deri tani
+   duheshin dy klikime dhe një faqe e ndërmjetme për të mbërritur te njëri prej
+   tyre. `<details>` e mban hapjen te shfletuesi — pa JavaScript, me tastierë
+   dhe me lexues ekrani që funksionojnë vetë. */
+.nav-group{display:block}
+.nav-summary{list-style:none;cursor:pointer;-webkit-tap-highlight-color:transparent}
+.nav-summary::-webkit-details-marker{display:none}
+.nav-summary>span:nth-child(2){flex:1;min-width:0}
+.nav-summary-chevron{display:grid;place-items:center;flex:none;opacity:.6;transition:transform .18s ease,opacity .15s}
+.nav-summary-chevron .icon{width:15px;height:15px}
+.nav-group[open] .nav-summary-chevron{transform:rotate(180deg);opacity:.9}
+.nav-summary:hover .nav-summary-chevron{opacity:1}
+.atc-group-list{display:grid;gap:1px;margin:3px 0 6px;padding:3px 0 3px 21px;border-left:1px solid rgba(255,255,255,.14)}
+.atc-group-link{display:grid;grid-template-columns:26px minmax(0,1fr);align-items:center;gap:9px;min-height:32px;padding:4px 8px;border-radius:6px;color:rgba(255,255,255,.6);text-decoration:none;transition:background .13s,color .13s}
+.atc-group-link:hover{background:rgba(255,255,255,.075);color:#fff}
+.atc-group-link[aria-current="true"]{background:rgba(102,94,253,.26);color:#fff}
+.atc-group-code{display:grid;height:20px;place-items:center;border-radius:5px;background:rgba(255,255,255,.1);color:rgba(255,255,255,.82);font:500 10.5px/1 ui-monospace,SFMono-Regular,Menlo,monospace}
+.atc-group-link:hover .atc-group-code,.atc-group-link[aria-current="true"] .atc-group-code{background:rgba(255,255,255,.2);color:#fff}
+.atc-group-link.is-all .atc-group-code{font-size:10px}
+.atc-group-name{overflow:hidden;font-size:11.5px;text-overflow:ellipsis;white-space:nowrap}
+@media(max-width:760px){
+  .atc-group-link{min-height:40px}
+  .nav-summary{min-height:44px}
+}
+
+/* Rafinim i listës ATC në shirit: shenja e grupit merr peshën e vet vizuale,
+   rreshti aktiv ka një shenjë të majtë në vend të një sfondi të plotë, dhe
+   hapësira mes emrit e kodit lexohet si një kolonë, jo si dy. */
+.atc-group-list{gap:2px;padding:4px 0 5px 20px;border-left:1px solid rgba(255,255,255,.13)}
+.atc-group-link{position:relative;grid-template-columns:24px minmax(0,1fr);gap:10px;min-height:31px;padding:4px 9px;border-radius:7px;color:rgba(255,255,255,.62)}
+.atc-group-link::before{content:"";position:absolute;left:-21px;top:50%;width:2px;height:0;transform:translateY(-50%);border-radius:2px;background:#8b84ff;transition:height .16s ease}
+.atc-group-link:hover{background:rgba(255,255,255,.06);color:#fff}
+.atc-group-link:hover::before{height:14px}
+.atc-group-link[aria-current="true"]{background:rgba(102,94,253,.2);color:#fff}
+.atc-group-link[aria-current="true"]::before{height:20px;background:#a29bff}
+.atc-group-code{height:19px;border-radius:5px;background:rgba(255,255,255,.09);color:rgba(255,255,255,.78);font:600 10px/1 ui-monospace,SFMono-Regular,Menlo,monospace;letter-spacing:.02em}
+.atc-group-link:hover .atc-group-code{background:rgba(255,255,255,.17);color:#fff}
+.atc-group-link[aria-current="true"] .atc-group-code{background:rgba(162,155,255,.28);color:#fff}
+.atc-group-link.is-all{margin-bottom:3px}
+.atc-group-link.is-all .atc-group-code{background:rgba(255,255,255,.14);font-size:9.5px}
+.atc-group-name{font-size:11.5px;letter-spacing:-.01em}
+.nav-summary-chevron{opacity:.5}
+.nav-group[open] .nav-summary{color:#fff}
+.nav-group[open] .nav-summary .nav-icon{opacity:1}

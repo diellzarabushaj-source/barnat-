@@ -453,3 +453,23 @@ a{color:inherit}
   .atc-group-link{min-height:40px}
   .nav-summary{min-height:44px}
 }
+
+/* Rafinim i listës ATC në shirit: shenja e grupit merr peshën e vet vizuale,
+   rreshti aktiv ka një shenjë të majtë në vend të një sfondi të plotë, dhe
+   hapësira mes emrit e kodit lexohet si një kolonë, jo si dy. */
+.atc-group-list{gap:2px;padding:4px 0 5px 20px;border-left:1px solid rgba(255,255,255,.13)}
+.atc-group-link{position:relative;grid-template-columns:24px minmax(0,1fr);gap:10px;min-height:31px;padding:4px 9px;border-radius:7px;color:rgba(255,255,255,.62)}
+.atc-group-link::before{content:"";position:absolute;left:-21px;top:50%;width:2px;height:0;transform:translateY(-50%);border-radius:2px;background:#8b84ff;transition:height .16s ease}
+.atc-group-link:hover{background:rgba(255,255,255,.06);color:#fff}
+.atc-group-link:hover::before{height:14px}
+.atc-group-link[aria-current="true"]{background:rgba(102,94,253,.2);color:#fff}
+.atc-group-link[aria-current="true"]::before{height:20px;background:#a29bff}
+.atc-group-code{height:19px;border-radius:5px;background:rgba(255,255,255,.09);color:rgba(255,255,255,.78);font:600 10px/1 ui-monospace,SFMono-Regular,Menlo,monospace;letter-spacing:.02em}
+.atc-group-link:hover .atc-group-code{background:rgba(255,255,255,.17);color:#fff}
+.atc-group-link[aria-current="true"] .atc-group-code{background:rgba(162,155,255,.28);color:#fff}
+.atc-group-link.is-all{margin-bottom:3px}
+.atc-group-link.is-all .atc-group-code{background:rgba(255,255,255,.14);font-size:9.5px}
+.atc-group-name{font-size:11.5px;letter-spacing:-.01em}
+.nav-summary-chevron{opacity:.5}
+.nav-group[open] .nav-summary{color:#fff}
+.nav-group[open] .nav-summary .nav-icon{opacity:1}

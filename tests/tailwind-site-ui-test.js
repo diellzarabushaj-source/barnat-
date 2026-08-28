@@ -17,7 +17,6 @@ assert.match(css, /focus-visible/);
 assert.doesNotMatch(css, /cdn\.tailwindcss\.com|fonts\.googleapis\.com/i);
 
 const touch = read('medindex-tailwind-touch.css');
-assert.match(touch, /#icdSourceHealthRefresh/);
 assert.match(touch, /min-height:40px/);
 assert.match(touch, /min-height:44px/);
 
@@ -51,8 +50,18 @@ assert.match(registryHtml, /registry-v2\.js\?v=1/);
 assert.doesNotMatch(registryHtml, /tailadmin-professional\.css|tailadmin-shell\.js/,
   'Registry V2 must stay standalone instead of reintroducing legacy UI layers.');
 
+/* ICD-10 u nda nga bundle-i i pajtueshmërisë njësoj si Barnat: nëntëmbëdhjetë
+   fletë stili mbi një guaskë tjetër u zëvendësuan me një shtresë të vetme.
+   Pohimi nuk u hoq — u drejtua nga arkitektura që ekziston vërtet. */
+const icdHtml = read('icd.html');
+assert.match(icdHtml, /data-drx-app="icd-v2"/);
+assert.match(icdHtml, /icd-v2\.css\?v=1/);
+assert.match(icdHtml, /icd-v2\.js\?v=1/);
+assert.doesNotMatch(icdHtml, /tailadmin-professional\.css|tailadmin-shell\.js/,
+  'ICD V2 must stay standalone instead of reintroducing legacy UI layers.');
+
 const appPages = [
-  'analizat.html', 'icd.html', 'dozologjia.html',
+  'analizat.html', 'dozologjia.html',
   'recetat.html', 'protokollet.html', 'medical-hub.html',
   'urgjencat.html', 'sistemi.html',
 ];
