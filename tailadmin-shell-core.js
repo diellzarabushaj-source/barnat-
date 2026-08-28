@@ -402,8 +402,27 @@
   }
 
   function ensureStylesheetLast() {
-    const link = document.querySelector('link[data-tailadmin-medindex-css]');
-    if (link && document.head.lastElementChild !== link) document.head.appendChild(link);
+    const base = document.querySelector('link[data-mi-base-stylesheet],link[data-tailadmin-medindex-css],link[href*="tailadmin-medindex.css"]');
+    const professional = document.querySelector('link[data-tailadmin-professional-css],link[href*="tailadmin-professional.css"]');
+    const stripe = [...document.querySelectorAll('link[rel="stylesheet"]')]
+      .find(link => /(?:^|\/)drx-dashboard-stripe\.css(?:\?|$)/.test(link.getAttribute('href') || '')) || null;
+    if (!base) return;
+
+    if (professional && stripe) {
+      if (base.nextElementSibling !== professional || professional.nextElementSibling !== stripe || document.head.lastElementChild !== stripe) {
+        document.head.append(base, professional, stripe);
+      }
+      return;
+    }
+
+    if (professional) {
+      if (base.nextElementSibling !== professional || document.head.lastElementChild !== professional) {
+        document.head.append(base, professional);
+      }
+      return;
+    }
+
+    if (document.head.lastElementChild !== base) document.head.appendChild(base);
   }
 
   function init() {
