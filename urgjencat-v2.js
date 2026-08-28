@@ -22,7 +22,7 @@
       },
       abbreviations[]{_key,footnoteNumber,abbreviation,fullTermEn,explanationSq},
       figures[]{
-        _key,visualType,figureNumber,sourcePdfPage,caption,sourceCaptionEn,alt,externalUrl,imageDataUrl,
+        _key,visualType,figureNumber,sourcePdfPage,caption,sourceCaptionEn,alt,externalUrl,imageDataUrl,imageDataChunks,
         image{asset->{url},alt}
       }
     }
@@ -368,7 +368,7 @@
   }
 
   function figureSrc(figure) {
-    return figure?.image?.asset?.url || figure?.externalUrl || figure?.imageDataUrl || '';
+    return figure?.image?.asset?.url || figure?.externalUrl || figure?.imageDataUrl || ((figure?.imageDataChunks || []).length ? figure.imageDataChunks.join('') : '') || '';
   }
 
   function figureMarkup(figure) {
