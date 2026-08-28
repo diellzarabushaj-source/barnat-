@@ -2,6 +2,8 @@ const { test, expect } = require('@playwright/test');
 const fs = require('node:fs');
 const path = require('node:path');
 
+test.use({ serviceWorkers:'block' });
+
 const BASE = 'http://127.0.0.1:4173';
 const OUTPUT = '/tmp/icd-visual';
 fs.mkdirSync(OUTPUT, { recursive:true });
@@ -181,11 +183,13 @@ async function openTree(page) {
 }
 
 test('advanced Albanian ICD suggestions are grouped, explained and reveal the code in the tree', async ({ page }) => {
-  await installAdvancedRoute(page);
+  const observed = [];
+  await installAdvancedRoute(page, () => 0, observed);
   await openTree(page);
   const search = page.locator('#icdSearch');
   await expect(page.locator('#icdSourceStatus')).toContainText('Burimi: live');
   await search.fill('tension i lartë');
+  await expect.poll(() => observed.some(request => request.query === 'tension i lartë')).toBe(true);
   await expect(page.locator('#icdSuggestions')).toBeVisible();
   await expect(page.locator('.icd-suggestion-interpretation')).toContainText('hypertension');
   await expect(page.locator('[data-suggestion-group="suggested"] .icd-suggestion-group-title')).toContainText('Diagnoza të sugjeruara');
