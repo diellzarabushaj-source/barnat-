@@ -163,10 +163,11 @@
         <a class="button button-secondary" href="${registryUrl(categoryCode)}">Hap barnat ${escapeHtml(categoryCode)}</a>
       </div>
       ${entries.length ? `<div class="subdivision-list">${entries.map(([code,name]) => `
-        <button class="subdivision-row ${state.subdivision === code ? 'is-active' : ''}" type="button" data-subdivision-code="${escapeHtml(code)}">
+        <a class="subdivision-row ${state.subdivision === code ? 'is-active' : ''}" href="${registryUrl(code)}" data-subdivision-code="${escapeHtml(code)}">
           <span class="subdivision-code">${escapeHtml(code)}</span>
           <span class="subdivision-name">${escapeHtml(name)}</span>
-        </button>`).join('')}</div>` : `<div class="empty-state">Nuk ka nënndarje shtesë të kataloguara për ${escapeHtml(categoryCode)} — ${escapeHtml(categoryName)}.</div>`}
+          <span class="subdivision-open" aria-hidden="true">→</span>
+        </a>`).join('')}</div>` : `<div class="empty-state">Nuk ka nënndarje shtesë të kataloguara për ${escapeHtml(categoryCode)} — ${escapeHtml(categoryName)}.</div>`}
     </div>`;
   }
 
@@ -350,12 +351,7 @@
 
     el.categoryList.addEventListener('click', event => {
       const sub = event.target.closest('[data-subdivision-code]');
-      if (sub) {
-        state.subdivision = sub.dataset.subdivisionCode;
-        writeHash(state.subdivision);
-        renderClassification();
-        return;
-      }
+      if (sub) return;
       const button = event.target.closest('[data-category-code]');
       if (button) toggleCategory(button.dataset.categoryCode);
     });
