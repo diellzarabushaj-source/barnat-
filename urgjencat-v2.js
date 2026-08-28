@@ -518,8 +518,9 @@
     const rx = [...(section.rx || [])].sort((a, b) => (Number(a.order) || 999) - (Number(b.order) || 999));
     const linkedFigures = (section.figureNumbers || []).map(number => figureByNumber(lesson, number)).filter(Boolean);
     const linkedTables = (section.tableNumbers || []).map(number => tableByNumber(lesson, number)).filter(Boolean);
+    const anchorId = `ec-section-${String(index + 1).padStart(2, '0')}`;
     return `
-      <section class="ec-section">
+      <section class="ec-section" id="${anchorId}">
         <div class="ec-section-number">${String(index + 1).padStart(2, '0')}</div>
         <h3>${esc(section.title)}</h3>
         ${section.sourceHeadingEn ? `<div class="ec-source-title">${esc(section.sourceHeadingEn)}</div>` : ''}
@@ -634,6 +635,23 @@
           </div>
         ` : ''}
 
+        ${sections.length > 1 ? `
+          <nav class="ec-section-index" aria-label="Përmbajtja e këtij mësimi">
+            <div class="ec-section-index-head">
+              <span>Në këtë mësim</span>
+              <small>${sections.length} pjesë</small>
+            </div>
+            <div class="ec-section-index-list">
+              ${sections.map((item, index) => `
+                <button type="button" data-section-jump="ec-section-${String(index + 1).padStart(2, '0')}">
+                  <span>${String(index + 1).padStart(2, '0')}</span>
+                  <strong>${esc(item.title)}</strong>
+                </button>
+              `).join('')}
+            </div>
+          </nav>
+        ` : ''}
+
         ${sections.length
           ? sections.map((item, index) => renderLessonSection(lesson, item, index)).join('')
           : subtopics.length
@@ -708,6 +726,16 @@
         ` : ''}
       </div>
     `;
+
+    root.querySelectorAll('[data-section-jump]').forEach(button => {
+      button.addEventListener('click', () => {
+        const target = document.getElementById(button.dataset.sectionJump);
+        target?.scrollIntoView({
+          block:'start',
+          behavior: window.matchMedia?.('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth',
+        });
+      });
+    });
 
     root.querySelectorAll('[data-lesson-jump]').forEach(button => {
       button.addEventListener('click', () => {
