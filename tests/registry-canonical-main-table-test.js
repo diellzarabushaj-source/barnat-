@@ -7,7 +7,7 @@ const path = require('node:path');
 const ROOT = path.resolve(__dirname, '..');
 const read = file => fs.readFileSync(path.join(ROOT, file), 'utf8');
 const js = read('registry-unified-table.js');
-const css = read('registry-unified-table.css');
+const css = read('registry-table-tools.css');
 const html = read('index.html');
 
 const RELEASE = 'registry-canonical-main-table-v1';
@@ -42,7 +42,8 @@ assert.ok(canonicalTail.endsWith('}'), 'canonical toolbar hide guard must remain
 assert.ok(canonicalTail.includes('display:none!important'), 'final canonical CSS rule must force-hide the retired toolbar');
 
 assert.match(html, /data-registry-ux-view="full"/, 'registry HTML must boot in full canonical mode');
-assert.ok(html.includes(`registry-unified-table.css?v=${RELEASE}`), 'canonical CSS version must be published');
+assert.ok(html.includes('registry-table-tools.css?v='), 'single registry CSS authority must be published');
+assert.ok(!html.includes('registry-unified-table.css'), 'legacy unified-table CSS must not be published separately');
 assert.ok(html.includes(`registry-unified-table.js?v=${RELEASE}`), 'canonical JS version must be published');
 assert.ok(!html.includes('data-registry-ux-view="clinical"'), 'HTML must never boot the alternate clinical projection');
 
