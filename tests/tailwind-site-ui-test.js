@@ -22,6 +22,14 @@ assert.match(touch, /min-height:40px/);
 assert.match(touch, /min-height:44px/);
 
 const professional = read('tailadmin-professional.css');
+const stripe = read('drx-dashboard-stripe.css');
+assert.match(stripe, /DRx Stripe Dashboard v2 — final visual authority/);
+assert.match(stripe, /--drx-nav:#1c1e54/);
+assert.match(stripe, /--drx-shell-accent:#533afd/);
+assert.match(stripe, /width:238px!important/);
+assert.match(stripe, /height:58px!important/);
+assert.doesNotMatch(stripe, /https?:\/\//);
+
 const coreIndex = professional.indexOf('tailadmin-professional-core.css');
 const uiIndex = professional.indexOf('medindex-tailwind-ui.css');
 const touchIndex = professional.indexOf('medindex-tailwind-touch.css');
@@ -50,8 +58,12 @@ const appPages = [
 ];
 for (const file of appPages) {
   const html = read(file);
-  assert.match(html, /tailadmin-professional\.css/, `${file} does not load the final professional bundle`);
+  assert.match(html, /tailadmin-professional\.css/, `${file} does not load the professional compatibility bundle`);
+  assert.match(html, /drx-dashboard-stripe\.css\?v=drx-dashboard-stripe-v2/, `${file} does not load the Stripe v2 authority`);
   assert.match(html, /class="[^"]*medindex-tailadmin/, `${file} is missing the shared TailAdmin root class`);
+  const professionalIndex = html.indexOf('tailadmin-professional.css');
+  const stripeIndex = html.indexOf('drx-dashboard-stripe.css');
+  assert.ok(stripeIndex > professionalIndex, `${file}: Stripe v2 must load after professional compatibility CSS`);
 }
 
 for (const file of ['rreth-nesh.html', 'kontakt.html', 'blog.html']) {
