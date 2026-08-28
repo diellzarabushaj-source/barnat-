@@ -1,0 +1,421 @@
+(() => {
+  'use strict';
+
+  const GROUP_COLORS = Object.freeze({
+    A:'#16857a', B:'#b4495a', C:'#3767c7', D:'#b67b24', G:'#b44f85', H:'#7655bf', J:'#18815c',
+    L:'#6b50b6', M:'#c46b2c', N:'#533afd', P:'#8b6443', R:'#2787a8', S:'#2c8d86', V:'#6c7685',
+  });
+
+  const state = {
+    group:'',
+    category:'',
+    subdivision:'',
+    query:'',
+    counts:null,
+  };
+
+  const $ = id => document.getElementById(id);
+  const el = {
+    appShell:$('appShell'), sidebar:$('sidebar'), sidebarBackdrop:$('sidebarBackdrop'), menuButton:$('menuButton'), sidebarClose:$('sidebarClose'),
+    logoutButton:$('logoutButton'), sourceStatus:$('sourceStatus'), syncText:$('syncText'), avatarInitials:$('avatarInitials'),
+    metricGroups:$('metricGroups'), metricCategories:$('metricCategories'), metricClassified:$('metricClassified'), metricCoverage:$('metricCoverage'), metricUnclassified:$('metricUnclassified'),
+    atcSearch:$('atcSearch'), clearSearchButton:$('clearSearchButton'), atcStatusText:$('atcStatusText'), atcStatusMeta:$('atcStatusMeta'),
+    groupList:$('groupList'), groupCount:$('groupCount'), categoryHero:$('categoryHero'), categoryPanelTitle:$('categoryPanelTitle'), categoryCount:$('categoryCount'), categoryList:$('categoryList'),
+    categoryView:$('categoryView'), searchResultsView:$('searchResultsView'), searchResultCount:$('searchResultCount'), searchResults:$('searchResults'),
+    toast:$('toast'),
+  };
+
+  const clean = value => String(value ?? '').replace(/\s+/g, ' ').trim();
+  const escapeHtml = value => clean(value).replace(/[&<>'"]/g, char => ({'&':'&amp;','<':'&lt;','>':'&gt;',"'":'&#39;','"':'&quot;'}[char]));
+  const normalize = value => clean(value).normalize('NFD').replace(/[\u0300-\u036f]/g, '').toLocaleLowerCase('sq');
+  const groups = () => window.MEDINDEX_ATC_GROUPS && typeof window.MEDINDEX_ATC_GROUPS === 'object' ? window.MEDINDEX_ATC_GROUPS : {};
+  const categories = () => window.MEDINDEX_ATC_SUBGROUPS && typeof window.MEDINDEX_ATC_SUBGROUPS === 'object' ? window.MEDINDEX_ATC_SUBGROUPS : {};
+  const subdivisions = () => window.MEDINDEX_ATC_SUBDIVISIONS && typeof window.MEDINDEX_ATC_SUBDIVISIONS === 'object' ? window.MEDINDEX_ATC_SUBDIVISIONS : {};
+  const colorFor = code => GROUP_COLORS[String(code || '').charAt(0)] || '#64748d';
+  const number = value => Number.isFinite(Number(value)) ? Number(value) : 0;
+  const formatNumber = value => Number(value || 0).toLocaleString('sq-XK');
+
+  async function fetchJson(url, options = {}, timeoutMs = 7000) {
+    const controller = new AbortController();
+    const timer = setTimeout(() => controller.abort(), timeoutMs);
+    try {
+      const response = await fetch(url, {
+        credentials:'same-origin',
+        cache:'no-store',
+        ...options,
+        signal:controller.signal,
+        headers:{ Accept:'application/json', ...(options.headers || {}) },
+      });
+      const payload = await response.json().catch(() => ({}));
+      if (response.status === 401 || response.status === 403) {
+        redirectToLogin();
+        throw new Error('Sesioni nuk është aktiv.');
+      }
+      if (!response.ok) throw new Error(payload.error || `Gabim ${response.status}`);
+      return { payload, response };
+    } finally {
+      clearTimeout(timer);
+    }
+  }
+
+  function redirectToLogin() {
+    const target = new URL('/landing.html', location.origin);
+    target.searchParams.set('return', location.pathname + location.search + location.hash);
+    location.replace(target.pathname + target.search);
+  }
+
+  async function ensureAuth() {
+    const { payload } = await fetchJson('/api/auth', {}, 4200);
+    if (!payload.authenticated) return redirectToLogin();
+    const name = clean(payload.user?.name || payload.authUser?.name || payload.user?.email || 'DR');
+    el.avatarInitials.textContent = name.split(/[\s@.]+/).filter(Boolean).slice(0,2).map(part => part[0]?.toUpperCase()).join('') || 'DR';
+  }
+
+  function categoryEntries(groupCode) {
+    return Object.entries(categories())
+      .filter(([code]) => code.startsWith(groupCode) && code.length === 3)
+      .sort(([a],[b]) => a.localeCompare(b, 'sq'));
+  }
+
+  function subdivisionEntries(categoryCode) {
+    return Object.entries(subdivisions())
+      .filter(([code]) => code.startsWith(categoryCode) && (code.length === 4 || code.length === 5))
+      .sort(([a],[b]) => a.length - b.length || a.localeCompare(b, 'sq'));
+  }
+
+  function groupCount(code) {
+    return number(state.counts?.groupCounts?.[code]);
+  }
+
+  function categoryDrugCount(code) {
+    return number(state.counts?.counts?.[code]);
+  }
+
+  function registryUrl(code) {
+    const url = new URL('/index.html', location.origin);
+    if (code) url.searchParams.set('atc', code);
+    return url.pathname + url.search;
+  }
+
+  function readHash() {
+    const raw = decodeURIComponent(location.hash.slice(1) || '').trim().toUpperCase().replace(/\s+/g, '');
+    if (/^[A-Z]\d{2}[A-Z]{1,2}$/.test(raw)) {
+      return { group:raw.charAt(0), category:raw.slice(0,3), subdivision:raw };
+    }
+    if (/^[A-Z]\d{2}$/.test(raw)) return { group:raw.charAt(0), category:raw, subdivision:'' };
+    if (/^[A-Z]$/.test(raw)) return { group:raw, category:'', subdivision:'' };
+    return { group:'', category:'', subdivision:'' };
+  }
+
+  function writeHash(code) {
+    const next = code ? `#${encodeURIComponent(code)}` : location.pathname + location.search;
+    if (code) history.replaceState({ atc:code }, '', next);
+    else history.replaceState({}, '', location.pathname + location.search);
+  }
+
+  function renderGroups() {
+    const entries = Object.entries(groups());
+    el.metricGroups.textContent = String(entries.length);
+    el.groupCount.textContent = String(entries.length);
+    el.groupList.innerHTML = entries.map(([code,name]) => {
+      const active = code === state.group;
+      const count = groupCount(code);
+      const children = categoryEntries(code).length;
+      return `<button class="group-row ${active ? 'is-active' : ''}" type="button" role="option" aria-selected="${active ? 'true' : 'false'}" data-group-code="${code}" style="--group-accent:${colorFor(code)}">
+        <span class="group-code">${code}</span>
+        <span class="group-copy"><strong>${escapeHtml(name)}</strong><small>${children} kategori terapeutike</small></span>
+        <span class="group-total" title="Barna në grup">${count ? formatNumber(count) : '—'}</span>
+      </button>`;
+    }).join('');
+  }
+
+  function renderHero() {
+    const name = groups()[state.group] || '';
+    const count = groupCount(state.group);
+    const color = colorFor(state.group);
+    el.categoryHero.style.setProperty('--group-accent', color);
+    el.categoryHero.innerHTML = `
+      <span class="hero-code">${escapeHtml(state.group)}</span>
+      <div class="hero-copy">
+        <small>Grupi anatomik</small>
+        <h2>${escapeHtml(name)}</h2>
+        <p>${categoryEntries(state.group).length} kategori terapeutike në këtë grup.</p>
+      </div>
+      <div class="hero-actions">
+        <span class="hero-count">${count ? formatNumber(count) : '—'} barna</span>
+        <a class="button button-secondary" href="${registryUrl(state.group)}">Hap barnat</a>
+      </div>`;
+  }
+
+  function selectedSubdivisionMarkup(categoryCode) {
+    const entries = subdivisionEntries(categoryCode);
+    const color = colorFor(categoryCode);
+    const categoryName = categories()[categoryCode] || '';
+    return `<div class="subdivision-block" style="--group-accent:${color}">
+      <div class="subdivision-heading">
+        <span>Nënndarjet ATC</span>
+        <a class="button button-secondary" href="${registryUrl(categoryCode)}">Hap barnat ${escapeHtml(categoryCode)}</a>
+      </div>
+      ${entries.length ? `<div class="subdivision-list">${entries.map(([code,name]) => `
+        <button class="subdivision-row ${state.subdivision === code ? 'is-active' : ''}" type="button" data-subdivision-code="${escapeHtml(code)}">
+          <span class="subdivision-code">${escapeHtml(code)}</span>
+          <span class="subdivision-name">${escapeHtml(name)}</span>
+        </button>`).join('')}</div>` : `<div class="empty-state">Nuk ka nënndarje shtesë të kataloguara për ${escapeHtml(categoryCode)} — ${escapeHtml(categoryName)}.</div>`}
+    </div>`;
+  }
+
+  function renderCategories() {
+    const entries = categoryEntries(state.group);
+    el.categoryPanelTitle.textContent = groups()[state.group] || 'Kategoritë ATC';
+    el.categoryCount.textContent = String(entries.length);
+    el.categoryList.innerHTML = entries.length ? entries.map(([code,name]) => {
+      const active = code === state.category;
+      const count = categoryDrugCount(code);
+      const subCount = subdivisionEntries(code).length;
+      return `<article class="category-row ${active ? 'is-active' : ''}" data-category-card="${code}" style="--group-accent:${colorFor(code)}">
+        <button class="category-code" type="button" data-category-code="${code}" aria-label="Hap kategorinë ${escapeHtml(code)}">${escapeHtml(code)}</button>
+        <button class="category-copy" type="button" data-category-code="${code}">
+          <strong>${escapeHtml(name)}</strong>
+          <small>${subCount ? `${subCount} nënndarje të kataloguara` : 'Pa nënndarje shtesë'}</small>
+        </button>
+        <div class="category-actions">
+          <span class="category-count" title="Barna në kategori">${count ? formatNumber(count) : '—'}</span>
+          <button class="category-chevron" type="button" data-category-code="${code}" aria-label="${active ? 'Mbyll' : 'Hap'} ${escapeHtml(code)}">${active ? '⌃' : '›'}</button>
+        </div>
+        ${active ? selectedSubdivisionMarkup(code) : ''}
+      </article>`;
+    }).join('') : '<div class="empty-state">Nuk ka kategori të kataloguara për këtë grup.</div>';
+  }
+
+  function renderClassification() {
+    if (!state.group || !groups()[state.group]) state.group = Object.keys(groups())[0] || 'A';
+    renderGroups();
+    renderHero();
+    renderCategories();
+    const totalCategories = Object.keys(categories()).length;
+    el.metricCategories.textContent = String(totalCategories);
+    el.atcStatusText.textContent = state.category
+      ? `${state.category} — ${categories()[state.category] || 'Kategoria ATC'}`
+      : `${state.group} — ${groups()[state.group] || 'Grupi ATC'}`;
+    el.atcStatusMeta.textContent = state.counts ? 'Numërimet nga Supabase' : 'Katalogu ATC';
+  }
+
+  function searchCatalog(query) {
+    const needle = normalize(query);
+    if (!needle) return [];
+    const result = [];
+    for (const [code,name] of Object.entries(groups())) {
+      if (normalize(`${code} ${name}`).includes(needle)) result.push({ type:'Grup', code, name, group:code, category:'', subdivision:'' });
+    }
+    for (const [code,name] of Object.entries(categories())) {
+      if (normalize(`${code} ${name}`).includes(needle)) result.push({ type:'Kategori', code, name, group:code.charAt(0), category:code, subdivision:'' });
+    }
+    for (const [code,name] of Object.entries(subdivisions())) {
+      if (normalize(`${code} ${name}`).includes(needle)) result.push({ type:'Nënndarje', code, name, group:code.charAt(0), category:code.slice(0,3), subdivision:code });
+    }
+    return result.slice(0,80);
+  }
+
+  function renderSearchResults() {
+    const results = searchCatalog(state.query);
+    el.categoryView.hidden = true;
+    el.searchResultsView.hidden = false;
+    el.searchResultCount.textContent = String(results.length);
+    el.atcStatusText.textContent = results.length
+      ? `${results.length} rezultate për “${state.query}”`
+      : `Asnjë rezultat për “${state.query}”`;
+    el.atcStatusMeta.textContent = 'Kod, grup, kategori dhe nënndarje';
+    el.searchResults.innerHTML = results.length ? results.map(item => `
+      <button class="search-result" type="button" data-search-code="${escapeHtml(item.code)}" data-search-group="${escapeHtml(item.group)}" data-search-category="${escapeHtml(item.category)}" data-search-subdivision="${escapeHtml(item.subdivision)}" style="--group-accent:${colorFor(item.group)}">
+        <span class="search-result-code">${escapeHtml(item.code)}</span>
+        <span class="search-result-copy"><strong>${escapeHtml(item.name)}</strong><small>${item.category ? `${escapeHtml(groups()[item.group] || '')}` : `${categoryEntries(item.group).length} kategori terapeutike`}</small></span>
+        <span class="search-result-type">${escapeHtml(item.type)}</span>
+      </button>`).join('') : '<div class="empty-state">Provo një kod si <strong>N02</strong> ose një term si <strong>diabet</strong>, <strong>antibiotik</strong>, <strong>respirator</strong>.</div>';
+  }
+
+  function applySearch() {
+    state.query = clean(el.atcSearch.value);
+    el.clearSearchButton.hidden = !state.query;
+    if (state.query) renderSearchResults();
+    else {
+      el.categoryView.hidden = false;
+      el.searchResultsView.hidden = true;
+      renderClassification();
+    }
+  }
+
+  function selectGroup(code, { updateHash = true } = {}) {
+    if (!groups()[code]) return;
+    state.group = code;
+    state.category = '';
+    state.subdivision = '';
+    state.query = '';
+    el.atcSearch.value = '';
+    el.clearSearchButton.hidden = true;
+    el.categoryView.hidden = false;
+    el.searchResultsView.hidden = true;
+    if (updateHash) writeHash(code);
+    renderClassification();
+    requestAnimationFrame(() => document.querySelector(`[data-group-code="${CSS.escape(code)}"]`)?.scrollIntoView({ block:'nearest' }));
+  }
+
+  function selectCategory(code, subdivision = '', { updateHash = true } = {}) {
+    if (!categories()[code]) return;
+    state.group = code.charAt(0);
+    state.category = code;
+    state.subdivision = subdivision;
+    state.query = '';
+    el.atcSearch.value = '';
+    el.clearSearchButton.hidden = true;
+    el.categoryView.hidden = false;
+    el.searchResultsView.hidden = true;
+    if (updateHash) writeHash(subdivision || code);
+    renderClassification();
+    requestAnimationFrame(() => {
+      const target = subdivision
+        ? document.querySelector(`[data-subdivision-code="${CSS.escape(subdivision)}"]`)
+        : document.querySelector(`[data-category-card="${CSS.escape(code)}"]`);
+      target?.scrollIntoView({ block:'center', behavior:'smooth' });
+    });
+  }
+
+  function toggleCategory(code) {
+    if (state.category === code) {
+      state.category = '';
+      state.subdivision = '';
+      writeHash(state.group);
+      renderClassification();
+      return;
+    }
+    selectCategory(code);
+  }
+
+  async function loadCounts() {
+    try {
+      const { payload, response } = await fetchJson('/api/atc-counts', {}, 7000);
+      state.counts = payload;
+      const total = number(payload.total);
+      const classified = number(payload.classifiedTotal);
+      const unclassified = number(payload.unclassifiedTotal);
+      const coverage = total ? ((classified / total) * 100).toFixed(1) : '100.0';
+      el.metricClassified.textContent = formatNumber(classified);
+      el.metricUnclassified.textContent = formatNumber(unclassified);
+      el.metricCoverage.textContent = `${coverage}% e regjistrit`;
+      const source = response.headers.get('X-MedIndex-Data-Source') || payload.source || 'Supabase';
+      el.sourceStatus.textContent = `${source} · aktiv`;
+      el.syncText.textContent = 'Supabase';
+      renderClassification();
+    } catch (error) {
+      console.warn('ATC counts unavailable:', error);
+      el.metricClassified.textContent = '—';
+      el.metricUnclassified.textContent = '—';
+      el.metricCoverage.textContent = 'Numërimet s’u ngarkuan';
+      el.sourceStatus.textContent = 'Katalogu ATC · aktiv';
+      showToast('Klasifikimi u hap, por numërimet e barnave nuk u ngarkuan.');
+    }
+  }
+
+  function openSidebar() { el.sidebar.classList.add('is-open'); el.sidebarBackdrop.hidden = false; }
+  function closeSidebar() { el.sidebar.classList.remove('is-open'); el.sidebarBackdrop.hidden = true; }
+
+  async function logout() {
+    el.logoutButton.disabled = true;
+    try {
+      await fetch('/api/auth', { method:'DELETE', credentials:'same-origin', headers:{ Accept:'application/json' } });
+      location.replace('/landing.html');
+    } catch {
+      el.logoutButton.disabled = false;
+      showToast('Dalja nuk u krye. Provo përsëri.');
+    }
+  }
+
+  function showToast(message) {
+    el.toast.textContent = message;
+    el.toast.hidden = false;
+    clearTimeout(showToast.timer);
+    showToast.timer = setTimeout(() => { el.toast.hidden = true; }, 3600);
+  }
+
+  function bindEvents() {
+    el.groupList.addEventListener('click', event => {
+      const button = event.target.closest('[data-group-code]');
+      if (button) selectGroup(button.dataset.groupCode);
+    });
+
+    el.categoryList.addEventListener('click', event => {
+      const sub = event.target.closest('[data-subdivision-code]');
+      if (sub) {
+        state.subdivision = sub.dataset.subdivisionCode;
+        writeHash(state.subdivision);
+        renderClassification();
+        return;
+      }
+      const button = event.target.closest('[data-category-code]');
+      if (button) toggleCategory(button.dataset.categoryCode);
+    });
+
+    el.searchResults.addEventListener('click', event => {
+      const button = event.target.closest('[data-search-code]');
+      if (!button) return;
+      const group = button.dataset.searchGroup;
+      const category = button.dataset.searchCategory;
+      const subdivision = button.dataset.searchSubdivision;
+      if (category) selectCategory(category, subdivision);
+      else selectGroup(group);
+    });
+
+    el.atcSearch.addEventListener('input', applySearch);
+    el.atcSearch.addEventListener('keydown', event => {
+      if (event.key === 'Escape' && el.atcSearch.value) {
+        el.atcSearch.value = '';
+        applySearch();
+      }
+    });
+    el.clearSearchButton.addEventListener('click', () => {
+      el.atcSearch.value = '';
+      applySearch();
+      el.atcSearch.focus();
+    });
+
+    window.addEventListener('keydown', event => {
+      if ((event.metaKey || event.ctrlKey) && event.key.toLowerCase() === 'k') {
+        event.preventDefault();
+        el.atcSearch.focus();
+        el.atcSearch.select();
+      }
+      if (event.key === 'Escape') closeSidebar();
+    });
+
+    window.addEventListener('hashchange', () => {
+      const next = readHash();
+      if (next.category) selectCategory(next.category, next.subdivision, { updateHash:false });
+      else if (next.group) selectGroup(next.group, { updateHash:false });
+    });
+
+    el.menuButton.addEventListener('click', openSidebar);
+    el.sidebarClose.addEventListener('click', closeSidebar);
+    el.sidebarBackdrop.addEventListener('click', closeSidebar);
+    el.logoutButton.addEventListener('click', logout);
+  }
+
+  async function init() {
+    bindEvents();
+    const hash = readHash();
+    state.group = hash.group && groups()[hash.group] ? hash.group : Object.keys(groups())[0] || 'A';
+    state.category = hash.category && categories()[hash.category] ? hash.category : '';
+    state.subdivision = hash.subdivision && subdivisions()[hash.subdivision] ? hash.subdivision : '';
+    renderClassification();
+
+    try {
+      await ensureAuth();
+      el.appShell.setAttribute('aria-busy', 'false');
+      void loadCounts();
+    } catch (error) {
+      console.error('ATC classification bootstrap failed:', error);
+      el.appShell.setAttribute('aria-busy', 'false');
+      showToast(error?.message || 'Klasifikimi ATC nuk u inicializua.');
+    }
+  }
+
+  init();
+})();
