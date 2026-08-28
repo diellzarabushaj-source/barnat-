@@ -166,6 +166,9 @@ html[data-theme="dark"] .ck-v5-session-bar button{background:#151f32!important;c
   html.medindex-tailadmin[data-mi-page="urgjencat"] .ck-v5-trainer-grid{grid-template-columns:1fr}
   html.medindex-tailadmin[data-mi-page="urgjencat"] .ck-v5-trainer-card>button{min-height:44px}
 }
+@media(max-width:400px){
+  html.medindex-tailadmin[data-mi-page="urgjencat"] .ck-v5-trainers-head span{font-size:11px!important}
+}
 @media(prefers-reduced-motion:reduce){
   html.medindex-tailadmin[data-mi-page="urgjencat"] .ck-v5-session-bar,
   html.medindex-tailadmin[data-mi-page="urgjencat"] .ck-v5-trainers{transition:none!important}
