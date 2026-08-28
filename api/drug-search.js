@@ -1,119 +1,109 @@
 'use strict';
 
-const NeonClinical = require('../lib/neon-clinical-reader.js');
+const { supabaseRequest, exactCount } = require('../lib/supabase-data-api.js');
 
-const CACHE_MS = 5 * 60 * 1000;
 const MAX_PAGE_SIZE = 200;
-let cache = { rows:null, loadedAt:0 };
-let pending = null;
-
 const clean = value => String(value ?? '').replace(/\s+/g, ' ').trim();
-const normalize = value => clean(value).normalize('NFD').replace(/[\u0300-\u036f]/g, '').toLocaleLowerCase('sq');
 
 async function authorized(req) {
   const auth = await import('../lib/auth.mjs');
   return auth.verifySessionToken(auth.sessionFromRequest(req));
 }
 
+function requestUrl(req) {
+  try { return new URL(req?.url || '/api/drug-search', 'https://drx.local'); }
+  catch { return new URL('/api/drug-search', 'https://drx.local'); }
+}
+
 function mapDrug(row) {
+  const payload = row?.source_payload && typeof row.source_payload === 'object' ? row.source_payload : {};
   return {
-    id:clean(row.__neonDrugId || row.PDID || row['Nr rendor']),
-    registryNumber:clean(row['Nr rendor']),
-    pdid:clean(row.PDID),
-    tradeName:clean(row['Emri tregtar']),
-    activeSubstance:clean(row['Substanca aktive']),
-    strength:clean(row.Fortësia),
-    form:clean(row['Forma farmaceutike']),
-    atc:clean(row['ATC Code']),
-    drugClass:clean(row['Klasa / Çka është']),
-    use:clean(row['Përdorimi (fjalë kyçe)']),
-    packaging:clean(row['Madhësia e paketimit']),
-    manufacturer:clean(row.Prodhuesi),
-    holder:clean(row['Bartësi i Autorizim Marketingut']),
-    productStatus:clean(row['Statusi ']),
-    retailPrice:row['Çmimi me pakicë'] ?? '',
-    wholesalePrice:row['Çmimi me shumicë'] ?? '',
-    validity:clean(row['Afati i vlefshmërisë']),
-    prescription:clean(row['Si të shënohet në recetë']),
+    id:clean(row.id),
+    registryNumber:clean(row.registry_number),
+    pdid:clean(row.pdid),
+    tradeName:clean(row.trade_name),
+    activeSubstance:clean(row.active_substance),
+    strength:clean(row.strength),
+    form:clean(row.pharmaceutical_form),
+    atc:clean(row.atc_code),
+    drugClass:clean(row.drug_class),
+    use:clean(row.use_text),
+    packaging:clean(row.packaging),
+    manufacturer:clean(row.manufacturer),
+    holder:clean(row.marketing_authorization_holder),
+    productStatus:clean(row.product_status),
+    retailPrice:row.retail_price ?? '',
+    wholesalePrice:row.wholesale_price ?? '',
+    validity:clean(row.validity_text),
+    approvedPopulation:clean(row.approved_population),
+    prescriptionNotation:clean(payload['Si të shënohet në recetë']),
   };
 }
 
-async function allRows() {
-  if (cache.rows && Date.now() - cache.loadedAt < CACHE_MS) return cache.rows;
-  if (!pending) {
-    pending = NeonClinical.getPublishedDrugs().then(rows => rows.map(mapDrug)).then(rows => {
-      cache = { rows, loadedAt:Date.now() };
-      return rows;
-    }).finally(() => { pending = null; });
-  }
-  return pending;
-}
+function buildPath(url) {
+  const page=Math.max(1,Number.parseInt(url.searchParams.get('page') || '1',10) || 1);
+  const pageSize=Math.min(MAX_PAGE_SIZE,Math.max(10,Number.parseInt(url.searchParams.get('pageSize') || '50',10) || 50));
+  const q=clean(url.searchParams.get('q'));
+  const form=clean(url.searchParams.get('form'));
+  const status=clean(url.searchParams.get('status'));
+  const direction=clean(url.searchParams.get('direction')) === 'desc' ? 'desc' : 'asc';
+  const sortKey=clean(url.searchParams.get('sort') || 'registry');
+  const sortColumn={registry:'registry_number',name:'trade_name',substance:'active_substance',atc:'atc_code',price:'retail_price'}[sortKey] || 'registry_number';
+  const offset=(page-1)*pageSize;
 
-function haystack(row) {
-  return normalize([row.tradeName,row.activeSubstance,row.atc,row.drugClass,row.use,row.form,row.strength,row.manufacturer,row.holder,row.packaging].join(' '));
-}
-
-function sorted(rows, sort, direction) {
-  const factor = direction === 'desc' ? -1 : 1;
-  const getter = {
-    registry:r => Number(r.registryNumber) || Number.MAX_SAFE_INTEGER,
-    name:r => r.tradeName,
-    substance:r => r.activeSubstance,
-    atc:r => r.atc,
-    price:r => Number(r.retailPrice) || 0,
-  }[sort] || (r => Number(r.registryNumber) || Number.MAX_SAFE_INTEGER);
-  return [...rows].sort((a,b) => {
-    const av=getter(a), bv=getter(b);
-    if(typeof av === 'number' && typeof bv === 'number') return (av-bv)*factor;
-    return String(av).localeCompare(String(bv),'sq',{sensitivity:'base',numeric:true})*factor;
-  });
+  const params=new URLSearchParams();
+  params.set('select',[
+    'id','registry_number','pdid','trade_name','active_substance','strength','pharmaceutical_form','atc_code',
+    'drug_class','use_text','packaging','manufacturer','marketing_authorization_holder','product_status',
+    'retail_price','wholesale_price','validity_text','approved_population','source_payload'
+  ].join(','));
+  params.set('is_published','eq.true');
+  params.set('editorial_status','eq.published');
+  if(q) params.set('registry_search_text',`ilike.*${q.replace(/[,*()]/g,' ')}*`);
+  if(form) params.set('pharmaceutical_form',`ilike.*${form.replace(/[,*()]/g,' ')}*`);
+  if(status) params.set('product_status',`ilike.*${status.replace(/[,*()]/g,' ')}*`);
+  params.set('order',`${sortColumn}.${direction}.nullslast,registry_number.asc`);
+  params.set('limit',String(pageSize));
+  params.set('offset',String(offset));
+  return { path:`drugs?${params.toString()}`, page, pageSize };
 }
 
 module.exports = async function handler(req,res) {
-  const startedAt = Date.now();
+  const startedAt=Date.now();
   try {
-    if (req.method !== 'GET') {
-      res.setHeader('Allow','GET');
+    if(req.method !== 'GET' && req.method !== 'HEAD') {
+      res.setHeader('Allow','GET, HEAD');
       return res.status(405).json({error:'Method Not Allowed'});
     }
-    if (!(await authorized(req))) {
+    if(!(await authorized(req))) {
       res.setHeader('Cache-Control','no-store');
       return res.status(401).json({error:'Sesioni nuk është aktiv.'});
     }
 
-    const url = new URL(req.url,'https://drx.local');
-    const q=normalize(url.searchParams.get('q'));
-    const form=normalize(url.searchParams.get('form'));
-    const status=normalize(url.searchParams.get('status'));
-    const sort=clean(url.searchParams.get('sort') || 'registry');
-    const direction=clean(url.searchParams.get('direction')) === 'desc' ? 'desc' : 'asc';
-    const page=Math.max(1,parseInt(url.searchParams.get('page') || '1',10) || 1);
-    const pageSize=Math.min(MAX_PAGE_SIZE,Math.max(10,parseInt(url.searchParams.get('pageSize') || '50',10) || 50));
-
-    let rows=await allRows();
-    if(q) rows=rows.filter(row => haystack(row).includes(q));
-    if(form) rows=rows.filter(row => normalize(row.form).includes(form));
-    if(status) rows=rows.filter(row => normalize(row.productStatus).includes(status));
-    rows=sorted(rows,sort,direction);
-
-    const total=rows.length;
+    const { path, page, pageSize }=buildPath(requestUrl(req));
+    const { data, response }=await supabaseRequest(path, {
+      timeoutMs:6500,
+      prefer:'count=exact',
+      label:'Supabase registry search',
+    });
+    const rows=Array.isArray(data) ? data.map(mapDrug) : [];
+    const total=exactCount(response) ?? rows.length;
     const totalPages=Math.max(1,Math.ceil(total/pageSize));
-    const safePage=Math.min(page,totalPages);
-    const offset=(safePage-1)*pageSize;
-    const pageRows=rows.slice(offset,offset+pageSize);
 
     res.setHeader('Content-Type','application/json; charset=utf-8');
-    res.setHeader('Cache-Control','private, no-store');
+    res.setHeader('Cache-Control','private, max-age=30, stale-while-revalidate=120');
+    res.setHeader('Vary','Cookie');
     res.setHeader('X-Content-Type-Options','nosniff');
-    res.setHeader('X-MedIndex-Data-Source','Neon');
-    res.setHeader('Server-Timing',`drug-search;dur=${Date.now()-startedAt}`);
+    res.setHeader('X-MedIndex-Data-Source','Supabase');
+    res.setHeader('Server-Timing',`supabase-registry;dur=${Date.now()-startedAt}`);
+    if(req.method === 'HEAD') return res.status(200).end();
     return res.status(200).json({
-      rows:pageRows,
-      pagination:{page:safePage,pageSize,total,totalPages},
-      meta:{source:'neon',cacheAgeMs:Date.now()-cache.loadedAt,generatedAt:new Date().toISOString()}
+      rows,
+      pagination:{page,pageSize,total,totalPages},
+      meta:{source:'supabase',generatedAt:new Date().toISOString()}
     });
   } catch(error) {
-    console.error('drug-search',error);
+    console.error('drug-search supabase',error);
     res.setHeader('Cache-Control','no-store');
     return res.status(500).json({error:'Regjistri nuk u ngarkua.',detail:String(error?.message || error).slice(0,240)});
   }
