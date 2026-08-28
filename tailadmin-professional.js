@@ -66,7 +66,20 @@
     headFrame = 0;
     const base = document.querySelector('link[data-tailadmin-medindex-css]');
     const professional = document.querySelector('link[data-tailadmin-professional-css]');
+    const stripe = [...document.querySelectorAll('link[rel="stylesheet"]')]
+      .find(link => /(?:^|\/)drx-dashboard-stripe\.css(?:\?|$)/.test(link.getAttribute('href') || ''));
     if (!base || !professional) return;
+
+    // Functional/base CSS first, professional compatibility second,
+    // DRx Stripe authority last. Never let the compatibility bundle
+    // overwrite the approved dashboard design system after runtime mount.
+    if (stripe) {
+      if (base.nextElementSibling !== professional || professional.nextElementSibling !== stripe || document.head.lastElementChild !== stripe) {
+        document.head.append(base, professional, stripe);
+      }
+      return;
+    }
+
     if (base.nextElementSibling !== professional || document.head.lastElementChild !== professional) {
       document.head.append(base, professional);
     }
