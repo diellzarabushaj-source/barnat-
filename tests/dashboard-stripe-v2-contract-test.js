@@ -47,8 +47,10 @@ const icdCss = read('icd-v2.css');
 assert.match(icdHtml, /data-drx-app="icd-v2"/);
 assert.match(icdHtml, /<meta name="theme-color" content="#1c1e54">/);
 assert.match(icdHtml, /icd-v2\.css\?v=profile-columns-v4/);
+assert.match(icdHtml, /drx-dashboard-stripe\.css\?v=drx-dashboard-stripe-v3/);
+assert.match(icdHtml, /drx-unified-sidebar/);
 assert.match(icdHtml, /icd-v2\.js\?v=profile-columns-v4/);
-assert.doesNotMatch(icdHtml, /tailadmin-medindex\.css|tailadmin-professional\.css|drx-dashboard-stripe\.css|tailadmin-shell\.js/);
+assert.doesNotMatch(icdHtml, /tailadmin-medindex\.css|tailadmin-professional\.css|tailadmin-shell\.js/);
 assert.match(icdCss, /#1c1e54/i);
 assert.match(icdCss, /#533afd/i);
 
@@ -62,11 +64,13 @@ for (const [htmlFile, cssFile, jsFile, markerName] of [
   const styles = [...html.matchAll(/<link\b(?=[^>]*\brel=["']stylesheet["'])(?=[^>]*\bhref=["']([^"']+)["'])[^>]*>/gi)].map(match => match[1]);
   const scripts = [...html.matchAll(/<script\b[^>]*\bsrc=["']([^"']+)["'][^>]*>/gi)].map(match => match[1]);
   assert.match(html, new RegExp(`data-drx-app="${markerName}"`));
-  assert.equal(styles.length, 1, `${htmlFile}: standalone V2 must own one stylesheet`);
+  assert.equal(styles.length, 2, `${htmlFile}: standalone V2 must load page CSS plus shared Stripe shell CSS`);
+  assert.match(html, /drx-unified-sidebar/, `${htmlFile}: unified sidebar marker missing`);
   assert.equal(scripts.length, 1, `${htmlFile}: standalone V2 must own one runtime`);
-  assert.ok(styles[0].includes(cssFile), `${htmlFile}: unexpected stylesheet owner`);
+  assert.ok(styles[0].includes(cssFile), `${htmlFile}: unexpected page stylesheet owner`);
+  assert.ok(/drx-dashboard-stripe\.css\?v=drx-dashboard-stripe-v3/.test(styles[1]), `${htmlFile}: shared Stripe shell must load last`);
   assert.ok(scripts[0].includes(jsFile), `${htmlFile}: unexpected runtime owner`);
-  assert.doesNotMatch(html, /tailadmin-|drx-dashboard-stripe|auth-client|emergency-curriculum|clinical-knowledge\.css|medical-hub\.css/);
+  assert.doesNotMatch(html, /tailadmin-|auth-client|emergency-curriculum|clinical-knowledge\.css|medical-hub\.css/);
   assert.match(css, /#1c1e54/i);
   assert.match(css, /#635bff|#533afd/i);
   assert.doesNotThrow(() => new Function(js));
