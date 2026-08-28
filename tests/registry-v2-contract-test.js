@@ -40,7 +40,7 @@ assert.match(js, /requestId/);
 assert.match(js, /escapeHtml/);
 assert.doesNotThrow(() => new Function(js));
 
-const page = drugSearch.buildRegistryPagePath({
+const page = drugSearch.buildPageRequest({
   page:'2',
   pageSize:'50',
   includeTotal:'true',
@@ -60,9 +60,9 @@ assert.match(page.path, /is_published=eq\.true/);
 assert.match(page.path, /editorial_status=eq\.published/);
 assert.match(page.path, /limit=50/);
 assert.match(page.path, /offset=50/);
-assert.match(page.path, /trade_name\.ilike/);
+assert.match(page.path, /registry_search_text=ilike/);
 
-const capped = drugSearch.buildRegistryPagePath({ pageSize:'500' });
+const capped = drugSearch.buildPageRequest({ pageSize:'500' });
 assert.equal(capped.pageSize, drugSearch.REGISTRY_MAX_PAGE_SIZE);
 
 console.log('registry-v2-contract-test: ok');
