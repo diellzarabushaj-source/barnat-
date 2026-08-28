@@ -181,7 +181,7 @@ jobs:
           grep -q 'aria-current="page"' tailadmin-shell-core.js
           grep -q 'MutationObserver' tailadmin-shell-core.js
           grep -q 'regjistriBarnave_theme_v1' tailadmin-shell-core.js
-          grep -q 'CORE_SHELL_SRC' tailadmin-shell.js
+          grep -q 'LEGACY_SRC' tailadmin-shell.js
           ! grep -q 'tailadmin-shell-legacy.js' index.html
           ! grep -q 'offline-runtime-performance.js' index.html
           grep -q 'TailAdmin Free Tailwind Dashboard Template' THIRD_PARTY_NOTICES.md
