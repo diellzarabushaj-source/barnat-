@@ -40,7 +40,7 @@
   const $ = id => document.getElementById(id);
   const el = {
     appShell:$('appShell'), sidebar:$('sidebar'), sidebarBackdrop:$('sidebarBackdrop'), menuButton:$('menuButton'), sidebarClose:$('sidebarClose'),
-    logoutButton:$('logoutButton'), sourceStatus:$('sourceStatus'), syncText:$('syncText'), avatarInitials:$('avatarInitials'),
+    logoutButton:$('logoutButton'), sourceStatus:$('sourceStatus'), syncText:$('syncText'), avatarInitials:$('avatarInitials'), searchShortcut:$('searchShortcut'),
     metricGroups:$('metricGroups'), metricCategories:$('metricCategories'), metricClassified:$('metricClassified'), metricCoverage:$('metricCoverage'), metricUnclassified:$('metricUnclassified'),
     atcSearch:$('atcSearch'), clearSearchButton:$('clearSearchButton'), atcStatusText:$('atcStatusText'), atcStatusMeta:$('atcStatusMeta'),
     groupList:$('groupList'), groupCount:$('groupCount'), categoryHero:$('categoryHero'), categoryPanelTitle:$('categoryPanelTitle'), categoryCount:$('categoryCount'), categoryList:$('categoryList'),
@@ -576,6 +576,8 @@
   }
 
   async function init() {
+    const isMac = /Mac|iPhone|iPad/.test(navigator.platform || navigator.userAgent || '');
+    if (el.searchShortcut) el.searchShortcut.textContent = isMac ? '⌘K' : 'Ctrl K';
     bindEvents();
     const hash = readHash();
     state.group = hash.group && groups()[hash.group] ? hash.group : Object.keys(groups())[0] || 'A';
