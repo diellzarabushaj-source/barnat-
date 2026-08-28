@@ -21,10 +21,15 @@
         rows[]{_key,cells}
       },
       abbreviations[]{_key,footnoteNumber,abbreviation,fullTermEn,explanationSq},
-      figures[]{
-        _key,visualType,figureNumber,sourcePdfPage,caption,sourceCaptionEn,alt,externalUrl,imageDataUrl,imageDataChunks,
-        image{asset->{url},alt}
-      }
+      figures[]{_key,visualType,figureNumber,sourcePdfPage,caption,sourceCaptionEn,alt,externalUrl}
+    }
+  }`;
+
+  const FIGURE_DETAIL_QUERY = `*[_type == "emergencyLesson" && _id == $id][0]{
+    _id,
+    figures[]{
+      _key,visualType,figureNumber,sourcePdfPage,caption,sourceCaptionEn,alt,externalUrl,imageDataUrl,imageDataChunks,
+      image{asset->{url},alt}
     }
   }`;
 
@@ -36,6 +41,9 @@
     selectedLessonId: '',
     term: '',
   };
+
+  const figureCache = new Map();
+  const figureRequests = new Map();
 
   const $ = selector => document.querySelector(selector);
   const esc = value => String(value ?? '').replace(/[&<>"']/g, char => ({
