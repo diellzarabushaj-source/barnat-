@@ -793,3 +793,439 @@ main#atcContent a{
   text-decoration:none;
 }
 main#atcContent a:is(:hover,:focus-visible){background:var(--ck-blue-strong,#155f63)}
+
+
+/* ═══════════════════════════════════════════════════════════════════════
+   DRx Stripe Dashboard v2 — final visual authority
+   Loaded LAST on application dashboards. Functional/page-specific CSS may
+   define layout mechanics; this layer owns the visual system.
+   ═══════════════════════════════════════════════════════════════════════ */
+html.medindex-tailadmin{
+  --drx-nav:#1c1e54;
+  --drx-nav-hover:rgba(255,255,255,.075);
+  --drx-nav-active:rgba(102,94,253,.26);
+  --drx-nav-text:rgba(255,255,255,.68);
+  --drx-nav-label:rgba(255,255,255,.46);
+  --drx-shell-accent:#533afd;
+  --drx-shell-accent-deep:#4434d4;
+  --drx-shell-accent-soft:#f0efff;
+  --drx-shell-accent-line:#d9d6ff;
+  --drx-shell-ink:#0d253d;
+  --drx-shell-ink-2:#273951;
+  --drx-shell-muted:#64748d;
+  --drx-shell-line:#e3e8ee;
+  --drx-shell-line-strong:#cfd8e3;
+  --drx-shell-soft:#f6f9fc;
+  --drx-shell-canvas:#fff;
+  --drx-shell-success:#027a48;
+  --drx-shell-warning:#b54708;
+  --drx-shell-danger:#b42318;
+  --drx-shell-shadow:rgba(0,55,112,.04) 0 1px 3px;
+  --ck-blue:#533afd;
+  --ck-blue-strong:#4434d4;
+  --ck-accent-solid:#533afd;
+  --mi-brand-500:#533afd;
+  --mi-brand-600:#4434d4;
+  --mi-brand-50:#f0efff;
+  --mi-brand-100:#e5e2ff;
+  --mi-brand-200:#d9d6ff;
+  --mi-focus:0 0 0 3px rgba(83,58,253,.16);
+}
+
+html.medindex-tailadmin,
+html.medindex-tailadmin body{
+  background:var(--drx-shell-canvas)!important;
+  color:var(--drx-shell-ink)!important;
+  font-family:Inter,"SF Pro Display",system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif!important;
+  font-weight:300!important;
+  font-feature-settings:"ss01"!important;
+  -webkit-font-smoothing:antialiased!important;
+}
+
+/* Legacy source shell fallback, before/without runtime enhancement */
+html.medindex-tailadmin .med-shell{
+  min-height:100dvh!important;
+  background:#fff!important;
+}
+html.medindex-tailadmin .med-nav{
+  background:var(--drx-nav)!important;
+  color:#fff!important;
+  border-right:0!important;
+  box-shadow:none!important;
+}
+html.medindex-tailadmin .med-nav-link{
+  min-height:40px!important;
+  border:0!important;
+  border-radius:6px!important;
+  background:transparent!important;
+  color:var(--drx-nav-text)!important;
+  font-size:14px!important;
+  font-weight:300!important;
+}
+html.medindex-tailadmin .med-nav-link:hover{
+  background:var(--drx-nav-hover)!important;
+  color:#fff!important;
+}
+html.medindex-tailadmin .med-nav-link.active,
+html.medindex-tailadmin .med-nav-link[aria-current="page"]{
+  background:var(--drx-nav-active)!important;
+  color:#fff!important;
+}
+html.medindex-tailadmin .med-main{
+  background:#fff!important;
+  color:var(--drx-shell-ink)!important;
+}
+
+/* Shell geometry must match the approved admin dashboard exactly. */
+html.medindex-tailadmin .mi-sidebar{
+  width:238px!important;
+  min-width:238px!important;
+  flex-basis:238px!important;
+  padding:18px 14px 14px!important;
+  background:var(--drx-nav)!important;
+}
+html.medindex-tailadmin .mi-sidebar-header{min-height:54px!important;padding:0 10px 12px!important}
+html.medindex-tailadmin .mi-topbar{
+  height:58px!important;
+  min-height:58px!important;
+  flex-basis:58px!important;
+  padding:0 28px!important;
+  background:rgba(255,255,255,.97)!important;
+  border-bottom:1px solid var(--drx-shell-line)!important;
+  box-shadow:none!important;
+}
+html.medindex-tailadmin .mi-main,
+html.medindex-tailadmin .mi-workspace{background:#fff!important}
+html.medindex-tailadmin .mi-content-container{
+  width:100%!important;
+  max-width:1360px!important;
+  margin-inline:auto!important;
+  padding:32px 36px 64px!important;
+}
+
+/* Navigation */
+html.medindex-tailadmin #appMenu :is(.app-menu-link,.auth-logout){
+  min-height:40px!important;
+  border-radius:6px!important;
+  color:var(--drx-nav-text)!important;
+  font-weight:300!important;
+}
+html.medindex-tailadmin #appMenu .app-menu-link:is(.active,[aria-current="page"]){
+  background:var(--drx-nav-active)!important;
+  color:#fff!important;
+}
+html.medindex-tailadmin #appMenu .mi-menu-badge,
+html.medindex-tailadmin #appMenu .nav-mini-count{
+  background:rgba(255,255,255,.14)!important;
+  color:#fff!important;
+  font-weight:400!important;
+}
+
+/* Page-heading family — large cards/gradients are intentionally removed. */
+html.medindex-tailadmin :is(
+  .mi-page-heading,.med-hero,.lab-hero,.clinical-hero,.pediatric-calculator-hero,
+  .icd-registry-intro,.ck-hero,.rx-hero,.system-hero,.ec-hero
+){
+  margin:0 0 28px!important;
+  padding:0!important;
+  border:0!important;
+  border-radius:0!important;
+  background:transparent!important;
+  box-shadow:none!important;
+  color:var(--drx-shell-ink)!important;
+}
+html.medindex-tailadmin :is(
+  .mi-page-heading,.med-hero,.lab-hero,.clinical-hero,.pediatric-calculator-hero,
+  .icd-registry-intro,.ck-hero,.rx-hero,.system-hero,.ec-hero
+) h1{
+  margin:0!important;
+  color:var(--drx-shell-ink)!important;
+  font-size:32px!important;
+  font-weight:300!important;
+  letter-spacing:-.64px!important;
+  line-height:1.1!important;
+}
+html.medindex-tailadmin :is(
+  .mi-page-heading,.med-hero,.lab-hero,.clinical-hero,.pediatric-calculator-hero,
+  .icd-registry-intro,.ck-hero,.rx-hero,.system-hero,.ec-hero
+) p:not(.mi-kicker):not(.med-kicker):not(.clinical-kicker):not(.ck-kicker):not(.ec-eyebrow):not(.system-kicker){
+  max-width:780px!important;
+  color:var(--drx-shell-muted)!important;
+  font-size:14px!important;
+  font-weight:300!important;
+  line-height:1.55!important;
+}
+html.medindex-tailadmin :is(.mi-kicker,.med-kicker,.clinical-kicker,.ck-kicker,.ec-eyebrow,.system-kicker){
+  margin:0 0 6px!important;
+  color:var(--drx-shell-muted)!important;
+  font-size:10px!important;
+  font-weight:400!important;
+  letter-spacing:.08em!important;
+  text-transform:uppercase!important;
+}
+
+/* Stripe surface grammar */
+html.medindex-tailadmin :is(
+  .mi-panel,.mi-card,.mi-surface-card,.med-card,.med-panel,.lab-panel,.lab-card,
+  .clinical-summary,.clinical-toolbar,.clinical-patient,.dosage-control-panel,
+  .pediatric-calculator-panel,.pediatric-result-section,.icd-tree-panel,
+  .icd-favorites-panel,.ck-directory,.ck-detail,.protocol-directory,.protocol-reader,
+  .rx-compose-card,.rx-preview-card,.rx-safety,.rx-saved-section,.system-panel,
+  .system-sync-panel,.system-setup,.ec-pane,.ec-detail
+){
+  border:1px solid var(--drx-shell-line)!important;
+  border-radius:12px!important;
+  background:#fff!important;
+  box-shadow:var(--drx-shell-shadow)!important;
+}
+html.medindex-tailadmin :is(
+  .mi-panel,.mi-card,.med-card,.med-panel,.lab-panel,.clinical-summary,
+  .dosage-control-panel,.pediatric-calculator-panel,.icd-tree-panel,.ck-directory,
+  .ck-detail,.protocol-directory,.protocol-reader,.rx-compose-card,.rx-preview-card,
+  .system-panel,.ec-pane,.ec-detail
+):hover{
+  transform:none!important;
+  box-shadow:var(--drx-shell-shadow)!important;
+}
+
+/* Summary numbers — one quiet Stripe strip, not floating colored cards. */
+html.medindex-tailadmin :is(
+  .mi-stats,.icd-registry-stats,.system-metrics,.clinical-summary,.ec-summary-badge
+){
+  border:1px solid var(--drx-shell-line)!important;
+  border-radius:12px!important;
+  background:#fff!important;
+  box-shadow:var(--drx-shell-shadow)!important;
+}
+html.medindex-tailadmin :is(
+  .mi-stat,.icd-registry-stat,.lab-hero-stat
+){
+  border-color:var(--drx-shell-line)!important;
+  background:#fff!important;
+  box-shadow:none!important;
+}
+html.medindex-tailadmin :is(.mi-stat,.icd-registry-stat,.lab-hero-stat) strong{
+  color:var(--drx-shell-ink)!important;
+  font-weight:300!important;
+  font-variant-numeric:tabular-nums!important;
+}
+html.medindex-tailadmin :is(.mi-stat,.icd-registry-stat,.lab-hero-stat) :is(span,small){
+  color:var(--drx-shell-muted)!important;
+  font-weight:300!important;
+}
+
+/* Inputs and controls */
+html.medindex-tailadmin :is(.mi-main,.med-main) :is(input,select,textarea){
+  border:1px solid var(--drx-shell-line-strong)!important;
+  border-radius:8px!important;
+  background:#fff!important;
+  color:var(--drx-shell-ink)!important;
+  box-shadow:none!important;
+  font-weight:400!important;
+}
+html.medindex-tailadmin :is(.mi-main,.med-main) :is(input,select,textarea)::placeholder{
+  color:#78879a!important;
+}
+html.medindex-tailadmin :is(.mi-main,.med-main) :is(input,select,textarea):focus{
+  border-color:var(--drx-shell-accent)!important;
+  outline:0!important;
+  box-shadow:0 0 0 3px rgba(83,58,253,.14)!important;
+}
+html.medindex-tailadmin :is(
+  .mi-global-search input,.lab-search-wrap input,.icd-search-wrap input,.ck-toolbar input,
+  .rx-command-bar input,.rx-saved-search input,.ec-search input
+){
+  min-height:40px!important;
+}
+
+/* Primary actions */
+html.medindex-tailadmin :is(
+  .mi-primary-action,.rx-primary,.pediatric-calculate-button,.system-refresh,
+  .ck-studio-link,.clinical-primary,.med-primary
+){
+  min-height:38px!important;
+  padding:8px 15px!important;
+  border:1px solid var(--drx-shell-accent)!important;
+  border-radius:9999px!important;
+  background:var(--drx-shell-accent)!important;
+  color:#fff!important;
+  box-shadow:none!important;
+  font-size:12px!important;
+  font-weight:400!important;
+  text-decoration:none!important;
+}
+html.medindex-tailadmin :is(
+  .mi-primary-action,.rx-primary,.pediatric-calculate-button,.system-refresh,
+  .ck-studio-link,.clinical-primary,.med-primary
+):hover{
+  border-color:var(--drx-shell-accent-deep)!important;
+  background:var(--drx-shell-accent-deep)!important;
+  color:#fff!important;
+  transform:none!important;
+}
+
+/* Secondary actions */
+html.medindex-tailadmin :is(
+  .rx-secondary,.rx-ghost,.rx-text-button,.icd-tree-action,.icd-search-clear,
+  .icd-favorites-toggle,.icd-favorites-clear,.icd-source-health-refresh,
+  .med-panel-close
+){
+  min-height:36px!important;
+  border:1px solid var(--drx-shell-line-strong)!important;
+  border-radius:9999px!important;
+  background:#fff!important;
+  color:#42566b!important;
+  box-shadow:none!important;
+  font-size:11px!important;
+  font-weight:400!important;
+}
+html.medindex-tailadmin :is(
+  .rx-secondary,.rx-ghost,.rx-text-button,.icd-tree-action,.icd-search-clear,
+  .icd-favorites-toggle,.icd-favorites-clear,.icd-source-health-refresh
+):hover{
+  background:var(--drx-shell-soft)!important;
+  border-color:#b9c6d3!important;
+  color:var(--drx-shell-ink)!important;
+}
+
+/* Toolbars */
+html.medindex-tailadmin :is(
+  .lab-quickbar,.clinical-toolbar,.pediatric-search-toolbar,.icd-tree-toolbar,
+  .ck-toolbar,.rx-command-bar,.system-hero-actions,.ec-search
+){
+  gap:10px!important;
+  border-color:var(--drx-shell-line)!important;
+  background:#fff!important;
+  box-shadow:none!important;
+}
+
+/* Tables and lists */
+html.medindex-tailadmin :is(table,.mi-table){
+  border-collapse:separate!important;
+  border-spacing:0!important;
+  color:var(--drx-shell-ink)!important;
+}
+html.medindex-tailadmin :is(table,.mi-table) thead th{
+  background:var(--drx-shell-soft)!important;
+  color:var(--drx-shell-muted)!important;
+  border-color:var(--drx-shell-line)!important;
+  font-size:11px!important;
+  font-weight:400!important;
+  letter-spacing:0!important;
+  text-transform:none!important;
+}
+html.medindex-tailadmin :is(table,.mi-table) tbody td{
+  background:#fff!important;
+  color:var(--drx-shell-ink-2)!important;
+  border-color:#edf1f4!important;
+  font-size:12px!important;
+  font-weight:300!important;
+}
+html.medindex-tailadmin :is(table,.mi-table) tbody tr:hover td{
+  background:#fbfcff!important;
+}
+
+/* Chips, tabs and statuses */
+html.medindex-tailadmin :is(
+  .mi-heading-badge,.med-count,.icd-source-status,.rx-status,.system-state,
+  .clinical-status,.lab-status
+){
+  border:1px solid var(--drx-shell-line)!important;
+  border-radius:9999px!important;
+  background:#fff!important;
+  color:var(--drx-shell-muted)!important;
+  box-shadow:none!important;
+  font-size:10px!important;
+  font-weight:400!important;
+}
+html.medindex-tailadmin :is(.mi-tabs,[role="tablist"]){
+  border-color:var(--drx-shell-line)!important;
+  background:transparent!important;
+  box-shadow:none!important;
+}
+html.medindex-tailadmin [role="tab"]{
+  color:var(--drx-shell-muted)!important;
+  font-weight:400!important;
+}
+html.medindex-tailadmin [role="tab"][aria-selected="true"]{
+  color:var(--drx-shell-accent)!important;
+}
+
+/* Dialogs / overlays */
+html.medindex-tailadmin :is(.rx-dialog,.med-panel,.mi-dialog){
+  border:1px solid var(--drx-shell-line)!important;
+  border-radius:14px!important;
+  background:#fff!important;
+  color:var(--drx-shell-ink)!important;
+  box-shadow:0 24px 64px rgba(10,37,64,.17),0 8px 24px rgba(10,37,64,.08)!important;
+}
+html.medindex-tailadmin :is(.rx-dialog-overlay,.med-panel-overlay){
+  background:rgba(10,37,64,.24)!important;
+  backdrop-filter:blur(2px)!important;
+}
+
+/* Dark theme stays legible, but keeps the same geometry. */
+html.medindex-tailadmin:is(.dark,[data-theme="dark"]){
+  --drx-shell-canvas:#101828;
+  --drx-shell-ink:#f8fafc;
+  --drx-shell-ink-2:#d0d5dd;
+  --drx-shell-muted:#98a2b3;
+  --drx-shell-line:#344054;
+  --drx-shell-line-strong:#475467;
+  --drx-shell-soft:#1d2939;
+}
+html.medindex-tailadmin:is(.dark,[data-theme="dark"]) :is(.mi-main,.mi-workspace,.med-main){
+  background:#101828!important;
+}
+html.medindex-tailadmin:is(.dark,[data-theme="dark"]) :is(
+  .mi-topbar,.mi-panel,.mi-card,.mi-surface-card,.med-card,.med-panel,.lab-panel,.lab-card,
+  .clinical-summary,.clinical-toolbar,.clinical-patient,.dosage-control-panel,
+  .pediatric-calculator-panel,.pediatric-result-section,.icd-tree-panel,.icd-favorites-panel,
+  .ck-directory,.ck-detail,.protocol-directory,.protocol-reader,.rx-compose-card,.rx-preview-card,
+  .rx-safety,.rx-saved-section,.system-panel,.system-sync-panel,.system-setup,.ec-pane,.ec-detail,
+  input,select,textarea
+){
+  background:#101828!important;
+  border-color:#344054!important;
+  color:#f8fafc!important;
+}
+html.medindex-tailadmin:is(.dark,[data-theme="dark"]) :is(table,.mi-table) thead th{
+  background:#1d2939!important;
+  color:#98a2b3!important;
+}
+html.medindex-tailadmin:is(.dark,[data-theme="dark"]) :is(table,.mi-table) tbody td{
+  background:#101828!important;
+  color:#d0d5dd!important;
+  border-color:#243044!important;
+}
+
+/* Mobile: same interaction size across every dashboard. */
+@media(max-width:1023px){
+  html.medindex-tailadmin .mi-topbar{padding:0 14px!important}
+  html.medindex-tailadmin .mi-content-container{padding:20px 16px 48px!important}
+}
+@media(max-width:760px){
+  html.medindex-tailadmin :is(
+    .mi-page-heading,.med-hero,.lab-hero,.clinical-hero,.pediatric-calculator-hero,
+    .icd-registry-intro,.ck-hero,.rx-hero,.system-hero,.ec-hero
+  ) h1{
+    font-size:26px!important;
+    letter-spacing:-.26px!important;
+  }
+  html.medindex-tailadmin :is(.mi-main,.med-main) :is(input,select,textarea){
+    min-height:44px!important;
+    font-size:16px!important;
+  }
+  html.medindex-tailadmin :is(
+    .mi-primary-action,.rx-primary,.rx-secondary,.rx-ghost,.pediatric-calculate-button,
+    .system-refresh,.ck-studio-link,.icd-tree-action,.med-panel-close
+  ){
+    min-height:44px!important;
+  }
+  html.medindex-tailadmin .mi-sidebar{width:min(86vw,300px)!important}
+}
+
+html.medindex-tailadmin ::selection{
+  background:#d9d5ff!important;
+  color:#1c1e54!important;
+}
