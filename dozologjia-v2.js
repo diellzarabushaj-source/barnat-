@@ -159,6 +159,7 @@
     results:[],
     facets:{ all:0, ready:0, text:0, blocked:0 },
     filter:'all',
+    formFilter:'',
     product:null,
     calculation:null,
     selectedDrugId:'',
@@ -181,6 +182,7 @@
     elements.status = $('#dosageStatus');
     elements.count = $('#dosageCount');
     elements.filters = [...document.querySelectorAll('[data-readiness-filter]')];
+    elements.formFilter = $('#dosageFormFilter');
     elements.facetAll = $('#dosageFacetAll');
     elements.facetReady = $('#dosageFacetReady');
     elements.facetText = $('#dosageFacetText');
@@ -334,8 +336,43 @@
   }
 
   function visibleResults() {
-    if (state.filter === 'all') return state.results;
-    return state.results.filter(item => normalizeReadinessGroup(item.readiness) === state.filter);
+    return state.results.filter(item => {
+      const readinessMatch = state.filter === 'all'
+        || normalizeReadinessGroup(item.readiness) === state.filter;
+      const formMatch = !state.formFilter || text(item.form) === state.formFilter;
+      return readinessMatch && formMatch;
+    });
+  }
+
+  function updateFormOptions() {
+    const select = elements.formFilter;
+    if (!select) return;
+    const previous = state.formFilter;
+    const forms = [...new Set(state.results.map(item => text(item.form)).filter(Boolean))]
+      .sort((left, right) => left.localeCompare(right, 'sq'));
+
+    select.textContent = '';
+    const all = element('option', null, 'Të gjitha format');
+    all.value = '';
+    select.append(all);
+    for (const form of forms) {
+      const option = element('option', null, form);
+      option.value = form;
+      select.append(option);
+    }
+
+    state.formFilter = forms.includes(previous) ? previous : '';
+    select.value = state.formFilter;
+  }
+
+  function setFormFilter(value) {
+    state.formFilter = text(value);
+    renderResults();
+    const visible = visibleResults().length;
+    const formLabel = state.formFilter || 'Të gjitha format';
+    setStatus(state.query
+      ? `${visible} nga ${state.results.length} rezultate · ${formLabel}`
+      : 'Shkruaj së paku dy shkronja për të kërkuar.');
   }
 
   function setFilter(filter) {
@@ -445,6 +482,7 @@
       state.searchController?.abort?.();
       state.results = [];
       updateFacets({ all:0, ready:0, text:0, blocked:0 });
+      updateFormOptions();
       renderResults();
       setStatus('Shkruaj së paku dy shkronja për të kërkuar.');
       return;
@@ -462,6 +500,7 @@
       if (token !== state.searchToken || controller.signal.aborted) return;
       state.results = Array.isArray(payload.results) ? payload.results : [];
       updateFacets(payload.facets);
+      updateFormOptions();
       renderResults();
       setStatus(
         state.results.length
@@ -473,6 +512,7 @@
       if (error?.name === 'AbortError' || token !== state.searchToken) return;
       state.results = [];
       updateFacets({ all:0, ready:0, text:0, blocked:0 });
+      updateFormOptions();
       renderListError(error.message);
       setStatus(error.message, 'error');
     }
@@ -1044,6 +1084,7 @@
     for (const button of elements.filters) {
       button.addEventListener('click', () => setFilter(button.dataset.readinessFilter));
     }
+    elements.formFilter?.addEventListener('change', () => setFormFilter(elements.formFilter.value));
 
     elements.list.addEventListener('click', event => {
       const choice = event.target.closest('[data-drug-id]');
@@ -1109,6 +1150,7 @@
     } else {
       renderResults();
       updateFacets({ all:0, ready:0, text:0, blocked:0 });
+      updateFormOptions();
     }
 
     if (drugId) await selectDrug(drugId, { scroll:false });
@@ -1124,6 +1166,7 @@
     resetCalculation();
     updateSearchChrome();
     updateFacets({ all:0, ready:0, text:0, blocked:0 });
+    updateFormOptions();
     bindEvents();
     void restoreFromUrl();
   }
