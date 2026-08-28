@@ -6,26 +6,15 @@ const root = path.resolve(__dirname, '..');
 const read = file => fs.readFileSync(path.join(root, file), 'utf8');
 
 const html = read('index.html');
-const professionalCss = read('tailadmin-professional.css');
-const markerJs = read('registry-dose-clinical-row-markers.js');
-const markerCss = read('registry-dose-clinical-row-markers.css');
+const css = read('registry-v2.css');
+const js = read('registry-v2.js');
 
-assert.match(html, /tailadmin-professional\.css\?v=20260811-3/);
-assert.doesNotMatch(html, /<link[^>]+registry-dose-clinical-row-markers\.css/,
-  'Clinical row CSS must not create a second stylesheet after the canonical TailAdmin bundle.');
-assert.match(professionalCss, /registry-dose-clinical-row-markers\.css\?v=20260812-pediatric-pink-1/);
-assert.ok(
-  professionalCss.lastIndexOf('registry-dose-clinical-row-markers.css') > professionalCss.lastIndexOf('medindex-phase5-performance.css'),
-  'Clinical row semantics must be the last import inside the canonical TailAdmin bundle.',
-);
-assert.match(html, /registry-dose-clinical-row-markers\.js\?v=20260812-pediatric-pink-1/);
-assert.ok(
-  html.indexOf('registry-dosage-loader.js') < html.indexOf('registry-dose-clinical-row-markers.js'),
-  'Clinical row classifier must run after the dosage loader.',
-);
+assert.match(html, /data-drx-app="registry-v2"/);
+assert.match(html, /<th>Doza e të rriturit<\/th>/);
+assert.match(html, /<th>Doza pediatrike<\/th>/);
+assert.match(html, /registry-v2\.css\?v=1/);
+assert.match(html, /registry-v2\.js\?v=1/);
 
-// The medicines table no longer exposes a dose calculator. Keep clinical row
-// semantics, but prevent every retired calculator UI/runtime from returning.
 for (const retired of [
   'registry-dose-calculator.js',
   'registry-dose-table-button.js',
@@ -36,25 +25,28 @@ for (const retired of [
   'registry-novomix30-simple-calculator.js',
   'registry-other-insulins-simple-calculator.js',
   'registry-insulin-final-safety.js',
+  'registry-dose-clinical-row-markers.js',
+  'registry-dose-clinical-row-markers.css',
 ]) {
-  assert.ok(!html.includes(retired), `Retired calculator runtime must stay out of index.html: ${retired}`);
+  assert.ok(!html.includes(retired), `Legacy dosage runtime must stay out of Registry V2: ${retired}`);
 }
-assert.doesNotMatch(html, /registry-dose-calculator-fast-ui\.js/, 'Retired fast-UI controller must not return to production.');
 
-assert.match(markerJs, /mi-dose-row--pediatric-only/);
-assert.match(markerJs, /mi-dose-row--parenteral/);
-assert.match(markerJs, /mi-dose-row--pediatric-parenteral/);
-assert.match(markerJs, /data-registry-column-key=\"form\"/);
-assert.match(markerJs, /injeksion\|injection/);
-assert.match(markerJs, /infuzion\|infusion/);
-assert.match(markerJs, /requestIdleCallback/);
-assert.doesNotMatch(markerJs, /fetch\s*\(/, 'Row markers must not perform another API request.');
+assert.match(js, /\/api\/dosage\?view=cards/);
+assert.match(js, /adultDose/);
+assert.match(js, /pediatricDose/);
+assert.match(js, /adultRoute/);
+assert.match(js, /pediatricRoute/);
+assert.match(js, /dose-cell/);
+assert.match(js, /route-chip/);
 
-assert.match(markerCss, /--mi-dose-pediatric-text:\s*#b42318/);
-assert.match(markerCss, /--mi-dose-parenteral-bg:\s*#ecfdf3/);
-assert.match(markerCss, /mi-dose-row--pediatric-parenteral/);
-assert.match(markerCss, /\[data-theme=\"dark\"\]/);
-assert.match(markerCss, /forced-colors/);
-assert.match(markerCss, /print-color-adjust/);
+assert.match(css, /--clinical:#0f766e/);
+assert.match(css, /--pediatric:#2563eb/);
+assert.match(css, /\.registry-table td:nth-child\(9\) \.route-chip/);
+assert.match(css, /content:"Doza e të rriturit"/);
+assert.match(css, /content:"Doza pediatrike"/);
+assert.match(css, /border-left:3px solid #8bd4c8/);
+assert.match(css, /border-left:3px solid #93b4f6/);
+assert.match(css, /@media\(max-width:760px\)/);
+assert.doesNotMatch(css, /!important/);
 
-console.log('Clinical dosage row semantics remain available while all calculator UI/runtimes stay retired from the medicines table.');
+console.log('Registry V2 adult/pediatric dosage semantics, mobile cards and retired calculator isolation passed.');
