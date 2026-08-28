@@ -300,8 +300,10 @@ a{color:inherit}
   .drug-meta{font-size:9.5px}
   .cell-clamp{-webkit-line-clamp:3}
   .dose-text{-webkit-line-clamp:4;font-size:10.5px}
-  .row-check,#selectPageCheckbox{width:17px;height:17px}
-  .row-action{width:34px;height:34px;border-color:var(--line);background:#fff}
+  .row-check,#selectPageCheckbox{width:28px;height:28px}
+  .row-action{width:44px;height:44px;border-color:var(--line);background:#fff}
+  #sidebarClose,#drawerClose{width:44px;height:44px}
+  .sidebar .nav-item{min-height:44px}
   .pagination-bar{padding:8px 9px}
   #paginationSummary{display:none}
   .pagination-actions{width:100%;justify-content:space-between}
