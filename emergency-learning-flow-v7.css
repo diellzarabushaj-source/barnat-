@@ -15,7 +15,8 @@ html.medindex-tailadmin[data-mi-page="urgjencat"] .ck-v7-next-step>div>span{
   display:block;
   margin-bottom:3px;
   color:#6c82b8;
-  font-size:9.5px;
+  /* 11px: dyshemeja e lexueshmërisë e auditit responsive për ekranin e urgjencës. */
+  font-size:11px;
   font-weight:600!important;
   letter-spacing:.07em;
 }
@@ -59,7 +60,8 @@ html.medindex-tailadmin[data-mi-page="urgjencat"] .ck-v7-next-step button:focus-
 html.medindex-tailadmin[data-mi-page="urgjencat"] .ck-v7-shortcuts{
   margin:7px 0 0;
   color:#8a94a5;
-  font-size:10px;
+  /* 11px: dyshemeja e lexueshmërisë e auditit responsive për ekranin e urgjencës. */
+  font-size:11px;
   font-weight:400!important;
   line-height:1.45;
   text-align:center;
@@ -76,7 +78,7 @@ html.medindex-tailadmin[data-mi-page="urgjencat"] .ck-v7-shortcuts kbd{
   border-radius:5px;
   background:#fff;
   color:#52617b;
-  font:500 9.5px/1 var(--mi-font,"Inter",sans-serif)!important;
+  font:500 11px/1 var(--mi-font,"Inter",sans-serif)!important;
   box-shadow:0 1px 1px rgba(31,45,75,.04);
 }
 html.medindex-tailadmin[data-mi-page="urgjencat"] .ck-v7-shortcuts span{margin:0 2px;color:#b0b7c3}

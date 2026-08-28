@@ -134,7 +134,8 @@ html.medindex-tailadmin[data-mi-page="urgjencat"] .ck-sl-recall [data-ck-rating=
 html.medindex-tailadmin[data-mi-page="urgjencat"] .ck-v4-next-review{
   margin:8px 0 0;
   color:#818b9b;
-  font-size:10.5px;
+  /* 11px: dyshemeja e lexueshmërisë e auditit responsive për ekranin e urgjencës. */
+  font-size:11px;
   text-align:center;
 }
 html.medindex-tailadmin[data-mi-page="urgjencat"] .ck-flash-feedback [data-ck-v4-open-learn]{
