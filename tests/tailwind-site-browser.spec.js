@@ -192,6 +192,21 @@ for (const viewport of viewports) {
         await expect(page.locator('#registryRows tr[data-row-id]')).toHaveCount(3, { timeout:20000 });
         await page.waitForTimeout(250);
         await auditRegistryV2(page, `${file} / ${viewport.name}`);
+        await page.locator('#filterToggle').click();
+        await page.locator('#formPickerButton').click();
+        await expect(page.locator('#formPickerPanel')).toBeVisible();
+        await expect(page.locator('.form-picker-group')).toHaveCount(10);
+        await expect(page.locator('[data-form-category="Tableta & pilula"] .form-category-count')).toHaveText('17');
+        await expect(page.locator('[data-form-category="Kapsula"] .form-category-count')).toHaveText('11');
+        await expect(page.locator('[data-form-category="Pika (sy, veshë, hundë)"] .form-category-count')).toHaveText('9');
+        await expect(page.locator('[data-form-category="Sprej & Inhalim"] .form-category-count')).toHaveText('18');
+        await page.locator('#formPickerSearch').fill('kapsul');
+        await expect(page.locator('.form-picker-group')).toHaveCount(1);
+        await expect(page.locator('[data-form-category="Kapsula"]')).toBeVisible();
+        await expect(page.locator('[data-form-value="Capsule, hard"]')).toBeVisible();
+        await page.screenshot({ path:path.join(OUTPUT, `registry-v2-form-picker-${viewport.name}.png`), fullPage:false });
+        await page.locator('[data-form-value="Capsule, hard"]').click();
+        await expect(page.locator('#formPickerValue')).toHaveText('Capsule, hard');
         await page.screenshot({ path:path.join(OUTPUT, `registry-v2-${viewport.name}.png`), fullPage:false });
         continue;
       }
