@@ -601,7 +601,7 @@
 
   async function init() {
     const incomingAtc = clean(new URLSearchParams(location.search).get('atc')).toUpperCase().replace(/\s+/g, '');
-    state.atc = /^(?:[A-Z]|[A-Z]\d{2})$/.test(incomingAtc) ? incomingAtc : '';
+    state.atc = /^(?:[A-Z]|[A-Z]\d{2}(?:[A-Z]{1,2})?)$/.test(incomingAtc) ? incomingAtc : '';
     bindEvents();
     renderFormPicker();
     syncFormPickerTrigger();
