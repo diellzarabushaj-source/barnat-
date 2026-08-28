@@ -35,7 +35,7 @@
     status:'Statusi', 'wholesale-price':'Çmimi me shumicë', 'margin-price':'Çmimi me marzhë',
     vat:'TVSH', 'retail-price':'Çmimi me pakicë', validity:'Afati i vlefshmërisë',
     'dosage-adult':'1. Dozimi për të rritur', 'dosage-pediatric':'2. Dozimi për fëmijë',
-    'clinical-status':'Verifikimi', 'clinical-action':'Redakto', 'dose-calculator':'Doza',
+    'clinical-status':'Verifikimi',
   });
   const RAW_FIELD_BY_KEY = Object.freeze({
     'trade-name':'Emri tregtar', 'active-substance':'Substanca aktive', strength:'Fortësia',
@@ -71,8 +71,6 @@
     dozimiiperfemije:'dosage-pediatric', dozimipediatrik:'dosage-pediatric',
     verifikimi:'clinical-status',
   });
-
-  const PENCIL = '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 20h9"/><path d="M16.5 3.5a2.12 2.12 0 0 1 3 3L7 19l-4 1 1-4Z"/></svg>';
   const PLACEHOLDER = '<span class="registry-unified-skeleton" aria-hidden="true"></span>';
 
   let scheduled = false;
@@ -145,11 +143,7 @@
     const cell = document.createElement('th');
     if (synthetic) cell.dataset.registryUnifiedSynthetic = 'true';
     stamp(cell, key);
-    if (key === 'dose-calculator') {
-      cell.dataset.registryDoseCalculatorColumn = 'dose-calculator';
-      cell.className = 'registry-dose-calculator-column';
-      cell.innerHTML = 'Kalkulatori<span class="registry-dosage-subhead">Doza individuale</span>';
-    } else if (key === 'dosage-adult' || key === 'dosage-pediatric') {
+    if (key === 'dosage-adult' || key === 'dosage-pediatric') {
       const population = key === 'dosage-adult' ? 'adult' : 'pediatric';
       cell.dataset.registryDosageColumn = population;
       cell.className = `registry-dosage-column registry-dosage-${population}`;
@@ -158,11 +152,6 @@
       cell.dataset.clinicalEditorColumn = 'clinical-status';
       cell.className = 'clinical-editor-status-column';
       cell.textContent = LABEL_BY_KEY[key];
-    } else if (key === 'clinical-action') {
-      cell.dataset.clinicalEditorColumn = 'clinical-action';
-      cell.className = 'clinical-editor-action-column';
-      cell.innerHTML = PENCIL;
-      cell.title = 'Redakto';
     } else {
       cell.textContent = LABEL_BY_KEY[key] || key;
     }
@@ -176,11 +165,7 @@
     const raw = rawForRow(row);
     const value = clean(raw?.[RAW_FIELD_BY_KEY[key]]);
 
-    if (key === 'dose-calculator') {
-      cell.dataset.registryDoseCalculatorColumn = 'dose-calculator';
-      cell.className = 'registry-dose-calculator-column registry-unified-placeholder';
-      cell.innerHTML = '<span class="registry-dosage-muted">Duke u lidhur…</span>';
-    } else if (key === 'dosage-adult' || key === 'dosage-pediatric') {
+    if (key === 'dosage-adult' || key === 'dosage-pediatric') {
       const population = key === 'dosage-adult' ? 'adult' : 'pediatric';
       cell.dataset.registryDosageColumn = population;
       cell.className = `registry-dosage-column registry-dosage-${population} registry-unified-placeholder`;
@@ -188,10 +173,6 @@
     } else if (key === 'clinical-status') {
       cell.dataset.clinicalEditorColumn = 'clinical-status';
       cell.className = 'clinical-editor-status-column registry-unified-placeholder';
-      cell.innerHTML = PLACEHOLDER;
-    } else if (key === 'clinical-action') {
-      cell.dataset.clinicalEditorColumn = 'clinical-action';
-      cell.className = 'clinical-editor-action-column registry-unified-placeholder';
       cell.innerHTML = PLACEHOLDER;
     } else if (key === 'trade-name') {
       cell.className = 'name';
@@ -343,15 +324,6 @@
     table.style.setProperty('min-width', `${width}px`, 'important');
   }
 
-  function normalizePencils(tbody) {
-    tbody.querySelectorAll('.clinical-editor-open').forEach(button => {
-      button.dataset.registryUnifiedPencil = VERSION;
-      button.setAttribute('aria-label', 'Redakto barin');
-      button.title = 'Redakto';
-      if (!button.querySelector('svg') || clean(button.textContent)) button.innerHTML = PENCIL;
-    });
-  }
-
   function updateCellLabels(header, tbody) {
     const labels = new Map(Array.from(header.children).map(cell => [directKey(cell), LABEL_BY_KEY[directKey(cell)] || clean(cell.textContent)]));
     Array.from(tbody.children).forEach(row => {
@@ -420,7 +392,6 @@
       });
 
       updateCellLabels(header, tbody);
-      normalizePencils(tbody);
       rebuildColgroup(table, wrapper, order);
       table.dataset.registryUnifiedTable = VERSION;
       wrapper.dataset.registryUnifiedTable = VERSION;
@@ -455,7 +426,7 @@
     toolbar.innerHTML = `
       <div class="registry-view-heading">
         <strong>Barnat</strong>
-        <span data-registry-view-description>Pamje klinike e shpejtë për kërkim, dozë dhe recetë.</span>
+        <span data-registry-view-description>Pamje klinike e shpejtë për kërkim, dozologji dhe recetë.</span>
       </div>
       <div class="registry-view-actions-wrap">
         <button type="button" class="registry-filter-toggle" data-registry-filter-toggle aria-controls="registryFilterPanel" aria-expanded="false">Filtrat <span data-registry-filter-count hidden>0</span></button>
