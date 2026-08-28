@@ -48,7 +48,7 @@ const icdCss = read('icd-v2.css');
 assert.match(icdHtml, /data-drx-app="icd-v2"/);
 assert.match(icdHtml, /<meta name="theme-color" content="#1c1e54">/);
 assert.match(icdHtml, /icd-v2\.css\?v=1/);
-assert.match(icdHtml, /icd-v2\.js\?v=1/);
+assert.match(icdHtml, /icd-v2\.js\?v=sidebar-taxonomy-v3/);
 assert.doesNotMatch(icdHtml, /tailadmin-medindex\.css|tailadmin-professional\.css|drx-dashboard-stripe\.css|tailadmin-shell\.js/);
 assert.match(icdCss, /#1c1e54/i);
 assert.match(icdCss, /#533afd/i);
