@@ -1,0 +1,29 @@
+{
+  "brand": "DRx",
+  "version": "2026-08-28",
+  "policy": "Use onDark assets on dark/navy/black surfaces and onLight assets on white/light surfaces. These four files are the canonical application logos.",
+  "assets": {
+    "horizontalOnDark": {
+      "route": "/brand/drx-horizontal-on-dark.svg",
+      "usage": "Sidebar, dark cards, navy or black backgrounds"
+    },
+    "horizontalOnLight": {
+      "route": "/brand/drx-horizontal-on-light.svg",
+      "usage": "Landing, login and light backgrounds"
+    },
+    "markOnDark": {
+      "route": "/brand/drx-mark-on-dark.svg",
+      "usage": "Compact icon on dark backgrounds"
+    },
+    "markOnLight": {
+      "route": "/brand/drx-mark-on-light.svg",
+      "usage": "Favicon/mobile compact icon on light backgrounds"
+    }
+  },
+  "legacyAliases": {
+    "/brand/drx-horizontal-white.svg": "horizontalOnDark",
+    "/brand/drx-horizontal-dark.svg": "horizontalOnLight",
+    "/brand/drx-icon-white.svg": "markOnDark",
+    "/brand/drx-icon-silver.svg": "markOnLight"
+  }
+}
