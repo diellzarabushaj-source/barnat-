@@ -61,18 +61,23 @@ assert.doesNotMatch(icdHtml, /tailadmin-professional\.css|tailadmin-shell\.js/,
   'ICD V2 must stay standalone instead of reintroducing legacy UI layers.');
 
 const appPages = [
-  'analizat.html', 'dozologjia.html',
-  'recetat.html', 'protokollet.html', 'medical-hub.html',
-  'urgjencat.html', 'sistemi.html',
+  ['analizat.html', 'analizat-v2'],
+  ['dozologjia.html', 'dozologjia-v2'],
+  ['recetat.html', 'recetat-v2'],
+  ['protokollet.html', 'protokollet-v2'],
+  ['medical-hub.html', 'medical-hub-v2'],
+  ['urgjencat.html', 'urgjencat-v2'],
+  ['sistemi.html', 'sistemi-v2'],
 ];
-for (const file of appPages) {
+for (const [file, appId] of appPages) {
   const html = read(file);
-  assert.match(html, /tailadmin-professional\.css/, `${file} does not load the professional compatibility bundle`);
+  assert.match(html, new RegExp(`data-drx-app="${appId}"`), `${file} is missing its V2 app marker`);
   assert.match(html, /drx-dashboard-stripe\.css\?v=drx-dashboard-stripe-v4/, `${file} does not load the Stripe v4 authority`);
-  assert.match(html, /class="[^"]*medindex-tailadmin/, `${file} is missing the shared TailAdmin root class`);
-  const professionalIndex = html.indexOf('tailadmin-professional.css');
+  assert.doesNotMatch(html, /tailadmin-professional\.css|tailadmin-shell\.js|medindex-tailadmin/,
+    `${file} must stay on its standalone V2 shell instead of reintroducing TailAdmin legacy layers`);
   const stripeIndex = html.indexOf('drx-dashboard-stripe.css');
-  assert.ok(stripeIndex > professionalIndex, `${file}: Stripe v4 must load after professional compatibility CSS`);
+  const pageCssIndex = html.indexOf(`${appId}.css`);
+  assert.ok(pageCssIndex >= 0 && stripeIndex > pageCssIndex, `${file}: shared Stripe authority must load after the page V2 stylesheet`);
 }
 
 for (const file of ['rreth-nesh.html', 'kontakt.html', 'blog.html']) {
