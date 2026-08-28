@@ -59,7 +59,7 @@
 
   const clean = value => String(value ?? '').replace(/\s+/g, ' ').trim();
 
-  const escapeRegExp = value => String(value ?? '').replace(/[.*+?^$()|[\]\\{}]/g, '\\  const clean = value => String(value ?? '').replace(/\s+/g, ' ').trim();');
+  const escapeRegExp = value => String(value ?? '').replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
   let abbreviationTooltip = null;
   let activeAbbreviationButton = null;
   let abbreviationCloseTimer = 0;
