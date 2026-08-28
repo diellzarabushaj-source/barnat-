@@ -6,10 +6,9 @@
    faqeje me kicker dhe titull të hollë, shirit statistikash me ndarëse, panele
    me vijë floku.
 
-   Ndryshimi i vetëm i qëllimshëm ndaj referencës: theksi. Paneli i
-   administratorit përdor indigo-n e vet; këtu mbetet teal-i klinik i
-   `--ck-blue`, sepse ai është theksi i regjistrit, i Urgjencave dhe i Medical
-   Hub-it, dhe një aplikacion nuk mund të ketë dy.
+   Autoriteti kanonik i shell-it është navy + indigo, njësoj në çdo faqe.
+   Teal-i ruhet vetëm si ngjyrë semantike brenda përmbajtjes klinike; nuk është
+   më accent alternativ i sidebar-it, topbar-it ose kontrollave të shell-it.
 
    Ngarkohet i fundit mbi çdo dashboard. Nuk prek asnjë strukturë: `mi-*`
    mbeten pikërisht ato klasa që runtime-i i shell-it vizaton. */
@@ -17,14 +16,14 @@
 html.medindex-tailadmin {
   --drx-nav:#1c1e54;
   --drx-nav-hover:rgba(255,255,255,.075);
-  --drx-nav-active:rgba(102,183,173,.22);
+  --drx-nav-active:rgba(83,58,253,.20);
   --drx-nav-text:rgba(255,255,255,.67);
   --drx-nav-label:rgba(255,255,255,.42);
   --drx-shell-line:var(--ck-line,#e4e7ec);
   --drx-shell-ink:var(--ck-ink,#101828);
   --drx-shell-muted:var(--ck-muted,#667085);
-  --drx-shell-accent:var(--ck-blue,#1f7779);
-  --drx-shell-accent-deep:var(--ck-blue-strong,#155f63);
+  --drx-shell-accent:#533afd;
+  --drx-shell-accent-deep:#4434d4;
   --drx-shell-soft:var(--ck-soft,#f9fafb);
   --drx-shell-shadow:var(--ck-shadow-1,rgba(16,24,40,.04) 0 1px 3px);
 }
@@ -803,7 +802,7 @@ main#atcContent a:is(:hover,:focus-visible){background:var(--ck-blue-strong,#155
 html.medindex-tailadmin{
   --drx-nav:#1c1e54;
   --drx-nav-hover:rgba(255,255,255,.075);
-  --drx-nav-active:rgba(102,94,253,.26);
+  --drx-nav-active:rgba(83,58,253,.20);
   --drx-nav-text:rgba(255,255,255,.68);
   --drx-nav-label:rgba(255,255,255,.46);
   --drx-shell-accent:#533afd;
