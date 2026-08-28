@@ -237,7 +237,7 @@ async function buildNeonDataset() {
   const startedAt = Date.now();
   const sourceRows = await NeonClinical.getPublishedDrugs();
   const enriched = attachPrescriptionNotation(sourceRows, []);
-  return finishDataset(sourceRows, enriched, startedAt, 'neon', { neonQueryMs:Date.now() - startedAt, prescriptionSheetError:'' });
+  return finishDataset(sourceRows, enriched, startedAt, 'supabase', { neonQueryMs:Date.now() - startedAt, prescriptionSheetError:'' });
 }
 
 async function buildDataset() {
