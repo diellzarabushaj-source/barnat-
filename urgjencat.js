@@ -18,7 +18,7 @@
       },
       abbreviations[]{_key,footnoteNumber,abbreviation,fullTermEn,explanationSq},
       figures[]{
-        _key,figureNumber,sourcePdfPage,caption,sourceCaptionEn,alt,externalUrl,imageDataUrl,
+        _key,visualType,figureNumber,sourcePdfPage,caption,sourceCaptionEn,alt,externalUrl,imageDataUrl,
         image{asset->{url},alt}
       }
     }
@@ -251,13 +251,14 @@
   function figureMarkup(figure) {
     if (!figure) return '';
     const src = figureSrc(figure);
+    const label = figure.visualType === 'table' ? 'Tabela' : 'Figura';
     if (!src) {
-      return `<span class="ec-figure-chip">Figura ${esc(figure.figureNumber)}${figure.sourcePdfPage ? ` · PDF f. ${esc(figure.sourcePdfPage)}` : ''}</span>`;
+      return `<span class="ec-figure-chip">${label} ${esc(figure.figureNumber)}${figure.sourcePdfPage ? ` · PDF f. ${esc(figure.sourcePdfPage)}` : ''}</span>`;
     }
     return `
       <figure class="ec-figure-card">
-        <img src="${esc(src)}" alt="${esc(figure.alt || figure.caption || `Figura ${figure.figureNumber}`)}" loading="lazy">
-        <figcaption><strong>Figura ${esc(figure.figureNumber)}.</strong> ${esc(figure.caption || '')}</figcaption>
+        <img src="${esc(src)}" alt="${esc(figure.alt || figure.caption || `${label} ${figure.figureNumber}`)}" loading="lazy">
+        <figcaption><strong>${label} ${esc(figure.figureNumber)}.</strong> ${esc(figure.caption || '')}</figcaption>
       </figure>
     `;
   }
