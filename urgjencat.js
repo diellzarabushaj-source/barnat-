@@ -13,8 +13,12 @@
       section->{_id,title,sectionNumber},
       subtopics[]{_key,order,title,sourceTitleEn},
       lessonSections[]{
-        _key,order,title,sourceHeadingEn,explanation,clinicalPearl,figureNumbers,
+        _key,order,title,sourceHeadingEn,explanation,clinicalPearl,figureNumbers,tableNumbers,
         rx[]{_key,order,text,note}
+      },
+      translatedTables[]{
+        _key,tableNumber,titleSq,sourceTitleEn,sourcePdfPage,columnsSq,descriptionSq,clinicalHighlight,sourceNote,
+        rows[]{_key,cells}
       },
       abbreviations[]{_key,footnoteNumber,abbreviation,fullTermEn,explanationSq},
       figures[]{
@@ -67,6 +71,16 @@
       ...(lesson.subtopics || []).flatMap(item => [
         item.title,
         item.sourceTitleEn,
+      ]),
+      ...(lesson.translatedTables || []).flatMap(table => [
+        table.tableNumber,
+        table.titleSq,
+        table.sourceTitleEn,
+        table.descriptionSq,
+        table.clinicalHighlight,
+        table.sourceNote,
+        ...(table.columnsSq || []),
+        ...(table.rows || []).flatMap(row => row.cells || []),
       ]),
       ...(lesson.abbreviations || []).flatMap(item => [
         item.abbreviation,
