@@ -9,9 +9,9 @@
   <title>DRx | Dozologjia pediatrike</title>
   <link rel="icon" href="/brand/drx-mark-on-light.svg" type="image/svg+xml">
   <link rel="preload" href="/fonts/inter-latin-variable-normal.woff2" as="font" type="font/woff2" crossorigin>
-  <link rel="stylesheet" href="/dozologjia-v2.css?v=1">
+  <link rel="stylesheet" href="/dozologjia-v2.css?v=3">
   <link rel="stylesheet" href="/drx-dashboard-stripe.css?v=drx-dashboard-stripe-v4">
-  <script src="/dozologjia-v2.js?v=1" defer></script>
+  <script src="/dozologjia-v2.js?v=3" defer></script>
 </head>
 <body>
   <a class="sr-only" href="#dosageContent">Kalo te kalkulatori pediatrik</a>
@@ -89,75 +89,125 @@
         </div>
       </header>
 
-      <div class="page-wrap dosage-v2-page" id="dosageContent">
-        <header class="page-heading dosage-v2-heading">
+      <div class="page-wrap dosage-page" id="dosageContent">
+        <header class="page-heading dosage-heading">
           <div>
-            <p class="eyebrow">Pediatri · server-calculated</p>
-            <h1>Dozologjia</h1>
-            <p class="page-subtitle">Kërko preparatin pediatrik, plotëso vetëm matjet që kërkon skema dhe merr rezultat vetëm kur regjimi është i strukturuar, i lidhur me indikacionin dhe i llogaritshëm në server.</p>
+            <h1>Dozologjia pediatrike</h1>
+            <p class="page-subtitle">Kërko preparatin, kontrollo regjimin e verifikuar dhe llogarit vetëm me parametrat që kërkon skema. Formula, kufijtë dhe indikacioni vijnë nga serveri.</p>
           </div>
-          <div class="dosage-v2-summary">
-            <span class="dosage-v2-shield" aria-hidden="true">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><path d="M12 3 5 6v5c0 4.8 2.8 8 7 10 4.2-2 7-5.2 7-10V6Z"/><path d="m9 12 2 2 4-4"/></svg>
-            </span>
-            <span><strong>Server-side safety</strong><small>Pa regjim të lidhur → pa kalkulim</small></span>
+          <div class="dosage-runtime-chip" aria-label="Statusi i kalkulatorit">
+            <span class="dosage-runtime-dot" aria-hidden="true"></span>
+            <span><strong id="dosageRuntimeLabel">Server-side</strong><small id="dosageRuntimeDetail">Supabase · fail-closed</small></span>
           </div>
         </header>
 
-        <section class="dosage-v2-metrics" aria-label="Gjendja e kalkulatorit">
-          <article><span>Rezultate</span><strong id="dosageCount">0</strong><small>Nga kërkimi aktual</small></article>
-          <article><span>Population</span><strong class="dosage-text-metric">Pediatrik</strong><small>Adult-only nuk shfaqen</small></article>
-          <article><span>Burimi</span><strong class="dosage-text-metric" id="dosageSourceMetric">Supabase</strong><small>Skema të publikuara</small></article>
-          <article><span>Pronari i llogaritjes</span><strong class="dosage-text-metric">Server</strong><small>Browser-i vetëm renderon</small></article>
-        </section>
-
-        <section class="dosage-v2-workspace" aria-labelledby="dosageControlTitle">
-          <article class="dosage-v2-control">
-            <header class="dosage-v2-card-head">
-              <span class="dosage-v2-step">01</span>
-              <div><h2 id="dosageControlTitle">Zgjidh barin pediatrik</h2><p>Kërko me emër tregtar, substancë aktive ose ATC. Rezultatet tregojnë menjëherë readiness-in e kalkulatorit.</p></div>
+        <section class="dosage-console" aria-label="Workspace i dozologjisë pediatrike">
+          <aside class="dosage-catalog" aria-labelledby="dosageCatalogTitle">
+            <header class="dosage-panel-head">
+              <div>
+                <h2 id="dosageCatalogTitle">Katalogu pediatrik</h2>
+                <p>Emër, substancë, ATC, fortësi ose formë.</p>
+              </div>
+              <span class="dosage-count-pill"><strong id="dosageCount">0</strong><small>rezultate</small></span>
             </header>
 
-            <label class="dosage-v2-search" for="dosageSearch">
+            <div class="dosage-search-field">
               <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" aria-hidden="true"><circle cx="11" cy="11" r="6.5"/><path d="m16 16 4 4"/></svg>
-              <input id="dosageSearch" type="search" autocomplete="off" placeholder="Kërko barin, substancën ose ATC…" aria-label="Kërko barin pediatrik">
+              <input id="dosageSearch" type="search" autocomplete="off" spellcheck="false" placeholder="p.sh. amoxicillin, J01CA04, syrup…" aria-label="Kërko barin pediatrik">
               <kbd>⌘ K</kbd>
-            </label>
-
-            <div class="dosage-v2-patient" id="pediatricInputs">
-              <div class="dosage-v2-patient-copy">
-                <span class="dosage-v2-step">02</span>
-                <div><h2>Të dhënat e pacientit</h2><p id="pediatricInputsHint">Fushat hapen vetëm nëse regjimi i zgjedhur ka nevojë për to.</p></div>
-              </div>
-              <div class="dosage-v2-patient-fields">
-                <label data-patient-field="weight">Pesha (kg)<input id="patientWeightKg" type="number" min="0.1" step="0.1" inputmode="decimal" placeholder="18" autocomplete="off"></label>
-                <label data-patient-field="age">Mosha<input id="patientAgeMonths" type="number" min="0" step="1" inputmode="numeric" placeholder="48" autocomplete="off"></label>
-                <label data-patient-field="age-unit">Njësia<select id="patientAgeUnit"><option value="ditë">ditë</option><option value="javë">javë</option><option value="muaj" selected>muaj</option><option value="vjet">vjet</option></select></label>
-                <label data-patient-field="height">Gjatësia (cm)<input id="patientHeightCm" type="number" min="20" step="0.5" inputmode="decimal" placeholder="130" autocomplete="off"></label>
-              </div>
-              <button type="button" id="pediatricCalculate" class="pediatric-calculate-button" hidden>Llogarit dozën</button>
+              <button id="dosageSearchClear" class="dosage-search-clear" type="button" aria-label="Pastro kërkimin" hidden>
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><path d="M7 7l10 10M17 7 7 17"/></svg>
+              </button>
             </div>
-          </article>
 
-          <article class="dosage-v2-results" aria-labelledby="pediatricResultTitle">
-            <header class="dosage-v2-card-head">
-              <span class="dosage-v2-step">03</span>
-              <div><h2 id="pediatricResultTitle">Rezultati</h2><p>Doza numerike shfaqet vetëm kur serveri e konsideron regjimin të llogaritshëm për pacientin.</p></div>
-            </header>
-            <p class="dosage-v2-status" id="dosageStatus" role="status" aria-live="polite">Kërko barin pediatrik për të filluar.</p>
-            <div class="pediatric-calculator-results" id="dosageList" aria-live="polite"></div>
-          </article>
+            <div class="dosage-filter-bar" role="toolbar" aria-label="Filtro sipas gatishmërisë">
+              <button class="is-active" type="button" data-readiness-filter="all" aria-pressed="true">Të gjitha <span id="dosageFacetAll">0</span></button>
+              <button type="button" data-readiness-filter="ready" aria-pressed="false">Llogaritet <span id="dosageFacetReady">0</span></button>
+              <button type="button" data-readiness-filter="text" aria-pressed="false">Vetëm tekst <span id="dosageFacetText">0</span></button>
+              <button type="button" data-readiness-filter="blocked" aria-pressed="false">Bllokuar <span id="dosageFacetBlocked">0</span></button>
+            </div>
+
+            <p class="dosage-status" id="dosageStatus" role="status" aria-live="polite">Shkruaj së paku dy shkronja për të kërkuar.</p>
+            <div class="dosage-result-list" id="dosageList" aria-live="polite"></div>
+          </aside>
+
+          <section class="dosage-workbench" aria-label="Detajet dhe llogaritja">
+            <article class="dosage-product-panel" id="dosageProductPanel">
+              <div class="dosage-empty-state" id="dosageProductEmpty">
+                <span class="dosage-empty-icon" aria-hidden="true">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M5 7.5A3.5 3.5 0 0 1 8.5 4h7a3.5 3.5 0 0 1 0 7h-7A3.5 3.5 0 0 1 5 7.5Z"/><path d="m8 5.5 8 4"/><path d="M7 15h10M7 19h7"/></svg>
+                </span>
+                <div><strong>Zgjidh një bar nga katalogu</strong><p>Do të shfaqen indikacioni, regjimi i lidhur, kufizimet dhe burimi para se të aktivizohet kalkulatori.</p></div>
+              </div>
+              <div id="dosageProductBody" hidden></div>
+            </article>
+
+            <article class="dosage-patient-panel is-disabled" id="pediatricInputs" aria-labelledby="dosagePatientTitle">
+              <header class="dosage-section-head">
+                <div>
+                  <h2 id="dosagePatientTitle">Pacienti</h2>
+                  <p id="pediatricInputsHint">Zgjidh një bar të llogaritshëm për të aktivizuar fushat.</p>
+                </div>
+                <span class="dosage-step-state" id="dosagePatientState">Në pritje</span>
+              </header>
+
+              <div class="dosage-patient-fields">
+                <label data-patient-field="weight" hidden>
+                  <span>Pesha <small>kg</small></span>
+                  <input id="patientWeightKg" type="number" min="0.1" max="300" step="0.1" inputmode="decimal" placeholder="18.0" autocomplete="off">
+                  <small class="dosage-field-error" data-field-error="weight"></small>
+                </label>
+                <label data-patient-field="age" hidden>
+                  <span>Mosha</span>
+                  <input id="patientAgeMonths" type="number" min="0" max="1200" step="1" inputmode="numeric" placeholder="48" autocomplete="off">
+                  <small class="dosage-field-error" data-field-error="age"></small>
+                </label>
+                <label data-patient-field="age-unit" hidden>
+                  <span>Njësia</span>
+                  <select id="patientAgeUnit">
+                    <option value="ditë">ditë</option>
+                    <option value="javë">javë</option>
+                    <option value="muaj" selected>muaj</option>
+                    <option value="vjet">vjet</option>
+                  </select>
+                </label>
+                <label data-patient-field="height" hidden>
+                  <span>Gjatësia <small>cm</small></span>
+                  <input id="patientHeightCm" type="number" min="20" max="250" step="0.5" inputmode="decimal" placeholder="130" autocomplete="off">
+                  <small class="dosage-field-error" data-field-error="height"></small>
+                </label>
+              </div>
+
+              <div class="dosage-patient-action">
+                <p id="dosagePatientActionHint">Të dhënat e pacientit nuk ruhen në këtë faqe.</p>
+                <button type="button" id="pediatricCalculate" class="dosage-primary-button" hidden disabled>
+                  <span>Llogarit dozën</span>
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><path d="m9 6 6 6-6 6"/></svg>
+                </button>
+              </div>
+            </article>
+
+            <article class="dosage-calculation-panel" id="dosageCalculationPanel" aria-labelledby="pediatricResultTitle">
+              <header class="dosage-section-head">
+                <div>
+                  <h2 id="pediatricResultTitle">Rezultati i dozës</h2>
+                  <p>Vlera numerike shfaqet vetëm pasi serveri kalon të gjitha portat klinike.</p>
+                </div>
+                <button type="button" class="dosage-copy-button" id="dosageCopyResult" hidden>Kopjo rezultatin</button>
+              </header>
+              <div class="dosage-calculation-body" id="dosageCalculationBody" aria-live="polite">
+                <div class="dosage-result-empty">
+                  <strong>Ende pa llogaritje</strong>
+                  <span>Rezultati, kufijtë, paralajmërimet dhe burimi do të shfaqen këtu.</span>
+                </div>
+              </div>
+            </article>
+          </section>
         </section>
 
-        <div class="dosage-legacy-filter-hooks" hidden aria-hidden="true">
-          <select id="dosagePopulation"><option value="pediatric" selected>Me dozë për fëmijë</option></select>
-          <select id="dosageForm"><option value="">Të gjitha format</option></select>
-          <select id="dosageAtc"><option value="">Të gjitha ATC-të</option></select>
-        </div>
-
-        <aside class="dosage-v2-safety">
-          <span aria-hidden="true">!</span>
-          <div><strong>Kontroll klinik i detyrueshëm.</strong><p>Rezultati nuk zëvendëson SmPC-në, burimin zyrtar ose vlerësimin klinik. Kur mungon regjimi typed, kalkulatori ndalet në vend që të hamendësojë.</p></div>
+        <aside class="dosage-safety-note" role="note">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" aria-hidden="true"><path d="M12 3 5 6v5c0 4.8 2.8 8 7 10 4.2-2 7-5.2 7-10V6Z"/><path d="M12 8v5M12 16.5h.01"/></svg>
+          <div><strong>Kontroll klinik i detyrueshëm.</strong><p>DRx nuk inferon dozë nga fortësia e produktit. Kur mungon një formulë typed, kufi maksimal, regjim i lidhur ose verifikim klinik, llogaritja ndalet dhe shfaqet vetëm informacioni burimor.</p></div>
         </aside>
       </div>
     </main>
