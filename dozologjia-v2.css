@@ -200,6 +200,13 @@ a{color:inherit}
 }
 .dosage-filter-bar button.is-active span{background:#e8e5ff;color:#533afd}
 .dosage-filter-bar button:focus-visible{outline:0;box-shadow:0 0 0 3px rgba(83,58,253,.11)}
+.dosage-form-filter{margin-left:auto;flex:none}
+.dosage-form-filter select{
+  height:30px;max-width:150px;padding:0 26px 0 8px;border:1px solid #e4e7ec;border-radius:6px;
+  background:#fff;color:#667085;outline:0;font-size:9px;font-weight:500;cursor:pointer;
+}
+.dosage-form-filter select:hover{border-color:#d6d2ff;color:#4434d4}
+.dosage-form-filter select:focus{border-color:#635bff;box-shadow:0 0 0 3px rgba(83,58,253,.10)}
 
 .dosage-status{
   min-height:29px;margin:0;padding:7px 11px;border-top:1px solid #f1f3f5;border-bottom:1px solid #f1f3f5;
@@ -462,6 +469,8 @@ input{caret-color:#533afd}
   .dosage-search-field input{height:46px;font-size:16px}
   .dosage-search-field kbd{display:none}
   .dosage-filter-bar button{min-height:36px}
+  .dosage-form-filter{margin-left:0}
+  .dosage-form-filter select{height:36px;max-width:165px;font-size:10px}
   .pediatric-result-button{min-height:56px;padding:11px}
   .pediatric-product-header{grid-template-columns:1fr}
   .pediatric-back-button{justify-self:start;min-height:40px}
