@@ -17,8 +17,8 @@ const headerSource = read('app-parts/part-02.txt');
 const rowSource = read('app-parts/part-03.txt') + read('app-parts/part-04.txt');
 
 assert.match(html, /rel="preload" href="first-page-clinical\.css\?v=20260731-1" as="style"/);
-assert.match(html, /first-page-style-loader\.js\?v=20260820-3/);
-assert.match(html, /registry-table-tools\.css\?v=20260820-3/);
+assert.match(html, /first-page-style-loader\.js\?v=20260828-canonical-v3/);
+assert.match(html, /registry-table-tools\.css\?v=20260828-admin-stripe-v3/);
 assert.match(html, /first-page-clinical\.js\?v=20260731-1/);
 const staticStylesheets = [...html.matchAll(/<link[^>]+rel="stylesheet"[^>]+href="([^"]+)"/g)].map(match => match[1]);
 const professionalCssIndex = staticStylesheets.findIndex(href => /tailadmin-professional\.css/.test(href));
@@ -32,15 +32,17 @@ assert.ok(
   html.indexOf('form-picker-clinical.js') < html.indexOf('first-page-clinical.js'),
   'The first-page runtime must enhance the completed pharmaceutical form picker.'
 );
-assert.match(loader, /VERSION = 'first-page-style-loader-20260820-3'/, 'First-page style owner must expose its cache-safe release.');
+assert.match(loader, /VERSION = 'first-page-style-loader-20260828-canonical-v3'/, 'First-page style owner must expose its cache-safe release.');
 assert.match(loader, /PHONE_QUERY = '\(max-width:767px\)'/, 'First-page stylesheet loader must have an explicit phone cascade contract.');
 assert.match(loader, /data-registry-mobile-critical-css/, 'Phone first-page CSS must anchor before the mobile registry cascade.');
 assert.match(loader, /anchor\.before\(link\)/, 'Phone first-page CSS must be inserted before mobile-lite layers, not appended after them.');
 assert.match(loader, /document\.head\.appendChild\(link\)/, 'Desktop first-page CSS must retain its last-layer behavior.');
 assert.match(loader, /phone\?\.addEventListener\?\.\('change', ensure\)/, 'Stylesheet ordering must follow responsive viewport transitions.');
 assert.match(loader, /first-page-clinical\.css\?v=20260731-1/);
-assert.match(loader, /registry-frozen-columns\.css\?v=20260820-2/, 'The final frozen-column cascade must be loaded by the first-page style owner.');
+assert.match(loader, /registry-frozen-columns\.css\?v=20260828-admin-stripe-v3/, 'The final frozen-column cascade must be loaded by the first-page style owner.');
 assert.ok(loader.indexOf('place(clinical)') < loader.indexOf('place(frozen)'), 'Frozen-column CSS must follow first-page clinical CSS in the cascade.');
+assert.match(loader, /placeCanonicalRegistryStylesLast/, 'The canonical registry stylesheet must be re-anchored after late first-page styles.');
+assert.match(loader, /registry-table-tools\.css/, 'The late cascade owner must target the Admin Stripe registry stylesheet.');
 assert.match(loader, /dataset\.firstPageStyleLoader = VERSION/, 'The active first-page style release must be observable in browser audits.');
 assert.match(loader, /medindex:tailadmin-ready/);
 assert.match(offlineManifest, /DYNAMIC_SHELL_ASSETS[\s\S]*'\/registry-frozen-columns\.css'/, 'Dynamically loaded frozen-column CSS must be seeded into the offline shell manifest.');
@@ -66,35 +68,42 @@ for (const marker of [
 
 for (const marker of [
   'MedIndex registry frozen-column cascade',
+  '[data-registry-column-key="select"]',
+  '[data-column-key="__select"]',
+  '[data-registry-column-key="trade-name"]',
+  '[data-column-key="Emri tregtar"]',
   '[data-registry-column-key="number"]',
   '[data-column-key="Nr rendor"]',
   '[data-registry-column-key="prescription-label"]',
   '[data-column-key="Si të shënohet në recetë"]',
   '[data-registry-column-key="active-substance"]',
   '[data-column-key="Substanca aktive"]',
-  '[data-registry-column-key="select"]',
-  '[data-registry-column-key="trade-name"]',
-  'left:var(--registry-frozen-prescription-left,68px)!important',
+  'left:44px!important',
 ]) {
   assert.ok(frozenCss.includes(marker), `final frozen-column CSS is missing ${marker}`);
 }
-assert.match(
-  frozenCss,
-  /\[data-registry-column-key="select"\][\s\S]*\[data-registry-column-key="trade-name"\][\s\S]*\[data-registry-column-key="active-substance"\][\s\S]*position:relative!important;[\s\S]*left:auto!important;/,
-  'Selection, trade-name and active-substance columns must be explicitly released from legacy pinning.',
-);
-assert.match(
-  frozenCss,
-  /\[data-registry-column-key="number"\][\s\S]*position:sticky!important;[\s\S]*left:0!important;/,
-  'Nr must be the first frozen data column.',
-);
-assert.match(
-  frozenCss,
-  /\[data-registry-column-key="prescription-label"\][\s\S]*position:sticky!important;[\s\S]*left:var\(--registry-frozen-prescription-left,68px\)!important/,
-  'Prescription notation must be the second frozen data column.',
-);
-assert.doesNotMatch(frozenCss, /data-registry-column-key="active-substance"[^}]*position:sticky/i, 'Substanca aktive must scroll normally in the final cascade.');
 
+assert.match(
+  frozenCss,
+  /@media \(min-width:1200px\)[\s\S]*\[data-registry-column-key="select"\][\s\S]*position:sticky!important;[\s\S]*left:0!important;/,
+  'Prescription selection must be the first frozen identity column on desktop.',
+);
+assert.match(
+  frozenCss,
+  /@media \(min-width:1200px\)[\s\S]*\[data-registry-column-key="trade-name"\][\s\S]*position:sticky!important;[\s\S]*left:44px!important;/,
+  'Emri tregtar must be frozen immediately after selection on desktop.',
+);
+
+const desktopFrozenSection = frozenCss.slice(frozenCss.indexOf('@media (min-width:1200px)'));
+const legacyReleaseEnd = desktopFrozenSection.indexOf('html.medindex-tailadmin[data-mi-page="barnat"] body #registryContent #dataTable :is(th,td):is(\n    [data-registry-column-key="select"]');
+const releasedLegacyColumns = legacyReleaseEnd > 0 ? desktopFrozenSection.slice(0, legacyReleaseEnd) : '';
+for (const key of ['number', 'prescription-label', 'active-substance']) {
+  assert.ok(
+    releasedLegacyColumns.includes(`[data-registry-column-key="${key}"]`),
+    `Legacy frozen column ${key} must be explicitly released before identity pinning.`,
+  );
+}
+assert.match(releasedLegacyColumns, /position:static!important;/, 'Retired frozen columns must be reset to static geometry.');
 /* The final accessibility layer owns interactive target size and the compact
    mobile panel radius. Guard the source values so later cascade patches cannot
    silently re-introduce the 30px preview target or the off-scale 15px radius. */
@@ -128,7 +137,7 @@ for (const marker of [
 }
 
 assert.match(tableToolsCss, /registry-legacy-toolbar-hidden-v2/, 'Retired toolbar controls need an explicit final visibility contract.');
-for (const control of ['#statusFilter', '#pageSize', '.selection-badge', '#protocolsBtn']) {
+for (const control of ['#statusFilter', '#pageSize', '.selection-badge', '#protocolsBtn', '.clinical-editor-progress']) {
   assert.ok(tableToolsCss.includes(control), `Retired toolbar control must stay hidden: ${control}`);
 }
 
@@ -137,8 +146,6 @@ assert.doesNotMatch(js, /\/api\//, 'The visual audit layer must remain frontend-
 assert.doesNotMatch(js, /innerHTML\s*=\s*[^;]*(?:RAW|DRUG_DATA_PARTS)/, 'The visual layer must not render a substitute dataset.');
 assert.doesNotMatch(loader, /fetch\s*\(/, 'The stylesheet loader must not perform network data requests.');
 assert.doesNotMatch(css, /nth-child\(2\)\{position:sticky/, 'Trade-name pinning must not depend on a dynamic column index.');
-assert.doesNotMatch(frozenCss, /data-registry-column-key="trade-name"[^}]*position:sticky/i, 'Emri tregtar must never become a frozen column in the final cascade.');
-assert.doesNotMatch(frozenCss, /data-registry-column-key="select"[^}]*position:sticky/i, 'Prescription selection must scroll normally in the final cascade.');
 assert.doesNotMatch(css, /(?:linear|radial)-gradient|backdrop-filter:\s*blur/, 'The compact registry workspace must not use gradients or glass effects.');
 assert.match(css, /\.registry-toolbar\{[\s\S]*position:sticky!important;[\s\S]*grid-template-columns:minmax\(300px,1fr\) auto!important;/, 'The working toolbar must stay compact and sticky on desktop.');
 assert.match(css, /#dataTable thead th\{[\s\S]*background:#f9fafb!important;[\s\S]*text-transform:none!important;/, 'The table header must use a neutral sentence-case treatment.');
@@ -151,4 +158,4 @@ assert.match(headerSource, /th\.dataset\.columnKey = col\.key/, 'Headers need st
 assert.match(rowSource, /data-column-key="' \+ columnKey \+ '"/, 'Cells need stable column keys.');
 assert.match(rowSource, /registry-selection-control/, 'Row selection needs a 44px hit target.');
 
-console.log('First-page UI: retired toolbar controls hidden, final Nr + prescription-notation freeze, touch targets and mobile radius audit passed.');
+console.log('First-page UI: Admin Stripe v3 cascade, selection + trade-name freeze, hidden legacy audit control, touch targets and mobile radius audit passed.');
