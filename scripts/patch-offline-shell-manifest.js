@@ -71,7 +71,6 @@ const CRITICAL_SHELL_ASSETS = Object.freeze([
 /* Dynamic-only roots that are not guaranteed to appear directly in HTML.
    Their transitive local dependencies are discovered recursively below. */
 const DYNAMIC_SHELL_ASSETS = Object.freeze([
-  '/registry-frozen-columns.css',
   '/clinical-workflow.js',
   '/local-registry.js',
   '/app-runtime.js',
@@ -93,7 +92,6 @@ const REQUIRED_OFFLINE = Object.freeze([
   '/local-registry.js',
   '/app-runtime.js',
   '/registry-table-tools.css',
-  '/registry-frozen-columns.css',
   '/registry-list-owner-guard.js',
   '/registry-list-data-bridge.js',
   '/registry-list-view.js',
