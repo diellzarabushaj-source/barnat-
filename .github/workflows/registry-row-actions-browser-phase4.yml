@@ -36,7 +36,18 @@ jobs:
       - name: Install dependencies
         run: pnpm install --frozen-lockfile --ignore-scripts
 
+      - name: Detect Registry V2
+        id: registry
+        shell: bash
+        run: |
+          if grep -q 'data-drx-app="registry-v2"' index.html; then
+            echo "v2=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "v2=false" >> "$GITHUB_OUTPUT"
+          fi
+
       - name: Prepare and syntax-check Phase 4 gate
+        if: steps.registry.outputs.v2 != 'true'
         run: |
           node --check scripts/prepare-registry-row-actions-browser-phase4.js
           node scripts/prepare-registry-row-actions-browser-phase4.js
@@ -53,7 +64,15 @@ jobs:
       - name: Build composed registry runtime
         run: pnpm run build:runtime
 
+      - name: Verify Registry V2 pagination ownership
+        if: steps.registry.outputs.v2 == 'true'
+        run: |
+          node scripts/audit-registry-v2.js
+          node tests/registry-v2-contract-test.js
+          node tests/registry-page-api-test.js
+
       - name: Verify full-runtime pagination ownership
+        if: steps.registry.outputs.v2 != 'true'
         run: |
           node tests/full-runtime-pagination-owner-test.js
           grep -q "full-runtime-pagination-busy-reset-v1" app-runtime-performance.js
@@ -66,7 +85,22 @@ jobs:
           pnpm exec playwright install --with-deps chromium > /tmp/row-actions-phase4-playwright-install.log 2>&1 \
             || { tail -200 /tmp/row-actions-phase4-playwright-install.log; exit 1; }
 
+      - name: Run Registry V2 browser acceptance
+        if: steps.registry.outputs.v2 == 'true'
+        shell: bash
+        run: |
+          set -euo pipefail
+          node tests/clinical-smoke-server.js > /tmp/registry-row-actions-phase4.log 2>&1 &
+          SERVER_PID=$!
+          trap 'kill "$SERVER_PID" 2>/dev/null || true' EXIT
+          for attempt in {1..30}; do
+            curl -fsS http://127.0.0.1:4173/index.html >/dev/null && break
+            sleep 1
+          done
+          pnpm exec playwright test tests/tailwind-site-browser.spec.js --grep "all authenticated clinical pages share" --reporter=line --workers=1 --retries=1
+
       - name: Run Phase 4 browser acceptance
+        if: steps.registry.outputs.v2 != 'true'
         shell: bash
         run: |
           set -euo pipefail
