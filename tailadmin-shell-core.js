@@ -180,11 +180,14 @@
         </div>
         <div class="mi-sidebar-scroll" data-mi-nav-slot></div>
         <div class="mi-sidebar-footer">
-          <div class="mi-user-card">
-            <span class="mi-user-avatar">DL</span>
-            <span class="mi-user-copy"><strong>Diellza Rabushaj</strong><small>Administratore</small></span>
-            <span class="mi-user-arrow">${ICONS.chevron}</span>
+          <div class="mi-sidebar-source-card">
+            <span class="mi-sidebar-source-dot" aria-hidden="true"></span>
+            <span class="mi-sidebar-source-copy"><strong>DRx clinical workspace</strong><small>Të dhëna · aktiv</small></span>
           </div>
+          <button class="mi-sidebar-logout" type="button" data-mi-logout>
+            <span class="mi-sidebar-logout-icon" aria-hidden="true">↗</span>
+            <span>Dil</span>
+          </button>
         </div>
       </aside>
       <section class="mi-workspace">
@@ -342,6 +345,21 @@
     app.querySelectorAll('[data-mi-theme-toggle]').forEach(button => button.addEventListener('click', () => {
       applyTheme(document.documentElement.dataset.theme === 'dark' ? 'light' : 'dark');
     }));
+
+    app.querySelector('[data-mi-logout]')?.addEventListener('click', async event => {
+      const button = event.currentTarget;
+      button.disabled = true;
+      try {
+        await fetch('/api/auth', {
+          method:'DELETE',
+          credentials:'same-origin',
+          headers:{ Accept:'application/json' },
+        });
+        location.replace('/landing.html');
+      } catch {
+        button.disabled = false;
+      }
+    });
 
     const globalSearch = app.querySelector('#miGlobalSearch');
     globalSearch?.addEventListener('keydown', event => {
