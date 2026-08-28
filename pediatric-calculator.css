@@ -40,7 +40,7 @@ html.medindex-tailadmin[data-mi-page="dozologjia"] .pediatric-result-button{
 
 html.medindex-tailadmin[data-mi-page="dozologjia"] .pediatric-result-button:hover,
 html.medindex-tailadmin[data-mi-page="dozologjia"] .pediatric-result-button:focus-visible{
-  border-color:var(--mi-accent, #0d3d40);
+  border-color:var(--mi-accent, #533afd);
 }
 
 html.medindex-tailadmin[data-mi-page="dozologjia"] .pediatric-result-name{
@@ -95,7 +95,7 @@ html.medindex-tailadmin[data-mi-page="dozologjia"] .pediatric-calculate-button{
   padding:0 20px;
   border:0;
   border-radius:var(--pk-radius);
-  background:var(--mi-accent, #0d3d40);
+  background:var(--mi-accent, #533afd);
   color:#fff;
   font-weight:600;
   cursor:pointer;
