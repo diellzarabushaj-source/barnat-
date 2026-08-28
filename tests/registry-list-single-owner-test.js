@@ -9,7 +9,11 @@ const ROOT = path.resolve(__dirname, '..');
 const read = file => fs.readFileSync(path.join(ROOT, file), 'utf8');
 
 const html = read('index.html');
-const css = read('registry-list-owner-guard.css');
+const finalCss = read('registry-table-tools.css');
+const guardStart = finalCss.indexOf('/* ===== consolidated from registry-list-owner-guard.css ===== */');
+const guardEnd = finalCss.indexOf('/* ===== canonical final layer: registry-table-tools.css ===== */', guardStart);
+assert.ok(guardStart >= 0 && guardEnd > guardStart, 'the consolidated List owner guard section must exist in final CSS');
+const css = finalCss.slice(guardStart, guardEnd);
 const owner = read('registry-list-owner-guard.js');
 const bridge = read('registry-list-data-bridge.js');
 const listView = read('registry-list-view.js');
@@ -19,14 +23,14 @@ const api = read('api/drug-search.js');
 // --- Final built asset contract ---------------------------------------------
 
 {
-  const cssAt = html.indexOf('registry-list-owner-guard.css');
+  const cssAt = html.indexOf('registry-table-tools.css');
   const bridgeAt = html.indexOf('registry-list-data-bridge.js');
   const listAt = html.indexOf('registry-list-view.js');
   const ownerAt = html.indexOf('registry-list-owner-guard.js');
   const headClose = html.indexOf('</head>');
 
   assert.ok(cssAt >= 0 && cssAt < headClose,
-    'the fail-safe stylesheet must be present in <head> before deferred runtimes can paint');
+    'the single registry stylesheet must be present in <head> before deferred runtimes can paint');
   assert.ok(bridgeAt >= 0 && bridgeAt < listAt,
     'the data-only bridge must be available before List can ask for the full browse dataset');
   assert.ok(ownerAt > listAt,
@@ -34,8 +38,7 @@ const api = read('api/drug-search.js');
 
   const release = 'registry-list-stable-v1';
   for (const asset of [
-    'registry-list-view.css',
-    'registry-list-owner-guard.css',
+    'registry-table-tools.css',
     'registry-list-data-bridge.js',
     'registry-list-view.js',
     'registry-list-owner-guard.js',
