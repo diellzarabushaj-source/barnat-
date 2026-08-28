@@ -138,7 +138,11 @@
       else upstream.addEventListener('abort', abortFromUpstream, { once:true });
     }
 
-    const timer = window.setTimeout(() => controller.abort(), options.timeoutMs || REQUEST_TIMEOUT_MS);
+    let timedOut = false;
+    const timer = window.setTimeout(() => {
+      timedOut = true;
+      controller.abort();
+    }, options.timeoutMs || REQUEST_TIMEOUT_MS);
     try {
       const { signal:_ignoredSignal, timeoutMs:_ignoredTimeout, ...fetchOptions } = options;
       const response = await fetch(url, {
@@ -162,7 +166,9 @@
       }
       return payload;
     } catch (error) {
-      if (error?.name === 'AbortError') throw error;
+      if (error?.name === 'AbortError' && timedOut && !upstream?.aborted) {
+        throw new Error('Kërkesa zgjati shumë. Kontrollo lidhjen dhe provo përsëri.');
+      }
       throw error;
     } finally {
       window.clearTimeout(timer);
@@ -538,7 +544,11 @@
 
   function disablePatientPanel(message) {
     elements.patientPanel.classList.add('is-disabled');
-    elements.patientPanel.querySelectorAll('[data-patient-field]').forEach(label => { label.hidden = true; });
+    elements.patientPanel.querySelectorAll('[data-patient-field]').forEach(label => {
+      label.hidden = true;
+      const input = label.querySelector('input, select');
+      if (input) input.disabled = true;
+    });
     clearFieldErrors();
     elements.calculate.hidden = true;
     elements.calculate.disabled = true;
@@ -614,13 +624,14 @@
   }
 
   function patientPayload() {
+    const requires = state.product?.requires || {};
     const weight = Number(elements.weight?.value);
     const height = Number(elements.height?.value);
     const age = Number(elements.age?.value);
     const payload = { drugId:state.product?.drugId };
-    if (Number.isFinite(weight) && weight > 0) payload.weightKg = weight;
-    if (Number.isFinite(height) && height > 0) payload.heightCm = height;
-    if (Number.isFinite(age) && age >= 0) {
+    if (requires.weight && Number.isFinite(weight) && weight > 0) payload.weightKg = weight;
+    if (requires.height && Number.isFinite(height) && height > 0) payload.heightCm = height;
+    if (requires.age && Number.isFinite(age) && age >= 0) {
       payload.age = { value:age, unit:elements.ageUnit?.value || 'muaj' };
     }
     const selectionId = state.product?.calculationRegimen?.selectionId;
