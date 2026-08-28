@@ -804,7 +804,7 @@
       if (dirty && Date.now() >= retryUntil) scheduleSync(EVENT_SYNC_DELAY_MS);
     }
   });
-  ['medindex:favorites-changed', 'medindex:notes-changed', 'medindex:personal-note-saved', 'medindex:personal-drugs-changed']
+  ['medindex:favorites-changed', 'medindex:notes-changed', 'medindex:personal-note-saved', 'medindex:personal-drugs-changed', 'medindex:prescriptions-changed']
     .forEach(name => window.addEventListener(name, onPersonalLibraryMutation));
 
   window.addEventListener('storage', event => {
