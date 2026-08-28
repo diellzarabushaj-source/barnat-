@@ -906,7 +906,7 @@ html.medindex-tailadmin[data-mi-page="barnat"] body #pagination.pagination :is(b
   html.medindex-tailadmin[data-mi-page="barnat"] body #dataTable[data-registry-unified-table] tbody tr:nth-child(even){
     background:#fff!important;
   }
-  html.medindex-tailadmin[data-mi-page="barnat"] body #dataTable[data-registry-unified-table] tbody td.select-col{
+  html.medindex-tailadmin[data-mi-page="barnat"] body #registryContent #dataTable[data-registry-unified-table] tbody td.select-col[data-registry-column-key="select"]{
     border-radius:8px!important;
   }
   html.medindex-tailadmin[data-mi-page="barnat"] body #dataTable[data-registry-unified-table] tbody td{
