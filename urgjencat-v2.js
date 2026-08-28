@@ -208,6 +208,79 @@
     return state.lessons.find(lesson => lesson._id === state.selectedLessonId) || null;
   }
 
+  function filteredLessonsForSection(sectionId) {
+    const lessons = sectionLessons(sectionId);
+    const term = normalize(state.term);
+    return term ? lessons.filter(lesson => haystackForLesson(lesson).includes(term)) : lessons;
+  }
+
+  function visibleLessonSequence() {
+    return state.visibleSections.flatMap(section => filteredLessonsForSection(section._id));
+  }
+
+  function renderReaderNavigation() {
+    const sequence = visibleLessonSequence();
+    const index = sequence.findIndex(lesson => lesson._id === state.selectedLessonId);
+    const searchField = $('#emergencySearchField');
+    const result = $('#emergencyResultStatus');
+    const position = $('#emergencyLessonPosition');
+    const previous = $('#previousLessonButton');
+    const next = $('#nextLessonButton');
+    const term = String(state.term || '').trim();
+
+    searchField?.classList.toggle('has-value', Boolean(term));
+
+    if (result) {
+      result.textContent = term
+        ? `${sequence.length} mësime në ${state.visibleSections.length} kapituj për “${term}”`
+        : `${state.sections.length} kapituj · ${state.lessons.length} mësime`;
+    }
+
+    if (position) {
+      position.textContent = index >= 0 ? `${index + 1} / ${sequence.length}` : `0 / ${sequence.length}`;
+    }
+
+    if (previous) previous.disabled = index <= 0;
+    if (next) next.disabled = index < 0 || index >= sequence.length - 1;
+  }
+
+  function scrollReaderToTop() {
+    const root = $('#emergencyDetail');
+    if (!root) return;
+    root.scrollIntoView({
+      block:'start',
+      behavior: window.matchMedia?.('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth',
+    });
+  }
+
+  function selectAdjacentLesson(delta) {
+    const sequence = visibleLessonSequence();
+    const index = sequence.findIndex(lesson => lesson._id === state.selectedLessonId);
+    const lesson = sequence[index + delta];
+    if (!lesson) return;
+
+    state.selectedLessonId = lesson._id;
+    if (lesson.section?._id) state.selectedSectionId = lesson.section._id;
+    renderChapters();
+    renderLessons();
+    renderDetail();
+    renderReaderNavigation();
+    syncUrl();
+    requestAnimationFrame(scrollReaderToTop);
+  }
+
+  function clearSearch({ focus = true } = {}) {
+    state.term = '';
+    const input = $('#emergencySearch');
+    if (input) input.value = '';
+    renderChapters();
+    renderLessons();
+    renderDetail();
+    renderReaderNavigation();
+    syncUrl();
+    if (focus) input?.focus();
+  }
+
   function reviewMeta(status) {
     const value = String(status || '').trim().toLowerCase();
     if (value === 'verified') {
@@ -317,9 +390,7 @@
       return;
     }
 
-    let lessons = sectionLessons(section._id);
-    const term = normalize(state.term);
-    if (term) lessons = lessons.filter(lesson => haystackForLesson(lesson).includes(term));
+    const lessons = filteredLessonsForSection(section._id);
 
     if (!lessons.some(lesson => lesson._id === state.selectedLessonId)) {
       state.selectedLessonId = lessons[0]?._id || '';
