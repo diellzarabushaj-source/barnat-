@@ -5,7 +5,7 @@ const path = require('node:path');
 
 const ROOT = path.resolve(__dirname, '..');
 const JS_FILE = path.join(ROOT, 'registry-unified-table.js');
-const CSS_FILE = path.join(ROOT, 'registry-unified-table.css');
+const CSS_FILE = path.join(ROOT, 'registry-table-tools.css');
 const HTML_FILE = path.join(ROOT, 'index.html');
 const RELEASE = 'registry-canonical-main-table-v1';
 
@@ -143,7 +143,6 @@ fs.writeFileSync(CSS_FILE, css, 'utf8');
 
 let html = read(HTML_FILE);
 html = html.replace(/data-registry-ux-view="(?:clinical|full)"/, 'data-registry-ux-view="full"');
-html = html.replace(/registry-unified-table\.css\?v=[^"&]+/g, `registry-unified-table.css?v=${RELEASE}`);
 html = html.replace(/registry-unified-table\.js\?v=[^"&]+/g, `registry-unified-table.js?v=${RELEASE}`);
 fs.writeFileSync(HTML_FILE, html, 'utf8');
 
