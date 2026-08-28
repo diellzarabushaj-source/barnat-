@@ -258,6 +258,35 @@
     return (lesson.figures || []).find(item => String(item.figureNumber) === String(number));
   }
 
+  function tableByNumber(lesson, number) {
+    return (lesson.translatedTables || []).find(item => String(item.tableNumber) === String(number));
+  }
+
+  function tableMarkup(table) {
+    if (!table) return '';
+    const columns = table.columnsSq || [];
+    const rows = table.rows || [];
+    const head = columns.length
+      ? '<thead><tr>' + columns.map(col => '<th>' + esc(col) + '</th>').join('') + '</tr></thead>'
+      : '';
+    const body = '<tbody>' + rows.map(row =>
+      '<tr>' + (row.cells || []).map(cell => '<td>' + esc(cell) + '</td>').join('') + '</tr>'
+    ).join('') + '</tbody>';
+    return '<section class="ec-table-card" aria-label="' + esc(table.titleSq || ('Tabela ' + table.tableNumber)) + '">' +
+      '<div class="ec-table-head"><div>' +
+        '<span class="ec-table-kicker">Tabela ' + esc(table.tableNumber) + '</span>' +
+        '<h4>' + esc(table.titleSq || '') + '</h4>' +
+        (table.sourceTitleEn ? '<small>' + esc(table.sourceTitleEn) + '</small>' : '') +
+      '</div>' +
+      (table.sourcePdfPage ? '<span class="ec-table-page">PDF f. ' + esc(table.sourcePdfPage) + '</span>' : '') +
+      '</div>' +
+      (table.descriptionSq ? '<p class="ec-table-description">' + esc(table.descriptionSq) + '</p>' : '') +
+      '<div class="ec-table-scroll"><table class="ec-clinical-table">' + head + body + '</table></div>' +
+      (table.clinicalHighlight ? '<div class="ec-table-highlight"><strong>Highlight:</strong> ' + esc(String(table.clinicalHighlight).replace(/^HIGHLIGHT\\s*[—:-]?\\s*/i, '')) + '</div>' : '') +
+      (table.sourceNote ? '<p class="ec-table-note">' + esc(table.sourceNote) + '</p>' : '') +
+    '</section>';
+  }
+
   function figureSrc(figure) {
     return figure?.image?.asset?.url || figure?.externalUrl || figure?.imageDataUrl || '';
   }
