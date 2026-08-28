@@ -220,6 +220,9 @@ body{overflow-x:hidden}
 .ec-detail-placeholder>div{display:grid;justify-items:center;gap:6px;max-width:380px}
 .ec-detail-placeholder strong{color:var(--ink);font-size:15px;font-weight:500}
 .ec-detail-placeholder span{font-size:11.5px}
+.ec-retry{min-height:36px;margin-top:8px;padding:7px 13px;border:1px solid #cfd7e2;border-radius:999px;background:#fff;color:#42566b;font:500 11px/1 Inter;cursor:pointer}
+.ec-retry:hover{border-color:#b9c4d1;background:#f8fafc;color:#0d253d}
+.ec-retry:focus-visible{outline:3px solid rgba(83,58,253,.14);outline-offset:2px}
 
 .ec-detail-inner{max-width:980px;margin:0 auto;padding:36px 44px 58px}
 .ec-breadcrumb{display:flex;align-items:center;gap:6px;margin:0 0 12px;color:#8795a7;font-size:10px}
