@@ -131,7 +131,7 @@
       return `<button class="group-row ${active ? 'is-active' : ''}" type="button" role="option" aria-selected="${active ? 'true' : 'false'}" data-group-code="${code}" style="--group-accent:${colorFor(code)}">
         <span class="group-code">${code}</span>
         <span class="group-copy"><strong>${escapeHtml(name)}</strong><small>${children} kategori terapeutike</small></span>
-        <span class="group-total" title="Barna në grup">${count ? formatNumber(count) : '—'}</span>
+        <span class="group-total" title="Barna në grup">${state.counts ? formatNumber(count) : '—'}</span>
       </button>`;
     }).join('');
   }
@@ -149,7 +149,7 @@
         <p>${categoryEntries(state.group).length} kategori terapeutike në këtë grup.</p>
       </div>
       <div class="hero-actions">
-        <span class="hero-count">${count ? formatNumber(count) : '—'} barna</span>
+        <span class="hero-count">${state.counts ? formatNumber(count) : '—'} barna</span>
         <a class="button button-secondary" href="${registryUrl(state.group)}">Hap barnat</a>
       </div>`;
   }
@@ -187,7 +187,7 @@
           <small>${subCount ? `${subCount} nënndarje të kataloguara` : 'Pa nënndarje shtesë'}</small>
         </button>
         <div class="category-actions">
-          <span class="category-count" title="Barna në kategori">${count ? formatNumber(count) : '—'}</span>
+          <span class="category-count" title="Barna në kategori">${state.counts ? formatNumber(count) : '—'}</span>
           <button class="category-chevron" type="button" data-category-code="${code}" aria-label="${active ? 'Mbyll' : 'Hap'} ${escapeHtml(code)}">${active ? '⌃' : '›'}</button>
         </div>
         ${active ? selectedSubdivisionMarkup(code) : ''}
@@ -310,7 +310,8 @@
       el.metricUnclassified.textContent = formatNumber(unclassified);
       el.metricCoverage.textContent = `${coverage}% e regjistrit`;
       const source = response.headers.get('X-MedIndex-Data-Source') || payload.source || 'Supabase';
-      el.sourceStatus.textContent = `${source} · aktiv`;
+      const sourceLabel = /supabase/i.test(source) ? 'Supabase' : clean(source);
+      el.sourceStatus.textContent = `${sourceLabel} · aktiv`;
       el.syncText.textContent = 'Supabase';
       renderClassification();
     } catch (error) {
