@@ -100,10 +100,28 @@
             <label>Statusi
               <select id="statusFilter"><option value="">Të gjitha statuset</option><option value="Gjenerik">Gjenerik</option><option value="Origjinator">Origjinator</option></select>
             </label>
-            <label>Forma farmaceutike
-              <input id="formFilter" list="formSuggestions" placeholder="p.sh. Tabletë">
-              <datalist id="formSuggestions"></datalist>
-            </label>
+            <div class="filter-field form-filter-field">
+              <span class="filter-field-label">Forma farmaceutike</span>
+              <div class="form-picker" id="formPicker">
+                <button class="form-picker-trigger" id="formPickerButton" type="button" aria-haspopup="listbox" aria-expanded="false" aria-controls="formPickerPanel">
+                  <span class="form-picker-trigger-icon" aria-hidden="true">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="4" width="6" height="6" rx="1.5"/><rect x="14" y="4" width="6" height="6" rx="1.5"/><rect x="4" y="14" width="6" height="6" rx="1.5"/><rect x="14" y="14" width="6" height="6" rx="1.5"/></svg>
+                  </span>
+                  <span class="form-picker-trigger-copy">
+                    <strong id="formPickerValue">Të gjitha format</strong>
+                    <small id="formPickerHint">10 kategori farmaceutike</small>
+                  </span>
+                  <span class="form-picker-chevron" aria-hidden="true">⌄</span>
+                </button>
+                <div class="form-picker-panel" id="formPickerPanel" hidden>
+                  <div class="form-picker-search">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" aria-hidden="true"><circle cx="11" cy="11" r="6.5"/><path d="m16 16 4 4"/></svg>
+                    <input id="formPickerSearch" type="search" autocomplete="off" spellcheck="false" placeholder="Kërko formën (p.sh. kapsul, tablet)…" aria-label="Kërko formën farmaceutike">
+                  </div>
+                  <div class="form-picker-list" id="formPickerList" role="listbox" aria-label="Format farmaceutike"></div>
+                </div>
+              </div>
+            </div>
             <label>Rendit sipas
               <select id="sortSelect"><option value="registry">Nr. regjistri</option><option value="name">Emri</option><option value="substance">Substanca</option><option value="atc">ATC</option><option value="strength">Fortësia</option><option value="form">Forma</option><option value="status">Statusi</option><option value="price">Çmimi</option></select>
             </label>
