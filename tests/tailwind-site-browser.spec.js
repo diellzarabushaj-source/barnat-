@@ -53,6 +53,74 @@ async function mockPhase5AuthenticatedSession(page) {
   });
 }
 
+async function mockRegistryV2Data(page) {
+  await page.route('**/api/drug-search?**', async route => {
+    const url = new URL(route.request().url());
+    if (url.searchParams.get('view') !== 'registry-page') return route.continue();
+    await route.fulfill({
+      status:200,
+      contentType:'application/json',
+      headers:{ 'X-MedIndex-Data-Source':'supabase' },
+      body:JSON.stringify({
+        ok:true,
+        rows:[
+          { id:'11111111-1111-4111-8111-111111111111', registryNumber:101, pdid:'PD-101', tradeName:'Amoxicillin DRx', activeSubstance:'Amoxicillin', strength:'500 mg', form:'Kapsulë', atc:'J01CA04', productStatus:'Gjenerik', retailPrice:3.2 },
+          { id:'22222222-2222-4222-8222-222222222222', registryNumber:202, pdid:'PD-202', tradeName:'Paracetamol DRx', activeSubstance:'Paracetamol', strength:'500 mg', form:'Tabletë', atc:'N02BE01', productStatus:'Gjenerik', retailPrice:1.8 },
+          { id:'33333333-3333-4333-8333-333333333333', registryNumber:303, pdid:'PD-303', tradeName:'Salbutamol DRx', activeSubstance:'Salbutamol', strength:'100 mcg', form:'Inhalator', atc:'R03AC02', productStatus:'Origjinator', retailPrice:5.4 },
+        ],
+        pagination:{ page:1, pageSize:25, total:4003, totalPages:161, hasPrevious:false, hasNext:true },
+      }),
+    });
+  });
+  await page.route('**/api/dosage?**', async route => {
+    const url = new URL(route.request().url());
+    if (url.searchParams.get('view') !== 'cards') return route.continue();
+    await route.fulfill({
+      status:200,
+      contentType:'application/json',
+      body:JSON.stringify({
+        ok:true,
+        cards:[
+          { registryNumber:'101', adultDose:'500 mg çdo 8 orë', adultRoute:'PO', pediatricDose:'20–40 mg/kg/ditë', pediatricRoute:'PO' },
+          { registryNumber:'202', adultDose:'500–1000 mg çdo 6–8 orë', adultRoute:'PO', pediatricDose:'10–15 mg/kg çdo 4–6 orë', pediatricRoute:'PO' },
+          { registryNumber:'303', adultDose:'1–2 inhalime sipas nevojës', adultRoute:'Inhalim', pediatricDose:'Sipas moshës dhe planit klinik', pediatricRoute:'Inhalim' },
+        ],
+      }),
+    });
+  });
+}
+
+async function auditRegistryV2(page, label) {
+  const audit = await page.evaluate(() => {
+    const root = getComputedStyle(document.documentElement);
+    const visible = [...document.querySelectorAll('button,input,select,a[href]')].filter(node => {
+      const rect = node.getBoundingClientRect();
+      const style = getComputedStyle(node);
+      return rect.width > 0 && rect.height > 0 && style.display !== 'none' && style.visibility !== 'hidden';
+    }).map(node => ({ tag:node.tagName, id:node.id || '', width:node.getBoundingClientRect().width, height:node.getBoundingClientRect().height }));
+    return {
+      primary:root.getPropertyValue('--stripe-primary').trim(),
+      pageWidth:document.documentElement.scrollWidth,
+      viewportWidth:innerWidth,
+      bodyWidth:document.body.scrollWidth,
+      rows:document.querySelectorAll('#registryRows tr[data-row-id]').length,
+      adultDose:document.querySelector('[data-dose-adult]')?.textContent?.trim() || '',
+      pediatricDose:document.querySelector('[data-dose-pediatric]')?.textContent?.trim() || '',
+      sidebarBg:getComputedStyle(document.querySelector('.sidebar')).backgroundColor,
+      controls:visible.filter(item => item.tag !== 'A'),
+    };
+  });
+  expect(audit.primary, `${label}: Stripe primary token`).toBe('#533afd');
+  expect(audit.pageWidth, `${label}: document horizontal overflow`).toBeLessThanOrEqual(audit.viewportWidth + 2);
+  expect(audit.bodyWidth, `${label}: body horizontal overflow`).toBeLessThanOrEqual(audit.viewportWidth + 2);
+  expect(audit.rows, `${label}: registry rows`).toBe(3);
+  expect(audit.adultDose).toContain('500 mg');
+  expect(audit.pediatricDose.length).toBeGreaterThan(0);
+  expect(audit.sidebarBg).toBe('rgb(28, 30, 84)');
+  for (const control of audit.controls) expect(control.height, `${label}: control ${control.id}`).toBeGreaterThanOrEqual(28);
+  return audit;
+}
+
 async function auditViewport(page, label, { requireControls = false } = {}) {
   const audit = await page.evaluate(() => {
     const style = getComputedStyle(document.documentElement);
@@ -114,14 +182,21 @@ for (const viewport of viewports) {
   test(`all authenticated clinical pages share the Tailwind system on ${viewport.name}`, async ({ page }) => {
     await page.setViewportSize(viewport);
     await mockPhase5AuthenticatedSession(page);
+    await mockRegistryV2Data(page);
 
     for (const file of clinicalPages) {
       await page.goto(`http://127.0.0.1:4173/${file}`, { waitUntil:'domcontentloaded' });
+      if (file === 'index.html') {
+        await expect(page.locator('html')).toHaveAttribute('data-drx-app', 'registry-v2');
+        await expect(page.locator('.app-shell')).toBeVisible();
+        await expect(page.locator('#registryRows tr[data-row-id]')).toHaveCount(3, { timeout:20000 });
+        await page.waitForTimeout(250);
+        await auditRegistryV2(page, `${file} / ${viewport.name}`);
+        await page.screenshot({ path:path.join(OUTPUT, `registry-v2-${viewport.name}.png`), fullPage:false });
+        continue;
+      }
       await expect(page.locator('html')).toHaveClass(/auth-ready/, { timeout:20000 });
       await expect(page.locator('.mi-app-shell')).toBeVisible({ timeout:20000 });
-      if (file === 'index.html') {
-        await page.waitForTimeout(1500);
-      }
       await auditViewport(page, `${file} / ${viewport.name}`, { requireControls:true });
 
       if (file === 'icd.html') {
