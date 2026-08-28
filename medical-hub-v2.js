@@ -68,7 +68,7 @@
   }
 
   async function syncProfileChrome(payload) {
-    await loadRuntime('/medindex-brand-runtime.js?v=profile-unified-v1', 'data-drx-profile-runtime').catch(() => null);
+    await loadRuntime('/medindex-brand-runtime.js?v=drx-brand-v5', 'data-drx-profile-runtime').catch(() => null);
     window.MedIndexProfile?.adoptAccount?.(payload);
     window.dispatchEvent(new CustomEvent('medindex:auth-ready', { detail:payload }));
   }
