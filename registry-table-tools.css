@@ -752,6 +752,12 @@ html.medindex-tailadmin[data-mi-page="barnat"] body #dataTable .registry-dosage-
   font-size:10px!important;
   font-weight:400!important;
 }
+/* Keep row actions below the 40px sticky table header when browsers,
+   keyboard navigation or Playwright scroll a control into view. */
+html.medindex-tailadmin[data-mi-page="barnat"] body #dataTable .registry-row-more-toggle{
+  scroll-margin-block-start:52px!important;
+}
+
 html.medindex-tailadmin[data-mi-page="barnat"] body #dataTable :is(
   .registry-row-favorite-toggle,.registry-row-note-toggle,.registry-cell-preview-trigger
 ){
