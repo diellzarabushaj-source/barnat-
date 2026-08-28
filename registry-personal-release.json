@@ -5,7 +5,7 @@
   "scope": ["favorites", "notes"],
   "canonicalSources": [
     "registry-user-personalization.js",
-    "registry-user-personalization.css",
+    "registry-table-tools.css",
     "user-library-client.js"
   ],
   "releaseGate": "tests/registry-personal-release-gate.js",
