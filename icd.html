@@ -60,11 +60,13 @@
       </nav>
 
       <div class="sidebar-foot">
-        <div class="source-card">
-          <span class="source-dot" aria-hidden="true"></span>
-          <div><strong>ICD-10 clinical source</strong><small id="sourceStatus">Duke u lidhur…</small></div>
-        </div>
-        <button class="nav-item logout-button" id="logoutButton" type="button"><span class="nav-icon" aria-hidden="true"><svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M14.5 4.5h3a2 2 0 0 1 2 2v11a2 2 0 0 1-2 2h-3"/><path d="M10 16.5 14.5 12 10 7.5"/><path d="M14.5 12h-10"/></svg></span><span>Dil</span></button>
+        <span id="sourceStatus" class="sr-only">Duke u lidhur…</span>
+        <button class="drx-user-card mi-user-card" id="sidebarProfileButton" type="button" data-mi-profile-trigger aria-label="Hap profilin">
+          <span class="mi-user-avatar drx-user-avatar">DR</span>
+          <span class="mi-user-copy drx-user-copy"><strong>Llogaria</strong><small></small></span>
+          <span class="drx-user-arrow" aria-hidden="true"><svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="m9 5 7 7-7 7"/></svg></span>
+        </button>
+        <button class="nav-item logout-button" id="logoutButton" type="button"><span class="nav-icon" aria-hidden="true"><svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M14.5 4.5h3a2 2 0 0 1 2 2v11a2 2 0 0 1-2 2h-3"/><path d="M10 16.5 14.5 12 10 7.5"/><path d="M14.5 12h-10"/></svg></span><span>Dil</span></button>
       </div>
     </aside>
 
@@ -78,7 +80,10 @@
         </div>
         <div class="topbar-actions">
           <span class="sync-pill"><span class="sync-dot"></span><span id="syncText">Supabase</span></span>
-          <span class="avatar-button" aria-label="Përdoruesi aktiv"><span id="avatarInitials">DR</span></span>
+          <button class="drx-profile-chip mi-profile-chip" id="profileButton" type="button" data-mi-profile-trigger aria-label="Hap profilin">
+            <span class="mi-user-avatar drx-user-avatar avatar-button" id="avatarInitials">DR</span>
+            <span class="drx-profile-copy"><strong>Llogaria</strong><small></small></span>
+          </button>
         </div>
       </header>
 
