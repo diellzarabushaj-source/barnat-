@@ -50,9 +50,9 @@ if (!css.includes(blockedAfter)) {
   if (!css.includes(blockedBefore)) throw new Error('Blocked bottom-nav CSS state block changed in final registry CSS.');
   css = css.replace(blockedBefore, blockedAfter);
 }
-if (!css.includes('padding:3px 12px 3px 15px;')) throw new Error('Final mobile design card spacing is missing.');
-if (!css.includes('padding:3px 10px 3px 13px;')) throw new Error('Final sub-390 mobile card spacing is missing.');
-if (!css.includes('padding:4px 9px 4px 12px;')) throw new Error('Final narrow-phone card spacing is missing.');
+if (!css.includes('/* MedIndex revised Phase 2: compact narrow-phone card spacing */')) throw new Error('Final narrow-phone card spacing contract is missing.');
+if (!css.includes('.mobile-lite-card:has(.mobile-lite-actions){')) throw new Error('Final mobile card action-region contract is missing.');
+if (!css.includes('--mi-registry-bottom-nav-clearance:calc(80px + env(safe-area-inset-bottom))')) throw new Error('Final bottom-nav clearance contract is missing.');
 fs.writeFileSync(cssFile, css, 'utf8');
 
 console.log('Mobile nav priority and audited card geometry are maintained inside the single registry CSS authority.');
