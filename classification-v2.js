@@ -48,8 +48,8 @@
     appShell:$('appShell'), sidebar:$('sidebar'), sidebarBackdrop:$('sidebarBackdrop'), menuButton:$('menuButton'), sidebarClose:$('sidebarClose'),
     logoutButton:$('logoutButton'), sourceStatus:$('sourceStatus'), syncText:$('syncText'), avatarInitials:$('avatarInitials'), searchShortcut:$('searchShortcut'),
     metricGroups:$('metricGroups'), metricCategories:$('metricCategories'), metricClassified:$('metricClassified'), metricCoverage:$('metricCoverage'), metricUnclassified:$('metricUnclassified'),
-    atcSearch:$('atcSearch'), clearSearchButton:$('clearSearchButton'), atcStatusText:$('atcStatusText'), atcStatusMeta:$('atcStatusMeta'),
-    groupList:$('groupList'), groupCount:$('groupCount'), categoryHero:$('categoryHero'), categoryPanelTitle:$('categoryPanelTitle'), categoryCount:$('categoryCount'), categoryList:$('categoryList'),
+    atcSearch:$('atcSearch'), clearSearchButton:$('clearSearchButton'), atcStatusText:$('atcStatusText'),
+    categoryHero:$('categoryHero'), categoryPanelTitle:$('categoryPanelTitle'), categoryCount:$('categoryCount'), categoryList:$('categoryList'),
     categoryView:$('categoryView'), searchResultsView:$('searchResultsView'), searchResultCount:$('searchResultCount'), searchResults:$('searchResults'),
     atcPath:$('atcPath'), atcPathItems:$('atcPathItems'), atcPathRegistry:$('atcPathRegistry'), toast:$('toast'),
   };
@@ -185,22 +185,6 @@
     history.replaceState(code ? { atc:code } : {}, '', url.pathname + url.search + url.hash);
   }
 
-  function renderGroups() {
-    const entries = Object.entries(groups());
-    el.metricGroups.textContent = String(entries.length);
-    el.groupCount.textContent = String(entries.length);
-    el.groupList.innerHTML = entries.map(([code,name]) => {
-      const active = code === state.group;
-      const count = groupCount(code);
-      const children = categoryEntries(code).length;
-      return `<button class="group-row ${active ? 'is-active' : ''}" type="button" role="option" aria-selected="${active ? 'true' : 'false'}" data-group-code="${code}" style="--group-accent:${colorFor(code)}">
-        <span class="group-code">${code}</span>
-        <span class="group-copy"><strong>${escapeHtml(name)}</strong><small>${children} kategori terapeutike</small></span>
-        <span class="group-total" title="Barna në grup">${state.counts ? formatNumber(count) : '—'}</span>
-      </button>`;
-    }).join('');
-  }
-
   function renderHero() {
     const code = state.subdivision || state.category || state.group;
     const color = colorFor(code);
@@ -329,28 +313,22 @@
     el.atcPath.hidden = !codes.length;
   }
 
-  /* Shiriti anësor tregon të njëjtin grup si faqja. Pa këtë, hyrja e hapur në
-     menu dhe grupi i zgjedhur në ekran mund të tregonin dy vende të ndryshme. */
-  function syncSidebarGroup() {
-    document.querySelectorAll('[data-atc-group]').forEach(link => {
-      if (link.dataset.atcGroup === state.group) link.setAttribute('aria-current', 'true');
-      else link.removeAttribute('aria-current');
-    });
+  function syncSidebar() {
+    window.DRxSidebarTaxonomy?.syncAtc?.();
   }
 
   function renderClassification() {
     if (!state.group || !groups()[state.group]) state.group = Object.keys(groups())[0] || 'A';
-    syncSidebarGroup();
-    renderGroups();
+    syncSidebar();
     renderHero();
     renderCategories();
     renderPath();
+    el.metricGroups.textContent = String(Object.keys(groups()).length);
     const totalCategories = Object.keys(categories()).length;
     el.metricCategories.textContent = String(totalCategories);
     el.atcStatusText.textContent = state.category
       ? `${state.category} — ${categories()[state.category] || 'Kategoria ATC'}`
       : `${state.group} — ${groups()[state.group] || 'Grupi ATC'}`;
-    el.atcStatusMeta.textContent = state.counts ? 'Numërimet nga Supabase' : 'Katalogu ATC';
   }
 
   function searchCatalog(query) {
@@ -432,7 +410,6 @@
     el.atcStatusText.textContent = results.length
       ? `${results.length} rezultate për “${state.query}”`
       : `Asnjë rezultat për “${state.query}”`;
-    el.atcStatusMeta.textContent = 'Kod, grup, kategori dhe nënndarje';
     el.searchResults.innerHTML = results.length ? results.map(item => `
       <button class="search-result" type="button" data-search-code="${escapeHtml(item.code)}" data-search-group="${escapeHtml(item.group)}" data-search-category="${escapeHtml(item.category)}" data-search-subdivision="${escapeHtml(item.subdivision)}" style="--group-accent:${colorFor(item.group)}">
         <span class="search-result-code">${escapeHtml(item.code)}</span>
@@ -464,7 +441,6 @@
     el.searchResultsView.hidden = true;
     if (updateHash) writeHash(code);
     renderClassification();
-    requestAnimationFrame(() => document.querySelector(`[data-group-code="${CSS.escape(code)}"]`)?.scrollIntoView({ block:'nearest' }));
   }
 
   function selectCategory(code, subdivision = '', { updateHash = true } = {}) {
@@ -546,15 +522,6 @@
   }
 
   function bindEvents() {
-    el.groupList.addEventListener('click', event => {
-      const button = event.target.closest('[data-group-code]');
-      if (button) selectGroup(button.dataset.groupCode);
-    });
-    el.groupList.addEventListener('keydown', event => {
-      if (!['ArrowDown','ArrowUp','ArrowLeft','ArrowRight','Home','End'].includes(event.key)) return;
-      if (moveFocus(el.groupList, '[data-group-code]', event.key)) event.preventDefault();
-    });
-
     el.categoryList.addEventListener('click', event => {
       const sub = event.target.closest('[data-subdivision-code]');
       if (sub) return;
@@ -633,9 +600,11 @@
     if (el.searchShortcut) el.searchShortcut.textContent = isMac ? '⌘K' : 'Ctrl K';
     bindEvents();
     const hash = readHash();
-    state.group = hash.group && groups()[hash.group] ? hash.group : Object.keys(groups())[0] || 'A';
+    const hadGroup = Boolean(hash.group && groups()[hash.group]);
+    state.group = hadGroup ? hash.group : Object.keys(groups())[0] || 'A';
     state.category = hash.category && categories()[hash.category] ? hash.category : '';
     state.subdivision = hash.subdivision && subdivisions()[hash.subdivision] ? hash.subdivision : '';
+    if (!hadGroup) writeHash(state.subdivision || state.category || state.group);
     renderClassification();
 
     try {
