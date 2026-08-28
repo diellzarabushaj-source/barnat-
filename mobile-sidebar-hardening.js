@@ -67,7 +67,7 @@
         html.medindex-tailadmin #appMenu .auth-logout,
         html.medindex-tailadmin #appMenu .mi-menu-item{
           min-height:44px!important;
-          border-radius:11px!important;
+          border-radius:12px!important;
         }
         html.medindex-tailadmin #appMenu .app-menu-link.active,
         html.medindex-tailadmin #appMenu .mi-menu-item.active{box-shadow:none!important}

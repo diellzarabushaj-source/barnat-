@@ -25,42 +25,48 @@ const FLASH_KEY = 'medindex_emergency_flashcards_v1:emergency-v17-test';
 const META_KEY = 'medindex_emergency_flashcards_v3meta:emergency-v17-test';
 const SCHEDULE_KEY = 'medindex_emergency_flashcards_v4schedule:emergency-v17-test';
 
+async function installFrozenSanityFixture(page) {
+  await page.addInitScript(`(() => {
+    const FIXTURE = ${JSON.stringify({
+      meta:[{
+        _id:fixture._id,
+        reviewStatus:'verified',
+        sourceCount:1,
+        sources:[{title:'Guideline',url:'https://example.test/guideline'}],
+      }],
+      emergencies:[fixture],
+    })};
+    const nativeFetch = window.fetch.bind(window);
+    window.fetch = function medindexEmergencyFixtureFetch(input, init = {}) {
+      let url;
+      try {
+        const raw = typeof Request !== 'undefined' && input instanceof Request ? input.url : String(input);
+        url = new URL(raw, location.href);
+      } catch {
+        return nativeFetch(input, init);
+      }
+      if (url.hostname === '4wdtp8cz.apicdn.sanity.io' && url.pathname.includes('/data/query/production')) {
+        const groq = url.searchParams.get('query') || '';
+        const result = groq.includes('"sourceCount":count(sources)')
+          ? FIXTURE.meta
+          : FIXTURE.emergencies;
+        return Promise.resolve(new Response(JSON.stringify({ result }), {
+          status:200,
+          headers:{ 'Content-Type':'application/json; charset=utf-8' },
+        }));
+      }
+      return nativeFetch(input, init);
+    };
+  })();`);
+}
+
 async function openEmergency(page, width = 1360, height = 900) {
   const errors = [];
-  const pending = new Map();
-  const completed = [];
-  const tracked = request => ['document','script','stylesheet'].includes(request.resourceType());
   page.on('pageerror', error => errors.push(String(error)));
-  page.on('request', request => {
-    if (tracked(request)) pending.set(request.url(), request.resourceType());
-  });
-  page.on('requestfinished', request => {
-    if (!tracked(request)) return;
-    pending.delete(request.url());
-    completed.push(`${request.resourceType()}:${new URL(request.url()).pathname}`);
-    if (completed.length > 16) completed.shift();
-  });
-  page.on('requestfailed', request => {
-    if (!tracked(request)) return;
-    pending.delete(request.url());
-    completed.push(`FAILED ${request.resourceType()}:${new URL(request.url()).pathname} ${request.failure()?.errorText || ''}`);
-    if (completed.length > 16) completed.shift();
-  });
   await page.setViewportSize({width,height});
-  await page.route('**/sanity-clinical-client.js*', route => route.fulfill({
-    status:200,
-    contentType:'application/javascript; charset=utf-8',
-    body:`window.MedIndexSanity=Object.freeze({projectId:'test',dataset:'test',studioUrl:'#',query:async groq=>String(groq).includes('"sourceCount":count(sources)')?[{_id:'emergency-v17-test',reviewStatus:'verified',sourceCount:1,sources:[{title:'Guideline',url:'https://example.test/guideline'}]}]:${JSON.stringify([fixture])}});`,
-  }));
-  await page.goto('http://127.0.0.1:4173/urgjencat.html', {waitUntil:'commit', timeout:10000});
-  try {
-    await page.waitForLoadState('domcontentloaded', {timeout:7000});
-  } catch (error) {
-    console.log('URGJENCAT_DCL_PENDING', JSON.stringify([...pending.entries()].map(([url,type]) => ({type,path:new URL(url).pathname}))));
-    console.log('URGJENCAT_DCL_LAST_COMPLETED', JSON.stringify(completed));
-    throw error;
-  }
-  await page.waitForFunction(() => document.documentElement.classList.contains('auth-ready'));
+  await installFrozenSanityFixture(page);
+  await page.goto('http://127.0.0.1:4173/urgjencat.html', {waitUntil:'domcontentloaded', timeout:15000});
+  await page.locator('html.auth-ready').waitFor({state:'attached', timeout:10000});
   await expect(page.locator('#emergencyDetail .ck-sl-experience')).toBeVisible({timeout:10000});
   return errors;
 }
@@ -70,12 +76,15 @@ async function currentIndex(page) {
 }
 
 async function rate(page, selector, expectedRating, minDays) {
-  let flash = page.locator('[data-ck-sl-panel="test"] [data-ck-sl-flashcards]');
+  const flash = page.locator('[data-ck-sl-panel="test"] [data-ck-sl-flashcards]');
+  await expect(page.locator('#emergencyDetail [data-ck-sl-flashcards]')).toHaveCount(1);
   await expect(flash).toBeVisible();
   await flash.locator('[data-flash-reveal]').click();
   const index = await currentIndex(page);
   await flash.locator(selector).click();
-  await expect(page.locator('[data-ck-sl-panel="test"] [data-flash-reveal]')).toBeVisible();
+  await expect(page.locator('#emergencyDetail [data-ck-mode="test"]')).toHaveAttribute('aria-pressed','true');
+  await expect(page.locator('#emergencyDetail [data-ck-sl-flashcards]')).toHaveCount(1);
+  await expect(flash.locator('[data-flash-reveal]')).toBeVisible();
 
   const entry = await page.evaluate(({key,index}) => {
     const schedule = JSON.parse(localStorage.getItem(key) || '{}');
@@ -99,10 +108,10 @@ test.describe('Urgjencat physician v17', () => {
     await expect.poll(() => page.evaluate(() => window.MedIndexEmergencyReviewV17?.version || '')).toBe('17.0');
 
     await expect(page.locator('[data-ck-doctor-nav="summary"]')).toBeVisible();
-    await expect(page.locator('.ck-v3-nav-context')).toBeVisible();
+    await expect(page.locator('.ck-sl-summary .ck-v3-nav-context')).toBeVisible();
     await expect(page.locator('.ck-doctor-redflags-quick li')).toHaveCount(2);
 
-    await page.getByRole('button',{name:/Testo veten|Testo$/}).click();
+    await page.locator('#emergencyDetail [data-ck-mode="test"]').click();
     const flash = page.locator('[data-ck-sl-panel="test"] [data-ck-sl-flashcards]');
     await expect(flash).toBeVisible();
     await expect(flash.locator('.ck-flash-session-stats')).toBeVisible();
@@ -122,7 +131,7 @@ test.describe('Urgjencat physician v17', () => {
 
   test('320px remains navigable without horizontal overflow', async ({page}) => {
     const errors = await openEmergency(page, 320, 720);
-    await page.getByRole('button',{name:/Testo veten|Testo$/}).click();
+    await page.locator('#emergencyDetail [data-ck-mode="test"]').click();
     await page.locator('[data-ck-sl-panel="test"] [data-flash-reveal]').click();
 
     const metrics = await page.evaluate(() => {

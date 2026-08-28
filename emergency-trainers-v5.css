@@ -46,7 +46,8 @@ html.medindex-tailadmin[data-mi-page="urgjencat"] .ck-v5-trainers-head{
 html.medindex-tailadmin[data-mi-page="urgjencat"] .ck-v5-trainers-head span{
   display:block;
   color:#426fe3;
-  font-size:10px;
+  /* 11px: dyshemeja e lexueshmërisë e auditit responsive për ekranin e urgjencës. */
+  font-size:11px;
   font-weight:700!important;
   letter-spacing:.08em;
 }
@@ -164,6 +165,9 @@ html[data-theme="dark"] .ck-v5-session-bar button{background:#151f32!important;c
   html.medindex-tailadmin[data-mi-page="urgjencat"] .ck-v5-trainers-head{display:grid;align-items:start}
   html.medindex-tailadmin[data-mi-page="urgjencat"] .ck-v5-trainer-grid{grid-template-columns:1fr}
   html.medindex-tailadmin[data-mi-page="urgjencat"] .ck-v5-trainer-card>button{min-height:44px}
+}
+@media(max-width:400px){
+  html.medindex-tailadmin[data-mi-page="urgjencat"] .ck-v5-trainers-head span{font-size:11px!important}
 }
 @media(prefers-reduced-motion:reduce){
   html.medindex-tailadmin[data-mi-page="urgjencat"] .ck-v5-session-bar,

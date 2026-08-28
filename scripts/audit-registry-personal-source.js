@@ -4,7 +4,10 @@ const fs = require('node:fs');
 const path = require('node:path');
 
 const ROOT = path.resolve(__dirname, '..');
-const read = file => fs.readFileSync(path.join(ROOT, file), 'utf8');
+/* Git may materialize tracked sources with CRLF on Windows. The source gate
+   asserts semantic snippets that span lines, so compare a canonical newline
+   representation instead of making a correct checkout fail by platform. */
+const read = file => fs.readFileSync(path.join(ROOT, file), 'utf8').replace(/\r\n?/g, '\n');
 
 const ui = read('registry-user-personalization.js');
 const client = read('user-library-client.js');

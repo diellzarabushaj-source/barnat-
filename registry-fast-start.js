@@ -87,7 +87,6 @@
       pageSize:mobile ? '25' : '50',
       sort:'registry',
       direction:'asc',
-      includeTotal:'1',
     });
     return `/api/drug-search?${params.toString()}`;
   }
@@ -108,7 +107,7 @@
       && url.searchParams.get('pageSize') === (mobile ? '25' : '50')
       && (url.searchParams.get('sort') || 'registry') === 'registry'
       && (url.searchParams.get('direction') || 'asc') === 'asc'
-      && url.searchParams.get('includeTotal') === '1'
+      && !url.searchParams.has('includeTotal')
       && !url.searchParams.get('q')
       && !url.searchParams.get('status');
   }
@@ -210,7 +209,7 @@
   function installPrefetchReuse() {
     window.fetch = function medindexStartupFetch(input, init = {}) {
       const age = performance.now() - prefetchStartedAt;
-      if (prefetchPromise && age <= PREFETCH_TTL_MS && isInitialRegistryPageRequest(input, init)) {
+      if (!prefetchReused && prefetchPromise && age <= PREFETCH_TTL_MS && isInitialRegistryPageRequest(input, init)) {
         const signal = init.signal || (typeof Request !== 'undefined' && input instanceof Request ? input.signal : null);
         return abortableClone(prefetchPromise, signal).then(response => {
           if (!response) return deduplicatedFetch(input, init);

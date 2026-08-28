@@ -143,6 +143,10 @@ assert.match(finalizer, /registry-personal-release-gate\.js/);
 assert.doesNotMatch(finalizer, /registry-personal-ux-phase8-test|registry-personal-long-session-test|registry-personal-finalizer-test/);
 assert.doesNotMatch(finalizer, /fs\.writeFileSync|localStorage|fetch\s*\(/);
 assert.doesNotMatch(sourceAudit, /writeFileSync|appendFileSync/);
+assert.ok(
+  sourceAudit.includes(".replace(/\\r\\n?/g, '\\n')"),
+  'The prebuild source gate must remain newline-stable on Windows checkouts.'
+);
 
 for (const retired of [
   'scripts/patch-registry-phase16-personal-ux.js',

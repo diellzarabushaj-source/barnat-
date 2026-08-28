@@ -228,7 +228,9 @@ html.medindex-tailadmin[data-mi-page="urgjencat"] .ck-list-button:hover{
 }
 html.medindex-tailadmin[data-mi-page="urgjencat"] .ck-list-button strong{
   color:#334158!important;
-  font-size:13.5px!important;
+  /* Dyshemeja e lexueshmërisë për titullin e një urgjence është 14px, e mbrojtur
+     nga auditi responsive. 13.5px e kalonte atë kufi për gjysmë piksel. */
+  font-size:14px!important;
   font-weight:550!important;
   line-height:1.32!important;
   letter-spacing:-.014em!important;
@@ -329,7 +331,9 @@ html.medindex-tailadmin[data-mi-page="urgjencat"] .ck-mode-toggle{
   background:#f6f8fc!important;
 }
 html.medindex-tailadmin[data-mi-page="urgjencat"] .ck-mode-toggle button{
-  min-height:34px!important;
+  /* Caku i prekjes për këto tre butona është 44px. Kalimi mes modaliteteve
+     bëhet me gisht mbi një ekran urgjence; 34px është nën atë kufi. */
+  min-height:44px!important;
   padding:0 12px!important;
   border-radius:8px!important;
   color:#6a778c!important;
@@ -531,5 +535,25 @@ html[data-theme="dark"].medindex-tailadmin[data-mi-page="urgjencat"] .ck-info-ca
   html.medindex-tailadmin[data-mi-page="urgjencat"] #ckDetailOverlay *{
     scroll-behavior:auto!important;
     transition-duration:.001ms!important;
+  }
+}
+
+/* Dyshemeja e lexueshmërisë në telefon.
+   Auditi responsive nuk lejon asnjë tekst nën 11px brenda ekranit të urgjencës
+   në 320px: kjo faqe lexohet me një dorë, shpesh nën dritë të keqe, dhe një
+   protokoll urgjence nuk guxon të ketë mikro-tekst. Këto ishin 10, 10.5 dhe
+   10.75px. Ngrihen te kufiri, jo mbi të, që hierarkia të mbetet e paprekur. */
+@media (max-width:400px){
+  html.medindex-tailadmin[data-mi-page="urgjencat"] #emergencyDetail :is(
+    .ck-emergency-breadcrumb,
+    .ck-chip,
+    .ck-mode-caption,
+    .ck-v4-source-meta,
+    .ck-v5-session-bar span,
+    .ck-v5-trainer-card span,
+    small
+  ),
+  html.medindex-tailadmin[data-mi-page="urgjencat"] .ck-emergency-breadcrumb{
+    font-size:11px!important;
   }
 }

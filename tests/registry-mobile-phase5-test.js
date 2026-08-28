@@ -42,7 +42,9 @@ for (const field of ['atc', 'form', 'substance', 'indication', 'population']) {
 }
 assert.match(lite, /function setFilters\(next = \{\}, options = \{\}\)/, 'single-request filter API is missing');
 assert.match(lite, /medindex:mobile-lite-filters-changed/, 'filter state event is missing');
-assert.match(lite, /function clearKnownTotal\(\)/, 'search/filter count invalidation helper is missing');
+assert.match(lite, /function clearKnownTotal\(\{ resetCountOwner = true \} = \{\}\)/, 'search/filter count invalidation helper is missing');
+assert.match(lite, /if \(resetCountOwner\) \{[\s\S]{0,220}countContextOwner = '';/, 'explicit count invalidation must release the exact-count context owner');
+assert.match(lite, /if \(includeTotal\) clearKnownTotal\(\{ resetCountOwner:false \}\)/, 'duplicate includeTotal row loads must preserve the active exact-count owner');
 assert.match(
   lite,
   /search\?\.addEventListener\('input',[\s\S]{0,500}pageController\?\.abort\(\);\s*pageController = null;\s*clearKnownTotal\(\);/,

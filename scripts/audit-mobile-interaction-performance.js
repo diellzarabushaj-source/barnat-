@@ -308,7 +308,7 @@ async function waitForRequestCount(requestLog, predicate, minimum, timeoutMs = 3
     const clearStarted = Date.now();
     await search.fill('');
     await waitForRequestCount(requestLog, item => item.view === 'registry-page' && item.q === '' && item.includeTotal === '1', 2);
-    await page.locator('#pagination .mobile-lite-page-label').waitFor({ state:'visible', timeout:3000 });
+    await page.locator('#pagination [data-mobile-lite-page-number="1"][aria-current="page"]').waitFor({ state:'visible', timeout:3000 });
     const clearSearchSettleMs = elapsed(clearStarted);
 
     const statusRowsBefore = rowRequests().length;
@@ -334,8 +334,8 @@ async function waitForRequestCount(requestLog, predicate, minimum, timeoutMs = 3
     const paginationStarted = Date.now();
     await page.locator('#pagination [data-mobile-lite-page="next"]').click();
     await waitForRequestCount(requestLog, item => item.view === 'registry-page' && item.page === 2, 1);
-    await page.locator('#pagination .mobile-lite-page-label').filter({ hasText:'Faqja 2' }).waitFor({ state:'visible', timeout:3000 });
-    assert.match(await page.locator('#pagination .mobile-lite-page-label').innerText(), /Faqja 2/);
+    await page.locator('#pagination [data-mobile-lite-page-number="2"][aria-current="page"]').waitFor({ state:'visible', timeout:3000 });
+    assert.equal(await page.locator('#pagination [data-mobile-lite-page-number="2"][aria-current="page"]').innerText(), '2');
     const paginationSettleMs = elapsed(paginationStarted);
     assert.equal(rowRequests().length - paginationRowsBefore, 1, 'Pagination should produce exactly one registry-page request.');
     assert.equal(countRequests().length - paginationCountsBefore, 0, 'Turning a page must reuse the count already known.');

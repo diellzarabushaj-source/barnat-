@@ -83,6 +83,10 @@
     return available.filter(item => selected.has(item.key)).map(item => item.query).join(' ').trim();
   }
 
+  function hideLegacyQuick() {
+    if (legacyQuick && !legacyQuick.hidden) legacyQuick.hidden = true;
+  }
+
   function render() {
     ensureHost();
     const available = availableCandidates();
@@ -101,7 +105,7 @@
         ${selected.size ? '<button type="button" class="ck-v9-clear" data-ck-v9-clear>Hiqi</button>' : ''}
       </div>`;
     host.hidden = false;
-    if (legacyQuick) legacyQuick.hidden = true;
+    hideLegacyQuick();
   }
 
   function applySelection() {
@@ -124,11 +128,13 @@
     }
   }, {capture:true});
 
+  // Observe content changes only. Observing and rewriting the same `hidden`
+  // attribute creates a feedback loop with emergency-rapid-search.js, which
+  // also owns that visibility state. render() is the sole guarded writer here.
   const observer = new MutationObserver(() => {
     if (!host || host.hidden || !host.querySelector('[data-ck-v9-symptom]')) render();
-    if (legacyQuick) legacyQuick.hidden = true;
   });
-  if (legacyQuick) observer.observe(legacyQuick, {childList:true, subtree:true, attributes:true, attributeFilter:['hidden']});
+  if (legacyQuick) observer.observe(legacyQuick, {childList:true, subtree:true});
 
   ensureHost();
   render();

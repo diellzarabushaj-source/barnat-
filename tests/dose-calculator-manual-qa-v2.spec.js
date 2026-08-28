@@ -102,6 +102,9 @@ async function openRegistry(page, payload = safePayload) {
   await mockSafety(page);
   await page.goto(BASE, { waitUntil:'domcontentloaded' });
   await expect.poll(() => page.evaluate(() => document.documentElement.classList.contains('auth-ready')), { timeout:10000 }).toBe(true);
+  const doseHeader = page.locator('#headerRow [data-registry-dose-calculator-column="dose-calculator"]');
+  await expect(doseHeader).toHaveCount(1, { timeout:10000 });
+  await doseHeader.dispatchEvent('focusin');
   await expect.poll(() => page.evaluate(() => window.MedIndexDoseCalculator?.catalogStatus?.() || 'loading'), { timeout:15000 }).toBe('ready');
   await expect.poll(() => page.evaluate(() => window.MedIndexDoseSafety?.status?.() || 'loading'), { timeout:15000 }).toBe('ready');
   await expect.poll(() => page.locator('#tbody > tr').count(), { timeout:15000 }).toBe(3);
@@ -118,7 +121,10 @@ test('desktop physician flow: table, filter, calculation, safety and keyboard', 
   const header = page.locator('#headerRow [data-registry-dose-calculator-column="dose-calculator"]');
   await expect(rows).toHaveCount(3);
   await expect(header).toHaveAttribute('data-dose-header-meta', '3 në këtë faqe');
-  await expect(page.locator('#doseCalculatorModal')).toHaveCount(1);
+  // The modal itself is intentionally interaction-lazy. Visibility/focus may
+  // warm the catalog and table controls, but DOM for the modal is created only
+  // when a doctor actually opens a calculator.
+  await expect(page.locator('#doseCalculatorModal')).toHaveCount(0);
   expect(await rows.evaluateAll(list => list.map(row => row.querySelectorAll('[data-registry-dose-calculator-column="dose-calculator"]').length))).toEqual([1,1,1]);
   const nameContract = await rows.evaluateAll(list => list.map(row => ({
     text:row.querySelector('.drug-name-text')?.textContent || '',
@@ -270,6 +276,10 @@ test('mobile physician flow: 44px action and no modal overflow', async ({ page }
 test('fail closed: unsafe catalog never exposes a dose button', async ({ page }) => {
   await mockCatalog(page, { ok:true, meta:{ failClosed:false, officialVerifiedOnly:false }, catalog });
   await page.goto(BASE, { waitUntil:'domcontentloaded' });
+  await expect.poll(() => page.evaluate(() => document.documentElement.classList.contains('auth-ready')), { timeout:10000 }).toBe(true);
+  const doseHeader = page.locator('#headerRow [data-registry-dose-calculator-column="dose-calculator"]');
+  await expect(doseHeader).toHaveCount(1, { timeout:10000 });
+  await doseHeader.dispatchEvent('focusin');
   await expect.poll(() => page.evaluate(() => window.MedIndexDoseCalculator?.catalogStatus?.() || 'loading'), { timeout:15000 }).toBe('error');
   await expect(page.locator('#tbody .dose-calculator-open')).toHaveCount(0);
   await expect(page.locator('#tbody [data-registry-dose-calculator-column="dose-calculator"] .registry-dosage-muted')).toHaveCount(3);
