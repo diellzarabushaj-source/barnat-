@@ -124,7 +124,7 @@ function patchUnifiedTable() {
 }
 
 function patchPersonalCss() {
-  const file = 'registry-user-personalization.css';
+  const file = 'registry-table-tools.css';
   let source = read(file);
   if (source.includes(MARKER)) return;
   source += `\n\n/* ${MARKER}: personal navigation is a first-class desktop tool. */\n@media (min-width:768px){\n  html.medindex-tailadmin body .mi-menu-group-tools > [data-nav="favorites"],\n  html.medindex-tailadmin body .mi-menu-group-tools > [data-nav="notes"]{\n    display:flex!important;\n    visibility:visible!important;\n  }\n}\n`;
@@ -134,7 +134,7 @@ function patchPersonalCss() {
 function verify() {
   const personal = read('registry-user-personalization.js');
   const unified = read('registry-unified-table.js');
-  const css = read('registry-user-personalization.css');
+  const css = read('registry-table-tools.css');
   const required = [
     [personal, `${MARKER}: capture visible main-table contract`, 'main table capture'],
     [personal, VISIBLE_CONTRACT_MARKER, 'visible-only table capture'],
