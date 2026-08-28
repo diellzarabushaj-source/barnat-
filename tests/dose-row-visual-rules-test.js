@@ -10,10 +10,10 @@ const css = read('registry-v2.css');
 const js = read('registry-v2.js');
 
 assert.match(html, /data-drx-app="registry-v2"/);
-assert.match(html, /<th>Doza e të rriturit<\/th>/);
-assert.match(html, /<th>Doza pediatrike<\/th>/);
-assert.match(html, /registry-v2\.css\?v=registry-dose-v6/);
-assert.match(html, /registry-v2\.js\?v=registry-dose-v6/);
+assert.match(html, /<th[^>]*data-col="adultDose"[^>]*>Doza e të rriturit<\/th>/);
+assert.match(html, /<th[^>]*data-col="pediatricDose"[^>]*>Doza pediatrike<\/th>/);
+assert.match(html, /registry-v2\.css\?v=[^"\s]+/);
+assert.match(html, /registry-v2\.js\?v=[^"\s]+/);
 
 for (const retired of [
   'registry-dose-calculator.js',
@@ -38,10 +38,16 @@ assert.match(js, /adultRoute/);
 assert.match(js, /pediatricRoute/);
 assert.match(js, /dose-cell/);
 assert.match(js, /route-chip/);
+assert.match(js, /data-dose-toggle/);
+assert.match(js, /syncDoseToggle/);
+assert.match(js, /Më shumë/);
+assert.match(js, /Më pak/);
 
 assert.match(css, /--clinical:#0f766e/);
 assert.match(css, /--pediatric:#2563eb/);
 assert.match(css, /\.registry-table td:nth-child\(9\) \.route-chip/);
+assert.match(css, /\.dose-toggle/);
+assert.match(css, /\.dose-cell\.is-expanded \.dose-text/);
 assert.match(css, /content:"Doza e të rriturit"/);
 assert.match(css, /content:"Doza pediatrike"/);
 assert.match(css, /border-left:3px solid #8bd4c8/);
