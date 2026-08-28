@@ -45,10 +45,30 @@ for (const file of allPages) {
   assert.match(html, /<meta name="theme-color" content="#1c1e54">/, `${file}: browser chrome must match the navy shell`);
 }
 
+function normalizedStandaloneSidebar(html) {
+  const start = html.indexOf('<aside class="sidebar"');
+  const end = html.indexOf('</aside>', start);
+  assert.ok(start >= 0 && end > start, 'Canonical standalone sidebar markup is missing');
+  return html.slice(start, end + 8)
+    .replace(/ class="nav-item is-active"/g, ' class="nav-item"')
+    .replace(/ aria-current="page"/g, '')
+    .replace(/(<details class="nav-group" id="atcNavGroup") open/g, '$1')
+    .replace(/>\s+</g, '><')
+    .replace(/\s+/g, ' ')
+    .trim();
+}
+
+const canonicalStandaloneSidebar = normalizedStandaloneSidebar(read('index.html'));
+
 for (const file of standalone) {
   const html = read(file);
   assert.match(html, /drx-unified-sidebar/, `${file}: standalone page must opt into canonical sidebar shell`);
   assert.match(html, /\/brand\/drx-horizontal-on-dark\.svg/, `${file}: dark sidebar must use the white horizontal DRx logo`);
+  assert.equal(
+    normalizedStandaloneSidebar(html),
+    canonicalStandaloneSidebar,
+    `${file}: standalone sidebar must stay structurally identical to the canonical Registry sidebar`,
+  );
 
   const styles = [...html.matchAll(/<link\b(?=[^>]*\brel=["']stylesheet["'])(?=[^>]*\bhref=["']([^"']+)["'])[^>]*>/gi)]
     .map(match => match[1]);
