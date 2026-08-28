@@ -13,8 +13,8 @@ const css = read('urgjencat-v2.css');
 const auth = read('auth-client.js');
 
 assert.match(html, /data-drx-app="urgjencat-v2"/);
-assert.match(html, /urgjencat-v2\.css\?v=3/);
-assert.match(html, /urgjencat-v2\.js\?v=3/);
+assert.match(html, /urgjencat-v2\.css\?v=4/);
+assert.match(html, /urgjencat-v2\.js\?v=4/);
 assert.match(html, /id="emergencyChapterSelect"/);
 assert.match(html, /id="emergencyLessonSelect"/);
 assert.match(html, /id="emergencySearch"/);
