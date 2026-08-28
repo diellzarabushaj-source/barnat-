@@ -80,6 +80,12 @@ for (const file of ['analizat.html','dozologjia.html','protokollet.html','receta
   assert.match(html, /tailadmin-shell\.js\?v=shell-profile-v4/, `${file}: shared TailAdmin sidebar cache-bust missing`);
 }
 
+for (const file of ['index.html','klasifikimi.html','icd.html','urgjencat.html','medical-hub.html']) {
+  const html = read(file);
+  assert.match(html, /drx-unified-sidebar/, `${file}: unified standalone sidebar marker missing`);
+  assert.match(html, /drx-dashboard-stripe\.css\?v=drx-dashboard-stripe-v3/, `${file}: shared Stripe sidebar authority missing`);
+}
+
 assert.match(stripe, /Shared taxonomy sidebar — ATC and ICD use one identical navy language/);
 assert.match(stripe, /#appMenu :is\(\.mi-atc-root-panel,\.mi-atc-submenu\)/);
 
