@@ -101,24 +101,20 @@
           <article class="metric-card"><span>Në shqip</span><strong id="metricCoverage">—</strong><small id="metricCoverageNote">Mbulimi i përkthimit</small></article>
         </div>
 
-        <nav class="icd-path" id="icdPath" aria-label="Rruga aktive ICD-10" hidden>
-          <span class="icd-path-label">Rruga ICD</span>
-          <div class="icd-path-items" id="icdPathItems"></div>
-          <button class="icd-path-reset" id="icdPathReset" type="button">Pastro</button>
-        </nav>
-
         <section class="icd-card">
+          <nav class="icd-path" id="icdPath" aria-label="Rruga aktive ICD-10" hidden>
+            <span class="icd-path-label">Rruga ICD</span>
+            <div class="icd-path-items" id="icdPathItems"></div>
+            <button class="icd-path-reset" id="icdPathReset" type="button">Pastro</button>
+          </nav>
+
           <div class="icd-toolbar">
             <div class="search-box">
               <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="11" cy="11" r="6.5"/><path d="m16 16 4 4"/></svg>
               <input id="icdSearch" type="search" autocomplete="off" spellcheck="false" placeholder="Kërko kodin ose diagnozën (p.sh. I10, hipertension, A00)…" aria-label="Kërko ICD-10">
               <kbd>Ctrl K</kbd>
             </div>
-          </div>
-
-          <div class="icd-status" role="status" aria-live="polite">
-            <span id="icdStatusText">Duke ngarkuar ICD-10…</span>
-            <span id="icdStatusMeta"></span>
+            <p class="icd-status" id="icdStatusText" role="status" aria-live="polite">Duke ngarkuar ICD-10…</p>
           </div>
 
           <div class="icd-workspace">
