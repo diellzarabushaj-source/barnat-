@@ -1685,3 +1685,101 @@ html.drx-unified-sidebar :is(input,select,textarea):focus-visible{
     transition:none!important;
   }
 }
+
+
+/* Canonical sidebar taxonomy depth — ATC groups/subgroups */
+.drx-unified-sidebar .atc-group-list,
+.medindex-tailadmin .atc-group-list{
+  display:grid;gap:2px;margin:3px 0 6px;padding:4px 0 5px 20px;
+  border-left:1px solid rgba(255,255,255,.13);
+}
+.drx-unified-sidebar .atc-group,
+.medindex-tailadmin .atc-group{display:block}
+.drx-unified-sidebar .atc-group-link,
+.medindex-tailadmin .atc-group-link{
+  position:relative;display:grid;grid-template-columns:24px minmax(0,1fr) auto;align-items:center;gap:9px;
+  min-height:31px;padding:4px 8px;border-radius:6px;color:rgba(255,255,255,.62);text-decoration:none;
+  cursor:pointer;list-style:none;transition:background .13s,color .13s;
+}
+.drx-unified-sidebar .atc-group-link::-webkit-details-marker,
+.medindex-tailadmin .atc-group-link::-webkit-details-marker{display:none}
+.drx-unified-sidebar .atc-group-link::before,
+.medindex-tailadmin .atc-group-link::before{
+  content:"";position:absolute;left:-21px;top:50%;width:2px;height:0;transform:translateY(-50%);
+  border-radius:2px;background:#8b84ff;transition:height .16s ease;
+}
+.drx-unified-sidebar .atc-group-link:hover,
+.medindex-tailadmin .atc-group-link:hover{background:rgba(255,255,255,.06);color:#fff}
+.drx-unified-sidebar .atc-group-link:hover::before,
+.medindex-tailadmin .atc-group-link:hover::before{height:14px}
+.drx-unified-sidebar .atc-group-link[aria-current="true"],
+.medindex-tailadmin .atc-group-link[aria-current="true"]{background:rgba(83,58,253,.20);color:#fff}
+.drx-unified-sidebar .atc-group-link[aria-current="true"]::before,
+.medindex-tailadmin .atc-group-link[aria-current="true"]::before{height:20px;background:#a29bff}
+.drx-unified-sidebar .atc-group-link:focus-visible,
+.medindex-tailadmin .atc-group-link:focus-visible{outline:0;box-shadow:0 0 0 2px rgba(162,155,255,.65)}
+.drx-unified-sidebar .atc-group-code,
+.medindex-tailadmin .atc-group-code{
+  display:grid;height:19px;place-items:center;border-radius:5px;background:rgba(255,255,255,.09);
+  color:rgba(255,255,255,.78);font:600 10px/1 ui-monospace,SFMono-Regular,Menlo,monospace;
+}
+.drx-unified-sidebar .atc-group-name,
+.medindex-tailadmin .atc-group-name{overflow:hidden;font-size:11px;text-overflow:ellipsis;white-space:nowrap}
+.drx-unified-sidebar .atc-group-caret,
+.medindex-tailadmin .atc-group-caret{
+  display:grid;place-items:center;opacity:.42;transition:transform .18s ease,opacity .15s;
+}
+.drx-unified-sidebar .atc-group-caret .icon,
+.medindex-tailadmin .atc-group-caret .icon{width:13px;height:13px}
+.drx-unified-sidebar .atc-group[open]>.atc-group-link .atc-group-caret,
+.medindex-tailadmin .atc-group[open]>.atc-group-link .atc-group-caret{transform:rotate(180deg);opacity:.8}
+.drx-unified-sidebar .atc-group-link.is-all,
+.medindex-tailadmin .atc-group-link.is-all{grid-template-columns:24px minmax(0,1fr);margin-bottom:3px}
+.drx-unified-sidebar .atc-sub-list,
+.medindex-tailadmin .atc-sub-list{
+  display:grid;gap:1px;margin:2px 0 5px;padding:2px 0 2px 12px;border-left:1px solid rgba(255,255,255,.10);
+}
+.drx-unified-sidebar .atc-sub-link,
+.medindex-tailadmin .atc-sub-link{
+  position:relative;display:grid;grid-template-columns:30px minmax(0,1fr);align-items:center;gap:8px;
+  min-height:27px;padding:3px 7px;border-radius:6px;color:rgba(255,255,255,.55);text-decoration:none;
+  transition:background .13s,color .13s;
+}
+.drx-unified-sidebar .atc-sub-link::before,
+.medindex-tailadmin .atc-sub-link::before{
+  content:"";position:absolute;left:-13px;top:50%;width:2px;height:0;transform:translateY(-50%);
+  border-radius:2px;background:#8b84ff;transition:height .16s ease;
+}
+.drx-unified-sidebar .atc-sub-link:hover,
+.medindex-tailadmin .atc-sub-link:hover{background:rgba(255,255,255,.055);color:#fff}
+.drx-unified-sidebar .atc-sub-link:hover::before,
+.medindex-tailadmin .atc-sub-link:hover::before{height:12px}
+.drx-unified-sidebar .atc-sub-link[aria-current="true"],
+.medindex-tailadmin .atc-sub-link[aria-current="true"]{background:rgba(83,58,253,.20);color:#fff}
+.drx-unified-sidebar .atc-sub-link[aria-current="true"]::before,
+.medindex-tailadmin .atc-sub-link[aria-current="true"]::before{height:16px;background:#a29bff}
+.drx-unified-sidebar .atc-sub-code,
+.medindex-tailadmin .atc-sub-code{
+  color:rgba(255,255,255,.72);font:600 9.5px/1 ui-monospace,SFMono-Regular,Menlo,monospace;
+}
+.drx-unified-sidebar .atc-sub-name,
+.medindex-tailadmin .atc-sub-name{overflow:hidden;font-size:10.5px;text-overflow:ellipsis;white-space:nowrap}
+
+@media(max-width:760px){
+  .drx-unified-sidebar .atc-group-link,
+  .medindex-tailadmin .atc-group-link{min-height:40px}
+  .drx-unified-sidebar .atc-sub-link,
+  .medindex-tailadmin .atc-sub-link{min-height:36px}
+}
+@media(prefers-reduced-motion:reduce){
+  .drx-unified-sidebar .atc-group-link,
+  .drx-unified-sidebar .atc-sub-link,
+  .drx-unified-sidebar .atc-group-caret,
+  .drx-unified-sidebar .atc-group-link::before,
+  .drx-unified-sidebar .atc-sub-link::before,
+  .medindex-tailadmin .atc-group-link,
+  .medindex-tailadmin .atc-sub-link,
+  .medindex-tailadmin .atc-group-caret,
+  .medindex-tailadmin .atc-group-link::before,
+  .medindex-tailadmin .atc-sub-link::before{transition:none}
+}
