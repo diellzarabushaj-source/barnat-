@@ -9,9 +9,9 @@
   const MOBILE_BREAKPOINT = 1199;
   const TOLERANCE_PX = 2;
   const VISIBILITY_STYLE_ID = 'registry-layout-body-visibility';
-  const REMOVED_KEYS = new Set(['clinical-status', 'clinical-action', 'personal-note']);
+  const REMOVED_KEYS = new Set(['clinical-status', 'clinical-action', 'dose-calculator', 'personal-note']);
   const NEVER_FLEX = new Set([
-    'select', 'number', 'dose-calculator', 'strength', 'status', 'atc', 'pdid',
+    'select', 'number', 'strength', 'status', 'atc', 'pdid',
     'protocol', 'wholesale-price', 'margin-price', 'vat', 'retail-price', 'validity',
   ]);
   const FLEX_WEIGHTS = Object.freeze({
@@ -33,7 +33,7 @@
     'prescription-label':235, packaging:150, mah:190, manufacturer:180,
     'ma-certificate':138, status:112, 'wholesale-price':116, 'margin-price':116,
     vat:78, 'retail-price':116, validity:140, 'dosage-adult':250,
-    'dosage-pediatric':250, 'dose-calculator':132,
+    'dosage-pediatric':250,
   });
   const DESKTOP_GEOMETRY_RULES = `
 #dataTable[data-registry-unified-table] :is(th,td).registry-dosage-column {
@@ -50,7 +50,6 @@
   let rootObserver = null;
 
   const clean = value => String(value ?? '').trim();
-  const doseVisible = () => ROOT.dataset.registryDoseColumnVisible === 'true';
   const escapeSelector = value => window.CSS?.escape
     ? window.CSS.escape(String(value ?? ''))
     : String(value ?? '').replace(/["\\]/g, '\\$&');
@@ -62,17 +61,12 @@
 
   function shouldShow(table, key) {
     if (!key || REMOVED_KEYS.has(key)) return false;
-    if (key === 'dose-calculator' && !doseVisible()) return false;
     const header = headerFor(table, key);
     if (!header) return false;
     return getComputedStyle(header).display !== 'none';
   }
 
   function rememberedWidth(col, key) {
-    if (key === 'dose-calculator') {
-      col.dataset.registryLayoutBaseWidth = String(FALLBACK_WIDTHS[key]);
-      return FALLBACK_WIDTHS[key];
-    }
     const remembered = Number(col.dataset.registryLayoutBaseWidth);
     if (Number.isFinite(remembered) && remembered > 0) return remembered;
     const inlineWidth = Number.parseFloat(col.style.width || '');
@@ -177,9 +171,6 @@
         const header = headerFor(table, key);
         return Boolean(header && getComputedStyle(header).display !== 'none');
       });
-      const calculatorHeader = headerFor(table, 'dose-calculator');
-      const calculatorActuallyVisible = Boolean(calculatorHeader && getComputedStyle(calculatorHeader).display !== 'none');
-      const calculatorStateMatches = calculatorActuallyVisible === doseVisible();
       const measuredTableWidth = Math.round(table.getBoundingClientRect().width || 0);
       const wrapperWidth = Math.max(0, Math.round(wrapper.clientWidth || 0));
       const overflowPx = Math.max(0, Math.ceil(table.scrollWidth - wrapper.clientWidth));
@@ -191,9 +182,6 @@
         version:VERSION,
         mode:'desktop',
         view:ROOT.dataset.registryUxView || 'clinical',
-        doseCalculatorVisible:doseVisible(),
-        calculatorActuallyVisible,
-        calculatorStateMatches,
         visibleColumns:visibleRecords.length,
         hiddenColumns,
         baseVisibleWidth:Math.ceil(fit.baseContentWidth),
@@ -207,8 +195,7 @@
         stretchedToFit:fit.stretched,
         removedColumnsStillVisible,
         excessReservedWidth:Math.max(0, targetWidth - Math.max(contentWidth, wrapperWidth)),
-        stable:calculatorStateMatches
-          && removedColumnsStillVisible.length === 0
+        stable:removedColumnsStillVisible.length === 0
           && !phantomOverflow
           && !widthMismatch,
       });
@@ -242,7 +229,7 @@
       rootObserver = new MutationObserver(schedule);
       rootObserver.observe(ROOT, {
         attributes:true,
-        attributeFilter:['class', 'data-registry-ux-view', 'data-registry-dose-column-visible'],
+        attributeFilter:['class', 'data-registry-ux-view'],
       });
     }
   }
