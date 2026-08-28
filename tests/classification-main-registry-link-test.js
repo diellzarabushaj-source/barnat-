@@ -17,7 +17,7 @@ const vercel = JSON.parse(read('vercel.json'));
 assert.match(html, /data-drx-app="classification-v2"/);
 assert.match(html, /classification-v2\.css\?v=1/);
 assert.match(html, /classification-data\.js\?v=atc-catalog-v2/);
-assert.match(html, /classification-v2\.js\?v=1/);
+assert.match(html, /classification-v2\.js\?v=sidebar-taxonomy-v3/);
 assert.doesNotMatch(html, /classification-redirect\.js|tailadmin-|medindex-tailadmin/);
 assert.match(html, /id="atcSearch"/);
 assert.match(html, /id="groupList"/);
