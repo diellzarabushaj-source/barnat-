@@ -68,10 +68,13 @@ for (const file of ['index.html','klasifikimi.html','icd.html']) {
   const html = read(file);
   assert.match(html, /profile-columns-v4/, `${file}: V2 runtime cache-bust missing`);
 }
-for (const [htmlFile, runtime] of [['urgjencat.html','urgjencat-v2.js'],['medical-hub.html','medical-hub-v2.js']]) {
+for (const [htmlFile, runtime, version] of [
+  ['urgjencat.html','urgjencat-v2.js','4'],
+  ['medical-hub.html','medical-hub-v2.js','1'],
+]) {
   const html = read(htmlFile);
   const js = read(runtime);
-  assert.match(html, new RegExp(runtime.replace('.', '\\.') + '\\?v=1'), `${htmlFile}: standalone V2 runtime missing`);
+  assert.match(html, new RegExp(runtime.replace('.', '\\.') + '\\?v=' + version), `${htmlFile}: standalone V2 runtime missing`);
   assert.match(js, /sidebar-taxonomy-v3\.js\?v=sidebar-taxonomy-v3/, `${runtime}: shared taxonomy loader missing`);
 }
 
@@ -83,7 +86,7 @@ for (const file of ['analizat.html','dozologjia.html','protokollet.html','receta
 for (const file of ['index.html','klasifikimi.html','icd.html','urgjencat.html','medical-hub.html']) {
   const html = read(file);
   assert.match(html, /drx-unified-sidebar/, `${file}: unified standalone sidebar marker missing`);
-  assert.match(html, /drx-dashboard-stripe\.css\?v=drx-dashboard-stripe-v3/, `${file}: shared Stripe sidebar authority missing`);
+  assert.match(html, /drx-dashboard-stripe\.css\?v=drx-dashboard-stripe-v4/, `${file}: shared Stripe sidebar authority missing`);
 }
 
 assert.match(stripe, /Shared taxonomy sidebar — ATC and ICD use one identical navy language/);
