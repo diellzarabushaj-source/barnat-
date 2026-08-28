@@ -1,8 +1,8 @@
 :root{
-  --teal-dark:#0d4145;
-  --teal:#1f7779;
-  --teal-hover:#155f63;
-  --teal-soft:#eaf4f1;
+  --teal-dark:#2e2b8c;
+  --teal:#533afd;
+  --teal-hover:#4434d4;
+  --teal-soft:#f0efff;
   --amber:#b54708;
   --amber-soft:#fffaeb;
   --ink:#101828;
@@ -78,7 +78,7 @@ body{
 .med-nav-link.active,
 .med-nav-link[aria-current="page"]{
   background:var(--teal-soft);
-  border-color:#d6eae5;
+  border-color:#d9d6ff;
   color:var(--teal-hover);
   font-weight:600;
 }
@@ -245,14 +245,14 @@ body{
   transition:border-color .15s ease,box-shadow .15s ease,background-color .15s ease;
 }
 .med-card:hover{
-  border-color:#b6d8d0;
+  border-color:#c7c4ff;
   background:#fff;
   box-shadow:0 2px 8px rgba(16,24,40,.07);
 }
 .med-card-code{
   display:inline-flex;
   padding:4px 7px;
-  border:1px solid #d6eae5;
+  border:1px solid #d9d6ff;
   border-radius:6px;
   background:var(--teal-soft);
   color:var(--teal-hover);
@@ -387,7 +387,7 @@ body{
 .med-range{
   margin-top:10px;
   padding:10px;
-  border:1px solid #d6eae5;
+  border:1px solid #d9d6ff;
   border-radius:8px;
   background:var(--teal-soft);
   color:var(--teal-hover);
