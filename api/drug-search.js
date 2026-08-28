@@ -1,14 +1,17 @@
 'use strict';
 
 const { supabaseRequest, exactCount } = require('../lib/supabase-data-api.js');
+const registryHandler = require('./registry.js');
 
 const REGISTRY_DEFAULT_PAGE_SIZE = 25;
 const REGISTRY_MAX_PAGE_SIZE = 50;
+const MAX_QUERY = 160;
+const MAX_RESULTS = 20;
 const SEARCH_LIMIT = 20;
 
 const LIST_SELECT = [
   'id','registry_number','pdid','trade_name','active_substance','atc_code','drug_class','use_text',
-  'strength','pharmaceutical_form','product_status','retail_price'
+  'strength','pharmaceutical_form','product_status','retail_price','editorial_status'
 ].join(',');
 
 const DETAIL_SELECT = [
