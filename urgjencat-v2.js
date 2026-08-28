@@ -63,6 +63,13 @@
   let abbreviationTooltip = null;
   let activeAbbreviationButton = null;
   let abbreviationCloseTimer = 0;
+  let figureLightbox = null;
+  let figureLightboxReturnFocus = null;
+  let figureLightboxState = null;
+
+  function mobilePopoverMode() {
+    return Boolean(window.matchMedia?.('(hover: none), (pointer: coarse)').matches);
+  }
 
   function abbreviationByKey(lesson, key) {
     return (lesson?.abbreviations || []).find(item => String(item._key) === String(key)) || null;
@@ -90,7 +97,8 @@
       const item = byTerm.get(term);
       html += esc(text.slice(cursor, index));
       if (item) {
-        html += '<button type="button" class="ec-abbr-token" data-abbr-key="' + esc(item._key) + '" aria-haspopup="true" aria-expanded="false">' + esc(term) + '<span aria-hidden="true">i</span></button>';
+        const number = Number(item.footnoteNumber);
+        html += '<button type="button" class="ec-abbr-token" data-abbr-key="' + esc(item._key) + '" aria-haspopup="true" aria-controls="ecAbbrTooltip" aria-expanded="false" aria-label="Shpjego ' + esc(term) + '">' + esc(term) + (Number.isFinite(number) ? '<sup aria-hidden="true">' + esc(number) + '</sup>' : '') + '</button>';
       } else html += esc(term);
       cursor = index + term.length;
     }
@@ -111,6 +119,21 @@
   }
 
   function positionAbbreviationTooltip(button, tooltip) {
+    const coarse = mobilePopoverMode();
+    tooltip.classList.toggle('is-popover', coarse);
+    tooltip.setAttribute('role', coarse ? 'dialog' : 'tooltip');
+    if (coarse) {
+      tooltip.style.width = '';
+      tooltip.style.left = '12px';
+      tooltip.style.right = '12px';
+      tooltip.style.top = 'auto';
+      tooltip.style.bottom = '12px';
+      tooltip.classList.remove('is-above');
+      return;
+    }
+
+    tooltip.style.right = '';
+    tooltip.style.bottom = '';
     const rect = button.getBoundingClientRect();
     const gap = 8;
     const width = Math.min(320, Math.max(230, tooltip.offsetWidth || 280));
@@ -133,7 +156,8 @@
       activeAbbreviationButton.classList.remove('is-open');
     }
     const tooltip = ensureAbbreviationTooltip();
-    tooltip.innerHTML = '<div class="ec-abbr-tooltip-head"><strong>' + esc(item.abbreviation) + '</strong>' + (item.fullTermEn ? '<span>' + esc(item.fullTermEn) + '</span>' : '') + '</div>' + (item.explanationSq ? '<p>' + esc(item.explanationSq) + '</p>' : '');
+    tooltip.innerHTML = '<button type="button" class="ec-abbr-tooltip-close" aria-label="Mbyll shpjegimin">×</button><div class="ec-abbr-tooltip-head"><strong>' + esc(item.abbreviation) + '</strong>' + (item.fullTermEn ? '<span>' + esc(item.fullTermEn) + '</span>' : '') + '</div>' + (item.explanationSq ? '<p>' + esc(item.explanationSq) + '</p>' : '');
+    tooltip.querySelector('.ec-abbr-tooltip-close')?.addEventListener('click', () => closeAbbreviationTooltip());
     tooltip.hidden = false;
     activeAbbreviationButton = button;
     button.classList.add('is-open');
@@ -287,6 +311,10 @@
     $('#logoutButton')?.addEventListener('click', logout);
     window.addEventListener('keydown', event => {
       if (event.key === 'Escape') {
+        if (figureLightbox && !figureLightbox.hidden) {
+          closeFigureLightbox();
+          return;
+        }
         if (activeAbbreviationButton) {
           closeAbbreviationTooltip();
           return;
@@ -661,6 +689,84 @@
     return figureSrcCandidates(figure)[0] || '';
   }
 
+  function ensureFigureLightbox() {
+    if (figureLightbox?.isConnected) return figureLightbox;
+    const overlay = document.createElement('div');
+    overlay.className = 'ec-figure-lightbox';
+    overlay.id = 'ecFigureLightbox';
+    overlay.hidden = true;
+    overlay.setAttribute('role', 'dialog');
+    overlay.setAttribute('aria-modal', 'true');
+    overlay.setAttribute('aria-label', 'Zmadhimi i figurës');
+    overlay.innerHTML = `
+      <div class="ec-figure-lightbox-card">
+        <button type="button" class="ec-figure-lightbox-close" aria-label="Mbyll figurën">×</button>
+        <div class="ec-figure-lightbox-stage">
+          <img class="ec-figure-lightbox-image" alt="">
+        </div>
+        <div class="ec-figure-lightbox-caption"></div>
+      </div>
+    `;
+    overlay.addEventListener('pointerdown', event => {
+      if (event.target === overlay) closeFigureLightbox();
+    });
+    overlay.querySelector('.ec-figure-lightbox-close')?.addEventListener('click', closeFigureLightbox);
+    overlay.querySelector('.ec-figure-lightbox-image')?.addEventListener('error', () => {
+      if (!figureLightboxState) return;
+      figureLightboxState.index += 1;
+      const next = figureLightboxState.candidates[figureLightboxState.index];
+      if (next) overlay.querySelector('.ec-figure-lightbox-image').src = next;
+    });
+    document.body.appendChild(overlay);
+    figureLightbox = overlay;
+    return overlay;
+  }
+
+  function closeFigureLightbox() {
+    if (!figureLightbox || figureLightbox.hidden) return;
+    figureLightbox.hidden = true;
+    figureLightboxState = null;
+    document.body.classList.remove('ec-modal-open');
+    const returnFocus = figureLightboxReturnFocus;
+    figureLightboxReturnFocus = null;
+    returnFocus?.focus?.({ preventScroll:true });
+  }
+
+  function openFigureLightbox(lesson, key, trigger) {
+    const figure = figuresForLesson(lesson).find(item =>
+      String(item?._key || item?.figureNumber || '') === String(key)
+    );
+    if (!figure) return;
+    const candidates = figureSrcCandidates(figure);
+    if (!candidates.length) return;
+
+    closeAbbreviationTooltip();
+    const overlay = ensureFigureLightbox();
+    const image = overlay.querySelector('.ec-figure-lightbox-image');
+    const caption = overlay.querySelector('.ec-figure-lightbox-caption');
+    const label = figure.visualType === 'table' ? 'Tabela' : 'Figura';
+
+    figureLightboxState = { candidates, index:0 };
+    figureLightboxReturnFocus = trigger || document.activeElement;
+    image.alt = figure.alt || figure.caption || `${label} ${figure.figureNumber || ''}`;
+    image.src = candidates[0];
+    caption.innerHTML =
+      '<div><strong>' + esc(label + ' ' + (figure.figureNumber || '')) + '</strong>' +
+      (figure.sourcePdfPage ? '<span>PDF f. ' + esc(figure.sourcePdfPage) + '</span>' : '') +
+      '</div>' +
+      (figure.caption ? '<p>' + inlineClinicalText(lesson, figure.caption) + '</p>' : '');
+
+    overlay.hidden = false;
+    document.body.classList.add('ec-modal-open');
+    requestAnimationFrame(() => overlay.querySelector('.ec-figure-lightbox-close')?.focus({ preventScroll:true }));
+  }
+
+  function bindFigureLightbox(root, lesson) {
+    root?.querySelectorAll?.('[data-figure-open]')?.forEach(button => {
+      button.addEventListener('click', () => openFigureLightbox(lesson, button.dataset.figureOpen, button));
+    });
+  }
+
   function figureMarkup(lesson, figure) {
     if (!figure) return '';
     const src = figureSrc(figure);
@@ -668,17 +774,24 @@
     if (!src) {
       return `<span class="ec-figure-chip">${label} ${esc(figure.figureNumber)}${figure.sourcePdfPage ? ` · PDF f. ${esc(figure.sourcePdfPage)}` : ''}</span>`;
     }
+    const key = figure._key || figure.figureNumber || '';
     return `
-      <figure class="ec-figure-card" data-figure-card="${esc(figure._key || figure.figureNumber || '')}">
-        <img
-          src="${esc(src)}"
-          data-figure-key="${esc(figure._key || figure.figureNumber || '')}"
-          data-figure-src-index="0"
-          alt="${esc(figure.alt || figure.caption || `${label} ${figure.figureNumber}`)}"
-          loading="lazy"
-          decoding="async"
-        >
-        <figcaption><strong>${label} ${esc(figure.figureNumber)}.</strong> ${inlineClinicalText(lesson, figure.caption || '')}</figcaption>
+      <figure class="ec-figure-card" data-figure-card="${esc(key)}">
+        <button type="button" class="ec-figure-zoom" data-figure-open="${esc(key)}" aria-label="Zmadho ${esc(label)} ${esc(figure.figureNumber || '')}">
+          <img
+            src="${esc(src)}"
+            data-figure-key="${esc(key)}"
+            data-figure-src-index="0"
+            alt="${esc(figure.alt || figure.caption || `${label} ${figure.figureNumber}`)}"
+            loading="lazy"
+            decoding="async"
+          >
+          <span class="ec-figure-zoom-hint" aria-hidden="true">Zmadho</span>
+        </button>
+        <figcaption>
+          <div class="ec-figure-caption-head"><strong>${label} ${esc(figure.figureNumber)}.</strong>${figure.sourcePdfPage ? `<span>PDF f. ${esc(figure.sourcePdfPage)}</span>` : ''}</div>
+          ${figure.caption ? `<p>${inlineClinicalText(lesson, figure.caption)}</p>` : ''}
+        </figcaption>
       </figure>
     `;
   }
@@ -797,8 +910,6 @@
     const section = lesson.section || currentSection();
     const sections = [...(lesson.lessonSections || [])].sort((a, b) => (Number(a.order) || 999) - (Number(b.order) || 999));
     const subtopics = [...(lesson.subtopics || [])].sort((a, b) => (Number(a.order) || 999) - (Number(b.order) || 999));
-    const abbreviations = [...(lesson.abbreviations || [])].sort((a, b) => (Number(a.footnoteNumber) || 999) - (Number(b.footnoteNumber) || 999));
-    const figures = [...figuresForLesson(lesson)];
     const mediaPending = (lesson.figures || []).length > 0 && !figureCache.has(lesson._id);
     const sequence = visibleLessonSequence();
     const lessonIndex = sequence.findIndex(item => item._id === lesson._id);
@@ -881,15 +992,6 @@
             `
             : `<div class="ec-quick-summary"><span>Përmbajtja</span><p>Ky mësim është krijuar në strukturën e re. Përmbajtja klinike do të plotësohet nga kapitulli përkatës i Tintinalli-t.</p></div>`}
 
-        ${figures.length && !sections.length ? `
-          <section class="ec-footnotes ec-lesson-figures">
-            <h3>Figurat e kapitullit</h3>
-            <div class="ec-figure-overview">
-              ${figures.map(figure => figureMarkup(lesson, figure)).join('')}
-            </div>
-          </section>
-        ` : ''}
-
         <div class="ec-source-meta">
           ${lesson.sourceBook ? `<span>${esc(lesson.sourceBook)}</span>` : ''}
           ${lesson.sourceEdition ? `<span>${esc(lesson.sourceEdition)}</span>` : ''}
@@ -917,7 +1019,16 @@
     `;
 
     bindFigureFallbacks(root, lesson);
+    bindFigureLightbox(root, lesson);
     bindInlineAbbreviations(root);
+
+    if (sections.length) {
+      const linked = new Set(sections.flatMap(item => item.figureNumbers || []).map(String));
+      const unlinked = figuresForLesson(lesson).filter(item => item?.figureNumber && !linked.has(String(item.figureNumber)));
+      if (unlinked.length) {
+        console.warn('[Urgjencat v2] Figura pa nënseksion nuk renderohen në fund të mësimit:', unlinked.map(item => item.figureNumber));
+      }
+    }
 
     root.querySelectorAll('[data-section-jump]').forEach(button => {
       button.addEventListener('click', () => {
