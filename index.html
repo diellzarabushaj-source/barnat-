@@ -1,147 +1,179 @@
-<!DOCTYPE html>
-<html lang="sq" class="auth-checking medindex-clean-ui medindex-tailadmin mi-shell-booting" data-mi-page="barnat" data-registry-ux-view="clinical" data-registry-ui-release="20260812-1" data-medindex-build-id="registry-r20260812-1">
+<!doctype html>
+<html lang="sq" data-drx-app="registry-v2">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-<meta name="robots" content="noindex,nofollow,noarchive">
-<meta name="theme-color" content="#1d4ed8">
-<meta name="medindex-build-id" content="registry-r20260812-1">
-<link rel="manifest" href="manifest.webmanifest">
-<title>DRx | Regjistri i Barnave — Dr. Diellza Rabushaj</title>
-<link rel="preload" href="/fonts/inter-latin-variable-normal.woff2" as="font" type="font/woff2" crossorigin>
-<link rel="stylesheet" href="drx-clinical-system.css?v=drx-clinical-system-v1">
-<link rel="stylesheet" href="styles.css?v=20260723-2">
-<link rel="stylesheet" href="ui-controls.css?v=20260722-7">
-<link rel="stylesheet" href="loader.css?v=20260722-6">
-<link rel="stylesheet" href="app-polish.css?v=20260728-1">
-<link rel="stylesheet" href="performance.css?v=20260723-1">
-<link rel="stylesheet" href="clean-medindex-ui.css?v=20260723-1">
-<link rel="stylesheet" href="tailadmin-medindex.css?v=20260728-1" data-tailadmin-medindex-css>
-<link rel="stylesheet" href="form-picker-clinical.css?v=20260725-1">
-<link rel="stylesheet" href="registry-dosage-columns.css?v=20260805-2&build=registry-r20260812-1">
-<link rel="preload" href="first-page-clinical.css?v=20260731-1" as="style">
-<link rel="stylesheet" href="registry-cell-preview.css?v=20260805-4&build=registry-r20260812-1" data-registry-cell-preview-css>
-<link rel="stylesheet" href="registry-verification-ui.css?v=20260801-1&build=registry-r20260812-1" data-registry-verification-ui-css>
-<link rel="stylesheet" href="registry-unified-table.css?v=20260801-1&build=registry-r20260812-1" data-registry-unified-table-css>
-<link rel="stylesheet" href="registry-full-text-expansion.css?v=20260805-2&build=registry-r20260812-1" data-registry-full-text-expansion-css>
-<link rel="stylesheet" href="registry-atc-context.css?v=atc-context-v1&build=registry-r20260812-1" data-registry-atc-context-css>
-<link rel="stylesheet" href="registry-mobile-critical.css?v=20260810-1&build=registry-r20260812-1" data-registry-mobile-critical-css>
-<link rel="stylesheet" href="registry-mobile-lite.css?v=20260812-1&build=registry-r20260812-1" data-registry-mobile-lite-css>
-<link rel="stylesheet" href="registry-mobile-phase3.css?v=20260812-1&build=registry-r20260812-1" data-registry-mobile-phase3-css>
-<link rel="stylesheet" href="registry-mobile-phase4.css?v=20260812-2&build=registry-r20260812-1" data-registry-mobile-phase4-css>
-<link rel="stylesheet" href="registry-mobile-design-audit.css?v=20260812-1&build=registry-r20260812-1" data-registry-mobile-design-audit-css>
-<link rel="stylesheet" href="registry-mobile-phone-hardening.css?v=20260812-1&build=registry-r20260812-1" data-registry-mobile-phone-hardening-css>
-<link rel="stylesheet" href="registry-column-picker-tailwind.css?v=20260805-3&build=registry-r20260812-1" data-registry-column-picker-tailwind-css>
-<link rel="stylesheet" href="registry-user-personalization.css?v=20260816-7&ux=20260817-1&build=registry-r20260812-1">
-<link rel="stylesheet" href="personal-drugs-ui.css?v=multiuser-v1">
-<link rel="stylesheet" href="registry-ux-phase1.css?v=20260810-1&build=registry-r20260812-1">
-<link rel="stylesheet" href="registry-ux-phase2.css?v=20260810-1&build=registry-r20260812-1">
-<link rel="stylesheet" href="registry-ux-phase3.css?v=20260810-1&build=registry-r20260812-1">
-<link rel="stylesheet" href="registry-tablet-rows.css?v=20260816-1&build=registry-r20260812-1" data-registry-tablet-rows-css>
-<link rel="stylesheet" href="registry-typography-scale.css?v=20260816-1&build=registry-r20260812-1" data-registry-typography-scale-css>
-<link rel="stylesheet" href="registry-touch-targets.css?v=20260816-1&build=registry-r20260812-1" data-registry-touch-targets-css>
-<link rel="stylesheet" href="registry-list-view.css?v=list-view-v1" data-registry-list-view-css>
-<link rel="stylesheet" href="registry-search-suggest.css?v=search-suggest-v1" data-registry-search-suggest-css>
-<link rel="stylesheet" href="drx-dashboard-stripe.css?v=drx-dashboard-stripe-v1">
-<link rel="stylesheet" href="tailadmin-professional.css?v=20260811-3" data-tailadmin-professional-css>
-<link rel="stylesheet" href="registry-table-tools.css?v=20260828-admin-stripe-v2&build=registry-r20260812-1" data-registry-table-tools-css>
-<script src="tailadmin-shell.js?v=production-audit-v2" defer></script>
-<script src="user-library-client.js?v=20260817-event-sync-1&ls=20260817-1" defer></script>
-<script src="tailadmin-professional.js?v=production-audit-v2" defer></script>
-<script src="first-page-style-loader.js?v=20260828-4" defer></script>
-<script src="registry-runtime-integrity.js?v=registry-runtime-integrity-v1&build=registry-r20260812-1" defer></script>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+  <meta name="robots" content="noindex,nofollow,noarchive">
+  <meta name="theme-color" content="#ffffff">
+  <title>DRx | Regjistri i barnave</title>
+  <link rel="icon" href="/brand/drx-icon-silver.svg" type="image/svg+xml">
+  <link rel="preload" href="/fonts/inter-latin-variable-normal.woff2" as="font" type="font/woff2" crossorigin>
+  <link rel="stylesheet" href="/registry-v2.css?v=1">
+  <script src="/registry-v2.js?v=1" defer></script>
 </head>
 <body>
-<a class="skip-link" href="#registryContent">Kalo te regjistri i barnave</a>
-<div class="page-loader" id="pageLoader" role="status" aria-live="polite" aria-label="Duke i ngarkuar barnat">
-  <div class="loader-content">
-    <div class="wrapper" aria-hidden="true">
-      <div class="circle"></div><div class="circle"></div><div class="circle"></div>
-      <div class="shadow"></div><div class="shadow"></div><div class="shadow"></div>
+  <div class="app-shell" id="appShell" aria-busy="true">
+    <aside class="sidebar" id="sidebar" aria-label="Navigimi kryesor">
+      <div class="sidebar-head">
+        <a class="brand" href="/index.html" aria-label="DRx — Regjistri">
+          <img src="/brand/drx-horizontal-dark.svg" alt="DRx" width="112" height="33">
+        </a>
+        <button class="icon-button sidebar-close" id="sidebarClose" type="button" aria-label="Mbyll menynë">
+          <span aria-hidden="true">×</span>
+        </button>
+      </div>
+
+      <nav class="nav-stack">
+        <p class="nav-label">Klinike</p>
+        <a class="nav-item is-active" href="/index.html" aria-current="page"><span class="nav-icon">Rx</span><span>Barnat</span></a>
+        <a class="nav-item" href="/klasifikimi.html"><span class="nav-icon">AT</span><span>Klasifikimi ATC</span></a>
+        <a class="nav-item" href="/icd.html"><span class="nav-icon">10</span><span>ICD‑10</span></a>
+        <a class="nav-item" href="/dozologjia.html"><span class="nav-icon">mg</span><span>Dozologjia</span></a>
+        <a class="nav-item" href="/protokollet.html"><span class="nav-icon">P</span><span>Protokollet</span></a>
+        <a class="nav-item" href="/urgjencat.html"><span class="nav-icon">!</span><span>Urgjencat</span></a>
+
+        <p class="nav-label nav-label-spaced">Puna ime</p>
+        <a class="nav-item" href="/recetat.html"><span class="nav-icon">R</span><span>Recetat</span></a>
+        <a class="nav-item" href="/analizat.html"><span class="nav-icon">A</span><span>Analizat</span></a>
+        <a class="nav-item" href="/medical-hub.html"><span class="nav-icon">+</span><span>Medical Hub</span></a>
+      </nav>
+
+      <div class="sidebar-foot">
+        <div class="source-card">
+          <span class="source-dot" aria-hidden="true"></span>
+          <div><strong>Neon clinical registry</strong><small id="sourceStatus">Duke u lidhur…</small></div>
+        </div>
+        <button class="nav-item logout-button" id="logoutButton" type="button"><span class="nav-icon">↗</span><span>Dil</span></button>
+      </div>
+    </aside>
+
+    <div class="sidebar-backdrop" id="sidebarBackdrop" hidden></div>
+
+    <main class="main-shell">
+      <header class="topbar">
+        <button class="icon-button menu-button" id="menuButton" type="button" aria-label="Hap menynë">☰</button>
+        <div class="breadcrumbs" aria-label="Pozicioni aktual">
+          <span>DRx</span><span class="crumb-sep">/</span><strong>Barnat</strong>
+        </div>
+        <div class="topbar-actions">
+          <span class="sync-pill"><span class="sync-dot"></span><span id="syncText">Neon</span></span>
+          <button class="avatar-button" id="profileButton" type="button" aria-label="Profili"><span id="avatarInitials">DR</span></button>
+        </div>
+      </header>
+
+      <section class="page-wrap" aria-labelledby="pageTitle">
+        <div class="page-heading">
+          <div>
+            <p class="eyebrow">Regjistri klinik</p>
+            <h1 id="pageTitle">Barnat</h1>
+            <p class="page-subtitle">Kërko, filtro dhe hap detajet klinike pa u larguar nga tabela.</p>
+          </div>
+          <div class="heading-actions">
+            <button class="button button-secondary" id="refreshButton" type="button">Rifresko</button>
+            <button class="button button-primary" id="openPrescriptionButton" type="button" disabled>Hap recetën <span id="selectedCount">0</span></button>
+          </div>
+        </div>
+
+        <div class="metrics-row" aria-label="Përmbledhje e regjistrit">
+          <article class="metric-card"><span>Rezultate</span><strong id="metricTotal">—</strong><small id="metricScope">Në regjistrin aktiv</small></article>
+          <article class="metric-card"><span>Faqja</span><strong id="metricPage">1</strong><small id="metricPageSize">50 për faqe</small></article>
+          <article class="metric-card"><span>Burimi</span><strong>Neon</strong><small id="metricSource">Server-side</small></article>
+          <article class="metric-card"><span>Filtra aktivë</span><strong id="metricFilters">0</strong><small>Kërkim, status, formë</small></article>
+        </div>
+
+        <section class="data-card" aria-label="Tabela e barnave">
+          <div class="data-card-head">
+            <div class="search-box">
+              <svg viewBox="0 0 24 24" aria-hidden="true"><path d="m21 21-4.35-4.35m2.35-5.65a8 8 0 1 1-16 0 8 8 0 0 1 16 0Z"/></svg>
+              <input id="searchInput" type="search" autocomplete="off" placeholder="Kërko barin, substancën, ATC, klasën, përdorimin…" aria-label="Kërko barnat">
+              <kbd>⌘K</kbd>
+            </div>
+            <div class="toolbar-actions">
+              <button class="button button-secondary filter-toggle" id="filterToggle" type="button" aria-expanded="false" aria-controls="filterPanel">Filtra <span id="filterCountBadge" class="count-chip" hidden>0</span></button>
+              <label class="compact-select">Rreshta
+                <select id="pageSizeSelect" aria-label="Rreshta për faqe"><option value="25">25</option><option value="50" selected>50</option></select>
+              </label>
+            </div>
+          </div>
+
+          <div class="filter-panel" id="filterPanel" hidden>
+            <label>Statusi
+              <select id="statusFilter"><option value="">Të gjitha statuset</option><option value="Gjenerik">Gjenerik</option><option value="Origjinator">Origjinator</option></select>
+            </label>
+            <label>Forma farmaceutike
+              <input id="formFilter" list="formSuggestions" placeholder="p.sh. Tabletë">
+              <datalist id="formSuggestions"></datalist>
+            </label>
+            <label>Rendit sipas
+              <select id="sortSelect"><option value="registry">Nr. regjistri</option><option value="name">Emri</option><option value="substance">Substanca</option><option value="atc">ATC</option><option value="strength">Fortësia</option><option value="form">Forma</option><option value="status">Statusi</option><option value="price">Çmimi</option></select>
+            </label>
+            <label>Drejtimi
+              <select id="directionSelect"><option value="asc">A → Z</option><option value="desc">Z → A</option></select>
+            </label>
+            <button class="button button-ghost filter-clear" id="clearFiltersButton" type="button">Pastro filtrat</button>
+          </div>
+
+          <div class="table-status" id="tableStatus" role="status" aria-live="polite">
+            <span id="resultSummary">Duke ngarkuar regjistrin…</span>
+            <span id="requestTiming"></span>
+          </div>
+
+          <div class="table-scroll" id="tableScroll">
+            <table class="registry-table" id="registryTable">
+              <caption class="sr-only">Regjistri i barnave</caption>
+              <thead>
+                <tr>
+                  <th class="check-col"><input id="selectPageCheckbox" type="checkbox" aria-label="Zgjidh barnat në këtë faqe"></th>
+                  <th><button class="sort-head" data-sort="registry" type="button">Nr.</button></th>
+                  <th><button class="sort-head" data-sort="name" type="button">Bari</button></th>
+                  <th><button class="sort-head" data-sort="substance" type="button">Substanca aktive</button></th>
+                  <th><button class="sort-head" data-sort="strength" type="button">Fortësia</button></th>
+                  <th><button class="sort-head" data-sort="form" type="button">Forma</button></th>
+                  <th><button class="sort-head" data-sort="atc" type="button">ATC</button></th>
+                  <th>Doza e të rriturit</th>
+                  <th>Doza pediatrike</th>
+                  <th><button class="sort-head" data-sort="status" type="button">Statusi</button></th>
+                  <th class="price-col"><button class="sort-head" data-sort="price" type="button">Çmimi</button></th>
+                  <th class="actions-col"><span class="sr-only">Veprime</span></th>
+                </tr>
+              </thead>
+              <tbody id="registryRows"></tbody>
+            </table>
+          </div>
+
+          <div class="empty-state" id="emptyState" hidden>
+            <div class="empty-icon">⌕</div>
+            <h2>Nuk u gjet asnjë bar</h2>
+            <p>Provo një emër, substancë ose kod ATC tjetër.</p>
+            <button class="button button-secondary" id="emptyClearButton" type="button">Pastro kërkimin</button>
+          </div>
+
+          <div class="pagination-bar">
+            <span id="paginationSummary">—</span>
+            <div class="pagination-actions">
+              <button class="button button-secondary button-square" id="prevPageButton" type="button" aria-label="Faqja e mëparshme">←</button>
+              <span class="page-indicator" id="pageIndicator">1 / —</span>
+              <button class="button button-secondary button-square" id="nextPageButton" type="button" aria-label="Faqja tjetër">→</button>
+            </div>
+          </div>
+        </section>
+      </section>
+    </main>
+  </div>
+
+  <div class="drawer-backdrop" id="drawerBackdrop" hidden></div>
+  <aside class="detail-drawer" id="detailDrawer" aria-hidden="true" aria-labelledby="drawerTitle">
+    <div class="drawer-head">
+      <div><p class="eyebrow">Kartela e barit</p><h2 id="drawerTitle">Detajet</h2></div>
+      <button class="icon-button" id="drawerClose" type="button" aria-label="Mbyll detajet">×</button>
     </div>
-    <p>Duke i ngarkuar barnat...</p>
-  </div>
-</div>
-
-<header>
-  <h1>DRx | Regjistri i Barnave dhe Diagnozave ICD</h1>
-  <div class="sub">Dr. Diellza Rabushaj · Versioni 1.2 · Afati i vlefshmërisë: 01.05.2026 – 31.12.2026</div>
-</header>
-
-<div class="toolbar" role="search" aria-label="Kërkimi dhe filtrat e regjistrit">
-  <input type="search" id="search" placeholder="Kërko emrin, substancën, klasën, përdorimin, ATC..." autocomplete="off" enterkeyhint="search" aria-label="Kërko në regjistrin e barnave">
-  <select id="statusFilter" aria-label="Filtro statusin">
-    <option value="">Të gjitha statuset</option>
-    <option value="Gjenerik">Gjenerik</option>
-    <option value="Origjinator">Origjinator</option>
-  </select>
-  <div class="form-picker">
-    <button id="formPickerBtn" type="button" aria-haspopup="listbox" aria-controls="formPanel" aria-expanded="false">Forma: Të gjitha ▾</button>
-    <div class="form-panel" id="formPanel">
-      <input type="search" id="formSearch" placeholder="Kërko formën (p.sh. kapsul, tablet)..." autocomplete="off" aria-label="Kërko formën farmaceutike">
-      <div id="formList" role="listbox"></div>
+    <div class="drawer-body" id="drawerBody"><div class="drawer-loading">Zgjidh një bar nga tabela.</div></div>
+    <div class="drawer-foot">
+      <button class="button button-secondary" id="drawerPrescriptionButton" type="button">Shto në recetë</button>
+      <button class="button button-primary" id="drawerCloseButton" type="button">Mbyll</button>
     </div>
-  </div>
-  <select id="pageSize" aria-label="Numri i barnave për faqe">
-    <option value="50">50 / faqe</option>
-    <option value="100">100 / faqe</option>
-    <option value="250">250 / faqe</option>
-    <option value="500">500 / faqe</option>
-  </select>
-  <div class="col-picker">
-    <button id="colPickerBtn" type="button" aria-haspopup="dialog" aria-controls="colPanel" aria-expanded="false">Kolonat ▾</button>
-    <div class="col-panel" id="colPanel" role="dialog" aria-label="Zgjedhja e kolonave të regjistrit" aria-hidden="true"></div>
-  </div>
-  <span class="selection-badge" title="Barnat e zgjedhura për recetë">Të zgjedhura: <strong id="selectedCount">0</strong></span>
-  <button class="protocol-toolbar-btn" id="protocolsBtn" type="button">Krijo recetën <span class="mini-count" id="savedProtocolCount">0</span></button>
-  <span class="count-badge" id="countBadge" aria-live="polite">Duke u ngarkuar...</span>
-</div>
+  </aside>
 
-<div class="table-wrap" id="registryContent" tabindex="-1" aria-label="Tabela e regjistrit të barnave">
-  <table id="dataTable">
-    <thead><tr id="headerRow"></tr></thead>
-    <tbody id="tbody"><tr><td class="empty-state">Duke i ngarkuar barnat...</td></tr></tbody>
-  </table>
-</div>
-<div class="pagination" id="pagination" aria-label="Faqet e rezultateve"></div>
-<div class="protocol-toast" id="protocolToast" role="status" aria-live="polite"></div>
-
-<script id="drug-data" type="application/json">[]</script>
-<script src="registry-fast-start.js?v=registry-fast-start-v2&build=registry-r20260812-1" defer></script>
-<script src="registry-mobile-lite.js?v=20260812-1&build=registry-r20260812-1" defer></script>
-<script src="registry-mobile-phase3.js?v=20260812-1&build=registry-r20260812-1" defer></script>
-<script src="registry-mobile-phase4.js?v=20260812-2&build=registry-r20260812-1" defer></script>
-<script src="registry-mobile-phone-hardening.js?v=20260812-1&build=registry-r20260812-1" defer></script>
-<script src="registry-desktop-lite.js?v=20260812-1&build=registry-r20260812-1" defer></script>
-<script src="registry-runtime-loader.js?v=20260812-8&build=registry-r20260812-1" defer></script>
-<script src="registry-atc-context.js?v=atc-context-v1&build=registry-r20260812-1" defer></script>
-<script src="registry-drug-name-hardening.js?v=20260810-1&build=registry-r20260812-1" defer></script>
-<script src="form-picker-clinical.js?v=20260725-1" defer></script>
-<script src="first-page-clinical.js?v=20260731-1" defer></script>
-<script src="dosage-engine.js?v=20260725-1" defer></script>
-<script src="registry-cell-preview.js?v=20260811-2&build=registry-r20260812-1" defer></script>
-<script src="registry-row-expand.js?v=20260810-1&build=registry-r20260812-1" defer></script>
-<script src="registry-dosage-loader.js?v=20260812-1&build=registry-r20260812-1" defer></script>
-<script src="registry-dose-clinical-row-markers.js?v=20260812-pediatric-pink-1&build=registry-r20260812-1" defer></script>
-<script src="registry-dose-modal-accessibility.js?v=20260809-1&build=registry-r20260812-1" defer></script>
-<script src="registry-column-picker-tailwind.js?v=20260805-3&build=registry-r20260812-1" defer></script>
-<script src="name-display.js?v=20260810-1" defer></script>
-<script src="registry-verification-loader.js?v=20260810-1&build=registry-r20260812-1" defer></script>
-<script src="registry-ui-release.js?v=20260812-1&build=registry-r20260812-1" defer></script>
-<script src="registry-column-contract.js?v=20260801-2&build=registry-r20260812-1" defer></script>
-<script src="registry-unified-table.js?v=20260828-admin-stripe-v2&build=registry-r20260812-1" defer></script>
-<script src="registry-user-personalization.js?v=20260816-7&ux=20260817-1&build=registry-r20260812-1&ls=20260817-1" defer></script>
-<script src="personal-drugs-ui.js?v=multiuser-v1" defer></script>
-<script src="registry-table-tools.js?v=20260812-1&build=registry-r20260812-1" defer></script>
-<script src="registry-table-layout-guard.js?v=20260812-3&build=registry-r20260812-1" defer></script>
-<script src="registry-ux-phase1.js?v=20260816-2&build=registry-r20260812-1" defer></script>
-<script src="registry-ux-phase2.js?v=20260810-1&build=registry-r20260812-1" defer></script>
-<script src="registry-ux-phase3.js?v=20260810-1&build=registry-r20260812-1" defer></script>
-<script src="offline-runtime.js" data-medindex-offline-runtime defer></script>
-<script src="auth-client.js?v=production-audit-v2" defer></script>
-<script src="app-stability.js?v=20260724-2" defer></script>
-<script src="registry-list-view.js?v=list-view-v1" defer></script>
-<script src="registry-search-suggest.js?v=search-suggest-v1" defer></script>
-<script src="registry-stripe-clinical-table.js?v=stripe-clinical-table-v2&build=registry-r20260812-1" defer></script>
+  <div class="toast" id="toast" role="status" aria-live="polite" hidden></div>
 </body>
 </html>
