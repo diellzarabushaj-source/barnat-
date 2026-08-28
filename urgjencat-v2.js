@@ -59,6 +59,133 @@
 
   const clean = value => String(value ?? '').replace(/\s+/g, ' ').trim();
 
+  const escapeRegExp = value => String(value ?? '').replace(/[.*+?^$()|[\]\\{}]/g, '\\  const clean = value => String(value ?? '').replace(/\s+/g, ' ').trim();');
+  let abbreviationTooltip = null;
+  let activeAbbreviationButton = null;
+  let abbreviationCloseTimer = 0;
+
+  function abbreviationByKey(lesson, key) {
+    return (lesson?.abbreviations || []).find(item => String(item._key) === String(key)) || null;
+  }
+
+  function inlineClinicalText(lesson, value) {
+    const text = String(value ?? '');
+    const items = [...(lesson?.abbreviations || [])]
+      .filter(item => item?.abbreviation && text.includes(item.abbreviation))
+      .sort((a, b) => String(b.abbreviation).length - String(a.abbreviation).length);
+    if (!items.length) return esc(text);
+    const unique = [];
+    const seen = new Set();
+    for (const item of items) {
+      const term = String(item.abbreviation);
+      if (seen.has(term)) continue;
+      seen.add(term); unique.push(item);
+    }
+    const byTerm = new Map(unique.map(item => [String(item.abbreviation), item]));
+    const pattern = new RegExp(unique.map(item => escapeRegExp(item.abbreviation)).join('|'), 'g');
+    let html = ''; let cursor = 0;
+    for (const match of text.matchAll(pattern)) {
+      const index = match.index ?? 0;
+      const term = match[0];
+      const item = byTerm.get(term);
+      html += esc(text.slice(cursor, index));
+      if (item) {
+        html += '<button type="button" class="ec-abbr-token" data-abbr-key="' + esc(item._key) + '" aria-haspopup="true" aria-expanded="false">' + esc(term) + '<span aria-hidden="true">i</span></button>';
+      } else html += esc(term);
+      cursor = index + term.length;
+    }
+    html += esc(text.slice(cursor));
+    return html;
+  }
+
+  function ensureAbbreviationTooltip() {
+    if (abbreviationTooltip?.isConnected) return abbreviationTooltip;
+    const tooltip = document.createElement('div');
+    tooltip.className = 'ec-abbr-tooltip';
+    tooltip.id = 'ecAbbrTooltip';
+    tooltip.setAttribute('role', 'tooltip');
+    tooltip.hidden = true;
+    document.body.appendChild(tooltip);
+    abbreviationTooltip = tooltip;
+    return tooltip;
+  }
+
+  function positionAbbreviationTooltip(button, tooltip) {
+    const rect = button.getBoundingClientRect();
+    const gap = 8;
+    const width = Math.min(320, Math.max(230, tooltip.offsetWidth || 280));
+    let left = rect.left + (rect.width / 2) - (width / 2);
+    left = Math.max(10, Math.min(left, window.innerWidth - width - 10));
+    tooltip.style.width = width + 'px';
+    tooltip.style.left = left + 'px';
+    const height = tooltip.offsetHeight || 110;
+    const placeAbove = (window.innerHeight - rect.bottom) < height + 24 && rect.top > height + 24;
+    tooltip.classList.toggle('is-above', placeAbove);
+    tooltip.style.top = (placeAbove ? Math.max(10, rect.top - height - gap) : Math.min(window.innerHeight - height - 10, rect.bottom + gap)) + 'px';
+  }
+
+  function openAbbreviationTooltip(button) {
+    window.clearTimeout(abbreviationCloseTimer);
+    const item = abbreviationByKey(currentLesson(), button?.dataset?.abbrKey);
+    if (!item || !button) return;
+    if (activeAbbreviationButton && activeAbbreviationButton !== button) {
+      activeAbbreviationButton.setAttribute('aria-expanded', 'false');
+      activeAbbreviationButton.classList.remove('is-open');
+    }
+    const tooltip = ensureAbbreviationTooltip();
+    tooltip.innerHTML = '<div class="ec-abbr-tooltip-head"><strong>' + esc(item.abbreviation) + '</strong>' + (item.fullTermEn ? '<span>' + esc(item.fullTermEn) + '</span>' : '') + '</div>' + (item.explanationSq ? '<p>' + esc(item.explanationSq) + '</p>' : '');
+    tooltip.hidden = false;
+    activeAbbreviationButton = button;
+    button.classList.add('is-open');
+    button.setAttribute('aria-expanded', 'true');
+    requestAnimationFrame(() => positionAbbreviationTooltip(button, tooltip));
+  }
+
+  function closeAbbreviationTooltip({ delay = 0 } = {}) {
+    window.clearTimeout(abbreviationCloseTimer);
+    const close = () => {
+      if (activeAbbreviationButton) {
+        activeAbbreviationButton.setAttribute('aria-expanded', 'false');
+        activeAbbreviationButton.classList.remove('is-open');
+      }
+      activeAbbreviationButton = null;
+      if (abbreviationTooltip) abbreviationTooltip.hidden = true;
+    };
+    if (delay) abbreviationCloseTimer = window.setTimeout(close, delay); else close();
+  }
+
+  function bindInlineAbbreviations(root) {
+    (root?.querySelectorAll?.('.ec-abbr-token') || []).forEach(button => {
+      button.addEventListener('mouseenter', () => openAbbreviationTooltip(button));
+      button.addEventListener('mouseleave', () => closeAbbreviationTooltip({ delay:120 }));
+      button.addEventListener('focus', () => openAbbreviationTooltip(button));
+      button.addEventListener('blur', () => closeAbbreviationTooltip({ delay:100 }));
+      button.addEventListener('click', event => {
+        event.preventDefault(); event.stopPropagation();
+        if (activeAbbreviationButton === button && !abbreviationTooltip?.hidden) closeAbbreviationTooltip();
+        else openAbbreviationTooltip(button);
+      });
+    });
+    const tooltip = ensureAbbreviationTooltip();
+    if (tooltip.dataset.bound !== '1') {
+      tooltip.dataset.bound = '1';
+      tooltip.addEventListener('mouseenter', () => window.clearTimeout(abbreviationCloseTimer));
+      tooltip.addEventListener('mouseleave', () => closeAbbreviationTooltip({ delay:100 }));
+    }
+  }
+
+  document.addEventListener('pointerdown', event => {
+    if (!activeAbbreviationButton) return;
+    if (activeAbbreviationButton.contains(event.target) || abbreviationTooltip?.contains(event.target)) return;
+    closeAbbreviationTooltip();
+  });
+  window.addEventListener('resize', () => {
+    if (activeAbbreviationButton && abbreviationTooltip && !abbreviationTooltip.hidden) positionAbbreviationTooltip(activeAbbreviationButton, abbreviationTooltip);
+  });
+  window.addEventListener('scroll', () => {
+    if (activeAbbreviationButton && abbreviationTooltip && !abbreviationTooltip.hidden) positionAbbreviationTooltip(activeAbbreviationButton, abbreviationTooltip);
+  }, true);
+
   async function authJson(url = '/api/auth', options = {}, timeoutMs = 5000) {
     const controller = new AbortController();
     const timer = setTimeout(() => controller.abort(), timeoutMs);
