@@ -8,7 +8,7 @@
   <title>DRx | Urgjencat</title>
   <link rel="icon" href="/brand/drx-mark-on-light.svg" type="image/svg+xml">
   <link rel="preload" href="/fonts/inter-latin-variable-normal.woff2" as="font" type="font/woff2" crossorigin>
-  <link rel="stylesheet" href="/urgjencat-v2.css?v=2">
+  <link rel="stylesheet" href="/urgjencat-v2.css?v=3">
   <link rel="stylesheet" href="/drx-dashboard-stripe.css?v=drx-dashboard-stripe-v3">
 </head>
 <body>
@@ -107,12 +107,23 @@
             <span>Mësimi <small id="lessonStatus">—</small></span>
             <select id="emergencyLessonSelect" aria-label="Zgjidh mësimin"><option>Zgjidh kapitullin</option></select>
           </label>
-          <label class="command-search">
-            <span class="sr-only">Kërko në urgjenca</span>
+          <div class="command-search" id="emergencySearchField">
+            <label class="sr-only" for="emergencySearch">Kërko në urgjenca</label>
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" aria-hidden="true"><circle cx="11" cy="11" r="6.7"/><path d="m16 16 4.2 4.2"/></svg>
-            <input id="emergencySearch" type="search" autocomplete="off" placeholder="Kërko kapitull, mësim, Rx…" aria-label="Kërko në urgjenca">
+            <input id="emergencySearch" type="search" autocomplete="off" spellcheck="false" placeholder="Kërko kapitull, mësim, Rx…" aria-label="Kërko në urgjenca">
             <kbd>⌘ K</kbd>
-          </label>
+            <button class="command-search-clear" id="emergencySearchClear" type="button" aria-label="Pastro kërkimin">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><path d="M7 7l10 10M17 7 7 17"/></svg>
+            </button>
+          </div>
+          <div class="emergency-command-footer">
+            <span class="emergency-result-status" id="emergencyResultStatus" role="status" aria-live="polite">Duke ngarkuar përmbajtjen…</span>
+            <div class="emergency-lesson-nav" aria-label="Navigimi mes mësimeve">
+              <button id="previousLessonButton" type="button" aria-label="Mësimi i kaluar">← <span>I kaluari</span></button>
+              <span id="emergencyLessonPosition" aria-live="polite">—</span>
+              <button id="nextLessonButton" type="button" aria-label="Mësimi tjetër"><span>Tjetri</span> →</button>
+            </div>
+          </div>
         </section>
 
         <article class="emergency-document ec-detail" id="emergencyDetail" aria-live="polite">
@@ -121,6 +132,6 @@
       </div>
     </main>
   </div>
-  <script src="/urgjencat-v2.js?v=2" defer></script>
+  <script src="/urgjencat-v2.js?v=3" defer></script>
 </body>
 </html>
