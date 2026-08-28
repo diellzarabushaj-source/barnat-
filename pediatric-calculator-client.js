@@ -97,8 +97,15 @@
     else delete elements.status.dataset.tone;
   }
 
-  function normalizeReadinessGroup(readiness) {
-    if (readiness === 'CALCULATOR_READY') return 'ready';
+  function effectiveReadiness(item) {
+    if (typeof item === 'string') return item;
+    if (item?.readiness === 'CALCULATOR_READY' && item?.calculable !== true) return 'INSUFFICIENT_DATA';
+    return item?.readiness || 'INSUFFICIENT_DATA';
+  }
+
+  function normalizeReadinessGroup(item) {
+    const readiness = effectiveReadiness(item);
+    if (item?.calculable === true && readiness === 'CALCULATOR_READY') return 'ready';
     if (readiness === 'TEXT_ONLY') return 'text';
     return 'blocked';
   }
@@ -193,7 +200,7 @@
 
   function updateFacets(facets = null) {
     const next = facets || state.results.reduce((acc, item) => {
-      const group = normalizeReadinessGroup(item.readiness);
+      const group = normalizeReadinessGroup(item);
       acc.all += 1;
       acc[group] += 1;
       return acc;
@@ -213,7 +220,7 @@
   function visibleResults() {
     return state.results.filter(item => {
       const readinessMatch = state.filter === 'all'
-        || normalizeReadinessGroup(item.readiness) === state.filter;
+        || normalizeReadinessGroup(item) === state.filter;
       const formMatch = !state.formFilter || text(item.form) === state.formFilter;
       return readinessMatch && formMatch;
     });
@@ -323,12 +330,15 @@
         [item.substance, item.strength, item.form].filter(Boolean).join(' · '));
       const detail = element('span', 'pediatric-result-detail');
       if (item.atcCode) detail.append(element('code', null, item.atcCode));
-      const context = item.indication || item.summary || item.useStatus;
+      const readiness = effectiveReadiness(item);
+      const context = item.readiness === 'CALCULATOR_READY' && item.calculable !== true
+        ? 'Regjimi primar nuk është verifikuar për kalkulim.'
+        : (item.indication || item.summary || item.useStatus);
       if (context) detail.append(element('span', null, context));
 
-      button.append(heading, meta, readinessBadge(item.readiness), detail);
+      button.append(heading, meta, readinessBadge(readiness), detail);
       button.setAttribute('aria-label',
-        `${item.name || 'Bar'}. ${READINESS_LABEL[item.readiness] || item.readiness}.`);
+        `${item.name || 'Bar'}. ${READINESS_LABEL[readiness] || readiness}.`);
       row.append(button);
       group.append(row);
     }
@@ -474,7 +484,7 @@
     const header = element('div', 'pediatric-product-header');
     const identity = element('div');
     const titleRow = element('div', 'pediatric-product-title-row');
-    titleRow.append(element('h2', 'pediatric-product-name', product.name || '(pa emër)'), readinessBadge(product.readiness));
+    titleRow.append(element('h2', 'pediatric-product-name', product.name || '(pa emër)'), readinessBadge(effectiveReadiness(product)));
     identity.append(titleRow);
     identity.append(element('p', 'pediatric-product-meta',
       [product.substance, product.strength, product.form].filter(Boolean).join(' · ')));
