@@ -98,9 +98,15 @@
   }
 
   function readHash() {
-    const raw = decodeURIComponent(location.hash.slice(1) || '').trim().toUpperCase().replace(/\s+/g, '');
+    const hashValue = decodeURIComponent(location.hash.slice(1) || '');
+    const queryValue = new URLSearchParams(location.search).get('atc') || '';
+    const raw = clean(hashValue || queryValue).toUpperCase().replace(/\s+/g, '');
+    if (/^[A-Z]\d{2}[A-Z]{2}\d{2}$/.test(raw)) {
+      const subdivision = raw.slice(0,5);
+      return { group:raw.charAt(0), category:raw.slice(0,3), subdivision:subdivisions()[subdivision] ? subdivision : '' };
+    }
     if (/^[A-Z]\d{2}[A-Z]{1,2}$/.test(raw)) {
-      return { group:raw.charAt(0), category:raw.slice(0,3), subdivision:raw };
+      return { group:raw.charAt(0), category:raw.slice(0,3), subdivision:subdivisions()[raw] ? raw : '' };
     }
     if (/^[A-Z]\d{2}$/.test(raw)) return { group:raw.charAt(0), category:raw, subdivision:'' };
     if (/^[A-Z]$/.test(raw)) return { group:raw, category:'', subdivision:'' };
