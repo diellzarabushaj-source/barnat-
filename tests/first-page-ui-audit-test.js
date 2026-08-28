@@ -117,10 +117,9 @@ for (const marker of [
   assert.ok(js.includes(marker), `first-page clinical runtime is missing ${marker}`);
 }
 
-assert.match(tableToolsCss, /registry-legacy-toolbar-hidden-v2/, 'Retired toolbar controls need an explicit final visibility contract.');
-for (const control of ['#statusFilter', '#pageSize', '.selection-badge', '#protocolsBtn']) {
-  assert.ok(tableToolsCss.includes(control), `Retired toolbar control must stay hidden: ${control}`);
-}
+assert.match(tableToolsCss, /#registryFilterPanel\.registry-filter-panel-unified/, 'The final table layer must own advanced-filter panel geometry.');
+assert.match(tableToolsCss, /data-mi-registry-view="list"[\s\S]*\.registry-view-actions/, 'List mode must suppress table-only view controls.');
+assert.match(tableToolsCss, /data-mi-registry-view="list"[\s\S]*\.registry-filter-toggle/, 'List mode must suppress the duplicate advanced-filter trigger.');
 
 assert.doesNotMatch(js, /fetch\s*\(/, 'The visual audit layer must not fetch or replace registry data.');
 assert.doesNotMatch(js, /\/api\//, 'The visual audit layer must remain frontend-only.');
