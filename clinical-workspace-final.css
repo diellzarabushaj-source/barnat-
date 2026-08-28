@@ -211,10 +211,13 @@ html.medindex-workspace-final .mw-protocol-card .clinical-actions :is(a,button){
   background:var(--mw-surface)!important;
   color:var(--mw-text)!important;
 }
+/* `--mw-primary` çelet në errësirë (#0d5f63 → #79cfcb), por teksti mbeti i
+   bardhë: 1.81:1, i palexueshëm. Teksti mbi theks duhet të kthehet bashkë me
+   theksin, prandaj vjen nga `--ck-on-accent`. */
 html.medindex-workspace-final .mw-protocol-card .clinical-actions .primary{
   border-color:var(--mw-primary)!important;
   background:var(--mw-primary)!important;
-  color:#fff!important;
+  color:var(--ck-on-accent,#fff)!important;
 }
 html.medindex-workspace-final .mw-protocol-plan-button{
   border-color:color-mix(in srgb,var(--mw-primary) 40%,var(--mw-line))!important;

@@ -56,6 +56,13 @@
   --ck-blue-strong:#155f63;
   --ck-blue-soft:#eaf4f1;
 
+  /* Një buton i mbushur ka dy ngjyra, jo një, dhe të dyja duhet të kthehen së
+     bashku. Në dritë theksi është i errët dhe teksti mbi të i bardhë; në
+     errësirë theksi çelet, prandaj teksti duhet të errësohet — përndryshe del
+     e bardhë mbi teal të çelët, që matet 2.35:1. */
+  --ck-accent-solid:#1f7779;
+  --ck-on-accent:#ffffff;
+
   /* Semantika. Këto tri janë të vetmet ngjyra të tjera që lejohet të shfaqen,
      dhe vetëm kur kanë kuptim: gabim, kujdes, në rregull. */
   --ck-red:#b42318;
@@ -89,6 +96,8 @@ html:is(.dark,[data-theme="dark"]) {
   --ck-blue:#66b7ad;
   --ck-blue-strong:#8dcfc6;
   --ck-blue-soft:#12312f;
+  --ck-accent-solid:#66b7ad;
+  --ck-on-accent:#062321;
 
   --ck-red:#fda29b;
   --ck-red-soft:#33191a;
