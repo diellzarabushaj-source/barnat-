@@ -6822,7 +6822,2209 @@ html[data-theme="dark"].medindex-tailadmin .registry-personal-note-wrap textarea
   .registry-quick-favorites:active{transform:none}
 }
 
-/* __REGISTRY_FINAL_INSERT__ */
+/* ===== consolidated from registry-ux-phase2.css ===== */
+/* MedIndex Registry UX — Phase 2: Clinical Scanner
+   Pure presentation layer. Keeps the audited table controller and row geometry intact. */
+
+:root{
+  --mi-scan-teal:#137b77;
+  --mi-scan-teal-soft:#edf8f7;
+  --mi-scan-blue:#2f6fb2;
+  --mi-scan-blue-soft:#eef5fb;
+  --mi-scan-gold:#a66a17;
+  --mi-scan-line:#dbe5e4;
+  --mi-scan-ink:#17292c;
+  --mi-scan-muted:#708185;
+}
+
+html.medindex-tailadmin[data-mi-page="barnat"] #registryContent{
+  background:#fff!important;
+}
+
+/* Stronger information hierarchy without changing the table's fixed geometry. */
+html.medindex-tailadmin[data-mi-page="barnat"] #dataTable[data-registry-unified-table] tbody td[data-registry-column-key="trade-name"]{
+  color:var(--mi-scan-ink)!important;
+}
+html.medindex-tailadmin[data-mi-page="barnat"] #dataTable[data-registry-unified-table] tbody td[data-registry-column-key="trade-name"] .drug-name-text{
+  display:inline!important;
+  font-size:13.5px!important;
+  font-weight:760!important;
+  line-height:1.25!important;
+  letter-spacing:-.014em!important;
+}
+html.medindex-tailadmin[data-mi-page="barnat"] #dataTable[data-registry-unified-table] tbody td[data-registry-column-key="active-substance"]{
+  color:#42575a!important;
+  font-size:12px!important;
+  font-weight:610!important;
+  line-height:1.38!important;
+}
+html.medindex-tailadmin[data-mi-page="barnat"] #dataTable[data-registry-unified-table] tbody td[data-registry-column-key="strength"]{
+  color:#253d40!important;
+  font-variant-numeric:tabular-nums;
+  font-weight:760!important;
+  letter-spacing:-.01em!important;
+}
+html.medindex-tailadmin[data-mi-page="barnat"] #dataTable[data-registry-unified-table] tbody td[data-registry-column-key="form"]{
+  color:#5b6f72!important;
+  font-size:11.8px!important;
+}
+
+.registry-scan-meta{
+  display:flex;
+  min-width:0;
+  align-items:center;
+  gap:5px;
+  margin-top:7px;
+  overflow:hidden;
+  white-space:nowrap;
+}
+.registry-scan-atc,
+.registry-scan-status{
+  display:inline-flex;
+  min-width:0;
+  height:20px;
+  align-items:center;
+  justify-content:center;
+  padding:0 6px;
+  border:1px solid #d9e3e2;
+  border-radius:999px;
+  background:#f7f9f9;
+  color:#66777a;
+  font-size:9.5px;
+  font-weight:760;
+  line-height:1;
+  text-overflow:ellipsis;
+  overflow:hidden;
+}
+.registry-scan-atc{
+  flex:0 0 auto;
+  color:#48686a;
+  font-family:ui-monospace,SFMono-Regular,Menlo,Monaco,Consolas,"Liberation Mono",monospace;
+  letter-spacing:.015em;
+}
+.registry-scan-status{max-width:88px}
+.registry-scan-status.is-generic{
+  border-color:#c9e5dd;
+  background:#f0faf7;
+  color:#27715f;
+}
+.registry-scan-status.is-originator{
+  border-color:#d7e1ef;
+  background:#f4f7fb;
+  color:#4c6789;
+}
+
+/* Dosage columns read as one clinical block, while adult/pediatric remain visually distinct. */
+html.medindex-tailadmin[data-mi-page="barnat"] #dataTable[data-registry-unified-table] thead th[data-registry-column-key="dosage-adult"]{
+  box-shadow:inset 0 -3px 0 rgba(19,123,119,.32)!important;
+}
+html.medindex-tailadmin[data-mi-page="barnat"] #dataTable[data-registry-unified-table] thead th[data-registry-column-key="dosage-pediatric"]{
+  box-shadow:inset 0 -3px 0 rgba(47,111,178,.28)!important;
+}
+html.medindex-tailadmin[data-mi-page="barnat"] #dataTable[data-registry-unified-table] tbody td[data-registry-column-key="dosage-adult"]{
+  background:linear-gradient(rgba(19,123,119,.025),rgba(19,123,119,.025)),var(--ru-current-row)!important;
+}
+html.medindex-tailadmin[data-mi-page="barnat"] #dataTable[data-registry-unified-table] tbody td[data-registry-column-key="dosage-pediatric"]{
+  background:linear-gradient(rgba(47,111,178,.022),rgba(47,111,178,.022)),var(--ru-current-row)!important;
+}
+html.medindex-tailadmin[data-mi-page="barnat"] #dataTable[data-registry-unified-table] tbody td[data-registry-column-key="dosage-adult"] .registry-dosage-indication{
+  color:var(--mi-scan-teal)!important;
+}
+html.medindex-tailadmin[data-mi-page="barnat"] #dataTable[data-registry-unified-table] tbody td[data-registry-column-key="dosage-pediatric"] .registry-dosage-indication{
+  color:var(--mi-scan-blue)!important;
+}
+html.medindex-tailadmin[data-mi-page="barnat"] #dataTable[data-registry-unified-table] tbody :is(.registry-dosage-dose-text,.registry-dosage-muted){
+  font-size:11.5px!important;
+  line-height:1.38!important;
+}
+html.medindex-tailadmin[data-mi-page="barnat"] #dataTable[data-registry-unified-table] tbody .registry-dosage-route{
+  min-height:24px!important;
+  padding:1px 6px!important;
+  font-size:9.5px!important;
+  font-weight:760!important;
+}
+
+/* Safety and quick-action columns are compact and easy to spot. */
+html.medindex-tailadmin[data-mi-page="barnat"] #dataTable[data-registry-unified-table] :is(th,td)[data-registry-column-key="clinical-status"],
+html.medindex-tailadmin[data-mi-page="barnat"] #dataTable[data-registry-unified-table] :is(th,td)[data-registry-column-key="clinical-action"],
+html.medindex-tailadmin[data-mi-page="barnat"] #dataTable[data-registry-unified-table] :is(th,td)[data-registry-column-key="dose-calculator"]{
+  text-align:center!important;
+}
+html.medindex-tailadmin[data-mi-page="barnat"] #dataTable .dose-calculator-open{
+  min-height:34px!important;
+  border-radius:8px!important;
+  box-shadow:none!important;
+  transform:none!important;
+}
+html.medindex-tailadmin[data-mi-page="barnat"] #dataTable .dose-calculator-open:hover{
+  box-shadow:0 5px 14px rgba(13,95,99,.11)!important;
+  transform:translateY(-1px)!important;
+}
+
+/* Row focus feels precise rather than noisy. */
+html.medindex-tailadmin[data-mi-page="barnat"] #dataTable[data-registry-unified-table] tbody tr:hover td:first-child,
+html.medindex-tailadmin[data-mi-page="barnat"] #dataTable[data-registry-unified-table] tbody tr:focus-within td:first-child{
+  box-shadow:inset 3px 0 0 rgba(19,123,119,.42)!important;
+}
+html.medindex-tailadmin[data-mi-page="barnat"] #dataTable[data-registry-unified-table] tbody tr:focus-within td{
+  border-bottom-color:#c8d9d7!important;
+}
+
+/* Keep drug identity visible during horizontal scanning on desktop only. */
+@media(min-width:1100px){
+  html.medindex-tailadmin[data-mi-page="barnat"][data-registry-ux-view="clinical"] #dataTable[data-registry-unified-table] :is(th,td)[data-registry-column-key="select"]{
+    position:sticky!important;
+    left:0!important;
+  }
+  html.medindex-tailadmin[data-mi-page="barnat"][data-registry-ux-view="clinical"] #dataTable[data-registry-unified-table] th[data-registry-column-key="select"]{
+    z-index:15!important;
+    background:#fff!important;
+  }
+  html.medindex-tailadmin[data-mi-page="barnat"][data-registry-ux-view="clinical"] #dataTable[data-registry-unified-table] td[data-registry-column-key="select"]{
+    z-index:7!important;
+    background:var(--ru-current-row)!important;
+  }
+  html.medindex-tailadmin[data-mi-page="barnat"][data-registry-ux-view="clinical"] #dataTable[data-registry-unified-table] :is(th,td)[data-registry-column-key="trade-name"]{
+    position:sticky!important;
+    left:44px!important;
+  }
+  html.medindex-tailadmin[data-mi-page="barnat"][data-registry-ux-view="clinical"] #dataTable[data-registry-unified-table] th[data-registry-column-key="trade-name"]{
+    z-index:14!important;
+    background:#fff!important;
+  }
+  html.medindex-tailadmin[data-mi-page="barnat"][data-registry-ux-view="clinical"] #dataTable[data-registry-unified-table] td[data-registry-column-key="trade-name"]{
+    z-index:6!important;
+    background:var(--ru-current-row)!important;
+  }
+  html.medindex-tailadmin[data-mi-page="barnat"][data-registry-ux-view="clinical"] #registryContent.is-scrolled-x #dataTable :is(th,td)[data-registry-column-key="trade-name"]::after{
+    content:"";
+    position:absolute;
+    top:0;
+    right:-12px;
+    bottom:0;
+    width:12px;
+    pointer-events:none;
+    background:linear-gradient(90deg,rgba(35,58,61,.09),transparent);
+  }
+}
+
+/* More polished horizontal affordance. */
+html.medindex-tailadmin[data-mi-page="barnat"] #registryContent.is-scrollable-x{
+  scrollbar-color:#9abfbc transparent!important;
+}
+html.medindex-tailadmin[data-mi-page="barnat"] #registryContent.is-scrollable-x::-webkit-scrollbar{height:9px}
+html.medindex-tailadmin[data-mi-page="barnat"] #registryContent.is-scrollable-x::-webkit-scrollbar-track{background:transparent}
+html.medindex-tailadmin[data-mi-page="barnat"] #registryContent.is-scrollable-x::-webkit-scrollbar-thumb{
+  border:2px solid transparent;
+  border-radius:999px;
+  background:#b5cdca;
+  background-clip:padding-box;
+}
+html.medindex-tailadmin[data-mi-page="barnat"] #registryContent.is-scrollable-x::-webkit-scrollbar-thumb:hover{background:#92b7b3;background-clip:padding-box}
+
+/* Personal notes remain clearly personal and secondary. */
+html.medindex-tailadmin[data-mi-page="barnat"] #dataTable :is(th,td)[data-registry-column-key="personal-note"]{
+  border-left-color:#d9e4e2!important;
+}
+html.medindex-tailadmin[data-mi-page="barnat"] #dataTable th[data-registry-column-key="personal-note"]{
+  color:#687a7d!important;
+}
+
+html[data-theme="dark"].medindex-tailadmin[data-mi-page="barnat"] #registryContent{background:#121b1d!important}
+html[data-theme="dark"] .registry-scan-atc,
+html[data-theme="dark"] .registry-scan-status{
+  border-color:#34484a;
+  background:#1a2628;
+  color:#a7b9bb;
+}
+html[data-theme="dark"] .registry-scan-status.is-generic{border-color:#27554c;background:#17312d;color:#78c8b5}
+html[data-theme="dark"] .registry-scan-status.is-originator{border-color:#354963;background:#1b2737;color:#9bb7d9}
+html[data-theme="dark"].medindex-tailadmin[data-mi-page="barnat"] #dataTable[data-registry-unified-table] tbody td[data-registry-column-key="active-substance"]{color:#b4c3c5!important}
+html[data-theme="dark"].medindex-tailadmin[data-mi-page="barnat"] #dataTable[data-registry-unified-table] tbody td[data-registry-column-key="strength"]{color:#d7e3e4!important}
+html[data-theme="dark"].medindex-tailadmin[data-mi-page="barnat"] #dataTable[data-registry-unified-table] tbody td[data-registry-column-key="form"]{color:#9eb0b3!important}
+html[data-theme="dark"].medindex-tailadmin[data-mi-page="barnat"][data-registry-ux-view="clinical"] #dataTable[data-registry-unified-table] th[data-registry-column-key="select"],
+html[data-theme="dark"].medindex-tailadmin[data-mi-page="barnat"][data-registry-ux-view="clinical"] #dataTable[data-registry-unified-table] th[data-registry-column-key="trade-name"]{background:#172224!important}
+
+@media(max-width:1099px){
+  html.medindex-tailadmin[data-mi-page="barnat"] #dataTable :is(th,td)[data-registry-column-key="select"],
+  html.medindex-tailadmin[data-mi-page="barnat"] #dataTable :is(th,td)[data-registry-column-key="trade-name"]{
+    position:relative!important;
+    left:auto!important;
+  }
+}
+
+@media(max-width:760px){
+  html.medindex-tailadmin[data-mi-page="barnat"] #dataTable[data-registry-unified-table] tbody td[data-registry-column-key="trade-name"] .drug-name-text{
+    font-size:13px!important;
+  }
+  .registry-scan-meta{margin-top:6px;gap:4px}
+  .registry-scan-atc,.registry-scan-status{height:19px;padding-inline:5px;font-size:9px}
+  .registry-scan-status{max-width:74px}
+}
+
+@media(prefers-reduced-motion:reduce){
+  html.medindex-tailadmin[data-mi-page="barnat"] #dataTable .dose-calculator-open{transition:none!important}
+  html.medindex-tailadmin[data-mi-page="barnat"] #dataTable .dose-calculator-open:hover{transform:none!important}
+}
+
+/* ===== consolidated from registry-ux-phase3.css ===== */
+/* MedIndex Registry UX — Phase 3: Personal Clinical Workspace
+   Event-driven presentation layer for per-user favorites and personal notes. */
+
+:root{
+  --mi-workspace-ink:#173033;
+  --mi-workspace-muted:#738487;
+  --mi-workspace-line:#d9e4e2;
+  --mi-workspace-soft:#f7fbfa;
+  --mi-workspace-teal:#147d77;
+  --mi-workspace-teal-soft:#edf8f6;
+  --mi-workspace-gold:#a66a17;
+}
+
+.registry-personal-workspace{
+  position:relative;
+  display:inline-flex;
+  flex:0 0 auto;
+  align-items:center;
+}
+.registry-workspace-trigger{
+  display:inline-flex!important;
+  min-height:44px!important;
+  align-items:center!important;
+  justify-content:center!important;
+  gap:7px!important;
+  padding:0 11px!important;
+  border:1px solid #d5dfde!important;
+  border-radius:8px!important;
+  background:#fff!important;
+  color:#4e6265!important;
+  box-shadow:none!important;
+  font:750 .72rem/1 ui-sans-serif,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif!important;
+  cursor:pointer!important;
+  touch-action:manipulation;
+  -webkit-tap-highlight-color:transparent;
+  transition:border-color .1s ease,background .1s ease,color .1s ease,transform .08s ease!important;
+}
+.registry-workspace-trigger svg{
+  width:17px;
+  height:17px;
+  fill:none;
+  stroke:currentColor;
+  stroke-width:1.8;
+  stroke-linecap:round;
+  stroke-linejoin:round;
+}
+.registry-workspace-trigger:hover,
+.registry-personal-workspace.is-open .registry-workspace-trigger{
+  border-color:#afd7d2!important;
+  background:#f3fbf9!important;
+  color:#116e69!important;
+}
+.registry-workspace-trigger:active{transform:scale(.975)}
+.registry-workspace-trigger:focus-visible{
+  outline:3px solid rgba(20,125,119,.16)!important;
+  outline-offset:2px!important;
+}
+.registry-workspace-count{
+  display:inline-grid;
+  min-width:21px;
+  height:21px;
+  place-items:center;
+  padding:0 5px;
+  border-radius:999px;
+  background:#edf3f2;
+  color:#66787b;
+  font-size:.62rem;
+  font-weight:850;
+}
+.registry-personal-workspace.is-open .registry-workspace-count{
+  background:#dff3ef;
+  color:#0f6f69;
+}
+
+.registry-workspace-panel{
+  position:absolute;
+  z-index:260;
+  top:calc(100% + 8px);
+  right:0;
+  width:min(370px,calc(100vw - 28px));
+  max-height:min(66vh,560px);
+  overflow:hidden;
+  border:1px solid var(--mi-workspace-line);
+  border-radius:12px;
+  background:#fff;
+  color:var(--mi-workspace-ink);
+  box-shadow:0 24px 60px rgba(23,48,51,.18),0 3px 12px rgba(23,48,51,.06);
+}
+.registry-workspace-panel[hidden]{display:none!important}
+.registry-workspace-panel-head{
+  display:flex;
+  align-items:flex-start;
+  justify-content:space-between;
+  gap:12px;
+  padding:13px 13px 11px;
+  border-bottom:1px solid #e7eeee;
+  background:linear-gradient(180deg,#fff,#fbfdfd);
+}
+.registry-workspace-panel-head>span{display:grid;gap:2px;min-width:0}
+.registry-workspace-panel-head strong{
+  color:#193235;
+  font-size:.78rem;
+  font-weight:820;
+  letter-spacing:-.012em;
+}
+.registry-workspace-panel-head small{
+  color:#7a8a8d;
+  font-size:.61rem;
+  font-weight:620;
+}
+.registry-workspace-panel-head>button{
+  display:grid;
+  width:29px;
+  height:29px;
+  flex:0 0 29px;
+  place-items:center;
+  padding:0;
+  border:1px solid #dce5e4;
+  border-radius:8px;
+  background:#fff;
+  color:#7d8d8f;
+  font:700 18px/1 system-ui,sans-serif;
+  cursor:pointer;
+}
+.registry-workspace-panel-head>button:hover{background:#f4f8f7;color:#3d5356}
+.registry-workspace-panel-head>button:focus-visible{outline:3px solid rgba(20,125,119,.14);outline-offset:1px}
+.registry-workspace-list{
+  display:grid;
+  max-height:min(50vh,410px);
+  overflow:auto;
+  overscroll-behavior:contain;
+  scrollbar-width:thin;
+  scrollbar-color:#bdd0ce transparent;
+}
+.registry-workspace-note-item{
+  display:grid;
+  width:100%;
+  grid-template-columns:30px minmax(0,1fr) 16px;
+  align-items:center;
+  gap:9px;
+  padding:10px 12px;
+  border:0;
+  border-bottom:1px solid #edf1f1;
+  background:#fff;
+  color:inherit;
+  text-align:left;
+  cursor:pointer;
+}
+.registry-workspace-note-item:hover,
+.registry-workspace-note-item:focus-visible{
+  background:#f7fbfa;
+  outline:none;
+}
+.registry-workspace-note-icon{
+  display:grid;
+  width:30px;
+  height:30px;
+  place-items:center;
+  border:1px solid #cfe5e1;
+  border-radius:8px;
+  background:#eff9f7;
+  color:#157b75;
+  font-size:.9rem;
+  font-weight:800;
+}
+.registry-workspace-note-copy{
+  display:grid;
+  min-width:0;
+  gap:2px;
+}
+.registry-workspace-note-copy strong{
+  overflow:hidden;
+  color:#20383b;
+  font-size:.69rem;
+  font-weight:790;
+  letter-spacing:-.008em;
+  text-overflow:ellipsis;
+  white-space:nowrap;
+}
+.registry-workspace-note-copy small{
+  overflow:hidden;
+  color:#78898c;
+  font-size:.58rem;
+  font-weight:620;
+  text-overflow:ellipsis;
+  white-space:nowrap;
+}
+.registry-workspace-note-copy em{
+  display:-webkit-box;
+  margin-top:2px;
+  overflow:hidden;
+  color:#52676a;
+  font-size:.64rem;
+  font-style:normal;
+  font-weight:520;
+  line-height:1.3;
+  -webkit-box-orient:vertical;
+  -webkit-line-clamp:2;
+}
+.registry-workspace-note-arrow{
+  color:#9aabaa;
+  font-size:1.15rem;
+  line-height:1;
+  text-align:right;
+}
+.registry-workspace-empty{
+  display:grid;
+  gap:5px;
+  padding:24px 18px;
+  text-align:center;
+}
+.registry-workspace-empty strong{color:#334b4e;font-size:.74rem;font-weight:800}
+.registry-workspace-empty span{color:#7b8c8f;font-size:.64rem;line-height:1.45}
+.registry-workspace-more{
+  padding:9px 12px;
+  color:#7b8b8d;
+  font-size:.6rem;
+  font-weight:700;
+  text-align:center;
+  background:#fafcfc;
+}
+.registry-workspace-foot{
+  display:flex;
+  min-height:35px;
+  align-items:center;
+  justify-content:space-between;
+  gap:10px;
+  padding:0 12px;
+  border-top:1px solid #e6eded;
+  background:#fafcfc;
+  color:#7c8c8f;
+  font-size:.57rem;
+  font-weight:690;
+}
+
+/* One-click personal note access in each row. */
+.registry-row-note-jump{
+  position:relative;
+  display:inline-grid;
+  width:30px;
+  height:30px;
+  margin-left:3px;
+  place-items:center;
+  padding:6px;
+  border:1px solid transparent;
+  border-radius:8px;
+  background:transparent;
+  color:#a0adaf;
+  cursor:pointer;
+  vertical-align:middle;
+  opacity:.22;
+  touch-action:manipulation;
+  -webkit-tap-highlight-color:transparent;
+  transition:opacity .1s ease,color .1s ease,background .1s ease,border-color .1s ease,transform .08s ease;
+}
+.registry-row-note-jump svg{
+  width:16px;
+  height:16px;
+  fill:none;
+  stroke:currentColor;
+  stroke-width:1.8;
+  stroke-linecap:round;
+  stroke-linejoin:round;
+}
+#dataTable tbody tr:is(:hover,:focus-within) .registry-row-note-jump,
+.registry-row-note-jump:focus-visible,
+.registry-row-note-jump.has-note{opacity:1}
+.registry-row-note-jump:hover{
+  border-color:#cfe1de;
+  background:#f2faf8;
+  color:#167a74;
+  transform:translateY(-1px);
+}
+.registry-row-note-jump:active{transform:scale(.95)}
+.registry-row-note-jump:focus-visible{
+  outline:3px solid rgba(20,125,119,.15);
+  outline-offset:1px;
+}
+.registry-row-note-jump.has-note{
+  border-color:#cce4df;
+  background:#eef9f7;
+  color:#147a74;
+}
+.registry-row-note-dot{
+  position:absolute;
+  top:4px;
+  right:4px;
+  width:5px;
+  height:5px;
+  border:1.5px solid #fff;
+  border-radius:999px;
+  background:#1b8c84;
+  opacity:0;
+}
+.registry-row-note-jump.has-note .registry-row-note-dot{opacity:1}
+tr.has-personal-note td[data-registry-column-key="personal-note"]{
+  background:linear-gradient(rgba(20,125,119,.018),rgba(20,125,119,.018)),var(--ru-current-row,#fff)!important;
+}
+
+/* Saved notes are visibly present without making the table noisy. */
+.registry-personal-note-wrap textarea.has-content{
+  border-color:#cadeda!important;
+  background:#fbfefd!important;
+}
+.registry-personal-note-wrap textarea.has-content:not(:focus){
+  box-shadow:inset 2px 0 0 rgba(20,125,119,.16)!important;
+}
+.registry-personal-note-state[data-status="synced"]::before,
+.registry-personal-note-state[data-status="saved"]::before{
+  content:"✓ ";
+  font-weight:900;
+}
+
+.registry-workspace-banner-notes{
+  display:inline-flex;
+  min-height:22px;
+  align-items:center;
+  padding:0 7px;
+  border:1px solid rgba(15,118,110,.13);
+  border-radius:999px;
+  background:rgba(255,255,255,.64);
+  color:#34716c;
+  font-size:.58rem;
+  font-style:normal;
+  font-weight:780;
+  white-space:nowrap;
+}
+
+html[data-theme="dark"] .registry-workspace-trigger{
+  border-color:#35484a!important;
+  background:#172224!important;
+  color:#b6c5c7!important;
+}
+html[data-theme="dark"] .registry-workspace-trigger:hover,
+html[data-theme="dark"] .registry-personal-workspace.is-open .registry-workspace-trigger{
+  border-color:#3e6864!important;
+  background:#18302d!important;
+  color:#8bd0c8!important;
+}
+html[data-theme="dark"] .registry-workspace-count{background:#223234;color:#a9bbbd}
+html[data-theme="dark"] .registry-personal-workspace.is-open .registry-workspace-count{background:#20413d;color:#8ed4cc}
+html[data-theme="dark"] .registry-workspace-panel{border-color:#304548;background:#142023;color:#e8f0ef;box-shadow:0 24px 60px rgba(0,0,0,.34)}
+html[data-theme="dark"] .registry-workspace-panel-head{border-color:#2c3d40;background:#172326}
+html[data-theme="dark"] .registry-workspace-panel-head strong{color:#e3eceb}
+html[data-theme="dark"] .registry-workspace-panel-head small{color:#92a6a9}
+html[data-theme="dark"] .registry-workspace-panel-head>button{border-color:#35494b;background:#1b292c;color:#9eb1b4}
+html[data-theme="dark"] .registry-workspace-note-item{border-color:#293a3d;background:#142023}
+html[data-theme="dark"] .registry-workspace-note-item:hover,
+html[data-theme="dark"] .registry-workspace-note-item:focus-visible{background:#19282b}
+html[data-theme="dark"] .registry-workspace-note-icon{border-color:#2e5550;background:#17312e;color:#79c7bd}
+html[data-theme="dark"] .registry-workspace-note-copy strong{color:#dce7e6}
+html[data-theme="dark"] .registry-workspace-note-copy small{color:#92a5a8}
+html[data-theme="dark"] .registry-workspace-note-copy em{color:#b6c5c7}
+html[data-theme="dark"] .registry-workspace-more,
+html[data-theme="dark"] .registry-workspace-foot{border-color:#293a3d;background:#172326;color:#92a4a7}
+html[data-theme="dark"] .registry-row-note-jump{color:#748a8d}
+html[data-theme="dark"] .registry-row-note-jump:hover,
+html[data-theme="dark"] .registry-row-note-jump.has-note{border-color:#315b56;background:#17312e;color:#7cc9c0}
+html[data-theme="dark"] .registry-row-note-dot{border-color:#17312e;background:#7cc9c0}
+html[data-theme="dark"] .registry-personal-note-wrap textarea.has-content{border-color:#36524f!important;background:#152423!important}
+html[data-theme="dark"] .registry-workspace-banner-notes{border-color:#3a6d69;background:#17312e;color:#9bd5ce}
+
+@media(max-width:980px){
+  .registry-personal-workspace{order:2}
+}
+
+@media(max-width:620px){
+  .registry-workspace-label{display:none}
+  .registry-workspace-trigger{min-height:42px!important;padding:0 9px!important}
+  .registry-workspace-panel{
+    position:fixed;
+    z-index:2147482000;
+    top:calc(env(safe-area-inset-top) + 68px);
+    right:12px;
+    left:12px;
+    width:auto;
+    max-height:min(66dvh,560px);
+    border-radius:16px;
+  }
+  .registry-workspace-list{max-height:min(50dvh,410px)}
+  .registry-workspace-note-item{min-height:64px;padding:10px}
+  .registry-row-note-jump{width:38px;height:38px;padding:9px;opacity:.72}
+  .registry-row-note-jump svg{width:18px;height:18px}
+  .registry-row-note-jump.has-note{opacity:1}
+  .registry-workspace-banner-notes{align-self:flex-start}
+}
+
+@media(prefers-reduced-motion:reduce){
+  .registry-workspace-trigger,.registry-row-note-jump{transition:none!important}
+  .registry-workspace-trigger:active,.registry-row-note-jump:hover,.registry-row-note-jump:active{transform:none!important}
+}
+
+/* ===== consolidated from registry-tablet-rows.css ===== */
+/* MedIndex — Faza 02: rreshta shumërreshtorë për brezin 768–1199px.
+
+   Deri në 767px faqja mbetet te kartelat e `registry-mobile-lite`, dhe mbi
+   1199px kthehet tabela e plotë me kre. Në mes, tabela nuk ka kurrë hapësirë
+   të mjaftueshme: kolonat e dozimit duan 250px secila dhe tabela e plotë del
+   1486px e gjerë brenda një kolone përmbajtjeje prej 690–870px. Prandaj këtu
+   çdo rresht bëhet një kartelë me katër rreshta të brendshëm, ku dozimi për
+   të rritur dhe ai për fëmijë qëndrojnë krah për krah — puna mendore aty
+   është krahasim, jo lexim i njëpasnjëshëm.
+
+   Vendosja bëhet përmes `data-registry-column-key`, jo `nth-child`, sepse
+   rendi i kolonave ndryshon nga zgjedhësi i kolonave dhe nga pamja
+   klinike/e plotë.
+
+   Kompromis i pranuar: në këtë brez `thead` fshihet, prandaj renditja me
+   klikim mbi kre nuk është e disponueshme derisa gjerësia kalon 1199px.
+
+   Kufiri 1199px duhet të përputhet me MOBILE_BREAKPOINT te
+   registry-unified-table.js dhe registry-table-layout-guard.js; ata të dy e
+   heqin colgroup-in dhe gjerësinë e fiksuar nën atë kufi, pa të cilën kartela
+   do të mbetej 1150px e gjerë brenda një shtrati shumë më të ngushtë. */
+
+@media (min-width:768px) and (max-width:1199px){
+  html.medindex-tailadmin[data-mi-page="barnat"] body #registryContent.table-wrap{
+    width:100%!important;
+    max-height:none!important;
+    overflow-x:hidden!important;
+    overflow-y:visible!important;
+  }
+
+  html.medindex-tailadmin[data-mi-page="barnat"] body #registryContent #dataTable[data-registry-unified-table]{
+    display:block!important;
+    width:100%!important;
+    min-width:0!important;
+    max-width:100%!important;
+    table-layout:auto!important;
+    background:transparent!important;
+  }
+
+  /* Kreu hiqet nga pamja por mbetet për lexuesit e ekranit. */
+  html.medindex-tailadmin[data-mi-page="barnat"] body #registryContent #dataTable[data-registry-unified-table] thead{
+    position:absolute!important;
+    width:1px!important;
+    height:1px!important;
+    overflow:hidden!important;
+    clip-path:inset(50%)!important;
+  }
+
+  html.medindex-tailadmin[data-mi-page="barnat"] body #registryContent #dataTable[data-registry-unified-table] tbody{
+    display:grid!important;
+    width:100%!important;
+    gap:12px!important;
+  }
+
+  /* Kartela: katër kolona të brendshme, që fushat e ngushta (fortësia, forma)
+     të zënë gjysmë rreshti pa u shtrirë sa një kolonë dozimi. */
+  html.medindex-tailadmin[data-mi-page="barnat"] body #registryContent #dataTable[data-registry-unified-table] tbody tr{
+    position:relative!important;
+    display:grid!important;
+    width:100%!important;
+    min-width:0!important;
+    height:auto!important;
+    min-height:0!important;
+    max-height:none!important;
+    grid-template-columns:repeat(4,minmax(0,1fr))!important;
+    align-content:start!important;
+    overflow:hidden!important;
+    border:1px solid #e4e7ec!important;
+    border-radius:16px!important;
+    background:#fff!important;
+    box-shadow:0 5px 18px rgba(16,24,40,.045)!important;
+  }
+
+  html.medindex-tailadmin[data-mi-page="barnat"] body #registryContent #dataTable[data-registry-unified-table] tbody tr:hover{
+    border-color:#cbd5e1!important;
+  }
+
+  /* Qelizat: etiketa sipër, vlera poshtë. Në një kartelë me kolona të
+     ndryshme gjerësie, etiketa anash do të linte fusha të ngushta pa hapësirë
+     për vlerën. */
+  html.medindex-tailadmin[data-mi-page="barnat"] body #registryContent #dataTable[data-registry-unified-table] tbody td{
+    display:block!important;
+    width:auto!important;
+    min-width:0!important;
+    max-width:none!important;
+    height:auto!important;
+    min-height:0!important;
+    max-height:none!important;
+    /* Parazgjedhja është rresht i plotë. Kolonat e projektuara më poshtë e
+       mbishkruajnë atë me vendin e tyre të saktë; çdo kolonë tjetër — e
+       shtuar nga zgjedhësi i kolonave, nga pamja e plotë, ose e ndezur si
+       parazgjedhje më vonë — bie në një rresht të tërin, në vend që të zërë
+       një çerek të vetmuar poshtë kartelës. Kartela mbetet e lexueshme pa e
+       ditur paraprakisht se cilat kolona janë të dukshme. */
+    grid-column:1/-1!important;
+    padding:10px 14px!important;
+    overflow:hidden!important;
+    border:0!important;
+    background:transparent!important;
+    color:#344054!important;
+    font-size:13px!important;
+    line-height:1.45!important;
+    text-align:left!important;
+    vertical-align:top!important;
+    white-space:normal!important;
+    overflow-wrap:anywhere!important;
+  }
+
+  html.medindex-tailadmin[data-mi-page="barnat"] body #registryContent #dataTable[data-registry-unified-table] tbody td::before{
+    content:attr(data-label)!important;
+    display:block!important;
+    margin-bottom:3px!important;
+    color:#667085!important;
+    font-size:10px!important;
+    font-weight:650!important;
+    letter-spacing:.02em!important;
+    line-height:1.35!important;
+  }
+
+  /* Rreshti 1 — identiteti. Emri tregtar merr tërë gjerësinë, kutia e
+     përzgjedhjes rri lart djathtas jashtë rrjedhës. */
+  html.medindex-tailadmin[data-mi-page="barnat"] body #registryContent #dataTable[data-registry-unified-table] tbody td[data-registry-column-key="trade-name"]{
+    grid-column:1/-1!important;
+    grid-row:1!important;
+    padding:14px 66px 10px 14px!important;
+    color:#101828!important;
+    font-size:16px!important;
+    font-weight:690!important;
+    letter-spacing:-.015em!important;
+    line-height:1.2!important;
+  }
+  html.medindex-tailadmin[data-mi-page="barnat"] body #registryContent #dataTable[data-registry-unified-table] tbody td[data-registry-column-key="trade-name"]::before{
+    color:#14716f!important;
+    font-size:9px!important;
+    letter-spacing:.11em!important;
+    text-transform:uppercase!important;
+  }
+  html.medindex-tailadmin[data-mi-page="barnat"] body #registryContent #dataTable[data-registry-unified-table] tbody td[data-registry-column-key="trade-name"] .drug-name-text{
+    display:block!important;
+    max-height:none!important;
+    overflow:visible!important;
+    white-space:normal!important;
+    -webkit-line-clamp:unset!important;
+  }
+
+  html.medindex-tailadmin[data-mi-page="barnat"] body #registryContent #dataTable[data-registry-unified-table] tbody td[data-registry-column-key="select"]{
+    position:absolute!important;
+    top:12px!important;
+    right:12px!important;
+    /* Pa këtë, mbi 1023px një shtresë tjetër e lë `left` të caktuar dhe kutiza
+       kalon majtas mbi emrin e barit — `left` fiton kur të dyja janë të dhëna. */
+    left:auto!important;
+    bottom:auto!important;
+    display:grid!important;
+    width:44px!important;
+    min-width:44px!important;
+    max-width:44px!important;
+    height:44px!important;
+    padding:0!important;
+    /* Rregulla e përgjithshme e qelizave në ≤1023px i jep çdo td dy kolona,
+       ku e para ka minimum 88px. Brenda një kutie 44px kjo e shtyn kutizën
+       jashtë kartelës, prandaj rrjeti këtu kthehet në një kolonë të vetme. */
+    grid-template-columns:minmax(0,1fr)!important;
+    grid-template-rows:minmax(0,1fr)!important;
+    place-items:center!important;
+    border:1px solid #d0d5dd!important;
+    border-radius:12px!important;
+    background:#fff!important;
+  }
+  html.medindex-tailadmin[data-mi-page="barnat"] body #registryContent #dataTable[data-registry-unified-table] tbody td[data-registry-column-key="select"] .registry-selection-control{
+    width:44px!important;
+    height:44px!important;
+    margin:0!important;
+  }
+  html.medindex-tailadmin[data-mi-page="barnat"] body #registryContent #dataTable[data-registry-unified-table] tbody td[data-registry-column-key="select"]::before{
+    display:none!important;
+  }
+
+  /* Rreshti 2 — substanca me fortësinë dhe formën pranë. */
+  html.medindex-tailadmin[data-mi-page="barnat"] body #registryContent #dataTable[data-registry-unified-table] tbody td[data-registry-column-key="active-substance"]{
+    grid-column:1/3!important;
+    grid-row:2!important;
+  }
+  html.medindex-tailadmin[data-mi-page="barnat"] body #registryContent #dataTable[data-registry-unified-table] tbody td[data-registry-column-key="strength"]{
+    grid-column:3/4!important;
+    grid-row:2!important;
+  }
+  html.medindex-tailadmin[data-mi-page="barnat"] body #registryContent #dataTable[data-registry-unified-table] tbody td[data-registry-column-key="form"]{
+    grid-column:4/5!important;
+    grid-row:2!important;
+  }
+
+  /* Rreshti 3 — dozimi krah për krah, i ndarë me një vijë të hollë. */
+  html.medindex-tailadmin[data-mi-page="barnat"] body #registryContent #dataTable[data-registry-unified-table] tbody td[data-registry-column-key="dosage-adult"]{
+    grid-column:1/3!important;
+    grid-row:3!important;
+  }
+  html.medindex-tailadmin[data-mi-page="barnat"] body #registryContent #dataTable[data-registry-unified-table] tbody td[data-registry-column-key="dosage-pediatric"]{
+    grid-column:3/5!important;
+    grid-row:3!important;
+    border-left:1px solid #eef1f4!important;
+  }
+  html.medindex-tailadmin[data-mi-page="barnat"] body #registryContent #dataTable[data-registry-unified-table] tbody td:is(
+    [data-registry-column-key="dosage-adult"],
+    [data-registry-column-key="dosage-pediatric"]
+  ){
+    margin-top:2px!important;
+    padding-top:12px!important;
+    padding-bottom:12px!important;
+    border-top:1px solid #eef1f4!important;
+    background:#fbfcfd!important;
+  }
+  html.medindex-tailadmin[data-mi-page="barnat"] body #registryContent #dataTable[data-registry-unified-table] tbody td:is(
+    [data-registry-column-key="dosage-adult"],
+    [data-registry-column-key="dosage-pediatric"]
+  ) .registry-dosage-grid{
+    display:block!important;
+    max-height:none!important;
+    overflow:visible!important;
+  }
+  html.medindex-tailadmin[data-mi-page="barnat"] body #registryContent #dataTable[data-registry-unified-table] tbody td:is(
+    [data-registry-column-key="dosage-adult"],
+    [data-registry-column-key="dosage-pediatric"]
+  ) :is(.registry-dosage-grid>*,.registry-dosage-muted){
+    display:block!important;
+    max-height:none!important;
+    overflow:visible!important;
+    -webkit-line-clamp:unset!important;
+  }
+
+  /* Rreshti 4 — verifikimi dhe veprimet. */
+  html.medindex-tailadmin[data-mi-page="barnat"] body #registryContent #dataTable[data-registry-unified-table] tbody td[data-registry-column-key="clinical-status"]{
+    grid-column:1/3!important;
+    grid-row:4!important;
+  }
+  html.medindex-tailadmin[data-mi-page="barnat"] body #registryContent #dataTable[data-registry-unified-table] tbody td[data-registry-column-key="dose-calculator"]{
+    grid-column:3/4!important;
+    grid-row:4!important;
+  }
+  html.medindex-tailadmin[data-mi-page="barnat"] body #registryContent #dataTable[data-registry-unified-table] tbody td[data-registry-column-key="clinical-action"]{
+    grid-column:4/5!important;
+    grid-row:4!important;
+  }
+  html.medindex-tailadmin[data-mi-page="barnat"] body #registryContent #dataTable[data-registry-unified-table] tbody td:is(
+    [data-registry-column-key="clinical-status"],
+    [data-registry-column-key="dose-calculator"],
+    [data-registry-column-key="clinical-action"]
+  ){
+    padding-top:11px!important;
+    padding-bottom:13px!important;
+    border-top:1px solid #eef1f4!important;
+  }
+
+  /* Kolonat opsionale që zgjedhësi i kolonave mund t'i ndezë. Ato bien nën
+     rreshtin e katërt, secila si brez i vetin. Nëse shtohet ndonjë kolonë e re,
+     ajo merr gjerësinë e plotë nga parazgjedhja më lart dhe këtu i shtohet
+     vetëm vija ndarëse — asgjë nuk prishet pa këtë rregull. */
+  html.medindex-tailadmin[data-mi-page="barnat"] body #registryContent #dataTable[data-registry-unified-table] tbody td:is(
+    [data-registry-column-key="personal-note"],
+    [data-registry-column-key="population"],
+    [data-registry-column-key="prescription-label"]
+  ){
+    padding-top:11px!important;
+    padding-bottom:13px!important;
+    border-top:1px solid #eef1f4!important;
+  }
+
+  /* Qelizat e zbrazëta të dozës dhe të redaktimit vizatohen si shirita gri
+     mbushës. Në tabelë ato zënë 54–128px dhe nuk bien në sy; brenda kartelës
+     do të zinin një çerek rreshti pa mbajtur asnjë informatë, prandaj hiqen. */
+  html.medindex-tailadmin[data-mi-page="barnat"] body #registryContent #dataTable[data-registry-unified-table] tbody td[data-registry-column-key="dose-calculator"].dose-table-cell-empty,
+  html.medindex-tailadmin[data-mi-page="barnat"] body #registryContent #dataTable[data-registry-unified-table] tbody td[data-registry-column-key="clinical-action"].registry-unified-placeholder{
+    display:none!important;
+  }
+
+  /* Kur të dyja mungojnë, verifikimi merr tërë rreshtin e fundit. */
+  html.medindex-tailadmin[data-mi-page="barnat"] body #registryContent #dataTable[data-registry-unified-table] tbody tr:not(:has(td[data-registry-column-key="dose-calculator"]:not(.dose-table-cell-empty))):not(:has(td[data-registry-column-key="clinical-action"]:not(.registry-unified-placeholder))) td[data-registry-column-key="clinical-status"]{
+    grid-column:1/-1!important;
+  }
+
+  html.medindex-tailadmin[data-mi-page="barnat"] body #registryContent #dataTable[data-registry-unified-table] tbody td[data-registry-column-key="clinical-action"] .clinical-editor-open{
+    min-width:44px!important;
+    min-height:44px!important;
+  }
+
+  /* Shkasi i parapamjes së qelizës hiqet, njësoj si te kartela e telefonit ku
+     `registry-cell-preview.js` e ndalon me `cell.closest('.mobile-lite-row')`.
+     Arsyeja është e njëjta: kartela e tregon tekstin të plotë, prandaj një
+     buton "shfaq më shumë" mbi të njëjtin tekst është zhurmë — dhe do të shtonte
+     një objektiv prekjeje për çdo qelizë të çdo rreshti. */
+  html.medindex-tailadmin[data-mi-page="barnat"] body #registryContent #dataTable[data-registry-unified-table] tbody .registry-cell-preview-trigger{
+    display:none!important;
+  }
+
+  /* Butoni i dozës është kontroll i vërtetë: e hap dozimin e plotë të kufizuar
+     në dy rreshta. Në tabelë rri brenda një qelize 250px dhe teksti dydimensional
+     e mban lartësinë; brenda kartelës bie nën 40px, prandaj i jepet lartësi e
+     mjaftueshme për gisht. */
+  html.medindex-tailadmin[data-mi-page="barnat"] body #registryContent #dataTable[data-registry-unified-table] tbody .registry-dosage-dose{
+    display:flex!important;
+    min-height:40px!important;
+    align-items:center!important;
+    padding:4px 0!important;
+  }
+
+  /* Gjendja bosh mbetet një bllok i vetëm, jo një kartelë me katër kolona. */
+  html.medindex-tailadmin[data-mi-page="barnat"] body #registryContent #dataTable[data-registry-unified-table] tbody tr:has(td[colspan]){
+    display:block!important;
+  }
+  html.medindex-tailadmin[data-mi-page="barnat"] body #registryContent #dataTable[data-registry-unified-table] tbody td[colspan]{
+    display:block!important;
+    padding:34px 20px!important;
+    color:#667085!important;
+    text-align:center!important;
+  }
+  html.medindex-tailadmin[data-mi-page="barnat"] body #registryContent #dataTable[data-registry-unified-table] tbody td[colspan]::before{
+    display:none!important;
+  }
+}
+
+@media (min-width:768px) and (max-width:1199px) and (prefers-color-scheme:dark){
+  html[data-theme="dark"].medindex-tailadmin[data-mi-page="barnat"] body #registryContent #dataTable[data-registry-unified-table] tbody tr{
+    border-color:#334155!important;
+    background:#111827!important;
+  }
+  html[data-theme="dark"].medindex-tailadmin[data-mi-page="barnat"] body #registryContent #dataTable[data-registry-unified-table] tbody td{
+    color:#cbd5e1!important;
+  }
+  html[data-theme="dark"].medindex-tailadmin[data-mi-page="barnat"] body #registryContent #dataTable[data-registry-unified-table] tbody td[data-registry-column-key="trade-name"]{
+    color:#e5eefb!important;
+  }
+  html[data-theme="dark"].medindex-tailadmin[data-mi-page="barnat"] body #registryContent #dataTable[data-registry-unified-table] tbody td:is(
+    [data-registry-column-key="dosage-adult"],
+    [data-registry-column-key="dosage-pediatric"]
+  ){
+    background:#121d2e!important;
+  }
+}
+
+/* ===== consolidated from registry-typography-scale.css ===== */
+/* MedIndex — Faza 01b: një shkallë e vetme tipografike për regjistrin.
+
+   Matja mbi runtime-in e ndërtuar nxori 19 madhësi të dallueshme fonti në një
+   faqe të vetme, me tekstin më të vogël në 8.5px. Shumica nuk ishin as të
+   zgjedhura: vinin nga vlera `rem` pa shkallë — 0.64rem del 10.24px, 0.66rem
+   del 10.56px, 0.88rem del 14.08px, 1.8rem del 28.8px. Askush nuk e ka menduar
+   ndonjëherë "kjo etiketë le të jetë 10.24 piksela".
+
+   Shkalla është gjashtë hapa. Dyshemeja është 12px: kjo faqe lexohet nga një
+   mjeke që kontrollon dozime, shpesh në tablet, dhe 9.5px për rrugën e
+   administrimit apo 10.24px për popullatën e aprovuar nuk është zgjedhje
+   estetike — është tekst që duhet lexuar saktë.
+
+   Pse një shtresë e vetme dhe jo redaktim i 34 fletëve: secila prej këtyre
+   klasave e ka madhësinë e deklaruar në tri deri në pesë fletë njëherësh, të
+   gjitha me `!important`, ku fiton ajo që ngarkohet e fundit. Ndreqja në burim
+   kërkon zgjidhjen e asaj rrëmuje — që është Faza 04, projekt më vete. Deri
+   atëherë kjo shtresë e mban shkallën në një vend të vetëm, të lexueshëm.
+
+   Specifika këtu është 2 id + 3 klasa/atribute, sa duhet për t'i mundur
+   shtresat ekzistuese pa iu qasur `!important`-it të tyre me trikë. */
+
+html.medindex-tailadmin[data-mi-page="barnat"]{
+  --mi-type-xs:12px;   /* dyshemeja: etiketa, meta, ndihmëse */
+  --mi-type-sm:13px;   /* teksti i tabelës */
+  --mi-type-md:14px;   /* teksti bazë */
+  --mi-type-lg:16px;   /* theksim, tituj kartelash */
+  --mi-type-xl:20px;   /* tituj seksionesh */
+  --mi-type-2xl:28px;  /* titulli i faqes */
+}
+
+/* ————— Trupi i tabelës ————— */
+
+/* Qeliza e tabelës rrinte në 12.5px (0.78rem). Teksti kryesor klinik shkon te
+   hapi `sm`; nën të nuk zbret asgjë brenda tabelës. */
+html.medindex-tailadmin[data-mi-page="barnat"] body #registryContent #dataTable[data-registry-unified-table] tbody td{
+  font-size:var(--mi-type-sm)!important;
+}
+
+/* Emri tregtar është ankora e rreshtit — një hap mbi trupin. */
+html.medindex-tailadmin[data-mi-page="barnat"] body #registryContent #dataTable[data-registry-unified-table] tbody .drug-name-text{
+  font-size:var(--mi-type-md)!important;
+}
+
+/* Dozimi lexohet sa trupi i tabelës, jo më pak — ishte 11.5px. Doza është
+   përmbajtja që lexohet më shumë në këtë faqe; nuk ka arsye të jetë më e vogël
+   se emri i barit pranë saj.
+
+   E kontrollova nëse 13px del jashtë qelizës 250px: mbi dhjetë rreshta,
+   `scrollHeight - clientHeight` është 0 si në 12px ashtu edhe në 13px. Teksti
+   që duket i prerë në pamje nuk pritet nga qeliza — është skaji i skrollimit
+   horizontal të tabelës, i njëjtë para dhe pas kësaj shtrese. */
+html.medindex-tailadmin[data-mi-page="barnat"] body #registryContent #dataTable[data-registry-unified-table] tbody :is(
+  .registry-dosage-dose-text,
+  .registry-dosage-muted,
+  .registry-dosage-details,
+  .registry-dosage-grid
+){
+  font-size:var(--mi-type-sm)!important;
+}
+
+/* Etiketat ndihmëse brenda rreshtit: rruga e administrimit (ishte 9.5px),
+   popullata e aprovuar (10.24px), çelësi i dozimit dhe treguesi i redaktimit
+   (10.56px), nënkreu i dozimit (8.5px). Të gjitha bien te dyshemeja. */
+html.medindex-tailadmin[data-mi-page="barnat"] body #registryContent #dataTable[data-registry-unified-table] :is(
+  .registry-dosage-route,
+  .registry-dosage-subhead,
+  .registry-dosage-toggle,
+  .population-verification-label,
+  .population-verification-value,
+  .clinical-editor-progress,
+  .clinical-editor-status-column,
+  .registry-population-badge
+){
+  font-size:var(--mi-type-xs)!important;
+}
+
+/* Etiketa e gjeneruar mbi çdo qelizë në brezin e kartelës. */
+html.medindex-tailadmin[data-mi-page="barnat"] body #registryContent #dataTable[data-registry-unified-table] tbody td::before{
+  font-size:var(--mi-type-xs)!important;
+}
+
+/* Kreu i tabelës mbetet i vogël por i lexueshëm, jo nën dysheme. */
+html.medindex-tailadmin[data-mi-page="barnat"] body #registryContent #dataTable[data-registry-unified-table] thead th{
+  font-size:var(--mi-type-xs)!important;
+}
+
+/* ————— Shtresa rreth tabelës ————— */
+
+/* Shkurtorja e kërkimit ishte 0.55rem = 8.8px, shigjetat 0.7rem = 11.2px,
+   dhe disa etiketa 0.71rem = 11.36px. Asnjë prej tyre nuk ishte vlerë e
+   menduar; të gjitha shkojnë te dyshemeja. */
+html.medindex-tailadmin[data-mi-page="barnat"] body :is(
+  .registry-search-shortcut,
+  .registry-control-label,
+  .registry-eyebrow,
+  .registry-result-count,
+  .registry-filter-state,
+  .nav-mini-count,
+  .mini-count
+){
+  font-size:var(--mi-type-xs)!important;
+}
+
+/* Titulli i faqes ishte 28.8px (1.8rem). */
+html.medindex-tailadmin[data-mi-page="barnat"] body :is(.mi-page-heading-title, .mi-page-heading h1){
+  font-size:var(--mi-type-2xl)!important;
+}
+
+/* Nën 600px titulli zbret një hap, që të mos e hajë gjerësinë e ekranit. */
+@media (max-width:599px){
+  html.medindex-tailadmin[data-mi-page="barnat"] body :is(.mi-page-heading-title, .mi-page-heading h1){
+    font-size:var(--mi-type-xl)!important;
+  }
+}
+
+/* ————— Mbetjet e shtresës së jashtme —————
+
+   Matja me CSS.getMatchedStylesForNode tregoi pse gjysma e rregullave të para
+   nuk zbatohej: rregullat fituese ankorohen te id-të — `#pagination`,
+   `#registryViewToolbar`, `#registryFilterPanel` — dhe një selektor me klasa,
+   sado i gjatë, nuk e mund dot një id. Prandaj këtu përdoret e njëjta id plus
+   një kualifikues, jo më shumë klasa. */
+
+/* Kreu i seksionit: titulli ishte 0.88rem = 14.08px, përmbledhja dhe butonat
+   e pamjes 0.68rem = 10.88px. */
+html.medindex-tailadmin[data-mi-page="barnat"] body #registryViewToolbar.registry-view-toolbar .registry-view-heading strong{
+  font-size:var(--mi-type-md)!important;
+}
+html.medindex-tailadmin[data-mi-page="barnat"] body #registryViewToolbar.registry-view-toolbar :is(
+  .registry-view-heading span,
+  .registry-view-actions button,
+  .registry-filter-toggle,
+  [data-registry-view]
+){
+  font-size:var(--mi-type-xs)!important;
+}
+
+/* Treguesi i auditimit rri te shiriti i filtrave, ku rregulli fitues ishte
+   0.66rem = 10.56px. */
+html.medindex-tailadmin[data-mi-page="barnat"] body #registryFilterPanel.toolbar :is(
+  .clinical-editor-progress,
+  select,
+  .form-picker > button,
+  .col-picker > button
+){
+  font-size:var(--mi-type-xs)!important;
+}
+
+/* Shigjeta e renditjes në kre ishte 0.7rem = 11.2px. */
+html.medindex-tailadmin[data-mi-page="barnat"] body .registry-column-header .registry-sort-trigger .arrow{
+  font-size:var(--mi-type-xs)!important;
+}
+
+/* Faqosja: butonat ishin 0.71rem = 11.36px, ndarësi "…" 0.85rem = 13.6px. */
+html.medindex-tailadmin[data-mi-page="barnat"] body #pagination.pagination :is(button, a){
+  font-size:var(--mi-type-xs)!important;
+}
+html.medindex-tailadmin[data-mi-page="barnat"] body #pagination.pagination span{
+  font-size:var(--mi-type-sm)!important;
+}
+
+/* Shiriti i sipërm dhe anështylla: numri i favoriteve, roli i përdoruesit,
+   distinktivi i numërimit dhe shkurtorja e tastierës rrinin në 11px. */
+html.medindex-tailadmin[data-mi-page="barnat"] body :is(
+  .mi-menu-item .nav-mini-count.mi-menu-badge,
+  .mi-user-card .mi-user-copy small,
+  .mi-profile-chip small,
+  .mi-global-search kbd
+){
+  font-size:var(--mi-type-xs)!important;
+}
+html.medindex-tailadmin[data-mi-page="barnat"] body #countBadge.count-badge,
+html.medindex-tailadmin[data-mi-page="barnat"] body #savedProtocolCount.mini-count{
+  font-size:var(--mi-type-xs)!important;
+}
+
+/* Distinktivi i menysë ankorohet te `#appMenu` (tailadmin-medindex.css:293),
+   prandaj edhe këtu duhet e njëjta id. Ishte 11px — nën dysheme. */
+html.medindex-tailadmin[data-mi-page="barnat"] body #appMenu :is(.mi-menu-badge, .nav-mini-count){
+  font-size:var(--mi-type-xs)!important;
+}
+
+/* Në telefon treguesi i auditimit nuk rri te `#registryFilterPanel`, prandaj i
+   duhet edhe një rregull pa id — ishte 0.76rem = 12.16px, jashtë shkallës. */
+html.medindex-tailadmin[data-mi-page="barnat"] body .toolbar .clinical-editor-progress,
+html.medindex-tailadmin[data-mi-page="barnat"] body .registry-toolbar .clinical-editor-progress{
+  font-size:var(--mi-type-xs)!important;
+}
+
+/* Distinktivi i numërimit në telefon kishte ende 11px nga një shtresë tjetër. */
+html.medindex-tailadmin[data-mi-page="barnat"] body :is(.count-badge, .selection-badge),
+html.medindex-tailadmin[data-mi-page="barnat"] body .registry-toolbar :is(.count-badge, .selection-badge){
+  font-size:var(--mi-type-xs)!important;
+}
+
+/* ===== consolidated from registry-touch-targets.css ===== */
+/* MedIndex — Faza 03: objektivat e prekjes.
+
+   Matja mbi runtime-in e ndërtuar nxori 63 kontrolle nën 40px në desktop, dhe
+   50 prej tyre ishin i njëjti element: emri i barit, 22px i lartë. Pjesa tjetër
+   janë grupe me nga një deri në katër.
+
+   Pragu i punës është 44px — masa e rekomanduar për gisht. Kjo faqe përdoret
+   edhe në tablet me dorë, jo vetëm me mi, dhe një emër bari 22px i lartë është
+   objektivi kryesor i çdo rreshti: aty klikohet për të hapur barin.
+
+   Rregull i përgjithshëm: rritet vetëm zona e prekjes, jo pamja. Prandaj
+   përdoret `min-height` me `align-items:center` në vend të `height`, që teksti
+   të mos zhvendoset dhe rreshtat të mos rriten kur ka tashmë hapësirë. */
+
+html.medindex-tailadmin[data-mi-page="barnat"]{
+  --mi-touch:44px;
+}
+
+/* Emri i barit — 50 nga 63 rastet, 22px i lartë.
+
+   Provova `min-height:44px` dhe matja e refuzoi menjëherë: rreshti u rrit nga
+   92px në 124px, sepse qeliza e emrit mban edhe elemente të tjera nën të dhe
+   stiva doli mbi lartësinë e rreshtit. Tridhjetë e pesë për qind rreshta më të
+   lartë do të thotë një të tretën më pak barna në ekran — çmim i papranueshëm
+   për një regjistër që skanohet me sy.
+
+   Prandaj zgjerohet vetëm zona e prekjes: mbushje vertikale për gishtin, dhe
+   margjinë negative e barabartë që rrjedha të mbetet e paprekur. 22px tekst +
+   2×12px = 46px zonë prekjeje, me rreshtin pikërisht aty ku ishte.
+
+   Pa `display:flex`. Provova edhe atë dhe pamja e refuzoi: emri e humbi
+   kufizimin e qelizës dhe dilte mbi kolonën e substancës. Mbushja e zgjeron
+   zonën pa e prekur mënyrën si vizatohet elementi. */
+html.medindex-tailadmin[data-mi-page="barnat"] body #registryContent #dataTable[data-registry-unified-table] tbody .drug-name-text{
+  padding-block:12px!important;
+  margin-block:-12px!important;
+}
+
+/* Përzgjedhja e barit mund të materializohet para klasës së auditimit të faqes.
+   Mbaje etiketën 44px në çdo fazë të runtime-it; kutia vizuale brenda mbetet e
+   vogël, ndërsa zona reale e prekjes është e sigurt për telefon dhe tablet. */
+html.medindex-tailadmin[data-mi-page="barnat"] body #registryContent #dataTable .registry-selection-control{
+  display:grid!important;
+  width:var(--mi-touch)!important;
+  min-width:var(--mi-touch)!important;
+  height:var(--mi-touch)!important;
+  min-height:var(--mi-touch)!important;
+  margin:auto!important;
+  place-items:center!important;
+  cursor:pointer!important;
+}
+
+/* CSS-i i kartelave mobile mund ta ngushtojë këtë kontroll në 25–30px pasi ai
+   krijohet me vonesë. Ky është kontroll real (jo vetëm ikonë), prandaj përdor të
+   njëjtin kontrakt 44px si kontrollet e tjera, në desktop, tablet dhe telefon. */
+html.medindex-tailadmin[data-mi-page="barnat"] body #registryContent #dataTable .registry-cell-preview-trigger{
+  width:var(--mi-touch)!important;
+  min-width:var(--mi-touch)!important;
+  height:var(--mi-touch)!important;
+  min-height:var(--mi-touch)!important;
+}
+
+/* Panelët floating në telefon duhet të ndjekin të njëjtën shkallë të radius-it
+   si pjesa tjetër e regjistrit. Shtresat më të hershme përdorin 15px; kjo është
+   shtresa finale e auditit dhe e fikson në hapin 16px të shkallës 8/12/16. */
+@media (max-width:760px){
+  html.medindex-tailadmin[data-mi-page="barnat"] body :is(.form-panel,.col-panel){
+    border-radius:16px!important;
+  }
+}
+
+/* Faqosja: butonat ishin 35px. Gjerësia 35px është nën 44 po mbi pragun 24 të
+   portës; këtu rregullohet lartësia dhe gjerësia minimale bashkë. */
+html.medindex-tailadmin[data-mi-page="barnat"] body #pagination.pagination :is(button, a){
+  min-width:var(--mi-touch)!important;
+  min-height:var(--mi-touch)!important;
+}
+
+/* Shiriti i regjistrit: çelësi i filtrave dhe butonat e pamjes ishin 38px. */
+html.medindex-tailadmin[data-mi-page="barnat"] body #registryViewToolbar.registry-view-toolbar :is(
+  .registry-filter-toggle,
+  .registry-view-actions button,
+  [data-registry-view]
+){
+  min-height:var(--mi-touch)!important;
+}
+
+/* Treguesi i auditimit është buton i vërtetë — hap panelin e verifikimit. */
+html.medindex-tailadmin[data-mi-page="barnat"] body :is(#registryFilterPanel.toolbar, .toolbar, .registry-toolbar) .clinical-editor-progress{
+  min-height:var(--mi-touch)!important;
+}
+
+/* Statusi offline dhe marka e krerëve: të dy klikohen, të dy ishin 34px. */
+html.medindex-tailadmin[data-mi-page="barnat"] body :is(.mi-offline-status, .mi-mobile-brand, .mi-brand){
+  min-height:var(--mi-touch)!important;
+}
+
+/* `.skip-link` mbetet jashtë me qëllim: është lidhja e kapërcimit që rri e
+   fshehur derisa merr fokusin nga tastiera. Ajo nuk preket me gisht kurrë, dhe
+   rritja e saj do ta bënte të dukshme ose do të kërkonte pozicionim të ri. */
+
+/* Thërrimet janë lidhje teksti inline: një `min-height` do t'i shtynte poshtë
+   dhe do ta prishte rreshtin. Në vend të saj zgjerohet vetëm zona e prekjes me
+   mbushje vertikale, dhe një margjinë negative e barabartë e mban rreshtin
+   pikërisht aty ku ishte. 19px tekst + 2×13px mbushje = 45px zonë prekjeje,
+   me pamje të pandryshuar. */
+html.medindex-tailadmin[data-mi-page="barnat"] body .mi-breadcrumb a{
+  display:inline-flex!important;
+  align-items:center!important;
+  padding-block:13px!important;
+  margin-block:-13px!important;
+}
+
+/* ===== consolidated from registry-list-view.css ===== */
+/* Registry list view.
+   A reading surface, not a second table: rows carry no borders of their own, and
+   the only rules on the page are the hairlines between them. Built on the same
+   --mi-* tokens as the rest of the workspace so it follows the shell theme. */
+
+/* The switch sits with the registry it switches, not inside the search toolbar:
+   the toolbar has a height budget on phones that a second row would blow. */
+.rlv-bar {
+  display: flex;
+  justify-content: flex-end;
+  margin: 0 0 10px;
+}
+
+.rlv-toggle {
+  display: inline-flex;
+  gap: 2px;
+  padding: 3px;
+  border: 1px solid var(--mi-border, #e4e7ec);
+  border-radius: 999px;
+  background: var(--mi-surface-soft, #f9fafb);
+}
+
+.rlv-toggle button {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  min-height: 38px;
+  padding: 0 15px;
+  border: 0;
+  border-radius: 999px;
+  background: transparent;
+  color: var(--mi-muted, #667085);
+  font: inherit;
+  font-size: 13px;
+  font-weight: 650;
+  white-space: nowrap;
+  cursor: pointer;
+  transition: background .15s ease, color .15s ease;
+}
+
+.rlv-toggle button span { font-size: 14px; line-height: 1; }
+
+.rlv-toggle button[aria-pressed="true"] {
+  background: var(--mi-surface, #fff);
+  color: var(--mi-text, #101828);
+  box-shadow: var(--mi-shadow-xs, 0 1px 2px rgba(16, 24, 40, .05));
+}
+
+.rlv-toggle button:focus-visible {
+  outline: none;
+  box-shadow: var(--mi-focus, 0 0 0 4px rgba(21, 95, 99, .18));
+}
+
+/* --- panel ---------------------------------------------------------------- */
+
+.rlv-panel {
+  margin: 14px 0 0;
+  border: 1px solid var(--mi-border, #e4e7ec);
+  border-radius: var(--mi-radius-lg, 16px);
+  background: var(--mi-surface, #fff);
+  overflow: hidden;
+}
+
+.rlv-panel[hidden] { display: none !important; }
+
+.rlv-head {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 13px 18px;
+  border-bottom: 1px solid var(--mi-border, #e4e7ec);
+  background: var(--mi-surface-soft, #f9fafb);
+}
+
+.rlv-crumb {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 4px;
+  min-width: 0;
+  font-size: 13px;
+}
+
+.rlv-crumb button {
+  min-height: 32px;
+  padding: 0 9px;
+  border: 0;
+  border-radius: 7px;
+  background: transparent;
+  color: var(--mi-brand-600, #155f63);
+  font: inherit;
+  font-size: 13px;
+  font-weight: 650;
+  cursor: pointer;
+}
+
+.rlv-crumb button:hover { background: var(--mi-brand-25, #f7fbfa); }
+
+/* The separator lives on the crumb rather than in the markup, so the trail
+   reads correctly however many levels deep it goes. */
+.rlv-crumb button + button::before,
+.rlv-crumb button + .rlv-crumb-current::before {
+  content: "›";
+  margin-right: 6px;
+  color: var(--mi-gray-400, #98a2b3);
+  font-weight: 400;
+}
+
+.rlv-crumb-current {
+  padding: 0 4px;
+  overflow: hidden;
+  color: var(--mi-text, #101828);
+  font-weight: 650;
+  text-overflow: ellipsis;
+}
+
+.rlv-count {
+  margin-left: auto;
+  color: var(--mi-muted, #667085);
+  font-size: 12.5px;
+  font-weight: 600;
+  white-space: nowrap;
+  font-variant-numeric: tabular-nums;
+}
+
+/* --- filters ----------------------------------------------------------------
+   A compact row inside the panel, never in the page toolbar: the toolbar has a
+   height budget on phones that this would spend several times over. */
+
+.rlv-filters {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 18px;
+  border-bottom: 1px solid var(--mi-gray-100, #f2f4f7);
+}
+
+.rlv-filters:empty { display: none; }
+
+.rlv-filter {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  min-width: 0;
+  padding: 4px 4px 4px 10px;
+  border: 1px solid var(--mi-border, #e4e7ec);
+  border-radius: 999px;
+  background: var(--mi-surface, #fff);
+}
+
+/* A filter that is doing something should look like it is. */
+.rlv-filter.is-set {
+  border-color: var(--mi-brand-500, #1f7779);
+  background: var(--mi-brand-25, #f7fbfa);
+}
+
+.rlv-filter-label {
+  color: var(--mi-muted, #667085);
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: .03em;
+  text-transform: uppercase;
+  white-space: nowrap;
+}
+
+.rlv-filter.is-set .rlv-filter-label { color: var(--mi-brand-700, #0d4145); }
+
+.rlv-filter select {
+  max-width: 190px;
+  min-height: 30px;
+  padding: 0 6px;
+  border: 0;
+  border-radius: 999px;
+  background: transparent;
+  color: var(--mi-text, #101828);
+  font: inherit;
+  font-size: 13px;
+  cursor: pointer;
+}
+
+.rlv-filter select:focus-visible {
+  outline: none;
+  box-shadow: var(--mi-focus, 0 0 0 4px rgba(21, 95, 99, .18));
+}
+
+.rlv-filter-clear {
+  min-height: 32px;
+  padding: 0 12px;
+  border: 0;
+  border-radius: 999px;
+  background: transparent;
+  color: var(--mi-brand-600, #155f63);
+  font: inherit;
+  font-size: 12.5px;
+  font-weight: 650;
+  cursor: pointer;
+}
+
+.rlv-filter-clear:hover { background: var(--mi-brand-25, #f7fbfa); }
+
+/* Says plainly that the list is showing part of what matched, rather than
+   letting a truncated list look complete. */
+.rlv-more {
+  padding: 14px 18px;
+  border-top: 1px dashed var(--mi-gray-200, #e4e7ec);
+  color: var(--mi-muted, #667085);
+  font-size: 12.5px;
+  text-align: center;
+}
+
+/* --- rows ------------------------------------------------------------------ */
+
+.rlv-list {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  max-height: min(70vh, 780px);
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
+}
+
+.rlv-list > li + li { border-top: 1px solid var(--mi-gray-100, #f2f4f7); }
+
+.rlv-category-open,
+.rlv-drug-open {
+  display: grid;
+  width: 100%;
+  padding: 13px 18px;
+  border: 0;
+  background: transparent;
+  color: inherit;
+  font: inherit;
+  text-align: left;
+  cursor: pointer;
+  transition: background .12s ease;
+}
+
+.rlv-category-open:hover,
+.rlv-drug-open:hover { background: var(--mi-surface-soft, #f9fafb); }
+
+.rlv-category-open:focus-visible,
+.rlv-drug-open:focus-visible {
+  outline: none;
+  background: var(--mi-brand-25, #f7fbfa);
+  box-shadow: inset 3px 0 0 var(--mi-brand-500, #1f7779);
+}
+
+/* --- category row ----------------------------------------------------------- */
+
+.rlv-category-open {
+  /* code · name · count · chevron */
+  grid-template-columns: auto minmax(0, 1fr) auto auto;
+  align-items: center;
+  gap: 12px;
+}
+
+.rlv-category-code {
+  padding: 3px 9px;
+  border-radius: 7px;
+  background: var(--mi-brand-50, #eaf4f1);
+  color: var(--mi-brand-700, #0d4145);
+  font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: .02em;
+}
+
+.rlv-category-name {
+  min-width: 0;
+  overflow: hidden;
+  font-size: 14px;
+  font-weight: 600;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.rlv-category-name em { color: var(--mi-muted, #667085); font-weight: 500; }
+/* Substances stand in where the ATC catalog has no name for a code. They are
+   the register's own words, not an official subgroup name, so they read a shade
+   quieter than a catalogued one. */
+.rlv-category-substances { color: var(--mi-gray-600, #475467); font-weight: 550; }
+
+.rlv-category-count {
+  color: var(--mi-muted, #667085);
+  font-size: 12.5px;
+  font-weight: 650;
+  font-variant-numeric: tabular-nums;
+}
+
+/* An affordance that the row goes somewhere, without an icon column. */
+.rlv-category-open::after {
+  content: "›";
+  grid-column: 4;
+  color: var(--mi-gray-400, #98a2b3);
+  font-size: 17px;
+  line-height: 1;
+}
+
+
+/* --- drug row ---------------------------------------------------------------- */
+
+.rlv-drug-open { gap: 3px; }
+
+.rlv-drug-name {
+  font-size: 14.5px;
+  font-weight: 700;
+  letter-spacing: -0.01em;
+}
+
+.rlv-drug-meta {
+  color: var(--mi-gray-600, #475467);
+  font-size: 13px;
+  line-height: 1.5;
+}
+
+/* The pharmaceutical form is the part a doctor scans for, so it carries the
+   weight even inside the secondary line. */
+.rlv-drug-meta strong { color: var(--mi-text, #101828); font-weight: 650; }
+
+.rlv-drug-atc {
+  justify-self: start;
+  margin-top: 3px;
+  padding: 2px 7px;
+  border-radius: 6px;
+  background: var(--mi-gray-100, #f2f4f7);
+  color: var(--mi-gray-700, #344054);
+  font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+  font-size: 11.5px;
+  font-weight: 600;
+}
+
+.rlv-drug-trail {
+  margin-top: 4px;
+  color: var(--mi-muted, #667085);
+  font-size: 12px;
+}
+
+.rlv-drug-snippet {
+  margin-top: 5px;
+  color: var(--mi-gray-600, #475467);
+  font-size: 12.5px;
+  line-height: 1.55;
+}
+
+.rlv-drug-snippet mark {
+  padding: 0 2px;
+  border-radius: 3px;
+  background: var(--mi-warning-50, #fffaeb);
+  color: var(--mi-warning-700, #b54708);
+  font-weight: 650;
+}
+
+/* --- the opened record ------------------------------------------------------- */
+
+/* The full stored record, exactly as the registry holds it. Two columns on a
+   desktop so a label and its value stay on one line; stacked on a phone. */
+.rlv-drug-detail {
+  display: grid;
+  grid-template-columns: minmax(120px, 190px) minmax(0, 1fr);
+  gap: 7px 16px;
+  margin: 0;
+  padding: 4px 18px 17px;
+  border-top: 1px dashed var(--mi-gray-200, #e4e7ec);
+  background: var(--mi-surface-soft, #f9fafb);
+}
+
+.rlv-drug-detail[hidden] { display: none; }
+
+.rlv-drug-detail dt {
+  padding-top: 1px;
+  color: var(--mi-muted, #667085);
+  font-size: 12px;
+  font-weight: 650;
+}
+
+.rlv-drug-detail dd {
+  margin: 0;
+  color: var(--mi-gray-700, #344054);
+  font-size: 13px;
+  line-height: 1.55;
+  /* Clinical text is shown whole — never clipped, never summarised. */
+  overflow-wrap: anywhere;
+}
+
+/* An opened row keeps the tint of the record below it, so the two read as one
+   block rather than a row and an unrelated panel. */
+.rlv-drug-open[aria-expanded="true"] { background: var(--mi-surface-soft, #f9fafb); }
+
+.rlv-empty {
+  padding: 40px 18px;
+  color: var(--mi-muted, #667085);
+  font-size: 13.5px;
+  text-align: center;
+}
+
+/* --- where the choice is offered --------------------------------------------
+   The switch is for the screens that actually show a table. On a phone the
+   registry is not a table at all — the mobile-lite layer owns it and already
+   renders a card list — so there are not two things to choose between, and the
+   phone layout has a height budget that a second control would spend for
+   nothing. Below the table breakpoint the surface stays out of the way and the
+   phone is left exactly as it was. */
+
+.rlv-bar,
+.rlv-panel { display: none; }
+
+@media (min-width: 768px) {
+  .rlv-bar { display: flex; }
+  .rlv-panel { display: block; }
+  .rlv-panel[hidden] { display: none; }
+
+  /* The table gives way to the list only where the toggle exists to bring it
+     back. Unscoped, a preference set on a desktop would follow the doctor to a
+     phone and leave them with neither view. */
+  html[data-mi-registry-view="list"] #registryContent { display: none !important; }
+  html[data-mi-registry-view="list"] #pagination { display: none !important; }
+}
+
+/* Tablets: roomier touch targets, and the opened record in a single column. */
+@media (min-width: 768px) and (max-width: 900px) {
+  .rlv-toggle button { min-height: 44px; }
+  .rlv-head { padding: 11px 13px; }
+  .rlv-category-open, .rlv-drug-open { padding: 13px; }
+  .rlv-category-name { white-space: normal; }
+  .rlv-drug-detail { grid-template-columns: minmax(0, 1fr); gap: 2px; padding: 4px 13px 15px; }
+  .rlv-drug-detail dd + dt { margin-top: 9px; }
+  .rlv-filters { padding: 9px 13px; gap: 6px; }
+  .rlv-filter select { max-width: 130px; min-height: 36px; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .rlv-toggle button,
+  .rlv-category-open,
+  .rlv-drug-open { transition: none; }
+}
+
+/* ===== consolidated from registry-search-suggest.css ===== */
+/* Registry search suggestions.
+   A fixed overlay anchored under the search box. It lives on the body and is
+   out of flow, so it adds nothing to the toolbar's height budget. Built on the
+   same --mi-* tokens as the rest of the workspace. */
+
+.rss-panel {
+  position: fixed;
+  z-index: 900;
+  max-height: min(58vh, 470px);
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
+  border: 1px solid var(--mi-border, #e4e7ec);
+  border-radius: var(--mi-radius, 12px);
+  background: var(--mi-surface, #fff);
+  box-shadow: var(--mi-shadow-lg, 0 12px 34px rgba(16, 24, 40, .13));
+}
+
+.rss-panel[hidden] { display: none !important; }
+
+.rss-list { margin: 0; padding: 5px 0; list-style: none; }
+
+/* The category a suggestion belongs to, so a name and an indication are never
+   mistaken for one another. */
+.rss-head {
+  padding: 9px 14px 4px;
+  color: var(--mi-muted, #667085);
+  font-size: 10.5px;
+  font-weight: 750;
+  letter-spacing: .07em;
+  text-transform: uppercase;
+}
+
+.rss-head + .rss-item { margin-top: 0; }
+
+.rss-item {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  padding: 8px 14px;
+  cursor: pointer;
+}
+
+.rss-item:hover,
+.rss-item[aria-selected="true"] { background: var(--mi-surface-soft, #f9fafb); }
+
+.rss-item[aria-selected="true"] { box-shadow: inset 3px 0 0 var(--mi-brand-500, #1f7779); }
+
+.rss-primary {
+  color: var(--mi-text, #101828);
+  font-size: 14px;
+  font-weight: 600;
+}
+
+.rss-primary mark,
+.rss-snippet mark {
+  padding: 0 1px;
+  border-radius: 3px;
+  background: var(--mi-warning-50, #fffaeb);
+  color: var(--mi-warning-700, #b54708);
+  font-weight: 700;
+}
+
+.rss-secondary {
+  color: var(--mi-gray-600, #475467);
+  font-size: 12.5px;
+}
+
+/* The stored sentence that caused an indication match, shown as it is written. */
+.rss-snippet {
+  color: var(--mi-gray-600, #475467);
+  font-size: 12px;
+  line-height: 1.5;
+}
+
+@media (max-width: 640px) {
+  .rss-panel { max-height: 46vh; }
+  /* A comfortable target on a phone without turning the list into a wall. */
+  .rss-item { padding: 11px 14px; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .rss-item { transition: none; }
+}
+
+/* ===== consolidated from registry-pagination-v2.css ===== */
+/* MedIndex Registry Pagination v3
+   Senior UX pass: compact table footer, grouped page navigation and no-scroll mobile layout. */
+
+html[data-mi-page="barnat"] #pagination {
+  --mi-page-accent: #2563eb;
+  --mi-page-accent-strong: #1d4ed8;
+  --mi-page-accent-soft: #eff6ff;
+  --mi-page-text: #1e293b;
+  --mi-page-text-soft: #64748b;
+  --mi-page-muted: #94a3b8;
+  --mi-page-border: #dbe4ee;
+  --mi-page-border-soft: #e8eef5;
+  --mi-page-surface: #ffffff;
+  --mi-page-surface-soft: #f8fafc;
+  display: block;
+  width: 100%;
+  min-height: 0;
+  padding: 12px 20px 16px;
+  box-sizing: border-box;
+  border-top: 1px solid var(--mi-page-border-soft);
+  background: var(--mi-page-surface);
+  color: var(--mi-page-text);
+  font-family: inherit;
+  font-variant-numeric: tabular-nums;
+}
+
+html[data-mi-page="barnat"] #pagination.is-loading {
+  opacity: .64;
+  pointer-events: none;
+}
+
+html[data-mi-page="barnat"] #pagination .registry-pagination-frame {
+  display: grid;
+  grid-template-columns: minmax(150px, 1fr) auto minmax(110px, 1fr);
+  align-items: center;
+  gap: 18px;
+  width: min(100%, 1180px);
+  min-height: 48px;
+  margin: 0 auto;
+}
+
+html[data-mi-page="barnat"] #pagination .registry-pagination-frame-all {
+  grid-template-columns: 1fr;
+}
+
+html[data-mi-page="barnat"] #pagination .registry-pagination-summary {
+  display: inline-flex;
+  align-items: baseline;
+  justify-self: start;
+  gap: 5px;
+  min-width: 0;
+  color: var(--mi-page-text-soft);
+  font-size: 12.5px;
+  line-height: 1.3;
+  white-space: nowrap;
+}
+
+html[data-mi-page="barnat"] #pagination .registry-pagination-summary-label {
+  color: var(--mi-page-muted);
+  font-weight: 600;
+}
+
+html[data-mi-page="barnat"] #pagination .registry-pagination-summary strong {
+  color: var(--mi-page-text);
+  font-size: 13px;
+  font-weight: 700;
+  letter-spacing: -.01em;
+}
+
+html[data-mi-page="barnat"] #pagination .registry-pagination-size {
+  justify-self: end;
+  color: var(--mi-page-muted);
+  font-size: 12.5px;
+  font-weight: 600;
+  line-height: 1;
+  white-space: nowrap;
+}
+
+html[data-mi-page="barnat"] #pagination .registry-pagination-controls {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  justify-self: center;
+  gap: 8px;
+  min-width: 0;
+}
+
+html[data-mi-page="barnat"] #pagination .registry-pagination-pages {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 2px;
+  min-width: 0;
+  padding: 3px;
+  border: 1px solid var(--mi-page-border-soft);
+  border-radius: 12px;
+  background: var(--mi-page-surface-soft);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, .72);
+}
+
+html[data-mi-page="barnat"] #pagination button {
+  appearance: none;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex: 0 0 auto;
+  height: 38px;
+  margin: 0;
+  border: 1px solid transparent;
+  border-radius: 9px;
+  font: inherit;
+  font-size: 13px;
+  font-weight: 650;
+  line-height: 1;
+  letter-spacing: -.01em;
+  cursor: pointer;
+  transition: background-color .14s ease, border-color .14s ease, color .14s ease, box-shadow .14s ease;
+}
+
+html[data-mi-page="barnat"] #pagination button.registry-pagination-page {
+  width: 34px;
+  min-width: 34px;
+  padding: 0;
+  background: transparent;
+  color: #475569;
+}
+
+html[data-mi-page="barnat"] #pagination button.registry-pagination-nav {
+  min-width: 76px;
+  padding: 0 12px;
+  gap: 7px;
+  border-color: var(--mi-page-border);
+  background: var(--mi-page-surface);
+  color: #334155;
+  box-shadow: 0 1px 2px rgba(15, 23, 42, .03);
+}
+
+html[data-mi-page="barnat"] #pagination .registry-pagination-nav-icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 14px;
+  color: #64748b;
+  font-size: 15px;
+  font-weight: 700;
+  line-height: 1;
+}
+
+html[data-mi-page="barnat"] #pagination button.registry-pagination-page:hover:not([aria-current="page"]),
+html[data-mi-page="barnat"] #pagination button.registry-pagination-nav:hover:not(:disabled) {
+  border-color: #cbd8e7;
+  background: #ffffff;
+  color: #173f88;
+  box-shadow: 0 2px 7px rgba(15, 23, 42, .06);
+}
+
+html[data-mi-page="barnat"] #pagination button.active,
+html[data-mi-page="barnat"] #pagination button[aria-current="page"] {
+  border-color: var(--mi-page-accent);
+  background: var(--mi-page-accent);
+  color: #ffffff;
+  box-shadow: 0 3px 9px rgba(37, 99, 235, .20);
+  font-weight: 750;
+  cursor: default;
+}
+
+html[data-mi-page="barnat"] #pagination button:disabled {
+  border-color: var(--mi-page-border-soft);
+  background: var(--mi-page-surface-soft);
+  color: #a8b2c0;
+  box-shadow: none;
+  cursor: default;
+  opacity: .58;
+}
+
+html[data-mi-page="barnat"] #pagination button:disabled .registry-pagination-nav-icon {
+  color: inherit;
+}
+
+html[data-mi-page="barnat"] #pagination button:focus-visible {
+  outline: 2px solid rgba(37, 99, 235, .38);
+  outline-offset: 2px;
+}
+
+html[data-mi-page="barnat"] #pagination .registry-pagination-ellipsis {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex: 0 0 18px;
+  width: 18px;
+  height: 34px;
+  color: var(--mi-page-muted);
+  font-size: 14px;
+  font-weight: 700;
+  line-height: 1;
+  user-select: none;
+}
+
+html[data-mi-page="barnat"] #pagination .registry-pagination-current-fallback {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 34px;
+  height: 34px;
+  padding: 0 8px;
+  border-radius: 8px;
+  background: var(--mi-page-accent);
+  color: #ffffff;
+  font-size: 13px;
+  font-weight: 750;
+}
+
+@media (max-width: 760px) {
+  html[data-mi-page="barnat"] #pagination {
+    padding-inline: 14px;
+  }
+
+  html[data-mi-page="barnat"] #pagination .registry-pagination-frame {
+    grid-template-columns: 1fr auto;
+    gap: 10px 14px;
+  }
+
+  html[data-mi-page="barnat"] #pagination .registry-pagination-summary {
+    grid-column: 1;
+  }
+
+  html[data-mi-page="barnat"] #pagination .registry-pagination-size {
+    grid-column: 2;
+  }
+
+  html[data-mi-page="barnat"] #pagination .registry-pagination-controls {
+    grid-column: 1 / -1;
+    grid-row: 2;
+  }
+}
+
+@media (max-width: 560px) {
+  html[data-mi-page="barnat"] #pagination {
+    padding: 10px 10px 13px;
+  }
+
+  html[data-mi-page="barnat"] #pagination .registry-pagination-frame {
+    grid-template-columns: 1fr;
+    gap: 9px;
+    width: 100%;
+  }
+
+  html[data-mi-page="barnat"] #pagination .registry-pagination-summary {
+    grid-column: 1;
+    grid-row: 1;
+    justify-self: center;
+    font-size: 12px;
+  }
+
+  html[data-mi-page="barnat"] #pagination .registry-pagination-size {
+    display: none;
+  }
+
+  html[data-mi-page="barnat"] #pagination .registry-pagination-controls {
+    display: grid;
+    grid-template-columns: 42px minmax(0, 1fr) 42px;
+    grid-column: 1;
+    grid-row: 2;
+    gap: 6px;
+    width: 100%;
+  }
+
+  html[data-mi-page="barnat"] #pagination .registry-pagination-pages {
+    width: 100%;
+    max-width: 100%;
+    min-width: 0;
+    padding: 3px;
+    gap: 1px;
+    overflow: hidden;
+    box-sizing: border-box;
+  }
+
+  html[data-mi-page="barnat"] #pagination button.registry-pagination-nav {
+    width: 42px;
+    min-width: 42px;
+    height: 40px;
+    padding: 0;
+    gap: 0;
+  }
+
+  html[data-mi-page="barnat"] #pagination .registry-pagination-nav-label {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    margin: -1px;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    white-space: nowrap;
+    border: 0;
+  }
+
+  html[data-mi-page="barnat"] #pagination .registry-pagination-nav-icon {
+    width: auto;
+    font-size: 17px;
+    color: currentColor;
+  }
+
+  html[data-mi-page="barnat"] #pagination button.registry-pagination-page {
+    width: 34px;
+    min-width: 34px;
+    height: 34px;
+    border-radius: 8px;
+    font-size: 12.5px;
+  }
+
+  html[data-mi-page="barnat"] #pagination .registry-pagination-ellipsis {
+    flex-basis: 13px;
+    width: 13px;
+    min-width: 13px;
+    height: 34px;
+    font-size: 13px;
+  }
+}
+
+@media (max-width: 360px) {
+  html[data-mi-page="barnat"] #pagination .registry-pagination-controls {
+    grid-template-columns: 40px minmax(0, 1fr) 40px;
+    gap: 4px;
+  }
+
+  html[data-mi-page="barnat"] #pagination button.registry-pagination-nav {
+    width: 40px;
+    min-width: 40px;
+  }
+
+  html[data-mi-page="barnat"] #pagination button.registry-pagination-page {
+    width: 32px;
+    min-width: 32px;
+  }
+
+  html[data-mi-page="barnat"] #pagination .registry-pagination-pages {
+    gap: 0;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html[data-mi-page="barnat"] #pagination button {
+    transition: none;
+  }
+}
+
+html.dark[data-mi-page="barnat"] #pagination,
+html[data-theme="dark"][data-mi-page="barnat"] #pagination {
+  --mi-page-text: #e2e8f0;
+  --mi-page-text-soft: #9fb0c5;
+  --mi-page-muted: #75879e;
+  --mi-page-border: #33455d;
+  --mi-page-border-soft: #25354a;
+  --mi-page-surface: #0f172a;
+  --mi-page-surface-soft: #121d31;
+  border-top-color: #25354a;
+}
+
+html.dark[data-mi-page="barnat"] #pagination .registry-pagination-pages,
+html[data-theme="dark"][data-mi-page="barnat"] #pagination .registry-pagination-pages {
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, .025);
+}
+
+html.dark[data-mi-page="barnat"] #pagination button.registry-pagination-page,
+html[data-theme="dark"][data-mi-page="barnat"] #pagination button.registry-pagination-page {
+  color: #c2cfdf;
+}
+
+html.dark[data-mi-page="barnat"] #pagination button.registry-pagination-nav,
+html[data-theme="dark"][data-mi-page="barnat"] #pagination button.registry-pagination-nav {
+  background: #111c2f;
+  color: #d5dfec;
+}
+
+html.dark[data-mi-page="barnat"] #pagination button.registry-pagination-page:hover:not([aria-current="page"]),
+html[data-theme="dark"][data-mi-page="barnat"] #pagination button.registry-pagination-page:hover:not([aria-current="page"]),
+html.dark[data-mi-page="barnat"] #pagination button.registry-pagination-nav:hover:not(:disabled),
+html[data-theme="dark"][data-mi-page="barnat"] #pagination button.registry-pagination-nav:hover:not(:disabled) {
+  border-color: #45607f;
+  background: #17243a;
+  color: #dbeafe;
+}
+
+html.dark[data-mi-page="barnat"] #pagination button:disabled,
+html[data-theme="dark"][data-mi-page="barnat"] #pagination button:disabled {
+  border-color: #28384e;
+  background: #111827;
+  color: #64748b;
+}
 
 /* ===== canonical final layer: registry-table-tools.css ===== */
 /* Compact optional tools for the medicine registry.
