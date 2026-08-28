@@ -135,9 +135,15 @@ html.medindex-tailadmin[data-mi-page="barnat"] #dataTable[data-registry-unified-
     position:sticky!important;
     left:0!important;
   }
+  /* Një qelizë e ngjitur duhet të jetë e patejdukshme, përndryshe rreshtat
+     shkojnë poshtë saj kur tabela rrëshqet anash. Por ngjyra e saj i takon
+     shtresës Stripe, jo kësaj: e ngulitur si `#fff` ajo dilte e bardhë mbi një
+     rresht kokë `#f6f9fc` — dy të bardha të ndryshme krah për krah — dhe në
+     temën e errët dilte `#172224` gjelbërosh mbi tabelë `#101828` blunavy,
+     pikërisht dy të errëtat që s'duhen takuar. Tokeni i mban të dyja në një. */
   html.medindex-tailadmin[data-mi-page="barnat"][data-registry-ux-view="clinical"] #dataTable[data-registry-unified-table] th[data-registry-column-key="select"]{
     z-index:15!important;
-    background:#fff!important;
+    background:var(--rst-soft,#f6f9fc)!important;
   }
   html.medindex-tailadmin[data-mi-page="barnat"][data-registry-ux-view="clinical"] #dataTable[data-registry-unified-table] td[data-registry-column-key="select"]{
     z-index:7!important;
@@ -149,7 +155,7 @@ html.medindex-tailadmin[data-mi-page="barnat"] #dataTable[data-registry-unified-
   }
   html.medindex-tailadmin[data-mi-page="barnat"][data-registry-ux-view="clinical"] #dataTable[data-registry-unified-table] th[data-registry-column-key="trade-name"]{
     z-index:14!important;
-    background:#fff!important;
+    background:var(--rst-soft,#f6f9fc)!important;
   }
   html.medindex-tailadmin[data-mi-page="barnat"][data-registry-ux-view="clinical"] #dataTable[data-registry-unified-table] td[data-registry-column-key="trade-name"]{
     z-index:6!important;
@@ -201,8 +207,9 @@ html[data-theme="dark"] .registry-scan-status.is-originator{border-color:#354963
 html[data-theme="dark"].medindex-tailadmin[data-mi-page="barnat"] #dataTable[data-registry-unified-table] tbody td[data-registry-column-key="active-substance"]{color:#b4c3c5!important}
 html[data-theme="dark"].medindex-tailadmin[data-mi-page="barnat"] #dataTable[data-registry-unified-table] tbody td[data-registry-column-key="strength"]{color:#d7e3e4!important}
 html[data-theme="dark"].medindex-tailadmin[data-mi-page="barnat"] #dataTable[data-registry-unified-table] tbody td[data-registry-column-key="form"]{color:#9eb0b3!important}
-html[data-theme="dark"].medindex-tailadmin[data-mi-page="barnat"][data-registry-ux-view="clinical"] #dataTable[data-registry-unified-table] th[data-registry-column-key="select"],
-html[data-theme="dark"].medindex-tailadmin[data-mi-page="barnat"][data-registry-ux-view="clinical"] #dataTable[data-registry-unified-table] th[data-registry-column-key="trade-name"]{background:#172224!important}
+/* Mbulesa e errët e qelizave të ngjitura hiqet me qëllim: `--rst-soft` tani e
+   ndërron vetë vlerën me temën, prandaj çdo vlerë e dytë e shkruar këtu do të
+   ishte thjesht një mundësi më shumë që të dyja të mos përputhen. */
 
 @media(max-width:1099px){
   html.medindex-tailadmin[data-mi-page="barnat"] #dataTable :is(th,td)[data-registry-column-key="select"],

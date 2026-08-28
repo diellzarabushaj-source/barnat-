@@ -608,7 +608,7 @@ html.medindex-tailadmin[data-mi-page="barnat"] body #dataTable tbody td[data-reg
 }
 
 html.medindex-tailadmin[data-mi-page="barnat"] body #dataTable tbody td[data-registry-column-key="active-substance"] {
-  color:#25324a!important;
+  color:var(--rst-ink-2,#25324a)!important;
   font-weight:650!important;
 }
 
@@ -656,6 +656,11 @@ html.medindex-tailadmin[data-mi-page="barnat"] body #dataTable .registry-dosage-
   overflow:hidden!important;
 }
 
+/* Ngjyra dhe pesha e tekstit të qelizave i takojnë shtresës Stripe; këtu mbetet
+   vetëm gjeometria e kufizimit. `#25324a` i ngulitur këtu dilte 1.38:1 mbi
+   tabelën e errët — teksti "Nuk ka dozë të strukturuar" praktikisht i padukshëm
+   — sepse ishte vlerë e temës së çelët e shkruar pa binjaken e saj të errët.
+   Tokeni i mban të dyja. */
 html.medindex-tailadmin[data-mi-page="barnat"] body #dataTable :is(
   .registry-dosage-grid>:first-child,
   .registry-dosage-muted,
@@ -664,7 +669,7 @@ html.medindex-tailadmin[data-mi-page="barnat"] body #dataTable :is(
   display:-webkit-box!important;
   max-height:64px!important;
   overflow:hidden!important;
-  color:#25324a!important;
+  color:var(--rst-ink-2,#25324a)!important;
   font-size:12px!important;
   font-weight:550!important;
   line-height:1.42!important;
