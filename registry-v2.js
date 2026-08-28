@@ -1,6 +1,43 @@
 (() => {
   'use strict';
 
+
+  const FORM_GROUPS = [
+    { source:'Tableta & pilula', label:'TABLETA & PILULA', short:'Tab.', color:'#2f7d5c', icon:'pill', forms:['Chewable tablet','Coated tablet','Compressed lozenge','Dispersible tablet','Effervescent tablet','Film coated tablet','Gastro-resistant coated tablet','Gastro-resistant tablet','Lozenge','Modified-release film-coated tablet','Modified-release tablet','Orodispersible tablet','Pastille','Prolonged-release tablet','Soluble tablet','Sublingual tablet','Tablet'] },
+    { source:'Kapsula', label:'KAPSULA', short:'Caps.', color:'#b1502f', icon:'capsule', forms:['Capsule','Capsule, hard','Capsule, soft','Gastro-resistant capsule','Gastro-resistant capsule, hard','Inhalation powder, hard capsule','Modified release capsule, hard','Prolonged release capsule, hard','Prolonged-release capsule','Vaginal capsule','Vaginal capsule, soft'] },
+    { source:'Shurupe & solucione orale', label:'SHURUPE & SOLUCIONE ORALE', short:'Sir. / Sol.', color:'#2f6f9e', icon:'bottle', forms:['Granules for oral solution','Granules for oral suspension','Granules for syrup','Oral drops','Oral drops, solution','Oral drops, suspension','Oral emulsion','Oral gel','Oral jelly','Oral lyophilisate','Oral powder','Oral solution','Oral suspension','Powder for oral solution','Powder for oral suspension','Syrup'] },
+    { source:'Injeksione & Infuzione', label:'AMPULA, INJEKSIONE & INFUZIONE', short:'Amp. / Inf.', color:'#8a3e6b', icon:'syringe', forms:['Ampoule','Concentrate for solution for infusion','Concentrate for solution for injection','Concentrate for solution for injection/infusion','Emulsion for infusion','Emulsion for injection/infusion','Injection','Lyophilisate for solution for infusion','Lyophilisate for solution for injection','Lyophilisate for suspension for injection','Powder and solvent for solution for infusion','Powder and solvent for solution for injection','Powder and solvent for solution for injection/infusion','Powder and solvent for suspension for injection','Powder for concentrate for solution for infusion','Powder for injection','Powder for solution for infusion','Powder for solution for injection','Powder for solution for injection or infusion','Powder for suspension for injection','Solution for infusion','Solution for infusion and oral solution','Solution for injection','Solution for injection/infusion','Suspension for injection'] },
+    { source:'Kremra, xhel & pomada', label:'KREMRA, XHEL & POMADA', short:'Krem. / Ung.', color:'#b98a1e', icon:'tube', forms:['Cream','Cutaneous emulsion','Cutaneous liquid','Cutaneous paste','Cutaneous powder','Cutaneous solution','Gel','Nasal ointment','Ointment'] },
+    { source:'Pika (sy, veshë, hundë)', label:'PIKA PËR SY, VESHË & HUNDË', short:'Gtt.', color:'#3f9a8f', icon:'drop', forms:['Ear drops, emulsion','Ear drops, solution','Ear/eye drops, solution','Eye drops','Eye drops, solution','Eye drops, suspension','Eye gel','Eye ointment','Nasal drops, solution'] },
+    { source:'Sprej & Inhalim', label:'SPREJ & INHALIM', short:'Spray / Inh.', color:'#6d5aa6', icon:'lungs', forms:['Cutaneous spray','Cutaneous spray, solution','Inhalation powder','Inhalation vapour, liquid','Inhalation vapour, solution','Medicinal gas, compressed','Medicinal gas, liquefied','Nasal spray','Nasal spray, solution','Nasal spray, suspension','Nebuliser solution','Nebuliser suspension','Oral solution/concentrate for nebuliser solution','Oromucosal spray','Powder for nebuliser solution','Pressurised inhalation, solution','Pressurised inhalation, suspension','Sublingual spray'] },
+    { source:'Pluhur & granula', label:'PLUHUR & GRANULA', short:'Pulv. / Gran.', color:'#9c6b3f', icon:'powder', forms:['Effervescent granules','Effervescent powder','Granules','Oromucosal gel','Oromucosal solution'] },
+    { source:'Supozitorë & forma vaginale', label:'SUPOZITORË & FORMA VAGINALE', short:'Supp.', color:'#c2547e', icon:'suppository', forms:['Endocervical gel','Pessary','Rectal cream','Rectal ointment','Rectal solution','Rectal suspension','Suppository','Vaginal cream','Vaginal gel','Vaginal solution','Vaginal tablet'] },
+    { source:'Forma të tjera speciale', label:'FORMA TË TJERA SPECIALE', short:'Tjera', color:'#6b6f76', icon:'special', forms:['Applicator','Bladder irrigation','Dental solution','Gargle','Gargle/mouth wash','Implant','Impregnated dressing','Intraarticular use','Medicated chewing-gum','Medicated nail laquer','Mouth wash','Shampoo','Solution for peritonel dialysis','Solvent for parenteral use','Transdermal patch'] },
+  ];
+
+  const FORM_ALIASES = {
+    kapsul:['capsule'], tablet:['tablet'], 'tabletë':['tablet'], shurup:['syrup'], sirup:['syrup'],
+    injeksion:['injection'], infuzion:['infusion'], 'kremë':['cream'], kreme:['cream'], pika:['drops'], 'pikë':['drops'],
+    supozitor:['suppository'], pomad:['ointment'], 'pomadë':['ointment'], xhel:['gel'], zhel:['gel'], pluhur:['powder'],
+    granula:['granules'], 'granulë':['granules'], inhalim:['inhalation'], inhalator:['inhalation'], spraj:['spray'], sprej:['spray'],
+    shampo:['shampoo'], implant:['implant'], ampul:['ampoule'], 'ampulë':['ampoule'], suspension:['suspension'],
+    'tretësirë':['solution'], tretesire:['solution'], 'lëng':['solution','liquid'], leng:['solution','liquid'], pilul:['tablet','pill'],
+  };
+
+  const FORM_ICONS = {
+    all:'<rect x="4" y="4" width="6" height="6" rx="1.5"/><rect x="14" y="4" width="6" height="6" rx="1.5"/><rect x="4" y="14" width="6" height="6" rx="1.5"/><rect x="14" y="14" width="6" height="6" rx="1.5"/>',
+    pill:'<rect x="3" y="8" width="18" height="8" rx="4"/><path d="M12 8v8"/>',
+    capsule:'<path d="M7.1 16.9a5 5 0 0 1 0-7.1l2.7-2.7a5 5 0 1 1 7.1 7.1l-2.7 2.7a5 5 0 0 1-7.1 0Z"/><path d="m9 9 6 6"/>',
+    bottle:'<path d="M9 3h6v4l2 2v10a2 2 0 0 1-2 2H9a2 2 0 0 1-2-2V9l2-2V3Z"/><path d="M8 12h8M10 3h4"/>',
+    syringe:'<path d="m14 4 6 6M16 2l6 6M7 11l6 6M4 20l4-4M3 21l3-1"/><path d="m8 10 6-6 6 6-6 6-6-6Z"/>',
+    tube:'<path d="m8 3 8 2-1 4 3 2-4 10-8-3 4-9-3-2 1-4Z"/><path d="m10 9 5 2"/>',
+    drop:'<path d="M12 3S6 10 6 15a6 6 0 0 0 12 0c0-5-6-12-6-12Z"/><path d="M9.5 16.5c.5 1 1.3 1.5 2.5 1.5"/>',
+    lungs:'<path d="M11 4v8c-2-3-4-5-6-5-2 0-3 4-3 8 0 4 3 6 7 6 2 0 2-2 2-4V4ZM13 4v8c2-3 4-5 6-5 2 0 3 4 3 8 0 4-3 6-7 6-2 0-2-2-2-4V4Z"/>',
+    powder:'<path d="M8 3h8l-1 5 4 9a3 3 0 0 1-3 4H8a3 3 0 0 1-3-4l4-9-1-5Z"/><path d="M7 16h10M9 3h6"/>',
+    suppository:'<path d="M12 3c3 3 5 6 5 10a5 5 0 0 1-10 0c0-4 2-7 5-10Z"/><path d="M9 17h6"/>',
+    special:'<path d="M12 3 9.8 8.2 4 9l4.2 4.1-1 5.8L12 16.2l4.8 2.7-1-5.8L20 9l-5.8-.8L12 3Z"/>',
+  };
+
   const state = {
     page: 1,
     pageSize: 50,
@@ -8,7 +45,8 @@
     totalPages: null,
     q: '',
     status: '',
-    form: '',
+    formType: '',
+    formValue: '',
     sort: 'registry',
     direction: 'asc',
     rows: [],
@@ -26,7 +64,7 @@
     refreshButton: $('refreshButton'), openPrescriptionButton: $('openPrescriptionButton'), selectedCount: $('selectedCount'),
     metricTotal: $('metricTotal'), metricPage: $('metricPage'), metricPageSize: $('metricPageSize'), metricSource: $('metricSource'), metricFilters: $('metricFilters'),
     searchInput: $('searchInput'), filterToggle: $('filterToggle'), filterPanel: $('filterPanel'), filterCountBadge: $('filterCountBadge'),
-    statusFilter: $('statusFilter'), formFilter: $('formFilter'), formSuggestions: $('formSuggestions'), sortSelect: $('sortSelect'), directionSelect: $('directionSelect'), clearFiltersButton: $('clearFiltersButton'),
+    statusFilter: $('statusFilter'), formPicker: $('formPicker'), formPickerButton: $('formPickerButton'), formPickerPanel: $('formPickerPanel'), formPickerSearch: $('formPickerSearch'), formPickerList: $('formPickerList'), formPickerValue: $('formPickerValue'), formPickerHint: $('formPickerHint'), sortSelect: $('sortSelect'), directionSelect: $('directionSelect'), clearFiltersButton: $('clearFiltersButton'),
     pageSizeSelect: $('pageSizeSelect'), resultSummary: $('resultSummary'), requestTiming: $('requestTiming'), registryRows: $('registryRows'), registryTable: $('registryTable'), tableScroll: $('tableScroll'),
     emptyState: $('emptyState'), emptyClearButton: $('emptyClearButton'), selectPageCheckbox: $('selectPageCheckbox'), paginationSummary: $('paginationSummary'), pageIndicator: $('pageIndicator'), prevPageButton: $('prevPageButton'), nextPageButton: $('nextPageButton'),
     drawerBackdrop: $('drawerBackdrop'), detailDrawer: $('detailDrawer'), drawerClose: $('drawerClose'), drawerCloseButton: $('drawerCloseButton'), drawerTitle: $('drawerTitle'), drawerBody: $('drawerBody'), drawerPrescriptionButton: $('drawerPrescriptionButton'),
@@ -92,7 +130,8 @@
     });
     if (state.q) params.set('q', state.q);
     if (state.status) params.set('status', state.status);
-    if (state.form) params.set('form', state.form);
+    if (state.formType === 'form' && state.formValue) params.set('formExact', state.formValue);
+    else if (state.formType === 'category' && state.formValue) params.set('formCategory', state.formValue);
     return `/api/drug-search?${params.toString()}`;
   }
 
@@ -128,7 +167,6 @@
       renderRows();
       updateSummary(Math.round(performance.now() - startedAt));
       updateSortHeaders();
-      updateFormSuggestions();
       updateFilterUi();
       if (!preserveScroll) el.tableScroll.scrollLeft = 0;
       void loadDosageForVisibleRows(requestId);
@@ -228,12 +266,112 @@
     el.nextPageButton.disabled = Number.isFinite(state.totalPages) ? state.page >= state.totalPages : state.rows.length < state.pageSize;
   }
 
-  function updateFormSuggestions() {
-    const forms = [...new Set(state.rows.map(row => clean(row.form)).filter(Boolean))].sort((a,b) => a.localeCompare(b,'sq'));
-    el.formSuggestions.innerHTML = forms.map(form => `<option value="${escapeHtml(form)}"></option>`).join('');
+  const normalizeFormText = value => clean(value)
+    .normalize('NFD')
+    .replace(/[\u0300-\u036f]/g, '')
+    .toLocaleLowerCase('sq');
+
+  function formIcon(name) {
+    const body = FORM_ICONS[name] || FORM_ICONS.special;
+    return `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${body}</svg>`;
   }
 
-  function activeFilterCount() { return [state.q, state.status, state.form].filter(Boolean).length; }
+  function formGroupForValue(value) {
+    return FORM_GROUPS.find(group => group.source === value || group.forms.includes(value)) || null;
+  }
+
+  function formMatches(value, rawQuery) {
+    const query = normalizeFormText(rawQuery);
+    if (!query) return true;
+    const text = normalizeFormText(value);
+    if (text.includes(query)) return true;
+    return Object.entries(FORM_ALIASES).some(([alias, targets]) =>
+      query.includes(normalizeFormText(alias)) && targets.some(target => text.includes(normalizeFormText(target)))
+    );
+  }
+
+  function renderFormPicker() {
+    const query = clean(el.formPickerSearch.value);
+    const allSelected = !state.formType || !state.formValue;
+    const blocks = [`
+      <button class="form-picker-all ${allSelected ? 'is-selected' : ''}" type="button" role="option" aria-selected="${allSelected ? 'true' : 'false'}" data-form-all>
+        <span class="form-picker-all-icon">${formIcon('all')}</span>
+        <span class="form-picker-all-copy"><strong>Të gjitha format</strong><small>Shfaq regjistrin pa filtër farmaceutik</small></span>
+        <span class="form-picker-all-count">${FORM_GROUPS.length} kategori</span>
+      </button>`];
+
+    let visibleGroupCount = 0;
+    for (const group of FORM_GROUPS) {
+      const categoryMatches = formMatches(group.source, query) || formMatches(group.label, query);
+      const visibleForms = group.forms.filter(form => categoryMatches || formMatches(form, query));
+      if (query && !categoryMatches && !visibleForms.length) continue;
+      visibleGroupCount += 1;
+      const groupSelected = state.formType === 'category' && state.formValue === group.source;
+      blocks.push(`
+        <section class="form-picker-group" style="--form-accent:${group.color}" data-form-group="${escapeHtml(group.source)}">
+          <button class="form-category ${groupSelected ? 'is-selected' : ''}" type="button" role="option" aria-selected="${groupSelected ? 'true' : 'false'}" data-form-category="${escapeHtml(group.source)}">
+            <span class="form-category-icon">${formIcon(group.icon)}</span>
+            <span class="form-category-copy"><strong>${escapeHtml(group.label)}</strong><small>Forma në recetë: <b>${escapeHtml(group.short)}</b></small></span>
+            <span class="form-category-count">${group.forms.length}</span>
+          </button>
+          <div class="form-options">
+            ${(query && !categoryMatches ? visibleForms : group.forms).map(form => {
+              const selected = state.formType === 'form' && state.formValue === form;
+              return `<button class="form-option ${selected ? 'is-selected' : ''}" type="button" role="option" aria-selected="${selected ? 'true' : 'false'}" data-form-value="${escapeHtml(form)}">
+                <span class="form-option-dot" aria-hidden="true"></span>
+                <span class="form-option-label">${escapeHtml(form)}</span>
+                <span class="form-option-short">${escapeHtml(group.short)}</span>
+              </button>`;
+            }).join('')}
+          </div>
+        </section>`);
+    }
+    if (!visibleGroupCount) blocks.push('<div class="form-picker-empty">Asnjë formë farmaceutike nuk u gjet.</div>');
+    el.formPickerList.innerHTML = blocks.join('');
+  }
+
+  function syncFormPickerTrigger() {
+    const group = formGroupForValue(state.formValue);
+    if (!state.formType || !state.formValue) {
+      el.formPickerValue.textContent = 'Të gjitha format';
+      el.formPickerHint.textContent = `${FORM_GROUPS.length} kategori farmaceutike`;
+      el.formPickerButton.style.removeProperty('--form-accent');
+      return;
+    }
+    el.formPickerValue.textContent = state.formValue;
+    el.formPickerHint.textContent = group ? `Forma në recetë: ${group.short}` : 'Formë farmaceutike';
+    if (group) el.formPickerButton.style.setProperty('--form-accent', group.color);
+  }
+
+  function openFormPicker() {
+    el.formPickerPanel.hidden = false;
+    el.formPickerButton.setAttribute('aria-expanded', 'true');
+    renderFormPicker();
+    requestAnimationFrame(() => {
+      el.formPickerSearch.focus({ preventScroll:true });
+      const selected = el.formPickerList.querySelector('[aria-selected="true"]');
+      if (selected) selected.scrollIntoView({ block:'nearest' });
+    });
+  }
+
+  function closeFormPicker({ focusButton = false } = {}) {
+    if (el.formPickerPanel.hidden) return;
+    el.formPickerPanel.hidden = true;
+    el.formPickerButton.setAttribute('aria-expanded', 'false');
+    el.formPickerSearch.value = '';
+    if (focusButton) el.formPickerButton.focus({ preventScroll:true });
+  }
+
+  function selectFormFilter(type, value) {
+    state.formType = type || '';
+    state.formValue = type ? clean(value) : '';
+    state.page = 1;
+    syncFormPickerTrigger();
+    closeFormPicker();
+    loadPage();
+  }
+
+  function activeFilterCount() { return [state.q, state.status, state.formValue].filter(Boolean).length; }
 
   function updateFilterUi() {
     const count = activeFilterCount();
@@ -244,7 +382,7 @@
     el.sortSelect.value = state.sort;
     el.directionSelect.value = state.direction;
     el.statusFilter.value = state.status;
-    el.formFilter.value = state.form;
+    syncFormPickerTrigger();
   }
 
   function updateSortHeaders() {
@@ -391,12 +529,36 @@
     el.searchInput.addEventListener('keydown', event => { if (event.key === 'Escape' && el.searchInput.value) { el.searchInput.value = ''; state.q = ''; state.page = 1; loadPage(); } });
     window.addEventListener('keydown', event => {
       if ((event.metaKey || event.ctrlKey) && event.key.toLowerCase() === 'k') { event.preventDefault(); el.searchInput.focus(); el.searchInput.select(); }
-      if (event.key === 'Escape') { closeDrawer(); closeSidebar(); }
+      if (event.key === 'Escape') { closeDrawer(); closeSidebar(); closeFormPicker(); }
     });
     el.filterToggle.addEventListener('click', () => { const open = el.filterPanel.hidden; el.filterPanel.hidden = !open; el.filterToggle.setAttribute('aria-expanded', open ? 'true' : 'false'); });
     el.statusFilter.addEventListener('change', () => { state.status = el.statusFilter.value; state.page = 1; loadPage(); });
-    el.formFilter.addEventListener('change', () => { state.form = clean(el.formFilter.value); state.page = 1; loadPage(); });
-    el.formFilter.addEventListener('keydown', event => { if (event.key === 'Enter') { state.form = clean(el.formFilter.value); state.page = 1; loadPage(); } });
+    el.formPickerButton.addEventListener('click', event => {
+      event.stopPropagation();
+      if (el.formPickerPanel.hidden) openFormPicker(); else closeFormPicker();
+    });
+    el.formPickerSearch.addEventListener('input', renderFormPicker);
+    el.formPickerPanel.addEventListener('click', event => {
+      event.stopPropagation();
+      const all = event.target.closest('[data-form-all]');
+      if (all) return selectFormFilter('', '');
+      const category = event.target.closest('[data-form-category]');
+      if (category) return selectFormFilter('category', category.dataset.formCategory);
+      const option = event.target.closest('[data-form-value]');
+      if (option) return selectFormFilter('form', option.dataset.formValue);
+    });
+    el.formPickerPanel.addEventListener('keydown', event => {
+      if (event.key === 'Escape') { event.preventDefault(); closeFormPicker({ focusButton:true }); return; }
+      if (!['ArrowDown','ArrowUp','Home','End'].includes(event.key)) return;
+      const options = [...el.formPickerList.querySelectorAll('button[role="option"]')].filter(node => node.offsetParent !== null);
+      if (!options.length) return;
+      event.preventDefault();
+      const current = Math.max(0, options.indexOf(document.activeElement));
+      const next = event.key === 'Home' ? 0 : event.key === 'End' ? options.length - 1 : event.key === 'ArrowDown' ? Math.min(options.length - 1, current + 1) : Math.max(0, current - 1);
+      options[next].focus({ preventScroll:true });
+      options[next].scrollIntoView({ block:'nearest' });
+    });
+    document.addEventListener('click', event => { if (!el.formPicker.contains(event.target)) closeFormPicker(); });
     el.sortSelect.addEventListener('change', () => { state.sort = el.sortSelect.value; state.page = 1; loadPage(); });
     el.directionSelect.addEventListener('change', () => { state.direction = el.directionSelect.value; state.page = 1; loadPage(); });
     el.pageSizeSelect.addEventListener('change', () => { state.pageSize = Number(el.pageSizeSelect.value) || 50; state.page = 1; loadPage(); });
@@ -424,13 +586,15 @@
   }
 
   function clearFilters() {
-    state.q = ''; state.status = ''; state.form = ''; state.page = 1;
-    el.searchInput.value = ''; el.statusFilter.value = ''; el.formFilter.value = '';
+    state.q = ''; state.status = ''; state.formType = ''; state.formValue = ''; state.page = 1;
+    el.searchInput.value = ''; el.statusFilter.value = ''; el.formPickerSearch.value = ''; syncFormPickerTrigger(); closeFormPicker();
     loadPage();
   }
 
   async function init() {
     bindEvents();
+    renderFormPicker();
+    syncFormPickerTrigger();
     updateSelectedCount();
     try {
       await ensureAuth();
