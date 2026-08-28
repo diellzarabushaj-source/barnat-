@@ -206,7 +206,7 @@
   }
 
   function enhanceBrands() {
-    const sidebar = document.querySelector('.mi-sidebar .mi-brand');
+    const sidebar = document.querySelector('.mi-sidebar .mi-brand, .sidebar .brand');
     const mobile = document.querySelector('.mi-mobile-brand');
     if (sidebar && sidebar.dataset.medindexBrand !== VERSION) {
       sidebar.dataset.medindexBrand = VERSION;
@@ -218,7 +218,7 @@
       mobile.setAttribute('aria-label', 'DRx');
       mobile.innerHTML = picture('icon','medindex-brand-icon');
     }
-    return Boolean(sidebar && mobile);
+    return Boolean(sidebar);
   }
 
   function setAvatar(node) {
@@ -390,10 +390,8 @@
   }
 
   function enhanceProfiles() {
-    const entries = [
-      [document.querySelector('.mi-sidebar .mi-user-card'), 'miSidebarProfileTrigger'],
-      [document.querySelector('.mi-topbar .mi-profile-chip'), 'miTopbarProfileTrigger'],
-    ];
+    const candidates = [...document.querySelectorAll('[data-mi-profile-trigger], .mi-sidebar .mi-user-card, .mi-topbar .mi-profile-chip')];
+    const entries = [...new Set(candidates)].map((node, index) => [node, index === 0 ? 'miSidebarProfileTrigger' : `miProfileTrigger${index + 1}`]);
     entries.forEach(([node, id]) => {
       if (!node) return;
       node.id ||= id;
@@ -407,7 +405,7 @@
       node.setAttribute('title', 'Hap opsionet e profilit');
     });
     createProfileUi();
-    return entries.every(([node]) => Boolean(node));
+    return entries.length > 0 && entries.every(([node]) => Boolean(node));
   }
 
   function ensureFavicons() {
@@ -422,7 +420,8 @@
   function apply() {
     installStyles();
     ensureFavicons();
-    const ready = enhanceBrands() && enhanceProfiles();
+    enhanceBrands();
+    const ready = enhanceProfiles();
     applyProfile();
     document.documentElement.dataset.medindexBrand = VERSION;
     document.documentElement.dataset.medindexProfile = PROFILE_VERSION;
