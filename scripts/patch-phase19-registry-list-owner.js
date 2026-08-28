@@ -18,7 +18,7 @@ const { execFileSync } = require('node:child_process');
 
 const ROOT = path.resolve(__dirname, '..');
 const INDEX = path.join(ROOT, 'index.html');
-const CSS_FILE = path.join(ROOT, 'registry-list-owner-guard.css');
+const CSS_FILE = path.join(ROOT, 'registry-table-tools.css');
 const JS_FILE = path.join(ROOT, 'registry-list-owner-guard.js');
 const DATA_FILE = path.join(ROOT, 'registry-list-data-bridge.js');
 const LIST_VIEW_FILE = path.join(ROOT, 'registry-list-view.js');
@@ -26,7 +26,6 @@ const API_FILE = path.join(ROOT, 'api', 'drug-search.js');
 const OWNER_VERSION = 'list-owner-v1';
 const DATA_VERSION = 'list-data-v1';
 
-const CSS_TAG = `<link rel="stylesheet" href="registry-list-owner-guard.css?v=${OWNER_VERSION}" data-registry-list-owner-guard-css>`;
 const OWNER_TAG = `<script src="registry-list-owner-guard.js?v=${OWNER_VERSION}" defer data-registry-list-owner-guard></script>`;
 const DATA_TAG = `<script src="registry-list-data-bridge.js?v=${DATA_VERSION}" defer data-registry-list-data-bridge></script>`;
 
@@ -139,9 +138,11 @@ function wireAssets() {
     .replace(/^.*data-registry-list-owner-guard(?:>|\s).*\n?/gm, '')
     .replace(/^.*data-registry-list-data-bridge.*\n?/gm, '');
 
-  const cssAnchor = html.match(/^.*registry-list-view\.css[^\n]*\n/m);
-  if (!cssAnchor) throw new Error('Registry list Phase 19: nuk u gjet registry-list-view.css.');
-  html = html.replace(cssAnchor[0], `${cssAnchor[0]}${CSS_TAG}\n`);
+  const registryCssLinks = [...html.matchAll(/<link\b[^>]*rel="stylesheet"[^>]*href="(registry-[^"]+\.css[^"]*)"[^>]*>/g)]
+    .map(match => match[1]);
+  if (registryCssLinks.length !== 1 || !registryCssLinks[0].startsWith('registry-table-tools.css')) {
+    throw new Error(`Registry list Phase 19: pritet vetëm registry-table-tools.css; u gjetën ${registryCssLinks.join(', ') || 'asnjë'}.`);
+  }
 
   const jsAnchor = html.match(/^.*registry-list-view\.js[^\n]*\n/m);
   if (!jsAnchor) throw new Error('Registry list Phase 19: nuk u gjet registry-list-view.js.');
@@ -164,8 +165,13 @@ const listView = fs.readFileSync(LIST_VIEW_FILE, 'utf8');
 const api = fs.readFileSync(API_FILE, 'utf8');
 const count = (source, needle) => source.split(needle).length - 1;
 
-if (count(written, 'data-registry-list-owner-guard-css') !== 1) {
-  throw new Error('Registry list Phase 19: CSS guard duhet të ngarkohet saktësisht një herë.');
+if (count(written, 'data-registry-list-owner-guard-css') !== 0) {
+  throw new Error('Registry list Phase 19: CSS guard nuk guxon të rikthehet si stylesheet i veçantë.');
+}
+const registryCssLinks = [...written.matchAll(/<link\b[^>]*rel="stylesheet"[^>]*href="(registry-[^"]+\.css[^"]*)"[^>]*>/g)]
+  .map(match => match[1]);
+if (registryCssLinks.length !== 1 || !registryCssLinks[0].startsWith('registry-table-tools.css')) {
+  throw new Error('Registry list Phase 19: duhet të mbetet vetëm një registry CSS authority.');
 }
 if (count(written, 'data-registry-list-owner-guard></script>') !== 1) {
   throw new Error('Registry list Phase 19: owner guard duhet të ngarkohet saktësisht një herë.');
@@ -173,8 +179,8 @@ if (count(written, 'data-registry-list-owner-guard></script>') !== 1) {
 if (count(written, 'data-registry-list-data-bridge') !== 1) {
   throw new Error('Registry list Phase 19: data bridge duhet të ngarkohet saktësisht një herë.');
 }
-if (written.indexOf('registry-list-owner-guard.css') > written.indexOf('</head>')) {
-  throw new Error('Registry list Phase 19: CSS guard duhet të jetë në <head>.');
+if (!css.includes('consolidated from registry-list-owner-guard.css')) {
+  throw new Error('Registry list Phase 19: list-owner guard duhet të jetë materializuar brenda CSS-it final.');
 }
 if (written.indexOf('registry-list-data-bridge.js') > written.indexOf('registry-list-view.js')) {
   throw new Error('Registry list Phase 19: data bridge duhet të ekzekutohet para List view.');
