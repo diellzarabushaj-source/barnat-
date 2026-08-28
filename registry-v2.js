@@ -425,7 +425,30 @@
 
   function doseMarkup(dose, route) {
     if (!clean(dose)) return '<span class="dose-missing">Pa dozë të publikuar</span>';
-    return `<div class="dose-cell"><span class="dose-text">${escapeHtml(dose)}</span>${clean(route) ? `<span class="route-chip">${escapeHtml(route)}</span>` : ''}</div>`;
+    return `<div class="dose-cell"><span class="dose-text">${escapeHtml(dose)}</span><button class="dose-toggle" type="button" data-dose-toggle aria-expanded="false" hidden>Më shumë</button>${clean(route) ? `<span class="route-chip">${escapeHtml(route)}</span>` : ''}</div>`;
+  }
+
+  function syncDoseToggle(cell) {
+    const text = cell?.querySelector('.dose-text');
+    const toggle = cell?.querySelector('[data-dose-toggle]');
+    if (!text || !toggle) return;
+    if (cell.classList.contains('is-expanded')) { toggle.hidden = false; return; }
+    toggle.hidden = text.scrollHeight <= text.clientHeight + 1;
+  }
+
+  function syncAllDoseToggles() {
+    document.querySelectorAll('.dose-cell').forEach(syncDoseToggle);
+  }
+
+  function toggleDose(button) {
+    const cell = button.closest('.dose-cell');
+    const text = cell?.querySelector('.dose-text');
+    if (!cell || !text) return;
+    const expanded = !cell.classList.contains('is-expanded');
+    cell.classList.toggle('is-expanded', expanded);
+    button.setAttribute('aria-expanded', String(expanded));
+    button.textContent = expanded ? 'Më pak' : 'Më shumë';
+    if (!expanded) syncDoseToggle(cell);
   }
 
   function patchDosageCells() {
@@ -437,6 +460,7 @@
       if (adult) { adult.innerHTML = doseMarkup(card?.adultDose, card?.adultRoute); adult.dataset.doseStatus = 'ready'; }
       if (pediatric) { pediatric.innerHTML = doseMarkup(card?.pediatricDose, card?.pediatricRoute); pediatric.dataset.doseStatus = 'ready'; }
     }
+    requestAnimationFrame(syncAllDoseToggles);
   }
 
   function statusBadge(value) {
@@ -812,6 +836,11 @@
       if (!el.formPicker.contains(event.target)) closeFormPicker();
       if (!el.columnPicker.contains(event.target)) closeColumnPicker();
     });
+    let doseResizeTimer = 0;
+    window.addEventListener('resize', () => {
+      clearTimeout(doseResizeTimer);
+      doseResizeTimer = setTimeout(syncAllDoseToggles, 160);
+    });
     el.sortSelect.addEventListener('change', () => { state.sort = el.sortSelect.value; state.page = 1; loadPage(); });
     el.directionSelect.addEventListener('change', () => { state.direction = el.directionSelect.value; state.page = 1; loadPage(); });
     el.pageSizeSelect.addEventListener('change', () => { state.pageSize = Number(el.pageSizeSelect.value) || 50; state.page = 1; loadPage(); });
@@ -822,6 +851,8 @@
     el.nextPageButton.addEventListener('click', () => { if (!el.nextPageButton.disabled) { state.page += 1; loadPage(); } });
     document.querySelectorAll('.sort-head[data-sort]').forEach(button => button.addEventListener('click', () => { const next = button.dataset.sort; if (state.sort === next) state.direction = state.direction === 'asc' ? 'desc' : 'asc'; else { state.sort = next; state.direction = 'asc'; } state.page = 1; loadPage(); }));
     el.registryRows.addEventListener('click', event => {
+      const doseToggle = event.target.closest('[data-dose-toggle]');
+      if (doseToggle) { event.stopPropagation(); toggleDose(doseToggle); return; }
       const checkbox = event.target.closest('[data-select-row]');
       if (checkbox) { event.stopPropagation(); const row = findRow(checkbox.dataset.selectRow); toggleSelection(row, checkbox.checked); return; }
       const button = event.target.closest('[data-open-row]');
