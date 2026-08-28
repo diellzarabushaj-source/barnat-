@@ -700,3 +700,130 @@
 .ec-review-banner.is-review .ec-review-dot{background:#b54708;box-shadow:0 0 0 3px #fff0d5}
 .ec-review-banner.is-source{border-color:#d9d6ff;background:#faf9ff}
 .ec-review-banner.is-source .ec-review-dot{background:#533afd;box-shadow:0 0 0 3px #e9e7ff}
+
+
+/* Structured translated clinical tables */
+.ec-table-card {
+  margin-top: 18px;
+  border: 1px solid var(--ec-border-strong);
+  border-radius: 14px;
+  background: var(--ec-surface);
+  overflow: hidden;
+}
+
+.ec-table-head {
+  display: flex;
+  justify-content: space-between;
+  gap: 16px;
+  align-items: flex-start;
+  padding: 14px 16px 12px;
+  border-bottom: 1px solid var(--ec-border);
+  background: var(--ec-surface-soft);
+}
+
+.ec-table-kicker {
+  display: block;
+  margin-bottom: 4px;
+  color: var(--ec-subtle);
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: .08em;
+  text-transform: uppercase;
+}
+
+.ec-table-head h4 {
+  margin: 0;
+  color: var(--ec-text);
+  font-size: 15px;
+  line-height: 1.35;
+}
+
+.ec-table-head small {
+  display: block;
+  margin-top: 4px;
+  color: var(--ec-muted);
+  font-size: 10.5px;
+}
+
+.ec-table-page {
+  white-space: nowrap;
+  color: var(--ec-muted);
+  font-size: 10.5px;
+}
+
+.ec-table-description,
+.ec-table-note {
+  margin: 0;
+  padding: 11px 16px 0;
+  color: var(--ec-muted);
+  font-size: 11.5px;
+  line-height: 1.55;
+}
+
+.ec-table-scroll {
+  margin-top: 12px;
+  overflow-x: auto;
+  overscroll-behavior-inline: contain;
+}
+
+.ec-clinical-table {
+  width: 100%;
+  min-width: 620px;
+  border-collapse: collapse;
+  font-size: 11.5px;
+  line-height: 1.45;
+}
+
+.ec-clinical-table th,
+.ec-clinical-table td {
+  padding: 9px 11px;
+  border-top: 1px solid var(--ec-border);
+  border-right: 1px solid var(--ec-border);
+  text-align: left;
+  vertical-align: top;
+}
+
+.ec-clinical-table th:last-child,
+.ec-clinical-table td:last-child {
+  border-right: 0;
+}
+
+.ec-clinical-table th {
+  color: var(--ec-text);
+  background: var(--ec-surface-soft);
+  font-weight: 650;
+}
+
+.ec-clinical-table td {
+  color: var(--ec-text);
+  background: var(--ec-surface);
+}
+
+.ec-table-highlight {
+  margin: 12px 16px 0;
+  padding: 10px 11px;
+  border: 1px solid var(--ec-border);
+  border-radius: 10px;
+  background: var(--ec-surface-soft);
+  color: var(--ec-text);
+  font-size: 11.5px;
+  line-height: 1.5;
+}
+
+.ec-table-note {
+  padding-bottom: 14px;
+  font-size: 10.5px;
+}
+
+@media (max-width: 600px) {
+  .ec-table-head {
+    display: block;
+  }
+  .ec-table-page {
+    display: inline-block;
+    margin-top: 7px;
+  }
+  .ec-clinical-table {
+    min-width: 560px;
+  }
+}
