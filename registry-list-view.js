@@ -635,8 +635,7 @@
 
   function mount() {
     const registry = document.getElementById('registryContent');
-    const toolbar = document.querySelector('.toolbar');
-    if (!registry || !toolbar || state.mounted) return;
+    if (!registry || state.mounted) return;
 
     // The toggle sits above the registry rather than inside the search toolbar.
     // On a phone it would take a row of its own there, and the toolbar has a
@@ -652,7 +651,14 @@
       <button type="button" data-rlv-view="list" aria-pressed="false"><span aria-hidden="true">☷</span>Listë</button>
       <button type="button" data-rlv-view="table" aria-pressed="true"><span aria-hidden="true">▦</span>Tabelë</button>`;
     bar.appendChild(toggle);
-    registry.insertAdjacentElement('beforebegin', bar);
+    const toolbarActions = document.querySelector('#registryViewToolbar .registry-view-actions-wrap');
+    if (toolbarActions) {
+      bar.classList.add('rlv-bar--inline');
+      const viewActions = toolbarActions.querySelector('.registry-view-actions');
+      toolbarActions.insertBefore(bar, viewActions || null);
+    } else {
+      registry.insertAdjacentElement('beforebegin', bar);
+    }
 
     const panel = document.createElement('section');
     panel.className = 'rlv-panel';
