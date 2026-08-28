@@ -19,7 +19,7 @@ const OUT = path.join(ROOT, 'registry-row-actions-release.json');
 const RELEASE = 'registry-row-actions-menu-phase7-v1';
 const ASSETS = [
   'registry-user-personalization.js',
-  'registry-user-personalization.css',
+  'registry-table-tools.css',
   'registry-desktop-lite.js',
   'registry-unified-table.js',
 ];
