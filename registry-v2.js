@@ -531,7 +531,12 @@
       if ((event.metaKey || event.ctrlKey) && event.key.toLowerCase() === 'k') { event.preventDefault(); el.searchInput.focus(); el.searchInput.select(); }
       if (event.key === 'Escape') { closeDrawer(); closeSidebar(); closeFormPicker(); }
     });
-    el.filterToggle.addEventListener('click', () => { const open = el.filterPanel.hidden; el.filterPanel.hidden = !open; el.filterToggle.setAttribute('aria-expanded', open ? 'true' : 'false'); });
+    el.filterToggle.addEventListener('click', () => {
+      const open = el.filterPanel.hidden;
+      if (!open) closeFormPicker();
+      el.filterPanel.hidden = !open;
+      el.filterToggle.setAttribute('aria-expanded', open ? 'true' : 'false');
+    });
     el.statusFilter.addEventListener('change', () => { state.status = el.statusFilter.value; state.page = 1; loadPage(); });
     el.formPickerButton.addEventListener('click', event => {
       event.stopPropagation();
