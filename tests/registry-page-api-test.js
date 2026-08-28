@@ -36,6 +36,17 @@ assert.match(decodedPage, /limit=50/);
 assert.match(decodedPage, /offset=100/);
 assert.match(decodedPage, /order=trade_name\.desc/);
 
+const exactForm = decodeURIComponent(drugSearch.buildPageRequest({ formExact:'Capsule, hard' }).path);
+assert.match(exactForm, /pharmaceutical_form=eq\.Capsule, hard/);
+
+const groupedFormRequest = drugSearch.buildPageRequest({ formCategory:'Tableta & pilula' });
+const groupedForm = decodeURIComponent(groupedFormRequest.path);
+assert.equal(groupedFormRequest.formCategory, 'Tableta & pilula');
+assert.match(groupedForm, /pharmaceutical_form=in\.\(/);
+assert.match(groupedForm, /Chewable tablet/);
+assert.match(groupedForm, /Gastro-resistant tablet/);
+assert.match(groupedForm, /Tablet/);
+
 const detail = decodeURIComponent(drugSearch.buildDetailPath({ id:'11111111-1111-4111-8111-111111111111' }));
 assert.match(detail, /^drugs\?/);
 assert.match(detail, /id=eq\.11111111-1111-4111-8111-111111111111/);
