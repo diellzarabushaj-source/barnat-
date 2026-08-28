@@ -403,3 +403,34 @@ body{overflow-x:hidden}
   #emergencyLessonPosition{min-width:58px}
   .emergency-document{scroll-margin-top:12px}
 }
+
+
+/* Emergency lesson title status v3 */
+.ec-detail-title-row{
+  display:flex;align-items:flex-start;justify-content:space-between;gap:16px;
+}
+.ec-detail-title-row h2{min-width:0;flex:1}
+.ec-detail-title .ec-review-banner{
+  width:auto;min-height:26px;display:inline-flex;align-items:center;gap:7px;flex:none;
+  margin:1px 0 0;padding:5px 8px;border:1px solid var(--line);border-radius:999px;
+  background:#fff;box-shadow:none;
+}
+.ec-detail-title .ec-review-dot{margin-top:0}
+.ec-detail-title .ec-review-copy{display:block}
+.ec-detail-title .ec-review-copy strong{
+  display:block;color:#66788d;font-size:9px;font-weight:500;line-height:1;
+  white-space:nowrap;
+}
+.ec-detail-title .ec-review-banner.is-verified{
+  border-color:#cce8de;background:#f8fcfa;
+}
+.ec-detail-title .ec-review-banner.is-review{
+  border-color:#efd9ad;background:#fffcf5;
+}
+.ec-detail-title .ec-review-banner.is-source{
+  border-color:#dddafe;background:#fbfaff;
+}
+@media(max-width:760px){
+  .ec-detail-title-row{display:grid;grid-template-columns:1fr;gap:10px}
+  .ec-detail-title .ec-review-banner{justify-self:start}
+}
