@@ -2,7 +2,7 @@
 'use strict';
 
 const VERSION = 'production-audit-v2';
-const CACHE_EPOCH = 'clinical-knowledge-20260829-analizat-v2';
+const CACHE_EPOCH = 'clinical-knowledge-20260829-dashboard-v2';
 const CACHE_NAMESPACE = `${VERSION}-${CACHE_EPOCH}`;
 const STATIC_CACHE = `medindex-static-${CACHE_NAMESPACE}`;
 const PAGE_CACHE = `medindex-pages-${CACHE_NAMESPACE}`;
@@ -25,6 +25,7 @@ const APP_SHELL = [
   '/tailadmin-professional.css', '/registry-table-tools.css', '/medical-hub.css', '/clinical-knowledge.css', '/clinical-density.css',
   '/classification.css', '/classification-nav-fix.css', '/registry-quality.css',
   '/clinical-reference.css', '/analizat-v2.css', '/drx-dashboard-stripe.css',
+  '/protokollet-v2.css',
   '/icd-premium-cards.css', '/icd-clinical-workspace.css', '/icd-tailadmin-cards-v2.css',
   '/dozologjia-verified-cards.css', '/dozologjia-simple-workflow.css',
   '/dozologjia-safety-enhancements.css', '/dozologjia-clinical-readiness.css',
@@ -42,7 +43,7 @@ const APP_SHELL = [
   '/icd-clinical-style-loader.js', '/icd-tailadmin-card-style-loader.js',
   '/analizat-v2.js', '/sidebar-taxonomy-v3.js', '/medindex-brand-runtime.js',
   '/clinical-dialog.js', '/dosage-engine.js', '/dozologjia.js',
-  '/dozologjia-deep-audit.js', '/sanity-clinical-client.js', '/urgjencat.js', '/medical-hub.js', '/protokollet.js',
+  '/dozologjia-deep-audit.js', '/sanity-clinical-client.js', '/urgjencat.js', '/medical-hub.js', '/protokollet-v2.js',
   '/prescription-format-core.js', '/signature-templates.js',
   '/recetat.js', '/login.js', '/data/registry-quality.js',
   '/data/protocols.json'
