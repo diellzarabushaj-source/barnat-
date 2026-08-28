@@ -63,6 +63,8 @@ assert.match(js, /\/api\/dosage\/search\?q=/);
 assert.match(js, /\/api\/dosage\/product\//);
 assert.match(js, /'\/api\/dosage\/calculate'/);
 assert.match(js, /function setFilter\(filter\)/);
+assert.match(js, /function effectiveReadiness\(item\)/);
+assert.match(js, /item\?\.readiness === 'CALCULATOR_READY' && item\?\.calculable !== true/);
 assert.match(js, /function setFormFilter\(value\)/);
 assert.match(js, /function updateFormOptions\(\)/);
 assert.match(js, /function validatePatientFields\(/);
