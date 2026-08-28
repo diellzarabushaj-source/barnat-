@@ -4980,6 +4980,23 @@
     if (meta) meta.textContent = suggested === 'te-tjera' ? 'pa përputhje të sigurt' : 'sugjeruar nga ATC/diagnoza';
   }
 
+  function migrateLegacyChapterAssignments() {
+    const saved = getSaved();
+    let changed = false;
+    const next = saved.map(protocol => {
+      const existing = text(protocol?.chapterKey);
+      if (existing && chapterCatalog().some(chapter => chapter.slug === existing)) return protocol;
+      const chapterKey = classifyChapter({
+        diagnosis:protocol?.indication || protocol?.diagnosis || '',
+        selectedDrugs:Array.isArray(protocol?.selectedDrugs) ? protocol.selectedDrugs : [],
+      });
+      changed = true;
+      return { ...protocol, chapterKey, updatedAt:protocol?.updatedAt || new Date().toISOString() };
+    });
+    if (changed) setSaved(next);
+    return changed;
+  }
+
   function chapterCounts(items) {
     const counts = new Map(chapterCatalog().map(item => [item.slug, 0]));
     items.forEach(item => {
@@ -5798,6 +5815,7 @@
     try { await Promise.race([window.MEDINDEX_LIBRARY_READY || Promise.resolve(), new Promise(resolve => setTimeout(resolve, 2200))]); } catch {}
     populateChapterSelect();
     bindEvents();
+    migrateLegacyChapterAssignments();
     renderSaved();
     loadSelection();
     syncChapterSuggestion({ force:true });
