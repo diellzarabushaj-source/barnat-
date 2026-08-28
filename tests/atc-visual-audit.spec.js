@@ -61,6 +61,9 @@ for (const profile of [
     await expect(page.locator('#categoryPanelTitle')).toContainText('Sistemi nervor');
     await expect(page.locator('[data-category-card="N02"] .category-count')).toHaveText('126');
     await expect(page.locator('[data-category-card="N02"] a[href="/index.html?atc=N02"]')).toBeVisible();
+    await expect(page.locator('#categoryHero .hero-code')).toHaveText('N02');
+    await expect(page.locator('#categoryHero .hero-copy h2')).toContainText('Analgjezik');
+    await expect(page.locator('#categoryHero a[href="/index.html?atc=N02"]')).toBeVisible();
     await expect(page.locator('[data-subdivision-code="N02A"].subdivision-parent')).toBeVisible();
     await expect(page.locator('[data-subdivision-code="N02AA"].subdivision-child')).toBeVisible();
     await expect(page.locator('#atcPathItems [data-path-code="N"]')).toBeVisible();
