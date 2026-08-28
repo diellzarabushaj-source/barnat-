@@ -11,8 +11,8 @@ const stripe = read('drx-dashboard-stripe.css');
 const design = read('.superdesign/design-system.md');
 const shellCore = read('tailadmin-shell-core.js');
 
-const standalone = ['index.html','klasifikimi.html','icd.html','urgjencat.html','analizat.html','protokollet.html','recetat.html','medical-hub.html'];
-const tailadmin = ['dozologjia.html','sistemi.html'];
+const standalone = ['index.html','klasifikimi.html','icd.html','dozologjia.html','urgjencat.html','analizat.html','protokollet.html','recetat.html','medical-hub.html'];
+const tailadmin = ['sistemi.html'];
 const allPages = [...standalone, ...tailadmin];
 
 assert.match(stripe, /DRx canonical dashboard shell v4/);
