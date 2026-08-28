@@ -64,9 +64,15 @@ for (const file of ['registry-v2.js','classification-v2.js','icd-v2.js','urgjenc
   assert.match(source, /sidebar-taxonomy-v3\.js\?v=sidebar-taxonomy-v3/, `${file}: shared sidebar runtime missing`);
 }
 
-for (const file of ['index.html','klasifikimi.html','icd.html','urgjencat.html','medical-hub.html']) {
+for (const file of ['index.html','klasifikimi.html','icd.html']) {
   const html = read(file);
   assert.match(html, /sidebar-taxonomy-v3/, `${file}: V2 runtime cache-bust missing`);
+}
+for (const [htmlFile, runtime] of [['urgjencat.html','urgjencat-v2.js'],['medical-hub.html','medical-hub-v2.js']]) {
+  const html = read(htmlFile);
+  const js = read(runtime);
+  assert.match(html, new RegExp(runtime.replace('.', '\\.') + '\\?v=1'), `${htmlFile}: standalone V2 runtime missing`);
+  assert.match(js, /sidebar-taxonomy-v3\.js\?v=sidebar-taxonomy-v3/, `${runtime}: shared taxonomy loader missing`);
 }
 
 for (const file of ['analizat.html','dozologjia.html','protokollet.html','recetat.html','sistemi.html']) {
