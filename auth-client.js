@@ -444,10 +444,45 @@
     window.addEventListener('online', revalidateOnlineSession);
   }
 
+  let unauthorizedRevalidation = null;
+
+  async function confirmSessionAfterUnauthorized() {
+    if (unauthorizedRevalidation) return unauthorizedRevalidation;
+    unauthorizedRevalidation = (async () => {
+      try {
+        const response = await authRequest();
+        const payload = await response.json().catch(() => ({}));
+        const valid = response.ok
+          && payload.authenticated === true
+          && payload.hardened === true
+          && phase5Session(payload);
+        if (!valid && (response.status === 401 || response.status === 403 || payload.authenticated === false)) {
+          showExpired();
+        }
+        return valid;
+      } catch {
+        // A content request must never destroy a still-valid session merely
+        // because the auth recheck itself hit a transient network problem.
+        return false;
+      } finally {
+        window.setTimeout(() => { unauthorizedRevalidation = null; }, 250);
+      }
+    })();
+    return unauthorizedRevalidation;
+  }
+
   window.fetch = async (...args) => {
     const response = await originalFetch(...args);
-    const target = typeof args[0] === 'string' ? args[0] : args[0]?.url || '';
-    if ((response.status === 401 || response.status === 403) && !String(target).includes('/api/auth')) showExpired();
+    const rawTarget = typeof args[0] === 'string' ? args[0] : args[0]?.url || '';
+    let pathname = '';
+    try { pathname = new URL(String(rawTarget || ''), location.origin).pathname; }
+    catch { pathname = String(rawTarget || ''); }
+
+    if ((response.status === 401 || response.status === 403) && pathname !== '/api/auth') {
+      // 401/403 from Sanity, ICD, dosage, etc. belongs to that request first.
+      // Revalidate the session before interpreting it as a logout event.
+      void confirmSessionAfterUnauthorized();
+    }
     return response;
   };
 
