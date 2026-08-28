@@ -61,7 +61,12 @@ for (const profile of [
     await expect(page.locator('#categoryPanelTitle')).toContainText('Sistemi nervor');
     await expect(page.locator('[data-category-card="N02"] .category-count')).toHaveText('126');
     await expect(page.locator('[data-category-card="N02"] a[href="/index.html?atc=N02"]')).toBeVisible();
+    await expect(page.locator('#atcPathItems [data-path-code="N"]')).toBeVisible();
+    await expect(page.locator('#atcPathItems [data-path-code="N02"]')).toHaveClass(/is-current/);
+    await expect(page.locator('#atcPathRegistry')).toHaveAttribute('href', '/index.html?atc=N02');
 
+    await page.locator('#atcSearch').fill('dhimbje');
+    await expect(page.locator('[data-search-code="N02"]')).toBeVisible();
     await page.locator('#atcSearch').fill('diabet');
     await expect(page.locator('#searchResultsView')).toBeVisible();
     await expect(page.locator('[data-search-code="A10"]')).toBeVisible();
@@ -71,6 +76,16 @@ for (const profile of [
     await expect(page.locator('[data-subdivision-code="A10A"]')).toBeVisible();
 
     if (profile.width < 940) {
+      const mobileRail = await page.locator('#groupList').evaluate(node => ({
+        display:getComputedStyle(node).display,
+        overflowX:getComputedStyle(node).overflowX,
+        scrollWidth:node.scrollWidth,
+        clientWidth:node.clientWidth,
+      }));
+      expect(mobileRail.display).toBe('flex');
+      expect(['auto','scroll']).toContain(mobileRail.overflowX);
+      expect(mobileRail.scrollWidth).toBeGreaterThan(mobileRail.clientWidth);
+
       await page.locator('#menuButton').click();
       await expect(page.locator('#sidebar')).toHaveClass(/is-open/);
       await expect(page.locator('#sidebarBackdrop')).toBeVisible();
