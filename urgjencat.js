@@ -304,7 +304,9 @@
           </div>
         ` : ''}
 
-        ${sections.map((item, index) => renderLessonSection(lesson, item, index)).join('')}
+        ${sections.length
+          ? sections.map((item, index) => renderLessonSection(lesson, item, index)).join('')
+          : `<div class="ec-quick-summary"><span>Përmbajtja</span><p>Ky mësim është krijuar në strukturën e re. Përmbajtja klinike do të plotësohet nga kapitulli përkatës i Tintinalli-t.</p></div>`}
 
         ${abbreviations.length ? `
           <section class="ec-footnotes">
