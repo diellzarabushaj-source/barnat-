@@ -64,9 +64,13 @@ for (const file of ['registry-v2.js','classification-v2.js','icd-v2.js','urgjenc
   assert.match(source, /sidebar-taxonomy-v3\.js\?v=sidebar-taxonomy-v3/, `${file}: shared sidebar runtime missing`);
 }
 
-for (const file of ['index.html','klasifikimi.html','icd.html']) {
+for (const [file, version] of [
+  ['index.html','profile-columns-v5'],
+  ['klasifikimi.html','profile-columns-v4'],
+  ['icd.html','profile-columns-v4'],
+]) {
   const html = read(file);
-  assert.match(html, /profile-columns-v4/, `${file}: V2 runtime cache-bust missing`);
+  assert.match(html, new RegExp(version), `${file}: V2 runtime cache-bust missing`);
 }
 for (const [htmlFile, runtime, version] of [
   ['urgjencat.html','urgjencat-v2.js','4'],
