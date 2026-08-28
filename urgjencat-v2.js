@@ -287,6 +287,10 @@
     $('#logoutButton')?.addEventListener('click', logout);
     window.addEventListener('keydown', event => {
       if (event.key === 'Escape') {
+        if (activeAbbreviationButton) {
+          closeAbbreviationTooltip();
+          return;
+        }
         if (document.activeElement === $('#emergencySearch') && state.term) {
           event.preventDefault();
           clearSearch();
@@ -597,7 +601,7 @@
     return (lesson.translatedTables || []).find(item => String(item.tableNumber) === String(number));
   }
 
-  function tableMarkup(table) {
+  function tableMarkup(lesson, table) {
     if (!table) return '';
     const columns = table.columnsSq || [];
     const rows = table.rows || [];
@@ -605,20 +609,20 @@
       ? '<thead><tr>' + columns.map(col => '<th>' + esc(col) + '</th>').join('') + '</tr></thead>'
       : '';
     const body = '<tbody>' + rows.map(row =>
-      '<tr>' + (row.cells || []).map(cell => '<td>' + esc(cell) + '</td>').join('') + '</tr>'
+      '<tr>' + (row.cells || []).map(cell => '<td>' + inlineClinicalText(lesson, cell) + '</td>').join('') + '</tr>'
     ).join('') + '</tbody>';
     return '<section class="ec-table-card" aria-label="' + esc(table.titleSq || ('Tabela ' + table.tableNumber)) + '">' +
       '<div class="ec-table-head"><div>' +
         '<span class="ec-table-kicker">Tabela ' + esc(table.tableNumber) + '</span>' +
-        '<h4>' + esc(table.titleSq || '') + '</h4>' +
-        (table.sourceTitleEn ? '<small>' + esc(table.sourceTitleEn) + '</small>' : '') +
+        '<h4>' + inlineClinicalText(lesson, table.titleSq || '') + '</h4>' +
+        (table.sourceTitleEn ? '<small>' + inlineClinicalText(lesson, table.sourceTitleEn) + '</small>' : '') +
       '</div>' +
       (table.sourcePdfPage ? '<span class="ec-table-page">PDF f. ' + esc(table.sourcePdfPage) + '</span>' : '') +
       '</div>' +
-      (table.descriptionSq ? '<p class="ec-table-description">' + esc(table.descriptionSq) + '</p>' : '') +
+      (table.descriptionSq ? '<p class="ec-table-description">' + inlineClinicalText(lesson, table.descriptionSq) + '</p>' : '') +
       '<div class="ec-table-scroll"><table class="ec-clinical-table">' + head + body + '</table></div>' +
-      (table.clinicalHighlight ? '<div class="ec-table-highlight"><strong>Highlight:</strong> ' + esc(String(table.clinicalHighlight).replace(/^HIGHLIGHT\\s*[—:-]?\\s*/i, '')) + '</div>' : '') +
-      (table.sourceNote ? '<p class="ec-table-note">' + esc(table.sourceNote) + '</p>' : '') +
+      (table.clinicalHighlight ? '<div class="ec-table-highlight"><strong>Highlight:</strong> ' + inlineClinicalText(lesson, String(table.clinicalHighlight).replace(/^HIGHLIGHT\\s*[—:-]?\\s*/i, '')) + '</div>' : '') +
+      (table.sourceNote ? '<p class="ec-table-note">' + inlineClinicalText(lesson, table.sourceNote) + '</p>' : '') +
     '</section>';
   }
 
@@ -650,8 +654,8 @@
       <section class="ec-section" id="${anchorId}">
         <div class="ec-section-number">${String(index + 1).padStart(2, '0')}</div>
         <h3>${esc(section.title)}</h3>
-        ${section.sourceHeadingEn ? `<div class="ec-source-title">${esc(section.sourceHeadingEn)}</div>` : ''}
-        ${section.explanation ? `<p class="ec-section-explanation">${esc(section.explanation)}</p>` : ''}
+        ${section.sourceHeadingEn ? `<div class="ec-source-title">${inlineClinicalText(lesson, section.sourceHeadingEn)}</div>` : ''}
+        ${section.explanation ? `<p class="ec-section-explanation">${inlineClinicalText(lesson, section.explanation)}</p>` : ''}
 
         ${rx.length ? `
           <ol class="ec-rx-list">
@@ -659,8 +663,8 @@
               <li class="ec-rx">
                 <span class="ec-rx-badge">Rx.</span>
                 <div>
-                  <p>${esc(String(item.text || '').replace(/^Rx\.\s*/i, ''))}</p>
-                  ${item.note ? `<small>${esc(item.note)}</small>` : ''}
+                  <p>${inlineClinicalText(lesson, String(item.text || '').replace(/^Rx\.\s*/i, ''))}</p>
+                  ${item.note ? `<small>${inlineClinicalText(lesson, item.note)}</small>` : ''}
                 </div>
               </li>
             `).join('')}
@@ -668,10 +672,10 @@
         ` : ''}
 
         ${section.clinicalPearl ? `
-          <div class="ec-pearl"><strong>Mbaje mend:</strong> ${esc(section.clinicalPearl)}</div>
+          <div class="ec-pearl"><strong>Mbaje mend:</strong> ${inlineClinicalText(lesson, section.clinicalPearl)}</div>
         ` : ''}
 
-        ${linkedTables.length ? linkedTables.map(tableMarkup).join('') : ''}
+        ${linkedTables.length ? linkedTables.map(table => tableMarkup(lesson, table)).join('') : ''}
 
         ${linkedFigures.length ? `
           <div class="ec-figure-strip">
@@ -745,13 +749,13 @@
               <span class="ec-review-copy"><strong>${esc(review.label)}</strong></span>
             </span>
           </div>
-          ${lesson.sourceTitleEn ? `<p class="ec-source-title">${esc(lesson.sourceTitleEn)}</p>` : ''}
+          ${lesson.sourceTitleEn ? `<p class="ec-source-title">${inlineClinicalText(lesson, lesson.sourceTitleEn)}</p>` : ''}
         </header>
 
         ${lesson.quickSummary ? `
           <div class="ec-quick-summary">
             <span>Në 20 sekonda</span>
-            <p>${esc(lesson.quickSummary)}</p>
+            <p>${inlineClinicalText(lesson, lesson.quickSummary)}</p>
           </div>
         ` : ''}
 
@@ -813,21 +817,6 @@
           </section>
         ` : ''}
 
-        ${abbreviations.length ? `
-          <section class="ec-footnotes">
-            <h3>Fusnota · shkurtesat</h3>
-            <div class="ec-abbreviation-grid">
-              ${abbreviations.map(item => `
-                <div class="ec-abbreviation">
-                  <b>${esc(item.footnoteNumber)}. ${esc(item.abbreviation)}</b>
-                  ${item.fullTermEn ? ` <span>— ${esc(item.fullTermEn)}</span>` : ''}
-                  ${item.explanationSq ? `<p>${esc(item.explanationSq)}</p>` : ''}
-                </div>
-              `).join('')}
-            </div>
-          </section>
-        ` : ''}
-
         <div class="ec-source-meta">
           ${lesson.sourceBook ? `<span>${esc(lesson.sourceBook)}</span>` : ''}
           ${lesson.sourceEdition ? `<span>${esc(lesson.sourceEdition)}</span>` : ''}
@@ -853,6 +842,8 @@
         ` : ''}
       </div>
     `;
+
+    bindInlineAbbreviations(root);
 
     root.querySelectorAll('[data-section-jump]').forEach(button => {
       button.addEventListener('click', () => {
