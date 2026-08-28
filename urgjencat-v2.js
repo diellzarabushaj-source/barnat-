@@ -595,6 +595,10 @@
     const abbreviations = [...(lesson.abbreviations || [])].sort((a, b) => (Number(a.footnoteNumber) || 999) - (Number(b.footnoteNumber) || 999));
     const figures = [...figuresForLesson(lesson)];
     const mediaPending = (lesson.figures || []).length > 0 && !figureCache.has(lesson._id);
+    const sequence = visibleLessonSequence();
+    const lessonIndex = sequence.findIndex(item => item._id === lesson._id);
+    const previousLesson = lessonIndex > 0 ? sequence[lessonIndex - 1] : null;
+    const nextLesson = lessonIndex >= 0 && lessonIndex < sequence.length - 1 ? sequence[lessonIndex + 1] : null;
     const review = reviewMeta(lesson.reviewStatus);
 
     root.innerHTML = `
@@ -685,8 +689,32 @@
           ${lesson.sourcePdfStartPage ? `<span>PDF f. ${esc(lesson.sourcePdfStartPage)}–${esc(lesson.sourcePdfEndPage || lesson.sourcePdfStartPage)}</span>` : ''}
           ${lesson.reviewStatus ? `<span>Rishikimi: ${esc(review.label)}</span>` : ''}
         </div>
+
+        ${previousLesson || nextLesson ? `
+          <nav class="ec-document-pagination" aria-label="Navigimi mes mësimeve">
+            ${previousLesson ? `
+              <button type="button" class="ec-document-page ec-document-page-prev" data-lesson-jump="${esc(previousLesson._id)}">
+                <span>← Mësimi i kaluar</span>
+                <strong>${esc(previousLesson.title)}</strong>
+              </button>
+            ` : '<span></span>'}
+            ${nextLesson ? `
+              <button type="button" class="ec-document-page ec-document-page-next" data-lesson-jump="${esc(nextLesson._id)}">
+                <span>Mësimi tjetër →</span>
+                <strong>${esc(nextLesson.title)}</strong>
+              </button>
+            ` : '<span></span>'}
+          </nav>
+        ` : ''}
       </div>
     `;
+
+    root.querySelectorAll('[data-lesson-jump]').forEach(button => {
+      button.addEventListener('click', () => {
+        selectLesson(button.dataset.lessonJump);
+        requestAnimationFrame(scrollReaderToTop);
+      });
+    });
 
     if (mediaPending && !figureRequests.has(lesson._id)) {
       void ensureLessonFigures(lesson);
