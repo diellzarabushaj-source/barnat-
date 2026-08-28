@@ -2,7 +2,7 @@
 'use strict';
 
 const VERSION = 'production-audit-v2';
-const CACHE_EPOCH = 'clinical-knowledge-20260829-dosage-v3';
+const CACHE_EPOCH = 'clinical-knowledge-20260829-sidebar-atc-v4';
 const CACHE_NAMESPACE = `${VERSION}-${CACHE_EPOCH}`;
 const STATIC_CACHE = `medindex-static-${CACHE_NAMESPACE}`;
 const PAGE_CACHE = `medindex-pages-${CACHE_NAMESPACE}`;
