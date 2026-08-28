@@ -712,15 +712,40 @@
 
   function bindEvents() {
     $('#labDiseaseTrigger')?.addEventListener('click', toggleDiseasePicker);
+    $('#labDiseaseTrigger')?.addEventListener('keydown', event => {
+      if (event.key !== 'ArrowDown') return;
+      event.preventDefault();
+      if ($('#labDiseasePopover')?.hidden) openDiseasePicker();
+      else $('#labDiseaseSearch')?.focus();
+    });
 
     $('#labDiseaseSearch')?.addEventListener('input', event => {
       state.diseaseTerm = event.target.value || '';
       renderDiseaseList();
     });
+    $('#labDiseaseSearch')?.addEventListener('keydown', event => {
+      if (!['ArrowDown', 'Enter'].includes(event.key)) return;
+      const first = $('#labDiseaseList')?.querySelector('[data-disease-id]');
+      if (!first) return;
+      event.preventDefault();
+      if (event.key === 'Enter') first.click();
+      else first.focus();
+    });
 
     $('#labDiseaseList')?.addEventListener('click', event => {
       const button = event.target.closest('[data-disease-id]');
       if (button) toggleIndication(button.dataset.diseaseId);
+    });
+    $('#labDiseaseList')?.addEventListener('keydown', event => {
+      if (!['ArrowDown', 'ArrowUp'].includes(event.key)) return;
+      const options = [...event.currentTarget.querySelectorAll('[data-disease-id]')];
+      const index = options.indexOf(document.activeElement);
+      if (index < 0 || !options.length) return;
+      event.preventDefault();
+      const next = event.key === 'ArrowDown'
+        ? Math.min(options.length - 1, index + 1)
+        : Math.max(0, index - 1);
+      options[next]?.focus();
     });
 
     $('#labSelectedDiseases')?.addEventListener('click', event => {
@@ -736,10 +761,29 @@
         renderManualResults();
       }, 70);
     });
+    $('#labManualSearch')?.addEventListener('keydown', event => {
+      if (!['ArrowDown', 'Enter'].includes(event.key)) return;
+      const first = $('#labManualResults')?.querySelector('[data-add-test]');
+      if (!first) return;
+      event.preventDefault();
+      if (event.key === 'Enter') first.click();
+      else first.focus();
+    });
 
     $('#labManualResults')?.addEventListener('click', event => {
       const button = event.target.closest('[data-add-test]');
       if (button) addManualTest(button.dataset.addTest);
+    });
+    $('#labManualResults')?.addEventListener('keydown', event => {
+      if (!['ArrowDown', 'ArrowUp'].includes(event.key)) return;
+      const options = [...event.currentTarget.querySelectorAll('[data-add-test]')];
+      const index = options.indexOf(document.activeElement);
+      if (index < 0 || !options.length) return;
+      event.preventDefault();
+      const next = event.key === 'ArrowDown'
+        ? Math.min(options.length - 1, index + 1)
+        : Math.max(0, index - 1);
+      options[next]?.focus();
     });
 
     $('#labPlanSections')?.addEventListener('change', event => {
