@@ -15,15 +15,14 @@
     'pdid', 'protocol', 'strength', 'form', 'prescription-label', 'packaging', 'mah',
     'manufacturer', 'ma-certificate', 'status', 'wholesale-price', 'margin-price', 'vat',
     'retail-price', 'validity', 'dosage-adult', 'dosage-pediatric', 'clinical-status',
-    'clinical-action', 'dose-calculator',
   ]);
   const CLINICAL_ORDER = Object.freeze([
     'select', 'trade-name', 'active-substance', 'strength', 'form',
-    'dosage-adult', 'dosage-pediatric', 'clinical-status', 'clinical-action', 'dose-calculator',
+    'dosage-adult', 'dosage-pediatric', 'clinical-status',
   ]);
   const VALID_KEYS = new Set(FULL_ORDER);
   const DYNAMIC_KEYS = new Set([
-    'dosage-adult', 'dosage-pediatric', 'clinical-status', 'clinical-action', 'dose-calculator',
+    'dosage-adult', 'dosage-pediatric', 'clinical-status',
   ]);
   const CLINICAL_BASE_KEYS = Object.freeze(['trade-name', 'active-substance', 'strength', 'form']);
 
@@ -54,8 +53,7 @@
     'prescription-label':235, packaging:150, mah:190, manufacturer:180,
     'ma-certificate':138, status:112, 'wholesale-price':116, 'margin-price':116,
     vat:78, 'retail-price':116, validity:140, 'dosage-adult':250,
-    'dosage-pediatric':250, 'clinical-status':150, 'clinical-action':54,
-    'dose-calculator':128,
+    'dosage-pediatric':250, 'clinical-status':150,
   });
   const LABEL_KEYS = Object.freeze({
     perrecete:'select', zgjidh:'select', nr:'number', nrrendor:'number',
@@ -71,8 +69,7 @@
     cmimimepakice:'retail-price', cmpakice:'retail-price', afatiivlefshmerise:'validity',
     afati:'validity', dozimiipertetritur:'dosage-adult', dozimiiperritur:'dosage-adult',
     dozimiiperfemije:'dosage-pediatric', dozimipediatrik:'dosage-pediatric',
-    verifikimi:'clinical-status', redakto:'clinical-action', doza:'dose-calculator',
-    kalkulatori:'dose-calculator', kalkulatoridozes:'dose-calculator',
+    verifikimi:'clinical-status',
   });
 
   const PENCIL = '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 20h9"/><path d="M16.5 3.5a2.12 2.12 0 0 1 3 3L7 19l-4 1 1-4Z"/></svg>';
@@ -104,9 +101,7 @@
     if (VALID_KEYS.has(existing)) return existing;
     if (cell.dataset.registryDosageColumn === 'adult') return 'dosage-adult';
     if (cell.dataset.registryDosageColumn === 'pediatric') return 'dosage-pediatric';
-    if (cell.dataset.registryDoseCalculatorColumn === 'dose-calculator') return 'dose-calculator';
     if (cell.dataset.clinicalEditorColumn === 'clinical-status') return 'clinical-status';
-    if (cell.dataset.clinicalEditorColumn === 'clinical-action') return 'clinical-action';
     if (cell.classList?.contains('select-col')) return 'select';
     return '';
   }
@@ -307,8 +302,7 @@
 
   function keyVisible(key) {
     if (currentView() === 'clinical' && !CLINICAL_ORDER.includes(key)) return false;
-    if (key === 'clinical-status' || key === 'clinical-action') return false;
-    if (key === 'dose-calculator' && document.documentElement.dataset.registryDoseColumnVisible !== 'true') return false;
+    if (key === 'clinical-status') return false;
     if (key === 'dosage-adult' && document.documentElement.classList.contains('hide-registry-dosage-adult')) return false;
     if (key === 'dosage-pediatric' && document.documentElement.classList.contains('hide-registry-dosage-pediatric')) return false;
     return true;
