@@ -36,8 +36,15 @@ const themePreload = read('theme-preload.js');
 assert.match(themePreload, /medindex-tailwind-ui\.css\?v=20260805-1/);
 assert.match(themePreload, /dataset\.miTailwindUi = '20260805-1'/);
 
+const registryHtml = read('index.html');
+assert.match(registryHtml, /data-drx-app="registry-v2"/);
+assert.match(registryHtml, /registry-v2\.css\?v=1/);
+assert.match(registryHtml, /registry-v2\.js\?v=1/);
+assert.doesNotMatch(registryHtml, /tailadmin-professional\.css|tailadmin-shell\.js/,
+  'Registry V2 must stay standalone instead of reintroducing legacy UI layers.');
+
 const appPages = [
-  'index.html', 'analizat.html', 'icd.html', 'dozologjia.html',
+  'analizat.html', 'icd.html', 'dozologjia.html',
   'recetat.html', 'protokollet.html', 'medical-hub.html',
   'urgjencat.html', 'sistemi.html',
 ];
