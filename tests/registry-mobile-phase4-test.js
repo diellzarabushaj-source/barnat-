@@ -11,7 +11,7 @@ const index = read('index.html');
 const router = read('api/dosage.js');
 const handler = read('lib/dosage-card-handler.js');
 const runtime = read('registry-mobile-phase4.js');
-const css = read('registry-mobile-phase4.css');
+const css = read('registry-table-tools.css');
 
 execFileSync(process.execPath, ['--check', path.join(root, 'lib/dosage-card-handler.js')], { stdio:'pipe' });
 execFileSync(process.execPath, ['--check', path.join(root, 'registry-mobile-phase4.js')], { stdio:'pipe' });
@@ -63,7 +63,7 @@ assert.match(css, /mi-phase4-safety/);
 assert.match(css, /data-theme="dark"/);
 
 assert.match(index, /registry-mobile-phase4\.js\?v=20260812-2/);
-assert.match(index, /registry-mobile-phase4\.css\?v=20260812-2/);
+assert.match(index, /registry-table-tools\\.css\\?v=/);\nassert.doesNotMatch(index, /registry-mobile-phase4\\.css/);
 assert.ok(index.indexOf('registry-mobile-lite.js') < index.indexOf('registry-mobile-phase4.js'));
 assert.ok(index.indexOf('registry-mobile-phase3.js') < index.indexOf('registry-mobile-phase4.js'));
 
