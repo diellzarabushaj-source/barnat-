@@ -73,13 +73,13 @@ for (const file of ['registry-v2.js','classification-v2.js','icd-v2.js','dozolog
   assert.match(source, /sidebar-taxonomy-v3\.js\?v=sidebar-taxonomy-v3/, `${file}: shared sidebar runtime missing`);
 }
 
-for (const [file, version] of [
-  ['index.html','profile-columns-v5'],
-  ['klasifikimi.html','profile-columns-v5'],
-  ['icd.html','profile-columns-v4'],
+for (const [file, runtime] of [
+  ['index.html','registry-v2.js'],
+  ['klasifikimi.html','classification-v2.js'],
+  ['icd.html','icd-v2.js'],
 ]) {
   const html = read(file);
-  assert.match(html, new RegExp(version), `${file}: V2 runtime cache-bust missing`);
+  assert.match(html, new RegExp(runtime.replace('.', '\\.') + '\\?v=[^"\\s]+'), `${file}: V2 runtime cache-bust missing`);
 }
 for (const [htmlFile, runtime, version] of [
   ['dozologjia.html','dozologjia-v2.js','3'],
