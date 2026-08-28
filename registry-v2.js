@@ -24,6 +24,11 @@
     'tretësirë':['solution'], tretesire:['solution'], 'lëng':['solution','liquid'], leng:['solution','liquid'], pilul:['tablet','pill'],
   };
 
+  /* E njëjta gjuhë vizatimi si `FORM_ICONS` dhe si ikonat në `index.html`:
+     24×24, pa mbushje, vijë 1.7 me `currentColor`. Shenja tipografike `›` që
+     rrinte këtu merrte formën e vet nga fonti, jo nga sistemi. */
+  const CHEVRON_RIGHT = '<svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9.5 5.5 16 12l-6.5 6.5"/></svg>';
+
   const FORM_ICONS = {
     all:'<rect x="4" y="4" width="6" height="6" rx="1.5"/><rect x="14" y="4" width="6" height="6" rx="1.5"/><rect x="4" y="14" width="6" height="6" rx="1.5"/><rect x="14" y="14" width="6" height="6" rx="1.5"/>',
     pill:'<rect x="3" y="8" width="18" height="8" rx="4"/><path d="M12 8v8"/>',
@@ -247,7 +252,7 @@
         <td data-dose-pediatric="${escapeHtml(number)}" data-dose-status="loading"><span class="skeleton lg"></span></td>
         <td>${statusBadge(row.productStatus)}</td>
         <td><span class="price">${euros(row.retailPrice)}</span></td>
-        <td><button class="row-action" type="button" data-open-row="${escapeHtml(key)}" aria-label="Hap detajet e ${escapeHtml(row.tradeName)}">›</button></td>
+        <td><button class="row-action" type="button" data-open-row="${escapeHtml(key)}" aria-label="Hap detajet e ${escapeHtml(row.tradeName)}">${CHEVRON_RIGHT}</button></td>
       </tr>`;
     }).join('');
     syncPageSelection();
