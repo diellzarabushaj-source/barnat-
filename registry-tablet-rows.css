@@ -164,7 +164,7 @@
     grid-template-rows:minmax(0,1fr)!important;
     place-items:center!important;
     border:1px solid #d0d5dd!important;
-    border-radius:12px!important;
+    border-radius:8px!important;
     background:#fff!important;
   }
   html.medindex-tailadmin[data-mi-page="barnat"] body #registryContent #dataTable[data-registry-unified-table] tbody td[data-registry-column-key="select"] .registry-selection-control{
