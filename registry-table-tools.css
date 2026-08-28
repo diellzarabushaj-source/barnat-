@@ -1007,6 +1007,17 @@ html.medindex-tailadmin[data-mi-page="barnat"] body .rlv-bar{
   background:var(--rst-canvas)!important;
 }
 
+/* When mounted in the canonical registry toolbar, the switch must not draw a
+   second card inside the toolbar. It becomes a compact segmented control only. */
+html.medindex-tailadmin[data-mi-page="barnat"] body #registryViewToolbar .rlv-bar--inline{
+  display:flex!important;
+  align-items:center!important;
+  margin:0!important;
+  padding:0!important;
+  border:0!important;
+  background:transparent!important;
+}
+
 /* Vetëm gjendja e zgjedhur mban ngjyrë; shina rreth saj hiqet, që të mos kemi
    një kornizë brenda një kornize. */
 html.medindex-tailadmin[data-mi-page="barnat"] body .rlv-toggle{
