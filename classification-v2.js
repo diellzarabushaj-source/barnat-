@@ -1,8 +1,14 @@
 (() => {
   'use strict';
 
+  /* E njëjta gjuhë ikonash si te Barnat: 24×24, vijë me `currentColor`.
+     Shenjat `›` dhe `⌃` merrnin formë nga fonti, jo nga sistemi. */
+  const ATC_ICON = body => `<svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${body}</svg>`;
+  const ICON_CHEVRON_RIGHT = ATC_ICON('<path d="M9.5 5.5 16 12l-6.5 6.5"/>');
+  const ICON_CHEVRON_UP = ATC_ICON('<path d="M5.5 14.5 12 8l6.5 6.5"/>');
+
   const GROUP_COLORS = Object.freeze({
-    A:'#16857a', B:'#b4495a', C:'#3767c7', D:'#b67b24', G:'#b44f85', H:'#7655bf', J:'#18815c',
+    A:'#16857a', B:'#b4495a', C:'#3767c7', D:'#b67b24', G:'#b4495a', H:'#7655bf', J:'#18815c',
     L:'#6b50b6', M:'#c46b2c', N:'#533afd', P:'#8b6443', R:'#2787a8', S:'#2c8d86', V:'#6c7685',
   });
 
@@ -247,7 +253,7 @@
         </button>
         <div class="category-actions">
           <span class="category-count" title="Barna në kategori">${state.counts ? formatNumber(count) : '—'}</span>
-          <button class="category-chevron" type="button" data-category-code="${code}" aria-label="${active ? 'Mbyll' : 'Hap'} ${escapeHtml(code)}">${active ? '⌃' : '›'}</button>
+          <button class="category-chevron" type="button" data-category-code="${code}" aria-label="${active ? 'Mbyll' : 'Hap'} ${escapeHtml(code)}">${active ? ICON_CHEVRON_UP : ICON_CHEVRON_RIGHT}</button>
         </div>
         ${active ? selectedSubdivisionMarkup(code) : ''}
       </article>`;
@@ -281,14 +287,24 @@
     el.atcPathItems.innerHTML = codes.map((code,index) => {
       const name = pathName(code);
       const current = index === codes.length - 1;
-      return `${index ? '<span class="atc-path-sep" aria-hidden="true">›</span>' : ''}<button class="atc-path-node ${current ? 'is-current' : ''}" type="button" data-path-code="${escapeHtml(code)}" title="${escapeHtml(name)}"><strong>${escapeHtml(code)}</strong><span>${escapeHtml(name)}</span></button>`;
+      return `${index ? `<span class="atc-path-sep" aria-hidden="true">${ICON_CHEVRON_RIGHT}</span>` : ''}<button class="atc-path-node ${current ? 'is-current' : ''}" type="button" data-path-code="${escapeHtml(code)}" title="${escapeHtml(name)}"><strong>${escapeHtml(code)}</strong><span>${escapeHtml(name)}</span></button>`;
     }).join('');
     el.atcPathRegistry.href = registryUrl(finalCode);
     el.atcPath.hidden = !codes.length;
   }
 
+  /* Shiriti anësor tregon të njëjtin grup si faqja. Pa këtë, hyrja e hapur në
+     menu dhe grupi i zgjedhur në ekran mund të tregonin dy vende të ndryshme. */
+  function syncSidebarGroup() {
+    document.querySelectorAll('[data-atc-group]').forEach(link => {
+      if (link.dataset.atcGroup === state.group) link.setAttribute('aria-current', 'true');
+      else link.removeAttribute('aria-current');
+    });
+  }
+
   function renderClassification() {
     if (!state.group || !groups()[state.group]) state.group = Object.keys(groups())[0] || 'A';
+    syncSidebarGroup();
     renderGroups();
     renderHero();
     renderCategories();
