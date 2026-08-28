@@ -83,6 +83,11 @@
     return document.querySelector('link[data-tailadmin-professional-css],link[href*="tailadmin-professional.css"]');
   }
 
+  function stripeStylesheet() {
+    return [...document.querySelectorAll('link[rel="stylesheet"]')]
+      .find(link => /(?:^|\/)drx-dashboard-stripe\.css(?:\?|$)/.test(link.getAttribute('href') || '')) || null;
+  }
+
   function criticalMobileStylesheet() {
     return document.getElementById('miCriticalMobileTouchStyles');
   }
@@ -93,8 +98,19 @@
     if (!base || !professional) return;
     base.removeAttribute('data-tailadmin-medindex-css');
     base.dataset.miBaseStylesheet = '1';
-    if (base.nextElementSibling !== professional) base.after(professional);
+
+    const stripe = stripeStylesheet();
     const critical = criticalMobileStylesheet();
+
+    if (stripe) {
+      if (base.nextElementSibling !== professional || professional.nextElementSibling !== stripe) {
+        document.head.append(base, professional, stripe);
+      }
+      if (critical && stripe.nextElementSibling !== critical) stripe.after(critical);
+      return;
+    }
+
+    if (base.nextElementSibling !== professional) base.after(professional);
     if (critical && professional.nextElementSibling !== critical) professional.after(critical);
   }
 
