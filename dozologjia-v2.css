@@ -1,0 +1,541 @@
+/* Dozologjia V2 — consolidated server-calculated pediatric workspace. */
+
+@font-face{font-family:Inter;src:url('/fonts/inter-latin-variable-normal.woff2') format('woff2');font-style:normal;font-weight:100 900;font-display:swap}
+:root{
+  --ink:#0d253d;--ink-2:#34475c;--muted:#66788d;--muted-2:#8795a7;
+  --surface:#fff;--canvas:#fff;--soft:#f6f9fc;--soft-2:#f1f4f8;
+  --line:#e3e8ee;--line-strong:#cfd8e3;
+  --accent:#533afd;--accent-hover:#4434d4;--accent-soft:#f0efff;--accent-line:#d9d6ff;
+  --clinical:#0e7c66;--clinical-soft:#eefaf6;--warning:#9a6700;--warning-soft:#fff9ed;--danger:#b42318;
+  --sidebar:238px;--topbar:58px;
+  --shadow-xs:0 1px 2px rgba(16,24,40,.04);
+  --shadow-sm:0 1px 2px rgba(16,24,40,.05),0 8px 24px rgba(16,24,40,.04);
+  --shadow-lg:0 24px 60px rgba(16,24,40,.16),0 8px 20px rgba(16,24,40,.08);
+}
+*{box-sizing:border-box}
+html,body{min-height:100%}
+html{background:var(--canvas)}
+body{margin:0;background:var(--canvas);color:var(--ink);font-family:Inter,"SF Pro Display",system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;font-size:14px;font-weight:300;line-height:1.45;font-feature-settings:"ss01";-webkit-font-smoothing:antialiased;text-rendering:optimizeLegibility}
+button,input,select{font:inherit}
+button{color:inherit}
+a{color:inherit}
+[hidden]{display:none!important}
+.sr-only{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;border:0}
+.app-shell{min-height:100vh}
+.app-shell[aria-busy="true"] .lab-order-page{opacity:.64;pointer-events:none}
+.lab-order-page{transition:opacity .14s}
+
+/* Standalone shell structure only.
+   Visual geometry, colors, spacing and responsive shell authority live in drx-dashboard-stripe.css v4. */
+.sidebar{position:fixed;inset:0 auto 0 0;z-index:50;display:flex;flex-direction:column}
+.sidebar-head{display:flex;align-items:center;justify-content:space-between}
+.brand{display:flex;align-items:center;min-width:0}
+.brand img{display:block;height:auto;object-fit:contain;object-position:left center}
+.sidebar-close{display:none}
+.nav-stack{overflow:auto}
+.nav-item{width:100%;display:flex;align-items:center;text-decoration:none;text-align:left;cursor:pointer}
+.nav-icon{display:grid;place-items:center;flex:none}
+.nav-icon .icon{width:18px;height:18px}
+.icon{display:block;width:18px;height:18px;flex:none}
+.nav-group{display:block}
+.nav-summary{list-style:none;cursor:pointer;-webkit-tap-highlight-color:transparent}
+.nav-summary::-webkit-details-marker{display:none}
+.nav-summary>span:nth-child(2){flex:1;min-width:0}
+.nav-summary-chevron{display:grid;place-items:center;flex:none;opacity:.5;transition:transform .16s ease}
+.nav-summary-chevron .icon{width:15px;height:15px}
+.nav-group[open] .nav-summary-chevron{transform:rotate(180deg);opacity:.9}
+.atc-group-list{display:grid;gap:2px;margin:3px 0 6px;padding:4px 0 5px 20px;border-left:1px solid rgba(255,255,255,.13)}
+.atc-group-link{position:relative;display:grid;grid-template-columns:24px minmax(0,1fr);align-items:center;gap:10px;min-height:31px;padding:4px 9px;border-radius:7px;color:rgba(255,255,255,.62);text-decoration:none}
+.atc-group-link:hover{background:rgba(255,255,255,.06);color:#fff}
+.atc-group-code{display:grid;height:19px;place-items:center;border-radius:5px;background:rgba(255,255,255,.09);color:rgba(255,255,255,.78);font:600 10px/1 ui-monospace,SFMono-Regular,Menlo,monospace}
+.atc-group-name{overflow:hidden;font-size:11.5px;text-overflow:ellipsis;white-space:nowrap}
+.sidebar-foot{display:grid;margin-top:auto}
+.drx-user-card{width:100%;display:grid;grid-template-columns:40px minmax(0,1fr) 18px;align-items:center;gap:10px;cursor:pointer;text-align:left}
+.drx-user-avatar{display:grid;place-items:center;flex:none;border-radius:50%;background-position:center;background-size:cover;background-repeat:no-repeat}
+.drx-profile-copy,.drx-user-copy{min-width:0;display:grid;line-height:1.15}
+.drx-profile-copy strong,.drx-user-copy strong,
+.drx-profile-copy small,.drx-user-copy small{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.drx-profile-copy small{max-width:190px}
+.drx-user-arrow{display:grid;place-items:center}
+.drx-user-arrow .icon{width:15px;height:15px}
+.main-shell{min-width:0}
+.topbar{position:sticky;top:0;z-index:35;display:flex;align-items:center;gap:12px}
+.breadcrumbs{display:flex;align-items:center;gap:8px;color:var(--muted);font-size:12px}
+.breadcrumbs strong{color:#394b5f;font-weight:400}
+.crumb-sep{color:#c3cbd4}
+.topbar-actions{display:flex;align-items:center;gap:9px;margin-left:auto}
+.sync-pill{display:inline-flex;align-items:center;gap:7px;min-height:28px;padding:4px 10px;border:1px solid var(--line);border-radius:999px;background:#fff;color:var(--muted);font-size:11px}
+.sync-dot{width:6px;height:6px;border-radius:50%;background:#20b486}
+.drx-profile-chip{min-width:0;height:46px;display:flex;align-items:center;gap:10px;padding:4px 11px 4px 5px;border:1px solid var(--line);border-radius:999px;background:#fff;color:var(--ink);cursor:pointer;text-align:left}
+.drx-profile-chip:hover{background:var(--soft)}
+.icon-button{display:grid;width:34px;height:34px;place-items:center;padding:0;border:1px solid var(--line);border-radius:8px;background:#fff;color:#5a6b80;cursor:pointer}
+.icon-button.menu-button,.icon-button.sidebar-close{display:none}
+.page-heading{display:flex;align-items:flex-start;justify-content:space-between;gap:28px;margin-bottom:20px}
+.eyebrow{margin:0 0 6px;color:var(--muted);font-size:11px;font-weight:400;letter-spacing:.1px;text-transform:uppercase}
+.page-heading h1{margin:0}
+.page-subtitle{max-width:820px;margin:7px 0 0;color:var(--muted);font-size:14px;font-weight:300;line-height:1.55}
+.sidebar-backdrop{position:fixed;inset:0;z-index:45;background:rgba(10,20,45,.35);backdrop-filter:blur(2px)}
+
+
+
+/* Kalkulatori pediatrik — pamja e rrjedhës bar → pacient → rezultat.
+   Fazat 3, 4, 8 dhe 9 bashkë: paraqitja dhe prekshmëria janë e njëjta punë.
+
+   Objektivat e prekjes janë 44px që nga fillimi, jo të shtuara më vonë me një
+   shtresë korrigjuese. Kjo faqe përdoret me gisht, shpesh me një fëmijë në
+   krah, dhe një buton 32px aty është gabim që kushton kohë pikërisht kur nuk ka. */
+
+html[data-drx-app="dozologjia-v2"]{
+  --pk-touch:44px;
+  --pk-radius:10px;
+  --pk-gap:12px;
+}
+
+/* ------------------------------------------------------------- 3 · Bari */
+
+html[data-drx-app="dozologjia-v2"] .pediatric-result-list{
+  list-style:none;
+  margin:0;
+  padding:0;
+  display:grid;
+  gap:8px;
+}
+
+html[data-drx-app="dozologjia-v2"] .pediatric-result-button{
+  width:100%;
+  min-height:var(--pk-touch);
+  display:grid;
+  grid-template-columns:1fr auto;
+  grid-template-areas:"name badge" "meta badge";
+  align-items:center;
+  gap:2px var(--pk-gap);
+  padding:10px 14px;
+  border:1px solid var(--mi-border, #d7dee6);
+  border-radius:var(--pk-radius);
+  background:var(--mi-surface, #fff);
+  color:inherit;
+  text-align:left;
+  cursor:pointer;
+}
+
+html[data-drx-app="dozologjia-v2"] .pediatric-result-button:hover,
+html[data-drx-app="dozologjia-v2"] .pediatric-result-button:focus-visible{
+  border-color:var(--mi-accent, #533afd);
+}
+
+html[data-drx-app="dozologjia-v2"] .pediatric-result-name{
+  grid-area:name;
+  font-weight:600;
+}
+
+html[data-drx-app="dozologjia-v2"] .pediatric-result-meta{
+  grid-area:meta;
+  font-size:13px;
+  opacity:.75;
+}
+
+html[data-drx-app="dozologjia-v2"] .pediatric-badge{
+  grid-area:badge;
+  justify-self:end;
+  padding:4px 10px;
+  border-radius:999px;
+  font-size:12px;
+  font-weight:600;
+  white-space:nowrap;
+}
+
+/* Ngjyra e gjendjes mban edhe kuptim, prandaj nuk mbetet vetëm te ngjyra:
+   teksti i etiketës e thotë të njëjtën gjë për këdo që nuk i dallon. */
+html[data-drx-app="dozologjia-v2"] .pediatric-badge[data-readiness="CALCULATOR_READY"]{
+  background:#e7f5ec; color:#12693c;
+}
+html[data-drx-app="dozologjia-v2"] .pediatric-badge[data-readiness="TEXT_ONLY"]{
+  background:#eef1f5; color:#455063;
+}
+html[data-drx-app="dozologjia-v2"] .pediatric-badge[data-readiness="NOT_RECOMMENDED"],
+html[data-drx-app="dozologjia-v2"] .pediatric-badge[data-readiness="INSUFFICIENT_DATA"]{
+  background:#fdf1e2; color:#8a4b08;
+}
+html[data-drx-app="dozologjia-v2"] .pediatric-badge[data-readiness="CONTRAINDICATED"]{
+  background:#fdeaea; color:#96201f;
+}
+
+/* --------------------------------------------------------- 2 · Pacienti */
+
+html[data-drx-app="dozologjia-v2"] .pediatric-patient-panel label[hidden]{
+  display:none!important;
+}
+
+html[data-drx-app="dozologjia-v2"] .pediatric-patient-panel :is(input, select){
+  min-height:var(--pk-touch);
+}
+
+html[data-drx-app="dozologjia-v2"] .pediatric-calculate-button{
+  min-height:var(--pk-touch);
+  padding:0 20px;
+  border:0;
+  border-radius:var(--pk-radius);
+  background:var(--mi-accent, #533afd);
+  color:#fff;
+  font-weight:600;
+  cursor:pointer;
+}
+
+html[data-drx-app="dozologjia-v2"] .pediatric-calculate-button[disabled]{
+  opacity:.6;
+  cursor:progress;
+}
+
+/* -------------------------------------------------------- 3 · Rezultati */
+
+html[data-drx-app="dozologjia-v2"] .pediatric-product-header{
+  display:flex;
+  flex-wrap:wrap;
+  align-items:center;
+  gap:var(--pk-gap);
+  margin-bottom:12px;
+}
+
+html[data-drx-app="dozologjia-v2"] .pediatric-product-name{
+  margin:0;
+  flex:1 1 220px;
+  /* Emrat e barnave janë të gjatë dhe pa hapësira; pa këtë ata e shtynin
+     kartën përtej ekranit në telefon. */
+  overflow-wrap:anywhere;
+}
+
+html[data-drx-app="dozologjia-v2"] .pediatric-product-meta{
+  margin:0;
+  flex:1 1 100%;
+  font-size:13px;
+  opacity:.75;
+}
+
+html[data-drx-app="dozologjia-v2"] .pediatric-back-button{
+  min-height:var(--pk-touch);
+  padding:0 16px;
+  border:1px solid var(--mi-border, #d7dee6);
+  border-radius:var(--pk-radius);
+  background:transparent;
+  color:inherit;
+  cursor:pointer;
+}
+
+html[data-drx-app="dozologjia-v2"] .pediatric-calculation{
+  margin-top:16px;
+  padding:16px;
+  border:1px solid var(--mi-border, #d7dee6);
+  border-radius:var(--pk-radius);
+  background:var(--mi-surface, #fff);
+}
+
+html[data-drx-app="dozologjia-v2"] .pediatric-dose-primary{
+  margin:4px 0 0;
+  /* Numri është arsyeja pse ekziston kjo faqe; asgjë tjetër në të nuk duhet të
+     jetë më e madhe. */
+  font-size:32px;
+  font-weight:600;
+  line-height:1.15;
+  overflow-wrap:anywhere;
+}
+
+html[data-drx-app="dozologjia-v2"] .pediatric-dose-secondary,
+html[data-drx-app="dozologjia-v2"] .pediatric-dose-daily{
+  margin:2px 0 0;
+  font-size:14px;
+  opacity:.8;
+}
+
+html[data-drx-app="dozologjia-v2"] .pediatric-dose-measure{
+  margin:6px 0 0;
+  font-size:20px;
+  font-weight:600;
+}
+
+html[data-drx-app="dozologjia-v2"] .pediatric-kicker{
+  margin:0;
+  font-size:12px;
+  letter-spacing:.08em;
+  text-transform:uppercase;
+  opacity:.7;
+}
+
+html[data-drx-app="dozologjia-v2"] .pediatric-warning,
+html[data-drx-app="dozologjia-v2"] .pediatric-restriction{
+  margin:8px 0 0;
+  padding:10px 12px;
+  border-left:3px solid #d99100;
+  border-radius:4px;
+  background:#fdf6e9;
+  color:#6b4708;
+  font-size:14px;
+}
+
+html[data-drx-app="dozologjia-v2"] .pediatric-not-calculable{
+  margin:12px 0;
+  padding:12px 14px;
+  border:1px solid #e5c9c9;
+  border-radius:var(--pk-radius);
+  background:#fdf3f3;
+}
+
+html[data-drx-app="dozologjia-v2"] .pediatric-reason-list{
+  margin:6px 0 0;
+  padding-left:20px;
+  font-size:14px;
+}
+
+html[data-drx-app="dozologjia-v2"] .pediatric-text-regimen{
+  margin-top:10px;
+  padding:12px 14px;
+  border:1px solid var(--mi-border, #d7dee6);
+  border-radius:var(--pk-radius);
+}
+
+html[data-drx-app="dozologjia-v2"] .pediatric-text-meta{
+  margin:4px 0 0;
+  font-size:13px;
+  opacity:.75;
+}
+
+html[data-drx-app="dozologjia-v2"] .pediatric-explain{
+  margin-top:14px;
+}
+
+html[data-drx-app="dozologjia-v2"] .pediatric-explain summary{
+  min-height:var(--pk-touch);
+  display:flex;
+  align-items:center;
+  cursor:pointer;
+  font-weight:600;
+}
+
+html[data-drx-app="dozologjia-v2"] .pediatric-explain-list{
+  display:grid;
+  grid-template-columns:minmax(0, 1fr) auto;
+  gap:4px var(--pk-gap);
+  margin:8px 0 0;
+  font-size:14px;
+}
+
+html[data-drx-app="dozologjia-v2"] .pediatric-explain-list dt{
+  opacity:.75;
+}
+
+html[data-drx-app="dozologjia-v2"] .pediatric-explain-list dd{
+  margin:0;
+  justify-self:end;
+  font-variant-numeric:tabular-nums;
+  overflow-wrap:anywhere;
+}
+
+html[data-drx-app="dozologjia-v2"] .pediatric-source{
+  margin:12px 0 0;
+  font-size:13px;
+  opacity:.8;
+}
+
+html[data-drx-app="dozologjia-v2"] .pediatric-empty{
+  margin:0;
+  padding:16px;
+  text-align:center;
+  opacity:.75;
+}
+
+/* ------------------------------------------------------------- telefoni */
+
+@media (max-width: 767px){
+  html[data-drx-app="dozologjia-v2"] .pediatric-result-button{
+    /* Në telefon etiketa zbret nën emrin, që emri të mos ngushtohet në dy
+       shkronja për rresht kur bari quhet gjatë. */
+    grid-template-columns:1fr;
+    grid-template-areas:"name" "meta" "badge";
+    gap:4px;
+  }
+  html[data-drx-app="dozologjia-v2"] .pediatric-badge{
+    justify-self:start;
+  }
+  html[data-drx-app="dozologjia-v2"] .pediatric-dose-primary{
+    font-size:28px;
+  }
+  html[data-drx-app="dozologjia-v2"] .pediatric-calculate-button{
+    width:100%;
+  }
+}
+
+/* Kur lëvizja është e padëshiruar, asgjë këtu nuk animohet gjithsesi — po
+   `details` hapet me animim në disa shfletues. */
+@media (prefers-reduced-motion: reduce){
+  html[data-drx-app="dozologjia-v2"] .pediatric-explain{
+    transition:none;
+  }
+}
+
+
+
+/* Dozologjia V2 — Stripe pediatric calculator */
+:root{
+  --dosage-shell-navy:#1c1e54;
+  --mi-border:#e4e7ec;
+  --mi-surface:#fff;
+  --mi-accent:#533afd;
+  --dosage-bg:#f7f8fb;
+  --dosage-surface:#fff;
+  --dosage-ink:#0d253d;
+  --dosage-muted:#667085;
+  --dosage-line:#e4e7ec;
+  --dosage-line-strong:#d0d5dd;
+  --dosage-accent:#533afd;
+  --dosage-accent-hover:#4434d4;
+  --dosage-accent-soft:#f2f0ff;
+  --dosage-success:#067647;
+  --dosage-warning:#9a6700;
+  --dosage-danger:#b42318;
+}
+body{background:var(--dosage-bg);color:var(--dosage-ink)}
+.app-shell[aria-busy="true"] .dosage-v2-page{opacity:.62;pointer-events:none}
+.dosage-v2-page{min-height:calc(100vh - 58px);transition:opacity .14s ease}
+.dosage-v2-heading{align-items:center}
+.dosage-v2-summary{
+  min-width:270px;display:flex;align-items:center;gap:10px;padding:10px 12px;border:1px solid var(--dosage-line);
+  border-radius:10px;background:#fff;box-shadow:0 1px 2px rgba(16,24,40,.025)
+}
+.dosage-v2-shield{
+  width:36px;height:36px;display:grid;place-items:center;flex:none;border:1px solid #dedbff;border-radius:8px;
+  background:#f6f4ff;color:var(--dosage-accent)
+}
+.dosage-v2-shield svg{width:18px;height:18px}
+.dosage-v2-summary>span:last-child{display:grid;gap:2px}
+.dosage-v2-summary strong{font-size:11.5px;font-weight:550;color:#344054}
+.dosage-v2-summary small{font-size:9.5px;color:#98a2b3}
+
+.dosage-v2-metrics{
+  display:grid;grid-template-columns:repeat(4,minmax(0,1fr));margin-bottom:16px;border:1px solid var(--dosage-line);
+  border-radius:12px;background:#fff;overflow:hidden;box-shadow:0 1px 2px rgba(16,24,40,.025)
+}
+.dosage-v2-metrics article{min-width:0;padding:15px 17px;border-right:1px solid var(--dosage-line)}
+.dosage-v2-metrics article:last-child{border-right:0}
+.dosage-v2-metrics span,.dosage-v2-metrics small{display:block;color:var(--dosage-muted)}
+.dosage-v2-metrics span{font-size:10px;font-weight:450}
+.dosage-v2-metrics strong{display:block;margin:8px 0 4px;color:var(--dosage-ink);font-size:23px;font-weight:330;line-height:1}
+.dosage-v2-metrics .dosage-text-metric{font-size:13px;font-weight:540;line-height:1.25}
+.dosage-v2-metrics small{font-size:9px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+
+.dosage-v2-workspace{display:grid;grid-template-columns:minmax(330px,.78fr) minmax(0,1.22fr);gap:14px;align-items:start}
+.dosage-v2-control,.dosage-v2-results{
+  min-width:0;border:1px solid var(--dosage-line);border-radius:12px;background:#fff;box-shadow:0 1px 2px rgba(16,24,40,.025)
+}
+.dosage-v2-card-head{display:flex;align-items:flex-start;gap:10px;padding:14px 15px;border-bottom:1px solid #edf0f3}
+.dosage-v2-card-head h2{margin:0;color:#344054;font-size:14px;font-weight:550}
+.dosage-v2-card-head p{margin:3px 0 0;color:#667085;font-size:9.5px;line-height:1.45}
+.dosage-v2-step{
+  width:28px;height:28px;display:grid;place-items:center;flex:none;border:1px solid #dedbff;border-radius:7px;
+  background:#f4f2ff;color:#533afd;font-size:8.5px;font-weight:700
+}
+
+.dosage-v2-search{position:relative;display:block;margin:13px 15px}
+.dosage-v2-search svg{position:absolute;left:11px;top:50%;width:16px;height:16px;transform:translateY(-50%);color:#98a2b3}
+.dosage-v2-search input{
+  width:100%;height:42px;padding:0 50px 0 35px;border:1px solid var(--dosage-line-strong);border-radius:8px;background:#fff;
+  color:#344054;font:400 11.5px/1 Inter,system-ui,sans-serif;outline:0
+}
+.dosage-v2-search input:focus{border-color:#533afd;box-shadow:0 0 0 3px rgba(83,58,253,.10)}
+.dosage-v2-search kbd{
+  position:absolute;right:9px;top:50%;transform:translateY(-50%);padding:3px 6px;border:1px solid #e4e7ec;border-radius:5px;
+  background:#f9fafb;color:#98a2b3;font:500 8px/1 Inter
+}
+
+.dosage-v2-patient{margin:0 15px 15px;padding:11px;border:1px solid #e9e6ff;border-radius:9px;background:#fbfaff}
+.dosage-v2-patient-copy{display:flex;align-items:flex-start;gap:9px;margin-bottom:9px}
+.dosage-v2-patient-copy h2{margin:0;color:#344054;font-size:11.5px;font-weight:550}
+.dosage-v2-patient-copy p{margin:2px 0 0;color:#7c789e;font-size:9px;line-height:1.4}
+.dosage-v2-patient-fields{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:7px}
+.dosage-v2-patient-fields label{display:grid;gap:4px;color:#667085;font-size:8.5px;font-weight:520}
+.dosage-v2-patient-fields label[hidden]{display:none!important}
+.dosage-v2-patient-fields :is(input,select){
+  width:100%;height:38px;padding:0 9px;border:1px solid #d0d5dd;border-radius:7px;background:#fff;color:#344054;outline:0;font-size:10.5px
+}
+.dosage-v2-patient-fields :is(input,select):focus{border-color:#533afd;box-shadow:0 0 0 3px rgba(83,58,253,.09)}
+html[data-drx-app="dozologjia-v2"] .pediatric-calculate-button{
+  width:100%;margin-top:8px;min-height:38px;border-radius:7px;background:#533afd;color:#fff;font-size:10px;font-weight:550
+}
+html[data-drx-app="dozologjia-v2"] .pediatric-calculate-button:hover:not(:disabled){background:#4434d4}
+
+.dosage-v2-status{min-height:30px;margin:0;padding:10px 15px;border-bottom:1px solid #f0f2f5;color:#667085;font-size:9.5px}
+.pediatric-calculator-results{min-height:420px;padding:12px}
+html[data-drx-app="dozologjia-v2"] .pediatric-result-list{gap:6px}
+html[data-drx-app="dozologjia-v2"] .pediatric-result-button{
+  min-height:54px;padding:9px 11px;border-color:#e4e7ec;border-radius:8px;background:#fff;box-shadow:none
+}
+html[data-drx-app="dozologjia-v2"] .pediatric-result-button:hover,
+html[data-drx-app="dozologjia-v2"] .pediatric-result-button:focus-visible{
+  border-color:#d4cfff;background:#fbfaff;outline:0;box-shadow:0 0 0 3px rgba(83,58,253,.08)
+}
+html[data-drx-app="dozologjia-v2"] .pediatric-result-name{font-size:10.5px;font-weight:560;color:#344054}
+html[data-drx-app="dozologjia-v2"] .pediatric-result-meta{font-size:9px;color:#667085;opacity:1}
+html[data-drx-app="dozologjia-v2"] .pediatric-badge{padding:3px 7px;font-size:8px;border-radius:999px}
+html[data-drx-app="dozologjia-v2"] .pediatric-product-header{padding:2px 2px 10px;border-bottom:1px solid #edf0f3}
+html[data-drx-app="dozologjia-v2"] .pediatric-product-name{font-size:14px;font-weight:560;color:#344054}
+html[data-drx-app="dozologjia-v2"] .pediatric-product-meta{font-size:9.5px;color:#667085;opacity:1}
+html[data-drx-app="dozologjia-v2"] .pediatric-back-button{
+  min-height:32px;padding:0 9px;border-color:#e4e7ec;border-radius:7px;background:#fff;color:#475467;font-size:8.5px
+}
+html[data-drx-app="dozologjia-v2"] .pediatric-product-summary{font-size:10px;line-height:1.5;color:#667085}
+html[data-drx-app="dozologjia-v2"] .pediatric-text-regimen{
+  margin-top:8px;padding:10px 11px;border-color:#e4e7ec;border-radius:8px;background:#fff;font-size:9.5px
+}
+html[data-drx-app="dozologjia-v2"] .pediatric-calculation-context{border-color:#dedbff;background:#faf9ff}
+html[data-drx-app="dozologjia-v2"] .pediatric-text-meta{font-size:8.5px;color:#667085;opacity:1}
+html[data-drx-app="dozologjia-v2"] .pediatric-warning,
+html[data-drx-app="dozologjia-v2"] .pediatric-restriction{
+  margin-top:7px;padding:8px 9px;border-left:3px solid #d5a321;background:#fffbeb;color:#725b28;font-size:9px
+}
+html[data-drx-app="dozologjia-v2"] .pediatric-not-calculable{
+  margin:9px 0;padding:10px;border-color:#f1c7c7;border-radius:8px;background:#fff7f7;color:#7a3d3d;font-size:9.5px
+}
+html[data-drx-app="dozologjia-v2"] .pediatric-reason-list{font-size:9px}
+html[data-drx-app="dozologjia-v2"] .pediatric-source{font-size:8.5px;color:#667085;opacity:1}
+html[data-drx-app="dozologjia-v2"] .pediatric-calculation{
+  margin-top:12px;padding:13px;border-color:#dcd8ff;border-radius:9px;background:#faf9ff
+}
+html[data-drx-app="dozologjia-v2"] .pediatric-dose-primary{font-size:30px;font-weight:420;color:#2f2a75;letter-spacing:-.6px}
+html[data-drx-app="dozologjia-v2"] .pediatric-dose-secondary,
+html[data-drx-app="dozologjia-v2"] .pediatric-dose-daily{font-size:10px;color:#667085;opacity:1}
+html[data-drx-app="dozologjia-v2"] .pediatric-dose-measure{font-size:17px;font-weight:520;color:#4434d4}
+html[data-drx-app="dozologjia-v2"] .pediatric-kicker{font-size:8px;color:#635bff;opacity:1}
+html[data-drx-app="dozologjia-v2"] .pediatric-explain summary{min-height:36px;font-size:9px}
+html[data-drx-app="dozologjia-v2"] .pediatric-explain-list{font-size:9px}
+
+.dosage-v2-safety{
+  display:flex;align-items:flex-start;gap:9px;margin-top:14px;padding:10px 11px;border:1px solid #eadfb8;border-radius:8px;background:#fffdf7
+}
+.dosage-v2-safety>span{width:20px;height:20px;display:grid;place-items:center;flex:none;border-radius:50%;background:#f8e9b7;color:#7a5b00;font-size:10px;font-weight:700}
+.dosage-v2-safety strong{display:block;color:#5c5138;font-size:9.5px;font-weight:600}
+.dosage-v2-safety p{margin:2px 0 0;color:#7c7057;font-size:9px;line-height:1.45}
+
+@media(max-width:1020px){
+  .dosage-v2-workspace{grid-template-columns:1fr}
+  .pediatric-calculator-results{min-height:320px}
+}
+@media(max-width:760px){
+  .breadcrumbs,.sync-pill{display:none}
+  .drx-profile-copy{display:none}
+  .drx-profile-chip{width:38px;height:38px;padding:1px;border:0;background:transparent}
+  .dosage-v2-heading{display:block}
+  .dosage-v2-summary{min-width:0;width:100%;margin-top:12px}
+  .dosage-v2-metrics{grid-template-columns:1fr 1fr}
+  .dosage-v2-metrics article:nth-child(2){border-right:0}
+  .dosage-v2-metrics article:nth-child(-n+2){border-bottom:1px solid var(--dosage-line)}
+  .dosage-v2-search input{height:46px;font-size:16px}
+  .dosage-v2-search kbd{display:none}
+  .dosage-v2-patient-fields{grid-template-columns:1fr}
+  .dosage-v2-patient-fields :is(input,select){height:44px;font-size:16px}
+}
+@media(max-width:520px){
+  .dosage-v2-metrics{grid-template-columns:1fr}
+  .dosage-v2-metrics article{border-right:0;border-bottom:1px solid var(--dosage-line)}
+  .dosage-v2-metrics article:last-child{border-bottom:0}
+}
+@media(prefers-reduced-motion:reduce){
+  .dosage-v2-page{transition:none}
+}
