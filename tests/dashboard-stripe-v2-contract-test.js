@@ -19,9 +19,7 @@ assert.match(stripe, /border-radius:9999px!important/);
 assert.match(stripe, /@media\(max-width:760px\)/);
 assert.match(stripe, /prefers-reduced-motion:reduce/);
 
-const pages = [
-  'sistemi.html',
-];
+const pages = [];
 
 for (const file of pages) {
   const html = read(file);
@@ -61,6 +59,7 @@ for (const [htmlFile, cssFile, jsFile, markerName] of [
   ['protokollet.html','protokollet-v2.css','protokollet-v2.js','protokollet-v2'],
   ['recetat.html','recetat-v2.css','recetat-v2.js','recetat-v2'],
   ['medical-hub.html','medical-hub-v2.css','medical-hub-v2.js','medical-hub-v2'],
+  ['sistemi.html','sistemi-v2.css','sistemi-v2.js','sistemi-v2'],
 ]) {
   const html = read(htmlFile);
   const css = read(cssFile);
