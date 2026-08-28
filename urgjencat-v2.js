@@ -91,12 +91,17 @@
     const byTerm = new Map(unique.map(item => [String(item.abbreviation), item]));
     const pattern = new RegExp(unique.map(item => escapeRegExp(item.abbreviation)).join('|'), 'g');
     let html = ''; let cursor = 0;
+    const isWordChar = char => Boolean(char && /[\p{L}\p{N}]/u.test(char));
     for (const match of text.matchAll(pattern)) {
       const index = match.index ?? 0;
       const term = match[0];
       const item = byTerm.get(term);
+      const before = text[index - 1] || '';
+      const after = text[index + term.length] || '';
+      const partialWord = (isWordChar(term[0]) && isWordChar(before))
+        || (isWordChar(term[term.length - 1]) && isWordChar(after));
       html += esc(text.slice(cursor, index));
-      if (item) {
+      if (item && !partialWord) {
         const number = Number(item.footnoteNumber);
         html += '<button type="button" class="ec-abbr-token" data-abbr-key="' + esc(item._key) + '" aria-haspopup="true" aria-controls="ecAbbrTooltip" aria-expanded="false" aria-label="Shpjego ' + esc(term) + '">' + esc(term) + (Number.isFinite(number) ? '<sup aria-hidden="true">' + esc(number) + '</sup>' : '') + '</button>';
       } else html += esc(term);
@@ -120,8 +125,9 @@
 
   function positionAbbreviationTooltip(button, tooltip) {
     const coarse = mobilePopoverMode();
-    tooltip.classList.toggle('is-popover', coarse);
-    tooltip.setAttribute('role', coarse ? 'dialog' : 'tooltip');
+    const popover = coarse || tooltip.dataset.popover === '1';
+    tooltip.classList.toggle('is-popover', popover);
+    tooltip.setAttribute('role', popover ? 'dialog' : 'tooltip');
     if (coarse) {
       tooltip.style.width = '';
       tooltip.style.left = '12px';
@@ -156,6 +162,8 @@
       activeAbbreviationButton.classList.remove('is-open');
     }
     const tooltip = ensureAbbreviationTooltip();
+    const longExplanation = clean(item.explanationSq).length > 140 || clean(item.fullTermEn).length > 52;
+    tooltip.dataset.popover = longExplanation ? '1' : '0';
     tooltip.innerHTML = '<button type="button" class="ec-abbr-tooltip-close" aria-label="Mbyll shpjegimin">×</button><div class="ec-abbr-tooltip-head"><strong>' + esc(item.abbreviation) + '</strong>' + (item.fullTermEn ? '<span>' + esc(item.fullTermEn) + '</span>' : '') + '</div>' + (item.explanationSq ? '<p>' + esc(item.explanationSq) + '</p>' : '');
     tooltip.querySelector('.ec-abbr-tooltip-close')?.addEventListener('click', () => closeAbbreviationTooltip());
     tooltip.hidden = false;
@@ -756,6 +764,7 @@
       '</div>' +
       (figure.caption ? '<p>' + inlineClinicalText(lesson, figure.caption) + '</p>' : '');
 
+    bindInlineAbbreviations(caption);
     overlay.hidden = false;
     document.body.classList.add('ec-modal-open');
     requestAnimationFrame(() => overlay.querySelector('.ec-figure-lightbox-close')?.focus({ preventScroll:true }));
@@ -815,7 +824,8 @@
         }
 
         const card = image.closest('.ec-figure-card');
-        image.hidden = true;
+        const zoom = image.closest('.ec-figure-zoom');
+        if (zoom) zoom.hidden = true; else image.hidden = true;
         if (card && !card.querySelector('.ec-figure-error')) {
           const fallback = document.createElement('div');
           fallback.className = 'ec-figure-error ec-figure-chip';
@@ -864,10 +874,9 @@
         ${linkedTables.length ? linkedTables.map(table => tableMarkup(lesson, table)).join('') : ''}
 
         ${linkedFigures.length ? `
-          <div class="ec-figure-strip">
-            ${linkedFigures.filter(f => !figureSrc(f)).map(f => figureMarkup(lesson, f)).join('')}
+          <div class="ec-figure-strip" data-section-figures="${esc(section._key || anchorId)}">
+            ${linkedFigures.map(figure => figureMarkup(lesson, figure)).join('')}
           </div>
-          ${linkedFigures.filter(f => figureSrc(f)).map(f => figureMarkup(lesson, f)).join('')}
         ` : ''}
       </section>
     `;
