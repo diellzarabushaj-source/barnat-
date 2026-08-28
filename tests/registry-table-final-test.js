@@ -12,6 +12,7 @@ const mobileCss = read('registry-mobile-lite.css');
 const desktop = read('registry-desktop-lite.js');
 const css = read('registry-unified-table.css');
 const tableTools = read('registry-table-tools.css');
+const frozenCss = read('registry-frozen-columns.css');
 const fullTextCss = read('registry-full-text-expansion.css');
 const runtime = read('registry-unified-table.js');
 const generatedRuntime = read('app-runtime.js');
@@ -87,24 +88,20 @@ assert.doesNotMatch(loader,/scheduleRuntime\('desktop-or-legacy'\)/,'normal auth
 assert.doesNotMatch(loader,/FIRST_INTERACTION_FALLBACK_MS|POST_INTERACTION_GRACE_MS|INTERACTION_EVENTS/,'legacy interaction gates must remain removed');
 assert.doesNotMatch(loader,/MEDINDEX_REGISTRY_UI_READY\s*=\s*new Promise/,'loader must not create a circular readiness promise');
 
-assert.match(runtime,/registry-canonical-main-table-v1/,'canonical unified controller version is missing');
+assert.match(runtime,/registry-unified-table-20260828-admin-stripe-v2/,'current unified controller version is missing');
 assert.match(runtime,/const FULL_ORDER = Object\.freeze/,'one canonical full-column order is required');
-assert.match(runtime,/const CLINICAL_ORDER = Object\.freeze/,'legacy clinical order may remain as compatibility metadata but must not own a second view');
-assert.match(runtime,/'select', 'number', 'active-substance', 'trade-name'/,'Nr and active substance must precede the trade name');
-assert.match(runtime,/'clinical-action', 'dose-calculator'/,'verified dose must be part of canonical clinical order');
-assert.match(runtime,/DYNAMIC_KEYS = new Set\([\s\S]*'dose-calculator'/,'verified dose must be a canonical dynamic column');
-assert.match(runtime,/clinical-action':54[\s\S]*'dose-calculator':128/,'edit and dose columns must remain compact');
-assert.match(runtime,/dataset\.registryDoseCalculatorColumn === 'dose-calculator'/,'unified controller must recognize the dose column');
-assert.match(runtime,/key === 'clinical-status' \|\| key === 'clinical-action'/,'verification/editor columns must stay out of the visible registry surface');
-assert.match(runtime,/--registry-frozen-active-left/,'runtime must calculate the frozen active-substance offset');
-assert.match(runtime,/document\.documentElement\.dataset\.registryUxView = 'full'/,'the registry must be frozen to the one canonical main-table view');
+assert.match(runtime,/const CLINICAL_ORDER = Object\.freeze/,'clinical view order must remain explicit');
+assert.match(runtime,/'select', 'number', 'trade-name', 'active-substance'/,'full view must begin with prescription selection, Nr, trade name and active substance');
+assert.match(runtime,/'select', 'trade-name', 'active-substance', 'strength', 'form'/,'clinical view must prioritize identity, strength and form');
+assert.match(runtime,/DYNAMIC_KEYS = new Set\([\s\S]*'dosage-adult'[\s\S]*'dosage-pediatric'[\s\S]*'clinical-status'/,'dosage and passive verification remain the only dynamic table columns');
+assert.match(runtime,/if \(key === 'clinical-status'\) return false/,'technical verification must stay out of the visible surface');
+assert.doesNotMatch(runtime,/clinical-action|dose-calculator|registryDoseCalculatorColumn|normalizePencils/,'retired edit and calculator columns must not return');
 assert.match(runtime,/table\.querySelectorAll\(':scope > colgroup'\)\.forEach\(group => group\.remove\(\)\)/,'only one colgroup may survive');
 assert.match(runtime,/observer\.observe\(header, \{ childList:true \}\)/,'header observer must be shallow');
 assert.match(runtime,/observer\.observe\(tbody, \{ childList:true \}\)/,'body observer must watch only row replacement');
 assert.doesNotMatch(runtime,/observe\(document\.body|subtree\s*:\s*true/,'unified controller must never scan the whole page or table subtree');
 assert.match(runtime,/registryUnifiedIntegrity/,'runtime must expose row/header integrity');
 assert.match(runtime,/MEDINDEX_REGISTRY_TABLE_AUDIT/,'runtime must expose a browser audit object');
-assert.match(runtime,/normalizePencils/,'edit buttons must be normalized once by the unified controller');
 assert.doesNotMatch(runtime,/registry-dose-dialog|registry-cell-preview-dialog/,'unified runtime must not contain a text modal');
 
 const nrPosition = generatedRuntime.indexOf("key:'Nr rendor'");
@@ -135,21 +132,17 @@ assert.match(css,/#dataTable\[data-registry-unified-table\] :is\(th,td\)\[data-r
 assert.match(tableTools,/--rst-row-height:\d+px/,'rows must use one compact stable height, declared once');
 assert.match(css,/registry-row-expanded[\s\S]*max-height:none!important/,'expanded rows must reveal full inline content');
 assert.match(css,/:is\(\.registry-dose-dialog,\.registry-cell-preview-dialog\)[\s\S]*display:none!important/,'legacy text modals must remain disabled');
-assert.match(css,/\.clinical-editor-open \{[\s\S]*width:34px!important/,'edit action must be one compact pencil');
+assert.doesNotMatch(index,/clinical-editor\.js|registry-dose-calculator\.js|registry-dose-table-button\.js/,'retired editor and calculator runtimes must not load on the medicines page');
 assert.match(css,/\.population-verification-grid/,'strict population verification styles may remain available for editor/internal surfaces');
 assert.match(css,/@media \(max-width:760px\)[\s\S]*#dataTable tbody td\[data-registry-column-key\][\s\S]*grid-template-columns:94px minmax\(0,1fr\)/,'full-runtime mobile cards must remain readable after explicit fatal handoff');
 assert.match(css,/#registryFilterPanel #search/,'search must remain visible in the unified full-runtime filter surface');
 assert.match(css,/\.col-panel\.open[\s\S]*grid-template-columns:repeat\(2,minmax\(0,1fr\)\)/,'desktop multi-column picker must remain compact');
-assert.match(css,/registry-frozen-columns-v2/,'the frozen-column contract must be explicit and auditable');
-assert.match(css,/\[data-registry-column-key="number"\][\s\S]{0,180}position:sticky!important[\s\S]{0,120}left:0!important/,'Nr must be frozen at the left edge on desktop');
-// A doctor reads a row by what goes on the prescription, so that is the column
-// that stays put while the rest of the register scrolls sideways. This used to
-// pin the active substance; registry-frozen-columns.css and the first-page
-// audit had already moved to the prescription notation, and the two halves
-// disagreed until now.
-assert.match(css,/\[data-registry-column-key="prescription-label"\][\s\S]{0,220}position:sticky!important[\s\S]{0,140}left:var\(--registry-frozen-prescription-left,68px\)!important/,'the prescription notation must freeze immediately after Nr');
-assert.doesNotMatch(css,/\[data-registry-column-key="active-substance"\]\s*\{[^}]*position:sticky!important/,'the active substance scrolls with the rest of the register');
-assert.doesNotMatch(css,/\[data-registry-column-key="trade-name"\]\s*\{[^}]*position:sticky!important/,'trade name must never be frozen');
+assert.match(frozenCss,/final frozen-column contract/,'the final frozen-column contract must be explicit and auditable');
+assert.match(frozenCss,/\[data-registry-column-key="select"\][\s\S]*position:sticky!important[\s\S]*left:0!important/,'prescription selection must be frozen at the left edge on desktop');
+assert.match(frozenCss,/\[data-registry-column-key="trade-name"\][\s\S]*position:sticky!important[\s\S]*left:44px!important/,'trade name must freeze immediately after prescription selection');
+assert.match(frozenCss,/\[data-registry-column-key="number"\][\s\S]*position:relative!important/,'Nr must scroll normally in the final contract');
+assert.match(frozenCss,/\[data-registry-column-key="prescription-label"\][\s\S]*position:relative!important/,'prescription notation must scroll normally in the final contract');
+assert.doesNotMatch(frozenCss,/data-registry-column-key="active-substance"[^}]*position:sticky!important/i,'active substance must scroll normally');
 assert.doesNotMatch(css,/https?:\/\//,'unified table stylesheet must not load third-party assets');
 
 assert.match(fullTextCss,/thead th\[data-registry-column-key\][\s\S]*left:auto!important[\s\S]*right:auto!important/,'the base sticky-header stylesheet must not horizontally freeze arbitrary columns');
@@ -157,4 +150,4 @@ assert.match(fullTextCss,/::-webkit-scrollbar[\s\S]*width:12px!important[\s\S]*h
 assert.match(fullTextCss,/data-theme="dark"[\s\S]*scrollbar-color:/,'dark mode must style the same scroll surface');
 assert.doesNotMatch(fullTextCss,/https?:\/\//,'full-row text and scroll styles must not load third-party assets');
 
-console.log('Single-controller registry table, requested 11-column defaults, persistent user choices, hidden technical verification columns, frozen Nr + prescription notation, mobile lightweight v2 and full-row reveal audit passed.');
+console.log('Registry table: simplified action surface, no edit/calculator columns, canonical view ordering, selection + trade-name freeze, mobile lightweight v2 and full-row reveal audit passed.');
