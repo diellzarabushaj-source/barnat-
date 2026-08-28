@@ -274,7 +274,7 @@
     }
     return new Promise(resolve => {
       const script = document.createElement('script');
-      script.src = '/medindex-brand-runtime.js?v=profile-unified-v1';
+      script.src = '/medindex-brand-runtime.js?v=drx-brand-v5';
       script.defer = true;
       script.dataset.drxProfileRuntime = '1';
       script.addEventListener('load', () => resolve(window.MedIndexProfile || null), { once:true });
