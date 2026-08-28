@@ -1,0 +1,91 @@
+name: Materialize Chapter 1 figures
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/materialize-chapter-1-figures.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  extract:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout main
+        uses: actions/checkout@v4
+        with:
+          ref: main
+          fetch-depth: 0
+
+      - name: Install extraction tools
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y poppler-utils
+          python -m pip install --disable-pip-version-check gdown pillow
+
+      - name: Download exact public Google Drive source
+        run: |
+          gdown 'https://drive.google.com/uc?id=1WXGUGRtlmauPUKsZo-fDfJ-sXSyFA5Ln' -O /tmp/tintinalli.pdf
+          test -s /tmp/tintinalli.pdf
+          pdfinfo /tmp/tintinalli.pdf | grep -q 'Pages:[[:space:]]*1089'
+
+      - name: Extract original embedded Chapter 1 images
+        run: |
+          rm -rf /tmp/ch1-images
+          mkdir -p /tmp/ch1-images assets/urgjencat/chapter-1
+          pdfimages -f 22 -l 28 -j /tmp/tintinalli.pdf /tmp/ch1-images/source
+          python - <<'PY'
+          from pathlib import Path
+          from PIL import Image
+          import shutil
+
+          src = Path('/tmp/ch1-images')
+          out = Path('assets/urgjencat/chapter-1')
+          jpgs = sorted(src.glob('source-*.jpg'))
+          if len(jpgs) != 7:
+              raise SystemExit(f'Expected 7 embedded JPEGs on PDF pages 22-28, found {len(jpgs)}: {jpgs}')
+
+          expected = [(575,433),(575,433),(575,439),(576,351),(457,678),(575,408),(575,481)]
+          actual = [Image.open(p).size for p in jpgs]
+          if actual != expected:
+              raise SystemExit(f'Unexpected image dimensions/order: {actual}')
+
+          # Figure 1-1 is two source JPEG panels (A/B). Decode once and stack
+          # without resizing; PNG keeps the decoded source pixels losslessly.
+          a = Image.open(jpgs[0]).convert('RGB')
+          b = Image.open(jpgs[1]).convert('RGB')
+          gap = 24
+          canvas = Image.new('RGB', (max(a.width,b.width), a.height + gap + b.height), 'white')
+          canvas.paste(a, (0,0))
+          canvas.paste(b, (0,a.height+gap))
+          canvas.save(out/'figure-1-1-mask-ventilation.png', format='PNG', optimize=False)
+
+          # Figures 1-2 through 1-6 are copied byte-for-byte from the PDF's
+          # embedded JPEG streams: no resize, sharpen, contrast change or re-encode.
+          names = [
+              'figure-1-2-stylets.jpg',
+              'figure-1-3-sniffing-position.jpg',
+              'figure-1-4-external-laryngeal-manipulation.jpg',
+              'figure-1-5-cricothyroid-incision.jpg',
+              'figure-1-6-bougie-tube.jpg',
+          ]
+          for source, name in zip(jpgs[2:], names):
+              shutil.copyfile(source, out/name)
+
+          print('Materialized:', *sorted(p.name for p in out.glob('figure-1-*')), sep='\n- ')
+          PY
+
+      - name: Commit source-faithful figure assets to main
+        run: |
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add assets/urgjencat/chapter-1/
+          if git diff --cached --quiet; then
+            echo 'Chapter 1 figures already match the source.'
+            exit 0
+          fi
+          git commit -m 'Add source-faithful Chapter 1 airway figures'
+          git push origin HEAD:main
