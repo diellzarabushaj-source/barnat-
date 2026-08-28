@@ -13,7 +13,7 @@
     '/recetat.html':['Recetat'],
     '/sistemi.html':['Sistemi'],
   };
-  const LEGACY_SRC = '/tailadmin-shell-core.js?v=production-audit-v2';
+  const LEGACY_SRC = '/tailadmin-shell-core.js?v=sidebar-taxonomy-v3';
   const MOBILE_SRC = '/mobile-experience.js?v=production-audit-v2';
   const MOBILE_A11Y_SRC = '/mobile-accessibility-hardening.js?v=mobile-a11y-deep-audit-v1';
   const MOBILE_SIDEBAR_HARDENING_SRC = '/mobile-sidebar-hardening.js?v=mobile-sidebar-deep-audit-v3';
@@ -22,7 +22,7 @@
   const ATC_NAV_SRC = '/atc-sidebar.js?v=atc-sidebar-v2';
   const ICD_NAV_SRC = '/icd-sidebar-v3.js?v=icd-sidebar-v3';
   const ATC_SEARCH_SRC = '/atc-global-search.js?v=atc-global-search-v1';
-  const SHELL_VERSION = 'production-audit-v2';
+  const SHELL_VERSION = 'sidebar-taxonomy-v3';
   const SHELL_RETRY_MS = 3500;
   const SHELL_FALLBACK_MS = 8000;
   let shellReady = false;
