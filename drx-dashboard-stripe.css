@@ -1383,3 +1383,131 @@ html.medindex-tailadmin .mi-sidebar-logout-icon{
   place-items:center!important;
   flex:none!important;
 }
+
+
+/* Unified standalone V2 dashboard bridge — v3
+   Registry, ATC, ICD, Urgjencat and Medical Hub keep their focused V2
+   workspaces, while dashboard chrome is owned by the same Stripe-style
+   authority used by the other authenticated pages. This block is scoped to
+   html.drx-unified-sidebar so clinical content remains page-specific. */
+html.drx-unified-sidebar{
+  --drx-nav:#1c1e54;
+  --drx-nav-hover:rgba(255,255,255,.075);
+  --drx-nav-active:rgba(83,58,253,.20);
+  --drx-nav-text:rgba(255,255,255,.67);
+  --drx-nav-label:rgba(255,255,255,.42);
+  --drx-shell-accent:#533afd;
+  --drx-shell-line:#e4e7ec;
+}
+html.drx-unified-sidebar .sidebar{
+  width:238px!important;
+  min-width:238px!important;
+  padding:18px 14px 14px!important;
+  border-right:0!important;
+  background:var(--drx-nav)!important;
+  color:#fff!important;
+  box-shadow:none!important;
+}
+html.drx-unified-sidebar .sidebar-head{
+  min-height:54px!important;
+  padding:0 10px 12px!important;
+  border-bottom:0!important;
+  background:transparent!important;
+}
+html.drx-unified-sidebar .sidebar .brand img{
+  display:block!important;
+  width:112px!important;
+  height:auto!important;
+}
+html.drx-unified-sidebar .nav-stack{
+  padding:10px 0 18px!important;
+  scrollbar-width:thin!important;
+  scrollbar-color:rgba(255,255,255,.18) transparent!important;
+}
+html.drx-unified-sidebar .nav-label{
+  margin:14px 0 4px!important;
+  padding:0 11px!important;
+  color:var(--drx-nav-label)!important;
+  font-size:10px!important;
+  font-weight:400!important;
+  letter-spacing:.04em!important;
+  text-transform:uppercase!important;
+}
+html.drx-unified-sidebar .nav-label:first-child{margin-top:0!important}
+html.drx-unified-sidebar .nav-item{
+  min-height:40px!important;
+  gap:10px!important;
+  padding:0 10px!important;
+  border:0!important;
+  border-radius:6px!important;
+  background:transparent!important;
+  color:var(--drx-nav-text)!important;
+  font-size:14px!important;
+  font-weight:300!important;
+  box-shadow:none!important;
+}
+html.drx-unified-sidebar .nav-item:hover{
+  background:var(--drx-nav-hover)!important;
+  color:#fff!important;
+}
+html.drx-unified-sidebar .nav-item:is(.is-active,[aria-current="page"]){
+  background:var(--drx-nav-active)!important;
+  color:#fff!important;
+  font-weight:300!important;
+}
+html.drx-unified-sidebar .nav-icon{
+  width:22px!important;
+  height:22px!important;
+  color:currentColor!important;
+  opacity:.82!important;
+}
+html.drx-unified-sidebar .nav-item:is(:hover,.is-active,[aria-current="page"]) .nav-icon{
+  color:#fff!important;
+  opacity:1!important;
+}
+html.drx-unified-sidebar .sidebar-foot{
+  display:grid!important;
+  gap:6px!important;
+  margin-top:auto!important;
+  padding:12px 0 0!important;
+  border-top:1px solid rgba(255,255,255,.12)!important;
+  background:transparent!important;
+}
+html.drx-unified-sidebar .sidebar-foot .drx-user-card{
+  min-height:44px!important;
+  border:0!important;
+  border-radius:6px!important;
+  background:rgba(255,255,255,.06)!important;
+  color:rgba(255,255,255,.86)!important;
+  box-shadow:none!important;
+}
+html.drx-unified-sidebar .sidebar-foot .drx-user-card:hover{
+  background:rgba(255,255,255,.09)!important;
+}
+html.drx-unified-sidebar .sidebar-foot .logout-button{
+  width:100%!important;
+  min-height:40px!important;
+  color:var(--drx-nav-text)!important;
+}
+html.drx-unified-sidebar .topbar{
+  height:58px!important;
+  min-height:58px!important;
+  padding:0 28px!important;
+  background:rgba(255,255,255,.97)!important;
+  border-bottom:1px solid var(--drx-shell-line)!important;
+  box-shadow:none!important;
+}
+@media(max-width:1023px){
+  html.drx-unified-sidebar .sidebar{
+    width:min(86vw,300px)!important;
+    min-width:0!important;
+  }
+  html.drx-unified-sidebar .topbar{padding:0 14px!important}
+}
+@media(max-width:760px){
+  html.drx-unified-sidebar .nav-item,
+  html.drx-unified-sidebar .sidebar-foot .logout-button{min-height:44px!important}
+}
+@media(prefers-reduced-motion:reduce){
+  html.drx-unified-sidebar :is(.sidebar,.nav-item){transition:none!important}
+}
