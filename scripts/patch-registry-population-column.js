@@ -6,7 +6,7 @@ const path = require('node:path');
 const root = path.resolve(__dirname, '..');
 const runtimeFiles = ['app-runtime.js', 'app-runtime-performance.js'];
 const unifiedTableFile = 'registry-unified-table.js';
-const unifiedCssFile = 'registry-unified-table.css';
+const unifiedCssFile = 'registry-table-tools.css';
 const columnContractFile = 'registry-column-contract.js';
 const columnPickerFile = 'registry-column-picker-tailwind.js';
 const indexFile = 'index.html';
@@ -248,7 +248,6 @@ function patchColumnPicker() {
 
 function patchAssetVersions() {
   let source = read(indexFile);
-  source = source.replace(/registry-unified-table\.css\?v=[^\"']+/g, `registry-unified-table.css?v=${ASSET_VERSION}`);
   source = source.replace(/registry-unified-table\.js\?v=[^\"']+/g, `registry-unified-table.js?v=${ASSET_VERSION}`);
   source = source.replace(/registry-dose-clinical-row-markers\.js\?v=[^\"']+/g, `registry-dose-clinical-row-markers.js?v=${ASSET_VERSION}`);
   source = source.replace(/registry-column-picker-tailwind\.js\?v=[^\"']+/g, `registry-column-picker-tailwind.js?v=${ASSET_VERSION}`);
@@ -304,7 +303,8 @@ if (!pickerSource.includes('data-mi-technical-column-hidden')
   throw new Error('Kolonat teknike të verifikimit nuk u hoqën nga picker-i.');
 }
 const indexSource = read(indexFile);
-if (!indexSource.includes(`registry-unified-table.css?v=${ASSET_VERSION}`)
+if (!indexSource.includes('registry-table-tools.css?v=')
+    || indexSource.includes('registry-unified-table.css')
     || !indexSource.includes(`registry-unified-table.js?v=${ASSET_VERSION}`)
     || !indexSource.includes(`registry-dose-clinical-row-markers.js?v=${ASSET_VERSION}`)
     || !indexSource.includes(`registry-column-picker-tailwind.js?v=${ASSET_VERSION}`)) {
