@@ -84,6 +84,36 @@
     return state.lessons.find(lesson => lesson._id === state.selectedLessonId) || null;
   }
 
+  function reviewMeta(status) {
+    const value = String(status || '').trim().toLowerCase();
+    if (value === 'verified') {
+      return {
+        className:'is-verified',
+        label:'I verifikuar',
+        detail:'Përmbajtja është shënuar si e verifikuar në Sanity.',
+      };
+    }
+    if (value === 'review') {
+      return {
+        className:'is-review',
+        label:'Në rishikim',
+        detail:'Përmbajtja është në proces rishikimi klinik.',
+      };
+    }
+    if (value === 'source-imported') {
+      return {
+        className:'is-source',
+        label:'Material burimor',
+        detail:'Importuar nga burimi referues; ende jo i verifikuar klinikisht në DRx.',
+      };
+    }
+    return {
+      className:'',
+      label:'Status i papërcaktuar',
+      detail:'Statusi i rishikimit nuk është përcaktuar në Sanity.',
+    };
+  }
+
   function syncUrl() {
     try {
       const url = new URL(window.location.href);
@@ -290,6 +320,7 @@
     const subtopics = [...(lesson.subtopics || [])].sort((a, b) => (Number(a.order) || 999) - (Number(b.order) || 999));
     const abbreviations = [...(lesson.abbreviations || [])].sort((a, b) => (Number(a.footnoteNumber) || 999) - (Number(b.footnoteNumber) || 999));
     const figures = [...(lesson.figures || [])];
+    const review = reviewMeta(lesson.reviewStatus);
 
     root.innerHTML = `
       <div class="ec-detail-inner">
@@ -303,6 +334,14 @@
           <h2>${esc(lesson.title)}</h2>
           ${lesson.sourceTitleEn ? `<p class="ec-source-title">${esc(lesson.sourceTitleEn)}</p>` : ''}
         </header>
+
+        <div class="ec-review-banner ${review.className}" role="note" aria-label="Statusi i rishikimit">
+          <span class="ec-review-dot" aria-hidden="true"></span>
+          <div class="ec-review-copy">
+            <strong>${esc(review.label)}</strong>
+            <small>${esc(review.detail)}</small>
+          </div>
+        </div>
 
         ${lesson.quickSummary ? `
           <div class="ec-quick-summary">
@@ -364,7 +403,7 @@
           ${lesson.sourceBook ? `<span>${esc(lesson.sourceBook)}</span>` : ''}
           ${lesson.sourceEdition ? `<span>${esc(lesson.sourceEdition)}</span>` : ''}
           ${lesson.sourcePdfStartPage ? `<span>PDF f. ${esc(lesson.sourcePdfStartPage)}–${esc(lesson.sourcePdfEndPage || lesson.sourcePdfStartPage)}</span>` : ''}
-          ${lesson.reviewStatus ? `<span>Status: ${esc(lesson.reviewStatus)}</span>` : ''}
+          ${lesson.reviewStatus ? `<span>Rishikimi: ${esc(review.label)}</span>` : ''}
         </div>
       </div>
     `;
