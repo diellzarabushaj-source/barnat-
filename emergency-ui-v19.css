@@ -537,3 +537,23 @@ html[data-theme="dark"].medindex-tailadmin[data-mi-page="urgjencat"] .ck-info-ca
     transition-duration:.001ms!important;
   }
 }
+
+/* Dyshemeja e lexueshmërisë në telefon.
+   Auditi responsive nuk lejon asnjë tekst nën 11px brenda ekranit të urgjencës
+   në 320px: kjo faqe lexohet me një dorë, shpesh nën dritë të keqe, dhe një
+   protokoll urgjence nuk guxon të ketë mikro-tekst. Këto ishin 10, 10.5 dhe
+   10.75px. Ngrihen te kufiri, jo mbi të, që hierarkia të mbetet e paprekur. */
+@media (max-width:400px){
+  html.medindex-tailadmin[data-mi-page="urgjencat"] #emergencyDetail :is(
+    .ck-emergency-breadcrumb,
+    .ck-chip,
+    .ck-mode-caption,
+    .ck-v4-source-meta,
+    .ck-v5-session-bar span,
+    .ck-v5-trainer-card span,
+    small
+  ),
+  html.medindex-tailadmin[data-mi-page="urgjencat"] .ck-emergency-breadcrumb{
+    font-size:11px!important;
+  }
+}
