@@ -864,7 +864,7 @@ html.medindex-tailadmin[data-mi-page="barnat"] body #pagination.pagination :is(b
   html.medindex-tailadmin[data-mi-page="barnat"] body #registryViewToolbar.registry-view-toolbar-unified{
     align-items:flex-start!important;
     padding:10px!important;
-    border-radius:12px!important;
+    border-radius:8px!important;
   }
   html.medindex-tailadmin[data-mi-page="barnat"] body #registryViewToolbar .registry-view-actions-wrap{
     flex-wrap:wrap!important;
@@ -876,7 +876,7 @@ html.medindex-tailadmin[data-mi-page="barnat"] body #pagination.pagination :is(b
   html.medindex-tailadmin[data-mi-page="barnat"] body #registryFilterPanel.registry-filter-panel-unified{
     grid-template-columns:minmax(0,1fr)!important;
     border-top:1px solid var(--rst-hairline)!important;
-    border-radius:12px!important;
+    border-radius:8px!important;
   }
   html.medindex-tailadmin[data-mi-page="barnat"] body #registryFilterPanel .registry-toolbar-secondary{
     width:100%!important;
