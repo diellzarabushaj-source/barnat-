@@ -4,13 +4,11 @@ const fs = require('node:fs');
 const path = require('node:path');
 
 const ROOT = path.resolve(__dirname, '..');
-const cssFile = path.join(ROOT, 'registry-mobile-phase8.css');
+const cssFile = path.join(ROOT, 'registry-table-tools.css');
 const phase8JsFile = path.join(ROOT, 'registry-mobile-phase8.js');
-const shellCssFile = path.join(ROOT, 'registry-mobile-phase3.css');
 const jsFile = path.join(ROOT, 'registry-mobile-lite.js');
 let css = fs.readFileSync(cssFile, 'utf8').replace(/\r\n?/g, '\n');
 let phase8Js = fs.readFileSync(phase8JsFile, 'utf8').replace(/\r\n?/g, '\n');
-let shellCss = fs.readFileSync(shellCssFile, 'utf8').replace(/\r\n?/g, '\n');
 let js = fs.readFileSync(jsFile, 'utf8').replace(/\r\n?/g, '\n');
 
 const oldCard = `  html[data-registry-mobile-lite] #tbody .mobile-lite-card{\n    position:relative;\n    display:block!important;\n    width:100%!important;\n    min-width:0!important;\n    max-width:none!important;\n    box-sizing:border-box!important;\n  }`;
@@ -148,8 +146,8 @@ if (!css.includes(narrowPhoneCardMarker)) {
 }
 
 const shellClearanceMarker = '/* MedIndex revised Phase 4: fixed-nav end-of-list clearance */';
-if (!shellCss.includes(shellClearanceMarker)) {
-  shellCss += `\n\n${shellClearanceMarker}\n@media (max-width:767px){\n  html[data-registry-mobile-lite][data-registry-mobile-phase3]{\n    --mi-registry-bottom-nav-clearance:calc(80px + env(safe-area-inset-bottom));\n  }\n  html[data-registry-mobile-lite][data-registry-mobile-phase3] .mi-main{\n    scroll-padding-bottom:var(--mi-registry-bottom-nav-clearance)!important;\n  }\n  html[data-registry-mobile-lite][data-registry-mobile-phase3] #pagination{\n    margin-bottom:var(--mi-registry-bottom-nav-clearance)!important;\n  }\n  html[data-registry-mobile-lite][data-registry-mobile-phase3][data-mi-keyboard-open=\"true\"] #pagination{\n    margin-bottom:calc(18px + env(safe-area-inset-bottom))!important;\n  }\n}\n`;
+if (!css.includes(shellClearanceMarker)) {
+  css += `\n\n${shellClearanceMarker}\n@media (max-width:767px){\n  html[data-registry-mobile-lite][data-registry-mobile-phase3]{\n    --mi-registry-bottom-nav-clearance:calc(80px + env(safe-area-inset-bottom));\n  }\n  html[data-registry-mobile-lite][data-registry-mobile-phase3] .mi-main{\n    scroll-padding-bottom:var(--mi-registry-bottom-nav-clearance)!important;\n  }\n  html[data-registry-mobile-lite][data-registry-mobile-phase3] #pagination{\n    margin-bottom:var(--mi-registry-bottom-nav-clearance)!important;\n  }\n  html[data-registry-mobile-lite][data-registry-mobile-phase3][data-mi-keyboard-open=\"true\"] #pagination{\n    margin-bottom:calc(18px + env(safe-area-inset-bottom))!important;\n  }\n}\n`;
 }
 
 if (!css.includes('min-height:108px!important')) throw new Error('Phase 2 stable card reserve is missing.');
@@ -189,12 +187,11 @@ if (!js.includes("if (main) return main;\n    return document.scrollingElement |
 if (!js.includes("session.trigger.focus({ preventScroll:true });\n        if (session.scrollOwner) setOwnerScrollTop(session.scrollOwner, session.scrollTop);")) {
   throw new Error('Phase 3 focus-before-final-scroll restoration is missing.');
 }
-if (!shellCss.includes('--mi-registry-bottom-nav-clearance:calc(80px + env(safe-area-inset-bottom))')) {
+if (!css.includes('--mi-registry-bottom-nav-clearance:calc(80px + env(safe-area-inset-bottom))')) {
   throw new Error('Phase 4 fixed-nav end-of-list clearance is missing.');
 }
 
 fs.writeFileSync(cssFile, css, 'utf8');
 fs.writeFileSync(phase8JsFile, phase8Js, 'utf8');
-fs.writeFileSync(shellCssFile, shellCss, 'utf8');
 fs.writeFileSync(jsFile, js, 'utf8');
 console.log('Phase 2/3/4 mobile stability passed: delegated detail interaction, compact narrow-phone spacing, explicit collision-free card actions, one detail trigger, true vertical card flow, canonical detail scroll restoration and fixed-nav clearance.');
