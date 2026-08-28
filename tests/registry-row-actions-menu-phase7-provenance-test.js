@@ -50,7 +50,7 @@ assert.deepEqual(manifest.contracts, {
 
 for (const file of [
   'registry-user-personalization.js',
-  'registry-user-personalization.css',
+  'registry-table-tools.css',
   'registry-desktop-lite.js',
   'registry-unified-table.js',
 ]) {
