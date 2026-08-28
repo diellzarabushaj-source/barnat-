@@ -30,7 +30,7 @@ a{color:inherit}
 .brand img{display:block;width:104px;height:auto;max-height:32px;object-fit:contain;object-position:left center}
 .sidebar-close{display:none}
 .nav-stack{padding:10px 0 18px;overflow:auto;scrollbar-width:thin;scrollbar-color:rgba(255,255,255,.18) transparent}
-.nav-label{margin:6px 11px 7px;color:rgba(255,255,255,.42);font-size:10px;font-weight:400;letter-spacing:.04em;text-transform:uppercase}
+.nav-label{margin:6px 11px 7px;color:rgba(255,255,255,.48);font-size:10px;font-weight:400;letter-spacing:.04em;text-transform:uppercase}
 .nav-label-spaced{margin-top:19px}
 .nav-item{width:100%;min-height:40px;display:flex;align-items:center;gap:10px;padding:0 10px;border:0;border-radius:6px;background:transparent;color:rgba(255,255,255,.67);text-decoration:none;text-align:left;cursor:pointer;font-size:14px;font-weight:300;transition:background .15s,color .15s}
 .nav-item:hover{background:rgba(255,255,255,.075);color:#fff}
@@ -50,7 +50,7 @@ a{color:inherit}
 .main-shell{min-width:0;margin-left:var(--sidebar)}
 .topbar{height:var(--topbar);position:sticky;top:0;z-index:35;display:flex;align-items:center;gap:12px;padding:0 28px;background:rgba(255,255,255,.97);border-bottom:1px solid var(--line)}
 .menu-button{display:none}
-.breadcrumbs{display:flex;align-items:center;gap:8px;color:#8d99a8;font-size:11px}
+.breadcrumbs{display:flex;align-items:center;gap:8px;color:#64748d;font-size:11px}
 .breadcrumbs strong{color:#394b5f;font-weight:400}
 .crumb-sep{color:#c3cbd4}
 .topbar-actions{display:flex;align-items:center;gap:9px;margin-left:auto}
@@ -94,12 +94,12 @@ a{color:inherit}
 .search-box{position:relative;flex:1 1 auto;max-width:760px}
 .search-box svg{position:absolute;left:11px;top:50%;width:15px;height:15px;transform:translateY(-50%);fill:none;stroke:#8794a3;stroke-width:1.8;stroke-linecap:round}
 .search-box input{width:100%;height:38px;padding:0 56px 0 35px;border:1px solid var(--line-strong);border-radius:7px;background:#fff;color:var(--ink);font-size:12.5px;transition:border-color .12s,box-shadow .12s}
-.search-box input::placeholder{color:#a1acb9}
+.search-box input::placeholder{color:#697386}
 .search-box input:hover{border-color:#bcc7d3}
 .search-box kbd{position:absolute;right:8px;top:50%;transform:translateY(-50%);padding:3px 6px;border:1px solid var(--line);border-bottom-color:#c4ccd6;border-radius:5px;background:#f8fafc;color:#8c98a6;font:520 9px/1 Inter}
 .toolbar-actions{display:flex;align-items:center;gap:7px;margin-left:auto}
 .count-chip{display:inline-grid;min-width:18px;height:18px;place-items:center;padding:0 5px;border-radius:999px;background:var(--accent);color:#fff;font-size:9px}
-.compact-select{display:flex;align-items:center;gap:7px;color:#8794a3;font-size:9.5px}
+.compact-select{display:flex;align-items:center;gap:7px;color:#64748d;font-size:9.5px}
 .compact-select select{height:35px;padding:0 25px 0 8px;border:1px solid var(--line-strong);border-radius:7px;background:#fff;color:#3f5165;font-size:10.5px}
 
 .filter-panel{display:grid;grid-template-columns:repeat(4,minmax(150px,1fr)) auto;gap:9px;align-items:end;padding:10px 10px 11px;border-bottom:1px solid var(--line);background:#fafbfc}
@@ -151,7 +151,7 @@ a{color:inherit}
 .sort-head[data-active="true"][data-direction="desc"]::after{transform:rotate(180deg)}
 .row-check,#selectPageCheckbox{width:14px;height:14px;accent-color:var(--accent);cursor:pointer}
 .drug-name{display:block;overflow:hidden;color:#0d253d;font-size:12px;font-weight:400;text-overflow:ellipsis;white-space:nowrap}
-.drug-meta{display:block;overflow:hidden;margin-top:2px;color:#99a5b2;font-size:9px;text-overflow:ellipsis;white-space:nowrap}
+.drug-meta{display:block;overflow:hidden;margin-top:2px;color:#64748d;font-size:9px;text-overflow:ellipsis;white-space:nowrap}
 .cell-clamp{display:-webkit-box;overflow:hidden;-webkit-box-orient:vertical;-webkit-line-clamp:2;line-height:1.35}
 .atc-chip{display:inline-flex;align-items:center;min-height:22px;padding:2px 6px;border:1px solid #dfe5eb;border-radius:5px;background:#f8fafc;color:#506174;font:650 9.5px/1 ui-monospace,SFMono-Regular,Menlo,monospace}
 .price{color:#42566b;font-variant-numeric:tabular-nums}
@@ -159,7 +159,7 @@ a{color:inherit}
 .dose-text{display:-webkit-box;overflow:hidden;color:#3d5167;-webkit-box-orient:vertical;-webkit-line-clamp:2;font-size:10.5px;line-height:1.3}
 .route-chip{display:inline-flex;width:max-content;max-width:100%;align-items:center;min-height:18px;padding:2px 5px;border-radius:999px;background:#eff8f6;color:#17685f;font-size:8.5px;font-weight:650}
 .registry-table td:nth-child(9) .route-chip{background:var(--pediatric-soft);color:#2454a6}
-.dose-missing{color:#a0aab5;font-size:9.5px}
+.dose-missing{color:#64748d;font-size:9.5px}
 .status-badge{display:inline-flex;align-items:center;min-height:22px;padding:3px 7px;border-radius:999px;font-size:9px;font-weight:650;white-space:nowrap}
 .status-badge.is-generic{background:#ecf9f5;color:#0e7664}
 .status-badge.is-originator{background:#f2f1ff;color:#5b54d5}
@@ -174,8 +174,8 @@ a{color:inherit}
 .empty-state{padding:56px 20px 62px;text-align:center}
 .empty-icon{width:44px;height:44px;display:grid;place-items:center;margin:0 auto 12px;border:1px solid var(--line);border-radius:10px;background:#f8fafc;color:#8795a7;font-size:19px}
 .empty-state h2{margin:0;color:#1d3853;font-size:14px;font-weight:650}
-.empty-state p{margin:6px 0 14px;color:#8794a3;font-size:11px}
-.pagination-bar{min-height:49px;display:flex;align-items:center;justify-content:space-between;gap:12px;padding:7px 10px;border-top:0;background:#fff;color:#8794a3;font-size:10px}
+.empty-state p{margin:6px 0 14px;color:#64748d;font-size:11px}
+.pagination-bar{min-height:49px;display:flex;align-items:center;justify-content:space-between;gap:12px;padding:7px 10px;border-top:0;background:#fff;color:#64748d;font-size:10px}
 .pagination-actions{display:flex;align-items:center;gap:7px}
 .page-indicator{min-width:72px;text-align:center;color:#5e6e80;font-size:10px;font-variant-numeric:tabular-nums}
 
@@ -187,7 +187,7 @@ a{color:inherit}
 .drawer-head h2{margin:0;color:#0a2540;font-size:18px;font-weight:650;letter-spacing:-.025em}
 .drawer-body{flex:1;overflow:auto;padding:0 18px 20px;scrollbar-width:thin}
 .drawer-foot{display:flex;align-items:center;justify-content:flex-end;gap:8px;padding:11px 18px;border-top:1px solid var(--line);background:#fff}
-.drawer-loading{padding:30px 2px;color:#8b97a6;font-size:11.5px}
+.drawer-loading{padding:30px 2px;color:#64748d;font-size:11.5px}
 .detail-hero{margin:0 -18px 2px;padding:19px 18px 17px;border-bottom:1px solid var(--line);background:linear-gradient(180deg,#fff 0%,#fbfcff 100%)}
 .detail-hero h3{margin:0;color:#0a2540;font-size:20px;font-weight:660;letter-spacing:-.03em}
 .detail-hero p{margin:5px 0 10px;color:#66778a;font-size:11.5px}
@@ -205,7 +205,7 @@ a{color:inherit}
 .dose-card-head{display:flex;align-items:center;justify-content:space-between;gap:10px}
 .dose-card-head strong{color:#233d56;font-size:11px;font-weight:650}
 .dose-card p{margin:7px 0 0;color:#42566b;font-size:11px;line-height:1.5}
-.dose-card small{display:block;margin-top:6px;color:#8794a3;font-size:9.5px}
+.dose-card small{display:block;margin-top:6px;color:#64748d;font-size:9.5px}
 .clinical-copy{margin:0;color:#42566b;font-size:11px;line-height:1.58;white-space:pre-line}
 .source-link{display:block;overflow:hidden;padding:7px 0;color:#5a54cf;font-size:10px;text-decoration:none;text-overflow:ellipsis;white-space:nowrap}
 .source-link:hover{text-decoration:underline}
@@ -287,14 +287,14 @@ a{color:inherit}
   .registry-table td:nth-child(8){border-left:3px solid #8bd4c8}
   .registry-table td:nth-child(9){border-left:3px solid #93b4f6}
   .registry-table td:nth-child(12){position:absolute;top:10px;right:8px;width:34px}
-  .registry-table td:nth-child(2)::before{content:"Nr.";display:block;margin-right:5px;color:#9aa5b2;font-size:9px}
-  .registry-table td:nth-child(5)::before{content:"Fortësia";color:#9aa5b2;font-size:8.5px;font-weight:600}
-  .registry-table td:nth-child(6)::before{content:"Forma";color:#9aa5b2;font-size:8.5px;font-weight:600}
-  .registry-table td:nth-child(7)::before{content:"ATC";color:#9aa5b2;font-size:8.5px;font-weight:600}
+  .registry-table td:nth-child(2)::before{content:"Nr.";display:block;margin-right:5px;color:#64748d;font-size:9px}
+  .registry-table td:nth-child(5)::before{content:"Fortësia";color:#64748d;font-size:8.5px;font-weight:600}
+  .registry-table td:nth-child(6)::before{content:"Forma";color:#64748d;font-size:8.5px;font-weight:600}
+  .registry-table td:nth-child(7)::before{content:"ATC";color:#64748d;font-size:8.5px;font-weight:600}
   .registry-table td:nth-child(8)::before{content:"Doza e të rriturit";color:#6a7b8e;font-size:8.5px;font-weight:700;text-transform:uppercase;letter-spacing:.04em}
   .registry-table td:nth-child(9)::before{content:"Doza pediatrike";color:#6a7b8e;font-size:8.5px;font-weight:700;text-transform:uppercase;letter-spacing:.04em}
-  .registry-table td:nth-child(10)::before{content:"Statusi";color:#9aa5b2;font-size:8.5px;font-weight:600}
-  .registry-table td:nth-child(11)::before{content:"Çmimi";color:#9aa5b2;font-size:8.5px;font-weight:600}
+  .registry-table td:nth-child(10)::before{content:"Statusi";color:#64748d;font-size:8.5px;font-weight:600}
+  .registry-table td:nth-child(11)::before{content:"Çmimi";color:#64748d;font-size:8.5px;font-weight:600}
   .registry-table td:nth-child(3),.registry-table td:nth-child(4){box-shadow:none}
   .drug-name{font-size:13px;white-space:normal}
   .drug-meta{font-size:9.5px}
