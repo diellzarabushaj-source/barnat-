@@ -13,6 +13,7 @@ const js = read('recetat-v2.js');
 const library = read('lib/user-library.js');
 const libraryClient = read('user-library-client.js');
 const dosage = read('lib/prescription-dosage-handler.js');
+const dataApi = read('lib/neon-data-api.js');
 const migration = read('supabase/migrations/20260828222548_add_prescription_chapters_and_folder_metadata.sql');
 const history = JSON.parse(read('supabase/migration-history.json'));
 const worker = read('sw.js');
@@ -77,6 +78,8 @@ assert.match(library, /payload:encryptJson\(item\.payload/);
 assert.match(library, /chapter_key:item\.chapterKey/);
 assert.match(libraryClient, /prescriptionChapters:\(\)/);
 assert.match(libraryClient, /medindex:prescriptions-changed/);
+assert.match(dataApi, /'prescription_chapters'/);
+assert.match(dataApi, /const PRIVATE_SERVER_RELATIONS/);
 
 assert.match(dosage, /X-MedIndex-Data-Source', 'supabase'/);
 assert.match(dosage, /dataSource:'supabase'/);
