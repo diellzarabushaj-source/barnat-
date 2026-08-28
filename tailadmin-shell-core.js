@@ -180,10 +180,11 @@
         </div>
         <div class="mi-sidebar-scroll" data-mi-nav-slot></div>
         <div class="mi-sidebar-footer">
-          <div class="mi-sidebar-source-card">
-            <span class="mi-sidebar-source-dot" aria-hidden="true"></span>
-            <span class="mi-sidebar-source-copy"><strong>DRx clinical workspace</strong><small>Të dhëna · aktiv</small></span>
-          </div>
+          <button class="mi-user-card" id="miSidebarProfileTrigger" type="button" data-mi-profile-trigger aria-label="Hap profilin">
+            <span class="mi-user-avatar">DR</span>
+            <span class="mi-user-copy"><strong>Llogaria</strong><small></small></span>
+            <span class="mi-user-arrow">${ICONS.chevron}</span>
+          </button>
           <button class="mi-sidebar-logout" type="button" data-mi-logout>
             <span class="mi-sidebar-logout-icon" aria-hidden="true">↗</span>
             <span>Dil</span>
