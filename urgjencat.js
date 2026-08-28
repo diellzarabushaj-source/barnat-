@@ -309,6 +309,7 @@
   function renderLessonSection(lesson, section, index) {
     const rx = [...(section.rx || [])].sort((a, b) => (Number(a.order) || 999) - (Number(b.order) || 999));
     const linkedFigures = (section.figureNumbers || []).map(number => figureByNumber(lesson, number)).filter(Boolean);
+    const linkedTables = (section.tableNumbers || []).map(number => tableByNumber(lesson, number)).filter(Boolean);
     return `
       <section class="ec-section">
         <div class="ec-section-number">${String(index + 1).padStart(2, '0')}</div>
@@ -333,6 +334,8 @@
         ${section.clinicalPearl ? `
           <div class="ec-pearl"><strong>Mbaje mend:</strong> ${esc(section.clinicalPearl)}</div>
         ` : ''}
+
+        ${linkedTables.length ? linkedTables.map(tableMarkup).join('') : ''}
 
         ${linkedFigures.length ? `
           <div class="ec-figure-strip">
