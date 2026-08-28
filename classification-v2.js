@@ -6,6 +6,29 @@
     L:'#6b50b6', M:'#c46b2c', N:'#533afd', P:'#8b6443', R:'#2787a8', S:'#2c8d86', V:'#6c7685',
   });
 
+
+  const SEARCH_ALIASES = Object.freeze({
+    'dhimbje':['N02'], 'analgjezik':['N02'], 'qetesues dhimbjeje':['N02'],
+    'migrene':['N02C'], 'migrenë':['N02C'],
+    'tension':['C02','C09'], 'hipertension':['C02','C09'], 'presion':['C02','C09'],
+    'kolesterol':['C10'], 'lipide':['C10'],
+    'diabet':['A10'], 'insuline':['A10A'], 'insulinë':['A10A'],
+    'antibiotik':['J01'], 'antibakterial':['J01'], 'infeksion bakterial':['J01'],
+    'antifungal':['J02','D01'], 'antimykotik':['J02','D01'],
+    'astme':['R03'], 'astmë':['R03'], 'bronkodilator':['R03'],
+    'kolle':['R05'], 'kollë':['R05'], 'ftohje':['R05'],
+    'alergji':['R06'], 'antihistaminik':['R06'],
+    'depresion':['N06A'], 'antidepresiv':['N06A'],
+    'ankth':['N05B'], 'anksiolitik':['N05B'],
+    'epilepsi':['N03'], 'antiepileptik':['N03'],
+    'parkinson':['N04'], 'anestezi':['N01'], 'anestetik':['N01'],
+    'tiroide':['H03'], 'tiroide':['H03'],
+    'kortikosteroid':['H02','D07'],
+    'kontracepsion':['G03A'], 'prostate':['G04C'], 'prostatë':['G04C'],
+    'osteoporoze':['M05'], 'osteoporozë':['M05'], 'kocka':['M05'],
+    'sy':['S01'], 'vesh':['S02'], 'veshë':['S02'],
+  });
+
   const state = {
     group:'',
     category:'',
@@ -22,7 +45,7 @@
     atcSearch:$('atcSearch'), clearSearchButton:$('clearSearchButton'), atcStatusText:$('atcStatusText'), atcStatusMeta:$('atcStatusMeta'),
     groupList:$('groupList'), groupCount:$('groupCount'), categoryHero:$('categoryHero'), categoryPanelTitle:$('categoryPanelTitle'), categoryCount:$('categoryCount'), categoryList:$('categoryList'),
     categoryView:$('categoryView'), searchResultsView:$('searchResultsView'), searchResultCount:$('searchResultCount'), searchResults:$('searchResults'),
-    toast:$('toast'),
+    atcPath:$('atcPath'), atcPathItems:$('atcPathItems'), atcPathRegistry:$('atcPathRegistry'), toast:$('toast'),
   };
 
   const clean = value => String(value ?? '').replace(/\s+/g, ' ').trim();
@@ -195,11 +218,45 @@
     }).join('') : '<div class="empty-state">Nuk ka kategori të kataloguara për këtë grup.</div>';
   }
 
+
+  function pathName(code) {
+    if (!code) return '';
+    if (code.length === 1) return groups()[code] || '';
+    if (code.length === 3) return categories()[code] || '';
+    return subdivisions()[code] || '';
+  }
+
+  function activePathCodes() {
+    const codes = [];
+    if (state.group) codes.push(state.group);
+    if (state.category) codes.push(state.category);
+    if (state.subdivision) {
+      const level4 = state.subdivision.slice(0,4);
+      if (subdivisions()[level4] && !codes.includes(level4)) codes.push(level4);
+      const level5 = state.subdivision.slice(0,5);
+      if (state.subdivision.length >= 5 && subdivisions()[level5] && !codes.includes(level5)) codes.push(level5);
+    }
+    return codes;
+  }
+
+  function renderPath() {
+    const codes = activePathCodes();
+    const finalCode = codes[codes.length - 1] || state.group || '';
+    el.atcPathItems.innerHTML = codes.map((code,index) => {
+      const name = pathName(code);
+      const current = index === codes.length - 1;
+      return `${index ? '<span class="atc-path-sep" aria-hidden="true">›</span>' : ''}<button class="atc-path-node ${current ? 'is-current' : ''}" type="button" data-path-code="${escapeHtml(code)}" title="${escapeHtml(name)}"><strong>${escapeHtml(code)}</strong><span>${escapeHtml(name)}</span></button>`;
+    }).join('');
+    el.atcPathRegistry.href = registryUrl(finalCode);
+    el.atcPath.hidden = !codes.length;
+  }
+
   function renderClassification() {
     if (!state.group || !groups()[state.group]) state.group = Object.keys(groups())[0] || 'A';
     renderGroups();
     renderHero();
     renderCategories();
+    renderPath();
     const totalCategories = Object.keys(categories()).length;
     el.metricCategories.textContent = String(totalCategories);
     el.atcStatusText.textContent = state.category
@@ -212,15 +269,45 @@
     const needle = normalize(query);
     if (!needle) return [];
     const result = [];
+    const seen = new Set();
+    const add = item => {
+      if (!item?.code || seen.has(item.code)) return;
+      seen.add(item.code);
+      result.push(item);
+    };
+    const aliasCodes = Object.entries(SEARCH_ALIASES)
+      .filter(([alias]) => normalize(alias).includes(needle) || needle.includes(normalize(alias)))
+      .flatMap(([,codes]) => codes);
+
+    const score = (code, name) => {
+      const codeText = normalize(code), nameText = normalize(name);
+      if (codeText === needle) return 0;
+      if (codeText.startsWith(needle)) return 1;
+      if (nameText.startsWith(needle)) return 2;
+      if (nameText.includes(needle)) return 3;
+      return 9;
+    };
+
+    const direct = [];
     for (const [code,name] of Object.entries(groups())) {
-      if (normalize(`${code} ${name}`).includes(needle)) result.push({ type:'Grup', code, name, group:code, category:'', subdivision:'' });
+      if (normalize(`${code} ${name}`).includes(needle)) direct.push({ type:'Grup', code, name, group:code, category:'', subdivision:'', score:score(code,name) });
     }
     for (const [code,name] of Object.entries(categories())) {
-      if (normalize(`${code} ${name}`).includes(needle)) result.push({ type:'Kategori', code, name, group:code.charAt(0), category:code, subdivision:'' });
+      if (normalize(`${code} ${name}`).includes(needle)) direct.push({ type:'Kategori', code, name, group:code.charAt(0), category:code, subdivision:'', score:score(code,name) });
     }
     for (const [code,name] of Object.entries(subdivisions())) {
-      if (normalize(`${code} ${name}`).includes(needle)) result.push({ type:'Nënndarje', code, name, group:code.charAt(0), category:code.slice(0,3), subdivision:code });
+      if (normalize(`${code} ${name}`).includes(needle)) direct.push({ type:'Nënndarje', code, name, group:code.charAt(0), category:code.slice(0,3), subdivision:code, score:score(code,name) });
     }
+    direct.sort((a,b) => a.score - b.score || a.code.localeCompare(b.code,'sq')).forEach(add);
+
+    aliasCodes.forEach(code => {
+      const name = groups()[code] || categories()[code] || subdivisions()[code];
+      if (!name) return;
+      add({
+        type:code.length === 1 ? 'Grup' : code.length === 3 ? 'Kategori' : 'Nënndarje',
+        code, name, group:code.charAt(0), category:code.length >= 3 ? code.slice(0,3) : '', subdivision:code.length > 3 ? code : ''
+      });
+    });
     return result.slice(0,80);
   }
 
@@ -356,6 +443,14 @@
       if (sub) return;
       const button = event.target.closest('[data-category-code]');
       if (button) toggleCategory(button.dataset.categoryCode);
+    });
+
+    el.atcPathItems.addEventListener('click', event => {
+      const button = event.target.closest('[data-path-code]');
+      if (!button) return;
+      const code = button.dataset.pathCode;
+      if (code.length === 1) selectGroup(code);
+      else selectCategory(code.slice(0,3), code.length > 3 ? code : '');
     });
 
     el.searchResults.addEventListener('click', event => {
