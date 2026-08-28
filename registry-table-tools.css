@@ -337,6 +337,16 @@ html.medindex-tailadmin[data-mi-page="barnat"] body #registryViewToolbar .regist
 html.medindex-tailadmin[data-mi-page="barnat"] body #registryViewToolbar .registry-view-actions-wrap{
   gap:8px!important;
 }
+
+/* List mode owns its own browse/filter controls. Do not show table-only view
+   and advanced-filter controls beside it; the shared search remains visible. */
+html.medindex-tailadmin[data-mi-page="barnat"][data-mi-registry-view="list"] body #registryViewToolbar .registry-view-actions,
+html.medindex-tailadmin[data-mi-page="barnat"][data-mi-registry-view="list"] body #registryViewToolbar .registry-filter-toggle{
+  display:none!important;
+}
+html.medindex-tailadmin[data-mi-page="barnat"][data-mi-registry-view="list"] body #registryFilterPanel .registry-toolbar-secondary{
+  display:none!important;
+}
 html.medindex-tailadmin[data-mi-page="barnat"] body #registryViewToolbar .registry-view-actions{
   display:flex!important;
   align-items:center!important;
@@ -413,10 +423,7 @@ html.medindex-tailadmin[data-mi-page="barnat"] body #registryViewToolbar [data-r
 /* Admin-style search row. */
 html.medindex-tailadmin[data-mi-page="barnat"] body #registryFilterPanel.registry-filter-panel-unified{
   min-height:58px!important;
-  /* Tri kolona, jo dy. `button.clinical-editor-progress` është fëmija i tretë i
-     drejtpërdrejtë i panelit; me dy kolona binte në rreshtin e dytë dhe zinte
-     tërë gjerësinë e kërkimit — një buton sa gjysma e ekranit për një lexim
-     gjendjeje. Rreshti i komandës është një tani: kërkim, kontrolle, gjendje. */
+  /* Search + advanced controls share one compact command row. */
   grid-template-columns:minmax(320px,1fr) auto!important;
   align-items:center!important;
   gap:10px!important;
@@ -462,7 +469,7 @@ html.medindex-tailadmin[data-mi-page="barnat"] body #registryFilterPanel .regist
   gap:8px!important;
 }
 html.medindex-tailadmin[data-mi-page="barnat"] body #registryFilterPanel :is(
-  select,.form-picker>button,.col-picker>button,.selection-badge,.protocol-toolbar-btn,.clinical-editor-progress
+  select,.form-picker>button,.col-picker>button,.selection-badge,.protocol-toolbar-btn
 ){
   min-height:40px!important;
   padding:8px 12px!important;
@@ -476,7 +483,7 @@ html.medindex-tailadmin[data-mi-page="barnat"] body #registryFilterPanel :is(
   line-height:1.4!important;
 }
 html.medindex-tailadmin[data-mi-page="barnat"] body #registryFilterPanel :is(
-  select,.form-picker>button,.col-picker>button,.clinical-editor-progress
+  select,.form-picker>button,.col-picker>button
 ):hover{
   border-color:var(--rst-hairline-strong)!important;
   background:var(--rst-soft)!important;
@@ -908,7 +915,7 @@ html.medindex-tailadmin[data-mi-page="barnat"] body #pagination.pagination :is(b
     font-size:16px!important;
   }
   html.medindex-tailadmin[data-mi-page="barnat"] body #registryFilterPanel :is(
-    select,.form-picker>button,.col-picker>button,.selection-badge,.protocol-toolbar-btn,.clinical-editor-progress
+    select,.form-picker>button,.col-picker>button,.selection-badge,.protocol-toolbar-btn
   ){
     min-height:44px!important;
     font-size:13px!important;
@@ -951,7 +958,7 @@ html.medindex-tailadmin[data-mi-page="barnat"][data-theme="dark"] body #registry
 html.medindex-tailadmin[data-mi-page="barnat"][data-theme="dark"] body #registryViewToolbar :is(.registry-filter-toggle,.registry-density-toggle),
 html.medindex-tailadmin[data-mi-page="barnat"][data-theme="dark"] body #registryFilterPanel #search,
 html.medindex-tailadmin[data-mi-page="barnat"][data-theme="dark"] body #registryFilterPanel :is(
-  select,.form-picker>button,.col-picker>button,.selection-badge,.clinical-editor-progress
+  select,.form-picker>button,.col-picker>button,.selection-badge
 ),
 html.medindex-tailadmin[data-mi-page="barnat"][data-theme="dark"] body :is(.form-panel,.col-panel){
   background:#111c28!important;
