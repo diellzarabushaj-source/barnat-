@@ -82,9 +82,9 @@ const registrySource = fs.readFileSync(path.join(root, 'api', 'registry.js'), 'u
 assert.match(registrySource, /PRESCRIPTION_SHEET_ID/);
 assert.match(registrySource, /export\?format=csv/);
 assert.match(registrySource, /Si të shënohet në recetë/);
-const vercel = JSON.parse(fs.readFileSync(path.join(root, 'vercel.json'), 'utf8'));
-assert.equal(vercel.env.PRESCRIPTION_SHEET_ID, '1o-TT-Oqlsw4aUo5DW3XZT6T9eD_IeEBCFQyjBSYM4-Q');
-assert.equal(vercel.env.PRESCRIPTION_SHEET_GID, '407106508');
+JSON.parse(fs.readFileSync(path.join(root, 'vercel.json'), 'utf8'));
+assert.match(registrySource, /process\\.env\\.PRESCRIPTION_SHEET_ID/, 'Prescription sheet ID must be configurable through the deployment environment');
+assert.match(registrySource, /process\\.env\\.PRESCRIPTION_SHEET_GID/, 'Prescription sheet GID must be configurable through the deployment environment');
 
 const drugSearch = fs.readFileSync(path.join(root, 'api', 'drug-search.js'), 'utf8');
 assert.match(drugSearch, /packagingSummary/);
