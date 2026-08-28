@@ -26,8 +26,8 @@ assert.match(prescriptions, /drx-dashboard-stripe\.css\?v=drx-dashboard-stripe-v
 assert.doesNotMatch(prescriptions, /auth-client\.js|tailadmin-|recetat-style-loader\.js|recetat\.css|recetat\.js/, 'recetat.html: legacy prescription runtime must stay removed');
 
 const dosagePage = read('dozologjia.html');
-assert.match(dosagePage, /dozologjia-v2\.css\?v=1/, 'dozologjia.html: V2 stylesheet version is stale');
-assert.match(dosagePage, /dozologjia-v2\.js\?v=1/, 'dozologjia.html: V2 runtime version is stale');
+assert.match(dosagePage, /dozologjia-v2\\.css\\?v=3/, 'dozologjia.html: V2 stylesheet version is stale');
+assert.match(dosagePage, /dozologjia-v2\\.js\\?v=3/, 'dozologjia.html: V2 runtime version is stale');
 assert.match(dosagePage, /drx-dashboard-stripe\.css\?v=drx-dashboard-stripe-v4/, 'dozologjia.html: canonical Stripe shell is missing');
 assert.doesNotMatch(dosagePage, /auth-client\.js|tailadmin-|dozologjia-deep-audit\.js|style-loader|dozologjia\.js/, 'dozologjia.html: legacy dosage runtime must stay removed');
 
