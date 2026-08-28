@@ -22,7 +22,8 @@
  * Fjalori nuk është "një ngjyrë e vetme". Dallimet që mbajnë kuptim klinik
  * ruhen shprehimisht:
  *
- *   teal    theksi i markës — veprimi, lidhja, gjendja aktive, i rrituri
+ *   indigo  theksi i produktit/brandit — Stripe UI, veprimi, gjendja aktive
+ *   teal    semantikë klinike e trashëguar ku mban kuptim (p.sh. adult)
  *   blu     pediatria; i njëjti blu si te kolonat e dozimit në regjistër
  *   e kuqe  gabimi
  *   e verdhë kujdesi
@@ -65,6 +66,7 @@ const PAGES = [
 const FAMILIES = [
   { name:'teal',   min:150, max:200 },
   { name:'blu',    min:200, max:250 },
+  { name:'indigo', min:250, max:285 },
   { name:'jeshile', min:90, max:150 },
   { name:'e verdhë', min:20, max:60 },
   { name:'e kuqe',  min:-1, max:20 },
@@ -202,7 +204,7 @@ async function main() {
 
   console.log(report.join('\n'));
   assert.deepEqual(failures, [], `\n${failures.join('\n')}\n`);
-  console.log('\nPorta e theksit klinik kaloi: çdo dashboard rri brenda teal/blu/semantikës.');
+  console.log('\nPorta e theksit klinik kaloi: çdo dashboard rri brenda Stripe indigo + ngjyrave semantike klinike.');
 }
 
 main().catch(error => {
