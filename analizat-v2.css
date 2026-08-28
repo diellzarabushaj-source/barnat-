@@ -108,6 +108,7 @@ a{color:inherit}
 .lab-disease-list{max-height:min(390px,calc(100vh - 260px));display:grid;gap:4px;overflow:auto;overscroll-behavior:contain;scrollbar-width:thin}
 .lab-disease-option{width:100%;min-height:52px;display:grid;grid-template-columns:28px minmax(0,1fr) auto;align-items:center;gap:10px;padding:7px 8px;border:1px solid transparent;border-radius:8px;background:#fff;text-align:left;cursor:pointer}
 .lab-disease-option:hover{border-color:#e2e7ed;background:#f8fafc}
+.lab-disease-option:focus-visible,.lab-manual-option:focus-visible{outline:0;border-color:#635bff;background:#f8f7ff;box-shadow:0 0 0 3px rgba(83,58,253,.10)}
 .lab-disease-option.is-selected{border-color:#d9d6ff;background:#f8f7ff}
 .lab-disease-check{width:22px;height:22px;display:grid;place-items:center;border:1px solid #cfd8e3;border-radius:6px;background:#fff;color:transparent}
 .lab-disease-option.is-selected .lab-disease-check{border-color:#635bff;background:#635bff;color:#fff}
@@ -115,8 +116,9 @@ a{color:inherit}
 .lab-disease-copy{min-width:0;display:grid;gap:3px}
 .lab-disease-copy strong{overflow:hidden;color:#34475c;font-size:11px;font-weight:500;text-overflow:ellipsis;white-space:nowrap}
 .lab-disease-copy small{overflow:hidden;color:#8795a7;font-size:9.5px;text-overflow:ellipsis;white-space:nowrap}
-.lab-disease-icd{display:flex;gap:4px;flex-wrap:wrap;justify-content:flex-end}
+.lab-disease-icd{display:flex;gap:4px;flex-wrap:wrap;align-items:center;justify-content:flex-end}
 .lab-disease-icd span{padding:3px 6px;border:1px solid #e0e5eb;border-radius:999px;background:#fff;color:#66788d;font:500 8.5px/1 Inter}
+.lab-disease-icd small{width:100%;color:#98a2b3;font-size:8.5px;text-align:right}
 .lab-picker-empty{padding:18px 12px;color:#8795a7;font-size:10.5px;text-align:center}
 
 .lab-manual-search{position:relative}
@@ -190,6 +192,7 @@ a{color:inherit}
 .lab-test-detail-body p{margin:0}
 .lab-test-remove{min-height:28px;padding:0 7px;border:0;border-radius:6px;background:transparent;color:#98a2b3;font-size:9px;cursor:pointer}
 .lab-test-remove:hover{background:#f2f4f7;color:#526579}
+.lab-test-remove:focus-visible,.lab-disease-chip button:focus-visible,#labCopyPlan:focus-visible{outline:0;box-shadow:0 0 0 3px rgba(83,58,253,.12)}
 
 .lab-summary-card{position:sticky;top:76px;overflow:hidden}
 .lab-summary-head{padding:15px 15px 12px;border-bottom:1px solid #edf0f4}
