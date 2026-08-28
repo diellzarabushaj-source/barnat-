@@ -6,13 +6,16 @@ const root = path.resolve(__dirname, '..');
 const read = file => fs.readFileSync(path.join(root, file), 'utf8');
 
 const html = read('index.html');
-const css = read('form-picker-clinical.css');
-const js = read('form-picker-clinical.js');
+const css = read('registry-v2.css');
+const js = read('registry-v2.js');
 
-assert.match(html, /form-picker-clinical\.css\?v=20260725-1/);
-assert.match(html, /form-picker-clinical\.js\?v=20260725-1/);
-assert.ok(html.indexOf('ui-enhancements.js?v=20260810-1') < html.indexOf('form-picker-clinical.js?v=20260725-1'));
-new Function(js);
+assert.match(html, /data-drx-app="registry-v2"/);
+assert.match(html, /id="formPickerButton"/);
+assert.match(html, /id="formPickerPanel"/);
+assert.match(html, /id="formPickerSearch"/);
+assert.match(html, /id="formPickerList"/);
+assert.doesNotMatch(html, /form-picker-clinical\.(?:css|js)/);
+assert.doesNotThrow(() => new Function(js));
 
 for (const category of [
   'TABLETA & PILULA', 'KAPSULA', 'SHURUPE & SOLUCIONE ORALE',
@@ -25,22 +28,28 @@ for (const abbreviation of ['Tab.', 'Caps.', 'Sir. / Sol.', 'Amp. / Inf.', 'Krem
   assert.ok(js.includes(abbreviation), `Missing prescription abbreviation ${abbreviation}`);
 }
 
-assert.equal((js.match(/color:'#[0-9a-f]{6}'/gi) || []).length, 10, 'All ten categories must preserve an explicit colour');
-assert.match(js, /MutationObserver/);
+for (const expected of [
+  "source:'Tableta & pilula'", "forms:['Chewable tablet'", "source:'Kapsula'",
+  "source:'Pika (sy, veshë, hundë)'", "source:'Sprej & Inhalim'"
+]) assert.ok(js.includes(expected), `Missing picker taxonomy contract: ${expected}`);
+
+assert.match(js, /FORM_ALIASES/);
 assert.match(js, /ArrowDown/);
 assert.match(js, /Escape/);
-assert.match(js, /aria-expanded/);
-assert.doesNotMatch(js, /fetch\(|\/api\//, 'Visual form picker must not touch the backend');
+assert.match(js, /aria-selected/);
+assert.match(js, /formExact/);
+assert.match(js, /formCategory/);
 
 for (const selector of [
+  '.form-picker-panel', '.form-picker-search', '.form-picker-all',
   '.form-category-icon', '.form-category-copy', '.form-category-count',
-  '.form-option-label', '.form-option-short', '.form-item-sub.is-group-end'
-]) assert.ok(css.includes(selector), `Missing clinical picker style ${selector}`);
+  '.form-option-label', '.form-option-short'
+]) assert.ok(css.includes(selector), `Missing Registry V2 picker style ${selector}`);
 
 assert.match(css, /border-left:4px solid var\(--form-accent\)/);
-assert.match(css, /@media\(max-width:720px\)/);
+assert.match(css, /@media\(max-width:760px\)/);
 assert.match(css, /@media\(prefers-reduced-motion:reduce\)/);
-assert.match(css, /@media\(forced-colors:active\)/);
-assert.doesNotMatch(css, /https?:\/\//, 'The form picker must not load external assets');
+assert.doesNotMatch(css, /!important/);
+assert.doesNotMatch(css, /https?:\/\//);
 
-console.log('Clinical pharmaceutical-form picker audit passed.');
+console.log('Registry V2 grouped pharmaceutical-form picker audit passed.');
