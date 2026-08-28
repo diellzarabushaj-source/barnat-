@@ -434,3 +434,21 @@ body{overflow-x:hidden}
   .ec-detail-title-row{display:grid;grid-template-columns:1fr;gap:10px}
   .ec-detail-title .ec-review-banner{justify-self:start}
 }
+
+
+/* Emergency lazy media state v5 */
+.ec-media-loading{
+  min-height:38px;display:flex;align-items:center;gap:9px;
+  margin:14px 0 4px;padding:8px 10px;
+  border:1px solid #e7eaf0;border-radius:8px;background:#fbfcfe;
+  color:#7b8999;font-size:10px;font-weight:300;
+}
+.ec-media-spinner{
+  width:13px;height:13px;flex:0 0 13px;border:1.5px solid #d7dce4;
+  border-top-color:#635bff;border-radius:50%;
+  animation:ecMediaSpin .8s linear infinite;
+}
+@keyframes ecMediaSpin{to{transform:rotate(360deg)}}
+@media(prefers-reduced-motion:reduce){
+  .ec-media-spinner{animation:none;border-top-color:#d7dce4;background:#635bff}
+}
