@@ -448,6 +448,86 @@
   line-height: 1.5;
 }
 
+
+.ec-outline {
+  margin-top: 24px;
+  padding-top: 24px;
+  border-top: 1px solid var(--ec-border);
+}
+
+.ec-outline-head span {
+  display: block;
+  margin-bottom: 5px;
+  color: var(--ec-accent);
+  font-size: 11px;
+  font-weight: 800;
+  letter-spacing: .06em;
+  text-transform: uppercase;
+}
+
+.ec-outline-head h3 {
+  margin: 0;
+  font-size: 18px;
+  line-height: 1.3;
+}
+
+.ec-outline-head p {
+  max-width: 720px;
+  margin: 7px 0 16px;
+  color: var(--ec-muted);
+  font-size: 12.5px;
+  line-height: 1.55;
+}
+
+.ec-outline-list {
+  display: grid;
+  gap: 7px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.ec-outline-list li {
+  display: grid;
+  grid-template-columns: 34px minmax(0, 1fr);
+  gap: 10px;
+  align-items: start;
+  padding: 10px 12px;
+  border: 1px solid var(--ec-border);
+  border-radius: 10px;
+  background: var(--ec-surface-soft);
+}
+
+.ec-outline-list li > span {
+  color: var(--ec-subtle);
+  font-size: 11px;
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+}
+
+.ec-outline-list strong {
+  display: block;
+  font-size: 13px;
+  line-height: 1.4;
+}
+
+.ec-outline-list small {
+  display: block;
+  margin-top: 3px;
+  color: var(--ec-muted);
+  font-size: 11px;
+  line-height: 1.4;
+}
+
+.ec-figure-overview {
+  display: grid;
+  gap: 10px;
+}
+
+.ec-lesson-figures .ec-figure-card {
+  margin-top: 0;
+}
+
 .ec-footnotes {
   margin-top: 30px;
   padding-top: 24px;
