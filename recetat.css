@@ -47,13 +47,13 @@ html.medindex-tailadmin[data-mi-page="recetat"] .rx-page-header {
   grid-template-columns:minmax(0,1fr) auto !important;
   align-items:center !important;
   gap:24px !important;
-  margin:0 0 18px !important;
-  padding:22px 24px !important;
-  border:1px solid var(--rx-line) !important;
-  border-radius:14px !important;
-  background:var(--rx-paper) !important;
+  margin:0 0 28px !important;
+  padding:0 !important;
+  border:0 !important;
+  border-radius:0 !important;
+  background:transparent !important;
   color:var(--rx-ink) !important;
-  box-shadow:var(--rx-shadow) !important;
+  box-shadow:none !important;
   overflow:visible !important;
 }
 
@@ -64,7 +64,7 @@ html.medindex-tailadmin[data-mi-page="recetat"] .rx-page-header::after {
 html.medindex-tailadmin[data-mi-page="recetat"] .rx-page-header .med-kicker {
   margin:0 0 5px !important;
   color:var(--rx-teal) !important;
-  font:700 11px/1.3 var(--mi-font,Inter,sans-serif) !important;
+  font:400 10px/1.3 var(--mi-font,Inter,sans-serif) !important;
   letter-spacing:.08em !important;
   text-transform:uppercase;
 }
@@ -72,15 +72,16 @@ html.medindex-tailadmin[data-mi-page="recetat"] .rx-page-header .med-kicker {
 html.medindex-tailadmin[data-mi-page="recetat"] .rx-page-header h1 {
   margin:0 !important;
   color:var(--rx-ink) !important;
-  font:650 24px/1.25 var(--mi-font,Inter,sans-serif) !important;
-  letter-spacing:-.02em !important;
+  font:300 32px/1.1 var(--mi-font,Inter,sans-serif) !important;
+  letter-spacing:-.64px !important;
 }
 
 html.medindex-tailadmin[data-mi-page="recetat"] .rx-page-header p:not(.med-kicker) {
   max-width:860px !important;
   margin:7px 0 0 !important;
   color:var(--rx-muted) !important;
-  font-size:13px !important;
+  font-size:14px !important;
+  font-weight:300 !important;
   line-height:1.55 !important;
 }
 
@@ -122,9 +123,9 @@ html.medindex-tailadmin[data-mi-page="recetat"] .rx-dashboard {
 html.medindex-tailadmin[data-mi-page="recetat"] :is(.rx-compose-card,.rx-preview-card,.rx-saved-section) {
   min-width:0;
   border:1px solid var(--rx-line) !important;
-  border-radius:14px !important;
+  border-radius:12px !important;
   background:var(--rx-paper) !important;
-  box-shadow:var(--rx-shadow) !important;
+  box-shadow:rgba(0,55,112,.04) 0 1px 3px !important;
 }
 
 html.medindex-tailadmin[data-mi-page="recetat"] .rx-compose-card {
@@ -153,7 +154,7 @@ html.medindex-tailadmin[data-mi-page="recetat"] .rx-card-head > div {
 html.medindex-tailadmin[data-mi-page="recetat"] .rx-card-head h2 {
   margin:0 !important;
   color:var(--rx-ink) !important;
-  font:650 17px/1.3 var(--mi-font,Inter,sans-serif) !important;
+  font:500 15px/1.3 var(--mi-font,Inter,sans-serif) !important;
 }
 
 html.medindex-tailadmin[data-mi-page="recetat"] .rx-step {
@@ -172,7 +173,7 @@ html.medindex-tailadmin[data-mi-page="recetat"] :is(.rx-text-button,.rx-ghost) {
   border:0;
   background:transparent;
   color:var(--rx-teal);
-  font-weight:750;
+  font-weight:500;
   cursor:pointer;
 }
 
@@ -231,7 +232,7 @@ html.medindex-tailadmin[data-mi-page="recetat"] .rx-command-bar button {
   border-radius:7px !important;
   background:var(--rx-paper) !important;
   color:var(--rx-teal) !important;
-  font:750 11px/1 ui-monospace,SFMono-Regular,Consolas,monospace;
+  font:600 11px/1 ui-monospace,SFMono-Regular,Consolas,monospace;
   cursor:pointer;
 }
 
@@ -312,7 +313,7 @@ html.medindex-tailadmin[data-mi-page="recetat"] .rx-selected[hidden] {
 html.medindex-tailadmin[data-mi-page="recetat"] .rx-selected-label {
   color:var(--rx-muted);
   font-size:11px;
-  font-weight:750;
+  font-weight:500;
 }
 
 html.medindex-tailadmin[data-mi-page="recetat"] .rx-drug-chip {
@@ -376,7 +377,7 @@ html.medindex-tailadmin[data-mi-page="recetat"] .rx-form-options button {
   border-radius:8px;
   background:var(--rx-soft);
   color:var(--rx-teal);
-  font-weight:750;
+  font-weight:500;
   cursor:pointer;
 }
 
@@ -453,8 +454,8 @@ html.medindex-tailadmin[data-mi-page="recetat"] :is(.rx-compose-actions,.rx-prev
 html.medindex-tailadmin[data-mi-page="recetat"] :is(.rx-primary,.rx-secondary,.rx-ghost) {
   min-height:42px;
   padding:0 14px;
-  border-radius:9px;
-  font-weight:750;
+  border-radius:9999px;
+  font-weight:500;
   cursor:pointer;
 }
 
@@ -697,7 +698,7 @@ html.medindex-tailadmin[data-mi-page="recetat"] .rx-saved-card time { color:var(
 html.medindex-tailadmin[data-mi-page="recetat"] .rx-saved-card p { margin:8px 0; color:var(--rx-muted); font-size:11px; line-height:1.5; }
 html.medindex-tailadmin[data-mi-page="recetat"] .rx-saved-tags { display:flex; gap:5px; flex-wrap:wrap; margin-top:auto; }
 html.medindex-tailadmin[data-mi-page="recetat"] .rx-saved-actions { display:flex; gap:6px; margin-top:12px; }
-html.medindex-tailadmin[data-mi-page="recetat"] .rx-saved-actions button { flex:1; min-height:36px; border:1px solid var(--rx-line); border-radius:8px; background:var(--rx-paper); color:var(--rx-teal); font-size:11px; font-weight:750; cursor:pointer; }
+html.medindex-tailadmin[data-mi-page="recetat"] .rx-saved-actions button { flex:1; min-height:36px; border:1px solid var(--rx-line); border-radius:8px; background:var(--rx-paper); color:var(--rx-teal); font-size:11px; font-weight:500; cursor:pointer; }
 html.medindex-tailadmin[data-mi-page="recetat"] .rx-saved-actions button:first-child { border-color:var(--rx-teal); background:var(--rx-teal); color:#fff; }
 html.medindex-tailadmin[data-mi-page="recetat"] .rx-saved-actions .danger { flex:0 0 38px; color:var(--rx-danger); }
 html.medindex-tailadmin[data-mi-page="recetat"] .rx-saved-empty { grid-column:1/-1; padding:34px; border:1px dashed var(--rx-line); border-radius:11px; color:var(--rx-muted); text-align:center; }
@@ -742,12 +743,12 @@ html.medindex-tailadmin[data-mi-page="recetat"] .rx-dialog {
   border-radius:14px !important;
   background:var(--rx-paper) !important;
   color:var(--rx-ink) !important;
-  box-shadow:0 24px 70px rgba(0,0,0,.3) !important;
+  box-shadow:0 24px 64px rgba(10,37,64,.17),0 8px 24px rgba(10,37,64,.08) !important;
 }
 
 html.medindex-tailadmin[data-mi-page="recetat"] .rx-dialog h2 { margin:0 0 7px; }
 html.medindex-tailadmin[data-mi-page="recetat"] .rx-dialog p { margin:0 0 15px; color:var(--rx-muted); font-size:13px; line-height:1.5; }
-html.medindex-tailadmin[data-mi-page="recetat"] .rx-dialog label span { display:block; margin-bottom:6px; font-size:12px; font-weight:750; }
+html.medindex-tailadmin[data-mi-page="recetat"] .rx-dialog label span { display:block; margin-bottom:6px; font-size:12px; font-weight:500; }
 html.medindex-tailadmin[data-mi-page="recetat"] .rx-dialog select { width:100%; min-height:44px; padding:0 10px; border:1px solid var(--rx-line); border-radius:9px; background:var(--rx-paper); color:var(--rx-ink); }
 html.medindex-tailadmin[data-mi-page="recetat"] .rx-dialog > div { display:flex; justify-content:flex-end; gap:8px; margin-top:16px; }
 
