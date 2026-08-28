@@ -109,21 +109,23 @@ function validateCanonicalTableOwner() {
   }
 
   const unified = read('registry-unified-table.js');
-  if (!unified.includes("population:'Popullata e aprovuar'")
-      || !unified.includes("'select', 'number', 'active-substance', 'trade-name'")
-      || !unified.includes("'strength', 'form', 'population'")
-      || !unified.includes("key === 'clinical-status' || key === 'clinical-action'")
-      || !unified.includes('--registry-frozen-active-left')
-      || !unified.includes("let storedView = 'full'")) {
-    throw new Error('Phase 15: canonical unified-table order/default/frozen contract is missing.');
+  if (!unified.includes("'select', 'number', 'trade-name', 'active-substance'")
+      || !unified.includes("'select', 'trade-name', 'active-substance', 'strength', 'form'")
+      || !unified.includes("'dosage-adult', 'dosage-pediatric', 'clinical-status'")
+      || !unified.includes("if (key === 'clinical-status') return false")
+      || !unified.includes("let storedView = 'clinical'")
+      || unified.includes("'clinical-action'")
+      || unified.includes("'dose-calculator'")) {
+    throw new Error('Phase 15: canonical registry table contract is missing or retired action columns returned.');
   }
 
-  const css = read('registry-unified-table.css');
-  if (!css.includes('registry-frozen-columns-v2')
-      || !css.includes('[data-registry-column-key="number"]')
-      || !css.includes('[data-registry-column-key="prescription-label"]')
-      || !css.includes('left:var(--registry-frozen-prescription-left,68px)!important')) {
-    throw new Error('Phase 15: frozen Nr + prescription-notation CSS contract is missing.');
+  const frozen = read('registry-frozen-columns.css');
+  if (!frozen.includes('[data-registry-column-key="select"]')
+      || !frozen.includes('[data-registry-column-key="trade-name"]')
+      || !frozen.includes('left:44px!important')
+      || !frozen.includes('[data-registry-column-key="number"]')
+      || !frozen.includes('position:relative!important')) {
+    throw new Error('Phase 15: final selection + trade-name frozen-column contract is missing.');
   }
 }
 
