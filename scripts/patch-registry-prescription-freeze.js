@@ -109,7 +109,7 @@ function patchToolbarVisibility() {
 
 function patchAssetVersions() {
   let index = read(INDEX);
-  index = index.replace(/first-page-style-loader\.js\?v=[^\"']+/g, 'first-page-style-loader.js?v=20260820-3');
+  index = index.replace(/first-page-style-loader\.js\?v=[^\"']+/g, 'first-page-style-loader.js?v=single-css-v1');
   index = index.replace(/registry-table-tools\.css\?v=[^\"']+/g, 'registry-table-tools.css?v=20260820-3');
   write(INDEX, index);
 }
@@ -132,11 +132,11 @@ function verify() {
     throw new Error('Prescription freeze finalizer: final frozen CSS contract mungon.');
   }
   const loader = read(STYLE_LOADER);
-  if (!loader.includes("first-page-style-loader-20260820-3") || loader.includes('registry-frozen-columns.css')) {
+  if (!loader.includes("first-page-style-loader-single-css-v1") || loader.includes('registry-frozen-columns.css') || loader.includes('first-page-clinical.css')) {
     throw new Error('Prescription freeze finalizer: legacy frozen stylesheet must not be injected.');
   }
   const index = read(INDEX);
-  if (!index.includes('first-page-style-loader.js?v=20260820-3') || !index.includes('registry-table-tools.css?v=20260820-3')) {
+  if (!index.includes('first-page-style-loader.js?v=single-css-v1') || !index.includes('registry-table-tools.css?v=20260820-3')) {
     throw new Error('Prescription freeze finalizer: index asset cache versions mungojnë.');
   }
   const tools = read(TABLE_TOOLS_CSS);
