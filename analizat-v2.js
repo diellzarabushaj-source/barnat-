@@ -171,6 +171,9 @@
       if (!data || !Array.isArray(data.tests) || !Array.isArray(data.categories) || !Array.isArray(data.indications)) {
         throw new Error('Dataset-i i analizave nuk është i plotë.');
       }
+      if (!data.tests.length || !data.categories.length || !data.indications.length) {
+        throw new Error('Katalogu ose profilet klinike janë bosh.');
+      }
       return data;
     } finally {
       clearTimeout(timer);
@@ -331,7 +334,7 @@
           <strong>${esc(indication.title)}</strong>
           <small>${esc(indication.summary || indication.titleEn || '')}</small>
         </span>
-        <span class="lab-disease-icd">${(indication.icdCodes || []).map(code => `<span>${esc(code)}</span>`).join('')}</span>
+        <span class="lab-disease-icd">${(indication.icdCodes || []).map(code => `<span>${esc(code)}</span>`).join('')}<small>${(indication.tests || []).length} analiza</small></span>
       </button>`;
   }
 
@@ -386,11 +389,19 @@
     $('#labDiagnosisCount').textContent = String(indications.length);
   }
 
+  function pruneExcludedTests() {
+    const activeIds = new Set(buildPlanEntries().map(entry => entry.test.id));
+    for (const id of [...state.excludedTestIds]) {
+      if (!activeIds.has(id)) state.excludedTestIds.delete(id);
+    }
+  }
+
   function toggleIndication(id) {
     if (!state.indicationsById.has(id)) return;
     if (state.selectedIndicationIds.has(id)) state.selectedIndicationIds.delete(id);
     else state.selectedIndicationIds.add(id);
 
+    pruneExcludedTests();
     renderDiseaseList();
     renderSelectedDiseases();
     renderPlan();
@@ -401,6 +412,7 @@
 
   function removeIndication(id) {
     state.selectedIndicationIds.delete(id);
+    pruneExcludedTests();
     renderDiseaseList();
     renderSelectedDiseases();
     renderPlan();
@@ -437,7 +449,7 @@
     root.hidden = false;
     root.innerHTML = results.length
       ? results.map(test => `
-        <button type="button" class="lab-manual-option" data-add-test="${esc(test.id)}">
+        <button type="button" class="lab-manual-option" data-add-test="${esc(test.id)}" role="option">
           <span>
             <strong>${esc(test.formName)}</strong>
             <small>${esc(test.albanianName || test.englishName || test.category || '')}</small>
@@ -461,6 +473,7 @@
   function removeManualTest(id) {
     state.manualTestIds.delete(id);
     state.excludedTestIds.delete(id);
+    pruneExcludedTests();
     renderPlan();
     renderManualResults();
   }
