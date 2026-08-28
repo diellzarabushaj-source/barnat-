@@ -43,13 +43,28 @@
     special:'<path d="M12 3 9.8 8.2 4 9l4.2 4.1-1 5.8L12 16.2l4.8 2.7-1-5.8L20 9l-5.8-.8L12 3Z"/>',
   };
 
+  const COLUMN_DEFS = Object.freeze([
+    { id:'registry', label:'Nr. regjistri', hint:'Numri zyrtar i regjistrimit' },
+    { id:'name', label:'Bari', hint:'Emri tregtar', required:true },
+    { id:'substance', label:'Substanca aktive', hint:'Përbërësi aktiv' },
+    { id:'strength', label:'Fortësia', hint:'Doza / përqendrimi' },
+    { id:'form', label:'Forma', hint:'Forma farmaceutike' },
+    { id:'atc', label:'ATC', hint:'Kodi ATC' },
+    { id:'adultDose', label:'Doza e të rriturit', hint:'Dozologjia e të rriturit' },
+    { id:'pediatricDose', label:'Doza pediatrike', hint:'Dozologjia pediatrike' },
+    { id:'status', label:'Statusi', hint:'Gjenerik / origjinator' },
+    { id:'price', label:'Çmimi', hint:'Çmimi me pakicë' },
+  ]);
+  const DEFAULT_VISIBLE_COLUMNS = Object.freeze(COLUMN_DEFS.map(item => item.id));
+  const PREFERENCES_API = '/api/auth?scope=ui-preferences';
+  const COLUMN_CACHE_PREFIX = 'drx_registry_columns_v2:';
+
   const state = {
     page: 1,
     pageSize: 50,
     total: null,
     totalPages: null,
     q: '',
-    status: '',
     atc: '',
     formType: '',
     formValue: '',
@@ -61,6 +76,9 @@
     currentDetail: null,
     requestId: 0,
     searchTimer: 0,
+    preferenceOwner: '',
+    visibleColumns: new Set(DEFAULT_VISIBLE_COLUMNS),
+    preferenceSaveTimer: 0,
   };
 
   const $ = id => document.getElementById(id);
@@ -70,7 +88,8 @@
     refreshButton: $('refreshButton'), openPrescriptionButton: $('openPrescriptionButton'), selectedCount: $('selectedCount'),
     metricTotal: $('metricTotal'), metricPage: $('metricPage'), metricPageSize: $('metricPageSize'), metricSource: $('metricSource'), metricFilters: $('metricFilters'),
     searchInput: $('searchInput'), filterToggle: $('filterToggle'), filterPanel: $('filterPanel'), filterCountBadge: $('filterCountBadge'),
-    statusFilter: $('statusFilter'), formPicker: $('formPicker'), formPickerButton: $('formPickerButton'), formPickerPanel: $('formPickerPanel'), formPickerSearch: $('formPickerSearch'), formPickerList: $('formPickerList'), formPickerValue: $('formPickerValue'), formPickerHint: $('formPickerHint'), sortSelect: $('sortSelect'), directionSelect: $('directionSelect'), clearFiltersButton: $('clearFiltersButton'),
+    columnPicker: $('columnPicker'), columnPickerButton: $('columnPickerButton'), columnPickerPanel: $('columnPickerPanel'), columnPickerList: $('columnPickerList'), columnPickerSummary: $('columnPickerSummary'), columnSaveStatus: $('columnSaveStatus'), resetColumnsButton: $('resetColumnsButton'),
+    formPicker: $('formPicker'), formPickerButton: $('formPickerButton'), formPickerPanel: $('formPickerPanel'), formPickerSearch: $('formPickerSearch'), formPickerList: $('formPickerList'), formPickerValue: $('formPickerValue'), formPickerHint: $('formPickerHint'), sortSelect: $('sortSelect'), directionSelect: $('directionSelect'), clearFiltersButton: $('clearFiltersButton'),
     pageSizeSelect: $('pageSizeSelect'), resultSummary: $('resultSummary'), requestTiming: $('requestTiming'), registryRows: $('registryRows'), registryTable: $('registryTable'), tableScroll: $('tableScroll'),
     emptyState: $('emptyState'), emptyClearButton: $('emptyClearButton'), selectPageCheckbox: $('selectPageCheckbox'), paginationSummary: $('paginationSummary'), pageIndicator: $('pageIndicator'), prevPageButton: $('prevPageButton'), nextPageButton: $('nextPageButton'),
     drawerBackdrop: $('drawerBackdrop'), detailDrawer: $('detailDrawer'), drawerClose: $('drawerClose'), drawerCloseButton: $('drawerCloseButton'), drawerTitle: $('drawerTitle'), drawerBody: $('drawerBody'), drawerPrescriptionButton: $('drawerPrescriptionButton'),
@@ -84,6 +103,143 @@
     if (!Number.isFinite(number)) return '—';
     return new Intl.NumberFormat('sq-XK', { style:'currency', currency:'EUR', maximumFractionDigits:2 }).format(number);
   };
+
+  function normalizeColumns(value) {
+    const requested = Array.isArray(value) ? value.map(clean).filter(Boolean) : [];
+    const allowed = new Set(COLUMN_DEFS.map(item => item.id));
+    const next = [...new Set(requested)].filter(id => allowed.has(id));
+    for (const item of COLUMN_DEFS) {
+      if (item.required && !next.includes(item.id)) next.unshift(item.id);
+    }
+    return next.length ? next : [...DEFAULT_VISIBLE_COLUMNS];
+  }
+
+  function columnCacheKey() {
+    return state.preferenceOwner ? `${COLUMN_CACHE_PREFIX}${state.preferenceOwner}` : '';
+  }
+
+  function readCachedColumns() {
+    const key = columnCacheKey();
+    if (!key) return null;
+    try {
+      const value = JSON.parse(localStorage.getItem(key) || 'null');
+      return Array.isArray(value) ? normalizeColumns(value) : null;
+    } catch { return null; }
+  }
+
+  function cacheColumns() {
+    const key = columnCacheKey();
+    if (!key) return;
+    try { localStorage.setItem(key, JSON.stringify([...state.visibleColumns])); }
+    catch {}
+  }
+
+  function updateColumnPickerSummary() {
+    const visible = COLUMN_DEFS.filter(item => state.visibleColumns.has(item.id)).length;
+    if (el.columnPickerSummary) el.columnPickerSummary.textContent = `${visible} nga ${COLUMN_DEFS.length} të dukshme`;
+  }
+
+  function renderColumnPicker() {
+    if (!el.columnPickerList) return;
+    el.columnPickerList.innerHTML = COLUMN_DEFS.map(item => {
+      const checked = state.visibleColumns.has(item.id);
+      return `<label class="column-option${item.required ? ' is-required' : ''}">
+        <input type="checkbox" data-column-toggle="${escapeHtml(item.id)}" ${checked ? 'checked' : ''} ${item.required ? 'disabled' : ''}>
+        <span class="column-option-check" aria-hidden="true"><svg viewBox="0 0 16 16" fill="none"><path d="m3.2 8.1 2.8 2.8 6-6"/></svg></span>
+        <span class="column-option-copy"><strong>${escapeHtml(item.label)}</strong><small>${item.required ? 'Gjithmonë e dukshme' : escapeHtml(item.hint)}</small></span>
+      </label>`;
+    }).join('');
+    updateColumnPickerSummary();
+  }
+
+  function applyColumnVisibility() {
+    for (const item of COLUMN_DEFS) {
+      const visible = state.visibleColumns.has(item.id);
+      document.querySelectorAll(`[data-col="${CSS.escape(item.id)}"]`).forEach(node => {
+        node.hidden = !visible;
+        node.setAttribute('aria-hidden', visible ? 'false' : 'true');
+      });
+    }
+    renderColumnPicker();
+  }
+
+  function setColumnSaveStatus(text, tone = '') {
+    if (!el.columnSaveStatus) return;
+    el.columnSaveStatus.textContent = text;
+    if (tone) el.columnSaveStatus.dataset.tone = tone;
+    else el.columnSaveStatus.removeAttribute('data-tone');
+  }
+
+  async function persistColumnPreferences() {
+    cacheColumns();
+    setColumnSaveStatus('Duke ruajtur…');
+    try {
+      const { payload } = await fetchJson(PREFERENCES_API, {
+        method:'PUT',
+        body:JSON.stringify({ registryColumns:[...state.visibleColumns] }),
+        headers:{ 'Content-Type':'application/json' },
+      }, 6000);
+      const normalized = normalizeColumns(payload.registryColumns);
+      state.visibleColumns = new Set(normalized);
+      cacheColumns();
+      applyColumnVisibility();
+      setColumnSaveStatus('Ruajtur në profil', 'success');
+    } catch (error) {
+      console.warn('Column preferences save failed:', error);
+      setColumnSaveStatus('Ruajtur në këtë pajisje', 'local');
+    }
+  }
+
+  function scheduleColumnSave() {
+    clearTimeout(state.preferenceSaveTimer);
+    cacheColumns();
+    setColumnSaveStatus('Duke ruajtur…');
+    state.preferenceSaveTimer = setTimeout(() => { void persistColumnPreferences(); }, 260);
+  }
+
+  async function loadColumnPreferences(authPayload) {
+    state.preferenceOwner = clean(authPayload?.authUser?.id || authPayload?.user?.email || '').toLowerCase();
+    const cached = readCachedColumns();
+    if (cached) state.visibleColumns = new Set(cached);
+    applyColumnVisibility();
+    setColumnSaveStatus(cached ? 'Preferenca lokale u ngarkua' : 'Duke sinkronizuar…');
+    try {
+      const { payload } = await fetchJson(PREFERENCES_API, {}, 6000);
+      state.preferenceOwner = clean(payload.userId || state.preferenceOwner).toLowerCase();
+      state.visibleColumns = new Set(normalizeColumns(payload.registryColumns));
+      cacheColumns();
+      applyColumnVisibility();
+      setColumnSaveStatus('Sinkronizuar me profilin', 'success');
+    } catch (error) {
+      console.warn('Column preferences load failed:', error);
+      setColumnSaveStatus(cached ? 'Nga kjo pajisje' : 'Standardi DRx', cached ? 'local' : '');
+    }
+  }
+
+  function openColumnPicker() {
+    if (!el.columnPickerPanel) return;
+    closeFormPicker();
+    el.columnPickerPanel.hidden = false;
+    el.columnPickerButton.setAttribute('aria-expanded', 'true');
+    renderColumnPicker();
+    requestAnimationFrame(() => el.columnPickerList.querySelector('input:not(:disabled)')?.focus({ preventScroll:true }));
+  }
+
+  function closeColumnPicker({ focusButton = false } = {}) {
+    if (!el.columnPickerPanel || el.columnPickerPanel.hidden) return;
+    el.columnPickerPanel.hidden = true;
+    el.columnPickerButton.setAttribute('aria-expanded', 'false');
+    if (focusButton) el.columnPickerButton.focus({ preventScroll:true });
+  }
+
+  function toggleColumn(id, visible) {
+    const item = COLUMN_DEFS.find(entry => entry.id === id);
+    if (!item || item.required) return;
+    if (visible) state.visibleColumns.add(id);
+    else state.visibleColumns.delete(id);
+    applyColumnVisibility();
+    scheduleColumnSave();
+  }
 
   function loadProfileChrome() {
     if (window.MedIndexProfile) return Promise.resolve(window.MedIndexProfile);
@@ -171,7 +327,6 @@
       view:'registry-page', page:String(state.page), pageSize:String(state.pageSize), includeTotal:'true', sort:state.sort, direction:state.direction,
     });
     if (state.q) params.set('q', state.q);
-    if (state.status) params.set('status', state.status);
     if (state.atc) params.set('atc', state.atc);
     if (state.formType === 'form' && state.formValue) params.set('formExact', state.formValue);
     else if (state.formType === 'category' && state.formValue) params.set('formCategory', state.formValue);
@@ -183,12 +338,22 @@
     el.tableScroll.hidden = false;
     el.registryRows.innerHTML = Array.from({ length: Math.min(10, state.pageSize) }, () => `
       <tr aria-hidden="true">
-        <td><span class="skeleton sm"></span></td><td><span class="skeleton sm"></span></td><td><span class="skeleton lg"></span></td><td><span class="skeleton md"></span></td>
-        <td><span class="skeleton sm"></span></td><td><span class="skeleton md"></span></td><td><span class="skeleton sm"></span></td><td><span class="skeleton lg"></span></td>
-        <td><span class="skeleton lg"></span></td><td><span class="skeleton sm"></span></td><td><span class="skeleton sm"></span></td><td></td>
+        <td><span class="skeleton sm"></span></td>
+        <td data-col="registry"><span class="skeleton sm"></span></td>
+        <td data-col="name"><span class="skeleton lg"></span></td>
+        <td data-col="substance"><span class="skeleton md"></span></td>
+        <td data-col="strength"><span class="skeleton sm"></span></td>
+        <td data-col="form"><span class="skeleton md"></span></td>
+        <td data-col="atc"><span class="skeleton sm"></span></td>
+        <td data-col="adultDose"><span class="skeleton lg"></span></td>
+        <td data-col="pediatricDose"><span class="skeleton lg"></span></td>
+        <td data-col="status"><span class="skeleton sm"></span></td>
+        <td data-col="price"><span class="skeleton sm"></span></td>
+        <td></td>
       </tr>`).join('');
     el.resultSummary.textContent = 'Duke ngarkuar regjistrin…';
     el.requestTiming.textContent = '';
+    applyColumnVisibility();
   }
 
   async function loadPage({ preserveScroll = false } = {}) {
@@ -278,19 +443,20 @@
       const number = clean(row.registryNumber);
       return `<tr data-row-id="${escapeHtml(key)}" class="${selected ? 'is-selected' : ''}" tabindex="0" aria-selected="${selected ? 'true' : 'false'}">
         <td><input class="row-check" type="checkbox" data-select-row="${escapeHtml(key)}" aria-label="Zgjidh ${escapeHtml(row.tradeName)}" ${selected ? 'checked' : ''}></td>
-        <td><span class="price">${escapeHtml(number || '—')}</span></td>
-        <td><span class="drug-name">${escapeHtml(row.tradeName || 'Pa emër')}</span><span class="drug-meta">${escapeHtml(row.pdid || row.productStatus || '')}</span></td>
-        <td><span class="cell-clamp">${escapeHtml(row.activeSubstance || '—')}</span></td>
-        <td>${escapeHtml(row.strength || '—')}</td>
-        <td><span class="cell-clamp">${escapeHtml(row.form || '—')}</span></td>
-        <td>${row.atc ? `<span class="atc-chip">${escapeHtml(row.atc)}</span>` : '—'}</td>
-        <td data-dose-adult="${escapeHtml(number)}" data-dose-status="loading"><span class="skeleton lg"></span></td>
-        <td data-dose-pediatric="${escapeHtml(number)}" data-dose-status="loading"><span class="skeleton lg"></span></td>
-        <td>${statusBadge(row.productStatus)}</td>
-        <td><span class="price">${euros(row.retailPrice)}</span></td>
+        <td data-col="registry"><span class="price">${escapeHtml(number || '—')}</span></td>
+        <td data-col="name"><span class="drug-name">${escapeHtml(row.tradeName || 'Pa emër')}</span><span class="drug-meta">${escapeHtml(row.pdid || row.productStatus || '')}</span></td>
+        <td data-col="substance"><span class="cell-clamp">${escapeHtml(row.activeSubstance || '—')}</span></td>
+        <td data-col="strength">${escapeHtml(row.strength || '—')}</td>
+        <td data-col="form"><span class="cell-clamp">${escapeHtml(row.form || '—')}</span></td>
+        <td data-col="atc">${row.atc ? `<span class="atc-chip">${escapeHtml(row.atc)}</span>` : '—'}</td>
+        <td data-col="adultDose" data-dose-adult="${escapeHtml(number)}" data-dose-status="loading"><span class="skeleton lg"></span></td>
+        <td data-col="pediatricDose" data-dose-pediatric="${escapeHtml(number)}" data-dose-status="loading"><span class="skeleton lg"></span></td>
+        <td data-col="status">${statusBadge(row.productStatus)}</td>
+        <td data-col="price"><span class="price">${euros(row.retailPrice)}</span></td>
         <td><button class="row-action" type="button" data-open-row="${escapeHtml(key)}" aria-label="Hap detajet e ${escapeHtml(row.tradeName)}">${CHEVRON_RIGHT}</button></td>
       </tr>`;
     }).join('');
+    applyColumnVisibility();
     syncPageSelection();
   }
 
@@ -414,7 +580,7 @@
     loadPage();
   }
 
-  function activeFilterCount() { return [state.q, state.status, state.atc, state.formValue].filter(Boolean).length; }
+  function activeFilterCount() { return [state.q, state.atc, state.formValue].filter(Boolean).length; }
 
   function updateFilterUi() {
     const count = activeFilterCount();
@@ -424,7 +590,6 @@
     el.pageSizeSelect.value = String(state.pageSize);
     el.sortSelect.value = state.sort;
     el.directionSelect.value = state.direction;
-    el.statusFilter.value = state.status;
     syncFormPickerTrigger();
   }
 
@@ -572,7 +737,7 @@
     el.searchInput.addEventListener('keydown', event => { if (event.key === 'Escape' && el.searchInput.value) { el.searchInput.value = ''; state.q = ''; state.page = 1; loadPage(); } });
     window.addEventListener('keydown', event => {
       if ((event.metaKey || event.ctrlKey) && event.key.toLowerCase() === 'k') { event.preventDefault(); el.searchInput.focus(); el.searchInput.select(); }
-      if (event.key === 'Escape') { closeDrawer(); closeSidebar(); closeFormPicker(); }
+      if (event.key === 'Escape') { closeDrawer(); closeSidebar(); closeFormPicker(); closeColumnPicker(); }
     });
     el.filterToggle.addEventListener('click', () => {
       const open = el.filterPanel.hidden;
@@ -580,7 +745,23 @@
       el.filterPanel.hidden = !open;
       el.filterToggle.setAttribute('aria-expanded', open ? 'true' : 'false');
     });
-    el.statusFilter.addEventListener('change', () => { state.status = el.statusFilter.value; state.page = 1; loadPage(); });
+    el.columnPickerButton.addEventListener('click', event => {
+      event.stopPropagation();
+      if (el.columnPickerPanel.hidden) openColumnPicker(); else closeColumnPicker();
+    });
+    el.columnPickerPanel.addEventListener('click', event => {
+      event.stopPropagation();
+      const input = event.target.closest('[data-column-toggle]');
+      if (input) toggleColumn(input.dataset.columnToggle, input.checked);
+    });
+    el.columnPickerPanel.addEventListener('keydown', event => {
+      if (event.key === 'Escape') { event.preventDefault(); closeColumnPicker({ focusButton:true }); }
+    });
+    el.resetColumnsButton.addEventListener('click', () => {
+      state.visibleColumns = new Set(DEFAULT_VISIBLE_COLUMNS);
+      applyColumnVisibility();
+      scheduleColumnSave();
+    });
     el.formPickerButton.addEventListener('click', event => {
       event.stopPropagation();
       if (el.formPickerPanel.hidden) openFormPicker(); else closeFormPicker();
@@ -606,7 +787,10 @@
       options[next].focus({ preventScroll:true });
       options[next].scrollIntoView({ block:'nearest' });
     });
-    document.addEventListener('click', event => { if (!el.formPicker.contains(event.target)) closeFormPicker(); });
+    document.addEventListener('click', event => {
+      if (!el.formPicker.contains(event.target)) closeFormPicker();
+      if (!el.columnPicker.contains(event.target)) closeColumnPicker();
+    });
     el.sortSelect.addEventListener('change', () => { state.sort = el.sortSelect.value; state.page = 1; loadPage(); });
     el.directionSelect.addEventListener('change', () => { state.direction = el.directionSelect.value; state.page = 1; loadPage(); });
     el.pageSizeSelect.addEventListener('change', () => { state.pageSize = Number(el.pageSizeSelect.value) || 50; state.page = 1; loadPage(); });
@@ -634,9 +818,9 @@
   }
 
   function clearFilters() {
-    state.q = ''; state.status = ''; state.atc = ''; state.formType = ''; state.formValue = ''; state.page = 1;
+    state.q = ''; state.atc = ''; state.formType = ''; state.formValue = ''; state.page = 1;
     const url = new URL(location.href); url.searchParams.delete('atc'); history.replaceState(history.state, '', url.pathname + url.search + url.hash);
-    el.searchInput.value = ''; el.statusFilter.value = ''; el.formPickerSearch.value = ''; syncFormPickerTrigger(); closeFormPicker();
+    el.searchInput.value = ''; el.formPickerSearch.value = ''; syncFormPickerTrigger(); closeFormPicker();
     loadPage();
   }
 
@@ -651,6 +835,7 @@
     try {
       const authPayload = await ensureAuth();
       await syncProfileChrome(authPayload);
+      await loadColumnPreferences(authPayload);
       el.appShell.setAttribute('aria-busy', 'false');
       await loadPage();
     } catch (error) {
