@@ -16,8 +16,8 @@ The GIS callback flow does not use a redirect URI. The credential is verified se
 ## Persistent data
 
 - Recipes and drug favorites remain available immediately from local browser storage.
-- The first authenticated online load migrates them to Neon.
-- Neon is the durable copy; local storage remains the fast/offline copy.
+- The first authenticated online load migrates them to Supabase.
+- Supabase is the durable copy; local storage remains the fast/offline copy.
 - Recipe payloads are encrypted with AES-256-GCM before being stored.
 - Deletions use tombstones so deleted items do not return from another device.
 - The library is scoped to the authenticated MedIndex user.
