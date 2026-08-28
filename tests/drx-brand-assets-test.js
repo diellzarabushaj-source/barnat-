@@ -27,7 +27,7 @@ for (const [key, route] of Object.entries(expected)) {
   assert.match(fs.readFileSync(absolute, 'utf8'), /<svg\b/, `${key}: canonical asset must remain vector`);
 }
 
-for (const file of ['index.html','klasifikimi.html','icd.html','urgjencat.html','analizat.html','protokollet.html','recetat.html','medical-hub.html']) {
+for (const file of ['index.html','klasifikimi.html','icd.html','dozologjia.html','urgjencat.html','analizat.html','protokollet.html','recetat.html','medical-hub.html']) {
   const html = read(file);
   assert.match(html, /src="\/brand\/drx-horizontal-on-dark\.svg"[^>]*width="112" height="33"/,
     `${file}: dark sidebar must use the same white DRx lockup at 112×33`);
