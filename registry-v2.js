@@ -160,6 +160,27 @@
         node.setAttribute('aria-hidden', visible ? 'false' : 'true');
       });
     }
+
+    // The drug name remains the stable clinical anchor. When "Nr. regjistri"
+    // is hidden, move that frozen name column next to the selection checkbox
+    // instead of leaving a 68px blank gutter.
+    const registryVisible = state.visibleColumns.has('registry');
+    document.querySelectorAll('[data-col="registry"]').forEach(node => {
+      node.style.left = registryVisible ? '44px' : '';
+    });
+    document.querySelectorAll('[data-col="name"]').forEach(node => {
+      node.style.left = registryVisible ? '112px' : '44px';
+    });
+
+    const widths = {
+      registry:68, name:225, substance:190, strength:105, form:145,
+      atc:90, adultDose:190, pediatricDose:190, status:105, price:92,
+    };
+    const visibleWidth = COLUMN_DEFS.reduce((sum, item) => {
+      return state.visibleColumns.has(item.id) ? sum + (widths[item.id] || 100) : sum;
+    }, 44 + 48);
+    if (el.registryTable) el.registryTable.style.minWidth = `${Math.max(720, visibleWidth)}px`;
+
     renderColumnPicker();
   }
 
