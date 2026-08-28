@@ -1,7 +1,7 @@
 (() => {
   'use strict';
 
-  const VERSION = 'registry-unified-table-20260801-1';
+  const VERSION = 'registry-unified-table-20260828-admin-stripe-v2';
   const VIEW_STORAGE_KEY = 'medindex.registry.view.v2';
   const FILTER_STORAGE_KEY = 'medindex.registry.filters.open.v3';
   // Nën këtë kufi tabela nuk vizatohet si tabelë por si rreshta shumërreshtorë,
@@ -458,14 +458,14 @@
     toolbar.setAttribute('aria-label', 'Kontrollet e regjistrit të barnave');
     toolbar.innerHTML = `
       <div class="registry-view-heading">
-        <strong>Regjistri i barnave</strong>
-        <span data-registry-view-description>Dozat dhe rruga e përdorimit janë në fokus.</span>
+        <strong>Barnat</strong>
+        <span data-registry-view-description>Pamje klinike e shpejtë për kërkim, dozë dhe recetë.</span>
       </div>
       <div class="registry-view-actions-wrap">
         <button type="button" class="registry-filter-toggle" data-registry-filter-toggle aria-controls="registryFilterPanel" aria-expanded="false">Filtrat <span data-registry-filter-count hidden>0</span></button>
         <div class="registry-view-actions" role="group" aria-label="Pamja e tabelës">
-          <button type="button" data-registry-view="clinical">Fokus klinik</button>
-          <button type="button" data-registry-view="full">Tabela e plotë</button>
+          <button type="button" data-registry-view="clinical">Klinike</button>
+          <button type="button" data-registry-view="full">Të gjitha kolonat</button>
         </div>
       </div>`;
     return toolbar;
@@ -512,7 +512,7 @@
     const description = toolbar.querySelector('[data-registry-view-description]');
     const countText = clean(document.getElementById('countBadge')?.textContent).match(/\d[\d.,]*/)?.[0];
     if (description) description.textContent = currentView() === 'clinical'
-      ? `${countText ? `${countText} barna · ` : ''}dozat dhe rruga e përdorimit janë të prioritizuara.`
+      ? `${countText ? `${countText} barna · ` : ''}emri, substanca, fortësia, forma dhe dozimi janë në fokus.`
       : `${countText ? `${countText} barna · ` : ''}kolonat e zgjedhura shfaqen në rend të qëndrueshëm.`;
   }
 
