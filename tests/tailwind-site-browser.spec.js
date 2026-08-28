@@ -149,8 +149,12 @@ async function auditViewport(page, label, { requireControls = false } = {}) {
         ),
       }));
 
+    const sidebar = document.querySelector('.mi-sidebar');
+    const topbar = document.querySelector('.mi-topbar');
     return {
-      token:style.getPropertyValue('--tw-teal-500').trim(),
+      token:style.getPropertyValue('--drx-shell-accent').trim(),
+      sidebarBg:sidebar ? getComputedStyle(sidebar).backgroundColor : '',
+      topbarHeight:topbar ? Math.round(topbar.getBoundingClientRect().height) : 0,
       pageWidth:document.documentElement.scrollWidth,
       viewportWidth:innerWidth,
       bodyWidth:document.body?.scrollWidth || 0,
@@ -162,7 +166,9 @@ async function auditViewport(page, label, { requireControls = false } = {}) {
     };
   });
 
-  expect(audit.token, `${label}: Tailwind token was not applied`).toBe('#147d7e');
+  expect(audit.token, `${label}: Stripe accent token was not applied`).toBe('#533afd');
+  expect(audit.sidebarBg, `${label}: sidebar must use the approved navy shell`).toBe('rgb(28, 30, 84)');
+  expect(audit.topbarHeight, `${label}: topbar height must match admin Stripe shell`).toBe(58);
   expect(audit.pageWidth, `${label}: document has horizontal overflow`).toBeLessThanOrEqual(audit.viewportWidth + 2);
   expect(audit.bodyWidth, `${label}: body has horizontal overflow`).toBeLessThanOrEqual(audit.viewportWidth + 2);
 
@@ -179,7 +185,7 @@ async function auditViewport(page, label, { requireControls = false } = {}) {
 }
 
 for (const viewport of viewports) {
-  test(`all authenticated clinical pages share the Tailwind system on ${viewport.name}`, async ({ page }) => {
+  test(`all authenticated clinical pages share the Stripe dashboard system on ${viewport.name}`, async ({ page }) => {
     await page.setViewportSize(viewport);
     await mockPhase5AuthenticatedSession(page);
     await mockRegistryV2Data(page);
