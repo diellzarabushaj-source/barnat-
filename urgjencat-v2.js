@@ -149,7 +149,14 @@
     $('#sidebarBackdrop')?.addEventListener('click', closeSidebar);
     $('#logoutButton')?.addEventListener('click', logout);
     window.addEventListener('keydown', event => {
-      if (event.key === 'Escape') closeSidebar();
+      if (event.key === 'Escape') {
+        if (document.activeElement === $('#emergencySearch') && state.term) {
+          event.preventDefault();
+          clearSearch();
+          return;
+        }
+        closeSidebar();
+      }
       if ((event.ctrlKey || event.metaKey) && event.key.toLowerCase() === 'k') {
         event.preventDefault();
         $('#emergencySearch')?.focus();
@@ -615,11 +622,12 @@
     if (!id) return;
     state.selectedSectionId = id;
     if (!preserveLesson || currentLesson()?.section?._id !== id) {
-      state.selectedLessonId = sectionLessons(id)[0]?._id || '';
+      state.selectedLessonId = filteredLessonsForSection(id)[0]?._id || '';
     }
     renderChapters();
     renderLessons();
     renderDetail();
+    renderReaderNavigation();
     syncUrl();
   }
 
@@ -631,6 +639,7 @@
     renderChapters();
     renderLessons();
     renderDetail();
+    renderReaderNavigation();
     syncUrl();
   }
 
@@ -652,6 +661,8 @@
     renderChapters();
     renderLessons();
     renderDetail();
+    renderReaderNavigation();
+    syncUrl();
   }
 
   async function init() {
@@ -676,12 +687,16 @@
       restoreUrl();
 
       $('#emergencySearch')?.addEventListener('input', event => handleSearch(event.target.value));
+      $('#emergencySearchClear')?.addEventListener('click', () => clearSearch());
       $('#emergencyChapterSelect')?.addEventListener('change', event => selectSection(event.target.value));
       $('#emergencyLessonSelect')?.addEventListener('change', event => selectLesson(event.target.value));
+      $('#previousLessonButton')?.addEventListener('click', () => selectAdjacentLesson(-1));
+      $('#nextLessonButton')?.addEventListener('click', () => selectAdjacentLesson(1));
 
       renderChapters();
       renderLessons();
       renderDetail();
+      renderReaderNavigation();
       syncUrl();
       $('#appShell')?.setAttribute('aria-busy','false');
     } catch (error) {
@@ -692,6 +707,7 @@
       if ($('#emergencyLessonSelect')) $('#emergencyLessonSelect').innerHTML = '<option>Gabim në ngarkim</option>';
       if ($('#emergencyDetail')) $('#emergencyDetail').innerHTML = '<div class="ec-detail-placeholder"><div><strong>Urgjencat nuk u ngarkuan.</strong><span>Provo përsëri pa humbur sesionin.</span><button class="ec-retry" type="button">Provo përsëri</button></div></div>';
       $('#emergencyDetail')?.querySelector('.ec-retry')?.addEventListener('click', () => window.location.reload());
+      renderReaderNavigation();
       $('#appShell')?.setAttribute('aria-busy','false');
     }
   }
