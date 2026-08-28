@@ -27,6 +27,15 @@ assert.match(shared, /Të gjithë kapitujt/);
 assert.match(shared, /22/);
 assert.match(shared, /data-icd-chapter/);
 assert.match(shared, /canonicalize\(nav\)/);
+assert.match(shared, /classification-data\.js\?v=atc-catalog-v2/);
+assert.match(shared, /function enhanceAtc\(nav\)/);
+assert.match(shared, /function syncAtc\(/);
+assert.match(shared, /data-atc-details/);
+assert.match(shared, /data-atc-sub/);
+assert.match(shared, /class="atc-sub-list"/);
+assert.match(shared, /class="atc-sub-link"/);
+assert.match(shared, /other\.open = false/);
+assert.match(shared, /window\.DRxSidebarTaxonomy/);
 
 assert.match(icdSidebar, /\/api\/icd\?view=nav/);
 assert.match(icdSidebar, /mi-atc-menu mi-icd-menu-shared/);
@@ -66,7 +75,7 @@ for (const file of ['registry-v2.js','classification-v2.js','icd-v2.js','dozolog
 
 for (const [file, version] of [
   ['index.html','profile-columns-v5'],
-  ['klasifikimi.html','profile-columns-v4'],
+  ['klasifikimi.html','profile-columns-v5'],
   ['icd.html','profile-columns-v4'],
 ]) {
   const html = read(file);
@@ -95,5 +104,17 @@ for (const file of ['index.html','klasifikimi.html','icd.html','dozologjia.html'
 
 assert.match(stripe, /Shared taxonomy sidebar — ATC and ICD use one identical navy language/);
 assert.match(stripe, /#appMenu :is\(\.mi-atc-root-panel,\.mi-atc-submenu\)/);
+assert.match(stripe, /Canonical sidebar taxonomy depth — ATC groups\/subgroups/);
+assert.match(stripe, /\.drx-unified-sidebar \.atc-sub-link/);
+
+
+const classificationHtml = read('klasifikimi.html');
+const classificationJs = read('classification-v2.js');
+const classificationCss = read('classification-v2.css');
+assert.doesNotMatch(classificationHtml, /id="groupList"|class="group-panel"|id="groupCount"|id="atcStatusMeta"/);
+assert.doesNotMatch(classificationJs, /el\.groupList|el\.groupCount|el\.atcStatusMeta|function renderGroups\(/);
+assert.doesNotMatch(classificationCss, /\.group-panel|\.group-list|\.group-row/);
+assert.match(classificationJs, /window\.DRxSidebarTaxonomy\?\.syncAtc\?\.\(\)/);
+assert.match(classificationJs, /if \(!hadGroup\) writeHash/);
 
 console.log('Shared sidebar taxonomy v3: ATC + ICD nesting and canonical page order passed.');
