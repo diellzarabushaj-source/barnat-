@@ -73,8 +73,8 @@
     window.dispatchEvent(new CustomEvent('medindex:auth-ready', { detail:payload }));
   }
 
-  function loadTaxonomy() {
-    void loadRuntime('/sidebar-taxonomy-v3.js?v=sidebar-taxonomy-v3', 'data-drx-sidebar-taxonomy');
+  function loadSharedSidebarTaxonomy() {
+    return loadRuntime('/sidebar-taxonomy-v3.js?v=sidebar-taxonomy-v3', 'data-drx-sidebar-taxonomy');
   }
 
   function openSidebar() {
@@ -105,7 +105,7 @@
   function init() {
     if (bound) return;
     bound = true;
-    loadTaxonomy();
+    void loadSharedSidebarTaxonomy();
     $('#menuButton')?.addEventListener('click', openSidebar);
     $('#sidebarClose')?.addEventListener('click', closeSidebar);
     $('#sidebarBackdrop')?.addEventListener('click', closeSidebar);
