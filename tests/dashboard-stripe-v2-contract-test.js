@@ -20,8 +20,7 @@ assert.match(stripe, /@media\(max-width:760px\)/);
 assert.match(stripe, /prefers-reduced-motion:reduce/);
 
 const pages = [
-  'analizat.html','dozologjia.html','medical-hub.html',
-  'protokollet.html','recetat.html','sistemi.html','urgjencat.html',
+  'analizat.html','dozologjia.html','protokollet.html','recetat.html','sistemi.html',
 ];
 
 for (const file of pages) {
@@ -52,6 +51,26 @@ assert.match(icdHtml, /icd-v2\.js\?v=sidebar-taxonomy-v3/);
 assert.doesNotMatch(icdHtml, /tailadmin-medindex\.css|tailadmin-professional\.css|drx-dashboard-stripe\.css|tailadmin-shell\.js/);
 assert.match(icdCss, /#1c1e54/i);
 assert.match(icdCss, /#533afd/i);
+
+for (const [htmlFile, cssFile, jsFile, markerName] of [
+  ['urgjencat.html','urgjencat-v2.css','urgjencat-v2.js','urgjencat-v2'],
+  ['medical-hub.html','medical-hub-v2.css','medical-hub-v2.js','medical-hub-v2'],
+]) {
+  const html = read(htmlFile);
+  const css = read(cssFile);
+  const js = read(jsFile);
+  const styles = [...html.matchAll(/<link\b(?=[^>]*\brel=["']stylesheet["'])(?=[^>]*\bhref=["']([^"']+)["'])[^>]*>/gi)].map(match => match[1]);
+  const scripts = [...html.matchAll(/<script\b[^>]*\bsrc=["']([^"']+)["'][^>]*>/gi)].map(match => match[1]);
+  assert.match(html, new RegExp(`data-drx-app="${markerName}"`));
+  assert.equal(styles.length, 1, `${htmlFile}: standalone V2 must own one stylesheet`);
+  assert.equal(scripts.length, 1, `${htmlFile}: standalone V2 must own one runtime`);
+  assert.ok(styles[0].includes(cssFile), `${htmlFile}: unexpected stylesheet owner`);
+  assert.ok(scripts[0].includes(jsFile), `${htmlFile}: unexpected runtime owner`);
+  assert.doesNotMatch(html, /tailadmin-|drx-dashboard-stripe|auth-client|emergency-curriculum|clinical-knowledge\.css|medical-hub\.css/);
+  assert.match(css, /#1c1e54/i);
+  assert.match(css, /#635bff|#533afd/i);
+  assert.doesNotThrow(() => new Function(js));
+}
 
 const shell = read('tailadmin-shell.js');
 assert.match(shell, /function stripeStylesheet\(\)/);
