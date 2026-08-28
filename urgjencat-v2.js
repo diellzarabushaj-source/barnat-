@@ -142,7 +142,7 @@
     tooltip.style.bottom = '';
     const rect = button.getBoundingClientRect();
     const gap = 8;
-    const width = Math.min(320, Math.max(230, tooltip.offsetWidth || 280));
+    const width = Math.min(popover ? 380 : 320, Math.max(popover ? 280 : 230, tooltip.offsetWidth || (popover ? 340 : 280)));
     let left = rect.left + (rect.width / 2) - (width / 2);
     left = Math.max(10, Math.min(left, window.innerWidth - width - 10));
     tooltip.style.width = width + 'px';
