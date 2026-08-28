@@ -13,12 +13,10 @@
   const LEGACY_PROFILE_KEY = 'medindex_profile_v1';
   const ROOT = '/brand/';
   const ASSETS = Object.freeze({
-    horizontalLight:`${ROOT}drx-horizontal-on-light.svg`,
-    horizontalDark:`${ROOT}drx-horizontal-on-dark.svg`,
-    fullLight:`${ROOT}drx-horizontal-on-light.svg`,
-    fullDark:`${ROOT}drx-horizontal-on-dark.svg`,
-    iconLight:`${ROOT}drx-mark-on-light.svg`,
-    iconDark:`${ROOT}drx-mark-on-dark.svg`,
+    horizontalOnLight:`${ROOT}drx-horizontal-on-light.svg`,
+    horizontalOnDark:`${ROOT}drx-horizontal-on-dark.svg`,
+    markOnLight:`${ROOT}drx-mark-on-light.svg`,
+    markOnDark:`${ROOT}drx-mark-on-dark.svg`,
   });
   // Until the session answers, the card names nobody. It used to default to a
   // real person, so every account that opened MedIndex on this device was shown
@@ -200,8 +198,8 @@
 
   function picture(kind, className) {
     const full = kind === 'full';
-    const light = full ? ASSETS.horizontalLight : ASSETS.iconLight;
-    const dark = full ? ASSETS.horizontalDark : ASSETS.iconDark;
+    const light = full ? ASSETS.horizontalOnLight : ASSETS.markOnLight;
+    const dark = full ? ASSETS.horizontalOnDark : ASSETS.markOnDark;
     return `<span class="medindex-brand-picture ${className}" aria-hidden="true"><img class="medindex-brand-light" src="${light}" alt="" decoding="async" draggable="false"><img class="medindex-brand-dark" src="${dark}" alt="" decoding="async" draggable="false"></span>`;
   }
 
