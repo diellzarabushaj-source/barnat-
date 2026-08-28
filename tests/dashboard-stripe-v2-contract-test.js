@@ -30,7 +30,7 @@ for (const file of pages) {
 
   const base = styles.findIndex(href => /tailadmin-medindex\.css/.test(href));
   const professional = styles.findIndex(href => /tailadmin-professional\.css/.test(href));
-  const stripeIndex = styles.findIndex(href => /drx-dashboard-stripe\.css\?v=drx-dashboard-stripe-v2/.test(href));
+  const stripeIndex = styles.findIndex(href => /drx-dashboard-stripe\.css\?v=drx-dashboard-stripe-v4/.test(href));
 
   assert.ok(base >= 0, `${file}: TailAdmin base CSS is missing`);
   assert.ok(professional > base, `${file}: professional compatibility CSS must follow base`);
@@ -47,7 +47,7 @@ const icdCss = read('icd-v2.css');
 assert.match(icdHtml, /data-drx-app="icd-v2"/);
 assert.match(icdHtml, /<meta name="theme-color" content="#1c1e54">/);
 assert.match(icdHtml, /icd-v2\.css\?v=profile-columns-v4/);
-assert.match(icdHtml, /drx-dashboard-stripe\.css\?v=drx-dashboard-stripe-v3/);
+assert.match(icdHtml, /drx-dashboard-stripe\.css\?v=drx-dashboard-stripe-v4/);
 assert.match(icdHtml, /drx-unified-sidebar/);
 assert.match(icdHtml, /icd-v2\.js\?v=profile-columns-v4/);
 assert.doesNotMatch(icdHtml, /tailadmin-medindex\.css|tailadmin-professional\.css|tailadmin-shell\.js/);
@@ -68,7 +68,7 @@ for (const [htmlFile, cssFile, jsFile, markerName] of [
   assert.match(html, /drx-unified-sidebar/, `${htmlFile}: unified sidebar marker missing`);
   assert.equal(scripts.length, 1, `${htmlFile}: standalone V2 must own one runtime`);
   assert.ok(styles[0].includes(cssFile), `${htmlFile}: unexpected page stylesheet owner`);
-  assert.ok(/drx-dashboard-stripe\.css\?v=drx-dashboard-stripe-v3/.test(styles[1]), `${htmlFile}: shared Stripe shell must load last`);
+  assert.ok(/drx-dashboard-stripe\.css\?v=drx-dashboard-stripe-v4/.test(styles[1]), `${htmlFile}: shared Stripe shell must load last`);
   assert.ok(scripts[0].includes(jsFile), `${htmlFile}: unexpected runtime owner`);
   assert.doesNotMatch(html, /tailadmin-|auth-client|emergency-curriculum|clinical-knowledge\.css|medical-hub\.css/);
   assert.match(css, /#1c1e54/i);
