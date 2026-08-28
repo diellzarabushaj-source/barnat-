@@ -606,7 +606,7 @@
     const columns = table.columnsSq || [];
     const rows = table.rows || [];
     const head = columns.length
-      ? '<thead><tr>' + columns.map(col => '<th>' + esc(col) + '</th>').join('') + '</tr></thead>'
+      ? '<thead><tr>' + columns.map(col => '<th>' + inlineClinicalText(lesson, col) + '</th>').join('') + '</tr></thead>'
       : '';
     const body = '<tbody>' + rows.map(row =>
       '<tr>' + (row.cells || []).map(cell => '<td>' + inlineClinicalText(lesson, cell) + '</td>').join('') + '</tr>'
@@ -630,7 +630,7 @@
     return figure?.image?.asset?.url || figure?.externalUrl || figure?.imageDataUrl || ((figure?.imageDataChunks || []).length ? figure.imageDataChunks.join('') : '') || '';
   }
 
-  function figureMarkup(figure) {
+  function figureMarkup(lesson, figure) {
     if (!figure) return '';
     const src = figureSrc(figure);
     const label = figure.visualType === 'table' ? 'Tabela' : 'Figura';
@@ -640,7 +640,7 @@
     return `
       <figure class="ec-figure-card">
         <img src="${esc(src)}" alt="${esc(figure.alt || figure.caption || `${label} ${figure.figureNumber}`)}" loading="lazy" decoding="async">
-        <figcaption><strong>${label} ${esc(figure.figureNumber)}.</strong> ${esc(figure.caption || '')}</figcaption>
+        <figcaption><strong>${label} ${esc(figure.figureNumber)}.</strong> ${inlineClinicalText(lesson, figure.caption || '')}</figcaption>
       </figure>
     `;
   }
@@ -679,9 +679,9 @@
 
         ${linkedFigures.length ? `
           <div class="ec-figure-strip">
-            ${linkedFigures.filter(f => !figureSrc(f)).map(figureMarkup).join('')}
+            ${linkedFigures.filter(f => !figureSrc(f)).map(f => figureMarkup(lesson, f)).join('')}
           </div>
-          ${linkedFigures.filter(f => figureSrc(f)).map(figureMarkup).join('')}
+          ${linkedFigures.filter(f => figureSrc(f)).map(f => figureMarkup(lesson, f)).join('')}
         ` : ''}
       </section>
     `;
@@ -812,7 +812,7 @@
           <section class="ec-footnotes ec-lesson-figures">
             <h3>Figurat e kapitullit</h3>
             <div class="ec-figure-overview">
-              ${figures.map(figureMarkup).join('')}
+              ${figures.map(figure => figureMarkup(lesson, figure)).join('')}
             </div>
           </section>
         ` : ''}
