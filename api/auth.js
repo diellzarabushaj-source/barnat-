@@ -8,6 +8,7 @@ const SupabasePassword = require('../lib/supabase-password-auth.js');
 const UserStore = require('../lib/user-store.js');
 const UserLibrary = require('../lib/user-library.js');
 const ProfileAvatar = require('../lib/profile-avatar.js');
+const UserUiPreferences = require('../lib/user-ui-preferences.js');
 const AdminUsers = require('../lib/admin-users.js');
 const AdminAccess = require('../lib/admin-access.js');
 const ProfessionalVerification = require('../lib/professional-verification.js');
@@ -104,6 +105,10 @@ function libraryRequested(req) {
 
 function profilePhotoRequested(req) {
   return queryValue(req, 'scope') === 'profile-photo';
+}
+
+function uiPreferencesRequested(req) {
+  return queryValue(req, 'scope') === 'ui-preferences';
 }
 
 function resetRequested(req) {
@@ -240,6 +245,7 @@ module.exports = async function handler(req, res) {
 
   if (libraryRequested(req)) return UserLibrary.handle(req, res);
   if (profilePhotoRequested(req)) return ProfileAvatar.handle(req, res);
+  if (uiPreferencesRequested(req)) return UserUiPreferences.handle(req, res);
 
   // Admin user management shares this function instead of claiming another Vercel
   // Hobby function slot; it enforces its own live admin check.
