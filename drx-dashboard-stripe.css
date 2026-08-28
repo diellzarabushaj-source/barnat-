@@ -1,0 +1,446 @@
+/* DRx — shell-i i dashboard-it, i marrë nga paneli i administratorit.
+
+   `admin-dashboard.css` është e vetmja sipërfaqe e aplikacionit e ndërtuar mbi
+   një gjuhë të vetme vizuale, dhe është ajo që u miratua. Ky skedar e sjell atë
+   gjuhë te shell-i i përdoruesit: sirtar navy, shirit i sipërm i qetë, kokë
+   faqeje me kicker dhe titull të hollë, shirit statistikash me ndarëse, panele
+   me vijë floku.
+
+   Ndryshimi i vetëm i qëllimshëm ndaj referencës: theksi. Paneli i
+   administratorit përdor indigo-n e vet; këtu mbetet teal-i klinik i
+   `--ck-blue`, sepse ai është theksi i regjistrit, i Urgjencave dhe i Medical
+   Hub-it, dhe një aplikacion nuk mund të ketë dy.
+
+   Ngarkohet i fundit mbi çdo dashboard. Nuk prek asnjë strukturë: `mi-*`
+   mbeten pikërisht ato klasa që runtime-i i shell-it vizaton. */
+
+html.medindex-tailadmin {
+  --drx-nav:#1c1e54;
+  --drx-nav-hover:rgba(255,255,255,.075);
+  --drx-nav-active:rgba(102,183,173,.22);
+  --drx-nav-text:rgba(255,255,255,.67);
+  --drx-nav-label:rgba(255,255,255,.42);
+  --drx-shell-line:var(--ck-line,#e4e7ec);
+  --drx-shell-ink:var(--ck-ink,#101828);
+  --drx-shell-muted:var(--ck-muted,#667085);
+  --drx-shell-accent:var(--ck-blue,#1f7779);
+  --drx-shell-accent-deep:var(--ck-blue-strong,#155f63);
+  --drx-shell-soft:var(--ck-soft,#f9fafb);
+  --drx-shell-shadow:var(--ck-shadow-1,rgba(16,24,40,.04) 0 1px 3px);
+}
+
+/* ── Sirtari ─────────────────────────────────────────────────────────────
+   Navy i thellë, si te referenca. Sfondi i errët e nxjerr hapësirën e punës
+   përpara dhe e heq navigimin nga rruga e syrit. */
+html.medindex-tailadmin .mi-sidebar {
+  padding:18px 14px 14px!important;
+  border-right:0!important;
+  background:var(--drx-nav)!important;
+  color:#fff!important;
+  box-shadow:none!important;
+}
+
+html.medindex-tailadmin .mi-sidebar-header {
+  padding:0 0 12px!important;
+  border-bottom:0!important;
+  background:transparent!important;
+}
+
+html.medindex-tailadmin .mi-sidebar-scroll {
+  padding-inline:0!important;
+  background:transparent!important;
+  scrollbar-width:thin!important;
+  scrollbar-color:rgba(255,255,255,.18) transparent!important;
+}
+
+html.medindex-tailadmin #appMenu.mi-sidebar-nav {
+  gap:3px!important;
+}
+
+html.medindex-tailadmin #appMenu .mi-menu-label {
+  margin:14px 0 4px!important;
+  padding:0 11px!important;
+  color:var(--drx-nav-label)!important;
+  font-size:10px!important;
+  font-weight:400!important;
+  letter-spacing:.04em!important;
+  text-transform:uppercase!important;
+}
+
+html.medindex-tailadmin #appMenu :is(.app-menu-link,.auth-logout) {
+  min-height:40px!important;
+  gap:10px!important;
+  padding:0 10px!important;
+  border:0!important;
+  border-radius:6px!important;
+  background:transparent!important;
+  color:var(--drx-nav-text)!important;
+  font-size:14px!important;
+  font-weight:300!important;
+  transition:background .15s ease,color .15s ease!important;
+}
+
+html.medindex-tailadmin #appMenu :is(.app-menu-link,.auth-logout):hover {
+  background:var(--drx-nav-hover)!important;
+  color:#fff!important;
+}
+
+html.medindex-tailadmin #appMenu .app-menu-link:is(.active,[aria-current="page"]) {
+  background:var(--drx-nav-active)!important;
+  color:#fff!important;
+  box-shadow:none!important;
+}
+
+html.medindex-tailadmin #appMenu .app-menu-link::after {
+  display:none!important;
+}
+
+html.medindex-tailadmin #appMenu :is(.app-menu-icon,.mi-menu-icon) {
+  width:24px!important;
+  height:24px!important;
+  flex:0 0 24px!important;
+  color:currentColor!important;
+}
+
+html.medindex-tailadmin #appMenu :is(.app-menu-icon,.mi-menu-icon) svg {
+  width:17px!important;
+  height:17px!important;
+}
+
+html.medindex-tailadmin #appMenu .mi-menu-badge {
+  min-width:20px!important;
+  height:20px!important;
+  padding:0 6px!important;
+  border:0!important;
+  border-radius:999px!important;
+  background:rgba(255,255,255,.14)!important;
+  color:#fff!important;
+  font-size:10px!important;
+  font-weight:400!important;
+  font-feature-settings:"tnum"!important;
+}
+
+html.medindex-tailadmin .mi-sidebar-footer {
+  margin-top:auto!important;
+  padding:12px 0 0!important;
+  border-top:1px solid rgba(255,255,255,.12)!important;
+  background:transparent!important;
+}
+
+html.medindex-tailadmin .mi-user-card {
+  padding:6px 8px!important;
+  border:0!important;
+  border-radius:8px!important;
+  background:transparent!important;
+  color:#fff!important;
+}
+
+html.medindex-tailadmin .mi-user-card:hover {
+  background:var(--drx-nav-hover)!important;
+}
+
+html.medindex-tailadmin .mi-user-card :is(strong,.mi-user-name) {
+  color:#fff!important;
+  font-size:13px!important;
+  font-weight:400!important;
+}
+
+html.medindex-tailadmin .mi-user-card :is(small,.mi-user-mail,span) {
+  color:rgba(255,255,255,.62)!important;
+  font-size:11px!important;
+  font-weight:300!important;
+}
+
+/* ── Shiriti i sipërm ────────────────────────────────────────────────────
+   58px, një vijë floku poshtë, asgjë tjetër. */
+html.medindex-tailadmin .mi-topbar {
+  height:58px!important;
+  min-height:58px!important;
+  padding:0 28px!important;
+  border-bottom:1px solid var(--drx-shell-line)!important;
+  background:rgba(255,255,255,.97)!important;
+  box-shadow:none!important;
+  backdrop-filter:saturate(1.4) blur(6px)!important;
+}
+
+html.medindex-tailadmin .mi-global-search :is(input,.mi-search-input) {
+  min-height:38px!important;
+  border:1px solid var(--drx-shell-line)!important;
+  border-radius:8px!important;
+  background:var(--drx-shell-soft)!important;
+  color:var(--drx-shell-ink)!important;
+  box-shadow:none!important;
+  font-size:13px!important;
+  font-weight:400!important;
+}
+
+html.medindex-tailadmin .mi-global-search :is(input,.mi-search-input):focus {
+  border-color:var(--drx-shell-accent)!important;
+  background:#fff!important;
+  outline:0!important;
+  box-shadow:0 0 0 3px rgba(31,119,121,.13)!important;
+}
+
+html.medindex-tailadmin .mi-icon-button {
+  width:38px!important;
+  height:38px!important;
+  border:1px solid var(--drx-shell-line)!important;
+  border-radius:8px!important;
+  background:#fff!important;
+  color:var(--drx-shell-ink)!important;
+  box-shadow:none!important;
+}
+
+html.medindex-tailadmin .mi-icon-button:hover {
+  background:var(--drx-shell-soft)!important;
+}
+
+/* Një veprim i mbushur për shirit — pilula, si te referenca. */
+html.medindex-tailadmin .mi-primary-action {
+  min-height:38px!important;
+  padding:0 16px!important;
+  border:0!important;
+  border-radius:999px!important;
+  background:var(--drx-shell-accent)!important;
+  color:#fff!important;
+  box-shadow:none!important;
+  font-size:14px!important;
+  font-weight:400!important;
+}
+
+html.medindex-tailadmin .mi-primary-action:hover {
+  background:var(--drx-shell-accent-deep)!important;
+  transform:none!important;
+}
+
+html.medindex-tailadmin .mi-profile-chip {
+  padding:5px 10px!important;
+  border:1px solid var(--drx-shell-line)!important;
+  border-radius:999px!important;
+  background:#fff!important;
+  color:var(--drx-shell-ink)!important;
+  box-shadow:none!important;
+}
+
+html.medindex-tailadmin .mi-profile-chip :is(strong,.mi-profile-name) {
+  font-size:12px!important;
+  font-weight:400!important;
+}
+
+html.medindex-tailadmin .mi-profile-chip :is(small,.mi-profile-mail,span:last-child) {
+  color:var(--drx-shell-muted)!important;
+  font-size:11px!important;
+  font-weight:300!important;
+}
+
+/* ── Hapësira e punës ────────────────────────────────────────────────────*/
+html.medindex-tailadmin .mi-main {
+  background:#fff!important;
+}
+
+html.medindex-tailadmin .mi-content-container {
+  width:100%!important;
+  max-width:1360px!important;
+  margin:0 auto!important;
+  padding:32px 36px 64px!important;
+}
+
+/* ── Koka e faqes ────────────────────────────────────────────────────────
+   Titull i hollë me hapësirë negative — nënshkrimi tipografik i referencës. */
+html.medindex-tailadmin .mi-page-heading {
+  gap:28px!important;
+  margin-bottom:28px!important;
+  padding:0!important;
+  border:0!important;
+  background:transparent!important;
+  box-shadow:none!important;
+}
+
+html.medindex-tailadmin .mi-breadcrumb {
+  color:var(--drx-shell-muted)!important;
+  font-size:12px!important;
+  font-weight:400!important;
+}
+
+html.medindex-tailadmin .mi-breadcrumb a:hover {
+  color:var(--drx-shell-accent)!important;
+}
+
+html.medindex-tailadmin .mi-page-heading :is(h1,.mi-page-heading-title) {
+  margin:0 0 7px!important;
+  color:var(--drx-shell-ink)!important;
+  font-size:32px!important;
+  font-weight:300!important;
+  letter-spacing:-.64px!important;
+  line-height:1.1!important;
+}
+
+html.medindex-tailadmin .mi-page-heading :is(p,.mi-page-heading-subtitle):not(.mi-page-heading-title) {
+  max-width:780px!important;
+  margin:0!important;
+  color:var(--drx-shell-muted)!important;
+  font-size:14px!important;
+  font-weight:300!important;
+  line-height:1.55!important;
+}
+
+html.medindex-tailadmin .mi-heading-badge {
+  min-height:30px!important;
+  padding:0 12px!important;
+  border:1px solid var(--drx-shell-line)!important;
+  border-radius:999px!important;
+  background:#fff!important;
+  color:var(--drx-shell-muted)!important;
+  box-shadow:none!important;
+  font-size:12px!important;
+  font-weight:400!important;
+}
+
+/* ── Kartat, panelet dhe shiriti i statistikave ──────────────────────────
+   E njëjta gjeometri si te referenca: 12px rreze, një vijë floku, hija e
+   nivelit 1 dhe asgjë më shumë. */
+html.medindex-tailadmin :is(.mi-panel,.mi-card,.mi-surface-card,.med-card,.atc-card,.icd-chapter-card,.icd-code-card,.lab-card) {
+  border:1px solid var(--drx-shell-line)!important;
+  border-radius:12px!important;
+  background:#fff!important;
+  box-shadow:var(--drx-shell-shadow)!important;
+}
+
+html.medindex-tailadmin :is(.mi-panel,.mi-card,.med-card,.atc-card,.icd-chapter-card,.icd-code-card,.lab-card):hover {
+  border-color:var(--drx-shell-accent)!important;
+  transform:none!important;
+  box-shadow:var(--drx-shell-shadow)!important;
+}
+
+html.medindex-tailadmin .mi-panel-head {
+  padding:18px 20px!important;
+  border-bottom:1px solid var(--drx-shell-line)!important;
+}
+
+html.medindex-tailadmin .mi-panel-head h2 {
+  margin:0!important;
+  color:var(--drx-shell-ink)!important;
+  font-size:18px!important;
+  font-weight:300!important;
+  line-height:1.4!important;
+}
+
+html.medindex-tailadmin .mi-panel-head p {
+  margin:3px 0 0!important;
+  color:var(--drx-shell-muted)!important;
+  font-size:12px!important;
+  font-weight:300!important;
+}
+
+/* Statistikat lexohen si një shirit i vetëm i ndarë, jo si katër kuti që
+   notojnë veç e veç. */
+html.medindex-tailadmin .mi-stats {
+  margin-bottom:24px!important;
+  border:1px solid var(--drx-shell-line)!important;
+  border-radius:12px!important;
+  background:#fff!important;
+  overflow:hidden!important;
+  box-shadow:var(--drx-shell-shadow)!important;
+  gap:0!important;
+}
+
+html.medindex-tailadmin .mi-stat {
+  padding:20px 22px!important;
+  border:0!important;
+  border-right:1px solid var(--drx-shell-line)!important;
+  border-radius:0!important;
+  background:#fff!important;
+  box-shadow:none!important;
+}
+
+html.medindex-tailadmin .mi-stat:last-child {
+  border-right:0!important;
+}
+
+html.medindex-tailadmin .mi-stat span {
+  color:var(--drx-shell-muted)!important;
+  font-size:12px!important;
+  font-weight:400!important;
+}
+
+html.medindex-tailadmin .mi-stat strong {
+  display:block!important;
+  margin:12px 0 4px!important;
+  color:var(--drx-shell-ink)!important;
+  font-size:28px!important;
+  font-weight:300!important;
+  letter-spacing:-.5px!important;
+  line-height:1.05!important;
+  font-feature-settings:"tnum"!important;
+  font-variant-numeric:tabular-nums!important;
+}
+
+html.medindex-tailadmin .mi-stat small {
+  color:var(--drx-shell-muted)!important;
+  font-size:11px!important;
+  font-weight:300!important;
+}
+
+/* ── Errësira ────────────────────────────────────────────────────────────
+   Sirtari është tashmë i errët; ndryshon vetëm hapësira e punës. */
+html.medindex-tailadmin:is(.dark,[data-theme="dark"]) .mi-topbar {
+  background:rgba(16,24,40,.97)!important;
+}
+
+html.medindex-tailadmin:is(.dark,[data-theme="dark"]) .mi-main {
+  background:var(--ck-surface,#101828)!important;
+}
+
+html.medindex-tailadmin:is(.dark,[data-theme="dark"]) :is(.mi-panel,.mi-card,.mi-stats,.mi-stat,.mi-icon-button,.mi-profile-chip) {
+  background:var(--ck-surface,#101828)!important;
+  border-color:var(--ck-line,#344054)!important;
+}
+
+/* ── Ekranet e ngushta ───────────────────────────────────────────────────*/
+@media (max-width:1023px) {
+  html.medindex-tailadmin .mi-content-container {
+    padding:20px 16px 48px!important;
+  }
+
+  html.medindex-tailadmin .mi-page-heading :is(h1,.mi-page-heading-title) {
+    font-size:26px!important;
+    letter-spacing:-.26px!important;
+  }
+
+  html.medindex-tailadmin .mi-topbar {
+    padding:0 14px!important;
+  }
+
+  html.medindex-tailadmin .mi-stats {
+    grid-template-columns:repeat(2,minmax(0,1fr))!important;
+  }
+
+  html.medindex-tailadmin .mi-stat:nth-child(2n) {
+    border-right:0!important;
+  }
+
+  html.medindex-tailadmin .mi-stat:nth-child(-n+2) {
+    border-bottom:1px solid var(--drx-shell-line)!important;
+  }
+}
+
+@media (max-width:640px) {
+  html.medindex-tailadmin .mi-stats {
+    grid-template-columns:1fr!important;
+  }
+
+  html.medindex-tailadmin .mi-stat {
+    border-right:0!important;
+    border-bottom:1px solid var(--drx-shell-line)!important;
+  }
+
+  html.medindex-tailadmin .mi-stat:last-child {
+    border-bottom:0!important;
+  }
+}
+
+@media (prefers-reduced-motion:reduce) {
+  html.medindex-tailadmin :is(.mi-panel,.mi-card,.app-menu-link,.mi-primary-action,.mi-icon-button) {
+    transition:none!important;
+  }
+}
