@@ -44,6 +44,8 @@
 
   const figureCache = new Map();
   const figureRequests = new Map();
+  const lessonSearchIndex = new Map();
+  let searchTimer = 0;
 
   const $ = selector => document.querySelector(selector);
   const esc = value => String(value ?? '').replace(/[&<>"']/g, char => ({
@@ -182,7 +184,10 @@
   }
 
   function haystackForLesson(lesson) {
-    return normalize([
+    const id = lesson?._id || '';
+    if (id && lessonSearchIndex.has(id)) return lessonSearchIndex.get(id);
+
+    const value = normalize([
       lesson.title,
       lesson.sourceTitleEn,
       lesson.quickSummary,
@@ -213,6 +218,8 @@
         item.explanationSq,
       ]),
     ].join(' '));
+    if (id) lessonSearchIndex.set(id, value);
+    return value;
   }
 
   function currentSection() {
@@ -285,6 +292,8 @@
   }
 
   function clearSearch({ focus = true } = {}) {
+    window.clearTimeout(searchTimer);
+    searchTimer = 0;
     state.term = '';
     const input = $('#emergencySearch');
     if (input) input.value = '';
@@ -383,7 +392,7 @@
     }
 
     select.innerHTML = state.visibleSections.map(section => {
-      const count = sectionLessons(section._id).length;
+      const count = filteredLessonsForSection(section._id).length;
       const number = String(section.sectionNumber || section.order || '').padStart(2, '0');
       return `<option value="${esc(section._id)}">Kapitulli ${number} — ${esc(section.title)} · ${count} mësime</option>`;
     }).join('') || '<option value="">Asnjë kapitull</option>';
@@ -710,6 +719,7 @@
   }
 
   function handleSearch(value) {
+    const previousLessonId = state.selectedLessonId;
     state.term = value || '';
 
     if (state.term) {
@@ -718,17 +728,25 @@
         const nextSection = state.visibleSections[0];
         state.selectedSectionId = nextSection?._id || '';
         const nextLesson = nextSection
-          ? sectionLessons(nextSection._id).find(lesson => haystackForLesson(lesson).includes(normalize(state.term)))
+          ? filteredLessonsForSection(nextSection._id)[0]
           : null;
-        state.selectedLessonId = nextLesson?._id || sectionLessons(nextSection?._id || '')[0]?._id || '';
+        state.selectedLessonId = nextLesson?._id || '';
       }
     }
 
     renderChapters();
     renderLessons();
-    renderDetail();
+    if (state.selectedLessonId !== previousLessonId || !currentLesson()) renderDetail();
     renderReaderNavigation();
     syncUrl();
+  }
+
+  function scheduleSearch(value) {
+    window.clearTimeout(searchTimer);
+    searchTimer = window.setTimeout(() => {
+      searchTimer = 0;
+      handleSearch(value);
+    }, 90);
   }
 
   async function init() {
@@ -752,7 +770,7 @@
       state.selectedLessonId = sectionLessons(state.selectedSectionId)[0]?._id || '';
       restoreUrl();
 
-      $('#emergencySearch')?.addEventListener('input', event => handleSearch(event.target.value));
+      $('#emergencySearch')?.addEventListener('input', event => scheduleSearch(event.target.value));
       $('#emergencySearchClear')?.addEventListener('click', () => clearSearch());
       $('#emergencyChapterSelect')?.addEventListener('change', event => selectSection(event.target.value));
       $('#emergencyLessonSelect')?.addEventListener('change', event => selectLesson(event.target.value));
