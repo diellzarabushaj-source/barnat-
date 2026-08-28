@@ -45,6 +45,7 @@
     totalPages: null,
     q: '',
     status: '',
+    atc: '',
     formType: '',
     formValue: '',
     sort: 'registry',
@@ -130,6 +131,7 @@
     });
     if (state.q) params.set('q', state.q);
     if (state.status) params.set('status', state.status);
+    if (state.atc) params.set('atc', state.atc);
     if (state.formType === 'form' && state.formValue) params.set('formExact', state.formValue);
     else if (state.formType === 'category' && state.formValue) params.set('formCategory', state.formValue);
     return `/api/drug-search?${params.toString()}`;
@@ -255,7 +257,7 @@
     const first = state.rows.length ? (state.page - 1) * state.pageSize + 1 : 0;
     const last = state.rows.length ? first + state.rows.length - 1 : 0;
     const totalText = Number.isFinite(state.total) ? state.total.toLocaleString('sq-XK') : '—';
-    el.resultSummary.textContent = state.rows.length ? `${first.toLocaleString('sq-XK')}–${last.toLocaleString('sq-XK')} nga ${totalText} rezultate` : '0 rezultate';
+    el.resultSummary.textContent = state.rows.length ? `${state.atc ? `ATC ${state.atc} · ` : ''}${first.toLocaleString('sq-XK')}–${last.toLocaleString('sq-XK')} nga ${totalText} rezultate` : `${state.atc ? `ATC ${state.atc} · ` : ''}0 rezultate`;
     el.requestTiming.textContent = `${durationMs} ms`;
     el.metricTotal.textContent = totalText;
     el.metricPage.textContent = String(state.page);
@@ -371,7 +373,7 @@
     loadPage();
   }
 
-  function activeFilterCount() { return [state.q, state.status, state.formValue].filter(Boolean).length; }
+  function activeFilterCount() { return [state.q, state.status, state.atc, state.formValue].filter(Boolean).length; }
 
   function updateFilterUi() {
     const count = activeFilterCount();
@@ -591,12 +593,15 @@
   }
 
   function clearFilters() {
-    state.q = ''; state.status = ''; state.formType = ''; state.formValue = ''; state.page = 1;
+    state.q = ''; state.status = ''; state.atc = ''; state.formType = ''; state.formValue = ''; state.page = 1;
+    const url = new URL(location.href); url.searchParams.delete('atc'); history.replaceState(history.state, '', url.pathname + url.search + url.hash);
     el.searchInput.value = ''; el.statusFilter.value = ''; el.formPickerSearch.value = ''; syncFormPickerTrigger(); closeFormPicker();
     loadPage();
   }
 
   async function init() {
+    const incomingAtc = clean(new URLSearchParams(location.search).get('atc')).toUpperCase().replace(/\s+/g, '');
+    state.atc = /^(?:[A-Z]|[A-Z]\d{2})$/.test(incomingAtc) ? incomingAtc : '';
     bindEvents();
     renderFormPicker();
     syncFormPickerTrigger();
