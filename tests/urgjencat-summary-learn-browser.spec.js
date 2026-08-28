@@ -233,9 +233,10 @@ test.describe('Urgjencat Summary / Learn QA', () => {
        fare. Testi kalon atje, siç do të bënte lexuesi. */
     await page.locator('#emergencyDetail [data-ck-mode="test"]').click();
     await expect(page.locator('#emergencyDetail [data-ck-mode="test"]')).toHaveAttribute('aria-pressed','true');
-    /* Ekzistojnë dy seksione flashcard-esh — një për Mësimin, një për Testin —
-       ndaj çdo pohim kufizohet te ai që është vërtet i dukshëm. */
-    const flashcards = page.locator('#emergencyDetail .ck-sl-flashcards').locator('visible=true');
+    /* Ka vetëm një pemë flashcard-esh. V4 e zhvendos nga Mësimi te Testi dhe
+       çdo rirenderim duhet ta zëvendësojë në vend, jo ta kopjojë. */
+    await expect(page.locator('#emergencyDetail [data-ck-sl-flashcards]')).toHaveCount(1);
+    const flashcards = page.locator('[data-ck-sl-panel="test"] [data-ck-sl-flashcards]');
     await expect(flashcards).toBeVisible();
     const reveal = flashcards.locator('[data-flash-reveal]');
     await expect(reveal).toHaveAttribute('aria-expanded','false');
@@ -261,8 +262,10 @@ test.describe('Urgjencat Summary / Learn QA', () => {
   test('mobile 320px: pa overflow, pa micro-text dhe kontrolle touch >=44px', async ({page}) => {
     await page.setViewportSize({width:320,height:720});
     const pageErrors = await openEmergency(page);
-    await page.locator('#emergencyDetail [data-ck-mode="learn"]').click();
-    await page.locator('[data-flash-reveal]').click();
+    await page.locator('#emergencyDetail [data-ck-mode="test"]').click();
+    const flashcards = page.locator('[data-ck-sl-panel="test"] [data-ck-sl-flashcards]');
+    await expect(page.locator('#emergencyDetail [data-ck-sl-flashcards]')).toHaveCount(1);
+    await flashcards.locator('[data-flash-reveal]').click();
 
     const metrics = await page.evaluate(() => {
       const root = document.querySelector('#emergencyDetail');
@@ -271,6 +274,14 @@ test.describe('Urgjencat Summary / Learn QA', () => {
         return node.textContent.trim() && style.display !== 'none' && style.visibility !== 'hidden' && node.getClientRects().length;
       });
       const fonts = visibleText.map(node => Number.parseFloat(getComputedStyle(node).fontSize)).filter(Number.isFinite);
+      const fontOffenders = visibleText
+        .map(node => ({
+          tag:node.tagName,
+          className:typeof node.className === 'string' ? node.className : '',
+          text:node.textContent.trim().slice(0, 80),
+          font:Number.parseFloat(getComputedStyle(node).fontSize),
+        }))
+        .filter(entry => Number.isFinite(entry.font) && entry.font < 11);
       const controls = [...root.querySelectorAll('button')].filter(node => node.getClientRects().length).map(node => ({
         label:node.textContent.trim(),
         rect:node.getBoundingClientRect().toJSON(),
@@ -285,6 +296,7 @@ test.describe('Urgjencat Summary / Learn QA', () => {
       return {
         overflow:document.documentElement.scrollWidth - document.documentElement.clientWidth,
         minFont:Math.min(...fonts),
+        fontOffenders,
         directoryTag:Number.parseFloat(getComputedStyle(document.querySelector('.ck-directory-tag')).fontSize),
         directoryStatus:Number.parseFloat(getComputedStyle(document.querySelector('.ck-directory-review')).fontSize),
         triageControls,
@@ -294,7 +306,7 @@ test.describe('Urgjencat Summary / Learn QA', () => {
     });
 
     expect(metrics.overflow).toBeLessThanOrEqual(0);
-    expect(metrics.minFont).toBeGreaterThanOrEqual(11);
+    expect(metrics.minFont, JSON.stringify(metrics.fontOffenders)).toBeGreaterThanOrEqual(11);
     expect(metrics.directoryTag).toBeGreaterThanOrEqual(11);
     expect(metrics.directoryStatus).toBeGreaterThanOrEqual(11);
     for (const control of metrics.triageControls) {

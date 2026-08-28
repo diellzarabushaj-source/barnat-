@@ -92,11 +92,7 @@
 
   function rerender() {
     requestAnimationFrame(() => {
-      detail.querySelector('[data-ck-mode="learn"]')?.click();
-      requestAnimationFrame(() => {
-        detail.querySelector('[data-ck-mode="test"]')?.click();
-        requestAnimationFrame(() => detail.querySelector('[data-ck-sl-panel="test"] [data-flash-reveal]')?.focus({preventScroll:true}));
-      });
+      detail.querySelector('[data-ck-sl-panel="test"] [data-flash-reveal]')?.focus({preventScroll:true});
     });
   }
 

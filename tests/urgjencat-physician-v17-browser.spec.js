@@ -76,12 +76,15 @@ async function currentIndex(page) {
 }
 
 async function rate(page, selector, expectedRating, minDays) {
-  let flash = page.locator('[data-ck-sl-panel="test"] [data-ck-sl-flashcards]');
+  const flash = page.locator('[data-ck-sl-panel="test"] [data-ck-sl-flashcards]');
+  await expect(page.locator('#emergencyDetail [data-ck-sl-flashcards]')).toHaveCount(1);
   await expect(flash).toBeVisible();
   await flash.locator('[data-flash-reveal]').click();
   const index = await currentIndex(page);
   await flash.locator(selector).click();
-  await expect(page.locator('[data-ck-sl-panel="test"] [data-flash-reveal]')).toBeVisible();
+  await expect(page.locator('#emergencyDetail [data-ck-mode="test"]')).toHaveAttribute('aria-pressed','true');
+  await expect(page.locator('#emergencyDetail [data-ck-sl-flashcards]')).toHaveCount(1);
+  await expect(flash.locator('[data-flash-reveal]')).toBeVisible();
 
   const entry = await page.evaluate(({key,index}) => {
     const schedule = JSON.parse(localStorage.getItem(key) || '{}');

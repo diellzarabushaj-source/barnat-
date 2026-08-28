@@ -550,3 +550,21 @@ html[data-theme="dark"].medindex-tailadmin[data-mi-page="urgjencat"] .ck-v18-act
   html.medindex-tailadmin[data-mi-page="urgjencat"] .ck-v8-smart-results>button,
   html.medindex-tailadmin[data-mi-page="urgjencat"] .ck-v6-readiness-actions button{transition:none!important}
 }
+
+/* Phone text floor: labels remain compact, but never drop into 10px
+   microcopy inside the clinical detail workspace. */
+@media(max-width:760px){
+  html.medindex-tailadmin[data-mi-page="urgjencat"] #emergencyDetail .ck-emergency-breadcrumb,
+  html.medindex-tailadmin[data-mi-page="urgjencat"] #emergencyDetail .ck-detail-head .ck-chip,
+  html.medindex-tailadmin[data-mi-page="urgjencat"] #emergencyDetail.ck-detail .ck-mode-toggle button[data-ck-mode],
+  html.medindex-tailadmin[data-mi-page="urgjencat"] #emergencyDetail .ck-mode-caption,
+  html.medindex-tailadmin[data-mi-page="urgjencat"] #emergencyDetail .ck-v4-source-meta,
+  html.medindex-tailadmin[data-mi-page="urgjencat"] #emergencyDetail .ck-v4-next-review,
+  html.medindex-tailadmin[data-mi-page="urgjencat"] #emergencyDetail .ck-v4-test-head>div>span,
+  html.medindex-tailadmin[data-mi-page="urgjencat"] #emergencyDetail .ck-v5-session-bar>span,
+  html.medindex-tailadmin[data-mi-page="urgjencat"] #emergencyDetail .ck-v5-trainers-head span,
+  html.medindex-tailadmin[data-mi-page="urgjencat"] #emergencyDetail .ck-v5-trainers-head small,
+  html.medindex-tailadmin[data-mi-page="urgjencat"] #emergencyDetail .ck-v5-trainer-card>span{
+    font-size:11px!important;
+  }
+}

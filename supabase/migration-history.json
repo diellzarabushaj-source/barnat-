@@ -253,6 +253,10 @@
     {
       "version": "20260827221219",
       "name": "p1_exit_revoke_inert_view_write_grants"
+    },
+    {
+      "version": "20260828000815",
+      "name": "p1_exit_runtime_hardening"
     }
   ]
 }

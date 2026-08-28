@@ -349,14 +349,28 @@
 
     const rerender = (next, focusSelector) => {
       saveFlashState(item._id, next);
-      const wrapper = root.querySelector('[data-ck-sl-panel="learn"]');
-      if (!wrapper) return;
-      wrapper.outerHTML = learnMarkup(item);
+      /* `emergency-learning-v4` moves this node from Learn into the dedicated
+         Test panel. Replacing the whole Learn panel after that move creates a
+         second flashcard tree: the moved one stays in Test while the rebuilt
+         Learn markup adds another. Replace only the stateful flashcard node so
+         it remains owned by whichever panel currently contains it. */
+      const template = document.createElement('template');
+      template.innerHTML = learnMarkup(item).trim();
+      const replacement = template.content.querySelector('[data-ck-sl-flashcards]');
+      if (!replacement) return;
+      flash.replaceWith(replacement);
       bindFlashcards(root, item);
-      if (focusSelector) requestAnimationFrame(() => root.querySelector(focusSelector)?.focus({preventScroll:true}));
+      if (focusSelector) requestAnimationFrame(() => replacement.querySelector(focusSelector)?.focus({preventScroll:true}));
     };
 
     const state = flashState(item._id, cards.length);
+    /* v17 owns all four rating controls. It writes the shared state first and
+       emits this event; repaint the one existing flashcard tree in place so
+       mode ownership never has to bounce through Learn and back to Test. */
+    flash.addEventListener('medindex:flashcard-rated', () => rerender(
+      flashState(item._id, cards.length),
+      '[data-flash-reveal]',
+    ));
     flash.querySelector('[data-flash-reveal]')?.addEventListener('click', () => rerender(
       {...state, revealed: !state.revealed},
       '[data-flash-reveal]',

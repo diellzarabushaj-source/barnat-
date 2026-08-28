@@ -308,11 +308,7 @@ async function waitForRequestCount(requestLog, predicate, minimum, timeoutMs = 3
     const clearStarted = Date.now();
     await search.fill('');
     await waitForRequestCount(requestLog, item => item.view === 'registry-page' && item.q === '' && item.includeTotal === '1', 2);
-    /* The pagination container also has a result-range summary. Scope the audit
-       to the summary that owns the explicit `Faqja` label so range text such as
-       `1–25 nga 75 barna` cannot satisfy the page-number wait. */
-    const pageNumberSummary = page.locator('#pagination .registry-pagination-summary:has(.registry-pagination-summary-label)');
-    await pageNumberSummary.waitFor({ state:'visible', timeout:3000 });
+    await page.locator('#pagination [data-mobile-lite-page-number="1"][aria-current="page"]').waitFor({ state:'visible', timeout:3000 });
     const clearSearchSettleMs = elapsed(clearStarted);
 
     const statusRowsBefore = rowRequests().length;
@@ -338,11 +334,8 @@ async function waitForRequestCount(requestLog, predicate, minimum, timeoutMs = 3
     const paginationStarted = Date.now();
     await page.locator('#pagination [data-mobile-lite-page="next"]').click();
     await waitForRequestCount(requestLog, item => item.view === 'registry-page' && item.page === 2, 1);
-    await pageNumberSummary.locator('strong').filter({ hasText:/^2$/ }).waitFor({ state:'visible', timeout:3000 });
-    /* The label and number are separate grid children, so normalize whitespace
-       before asserting the semantic page label. */
-    const pageSummaryText = (await pageNumberSummary.innerText()).replace(/\s+/g, ' ').trim();
-    assert.match(pageSummaryText, /Faqja 2/);
+    await page.locator('#pagination [data-mobile-lite-page-number="2"][aria-current="page"]').waitFor({ state:'visible', timeout:3000 });
+    assert.equal(await page.locator('#pagination [data-mobile-lite-page-number="2"][aria-current="page"]').innerText(), '2');
     const paginationSettleMs = elapsed(paginationStarted);
     assert.equal(rowRequests().length - paginationRowsBefore, 1, 'Pagination should produce exactly one registry-page request.');
     assert.equal(countRequests().length - paginationCountsBefore, 0, 'Turning a page must reuse the count already known.');
