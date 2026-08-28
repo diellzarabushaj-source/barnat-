@@ -440,7 +440,9 @@
       })
       .catch(error => {
         console.warn('[Urgjencat v2] Figura nuk u ngarkua:', error);
-        return lesson.figures || [];
+        const fallback = lesson.figures || [];
+        figureCache.set(id, fallback);
+        return fallback;
       })
       .finally(() => {
         figureRequests.delete(id);
@@ -582,7 +584,8 @@
     const sections = [...(lesson.lessonSections || [])].sort((a, b) => (Number(a.order) || 999) - (Number(b.order) || 999));
     const subtopics = [...(lesson.subtopics || [])].sort((a, b) => (Number(a.order) || 999) - (Number(b.order) || 999));
     const abbreviations = [...(lesson.abbreviations || [])].sort((a, b) => (Number(a.footnoteNumber) || 999) - (Number(b.footnoteNumber) || 999));
-    const figures = [...(lesson.figures || [])];
+    const figures = [...figuresForLesson(lesson)];
+    const mediaPending = (lesson.figures || []).length > 0 && !figureCache.has(lesson._id);
     const review = reviewMeta(lesson.reviewStatus);
 
     root.innerHTML = `
@@ -608,6 +611,13 @@
           <div class="ec-quick-summary">
             <span>Në 20 sekonda</span>
             <p>${esc(lesson.quickSummary)}</p>
+          </div>
+        ` : ''}
+
+        ${mediaPending ? `
+          <div class="ec-media-loading" role="status">
+            <span class="ec-media-spinner" aria-hidden="true"></span>
+            <span>Po ngarkohen figurat vetëm për këtë mësim…</span>
           </div>
         ` : ''}
 
@@ -668,6 +678,10 @@
         </div>
       </div>
     `;
+
+    if (mediaPending && !figureRequests.has(lesson._id)) {
+      void ensureLessonFigures(lesson);
+    }
   }
 
   function selectSection(id, {preserveLesson = false} = {}) {
