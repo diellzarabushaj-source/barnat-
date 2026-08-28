@@ -7,7 +7,7 @@
 
 html.medindex-tailadmin[data-mi-page="dozologjia"]{
   --pk-touch:44px;
-  --pk-radius:16px;
+  --pk-radius:10px;
   --pk-gap:12px;
 }
 
@@ -154,7 +154,7 @@ html.medindex-tailadmin[data-mi-page="dozologjia"] .pediatric-dose-primary{
   /* Numri është arsyeja pse ekziston kjo faqe; asgjë tjetër në të nuk duhet të
      jetë më e madhe. */
   font-size:32px;
-  font-weight:700;
+  font-weight:600;
   line-height:1.15;
   overflow-wrap:anywhere;
 }
