@@ -29,13 +29,14 @@
     searching: false,
     requestId: 0,
     loading: false,
+    reveal: false,     // sill panelin e nyjeve në pamje pasi të mbërrijnë fëmijët (vetëm në celular)
   };
 
   function bindElements() {
     [
       'appShell','sidebar','sidebarBackdrop','menuButton','sidebarClose','logoutButton','avatarInitials','sourceStatus','syncText',
       'metricNodes','metricChapters','metricCategories','metricCoverage','metricCoverageNote',
-      'icdPath','icdPathItems','icdPathReset','icdSearch','icdStatusText','icdStatusMeta',
+      'icdPath','icdPathItems','icdPathReset','icdSearch','icdStatusText',
       'chapterList','chapterCount','nodeHero','nodeList','nodeSectionTitle','nodeCount','nodeKicker','toast',
     ].forEach(id => { el[id] = document.getElementById(id); });
   }
@@ -83,6 +84,19 @@
     return clean(node?.displayTitle) || clean(node?.albanianDraft) || clean(node?.englishTitle) || clean(node?.code) || '—';
   }
 
+  /* Titujt e kapitujve vijnë si «Neoplazitë (C00-D48)». Intervali është e vetmja
+     gjë që i dallon te lista e ngushtë; kur titulli pritej me elips, pikërisht ai
+     humbte, dhe poshtë të tetë rreshtave rrinte e njëjta fjalë «Kapitull». */
+  const CODE_RANGE = /\s*[(\[]\s*([A-Z]\d{2}(?:\.\d+)?\s*[–—-]\s*[A-Z]?\d{2}(?:\.\d+)?)\s*[)\]]\s*$/;
+
+  function splitRange(node) {
+    const title = nodeTitle(node);
+    const match = title.match(CODE_RANGE);
+    if (!match) return { title, range:'' };
+    const stripped = title.slice(0, match.index).trim();
+    return stripped ? { title:stripped, range:match[1].replace(/\s+/g, '') } : { title, range:'' };
+  }
+
   function nodeSubtitle(node) {
     const english = clean(node?.englishTitle);
     const shown = nodeTitle(node);
@@ -114,9 +128,10 @@
     el.chapterList.innerHTML = state.chapters.map(node => {
       const code = clean(node.code);
       const active = code === state.chapter;
+      const { title, range } = splitRange(node);
       return `<button class="chapter-row ${active ? 'is-active' : ''}" type="button" role="option" aria-selected="${active}" data-chapter="${escapeHtml(code)}">
         <span class="chapter-code">${escapeHtml(code)}</span>
-        <span class="chapter-copy"><strong>${escapeHtml(nodeTitle(node))}</strong><small>${escapeHtml(levelLabel('chapter'))}</small></span>
+        <span class="chapter-copy"><strong>${escapeHtml(title)}</strong><small>${escapeHtml(range || levelLabel('chapter'))}</small></span>
       </button>`;
     }).join('');
   }
@@ -130,11 +145,12 @@
     if (!node) { el.nodeHero.hidden = true; return; }
     el.nodeHero.hidden = false;
     const code = clean(node.code);
+    const { title, range } = splitRange(node);
     el.nodeHero.innerHTML = `
       <span class="hero-code">${escapeHtml(code)}</span>
       <span class="hero-copy">
-        <span class="hero-kicker">${escapeHtml(levelLabel(node.level))}</span>
-        <h2>${escapeHtml(nodeTitle(node))}</h2>
+        <span class="hero-kicker">${escapeHtml(levelLabel(node.level))}${range ? ` · <b>${escapeHtml(range)}</b>` : ''}</span>
+        <h2>${escapeHtml(title)}</h2>
         ${nodeSubtitle(node) ? `<p>${escapeHtml(nodeSubtitle(node))}</p>` : ''}
       </span>
       <span class="hero-actions">
@@ -190,8 +206,24 @@
       return;
     }
     const node = currentNode();
-    el.nodeKicker.textContent = node ? 'Nënndarjet' : 'Fillo';
-    el.nodeSectionTitle.textContent = node ? nodeTitle(node) : 'Zgjidh një kapitull';
+    if (!node) {
+      el.nodeKicker.textContent = 'Fillo';
+      el.nodeSectionTitle.textContent = 'Zgjidh një kapitull';
+      return;
+    }
+    /* Koka e listës thoshte fjalë për fjalë titullin e hero-s dy dhjetëra pikselë
+       më lart. Tani thotë çfarë përmban lista, jo se ku ndodhemi. */
+    el.nodeKicker.textContent = 'Nënndarjet';
+    el.nodeSectionTitle.textContent = childLevelLabel() || nodeTitle(node);
+  }
+
+  const LEVEL_PLURALS = Object.freeze({ chapter:'Kapitujt', block:'Blloqet', category:'Kategoritë', subcategory:'Nënkategoritë' });
+
+  function childLevelLabel() {
+    if (state.loading || !state.rows.length) return '';
+    const levels = [...new Set(state.rows.map(row => clean(row.level)).filter(Boolean))];
+    if (levels.length !== 1) return 'Nyjet e nivelit tjetër';
+    return LEVEL_PLURALS[levels[0]] || levelLabel(levels[0]);
   }
 
   function render() {
@@ -203,16 +235,19 @@
     renderRows();
   }
 
-  function setStatus(text, meta = '') {
+  /* Statusi rri në rreshtin e komandës, jo në një brez të vetin, dhe nuk tregon
+     më milisekondat e kërkesës: sa zgjati fetch-i është telemetri zhvilluesi,
+     jo informacion klinik. Toni thotë vetëm nëse po pritet apo dështoi. */
+  function setStatus(text, tone = '') {
     el.icdStatusText.textContent = text;
-    el.icdStatusMeta.textContent = meta;
+    el.icdStatusText.classList.toggle('is-busy', tone === 'busy');
+    el.icdStatusText.classList.toggle('is-error', tone === 'error');
   }
 
   // --- të dhënat ------------------------------------------------------------
 
   async function loadNav() {
-    const startedAt = performance.now();
-    setStatus('Duke ngarkuar hierarkinë ICD-10…');
+    setStatus('Duke ngarkuar hierarkinë ICD-10…', 'busy');
     const { payload, response } = await fetchJson(endpoint('nav'));
     const data = payload.data || {};
     state.chapters = Array.isArray(data.chapters) ? data.chapters : [];
@@ -221,26 +256,31 @@
     const source = response.headers.get('X-MedIndex-Data-Source') || 'Supabase';
     el.sourceStatus.textContent = `${source} · aktiv`;
     el.syncText.textContent = source;
-    setStatus(`${formatNumber(state.chapters.length)} kapituj të ngarkuar`, `${Math.round(performance.now() - startedAt)} ms`);
+    setStatus(`${formatNumber(state.chapters.length)} kapituj të ngarkuar`);
   }
 
   async function loadChildren(code) {
     const requestId = ++state.requestId;
     state.loading = true;
+    setStatus(`Duke hapur ${code}…`, 'busy');
     renderRows();
-    const startedAt = performance.now();
     try {
       const { payload } = await fetchJson(endpoint('children', { parent:code }));
       if (requestId !== state.requestId) return;
       const data = payload.data || {};
       state.rows = Array.isArray(data.rows) ? data.rows : [];
-      setStatus(`${formatNumber(state.rows.length)} nyje nën ${code}`, `${Math.round(performance.now() - startedAt)} ms`);
+      setStatus(`${formatNumber(state.rows.length)} nyje nën ${code}`);
     } catch (error) {
       if (requestId !== state.requestId) return;
       state.rows = [];
-      setStatus(error?.message || 'Hierarkia nuk u ngarkua.');
+      setStatus(error?.message || 'Hierarkia nuk u ngarkua.', 'error');
     } finally {
-      if (requestId === state.requestId) { state.loading = false; render(); }
+      if (requestId === state.requestId) {
+        state.loading = false;
+        render();
+        // Pas rirenderimit, që lartësia e panelit të jetë ajo përfundimtare.
+        if (state.reveal) { state.reveal = false; revealNodePanel(); }
+      }
     }
   }
 
@@ -250,18 +290,18 @@
     state.query = query;
     state.loading = true;
     renderSection();
+    setStatus(`Duke kërkuar «${query}»…`, 'busy');
     renderRows();
-    const startedAt = performance.now();
     try {
       const { payload } = await fetchJson(endpoint('suggest', { q:query }));
       if (requestId !== state.requestId) return;
       const data = payload.data || {};
       state.rows = Array.isArray(data.rows) ? data.rows : (Array.isArray(data.suggestions) ? data.suggestions : []);
-      setStatus(`${formatNumber(state.rows.length)} përputhje për «${query}»`, `${Math.round(performance.now() - startedAt)} ms`);
+      setStatus(`${formatNumber(state.rows.length)} përputhje për «${query}»`);
     } catch (error) {
       if (requestId !== state.requestId) return;
       state.rows = [];
-      setStatus(error?.message || 'Kërkimi dështoi.');
+      setStatus(error?.message || 'Kërkimi dështoi.', 'error');
     } finally {
       if (requestId === state.requestId) { state.loading = false; render(); }
     }
@@ -275,13 +315,24 @@
 
   // --- lëvizja --------------------------------------------------------------
 
-  function selectChapter(code) {
+  /* Nën 940px të dy panelet bien njëri poshtë tjetrit, kështu që pas zgjedhjes
+     së kapitullit përmbajtja mbetej një ekran e gjysmë më poshtë, pas tetë
+     rreshtave të listës. Zgjedhja e sjell atë vetë në pamje. */
+  function revealNodePanel() {
+    if (!window.matchMedia('(max-width:940px)').matches) return;
+    const behavior = window.matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth';
+    requestAnimationFrame(() => el.nodeHero?.scrollIntoView({ block:'start', behavior }));
+  }
+
+  function selectChapter(code, options = {}) {
     clearSearch();
     state.chapter = clean(code);
     state.path = [];
     writeHash(state.chapter);
     render();
+    state.reveal = Boolean(options.reveal);
     if (state.chapter) void loadChildren(state.chapter);
+    else state.reveal = false;
   }
 
   async function openNode(code) {
@@ -338,7 +389,7 @@
   function bindEvents() {
     el.chapterList.addEventListener('click', event => {
       const button = event.target.closest('[data-chapter]');
-      if (button) selectChapter(button.dataset.chapter);
+      if (button) selectChapter(button.dataset.chapter, { reveal:true });
     });
 
     el.nodeList.addEventListener('click', event => {
@@ -370,6 +421,9 @@
       }
       searchTimer = setTimeout(() => void runSearch(value), 220);
     });
+
+    /* Vendmbajtësi i gjatë pritej në mes të fjalës në 390px. */
+    if (window.matchMedia('(max-width:760px)').matches) el.icdSearch.placeholder = 'Kërko kodin ose diagnozën…';
 
     document.addEventListener('keydown', event => {
       if ((event.metaKey || event.ctrlKey) && event.key.toLowerCase() === 'k') { event.preventDefault(); el.icdSearch.focus(); el.icdSearch.select(); }
@@ -407,7 +461,7 @@
       if (chapter) selectChapter(clean(chapter.code));
       else if (state.chapters.length) selectChapter(clean(state.chapters[0].code));
     } catch (error) {
-      setStatus(error?.message || 'ICD-10 nuk u ngarkua.');
+      setStatus(error?.message || 'ICD-10 nuk u ngarkua.', 'error');
       el.sourceStatus.textContent = 'I palidhur';
     } finally {
       el.appShell.setAttribute('aria-busy', 'false');

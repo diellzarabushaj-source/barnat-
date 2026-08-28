@@ -36,14 +36,17 @@ button,input{font:inherit}button{color:inherit}a{color:inherit}[hidden]{display:
 .icon-button.menu-button,.icon-button.sidebar-close{display:none}
 .icon{display:block;width:18px;height:18px;flex:none}.icon-button .icon{width:17px;height:17px}
 .page-wrap{width:100%;max-width:1360px;margin:0 auto;padding:32px 36px 64px}.page-heading{display:flex;align-items:flex-start;justify-content:space-between;gap:28px;margin-bottom:28px}.eyebrow{margin:0 0 6px;color:var(--muted);font-size:10px;font-weight:400;letter-spacing:.1px;text-transform:uppercase}.page-heading h1{margin:0;color:var(--ink);font-size:32px;font-weight:300;letter-spacing:-.64px;line-height:1.1}.page-subtitle{max-width:760px;margin:7px 0 0;color:var(--muted);font-size:14px;font-weight:300;line-height:1.55}.heading-actions{display:flex;gap:8px}
-.button{min-height:38px;display:inline-flex;align-items:center;justify-content:center;gap:7px;padding:8px 14px;border:1px solid transparent;border-radius:9999px;background:#fff;cursor:pointer;font-size:12px;font-weight:400;text-decoration:none;white-space:nowrap;transition:background .15s,border-color .15s,color .15s,box-shadow .15s}.button:focus-visible,.icon-button:focus-visible,input:focus-visible,.group-row:focus-visible,.category-row:focus-visible,.subdivision-row:focus-visible{outline:0;box-shadow:0 0 0 3px rgba(83,58,253,.15)}.button-secondary{border-color:var(--line-strong);color:#394b5f}.button-secondary:hover{background:var(--soft)}
+.button{min-height:38px;display:inline-flex;align-items:center;justify-content:center;gap:7px;padding:8px 14px;border:1px solid transparent;border-radius:9999px;background:#fff;cursor:pointer;font-size:12px;font-weight:400;text-decoration:none;white-space:nowrap;transition:background .15s,border-color .15s,color .15s,box-shadow .15s}.button:focus-visible,.icon-button:focus-visible,input:focus-visible{outline:0;box-shadow:0 0 0 3px rgba(83,58,253,.15)}.button-secondary{border-color:var(--line-strong);color:#394b5f}.button-secondary:hover{background:var(--soft)}
 .metrics-row{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:0;margin-bottom:24px;border:1px solid var(--line);border-radius:12px;background:#fff;box-shadow:var(--shadow-sm);overflow:hidden}.metric-card{min-width:0;padding:20px 22px;border-right:1px solid var(--line)}.metric-card:last-child{border-right:0}.metric-card span,.metric-card strong,.metric-card small{display:block}.metric-card span{color:var(--muted);font-size:12px;font-weight:400}.metric-card strong{margin:12px 0 4px;color:var(--ink);font-size:28px;font-weight:300;line-height:1.05;font-variant-numeric:tabular-nums;letter-spacing:-.5px}.metric-card small{overflow:hidden;color:var(--muted);font-size:11px;text-overflow:ellipsis;white-space:nowrap}
 
 /* ICD-10 — e njëjta kartë, i njëjti ritëm si Barnat dhe Klasifikimi.
    Faqja e vjetër ngarkonte nëntëmbëdhjetë fletë stili të mbivendosura mbi një
    guaskë tjetër nga pjesa tjetër e produktit. Kjo është një shtresë e vetme. */
 
-.icd-path{display:flex;align-items:center;gap:9px;min-height:44px;margin-bottom:14px;padding:6px 7px 6px 12px;border:1px solid var(--line);border-radius:10px;background:#fbfcfe}
+/* Rruga rri brenda kartës, jo mbi të. Një kartë Stripe i mban vetë thërrimet e
+   veta: një shirit i shkëputur sipër saj lexohej si mbetje e faqes së vjetër. */
+.icd-path{display:flex;align-items:center;gap:9px;min-height:42px;padding:5px 8px 5px 13px;border-bottom:1px solid var(--line);background:#fbfcfe;border-radius:11px 11px 0 0}
+.icd-path[hidden]{display:none}
 .icd-path-label{flex:none;color:var(--muted);font-size:11px;font-weight:400}
 .icd-path-items{min-width:0;display:flex;align-items:center;gap:5px;overflow-x:auto;scrollbar-width:none}
 .icd-path-items::-webkit-scrollbar{display:none}
@@ -58,8 +61,11 @@ button,input{font:inherit}button{color:inherit}a{color:inherit}[hidden]{display:
 .icd-path-reset:hover{background:var(--stripe-soft)}
 
 .icd-card{overflow:hidden;border:1px solid var(--line);border-radius:12px;background:#fff;box-shadow:var(--shadow-sm)}
-.icd-toolbar{display:flex;align-items:center;gap:10px;padding:9px 10px;border-bottom:1px solid var(--line)}
-.search-box{position:relative;flex:1 1 auto;max-width:760px}
+/* Një rresht komande, jo tre. Toolbar-i dhe shiriti i statusit ishin dy breza
+   të veçantë me dy vija horizontale brenda 80 pikselave; Barnat e zgjidhi këtë
+   me një rresht të vetëm ku kërkimi rri majtas dhe numërimi djathtas. */
+.icd-toolbar{display:grid;grid-template-columns:minmax(260px,1fr) auto;align-items:center;gap:14px;padding:10px 12px;border-bottom:1px solid var(--line)}
+.search-box{position:relative;min-width:0;max-width:640px}
 .search-box svg{position:absolute;left:11px;top:50%;width:15px;height:15px;transform:translateY(-50%);fill:none;stroke:#8794a3;stroke-width:1.8;stroke-linecap:round}
 .search-box input{width:100%;height:38px;padding:0 62px 0 35px;border:1px solid var(--line-strong);border-radius:7px;background:#fff;color:var(--ink);font-size:13px;transition:border-color .12s,box-shadow .12s}
 .search-box input::placeholder{color:var(--muted)}
@@ -67,7 +73,11 @@ button,input{font:inherit}button{color:inherit}a{color:inherit}[hidden]{display:
 .search-box input:focus{outline:0;border-color:var(--stripe);box-shadow:0 0 0 3px rgba(83,58,253,.14)}
 .search-box kbd{position:absolute;right:8px;top:50%;transform:translateY(-50%);padding:4px 7px;border:1px solid var(--line);border-bottom-color:#c4ccd6;border-radius:5px;background:var(--soft);color:var(--muted);font:500 10px/1 Inter}
 
-.icd-status{min-height:34px;display:flex;align-items:center;justify-content:space-between;gap:12px;padding:6px 12px;border-bottom:1px solid var(--line);background:#fcfdfe;color:var(--muted);font-size:11px}
+.icd-status{display:inline-flex;align-items:center;gap:7px;min-height:30px;margin:0;padding:5px 11px;border:1px solid var(--line);border-radius:999px;background:var(--soft);color:#5c6b83;font-size:11px;font-variant-numeric:tabular-nums;white-space:nowrap}
+.icd-status::before{content:"";flex:none;width:6px;height:6px;border-radius:50%;background:#20b486}
+.icd-status.is-busy::before{background:var(--stripe)}
+.icd-status.is-error{border-color:#f1c7c7;background:#fdf4f4;color:#9a4040}
+.icd-status.is-error::before{background:#c94a4a}
 
 .icd-workspace{display:grid;grid-template-columns:290px minmax(0,1fr);min-height:620px}
 .chapter-panel{border-right:1px solid var(--line);background:#fbfcfe}
@@ -82,15 +92,22 @@ button,input{font:inherit}button{color:inherit}a{color:inherit}[hidden]{display:
 .chapter-code{display:grid;height:30px;place-items:center;border:1px solid var(--line);border-radius:7px;background:#fff;color:var(--stripe);font:600 11px/1 ui-monospace,SFMono-Regular,Menlo,monospace}
 .chapter-row.is-active .chapter-code{border-color:var(--stripe-line)}
 .chapter-copy{min-width:0}
-.chapter-copy strong{display:block;overflow:hidden;color:#30465b;font-size:12.5px;font-weight:500;line-height:1.35;text-overflow:ellipsis;white-space:nowrap}
-.chapter-copy small{display:block;margin-top:2px;color:#5a6b80;font-size:11px}
+/* Titulli merr dy rreshta në vend të një elipsi. Rreshti i dytë mban intervalin
+   e kodeve — ishte e vetmja gjë që i dallonte kapitujt, dhe pikërisht ajo binte
+   nga elipsi, ndërsa poshtë secilit prej tetë rreshtave shkruhej «Kapitull». */
+.chapter-copy strong{display:-webkit-box;overflow:hidden;-webkit-box-orient:vertical;-webkit-line-clamp:2;color:#30465b;font-size:12.5px;font-weight:500;line-height:1.32}
+.chapter-copy small{display:block;margin-top:3px;color:#5a6b80;font-size:10.5px;font-family:ui-monospace,SFMono-Regular,Menlo,monospace;letter-spacing:.01em}
+.chapter-row:focus-visible,.node-row:focus-visible,.icd-path-node:focus-visible,.icd-path-reset:focus-visible{outline:0;border-color:var(--stripe-line);box-shadow:0 0 0 3px rgba(83,58,253,.15)}
 
 .node-panel{min-width:0;display:flex;flex-direction:column}
-.node-hero{display:grid;grid-template-columns:58px minmax(0,1fr) auto;align-items:center;gap:14px;padding:18px 16px;border-bottom:1px solid var(--line);background:linear-gradient(180deg,#fff,#fbfcff)}
+.node-hero{display:grid;grid-template-columns:auto minmax(0,1fr) auto;align-items:center;gap:14px;padding:18px 16px;border-bottom:1px solid var(--line);background:linear-gradient(180deg,#fff,#fbfcff)}
 .node-hero[hidden]{display:none}
-.hero-code{display:grid;width:56px;height:56px;place-items:center;border:1px solid var(--stripe-line);border-radius:12px;background:var(--stripe-soft);color:var(--stripe);font:600 17px/1 ui-monospace,SFMono-Regular,Menlo,monospace}
+/* Kodi i një blloku është «A00-A09»: brenda një katrori 56px ai thyhej në dy
+   rreshta me vizën varur në fund. Kutia rritet sipas kodit, kodi nuk thyhet. */
+.hero-code{display:grid;min-width:56px;height:56px;place-items:center;padding:0 11px;border:1px solid var(--stripe-line);border-radius:12px;background:var(--stripe-soft);color:var(--stripe);white-space:nowrap;font:600 16px/1 ui-monospace,SFMono-Regular,Menlo,monospace}
 .hero-copy{min-width:0}
 .hero-kicker{display:block;margin-bottom:3px;color:var(--muted);font-size:11px}
+.hero-kicker b{color:#4a5b70;font:600 10.5px/1 ui-monospace,SFMono-Regular,Menlo,monospace;letter-spacing:.01em}
 .hero-copy h2{margin:0;color:var(--ink);font-size:19px;font-weight:500;line-height:1.25}
 .hero-copy p{margin:5px 0 0;color:var(--muted);font-size:12px}
 .hero-actions{display:flex;align-items:center;gap:8px}
@@ -100,6 +117,11 @@ button,input{font:inherit}button{color:inherit}a{color:inherit}[hidden]{display:
 .node-list{display:grid;gap:7px;padding:2px 16px 20px}
 .node-row{width:100%;display:grid;grid-template-columns:74px minmax(0,1fr) auto;align-items:center;gap:12px;min-height:58px;padding:9px 11px;border:1px solid var(--line);border-radius:9px;background:#fff;color:#3e5165;text-align:left;cursor:pointer;transition:border-color .12s,background .12s,box-shadow .12s}
 .node-row:hover{border-color:var(--stripe-line);background:#fcfcff}
+/* Një gjethe nuk hapet. Deri tani rreshti i fundit i degës premtonte lëvizje me
+   të njëjtin hover si të tjerët dhe shpërblehej me një toast. */
+.node-row[data-leaf]{cursor:default}
+.node-row[data-leaf]:hover{border-color:var(--line-strong);background:#fbfcfd}
+.node-row[data-leaf] .node-code{color:#5b6b80;background:#fff}
 .node-row.is-active{border-color:var(--stripe-line);background:var(--stripe-soft);box-shadow:var(--shadow-xs)}
 .node-code{display:inline-flex;min-width:64px;align-items:center;justify-content:center;padding:5px 8px;border:1px solid var(--line);border-radius:7px;background:var(--soft);color:var(--stripe);font:600 11px/1 ui-monospace,SFMono-Regular,Menlo,monospace}
 .node-copy{min-width:0}
@@ -140,14 +162,18 @@ button,input{font:inherit}button{color:inherit}a{color:inherit}[hidden]{display:
   .page-heading{display:block;margin-bottom:16px}.page-heading h1{font-size:26px}.page-subtitle{font-size:12px}
   .heading-actions{margin-top:12px}.heading-actions .button{width:100%;min-height:44px}
   .metric-card{padding:12px}.metric-card strong{font-size:18px}.metric-card small{font-size:10.5px}
-  .icd-path{position:sticky;top:50px;z-index:26;margin:0 -1px 10px;padding:6px 8px;background:rgba(255,255,255,.97);backdrop-filter:blur(10px)}
-  .icd-path-label{display:none}.icd-path-node span{display:none}
-  .icd-toolbar{align-items:stretch;flex-direction:column;padding:9px}
-  .search-box{max-width:none}.search-box input{height:46px;font-size:16px}.search-box kbd{display:none}
+  .icd-path{padding:5px 8px 5px 9px}
+  .icd-path-label{display:none}
+  /* Vetëm nyja aktuale e mban titullin: një «I» i vetëm pa kontekst nuk ishte rrugë. */
+  .icd-path-node span{display:none}
+  .icd-path-node.is-current span{display:block;max-width:150px}
+  .icd-toolbar{grid-template-columns:minmax(0,1fr);gap:9px;padding:9px}
+  .icd-status{justify-self:start}
+  .search-box input{height:46px;font-size:16px}.search-box kbd{display:none}
   .chapter-list{grid-template-columns:1fr}
   .chapter-row{min-height:48px}
-  .node-hero{grid-template-columns:52px minmax(0,1fr);padding:15px 12px}
-  .hero-code{width:50px;height:50px;font-size:15px}
+  .node-hero{grid-template-columns:auto minmax(0,1fr);padding:15px 12px}
+  .hero-code{min-width:50px;height:50px;padding:0 9px;font-size:14px}
   .hero-actions{grid-column:1/-1;width:100%}.hero-actions .button{min-height:42px;flex:1}
   .node-section-head{padding:14px 12px 10px}.node-list{padding:2px 12px 18px}
   .node-row{grid-template-columns:66px minmax(0,1fr);min-height:56px}
