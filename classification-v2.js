@@ -160,20 +160,30 @@
   }
 
   function renderHero() {
-    const name = groups()[state.group] || '';
-    const count = groupCount(state.group);
-    const color = colorFor(state.group);
+    const code = state.subdivision || state.category || state.group;
+    const color = colorFor(code);
+    const name = pathName(code) || groups()[state.group] || '';
+    const level = code.length === 1 ? 'Grupi anatomik'
+      : code.length === 3 ? 'Kategoria terapeutike'
+        : code.length === 4 ? 'Nënndarja farmakologjike'
+          : 'Nënndarja kimike';
+    const parentCopy = code.length === 1
+      ? `${categoryEntries(state.group).length} kategori terapeutike në këtë grup.`
+      : code.length === 3
+        ? `${state.group} — ${groups()[state.group] || ''}`
+        : `${state.category} — ${categories()[state.category] || ''}`;
+    const count = code.length === 1 ? groupCount(code) : code.length === 3 ? categoryDrugCount(code) : null;
     el.categoryHero.style.setProperty('--group-accent', color);
     el.categoryHero.innerHTML = `
-      <span class="hero-code">${escapeHtml(state.group)}</span>
+      <span class="hero-code">${escapeHtml(code)}</span>
       <div class="hero-copy">
-        <small>Grupi anatomik</small>
+        <small>${escapeHtml(level)}</small>
         <h2>${escapeHtml(name)}</h2>
-        <p>${categoryEntries(state.group).length} kategori terapeutike në këtë grup.</p>
+        <p>${escapeHtml(parentCopy)}</p>
       </div>
       <div class="hero-actions">
-        <span class="hero-count">${state.counts ? formatNumber(count) : '—'} barna</span>
-        <a class="button button-secondary" href="${registryUrl(state.group)}">Hap barnat</a>
+        ${count !== null ? `<span class="hero-count">${state.counts ? formatNumber(count) : '—'} barna</span>` : ''}
+        <a class="button button-secondary" href="${registryUrl(code)}">Hap barnat ${escapeHtml(code)}</a>
       </div>`;
   }
 
