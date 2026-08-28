@@ -47,6 +47,7 @@
   let lastState = null;
   let syncTimer = 0;
   let legacyPrescriptionPollTimer = 0;
+  let prescriptionChapters = [];
   let syncPromise = null;
   let resyncAfterFlight = false;
   let dirty = false;
@@ -525,6 +526,7 @@
           body:payloadBody,
           keepalive,
         });
+        if (Array.isArray(payload.prescriptionChapters)) prescriptionChapters = payload.prescriptionChapters;
         const reconciled = mergeRemote(payload);
         const meta = readMeta();
         meta.lastSyncedAt = payload.generatedAt || nowIso();
@@ -635,6 +637,7 @@
     }
     try {
       const snapshot = await api(API_URL);
+      if (Array.isArray(snapshot.prescriptionChapters)) prescriptionChapters = snapshot.prescriptionChapters;
       // Before a single item is merged or pushed: does this device copy belong
       // to the account that just answered?
       if (adoptOwner(snapshot.user)) lastState = readState();
@@ -759,6 +762,7 @@
     ownerKey,
     adoptOwner,
     personalDrugs:parsePersonalDrugs,
+    prescriptionChapters:() => prescriptionChapters.map(item => ({ ...item })),
     savePersonalDrug,
     deletePersonalDrug,
     personalDrugFields:DRUG_FIELDS,
