@@ -74,7 +74,7 @@ for (const [file, version] of [
 }
 for (const [htmlFile, runtime, version] of [
   ['urgjencat.html','urgjencat-v2.js','6'],
-  ['medical-hub.html','medical-hub-v2.js','1'],
+  ['medical-hub.html','medical-hub-v2.js','2'],
 ]) {
   const html = read(htmlFile);
   const js = read(runtime);
