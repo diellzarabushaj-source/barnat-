@@ -92,7 +92,8 @@ jobs:
           test -f local-registry-fidelity.js
           test -f recetat.js
           test -f tailadmin-shell-core.js
-          grep -q 'id="protocolsBtn"' index.html
+          grep -q 'href="/protokollet.html"' index.html
+          grep -q 'href="/recetat.html"' index.html
           grep -q "href:'/recetat.html'" tailadmin-shell-core.js
           grep -q "label:'Recetat'" tailadmin-shell-core.js
           grep -q 'id="rxComposer"' recetat.html
@@ -147,7 +148,14 @@ jobs:
           test -f THIRD_PARTY_NOTICES.md
           test -f tests/ui-navigation-audit-test.js
           test -f tests/professional-ui-audit-test.js
-          for page in index.html klasifikimi.html icd.html analizat.html dozologjia.html protokollet.html recetat.html; do
+          # Registry V2 is intentionally standalone: one stylesheet + one runtime.
+          grep -q 'data-drx-app="registry-v2"' index.html
+          grep -q 'registry-v2.css' index.html
+          grep -q 'registry-v2.js' index.html
+          ! grep -q 'tailadmin-medindex.css' index.html
+          ! grep -q 'tailadmin-professional.css' index.html
+          ! grep -q 'tailadmin-shell.js' index.html
+          for page in klasifikimi.html icd.html analizat.html dozologjia.html protokollet.html recetat.html; do
             grep -q 'medindex-tailadmin' "$page"
             grep -q 'tailadmin-medindex.css' "$page"
             grep -q 'tailadmin-professional.css' "$page"
