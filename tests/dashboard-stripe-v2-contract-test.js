@@ -20,7 +20,7 @@ assert.match(stripe, /@media\(max-width:760px\)/);
 assert.match(stripe, /prefers-reduced-motion:reduce/);
 
 const pages = [
-  'analizat.html','dozologjia.html','icd.html','medical-hub.html',
+  'analizat.html','dozologjia.html','medical-hub.html',
   'protokollet.html','recetat.html','sistemi.html','urgjencat.html',
 ];
 
@@ -39,6 +39,19 @@ for (const file of pages) {
   assert.equal(stripeIndex, styles.length - 1, `${file}: Stripe v2 must be the final static stylesheet`);
   assert.match(html, /<meta name="theme-color" content="#1c1e54">/, `${file}: browser chrome must match the navy dashboard shell`);
 }
+
+/* ICD-10 is a standalone V2 shell, like Registry V2 and Classification V2.
+   It shares the approved navy/indigo design system directly rather than
+   loading the TailAdmin compatibility cascade. */
+const icdHtml = read('icd.html');
+const icdCss = read('icd-v2.css');
+assert.match(icdHtml, /data-drx-app="icd-v2"/);
+assert.match(icdHtml, /<meta name="theme-color" content="#1c1e54">/);
+assert.match(icdHtml, /icd-v2\.css\?v=1/);
+assert.match(icdHtml, /icd-v2\.js\?v=1/);
+assert.doesNotMatch(icdHtml, /tailadmin-medindex\.css|tailadmin-professional\.css|drx-dashboard-stripe\.css|tailadmin-shell\.js/);
+assert.match(icdCss, /#1c1e54/i);
+assert.match(icdCss, /#533afd/i);
 
 const shell = read('tailadmin-shell.js');
 assert.match(shell, /function stripeStylesheet\(\)/);
