@@ -1,30 +1,138 @@
 <!doctype html>
-<html lang="sq" class="auth-checking medindex-clean-ui medindex-tailadmin">
+<html lang="sq" data-drx-app="classification-v2">
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
   <meta name="robots" content="noindex,nofollow,noarchive">
-  <meta name="theme-color" content="#0d3d40">
-  <link rel="manifest" href="manifest.webmanifest">
-  <title>DRx | Tabela e Barnave</title>
+  <meta name="theme-color" content="#1c1e54">
+  <title>DRx | Klasifikimi ATC</title>
+  <link rel="icon" href="/brand/drx-icon-silver.svg" type="image/svg+xml">
   <link rel="preload" href="/fonts/inter-latin-variable-normal.woff2" as="font" type="font/woff2" crossorigin>
-  <link rel="stylesheet" href="drx-clinical-system.css?v=drx-clinical-system-v1">
-  <link rel="stylesheet" href="app-polish.css?v=20260728-1">
-  <link rel="stylesheet" href="tailadmin-medindex.css?v=20260728-1" data-tailadmin-medindex-css>
-  <link rel="stylesheet" href="drx-dashboard-stripe.css?v=drx-dashboard-stripe-v1">
-  <link rel="stylesheet" href="tailadmin-professional.css?v=20260728-1" data-tailadmin-professional-css>
-  <script src="classification-redirect.js?v=table-only-v1" defer></script>
-  <script src="tailadmin-shell.js?v=production-audit-v2" defer></script>
-  <script src="tailadmin-professional.js?v=production-audit-v2" defer></script>
-  <script src="auth-client.js?v=production-audit-v2" defer></script>
-  <script src="app-stability.js?v=20260724-2" defer></script>
-  <noscript><meta http-equiv="refresh" content="0;url=/index.html"></noscript>
+  <link rel="stylesheet" href="/classification-v2.css?v=1">
+  <script src="/classification-data.js?v=atc-catalog-v2" defer></script>
+  <script src="/classification-v2.js?v=1" defer></script>
 </head>
 <body>
-  <a class="skip-link" href="#atcContent">Kalo te tabela e Barnave</a>
-  <main id="atcContent" tabindex="-1">
-    <p>Po hapet tabela kryesore e Barnave…</p>
-    <p><a href="/index.html">Hape tabelën e Barnave</a></p>
-  </main>
+  <div class="app-shell" id="appShell" aria-busy="true">
+    <aside class="sidebar" id="sidebar" aria-label="Navigimi kryesor">
+      <div class="sidebar-head">
+        <a class="brand" href="/index.html" aria-label="DRx — Regjistri">
+          <img src="/brand/drx-horizontal-white.svg" alt="DRx" width="104" height="32">
+        </a>
+        <button class="icon-button sidebar-close" id="sidebarClose" type="button" aria-label="Mbyll menynë">×</button>
+      </div>
+
+      <nav class="nav-stack">
+        <p class="nav-label">Klinike</p>
+        <a class="nav-item" href="/index.html"><span class="nav-icon">Rx</span><span>Barnat</span></a>
+        <a class="nav-item is-active" href="/klasifikimi.html" aria-current="page"><span class="nav-icon">AT</span><span>Klasifikimi ATC</span></a>
+        <a class="nav-item" href="/icd.html"><span class="nav-icon">10</span><span>ICD‑10</span></a>
+        <a class="nav-item" href="/dozologjia.html"><span class="nav-icon">mg</span><span>Dozologjia</span></a>
+        <a class="nav-item" href="/protokollet.html"><span class="nav-icon">P</span><span>Protokollet</span></a>
+        <a class="nav-item" href="/urgjencat.html"><span class="nav-icon">!</span><span>Urgjencat</span></a>
+
+        <p class="nav-label nav-label-spaced">Puna ime</p>
+        <a class="nav-item" href="/recetat.html"><span class="nav-icon">R</span><span>Recetat</span></a>
+        <a class="nav-item" href="/analizat.html"><span class="nav-icon">A</span><span>Analizat</span></a>
+        <a class="nav-item" href="/medical-hub.html"><span class="nav-icon">+</span><span>Medical Hub</span></a>
+      </nav>
+
+      <div class="sidebar-foot">
+        <div class="source-card">
+          <span class="source-dot" aria-hidden="true"></span>
+          <div><strong>ATC clinical catalog</strong><small id="sourceStatus">Duke u lidhur…</small></div>
+        </div>
+        <button class="nav-item logout-button" id="logoutButton" type="button"><span class="nav-icon">↗</span><span>Dil</span></button>
+      </div>
+    </aside>
+
+    <div class="sidebar-backdrop" id="sidebarBackdrop" hidden></div>
+
+    <main class="main-shell">
+      <header class="topbar">
+        <button class="icon-button menu-button" id="menuButton" type="button" aria-label="Hap menynë">☰</button>
+        <div class="breadcrumbs" aria-label="Pozicioni aktual">
+          <span>DRx</span><span class="crumb-sep">/</span><strong>Klasifikimi ATC</strong>
+        </div>
+        <div class="topbar-actions">
+          <span class="sync-pill"><span class="sync-dot"></span><span id="syncText">Supabase</span></span>
+          <button class="avatar-button" id="profileButton" type="button" aria-label="Profili"><span id="avatarInitials">DR</span></button>
+        </div>
+      </header>
+
+      <section class="page-wrap" aria-labelledby="pageTitle">
+        <div class="page-heading">
+          <div>
+            <p class="eyebrow">Anatomical Therapeutic Chemical</p>
+            <h1 id="pageTitle">Klasifikimi ATC</h1>
+            <p class="page-subtitle">Shfleto barnat sipas sistemit anatomik, grupit terapeutik dhe nënndarjeve farmakologjike.</p>
+          </div>
+          <div class="heading-actions">
+            <a class="button button-secondary" href="/index.html">Hap regjistrin</a>
+          </div>
+        </div>
+
+        <div class="metrics-row" aria-label="Përmbledhje ATC">
+          <article class="metric-card"><span>Grupe anatomike</span><strong id="metricGroups">14</strong><small>Niveli kryesor ATC</small></article>
+          <article class="metric-card"><span>Kategori terapeutike</span><strong id="metricCategories">—</strong><small>Kode me 3 karaktere</small></article>
+          <article class="metric-card"><span>Barna të klasifikuara</span><strong id="metricClassified">—</strong><small id="metricCoverage">Duke ngarkuar…</small></article>
+          <article class="metric-card"><span>Pa klasifikim ATC</span><strong id="metricUnclassified">—</strong><small>Rreshta pa kategori të njohur</small></article>
+        </div>
+
+        <section class="atc-card">
+          <div class="atc-toolbar">
+            <div class="search-box">
+              <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="11" cy="11" r="6.5"/><path d="m16 16 4 4"/></svg>
+              <input id="atcSearch" type="search" autocomplete="off" spellcheck="false" placeholder="Kërko kodin ose emrin ATC (p.sh. N02, analgjezikë, diabet)…" aria-label="Kërko klasifikimin ATC">
+              <kbd>⌘K</kbd>
+            </div>
+            <button class="button button-secondary" id="clearSearchButton" type="button" hidden>Pastro</button>
+          </div>
+
+          <div class="atc-status" role="status" aria-live="polite">
+            <span id="atcStatusText">Duke ngarkuar klasifikimin…</span>
+            <span id="atcStatusMeta"></span>
+          </div>
+
+          <div class="atc-workspace" id="atcWorkspace">
+            <aside class="group-panel" aria-label="Grupet anatomike">
+              <div class="panel-heading">
+                <div><span class="panel-kicker">Niveli kryesor</span><h2>Grupet anatomike</h2></div>
+                <span class="panel-count" id="groupCount">14</span>
+              </div>
+              <div class="group-list" id="groupList" role="listbox" aria-label="Zgjidh grupin ATC"></div>
+            </aside>
+
+            <section class="category-panel" aria-labelledby="categoryPanelTitle">
+              <div id="categoryView">
+                <div class="category-hero" id="categoryHero"></div>
+                <div class="category-section-head">
+                  <div>
+                    <span class="panel-kicker">Kategoritë</span>
+                    <h2 id="categoryPanelTitle">Zgjidh një grup</h2>
+                  </div>
+                  <span class="panel-count" id="categoryCount">0</span>
+                </div>
+                <div class="category-list" id="categoryList"></div>
+              </div>
+
+              <div class="search-results-view" id="searchResultsView" hidden>
+                <div class="category-section-head">
+                  <div>
+                    <span class="panel-kicker">Rezultatet</span>
+                    <h2>Kërkimi ATC</h2>
+                  </div>
+                  <span class="panel-count" id="searchResultCount">0</span>
+                </div>
+                <div class="search-results" id="searchResults"></div>
+              </div>
+            </section>
+          </div>
+        </section>
+      </section>
+    </main>
+  </div>
+
+  <div class="toast" id="toast" role="status" aria-live="polite" hidden></div>
 </body>
 </html>
