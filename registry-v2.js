@@ -85,6 +85,15 @@
     return new Intl.NumberFormat('sq-XK', { style:'currency', currency:'EUR', maximumFractionDigits:2 }).format(number);
   };
 
+  function loadSharedSidebarTaxonomy() {
+    if (document.querySelector('script[data-drx-sidebar-taxonomy]')) return;
+    const script = document.createElement('script');
+    script.src = '/sidebar-taxonomy-v3.js?v=sidebar-taxonomy-v3';
+    script.defer = true;
+    script.dataset.drxSidebarTaxonomy = '1';
+    document.head.appendChild(script);
+  }
+
   function debounceSearch() {
     clearTimeout(state.searchTimer);
     state.searchTimer = setTimeout(() => {
@@ -605,6 +614,7 @@
   }
 
   async function init() {
+    loadSharedSidebarTaxonomy();
     const incomingAtc = clean(new URLSearchParams(location.search).get('atc')).toUpperCase().replace(/\s+/g, '');
     state.atc = /^(?:[A-Z]|[A-Z]\d{2}(?:[A-Z]{1,2})?)$/.test(incomingAtc) ? incomingAtc : '';
     bindEvents();
