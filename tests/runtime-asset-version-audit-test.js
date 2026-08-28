@@ -31,6 +31,12 @@ assert.match(dosagePage, /dozologjia-v2\.js\?v=1/, 'dozologjia.html: V2 runtime 
 assert.match(dosagePage, /drx-dashboard-stripe\.css\?v=drx-dashboard-stripe-v4/, 'dozologjia.html: canonical Stripe shell is missing');
 assert.doesNotMatch(dosagePage, /auth-client\.js|tailadmin-|dozologjia-deep-audit\.js|style-loader|dozologjia\.js/, 'dozologjia.html: legacy dosage runtime must stay removed');
 
+const systemPage = read('sistemi.html');
+assert.match(systemPage, /sistemi-v2\.css\?v=1/, 'sistemi.html: V2 stylesheet version is stale');
+assert.match(systemPage, /sistemi-v2\.js\?v=1/, 'sistemi.html: V2 runtime version is stale');
+assert.match(systemPage, /drx-dashboard-stripe\.css\?v=drx-dashboard-stripe-v4/, 'sistemi.html: canonical Stripe shell is missing');
+assert.doesNotMatch(systemPage, /auth-client\.js|tailadmin-|system-health\.js|media-library\.js|admin-entry\.js/, 'sistemi.html: legacy operational runtime must stay removed');
+
 for (const page of pages) {
   const html = read(page);
   assert.match(html, /auth-client\.js\?v=production-audit-v2/, `${page}: auth runtime cache version is stale`);
