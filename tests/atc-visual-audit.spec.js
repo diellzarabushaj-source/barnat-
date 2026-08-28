@@ -61,12 +61,18 @@ for (const profile of [
     await expect(page.locator('#categoryPanelTitle')).toContainText('Sistemi nervor');
     await expect(page.locator('[data-category-card="N02"] .category-count')).toHaveText('126');
     await expect(page.locator('[data-category-card="N02"] a[href="/index.html?atc=N02"]')).toBeVisible();
+    await expect(page.locator('[data-subdivision-code="N02A"].subdivision-parent')).toBeVisible();
+    await expect(page.locator('[data-subdivision-code="N02AA"].subdivision-child')).toBeVisible();
     await expect(page.locator('#atcPathItems [data-path-code="N"]')).toBeVisible();
     await expect(page.locator('#atcPathItems [data-path-code="N02"]')).toHaveClass(/is-current/);
     await expect(page.locator('#atcPathRegistry')).toHaveAttribute('href', '/index.html?atc=N02');
 
     await page.locator('#atcSearch').fill('dhimbje');
     await expect(page.locator('[data-search-code="N02"]')).toBeVisible();
+    await expect(page.locator('[data-search-code="N02"] .search-result-meta')).toContainText('126 barna');
+    await page.locator('#atcSearch').press('ArrowDown');
+    await expect(page.locator('[data-search-code="N02"]')).toBeFocused();
+    await page.locator('#atcSearch').focus();
     await page.locator('#atcSearch').fill('diabet');
     await expect(page.locator('#searchResultsView')).toBeVisible();
     await expect(page.locator('[data-search-code="A10"]')).toBeVisible();
