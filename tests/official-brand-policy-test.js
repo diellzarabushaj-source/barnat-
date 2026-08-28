@@ -122,8 +122,8 @@ loginLogoReferences.forEach(reference => {
 // approved MedIndex assets above or the DRx lockup, but never a reconstructed
 // wordmark made from live text.
 const approvedDrxLoginLogos = [
-  '/brand/drx-horizontal-dark.svg',
-  '/brand/drx-horizontal-white.svg',
+  '/brand/drx-horizontal-on-light.svg',
+  '/brand/drx-horizontal-on-dark.svg',
 ];
 const drxLoginLogos = approvedDrxLoginLogos.filter(reference => loginHtml.includes(reference));
 assert.ok(loginLogoReferences.length > 0 || drxLoginLogos.length > 0,
@@ -132,4 +132,4 @@ drxLoginLogos.forEach(reference => {
   assert.ok(fs.existsSync(path.join(ROOT, reference.replace(/^\//, ''))), `Approved DRx logo is missing: ${reference}`);
 });
 
-console.log('Official logo policy passed: MedIndex v1 assets stay governed and login uses an approved brand lockup.');
+console.log('Official logo policy passed: MedIndex legacy assets stay governed and login uses the canonical DRx on-light/on-dark lockup.');
