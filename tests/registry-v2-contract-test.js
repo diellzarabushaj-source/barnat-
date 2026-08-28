@@ -18,6 +18,10 @@ assert.doesNotMatch(html, /registry-mobile-|registry-ux-phase|registry-unified-t
 [
   'searchInput',
   'filterPanel',
+  'formPickerButton',
+  'formPickerPanel',
+  'formPickerSearch',
+  'formPickerList',
   'registryTable',
   'registryRows',
   'prevPageButton',
@@ -28,6 +32,9 @@ assert.doesNotMatch(html, /registry-mobile-|registry-ux-phase|registry-unified-t
 
 assert.match(css, /--accent:#635bff/);
 assert.match(css, /\.detail-drawer/);
+assert.match(css, /\.form-picker-panel/);
+assert.match(css, /\.form-category/);
+assert.match(css, /\.form-option/);
 assert.match(css, /@media\(max-width:760px\)/);
 assert.doesNotMatch(css, /!important/);
 
@@ -38,6 +45,9 @@ assert.match(js, /\/api\/dosage\?view=card/);
 assert.match(js, /AbortController/);
 assert.match(js, /requestId/);
 assert.match(js, /escapeHtml/);
+assert.match(js, /FORM_GROUPS/);
+assert.match(js, /formExact/);
+assert.match(js, /formCategory/);
 assert.doesNotThrow(() => new Function(js));
 
 const page = drugSearch.buildPageRequest({
