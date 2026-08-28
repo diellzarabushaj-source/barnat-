@@ -13935,6 +13935,16 @@ html[data-theme=dark] .registry-dosage-more{
   .registry-dosage-more{border:1px solid ButtonText;background:Canvas;color:CanvasText}
 }
 
+/* single-css authority: former TailGrids runtime mobile overflow fix */
+@media(max-width:760px){
+  html.medindex-tailadmin #registryContent.table-wrap{
+    overflow-x:visible!important;
+    overflow-y:visible!important;
+    scrollbar-gutter:auto!important;
+    box-shadow:none!important;
+  }
+}
+
 /* ===== canonical final layer: registry-table-tools.css ===== */
 /* Compact optional tools for the medicine registry.
    Verification and editing are intentionally removed from the table. */
