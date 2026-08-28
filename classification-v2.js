@@ -114,9 +114,10 @@
   }
 
   function writeHash(code) {
-    const next = code ? `#${encodeURIComponent(code)}` : location.pathname + location.search;
-    if (code) history.replaceState({ atc:code }, '', next);
-    else history.replaceState({}, '', location.pathname + location.search);
+    const url = new URL(location.href);
+    url.searchParams.delete('atc');
+    url.hash = code ? encodeURIComponent(code) : '';
+    history.replaceState(code ? { atc:code } : {}, '', url.pathname + url.search + url.hash);
   }
 
   function renderGroups() {
