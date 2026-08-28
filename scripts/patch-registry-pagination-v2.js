@@ -118,7 +118,8 @@ function verifyOutput() {
   if (!desktop.includes('desktopLitePageNumber')) throw new Error('Desktop direct page buttons are missing.');
   if (!mobile.includes('mobileLitePageNumber')) throw new Error('Mobile direct page buttons are missing.');
   if (!full.includes('registryPageNumber')) throw new Error('Full-runtime direct page buttons are missing.');
-  if (!index.includes('registry-table-tools.css?v=')) throw new Error('Single registry stylesheet authority is not wired into index.html.');\n  if (index.includes('registry-pagination-v2.css')) throw new Error('Legacy pagination stylesheet must not return as a separate asset.');
+  if (!index.includes('registry-table-tools.css?v=')) throw new Error('Single registry stylesheet authority is not wired into index.html.');
+  if (index.includes('registry-pagination-v2.css')) throw new Error('Legacy pagination stylesheet must not return as a separate asset.');
   if (!css.includes('#pagination button[aria-current="page"]')) throw new Error('Pagination active state styling is missing.');
 }
 
