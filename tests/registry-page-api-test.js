@@ -18,19 +18,21 @@ assert.equal(typeof drugSearch.buildDetailPath, 'function');
 assert.equal(typeof drugSearch.buildSearchPath, 'function');
 
 const page = drugSearch.buildPageRequest({
-  page:'3', pageSize:'50', includeTotal:'true', q:'amoxicillin', status:'Gjenerik', form:'Tabletë', sort:'name', direction:'desc',
+  page:'3', pageSize:'50', includeTotal:'true', q:'amoxicillin', status:'Gjenerik', atc:'N02', form:'Tabletë', sort:'name', direction:'desc',
 });
 assert.equal(page.page, 3);
 assert.equal(page.pageSize, 50);
 assert.equal(page.includeTotal, true);
 assert.equal(page.sort, 'name');
 assert.equal(page.direction, 'desc');
+assert.equal(page.atc, 'N02');
 const decodedPage = decodeURIComponent(page.path);
 assert.match(decodedPage, /^drugs\?/);
 assert.match(decodedPage, /is_published=eq\.true/);
 assert.match(decodedPage, /editorial_status=eq\.published/);
 assert.match(decodedPage, /registry_search_text=ilike\.\*amoxicillin\*/);
 assert.match(decodedPage, /product_status=eq\.Gjenerik/);
+assert.match(decodedPage, /atc_code=ilike\.N02\*/);
 assert.match(decodedPage, /pharmaceutical_form=ilike\.\*Tabletë\*/);
 assert.match(decodedPage, /limit=50/);
 assert.match(decodedPage, /offset=100/);
