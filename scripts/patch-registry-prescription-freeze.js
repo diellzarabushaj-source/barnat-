@@ -8,7 +8,6 @@ const DESKTOP_COLUMNS = 'registry-desktop-column-lite.js';
 const UNIFIED_TABLE = 'registry-unified-table.js';
 const INDEX = 'index.html';
 const TABLE_TOOLS_CSS = 'registry-table-tools.css';
-const FROZEN_CSS = 'registry-frozen-columns.css';
 const STYLE_LOADER = 'first-page-style-loader.js';
 const MARKER = 'registry-prescription-freeze-v1';
 
@@ -128,13 +127,13 @@ function verify() {
   if (!unified.includes("'select', 'number', 'prescription-label', 'trade-name', 'active-substance'") || !unified.includes("--registry-frozen-prescription-left")) {
     throw new Error('Prescription freeze finalizer: unified order/frozen offset mungon.');
   }
-  const frozen = read(FROZEN_CSS);
+  const frozen = read(TABLE_TOOLS_CSS);
   if (!frozen.includes('[data-registry-column-key="prescription-label"]') || !frozen.includes('left:var(--registry-frozen-prescription-left,68px)!important') || !frozen.includes('[data-registry-column-key="active-substance"]')) {
     throw new Error('Prescription freeze finalizer: final frozen CSS contract mungon.');
   }
   const loader = read(STYLE_LOADER);
-  if (!loader.includes("first-page-style-loader-20260820-3") || !loader.includes('registry-frozen-columns.css?v=20260820-2')) {
-    throw new Error('Prescription freeze finalizer: cache-safe frozen stylesheet loader mungon.');
+  if (!loader.includes("first-page-style-loader-20260820-3") || loader.includes('registry-frozen-columns.css')) {
+    throw new Error('Prescription freeze finalizer: legacy frozen stylesheet must not be injected.');
   }
   const index = read(INDEX);
   if (!index.includes('first-page-style-loader.js?v=20260820-3') || !index.includes('registry-table-tools.css?v=20260820-3')) {
