@@ -62,6 +62,8 @@ assert.match(js, /function classifyChapter\(/);
 assert.match(js, /function populateChapterSelect\(\)/);
 assert.match(js, /function renderChapterNav\(/);
 assert.match(js, /function moveSavedToChapter\(/);
+assert.match(js, /function migrateLegacyChapterAssignments\(\)/);
+assert.match(js, /migrateLegacyChapterAssignments\(\);/);
 assert.match(js, /chapterManuallySelected/);
 assert.match(js, /score \+= 10/);
 assert.match(js, /score \+= 4/);
