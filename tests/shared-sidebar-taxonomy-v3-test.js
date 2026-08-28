@@ -73,7 +73,7 @@ for (const [file, version] of [
   assert.match(html, new RegExp(version), `${file}: V2 runtime cache-bust missing`);
 }
 for (const [htmlFile, runtime, version] of [
-  ['urgjencat.html','urgjencat-v2.js','4'],
+  ['urgjencat.html','urgjencat-v2.js','5'],
   ['medical-hub.html','medical-hub-v2.js','1'],
 ]) {
   const html = read(htmlFile);
