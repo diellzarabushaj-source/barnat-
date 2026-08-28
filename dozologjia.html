@@ -125,6 +125,12 @@
               <button type="button" data-readiness-filter="ready" aria-pressed="false">Llogaritet <span id="dosageFacetReady">0</span></button>
               <button type="button" data-readiness-filter="text" aria-pressed="false">Vetëm tekst <span id="dosageFacetText">0</span></button>
               <button type="button" data-readiness-filter="blocked" aria-pressed="false">Bllokuar <span id="dosageFacetBlocked">0</span></button>
+              <label class="dosage-form-filter" for="dosageFormFilter">
+                <span class="sr-only">Filtro sipas formës farmaceutike</span>
+                <select id="dosageFormFilter" aria-label="Filtro sipas formës farmaceutike">
+                  <option value="">Të gjitha format</option>
+                </select>
+              </label>
             </div>
 
             <p class="dosage-status" id="dosageStatus" role="status" aria-live="polite">Shkruaj së paku dy shkronja për të kërkuar.</p>
