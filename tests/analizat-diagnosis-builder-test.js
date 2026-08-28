@@ -45,6 +45,7 @@ assert.ok(styles[1].includes('drx-dashboard-stripe.css?v=drx-dashboard-stripe-v4
 assert.equal(scripts.length, 1, 'Analizat V2 must own one page runtime');
 assert.ok(scripts[0].includes('analizat-v2.js?v=1'));
 assert.doesNotMatch(html, /tailadmin-|analizat-polish|medical-hub\.css|lab-sheet-data|auth-client\.js|clean-medindex-ui|clinical-density|app-polish|performance\.css/);
+assert.doesNotMatch(html, /<\/div>\s*<\/div>\s*<\/main>/, 'Analizat V2 main wrapper must stay balanced');
 
 assert.match(js, /fetch\('\/api\/icd\?dataset=labs'/);
 assert.match(js, /function loadSharedSidebarTaxonomy\(\)/);
