@@ -22,7 +22,7 @@ assert.match(html, /dozologjia-v2\.js\?v=3/);
 assert.match(html, /drx-dashboard-stripe\.css\?v=drx-dashboard-stripe-v4/);
 
 [
-  'dosageContent','dosageSearch','dosageSearchClear','dosageCount','dosageStatus','dosageList',
+  'dosageContent','dosageSearch','dosageSearchClear','dosageFormFilter','dosageCount','dosageStatus','dosageList',
   'dosageFacetAll','dosageFacetReady','dosageFacetText','dosageFacetBlocked',
   'dosageProductPanel','dosageProductEmpty','dosageProductBody',
   'pediatricInputs','pediatricInputsHint','dosagePatientState','dosagePatientActionHint',
@@ -63,6 +63,8 @@ assert.match(js, /\/api\/dosage\/search\?q=/);
 assert.match(js, /\/api\/dosage\/product\//);
 assert.match(js, /'\/api\/dosage\/calculate'/);
 assert.match(js, /function setFilter\(filter\)/);
+assert.match(js, /function setFormFilter\(value\)/);
+assert.match(js, /function updateFormOptions\(\)/);
 assert.match(js, /function validatePatientFields\(/);
 assert.match(js, /function invalidateCalculation\(\)/);
 assert.match(js, /function restoreFromUrl\(\)/);
