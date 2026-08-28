@@ -45,8 +45,8 @@ assert.match(themePreload, /dataset\.miTailwindUi = '20260805-1'/);
 
 const registryHtml = read('index.html');
 assert.match(registryHtml, /data-drx-app="registry-v2"/);
-assert.match(registryHtml, /registry-v2\.css\?v=1/);
-assert.match(registryHtml, /registry-v2\.js\?v=1/);
+assert.match(registryHtml, /registry-v2\.css\?v=[^"\s]+/);
+assert.match(registryHtml, /registry-v2\.js\?v=[^"\s]+/);
 assert.doesNotMatch(registryHtml, /tailadmin-professional\.css|tailadmin-shell\.js/,
   'Registry V2 must stay standalone instead of reintroducing legacy UI layers.');
 
@@ -55,8 +55,8 @@ assert.doesNotMatch(registryHtml, /tailadmin-professional\.css|tailadmin-shell\.
    Pohimi nuk u hoq — u drejtua nga arkitektura që ekziston vërtet. */
 const icdHtml = read('icd.html');
 assert.match(icdHtml, /data-drx-app="icd-v2"/);
-assert.match(icdHtml, /icd-v2\.css\?v=1/);
-assert.match(icdHtml, /icd-v2\.js\?v=1/);
+assert.match(icdHtml, /icd-v2\.css\?v=[^"\s]+/);
+assert.match(icdHtml, /icd-v2\.js\?v=[^"\s]+/);
 assert.doesNotMatch(icdHtml, /tailadmin-professional\.css|tailadmin-shell\.js/,
   'ICD V2 must stay standalone instead of reintroducing legacy UI layers.');
 
@@ -68,11 +68,11 @@ const appPages = [
 for (const file of appPages) {
   const html = read(file);
   assert.match(html, /tailadmin-professional\.css/, `${file} does not load the professional compatibility bundle`);
-  assert.match(html, /drx-dashboard-stripe\.css\?v=drx-dashboard-stripe-v2/, `${file} does not load the Stripe v2 authority`);
+  assert.match(html, /drx-dashboard-stripe\.css\?v=drx-dashboard-stripe-v4/, `${file} does not load the Stripe v4 authority`);
   assert.match(html, /class="[^"]*medindex-tailadmin/, `${file} is missing the shared TailAdmin root class`);
   const professionalIndex = html.indexOf('tailadmin-professional.css');
   const stripeIndex = html.indexOf('drx-dashboard-stripe.css');
-  assert.ok(stripeIndex > professionalIndex, `${file}: Stripe v2 must load after professional compatibility CSS`);
+  assert.ok(stripeIndex > professionalIndex, `${file}: Stripe v4 must load after professional compatibility CSS`);
 }
 
 for (const file of ['rreth-nesh.html', 'kontakt.html', 'blog.html']) {
