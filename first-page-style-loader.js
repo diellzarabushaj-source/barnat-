@@ -1,11 +1,10 @@
 (() => {
   'use strict';
 
-  const VERSION = 'first-page-style-loader-20260820-3';
+  const VERSION = 'first-page-style-loader-20260828-4';
   const ID = 'firstPageClinicalStyles';
   const HREF = '/first-page-clinical.css?v=20260731-1';
-  const FROZEN_ID = 'registryFrozenColumnStyles';
-  const FROZEN_HREF = '/registry-frozen-columns.css?v=20260820-2';
+  const RETIRED_FROZEN_ID = 'registryFrozenColumnStyles';
   const PHONE_QUERY = '(max-width:767px)';
   const phone = window.matchMedia?.(PHONE_QUERY);
 
@@ -13,36 +12,41 @@
     return document.querySelector('link[data-registry-mobile-critical-css],link[href*="registry-mobile-critical.css"]');
   }
 
-  function place(link) {
-    const anchor = phone?.matches ? mobileCascadeAnchor() : null;
+  function tableAuthority() {
+    return document.querySelector('link[data-registry-table-tools-css],link[href*="registry-table-tools.css"]');
+  }
+
+  function placeClinical(link) {
+    const phoneAnchor = phone?.matches ? mobileCascadeAnchor() : null;
+    const anchor = phoneAnchor || tableAuthority();
     if (anchor) {
       if (link.nextElementSibling !== anchor) anchor.before(link);
       return;
     }
-    if (document.head.lastElementChild !== link) document.head.appendChild(link);
+    if (!link.isConnected) document.head.appendChild(link);
   }
 
-  function ensureLink(id, href, datasetKey) {
-    let link = document.getElementById(id);
+  function ensureLink() {
+    let link = document.getElementById(ID);
     if (!link) {
       link = document.createElement('link');
-      link.id = id;
+      link.id = ID;
       link.rel = 'stylesheet';
-      link.href = href;
-      link.dataset[datasetKey] = '1';
+      link.href = HREF;
+      link.dataset.firstPageClinical = '1';
     }
     return link;
   }
 
   function ensure() {
-    const clinical = ensureLink(ID, HREF, 'firstPageClinical');
-    place(clinical);
+    const clinical = ensureLink();
+    placeClinical(clinical);
 
-    // This tiny final layer owns only the horizontal freeze contract. It must
-    // follow first-page-clinical.css because that legacy layer still contains
-    // older selection/trade-name pinning rules.
-    const frozen = ensureLink(FROZEN_ID, FROZEN_HREF, 'registryFrozenColumns');
-    place(frozen);
+    // Frozen-column ownership moved into registry-table-tools.css. Remove any
+    // stale dynamic layer left by an older page lifecycle so it cannot override
+    // the final table authority after navigation or bfcache restoration.
+    document.getElementById(RETIRED_FROZEN_ID)?.remove();
+
     document.documentElement.dataset.firstPageStyleLoader = VERSION;
   }
 

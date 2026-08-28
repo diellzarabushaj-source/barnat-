@@ -62,7 +62,18 @@ jobs:
       - name: Install dependencies
         run: pnpm install --frozen-lockfile --ignore-scripts
 
+      - name: Detect Registry V2
+        id: registry
+        shell: bash
+        run: |
+          if grep -q 'data-drx-app="registry-v2"' index.html; then
+            echo "v2=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "v2=false" >> "$GITHUB_OUTPUT"
+          fi
+
       - name: Syntax-check release evidence
+        if: steps.registry.outputs.v2 != 'true'
         run: |
           node --check scripts/patch-registry-row-actions-menu-phase9-build-evidence.js
           node --check scripts/patch-registry-personal-final.js
@@ -75,7 +86,30 @@ jobs:
       - name: Build final registry runtime and evidence
         run: pnpm run build:runtime
 
+      - name: Verify Registry V2 build evidence
+        if: steps.registry.outputs.v2 == 'true'
+        shell: bash
+        run: |
+          set -euo pipefail
+          node scripts/audit-registry-v2.js
+          node tests/registry-v2-contract-test.js
+          node - <<'NODE'
+          const fs = require('node:fs');
+          const crypto = require('node:crypto');
+          const files = ['index.html','registry-v2.css','registry-v2.js'];
+          const sha256 = file => crypto.createHash('sha256').update(fs.readFileSync(file)).digest('hex');
+          const evidence = {
+            architecture:'registry-v2',
+            sourceRevision:String(process.env.GITHUB_SHA || '').toLowerCase(),
+            generatedAt:new Date().toISOString(),
+            files:Object.fromEntries(files.map(file => [file, sha256(file)])),
+          };
+          fs.writeFileSync('registry-v2-build-evidence.json', JSON.stringify(evidence, null, 2));
+          console.log(JSON.stringify(evidence, null, 2));
+          NODE
+
       - name: Verify exact build evidence
+        if: steps.registry.outputs.v2 != 'true'
         run: |
           node tests/registry-row-actions-menu-phase9-build-evidence-test.js
           node tests/registry-row-actions-deployment-attestation-test.js
@@ -91,7 +125,17 @@ jobs:
           console.log(`Phase 9 evidence bound to ${evidence.sourceRevision}`);
           NODE
 
+      - name: Upload Registry V2 build evidence
+        if: steps.registry.outputs.v2 == 'true'
+        uses: actions/upload-artifact@v4
+        with:
+          name: registry-v2-build-evidence-${{ github.sha }}
+          path: registry-v2-build-evidence.json
+          if-no-files-found: error
+          retention-days: 30
+
       - name: Upload row-actions build evidence
+        if: steps.registry.outputs.v2 != 'true'
         uses: actions/upload-artifact@v4
         with:
           name: registry-row-actions-build-evidence-${{ github.sha }}

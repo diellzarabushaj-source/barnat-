@@ -35,13 +35,32 @@ jobs:
       - name: Build audited runtime
         run: pnpm run build:runtime
 
+      - name: Detect Registry V2
+        id: registry
+        shell: bash
+        run: |
+          if grep -q 'data-drx-app="registry-v2"' index.html; then
+            echo "v2=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "v2=false" >> "$GITHUB_OUTPUT"
+          fi
+
+      - name: Run Registry V2 static performance contracts
+        if: steps.registry.outputs.v2 == 'true'
+        run: |
+          node scripts/audit-registry-v2.js
+          node tests/registry-v2-contract-test.js
+          node tests/registry-page-api-test.js
+
       - name: Run Phase 0 static forensic gates
+        if: steps.registry.outputs.v2 != 'true'
         shell: bash
         run: |
           set -euo pipefail
           node scripts/audit-mobile-phase0.js --assert-phase0-ready --assert-phase1-ready --assert-phase2-ready | tee /tmp/mobile-phase0-static.log
 
       - name: Run mobile static performance contracts
+        if: steps.registry.outputs.v2 != 'true'
         shell: bash
         run: |
           set -euo pipefail
@@ -56,6 +75,7 @@ jobs:
           pnpm exec playwright install --with-deps chromium webkit > /tmp/phase5-playwright-install.log 2>&1 || { tail -200 /tmp/phase5-playwright-install.log; exit 1; }
 
       - name: Run Phase 0 delayed-start single-owner gate
+        if: steps.registry.outputs.v2 != 'true'
         shell: bash
         env:
           PHASE0_SKIP_BUILD: '1'
@@ -73,6 +93,7 @@ jobs:
       # performance suite. A desktop CLS or fixture cleanup regression must not
       # hide the mobile forensic/card result that this workflow is also responsible for.
       - name: Run phone WebKit shell, owner, card, network and startup gates
+        if: steps.registry.outputs.v2 != 'true'
         shell: bash
         env:
           MOBILE_SHELL_SKIP_BUILD: '1'
@@ -90,7 +111,22 @@ jobs:
           node scripts/audit-mobile-startup-phase5.js | tee /tmp/mobile-startup-phase5.log
           node scripts/audit-mobile-interaction-performance.js | tee /tmp/mobile-interaction-phase5.log
 
+      - name: Run Registry V2 Chromium desktop/mobile acceptance
+        if: steps.registry.outputs.v2 == 'true'
+        shell: bash
+        run: |
+          set -euo pipefail
+          node tests/clinical-smoke-server.js > /tmp/phase5-clinical-server.log 2>&1 &
+          SERVER_PID=$!
+          trap 'kill "$SERVER_PID" 2>/dev/null || true' EXIT
+          for attempt in {1..30}; do
+            curl -fsS http://127.0.0.1:4173/index.html >/dev/null && break
+            sleep 1
+          done
+          pnpm exec playwright test tests/tailwind-site-browser.spec.js --grep "all authenticated clinical pages share" --reporter=line --workers=1 --retries=1 | tee /tmp/phase5-performance.log
+
       - name: Run Phase 5 interaction, Phase 6 version and 4006-row performance gates
+        if: steps.registry.outputs.v2 != 'true'
         shell: bash
         run: |
           set -euo pipefail

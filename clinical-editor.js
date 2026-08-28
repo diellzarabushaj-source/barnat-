@@ -57,23 +57,8 @@
   }
 
   function ensureProgressButton() {
-    if (progressButton?.isConnected) return;
-    const toolbar = document.querySelector('.toolbar');
-    if (!toolbar) return;
-
-    progressButton = document.createElement('button');
-    progressButton.type = 'button';
-    progressButton.className = 'clinical-editor-progress';
-    progressButton.dataset.clinicalEditorProgress = VERSION;
-    progressButton.addEventListener('click', () => {
-      const next = nextIncomplete();
-      if (next) void openEditor(next.registryNumber);
-    });
-
-    const reference = document.getElementById('countBadge');
-    if (reference?.parentElement === toolbar) toolbar.insertBefore(progressButton, reference);
-    else toolbar.appendChild(progressButton);
-    updateProgressButton();
+    progressButton?.remove();
+    progressButton = null;
   }
 
   function buildHeaderIndex() {
@@ -107,6 +92,7 @@
   function ensureHeader() {
     const header = document.getElementById('headerRow');
     if (!header) return;
+    header.querySelectorAll(`[data-clinical-editor-column="${ACTION_COLUMN}"]`).forEach(node => node.remove());
 
     if (!header.querySelector(`[data-clinical-editor-column="${STATUS_COLUMN}"]`)) {
       const status = document.createElement('th');
@@ -117,17 +103,10 @@
       header.appendChild(status);
     }
 
-    if (!header.querySelector(`[data-clinical-editor-column="${ACTION_COLUMN}"]`)) {
-      const action = document.createElement('th');
-      action.scope = 'col';
-      action.dataset.clinicalEditorColumn = ACTION_COLUMN;
-      action.className = 'clinical-editor-action-column';
-      action.textContent = 'Redakto';
-      header.appendChild(action);
-    }
   }
 
   function ensureRows() {
+    document.querySelectorAll(`#tbody [data-clinical-editor-column="${ACTION_COLUMN}"]`).forEach(node => node.remove());
     const headerIndex = buildHeaderIndex();
     document.querySelectorAll('#tbody > tr').forEach(tableRow => {
       if (tableRow.querySelector('.empty-state')) {
@@ -152,22 +131,6 @@
       const markup = statusMarkup(item);
       if (statusCell.innerHTML !== markup) statusCell.innerHTML = markup;
 
-      let actionCell = tableRow.querySelector(`[data-clinical-editor-column="${ACTION_COLUMN}"]`);
-      if (!actionCell) {
-        actionCell = document.createElement('td');
-        actionCell.dataset.clinicalEditorColumn = ACTION_COLUMN;
-        actionCell.dataset.label = 'Redakto';
-        actionCell.className = 'clinical-editor-action-column';
-        tableRow.appendChild(actionCell);
-      }
-      if (!actionCell.querySelector('button')) {
-        const button = document.createElement('button');
-        button.type = 'button';
-        button.className = 'clinical-editor-open';
-        button.textContent = 'Hap';
-        button.addEventListener('click', () => void openEditor(registryNumber));
-        actionCell.replaceChildren(button);
-      }
     });
   }
 

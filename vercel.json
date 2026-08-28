@@ -37,16 +37,6 @@
       "source": "/login-v2.html",
       "destination": "/landing.html",
       "permanent": false
-    },
-    {
-      "source": "/klasifikimi",
-      "destination": "/index.html",
-      "permanent": false
-    },
-    {
-      "source": "/klasifikimi.html",
-      "destination": "/index.html",
-      "permanent": false
     }
   ],
   "rewrites": [
@@ -133,6 +123,10 @@
     {
       "source": "/admin-login",
       "destination": "/admin-login.html"
+    },
+    {
+      "source": "/klasifikimi",
+      "destination": "/klasifikimi.html"
     }
   ],
   "headers": [

@@ -3,42 +3,75 @@
 const assert = require('node:assert/strict');
 const fs = require('node:fs');
 const path = require('node:path');
+const drugSearch = require('../api/drug-search.js');
 
 const root = path.resolve(__dirname, '..');
 const gatewaySource = fs.readFileSync(path.join(root, 'api/drug-search.js'), 'utf8');
+const supabaseSource = fs.readFileSync(path.join(root, 'lib/supabase-data-api.js'), 'utf8');
 const extraRegistryFunction = path.join(root, 'api/registry-page.js');
 
-assert.equal(fs.existsSync(extraRegistryFunction), false, 'lightweight registry must reuse an existing API function on Vercel Hobby');
+assert.equal(fs.existsSync(extraRegistryFunction), false, 'registry v2 must reuse /api/drug-search on Vercel Hobby');
+assert.equal(drugSearch.REGISTRY_DEFAULT_PAGE_SIZE, 25);
+assert.equal(drugSearch.REGISTRY_MAX_PAGE_SIZE, 50);
+assert.equal(typeof drugSearch.buildPageRequest, 'function');
+assert.equal(typeof drugSearch.buildDetailPath, 'function');
+assert.equal(typeof drugSearch.buildSearchPath, 'function');
 
-assert.match(gatewaySource, /REGISTRY_DEFAULT_PAGE_SIZE = 25/, 'registry list must default to 25 rows');
-assert.match(gatewaySource, /REGISTRY_MAX_PAGE_SIZE = 50/, 'registry list must cap each visible page at 50 rows');
-assert.match(gatewaySource, /view === 'registry-page'/, 'lightweight page mode is required');
-assert.match(gatewaySource, /view === 'registry-detail'/, 'detail-on-demand mode is required');
-assert.match(gatewaySource, /params\.set\('offset', String\(offset\)\)/, 'server-side OFFSET is required');
-assert.match(gatewaySource, /Math\.min\(REGISTRY_MAX_PAGE_SIZE \+ 1, pageSize \+ 1\)/, 'count-free pagination must use one sentinel row');
-assert.match(gatewaySource, /request\.includeTotal \? \{ prefer:'count=exact' \} : \{\}/, 'exact counts must only run when explicitly requested');
-assert.match(gatewaySource, /is_published', 'eq\.true'/, 'only published drugs may be returned');
-assert.match(gatewaySource, /editorial_status', 'eq\.published'/, 'editorial published gate is required');
-assert.match(gatewaySource, /product_status', `eq\.\$\{status\}`/, 'status filter must remain server-side');
-assert.match(gatewaySource, /pharmaceutical_form', `ilike\.\*\$\{form\}\*`/, 'form contains-filter must remain server-side');
-assert.match(gatewaySource, /params\.set\('id', `eq\.\$\{id\}`\)/, 'detail reads must be targeted by drug id');
-assert.match(gatewaySource, /params\.set\('limit', '1'\)/, 'detail reads must never return multiple drugs');
-assert.match(gatewaySource, /REGISTRY_DETAIL_SELECT/, 'detail mode must use an explicit select contract');
-assert.match(gatewaySource, /X-MedIndex-Data-Source', 'neon'/, 'Neon source observability header is required');
+const page = drugSearch.buildPageRequest({
+  page:'3', pageSize:'50', includeTotal:'true', q:'amoxicillin', status:'Gjenerik', atc:'N02', form:'Tabletë', sort:'name', direction:'desc',
+});
+assert.equal(page.page, 3);
+assert.equal(page.pageSize, 50);
+assert.equal(page.includeTotal, true);
+assert.equal(page.sort, 'name');
+assert.equal(page.direction, 'desc');
+assert.equal(page.atc, 'N02');
+const decodedPage = decodeURIComponent(page.path);
+assert.match(decodedPage, /^drugs\?/);
+assert.match(decodedPage, /is_published=eq\.true/);
+assert.match(decodedPage, /editorial_status=eq\.published/);
+assert.match(decodedPage, /registry_search_text=ilike\.\*amoxicillin\*/);
+assert.match(decodedPage, /product_status=eq\.Gjenerik/);
+assert.match(decodedPage, /atc_code=ilike\.N02\*/);
+assert.match(decodedPage, /pharmaceutical_form=ilike\.\*Tabletë\*/);
+assert.match(decodedPage, /limit=50/);
+assert.match(decodedPage, /offset=100/);
+assert.match(decodedPage, /order=trade_name\.desc/);
 
-assert.match(gatewaySource, /SEARCH_CANDIDATE_LIMIT = 80/, 'drug search must use a bounded candidate set');
-assert.match(gatewaySource, /SEARCH_HYDRATION_SELECT = 'id,source_payload'/, 'heavy source payload must only be used by targeted hydration');
-const searchSelectBlock = gatewaySource.match(/const SEARCH_SELECT = \[([\s\S]*?)\]\.join\(','\);/);
-assert.ok(searchSelectBlock, 'lightweight search select contract missing');
-assert.doesNotMatch(searchSelectBlock[1], /source_payload/, 'candidate search must not transfer source_payload');
-assert.match(gatewaySource, /params\.set\('id', `in\.\(\$\{ids\.join\(','\)\}\)`\)/, 'search hydration must target only ranked result ids');
-assert.match(gatewaySource, /Math\.min\(MAX_RESULTS, ids\.length\)/, 'search hydration must be capped to final result count');
-assert.match(gatewaySource, /registry-fallback-error/, 'full registry fallback is allowed only for an actual Neon search failure');
-assert.doesNotMatch(gatewaySource, /registry-fallback-empty/, 'zero-result searches must not trigger a full registry transfer');
-assert.match(gatewaySource, /X-MedIndex-Search-Source/, 'search source observability header is required');
+const exactFormRequest = drugSearch.buildPageRequest({ formExact:'Capsule, hard' });
+const exactFormParams = new URLSearchParams(exactFormRequest.path.split('?')[1]);
+assert.equal(exactFormParams.get('pharmaceutical_form'), 'eq.Capsule, hard');
 
-assert.doesNotMatch(gatewaySource, /SELECT\s+\*/i, 'registry gateway must never SELECT *');
-assert.doesNotMatch(gatewaySource, /CREATE\s+TABLE|ALTER\s+TABLE|DROP\s+TABLE|migration/i, 'registry gateway must not modify database schema');
-assert.doesNotMatch(gatewaySource, /method\s*:\s*['"](?:POST|PATCH|PUT|DELETE)['"]/i, 'registry gateway must remain read-only');
+const groupedFormRequest = drugSearch.buildPageRequest({ formCategory:'Tableta & pilula' });
+const groupedFormParams = new URLSearchParams(groupedFormRequest.path.split('?')[1]);
+const groupedFormFilter = groupedFormParams.get('pharmaceutical_form') || '';
+assert.equal(groupedFormRequest.formCategory, 'Tableta & pilula');
+assert.match(groupedFormFilter, /^in\.\(/);
+assert.match(groupedFormFilter, /Chewable tablet/);
+assert.match(groupedFormFilter, /Gastro-resistant tablet/);
+assert.match(groupedFormFilter, /Tablet/);
 
-console.log('Phase 1 lightweight registry gateway, Hobby function budget and bounded search contracts passed.');
+const detail = decodeURIComponent(drugSearch.buildDetailPath({ id:'11111111-1111-4111-8111-111111111111' }));
+assert.match(detail, /^drugs\?/);
+assert.match(detail, /id=eq\.11111111-1111-4111-8111-111111111111/);
+assert.match(detail, /limit=1/);
+assert.equal(drugSearch.buildDetailPath({ id:'not-a-uuid' }), null);
+
+const search = drugSearch.buildSearchPath('paracetamol');
+assert.ok(search);
+assert.match(decodeURIComponent(search.path), /global_search_text=ilike\.\*paracetamol\*/);
+assert.match(decodeURIComponent(search.path), /limit=20/);
+
+assert.match(gatewaySource, /supabase-data-api\.js/);
+assert.match(gatewaySource, /X-MedIndex-Data-Source/);
+assert.match(gatewaySource, /supabase/i);
+assert.doesNotMatch(gatewaySource, /neonRequest|neon-data-api|getPublishedDrugs|fetchPaged\('drugs'/);
+assert.doesNotMatch(gatewaySource, /SELECT\s+\*/i);
+assert.doesNotMatch(gatewaySource, /CREATE\s+TABLE|ALTER\s+TABLE|DROP\s+TABLE|migration/i);
+assert.doesNotMatch(gatewaySource, /method\s*:\s*['"](?:POST|PATCH|PUT|DELETE)['"]/i);
+
+assert.match(supabaseSource, /\/rest\/v1/);
+assert.match(supabaseSource, /MEDINDEX_SUPABASE_PUBLISHABLE_KEY/);
+assert.doesNotMatch(supabaseSource, /neon/i);
+
+console.log('Registry v2 Supabase paging, detail, indexed search and read-only contracts passed.');

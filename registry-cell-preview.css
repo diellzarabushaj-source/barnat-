@@ -12,10 +12,23 @@ html.medindex-tailadmin[data-mi-page="barnat"] body #dataTable td[data-registry-
 /* The dosage columns are kept out of that padding, because it would push their
    two-line dose text off balance. But the expand button still lands in the
    top-right corner — which is exactly where the route badge sits, so "PO" ended
-   up underneath it. The corner is reserved on the badge instead: same clearance,
-   no change to the column's width or to the dose text beside it. */
+   up underneath it.
+
+   The clearance used to be a `margin-right:42px` on the badge itself, and that
+   is what broke it. The badge is the second track of a grid whose second track
+   is only 54px wide: 42px of margin has nowhere to go outward, so the badge was
+   dragged 42px inward instead and landed on top of the dose text — measured at
+   1440px, "500 mg (1 tabletë) çdo…" ran straight under the "Orale" pill.
+
+   The clearance belongs to the grid, which can actually give it up: the two
+   tracks re-solve inside the narrower box and the badge stays in its own track,
+   beside the text rather than over it. */
+html.medindex-tailadmin[data-mi-page="barnat"] body #dataTable td[data-registry-cell-preview="true"].registry-dosage-column .registry-dosage-grid {
+  padding-right:46px!important;
+}
+
 html.medindex-tailadmin[data-mi-page="barnat"] body #dataTable td[data-registry-cell-preview="true"].registry-dosage-column .registry-dosage-route {
-  margin-right:42px!important;
+  margin-right:0!important;
 }
 
 html.medindex-tailadmin[data-mi-page="barnat"] body .registry-cell-preview-trigger {

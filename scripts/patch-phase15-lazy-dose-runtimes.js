@@ -10,12 +10,15 @@ const INSULIN_STYLES = Object.freeze([
   'registry-novorapid-simple-calculator.css',
   'registry-novomix30-simple-calculator.css',
   'registry-other-insulins-simple-calculator.css',
+  'registry-insulin-deep-audit.css',
 ]);
 const INSULIN_SCRIPTS = Object.freeze([
   'registry-novorapid-simple-calculator.js',
   'registry-novomix30-simple-calculator.js',
   'registry-other-insulins-simple-calculator.js',
   'registry-insulin-final-safety.js',
+  'registry-insulin-row-bridge.js',
+  'registry-dose-interaction-loader.js',
 ]);
 
 let source = fs.readFileSync(INDEX, 'utf8').replace(/\r\n?/g, '\n');
@@ -37,32 +40,15 @@ function removeStaticScript(asset) {
 INSULIN_STYLES.forEach(removeStaticStyle);
 INSULIN_SCRIPTS.forEach(removeStaticScript);
 
-const rowBridgePattern = /<script src="registry-insulin-row-bridge\.js\?[^\"]+" defer><\/script>/;
-const rowBridge = source.match(rowBridgePattern)?.[0] || '';
-if (!rowBridge) throw new Error('Phase 15 lazy dose runtime patch could not find the insulin row bridge anchor.');
-
-const buildQuery = rowBridge.match(/&build=[^\"]+/)?.[0] || '';
-const loaderTag = `<script src="${LOADER_SRC}${buildQuery}" defer></script>`;
-const existingLoaderPattern = /<script src="registry-dose-interaction-loader\.js\?[^\"]+" defer><\/script>/;
-if (existingLoaderPattern.test(source)) source = source.replace(existingLoaderPattern, loaderTag);
-else source = source.replace(rowBridge, `${loaderTag}\n${rowBridge}`);
-
+// Calculator UI is intentionally retired from the medicines table. Phase 15
+// now enforces absence instead of rebuilding the old lazy Smart Insulin bridge.
 for (const asset of INSULIN_STYLES) {
-  const staticPattern = new RegExp(`<link\\s+[^>]*href="${escapeRegExp(asset)}[^\"]*"`, 'i');
-  if (staticPattern.test(source)) throw new Error(`Phase 15 must not statically load ${asset}.`);
+  const staticPattern = new RegExp(`<link\\s+[^>]*href="${escapeRegExp(asset)}[^\\"]*"`, 'i');
+  if (staticPattern.test(source)) throw new Error(`Phase 15 must remove retired calculator style ${asset}.`);
 }
 for (const asset of INSULIN_SCRIPTS) {
-  const staticPattern = new RegExp(`<script\\s+[^>]*src="${escapeRegExp(asset)}[^\"]*"`, 'i');
-  if (staticPattern.test(source)) throw new Error(`Phase 15 must not statically load ${asset}.`);
-}
-if (!source.includes('registry-insulin-row-bridge.js')) {
-  throw new Error('Phase 15 must keep the insulin row bridge in the startup path so visible Smart Insulin controls remain unchanged.');
-}
-if (!source.includes('registry-insulin-deep-audit.css')) {
-  throw new Error('Phase 15 must keep the visible Smart Insulin table styling in the startup path.');
-}
-if (source.indexOf('registry-dose-interaction-loader.js') > source.indexOf('registry-insulin-row-bridge.js')) {
-  throw new Error('Phase 15 interaction loader must initialize before the insulin row bridge.');
+  const staticPattern = new RegExp(`<script\\s+[^>]*src="${escapeRegExp(asset)}[^\\"]*"`, 'i');
+  if (staticPattern.test(source)) throw new Error(`Phase 15 must remove retired calculator runtime ${asset}.`);
 }
 
 fs.writeFileSync(INDEX, source, 'utf8');
@@ -109,21 +95,23 @@ function validateCanonicalTableOwner() {
   }
 
   const unified = read('registry-unified-table.js');
-  if (!unified.includes("population:'Popullata e aprovuar'")
-      || !unified.includes("'select', 'number', 'active-substance', 'trade-name'")
-      || !unified.includes("'strength', 'form', 'population'")
-      || !unified.includes("key === 'clinical-status' || key === 'clinical-action'")
-      || !unified.includes('--registry-frozen-active-left')
-      || !unified.includes("let storedView = 'full'")) {
-    throw new Error('Phase 15: canonical unified-table order/default/frozen contract is missing.');
+  if (!unified.includes("'select', 'number', 'trade-name', 'active-substance'")
+      || !unified.includes("'select', 'trade-name', 'active-substance', 'strength', 'form'")
+      || !unified.includes("'dosage-adult', 'dosage-pediatric', 'clinical-status'")
+      || !unified.includes("if (key === 'clinical-status') return false")
+      || !unified.includes("let storedView = 'clinical'")
+      || unified.includes("'clinical-action'")
+      || unified.includes("'dose-calculator'")) {
+    throw new Error('Phase 15: canonical registry table contract is missing or retired action columns returned.');
   }
 
-  const css = read('registry-unified-table.css');
-  if (!css.includes('registry-frozen-columns-v2')
-      || !css.includes('[data-registry-column-key="number"]')
-      || !css.includes('[data-registry-column-key="prescription-label"]')
-      || !css.includes('left:var(--registry-frozen-prescription-left,68px)!important')) {
-    throw new Error('Phase 15: frozen Nr + prescription-notation CSS contract is missing.');
+  const frozen = read('registry-frozen-columns.css');
+  if (!frozen.includes('[data-registry-column-key="select"]')
+      || !frozen.includes('[data-registry-column-key="trade-name"]')
+      || !frozen.includes('left:44px!important')
+      || !frozen.includes('[data-registry-column-key="number"]')
+      || !frozen.includes('position:relative!important')) {
+    throw new Error('Phase 15: final selection + trade-name frozen-column contract is missing.');
   }
 }
 

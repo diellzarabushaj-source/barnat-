@@ -1,28 +1,74 @@
+'use strict';
+
 const assert = require('node:assert/strict');
 const fs = require('node:fs');
 const path = require('node:path');
-const { execFileSync } = require('node:child_process');
+const drugSearch = require('../api/drug-search.js');
 
 const ROOT = path.resolve(__dirname, '..');
-const read = relativePath => fs.readFileSync(path.join(ROOT, relativePath), 'utf8');
+const read = file => fs.readFileSync(path.join(ROOT, file), 'utf8');
 
 const html = read('klasifikimi.html');
-const redirect = read('classification-redirect.js');
+const css = read('classification-v2.css');
+const js = read('classification-v2.js');
+const data = read('classification-data.js');
 const vercel = JSON.parse(read('vercel.json'));
 
-assert.doesNotMatch(html, /Barnat sipas klasifikimit ATC|id="cardGrid"|id="atcSearch"|atc-card|classification-v3\.js/, 'The obsolete card-based classification workspace must not be served');
-assert.doesNotMatch(html, /<table|drugTableBody|drugResults/, 'The legacy classification route must not contain any medicine table or compatibility workspace');
-assert.match(html, /classification-redirect\.js\?v=table-only-v1/, 'The offline-compatible redirect runtime must be loaded');
-assert.match(html, /href="\/index\.html"/, 'The no-script fallback must point to the main registry table');
+assert.match(html, /data-drx-app="classification-v2"/);
+assert.match(html, /classification-v2\.css\?v=1/);
+assert.match(html, /classification-data\.js\?v=atc-catalog-v2/);
+assert.match(html, /classification-v2\.js\?v=1/);
+assert.doesNotMatch(html, /classification-redirect\.js|tailadmin-|medindex-tailadmin/);
+assert.match(html, /id="atcSearch"/);
+assert.match(html, /id="groupList"/);
+assert.match(html, /id="categoryList"/);
+assert.match(html, /href="\/index\.html"/);
 
-assert.match(redirect, /new URL\('\/index\.html'/, 'Legacy classification routes must target the main registry');
-assert.match(redirect, /target\.searchParams\.set\('atc', legacyHash\.slice\(0, 3\)\)/, 'Legacy subgroup hashes such as #N02 must become the ATC table filter');
-assert.match(redirect, /location\.replace/, 'Redirects must replace history rather than leave the obsolete page in browser history');
+for (const code of ['A','B','C','D','G','H','J','L','M','N','P','R','S','V']) {
+  assert.ok(data.includes(`  ${code}:`), `Missing ATC group ${code}`);
+}
+for (const code of ['A10','C09','J01','N02','R03','S01']) {
+  assert.ok(data.includes(`  ${code}:`), `Missing ATC category ${code}`);
+}
+
+assert.match(css, /--navy:#1c1e54/);
+assert.match(css, /--stripe:#533afd/);
+assert.match(css, /\.atc-workspace/);
+assert.match(css, /\.group-row/);
+assert.match(css, /\.category-row/);
+assert.match(css, /@media\(max-width:760px\)/);
+assert.doesNotMatch(css, /!important/);
+
+assert.match(js, /\/api\/atc-counts/);
+assert.match(js, /registryUrl\(code\)/);
+assert.match(js, /\/index\.html/);
+assert.match(js, /groupCounts/);
+assert.match(js, /categoryDrugCount/);
+assert.match(js, /subdivisionEntries/);
+assert.match(js, /hashchange/);
+assert.match(js, /AbortController/);
+assert.doesNotThrow(() => new Function(js));
 
 const redirects = Array.isArray(vercel.redirects) ? vercel.redirects : [];
-assert.ok(redirects.some(rule => rule.source === '/klasifikimi.html' && rule.destination === '/index.html'), 'Vercel must redirect /klasifikimi.html to the main registry');
-assert.ok(redirects.some(rule => rule.source === '/klasifikimi' && rule.destination === '/index.html'), 'Vercel must redirect the extensionless classification route');
+assert.ok(!redirects.some(rule => rule.source === '/klasifikimi.html'), 'Classification page must no longer redirect away');
+assert.ok(!redirects.some(rule => rule.source === '/klasifikimi'), 'Extensionless classification route must no longer redirect away');
+const rewrites = Array.isArray(vercel.rewrites) ? vercel.rewrites : [];
+assert.ok(rewrites.some(rule => rule.source === '/klasifikimi' && rule.destination === '/klasifikimi.html'), 'Extensionless route must serve classification v2');
 
-execFileSync(process.execPath, ['--check', path.join(ROOT, 'classification-redirect.js')], { stdio:'pipe' });
+const category = drugSearch.buildPageRequest({ atc:'N02', page:'1', pageSize:'25' });
+assert.equal(category.atc, 'N02');
+assert.match(decodeURIComponent(category.path), /atc_code=ilike\.N02\*/);
 
-console.log('Legacy classification page removed; all classification routes now open the main registry table.');
+const group = drugSearch.buildPageRequest({ atc:'C', page:'1', pageSize:'25' });
+assert.equal(group.atc, 'C');
+assert.match(decodeURIComponent(group.path), /atc_code=ilike\.C\*/);
+
+const subdivision = drugSearch.buildPageRequest({ atc:'N02BE' });
+assert.equal(subdivision.atc, 'N02BE');
+assert.match(decodeURIComponent(subdivision.path), /atc_code=ilike\.N02BE\*/);
+
+const rejected = drugSearch.buildPageRequest({ atc:'N02BE01' });
+assert.equal(rejected.atc, '');
+assert.doesNotMatch(decodeURIComponent(rejected.path), /atc_code=/);
+
+console.log('Standalone Stripe-style ATC classification and Supabase registry routing passed.');

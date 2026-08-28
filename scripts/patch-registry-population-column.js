@@ -116,21 +116,21 @@ function patchUnifiedTable() {
   source = replaceOnce(
     source,
     "    'select', 'number', 'trade-name', 'active-substance', 'atc', 'drug-class', 'use',\n    'pdid', 'protocol', 'strength', 'form', 'prescription-label', 'packaging', 'mah',\n",
-    "    'select', 'number', 'active-substance', 'trade-name', 'atc', 'drug-class', 'use',\n    'pdid', 'protocol', 'strength', 'form', 'population', 'prescription-label', 'packaging', 'mah',\n",
+    "    'select', 'number', 'trade-name', 'active-substance', 'atc', 'drug-class', 'use',\n    'pdid', 'protocol', 'strength', 'form', 'population', 'prescription-label', 'packaging', 'mah',\n",
     'unified/full order',
   );
 
   source = replaceOnce(
     source,
-    "    'select', 'trade-name', 'active-substance', 'strength', 'form',\n    'dosage-adult', 'dosage-pediatric', 'clinical-status', 'clinical-action', 'dose-calculator',\n",
-    "    'select', 'number', 'active-substance', 'trade-name', 'strength', 'form', 'population',\n    'dosage-adult', 'dosage-pediatric', 'clinical-status', 'clinical-action', 'dose-calculator',\n",
+    "    'select', 'trade-name', 'active-substance', 'strength', 'form',\n    'dosage-adult', 'dosage-pediatric', 'clinical-status',\n",
+    "    'select', 'trade-name', 'active-substance', 'strength', 'form', 'population',\n    'dosage-adult', 'dosage-pediatric', 'clinical-status',\n",
     'unified/clinical order',
   );
 
   source = replaceOnce(
     source,
     "  const CLINICAL_BASE_KEYS = Object.freeze(['trade-name', 'active-substance', 'strength', 'form']);\n",
-    "  const CLINICAL_BASE_KEYS = Object.freeze(['number', 'active-substance', 'trade-name', 'strength', 'form', 'population']);\n",
+    "  const CLINICAL_BASE_KEYS = Object.freeze(['trade-name', 'active-substance', 'strength', 'form', 'population']);\n",
     'unified/clinical base order',
   );
 
@@ -160,34 +160,6 @@ function patchUnifiedTable() {
     "    protocol:'protocol', fortesia:'strength', forma:'form', formafarmaceutike:'form',\n    sishenohetnerecete:'prescription-label', paketimi:'packaging', madhesiaepaketimit:'packaging',\n",
     "    protocol:'protocol', fortesia:'strength', forma:'form', formafarmaceutike:'form',\n    popullata:'population', popullataeaprovuar:'population', pediatriconly:'population',\n    sishenohetnerecete:'prescription-label', paketimi:'packaging', madhesiaepaketimit:'packaging',\n",
     'unified/label aliases',
-  );
-
-  source = replaceOnce(
-    source,
-    "  function keyVisible(key) {\n    if (currentView() === 'clinical' && !CLINICAL_ORDER.includes(key)) return false;\n",
-    "  function keyVisible(key) {\n    if (key === 'clinical-status' || key === 'clinical-action') return false;\n    if (currentView() === 'clinical' && !CLINICAL_ORDER.includes(key)) return false;\n",
-    'unified/hide verification columns',
-  );
-
-  source = replaceOnce(
-    source,
-    "      table.style.removeProperty('--registry-unified-width');\n      table.style.removeProperty('width');\n",
-    "      table.style.removeProperty('--registry-unified-width');\n      table.style.removeProperty('--registry-frozen-active-left');\n      table.style.removeProperty('--registry-frozen-prescription-left');\n      table.style.removeProperty('width');\n",
-    'unified/mobile frozen reset',
-  );
-
-  source = replaceOnce(
-    source,
-    "    table.style.setProperty('--registry-unified-width', `${width}px`);\n    table.style.setProperty('width', `${width}px`, 'important');\n",
-    "    table.style.setProperty('--registry-unified-width', `${width}px`);\n    table.style.setProperty('--registry-frozen-active-left', visible.includes('number') ? `${WIDTHS.number}px` : '0px');\n    table.style.setProperty('--registry-frozen-prescription-left', visible.includes('number') ? `${WIDTHS.number}px` : '0px');\n    table.style.setProperty('width', `${width}px`, 'important');\n",
-    'unified/frozen offset',
-  );
-
-  source = replaceOnce(
-    source,
-    "    let storedView = 'clinical';\n    let storedFilters = false;\n    try {\n      storedView = localStorage.getItem(VIEW_STORAGE_KEY) === 'full' ? 'full' : 'clinical';\n",
-    "    let storedView = 'full';\n    let storedFilters = false;\n    try {\n      const savedView = localStorage.getItem(VIEW_STORAGE_KEY);\n      storedView = savedView === 'clinical' ? 'clinical' : 'full';\n",
-    'unified/default full view',
   );
 
   write(unifiedTableFile, source);
@@ -285,18 +257,17 @@ for (const relative of runtimeFiles) {
 }
 const unified = read(unifiedTableFile);
 if (!unified.includes("population:'Popullata e aprovuar'")
-    || !unified.includes("'select', 'number', 'active-substance', 'trade-name'")
-    || !unified.includes("key === 'clinical-status' || key === 'clinical-action'")
-    || !unified.includes('--registry-frozen-active-left')
-    || !unified.includes("let storedView = 'full'")) {
-  throw new Error('Population/order/frozen column patch nuk u aplikua në unified table.');
+    || !unified.includes("'select', 'number', 'trade-name', 'active-substance'")
+    || !unified.includes("'select', 'trade-name', 'active-substance', 'strength', 'form', 'population'")
+    || !unified.includes("if (key === 'clinical-status') return false")
+    || unified.includes("'clinical-action'")
+    || unified.includes("'dose-calculator'")) {
+  throw new Error('Population/order patch nuk u aplikua në unified table ose kolonat e hequra u rikthyen.');
 }
 const unifiedCss = read(unifiedCssFile);
 if (!unifiedCss.includes('[data-registry-column-key="population"]')
-    || !unifiedCss.includes('.registry-population-badge')
-    || !unifiedCss.includes('registry-frozen-columns-v2')
-    || !unifiedCss.includes('[data-registry-column-key="active-substance"]')) {
-  throw new Error('Population/frozen column patch nuk u aplikua në unified CSS.');
+    || !unifiedCss.includes('.registry-population-badge')) {
+  throw new Error('Population column patch nuk u aplikua në unified CSS.');
 }
 const pickerSource = read(columnPickerFile);
 if (!pickerSource.includes('data-mi-technical-column-hidden')
@@ -311,4 +282,4 @@ if (!indexSource.includes(`registry-unified-table.css?v=${ASSET_VERSION}`)
   throw new Error('Population/default column asset versions nuk u përditësuan.');
 }
 
-console.log('Registry defaults, persistent user column choices, verification cleanup and frozen Nr + active substance applied.');
+console.log('Registry defaults, population column, persistent user choices and simplified table contract applied.');

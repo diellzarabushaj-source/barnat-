@@ -62,8 +62,32 @@ function patchUnifiedTable() {
   if (!source.includes(`${MARKER}: exact main-table contract`)) {
     source = replaceOnce(
       source,
-      `  const currentView = () => 'full';\n  const currentOrder = () => FULL_ORDER;\n  const isMobile = () => window.innerWidth <= MOBILE_BREAKPOINT;`,
-      `  const currentView = () => 'full';\n  // ${MARKER}: exact main-table contract\n  function mainTableContract() {\n    const value = window.MEDINDEX_MAIN_TABLE_CONTRACT;\n    const columns = Array.isArray(value?.columns) ? value.columns : [];\n    const keys = columns.map(column => clean(column?.key)).filter(key => VALID_KEYS.has(key));\n    return keys.length >= 2 ? { ...value, columns, keys } : null;\n  }\n  function contractLocked() {\n    return Boolean(window.MEDINDEX_PERSONAL_TABLE_CONTRACT_LOCK && mainTableContract());\n  }\n  function contractWidth(key) {\n    const contract = mainTableContract();\n    const width = Number(contract?.columns?.find(column => column.key === key)?.width || 0);\n    return Number.isFinite(width) && width >= 44 ? width : (WIDTHS[key] || 150);\n  }\n  const currentOrder = () => {\n    if (!contractLocked()) return FULL_ORDER;\n    const keys = mainTableContract().keys;\n    return [...keys, ...FULL_ORDER.filter(key => !keys.includes(key))];\n  };\n  const isMobile = () => window.innerWidth <= MOBILE_BREAKPOINT;`,
+      `  const currentView = () => document.documentElement.dataset.registryUxView === 'full' ? 'full' : 'clinical';
+  const currentOrder = () => currentView() === 'full' ? FULL_ORDER : CLINICAL_ORDER;
+  const isMobile = () => window.innerWidth <= MOBILE_BREAKPOINT;`,
+      `  const currentView = () => document.documentElement.dataset.registryUxView === 'full' ? 'full' : 'clinical';
+  // ${MARKER}: exact main-table contract
+  function mainTableContract() {
+    const value = window.MEDINDEX_MAIN_TABLE_CONTRACT;
+    const columns = Array.isArray(value?.columns) ? value.columns : [];
+    const keys = columns.map(column => clean(column?.key)).filter(key => VALID_KEYS.has(key));
+    return keys.length >= 2 ? { ...value, columns, keys } : null;
+  }
+  function contractLocked() {
+    return Boolean(window.MEDINDEX_PERSONAL_TABLE_CONTRACT_LOCK && mainTableContract());
+  }
+  function contractWidth(key) {
+    const contract = mainTableContract();
+    const width = Number(contract?.columns?.find(column => column.key === key)?.width || 0);
+    return Number.isFinite(width) && width >= 44 ? width : (WIDTHS[key] || 150);
+  }
+  const currentOrder = () => {
+    const base = currentView() === 'full' ? FULL_ORDER : CLINICAL_ORDER;
+    if (!contractLocked()) return base;
+    const keys = mainTableContract().keys.filter(key => base.includes(key));
+    return [...keys, ...base.filter(key => !keys.includes(key))];
+  };
+  const isMobile = () => window.innerWidth <= MOBILE_BREAKPOINT;`,
       'unified current-order contract',
     );
   }
@@ -79,35 +103,58 @@ function patchUnifiedTable() {
     source = replaceRegex(
       source,
       /  function keyVisible\(key\) \{\n/,
-      `  function keyVisible(key) {\n    // ${MARKER}: visibility follows captured main table\n    if (contractLocked() && !mainTableContract().keys.includes(key)) return false;\n`,
+      `  function keyVisible(key) {
+    // ${MARKER}: visibility follows captured main table
+    if (contractLocked() && !mainTableContract().keys.includes(key)) return false;
+`,
       'column visibility contract',
     );
   }
 
-  // Preserve the measured geometry of the table that was visible before the
-  // Favorites/Notes data handoff.
   source = source.replace(
     /visible\.reduce\(\(sum, key\) => sum \+ \(WIDTHS\[key\] \|\| 150\), 0\)/,
     'visible.reduce((sum, key) => sum + (contractLocked() ? contractWidth(key) : (WIDTHS[key] || 150)), 0)',
   );
   source = source.replace(
     /if \(keyVisible\(key\)\) col\.style\.width = `\$\{WIDTHS\[key\] \|\| 150\}px`;/,
-    'if (keyVisible(key)) col.style.width = `${contractLocked() ? contractWidth(key) : (WIDTHS[key] || 150)}px`;',
+    'if (keyVisible(key)) col.style.width = `\${contractLocked() ? contractWidth(key) : (WIDTHS[key] || 150)}px`;',
   );
 
   if (!source.includes(`${MARKER}: non-destructive contract visibility`)) {
     source = replaceOnce(
       source,
-      `  function normalizePencils(tbody) {`,
-      `  // ${MARKER}: non-destructive contract visibility\n  function applyContractVisibility(header, tbody) {\n    const locked = contractLocked();\n    const visible = new Set(locked ? mainTableContract().keys : FULL_ORDER);\n    [header, ...Array.from(tbody.children)].forEach(container => {\n      Array.from(container.children).forEach(cell => {\n        const key = directKey(cell) || (cell.tagName === 'TH' ? headerKey(cell) : '');\n        if (!VALID_KEYS.has(key)) return;\n        if (locked && !visible.has(key)) {\n          cell.dataset.registryPersonalContractHidden = '${MARKER}';\n          cell.style.setProperty('display', 'none', 'important');\n        } else if (cell.dataset.registryPersonalContractHidden === '${MARKER}') {\n          delete cell.dataset.registryPersonalContractHidden;\n          cell.style.removeProperty('display');\n        }\n      });\n    });\n  }\n\n  function normalizePencils(tbody) {`,
+      `  function updateCellLabels(header, tbody) {`,
+      `  // ${MARKER}: non-destructive contract visibility
+  function applyContractVisibility(header, tbody) {
+    const locked = contractLocked();
+    const visible = new Set(locked ? mainTableContract().keys : currentOrder());
+    [header, ...Array.from(tbody.children)].forEach(container => {
+      Array.from(container.children).forEach(cell => {
+        const key = directKey(cell) || (cell.tagName === 'TH' ? headerKey(cell) : '');
+        if (!VALID_KEYS.has(key)) return;
+        if (locked && !visible.has(key)) {
+          cell.dataset.registryPersonalContractHidden = '${MARKER}';
+          cell.style.setProperty('display', 'none', 'important');
+        } else if (cell.dataset.registryPersonalContractHidden === '${MARKER}') {
+          delete cell.dataset.registryPersonalContractHidden;
+          cell.style.removeProperty('display');
+        }
+      });
+    });
+  }
+
+  function updateCellLabels(header, tbody) {`,
       'contract visibility function',
     );
   }
 
   source = replaceOnce(
     source,
-    `      updateCellLabels(header, tbody);\n      normalizePencils(tbody);`,
-    `      updateCellLabels(header, tbody);\n      applyContractVisibility(header, tbody);\n      normalizePencils(tbody);`,
+    `      updateCellLabels(header, tbody);
+      rebuildColgroup(table, wrapper, order);`,
+    `      updateCellLabels(header, tbody);
+      applyContractVisibility(header, tbody);
+      rebuildColgroup(table, wrapper, order);`,
     'contract visibility reconcile call',
   );
 
@@ -115,7 +162,14 @@ function patchUnifiedTable() {
     source = replaceOnce(
       source,
       `    document.addEventListener('click', event => {`,
-      `    // ${MARKER}: contract lifecycle\n    window.addEventListener('medindex:main-table-contract', () => { lastGeometry = ''; schedule(); });\n    document.addEventListener('click', event => {\n      if (event.target.closest?.('#colPickerBtn,#colPanel')) {\n        window.MEDINDEX_PERSONAL_TABLE_CONTRACT_LOCK = false;\n        lastGeometry = '';\n        schedule();\n      }`,
+      `    // ${MARKER}: contract lifecycle
+    window.addEventListener('medindex:main-table-contract', () => { lastGeometry = ''; schedule(); });
+    document.addEventListener('click', event => {
+      if (event.target.closest?.('#colPickerBtn,#colPanel')) {
+        window.MEDINDEX_PERSONAL_TABLE_CONTRACT_LOCK = false;
+        lastGeometry = '';
+        schedule();
+      }`,
       'unified click binding',
     );
   }

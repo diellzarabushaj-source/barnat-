@@ -510,7 +510,7 @@ html.medindex-tailadmin[data-mi-page="barnat"] body #dataTable td[data-registry-
 }
 
 html.medindex-tailadmin[data-mi-page="barnat"] body #dataTable td[data-registry-column-key="active-substance"] {
-  color:#25324a!important;
+  color:var(--rst-ink-2,#25324a)!important;
   font-weight:650!important;
 }
 
@@ -556,7 +556,7 @@ html.medindex-tailadmin[data-mi-page="barnat"] body #dataTable :is(
   display:-webkit-box!important;
   max-height:62px!important;
   overflow:hidden!important;
-  color:#25324a!important;
+  color:var(--rst-ink-2,#25324a)!important;
   font-size:12px!important;
   font-weight:550!important;
   line-height:1.4!important;
