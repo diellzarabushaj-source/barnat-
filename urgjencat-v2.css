@@ -533,3 +533,50 @@ body{overflow-x:hidden}
   }
   .ec-section{scroll-margin-top:12px}
 }
+
+
+/* Inline Sanity abbreviations — tooltip/popover, never footer footnotes */
+.ec-abbr-token{
+  display:inline-flex;align-items:center;gap:3px;vertical-align:baseline;
+  margin:0 1px;padding:1px 4px;border:0;border-radius:5px;
+  background:#f2f0ff;color:#5146c7;
+  font:inherit;font-weight:600;line-height:1.25;cursor:help;
+  box-shadow:inset 0 -1px 0 rgba(83,58,253,.22);
+  transition:background .12s,color .12s,box-shadow .12s;
+}
+.ec-abbr-token>span{
+  display:grid;width:12px;height:12px;place-items:center;flex:0 0 12px;
+  border:1px solid rgba(83,58,253,.28);border-radius:999px;
+  font:700 8px/1 Inter,system-ui,sans-serif;color:#635bff;background:#fff;
+}
+.ec-abbr-token:hover,.ec-abbr-token:focus-visible,.ec-abbr-token.is-open{
+  outline:0;background:#e9e6ff;color:#3f35ad;
+  box-shadow:0 0 0 3px rgba(99,91,255,.10),inset 0 -1px 0 rgba(83,58,253,.28);
+}
+.ec-abbr-tooltip{
+  position:fixed;z-index:1200;max-width:calc(100vw - 20px);
+  padding:11px 12px;border:1px solid #dfe3ea;border-radius:10px;
+  background:#fff;color:#42566b;
+  box-shadow:0 12px 32px rgba(16,24,40,.16),0 2px 6px rgba(16,24,40,.06);
+  font-family:Inter,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
+  pointer-events:auto;
+}
+.ec-abbr-tooltip[hidden]{display:none!important}
+.ec-abbr-tooltip::before{
+  content:"";position:absolute;top:-5px;left:50%;width:9px;height:9px;
+  transform:translateX(-50%) rotate(45deg);
+  border-left:1px solid #dfe3ea;border-top:1px solid #dfe3ea;background:#fff;
+}
+.ec-abbr-tooltip.is-above::before{
+  top:auto;bottom:-5px;transform:translateX(-50%) rotate(225deg);
+}
+.ec-abbr-tooltip-head{display:grid;gap:2px;padding-right:4px}
+.ec-abbr-tooltip-head strong{color:#2f3f52;font-size:12px;font-weight:650}
+.ec-abbr-tooltip-head span{color:#7a8999;font-size:10px;line-height:1.35}
+.ec-abbr-tooltip p{margin:7px 0 0;color:#526579;font-size:11px;line-height:1.5}
+@media(max-width:760px){
+  .ec-abbr-token{padding:2px 5px;min-height:24px}
+  .ec-abbr-tooltip{max-width:calc(100vw - 16px);padding:12px}
+  .ec-abbr-tooltip-head strong{font-size:13px}
+  .ec-abbr-tooltip p{font-size:12px;line-height:1.5}
+}
