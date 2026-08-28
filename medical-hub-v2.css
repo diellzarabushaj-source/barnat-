@@ -1,0 +1,160 @@
+html[data-mi-page="medical-hub"]{
+  --mh-ink:#142033;
+  --mh-muted:#6d7889;
+  --mh-line:rgba(53,72,105,.13);
+  --mh-line-strong:rgba(53,72,105,.2);
+  --mh-surface:#ffffff;
+  --mh-soft:#f5f8fb;
+  --mh-soft-2:#eef4f6;
+  --mh-primary:#0f7b7d;
+  --mh-primary-strong:#0b5f62;
+  --mh-primary-soft:#eaf8f7;
+  --mh-blue:#3f6fd8;
+  --mh-amber:#b77717;
+  --mh-purple:#7556c9;
+  --mh-danger:#b64141;
+  --mh-success:#1a756f;
+  --mh-shadow:0 14px 42px rgba(33,48,75,.07);
+}
+
+.med-main:has(.medical-hub-v2){width:min(1380px,calc(100% - 40px))}
+.medical-hub-v2{display:grid;gap:16px;padding-bottom:40px;color:var(--mh-ink)}
+
+.mh-head{display:flex;align-items:flex-start;justify-content:space-between;gap:24px;padding:4px 0 2px}
+.mh-eyebrow{margin:0 0 7px;color:var(--mh-primary);font-size:11px;font-weight:800;letter-spacing:.14em;text-transform:uppercase}
+.mh-head h1{margin:0;font-size:clamp(30px,3.8vw,44px);font-weight:760;letter-spacing:-.045em;line-height:1.05}
+.mh-head p{max-width:760px;margin:9px 0 0;color:var(--mh-muted);font-size:14px;line-height:1.6}
+.mh-studio-link{display:inline-flex;min-height:42px;align-items:center;gap:8px;padding:0 14px;border:1px solid var(--mh-line);border-radius:12px;background:var(--mh-surface);color:var(--mh-primary-strong);font-size:12px;font-weight:750;text-decoration:none;box-shadow:0 7px 20px rgba(33,48,75,.045);white-space:nowrap}
+.mh-studio-link:hover{border-color:rgba(15,123,125,.3);background:var(--mh-primary-soft)}
+
+.mh-search-shell{position:relative;display:grid;gap:10px;padding:13px;border:1px solid var(--mh-line);border-radius:18px;background:var(--mh-surface);box-shadow:var(--mh-shadow)}
+.mh-search-row{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:10px;align-items:center}
+.mh-search-box{position:relative;display:flex;align-items:center}
+.mh-search-icon{position:absolute;left:15px;display:grid;width:20px;height:20px;place-items:center;color:#798598;pointer-events:none}
+.mh-search-box input{width:100%;min-height:52px;padding:0 92px 0 45px;border:1px solid var(--mh-line);border-radius:14px;background:#fbfcfd;color:var(--mh-ink);font:inherit;font-size:14px;outline:none;transition:.16s ease}
+.mh-search-box input:focus{border-color:rgba(15,123,125,.48);box-shadow:0 0 0 4px rgba(15,123,125,.08);background:#fff}
+.mh-search-shortcut{position:absolute;right:12px;display:inline-flex;min-height:28px;align-items:center;padding:0 9px;border:1px solid var(--mh-line);border-radius:8px;background:#fff;color:#7d8796;font-size:10px;font-weight:700}
+.mh-stats{display:flex;align-items:center;gap:7px;flex-wrap:wrap}
+.mh-stat{display:inline-flex;min-height:34px;align-items:center;gap:6px;padding:0 10px;border:1px solid var(--mh-line);border-radius:10px;background:var(--mh-soft);color:#5f6b7e;font-size:11px;font-weight:650}
+.mh-stat strong{color:var(--mh-ink);font-size:12px}
+
+.mh-filter-row{display:flex;align-items:center;gap:7px;overflow-x:auto;padding:1px 1px 2px;scrollbar-width:none}
+.mh-filter-row::-webkit-scrollbar{display:none}
+.mh-filter{flex:0 0 auto;min-height:36px;padding:0 12px;border:1px solid transparent;border-radius:10px;background:transparent;color:#667286;font:inherit;font-size:11px;font-weight:720;cursor:pointer}
+.mh-filter:hover{background:var(--mh-soft)}
+.mh-filter[aria-pressed="true"]{border-color:rgba(15,123,125,.16);background:var(--mh-primary-soft);color:var(--mh-primary-strong)}
+
+.mh-search-results{position:absolute;z-index:40;top:71px;left:13px;right:13px;max-height:min(520px,70vh);overflow:auto;border:1px solid var(--mh-line-strong);border-radius:16px;background:#fff;box-shadow:0 24px 70px rgba(21,36,60,.18)}
+.mh-search-results[hidden]{display:none}
+.mh-search-group{padding:10px}
+.mh-search-group + .mh-search-group{border-top:1px solid var(--mh-line)}
+.mh-search-group-title{padding:5px 7px 8px;color:#8a94a4;font-size:9px;font-weight:850;letter-spacing:.13em;text-transform:uppercase}
+.mh-search-hit{display:flex;width:100%;align-items:center;justify-content:space-between;gap:14px;padding:10px;border:0;border-radius:11px;background:transparent;color:inherit;text-align:left;cursor:pointer}
+.mh-search-hit:hover{background:var(--mh-soft)}
+.mh-search-hit strong{display:block;font-size:12px}.mh-search-hit span{display:block;margin-top:3px;color:var(--mh-muted);font-size:10px}
+.mh-search-type{flex:0 0 auto;padding:4px 7px;border-radius:7px;background:var(--mh-soft-2);color:#68758a;font-size:9px;font-weight:800}
+
+.mh-workspace{display:grid;grid-template-columns:minmax(230px,.78fr) minmax(285px,.95fr) minmax(400px,1.52fr);gap:14px;align-items:start}
+.mh-panel{min-width:0;border:1px solid var(--mh-line);border-radius:18px;background:var(--mh-surface);box-shadow:0 12px 38px rgba(31,48,76,.055);overflow:hidden}
+.mh-panel-head{padding:15px 16px 13px;border-bottom:1px solid var(--mh-line);background:linear-gradient(180deg,#fff,#fbfcfd)}
+.mh-panel-kicker{margin:0 0 4px;color:#929bab;font-size:9px;font-weight:850;letter-spacing:.13em;text-transform:uppercase}
+.mh-panel-head h2,.mh-panel-head h3{margin:0;color:var(--mh-ink);font-size:15px;font-weight:780;letter-spacing:-.02em}
+.mh-panel-head p{margin:6px 0 0;color:var(--mh-muted);font-size:10.5px;line-height:1.45}
+
+.mh-chapters{position:sticky;top:14px;max-height:calc(100dvh - 120px);overflow:auto}
+.mh-chapter-body{padding:8px}
+.mh-group-label{margin:12px 8px 6px;color:#9aa3b0;font-size:9px;font-weight:850;letter-spacing:.12em;text-transform:uppercase}
+.mh-group-label:first-child{margin-top:4px}
+.mh-chapter-button{display:grid;width:100%;grid-template-columns:32px minmax(0,1fr) auto;gap:9px;align-items:center;padding:9px;border:1px solid transparent;border-radius:12px;background:transparent;color:inherit;text-align:left;cursor:pointer;transition:.15s ease}
+.mh-chapter-button:hover{background:var(--mh-soft)}
+.mh-chapter-button.is-active{border-color:rgba(15,123,125,.15);background:var(--mh-primary-soft)}
+.mh-chapter-index{display:grid;width:30px;height:30px;place-items:center;border-radius:9px;background:#eff3f7;color:#718096;font-size:9px;font-weight:850}
+.mh-chapter-button.is-active .mh-chapter-index{background:var(--mh-primary);color:#fff}
+.mh-chapter-title{display:block;overflow:hidden;color:var(--mh-ink);font-size:11.5px;font-weight:740;text-overflow:ellipsis;white-space:nowrap}
+.mh-chapter-meta{display:block;margin-top:2px;color:#929baa;font-size:9px}
+.mh-count{display:inline-flex;min-width:24px;height:24px;align-items:center;justify-content:center;padding:0 6px;border-radius:8px;background:#f0f3f7;color:#7a8596;font-size:9px;font-weight:800}
+.mh-chapter-button.is-active .mh-count{background:rgba(15,123,125,.1);color:var(--mh-primary-strong)}
+
+.mh-subchapters{position:sticky;top:14px;max-height:calc(100dvh - 120px);overflow:auto}
+.mh-chapter-overview{padding:16px;border-bottom:1px solid var(--mh-line)}
+.mh-chapter-overview .mh-number{display:inline-flex;min-height:25px;align-items:center;padding:0 8px;border-radius:8px;background:var(--mh-primary-soft);color:var(--mh-primary-strong);font-size:9px;font-weight:850;letter-spacing:.08em}
+.mh-chapter-overview h2{margin:9px 0 0;font-size:22px;font-weight:780;letter-spacing:-.035em}
+.mh-chapter-overview p{margin:7px 0 0;color:var(--mh-muted);font-size:11px;line-height:1.55}
+.mh-subchapter-list{display:grid;gap:6px;padding:9px}
+.mh-subchapter-button{display:grid;width:100%;grid-template-columns:minmax(0,1fr) auto;gap:10px;align-items:center;padding:11px 12px;border:1px solid transparent;border-radius:12px;background:transparent;color:inherit;text-align:left;cursor:pointer}
+.mh-subchapter-button:hover{background:var(--mh-soft)}
+.mh-subchapter-button.is-active{border-color:rgba(63,111,216,.14);background:#f1f5ff}
+.mh-subchapter-button strong{display:block;color:var(--mh-ink);font-size:11.5px;font-weight:720;line-height:1.35}
+.mh-subchapter-button span{display:block;margin-top:3px;color:#969faf;font-size:9px}
+.mh-subchapter-arrow{color:#a1a9b6;font-size:15px}
+
+.mh-lessons{min-height:620px}
+.mh-breadcrumbs{display:flex;align-items:center;gap:7px;flex-wrap:wrap;padding:13px 16px;border-bottom:1px solid var(--mh-line);color:#8b95a5;font-size:9.5px}
+.mh-breadcrumbs button{padding:0;border:0;background:transparent;color:var(--mh-primary-strong);font:inherit;font-weight:700;cursor:pointer}
+.mh-lesson-stage{padding:18px}
+.mh-lesson-stage-head{display:flex;align-items:flex-start;justify-content:space-between;gap:18px;padding-bottom:15px;border-bottom:1px solid var(--mh-line)}
+.mh-lesson-stage-head h2{margin:0;font-size:24px;font-weight:780;letter-spacing:-.035em;line-height:1.1}
+.mh-lesson-stage-head p{margin:7px 0 0;color:var(--mh-muted);font-size:11px;line-height:1.55}
+.mh-lesson-badge{display:inline-flex;min-height:29px;align-items:center;padding:0 9px;border:1px solid var(--mh-line);border-radius:9px;background:var(--mh-soft);color:#697589;font-size:9px;font-weight:800;white-space:nowrap}
+.mh-lessons-list{display:grid;gap:8px;margin-top:14px}
+.mh-lesson-card{display:grid;width:100%;grid-template-columns:minmax(0,1fr) auto;gap:12px;align-items:center;padding:13px;border:1px solid var(--mh-line);border-radius:13px;background:#fff;color:inherit;text-align:left;cursor:pointer}
+.mh-lesson-card:hover{border-color:rgba(15,123,125,.25);background:#fbfefd}
+.mh-lesson-card strong{display:block;font-size:12px}.mh-lesson-card span{display:block;margin-top:4px;color:var(--mh-muted);font-size:9.5px}
+.mh-lesson-card em{font-style:normal;color:var(--mh-primary);font-size:10px;font-weight:800}
+
+.mh-empty-lessons{display:grid;min-height:300px;place-items:center;padding:34px 24px;text-align:center}
+.mh-empty-icon{display:grid;width:54px;height:54px;place-items:center;margin:0 auto 14px;border-radius:17px;background:var(--mh-primary-soft);color:var(--mh-primary);font-size:20px;font-weight:800}
+.mh-empty-lessons h3{margin:0;font-size:16px;font-weight:770;letter-spacing:-.02em}
+.mh-empty-lessons p{max-width:420px;margin:7px auto 0;color:var(--mh-muted);font-size:11px;line-height:1.6}
+.mh-empty-lessons small{display:inline-flex;margin-top:13px;padding:6px 9px;border-radius:8px;background:var(--mh-soft);color:#8791a1;font-size:9px;font-weight:700}
+
+.mh-detail-view{display:grid;gap:14px}
+.mh-detail-toolbar{display:flex;align-items:center;justify-content:space-between;gap:12px}
+.mh-back{min-height:34px;padding:0 10px;border:1px solid var(--mh-line);border-radius:9px;background:#fff;color:var(--mh-primary-strong);font:inherit;font-size:10px;font-weight:750;cursor:pointer}
+.mh-detail-head{padding-bottom:16px;border-bottom:1px solid var(--mh-line)}
+.mh-detail-head h2{margin:0;font-size:30px;font-weight:780;letter-spacing:-.045em;line-height:1.06}
+.mh-detail-head .mh-question{margin:0 0 7px;color:var(--mh-primary);font-size:9.5px;font-weight:850;letter-spacing:.12em;text-transform:uppercase}
+.mh-detail-summary{margin:12px 0 0;color:#5f6b7f;font-size:12px;line-height:1.65}
+.mh-meta-row{display:flex;gap:6px;flex-wrap:wrap;margin-top:11px}.mh-meta-chip{display:inline-flex;min-height:26px;align-items:center;padding:0 8px;border:1px solid var(--mh-line);border-radius:8px;background:var(--mh-soft);color:#68758a;font-size:9px;font-weight:750}
+.mh-detail-sections{display:grid;gap:10px}.mh-detail-section{padding:14px;border:1px solid var(--mh-line);border-radius:13px;background:#fff}.mh-detail-section h3{margin:0 0 9px;font-size:12px}.mh-detail-section p,.mh-detail-section li{color:#5f6a7b;font-size:10.5px;line-height:1.6}.mh-detail-section ul{margin:0;padding-left:18px}.mh-detail-section.is-alert{border-color:rgba(182,65,65,.16);background:#fff8f8}.mh-detail-section.is-alert h3{color:var(--mh-danger)}
+.mh-step{display:grid;grid-template-columns:28px minmax(0,1fr);gap:10px;padding:10px 0}.mh-step + .mh-step{border-top:1px solid var(--mh-line)}.mh-step-index{display:grid;width:26px;height:26px;place-items:center;border-radius:8px;background:var(--mh-primary-soft);color:var(--mh-primary-strong);font-size:9px;font-weight:850}.mh-step strong{display:block;font-size:10.5px}.mh-step p{margin:4px 0 0}
+
+html[data-theme="dark"] .medical-hub-v2{--mh-ink:#eef2f7;--mh-muted:#a3adba;--mh-line:rgba(148,163,184,.16);--mh-line-strong:rgba(148,163,184,.24);--mh-surface:#111922;--mh-soft:#151f2b;--mh-soft-2:#172534;--mh-primary-soft:#102b2d;--mh-shadow:0 18px 50px rgba(0,0,0,.2)}
+html[data-theme="dark"] .mh-head,html[data-theme="dark"] .mh-search-shell,html[data-theme="dark"] .mh-panel,html[data-theme="dark"] .mh-studio-link,html[data-theme="dark"] .mh-lesson-card,html[data-theme="dark"] .mh-detail-section,html[data-theme="dark"] .mh-back,html[data-theme="dark"] .mh-search-results{background:var(--mh-surface);color:var(--mh-ink)}
+html[data-theme="dark"] .mh-search-box input{background:#0e1620;color:var(--mh-ink)}
+html[data-theme="dark"] .mh-search-shortcut{background:#17212d}
+html[data-theme="dark"] .mh-panel-head{background:#111922}
+html[data-theme="dark"] .mh-subchapter-button.is-active{background:#17233a}
+html[data-theme="dark"] .mh-lesson-card:hover{background:#142328}
+
+@media(max-width:1180px){
+  .mh-workspace{grid-template-columns:230px minmax(280px,.9fr) minmax(360px,1.3fr)}
+}
+@media(max-width:980px){
+  .mh-workspace{grid-template-columns:220px minmax(0,1fr)}
+  .mh-lessons{grid-column:1/-1;min-height:420px}
+  .mh-chapters,.mh-subchapters{position:static;max-height:560px}
+}
+@media(max-width:720px){
+  .med-main:has(.medical-hub-v2){width:min(100% - 20px,1380px)}
+  .medical-hub-v2{gap:12px}
+  .mh-head{display:block}.mh-studio-link{margin-top:12px}.mh-head h1{font-size:31px}
+  .mh-search-row{grid-template-columns:1fr}.mh-stats{padding-top:1px}
+  .mh-search-shortcut{display:none}.mh-search-box input{padding-right:14px}
+  .mh-workspace{grid-template-columns:1fr}
+  .mh-chapters,.mh-subchapters{max-height:none}
+  .mh-lessons{grid-column:auto;min-height:360px}
+  .mh-chapter-body{display:flex;gap:7px;overflow-x:auto;padding:9px;scrollbar-width:none}
+  .mh-chapter-body::-webkit-scrollbar{display:none}.mh-group-label{display:none}
+  .mh-chapter-button{flex:0 0 auto;width:auto;min-width:180px;grid-template-columns:30px minmax(0,1fr);padding:8px}.mh-chapter-button .mh-count{display:none}
+  .mh-subchapter-list{grid-template-columns:repeat(2,minmax(0,1fr))}
+  .mh-lesson-stage{padding:15px}.mh-lesson-stage-head{display:block}.mh-lesson-badge{margin-top:10px}
+  .mh-search-results{top:70px}
+}
+@media(max-width:470px){
+  .mh-subchapter-list{grid-template-columns:1fr}
+  .mh-stats{gap:5px}.mh-stat{min-height:30px;padding:0 8px;font-size:9.5px}
+  .mh-filter{min-height:34px;padding:0 10px}
+  .mh-lesson-stage-head h2{font-size:21px}
+  .mh-detail-head h2{font-size:25px}
+}
