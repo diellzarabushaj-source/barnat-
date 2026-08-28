@@ -64,6 +64,7 @@ const TEXT_ROW = {
 
 const REGIMEN_ROW = {
   id:'aaaaaaaa-bbbb-4ccc-8ddd-eeeeeeeeeeee',
+  drug_id:READY_ROW.id,
   source_key:'card:42:pediatric',
   population:'pediatric',
   dose_text:'25–50 mg/kg/ditë',
@@ -116,7 +117,7 @@ const handler = require(path.join(ROOT, 'lib/pediatric-dosage-handler.js'));
 const { STATUS } = require(path.join(ROOT, 'lib/pediatric-readiness.js'));
 const {
   searchTokens, searchToken, rowMatchesTokens, searchFacets,
-  drugSelector, limitOf, searchPath, productPath, regimenPath,
+  drugSelector, limitOf, searchPath, productPath, regimenPath, searchBindingPath,
   rankSearchRow, typedRegimen, publicRegimen, calculationBinding,
 } = handler._test;
 
@@ -160,6 +161,7 @@ for (const built of [
   searchPath('amoks', 40),
   productPath({ column:'id', value:READY_ROW.id }),
   regimenPath(READY_ROW.id),
+  searchBindingPath([READY_ROW]),
 ]) {
   assert.doesNotThrow(() => assertEgressSafeRead(built, { method:'GET' }));
 }
@@ -220,6 +222,16 @@ async function main() {
   const bySubstance = await handler.searchDrugs('amoxicillinum', '10');
   assert.equal(bySubstance.results.length, 2);
   assert.deepEqual(searchFacets(bySubstance.results), { all:2, ready:1, text:1, blocked:0 });
+
+  regimenRows = [];
+  const unboundSearch = await handler.searchDrugs('amoksicilinë', '10');
+  assert.equal(unboundSearch.results.length, 1);
+  assert.equal(unboundSearch.results[0].readiness, STATUS.CALCULATOR_READY);
+  assert.equal(unboundSearch.results[0].calculable, false);
+  assert.equal(unboundSearch.results[0].bindingState, 'missing');
+  assert.deepEqual(unboundSearch.facets, { all:1, ready:0, text:0, blocked:1 });
+  regimenRows = [REGIMEN_ROW];
+
   assert.equal((await handler.searchDrugs('a')).results.length, 0);
 
   // --------------------------------------------------------- product binding
