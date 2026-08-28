@@ -58,7 +58,7 @@ for (const marker of order) {
 assert.match(shellCore, />KLINIKE<\/p>/);
 assert.match(shellCore, />PUNA IME<\/p>/);
 
-for (const file of ['registry-v2.js','classification-v2.js','icd-v2.js','urgjencat-v2.js','analizat-v2.js','protokollet-v2.js','recetat-v2.js','medical-hub-v2.js']) {
+for (const file of ['registry-v2.js','classification-v2.js','icd-v2.js','dozologjia-v2.js','urgjencat-v2.js','analizat-v2.js','protokollet-v2.js','recetat-v2.js','medical-hub-v2.js']) {
   const source = read(file);
   assert.match(source, /function loadSharedSidebarTaxonomy\(\)/, `${file}: shared sidebar loader missing`);
   assert.match(source, /sidebar-taxonomy-v3\.js\?v=sidebar-taxonomy-v3/, `${file}: shared sidebar runtime missing`);
@@ -73,6 +73,7 @@ for (const [file, version] of [
   assert.match(html, new RegExp(version), `${file}: V2 runtime cache-bust missing`);
 }
 for (const [htmlFile, runtime, version] of [
+  ['dozologjia.html','dozologjia-v2.js','1'],
   ['urgjencat.html','urgjencat-v2.js','6'],
   ['analizat.html','analizat-v2.js','1'],
   ['protokollet.html','protokollet-v2.js','1'],
@@ -85,12 +86,12 @@ for (const [htmlFile, runtime, version] of [
   assert.match(js, /sidebar-taxonomy-v3\.js\?v=sidebar-taxonomy-v3/, `${runtime}: shared taxonomy loader missing`);
 }
 
-for (const file of ['dozologjia.html','sistemi.html']) {
+for (const file of ['sistemi.html']) {
   const html = read(file);
   assert.match(html, /tailadmin-shell\.js\?v=shell-profile-v4/, `${file}: shared TailAdmin sidebar cache-bust missing`);
 }
 
-for (const file of ['index.html','klasifikimi.html','icd.html','urgjencat.html','analizat.html','protokollet.html','recetat.html','medical-hub.html']) {
+for (const file of ['index.html','klasifikimi.html','icd.html','dozologjia.html','urgjencat.html','analizat.html','protokollet.html','recetat.html','medical-hub.html']) {
   const html = read(file);
   assert.match(html, /drx-unified-sidebar/, `${file}: unified standalone sidebar marker missing`);
   assert.match(html, /drx-dashboard-stripe\.css\?v=drx-dashboard-stripe-v4/, `${file}: shared Stripe sidebar authority missing`);
