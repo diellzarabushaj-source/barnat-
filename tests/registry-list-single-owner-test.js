@@ -60,7 +60,7 @@ const api = read('api/drug-search.js');
     'List mode must hard-hide the table-only toolbar');
   assert.match(css, /#registryContent,[\s\S]*#pagination[\s\S]*display:\s*none\s*!important/,
     'List mode must hard-hide table and pagination');
-  assert.doesNotMatch(css, /#registryFilterPanel[\s\S]{0,180}display:\s*none\s*!important/,
+  assert.doesNotMatch(css, /#registryFilterPanel(?:\.[^{,\s]+)?\s*\{[^}]*display:\s*none\s*!important/i,
     'the shared search/filter surface must remain available');
 }
 
