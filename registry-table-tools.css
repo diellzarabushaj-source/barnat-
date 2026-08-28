@@ -13945,6 +13945,801 @@ html[data-theme=dark] .registry-dosage-more{
   }
 }
 
+/* ===== consolidated from first-page-clinical.css ===== */
+/* First-page deep audit: a focused, doctor-style registry workspace without changing backend or clinical data. */
+html.medindex-tailadmin.mi-first-page-audited{
+  --registry-surface:#ffffff;
+  --registry-soft:#f9fafb;
+  --registry-soft-2:#f2f4f7;
+  --registry-line:#e4e7ec;
+  --registry-line-strong:#d0d5dd;
+  --registry-ink:#101828;
+  --registry-muted:#667085;
+  --registry-teal:#155f63;
+  --registry-teal-dark:#0d4145;
+  --registry-teal-soft:#eaf4f1;
+  --registry-gold:#c88a2b;
+  --registry-gold-soft:#fbf1df;
+  --registry-danger:#b84343;
+  --registry-radius:12px;
+  --registry-shadow:0 1px 2px rgba(16,24,40,.05);
+  --registry-select-width:48px;
+  --registry-name-width:224px;
+  --registry-substance-width:210px;
+  --registry-atc-width:92px;
+  --registry-strength-width:104px;
+  --registry-form-width:190px;
+  --registry-status-width:104px;
+}
+
+html.medindex-tailadmin.mi-first-page-audited .registry-page-workspace{
+  display:flex;
+  min-width:0;
+  flex-direction:column;
+  gap:10px;
+}
+html.medindex-tailadmin.mi-first-page-audited .registry-status-strip{width:100%}
+
+html.medindex-tailadmin.mi-first-page-audited .registry-overview{
+  position:relative!important;
+  display:grid!important;
+  grid-template-columns:36px minmax(0,1fr) auto!important;
+  align-items:center!important;
+  gap:11px!important;
+  min-height:58px!important;
+  margin:0!important;
+  padding:9px 12px!important;
+  overflow:hidden!important;
+  border:1px solid var(--registry-line)!important;
+  border-radius:var(--registry-radius)!important;
+  background:var(--registry-surface)!important;
+  color:var(--registry-ink)!important;
+  box-shadow:none!important;
+}
+html.medindex-tailadmin.mi-first-page-audited .registry-overview::before{
+  display:none!important;
+}
+html.medindex-tailadmin.mi-first-page-audited .registry-overview-icon{
+  display:grid;
+  width:36px;
+  height:36px;
+  place-items:center;
+  border:1px solid #cfe0db;
+  border-radius:8px;
+  background:var(--registry-teal-soft);
+  color:var(--registry-teal);
+}
+html.medindex-tailadmin.mi-first-page-audited .registry-overview-icon svg{width:19px;height:19px}
+html.medindex-tailadmin.mi-first-page-audited .registry-overview-copy{min-width:0}
+html.medindex-tailadmin.mi-first-page-audited .registry-eyebrow{
+  display:block;
+  margin-bottom:3px;
+  color:var(--registry-teal);
+  font-size:.75rem;
+  font-weight:850;
+  letter-spacing:.1em;
+}
+html.medindex-tailadmin.mi-first-page-audited .registry-overview h2{
+  margin:0!important;
+  color:var(--registry-ink)!important;
+  font-size:.94rem!important;
+  font-weight:700!important;
+  line-height:1.2!important;
+}
+html.medindex-tailadmin.mi-first-page-audited .registry-overview p{
+  margin:2px 0 0!important;
+  color:var(--registry-muted)!important;
+  font-size:.69rem!important;
+  line-height:1.35!important;
+}
+html.medindex-tailadmin.mi-first-page-audited .registry-overview-meta{
+  display:flex;
+  align-items:center;
+  gap:0;
+}
+html.medindex-tailadmin.mi-first-page-audited .registry-overview-meta>span{
+  display:flex;
+  min-width:0;
+  min-height:28px;
+  flex-direction:row;
+  align-items:center;
+  justify-content:center;
+  gap:5px;
+  padding:0 10px;
+  border:0;
+  border-left:1px solid var(--registry-line);
+  border-radius:0;
+  background:transparent;
+  white-space:nowrap;
+}
+html.medindex-tailadmin.mi-first-page-audited .registry-overview-meta strong{
+  color:var(--registry-teal-dark);
+  font-family:var(--mi-mono,"DM Mono",monospace);
+  font-size:.68rem;
+  line-height:1.15;
+}
+html.medindex-tailadmin.mi-first-page-audited .registry-overview-meta small{
+  margin:0;
+  color:var(--registry-muted);
+  font-size:.65rem;
+  font-weight:600;
+  letter-spacing:0;
+}
+
+html.medindex-tailadmin.mi-first-page-audited .registry-toolbar{
+  position:sticky!important;
+  top:8px!important;
+  inset:auto!important;
+  z-index:28!important;
+  display:grid!important;
+  grid-template-columns:minmax(300px,1fr) auto!important;
+  gap:10px!important;
+  margin:0!important;
+  padding:9px!important;
+  border:1px solid var(--registry-line)!important;
+  border-radius:var(--registry-radius)!important;
+  background:var(--registry-surface)!important;
+  box-shadow:var(--registry-shadow)!important;
+  backdrop-filter:none!important;
+}
+html.medindex-tailadmin.mi-first-page-audited .registry-search-block{
+  position:relative;
+  display:flex;
+  align-items:center;
+  min-width:280px;
+}
+html.medindex-tailadmin.mi-first-page-audited .registry-search-heading{
+  position:absolute!important;
+  width:1px!important;
+  height:1px!important;
+  overflow:hidden!important;
+  clip:rect(0 0 0 0)!important;
+  clip-path:inset(50%)!important;
+  white-space:nowrap!important;
+}
+html.medindex-tailadmin.mi-first-page-audited .registry-search-heading strong{
+  color:var(--registry-ink);
+  font-size:.76rem;
+  font-weight:800;
+}
+html.medindex-tailadmin.mi-first-page-audited .registry-search-heading span,
+html.medindex-tailadmin.mi-first-page-audited .registry-search-help{
+  color:var(--registry-muted);
+  font-size:.72rem;
+  line-height:1.35;
+}
+html.medindex-tailadmin.mi-first-page-audited .registry-search-help{display:none}
+html.medindex-tailadmin.mi-first-page-audited .registry-search-shell{
+  position:relative;
+  display:flex;
+  min-width:0;
+  align-items:center;
+}
+html.medindex-tailadmin.mi-first-page-audited .registry-search-icon{
+  position:absolute;
+  left:14px;
+  z-index:2;
+  display:grid;
+  width:20px;
+  height:20px;
+  place-items:center;
+  color:#617572;
+  pointer-events:none;
+}
+html.medindex-tailadmin.mi-first-page-audited .registry-search-icon svg{width:20px;height:20px}
+html.medindex-tailadmin.mi-first-page-audited .registry-toolbar #search{
+  width:100%!important;
+  min-width:0!important;
+  min-height:40px!important;
+  flex:1 1 auto!important;
+  padding:0 84px 0 44px!important;
+  border:1px solid var(--registry-line-strong)!important;
+  border-radius:8px!important;
+  background:#fff!important;
+  color:var(--registry-ink)!important;
+  box-shadow:none!important;
+  font-size:.8rem!important;
+}
+html.medindex-tailadmin.mi-first-page-audited .registry-toolbar #search::placeholder{color:#83918f}
+html.medindex-tailadmin.mi-first-page-audited .registry-toolbar #search:focus{
+  outline:0!important;
+  border-color:var(--registry-teal)!important;
+  background:#fff!important;
+  box-shadow:0 0 0 3px rgba(21,95,99,.12)!important;
+}
+html.medindex-tailadmin.mi-first-page-audited .registry-search-shortcut{
+  position:absolute;
+  right:10px;
+  display:inline-flex;
+  min-height:24px;
+  align-items:center;
+  padding:0 7px;
+  border:1px solid var(--registry-line);
+  border-radius:8px;
+  background:#fff;
+  color:#72817f;
+  font-family:var(--mi-mono,"DM Mono",monospace);
+  font-size:.55rem;
+  font-weight:700;
+  pointer-events:none;
+}
+
+html.medindex-tailadmin.mi-first-page-audited .registry-toolbar-secondary{
+  display:flex;
+  min-width:0;
+  align-items:flex-end;
+  justify-content:flex-end;
+  gap:8px;
+}
+html.medindex-tailadmin.mi-first-page-audited .registry-control-group{
+  display:grid;
+  min-width:0;
+  gap:3px;
+  padding:0;
+  border:0;
+  border-radius:0;
+  background:transparent;
+}
+html.medindex-tailadmin.mi-first-page-audited .registry-control-label{
+  display:flex;
+  align-items:center;
+  gap:6px;
+  margin:0 0 0 2px;
+  color:#667875;
+  font-size:.58rem;
+  font-weight:650;
+  letter-spacing:0;
+  text-transform:none;
+}
+html.medindex-tailadmin.mi-first-page-audited .registry-control-label svg{display:none;width:13px;height:13px}
+html.medindex-tailadmin.mi-first-page-audited .registry-control-row{
+  display:flex;
+  min-width:0;
+  align-items:center;
+  gap:6px;
+}
+html.medindex-tailadmin.mi-first-page-audited .registry-control-row>select,
+html.medindex-tailadmin.mi-first-page-audited .registry-control-row>.form-picker,
+html.medindex-tailadmin.mi-first-page-audited .registry-control-row>.col-picker{min-width:0;flex:0 1 auto}
+html.medindex-tailadmin.mi-first-page-audited .registry-filter-group .registry-control-row>select{width:116px!important}
+html.medindex-tailadmin.mi-first-page-audited .registry-filter-group .form-picker{width:142px!important}
+html.medindex-tailadmin.mi-first-page-audited .registry-view-group .registry-control-row>select{width:94px!important}
+html.medindex-tailadmin.mi-first-page-audited .registry-view-group .col-picker{width:104px!important}
+html.medindex-tailadmin.mi-first-page-audited .registry-control-row select,
+html.medindex-tailadmin.mi-first-page-audited .registry-control-row .form-picker>button,
+html.medindex-tailadmin.mi-first-page-audited .registry-control-row .col-picker>button{
+  width:100%!important;
+  min-width:0!important;
+  min-height:36px!important;
+  padding:0 9px!important;
+  border:1px solid var(--registry-line-strong)!important;
+  border-radius:8px!important;
+  background:#fff!important;
+  color:var(--registry-ink)!important;
+  box-shadow:none!important;
+  font-size:.67rem!important;
+  font-weight:600!important;
+  text-overflow:ellipsis;
+}
+html.medindex-tailadmin.mi-first-page-audited .registry-control-row select:hover,
+html.medindex-tailadmin.mi-first-page-audited .registry-control-row button:hover,
+html.medindex-tailadmin.mi-first-page-audited .registry-control-row button[aria-expanded=true]{
+  border-color:#9fbdb5!important;
+  background:#fff!important;
+}
+html.medindex-tailadmin.mi-first-page-audited .registry-action-group .registry-control-row{justify-content:flex-end}
+html.medindex-tailadmin.mi-first-page-audited .registry-action-group .selection-badge{
+  min-height:36px!important;
+  flex:0 0 auto!important;
+  padding:0 10px!important;
+  border:1px solid var(--registry-line)!important;
+  border-radius:8px!important;
+  background:#fff!important;
+  color:#61726f!important;
+  font-family:var(--mi-font)!important;
+  font-size:.65rem!important;
+}
+html.medindex-tailadmin.mi-first-page-audited .registry-action-group .selection-badge.has-selection{
+  border-color:#add0c3!important;
+  background:var(--registry-teal-soft)!important;
+  color:var(--registry-teal-dark)!important;
+}
+html.medindex-tailadmin.mi-first-page-audited .registry-action-group .protocol-toolbar-btn{
+  min-height:36px!important;
+  flex:1 1 auto!important;
+  padding:0 13px!important;
+  border:1px solid var(--registry-teal-dark)!important;
+  border-radius:8px!important;
+  background:var(--registry-teal-dark)!important;
+  color:#fff!important;
+  box-shadow:none!important;
+  font-size:.7rem!important;
+  font-weight:700!important;
+}
+html.medindex-tailadmin.mi-first-page-audited .registry-action-group .protocol-toolbar-btn:hover{background:var(--registry-teal)!important}
+html.medindex-tailadmin.mi-first-page-audited .registry-action-group .mini-count{
+  min-width:21px!important;
+  height:21px!important;
+  margin-left:6px!important;
+  padding:0 5px!important;
+  background:rgba(255,255,255,.17)!important;
+  color:#fff!important;
+  font-size:.57rem!important;
+}
+
+html.medindex-tailadmin.mi-first-page-audited .registry-table-bar{
+  display:flex;
+  min-width:0;
+  align-items:center;
+  justify-content:space-between;
+  gap:10px;
+  min-height:38px;
+  padding:0 2px;
+}
+html.medindex-tailadmin.mi-first-page-audited .registry-table-title{
+  display:flex;
+  min-width:0;
+  align-items:center;
+  gap:8px;
+}
+html.medindex-tailadmin.mi-first-page-audited .registry-table-title>svg{
+  width:30px;
+  height:30px;
+  padding:6px;
+  border:1px solid #d3e0dc;
+  border-radius:8px;
+  background:var(--registry-teal-soft);
+  color:var(--registry-teal);
+}
+html.medindex-tailadmin.mi-first-page-audited .registry-table-title h2{
+  margin:0;
+  color:var(--registry-ink);
+  font-size:.86rem;
+  font-weight:700;
+  line-height:1.2;
+}
+html.medindex-tailadmin.mi-first-page-audited .registry-table-title p{
+  margin:3px 0 0;
+  color:var(--registry-muted);
+  font-size:.61rem;
+  line-height:1.35;
+}
+html.medindex-tailadmin.mi-first-page-audited .registry-table-actions{
+  display:flex;
+  min-width:0;
+  align-items:center;
+  justify-content:flex-end;
+  gap:7px;
+}
+html.medindex-tailadmin.mi-first-page-audited .registry-filter-state{
+  display:inline-flex;
+  min-height:31px;
+  align-items:center;
+  padding:0 9px;
+  border:1px solid var(--registry-line);
+  border-radius:8px;
+  background:#fff;
+  color:#697a77;
+  font-size:.6rem;
+  font-weight:720;
+  white-space:nowrap;
+}
+html.medindex-tailadmin.mi-first-page-audited .registry-filter-state.is-active{
+  border-color:#acd0c2;
+  background:var(--registry-teal-soft);
+  color:var(--registry-teal-dark);
+}
+html.medindex-tailadmin.mi-first-page-audited .registry-reset-filters{
+  display:inline-flex;
+  min-height:31px;
+  align-items:center;
+  gap:5px;
+  padding:0 9px;
+  border:1px solid var(--registry-line-strong);
+  border-radius:8px;
+  background:#fff;
+  color:#516360;
+  cursor:pointer;
+  font-size:.6rem;
+  font-weight:720;
+}
+html.medindex-tailadmin.mi-first-page-audited .registry-reset-filters[hidden]{display:none!important}
+html.medindex-tailadmin.mi-first-page-audited .registry-reset-filters:hover{border-color:#9ebbb3;background:#f8fbfa;color:var(--registry-teal-dark)}
+html.medindex-tailadmin.mi-first-page-audited .registry-reset-filters svg{width:13px;height:13px}
+html.medindex-tailadmin.mi-first-page-audited .registry-result-count{
+  min-height:31px!important;
+  margin:0!important;
+  padding:0 10px!important;
+  border:1px solid var(--registry-line)!important;
+  border-radius:8px!important;
+  background:#fff!important;
+  color:var(--registry-muted)!important;
+  font-family:var(--mi-mono,"DM Mono",monospace)!important;
+  font-size:.59rem!important;
+  font-weight:760!important;
+}
+
+html.medindex-tailadmin.mi-first-page-audited .table-wrap{
+  position:relative!important;
+  margin:0!important;
+  max-height:min(760px,calc(100dvh - 282px))!important;
+  overflow:auto!important;
+  border:1px solid var(--registry-line)!important;
+  border-radius:var(--registry-radius) var(--registry-radius) 0 0!important;
+  background:var(--registry-surface)!important;
+  box-shadow:none!important;
+  scrollbar-color:#b8c6c2 transparent;
+  scrollbar-width:thin;
+  overscroll-behavior:contain;
+}
+html.medindex-tailadmin.mi-first-page-audited .table-wrap:focus-visible{outline:3px solid rgba(21,95,99,.22)!important;outline-offset:2px}
+html.medindex-tailadmin.mi-first-page-audited .table-wrap.has-horizontal-scroll:not(.is-scroll-end){box-shadow:inset -14px 0 18px -19px rgba(16,24,40,.42)!important}
+html.medindex-tailadmin.mi-first-page-audited .table-wrap.is-scrolled-x{box-shadow:inset 12px 0 16px -17px rgba(16,24,40,.38)!important}
+html.medindex-tailadmin.mi-first-page-audited .table-wrap.has-horizontal-scroll.is-scrolled-x:not(.is-scroll-end){box-shadow:inset 12px 0 16px -17px rgba(16,24,40,.38),inset -14px 0 18px -19px rgba(16,24,40,.42)!important}
+html.medindex-tailadmin.mi-first-page-audited .table-wrap::-webkit-scrollbar{width:10px;height:10px}
+html.medindex-tailadmin.mi-first-page-audited .table-wrap::-webkit-scrollbar-thumb{border:2px solid transparent;border-radius:999px;background:#b8c6c2;background-clip:padding-box}
+html.medindex-tailadmin.mi-first-page-audited #dataTable{
+  width:max-content!important;
+  min-width:100%!important;
+  border-collapse:separate!important;
+  border-spacing:0!important;
+  background:#fff!important;
+  font-size:.75rem!important;
+}
+html.medindex-tailadmin.mi-first-page-audited #dataTable thead th{
+  position:sticky!important;
+  top:0!important;
+  z-index:5!important;
+  height:42px!important;
+  padding:0 10px!important;
+  border-right:1px solid var(--registry-line)!important;
+  border-bottom:1px solid var(--registry-line)!important;
+  background:#f9fafb!important;
+  color:#475467!important;
+  font-size:.68rem!important;
+  font-weight:650!important;
+  letter-spacing:0!important;
+  line-height:1.2!important;
+  text-transform:none!important;
+  white-space:nowrap!important;
+}
+html.medindex-tailadmin.mi-first-page-audited #dataTable thead th:hover{background:#f2f4f7!important}
+html.medindex-tailadmin.mi-first-page-audited #dataTable thead th.registry-column-header{padding:0!important}
+html.medindex-tailadmin.mi-first-page-audited #dataTable .registry-sort-trigger{
+  display:flex;
+  width:100%;
+  min-height:42px;
+  align-items:center;
+  justify-content:flex-start;
+  gap:6px;
+  padding:0 10px;
+  border:0;
+  background:transparent;
+  color:inherit;
+  cursor:pointer;
+  font:inherit;
+  font-weight:inherit;
+  letter-spacing:inherit;
+  text-align:left;
+  text-transform:inherit;
+  white-space:nowrap;
+}
+html.medindex-tailadmin.mi-first-page-audited #dataTable .registry-sort-trigger:hover,
+html.medindex-tailadmin.mi-first-page-audited #dataTable .registry-sort-trigger:focus-visible{background:#eef5f2!important;outline:0;color:var(--registry-teal-dark)!important}
+html.medindex-tailadmin.mi-first-page-audited #dataTable .registry-sort-trigger:focus-visible{box-shadow:inset 0 0 0 2px rgba(21,95,99,.28)}
+html.medindex-tailadmin.mi-first-page-audited #dataTable .registry-sort-trigger .arrow{margin-left:auto}
+html.medindex-tailadmin.mi-first-page-audited #dataTable tbody tr{--registry-row-bg:#fff;background:var(--registry-row-bg)!important;transition:background .13s ease}
+html.medindex-tailadmin.mi-first-page-audited #dataTable tbody tr:nth-child(even){--registry-row-bg:#fcfcfd}
+html.medindex-tailadmin.mi-first-page-audited #dataTable tbody tr:hover{--registry-row-bg:#f7fbfa}
+html.medindex-tailadmin.mi-first-page-audited #dataTable tbody tr:focus-within{--registry-row-bg:#edf6f2;box-shadow:inset 3px 0 var(--registry-teal)}
+html.medindex-tailadmin.mi-first-page-audited #dataTable tbody tr.row-selected{--registry-row-bg:#eaf5f1}
+html.medindex-tailadmin.mi-first-page-audited #dataTable tbody td{
+  min-height:52px!important;
+  padding:9px 10px!important;
+  border-right:1px solid #f2f4f7!important;
+  border-bottom:1px solid var(--registry-line)!important;
+  background:var(--registry-row-bg)!important;
+  color:#314347!important;
+  font-size:.72rem!important;
+  line-height:1.4!important;
+  vertical-align:middle!important;
+}
+html.medindex-tailadmin.mi-first-page-audited #dataTable tbody td.wrap{max-width:310px!important;white-space:normal!important}
+html.medindex-tailadmin.mi-first-page-audited #dataTable td.name{
+  width:var(--registry-name-width)!important;
+  min-width:var(--registry-name-width)!important;
+  max-width:var(--registry-name-width)!important;
+  color:var(--registry-ink)!important;
+  font-size:.76rem!important;
+  font-weight:700!important;
+  white-space:normal!important;
+}
+html.medindex-tailadmin.mi-first-page-audited #dataTable .drug-name-text{
+  display:-webkit-box!important;
+  overflow:hidden!important;
+  line-height:1.35!important;
+  white-space:normal!important;
+  text-overflow:clip!important;
+  -webkit-box-orient:vertical;
+  -webkit-line-clamp:2;
+}
+html.medindex-tailadmin.mi-first-page-audited #dataTable td.name.name-expanded .drug-name-text{display:block!important;overflow:visible!important;-webkit-line-clamp:unset}
+html.medindex-tailadmin.mi-first-page-audited #dataTable [data-column-key="Substanca aktive"]{width:var(--registry-substance-width)!important;min-width:var(--registry-substance-width)!important;max-width:var(--registry-substance-width)!important;white-space:normal!important;overflow-wrap:anywhere}
+html.medindex-tailadmin.mi-first-page-audited #dataTable [data-column-key="ATC Code"]{width:var(--registry-atc-width)!important;min-width:var(--registry-atc-width)!important;max-width:var(--registry-atc-width)!important}
+html.medindex-tailadmin.mi-first-page-audited #dataTable [data-column-key="Fortësia"]{width:var(--registry-strength-width)!important;min-width:var(--registry-strength-width)!important;max-width:var(--registry-strength-width)!important}
+html.medindex-tailadmin.mi-first-page-audited #dataTable [data-column-key="Forma farmaceutike"]{width:var(--registry-form-width)!important;min-width:var(--registry-form-width)!important;max-width:var(--registry-form-width)!important;white-space:normal!important}
+html.medindex-tailadmin.mi-first-page-audited #dataTable [data-column-key="Statusi"]{width:var(--registry-status-width)!important;min-width:var(--registry-status-width)!important;max-width:var(--registry-status-width)!important}
+html.medindex-tailadmin.mi-first-page-audited #dataTable td.code{color:#5e6d6f!important;font-size:.69rem!important}
+html.medindex-tailadmin.mi-first-page-audited #dataTable input[type=checkbox]{width:18px;height:18px;accent-color:var(--registry-teal);cursor:pointer}
+html.medindex-tailadmin.mi-first-page-audited #dataTable .registry-selection-control{display:grid;width:44px;height:44px;margin:auto;place-items:center;border-radius:8px;cursor:pointer}
+html.medindex-tailadmin.mi-first-page-audited #dataTable .registry-selection-control:focus-within{background:var(--registry-teal-soft);box-shadow:0 0 0 3px rgba(21,95,99,.16)}
+html.medindex-tailadmin.mi-first-page-audited #dataTable .drug-actions-trigger{
+  width:29px!important;
+  height:29px!important;
+  border:1px solid var(--registry-line-strong)!important;
+  border-radius:8px!important;
+  background:#fff!important;
+  color:var(--registry-teal-dark)!important;
+}
+html.medindex-tailadmin.mi-first-page-audited #dataTable .drug-actions-trigger:hover,
+html.medindex-tailadmin.mi-first-page-audited #dataTable .drug-actions-trigger[aria-expanded=true]{border-color:var(--registry-teal)!important;background:var(--registry-teal)!important;color:#fff!important}
+
+/* Pin only selection and the stable trade-name key; dynamic columns never change this geometry. */
+html.medindex-tailadmin.mi-first-page-audited #dataTable :is(th,td)[data-column-key="__select"]{position:sticky!important;left:0!important;width:var(--registry-select-width)!important;min-width:var(--registry-select-width)!important;max-width:var(--registry-select-width)!important;padding:0!important;text-align:center;z-index:4}
+html.medindex-tailadmin.mi-first-page-audited #dataTable :is(th,td)[data-column-key="Emri tregtar"]{position:sticky!important;left:var(--registry-select-width)!important;width:var(--registry-name-width)!important;min-width:var(--registry-name-width)!important;max-width:var(--registry-name-width)!important;z-index:4;box-shadow:10px 0 16px -16px rgba(13,65,69,.58)}
+html.medindex-tailadmin.mi-first-page-audited #dataTable thead :is(th)[data-column-key="__select"],
+html.medindex-tailadmin.mi-first-page-audited #dataTable thead :is(th)[data-column-key="__select"]{z-index:8!important;background:#f9fafb!important}
+html.medindex-tailadmin.mi-first-page-audited #dataTable thead :is(th)[data-column-key="Emri tregtar"]{z-index:8!important;background:#f9fafb!important}
+html.medindex-tailadmin.mi-first-page-audited #dataTable tbody tr.row-selected td:first-child{box-shadow:inset 3px 0 var(--registry-teal)}
+
+html.medindex-tailadmin.mi-first-page-audited .pagination{
+  margin:0!important;
+  padding:10px 12px!important;
+  border:1px solid var(--registry-line)!important;
+  border-top:0!important;
+  border-radius:0 0 var(--registry-radius) var(--registry-radius)!important;
+  background:#fff!important;
+  box-shadow:none!important;
+}
+html.medindex-tailadmin.mi-first-page-audited .pagination button{
+  min-width:34px!important;
+  min-height:34px!important;
+  padding:0 10px!important;
+  border:1px solid var(--registry-line)!important;
+  border-radius:8px!important;
+  background:#fff!important;
+  color:#445653!important;
+  font-size:.78rem!important;
+  font-weight:700!important;
+}
+html.medindex-tailadmin.mi-first-page-audited .pagination button:hover:not(:disabled){border-color:#aac5bc!important;background:#f2f7f5!important;color:var(--registry-teal-dark)!important}
+html.medindex-tailadmin.mi-first-page-audited .pagination button.active{border-color:var(--registry-teal)!important;background:var(--registry-teal)!important;color:#fff!important}
+
+html[data-theme=dark].medindex-tailadmin.mi-first-page-audited{
+  --registry-surface:#132326;
+  --registry-soft:#17292c;
+  --registry-soft-2:#1b3033;
+  --registry-line:#304649;
+  --registry-line-strong:#3b5457;
+  --registry-ink:#edf5f3;
+  --registry-muted:#a7b7b4;
+  --registry-teal-soft:#17383a;
+  --registry-shadow:0 14px 32px rgba(0,0,0,.25);
+}
+html[data-theme=dark].medindex-tailadmin.mi-first-page-audited .registry-overview{background:#132326!important}
+html[data-theme=dark].medindex-tailadmin.mi-first-page-audited .registry-overview-meta>span,
+html[data-theme=dark].medindex-tailadmin.mi-first-page-audited .registry-search-shortcut,
+html[data-theme=dark].medindex-tailadmin.mi-first-page-audited .registry-toolbar,
+html[data-theme=dark].medindex-tailadmin.mi-first-page-audited .registry-control-row select,
+html[data-theme=dark].medindex-tailadmin.mi-first-page-audited .registry-control-row .form-picker>button,
+html[data-theme=dark].medindex-tailadmin.mi-first-page-audited .registry-control-row .col-picker>button,
+html[data-theme=dark].medindex-tailadmin.mi-first-page-audited .registry-action-group .selection-badge,
+html[data-theme=dark].medindex-tailadmin.mi-first-page-audited .registry-filter-state,
+html[data-theme=dark].medindex-tailadmin.mi-first-page-audited .registry-reset-filters,
+html[data-theme=dark].medindex-tailadmin.mi-first-page-audited .pagination,
+html[data-theme=dark].medindex-tailadmin.mi-first-page-audited .pagination button{background:#132326!important;color:#e8f1ef!important}
+html[data-theme=dark].medindex-tailadmin.mi-first-page-audited .registry-toolbar #search{background:#102023!important;color:#eef5f3!important}
+html[data-theme=dark].medindex-tailadmin.mi-first-page-audited #dataTable{background:#132326!important}
+html[data-theme=dark].medindex-tailadmin.mi-first-page-audited #dataTable thead th,
+html[data-theme=dark].medindex-tailadmin.mi-first-page-audited #dataTable thead :is(th)[data-column-key="__select"],
+html[data-theme=dark].medindex-tailadmin.mi-first-page-audited #dataTable thead :is(th)[data-column-key="Emri tregtar"]{border-color:#304649!important;background:#17292c!important;color:#cbd8d5!important}
+html[data-theme=dark].medindex-tailadmin.mi-first-page-audited #dataTable .registry-sort-trigger:hover,
+html[data-theme=dark].medindex-tailadmin.mi-first-page-audited #dataTable .registry-sort-trigger:focus-visible{background:#1b3033!important;color:#eef5f3!important}
+html[data-theme=dark].medindex-tailadmin.mi-first-page-audited #dataTable tbody tr{--registry-row-bg:#132326}
+html[data-theme=dark].medindex-tailadmin.mi-first-page-audited #dataTable tbody tr:nth-child(even){--registry-row-bg:#16282b}
+html[data-theme=dark].medindex-tailadmin.mi-first-page-audited #dataTable tbody tr:hover{--registry-row-bg:#1a3234}
+html[data-theme=dark].medindex-tailadmin.mi-first-page-audited #dataTable tbody tr.row-selected{--registry-row-bg:#19393a}
+html[data-theme=dark].medindex-tailadmin.mi-first-page-audited #dataTable tbody td{color:#cedbd8!important;border-right-color:#253b3e!important;border-bottom-color:#2b4144!important}
+html[data-theme=dark].medindex-tailadmin.mi-first-page-audited #dataTable td.name{color:#f0f8f6!important}
+
+@media(min-width:821px) and (max-width:1100px){
+  html.medindex-tailadmin.mi-first-page-audited{
+    --registry-name-width:210px;
+    --registry-substance-width:190px;
+    --registry-atc-width:84px;
+    --registry-strength-width:92px;
+    --registry-form-width:170px;
+    --registry-status-width:104px;
+  }
+}
+@media(max-width:1380px){
+  html.medindex-tailadmin.mi-first-page-audited .registry-toolbar{grid-template-columns:minmax(0,1fr)!important}
+  html.medindex-tailadmin.mi-first-page-audited .registry-toolbar-secondary{justify-content:flex-start}
+  html.medindex-tailadmin.mi-first-page-audited .registry-action-group .registry-control-row{justify-content:flex-start}
+  html.medindex-tailadmin.mi-first-page-audited .registry-action-group .protocol-toolbar-btn{flex:0 1 220px!important}
+}
+@media(max-width:900px){
+  html.medindex-tailadmin.mi-first-page-audited .registry-overview{grid-template-columns:36px minmax(0,1fr)!important}
+  html.medindex-tailadmin.mi-first-page-audited .registry-overview-icon{width:36px;height:36px}
+  html.medindex-tailadmin.mi-first-page-audited .registry-overview-meta{grid-column:1/-1;display:flex;justify-content:flex-start;padding-left:47px}
+  html.medindex-tailadmin.mi-first-page-audited .registry-overview-meta>span{min-width:0}
+  html.medindex-tailadmin.mi-first-page-audited .registry-toolbar{position:static!important}
+  html.medindex-tailadmin.mi-first-page-audited .registry-toolbar-secondary{flex-wrap:wrap;justify-content:flex-start}
+  html.medindex-tailadmin.mi-first-page-audited .registry-table-bar{align-items:flex-start;flex-direction:column}
+  html.medindex-tailadmin.mi-first-page-audited .registry-table-actions{width:100%;justify-content:flex-start;flex-wrap:wrap}
+}
+@media(max-width:820px){
+  html.medindex-tailadmin.mi-first-page-audited .registry-page-workspace{gap:11px}
+  html.medindex-tailadmin.mi-first-page-audited .registry-overview{
+    min-height:0!important;
+    grid-template-columns:minmax(0,1fr)!important;
+    padding:12px 14px!important;
+  }
+  html.medindex-tailadmin.mi-first-page-audited .registry-overview-icon,
+  html.medindex-tailadmin.mi-first-page-audited .registry-overview-meta{display:none!important}
+  html.medindex-tailadmin.mi-first-page-audited .registry-overview h2{font-size:1.05rem!important}
+  html.medindex-tailadmin.mi-first-page-audited .registry-overview p{display:none}
+  html.medindex-tailadmin.mi-first-page-audited .registry-overview-meta>span{min-height:45px;padding:7px 9px}
+  html.medindex-tailadmin.mi-first-page-audited .registry-toolbar{padding:10px!important}
+  html.medindex-tailadmin.mi-first-page-audited .registry-toolbar-secondary{display:grid;grid-template-columns:1fr 1fr;width:100%}
+  html.medindex-tailadmin.mi-first-page-audited .registry-control-group{width:100%}
+  html.medindex-tailadmin.mi-first-page-audited .registry-action-group{grid-column:1/-1}
+  html.medindex-tailadmin.mi-first-page-audited .registry-search-shortcut{display:none}
+  html.medindex-tailadmin.mi-first-page-audited .registry-toolbar #search{padding-right:12px!important}
+  html.medindex-tailadmin.mi-first-page-audited .registry-control-row{flex-wrap:wrap}
+  html.medindex-tailadmin.mi-first-page-audited .registry-control-row>select,
+  html.medindex-tailadmin.mi-first-page-audited .registry-control-row>.form-picker,
+  html.medindex-tailadmin.mi-first-page-audited .registry-control-row>.col-picker{flex:1 1 150px}
+  html.medindex-tailadmin.mi-first-page-audited .registry-filter-group .registry-control-row>select,
+  html.medindex-tailadmin.mi-first-page-audited .registry-filter-group .form-picker,
+  html.medindex-tailadmin.mi-first-page-audited .registry-view-group .registry-control-row>select,
+  html.medindex-tailadmin.mi-first-page-audited .registry-view-group .col-picker{width:auto!important}
+  html.medindex-tailadmin.mi-first-page-audited .registry-action-group .selection-badge{flex:1 1 auto!important}
+  html.medindex-tailadmin.mi-first-page-audited .registry-action-group .protocol-toolbar-btn{flex:1 1 170px!important}
+  html.medindex-tailadmin.mi-first-page-audited .registry-table-title p{display:none}
+  html.medindex-tailadmin.mi-first-page-audited .registry-reset-filters span{display:none}
+  html.medindex-tailadmin.mi-first-page-audited .table-wrap{
+    max-height:none!important;
+    overflow:visible!important;
+    border:0!important;
+    border-radius:0!important;
+    background:transparent!important;
+    box-shadow:none!important;
+  }
+  html.medindex-tailadmin.mi-first-page-audited #dataTable{
+    display:block!important;
+    width:100%!important;
+    min-width:0!important;
+    background:transparent!important;
+  }
+  html.medindex-tailadmin.mi-first-page-audited #dataTable thead{
+    position:absolute!important;
+    width:1px!important;
+    height:1px!important;
+    overflow:hidden!important;
+    clip:rect(0 0 0 0)!important;
+    clip-path:inset(50%)!important;
+    white-space:nowrap!important;
+  }
+  html.medindex-tailadmin.mi-first-page-audited #dataTable tbody{
+    display:grid!important;
+    gap:10px!important;
+  }
+  html.medindex-tailadmin.mi-first-page-audited #dataTable tbody tr{
+    position:relative!important;
+    display:block!important;
+    overflow:hidden!important;
+    border:1px solid var(--registry-line)!important;
+    border-radius:12px!important;
+    background:var(--registry-row-bg)!important;
+    box-shadow:0 3px 12px rgba(17,65,67,.05)!important;
+  }
+  html.medindex-tailadmin.mi-first-page-audited #dataTable tbody td{
+    position:static!important;
+    display:grid!important;
+    min-height:40px!important;
+    grid-template-columns:minmax(96px,38%) minmax(0,1fr)!important;
+    align-items:center!important;
+    gap:10px!important;
+    padding:9px 12px!important;
+    border-bottom:1px solid var(--registry-line)!important;
+    background:transparent!important;
+    white-space:normal!important;
+  }
+  html.medindex-tailadmin.mi-first-page-audited #dataTable tbody td[data-column-key],
+  html.medindex-tailadmin.mi-first-page-audited #dataTable tbody td.registry-dosage-column{
+    width:100%!important;
+    min-width:0!important;
+    max-width:none!important;
+  }
+  html.medindex-tailadmin.mi-first-page-audited #dataTable tbody td::before{
+    content:attr(data-label);
+    color:var(--registry-muted);
+    font-size:.72rem;
+    font-weight:750;
+    line-height:1.25;
+  }
+  html.medindex-tailadmin.mi-first-page-audited #dataTable tbody td.name{
+    width:100%!important;
+    min-width:0!important;
+    max-width:none!important;
+    padding-right:60px!important;
+    color:var(--registry-ink)!important;
+    font-size:.9rem!important;
+  }
+  html.medindex-tailadmin.mi-first-page-audited #dataTable tbody td.name .drug-actions-trigger{
+    position:absolute!important;
+    top:10px!important;
+    right:62px!important;
+    margin:0!important;
+  }
+  html.medindex-tailadmin.mi-first-page-audited #dataTable tbody td.select-col{
+    position:absolute!important;
+    inset:10px 10px auto auto!important;
+    z-index:3!important;
+    display:grid!important;
+    width:44px!important;
+    min-width:44px!important;
+    max-width:44px!important;
+    min-height:44px!important;
+    padding:0!important;
+    place-items:center!important;
+    border:1px solid var(--registry-line-strong)!important;
+    border-radius:8px!important;
+    background:var(--registry-surface)!important;
+  }
+  html.medindex-tailadmin.mi-first-page-audited #dataTable tbody td.select-col::before{display:none}
+  html.medindex-tailadmin.mi-first-page-audited #dataTable tbody td.select-col + td{padding-right:64px!important}
+  html.medindex-tailadmin.mi-first-page-audited #dataTable .drug-actions-trigger{
+    width:44px!important;
+    height:44px!important;
+  }
+  html.medindex-tailadmin.mi-first-page-audited #dataTable tbody td:last-child{border-bottom:0!important}
+  html.medindex-tailadmin.mi-first-page-audited #dataTable tbody td[colspan]{
+    position:static!important;
+    display:block!important;
+    width:auto!important;
+    max-width:none!important;
+    padding:0!important;
+    border:0!important;
+  }
+  html.medindex-tailadmin.mi-first-page-audited #dataTable :is(th,td)[data-column-key="Emri tregtar"]{position:static!important;left:auto!important;box-shadow:none!important}
+  html.medindex-tailadmin.mi-first-page-audited #dataTable thead :is(th)[data-column-key="Emri tregtar"]{z-index:5!important}
+}
+@media(max-width:560px){
+  html.medindex-tailadmin.mi-first-page-audited .registry-toolbar-secondary{grid-template-columns:1fr}
+  html.medindex-tailadmin.mi-first-page-audited .registry-action-group{grid-column:auto}
+}
+@media(max-width:430px){
+  html.medindex-tailadmin.mi-first-page-audited .registry-overview-meta{grid-template-columns:1fr 1fr}
+  html.medindex-tailadmin.mi-first-page-audited .registry-overview-meta>span:last-child{grid-column:1/-1}
+  html.medindex-tailadmin.mi-first-page-audited .registry-filter-state{max-width:135px;overflow:hidden;text-overflow:ellipsis}
+  html.medindex-tailadmin.mi-first-page-audited .registry-result-count{max-width:160px;overflow:hidden;text-overflow:ellipsis}
+}
+@media(prefers-reduced-motion:reduce){
+  html.medindex-tailadmin.mi-first-page-audited .registry-page-workspace *,
+  html.medindex-tailadmin.mi-first-page-audited .registry-page-workspace *::before,
+  html.medindex-tailadmin.mi-first-page-audited .registry-page-workspace *::after{transition:none!important;scroll-behavior:auto!important}
+}
+@media(forced-colors:active){
+  html.medindex-tailadmin.mi-first-page-audited .registry-overview,
+  html.medindex-tailadmin.mi-first-page-audited .registry-toolbar,
+  html.medindex-tailadmin.mi-first-page-audited .registry-control-group,
+  html.medindex-tailadmin.mi-first-page-audited .registry-table-bar,
+  html.medindex-tailadmin.mi-first-page-audited .table-wrap,
+  html.medindex-tailadmin.mi-first-page-audited .pagination{border:1px solid CanvasText!important;background:Canvas!important;color:CanvasText!important}
+}
+
 /* ===== canonical final layer: registry-table-tools.css ===== */
 /* Compact optional tools for the medicine registry.
    Verification and editing are intentionally removed from the table. */
