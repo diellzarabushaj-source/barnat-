@@ -13,6 +13,30 @@ html.medindex-tailadmin[data-mi-page="medical-hub"]{
   --ck-amber:#b54708;
   --ck-green:#027a48;
 }
+
+/* Ky bllok i fikson shenjat me një selektor prej dy klasash, prandaj asnjë
+   bllok `html[data-theme="dark"]` me specifikë më të ulët nuk i kthen dot.
+   Pa këtë çift, në temën e errët teal-i mbetej #1f7779 mbi një sipërfaqe
+   #142230 — 3:1 — dhe boja mbetej e errët mbi sfond të errët.
+
+   Vlerat janë ato të `drx-clinical-system.css`; të dyja anët nuk duhet të
+   shkojnë veç-e-veç, prandaj referohen si shenja aty ku ai skedar ngarkohet
+   dhe si vlera fjalë-për-fjalë si rezervë aty ku nuk ngarkohet. */
+html.medindex-tailadmin[data-mi-page="urgjencat"]:is(.dark,[data-theme="dark"]),
+html.medindex-tailadmin[data-mi-page="medical-hub"]:is(.dark,[data-theme="dark"]){
+  --ck-ink:#f9fafb;
+  --ck-muted:#98a2b3;
+  --ck-line:#344054;
+  --ck-line-strong:#475467;
+  --ck-surface:#101828;
+  --ck-soft:#1d2939;
+  --ck-soft-2:#182230;
+  --ck-blue:#66b7ad;
+  --ck-blue-strong:#8dcfc6;
+  --ck-red:#fda29b;
+  --ck-amber:#fec84b;
+  --ck-green:#6ce9a6;
+}
 .clinical-knowledge-page{
   display:grid;
   gap:16px;

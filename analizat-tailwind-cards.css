@@ -7,7 +7,10 @@ html.medindex-tailadmin {
   --lab-card-border: #e4e7ec;
   --lab-card-ink: #101828;
   --lab-card-muted: #667085;
-  --lab-card-subtle: #98a2b3;
+  /* Ishte #98a2b3 — 2.6:1 mbi kartën e bardhë, nën çdo prag. Emri anglisht i
+     analizës nuk është dekor: është ai që lexon mjeku kur emri shqip nuk i
+     ngjan atij në formular. */
+  --lab-card-subtle: #5d6b7f;
   --lab-card-shadow: 0 1px 2px rgba(16, 24, 40, .035);
   --lab-card-shadow-hover: 0 10px 24px rgba(16, 24, 40, .075);
 }
@@ -454,7 +457,7 @@ html[data-theme="dark"].medindex-tailadmin {
   --lab-card-border: #2b3b4c;
   --lab-card-ink: #f2f4f7;
   --lab-card-muted: #b3bdca;
-  --lab-card-subtle: #8e9bad;
+  --lab-card-subtle: #a3b0c1;
   --lab-card-shadow: 0 1px 2px rgba(0, 0, 0, .14);
   --lab-card-shadow-hover: 0 12px 26px rgba(0, 0, 0, .26);
 }

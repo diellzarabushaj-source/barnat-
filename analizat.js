@@ -16,21 +16,21 @@
     .replace(/\s+/g, ' ')
     .trim();
 
+  /* Katërmbëdhjetë nuanca, një për kategori laboratorike — vjollcë, blu,
+     trëndafil, portokalli, indigo, e kuqe, jeshile, cian. Asnjëra nuk mbante
+     informacion: kategoria e analizës lexohet nga emri dhe nga numri i saj,
+     kurrë nga ngjyra. Efekti i vetëm ishte se Analizat dukeshin si një faqe
+     tjetër nga pjesa tjetër e aplikacionit.
+
+     Dallimi me ngjyrë mbetet vetëm aty ku ngatërrimi do të ishte i rrezikshëm
+     — doza e të rriturve kundrejt asaj pediatrike — dhe ai rri te shtresa e
+     tabelës. Këtu mbetet një theks i vetëm klinik.
+
+     Vargu e ruan formën e vet: `themeFor()` indekson me modul mbi gjatësinë,
+     prandaj një hyrje e vetme i kthen të njëjtat vlera për çdo kategori pa e
+     prekur atë llogaritje. */
   const CATEGORY_THEMES = [
-    { accent:'#0f766e', strong:'#115e59', soft:'#e6f6f3', ring:'#99d8cf' },
-    { accent:'#2563eb', strong:'#1d4ed8', soft:'#eaf1ff', ring:'#b7cbff' },
-    { accent:'#7c3aed', strong:'#6d28d9', soft:'#f2ebff', ring:'#d5c0ff' },
-    { accent:'#d97706', strong:'#b45309', soft:'#fff4dd', ring:'#f4d08e' },
-    { accent:'#0891b2', strong:'#0e7490', soft:'#e5f8fc', ring:'#a8dfe9' },
-    { accent:'#15803d', strong:'#166534', soft:'#eaf8ee', ring:'#b8dfc4' },
-    { accent:'#ea580c', strong:'#c2410c', soft:'#fff0e7', ring:'#ffc5a2' },
-    { accent:'#dc2626', strong:'#b91c1c', soft:'#fff0f0', ring:'#ffc1c1' },
-    { accent:'#4f46e5', strong:'#4338ca', soft:'#eeedff', ring:'#c9c6ff' },
-    { accent:'#e11d48', strong:'#be123c', soft:'#fff0f4', ring:'#ffc2d0' },
-    { accent:'#a21caf', strong:'#86198f', soft:'#faedfc', ring:'#e8b8ed' },
-    { accent:'#65a30d', strong:'#4d7c0f', soft:'#f3f9e7', ring:'#cde5a2' },
-    { accent:'#475569', strong:'#334155', soft:'#eef2f6', ring:'#cbd5e1' },
-    { accent:'#0d9488', strong:'#0f766e', soft:'#e8f8f5', ring:'#a8ded6' },
+    { accent:'#1f7779', strong:'#155f63', soft:'#eaf4f1', ring:'#b6d8d0' },
   ];
 
   const state = {

@@ -8,6 +8,7 @@ const read = file => fs.readFileSync(path.join(root, file), 'utf8');
 const index = read('index.html');
 const script = read('registry-unified-table.js');
 const css = read('registry-unified-table.css');
+const tableTools = read('registry-table-tools.css');
 const rowExpand = read('registry-row-expand.js');
 const dosage = read('registry-dosage-columns-v3.js');
 
@@ -48,7 +49,10 @@ assert.match(dosage, /if \(rowContentChanged\) window\.MedIndexRegistryRows\?\.r
 assert.match(css, /table-layout:fixed!important/);
 assert.match(css, /#dataTable\[data-registry-unified-table\] :is\(th,td\)\[data-registry-column-key\][\s\S]*position:relative!important/);
 assert.match(css, /scrollbar-gutter:stable!important/);
-assert.match(css, /height:92px!important/);
+/* Lartësia e rreshtit vjen nga një shenjë e vetme te shtresa Stripe, jo nga
+   një numër i ngurtë i shpërndarë nëpër shtatë fletë stili. */
+assert.doesNotMatch(css, /tbody tr \{[\s\S]{0,300}height:92px!important/, 'row geometry must not be re-declared here');
+assert.match(tableTools, /--rst-row-height:/, 'the Stripe layer owns the row height token');
 assert.match(css, /registry-unified-skeleton/);
 assert.match(css, /:is\(\.registry-dose-dialog,\.registry-cell-preview-dialog\)[\s\S]*display:none!important/);
 assert.match(css, /@media \(max-width:760px\)/);

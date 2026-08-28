@@ -170,12 +170,10 @@ html.medindex-tailadmin[data-mi-page="barnat"] body #registryContent.table-wrap:
   background:#edf4fc!important;
 }
 
-/* Keep the table headings visually stronger without changing the current font,
-   size or spacing. */
-html.medindex-tailadmin[data-mi-page="barnat"] body #registryContent #dataTable[data-registry-unified-table] thead th[data-registry-column-key] {
-  color:var(--ru-blue-dark)!important;
-  font-weight:800!important;
-}
+/* Këtu koka e tabelës rimerrte `--ru-blue-dark` me peshë 800, mbi shtresën
+   Stripe që e kishte bërë tashmë të qetë. Dy ID në selektor e bënin këtë të
+   fitonte, prandaj koka blu mbetej edhe pas rishkrimit. Ngjyra dhe pesha e
+   kokës i takojnë vetëm `registry-table-tools.css`. */
 
 /* Keep the header row visible while scrolling vertically. Every column except
    the two frozen ones also scrolls horizontally with the body.

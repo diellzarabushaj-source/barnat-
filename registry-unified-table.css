@@ -260,6 +260,15 @@ html.medindex-tailadmin[data-mi-page="barnat"] body .col-panel :is(label,.regist
 }
 
 /* One stable table geometry. */
+/* Këtu rrinte gjeometria dhe ngjyra e tabelës: koka blu, `border-right` mbi
+   çdo qelizë, rreshta 92px të fiksuar, dhe një bllok kufizimi që mbante
+   njëkohësisht `-webkit-line-clamp:2` dhe `max-height:40px` — dy rreshta zënë
+   42px, prandaj rreshti i dytë pritej në mes të shkronjave.
+
+   E gjithë ajo i takon tani `registry-table-tools.css`. Ky skedar mban vetëm
+   strukturën që shtresa Stripe nuk e prek: panelet e filtrave, kartelat në
+   telefon, dukshmërinë e kolonave dhe zgjerimin e rreshtit. */
+
 html.medindex-tailadmin[data-mi-page="barnat"] body #registryContent.table-wrap {
   position:relative!important;
   width:100%!important;
@@ -298,33 +307,6 @@ html.medindex-tailadmin[data-mi-page="barnat"] body #dataTable[data-registry-uni
   overflow-wrap:anywhere!important;
 }
 
-html.medindex-tailadmin[data-mi-page="barnat"] body #dataTable[data-registry-unified-table] thead th {
-  height:56px!important;
-  min-height:56px!important;
-  max-height:56px!important;
-  padding:9px 11px!important;
-  overflow:hidden!important;
-  border:0!important;
-  border-right:1px solid var(--ru-line)!important;
-  border-bottom:1px solid var(--ru-line-strong)!important;
-  background:#fff!important;
-  background-image:none!important;
-  color:var(--ru-blue)!important;
-  font-family:var(--mi-font,Inter,"Segoe UI",system-ui,sans-serif)!important;
-  font-size:10.5px!important;
-  font-weight:790!important;
-  letter-spacing:.02em!important;
-  line-height:1.2!important;
-  text-align:left!important;
-  text-transform:uppercase!important;
-  white-space:normal!important;
-  vertical-align:middle!important;
-}
-
-html.medindex-tailadmin[data-mi-page="barnat"] body #dataTable[data-registry-unified-table] thead th:last-child {
-  border-right:0!important;
-}
-
 html.medindex-tailadmin[data-mi-page="barnat"] body #dataTable[data-registry-unified-table] th[data-registry-column-key="clinical-action"] {
   padding:0!important;
   text-align:center!important;
@@ -353,42 +335,8 @@ html.medindex-tailadmin[data-mi-page="barnat"] body #headerRow .registry-dosage-
   white-space:nowrap!important;
 }
 
-html.medindex-tailadmin[data-mi-page="barnat"] body #dataTable[data-registry-unified-table] tbody tr {
-  --ru-current-row:var(--ru-row);
-  height:92px!important;
-  min-height:92px!important;
-  max-height:92px!important;
-}
-
-html.medindex-tailadmin[data-mi-page="barnat"] body #dataTable[data-registry-unified-table] tbody tr:nth-child(even) {
-  --ru-current-row:var(--ru-row-alt);
-}
-
 html.medindex-tailadmin[data-mi-page="barnat"] body #dataTable[data-registry-unified-table] tbody tr:is(:hover,:focus-within) {
   --ru-current-row:var(--ru-row-hover);
-}
-
-html.medindex-tailadmin[data-mi-page="barnat"] body #dataTable[data-registry-unified-table] tbody td {
-  height:92px!important;
-  min-height:92px!important;
-  max-height:92px!important;
-  padding:10px 11px!important;
-  overflow:hidden!important;
-  border:0!important;
-  border-right:1px solid var(--ru-line)!important;
-  border-bottom:1px solid var(--ru-line)!important;
-  background:var(--ru-current-row)!important;
-  color:var(--ru-text)!important;
-  font-family:var(--mi-font,Inter,"Segoe UI",system-ui,sans-serif)!important;
-  font-size:12.5px!important;
-  font-weight:520!important;
-  line-height:1.42!important;
-  vertical-align:middle!important;
-  white-space:normal!important;
-}
-
-html.medindex-tailadmin[data-mi-page="barnat"] body #dataTable[data-registry-unified-table] tbody td:last-child {
-  border-right:0!important;
 }
 
 html.medindex-tailadmin[data-mi-page="barnat"] body #dataTable td[data-registry-column-key="select"] {
@@ -415,22 +363,6 @@ html.medindex-tailadmin[data-mi-page="barnat"] body #dataTable td[data-registry-
 html.medindex-tailadmin[data-mi-page="barnat"] body #dataTable td[data-registry-column-key="form"] {
   color:#273449!important;
   font-weight:620!important;
-}
-
-html.medindex-tailadmin[data-mi-page="barnat"] body #dataTable :is(
-  td[data-registry-column-key="trade-name"] .drug-name-text,
-  td[data-registry-column-key="active-substance"]>span:first-child,
-  td[data-registry-column-key="drug-class"]>*:first-child,
-  td[data-registry-column-key="use"]>*:first-child,
-  td[data-registry-column-key="form"] .registry-cell-value
-) {
-  display:-webkit-box!important;
-  max-height:40px!important;
-  overflow:hidden!important;
-  text-overflow:ellipsis!important;
-  white-space:normal!important;
-  -webkit-box-orient:vertical!important;
-  -webkit-line-clamp:2!important;
 }
 
 html.medindex-tailadmin[data-mi-page="barnat"] body #dataTable .registry-dosage-grid {

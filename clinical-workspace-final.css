@@ -128,32 +128,6 @@ html.medindex-workspace-final #dataTable{
   border-spacing:0!important;
   background:var(--mw-surface)!important;
 }
-html.medindex-workspace-final #dataTable thead th{
-  height:48px!important;
-  padding:0 12px!important;
-  border-right:1px solid rgba(255,255,255,.14)!important;
-  background:var(--mw-primary)!important;
-  color:#fff!important;
-  font-size:.7rem!important;
-  font-weight:800!important;
-  letter-spacing:.045em!important;
-  line-height:1.2!important;
-  vertical-align:middle!important;
-  white-space:nowrap!important;
-}
-html.medindex-workspace-final #dataTable tbody td{
-  min-height:52px!important;
-  padding:10px 12px!important;
-  border-right:1px solid color-mix(in srgb,var(--mw-line) 68%,transparent)!important;
-  border-bottom:1px solid var(--mw-line)!important;
-  background:var(--registry-row-bg,var(--mw-surface))!important;
-  color:var(--mw-text)!important;
-  line-height:1.42!important;
-  vertical-align:middle!important;
-}
-html.medindex-workspace-final #dataTable tbody tr:hover td{
-  background:color-mix(in srgb,var(--mw-primary-soft) 58%,var(--mw-surface))!important;
-}
 html.medindex-workspace-final #dataTable :is(th,td).registry-dosage-column{
   width:340px!important;
   min-width:340px!important;
@@ -237,10 +211,13 @@ html.medindex-workspace-final .mw-protocol-card .clinical-actions :is(a,button){
   background:var(--mw-surface)!important;
   color:var(--mw-text)!important;
 }
+/* `--mw-primary` çelet në errësirë (#0d5f63 → #79cfcb), por teksti mbeti i
+   bardhë: 1.81:1, i palexueshëm. Teksti mbi theks duhet të kthehet bashkë me
+   theksin, prandaj vjen nga `--ck-on-accent`. */
 html.medindex-workspace-final .mw-protocol-card .clinical-actions .primary{
   border-color:var(--mw-primary)!important;
   background:var(--mw-primary)!important;
-  color:#fff!important;
+  color:var(--ck-on-accent,#fff)!important;
 }
 html.medindex-workspace-final .mw-protocol-plan-button{
   border-color:color-mix(in srgb,var(--mw-primary) 40%,var(--mw-line))!important;

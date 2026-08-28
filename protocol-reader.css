@@ -23,10 +23,13 @@
   max-width:330px;
 }
 
+/* `color:#fff` mbi theksin ishte i sigurt vetëm sa kohë theksi rrinte i errët.
+   Në errësirë ai çelet dhe i bardhi mbi të matet 1.81:1. Çifti
+   theks/tekst-mbi-theks kthehet bashkë me temën. */
 .protocol-directory .clinical-actions .protocol-action-elaborate{
-  border-color:var(--clinical-accent);
-  background:var(--clinical-accent);
-  color:#fff;
+  border-color:var(--ck-accent-solid,var(--clinical-accent));
+  background:var(--ck-accent-solid,var(--clinical-accent));
+  color:var(--ck-on-accent,#fff);
 }
 
 .protocol-directory .clinical-actions .protocol-action-source{

@@ -11,7 +11,10 @@
   --mi-v4-surface-hover:#f6faf9;
   --mi-v4-ink:#172c2f;
   --mi-v4-ink-strong:#102326;
-  --mi-v4-muted:#6f8083;
+  /* Ishte #6f8083 — 4.12:1 mbi të bardhë, pak nën pragun. Kjo shenjë ngjyros
+     çdo `p` dhe `small` të sistemit, prandaj një ndryshim i vetëm këtu i heq
+     64 gjetje. */
+  --mi-v4-muted:#616f72;
   --mi-v4-muted-2:#8b999b;
   --mi-v4-line:#dbe4e3;
   --mi-v4-line-strong:#c8d5d3;
@@ -297,7 +300,7 @@ html[data-theme="dark"].medindex-tailadmin{
   --mi-v4-surface-hover:#1a292b;
   --mi-v4-ink:#e5eeed;
   --mi-v4-ink-strong:#f1f6f5;
-  --mi-v4-muted:#9aabad;
+  --mi-v4-muted:#a9bcbe;
   --mi-v4-muted-2:#7f9295;
   --mi-v4-line:#2b3e41;
   --mi-v4-line-strong:#354a4d;

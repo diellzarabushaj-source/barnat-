@@ -32,7 +32,7 @@
 .icd-tree-copy{min-width:0;display:flex;flex-direction:column;gap:3px}
 .icd-tree-copy strong{font-size:14px;line-height:1.35;color:#142743;font-weight:650;overflow-wrap:anywhere}
 .level-chapter>.icd-tree-row .icd-tree-copy strong{font-size:15px;font-weight:750}
-.icd-tree-copy small{font-size:12px;line-height:1.35;color:#718096;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+.icd-tree-copy small{font-size:12px;line-height:1.35;color:#5d6b7f;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
 .icd-tree-meta{display:flex;align-items:center;justify-content:flex-end;gap:8px;min-width:max-content}
 .icd-tree-count{display:inline-flex;align-items:center;justify-content:center;min-width:29px;height:25px;padding:0 8px;border-radius:999px;background:#eef2f6;color:#526277;font-size:11px;font-weight:700}
 .icd-tree-translation{display:inline-flex;align-items:center;min-height:24px;padding:0 8px;border-radius:999px;font-size:10px;font-weight:700;white-space:nowrap}
@@ -47,7 +47,7 @@
 .icd-tree-children::before{content:"";position:absolute;left:-1px;top:0;width:1px;height:10px;background:#fff}
 .icd-tree-node.is-loading>.icd-tree-row{background:#f8fbfb}
 .icd-tree-node.is-loading>.icd-tree-row .icd-tree-chevron{animation:icdTreePulse .8s ease-in-out infinite alternate}
-.icd-tree-child-loading,.icd-tree-empty{padding:12px 14px;color:#718096;font-size:13px}
+.icd-tree-child-loading,.icd-tree-empty{padding:12px 14px;color:#5d6b7f;font-size:13px}
 .icd-tree-loading,.icd-tree-error{min-height:320px;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:32px;color:#64748b}
 .icd-tree-error strong{color:#9b1c1c;font-size:16px}
 .icd-tree-error p{max-width:640px;margin:8px 0 0;line-height:1.5}
