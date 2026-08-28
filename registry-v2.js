@@ -85,6 +85,33 @@
     return new Intl.NumberFormat('sq-XK', { style:'currency', currency:'EUR', maximumFractionDigits:2 }).format(number);
   };
 
+  function loadProfileChrome() {
+    if (window.MedIndexProfile) return Promise.resolve(window.MedIndexProfile);
+    const existing = document.querySelector('script[data-drx-profile-runtime]');
+    if (existing) {
+      return new Promise(resolve => {
+        if (window.MedIndexProfile) return resolve(window.MedIndexProfile);
+        existing.addEventListener('load', () => resolve(window.MedIndexProfile || null), { once:true });
+        setTimeout(() => resolve(window.MedIndexProfile || null), 1800);
+      });
+    }
+    return new Promise(resolve => {
+      const script = document.createElement('script');
+      script.src = '/medindex-brand-runtime.js?v=profile-unified-v1';
+      script.defer = true;
+      script.dataset.drxProfileRuntime = '1';
+      script.addEventListener('load', () => resolve(window.MedIndexProfile || null), { once:true });
+      script.addEventListener('error', () => resolve(null), { once:true });
+      document.head.appendChild(script);
+    });
+  }
+
+  async function syncProfileChrome(payload) {
+    await loadProfileChrome();
+    window.MedIndexProfile?.adoptAccount?.(payload);
+    window.dispatchEvent(new CustomEvent('medindex:auth-ready', { detail:payload }));
+  }
+
   function loadSharedSidebarTaxonomy() {
     if (document.querySelector('script[data-drx-sidebar-taxonomy]')) return;
     const script = document.createElement('script');
@@ -622,7 +649,8 @@
     syncFormPickerTrigger();
     updateSelectedCount();
     try {
-      await ensureAuth();
+      const authPayload = await ensureAuth();
+      await syncProfileChrome(authPayload);
       el.appShell.setAttribute('aria-busy', 'false');
       await loadPage();
     } catch (error) {
