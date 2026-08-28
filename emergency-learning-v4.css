@@ -12,6 +12,9 @@ html.medindex-tailadmin[data-mi-page="urgjencat"] #emergencyDetail .ck-mode-togg
 html.medindex-tailadmin[data-mi-page="urgjencat"] .ck-detail[data-ck-learning-mode="test"] .ck-sl-panel[data-ck-sl-panel="summary"],
 html.medindex-tailadmin[data-mi-page="urgjencat"] .ck-detail[data-ck-learning-mode="test"] .ck-sl-panel[data-ck-sl-panel="learn"]{display:none!important}
 html.medindex-tailadmin[data-mi-page="urgjencat"] .ck-detail[data-ck-learning-mode="test"] .ck-sl-panel[data-ck-sl-panel="test"]{display:block!important}
+html.medindex-tailadmin[data-mi-page="urgjencat"] .ck-detail[data-ck-learning-mode="test"] .ck-v4-test [data-ck-sl-flashcards]{display:block!important}
+html.medindex-tailadmin[data-mi-page="urgjencat"] .ck-detail[data-ck-learning-mode="learn"] .ck-sl-panel[data-ck-sl-panel="test"]{display:block!important}
+html.medindex-tailadmin[data-mi-page="urgjencat"] .ck-detail[data-ck-learning-mode="learn"] .ck-v4-test-head{display:none!important}
 
 html.medindex-tailadmin[data-mi-page="urgjencat"] .ck-v4-cockpit{
   display:grid;
