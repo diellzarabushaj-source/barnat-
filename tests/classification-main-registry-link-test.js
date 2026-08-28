@@ -15,13 +15,15 @@ const data = read('classification-data.js');
 const vercel = JSON.parse(read('vercel.json'));
 
 assert.match(html, /data-drx-app="classification-v2"/);
-assert.match(html, /classification-v2\.css\?v=profile-columns-v4/);
+assert.match(html, /classification-v2\.css\?v=[^"\s]+/);
 assert.match(html, /classification-data\.js\?v=atc-catalog-v2/);
-assert.match(html, /classification-v2\.js\?v=profile-columns-v4/);
+assert.match(html, /classification-v2\.js\?v=[^"\s]+/);
 assert.doesNotMatch(html, /classification-redirect\.js|tailadmin-|medindex-tailadmin/);
 assert.match(html, /id="atcSearch"/);
-assert.match(html, /id="groupList"/);
+assert.doesNotMatch(html, /id="groupList"|id="groupPanel"/, "Duplicate ATC group panel must stay removed from the workspace");
 assert.match(html, /id="categoryList"/);
+assert.match(html, /id="atcNavGroup"/);
+assert.ok((html.match(/data-atc-group="/g) || []).length >= 14, 'All ATC groups must be available in the shared sidebar');
 assert.match(html, /href="\/index\.html"/);
 
 for (const code of ['A','B','C','D','G','H','J','L','M','N','P','R','S','V']) {
@@ -34,7 +36,8 @@ for (const code of ['A10','C09','J01','N02','R03','S01']) {
 assert.match(css, /--navy:#1c1e54/);
 assert.match(css, /--stripe:#533afd/);
 assert.match(css, /\.atc-workspace/);
-assert.match(css, /\.group-row/);
+assert.match(css, /grid-template-columns:minmax\(0,1fr\)/, 'Classification must remain a one-column ATC workspace');
+assert.doesNotMatch(css, /\.group-row|\.group-panel/, "Retired duplicate ATC group styles must stay removed");
 assert.match(css, /\.category-row/);
 assert.match(css, /@media\(max-width:760px\)/);
 assert.doesNotMatch(css, /!important/);
