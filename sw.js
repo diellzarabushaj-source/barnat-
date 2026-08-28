@@ -2,7 +2,7 @@
 'use strict';
 
 const VERSION = 'production-audit-v2';
-const CACHE_EPOCH = 'clinical-knowledge-20260805-1';
+const CACHE_EPOCH = 'clinical-knowledge-20260829-analizat-v2';
 const CACHE_NAMESPACE = `${VERSION}-${CACHE_EPOCH}`;
 const STATIC_CACHE = `medindex-static-${CACHE_NAMESPACE}`;
 const PAGE_CACHE = `medindex-pages-${CACHE_NAMESPACE}`;
@@ -19,11 +19,12 @@ const APP_SHELL = [
   '/dozologjia.html', '/urgjencat.html', '/protokollet.html', '/medical-hub.html', '/recetat.html',
   '/login-v2.html', '/login-v2.css', '/login-v2.js', '/login-v2-canvas.js', '/login.html',
   '/manifest.webmanifest', '/medindex-icon.svg',
+  '/brand/drx-horizontal-on-dark.svg', '/brand/drx-mark-on-light.svg', '/fonts/inter-latin-variable-normal.woff2',
   '/styles.css', '/ui-controls.css', '/loader.css', '/app-polish.css',
   '/performance.css', '/clean-medindex-ui.css', '/tailadmin-medindex.css',
   '/tailadmin-professional.css', '/registry-table-tools.css', '/medical-hub.css', '/clinical-knowledge.css', '/clinical-density.css',
   '/classification.css', '/classification-nav-fix.css', '/registry-quality.css',
-  '/clinical-reference.css', '/analizat-polish.css', '/analizat-tailwind-cards-v2.css',
+  '/clinical-reference.css', '/analizat-v2.css', '/drx-dashboard-stripe.css',
   '/icd-premium-cards.css', '/icd-clinical-workspace.css', '/icd-tailadmin-cards-v2.css',
   '/dozologjia-verified-cards.css', '/dozologjia-simple-workflow.css',
   '/dozologjia-safety-enhancements.css', '/dozologjia-clinical-readiness.css',
@@ -39,7 +40,7 @@ const APP_SHELL = [
   '/classification-info-v3.js', '/icd-data.js', '/icd.js',
   '/icd-premium-cards.js', '/icd-clinical-workspace.js',
   '/icd-clinical-style-loader.js', '/icd-tailadmin-card-style-loader.js',
-  '/lab-sheet-data.js', '/analizat.js', '/analizat-clinical-style-loader.js',
+  '/analizat-v2.js', '/sidebar-taxonomy-v3.js', '/medindex-brand-runtime.js',
   '/clinical-dialog.js', '/dosage-engine.js', '/dozologjia.js',
   '/dozologjia-deep-audit.js', '/sanity-clinical-client.js', '/urgjencat.js', '/medical-hub.js', '/protokollet.js',
   '/prescription-format-core.js', '/signature-templates.js',
