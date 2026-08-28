@@ -256,7 +256,8 @@ html.medindex-tailadmin[data-mi-page="barnat"] body :is(.toolbar,#registryFilter
   #statusFilter,
   #pageSize,
   .selection-badge,
-  #protocolsBtn
+  #protocolsBtn,
+  .clinical-editor-progress
 ) {
   display:none!important;
 }
