@@ -54,6 +54,8 @@ assert.match(client, /function applyPatientFields\(requires\)/);
 assert.match(client, /function validatePatientFields\(/);
 assert.match(client, /function invalidateCalculation\(\)/);
 assert.match(client, /function setFilter\(filter\)/);
+assert.match(client, /function effectiveReadiness\(item\)/);
+assert.match(client, /item\?\.readiness === 'CALCULATOR_READY' && item\?\.calculable !== true/);
 assert.match(client, /function setFormFilter\(value\)/);
 assert.match(client, /function updateFormOptions\(\)/);
 assert.match(html, /id="dosageFormFilter"/);
