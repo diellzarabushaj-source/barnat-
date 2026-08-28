@@ -174,7 +174,7 @@
       <aside class="mi-sidebar" id="miSidebar" aria-label="DRx">
         <div class="mi-sidebar-header">
           <a class="mi-brand" href="/index.html" aria-label="DRx — Barnat">
-            <img src="/brand/drx-horizontal-white.svg" alt="DRx" width="112" height="33" decoding="async">
+            <img src="/brand/drx-horizontal-on-dark.svg" alt="DRx" width="112" height="33" decoding="async">
           </a>
           <button class="mi-sidebar-close" type="button" data-mi-sidebar-close aria-label="Mbyll menynë">${ICONS.close}</button>
         </div>
@@ -195,7 +195,7 @@
         <header class="mi-topbar">
           <div class="mi-topbar-leading">
             <button class="mi-icon-button mi-sidebar-toggle" type="button" data-mi-sidebar-toggle aria-controls="miSidebar" aria-expanded="true" aria-label="Hap ose mbyll menynë">${ICONS.menu}</button>
-            <a class="mi-mobile-brand" href="/index.html" aria-label="DRx"><img src="/brand/drx-icon-silver.svg" alt="" width="30" height="30" decoding="async"></a>
+            <a class="mi-mobile-brand" href="/index.html" aria-label="DRx"><img src="/brand/drx-mark-on-light.svg" alt="" width="30" height="30" decoding="async"></a>
             <div class="mi-global-search">
               <span>${ICONS.search}</span>
               <input id="miGlobalSearch" type="search" autocomplete="off" placeholder="Kërko ose shkruaj komandën..." aria-label="Kërkim i shpejtë">
