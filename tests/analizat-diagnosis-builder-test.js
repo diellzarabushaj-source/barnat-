@@ -16,6 +16,8 @@ const api = read('lib/icd-api-base.js');
 const baseMigration = read('supabase/migrations/20260828214754_add_lab_indication_order_builder.sql');
 const liverCorrection = read('supabase/migrations/20260828215737_correct_liver_panel_alp_mapping.sql');
 const migrationHistory = JSON.parse(read('supabase/migration-history.json'));
+const integrityMigration = read('supabase/migrations/20260828221042_harden_lab_indication_integrity.sql');
+const serviceWorker = read('sw.js');
 
 assert.match(html, /data-drx-app="analizat-v2"/);
 assert.match(html, /class="drx-unified-sidebar"/);
@@ -27,6 +29,9 @@ assert.match(html, /id="labDiseaseTrigger"/);
 assert.match(html, /id="labDiseasePopover"/);
 assert.match(html, /id="labDiseaseSearch"/);
 assert.match(html, /id="labDiseaseList"/);
+assert.match(html, /aria-multiselectable="true"/);
+assert.match(html, /aria-haspopup="listbox"/);
+assert.match(html, /id="labPlanStatus" role="status" aria-live="polite"/);
 assert.match(html, /id="labManualSearch"/);
 assert.match(html, /id="labManualResults"/);
 assert.match(html, /id="labSelectedDiseases"/);
@@ -56,6 +61,9 @@ assert.match(js, /map\.has\(test\.id\)/);
 assert.match(js, /map\.set\(test\.id/);
 assert.match(js, /function buildPlanEntries\(\)/);
 assert.match(js, /function toggleIndication\(id\)/);
+assert.match(js, /function pruneExcludedTests\(\)/);
+assert.match(js, /ArrowDown/);
+assert.match(js, /ArrowUp/);
 assert.match(js, /function addManualTest\(id\)/);
 assert.match(js, /function togglePlannedTest\(id, checked\)/);
 assert.match(js, /catalogGaps/);
@@ -65,6 +73,9 @@ assert.match(js, /Panel orientues klinik/);
 assert.doesNotThrow(() => new Function(js));
 
 assert.match(css, /Analizat V2 — diagnosis-driven order builder/);
+assert.match(css, /Visual geometry, colors, spacing and responsive shell authority live in drx-dashboard-stripe\.css v4/);
+assert.doesNotMatch(css, /\.sidebar\{[^}]*background:#1c1e54/);
+assert.doesNotMatch(css, /\.topbar\{[^}]*background:/);
 assert.match(css, /\.lab-disease-popover/);
 assert.match(css, /\.lab-disease-option\.is-selected/);
 assert.match(css, /\.lab-tier-section/);
@@ -98,5 +109,13 @@ assert.ok(migrationHistory.migrations.some(item =>
 assert.ok(migrationHistory.migrations.some(item =>
   item.version === '20260828215737' && item.name === 'correct_liver_panel_alp_mapping'
 ));
+assert.match(integrityMigration, /lab_indications_slug_format_check/);
+assert.match(integrityMigration, /lab_indications_catalog_gaps_array_check/);
+assert.ok(migrationHistory.migrations.some(item =>
+  item.version === '20260828221042' && item.name === 'harden_lab_indication_integrity'
+));
+assert.match(serviceWorker, /\/analizat-v2\.css/);
+assert.match(serviceWorker, /\/analizat-v2\.js/);
+assert.doesNotMatch(serviceWorker, /analizat-polish|analizat-tailwind-cards-v2|lab-sheet-data\.js|['"]\/analizat\.js/);
 
 console.log('Analizat V2 diagnosis-driven Supabase order builder contract passed.');
