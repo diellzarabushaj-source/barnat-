@@ -22,6 +22,8 @@ const READY_ROW = {
   active_substance:'amoxicillinum',
   strength:'250 mg/5 mL',
   pharmaceutical_form:'suspension',
+  atc_code:'J01CA04',
+  registry_search_text:'amoksiciline amoxicillin suspension 250 mg 5 ml J01CA04',
   pediatric_dose_summary:'25–50 mg/kg/ditë, e ndarë në 3 doza',
   pediatric_indication:'Infeksion i rrugëve të frymëmarrjes',
   pediatric_use_status:'LEJOHET',
@@ -54,6 +56,8 @@ const TEXT_ROW = {
   id:'99999999-8888-4777-8666-555555555555',
   registry_number:43,
   trade_name:'Amoksiklav',
+  atc_code:'J01CR02',
+  registry_search_text:'amoksiklav amoxicillin clavulanate J01CR02',
   pediatric_primary_regimen_id:'card:43:pediatric',
   pediatric_verification_status:'in_review',
 };
@@ -111,7 +115,8 @@ require.cache[dataApiPath] = {
 const handler = require(path.join(ROOT, 'lib/pediatric-dosage-handler.js'));
 const { STATUS } = require(path.join(ROOT, 'lib/pediatric-readiness.js'));
 const {
-  searchToken, drugSelector, limitOf, searchPath, productPath, regimenPath,
+  searchTokens, searchToken, rowMatchesTokens, searchFacets,
+  drugSelector, limitOf, searchPath, productPath, regimenPath,
   rankSearchRow, typedRegimen, publicRegimen, calculationBinding,
 } = handler._test;
 
@@ -125,6 +130,11 @@ for (const evil of [
 assert.equal(searchToken('  amoksicilinë  '), 'amoksicilinë');
 assert.equal(searchToken('a'), '');
 assert.equal(searchToken('mg amoksicilinë'), 'amoksicilinë');
+assert.deepEqual(searchTokens('amoksicilinë 250 mg'), ['amoksicilinë', '250', 'mg']);
+assert.equal(searchTokens('amoks amoks 250').length, 2);
+assert.equal(rowMatchesTokens(READY_ROW, ['amoksicilinë','250']), true);
+assert.equal(rowMatchesTokens(READY_ROW, ['J01CA04','suspension']), true);
+assert.equal(rowMatchesTokens(TEXT_ROW, ['J01CA04']), false);
 assert.ok(searchToken('x'.repeat(200)).length <= 48);
 
 assert.deepEqual(drugSelector(READY_ROW.id), { column:'id', value:READY_ROW.id });
@@ -132,8 +142,8 @@ assert.deepEqual(drugSelector('42'), { column:'registry_number', value:'42' });
 for (const evil of ['', 'abc', '42 or 1=1', 'eq.42', '*', '42,43', '-1', '4.2']) {
   assert.equal(drugSelector(evil), null);
 }
-assert.equal(limitOf(undefined), 20);
-assert.equal(limitOf('9999'), 40);
+assert.equal(limitOf(undefined), 30);
+assert.equal(limitOf('9999'), 50);
 assert.equal(limitOf('0'), 1);
 
 const injectedToken = searchToken('amoks,is_published.eq.false');
@@ -141,6 +151,10 @@ const injected = new URLSearchParams(searchPath(injectedToken, 20).split('?')[1]
 assert.equal(injected.get('is_published'), 'eq.true');
 assert.equal(injected.get('editorial_status'), 'eq.published');
 assert.equal([...injected.keys()].length, 6);
+assert.match(injected.get('or') || '', /atc_code\.ilike/);
+assert.match(injected.get('or') || '', /strength\.ilike/);
+assert.match(injected.get('or') || '', /pharmaceutical_form\.ilike/);
+assert.match(injected.get('or') || '', /registry_search_text\.ilike/);
 
 for (const built of [
   searchPath('amoks', 40),
@@ -187,11 +201,25 @@ async function main() {
   // --------------------------------------------------------- search
   requestedPaths.length = 0;
   const search = await handler.searchDrugs('amoksicilinë', '10');
-  assert.equal(search.results.length, 2);
+  assert.equal(search.results.length, 1);
   assert.equal(search.results[0].readiness, STATUS.CALCULATOR_READY);
   assert.equal(search.results[0].calculable, true);
+  assert.equal(search.results[0].atcCode, 'J01CA04');
   assert.deepEqual(search.results[0].requires, { weight:true, height:false, age:true, indication:true });
-  assert.equal(rankSearchRow(READY_ROW, 'amoks'), 0);
+  assert.deepEqual(search.facets, { all:1, ready:1, text:0, blocked:0 });
+  assert.equal(rankSearchRow(READY_ROW, 'amoks'), 1);
+
+  const byAtc = await handler.searchDrugs('J01CA04', '10');
+  assert.equal(byAtc.results.length, 1);
+  assert.equal(byAtc.results[0].drugId, READY_ROW.id);
+
+  const multiToken = await handler.searchDrugs('amoksicilinë 250', '10');
+  assert.equal(multiToken.results.length, 1);
+  assert.equal(multiToken.results[0].drugId, READY_ROW.id);
+
+  const bySubstance = await handler.searchDrugs('amoxicillinum', '10');
+  assert.equal(bySubstance.results.length, 2);
+  assert.deepEqual(searchFacets(bySubstance.results), { all:2, ready:1, text:1, blocked:0 });
   assert.equal((await handler.searchDrugs('a')).results.length, 0);
 
   // --------------------------------------------------------- product binding
@@ -358,7 +386,8 @@ async function main() {
   const anonymous = fakeRes();
   await handler({ method:'GET', url:'/api/dosage?view=pediatric-search&q=amoks', headers:{} }, anonymous);
   assert.equal(anonymous.statusCode, 401);
-  assert.equal(anonymous.headers['Cache-Control'], 'private, no-cache, max-age=0');
+  assert.equal(anonymous.headers['Cache-Control'], 'private, no-store, max-age=0');
+  assert.equal(anonymous.headers.Vary, 'Cookie');
 }
 
 main().then(() => {
