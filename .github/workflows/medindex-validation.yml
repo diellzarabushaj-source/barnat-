@@ -48,6 +48,8 @@ jobs:
             section-icons.js
             classification-icons.js
             classification-v2.js
+            registry-v2.js
+            icd-v2.js
             prescription-format-core.js
             prescription-notation.js
             prescription-registry-bridge.js
@@ -163,7 +165,15 @@ jobs:
           ! grep -q 'tailadmin-medindex.css' klasifikimi.html
           ! grep -q 'tailadmin-professional.css' klasifikimi.html
           ! grep -q 'tailadmin-shell.js' klasifikimi.html
-          for page in icd.html analizat.html dozologjia.html protokollet.html recetat.html; do
+          # ICD V2 është i pavarur si Barnat dhe Klasifikimi: një fletë stili dhe
+          # një runtime mbi guaskën DRx, në vend të kaskadës TailAdmin.
+          grep -q 'data-drx-app="icd-v2"' icd.html
+          grep -q 'icd-v2.css' icd.html
+          grep -q 'icd-v2.js' icd.html
+          ! grep -q 'tailadmin-medindex.css' icd.html
+          ! grep -q 'tailadmin-professional.css' icd.html
+          ! grep -q 'tailadmin-shell.js' icd.html
+          for page in analizat.html dozologjia.html protokollet.html recetat.html; do
             grep -q 'medindex-tailadmin' "$page"
             grep -q 'tailadmin-medindex.css' "$page"
             grep -q 'tailadmin-professional.css' "$page"
