@@ -16,7 +16,7 @@ const MAX_QUERY_RESPONSES = 40;
 
 const APP_SHELL = [
   '/', '/index.html', '/klasifikimi.html', '/icd.html', '/analizat.html',
-  '/dozologjia.html', '/urgjencat.html', '/protokollet.html', '/medical-hub.html', '/recetat.html',
+  '/dozologjia.html', '/urgjencat.html', '/protokollet.html', '/medical-hub.html', '/recetat.html', '/sistemi.html',
   '/login-v2.html', '/login-v2.css', '/login-v2.js', '/login-v2-canvas.js', '/login.html',
   '/manifest.webmanifest', '/medindex-icon.svg',
   '/brand/drx-horizontal-on-dark.svg', '/brand/drx-mark-on-light.svg', '/fonts/inter-latin-variable-normal.woff2',
