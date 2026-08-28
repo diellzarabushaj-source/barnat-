@@ -54,3 +54,73 @@ html[data-theme=dark].medindex-tailadmin .lab-category-tile,html[data-theme=dark
 @media(max-width:640px){html.medindex-tailadmin .lab-category-nav{grid-auto-columns:minmax(205px,82vw)!important;gap:8px!important;margin-bottom:14px!important}html.medindex-tailadmin .lab-category-nav .lab-category-tile{min-height:82px!important;padding:10px!important}html.medindex-tailadmin .lab-category-tile-icon{width:44px!important;height:44px!important}html.medindex-tailadmin .lab-category-head{grid-template-columns:48px minmax(0,1fr)!important;gap:10px!important;padding:14px!important}html.medindex-tailadmin .lab-category-head .lab-category-symbol{width:48px!important;height:48px!important;border-radius:14px!important}html.medindex-tailadmin .lab-category-head .lab-category-symbol svg{width:27px!important;height:27px!important}html.medindex-tailadmin .lab-category-head .lab-category-number{position:absolute;left:47px;top:9px;width:24px!important;height:24px!important;border:2px solid var(--paper)!important;border-radius:8px!important;font-size:.58rem!important}html.medindex-tailadmin .lab-category-copy{grid-column:2}html.medindex-tailadmin .lab-category-highlights{display:none}html.medindex-tailadmin .lab-category-meta{grid-column:2;align-items:center;flex-direction:row;justify-content:space-between;width:100%}html.medindex-tailadmin .lab-category-open{min-height:34px;padding:0 10px}html.medindex-tailadmin .lab-grid{grid-template-columns:1fr!important;gap:10px!important}html.medindex-tailadmin .lab-card-open{min-height:205px!important}.lab-quickbar{grid-template-columns:1fr;gap:6px}.lab-quickbar .med-count{grid-column:auto;justify-self:stretch;text-align:center}.lab-name-grid,.lab-interpret-grid{grid-template-columns:1fr}.lab-detail-source{align-items:flex-start;flex-direction:column}.lab-sheet-link{display:none}.lab-search-wrap kbd{display:none}.lab-search-wrap input{padding-right:42px}.lab-hero p{font-size:.76rem}}
 @media(max-width:390px){html.medindex-tailadmin .lab-category-tile-copy strong{font-size:.69rem!important}html.medindex-tailadmin .lab-category-open{font-size:.62rem}html.medindex-tailadmin .lab-category-count{font-size:.58rem!important}.lab-hero-stat{grid-template-columns:auto auto}}
 @media(prefers-reduced-motion:reduce){html.medindex-tailadmin .lab-category-tile,html.medindex-tailadmin .lab-category-open,html.medindex-tailadmin .lab-card,html.medindex-tailadmin .lab-card-arrow,.lab-sheet-link{transition:none!important}html.medindex-tailadmin .lab-category-tile:hover,html.medindex-tailadmin .lab-category-open:hover,html.medindex-tailadmin .lab-card:hover,.lab-sheet-link:hover{transform:none!important}}
+
+
+/* Stripe v2 normalization — keep category color only as a semantic accent. */
+html.medindex-tailadmin[data-mi-page="analizat"] .lab-quickbar{
+  border-radius:10px!important;
+  background:var(--paper)!important;
+  box-shadow:none!important;
+  backdrop-filter:none!important;
+}
+html.medindex-tailadmin[data-mi-page="analizat"] .lab-category-nav .lab-category-tile{
+  min-height:76px!important;
+  border-radius:8px!important;
+  background:var(--paper)!important;
+  box-shadow:none!important;
+  transform:none!important;
+}
+html.medindex-tailadmin[data-mi-page="analizat"] .lab-category-nav .lab-category-tile:hover,
+html.medindex-tailadmin[data-mi-page="analizat"] .lab-category-nav .lab-category-tile:focus-visible{
+  background:color-mix(in srgb,var(--lab-soft) 38%,var(--paper))!important;
+  box-shadow:none!important;
+  transform:none!important;
+}
+html.medindex-tailadmin[data-mi-page="analizat"] .lab-category-nav .lab-category-tile.is-active{
+  background:color-mix(in srgb,var(--lab-soft) 45%,var(--paper))!important;
+  box-shadow:inset 3px 0 0 var(--lab-accent)!important;
+}
+html.medindex-tailadmin[data-mi-page="analizat"] .lab-category-tile-icon{
+  width:42px!important;
+  height:42px!important;
+  border-radius:8px!important;
+  box-shadow:none!important;
+}
+html.medindex-tailadmin[data-mi-page="analizat"] .lab-category-head{
+  min-height:92px!important;
+  border-radius:10px!important;
+  background:var(--paper)!important;
+  box-shadow:none!important;
+}
+html.medindex-tailadmin[data-mi-page="analizat"] .lab-category-head .lab-category-symbol{
+  width:48px!important;
+  height:48px!important;
+  border-radius:9px!important;
+  box-shadow:none!important;
+}
+html.medindex-tailadmin[data-mi-page="analizat"] .lab-category-copy>h2{
+  font-weight:500!important;
+}
+html.medindex-tailadmin[data-mi-page="analizat"] .lab-category-open{
+  min-height:36px!important;
+  border-radius:9999px!important;
+  box-shadow:none!important;
+  transform:none!important;
+}
+html.medindex-tailadmin[data-mi-page="analizat"] .lab-category-open:hover,
+html.medindex-tailadmin[data-mi-page="analizat"] .lab-category-open:focus-visible{
+  transform:none!important;
+  box-shadow:none!important;
+}
+html.medindex-tailadmin[data-mi-page="analizat"] .lab-card{
+  border-radius:10px!important;
+  box-shadow:none!important;
+  transform:none!important;
+}
+html.medindex-tailadmin[data-mi-page="analizat"] .lab-card:hover{
+  box-shadow:none!important;
+  transform:none!important;
+}
+html.medindex-tailadmin[data-mi-page="analizat"] .lab-panel{
+  border-radius:14px!important;
+}
