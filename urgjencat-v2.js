@@ -380,7 +380,7 @@
     }
     return `
       <figure class="ec-figure-card">
-        <img src="${esc(src)}" alt="${esc(figure.alt || figure.caption || `${label} ${figure.figureNumber}`)}" loading="lazy">
+        <img src="${esc(src)}" alt="${esc(figure.alt || figure.caption || `${label} ${figure.figureNumber}`)}" loading="lazy" decoding="async">
         <figcaption><strong>${label} ${esc(figure.figureNumber)}.</strong> ${esc(figure.caption || '')}</figcaption>
       </figure>
     `;
@@ -619,7 +619,8 @@
       if ($('#lessonStatus')) $('#lessonStatus').textContent = 'Nuk u ngarkua';
       if ($('#emergencyChapterSelect')) $('#emergencyChapterSelect').innerHTML = '<option>Gabim në ngarkim</option>';
       if ($('#emergencyLessonSelect')) $('#emergencyLessonSelect').innerHTML = '<option>Gabim në ngarkim</option>';
-      if ($('#emergencyDetail')) $('#emergencyDetail').innerHTML = '<div class="ec-detail-placeholder"><div><strong>Urgjencat nuk u ngarkuan.</strong><span>Provo përsëri pa humbur sesionin.</span></div></div>';
+      if ($('#emergencyDetail')) $('#emergencyDetail').innerHTML = '<div class="ec-detail-placeholder"><div><strong>Urgjencat nuk u ngarkuan.</strong><span>Provo përsëri pa humbur sesionin.</span><button class="ec-retry" type="button">Provo përsëri</button></div></div>';
+      $('#emergencyDetail')?.querySelector('.ec-retry')?.addEventListener('click', () => window.location.reload());
       $('#appShell')?.setAttribute('aria-busy','false');
     }
   }
