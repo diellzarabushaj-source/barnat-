@@ -1195,6 +1195,7 @@ html[data-theme="dark"] .icd-add-secondary-diagnosis{border-color:#175cd3!import
 
 /* Recetat V2 — Stripe prescription workspace */
 :root{
+  --rx-shell-navy:#1c1e54;
   --rx-bg:#f7f8fb;--rx-surface:#fff;--rx-ink:#0d253d;--rx-ink-2:#34475c;
   --rx-muted:#667085;--rx-muted-2:#98a2b3;--rx-line:#e4e7ec;--rx-line-strong:#d0d5dd;
   --rx-accent:#533afd;--rx-accent-hover:#4434d4;--rx-accent-soft:#f2f0ff;--rx-accent-line:#dedbff;
