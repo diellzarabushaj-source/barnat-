@@ -20,7 +20,7 @@ assert.match(stripe, /@media\(max-width:760px\)/);
 assert.match(stripe, /prefers-reduced-motion:reduce/);
 
 const pages = [
-  'analizat.html','dozologjia.html','protokollet.html','recetat.html','sistemi.html',
+  'dozologjia.html','protokollet.html','recetat.html','sistemi.html',
 ];
 
 for (const file of pages) {
@@ -56,6 +56,7 @@ assert.match(icdCss, /#533afd/i);
 
 for (const [htmlFile, cssFile, jsFile, markerName] of [
   ['urgjencat.html','urgjencat-v2.css','urgjencat-v2.js','urgjencat-v2'],
+  ['analizat.html','analizat-v2.css','analizat-v2.js','analizat-v2'],
   ['medical-hub.html','medical-hub-v2.css','medical-hub-v2.js','medical-hub-v2'],
 ]) {
   const html = read(htmlFile);
