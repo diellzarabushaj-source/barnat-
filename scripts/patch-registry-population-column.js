@@ -257,18 +257,17 @@ for (const relative of runtimeFiles) {
 }
 const unified = read(unifiedTableFile);
 if (!unified.includes("population:'Popullata e aprovuar'")
-    || !unified.includes("'select', 'number', 'active-substance', 'trade-name'")
-    || !unified.includes("key === 'clinical-status' || key === 'clinical-action'")
-    || !unified.includes('--registry-frozen-active-left')
-    || !unified.includes("let storedView = 'full'")) {
-  throw new Error('Population/order/frozen column patch nuk u aplikua në unified table.');
+    || !unified.includes("'select', 'number', 'trade-name', 'active-substance'")
+    || !unified.includes("'select', 'trade-name', 'active-substance', 'strength', 'form', 'population'")
+    || !unified.includes("if (key === 'clinical-status') return false")
+    || unified.includes("'clinical-action'")
+    || unified.includes("'dose-calculator'")) {
+  throw new Error('Population/order patch nuk u aplikua në unified table ose kolonat e hequra u rikthyen.');
 }
 const unifiedCss = read(unifiedCssFile);
 if (!unifiedCss.includes('[data-registry-column-key="population"]')
-    || !unifiedCss.includes('.registry-population-badge')
-    || !unifiedCss.includes('registry-frozen-columns-v2')
-    || !unifiedCss.includes('[data-registry-column-key="active-substance"]')) {
-  throw new Error('Population/frozen column patch nuk u aplikua në unified CSS.');
+    || !unifiedCss.includes('.registry-population-badge')) {
+  throw new Error('Population column patch nuk u aplikua në unified CSS.');
 }
 const pickerSource = read(columnPickerFile);
 if (!pickerSource.includes('data-mi-technical-column-hidden')
@@ -283,4 +282,4 @@ if (!indexSource.includes(`registry-unified-table.css?v=${ASSET_VERSION}`)
   throw new Error('Population/default column asset versions nuk u përditësuan.');
 }
 
-console.log('Registry defaults, persistent user column choices, verification cleanup and frozen Nr + active substance applied.');
+console.log('Registry defaults, population column, persistent user choices and simplified table contract applied.');
