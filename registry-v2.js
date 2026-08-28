@@ -122,7 +122,7 @@
       state.pageSize = Number(payload.pagination?.pageSize || state.pageSize);
       state.total = Number.isFinite(Number(payload.pagination?.total)) ? Number(payload.pagination.total) : null;
       state.totalPages = Number.isFinite(Number(payload.pagination?.totalPages)) ? Number(payload.pagination.totalPages) : null;
-      el.sourceStatus.textContent = response.headers.get('X-MedIndex-Data-Source') || 'Neon · aktiv';
+      el.sourceStatus.textContent = `${response.headers.get('X-MedIndex-Data-Source') || 'Supabase'} · aktiv`;
       el.syncText.textContent = response.headers.get('X-MedIndex-Data-Source') || 'Supabase';
       state.dosageByRegistry.clear();
       renderRows();
