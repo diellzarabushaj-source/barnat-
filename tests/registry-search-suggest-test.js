@@ -129,7 +129,7 @@ const rowsOf = query => [...t.suggest(query)].map(item => ({ ...item }));
 
 {
   const js = read('registry-search-suggest.js');
-  const css = read('registry-search-suggest.css');
+  const css = read('registry-table-tools.css');
   const premium = /version:'registry-search-suggest-v(?:3|[4-9]|\d{2,})'/.test(js);
 
   assert.match(js, /version:'registry-search-suggest-v(?:2|[3-9]|\d{2,})'/,
