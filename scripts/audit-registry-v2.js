@@ -49,9 +49,10 @@ assert(/src="\/registry-v2\.js\?v=profile-columns-v5"/.test(html), 'Registry v2 
 const stylesheetLinks = [...html.matchAll(/<link\b[^>]*rel="stylesheet"[^>]*href="([^"]+)"/g)].map(match => match[1]);
 const scriptSources = [...html.matchAll(/<script\b[^>]*src="([^"]+)"/g)].map(match => match[1]);
 
-assert(stylesheetLinks.length === 1, `Registry v2 must load exactly one stylesheet; found ${stylesheetLinks.length}.`);
+assert(stylesheetLinks.length === 2, `Registry v2 must load page CSS plus the shared Stripe shell; found ${stylesheetLinks.length}.`);
 assert(scriptSources.length === 1, `Registry v2 must load exactly one script; found ${scriptSources.length}.`);
-assert(stylesheetLinks[0].startsWith('/registry-v2.css'), 'Unexpected registry stylesheet authority.');
+assert(stylesheetLinks[0].startsWith('/registry-v2.css'), 'Unexpected registry page stylesheet authority.');
+assert(stylesheetLinks[1] === '/drx-dashboard-stripe.css?v=drx-dashboard-stripe-v4', 'Shared Stripe shell must load last.');
 assert(scriptSources[0].startsWith('/registry-v2.js'), 'Unexpected registry script authority.');
 
 for (const asset of legacyAssets) {
