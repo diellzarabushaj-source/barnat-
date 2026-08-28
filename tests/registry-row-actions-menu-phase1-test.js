@@ -16,7 +16,7 @@ const phase6Probe = process.env.MEDINDEX_ROW_ACTIONS_PHASE6_PROBE === '1';
 const desktop = read('registry-desktop-lite.js');
 const unified = read('registry-unified-table.js');
 const personal = read('registry-user-personalization.js');
-const css = read('registry-user-personalization.css');
+const css = read('registry-table-tools.css');
 
 assert.match(desktop, /registry-row-actions-menu-phase1-v1/);
 assert.match(desktop, /data-row-actions-menu="true"/,
