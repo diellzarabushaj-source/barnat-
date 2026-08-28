@@ -513,14 +513,29 @@
 
     if (!lesson) {
       const section = currentSection();
-      root.innerHTML = `
-        <div class="ec-detail-placeholder">
-          <div>
-            <strong>${section ? esc(section.title) : 'Zgjidh një kapitull.'}</strong>
-            ${section ? 'Zgjidh një mësim nga kolona e dytë.' : 'Pastaj zgjidh mësimin që dëshiron të hapësh.'}
+      const term = String(state.term || '').trim();
+      const noSearchResults = Boolean(term) && visibleLessonSequence().length === 0;
+
+      root.innerHTML = noSearchResults
+        ? `
+          <div class="ec-detail-placeholder">
+            <div>
+              <strong>Asnjë mësim nuk u gjet.</strong>
+              <span>Nuk ka përputhje për “${esc(term)}”. Provo një term tjetër ose pastro kërkimin.</span>
+              <button class="ec-retry ec-empty-clear" type="button">Pastro kërkimin</button>
+            </div>
           </div>
-        </div>
-      `;
+        `
+        : `
+          <div class="ec-detail-placeholder">
+            <div>
+              <strong>${section ? esc(section.title) : 'Zgjidh një kapitull.'}</strong>
+              <span>${section ? 'Zgjidh një mësim nga fusha “Mësimi”.' : 'Pastaj zgjidh mësimin që dëshiron të hapësh.'}</span>
+            </div>
+          </div>
+        `;
+
+      root.querySelector('.ec-empty-clear')?.addEventListener('click', () => clearSearch());
       return;
     }
 
