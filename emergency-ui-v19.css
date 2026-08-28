@@ -3,16 +3,16 @@
 
 html.medindex-tailadmin[data-mi-page="urgjencat"]{
   --ck19-font:"Inter",ui-sans-serif,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
-  --ck19-ink:#15213a;
-  --ck19-muted:#6f7c91;
-  --ck19-soft:#8b96a8;
-  --ck19-blue:#315fc8;
-  --ck19-blue-strong:#2853b4;
-  --ck19-line:rgba(53,75,112,.10);
-  --ck19-line-strong:rgba(53,75,112,.15);
+  --ck19-ink:#101828;
+  --ck19-muted:#667085;
+  --ck19-soft:#98a2b3;
+  --ck19-blue:#1f7779;
+  --ck19-blue-strong:#155f63;
+  --ck19-line:#e4e7ec;
+  --ck19-line-strong:#d0d5dd;
   --ck19-surface:#ffffff;
-  --ck19-surface-soft:#f8faff;
-  --ck19-shadow:0 18px 48px rgba(24,40,72,.065),0 2px 8px rgba(24,40,72,.035);
+  --ck19-surface-soft:#f9fafb;
+  --ck19-shadow:0 1px 2px rgba(16,24,40,.05);
 }
 
 html.medindex-tailadmin[data-mi-page="urgjencat"] body,
@@ -106,7 +106,7 @@ html.medindex-tailadmin[data-mi-page="urgjencat"] #emergencySearch{
   padding:0 20px 0 54px!important;
   border:1px solid rgba(53,75,112,.14)!important;
   border-radius:14px!important;
-  background:#fbfcff!important;
+  background:#ffffff!important;
   color:var(--ck19-ink)!important;
   font:500 15.5px/1.3 var(--ck19-font)!important;
   letter-spacing:-.012em!important;
@@ -118,9 +118,9 @@ html.medindex-tailadmin[data-mi-page="urgjencat"] #emergencySearch::placeholder{
   letter-spacing:-.006em!important;
 }
 html.medindex-tailadmin[data-mi-page="urgjencat"] #emergencySearch:focus{
-  border-color:rgba(49,95,200,.46)!important;
+  border-color:rgba(31,119,121,.46)!important;
   background:#fff!important;
-  box-shadow:0 0 0 4px rgba(49,95,200,.075),0 8px 22px rgba(49,95,200,.055)!important;
+  box-shadow:0 0 0 4px rgba(31,119,121,.075),0 8px 22px rgba(31,119,121,.055)!important;
 }
 html.medindex-tailadmin[data-mi-page="urgjencat"] .ck-rapid-search-panel .ck-status{
   margin:10px 3px 0!important;
@@ -139,7 +139,7 @@ html.medindex-tailadmin[data-mi-page="urgjencat"] :where(
   min-height:34px!important;
   border:1px solid rgba(53,75,112,.10)!important;
   border-radius:999px!important;
-  background:#f8faff!important;
+  background:#f9fafb!important;
   color:#5d6a80!important;
   font-family:var(--ck19-font)!important;
   font-size:11.5px!important;
@@ -153,8 +153,8 @@ html.medindex-tailadmin[data-mi-page="urgjencat"] :where(
   .ck-action-chip:hover,
   .ck-quick-buttons button:hover
 ){
-  border-color:rgba(49,95,200,.18)!important;
-  background:#f2f5ff!important;
+  border-color:rgba(31,119,121,.18)!important;
+  background:#f2f4f7!important;
   color:var(--ck19-blue)!important;
 }
 html.medindex-tailadmin[data-mi-page="urgjencat"] :where(
@@ -162,9 +162,9 @@ html.medindex-tailadmin[data-mi-page="urgjencat"] :where(
   .ck-personal-chip[aria-pressed="true"],
   .ck-action-chip[aria-pressed="true"]
 ){
-  border-color:rgba(49,95,200,.24)!important;
-  background:#edf2ff!important;
-  color:#2853b4!important;
+  border-color:rgba(31,119,121,.24)!important;
+  background:#eaf4f1!important;
+  color:#155f63!important;
   font-weight:600!important;
 }
 
@@ -178,7 +178,7 @@ html.medindex-tailadmin[data-mi-page="urgjencat"] .ck-directory,
 html.medindex-tailadmin[data-mi-page="urgjencat"] .ck-detail{
   border:1px solid var(--ck19-line)!important;
   background:var(--ck19-surface)!important;
-  box-shadow:0 10px 32px rgba(24,40,72,.045)!important;
+  box-shadow:0 1px 2px rgba(16,24,40,.04)!important;
 }
 html.medindex-tailadmin[data-mi-page="urgjencat"] .ck-directory{
   padding:8px!important;
@@ -196,7 +196,7 @@ html.medindex-tailadmin[data-mi-page="urgjencat"] .ck-directory-chapter-head{
   padding:8px 10px!important;
   border-color:rgba(53,75,112,.07)!important;
   border-radius:12px!important;
-  background:linear-gradient(145deg,#fbfcff,#f7f9fd)!important;
+  background:#f9fafb!important;
 }
 html.medindex-tailadmin[data-mi-page="urgjencat"] .ck-directory-chapter-head span{
   color:#8a95a7!important;
@@ -224,7 +224,7 @@ html.medindex-tailadmin[data-mi-page="urgjencat"] .ck-list-button{
 }
 html.medindex-tailadmin[data-mi-page="urgjencat"] .ck-list-button:hover{
   border-color:rgba(53,75,112,.075)!important;
-  background:#f8faff!important;
+  background:#f9fafb!important;
 }
 html.medindex-tailadmin[data-mi-page="urgjencat"] .ck-list-button strong{
   color:#334158!important;
@@ -236,12 +236,12 @@ html.medindex-tailadmin[data-mi-page="urgjencat"] .ck-list-button strong{
   letter-spacing:-.014em!important;
 }
 html.medindex-tailadmin[data-mi-page="urgjencat"] .ck-list-button.is-active{
-  border-color:rgba(49,95,200,.15)!important;
-  background:linear-gradient(145deg,#f7f9ff,#eff4ff)!important;
-  box-shadow:inset 3px 0 0 var(--ck19-blue),0 5px 14px rgba(49,95,200,.045)!important;
+  border-color:rgba(31,119,121,.15)!important;
+  background:#eaf4f1!important;
+  box-shadow:inset 3px 0 0 var(--ck19-blue),0 5px 14px rgba(31,119,121,.045)!important;
 }
 html.medindex-tailadmin[data-mi-page="urgjencat"] .ck-list-button.is-active strong{
-  color:#244894!important;
+  color:#155f63!important;
   font-weight:600!important;
 }
 html.medindex-tailadmin[data-mi-page="urgjencat"] .ck-directory-tag,
@@ -316,8 +316,8 @@ html.medindex-tailadmin[data-mi-page="urgjencat"] .ck-review-button{
   box-shadow:none!important;
 }
 html.medindex-tailadmin[data-mi-page="urgjencat"] .ck-review-button:hover{
-  border-color:rgba(49,95,200,.14)!important;
-  background:#f5f8ff!important;
+  border-color:rgba(31,119,121,.14)!important;
+  background:#f7fbfa!important;
 }
 html.medindex-tailadmin[data-mi-page="urgjencat"] .ck-mode-wrap{
   margin-top:18px!important;
@@ -343,7 +343,7 @@ html.medindex-tailadmin[data-mi-page="urgjencat"] .ck-mode-toggle button{
 }
 html.medindex-tailadmin[data-mi-page="urgjencat"] .ck-mode-toggle button[aria-pressed="true"]{
   background:#fff!important;
-  color:#284f9f!important;
+  color:#155f63!important;
   box-shadow:0 1px 4px rgba(24,40,72,.07)!important;
 }
 html.medindex-tailadmin[data-mi-page="urgjencat"] .ck-mode-caption{
@@ -401,7 +401,7 @@ html.medindex-tailadmin[data-mi-page="urgjencat"] .ck-step-card{
   box-shadow:none!important;
 }
 html.medindex-tailadmin[data-mi-page="urgjencat"] .ck-step-card:hover{
-  border-color:rgba(49,95,200,.14)!important;
+  border-color:rgba(31,119,121,.14)!important;
   background:#fff!important;
 }
 html.medindex-tailadmin[data-mi-page="urgjencat"] .ck-step-number{
@@ -438,7 +438,7 @@ html.medindex-tailadmin[data-mi-page="urgjencat"] .ck-info-card{
   box-shadow:none!important;
 }
 html.medindex-tailadmin[data-mi-page="urgjencat"] .ck-info-card:hover{
-  border-color:rgba(49,95,200,.14)!important;
+  border-color:rgba(31,119,121,.14)!important;
   background:#fff!important;
 }
 html.medindex-tailadmin[data-mi-page="urgjencat"] :where(.ck-alert-section,.ck-safety-section,.ck-referral){
@@ -463,7 +463,7 @@ html.medindex-tailadmin[data-mi-page="urgjencat"] .ck-browse-summary{
 /* Focus treatment is unified and visible without being loud. */
 html.medindex-tailadmin[data-mi-page="urgjencat"] #emergencyContent :where(button,a,input,select):focus-visible,
 html.medindex-tailadmin[data-mi-page="urgjencat"] #ckDetailOverlay :where(button,a):focus-visible{
-  outline:3px solid rgba(49,95,200,.16)!important;
+  outline:3px solid rgba(31,119,121,.16)!important;
   outline-offset:2px!important;
 }
 
