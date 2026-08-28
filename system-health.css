@@ -20,3 +20,38 @@ html.dark .system-hero,html.dark .system-panel,html.dark .system-metrics article
 @media(max-width:640px){.system-icd-metrics{grid-template-columns:repeat(2,minmax(0,1fr))}}
 @media(max-width:560px){.system-health{gap:14px}.system-hero,.system-panel{padding:17px;border-radius:16px}.system-metrics{grid-template-columns:1fr 1fr;gap:9px}.system-metrics article{padding:14px;border-radius:14px}.system-metrics strong{font-size:1.4rem}.system-source,.system-probe{grid-template-columns:1fr}.system-source .system-state,.system-probe>span{justify-self:start}.system-panel>header{align-items:flex-start;flex-direction:column}.system-hero-actions{width:100%}.system-refresh{flex:1}.system-icd-metrics{grid-template-columns:1fr 1fr;gap:8px}.system-icd-metrics article{padding:12px}.system-icd-metrics strong{font-size:.92rem}#systemIcdSourceStatus{font-size:.86rem}}
 @media(forced-colors:active){.system-hero,.system-panel,.system-source,.system-event,.system-icd-metrics article,.system-probe{border:1px solid CanvasText}.system-state,.system-probe>span{border:1px solid CanvasText}}
+
+
+/* Stripe v2 normalization for nested system surfaces. */
+.system-source,.system-event,.system-icd-metrics article,.system-probe{
+  border-color:#e3e8ee;
+  border-radius:8px;
+  background:#fff;
+  box-shadow:none;
+}
+.system-table-wrap{
+  border-color:#e3e8ee;
+  border-radius:10px;
+}
+.system-table-wrap th{
+  background:#f6f9fc;
+  color:#64748d;
+  font-weight:500;
+  text-transform:none;
+  letter-spacing:0;
+}
+.system-setup{
+  border-radius:10px;
+}
+.system-probe code{
+  background:#f6f9fc;
+  color:#42566b;
+}
+html.dark .system-source,
+html.dark .system-event,
+html.dark .system-icd-metrics article,
+html.dark .system-probe{
+  background:#101828;
+  border-color:#344054;
+}
+html.dark .system-table-wrap th{background:#1d2939;color:#98a2b3}
