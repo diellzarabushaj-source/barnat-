@@ -350,7 +350,7 @@ body.ec-modal-open{overflow:hidden}
   .emergency-totals{margin-top:12px}.emergency-command{position:static;grid-template-columns:1fr;padding:8px;border-radius:10px}
   .command-search{grid-column:auto}.command-field select,.command-search input{height:46px;font-size:16px}.command-search kbd{display:none}
   .emergency-document{border-radius:10px}.ec-detail-inner{padding:24px 16px 36px}.ec-detail-title h2{font-size:23px}
-  .ec-abbreviation-grid{grid-template-columns:1fr}.ec-figure-strip{grid-template-columns:1fr}
+  .ec-figure-strip{grid-template-columns:1fr}
   .ec-outline-head{grid-template-columns:1fr;gap:5px;padding:12px}.ec-outline-head>span,.ec-outline-head h3,.ec-outline-head p{grid-column:1;grid-row:auto}.ec-outline-head p{margin-top:4px}.ec-outline-list{grid-template-columns:1fr}.ec-outline-list li{border-right:0!important;border-bottom:1px solid #edf1f4!important}.ec-outline-list li:last-child{border-bottom:0!important}
   .ec-table-card{margin-left:-6px;margin-right:-6px}.ec-clinical-table{min-width:620px}
   .sidebar .nav-item{min-height:44px}
