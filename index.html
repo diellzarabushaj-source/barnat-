@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="sq" class="auth-checking medindex-clean-ui medindex-tailadmin mi-shell-booting" data-mi-page="barnat" data-registry-ux-view="full" data-registry-ui-release="20260812-1" data-medindex-build-id="registry-r20260812-1">
+<html lang="sq" class="auth-checking medindex-clean-ui medindex-tailadmin mi-shell-booting" data-mi-page="barnat" data-registry-ux-view="clinical" data-registry-ui-release="20260812-1" data-medindex-build-id="registry-r20260812-1">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
@@ -10,33 +10,34 @@
 <title>DRx | Regjistri i Barnave — Dr. Diellza Rabushaj</title>
 <link rel="preload" href="/fonts/inter-latin-variable-normal.woff2" as="font" type="font/woff2" crossorigin>
 <link rel="stylesheet" href="drx-clinical-system.css?v=drx-clinical-system-v1">
-<link rel="stylesheet" href="styles.css?v=20260723-2&build=local-1.8.0">
-<link rel="stylesheet" href="ui-controls.css?v=20260722-7&build=local-1.8.0">
-<link rel="stylesheet" href="loader.css?v=20260722-6&build=local-1.8.0">
+<link rel="stylesheet" href="styles.css?v=20260723-2">
+<link rel="stylesheet" href="ui-controls.css?v=20260722-7">
+<link rel="stylesheet" href="loader.css?v=20260722-6">
 <link rel="stylesheet" href="app-polish.css?v=20260728-1">
 <link rel="stylesheet" href="performance.css?v=20260723-1">
-<link rel="stylesheet" href="clean-medindex-ui.css?v=20260723-1&build=local-1.8.0">
-<link rel="stylesheet" href="tailadmin-medindex.css?v=20260728-1&build=local-1.8.0" data-tailadmin-medindex-css>
+<link rel="stylesheet" href="clean-medindex-ui.css?v=20260723-1">
+<link rel="stylesheet" href="tailadmin-medindex.css?v=20260728-1" data-tailadmin-medindex-css>
 <link rel="stylesheet" href="form-picker-clinical.css?v=20260725-1">
 <link rel="stylesheet" href="registry-dosage-columns.css?v=20260805-2&build=registry-r20260812-1">
 <link rel="stylesheet" href="clinical-editor.css?v=20260729-1">
 <link rel="preload" href="first-page-clinical.css?v=20260731-1" as="style">
 <link rel="stylesheet" href="registry-cell-preview.css?v=20260805-4&build=registry-r20260812-1" data-registry-cell-preview-css>
 <link rel="stylesheet" href="registry-verification-ui.css?v=20260801-1&build=registry-r20260812-1" data-registry-verification-ui-css>
-<link rel="stylesheet" href="registry-unified-table.css?v=registry-canonical-main-table-v1" data-registry-unified-table-css>
+<link rel="stylesheet" href="registry-unified-table.css?v=20260801-1&build=registry-r20260812-1" data-registry-unified-table-css>
 <link rel="stylesheet" href="registry-full-text-expansion.css?v=20260805-2&build=registry-r20260812-1" data-registry-full-text-expansion-css>
 <link rel="stylesheet" href="registry-atc-context.css?v=atc-context-v1&build=registry-r20260812-1" data-registry-atc-context-css>
 <link rel="stylesheet" href="registry-mobile-critical.css?v=20260810-1&build=registry-r20260812-1" data-registry-mobile-critical-css>
-<link rel="stylesheet" href="registry-mobile-lite.css?v=20260812-2&build=registry-r20260812-1" data-registry-mobile-lite-css>
-<link rel="stylesheet" href="registry-mobile-phase3.css?v=20260812-2&build=registry-r20260812-1" data-registry-mobile-phase3-css>
+<link rel="stylesheet" href="registry-mobile-lite.css?v=20260812-1&build=registry-r20260812-1" data-registry-mobile-lite-css>
+<link rel="stylesheet" href="registry-mobile-phase3.css?v=20260812-1&build=registry-r20260812-1" data-registry-mobile-phase3-css>
 <link rel="stylesheet" href="registry-mobile-phase4.css?v=20260812-2&build=registry-r20260812-1" data-registry-mobile-phase4-css>
-<link rel="stylesheet" href="registry-mobile-phase8.css?v=20260816-2" data-registry-mobile-phase8-css>
 <link rel="stylesheet" href="registry-mobile-design-audit.css?v=20260812-1&build=registry-r20260812-1" data-registry-mobile-design-audit-css>
 <link rel="stylesheet" href="registry-mobile-phone-hardening.css?v=20260812-1&build=registry-r20260812-1" data-registry-mobile-phone-hardening-css>
 <link rel="stylesheet" href="registry-column-picker-tailwind.css?v=20260805-3&build=registry-r20260812-1" data-registry-column-picker-tailwind-css>
 <link rel="stylesheet" href="registry-dose-table-button.css?v=20260810-1&build=registry-r20260812-1">
+<link rel="stylesheet" href="registry-novorapid-simple-calculator.css?v=20260810-deep-audit-1&build=registry-r20260812-1">
+<link rel="stylesheet" href="registry-novomix30-simple-calculator.css?v=20260810-deep-audit-1&build=registry-r20260812-1">
+<link rel="stylesheet" href="registry-other-insulins-simple-calculator.css?v=20260810-deep-audit-1&build=registry-r20260812-1">
 <link rel="stylesheet" href="registry-insulin-deep-audit.css?v=20260810-1&build=registry-r20260812-1">
-<link rel="stylesheet" href="user-library-account-guard.css?v=account-isolation-v1" data-user-library-account-guard-css>
 <link rel="stylesheet" href="registry-user-personalization.css?v=20260816-7&ux=20260817-1&build=registry-r20260812-1">
 <link rel="stylesheet" href="personal-drugs-ui.css?v=multiuser-v1">
 <link rel="stylesheet" href="registry-ux-phase1.css?v=20260810-1&build=registry-r20260812-1">
@@ -45,75 +46,18 @@
 <link rel="stylesheet" href="registry-tablet-rows.css?v=20260816-1&build=registry-r20260812-1" data-registry-tablet-rows-css>
 <link rel="stylesheet" href="registry-typography-scale.css?v=20260816-1&build=registry-r20260812-1" data-registry-typography-scale-css>
 <link rel="stylesheet" href="registry-touch-targets.css?v=20260816-1&build=registry-r20260812-1" data-registry-touch-targets-css>
-<link rel="stylesheet" href="registry-list-view.css?v=list-view-v1&rlv=registry-list-stable-v1" data-registry-list-view-css>
-<link rel="stylesheet" href="registry-list-owner-guard.css?v=list-owner-v1&rlv=registry-list-stable-v1" data-registry-list-owner-guard-css>
-<link rel="stylesheet" href="registry-search-suggest.css?v=search-premium-v3" data-registry-search-suggest-css>
+<link rel="stylesheet" href="registry-list-view.css?v=list-view-v1" data-registry-list-view-css>
+<link rel="stylesheet" href="registry-search-suggest.css?v=search-suggest-v1" data-registry-search-suggest-css>
 <link rel="stylesheet" href="drx-dashboard-stripe.css?v=drx-dashboard-stripe-v1">
-<link rel="stylesheet" href="tailadmin-professional.css?v=20260811-3&build=local-1.8.0" data-tailadmin-professional-css>
-<link rel="stylesheet" href="registry-table-tools.css?v=20260820-3" data-registry-table-tools-css>
-<script src="tailadmin-shell.js?v=production-audit-v2&build=local-1.8.0" defer></script>
-<script src="user-library-account-guard.js?v=account-isolation-v1" defer data-user-library-account-guard></script>
+<link rel="stylesheet" href="tailadmin-professional.css?v=20260811-3" data-tailadmin-professional-css>
+<link rel="stylesheet" href="registry-table-tools.css?v=20260828-admin-stripe-v2&build=registry-r20260812-1" data-registry-table-tools-css>
+<script src="tailadmin-shell.js?v=production-audit-v2" defer></script>
 <script src="user-library-client.js?v=20260817-event-sync-1&ls=20260817-1" defer></script>
-<script src="tailadmin-professional.js?v=production-audit-v2&build=local-1.8.0" defer></script>
-<script src="first-page-style-loader.js?v=20260820-3" defer></script>
+<script src="tailadmin-professional.js?v=production-audit-v2" defer></script>
+<script src="first-page-style-loader.js?v=20260820-2" defer></script>
 <script src="registry-runtime-integrity.js?v=registry-runtime-integrity-v1&build=registry-r20260812-1" defer></script>
-<meta name="medindex-registry-list-release" content="registry-list-stable-v1">
-<style id="miShellBootGuard">
-  html.mi-shell-booting,html.mi-shell-booting body,html.auth-checking,html.auth-checking body{min-height:100%;background:#f8fafc!important}
-  html.mi-shell-booting body,html.auth-checking body{overflow:hidden!important}
-  html.mi-shell-booting body>*:not(#miShellBoot):not(#miShellRecovery),html.auth-checking body>*:not(#miShellBoot):not(#miShellRecovery){visibility:hidden!important}
-  html.mi-shell-booting #pageLoader,html.auth-checking #pageLoader{display:none!important}
-  #miShellBoot{display:none}
-  html.mi-shell-booting #miShellBoot,html.auth-checking #miShellBoot{position:fixed!important;inset:0!important;z-index:999998!important;display:grid!important;place-content:center!important;justify-items:center!important;gap:28px!important;padding:24px!important;visibility:visible!important;background:#f8fafc!important;color:#0b1220!important;font-family:Inter,ui-sans-serif,system-ui,sans-serif!important}
-  .mi-boot-screen .mi-boot-logo{width:min(226px,56vw);height:auto;animation:miBootLogoIn .78s cubic-bezier(.22,1,.36,1) both}
-  .mi-boot-screen .mi-boot-rings{width:5.6em;height:5.6em;font-size:16px;animation:miBootFade .5s ease .3s both}
-  .mi-boot-screen .mi-boot-ring{fill:none;stroke-linecap:round;stroke-width:20;animation:miBootRingA 2s linear .3s infinite}
-  .mi-boot-screen .mi-boot-ring--a{stroke:#155f63}
-  .mi-boot-screen .mi-boot-ring--b{stroke:#efb660;animation-name:miBootRingB}
-  .mi-boot-screen .mi-boot-ring--c{stroke:#2450b8;animation-name:miBootRingC}
-  .mi-boot-screen .mi-boot-ring--d{stroke:#4f958d;animation-name:miBootRingD}
-  .mi-boot-screen .mi-boot-text{margin:0;color:#667085;font-size:12.5px;font-weight:600;line-height:1.45;text-align:center;animation:miBootFade .5s ease .46s both}
-  .mi-boot-screen .mi-boot-logo--dark{display:none}
-  html[data-theme="dark"] .mi-boot-screen .mi-boot-logo--light,html.dark .mi-boot-screen .mi-boot-logo--light{display:none}
-  html[data-theme="dark"] .mi-boot-screen .mi-boot-logo--dark,html.dark .mi-boot-screen .mi-boot-logo--dark{display:block}
-  html[data-theme="dark"].mi-shell-booting,html[data-theme="dark"].mi-shell-booting body,html[data-theme="dark"].auth-checking,html[data-theme="dark"].auth-checking body{background:#101d20!important}
-  html[data-theme="dark"].mi-shell-booting #miShellBoot,html[data-theme="dark"].auth-checking #miShellBoot{background:#101d20!important;color:#e6efed!important}
-  html[data-theme="dark"] .mi-boot-screen .mi-boot-text{color:#93a7a4}
-  @keyframes miBootLogoIn{from{opacity:0;transform:translateY(16px) scale(.94)}to{opacity:1;transform:none}}
-  @keyframes miBootFade{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
-  @keyframes miBootRingA{from,4%{stroke-dasharray:0 660;stroke-width:20;stroke-dashoffset:-330}12%{stroke-dasharray:60 600;stroke-width:30;stroke-dashoffset:-335}32%{stroke-dasharray:60 600;stroke-width:30;stroke-dashoffset:-595}40%,54%{stroke-dasharray:0 660;stroke-width:20;stroke-dashoffset:-660}62%{stroke-dasharray:60 600;stroke-width:30;stroke-dashoffset:-665}82%{stroke-dasharray:60 600;stroke-width:30;stroke-dashoffset:-925}90%,to{stroke-dasharray:0 660;stroke-width:20;stroke-dashoffset:-990}}
-  @keyframes miBootRingB{from,12%{stroke-dasharray:0 220;stroke-width:20;stroke-dashoffset:-110}20%{stroke-dasharray:20 200;stroke-width:30;stroke-dashoffset:-115}40%{stroke-dasharray:20 200;stroke-width:30;stroke-dashoffset:-195}48%,62%{stroke-dasharray:0 220;stroke-width:20;stroke-dashoffset:-220}70%{stroke-dasharray:20 200;stroke-width:30;stroke-dashoffset:-225}90%{stroke-dasharray:20 200;stroke-width:30;stroke-dashoffset:-305}98%,to{stroke-dasharray:0 220;stroke-width:20;stroke-dashoffset:-330}}
-  @keyframes miBootRingC{from{stroke-dasharray:0 440;stroke-width:20;stroke-dashoffset:0}8%{stroke-dasharray:40 400;stroke-width:30;stroke-dashoffset:-5}28%{stroke-dasharray:40 400;stroke-width:30;stroke-dashoffset:-175}36%,58%{stroke-dasharray:0 440;stroke-width:20;stroke-dashoffset:-220}66%{stroke-dasharray:40 400;stroke-width:30;stroke-dashoffset:-225}86%{stroke-dasharray:40 400;stroke-width:30;stroke-dashoffset:-395}94%,to{stroke-dasharray:0 440;stroke-width:20;stroke-dashoffset:-440}}
-  @keyframes miBootRingD{from,8%{stroke-dasharray:0 440;stroke-width:20;stroke-dashoffset:0}16%{stroke-dasharray:40 400;stroke-width:30;stroke-dashoffset:-5}36%{stroke-dasharray:40 400;stroke-width:30;stroke-dashoffset:-175}44%,50%{stroke-dasharray:0 440;stroke-width:20;stroke-dashoffset:-220}58%{stroke-dasharray:40 400;stroke-width:30;stroke-dashoffset:-225}78%{stroke-dasharray:40 400;stroke-width:30;stroke-dashoffset:-395}86%,to{stroke-dasharray:0 440;stroke-width:20;stroke-dashoffset:-440}}
-  #miShellRecovery{position:fixed!important;inset:0!important;z-index:1000002!important;display:grid!important;place-items:center!important;visibility:visible!important;opacity:1!important;padding:24px!important;background:#f8fafc!important;color:#0b1220!important;font-family:Inter,ui-sans-serif,system-ui,sans-serif!important}
-  #miShellRecovery[hidden]{display:none!important}
-  #miShellRecovery .mi-shell-recovery-card{width:min(430px,100%);padding:30px 28px;border:1px solid #e4e7ec;border-radius:18px;background:#fff;box-shadow:0 18px 50px rgba(16,24,40,.10);text-align:center}
-  #miShellRecovery strong{display:block;margin:0 0 8px;font-size:20px;letter-spacing:-.03em}
-  #miShellRecovery p{margin:0;color:#667085;font-size:13px;line-height:1.6}
-  #miShellRecovery button{min-height:44px;margin-top:20px;padding:0 18px;border:0;border-radius:10px;background:#2450b8;color:#fff;font:700 13px/1 Inter,ui-sans-serif,system-ui,sans-serif;cursor:pointer}
-  #miShellRecovery button:disabled{opacity:.58;cursor:wait}
-  @media(prefers-reduced-motion:reduce){
-    .mi-boot-screen .mi-boot-logo,.mi-boot-screen .mi-boot-rings,.mi-boot-screen .mi-boot-text{animation-duration:.01ms!important;animation-delay:0ms!important}
-    .mi-boot-screen .mi-boot-ring{animation:none!important;stroke-width:22}
-    .mi-boot-screen .mi-boot-ring--a{stroke-dasharray:150 510;stroke-dashoffset:-330}
-    .mi-boot-screen .mi-boot-ring--b{stroke-dasharray:50 170;stroke-dashoffset:-110}
-    .mi-boot-screen .mi-boot-ring--c{stroke-dasharray:100 340;stroke-dashoffset:-40}
-    .mi-boot-screen .mi-boot-ring--d{stroke-dasharray:100 340;stroke-dashoffset:-260}
-  }
-</style>
 </head>
 <body>
-<div id="miShellBoot" class="mi-boot-screen" role="status" aria-live="polite" aria-label="Po ngarkohet MedIndex">
-  <img class="mi-boot-logo mi-boot-logo--light" src="/brand/medindex-horizontal-on-light.webp" alt="MedIndex" width="188" height="52" decoding="async" fetchpriority="high">
-  <img class="mi-boot-logo mi-boot-logo--dark" src="/brand/medindex-horizontal-on-dark.webp" alt="" aria-hidden="true" width="188" height="52" decoding="async">
-  <svg class="mi-boot-rings" viewBox="0 0 240 240" aria-hidden="true" focusable="false">
-    <circle class="mi-boot-ring mi-boot-ring--a" cx="120" cy="120" r="105"></circle>
-    <circle class="mi-boot-ring mi-boot-ring--b" cx="120" cy="120" r="35"></circle>
-    <circle class="mi-boot-ring mi-boot-ring--c" cx="85" cy="120" r="70"></circle>
-    <circle class="mi-boot-ring mi-boot-ring--d" cx="155" cy="120" r="70"></circle>
-  </svg>
-  <p class="mi-boot-text">Po ngarkohet hapësira klinike…</p>
-</div>
 <a class="skip-link" href="#registryContent">Kalo te regjistri i barnave</a>
 <div class="page-loader" id="pageLoader" role="status" aria-live="polite" aria-label="Duke i ngarkuar barnat">
   <div class="loader-content">
@@ -131,7 +75,7 @@
 </header>
 
 <div class="toolbar" role="search" aria-label="Kërkimi dhe filtrat e regjistrit">
-  <input type="search" id="search" placeholder="Kërko bar, substancë, ATC ose indikacion…" autocomplete="off" spellcheck="false" autocapitalize="none" enterkeyhint="search" aria-label="Kërko në regjistrin e barnave">
+  <input type="search" id="search" placeholder="Kërko emrin, substancën, klasën, përdorimin, ATC..." autocomplete="off" enterkeyhint="search" aria-label="Kërko në regjistrin e barnave">
   <select id="statusFilter" aria-label="Filtro statusin">
     <option value="">Të gjitha statuset</option>
     <option value="Gjenerik">Gjenerik</option>
@@ -170,13 +114,12 @@
 
 <script id="drug-data" type="application/json">[]</script>
 <script src="registry-fast-start.js?v=registry-fast-start-v2&build=registry-r20260812-1" defer></script>
-<script src="registry-mobile-lite.js?v=20260812-2&build=registry-r20260812-1" defer></script>
-<script src="registry-mobile-phase3.js?v=20260812-2&build=registry-r20260812-1" defer></script>
+<script src="registry-mobile-lite.js?v=20260812-1&build=registry-r20260812-1" defer></script>
+<script src="registry-mobile-phase3.js?v=20260812-1&build=registry-r20260812-1" defer></script>
 <script src="registry-mobile-phase4.js?v=20260812-2&build=registry-r20260812-1" defer></script>
-<script src="registry-mobile-phase8.js?v=20260816-2" defer></script>
 <script src="registry-mobile-phone-hardening.js?v=20260812-1&build=registry-r20260812-1" defer></script>
 <script src="registry-desktop-lite.js?v=20260812-1&build=registry-r20260812-1" defer></script>
-<script src="registry-runtime-loader.js?v=20260813-10&build=registry-r20260812-1" defer></script>
+<script src="registry-runtime-loader.js?v=20260812-8&build=registry-r20260812-1" defer></script>
 <script src="registry-atc-context.js?v=atc-context-v1&build=registry-r20260812-1" defer></script>
 <script src="registry-drug-name-hardening.js?v=20260810-1&build=registry-r20260812-1" defer></script>
 <script src="form-picker-clinical.js?v=20260725-1" defer></script>
@@ -184,25 +127,25 @@
 <script src="dosage-engine.js?v=20260725-1" defer></script>
 <script src="registry-cell-preview.js?v=20260811-2&build=registry-r20260812-1" defer></script>
 <script src="registry-row-expand.js?v=20260810-1&build=registry-r20260812-1" defer></script>
-<script src="registry-desktop-targeted-detail.js?v=20260812-1&build=registry-r20260812-1" defer></script>
-<script src="registry-desktop-prescription-lite.js?v=20260812-1&build=registry-r20260812-1" defer></script>
-<script src="registry-desktop-column-lite.js?v=20260812-1&build=registry-r20260812-1" defer></script>
 <script src="registry-dosage-loader.js?v=20260812-1&build=registry-r20260812-1" defer></script>
 <script src="registry-dose-calculator.js?v=20260810-2&build=registry-r20260812-1" defer></script>
 <script src="registry-dose-safety-layer.js?v=20260809-2&build=registry-r20260812-1" defer></script>
-<script src="registry-dose-interaction-loader.js?v=20260814-1&build=registry-r20260812-1" defer></script>
+<script src="registry-novorapid-simple-calculator.js?v=20260810-deep-audit-1&build=registry-r20260812-1" defer></script>
+<script src="registry-novomix30-simple-calculator.js?v=20260810-deep-audit-1&build=registry-r20260812-1" defer></script>
+<script src="registry-other-insulins-simple-calculator.js?v=20260810-deep-audit-1&build=registry-r20260812-1" defer></script>
+<script src="registry-insulin-final-safety.js?v=20260810-final-guard-1&build=registry-r20260812-1" defer></script>
 <script src="registry-insulin-row-bridge.js?v=20260810-deep-audit-1&build=registry-r20260812-1" defer></script>
 <script src="registry-dose-10s-flow.js?v=20260811-2&build=registry-r20260812-1" defer></script>
 <script src="registry-dose-table-button.js?v=20260811-1&build=registry-r20260812-1" defer></script>
-<script src="registry-dose-clinical-row-markers.js?v=20260820-registry-columns-v2" defer></script>
-<script src="registry-dose-modal-accessibility-loader.js?v=dose-modal-accessibility-lazy-v1" data-dose-modal-accessibility-runtime="registry-dose-modal-accessibility.js?v=20260809-1&build=registry-r20260812-1" defer></script>
-<script src="registry-column-picker-tailwind.js?v=20260820-registry-columns-v2" defer></script>
+<script src="registry-dose-clinical-row-markers.js?v=20260812-pediatric-pink-1&build=registry-r20260812-1" defer></script>
+<script src="registry-dose-modal-accessibility.js?v=20260809-1&build=registry-r20260812-1" defer></script>
+<script src="registry-column-picker-tailwind.js?v=20260805-3&build=registry-r20260812-1" defer></script>
 <script src="name-display.js?v=20260810-1" defer></script>
-<script src="clinical-editor-interaction-loader.js?v=clinical-editor-interaction-lazy-v1" data-clinical-editor-runtime="clinical-editor.js?v=20260729-1" defer></script>
+<script src="clinical-editor.js?v=20260729-1" defer></script>
 <script src="registry-verification-loader.js?v=20260810-1&build=registry-r20260812-1" defer></script>
 <script src="registry-ui-release.js?v=20260812-1&build=registry-r20260812-1" defer></script>
 <script src="registry-column-contract.js?v=20260801-2&build=registry-r20260812-1" defer></script>
-<script src="registry-unified-table.js?v=registry-canonical-main-table-v1" defer></script>
+<script src="registry-unified-table.js?v=20260828-admin-stripe-v2&build=registry-r20260812-1" defer></script>
 <script src="registry-user-personalization.js?v=20260816-7&ux=20260817-1&build=registry-r20260812-1&ls=20260817-1" defer></script>
 <script src="personal-drugs-ui.js?v=multiuser-v1" defer></script>
 <script src="registry-table-tools.js?v=20260812-1&build=registry-r20260812-1" defer></script>
@@ -210,14 +153,11 @@
 <script src="registry-ux-phase1.js?v=20260816-2&build=registry-r20260812-1" defer></script>
 <script src="registry-ux-phase2.js?v=20260810-1&build=registry-r20260812-1" defer></script>
 <script src="registry-ux-phase3.js?v=20260810-1&build=registry-r20260812-1" defer></script>
-<script src="offline-runtime.js?v=local-1.8.0" data-medindex-offline-runtime defer></script>
-<script src="auth-client.js?v=production-audit-v2&build=local-1.8.0" defer></script>
+<script src="offline-runtime.js" data-medindex-offline-runtime defer></script>
+<script src="auth-client.js?v=production-audit-v2" defer></script>
 <script src="app-stability.js?v=20260724-2" defer></script>
-<script src="registry-list-data-bridge.js?v=list-data-v1&rlv=registry-list-stable-v1" defer data-registry-list-data-bridge></script>
-<script src="registry-list-view.js?v=list-view-v1&rlv=registry-list-stable-v1" defer></script>
-<script src="registry-list-owner-guard.js?v=list-owner-v1&rlv=registry-list-stable-v1" defer data-registry-list-owner-guard></script>
-<script src="registry-list-detail-dosage.js?v=20260821-1&rlv=registry-list-stable-v1" defer></script>
-<script src="registry-search-suggest.js?v=search-premium-v3" defer></script>
+<script src="registry-list-view.js?v=list-view-v1" defer></script>
+<script src="registry-search-suggest.js?v=search-suggest-v1" defer></script>
 <script src="registry-stripe-clinical-table.js?v=stripe-clinical-table-v2&build=registry-r20260812-1" defer></script>
 </body>
 </html>
