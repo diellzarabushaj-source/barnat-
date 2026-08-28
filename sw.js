@@ -25,7 +25,7 @@ const APP_SHELL = [
   '/tailadmin-professional.css', '/registry-table-tools.css', '/medical-hub.css', '/clinical-knowledge.css', '/clinical-density.css',
   '/classification.css', '/classification-nav-fix.css', '/registry-quality.css',
   '/clinical-reference.css', '/analizat-v2.css', '/drx-dashboard-stripe.css',
-  '/protokollet-v2.css', '/recetat-v2.css', '/dozologjia-v2.css', '/urgjencat-v2.css',
+  '/protokollet-v2.css', '/recetat-v2.css', '/dozologjia-v2.css', '/urgjencat-v2.css', '/sistemi-v2.css',
   '/icd-premium-cards.css', '/icd-clinical-workspace.css', '/icd-tailadmin-cards-v2.css',
   
   '/signature-templates.css', '/login.css',
@@ -40,7 +40,7 @@ const APP_SHELL = [
   '/classification-info-v3.js', '/icd-data.js', '/icd.js',
   '/icd-premium-cards.js', '/icd-clinical-workspace.js',
   '/icd-clinical-style-loader.js', '/icd-tailadmin-card-style-loader.js',
-  '/analizat-v2.js', '/dozologjia-v2.js', '/urgjencat-v2.js', '/sidebar-taxonomy-v3.js', '/medindex-brand-runtime.js',
+  '/analizat-v2.js', '/dozologjia-v2.js', '/urgjencat-v2.js', '/sistemi-v2.js', '/sidebar-taxonomy-v3.js', '/medindex-brand-runtime.js',
   '/clinical-dialog.js', '/dosage-engine.js',
   '/dozologjia-deep-audit.js', '/sanity-clinical-client.js', '/medical-hub.js', '/protokollet-v2.js', '/recetat-v2.js',
   '/prescription-format-core.js', '/signature-templates.js',
