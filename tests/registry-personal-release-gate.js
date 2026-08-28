@@ -11,7 +11,7 @@ const read = file => fs.readFileSync(path.join(ROOT, file), 'utf8').replace(/\r\
 
 const ui = read('registry-user-personalization.js');
 const client = read('user-library-client.js');
-const css = read('registry-user-personalization.css');
+const css = read('registry-table-tools.css');
 const html = read('index.html');
 const finalizer = read('scripts/patch-registry-personal-final.js');
 const sourceAudit = read('scripts/audit-registry-personal-source.js');
@@ -36,7 +36,7 @@ assert.equal(release.status, 'frozen');
 assert.equal(release.releaseGate, 'tests/registry-personal-release-gate.js');
 assert.deepEqual(release.canonicalSources, [
   'registry-user-personalization.js',
-  'registry-user-personalization.css',
+  'registry-table-tools.css',
   'user-library-client.js',
 ]);
 assert.equal(release.productionAlias, 'barnat-six.vercel.app');
@@ -88,7 +88,8 @@ assert.match(css, /data-personal-banner-sync\]\[data-state="saving"\]/);
 assert.match(css, /data-personal-banner-sync\]\[data-state="pending"\]/);
 assert.match(css, /data-personal-banner-sync\]\[data-state="synced"\]/);
 assert.match(css, /prefers-reduced-motion:reduce/);
-assert.match(html, /registry-user-personalization\.css\?v=20260816-7&ux=20260817-1/);
+assert.match(html, /registry-table-tools\.css\?v=/);
+assert.doesNotMatch(html, /registry-user-personalization\.css/);
 assert.match(html, /registry-user-personalization\.js\?v=20260816-7&ux=20260817-1/);
 assert.match(html, /registry-user-personalization\.js\?v=[^"']+&ls=20260817-1/);
 assert.match(html, /user-library-client\.js\?v=[^"']+&ls=20260817-1/);

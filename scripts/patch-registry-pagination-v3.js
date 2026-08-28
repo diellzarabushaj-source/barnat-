@@ -89,10 +89,13 @@ function patchFullRuntime() {
 }
 
 function bumpStyleVersion() {
-  const file = 'index.html';
-  let source = read(file);
-  source = source.replace(/registry-pagination-v2\.css\?v=20260825-1/g, 'registry-pagination-v2.css?v=20260825-2');
-  write(file, source);
+  const index = read('index.html');
+  if (!index.includes('registry-table-tools.css?v=')) {
+    throw new Error('Single registry stylesheet authority is missing.');
+  }
+  if (index.includes('registry-pagination-v2.css')) {
+    throw new Error('Legacy pagination stylesheet must not be reintroduced.');
+  }
 }
 
 function verifyModel() {
@@ -116,7 +119,7 @@ function verifyOutput() {
     if (!source.includes('registry-pagination-pages')) throw new Error(`${label} page group missing.`);
     if (!source.includes("setAttribute('aria-current', 'page')")) throw new Error(`${label} current-page accessibility missing.`);
   }
-  if (!index.includes('registry-pagination-v2.css?v=20260825-2')) throw new Error('Pagination CSS cache-bust v2 is missing.');
+  if (!index.includes('registry-table-tools.css?v=')) throw new Error('Single registry stylesheet authority is missing.');
 }
 
 verifyModel();

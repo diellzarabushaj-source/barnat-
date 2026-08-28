@@ -4,8 +4,9 @@
  *
  * Keep the established primary asset versions because earlier build patches use
  * them as stable anchors. Add one shared `rlv=` release marker to every List
- * asset instead. Online requests therefore cannot mix an older List stylesheet
- * with a newer controller, while the final offline manifest still derives the
+ * asset instead. The single registry stylesheet carries the List styles and
+ * owner guard together, so online requests cannot mix CSS generations with a
+ * newer controller, while the final offline manifest still derives the
  * canonical unversioned paths from the finished index.html.
  */
 
@@ -17,8 +18,7 @@ const INDEX = path.join(ROOT, 'index.html');
 const RELEASE = 'registry-list-stable-v1';
 const META = `<meta name="medindex-registry-list-release" content="${RELEASE}">`;
 const ASSETS = [
-  'registry-list-view.css',
-  'registry-list-owner-guard.css',
+  'registry-table-tools.css',
   'registry-list-data-bridge.js',
   'registry-list-view.js',
   'registry-list-owner-guard.js',

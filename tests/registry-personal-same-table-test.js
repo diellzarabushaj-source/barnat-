@@ -8,7 +8,7 @@ const ROOT = path.resolve(__dirname, '..');
 const read = file => fs.readFileSync(path.join(ROOT, file), 'utf8');
 const personal = read('registry-user-personalization.js');
 const unified = read('registry-unified-table.js');
-const css = read('registry-user-personalization.css');
+const css = read('registry-table-tools.css');
 const MARKER = 'registry-personal-same-table-v1';
 const VISIBLE_CONTRACT_MARKER = 'registry-personal-visible-columns-v2';
 

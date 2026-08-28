@@ -421,7 +421,7 @@ function patchMobilePhase3() {
 }
 
 function patchMobilePhase3Css() {
-  let source = read('registry-mobile-phase3.css');
+  let source = read('registry-table-tools.css');
   source = replaceOnce(source, 'max-height:min(74dvh,650px);', 'max-height:min(84dvh,760px);', 'larger filter panel viewport');
   source = replaceOnce(source, 'max-height:calc(min(74dvh,650px) - 132px);', 'max-height:calc(min(84dvh,760px) - 132px);', 'larger filter body viewport');
   source = replaceOnce(
@@ -437,13 +437,11 @@ function patchMobilePhase3Css() {
     'dark advanced filter controls',
   );
   if (!source.includes('.mi-registry-filter-grid')) throw new Error('Phase 5 advanced filter grid styles are missing.');
-  write('registry-mobile-phase3.css', source);
+  write('registry-table-tools.css', source);
 }
 
 function patchIndexVersions() {
   let source = read('index.html');
-  source = replaceOnce(source, 'registry-mobile-lite.css?v=20260812-1', 'registry-mobile-lite.css?v=20260812-2', 'mobile-lite stylesheet cache key');
-  source = replaceOnce(source, 'registry-mobile-phase3.css?v=20260812-1', 'registry-mobile-phase3.css?v=20260812-2', 'Phase 3/5 stylesheet cache key');
   source = replaceOnce(source, 'registry-mobile-lite.js?v=20260812-1', 'registry-mobile-lite.js?v=20260812-2', 'mobile-lite runtime cache key');
   source = replaceOnce(source, 'registry-mobile-phase3.js?v=20260812-1', 'registry-mobile-phase3.js?v=20260812-2', 'Phase 3/5 runtime cache key');
   write('index.html', source);
@@ -459,9 +457,7 @@ function patchVersionPinnedTests() {
       .replaceAll('registry-mobile-lite-v1', 'registry-mobile-lite-v2')
       .replaceAll('registry-mobile-phase3-v1', 'registry-mobile-phase3-v2')
       .replaceAll('registry-mobile-lite\\.js\\?v=20260812-1', 'registry-mobile-lite\\.js\\?v=20260812-2')
-      .replaceAll('registry-mobile-phase3\\.js\\?v=20260812-1', 'registry-mobile-phase3\\.js\\?v=20260812-2')
-      .replaceAll('registry-mobile-lite\\.css\\?v=20260812-1', 'registry-mobile-lite\\.css\\?v=20260812-2')
-      .replaceAll('registry-mobile-phase3\\.css\\?v=20260812-1', 'registry-mobile-phase3\\.css\\?v=20260812-2');
+      .replaceAll('registry-mobile-phase3\\.js\\?v=20260812-1', 'registry-mobile-phase3\\.js\\?v=20260812-2');
     if (entry.name === 'registry-mobile-phase3-test.js') {
       source = source.replace(
         `assert.match(js, /data-mi-phase3-search-mode="atc"/, 'ATC search shortcut is missing');\nassert.match(js, /data-mi-phase3-search-mode="form"/, 'pharmaceutical-form search shortcut is missing');`,

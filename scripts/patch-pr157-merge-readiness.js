@@ -33,7 +33,7 @@ function patchMobilePhase3Owner() {
 }
 
 function patchPhonePersonalControls() {
-  let source = read('registry-user-personalization.css');
+  let source = read('registry-table-tools.css');
   const marker = '/* PR157 merge readiness: phone personal views remain readable and touch-safe. */';
   if (!source.includes(marker)) {
     source += `\n\n${marker}\n@media (max-width:767px){\n  html[data-registry-mobile-lite] .registry-personal-view-actions button{\n    min-height:44px!important;\n    font-size:12px!important;\n  }\n  html[data-registry-mobile-lite] .registry-personal-view-actions button>b{\n    font-size:11px!important;\n  }\n}\n`;
@@ -41,33 +41,24 @@ function patchPhonePersonalControls() {
   if (!source.includes('min-height:44px!important;') || !source.includes('font-size:11px!important;')) {
     throw new Error('Phone personal-view touch/font floor was not materialized.');
   }
-  write('registry-user-personalization.css', source);
+  write('registry-table-tools.css', source);
 }
 
 function patchPhoneCardDensity() {
-  let design = read('registry-mobile-design-audit.css');
-  design = replaceOnce(
-    design,
-    'padding:3px 12px 3px 15px;',
-    'padding:2px 12px 2px 15px;',
-    'final phone card vertical padding',
-  );
-  design = replaceOnce(
-    design,
-    'padding:3px 10px 3px 13px;',
-    'padding:2px 10px 2px 13px;',
-    'final sub-390 card vertical padding',
-  );
-  write('registry-mobile-design-audit.css', design);
-
-  let phone = read('registry-mobile-phone-hardening.css');
-  phone = replaceOnce(
-    phone,
-    'padding:4px 9px 4px 12px;',
-    'padding:2px 9px 2px 12px;',
-    'final narrow-phone card vertical padding',
-  );
-  write('registry-mobile-phone-hardening.css', phone);
+  const css = read('registry-table-tools.css');
+  // Historical PR157 used to rewrite exact padding literals in three separate
+  // mobile stylesheets. Those layers are now consolidated and later mobile
+  // stability patches own the final geometry. Verify the stable contracts
+  // instead of re-mutating obsolete source literals.
+  if (!css.includes('/* MedIndex revised Phase 2: compact narrow-phone card spacing */')) {
+    throw new Error('Final narrow-phone density contract is missing.');
+  }
+  if (!css.includes('.mobile-lite-card:has(.mobile-lite-actions){')) {
+    throw new Error('Final mobile card geometry contract is missing.');
+  }
+  if (!css.includes('min-height:108px!important')) {
+    throw new Error('Final mobile card minimum geometry is missing.');
+  }
 }
 
 function patchFullDesktopColumnMaterialization() {

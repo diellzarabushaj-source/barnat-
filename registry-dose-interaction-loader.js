@@ -3,11 +3,6 @@
 
   const VERSION = 'registry-dose-interaction-loader-v1';
   const INSULIN_TRIGGER = '[data-insulin-smart-open]';
-  const INSULIN_STYLE_URLS = Object.freeze([
-    'registry-novorapid-simple-calculator.css?v=20260810-deep-audit-1&build=registry-r20260812-1',
-    'registry-novomix30-simple-calculator.css?v=20260810-deep-audit-1&build=registry-r20260812-1',
-    'registry-other-insulins-simple-calculator.css?v=20260810-deep-audit-1&build=registry-r20260812-1',
-  ]);
   const INSULIN_SCRIPT_URLS = Object.freeze([
     'registry-novorapid-simple-calculator.js?v=20260810-deep-audit-1&build=registry-r20260812-1',
     'registry-novomix30-simple-calculator.js?v=20260810-deep-audit-1&build=registry-r20260812-1',
@@ -21,26 +16,6 @@
 
   function absoluteAssetUrl(value) {
     return new URL(value, document.baseURI).href;
-  }
-
-  function findLoadedStyle(href) {
-    const expected = absoluteAssetUrl(href);
-    return [...document.querySelectorAll('link[rel="stylesheet"][href]')]
-      .find(link => link.href === expected) || null;
-  }
-
-  function loadStyle(href) {
-    const existing = findLoadedStyle(href);
-    if (existing) return Promise.resolve(existing);
-    return new Promise((resolve, reject) => {
-      const link = document.createElement('link');
-      link.rel = 'stylesheet';
-      link.href = href;
-      link.dataset.medindexLazyDoseAsset = 'insulin-style';
-      link.addEventListener('load', () => resolve(link), { once:true });
-      link.addEventListener('error', () => reject(new Error(`Nuk u ngarkua stili: ${href}`)), { once:true });
-      document.head.appendChild(link);
-    });
   }
 
   function findLoadedScript(src) {
@@ -63,7 +38,6 @@
   }
 
   async function loadInsulinRuntimeAssets() {
-    await Promise.all(INSULIN_STYLE_URLS.map(loadStyle));
     for (const src of INSULIN_SCRIPT_URLS) await loadScript(src);
   }
 

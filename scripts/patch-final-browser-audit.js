@@ -173,7 +173,7 @@ function patchModalMetricsGate() {
 }
 
 function auditStickyHeader() {
-  const source = read('registry-full-text-expansion.css');
+  const source = read('registry-table-tools.css');
   if (!/thead th\[data-registry-column-key\][\s\S]*position:sticky!important;[\s\S]*top:0!important;/.test(source)) {
     throw new Error('Sticky registry header contract missing.');
   }

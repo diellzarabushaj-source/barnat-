@@ -12,7 +12,7 @@ const syntax = file => execFileSync(process.execPath, ['--check', path.join(ROOT
 syntax('registry-user-personalization.js');
 
 const personal = read('registry-user-personalization.js');
-const css = read('registry-user-personalization.css');
+const css = read('registry-table-tools.css');
 
 assert.match(personal, /registry-row-actions-menu-phase3-v1: accessible desktop menu hardening/);
 assert.match(personal, /role="menuitemcheckbox" aria-checked="false"/,

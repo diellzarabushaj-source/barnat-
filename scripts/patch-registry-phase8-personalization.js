@@ -132,13 +132,11 @@ function patchUserLibraryEventSync() {
 function patchIndex() {
   let source = read('index.html');
 
-  const cssTag = `<link rel="stylesheet" href="registry-mobile-phase8.css?v=20260816-2" data-registry-mobile-phase8-css>`;
-  if (!source.includes('registry-mobile-phase8.css')) {
-    const cssMatch = source.match(/<link rel="stylesheet" href="registry-mobile-phase4\.css\?v=[^"]+"[^>]*>/);
-    if (!cssMatch) throw new Error('Phase 8 personalization patch could not find current Phase 4 CSS anchor.');
-    source = source.replace(cssMatch[0], `${cssMatch[0]}\n${cssTag}`);
-  } else {
-    source = source.replace(/registry-mobile-phase8\.css\?v=[^&"]+/g, 'registry-mobile-phase8.css?v=20260816-2');
+  if (!source.includes('registry-table-tools.css?v=')) {
+    throw new Error('Phase 8 personalization requires the single registry CSS authority.');
+  }
+  if (source.includes('registry-mobile-phase8.css') || source.includes('registry-user-personalization.css')) {
+    throw new Error('Phase 8 personalization must not reintroduce standalone registry CSS layers.');
   }
 
   const scriptTag = `<script src="registry-mobile-phase8.js?v=20260816-2" defer></script>`;
@@ -152,7 +150,6 @@ function patchIndex() {
 
   /* v3.3 keeps the canonical controller alive as a non-visual mobile bridge;
      Phase 8 v2 adds the single mobile note pencil and correct full-view handoff. */
-  source = source.replace(/registry-user-personalization\.css\?v=[^&"]+/g, 'registry-user-personalization.css?v=20260816-7');
   source = source.replace(/registry-user-personalization\.js\?v=[^&"]+/g, 'registry-user-personalization.js?v=20260816-7');
   source = source.replace(/registry-ux-phase1\.js\?v=[^&"]+/g, 'registry-ux-phase1.js?v=20260816-2');
   source = source.replace(/user-library-client\.js\?v=[^&"]+/g, 'user-library-client.js?v=20260817-event-sync-1');
@@ -160,9 +157,7 @@ function patchIndex() {
   if (source.indexOf('registry-mobile-phase8.js') > source.indexOf('registry-runtime-loader.js')) {
     throw new Error('Phase 8 must initialize before the full registry loader.');
   }
-  if (!source.includes('registry-mobile-phase8.css?v=20260816-2')) throw new Error('Mobile Notes CSS version was not published.');
   if (!source.includes('registry-mobile-phase8.js?v=20260816-2')) throw new Error('Mobile Notes JS version was not published.');
-  if (!source.includes('registry-user-personalization.css?v=20260816-7')) throw new Error('Mobile-bridge personalization CSS version was not published.');
   if (!source.includes('registry-user-personalization.js?v=20260816-7')) throw new Error('Mobile-bridge personalization JS version was not published.');
   if (!source.includes('registry-ux-phase1.js?v=20260816-2')) throw new Error('Canonical toolbar UX version was not published.');
   if (!source.includes('user-library-client.js?v=20260817-event-sync-1')) throw new Error('Phase 6 event-driven user-library asset version was not published.');
@@ -170,18 +165,18 @@ function patchIndex() {
 }
 
 function patchMobileActionRegion() {
-  let css = read('registry-mobile-phase8.css');
+  let css = read('registry-table-tools.css');
   const marker = '/* MedIndex revised Phase 2: explicit mobile card action region */';
   if (css.includes(marker)) return;
 
   css += `\n\n${marker}\n@media (max-width:767px){\n  html.medindex-tailadmin[data-mi-page="barnat"][data-registry-mobile-lite][data-registry-mobile-phase8] body #dataTable[data-registry-unified-table] #tbody>.mobile-lite-row .mobile-lite-card:has(.mobile-lite-actions){\n    display:grid!important;\n    grid-template-columns:minmax(0,1fr) auto!important;\n    align-items:center!important;\n    gap:8px!important;\n    min-height:108px!important;\n    padding:10px 10px 10px 13px!important;\n  }\n  html[data-registry-mobile-lite][data-registry-mobile-phase8] #tbody .mobile-lite-card:has(.mobile-lite-actions) .mobile-lite-open{\n    display:flex!important;\n    min-width:0!important;\n    min-height:58px!important;\n    width:100%!important;\n    padding:0!important;\n    pointer-events:none!important;\n  }\n  html[data-registry-mobile-lite][data-registry-mobile-phase8] #tbody .mobile-lite-actions{\n    display:grid!important;\n    grid-template-columns:44px 44px 78px!important;\n    align-items:center!important;\n    gap:6px!important;\n    min-width:178px!important;\n    margin:0!important;\n    padding:0!important;\n  }\n  html[data-registry-mobile-lite][data-registry-mobile-phase8] #tbody .mobile-lite-actions .mi-mobile-favorite-toggle,\n  html[data-registry-mobile-lite][data-registry-mobile-phase8] #tbody .mobile-lite-actions .mi-mobile-note-toggle{\n    position:static!important;\n    inset:auto!important;\n    width:44px!important;\n    height:44px!important;\n    margin:0!important;\n  }\n  html[data-registry-mobile-lite][data-registry-mobile-phase8] #tbody .mobile-lite-actions .mi-mobile-favorite-toggle{order:1}\n  html[data-registry-mobile-lite][data-registry-mobile-phase8] #tbody .mobile-lite-actions .mi-mobile-note-toggle{order:2}\n  html[data-registry-mobile-lite][data-registry-mobile-phase8] #tbody .mobile-lite-actions .mobile-lite-more{\n    order:3;\n    position:static!important;\n    inset:auto!important;\n    width:78px!important;\n    min-width:78px!important;\n    min-height:44px!important;\n    margin:0!important;\n    padding:0 10px!important;\n  }\n}\n`;
 
-  write('registry-mobile-phase8.css', css);
+  write('registry-table-tools.css', css);
 }
 
 function verifyAddon() {
   const source = read('registry-mobile-phase8.js');
-  const css = read('registry-mobile-phase8.css');
+  const css = read('registry-table-tools.css');
   const shared = read('registry-user-personalization.js');
   const library = read('user-library-client.js');
 

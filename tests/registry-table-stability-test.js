@@ -7,11 +7,12 @@ const read = file => fs.readFileSync(path.join(root, file), 'utf8');
 
 const index = read('index.html');
 const script = read('registry-unified-table.js');
-const css = read('registry-unified-table.css');
+const css = read('registry-table-tools.css');
 const rowExpand = read('registry-row-expand.js');
 const dosage = read('registry-dosage-columns-v3.js');
 
-assert.match(index, /registry-unified-table\.css\?v=registry-canonical-main-table-v1/);
+assert.match(index, /registry-table-tools\.css\?v=/);
+assert.doesNotMatch(index, /registry-unified-table\.css/);
 assert.match(index, /registry-unified-table\.js\?v=registry-canonical-main-table-v1/);
 assert.ok(
   index.indexOf('registry-dosage-loader.js') < index.indexOf('registry-unified-table.js'),

@@ -2,7 +2,6 @@
   'use strict';
 
   const VERSION = 'registry-table-integrity-v5';
-  const STYLE_VERSION = '20260801-4';
   const PROBE_KEY = 'registry-number-probe';
   const DYNAMIC_ORDER = Object.freeze([
     '[data-registry-dosage-column="adult"]',
@@ -31,7 +30,6 @@
 
   let observer = null;
   let resizeObserver = null;
-  let headObserver = null;
   let scheduled = false;
   let enforcing = false;
   let numberIndex = new Map();
@@ -50,32 +48,13 @@
     .replace(/[^a-z0-9]+/g, '');
 
   function observeHead() {
-    if (!document.head) return;
-    if (!headObserver) {
-      headObserver = new MutationObserver(() => {
-        const link = document.querySelector('link[data-registry-table-integrity-css]');
-        if (link && document.head.lastElementChild !== link) requestAnimationFrame(promoteStylesheet);
-      });
-    }
-    headObserver.observe(document.head, { childList:true });
+    // Single-CSS authority: no head observer or stylesheet promotion is needed.
   }
 
   function promoteStylesheet() {
-    headObserver?.disconnect();
-    let link = document.querySelector('link[data-registry-table-integrity-css]');
-    if (!link) {
-      link = [...document.querySelectorAll('link[rel="stylesheet"]')]
-        .find(node => /registry-table-integrity\.css/i.test(node.getAttribute('href') || ''));
-    }
-    if (!link) {
-      link = document.createElement('link');
-      link.rel = 'stylesheet';
-    }
-    link.dataset.registryTableIntegrityCss = '1';
-    const href = `registry-table-integrity.css?v=${STYLE_VERSION}`;
-    if (link.getAttribute('href') !== href) link.setAttribute('href', href);
-    if (document.head.lastElementChild !== link) document.head.appendChild(link);
-    observeHead();
+    const link = [...document.querySelectorAll('link[rel="stylesheet"]')]
+      .find(node => /registry-table-tools\.css/i.test(node.getAttribute('href') || ''));
+    document.documentElement.dataset.registryTableIntegrityCss = link ? 'final-authority' : 'missing';
   }
 
   function directMatches(container, selector) {

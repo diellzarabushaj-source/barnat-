@@ -292,7 +292,7 @@ assert.ok(api, 'the list view must publish its API');
   assert.match(js, /registry\.insertAdjacentElement\('beforebegin', bar\)/,
     'the toggle sits above the registry, outside the toolbar');
 
-  const css = read('registry-list-view.css');
+  const css = read('registry-table-tools.css');
   assert.match(css, /html\[data-mi-registry-view="list"\] #registryContent \{ display: none !important; \}/,
     'the table is hidden by CSS rather than dismantled');
 
@@ -312,7 +312,7 @@ assert.ok(api, 'the list view must publish its API');
 
   const html = read('index.html');
   assert.match(html, /registry-list-view\.js\?v=/, 'the registry page loads the list runtime');
-  assert.match(html, /registry-list-view\.css\?v=/, 'the registry page loads the list stylesheet');
+  assert.match(html, /registry-table-tools\\.css\\?v=/, 'the registry page loads the single stylesheet authority');\n  assert.doesNotMatch(html, /registry-list-view\\.css/, 'list view CSS must not be loaded as a second layer');
   assert.match(html, /id="registryContent"/, 'the table wrapper is still there, untouched');
   assert.match(html, /id="dataTable"/, 'the table itself is still there, untouched');
 }
@@ -361,7 +361,7 @@ assert.ok(api, 'the list view must publish its API');
   // opt-in. Each was hidden at the <col> while its th/td kept rendering, so the
   // registry carried three columns nobody asked for — one of them blank — and
   // reserved 336px for them.
-  const unified = read('registry-unified-table.css');
+  const unified = read('registry-table-tools.css');
   const clinicalShow = unified.slice(unified.indexOf('[data-registry-ux-view="clinical"] body #dataTable :is(th,td):is('));
   const whitelist = clinicalShow.slice(0, clinicalShow.indexOf('}'));
   for (const key of ['clinical-status', 'clinical-action']) {
@@ -371,7 +371,7 @@ assert.ok(api, 'the list view must publish its API');
     );
   }
 
-  const doseCss = read('registry-dose-table-button.css');
+  const doseCss = read('registry-table-tools.css');
   assert.match(
     doseCss,
     /\[data-registry-ux-view="clinical"\]\[data-registry-dose-column-visible="true"\]/,

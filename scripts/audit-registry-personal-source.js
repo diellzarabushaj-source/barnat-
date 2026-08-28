@@ -11,7 +11,7 @@ const read = file => fs.readFileSync(path.join(ROOT, file), 'utf8').replace(/\r\
 
 const ui = read('registry-user-personalization.js');
 const client = read('user-library-client.js');
-const css = read('registry-user-personalization.css');
+const css = read('registry-table-tools.css');
 const html = read('index.html');
 const registrySource = read('app-parts/part-01.txt');
 const registryRenderSource = read('app-parts/part-04.txt');
@@ -37,7 +37,7 @@ const requirements = [
   [client, 'async function flushThroughRevision(targetRevision)', 'Revision-safe sync must live in canonical source.'],
   [client, 'const prescriptions = parseArray(PRESCRIPTIONS_KEY);', 'Legacy poll must remain prescription-only in canonical source.'],
   [css, '/* registry-personal-ux-phase8-v1 */', 'Phase 8 personal UX CSS must be materialized.'],
-  [html, 'registry-user-personalization.css?v=20260816-7&ux=20260817-1', 'Canonical Phase 8 CSS asset publication is missing.'],
+  [html, 'registry-table-tools.css?v=', 'Single registry CSS authority publication is missing.'],
   [html, 'user-library-client.js?v=20260817-event-sync-1', 'Canonical user-library asset publication is missing.'],
   [registrySource, "key:'Nr rendor', label:'Nr', mobileLabel:'Nr', type:'num', cls:'code', visible:true", 'Full-registry source must default Nr ON.'],
   [registrySource, "key:'Substanca aktive', label:'Substanca Aktive', mobileLabel:'Substanca aktive', type:'str', cls:'', visible:true", 'Full-registry source must default active substance ON.'],

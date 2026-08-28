@@ -14,7 +14,7 @@ const syntax = file => execFileSync(process.execPath, ['--check', path.join(ROOT
 const desktop = read('registry-desktop-lite.js');
 const unified = read('registry-unified-table.js');
 const personal = read('registry-user-personalization.js');
-const css = read('registry-user-personalization.css');
+const css = read('registry-table-tools.css');
 
 assert.match(desktop, /registry-row-actions-menu-phase2-v1: trigger is visible from first desktop render/);
 assert.match(desktop, /data-row-actions-menu="true"/);

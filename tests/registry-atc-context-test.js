@@ -8,13 +8,14 @@ const read = relativePath => fs.readFileSync(path.join(ROOT, relativePath), 'utf
 
 const html = read('index.html');
 const script = read('registry-atc-context.js');
-const styles = read('registry-atc-context.css');
+const styles = read('registry-table-tools.css');
 
-assert.equal((html.match(/registry-atc-context\.css/g) || []).length, 1, 'ATC context CSS must load exactly once');
+assert.equal((html.match(/registry-atc-context\.css/g) || []).length, 0, 'ATC context CSS must not return as a standalone layer');
+assert.equal((html.match(/registry-table-tools\.css/g) || []).length, 1, 'single registry CSS authority must load exactly once');
 assert.equal((html.match(/registry-atc-context\.js/g) || []).length, 1, 'ATC context controller must load exactly once');
 assert.ok(
-  html.indexOf('registry-atc-context.css') < html.indexOf('tailadmin-professional.css'),
-  'TailAdmin professional CSS must remain the final static stylesheet'
+  html.indexOf('tailadmin-professional.css') < html.indexOf('registry-table-tools.css'),
+  'single registry CSS authority must remain after TailAdmin professional'
 );
 
 assert.match(script, /id = 'registryAtcContext'|PANEL_ID = 'registryAtcContext'/, 'The panel needs a stable ID');

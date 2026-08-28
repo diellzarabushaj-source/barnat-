@@ -58,8 +58,14 @@ for (const asset of INSULIN_SCRIPTS) {
 if (!source.includes('registry-insulin-row-bridge.js')) {
   throw new Error('Phase 15 must keep the insulin row bridge in the startup path so visible Smart Insulin controls remain unchanged.');
 }
-if (!source.includes('registry-insulin-deep-audit.css')) {
-  throw new Error('Phase 15 must keep the visible Smart Insulin table styling in the startup path.');
+if (!source.includes('registry-table-tools.css?v=')) {
+  throw new Error('Phase 15 requires the single registry CSS authority in the startup path.');
+}
+const finalRegistryCss = fs.readFileSync(path.join(ROOT, 'registry-table-tools.css'), 'utf8').replace(/\r\n?/g, '\n');
+for (const asset of [...INSULIN_STYLES, 'registry-insulin-deep-audit.css']) {
+  if (!finalRegistryCss.includes(`consolidated from ${asset}`)) {
+    throw new Error(`Phase 15 Smart Insulin styling is missing from the final registry CSS: ${asset}.`);
+  }
 }
 if (source.indexOf('registry-dose-interaction-loader.js') > source.indexOf('registry-insulin-row-bridge.js')) {
   throw new Error('Phase 15 interaction loader must initialize before the insulin row bridge.');
@@ -118,7 +124,7 @@ function validateCanonicalTableOwner() {
     throw new Error('Phase 15: canonical unified-table order/default/frozen contract is missing.');
   }
 
-  const css = read('registry-unified-table.css');
+  const css = read('registry-table-tools.css');
   if (!css.includes('registry-frozen-columns-v2')
       || !css.includes('[data-registry-column-key="number"]')
       || !css.includes('[data-registry-column-key="prescription-label"]')

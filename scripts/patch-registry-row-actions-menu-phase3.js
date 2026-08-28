@@ -6,7 +6,7 @@ const { execFileSync } = require('node:child_process');
 
 const ROOT = path.resolve(__dirname, '..');
 const PERSONAL = path.join(ROOT, 'registry-user-personalization.js');
-const CSS = path.join(ROOT, 'registry-user-personalization.css');
+const CSS = path.join(ROOT, 'registry-table-tools.css');
 const MARKER = 'registry-row-actions-menu-phase3-v1';
 
 const read = file => fs.readFileSync(file, 'utf8').replace(/\r\n?/g, '\n');

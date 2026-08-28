@@ -6,18 +6,29 @@ const root = path.resolve(__dirname, '..');
 const read = file => fs.readFileSync(path.join(root, file), 'utf8');
 
 const html = read('index.html');
-const css = read('first-page-clinical.css');
-const frozenCss = read('registry-frozen-columns.css');
 const tableToolsCss = read('registry-table-tools.css');
-const touchCss = read('registry-touch-targets.css');
+function consolidatedSection(name) {
+  const marker = `/* ===== consolidated from ${name} ===== */`;
+  const start = tableToolsCss.indexOf(marker);
+  assert.ok(start >= 0, `final registry CSS is missing consolidated section: ${name}`);
+  const next = tableToolsCss.indexOf('/* ===== consolidated from ', start + marker.length);
+  const canonical = tableToolsCss.indexOf('/* ===== canonical final layer:', start + marker.length);
+  const candidates = [next, canonical].filter(value => value > start);
+  const end = candidates.length ? Math.min(...candidates) : tableToolsCss.length;
+  return tableToolsCss.slice(start, end);
+}
+const css = consolidatedSection('first-page-clinical.css');
+const frozenCss = consolidatedSection('registry-frozen-columns.css');
+const touchCss = consolidatedSection('registry-touch-targets.css');
 const js = read('first-page-clinical.js');
 const loader = read('first-page-style-loader.js');
 const offlineManifest = read('scripts/patch-offline-shell-manifest.js');
 const headerSource = read('app-parts/part-02.txt');
 const rowSource = read('app-parts/part-03.txt') + read('app-parts/part-04.txt');
 
-assert.match(html, /rel="preload" href="first-page-clinical\.css\?v=20260731-1" as="style"/);
-assert.match(html, /first-page-style-loader\.js\?v=20260820-3/);
+assert.doesNotMatch(html, /first-page-clinical\.css/, 'Retired first-page CSS must not be requested separately.');
+assert.doesNotMatch(html, /registry-frozen-columns\.css/, 'Retired frozen-column CSS must not be requested separately.');
+assert.match(html, /first-page-style-loader\.js\?v=single-css-v1/);
 assert.match(html, /registry-table-tools\.css\?v=20260820-3/);
 assert.match(html, /first-page-clinical\.js\?v=20260731-1/);
 const staticStylesheets = [...html.matchAll(/<link[^>]+rel="stylesheet"[^>]+href="([^"]+)"/g)].map(match => match[1]);
@@ -32,19 +43,14 @@ assert.ok(
   html.indexOf('form-picker-clinical.js') < html.indexOf('first-page-clinical.js'),
   'The first-page runtime must enhance the completed pharmaceutical form picker.'
 );
-assert.match(loader, /VERSION = 'first-page-style-loader-20260820-3'/, 'First-page style owner must expose its cache-safe release.');
-assert.match(loader, /PHONE_QUERY = '\(max-width:767px\)'/, 'First-page stylesheet loader must have an explicit phone cascade contract.');
-assert.match(loader, /data-registry-mobile-critical-css/, 'Phone first-page CSS must anchor before the mobile registry cascade.');
-assert.match(loader, /anchor\.before\(link\)/, 'Phone first-page CSS must be inserted before mobile-lite layers, not appended after them.');
-assert.match(loader, /document\.head\.appendChild\(link\)/, 'Desktop first-page CSS must retain its last-layer behavior.');
-assert.match(loader, /phone\?\.addEventListener\?\.\('change', ensure\)/, 'Stylesheet ordering must follow responsive viewport transitions.');
-assert.match(loader, /first-page-clinical\.css\?v=20260731-1/);
-assert.match(loader, /registry-frozen-columns\.css\?v=20260820-2/, 'The final frozen-column cascade must be loaded by the first-page style owner.');
-assert.ok(loader.indexOf('place(clinical)') < loader.indexOf('place(frozen)'), 'Frozen-column CSS must follow first-page clinical CSS in the cascade.');
-assert.match(loader, /dataset\.firstPageStyleLoader = VERSION/, 'The active first-page style release must be observable in browser audits.');
+assert.match(loader, /VERSION = 'first-page-style-loader-single-css-v1'/, 'First-page style owner must expose the single-CSS release.');
+assert.match(loader, /registry-table-tools\\.css/, 'First-page loader must verify the final registry CSS authority.');
+assert.doesNotMatch(loader, /createElement\\(['"]link/, 'First-page loader must not create another stylesheet.');
+assert.doesNotMatch(loader, /first-page-clinical\\.css|registry-frozen-columns\\.css/, 'Retired stylesheet URLs must not return.');
+assert.match(loader, /dataset\\.firstPageStyleLoader/, 'The active first-page style release must remain observable in browser audits.');
 assert.match(loader, /medindex:tailadmin-ready/);
-assert.match(offlineManifest, /DYNAMIC_SHELL_ASSETS[\s\S]*'\/registry-frozen-columns\.css'/, 'Dynamically loaded frozen-column CSS must be seeded into the offline shell manifest.');
-assert.match(offlineManifest, /REQUIRED_OFFLINE[\s\S]*'\/registry-frozen-columns\.css'/, 'Offline manifest generation must fail if the final frozen-column CSS disappears.');
+assert.doesNotMatch(offlineManifest, /registry-frozen-columns\.css/, 'Offline manifest must not resurrect frozen-column CSS.');
+assert.match(offlineManifest, /registry-table-tools\.css/, 'Offline manifest must cache the final registry CSS authority.');
 
 for (const marker of [
   'registry-overview',

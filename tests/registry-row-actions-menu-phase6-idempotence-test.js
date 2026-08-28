@@ -9,7 +9,7 @@ const { execFileSync } = require('node:child_process');
 const ROOT = path.resolve(__dirname, '..');
 const files = [
   'registry-user-personalization.js',
-  'registry-user-personalization.css',
+  'registry-table-tools.css',
   'registry-desktop-lite.js',
   'registry-unified-table.js',
 ];
@@ -48,7 +48,7 @@ for (const file of files) {
 }
 
 const personal = after['registry-user-personalization.js'].content;
-const css = after['registry-user-personalization.css'].content;
+const css = after['registry-table-tools.css'].content;
 const desktop = after['registry-desktop-lite.js'].content;
 const unified = after['registry-unified-table.js'].content;
 

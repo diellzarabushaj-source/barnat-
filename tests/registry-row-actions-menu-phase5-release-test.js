@@ -14,7 +14,7 @@ for (const file of ['registry-user-personalization.js', 'registry-desktop-lite.j
 const personal = read('registry-user-personalization.js');
 const desktop = read('registry-desktop-lite.js');
 const unified = read('registry-unified-table.js');
-const css = read('registry-user-personalization.css');
+const css = read('registry-table-tools.css');
 const chain = read('scripts/patch-registry-row-actions-menu-phase1.js');
 const gate = read('scripts/patch-registry-row-actions-menu-phase5-release-gate.js');
 const marker = read('release-markers/registry-row-actions-menu-phase5.txt');

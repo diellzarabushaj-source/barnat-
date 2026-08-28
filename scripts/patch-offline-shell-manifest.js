@@ -59,13 +59,10 @@ const CRITICAL_SHELL_ASSETS = Object.freeze([
   '/tailadmin-shell.js',
   '/tailadmin-professional.js',
   '/registry-fast-start.js',
-  '/registry-mobile-lite.css',
+  '/registry-table-tools.css',
   '/registry-mobile-lite.js',
-  '/registry-mobile-phase3.css',
   '/registry-mobile-phase3.js',
-  '/registry-mobile-phase4.css',
   '/registry-mobile-phase4.js',
-  '/registry-mobile-phase8.css',
   '/registry-mobile-phase8.js',
   '/registry-desktop-lite.js',
   '/registry-runtime-loader.js',
@@ -74,7 +71,6 @@ const CRITICAL_SHELL_ASSETS = Object.freeze([
 /* Dynamic-only roots that are not guaranteed to appear directly in HTML.
    Their transitive local dependencies are discovered recursively below. */
 const DYNAMIC_SHELL_ASSETS = Object.freeze([
-  '/registry-frozen-columns.css',
   '/clinical-workflow.js',
   '/local-registry.js',
   '/app-runtime.js',
@@ -95,9 +91,7 @@ const REQUIRED_OFFLINE = Object.freeze([
   '/clinical-workflow.js',
   '/local-registry.js',
   '/app-runtime.js',
-  '/registry-frozen-columns.css',
-  '/registry-tablet-rows.css',
-  '/registry-list-owner-guard.css',
+  '/registry-table-tools.css',
   '/registry-list-owner-guard.js',
   '/registry-list-data-bridge.js',
   '/registry-list-view.js',
