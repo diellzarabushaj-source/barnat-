@@ -174,7 +174,7 @@
       <aside class="mi-sidebar" id="miSidebar" aria-label="DRx">
         <div class="mi-sidebar-header">
           <a class="mi-brand" href="/index.html" aria-label="DRx — Barnat">
-            <img src="/brand/drx-horizontal-dark.svg" alt="DRx" width="112" height="33" decoding="async">
+            <img src="/brand/drx-horizontal-white.svg" alt="DRx" width="112" height="33" decoding="async">
           </a>
           <button class="mi-sidebar-close" type="button" data-mi-sidebar-close aria-label="Mbyll menynë">${ICONS.close}</button>
         </div>
