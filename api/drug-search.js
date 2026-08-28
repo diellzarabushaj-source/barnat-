@@ -61,7 +61,7 @@ function requestQuery(req) {
 function integerInRange(value, fallback, min, max) { const parsed=Number.parseInt(String(value ?? ''),10); return Number.isFinite(parsed) ? Math.min(max,Math.max(min,parsed)) : fallback; }
 function safeFilterText(value,max=MAX_QUERY) { return clean(value).slice(0,max).replace(/[,*%()\\]/g,' ').replace(/\s+/g,' ').trim(); }
 function safeQueryText(value) { return clean(value).slice(0, MAX_QUERY).replace(/[,*%()\\]/g,' ').replace(/\s+/g,' ').trim(); }
-function safeAtcPrefix(value) { const code=clean(value).toUpperCase().replace(/\s+/g,''); return /^(?:[A-Z]|[A-Z]\d{2})$/.test(code) ? code : ''; }
+function safeAtcPrefix(value) { const code=clean(value).toUpperCase().replace(/\s+/g,''); return /^(?:[A-Z]|[A-Z]\d{2}(?:[A-Z]{1,2})?)$/.test(code) ? code : ''; }
 async function authorized(req) { return registryHandler.authorized(req); }
 
 function atcCategoryCode(value) {
