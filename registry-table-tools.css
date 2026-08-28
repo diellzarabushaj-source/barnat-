@@ -295,6 +295,9 @@ html.medindex-tailadmin[data-mi-page="barnat"]{
   font-feature-settings:"tnum","ss01";
   font-variant-numeric:tabular-nums;
 }
+html.medindex-tailadmin[data-mi-page="barnat"] body{
+  font-family:Inter,ui-sans-serif,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif!important;
+}
 html.medindex-tailadmin[data-mi-page="barnat"][data-registry-density="comfortable"]{
   --rst-row-height:82px;
 }
@@ -325,9 +328,9 @@ html.medindex-tailadmin[data-mi-page="barnat"] body #registryViewToolbar .regist
   max-width:680px!important;
   overflow:hidden!important;
   color:var(--rst-muted)!important;
-  font-size:11px!important;
-  font-weight:300!important;
-  line-height:1.35!important;
+  font-size:12px!important;
+  font-weight:350!important;
+  line-height:1.4!important;
   text-overflow:ellipsis!important;
   white-space:nowrap!important;
 }
@@ -350,8 +353,8 @@ html.medindex-tailadmin[data-mi-page="barnat"] body #registryViewToolbar [data-r
   background:transparent!important;
   color:var(--rst-muted)!important;
   box-shadow:none!important;
-  font-size:12px!important;
-  font-weight:400!important;
+  font-size:13px!important;
+  font-weight:500!important;
   white-space:nowrap!important;
 }
 html.medindex-tailadmin[data-mi-page="barnat"] body #registryViewToolbar [data-registry-view]:hover{
@@ -414,7 +417,7 @@ html.medindex-tailadmin[data-mi-page="barnat"] body #registryFilterPanel.registr
      drejtpërdrejtë i panelit; me dy kolona binte në rreshtin e dytë dhe zinte
      tërë gjerësinë e kërkimit — një buton sa gjysma e ekranit për një lexim
      gjendjeje. Rreshti i komandës është një tani: kërkim, kontrolle, gjendje. */
-  grid-template-columns:minmax(300px,1fr) auto auto!important;
+  grid-template-columns:minmax(320px,1fr) auto!important;
   align-items:center!important;
   gap:10px!important;
   margin:0!important;
@@ -468,8 +471,8 @@ html.medindex-tailadmin[data-mi-page="barnat"] body #registryFilterPanel :is(
   background:#fff!important;
   color:var(--rst-ink-2)!important;
   box-shadow:none!important;
-  font-size:12px!important;
-  font-weight:300!important;
+  font-size:13px!important;
+  font-weight:350!important;
   line-height:1.4!important;
 }
 html.medindex-tailadmin[data-mi-page="barnat"] body #registryFilterPanel :is(
@@ -481,8 +484,8 @@ html.medindex-tailadmin[data-mi-page="barnat"] body #registryFilterPanel :is(
 html.medindex-tailadmin[data-mi-page="barnat"] body #registryFilterPanel :is(.selection-badge,#countBadge){
   margin-left:auto!important;
   color:var(--rst-muted)!important;
-  font-size:11px!important;
-  font-weight:300!important;
+  font-size:12px!important;
+  font-weight:400!important;
   font-variant-numeric:tabular-nums!important;
 }
 html.medindex-tailadmin[data-mi-page="barnat"] body #registryFilterPanel .protocol-toolbar-btn{
@@ -552,8 +555,8 @@ html.medindex-tailadmin[data-mi-page="barnat"] body #dataTable[data-registry-uni
   border-bottom:1px solid var(--rst-hairline)!important;
   background:var(--rst-soft)!important;
   color:var(--rst-muted)!important;
-  font-size:11px!important;
-  font-weight:400!important;
+  font-size:12px!important;
+  font-weight:500!important;
   letter-spacing:0!important;
   line-height:1.25!important;
   text-align:left!important;
@@ -600,9 +603,9 @@ html.medindex-tailadmin[data-mi-page="barnat"] body #dataTable[data-registry-uni
   border-bottom:1px solid var(--rst-hairline)!important;
   background:var(--ru-current-row,#fff)!important;
   color:var(--rst-ink-2)!important;
-  font-size:12px!important;
-  font-weight:300!important;
-  line-height:1.4!important;
+  font-size:13px!important;
+  font-weight:350!important;
+  line-height:1.45!important;
   vertical-align:middle!important;
 }
 html.medindex-tailadmin[data-mi-page="barnat"] body #dataTable[data-registry-unified-table] tbody tr:last-child td{
@@ -614,8 +617,8 @@ html.medindex-tailadmin[data-mi-page="barnat"] body #dataTable td[data-registry-
 }
 html.medindex-tailadmin[data-mi-page="barnat"] body #dataTable td[data-registry-column-key="trade-name"] .drug-name-text{
   color:var(--rst-ink)!important;
-  font-size:13px!important;
-  font-weight:500!important;
+  font-size:14px!important;
+  font-weight:600!important;
   letter-spacing:-.05px!important;
   /* Emri mbyllet me tri pika në fund të rreshtit të dytë, kurrë në mes të një
      fjale. Kufizon vetëm numri i rreshtave: një `max-height` paralel ishte
@@ -676,8 +679,8 @@ html.medindex-tailadmin[data-mi-page="barnat"] body #dataTable :is(
   .registry-dosage-dose-text,.registry-dosage-muted,.registry-dosage-details,.registry-dosage-grid,.registry-dosage-preview
 ){
   color:var(--rst-ink-2)!important;
-  font-size:12px!important;
-  font-weight:300!important;
+  font-size:13px!important;
+  font-weight:350!important;
 }
 html.medindex-tailadmin[data-mi-page="barnat"] body #dataTable .registry-dosage-route{
   border:1px solid var(--rst-primary-line)!important;
