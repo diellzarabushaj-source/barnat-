@@ -8,18 +8,17 @@ const read = file => fs.readFileSync(path.join(root, file), 'utf8');
 const html = read('index.html');
 const professionalCss = read('tailadmin-professional.css');
 const markerJs = read('registry-dose-clinical-row-markers.js');
-const markerCss = read('registry-dose-clinical-row-markers.css');
+const markerCss = read('registry-table-tools.css');
 const calculator = read('registry-dose-calculator.js');
 const tenSecondFlow = read('registry-dose-10s-flow.js');
 
 assert.match(html, /tailadmin-professional\.css\?v=20260811-3/);
 assert.doesNotMatch(html, /<link[^>]+registry-dose-clinical-row-markers\.css/,
   'Clinical row CSS must not create a second stylesheet after the canonical TailAdmin bundle.');
-assert.match(professionalCss, /registry-dose-clinical-row-markers\.css\?v=20260812-pediatric-pink-1/);
-assert.ok(
-  professionalCss.lastIndexOf('registry-dose-clinical-row-markers.css') > professionalCss.lastIndexOf('medindex-phase5-performance.css'),
-  'Clinical row semantics must be the last import inside the canonical TailAdmin bundle.',
-);
+assert.doesNotMatch(professionalCss, /registry-dose-clinical-row-markers\.css/,
+  'TailAdmin must not import a second registry stylesheet.');
+assert.match(markerCss, /consolidated from registry-dose-clinical-row-markers\.css/,
+  'Clinical row semantics must be materialized in the final registry CSS authority.');
 assert.match(html, /registry-dose-clinical-row-markers\.js\?v=20260812-pediatric-pink-1/);
 assert.ok(
   html.indexOf('registry-dose-table-button.js') < html.indexOf('registry-dose-clinical-row-markers.js'),
