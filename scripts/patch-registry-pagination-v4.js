@@ -69,7 +69,7 @@ function patchFull() {
 }
 
 function patchCss() {
-  const file = 'registry-pagination-v2.css';
+  const file = 'registry-table-tools.css';
   let source = read(file);
   if (source.includes(MARKER)) return;
 
@@ -82,7 +82,7 @@ function verify() {
   const desktop = read('registry-desktop-lite.js');
   const mobile = read('registry-mobile-lite.js');
   const full = read('app-parts/part-04.txt');
-  const css = read('registry-pagination-v2.css');
+  const css = read('registry-table-tools.css');
 
   for (const [name, source] of [['desktop', desktop], ['mobile', mobile], ['full', full]]) {
     if (!source.includes('registry-pagination-frame-static')) throw new Error(`${name} static pagination state missing.`);
