@@ -177,21 +177,47 @@
       </div>`;
   }
 
-  function selectedSubdivisionMarkup(categoryCode) {
+  function subdivisionTree(categoryCode) {
     const entries = subdivisionEntries(categoryCode);
+    const level4 = entries.filter(([code]) => code.length === 4);
+    const level5 = entries.filter(([code]) => code.length === 5);
+    const claimed = new Set();
+    const branches = level4.map(([code,name]) => {
+      const children = level5.filter(([child]) => child.startsWith(code));
+      children.forEach(([child]) => claimed.add(child));
+      return { code, name, children };
+    });
+    level5.filter(([code]) => !claimed.has(code)).forEach(([code,name]) => {
+      branches.push({ code, name, children:[] });
+    });
+    return branches;
+  }
+
+  function selectedSubdivisionMarkup(categoryCode) {
+    const branches = subdivisionTree(categoryCode);
     const color = colorFor(categoryCode);
     const categoryName = categories()[categoryCode] || '';
     return `<div class="subdivision-block" style="--group-accent:${color}">
       <div class="subdivision-heading">
-        <span>Nënndarjet ATC</span>
+        <div><span>Nënndarjet ATC</span><small>Niveli farmakologjik → niveli kimik</small></div>
         <a class="button button-secondary" href="${registryUrl(categoryCode)}">Hap barnat ${escapeHtml(categoryCode)}</a>
       </div>
-      ${entries.length ? `<div class="subdivision-list">${entries.map(([code,name]) => `
-        <a class="subdivision-row ${state.subdivision === code ? 'is-active' : ''}" href="${registryUrl(code)}" data-subdivision-code="${escapeHtml(code)}">
-          <span class="subdivision-code">${escapeHtml(code)}</span>
-          <span class="subdivision-name">${escapeHtml(name)}</span>
-          <span class="subdivision-open" aria-hidden="true">→</span>
-        </a>`).join('')}</div>` : `<div class="empty-state">Nuk ka nënndarje shtesë të kataloguara për ${escapeHtml(categoryCode)} — ${escapeHtml(categoryName)}.</div>`}
+      ${branches.length ? `<div class="subdivision-tree">${branches.map(branch => {
+        const level = branch.code.length === 4 ? 'Niveli 4' : 'Niveli 5';
+        return `<section class="subdivision-branch ${state.subdivision === branch.code ? 'is-active' : ''}">
+          <a class="subdivision-parent" href="${registryUrl(branch.code)}" data-subdivision-code="${escapeHtml(branch.code)}">
+            <span class="subdivision-code">${escapeHtml(branch.code)}</span>
+            <span class="subdivision-name"><strong>${escapeHtml(branch.name)}</strong><small>${level}${branch.children.length ? ` · ${branch.children.length} nënndarje kimike` : ''}</small></span>
+            <span class="subdivision-open" aria-hidden="true">→</span>
+          </a>
+          ${branch.children.length ? `<div class="subdivision-children">${branch.children.map(([code,name]) => `
+            <a class="subdivision-child ${state.subdivision === code ? 'is-active' : ''}" href="${registryUrl(code)}" data-subdivision-code="${escapeHtml(code)}">
+              <span class="subdivision-code">${escapeHtml(code)}</span>
+              <span class="subdivision-name">${escapeHtml(name)}</span>
+              <span class="subdivision-open" aria-hidden="true">→</span>
+            </a>`).join('')}</div>` : ''}
+        </section>`;
+      }).join('')}</div>` : `<div class="empty-state">Nuk ka nënndarje shtesë të kataloguara për ${escapeHtml(categoryCode)} — ${escapeHtml(categoryName)}.</div>`}
     </div>`;
   }
 
