@@ -1,7 +1,7 @@
 (() => {
   'use strict';
 
-  const VERSION = 'stripe-clinical-table-v1';
+  const VERSION = 'stripe-clinical-table-v2';
   const ROOT = document.documentElement;
   const DENSITY_KEY = 'medindex.registry.density.v1';
   const COMPACT = 'compact';
