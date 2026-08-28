@@ -252,6 +252,8 @@ html[data-theme="dark"] .registry-note-dialog-clear {color:#f0aaa3}
 /* Registry table refinement — 2026-08-20.
    Keep the legacy controls mounted for runtime compatibility, but remove them
    from the visible doctor workspace. */
+/* registry-legacy-toolbar-hidden-v3:
+   runtime hooks stay mounted, but retired/admin-only controls never render in the doctor workspace. */
 html.medindex-tailadmin[data-mi-page="barnat"] body :is(.toolbar,#registryFilterPanel) :is(
   #statusFilter,
   #pageSize,
