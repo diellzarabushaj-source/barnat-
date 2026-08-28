@@ -1,3 +1,18 @@
+html.medindex-tailadmin[data-mi-page="protokollet"]{
+  --clinical-accent:#533afd;
+  --clinical-border:#e3e8ee;
+  --clinical-surface:#fff;
+  --clinical-text:#0d253d;
+  --clinical-muted:#64748d;
+}
+html.medindex-tailadmin[data-mi-page="protokollet"]:is(.dark,[data-theme="dark"]){
+  --clinical-accent:#a9a4ff;
+  --clinical-border:#344054;
+  --clinical-surface:#101828;
+  --clinical-text:#f8fafc;
+  --clinical-muted:#98a2b3;
+}
+
 .protocol-audit-workspace{
   grid-column:1 / -1;
   border:1px solid var(--clinical-border,#d8e2e4);
@@ -14,13 +29,13 @@
   align-items:start;
   padding:22px 24px 18px;
   border-bottom:1px solid var(--clinical-border,#d8e2e4);
-  background:linear-gradient(180deg,rgba(13,61,64,.055),rgba(13,61,64,.015));
+  background:linear-gradient(180deg,rgba(83,58,253,.035),rgba(83,58,253,.008));
 }
 
 .protocol-audit-workspace .paw-kicker{
   display:block;
   margin-bottom:6px;
-  color:var(--clinical-accent,#0d6669);
+  color:var(--clinical-accent,#533afd);
   font-size:12px;
   font-weight:700;
   letter-spacing:.08em;
@@ -122,7 +137,7 @@
   width:0;
   height:100%;
   border-radius:inherit;
-  background:var(--clinical-accent,#0d6669);
+  background:var(--clinical-accent,#533afd);
   transition:width .2s ease;
 }
 
@@ -144,15 +159,15 @@
 }
 
 .protocol-audit-workspace .paw-check:hover{
-  border-color:rgba(13,102,105,.34);
-  background:rgba(13,102,105,.025);
+  border-color:rgba(83,58,253,.28);
+  background:rgba(83,58,253,.025);
 }
 
 .protocol-audit-workspace .paw-check input{
   width:17px;
   height:17px;
   margin:1px 0 0;
-  accent-color:var(--clinical-accent,#0d6669);
+  accent-color:var(--clinical-accent,#533afd);
 }
 
 .protocol-audit-workspace .paw-check span{
@@ -193,8 +208,8 @@
 }
 
 .protocol-audit-workspace textarea:focus{
-  border-color:var(--clinical-accent,#0d6669);
-  box-shadow:0 0 0 3px rgba(13,102,105,.11);
+  border-color:var(--clinical-accent,#533afd);
+  box-shadow:0 0 0 3px rgba(83,58,253,.11);
 }
 
 .protocol-audit-workspace .paw-actions{
@@ -222,8 +237,8 @@
 }
 
 .protocol-audit-workspace .paw-button.is-primary{
-  border-color:var(--clinical-accent,#0d6669);
-  background:var(--clinical-accent,#0d6669);
+  border-color:var(--clinical-accent,#533afd);
+  background:var(--clinical-accent,#533afd);
   color:#fff;
 }
 
