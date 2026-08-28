@@ -79,6 +79,7 @@ html.medindex-tailadmin[data-mi-page="barnat"] body #pagination.pagination :is(b
 /* Shiriti i regjistrit: çelësi i filtrave dhe butonat e pamjes ishin 38px. */
 html.medindex-tailadmin[data-mi-page="barnat"] body #registryViewToolbar.registry-view-toolbar :is(
   .registry-filter-toggle,
+  .registry-density-toggle,
   .registry-view-actions button,
   [data-registry-view]
 ){

@@ -22,6 +22,7 @@
  */
 
 const assert = require('node:assert/strict');
+const fs = require('node:fs');
 const path = require('node:path');
 const { spawn } = require('node:child_process');
 const { chromium } = require('@playwright/test');
@@ -179,6 +180,22 @@ function collect() {
     ? Math.min(...[...fontSizes].map(parseFloat))
     : null;
 
+  const stickyMeta = key => {
+    const cell = document.querySelector(`#tbody > tr > td[data-registry-column-key="${key}"]`);
+    if (!cell) return null;
+    const cs = getComputedStyle(cell);
+    return { position:cs.position, left:cs.left };
+  };
+
+  const registryCascade = [...document.querySelectorAll('link[rel="stylesheet"][href]')]
+    .map(link => link.getAttribute('href') || '')
+    .filter(href => /first-page-clinical\.css|registry-frozen-columns\.css|registry-table-tools\.css/.test(href));
+
+  const headerProbe = document.querySelector(
+    '#dataTable thead th[data-registry-column-key="trade-name"],#dataTable thead th'
+  );
+  const headerStyle = headerProbe ? getComputedStyle(headerProbe) : null;
+
   return {
     documentOverflowPx,
     tinyTextCount:tinyText.length,
@@ -190,6 +207,15 @@ function collect() {
     fontSizes:[...fontSizes].sort((a, b) => parseFloat(a) - parseFloat(b)),
     radiusCount:radii.size,
     radii:[...radii].map(([value, where]) => `${value} · ${where}`).sort(),
+    visibleAuditProgress:nodes.filter(el => el.matches?.('.clinical-editor-progress')).length,
+    stickyContract:{
+      select:stickyMeta('select'),
+      tradeName:stickyMeta('trade-name'),
+      number:stickyMeta('number'),
+      prescriptionLabel:stickyMeta('prescription-label'),
+    },
+    registryCascade,
+    headerProbe:headerStyle ? { color:headerStyle.color, background:headerStyle.backgroundColor } : null,
   };
 }
 
@@ -201,6 +227,8 @@ function collect() {
   const executablePath = process.env.RESPONSIVE_VIEWPORTS_BROWSER_PATH || undefined;
   const browser = await chromium.launch({ headless:true, ...(executablePath ? { executablePath } : {}) });
   const findings = [];
+  const screenshotDir = process.env.RESPONSIVE_SCREENSHOT_DIR || '/tmp/responsive-screenshots';
+  fs.mkdirSync(screenshotDir, { recursive:true });
 
   try {
     for (const viewport of VIEWPORTS) {
@@ -219,6 +247,13 @@ function collect() {
 
       const measured = await page.evaluate(collect);
       findings.push({ viewport:viewport.name, width:viewport.width, pageErrors, ...measured });
+
+      const screenshotName = `${String(viewport.width).padStart(4, '0')}-registry.png`;
+      await page.screenshot({
+        path:path.join(screenshotDir, screenshotName),
+        fullPage:false,
+        animations:'disabled',
+      });
 
       await context.close();
     }
@@ -268,6 +303,23 @@ function collect() {
       row.radiusCount <= budget.maxRadii,
       `${at}: ${row.radiusCount} rreze qoshesh të dallueshme (buxheti ${budget.maxRadii}) — ${row.radii.join(', ')}`,
     );
+
+    assert.equal(
+      row.visibleAuditProgress, 0,
+      `${at}: kontrolli legacy "Auditimi" është ende i dukshëm në toolbar.`,
+    );
+
+    assert.ok(
+      row.registryCascade.length && /registry-table-tools\.css/.test(row.registryCascade.at(-1)),
+      `${at}: CSS-i kanonik nuk është i fundit në cascade — ${row.registryCascade.join(' -> ')}`,
+    );
+
+    if (row.width >= 1200) {
+      assert.equal(row.stickyContract.select?.position, 'sticky', `${at}: checkbox-i duhet të jetë sticky.`);
+      assert.equal(row.stickyContract.tradeName?.position, 'sticky', `${at}: Emri tregtar duhet të jetë sticky.`);
+      assert.notEqual(row.stickyContract.number?.position, 'sticky', `${at}: Nr nuk duhet të jetë sticky.`);
+      assert.notEqual(row.stickyContract.prescriptionLabel?.position, 'sticky', `${at}: etiketa e recetës nuk duhet të jetë sticky.`);
+    }
   }
 
   console.log(`Responsive viewport audit passed across ${findings.length} widths.`);

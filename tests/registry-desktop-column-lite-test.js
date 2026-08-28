@@ -42,13 +42,20 @@ assert.match(runtime, /if \(!existed \|\| column\.remote \|\| column\.key === 'p
 assert.match(runtime, /if \(changed\) window\.MedIndexRegistryUnified\?\.refresh\?\.\(\)/, 'Unified table refresh must happen only after a real structural/value change.');
 assert.doesNotMatch(runtime, /addEventListener\('medindex:registry-table-stable'/, 'Phase 14 must not create stable→refresh feedback loops.');
 
-const numberPosition = runtime.indexOf("key:'number'");
-const prescriptionPosition = runtime.indexOf("key:'prescription-label'");
 const tradePosition = runtime.indexOf("key:'trade-name'");
 const substancePosition = runtime.indexOf("key:'active-substance'");
+const strengthPosition = runtime.indexOf("key:'strength'");
+const formPosition = runtime.indexOf("key:'form'");
+const numberPosition = runtime.indexOf("key:'number'");
+const prescriptionPosition = runtime.indexOf("key:'prescription-label'");
 assert.ok(
-  numberPosition >= 0 && prescriptionPosition > numberPosition && tradePosition > prescriptionPosition && substancePosition > tradePosition,
-  'Lightweight final order must be Nr → Si shënohet në recetë → Emri tregtar → Substanca aktive.',
+  tradePosition >= 0
+    && substancePosition > tradePosition
+    && strengthPosition > substancePosition
+    && formPosition > strengthPosition
+    && numberPosition > formPosition
+    && prescriptionPosition > numberPosition,
+  'Admin Stripe lightweight order must be Emri tregtar → Substanca aktive → Fortësia → Forma → Nr → Si shënohet në recetë.',
 );
 for (const [key, expected] of Object.entries({
   number:true,

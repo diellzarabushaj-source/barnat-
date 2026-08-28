@@ -89,7 +89,11 @@ assert.doesNotMatch(loader,/MEDINDEX_REGISTRY_UI_READY\s*=\s*new Promise/,'loade
 assert.match(runtime,/registry-canonical-main-table-v1/,'canonical unified controller version is missing');
 assert.match(runtime,/const FULL_ORDER = Object\.freeze/,'one canonical full-column order is required');
 assert.match(runtime,/const CLINICAL_ORDER = Object\.freeze/,'legacy clinical order may remain as compatibility metadata but must not own a second view');
-assert.match(runtime,/'select', 'number', 'active-substance', 'trade-name'/,'Nr and active substance must precede the trade name');
+assert.match(
+  runtime,
+  /'select', 'trade-name', 'active-substance', 'strength', 'form'/,
+  'Admin Stripe clinical identity must start with trade name, active substance, strength and form.',
+);
 assert.match(runtime,/'clinical-action', 'dose-calculator'/,'verified dose must be part of canonical clinical order');
 assert.match(runtime,/DYNAMIC_KEYS = new Set\([\s\S]*'dose-calculator'/,'verified dose must be a canonical dynamic column');
 assert.match(runtime,/clinical-action':54[\s\S]*'dose-calculator':128/,'edit and dose columns must remain compact');

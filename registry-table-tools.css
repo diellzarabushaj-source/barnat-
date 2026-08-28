@@ -252,11 +252,14 @@ html[data-theme="dark"] .registry-note-dialog-clear {color:#f0aaa3}
 /* Registry table refinement — 2026-08-20.
    Keep the legacy controls mounted for runtime compatibility, but remove them
    from the visible doctor workspace. */
+/* registry-legacy-toolbar-hidden-v3:
+   runtime hooks stay mounted, but retired/admin-only controls never render in the doctor workspace. */
 html.medindex-tailadmin[data-mi-page="barnat"] body :is(.toolbar,#registryFilterPanel) :is(
   #statusFilter,
   #pageSize,
   .selection-badge,
-  #protocolsBtn
+  #protocolsBtn,
+  .clinical-editor-progress
 ) {
   display:none!important;
 }
@@ -749,6 +752,12 @@ html.medindex-tailadmin[data-mi-page="barnat"] body #dataTable .registry-dosage-
   font-size:10px!important;
   font-weight:400!important;
 }
+/* Keep row actions below the 40px sticky table header when browsers,
+   keyboard navigation or Playwright scroll a control into view. */
+html.medindex-tailadmin[data-mi-page="barnat"] body #dataTable .registry-row-more-toggle{
+  scroll-margin-block-start:52px!important;
+}
+
 html.medindex-tailadmin[data-mi-page="barnat"] body #dataTable :is(
   .registry-row-favorite-toggle,.registry-row-note-toggle,.registry-cell-preview-trigger
 ){
