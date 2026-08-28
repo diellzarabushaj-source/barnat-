@@ -230,6 +230,12 @@ a{color:inherit}
 .price{color:#42566b;font-variant-numeric:tabular-nums}
 .dose-cell{display:grid;gap:3px}
 .dose-text{display:-webkit-box;overflow:hidden;color:#3d5167;-webkit-box-orient:vertical;-webkit-line-clamp:2;font-size:11.5px;line-height:1.35}
+/* Kur doza kalon dy rreshtat, "Më shumë" e lëshon tekstin brenda vetë rreshtit.
+   Registry është një tabelë e vërtetë, prandaj rreshti/qeliza rriten natyrshëm. */
+.dose-cell.is-expanded .dose-text{display:block;overflow:visible;-webkit-line-clamp:unset}
+.dose-toggle{justify-self:start;padding:0;border:0;background:transparent;color:var(--accent);font-size:10.5px;font-weight:500;line-height:1;cursor:pointer;text-decoration:underline;text-underline-offset:2px}
+.dose-toggle:hover{color:var(--accent-hover)}
+.dose-toggle:focus-visible{outline:0;box-shadow:0 0 0 2px rgba(99,91,255,.25);border-radius:3px}
 .route-chip{display:inline-flex;width:max-content;max-width:100%;align-items:center;min-height:19px;padding:2px 7px;border-radius:999px;background:var(--clinical-soft);color:#12665c;font-size:10px;font-weight:500}
 .registry-table td:nth-child(9) .route-chip{background:var(--pediatric-soft);color:#2454a6}
 .dose-missing{color:var(--muted);font-size:11px}
