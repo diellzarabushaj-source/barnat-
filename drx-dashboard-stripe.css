@@ -1302,3 +1302,84 @@ html.medindex-tailadmin .mi-sidebar #appMenu .mi-atc-count{
   font-size:9.5px!important;
   font-weight:500!important;
 }
+
+
+/* Shared sidebar footer — same source card + logout on every dashboard. */
+html.medindex-tailadmin .mi-sidebar-footer{
+  display:grid!important;
+  gap:6px!important;
+  margin-top:auto!important;
+  padding:12px 0 0!important;
+  border-top:1px solid rgba(255,255,255,.12)!important;
+  background:transparent!important;
+}
+html.medindex-tailadmin .mi-sidebar-source-card{
+  display:grid!important;
+  grid-template-columns:8px minmax(0,1fr)!important;
+  gap:9px!important;
+  align-items:start!important;
+  padding:9px 10px!important;
+  border:0!important;
+  border-radius:6px!important;
+  background:rgba(255,255,255,.06)!important;
+  box-shadow:none!important;
+}
+html.medindex-tailadmin .mi-sidebar-source-dot{
+  width:7px!important;
+  height:7px!important;
+  margin-top:4px!important;
+  border-radius:999px!important;
+  background:#20b486!important;
+  box-shadow:0 0 0 3px rgba(32,180,134,.16)!important;
+}
+html.medindex-tailadmin .mi-sidebar-source-copy{
+  min-width:0!important;
+}
+html.medindex-tailadmin .mi-sidebar-source-copy strong,
+html.medindex-tailadmin .mi-sidebar-source-copy small{
+  display:block!important;
+}
+html.medindex-tailadmin .mi-sidebar-source-copy strong{
+  overflow:hidden!important;
+  color:rgba(255,255,255,.86)!important;
+  font-size:10.5px!important;
+  font-weight:400!important;
+  text-overflow:ellipsis!important;
+  white-space:nowrap!important;
+}
+html.medindex-tailadmin .mi-sidebar-source-copy small{
+  margin-top:2px!important;
+  color:rgba(255,255,255,.48)!important;
+  font-size:9.5px!important;
+  font-weight:300!important;
+}
+html.medindex-tailadmin .mi-sidebar-logout{
+  width:100%!important;
+  min-height:40px!important;
+  display:flex!important;
+  align-items:center!important;
+  gap:10px!important;
+  padding:0 10px!important;
+  border:0!important;
+  border-radius:6px!important;
+  background:transparent!important;
+  color:rgba(255,255,255,.62)!important;
+  cursor:pointer!important;
+  font-size:14px!important;
+  font-weight:300!important;
+  text-align:left!important;
+}
+html.medindex-tailadmin .mi-sidebar-logout:hover{
+  background:rgba(255,255,255,.075)!important;
+  color:#fff!important;
+}
+html.medindex-tailadmin .mi-sidebar-logout:disabled{
+  opacity:.55!important;
+  cursor:wait!important;
+}
+html.medindex-tailadmin .mi-sidebar-logout-icon{
+  width:24px!important;
+  display:grid!important;
+  place-items:center!important;
+  flex:none!important;
+}
