@@ -135,19 +135,19 @@
     nav.setAttribute('aria-label', 'Navigimi kryesor');
     nav.innerHTML = `
       <div class="mi-menu-group">
-        <p class="mi-menu-heading">KRYESORE</p>
-        ${navItem({ id:'home', href:'/index.html', label:'Barnat', icon:ICONS.drugs, button:index })}
-        ${navItem({ id:'classification', href:'/klasifikimi.html', label:'Klasifikimi', icon:ICONS.classification })}
-      </div>
-      <div class="mi-menu-group">
         <p class="mi-menu-heading">KLINIKE</p>
-        ${navItem({ id:'icd', href:'/icd.html', label:'ICD', icon:ICONS.icd })}
-        ${navItem({ id:'emergencies', href:'/urgjencat.html', label:'Urgjencat', icon:ICONS.emergencies })}
-        ${navItem({ id:'labs', href:'/analizat.html', label:'Analizat', icon:ICONS.labs })}
+        ${navItem({ id:'home', href:'/index.html', label:'Barnat', icon:ICONS.drugs, button:index })}
+        ${navItem({ id:'classification', href:'/klasifikimi.html', label:'Klasifikimi ATC', icon:ICONS.classification })}
+        ${navItem({ id:'icd', href:'/icd.html', label:'ICD‑10', icon:ICONS.icd })}
         ${navItem({ id:'dosage', href:'/dozologjia.html', label:'Dozologjia', icon:ICONS.dosage })}
         ${navItem({ id:'clinical-protocols', href:'/protokollet.html', label:'Protokollet', icon:ICONS.protocols })}
-        ${navItem({ id:'learning', href:'/medical-hub.html', label:'Medical Hub', icon:ICONS.learning })}
+        ${navItem({ id:'emergencies', href:'/urgjencat.html', label:'Urgjencat', icon:ICONS.emergencies })}
+      </div>
+      <div class="mi-menu-group">
+        <p class="mi-menu-heading">PUNA IME</p>
         ${navItem({ id:'prescriptions', href:'/recetat.html', label:'Recetat', icon:ICONS.prescriptions })}
+        ${navItem({ id:'labs', href:'/analizat.html', label:'Analizat', icon:ICONS.labs })}
+        ${navItem({ id:'learning', href:'/medical-hub.html', label:'Medical Hub', icon:ICONS.learning })}
       </div>
       <div class="mi-menu-group mi-menu-group-tools">
         <p class="mi-menu-heading">MJETET</p>
