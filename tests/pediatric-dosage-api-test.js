@@ -388,6 +388,8 @@ async function main() {
   assert.equal(anonymous.statusCode, 401);
   assert.equal(anonymous.headers['Cache-Control'], 'private, no-store, max-age=0');
   assert.equal(anonymous.headers.Vary, 'Cookie');
+  assert.equal(anonymous.headers['X-MedIndex-Data-Source'], 'Supabase');
+  assert.equal(anonymous.headers['X-MedIndex-Dosage-Policy'], 'fail-closed');
 }
 
 main().then(() => {
