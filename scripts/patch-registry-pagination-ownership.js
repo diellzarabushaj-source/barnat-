@@ -33,7 +33,7 @@ function patchListOwnership() {
 }
 
 function patchPaginationCss() {
-  const file = 'registry-pagination-v2.css';
+  const file = 'registry-table-tools.css';
   let source = read(file);
 
   // Replace the previous two-state guard with a three-state guard. The visible
@@ -72,7 +72,7 @@ function patchPaginationCss() {
 
 function verifyUiLogicContract() {
   const listSource = read('registry-list-view.js');
-  const css = read('registry-pagination-v2.css');
+  const css = read('registry-table-tools.css');
 
   const contract = {
     table: { hidden:false, aria:'false' },
