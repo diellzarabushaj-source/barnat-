@@ -57,7 +57,11 @@ html.medindex-tailadmin #appMenu.mi-sidebar-nav {
   gap:3px!important;
 }
 
-html.medindex-tailadmin #appMenu .mi-menu-label {
+/* Etiketa e seksionit dhe titulli i një zëri e ndajnë klasën `mi-menu-label`,
+   sepse zëri e mban atë bashkë me `app-menu-title`. Pa `:not()` këtu, çdo emër
+   në sirtar merrte 10px me shkronja të mëdha dhe 42% tejdukshmëri — i
+   palexueshëm mbi navy. Etiketa e seksionit është ajo që nuk është titull. */
+html.medindex-tailadmin #appMenu .mi-menu-label:not(.app-menu-title) {
   margin:14px 0 4px!important;
   padding:0 11px!important;
   color:var(--drx-nav-label)!important;
@@ -65,6 +69,24 @@ html.medindex-tailadmin #appMenu .mi-menu-label {
   font-weight:400!important;
   letter-spacing:.04em!important;
   text-transform:uppercase!important;
+}
+
+html.medindex-tailadmin #appMenu .app-menu-link .app-menu-title {
+  color:inherit!important;
+  font-size:14px!important;
+  font-weight:300!important;
+  letter-spacing:0!important;
+  text-transform:none!important;
+}
+
+/* Shenja e markës rri mbi navy edhe kur tema është e çelët, prandaj sirtari
+   kërkon gjithnjë variantin për sipërfaqe të errët. */
+html.medindex-tailadmin .mi-sidebar .medindex-brand-light {
+  display:none!important;
+}
+
+html.medindex-tailadmin .mi-sidebar .medindex-brand-dark {
+  display:block!important;
 }
 
 html.medindex-tailadmin #appMenu :is(.app-menu-link,.auth-logout) {
@@ -145,10 +167,21 @@ html.medindex-tailadmin .mi-user-card :is(strong,.mi-user-name) {
   font-weight:400!important;
 }
 
-html.medindex-tailadmin .mi-user-card :is(small,.mi-user-mail,span) {
+/* `:not(.mi-user-avatar)` sepse avatari është po ashtu një `span`: pa të,
+   inicialet merrnin të bardhë 62% mbi një sfond mente të zbehtë dhe
+   zhdukeshin. */
+html.medindex-tailadmin .mi-user-card :is(small,.mi-user-mail,span):not(.mi-user-avatar) {
   color:rgba(255,255,255,.62)!important;
   font-size:11px!important;
   font-weight:300!important;
+}
+
+html.medindex-tailadmin .mi-sidebar .mi-user-avatar {
+  border:0!important;
+  background:rgba(255,255,255,.14)!important;
+  color:#fff!important;
+  font-size:12px!important;
+  font-weight:400!important;
 }
 
 /* ── Shiriti i sipërm ────────────────────────────────────────────────────
