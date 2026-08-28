@@ -1,5 +1,24 @@
 # MedIndex TailAdmin Clinical Design System
 
+> **Canonical authenticated dashboard override · 2026-08-28**
+>
+> For every authenticated DRx dashboard surface, the Stripe-inspired shell is the final visual authority. This override supersedes older TailAdmin/teal shell geometry below wherever they conflict.
+>
+> - One shell only: navy sidebar `#1c1e54`, indigo interaction `#533afd`, white canvas.
+> - Sidebar: **238px** desktop; mobile drawer `min(86vw, 300px)`.
+> - Top bar: **58px**.
+> - Content: max **1360px**, desktop padding **32px 36px 64px**.
+> - Sidebar item: **40px** desktop / **44px** touch, 6px radius, Inter 14px / 300.
+> - Page title: 32px / 300 / 1.1; mobile 26px.
+> - Controls: 40px dense desktop / minimum 44px touch.
+> - Dark-shell brand asset: `/brand/drx-horizontal-on-dark.svg`.
+> - Teal is reserved for clinical semantics inside page content (verified/safe/clinical state); it is **not** a second shell accent.
+> - No page may introduce a second sidebar, second topbar, or competing dashboard stylesheet after `drx-dashboard-stripe.css`.
+> - Standalone V2 pages keep page-specific workspace CSS but share the same shell contract through `html.drx-unified-sidebar`.
+> - TailAdmin pages keep their functional compatibility layers but `drx-dashboard-stripe.css` must remain the final static stylesheet.
+>
+> This contract is guarded by automated dashboard-shell tests. When the Stripe reference and older TailAdmin notes disagree, **this override and `design-md/stripe/DESIGN.md` win**.
+
 ## Direction
 
 MedIndex is a fast, low-distraction clinical workspace for use while speaking with a patient. The visual language is a faithful TailAdmin-style data workspace adapted to MedIndex: quiet neutral surfaces, crisp borders, restrained teal interaction color, compact but comfortable controls, and strong information hierarchy. It must look deliberate and medically professional, never like an ecommerce dashboard, marketing landing page, PDF viewer, or playful consumer app.
