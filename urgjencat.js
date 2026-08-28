@@ -288,7 +288,7 @@
   }
 
   function figureSrc(figure) {
-    return figure?.image?.asset?.url || figure?.externalUrl || figure?.imageDataUrl || '';
+    return figure?.image?.asset?.url || figure?.externalUrl || figure?.imageDataUrl || ((figure?.imageDataChunks || []).join('')) || '';
   }
 
   function figureMarkup(figure) {
