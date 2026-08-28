@@ -13,6 +13,9 @@ const js = read('analizat-v2.js');
 const reader = read('lib/neon-clinical-reader.js');
 const dataApi = read('lib/neon-data-api.js');
 const api = read('lib/icd-api-base.js');
+const baseMigration = read('supabase/migrations/20260828214754_add_lab_indication_order_builder.sql');
+const liverCorrection = read('supabase/migrations/20260828215737_correct_liver_panel_alp_mapping.sql');
+const migrationHistory = JSON.parse(read('supabase/migration-history.json'));
 
 assert.match(html, /data-drx-app="analizat-v2"/);
 assert.match(html, /class="drx-unified-sidebar"/);
@@ -79,5 +82,20 @@ assert.match(dataApi, /'lab_indications'/);
 assert.match(dataApi, /'lab_indication_tests'/);
 assert.match(api, /wrap\(data, 'supabase'/);
 assert.doesNotMatch(api, /wrap\(data, 'neon'/);
+
+assert.match(baseMigration, /create table if not exists public\.lab_indications/);
+assert.match(baseMigration, /create table if not exists public\.lab_indication_tests/);
+assert.match(baseMigration, /enable row level security/);
+assert.match(baseMigration, /published lab indications are readable/);
+assert.match(baseMigration, /published lab indication tests are readable/);
+assert.match(liverCorrection, /Fosfataza alkaline/);
+assert.match(liverCorrection, /Alkaline Phosphatase/);
+assert.match(liverCorrection, /catalog_gaps='\[\]'::jsonb/);
+assert.ok(migrationHistory.migrations.some(item =>
+  item.version === '20260828214754' && item.name === 'add_lab_indication_order_builder'
+));
+assert.ok(migrationHistory.migrations.some(item =>
+  item.version === '20260828215737' && item.name === 'correct_liver_panel_alp_mapping'
+));
 
 console.log('Analizat V2 diagnosis-driven Supabase order builder contract passed.');
