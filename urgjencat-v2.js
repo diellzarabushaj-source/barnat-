@@ -70,9 +70,18 @@
 
   async function ensureAuth() {
     const { response, payload } = await authJson();
-    if (!response.ok || !payload.authenticated) {
+    const explicitlySignedOut = response.status === 401
+      || response.status === 403
+      || (response.ok && payload.authenticated === false);
+    if (explicitlySignedOut) {
       redirectToLogin();
       throw new Error('Sesioni nuk është aktiv.');
+    }
+    if (!response.ok) {
+      throw new Error('Sesioni nuk mund të verifikohet për momentin. Provo përsëri.');
+    }
+    if (payload.authenticated !== true) {
+      throw new Error('Gjendja e sesionit nuk u konfirmua. Provo përsëri.');
     }
     return payload;
   }
