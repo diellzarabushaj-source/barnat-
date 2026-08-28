@@ -440,7 +440,7 @@ function buildRegistryPagePath(query = {}) {
   params.set('limit', String(fetchLimit));
   params.set('offset', String(offset));
   if (status) params.set('product_status', `eq.${status}`);
-  if (form) params.set('pharmaceutical_form', `eq.${form}`);
+  if (form) params.set('pharmaceutical_form', `ilike.*${form}*`);
 
   if (q.length >= 2) {
     const pattern = `*${q}*`;
