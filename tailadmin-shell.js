@@ -20,6 +20,7 @@
   const OFFLINE_RUNTIME_SRC = '/offline-runtime-performance.js?v=low-bandwidth-v3';
   const BRAND_SRC = '/medindex-brand-runtime.js?v=medindex-brand-v1';
   const ATC_NAV_SRC = '/atc-sidebar.js?v=atc-sidebar-v2';
+  const ICD_NAV_SRC = '/icd-sidebar-v3.js?v=icd-sidebar-v3';
   const ATC_SEARCH_SRC = '/atc-global-search.js?v=atc-global-search-v1';
   const SHELL_VERSION = 'production-audit-v2';
   const SHELL_RETRY_MS = 3500;
@@ -233,6 +234,10 @@
     return loadRuntime(ATC_NAV_SRC, 'data-medindex-atc-sidebar', 'miAtcSidebarError');
   }
 
+  function loadIcdNavigation() {
+    return loadRuntime(ICD_NAV_SRC, 'data-medindex-icd-sidebar', 'miIcdSidebarError');
+  }
+
   function loadAtcSearch() {
     return loadRuntime(ATC_SEARCH_SRC, 'data-medindex-atc-global-search', 'miAtcGlobalSearchError');
   }
@@ -244,7 +249,10 @@
     const loadForPointerIntent = event => {
       const target = event.target?.closest?.('[data-mi-sidebar-toggle],[data-mi-registry-nav="more"],[data-mi-mobile-search],[data-mi-registry-nav="search"]');
       if (!target) return;
-      if (target.matches('[data-mi-sidebar-toggle],[data-mi-registry-nav="more"]')) loadAtcNavigation();
+      if (target.matches('[data-mi-sidebar-toggle],[data-mi-registry-nav="more"]')) {
+        loadAtcNavigation();
+        loadIcdNavigation();
+      }
       if (target.matches('[data-mi-mobile-search],[data-mi-registry-nav="search"]')) loadAtcSearch();
     };
 
@@ -253,10 +261,14 @@
     window.addEventListener('resize', () => {
       if (isMobileLayout()) return;
       loadAtcNavigation();
+      loadIcdNavigation();
       loadAtcSearch();
     }, { passive:true });
 
-    if (document.body?.classList.contains('mi-sidebar-open')) loadAtcNavigation();
+    if (document.body?.classList.contains('mi-sidebar-open')) {
+      loadAtcNavigation();
+      loadIcdNavigation();
+    }
     if (document.body?.classList.contains('mi-mobile-search-open')) loadAtcSearch();
     document.documentElement.dataset.miMobileClinicalEnhancements = 'intent-deferred-v1';
   }
@@ -267,6 +279,7 @@
       return;
     }
     loadAtcNavigation();
+    loadIcdNavigation();
     loadAtcSearch();
   }
 
