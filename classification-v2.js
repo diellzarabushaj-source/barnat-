@@ -22,7 +22,7 @@
     'ankth':['N05B'], 'anksiolitik':['N05B'],
     'epilepsi':['N03'], 'antiepileptik':['N03'],
     'parkinson':['N04'], 'anestezi':['N01'], 'anestetik':['N01'],
-    'tiroide':['H03'], 'tiroide':['H03'],
+    'tiroide':['H03'], 'gjender tiroide':['H03'],
     'kortikosteroid':['H02','D07'],
     'kontracepsion':['G03A'], 'prostate':['G04C'], 'prostatë':['G04C'],
     'osteoporoze':['M05'], 'osteoporozë':['M05'], 'kocka':['M05'],
@@ -301,9 +301,11 @@
       seen.add(item.code);
       result.push(item);
     };
-    const aliasCodes = Object.entries(SEARCH_ALIASES)
-      .filter(([alias]) => normalize(alias).includes(needle) || needle.includes(normalize(alias)))
-      .flatMap(([,codes]) => codes);
+    const aliasCodes = needle.length >= 3
+      ? Object.entries(SEARCH_ALIASES)
+          .filter(([alias]) => normalize(alias).includes(needle) || needle.includes(normalize(alias)))
+          .flatMap(([,codes]) => codes)
+      : [];
 
     const score = (code, name) => {
       const codeText = normalize(code), nameText = normalize(name);
