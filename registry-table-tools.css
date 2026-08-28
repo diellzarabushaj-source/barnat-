@@ -249,128 +249,15 @@ html[data-theme="dark"] .registry-note-dialog-clear {color:#f0aaa3}
   .registry-note-dialog-overlay{display:none!important}
 }
 
-/* Registry table refinement — 2026-08-20.
-   Keep the legacy controls mounted for runtime compatibility, but remove them
-   from the visible doctor workspace. */
-html.medindex-tailadmin[data-mi-page="barnat"] body :is(.toolbar,#registryFilterPanel) :is(
-  #statusFilter,
-  #pageSize,
-  .selection-badge,
-  #protocolsBtn
-) {
-  display:none!important;
-}
+/* Shtresa blu "Registry table refinement — 2026-08-20" qëndronte pikërisht
+   këtu, mbi 120 rreshta, dhe e vizatonte të njëjtën tabelë si blloku Stripe
+   më poshtë: kokë blu mbi `#f8fbff`, kornizë rreth çdo kolone, butona blu.
+   Dy autoritete në të njëjtin skedar — dhe aty ku e vjetra kishte selektor më
+   specifik, si `td[data-column-key="Emri tregtar"]`, ajo fitonte. Prandaj
+   pamja e vjetër dilte edhe pasi u shkrua e reja.
 
-/* With low-value controls gone, search and the two useful table tools get a
-   calmer, wider command surface instead of a row of cramped pills. */
-html.medindex-tailadmin[data-mi-page="barnat"] body #registryFilterPanel.registry-filter-panel-unified {
-  grid-template-columns:minmax(420px,1fr) auto!important;
-  gap:10px!important;
-  min-height:60px!important;
-  padding:9px 10px!important;
-}
-html.medindex-tailadmin[data-mi-page="barnat"] body #registryFilterPanel .registry-toolbar-secondary,
-html.medindex-tailadmin[data-mi-page="barnat"] body .toolbar {
-  gap:8px!important;
-}
-html.medindex-tailadmin[data-mi-page="barnat"] body #registryFilterPanel :is(
-  .form-picker>button,
-  .col-picker>button,
-  .registry-quick-notes,
-  .registry-quick-favorites
-) {
-  min-height:42px!important;
-  padding-inline:12px!important;
-  border-color:#cbd9ea!important;
-  border-radius:8px!important;
-  background:#fff!important;
-  color:#334155!important;
-  box-shadow:0 1px 1px rgba(15,23,42,.025)!important;
-  font-size:.69rem!important;
-  font-weight:720!important;
-}
-html.medindex-tailadmin[data-mi-page="barnat"] body #registryFilterPanel :is(
-  .form-picker>button,
-  .col-picker>button,
-  .registry-quick-notes,
-  .registry-quick-favorites
-):is(:hover,:focus-visible) {
-  border-color:#93c5fd!important;
-  background:#f8fbff!important;
-  color:#1d4ed8!important;
-}
-
-/* Premium but restrained table frame: clearer hierarchy, cleaner scanning. */
-html.medindex-tailadmin[data-mi-page="barnat"] body #registryContent.table-wrap {
-  overflow:auto!important;
-  border:1px solid #d8e4f1!important;
-  /* 12px — on the 8/12/16 scale the responsive budget enforces. */
-  border-radius:12px!important;
-  background:#fff!important;
-  box-shadow:0 1px 2px rgba(15,23,42,.025),0 14px 34px rgba(37,99,235,.035)!important;
-}
-html.medindex-tailadmin[data-mi-page="barnat"] body #dataTable thead th {
-  border-bottom-color:#cbd9ea!important;
-  background:#f8fbff!important;
-  color:#1f5ed7!important;
-  font-weight:760!important;
-  letter-spacing:.012em!important;
-}
-html.medindex-tailadmin[data-mi-page="barnat"] body #dataTable tbody td {
-  line-height:1.42!important;
-}
-html.medindex-tailadmin[data-mi-page="barnat"] body #dataTable tbody tr:hover>td {
-  background:#f5f9ff!important;
-}
-html.medindex-tailadmin[data-mi-page="barnat"] body #dataTable td[data-column-key="Emri tregtar"] {
-  color:#102a43!important;
-  font-weight:720!important;
-  letter-spacing:-.01em!important;
-}
-html.medindex-tailadmin[data-mi-page="barnat"] body #dataTable td[data-column-key="ATC Code"] {
-  color:#123a78!important;
-  font-variant-numeric:tabular-nums!important;
-}
-
-html[data-theme="dark"].medindex-tailadmin[data-mi-page="barnat"] body #registryFilterPanel :is(
-  .form-picker>button,
-  .col-picker>button,
-  .registry-quick-notes,
-  .registry-quick-favorites
-) {
-  border-color:#34485f!important;
-  background:#172236!important;
-  color:#d8e5f4!important;
-}
-html[data-theme="dark"].medindex-tailadmin[data-mi-page="barnat"] body #registryContent.table-wrap {
-  border-color:#30445d!important;
-  background:#101827!important;
-  box-shadow:0 14px 34px rgba(0,0,0,.16)!important;
-}
-html[data-theme="dark"].medindex-tailadmin[data-mi-page="barnat"] body #dataTable thead th {
-  border-bottom-color:#30445d!important;
-  background:#142033!important;
-  color:#8cb7ff!important;
-}
-html[data-theme="dark"].medindex-tailadmin[data-mi-page="barnat"] body #dataTable tbody tr:hover>td {
-  background:#16243a!important;
-}
-html[data-theme="dark"].medindex-tailadmin[data-mi-page="barnat"] body #dataTable td[data-column-key="Emri tregtar"] {
-  color:#eef5ff!important;
-}
-html[data-theme="dark"].medindex-tailadmin[data-mi-page="barnat"] body #dataTable td[data-column-key="ATC Code"] {
-  color:#b9d3ff!important;
-}
-
-@media(max-width:1100px){
-  html.medindex-tailadmin[data-mi-page="barnat"] body #registryFilterPanel.registry-filter-panel-unified {
-    grid-template-columns:minmax(0,1fr)!important;
-  }
-  html.medindex-tailadmin[data-mi-page="barnat"] body #registryFilterPanel .registry-toolbar-secondary {
-    justify-content:flex-start!important;
-    flex-wrap:wrap!important;
-  }
-}
+   Është hequr. `Admin Stripe Clinical Table v2` më poshtë është i vetmi
+   autoritet vizual i tabelës. */
 
 /* MedIndex — Admin Stripe Clinical Table v2
    Canonical visual authority for the medicines registry.
@@ -721,10 +608,52 @@ html.medindex-tailadmin[data-mi-page="barnat"] body #dataTable td[data-registry-
   font-size:13px!important;
   font-weight:500!important;
   letter-spacing:-.05px!important;
+  /* Emri mbyllet me tri pika në fund të rreshtit të dytë, kurrë në mes të një
+     fjale. Kufizon vetëm numri i rreshtave: një `max-height` paralel ishte
+     pikërisht ajo që e priste rreshtin e dytë përgjysmë më parë.
+
+     `registry-touch-targets.css` i jep butonit `padding-block:12px` me
+     margjinë negative, që gishti të ketë 44px pa u rritur rreshti. Por
+     `overflow:hidden` pret te kutia e mbushjes, jo te ajo e përmbajtjes,
+     prandaj rreshti i tretë dukej gjysmë i pikturuar brenda atyre 12px.
+     `overflow-clip-margin:content-box` e pret aty ku mbaron teksti;
+     `overflow:hidden` mbetet rezervë për motorët pa të. */
+  display:-webkit-box!important;
+  max-height:none!important;
+  overflow:hidden!important;
+  overflow:clip!important;
+  overflow-clip-margin:content-box!important;
+  text-overflow:ellipsis!important;
+  white-space:normal!important;
+  -webkit-box-orient:vertical!important;
+  -webkit-line-clamp:2!important;
 }
 html.medindex-tailadmin[data-mi-page="barnat"] body #dataTable td[data-registry-column-key="active-substance"]{
   color:var(--rst-ink-2)!important;
   font-weight:400!important;
+}
+
+/* Të njëjtin kufizim e marrin edhe kolonat përshkruese. Pa të, një substancë e
+   gjatë e rriste rreshtin nga 68px në 135px dhe ritmi i tabelës prishej.
+
+   `display:-webkit-box` e bën edhe kutinë bllok, që shenja e cilësisë nën të
+   të bjerë në rreshtin e vet — ndryshe teksti dhe shenja ngjiteshin:
+   "ParacetamolKontrollo". */
+html.medindex-tailadmin[data-mi-page="barnat"] body #dataTable tbody :is(
+  td[data-registry-column-key="active-substance"]>span:first-child,
+  td[data-registry-column-key="drug-class"]>span:first-child,
+  td[data-registry-column-key="use"]>span:first-child,
+  td[data-registry-column-key] .registry-cell-value
+){
+  display:-webkit-box!important;
+  max-height:none!important;
+  overflow:hidden!important;
+  overflow:clip!important;
+  overflow-clip-margin:content-box!important;
+  text-overflow:ellipsis!important;
+  white-space:normal!important;
+  -webkit-box-orient:vertical!important;
+  -webkit-line-clamp:2!important;
 }
 html.medindex-tailadmin[data-mi-page="barnat"] body #dataTable td[data-registry-column-key="strength"]{
   color:var(--rst-ink)!important;

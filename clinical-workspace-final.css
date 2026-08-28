@@ -128,32 +128,6 @@ html.medindex-workspace-final #dataTable{
   border-spacing:0!important;
   background:var(--mw-surface)!important;
 }
-html.medindex-workspace-final #dataTable thead th{
-  height:48px!important;
-  padding:0 12px!important;
-  border-right:1px solid rgba(255,255,255,.14)!important;
-  background:var(--mw-primary)!important;
-  color:#fff!important;
-  font-size:.7rem!important;
-  font-weight:800!important;
-  letter-spacing:.045em!important;
-  line-height:1.2!important;
-  vertical-align:middle!important;
-  white-space:nowrap!important;
-}
-html.medindex-workspace-final #dataTable tbody td{
-  min-height:52px!important;
-  padding:10px 12px!important;
-  border-right:1px solid color-mix(in srgb,var(--mw-line) 68%,transparent)!important;
-  border-bottom:1px solid var(--mw-line)!important;
-  background:var(--registry-row-bg,var(--mw-surface))!important;
-  color:var(--mw-text)!important;
-  line-height:1.42!important;
-  vertical-align:middle!important;
-}
-html.medindex-workspace-final #dataTable tbody tr:hover td{
-  background:color-mix(in srgb,var(--mw-primary-soft) 58%,var(--mw-surface))!important;
-}
 html.medindex-workspace-final #dataTable :is(th,td).registry-dosage-column{
   width:340px!important;
   min-width:340px!important;

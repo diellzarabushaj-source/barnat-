@@ -20,29 +20,13 @@ html.medindex-tailadmin[data-mi-page="barnat"] #registryContent{
 html.medindex-tailadmin[data-mi-page="barnat"] #dataTable[data-registry-unified-table] tbody td[data-registry-column-key="trade-name"]{
   color:var(--mi-scan-ink)!important;
 }
-html.medindex-tailadmin[data-mi-page="barnat"] #dataTable[data-registry-unified-table] tbody td[data-registry-column-key="trade-name"] .drug-name-text{
-  display:inline!important;
-  font-size:13.5px!important;
-  font-weight:760!important;
-  line-height:1.25!important;
-  letter-spacing:-.014em!important;
-}
-html.medindex-tailadmin[data-mi-page="barnat"] #dataTable[data-registry-unified-table] tbody td[data-registry-column-key="active-substance"]{
-  color:#42575a!important;
-  font-size:12px!important;
-  font-weight:610!important;
-  line-height:1.38!important;
-}
-html.medindex-tailadmin[data-mi-page="barnat"] #dataTable[data-registry-unified-table] tbody td[data-registry-column-key="strength"]{
-  color:#253d40!important;
-  font-variant-numeric:tabular-nums;
-  font-weight:760!important;
-  letter-spacing:-.01em!important;
-}
-html.medindex-tailadmin[data-mi-page="barnat"] #dataTable[data-registry-unified-table] tbody td[data-registry-column-key="form"]{
-  color:#5b6f72!important;
-  font-size:11.8px!important;
-}
+/* Këtu rrinin katër blloqe që e rivizatonin tipografinë e qelizave mbi
+   `registry-table-tools.css`. Njëri prej tyre — `display:inline` mbi
+   `.drug-name-text` — e shuante kufizimin me rreshta, dhe emri i barit dilte i
+   prerë në mes të shkronjave: "PARACETAMOL / TEST". Selektori këtu ishte më
+   specifik se ai i shtresës Stripe, prandaj fitonte pa u vënë re.
+
+   Tipografia e qelizave i takon tani vetëm shtresës Stripe. */
 
 .registry-scan-meta{
   display:flex;
@@ -229,9 +213,6 @@ html[data-theme="dark"].medindex-tailadmin[data-mi-page="barnat"][data-registry-
 }
 
 @media(max-width:760px){
-  html.medindex-tailadmin[data-mi-page="barnat"] #dataTable[data-registry-unified-table] tbody td[data-registry-column-key="trade-name"] .drug-name-text{
-    font-size:13px!important;
-  }
   .registry-scan-meta{margin-top:6px;gap:4px}
   .registry-scan-atc,.registry-scan-status{height:19px;padding-inline:5px;font-size:9px}
   .registry-scan-status{max-width:74px}
