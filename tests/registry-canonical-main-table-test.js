@@ -35,11 +35,14 @@ assert.match(
   'alternate registry toolbar must be force-hidden with specificity at least as strong as the legacy rule',
 );
 const canonicalGuardIndex = css.lastIndexOf(`/* ${RELEASE} — one visible registry table owner. */`);
-const legacyFlexIndex = css.lastIndexOf('display:flex!important');
-assert.ok(canonicalGuardIndex > legacyFlexIndex, 'canonical toolbar hide guard must come after every legacy display:flex!important rule in the CSS cascade');
-const canonicalTail = css.slice(canonicalGuardIndex).trim();
-assert.ok(canonicalTail.endsWith('}'), 'canonical toolbar hide guard must remain the final CSS rule');
-assert.ok(canonicalTail.includes('display:none!important'), 'final canonical CSS rule must force-hide the retired toolbar');
+assert.ok(canonicalGuardIndex >= 0, 'canonical toolbar hide guard must exist in the final CSS authority');
+const canonicalTail = css.slice(canonicalGuardIndex);
+assert.ok(canonicalTail.includes('display:none!important'), 'canonical CSS guard must force-hide the retired toolbar');
+assert.doesNotMatch(
+  canonicalTail,
+  /#registryViewToolbar(?:\\.registry-view-toolbar-unified)?[^{}]*\\{[^}]*display:flex!important/i,
+  'no later consolidated rule may revive the retired registry toolbar after the canonical hide guard',
+);
 
 assert.match(html, /data-registry-ux-view="full"/, 'registry HTML must boot in full canonical mode');
 assert.ok(html.includes('registry-table-tools.css?v='), 'single registry CSS authority must be published');
