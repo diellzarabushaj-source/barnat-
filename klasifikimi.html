@@ -108,13 +108,13 @@
           <article class="metric-card"><span>Pa klasifikim ATC</span><strong id="metricUnclassified">—</strong><small>Rreshta pa kategori të njohur</small></article>
         </div>
 
-        <nav class="atc-path" id="atcPath" aria-label="Rruga aktive e klasifikimit ATC">
-          <span class="atc-path-label">Rruga ATC</span>
-          <div class="atc-path-items" id="atcPathItems"></div>
-          <a class="atc-path-registry" id="atcPathRegistry" href="/index.html">Hap barnat <span aria-hidden="true">→</span></a>
-        </nav>
-
         <section class="atc-card">
+          <nav class="atc-path" id="atcPath" aria-label="Rruga aktive e klasifikimit ATC">
+            <span class="atc-path-label">Rruga ATC</span>
+            <div class="atc-path-items" id="atcPathItems"></div>
+            <a class="atc-path-registry" id="atcPathRegistry" href="/index.html">Hap barnat <span aria-hidden="true">→</span></a>
+          </nav>
+
           <div class="atc-toolbar">
             <div class="search-box">
               <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="11" cy="11" r="6.5"/><path d="m16 16 4 4"/></svg>
@@ -126,18 +126,9 @@
 
           <div class="atc-status" role="status" aria-live="polite">
             <span id="atcStatusText">Duke ngarkuar klasifikimin…</span>
-            <span id="atcStatusMeta"></span>
           </div>
 
           <div class="atc-workspace" id="atcWorkspace">
-            <aside class="group-panel" aria-label="Grupet anatomike">
-              <div class="panel-heading">
-                <div><span class="panel-kicker">Niveli kryesor</span><h2>Grupet anatomike</h2></div>
-                <span class="panel-count" id="groupCount">14</span>
-              </div>
-              <div class="group-list" id="groupList" role="listbox" aria-label="Zgjidh grupin ATC"></div>
-            </aside>
-
             <section class="category-panel" aria-labelledby="categoryPanelTitle">
               <div id="categoryView">
                 <div class="category-hero" id="categoryHero"></div>
