@@ -18,7 +18,7 @@
   const MOBILE_A11Y_SRC = '/mobile-accessibility-hardening.js?v=mobile-a11y-deep-audit-v1';
   const MOBILE_SIDEBAR_HARDENING_SRC = '/mobile-sidebar-hardening.js?v=mobile-sidebar-deep-audit-v3';
   const OFFLINE_RUNTIME_SRC = '/offline-runtime-performance.js?v=low-bandwidth-v3';
-  const BRAND_SRC = '/medindex-brand-runtime.js?v=profile-unified-v1';
+  const BRAND_SRC = '/medindex-brand-runtime.js?v=drx-brand-v5';
   const ATC_NAV_SRC = '/atc-sidebar.js?v=atc-sidebar-v2';
   const ICD_NAV_SRC = '/icd-sidebar-v3.js?v=icd-sidebar-v3';
   const ATC_SEARCH_SRC = '/atc-global-search.js?v=atc-global-search-v1';
