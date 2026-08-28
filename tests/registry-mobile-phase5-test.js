@@ -8,7 +8,7 @@ const { execFileSync } = require('node:child_process');
 const ROOT = path.resolve(__dirname, '..');
 const read = file => fs.readFileSync(path.join(ROOT, file), 'utf8');
 
-for (const file of ['api/drug-search.js', 'registry-mobile-lite.js', 'registry-mobile-phase3.js', 'registry-mobile-phase3.css', 'index.html']) {
+for (const file of ['api/drug-search.js', 'registry-mobile-lite.js', 'registry-mobile-phase3.js', 'registry-table-tools.css', 'index.html']) {
   assert.ok(fs.existsSync(path.join(ROOT, file)), `${file} is missing`);
 }
 execFileSync(process.execPath, ['--check', path.join(ROOT, 'api/drug-search.js')], { stdio:'pipe' });
@@ -18,7 +18,7 @@ execFileSync(process.execPath, ['--check', path.join(ROOT, 'registry-mobile-phas
 const api = read('api/drug-search.js');
 const lite = read('registry-mobile-lite.js');
 const phase3 = read('registry-mobile-phase3.js');
-const css = read('registry-mobile-phase3.css');
+const css = read('registry-table-tools.css');
 const index = read('index.html');
 
 assert.match(api, /REGISTRY_POPULATIONS = new Set\(\['adult_only', 'pediatric_only', 'both'\]\)/, 'population allow-list is missing');
