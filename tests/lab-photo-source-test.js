@@ -25,7 +25,9 @@ assert.equal(byId('urine-appearance').reference, 'Nuk është shënuar në formu
 
 assert.ok(!fs.existsSync(path.join(ROOT, 'api/labs.js')), 'stale laboratory API must not expose a second contradictory dataset');
 const labsHtml = fs.readFileSync(path.join(ROOT, 'analizat.html'), 'utf8');
-assert.match(labsHtml, /lab-sheet-data\.js/, 'current laboratory UI must use the audited Sheet dataset');
-assert.doesNotMatch(labsHtml, /api\/labs|lab-data\.js/, 'current laboratory UI must not load the archived photo dataset');
+assert.doesNotMatch(labsHtml, /lab-sheet-data\.js|lab-data\.js|analizat\.js|analizat-polish\.css/, 'Analizat V2 must not load archived laboratory runtimes');
+const labsRuntime = fs.readFileSync(path.join(ROOT, 'analizat-v2.js'), 'utf8');
+assert.match(labsRuntime, /\/api\/icd\?dataset=labs/, 'Analizat V2 must read the canonical Supabase laboratory dataset through the authenticated API');
+assert.match(labsRuntime, /Supabase/, 'Analizat V2 runtime must identify Supabase as the canonical source');
 
 console.log('Kosovo laboratory photo-source preservation test passed.');
