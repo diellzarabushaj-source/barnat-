@@ -23,7 +23,7 @@ assert.match(html, /id="emergencySearchClear"/);
 assert.match(html, /id="emergencyResultStatus"/);
 assert.match(html, /id="previousLessonButton"/);
 assert.match(html, /id="nextLessonButton"/);
-assert.match(html, /drx-dashboard-stripe\.css\?v=drx-dashboard-stripe-v3/);
+assert.match(html, /drx-dashboard-stripe\.css\?v=drx-dashboard-stripe-v4/);
 assert.doesNotMatch(html, /tailadmin-|auth-client|emergency-curriculum|medical-hub\.css/);
 
 assert.match(js, /_type == "emergencySection"/);
