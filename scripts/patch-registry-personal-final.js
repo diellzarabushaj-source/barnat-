@@ -86,6 +86,13 @@ require('./patch-registry-observer-budget.js');
 require('./patch-registry-row-actions-menu-phase1.js');
 
 const ROOT = path.resolve(__dirname, '..');
+// Row-actions Phase 1 appends its trigger styles after the first canonical
+// table pass. Re-run the canonical table patch in a fresh process so its
+// hide guard is the final table-toolbar rule in the consolidated CSS cascade.
+execFileSync(process.execPath, [path.join(ROOT, 'scripts', 'patch-registry-canonical-main-table.js')], {
+  cwd:ROOT,
+  stdio:'inherit',
+});
 execFileSync(process.execPath, [path.join(ROOT, 'tests', 'registry-personal-release-gate.js')], {
   cwd:ROOT,
   stdio:'inherit',
