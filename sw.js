@@ -2,7 +2,7 @@
 'use strict';
 
 const VERSION = 'production-audit-v2';
-const CACHE_EPOCH = 'clinical-knowledge-20260829-emergency-v10';
+const CACHE_EPOCH = 'clinical-knowledge-20260829-dosage-v3';
 const CACHE_NAMESPACE = `${VERSION}-${CACHE_EPOCH}`;
 const STATIC_CACHE = `medindex-static-${CACHE_NAMESPACE}`;
 const PAGE_CACHE = `medindex-pages-${CACHE_NAMESPACE}`;
@@ -42,7 +42,7 @@ const APP_SHELL = [
   '/icd-clinical-style-loader.js', '/icd-tailadmin-card-style-loader.js',
   '/analizat-v2.js', '/dozologjia-v2.js', '/urgjencat-v2.js', '/sistemi-v2.js', '/sidebar-taxonomy-v3.js', '/medindex-brand-runtime.js',
   '/clinical-dialog.js', '/dosage-engine.js',
-  '/dozologjia-deep-audit.js', '/sanity-clinical-client.js', '/medical-hub.js', '/protokollet-v2.js', '/recetat-v2.js',
+  '/sanity-clinical-client.js', '/medical-hub.js', '/protokollet-v2.js', '/recetat-v2.js',
   '/prescription-format-core.js', '/signature-templates.js',
   '/login.js', '/data/registry-quality.js',
   '/data/protocols.json'
