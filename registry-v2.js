@@ -123,7 +123,7 @@
       state.total = Number.isFinite(Number(payload.pagination?.total)) ? Number(payload.pagination.total) : null;
       state.totalPages = Number.isFinite(Number(payload.pagination?.totalPages)) ? Number(payload.pagination.totalPages) : null;
       el.sourceStatus.textContent = response.headers.get('X-MedIndex-Data-Source') || 'Neon · aktiv';
-      el.syncText.textContent = response.headers.get('X-MedIndex-Data-Source') || 'Neon';
+      el.syncText.textContent = response.headers.get('X-MedIndex-Data-Source') || 'Supabase';
       state.dosageByRegistry.clear();
       renderRows();
       updateSummary(Math.round(performance.now() - startedAt));
