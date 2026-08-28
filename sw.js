@@ -2,7 +2,7 @@
 'use strict';
 
 const VERSION = 'production-audit-v2';
-const CACHE_EPOCH = 'clinical-knowledge-20260829-recetat-v2';
+const CACHE_EPOCH = 'clinical-knowledge-20260829-clinical-v2';
 const CACHE_NAMESPACE = `${VERSION}-${CACHE_EPOCH}`;
 const STATIC_CACHE = `medindex-static-${CACHE_NAMESPACE}`;
 const PAGE_CACHE = `medindex-pages-${CACHE_NAMESPACE}`;
@@ -25,10 +25,9 @@ const APP_SHELL = [
   '/tailadmin-professional.css', '/registry-table-tools.css', '/medical-hub.css', '/clinical-knowledge.css', '/clinical-density.css',
   '/classification.css', '/classification-nav-fix.css', '/registry-quality.css',
   '/clinical-reference.css', '/analizat-v2.css', '/drx-dashboard-stripe.css',
-  '/protokollet-v2.css', '/recetat-v2.css',
+  '/protokollet-v2.css', '/recetat-v2.css', '/dozologjia-v2.css',
   '/icd-premium-cards.css', '/icd-clinical-workspace.css', '/icd-tailadmin-cards-v2.css',
-  '/dozologjia-verified-cards.css', '/dozologjia-simple-workflow.css',
-  '/dozologjia-safety-enhancements.css', '/dozologjia-clinical-readiness.css',
+  
   '/signature-templates.css', '/login.css',
   '/tailadmin-shell.js', '/tailadmin-shell-legacy.js', '/tailadmin-professional.js',
   '/mobile-experience.js', '/offline-runtime.js', '/clinical-workflow.js',
@@ -41,8 +40,8 @@ const APP_SHELL = [
   '/classification-info-v3.js', '/icd-data.js', '/icd.js',
   '/icd-premium-cards.js', '/icd-clinical-workspace.js',
   '/icd-clinical-style-loader.js', '/icd-tailadmin-card-style-loader.js',
-  '/analizat-v2.js', '/sidebar-taxonomy-v3.js', '/medindex-brand-runtime.js',
-  '/clinical-dialog.js', '/dosage-engine.js', '/dozologjia.js',
+  '/analizat-v2.js', '/dozologjia-v2.js', '/sidebar-taxonomy-v3.js', '/medindex-brand-runtime.js',
+  '/clinical-dialog.js', '/dosage-engine.js',
   '/dozologjia-deep-audit.js', '/sanity-clinical-client.js', '/urgjencat.js', '/medical-hub.js', '/protokollet-v2.js', '/recetat-v2.js',
   '/prescription-format-core.js', '/signature-templates.js',
   '/login.js', '/data/registry-quality.js',
