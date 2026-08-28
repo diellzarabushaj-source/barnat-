@@ -157,7 +157,25 @@ assert.match(labHtml, /analizat\.js\?v=20260727-neon1/);
   /html\[data-theme=dark\]\.medindex-tailadmin/,
   /@media\(max-width:640px\)/,
 ].forEach(pattern => assert.match(labCss, pattern, `laboratory CSS missing ${pattern}`));
-assert.ok((labRuntime.match(/accent:'#/g) || []).length >= 14, 'Every laboratory category must have its own colour theme');
+/* Ky pohim kërkonte të kundërtën: një temë ngjyre për secilën nga
+   katërmbëdhjetë kategoritë laboratorike. E matur në shfletues, kjo nxirrte
+   nëntë familje ngjyrash të ngopura mbi një faqe të vetme — vjollcë, blu,
+   trëndafil, portokalli, indigo, e kuqe, jeshile, cian, teal — dhe e bënte
+   Analizat të dukeshin si aplikacion tjetër nga pjesa tjetër e DRx-it.
+
+   Ngjyra nuk mbante informacion: kategoria lexohet nga emri dhe nga numri i
+   saj. Dallimi me ngjyrë ruhet vetëm aty ku ngatërrimi është i rrezikshëm —
+   doza e të rriturve kundrejt asaj pediatrike — dhe ai rri te shtresa e
+   dozimit, jo te kategoritë.
+
+   Kontrata tani është e kundërta, dhe `scripts/audit-clinical-accents.js` e
+   mat atë mbi faqen e ndezur. */
+assert.equal(
+  (labRuntime.match(/accent:'#/g) || []).length,
+  1,
+  'Laboratory categories share the one clinical accent; per-category hues are what the accent gate exists to stop'
+);
+assert.match(labRuntime, /accent:'#1f7779'/, 'the shared laboratory accent must be the clinical teal of the design system');
 [
   /return 'blood'/,
   /return 'microscope'/,

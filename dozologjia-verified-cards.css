@@ -7,10 +7,16 @@ html.medindex-tailadmin[data-mi-page="dozologjia"] {
   --dose-ink:#101828;
   --dose-muted:#667085;
   --dose-soft:#f8fafc;
-  --dose-adult:#0e7375;
-  --dose-adult-soft:#eaf7f5;
-  --dose-child:#6941c6;
-  --dose-child-soft:#f4f0ff;
+  /* I rrituri dhe fëmija duhet të dallohen — por me të njëjtat dy ngjyra
+     kudo. Regjistri e vizatonte pediatrinë blu, kjo faqe vjollcë; një mjek
+     që mëson "pediatria është blu" te tabela e gjente vjollcë te
+     kalkulatori. Për një sinjal sigurie, mospërputhja është më e keqe se
+     secila zgjedhje veç e veç. Teal-i klinik për të rriturit, blu për
+     fëmijët, si te `registry-ux-phase2.css`. */
+  --dose-adult:#1f7779;
+  --dose-adult-soft:#eaf4f1;
+  --dose-child:#2f6fb2;
+  --dose-child-soft:#eef5fb;
   --dose-warning:#b54708;
 }
 
@@ -91,8 +97,8 @@ html.medindex-tailadmin[data-mi-page="dozologjia"] .clinical-status {
   margin:0 0 12px !important;
   padding:0 10px;
   border-radius:999px;
-  background:#eef4ff;
-  color:#3538cd !important;
+  background:var(--ck-soft-2,#f2f4f7);
+  color:var(--ck-blue-strong,#155f63) !important;
   font-size:10px !important;
   font-weight:650;
 }
@@ -351,8 +357,8 @@ html.medindex-tailadmin[data-mi-page="dozologjia"] .dosage-calculation-item {
 html.medindex-tailadmin[data-mi-page="dozologjia"] .dosage-calculation-item b {
   display:block;
   margin-bottom:2px;
-  color:#6941c6;
-  font-size:8px;
+  color:var(--dose-child);
+  font-size:9px;
   text-transform:uppercase;
 }
 

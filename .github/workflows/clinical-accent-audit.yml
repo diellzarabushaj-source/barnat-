@@ -1,0 +1,62 @@
+name: Clinical accent audit
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  clinical-accents:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          version: 10.28.0
+          run_install: false
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          cache: pnpm
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile --ignore-scripts
+
+      - name: Build audited runtime
+        run: pnpm run build:runtime
+
+      # Nuanca e vizatuar është e njëjtë në të dy motorët, prandaj kjo portë
+      # mjaftohet me Chromium — si porta responsive.
+      - name: Install Chromium
+        shell: bash
+        run: |
+          set -euo pipefail
+          pnpm exec playwright install --with-deps chromium > /tmp/clinical-accents-playwright-install.log 2>&1 \
+            || { tail -200 /tmp/clinical-accents-playwright-install.log; exit 1; }
+
+      - name: Run clinical accent gate
+        shell: bash
+        run: |
+          set -euo pipefail
+          node scripts/audit-clinical-accents.js | tee /tmp/clinical-accents.log
+
+      - name: Upload measurements
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: clinical-accent-measurements
+          path: |
+            /tmp/clinical-accents.log
+            /tmp/clinical-accents-playwright-install.log
+          if-no-files-found: warn
+          retention-days: 7

@@ -78,8 +78,8 @@ html.medindex-tailadmin[data-mi-page="dozologjia"] .dosage-regimen-provenance :i
   text-decoration:none;
 }
 html.medindex-tailadmin[data-mi-page="dozologjia"] .dosage-regimen-provenance a {
-  background:#eef4ff;
-  color:#3538cd;
+  background:var(--ck-soft-2,#f2f4f7);
+  color:var(--ck-blue-strong,#155f63);
 }
 html.medindex-tailadmin[data-mi-page="dozologjia"] .dosage-readiness {
   margin-top:10px;
