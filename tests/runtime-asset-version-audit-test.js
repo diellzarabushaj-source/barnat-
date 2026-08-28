@@ -4,7 +4,7 @@ const path = require('node:path');
 
 const ROOT = path.resolve(__dirname, '..');
 const read = file => fs.readFileSync(path.join(ROOT, file), 'utf8');
-const pages = ['index.html', 'klasifikimi.html', 'icd.html', 'dozologjia.html', 'recetat.html'];
+const pages = ['index.html', 'klasifikimi.html', 'icd.html', 'dozologjia.html'];
 
 
 const labs = read('analizat.html');
@@ -18,6 +18,12 @@ assert.match(protocols, /protokollet-v2\.css\?v=1/, 'protokollet.html: V2 styles
 assert.match(protocols, /protokollet-v2\.js\?v=1/, 'protokollet.html: V2 runtime version is stale');
 assert.match(protocols, /drx-dashboard-stripe\.css\?v=drx-dashboard-stripe-v4/, 'protokollet.html: canonical Stripe shell is missing');
 assert.doesNotMatch(protocols, /auth-client\.js|tailadmin-|protocol-reader\.css|protocol-interactive\.css|protokollet\.js/, 'protokollet.html: legacy protocol runtime must stay removed');
+
+const prescriptions = read('recetat.html');
+assert.match(prescriptions, /recetat-v2\.css\?v=1/, 'recetat.html: V2 stylesheet version is stale');
+assert.match(prescriptions, /recetat-v2\.js\?v=1/, 'recetat.html: V2 runtime version is stale');
+assert.match(prescriptions, /drx-dashboard-stripe\.css\?v=drx-dashboard-stripe-v4/, 'recetat.html: canonical Stripe shell is missing');
+assert.doesNotMatch(prescriptions, /auth-client\.js|tailadmin-|recetat-style-loader\.js|recetat\.css|recetat\.js/, 'recetat.html: legacy prescription runtime must stay removed');
 
 for (const page of pages) {
   const html = read(page);
