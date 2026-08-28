@@ -308,7 +308,12 @@ async function waitForRequestCount(requestLog, predicate, minimum, timeoutMs = 3
     const clearStarted = Date.now();
     await search.fill('');
     await waitForRequestCount(requestLog, item => item.view === 'registry-page' && item.q === '' && item.includeTotal === '1', 2);
-    await page.locator('#pagination .mobile-lite-page-label').waitFor({ state:'visible', timeout:3000 });
+    /* Etiketa e faqes quhet `.registry-pagination-summary` tani. Klasa e
+       mëparshme, `.mobile-lite-page-label`, nuk prodhohet më nga asnjë rresht
+       kodi pas rishkrimeve v2→v5 të faqosjes: një kontroll mbi krejt repon,
+       përfshirë runtime-in e ndërtuar, e gjen vetëm te dy CSS të mbetura dhe
+       te ky audit. Butoni `[data-mobile-lite-page]` mbetet siç ishte. */
+    await page.locator('#pagination .registry-pagination-summary').waitFor({ state:'visible', timeout:3000 });
     const clearSearchSettleMs = elapsed(clearStarted);
 
     const statusRowsBefore = rowRequests().length;
@@ -334,8 +339,12 @@ async function waitForRequestCount(requestLog, predicate, minimum, timeoutMs = 3
     const paginationStarted = Date.now();
     await page.locator('#pagination [data-mobile-lite-page="next"]').click();
     await waitForRequestCount(requestLog, item => item.view === 'registry-page' && item.page === 2, 1);
-    await page.locator('#pagination .mobile-lite-page-label').filter({ hasText:'Faqja 2' }).waitFor({ state:'visible', timeout:3000 });
-    assert.match(await page.locator('#pagination .mobile-lite-page-label').innerText(), /Faqja 2/);
+    await page.locator('#pagination .registry-pagination-summary strong').filter({ hasText:'2' }).waitFor({ state:'visible', timeout:3000 });
+    /* Etiketa dhe numri janë dy elemente të veçanta brenda një grid-i, ndaj
+       `innerText` i fut me rresht të ri; hapësirat normalizohen që pohimi të
+       mbetet i njëjti pohim, jo një pohim për paraqitjen. */
+    const pageSummaryText = (await page.locator('#pagination .registry-pagination-summary').innerText()).replace(/\s+/g, ' ').trim();
+    assert.match(pageSummaryText, /Faqja 2/);
     const paginationSettleMs = elapsed(paginationStarted);
     assert.equal(rowRequests().length - paginationRowsBefore, 1, 'Pagination should produce exactly one registry-page request.');
     assert.equal(countRequests().length - paginationCountsBefore, 0, 'Turning a page must reuse the count already known.');
