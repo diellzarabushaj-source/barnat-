@@ -1,90 +1,203 @@
 <!doctype html>
-<html lang="sq" class="auth-checking medindex-clean-ui medindex-tailadmin">
+<html lang="sq" class="drx-unified-sidebar" data-drx-app="analizat-v2">
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-  <meta name="description" content="DRx — 111 analiza laboratorike të organizuara në 14 kategori, sipas emrit në formular.">
   <meta name="robots" content="noindex,nofollow,noarchive">
   <meta name="theme-color" content="#1c1e54">
-  <link rel="manifest" href="manifest.webmanifest">
-  <title>DRx | Analizat laboratorike — Dr. Diellza Rabushaj</title>
+  <title>DRx | Analizat</title>
+  <link rel="icon" href="/brand/drx-mark-on-light.svg" type="image/svg+xml">
   <link rel="preload" href="/fonts/inter-latin-variable-normal.woff2" as="font" type="font/woff2" crossorigin>
-  <link rel="stylesheet" href="drx-clinical-system.css?v=drx-clinical-system-v1">
-  <link rel="stylesheet" href="medical-hub.css?v=20260723-1">
-  <link rel="stylesheet" href="app-polish.css?v=20260728-1">
-  <link rel="stylesheet" href="analizat-polish.css?v=20260725-1">
-  <link rel="stylesheet" href="performance.css?v=20260723-1">
-  <link rel="stylesheet" href="clean-medindex-ui.css?v=20260723-1">
-  <link rel="stylesheet" href="clinical-density.css?v=20260724-1">
-  <link rel="stylesheet" href="tailadmin-medindex.css?v=20260728-1" data-tailadmin-medindex-css>
-  <link rel="preload" href="analizat-tailwind-cards-v2.css?v=20260726-1" as="style">
-<link rel="stylesheet" href="tailadmin-professional.css?v=20260728-1" data-tailadmin-professional-css>
-  <link rel="stylesheet" href="drx-dashboard-stripe.css?v=drx-dashboard-stripe-v4">
-  <script src="tailadmin-shell.js?v=shell-profile-v4" defer></script>
-  <script src="tailadmin-professional.js?v=production-audit-v2" defer></script>
-  <script src="analizat-clinical-style-loader.js?v=20260726-4" defer></script>
+  <link rel="stylesheet" href="/analizat-v2.css?v=1">
+  <link rel="stylesheet" href="/drx-dashboard-stripe.css?v=drx-dashboard-stripe-v4">
 </head>
 <body>
-  <a class="skip-link" href="#labContent">Kalo te analizat</a>
-  <div class="med-shell">
-    <nav class="med-nav" aria-label="Navigimi kryesor">
-      <a class="med-nav-link" href="index.html"><span class="med-nav-icon"><svg fill="none" viewBox="0 0 256 256" aria-hidden="true"><path d="M213 110 133 37a8 8 0 0 0-11 0l-79 73a8 8 0 0 0-3 6v92a8 8 0 0 0 8 8h160a8 8 0 0 0 8-8v-92a8 8 0 0 0-3-6Z" stroke="currentColor" stroke-width="16"/></svg></span><span class="med-nav-title">Barnat</span></a>
-      <a class="med-nav-link" href="klasifikimi.html"><span class="med-nav-icon"><svg fill="none" viewBox="0 0 256 256" aria-hidden="true"><rect x="36" y="36" width="76" height="76" rx="14" stroke="currentColor" stroke-width="16"/><rect x="144" y="36" width="76" height="76" rx="14" stroke="currentColor" stroke-width="16"/><rect x="36" y="144" width="76" height="76" rx="14" stroke="currentColor" stroke-width="16"/><rect x="144" y="144" width="76" height="76" rx="14" stroke="currentColor" stroke-width="16"/></svg></span><span class="med-nav-title">Klasifikimi</span></a>
-      <a class="med-nav-link" href="icd.html"><span class="med-nav-icon"><svg fill="none" viewBox="0 0 256 256" aria-hidden="true"><path d="M48 32h112l48 48v144H48V32Z" stroke="currentColor" stroke-width="16"/><path d="M160 32v48h48M80 120h96M80 160h96M80 200h64" stroke="currentColor" stroke-width="16" stroke-linecap="round"/></svg></span><span class="med-nav-title">ICD</span></a>
-      <a class="med-nav-link active" href="analizat.html" aria-current="page"><span class="med-nav-icon"><svg fill="none" viewBox="0 0 256 256" aria-hidden="true"><path d="M96 24h64M112 24v64l-56 96a32 32 0 0 0 28 48h88a32 32 0 0 0 28-48l-56-96V24" stroke="currentColor" stroke-width="16"/><path d="M78 176h100" stroke="currentColor" stroke-width="16"/></svg></span><span class="med-nav-title">Analizat</span></a>
-      <a class="med-nav-link" href="recetat.html"><span class="med-nav-icon"><svg fill="none" viewBox="0 0 256 256" aria-hidden="true"><path d="M64 40h128a16 16 0 0 1 16 16v160H48V56a16 16 0 0 1 16-16Z" stroke="currentColor" stroke-width="16"/><path d="M80 88h96M80 128h96M80 168h64" stroke="currentColor" stroke-width="16" stroke-linecap="round"/></svg></span><span class="med-nav-title">Recetat</span></a>
-      <div class="med-theme"><span>Tema</span><button id="themeButton" type="button" aria-label="Ndërro temën">☾</button></div>
-    </nav>
+  <a class="sr-only" href="#labPlan">Kalo te paneli i analizave</a>
+  <div class="app-shell" id="appShell" aria-busy="true">
+    <aside class="sidebar" id="sidebar" aria-label="Navigimi kryesor">
+      <div class="sidebar-head">
+        <a class="brand" href="/index.html" aria-label="DRx — Regjistri">
+          <img src="/brand/drx-horizontal-on-dark.svg" alt="DRx" width="112" height="33">
+        </a>
+        <button class="icon-button sidebar-close" id="sidebarClose" type="button" aria-label="Mbyll menynë">
+          <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6.4 6.4 17.6 17.6M17.6 6.4 6.4 17.6"/></svg>
+        </button>
+      </div>
 
-    <main class="med-main" id="labContent" tabindex="-1">
-      <header class="med-hero lab-hero">
-        <div>
-          <p class="med-kicker">DRx · Qasje e shpejtë klinike</p>
-          <h1>Analizat laboratorike</h1>
-          <p>Titulli kryesor i çdo analize është identik me kolonën <strong>“Emri në formular”</strong>. Të dhënat runtime lexohen nga Neon Postgres dhe sinkronizohen nga Google Sheet-i i aprovuar.</p>
+      <nav class="nav-stack">
+        <p class="nav-label">Klinike</p>
+        <a class="nav-item" href="/index.html"><span class="nav-icon" aria-hidden="true"><svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7 20V9h3.6a2.9 2.9 0 0 1 0 5.8H7"/><path d="m11.4 14.8 4.1 5.2"/><path d="m15.2 9.4 4.4 4.4M19.6 9.4l-4.4 4.4"/><path d="M4 4h6"/></svg></span><span>Barnat</span></a>
+        <details class="nav-group" id="atcNavGroup">
+          <summary class="nav-item nav-summary">
+            <span class="nav-icon" aria-hidden="true"><svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3.5" y="3.5" width="7" height="7" rx="1.6"/><rect x="13.5" y="3.5" width="7" height="7" rx="1.6"/><rect x="3.5" y="13.5" width="7" height="7" rx="1.6"/><rect x="13.5" y="13.5" width="7" height="7" rx="1.6"/></svg></span>
+            <span>Klasifikimi ATC</span>
+            <span class="nav-summary-chevron" aria-hidden="true"><svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m7 10 5 5 5-5"/></svg></span>
+          </summary>
+          <div class="atc-group-list">
+            <a class="atc-group-link is-all" href="/klasifikimi.html"><span class="atc-group-code">14</span><span class="atc-group-name">Të gjitha grupet</span></a>
+            <a class="atc-group-link" href="/klasifikimi.html#A" data-atc-group="A"><span class="atc-group-code">A</span><span class="atc-group-name">Tretja dhe metabolizmi</span></a>
+            <a class="atc-group-link" href="/klasifikimi.html#B" data-atc-group="B"><span class="atc-group-code">B</span><span class="atc-group-name">Gjaku dhe organet gjakformuese</span></a>
+            <a class="atc-group-link" href="/klasifikimi.html#C" data-atc-group="C"><span class="atc-group-code">C</span><span class="atc-group-name">Sistemi kardiovaskular</span></a>
+            <a class="atc-group-link" href="/klasifikimi.html#D" data-atc-group="D"><span class="atc-group-code">D</span><span class="atc-group-name">Barna dermatologjike</span></a>
+            <a class="atc-group-link" href="/klasifikimi.html#G" data-atc-group="G"><span class="atc-group-code">G</span><span class="atc-group-name">Gjenitourinar dhe hormonet seksuale</span></a>
+            <a class="atc-group-link" href="/klasifikimi.html#H" data-atc-group="H"><span class="atc-group-code">H</span><span class="atc-group-name">Hormonet sistemike</span></a>
+            <a class="atc-group-link" href="/klasifikimi.html#J" data-atc-group="J"><span class="atc-group-code">J</span><span class="atc-group-name">Antiinfektivë sistemikë</span></a>
+            <a class="atc-group-link" href="/klasifikimi.html#L" data-atc-group="L"><span class="atc-group-code">L</span><span class="atc-group-name">Antineoplastikë dhe imunomodulues</span></a>
+            <a class="atc-group-link" href="/klasifikimi.html#M" data-atc-group="M"><span class="atc-group-code">M</span><span class="atc-group-name">Sistemi muskuloskeletal</span></a>
+            <a class="atc-group-link" href="/klasifikimi.html#N" data-atc-group="N"><span class="atc-group-code">N</span><span class="atc-group-name">Sistemi nervor</span></a>
+            <a class="atc-group-link" href="/klasifikimi.html#P" data-atc-group="P"><span class="atc-group-code">P</span><span class="atc-group-name">Barna antiparazitare</span></a>
+            <a class="atc-group-link" href="/klasifikimi.html#R" data-atc-group="R"><span class="atc-group-code">R</span><span class="atc-group-name">Sistemi respirator</span></a>
+            <a class="atc-group-link" href="/klasifikimi.html#S" data-atc-group="S"><span class="atc-group-code">S</span><span class="atc-group-name">Organet shqisore</span></a>
+            <a class="atc-group-link" href="/klasifikimi.html#V" data-atc-group="V"><span class="atc-group-code">V</span><span class="atc-group-name">Produkte të ndryshme</span></a>
+          </div>
+        </details>
+        <a class="nav-item" href="/icd.html"><span class="nav-icon" aria-hidden="true"><svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 4h9l4 4v12a1 1 0 0 1-1 1H6a1 1 0 0 1-1-1V5a1 1 0 0 1 1-1Z"/><path d="M14 4v5h5"/><path d="M8.5 13h7M8.5 16.5h4.5"/></svg></span><span>ICD‑10</span></a>
+        <a class="nav-item" href="/dozologjia.html"><span class="nav-icon" aria-hidden="true"><svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 4v16"/><path d="M6 8h12"/><path d="M6 8 3 15a3 3 0 0 0 6 0Z"/><path d="M18 8l-3 7a3 3 0 0 0 6 0Z"/></svg></span><span>Dozologjia</span></a>
+        <a class="nav-item" href="/protokollet.html"><span class="nav-icon" aria-hidden="true"><svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M8 4h8a1 1 0 0 1 1 1v15a1 1 0 0 1-1 1H8a1 1 0 0 1-1-1V5a1 1 0 0 1 1-1Z"/><path d="M10 3.5h4v2h-4z"/><path d="m9.8 12 1.6 1.6 3-3.2"/><path d="M9.8 17h4.6"/></svg></span><span>Protokollet</span></a>
+        <a class="nav-item" href="/urgjencat.html"><span class="nav-icon" aria-hidden="true"><svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 4.6 2.9 20a1 1 0 0 0 .87 1.5h16.46A1 1 0 0 0 21.1 20L12 4.6Z"/><path d="M12 10v4.4"/><path d="M12 18h.01"/></svg></span><span>Urgjencat</span></a>
+
+        <p class="nav-label nav-label-spaced">Puna ime</p>
+        <a class="nav-item" href="/recetat.html"><span class="nav-icon" aria-hidden="true"><svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 3h8l4.5 4.5V20a1 1 0 0 1-1 1H6a1 1 0 0 1-1-1V4a1 1 0 0 1 1-1Z"/><path d="M14 3v5h5"/><path d="M8.5 12.5h7M8.5 16h4.5"/></svg></span><span>Recetat</span></a>
+        <a class="nav-item is-active" href="/analizat.html" aria-current="page"><span class="nav-icon" aria-hidden="true"><svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9.5 3v6.2L4.8 17.6A2.4 2.4 0 0 0 6.9 21h10.2a2.4 2.4 0 0 0 2.1-3.4L14.5 9.2V3"/><path d="M8.5 3h7"/><path d="M7.3 14.5h9.4"/></svg></span><span>Analizat</span></a>
+        <a class="nav-item" href="/medical-hub.html"><span class="nav-icon" aria-hidden="true"><svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="8.4"/><path d="M12 8.4v7.2M8.4 12h7.2"/></svg></span><span>Medical Hub</span></a>
+      </nav>
+
+      <div class="sidebar-foot">
+        <span id="sourceStatus" class="sr-only">Duke u lidhur…</span>
+        <button class="drx-user-card mi-user-card" id="sidebarProfileButton" type="button" data-mi-profile-trigger aria-label="Hap profilin">
+          <span class="mi-user-avatar drx-user-avatar">DR</span>
+          <span class="mi-user-copy drx-user-copy"><strong>Llogaria</strong><small></small></span>
+          <span class="drx-user-arrow" aria-hidden="true"><svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="m9 5 7 7-7 7"/></svg></span>
+        </button>
+        <button class="nav-item logout-button" id="logoutButton" type="button"><span class="nav-icon" aria-hidden="true"><svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M14.5 4.5h3a2 2 0 0 1 2 2v11a2 2 0 0 1-2 2h-3"/><path d="M10 16.5 14.5 12 10 7.5"/><path d="M14.5 12h-10"/></svg></span><span>Dil</span></button>
+      </div>
+    </aside>
+    <div class="sidebar-backdrop" id="sidebarBackdrop" hidden></div>
+    <main class="main-shell">
+      <header class="topbar">
+        <button class="icon-button menu-button" id="menuButton" type="button" aria-label="Hap menynë"><svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><path d="M4 7h16M4 12h16M4 17h16"/></svg></button>
+        <div class="breadcrumbs"><span>DRx</span><span class="crumb-sep">/</span><strong>Analizat</strong></div>
+        <div class="topbar-actions">
+          <span class="sync-pill"><span class="sync-dot"></span><span id="syncText">Sanity</span></span>
+          <button class="drx-profile-chip mi-profile-chip" id="profileButton" type="button" data-mi-profile-trigger aria-label="Hap profilin">
+            <span class="mi-user-avatar drx-user-avatar avatar-button" id="avatarInitials">DR</span>
+            <span class="drx-profile-copy"><strong>Llogaria</strong><small></small></span>
+          </button>
         </div>
-        <div class="lab-hero-stat" aria-label="Përmbledhje"><strong id="heroTestCount">111</strong><span>analiza</span><strong id="heroCategoryCount">14</strong><span>kategori</span></div>
       </header>
 
-      <div class="med-notice lab-sheet-note" id="sheetNote">Duke e ngarkuar shënimin e burimit…</div>
+      <div class="page-wrap lab-order-page">
+        <header class="page-heading lab-order-heading">
+          <div>
+            <p class="eyebrow">Clinical laboratory · order builder</p>
+            <h1>Analizat</h1>
+            <p class="page-subtitle">Zgjidh një ose disa diagnoza dhe DRx ndërton një panel laboratorik të deduplikuar, me arsyen klinike për secilën analizë.</p>
+          </div>
+          <div class="lab-header-stats" aria-label="Përmbledhja e katalogut">
+            <span><strong id="labTestTotal">—</strong> analiza</span>
+            <span><strong id="labIndicationTotal">—</strong> profile klinike</span>
+          </div>
+        </header>
 
-      <section class="lab-quickbar" role="search" aria-label="Kërkimi i shpejtë i analizave">
-        <div class="lab-search-wrap">
-          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="m21 21-4.35-4.35m2.35-5.65a8 8 0 1 1-16 0 8 8 0 0 1 16 0Z" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
-          <input id="labSearch" type="search" placeholder="Kërko emrin në formular, shkurtesën, organin ose diagnozën…" autocomplete="off" enterkeyhint="search" aria-label="Kërko analizën">
-          <kbd>/</kbd>
-          <button id="labClear" type="button" aria-label="Pastro kërkimin" hidden>×</button>
-        </div>
-        <select id="labCategory" aria-label="Filtro kategorinë"><option value="">Të gjitha kategoritë</option></select>
-        <span class="med-count" id="labCount" aria-live="polite">111 analiza</span>
-      </section>
+        <section class="lab-builder" aria-labelledby="labBuilderTitle">
+          <div class="lab-builder-head">
+            <div>
+              <span class="lab-builder-kicker">01 · Diagnozat</span>
+              <h2 id="labBuilderTitle">Ndërto panelin laboratorik</h2>
+              <p>Zgjidh diagnozat nga dropdown-i. Analizat e përbashkëta bashkohen automatikisht.</p>
+            </div>
+            <button class="lab-clear-plan" id="labClearPlan" type="button">Pastro</button>
+          </div>
 
-      <nav class="lab-category-nav" id="labCategoryNav" aria-label="Kalo shpejt te kategoria"></nav>
-      <p class="lab-status" id="labStatus" role="status" aria-live="polite"></p>
+          <div class="lab-builder-grid">
+            <div class="lab-disease-picker" id="labDiseasePicker">
+              <button class="lab-disease-trigger" id="labDiseaseTrigger" type="button" aria-expanded="false" aria-controls="labDiseasePopover">
+                <span class="lab-trigger-icon" aria-hidden="true">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><path d="M12 3v18M3 12h18"/></svg>
+                </span>
+                <span class="lab-trigger-copy">
+                  <small>Diagnozat / sëmundjet</small>
+                  <strong id="labDiseaseTriggerText">Zgjidh diagnoza…</strong>
+                </span>
+                <svg class="lab-trigger-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" aria-hidden="true"><path d="m7 10 5 5 5-5"/></svg>
+              </button>
 
-      <section aria-labelledby="labSectionTitle">
-        <div class="med-section-head lab-main-head">
-          <div><h2 id="labSectionTitle">Të gjitha kategoritë</h2><p id="labSectionSubtitle">111 analiza të renditura sipas kategorive të burimit editorial.</p></div>
-          <a class="lab-sheet-link" id="sheetLink" href="https://docs.google.com/spreadsheets/d/1sGEWsDYnVE1VThLUpfSs2Q0UIjXZZRzxXTHXDvn7p8I/edit?usp=sharing" target="_blank" rel="noopener noreferrer">Hape Sheet-in ↗</a>
-        </div>
-        <div id="labSections" aria-live="polite" aria-busy="true"></div>
-      </section>
+              <div class="lab-disease-popover" id="labDiseasePopover" hidden>
+                <div class="lab-picker-search">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" aria-hidden="true"><circle cx="11" cy="11" r="6.7"/><path d="m16 16 4.2 4.2"/></svg>
+                  <input id="labDiseaseSearch" type="search" autocomplete="off" spellcheck="false" placeholder="Kërko sëmundjen ose ICD…" aria-label="Kërko diagnozën">
+                </div>
+                <div class="lab-disease-list" id="labDiseaseList" role="listbox" aria-label="Diagnozat e disponueshme"></div>
+              </div>
+            </div>
+
+            <div class="lab-manual-picker" id="labManualPicker">
+              <div class="lab-manual-search">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" aria-hidden="true"><circle cx="11" cy="11" r="6.7"/><path d="m16 16 4.2 4.2"/></svg>
+                <input id="labManualSearch" type="search" autocomplete="off" spellcheck="false" placeholder="Shto analizë manualisht…" aria-label="Shto analizë manualisht">
+                <kbd>⌘ K</kbd>
+              </div>
+              <div class="lab-manual-results" id="labManualResults" hidden></div>
+            </div>
+          </div>
+
+          <div class="lab-selected-diseases" id="labSelectedDiseases" aria-live="polite">
+            <span class="lab-selected-empty">Nuk ke zgjedhur ende diagnozë.</span>
+          </div>
+        </section>
+
+        <section class="lab-plan-layout" id="labPlan">
+          <article class="lab-plan-card">
+            <header class="lab-plan-head">
+              <div>
+                <span class="lab-builder-kicker">02 · Paneli</span>
+                <h2>Analizat për t’u kërkuar</h2>
+                <p id="labPlanStatus">Zgjidh një diagnozë për të krijuar panelin.</p>
+              </div>
+              <div class="lab-plan-actions">
+                <span class="lab-plan-count"><strong id="labSelectedTestCount">0</strong> të zgjedhura</span>
+                <button id="labCopyPlan" type="button" disabled>Kopjo listën</button>
+              </div>
+            </header>
+            <div class="lab-plan-sections" id="labPlanSections">
+              <div class="lab-plan-empty">
+                <span class="lab-empty-icon" aria-hidden="true">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M9 3h6M10 3v6l-5 9a2 2 0 0 0 2 3h10a2 2 0 0 0 2-3l-5-9V3"/><path d="M7.5 16h9"/></svg>
+                </span>
+                <strong>Zgjidh diagnozat sipër.</strong>
+                <span>DRx do t’i bashkojë analizat e nevojshme dhe do ta shpjegojë pse sugjerohet secila.</span>
+              </div>
+            </div>
+          </article>
+
+          <aside class="lab-summary-card" aria-labelledby="labSummaryTitle">
+            <div class="lab-summary-head">
+              <span class="lab-builder-kicker">03 · Kontrolli klinik</span>
+              <h2 id="labSummaryTitle">Përmbledhja</h2>
+            </div>
+
+            <section class="lab-summary-block">
+              <div class="lab-summary-label"><span>Diagnozat</span><strong id="labDiagnosisCount">0</strong></div>
+              <div class="lab-summary-dx" id="labSummaryDiseases"><span>—</span></div>
+            </section>
+
+            <section class="lab-summary-block">
+              <div class="lab-summary-label"><span>Mungon në katalog</span><strong id="labGapCount">0</strong></div>
+              <div class="lab-gap-list" id="labGapList">
+                <p>Nuk ka boshllëqe të identifikuara.</p>
+              </div>
+            </section>
+
+            <div class="lab-safety-note">
+              <strong>Mbështetje klinike, jo urdhër automatik.</strong>
+              <p>Paneli duhet përshtatur sipas simptomave, moshës, shtatzënisë, barnave, komorbiditeteve, fazës së sëmundjes dhe protokollit lokal.</p>
+            </div>
+          </aside>
+        </section>
+      </div>
+      </div>
     </main>
   </div>
-
-  <div class="med-panel-overlay" id="detailOverlay" hidden aria-hidden="true">
-    <section class="med-panel lab-panel" role="dialog" aria-modal="true" aria-labelledby="detailTitle" aria-describedby="detailBody">
-      <header class="med-panel-head"><div><small id="detailKicker">Emri në formular</small><h2 id="detailTitle">Analiza</h2></div><button class="med-panel-close" id="detailClose" type="button" aria-label="Mbyll">×</button></header>
-      <div class="med-panel-body" id="detailBody"></div>
-      <footer class="med-panel-foot"><button id="detailDone" type="button">Mbyll</button></footer>
-    </section>
-  </div>
-  <script src="auth-client.js?v=production-audit-v2" defer></script>
-  <script src="medical-icons.js?v=20260723-1" defer></script>
-  <script src="lab-sheet-data.js?v=20260723-1" defer></script>
-  <script src="analizat.js?v=20260727-neon1" defer></script>
-  <script src="section-icons.js?v=20260723-1" defer></script>
-  <script src="clinical-dialog.js?v=20260724-1" defer></script>
-  <script src="app-stability.js?v=20260724-2" defer></script>
+  <script src="/analizat-v2.js?v=1" defer></script>
 </body>
 </html>
