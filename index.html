@@ -106,7 +106,7 @@
           <article class="metric-card"><span>Rezultate</span><strong id="metricTotal">—</strong><small id="metricScope">Në regjistrin aktiv</small></article>
           <article class="metric-card"><span>Faqja</span><strong id="metricPage">1</strong><small id="metricPageSize">50 për faqe</small></article>
           <article class="metric-card"><span>Burimi</span><strong>Supabase</strong><small id="metricSource">Server-side</small></article>
-          <article class="metric-card"><span>Filtra aktivë</span><strong id="metricFilters">0</strong><small>Kërkim, status, formë</small></article>
+          <article class="metric-card"><span>Filtra aktivë</span><strong id="metricFilters">0</strong><small>Kërkim, ATC, formë</small></article>
         </div>
 
         <section class="data-card" aria-label="Tabela e barnave">
@@ -125,9 +125,29 @@
           </div>
 
           <div class="filter-panel" id="filterPanel" hidden>
-            <label>Statusi
-              <select id="statusFilter"><option value="">Të gjitha statuset</option><option value="Gjenerik">Gjenerik</option><option value="Origjinator">Origjinator</option></select>
-            </label>
+            <div class="filter-field column-filter-field">
+              <span class="filter-field-label">Kolonat</span>
+              <div class="column-picker" id="columnPicker">
+                <button class="column-picker-trigger" id="columnPickerButton" type="button" aria-haspopup="dialog" aria-expanded="false" aria-controls="columnPickerPanel">
+                  <span class="column-picker-icon" aria-hidden="true">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M4 5h16M4 12h16M4 19h16"/><path d="M8 3v18M16 3v18"/></svg>
+                  </span>
+                  <span class="column-picker-copy"><strong>Kolonat</strong><small id="columnPickerSummary">Duke ngarkuar…</small></span>
+                  <span class="column-picker-chevron" aria-hidden="true"><svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="m7 10 5 5 5-5"/></svg></span>
+                </button>
+                <div class="column-picker-panel" id="columnPickerPanel" role="dialog" aria-label="Zgjidh kolonat e tabelës" hidden>
+                  <div class="column-picker-head">
+                    <div><strong>Kolonat e tabelës</strong><small>Zgjedhja ruhet në profilin tënd.</small></div>
+                    <span class="column-sync-dot" aria-hidden="true"></span>
+                  </div>
+                  <div class="column-picker-list" id="columnPickerList"></div>
+                  <div class="column-picker-foot">
+                    <button class="button button-ghost" id="resetColumnsButton" type="button">Rivendos standardin</button>
+                    <span id="columnSaveStatus" role="status" aria-live="polite">Ruhet automatikisht</span>
+                  </div>
+                </div>
+              </div>
+            </div>
             <div class="filter-field form-filter-field">
               <span class="filter-field-label">Forma farmaceutike</span>
               <div class="form-picker" id="formPicker">
@@ -170,16 +190,16 @@
               <thead>
                 <tr>
                   <th class="check-col"><input id="selectPageCheckbox" type="checkbox" aria-label="Zgjidh barnat në këtë faqe"></th>
-                  <th><button class="sort-head" data-sort="registry" type="button">Nr.</button></th>
-                  <th><button class="sort-head" data-sort="name" type="button">Bari</button></th>
-                  <th><button class="sort-head" data-sort="substance" type="button">Substanca aktive</button></th>
-                  <th><button class="sort-head" data-sort="strength" type="button">Fortësia</button></th>
-                  <th><button class="sort-head" data-sort="form" type="button">Forma</button></th>
-                  <th><button class="sort-head" data-sort="atc" type="button">ATC</button></th>
-                  <th>Doza e të rriturit</th>
-                  <th>Doza pediatrike</th>
-                  <th><button class="sort-head" data-sort="status" type="button">Statusi</button></th>
-                  <th class="price-col"><button class="sort-head" data-sort="price" type="button">Çmimi</button></th>
+                  <th data-col="registry"><button class="sort-head" data-sort="registry" type="button">Nr.</button></th>
+                  <th data-col="name"><button class="sort-head" data-sort="name" type="button">Bari</button></th>
+                  <th data-col="substance"><button class="sort-head" data-sort="substance" type="button">Substanca aktive</button></th>
+                  <th data-col="strength"><button class="sort-head" data-sort="strength" type="button">Fortësia</button></th>
+                  <th data-col="form"><button class="sort-head" data-sort="form" type="button">Forma</button></th>
+                  <th data-col="atc"><button class="sort-head" data-sort="atc" type="button">ATC</button></th>
+                  <th data-col="adultDose">Doza e të rriturit</th>
+                  <th data-col="pediatricDose">Doza pediatrike</th>
+                  <th data-col="status"><button class="sort-head" data-sort="status" type="button">Statusi</button></th>
+                  <th class="price-col" data-col="price"><button class="sort-head" data-sort="price" type="button">Çmimi</button></th>
                   <th class="actions-col"><span class="sr-only">Veprime</span></th>
                 </tr>
               </thead>
