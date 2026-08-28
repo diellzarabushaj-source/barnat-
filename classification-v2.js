@@ -87,6 +87,15 @@
     }
   }
 
+  function loadSharedSidebarTaxonomy() {
+    if (document.querySelector('script[data-drx-sidebar-taxonomy]')) return;
+    const script = document.createElement('script');
+    script.src = '/sidebar-taxonomy-v3.js?v=sidebar-taxonomy-v3';
+    script.defer = true;
+    script.dataset.drxSidebarTaxonomy = '1';
+    document.head.appendChild(script);
+  }
+
   function redirectToLogin() {
     const target = new URL('/landing.html', location.origin);
     target.searchParams.set('return', location.pathname + location.search + location.hash);
@@ -592,6 +601,7 @@
   }
 
   async function init() {
+    loadSharedSidebarTaxonomy();
     const isMac = /Mac|iPhone|iPad/.test(navigator.platform || navigator.userAgent || '');
     if (el.searchShortcut) el.searchShortcut.textContent = isMac ? '⌘K' : 'Ctrl K';
     bindEvents();
