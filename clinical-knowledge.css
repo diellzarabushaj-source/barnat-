@@ -7,8 +7,8 @@ html.medindex-tailadmin[data-mi-page="medical-hub"]{
   --ck-surface:#ffffff;
   --ck-soft:#f9fafb;
   --ck-soft-2:#f2f4f7;
-  --ck-blue:#1f7779;
-  --ck-blue-strong:#155f63;
+  --ck-blue:#533afd;
+  --ck-blue-strong:#4434d4;
   --ck-red:#b42318;
   --ck-amber:#b54708;
   --ck-green:#027a48;
@@ -31,8 +31,8 @@ html.medindex-tailadmin[data-mi-page="medical-hub"]:is(.dark,[data-theme="dark"]
   --ck-surface:#101828;
   --ck-soft:#1d2939;
   --ck-soft-2:#182230;
-  --ck-blue:#66b7ad;
-  --ck-blue-strong:#8dcfc6;
+  --ck-blue:#a9a4ff;
+  --ck-blue-strong:#c7c4ff;
   --ck-red:#fda29b;
   --ck-amber:#fec84b;
   --ck-green:#6ce9a6;
@@ -92,9 +92,9 @@ html.medindex-tailadmin[data-mi-page="medical-hub"]:is(.dark,[data-theme="dark"]
   box-shadow:0 1px 2px rgba(16,24,40,.04);
 }
 .ck-studio-link:hover{
-  border-color:#b6d8d0;
+  border-color:#c7c4ff;
   color:var(--ck-blue-strong);
-  background:#f7fbfa;
+  background:#faf9ff;
 }
 .ck-toolbar{
   display:grid;
@@ -124,7 +124,7 @@ html.medindex-tailadmin[data-mi-page="medical-hub"]:is(.dark,[data-theme="dark"]
 .ck-toolbar input::placeholder{color:#98a2b3}
 .ck-toolbar input:focus,.ck-toolbar select:focus{
   border-color:var(--ck-blue);
-  box-shadow:0 0 0 3px rgba(31,119,121,.12);
+  box-shadow:0 0 0 3px rgba(83,58,253,.12);
 }
 .ck-layout{
   display:grid;
@@ -164,8 +164,8 @@ html.medindex-tailadmin[data-mi-page="medical-hub"]:is(.dark,[data-theme="dark"]
   border-color:var(--ck-line);
 }
 .ck-list-button.is-active{
-  border-color:#d6eae5;
-  background:#eaf4f1;
+  border-color:#d9d6ff;
+  background:#f0efff;
   box-shadow:inset 3px 0 0 var(--ck-blue);
 }
 .ck-list-button strong{
