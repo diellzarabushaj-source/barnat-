@@ -12,8 +12,8 @@ const js = read('registry-v2.js');
 assert.match(html, /data-drx-app="registry-v2"/);
 assert.match(html, /<th>Doza e të rriturit<\/th>/);
 assert.match(html, /<th>Doza pediatrike<\/th>/);
-assert.match(html, /registry-v2\.css\?v=1/);
-assert.match(html, /registry-v2\.js\?v=1/);
+assert.match(html, /registry-v2\.css\?v=registry-dose-v6/);
+assert.match(html, /registry-v2\.js\?v=registry-dose-v6/);
 
 for (const retired of [
   'registry-dose-calculator.js',
