@@ -85,15 +85,12 @@ function patchFullRuntimeSource() {
 }
 
 function patchIndexStyle() {
-  const file = 'index.html';
-  let source = read(file);
-  if (source.includes('registry-pagination-v2.css')) return;
-  const link = '<link rel="stylesheet" href="registry-pagination-v2.css?v=20260825-1" data-registry-pagination-v2-css>';
-  const tableTools = /(<link rel="stylesheet" href="registry-table-tools\.css\?v=[^"]+"[^>]*>)/;
-  if (tableTools.test(source)) source = source.replace(tableTools, `$1\n${link}`);
-  else if (source.includes('</head>')) source = source.replace('</head>', `${link}\n</head>`);
-  else throw new Error('Registry pagination v2 could not find the index stylesheet anchor.');
-  write(file, source);
+  const index = read('index.html');
+  const registryLinks = [...index.matchAll(/<link\b[^>]*rel="stylesheet"[^>]*href="(registry-[^"]+\.css[^"]*)"[^>]*>/g)]
+    .map(match => match[1]);
+  if (registryLinks.length !== 1 || !registryLinks[0].startsWith('registry-table-tools.css')) {
+    throw new Error(`Registry pagination v2 requires the single registry-table-tools.css authority; found ${registryLinks.join(', ') || 'nothing'}.`);
+  }
 }
 
 function verifyModel() {
@@ -111,7 +108,7 @@ function verifyOutput() {
   const mobile = read('registry-mobile-lite.js');
   const full = read('app-parts/part-04.txt');
   const index = read('index.html');
-  const css = read('registry-pagination-v2.css');
+  const css = read('registry-table-tools.css');
 
   for (const [label, source] of [['desktop', desktop], ['mobile', mobile], ['full runtime', full]]) {
     if (!source.includes('registryPaginationItems')) throw new Error(`${label} pagination model is missing.`);
@@ -121,7 +118,7 @@ function verifyOutput() {
   if (!desktop.includes('desktopLitePageNumber')) throw new Error('Desktop direct page buttons are missing.');
   if (!mobile.includes('mobileLitePageNumber')) throw new Error('Mobile direct page buttons are missing.');
   if (!full.includes('registryPageNumber')) throw new Error('Full-runtime direct page buttons are missing.');
-  if (!index.includes('registry-pagination-v2.css?v=20260825-1')) throw new Error('Pagination stylesheet is not wired into index.html.');
+  if (!index.includes('registry-table-tools.css?v=')) throw new Error('Single registry stylesheet authority is not wired into index.html.');\n  if (index.includes('registry-pagination-v2.css')) throw new Error('Legacy pagination stylesheet must not return as a separate asset.');
   if (!css.includes('#pagination button[aria-current="page"]')) throw new Error('Pagination active state styling is missing.');
 }
 
