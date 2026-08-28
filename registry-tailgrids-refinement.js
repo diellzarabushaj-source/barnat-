@@ -2,7 +2,6 @@
   'use strict';
 
   const VERSION = 'registry-tailgrids-refinement-20260801-3';
-  const RUNTIME_STYLE_ID = 'registryTailgridsRuntimeFixes';
 
   let active = false;
   let paginationObserver = null;
@@ -17,11 +16,8 @@
   const editIcon = '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 20h9"/><path d="M16.5 3.5a2.12 2.12 0 0 1 3 3L7 19l-4 1 1-4Z"/></svg>';
 
   function ensureRuntimeStyles() {
-    if (document.getElementById(RUNTIME_STYLE_ID)) return;
-    const style = document.createElement('style');
-    style.id = RUNTIME_STYLE_ID;
-    style.textContent = '@media(max-width:760px){html.medindex-tailadmin #registryContent.table-wrap{overflow-x:visible!important;overflow-y:visible!important;scrollbar-gutter:auto!important;box-shadow:none!important}}';
-    document.head.appendChild(style);
+    // Runtime style injection retired: the rule is materialized in registry-table-tools.css.
+    document.documentElement.dataset.registryTailgridsCss = 'final-authority';
   }
 
   function normalizePaginationButton(button, type) {
