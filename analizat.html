@@ -78,7 +78,7 @@
         <button class="icon-button menu-button" id="menuButton" type="button" aria-label="Hap menynë"><svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><path d="M4 7h16M4 12h16M4 17h16"/></svg></button>
         <div class="breadcrumbs"><span>DRx</span><span class="crumb-sep">/</span><strong>Analizat</strong></div>
         <div class="topbar-actions">
-          <span class="sync-pill"><span class="sync-dot"></span><span id="syncText">Sanity</span></span>
+          <span class="sync-pill"><span class="sync-dot"></span><span id="syncText">Duke u lidhur…</span></span>
           <button class="drx-profile-chip mi-profile-chip" id="profileButton" type="button" data-mi-profile-trigger aria-label="Hap profilin">
             <span class="mi-user-avatar drx-user-avatar avatar-button" id="avatarInitials">DR</span>
             <span class="drx-profile-copy"><strong>Llogaria</strong><small></small></span>
@@ -111,7 +111,7 @@
 
           <div class="lab-builder-grid">
             <div class="lab-disease-picker" id="labDiseasePicker">
-              <button class="lab-disease-trigger" id="labDiseaseTrigger" type="button" aria-expanded="false" aria-controls="labDiseasePopover">
+              <button class="lab-disease-trigger" id="labDiseaseTrigger" type="button" aria-haspopup="listbox" aria-expanded="false" aria-controls="labDiseasePopover">
                 <span class="lab-trigger-icon" aria-hidden="true">
                   <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><path d="M12 3v18M3 12h18"/></svg>
                 </span>
@@ -127,7 +127,7 @@
                   <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" aria-hidden="true"><circle cx="11" cy="11" r="6.7"/><path d="m16 16 4.2 4.2"/></svg>
                   <input id="labDiseaseSearch" type="search" autocomplete="off" spellcheck="false" placeholder="Kërko sëmundjen ose ICD…" aria-label="Kërko diagnozën">
                 </div>
-                <div class="lab-disease-list" id="labDiseaseList" role="listbox" aria-label="Diagnozat e disponueshme"></div>
+                <div class="lab-disease-list" id="labDiseaseList" role="listbox" aria-multiselectable="true" aria-label="Diagnozat e disponueshme"></div>
               </div>
             </div>
 
@@ -137,7 +137,7 @@
                 <input id="labManualSearch" type="search" autocomplete="off" spellcheck="false" placeholder="Shto analizë manualisht…" aria-label="Shto analizë manualisht">
                 <kbd>⌘ K</kbd>
               </div>
-              <div class="lab-manual-results" id="labManualResults" hidden></div>
+              <div class="lab-manual-results" id="labManualResults" role="listbox" aria-label="Analizat për shtim manual" hidden></div>
             </div>
           </div>
 
@@ -152,7 +152,7 @@
               <div>
                 <span class="lab-builder-kicker">02 · Paneli</span>
                 <h2>Analizat për t’u kërkuar</h2>
-                <p id="labPlanStatus">Zgjidh një diagnozë për të krijuar panelin.</p>
+                <p id="labPlanStatus" role="status" aria-live="polite">Zgjidh një diagnozë për të krijuar panelin.</p>
               </div>
               <div class="lab-plan-actions">
                 <span class="lab-plan-count"><strong id="labSelectedTestCount">0</strong> të zgjedhura</span>
