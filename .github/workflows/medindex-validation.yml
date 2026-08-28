@@ -47,6 +47,7 @@ jobs:
             medical-icons.js
             section-icons.js
             classification-icons.js
+            classification-v2.js
             prescription-format-core.js
             prescription-notation.js
             prescription-registry-bridge.js
@@ -155,7 +156,14 @@ jobs:
           ! grep -q 'tailadmin-medindex.css' index.html
           ! grep -q 'tailadmin-professional.css' index.html
           ! grep -q 'tailadmin-shell.js' index.html
-          for page in klasifikimi.html icd.html analizat.html dozologjia.html protokollet.html recetat.html; do
+          # Classification V2 is standalone and uses the approved DRx shell.
+          grep -q 'data-drx-app="classification-v2"' klasifikimi.html
+          grep -q 'classification-v2.css' klasifikimi.html
+          grep -q 'classification-v2.js' klasifikimi.html
+          ! grep -q 'tailadmin-medindex.css' klasifikimi.html
+          ! grep -q 'tailadmin-professional.css' klasifikimi.html
+          ! grep -q 'tailadmin-shell.js' klasifikimi.html
+          for page in icd.html analizat.html dozologjia.html protokollet.html recetat.html; do
             grep -q 'medindex-tailadmin' "$page"
             grep -q 'tailadmin-medindex.css' "$page"
             grep -q 'tailadmin-professional.css' "$page"
