@@ -188,11 +188,17 @@ if (written.indexOf('registry-list-data-bridge.js') > written.indexOf('registry-
 if (written.indexOf('registry-list-owner-guard.js') < written.indexOf('registry-list-view.js')) {
   throw new Error('Registry list Phase 19: owner guard duhet të vijë pas List view.');
 }
-if (!/data-mi-registry-view="list"[\s\S]*#registryViewToolbar/.test(css)
-    || !/display:\s*none\s*!important/.test(css)) {
+const guardStart = css.indexOf('/* ===== consolidated from registry-list-owner-guard.css ===== */');
+const guardEnd = css.indexOf('/* ===== canonical final layer: registry-table-tools.css ===== */', guardStart);
+if (guardStart < 0 || guardEnd <= guardStart) {
+  throw new Error('Registry list Phase 19: seksioni i konsoliduar i list-owner guard mungon.');
+}
+const listGuardCss = css.slice(guardStart, guardEnd);
+if (!/data-mi-registry-view="list"[\s\S]*#registryViewToolbar/.test(listGuardCss)
+    || !/display:\s*none\s*!important/.test(listGuardCss)) {
   throw new Error('Registry list Phase 19: CSS nuk garanton fshehjen e table toolbar në List mode.');
 }
-if (/#registryFilterPanel[\s\S]{0,160}display:\s*none\s*!important/.test(css)) {
+if (/#registryFilterPanel[\s\S]{0,160}display:\s*none\s*!important/.test(listGuardCss)) {
   throw new Error('Registry list Phase 19: shared search/filter panel nuk guxon të fshihet.');
 }
 if (!owner.includes("attributeFilter:['data-mi-registry-view']")
