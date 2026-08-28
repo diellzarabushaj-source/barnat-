@@ -74,7 +74,7 @@ for (const [file, version] of [
 }
 for (const [htmlFile, runtime, version] of [
   ['dozologjia.html','dozologjia-v2.js','1'],
-  ['urgjencat.html','urgjencat-v2.js','6'],
+  ['urgjencat.html','urgjencat-v2.js','10'],
   ['analizat.html','analizat-v2.js','1'],
   ['protokollet.html','protokollet-v2.js','1'],
   ['recetat.html','recetat-v2.js','1'],
