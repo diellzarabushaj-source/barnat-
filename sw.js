@@ -2,7 +2,7 @@
 'use strict';
 
 const VERSION = 'production-audit-v2';
-const CACHE_EPOCH = 'clinical-knowledge-20260829-dashboard-v2';
+const CACHE_EPOCH = 'clinical-knowledge-20260829-recetat-v2';
 const CACHE_NAMESPACE = `${VERSION}-${CACHE_EPOCH}`;
 const STATIC_CACHE = `medindex-static-${CACHE_NAMESPACE}`;
 const PAGE_CACHE = `medindex-pages-${CACHE_NAMESPACE}`;
@@ -25,16 +25,16 @@ const APP_SHELL = [
   '/tailadmin-professional.css', '/registry-table-tools.css', '/medical-hub.css', '/clinical-knowledge.css', '/clinical-density.css',
   '/classification.css', '/classification-nav-fix.css', '/registry-quality.css',
   '/clinical-reference.css', '/analizat-v2.css', '/drx-dashboard-stripe.css',
-  '/protokollet-v2.css',
+  '/protokollet-v2.css', '/recetat-v2.css',
   '/icd-premium-cards.css', '/icd-clinical-workspace.css', '/icd-tailadmin-cards-v2.css',
   '/dozologjia-verified-cards.css', '/dozologjia-simple-workflow.css',
   '/dozologjia-safety-enhancements.css', '/dozologjia-clinical-readiness.css',
-  '/recetat.css', '/recetat-audit.css', '/signature-templates.css', '/login.css',
+  '/signature-templates.css', '/login.css',
   '/tailadmin-shell.js', '/tailadmin-shell-legacy.js', '/tailadmin-professional.js',
   '/mobile-experience.js', '/offline-runtime.js', '/clinical-workflow.js',
   '/local-registry.js', '/local-registry-fidelity.js', '/auth-client.js',
   '/app-stability.js', '/app.js', '/app-runtime.js', '/theme-preload.js', '/registry-table-tools.js',
-  '/recetat-safe-print.js', '/ui-enhancements.js', '/name-display.js',
+  '/ui-enhancements.js', '/name-display.js',
   '/medical-icons.js', '/section-icons.js', '/classification-icons.js',
   '/classification-data.js', '/classification-registry-bridge.js',
   '/classification-v3.js', '/classification-audit-view.js',
@@ -43,9 +43,9 @@ const APP_SHELL = [
   '/icd-clinical-style-loader.js', '/icd-tailadmin-card-style-loader.js',
   '/analizat-v2.js', '/sidebar-taxonomy-v3.js', '/medindex-brand-runtime.js',
   '/clinical-dialog.js', '/dosage-engine.js', '/dozologjia.js',
-  '/dozologjia-deep-audit.js', '/sanity-clinical-client.js', '/urgjencat.js', '/medical-hub.js', '/protokollet-v2.js',
+  '/dozologjia-deep-audit.js', '/sanity-clinical-client.js', '/urgjencat.js', '/medical-hub.js', '/protokollet-v2.js', '/recetat-v2.js',
   '/prescription-format-core.js', '/signature-templates.js',
-  '/recetat.js', '/login.js', '/data/registry-quality.js',
+  '/login.js', '/data/registry-quality.js',
   '/data/protocols.json'
 ];
 
