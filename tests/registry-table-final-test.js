@@ -11,6 +11,7 @@ const mobile = read('registry-mobile-lite.js');
 const mobileCss = read('registry-mobile-lite.css');
 const desktop = read('registry-desktop-lite.js');
 const css = read('registry-unified-table.css');
+const tableTools = read('registry-table-tools.css');
 const fullTextCss = read('registry-full-text-expansion.css');
 const runtime = read('registry-unified-table.js');
 const generatedRuntime = read('app-runtime.js');
@@ -124,9 +125,14 @@ assert.match(generatedRuntime,/key:'Statusi'[\s\S]{0,160}visible:false/,'status 
 assert.match(generatedRuntime,/REGISTRY_COLUMN_VISIBILITY_KEY/,'user column choices must persist after explicit changes');
 assert.match(picker,/optionText === 'verifikimi' \|\| optionText === 'redakto'/,'technical verification/editor columns must not be offered in the picker');
 
-assert.match(css,/#dataTable\[data-registry-unified-table\] thead th[\s\S]*background:#fff!important/,'header must retain the base white surface');
+/* Koka nuk vizatohet më nga ky skedar. Kur gjashtë fletë stili deklaronin të
+   njëjtën veti me `!important`, fituesi vendosej nga specifika, jo nga radha —
+   dhe pamja e vjetër dilte edhe pas rishkrimit. Autoriteti është një tani. */
+assert.doesNotMatch(css,/thead th \{[\s\S]{0,400}background:/,'the header surface belongs to registry-table-tools.css alone');
+assert.doesNotMatch(css,/tbody td \{[\s\S]{0,400}border-right:/,'the vertical grid must not come back');
+assert.match(tableTools,/thead th\{[\s\S]{0,400}background:var\(--rst-soft\)!important/,'the Stripe layer owns the header surface');
 assert.match(css,/#dataTable\[data-registry-unified-table\] :is\(th,td\)\[data-registry-column-key\][\s\S]*position:relative!important/,'base columns must begin with stable non-sticky geometry');
-assert.match(css,/#dataTable\[data-registry-unified-table\] tbody tr \{[\s\S]*height:92px!important/,'rows must use compact stable geometry');
+assert.match(tableTools,/--rst-row-height:\d+px/,'rows must use one compact stable height, declared once');
 assert.match(css,/registry-row-expanded[\s\S]*max-height:none!important/,'expanded rows must reveal full inline content');
 assert.match(css,/:is\(\.registry-dose-dialog,\.registry-cell-preview-dialog\)[\s\S]*display:none!important/,'legacy text modals must remain disabled');
 assert.match(css,/\.clinical-editor-open \{[\s\S]*width:34px!important/,'edit action must be one compact pencil');

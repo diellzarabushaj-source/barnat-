@@ -141,7 +141,12 @@ assert.doesNotMatch(frozenCss, /data-registry-column-key="trade-name"[^}]*positi
 assert.doesNotMatch(frozenCss, /data-registry-column-key="select"[^}]*position:sticky/i, 'Prescription selection must scroll normally in the final cascade.');
 assert.doesNotMatch(css, /(?:linear|radial)-gradient|backdrop-filter:\s*blur/, 'The compact registry workspace must not use gradients or glass effects.');
 assert.match(css, /\.registry-toolbar\{[\s\S]*position:sticky!important;[\s\S]*grid-template-columns:minmax\(300px,1fr\) auto!important;/, 'The working toolbar must stay compact and sticky on desktop.');
-assert.match(css, /#dataTable thead th\{[\s\S]*background:#f9fafb!important;[\s\S]*text-transform:none!important;/, 'The table header must use a neutral sentence-case treatment.');
+/* Ky skedar e vizatonte dikur kokën; tani e vizaton `registry-table-tools.css`.
+   Kontrata mbetet e njëjta — kokë neutrale, pa shkronja të mëdha — vetëm se
+   matet aty ku ajo tani vërtet vendoset. */
+assert.doesNotMatch(css, /#dataTable thead th\{[\s\S]{0,400}background:#f9fafb!important/, 'the header surface must not be re-declared here');
+assert.match(tableToolsCss, /thead th\{[\s\S]{0,400}background:var\(--rst-soft\)!important/, 'the Stripe layer must own the header surface');
+assert.match(tableToolsCss, /thead th\{[\s\S]{0,500}text-transform:none!important/, 'the table header must use a neutral sentence-case treatment');
 for (const pageSize of ['50', '100', '250', '500']) {
   assert.match(html, new RegExp(`<option value="${pageSize}">${pageSize} / faqe</option>`), `Registry must preserve the ${pageSize}-row page-size option.`);
 }
