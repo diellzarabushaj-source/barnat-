@@ -136,7 +136,7 @@ for (const marker of [
   assert.ok(js.includes(marker), `first-page clinical runtime is missing ${marker}`);
 }
 
-assert.match(tableToolsCss, /registry-legacy-toolbar-hidden-v2/, 'Retired toolbar controls need an explicit final visibility contract.');
+assert.match(tableToolsCss, /registry-legacy-toolbar-hidden-v3/, 'Retired toolbar controls need an explicit Admin Stripe v3 visibility contract.');
 for (const control of ['#statusFilter', '#pageSize', '.selection-badge', '#protocolsBtn', '.clinical-editor-progress']) {
   assert.ok(tableToolsCss.includes(control), `Retired toolbar control must stay hidden: ${control}`);
 }
