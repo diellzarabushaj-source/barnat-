@@ -307,6 +307,8 @@
 
   function keyVisible(key) {
     if (currentView() === 'clinical' && !CLINICAL_ORDER.includes(key)) return false;
+    if (key === 'clinical-status' || key === 'clinical-action') return false;
+    if (key === 'dose-calculator' && document.documentElement.dataset.registryDoseColumnVisible !== 'true') return false;
     if (key === 'dosage-adult' && document.documentElement.classList.contains('hide-registry-dosage-adult')) return false;
     if (key === 'dosage-pediatric' && document.documentElement.classList.contains('hide-registry-dosage-pediatric')) return false;
     return true;
