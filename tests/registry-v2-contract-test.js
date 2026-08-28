@@ -13,6 +13,7 @@ const js = fs.readFileSync(path.join(root, 'registry-v2.js'), 'utf8');
 assert.match(html, /data-drx-app="registry-v2"/);
 assert.match(html, /\/registry-v2\.css\?v=profile-columns-v5/);
 assert.match(html, /\/registry-v2\.js\?v=profile-columns-v5/);
+assert.match(html, /\/drx-dashboard-stripe\.css\?v=drx-dashboard-stripe-v4/);
 assert.doesNotMatch(html, /registry-mobile-|registry-ux-phase|registry-unified-table|registry-table-tools|tailadmin-/);
 
 [
