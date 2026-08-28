@@ -58,18 +58,18 @@ for (const marker of order) {
 assert.match(shellCore, />KLINIKE<\/p>/);
 assert.match(shellCore, />PUNA IME<\/p>/);
 
-for (const file of ['registry-v2.js','classification-v2.js','icd-v2.js']) {
+for (const file of ['registry-v2.js','classification-v2.js','icd-v2.js','urgjencat-v2.js','medical-hub-v2.js']) {
   const source = read(file);
   assert.match(source, /function loadSharedSidebarTaxonomy\(\)/, `${file}: shared sidebar loader missing`);
   assert.match(source, /sidebar-taxonomy-v3\.js\?v=sidebar-taxonomy-v3/, `${file}: shared sidebar runtime missing`);
 }
 
-for (const file of ['index.html','klasifikimi.html','icd.html']) {
+for (const file of ['index.html','klasifikimi.html','icd.html','urgjencat.html','medical-hub.html']) {
   const html = read(file);
   assert.match(html, /sidebar-taxonomy-v3/, `${file}: V2 runtime cache-bust missing`);
 }
 
-for (const file of ['analizat.html','dozologjia.html','medical-hub.html','protokollet.html','recetat.html','sistemi.html','urgjencat.html']) {
+for (const file of ['analizat.html','dozologjia.html','protokollet.html','recetat.html','sistemi.html']) {
   const html = read(file);
   assert.match(html, /tailadmin-shell\.js\?v=sidebar-taxonomy-v3/, `${file}: shared TailAdmin sidebar cache-bust missing`);
 }
