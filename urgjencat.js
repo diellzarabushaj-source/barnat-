@@ -11,6 +11,7 @@
       sourceSectionNumber,sourcePdfStartPage,sourcePdfEndPage,quickSummary,
       sourceBook,sourceEdition,reviewStatus,
       section->{_id,title,sectionNumber},
+      subtopics[]{_key,order,title,sourceTitleEn},
       lessonSections[]{
         _key,order,title,sourceHeadingEn,explanation,clinicalPearl,figureNumbers,
         rx[]{_key,order,text,note}
@@ -62,6 +63,10 @@
         section.explanation,
         section.clinicalPearl,
         ...(section.rx || []).flatMap(rx => [rx.text, rx.note]),
+      ]),
+      ...(lesson.subtopics || []).flatMap(item => [
+        item.title,
+        item.sourceTitleEn,
       ]),
       ...(lesson.abbreviations || []).flatMap(item => [
         item.abbreviation,
@@ -192,7 +197,7 @@
           data-lesson-id="${esc(lesson._id)}" aria-pressed="${active ? 'true' : 'false'}">
           <div class="ec-lesson-top">
             <span class="ec-index">Mësimi ${String(number).padStart(2, '0')}</span>
-            <span class="ec-count">${(lesson.lessonSections || []).length}</span>
+            <span class="ec-count">${(lesson.lessonSections || []).length || (lesson.subtopics || []).length}</span>
           </div>
           <strong>${esc(lesson.title)}</strong>
           ${lesson.sourceTitleEn ? `<small>${esc(lesson.sourceTitleEn)}</small>` : ''}
@@ -282,7 +287,9 @@
 
     const section = lesson.section || currentSection();
     const sections = [...(lesson.lessonSections || [])].sort((a, b) => (Number(a.order) || 999) - (Number(b.order) || 999));
+    const subtopics = [...(lesson.subtopics || [])].sort((a, b) => (Number(a.order) || 999) - (Number(b.order) || 999));
     const abbreviations = [...(lesson.abbreviations || [])].sort((a, b) => (Number(a.footnoteNumber) || 999) - (Number(b.footnoteNumber) || 999));
+    const figures = [...(lesson.figures || [])];
 
     root.innerHTML = `
       <div class="ec-detail-inner">
@@ -306,7 +313,37 @@
 
         ${sections.length
           ? sections.map((item, index) => renderLessonSection(lesson, item, index)).join('')
-          : `<div class="ec-quick-summary"><span>Përmbajtja</span><p>Ky mësim është krijuar në strukturën e re. Përmbajtja klinike do të plotësohet nga kapitulli përkatës i Tintinalli-t.</p></div>`}
+          : subtopics.length
+            ? `
+              <section class="ec-outline">
+                <div class="ec-outline-head">
+                  <span>Struktura nga PDF</span>
+                  <h3>Nëntitujt e këtij mësimi</h3>
+                  <p>Këta janë nëntitujt e kapitullit burimor. Përkthimi i thjeshtuar klinik do të plotësohet brenda secilit nëntitull.</p>
+                </div>
+                <ol class="ec-outline-list">
+                  ${subtopics.map((item, index) => `
+                    <li>
+                      <span>${String(index + 1).padStart(2, '0')}</span>
+                      <div>
+                        <strong>${esc(item.title)}</strong>
+                        ${item.sourceTitleEn ? `<small>${esc(item.sourceTitleEn)}</small>` : ''}
+                      </div>
+                    </li>
+                  `).join('')}
+                </ol>
+              </section>
+            `
+            : `<div class="ec-quick-summary"><span>Përmbajtja</span><p>Ky mësim është krijuar në strukturën e re. Përmbajtja klinike do të plotësohet nga kapitulli përkatës i Tintinalli-t.</p></div>`}
+
+        ${figures.length && !sections.length ? `
+          <section class="ec-footnotes ec-lesson-figures">
+            <h3>Figurat e kapitullit</h3>
+            <div class="ec-figure-overview">
+              ${figures.map(figureMarkup).join('')}
+            </div>
+          </section>
+        ` : ''}
 
         ${abbreviations.length ? `
           <section class="ec-footnotes">
