@@ -198,7 +198,7 @@ if (!/data-mi-registry-view="list"[\s\S]*#registryViewToolbar/.test(listGuardCss
     || !/display:\s*none\s*!important/.test(listGuardCss)) {
   throw new Error('Registry list Phase 19: CSS nuk garanton fshehjen e table toolbar në List mode.');
 }
-if (/#registryFilterPanel[\s\S]{0,160}display:\s*none\s*!important/.test(listGuardCss)) {
+if (/#registryFilterPanel(?:\.[^{,\s]+)?\s*\{[^}]*display:\s*none\s*!important/i.test(listGuardCss)) {
   throw new Error('Registry list Phase 19: shared search/filter panel nuk guxon të fshihet.');
 }
 if (!owner.includes("attributeFilter:['data-mi-registry-view']")
