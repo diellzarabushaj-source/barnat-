@@ -21,6 +21,13 @@ html[data-theme="dark"].medindex-tailadmin[data-mi-page="recetat"] {
   --rx-ink:#edf3f5;
   --rx-soft:#202e34;
   --rx-shadow:0 10px 28px rgba(0,0,0,.22);
+  /* Sipërfaqet ktheheshin me temën por theksi jo: teal-i mbetej #0f6b6d mbi
+     #172329, që matet 2.56:1. Një ngjyrë theksi është po aq pjesë e temës sa
+     sfondi nën të. */
+  --rx-teal:#5fb8b4;
+  --rx-teal-strong:#8ad3cf;
+  --rx-amber:#e8b464;
+  --rx-danger:#f0908f;
 }
 
 html.medindex-tailadmin[data-mi-page="recetat"] body {

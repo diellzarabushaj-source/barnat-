@@ -631,3 +631,66 @@ html.medindex-tailadmin #headerRow .registry-dosage-subhead {
 html.medindex-tailadmin .registry-workspace-count {
   color:var(--ck-ink,#101828)!important;
 }
+
+/* ── Ura e temës së errët ────────────────────────────────────────────────
+   Aplikacioni ka gjashtë familje shenjash që janë rritur veç e veç —
+   `--mi-*`, `--ck-*`, `--mw-*`, `--clinical-*`, `--lab-card-*`, `--system-*` —
+   dhe vetëm disa prej tyre kanë vlera për errësirën. Prandaj në temën e errët
+   disa sipërfaqe mbeteshin të bardha ndërsa teksti çelej, dhe disa ngjyra
+   mbeteshin të mbyllta ndërsa sfondi errësohej. Të dyja janë e njëjta gjë e
+   parë nga dy anë.
+
+   Kjo urë i drejton të gjitha te paleta e vetme e errët e `drx-clinical-system.css`.
+   Selektori mban dy klasa (`.medindex-tailadmin` plus temën) që të fitojë mbi
+   blloqet `html[data-theme="dark"]` të skedarëve që ngarkohen më vonë. */
+html.medindex-tailadmin:is(.dark,[data-theme="dark"]) {
+  --mi-v4-muted:var(--ck-muted);
+  --mi-v4-bg:var(--ck-surface);
+  --mi-v4-surface:var(--ck-surface);
+  --mi-v4-line:var(--ck-line);
+  --mi-muted:var(--ck-muted);
+  --mi-text:var(--ck-ink);
+  --mi-surface:var(--ck-surface);
+  --mi-surface-soft:var(--ck-soft);
+  --mi-page:var(--ck-surface);
+  --mi-border:var(--ck-line);
+  --mi-card:var(--ck-surface);
+  --mi-soft:var(--ck-soft);
+  --mi-line:var(--ck-line);
+  --mi-ink:var(--ck-ink);
+  --muted:var(--ck-muted);
+  --ink:var(--ck-ink);
+  --paper:var(--ck-surface);
+  --panel:var(--ck-soft);
+  --line:var(--ck-line);
+  --surface:var(--ck-surface);
+  --clinical-text:var(--ck-ink);
+  --clinical-muted:var(--ck-muted);
+  --clinical-surface:var(--ck-surface);
+  --clinical-line:var(--ck-line);
+  --clinical-accent:var(--ck-blue);
+  --system-muted:var(--ck-muted);
+  --system-ink:var(--ck-ink);
+  --system-surface:var(--ck-surface);
+  --mw-text:var(--ck-ink);
+  --mw-muted:var(--ck-muted);
+  --mw-surface:var(--ck-surface);
+  --mw-line:var(--ck-line);
+  --registry-ink:var(--ck-ink);
+  --registry-muted:var(--ck-muted);
+  --registry-line:var(--ck-line);
+  --teal:var(--ck-blue);
+  --teal-dark:var(--ck-blue-strong);
+
+  /* Provova ta shtrija urën edhe te rampa e markës, e grive dhe semantika.
+     Matja e refuzoi: nga 79 gjetje shkoi në 85 me rampën e grive dhe në 83 pa
+     të. Ato shenja përdoren njëkohësisht si tekst dhe si sipërfaqe, prandaj
+     kthimi i tyre krijon po aq raste sa zgjidh. Ajo që mbetet kërkon punë për
+     element, jo një urë të gjerë. */
+}
+
+/* Ndarësi i thërrimeve është një `span` pa klasë, prandaj kapet nga pozicioni:
+   çdo fëmijë i drejtpërdrejtë që nuk është lidhje apo teksti aktual. */
+html.medindex-tailadmin .mi-breadcrumb > span:not([class]) {
+  color:var(--ck-muted,#667085)!important;
+}
