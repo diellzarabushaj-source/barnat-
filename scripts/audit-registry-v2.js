@@ -1,0 +1,108 @@
+'use strict';
+
+const fs = require('node:fs');
+const path = require('node:path');
+
+const root = path.resolve(__dirname, '..');
+const read = file => fs.readFileSync(path.join(root, file), 'utf8');
+
+const html = read('index.html');
+const css = read('registry-v2.css');
+const js = read('registry-v2.js');
+
+function assert(condition, message) {
+  if (!condition) throw new Error(message);
+}
+
+const legacyAssets = [
+  'styles.css',
+  'ui-controls.css',
+  'clean-medindex-ui.css',
+  'tailadmin-medindex.css',
+  'registry-unified-table.css',
+  'registry-mobile-critical.css',
+  'registry-mobile-lite.css',
+  'registry-mobile-phase3.css',
+  'registry-mobile-phase4.css',
+  'registry-mobile-design-audit.css',
+  'registry-mobile-phone-hardening.css',
+  'registry-ux-phase1.css',
+  'registry-ux-phase2.css',
+  'registry-ux-phase3.css',
+  'registry-table-tools.css',
+  'registry-list-view.css',
+  'tailadmin-professional.css',
+  'tailadmin-shell.js',
+  'tailadmin-professional.js',
+  'registry-fast-start.js',
+  'registry-runtime-loader.js',
+  'registry-unified-table.js',
+  'registry-table-tools.js',
+  'auth-client.js',
+  'offline-runtime.js',
+];
+
+assert(/data-drx-app="registry-v2"/.test(html), 'Registry v2 document marker is missing.');
+assert(/href="\/registry-v2\.css\?v=1"/.test(html), 'Registry v2 stylesheet is not published.');
+assert(/src="\/registry-v2\.js\?v=1"/.test(html), 'Registry v2 runtime is not published.');
+
+const stylesheetLinks = [...html.matchAll(/<link\b[^>]*rel="stylesheet"[^>]*href="([^"]+)"/g)].map(match => match[1]);
+const scriptSources = [...html.matchAll(/<script\b[^>]*src="([^"]+)"/g)].map(match => match[1]);
+
+assert(stylesheetLinks.length === 1, `Registry v2 must load exactly one stylesheet; found ${stylesheetLinks.length}.`);
+assert(scriptSources.length === 1, `Registry v2 must load exactly one script; found ${scriptSources.length}.`);
+assert(stylesheetLinks[0].startsWith('/registry-v2.css'), 'Unexpected registry stylesheet authority.');
+assert(scriptSources[0].startsWith('/registry-v2.js'), 'Unexpected registry script authority.');
+
+for (const asset of legacyAssets) {
+  assert(!html.includes(asset), `Legacy registry asset is still loaded by index.html: ${asset}`);
+}
+
+[
+  'id="searchInput"',
+  'id="filterPanel"',
+  'id="registryTable"',
+  'id="registryRows"',
+  'id="prevPageButton"',
+  'id="nextPageButton"',
+  'id="detailDrawer"',
+  'id="drawerBody"',
+].forEach(needle => assert(html.includes(needle), `Registry v2 surface is missing ${needle}.`));
+
+[
+  "view:'registry-page'",
+  "/api/drug-search?",
+  "/api/dosage?view=cards",
+  "view=registry-detail",
+  "/api/dosage?view=card",
+  "includeTotal:'true'",
+  "state.pageSize",
+  "state.sort",
+  "state.direction",
+].forEach(needle => assert(js.includes(needle), `Registry v2 runtime contract is missing: ${needle}`));
+
+assert(js.includes("credentials:'same-origin'"), 'Authenticated API requests must keep same-origin credentials.');
+assert(js.includes("response.status === 401 || response.status === 403"), 'Registry v2 must fail closed on unauthenticated API responses.');
+assert(js.includes("escapeHtml"), 'Registry v2 must escape rendered text.');
+assert(js.includes("AbortController"), 'Registry v2 requests must have bounded timeouts.');
+assert(js.includes("requestId"), 'Registry v2 must discard stale concurrent responses.');
+assert(js.includes("220"), 'Registry v2 search must be debounced.');
+
+assert(css.includes('--accent:#635bff'), 'Stripe-style accent token is missing.');
+assert(css.includes('.data-card'), 'Canonical table card style is missing.');
+assert(css.includes('.detail-drawer'), 'Detail drawer style is missing.');
+assert(css.includes('@media(max-width:760px)'), 'Mobile registry layout is missing.');
+assert(css.includes('@media(prefers-reduced-motion:reduce)'), 'Reduced-motion support is missing.');
+assert(!css.includes('!important'), 'Registry v2 stylesheet must not rely on !important overrides.');
+
+const tableHeaderCount = (html.match(/<th\b/g) || []).length;
+assert(tableHeaderCount >= 10 && tableHeaderCount <= 14, `Registry v2 table column count is unexpected: ${tableHeaderCount}.`);
+
+console.log(JSON.stringify({
+  ok:true,
+  architecture:'registry-v2',
+  stylesheets:stylesheetLinks,
+  scripts:scriptSources,
+  tableHeaderCount,
+  legacyAssetsLoaded:0,
+}, null, 2));
