@@ -512,6 +512,7 @@ html.medindex-tailadmin[data-mi-page="barnat"] body #dataTable[data-registry-uni
   background:#fff!important;color:var(--rst-ink)!important;font-feature-settings:"tnum","ss01";font-variant-numeric:tabular-nums
 }
 html.medindex-tailadmin[data-mi-page="barnat"] body #dataTable[data-registry-unified-table] thead th{
+  position:sticky!important;top:0!important;z-index:8!important;
   height:46px!important;min-height:46px!important;max-height:46px!important;padding:9px 12px!important;border:0!important;
   border-bottom:1px solid var(--rst-hairline)!important;background:var(--rst-soft)!important;color:var(--rst-muted)!important;
   font-size:12px!important;font-weight:500!important;letter-spacing:0!important;line-height:18px!important;
