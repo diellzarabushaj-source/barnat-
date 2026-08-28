@@ -32,6 +32,15 @@
     reveal: false,     // sill panelin e nyjeve në pamje pasi të mbërrijnë fëmijët (vetëm në celular)
   };
 
+  function loadSharedSidebarTaxonomy() {
+    if (document.querySelector('script[data-drx-sidebar-taxonomy]')) return;
+    const script = document.createElement('script');
+    script.src = '/sidebar-taxonomy-v3.js?v=sidebar-taxonomy-v3';
+    script.defer = true;
+    script.dataset.drxSidebarTaxonomy = '1';
+    document.head.appendChild(script);
+  }
+
   function bindElements() {
     [
       'appShell','sidebar','sidebarBackdrop','menuButton','sidebarClose','logoutButton','avatarInitials','sourceStatus','syncText',
@@ -449,6 +458,7 @@
   }
 
   async function boot() {
+    loadSharedSidebarTaxonomy();
     bindElements();
     bindEvents();
     render();
