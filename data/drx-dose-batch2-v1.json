@@ -1,6 +1,6 @@
 {
   "schemaVersion": "drx-dose-batch2-v1",
-  "updatedAt": "2026-08-29T22:45:00+02:00",
+  "updatedAt": "2026-08-29T23:10:00+02:00",
   "status": "source_set_complete_repository_side",
   "publicationAllowed": false,
   "targetCount": 25,
@@ -150,35 +150,70 @@
       "canonicalName": "Levothyroxine",
       "sourceKey": "emc-12780-smpc",
       "url": "https://www.medicines.org.uk/emc/product/12780/smpc",
-      "status": "verified_live"
+      "status": "verified_live",
+      "documentDate": "2025-07-08",
+      "productName": "Levothyroxine 50 microgram tablets",
+      "formulation": "tablet",
+      "route": "PO",
+      "strength": "50 micrograms",
+      "section41Present": true,
+      "section42Present": true
     },
     {
       "canonicalKey": "ondansetron",
       "canonicalName": "Ondansetron",
       "sourceKey": "emc-5222-smpc",
       "url": "https://www.medicines.org.uk/emc/product/5222/smpc",
-      "status": "verified_live"
+      "status": "verified_live",
+      "documentDate": "2026-01-09",
+      "productName": "Ondansetron 4 mg film-coated tablets",
+      "formulation": "film-coated tablet",
+      "route": "PO",
+      "strength": "4 mg",
+      "section41Present": true,
+      "section42Present": true
     },
     {
       "canonicalKey": "carvedilol",
       "canonicalName": "Carvedilol",
       "sourceKey": "emc-3105-smpc",
       "url": "https://www.medicines.org.uk/emc/product/3105/smpc",
-      "status": "verified_live"
+      "status": "verified_live",
+      "documentDate": "2026-07-08",
+      "productName": "Carvedilol 25 mg film-coated tablets",
+      "formulation": "film-coated tablet",
+      "route": "PO",
+      "strength": "25 mg",
+      "section41Present": true,
+      "section42Present": true
     },
     {
       "canonicalKey": "tramadol",
       "canonicalName": "Tramadol",
       "sourceKey": "emc-7123-smpc",
       "url": "https://www.medicines.org.uk/emc/product/7123/smpc",
-      "status": "verified_live"
+      "status": "verified_live",
+      "documentDate": "2025-10-27",
+      "productName": "Tramadol 50 mg capsules, hard",
+      "formulation": "hard capsule",
+      "route": "PO",
+      "strength": "50 mg",
+      "section41Present": true,
+      "section42Present": true
     },
     {
       "canonicalKey": "aspirin",
       "canonicalName": "Aspirin",
       "sourceKey": "emc-102206-smpc",
       "url": "https://www.medicines.org.uk/emc/product/102206/smpc",
-      "status": "verified_live"
+      "status": "verified_live",
+      "documentDate": "2026-06-02",
+      "productName": "Aspirin 75 mg tablets",
+      "formulation": "tablet",
+      "route": "PO",
+      "strength": "75 mg",
+      "section41Present": true,
+      "section42Present": true
     },
     {
       "canonicalKey": "ramipril",
@@ -302,7 +337,7 @@
     "exactLiveProductBindingComplete": false,
     "clinicalReviewComplete": false,
     "productionPersistenceComplete": false,
-    "liveWebEvidenceStructuredCount": 10,
+    "liveWebEvidenceStructuredCount": 15,
     "archiveHashVerifiedCount": 0
   },
   "blockers": [
