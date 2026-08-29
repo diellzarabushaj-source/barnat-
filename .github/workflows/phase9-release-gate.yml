@@ -1,0 +1,37 @@
+name: Phase 9 release gate
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - ".github/workflows/phase9-release-gate.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: phase9-release-gate
+  cancel-in-progress: true
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Enable Corepack
+        run: corepack enable
+
+      - name: Use pnpm from packageManager
+        run: corepack prepare pnpm@10.28.0 --activate
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Run release test suite
+        env:
+          CI: "true"
+        run: pnpm test
