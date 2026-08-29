@@ -1,6 +1,6 @@
 {
   "schemaVersion": "drx-dosierung-master-plan-status-v1",
-  "updatedAt": "2026-08-30T00:30:00+02:00",
+  "updatedAt": "2026-08-30T00:55:00+02:00",
   "officialPlan": "DRx Dosierung phases 0-32",
   "databaseBlocker": {
     "active": true,
@@ -161,12 +161,15 @@
     {
       "id": 14,
       "name": "Supabase V3",
-      "status": "BLOCKED_DB_GATEWAY",
+      "status": "BLOCKED_DB_GATEWAY_CANDIDATE_READY",
       "evidence": [
         "V2 preserved",
-        "identified additive V3 gaps from ibuprofen pilot"
+        "identified additive V3 gaps from ibuprofen pilot",
+        "supabase/drx-dose-v3-additive-candidate.sql",
+        "tests/drx-dose-v3-supabase-candidate-test.js",
+        "data/drx-dose-v3-supabase-candidate-status.json"
       ],
-      "next": "apply additive V3 persistence only after Supabase SQL gateway returns and baseline is re-verified"
+      "next": "when SQL gateway recovers: baseline tables/types -> apply_migration -> security/performance advisors -> smoke queries"
     },
     {
       "id": 15,
@@ -387,7 +390,7 @@
   ],
   "currentExecution": {
     "phase": 16,
-    "objective": "Batch 2 has 25 structured candidates, 25 clinical review packets and a fail-closed prepublication audit. Normalization-ready remains 0 until hash-backed archive evidence exists.",
+    "objective": "Phase 14 V3 Supabase candidate is now prepared fail-closed and additive, but not applied because SQL/advisor/migration-list operations time out while project health and Postgres logs remain healthy.",
     "pilot": "batch2-25",
     "repositoryBatch1Substances": 10,
     "repositoryBatch2Substances": 25,
@@ -411,6 +414,10 @@
     "structuredCandidateReady": 25,
     "normalizationReady": 0,
     "publicationReady": 0,
-    "reviewPacketsReady": 25
+    "reviewPacketsReady": 25,
+    "supabaseProjectHealth": "ACTIVE_HEALTHY",
+    "supabaseSqlGateway": "timeout",
+    "v3CandidateReady": true,
+    "v3Applied": false
   }
 }
