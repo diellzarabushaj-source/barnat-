@@ -1,6 +1,6 @@
 {
   "schemaVersion": "drx-dose-batch2-v1",
-  "updatedAt": "2026-08-29T05:35:00+02:00",
+  "updatedAt": "2026-08-29T22:30:00+02:00",
   "status": "source_set_complete_repository_side",
   "publicationAllowed": false,
   "targetCount": 25,
@@ -10,35 +10,70 @@
       "canonicalName": "Amlodipine",
       "sourceKey": "emc-4717-smpc",
       "url": "https://www.medicines.org.uk/emc/product/4717/smpc",
-      "status": "verified_live"
+      "status": "verified_live",
+      "documentDate": "2026-04-20",
+      "productName": "Amlodipine 5 mg tablets",
+      "formulation": "tablet",
+      "route": "PO",
+      "strength": "5 mg",
+      "section41Present": true,
+      "section42Present": true
     },
     {
       "canonicalKey": "atorvastatin",
       "canonicalName": "Atorvastatin",
       "sourceKey": "emc-13385-smpc",
       "url": "https://www.medicines.org.uk/emc/product/13385/smpc",
-      "status": "verified_live"
+      "status": "verified_live",
+      "documentDate": "2025-08-26",
+      "productName": "Atorvastatin 80 mg film-coated tablets",
+      "formulation": "film-coated tablet",
+      "route": "PO",
+      "strength": "80 mg",
+      "section41Present": true,
+      "section42Present": true
     },
     {
       "canonicalKey": "bisoprolol",
       "canonicalName": "Bisoprolol",
       "sourceKey": "emc-101897-smpc",
       "url": "https://www.medicines.org.uk/emc/product/101897/smpc",
-      "status": "verified_live"
+      "status": "verified_live",
+      "documentDate": "2026-02-06",
+      "productName": "Bisoprolol 10 mg film-coated Tablets",
+      "formulation": "film-coated tablet",
+      "route": "PO",
+      "strength": "10 mg",
+      "section41Present": true,
+      "section42Present": true
     },
     {
       "canonicalKey": "losartan",
       "canonicalName": "Losartan",
       "sourceKey": "emc-651-smpc",
       "url": "https://www.medicines.org.uk/emc/product/651/smpc",
-      "status": "verified_live"
+      "status": "verified_live",
+      "documentDate": "2026-01-26",
+      "productName": "Losartan potassium 12.5 mg film-coated tablets",
+      "formulation": "film-coated tablet",
+      "route": "PO",
+      "strength": "12.5 mg",
+      "section41Present": true,
+      "section42Present": true
     },
     {
       "canonicalKey": "pantoprazole",
       "canonicalName": "Pantoprazole",
       "sourceKey": "emc-14644-smpc",
       "url": "https://www.medicines.org.uk/emc/product/14644/smpc",
-      "status": "verified_live"
+      "status": "verified_live",
+      "documentDate": "2026-02-26",
+      "productName": "Pantoprazole 40 mg gastro-resistant tablets",
+      "formulation": "gastro-resistant tablet",
+      "route": "PO",
+      "strength": "40 mg",
+      "section41Present": true,
+      "section42Present": true
     },
     {
       "canonicalKey": "ciprofloxacin",
@@ -231,12 +266,16 @@
     "normalizationComplete": false,
     "exactLiveProductBindingComplete": false,
     "clinicalReviewComplete": false,
-    "productionPersistenceComplete": false
+    "productionPersistenceComplete": false,
+    "liveWebEvidenceStructuredCount": 5,
+    "archiveHashVerifiedCount": 0
   },
   "blockers": [
     "Supabase SQL/MCP database gateway unavailable",
     "all Batch 2 rows require structured SmPC extraction and normalization before clinical review",
     "Batch 2 structured SmPC extraction and normalization still required before clinical review",
-    "18 Batch 2 sources still require document date/version capture in the canonical source map before publication readiness"
+    "18 Batch 2 sources still require document date/version capture in the canonical source map before publication readiness",
+    "Wave 1 has live web-verified section evidence but archive SHA-256 snapshots are still pending",
+    "Bisoprolol source requires clinical review because section 4.2 contains chronic heart failure titration while section 4.1 lists hypertension and angina"
   ]
 }
