@@ -6,7 +6,8 @@ const path = require('node:path');
 
 const ROOT = path.resolve(__dirname, '..');
 const DATA_DIR = path.join(ROOT, 'data');
-const WAVE_FILE_PATTERN = /^drx-first100-source-discovery-wave-([a-z]+)-v1\.json$/;
+const ANY_WAVE_FILE_PATTERN = /^drx-first100-source-discovery-wave-.*\.json$/;
+const SUPPORTED_WAVE_FILE_PATTERN = /^drx-first100-source-discovery-wave-([a-z]+)-v1\.json$/;
 
 function waveOrdinal(label) {
   assert.match(label, /^[a-z]+$/, `invalid wave label: ${label}`);
@@ -17,15 +18,21 @@ function waveOrdinal(label) {
   return ordinal;
 }
 
-const waveFiles = fs.readdirSync(DATA_DIR)
-  .map((fileName) => {
-    const match = fileName.match(WAVE_FILE_PATTERN);
-    return match ? { fileName, label: match[1], ordinal: waveOrdinal(match[1]) } : null;
-  })
-  .filter(Boolean)
-  .sort((a, b) => a.ordinal - b.ordinal);
+const candidateWaveFileNames = fs.readdirSync(DATA_DIR)
+  .filter((fileName) => ANY_WAVE_FILE_PATTERN.test(fileName));
 
-assert.ok(waveFiles.length > 0, 'no first-100 source-discovery waves found');
+assert.ok(candidateWaveFileNames.length > 0, 'no first-100 source-discovery waves found');
+
+const waveFiles = candidateWaveFileNames
+  .map((fileName) => {
+    const match = fileName.match(SUPPORTED_WAVE_FILE_PATTERN);
+    assert.ok(
+      match,
+      `${fileName}: unsupported source-discovery wave filename/schema version; fail closed until the aggregate gate is explicitly upgraded`
+    );
+    return { fileName, label: match[1], ordinal: waveOrdinal(match[1]) };
+  })
+  .sort((a, b) => a.ordinal - b.ordinal);
 
 for (let index = 0; index < waveFiles.length; index += 1) {
   const expectedOrdinal = index + 1;
