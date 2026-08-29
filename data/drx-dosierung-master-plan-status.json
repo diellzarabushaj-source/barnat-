@@ -1,6 +1,6 @@
 {
   "schemaVersion": "drx-dosierung-master-plan-status-v1",
-  "updatedAt": "2026-08-29T10:48:36.921Z",
+  "updatedAt": "2026-08-29T10:52:14.372Z",
   "officialPlan": "DRx Dosierung phases 0-32",
   "databaseBlocker": {
     "active": true,
@@ -57,7 +57,7 @@
     {
       "id": 3,
       "name": "Source Discovery",
-      "status": "IN_PROGRESS_FIRST100_83_VERIFIED_EFFECTIVE_89",
+      "status": "IN_PROGRESS_FIRST100_84_VERIFIED_EFFECTIVE_89",
       "evidence": [
         "data/drx-dose-source-map-v1.json",
         "ibuprofen pilot with official eMC oral+IV SmPCs",
@@ -124,9 +124,12 @@
         "first-100 verified product-specific source total: 82",
         "data/drx-first100-source-discovery-wave-r-v1.json",
         "Wave R: Rennie Dual Action authorised HPRA product, official SmPC 2024-09-05 sections 4.1/4.2",
-        "first-100 verified product-specific source total: 83"
+        "first-100 verified product-specific source total: 83",
+        "data/drx-first100-source-discovery-wave-s-v1.json",
+        "Wave S: Andorex 0.15% + 0.12% oral spray, AKPPM RMA-3120/16/11/2022 + Humanis KÜB 2023-10-24 sections 4.1/4.2; Kosovo/Turkey ATC difference retained as review flag",
+        "first-100 verified product-specific source total: 84"
       ],
-      "next": "source-discover 5 remaining exact targets; resolve Alteplase product selection separately; keep publication fail-closed"
+      "next": "source-discover 4 remaining exact targets; resolve Alteplase product selection separately; keep publication fail-closed"
     },
     {
       "id": 4,
@@ -305,7 +308,7 @@
     {
       "id": 17,
       "name": "Bulk Import",
-      "status": "FIRST100_83_OF_89_SOURCE_DISCOVERY_PRODUCTION_PROVENANCE_BLOCKED",
+      "status": "FIRST100_84_OF_89_SOURCE_DISCOVERY_PRODUCTION_PROVENANCE_BLOCKED",
       "evidence": [
         "data/drx-bulk-import-policy-v1.json",
         "scripts/build-drx-first100-discovery-queue.js",
@@ -335,9 +338,10 @@
         "80/89 effective canonical targets have product-specific authoritative sources",
         "81/89 effective canonical targets have product-specific authoritative sources",
         "82/89 effective canonical targets have product-specific sources meeting discovery policy",
-        "83/89 effective canonical targets have product-specific sources meeting discovery policy"
+        "83/89 effective canonical targets have product-specific sources meeting discovery policy",
+        "84/89 effective canonical targets have product-specific sources meeting discovery policy"
       ],
-      "next": "complete 5 remaining source lookups + 1 Alteplase product selection; production import still requires hash-bound Supabase canonical export provenance"
+      "next": "complete 4 remaining source lookups + 1 Alteplase product selection; production import still requires hash-bound Supabase canonical export provenance"
     },
     {
       "id": 18,
@@ -569,7 +573,7 @@
     "first100ProductionEligibleRows": 0,
     "first100ProductionDiscoveryAllowed": false,
     "first100SourceDiscoveryEligible": 89,
-    "first100VerifiedProductSources": 83,
+    "first100VerifiedProductSources": 84,
     "first100ProductSelectionRequired": 1,
     "legacyMirrorPrecheck": {
       "present": 2,
@@ -578,12 +582,12 @@
       "bindings": 4,
       "liveCompared": false
     },
-    "first100SourceDiscoveryRemaining": 5,
+    "first100SourceDiscoveryRemaining": 4,
     "first100SourceSectionVerificationPending": 0,
     "first100ProductSelectionPending": 1,
     "first100CanonicalReviewResolved": 14,
     "first100CanonicalReviewPending": 0,
     "first100EffectiveSourceDiscoveryEligible": 89,
-    "first100SourceLookupRemaining": 5
+    "first100SourceLookupRemaining": 4
   }
 }
