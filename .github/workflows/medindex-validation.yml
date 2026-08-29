@@ -77,67 +77,58 @@ jobs:
       - name: Run complete test suite
         run: pnpm test
 
-      - name: Verify the dedicated prescription dashboard
+      - name: Verify the Recetat V2 prescription workspace
         shell: bash
         run: |
           set -euo pipefail
           test -f recetat.html
-          test -f recetat.css
-          test -f recetat-audit.css
-          test -f signature-templates.css
-          test -f signature-templates.js
-          test -f tests/signature-templates-test.js
+          test -f recetat-v2.css
+          test -f recetat-v2.js
+          test -f tests/recetat-v2-folder-workspace-test.js
           test -f tests/prescription-notation-test.js
-          test -f tests/registry-source-fidelity-test.js
           test -f prescription-format-core.js
           test -f prescription-notation.js
-          test -f prescription-registry-bridge.js
-          test -f local-registry-fidelity.js
-          test -f recetat.js
           test -f tailadmin-shell-core.js
+
           grep -q 'href="/protokollet.html"' index.html
           grep -q 'href="/recetat.html"' index.html
           grep -q "href:'/recetat.html'" tailadmin-shell-core.js
           grep -q "label:'Recetat'" tailadmin-shell-core.js
-          grep -q 'id="rxComposer"' recetat.html
-          grep -q '@forma' recetat.html
-          grep -q '@bari' recetat.html
-          grep -q '@doza' recetat.html
-          grep -q '@sasia' recetat.html
-          grep -q '@tjetër' recetat.html
-          grep -q '@signatura' recetat.html
-          grep -q 'signature-templates.css' recetat.html
-          grep -q 'signature-templates.js' recetat.html
-          grep -q 'prescription-registry-bridge.js' recetat.html
-          grep -q 'local-registry-fidelity.js' recetat.html
-          grep -q 'Unguentum / krem' signature-templates.js
-          grep -q 'Administrohet IV si infuzion' signature-templates.js
-          grep -q 'prescription-format-core.js' recetat.html
-          grep -q 'recetat.js' recetat.html
-          grep -q 'id="rxGeneratedReview"' recetat.html
-          ! grep -q 'recetat-v2.js' recetat.html
-          grep -q '/api/gemini-prescription' recetat.js
-          grep -q '/api/drug-search' recetat.js
+
+          # Recetat is a standalone V2 workspace: its own page CSS/runtime plus
+          # the shared Stripe shell. Do not reintroduce the retired Recetat stack.
+          grep -q 'data-drx-app="recetat-v2"' recetat.html
+          grep -q 'recetat-v2.css?v=' recetat.html
+          grep -q 'recetat-v2.js?v=' recetat.html
+          grep -q 'drx-dashboard-stripe.css?v=drx-dashboard-stripe-v4' recetat.html
+          ! grep -q 'tailadmin-professional.css' recetat.html
+          ! grep -q 'tailadmin-shell.js' recetat.html
+          ! grep -q 'recetat.css' recetat.html
+          ! grep -q 'recetat-audit.css' recetat.html
+          ! grep -q 'signature-templates.js' recetat.html
+          ! grep -q 'prescription-registry-bridge.js' recetat.html
+          ! grep -q 'local-registry-fidelity.js' recetat.html
+          ! grep -q 'src="/recetat.js' recetat.html
+
+          grep -q '/api/gemini-prescription' recetat-v2.js
+          grep -q '/api/dosage' recetat-v2.js
+          grep -q 'prescriptionChapters' recetat-v2.js
+          grep -q 'medindex:prescriptions-changed' recetat-v2.js
           grep -q 'dispenseQuantity' prescription-format-core.js
           grep -q 'S (Signatura):' prescription-format-core.js
           grep -q 'sharedSignature' prescription-format-core.js
-          grep -q 'generatedReviewConfirmed' recetat.js
-          grep -q 'medindexPrescriptionSelection' recetat.js
-          grep -q 'Si të shënohet në recetë' app-parts/part-01.txt
           grep -q 'PRESCRIPTION_SHEET_ID' api/registry.js
           grep -q 'matchedByOrdinal' api/registry.js
           grep -q 'ambiguousPdid' api/registry.js
           grep -q 'export?format=csv' api/registry.js
           grep -q 'packagingSummary' api/drug-search.js
           grep -q 'prescriptionLine' api/drug-search.js
-          grep -q 'REGISTRY_SCHEMA_VERSION' local-registry-fidelity.js
-          grep -q 'record.version !== REGISTRY_SCHEMA_VERSION' local-registry-fidelity.js
-          grep -q 'local-registry-fidelity.js' sw.js
+
           ! grep -q 'protocolOverlay' index.html
           ! grep -q 'dosage-auto-apply.js' index.html
           ! grep -q 'prescription-review.js' index.html
 
-      - name: Verify TailAdmin UI and navigation
+      - name: Verify shared UI authorities and V2 navigation
         shell: bash
         run: |
           set -euo pipefail
@@ -147,48 +138,47 @@ jobs:
           test -f tailadmin-professional.css
           test -f tailadmin-professional-core.css
           test -f tailadmin-professional.js
+          test -f drx-dashboard-stripe.css
           test -f TAILADMIN-LICENSE
           test -f THIRD_PARTY_NOTICES.md
           test -f tests/ui-navigation-audit-test.js
           test -f tests/professional-ui-audit-test.js
-          # Registry V2 is intentionally standalone: one stylesheet + one runtime.
-          grep -q 'data-drx-app="registry-v2"' index.html
-          grep -q 'registry-v2.css' index.html
-          grep -q 'registry-v2.js' index.html
-          ! grep -q 'tailadmin-medindex.css' index.html
-          ! grep -q 'tailadmin-professional.css' index.html
-          ! grep -q 'tailadmin-shell.js' index.html
-          # Classification V2 is standalone and uses the approved DRx shell.
-          grep -q 'data-drx-app="classification-v2"' klasifikimi.html
-          grep -q 'classification-v2.css' klasifikimi.html
-          grep -q 'classification-v2.js' klasifikimi.html
-          ! grep -q 'tailadmin-medindex.css' klasifikimi.html
-          ! grep -q 'tailadmin-professional.css' klasifikimi.html
-          ! grep -q 'tailadmin-shell.js' klasifikimi.html
-          # ICD V2 është i pavarur si Barnat dhe Klasifikimi: një fletë stili dhe
-          # një runtime mbi guaskën DRx, në vend të kaskadës TailAdmin.
-          grep -q 'data-drx-app="icd-v2"' icd.html
-          grep -q 'icd-v2.css' icd.html
-          grep -q 'icd-v2.js' icd.html
-          ! grep -q 'tailadmin-medindex.css' icd.html
-          ! grep -q 'tailadmin-professional.css' icd.html
-          ! grep -q 'tailadmin-shell.js' icd.html
-          for page in analizat.html dozologjia.html protokollet.html recetat.html; do
-            grep -q 'medindex-tailadmin' "$page"
-            grep -q 'tailadmin-medindex.css' "$page"
-            grep -q 'tailadmin-professional.css' "$page"
-            grep -q 'tailadmin-shell.js' "$page"
-            grep -q 'tailadmin-professional.js' "$page"
-            grep -q 'skip-link' "$page"
-          done
-          # The sign-in page was rebuilt on the DRx system, so it no longer sets
-          # the medindex-tailadmin-login class or links the editorial stylesheets
-          # (landing-effects.css is still applied, injected at runtime by
-          # theme-preload.js). Assert the assets it actually owns instead.
+
+          verify_v2_page() {
+            page="$1"
+            marker="$2"
+            css="$3"
+            runtime="$4"
+            grep -q "data-drx-app=\"$marker\"" "$page"
+            grep -q "$css?v=" "$page"
+            grep -q "$runtime?v=" "$page"
+            grep -q 'drx-dashboard-stripe.css?v=drx-dashboard-stripe-v4' "$page"
+            grep -q 'drx-unified-sidebar' "$page"
+            ! grep -q 'tailadmin-professional.css' "$page"
+            ! grep -q 'tailadmin-shell.js' "$page"
+            ! grep -q 'medindex-tailadmin' "$page"
+          }
+
+          verify_v2_page index.html registry-v2 registry-v2.css registry-v2.js
+          verify_v2_page klasifikimi.html classification-v2 classification-v2.css classification-v2.js
+          verify_v2_page icd.html icd-v2 icd-v2.css icd-v2.js
+          verify_v2_page analizat.html analizat-v2 analizat-v2.css analizat-v2.js
+          verify_v2_page dozologjia.html dozologjia-v2 dozologjia-v2.css dozologjia-v2.js
+          verify_v2_page protokollet.html protokollet-v2 protokollet-v2.css protokollet-v2.js
+          verify_v2_page recetat.html recetat-v2 recetat-v2.css recetat-v2.js
+          verify_v2_page urgjencat.html urgjencat-v2 urgjencat-v2.css urgjencat-v2.js
+          verify_v2_page medical-hub.html medical-hub-v2 medical-hub-v2.css medical-hub-v2.js
+          verify_v2_page sistemi.html sistemi-v2 sistemi-v2.css sistemi-v2.js
+
+          # The sign-in page owns the DRx auth system rather than the editorial
+          # TailAdmin cascade.
           grep -q 'data-mi-page="login"' login.html
           grep -q 'theme-preload.js' login.html
           grep -q 'drx-auth.css' login.html
           grep -q 'plan-block' login.html
+
+          # Keep the compatibility bundle healthy for surfaces that still use it,
+          # without forcing standalone V2 pages back onto that cascade.
           grep -q -- '--mi-sidebar-width: 290px' tailadmin-medindex.css
           grep -q -- '--mi-brand-500: #1f7779' tailadmin-medindex.css
           grep -q -- '--mi-sidebar-width: 264px' tailadmin-professional-core.css
