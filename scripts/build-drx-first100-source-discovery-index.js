@@ -7,6 +7,7 @@ const WAVE_FILES=['a','b','c'].map(x=>'data/drx-first100-source-discovery-wave-'
 function build(){
  const queue=read('data/drx-first100-source-discovery-queue-v1.json');
  const quality=read('data/drx-first100-canonical-quality-audit-v1.json');
+ const provenance=read('data/drx-first100-production-provenance-audit-v1.json');
  const queueKeys=new Set(queue.queue.map(x=>x.canonicalKey));
  const reviewKeys=new Set(quality.rows.filter(x=>x.canonicalReviewRequired).map(x=>x.canonicalKey));
  const rows=[];const seen=new Set();const issues=[];
@@ -28,6 +29,12 @@ function build(){
  const verified=rows.filter(x=>x.status.startsWith('verified_'));
  const selection=rows.filter(x=>x.status==='product_selection_required');
  const eligibleTotal=quality.sourceDiscoveryEligible;
+ const repositoryComplete=issues.length===0&&verified.length===eligibleTotal&&selection.length===0;
+ const canonicalProductionProvenanceEligible=provenance.productionEligible===true;
+ const productionBlockers=[
+   ...(repositoryComplete?[]:['source_discovery_incomplete']),
+   ...(!canonicalProductionProvenanceEligible?(provenance.reasons||['canonical_provenance_not_verified']):[])
+ ];
  return {
    schemaVersion:'drx-first100-source-discovery-index-v1',
    generatedAt:new Date().toISOString(),
@@ -38,7 +45,11 @@ function build(){
    productSelectionRequired:selection.length,
    eligibleRemaining:Math.max(0,eligibleTotal-verified.length),
    issueCount:issues.length,
-   complete:issues.length===0&&verified.length===eligibleTotal&&selection.length===0,
+   complete:repositoryComplete,
+   repositoryComplete,
+   canonicalProductionProvenanceEligible,
+   productionDiscoveryAllowed:repositoryComplete&&canonicalProductionProvenanceEligible,
+   productionBlockers:[...new Set(productionBlockers)],
    publicationAllowed:false,
    issues,
    rows
