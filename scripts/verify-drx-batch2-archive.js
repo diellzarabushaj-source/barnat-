@@ -3,6 +3,7 @@
 const crypto = require('node:crypto');
 const fs = require('node:fs');
 const path = require('node:path');
+const SmPC = require('../lib/smpc-parser.js');
 
 const SHA256_RE = /^[0-9a-f]{64}$/i;
 const ISO_DATE_RE = /^\d{4}-\d{2}-\d{2}$/;
@@ -96,6 +97,10 @@ function verifyArchive(options = {}) {
     }
 
     if (!SHA256_RE.test(String(row?.rawSha256 || ''))) errors.push(`${prefix}:raw_sha256_invalid`);
+    if (!SHA256_RE.test(String(row?.section41Sha256 || ''))) errors.push(`${prefix}:section_4_1_sha256_invalid`);
+    if (!SHA256_RE.test(String(row?.section42Sha256 || ''))) errors.push(`${prefix}:section_4_2_sha256_invalid`);
+    if (row?.sectionSha256?.['4.1'] !== row?.section41Sha256) errors.push(`${prefix}:section_4_1_hash_map_mismatch`);
+    if (row?.sectionSha256?.['4.2'] !== row?.section42Sha256) errors.push(`${prefix}:section_4_2_hash_map_mismatch`);
     if (row?.snapshotId !== row?.rawSha256) errors.push(`${prefix}:snapshot_hash_mismatch`);
     if (!ISO_DATE_RE.test(String(row?.documentDate || ''))) errors.push(`${prefix}:document_date_missing_or_invalid`);
     if (row?.section41Present !== true) errors.push(`${prefix}:section_4_1_missing`);
@@ -129,6 +134,16 @@ function verifyArchive(options = {}) {
     if (actualHash !== row.rawSha256) errors.push(`${prefix}:raw_hash_mismatch`);
     if (Number(row.contentLength) !== raw.length) errors.push(`${prefix}:content_length_mismatch`);
 
+    const reparsed = SmPC.extractClinicalSections(raw.toString('utf8'));
+    const reparsed41 = String(reparsed.sections?.['4.1']?.text || '');
+    const reparsed42 = String(reparsed.sections?.['4.2']?.text || '');
+    const actualSection41Hash = reparsed41 ? sha256(Buffer.from(reparsed41, 'utf8')) : '';
+    const actualSection42Hash = reparsed42 ? sha256(Buffer.from(reparsed42, 'utf8')) : '';
+    if (!reparsed41) errors.push(`${prefix}:raw_section_4_1_missing`);
+    if (!reparsed42) errors.push(`${prefix}:raw_section_4_2_missing`);
+    if (actualSection41Hash !== row.section41Sha256) errors.push(`${prefix}:section_4_1_hash_mismatch`);
+    if (actualSection42Hash !== row.section42Sha256) errors.push(`${prefix}:section_4_2_hash_mismatch`);
+
     const meta = parseJsonFile(metaPath, `${prefix}:meta`, errors);
     if (!meta) continue;
     if (meta.rawSha256 !== row.rawSha256) errors.push(`${prefix}:meta_raw_hash_mismatch`);
@@ -140,6 +155,8 @@ function verifyArchive(options = {}) {
     if (Number(meta.contentLength) !== raw.length) errors.push(`${prefix}:meta_content_length_mismatch`);
     if (meta.parser?.indicationsSectionPresent !== true) errors.push(`${prefix}:meta_section_4_1_missing`);
     if (meta.parser?.doseSectionPresent !== true) errors.push(`${prefix}:meta_section_4_2_missing`);
+    if (meta.sectionSha256?.['4.1'] !== row.section41Sha256) errors.push(`${prefix}:meta_section_4_1_hash_mismatch`);
+    if (meta.sectionSha256?.['4.2'] !== row.section42Sha256) errors.push(`${prefix}:meta_section_4_2_hash_mismatch`);
   }
 
   const files = walkFiles(archiveRoot);
@@ -159,6 +176,10 @@ function verifyArchive(options = {}) {
       expectedCount,
       rowCount:rows.length,
       uniqueHashes:seenHash.size,
+      sectionHashVerifiedCount:rows.filter(row =>
+        SHA256_RE.test(String(row?.section41Sha256 || ''))
+        && SHA256_RE.test(String(row?.section42Sha256 || ''))
+      ).length,
       rawFiles:rawFiles.length,
       metadataFiles:metaFiles.length,
       publicationAllowed:false,
