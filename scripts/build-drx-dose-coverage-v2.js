@@ -66,6 +66,7 @@ function build() {
       first100QueueMaterialized:Number(execution.first100QueueMaterialized || 0),
       first100CanonicalReviewRequired:Number(execution.first100CanonicalReviewRequired || 0),
       first100SourceDiscoveryEligible:Number(execution.first100SourceDiscoveryEligible || 0),
+      first100EffectiveSourceDiscoveryEligible:Number(execution.first100EffectiveSourceDiscoveryEligible || execution.first100SourceDiscoveryEligible || 0),
       first100VerifiedProductSources:Number(execution.first100VerifiedProductSources || 0),
       first100SourceDiscoveryRemaining:Number(execution.first100SourceDiscoveryRemaining || 0),
       first100SourceSectionVerificationPending:Number(execution.first100SourceSectionVerificationPending || 0),
@@ -82,8 +83,8 @@ function build() {
       published:pct(published, batch2Total)
     },
     first100ProgressPct:{
-      verifiedProductSources:pct(execution.first100VerifiedProductSources, execution.first100SourceDiscoveryEligible),
-      discoveryRemaining:pct(execution.first100SourceDiscoveryRemaining, execution.first100SourceDiscoveryEligible),
+      verifiedProductSources:pct(execution.first100VerifiedProductSources, execution.first100EffectiveSourceDiscoveryEligible || execution.first100SourceDiscoveryEligible),
+      discoveryRemaining:pct(execution.first100SourceDiscoveryRemaining, execution.first100EffectiveSourceDiscoveryEligible || execution.first100SourceDiscoveryEligible),
       canonicalReviewBlocked:pct(execution.first100CanonicalReviewRequired, execution.first100QueueMaterialized)
     },
     architecture:{
