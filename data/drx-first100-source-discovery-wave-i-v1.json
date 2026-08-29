@@ -1,0 +1,86 @@
+{
+  "schemaVersion": "drx-first100-source-discovery-wave-i-v1",
+  "generatedAt": "2026-08-29T09:34:00+02:00",
+  "sourcePolicy": "data/drx-dose-source-policy-v1.json",
+  "verificationMethod": "eu_national_regulator_product_specific_rcp",
+  "publicationAllowed": false,
+  "verifiedProductSpecificCount": 3,
+  "sectionsPendingCount": 0,
+  "productSelectionRequiredCount": 0,
+  "rows": [
+    {
+      "canonicalKey": "chamomiletincturelauromacrogollidocaine",
+      "canonicalName": "Chamomile tincture + Lauromacrogol + Lidocaine",
+      "status": "verified_product_specific_component_normalization_review",
+      "sourceTier": "EU_NATIONAL",
+      "authority": "ANMDMR Romania",
+      "sourceKey": "anm-ro-rcp-12309-2019",
+      "url": "https://www.anm.ro/_/_RCP/RCP_12309_29.08.19.pdf",
+      "productName": "Dentinox – Gel 10 g gel gingival",
+      "documentDate": "2019-08-29",
+      "section41Present": true,
+      "section42Present": true,
+      "registryAnchor": {
+        "tradeName": "Dentinox Gel med",
+        "pdid": "846",
+        "atcCode": "A01AD11",
+        "form": "Oromucosal gel"
+      },
+      "reviewFlags": [
+        "matricaria_chamomilla_tincture_name_normalization",
+        "lidocaine_hydrochloride_monohydrate_normalization",
+        "gingival_product_specific",
+        "pediatric_teething_context"
+      ],
+      "publicationAllowed": false
+    },
+    {
+      "canonicalKey": "chlorquinaldoltriamcinoloneacetonide",
+      "canonicalName": "Chlorquinaldol + Triamcinolone acetonide",
+      "status": "verified_product_specific_component_order_review",
+      "sourceTier": "EU_NATIONAL",
+      "authority": "ANMDMR Romania",
+      "sourceKey": "anm-ro-rcp-12345-2019",
+      "url": "https://www.anm.ro/_/_RCP/RCP_12345_30.08.19.pdf",
+      "productName": "Triamcinolon S Atb 1 mg/30 mg/g cremă",
+      "documentDate": "2019-08-30",
+      "section41Present": true,
+      "section42Present": true,
+      "registryAnchor": {
+        "tradeName": "Triamcinolon S",
+        "pdid": "1401",
+        "atcCode": "D07XB02",
+        "form": "Cream"
+      },
+      "reviewFlags": [
+        "component_order_normalized",
+        "cutaneous_combination",
+        "age_under_2_not_recommended",
+        "short_course_2_to_7_days"
+      ],
+      "publicationAllowed": false
+    },
+    {
+      "canonicalKey": "betamethasonedipropionateclotrimazolegentamicin",
+      "canonicalName": "Betamethasone dipropionate + Clotrimazole + Gentamicin",
+      "status": "verified_product_specific",
+      "sourceTier": "EU_NATIONAL",
+      "authority": "ANMDMR Romania",
+      "sourceKey": "anm-ro-rcp-11852-2019",
+      "url": "https://www.anm.ro/_/_RCP/RCP_11852_31.05.19.pdf",
+      "productName": "Tresyl cremă",
+      "documentDate": "2019-05-31",
+      "section41Present": true,
+      "section42Present": true,
+      "reviewFlags": [
+        "fixed_topical_triple_combination",
+        "infected_steroid_responsive_dermatoses",
+        "twice_daily",
+        "diagnosis_review_if_no_improvement_3_to_4_weeks",
+        "pediatric_experience_limited",
+        "clinical_review_required"
+      ],
+      "publicationAllowed": false
+    }
+  ]
+}
