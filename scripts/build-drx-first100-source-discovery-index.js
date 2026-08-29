@@ -14,7 +14,7 @@ function validAuthorityUrl(row){
   return Boolean(
     resolved
     && resolved.key===expected
-    && ['EMA','EMC','AEMPS_CIMA','EU_NATIONAL','KOSOVO_AKPPM'].includes(resolved.key)
+    && ['EMA','EMC','FACHINFO_DE','AEMPS_CIMA','EU_NATIONAL','KOSOVO_AKPPM'].includes(resolved.key)
   );
 }
 
