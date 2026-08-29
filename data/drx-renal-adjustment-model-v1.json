@@ -1,6 +1,6 @@
 {
   "schemaVersion": "drx-renal-adjustment-model-v1",
-  "status": "foundation_complete_repository",
+  "status": "provenance_hardened_repository",
   "publicationAllowed": false,
   "supportedMeasures": [
     "eGFR_mL_min_1_73m2",
@@ -14,7 +14,12 @@
     "dose_action",
     "source_key",
     "source_section",
-    "review_status"
+    "source_section_sha256",
+    "source_snapshot_id",
+    "source_evidence_hash",
+    "review_status",
+    "verified_by",
+    "verified_at"
   ],
   "doseActions": [
     "no_adjustment",
@@ -33,7 +38,10 @@
   "safetyRules": [
     "do_not_infer_CrCl_from_eGFR",
     "do_not_publish_without_source",
-    "conflicting_rules_require_manual_review"
+    "conflicting_rules_require_manual_review",
+    "source_snapshot_must_equal_source_evidence_hash",
+    "exact_smpc_4_2_section_sha256_required",
+    "verified_adjustment_requires_reviewer_identity_and_timestamp"
   ],
-  "next": "bind normalized sourced rules to exact products and patient inputs after live V3 persistence"
+  "next": "persist only exact SmPC 4.2 hash-pinned renal rows after live V3 persistence; validate CrCl/eGFR/dialysis measures without cross-inference"
 }
