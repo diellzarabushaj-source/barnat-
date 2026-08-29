@@ -1,10 +1,10 @@
 'use strict';
 
-const { neonRequest, exactCount } = require('../lib/neon-data-api');
+const { neonRequest, exactCount } = require('../lib/medindex-data-api.js');
 
 (async () => {
   if (!process.env.VERCEL) {
-    console.log('MedIndex Neon health check skipped outside Vercel.');
+    console.log('MedIndex Supabase health check skipped outside Vercel.');
     return;
   }
 
@@ -15,6 +15,6 @@ const { neonRequest, exactCount } = require('../lib/neon-data-api');
     });
     console.log(`MedIndex Neon healthy. Lab tests: ${exactCount(response) ?? 'unknown'}.`);
   } catch (error) {
-    console.warn(`MedIndex Neon health check limited: ${error.message}`);
+    console.warn(`MedIndex Supabase health check limited: ${error.message}`);
   }
 })();
