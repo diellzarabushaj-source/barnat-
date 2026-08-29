@@ -1,0 +1,19 @@
+{
+  "schemaVersion": "drx-publication-gate-v3-policy",
+  "status": "foundation_complete_repository",
+  "publishWhenAll": [
+    "editorial_status_verified",
+    "source_key_present",
+    "source_version_or_date_present",
+    "source_evidence_hash_present",
+    "product_binding_exact",
+    "indication_normalized",
+    "required_inputs_resolved",
+    "safety_validation_passed",
+    "confidence_threshold_passed",
+    "no_open_clinical_review"
+  ],
+  "failClosed": true,
+  "highRiskOverride": "manual_review_required_even_when_other_conditions_pass",
+  "next": "enforce as DB constraint/view or publication RPC in additive V3"
+}
