@@ -277,6 +277,10 @@
     {
       "version": "20260829002018",
       "name": "harden_dose_rule_publication_gate"
+    },
+    {
+      "version": "20260829002859",
+      "name": "phase1_public_read_hardening"
     }
   ]
 }
