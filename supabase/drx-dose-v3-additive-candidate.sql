@@ -134,6 +134,9 @@ create table if not exists public.dose_rules_v3 (
   source_evidence_hash text not null,
   confidence_score numeric,
   review_class text,
+  safety_validation_status text not null default 'pending',
+  safety_validator_version text,
+  safety_validated_at timestamptz,
   editorial_status text not null default 'draft',
   verified_by text,
   verified_at timestamptz,
@@ -147,6 +150,11 @@ create table if not exists public.dose_rules_v3 (
   constraint dose_rules_v3_version_check check (version_no >= 1),
   constraint dose_rules_v3_confidence_check check (confidence_score is null or (confidence_score >= 0 and confidence_score <= 1)),
   constraint dose_rules_v3_editorial_check check (editorial_status in ('draft','in_review','verified','published','retired')),
+  constraint dose_rules_v3_safety_status_check check (safety_validation_status in ('pending','passed','failed','manual_review')),
+  constraint dose_rules_v3_safety_pass_complete_check check (
+    safety_validation_status <> 'passed'
+    or (safety_validator_version is not null and safety_validated_at is not null)
+  ),
   constraint dose_rules_v3_patient_group_check check (patient_group in ('adult_only','pediatric_only','pediatric_and_adult','age_band','manual_review')),
   constraint dose_rules_v3_method_check check (calculation_method in ('fixed_dose','fixed_volume','dose_per_kg_per_dose','dose_per_kg_per_day','dose_per_m2_per_dose','dose_per_m2_per_day','age_band_fixed','manual_only')),
   constraint dose_rules_v3_frequency_check check (frequency_mode in ('interval','times_per_day','prn','single','continuous','manual')),
@@ -183,6 +191,10 @@ create table if not exists public.dose_rules_v3 (
   constraint dose_rules_v3_published_not_manual_check check (
     editorial_status <> 'published'
     or (calculation_method <> 'manual_only' and review_class is distinct from 'manual_review')
+  ),
+  constraint dose_rules_v3_published_safety_check check (
+    editorial_status <> 'published'
+    or safety_validation_status = 'passed'
   )
 );
 
@@ -318,6 +330,91 @@ create index if not exists dose_review_queue_v3_open_idx
   on public.dose_review_queue_v3(priority desc, opened_at)
   where review_status in ('open','in_review');
 create index if not exists dose_publication_events_v3_rule_idx on public.dose_publication_events_v3(rule_id, created_at desc);
+
+
+-- Publication transition is enforced in the database, not only in application code.
+create or replace function private.drx_enforce_rule_publication_v3()
+returns trigger
+language plpgsql
+set search_path = pg_catalog, public, private
+as $
+declare
+  verified_binding_count integer;
+  clean_comparison_count integer;
+  unresolved_review_count integer;
+begin
+  if new.editorial_status <> 'published'
+     or old.editorial_status = 'published' then
+    return new;
+  end if;
+
+  if new.safety_validation_status <> 'passed' then
+    raise exception 'DRX_V3_PUBLICATION_BLOCKED: safety validation has not passed';
+  end if;
+
+  select count(*)::integer
+  into verified_binding_count
+  from public.dose_rule_products_v3 b
+  where b.rule_id = new.rule_id
+    and b.binding_status = 'verified';
+
+  if verified_binding_count = 0 then
+    raise exception 'DRX_V3_PUBLICATION_BLOCKED: no verified product binding';
+  end if;
+
+  select count(*)::integer
+  into clean_comparison_count
+  from public.dose_rule_products_v3 b
+  where b.rule_id = new.rule_id
+    and b.binding_status = 'verified'
+    and exists (
+      select 1
+      from public.dose_legacy_comparisons_v3 c
+      where c.rule_id = new.rule_id
+        and c.drug_id = b.drug_id
+        and c.comparison_status in ('exact','compatible','not_applicable')
+    );
+
+  if clean_comparison_count <> verified_binding_count then
+    raise exception 'DRX_V3_PUBLICATION_BLOCKED: legacy comparison incomplete or conflicting';
+  end if;
+
+  select count(*)::integer
+  into unresolved_review_count
+  from public.dose_review_queue_v3 q
+  where q.rule_id = new.rule_id
+    and q.review_status in ('open','in_review');
+
+  if unresolved_review_count <> 0 then
+    raise exception 'DRX_V3_PUBLICATION_BLOCKED: clinical review remains open';
+  end if;
+
+  if new.specialist_only
+     and not exists (
+       select 1
+       from public.dose_review_queue_v3 q
+       where q.rule_id = new.rule_id
+         and q.review_status = 'resolved'
+         and q.decision is not null
+     ) then
+    raise exception 'DRX_V3_PUBLICATION_BLOCKED: specialist rule requires resolved manual review';
+  end if;
+
+  return new;
+end
+$;
+
+revoke all on function private.drx_enforce_rule_publication_v3()
+from public, anon, authenticated;
+
+drop trigger if exists dose_rules_v3_publication_guard
+on public.dose_rules_v3;
+
+create trigger dose_rules_v3_publication_guard
+before update of editorial_status
+on public.dose_rules_v3
+for each row
+execute function private.drx_enforce_rule_publication_v3();
 
 -- RLS: every V3 table in public is explicitly protected.
 alter table public.dose_source_snapshots_v3 enable row level security;
