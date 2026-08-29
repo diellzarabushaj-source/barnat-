@@ -1,0 +1,713 @@
+{
+  "schemaVersion": "drx-batch2-review-packets-v1",
+  "generatedAt": "2026-08-30T00:30:00+02:00",
+  "total": 25,
+  "publicationAllowed": false,
+  "packets": [
+    {
+      "reviewKey": "batch2:aspirin",
+      "canonicalKey": "aspirin",
+      "productName": "Aspirin 75 mg tablets",
+      "sourceKey": "emc-102206-smpc",
+      "sourceUrl": "https://www.medicines.org.uk/emc/product/102206/smpc",
+      "documentDate": "2026-08-27",
+      "priority": "high",
+      "reasons": [
+        "indication_specific_ranges",
+        "acute_mi_loading_then_maintenance",
+        "max_daily_dose_300mg",
+        "pediatric_under16_restriction",
+        "bleeding_risk_context",
+        "unscored_75mg_product_binding",
+        "clinical_review_required"
+      ],
+      "requiredDecisions": [
+        "confirm_indication_scope",
+        "confirm_product_formulation_route",
+        "confirm_dose_structure_from_smpc_4_2",
+        "confirm_pediatric_age_weight_bsa_logic",
+        "confirm_high_risk_manual_review",
+        "confirm_exact_product_can_supply_rule"
+      ],
+      "status": "pending_clinical_review",
+      "reviewer": null,
+      "reviewedAt": null,
+      "decision": null,
+      "publicationAllowed": false
+    },
+    {
+      "reviewKey": "batch2:bisoprolol",
+      "canonicalKey": "bisoprolol",
+      "productName": "Bisoprolol 10 mg film-coated Tablets",
+      "sourceKey": "emc-101897-smpc",
+      "sourceUrl": "https://www.medicines.org.uk/emc/product/101897/smpc",
+      "documentDate": "2026-02-06",
+      "priority": "high",
+      "reasons": [
+        "section41_section42_indication_mismatch",
+        "clinical_review_required",
+        "do_not_auto_normalize_chf",
+        "product_binding_required"
+      ],
+      "requiredDecisions": [
+        "confirm_indication_scope",
+        "confirm_product_formulation_route",
+        "confirm_dose_structure_from_smpc_4_2",
+        "confirm_exact_product_can_supply_rule"
+      ],
+      "status": "pending_clinical_review",
+      "reviewer": null,
+      "reviewedAt": null,
+      "decision": null,
+      "publicationAllowed": false
+    },
+    {
+      "reviewKey": "batch2:carvedilol",
+      "canonicalKey": "carvedilol",
+      "productName": "Carvedilol 25 mg film-coated tablets",
+      "sourceKey": "emc-3105-smpc",
+      "sourceUrl": "https://www.medicines.org.uk/emc/product/3105/smpc",
+      "documentDate": "2026-07-08",
+      "priority": "high",
+      "reasons": [
+        "heart_failure_titration_required",
+        "weight_dependent_maximum_in_chf",
+        "monitor_before_each_titration",
+        "multiple_indication_rules",
+        "25mg_product_cannot_supply_3_125mg_starting_dose",
+        "clinical_review_required"
+      ],
+      "requiredDecisions": [
+        "confirm_indication_scope",
+        "confirm_product_formulation_route",
+        "confirm_dose_structure_from_smpc_4_2",
+        "confirm_monitoring_or_titration_requirements",
+        "confirm_pediatric_age_weight_bsa_logic",
+        "confirm_exact_product_can_supply_rule"
+      ],
+      "status": "pending_clinical_review",
+      "reviewer": null,
+      "reviewedAt": null,
+      "decision": null,
+      "publicationAllowed": false
+    },
+    {
+      "reviewKey": "batch2:cefalexin",
+      "canonicalKey": "cefalexin",
+      "productName": "Cefalexin 250 mg Capsules",
+      "sourceKey": "emc-9140-smpc",
+      "sourceUrl": "https://www.medicines.org.uk/emc/product/9140/smpc",
+      "documentDate": "2025-06-06",
+      "priority": "high",
+      "reasons": [
+        "susceptibility_context_required",
+        "indication_specific_regimens",
+        "renal_adjustment_review",
+        "pediatric_weight_rules",
+        "clinical_review_required"
+      ],
+      "requiredDecisions": [
+        "confirm_indication_scope",
+        "confirm_product_formulation_route",
+        "confirm_dose_structure_from_smpc_4_2",
+        "confirm_antimicrobial_guidance_context",
+        "confirm_renal_adjustment_logic",
+        "confirm_pediatric_age_weight_bsa_logic"
+      ],
+      "status": "pending_clinical_review",
+      "reviewer": null,
+      "reviewedAt": null,
+      "decision": null,
+      "publicationAllowed": false
+    },
+    {
+      "reviewKey": "batch2:cetirizine",
+      "canonicalKey": "cetirizine",
+      "productName": "Cetirizine Dihydrochloride 10 mg Film-Coated Tablets",
+      "sourceKey": "emc-100094-smpc",
+      "sourceUrl": "https://www.medicines.org.uk/emc/product/100094/smpc",
+      "documentDate": "2026-06-29",
+      "priority": "high",
+      "reasons": [
+        "renal_adjustment_required",
+        "renal_metric_mapping_requires_review",
+        "pediatric_age_band_required",
+        "product_split_capability_relevant",
+        "clinical_review_required"
+      ],
+      "requiredDecisions": [
+        "confirm_indication_scope",
+        "confirm_product_formulation_route",
+        "confirm_dose_structure_from_smpc_4_2",
+        "confirm_renal_adjustment_logic",
+        "confirm_pediatric_age_weight_bsa_logic",
+        "confirm_exact_product_can_supply_rule"
+      ],
+      "status": "pending_clinical_review",
+      "reviewer": null,
+      "reviewedAt": null,
+      "decision": null,
+      "publicationAllowed": false
+    },
+    {
+      "reviewKey": "batch2:ciprofloxacin",
+      "canonicalKey": "ciprofloxacin",
+      "productName": "Ciprofloxacin 250 mg film-coated tablets",
+      "sourceKey": "emc-4341-smpc",
+      "sourceUrl": "https://www.medicines.org.uk/emc/product/4341/smpc",
+      "documentDate": "2026-05-14",
+      "priority": "high",
+      "reasons": [
+        "high_risk_antimicrobial",
+        "official_antimicrobial_guidance_required",
+        "resistance_context_required",
+        "renal_adjustment_required",
+        "pediatric_weight_required",
+        "do_not_flatten_indication_table",
+        "clinical_review_required"
+      ],
+      "requiredDecisions": [
+        "confirm_indication_scope",
+        "confirm_product_formulation_route",
+        "confirm_dose_structure_from_smpc_4_2",
+        "confirm_antimicrobial_guidance_context",
+        "confirm_high_risk_manual_review",
+        "confirm_renal_adjustment_logic",
+        "confirm_pediatric_age_weight_bsa_logic"
+      ],
+      "status": "pending_clinical_review",
+      "reviewer": null,
+      "reviewedAt": null,
+      "decision": null,
+      "publicationAllowed": false
+    },
+    {
+      "reviewKey": "batch2:clopidogrel",
+      "canonicalKey": "clopidogrel",
+      "productName": "Clopidogrel 75 mg film-coated tablets",
+      "sourceKey": "emc-15846-smpc",
+      "sourceUrl": "https://www.medicines.org.uk/emc/product/15846/smpc",
+      "documentDate": "2024-07-24",
+      "priority": "high",
+      "reasons": [
+        "loading_dose_context_required",
+        "acs_pci_age_branching",
+        "asa_combination_context",
+        "bleeding_risk_review",
+        "clinical_review_required"
+      ],
+      "requiredDecisions": [
+        "confirm_indication_scope",
+        "confirm_product_formulation_route",
+        "confirm_dose_structure_from_smpc_4_2",
+        "confirm_pediatric_age_weight_bsa_logic",
+        "confirm_high_risk_manual_review"
+      ],
+      "status": "pending_clinical_review",
+      "reviewer": null,
+      "reviewedAt": null,
+      "decision": null,
+      "publicationAllowed": false
+    },
+    {
+      "reviewKey": "batch2:dexamethasone",
+      "canonicalKey": "dexamethasone",
+      "productName": "Dexamethasone 2 mg soluble tablets",
+      "sourceKey": "emc-816-smpc",
+      "sourceUrl": "https://www.medicines.org.uk/emc/product/816/smpc",
+      "documentDate": "2025-01-21",
+      "priority": "high",
+      "reasons": [
+        "systemic_corticosteroid",
+        "very_broad_indication_set",
+        "oncology_overlap",
+        "weight_based_pediatric_rule",
+        "condition_specific_rules_required",
+        "clinical_review_required"
+      ],
+      "requiredDecisions": [
+        "confirm_indication_scope",
+        "confirm_product_formulation_route",
+        "confirm_dose_structure_from_smpc_4_2",
+        "confirm_high_risk_manual_review",
+        "confirm_pediatric_age_weight_bsa_logic"
+      ],
+      "status": "pending_clinical_review",
+      "reviewer": null,
+      "reviewedAt": null,
+      "decision": null,
+      "publicationAllowed": false
+    },
+    {
+      "reviewKey": "batch2:diclofenac",
+      "canonicalKey": "diclofenac",
+      "productName": "Diclofenac sodium Dexcel XL 100 mg prolonged-release tablets",
+      "sourceKey": "emc-2662-smpc",
+      "sourceUrl": "https://www.medicines.org.uk/emc/product/2662/smpc",
+      "documentDate": "2026-05-01",
+      "priority": "high",
+      "reasons": [
+        "prolonged_release_specific",
+        "do_not_generalize_to_immediate_release",
+        "lowest_effective_shortest_duration",
+        "gi_cv_renal_risk_context",
+        "clinical_review_required"
+      ],
+      "requiredDecisions": [
+        "confirm_indication_scope",
+        "confirm_product_formulation_route",
+        "confirm_dose_structure_from_smpc_4_2",
+        "confirm_renal_adjustment_logic"
+      ],
+      "status": "pending_clinical_review",
+      "reviewer": null,
+      "reviewedAt": null,
+      "decision": null,
+      "publicationAllowed": false
+    },
+    {
+      "reviewKey": "batch2:doxycycline",
+      "canonicalKey": "doxycycline",
+      "productName": "Doxycycline 100 mg Capsules",
+      "sourceKey": "emc-13082-smpc",
+      "sourceUrl": "https://www.medicines.org.uk/emc/product/13082/smpc",
+      "documentDate": "2026-03-24",
+      "priority": "high",
+      "reasons": [
+        "official_antimicrobial_guidance_required",
+        "indication_specific_duration",
+        "pediatric_age_weight_branching",
+        "malaria_resistance_context",
+        "clinical_review_required"
+      ],
+      "requiredDecisions": [
+        "confirm_indication_scope",
+        "confirm_product_formulation_route",
+        "confirm_dose_structure_from_smpc_4_2",
+        "confirm_antimicrobial_guidance_context",
+        "confirm_pediatric_age_weight_bsa_logic"
+      ],
+      "status": "pending_clinical_review",
+      "reviewer": null,
+      "reviewedAt": null,
+      "decision": null,
+      "publicationAllowed": false
+    },
+    {
+      "reviewKey": "batch2:furosemide",
+      "canonicalKey": "furosemide",
+      "productName": "Furosemide 10 mg/ml solution for injection/infusion",
+      "sourceKey": "emc-102194-smpc",
+      "sourceUrl": "https://www.medicines.org.uk/emc/product/102194/smpc",
+      "documentDate": "2026-06-12",
+      "priority": "high",
+      "reasons": [
+        "parenteral_high_risk",
+        "infusion_rate_required",
+        "renal_rate_modifier",
+        "route_specific_rule_required",
+        "clinical_review_required"
+      ],
+      "requiredDecisions": [
+        "confirm_indication_scope",
+        "confirm_product_formulation_route",
+        "confirm_dose_structure_from_smpc_4_2",
+        "confirm_high_risk_manual_review",
+        "confirm_renal_adjustment_logic"
+      ],
+      "status": "pending_clinical_review",
+      "reviewer": null,
+      "reviewedAt": null,
+      "decision": null,
+      "publicationAllowed": false
+    },
+    {
+      "reviewKey": "batch2:gliclazide",
+      "canonicalKey": "gliclazide",
+      "productName": "Gliclazide 40 mg Tablets",
+      "sourceKey": "emc-13135-smpc",
+      "sourceUrl": "https://www.medicines.org.uk/emc/product/13135/smpc",
+      "documentDate": "2025-08-28",
+      "priority": "high",
+      "reasons": [
+        "glucose_monitoring_required",
+        "hypoglycaemia_risk",
+        "meal_timing_context",
+        "titration_required",
+        "clinical_review_required"
+      ],
+      "requiredDecisions": [
+        "confirm_indication_scope",
+        "confirm_product_formulation_route",
+        "confirm_dose_structure_from_smpc_4_2",
+        "confirm_monitoring_or_titration_requirements"
+      ],
+      "status": "pending_clinical_review",
+      "reviewer": null,
+      "reviewedAt": null,
+      "decision": null,
+      "publicationAllowed": false
+    },
+    {
+      "reviewKey": "batch2:levothyroxine",
+      "canonicalKey": "levothyroxine",
+      "productName": "Levothyroxine 50 microgram tablets",
+      "sourceKey": "emc-12780-smpc",
+      "sourceUrl": "https://www.medicines.org.uk/emc/product/12780/smpc",
+      "documentDate": "2025-07-08",
+      "priority": "high",
+      "reasons": [
+        "tsh_or_t4_monitoring_required",
+        "age_and_cardiac_status_branching",
+        "pediatric_bsa_and_weight_rules",
+        "under5_formulation_constraint",
+        "clinical_review_required"
+      ],
+      "requiredDecisions": [
+        "confirm_indication_scope",
+        "confirm_product_formulation_route",
+        "confirm_dose_structure_from_smpc_4_2",
+        "confirm_monitoring_or_titration_requirements",
+        "confirm_pediatric_age_weight_bsa_logic",
+        "confirm_exact_product_can_supply_rule"
+      ],
+      "status": "pending_clinical_review",
+      "reviewer": null,
+      "reviewedAt": null,
+      "decision": null,
+      "publicationAllowed": false
+    },
+    {
+      "reviewKey": "batch2:loratadine",
+      "canonicalKey": "loratadine",
+      "productName": "Loratadine 10 mg Tablets",
+      "sourceKey": "emc-8911-smpc",
+      "sourceUrl": "https://www.medicines.org.uk/emc/product/8911/smpc",
+      "documentDate": "2024-01-24",
+      "priority": "high",
+      "reasons": [
+        "pediatric_age_and_weight_gate",
+        "alternative_formulation_for_small_children",
+        "hepatic_impairment_review",
+        "clinical_review_required"
+      ],
+      "requiredDecisions": [
+        "confirm_indication_scope",
+        "confirm_product_formulation_route",
+        "confirm_dose_structure_from_smpc_4_2",
+        "confirm_pediatric_age_weight_bsa_logic",
+        "confirm_exact_product_can_supply_rule",
+        "confirm_hepatic_adjustment_logic"
+      ],
+      "status": "pending_clinical_review",
+      "reviewer": null,
+      "reviewedAt": null,
+      "decision": null,
+      "publicationAllowed": false
+    },
+    {
+      "reviewKey": "batch2:metronidazole",
+      "canonicalKey": "metronidazole",
+      "productName": "Metronidazole 500 mg Film-Coated Tablets",
+      "sourceKey": "emc-14660-smpc",
+      "sourceUrl": "https://www.medicines.org.uk/emc/product/14660/smpc",
+      "documentDate": "2026-07-27",
+      "priority": "high",
+      "reasons": [
+        "many_indication_specific_regimens",
+        "h_pylori_combination_context",
+        "hepatic_impairment_review",
+        "pediatric_age_weight_branching",
+        "clinical_review_required"
+      ],
+      "requiredDecisions": [
+        "confirm_indication_scope",
+        "confirm_product_formulation_route",
+        "confirm_dose_structure_from_smpc_4_2",
+        "confirm_hepatic_adjustment_logic",
+        "confirm_pediatric_age_weight_bsa_logic"
+      ],
+      "status": "pending_clinical_review",
+      "reviewer": null,
+      "reviewedAt": null,
+      "decision": null,
+      "publicationAllowed": false
+    },
+    {
+      "reviewKey": "batch2:naproxen",
+      "canonicalKey": "naproxen",
+      "productName": "Naproxen 500 mg Tablets",
+      "sourceKey": "emc-101275-smpc",
+      "sourceUrl": "https://www.medicines.org.uk/emc/product/101275/smpc",
+      "documentDate": "2026-06-05",
+      "priority": "high",
+      "reasons": [
+        "lowest_effective_shortest_duration",
+        "indication_specific_dose_ranges",
+        "pediatric_jra_only",
+        "gi_cv_renal_risk_context",
+        "clinical_review_required"
+      ],
+      "requiredDecisions": [
+        "confirm_indication_scope",
+        "confirm_product_formulation_route",
+        "confirm_dose_structure_from_smpc_4_2",
+        "confirm_pediatric_age_weight_bsa_logic",
+        "confirm_renal_adjustment_logic"
+      ],
+      "status": "pending_clinical_review",
+      "reviewer": null,
+      "reviewedAt": null,
+      "decision": null,
+      "publicationAllowed": false
+    },
+    {
+      "reviewKey": "batch2:ondansetron",
+      "canonicalKey": "ondansetron",
+      "productName": "Ondansetron 4 mg film-coated tablets",
+      "sourceKey": "emc-5222-smpc",
+      "sourceUrl": "https://www.medicines.org.uk/emc/product/5222/smpc",
+      "documentDate": "2026-01-09",
+      "priority": "high",
+      "reasons": [
+        "cinv_rinv_regimen_complexity",
+        "bsa_or_weight_pediatric_branching",
+        "ponv_route_specificity",
+        "hepatic_daily_max_8mg",
+        "qt_risk_context",
+        "clinical_review_required"
+      ],
+      "requiredDecisions": [
+        "confirm_indication_scope",
+        "confirm_product_formulation_route",
+        "confirm_dose_structure_from_smpc_4_2",
+        "confirm_pediatric_age_weight_bsa_logic",
+        "confirm_hepatic_adjustment_logic",
+        "confirm_monitoring_or_titration_requirements"
+      ],
+      "status": "pending_clinical_review",
+      "reviewer": null,
+      "reviewedAt": null,
+      "decision": null,
+      "publicationAllowed": false
+    },
+    {
+      "reviewKey": "batch2:prednisolone",
+      "canonicalKey": "prednisolone",
+      "productName": "Prednisolone 5 mg soluble tablets",
+      "sourceKey": "emc-102342-smpc",
+      "sourceUrl": "https://www.medicines.org.uk/emc/product/102342/smpc",
+      "documentDate": "2026-06-19",
+      "priority": "high",
+      "reasons": [
+        "systemic_corticosteroid",
+        "many_indication_specific_rules",
+        "tapering_logic_requires_explicit_source_context",
+        "pediatric_age_and_weight_branching",
+        "clinical_review_required"
+      ],
+      "requiredDecisions": [
+        "confirm_indication_scope",
+        "confirm_product_formulation_route",
+        "confirm_dose_structure_from_smpc_4_2",
+        "confirm_pediatric_age_weight_bsa_logic"
+      ],
+      "status": "pending_clinical_review",
+      "reviewer": null,
+      "reviewedAt": null,
+      "decision": null,
+      "publicationAllowed": false
+    },
+    {
+      "reviewKey": "batch2:ramipril",
+      "canonicalKey": "ramipril",
+      "productName": "Ramipril 5 mg tablets",
+      "sourceKey": "emc-10153-smpc",
+      "sourceUrl": "https://www.medicines.org.uk/emc/product/10153/smpc",
+      "documentDate": "2024-12-14",
+      "priority": "high",
+      "reasons": [
+        "multiple_indication_rules",
+        "renal_function_monitoring_required",
+        "serum_potassium_monitoring_required",
+        "diuretic_volume_status_branch",
+        "post_mi_titration_specific",
+        "clinical_review_required"
+      ],
+      "requiredDecisions": [
+        "confirm_indication_scope",
+        "confirm_product_formulation_route",
+        "confirm_dose_structure_from_smpc_4_2",
+        "confirm_renal_adjustment_logic",
+        "confirm_monitoring_or_titration_requirements"
+      ],
+      "status": "pending_clinical_review",
+      "reviewer": null,
+      "reviewedAt": null,
+      "decision": null,
+      "publicationAllowed": false
+    },
+    {
+      "reviewKey": "batch2:spironolactone",
+      "canonicalKey": "spironolactone",
+      "productName": "Spironolactone 12.5 mg Film-coated Tablets",
+      "sourceKey": "emc-12015-smpc",
+      "sourceUrl": "https://www.medicines.org.uk/emc/product/12015/smpc",
+      "documentDate": "2025-10-23",
+      "priority": "high",
+      "reasons": [
+        "serum_potassium_required",
+        "renal_function_required",
+        "heart_failure_specific_criteria",
+        "hyperkalaemia_risk",
+        "clinical_review_required"
+      ],
+      "requiredDecisions": [
+        "confirm_indication_scope",
+        "confirm_product_formulation_route",
+        "confirm_dose_structure_from_smpc_4_2",
+        "confirm_monitoring_or_titration_requirements",
+        "confirm_renal_adjustment_logic"
+      ],
+      "status": "pending_clinical_review",
+      "reviewer": null,
+      "reviewedAt": null,
+      "decision": null,
+      "publicationAllowed": false
+    },
+    {
+      "reviewKey": "batch2:tramadol",
+      "canonicalKey": "tramadol",
+      "productName": "Tramadol 50 mg capsules, hard",
+      "sourceKey": "emc-7123-smpc",
+      "sourceUrl": "https://www.medicines.org.uk/emc/product/7123/smpc",
+      "documentDate": "2025-10-27",
+      "priority": "high",
+      "reasons": [
+        "high_risk_opioid",
+        "dependence_withdrawal_plan_required",
+        "max_daily_dose_400mg_except_special_circumstances",
+        "renal_hepatic_interval_review",
+        "age_restriction_under12",
+        "clinical_review_required"
+      ],
+      "requiredDecisions": [
+        "confirm_indication_scope",
+        "confirm_product_formulation_route",
+        "confirm_dose_structure_from_smpc_4_2",
+        "confirm_high_risk_manual_review",
+        "confirm_renal_adjustment_logic",
+        "confirm_hepatic_adjustment_logic",
+        "confirm_pediatric_age_weight_bsa_logic"
+      ],
+      "status": "pending_clinical_review",
+      "reviewer": null,
+      "reviewedAt": null,
+      "decision": null,
+      "publicationAllowed": false
+    },
+    {
+      "reviewKey": "batch2:losartan",
+      "canonicalKey": "losartan",
+      "productName": "Losartan potassium 12.5 mg film-coated tablets",
+      "sourceKey": "emc-651-smpc",
+      "sourceUrl": "https://www.medicines.org.uk/emc/product/651/smpc",
+      "documentDate": "2026-01-26",
+      "priority": "medium",
+      "reasons": [
+        "multiple_indication_specific_rules_required",
+        "renal_hepatic_special_population_rules_required",
+        "product_binding_required"
+      ],
+      "requiredDecisions": [
+        "confirm_indication_scope",
+        "confirm_product_formulation_route",
+        "confirm_dose_structure_from_smpc_4_2",
+        "confirm_renal_adjustment_logic",
+        "confirm_hepatic_adjustment_logic",
+        "confirm_exact_product_can_supply_rule"
+      ],
+      "status": "pending_clinical_review",
+      "reviewer": null,
+      "reviewedAt": null,
+      "decision": null,
+      "publicationAllowed": false
+    },
+    {
+      "reviewKey": "batch2:amlodipine",
+      "canonicalKey": "amlodipine",
+      "productName": "Amlodipine 5 mg tablets",
+      "sourceKey": "emc-4717-smpc",
+      "sourceUrl": "https://www.medicines.org.uk/emc/product/4717/smpc",
+      "documentDate": "2026-04-20",
+      "priority": "normal",
+      "reasons": [
+        "exact_product_cannot_supply_2_5_mg_from_this_5_mg_tablet",
+        "product_binding_required"
+      ],
+      "requiredDecisions": [
+        "confirm_indication_scope",
+        "confirm_product_formulation_route",
+        "confirm_dose_structure_from_smpc_4_2",
+        "confirm_exact_product_can_supply_rule"
+      ],
+      "status": "pending_clinical_review",
+      "reviewer": null,
+      "reviewedAt": null,
+      "decision": null,
+      "publicationAllowed": false
+    },
+    {
+      "reviewKey": "batch2:atorvastatin",
+      "canonicalKey": "atorvastatin",
+      "productName": "Atorvastatin 80 mg film-coated tablets",
+      "sourceKey": "emc-13385-smpc",
+      "sourceUrl": "https://www.medicines.org.uk/emc/product/13385/smpc",
+      "documentDate": "2025-08-26",
+      "priority": "normal",
+      "reasons": [
+        "indication_specific_rules_required",
+        "strength_80mg_product_not_equal_to_starting_dose",
+        "product_binding_required"
+      ],
+      "requiredDecisions": [
+        "confirm_indication_scope",
+        "confirm_product_formulation_route",
+        "confirm_dose_structure_from_smpc_4_2",
+        "confirm_exact_product_can_supply_rule"
+      ],
+      "status": "pending_clinical_review",
+      "reviewer": null,
+      "reviewedAt": null,
+      "decision": null,
+      "publicationAllowed": false
+    },
+    {
+      "reviewKey": "batch2:pantoprazole",
+      "canonicalKey": "pantoprazole",
+      "productName": "Pantoprazole 40 mg gastro-resistant tablets",
+      "sourceKey": "emc-14644-smpc",
+      "sourceUrl": "https://www.medicines.org.uk/emc/product/14644/smpc",
+      "documentDate": "2026-02-26",
+      "priority": "normal",
+      "reasons": [
+        "combination_regimen_requires_local_antimicrobial_guidance",
+        "do_not_auto_publish_antibiotic_components",
+        "indication_specific_duration_rules_required",
+        "product_binding_required"
+      ],
+      "requiredDecisions": [
+        "confirm_indication_scope",
+        "confirm_product_formulation_route",
+        "confirm_dose_structure_from_smpc_4_2",
+        "confirm_antimicrobial_guidance_context",
+        "confirm_exact_product_can_supply_rule"
+      ],
+      "status": "pending_clinical_review",
+      "reviewer": null,
+      "reviewedAt": null,
+      "decision": null,
+      "publicationAllowed": false
+    }
+  ]
+}
