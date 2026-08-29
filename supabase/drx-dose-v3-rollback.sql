@@ -7,11 +7,18 @@ begin;
 
 drop function if exists public.medindex_dose_product_fast_path_v3(text, uuid);
 
+drop trigger if exists dose_source_snapshots_v3_provenance_lock
+on public.dose_source_snapshots_v3;
+drop trigger if exists dose_source_sections_v3_provenance_lock
+on public.dose_source_sections_v3;
+
 drop trigger if exists dose_products_v3_publication_guard
 on public.dose_products_v3;
 drop trigger if exists dose_rules_v3_publication_guard
 on public.dose_rules_v3;
 
+drop function if exists private.drx_lock_source_snapshot_v3();
+drop function if exists private.drx_lock_source_section_v3();
 drop function if exists private.drx_enforce_product_publication_v3();
 drop function if exists private.drx_enforce_rule_publication_v3();
 
