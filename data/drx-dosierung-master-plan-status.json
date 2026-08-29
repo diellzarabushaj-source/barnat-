@@ -1,6 +1,6 @@
 {
   "schemaVersion": "drx-dosierung-master-plan-status-v1",
-  "updatedAt": "2026-08-29T07:16:10.610Z",
+  "updatedAt": "2026-08-29T07:20:46.650Z",
   "officialPlan": "DRx Dosierung phases 0-32",
   "databaseBlocker": {
     "active": true,
@@ -49,7 +49,7 @@
     {
       "id": 3,
       "name": "Source Discovery",
-      "status": "IN_PROGRESS_FIRST100_68_VERIFIED_EFFECTIVE_88",
+      "status": "IN_PROGRESS_FIRST100_73_VERIFIED_EFFECTIVE_88",
       "evidence": [
         "data/drx-dose-source-map-v1.json",
         "ibuprofen pilot with official eMC oral+IV SmPCs",
@@ -83,9 +83,12 @@
         "Wave H EU national regulators: Baneocin, LisAm, Pepcid Duo",
         "data/drx-first100-canonical-review-decisions-v1.json",
         "canonical review: 2 resolved, 11 pending; effective unique source-discovery denominator 88",
-        "first-100 verified product-specific source total: 68"
+        "first-100 verified product-specific source total: 68",
+        "data/drx-first100-source-discovery-wave-i-v1.json",
+        "Wave I: amlodipine/ramipril canonical resolution + four exact ANMDMR product SmPCs",
+        "first-100 verified product-specific source total: 73"
       ],
-      "next": "source-discover 19 remaining exact targets (including resolved amlodipine+ramipril); resolve alteplase product selection separately; keep 11 unresolved canonical-review rows blocked"
+      "next": "source-discover 14 remaining exact targets; resolve alteplase product selection separately; keep 11 unresolved canonical-review rows blocked"
     },
     {
       "id": 4,
@@ -514,7 +517,7 @@
     "first100ProductionEligibleRows": 0,
     "first100ProductionDiscoveryAllowed": false,
     "first100SourceDiscoveryEligible": 87,
-    "first100VerifiedProductSources": 68,
+    "first100VerifiedProductSources": 73,
     "first100ProductSelectionRequired": 1,
     "legacyMirrorPrecheck": {
       "present": 2,
@@ -523,7 +526,7 @@
       "bindings": 4,
       "liveCompared": false
     },
-    "first100SourceDiscoveryRemaining": 19,
+    "first100SourceDiscoveryRemaining": 14,
     "first100SourceSectionVerificationPending": 0,
     "first100ProductSelectionPending": 1,
     "first100CanonicalReviewResolved": 2,
