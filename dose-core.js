@@ -61,7 +61,10 @@
 
     const minAge = finite(valueOf(rule, 'minAgeMonths', 'min_age_months'));
     const maxAge = finite(valueOf(rule, 'maxAgeMonths', 'max_age_months'));
-    if (method === 'age_band_fixed' || minAge !== null || maxAge !== null) inputs.add('age_months');
+    const patientGroup = clean(valueOf(rule, 'patientGroup', 'patient_group'));
+    if (method === 'age_band_fixed'
+        || ['adult_only','pediatric_only'].includes(patientGroup)
+        || minAge !== null || maxAge !== null) inputs.add('age_months');
 
     const minWeight = finite(valueOf(rule, 'minWeightKg', 'min_weight_kg'));
     const maxWeight = finite(valueOf(rule, 'maxWeightKg', 'max_weight_kg'));
