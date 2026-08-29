@@ -25,8 +25,30 @@
     "requireStableOrdering": true,
     "requireUniqueCanonicalKey": true,
     "requireAtLeast100UncoveredAfterBatch1And2": true,
-    "failClosedOnSchemaMismatch": true
+    "failClosedOnSchemaMismatch": true,
+    "requireQueueAdapterParity": true
   },
   "intendedQueryShape": "select canonical_key, canonical_name, concept_id from canonical substance view/table ordered deterministically",
-  "next": "resolve exact live table/view and export first-100 queue when Supabase data plane returns"
+  "next": "when Supabase data plane returns, resolve exact canonical table/view, export snake_case rows, exclude Batch 1+2, and build deterministic 100-substance discovery batch",
+  "queueAdapter": {
+    "acceptedDatabaseShape": [
+      "canonical_key",
+      "canonical_name",
+      "concept_id"
+    ],
+    "acceptedRuntimeShape": [
+      "canonicalKey",
+      "canonicalName",
+      "conceptId"
+    ],
+    "canonicalKeyNormalization": "Unicode NFC + trim + lowercase",
+    "deterministicOrdering": "code-point canonicalKey ASC, then conceptId ASC",
+    "maxBatchSize": 500,
+    "supportedBatchSizes": [
+      100,
+      250,
+      500
+    ],
+    "alreadyCoveredAcceptedShape": "objects using canonical_key/canonicalKey or literal canonical-key strings"
+  }
 }
