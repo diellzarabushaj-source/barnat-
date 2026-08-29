@@ -1,0 +1,32 @@
+{
+  "schemaVersion": "drx-canonical-substance-export-contract-v1",
+  "status": "foundation_complete_repository",
+  "publicationAllowed": false,
+  "sourceOfTruth": "Supabase canonical substance tables",
+  "requiredColumns": [
+    "canonical_key",
+    "canonical_name"
+  ],
+  "optionalColumns": [
+    "concept_id",
+    "synonym_count",
+    "product_count"
+  ],
+  "ordering": [
+    "canonical_key ASC",
+    "concept_id ASC"
+  ],
+  "exclusions": [
+    "null_or_blank_canonical_key",
+    "null_or_blank_canonical_name",
+    "duplicate_canonical_key"
+  ],
+  "exportGate": {
+    "requireStableOrdering": true,
+    "requireUniqueCanonicalKey": true,
+    "requireAtLeast100UncoveredAfterBatch1And2": true,
+    "failClosedOnSchemaMismatch": true
+  },
+  "intendedQueryShape": "select canonical_key, canonical_name, concept_id from canonical substance view/table ordered deterministically",
+  "next": "resolve exact live table/view and export first-100 queue when Supabase data plane returns"
+}
