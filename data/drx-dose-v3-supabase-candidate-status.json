@@ -1,6 +1,6 @@
 {
   "schemaVersion": "drx-dose-v3-supabase-candidate-status-v1",
-  "updatedAt": "2026-08-29T11:47:52.669Z",
+  "updatedAt": "2026-08-29T11:53:03.434Z",
   "projectId": "ftuchtmolddhhsdcwnqe",
   "projectHealth": "ACTIVE_HEALTHY",
   "postgresVersion": "17.6.1.155",
@@ -60,7 +60,10 @@
       "EU_NATIONAL",
       "KOSOVO_AKPPM"
     ],
-    "preexistingShadowSchemaFailsClosed": true
+    "preexistingShadowSchemaFailsClosed": true,
+    "sourceSectionShaPinned": true,
+    "runtimeProvenanceRevalidation": true,
+    "publishedProvenanceMutationLocks": true
   },
   "applyGate": [
     "Supabase changelog/docs reviewed for relevant breaking changes",
@@ -80,12 +83,15 @@
     "non-publication source tier is blocked at product/rule publication",
     "missing or non-extracted SmPC 4.2 artifact blocks rule publication",
     "run supabase/drx-dose-v3-postapply-smoke.sql immediately after apply",
-    "run supabase/drx-dose-v3-rollback.sql in a controlled rollback test before runtime cutover"
+    "run supabase/drx-dose-v3-rollback.sql in a controlled rollback test before runtime cutover",
+    "published rules pin source_section_sha256 to the persisted extracted SmPC 4.2 section",
+    "runtime RPC revalidates product/rule source snapshot tier/key/version/date and exact section hash",
+    "verified/published source snapshots and sections are mutation-locked"
   ],
   "publicationAllowed": false,
   "selfContainedV3ProductShell": true,
   "v2ProductShellDependency": false,
-  "candidateGitBlobSha": "3a65730916870bf9557c391716529065c31fe813",
+  "candidateGitBlobSha": "f9da36c149283267d3b1d8f96cc147907819c066",
   "repositoryStaticAudit": {
     "candidateSelfContained": true,
     "additiveOnly": true,
@@ -93,13 +99,16 @@
     "directClientWriteGrants": 0,
     "publishedClientReadTables": 4,
     "publicationTriggerPresent": true,
-    "status": "STATIC_HARDENED_NOT_LIVE_APPLIED",
+    "status": "STATIC_PROVENANCE_HARDENED_NOT_LIVE_APPLIED",
     "productPublicationTriggerPresent": true,
     "rulePublicationTriggerPresent": true,
     "insertPublicationBypassClosed": true,
     "sourceTierPublicationGatePresent": true,
     "section42ArtifactGatePresent": true,
-    "partialSchemaPreflightPresent": true
+    "partialSchemaPreflightPresent": true,
+    "sourceSectionHashPinned": true,
+    "runtimeSnapshotAndSectionRevalidation": true,
+    "publishedProvenanceMutationLocks": true
   },
   "rollback": {
     "prepared": true,
