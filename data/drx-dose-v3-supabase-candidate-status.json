@@ -1,6 +1,6 @@
 {
   "schemaVersion": "drx-dose-v3-supabase-candidate-status-v1",
-  "updatedAt": "2026-08-29T11:54:37.374Z",
+  "updatedAt": "2026-08-29T11:56:27.875Z",
   "projectId": "ftuchtmolddhhsdcwnqe",
   "projectHealth": "ACTIVE_HEALTHY",
   "postgresVersion": "17.6.1.155",
@@ -86,7 +86,9 @@
     "run supabase/drx-dose-v3-rollback.sql in a controlled rollback test before runtime cutover",
     "published rules pin source_section_sha256 to the persisted extracted SmPC 4.2 section",
     "runtime RPC revalidates product/rule source snapshot tier/key/version/date and exact section hash",
-    "verified/published source snapshots and sections are mutation-locked"
+    "verified/published source snapshots and sections are mutation-locked",
+    "run supabase/drx-dose-v3-publication-gate-smoke.sql after structural smoke; transaction must end in ROLLBACK",
+    "negative and positive DB publication-gate cases pass before any real V3 import"
   ],
   "publicationAllowed": false,
   "selfContainedV3ProductShell": true,
@@ -135,6 +137,24 @@
       "selector-less RPC fails closed to NULL",
       "two provenance mutation-lock triggers present",
       "V3 functions are SECURITY INVOKER"
+    ]
+  },
+  "transactionalPublicationSmoke": {
+    "prepared": true,
+    "executed": false,
+    "file": "supabase/drx-dose-v3-publication-gate-smoke.sql",
+    "rollbackAtEnd": true,
+    "negativeCases": [
+      "FALLBACK source product publication blocked",
+      "rule without persisted extracted SmPC 4.2 blocked",
+      "rule without verified exact product binding blocked",
+      "published source section mutation blocked",
+      "published source snapshot mutation blocked"
+    ],
+    "positiveCases": [
+      "official-tier product publication succeeds",
+      "draft rule with verified binding + clean legacy comparison + passed safety gate publishes",
+      "one-RPC fast path returns exactly one published rule with pinned sectionSha256"
     ]
   }
 }
