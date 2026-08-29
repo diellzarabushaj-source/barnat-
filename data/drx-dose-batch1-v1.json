@@ -1,0 +1,75 @@
+{
+  "schemaVersion": "drx-dose-batch1-v1",
+  "updatedAt": "2026-08-29",
+  "status": "repo_candidates_complete_live_binding_blocked",
+  "publicationAllowed": false,
+  "substances": [
+    {
+      "key": "ibuprofen",
+      "pilotFile": "drx-pilot-ibuprofen-v1.json",
+      "mode": "multi_source_pilot"
+    },
+    {
+      "key": "paracetamol",
+      "pilotFile": "drx-pilot-paracetamol-v1.json",
+      "mode": "representative_rule"
+    },
+    {
+      "key": "amoxicillin",
+      "pilotFile": "drx-pilot-amoxicillin-v1.json",
+      "mode": "representative_rule"
+    },
+    {
+      "key": "amoxicillin-clavulanic-acid",
+      "pilotFile": "drx-pilot-amoxicillin-clavulanic-acid-v1.json",
+      "mode": "combination_review"
+    },
+    {
+      "key": "azithromycin",
+      "pilotFile": "drx-pilot-azithromycin-v1.json",
+      "mode": "representative_rule"
+    },
+    {
+      "key": "metformin",
+      "pilotFile": "drx-pilot-metformin-v1.json",
+      "mode": "manual_v3_gap"
+    },
+    {
+      "key": "enalapril",
+      "pilotFile": "drx-pilot-enalapril-v1.json",
+      "mode": "renal_context_review"
+    },
+    {
+      "key": "omeprazole",
+      "pilotFile": "drx-pilot-omeprazole-v1.json",
+      "mode": "representative_rule"
+    },
+    {
+      "key": "salbutamol",
+      "pilotFile": "drx-pilot-salbutamol-v1.json",
+      "mode": "actuation_review"
+    },
+    {
+      "key": "cefuroxime",
+      "pilotFile": "drx-pilot-cefuroxime-v1.json",
+      "mode": "renal_context_review"
+    }
+  ],
+  "gates": {
+    "sourceDiscoveryCompleteForBatch": true,
+    "representativeExtractionCompleteForBatch": true,
+    "structuralNormalizationCheckedForNewPilots": true,
+    "exactLiveProductBindingComplete": false,
+    "legacyComparisonComplete": false,
+    "clinicalReviewComplete": false,
+    "productionPersistenceComplete": false
+  },
+  "blockers": [
+    "Supabase SQL/MCP database gateway unavailable",
+    "exact DRx product identities and ingredient concept IDs need live verification",
+    "legacy dosage_regimens comparison requires live product-linked rows",
+    "source snapshots/evidence hashes are not persisted in V3 yet",
+    "ICD mappings remain needs_review"
+  ],
+  "next": "when DB gateway returns: verify baseline -> apply additive V3 -> bind 10 pilots to exact products -> compare legacy -> confidence/safety -> clinical review"
+}
