@@ -276,8 +276,16 @@
     let calculatedUnit = doseUnit;
 
     if (method === 'fixed_dose' || method === 'age_band_fixed' || method === 'fixed_volume') {
-      perDose = values;
-      if (sched.timesPerDay) daily = { min:values.min * sched.timesPerDay, max:values.max * sched.timesPerDay };
+      const doseBasis = clean(valueOf(rule, 'doseBasis', 'dose_basis')).toLowerCase();
+      if (doseBasis === 'per_day') {
+        daily = values;
+        if (sched.timesPerDay) {
+          perDose = { min:daily.min / sched.timesPerDay, max:daily.max / sched.timesPerDay };
+        }
+      } else {
+        perDose = values;
+        if (sched.timesPerDay) daily = { min:values.min * sched.timesPerDay, max:values.max * sched.timesPerDay };
+      }
     } else if (method === 'dose_per_kg_per_dose') {
       const weight = patientValue(patient, 'weight_kg');
       perDose = { min:values.min * weight, max:values.max * weight };
@@ -305,7 +313,21 @@
     }
 
     let capped = { perDose, daily, cappedBy:[] };
-    if (calculatedUnit === 'mg' || mgUnit(doseUnit)) capped = applyMgCaps(perDose, daily, rule);
+    if (calculatedUnit === 'mg' || mgUnit(doseUnit)) {
+      capped = applyMgCaps(perDose, daily, rule);
+      const maxDaily = positive(valueOf(rule, 'maxDailyDoseMg', 'max_daily_dose_mg'));
+      const maxDoses = sched.maxDoses24h;
+      if (capped.perDose && maxDaily !== null && maxDoses !== null && maxDoses > 0) {
+        const safePerDoseCap = maxDaily / maxDoses;
+        if (capped.perDose.max > safePerDoseCap) {
+          capped.perDose = {
+            min:Math.min(capped.perDose.min, safePerDoseCap),
+            max:Math.min(capped.perDose.max, safePerDoseCap),
+          };
+          capped.cappedBy = [...new Set([...capped.cappedBy, 'max_daily_dose_mg_via_max_doses_24h'])];
+        }
+      }
+    }
 
     const resultRange = capped.perDose && Math.abs(capped.perDose.max - capped.perDose.min) > 1e-12;
     const outcome = capped.perDose
