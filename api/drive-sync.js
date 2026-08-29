@@ -1,7 +1,7 @@
 'use strict';
 
 const crypto = require('node:crypto');
-const DriveNeonSync = require('../lib/drive-neon-sync.js');
+const DriveSupabaseSync = require('../lib/drive-supabase-sync.js');
 const SyncOutbox = require('../lib/sync-outbox.js');
 const Administration = require('../administration-routes.js');
 const { neonRequest } = require('../lib/neon-data-api.js');
