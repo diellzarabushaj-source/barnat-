@@ -1,17 +1,21 @@
 'use strict';
 const fs=require('node:fs');const path=require('node:path');
 const ROOT=path.resolve(__dirname,'..');
+const SourcePolicy=require('../lib/dose-source-policy.js');
 const read=p=>JSON.parse(fs.readFileSync(path.join(ROOT,p),'utf8'));
-const WAVE_FILES=['a','b','c','d','e','f','g'].map(x=>'data/drx-first100-source-discovery-wave-'+x+'-v1.json');
+const WAVE_FILES=fs.readdirSync(path.join(ROOT,'data'))
+  .filter(name=>/^drx-first100-source-discovery-wave-[a-z]-v1\\.json$/.test(name))
+  .sort()
+  .map(name=>'data/'+name);
 
 function validAuthorityUrl(row){
-  const tier=String(row?.sourceTier||'');
-  const url=String(row?.url||'');
-  if(tier==='EMC') return /^https:\/\/www\.medicines\.org\.uk\/emc\//.test(url);
-  if(tier==='AEMPS_CIMA') return /^https:\/\/cima\.aemps\.es\/cima\/dochtml\/ft\//.test(url);
-  if(tier==='EMA') return /^https:\/\/(?:www\.)?ema\.europa\.eu\//.test(url);
-  if(tier==='EU_OTHER') return /^https:\/\//.test(url);
-  return false;
+  const expected=String(row?.sourceTier||'');
+  const resolved=SourcePolicy.sourceTierForUrl(String(row?.url||''));
+  return Boolean(
+    resolved
+    && resolved.key===expected
+    && ['EMA','EMC','AEMPS_CIMA','EU_NATIONAL','KOSOVO_AKPPM'].includes(resolved.key)
+  );
 }
 
 function build(){
