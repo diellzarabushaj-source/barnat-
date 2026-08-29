@@ -1,0 +1,31 @@
+{
+  "schemaVersion": "drx-frontend-flow-contract-v1",
+  "status": "foundation_complete_repository",
+  "flow": [
+    "product",
+    "indication",
+    "required_inputs",
+    "dose_result"
+  ],
+  "labelsSq": [
+    "Bari",
+    "Indikacioni",
+    "Të dhënat e nevojshme",
+    "Doza"
+  ],
+  "dynamicInputs": [
+    "age_months",
+    "weight_kg",
+    "renal",
+    "hepatic",
+    "body_surface_area"
+  ],
+  "UXRules": [
+    "show_only_required_inputs",
+    "show_source_and_version",
+    "show_max_dose",
+    "show_review_warning_when_not_publishable",
+    "never_display_draft_as_final"
+  ],
+  "next": "bind existing calculator UI to V3 fast path after backend stabilization"
+}
