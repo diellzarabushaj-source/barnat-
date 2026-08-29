@@ -1,6 +1,6 @@
 {
   "schemaVersion": "drx-dose-coverage-snapshot-v2",
-  "generatedAt": "2026-08-30T00:30:00+02:00",
+  "generatedAt": "2026-08-29T03:52:11.562Z",
   "publicationAllowed": false,
   "counts": {
     "batch1Substances": 10,
@@ -13,28 +13,55 @@
     "clinicallyReviewed": 0,
     "published": 0,
     "liveWebEvidenceStructured": 25,
+    "batch2SourceMetadataVerified": 25,
     "batch2ArchiveSnapshots": 0,
     "openClinicalReviewQueue": 25,
     "highPriorityClinicalReviewQueue": 21,
     "structuredCandidateReady": 25,
     "normalizationReady": 0,
     "publicationReady": 0,
-    "reviewPacketsReady": 25
+    "reviewPacketsReady": 25,
+    "first100QueueMaterialized": 100,
+    "first100CanonicalReviewRequired": 13,
+    "first100SourceDiscoveryEligible": 87,
+    "first100VerifiedProductSources": 15,
+    "first100ProductionEligibleRows": 0
+  },
+  "batch2ProgressPct": {
+    "structuredEvidence": 100,
+    "archiveHashes": 0,
+    "normalizationReady": 0,
+    "exactProductBinding": 0,
+    "clinicalReview": 0,
+    "publicationReady": 0,
+    "published": 0
+  },
+  "architecture": {
+    "v3CandidateReady": true,
+    "v3Applied": false,
+    "v3TableCount": 12,
+    "v3SelfContainedProductShell": true,
+    "v2ProductShellDependency": false,
+    "oneRpcFastPathConfigured": true,
+    "sharedDoseCoreConfigured": true
   },
   "gates": {
     "supabaseLiveAvailable": false,
     "batch2ExtractionArtifactPresent": false,
     "batch2NormalizationArtifactPresent": false,
-    "publicationBlocked": true,
-    "batch2LiveWebEvidenceWave1": true,
-    "batch2LiveWebEvidenceWave2": true,
-    "batch2LiveWebEvidenceWave3": true,
-    "batch2LiveWebEvidenceWave4": true,
-    "batch2LiveWebEvidenceWave5": true,
     "batch2LiveWebEvidenceComplete": true,
     "archiveWorkflowConfigured": true,
     "archiveWorkflowRunObserved": false,
-    "prepublicationAuditConfigured": true
+    "drxSafetyWorkflowConfigured": true,
+    "drxSafetyWorkflowRunObserved": false,
+    "drxSafetyWorkflowGreen": false,
+    "fullCiGreen": false,
+    "desktopSmokeGreen": false,
+    "mobileSmokeGreen": false,
+    "vercelDeploymentGreen": false,
+    "rollbackTested": false,
+    "zeroKnownLegacyConsumers": false,
+    "publicationBlocked": true
   },
-  "next": "promote counts only after archive hashes and downstream review/binding/safety evidence are persisted"
+  "next": "Promote counts only from persisted evidence; archive, binding, review, CI, smoke, deploy and rollback gates remain fail-closed until observed."
 }
