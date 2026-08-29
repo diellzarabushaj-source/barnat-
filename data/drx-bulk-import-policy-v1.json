@@ -1,0 +1,34 @@
+{
+  "schemaVersion": "drx-bulk-import-policy-v1",
+  "status": "foundation_complete_repository",
+  "publicationAllowed": false,
+  "batchSizes": [
+    100,
+    250,
+    500
+  ],
+  "prerequisites": [
+    "canonical_identity_resolved",
+    "authoritative_source_mapped",
+    "section_4_1_and_4_2_extracted",
+    "normalized_rule_valid",
+    "no_unresolved_schema_gap"
+  ],
+  "batchGate": {
+    "maxFailureRate": 0,
+    "requireDeterministicOrdering": true,
+    "stopOnSourceFetchError": true,
+    "stopOnParserError": true,
+    "stopOnNormalizationError": true,
+    "stopOnSafetyConflict": true
+  },
+  "checkpoints": [
+    "source_archive",
+    "parse_index",
+    "normalized_rules",
+    "binding_queue",
+    "review_queue"
+  ],
+  "rollback": "each batch must be independently replayable and removable before publication",
+  "next": "generate first 100-substance candidate batch only after Batch 2 extraction/review proves stable"
+}
