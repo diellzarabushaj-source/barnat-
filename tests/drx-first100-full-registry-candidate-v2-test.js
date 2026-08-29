@@ -1,0 +1,18 @@
+'use strict';
+const assert=require('node:assert/strict');
+const Builder=require('../scripts/build-drx-first100-full-registry-candidate-v2.js');
+const x=Builder.build(100);
+assert.equal(x.schemaVersion,'drx-first100-full-registry-candidate-v2');
+assert.equal(x.queue.length,100);
+assert.equal(x.counts.queued,100);
+assert.equal(x.productionCanonicalExportVerified,false);
+assert.equal(x.productionEligible,false);
+assert.equal(x.publicationAllowed,false);
+assert.equal(new Set(x.queue.map(r=>r.canonicalKey)).size,100);
+const keys=x.queue.map(r=>r.canonicalKey);
+assert.deepEqual(keys,[...keys].sort((a,b)=>a.localeCompare(b,'en')));
+assert.equal(x.queue.some(r=>r.canonicalKey==='2h20potassiumchloridesodiumchloride'),false);
+assert.equal(x.queue.some(r=>r.canonicalKey==='amylaselipasepanceatintotalproteases'),false);
+assert.ok(x.queue.every(r=>r.provenance==='registry_full_fallback_not_supabase_canonical'));
+assert.equal(x.counts.clean+x.counts.canonicalReviewRequired+x.counts.productSelectionRequired,100);
+console.log('DRx full-registry first-100 fallback candidate v2 passed.');
