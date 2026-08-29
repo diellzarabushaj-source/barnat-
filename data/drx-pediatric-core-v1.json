@@ -1,6 +1,6 @@
 {
   "schemaVersion": "drx-pediatric-core-v1",
-  "status": "foundation_complete_repository",
+  "status": "provenance_hardened_repository",
   "publicationAllowed": false,
   "methods": [
     "fixed_dose",
@@ -28,7 +28,11 @@
     "age_band_enforced",
     "max_dose_enforced",
     "out_of_range_blocks_by_default",
-    "no_publication_without_product_specific_concentration"
+    "no_publication_without_product_specific_concentration",
+    "verified_rule_requires_snapshot_evidence_hash_identity",
+    "verified_rule_requires_exact_smpc_4_2_sha256",
+    "renal_hepatic_adjustments_must_be_separately_hash_pinned",
+    "missing_required_patient_input_blocks_calculation"
   ],
-  "next": "rebase existing pediatric calculator on sourced normalized V3 rules"
+  "next": "rebase pediatric calculator on live V3 rules only after snapshot/4.2 hash + exact product concentration + required-input gates pass"
 }
