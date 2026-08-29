@@ -1,0 +1,49 @@
+name: Phase 5 apply system health snapshot
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - ".github/workflows/phase5-apply-system-health-snapshot.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  id-token: write
+
+jobs:
+  apply-phase5:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - name: Apply Phase 5 migration with GitHub OIDC
+        shell: bash
+        run: |
+          set -euo pipefail
+
+          oidc_json="$(
+            curl --fail --silent --show-error \
+              -H "Authorization: Bearer ${ACTIONS_ID_TOKEN_REQUEST_TOKEN}" \
+              "${ACTIONS_ID_TOKEN_REQUEST_URL}&audience=medindex-phase5-migration"
+          )"
+
+          oidc_token="$(
+            python -c 'import json,sys; print(json.load(sys.stdin)["value"])' <<<"$oidc_json"
+          )"
+
+          response="$(
+            curl --fail-with-body --silent --show-error \
+              --request POST \
+              --header "Authorization: Bearer ${oidc_token}" \
+              --header "Accept: application/json" \
+              "https://ftuchtmolddhhsdcwnqe.supabase.co/functions/v1/phase5-migrate-once"
+          )"
+
+          printf '%s\n' "$response"
+
+          python -c '
+          import json,sys
+          payload=json.loads(sys.stdin.read())
+          assert payload.get("ok") is True, payload
+          assert payload.get("version") == "20260829012500", payload
+          ' <<<"$response"
