@@ -1,21 +1,21 @@
 {
   "schemaVersion": "drx-first100-canonical-review-decisions-v1",
-  "generatedAt": "2026-08-29T10:27:47.338Z",
-  "total": 14,
-  "resolved": 14,
+  "generatedAt": "2026-08-29T11:30:08.042Z",
+  "total": 16,
+  "resolved": 16,
   "pending": 0,
   "canonicalReviewOpen": 0,
   "dispositionCounts": {
-    "dedupeExistingCanonical": 3,
+    "dedupeExistingCanonical": 5,
     "replaceWithCleanCanonical": 3,
     "removeProductLevelMixture": 7,
     "requiresProductSelection": 1
   },
-  "effectiveSourceDiscoveryEligible": 89,
-  "effectiveUniqueSourceDiscoveryEligible": 89,
+  "effectiveSourceDiscoveryEligible": 87,
+  "effectiveUniqueSourceDiscoveryEligible": 87,
   "queueRegenerationRequired": true,
-  "queueRowsRemovedOrDeduped": 10,
-  "refillRowsRequired": 10,
+  "queueRowsRemovedOrDeduped": 12,
+  "refillRowsRequired": 12,
   "publicationAllowed": false,
   "decisions": [
     {
@@ -393,6 +393,80 @@
       },
       "productSelectionRequired": false,
       "doseSourceReady": false
+    },
+    {
+      "canonicalKey": "benzydaminechlorhexidine",
+      "sourceName": "Benzydamine + Chlorhexidine",
+      "decision": "resolved_generic_combination_to_existing_salt_specific_canonical",
+      "confidence": "high",
+      "evidence": [
+        {
+          "authority": "WHO ATC/DDD Index",
+          "url": "https://atcddd.fhi.no/atc_ddd_index/?code=A01AD02",
+          "finding": "A01AD02 is benzydamine; A01AD11 is a non-specific 'various' bucket, so the two ATC labels in the source sheet do not establish a distinct chlorhexidine salt-free product."
+        },
+        {
+          "authority": "Kosovo Medicines Agency (AKPPM)",
+          "url": "https://akppm.rks-gov.net/CMS/Medias/Lista%20zyrtare%20e%20cmimeve%20te%20produkteve%20medicinale.pdf",
+          "finding": "Andorex is registered with Benzydamine HCl + Chlorhexidine digluconate, including RMA-3120/16/11/2022 for the 30 ml oral spray."
+        },
+        {
+          "authority": "Humanis ANDOREX Kısa Ürün Bilgisi",
+          "url": "https://humanis.com.tr/assets/pdf/45889911437854062.pdf",
+          "finding": "Product composition and sections 4.1/4.2 identify benzydamine hydrochloride plus chlorhexidine gluconate; ATC A01AD11 is used for the product."
+        }
+      ],
+      "sourceDiscoveryEligible": false,
+      "publicationAllowed": false,
+      "dispositionResolved": true,
+      "canonicalIdentityResolved": true,
+      "queueDisposition": "dedupe_existing_canonical",
+      "resolvedCanonicalKey": "benzydaminechlorhexidinedigluconate",
+      "resolvedCanonicalName": "Benzydamine + Chlorhexidine digluconate",
+      "registryAnchor": {
+        "sourceRow": 6,
+        "atcCodes": "A01AD02, A01AD11",
+        "matchedVerifiedProduct": "Andorex"
+      },
+      "productSelectionRequired": false,
+      "doseSourceReady": true
+    },
+    {
+      "canonicalKey": "betamethasonedipropionategentamicinsalicylicacid",
+      "sourceName": "Betamethasone dipropionate + Gentamicin + Salicylic acid",
+      "decision": "resolved_atc_conflation_to_existing_betamethasone_salicylic_canonical",
+      "confidence": "high",
+      "evidence": [
+        {
+          "authority": "electronic medicines compendium",
+          "url": "https://www.medicines.org.uk/emc/product/101259/smpc",
+          "finding": "D07XC01 product contains betamethasone dipropionate + salicylic acid; this clean canonical is already source-verified in Wave C."
+        },
+        {
+          "authority": "AEMPS CIMA",
+          "url": "https://cima.aemps.es/cima/dochtml/ft/53541/FT_53541.html",
+          "finding": "Betamethasone dipropionate + gentamicin is a separate product/canonical (Diprogenta) and is already source-verified in Wave G."
+        },
+        {
+          "authority": "WHO ATC/DDD Index",
+          "url": "https://atcddd.fhi.no/atc_ddd_index/?code=D07CC",
+          "finding": "D07CC01 is betamethasone with antibiotics, confirming gentamicin belongs to a distinct antibiotic-combination branch rather than the D07XC01 salicylic-acid target."
+        }
+      ],
+      "sourceDiscoveryEligible": false,
+      "publicationAllowed": false,
+      "dispositionResolved": true,
+      "canonicalIdentityResolved": true,
+      "queueDisposition": "dedupe_existing_canonical",
+      "resolvedCanonicalKey": "betamethasonedipropionatesalicylicacid",
+      "resolvedCanonicalName": "Betamethasone dipropionate + Salicylic acid",
+      "registryAnchor": {
+        "sourceRow": 358,
+        "atcCode": "D07XC01",
+        "separateGentamicinCanonical": "betamethasonedipropionategentamicin"
+      },
+      "productSelectionRequired": false,
+      "doseSourceReady": true
     }
   ],
   "resolutionNotes": [
@@ -400,6 +474,8 @@
     "Amlodipine + Ramipril and Pancreatin add two clean canonical targets.",
     "Betamethasone dipropionate resolves to an already-existing canonical and does not increase the unique denominator.",
     "Seven product-level mixtures are removed from the substance queue, three dirty rows deduplicate to existing canonicals, and ten deterministic refill rows are required.",
-    "FITOSTIMOLINE source terminology is preserved, but phenoxyethanol is treated as excipient noise for canonical identity; source discovery continues under Triticum vulgare aqueous extract."
+    "FITOSTIMOLINE source terminology is preserved, but phenoxyethanol is treated as excipient noise for canonical identity; source discovery continues under Triticum vulgare aqueous extract.",
+    "Benzydamine + Chlorhexidine generic row is deduped to the already verified chlorhexidine-digluconate Andorex canonical.",
+    "D07XC01 triple row is an ATC/component conflation: salicylic-acid and gentamicin combinations already exist as separate verified canonicals."
   ]
 }
