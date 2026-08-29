@@ -1,6 +1,6 @@
 {
   "schemaVersion": "drx-dosierung-master-plan-status-v1",
-  "updatedAt": "2026-08-29T11:30:08.042Z",
+  "updatedAt": "2026-08-29T11:35:42.600Z",
   "officialPlan": "DRx Dosierung phases 0-32",
   "databaseBlocker": {
     "active": true,
@@ -59,7 +59,7 @@
     {
       "id": 3,
       "name": "Source Discovery",
-      "status": "FIRST100_SOURCE_LOOKUPS_COMPLETE_86_OF_87_SELECTION_1",
+      "status": "REPOSITORY_COMPLETE_FIRST100_87_OF_87_ALTEPLASE_FAMILY_SELECTION_FAIL_CLOSED",
       "evidence": [
         "data/drx-dose-source-map-v1.json",
         "ibuprofen pilot with official eMC oral+IV SmPCs",
@@ -138,9 +138,13 @@
         "first-100 verified product-specific source total: 86",
         "canonical cleanup reduced effective unique source-discovery denominator from 89 to 87",
         "sourceLookupRemaining: 0",
-        "86/87 effective canonical targets source-verified; remaining item is Alteplase product selection"
+        "86/87 effective canonical targets source-verified; remaining item is Alteplase product selection",
+        "Alteplase family selection resolved without a default product: Actilyse 10/20/50 mg for systemic thrombolysis vs Actilyse Cathflo 2 mg for occluded central venous access devices",
+        "eMC Actilyse systemic SmPC updated 2026-05-08; text revision 04/2026",
+        "eMC Actilyse Cathflo 2 mg SmPC updated 2024-09-10; text revision 09/2024",
+        "first-100 repository source discovery: 87/87 effective canonical targets verified; 0 source lookups; 0 unresolved product selections"
       ],
-      "next": "resolve Alteplase exact product selection; no unresolved source lookups remain; keep publication fail-closed"
+      "next": "repository source discovery is complete; preserve indication-gated Alteplase runtime selection and wait for live Supabase canonical provenance before production import"
     },
     {
       "id": 4,
@@ -319,7 +323,7 @@
     {
       "id": 17,
       "name": "Bulk Import",
-      "status": "FIRST100_86_OF_87_SOURCE_LOOKUPS_COMPLETE_PRODUCT_SELECTION_PENDING_PRODUCTION_PROVENANCE_BLOCKED",
+      "status": "FIRST100_87_OF_87_REPOSITORY_SOURCE_DISCOVERY_COMPLETE_PRODUCTION_PROVENANCE_BLOCKED",
       "evidence": [
         "data/drx-bulk-import-policy-v1.json",
         "scripts/build-drx-first100-discovery-queue.js",
@@ -353,9 +357,10 @@
         "84/89 effective canonical targets have product-specific sources meeting discovery policy",
         "85/89 effective canonical targets have product-specific sources meeting discovery policy",
         "86/89 effective canonical targets have product-specific sources meeting discovery policy",
-        "86/87 effective canonical targets source-verified after final canonical dedupe"
+        "86/87 effective canonical targets source-verified after final canonical dedupe",
+        "87/87 effective canonical targets source-verified; Alteplase product-family selection resolved fail-closed"
       ],
-      "next": "resolve 1 Alteplase product selection; production import still requires hash-bound Supabase canonical export provenance"
+      "next": "production import remains blocked until hash-bound Supabase canonical export provenance passes; do not publish or bulk-import from fallback snapshot"
     },
     {
       "id": 18,
@@ -587,8 +592,8 @@
     "first100ProductionEligibleRows": 0,
     "first100ProductionDiscoveryAllowed": false,
     "first100SourceDiscoveryEligible": 87,
-    "first100VerifiedProductSources": 86,
-    "first100ProductSelectionRequired": 1,
+    "first100VerifiedProductSources": 87,
+    "first100ProductSelectionRequired": 0,
     "legacyMirrorPrecheck": {
       "present": 2,
       "missing": 33,
@@ -598,7 +603,7 @@
     },
     "first100SourceDiscoveryRemaining": 0,
     "first100SourceSectionVerificationPending": 0,
-    "first100ProductSelectionPending": 1,
+    "first100ProductSelectionPending": 0,
     "first100CanonicalReviewResolved": 16,
     "first100CanonicalReviewPending": 0,
     "first100EffectiveSourceDiscoveryEligible": 87,

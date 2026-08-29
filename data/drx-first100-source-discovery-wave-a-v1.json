@@ -1,10 +1,10 @@
 {
   "schemaVersion": "drx-first100-source-discovery-wave-a-v1",
-  "generatedAt": "2026-08-30T02:45:00+02:00",
+  "generatedAt": "2026-08-29T11:35:00.226Z",
   "sourcePolicy": "data/drx-dose-source-policy-v1.json",
   "publicationAllowed": false,
-  "verifiedProductSpecificCount": 15,
-  "productSelectionRequiredCount": 1,
+  "verifiedProductSpecificCount": 16,
+  "productSelectionRequiredCount": 0,
   "rows": [
     {
       "canonicalKey": "acarbose",
@@ -285,21 +285,80 @@
     {
       "canonicalKey": "alteplase",
       "canonicalName": "Alteplase",
-      "status": "product_selection_required",
+      "status": "verified_product_family_selection",
       "sourceTier": "EMC",
-      "sourceKey": null,
-      "url": "https://www.medicines.org.uk/emc/ingredient/19",
-      "productName": null,
-      "documentDate": null,
-      "section41Present": null,
-      "section42Present": null,
+      "sourceKey": "emc-alteplase-family-898-4617",
+      "url": "https://www.medicines.org.uk/emc/product/898/smpc",
+      "productName": "Actilyse product family (systemic 10/20/50 mg + Cathflo 2 mg)",
+      "documentDate": "2026-04",
+      "section41Present": true,
+      "section42Present": true,
       "reviewFlags": [
         "multiple_presentations_different_indications",
-        "do_not_choose_product_automatically",
+        "selection_required_at_runtime",
+        "no_default_product",
+        "fail_closed_on_ambiguous_indication",
         "high_risk_thrombolytic",
+        "systemic_vs_catheter_clearance_hard_split",
         "clinical_review_required"
       ],
-      "publicationAllowed": false
+      "publicationAllowed": false,
+      "documentDatePrecision": "month",
+      "selectionRequiredAtRuntime": true,
+      "defaultProduct": null,
+      "selectionInput": "indication",
+      "failClosedOnAmbiguousSelection": true,
+      "selectionVariants": [
+        {
+          "selectionKey": "systemic_thrombolysis",
+          "indicationKeys": [
+            "acute_myocardial_infarction",
+            "acute_massive_pulmonary_embolism",
+            "acute_ischaemic_stroke"
+          ],
+          "presentationsMg": [
+            10,
+            20,
+            50
+          ],
+          "sourceTier": "EMC",
+          "sourceKey": "emc-898-smpc",
+          "url": "https://www.medicines.org.uk/emc/product/898/smpc",
+          "productNames": [
+            "Actilyse 10 mg powder and solvent for solution for injection and infusion",
+            "Actilyse 20 mg powder and solvent for solution for injection and infusion",
+            "Actilyse 50 mg powder and solvent for solution for injection and infusion"
+          ],
+          "marketingAuthorisationNumber": "PL 14598/0183",
+          "documentDate": "2026-04",
+          "lastUpdatedOnEmc": "2026-05-08",
+          "section41Present": true,
+          "section42Present": true,
+          "hardExclusion": "Actilyse Cathflo 2 mg is not indicated for acute myocardial infarction, acute pulmonary embolism or acute ischaemic stroke."
+        },
+        {
+          "selectionKey": "central_venous_access_device_occlusion",
+          "indicationKeys": [
+            "occluded_central_venous_access_device"
+          ],
+          "presentationsMg": [
+            2
+          ],
+          "sourceTier": "EMC",
+          "sourceKey": "emc-4617-smpc",
+          "url": "https://www.medicines.org.uk/emc/product/4617/smpc",
+          "productNames": [
+            "Actilyse Cathflo 2 mg powder for solution for injection and infusion"
+          ],
+          "marketingAuthorisationNumber": "PL 14598/0184",
+          "documentDate": "2024-09",
+          "lastUpdatedOnEmc": "2024-09-10",
+          "section41Present": true,
+          "section42Present": true,
+          "hardExclusion": "The 2 mg vial is the only recommended presentation for thrombolytic treatment of occluded central venous access devices."
+        }
+      ]
     }
-  ]
+  ],
+  "verifiedProductFamilySelectionCount": 1
 }

@@ -76,11 +76,22 @@ for (const { fileName, label } of waveFiles) {
     );
     seen.set(row.canonicalKey, waveName);
 
-    if (row.status.startsWith('verified_product_specific')) {
+    if (row.status.startsWith('verified_')) {
       assert.ok(row.sourceTier, `${row.canonicalKey}: sourceTier missing`);
       assert.ok(row.sourceKey, `${row.canonicalKey}: sourceKey missing`);
       assert.ok(/^https:\/\//.test(row.url || ''), `${row.canonicalKey}: official source URL missing`);
-      if (row.sourceTier === 'NON_EU_REGULATOR') {
+      if (row.status === 'verified_product_family_selection') {
+        assert.equal(row.selectionRequiredAtRuntime, true, `${row.canonicalKey}: runtime family selection must be required`);
+        assert.equal(row.defaultProduct, null, `${row.canonicalKey}: family selection must not have a default product`);
+        assert.equal(row.failClosedOnAmbiguousSelection, true, `${row.canonicalKey}: family selection must fail closed`);
+        assert.ok(Array.isArray(row.selectionVariants) && row.selectionVariants.length >= 2, `${row.canonicalKey}: family variants missing`);
+        for (const variant of row.selectionVariants) {
+          assert.ok(/^https:\/\//.test(variant.url || ''), `${row.canonicalKey}: variant source URL missing`);
+          assert.equal(variant.section41Present, true, `${row.canonicalKey}: variant SmPC 4.1 not verified`);
+          assert.equal(variant.section42Present, true, `${row.canonicalKey}: variant SmPC 4.2 not verified`);
+          assert.ok(Array.isArray(variant.indicationKeys) && variant.indicationKeys.length > 0, `${row.canonicalKey}: variant indication missing`);
+        }
+      } else if (row.sourceTier === 'NON_EU_REGULATOR') {
         assert.equal(row.officialIdentityPresent, true, `${row.canonicalKey}: non-EU regulator identity not verified`);
         assert.equal(row.doseEvidencePresent, true, `${row.canonicalKey}: non-EU dose evidence missing`);
         assert.ok((row.reviewFlags || []).includes('manual_publication_review_required'), `${row.canonicalKey}: manual publication review flag missing`);
