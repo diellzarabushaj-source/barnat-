@@ -1,0 +1,390 @@
+{
+  "schemaVersion": "drx-batch2-readiness-matrix-v1",
+  "generatedAt": "2026-08-30T00:20:00+02:00",
+  "publicationAllowed": false,
+  "total": 25,
+  "structuredCandidateReady": 25,
+  "normalizationReady": 0,
+  "publicationReady": 0,
+  "blockedByArchiveHash": 25,
+  "blockedByClinicalReview": 25,
+  "blockedByProductBinding": 25,
+  "blockedBySafety": 25,
+  "rows": [
+    {
+      "canonicalKey": "aspirin",
+      "productName": "Aspirin 75 mg tablets",
+      "priority": "high",
+      "structuredCandidateReady": true,
+      "normalizationReady": false,
+      "publicationReady": false,
+      "blockers": [
+        "archive_hash_missing",
+        "clinical_review_open",
+        "exact_product_binding_missing",
+        "safety_validation_missing"
+      ],
+      "publicationAllowed": false
+    },
+    {
+      "canonicalKey": "bisoprolol",
+      "productName": "Bisoprolol 10 mg film-coated Tablets",
+      "priority": "high",
+      "structuredCandidateReady": true,
+      "normalizationReady": false,
+      "publicationReady": false,
+      "blockers": [
+        "archive_hash_missing",
+        "clinical_review_open",
+        "exact_product_binding_missing",
+        "safety_validation_missing"
+      ],
+      "publicationAllowed": false
+    },
+    {
+      "canonicalKey": "carvedilol",
+      "productName": "Carvedilol 25 mg film-coated tablets",
+      "priority": "high",
+      "structuredCandidateReady": true,
+      "normalizationReady": false,
+      "publicationReady": false,
+      "blockers": [
+        "archive_hash_missing",
+        "clinical_review_open",
+        "exact_product_binding_missing",
+        "safety_validation_missing"
+      ],
+      "publicationAllowed": false
+    },
+    {
+      "canonicalKey": "cefalexin",
+      "productName": "Cefalexin 250 mg Capsules",
+      "priority": "high",
+      "structuredCandidateReady": true,
+      "normalizationReady": false,
+      "publicationReady": false,
+      "blockers": [
+        "archive_hash_missing",
+        "clinical_review_open",
+        "exact_product_binding_missing",
+        "safety_validation_missing"
+      ],
+      "publicationAllowed": false
+    },
+    {
+      "canonicalKey": "cetirizine",
+      "productName": "Cetirizine Dihydrochloride 10 mg Film-Coated Tablets",
+      "priority": "high",
+      "structuredCandidateReady": true,
+      "normalizationReady": false,
+      "publicationReady": false,
+      "blockers": [
+        "archive_hash_missing",
+        "clinical_review_open",
+        "exact_product_binding_missing",
+        "safety_validation_missing"
+      ],
+      "publicationAllowed": false
+    },
+    {
+      "canonicalKey": "ciprofloxacin",
+      "productName": "Ciprofloxacin 250 mg film-coated tablets",
+      "priority": "high",
+      "structuredCandidateReady": true,
+      "normalizationReady": false,
+      "publicationReady": false,
+      "blockers": [
+        "archive_hash_missing",
+        "clinical_review_open",
+        "exact_product_binding_missing",
+        "safety_validation_missing"
+      ],
+      "publicationAllowed": false
+    },
+    {
+      "canonicalKey": "clopidogrel",
+      "productName": "Clopidogrel 75 mg film-coated tablets",
+      "priority": "high",
+      "structuredCandidateReady": true,
+      "normalizationReady": false,
+      "publicationReady": false,
+      "blockers": [
+        "archive_hash_missing",
+        "clinical_review_open",
+        "exact_product_binding_missing",
+        "safety_validation_missing"
+      ],
+      "publicationAllowed": false
+    },
+    {
+      "canonicalKey": "dexamethasone",
+      "productName": "Dexamethasone 2 mg soluble tablets",
+      "priority": "high",
+      "structuredCandidateReady": true,
+      "normalizationReady": false,
+      "publicationReady": false,
+      "blockers": [
+        "archive_hash_missing",
+        "clinical_review_open",
+        "exact_product_binding_missing",
+        "safety_validation_missing"
+      ],
+      "publicationAllowed": false
+    },
+    {
+      "canonicalKey": "diclofenac",
+      "productName": "Diclofenac sodium Dexcel XL 100 mg prolonged-release tablets",
+      "priority": "high",
+      "structuredCandidateReady": true,
+      "normalizationReady": false,
+      "publicationReady": false,
+      "blockers": [
+        "archive_hash_missing",
+        "clinical_review_open",
+        "exact_product_binding_missing",
+        "safety_validation_missing"
+      ],
+      "publicationAllowed": false
+    },
+    {
+      "canonicalKey": "doxycycline",
+      "productName": "Doxycycline 100 mg Capsules",
+      "priority": "high",
+      "structuredCandidateReady": true,
+      "normalizationReady": false,
+      "publicationReady": false,
+      "blockers": [
+        "archive_hash_missing",
+        "clinical_review_open",
+        "exact_product_binding_missing",
+        "safety_validation_missing"
+      ],
+      "publicationAllowed": false
+    },
+    {
+      "canonicalKey": "furosemide",
+      "productName": "Furosemide 10 mg/ml solution for injection/infusion",
+      "priority": "high",
+      "structuredCandidateReady": true,
+      "normalizationReady": false,
+      "publicationReady": false,
+      "blockers": [
+        "archive_hash_missing",
+        "clinical_review_open",
+        "exact_product_binding_missing",
+        "safety_validation_missing"
+      ],
+      "publicationAllowed": false
+    },
+    {
+      "canonicalKey": "gliclazide",
+      "productName": "Gliclazide 40 mg Tablets",
+      "priority": "high",
+      "structuredCandidateReady": true,
+      "normalizationReady": false,
+      "publicationReady": false,
+      "blockers": [
+        "archive_hash_missing",
+        "clinical_review_open",
+        "exact_product_binding_missing",
+        "safety_validation_missing"
+      ],
+      "publicationAllowed": false
+    },
+    {
+      "canonicalKey": "levothyroxine",
+      "productName": "Levothyroxine 50 microgram tablets",
+      "priority": "high",
+      "structuredCandidateReady": true,
+      "normalizationReady": false,
+      "publicationReady": false,
+      "blockers": [
+        "archive_hash_missing",
+        "clinical_review_open",
+        "exact_product_binding_missing",
+        "safety_validation_missing"
+      ],
+      "publicationAllowed": false
+    },
+    {
+      "canonicalKey": "loratadine",
+      "productName": "Loratadine 10 mg Tablets",
+      "priority": "high",
+      "structuredCandidateReady": true,
+      "normalizationReady": false,
+      "publicationReady": false,
+      "blockers": [
+        "archive_hash_missing",
+        "clinical_review_open",
+        "exact_product_binding_missing",
+        "safety_validation_missing"
+      ],
+      "publicationAllowed": false
+    },
+    {
+      "canonicalKey": "metronidazole",
+      "productName": "Metronidazole 500 mg Film-Coated Tablets",
+      "priority": "high",
+      "structuredCandidateReady": true,
+      "normalizationReady": false,
+      "publicationReady": false,
+      "blockers": [
+        "archive_hash_missing",
+        "clinical_review_open",
+        "exact_product_binding_missing",
+        "safety_validation_missing"
+      ],
+      "publicationAllowed": false
+    },
+    {
+      "canonicalKey": "naproxen",
+      "productName": "Naproxen 500 mg Tablets",
+      "priority": "high",
+      "structuredCandidateReady": true,
+      "normalizationReady": false,
+      "publicationReady": false,
+      "blockers": [
+        "archive_hash_missing",
+        "clinical_review_open",
+        "exact_product_binding_missing",
+        "safety_validation_missing"
+      ],
+      "publicationAllowed": false
+    },
+    {
+      "canonicalKey": "ondansetron",
+      "productName": "Ondansetron 4 mg film-coated tablets",
+      "priority": "high",
+      "structuredCandidateReady": true,
+      "normalizationReady": false,
+      "publicationReady": false,
+      "blockers": [
+        "archive_hash_missing",
+        "clinical_review_open",
+        "exact_product_binding_missing",
+        "safety_validation_missing"
+      ],
+      "publicationAllowed": false
+    },
+    {
+      "canonicalKey": "prednisolone",
+      "productName": "Prednisolone 5 mg soluble tablets",
+      "priority": "high",
+      "structuredCandidateReady": true,
+      "normalizationReady": false,
+      "publicationReady": false,
+      "blockers": [
+        "archive_hash_missing",
+        "clinical_review_open",
+        "exact_product_binding_missing",
+        "safety_validation_missing"
+      ],
+      "publicationAllowed": false
+    },
+    {
+      "canonicalKey": "ramipril",
+      "productName": "Ramipril 5 mg tablets",
+      "priority": "high",
+      "structuredCandidateReady": true,
+      "normalizationReady": false,
+      "publicationReady": false,
+      "blockers": [
+        "archive_hash_missing",
+        "clinical_review_open",
+        "exact_product_binding_missing",
+        "safety_validation_missing"
+      ],
+      "publicationAllowed": false
+    },
+    {
+      "canonicalKey": "spironolactone",
+      "productName": "Spironolactone 12.5 mg Film-coated Tablets",
+      "priority": "high",
+      "structuredCandidateReady": true,
+      "normalizationReady": false,
+      "publicationReady": false,
+      "blockers": [
+        "archive_hash_missing",
+        "clinical_review_open",
+        "exact_product_binding_missing",
+        "safety_validation_missing"
+      ],
+      "publicationAllowed": false
+    },
+    {
+      "canonicalKey": "tramadol",
+      "productName": "Tramadol 50 mg capsules, hard",
+      "priority": "high",
+      "structuredCandidateReady": true,
+      "normalizationReady": false,
+      "publicationReady": false,
+      "blockers": [
+        "archive_hash_missing",
+        "clinical_review_open",
+        "exact_product_binding_missing",
+        "safety_validation_missing"
+      ],
+      "publicationAllowed": false
+    },
+    {
+      "canonicalKey": "losartan",
+      "productName": "Losartan potassium 12.5 mg film-coated tablets",
+      "priority": "medium",
+      "structuredCandidateReady": true,
+      "normalizationReady": false,
+      "publicationReady": false,
+      "blockers": [
+        "archive_hash_missing",
+        "clinical_review_open",
+        "exact_product_binding_missing",
+        "safety_validation_missing"
+      ],
+      "publicationAllowed": false
+    },
+    {
+      "canonicalKey": "amlodipine",
+      "productName": "Amlodipine 5 mg tablets",
+      "priority": "normal",
+      "structuredCandidateReady": true,
+      "normalizationReady": false,
+      "publicationReady": false,
+      "blockers": [
+        "archive_hash_missing",
+        "clinical_review_open",
+        "exact_product_binding_missing",
+        "safety_validation_missing"
+      ],
+      "publicationAllowed": false
+    },
+    {
+      "canonicalKey": "atorvastatin",
+      "productName": "Atorvastatin 80 mg film-coated tablets",
+      "priority": "normal",
+      "structuredCandidateReady": true,
+      "normalizationReady": false,
+      "publicationReady": false,
+      "blockers": [
+        "archive_hash_missing",
+        "clinical_review_open",
+        "exact_product_binding_missing",
+        "safety_validation_missing"
+      ],
+      "publicationAllowed": false
+    },
+    {
+      "canonicalKey": "pantoprazole",
+      "productName": "Pantoprazole 40 mg gastro-resistant tablets",
+      "priority": "normal",
+      "structuredCandidateReady": true,
+      "normalizationReady": false,
+      "publicationReady": false,
+      "blockers": [
+        "archive_hash_missing",
+        "clinical_review_open",
+        "exact_product_binding_missing",
+        "safety_validation_missing"
+      ],
+      "publicationAllowed": false
+    }
+  ]
+}
