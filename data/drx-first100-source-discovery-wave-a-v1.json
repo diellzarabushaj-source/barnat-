@@ -1,0 +1,305 @@
+{
+  "schemaVersion": "drx-first100-source-discovery-wave-a-v1",
+  "generatedAt": "2026-08-30T02:45:00+02:00",
+  "sourcePolicy": "data/drx-dose-source-policy-v1.json",
+  "publicationAllowed": false,
+  "verifiedProductSpecificCount": 15,
+  "productSelectionRequiredCount": 1,
+  "rows": [
+    {
+      "canonicalKey": "acarbose",
+      "canonicalName": "Acarbose",
+      "status": "verified_product_specific",
+      "sourceTier": "EMC",
+      "sourceKey": "emc-101119-smpc",
+      "url": "https://www.medicines.org.uk/emc/product/101119/smpc",
+      "productName": "Acarbose 100 mg Tablets",
+      "documentDate": "2025-06-30",
+      "section41Present": true,
+      "section42Present": true,
+      "reviewFlags": [
+        "dose_titration",
+        "monitoring_at_max_dose"
+      ],
+      "publicationAllowed": false
+    },
+    {
+      "canonicalKey": "acenocoumarol",
+      "canonicalName": "Acenocoumarol",
+      "status": "verified_product_specific",
+      "sourceTier": "EMC",
+      "sourceKey": "emc-2058-smpc",
+      "url": "https://www.medicines.org.uk/emc/product/2058/smpc",
+      "productName": "Sinthrome 1 mg Tablets",
+      "documentDate": "2025-07-25",
+      "section41Present": true,
+      "section42Present": true,
+      "reviewFlags": [
+        "high_risk_anticoagulant",
+        "inr_monitoring_required",
+        "clinical_review_required"
+      ],
+      "publicationAllowed": false
+    },
+    {
+      "canonicalKey": "aciclovir",
+      "canonicalName": "Aciclovir",
+      "status": "verified_product_specific",
+      "sourceTier": "EMC",
+      "sourceKey": "emc-11673-smpc",
+      "url": "https://www.medicines.org.uk/emc/product/11673/smpc",
+      "productName": "Aciclovir 200 mg Tablets",
+      "documentDate": "2026-05-18",
+      "section41Present": true,
+      "section42Present": true,
+      "reviewFlags": [
+        "indication_specific_regimens",
+        "renal_adjustment_review",
+        "pediatric_context_review"
+      ],
+      "publicationAllowed": false
+    },
+    {
+      "canonicalKey": "acitretin",
+      "canonicalName": "Acitretin",
+      "status": "verified_product_specific",
+      "sourceTier": "EMC",
+      "sourceKey": "emc-5265-smpc",
+      "url": "https://www.medicines.org.uk/emc/product/5265/smpc",
+      "productName": "Acitretin 10 mg Capsules",
+      "documentDate": "2026-06-12",
+      "section41Present": true,
+      "section42Present": true,
+      "reviewFlags": [
+        "specialist_only",
+        "teratogenic_risk",
+        "individual_titration",
+        "clinical_review_required"
+      ],
+      "publicationAllowed": false
+    },
+    {
+      "canonicalKey": "alclometasonedipropionate",
+      "canonicalName": "Alclometasone dipropionate",
+      "status": "verified_product_specific",
+      "sourceTier": "EMC",
+      "sourceKey": "emc-11728-smpc",
+      "url": "https://www.medicines.org.uk/emc/product/11728/smpc",
+      "productName": "Alclometasone Dipropionate 0.05% w/w Cream",
+      "documentDate": "2024-07-31",
+      "section41Present": true,
+      "section42Present": true,
+      "reviewFlags": [
+        "topical_route_specific",
+        "application_frequency_review"
+      ],
+      "publicationAllowed": false
+    },
+    {
+      "canonicalKey": "alphamethyldopa",
+      "canonicalName": "Alpha methyldopa",
+      "status": "verified_product_specific_alias_match",
+      "sourceTier": "EMC",
+      "sourceKey": "emc-100084-smpc",
+      "url": "https://www.medicines.org.uk/emc/product/100084/smpc",
+      "productName": "Methyldopa Tablets BP 250mg",
+      "documentDate": "2026-08-05",
+      "section41Present": true,
+      "section42Present": true,
+      "reviewFlags": [
+        "reviewed_alias_alpha_methyldopa_to_methyldopa",
+        "renal_adjustment_review",
+        "titration_required"
+      ],
+      "publicationAllowed": false
+    },
+    {
+      "canonicalKey": "adenosine",
+      "canonicalName": "Adenosine",
+      "status": "verified_product_specific",
+      "sourceTier": "EMC",
+      "sourceKey": "emc-11530-smpc",
+      "url": "https://www.medicines.org.uk/emc/product/11530/smpc",
+      "productName": "Adenosine 3 mg/ml solution for injection",
+      "documentDate": "2025-11-27",
+      "section41Present": true,
+      "section42Present": true,
+      "reviewFlags": [
+        "parenteral_high_risk",
+        "route_specific",
+        "monitoring_required",
+        "clinical_review_required"
+      ],
+      "publicationAllowed": false
+    },
+    {
+      "canonicalKey": "amiodarone",
+      "canonicalName": "Amiodarone",
+      "status": "verified_product_specific",
+      "sourceTier": "EMC",
+      "sourceKey": "emc-101141-smpc",
+      "url": "https://www.medicines.org.uk/emc/product/101141/smpc",
+      "productName": "Amiodarone Hydrochloride 200mg Tablets",
+      "documentDate": "2025-07-04",
+      "section41Present": true,
+      "section42Present": true,
+      "reviewFlags": [
+        "high_risk_antiarrhythmic",
+        "specialist_supervision",
+        "loading_maintenance_regimen",
+        "clinical_review_required"
+      ],
+      "publicationAllowed": false
+    },
+    {
+      "canonicalKey": "apixaban",
+      "canonicalName": "Apixaban",
+      "status": "verified_product_specific",
+      "sourceTier": "EMC",
+      "sourceKey": "emc-15981-smpc",
+      "url": "https://www.medicines.org.uk/emc/product/15981/smpc",
+      "productName": "Apixaban 5 mg Film-Coated Tablets",
+      "documentDate": "2026-05-19",
+      "section41Present": true,
+      "section42Present": true,
+      "reviewFlags": [
+        "high_risk_anticoagulant",
+        "indication_specific_regimens",
+        "dose_reduction_criteria",
+        "clinical_review_required"
+      ],
+      "publicationAllowed": false
+    },
+    {
+      "canonicalKey": "aprepitant",
+      "canonicalName": "Aprepitant",
+      "status": "verified_product_specific",
+      "sourceTier": "EMC",
+      "sourceKey": "emc-11726-smpc",
+      "url": "https://www.medicines.org.uk/emc/product/11726/smpc",
+      "productName": "Aprepitant 80 mg and 125 mg hard capsules",
+      "documentDate": "2026-08-13",
+      "section41Present": true,
+      "section42Present": true,
+      "reviewFlags": [
+        "combination_therapy_context",
+        "chemotherapy_context",
+        "interaction_review",
+        "clinical_review_required"
+      ],
+      "publicationAllowed": false
+    },
+    {
+      "canonicalKey": "atenolol",
+      "canonicalName": "Atenolol",
+      "status": "verified_product_specific",
+      "sourceTier": "EMC",
+      "sourceKey": "emc-14699-smpc",
+      "url": "https://www.medicines.org.uk/emc/product/14699/smpc",
+      "productName": "Atenolol 50 mg film-coated tablets",
+      "documentDate": "2026-05-13",
+      "section41Present": true,
+      "section42Present": true,
+      "reviewFlags": [
+        "multiple_indication_rules",
+        "renal_adjustment_review",
+        "titration_context"
+      ],
+      "publicationAllowed": false
+    },
+    {
+      "canonicalKey": "atosiban",
+      "canonicalName": "Atosiban",
+      "status": "verified_product_specific",
+      "sourceTier": "EMC",
+      "sourceKey": "emc-3262-smpc",
+      "url": "https://www.medicines.org.uk/emc/product/3262/smpc",
+      "productName": "Atosiban 37.5 mg/5 ml concentrate for solution for infusion",
+      "documentDate": null,
+      "section41Present": true,
+      "section42Present": true,
+      "reviewFlags": [
+        "specialist_obstetric_use",
+        "multi_stage_infusion",
+        "infusion_rate_required",
+        "clinical_review_required"
+      ],
+      "publicationAllowed": false
+    },
+    {
+      "canonicalKey": "atropine",
+      "canonicalName": "Atropine",
+      "status": "verified_product_specific",
+      "sourceTier": "EMC",
+      "sourceKey": "emc-6282-smpc",
+      "url": "https://www.medicines.org.uk/emc/product/6282/smpc",
+      "productName": "Atropine Sulfate 600 micrograms/ml solution for injection",
+      "documentDate": "2025-03-24",
+      "section41Present": true,
+      "section42Present": true,
+      "reviewFlags": [
+        "parenteral_high_risk",
+        "age_weight_branching",
+        "multiple_indication_rules",
+        "clinical_review_required"
+      ],
+      "publicationAllowed": false
+    },
+    {
+      "canonicalKey": "bisacodyl",
+      "canonicalName": "Bisacodyl",
+      "status": "verified_product_specific",
+      "sourceTier": "EMC",
+      "sourceKey": "emc-13049-smpc",
+      "url": "https://www.medicines.org.uk/emc/product/13049/smpc",
+      "productName": "Bisacodyl 5mg Tablets",
+      "documentDate": "2026-06-29",
+      "section41Present": true,
+      "section42Present": true,
+      "reviewFlags": [
+        "age_gate_12_plus",
+        "short_term_use",
+        "gastro_resistant_administration"
+      ],
+      "publicationAllowed": false
+    },
+    {
+      "canonicalKey": "calcitriol",
+      "canonicalName": "Calcitriol",
+      "status": "verified_product_specific",
+      "sourceTier": "EMC",
+      "sourceKey": "emc-101903-smpc",
+      "url": "https://www.medicines.org.uk/emc/product/101903/smpc",
+      "productName": "Calcitriol 0.5 microgram Soft Capsules",
+      "documentDate": "2026-02-23",
+      "section41Present": true,
+      "section42Present": true,
+      "reviewFlags": [
+        "calcium_monitoring_required",
+        "renal_osteodystrophy_context",
+        "titration_required",
+        "clinical_review_required"
+      ],
+      "publicationAllowed": false
+    },
+    {
+      "canonicalKey": "alteplase",
+      "canonicalName": "Alteplase",
+      "status": "product_selection_required",
+      "sourceTier": "EMC",
+      "sourceKey": null,
+      "url": "https://www.medicines.org.uk/emc/ingredient/19",
+      "productName": null,
+      "documentDate": null,
+      "section41Present": null,
+      "section42Present": null,
+      "reviewFlags": [
+        "multiple_presentations_different_indications",
+        "do_not_choose_product_automatically",
+        "high_risk_thrombolytic",
+        "clinical_review_required"
+      ],
+      "publicationAllowed": false
+    }
+  ]
+}
