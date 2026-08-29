@@ -1,0 +1,159 @@
+{
+  "schemaVersion": "drx-batch2-live-evidence-wave1-v1",
+  "createdAt": "2026-08-29T22:30:00+02:00",
+  "status": "live_web_verified_archive_hash_pending",
+  "publicationAllowed": false,
+  "sourceCount": 5,
+  "archiveSnapshotCount": 0,
+  "normalizedRuleCount": 0,
+  "sources": [
+    {
+      "canonicalKey": "amlodipine",
+      "sourceKey": "emc-4717-smpc",
+      "url": "https://www.medicines.org.uk/emc/product/4717/smpc",
+      "documentDate": "2026-04-20",
+      "productName": "Amlodipine 5 mg tablets",
+      "productSpecific": true,
+      "section41Present": true,
+      "section42Present": true,
+      "extractedFacts": {
+        "indications": [
+          "hypertension",
+          "chronic stable angina",
+          "vasospastic angina"
+        ],
+        "adultDosePattern": "initial 5 mg once daily; may increase to 10 mg once daily depending on response",
+        "pediatricDosePattern": "ages 6-17 hypertension: 2.5 mg once daily, may increase to 5 mg once daily after 4 weeks",
+        "renal": "normal dosage recommended; not dialysable",
+        "hepatic": "start cautiously at lower end; severe impairment requires lowest dose and slow titration"
+      },
+      "reviewFlags": [
+        "exact_product_cannot_supply_2_5_mg_from_this_5_mg_tablet",
+        "product_binding_required"
+      ],
+      "archiveHashStatus": "pending",
+      "normalizationStatus": "pending_archive_and_structuring"
+    },
+    {
+      "canonicalKey": "atorvastatin",
+      "sourceKey": "emc-13385-smpc",
+      "url": "https://www.medicines.org.uk/emc/product/13385/smpc",
+      "documentDate": "2025-08-26",
+      "productName": "Atorvastatin 80 mg film-coated tablets",
+      "productSpecific": true,
+      "section41Present": true,
+      "section42Present": true,
+      "extractedFacts": {
+        "indications": [
+          "primary/familial hypercholesterolaemia",
+          "mixed hyperlipidaemia",
+          "homozygous familial hypercholesterolaemia",
+          "cardiovascular event prevention in high-risk adults"
+        ],
+        "generalDosePattern": "usual starting dose 10 mg once daily; adjust at intervals of at least 4 weeks; maximum 80 mg once daily",
+        "pediatricScope": "some indications include patients age 10 years or older"
+      },
+      "reviewFlags": [
+        "indication_specific_rules_required",
+        "strength_80mg_product_not_equal_to_starting_dose",
+        "product_binding_required"
+      ],
+      "archiveHashStatus": "pending",
+      "normalizationStatus": "pending_archive_and_structuring"
+    },
+    {
+      "canonicalKey": "bisoprolol",
+      "sourceKey": "emc-101897-smpc",
+      "url": "https://www.medicines.org.uk/emc/product/101897/smpc",
+      "documentDate": "2026-02-06",
+      "productName": "Bisoprolol 10 mg film-coated Tablets",
+      "productSpecific": true,
+      "section41Present": true,
+      "section42Present": true,
+      "extractedFacts": {
+        "section41Indications": [
+          "hypertension",
+          "angina pectoris"
+        ],
+        "adultDosePattern": "usual 10 mg once daily; some patients 5 mg; stated maximum 20 mg/day for adult hypertension/angina dosing",
+        "chfTitrationPresentInSection42": true,
+        "chfTitrationPattern": "1.25 -> 2.5 -> 3.75 -> 5 -> 7.5 -> 10 mg once daily with staged titration",
+        "pediatric": "use cannot be recommended due to lack of experience"
+      },
+      "reviewFlags": [
+        "section41_section42_indication_mismatch",
+        "clinical_review_required",
+        "do_not_auto_normalize_chf",
+        "product_binding_required"
+      ],
+      "archiveHashStatus": "pending",
+      "normalizationStatus": "blocked_clinical_review"
+    },
+    {
+      "canonicalKey": "losartan",
+      "sourceKey": "emc-651-smpc",
+      "url": "https://www.medicines.org.uk/emc/product/651/smpc",
+      "documentDate": "2026-01-26",
+      "productName": "Losartan potassium 12.5 mg film-coated tablets",
+      "productSpecific": true,
+      "section41Present": true,
+      "section42Present": true,
+      "extractedFacts": {
+        "indications": [
+          "essential hypertension adults and ages 6-18",
+          "hypertensive type 2 diabetes with proteinuria",
+          "chronic heart failure when ACE inhibitor unsuitable",
+          "stroke-risk reduction in hypertensive LVH"
+        ],
+        "hypertensionPattern": "50 mg once daily usual; may increase to 100 mg once daily",
+        "heartFailurePattern": "12.5 mg once daily initially; weekly titration through 25, 50, 100 to maximum 150 mg once daily as tolerated",
+        "volumeDepletionPattern": "consider 25 mg once daily starting dose"
+      },
+      "reviewFlags": [
+        "multiple_indication_specific_rules_required",
+        "renal_hepatic_special_population_rules_required",
+        "product_binding_required"
+      ],
+      "archiveHashStatus": "pending",
+      "normalizationStatus": "pending_archive_and_structuring"
+    },
+    {
+      "canonicalKey": "pantoprazole",
+      "sourceKey": "emc-14644-smpc",
+      "url": "https://www.medicines.org.uk/emc/product/14644/smpc",
+      "documentDate": "2026-02-26",
+      "productName": "Pantoprazole 40 mg gastro-resistant tablets",
+      "productSpecific": true,
+      "section41Present": true,
+      "section42Present": true,
+      "extractedFacts": {
+        "indications": [
+          "reflux oesophagitis age 12+",
+          "H. pylori eradication in combination therapy adults",
+          "gastric ulcer adults",
+          "duodenal ulcer adults",
+          "Zollinger-Ellison and pathological hypersecretory conditions adults"
+        ],
+        "refluxPattern": "40 mg once daily; may double in selected non-response cases; usual treatment period 4 weeks with possible additional 4 weeks",
+        "hpyloriPattern": "40 mg twice daily as part of combination therapy; regimen depends on antimicrobial resistance/local guidance",
+        "administration": "oral; swallow whole before meal"
+      },
+      "reviewFlags": [
+        "combination_regimen_requires_local_antimicrobial_guidance",
+        "do_not_auto_publish_antibiotic_components",
+        "indication_specific_duration_rules_required",
+        "product_binding_required"
+      ],
+      "archiveHashStatus": "pending",
+      "normalizationStatus": "pending_archive_and_structuring"
+    }
+  ],
+  "completionGate": {
+    "liveWebEvidenceComplete": true,
+    "archiveHashesComplete": false,
+    "exactProductBindingComplete": false,
+    "normalizedRulesComplete": false,
+    "safetyValidationComplete": false,
+    "clinicalReviewComplete": false
+  }
+}
