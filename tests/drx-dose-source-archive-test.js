@@ -36,6 +36,12 @@ function response(body, options = {}) {
   assert.equal(snapshot.parser.doseSectionPresent, true);
   assert.equal(snapshot.parser.indicationsSectionPresent, true);
   assert.match(snapshot.rawSha256, /^[0-9a-f]{64}$/);
+  assert.match(snapshot.sectionSha256['4.1'], /^[0-9a-f]{64}$/);
+  assert.match(snapshot.sectionSha256['4.2'], /^[0-9a-f]{64}$/);
+  assert.equal(
+    snapshot.sectionSha256['4.2'],
+    Archive.sha256(Buffer.from(snapshot.parsed.sections['4.2'].text, 'utf8'))
+  );
   assert.equal(snapshot.contentType, 'text/html');
   assert.equal(snapshot.sourceDocument.productName, 'Amlodipine 5mg tablets');
   assert.equal(snapshot.sourceDocument.documentDate, '2026-04-20');
