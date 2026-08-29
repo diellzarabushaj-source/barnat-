@@ -1,13 +1,13 @@
 {
   "schemaVersion": "drx-first100-canonical-review-decisions-v1",
-  "generatedAt": "2026-08-29T09:48:00+02:00",
-  "total": 13,
-  "resolved": 13,
+  "generatedAt": "2026-08-29T10:27:47.338Z",
+  "total": 14,
+  "resolved": 14,
   "pending": 0,
   "canonicalReviewOpen": 0,
   "dispositionCounts": {
     "dedupeExistingCanonical": 3,
-    "replaceWithCleanCanonical": 2,
+    "replaceWithCleanCanonical": 3,
     "removeProductLevelMixture": 7,
     "requiresProductSelection": 1
   },
@@ -361,12 +361,45 @@
       },
       "productSelectionRequired": false,
       "doseSourceReady": false
+    },
+    {
+      "canonicalKey": "aqueousextracttriticumvulgarephenoxyethanol",
+      "sourceName": "Aqueous extract triticum vulgare + Phenoxyethanol",
+      "decision": "resolved_registry_excipient_noise_to_triticum_vulgare",
+      "confidence": "high",
+      "evidence": [
+        {
+          "authority": "AIFA-derived RCP mirror",
+          "url": "https://farmaco-info.it/fitostimoline-141682/riassunto-delle-caratteristiche-del-prodotto",
+          "finding": "FITOSTIMOLINE 15% cream/gauze RCP identifies aqueous Triticum vulgare extract as the active substance; 2-phenoxyethanol appears in section 6.1 among excipients."
+        },
+        {
+          "authority": "Kosovo Ministry of Health official medicinal-product price list",
+          "url": "https://msh.rks-gov.net/Documents/DownloadDocument?fileName=Vendi52614574.3635.pdf",
+          "finding": "Kosovo source terminology lists FITOSTIMOLINE with Triticum vulgare and 2-phenoxyethanol; retain that source term as provenance rather than treating phenoxyethanol as a canonical active ingredient."
+        }
+      ],
+      "sourceDiscoveryEligible": true,
+      "publicationAllowed": false,
+      "resolvedCanonicalKey": "triticumvulgare",
+      "resolvedCanonicalName": "Triticum vulgare aqueous extract",
+      "dispositionResolved": true,
+      "canonicalIdentityResolved": true,
+      "queueDisposition": "replace_with_clean_canonical",
+      "registryAnchor": {
+        "tradeName": "FITOSTIMOLINE",
+        "sourceRow": 307,
+        "atcCode": "D03AX49"
+      },
+      "productSelectionRequired": false,
+      "doseSourceReady": false
     }
   ],
   "resolutionNotes": [
     "Disposition resolution closes identity-quality review only; it does not imply clinical dose review or publication readiness.",
     "Amlodipine + Ramipril and Pancreatin add two clean canonical targets.",
     "Betamethasone dipropionate resolves to an already-existing canonical and does not increase the unique denominator.",
-    "Seven product-level mixtures are removed from the substance queue, three dirty rows deduplicate to existing canonicals, and ten deterministic refill rows are required."
+    "Seven product-level mixtures are removed from the substance queue, three dirty rows deduplicate to existing canonicals, and ten deterministic refill rows are required.",
+    "FITOSTIMOLINE source terminology is preserved, but phenoxyethanol is treated as excipient noise for canonical identity; source discovery continues under Triticum vulgare aqueous extract."
   ]
 }
