@@ -6,10 +6,10 @@
 <path d="M600 200 V250" class="l"/>
 <rect x="280" y="250" width="640" height="90" class="b h"/><text x="600" y="282" class="s c">Epinefrinë ose norepinefrinë</text><text x="600" y="315" class="s c">1–5 µg/min, titro sipas përgjigjes</text>
 <path d="M600 340 V390" class="l"/><path d="M600 390 H330 V430" class="l"/><path d="M600 390 H870 V430" class="l"/>
-<rect x="100" y="430" width="460" height="175" class="b g"/><text x="330" y="465" class="s c">Glukagon 3–10 mg (0.03–0.05 mg/kg) IV bolus</text><text x="330" y="500" class="s c">Mund të përsëritet çdo 10 min</text><text x="330" y="535" class="s c">Konsidero infuzion IV 1–5 mg/h</text><text x="330" y="570" class="s c">(0.02–0.07 mg/kg/h)</text>
-<rect x="640" y="430" width="460" height="215" class="b o"/><text x="870" y="465" class="s c">Nëse glukoza serike &lt;200 mg/dL:</text><text x="870" y="500" class="s c">dekstrozë 50% 50 mL IV</text><text x="870" y="535" class="s c">+ insulinë e rregullt 1 U/kg IV bolus</text><text x="870" y="570" class="s c">pastaj 0.5–1 U/kg/h</text><text x="870" y="605" class="s c">dhe D10W 200 mL/h (5 mL/kg/h)</text>
+<rect x="100" y="430" width="460" height="175" class="b g"/><text x="330" y="465" class="s c">Glukagon 3–10 mg (0.03–0.05 mg/kg) IV si dozë e shpejtë</text><text x="330" y="500" class="s c">Mund të përsëritet çdo 10 min</text><text x="330" y="535" class="s c">Konsidero infuzion IV 1–5 mg/h</text><text x="330" y="570" class="s c">(0.02–0.07 mg/kg/h)</text>
+<rect x="640" y="430" width="460" height="215" class="b o"/><text x="870" y="465" class="s c">Nëse glukoza serike &lt;200 mg/dL:</text><text x="870" y="500" class="s c">dekstrozë 50% 50 mL IV</text><text x="870" y="535" class="s c">+ insulinë e rregullt 1 U/kg IV si dozë e shpejtë</text><text x="870" y="570" class="s c">pastaj 0.5–1 U/kg/h</text><text x="870" y="605" class="s c">dhe D10W 200 mL/h (5 mL/kg/h)</text>
 <path d="M870 645 V700" class="l"/>
-<rect x="650" y="700" width="440" height="150" class="b o"/><text x="870" y="735" class="s c">Emulsion lipidik 20%</text><text x="870" y="770" class="s c">1.5 mL/kg IV bolus gjatë 2–3 min</text><text x="870" y="805" class="s c">pastaj infuzion 0.5 mL/kg/min</text>
+<rect x="650" y="700" width="440" height="150" class="b o"/><text x="870" y="735" class="s c">Emulsion lipidik 20%</text><text x="870" y="770" class="s c">1.5 mL/kg IV si dozë e shpejtë gjatë 2–3 min</text><text x="870" y="805" class="s c">pastaj infuzion 0.5 mL/kg/min</text>
 <path d="M870 850 V900" class="l"/>
 <rect x="680" y="900" width="380" height="105" class="b o"/><text x="870" y="935" class="s c">Atropinë ose stimulim kardiak</text><text x="870" y="970" class="s c">për bradikardi simptomatike</text>
 <path d="M870 1005 V1045" class="l"/>
