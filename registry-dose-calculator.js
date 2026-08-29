@@ -7,9 +7,11 @@
   const DOSE_CACHE_DB = 'drx-dose-cache-v1';
   const DOSE_CACHE_STORE = 'products';
   const OFFLINE_MAX_AGE_MS = 24 * 60 * 60 * 1000;
+  const SHARED_CORE_SRC = '/dose-core.js?v=drx-dose-core-v1';
   const COLUMN_KEY = 'dose-calculator';
   const MAX_AGE_MONTHS = 130 * 12;
   const MAX_WEIGHT_KG = 500;
+  const MAX_HEIGHT_CM = 250;
   const EPSILON = 0.000001;
 
   const clean = value => String(value ?? '').replace(/\s+/g, ' ').trim();
@@ -110,6 +112,35 @@
   let enhanceQueued = false;
   let observer = null;
   const productMemoryCache = new Map();
+  let sharedCorePromise = null;
+
+  function ensureSharedDoseCore() {
+    if (window.DRxDoseCore?.calculate) return Promise.resolve(window.DRxDoseCore);
+    if (sharedCorePromise) return sharedCorePromise;
+    sharedCorePromise = new Promise((resolve, reject) => {
+      const existing = document.querySelector('script[data-drx-dose-core]');
+      const finish = () => window.DRxDoseCore?.calculate
+        ? resolve(window.DRxDoseCore)
+        : reject(new Error('Shared DRx dose-core nuk u inicializua.'));
+      if (existing) {
+        existing.addEventListener('load', finish, { once:true });
+        existing.addEventListener('error', () => reject(new Error('Shared DRx dose-core nuk u ngarkua.')), { once:true });
+        return;
+      }
+      const script = document.createElement('script');
+      script.src = SHARED_CORE_SRC;
+      script.async = false;
+      script.dataset.drxDoseCore = 'drx-dose-core-v1';
+      script.addEventListener('load', finish, { once:true });
+      script.addEventListener('error', () => reject(new Error('Shared DRx dose-core nuk u ngarkua.')), { once:true });
+      document.head.appendChild(script);
+    }).catch(error => {
+      sharedCorePromise = null;
+      throw error;
+    });
+    return sharedCorePromise;
+  }
+
 
   function doseCacheDb() {
     if (!('indexedDB' in window)) return Promise.resolve(null);
@@ -442,12 +473,12 @@
     const minimum = fmt(rule.doseMinValue);
     const maximum = fmt(rule.doseMaxValue);
     const value = minimum === maximum ? minimum : `${minimum}–${maximum}`;
-    if (rule.calculationMethod === 'dose_per_kg_per_dose') return `${value} ${rule.doseUnit}/kg/dozë`;
-    if (rule.calculationMethod === 'dose_per_kg_per_day') return `${value} ${rule.doseUnit}/kg/ditë`;
-    if (rule.calculationMethod === 'dose_per_m2_per_dose') return `${value} ${rule.doseUnit}/m²/dozë`;
-    if (rule.calculationMethod === 'dose_per_m2_per_day') return `${value} ${rule.doseUnit}/m²/ditë`;
+    if (rule.calculationMethod === 'dose_per_kg_per_dose') return `${value} ${computed.doseUnit || rule.doseUnit}/kg/dozë`;
+    if (rule.calculationMethod === 'dose_per_kg_per_day') return `${value} ${computed.doseUnit || rule.doseUnit}/kg/ditë`;
+    if (rule.calculationMethod === 'dose_per_m2_per_dose') return `${value} ${computed.doseUnit || rule.doseUnit}/m²/dozë`;
+    if (rule.calculationMethod === 'dose_per_m2_per_day') return `${value} ${computed.doseUnit || rule.doseUnit}/m²/ditë`;
     const basis = rule.doseBasis === 'per_day' ? '/ditë' : rule.doseBasis === 'per_dose' ? '/dozë' : '';
-    return `${value} ${rule.doseUnit}${basis}`;
+    return `${value} ${computed.doseUnit || rule.doseUnit}${basis}`;
   }
 
   function frequencyText(rule) {
@@ -475,82 +506,77 @@
     return 'Sipas indikacionit';
   }
 
-  function computeDose(rule, product, weightKg) {
-    if (rule.calculationMethod === 'manual_only') {
-      return { error:clean(rule.clinicalNotes) || 'Kjo skemë kërkon vlerësim manual.' };
+  function computeDose(rule, product, patientOrWeight = {}) {
+    const Core = window.DRxDoseCore;
+    if (!Core?.calculate) {
+      return { error:'Motori i përbashkët i dozës nuk është ngarkuar; kalkulimi u bllokua.' };
     }
-    if (needsBsaMethod(rule.calculationMethod)) {
-      return { error:'Kjo skemë kërkon sipërfaqen trupore; kalkulimi automatik nuk është konfiguruar për këtë rregull.' };
+    const patient = typeof patientOrWeight === 'object' && patientOrWeight !== null
+      ? patientOrWeight
+      : { weightKg:patientOrWeight };
+
+    const result = Core.calculate(rule, {
+      ageMonths:num(patient.ageMonths),
+      weightKg:num(patient.weightKg),
+      heightCm:num(patient.heightCm),
+    }, product);
+
+    if ([Core.OUTCOME.NEEDS_INPUT, Core.OUTCOME.OUT_OF_RANGE, Core.OUTCOME.MANUAL_REVIEW, Core.OUTCOME.INVALID_RULE].includes(result.outcome)) {
+      const message = result.outcome === Core.OUTCOME.NEEDS_INPUT
+        ? `Mungojnë të dhënat: ${(result.missing || []).join(', ')}.`
+        : result.outcome === Core.OUTCOME.OUT_OF_RANGE
+          ? 'Pacienti është jashtë kufijve të këtij rregulli.'
+          : result.outcome === Core.OUTCOME.MANUAL_REVIEW
+            ? 'Kjo skemë kërkon vlerësim klinik/manual dhe nuk llogaritet automatikisht.'
+            : 'Rregulli i dozës nuk është i plotë për kalkulim deterministik.';
+      return { error:message, coreResult:result };
     }
-    const minimum = num(rule.doseMinValue);
-    const maximum = num(rule.doseMaxValue ?? rule.doseMinValue);
-    if (minimum === null || maximum === null) return { error:'Rregulli nuk ka vlera numerike të plota.' };
-
-    let doseMin = minimum;
-    let doseMax = maximum;
-    let calculation = 'Dozë fikse; pesha nuk përdoret në këtë rregull.';
-    const administrations = administrationsPerDay(rule);
-
-    if (needsWeightMethod(rule.calculationMethod)) {
-      if (weightKg === null || weightKg <= 0) return { error:'Shkruaje peshën e pacientit.' };
-      doseMin = minimum * weightKg;
-      doseMax = maximum * weightKg;
-      calculation = `${fmt(weightKg)} kg × ${minimum === maximum ? fmt(minimum) : `${fmt(minimum)}–${fmt(maximum)}`} ${rule.doseUnit}/kg`;
-      if (rule.calculationMethod === 'dose_per_kg_per_day') {
-        if (!administrations || administrations <= 0) return { error:'Mungon numri i dozave në ditë për këtë rregull.' };
-        doseMin /= administrations;
-        doseMax /= administrations;
-        calculation += ` ÷ ${fmt(administrations)} doza/ditë`;
-      }
-    } else if (clean(rule.doseBasis) === 'per_day') {
-      if (!administrations || administrations <= 0) return { error:'Mungon skema e administrimeve për dozën ditore.' };
-      doseMin /= administrations;
-      doseMax /= administrations;
-      calculation = `Doza totale ditore ÷ ${fmt(administrations)} administrime/ditë`;
+    if (!result.perDose || !Number.isFinite(result.perDose.min) || !Number.isFinite(result.perDose.max)) {
+      return { error:'Rregulli nuk jep dozë të vetme të përcaktuar; kalkulimi automatik u bllokua.', coreResult:result };
     }
 
-    const maxSingle = num(rule.maxSingleDoseMg);
-    if (maxSingle !== null) {
-      const minMg = convertDoseUnit(doseMin, rule.doseUnit, 'mg');
-      const maxMg = convertDoseUnit(doseMax, rule.doseUnit, 'mg');
-      if (minMg !== null && maxMg !== null) {
-        doseMin = convertDoseUnit(Math.min(minMg, maxSingle), 'mg', rule.doseUnit);
-        doseMax = convertDoseUnit(Math.min(maxMg, maxSingle), 'mg', rule.doseUnit);
-      }
-    }
-    const maxDaily = num(rule.maxDailyDoseMg);
-    if (maxDaily !== null && administrations && administrations > 0) {
-      const perAdministrationMaxMg = maxDaily / administrations;
-      const minMg = convertDoseUnit(doseMin, rule.doseUnit, 'mg');
-      const maxMg = convertDoseUnit(doseMax, rule.doseUnit, 'mg');
-      if (minMg !== null && maxMg !== null) {
-        doseMin = convertDoseUnit(Math.min(minMg, perAdministrationMaxMg), 'mg', rule.doseUnit);
-        doseMax = convertDoseUnit(Math.min(maxMg, perAdministrationMaxMg), 'mg', rule.doseUnit);
-      }
-    }
-
+    const doseMin = result.perDose.min;
+    const doseMax = result.perDose.max;
+    const resultDoseUnit = clean(result.doseUnit || rule.doseUnit);
     const conversion = rule.conversion || {};
     const numerator = num(product.numeratorValue);
     const denominator = num(product.denominatorValue);
-    const doseMinForProduct = convertDoseUnit(doseMin, rule.doseUnit, product.numeratorUnit);
-    const doseMaxForProduct = convertDoseUnit(doseMax, rule.doseUnit, product.numeratorUnit);
+    const doseMinForProduct = convertDoseUnit(doseMin, resultDoseUnit, product.numeratorUnit);
+    const doseMaxForProduct = convertDoseUnit(doseMax, resultDoseUnit, product.numeratorUnit);
     let quantityMin = null;
     let quantityMax = null;
     let conversionText = 'Konvertimi në njësinë e këtij preparati kërkon verifikim manual.';
+
     if (!conversion.enabled || conversion.status === 'not_allowed') {
       conversionText = 'Konvertimi automatik në këtë preparat nuk lejohet; përdor dozën dhe verifiko preparatin.';
     } else if (conversion.status === 'automatic' && numerator && denominator && doseMinForProduct !== null && doseMaxForProduct !== null) {
       quantityMin = roundQuantity(doseMinForProduct * denominator / numerator, product, conversion);
       quantityMax = roundQuantity(doseMaxForProduct * denominator / numerator, product, conversion);
       if (quantityMin === null || quantityMax === null) {
-        return { error:'Doza nuk mund të shndërrohet saktë në këtë preparat pa ndarje ose rrumbullakim të palejuar.' };
+        return { error:'Doza nuk mund të shndërrohet saktë në këtë preparat pa ndarje ose rrumbullakim të palejuar.', coreResult:result };
       }
       const doseLabel = Math.abs(doseMin - doseMax) < EPSILON ? fmt(doseMin) : `${fmt(doseMin)}–${fmt(doseMax)}`;
       const units = Math.abs(quantityMin - quantityMax) < EPSILON ? fmt(quantityMin) : `${fmt(quantityMin)}–${fmt(quantityMax)}`;
-      conversionText = `${doseLabel} ${rule.doseUnit} = ${units} ${quantityName(product.denominatorUnit, quantityMax)}`;
+      conversionText = `${doseLabel} ${resultDoseUnit} = ${units} ${quantityName(product.denominatorUnit, quantityMax)}`;
     }
 
-    return { doseMin, doseMax, quantityMin, quantityMax, calculation, conversionText };
+    const method = clean(rule.calculationMethod);
+    const calculation = method.includes('per_m2')
+      ? `DRx dose-core · BSA Mosteller ${result.bsaM2 ? fmt(result.bsaM2) + ' m²' : ''}`.trim()
+      : method.includes('per_kg')
+        ? `DRx dose-core · ${fmt(patient.weightKg)} kg`
+        : 'DRx dose-core · dozë fikse e verifikuar';
+
+    return {
+      doseMin,
+      doseMax,
+      doseUnit:resultDoseUnit,
+      quantityMin,
+      quantityMax,
+      calculation,
+      conversionText,
+      coreResult:result,
+    };
   }
 
   function currentAgeMonths() {
@@ -579,11 +605,17 @@
   function ruleNeedsWeight(rule) {
     const required = ruleRequiredInputs(rule);
     if (required.size) return required.has('weight_kg');
-    return needsWeightMethod(rule.calculationMethod) || num(rule.minWeightKg) !== null || num(rule.maxWeightKg) !== null;
+    return needsWeightMethod(rule.calculationMethod) || needsBsaMethod(rule.calculationMethod) || num(rule.minWeightKg) !== null || num(rule.maxWeightKg) !== null;
+  }
+
+  function ruleNeedsHeight(rule) {
+    const required = ruleRequiredInputs(rule);
+    if (required.size) return required.has('height_cm');
+    return needsBsaMethod(rule.calculationMethod);
   }
 
   function unsupportedRequiredInputs(rule) {
-    const supported = new Set(['age_months','weight_kg']);
+    const supported = new Set(['age_months','weight_kg','height_cm']);
     return [...ruleRequiredInputs(rule)].filter(key => !supported.has(key));
   }
 
@@ -591,12 +623,18 @@
     if (!modal) return;
     const ageMonths = currentAgeMonths();
     const ageValid = ageMonths !== null && ageMonths >= 0 && ageMonths <= MAX_AGE_MONTHS;
-    const needsWeight = ageValid && ageMatchedRules(ageMonths).some(ruleNeedsWeight);
+    const matchingRules = ageValid ? ageMatchedRules(ageMonths) : [];
+    const needsWeight = matchingRules.some(ruleNeedsWeight);
+    const needsHeight = matchingRules.some(ruleNeedsHeight);
     modal.weightWrap.hidden = !needsWeight;
     modal.weight.disabled = !needsWeight;
     modal.weight.required = needsWeight;
     if (!needsWeight) modal.weight.value = '';
     modal.weightChips.hidden = !needsWeight;
+    modal.heightWrap.hidden = !needsHeight;
+    modal.height.disabled = !needsHeight;
+    modal.height.required = needsHeight;
+    if (!needsHeight) modal.height.value = '';
     modal.progressAge.classList.toggle('is-done', ageValid);
     modal.progressWeight.classList.toggle('is-done', !needsWeight || (num(modal.weight.value) !== null && num(modal.weight.value) > 0));
   }
@@ -652,6 +690,8 @@
     }
     const needsWeight = ageRules.some(ruleNeedsWeight);
     const weight = needsWeight ? num(modal.weight.value) : null;
+    const needsHeight = ageRules.some(ruleNeedsHeight);
+    const height = needsHeight ? num(modal.height.value) : null;
     if (needsWeight && (weight === null || weight <= 0)) {
       if (!silent) showError('Shkruaje peshën e pacientit.');
       else clearResult();
@@ -659,6 +699,11 @@
     }
     if (weight !== null && weight > MAX_WEIGHT_KG) {
       showError('Kontrolloje peshën e pacientit.');
+      return false;
+    }
+    if (needsHeight && (height === null || height <= 0 || height > MAX_HEIGHT_CM)) {
+      if (!silent) showError('Shkruaje gjatësinë e pacientit në cm.');
+      else clearResult();
       return false;
     }
 
@@ -676,15 +721,15 @@
       showError(`Kjo skemë kërkon të dhëna shtesë klinike (${unsupported.join(', ')}); kalkulimi automatik u bllokua.`);
       return false;
     }
-    const computed = computeDose(rule, activeProduct, weight);
+    const computed = computeDose(rule, activeProduct, { ageMonths, weightKg:weight, heightCm:height });
     if (computed.error) {
       showError(computed.error);
       return false;
     }
 
     const doseRange = Math.abs(computed.doseMin - computed.doseMax) < EPSILON
-      ? `${fmt(computed.doseMin)} ${rule.doseUnit}`
-      : `${fmt(computed.doseMin)}–${fmt(computed.doseMax)} ${rule.doseUnit}`;
+      ? `${fmt(computed.doseMin)} ${computed.doseUnit || rule.doseUnit}`
+      : `${fmt(computed.doseMin)}–${fmt(computed.doseMax)} ${computed.doseUnit || rule.doseUnit}`;
     const hasAutomaticQuantity = computed.quantityMin !== null && computed.quantityMax !== null;
     const quantity = hasAutomaticQuantity
       ? (Math.abs(computed.quantityMin - computed.quantityMax) < EPSILON
@@ -765,7 +810,9 @@
     modal.age.value = '';
     modal.ageUnit.value = 'years';
     modal.weight.value = '';
+    modal.height.value = '';
     modal.weightWrap.hidden = true;
+    modal.heightWrap.hidden = true;
     modal.weightChips.hidden = true;
     modal.progressAge.classList.remove('is-done');
     modal.progressWeight.classList.add('is-done');
@@ -793,7 +840,7 @@
     const key = clean(productKey);
     if (!key) return false;
     try {
-      const product = await loadFastProduct(key);
+      const [product] = await Promise.all([loadFastProduct(key), ensureSharedDoseCore()]);
       if (!product?.rules?.length) return false;
       openModal(product);
       return true;
@@ -835,12 +882,13 @@
     root.className = 'dose-calculator-modal';
     root.id = 'doseCalculatorModal';
     root.hidden = true;
-    root.innerHTML = `<div class="dose-calculator-backdrop" data-dose-calculator-close></div><section class="dose-calculator-dialog" role="dialog" aria-modal="true" aria-labelledby="doseCalculatorTitle"><header class="dose-calculator-dialog-header"><div><span class="dose-calculator-eyebrow">MedIndex · Kalkulator doze</span><h2 id="doseCalculatorTitle">Kalkulo</h2></div><button type="button" class="dose-calculator-close" data-dose-calculator-close aria-label="Mbyll kalkulatorin">×</button></header><div class="dose-calculator-product" data-dose-product-name></div><div class="dose-calculator-progress" aria-hidden="true"><span data-dose-progress-age>Mosha</span><span data-dose-progress-weight>Pesha</span><span data-dose-progress-result>Rezultati</span></div><div class="dose-calculator-form"><label data-dose-indication-wrap><span>Indikacioni</span><select data-dose-indication></select></label><label><span>Mosha</span><span class="dose-calculator-input-pair"><input data-dose-age type="number" min="0" max="130" step="0.1" inputmode="decimal" autocomplete="off" placeholder="p.sh. 7"><select data-dose-age-unit aria-label="Njësia e moshës"><option value="years">vjet</option><option value="months">muaj</option></select></span></label><label data-dose-weight-wrap hidden><span>Pesha</span><span class="dose-calculator-input-pair"><input data-dose-weight type="number" min="0.1" max="500" step="0.1" inputmode="decimal" autocomplete="off" placeholder="kg"><span class="dose-calculator-unit">kg</span></span><span class="dose-calculator-weight-chips" data-dose-weight-chips hidden><button type="button" data-weight="5">5</button><button type="button" data-weight="10">10</button><button type="button" data-weight="15">15</button><button type="button" data-weight="30">30</button><button type="button" data-weight="40">40</button></span></label></div><p class="dose-calculator-auto-note">Rezultati llogaritet automatikisht sapo plotësohen të dhënat e nevojshme.</p><section class="dose-calculator-result" data-dose-result hidden aria-live="polite"><h3>Rezultati</h3><p data-dose-result-text></p><details><summary>Si u llogarit?</summary><div class="dose-calculator-details" data-dose-details></div></details><div class="dose-calculator-result-actions" data-dose-actions hidden><button type="button" data-dose-copy>Kopjo udhëzimin</button><button type="button" data-dose-new-patient>Pacient i ri</button></div></section></section>`;
+    root.innerHTML = `<div class="dose-calculator-backdrop" data-dose-calculator-close></div><section class="dose-calculator-dialog" role="dialog" aria-modal="true" aria-labelledby="doseCalculatorTitle"><header class="dose-calculator-dialog-header"><div><span class="dose-calculator-eyebrow">MedIndex · Kalkulator doze</span><h2 id="doseCalculatorTitle">Kalkulo</h2></div><button type="button" class="dose-calculator-close" data-dose-calculator-close aria-label="Mbyll kalkulatorin">×</button></header><div class="dose-calculator-product" data-dose-product-name></div><div class="dose-calculator-progress" aria-hidden="true"><span data-dose-progress-age>Mosha</span><span data-dose-progress-weight>Pesha</span><span data-dose-progress-result>Rezultati</span></div><div class="dose-calculator-form"><label data-dose-indication-wrap><span>Indikacioni</span><select data-dose-indication></select></label><label><span>Mosha</span><span class="dose-calculator-input-pair"><input data-dose-age type="number" min="0" max="130" step="0.1" inputmode="decimal" autocomplete="off" placeholder="p.sh. 7"><select data-dose-age-unit aria-label="Njësia e moshës"><option value="years">vjet</option><option value="months">muaj</option></select></span></label><label data-dose-weight-wrap hidden><span>Pesha</span><span class="dose-calculator-input-pair"><input data-dose-weight type="number" min="0.1" max="500" step="0.1" inputmode="decimal" autocomplete="off" placeholder="kg"><span class="dose-calculator-unit">kg</span></span><span class="dose-calculator-weight-chips" data-dose-weight-chips hidden><button type="button" data-weight="5">5</button><button type="button" data-weight="10">10</button><button type="button" data-weight="15">15</button><button type="button" data-weight="30">30</button><button type="button" data-weight="40">40</button></span></label><label data-dose-height-wrap hidden><span>Gjatësia</span><span class="dose-calculator-input-pair"><input data-dose-height type="number" min="20" max="250" step="0.1" inputmode="decimal" autocomplete="off" placeholder="cm"><span class="dose-calculator-unit">cm</span></span></label></div><p class="dose-calculator-auto-note">Rezultati llogaritet automatikisht sapo plotësohen të dhënat e nevojshme.</p><section class="dose-calculator-result" data-dose-result hidden aria-live="polite"><h3>Rezultati</h3><p data-dose-result-text></p><details><summary>Si u llogarit?</summary><div class="dose-calculator-details" data-dose-details></div></details><div class="dose-calculator-result-actions" data-dose-actions hidden><button type="button" data-dose-copy>Kopjo udhëzimin</button><button type="button" data-dose-new-patient>Pacient i ri</button></div></section></section>`;
     document.body.appendChild(root);
     modal = {
       root, productName:root.querySelector('[data-dose-product-name]'), indicationWrap:root.querySelector('[data-dose-indication-wrap]'),
       indication:root.querySelector('[data-dose-indication]'), age:root.querySelector('[data-dose-age]'), ageUnit:root.querySelector('[data-dose-age-unit]'),
       weightWrap:root.querySelector('[data-dose-weight-wrap]'), weight:root.querySelector('[data-dose-weight]'), weightChips:root.querySelector('[data-dose-weight-chips]'),
+      heightWrap:root.querySelector('[data-dose-height-wrap]'), height:root.querySelector('[data-dose-height]'),
       result:root.querySelector('[data-dose-result]'), resultText:root.querySelector('[data-dose-result-text]'), details:root.querySelector('[data-dose-details]'),
       actions:root.querySelector('[data-dose-actions]'), copy:root.querySelector('[data-dose-copy]'), progressAge:root.querySelector('[data-dose-progress-age]'),
       progressWeight:root.querySelector('[data-dose-progress-weight]'), progressResult:root.querySelector('[data-dose-progress-result]'),
@@ -850,6 +898,7 @@
     modal.age.addEventListener('input', maybeCalculate);
     modal.ageUnit.addEventListener('change', maybeCalculate);
     modal.weight.addEventListener('input', maybeCalculate);
+    modal.height.addEventListener('input', maybeCalculate);
     modal.weightChips.addEventListener('click', event => {
       const button = event.target.closest('[data-weight]');
       if (!button) return;
@@ -909,7 +958,7 @@
       num, within, needsWeightMethod, needsBsaMethod, canonicalUnit, convertDoseUnit,
       administrationsPerDay, ageMatchesRule, preferredUnique, renderPlainLanguageTemplate,
       computeDose, frequencyText, durationText, ruleCoversPediatric, ruleCoversAdult,
-      productGroup, cacheFresh, ruleRequiredInputs, ruleNeedsWeight, unsupportedRequiredInputs,
+      productGroup, cacheFresh, ruleRequiredInputs, ruleNeedsWeight, ruleNeedsHeight, unsupportedRequiredInputs, ensureSharedDoseCore,
     }),
   };
 })();
