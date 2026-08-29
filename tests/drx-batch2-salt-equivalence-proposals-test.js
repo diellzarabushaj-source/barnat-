@@ -62,22 +62,41 @@ for (const b of proposals.blockedProposals) {
   assert.ok(b.why && b.why.trim() !== '', `${b.sourceKey}: needs a stated reason.`);
 }
 
-// The section 2 gap is the root cause and must be recorded at both layers,
-// because fixing only one of them silently drops the data.
+// Both layers that blocked section 2 are now open, and the gate re-derives
+// that from the code rather than trusting the recorded text.
 const gap = proposals.pipelineGap;
-assert.match(gap.parserLayer, /SECTION_TITLES/);
-assert.match(gap.schemaLayer, /section_code/);
-assert.match(gap.consequence, /[Bb]oth layers must change together/);
+assert.match(gap.parserLayer, /^RESOLVED:/);
+assert.match(gap.schemaLayer, /^RESOLVED:/);
+assert.equal(gap.remaining, 'rerun_archive_to_capture_section_2');
 
-// Verify the gap is real rather than stale documentation.
 const parser = fs.readFileSync(path.join(ROOT, 'lib', 'smpc-parser.js'), 'utf8');
+assert.match(parser, /function extractCompositionSection/,
+  'the parser must be able to read section 2.');
+
+// Section 2 must stay out of the clinical set, or every recorded
+// clinicalSectionCoverage figure silently changes meaning.
+const SmPC = require('../lib/smpc-parser.js');
+assert.equal(SmPC.SECTION_TITLES['2'], undefined);
+assert.equal(Object.keys(SmPC.SECTION_TITLES).length, 9);
+
+// The widening migration must exist and must widen storage only.
+const migration = fs.readFileSync(path.join(ROOT, 'supabase', 'migrations',
+  '20260829213000_drx_v3_allow_composition_section.sql'), 'utf8');
+assert.match(migration, /\^\(\?:2\|4\\\.\[1-9\]\)\$/,
+  'the migration must admit section 2 alongside 4.1-4.9.');
+assert.doesNotMatch(migration, /alter table public\.dose_rules_v3/i,
+  'widening storage must not touch what a rule may cite as its dosing source.');
+
+// Dosing stays pinned to 4.2 in the schema of record.
 const candidate = fs.readFileSync(
   path.join(ROOT, 'supabase', 'drx-dose-v3-additive-candidate.sql'), 'utf8');
-const parserCoversSection2 = /'2(\.\d)?'\s*:/.test(parser);
-const schemaAllowsSection2 = !/section_code ~ '\^4\\\.\[1-9\]\$'/.test(candidate);
-assert.equal(parserCoversSection2, false,
-  'parser now covers section 2; update the recorded gap and revisit the blocked mappings.');
-assert.equal(schemaAllowsSection2, false,
-  'schema now allows section 2; update the recorded gap and revisit the blocked mappings.');
+assert.match(candidate, /constraint dose_rules_v3_source_section_check check \(source_section = '4\.2'\)/,
+  'dose_rules_v3 must keep citing section 4.2 only.');
+
+// Evidence still does not exist in the database, so nothing may be promoted.
+for (const b of proposals.blockedProposals) {
+  assert.match(b.why, /not been fetched yet/,
+    `${b.sourceKey}: must stay blocked until section 2 is actually archived.`);
+}
 
 console.log(`DRx Batch 2 salt equivalence gate passed (${proposals.proposals.length} proposed, ${proposals.blockedProposals.length} blocked on section 2).`);

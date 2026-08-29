@@ -321,6 +321,14 @@
     {
       "version": "20260829145424",
       "name": "drx_v3_cover_foreign_keys"
+    },
+    {
+      "version": "20260829151516",
+      "name": "drx_v3_service_ingestion_grants"
+    },
+    {
+      "version": "20260829213000",
+      "name": "drx_v3_allow_composition_section"
     }
   ]
 }
