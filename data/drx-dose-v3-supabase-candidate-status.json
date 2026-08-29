@@ -1,14 +1,14 @@
 {
   "schemaVersion": "drx-dose-v3-supabase-candidate-status-v1",
-  "updatedAt": "2026-08-29T11:40:41.858Z",
+  "updatedAt": "2026-08-29T11:46:19.382Z",
   "projectId": "ftuchtmolddhhsdcwnqe",
   "projectHealth": "ACTIVE_HEALTHY",
   "postgresVersion": "17.6.1.155",
   "candidateFile": "supabase/drx-dose-v3-additive-candidate.sql",
   "applied": false,
-  "reasonNotApplied": "Supabase migration history still returns a connection timeout on the 2026-08-29 read-only recheck. The project reports ACTIVE_HEALTHY, but live baseline/migration/advisor/smoke evidence is unavailable; no V3 DDL was attempted.",
+  "reasonNotApplied": "Read-only Phase 14 recheck failed again: both SELECT 1 and list_migrations returned 'Connection terminated due to connection timeout' while the project still reports ACTIVE_HEALTHY. Postgres logs remain readable. No V3 DDL, migration, or write was attempted.",
   "databaseGatewayEvidence": {
-    "observedAt": "2026-08-29T11:40:41.858Z",
+    "observedAt": "2026-08-29T11:46:19.382Z",
     "projectHealth": "ACTIVE_HEALTHY",
     "postgresLogErrorAt": "2026-08-29T00:56:31.371Z",
     "postgresLogError": "could not write to file base/pgsql_tmp/pgsql_tmp997809.0: No space left on device",
@@ -16,7 +16,10 @@
     "listMigrations": "CONNECTION_TIMEOUT",
     "ddlAttemptedByThisRun": false,
     "migrationAppliedByThisRun": false,
-    "sqlProbe": "NOT_USED_FOR_RECOVERY_DECISION"
+    "sqlProbe": "CONNECTION_TIMEOUT",
+    "latestReadablePostgresLogAt": "2026-08-29T01:23:42.811Z",
+    "latestReadablePostgresLogSummary": "checkpoint complete after earlier migration activity; SQL/MCP connection path remains unavailable",
+    "retryStoppedAfterReadOnlyFailures": true
   },
   "legacyTablesModified": false,
   "tableCount": 12,
