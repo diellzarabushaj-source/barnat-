@@ -1,6 +1,6 @@
 {
   "schemaVersion": "drx-dose-v3-schema-proposal-v1",
-  "updatedAt": "2026-08-29",
+  "updatedAt": "2026-08-29T11:52:56.324Z",
   "status": "proposal_hardened_not_applied",
   "principles": [
     "additive_only",
@@ -15,7 +15,8 @@
     "renal_measure_no_inference",
     "hepatic_measure_no_inference",
     "review_decisions_auditable",
-    "one_rpc_product_fast_path"
+    "one_rpc_product_fast_path",
+    "Published rule provenance pins the exact SmPC section hash and is revalidated at runtime."
   ],
   "tables": [
     {
@@ -146,7 +147,7 @@
     },
     {
       "name": "dose_rules_v3",
-      "purpose": "Normalized deterministic dose rules with immutable provenance and safety status.",
+      "purpose": "Normalized deterministic dose rules with immutable snapshot + exact SmPC section hash provenance and safety status.",
       "primaryKey": [
         "rule_id"
       ],
@@ -211,7 +212,8 @@
         "editorial_status": "text",
         "verified_by": "text",
         "verified_at": "timestamptz",
-        "version_no": "integer"
+        "version_no": "integer",
+        "source_section_sha256": "sha256 text"
       },
       "allowedRuntimeEnums": {
         "frequency_mode": [
