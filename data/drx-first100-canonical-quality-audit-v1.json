@@ -1,9 +1,9 @@
 {
   "schemaVersion": "drx-first100-canonical-quality-audit-v1",
-  "generatedAt": "2026-08-29T10:27:47.338Z",
+  "generatedAt": "2026-08-29T11:30:08.042Z",
   "total": 100,
-  "canonicalReviewRequired": 14,
-  "sourceDiscoveryEligible": 86,
+  "canonicalReviewRequired": 16,
+  "sourceDiscoveryEligible": 84,
   "combinations": 56,
   "reviewedCoveredAliasExclusions": 3,
   "publicationAllowed": false,
@@ -1373,11 +1373,13 @@
         "FALLBACK"
       ],
       "publicationAllowed": false,
-      "flags": [],
+      "flags": [
+        "GENERIC_CHLORHEXIDINE_SALT_CANONICAL_DUPLICATE"
+      ],
       "componentCount": 2,
       "combination": true,
-      "canonicalReviewRequired": false,
-      "sourceDiscoveryEligible": true
+      "canonicalReviewRequired": true,
+      "sourceDiscoveryEligible": false
     },
     {
       "ordinal": 55,
@@ -1525,11 +1527,13 @@
         "FALLBACK"
       ],
       "publicationAllowed": false,
-      "flags": [],
+      "flags": [
+        "ATC_COMBINATION_CONFLATION_D07XC01"
+      ],
       "componentCount": 3,
       "combination": true,
-      "canonicalReviewRequired": false,
-      "sourceDiscoveryEligible": true
+      "canonicalReviewRequired": true,
+      "sourceDiscoveryEligible": false
     },
     {
       "ordinal": 61,
