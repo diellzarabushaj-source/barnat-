@@ -32,6 +32,7 @@ for (const name of [
 const rules = byName.get('dose_rules_v3').columns;
 for (const column of [
   'source_snapshot_id',
+  'source_section_sha256',
   'source_evidence_hash',
   'required_inputs',
   'dose_basis_mode',
