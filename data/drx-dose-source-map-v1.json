@@ -5,7 +5,7 @@
     "ibuprofen": {
       "canonicalName": "Ibuprofen",
       "canonicalKey": "ibuprofen",
-      "discoveryStatus": "pilot_discovered",
+      "discoveryStatus": "pilot_multi_authority_discovered",
       "preferredSourceTier": "EMC",
       "candidates": [
         {
@@ -61,6 +61,60 @@
           "substanceMatch": true,
           "productMatch": true,
           "status": "discovered"
+        },
+        {
+          "sourceKey": "cima-90878-ft",
+          "url": "https://cima.aemps.es/cima/dochtml/ft/90878/FT_90878.html",
+          "tier": "AEMPS_CIMA",
+          "documentType": "FICHA_TECNICA",
+          "productName": "Ibuprofeno Alterpharma 400 mg comprimidos recubiertos con película",
+          "formulation": "film-coated tablet",
+          "route": "PO",
+          "strength": "400 mg",
+          "documentDate": "2026-08-28",
+          "hasDoseSection": true,
+          "sectionsExpected": [
+            "4.1",
+            "4.2",
+            "4.3",
+            "4.4",
+            "4.5",
+            "4.6",
+            "4.7",
+            "4.8",
+            "4.9"
+          ],
+          "productSpecific": true,
+          "substanceMatch": true,
+          "productMatch": true,
+          "status": "discovered_cross_check"
+        },
+        {
+          "sourceKey": "cima-82808-ft",
+          "url": "https://cima.aemps.es/cima/dochtml/ft/82808/FT_82808.html",
+          "tier": "AEMPS_CIMA",
+          "documentType": "FICHA_TECNICA",
+          "productName": "Ibuprofeno Braun 400 mg solución para perfusión",
+          "formulation": "solution for infusion",
+          "route": "IV",
+          "strength": "400 mg/100 mL",
+          "documentDate": "2026-08-29",
+          "hasDoseSection": true,
+          "sectionsExpected": [
+            "4.1",
+            "4.2",
+            "4.3",
+            "4.4",
+            "4.5",
+            "4.6",
+            "4.7",
+            "4.8",
+            "4.9"
+          ],
+          "productSpecific": true,
+          "substanceMatch": true,
+          "productMatch": true,
+          "status": "discovered_cross_check"
         }
       ],
       "legacyDraft": {
