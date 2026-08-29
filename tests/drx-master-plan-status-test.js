@@ -80,7 +80,7 @@ assert.ok(network.deniedHosts.includes('www.ema.europa.eu:443'));
 assert.ok(network.deniedHosts.includes('www.medicines.org.uk:443'));
 assert.ok(network.deniedHosts.includes('cima.aemps.es:443'));
 assert.match(network.rule, /Do not fabricate/);
-assert.ok(network.blocks.includes('batch2_archive_hashes_incomplete'));
+assert.ok(network.blocks.includes('batch2_archive_evidence_not_materialized'));
 assert.equal(tracker.currentExecution.archiveBlockedByNetworkPolicy, true);
 // A real archive run has been observed in CI, where egress is permitted.
 // Repo-side hash count stays 0 because those artifacts are not committed.
@@ -94,8 +94,8 @@ assert.equal(ciEvidence.extraction.failedCount, 0);
 assert.equal(ciEvidence.verification.sectionHashVerifiedCount, 25);
 assert.equal(ciEvidence.verification.publicationAllowed, false);
 assert.ok(ciEvidence.runUrl.startsWith('https://github.com/'));
-assert.match(tracker.sourceNetworkBlocker.ciExemption, /not behind this workspace egress policy/);
-assert.ok(tracker.currentExecution.releaseBlockers.includes('archive_sources_network_denied'));
+assert.match(tracker.sourceNetworkBlocker.ciExemption, /hash-verified 25\/25 sources/);
+assert.ok(tracker.currentExecution.releaseBlockers.includes('batch2_archive_evidence_not_materialized'));
 
 assert.equal(tracker.currentExecution.activeCriticalPhase, 14);
 assert.equal(tracker.currentExecution.repositoryImplementationThroughPhase, 32);
