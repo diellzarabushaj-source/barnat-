@@ -3,7 +3,7 @@ const assert=require('node:assert/strict');
 const Index=require('../scripts/build-drx-first100-source-discovery-index.js');
 const x=Index.build();
 assert.equal(x.first100Count,100);
-assert.equal(x.canonicalReviewRequired,13);
+assert.equal(x.canonicalReviewRequired,14);
 assert.equal(x.sourceDiscoveryEligible,89);
 assert.equal(x.verifiedProductSpecific,78);
 assert.equal(x.productSelectionRequired,1);
