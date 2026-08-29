@@ -11,7 +11,7 @@ const path = require('node:path');
 const { pathToFileURL } = require('node:url');
 
 const ROOT = path.resolve(__dirname, '..');
-const dataApiPath = require.resolve(path.join(ROOT, 'lib/neon-data-api.js'));
+const dataApiPath = require.resolve(path.join(ROOT, 'lib/medindex-data-api.js'));
 const { assertEgressSafeRead } = require(dataApiPath);
 
 const READY_ROW = {
@@ -105,7 +105,7 @@ require.cache[dataApiPath] = {
     neonRequest:async requestPath => {
       requestedPaths.push(requestPath);
       if (requestPath.startsWith('dosage_regimens?')) {
-        if (regimenShouldFail) throw new Error('Neon Data API 500: regjimet dështuan.');
+        if (regimenShouldFail) throw new Error('Supabase Data API 500: regjimet dështuan.');
         return { data:regimenRows };
       }
       return { data:drugRows };
