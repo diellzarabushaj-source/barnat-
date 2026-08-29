@@ -2,15 +2,15 @@ name: Phase 9 release gate
 
 on:
   push:
-    branches: [main]
+    branches: [main, phase9-ci-snapshot]
   workflow_dispatch:
 
 permissions:
   contents: read
 
 concurrency:
-  group: phase9-release-gate-${{ github.sha }}
-  cancel-in-progress: false
+  group: phase9-release-gate-${{ github.ref }}
+  cancel-in-progress: true
 
 jobs:
   test:
