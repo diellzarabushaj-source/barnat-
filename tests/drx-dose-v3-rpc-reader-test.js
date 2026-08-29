@@ -19,6 +19,13 @@ require.cache[apiPath].exports = {
           drugId:'11111111-1111-4111-8111-111111111111',
           rules:[{
             ruleKey:'r1',
+            renalAdjustmentRequired:true,
+            hepaticAdjustmentRequired:false,
+            renalAdjustments:[{
+              adjustmentId:'a1',
+              source:{snapshotId:hash,sectionSha256:'f'.repeat(64),evidenceHash:hash,section:'4.2',documentDate:'2026-08-27',official:true}
+            }],
+            hepaticAdjustments:[],
             source:{snapshotId:hash,sectionSha256:'e'.repeat(64),evidenceHash:hash,section:'4.2',documentDate:'2026-08-27',official:true}
           }]
         },
@@ -38,7 +45,14 @@ const Rpc = require('../lib/dose-v3-product-rpc-reader.js');
   assert.deepEqual(calls[0].options.body,{p_product_key:'p1',p_drug_id:null});
   assert.equal(payload.meta.dbReads,1);
   assert.equal(payload.meta.runtimeModel,'v3-rpc');
+  assert.equal(Rpc._test.adjustmentSourceValid(payload.product.rules[0].renalAdjustments[0]),true);
   assert.equal(Rpc._test.ruleSourceValid(payload.product.rules[0]),true);
+  assert.equal(Rpc._test.ruleSourceValid({
+    renalAdjustmentRequired:true,
+    renalAdjustments:[],
+    hepaticAdjustments:[],
+    source:{snapshotId:hash,sectionSha256:'e'.repeat(64),evidenceHash:hash,section:'4.2',documentDate:'2026-08-27',official:true}
+  }),false);
   assert.equal(Rpc._test.ruleSourceValid({
     source:{snapshotId:hash,sectionSha256:'',evidenceHash:hash,section:'4.2',documentDate:'2026-08-27',official:true}
   }),false);
