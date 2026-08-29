@@ -37,13 +37,22 @@ for (const artifact of [
   assert.equal(exists(artifact), true, artifact + ' must exist.');
 }
 
-assert.equal(tracker.phases.find(p => p.id === 14).status, 'BLOCKED_DB_GATEWAY');
+assert.equal(tracker.databaseBlocker.active, true);
+assert.equal(tracker.phases.find(p => p.id === 14).status, 'BLOCKED_DB_GATEWAY_CANDIDATE_READY');
 assert.equal(tracker.phases.find(p => p.id === 15).status, 'IN_PROGRESS');
-assert.equal(tracker.currentExecution.phase, 15);
-assert.equal(tracker.currentExecution.pilot, 'batch1-10');
+assert.match(tracker.phases.find(p => p.id === 16).status, /^IN_PROGRESS/);
+assert.equal(tracker.phases.find(p => p.id === 17).status, 'LIVE_EXPORT_GATE_IMPLEMENTED_WAITING_SUPABASE');
+assert.equal(tracker.currentExecution.phase, 32);
+assert.equal(tracker.currentExecution.pilot, 'batch2-25');
 assert.equal(tracker.currentExecution.repositoryBatch1Substances, 10);
-assert.equal(tracker.currentExecution.representativeRuleCandidates, 12);
+assert.equal(tracker.currentExecution.repositoryBatch2Substances, 25);
+assert.equal(tracker.currentExecution.mappedSources, 35);
+assert.equal(tracker.currentExecution.archiveHashVerifiedCount, 0);
+assert.equal(tracker.currentExecution.normalizationReady, 0);
 assert.equal(tracker.currentExecution.liveBoundRules, 0);
+assert.equal(tracker.currentExecution.v3Applied, false);
+assert.equal(tracker.currentExecution.releaseReady, false);
+assert.equal(tracker.currentExecution.first100ProductionDiscoveryAllowed, false);
 assert.equal(tracker.currentExecution.publicationAllowed, false);
 
 const batch1 = readJson('data/drx-dose-batch1-v1.json');
