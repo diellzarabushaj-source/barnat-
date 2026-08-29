@@ -1,0 +1,88 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1220" height="1010" viewBox="0 0 1220 1010">
+<rect width="100%" height="100%" fill="white"/>
+<defs><marker id="arr" markerWidth="8" markerHeight="8" refX="7" refY="4" orient="auto"><path d="M0,0 L8,4 L0,8 z" fill="#555"/></marker></defs>
+<text x="610.0" y="40" font-family="DejaVu Sans,Arial" font-size="27" font-weight="700" text-anchor="middle">Udhëzuesi i trajtimit për gëlltitjen e acetaminofenit (APAP)</text>
+
+<rect x="490" y="65" width="240" height="60" rx="5" fill="#d8e8f3" stroke="#6993ad" stroke-width="1.5"/>
+<text x="610.0" y="100.0" font-family="DejaVu Sans,Arial" font-size="20" font-weight="700" text-anchor="middle">Gëlltitje e APAP</text>
+<rect x="70" y="165" width="270" height="70" rx="5" fill="#e8e5e0" stroke="#8d8d8d" stroke-width="1.5"/>
+<text x="205.0" y="205.0" font-family="DejaVu Sans,Arial" font-size="17" font-weight="400" text-anchor="middle">&lt;4 orë nga gëlltitja</text>
+<rect x="475" y="165" width="270" height="70" rx="5" fill="#e8e5e0" stroke="#8d8d8d" stroke-width="1.5"/>
+<text x="610.0" y="205.0" font-family="DejaVu Sans,Arial" font-size="17" font-weight="400" text-anchor="middle">4-24 orë nga gëlltitja</text>
+<rect x="880" y="165" width="270" height="70" rx="5" fill="#e8e5e0" stroke="#8d8d8d" stroke-width="1.5"/>
+<text x="1015.0" y="205.0" font-family="DejaVu Sans,Arial" font-size="17" font-weight="400" text-anchor="middle">Koha e panjohur ose &gt;24 orë</text>
+<line x1="610" y1="125" x2="205" y2="165" stroke="#555" stroke-width="1.6" marker-end="url(#arr)"/>
+<line x1="610" y1="125" x2="610" y2="165" stroke="#555" stroke-width="1.6" marker-end="url(#arr)"/>
+<line x1="610" y1="125" x2="1015" y2="165" stroke="#555" stroke-width="1.6" marker-end="url(#arr)"/>
+<rect x="70" y="275" width="270" height="70" rx="5" fill="#e3f0e3" stroke="#6a9971" stroke-width="1.5"/>
+<text x="205.0" y="315.0" font-family="DejaVu Sans,Arial" font-size="16" font-weight="400" text-anchor="middle">Konsidero dekontaminim GI</text>
+<rect x="70" y="385" width="270" height="70" rx="5" fill="#e3f0e3" stroke="#6a9971" stroke-width="1.5"/>
+<text x="205.0" y="415.0" font-family="DejaVu Sans,Arial" font-size="16" font-weight="400" text-anchor="middle">Dërgo nivelin e APAP pas ≥4</text>
+<text x="205.0" y="435.0" font-family="DejaVu Sans,Arial" font-size="16" font-weight="400" text-anchor="middle">orësh</text>
+<line x1="205" y1="235" x2="205" y2="275" stroke="#555" stroke-width="1.6" marker-end="url(#arr)"/>
+<line x1="205" y1="345" x2="205" y2="385" stroke="#555" stroke-width="1.6" marker-end="url(#arr)"/>
+<rect x="410" y="275" width="230" height="70" rx="5" fill="#e3f0e3" stroke="#6a9971" stroke-width="1.5"/>
+<text x="525.0" y="305.0" font-family="DejaVu Sans,Arial" font-size="16" font-weight="400" text-anchor="middle">Niveli i disponueshëm</text>
+<text x="525.0" y="325.0" font-family="DejaVu Sans,Arial" font-size="16" font-weight="400" text-anchor="middle">para 8 orësh</text>
+<rect x="670" y="275" width="230" height="70" rx="5" fill="#e3f0e3" stroke="#6a9971" stroke-width="1.5"/>
+<text x="785.0" y="305.0" font-family="DejaVu Sans,Arial" font-size="16" font-weight="400" text-anchor="middle">Niveli nuk disponohet</text>
+<text x="785.0" y="325.0" font-family="DejaVu Sans,Arial" font-size="16" font-weight="400" text-anchor="middle">deri pas 8 orësh</text>
+<line x1="610" y1="235" x2="525" y2="275" stroke="#555" stroke-width="1.6" marker-end="url(#arr)"/>
+<line x1="610" y1="235" x2="785" y2="275" stroke="#555" stroke-width="1.6" marker-end="url(#arr)"/>
+<rect x="410" y="385" width="230" height="70" rx="5" fill="#f3e2df" stroke="#b07a70" stroke-width="1.5"/>
+<text x="525.0" y="425.0" font-family="DejaVu Sans,Arial" font-size="16" font-weight="400" text-anchor="middle">Vendose në nomogram</text>
+<rect x="670" y="385" width="230" height="70" rx="5" fill="#f3e2df" stroke="#b07a70" stroke-width="1.5"/>
+<text x="785.0" y="415.0" font-family="DejaVu Sans,Arial" font-size="16" font-weight="400" text-anchor="middle">Jep dozën e parë të NAC</text>
+<text x="785.0" y="435.0" font-family="DejaVu Sans,Arial" font-size="16" font-weight="400" text-anchor="middle">(brenda 8 orëve)</text>
+<line x1="525" y1="345" x2="525" y2="385" stroke="#555" stroke-width="1.6" marker-end="url(#arr)"/>
+<line x1="785" y1="345" x2="785" y2="385" stroke="#555" stroke-width="1.6" marker-end="url(#arr)"/>
+<line x1="785" y1="455" x2="645" y2="505" stroke="#555" stroke-width="1.6" marker-end="url(#arr)"/>
+<line x1="525" y1="455" x2="525" y2="505" stroke="#555" stroke-width="1.6" marker-end="url(#arr)"/>
+<rect x="390" y="505" width="290" height="80" rx="5" fill="#f6f0df" stroke="#aa985e" stroke-width="1.5"/>
+<text x="535.0" y="550.0" font-family="DejaVu Sans,Arial" font-size="17" font-weight="700" text-anchor="middle">Rezultati në nomogram</text>
+<rect x="290" y="620" width="220" height="75" rx="5" fill="#f3e2df" stroke="#b07a70" stroke-width="1.5"/>
+<text x="400.0" y="662.5" font-family="DejaVu Sans,Arial" font-size="16" font-weight="700" text-anchor="middle">Toksik: vazhdo NAC</text>
+<rect x="550" y="620" width="220" height="75" rx="5" fill="#e3f0e3" stroke="#6a9971" stroke-width="1.5"/>
+<text x="660.0" y="652.5" font-family="DejaVu Sans,Arial" font-size="16" font-weight="700" text-anchor="middle">Jo toksik: trajtim</text>
+<text x="660.0" y="672.5" font-family="DejaVu Sans,Arial" font-size="16" font-weight="700" text-anchor="middle">simptomatik</text>
+<line x1="525" y1="585" x2="400" y2="620" stroke="#555" stroke-width="1.6" marker-end="url(#arr)"/>
+<line x1="525" y1="585" x2="660" y2="620" stroke="#555" stroke-width="1.6" marker-end="url(#arr)"/>
+<text x="430" y="610" font-family="DejaVu Sans,Arial" font-size="14" font-weight="700" text-anchor="middle">Po</text>
+<text x="620" y="610" font-family="DejaVu Sans,Arial" font-size="14" font-weight="700" text-anchor="middle">Jo</text>
+<rect x="880" y="275" width="270" height="70" rx="5" fill="#e3f0e3" stroke="#6a9971" stroke-width="1.5"/>
+<text x="1015.0" y="305.0" font-family="DejaVu Sans,Arial" font-size="16" font-weight="400" text-anchor="middle">Konsidero dekontaminim GI kur</text>
+<text x="1015.0" y="325.0" font-family="DejaVu Sans,Arial" font-size="16" font-weight="400" text-anchor="middle">koha është e panjohur</text>
+<rect x="880" y="385" width="270" height="95" rx="5" fill="#f3e2df" stroke="#b07a70" stroke-width="1.5"/>
+<text x="1015.0" y="417.5" font-family="DejaVu Sans,Arial" font-size="16" font-weight="400" text-anchor="middle">Dërgo nivelin e APAP dhe LFT</text>
+<text x="1015.0" y="437.5" font-family="DejaVu Sans,Arial" font-size="16" font-weight="400" text-anchor="middle">(AST, ALT, PT); jep dozën e</text>
+<text x="1015.0" y="457.5" font-family="DejaVu Sans,Arial" font-size="16" font-weight="400" text-anchor="middle">parë të NAC</text>
+<line x1="1015" y1="235" x2="1015" y2="275" stroke="#555" stroke-width="1.6" marker-end="url(#arr)"/>
+<line x1="1015" y1="345" x2="1015" y2="385" stroke="#555" stroke-width="1.6" marker-end="url(#arr)"/>
+<rect x="880" y="530" width="270" height="80" rx="5" fill="#f6f0df" stroke="#aa985e" stroke-width="1.5"/>
+<text x="1015.0" y="565.0" font-family="DejaVu Sans,Arial" font-size="16" font-weight="700" text-anchor="middle">APAP &gt;10 µg/mL ose AST/ALT të</text>
+<text x="1015.0" y="585.0" font-family="DejaVu Sans,Arial" font-size="16" font-weight="700" text-anchor="middle">rritura?</text>
+<line x1="1015" y1="480" x2="1015" y2="530" stroke="#555" stroke-width="1.6" marker-end="url(#arr)"/>
+<rect x="850" y="660" width="210" height="65" rx="5" fill="#f3e2df" stroke="#b07a70" stroke-width="1.5"/>
+<text x="955.0" y="697.5" font-family="DejaVu Sans,Arial" font-size="16" font-weight="700" text-anchor="middle">Vazhdo NAC</text>
+<rect x="1080" y="660" width="120" height="65" rx="5" fill="#e3f0e3" stroke="#6a9971" stroke-width="1.5"/>
+<text x="1140.0" y="689.0" font-family="DejaVu Sans,Arial" font-size="13" font-weight="400" text-anchor="middle">Trajtim</text>
+<text x="1140.0" y="706.0" font-family="DejaVu Sans,Arial" font-size="13" font-weight="400" text-anchor="middle">mbështetës</text>
+<line x1="1015" y1="610" x2="955" y2="660" stroke="#555" stroke-width="1.6" marker-end="url(#arr)"/>
+<line x1="1015" y1="610" x2="1140" y2="660" stroke="#555" stroke-width="1.6" marker-end="url(#arr)"/>
+<text x="965" y="650" font-family="DejaVu Sans,Arial" font-size="14" font-weight="700" text-anchor="middle">Po</text>
+<text x="1110" y="650" font-family="DejaVu Sans,Arial" font-size="14" font-weight="700" text-anchor="middle">Jo</text>
+<rect x="760" y="775" width="330" height="95" rx="5" fill="#f6f0df" stroke="#aa985e" stroke-width="1.5"/>
+<text x="925.0" y="818.0" font-family="DejaVu Sans,Arial" font-size="15" font-weight="700" text-anchor="middle">pH &lt;7.3, PT &gt;100, Cr &gt;3.3 ose</text>
+<text x="925.0" y="837.0" font-family="DejaVu Sans,Arial" font-size="15" font-weight="700" text-anchor="middle">ndryshim i gjendjes mendore?</text>
+<line x1="955" y1="725" x2="925" y2="775" stroke="#555" stroke-width="1.6" marker-end="url(#arr)"/>
+<rect x="690" y="915" width="300" height="60" rx="5" fill="#f3e2df" stroke="#b07a70" stroke-width="1.5"/>
+<text x="840.0" y="940.5" font-family="DejaVu Sans,Arial" font-size="15" font-weight="700" text-anchor="middle">Refero në njësinë e</text>
+<text x="840.0" y="959.5" font-family="DejaVu Sans,Arial" font-size="15" font-weight="700" text-anchor="middle">transplantimit të mëlçisë</text>
+<rect x="1010" y="915" width="180" height="60" rx="5" fill="#e3f0e3" stroke="#6a9971" stroke-width="1.5"/>
+<text x="1100.0" y="950.0" font-family="DejaVu Sans,Arial" font-size="14" font-weight="700" text-anchor="middle">Trajtim mbështetës</text>
+<line x1="925" y1="870" x2="840" y2="915" stroke="#555" stroke-width="1.6" marker-end="url(#arr)"/>
+<line x1="925" y1="870" x2="1100" y2="915" stroke="#555" stroke-width="1.6" marker-end="url(#arr)"/>
+<text x="870" y="905" font-family="DejaVu Sans,Arial" font-size="14" font-weight="700" text-anchor="middle">Po</text>
+<text x="1060" y="905" font-family="DejaVu Sans,Arial" font-size="14" font-weight="700" text-anchor="middle">Jo</text>
+<text x="35" y="996" font-family="DejaVu Sans,Arial" font-size="13">NAC = N-acetilcisteinë; LFT = testet e funksionit hepatik; AST/ALT = aminotransferazat; PT = koha e protrombinës; Cr = kreatinina.</text>
+</svg>

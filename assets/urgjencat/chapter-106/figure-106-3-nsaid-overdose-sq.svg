@@ -1,0 +1,60 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1050" height="1100" viewBox="0 0 1050 1100">
+<rect width="100%" height="100%" fill="white"/>
+<defs><marker id="arr" markerWidth="8" markerHeight="8" refX="7" refY="4" orient="auto"><path d="M0,0 L8,4 L0,8 z" fill="#555"/></marker></defs>
+<text x="525.0" y="38" font-family="DejaVu Sans,Arial" font-size="27" font-weight="700" text-anchor="middle">Qasja ndaj mbidozimit akut me NSAID</text>
+
+<rect x="390" y="65" width="270" height="65" rx="5" fill="#d8e8f3" stroke="#6993ad" stroke-width="1.5"/>
+<text x="525.0" y="102.5" font-family="DejaVu Sans,Arial" font-size="19" font-weight="700" text-anchor="middle">Raportim i mbidozimit me NSAID</text>
+<rect x="330" y="165" width="390" height="95" rx="5" fill="#e3f0e3" stroke="#6a9971" stroke-width="1.5"/>
+<text x="525.0" y="207.5" font-family="DejaVu Sans,Arial" font-size="16" font-weight="700" text-anchor="middle">Simptomatik? (ndryshim i gjendjes mendore,</text>
+<text x="525.0" y="227.5" font-family="DejaVu Sans,Arial" font-size="16" font-weight="700" text-anchor="middle">konvulsion, shenja vitale jonormale)</text>
+<line x1="525" y1="130" x2="525" y2="165" stroke="#555" stroke-width="1.6" marker-end="url(#arr)"/>
+<text x="295" y="285" font-family="DejaVu Sans,Arial" font-size="14" font-weight="700" text-anchor="middle">Po</text>
+<text x="755" y="285" font-family="DejaVu Sans,Arial" font-size="14" font-weight="700" text-anchor="middle">Jo</text>
+<rect x="70" y="315" width="350" height="165" rx="5" fill="#f3e2df" stroke="#b07a70" stroke-width="1.5"/>
+<text x="245.0" y="364.5" font-family="DejaVu Sans,Arial" font-size="15" font-weight="400" text-anchor="middle">1. Menaxhim definitiv i rrugëve të</text>
+<text x="245.0" y="383.5" font-family="DejaVu Sans,Arial" font-size="15" font-weight="400" text-anchor="middle">frymëmarrjes nëse duhet 2.</text>
+<text x="245.0" y="402.5" font-family="DejaVu Sans,Arial" font-size="15" font-weight="400" text-anchor="middle">Hipotension: bolus lëngjesh;</text>
+<text x="245.0" y="421.5" font-family="DejaVu Sans,Arial" font-size="15" font-weight="400" text-anchor="middle">vazopresor nëse refraktar 3.</text>
+<text x="245.0" y="440.5" font-family="DejaVu Sans,Arial" font-size="15" font-weight="400" text-anchor="middle">Konvulsione: benzodiazepinë IV</text>
+<line x1="420" y1="260" x2="245" y2="315" stroke="#555" stroke-width="1.6" marker-end="url(#arr)"/>
+<rect x="70" y="525" width="350" height="70" rx="5" fill="#f3e2df" stroke="#b07a70" stroke-width="1.5"/>
+<text x="245.0" y="565.0" font-family="DejaVu Sans,Arial" font-size="16" font-weight="700" text-anchor="middle">Prano për menaxhim simptomatik</text>
+<line x1="245" y1="480" x2="245" y2="525" stroke="#555" stroke-width="1.6" marker-end="url(#arr)"/>
+<rect x="630" y="315" width="330" height="80" rx="5" fill="#f6f0df" stroke="#aa985e" stroke-width="1.5"/>
+<text x="795.0" y="350.0" font-family="DejaVu Sans,Arial" font-size="16" font-weight="400" text-anchor="middle">Anamneza: sasia dhe lloji i NSAID të</text>
+<text x="795.0" y="370.0" font-family="DejaVu Sans,Arial" font-size="16" font-weight="400" text-anchor="middle">gëlltitur</text>
+<line x1="630" y1="260" x2="795" y2="315" stroke="#555" stroke-width="1.6" marker-end="url(#arr)"/>
+<rect x="630" y="440" width="330" height="75" rx="5" fill="#f3e2df" stroke="#b07a70" stroke-width="1.5"/>
+<text x="795.0" y="473.0" font-family="DejaVu Sans,Arial" font-size="15" font-weight="400" text-anchor="middle">Qymyr i aktivizuar 1 g/kg PO ose</text>
+<text x="795.0" y="492.0" font-family="DejaVu Sans,Arial" font-size="15" font-weight="400" text-anchor="middle">përmes sondës nazogastrike</text>
+<line x1="795" y1="395" x2="795" y2="440" stroke="#555" stroke-width="1.6" marker-end="url(#arr)"/>
+<rect x="630" y="560" width="330" height="90" rx="5" fill="#f3e2df" stroke="#b07a70" stroke-width="1.5"/>
+<text x="795.0" y="591.0" font-family="DejaVu Sans,Arial" font-size="15" font-weight="400" text-anchor="middle">Kontrollo elektrolitet, ECG,</text>
+<text x="795.0" y="610.0" font-family="DejaVu Sans,Arial" font-size="15" font-weight="400" text-anchor="middle">acetaminofenin dhe nivelin e</text>
+<text x="795.0" y="629.0" font-family="DejaVu Sans,Arial" font-size="15" font-weight="400" text-anchor="middle">salicilateve</text>
+<line x1="795" y1="515" x2="795" y2="560" stroke="#555" stroke-width="1.6" marker-end="url(#arr)"/>
+<rect x="630" y="700" width="330" height="60" rx="5" fill="#f6f0df" stroke="#aa985e" stroke-width="1.5"/>
+<text x="795.0" y="735.0" font-family="DejaVu Sans,Arial" font-size="17" font-weight="400" text-anchor="middle">Vëzhgo për 4 orë</text>
+<line x1="795" y1="650" x2="795" y2="700" stroke="#555" stroke-width="1.6" marker-end="url(#arr)"/>
+<rect x="600" y="810" width="390" height="120" rx="5" fill="#e3f0e3" stroke="#6a9971" stroke-width="1.5"/>
+<text x="795.0" y="848.0" font-family="DejaVu Sans,Arial" font-size="14" font-weight="700" text-anchor="middle">Simptomatik? (ndryshim i gjendjes mendore,</text>
+<text x="795.0" y="866.0" font-family="DejaVu Sans,Arial" font-size="14" font-weight="700" text-anchor="middle">konvulsion, shenja vitale jonormale,</text>
+<text x="795.0" y="884.0" font-family="DejaVu Sans,Arial" font-size="14" font-weight="700" text-anchor="middle">insuficiencë renale, acidozë, toksicitet</text>
+<text x="795.0" y="902.0" font-family="DejaVu Sans,Arial" font-size="14" font-weight="700" text-anchor="middle">hepatik)</text>
+<line x1="795" y1="760" x2="795" y2="810" stroke="#555" stroke-width="1.6" marker-end="url(#arr)"/>
+<rect x="445" y="990" width="260" height="70" rx="5" fill="#f3e2df" stroke="#b07a70" stroke-width="1.5"/>
+<text x="575.0" y="1020.5" font-family="DejaVu Sans,Arial" font-size="15" font-weight="700" text-anchor="middle">Prano për menaxhim</text>
+<text x="575.0" y="1039.5" font-family="DejaVu Sans,Arial" font-size="15" font-weight="700" text-anchor="middle">simptomatik</text>
+<rect x="760" y="970" width="250" height="60" rx="5" fill="#e3f0e3" stroke="#6a9971" stroke-width="1.5"/>
+<text x="885.0" y="995.5" font-family="DejaVu Sans,Arial" font-size="15" font-weight="700" text-anchor="middle">I pastruar mjekësisht për</text>
+<text x="885.0" y="1014.5" font-family="DejaVu Sans,Arial" font-size="15" font-weight="700" text-anchor="middle">dalje</text>
+<line x1="720" y1="930" x2="575" y2="990" stroke="#555" stroke-width="1.6" marker-end="url(#arr)"/>
+<line x1="850" y1="930" x2="885" y2="970" stroke="#555" stroke-width="1.6" marker-end="url(#arr)"/>
+<text x="660" y="963" font-family="DejaVu Sans,Arial" font-size="14" font-weight="700" text-anchor="middle">Po</text>
+<text x="870" y="957" font-family="DejaVu Sans,Arial" font-size="14" font-weight="700" text-anchor="middle">Jo</text>
+<rect x="760" y="1040" width="250" height="45" rx="5" fill="#e8e5e0" stroke="#8d8d8d" stroke-width="1.5"/>
+<text x="885.0" y="1058.5" font-family="DejaVu Sans,Arial" font-size="14" font-weight="400" text-anchor="middle">Konsultë psikiatrike kur</text>
+<text x="885.0" y="1076.5" font-family="DejaVu Sans,Arial" font-size="14" font-weight="400" text-anchor="middle">indikohet</text>
+<line x1="885" y1="1030" x2="885" y2="1040" stroke="#555" stroke-width="1.6" marker-end="url(#arr)"/>
+</svg>
