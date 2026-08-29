@@ -1,6 +1,6 @@
 {
   "schemaVersion": "drx-frontend-flow-contract-v1",
-  "status": "foundation_complete_repository",
+  "status": "provenance_aware_frontend_foundation_live_adjustment_inputs_blocked",
   "flow": [
     "product",
     "indication",
@@ -25,7 +25,23 @@
     "show_source_and_version",
     "show_max_dose",
     "show_review_warning_when_not_publishable",
-    "never_display_draft_as_final"
+    "never_display_draft_as_final",
+    "never_auto_compute_renal_or_hepatic_adjustment_without_supported_structured_input",
+    "hide_rule_when_required_adjustment_evidence_is_missing",
+    "preserve_source_and_adjustment_provenance_in_runtime_payload"
   ],
-  "next": "bind existing calculator UI to V3 fast path after backend stabilization"
+  "next": "after live V3 adjustment rows validate: add structured renal/hepatic inputs one measure at a time; until then UI must show blocked/manual-review rather than infer",
+  "currentlySupportedInputs": [
+    "age_months",
+    "weight_kg",
+    "height_cm"
+  ],
+  "plannedStructuredClinicalInputs": [
+    "crcl_ml_min",
+    "egfr_ml_min_1_73m2",
+    "dialysis_status",
+    "child_pugh_class",
+    "hepatic_impairment_textual"
+  ],
+  "unsupportedClinicalInputsFailClosed": true
 }
