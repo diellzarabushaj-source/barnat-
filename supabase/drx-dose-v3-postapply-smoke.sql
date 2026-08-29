@@ -92,6 +92,8 @@ begin
       'dose_indication_concepts_v3',
       'dose_products_v3',
       'dose_rules_v3',
+      'dose_renal_adjustments_v3',
+      'dose_hepatic_adjustments_v3',
       'dose_rule_products_v3'
     );
 
