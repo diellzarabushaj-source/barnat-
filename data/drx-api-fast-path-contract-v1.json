@@ -1,6 +1,6 @@
 {
   "schemaVersion": "drx-api-fast-path-contract-v1",
-  "status": "v3_one_rpc_ready_repository_not_live",
+  "status": "v3_one_rpc_adjustment_provenance_hardened_repository_not_live",
   "request": {
     "endpoint": "/api/dosage?view=product-rules",
     "selectorRule": "exactly_one_selector",
@@ -32,7 +32,17 @@
       "runtimeModel"
     ],
     "etag": "HTTP ETag on authenticated product-scoped response",
-    "maxPayloadIntent": "tiny_product_scoped_payload"
+    "maxPayloadIntent": "tiny_product_scoped_payload",
+    "ruleRequired": [
+      "source.snapshotId",
+      "source.section=4.2",
+      "source.sectionSha256",
+      "source.evidenceHash",
+      "source.documentVersion_or_documentDate",
+      "source.official=true",
+      "renalAdjustments[] when renalAdjustmentRequired=true",
+      "hepaticAdjustments[] when hepaticAdjustmentRequired=true"
+    ]
   },
   "guarantees": [
     "product_scoped_only",
@@ -42,15 +52,25 @@
     "one_http_request_per_product",
     "v3_one_db_rpc_target",
     "hash_backed_source_only_in_v3",
-    "source_version_or_date_required_in_v3_rpc"
+    "source_version_or_date_required_in_v3_rpc",
+    "exact_smpc_4_2_hash_required_in_v3_rpc",
+    "snapshot_equals_evidence_hash",
+    "nested_adjustment_provenance_validated",
+    "required_adjustment_array_must_be_nonempty",
+    "runtime_payload_revalidated_client_side"
   ],
   "failClosedOn": [
     "unknown_product",
     "unpublished_rule",
     "missing_required_input",
-    "conflicting_verified_rules"
+    "conflicting_verified_rules",
+    "source_provenance_mismatch",
+    "missing_smpc_4_2_hash",
+    "renal_adjustment_required_but_unavailable",
+    "hepatic_adjustment_required_but_unavailable",
+    "invalid_nested_adjustment_provenance"
   ],
-  "next": "apply V3 candidate after live baseline verification; benchmark one-RPC path; enable DRX_DOSE_V3_READS, then RPC strict, then V3 strict only after parity",
+  "next": "after V3 live apply: structural+transactional smoke, benchmark one-RPC payload including verified adjustments, enable reads then RPC strict then V3 strict only after parity",
   "v3": {
     "rpc": "public.medindex_dose_product_fast_path_v3",
     "targetDbReads": 1,
