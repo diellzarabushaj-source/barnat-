@@ -62,6 +62,9 @@ const fakeFetch = async url => ({
   assert.equal(result.presentSections.length, 9);
   assert.equal(result.missingSections.length, 0);
   assert.match(result.rawSha256, /^[0-9a-f]{64}$/);
+  assert.match(result.section41Sha256, /^[0-9a-f]{64}$/);
+  assert.match(result.section42Sha256, /^[0-9a-f]{64}$/);
+  assert.equal(result.sectionSha256['4.2'], result.section42Sha256);
   console.log('DRx Batch 2 extraction pipeline contract passed.');
 })().catch(error => {
   console.error(error);
