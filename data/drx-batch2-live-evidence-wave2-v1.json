@@ -1,0 +1,159 @@
+{
+  "schemaVersion": "drx-batch2-live-evidence-wave2-v1",
+  "createdAt": "2026-08-29T22:45:00+02:00",
+  "status": "live_web_verified_archive_hash_pending",
+  "publicationAllowed": false,
+  "sourceCount": 5,
+  "archiveSnapshotCount": 0,
+  "normalizedRuleCount": 0,
+  "sources": [
+    {
+      "canonicalKey": "ciprofloxacin",
+      "sourceKey": "emc-4341-smpc",
+      "url": "https://www.medicines.org.uk/emc/product/4341/smpc",
+      "documentDate": "2026-05-14",
+      "productName": "Ciprofloxacin 250 mg film-coated tablets",
+      "productSpecific": true,
+      "section41Present": true,
+      "section42Present": true,
+      "extractedFacts": {
+        "indicationComplexity": "many adult and pediatric infection-specific regimens",
+        "adultPattern": "dose and duration vary by infection; several regimens use 250-750 mg once or twice daily",
+        "pediatricPattern": "weight-based twice-daily regimens with indication-specific maxima",
+        "renalPattern": "dose interval and dose depend on renal function and dialysis status",
+        "hepaticPattern": "no dose adjustment stated for hepatic impairment in this product"
+      },
+      "reviewFlags": [
+        "high_risk_antimicrobial",
+        "official_antimicrobial_guidance_required",
+        "resistance_context_required",
+        "renal_adjustment_required",
+        "pediatric_weight_required",
+        "do_not_flatten_indication_table",
+        "clinical_review_required"
+      ],
+      "archiveHashStatus": "pending",
+      "normalizationStatus": "blocked_high_complexity_review"
+    },
+    {
+      "canonicalKey": "furosemide",
+      "sourceKey": "emc-102194-smpc",
+      "url": "https://www.medicines.org.uk/emc/product/102194/smpc",
+      "documentDate": "2026-06-12",
+      "productName": "Furosemide 10 mg/ml solution for injection/infusion",
+      "productSpecific": true,
+      "section41Present": true,
+      "section42Present": true,
+      "extractedFacts": {
+        "indications": [
+          "urgent/effective diuresis where IV formulation appropriate",
+          "cardiac oedema",
+          "pulmonary oedema",
+          "hepatic oedema",
+          "renal oedema"
+        ],
+        "adultInitialPattern": "20-50 mg IV or IM initially; escalation by 20 mg increments with timing constraints",
+        "pediatricPattern": "0.5-1.5 mg/kg/day parenterally with maximum total daily dose 20 mg",
+        "administrationRate": "IV rate constraints apply, with slower limit in severe renal impairment",
+        "formulationConcentration": "10 mg/mL"
+      },
+      "reviewFlags": [
+        "parenteral_high_risk",
+        "infusion_rate_required",
+        "renal_rate_modifier",
+        "route_specific_rule_required",
+        "clinical_review_required"
+      ],
+      "archiveHashStatus": "pending",
+      "normalizationStatus": "blocked_high_risk_review"
+    },
+    {
+      "canonicalKey": "prednisolone",
+      "sourceKey": "emc-102342-smpc",
+      "url": "https://www.medicines.org.uk/emc/product/102342/smpc",
+      "documentDate": "2026-06-19",
+      "productName": "Prednisolone 5 mg soluble tablets",
+      "productSpecific": true,
+      "section41Present": true,
+      "section42Present": true,
+      "extractedFacts": {
+        "adultPattern": "dose varies substantially by disease/severity and response; tapering guidance is condition- and duration-dependent",
+        "pediatricAsthmaPattern": "age-specific acute asthma regimens are present, including weight-based escalation for children already on maintenance steroid therapy",
+        "administration": "soluble tablet can be dissolved in water or swallowed; enteral tube use described"
+      },
+      "reviewFlags": [
+        "systemic_corticosteroid",
+        "many_indication_specific_rules",
+        "tapering_logic_requires_explicit_source_context",
+        "pediatric_age_and_weight_branching",
+        "clinical_review_required"
+      ],
+      "archiveHashStatus": "pending",
+      "normalizationStatus": "blocked_complexity_review"
+    },
+    {
+      "canonicalKey": "dexamethasone",
+      "sourceKey": "emc-816-smpc",
+      "url": "https://www.medicines.org.uk/emc/product/816/smpc",
+      "documentDate": "2025-01-21",
+      "productName": "Dexamethasone 2 mg soluble tablets",
+      "productSpecific": true,
+      "section41Present": true,
+      "section42Present": true,
+      "extractedFacts": {
+        "indicationComplexity": "broad endocrine, inflammatory, oncologic and other indications",
+        "adultGeneralPattern": "dose individualized by disease severity and response; broad daily range given",
+        "pediatricExample": "croup includes a single weight-based dose range",
+        "covidScope": "specific indication present for adults/adolescents meeting oxygen and age/weight criteria"
+      },
+      "reviewFlags": [
+        "systemic_corticosteroid",
+        "very_broad_indication_set",
+        "oncology_overlap",
+        "weight_based_pediatric_rule",
+        "condition_specific_rules_required",
+        "clinical_review_required"
+      ],
+      "archiveHashStatus": "pending",
+      "normalizationStatus": "blocked_complexity_review"
+    },
+    {
+      "canonicalKey": "cetirizine",
+      "sourceKey": "emc-100094-smpc",
+      "url": "https://www.medicines.org.uk/emc/product/100094/smpc",
+      "documentDate": "2026-06-29",
+      "productName": "Cetirizine Dihydrochloride 10 mg Film-Coated Tablets",
+      "productSpecific": true,
+      "section41Present": true,
+      "section42Present": true,
+      "extractedFacts": {
+        "indications": [
+          "allergic rhinitis",
+          "associated allergic conjunctivitis in older patients",
+          "chronic idiopathic urticaria"
+        ],
+        "adultPattern": "10 mg once daily for adults/adolescents over 12",
+        "pediatricPattern": "ages 6-12 use 5 mg twice daily with this scored tablet",
+        "renalPattern": "dose/frequency reduced by renal function; end-stage renal disease requiring dialysis is contraindicated",
+        "hepaticPattern": "no adjustment for isolated hepatic impairment; combined hepatic+renal impairment follows renal adjustment"
+      },
+      "reviewFlags": [
+        "renal_adjustment_required",
+        "renal_metric_mapping_requires_review",
+        "pediatric_age_band_required",
+        "product_split_capability_relevant",
+        "clinical_review_required"
+      ],
+      "archiveHashStatus": "pending",
+      "normalizationStatus": "pending_renal_model_review"
+    }
+  ],
+  "completionGate": {
+    "liveWebEvidenceComplete": true,
+    "archiveHashesComplete": false,
+    "exactProductBindingComplete": false,
+    "normalizedRulesComplete": false,
+    "safetyValidationComplete": false,
+    "clinicalReviewComplete": false
+  }
+}
