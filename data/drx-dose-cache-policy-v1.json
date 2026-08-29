@@ -1,0 +1,23 @@
+{
+  "schemaVersion": "drx-dose-cache-policy-v1",
+  "status": "foundation_complete_repository",
+  "cacheKey": [
+    "product_id",
+    "rule_version",
+    "indication_id",
+    "input_signature"
+  ],
+  "layers": [
+    "memory",
+    "IndexedDB",
+    "HTTP_ETag"
+  ],
+  "invalidation": [
+    "rule_version_change",
+    "publication_status_change",
+    "source_version_change"
+  ],
+  "offlineRule": "serve_only_previously_verified_published_payloads",
+  "safetyRule": "never_cache_draft_or_in_review_rules_as_public",
+  "next": "activate only after V3 API rule versioning is live"
+}
