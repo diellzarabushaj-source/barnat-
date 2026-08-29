@@ -18,8 +18,8 @@ const extraction = {
   failedCount:0,
   complete:true,
   rows:[
-    {canonicalKey:'a',sourceKey:'emc-a',snapshotId:hash,rawSha256:hash,section41Present:true,section42Present:true,extractionGate:{allowed:true}},
-    {canonicalKey:'b',sourceKey:'emc-b',snapshotId:hash,rawSha256:hash,section41Present:true,section42Present:true,extractionGate:{allowed:true}},
+    {canonicalKey:'a',sourceKey:'emc-a',snapshotId:hash,rawSha256:hash,section41Present:true,section42Present:true,sectionSha256:{'4.2':hash},section42Sha256:hash,extractionGate:{allowed:true}},
+    {canonicalKey:'b',sourceKey:'emc-b',snapshotId:hash,rawSha256:hash,section41Present:true,section42Present:true,sectionSha256:{'4.2':hash},section42Sha256:hash,extractionGate:{allowed:true}},
   ],
   errors:[],
 };
@@ -30,6 +30,19 @@ assert.equal(normalized.gate.allowNormalization, true);
 assert.equal(normalized.readyForStructuredDoseCandidateCount, 2);
 assert.equal(normalized.normalizedRuleCount, 0);
 assert.equal(normalized.publicationAllowed, false);
+assert.ok(normalized.rows.every(row => row.sourceSectionSha256 === hash));
+assert.equal(
+  Normalization.candidateFromExtraction({
+    canonicalKey:'missing-hash',
+    sourceKey:'emc-missing',
+    snapshotId:hash,
+    rawSha256:hash,
+    section41Present:true,
+    section42Present:true,
+    extractionGate:{allowed:true},
+  }).extractionReady,
+  false
+);
 
 const invalidRule = Normalization.validateStructuredRule({
   ruleKey:'x',
@@ -47,6 +60,7 @@ const invalidRule = Normalization.validateStructuredRule({
 assert.equal(invalidRule.valid, false);
 assert.ok(invalidRule.errors.includes('times_per_day_missing'));
 assert.ok(invalidRule.errors.includes('source_snapshot_missing_or_invalid'));
+assert.ok(invalidRule.errors.includes('source_section_sha256_missing_or_invalid'));
 assert.ok(invalidRule.errors.includes('source_evidence_hash_missing_or_invalid'));
 
 const canonical = Array.from({length:140}, (_, i) => ({
