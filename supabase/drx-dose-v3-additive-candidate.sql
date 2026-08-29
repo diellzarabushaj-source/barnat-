@@ -149,8 +149,8 @@ create table if not exists public.dose_rules_v3 (
   constraint dose_rules_v3_editorial_check check (editorial_status in ('draft','in_review','verified','published','retired')),
   constraint dose_rules_v3_patient_group_check check (patient_group in ('adult_only','pediatric_only','pediatric_and_adult','age_band','manual_review')),
   constraint dose_rules_v3_method_check check (calculation_method in ('fixed_dose','fixed_volume','dose_per_kg_per_dose','dose_per_kg_per_day','dose_per_m2_per_dose','dose_per_m2_per_day','age_band_fixed','manual_only')),
-  constraint dose_rules_v3_frequency_check check (frequency_mode in ('interval','times_per_day','range_per_day','once','prn','manual')),
-  constraint dose_rules_v3_duration_check check (duration_mode in ('fixed_days','range_days','review_after','ongoing','single_dose','manual')),
+  constraint dose_rules_v3_frequency_check check (frequency_mode in ('interval','times_per_day','prn','single','continuous','manual')),
+  constraint dose_rules_v3_duration_check check (duration_mode in ('none','fixed_days','range_days','review_after','manual')),
   constraint dose_rules_v3_out_of_range_check check (out_of_range_action in ('block','manual_review')),
   constraint dose_rules_v3_dose_range_check check (dose_min_value is null or dose_max_value is null or dose_min_value <= dose_max_value),
   constraint dose_rules_v3_age_range_check check (min_age_months is null or max_age_months is null or min_age_months <= max_age_months),
@@ -170,7 +170,6 @@ create table if not exists public.dose_rules_v3 (
     or (
       (frequency_mode <> 'interval' or interval_min_hours is not null)
       and (frequency_mode <> 'times_per_day' or times_per_day is not null)
-      and (frequency_mode <> 'range_per_day' or (times_per_day_min is not null and times_per_day_max is not null))
     )
   ),
   constraint dose_rules_v3_verified_duration_check check (
@@ -184,6 +183,719 @@ create table if not exists public.dose_rules_v3 (
   constraint dose_rules_v3_published_not_manual_check check (
     editorial_status <> 'published'
     or (calculation_method <> 'manual_only' and review_class is distinct from 'manual_review')
+  )
+);
+
+create table if not exists public.dose_renal_adjustments_v3 (
+  adjustment_id uuid primary key default gen_random_uuid(),
+  rule_id uuid not null references public.dose_rules_v3(rule_id) on delete restrict,
+  measure_type text not null,
+  min_value numeric,
+  max_value numeric,
+  accepted_values text[] not null default '{}'::text[],
+  min_inclusive boolean not null default true,
+  max_inclusive boolean not null default true,
+  dose_action text not null,
+  dose_factor numeric,
+  replacement_dose_min numeric,
+  replacement_dose_max numeric,
+  interval_min_hours numeric,
+  interval_max_hours numeric,
+  source_key text not null,
+  source_snapshot_id text not null references public.dose_source_snapshots_v3(snapshot_id) on delete restrict,
+  source_section text not null default '4.2',
+  source_evidence_hash text not null,
+  review_status text not null default 'draft',
+  verified_by text,
+  verified_at timestamptz,
+  created_at timestamptz not null default now(),
+  updated_at timestamptz not null default now(),
+  constraint dose_renal_adjustments_v3_measure_check
+    check (measure_type in ('CrCl_mL_min','eGFR_mL_min_1_73m2','dialysis_status')),
+  constraint dose_renal_adjustments_v3_action_check
+    check (dose_action in ('no_adjustment','reduce_dose','extend_interval','avoid','contraindicated','specialist_review')),
+  constraint dose_renal_adjustments_v3_section_check check (source_section = '4.2'),
+  constraint dose_renal_adjustments_v3_source_hash_check check (source_evidence_hash ~ '^[0-9a-f]{64}
+  binding_id uuid primary key default gen_random_uuid(),
+  rule_id uuid not null references public.dose_rules_v3(rule_id) on delete restrict,
+  drug_id uuid not null references public.drugs(id) on delete restrict,
+  product_key text,
+  match_method text not null,
+  preferred boolean not null default false,
+  conversion_enabled boolean not null default false,
+  tablet_split_allowed boolean not null default false,
+  rounding_increment_value numeric,
+  rounding_increment_unit text,
+  binding_status text not null,
+  verified_at timestamptz,
+  created_at timestamptz not null default now(),
+  constraint dose_rule_products_v3_unique_binding unique (rule_id, drug_id),
+  constraint dose_rule_products_v3_status_check check (binding_status in ('candidate','verified','rejected','retired')),
+  constraint dose_rule_products_v3_verified_check check (binding_status <> 'verified' or verified_at is not null),
+  constraint dose_rule_products_v3_rounding_check check (rounding_increment_value is null or rounding_increment_value > 0)
+);
+
+create table if not exists public.dose_legacy_comparisons_v3 (
+  comparison_id uuid primary key default gen_random_uuid(),
+  rule_id uuid not null references public.dose_rules_v3(rule_id) on delete restrict,
+  drug_id uuid references public.drugs(id) on delete restrict,
+  legacy_regimen_id uuid,
+  comparison_status text not null,
+  conflicts jsonb not null default '[]'::jsonb,
+  missing_fields text[] not null default '{}'::text[],
+  compared_at timestamptz not null default now(),
+  constraint dose_legacy_comparisons_v3_status_check check (comparison_status in ('exact','compatible','conflict','missing','not_applicable'))
+);
+
+create table if not exists public.dose_review_queue_v3 (
+  review_id uuid primary key default gen_random_uuid(),
+  rule_id uuid not null references public.dose_rules_v3(rule_id) on delete restrict,
+  drug_id uuid references public.drugs(id) on delete restrict,
+  priority integer not null,
+  review_reason_codes text[] not null,
+  review_status text not null default 'open',
+  assigned_to uuid,
+  reviewer_id uuid,
+  source_version text,
+  decision text,
+  decision_reason text,
+  decision_notes text,
+  opened_at timestamptz not null default now(),
+  reviewed_at timestamptz,
+  decided_at timestamptz,
+  constraint dose_review_queue_v3_priority_check check (priority between 1 and 100),
+  constraint dose_review_queue_v3_status_check check (review_status in ('open','in_review','resolved','rejected')),
+  constraint dose_review_queue_v3_decision_check check (
+    review_status not in ('resolved','rejected')
+    or (
+      decision is not null
+      and decision_reason is not null
+      and btrim(decision_reason) <> ''
+      and reviewer_id is not null
+      and reviewed_at is not null
+      and decided_at is not null
+      and source_version is not null
+      and btrim(source_version) <> ''
+    )
+  )
+);
+
+create table if not exists public.dose_publication_events_v3 (
+  event_id uuid primary key default gen_random_uuid(),
+  rule_id uuid not null references public.dose_rules_v3(rule_id) on delete restrict,
+  drug_id uuid references public.drugs(id) on delete restrict,
+  from_status text,
+  to_status text not null,
+  gate_version text not null,
+  gate_result jsonb not null,
+  actor_user_id uuid,
+  created_at timestamptz not null default now(),
+  constraint dose_publication_events_v3_to_status_check check (to_status in ('draft','in_review','verified','published','retired'))
+);
+
+-- Foreign-key and fast-path indexes.
+create index if not exists dose_source_sections_v3_snapshot_idx on public.dose_source_sections_v3(snapshot_id);
+create index if not exists dose_indication_terms_v3_indication_idx on public.dose_indication_terms_v3(indication_id);
+create index if not exists dose_indication_terms_v3_snapshot_idx on public.dose_indication_terms_v3(source_snapshot_id);
+create index if not exists dose_rules_v3_substance_idx on public.dose_rules_v3(substance_concept_id);
+create index if not exists dose_rules_v3_indication_idx on public.dose_rules_v3(indication_id);
+create index if not exists dose_rules_v3_source_snapshot_idx on public.dose_rules_v3(source_snapshot_id);
+create index if not exists dose_rules_v3_published_lookup_idx
+  on public.dose_rules_v3(substance_concept_id, indication_id, patient_group)
+  where editorial_status = 'published';
+create index if not exists dose_renal_adjustments_v3_rule_idx on public.dose_renal_adjustments_v3(rule_id);
+create index if not exists dose_renal_adjustments_v3_measure_idx on public.dose_renal_adjustments_v3(rule_id, measure_type) where review_status = 'verified';
+create index if not exists dose_hepatic_adjustments_v3_rule_idx on public.dose_hepatic_adjustments_v3(rule_id);
+create index if not exists dose_hepatic_adjustments_v3_measure_idx on public.dose_hepatic_adjustments_v3(rule_id, measure_type) where review_status = 'verified';
+create index if not exists dose_rule_products_v3_rule_idx on public.dose_rule_products_v3(rule_id);
+create index if not exists dose_rule_products_v3_drug_idx on public.dose_rule_products_v3(drug_id);
+create index if not exists dose_rule_products_v3_verified_drug_idx
+  on public.dose_rule_products_v3(drug_id, rule_id)
+  where binding_status = 'verified';
+create index if not exists dose_legacy_comparisons_v3_rule_idx on public.dose_legacy_comparisons_v3(rule_id);
+create index if not exists dose_review_queue_v3_rule_idx on public.dose_review_queue_v3(rule_id);
+create index if not exists dose_review_queue_v3_open_idx
+  on public.dose_review_queue_v3(priority desc, opened_at)
+  where review_status in ('open','in_review');
+create index if not exists dose_publication_events_v3_rule_idx on public.dose_publication_events_v3(rule_id, created_at desc);
+
+-- RLS: every V3 table in public is explicitly protected.
+alter table public.dose_source_snapshots_v3 enable row level security;
+alter table public.dose_source_sections_v3 enable row level security;
+alter table public.dose_indication_concepts_v3 enable row level security;
+alter table public.dose_indication_terms_v3 enable row level security;
+alter table public.dose_rules_v3 enable row level security;
+alter table public.dose_renal_adjustments_v3 enable row level security;
+alter table public.dose_hepatic_adjustments_v3 enable row level security;
+alter table public.dose_rule_products_v3 enable row level security;
+alter table public.dose_legacy_comparisons_v3 enable row level security;
+alter table public.dose_review_queue_v3 enable row level security;
+alter table public.dose_publication_events_v3 enable row level security;
+
+-- Fail closed first: no implicit client access.
+revoke all privileges on table
+  public.dose_source_snapshots_v3,
+  public.dose_source_sections_v3,
+  public.dose_indication_concepts_v3,
+  public.dose_indication_terms_v3,
+  public.dose_rules_v3,
+  public.dose_renal_adjustments_v3,
+  public.dose_hepatic_adjustments_v3,
+  public.dose_rule_products_v3,
+  public.dose_legacy_comparisons_v3,
+  public.dose_review_queue_v3,
+  public.dose_publication_events_v3
+from anon, authenticated;
+
+-- Published-read tables: SELECT only, filtered by RLS.
+grant select on table public.dose_indication_concepts_v3 to anon, authenticated;
+grant select on table public.dose_rules_v3 to anon, authenticated;
+grant select on table public.dose_rule_products_v3 to anon, authenticated;
+
+drop policy if exists dose_indication_concepts_v3_published_read on public.dose_indication_concepts_v3;
+create policy dose_indication_concepts_v3_published_read
+  on public.dose_indication_concepts_v3
+  for select to anon, authenticated
+  using (editorial_status = 'published');
+
+drop policy if exists dose_rules_v3_published_read on public.dose_rules_v3;
+create policy dose_rules_v3_published_read
+  on public.dose_rules_v3
+  for select to anon, authenticated
+  using (editorial_status = 'published');
+
+drop policy if exists dose_rule_products_v3_published_read on public.dose_rule_products_v3;
+create policy dose_rule_products_v3_published_read
+  on public.dose_rule_products_v3
+  for select to anon, authenticated
+  using (
+    binding_status = 'verified'
+    and exists (
+      select 1
+      from public.dose_rules_v3 r
+      where r.rule_id = dose_rule_products_v3.rule_id
+        and r.editorial_status = 'published'
+    )
+  );
+
+-- service_role remains able to manage shadow V3 through its elevated server-side role.
+comment on table public.dose_rules_v3 is
+  'DRx Dosierung V3 shadow rules. Fail-closed; do not cut over runtime until review/binding/safety/API parity gates pass.';
+),
+  constraint dose_renal_adjustments_v3_range_check check (min_value is null or max_value is null or min_value <= max_value),
+  constraint dose_renal_adjustments_v3_review_check
+    check (review_status in ('draft','in_review','verified','rejected','retired')),
+  constraint dose_renal_adjustments_v3_verified_provenance_check check (
+    review_status <> 'verified'
+    or (
+      source_snapshot_id is not null
+      and source_evidence_hash ~ '^[0-9a-f]{64}
+  binding_id uuid primary key default gen_random_uuid(),
+  rule_id uuid not null references public.dose_rules_v3(rule_id) on delete restrict,
+  drug_id uuid not null references public.drugs(id) on delete restrict,
+  product_key text,
+  match_method text not null,
+  preferred boolean not null default false,
+  conversion_enabled boolean not null default false,
+  tablet_split_allowed boolean not null default false,
+  rounding_increment_value numeric,
+  rounding_increment_unit text,
+  binding_status text not null,
+  verified_at timestamptz,
+  created_at timestamptz not null default now(),
+  constraint dose_rule_products_v3_unique_binding unique (rule_id, drug_id),
+  constraint dose_rule_products_v3_status_check check (binding_status in ('candidate','verified','rejected','retired')),
+  constraint dose_rule_products_v3_verified_check check (binding_status <> 'verified' or verified_at is not null),
+  constraint dose_rule_products_v3_rounding_check check (rounding_increment_value is null or rounding_increment_value > 0)
+);
+
+create table if not exists public.dose_legacy_comparisons_v3 (
+  comparison_id uuid primary key default gen_random_uuid(),
+  rule_id uuid not null references public.dose_rules_v3(rule_id) on delete restrict,
+  drug_id uuid references public.drugs(id) on delete restrict,
+  legacy_regimen_id uuid,
+  comparison_status text not null,
+  conflicts jsonb not null default '[]'::jsonb,
+  missing_fields text[] not null default '{}'::text[],
+  compared_at timestamptz not null default now(),
+  constraint dose_legacy_comparisons_v3_status_check check (comparison_status in ('exact','compatible','conflict','missing','not_applicable'))
+);
+
+create table if not exists public.dose_review_queue_v3 (
+  review_id uuid primary key default gen_random_uuid(),
+  rule_id uuid not null references public.dose_rules_v3(rule_id) on delete restrict,
+  drug_id uuid references public.drugs(id) on delete restrict,
+  priority integer not null,
+  review_reason_codes text[] not null,
+  review_status text not null default 'open',
+  assigned_to uuid,
+  decision text,
+  decision_notes text,
+  opened_at timestamptz not null default now(),
+  decided_at timestamptz,
+  constraint dose_review_queue_v3_priority_check check (priority between 1 and 100),
+  constraint dose_review_queue_v3_status_check check (review_status in ('open','in_review','resolved','rejected')),
+  constraint dose_review_queue_v3_decision_check check (
+    review_status not in ('resolved','rejected')
+    or (decision is not null and decided_at is not null)
+  )
+);
+
+create table if not exists public.dose_publication_events_v3 (
+  event_id uuid primary key default gen_random_uuid(),
+  rule_id uuid not null references public.dose_rules_v3(rule_id) on delete restrict,
+  drug_id uuid references public.drugs(id) on delete restrict,
+  from_status text,
+  to_status text not null,
+  gate_version text not null,
+  gate_result jsonb not null,
+  actor_user_id uuid,
+  created_at timestamptz not null default now(),
+  constraint dose_publication_events_v3_to_status_check check (to_status in ('draft','in_review','verified','published','retired'))
+);
+
+-- Foreign-key and fast-path indexes.
+create index if not exists dose_source_sections_v3_snapshot_idx on public.dose_source_sections_v3(snapshot_id);
+create index if not exists dose_indication_terms_v3_indication_idx on public.dose_indication_terms_v3(indication_id);
+create index if not exists dose_indication_terms_v3_snapshot_idx on public.dose_indication_terms_v3(source_snapshot_id);
+create index if not exists dose_rules_v3_substance_idx on public.dose_rules_v3(substance_concept_id);
+create index if not exists dose_rules_v3_indication_idx on public.dose_rules_v3(indication_id);
+create index if not exists dose_rules_v3_source_snapshot_idx on public.dose_rules_v3(source_snapshot_id);
+create index if not exists dose_rules_v3_published_lookup_idx
+  on public.dose_rules_v3(substance_concept_id, indication_id, patient_group)
+  where editorial_status = 'published';
+create index if not exists dose_rule_products_v3_rule_idx on public.dose_rule_products_v3(rule_id);
+create index if not exists dose_rule_products_v3_drug_idx on public.dose_rule_products_v3(drug_id);
+create index if not exists dose_rule_products_v3_verified_drug_idx
+  on public.dose_rule_products_v3(drug_id, rule_id)
+  where binding_status = 'verified';
+create index if not exists dose_legacy_comparisons_v3_rule_idx on public.dose_legacy_comparisons_v3(rule_id);
+create index if not exists dose_review_queue_v3_rule_idx on public.dose_review_queue_v3(rule_id);
+create index if not exists dose_review_queue_v3_open_idx
+  on public.dose_review_queue_v3(priority desc, opened_at)
+  where review_status in ('open','in_review');
+create index if not exists dose_publication_events_v3_rule_idx on public.dose_publication_events_v3(rule_id, created_at desc);
+
+-- RLS: every V3 table in public is explicitly protected.
+alter table public.dose_source_snapshots_v3 enable row level security;
+alter table public.dose_source_sections_v3 enable row level security;
+alter table public.dose_indication_concepts_v3 enable row level security;
+alter table public.dose_indication_terms_v3 enable row level security;
+alter table public.dose_rules_v3 enable row level security;
+alter table public.dose_rule_products_v3 enable row level security;
+alter table public.dose_legacy_comparisons_v3 enable row level security;
+alter table public.dose_review_queue_v3 enable row level security;
+alter table public.dose_publication_events_v3 enable row level security;
+
+-- Fail closed first: no implicit client access.
+revoke all privileges on table
+  public.dose_source_snapshots_v3,
+  public.dose_source_sections_v3,
+  public.dose_indication_concepts_v3,
+  public.dose_indication_terms_v3,
+  public.dose_rules_v3,
+  public.dose_rule_products_v3,
+  public.dose_legacy_comparisons_v3,
+  public.dose_review_queue_v3,
+  public.dose_publication_events_v3
+from anon, authenticated;
+
+-- Published-read tables: SELECT only, filtered by RLS.
+grant select on table public.dose_indication_concepts_v3 to anon, authenticated;
+grant select on table public.dose_rules_v3 to anon, authenticated;
+grant select on table public.dose_rule_products_v3 to anon, authenticated;
+
+drop policy if exists dose_indication_concepts_v3_published_read on public.dose_indication_concepts_v3;
+create policy dose_indication_concepts_v3_published_read
+  on public.dose_indication_concepts_v3
+  for select to anon, authenticated
+  using (editorial_status = 'published');
+
+drop policy if exists dose_rules_v3_published_read on public.dose_rules_v3;
+create policy dose_rules_v3_published_read
+  on public.dose_rules_v3
+  for select to anon, authenticated
+  using (editorial_status = 'published');
+
+drop policy if exists dose_rule_products_v3_published_read on public.dose_rule_products_v3;
+create policy dose_rule_products_v3_published_read
+  on public.dose_rule_products_v3
+  for select to anon, authenticated
+  using (
+    binding_status = 'verified'
+    and exists (
+      select 1
+      from public.dose_rules_v3 r
+      where r.rule_id = dose_rule_products_v3.rule_id
+        and r.editorial_status = 'published'
+    )
+  );
+
+-- service_role remains able to manage shadow V3 through its elevated server-side role.
+comment on table public.dose_rules_v3 is
+  'DRx Dosierung V3 shadow rules. Fail-closed; do not cut over runtime until review/binding/safety/API parity gates pass.';
+
+      and verified_by is not null
+      and btrim(verified_by) <> ''
+      and verified_at is not null
+    )
+  ),
+  constraint dose_renal_adjustments_v3_reduction_check check (
+    dose_action <> 'reduce_dose'
+    or (
+      (dose_factor is not null and dose_factor > 0 and dose_factor < 1)
+      or replacement_dose_min is not null
+      or replacement_dose_max is not null
+    )
+  ),
+  constraint dose_renal_adjustments_v3_interval_check check (
+    dose_action <> 'extend_interval'
+    or interval_min_hours is not null
+    or interval_max_hours is not null
+  )
+);
+
+create table if not exists public.dose_hepatic_adjustments_v3 (
+  adjustment_id uuid primary key default gen_random_uuid(),
+  rule_id uuid not null references public.dose_rules_v3(rule_id) on delete restrict,
+  measure_type text not null,
+  severity_or_class text[] not null,
+  dose_action text not null,
+  dose_factor numeric,
+  replacement_dose_min numeric,
+  replacement_dose_max numeric,
+  interval_min_hours numeric,
+  interval_max_hours numeric,
+  source_key text not null,
+  source_snapshot_id text not null references public.dose_source_snapshots_v3(snapshot_id) on delete restrict,
+  source_section text not null default '4.2',
+  source_evidence_hash text not null,
+  review_status text not null default 'draft',
+  verified_by text,
+  verified_at timestamptz,
+  created_at timestamptz not null default now(),
+  updated_at timestamptz not null default now(),
+  constraint dose_hepatic_adjustments_v3_measure_check
+    check (measure_type in ('Child_Pugh_class','hepatic_impairment_textual')),
+  constraint dose_hepatic_adjustments_v3_action_check
+    check (dose_action in ('no_adjustment','reduce_dose','extend_interval','avoid','contraindicated','specialist_review')),
+  constraint dose_hepatic_adjustments_v3_class_check check (cardinality(severity_or_class) >= 1),
+  constraint dose_hepatic_adjustments_v3_section_check check (source_section = '4.2'),
+  constraint dose_hepatic_adjustments_v3_source_hash_check check (source_evidence_hash ~ '^[0-9a-f]{64}
+  binding_id uuid primary key default gen_random_uuid(),
+  rule_id uuid not null references public.dose_rules_v3(rule_id) on delete restrict,
+  drug_id uuid not null references public.drugs(id) on delete restrict,
+  product_key text,
+  match_method text not null,
+  preferred boolean not null default false,
+  conversion_enabled boolean not null default false,
+  tablet_split_allowed boolean not null default false,
+  rounding_increment_value numeric,
+  rounding_increment_unit text,
+  binding_status text not null,
+  verified_at timestamptz,
+  created_at timestamptz not null default now(),
+  constraint dose_rule_products_v3_unique_binding unique (rule_id, drug_id),
+  constraint dose_rule_products_v3_status_check check (binding_status in ('candidate','verified','rejected','retired')),
+  constraint dose_rule_products_v3_verified_check check (binding_status <> 'verified' or verified_at is not null),
+  constraint dose_rule_products_v3_rounding_check check (rounding_increment_value is null or rounding_increment_value > 0)
+);
+
+create table if not exists public.dose_legacy_comparisons_v3 (
+  comparison_id uuid primary key default gen_random_uuid(),
+  rule_id uuid not null references public.dose_rules_v3(rule_id) on delete restrict,
+  drug_id uuid references public.drugs(id) on delete restrict,
+  legacy_regimen_id uuid,
+  comparison_status text not null,
+  conflicts jsonb not null default '[]'::jsonb,
+  missing_fields text[] not null default '{}'::text[],
+  compared_at timestamptz not null default now(),
+  constraint dose_legacy_comparisons_v3_status_check check (comparison_status in ('exact','compatible','conflict','missing','not_applicable'))
+);
+
+create table if not exists public.dose_review_queue_v3 (
+  review_id uuid primary key default gen_random_uuid(),
+  rule_id uuid not null references public.dose_rules_v3(rule_id) on delete restrict,
+  drug_id uuid references public.drugs(id) on delete restrict,
+  priority integer not null,
+  review_reason_codes text[] not null,
+  review_status text not null default 'open',
+  assigned_to uuid,
+  decision text,
+  decision_notes text,
+  opened_at timestamptz not null default now(),
+  decided_at timestamptz,
+  constraint dose_review_queue_v3_priority_check check (priority between 1 and 100),
+  constraint dose_review_queue_v3_status_check check (review_status in ('open','in_review','resolved','rejected')),
+  constraint dose_review_queue_v3_decision_check check (
+    review_status not in ('resolved','rejected')
+    or (decision is not null and decided_at is not null)
+  )
+);
+
+create table if not exists public.dose_publication_events_v3 (
+  event_id uuid primary key default gen_random_uuid(),
+  rule_id uuid not null references public.dose_rules_v3(rule_id) on delete restrict,
+  drug_id uuid references public.drugs(id) on delete restrict,
+  from_status text,
+  to_status text not null,
+  gate_version text not null,
+  gate_result jsonb not null,
+  actor_user_id uuid,
+  created_at timestamptz not null default now(),
+  constraint dose_publication_events_v3_to_status_check check (to_status in ('draft','in_review','verified','published','retired'))
+);
+
+-- Foreign-key and fast-path indexes.
+create index if not exists dose_source_sections_v3_snapshot_idx on public.dose_source_sections_v3(snapshot_id);
+create index if not exists dose_indication_terms_v3_indication_idx on public.dose_indication_terms_v3(indication_id);
+create index if not exists dose_indication_terms_v3_snapshot_idx on public.dose_indication_terms_v3(source_snapshot_id);
+create index if not exists dose_rules_v3_substance_idx on public.dose_rules_v3(substance_concept_id);
+create index if not exists dose_rules_v3_indication_idx on public.dose_rules_v3(indication_id);
+create index if not exists dose_rules_v3_source_snapshot_idx on public.dose_rules_v3(source_snapshot_id);
+create index if not exists dose_rules_v3_published_lookup_idx
+  on public.dose_rules_v3(substance_concept_id, indication_id, patient_group)
+  where editorial_status = 'published';
+create index if not exists dose_rule_products_v3_rule_idx on public.dose_rule_products_v3(rule_id);
+create index if not exists dose_rule_products_v3_drug_idx on public.dose_rule_products_v3(drug_id);
+create index if not exists dose_rule_products_v3_verified_drug_idx
+  on public.dose_rule_products_v3(drug_id, rule_id)
+  where binding_status = 'verified';
+create index if not exists dose_legacy_comparisons_v3_rule_idx on public.dose_legacy_comparisons_v3(rule_id);
+create index if not exists dose_review_queue_v3_rule_idx on public.dose_review_queue_v3(rule_id);
+create index if not exists dose_review_queue_v3_open_idx
+  on public.dose_review_queue_v3(priority desc, opened_at)
+  where review_status in ('open','in_review');
+create index if not exists dose_publication_events_v3_rule_idx on public.dose_publication_events_v3(rule_id, created_at desc);
+
+-- RLS: every V3 table in public is explicitly protected.
+alter table public.dose_source_snapshots_v3 enable row level security;
+alter table public.dose_source_sections_v3 enable row level security;
+alter table public.dose_indication_concepts_v3 enable row level security;
+alter table public.dose_indication_terms_v3 enable row level security;
+alter table public.dose_rules_v3 enable row level security;
+alter table public.dose_rule_products_v3 enable row level security;
+alter table public.dose_legacy_comparisons_v3 enable row level security;
+alter table public.dose_review_queue_v3 enable row level security;
+alter table public.dose_publication_events_v3 enable row level security;
+
+-- Fail closed first: no implicit client access.
+revoke all privileges on table
+  public.dose_source_snapshots_v3,
+  public.dose_source_sections_v3,
+  public.dose_indication_concepts_v3,
+  public.dose_indication_terms_v3,
+  public.dose_rules_v3,
+  public.dose_rule_products_v3,
+  public.dose_legacy_comparisons_v3,
+  public.dose_review_queue_v3,
+  public.dose_publication_events_v3
+from anon, authenticated;
+
+-- Published-read tables: SELECT only, filtered by RLS.
+grant select on table public.dose_indication_concepts_v3 to anon, authenticated;
+grant select on table public.dose_rules_v3 to anon, authenticated;
+grant select on table public.dose_rule_products_v3 to anon, authenticated;
+
+drop policy if exists dose_indication_concepts_v3_published_read on public.dose_indication_concepts_v3;
+create policy dose_indication_concepts_v3_published_read
+  on public.dose_indication_concepts_v3
+  for select to anon, authenticated
+  using (editorial_status = 'published');
+
+drop policy if exists dose_rules_v3_published_read on public.dose_rules_v3;
+create policy dose_rules_v3_published_read
+  on public.dose_rules_v3
+  for select to anon, authenticated
+  using (editorial_status = 'published');
+
+drop policy if exists dose_rule_products_v3_published_read on public.dose_rule_products_v3;
+create policy dose_rule_products_v3_published_read
+  on public.dose_rule_products_v3
+  for select to anon, authenticated
+  using (
+    binding_status = 'verified'
+    and exists (
+      select 1
+      from public.dose_rules_v3 r
+      where r.rule_id = dose_rule_products_v3.rule_id
+        and r.editorial_status = 'published'
+    )
+  );
+
+-- service_role remains able to manage shadow V3 through its elevated server-side role.
+comment on table public.dose_rules_v3 is
+  'DRx Dosierung V3 shadow rules. Fail-closed; do not cut over runtime until review/binding/safety/API parity gates pass.';
+),
+  constraint dose_hepatic_adjustments_v3_review_check
+    check (review_status in ('draft','in_review','verified','rejected','retired')),
+  constraint dose_hepatic_adjustments_v3_verified_provenance_check check (
+    review_status <> 'verified'
+    or (
+      source_snapshot_id is not null
+      and source_evidence_hash ~ '^[0-9a-f]{64}
+  binding_id uuid primary key default gen_random_uuid(),
+  rule_id uuid not null references public.dose_rules_v3(rule_id) on delete restrict,
+  drug_id uuid not null references public.drugs(id) on delete restrict,
+  product_key text,
+  match_method text not null,
+  preferred boolean not null default false,
+  conversion_enabled boolean not null default false,
+  tablet_split_allowed boolean not null default false,
+  rounding_increment_value numeric,
+  rounding_increment_unit text,
+  binding_status text not null,
+  verified_at timestamptz,
+  created_at timestamptz not null default now(),
+  constraint dose_rule_products_v3_unique_binding unique (rule_id, drug_id),
+  constraint dose_rule_products_v3_status_check check (binding_status in ('candidate','verified','rejected','retired')),
+  constraint dose_rule_products_v3_verified_check check (binding_status <> 'verified' or verified_at is not null),
+  constraint dose_rule_products_v3_rounding_check check (rounding_increment_value is null or rounding_increment_value > 0)
+);
+
+create table if not exists public.dose_legacy_comparisons_v3 (
+  comparison_id uuid primary key default gen_random_uuid(),
+  rule_id uuid not null references public.dose_rules_v3(rule_id) on delete restrict,
+  drug_id uuid references public.drugs(id) on delete restrict,
+  legacy_regimen_id uuid,
+  comparison_status text not null,
+  conflicts jsonb not null default '[]'::jsonb,
+  missing_fields text[] not null default '{}'::text[],
+  compared_at timestamptz not null default now(),
+  constraint dose_legacy_comparisons_v3_status_check check (comparison_status in ('exact','compatible','conflict','missing','not_applicable'))
+);
+
+create table if not exists public.dose_review_queue_v3 (
+  review_id uuid primary key default gen_random_uuid(),
+  rule_id uuid not null references public.dose_rules_v3(rule_id) on delete restrict,
+  drug_id uuid references public.drugs(id) on delete restrict,
+  priority integer not null,
+  review_reason_codes text[] not null,
+  review_status text not null default 'open',
+  assigned_to uuid,
+  decision text,
+  decision_notes text,
+  opened_at timestamptz not null default now(),
+  decided_at timestamptz,
+  constraint dose_review_queue_v3_priority_check check (priority between 1 and 100),
+  constraint dose_review_queue_v3_status_check check (review_status in ('open','in_review','resolved','rejected')),
+  constraint dose_review_queue_v3_decision_check check (
+    review_status not in ('resolved','rejected')
+    or (decision is not null and decided_at is not null)
+  )
+);
+
+create table if not exists public.dose_publication_events_v3 (
+  event_id uuid primary key default gen_random_uuid(),
+  rule_id uuid not null references public.dose_rules_v3(rule_id) on delete restrict,
+  drug_id uuid references public.drugs(id) on delete restrict,
+  from_status text,
+  to_status text not null,
+  gate_version text not null,
+  gate_result jsonb not null,
+  actor_user_id uuid,
+  created_at timestamptz not null default now(),
+  constraint dose_publication_events_v3_to_status_check check (to_status in ('draft','in_review','verified','published','retired'))
+);
+
+-- Foreign-key and fast-path indexes.
+create index if not exists dose_source_sections_v3_snapshot_idx on public.dose_source_sections_v3(snapshot_id);
+create index if not exists dose_indication_terms_v3_indication_idx on public.dose_indication_terms_v3(indication_id);
+create index if not exists dose_indication_terms_v3_snapshot_idx on public.dose_indication_terms_v3(source_snapshot_id);
+create index if not exists dose_rules_v3_substance_idx on public.dose_rules_v3(substance_concept_id);
+create index if not exists dose_rules_v3_indication_idx on public.dose_rules_v3(indication_id);
+create index if not exists dose_rules_v3_source_snapshot_idx on public.dose_rules_v3(source_snapshot_id);
+create index if not exists dose_rules_v3_published_lookup_idx
+  on public.dose_rules_v3(substance_concept_id, indication_id, patient_group)
+  where editorial_status = 'published';
+create index if not exists dose_rule_products_v3_rule_idx on public.dose_rule_products_v3(rule_id);
+create index if not exists dose_rule_products_v3_drug_idx on public.dose_rule_products_v3(drug_id);
+create index if not exists dose_rule_products_v3_verified_drug_idx
+  on public.dose_rule_products_v3(drug_id, rule_id)
+  where binding_status = 'verified';
+create index if not exists dose_legacy_comparisons_v3_rule_idx on public.dose_legacy_comparisons_v3(rule_id);
+create index if not exists dose_review_queue_v3_rule_idx on public.dose_review_queue_v3(rule_id);
+create index if not exists dose_review_queue_v3_open_idx
+  on public.dose_review_queue_v3(priority desc, opened_at)
+  where review_status in ('open','in_review');
+create index if not exists dose_publication_events_v3_rule_idx on public.dose_publication_events_v3(rule_id, created_at desc);
+
+-- RLS: every V3 table in public is explicitly protected.
+alter table public.dose_source_snapshots_v3 enable row level security;
+alter table public.dose_source_sections_v3 enable row level security;
+alter table public.dose_indication_concepts_v3 enable row level security;
+alter table public.dose_indication_terms_v3 enable row level security;
+alter table public.dose_rules_v3 enable row level security;
+alter table public.dose_rule_products_v3 enable row level security;
+alter table public.dose_legacy_comparisons_v3 enable row level security;
+alter table public.dose_review_queue_v3 enable row level security;
+alter table public.dose_publication_events_v3 enable row level security;
+
+-- Fail closed first: no implicit client access.
+revoke all privileges on table
+  public.dose_source_snapshots_v3,
+  public.dose_source_sections_v3,
+  public.dose_indication_concepts_v3,
+  public.dose_indication_terms_v3,
+  public.dose_rules_v3,
+  public.dose_rule_products_v3,
+  public.dose_legacy_comparisons_v3,
+  public.dose_review_queue_v3,
+  public.dose_publication_events_v3
+from anon, authenticated;
+
+-- Published-read tables: SELECT only, filtered by RLS.
+grant select on table public.dose_indication_concepts_v3 to anon, authenticated;
+grant select on table public.dose_rules_v3 to anon, authenticated;
+grant select on table public.dose_rule_products_v3 to anon, authenticated;
+
+drop policy if exists dose_indication_concepts_v3_published_read on public.dose_indication_concepts_v3;
+create policy dose_indication_concepts_v3_published_read
+  on public.dose_indication_concepts_v3
+  for select to anon, authenticated
+  using (editorial_status = 'published');
+
+drop policy if exists dose_rules_v3_published_read on public.dose_rules_v3;
+create policy dose_rules_v3_published_read
+  on public.dose_rules_v3
+  for select to anon, authenticated
+  using (editorial_status = 'published');
+
+drop policy if exists dose_rule_products_v3_published_read on public.dose_rule_products_v3;
+create policy dose_rule_products_v3_published_read
+  on public.dose_rule_products_v3
+  for select to anon, authenticated
+  using (
+    binding_status = 'verified'
+    and exists (
+      select 1
+      from public.dose_rules_v3 r
+      where r.rule_id = dose_rule_products_v3.rule_id
+        and r.editorial_status = 'published'
+    )
+  );
+
+-- service_role remains able to manage shadow V3 through its elevated server-side role.
+comment on table public.dose_rules_v3 is
+  'DRx Dosierung V3 shadow rules. Fail-closed; do not cut over runtime until review/binding/safety/API parity gates pass.';
+
+      and verified_by is not null
+      and btrim(verified_by) <> ''
+      and verified_at is not null
+    )
+  ),
+  constraint dose_hepatic_adjustments_v3_reduction_check check (
+    dose_action <> 'reduce_dose'
+    or (
+      (dose_factor is not null and dose_factor > 0 and dose_factor < 1)
+      or replacement_dose_min is not null
+      or replacement_dose_max is not null
+    )
+  ),
+  constraint dose_hepatic_adjustments_v3_interval_check check (
+    dose_action <> 'extend_interval'
+    or interval_min_hours is not null
+    or interval_max_hours is not null
   )
 );
 
