@@ -1,0 +1,67 @@
+{
+  "schemaVersion": "drx-dose-pilot-v1",
+  "pilotKey": "enalapril",
+  "updatedAt": "2026-08-29",
+  "status": "in_review_unbound",
+  "publicationAllowed": false,
+  "ruleScope": "representative_not_exhaustive",
+  "canonicalSubstance": {
+    "key": "enalapril",
+    "name": "Enalapril"
+  },
+  "sourceSet": [
+    {
+      "sourceKey": "emc-2672-smpc",
+      "url": "https://www.medicines.org.uk/emc/product/2672/smpc",
+      "tier": "EMC",
+      "documentDate": "2026-02-05",
+      "section": "4.2",
+      "formulation": "tablet",
+      "strength": "10 mg",
+      "section42Verified": true
+    }
+  ],
+  "extractedRuleCandidates": [
+    {
+      "candidateKey": "emc-2672-mild-hypertension-start",
+      "ruleKey": "enalapril|hypertension|adult|po|initial",
+      "sourceKey": "emc-2672-smpc",
+      "sourceSection": "4.2",
+      "indicationKey": "hypertension",
+      "indicationTerms": [
+        "hypertension",
+        "mild hypertension"
+      ],
+      "patientGroup": "adult_only",
+      "calculationMethod": "fixed_dose",
+      "doseMinValue": 5,
+      "doseMaxValue": 10,
+      "doseUnit": "mg",
+      "frequencyMode": "times_per_day",
+      "timesPerDay": 1,
+      "maxDailyDoseMg": 40,
+      "durationMode": "manual",
+      "route": "PO",
+      "prn": false,
+      "renalAdjustmentRequired": true,
+      "requiredInputs": [
+        "age_months",
+        "renal_function"
+      ],
+      "bindingStatus": "unbound",
+      "editorialStatus": "in_review",
+      "reviewReason": "patient profile, volume status, diuretic use and renal function affect initiation"
+    }
+  ],
+  "sourceReconciliation": {
+    "status": "single_authoritative_source",
+    "autoMerge": false
+  },
+  "v2SchemaGaps": [
+    "source_snapshot_id",
+    "source_evidence_hash",
+    "required_inputs",
+    "renal_starting_dose_context"
+  ],
+  "nextGate": "bind exact enalapril products and attach formal renal adjustment before publication"
+}
