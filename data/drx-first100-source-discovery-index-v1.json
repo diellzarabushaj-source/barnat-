@@ -1,21 +1,16 @@
 {
   "schemaVersion": "drx-first100-source-discovery-index-v1",
-  "generatedAt": "2026-08-30T03:25:00+02:00",
+  "generatedAt": "2026-08-30T03:40:00+02:00",
   "first100Count": 100,
   "canonicalReviewRequired": 13,
   "sourceDiscoveryEligible": 87,
   "verifiedProductSpecific": 35,
   "productSelectionRequired": 1,
   "eligibleRemaining": 52,
-  "issueCount": 1,
+  "issueCount": 0,
   "complete": false,
   "publicationAllowed": false,
-  "issues": [
-    {
-      "canonicalKey": "cyanocobalamin",
-      "issue": "not_in_first100_queue"
-    }
-  ],
+  "issues": [],
   "rows": [
     {
       "canonicalKey": "acarbose",
@@ -533,25 +528,6 @@
       "wave": "b"
     },
     {
-      "canonicalKey": "cyanocobalamin",
-      "canonicalName": "Cyanocobalamin",
-      "status": "verified_product_specific",
-      "sourceTier": "EMC",
-      "sourceKey": "emc-15102-smpc",
-      "url": "https://www.medicines.org.uk/emc/product/15102/smpc",
-      "productName": "Cyanocobalamin 50 micrograms Film-coated Tablets",
-      "documentDate": null,
-      "section41Present": true,
-      "section42Present": true,
-      "reviewFlags": [
-        "indication_specific_dosing",
-        "oral_vs_parenteral_context",
-        "pernicious_anaemia_route_review"
-      ],
-      "publicationAllowed": false,
-      "wave": "b"
-    },
-    {
       "canonicalKey": "calciumgluconate",
       "canonicalName": "Calcium gluconate",
       "status": "verified_product_specific",
@@ -567,6 +543,27 @@
         "emergency_hyperkalaemia_context",
         "serum_calcium_monitoring",
         "pediatric_age_dose_table",
+        "clinical_review_required"
+      ],
+      "publicationAllowed": false,
+      "wave": "b"
+    },
+    {
+      "canonicalKey": "clomiphene",
+      "canonicalName": "Clomiphene",
+      "status": "verified_product_specific_alias_match",
+      "sourceTier": "EMC",
+      "sourceKey": "emc-15080-smpc",
+      "url": "https://www.medicines.org.uk/emc/product/15080/smpc",
+      "productName": "Clomifene 50mg Tablets",
+      "documentDate": "2024-06-26",
+      "section41Present": true,
+      "section42Present": true,
+      "reviewFlags": [
+        "reviewed_clomiphene_clomifene_alias",
+        "fertility_specialist_context",
+        "cycle_limited_therapy",
+        "pregnancy_exclusion",
         "clinical_review_required"
       ],
       "publicationAllowed": false,
