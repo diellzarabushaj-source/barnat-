@@ -19,7 +19,9 @@ function rawCanonicalKey(item) {
 }
 
 function stableKey(item) {
-  return clean(rawCanonicalKey(item)).toLowerCase();
+  return clean(rawCanonicalKey(item))
+    .toLowerCase()
+    .replace(/[^a-z0-9]+/g, '');
 }
 
 function canonicalName(item) {
