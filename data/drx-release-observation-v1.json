@@ -1,0 +1,20 @@
+{
+  "schemaVersion": "drx-release-observation-v1",
+  "checkedAt": "2026-08-29T03:43:58.745Z",
+  "publicationAllowed": false,
+  "drxSafetyWorkflowConfigured": true,
+  "drxSafetyWorkflowRunObserved": false,
+  "drxSafetyWorkflowGreen": false,
+  "fullCiGreen": false,
+  "desktopSmokeGreen": false,
+  "mobileSmokeGreen": false,
+  "vercelDeploymentGreen": false,
+  "vercelBlocker": "build-rate-limit",
+  "rollbackTested": false,
+  "zeroKnownLegacyConsumers": false,
+  "notes": [
+    "No GitHub Actions workflow run was observed for the DRx safety-gate commit.",
+    "Vercel commit status reports build-rate-limit.",
+    "All unobserved release signals remain fail-closed."
+  ]
+}
