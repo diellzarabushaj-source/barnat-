@@ -1,0 +1,19 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="900" height="1000" viewBox="0 0 900 1000">
+<defs>
+ <linearGradient id="skin" x1="0" x2="1"><stop offset="0" stop-color="#f8d8c6"/><stop offset=".55" stop-color="#f2c7af"/><stop offset="1" stop-color="#e9ad91"/></linearGradient>
+ <filter id="shadow"><feDropShadow dx="0" dy="4" stdDeviation="8" flood-opacity=".15"/></filter>
+</defs>
+<rect width="900" height="1000" fill="#fff"/>
+<g transform="translate(80,40)" filter="url(#shadow)">
+ <path d="M120 130 C180 55 315 35 420 95 C540 165 650 245 700 355 C725 415 680 460 615 452 C485 435 385 365 320 285 C275 230 240 225 215 275 C185 335 125 340 85 300 C45 260 65 195 120 130Z" fill="url(#skin)" stroke="#c96d4f" stroke-width="5"/>
+ <path d="M320 285 C355 330 410 370 475 402" fill="none" stroke="#c96d4f" stroke-width="5"/>
+ <text x="390" y="520" font-family="Arial,sans-serif" font-size="42" font-weight="700" text-anchor="middle">FIMOZA</text>
+</g>
+<g transform="translate(85,515)" filter="url(#shadow)">
+ <path d="M115 125 C185 55 310 40 390 90 C470 140 540 190 575 245 C600 285 585 320 535 330 C495 337 468 330 448 305 C425 278 402 280 380 315 C350 365 300 395 230 385 C150 375 85 325 70 260 C55 195 70 160 115 125Z" fill="url(#skin)" stroke="#c96d4f" stroke-width="5"/>
+ <path d="M430 235 C495 210 555 230 600 280 C620 305 614 350 585 372 C548 402 494 397 465 365 C435 332 420 290 430 235Z" fill="#f1c2aa" stroke="#c96d4f" stroke-width="5"/>
+ <path d="M405 215 C430 245 438 278 430 315" fill="none" stroke="#a7523b" stroke-width="6"/>
+ <path d="M420 205 C448 240 455 280 445 325" fill="none" stroke="#d67a5d" stroke-width="5"/>
+ <text x="390" y="455" font-family="Arial,sans-serif" font-size="42" font-weight="700" text-anchor="middle">PARAFIMOZA</text>
+</g>
+</svg>

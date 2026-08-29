@@ -1,0 +1,30 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="620" viewBox="0 0 1200 620">
+<defs>
+  <radialGradient id="g" cx="50%" cy="40%" r="70%"><stop offset="0" stop-color="#242424"/><stop offset="1" stop-color="#050505"/></radialGradient>
+</defs>
+<rect width="1200" height="620" fill="#fff"/>
+<g transform="translate(25,35)">
+  <rect x="0" y="0" width="550" height="540" rx="14" fill="url(#g)"/>
+  <text x="275" y="38" fill="#fff" font-family="Arial,sans-serif" font-size="28" font-weight="700" text-anchor="middle">TRANSVERSAL</text>
+  <path d="M80 110 Q275 55 470 110" stroke="#d7d7d7" stroke-width="9" fill="none" opacity=".75"/>
+  <path d="M100 132 Q275 82 450 132" stroke="#979797" stroke-width="5" fill="none" opacity=".65"/>
+  <ellipse cx="270" cy="300" rx="170" ry="120" fill="#070707" stroke="#dadada" stroke-width="8"/>
+  <path d="M125 310 Q270 420 415 310" stroke="#777" stroke-width="4" fill="none" opacity=".6"/>
+  <line x1="270" y1="180" x2="270" y2="420" stroke="#58c7bb" stroke-width="3" stroke-dasharray="7 8"/>
+  <line x1="100" y1="300" x2="440" y2="300" stroke="#58c7bb" stroke-width="3" stroke-dasharray="7 8"/>
+  <text x="270" y="315" fill="#fff" font-family="Arial,sans-serif" font-size="34" font-weight="700" text-anchor="middle">FSHIKËZA</text>
+  <text x="270" y="505" fill="#bdbdbd" font-family="Arial,sans-serif" font-size="20" text-anchor="middle">Pamje transversale</text>
+</g>
+<g transform="translate(625,35)">
+  <rect x="0" y="0" width="550" height="540" rx="14" fill="url(#g)"/>
+  <text x="275" y="38" fill="#fff" font-family="Arial,sans-serif" font-size="28" font-weight="700" text-anchor="middle">SAGITAL</text>
+  <path d="M80 110 Q275 55 470 110" stroke="#d7d7d7" stroke-width="9" fill="none" opacity=".75"/>
+  <path d="M100 132 Q275 82 450 132" stroke="#979797" stroke-width="5" fill="none" opacity=".65"/>
+  <path d="M120 225 Q230 180 390 225 Q435 260 410 365 Q365 425 195 410 Q105 385 120 225Z" fill="#070707" stroke="#d9d9d9" stroke-width="8"/>
+  <ellipse cx="345" cy="420" rx="70" ry="35" fill="#5d5d5d" stroke="#cfcfcf" stroke-width="5"/>
+  <line x1="120" y1="300" x2="440" y2="300" stroke="#58c7bb" stroke-width="3" stroke-dasharray="7 8"/>
+  <text x="275" y="315" fill="#fff" font-family="Arial,sans-serif" font-size="34" font-weight="700" text-anchor="middle">FSHIKËZA</text>
+  <text x="345" y="429" fill="#fff" font-family="Arial,sans-serif" font-size="24" font-weight="700" text-anchor="middle">PROSTATA</text>
+  <text x="275" y="505" fill="#bdbdbd" font-family="Arial,sans-serif" font-size="20" text-anchor="middle">Pamje sagitale</text>
+</g>
+</svg>
