@@ -1,6 +1,6 @@
 {
   "schemaVersion": "drx-dose-v3-supabase-candidate-status-v1",
-  "updatedAt": "2026-08-29T12:18:34.862Z",
+  "updatedAt": "2026-08-29T12:21:57.305Z",
   "projectId": "ftuchtmolddhhsdcwnqe",
   "projectHealth": "ACTIVE_HEALTHY",
   "postgresVersion": "17.6.1.155",
@@ -66,7 +66,10 @@
     "publishedProvenanceMutationLocks": true,
     "verifiedAdjustmentReadRls": true,
     "adjustmentSourceSectionShaPinned": true,
-    "runtimeAdjustmentProvenanceRevalidation": true
+    "runtimeAdjustmentProvenanceRevalidation": true,
+    "adjustmentRequiredPublicationGate": true,
+    "adjustmentRequiredRuntimeGate": true,
+    "adjustmentRlsProvenanceRevalidation": true
   },
   "applyGate": [
     "Supabase changelog/docs reviewed for relevant breaking changes",
@@ -94,20 +97,24 @@
     "negative and positive DB publication-gate cases pass before any real V3 import",
     "renal/hepatic verified rows require exact source_section_sha256 and source snapshot/evidence identity",
     "renal/hepatic client read is RLS-limited to verified rows linked to published parent rules",
-    "runtime RPC revalidates renal/hepatic snapshot tier/key/version/date and exact section hash"
+    "runtime RPC revalidates renal/hepatic snapshot tier/key/version/date and exact section hash",
+    "rules with renal_adjustment_required cannot publish without a verified provenance-valid renal adjustment",
+    "rules with hepatic_adjustment_required cannot publish without a verified provenance-valid hepatic adjustment",
+    "runtime fast path omits rules whose required renal/hepatic adjustment set is unavailable",
+    "direct adjustment RLS revalidates official snapshot and exact extracted SmPC 4.2 hash"
   ],
   "publicationAllowed": false,
   "selfContainedV3ProductShell": true,
   "v2ProductShellDependency": false,
-  "candidateGitBlobSha": "9e6d595be89f9b8f0d322f9d1c6b6df430d76b49",
+  "candidateGitBlobSha": "175241f6d18e83855edba12fcb3e46b5c84c81e6",
   "repositoryStaticAudit": {
     "candidateSelfContained": true,
     "additiveOnly": true,
     "rlsCoverage": "12/12",
     "directClientWriteGrants": 0,
-    "publishedClientReadTables": 4,
+    "publishedClientReadTables": 6,
     "publicationTriggerPresent": true,
-    "status": "STATIC_RENAL_HEPATIC_RUNTIME_HARDENED_NOT_LIVE_APPLIED",
+    "status": "STATIC_ADJUSTMENT_REQUIRED_FAIL_CLOSED_NOT_LIVE_APPLIED",
     "productPublicationTriggerPresent": true,
     "rulePublicationTriggerPresent": true,
     "insertPublicationBypassClosed": true,
@@ -119,7 +126,10 @@
     "publishedProvenanceMutationLocks": true,
     "verifiedAdjustmentReadRls": true,
     "adjustmentSourceSectionHashPinned": true,
-    "runtimeAdjustmentProvenanceRevalidation": true
+    "runtimeAdjustmentProvenanceRevalidation": true,
+    "adjustmentRequiredPublicationGate": true,
+    "adjustmentRequiredRuntimeGate": true,
+    "adjustmentRlsProvenanceRevalidation": true
   },
   "rollback": {
     "prepared": true,
