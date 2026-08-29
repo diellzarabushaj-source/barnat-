@@ -9,6 +9,7 @@ function audit(){
  const coverage=read('data/drx-dose-coverage-snapshot-v2.json');
  const v3=read('data/drx-dose-v3-supabase-candidate-status.json');
  const matrix=read('data/drx-batch2-readiness-matrix-v1.json');
+ const observation=read('data/drx-release-observation-v1.json');
  const blockers=[];
 
  if(v3.applied!==true) blockers.push('supabase_v3_not_applied');
@@ -18,6 +19,14 @@ function audit(){
  if((tracker.currentExecution.legacyComparedRules||0)<=0) blockers.push('legacy_comparison_not_live');
  if((tracker.currentExecution.clinicallyReviewedRules||0)<=0) blockers.push('clinical_review_not_complete');
  if((tracker.currentExecution.publishedRules||0)<=0) blockers.push('no_published_v3_rules');
+ if(observation.drxSafetyWorkflowRunObserved!==true) blockers.push('drx_safety_ci_not_observed');
+ else if(observation.drxSafetyWorkflowGreen!==true) blockers.push('drx_safety_ci_not_green');
+ if(observation.fullCiGreen!==true) blockers.push('full_ci_not_green');
+ if(observation.desktopSmokeGreen!==true) blockers.push('desktop_smoke_not_green');
+ if(observation.mobileSmokeGreen!==true) blockers.push('mobile_smoke_not_green');
+ if(observation.vercelDeploymentGreen!==true) blockers.push('vercel_deploy_not_green');
+ if(observation.rollbackTested!==true) blockers.push('rollback_not_tested');
+ if(observation.zeroKnownLegacyConsumers!==true) blockers.push('legacy_consumers_not_zero');
  if(coverage?.gates?.publicationBlocked!==true && blockers.length) blockers.push('coverage_gate_inconsistent');
 
  return {
@@ -27,11 +36,11 @@ function audit(){
    publicationAllowed:blockers.length===0,
    blockers:[...new Set(blockers)],
    phases:{
-     apiFastPath:'implemented_v2_v3_gate_ready',
-     doseCore:'implemented_shared_core',
+     apiFastPath:'v3_one_rpc_ready_not_live',
+     doseCore:'shared_core_runtime_hardened',
      cacheOffline:'implemented_indexeddb_etag',
-     frontend:'implemented_fast_flow_v2_v3_ready',
-     automatedQa:'implemented_contracts_and_golden_cases',
+     frontend:'shared_core_fast_flow_ready',
+     automatedQa:observation.drxSafetyWorkflowRunObserved?'dedicated_gate_observed':'dedicated_gate_configured_not_observed',
      coverage:'implemented_repo_evidence',
      cleanup:'gated_no_destructive_changes',
      productionRelease:blockers.length===0?'ready':'blocked'
