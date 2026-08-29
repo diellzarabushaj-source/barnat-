@@ -50,8 +50,10 @@ function transform(){
      row={...row,canonicalKey:d.resolvedCanonicalKey,canonicalName:d.resolvedCanonicalName,reconciledFrom:raw.canonicalKey,productSelectionRequired:true};
    }
    if(!row.canonicalKey||!row.canonicalName||covered.has(row.canonicalKey)) continue;
+   const componentCount=String(row.canonicalName).split(/\\s*\\+\\s*/).filter(Boolean).length;
    const flags=SUSPICIOUS.filter(([,re])=>re.test(row.canonicalName)).map(([code])=>code);
-   output.push({...row,qualityFlags:flags});
+   if(componentCount>4) flags.push('HIGH_COMPONENT_COUNT_REVIEW');
+   output.push({...row,componentCount,qualityFlags:[...new Set(flags)]});
  }
  const seen=new Set();
  return output
