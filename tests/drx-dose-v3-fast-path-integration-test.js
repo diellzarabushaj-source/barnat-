@@ -18,6 +18,20 @@ assert.equal(Reader._test.productSourceValid({
   source_evidence_hash:'a'.repeat(64),
   source_document_date:'2026-08-27'
 }),true);
+assert.equal(Reader._test.sourceValid({
+  source_snapshot_id:'a'.repeat(64),
+  source_section:'4.2',
+  source_section_sha256:'b'.repeat(64),
+  source_evidence_hash:'a'.repeat(64),
+  source_document_date:'2026-08-27'
+}),true);
+assert.equal(Reader._test.sourceValid({
+  source_snapshot_id:'a'.repeat(64),
+  source_section:'4.2',
+  source_section_sha256:'',
+  source_evidence_hash:'a'.repeat(64),
+  source_document_date:'2026-08-27'
+}),false);
 
 const fallback=Gate.chooseRuntime({v3Enabled:true,v3Available:false,v2Available:true,strictV3:false});
 assert.equal(fallback.runtime,'v2');
