@@ -1,21 +1,22 @@
 {
   "schemaVersion": "drx-first100-source-discovery-index-v1",
-  "generatedAt": "2026-08-29T10:55:10.357Z",
+  "generatedAt": "2026-08-29T11:25:41.383Z",
   "first100Count": 100,
   "canonicalReviewRequired": 14,
   "sourceDiscoveryEligible": 89,
-  "verifiedProductSpecific": 85,
-  "verifiedCanonicalSubstances": 85,
+  "verifiedProductSpecific": 86,
+  "verifiedCanonicalSubstances": 86,
   "sourceAuthorityCounts": {
     "EMC": 55,
     "AEMPS_CIMA": 12,
     "EU_NATIONAL": 14,
     "KOSOVO_AKPPM": 3,
-    "FACHINFO_DE": 1
+    "FACHINFO_DE": 1,
+    "NON_EU_REGULATOR": 1
   },
   "productSelectionRequired": 1,
-  "eligibleRemaining": 4,
-  "sourceLookupRemaining": 3,
+  "eligibleRemaining": 3,
+  "sourceLookupRemaining": 2,
   "issueCount": 0,
   "complete": false,
   "repositoryComplete": false,
@@ -2162,6 +2163,62 @@
       ],
       "publicationAllowed": false,
       "wave": "drx-first100-source-discovery-wave-t-v1.json"
+    },
+    {
+      "canonicalKey": "chlorthalidonvalsartan",
+      "canonicalName": "Chlorthalidone + Valsartan",
+      "status": "verified_product_specific_review_required",
+      "sourceTier": "NON_EU_REGULATOR",
+      "authority": "Instituto Nacional de Vigilancia de Medicamentos y Alimentos (INVIMA), Colombia",
+      "sourceKey": "invima-2023m-0021003-resolution-2023024275",
+      "url": "https://webservice.invima.gov.co/registros/pdf/16393702_2023024275.pdf",
+      "productRegistryUrl": "https://webservice.invima.gov.co/registros/202306.htm",
+      "productName": "BRASARTAN CTDN 160 mg / 12.5 mg",
+      "registrationNumber": "INVIMA 2023M-0021003",
+      "atcCode": "C09DA03",
+      "documentDate": "2023-06-05",
+      "documentDatePrecision": "day",
+      "section41Present": false,
+      "section42Present": false,
+      "officialIdentityPresent": true,
+      "doseEvidencePresent": true,
+      "currentRegistryCrosscheck": {
+        "checkedDate": "2026-08-29",
+        "registryStatus": "Vigente",
+        "activeSubstances": [
+          "valsartan",
+          "chlorthalidone"
+        ],
+        "strengths": [
+          "160 mg",
+          "12.5 mg"
+        ],
+        "dosageForm": "film-coated tablet",
+        "route": "oral",
+        "marketingAuthorisationHolder": "Farma de Colombia S.A.S.",
+        "officialResolution": "2023024275"
+      },
+      "doseEvidence": {
+        "sourceType": "PROFESSIONAL_MONOGRAPH",
+        "source": "Medicamentos PLM Colombia",
+        "url": "https://www.medicamentosplm.com.co/Home/productos/brasartan_ctdn_tabletas/258/101/62889/210",
+        "doseFinding": "recommended dose is 1 tablet daily; listed strengths include 80/12.5 mg, 160/12.5 mg and 160/25 mg",
+        "pediatricFinding": "safety and efficacy in children not established",
+        "reviewNote": "dose source is not the regulator and cannot independently authorize publication"
+      },
+      "reviewFlags": [
+        "fixed_combination",
+        "oral_route_specific",
+        "non_eu_regulator",
+        "official_product_identity_verified",
+        "non_smpc_dose_crosscheck",
+        "atc_from_registry_not_invima_resolution",
+        "pediatric_not_established",
+        "manual_publication_review_required",
+        "clinical_review_required"
+      ],
+      "publicationAllowed": false,
+      "wave": "drx-first100-source-discovery-wave-u-v1.json"
     }
   ]
 }
