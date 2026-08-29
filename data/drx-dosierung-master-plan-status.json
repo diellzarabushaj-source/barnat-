@@ -1,6 +1,6 @@
 {
   "schemaVersion": "drx-dosierung-master-plan-status-v1",
-  "updatedAt": "2026-08-29T12:30:13.000Z",
+  "updatedAt": "2026-08-29T12:33:36.201Z",
   "officialPlan": "DRx Dosierung phases 0-32",
   "databaseBlocker": {
     "active": true,
@@ -534,14 +534,19 @@
     {
       "id": 26,
       "name": "Dose Core Engine",
-      "status": "IMPLEMENTED_SHARED_CORE",
+      "status": "ADJUSTMENT_AWARE_RUNTIME_HARDENED_REPO_LIVE_VALIDATION_BLOCKED",
       "evidence": [
         "dosage-engine.js and calculators",
         "data/drx-dose-core-contract-v1.json",
         "dose-core.js",
-        "tests/drx-dose-core-test.js"
+        "tests/drx-dose-core-test.js",
+        "lib/dose-runtime-engine.js",
+        "tests/drx-dose-runtime-engine-test.js",
+        "renal/hepatic exact-match orchestration applies at most one dose-changing adjustment automatically",
+        "simultaneous renal+hepatic dose-changing adjustments fail closed to manual review",
+        "contraindicated/avoid/specialist_review adjustments never enter base dose calculation"
       ],
-      "next": "keep frontend/backend on dose-core and expand only with sourced renal/hepatic rule objects"
+      "next": "wire live V3 product rules into adjustment-aware runtime after Phase14 apply; validate golden renal/hepatic cases against persisted verified rows"
     },
     {
       "id": 27,
