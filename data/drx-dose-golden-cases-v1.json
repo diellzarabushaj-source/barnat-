@@ -122,6 +122,192 @@
         "publicationAllowed": false,
         "bindingStatus": "unbound"
       }
+    },
+    {
+      "id": "runtime-renal-reduction",
+      "type": "runtime_adjustment",
+      "rule": {
+        "ruleKey": "renal-reduce",
+        "patientGroup": "adult_only",
+        "calculationMethod": "fixed_dose",
+        "doseMinValue": 100,
+        "doseMaxValue": 100,
+        "doseUnit": "mg",
+        "frequencyMode": "single",
+        "renalAdjustmentRequired": true,
+        "renalAdjustments": [
+          {
+            "measureType": "CrCl_mL_min",
+            "minValue": 0,
+            "maxValue": 29,
+            "doseAction": "reduce_dose",
+            "doseFactor": 0.5,
+            "sourceKey": "emc-test",
+            "sourceSection": "4.2",
+            "sourceSectionSha256": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+            "sourceSnapshotId": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+            "sourceEvidenceHash": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+            "reviewStatus": "verified",
+            "verifiedBy": "reviewer",
+            "verifiedAt": "2026-08-29T12:00:00Z"
+          }
+        ]
+      },
+      "patient": {
+        "ageMonths": 300,
+        "crClMlMin": 20
+      },
+      "expected": {
+        "outcome": "calculated",
+        "perDose": {
+          "min": 50,
+          "max": 50
+        },
+        "appliedDomains": [
+          "renal"
+        ]
+      }
+    },
+    {
+      "id": "runtime-renal-needs-structured-input",
+      "type": "runtime_adjustment",
+      "rule": {
+        "ruleKey": "renal-input",
+        "patientGroup": "adult_only",
+        "calculationMethod": "fixed_dose",
+        "doseMinValue": 100,
+        "doseMaxValue": 100,
+        "doseUnit": "mg",
+        "frequencyMode": "single",
+        "renalAdjustmentRequired": true,
+        "renalAdjustments": [
+          {
+            "measureType": "CrCl_mL_min",
+            "minValue": 0,
+            "maxValue": 29,
+            "doseAction": "no_adjustment",
+            "sourceKey": "emc-test",
+            "sourceSection": "4.2",
+            "sourceSectionSha256": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+            "sourceSnapshotId": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+            "sourceEvidenceHash": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+            "reviewStatus": "verified",
+            "verifiedBy": "reviewer",
+            "verifiedAt": "2026-08-29T12:00:00Z"
+          }
+        ]
+      },
+      "patient": {
+        "ageMonths": 300
+      },
+      "expected": {
+        "outcome": "needs-input",
+        "missing": [
+          "CrCl_mL_min"
+        ]
+      }
+    },
+    {
+      "id": "runtime-renal-contraindicated",
+      "type": "runtime_adjustment",
+      "rule": {
+        "ruleKey": "renal-contra",
+        "patientGroup": "adult_only",
+        "calculationMethod": "fixed_dose",
+        "doseMinValue": 100,
+        "doseMaxValue": 100,
+        "doseUnit": "mg",
+        "frequencyMode": "single",
+        "renalAdjustmentRequired": true,
+        "renalAdjustments": [
+          {
+            "measureType": "CrCl_mL_min",
+            "minValue": 0,
+            "maxValue": 15,
+            "doseAction": "contraindicated",
+            "sourceKey": "emc-test",
+            "sourceSection": "4.2",
+            "sourceSectionSha256": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+            "sourceSnapshotId": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+            "sourceEvidenceHash": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+            "reviewStatus": "verified",
+            "verifiedBy": "reviewer",
+            "verifiedAt": "2026-08-29T12:00:00Z"
+          }
+        ]
+      },
+      "patient": {
+        "ageMonths": 300,
+        "crClMlMin": 10
+      },
+      "expected": {
+        "outcome": "manual-review",
+        "reason": "contraindicated"
+      }
+    },
+    {
+      "id": "runtime-dual-dose-change-manual",
+      "type": "runtime_adjustment",
+      "rule": {
+        "ruleKey": "dual-change",
+        "patientGroup": "adult_only",
+        "calculationMethod": "fixed_dose",
+        "doseMinValue": 100,
+        "doseMaxValue": 100,
+        "doseUnit": "mg",
+        "frequencyMode": "single",
+        "renalAdjustmentRequired": true,
+        "hepaticAdjustmentRequired": true,
+        "renalAdjustments": [
+          {
+            "measureType": "CrCl_mL_min",
+            "minValue": 0,
+            "maxValue": 29,
+            "doseAction": "reduce_dose",
+            "doseFactor": 0.5,
+            "sourceKey": "emc-test",
+            "sourceSection": "4.2",
+            "sourceSectionSha256": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+            "sourceSnapshotId": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+            "sourceEvidenceHash": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+            "reviewStatus": "verified",
+            "verifiedBy": "reviewer",
+            "verifiedAt": "2026-08-29T12:00:00Z"
+          }
+        ],
+        "hepaticAdjustments": [
+          {
+            "measureType": "Child_Pugh_class",
+            "severityOrClass": [
+              "B"
+            ],
+            "doseAction": "extend_interval",
+            "intervalMinHours": 12,
+            "sourceKey": "emc-test",
+            "sourceSection": "4.2",
+            "sourceSectionSha256": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+            "sourceSnapshotId": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+            "sourceEvidenceHash": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+            "reviewStatus": "verified",
+            "verifiedBy": "reviewer",
+            "verifiedAt": "2026-08-29T12:00:00Z"
+          }
+        ]
+      },
+      "patient": {
+        "ageMonths": 300,
+        "crClMlMin": 20,
+        "childPughClass": "B"
+      },
+      "expected": {
+        "outcome": "manual-review",
+        "reason": "multiple_dose_changing_adjustments_require_manual_review"
+      }
     }
-  ]
+  ],
+  "qaScope": {
+    "baseMathCases": 4,
+    "adjustmentRuntimeCases": 4,
+    "failClosedCases": 6
+  }
 }
