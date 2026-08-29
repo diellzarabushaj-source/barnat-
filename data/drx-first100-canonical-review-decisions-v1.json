@@ -4,7 +4,7 @@
   "total": 13,
   "resolved": 2,
   "pending": 11,
-  "effectiveSourceDiscoveryEligible": 89,
+  "effectiveSourceDiscoveryEligible": 88,
   "publicationAllowed": false,
   "decisions": [
     {
@@ -140,5 +140,11 @@
       "sourceDiscoveryEligible": false,
       "publicationAllowed": false
     }
+  ],
+  "effectiveUniqueSourceDiscoveryEligible": 88,
+  "resolutionNotes": [
+    "Resolved canonical targets are deduplicated against already-eligible canonical keys.",
+    "amlodipineramipril adds one new eligible canonical target.",
+    "betamethasonedipropionate is already present as an eligible canonical target and does not increase the unique denominator."
   ]
 }
