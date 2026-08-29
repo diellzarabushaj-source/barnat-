@@ -120,6 +120,21 @@ assert.equal(
   'EU_NATIONAL'
 );
 
+const aifa = Policy.rankCandidate({
+  url:'https://www.aifa.gov.it/documents/20142/1159780/Esiti_CTS_13-14-15-20-26_maggio_2020_AVPM.pdf',
+  documentType:'PRODUCT_INFORMATION',
+  documentDate:'2020-05-26',
+  productSpecific:true,
+  productMatch:true,
+  hasDoseSection:true,
+});
+assert.equal(aifa.tier.key, 'EU_NATIONAL');
+assert.equal(aifa.publicationEligible, true);
+assert.equal(
+  Policy.sourceTierForUrl('https://www.aifa.gov.it/example').key,
+  'EU_NATIONAL'
+);
+
 const kosovo = Policy.rankCandidate({
   url:'https://akppm.rks-gov.net/example',
   documentType:'PRODUCT_REGISTER',
