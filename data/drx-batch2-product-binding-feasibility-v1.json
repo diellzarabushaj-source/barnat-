@@ -1,6 +1,6 @@
 {
   "schemaVersion": "drx-batch2-product-binding-feasibility-v1",
-  "measuredAt": "2026-08-29T18:55:00.000Z",
+  "measuredAt": "2026-08-29T21:32:25.000Z",
   "measuredAgainst": {
     "project": "ftuchtmolddhhsdcwnqe",
     "drugsRows": 4015,
@@ -19,57 +19,172 @@
     "blockedByStrengthAbsent": 9
   },
   "bindable": [
-    { "canonicalKey": "ramipril", "smpcStrength": "5 mg", "kosovoProducts": 22, "exactStrengthProducts": 5 },
-    { "canonicalKey": "carvedilol", "smpcStrength": "25 mg", "kosovoProducts": 13, "exactStrengthProducts": 4 },
-    { "canonicalKey": "loratadine", "smpcStrength": "10 mg", "kosovoProducts": 8, "exactStrengthProducts": 4 },
-    { "canonicalKey": "metronidazole", "smpcStrength": "500 mg", "kosovoProducts": 26, "exactStrengthProducts": 4 },
-    { "canonicalKey": "pantoprazole", "smpcStrength": "40 mg", "kosovoProducts": 5, "exactStrengthProducts": 4 },
-    { "canonicalKey": "clopidogrel", "smpcStrength": "75 mg", "kosovoProducts": 3, "exactStrengthProducts": 3 },
-    { "canonicalKey": "naproxen", "smpcStrength": "500 mg", "kosovoProducts": 4, "exactStrengthProducts": 3 },
-    { "canonicalKey": "prednisolone", "smpcStrength": "5 mg", "kosovoProducts": 6, "exactStrengthProducts": 3 },
-    { "canonicalKey": "amlodipine", "smpcStrength": "5 mg", "kosovoProducts": 13, "exactStrengthProducts": 1 },
-    { "canonicalKey": "aspirin", "smpcStrength": "75 mg", "kosovoProducts": 1, "exactStrengthProducts": 1 },
-    { "canonicalKey": "cefalexin", "smpcStrength": "250 mg", "kosovoProducts": 2, "exactStrengthProducts": 1 },
-    { "canonicalKey": "doxycycline", "smpcStrength": "100 mg", "kosovoProducts": 1, "exactStrengthProducts": 1 }
+    {
+      "canonicalKey": "ramipril",
+      "smpcStrength": "5 mg",
+      "kosovoProducts": 22,
+      "exactStrengthProducts": 5
+    },
+    {
+      "canonicalKey": "carvedilol",
+      "smpcStrength": "25 mg",
+      "kosovoProducts": 13,
+      "exactStrengthProducts": 4
+    },
+    {
+      "canonicalKey": "loratadine",
+      "smpcStrength": "10 mg",
+      "kosovoProducts": 8,
+      "exactStrengthProducts": 4
+    },
+    {
+      "canonicalKey": "metronidazole",
+      "smpcStrength": "500 mg",
+      "kosovoProducts": 26,
+      "exactStrengthProducts": 4
+    },
+    {
+      "canonicalKey": "pantoprazole",
+      "smpcStrength": "40 mg",
+      "kosovoProducts": 5,
+      "exactStrengthProducts": 4
+    },
+    {
+      "canonicalKey": "clopidogrel",
+      "smpcStrength": "75 mg",
+      "kosovoProducts": 3,
+      "exactStrengthProducts": 3
+    },
+    {
+      "canonicalKey": "naproxen",
+      "smpcStrength": "500 mg",
+      "kosovoProducts": 4,
+      "exactStrengthProducts": 3
+    },
+    {
+      "canonicalKey": "prednisolone",
+      "smpcStrength": "5 mg",
+      "kosovoProducts": 6,
+      "exactStrengthProducts": 3
+    },
+    {
+      "canonicalKey": "amlodipine",
+      "smpcStrength": "5 mg",
+      "kosovoProducts": 13,
+      "exactStrengthProducts": 1
+    },
+    {
+      "canonicalKey": "aspirin",
+      "smpcStrength": "75 mg",
+      "kosovoProducts": 1,
+      "exactStrengthProducts": 1
+    },
+    {
+      "canonicalKey": "cefalexin",
+      "smpcStrength": "250 mg",
+      "kosovoProducts": 2,
+      "exactStrengthProducts": 1
+    },
+    {
+      "canonicalKey": "doxycycline",
+      "smpcStrength": "100 mg",
+      "kosovoProducts": 1,
+      "exactStrengthProducts": 1
+    }
   ],
   "blocked": [
     {
       "canonicalKey": "bisoprolol",
       "smpcStrength": "10 mg",
       "reason": "canonical_key_not_in_substance_concepts",
-      "detail": "The registry keys the salt: bisoprololfumarate (10 mg exists, 6 products), plus bisoprololfumaratemicronized and bisoprololhemifumarate. The SmPC canonical key is the base.",
-      "fixable": "canonical_equivalence"
+      "detail": "Registry keys bisoprololfumarate, which has 6 products at exactly the 10 mg the SmPC describes. But sections 4.1 and 4.2 never name the salt, so whether that 10 mg is fumarate or base is unproven.",
+      "fixable": "blocked_on_section_2_archival"
     },
     {
       "canonicalKey": "cetirizine",
       "smpcStrength": "10 mg",
       "reason": "canonical_key_not_in_substance_concepts",
-      "detail": "Registry almost certainly keys the salt (cetirizine dihydrochloride); needs the same base/salt equivalence treatment as bisoprolol.",
-      "fixable": "canonical_equivalence"
+      "detail": "Registry keys cetirizinedihydrochloride (7 products at 10 mg). Section 4.2 says only \"1 tablet (10 mg) once daily\" and never names the salt.",
+      "fixable": "blocked_on_section_2_archival"
     },
     {
       "canonicalKey": "diclofenac",
       "smpcStrength": "100 mg",
       "reason": "canonical_key_not_in_substance_concepts",
-      "detail": "Registry keys the salt (diclofenac sodium/potassium). Salt choice also changes release behaviour, so the prolonged-release form must be matched too, not just the strength.",
-      "fixable": "canonical_equivalence_plus_form_check"
+      "detail": "Registry keys diclofenacsodium (55 products), and section 4.2 names the salt itself: \"Adults: One 100 mg diclofenac sodium prolonged-release tablet daily\". Six registry products match 100 mg prolonged-release exactly.",
+      "fixable": "canonical_equivalence_source_proven"
     },
     {
       "canonicalKey": "levothyroxine",
       "smpcStrength": "50 micrograms",
       "reason": "canonical_key_not_in_substance_concepts",
-      "detail": "Registry keys levothyroxine sodium. Microgram dosing makes a wrong strength binding especially dangerous here.",
-      "fixable": "canonical_equivalence"
+      "detail": "Registry keys levothyroxinesodium (16 products at 50 micrograms). The archived sections never name the salt, and microgram dosing makes an unproven assumption especially unsafe.",
+      "fixable": "blocked_on_section_2_archival"
     },
-    { "canonicalKey": "atorvastatin", "smpcStrength": "80 mg", "reason": "strength_not_on_market", "detail": "Kosovo stocks 10, 20 and 40 mg film-coated tablets. No 80 mg.", "fixable": "reselect_source" },
-    { "canonicalKey": "ciprofloxacin", "smpcStrength": "250 mg", "reason": "strength_not_on_market", "detail": "Kosovo stocks 500 mg film-coated tablets plus infusion and drop presentations. No 250 mg tablet.", "fixable": "reselect_source" },
-    { "canonicalKey": "dexamethasone", "smpcStrength": "2 mg", "reason": "strength_not_on_market", "detail": "11 dexamethasone products, none at 2 mg soluble tablet.", "fixable": "reselect_source" },
-    { "canonicalKey": "furosemide", "smpcStrength": "10 mg/mL", "reason": "strength_not_on_market", "detail": "9 furosemide products, none matching the 10 mg/mL injection concentration as written.", "fixable": "reselect_source" },
-    { "canonicalKey": "gliclazide", "smpcStrength": "40 mg", "reason": "strength_not_on_market", "detail": "3 gliclazide products, none at 40 mg.", "fixable": "reselect_source" },
-    { "canonicalKey": "losartan", "smpcStrength": "12.5 mg", "reason": "strength_not_on_market", "detail": "Kosovo stocks 50 and 100 mg. No 12.5 mg.", "fixable": "reselect_source" },
-    { "canonicalKey": "ondansetron", "smpcStrength": "4 mg", "reason": "strength_not_on_market", "detail": "3 ondansetron products, none at 4 mg film-coated tablet.", "fixable": "reselect_source" },
-    { "canonicalKey": "spironolactone", "smpcStrength": "12.5 mg", "reason": "strength_not_on_market", "detail": "8 spironolactone products, none at 12.5 mg.", "fixable": "reselect_source" },
-    { "canonicalKey": "tramadol", "smpcStrength": "50 mg", "reason": "strength_not_on_market", "detail": "3 tramadol products, none at 50 mg hard capsule.", "fixable": "reselect_source" }
+    {
+      "canonicalKey": "atorvastatin",
+      "smpcStrength": "80 mg",
+      "reason": "strength_not_on_market",
+      "detail": "Kosovo stocks 10, 20 and 40 mg film-coated tablets. No 80 mg.",
+      "fixable": "reselect_source"
+    },
+    {
+      "canonicalKey": "ciprofloxacin",
+      "smpcStrength": "250 mg",
+      "reason": "strength_not_on_market",
+      "detail": "Kosovo stocks 500 mg film-coated tablets plus infusion and drop presentations. No 250 mg tablet.",
+      "fixable": "reselect_source"
+    },
+    {
+      "canonicalKey": "dexamethasone",
+      "smpcStrength": "2 mg",
+      "reason": "strength_not_on_market",
+      "detail": "11 dexamethasone products, none at 2 mg soluble tablet.",
+      "fixable": "reselect_source"
+    },
+    {
+      "canonicalKey": "furosemide",
+      "smpcStrength": "10 mg/mL",
+      "reason": "strength_not_on_market",
+      "detail": "9 furosemide products, none matching the 10 mg/mL injection concentration as written.",
+      "fixable": "reselect_source"
+    },
+    {
+      "canonicalKey": "gliclazide",
+      "smpcStrength": "40 mg",
+      "reason": "strength_not_on_market",
+      "detail": "3 gliclazide products, none at 40 mg.",
+      "fixable": "reselect_source"
+    },
+    {
+      "canonicalKey": "losartan",
+      "smpcStrength": "12.5 mg",
+      "reason": "strength_not_on_market",
+      "detail": "Kosovo stocks 50 and 100 mg. No 12.5 mg.",
+      "fixable": "reselect_source"
+    },
+    {
+      "canonicalKey": "ondansetron",
+      "smpcStrength": "4 mg",
+      "reason": "strength_not_on_market",
+      "detail": "3 ondansetron products, none at 4 mg film-coated tablet.",
+      "fixable": "reselect_source"
+    },
+    {
+      "canonicalKey": "spironolactone",
+      "smpcStrength": "12.5 mg",
+      "reason": "strength_not_on_market",
+      "detail": "8 spironolactone products, none at 12.5 mg.",
+      "fixable": "reselect_source"
+    },
+    {
+      "canonicalKey": "tramadol",
+      "smpcStrength": "50 mg",
+      "reason": "strength_not_on_market",
+      "detail": "3 tramadol products, none at 50 mg hard capsule.",
+      "fixable": "reselect_source"
+    }
   ],
-  "next": "Two different fixes, not one. The four canonical-key blocks are a base/salt equivalence gap and can be resolved in the existing substance equivalence layer. The nine strength blocks cannot: they need source discovery rerun against strengths the Kosovo registry actually carries. Binding must stay empty for all thirteen until their own fix lands."
+  "next": "Three fixes, not one. (1) diclofenac is source-proven and needs only a clinical sign-off on the prepared equivalence proposal. (2) bisoprolol, cetirizine and levothyroxine are blocked on archiving SmPC section 2, which requires changing the parser and the section_code constraint together. (3) The nine strength blocks need source discovery rerun against strengths the Kosovo registry actually carries; no equivalence work reaches them. Binding stays empty for all thirteen until their own fix lands.",
+  "saltEvidenceFinding": "Only one of the four canonical-key blocks can be closed with archived evidence. The salt and strength basis is declared in SmPC section 2, and the pipeline cannot reach it: lib/smpc-parser.js parses 4.1-4.9 only, and dose_source_sections_v3 constrains section_code to ^4\\.[1-9]$ so section 2 could not be stored even if parsed. Proposals recorded in data/drx-batch2-salt-equivalence-proposals-v1.json."
 }

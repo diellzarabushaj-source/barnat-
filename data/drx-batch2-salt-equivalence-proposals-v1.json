@@ -1,0 +1,55 @@
+{
+  "schemaVersion": "drx-batch2-salt-equivalence-proposals-v1",
+  "preparedAt": "2026-08-29T19:05:00.000Z",
+  "status": "PROPOSED_AWAITING_CLINICAL_REVIEW",
+  "targetTable": "public.substance_equivalence_reviewed_v1",
+  "rule": "These are proposals, not decisions. substance_equivalence_reviewed_v1 records who decided and on what evidence, so nothing here may be inserted under a review identifier until a person actually reviews it. A base-to-salt mapping asserts that the strength on the label means the same quantity in both, which is a dosing claim.",
+  "evidenceBasis": "Archived SmPC sections in dose_source_sections_v3, hash-pinned to the CI attestation. A proposal is only 'source_proven' when the archived section names the salt itself.",
+  "proposals": [
+    {
+      "sourceKey": "diclofenac",
+      "canonicalKey": "diclofenacsodium",
+      "confidence": "source_proven",
+      "quote": "Adults: One 100 mg diclofenac sodium prolonged-release tablet daily",
+      "quotedFrom": "section 4.2",
+      "snapshotId": "446826fb66295c443bbef21854f8f9b712a2a5251954ff1b014a9e28dc014979",
+      "evidenceUrls": ["https://www.medicines.org.uk/emc/product/2662/smpc"],
+      "registryMatch": {
+        "strength": "100 mg",
+        "pharmaceuticalForm": "Prolonged-release tablet",
+        "products": 6
+      },
+      "note": "Strength, salt and release form all match, and the salt is named by the archived section rather than inferred. The form check matters here: the same 100 mg also exists as suppository, modified-release and gastro-resistant products, and a prolonged-release rule must not bind to those."
+    }
+  ],
+  "blockedProposals": [
+    {
+      "sourceKey": "bisoprolol",
+      "likelyCanonicalKey": "bisoprololfumarate",
+      "confidence": "unproven_by_archived_evidence",
+      "registryMatch": { "strength": "10 mg", "products": 6 },
+      "why": "Sections 4.1 and 4.2 never name the salt. The strength exists in the registry under bisoprololfumarate, but whether the SmPC's 10 mg is 10 mg of fumarate or of base is declared in section 2, which is not archived."
+    },
+    {
+      "sourceKey": "cetirizine",
+      "likelyCanonicalKey": "cetirizinedihydrochloride",
+      "confidence": "unproven_by_archived_evidence",
+      "registryMatch": { "strength": "10 mg", "products": 7 },
+      "why": "Section 4.2 says only '1 tablet (10 mg) once daily'. The salt is never named in the archived sections."
+    },
+    {
+      "sourceKey": "levothyroxine",
+      "likelyCanonicalKey": "levothyroxinesodium",
+      "confidence": "unproven_by_archived_evidence",
+      "registryMatch": { "strength": "50 micrograms", "products": 16 },
+      "why": "The archived sections never name the salt. Microgram dosing makes an unproven base-to-salt assumption particularly unsafe here."
+    }
+  ],
+  "pipelineGap": {
+    "finding": "The salt and strength basis of a medicine is declared in SmPC section 2 (qualitative and quantitative composition). The pipeline cannot reach it, at two independent layers.",
+    "parserLayer": "lib/smpc-parser.js SECTION_TITLES covers 4.1 through 4.9 only, so section 2 is never extracted.",
+    "schemaLayer": "dose_source_sections_v3 constrains section_code with check (section_code ~ '^4\\.[1-9]$'), so section 2 could not be stored even if it were parsed.",
+    "consequence": "Three of the four base-to-salt gaps cannot be closed with evidence until section 2 is archived. Both layers must change together: parsing section 2 without relaxing the constraint would silently drop it.",
+    "doNot": "Do not close these by assuming the usual convention. The convention is usually right, which is exactly what makes an unchecked assumption here easy to miss and dangerous when wrong."
+  }
+}
