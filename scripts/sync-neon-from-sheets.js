@@ -2,7 +2,7 @@
 
 const crypto = require('node:crypto');
 const XLSX = require('xlsx');
-const { neonRequest, exactCount } = require('../lib/neon-data-api');
+const { neonRequest, exactCount } = require('../lib/medindex-data-api.js');
 
 const SOURCES = Object.freeze({
   registry: 'https://drive.usercontent.google.com/download?id=1SY2rb2Eqo3fVkRhgQ8ltJHCRrWyAUDvd&export=download&confirm=t',
