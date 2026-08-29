@@ -1,7 +1,7 @@
 {
   "schemaVersion": "drx-final-cleanup-manifest-v1",
-  "updatedAt": "2026-08-29T03:50:28.232Z",
-  "status": "gated_known_legacy_consumers_present",
+  "updatedAt": "2026-08-29T12:45:01.281Z",
+  "status": "gated_executable_audit_known_legacy_consumers_present",
   "publicationAllowed": false,
   "destructiveCleanupAllowed": false,
   "legacyRuntime": [
@@ -100,5 +100,12 @@
     "production_soak",
     "only_then_remove_legacy_tables_or_wrappers"
   ],
-  "action": "retain_legacy_read_paths_as_explicit_compatibility_fallbacks_until_every_removal_gate_is evidenced"
+  "action": "retain legacy read paths until executable runtime audit reports zero consumers AND V3 parity/rollback/soak gates pass",
+  "audit": {
+    "script": "scripts/audit-drx-legacy-consumers.js",
+    "test": "tests/drx-legacy-consumer-audit-test.js",
+    "zeroKnownLegacyConsumers": false,
+    "destructiveCleanupAllowed": false,
+    "runtimeScanRequiredEveryRelease": true
+  }
 }
