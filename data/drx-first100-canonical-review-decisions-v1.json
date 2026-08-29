@@ -1,74 +1,212 @@
 {
   "schemaVersion": "drx-first100-canonical-review-decisions-v1",
-  "generatedAt": "2026-08-29T09:05:00+02:00",
+  "generatedAt": "2026-08-29T09:48:00+02:00",
   "total": 13,
-  "resolved": 2,
-  "pending": 11,
-  "effectiveSourceDiscoveryEligible": 88,
+  "resolved": 13,
+  "pending": 0,
+  "canonicalReviewOpen": 0,
+  "dispositionCounts": {
+    "dedupeExistingCanonical": 3,
+    "replaceWithCleanCanonical": 2,
+    "removeProductLevelMixture": 7,
+    "requiresProductSelection": 1
+  },
+  "effectiveSourceDiscoveryEligible": 89,
+  "effectiveUniqueSourceDiscoveryEligible": 89,
+  "queueRegenerationRequired": true,
+  "queueRowsRemovedOrDeduped": 10,
+  "refillRowsRequired": 10,
   "publicationAllowed": false,
   "decisions": [
     {
       "canonicalKey": "2h20potassiumchloridesodiumchloride",
       "sourceName": "2h20 + Potassium chloride + Sodium chloride",
-      "decision": "source_expression_reconstruction_required",
-      "confidence": "insufficient_for_auto_resolution",
-      "evidence": [],
+      "decision": "resolved_duplicate_existing_canonical",
+      "confidence": "high",
+      "evidence": [
+        {
+          "authority": "Kosovo registry source sheet",
+          "finding": "Product row identifies 'Calcium chloride 2H20' as calcium chloride dihydrate; this dirty token is already represented by the clean Ringer canonical target."
+        }
+      ],
       "sourceDiscoveryEligible": false,
-      "publicationAllowed": false
+      "publicationAllowed": false,
+      "dispositionResolved": true,
+      "canonicalIdentityResolved": true,
+      "queueDisposition": "dedupe_existing_canonical",
+      "resolvedCanonicalKey": "calciumchloridepotassiumchloridesodiumchloride",
+      "resolvedCanonicalName": "Calcium chloride dihydrate + Potassium chloride + Sodium chloride",
+      "registryAnchor": {
+        "tradeName": "RINGER Fresenius",
+        "pdid": "880",
+        "atcCode": "B05BB01",
+        "activeSubstance": "Sodium chloride; Potassium chloride; Calcium chloride 2H20"
+      },
+      "productSelectionRequired": false,
+      "doseSourceReady": false
     },
     {
       "canonicalKey": "alaninearginineasparticacidcalciumchloridedihydrogenglucoseglutamicacidglycinehistidineisoleucineleucinelysinemethioninephenylalaninepotassiumacetateprolineserinesodiumacetatesodiumchloridesodiumhydroxidesoyabeanoiltetrahydratethreoninetriglyceridesmediumchaintryptophanvalinezinc",
       "sourceName": "Alanine + Arginine + Aspartic acid + Calcium chloride + Dihydrogen + Glucose + Glutamic acid + Glycine + Histidine + Isoleucine + Leucine + Lysine + Methionine + Phenylalanine + Potassium acetate + Proline + Serine + Sodium acetate + Sodium chloride + Sodium hydroxide + Soya bean oil + Tetrahydrate + Threonine + Triglycerides medium chain + Tryptophan + Valine + Zinc",
-      "decision": "source_expression_reconstruction_required",
-      "confidence": "insufficient_for_auto_resolution",
-      "evidence": [],
+      "decision": "resolved_product_level_parenteral_nutrition_mixture",
+      "confidence": "high",
+      "evidence": [
+        {
+          "authority": "Kosovo registry source sheet",
+          "finding": "The long string is the component expression of the multichamber parenteral-nutrition product NuTRIflex Lipid peri, not one canonical active substance."
+        }
+      ],
       "sourceDiscoveryEligible": false,
-      "publicationAllowed": false
+      "publicationAllowed": false,
+      "dispositionResolved": true,
+      "canonicalIdentityResolved": true,
+      "queueDisposition": "remove_product_level_mixture",
+      "resolvedProductFamily": "NuTRIflex Lipid peri",
+      "registryAnchor": {
+        "tradeName": "NuTRIflex Lipid peri",
+        "pdid": "1343",
+        "atcCode": "B05BA10",
+        "form": "Emulsion for infusion"
+      },
+      "productSelectionRequired": false,
+      "doseSourceReady": false
     },
     {
       "canonicalKey": "alaninearginineasparticacidcalciumchlorideglucoseglutamicacidglycerolmonoglycineheptahydratehistidineisoleucineleucinelysinemethioninephenylalaninepotassiumchlorideprolineserinesodiumacetatesoyabeanoilthreoninetryptophantyrosinevaline",
       "sourceName": "Alanine + Arginine + Aspartic acid + Calcium chloride + Glucose + Glutamic acid + Glycerol mono + Glycine + Heptahydrate + Histidine + Isoleucine + Leucine + Lysine + Methionine + Phenylalanine + Potassium chloride + Proline + Serine + Sodium acetate + Soyabean oil + Threonine + Tryptophan + Tyrosine + Valine",
-      "decision": "source_expression_reconstruction_required",
-      "confidence": "insufficient_for_auto_resolution",
-      "evidence": [],
+      "decision": "resolved_product_level_parenteral_nutrition_mixture",
+      "confidence": "high",
+      "evidence": [
+        {
+          "authority": "AEMPS_CIMA",
+          "url": "https://cima.aemps.es/cima/dochtml/ft/63596/FichaTecnica_63596.html",
+          "finding": "Official ficha técnica identifies Kabiven Periférico as a three-chamber parenteral nutrition product containing glucose, amino acids/electrolytes and lipid emulsion; §4.1 and §4.2 are product-level."
+        }
+      ],
       "sourceDiscoveryEligible": false,
-      "publicationAllowed": false
+      "publicationAllowed": false,
+      "dispositionResolved": true,
+      "canonicalIdentityResolved": true,
+      "queueDisposition": "remove_product_level_mixture",
+      "resolvedProductFamily": "Kabiven Peripheral",
+      "registryAnchor": {
+        "tradeName": "Kabiven Peripher",
+        "pdid": "905",
+        "atcCode": "B05BA10",
+        "form": "Emulsion for infusion"
+      },
+      "productSelectionRequired": false,
+      "doseSourceReady": false
     },
     {
       "canonicalKey": "alaninearginineasparticaciddodecahydrateglutamicacidglycinehexahydratehistidineisoleucineleucinelysinemethioninephenylalaninepotassiumacetateprolineserinesodiumacetatesodiumhydroxidethreoninetryptophantyrosinevaline",
       "sourceName": "Alanine + Arginine + Aspartic acid + Dodecahydrate + Glutamic acid + Glycine + Hexahydrate + Histidine + Isoleucine + Leucine + Lysine + Methionine + Phenylalanine + Potassium acetate + Proline + Serine + Sodium acetate + Sodium hydroxide + Threonine + Tryptophan + Tyrosine + Valine",
-      "decision": "source_expression_reconstruction_required",
-      "confidence": "insufficient_for_auto_resolution",
-      "evidence": [],
+      "decision": "resolved_product_level_amino_acid_electrolyte_mixture",
+      "confidence": "high",
+      "evidence": [
+        {
+          "authority": "Kosovo registry source sheet",
+          "finding": "The expression belongs to Aminoplasmal 10% E/5% E infusion products and includes hydrate/equivalence wording; it is not one canonical substance."
+        }
+      ],
       "sourceDiscoveryEligible": false,
-      "publicationAllowed": false
+      "publicationAllowed": false,
+      "dispositionResolved": true,
+      "canonicalIdentityResolved": true,
+      "queueDisposition": "remove_product_level_mixture",
+      "resolvedProductFamily": "Aminoplasmal B. Braun E",
+      "registryAnchor": {
+        "tradeNames": [
+          "Aminoplasmal B.Braun 10% E",
+          "Aminoplasmal B. Braun 5% E"
+        ],
+        "pdids": [
+          "1327",
+          "1325"
+        ],
+        "atcCode": "B05BA10",
+        "form": "Solution for infusion"
+      },
+      "productSelectionRequired": false,
+      "doseSourceReady": false
     },
     {
       "canonicalKey": "alanineargininecalciumchlorideglucoseglutamicacidglycinehistidineequisoleucineleucinelysineequtomethioninephenylalaninepotassiumacetateprolineserinesodiumacetatesodiumchloridesodiumhydroxidetetrahydratethreoninetryptophanvaline",
       "sourceName": "Alanine + Arginine + Calcium chloride + Glucose + Glutamic acid + Glycine + Histidine equ + Isoleucine + Leucine + Lysine equto + Methionine + Phenylalanine + Potassium acetate + Proline + Serine + Sodium acetate + Sodium chloride + Sodium hydroxide + Tetrahydrate + Threonine + Tryptophan + Valine",
-      "decision": "source_expression_reconstruction_required",
-      "confidence": "insufficient_for_auto_resolution",
-      "evidence": [],
+      "decision": "resolved_duplicate_product_level_parenteral_nutrition_mixture",
+      "confidence": "high",
+      "evidence": [
+        {
+          "authority": "Kosovo registry source sheet",
+          "finding": "The 'equto/equ' tokens are equivalence text inside a second NuTRIflex Lipid peri registry presentation, not distinct active ingredients."
+        }
+      ],
       "sourceDiscoveryEligible": false,
-      "publicationAllowed": false
+      "publicationAllowed": false,
+      "dispositionResolved": true,
+      "canonicalIdentityResolved": true,
+      "queueDisposition": "remove_product_level_mixture",
+      "resolvedProductFamily": "NuTRIflex Lipid peri",
+      "registryAnchor": {
+        "tradeName": "NuTRIflex Lipid peri",
+        "pdid": "1340",
+        "atcCode": "B05BA10",
+        "form": "Emulsion for infusion"
+      },
+      "productSelectionRequired": false,
+      "doseSourceReady": false
     },
     {
       "canonicalKey": "alfatocopherylascorbicacidcholecalciferolconcentratecopperpentahydratedcyanocobalaminmannitolferrousfolicacidhydrogenmagnesiumlactatemanganesemolybdatenicotinamidepantothenatepyridoxineriboflavinthiaminevitaminconcentratesyntheticoilyzincheptahydrate",
       "sourceName": "Alfa tocopheryl + Ascorbic acid + Cholecalciferol concentrate + Copper pentahydrated + Cyanocobalamin mannitol + Ferrous + Folic acid + Hydrogen + Magnesium lactate + Manganese + Molybdate + Nicotinamide + Pantothenate + Pyridoxine + Riboflavin + Thiamine + Vitamin concentrate synthetic oily + Zinc heptahydrate",
-      "decision": "source_expression_reconstruction_required",
-      "confidence": "insufficient_for_auto_resolution",
-      "evidence": [],
+      "decision": "resolved_product_level_multivitamin_mineral_combination",
+      "confidence": "high",
+      "evidence": [
+        {
+          "authority": "Kosovo registry source sheet",
+          "finding": "The long expression is the complete vitamin/mineral composition of DUOVIT®, not a standalone canonical active substance."
+        }
+      ],
       "sourceDiscoveryEligible": false,
-      "publicationAllowed": false
+      "publicationAllowed": false,
+      "dispositionResolved": true,
+      "canonicalIdentityResolved": true,
+      "queueDisposition": "remove_product_level_mixture",
+      "resolvedProductFamily": "DUOVIT",
+      "registryAnchor": {
+        "tradeName": "DUOVIT®",
+        "pdid": "4511",
+        "atcCode": "A11AA03",
+        "form": "Coated tablet"
+      },
+      "productSelectionRequired": false,
+      "doseSourceReady": false
     },
     {
       "canonicalKey": "aminoacids",
       "sourceName": "Aminoacids",
-      "decision": "generic_or_group_label_requires_product_resolution",
-      "confidence": "insufficient_for_auto_resolution",
-      "evidence": [],
+      "decision": "resolved_generic_group_label_to_product_level_mixture",
+      "confidence": "high",
+      "evidence": [
+        {
+          "authority": "Kosovo registry source sheet",
+          "finding": "The registry value 'Aminoacids' is a generic group label attached to AMINOVEN 5%, not a chemically defined canonical substance."
+        }
+      ],
       "sourceDiscoveryEligible": false,
-      "publicationAllowed": false
+      "publicationAllowed": false,
+      "dispositionResolved": true,
+      "canonicalIdentityResolved": true,
+      "queueDisposition": "remove_product_level_mixture",
+      "resolvedProductFamily": "AMINOVEN 5%",
+      "registryAnchor": {
+        "tradeName": "AMINOVEN 5%",
+        "pdid": "933",
+        "atcCode": "B05BA10",
+        "form": "Solution for infusion"
+      },
+      "productSelectionRequired": false,
+      "doseSourceReady": false
     },
     {
       "canonicalKey": "amlodipinebesilate2ramipril",
@@ -79,22 +217,52 @@
         {
           "authority": "AEMPS_CIMA",
           "url": "https://cima.aemps.es/cima/dochtml/ft/82689/FT_82689.html",
-          "finding": "Official composition states ramipril plus amlodipine besilate equivalent to amlodipine; the source token 'besilate2' is not a separate active ingredient. Sections 4.1 and 4.2 confirm the fixed-combination product context."
+          "finding": "Official composition states ramipril plus amlodipine besilate equivalent to amlodipine; 'besilate2' is a corrupted salt/equivalence token, not a separate ingredient."
         }
       ],
       "sourceDiscoveryEligible": true,
       "publicationAllowed": false,
       "resolvedCanonicalKey": "amlodipineramipril",
-      "resolvedCanonicalName": "Amlodipine + Ramipril"
+      "resolvedCanonicalName": "Amlodipine + Ramipril",
+      "dispositionResolved": true,
+      "canonicalIdentityResolved": true,
+      "queueDisposition": "replace_with_clean_canonical",
+      "productSelectionRequired": false,
+      "doseSourceReady": true
     },
     {
       "canonicalKey": "amylaselipasepanceatintotalproteases",
       "sourceName": "Amylase + Lipase + Panceatin + Total proteases",
-      "decision": "source_expression_reconstruction_required",
-      "confidence": "insufficient_for_auto_resolution",
-      "evidence": [],
-      "sourceDiscoveryEligible": false,
-      "publicationAllowed": false
+      "decision": "resolved_enzyme_activity_expression_to_pancreatin",
+      "confidence": "high",
+      "evidence": [
+        {
+          "authority": "EMC",
+          "url": "https://www.medicines.org.uk/emc/product/1167/smpc",
+          "finding": "Current Creon 10000 SmPC identifies pancreatin as the active ingredient; lipase, amylase and protease are enzyme activities expressed in Ph. Eur. units."
+        }
+      ],
+      "sourceDiscoveryEligible": true,
+      "publicationAllowed": false,
+      "dispositionResolved": true,
+      "canonicalIdentityResolved": true,
+      "queueDisposition": "replace_with_clean_canonical",
+      "resolvedCanonicalKey": "pancreatin",
+      "resolvedCanonicalName": "Pancreatin",
+      "registryAnchor": {
+        "tradeNames": [
+          "CREON 10000",
+          "Creon 25000"
+        ],
+        "pdids": [
+          "5685",
+          "2894",
+          "2873"
+        ],
+        "atcCode": "A09AA02"
+      },
+      "productSelectionRequired": false,
+      "doseSourceReady": true
     },
     {
       "canonicalKey": "betamethasonedipropionateequivalntbetamethasone",
@@ -105,46 +273,100 @@
       "confidence": "high",
       "evidence": [
         {
-          "authority": "eMC",
+          "authority": "EMC",
           "url": "https://www.medicines.org.uk/emc/product/6405/smpc",
-          "finding": "Official product composition expresses betamethasone dipropionate as equivalent to betamethasone; this is potency/equivalence wording, not a second active ingredient."
+          "finding": "Official product composition expresses betamethasone dipropionate as equivalent to betamethasone; equivalence wording is not a second active ingredient."
         }
       ],
       "sourceDiscoveryEligible": true,
-      "publicationAllowed": false
+      "publicationAllowed": false,
+      "dispositionResolved": true,
+      "canonicalIdentityResolved": true,
+      "queueDisposition": "dedupe_existing_canonical",
+      "productSelectionRequired": false,
+      "doseSourceReady": false
     },
     {
       "canonicalKey": "calcipotriolcombinations",
       "sourceName": "Calcipotriol combinations",
-      "decision": "generic_or_group_label_requires_product_resolution",
-      "confidence": "insufficient_for_auto_resolution",
-      "evidence": [],
+      "decision": "resolved_family_requires_exact_product_selection",
+      "confidence": "high",
+      "evidence": [
+        {
+          "authority": "EMC",
+          "url": "https://www.medicines.org.uk/emc/product/13078/smpc",
+          "finding": "Current product-specific SmPC confirms calcipotriol (as monohydrate) + betamethasone (as dipropionate), but gel/ointment/cream products have formulation-specific instructions; exact product selection remains mandatory."
+        }
+      ],
       "sourceDiscoveryEligible": false,
-      "publicationAllowed": false
+      "publicationAllowed": false,
+      "dispositionResolved": true,
+      "canonicalIdentityResolved": true,
+      "queueDisposition": "requires_product_selection",
+      "resolvedCanonicalKey": "calcipotriolbetamethasone",
+      "resolvedCanonicalName": "Calcipotriol + Betamethasone",
+      "productSelectionRequired": true,
+      "doseSourceReady": false
     },
     {
       "canonicalKey": "calciumchlorideclorurcaliumclorurnatrium",
       "sourceName": "Calcium chloride + Clorur calium + Clorur natrium",
-      "decision": "source_expression_reconstruction_required",
-      "confidence": "insufficient_for_auto_resolution",
-      "evidence": [],
+      "decision": "resolved_duplicate_existing_ringer_lactate_canonical",
+      "confidence": "high",
+      "evidence": [
+        {
+          "authority": "Kosovo registry source sheet",
+          "finding": "The 'clorur calium / clorur natrium' tokens are corrupted salt names in the Ringer Lactate product row; the clean Ringer-lactate canonical already exists and is source-verified."
+        }
+      ],
       "sourceDiscoveryEligible": false,
-      "publicationAllowed": false
+      "publicationAllowed": false,
+      "dispositionResolved": true,
+      "canonicalIdentityResolved": true,
+      "queueDisposition": "dedupe_existing_canonical",
+      "resolvedCanonicalKey": "calciumchloridepotassiumchloridesodiumchloridesodiumlactate",
+      "resolvedCanonicalName": "Calcium chloride + Potassium chloride + Sodium chloride + Sodium lactate",
+      "registryAnchor": {
+        "tradeName": "Ringer Lactate",
+        "pdid": "7133",
+        "atcCode": "B05CB10",
+        "form": "Solution for infusion"
+      },
+      "productSelectionRequired": false,
+      "doseSourceReady": false
     },
     {
       "canonicalKey": "calciumchlorideglucoseappropriatehexahydratesodiumchloridesodiumlactate",
       "sourceName": "Calcium chloride + Glucose appropriate + Hexahydrate + Sodium chloride + Sodium lactate",
-      "decision": "source_expression_reconstruction_required",
-      "confidence": "insufficient_for_auto_resolution",
-      "evidence": [],
+      "decision": "resolved_product_level_peritoneal_dialysis_mixture",
+      "confidence": "high",
+      "evidence": [
+        {
+          "authority": "EMC",
+          "url": "https://www.medicines.org.uk/emc/product/1816/smpc",
+          "finding": "Current SmPC identifies Dianeal PD4 as a peritoneal-dialysis solution containing glucose, sodium chloride, sodium lactate, calcium chloride and magnesium chloride; this is product-level composition, not a single canonical substance."
+        }
+      ],
       "sourceDiscoveryEligible": false,
-      "publicationAllowed": false
+      "publicationAllowed": false,
+      "dispositionResolved": true,
+      "canonicalIdentityResolved": true,
+      "queueDisposition": "remove_product_level_mixture",
+      "resolvedProductFamily": "Dianeal PD4",
+      "registryAnchor": {
+        "tradeName": "Dianeal PD4",
+        "pdid": "6851",
+        "atcCode": "B05DB",
+        "form": "Solution for peritoneal dialysis"
+      },
+      "productSelectionRequired": false,
+      "doseSourceReady": false
     }
   ],
-  "effectiveUniqueSourceDiscoveryEligible": 88,
   "resolutionNotes": [
-    "Resolved canonical targets are deduplicated against already-eligible canonical keys.",
-    "amlodipineramipril adds one new eligible canonical target.",
-    "betamethasonedipropionate is already present as an eligible canonical target and does not increase the unique denominator."
+    "Disposition resolution closes identity-quality review only; it does not imply clinical dose review or publication readiness.",
+    "Amlodipine + Ramipril and Pancreatin add two clean canonical targets.",
+    "Betamethasone dipropionate resolves to an already-existing canonical and does not increase the unique denominator.",
+    "Seven product-level mixtures are removed from the substance queue, three dirty rows deduplicate to existing canonicals, and ten deterministic refill rows are required."
   ]
 }
