@@ -18,7 +18,7 @@ assert.equal(snapshot.counts.liveWebEvidenceStructured, 25);
 assert.equal(snapshot.counts.batch2SourceMetadataVerified, 25);
 assert.equal(snapshot.counts.batch2ArchiveSnapshots, 0);
 assert.equal(snapshot.counts.first100QueueMaterialized, 100);
-assert.equal(snapshot.counts.first100CanonicalReviewRequired, 13);
+assert.equal(snapshot.counts.first100CanonicalReviewRequired, 14);
 assert.equal(snapshot.counts.first100SourceDiscoveryEligible, 89);
 assert.equal(snapshot.counts.first100VerifiedProductSources, 78);
 assert.equal(snapshot.counts.first100SourceDiscoveryRemaining, 10);
