@@ -30,7 +30,7 @@
     "test:icd-hierarchy-neon": "node tests/icd-public-source-test.js && node tests/icd-hierarchy-neon-sync-test.js",
     "audit:icd-source": "node scripts/audit-icd-public-source.js",
     "sync:protocols": "node scripts/sync-protocols.js",
-    "sync:supabase": "node scripts/sync-neon-from-sheets.js && node scripts/sync-neon-structured-dosage.js && node scripts/publish-neon-registry.js",
+    "sync:supabase": "node scripts/sync-supabase-from-sheets.js && node scripts/sync-supabase-structured-dosage.js && node scripts/publish-supabase-registry.js",
     "sync:all": "pnpm run sync:protocols && pnpm run sync:supabase",
     "build": "pnpm test && node scripts/export-pediatric-master-static.js",
     "test:p0-integrity": "node tests/p0-database-integrity-test.js",
