@@ -1,6 +1,6 @@
 {
   "schemaVersion": "drx-dosierung-master-plan-status-v1",
-  "updatedAt": "2026-08-29T12:43:08.567Z",
+  "updatedAt": "2026-08-29T12:45:05.837Z",
   "officialPlan": "DRx Dosierung phases 0-32",
   "databaseBlocker": {
     "active": true,
@@ -624,23 +624,28 @@
     {
       "id": 31,
       "name": "Final Cleanup",
-      "status": "CLEANUP_GATED_READY",
+      "status": "EXECUTABLE_LEGACY_CONSUMER_GATE_READY_CLEANUP_BLOCKED",
       "evidence": [
         "legacy wrappers retained intentionally",
-        "data/drx-final-cleanup-manifest-v1.json"
+        "data/drx-final-cleanup-manifest-v1.json",
+        "scripts/audit-drx-legacy-consumers.js",
+        "tests/drx-legacy-consumer-audit-test.js",
+        "release audit now derives legacy_consumers_not_zero from runtime code scan instead of trusting a stale manual flag"
       ],
-      "next": "remove legacy only after zero consumers + parity + rollback test"
+      "next": "migrate each detected legacy runtime consumer after live V3 parity; cleanup remains destructiveCleanupAllowed=false until runtime audit returns zero and rollback/soak pass"
     },
     {
       "id": 32,
       "name": "Production Release",
-      "status": "RELEASE_GATE_IMPLEMENTED_BLOCKED",
+      "status": "RELEASE_GATE_EXPANDED_EXECUTABLE_BLOCKED",
       "evidence": [
         "scripts/audit-drx-production-release.js",
         "tests/drx-production-release-readiness-test.js",
-        "data/drx-production-release-readiness-v1.json"
+        "data/drx-production-release-readiness-v1.json",
+        "production release audit now invokes executable legacy consumer scan",
+        "test:drx-release includes legacy-consumer audit and critical provenance/archive/golden/coverage contracts"
       ],
-      "next": "clear all production blockers, require CI/browser/deploy green, then release"
+      "next": "clear live DB/materialization/review/CI/browser/deploy/rollback/legacy-consumer blockers; no release on repository-only evidence"
     }
   ],
   "currentExecution": {
