@@ -293,6 +293,10 @@
     {
       "version": "20260829005849",
       "name": "phase2_shallow_registry_read_model"
+    },
+    {
+      "version": "20260829010508",
+      "name": "phase3_ranked_registry_search_v2"
     }
   ]
 }
