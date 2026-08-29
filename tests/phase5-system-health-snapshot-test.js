@@ -15,6 +15,25 @@ const editor = read('lib/clinical-editor.js');
 const adminDrugs = read('lib/admin-drugs.js');
 const driveSync = read('api/drive-sync.js');
 const publish = read('scripts/publish-neon-registry.js');
+const migration = read('supabase/migrations/20260829012500_phase5_system_health_snapshot.sql');
+
+assert.match(migration, /create table if not exists public\.medindex_system_health_snapshot_v1/i);
+assert.match(migration, /alter table public\.medindex_system_health_snapshot_v1 enable row level security/i);
+assert.match(migration, /revoke all on table public\.medindex_system_health_snapshot_v1[\s\S]*from public, anon, authenticated/i);
+assert.match(migration, /grant select on table public\.medindex_system_health_snapshot_v1[\s\S]*to service_role/i);
+assert.match(migration, /create or replace function private\.medindex_mark_system_health_snapshot_dirty_v1\(\)/i);
+assert.match(migration, /for each statement execute function private\.medindex_mark_system_health_snapshot_dirty_v1\(\)/i);
+for (const relation of [
+  'drugs','dosage_regimens','icd_codes','lab_tests',
+  'drive_sync_sources','audit_logs','sync_runs','sync_outbox',
+]) assert.ok(migration.includes(`'${relation}'`), `Missing dirty trigger source ${relation}`);
+assert.match(migration, /dirty_revision = public\.medindex_system_health_snapshot_v1\.dirty_revision \+ 1/i);
+assert.match(migration, /create or replace function public\.medindex_refresh_system_health_snapshot_v1\(\)/i);
+assert.match(migration, /security definer[\s\S]*set search_path = pg_catalog, public, private/i);
+assert.match(migration, /refreshed_revision = target_revision/i);
+assert.match(migration, /revoke all on function public\.medindex_refresh_system_health_snapshot_v1\(\)[\s\S]*from public, anon, authenticated/i);
+assert.match(migration, /grant execute on function public\.medindex_refresh_system_health_snapshot_v1\(\)[\s\S]*to service_role/i);
+assert.match(migration, /select public\.medindex_refresh_system_health_snapshot_v1\(\)/i);
 
 assert.match(snapshot, /SNAPSHOT_RELATION = 'medindex_system_health_snapshot_v1'/);
 assert.match(snapshot, /SNAPSHOT_RPC = 'rpc\/medindex_refresh_system_health_snapshot_v1'/);
