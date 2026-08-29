@@ -28,6 +28,10 @@ async function extractOne(item, options = {}) {
     fetchImpl:options.fetchImpl,
   });
   const gate = SmPC.publicationExtractionGate(snapshot.parsed);
+  let archiveFiles = null;
+  if (options.archiveDirectory) {
+    archiveFiles = Archive.writeSnapshot(snapshot, options.archiveDirectory);
+  }
 
   return {
     canonicalKey:item.canonicalKey,
@@ -53,6 +57,10 @@ async function extractOne(item, options = {}) {
     section41Present:snapshot.parser.indicationsSectionPresent,
     section42Present:snapshot.parser.doseSectionPresent,
     extractionGate:gate,
+    archiveFiles:archiveFiles ? {
+      rawPath:path.relative(ROOT, archiveFiles.rawPath),
+      metaPath:path.relative(ROOT, archiveFiles.metaPath),
+    } : null,
   };
 }
 
