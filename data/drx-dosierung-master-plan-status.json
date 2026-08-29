@@ -1,12 +1,12 @@
 {
   "schemaVersion": "drx-dosierung-master-plan-status-v1",
-  "updatedAt": "2026-08-30T00:05:00+02:00",
+  "updatedAt": "2026-08-29T03:23:53.289Z",
   "officialPlan": "DRx Dosierung phases 0-32",
   "databaseBlocker": {
     "active": true,
     "system": "Supabase SQL/MCP database gateway",
     "symptom": "Connection terminated due to connection timeout",
-    "rule": "Do not retry destructively; continue repository-side work and recheck on the next scheduled continuation."
+    "rule": "Do not bypass live database or archive verification. Continue repository-safe work only; keep publication closed."
   },
   "phases": [
     {
@@ -184,7 +184,7 @@
     {
       "id": 16,
       "name": "Batch 2",
-      "status": "IN_PROGRESS_25_OF_25_EVIDENCE_REVIEW_QUEUE_READY",
+      "status": "IN_PROGRESS_25_OF_25_LIVE_WEB_EVIDENCE_HASH_ARCHIVE_PENDING",
       "evidence": [
         "data/drx-dose-batch2-v1.json",
         "data/drx-dose-source-map-v1.json",
@@ -208,9 +208,13 @@
         ".github/workflows/drx-batch2-source-archive.yml",
         "tests/drx-batch2-archive-workflow-test.js",
         "data/drx-batch2-clinical-review-queue-v1.json",
-        "tests/drx-batch2-review-queue-test.js"
+        "tests/drx-batch2-review-queue-test.js",
+        "25/25 live SmPC metadata synchronized across manifest/source map/waves",
+        "scripts/audit-drx-phase16-consistency.js (v2 parity audit)",
+        "25/25 manifest↔source-map↔wave parity audit: 0 mismatches",
+        "Aspirin eMC source version corrected to 2026-08-27"
       ],
-      "next": "run source-archive workflow to obtain 25 hash-backed snapshots, then normalize only rules that pass the 25-item clinical review queue"
+      "next": "obtain 25/25 raw SHA-256 archive snapshots; then structure section 4.2 rules, run safety/confidence, exact live product binding, legacy comparison and clinical review"
     },
     {
       "id": 17,
@@ -377,7 +381,7 @@
   ],
   "currentExecution": {
     "phase": 16,
-    "objective": "Batch 2 live evidence is 25/25 and the clinical review queue is materialized (21 high priority). GitHub archive workflow is ready but no workflow run was observed from connector-originated commits; hash-backed archive remains 0/25.",
+    "objective": "Batch 2 has 25/25 live structured web evidence and 25/25 synchronized source metadata with zero parity mismatches. Completion remains fail-closed until 25/25 raw SHA-256 archive snapshots and all downstream clinical gates pass.",
     "pilot": "batch2-25",
     "repositoryBatch1Substances": 10,
     "repositoryBatch2Substances": 25,
@@ -394,6 +398,9 @@
     "reviewQueueItems": 25,
     "highPriorityReviewItems": 21,
     "archiveWorkflowReady": true,
-    "archiveWorkflowRunObserved": false
+    "archiveWorkflowRunObserved": false,
+    "batch2SourceMetadataVerified": 25,
+    "batch2ParityMismatchCount": 0,
+    "archiveHashVerifiedCount": 0
   }
 }
