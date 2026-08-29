@@ -1,0 +1,164 @@
+{
+  "schemaVersion": "drx-first100-source-discovery-wave-c-v1",
+  "generatedAt": "2026-08-30T03:18:00+02:00",
+  "sourcePolicy": "data/drx-dose-source-policy-v1.json",
+  "publicationAllowed": false,
+  "verifiedProductSpecificCount": 8,
+  "rows": [
+    {
+      "canonicalKey": "amlodipinevalsartan",
+      "canonicalName": "Amlodipine + Valsartan",
+      "status": "verified_product_specific",
+      "sourceTier": "EMC",
+      "sourceKey": "emc-306-smpc",
+      "url": "https://www.medicines.org.uk/emc/product/306/smpc",
+      "productName": "Exforge 5mg/80mg film coated tablets",
+      "documentDate": "2025-05-12",
+      "section41Present": true,
+      "section42Present": true,
+      "reviewFlags": [
+        "combination_drug",
+        "component_doses_explicit",
+        "renal_monitoring",
+        "hepatic_max_component_constraint",
+        "clinical_review_required"
+      ],
+      "publicationAllowed": false
+    },
+    {
+      "canonicalKey": "amorolfine",
+      "canonicalName": "Amorolfine",
+      "status": "verified_product_specific",
+      "sourceTier": "EMC",
+      "sourceKey": "emc-1411-smpc",
+      "url": "https://www.medicines.org.uk/emc/product/1411/smpc",
+      "productName": "Loceryl 5% w/v Medicated Nail Lacquer",
+      "documentDate": "2023-04-18",
+      "section41Present": true,
+      "section42Present": true,
+      "reviewFlags": [
+        "topical_nail_route",
+        "long_duration_context",
+        "formulation_specific"
+      ],
+      "publicationAllowed": false
+    },
+    {
+      "canonicalKey": "atenololchlortalidone",
+      "canonicalName": "Atenolol + Chlortalidone",
+      "status": "verified_product_specific",
+      "sourceTier": "EMC",
+      "sourceKey": "emc-5497-smpc",
+      "url": "https://www.medicines.org.uk/emc/product/5497/smpc",
+      "productName": "Tenoretic 100 mg/25 mg film coated tablets",
+      "documentDate": "2024-12-13",
+      "section41Present": true,
+      "section42Present": true,
+      "reviewFlags": [
+        "combination_drug",
+        "component_doses_explicit",
+        "renal_electrolyte_monitoring",
+        "clinical_review_required"
+      ],
+      "publicationAllowed": false
+    },
+    {
+      "canonicalKey": "amlodipineperindopril",
+      "canonicalName": "Amlodipine + Perindopril",
+      "status": "verified_product_specific_component_order_alias",
+      "sourceTier": "EMC",
+      "sourceKey": "emc-15441-smpc",
+      "url": "https://www.medicines.org.uk/emc/product/15441/smpc",
+      "productName": "Perindopril/Amlodipine KRKA 4mg/5mg tablets",
+      "documentDate": "2024-01-25",
+      "section41Present": true,
+      "section42Present": true,
+      "reviewFlags": [
+        "combination_drug",
+        "component_order_normalized",
+        "substitution_therapy_only",
+        "exact_strength_binding_required",
+        "clinical_review_required"
+      ],
+      "publicationAllowed": false
+    },
+    {
+      "canonicalKey": "ascorbicacid",
+      "canonicalName": "Ascorbic acid",
+      "status": "verified_product_specific",
+      "sourceTier": "EMC",
+      "sourceKey": "emc-102185-smpc",
+      "url": "https://www.medicines.org.uk/emc/product/102185/smpc",
+      "productName": "Ascorbic Acid 100 mg Tablets",
+      "documentDate": null,
+      "section41Present": true,
+      "section42Present": true,
+      "reviewFlags": [
+        "age_band_maximums",
+        "hyperoxaluria_context"
+      ],
+      "publicationAllowed": false
+    },
+    {
+      "canonicalKey": "atorvastatinezetimibe",
+      "canonicalName": "Atorvastatin ezetimibe",
+      "status": "verified_product_specific_alias_match",
+      "sourceTier": "EMC",
+      "sourceKey": "emc-101938-smpc",
+      "url": "https://www.medicines.org.uk/emc/product/101938/smpc",
+      "productName": "Ezetimibe/Atorvastatin 10 mg/10 mg Film-coated Tablets",
+      "documentDate": null,
+      "section41Present": true,
+      "section42Present": true,
+      "reviewFlags": [
+        "reviewed_component_order_alias",
+        "combination_drug",
+        "not_initial_therapy",
+        "interaction_dose_caps",
+        "exact_strength_binding_required",
+        "clinical_review_required"
+      ],
+      "publicationAllowed": false
+    },
+    {
+      "canonicalKey": "alverinesimethicone",
+      "canonicalName": "Alverine + Simethicone",
+      "status": "verified_product_specific_alias_match",
+      "sourceTier": "EMC",
+      "sourceKey": "emc-101935-smpc",
+      "url": "https://www.medicines.org.uk/emc/product/101935/smpc",
+      "productName": "SimAlvia 60 mg/300 mg soft capsules",
+      "documentDate": "2026-02-23",
+      "section41Present": true,
+      "section42Present": true,
+      "reviewFlags": [
+        "reviewed_simethicone_simeticone_alias",
+        "combination_drug",
+        "adult_only",
+        "hepatic_warning_context"
+      ],
+      "publicationAllowed": false
+    },
+    {
+      "canonicalKey": "captopril",
+      "canonicalName": "Captopril",
+      "status": "verified_product_specific",
+      "sourceTier": "EMC",
+      "sourceKey": "emc-9476-smpc",
+      "url": "https://www.medicines.org.uk/emc/product/9476/smpc",
+      "productName": "Captopril 25mg/5ml Sugar Free Oral Solution",
+      "documentDate": "2026-04-08",
+      "section41Present": true,
+      "section42Present": true,
+      "reviewFlags": [
+        "multiple_indication_rules",
+        "renal_crcl_adjustment",
+        "pediatric_weight_based",
+        "potassium_creatinine_monitoring",
+        "liquid_concentration_binding",
+        "clinical_review_required"
+      ],
+      "publicationAllowed": false
+    }
+  ]
+}
