@@ -1,0 +1,38 @@
+{
+  "schemaVersion": "drx-api-fast-path-contract-v1",
+  "status": "foundation_complete_repository",
+  "request": {
+    "required": [
+      "product_id"
+    ],
+    "optional": [
+      "indication_id",
+      "age_months",
+      "weight_kg",
+      "renal",
+      "hepatic"
+    ]
+  },
+  "response": {
+    "required": [
+      "product_id",
+      "rule_version",
+      "rules",
+      "etag"
+    ],
+    "maxPayloadIntent": "tiny_product_scoped_payload"
+  },
+  "guarantees": [
+    "product_scoped_only",
+    "published_rules_only",
+    "deterministic_order",
+    "no_legacy_bulk_payload"
+  ],
+  "failClosedOn": [
+    "unknown_product",
+    "unpublished_rule",
+    "missing_required_input",
+    "conflicting_verified_rules"
+  ],
+  "next": "wire to V3 persistence and benchmark after Supabase gateway returns"
+}
