@@ -1,0 +1,131 @@
+{
+  "schemaVersion": "drx-dose-pilot-v1",
+  "pilotKey": "ibuprofen",
+  "updatedAt": "2026-08-29",
+  "status": "in_review_unbound",
+  "publicationAllowed": false,
+  "canonicalSubstance": {
+    "key": "ibuprofen",
+    "name": "Ibuprofen"
+  },
+  "sourceSet": [
+    {
+      "sourceKey": "emc-7020-smpc",
+      "url": "https://www.medicines.org.uk/emc/product/7020/smpc",
+      "tier": "EMC",
+      "documentDate": "2026-07-01",
+      "section": "4.2",
+      "formulation": "film-coated tablet",
+      "strength": "400 mg"
+    },
+    {
+      "sourceKey": "cima-90878-ft",
+      "url": "https://cima.aemps.es/cima/dochtml/ft/90878/FT_90878.html",
+      "tier": "AEMPS_CIMA",
+      "documentDate": null,
+      "section": "4.2",
+      "formulation": "film-coated tablet",
+      "strength": "400 mg",
+      "publicationBlockedReason": "official_document_version_or_date_not_yet_extracted"
+    }
+  ],
+  "extractedRuleCandidates": [
+    {
+      "candidateKey": "emc-7020-pain-fever-12plus-40kg",
+      "sourceKey": "emc-7020-smpc",
+      "indicationTerms": [
+        "mild to moderate pain",
+        "fever"
+      ],
+      "patientGroup": "pediatric_and_adult",
+      "calculationMethod": "fixed_dose",
+      "doseMinValue": 200,
+      "doseMaxValue": 400,
+      "doseUnit": "mg",
+      "frequencyMode": "interval",
+      "intervalMinHours": 6,
+      "maxDoses24h": 4,
+      "maxDailyDoseMg": 1200,
+      "minAgeMonths": 144,
+      "minWeightKg": 40,
+      "route": "PO",
+      "prn": true,
+      "requiredInputs": [
+        "age_months",
+        "weight_kg"
+      ],
+      "bindingStatus": "unbound",
+      "editorialStatus": "in_review"
+    },
+    {
+      "candidateKey": "cima-90878-pain-fever-12plus-40kg",
+      "sourceKey": "cima-90878-ft",
+      "indicationTerms": [
+        "mild to moderate occasional pain",
+        "fever"
+      ],
+      "patientGroup": "pediatric_and_adult",
+      "calculationMethod": "fixed_dose",
+      "doseMinValue": 400,
+      "doseMaxValue": 400,
+      "doseUnit": "mg",
+      "frequencyMode": "interval",
+      "intervalMinHours": 6,
+      "intervalMaxHours": 8,
+      "maxDoses24h": 3,
+      "maxDailyDoseMg": 1200,
+      "minAgeMonths": 144,
+      "minWeightKg": 40,
+      "route": "PO",
+      "prn": true,
+      "requiredInputs": [
+        "age_months",
+        "weight_kg"
+      ],
+      "bindingStatus": "unbound",
+      "editorialStatus": "in_review"
+    },
+    {
+      "candidateKey": "emc-7020-rheumatic-adolescent",
+      "sourceKey": "emc-7020-smpc",
+      "indicationTerms": [
+        "rheumatic diseases"
+      ],
+      "patientGroup": "pediatric_only",
+      "calculationMethod": "dose_per_kg_per_day",
+      "doseMinValue": 20,
+      "doseMaxValue": 40,
+      "doseUnit": "mg/kg/day",
+      "frequencyMode": "times_per_day",
+      "timesPerDay": null,
+      "maxDailyDoseMg": 2400,
+      "minAgeMonths": 180,
+      "maxAgeMonths": 215,
+      "route": "PO",
+      "prn": false,
+      "requiredInputs": [
+        "age_months",
+        "weight_kg"
+      ],
+      "bindingStatus": "unbound",
+      "editorialStatus": "in_review",
+      "reviewReason": "source specifies 3 to 4 divided doses but V2 stores one times_per_day value"
+    }
+  ],
+  "sourceReconciliation": {
+    "status": "not_a_direct_conflict",
+    "reason": "The eMC and CIMA rows are product-specific and differ in dose granularity; they must not be collapsed into one generic ibuprofen rule before product binding.",
+    "autoMerge": false
+  },
+  "v2SchemaGaps": [
+    "times_per_day_range",
+    "daily_total_dose_range_as_first_class_method",
+    "hepatic_adjustment_required",
+    "cardiac_adjustment_required",
+    "source_snapshot_id",
+    "source_evidence_hash",
+    "required_inputs",
+    "dose_basis_component_concept_id"
+  ],
+  "nextGate": "bind to exact DRx products after live Supabase access returns; then compare to legacy dosage_regimens and run confidence/safety gates"
+}
