@@ -163,6 +163,7 @@ async function runBrowserProbe() {
       const startedAt = performance.now();
       const probe = {
         startedAt,
+        authReady:[],
         fullRegistryStarts:[],
         mobileLiteReady:[],
         mobileLiteStalled:[],
@@ -174,6 +175,7 @@ async function runBrowserProbe() {
       window.__MEDINDEX_PHASE0_PROBE = probe;
       const stamp = () => Math.round((performance.now() - startedAt) * 10) / 10;
       const capture = (bucket, event) => bucket.push({ atMs:stamp(), detail:event.detail || null });
+      window.addEventListener('medindex:auth-ready', event => capture(probe.authReady, event));
       window.addEventListener('medindex:full-registry-started', event => capture(probe.fullRegistryStarts, event));
       window.addEventListener('medindex:mobile-lite-ready', event => capture(probe.mobileLiteReady, event));
       window.addEventListener('medindex:mobile-lite-stalled', event => capture(probe.mobileLiteStalled, event));
@@ -185,7 +187,7 @@ async function runBrowserProbe() {
 
     await installDelayedDrugSearchRoute(page);
     await page.goto(`${BASE}/index.html`, { waitUntil:'domcontentloaded', timeout:30000 });
-    await page.locator('html.auth-ready').waitFor({ state:'attached', timeout:10000 });
+    await page.waitForFunction(() => (window.__MEDINDEX_PHASE0_PROBE?.authReady || []).length > 0, null, { timeout:10000 });
     await page.locator('html[data-registry-mobile-lite]').waitFor({ state:'attached', timeout:5000 });
 
     // Delay the bounded phone list well past the removed 5 s takeover window.
