@@ -1,21 +1,22 @@
 {
   "schemaVersion": "drx-dose-v3-supabase-candidate-status-v1",
-  "updatedAt": "2026-08-29T09:53:17Z",
+  "updatedAt": "2026-08-29T11:40:41.858Z",
   "projectId": "ftuchtmolddhhsdcwnqe",
   "projectHealth": "ACTIVE_HEALTHY",
   "postgresVersion": "17.6.1.155",
   "candidateFile": "supabase/drx-dose-v3-additive-candidate.sql",
   "applied": false,
-  "reasonNotApplied": "Supabase list_migrations still timed out at the 2026-08-29 09:53Z read-only recheck. Postgres logs also show temporary-file disk exhaustion ('No space left on device') at 00:56Z. Production baseline, migration history, advisors, and post-migration smoke tests therefore remain unverified.",
+  "reasonNotApplied": "Supabase migration history still returns a connection timeout on the 2026-08-29 read-only recheck. The project reports ACTIVE_HEALTHY, but live baseline/migration/advisor/smoke evidence is unavailable; no V3 DDL was attempted.",
   "databaseGatewayEvidence": {
-    "observedAt": "2026-08-29T09:53:17Z",
+    "observedAt": "2026-08-29T11:40:41.858Z",
     "projectHealth": "ACTIVE_HEALTHY",
     "postgresLogErrorAt": "2026-08-29T00:56:31.371Z",
     "postgresLogError": "could not write to file base/pgsql_tmp/pgsql_tmp997809.0: No space left on device",
     "laterMigrationStatementObservedAt": "2026-08-29T01:19:24.217Z",
     "listMigrations": "CONNECTION_TIMEOUT",
     "ddlAttemptedByThisRun": false,
-    "migrationAppliedByThisRun": false
+    "migrationAppliedByThisRun": false,
+    "sqlProbe": "NOT_USED_FOR_RECOVERY_DECISION"
   },
   "legacyTablesModified": false,
   "tableCount": 12,
@@ -43,7 +44,20 @@
     ],
     "securityDefinerFunctions": 0,
     "publicRpcSecurity": "invoker",
-    "publicRpc": "public.medindex_dose_product_fast_path_v3(text, uuid)"
+    "publicRpc": "public.medindex_dose_product_fast_path_v3(text, uuid)",
+    "tablePublicRoleRevoked": true,
+    "productPublicationTrigger": true,
+    "rulePublicationTrigger": true,
+    "insertPublicationGuard": true,
+    "ruleSourceSection42ArtifactRequired": true,
+    "publicationEligibleSourceTiers": [
+      "EMA",
+      "EMC",
+      "AEMPS_CIMA",
+      "EU_NATIONAL",
+      "KOSOVO_AKPPM"
+    ],
+    "preexistingShadowSchemaFailsClosed": true
   },
   "applyGate": [
     "Supabase changelog/docs reviewed for relevant breaking changes",
@@ -56,12 +70,17 @@
     "negative publication-gate smoke cases pass",
     "positive shadow publication case passes",
     "one-RPC product fast path returns only published/verified data",
-    "rollback procedure tested before runtime cutover"
+    "rollback procedure tested before runtime cutover",
+    "verify all 12 V3 tables are absent before candidate apply",
+    "negative INSERT-directly-as-published product case is blocked",
+    "negative INSERT-directly-as-published rule case is blocked",
+    "non-publication source tier is blocked at product/rule publication",
+    "missing or non-extracted SmPC 4.2 artifact blocks rule publication"
   ],
   "publicationAllowed": false,
   "selfContainedV3ProductShell": true,
   "v2ProductShellDependency": false,
-  "candidateGitBlobSha": "8c213f04821e4e00016b56b4f86168ea3a4558d9",
+  "candidateGitBlobSha": "3a65730916870bf9557c391716529065c31fe813",
   "repositoryStaticAudit": {
     "candidateSelfContained": true,
     "additiveOnly": true,
@@ -69,6 +88,12 @@
     "directClientWriteGrants": 0,
     "publishedClientReadTables": 4,
     "publicationTriggerPresent": true,
-    "status": "STATIC_VERIFIED_NOT_LIVE_APPLIED"
+    "status": "STATIC_HARDENED_NOT_LIVE_APPLIED",
+    "productPublicationTriggerPresent": true,
+    "rulePublicationTriggerPresent": true,
+    "insertPublicationBypassClosed": true,
+    "sourceTierPublicationGatePresent": true,
+    "section42ArtifactGatePresent": true,
+    "partialSchemaPreflightPresent": true
   }
 }
