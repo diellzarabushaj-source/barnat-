@@ -1,6 +1,6 @@
 {
   "schemaVersion": "drx-qa-coverage-contract-v1",
-  "status": "foundation_complete_repository",
+  "status": "adjustment_and_provenance_qa_hardened_repository_live_ci_blocked",
   "qaLayers": [
     "unit",
     "contract",
@@ -18,13 +18,22 @@
     "products_bound",
     "legacy_compared",
     "verified",
-    "published"
+    "published",
+    "source_snapshot_hash",
+    "source_section_4_2_hash",
+    "adjustment_provenance",
+    "required_adjustment_completeness",
+    "review_evidence_ready",
+    "runtime_fail_closed_cases"
   ],
   "releaseGate": [
     "all_critical_tests_green",
     "zero_publishable_conflicts",
     "coverage_snapshot_generated",
-    "desktop_mobile_smoke_pass"
+    "desktop_mobile_smoke_pass",
+    "golden_adjustment_cases_green",
+    "required_adjustment_fail_closed_cases_green",
+    "provenance_contract_tests_green"
   ],
-  "next": "materialize live dashboard metrics from V3 tables"
+  "next": "run full CI/browser matrix and live V3 integration after gateway recovery; do not infer green status from repository-only syntax/contracts"
 }
