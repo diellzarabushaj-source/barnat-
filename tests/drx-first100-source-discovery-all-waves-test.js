@@ -5,19 +5,55 @@ const fs = require('node:fs');
 const path = require('node:path');
 
 const ROOT = path.resolve(__dirname, '..');
-const letters = ['a', 'b', 'c', 'd', 'e', 'f', 'g'];
+const DATA_DIR = path.join(ROOT, 'data');
+const WAVE_FILE_PATTERN = /^drx-first100-source-discovery-wave-([a-z]+)-v1\.json$/;
+
+function waveOrdinal(label) {
+  assert.match(label, /^[a-z]+$/, `invalid wave label: ${label}`);
+  let ordinal = 0;
+  for (const char of label) {
+    ordinal = (ordinal * 26) + (char.charCodeAt(0) - 96);
+  }
+  return ordinal;
+}
+
+const waveFiles = fs.readdirSync(DATA_DIR)
+  .map((fileName) => {
+    const match = fileName.match(WAVE_FILE_PATTERN);
+    return match ? { fileName, label: match[1], ordinal: waveOrdinal(match[1]) } : null;
+  })
+  .filter(Boolean)
+  .sort((a, b) => a.ordinal - b.ordinal);
+
+assert.ok(waveFiles.length > 0, 'no first-100 source-discovery waves found');
+
+for (let index = 0; index < waveFiles.length; index += 1) {
+  const expectedOrdinal = index + 1;
+  const waveFile = waveFiles[index];
+  assert.equal(
+    waveFile.ordinal,
+    expectedOrdinal,
+    `source-discovery wave sequence is not contiguous at ${waveFile.label.toUpperCase()}: expected ordinal ${expectedOrdinal}, got ${waveFile.ordinal}`
+  );
+}
+
 const seen = new Map();
 let verified = 0;
 let pending = 0;
 let selectionRequired = 0;
 
-for (const letter of letters) {
-  const file = path.join(ROOT, 'data', `drx-first100-source-discovery-wave-${letter}-v1.json`);
-  assert.ok(fs.existsSync(file), `missing source-discovery wave ${letter.toUpperCase()}`);
+for (const { fileName, label } of waveFiles) {
+  const file = path.join(DATA_DIR, fileName);
   const wave = JSON.parse(fs.readFileSync(file, 'utf8'));
+  const waveName = label.toUpperCase();
 
-  assert.equal(wave.publicationAllowed, false, `wave ${letter.toUpperCase()} must fail closed`);
-  assert.ok(Array.isArray(wave.rows) && wave.rows.length > 0, `wave ${letter.toUpperCase()} has no rows`);
+  assert.equal(
+    wave.schemaVersion,
+    `drx-first100-source-discovery-wave-${label}-v1`,
+    `wave ${waveName}: schemaVersion must match its filename`
+  );
+  assert.equal(wave.publicationAllowed, false, `wave ${waveName} must fail closed`);
+  assert.ok(Array.isArray(wave.rows) && wave.rows.length > 0, `wave ${waveName} has no rows`);
 
   verified += Number(wave.verifiedProductSpecificCount || 0);
   pending += Number(wave.sectionsPendingCount || 0);
@@ -25,9 +61,13 @@ for (const letter of letters) {
 
   for (const row of wave.rows) {
     assert.equal(row.publicationAllowed, false, `${row.canonicalKey}: publication must remain closed`);
-    assert.ok(row.canonicalKey, `wave ${letter.toUpperCase()}: canonicalKey missing`);
-    assert.equal(seen.has(row.canonicalKey), false, `${row.canonicalKey}: duplicate across waves ${seen.get(row.canonicalKey)} and ${letter.toUpperCase()}`);
-    seen.set(row.canonicalKey, letter.toUpperCase());
+    assert.ok(row.canonicalKey, `wave ${waveName}: canonicalKey missing`);
+    assert.equal(
+      seen.has(row.canonicalKey),
+      false,
+      `${row.canonicalKey}: duplicate across waves ${seen.get(row.canonicalKey)} and ${waveName}`
+    );
+    seen.set(row.canonicalKey, waveName);
 
     if (row.status.startsWith('verified_product_specific')) {
       assert.ok(row.sourceTier, `${row.canonicalKey}: sourceTier missing`);
@@ -43,4 +83,12 @@ assert.ok(verified >= 61, `verified coverage regressed below 61: ${verified}`);
 assert.ok(seen.has('acetylsalicylicacidrosuvastatin'), 'Wave G Roasax canonical is missing');
 assert.ok(pending >= 0 && selectionRequired >= 0);
 
-console.log(JSON.stringify({ waves: letters.length, uniqueCanonicalRows: seen.size, verifiedProductSpecificCount: verified, sectionsPendingCount: pending, productSelectionRequiredCount: selectionRequired, publicationAllowed: false }, null, 2));
+console.log(JSON.stringify({
+  waves: waveFiles.map(({ label }) => label.toUpperCase()),
+  waveCount: waveFiles.length,
+  uniqueCanonicalRows: seen.size,
+  verifiedProductSpecificCount: verified,
+  sectionsPendingCount: pending,
+  productSelectionRequiredCount: selectionRequired,
+  publicationAllowed: false
+}, null, 2));
