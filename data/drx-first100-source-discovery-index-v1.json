@@ -1,19 +1,19 @@
 {
   "schemaVersion": "drx-first100-source-discovery-index-v1",
-  "generatedAt": "2026-08-29T07:19:30Z",
+  "generatedAt": "2026-08-29T07:46:00Z",
   "first100Count": 100,
   "canonicalReviewRequired": 13,
   "sourceDiscoveryEligible": 88,
-  "verifiedProductSpecific": 71,
-  "verifiedCanonicalSubstances": 71,
+  "verifiedProductSpecific": 72,
+  "verifiedCanonicalSubstances": 72,
   "sourceAuthorityCounts": {
     "EMC": 54,
-    "AEMPS_CIMA": 11,
+    "AEMPS_CIMA": 12,
     "EU_NATIONAL": 6
   },
   "productSelectionRequired": 1,
-  "eligibleRemaining": 17,
-  "sourceLookupRemaining": 16,
+  "eligibleRemaining": 16,
+  "sourceLookupRemaining": 15,
   "issueCount": 0,
   "complete": false,
   "repositoryComplete": false,
@@ -1589,6 +1589,33 @@
       ],
       "publicationAllowed": false,
       "wave": "drx-first100-source-discovery-wave-i-v1.json"
+    },
+    {
+      "canonicalKey": "amlodipineramipril",
+      "canonicalName": "Amlodipine + Ramipril",
+      "status": "verified_product_specific_canonical_resolution",
+      "sourceTier": "AEMPS_CIMA",
+      "sourceKey": "cima-82689-ft",
+      "url": "https://cima.aemps.es/cima/dochtml/ft/82689/FT_82689.html",
+      "productName": "Amlodipino/ramipril Aristo 10 mg/5 mg cápsulas duras",
+      "documentDate": "2023-02",
+      "documentDatePrecision": "month",
+      "section41Present": true,
+      "section42Present": true,
+      "reviewFlags": [
+        "canonical_besilate2_artifact_resolved",
+        "fixed_combination",
+        "adult_hypertension",
+        "substitution_therapy_not_initial",
+        "one_capsule_once_daily",
+        "renal_function_and_potassium_monitoring",
+        "hepatic_review",
+        "pediatric_not_established",
+        "product_strength_specific",
+        "clinical_review_required"
+      ],
+      "publicationAllowed": false,
+      "wave": "drx-first100-source-discovery-wave-j-v1.json"
     }
   ]
 }
