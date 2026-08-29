@@ -571,8 +571,20 @@
     return rulesForIndication().filter(rule => ageMatchesRule(rule, ageMonths));
   }
 
+  function ruleRequiredInputs(rule) {
+    const values = Array.isArray(rule?.requiredInputs) ? rule.requiredInputs : [];
+    return new Set(values.map(clean).filter(Boolean));
+  }
+
   function ruleNeedsWeight(rule) {
+    const required = ruleRequiredInputs(rule);
+    if (required.size) return required.has('weight_kg');
     return needsWeightMethod(rule.calculationMethod) || num(rule.minWeightKg) !== null || num(rule.maxWeightKg) !== null;
+  }
+
+  function unsupportedRequiredInputs(rule) {
+    const supported = new Set(['age_months','weight_kg']);
+    return [...ruleRequiredInputs(rule)].filter(key => !supported.has(key));
   }
 
   function updateAdaptiveFields() {
@@ -659,6 +671,11 @@
     }
 
     const rule = eligible[0];
+    const unsupported = unsupportedRequiredInputs(rule);
+    if (unsupported.length) {
+      showError(`Kjo skemë kërkon të dhëna shtesë klinike (${unsupported.join(', ')}); kalkulimi automatik u bllokua.`);
+      return false;
+    }
     const computed = computeDose(rule, activeProduct, weight);
     if (computed.error) {
       showError(computed.error);
@@ -892,7 +909,7 @@
       num, within, needsWeightMethod, needsBsaMethod, canonicalUnit, convertDoseUnit,
       administrationsPerDay, ageMatchesRule, preferredUnique, renderPlainLanguageTemplate,
       computeDose, frequencyText, durationText, ruleCoversPediatric, ruleCoversAdult,
-      productGroup, cacheFresh,
+      productGroup, cacheFresh, ruleRequiredInputs, ruleNeedsWeight, unsupportedRequiredInputs,
     }),
   };
 })();
