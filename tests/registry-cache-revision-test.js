@@ -5,7 +5,7 @@ const { execFileSync } = require('node:child_process');
 
 const ROOT = path.resolve(__dirname, '..');
 const read = relativePath => fs.readFileSync(path.join(ROOT, relativePath), 'utf8');
-const dataApiPath = require.resolve(path.join(ROOT, 'lib/neon-data-api.js'));
+const dataApiPath = require.resolve(path.join(ROOT, 'lib/medindex-data-api.js'));
 const revisionPath = require.resolve(path.join(ROOT, 'lib/registry-revision.js'));
 
 let calls = 0;
@@ -34,12 +34,12 @@ const RegistryRevision = require(revisionPath);
   const cached = await RegistryRevision.getRegistryRevision();
   assert.equal(first, revisionValue);
   assert.equal(cached, revisionValue);
-  assert.equal(calls, 1, 'Revision checks must be cached briefly instead of querying Neon on every request');
+  assert.equal(calls, 1, 'Revision checks must be cached briefly instead of querying Supabase on every request');
 
   revisionValue = '2026-08-01T20:05:00.000Z';
   const forced = await RegistryRevision.getRegistryRevision({ force:true });
   assert.equal(forced, revisionValue);
-  assert.equal(calls, 2, 'A forced revision check must detect the latest Neon update');
+  assert.equal(calls, 2, 'A forced revision check must detect the latest Supabase update');
 
   RegistryRevision.resetRegistryRevisionCache();
   await RegistryRevision.getRegistryRevision();
@@ -64,7 +64,7 @@ const RegistryRevision = require(revisionPath);
   execFileSync(process.execPath, ['--check', path.join(ROOT, 'lib/registry-revision.js')], { stdio:'pipe' });
   execFileSync(process.execPath, ['--check', path.join(ROOT, 'api/registry.js')], { stdio:'pipe' });
 
-  console.log('Neon-backed registry cache revision tests passed.');
+  console.log('Supabase-backed registry cache revision tests passed.');
 })().catch(error => {
   console.error(error);
   process.exitCode = 1;
