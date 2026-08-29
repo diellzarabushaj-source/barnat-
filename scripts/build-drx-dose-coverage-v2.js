@@ -34,6 +34,7 @@ function build() {
 
   const batch2Total = Number(matrix.total || batch2.substances.length || 25);
   const archived = Number(execution.archiveHashVerifiedCount || 0);
+  const archiveCiVerified = Number(execution.archiveCiSectionHashVerifiedCount || 0);
   const normalizationReady = Number(matrix.normalizationReady || execution.normalizationReady || 0);
   const publicationReady = Number(matrix.publicationReady || execution.publicationReady || 0);
   const bound = Number(execution.liveBoundRules || 0);
@@ -61,6 +62,7 @@ function build() {
       liveWebEvidenceStructured:Number(execution.webEvidenceStructuredSources || 0),
       batch2SourceMetadataVerified:Number(execution.batch2SourceMetadataVerified || 0),
       batch2ArchiveSnapshots:archived,
+      batch2ArchiveCiVerified:archiveCiVerified,
       openClinicalReviewQueue:Number(execution.reviewQueueItems || 0),
       highPriorityClinicalReviewQueue:Number(execution.highPriorityReviewItems || 0),
       structuredCandidateReady:Number(matrix.structuredCandidateReady || execution.structuredCandidateReady || 0),
@@ -83,6 +85,7 @@ function build() {
     batch2ProgressPct:{
       structuredEvidence:pct(execution.webEvidenceStructuredSources, batch2Total),
       archiveHashes:pct(archived, batch2Total),
+      archiveCiVerified:pct(archiveCiVerified, batch2Total),
       normalizationReady:pct(normalizationReady, batch2Total),
       exactProductBinding:pct(bound, batch2Total),
       clinicalReview:pct(clinicallyReviewed, batch2Total),
@@ -114,6 +117,9 @@ function build() {
       batch2LiveWebEvidenceComplete:Number(execution.webEvidenceStructuredSources || 0) === batch2Total,
       archiveWorkflowConfigured:execution.archiveWorkflowReady === true,
       archiveWorkflowRunObserved:execution.archiveWorkflowRunObserved === true,
+      archiveCiEvidenceComplete:archiveCiVerified === batch2Total,
+      archiveEvidenceMaterialized:archived === batch2Total,
+      archiveEvidenceLocation:execution.archiveEvidenceLocation || null,
       drxSafetyWorkflowConfigured:release.drxSafetyWorkflowConfigured === true,
       drxSafetyWorkflowRunObserved:release.drxSafetyWorkflowRunObserved === true,
       drxSafetyWorkflowGreen:release.drxSafetyWorkflowGreen === true,
@@ -127,7 +133,7 @@ function build() {
       renalHepaticLiveValidationObserved:(renalAdjustmentLiveVerified + hepaticAdjustmentLiveVerified) > 0,
       publicationBlocked:true
     },
-    next:'Promote counts only from persisted evidence; archive, binding, review, CI, smoke, deploy and rollback gates remain fail-closed until observed.'
+    next:'CI archive evidence and persisted/materialized archive evidence are reported separately. Promote live/import counts only from repo/DB-readable persisted evidence; binding, review, CI, smoke, deploy and rollback remain fail-closed until observed.'
   };
 }
 
