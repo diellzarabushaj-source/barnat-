@@ -66,7 +66,7 @@ const maintainHardening = fs.readFileSync(
 assert.match(maintainHardening, /revoke\s+maintain\s+on\s+all\s+tables\s+in\s+schema\s+public/i);
 assert.match(maintainHardening, /alter\s+default\s+privileges[\s\S]*?revoke\s+maintain\s+on\s+tables/i);
 
-const dataApi = fs.readFileSync(path.join(ROOT, 'lib', 'neon-data-api.js'), 'utf8');
+const dataApi = fs.readFileSync(path.join(ROOT, 'lib', 'medindex-data-api.js'), 'utf8');
 assert.match(dataApi, /const\s+privileged\s*=\s*shouldUseSupabaseServer\(path,\s*options\)/);
 assert.match(dataApi, /const\s+key\s*=\s*privileged\s*\?\s*SUPABASE_SECRET_KEY\s*:\s*SUPABASE_PUBLISHABLE_KEY/);
 
