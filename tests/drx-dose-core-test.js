@@ -123,4 +123,35 @@ const invalid = Core.calculate({
 }, {});
 assert.equal(invalid.outcome, Core.OUTCOME.INVALID_RULE);
 
+const fixedPerDay = Core.calculate({
+  ruleKey:'fixed-per-day',
+  calculationMethod:'fixed_dose',
+  doseMinValue:1000,
+  doseMaxValue:1000,
+  doseUnit:'mg',
+  doseBasis:'per_day',
+  frequencyMode:'times_per_day',
+  timesPerDay:2,
+  durationMode:'none',
+}, { ageMonths:300 });
+assert.equal(fixedPerDay.outcome, Core.OUTCOME.CALCULATED);
+assert.equal(fixedPerDay.perDose.min, 500);
+assert.equal(fixedPerDay.daily.min, 1000);
+
+const explicitDailyCap = Core.calculate({
+  ruleKey:'explicit-24h-cap',
+  calculationMethod:'fixed_dose',
+  doseMinValue:500,
+  doseMaxValue:500,
+  doseUnit:'mg',
+  frequencyMode:'interval',
+  intervalMinHours:6,
+  maxDoses24h:4,
+  maxDailyDoseMg:1200,
+  durationMode:'none',
+}, { ageMonths:300 });
+assert.equal(explicitDailyCap.outcome, Core.OUTCOME.CALCULATED);
+assert.equal(explicitDailyCap.perDose.max, 300);
+assert.ok(explicitDailyCap.cappedBy.includes('max_daily_dose_mg_via_max_doses_24h'));
+
 console.log('DRx shared deterministic dose-core contract passed.');
