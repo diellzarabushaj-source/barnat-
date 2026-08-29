@@ -24,7 +24,8 @@ function response(body, options = {}) {
     'https://www.medicines.org.uk/emc/product/7020/smpc',
     {
       fetchImpl:async () => response(
-        '<h2>4.1 Therapeutic indications</h2><p>Pain.</p>'
+        '<h1>Amlodipine 5mg tablets</h1><p>Last updated on emc: 20 Apr 2026</p>'
+        + '<h2>4.1 Therapeutic indications</h2><p>Pain.</p>'
         + '<h2>4.2 Posology and method of administration</h2><p>Dose text.</p>'
         + '<h2>5. Pharmacological properties</h2>'
       ),
@@ -36,6 +37,8 @@ function response(body, options = {}) {
   assert.equal(snapshot.parser.indicationsSectionPresent, true);
   assert.match(snapshot.rawSha256, /^[0-9a-f]{64}$/);
   assert.equal(snapshot.contentType, 'text/html');
+  assert.equal(snapshot.sourceDocument.productName, 'Amlodipine 5mg tablets');
+  assert.equal(snapshot.sourceDocument.documentDate, '2026-04-20');
 
   await assert.rejects(
     () => Archive.fetchSourceSnapshot('https://mediately.co/drugs/example', {
