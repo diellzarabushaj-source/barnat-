@@ -1,0 +1,92 @@
+name: DRx Batch 2 Live SmPC Extraction
+
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - main
+    paths:
+      - .github/workflows/drx-batch2-live-extraction.yml
+
+permissions:
+  contents: write
+
+concurrency:
+  group: drx-batch2-live-extraction
+  cancel-in-progress: false
+
+jobs:
+  extract:
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Use Node.js 22
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+
+      - name: Run repository contracts
+        run: |
+          node tests/drx-dose-source-archive-test.js
+          node tests/drx-batch2-extraction-pipeline-test.js
+          node tests/drx-batch2-normalization-first100-test.js
+          node tests/drx-phase16-live-status-test.js
+
+      - name: Extract 25 authoritative SmPC sources
+        run: node scripts/build-drx-batch2-extraction-index.js
+
+      - name: Build fail-closed normalization gate
+        run: node scripts/build-drx-batch2-normalization-index.js
+
+      - name: Update Phase 16 status
+        run: node scripts/update-drx-phase16-live-status.js
+
+      - name: Validate live extraction evidence
+        run: |
+          node - <<'NODE'
+          const fs = require('node:fs');
+          const assert = require('node:assert/strict');
+          const extraction = JSON.parse(fs.readFileSync('data/drx-batch2-extraction-index-v1.json', 'utf8'));
+          const normalization = JSON.parse(fs.readFileSync('data/drx-batch2-normalization-index-v1.json', 'utf8'));
+          assert.equal(extraction.targetCount, 25);
+          assert.equal(extraction.extractedCount, 25);
+          assert.equal(extraction.failedCount, 0);
+          assert.equal(extraction.complete, true);
+          assert.equal(extraction.publicationAllowed, false);
+          assert.equal(normalization.publicationAllowed, false);
+          assert.equal(normalization.normalizedRuleCount, 0);
+          assert.equal(normalization.gate.allowNormalization, true);
+          for (const row of extraction.rows) {
+            assert.equal(row.section41Present, true, row.canonicalKey + ': section 4.1 missing');
+            assert.equal(row.section42Present, true, row.canonicalKey + ': section 4.2 missing');
+            assert.equal(row.extractionGate?.allowed, true, row.canonicalKey + ': extraction gate closed');
+            assert.match(String(row.rawSha256 || ''), /^[0-9a-f]{64}$/i, row.canonicalKey + ': evidence hash missing');
+          }
+          console.log('DRx Batch 2 live evidence gate passed: 25/25.');
+          NODE
+
+      - name: Upload non-clinical evidence metadata
+        uses: actions/upload-artifact@v4
+        with:
+          name: drx-batch2-live-evidence
+          path: |
+            data/drx-batch2-extraction-index-v1.json
+            data/drx-batch2-normalization-index-v1.json
+          if-no-files-found: error
+          retention-days: 30
+
+      - name: Commit live evidence to main
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add             data/drx-batch2-extraction-index-v1.json             data/drx-batch2-normalization-index-v1.json             data/drx-dosierung-master-plan-status.json
+          if git diff --cached --quiet; then
+            echo "No evidence changes to commit."
+            exit 0
+          fi
+          git commit -m "data(drx): record Batch 2 live SmPC extraction"
+          git push origin HEAD:main
