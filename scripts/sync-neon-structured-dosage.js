@@ -2,7 +2,7 @@
 
 const crypto = require('node:crypto');
 const XLSX = require('xlsx');
-const { neonRequest } = require('../lib/neon-data-api');
+const { neonRequest } = require('../lib/medindex-data-api.js');
 
 const SOURCE_URL = 'https://docs.google.com/spreadsheets/d/1T7XsfkXLQfEomFL4DmXoA8PheiR6s3Qmu36hTqklOMo/export?format=xlsx';
 const clean = value => String(value ?? '').replace(/\s+/g, ' ').trim();
