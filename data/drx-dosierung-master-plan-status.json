@@ -1,6 +1,6 @@
 {
   "schemaVersion": "drx-dosierung-master-plan-status-v1",
-  "updatedAt": "2026-08-29T05:45:00+02:00",
+  "updatedAt": "2026-08-29T05:55:00+02:00",
   "officialPlan": "DRx Dosierung phases 0-32",
   "databaseBlocker": {
     "active": true,
@@ -197,27 +197,31 @@
     {
       "id": 17,
       "name": "Bulk Import",
-      "status": "PENDING",
-      "evidence": [],
-      "next": "100 -> 250 -> 500 -> remainder"
+      "status": "FOUNDATION_COMPLETE_REPO",
+      "evidence": [
+        "data/drx-bulk-import-policy-v1.json"
+      ],
+      "next": "start first 100-substance batch only after Batch 2 extraction and review stability"
     },
     {
       "id": 18,
       "name": "Pediatric Core",
-      "status": "PARTIAL_EXISTING",
+      "status": "FOUNDATION_COMPLETE_REPO",
       "evidence": [
-        "pediatric dosage handlers/calculator"
+        "pediatric dosage handlers/calculator",
+        "data/drx-pediatric-core-v1.json"
       ],
-      "next": "rebase on new normalized sourced rules"
+      "next": "rebase pediatric calculator on sourced normalized V3 rules"
     },
     {
       "id": 19,
       "name": "Adult Core",
-      "status": "PARTIAL_EXISTING",
+      "status": "FOUNDATION_COMPLETE_REPO",
       "evidence": [
-        "adult dosage handlers"
+        "adult dosage handlers",
+        "data/drx-adult-core-v1.json"
       ],
-      "next": "rebase on new normalized sourced rules"
+      "next": "rebase adult calculator on sourced normalized V3 rules"
     },
     {
       "id": 20,
