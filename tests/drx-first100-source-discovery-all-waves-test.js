@@ -86,7 +86,7 @@ for (const { fileName, label } of waveFiles) {
   }
 }
 
-assert.ok(verified >= 62, `verified coverage regressed below 62: ${verified}`);
+assert.ok(verified >= 72, `verified coverage regressed below 72: ${verified}`);
 assert.ok(seen.has('acetylsalicylicacidrosuvastatin'), 'Wave G Roasax canonical is missing');
 assert.ok(seen.has('amlodipineramipril'), 'Wave H Amlodipine + Ramipril canonical is missing');
 assert.ok(pending >= 0 && selectionRequired >= 0);
