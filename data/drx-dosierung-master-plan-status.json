@@ -1,6 +1,6 @@
 {
   "schemaVersion": "drx-dosierung-master-plan-status-v1",
-  "updatedAt": "2026-08-29T07:20:46.650Z",
+  "updatedAt": "2026-08-29T07:31:00Z",
   "officialPlan": "DRx Dosierung phases 0-32",
   "databaseBlocker": {
     "active": true,
@@ -22,7 +22,7 @@
     {
       "id": 1,
       "name": "Canonical Substances",
-      "status": "IMPLEMENTED_REPO_WITH_BULK_QUALITY_GATE_2_RESOLVED_11_PENDING",
+      "status": "IMPLEMENTED_REPO_CANONICAL_REVIEW_13_RESOLVED",
       "evidence": [
         "substance_concepts_v1",
         "substance_terms_v1",
@@ -31,9 +31,12 @@
         "data/drx-first100-canonical-quality-audit-v1.json",
         "reviewed alias exclusion: aspirin→acetylsalicylic acid",
         "data/drx-first100-canonical-review-decisions-v1.json",
-        "AEMPS/CIMA 82689: 'Amlodipine besilate2 + Ramipril' resolved to Amlodipine + Ramipril; salt-equivalence/product sections 4.1/4.2 verified"
+        "AEMPS/CIMA 82689: 'Amlodipine besilate2 + Ramipril' resolved to Amlodipine + Ramipril; salt-equivalence/product sections 4.1/4.2 verified",
+        "canonical review: 13/13 decisions resolved repository-side",
+        "effective unique source-discovery denominator: 89",
+        "Pancreatin resolved from imported amylase/lipase/panceatin/protease expression"
       ],
-      "next": "resolve remaining 11 first-100 canonical review rows only with authoritative product/source evidence; keep unresolved expressions fail-closed"
+      "next": "canonical first-100 review is resolved repository-side; verify all resolved identities against the live Supabase canonical relation when the SQL gateway returns"
     },
     {
       "id": 2,
@@ -49,7 +52,7 @@
     {
       "id": 3,
       "name": "Source Discovery",
-      "status": "IN_PROGRESS_FIRST100_73_VERIFIED_EFFECTIVE_88",
+      "status": "IN_PROGRESS_FIRST100_73_VERIFIED_EFFECTIVE_89",
       "evidence": [
         "data/drx-dose-source-map-v1.json",
         "ibuprofen pilot with official eMC oral+IV SmPCs",
@@ -86,9 +89,12 @@
         "first-100 verified product-specific source total: 68",
         "data/drx-first100-source-discovery-wave-i-v1.json",
         "Wave I: amlodipine/ramipril canonical resolution + four exact ANMDMR product SmPCs",
-        "first-100 verified product-specific source total: 73"
+        "first-100 verified product-specific source total: 73",
+        "data/drx-first100-source-discovery-index-v1.json",
+        "Wave I current: 5 verified rows including amlodipine/ramipril, TRIDERM, Triamcinolon S, Meclodin, CERVUGID",
+        "source-discovery denominator after canonical review: 89"
       ],
-      "next": "source-discover 14 remaining exact targets; resolve alteplase product selection separately; keep 11 unresolved canonical-review rows blocked"
+      "next": "source-discover 15 remaining exact targets; resolve Alteplase product selection separately; keep publication fail-closed"
     },
     {
       "id": 4,
@@ -267,7 +273,7 @@
     {
       "id": 17,
       "name": "Bulk Import",
-      "status": "FIRST100_QUEUE_QUALITY_GATED_SOURCE_DISCOVERY_ACTIVE",
+      "status": "FIRST100_73_OF_89_SOURCE_DISCOVERY_PRODUCTION_PROVENANCE_BLOCKED",
       "evidence": [
         "data/drx-bulk-import-policy-v1.json",
         "scripts/build-drx-first100-discovery-queue.js",
@@ -285,9 +291,12 @@
         "data/drx-first100-production-provenance-audit-v1.json",
         "registry-derived first-100 classified audit-only: 13 canonical-review flags, 87/100 discovery-eligible, 0 production-eligible without Supabase export provenance",
         "data/drx-first100-canonical-quality-audit-v1.json",
-        "data/drx-first100-source-discovery-wave-a-v1.json"
+        "data/drx-first100-source-discovery-wave-a-v1.json",
+        "data/drx-first100-source-discovery-index-v1.json",
+        "73/89 effective canonical targets have product-specific authoritative sources",
+        "productionDiscoveryAllowed=false until Supabase canonical export provenance passes"
       ],
-      "next": "complete source discovery for 87 eligible rows; resolve 13 canonical-review rows before archive/import"
+      "next": "complete 15 remaining source lookups + 1 Alteplase product selection; production import still requires hash-bound Supabase canonical export provenance"
     },
     {
       "id": 18,
@@ -516,7 +525,7 @@
     "first100RegistryDiscoveryEligible": 87,
     "first100ProductionEligibleRows": 0,
     "first100ProductionDiscoveryAllowed": false,
-    "first100SourceDiscoveryEligible": 87,
+    "first100SourceDiscoveryEligible": 89,
     "first100VerifiedProductSources": 73,
     "first100ProductSelectionRequired": 1,
     "legacyMirrorPrecheck": {
@@ -526,11 +535,12 @@
       "bindings": 4,
       "liveCompared": false
     },
-    "first100SourceDiscoveryRemaining": 14,
+    "first100SourceDiscoveryRemaining": 15,
     "first100SourceSectionVerificationPending": 0,
     "first100ProductSelectionPending": 1,
-    "first100CanonicalReviewResolved": 2,
-    "first100CanonicalReviewPending": 11,
-    "first100EffectiveSourceDiscoveryEligible": 88
+    "first100CanonicalReviewResolved": 13,
+    "first100CanonicalReviewPending": 0,
+    "first100EffectiveSourceDiscoveryEligible": 89,
+    "first100SourceLookupRemaining": 15
   }
 }
