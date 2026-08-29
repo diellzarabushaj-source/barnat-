@@ -51,15 +51,31 @@ assert.equal(baseline.publicTables, baseline.rlsEnabledTables,
   'every public table must keep RLS enabled.');
 assert.equal(tracker.currentExecution.supabaseSqlGateway, 'live');
 assert.equal(tracker.currentExecution.supabaseDataPlaneDown, false);
-assert.equal(tracker.currentExecution.liveRlsCoverage, '50/50');
+// Assert full coverage, not a fixed table count: the count legitimately grows
+// as migrations land, but every public table must keep RLS enabled.
+const rlsCoverage = /^(\d+)\/(\d+)$/.exec(tracker.currentExecution.liveRlsCoverage);
+assert.ok(rlsCoverage, 'liveRlsCoverage must read "<enabled>/<total>".');
+assert.equal(rlsCoverage[1], rlsCoverage[2], 'every public table must have RLS enabled.');
 assert.equal(tracker.currentExecution.liveSecurityAdvisorErrors, 0);
 assert.ok(!tracker.currentExecution.releaseBlockers.includes('supabase_data_plane_down'));
 
-// Live is behind the repository by the migration that was in flight at the crash.
+// The migration that was in flight at the crash has been applied, so live and
+// the repository agree again. It carried a real defect as well as bad luck.
 const drift = tracker.currentExecution.migrationDrift;
-assert.equal(drift.repositoryCount - drift.liveCount, drift.missingLive.length);
-assert.equal(drift.mustReapplyBeforeV3, true);
-assert.ok(tracker.currentExecution.releaseBlockers.includes('migration_drift_phase5_missing'));
+assert.equal(drift.resolved, true);
+assert.equal(drift.liveCount, drift.repositoryCount);
+assert.deepEqual(drift.missingLive, []);
+assert.equal(drift.mustReapplyBeforeV3, false);
+assert.match(drift.defectFound, /collides with sync_runs\.started_at/);
+assert.ok(!tracker.currentExecution.releaseBlockers.includes('migration_drift_phase5_missing'));
+
+// Applying it must not have moved clinical data or weakened RLS.
+const post = drift.postApplyVerification;
+assert.equal(post.drugs, 4015);
+assert.equal(post.dosageRegimens, 8104);
+assert.equal(post.publicTables, post.rlsEnabledTables);
+assert.equal(post.leakedClientGrants, 0);
+assert.equal(post.securityAdvisorErrors, 0);
 assert.match(tracker.databaseBlocker.likelyCauseEvidence, /No space left on device/);
 assert.match(tracker.databaseBlocker.likelyCauseEvidence, /edge_logs stayed live/);
 

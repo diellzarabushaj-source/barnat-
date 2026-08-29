@@ -1,6 +1,6 @@
 {
   "schemaVersion": "drx-dosierung-master-plan-status-v1",
-  "updatedAt": "2026-08-29T12:46:24.000Z",
+  "updatedAt": "2026-08-29T13:02:00.000Z",
   "officialPlan": "DRx Dosierung phases 0-32",
   "databaseBlocker": {
     "active": false,
@@ -713,8 +713,7 @@
       "legacy_comparison_not_live",
       "clinical_review_not_complete",
       "no_published_v3_rules",
-      "vercel_build_rate_limit",
-      "migration_drift_phase5_missing"
+      "vercel_build_rate_limit"
     ],
     "first100QueueMaterialized": 100,
     "first100CoveredExcluded": 35,
@@ -781,16 +780,29 @@
     "renalAdjustmentLiveVerified": 0,
     "hepaticAdjustmentLiveVerified": 0,
     "supabaseLiveVerifiedAt": "2026-08-29T12:41:00.000Z",
-    "liveRlsCoverage": "50/50",
+    "liveRlsCoverage": "51/51",
     "liveSecurityAdvisorErrors": 0,
     "migrationDrift": {
-      "liveCount": 77,
+      "liveCount": 78,
       "repositoryCount": 78,
-      "missingLive": [
-        "20260829012500_phase5_system_health_snapshot"
-      ],
+      "missingLive": [],
+      "resolved": true,
+      "resolvedAt": "2026-08-29T13:01:04.000Z",
       "cause": "in_flight_when_disk_filled",
-      "mustReapplyBeforeV3": true
+      "mustReapplyBeforeV3": false,
+      "defectFound": "The migration was not merely interrupted. Its refresh function declared a plpgsql variable named started_at, which collides with sync_runs.started_at in the ORDER BY of the recent-runs subquery. Since the migration ends by calling that function, it would have failed on every apply regardless of disk space. Renamed the variable to fn_started_at.",
+      "postApplyVerification": {
+        "drugs": 4015,
+        "dosageRegimens": 8104,
+        "icdCodes": 701,
+        "labTests": 111,
+        "publicTables": 51,
+        "rlsEnabledTables": 51,
+        "healthTriggers": 8,
+        "leakedClientGrants": 0,
+        "securityAdvisorErrors": 0,
+        "note": "Row counts identical to the pre-apply baseline; RLS stayed at 100% coverage. One INFO advisor (rls_enabled_no_policy) is intentional: the snapshot table is server-only, so no policy means deny-all for clients while service_role bypasses RLS."
+      }
     }
   },
   "sourceNetworkBlocker": {
