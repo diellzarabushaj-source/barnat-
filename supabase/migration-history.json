@@ -289,6 +289,10 @@
     {
       "version": "20260829003744",
       "name": "phase1_default_maintain_hardening"
+    },
+    {
+      "version": "20260829005849",
+      "name": "phase2_shallow_registry_read_model"
     }
   ]
 }
