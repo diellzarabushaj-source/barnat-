@@ -1,6 +1,6 @@
 {
   "schemaVersion": "drx-dosierung-master-plan-status-v1",
-  "updatedAt": "2026-08-29T05:55:00+02:00",
+  "updatedAt": "2026-08-29T06:08:00+02:00",
   "officialPlan": "DRx Dosierung phases 0-32",
   "databaseBlocker": {
     "active": true,
@@ -190,18 +190,22 @@
         "data/drx-dose-source-map-v1.json",
         "scripts/build-drx-batch2-extraction-index.js",
         "tests/drx-batch2-extraction-pipeline-test.js",
-        "25/25 authoritative Batch 2 sources mapped"
+        "25/25 authoritative Batch 2 sources mapped",
+        "scripts/build-drx-batch2-normalization-index.js",
+        "tests/drx-batch2-normalization-first100-test.js"
       ],
-      "next": "execute archive/parser pipeline for all 25 sources, capture document versions, then normalize extracted dose candidates"
+      "next": "run live archive/parse for 25 sources; only then structure and validate dose candidates"
     },
     {
       "id": 17,
       "name": "Bulk Import",
       "status": "FOUNDATION_COMPLETE_REPO",
       "evidence": [
-        "data/drx-bulk-import-policy-v1.json"
+        "data/drx-bulk-import-policy-v1.json",
+        "scripts/build-drx-first100-discovery-queue.js",
+        "tests/drx-batch2-normalization-first100-test.js"
       ],
-      "next": "start first 100-substance batch only after Batch 2 extraction and review stability"
+      "next": "generate deterministic first-100 queue from live canonical substance export after excluding 35 covered substances"
     },
     {
       "id": 18,
@@ -328,9 +332,12 @@
       "status": "FOUNDATION_COMPLETE_REPO",
       "evidence": [
         "health/dashboard foundations",
-        "data/drx-qa-coverage-contract-v1.json"
+        "data/drx-qa-coverage-contract-v1.json",
+        "scripts/build-drx-dose-coverage-v2.js",
+        "tests/drx-dose-coverage-v2-test.js",
+        "data/drx-dose-coverage-snapshot-v2.json"
       ],
-      "next": "materialize live source/parse/review/publication metrics"
+      "next": "replace repository counts with live V3 counts when Supabase data plane returns"
     },
     {
       "id": 31,
@@ -351,13 +358,18 @@
   ],
   "currentExecution": {
     "phase": 16,
-    "objective": "Batch 2 source set is 25/25 mapped. Execute archive and SmPC section extraction next; live V3 persistence, exact product binding and legacy comparison remain blocked by the Supabase SQL gateway.",
+    "objective": "Batch 2 has 25/25 mapped authoritative sources, a bounded archive/parse pipeline, a fail-closed normalization gate, and an evidence-based coverage snapshot. Next: execute live extraction for all 25, then structure dose candidates. First-100 discovery is prepared but must derive from the real canonical export.",
     "pilot": "batch2-25",
     "repositoryBatch1Substances": 10,
     "repositoryBatch2Substances": 25,
-    "batch2MappedSources": 25,
+    "mappedSources": 35,
+    "extractedSubstances": 10,
+    "normalizedSubstances": 10,
     "batch2ExtractedSources": 0,
     "liveBoundRules": 0,
+    "legacyComparedRules": 0,
+    "clinicallyReviewedRules": 0,
+    "publishedRules": 0,
     "publicationAllowed": false
   }
 }
