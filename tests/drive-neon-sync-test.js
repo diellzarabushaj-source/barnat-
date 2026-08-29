@@ -57,7 +57,10 @@ assert.match(source, /drive_sheet_rows/);
 assert.match(source, /editorial_override/);
 assert.match(source, /resolution=merge-duplicates/);
 assert.doesNotMatch(source, /MEDINDEX_DRIVE_SYNC_SECRET\s*=\s*['"][^'"]+['"]/);
-assert.match(api, /DriveNeonSync\.handle/);
+assert.match(api, /DriveSupabaseSync\\.handle/);
+assert.doesNotMatch(api, /DriveNeonSync/);
+assert.match(legacySource, /drive-supabase-sync\\.js/);
+assert.equal(LegacySync, Sync);
 
 /* Bootstrap authorization must prove ownership and editability through Google APIs. */
 assert.match(api, /googleapis\.com\/drive\/v3\/files/);
