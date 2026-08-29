@@ -1,0 +1,36 @@
+{
+  "schemaVersion": "drx-first100-source-discovery-wave-g-v1",
+  "generatedAt": "2026-08-29T04:36:00.000Z",
+  "sourcePolicy": "data/drx-dose-source-policy-v1.json",
+  "verificationMethod": "live_aemps_cima_html_product_specific_smpc",
+  "publicationAllowed": false,
+  "verifiedProductSpecificCount": 1,
+  "sectionsPendingCount": 0,
+  "productSelectionRequiredCount": 0,
+  "rows": [
+    {
+      "canonicalKey": "acetylsalicylicacidrosuvastatin",
+      "canonicalName": "Acetylsalicylic acid + Rosuvastatin",
+      "status": "verified_product_specific",
+      "sourceTier": "AEMPS_CIMA",
+      "sourceKey": "cima-85514-ft",
+      "url": "https://cima.aemps.es/cima/dochtml/ft/85514/FT_85514.html",
+      "productName": "Roasax 20 mg/100 mg cápsulas duras",
+      "documentDate": "2025-12",
+      "documentDatePrecision": "month",
+      "section41Present": true,
+      "section42Present": true,
+      "reviewFlags": [
+        "fixed_combination",
+        "secondary_cardiovascular_prevention",
+        "substitution_therapy_not_initial",
+        "one_capsule_once_daily",
+        "stable_monocomponent_doses_required",
+        "renal_hepatic_review",
+        "product_strength_specific",
+        "clinical_review_required"
+      ],
+      "publicationAllowed": false
+    }
+  ]
+}
