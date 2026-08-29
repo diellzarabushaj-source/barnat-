@@ -1,0 +1,74 @@
+{
+  "schemaVersion": "drx-dose-source-map-v1",
+  "updatedAt": "2026-08-29",
+  "substances": {
+    "ibuprofen": {
+      "canonicalName": "Ibuprofen",
+      "canonicalKey": "ibuprofen",
+      "discoveryStatus": "pilot_discovered",
+      "preferredSourceTier": "EMC",
+      "candidates": [
+        {
+          "sourceKey": "emc-7020-smpc",
+          "url": "https://www.medicines.org.uk/emc/product/7020/smpc",
+          "tier": "EMC",
+          "documentType": "SmPC",
+          "productName": "Ibuprofen 400 mg film-coated tablets",
+          "formulation": "film-coated tablet",
+          "route": "PO",
+          "strength": "400 mg",
+          "documentDate": "2026-07-01",
+          "hasDoseSection": true,
+          "sectionsExpected": [
+            "4.1",
+            "4.2",
+            "4.3",
+            "4.4",
+            "4.5",
+            "4.6",
+            "4.7",
+            "4.8",
+            "4.9"
+          ],
+          "productSpecific": true,
+          "substanceMatch": true,
+          "productMatch": true,
+          "status": "discovered"
+        },
+        {
+          "sourceKey": "emc-15156-smpc",
+          "url": "https://www.medicines.org.uk/emc/product/15156/smpc",
+          "tier": "EMC",
+          "documentType": "SmPC",
+          "productName": "Ibuprofen 400 mg solution for infusion",
+          "formulation": "solution for infusion",
+          "route": "IV",
+          "strength": "400 mg/100 mL",
+          "documentDate": "2025-11-10",
+          "hasDoseSection": true,
+          "sectionsExpected": [
+            "4.1",
+            "4.2",
+            "4.3",
+            "4.4",
+            "4.5",
+            "4.6",
+            "4.7",
+            "4.8",
+            "4.9"
+          ],
+          "productSpecific": true,
+          "substanceMatch": true,
+          "productMatch": true,
+          "status": "discovered"
+        }
+      ],
+      "legacyDraft": {
+        "path": "drafts/ibuprofen-dose-draft.json",
+        "sourceType": "secondary_reference",
+        "publishable": false,
+        "reconciliationRequired": true
+      }
+    }
+  }
+}
