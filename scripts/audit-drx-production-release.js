@@ -18,6 +18,7 @@ function audit(){
  if(v3.applied!==true) blockers.push('supabase_v3_not_applied');
  if((tracker.currentExecution.archiveCiSectionHashVerifiedCount||0)<25) blockers.push('batch2_archive_ci_hashes_incomplete');
  if((tracker.currentExecution.archiveHashVerifiedCount||0)<25) blockers.push('batch2_archive_evidence_not_materialized');
+ if((v3.liveVerification?.sourceSections||0)<25) blockers.push('batch2_source_sections_not_persisted');
  if((matrix.normalizationReady||0)<25) blockers.push('batch2_normalization_not_ready');
  if((tracker.currentExecution.liveBoundRules||0)<=0) blockers.push('exact_product_binding_not_live');
  if((tracker.currentExecution.legacyComparedRules||0)<=0) blockers.push('legacy_comparison_not_live');
@@ -43,7 +44,7 @@ function audit(){
    publicationAllowed:blockers.length===0,
    blockers:[...new Set(blockers)],
    phases:{
-     apiFastPath:'v3_one_rpc_ready_not_live',
+     apiFastPath:v3.applied===true?'v3_one_rpc_live_shadow_no_published_rules':'v3_one_rpc_ready_not_live',
      doseCore:'shared_core_runtime_hardened',
      cacheOffline:'implemented_indexeddb_etag',
      frontend:'shared_core_fast_flow_ready',

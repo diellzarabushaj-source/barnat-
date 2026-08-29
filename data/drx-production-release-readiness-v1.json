@@ -1,11 +1,10 @@
 {
   "schemaVersion": "drx-production-release-readiness-v1",
-  "checkedAt": "2026-08-29T12:46:28.692Z",
+  "checkedAt": "2026-08-29T14:59:01.879Z",
   "releaseReady": false,
   "publicationAllowed": false,
   "blockers": [
-    "supabase_v3_not_applied",
-    "batch2_archive_evidence_not_materialized",
+    "batch2_source_sections_not_persisted",
     "batch2_normalization_not_ready",
     "exact_product_binding_not_live",
     "legacy_comparison_not_live",
@@ -22,13 +21,13 @@
     "legacy_consumers_not_zero"
   ],
   "phases": {
-    "apiFastPath": "v3_one_rpc_ready_not_live",
+    "apiFastPath": "v3_one_rpc_live_shadow_no_published_rules",
     "doseCore": "shared_core_runtime_hardened",
     "cacheOffline": "implemented_indexeddb_etag",
     "frontend": "shared_core_fast_flow_ready",
-    "automatedQa": "critical_release_suite_expanded_commit_bound_ci_not_observed",
-    "coverage": "ci_vs_materialized_evidence_separated",
-    "cleanup": "executable_legacy_consumer_gate_blocked",
+    "automatedQa": "dedicated_gate_configured_not_observed",
+    "coverage": "implemented_repo_evidence",
+    "cleanup": "gated_no_destructive_changes",
     "productionRelease": "blocked"
   }
 }

@@ -1,6 +1,6 @@
 {
   "schemaVersion": "drx-dose-coverage-snapshot-v2",
-  "generatedAt": "2026-08-29T12:42:57.186Z",
+  "generatedAt": "2026-08-29T14:59:01.735Z",
   "publicationAllowed": false,
   "counts": {
     "batch1Substances": 10,
@@ -14,13 +14,17 @@
     "published": 0,
     "liveWebEvidenceStructured": 25,
     "batch2SourceMetadataVerified": 25,
-    "batch2ArchiveSnapshots": 0,
+    "batch2ArchiveSnapshots": 25,
+    "batch2ArchiveCiVerified": 25,
     "openClinicalReviewQueue": 25,
     "highPriorityClinicalReviewQueue": 21,
     "structuredCandidateReady": 25,
     "normalizationReady": 0,
     "publicationReady": 0,
     "reviewPacketsReady": 25,
+    "reviewEvidenceReady": 0,
+    "renalAdjustmentLiveVerified": 0,
+    "hepaticAdjustmentLiveVerified": 0,
     "first100QueueMaterialized": 100,
     "first100CanonicalReviewRequired": 16,
     "first100SourceDiscoveryEligible": 87,
@@ -29,21 +33,17 @@
     "first100SourceDiscoveryRemaining": 0,
     "first100SourceSectionVerificationPending": 0,
     "first100ProductSelectionPending": 0,
-    "first100ProductionEligibleRows": 0,
-    "reviewEvidenceReady": 0,
-    "renalAdjustmentLiveVerified": 0,
-    "hepaticAdjustmentLiveVerified": 0,
-    "batch2ArchiveCiVerified": 25
+    "first100ProductionEligibleRows": 0
   },
   "batch2ProgressPct": {
     "structuredEvidence": 100,
-    "archiveHashes": 0,
+    "archiveHashes": 100,
+    "archiveCiVerified": 100,
     "normalizationReady": 0,
     "exactProductBinding": 0,
     "clinicalReview": 0,
     "publicationReady": 0,
-    "published": 0,
-    "archiveCiVerified": 100
+    "published": 0
   },
   "first100ProgressPct": {
     "verifiedProductSources": 100,
@@ -52,7 +52,7 @@
   },
   "architecture": {
     "v3CandidateReady": true,
-    "v3Applied": false,
+    "v3Applied": true,
     "v3TableCount": 12,
     "v3SelfContainedProductShell": true,
     "v2ProductShellDependency": false,
@@ -64,12 +64,15 @@
     "requiredAdjustmentRuntimeGateConfigured": true
   },
   "gates": {
-    "supabaseLiveAvailable": false,
+    "supabaseLiveAvailable": true,
     "batch2ExtractionArtifactPresent": false,
     "batch2NormalizationArtifactPresent": false,
     "batch2LiveWebEvidenceComplete": true,
     "archiveWorkflowConfigured": true,
     "archiveWorkflowRunObserved": true,
+    "archiveCiEvidenceComplete": true,
+    "archiveEvidenceMaterialized": true,
+    "archiveEvidenceLocation": "repo_attestation_and_supabase_v3_source_snapshots",
     "drxSafetyWorkflowConfigured": true,
     "drxSafetyWorkflowRunObserved": false,
     "drxSafetyWorkflowGreen": false,
@@ -79,12 +82,9 @@
     "vercelDeploymentGreen": false,
     "rollbackTested": false,
     "zeroKnownLegacyConsumers": false,
-    "publicationBlocked": true,
     "reviewEvidenceComplete": false,
     "renalHepaticLiveValidationObserved": false,
-    "archiveCiEvidenceComplete": true,
-    "archiveEvidenceMaterialized": false,
-    "archiveEvidenceLocation": "ci_artifact_only_not_committed"
+    "publicationBlocked": true
   },
-  "next": "CI verified 25/25 raw+section hashes, but persisted/materialized archive evidence remains 0/25. Promote live/import counts only after evidence becomes repo/DB-readable; binding, review, CI, smoke, deploy and rollback remain fail-closed."
+  "next": "CI archive evidence and persisted/materialized archive evidence are reported separately. Promote live/import counts only from repo/DB-readable persisted evidence; binding, review, CI, smoke, deploy and rollback remain fail-closed until observed."
 }

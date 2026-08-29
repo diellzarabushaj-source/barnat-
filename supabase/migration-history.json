@@ -313,6 +313,14 @@
     {
       "version": "20260829012500",
       "name": "phase5_system_health_snapshot"
+    },
+    {
+      "version": "20260829131545",
+      "name": "drx_dose_v3_additive_shadow_schema"
+    },
+    {
+      "version": "20260829145424",
+      "name": "drx_v3_cover_foreign_keys"
     }
   ]
 }

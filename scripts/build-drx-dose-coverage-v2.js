@@ -111,7 +111,7 @@ function build() {
       requiredAdjustmentRuntimeGateConfigured:v3.security?.adjustmentRequiredRuntimeGate === true
     },
     gates:{
-      supabaseLiveAvailable:execution.supabaseSqlGateway === 'available',
+      supabaseLiveAvailable:['available','live'].includes(execution.supabaseSqlGateway),
       batch2ExtractionArtifactPresent:Boolean(batch2Extraction),
       batch2NormalizationArtifactPresent:Boolean(batch2Normalization),
       batch2LiveWebEvidenceComplete:Number(execution.webEvidenceStructuredSources || 0) === batch2Total,

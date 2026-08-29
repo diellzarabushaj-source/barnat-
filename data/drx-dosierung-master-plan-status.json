@@ -1,6 +1,6 @@
 {
   "schemaVersion": "drx-dosierung-master-plan-status-v1",
-  "updatedAt": "2026-08-29T13:35:06.000Z",
+  "updatedAt": "2026-08-29T14:55:00.000Z",
   "officialPlan": "DRx Dosierung phases 0-32",
   "databaseBlocker": {
     "active": false,
@@ -636,10 +636,10 @@
         "coverage v2 reports reviewEvidenceReady, renalAdjustmentLiveVerified and hepaticAdjustmentLiveVerified separately",
         "coverage architecture reports adjustment-aware runtime, provenance-bound cache and required-adjustment DB/runtime gates",
         "live renal/hepatic counts remain zero until observed from V3",
-        "coverage now separates batch2ArchiveCiVerified=25 from batch2ArchiveSnapshots=0",
-        "archiveWorkflowRunObserved=true and archiveCiEvidenceComplete=true do not promote archiveEvidenceMaterialized"
+        "coverage separates CI archive verification from 25 live provenance snapshots; SmPC section persistence remains 0/25",
+        "25 live V3 source snapshots promote raw archive evidence only; source sections, normalization, binding, review and publication remain zero"
       ],
-      "next": "materialize CI archive artifact into a repo/DB-readable evidence gate; keep persisted/import counts at zero until then"
+      "next": "persist the exact hash-matched SmPC sections from the authoritative archive, then normalize and bind without opening publication"
     },
     {
       "id": 31,
@@ -672,9 +672,9 @@
   ],
   "currentExecution": {
     "phase": 32,
-    "activeCriticalPhase": 14,
+    "activeCriticalPhase": 15,
     "repositoryImplementationThroughPhase": 32,
-    "objective": "All phases 25-32 now have concrete repo-side implementation/gates. Production remains fail-closed on live V3/archive/binding/legacy/review publication blockers.",
+    "objective": "Phase 14 is live and hardened. Continue Batch 1/2 provenance section persistence, normalization, binding, legacy comparison and clinical review while publication remains fail-closed.",
     "pilot": "batch2-25",
     "repositoryBatch1Substances": 10,
     "repositoryBatch2Substances": 25,
@@ -694,7 +694,7 @@
     "archiveWorkflowRunObserved": true,
     "batch2SourceMetadataVerified": 25,
     "batch2ParityMismatchCount": 0,
-    "archiveHashVerifiedCount": 0,
+    "archiveHashVerifiedCount": 25,
     "structuredCandidateReady": 25,
     "normalizationReady": 0,
     "publicationReady": 0,
@@ -706,7 +706,7 @@
     "releaseGateImplemented": true,
     "releaseReady": false,
     "releaseBlockers": [
-      "batch2_archive_evidence_not_materialized",
+      "batch2_source_sections_not_persisted",
       "batch2_normalization_not_ready",
       "exact_product_binding_not_live",
       "legacy_comparison_not_live",
@@ -774,11 +774,11 @@
       "artifactRetentionDays": 90,
       "note": "Fetches are real: build-drx-batch2-extraction-index.js calls Archive.fetchSourceSnapshot, which issues an HTTPS GET via globalThis.fetch against a policy-validated authoritative tier URL. CI egress permits the EMA/eMC/AEMPS hosts that this workspace is denied."
     },
-    "archiveEvidenceLocation": "ci_artifact_only_not_committed",
+    "archiveEvidenceLocation": "repo_attestation_and_supabase_v3_source_snapshots",
     "archiveCiSectionHashVerifiedCount": 25,
     "renalAdjustmentLiveVerified": 0,
     "hepaticAdjustmentLiveVerified": 0,
-    "supabaseLiveVerifiedAt": "2026-08-29T12:41:00.000Z",
+    "supabaseLiveVerifiedAt": "2026-08-29T14:55:00.000Z",
     "liveRlsCoverage": "63/63",
     "liveSecurityAdvisorErrors": 0,
     "migrationDrift": {
@@ -832,11 +832,16 @@
         "dosageRegimens": 8104
       },
       "contentAfterApply": {
-        "snapshots": 0,
+        "snapshots": 25,
+        "sections": 0,
         "products": 0,
         "rules": 0,
         "publishedRules": 0
-      }
+      },
+      "liveMigrationCount": 80,
+      "repositoryMigrationCount": 80,
+      "latestMigration": "20260829145424_drx_v3_cover_foreign_keys",
+      "performanceAdvisorForeignKeyFindingsClosed": 7
     },
     "archiveAttestationPresent": true,
     "archiveAttestationPath": "data/drx-batch2-archive-attestation-v1.json",
@@ -856,11 +861,11 @@
     ],
     "allowedReference": "api.github.com returns HTTP 200 through the same proxy, so this is per-host policy rather than a broken proxy.",
     "blocks": [
-      "batch2_archive_evidence_not_materialized",
+      "batch2_source_sections_not_persisted",
       "batch2_normalization_not_ready"
     ],
-    "rule": "Do not fabricate archive artifacts. GitHub Actions verified 25/25 raw and section hashes; normalization/import stay blocked until that CI artifact is materialized into a repo/DB-readable evidence gate.",
+    "rule": "Do not fabricate archive artifacts or section text. GitHub Actions verified 25/25 raw and section hashes and 25 provenance snapshots are live; normalization/import stay blocked until exact SmPC sections are persisted and hash-matched.",
     "operatorCheck": "Allow the EMA/eMC/AEMPS hosts in the environment network policy (or run the archive workflow from an environment that already permits them), then rerun the archive workflow and verifier.",
-    "ciExemption": "GitHub Actions run 33251672706 fetched and hash-verified 25/25 sources. Workspace egress remains denied, but release is now blocked on evidence materialization rather than source-fetch completeness."
+    "ciExemption": "GitHub Actions run 33251672706 fetched and hash-verified 25/25 sources. The 25 source snapshots are now materialized in V3; workspace egress remains denied and release is blocked on section persistence rather than source-fetch completeness."
   }
 }

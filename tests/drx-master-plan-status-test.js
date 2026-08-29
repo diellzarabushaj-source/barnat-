@@ -96,12 +96,12 @@ assert.ok(network.deniedHosts.includes('www.ema.europa.eu:443'));
 assert.ok(network.deniedHosts.includes('www.medicines.org.uk:443'));
 assert.ok(network.deniedHosts.includes('cima.aemps.es:443'));
 assert.match(network.rule, /Do not fabricate/);
-assert.ok(network.blocks.includes('batch2_archive_evidence_not_materialized'));
+assert.ok(network.blocks.includes('batch2_source_sections_not_persisted'));
 assert.equal(tracker.currentExecution.archiveBlockedByNetworkPolicy, true);
 // A real archive run has been observed in CI, where egress is permitted.
-// Repo-side hash count stays 0 because those artifacts are not committed.
+// CI attestation and live V3 snapshot rows now materialize the 25 raw hashes.
 assert.equal(tracker.currentExecution.archiveWorkflowRunObserved, true);
-assert.equal(tracker.currentExecution.archiveEvidenceLocation, 'ci_artifact_only_not_committed');
+assert.equal(tracker.currentExecution.archiveEvidenceLocation, 'repo_attestation_and_supabase_v3_source_snapshots');
 assert.equal(tracker.currentExecution.archiveCiSectionHashVerifiedCount, 25);
 const ciEvidence = tracker.currentExecution.archiveCiEvidence;
 assert.equal(ciEvidence.conclusion, 'success');
@@ -111,9 +111,9 @@ assert.equal(ciEvidence.verification.sectionHashVerifiedCount, 25);
 assert.equal(ciEvidence.verification.publicationAllowed, false);
 assert.ok(ciEvidence.runUrl.startsWith('https://github.com/'));
 assert.match(tracker.sourceNetworkBlocker.ciExemption, /hash-verified 25\/25 sources/);
-assert.ok(tracker.currentExecution.releaseBlockers.includes('batch2_archive_evidence_not_materialized'));
+assert.ok(tracker.currentExecution.releaseBlockers.includes('batch2_source_sections_not_persisted'));
 
-assert.equal(tracker.currentExecution.activeCriticalPhase, 14);
+assert.equal(tracker.currentExecution.activeCriticalPhase, 15);
 assert.equal(tracker.currentExecution.repositoryImplementationThroughPhase, 32);
 assert.equal(tracker.phases.find(p => p.id === 14).status, 'APPLIED_LIVE_SHADOW_SCHEMA_FAIL_CLOSED');
 assert.equal(tracker.phases.find(p => p.id === 15).status, 'IN_PROGRESS');
@@ -124,10 +124,10 @@ assert.equal(tracker.currentExecution.pilot, 'batch2-25');
 assert.equal(tracker.currentExecution.repositoryBatch1Substances, 10);
 assert.equal(tracker.currentExecution.repositoryBatch2Substances, 25);
 assert.equal(tracker.currentExecution.mappedSources, 35);
-assert.equal(tracker.currentExecution.archiveHashVerifiedCount, 0);
+assert.equal(tracker.currentExecution.archiveHashVerifiedCount, 25);
 assert.equal(tracker.currentExecution.normalizationReady, 0);
 assert.equal(tracker.currentExecution.liveBoundRules, 0);
-// V3 is applied live. It is a shadow schema: present, fail-closed and empty.
+// V3 is applied live. It is a fail-closed shadow with provenance snapshots only.
 assert.equal(tracker.currentExecution.v3Applied, true);
 const v3 = tracker.currentExecution.v3LiveVerification;
 assert.equal(v3.tables, 12);
@@ -141,6 +141,10 @@ for (const [check, result] of Object.entries(v3.failClosedSmoke)) {
 assert.equal(v3.v2Untouched.drugs, 4015);
 assert.equal(v3.v2Untouched.dosageRegimens, 8104);
 assert.equal(v3.contentAfterApply.publishedRules, 0, 'applying schema must publish nothing.');
+assert.equal(v3.contentAfterApply.snapshots, 25);
+assert.equal(v3.contentAfterApply.sections, 0);
+assert.equal(v3.liveMigrationCount, 80);
+assert.equal(v3.repositoryMigrationCount, 80);
 assert.ok(!tracker.currentExecution.releaseBlockers.includes('supabase_v3_not_applied'));
 assert.equal(tracker.currentExecution.releaseReady, false);
 assert.equal(tracker.currentExecution.first100ProductionDiscoveryAllowed, false);
