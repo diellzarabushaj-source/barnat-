@@ -38,7 +38,7 @@ assert.equal(status.candidateGitBlobSha, gitBlobSha(sql));
 assert.equal(status.security.rlsTableCount, 12);
 assert.equal(status.repositoryStaticAudit.rlsCoverage, '12/12');
 assert.equal(status.repositoryStaticAudit.directClientWriteGrants, 0);
-assert.equal(status.repositoryStaticAudit.status, 'STATIC_VERIFIED_NOT_LIVE_APPLIED');
+assert.equal(status.repositoryStaticAudit.status, 'STATIC_HARDENED_NOT_LIVE_APPLIED');\nassert.equal(status.security.tablePublicRoleRevoked, true);\nassert.equal(status.security.productPublicationTrigger, true);\nassert.equal(status.security.rulePublicationTrigger, true);\nassert.equal(status.security.insertPublicationGuard, true);\nassert.equal(status.security.ruleSourceSection42ArtifactRequired, true);\nassert.equal(status.security.preexistingShadowSchemaFailsClosed, true);
 
 const publishedRead = proposal.tables
   .filter(table => table.exposure === 'published_read_only')
