@@ -4,7 +4,7 @@ const ROOT=path.resolve(__dirname,'..');
 const SourcePolicy=require('../lib/dose-source-policy.js');
 const read=p=>JSON.parse(fs.readFileSync(path.join(ROOT,p),'utf8'));
 const WAVE_FILES=fs.readdirSync(path.join(ROOT,'data'))
-  .filter(name=>/^drx-first100-source-discovery-wave-[a-z]-v1\\.json$/.test(name))
+  .filter(name=>/^drx-first100-source-discovery-wave-[a-z]-v1\.json$/.test(name))
   .sort()
   .map(name=>'data/'+name);
 
