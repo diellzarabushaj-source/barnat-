@@ -1,0 +1,39 @@
+{
+  "schemaVersion": "drx-renal-adjustment-model-v1",
+  "status": "foundation_complete_repository",
+  "publicationAllowed": false,
+  "supportedMeasures": [
+    "eGFR_mL_min_1_73m2",
+    "CrCl_mL_min",
+    "dialysis_status"
+  ],
+  "requiredFields": [
+    "measure_type",
+    "threshold_operator",
+    "threshold_value",
+    "dose_action",
+    "source_key",
+    "source_section",
+    "review_status"
+  ],
+  "doseActions": [
+    "no_adjustment",
+    "reduce_dose",
+    "extend_interval",
+    "avoid",
+    "contraindicated",
+    "specialist_review"
+  ],
+  "dialysisStates": [
+    "none",
+    "hemodialysis",
+    "peritoneal_dialysis",
+    "continuous_renal_replacement"
+  ],
+  "safetyRules": [
+    "do_not_infer_CrCl_from_eGFR",
+    "do_not_publish_without_source",
+    "conflicting_rules_require_manual_review"
+  ],
+  "next": "bind normalized sourced rules to exact products and patient inputs after live V3 persistence"
+}
