@@ -49,6 +49,61 @@ assert.match(sql,/dose_source_snapshots_v3_tier_check/);
 assert.match(sql,/editorial_status = 'published'/);
 assert.match(sql,/binding_status = 'verified'/);
 assert.match(sql,/dose_rules_v3_verified_provenance_check/);
+assert.match(sql,/source_section_sha256 text/);
+assert.match(sql,/dose_rules_v3_section_sha_check/);
+assert.match(sql,/source_section_sha256 ~ '\^\[0-9a-f\]\{64\}\
+assert.match(sql,/dose_rules_v3_published_not_manual_check/);
+assert.match(sql,/source_evidence_hash ~ '\^\[0-9a-f\]\{64\}\$'/);
+
+// Supabase public-schema least privilege: revoke defaults first, then expose SELECT only.
+assert.match(sql,/revoke all privileges on table/);
+assert.match(sql,/from public, anon, authenticated/);
+assert.match(sql,/grant select on table public\.dose_indication_concepts_v3 to anon, authenticated/);
+assert.match(sql,/grant select on table public\.dose_products_v3 to anon, authenticated/);
+assert.match(sql,/grant select on table public\.dose_rules_v3 to anon, authenticated/);
+assert.match(sql,/grant select on table public\.dose_rule_products_v3 to anon, authenticated/);
+assert.doesNotMatch(sql,/grant\s+(?:insert|update|delete|truncate|references|trigger|all(?:\s+privileges)?)\b[\s\S]*?\bto\s+(?:anon|authenticated)\b/i);
+assert.doesNotMatch(sql,/create\s+policy[\s\S]*?for\s+(?:insert|update|delete|all)\s+to\s+(?:anon|authenticated)\b/i);
+
+// Published provenance must be mutation-locked.
+assert.match(sql,/create or replace function private\.drx_lock_source_snapshot_v3\(\)/);
+assert.match(sql,/create or replace function private\.drx_lock_source_section_v3\(\)/);
+assert.match(sql,/create trigger dose_source_snapshots_v3_provenance_lock[\s\S]*?before update or delete/);
+assert.match(sql,/create trigger dose_source_sections_v3_provenance_lock[\s\S]*?before update or delete/);
+assert.match(sql,/DRX_V3_PROVENANCE_LOCKED/);
+
+// Product/rule publication guards must cover INSERT as well as UPDATE and remain invoker-safe.
+assert.match(sql,/create or replace function private\.drx_enforce_product_publication_v3\(\)/);
+assert.match(sql,/create trigger dose_products_v3_publication_guard[\s\S]*?before insert or update/);
+assert.match(sql,/create trigger dose_rules_v3_publication_guard[\s\S]*?before insert or update/);
+assert.match(sql,/source tier is not publication eligible/);
+assert.match(sql,/verified SmPC section 4\.2 artifact missing/);
+assert.match(sql,/source section hash does not match persisted artifact/);
+assert.match(sql,/section_code = '4\.2'[\s\S]*?extraction_status = 'extracted'/);
+assert.match(sql,/snapshot_source_key is distinct from new\.source_key/);
+
+// Runtime must revalidate the persisted provenance, not trust published status alone.
+assert.match(sql,/join public\.dose_source_snapshots_v3 ps[\s\S]*?ps\.source_tier in \('EMA','EMC','AEMPS_CIMA','EU_NATIONAL','KOSOVO_AKPPM'\)/);
+assert.match(sql,/join public\.dose_source_snapshots_v3 rs/);
+assert.match(sql,/join public\.dose_source_sections_v3 sec[\s\S]*?sec\.section_sha256 = r\.source_section_sha256/);
+assert.match(sql,/'sectionSha256', r\.source_section_sha256/);
+
+// The one-read RPC is allowed only as SECURITY INVOKER and must remain least-privilege.
+assert.doesNotMatch(sql,/\bsecurity\s+definer\b/i);
+assert.match(sql,/create or replace function public\.medindex_dose_product_fast_path_v3/);
+assert.match(sql,/language sql[\s\S]*?stable[\s\S]*?security invoker/);
+assert.match(sql,/revoke\s+all\s+on\s+function\s+public\.medindex_dose_product_fast_path_v3\(text,\s*uuid\)\s+from\s+public/i);
+assert.match(sql,/grant\s+execute\s+on\s+function\s+public\.medindex_dose_product_fast_path_v3\(text,\s*uuid\)\s+to\s+anon,\s*authenticated/i);
+assert.doesNotMatch(sql,/\bcreate\s+(?:or\s+replace\s+)?view\b/i);
+
+// Client-visible rows remain constrained to published concepts/rules and verified bindings.
+assert.match(sql,/create policy dose_indication_concepts_v3_published_read[\s\S]*?using \(editorial_status = 'published'\)/);
+assert.match(sql,/create policy dose_products_v3_published_read[\s\S]*?using \(editorial_status = 'published'\)/);
+assert.match(sql,/create policy dose_rules_v3_published_read[\s\S]*?using \(editorial_status = 'published'\)/);
+assert.match(sql,/create policy dose_rule_products_v3_published_read[\s\S]*?binding_status = 'verified'[\s\S]*?r\.editorial_status = 'published'/);
+
+console.log('DRx V3 additive Supabase candidate least-privilege contract passed.');
+/);
 assert.match(sql,/dose_rules_v3_published_not_manual_check/);
 assert.match(sql,/source_evidence_hash ~ '\^\[0-9a-f\]\{64\}\$'/);
 
