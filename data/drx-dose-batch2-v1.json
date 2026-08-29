@@ -1,7 +1,7 @@
 {
   "schemaVersion": "drx-dose-batch2-v1",
   "updatedAt": "2026-08-29T05:20:00+02:00",
-  "status": "in_progress_repository_side",
+  "status": "source_discovery_complete_repository_side",
   "publicationAllowed": false,
   "targetCount": 25,
   "substances": [
@@ -134,57 +134,57 @@
     {
       "canonicalKey": "spironolactone",
       "canonicalName": "Spironolactone",
-      "sourceKey": null,
-      "url": null,
-      "status": "pending_source_verification"
+      "sourceKey": "emc-1619-smpc",
+      "url": "https://www.medicines.org.uk/emc/product/1619/smpc",
+      "status": "verified_live"
     },
     {
       "canonicalKey": "diclofenac",
       "canonicalName": "Diclofenac",
-      "sourceKey": null,
-      "url": null,
-      "status": "pending_source_verification"
+      "sourceKey": "emc-2661-smpc",
+      "url": "https://www.medicines.org.uk/emc/product/2661/smpc",
+      "status": "verified_live"
     },
     {
       "canonicalKey": "doxycycline",
       "canonicalName": "Doxycycline",
-      "sourceKey": null,
-      "url": null,
-      "status": "pending_source_verification"
+      "sourceKey": "emc-13082-smpc",
+      "url": "https://www.medicines.org.uk/emc/product/13082/smpc",
+      "status": "verified_live"
     },
     {
       "canonicalKey": "cefalexin",
       "canonicalName": "Cefalexin",
-      "sourceKey": null,
-      "url": null,
-      "status": "pending_source_verification"
+      "sourceKey": "emc-554-smpc",
+      "url": "https://www.medicines.org.uk/emc/product/554/smpc",
+      "status": "verified_live"
     },
     {
       "canonicalKey": "metronidazole",
       "canonicalName": "Metronidazole",
-      "sourceKey": null,
-      "url": null,
-      "status": "pending_source_verification"
+      "sourceKey": "emc-12817-smpc",
+      "url": "https://www.medicines.org.uk/emc/product/12817/smpc",
+      "status": "verified_live"
     },
     {
       "canonicalKey": "gliclazide",
       "canonicalName": "Gliclazide",
-      "sourceKey": null,
-      "url": null,
-      "status": "pending_source_verification"
+      "sourceKey": "emc-13676-smpc",
+      "url": "https://www.medicines.org.uk/emc/product/13676/smpc",
+      "status": "verified_live"
     },
     {
       "canonicalKey": "loratadine",
       "canonicalName": "Loratadine",
-      "sourceKey": null,
-      "url": null,
-      "status": "pending_source_verification"
+      "sourceKey": "emc-8911-smpc",
+      "url": "https://www.medicines.org.uk/emc/product/8911/smpc",
+      "status": "verified_live"
     }
   ],
   "gates": {
     "candidateSetComplete": true,
-    "authoritativeSourceVerifiedCount": 18,
-    "authoritativeSourcePendingCount": 7,
+    "authoritativeSourceVerifiedCount": 25,
+    "authoritativeSourcePendingCount": 0,
     "structuredExtractionComplete": false,
     "normalizationComplete": false,
     "exactLiveProductBindingComplete": false,
@@ -193,7 +193,7 @@
   },
   "blockers": [
     "Supabase SQL/MCP database gateway unavailable",
-    "7 Batch 2 authoritative source pages still require verification",
-    "all Batch 2 rows require structured SmPC extraction and normalization before clinical review"
+    "all Batch 2 rows require structured SmPC extraction and normalization before clinical review",
+    "Batch 2 structured SmPC extraction and normalization still required before clinical review"
   ]
 }
