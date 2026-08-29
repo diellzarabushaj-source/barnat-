@@ -1,6 +1,6 @@
 {
   "schemaVersion": "drx-production-release-readiness-v1",
-  "checkedAt": "2026-08-29T12:43:01.018Z",
+  "checkedAt": "2026-08-29T12:46:28.692Z",
   "releaseReady": false,
   "publicationAllowed": false,
   "blockers": [
@@ -26,9 +26,9 @@
     "doseCore": "shared_core_runtime_hardened",
     "cacheOffline": "implemented_indexeddb_etag",
     "frontend": "shared_core_fast_flow_ready",
-    "automatedQa": "dedicated_gate_configured_not_observed",
-    "coverage": "implemented_repo_evidence",
-    "cleanup": "gated_no_destructive_changes",
+    "automatedQa": "critical_release_suite_expanded_commit_bound_ci_not_observed",
+    "coverage": "ci_vs_materialized_evidence_separated",
+    "cleanup": "executable_legacy_consumer_gate_blocked",
     "productionRelease": "blocked"
   }
 }
