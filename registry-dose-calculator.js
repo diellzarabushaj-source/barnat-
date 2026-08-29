@@ -3,6 +3,10 @@
 
   const VERSION = 'registry-dose-calculator-v2.3.0';
   const ENDPOINT = '/api/dose-calculator';
+  const FAST_ENDPOINT = '/api/dosage?view=product-rules&productKey=';
+  const DOSE_CACHE_DB = 'drx-dose-cache-v1';
+  const DOSE_CACHE_STORE = 'products';
+  const OFFLINE_MAX_AGE_MS = 24 * 60 * 60 * 1000;
   const COLUMN_KEY = 'dose-calculator';
   const MAX_AGE_MONTHS = 130 * 12;
   const MAX_WEIGHT_KG = 500;
@@ -105,6 +109,118 @@
   let activeProduct = null;
   let enhanceQueued = false;
   let observer = null;
+  const productMemoryCache = new Map();
+
+  function doseCacheDb() {
+    if (!('indexedDB' in window)) return Promise.resolve(null);
+    return new Promise(resolve => {
+      let request;
+      try { request = indexedDB.open(DOSE_CACHE_DB, 1); }
+      catch { resolve(null); return; }
+      request.onupgradeneeded = () => {
+        const db = request.result;
+        if (!db.objectStoreNames.contains(DOSE_CACHE_STORE)) db.createObjectStore(DOSE_CACHE_STORE, { keyPath:'productKey' });
+      };
+      request.onsuccess = () => resolve(request.result);
+      request.onerror = () => resolve(null);
+      request.onblocked = () => resolve(null);
+    });
+  }
+
+  async function cachedProduct(productKey) {
+    const key = clean(productKey);
+    if (!key) return null;
+    if (productMemoryCache.has(key)) return productMemoryCache.get(key);
+    const db = await doseCacheDb();
+    if (!db) return null;
+    const row = await new Promise(resolve => {
+      try {
+        const tx = db.transaction(DOSE_CACHE_STORE, 'readonly');
+        const request = tx.objectStore(DOSE_CACHE_STORE).get(key);
+        request.onsuccess = () => resolve(request.result || null);
+        request.onerror = () => resolve(null);
+      } catch { resolve(null); }
+    });
+    try { db.close(); } catch {}
+    if (row) productMemoryCache.set(key, row);
+    return row;
+  }
+
+  async function storeCachedProduct(productKey, product, etag) {
+    const key = clean(productKey);
+    if (!key || !product?.productKey || !Array.isArray(product.rules)) return;
+    const row = {
+      productKey:key,
+      schemaVersion:'drx-dose-product-cache-v1',
+      product,
+      etag:clean(etag),
+      cachedAt:Date.now(),
+    };
+    productMemoryCache.set(key, row);
+    const db = await doseCacheDb();
+    if (!db) return;
+    await new Promise(resolve => {
+      try {
+        const tx = db.transaction(DOSE_CACHE_STORE, 'readwrite');
+        tx.objectStore(DOSE_CACHE_STORE).put(row);
+        tx.oncomplete = () => resolve();
+        tx.onerror = () => resolve();
+        tx.onabort = () => resolve();
+      } catch { resolve(); }
+    });
+    try { db.close(); } catch {}
+  }
+
+  function cacheFresh(row) {
+    return Boolean(row
+      && row.schemaVersion === 'drx-dose-product-cache-v1'
+      && row.product?.productKey
+      && Array.isArray(row.product?.rules)
+      && Number.isFinite(row.cachedAt)
+      && Date.now() - row.cachedAt <= OFFLINE_MAX_AGE_MS);
+  }
+
+  async function loadFastProduct(productKey) {
+    const key = clean(productKey);
+    if (!key) return null;
+    const cached = await cachedProduct(key);
+    const headers = {};
+    if (cacheFresh(cached) && clean(cached.etag)) headers['If-None-Match'] = clean(cached.etag);
+
+    try {
+      const response = await fetch(FAST_ENDPOINT + encodeURIComponent(key), {
+        method:'GET',
+        cache:'no-store',
+        credentials:'same-origin',
+        headers,
+      });
+      if (response.status === 304 && cacheFresh(cached)) {
+        return { ...cached.product, __doseCacheState:'revalidated' };
+      }
+      if (!response.ok) throw new Error(`HTTP ${response.status}`);
+      const payload = await response.json();
+      if (!payload?.meta?.failClosed
+          || !payload?.meta?.officialVerifiedOnly
+          || payload?.meta?.publishedOnly !== true
+          || !payload?.product?.productKey
+          || !Array.isArray(payload.product.rules)) {
+        throw new Error('Kontrata fast-path e dozës nuk është e vlefshme.');
+      }
+      await storeCachedProduct(key, payload.product, response.headers.get('etag') || '');
+      return { ...payload.product, __doseCacheState:'network' };
+    } catch (error) {
+      if (cacheFresh(cached)) {
+        console.warn('Dose fast path offline cache:', error);
+        return { ...cached.product, __doseCacheState:'offline-cache' };
+      }
+      const fallback = catalog.byProductKey.get(key) || null;
+      if (fallback?.rules?.length) {
+        console.warn('Dose fast path compatibility fallback:', error);
+        return { ...fallback, __doseCacheState:'compatibility-catalog' };
+      }
+      throw error;
+    }
+  }
 
   function addUnique(map, key, value) {
     const normalized = clean(key);
@@ -656,6 +772,20 @@
     requestAnimationFrame(() => (modal.indicationWrap.hidden ? modal.age : modal.indication).focus());
   }
 
+  async function openProductByKey(productKey) {
+    const key = clean(productKey);
+    if (!key) return false;
+    try {
+      const product = await loadFastProduct(key);
+      if (!product?.rules?.length) return false;
+      openModal(product);
+      return true;
+    } catch (error) {
+      console.error('Dose calculator product fast path:', error);
+      return false;
+    }
+  }
+
   function copyInstruction() {
     const text = clean(modal?.resultText?.textContent);
     if (!text) return;
@@ -741,7 +871,7 @@
     if (!button) return;
     event.preventDefault();
     event.stopPropagation();
-    openModal(catalog.byProductKey.get(clean(button.dataset.doseProductKey)) || null);
+    void openProductByKey(button.dataset.doseProductKey);
   });
   document.addEventListener('keydown', event => {
     if (event.key === 'Escape' && modal && !modal.root.hidden) closeModal();
@@ -756,8 +886,13 @@
   window.MedIndexDoseCalculator = {
     version:VERSION,
     refresh:scheduleEnhance,
-    openByProductKey(productKey) { openModal(catalog.byProductKey.get(clean(productKey)) || null); },
+    openByProductKey(productKey) { return openProductByKey(productKey); },
     catalogStatus:() => catalog.status,
-    _test:Object.freeze({ num, within, needsWeightMethod, needsBsaMethod, canonicalUnit, convertDoseUnit, administrationsPerDay, ageMatchesRule, preferredUnique, renderPlainLanguageTemplate, computeDose, frequencyText, durationText, ruleCoversPediatric, ruleCoversAdult, productGroup }),
+    _test:Object.freeze({
+      num, within, needsWeightMethod, needsBsaMethod, canonicalUnit, convertDoseUnit,
+      administrationsPerDay, ageMatchesRule, preferredUnique, renderPlainLanguageTemplate,
+      computeDose, frequencyText, durationText, ruleCoversPediatric, ruleCoversAdult,
+      productGroup, cacheFresh,
+    }),
   };
 })();
