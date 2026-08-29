@@ -770,6 +770,8 @@ declare
   verified_binding_count integer;
   clean_comparison_count integer;
   unresolved_review_count integer;
+  valid_renal_adjustment_count integer;
+  valid_hepatic_adjustment_count integer;
   snapshot_tier text;
   snapshot_source_key text;
   snapshot_version text;
@@ -835,6 +837,56 @@ begin
 
   if new.source_section_sha256 is distinct from persisted_section_sha256 then
     raise exception 'DRX_V3_PUBLICATION_BLOCKED: source section hash does not match persisted artifact';
+  end if;
+
+  if new.renal_adjustment_required then
+    select count(*)::integer
+      into valid_renal_adjustment_count
+    from public.dose_renal_adjustments_v3 a
+    join public.dose_source_snapshots_v3 s
+      on s.snapshot_id = a.source_snapshot_id
+     and s.source_key = a.source_key
+     and s.source_tier in ('EMA','EMC','AEMPS_CIMA','EU_NATIONAL','KOSOVO_AKPPM')
+     and (a.source_document_version is null or s.document_version is not distinct from a.source_document_version)
+     and (a.source_document_date is null or s.document_date is not distinct from a.source_document_date)
+    join public.dose_source_sections_v3 sec
+      on sec.snapshot_id = a.source_snapshot_id
+     and sec.section_code = '4.2'
+     and sec.extraction_status = 'extracted'
+     and sec.section_sha256 = a.source_section_sha256
+    where a.rule_id = new.rule_id
+      and a.review_status = 'verified'
+      and a.source_section = '4.2'
+      and a.source_snapshot_id = a.source_evidence_hash;
+
+    if valid_renal_adjustment_count = 0 then
+      raise exception 'DRX_V3_PUBLICATION_BLOCKED: renal adjustment required but no verified provenance-valid renal adjustment exists';
+    end if;
+  end if;
+
+  if new.hepatic_adjustment_required then
+    select count(*)::integer
+      into valid_hepatic_adjustment_count
+    from public.dose_hepatic_adjustments_v3 a
+    join public.dose_source_snapshots_v3 s
+      on s.snapshot_id = a.source_snapshot_id
+     and s.source_key = a.source_key
+     and s.source_tier in ('EMA','EMC','AEMPS_CIMA','EU_NATIONAL','KOSOVO_AKPPM')
+     and (a.source_document_version is null or s.document_version is not distinct from a.source_document_version)
+     and (a.source_document_date is null or s.document_date is not distinct from a.source_document_date)
+    join public.dose_source_sections_v3 sec
+      on sec.snapshot_id = a.source_snapshot_id
+     and sec.section_code = '4.2'
+     and sec.extraction_status = 'extracted'
+     and sec.section_sha256 = a.source_section_sha256
+    where a.rule_id = new.rule_id
+      and a.review_status = 'verified'
+      and a.source_section = '4.2'
+      and a.source_snapshot_id = a.source_evidence_hash;
+
+    if valid_hepatic_adjustment_count = 0 then
+      raise exception 'DRX_V3_PUBLICATION_BLOCKED: hepatic adjustment required but no verified provenance-valid hepatic adjustment exists';
+    end if;
   end if;
 
   select count(*)::integer
@@ -973,10 +1025,29 @@ create policy dose_renal_adjustments_v3_verified_read
   for select to anon, authenticated
   using (
     review_status = 'verified'
+    and source_section = '4.2'
+    and source_snapshot_id = source_evidence_hash
     and exists (
       select 1 from public.dose_rules_v3 r
       where r.rule_id = dose_renal_adjustments_v3.rule_id
         and r.editorial_status = 'published'
+    )
+    and exists (
+      select 1
+      from public.dose_source_snapshots_v3 s
+      where s.snapshot_id = dose_renal_adjustments_v3.source_snapshot_id
+        and s.source_key = dose_renal_adjustments_v3.source_key
+        and s.source_tier in ('EMA','EMC','AEMPS_CIMA','EU_NATIONAL','KOSOVO_AKPPM')
+        and (dose_renal_adjustments_v3.source_document_version is null or s.document_version is not distinct from dose_renal_adjustments_v3.source_document_version)
+        and (dose_renal_adjustments_v3.source_document_date is null or s.document_date is not distinct from dose_renal_adjustments_v3.source_document_date)
+    )
+    and exists (
+      select 1
+      from public.dose_source_sections_v3 sec
+      where sec.snapshot_id = dose_renal_adjustments_v3.source_snapshot_id
+        and sec.section_code = '4.2'
+        and sec.extraction_status = 'extracted'
+        and sec.section_sha256 = dose_renal_adjustments_v3.source_section_sha256
     )
   );
 
@@ -987,10 +1058,29 @@ create policy dose_hepatic_adjustments_v3_verified_read
   for select to anon, authenticated
   using (
     review_status = 'verified'
+    and source_section = '4.2'
+    and source_snapshot_id = source_evidence_hash
     and exists (
       select 1 from public.dose_rules_v3 r
       where r.rule_id = dose_hepatic_adjustments_v3.rule_id
         and r.editorial_status = 'published'
+    )
+    and exists (
+      select 1
+      from public.dose_source_snapshots_v3 s
+      where s.snapshot_id = dose_hepatic_adjustments_v3.source_snapshot_id
+        and s.source_key = dose_hepatic_adjustments_v3.source_key
+        and s.source_tier in ('EMA','EMC','AEMPS_CIMA','EU_NATIONAL','KOSOVO_AKPPM')
+        and (dose_hepatic_adjustments_v3.source_document_version is null or s.document_version is not distinct from dose_hepatic_adjustments_v3.source_document_version)
+        and (dose_hepatic_adjustments_v3.source_document_date is null or s.document_date is not distinct from dose_hepatic_adjustments_v3.source_document_date)
+    )
+    and exists (
+      select 1
+      from public.dose_source_sections_v3 sec
+      where sec.snapshot_id = dose_hepatic_adjustments_v3.source_snapshot_id
+        and sec.section_code = '4.2'
+        and sec.extraction_status = 'extracted'
+        and sec.section_sha256 = dose_hepatic_adjustments_v3.source_section_sha256
     )
   );
 
@@ -1256,6 +1346,8 @@ as $$
     from rule_rows r
     left join renal_adjustments_json raj on raj.rule_id = r.rule_id
     left join hepatic_adjustments_json haj on haj.rule_id = r.rule_id
+    where (r.renal_adjustment_required is not true or raj.adjustments is not null)
+      and (r.hepatic_adjustment_required is not true or haj.adjustments is not null)
   )
   select case
     when p.product_id is null or coalesce(jsonb_array_length(r.rules), 0) = 0 then null
