@@ -1,19 +1,35 @@
 {
   "schemaVersion": "drx-publication-gate-v3-policy",
-  "status": "foundation_complete_repository",
+  "status": "provenance_and_adjustment_hardened_repository",
   "publishWhenAll": [
     "editorial_status_verified",
+    "publication_eligible_source_tier",
     "source_key_present",
     "source_version_or_date_present",
-    "source_evidence_hash_present",
+    "source_snapshot_sha256_present",
+    "source_snapshot_equals_evidence_hash",
+    "source_section_is_4_2",
+    "source_section_sha256_present",
+    "source_section_hash_matches_persisted_artifact",
     "product_binding_exact",
     "indication_normalized",
     "required_inputs_resolved",
+    "required_renal_adjustments_verified_if_required",
+    "required_hepatic_adjustments_verified_if_required",
+    "legacy_comparison_clean",
     "safety_validation_passed",
     "confidence_threshold_passed",
+    "reviewer_audit_complete",
     "no_open_clinical_review"
   ],
   "failClosed": true,
-  "highRiskOverride": "manual_review_required_even_when_other_conditions_pass",
-  "next": "enforce as DB constraint/view or publication RPC in additive V3"
+  "highRiskOverride": "manual_review_required_even_when_other_conditions_pass; reviewer identity, timestamp and reason mandatory",
+  "next": "after live V3 apply, prove every publishWhenAll condition with transactional negative/positive smoke before any real rule publication",
+  "bulkImporterMayPublish": false,
+  "databaseMirror": [
+    "private.drx_enforce_product_publication_v3",
+    "private.drx_enforce_rule_publication_v3",
+    "dose_products_v3_publication_guard",
+    "dose_rules_v3_publication_guard"
+  ]
 }
