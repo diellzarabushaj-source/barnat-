@@ -1,19 +1,20 @@
 {
   "schemaVersion": "drx-first100-source-discovery-index-v1",
-  "generatedAt": "2026-08-29T09:15:00+02:00",
+  "generatedAt": "2026-08-29T09:38:00+02:00",
   "first100Count": 100,
   "canonicalReviewRequired": 13,
   "sourceDiscoveryEligible": 87,
-  "verifiedProductSpecific": 65,
-  "verifiedCanonicalSubstances": 65,
+  "verifiedProductSpecific": 71,
+  "verifiedCanonicalSubstances": 71,
   "sourceAuthorityCounts": {
     "EMC": 54,
-    "AEMPS_CIMA": 11
+    "AEMPS_CIMA": 11,
+    "EU_NATIONAL": 6
   },
   "productSelectionRequired": 1,
-  "eligibleRemaining": 22,
-  "sourceLookupRemaining": 21,
-  "issueCount": 0,
+  "eligibleRemaining": 16,
+  "sourceLookupRemaining": 15,
+  "issueCount": 71,
   "complete": false,
   "repositoryComplete": false,
   "canonicalProductionProvenanceEligible": false,
@@ -28,7 +29,505 @@
     "fewer_than_100_quality_eligible_rows"
   ],
   "publicationAllowed": false,
-  "issues": [],
+  "issues": [
+    {
+      "canonicalKey": "acarbose",
+      "issue": "invalid_authority_url",
+      "sourceTier": "EMC",
+      "url": "https://www.medicines.org.uk/emc/product/101119/smpc",
+      "resolvedTier": "FALLBACK"
+    },
+    {
+      "canonicalKey": "acenocoumarol",
+      "issue": "invalid_authority_url",
+      "sourceTier": "EMC",
+      "url": "https://www.medicines.org.uk/emc/product/2058/smpc",
+      "resolvedTier": "FALLBACK"
+    },
+    {
+      "canonicalKey": "aciclovir",
+      "issue": "invalid_authority_url",
+      "sourceTier": "EMC",
+      "url": "https://www.medicines.org.uk/emc/product/11673/smpc",
+      "resolvedTier": "FALLBACK"
+    },
+    {
+      "canonicalKey": "acitretin",
+      "issue": "invalid_authority_url",
+      "sourceTier": "EMC",
+      "url": "https://www.medicines.org.uk/emc/product/5265/smpc",
+      "resolvedTier": "FALLBACK"
+    },
+    {
+      "canonicalKey": "alclometasonedipropionate",
+      "issue": "invalid_authority_url",
+      "sourceTier": "EMC",
+      "url": "https://www.medicines.org.uk/emc/product/11728/smpc",
+      "resolvedTier": "FALLBACK"
+    },
+    {
+      "canonicalKey": "alphamethyldopa",
+      "issue": "invalid_authority_url",
+      "sourceTier": "EMC",
+      "url": "https://www.medicines.org.uk/emc/product/100084/smpc",
+      "resolvedTier": "FALLBACK"
+    },
+    {
+      "canonicalKey": "adenosine",
+      "issue": "invalid_authority_url",
+      "sourceTier": "EMC",
+      "url": "https://www.medicines.org.uk/emc/product/11530/smpc",
+      "resolvedTier": "FALLBACK"
+    },
+    {
+      "canonicalKey": "amiodarone",
+      "issue": "invalid_authority_url",
+      "sourceTier": "EMC",
+      "url": "https://www.medicines.org.uk/emc/product/101141/smpc",
+      "resolvedTier": "FALLBACK"
+    },
+    {
+      "canonicalKey": "apixaban",
+      "issue": "invalid_authority_url",
+      "sourceTier": "EMC",
+      "url": "https://www.medicines.org.uk/emc/product/15981/smpc",
+      "resolvedTier": "FALLBACK"
+    },
+    {
+      "canonicalKey": "aprepitant",
+      "issue": "invalid_authority_url",
+      "sourceTier": "EMC",
+      "url": "https://www.medicines.org.uk/emc/product/11726/smpc",
+      "resolvedTier": "FALLBACK"
+    },
+    {
+      "canonicalKey": "atenolol",
+      "issue": "invalid_authority_url",
+      "sourceTier": "EMC",
+      "url": "https://www.medicines.org.uk/emc/product/14699/smpc",
+      "resolvedTier": "FALLBACK"
+    },
+    {
+      "canonicalKey": "atosiban",
+      "issue": "invalid_authority_url",
+      "sourceTier": "EMC",
+      "url": "https://www.medicines.org.uk/emc/product/3262/smpc",
+      "resolvedTier": "FALLBACK"
+    },
+    {
+      "canonicalKey": "atropine",
+      "issue": "invalid_authority_url",
+      "sourceTier": "EMC",
+      "url": "https://www.medicines.org.uk/emc/product/6282/smpc",
+      "resolvedTier": "FALLBACK"
+    },
+    {
+      "canonicalKey": "bisacodyl",
+      "issue": "invalid_authority_url",
+      "sourceTier": "EMC",
+      "url": "https://www.medicines.org.uk/emc/product/13049/smpc",
+      "resolvedTier": "FALLBACK"
+    },
+    {
+      "canonicalKey": "calcitriol",
+      "issue": "invalid_authority_url",
+      "sourceTier": "EMC",
+      "url": "https://www.medicines.org.uk/emc/product/101903/smpc",
+      "resolvedTier": "FALLBACK"
+    },
+    {
+      "canonicalKey": "adapalenbenzylperoxidehydrous",
+      "issue": "invalid_authority_url",
+      "sourceTier": "EMC",
+      "url": "https://www.medicines.org.uk/emc/product/102256/smpc",
+      "resolvedTier": "FALLBACK"
+    },
+    {
+      "canonicalKey": "adapalene",
+      "issue": "invalid_authority_url",
+      "sourceTier": "EMC",
+      "url": "https://www.medicines.org.uk/emc/product/921/smpc",
+      "resolvedTier": "FALLBACK"
+    },
+    {
+      "canonicalKey": "alfuzosin",
+      "issue": "invalid_authority_url",
+      "sourceTier": "EMC",
+      "url": "https://www.medicines.org.uk/emc/product/5205/smpc",
+      "resolvedTier": "FALLBACK"
+    },
+    {
+      "canonicalKey": "alverinesimethicone",
+      "issue": "invalid_authority_url",
+      "sourceTier": "EMC",
+      "url": "https://www.medicines.org.uk/emc/product/101935/smpc",
+      "resolvedTier": "FALLBACK"
+    },
+    {
+      "canonicalKey": "amorolfine",
+      "issue": "invalid_authority_url",
+      "sourceTier": "EMC",
+      "url": "https://www.medicines.org.uk/emc/product/7413/smpc",
+      "resolvedTier": "FALLBACK"
+    },
+    {
+      "canonicalKey": "ascorbicacid",
+      "issue": "invalid_authority_url",
+      "sourceTier": "EMC",
+      "url": "https://www.medicines.org.uk/emc/product/102185/smpc",
+      "resolvedTier": "FALLBACK"
+    },
+    {
+      "canonicalKey": "benzydamine",
+      "issue": "invalid_authority_url",
+      "sourceTier": "EMC",
+      "url": "https://www.medicines.org.uk/emc/product/102500/smpc",
+      "resolvedTier": "FALLBACK"
+    },
+    {
+      "canonicalKey": "budesonide",
+      "issue": "invalid_authority_url",
+      "sourceTier": "EMC",
+      "url": "https://www.medicines.org.uk/emc/product/14947/smpc",
+      "resolvedTier": "FALLBACK"
+    },
+    {
+      "canonicalKey": "candesartancilexetil",
+      "issue": "invalid_authority_url",
+      "sourceTier": "EMC",
+      "url": "https://www.medicines.org.uk/emc/product/7078/smpc",
+      "resolvedTier": "FALLBACK"
+    },
+    {
+      "canonicalKey": "captopril",
+      "issue": "invalid_authority_url",
+      "sourceTier": "EMC",
+      "url": "https://www.medicines.org.uk/emc/product/14009/smpc",
+      "resolvedTier": "FALLBACK"
+    },
+    {
+      "canonicalKey": "cholecalciferol",
+      "issue": "invalid_authority_url",
+      "sourceTier": "EMC",
+      "url": "https://www.medicines.org.uk/emc/product/8091/smpc",
+      "resolvedTier": "FALLBACK"
+    },
+    {
+      "canonicalKey": "clindamycin",
+      "issue": "invalid_authority_url",
+      "sourceTier": "EMC",
+      "url": "https://www.medicines.org.uk/emc/product/10644/smpc",
+      "resolvedTier": "FALLBACK"
+    },
+    {
+      "canonicalKey": "cilostazol",
+      "issue": "invalid_authority_url",
+      "sourceTier": "EMC",
+      "url": "https://www.medicines.org.uk/emc/product/2609/smpc",
+      "resolvedTier": "FALLBACK"
+    },
+    {
+      "canonicalKey": "cabergoline",
+      "issue": "invalid_authority_url",
+      "sourceTier": "EMC",
+      "url": "https://www.medicines.org.uk/emc/product/1691/smpc",
+      "resolvedTier": "FALLBACK"
+    },
+    {
+      "canonicalKey": "amlodipinevalsartan",
+      "issue": "invalid_authority_url",
+      "sourceTier": "EMC",
+      "url": "https://www.medicines.org.uk/emc/product/14212/smpc",
+      "resolvedTier": "FALLBACK"
+    },
+    {
+      "canonicalKey": "amlodipinehydrochlorothiazideolmesartanmedoxomil",
+      "issue": "invalid_authority_url",
+      "sourceTier": "EMC",
+      "url": "https://www.medicines.org.uk/emc/product/4596/smpc",
+      "resolvedTier": "FALLBACK"
+    },
+    {
+      "canonicalKey": "amlodipineolmesartanmedoxomil",
+      "issue": "invalid_authority_url",
+      "sourceTier": "EMC",
+      "url": "https://www.medicines.org.uk/emc/product/6527/smpc",
+      "resolvedTier": "FALLBACK"
+    },
+    {
+      "canonicalKey": "atorvastatinezetimibe",
+      "issue": "invalid_authority_url",
+      "sourceTier": "EMC",
+      "url": "https://www.medicines.org.uk/emc/product/101939/smpc",
+      "resolvedTier": "FALLBACK"
+    },
+    {
+      "canonicalKey": "azelaicacid",
+      "issue": "invalid_authority_url",
+      "sourceTier": "EMC",
+      "url": "https://www.medicines.org.uk/emc/product/285/smpc",
+      "resolvedTier": "FALLBACK"
+    },
+    {
+      "canonicalKey": "betamethasonedipropionate",
+      "issue": "invalid_authority_url",
+      "sourceTier": "EMC",
+      "url": "https://www.medicines.org.uk/emc/product/6405/smpc",
+      "resolvedTier": "FALLBACK"
+    },
+    {
+      "canonicalKey": "betamethasonedipropionatesalicylicacid",
+      "issue": "invalid_authority_url",
+      "sourceTier": "EMC",
+      "url": "https://www.medicines.org.uk/emc/product/101259/smpc",
+      "resolvedTier": "FALLBACK"
+    },
+    {
+      "canonicalKey": "atenololchlortalidone",
+      "issue": "invalid_authority_url",
+      "sourceTier": "EMC",
+      "url": "https://www.medicines.org.uk/emc/product/5497/smpc",
+      "resolvedTier": "FALLBACK"
+    },
+    {
+      "canonicalKey": "betamethasonevalerate",
+      "issue": "invalid_authority_url",
+      "sourceTier": "EMC",
+      "url": "https://www.medicines.org.uk/emc/product/102491/smpc",
+      "resolvedTier": "FALLBACK"
+    },
+    {
+      "canonicalKey": "betamethasonevaleratefusidicacid",
+      "issue": "invalid_authority_url",
+      "sourceTier": "EMC",
+      "url": "https://www.medicines.org.uk/emc/product/983/smpc",
+      "resolvedTier": "FALLBACK"
+    },
+    {
+      "canonicalKey": "bismuthsubcitratemetronidazoletetracycline",
+      "issue": "invalid_authority_url",
+      "sourceTier": "EMC",
+      "url": "https://www.medicines.org.uk/emc/product/15622/smpc",
+      "resolvedTier": "FALLBACK"
+    },
+    {
+      "canonicalKey": "calciumcarbonatecholecalciferol",
+      "issue": "invalid_authority_url",
+      "sourceTier": "EMC",
+      "url": "https://www.medicines.org.uk/emc/product/3747/smpc",
+      "resolvedTier": "FALLBACK"
+    },
+    {
+      "canonicalKey": "calciumcarbonatemagnesiumcarbonate",
+      "issue": "invalid_authority_url",
+      "sourceTier": "EMC",
+      "url": "https://www.medicines.org.uk/emc/product/13861/smpc",
+      "resolvedTier": "FALLBACK"
+    },
+    {
+      "canonicalKey": "calciumgluconate",
+      "issue": "invalid_authority_url",
+      "sourceTier": "EMC",
+      "url": "https://www.medicines.org.uk/emc/product/6264/smpc",
+      "resolvedTier": "FALLBACK"
+    },
+    {
+      "canonicalKey": "chloramphenicol",
+      "issue": "invalid_authority_url",
+      "sourceTier": "EMC",
+      "url": "https://www.medicines.org.uk/emc/product/14433/smpc",
+      "resolvedTier": "FALLBACK"
+    },
+    {
+      "canonicalKey": "clobetasolpropionate",
+      "issue": "invalid_authority_url",
+      "sourceTier": "EMC",
+      "url": "https://www.medicines.org.uk/emc/product/101904/smpc",
+      "resolvedTier": "FALLBACK"
+    },
+    {
+      "canonicalKey": "clomiphene",
+      "issue": "invalid_authority_url",
+      "sourceTier": "EMC",
+      "url": "https://www.medicines.org.uk/emc/product/15080/smpc",
+      "resolvedTier": "FALLBACK"
+    },
+    {
+      "canonicalKey": "clotrimazole",
+      "issue": "invalid_authority_url",
+      "sourceTier": "EMC",
+      "url": "https://www.medicines.org.uk/emc/product/102509/smpc",
+      "resolvedTier": "FALLBACK"
+    },
+    {
+      "canonicalKey": "alginatepotassiumbicarbonate",
+      "issue": "invalid_authority_url",
+      "sourceTier": "EMC",
+      "url": "https://www.medicines.org.uk/emc/product/6187/smpc",
+      "resolvedTier": "FALLBACK"
+    },
+    {
+      "canonicalKey": "amlodipineperindopril",
+      "issue": "invalid_authority_url",
+      "sourceTier": "EMC",
+      "url": "https://www.medicines.org.uk/emc/product/15443/smpc",
+      "resolvedTier": "FALLBACK"
+    },
+    {
+      "canonicalKey": "ascorbicacidironferrous",
+      "issue": "invalid_authority_url",
+      "sourceTier": "EMC",
+      "url": "https://www.medicines.org.uk/emc/product/102245/smpc",
+      "resolvedTier": "FALLBACK"
+    },
+    {
+      "canonicalKey": "benzoylperoxide",
+      "issue": "invalid_authority_url",
+      "sourceTier": "EMC",
+      "url": "https://www.medicines.org.uk/emc/product/11257/smpc",
+      "resolvedTier": "FALLBACK"
+    },
+    {
+      "canonicalKey": "calciumchloridepotassiumchloridesodiumchloride",
+      "issue": "invalid_authority_url",
+      "sourceTier": "EMC",
+      "url": "https://www.medicines.org.uk/emc/product/1865/smpc",
+      "resolvedTier": "FALLBACK"
+    },
+    {
+      "canonicalKey": "calciumchloridepotassiumchloridesodiumchloridesodiumlactate",
+      "issue": "invalid_authority_url",
+      "sourceTier": "EMC",
+      "url": "https://www.medicines.org.uk/emc/product/1812/smpc",
+      "resolvedTier": "FALLBACK"
+    },
+    {
+      "canonicalKey": "cinchocainehydrocortisone",
+      "issue": "invalid_authority_url",
+      "sourceTier": "EMC",
+      "url": "https://www.medicines.org.uk/emc/product/1599/smpc",
+      "resolvedTier": "FALLBACK"
+    },
+    {
+      "canonicalKey": "acidacetylsalicylicatorvastatinramipril",
+      "issue": "invalid_authority_url",
+      "sourceTier": "AEMPS_CIMA",
+      "url": "https://cima.aemps.es/cima/dochtml/ft/78575/FichaTecnica_78575.html",
+      "resolvedTier": "FALLBACK"
+    },
+    {
+      "canonicalKey": "amlodipineatorvastatin",
+      "issue": "invalid_authority_url",
+      "sourceTier": "AEMPS_CIMA",
+      "url": "https://cima.aemps.es/cima/dochtml/ft/67326/FichaTecnica_67326.html",
+      "resolvedTier": "FALLBACK"
+    },
+    {
+      "canonicalKey": "candesartancilexetilhydrochlorothiazide",
+      "issue": "invalid_authority_url",
+      "sourceTier": "AEMPS_CIMA",
+      "url": "https://cima.aemps.es/cima/dochtml/ft/63209/FichaTecnica_63209.html",
+      "resolvedTier": "FALLBACK"
+    },
+    {
+      "canonicalKey": "choriogonadotropinalfa",
+      "issue": "invalid_authority_url",
+      "sourceTier": "AEMPS_CIMA",
+      "url": "https://cima.aemps.es/cima/dochtml/ft/100165007/FT_100165007.html",
+      "resolvedTier": "FALLBACK"
+    },
+    {
+      "canonicalKey": "amlodipinecandesartancilexetil",
+      "issue": "invalid_authority_url",
+      "sourceTier": "AEMPS_CIMA",
+      "url": "https://cima.aemps.es/cima/dochtml/ft/84728/FT_84728.html",
+      "resolvedTier": "FALLBACK"
+    },
+    {
+      "canonicalKey": "amlodipineindapamideperindopril",
+      "issue": "invalid_authority_url",
+      "sourceTier": "AEMPS_CIMA",
+      "url": "https://cima.aemps.es/cima/dochtml/ft/90226/FT_90226.html",
+      "resolvedTier": "FALLBACK"
+    },
+    {
+      "canonicalKey": "amlodipinehydrochlorothiazidevalsartan",
+      "issue": "invalid_authority_url",
+      "sourceTier": "AEMPS_CIMA",
+      "url": "https://cima.aemps.es/cima/dochtml/ft/09574026/FT_09574026.html",
+      "resolvedTier": "FALLBACK"
+    },
+    {
+      "canonicalKey": "acetylsalicylicacidrosuvastatin",
+      "issue": "invalid_authority_url",
+      "sourceTier": "AEMPS_CIMA",
+      "url": "https://cima.aemps.es/cima/dochtml/ft/85514/FT_85514.html",
+      "resolvedTier": "FALLBACK"
+    },
+    {
+      "canonicalKey": "bezafibrate",
+      "issue": "invalid_authority_url",
+      "sourceTier": "AEMPS_CIMA",
+      "url": "https://cima.aemps.es/cima/dochtml/ft/57150/FT_57150.html",
+      "resolvedTier": "FALLBACK"
+    },
+    {
+      "canonicalKey": "betamethasonedipropionategentamicin",
+      "issue": "invalid_authority_url",
+      "sourceTier": "AEMPS_CIMA",
+      "url": "https://cima.aemps.es/cima/dochtml/ft/53541/FT_53541.html",
+      "resolvedTier": "FALLBACK"
+    },
+    {
+      "canonicalKey": "betamethasonevalerategentamicin",
+      "issue": "invalid_authority_url",
+      "sourceTier": "AEMPS_CIMA",
+      "url": "https://cima.aemps.es/cima/dochtml/ft/42399/FT_42399.html",
+      "resolvedTier": "FALLBACK"
+    },
+    {
+      "canonicalKey": "bacitracinneomycin",
+      "issue": "invalid_authority_url",
+      "sourceTier": "EU_NATIONAL",
+      "url": "https://medikamente.basg.gv.at/documents/9451__DOTC_FACH_INFO.pdf",
+      "resolvedTier": "FALLBACK"
+    },
+    {
+      "canonicalKey": "amlodipinelisinopril",
+      "issue": "invalid_authority_url",
+      "sourceTier": "EU_NATIONAL",
+      "url": "https://medikamente.basg.gv.at/documents/1-31503__DOTC_FACH_INFO.pdf",
+      "resolvedTier": "FALLBACK"
+    },
+    {
+      "canonicalKey": "calciumcarbonatefamotidinemagnesiumhydroxide",
+      "issue": "invalid_authority_url",
+      "sourceTier": "EU_NATIONAL",
+      "url": "https://assets.hpra.ie/products/Human/22257/Licence_PA23490-027-001_02062026135406.pdf",
+      "resolvedTier": "FALLBACK"
+    },
+    {
+      "canonicalKey": "chamomiletincturelauromacrogollidocaine",
+      "issue": "invalid_authority_url",
+      "sourceTier": "EU_NATIONAL",
+      "url": "https://www.anm.ro/_/_RCP/RCP_12309_29.08.19.pdf",
+      "resolvedTier": "FALLBACK"
+    },
+    {
+      "canonicalKey": "chlorquinaldoltriamcinoloneacetonide",
+      "issue": "invalid_authority_url",
+      "sourceTier": "EU_NATIONAL",
+      "url": "https://www.anm.ro/_/_RCP/RCP_12345_30.08.19.pdf",
+      "resolvedTier": "FALLBACK"
+    },
+    {
+      "canonicalKey": "betamethasonedipropionateclotrimazolegentamicin",
+      "issue": "invalid_authority_url",
+      "sourceTier": "EU_NATIONAL",
+      "url": "https://www.anm.ro/_/_RCP/RCP_11852_31.05.19.pdf",
+      "resolvedTier": "FALLBACK"
+    }
+  ],
   "rows": [
     {
       "canonicalKey": "acarbose",
@@ -1432,6 +1931,162 @@
       ],
       "publicationAllowed": false,
       "wave": "drx-first100-source-discovery-wave-g-v1.json"
+    },
+    {
+      "canonicalKey": "bacitracinneomycin",
+      "canonicalName": "Bacitracin + Neomycin",
+      "status": "verified_product_specific_salt_normalization_review",
+      "sourceTier": "EU_NATIONAL",
+      "authority": "BASG Austria",
+      "sourceKey": "basg-9451-fachinfo",
+      "url": "https://medikamente.basg.gv.at/documents/9451__DOTC_FACH_INFO.pdf",
+      "productName": "Baneocin - Puder",
+      "documentDate": "2019-11",
+      "documentDatePrecision": "month",
+      "section41Present": true,
+      "section42Present": true,
+      "reviewFlags": [
+        "bacitracin_zinc_and_neomycin_sulfate_salt_normalization",
+        "topical_antibacterial_combination",
+        "cutaneous_powder_formulation_specific",
+        "official_antibiotic_guidance_required",
+        "max_one_percent_body_surface_area",
+        "seven_day_duration_cap",
+        "aminoglycoside_nephrotoxicity_ototoxicity_absorption_risk",
+        "clinical_review_required"
+      ],
+      "publicationAllowed": false,
+      "wave": "drx-first100-source-discovery-wave-h-v1.json"
+    },
+    {
+      "canonicalKey": "amlodipinelisinopril",
+      "canonicalName": "Amlodipine + Lisinopril",
+      "status": "verified_product_specific_salt_normalization_review",
+      "sourceTier": "EU_NATIONAL",
+      "authority": "BASG Austria",
+      "sourceKey": "basg-1-31503-fachinfo",
+      "url": "https://medikamente.basg.gv.at/documents/1-31503__DOTC_FACH_INFO.pdf",
+      "productName": "LisAm 10 mg/5 mg Tabletten",
+      "documentDate": "2022-07",
+      "documentDatePrecision": "month",
+      "section41Present": true,
+      "section42Present": true,
+      "reviewFlags": [
+        "amlodipine_besilate_and_lisinopril_dihydrate_salt_normalization",
+        "fixed_combination",
+        "adult_essential_hypertension",
+        "substitution_therapy_not_initial",
+        "one_tablet_daily_max",
+        "renal_function_potassium_sodium_monitoring",
+        "individual_component_titration_if_adjustment_needed",
+        "clinical_review_required"
+      ],
+      "publicationAllowed": false,
+      "wave": "drx-first100-source-discovery-wave-h-v1.json"
+    },
+    {
+      "canonicalKey": "calciumcarbonatefamotidinemagnesiumhydroxide",
+      "canonicalName": "Calcium carbonate + Famotidine + Magnesium hydroxide",
+      "status": "verified_product_specific_component_order_review",
+      "sourceTier": "EU_NATIONAL",
+      "authority": "HPRA Ireland",
+      "sourceKey": "hpra-pa23490-027-001-spc",
+      "url": "https://assets.hpra.ie/products/Human/22257/Licence_PA23490-027-001_02062026135406.pdf",
+      "productName": "Pepcid Duo Chewable Tablets Famotidine 10 mg Magnesium Hydroxide 165 mg Calcium Carbonate 800 mg",
+      "documentDate": "2026-06-02",
+      "documentDatePrecision": "day",
+      "section41Present": true,
+      "section42Present": true,
+      "reviewFlags": [
+        "canonical_component_order_differs_from_product_name",
+        "fixed_famotidine_antacid_combination",
+        "chewable_tablet_specific",
+        "age_16_plus",
+        "max_two_tablets_per_day",
+        "maximum_two_week_treatment",
+        "severe_renal_failure_contraindication",
+        "calcium_magnesium_monitoring_if_renal_failure",
+        "clinical_review_required"
+      ],
+      "publicationAllowed": false,
+      "wave": "drx-first100-source-discovery-wave-h-v1.json"
+    },
+    {
+      "canonicalKey": "chamomiletincturelauromacrogollidocaine",
+      "canonicalName": "Chamomile tincture + Lauromacrogol + Lidocaine",
+      "status": "verified_product_specific_component_normalization_review",
+      "sourceTier": "EU_NATIONAL",
+      "authority": "ANMDMR Romania",
+      "sourceKey": "anm-ro-rcp-12309-2019",
+      "url": "https://www.anm.ro/_/_RCP/RCP_12309_29.08.19.pdf",
+      "productName": "Dentinox – Gel 10 g gel gingival",
+      "documentDate": "2019-08-29",
+      "section41Present": true,
+      "section42Present": true,
+      "registryAnchor": {
+        "tradeName": "Dentinox Gel med",
+        "pdid": "846",
+        "atcCode": "A01AD11",
+        "form": "Oromucosal gel"
+      },
+      "reviewFlags": [
+        "matricaria_chamomilla_tincture_name_normalization",
+        "lidocaine_hydrochloride_monohydrate_normalization",
+        "gingival_product_specific",
+        "pediatric_teething_context"
+      ],
+      "publicationAllowed": false,
+      "wave": "drx-first100-source-discovery-wave-i-v1.json"
+    },
+    {
+      "canonicalKey": "chlorquinaldoltriamcinoloneacetonide",
+      "canonicalName": "Chlorquinaldol + Triamcinolone acetonide",
+      "status": "verified_product_specific_component_order_review",
+      "sourceTier": "EU_NATIONAL",
+      "authority": "ANMDMR Romania",
+      "sourceKey": "anm-ro-rcp-12345-2019",
+      "url": "https://www.anm.ro/_/_RCP/RCP_12345_30.08.19.pdf",
+      "productName": "Triamcinolon S Atb 1 mg/30 mg/g cremă",
+      "documentDate": "2019-08-30",
+      "section41Present": true,
+      "section42Present": true,
+      "registryAnchor": {
+        "tradeName": "Triamcinolon S",
+        "pdid": "1401",
+        "atcCode": "D07XB02",
+        "form": "Cream"
+      },
+      "reviewFlags": [
+        "component_order_normalized",
+        "cutaneous_combination",
+        "age_under_2_not_recommended",
+        "short_course_2_to_7_days"
+      ],
+      "publicationAllowed": false,
+      "wave": "drx-first100-source-discovery-wave-i-v1.json"
+    },
+    {
+      "canonicalKey": "betamethasonedipropionateclotrimazolegentamicin",
+      "canonicalName": "Betamethasone dipropionate + Clotrimazole + Gentamicin",
+      "status": "verified_product_specific",
+      "sourceTier": "EU_NATIONAL",
+      "authority": "ANMDMR Romania",
+      "sourceKey": "anm-ro-rcp-11852-2019",
+      "url": "https://www.anm.ro/_/_RCP/RCP_11852_31.05.19.pdf",
+      "productName": "Tresyl cremă",
+      "documentDate": "2019-05-31",
+      "section41Present": true,
+      "section42Present": true,
+      "reviewFlags": [
+        "fixed_topical_triple_combination",
+        "infected_steroid_responsive_dermatoses",
+        "twice_daily",
+        "diagnosis_review_if_no_improvement_3_to_4_weeks",
+        "pediatric_experience_limited",
+        "clinical_review_required"
+      ],
+      "publicationAllowed": false,
+      "wave": "drx-first100-source-discovery-wave-i-v1.json"
     }
   ]
 }
