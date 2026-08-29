@@ -1,19 +1,19 @@
 {
   "schemaVersion": "drx-first100-source-discovery-index-v1",
-  "generatedAt": "2026-08-29T07:28:00Z",
+  "generatedAt": "2026-08-29T07:38:00Z",
   "first100Count": 100,
   "canonicalReviewRequired": 13,
   "sourceDiscoveryEligible": 89,
-  "verifiedProductSpecific": 73,
-  "verifiedCanonicalSubstances": 73,
+  "verifiedProductSpecific": 75,
+  "verifiedCanonicalSubstances": 75,
   "sourceAuthorityCounts": {
-    "EMC": 54,
+    "EMC": 55,
     "AEMPS_CIMA": 12,
-    "EU_NATIONAL": 7
+    "EU_NATIONAL": 8
   },
   "productSelectionRequired": 1,
-  "eligibleRemaining": 16,
-  "sourceLookupRemaining": 15,
+  "eligibleRemaining": 14,
+  "sourceLookupRemaining": 13,
   "issueCount": 0,
   "complete": false,
   "repositoryComplete": false,
@@ -1653,6 +1653,64 @@
       ],
       "publicationAllowed": false,
       "wave": "drx-first100-source-discovery-wave-i-v1.json"
+    },
+    {
+      "canonicalKey": "pancreatin",
+      "canonicalName": "Pancreatin",
+      "resolvedFromCanonicalKey": "amylaselipasepanceatintotalproteases",
+      "status": "verified_product_specific_canonical_expression_resolved",
+      "sourceTier": "EMC",
+      "authority": "electronic Medicines Compendium",
+      "sourceKey": "emc-1168-smpc",
+      "url": "https://www.medicines.org.uk/emc/product/1168/smpc",
+      "productName": "Creon 25000 Capsules / Pancreatin Viatris 25000 Capsules",
+      "documentDate": "2026-07",
+      "documentDatePrecision": "month",
+      "section41Present": true,
+      "section42Present": true,
+      "reviewFlags": [
+        "canonical_enzyme_activity_expression_resolved_to_pancreatin",
+        "pancreatic_exocrine_insufficiency",
+        "enzyme_activity_units_not_mass_only",
+        "meal_linked_dosing",
+        "individual_titration_required",
+        "product_strength_specific",
+        "clinical_review_required"
+      ],
+      "publicationAllowed": false,
+      "wave": "drx-first100-source-discovery-wave-j-v1.json"
+    },
+    {
+      "canonicalKey": "chamomiletincturelauromacrogollidocaine",
+      "canonicalName": "Chamomile tincture + Lauromacrogol + Lidocaine",
+      "status": "verified_product_specific_component_normalization_review",
+      "sourceTier": "EU_NATIONAL",
+      "authority": "ANMDMR Romania",
+      "sourceKey": "anmdmr-rcp-12309",
+      "url": "https://www.anm.ro/_/_RCP/RCP_12309_29.08.19.pdf",
+      "productName": "Dentinox – Gel 10 g gel gingival",
+      "documentDate": "2025-11",
+      "documentDatePrecision": "month",
+      "section41Present": true,
+      "section42Present": true,
+      "currentRegistryCrosscheck": {
+        "authority": "ANMDMR Nomenclator",
+        "checkedDate": "2026-08-29",
+        "product": "DENTINOX - GEL 10 g",
+        "atcCode": "A01AD11",
+        "cim": "W01462001"
+      },
+      "reviewFlags": [
+        "matricaria_chamomilla_tincture_name_normalization",
+        "lidocaine_hydrochloride_monohydrate_normalization",
+        "lauromacrogol_400_normalization",
+        "gingival_product_specific",
+        "primary_dentition_teething_context",
+        "pediatric_local_application",
+        "clinical_review_required"
+      ],
+      "publicationAllowed": false,
+      "wave": "drx-first100-source-discovery-wave-j-v1.json"
     }
   ]
 }
