@@ -1,6 +1,6 @@
 {
   "schemaVersion": "drx-dose-coverage-snapshot-v2",
-  "generatedAt": "2026-08-29T10:16:27.485Z",
+  "generatedAt": "2026-08-29T10:28:27.165Z",
   "publicationAllowed": false,
   "counts": {
     "batch1Substances": 10,
@@ -22,7 +22,7 @@
     "publicationReady": 0,
     "reviewPacketsReady": 25,
     "first100QueueMaterialized": 100,
-    "first100CanonicalReviewRequired": 13,
+    "first100CanonicalReviewRequired": 14,
     "first100SourceDiscoveryEligible": 89,
     "first100EffectiveSourceDiscoveryEligible": 89,
     "first100VerifiedProductSources": 78,
@@ -43,7 +43,7 @@
   "first100ProgressPct": {
     "verifiedProductSources": 87.6,
     "discoveryRemaining": 11.2,
-    "canonicalReviewBlocked": 13
+    "canonicalReviewBlocked": 14
   },
   "architecture": {
     "v3CandidateReady": true,
