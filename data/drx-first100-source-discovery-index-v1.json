@@ -1,21 +1,21 @@
 {
   "schemaVersion": "drx-first100-source-discovery-index-v1",
-  "generatedAt": "2026-08-29T10:48:36.921Z",
+  "generatedAt": "2026-08-29T10:52:14.372Z",
   "first100Count": 100,
   "canonicalReviewRequired": 14,
   "sourceDiscoveryEligible": 89,
-  "verifiedProductSpecific": 83,
-  "verifiedCanonicalSubstances": 83,
+  "verifiedProductSpecific": 84,
+  "verifiedCanonicalSubstances": 84,
   "sourceAuthorityCounts": {
     "EMC": 55,
     "AEMPS_CIMA": 12,
     "EU_NATIONAL": 14,
-    "KOSOVO_AKPPM": 1,
+    "KOSOVO_AKPPM": 2,
     "FACHINFO_DE": 1
   },
   "productSelectionRequired": 1,
-  "eligibleRemaining": 6,
-  "sourceLookupRemaining": 5,
+  "eligibleRemaining": 5,
+  "sourceLookupRemaining": 4,
   "issueCount": 0,
   "complete": false,
   "repositoryComplete": false,
@@ -2059,6 +2059,59 @@
       ],
       "publicationAllowed": false,
       "wave": "drx-first100-source-discovery-wave-r-v1.json"
+    },
+    {
+      "canonicalKey": "benzydaminechlorhexidinedigluconate",
+      "canonicalName": "Benzydamine + Chlorhexidine digluconate",
+      "status": "verified_product_specific_review_required",
+      "sourceTier": "KOSOVO_AKPPM",
+      "authority": "Kosovo Medicines Agency (AKPPM)",
+      "sourceKey": "akppm-andorex-rma-3120-2022-plus-humanis-kub-2023-10-24",
+      "url": "https://akppm.rks-gov.net/CMS/Medias/Lista%20zyrtare%20e%20cmimeve%20te%20produkteve%20medicinale.pdf",
+      "productRegistryUrl": "https://akppm.rks-gov.net/CMS/Medias/Lista%20zyrtare%20e%20cmimeve%20te%20produkteve%20medicinale.pdf",
+      "productName": "Andorex 0.15% + 0.12% oral spray, 30 ml",
+      "registrationNumber": "RMA-3120/16/11/2022",
+      "atcCode": "D08AC52",
+      "documentDate": "2023-10-24",
+      "documentDatePrecision": "day",
+      "section41Present": true,
+      "section42Present": true,
+      "currentRegistryCrosscheck": {
+        "checkedDate": "2026-08-29",
+        "activeSubstances": [
+          "benzydamine HCl",
+          "chlorhexidine digluconate"
+        ],
+        "strength": "0.15% + 0.12%",
+        "dosageForm": "oral spray",
+        "pack": "30 ml bottle",
+        "manufacturer": "Pharmactive Ilac San. ve Tic. A.S., Tekirdag, Turkey",
+        "kosovoAtcCode": "D08AC52"
+      },
+      "sectionTextCrosscheck": {
+        "source": "Humanis ANDOREX Kısa Ürün Bilgisi",
+        "url": "https://humanis.com.tr/assets/pdf/45889911437854062.pdf",
+        "kubRenewalDate": "2023-10-24",
+        "activeSubstances": [
+          "benzydamine hydrochloride",
+          "chlorhexidine gluconate"
+        ],
+        "doseFinding": "5-10 sprays, repeat every 1.5-3 hours if needed; continuous use not longer than 7 days",
+        "pediatricFinding": "age >=12: 5 sprays every 1.5-3 hours if needed; age <=6 contraindicated; age 6-11 only if physician recommends",
+        "kubAtcCode": "A01AD11"
+      },
+      "reviewFlags": [
+        "oral_topical_route_specific",
+        "fixed_combination",
+        "maximum_duration_seven_days",
+        "pediatric_age_bands",
+        "renal_hepatic_caution",
+        "jurisdiction_atc_difference",
+        "non_regulator_smpc_crosscheck",
+        "clinical_review_required"
+      ],
+      "publicationAllowed": false,
+      "wave": "drx-first100-source-discovery-wave-s-v1.json"
     }
   ]
 }
