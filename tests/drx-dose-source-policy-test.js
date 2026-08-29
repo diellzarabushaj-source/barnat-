@@ -28,6 +28,19 @@ const emc = Policy.rankCandidate({
 assert.equal(emc.tier.key, 'EMC');
 assert.ok(emc.rankScore > ema.rankScore);
 
+const fachinfo = Policy.rankCandidate({
+  url:'https://www.fachinfo.de/fi/pdf/015058/imazol-r-comp-creme',
+  documentType:'SmPC',
+  documentDate:'2024-06',
+  productSpecific:true,
+  productMatch:true,
+  hasDoseSection:true,
+});
+assert.equal(fachinfo.tier.key, 'FACHINFO_DE');
+assert.equal(fachinfo.accepted, true);
+assert.equal(fachinfo.publicationEligible, false);
+assert.equal(Policy.publicationDecision(fachinfo).allowed, false);
+
 const cima = Policy.rankCandidate({
   url:'https://cima.aemps.es/cima/dochtml/ft/66458/FT_66458.html',
   documentType:'FICHA_TECNICA',

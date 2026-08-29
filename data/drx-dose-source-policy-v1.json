@@ -39,6 +39,21 @@
       "autoPublishEligible": true
     },
     {
+      "rank": 25,
+      "key": "FACHINFO_DE",
+      "label": "Fachinfo-Service Germany",
+      "authority": "professional-product-information",
+      "jurisdiction": "DE",
+      "domains": [
+        "fachinfo.de",
+        "www.fachinfo.de"
+      ],
+      "acceptedDocumentTypes": [
+        "SmPC"
+      ],
+      "autoPublishEligible": false
+    },
+    {
       "rank": 30,
       "key": "AEMPS_CIMA",
       "label": "AEMPS CIMA",
