@@ -10,4 +10,5 @@ assert.ok(x.rows.every(r=>r.section41Present===true&&r.section42Present===true))
 assert.ok(x.rows.find(r=>r.canonicalKey==='candesartancilexetil').reviewFlags.includes('renal_adjustment_required'));
 assert.ok(x.rows.find(r=>r.canonicalKey==='calciumgluconate').reviewFlags.includes('parenteral_high_risk'));
 assert.ok(x.rows.find(r=>r.canonicalKey==='clotrimazole').reviewFlags.includes('do_not_generalize_to_topical_forms'));
+assert.ok(x.rows.find(r=>r.canonicalKey==='clomiphene').reviewFlags.includes('reviewed_clomiphene_clomifene_alias'));
 console.log('DRx first-100 source discovery wave B passed.');
