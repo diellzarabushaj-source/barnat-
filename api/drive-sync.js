@@ -4,7 +4,7 @@ const crypto = require('node:crypto');
 const DriveSupabaseSync = require('../lib/drive-supabase-sync.js');
 const SyncOutbox = require('../lib/sync-outbox.js');
 const Administration = require('../administration-routes.js');
-const { neonRequest } = require('../lib/neon-data-api.js');
+const { neonRequest } = require('../lib/medindex-data-api.js');
 const SystemHealthSnapshot = require('../lib/system-health-snapshot.js');
 
 const CURRENT_DOSAGE_SPREADSHEET_ID = '17cuXg5qORIIWkvAxLZ7uz2FMmGvzwjr850cubUcIgLE';
