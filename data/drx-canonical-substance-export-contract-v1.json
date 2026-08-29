@@ -1,6 +1,6 @@
 {
   "schemaVersion": "drx-canonical-substance-export-contract-v1",
-  "status": "foundation_complete_repository",
+  "status": "LIVE_EXPORT_GATE_IMPLEMENTED_WAITING_SUPABASE",
   "publicationAllowed": false,
   "sourceOfTruth": "Supabase canonical substance tables",
   "requiredColumns": [
@@ -26,10 +26,16 @@
     "requireUniqueCanonicalKey": true,
     "requireAtLeast100UncoveredAfterBatch1And2": true,
     "failClosedOnSchemaMismatch": true,
-    "requireQueueAdapterParity": true
+    "requireQueueAdapterParity": true,
+    "requireProjectIdMatch": true,
+    "requireSupabaseSourceEnvelope": true,
+    "requireHashBoundEnvelope": true,
+    "rejectDuplicateCanonicalKey": true,
+    "requireAllBatch1And2KeysPresent": true,
+    "noFallbackCanonicalRows": true
   },
   "intendedQueryShape": "select canonical_key, canonical_name, concept_id from canonical substance view/table ordered deterministically",
-  "next": "when Supabase data plane returns, resolve exact canonical table/view, export snake_case rows, exclude Batch 1+2, and build deterministic 100-substance discovery batch",
+  "next": "When Supabase SQL/data access returns, export the exact canonical relation with project/source/timestamp metadata, compute snapshotSha256, then run the production builder. No fallback or stale canonical array is permitted.",
   "queueAdapter": {
     "acceptedDatabaseShape": [
       "canonical_key",
@@ -51,5 +57,7 @@
     ],
     "alreadyCoveredAcceptedShape": "objects using canonical_key/canonicalKey or literal canonical-key strings",
     "normalizationSource": "supabase/migrations/20260827130837_p1_clinical_substance_identity_foundation.sql"
-  }
+  },
+  "productionBuilder": "scripts/build-drx-first100-from-canonical-export.js",
+  "productionTest": "tests/drx-phase17-canonical-export-gate-test.js"
 }
