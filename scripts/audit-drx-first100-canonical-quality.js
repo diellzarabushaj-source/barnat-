@@ -6,6 +6,8 @@ const ROOT=path.resolve(__dirname,'..');
 const read=p=>JSON.parse(fs.readFileSync(path.join(ROOT,p),'utf8'));
 
 const SUSPICIOUS=[
+  {code:'GENERIC_CHLORHEXIDINE_SALT_CANONICAL_DUPLICATE',re:/^benzydamine\s*\+\s*chlorhexidine$/i},
+  {code:'ATC_COMBINATION_CONFLATION_D07XC01',re:/^betamethasone dipropionate\s*\+\s*gentamicin\s*\+\s*salicylic acid$/i},
   {code:'KNOWN_TRITICUM_PHENOXYETHANOL_EXCIPIENT_MISCLASSIFICATION',re:/^aqueous extract triticum vulgare\s*\+\s*(?:2-)?phenoxyethanol$/i},
   {code:'IMPORT_TOKEN_2H20',re:/\b2h20\b/i},
   {code:'TYPO_BESILATE2',re:/\bbesilate2\b/i},

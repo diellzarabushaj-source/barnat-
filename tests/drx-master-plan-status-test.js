@@ -44,7 +44,7 @@ assert.equal(tracker.currentExecution.repositoryImplementationThroughPhase, 32);
 assert.equal(tracker.phases.find(p => p.id === 14).status, 'BLOCKED_DB_GATEWAY_CANDIDATE_READY');
 assert.equal(tracker.phases.find(p => p.id === 15).status, 'IN_PROGRESS');
 assert.match(tracker.phases.find(p => p.id === 16).status, /^IN_PROGRESS/);
-assert.equal(tracker.phases.find(p => p.id === 17).status, 'FIRST100_86_OF_89_SOURCE_DISCOVERY_PRODUCTION_PROVENANCE_BLOCKED');
+assert.equal(tracker.phases.find(p => p.id === 17).status, 'FIRST100_86_OF_87_SOURCE_LOOKUPS_COMPLETE_PRODUCT_SELECTION_PENDING_PRODUCTION_PROVENANCE_BLOCKED');
 assert.equal(tracker.currentExecution.phase, 32);
 assert.equal(tracker.currentExecution.pilot, 'batch2-25');
 assert.equal(tracker.currentExecution.repositoryBatch1Substances, 10);
@@ -57,7 +57,7 @@ assert.equal(tracker.currentExecution.v3Applied, false);
 assert.equal(tracker.currentExecution.releaseReady, false);
 assert.equal(tracker.currentExecution.first100ProductionDiscoveryAllowed, false);
 assert.equal(tracker.currentExecution.first100VerifiedProductSources, 86);
-assert.equal(tracker.currentExecution.first100SourceLookupRemaining, 2);
+assert.equal(tracker.currentExecution.first100SourceLookupRemaining, 0);
 assert.equal(tracker.currentExecution.publicationAllowed, false);
 
 const batch1 = readJson('data/drx-dose-batch1-v1.json');
