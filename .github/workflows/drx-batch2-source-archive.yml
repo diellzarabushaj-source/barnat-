@@ -16,6 +16,10 @@ on:
 permissions:
   contents: read
 
+concurrency:
+  group: drx-batch2-source-archive
+  cancel-in-progress: false
+
 jobs:
   archive:
     runs-on: ubuntu-latest
