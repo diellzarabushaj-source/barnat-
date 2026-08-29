@@ -1,12 +1,12 @@
 {
   "schemaVersion": "drx-dosierung-master-plan-status-v1",
-  "updatedAt": "2026-08-29T07:20:46.650Z",
+  "updatedAt": "2026-08-29T07:32:00.000Z",
   "officialPlan": "DRx Dosierung phases 0-32",
   "databaseBlocker": {
     "active": true,
     "system": "Supabase SQL/MCP database gateway",
-    "symptom": "2026-08-29 run: list_migrations timed out; single permitted execute_sql health recheck also timed out while project remained ACTIVE_HEALTHY",
-    "rule": "Do not bypass live database verification. No migration/DDL/data write/RLS mutation after the failed recheck; continue repository-safe work only and keep publication closed."
+    "symptom": "2026-08-29 run: migration-history read timed out; single permitted SELECT 1 health recheck also timed out while project remained ACTIVE_HEALTHY",
+    "rule": "No further SQL retries in this run. No migration, DDL, data write, RLS or publication-state mutation; continue repository-safe work only."
   },
   "phases": [
     {
@@ -51,44 +51,18 @@
       "name": "Source Discovery",
       "status": "IN_PROGRESS_FIRST100_73_VERIFIED_EFFECTIVE_88",
       "evidence": [
-        "data/drx-dose-source-map-v1.json",
-        "ibuprofen pilot with official eMC oral+IV SmPCs",
-        "data/drx-batch1-source-verification-v1.json",
-        "10-substance Batch 1 source map",
-        "data/drx-first100-source-discovery-wave-a-v1.json",
-        "15 first-100 product-specific eMC SmPCs verified",
-        "data/drx-first100-source-discovery-wave-b-v1.json",
-        "14 additional live eMC product-specific SmPCs verified in wave B",
-        "first-100 source discovery verified product total: 29",
-        "data/drx-first100-source-discovery-wave-c-v1.json",
-        "8 additional live eMC product-specific SmPCs verified in wave C",
-        "first-100 source discovery verified product total: 37",
-        "data/drx-first100-source-discovery-wave-d-v1.json",
-        "10 additional live product-specific SmPCs verified in wave D",
-        "first-100 source discovery verified product total: 47",
-        "data/drx-first100-source-discovery-wave-e-v1.json",
-        "7 additional live eMC product-specific SmPCs verified in wave E",
-        "first-100 source discovery verified product total: 54",
-        "data/drx-first100-source-discovery-wave-f-v1.json",
-        "6 additional AEMPS/CIMA product-specific fichas verified in wave F",
-        "EMA Exforge HCT official source found; PDF section visual verification pending because EMA returned 429",
-        "first-100 verified product-specific source total: 60",
-        "data/drx-first100-source-discovery-wave-g-v1.json",
-        "Wave F Exforge HCT pending resolved using CIMA Dafiro HCT sections + EMA version cross-check",
-        "Wave G: Roasax, Eulitop Retard, Diprogenta, Celestoderm",
-        "first-100 verified product-specific source total: 65",
-        "data/drx-first100-source-discovery-wave-h-v1.json",
-        "AEMPS/CIMA 82689 verified product-specific source for canonical Amlodipine + Ramipril after canonical typo/salt-equivalence resolution",
-        "first-100 verified product-specific source total: 62",
-        "Wave H EU national regulators: Baneocin, LisAm, Pepcid Duo",
         "data/drx-first100-canonical-review-decisions-v1.json",
-        "canonical review: 2 resolved, 11 pending; effective unique source-discovery denominator 88",
-        "first-100 verified product-specific source total: 68",
-        "data/drx-first100-source-discovery-wave-i-v1.json",
-        "Wave I: amlodipine/ramipril canonical resolution + four exact ANMDMR product SmPCs",
-        "first-100 verified product-specific source total: 73"
+        "data/drx-first100-source-discovery-wave-a-v1.json through data/drx-first100-source-discovery-wave-i-v1.json",
+        "data/drx-first100-source-discovery-index-v1.json",
+        "A-I deduplicated aggregate: 73 verified product-specific canonical rows",
+        "effective source-discovery denominator: 88 canonical targets",
+        "15 eligible targets remain: 14 exact source lookups + 1 product-selection-required (alteplase)",
+        "11 canonical-review decisions remain pending",
+        "Amlodipine + Ramipril is retained once in Wave I with AEMPS/CIMA 82689 after canonical resolution",
+        "verified rows remain publicationAllowed=false and require authoritative source-policy resolution plus SmPC sections 4.1 and 4.2",
+        "persisted discovery index is parity-gated against the dynamic builder; deleted wave rows are rejected"
       ],
-      "next": "source-discover 14 remaining exact targets; resolve alteplase product selection separately; keep 11 unresolved canonical-review rows blocked"
+      "next": "continue 14 exact official source lookups; resolve alteplase product selection separately; keep 11 unresolved canonical-review rows fail-closed"
     },
     {
       "id": 4,
@@ -287,7 +261,7 @@
         "data/drx-first100-canonical-quality-audit-v1.json",
         "data/drx-first100-source-discovery-wave-a-v1.json"
       ],
-      "next": "complete source discovery for 87 eligible rows; resolve 13 canonical-review rows before archive/import"
+      "next": "continue source discovery against 88 effective eligible canonical targets; 11 canonical-review decisions remain pending; production import remains blocked until live Supabase export provenance is verified"
     },
     {
       "id": 18,
@@ -531,6 +505,8 @@
     "first100ProductSelectionPending": 1,
     "first100CanonicalReviewResolved": 2,
     "first100CanonicalReviewPending": 11,
-    "first100EffectiveSourceDiscoveryEligible": 88
+    "first100EffectiveSourceDiscoveryEligible": 88,
+    "first100EligibleRemaining": 15,
+    "first100SourceLookupRemaining": 14
   }
 }
