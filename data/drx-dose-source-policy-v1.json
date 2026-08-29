@@ -74,7 +74,10 @@
         "ogyei.gov.hu",
         "nngyk.gov.hu",
         "basg.gv.at",
-        "medikamente.basg.gv.at"
+        "medikamente.basg.gv.at",
+        "anm.ro",
+        "nomenclator.anm.ro",
+        "www.anm.ro"
       ],
       "acceptedDocumentTypes": [
         "SmPC",
