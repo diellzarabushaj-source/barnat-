@@ -1,10 +1,10 @@
 {
   "schemaVersion": "drx-first100-canonical-review-decisions-v1",
-  "generatedAt": "2026-08-30T03:50:00+02:00",
+  "generatedAt": "2026-08-29T09:05:00+02:00",
   "total": 13,
-  "resolved": 1,
-  "pending": 12,
-  "effectiveSourceDiscoveryEligible": 88,
+  "resolved": 2,
+  "pending": 11,
+  "effectiveSourceDiscoveryEligible": 89,
   "publicationAllowed": false,
   "decisions": [
     {
@@ -73,13 +73,19 @@
     {
       "canonicalKey": "amlodipinebesilate2ramipril",
       "sourceName": "Amlodipine besilate2 + Ramipril",
-      "decision": "candidate_typo_fix_pending_exact_product_source",
-      "proposedCanonicalKey": "amlodipineramipril",
-      "proposedCanonicalName": "Amlodipine + Ramipril",
-      "confidence": "medium",
-      "evidence": [],
-      "sourceDiscoveryEligible": false,
-      "publicationAllowed": false
+      "decision": "resolved_typo_and_salt_equivalence_not_extra_component",
+      "confidence": "high",
+      "evidence": [
+        {
+          "authority": "AEMPS_CIMA",
+          "url": "https://cima.aemps.es/cima/dochtml/ft/82689/FT_82689.html",
+          "finding": "Official composition states ramipril plus amlodipine besilate equivalent to amlodipine; the source token 'besilate2' is not a separate active ingredient. Sections 4.1 and 4.2 confirm the fixed-combination product context."
+        }
+      ],
+      "sourceDiscoveryEligible": true,
+      "publicationAllowed": false,
+      "resolvedCanonicalKey": "amlodipineramipril",
+      "resolvedCanonicalName": "Amlodipine + Ramipril"
     },
     {
       "canonicalKey": "amylaselipasepanceatintotalproteases",
