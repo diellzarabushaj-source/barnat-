@@ -1,0 +1,65 @@
+{
+  "schemaVersion": "drx-dose-pilot-v1",
+  "pilotKey": "amoxicillin",
+  "updatedAt": "2026-08-29",
+  "status": "in_review_unbound",
+  "publicationAllowed": false,
+  "ruleScope": "representative_not_exhaustive",
+  "canonicalSubstance": {
+    "key": "amoxicillin",
+    "name": "Amoxicillin"
+  },
+  "sourceSet": [
+    {
+      "sourceKey": "emc-10638-smpc",
+      "url": "https://www.medicines.org.uk/emc/product/10638/smpc",
+      "tier": "EMC",
+      "documentDate": "2026-03-02",
+      "section": "4.2",
+      "formulation": "capsule",
+      "strength": "500 mg",
+      "section42Verified": true
+    }
+  ],
+  "extractedRuleCandidates": [
+    {
+      "candidateKey": "emc-10638-cap-40kg-plus",
+      "ruleKey": "amoxicillin|community-acquired-pneumonia|40kg-plus|po",
+      "sourceKey": "emc-10638-smpc",
+      "sourceSection": "4.2",
+      "indicationKey": "community-acquired-pneumonia",
+      "indicationTerms": [
+        "community acquired pneumonia"
+      ],
+      "patientGroup": "pediatric_and_adult",
+      "calculationMethod": "fixed_dose",
+      "doseMinValue": 500,
+      "doseMaxValue": 1000,
+      "doseUnit": "mg",
+      "frequencyMode": "interval",
+      "intervalMinHours": 8,
+      "intervalMaxHours": 8,
+      "durationMode": "manual",
+      "minWeightKg": 40,
+      "route": "PO",
+      "prn": false,
+      "requiredInputs": [
+        "weight_kg"
+      ],
+      "bindingStatus": "unbound",
+      "editorialStatus": "in_review",
+      "reviewReason": "duration remains indication/response dependent and must not be invented"
+    }
+  ],
+  "sourceReconciliation": {
+    "status": "single_authoritative_source",
+    "autoMerge": false
+  },
+  "v2SchemaGaps": [
+    "source_snapshot_id",
+    "source_evidence_hash",
+    "required_inputs",
+    "duration_by_indication"
+  ],
+  "nextGate": "bind to exact DRx amoxicillin products and compare to legacy dosage_regimens"
+}
