@@ -1,9 +1,9 @@
 {
   "schemaVersion": "drx-first100-source-discovery-index-v1",
-  "generatedAt": "2026-08-29T11:25:41.383Z",
+  "generatedAt": "2026-08-29T11:30:08.042Z",
   "first100Count": 100,
-  "canonicalReviewRequired": 14,
-  "sourceDiscoveryEligible": 89,
+  "canonicalReviewRequired": 16,
+  "sourceDiscoveryEligible": 87,
   "verifiedProductSpecific": 86,
   "verifiedCanonicalSubstances": 86,
   "sourceAuthorityCounts": {
@@ -15,8 +15,8 @@
     "NON_EU_REGULATOR": 1
   },
   "productSelectionRequired": 1,
-  "eligibleRemaining": 3,
-  "sourceLookupRemaining": 2,
+  "eligibleRemaining": 1,
+  "sourceLookupRemaining": 0,
   "issueCount": 0,
   "complete": false,
   "repositoryComplete": false,
