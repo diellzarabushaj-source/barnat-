@@ -1,6 +1,6 @@
 {
   "schemaVersion": "drx-dosierung-master-plan-status-v1",
-  "updatedAt": "2026-08-30T01:15:00+02:00",
+  "updatedAt": "2026-08-30T02:05:00+02:00",
   "officialPlan": "DRx Dosierung phases 0-32",
   "databaseBlocker": {
     "active": true,
@@ -225,14 +225,17 @@
     {
       "id": 17,
       "name": "Bulk Import",
-      "status": "FOUNDATION_COMPLETE_REPO",
+      "status": "QUEUE_MATERIALIZED_REAL_REGISTRY_DATA",
       "evidence": [
         "data/drx-bulk-import-policy-v1.json",
         "scripts/build-drx-first100-discovery-queue.js",
         "tests/drx-batch2-normalization-first100-test.js",
-        "data/drx-canonical-substance-export-contract-v1.json"
+        "data/drx-canonical-substance-export-contract-v1.json",
+        "data/drx-first100-source-discovery-queue-v1.json",
+        "tests/drx-first100-real-queue-test.js",
+        "Google Sheet: Lista e Substancave Aktive sipas ATC — Regjistri 2025"
       ],
-      "next": "resolve exact canonical Supabase export, exclude Batch 1+2, generate deterministic first-100 discovery queue"
+      "next": "run authoritative source discovery for the materialized first-100 queue, then archive/parse in bounded batches"
     },
     {
       "id": 18,
@@ -299,14 +302,16 @@
     {
       "id": 24,
       "name": "Publication Gate",
-      "status": "FOUNDATION_COMPLETE_PREPUBLICATION_AUDIT_ACTIVE",
+      "status": "DB_AND_APP_GATE_READY_NOT_APPLIED",
       "evidence": [
         "20260829002018_harden_dose_rule_publication_gate.sql",
         "published-only runtime",
         "data/drx-publication-gate-v3-policy.json",
-        "scripts/audit-drx-batch2-prepublication.js"
+        "scripts/audit-drx-batch2-prepublication.js",
+        "supabase/drx-dose-v3-additive-candidate.sql DB publication trigger",
+        "tests/drx-dose-v3-db-publication-gate-test.js"
       ],
-      "next": "keep publishable count at zero until archive, binding, safety and review gates pass"
+      "next": "apply V3 candidate when SQL gateway returns; verify DB-level publication trigger with negative/positive smoke cases"
     },
     {
       "id": 25,
@@ -443,7 +448,12 @@
       "exact_product_binding_not_live",
       "legacy_comparison_not_live",
       "clinical_review_not_complete",
-      "no_published_v3_rules"
-    ]
+      "no_published_v3_rules",
+      "vercel_build_rate_limit"
+    ],
+    "first100QueueMaterialized": 100,
+    "first100CoveredExcluded": 35,
+    "v3DbPublicationGuardReady": true,
+    "vercelBuildBlocker": "build-rate-limit"
   }
 }
