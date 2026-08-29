@@ -1,0 +1,387 @@
+{
+  "schemaVersion": "drx-batch1-2-legacy-mirror-precheck-v1",
+  "generatedAt": "2026-08-30T02:25:00+02:00",
+  "source": {
+    "kind": "google_sheet_mirror",
+    "spreadsheetId": "1T7XsfkXLQfEomFL4DmXoA8PheiR6s3Qmu36hTqklOMo",
+    "title": "MedIndex — Dozologjia, Format dhe Auto-fill",
+    "tabs": [
+      "DOSE_RULES_V2",
+      "DOSE_RULE_PRODUCTS_V2",
+      "DOSE_SOURCES_V2"
+    ]
+  },
+  "totalSubstances": 35,
+  "presentSubstances": 2,
+  "missingSubstances": 33,
+  "totalMirrorRules": 3,
+  "totalMirrorBindings": 4,
+  "liveSupabaseComparisonComplete": false,
+  "publicationAllowed": false,
+  "interpretation": "Precheck only. Missing means absent from the connected Google Sheet V2 mirror; it is not a claim that the live Supabase dosage_regimens dataset is missing the substance.",
+  "rows": [
+    {
+      "canonicalKey": "ibuprofen",
+      "legacyMirrorStatus": "missing",
+      "ruleCount": 0,
+      "bindingCount": 0,
+      "rules": [],
+      "sources": [],
+      "publicationStatuses": [],
+      "liveDbCompared": false
+    },
+    {
+      "canonicalKey": "paracetamol",
+      "legacyMirrorStatus": "present",
+      "ruleCount": 2,
+      "bindingCount": 2,
+      "rules": [
+        "RULE-PARACETAMOL-ALKALOID-500-AGE6TO12",
+        "RULE-PARACETAMOL-ALKALOID-500-13PLUS"
+      ],
+      "sources": [
+        "SRC-MK-REG-PARACETAMOL-ALKALOID-500-51848"
+      ],
+      "publicationStatuses": [
+        "published"
+      ],
+      "liveDbCompared": false
+    },
+    {
+      "canonicalKey": "amoxicillin",
+      "legacyMirrorStatus": "missing",
+      "ruleCount": 0,
+      "bindingCount": 0,
+      "rules": [],
+      "sources": [],
+      "publicationStatuses": [],
+      "liveDbCompared": false
+    },
+    {
+      "canonicalKey": "amoxicillin-clavulanic-acid",
+      "legacyMirrorStatus": "missing",
+      "ruleCount": 0,
+      "bindingCount": 0,
+      "rules": [],
+      "sources": [],
+      "publicationStatuses": [],
+      "liveDbCompared": false
+    },
+    {
+      "canonicalKey": "azithromycin",
+      "legacyMirrorStatus": "missing",
+      "ruleCount": 0,
+      "bindingCount": 0,
+      "rules": [],
+      "sources": [],
+      "publicationStatuses": [],
+      "liveDbCompared": false
+    },
+    {
+      "canonicalKey": "metformin",
+      "legacyMirrorStatus": "missing",
+      "ruleCount": 0,
+      "bindingCount": 0,
+      "rules": [],
+      "sources": [],
+      "publicationStatuses": [],
+      "liveDbCompared": false
+    },
+    {
+      "canonicalKey": "enalapril",
+      "legacyMirrorStatus": "missing",
+      "ruleCount": 0,
+      "bindingCount": 0,
+      "rules": [],
+      "sources": [],
+      "publicationStatuses": [],
+      "liveDbCompared": false
+    },
+    {
+      "canonicalKey": "omeprazole",
+      "legacyMirrorStatus": "missing",
+      "ruleCount": 0,
+      "bindingCount": 0,
+      "rules": [],
+      "sources": [],
+      "publicationStatuses": [],
+      "liveDbCompared": false
+    },
+    {
+      "canonicalKey": "salbutamol",
+      "legacyMirrorStatus": "missing",
+      "ruleCount": 0,
+      "bindingCount": 0,
+      "rules": [],
+      "sources": [],
+      "publicationStatuses": [],
+      "liveDbCompared": false
+    },
+    {
+      "canonicalKey": "cefuroxime",
+      "legacyMirrorStatus": "missing",
+      "ruleCount": 0,
+      "bindingCount": 0,
+      "rules": [],
+      "sources": [],
+      "publicationStatuses": [],
+      "liveDbCompared": false
+    },
+    {
+      "canonicalKey": "amlodipine",
+      "legacyMirrorStatus": "missing",
+      "ruleCount": 0,
+      "bindingCount": 0,
+      "rules": [],
+      "sources": [],
+      "publicationStatuses": [],
+      "liveDbCompared": false
+    },
+    {
+      "canonicalKey": "atorvastatin",
+      "legacyMirrorStatus": "missing",
+      "ruleCount": 0,
+      "bindingCount": 0,
+      "rules": [],
+      "sources": [],
+      "publicationStatuses": [],
+      "liveDbCompared": false
+    },
+    {
+      "canonicalKey": "bisoprolol",
+      "legacyMirrorStatus": "missing",
+      "ruleCount": 0,
+      "bindingCount": 0,
+      "rules": [],
+      "sources": [],
+      "publicationStatuses": [],
+      "liveDbCompared": false
+    },
+    {
+      "canonicalKey": "losartan",
+      "legacyMirrorStatus": "missing",
+      "ruleCount": 0,
+      "bindingCount": 0,
+      "rules": [],
+      "sources": [],
+      "publicationStatuses": [],
+      "liveDbCompared": false
+    },
+    {
+      "canonicalKey": "pantoprazole",
+      "legacyMirrorStatus": "present",
+      "ruleCount": 1,
+      "bindingCount": 2,
+      "rules": [
+        "RULE-PANTOPRAZOL-REFLUX-40-QD-12PLUS"
+      ],
+      "sources": [
+        "SRC-AEMPS-PANTOPRAZOL-ARISTO-40-78744"
+      ],
+      "publicationStatuses": [
+        "verified"
+      ],
+      "liveDbCompared": false
+    },
+    {
+      "canonicalKey": "ciprofloxacin",
+      "legacyMirrorStatus": "missing",
+      "ruleCount": 0,
+      "bindingCount": 0,
+      "rules": [],
+      "sources": [],
+      "publicationStatuses": [],
+      "liveDbCompared": false
+    },
+    {
+      "canonicalKey": "furosemide",
+      "legacyMirrorStatus": "missing",
+      "ruleCount": 0,
+      "bindingCount": 0,
+      "rules": [],
+      "sources": [],
+      "publicationStatuses": [],
+      "liveDbCompared": false
+    },
+    {
+      "canonicalKey": "prednisolone",
+      "legacyMirrorStatus": "missing",
+      "ruleCount": 0,
+      "bindingCount": 0,
+      "rules": [],
+      "sources": [],
+      "publicationStatuses": [],
+      "liveDbCompared": false
+    },
+    {
+      "canonicalKey": "dexamethasone",
+      "legacyMirrorStatus": "missing",
+      "ruleCount": 0,
+      "bindingCount": 0,
+      "rules": [],
+      "sources": [],
+      "publicationStatuses": [],
+      "liveDbCompared": false
+    },
+    {
+      "canonicalKey": "cetirizine",
+      "legacyMirrorStatus": "missing",
+      "ruleCount": 0,
+      "bindingCount": 0,
+      "rules": [],
+      "sources": [],
+      "publicationStatuses": [],
+      "liveDbCompared": false
+    },
+    {
+      "canonicalKey": "levothyroxine",
+      "legacyMirrorStatus": "missing",
+      "ruleCount": 0,
+      "bindingCount": 0,
+      "rules": [],
+      "sources": [],
+      "publicationStatuses": [],
+      "liveDbCompared": false
+    },
+    {
+      "canonicalKey": "ondansetron",
+      "legacyMirrorStatus": "missing",
+      "ruleCount": 0,
+      "bindingCount": 0,
+      "rules": [],
+      "sources": [],
+      "publicationStatuses": [],
+      "liveDbCompared": false
+    },
+    {
+      "canonicalKey": "carvedilol",
+      "legacyMirrorStatus": "missing",
+      "ruleCount": 0,
+      "bindingCount": 0,
+      "rules": [],
+      "sources": [],
+      "publicationStatuses": [],
+      "liveDbCompared": false
+    },
+    {
+      "canonicalKey": "tramadol",
+      "legacyMirrorStatus": "missing",
+      "ruleCount": 0,
+      "bindingCount": 0,
+      "rules": [],
+      "sources": [],
+      "publicationStatuses": [],
+      "liveDbCompared": false
+    },
+    {
+      "canonicalKey": "aspirin",
+      "legacyMirrorStatus": "missing",
+      "ruleCount": 0,
+      "bindingCount": 0,
+      "rules": [],
+      "sources": [],
+      "publicationStatuses": [],
+      "liveDbCompared": false
+    },
+    {
+      "canonicalKey": "ramipril",
+      "legacyMirrorStatus": "missing",
+      "ruleCount": 0,
+      "bindingCount": 0,
+      "rules": [],
+      "sources": [],
+      "publicationStatuses": [],
+      "liveDbCompared": false
+    },
+    {
+      "canonicalKey": "clopidogrel",
+      "legacyMirrorStatus": "missing",
+      "ruleCount": 0,
+      "bindingCount": 0,
+      "rules": [],
+      "sources": [],
+      "publicationStatuses": [],
+      "liveDbCompared": false
+    },
+    {
+      "canonicalKey": "naproxen",
+      "legacyMirrorStatus": "missing",
+      "ruleCount": 0,
+      "bindingCount": 0,
+      "rules": [],
+      "sources": [],
+      "publicationStatuses": [],
+      "liveDbCompared": false
+    },
+    {
+      "canonicalKey": "spironolactone",
+      "legacyMirrorStatus": "missing",
+      "ruleCount": 0,
+      "bindingCount": 0,
+      "rules": [],
+      "sources": [],
+      "publicationStatuses": [],
+      "liveDbCompared": false
+    },
+    {
+      "canonicalKey": "diclofenac",
+      "legacyMirrorStatus": "missing",
+      "ruleCount": 0,
+      "bindingCount": 0,
+      "rules": [],
+      "sources": [],
+      "publicationStatuses": [],
+      "liveDbCompared": false
+    },
+    {
+      "canonicalKey": "doxycycline",
+      "legacyMirrorStatus": "missing",
+      "ruleCount": 0,
+      "bindingCount": 0,
+      "rules": [],
+      "sources": [],
+      "publicationStatuses": [],
+      "liveDbCompared": false
+    },
+    {
+      "canonicalKey": "cefalexin",
+      "legacyMirrorStatus": "missing",
+      "ruleCount": 0,
+      "bindingCount": 0,
+      "rules": [],
+      "sources": [],
+      "publicationStatuses": [],
+      "liveDbCompared": false
+    },
+    {
+      "canonicalKey": "metronidazole",
+      "legacyMirrorStatus": "missing",
+      "ruleCount": 0,
+      "bindingCount": 0,
+      "rules": [],
+      "sources": [],
+      "publicationStatuses": [],
+      "liveDbCompared": false
+    },
+    {
+      "canonicalKey": "gliclazide",
+      "legacyMirrorStatus": "missing",
+      "ruleCount": 0,
+      "bindingCount": 0,
+      "rules": [],
+      "sources": [],
+      "publicationStatuses": [],
+      "liveDbCompared": false
+    },
+    {
+      "canonicalKey": "loratadine",
+      "legacyMirrorStatus": "missing",
+      "ruleCount": 0,
+      "bindingCount": 0,
+      "rules": [],
+      "sources": [],
+      "publicationStatuses": [],
+      "liveDbCompared": false
+    }
+  ]
+}
