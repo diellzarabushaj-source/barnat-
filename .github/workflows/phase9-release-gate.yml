@@ -3,8 +3,6 @@ name: Phase 9 release gate
 on:
   push:
     branches: [main]
-    paths:
-      - ".github/workflows/phase9-release-gate.yml"
   workflow_dispatch:
 
 permissions:
@@ -21,6 +19,11 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v4
+
+      - name: Use Node 24
+        uses: actions/setup-node@v4
+        with:
+          node-version: "24"
 
       - name: Enable Corepack
         run: corepack enable
