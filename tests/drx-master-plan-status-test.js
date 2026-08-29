@@ -41,7 +41,7 @@ assert.equal(tracker.databaseBlocker.active, true);
 assert.equal(tracker.phases.find(p => p.id === 14).status, 'BLOCKED_DB_GATEWAY_CANDIDATE_READY');
 assert.equal(tracker.phases.find(p => p.id === 15).status, 'IN_PROGRESS');
 assert.match(tracker.phases.find(p => p.id === 16).status, /^IN_PROGRESS/);
-assert.equal(tracker.phases.find(p => p.id === 17).status, 'LIVE_EXPORT_GATE_IMPLEMENTED_WAITING_SUPABASE');
+assert.equal(tracker.phases.find(p => p.id === 17).status, 'FIRST100_75_OF_89_SOURCE_DISCOVERY_PRODUCTION_PROVENANCE_BLOCKED');
 assert.equal(tracker.currentExecution.phase, 32);
 assert.equal(tracker.currentExecution.pilot, 'batch2-25');
 assert.equal(tracker.currentExecution.repositoryBatch1Substances, 10);
