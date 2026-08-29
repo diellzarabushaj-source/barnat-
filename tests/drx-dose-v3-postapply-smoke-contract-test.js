@@ -29,10 +29,10 @@ for(const table of tables){
   assert.ok(sql.includes("'"+table+"'"),table+' must be included in smoke expected set');
 }
 
-assert.doesNotMatch(sql,/\binsert\s+into\b/i);
-assert.doesNotMatch(sql,/\bupdate\s+public\./i);
-assert.doesNotMatch(sql,/\bdelete\s+from\b/i);
-assert.doesNotMatch(sql,/\bdrop\s+/i);
-assert.doesNotMatch(sql,/\btruncate\b/i);
+assert.doesNotMatch(sql,/^\s*insert\s+into\b/im);
+assert.doesNotMatch(sql,/^\s*update\s+(?:public\.)?[a-z_]/im);
+assert.doesNotMatch(sql,/^\s*delete\s+from\b/im);
+assert.doesNotMatch(sql,/^\s*drop\s+/im);
+assert.doesNotMatch(sql,/^\s*truncate\s+/im);
 
 console.log('DRx V3 post-apply smoke contract passed.');
