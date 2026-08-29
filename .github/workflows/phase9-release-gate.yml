@@ -2,7 +2,7 @@ name: Phase 9 release gate
 
 on:
   push:
-    branches: [main, phase9-ci-snapshot]
+    branches: [phase9-ci-snapshot]
   workflow_dispatch:
 
 permissions:
