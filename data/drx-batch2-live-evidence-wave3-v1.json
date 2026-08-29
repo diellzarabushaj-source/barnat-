@@ -1,6 +1,6 @@
 {
   "schemaVersion": "drx-batch2-live-evidence-wave3-v1",
-  "createdAt": "2026-08-29T23:10:00+02:00",
+  "createdAt": "2026-08-29T03:20:08.782Z",
   "status": "live_web_verified_archive_hash_pending",
   "publicationAllowed": false,
   "sourceCount": 5,
@@ -18,12 +18,26 @@
       "archiveHashStatus": "pending",
       "normalizationStatus": "blocked_monitoring_and_titration_review",
       "reviewFlags": [
-        "tsH_or_t4_monitoring_required",
+        "tsh_or_t4_monitoring_required",
         "age_and_cardiac_status_branching",
         "pediatric_bsa_and_weight_rules",
-        "product_specific_switching_relevant",
+        "under5_formulation_constraint",
         "clinical_review_required"
-      ]
+      ],
+      "productSpecific": true,
+      "extractedFacts": {
+        "indications": [
+          "hypothyroidism",
+          "congenital hypothyroidism in infants",
+          "acquired hypothyroidism in children",
+          "juvenile myxoedema"
+        ],
+        "adultUnder50Pattern": "initial 100 micrograms once daily; adjust by 50 micrograms every 3-4 weeks; final daily dose may be 100-200 micrograms",
+        "olderOrCardiacPattern": "age >50 and cardiac disease require lower initial doses and slower titration; cardiac disease may start 25 micrograms daily or 50 micrograms on alternate days",
+        "pediatricPattern": "maintenance generally 100-150 micrograms/m2; congenital hypothyroidism initial 10-15 micrograms/kg/day for first 3 months; acquired hypothyroidism initial 12.5-50 micrograms/day",
+        "monitoring": "dose adjustment requires clinical and thyroid hormone/TSH monitoring",
+        "formulationConstraint": "whole tablets and crushed/dispersed tablets are not recommended under age 5; approved oral solution preferred"
+      }
     },
     {
       "canonicalKey": "ondansetron",
@@ -34,14 +48,29 @@
       "section41Present": true,
       "section42Present": true,
       "archiveHashStatus": "pending",
-      "normalizationStatus": "blocked_indication_route_review",
+      "normalizationStatus": "blocked_indication_route_and_hepatic_review",
       "reviewFlags": [
         "cinv_rinv_regimen_complexity",
+        "bsa_or_weight_pediatric_branching",
         "ponv_route_specificity",
-        "hepatic_adjustment_review",
-        "pediatric_age_and_route_branching",
+        "hepatic_daily_max_8mg",
+        "qt_risk_context",
         "clinical_review_required"
-      ]
+      ],
+      "productSpecific": true,
+      "extractedFacts": {
+        "indications": [
+          "chemotherapy/radiotherapy induced nausea and vomiting in adults",
+          "prevention of postoperative nausea and vomiting in adults",
+          "chemotherapy induced nausea and vomiting age >=6 months"
+        ],
+        "adultCinvRinvPattern": "8 mg orally 1-2 hours before chemotherapy/radiotherapy then 8 mg every 12 hours for up to 5 days; highly emetogenic chemotherapy has a distinct regimen",
+        "pediatricCinvPattern": "BSA-based 5 mg/m2 IV or weight-based 0.15 mg/kg IV strategies with IV single-dose maximum 8 mg and subsequent oral dosing",
+        "adultPonvPattern": "16 mg orally one hour before anaesthesia for prevention; established PONV is treated by IV/IM route",
+        "pediatricPonvPattern": "oral PONV use not studied; IV 0.1 mg/kg up to 4 mg is specified",
+        "renal": "no dose/frequency/route adjustment required",
+        "hepatic": "moderate or severe hepatic impairment: total daily dose must not exceed 8 mg"
+      }
     },
     {
       "canonicalKey": "carvedilol",
@@ -52,14 +81,29 @@
       "section41Present": true,
       "section42Present": true,
       "archiveHashStatus": "pending",
-      "normalizationStatus": "blocked_titration_monitoring_review",
+      "normalizationStatus": "blocked_titration_monitoring_and_product_binding_review",
       "reviewFlags": [
         "heart_failure_titration_required",
         "weight_dependent_maximum_in_chf",
         "monitor_before_each_titration",
         "multiple_indication_rules",
+        "25mg_product_cannot_supply_3_125mg_starting_dose",
         "clinical_review_required"
-      ]
+      ],
+      "productSpecific": true,
+      "extractedFacts": {
+        "indications": [
+          "hypertension",
+          "symptomatic congestive heart failure adjunct",
+          "stable angina"
+        ],
+        "chfTitration": "3.125 mg twice daily for 2 weeks, then 6.25 mg twice daily, 12.5 mg twice daily, then 25 mg twice daily at intervals of at least 2 weeks as tolerated",
+        "chfMaximum": "25 mg twice daily for severe CHF or mild-moderate CHF <85 kg; 50 mg twice daily may be used in mild-moderate CHF >85 kg",
+        "hypertensionPattern": "12.5 mg once daily for first 2 days then 25 mg once daily; may titrate to maximum 50 mg/day",
+        "anginaPattern": "12.5 mg twice daily for first 2 days then 25 mg twice daily; may titrate to 50 mg twice daily",
+        "renal": "no dose adjustment indicated in moderate to severe renal impairment",
+        "pediatric": "safety and efficacy under 18 years not established"
+      }
     },
     {
       "canonicalKey": "tramadol",
@@ -74,29 +118,52 @@
       "reviewFlags": [
         "high_risk_opioid",
         "dependence_withdrawal_plan_required",
-        "max_daily_dose_required",
+        "max_daily_dose_400mg_except_special_circumstances",
         "renal_hepatic_interval_review",
-        "age_restriction",
+        "age_restriction_under12",
         "clinical_review_required"
-      ]
+      ],
+      "productSpecific": true,
+      "extractedFacts": {
+        "indication": "moderate to severe pain",
+        "generalCeiling": "total daily dose 400 mg should not be exceeded except in special circumstances",
+        "acutePainPattern": "age >=12: initial 100 mg then 50 or 100 mg every 4-6 hours according to clinical need",
+        "chronicPainPattern": "age >=12: initial 50 mg then titrate to pain severity with regular reassessment",
+        "pediatric": "capsules not suitable below age 12",
+        "elderlyRenalHepatic": "over age 75 and renal/hepatic impairment may require longer dosing intervals",
+        "treatmentGovernance": "treatment goals, duration and discontinuation strategy are required because dependence and withdrawal can occur"
+      }
     },
     {
       "canonicalKey": "aspirin",
       "sourceKey": "emc-102206-smpc",
       "url": "https://www.medicines.org.uk/emc/product/102206/smpc",
-      "documentDate": "2026-06-02",
+      "documentDate": "2026-08-27",
       "productName": "Aspirin 75 mg tablets",
       "section41Present": true,
       "section42Present": true,
       "archiveHashStatus": "pending",
-      "normalizationStatus": "blocked_indication_and_age_review",
+      "normalizationStatus": "blocked_indication_loading_and_bleeding_risk_review",
       "reviewFlags": [
         "indication_specific_ranges",
         "acute_mi_loading_then_maintenance",
+        "max_daily_dose_300mg",
         "pediatric_under16_restriction",
         "bleeding_risk_context",
+        "unscored_75mg_product_binding",
         "clinical_review_required"
-      ]
+      ],
+      "productSpecific": true,
+      "extractedFacts": {
+        "indicationScope": "secondary cardiovascular/cerebrovascular prevention and acute myocardial infarction",
+        "commonMaintenancePattern": "75-160 mg once daily for several secondary prevention indications",
+        "tiaCvaPattern": "75-300 mg once daily",
+        "acuteMiPattern": "150-300 mg loading dose followed by 75-160 mg daily",
+        "maxDailyDose": "300 mg/day unless specifically advised by a doctor",
+        "pediatric": "under 16 years only on medical advice when benefit outweighs risk",
+        "formulationConstraint": "75 mg tablet has no break-score",
+        "duration": "long-term treatment with the lowest possible dose"
+      }
     }
   ],
   "completionGate": {
