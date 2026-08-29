@@ -150,8 +150,16 @@ jobs:
           name: drx-batch2-source-archive
 
       - name: Ingest provenance into V3
+        # Both namings are passed because the project uses MEDINDEX_SUPABASE_*
+        # in CI and bare SUPABASE_* elsewhere. Whichever secret exists wins, so
+        # a value spelled the other way is not mistaken for a missing one.
+        # These must be GitHub Actions secrets: Vercel environment variables are
+        # invisible here.
         env:
           MEDINDEX_SUPABASE_URL: ${{ secrets.MEDINDEX_SUPABASE_URL }}
           MEDINDEX_SUPABASE_SECRET_KEY: ${{ secrets.MEDINDEX_SUPABASE_SECRET_KEY }}
+          SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
+          SUPABASE_SECRET_KEY: ${{ secrets.SUPABASE_SECRET_KEY }}
+          SUPABASE_SERVICE_ROLE_KEY: ${{ secrets.SUPABASE_SERVICE_ROLE_KEY }}
           DRX_ARCHIVE_DIR: artifacts/drx-batch2-raw
         run: node scripts/ingest-drx-v3-sections.js

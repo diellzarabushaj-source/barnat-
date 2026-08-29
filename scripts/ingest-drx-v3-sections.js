@@ -39,8 +39,23 @@ const dryRun = process.argv.includes('--dry-run');
 const indexPath = path.resolve(arg('index') || path.join(ROOT, 'data', 'drx-batch2-extraction-index-v1.json'));
 const archiveDir = path.resolve(arg('archive') || process.env.DRX_ARCHIVE_DIR || path.join(ROOT, 'artifacts', 'drx-batch2-raw'));
 
-const url = String(process.env.MEDINDEX_SUPABASE_URL || '').replace(/\/+$/, '');
-const key = String(process.env.MEDINDEX_SUPABASE_SECRET_KEY || '');
+// Accept either naming, matching the fallback chain the runtime already uses
+// in lib/medindex-data-api.js. The project carries both MEDINDEX_SUPABASE_* and
+// bare SUPABASE_* names in different places, and a job that only understood one
+// of them would look like a missing credential when the value was simply
+// spelled the other way.
+const url = String(
+  process.env.MEDINDEX_SUPABASE_URL
+  || process.env.SUPABASE_URL
+  || ''
+).trim().replace(/\/+$/, '');
+const key = String(
+  process.env.MEDINDEX_SUPABASE_SECRET_KEY
+  || process.env.SUPABASE_SECRET_KEY
+  || process.env.MEDINDEX_SUPABASE_SERVICE_ROLE_KEY
+  || process.env.SUPABASE_SERVICE_ROLE_KEY
+  || ''
+).trim();
 
 // Distinguish "not configured" from "configured and broken". A repository
 // without the service key cannot ingest, and failing the archive run for that
@@ -56,14 +71,18 @@ if (!dryRun && !credentialsConfigured) {
   console.log(JSON.stringify({
     ok: true,
     skipped: true,
-    reason: 'MEDINDEX_SUPABASE_URL and MEDINDEX_SUPABASE_SECRET_KEY are not configured for this repository, so provenance cannot be ingested.',
+    reason: 'No Supabase URL and service key are visible to this job, so provenance cannot be ingested.',
+    checked: ['MEDINDEX_SUPABASE_URL', 'SUPABASE_URL', 'MEDINDEX_SUPABASE_SECRET_KEY', 'SUPABASE_SECRET_KEY', 'MEDINDEX_SUPABASE_SERVICE_ROLE_KEY', 'SUPABASE_SERVICE_ROLE_KEY'],
     effect: 'dose_source_sections_v3 will not receive section 2, and the blocked base-to-salt mappings stay unproven.',
-    toEnable: 'Add both repository secrets. The key must be the Supabase service role key, which drx_v3_service_ingestion_grants grants insert and update on the two provenance tables only.',
+    toEnable: 'Add the URL and the service role key as GitHub Actions repository secrets. Vercel environment variables are not enough: GitHub Actions cannot read them, so a value set only in Vercel leaves this job with nothing. drx_v3_service_ingestion_grants limits that key to insert and update on the two provenance tables.',
   }, null, 2));
   process.exit(0);
 }
-if (!dryRun && (!url.startsWith('https://'))) {
-  fail('MEDINDEX_SUPABASE_URL must be an https URL.');
+if (!dryRun && !url.startsWith('https://')) {
+  // Do not name one variable here: the value may have arrived under any of the
+  // accepted names, and naming the wrong one sends the reader to the wrong
+  // setting.
+  fail('The configured Supabase URL must be https. Check whichever of MEDINDEX_SUPABASE_URL or SUPABASE_URL is set.');
 }
 
 if (!fs.existsSync(indexPath)) fail(`extraction index not found: ${indexPath}`);

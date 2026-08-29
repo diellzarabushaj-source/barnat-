@@ -55,22 +55,35 @@ function run(env) {
 
 // No credentials: skip, exit 0, and say why. Failing here would paint every
 // archive run red over a missing setting.
-const skipped = run({ MEDINDEX_SUPABASE_URL: '', MEDINDEX_SUPABASE_SECRET_KEY: '' });
+const BLANK = {
+  MEDINDEX_SUPABASE_URL: '', SUPABASE_URL: '',
+  MEDINDEX_SUPABASE_SECRET_KEY: '', SUPABASE_SECRET_KEY: '',
+  MEDINDEX_SUPABASE_SERVICE_ROLE_KEY: '', SUPABASE_SERVICE_ROLE_KEY: '',
+};
+
+const skipped = run(BLANK);
 assert.equal(skipped.code, 0, 'a missing service key must not fail the archive run.');
 const skipReport = JSON.parse(skipped.out);
 assert.equal(skipReport.skipped, true);
-assert.match(skipReport.reason, /not configured/);
 assert.ok(skipReport.effect && skipReport.toEnable,
   'a skip must state its consequence and how to enable it, or the gap goes invisible again.');
+assert.match(skipReport.toEnable, /Vercel environment variables are not enough/,
+  'the skip must warn that a value set only in Vercel is invisible to Actions.');
+assert.ok(Array.isArray(skipReport.checked) && skipReport.checked.length >= 4,
+  'the skip must list the names it looked for, so a naming mismatch is diagnosable.');
 
-// Credentials present but wrong: fail. A configured-and-broken ingest is a real
-// error and must not be swallowed by the same path as "not configured".
-const rejected = run({
-  MEDINDEX_SUPABASE_URL: 'http://insecure.example',
-  MEDINDEX_SUPABASE_SECRET_KEY: 'present',
-});
-assert.equal(rejected.code, 1, 'a configured but invalid endpoint must fail.');
-assert.match(rejected.out, /must be an https URL/);
+// Either naming must work. The project uses MEDINDEX_SUPABASE_* in CI and bare
+// SUPABASE_* elsewhere, and a value spelled the other way must not read as
+// missing. Reaching the https check proves the credentials were found.
+for (const [label, env] of [
+  ['MEDINDEX naming', { ...BLANK, MEDINDEX_SUPABASE_URL: 'http://insecure.example', MEDINDEX_SUPABASE_SECRET_KEY: 'present' }],
+  ['bare naming', { ...BLANK, SUPABASE_URL: 'http://insecure.example', SUPABASE_SECRET_KEY: 'present' }],
+  ['service role naming', { ...BLANK, SUPABASE_URL: 'http://insecure.example', SUPABASE_SERVICE_ROLE_KEY: 'present' }],
+]) {
+  const rejected = run(env);
+  assert.equal(rejected.code, 1, `${label}: a configured but invalid endpoint must fail, not skip.`);
+  assert.match(rejected.out, /must be https/, `${label}: credentials must have been found.`);
+}
 
 // The workflow must keep the service key away from the job that parses
 // untrusted documents.
