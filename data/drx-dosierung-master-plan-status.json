@@ -1,6 +1,6 @@
 {
   "schemaVersion": "drx-dosierung-master-plan-status-v1",
-  "updatedAt": "2026-08-29T12:09:11.371Z",
+  "updatedAt": "2026-08-29T12:23:48.460Z",
   "officialPlan": "DRx Dosierung phases 0-32",
   "databaseBlocker": {
     "active": true,
@@ -401,50 +401,67 @@
     {
       "id": 18,
       "name": "Pediatric Core",
-      "status": "FOUNDATION_COMPLETE_REPO",
+      "status": "PROVENANCE_HARDENED_REPO_LIVE_VALIDATION_BLOCKED",
       "evidence": [
         "pediatric dosage handlers/calculator",
-        "data/drx-pediatric-core-v1.json"
+        "data/drx-pediatric-core-v1.json",
+        "data/drx-pediatric-core-v1.json hardened: verified rules require snapshot=evidence hash + exact SmPC 4.2 SHA-256",
+        "missing required pediatric input remains fail-closed"
       ],
-      "next": "rebase pediatric calculator on sourced normalized V3 rules"
+      "next": "validate pediatric rule/calculator cases only after live V3 source/binding persistence; no production promotion from repo-only fixtures"
     },
     {
       "id": 19,
       "name": "Adult Core",
-      "status": "FOUNDATION_COMPLETE_REPO",
+      "status": "PROVENANCE_HARDENED_REPO_LIVE_VALIDATION_BLOCKED",
       "evidence": [
         "adult dosage handlers",
-        "data/drx-adult-core-v1.json"
+        "data/drx-adult-core-v1.json",
+        "data/drx-adult-core-v1.json hardened: verified rules require snapshot=evidence hash + exact SmPC 4.2 SHA-256",
+        "adult modifier/adjustment inputs remain fail-closed"
       ],
-      "next": "rebase adult calculator on sourced normalized V3 rules"
+      "next": "validate adult fixed/weight/interval rules against live V3 rows after Phase14/15-16 recovery"
     },
     {
       "id": 20,
       "name": "Renal",
-      "status": "FOUNDATION_COMPLETE_REPO",
+      "status": "RUNTIME_AND_PUBLICATION_GATES_HARDENED_REPO_LIVE_DATA_BLOCKED",
       "evidence": [
         "renal gates exist in some dose rules",
-        "data/drx-renal-adjustment-model-v1.json"
+        "data/drx-renal-adjustment-model-v1.json",
+        "lib/dose-adjustment-engine.js requires exact 4.2 SHA-256, snapshot=evidence hash and reviewer audit for verified renal adjustments",
+        "V3 renal table pins source_section_sha256 + source version/date",
+        "renal verified-only RLS revalidates official snapshot and exact extracted 4.2 hash",
+        "rule publication/runtime is blocked when renal_adjustment_required=true but no provenance-valid verified renal adjustment exists",
+        "RPC and multi-read fallback return only provenance-valid renal adjustments"
       ],
-      "next": "populate sourced renal adjustment rows after live V3 persistence"
+      "next": "populate and clinically validate live renal adjustment rows after V3 apply; test CrCl/eGFR/dialysis without cross-inference"
     },
     {
       "id": 21,
       "name": "Hepatic",
-      "status": "FOUNDATION_COMPLETE_REPO",
+      "status": "RUNTIME_AND_PUBLICATION_GATES_HARDENED_REPO_LIVE_DATA_BLOCKED",
       "evidence": [
-        "data/drx-hepatic-adjustment-model-v1.json"
+        "data/drx-hepatic-adjustment-model-v1.json",
+        "lib/dose-adjustment-engine.js requires exact 4.2 SHA-256, snapshot=evidence hash and reviewer audit for verified hepatic adjustments",
+        "V3 hepatic table pins source_section_sha256 + source version/date",
+        "hepatic verified-only RLS revalidates official snapshot and exact extracted 4.2 hash",
+        "rule publication/runtime is blocked when hepatic_adjustment_required=true but no provenance-valid verified hepatic adjustment exists",
+        "RPC and multi-read fallback return only provenance-valid hepatic adjustments"
       ],
-      "next": "populate sourced hepatic adjustment rows after live V3 persistence"
+      "next": "populate and clinically validate live hepatic rows after V3 apply; never infer Child-Pugh from textual impairment without explicit source"
     },
     {
       "id": 22,
       "name": "High-risk Drugs",
-      "status": "FOUNDATION_COMPLETE_REPO",
+      "status": "PROVENANCE_AND_MANUAL_REVIEW_HARDENED_REPO_LIVE_DATA_BLOCKED",
       "evidence": [
-        "data/drx-high-risk-drug-framework-v1.json"
+        "data/drx-high-risk-drug-framework-v1.json",
+        "data/drx-high-risk-drug-framework-v1.json pinned to exact snapshot + SmPC 4.2 hash",
+        "high-risk adjustments inherit reviewer-audited renal/hepatic provenance gates",
+        "runtime provenance is revalidated before high-risk dose data can be consumed"
       ],
-      "next": "add class-specific sourced rules and mandatory manual review"
+      "next": "populate class-specific live high-risk rules only after V3 apply; mandatory manual clinical review stays required before publication"
     },
     {
       "id": 23,
