@@ -127,6 +127,331 @@
         "publishable": false,
         "reconciliationRequired": true
       }
+    },
+    "paracetamol": {
+      "canonicalName": "Paracetamol",
+      "canonicalKey": "paracetamol",
+      "canonicalIdentityStatus": "pending_live_check",
+      "discoveryStatus": "batch1_official_source_discovered",
+      "preferredSourceTier": "EMC",
+      "candidates": [
+        {
+          "sourceKey": "emc-101491-smpc",
+          "url": "https://www.medicines.org.uk/emc/product/101491/smpc",
+          "tier": "EMC",
+          "documentType": "SmPC",
+          "productName": "Paracetamol 500mg Tablets",
+          "formulation": "tablet",
+          "route": "PO",
+          "strength": "500 mg",
+          "documentDate": "2025-10-24",
+          "hasDoseSection": true,
+          "sectionsExpected": [
+            "4.1",
+            "4.2",
+            "4.3",
+            "4.4",
+            "4.5",
+            "4.6",
+            "4.7",
+            "4.8",
+            "4.9"
+          ],
+          "productSpecific": true,
+          "substanceMatch": true,
+          "productMatch": true,
+          "status": "discovered"
+        }
+      ]
+    },
+    "amoxicillin": {
+      "canonicalName": "Amoxicillin",
+      "canonicalKey": "amoxicillin",
+      "canonicalIdentityStatus": "pending_live_check",
+      "discoveryStatus": "batch1_official_source_discovered",
+      "preferredSourceTier": "EMC",
+      "candidates": [
+        {
+          "sourceKey": "emc-10638-smpc",
+          "url": "https://www.medicines.org.uk/emc/product/10638/smpc",
+          "tier": "EMC",
+          "documentType": "SmPC",
+          "productName": "Amoxicillin 500 mg Capsules",
+          "formulation": "capsule",
+          "route": "PO",
+          "strength": "500 mg",
+          "documentDate": "2026-03-02",
+          "hasDoseSection": true,
+          "sectionsExpected": [
+            "4.1",
+            "4.2",
+            "4.3",
+            "4.4",
+            "4.5",
+            "4.6",
+            "4.7",
+            "4.8",
+            "4.9"
+          ],
+          "productSpecific": true,
+          "substanceMatch": true,
+          "productMatch": true,
+          "status": "discovered"
+        }
+      ]
+    },
+    "amoxicillin-clavulanic-acid": {
+      "canonicalName": "Amoxicillin / clavulanic acid",
+      "canonicalKey": "amoxicillin-clavulanic-acid",
+      "canonicalIdentityStatus": "pending_live_check",
+      "discoveryStatus": "batch1_official_source_discovered",
+      "preferredSourceTier": "EMC",
+      "candidates": [
+        {
+          "sourceKey": "emc-4347-smpc",
+          "url": "https://www.medicines.org.uk/emc/product/4347/smpc",
+          "tier": "EMC",
+          "documentType": "SmPC",
+          "productName": "Co-amoxiclav 500mg /125 mg film-coated Tablets",
+          "formulation": "film-coated tablet",
+          "route": "PO",
+          "strength": "500 mg/125 mg",
+          "documentDate": "2026-01-20",
+          "hasDoseSection": true,
+          "sectionsExpected": [
+            "4.1",
+            "4.2",
+            "4.3",
+            "4.4",
+            "4.5",
+            "4.6",
+            "4.7",
+            "4.8",
+            "4.9"
+          ],
+          "productSpecific": true,
+          "substanceMatch": true,
+          "productMatch": true,
+          "status": "discovered",
+          "combination": true
+        }
+      ]
+    },
+    "azithromycin": {
+      "canonicalName": "Azithromycin",
+      "canonicalKey": "azithromycin",
+      "canonicalIdentityStatus": "pending_live_check",
+      "discoveryStatus": "batch1_official_source_discovered",
+      "preferredSourceTier": "EMC",
+      "candidates": [
+        {
+          "sourceKey": "emc-6541-smpc",
+          "url": "https://www.medicines.org.uk/emc/product/6541/smpc",
+          "tier": "EMC",
+          "documentType": "SmPC",
+          "productName": "Azithromycin 500mg Tablets",
+          "formulation": "film-coated tablet",
+          "route": "PO",
+          "strength": "500 mg",
+          "documentDate": "2026-04-30",
+          "hasDoseSection": true,
+          "sectionsExpected": [
+            "4.1",
+            "4.2",
+            "4.3",
+            "4.4",
+            "4.5",
+            "4.6",
+            "4.7",
+            "4.8",
+            "4.9"
+          ],
+          "productSpecific": true,
+          "substanceMatch": true,
+          "productMatch": true,
+          "status": "discovered"
+        }
+      ]
+    },
+    "metformin": {
+      "canonicalName": "Metformin",
+      "canonicalKey": "metformin",
+      "canonicalIdentityStatus": "pending_live_check",
+      "discoveryStatus": "batch1_official_source_discovered",
+      "preferredSourceTier": "EMC",
+      "candidates": [
+        {
+          "sourceKey": "emc-100082-smpc",
+          "url": "https://www.medicines.org.uk/emc/product/100082/smpc",
+          "tier": "EMC",
+          "documentType": "SmPC",
+          "productName": "Metformin 1000 mg film-coated tablets",
+          "formulation": "film-coated tablet",
+          "route": "PO",
+          "strength": "1000 mg",
+          "documentDate": "2025-09-08",
+          "hasDoseSection": true,
+          "sectionsExpected": [
+            "4.1",
+            "4.2",
+            "4.3",
+            "4.4",
+            "4.5",
+            "4.6",
+            "4.7",
+            "4.8",
+            "4.9"
+          ],
+          "productSpecific": true,
+          "substanceMatch": true,
+          "productMatch": true,
+          "status": "discovered"
+        }
+      ]
+    },
+    "enalapril": {
+      "canonicalName": "Enalapril",
+      "canonicalKey": "enalapril",
+      "canonicalIdentityStatus": "pending_live_check",
+      "discoveryStatus": "batch1_official_source_discovered",
+      "preferredSourceTier": "EMC",
+      "candidates": [
+        {
+          "sourceKey": "emc-2672-smpc",
+          "url": "https://www.medicines.org.uk/emc/product/2672/smpc",
+          "tier": "EMC",
+          "documentType": "SmPC",
+          "productName": "Enalapril Maleate Tablets 10 mg",
+          "formulation": "tablet",
+          "route": "PO",
+          "strength": "10 mg",
+          "documentDate": "2026-02-05",
+          "hasDoseSection": true,
+          "sectionsExpected": [
+            "4.1",
+            "4.2",
+            "4.3",
+            "4.4",
+            "4.5",
+            "4.6",
+            "4.7",
+            "4.8",
+            "4.9"
+          ],
+          "productSpecific": true,
+          "substanceMatch": true,
+          "productMatch": true,
+          "status": "discovered"
+        }
+      ]
+    },
+    "omeprazole": {
+      "canonicalName": "Omeprazole",
+      "canonicalKey": "omeprazole",
+      "canonicalIdentityStatus": "pending_live_check",
+      "discoveryStatus": "batch1_official_source_discovered",
+      "preferredSourceTier": "EMC",
+      "candidates": [
+        {
+          "sourceKey": "emc-4895-smpc",
+          "url": "https://www.medicines.org.uk/emc/product/4895/smpc",
+          "tier": "EMC",
+          "documentType": "SmPC",
+          "productName": "Omeprazole 20mg Capsules",
+          "formulation": "gastro-resistant capsule",
+          "route": "PO",
+          "strength": "20 mg",
+          "documentDate": "2024-07-25",
+          "hasDoseSection": true,
+          "sectionsExpected": [
+            "4.1",
+            "4.2",
+            "4.3",
+            "4.4",
+            "4.5",
+            "4.6",
+            "4.7",
+            "4.8",
+            "4.9"
+          ],
+          "productSpecific": true,
+          "substanceMatch": true,
+          "productMatch": true,
+          "status": "discovered"
+        }
+      ]
+    },
+    "salbutamol": {
+      "canonicalName": "Salbutamol",
+      "canonicalKey": "salbutamol",
+      "canonicalIdentityStatus": "pending_live_check",
+      "discoveryStatus": "batch1_official_source_discovered",
+      "preferredSourceTier": "EMC",
+      "candidates": [
+        {
+          "sourceKey": "emc-6339-smpc",
+          "url": "https://www.medicines.org.uk/emc/product/6339/smpc",
+          "tier": "EMC",
+          "documentType": "SmPC",
+          "productName": "Easyhaler Salbutamol 100mcg",
+          "formulation": "inhalation powder",
+          "route": "INHALATION",
+          "strength": "100 micrograms/actuation",
+          "documentDate": "2025-11-18",
+          "hasDoseSection": true,
+          "sectionsExpected": [
+            "4.1",
+            "4.2",
+            "4.3",
+            "4.4",
+            "4.5",
+            "4.6",
+            "4.7",
+            "4.8",
+            "4.9"
+          ],
+          "productSpecific": true,
+          "substanceMatch": true,
+          "productMatch": true,
+          "status": "discovered"
+        }
+      ]
+    },
+    "cefuroxime": {
+      "canonicalName": "Cefuroxime",
+      "canonicalKey": "cefuroxime",
+      "canonicalIdentityStatus": "pending_live_check",
+      "discoveryStatus": "batch1_official_source_discovered",
+      "preferredSourceTier": "EMC",
+      "candidates": [
+        {
+          "sourceKey": "emc-9423-smpc",
+          "url": "https://www.medicines.org.uk/emc/product/9423/smpc",
+          "tier": "EMC",
+          "documentType": "SmPC",
+          "productName": "Cefuroxime 1.5g powder for solution for injection or infusion",
+          "formulation": "powder for solution for injection or infusion",
+          "route": "IV/IM",
+          "strength": "1.5 g",
+          "documentDate": "2025-08-19",
+          "hasDoseSection": true,
+          "sectionsExpected": [
+            "4.1",
+            "4.2",
+            "4.3",
+            "4.4",
+            "4.5",
+            "4.6",
+            "4.7",
+            "4.8",
+            "4.9"
+          ],
+          "productSpecific": true,
+          "substanceMatch": true,
+          "productMatch": true,
+          "status": "discovered"
+        }
+      ]
     }
   }
 }
