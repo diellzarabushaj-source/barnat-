@@ -1,0 +1,34 @@
+{
+  "schemaVersion": "drx-clinical-review-queue-policy-v1",
+  "status": "foundation_complete_repository",
+  "queueReasons": [
+    "source_conflict",
+    "high_risk_drug",
+    "schema_gap",
+    "legacy_mismatch",
+    "missing_required_input",
+    "ambiguous_indication",
+    "dose_basis_unclear",
+    "renal_or_hepatic_complexity"
+  ],
+  "priorities": [
+    "critical",
+    "high",
+    "normal",
+    "low"
+  ],
+  "terminalStates": [
+    "verified",
+    "rejected",
+    "superseded"
+  ],
+  "publicationRule": "only_verified_complete_sourced_rules_may_progress_to_publication_gate",
+  "requiredAuditFields": [
+    "reviewer_id",
+    "reviewed_at",
+    "decision",
+    "decision_reason",
+    "source_version"
+  ],
+  "next": "persist queue table/view in additive V3 when database gateway returns"
+}
