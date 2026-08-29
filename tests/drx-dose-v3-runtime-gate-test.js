@@ -19,11 +19,21 @@ assert.equal(
 assert.equal(Gate.validateV3Payload({
   schemaVersion:'dose-product-fast-path-v3',
   meta:{failClosed:true,publishedOnly:true,officialVerifiedOnly:true},
-  product:{productKey:'p1',rules:[{source:{snapshotId:'a'.repeat(64),evidenceHash:'b'.repeat(64),section:'4.2'}}]}
+  product:{productKey:'p1',rules:[{source:{snapshotId:'a'.repeat(64),evidenceHash:'a'.repeat(64),section:'4.2',documentDate:'2026-08-27'}}]}
 }),true);
 assert.equal(Gate.validateV3Payload({
   schemaVersion:'dose-product-fast-path-v3',
   meta:{failClosed:true,publishedOnly:true,officialVerifiedOnly:true},
   product:{productKey:'p1',rules:[{source:{snapshotId:'',evidenceHash:'bad',section:'4.2'}}]}
+}),false);
+assert.equal(Gate.validateV3Payload({
+  schemaVersion:'dose-product-fast-path-v3',
+  meta:{failClosed:true,publishedOnly:true,officialVerifiedOnly:true},
+  product:{productKey:'p1',rules:[{source:{snapshotId:'a'.repeat(64),evidenceHash:'b'.repeat(64),section:'4.2',documentDate:'2026-08-27'}}]}
+}),false);
+assert.equal(Gate.validateV3Payload({
+  schemaVersion:'dose-product-fast-path-v3',
+  meta:{failClosed:true,publishedOnly:true,officialVerifiedOnly:true},
+  product:{productKey:'p1',rules:[{source:{snapshotId:'a'.repeat(64),evidenceHash:'a'.repeat(64),section:'4.2'}}]}
 }),false);
 console.log('DRx V3 runtime gate contract passed.');
