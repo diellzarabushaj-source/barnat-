@@ -5,6 +5,7 @@ const DriveNeonSync = require('../lib/drive-neon-sync.js');
 const SyncOutbox = require('../lib/sync-outbox.js');
 const Administration = require('../administration-routes.js');
 const { neonRequest } = require('../lib/neon-data-api.js');
+const SystemHealthSnapshot = require('../lib/system-health-snapshot.js');
 
 const CURRENT_DOSAGE_SPREADSHEET_ID = '17cuXg5qORIIWkvAxLZ7uz2FMmGvzwjr850cubUcIgLE';
 const LEGACY_DOSAGE_SPREADSHEET_ID = '1T7XsfkXLQfEomFL4DmXoA8PheiR6s3Qmu36hTqklOMo';
@@ -93,6 +94,7 @@ async function bootstrapSecret(req, res, payload) {
       prefer:'return=minimal',
     },
   );
+  await SystemHealthSnapshot.refreshBestEffort('drive-sync-bootstrap');
   return res.status(200).json({ ok:true, secret, owner:email, expires:'stored_by_apps_script_only' });
 }
 
@@ -255,10 +257,12 @@ module.exports = async function handler(req, res) {
     }
     if (action === 'ack_editor_updates') {
       const acknowledged = await SyncOutbox.acknowledge(payload.outboxIds);
+      await SystemHealthSnapshot.refreshBestEffort('drive-sync-ack');
       return res.status(200).json({ ok:true, acknowledged });
     }
     if (action === 'fail_editor_updates') {
       const failed = await SyncOutbox.fail(payload.outboxIds, payload.error);
+      await SystemHealthSnapshot.refreshBestEffort('drive-sync-fail');
       return res.status(200).json({ ok:true, failed });
     }
 
@@ -271,9 +275,11 @@ module.exports = async function handler(req, res) {
       const result = await DriveNeonSync.handle(req, res);
       const successful = Number(res.statusCode || 200) >= 200 && Number(res.statusCode || 200) < 300;
       await setCurrentSourceStatus(payload, successful ? 'synced' : 'failed', successful ? null : 'Sinkronizimi u refuzua nga API-ja.');
+      await SystemHealthSnapshot.refreshBestEffort('drive-sync-complete');
       return result;
     } catch (error) {
       await setCurrentSourceStatus(payload, 'failed', error.message).catch(() => {});
+      await SystemHealthSnapshot.refreshBestEffort('drive-sync-error');
       throw error;
     } finally {
       req.body = previousBody;
