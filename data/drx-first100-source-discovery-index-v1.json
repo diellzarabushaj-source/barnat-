@@ -1,19 +1,19 @@
 {
   "schemaVersion": "drx-first100-source-discovery-index-v1",
-  "generatedAt": "2026-08-29T10:13:07.905Z",
+  "generatedAt": "2026-08-29T10:16:27.485Z",
   "first100Count": 100,
   "canonicalReviewRequired": 13,
   "sourceDiscoveryEligible": 89,
-  "verifiedProductSpecific": 77,
-  "verifiedCanonicalSubstances": 77,
+  "verifiedProductSpecific": 78,
+  "verifiedCanonicalSubstances": 78,
   "sourceAuthorityCounts": {
     "EMC": 55,
     "AEMPS_CIMA": 12,
-    "EU_NATIONAL": 10
+    "EU_NATIONAL": 11
   },
   "productSelectionRequired": 1,
-  "eligibleRemaining": 12,
-  "sourceLookupRemaining": 11,
+  "eligibleRemaining": 11,
+  "sourceLookupRemaining": 10,
   "issueCount": 0,
   "complete": false,
   "repositoryComplete": false,
@@ -1785,6 +1785,46 @@
       ],
       "publicationAllowed": false,
       "wave": "drx-first100-source-discovery-wave-l-v1.json"
+    },
+    {
+      "canonicalKey": "cinchocainepolicresulen",
+      "canonicalName": "Cinchocaine + Policresulen",
+      "status": "verified_product_specific",
+      "sourceTier": "EU_NATIONAL",
+      "authority": "State Institute for Drug Control Slovakia (ŠÚKL)",
+      "sourceKey": "sukl-faktu-93128-spc-2024-05",
+      "url": "https://www.sukl.sk/hlavna-stranka-1/slovenska-verzia/pomocne-stranky/save-dokument?dok_id=828086&dok_sec=9e143c8e892e8794adff16711020b898&page_id=637",
+      "productRegistryUrl": "https://www.sukl.sk/faktu-capiky-93128",
+      "productName": "FAKTU čapíky 100 mg/2,5 mg",
+      "registrationNumber": "23/0126/87-CS",
+      "atcCode": "C05AD04",
+      "documentDate": "2024-05",
+      "documentDatePrecision": "month",
+      "section41Present": true,
+      "section42Present": true,
+      "currentRegistryCrosscheck": {
+        "checkedDate": "2026-08-29",
+        "activeSubstances": [
+          "polykrezulén",
+          "cinchokaíniumchlorid"
+        ],
+        "strengths": [
+          "100 mg",
+          "2.5 mg"
+        ],
+        "route": "rectal",
+        "registrationStatus": "D - registration without expiry restriction",
+        "spcLabel": "SPC_FAKTU čapíky_05.2024.pdf"
+      },
+      "reviewFlags": [
+        "fixed_combination",
+        "rectal_route_specific",
+        "adult_dosing_only",
+        "pediatric_safety_efficacy_not_established",
+        "clinical_review_required"
+      ],
+      "publicationAllowed": false,
+      "wave": "drx-first100-source-discovery-wave-m-v1.json"
     }
   ]
 }

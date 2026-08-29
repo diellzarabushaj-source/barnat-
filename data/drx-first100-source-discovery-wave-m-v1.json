@@ -1,0 +1,51 @@
+{
+  "schemaVersion": "drx-first100-source-discovery-wave-m-v1",
+  "generatedAt": "2026-08-29T10:16:27.485Z",
+  "sourcePolicy": "data/drx-dose-source-policy-v1.json",
+  "verificationMethod": "live_sukl_product_registry_plus_official_spc_sections_4_1_4_2",
+  "publicationAllowed": false,
+  "verifiedProductSpecificCount": 1,
+  "sectionsPendingCount": 0,
+  "productSelectionRequiredCount": 0,
+  "rows": [
+    {
+      "canonicalKey": "cinchocainepolicresulen",
+      "canonicalName": "Cinchocaine + Policresulen",
+      "status": "verified_product_specific",
+      "sourceTier": "EU_NATIONAL",
+      "authority": "State Institute for Drug Control Slovakia (ŠÚKL)",
+      "sourceKey": "sukl-faktu-93128-spc-2024-05",
+      "url": "https://www.sukl.sk/hlavna-stranka-1/slovenska-verzia/pomocne-stranky/save-dokument?dok_id=828086&dok_sec=9e143c8e892e8794adff16711020b898&page_id=637",
+      "productRegistryUrl": "https://www.sukl.sk/faktu-capiky-93128",
+      "productName": "FAKTU čapíky 100 mg/2,5 mg",
+      "registrationNumber": "23/0126/87-CS",
+      "atcCode": "C05AD04",
+      "documentDate": "2024-05",
+      "documentDatePrecision": "month",
+      "section41Present": true,
+      "section42Present": true,
+      "currentRegistryCrosscheck": {
+        "checkedDate": "2026-08-29",
+        "activeSubstances": [
+          "polykrezulén",
+          "cinchokaíniumchlorid"
+        ],
+        "strengths": [
+          "100 mg",
+          "2.5 mg"
+        ],
+        "route": "rectal",
+        "registrationStatus": "D - registration without expiry restriction",
+        "spcLabel": "SPC_FAKTU čapíky_05.2024.pdf"
+      },
+      "reviewFlags": [
+        "fixed_combination",
+        "rectal_route_specific",
+        "adult_dosing_only",
+        "pediatric_safety_efficacy_not_established",
+        "clinical_review_required"
+      ],
+      "publicationAllowed": false
+    }
+  ]
+}

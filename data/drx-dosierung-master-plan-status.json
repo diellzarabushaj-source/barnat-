@@ -1,6 +1,6 @@
 {
   "schemaVersion": "drx-dosierung-master-plan-status-v1",
-  "updatedAt": "2026-08-29T10:13:07.905Z",
+  "updatedAt": "2026-08-29T10:16:27.485Z",
   "officialPlan": "DRx Dosierung phases 0-32",
   "databaseBlocker": {
     "active": true,
@@ -55,7 +55,7 @@
     {
       "id": 3,
       "name": "Source Discovery",
-      "status": "IN_PROGRESS_FIRST100_77_VERIFIED_EFFECTIVE_89",
+      "status": "IN_PROGRESS_FIRST100_78_VERIFIED_EFFECTIVE_89",
       "evidence": [
         "data/drx-dose-source-map-v1.json",
         "ibuprofen pilot with official eMC oral+IV SmPCs",
@@ -104,9 +104,12 @@
         "first-100 verified product-specific source total: 76",
         "data/drx-first100-source-discovery-wave-l-v1.json",
         "Wave L: SUPRASTIN tabletta (Chloropyramine), official Hungarian OGYÉI registry + current SmPC sections 4.1/4.2, text revision 2023-12-19",
-        "first-100 verified product-specific source total: 77"
+        "first-100 verified product-specific source total: 77",
+        "data/drx-first100-source-discovery-wave-m-v1.json",
+        "Wave M: FAKTU čapíky (Cinchocaine + Policresulen), current ŠÚKL registry + official SPC 05/2024 sections 4.1/4.2",
+        "first-100 verified product-specific source total: 78"
       ],
-      "next": "source-discover 11 remaining exact targets; resolve Alteplase product selection separately; keep publication fail-closed"
+      "next": "source-discover 10 remaining exact targets; resolve Alteplase product selection separately; keep publication fail-closed"
     },
     {
       "id": 4,
@@ -285,7 +288,7 @@
     {
       "id": 17,
       "name": "Bulk Import",
-      "status": "FIRST100_77_OF_89_SOURCE_DISCOVERY_PRODUCTION_PROVENANCE_BLOCKED",
+      "status": "FIRST100_78_OF_89_SOURCE_DISCOVERY_PRODUCTION_PROVENANCE_BLOCKED",
       "evidence": [
         "data/drx-bulk-import-policy-v1.json",
         "scripts/build-drx-first100-discovery-queue.js",
@@ -309,9 +312,10 @@
         "productionDiscoveryAllowed=false until Supabase canonical export provenance passes",
         "75/89 effective canonical targets have product-specific authoritative sources",
         "76/89 effective canonical targets have product-specific authoritative sources",
-        "77/89 effective canonical targets have product-specific authoritative sources"
+        "77/89 effective canonical targets have product-specific authoritative sources",
+        "78/89 effective canonical targets have product-specific authoritative sources"
       ],
-      "next": "complete 11 remaining source lookups + 1 Alteplase product selection; production import still requires hash-bound Supabase canonical export provenance"
+      "next": "complete 10 remaining source lookups + 1 Alteplase product selection; production import still requires hash-bound Supabase canonical export provenance"
     },
     {
       "id": 18,
@@ -543,7 +547,7 @@
     "first100ProductionEligibleRows": 0,
     "first100ProductionDiscoveryAllowed": false,
     "first100SourceDiscoveryEligible": 89,
-    "first100VerifiedProductSources": 77,
+    "first100VerifiedProductSources": 78,
     "first100ProductSelectionRequired": 1,
     "legacyMirrorPrecheck": {
       "present": 2,
@@ -552,12 +556,12 @@
       "bindings": 4,
       "liveCompared": false
     },
-    "first100SourceDiscoveryRemaining": 11,
+    "first100SourceDiscoveryRemaining": 10,
     "first100SourceSectionVerificationPending": 0,
     "first100ProductSelectionPending": 1,
     "first100CanonicalReviewResolved": 13,
     "first100CanonicalReviewPending": 0,
     "first100EffectiveSourceDiscoveryEligible": 89,
-    "first100SourceLookupRemaining": 11
+    "first100SourceLookupRemaining": 10
   }
 }
