@@ -1,0 +1,13 @@
+'use strict';
+const assert=require('node:assert/strict');
+const Audit=require('../scripts/audit-drx-production-release.js');
+const r=Audit.audit();
+assert.equal(r.schemaVersion,'drx-production-release-readiness-v1');
+assert.equal(r.releaseReady,false);
+assert.equal(r.publicationAllowed,false);
+assert.ok(r.blockers.includes('supabase_v3_not_applied'));
+assert.ok(r.blockers.includes('batch2_archive_hashes_incomplete'));
+assert.equal(r.phases.apiFastPath,'implemented_v2_v3_gate_ready');
+assert.equal(r.phases.doseCore,'implemented_shared_core');
+assert.equal(r.phases.cacheOffline,'implemented_indexeddb_etag');
+console.log('DRx final release gate correctly remains fail-closed.');
