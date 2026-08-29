@@ -239,9 +239,8 @@ async function main(){
     await sleep(30);
   });
 
-  const rows=[]; let i=0;
-  for(const target of targets){
-    i++;
+  let matchedDone=0;
+  const rows=await mapLimit(targets,6,async target=>{
     const atc=firstAtc(target.atcCode);
     const cached=byAtc.get(atc);
     let candidates=Array.isArray(cached)?cached:(cached?.items||[]);
@@ -264,7 +263,10 @@ async function main(){
     const s2=sections?.['2']||'';
     const s41=sections?.['4.1']||'';
     const s42=sections?.['4.2']||'';
-    rows.push({
+    matchedDone++;
+    if(matchedDone%50===0 || matchedDone===targets.length) console.log('Matched',matchedDone,'/',targets.length);
+    await sleep(30);
+    return {
       dedupeKey:target.dedupeKey,
       activeSubstance:target.activeSubstance,
       atcCode:target.atcCode,
@@ -289,10 +291,8 @@ async function main(){
       matching:best?.meta||null,
       error,
       publicationAllowed:false
-    });
-    if(i%50===0) console.log('Matched',i,'/',targets.length);
-    await sleep(40);
-  }
+    };
+  });
 
   const counts={};
   for(const r of rows) counts[r.matchStatus]=(counts[r.matchStatus]||0)+1;
