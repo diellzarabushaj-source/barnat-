@@ -1,6 +1,6 @@
 {
   "schemaVersion": "drx-dosierung-master-plan-status-v1",
-  "updatedAt": "2026-08-29T22:55:00+02:00",
+  "updatedAt": "2026-08-29T23:15:00+02:00",
   "officialPlan": "DRx Dosierung phases 0-32",
   "databaseBlocker": {
     "active": true,
@@ -184,7 +184,7 @@
     {
       "id": 16,
       "name": "Batch 2",
-      "status": "IN_PROGRESS_10_OF_25_LIVE_WEB_EVIDENCE",
+      "status": "IN_PROGRESS_15_OF_25_LIVE_WEB_EVIDENCE",
       "evidence": [
         "data/drx-dose-batch2-v1.json",
         "data/drx-dose-source-map-v1.json",
@@ -198,9 +198,11 @@
         "data/drx-batch2-live-evidence-wave1-v1.json",
         "data/drx-batch2-live-evidence-wave2-v1.json",
         "tests/drx-batch2-live-evidence-wave1-test.js",
-        "tests/drx-batch2-live-evidence-wave2-test.js"
+        "tests/drx-batch2-live-evidence-wave2-test.js",
+        "data/drx-batch2-live-evidence-wave3-v1.json",
+        "tests/drx-batch2-live-evidence-wave3-test.js"
       ],
-      "next": "continue live evidence waves 3-5, then obtain archive hashes for all 25 and normalize only review-cleared rules"
+      "next": "complete waves 4-5, then obtain hash-backed archive snapshots 25/25 and normalize only review-cleared rules"
     },
     {
       "id": 17,
@@ -365,7 +367,7 @@
   ],
   "currentExecution": {
     "phase": 16,
-    "objective": "Batch 2 now has live structured web evidence for 10/25 sources. Archive SHA-256 snapshots remain 0/25, so extracted/normalized coverage is not advanced. Continue waves 3-5 and preserve high-risk/review blockers.",
+    "objective": "Batch 2 live structured web evidence is 15/25. Archive SHA-256 snapshots remain 0/25; normalization and publication remain blocked until archive, product binding, safety and clinical review gates pass.",
     "pilot": "batch2-25",
     "repositoryBatch1Substances": 10,
     "repositoryBatch2Substances": 25,
@@ -378,6 +380,6 @@
     "clinicallyReviewedRules": 0,
     "publishedRules": 0,
     "publicationAllowed": false,
-    "webEvidenceStructuredSources": 10
+    "webEvidenceStructuredSources": 15
   }
 }
