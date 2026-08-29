@@ -1,6 +1,6 @@
 {
   "schemaVersion": "drx-dosierung-master-plan-status-v1",
-  "updatedAt": "2026-08-29T05:12:00+02:00",
+  "updatedAt": "2026-08-29T05:45:00+02:00",
   "officialPlan": "DRx Dosierung phases 0-32",
   "databaseBlocker": {
     "active": true,
@@ -184,9 +184,15 @@
     {
       "id": 16,
       "name": "Batch 2",
-      "status": "PENDING",
-      "evidence": [],
-      "next": "25-50 substances"
+      "status": "IN_PROGRESS_SOURCE_SET_COMPLETE",
+      "evidence": [
+        "data/drx-dose-batch2-v1.json",
+        "data/drx-dose-source-map-v1.json",
+        "scripts/build-drx-batch2-extraction-index.js",
+        "tests/drx-batch2-extraction-pipeline-test.js",
+        "25/25 authoritative Batch 2 sources mapped"
+      ],
+      "next": "execute archive/parser pipeline for all 25 sources, capture document versions, then normalize extracted dose candidates"
     },
     {
       "id": 17,
@@ -216,98 +222,111 @@
     {
       "id": 20,
       "name": "Renal",
-      "status": "PENDING_FORMAL",
+      "status": "FOUNDATION_COMPLETE_REPO",
       "evidence": [
-        "renal gates exist in some dose rules"
+        "renal gates exist in some dose rules",
+        "data/drx-renal-adjustment-model-v1.json"
       ],
-      "next": "formal CrCl/eGFR/dialysis adjustment model"
+      "next": "populate sourced renal adjustment rows after live V3 persistence"
     },
     {
       "id": 21,
       "name": "Hepatic",
-      "status": "PENDING_FORMAL",
-      "evidence": [],
-      "next": "formal Child-Pugh/hepatic adjustment model"
+      "status": "FOUNDATION_COMPLETE_REPO",
+      "evidence": [
+        "data/drx-hepatic-adjustment-model-v1.json"
+      ],
+      "next": "populate sourced hepatic adjustment rows after live V3 persistence"
     },
     {
       "id": 22,
       "name": "High-risk Drugs",
-      "status": "PENDING",
-      "evidence": [],
-      "next": "specialist rule framework"
+      "status": "FOUNDATION_COMPLETE_REPO",
+      "evidence": [
+        "data/drx-high-risk-drug-framework-v1.json"
+      ],
+      "next": "add class-specific sourced rules and mandatory manual review"
     },
     {
       "id": 23,
       "name": "Clinical Review Queue",
-      "status": "PENDING_FORMAL",
+      "status": "FOUNDATION_COMPLETE_REPO",
       "evidence": [
-        "review statuses exist"
+        "review statuses exist",
+        "data/drx-clinical-review-queue-policy-v1.json"
       ],
-      "next": "central conflict/high-risk review queue"
+      "next": "persist centralized review queue when database access returns"
     },
     {
       "id": 24,
       "name": "Publication Gate",
-      "status": "PARTIAL_EXISTING",
+      "status": "FOUNDATION_COMPLETE_REPO",
       "evidence": [
         "20260829002018_harden_dose_rule_publication_gate.sql",
-        "published-only runtime"
+        "published-only runtime",
+        "data/drx-publication-gate-v3-policy.json"
       ],
-      "next": "extend gate to provenance/completeness/confidence V3"
+      "next": "enforce V3 publication conditions in database/runtime"
     },
     {
       "id": 25,
       "name": "API Fast Path",
-      "status": "PARTIAL_EXISTING",
+      "status": "FOUNDATION_COMPLETE_REPO",
       "evidence": [
-        "targeted dosage API routes"
+        "targeted dosage API routes",
+        "data/drx-api-fast-path-contract-v1.json"
       ],
-      "next": "1 product -> tiny rule payload from V3"
+      "next": "bind product-scoped endpoint to V3"
     },
     {
       "id": 26,
       "name": "Dose Core Engine",
-      "status": "PARTIAL_EXISTING",
+      "status": "FOUNDATION_COMPLETE_REPO",
       "evidence": [
-        "dosage-engine.js and calculators"
+        "dosage-engine.js and calculators",
+        "data/drx-dose-core-contract-v1.json"
       ],
-      "next": "consolidate deterministic shared engine"
+      "next": "consolidate runtime calculators behind shared deterministic core"
     },
     {
       "id": 27,
       "name": "Cache / Offline",
-      "status": "PARTIAL_EXISTING",
+      "status": "FOUNDATION_COMPLETE_REPO",
       "evidence": [
-        "ETag/cache patterns exist"
+        "ETag/cache patterns exist",
+        "data/drx-dose-cache-policy-v1.json"
       ],
-      "next": "versioned dose cache only after V3 API"
+      "next": "activate versioned cache after V3 API"
     },
     {
       "id": 28,
       "name": "Frontend",
-      "status": "PARTIAL_EXISTING",
+      "status": "FOUNDATION_COMPLETE_REPO",
       "evidence": [
-        "registry dose calculator UI"
+        "registry dose calculator UI",
+        "data/drx-frontend-flow-contract-v1.json"
       ],
-      "next": "final Bar -> Indikacion -> inputs -> Doza flow after backend stabilizes"
+      "next": "bind final product-indication-input-dose flow after backend stabilization"
     },
     {
       "id": 29,
       "name": "Automated QA",
-      "status": "PARTIAL_EXISTING",
+      "status": "FOUNDATION_COMPLETE_REPO",
       "evidence": [
-        "dose tests and Playwright specs"
+        "dose tests and Playwright specs",
+        "data/drx-qa-coverage-contract-v1.json"
       ],
-      "next": "golden clinical cases tied to sourced V3 rules"
+      "next": "run sourced golden and browser cases after V3 rules exist"
     },
     {
       "id": 30,
       "name": "Coverage Dashboard",
-      "status": "PENDING_FORMAL",
+      "status": "FOUNDATION_COMPLETE_REPO",
       "evidence": [
-        "health/dashboard foundations"
+        "health/dashboard foundations",
+        "data/drx-qa-coverage-contract-v1.json"
       ],
-      "next": "live sourced/parsed/verified/published coverage"
+      "next": "materialize live source/parse/review/publication metrics"
     },
     {
       "id": 31,
@@ -327,11 +346,13 @@
     }
   ],
   "currentExecution": {
-    "phase": 15,
-    "objective": "Batch 1 repository work is 10/10 substances with 12 representative fail-closed rule candidates. Next required gate is live exact product binding and legacy comparison; publication remains disabled.",
-    "pilot": "batch1-10",
+    "phase": 16,
+    "objective": "Batch 2 source set is 25/25 mapped. Execute archive and SmPC section extraction next; live V3 persistence, exact product binding and legacy comparison remain blocked by the Supabase SQL gateway.",
+    "pilot": "batch2-25",
     "repositoryBatch1Substances": 10,
-    "representativeRuleCandidates": 12,
+    "repositoryBatch2Substances": 25,
+    "batch2MappedSources": 25,
+    "batch2ExtractedSources": 0,
     "liveBoundRules": 0,
     "publicationAllowed": false
   }
