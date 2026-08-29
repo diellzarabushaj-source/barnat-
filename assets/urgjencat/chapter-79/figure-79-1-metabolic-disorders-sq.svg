@@ -1,0 +1,33 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1600" height="1320" viewBox="0 0 1600 1320" role="img" aria-labelledby="title desc">
+  <title id="title">Qasja ndaj çrregullimeve metabolike të dyshuara</title>
+  <desc id="desc">Algoritëm i përkthyer në shqip nga Figura 79-1 e Tintinalli 8e.</desc>
+  <defs>
+    <marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse"><path d="M 0 0 L 10 5 L 0 10 z" fill="#171717"/></marker>
+    <style>
+      .txt{font-family:Arial,Helvetica,sans-serif;fill:#1f1f1f;font-size:34px;font-weight:500}
+      .small{font-family:Arial,Helvetica,sans-serif;fill:#1f1f1f;font-size:29px;font-weight:500}
+      .box{stroke-width:3;rx:8;ry:8}
+      .line{stroke:#171717;stroke-width:4;fill:none;marker-end:url(#arrow)}
+      .branch{stroke:#171717;stroke-width:4;fill:none}
+    </style>
+  </defs>
+  <rect width="1600" height="1320" fill="#fff"/>
+  <rect class="box" x="110" y="80" width="390" height="340" fill="#f6ddd2" stroke="#d98059"/>
+  <text class="txt" text-anchor="middle" x="305" y="145"><tspan x="305">Ushqyerje e dobët</tspan><tspan x="305" dy="46">Të vjella</tspan><tspan x="305" dy="72">Letargji</tspan><tspan x="305" dy="46">Konvulsione</tspan><tspan x="305" dy="46">Komë</tspan></text>
+  <rect class="box" x="700" y="80" width="780" height="340" fill="#f6ddd2" stroke="#d98059"/>
+  <text class="small" text-anchor="middle" x="1090" y="140"><tspan x="1090">Glukoza në gjak / Kalciumi / Amoniaku / pH / CO₂</tspan><tspan x="1090" dy="50">Ketonet në urinë</tspan><tspan x="1090" dy="84">Kriza mund të imitojë sepsën</tspan><tspan x="1090" dy="44">(merr kulturat përkatëse)</tspan></text>
+  <path class="line" d="M500 250 H700"/>
+  <rect class="box" x="70" y="620" width="510" height="350" fill="#eadcf0" stroke="#b171bf"/>
+  <text class="txt" text-anchor="middle" x="325" y="690"><tspan x="325">Glukoza në gjak, kalciumi</tspan><tspan x="325" dy="52">Amoniaku</tspan><tspan x="325" dy="52">pH, CO₂</tspan><tspan x="325" dy="82">Ketonet në urinë</tspan></text>
+  <path class="branch" d="M580 795 H690"/><path class="branch" d="M690 545 V1240"/>
+  <rect class="box" x="810" y="500" width="650" height="120" fill="#dceadd" stroke="#5a9b6f"/>
+  <text class="txt" text-anchor="middle" x="1135" y="550"><tspan x="1135">Hipoglikemi - sëmundje e</tspan><tspan x="1135" dy="44">depozitimit të glikogjenit</tspan></text><path class="line" d="M690 560 H810"/>
+  <rect class="box" x="810" y="650" width="650" height="120" fill="#dceadd" stroke="#5a9b6f"/>
+  <text class="txt" text-anchor="middle" x="1135" y="700"><tspan x="1135">Hiperamonemi - defekt i</tspan><tspan x="1135" dy="44">ciklit të uresë</tspan></text><path class="line" d="M690 710 H810"/>
+  <rect class="box" x="810" y="800" width="650" height="120" fill="#dceadd" stroke="#5a9b6f"/>
+  <text class="txt" text-anchor="middle" x="1135" y="850"><tspan x="1135">Hiperamonemi + acidozë</tspan><tspan x="1135" dy="44">Çrregullime të acideve organike</tspan></text><path class="line" d="M690 860 H810"/>
+  <rect class="box" x="810" y="950" width="650" height="145" fill="#dceadd" stroke="#5a9b6f"/>
+  <text class="small" text-anchor="middle" x="1135" y="995"><tspan x="1135">Amoniak normal + acidozë</tspan><tspan x="1135" dy="42">Aminoacidopati</tspan><tspan x="1135" dy="42">(p.sh. sëmundja e urinës me erë shurupi panje)</tspan></text><path class="line" d="M690 1022 H810"/>
+  <rect class="box" x="810" y="1130" width="650" height="125" fill="#dceadd" stroke="#5a9b6f"/>
+  <text class="small" text-anchor="middle" x="1135" y="1180"><tspan x="1135">+ Acidozë / - Ketone urinare</tspan><tspan x="1135" dy="44">Defekt i oksidimit të acideve yndyrore</tspan></text><path class="line" d="M690 1192 H810"/>
+</svg>
