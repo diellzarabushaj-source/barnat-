@@ -1,10 +1,11 @@
 {
   "schemaVersion": "drx-first100-canonical-quality-audit-v1",
-  "generatedAt": "2026-08-30T02:15:00+02:00",
+  "generatedAt": "2026-08-30T02:38:00+02:00",
   "total": 100,
   "canonicalReviewRequired": 13,
   "sourceDiscoveryEligible": 87,
-  "combinations": 57,
+  "combinations": 56,
+  "reviewedCoveredAliasExclusions": 3,
   "publicationAllowed": false,
   "rows": [
     {
@@ -86,31 +87,6 @@
     },
     {
       "ordinal": 4,
-      "sourceRow": 120,
-      "atcGroup": "B",
-      "atcDescription": "Gjaku dhe organet gjakformuese",
-      "atcCodes": "B01AC06",
-      "canonicalName": "Acetylsalicylic acid",
-      "canonicalKey": "acetylsalicylicacid",
-      "status": "source_discovery_pending",
-      "preferredSourceOrder": [
-        "EMA",
-        "EMC",
-        "AEMPS_CIMA",
-        "EU_OTHER",
-        "KOSOVO",
-        "MEDIATELY_CROSSCHECK",
-        "FALLBACK"
-      ],
-      "publicationAllowed": false,
-      "flags": [],
-      "componentCount": 1,
-      "combination": false,
-      "canonicalReviewRequired": false,
-      "sourceDiscoveryEligible": true
-    },
-    {
-      "ordinal": 5,
       "sourceRow": 293,
       "atcGroup": "C",
       "atcDescription": "Sistemi kardiovaskular",
@@ -135,7 +111,7 @@
       "sourceDiscoveryEligible": true
     },
     {
-      "ordinal": 6,
+      "ordinal": 5,
       "sourceRow": 327,
       "atcGroup": "D / J / S",
       "atcDescription": "Dermatologjikë / Antiinfektivë për përdorim sistemik / Organet shqisore",
@@ -160,7 +136,7 @@
       "sourceDiscoveryEligible": true
     },
     {
-      "ordinal": 7,
+      "ordinal": 6,
       "sourceRow": 294,
       "atcGroup": "C",
       "atcDescription": "Sistemi kardiovaskular",
@@ -185,7 +161,7 @@
       "sourceDiscoveryEligible": true
     },
     {
-      "ordinal": 8,
+      "ordinal": 7,
       "sourceRow": 317,
       "atcGroup": "D",
       "atcDescription": "Dermatologjikë",
@@ -210,7 +186,7 @@
       "sourceDiscoveryEligible": true
     },
     {
-      "ordinal": 9,
+      "ordinal": 8,
       "sourceRow": 365,
       "atcGroup": "D",
       "atcDescription": "Dermatologjikë",
@@ -235,7 +211,7 @@
       "sourceDiscoveryEligible": true
     },
     {
-      "ordinal": 10,
+      "ordinal": 9,
       "sourceRow": 364,
       "atcGroup": "D",
       "atcDescription": "Dermatologjikë",
@@ -260,7 +236,7 @@
       "sourceDiscoveryEligible": true
     },
     {
-      "ordinal": 11,
+      "ordinal": 10,
       "sourceRow": 200,
       "atcGroup": "C",
       "atcDescription": "Sistemi kardiovaskular",
@@ -285,7 +261,7 @@
       "sourceDiscoveryEligible": true
     },
     {
-      "ordinal": 12,
+      "ordinal": 11,
       "sourceRow": 225,
       "atcGroup": "C",
       "atcDescription": "Sistemi kardiovaskular",
@@ -310,7 +286,7 @@
       "sourceDiscoveryEligible": true
     },
     {
-      "ordinal": 13,
+      "ordinal": 12,
       "sourceRow": 186,
       "atcGroup": "C",
       "atcDescription": "Sistemi kardiovaskular",
@@ -335,7 +311,7 @@
       "sourceDiscoveryEligible": true
     },
     {
-      "ordinal": 14,
+      "ordinal": 13,
       "sourceRow": 167,
       "atcGroup": "B",
       "atcDescription": "Gjaku dhe organet gjakformuese",
@@ -362,7 +338,7 @@
       "sourceDiscoveryEligible": false
     },
     {
-      "ordinal": 15,
+      "ordinal": 14,
       "sourceRow": 168,
       "atcGroup": "B",
       "atcDescription": "Gjaku dhe organet gjakformuese",
@@ -389,7 +365,7 @@
       "sourceDiscoveryEligible": false
     },
     {
-      "ordinal": 16,
+      "ordinal": 15,
       "sourceRow": 169,
       "atcGroup": "B",
       "atcDescription": "Gjaku dhe organet gjakformuese",
@@ -416,7 +392,7 @@
       "sourceDiscoveryEligible": false
     },
     {
-      "ordinal": 17,
+      "ordinal": 16,
       "sourceRow": 170,
       "atcGroup": "B",
       "atcDescription": "Gjaku dhe organet gjakformuese",
@@ -444,7 +420,7 @@
       "sourceDiscoveryEligible": false
     },
     {
-      "ordinal": 18,
+      "ordinal": 17,
       "sourceRow": 334,
       "atcGroup": "D",
       "atcDescription": "Dermatologjikë",
@@ -469,7 +445,7 @@
       "sourceDiscoveryEligible": true
     },
     {
-      "ordinal": 19,
+      "ordinal": 18,
       "sourceRow": 89,
       "atcGroup": "A",
       "atcDescription": "Trakti alimentar dhe metabolizmi",
@@ -494,6 +470,31 @@
       "combination": true,
       "canonicalReviewRequired": true,
       "sourceDiscoveryEligible": false
+    },
+    {
+      "ordinal": 19,
+      "sourceRow": 419,
+      "atcGroup": "G",
+      "atcDescription": "Sistemi gjenitourinar dhe hormonet seksuale",
+      "atcCodes": "G04CA01",
+      "canonicalName": "Alfuzosin",
+      "canonicalKey": "alfuzosin",
+      "status": "source_discovery_pending",
+      "preferredSourceOrder": [
+        "EMA",
+        "EMC",
+        "AEMPS_CIMA",
+        "EU_OTHER",
+        "KOSOVO",
+        "MEDIATELY_CROSSCHECK",
+        "FALLBACK"
+      ],
+      "publicationAllowed": false,
+      "flags": [],
+      "componentCount": 1,
+      "combination": false,
+      "canonicalReviewRequired": false,
+      "sourceDiscoveryEligible": true
     },
     {
       "ordinal": 20,
@@ -2287,6 +2288,31 @@
     },
     {
       "ordinal": 91,
+      "sourceRow": 408,
+      "atcGroup": "G",
+      "atcDescription": "Sistemi gjenitourinar dhe hormonet seksuale",
+      "atcCodes": "G03GA08",
+      "canonicalName": "Choriogonadotropin alfa",
+      "canonicalKey": "choriogonadotropinalfa",
+      "status": "source_discovery_pending",
+      "preferredSourceOrder": [
+        "EMA",
+        "EMC",
+        "AEMPS_CIMA",
+        "EU_OTHER",
+        "KOSOVO",
+        "MEDIATELY_CROSSCHECK",
+        "FALLBACK"
+      ],
+      "publicationAllowed": false,
+      "flags": [],
+      "componentCount": 1,
+      "combination": false,
+      "canonicalReviewRequired": false,
+      "sourceDiscoveryEligible": true
+    },
+    {
+      "ordinal": 92,
       "sourceRow": 124,
       "atcGroup": "B",
       "atcDescription": "Gjaku dhe organet gjakformuese",
@@ -2311,7 +2337,7 @@
       "sourceDiscoveryEligible": true
     },
     {
-      "ordinal": 92,
+      "ordinal": 93,
       "sourceRow": 218,
       "atcGroup": "C",
       "atcDescription": "Sistemi kardiovaskular",
@@ -2336,7 +2362,7 @@
       "sourceDiscoveryEligible": true
     },
     {
-      "ordinal": 93,
+      "ordinal": 94,
       "sourceRow": 221,
       "atcGroup": "C",
       "atcDescription": "Sistemi kardiovaskular",
@@ -2361,7 +2387,7 @@
       "sourceDiscoveryEligible": true
     },
     {
-      "ordinal": 94,
+      "ordinal": 95,
       "sourceRow": 368,
       "atcGroup": "D / G / J",
       "atcDescription": "Dermatologjikë / Sistemi gjenitourinar dhe hormonet seksuale / Antiinfektivë për përdorim sistemik",
@@ -2386,7 +2412,7 @@
       "sourceDiscoveryEligible": true
     },
     {
-      "ordinal": 95,
+      "ordinal": 96,
       "sourceRow": 342,
       "atcGroup": "D",
       "atcDescription": "Dermatologjikë",
@@ -2411,7 +2437,32 @@
       "sourceDiscoveryEligible": true
     },
     {
-      "ordinal": 96,
+      "ordinal": 97,
+      "sourceRow": 409,
+      "atcGroup": "G",
+      "atcDescription": "Sistemi gjenitourinar dhe hormonet seksuale",
+      "atcCodes": "G03GB02",
+      "canonicalName": "Clomiphene",
+      "canonicalKey": "clomiphene",
+      "status": "source_discovery_pending",
+      "preferredSourceOrder": [
+        "EMA",
+        "EMC",
+        "AEMPS_CIMA",
+        "EU_OTHER",
+        "KOSOVO",
+        "MEDIATELY_CROSSCHECK",
+        "FALLBACK"
+      ],
+      "publicationAllowed": false,
+      "flags": [],
+      "componentCount": 1,
+      "combination": false,
+      "canonicalReviewRequired": false,
+      "sourceDiscoveryEligible": true
+    },
+    {
+      "ordinal": 98,
       "sourceRow": 295,
       "atcGroup": "D / G",
       "atcDescription": "Dermatologjikë / Sistemi gjenitourinar dhe hormonet seksuale",
@@ -2436,7 +2487,7 @@
       "sourceDiscoveryEligible": true
     },
     {
-      "ordinal": 97,
+      "ordinal": 99,
       "sourceRow": 332,
       "atcGroup": "D",
       "atcDescription": "Dermatologjikë",
@@ -2461,7 +2512,7 @@
       "sourceDiscoveryEligible": true
     },
     {
-      "ordinal": 98,
+      "ordinal": 100,
       "sourceRow": 378,
       "atcGroup": "G",
       "atcDescription": "Sistemi gjenitourinar dhe hormonet seksuale",
@@ -2482,56 +2533,6 @@
       "flags": [],
       "componentCount": 2,
       "combination": true,
-      "canonicalReviewRequired": false,
-      "sourceDiscoveryEligible": true
-    },
-    {
-      "ordinal": 99,
-      "sourceRow": 155,
-      "atcGroup": "B",
-      "atcDescription": "Gjaku dhe organet gjakformuese",
-      "atcCodes": "B03AE10",
-      "canonicalName": "Copper + Ironas ferrous + Manganese",
-      "canonicalKey": "copperironasferrousmanganese",
-      "status": "source_discovery_pending",
-      "preferredSourceOrder": [
-        "EMA",
-        "EMC",
-        "AEMPS_CIMA",
-        "EU_OTHER",
-        "KOSOVO",
-        "MEDIATELY_CROSSCHECK",
-        "FALLBACK"
-      ],
-      "publicationAllowed": false,
-      "flags": [],
-      "componentCount": 3,
-      "combination": true,
-      "canonicalReviewRequired": false,
-      "sourceDiscoveryEligible": true
-    },
-    {
-      "ordinal": 100,
-      "sourceRow": 156,
-      "atcGroup": "B",
-      "atcDescription": "Gjaku dhe organet gjakformuese",
-      "atcCodes": "B03BA01",
-      "canonicalName": "Cyanocobalamin",
-      "canonicalKey": "cyanocobalamin",
-      "status": "source_discovery_pending",
-      "preferredSourceOrder": [
-        "EMA",
-        "EMC",
-        "AEMPS_CIMA",
-        "EU_OTHER",
-        "KOSOVO",
-        "MEDIATELY_CROSSCHECK",
-        "FALLBACK"
-      ],
-      "publicationAllowed": false,
-      "flags": [],
-      "componentCount": 1,
-      "combination": false,
       "canonicalReviewRequired": false,
       "sourceDiscoveryEligible": true
     }
