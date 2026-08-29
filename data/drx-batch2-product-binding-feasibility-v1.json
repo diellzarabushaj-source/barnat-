@@ -1,0 +1,75 @@
+{
+  "schemaVersion": "drx-batch2-product-binding-feasibility-v1",
+  "measuredAt": "2026-08-29T18:55:00.000Z",
+  "measuredAgainst": {
+    "project": "ftuchtmolddhhsdcwnqe",
+    "drugsRows": 4015,
+    "substanceConcepts": 1111,
+    "productIngredients": 4704,
+    "query": "sql/drx-batch2-binding-feasibility.sql"
+  },
+  "finding": "Batch 2 source discovery selected UK eMC SmPCs on document quality alone, without checking that the strength each SmPC describes is actually dispensed in Kosovo. Only 12 of 25 substances have a Kosovo product at the SmPC's exact strength, so exact product binding cannot be completed for the remaining 13 no matter how good the extraction is.",
+  "rule": "Never bind a rule derived from one strength to a product of a different strength. dose_products_v3 carries numerator_value/denominator_value and the dose engine calculates from them, so a cross-strength binding produces a wrong dose rather than a missing one.",
+  "publicationAllowed": false,
+  "totals": {
+    "substances": 25,
+    "bindable": 12,
+    "blocked": 13,
+    "blockedByCanonicalKey": 4,
+    "blockedByStrengthAbsent": 9
+  },
+  "bindable": [
+    { "canonicalKey": "ramipril", "smpcStrength": "5 mg", "kosovoProducts": 22, "exactStrengthProducts": 5 },
+    { "canonicalKey": "carvedilol", "smpcStrength": "25 mg", "kosovoProducts": 13, "exactStrengthProducts": 4 },
+    { "canonicalKey": "loratadine", "smpcStrength": "10 mg", "kosovoProducts": 8, "exactStrengthProducts": 4 },
+    { "canonicalKey": "metronidazole", "smpcStrength": "500 mg", "kosovoProducts": 26, "exactStrengthProducts": 4 },
+    { "canonicalKey": "pantoprazole", "smpcStrength": "40 mg", "kosovoProducts": 5, "exactStrengthProducts": 4 },
+    { "canonicalKey": "clopidogrel", "smpcStrength": "75 mg", "kosovoProducts": 3, "exactStrengthProducts": 3 },
+    { "canonicalKey": "naproxen", "smpcStrength": "500 mg", "kosovoProducts": 4, "exactStrengthProducts": 3 },
+    { "canonicalKey": "prednisolone", "smpcStrength": "5 mg", "kosovoProducts": 6, "exactStrengthProducts": 3 },
+    { "canonicalKey": "amlodipine", "smpcStrength": "5 mg", "kosovoProducts": 13, "exactStrengthProducts": 1 },
+    { "canonicalKey": "aspirin", "smpcStrength": "75 mg", "kosovoProducts": 1, "exactStrengthProducts": 1 },
+    { "canonicalKey": "cefalexin", "smpcStrength": "250 mg", "kosovoProducts": 2, "exactStrengthProducts": 1 },
+    { "canonicalKey": "doxycycline", "smpcStrength": "100 mg", "kosovoProducts": 1, "exactStrengthProducts": 1 }
+  ],
+  "blocked": [
+    {
+      "canonicalKey": "bisoprolol",
+      "smpcStrength": "10 mg",
+      "reason": "canonical_key_not_in_substance_concepts",
+      "detail": "The registry keys the salt: bisoprololfumarate (10 mg exists, 6 products), plus bisoprololfumaratemicronized and bisoprololhemifumarate. The SmPC canonical key is the base.",
+      "fixable": "canonical_equivalence"
+    },
+    {
+      "canonicalKey": "cetirizine",
+      "smpcStrength": "10 mg",
+      "reason": "canonical_key_not_in_substance_concepts",
+      "detail": "Registry almost certainly keys the salt (cetirizine dihydrochloride); needs the same base/salt equivalence treatment as bisoprolol.",
+      "fixable": "canonical_equivalence"
+    },
+    {
+      "canonicalKey": "diclofenac",
+      "smpcStrength": "100 mg",
+      "reason": "canonical_key_not_in_substance_concepts",
+      "detail": "Registry keys the salt (diclofenac sodium/potassium). Salt choice also changes release behaviour, so the prolonged-release form must be matched too, not just the strength.",
+      "fixable": "canonical_equivalence_plus_form_check"
+    },
+    {
+      "canonicalKey": "levothyroxine",
+      "smpcStrength": "50 micrograms",
+      "reason": "canonical_key_not_in_substance_concepts",
+      "detail": "Registry keys levothyroxine sodium. Microgram dosing makes a wrong strength binding especially dangerous here.",
+      "fixable": "canonical_equivalence"
+    },
+    { "canonicalKey": "atorvastatin", "smpcStrength": "80 mg", "reason": "strength_not_on_market", "detail": "Kosovo stocks 10, 20 and 40 mg film-coated tablets. No 80 mg.", "fixable": "reselect_source" },
+    { "canonicalKey": "ciprofloxacin", "smpcStrength": "250 mg", "reason": "strength_not_on_market", "detail": "Kosovo stocks 500 mg film-coated tablets plus infusion and drop presentations. No 250 mg tablet.", "fixable": "reselect_source" },
+    { "canonicalKey": "dexamethasone", "smpcStrength": "2 mg", "reason": "strength_not_on_market", "detail": "11 dexamethasone products, none at 2 mg soluble tablet.", "fixable": "reselect_source" },
+    { "canonicalKey": "furosemide", "smpcStrength": "10 mg/mL", "reason": "strength_not_on_market", "detail": "9 furosemide products, none matching the 10 mg/mL injection concentration as written.", "fixable": "reselect_source" },
+    { "canonicalKey": "gliclazide", "smpcStrength": "40 mg", "reason": "strength_not_on_market", "detail": "3 gliclazide products, none at 40 mg.", "fixable": "reselect_source" },
+    { "canonicalKey": "losartan", "smpcStrength": "12.5 mg", "reason": "strength_not_on_market", "detail": "Kosovo stocks 50 and 100 mg. No 12.5 mg.", "fixable": "reselect_source" },
+    { "canonicalKey": "ondansetron", "smpcStrength": "4 mg", "reason": "strength_not_on_market", "detail": "3 ondansetron products, none at 4 mg film-coated tablet.", "fixable": "reselect_source" },
+    { "canonicalKey": "spironolactone", "smpcStrength": "12.5 mg", "reason": "strength_not_on_market", "detail": "8 spironolactone products, none at 12.5 mg.", "fixable": "reselect_source" },
+    { "canonicalKey": "tramadol", "smpcStrength": "50 mg", "reason": "strength_not_on_market", "detail": "3 tramadol products, none at 50 mg hard capsule.", "fixable": "reselect_source" }
+  ],
+  "next": "Two different fixes, not one. The four canonical-key blocks are a base/salt equivalence gap and can be resolved in the existing substance equivalence layer. The nine strength blocks cannot: they need source discovery rerun against strengths the Kosovo registry actually carries. Binding must stay empty for all thirteen until their own fix lands."
+}
