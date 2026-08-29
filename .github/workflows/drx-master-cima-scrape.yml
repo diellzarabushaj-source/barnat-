@@ -9,7 +9,7 @@ on:
       - '.github/workflows/drx-master-cima-scrape.yml'
 
 concurrency:
-  group: drx-master-cima-scrape
+  group: drx-master-cima-scrape-v2
   cancel-in-progress: true
 
 jobs:
