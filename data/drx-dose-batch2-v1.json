@@ -1,6 +1,6 @@
 {
   "schemaVersion": "drx-dose-batch2-v1",
-  "updatedAt": "2026-08-29T03:20:47.813Z",
+  "updatedAt": "2026-08-29T03:23:39.956Z",
   "status": "source_set_complete_repository_side",
   "publicationAllowed": false,
   "targetCount": 25,
@@ -370,16 +370,10 @@
   },
   "blockers": [
     "Supabase SQL/MCP database gateway unavailable",
-    "all Batch 2 rows require structured SmPC extraction and normalization before clinical review",
-    "Batch 2 structured SmPC extraction and normalization still required before clinical review",
-    "18 Batch 2 sources still require document date/version capture in the canonical source map before publication readiness",
-    "Wave 1 has live web-verified section evidence but archive SHA-256 snapshots are still pending",
-    "Bisoprolol source requires clinical review because section 4.2 contains chronic heart failure titration while section 4.1 lists hypertension and angina",
-    "Wave 2 adds high-complexity antimicrobial, parenteral and corticosteroid rules that require specialist safety review before normalization",
-    "Ciprofloxacin rules require indication, resistance/guidance, renal function and pediatric weight-aware branching",
-    "Cetirizine renal adjustment source wording requires careful renal-model mapping before publication",
-    "All 25 Batch 2 sources now have live web evidence; archive SHA-256 snapshots remain pending",
-    "NSAID sources must remain formulation- and indication-specific and must not be generalized across immediate/prolonged-release products",
-    "Antimicrobial wave 5 rules require indication, duration and antimicrobial-guidance review before normalization"
+    "25/25 live web evidence is complete, but 25/25 raw authoritative snapshots still require SHA-256 archive evidence",
+    "structured dose candidates must be created only from hash-backed section 4.2 evidence",
+    "exact DRx product binding and legacy dosage_regimens comparison require the live Supabase data plane",
+    "high-risk, antimicrobial, parenteral, corticosteroid, opioid, antiplatelet and complex titration rules require clinical review before normalization/publication",
+    "publication remains fail-closed until archive, normalization, product binding, safety validation and clinical review gates pass"
   ]
 }
