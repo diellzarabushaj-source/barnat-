@@ -134,8 +134,10 @@ async function liveDatabaseHealth() {
   };
 }
 
-async function databaseHealth() {
-  const snapshot = await SystemHealthSnapshot.getFresh();
+async function databaseHealth(options = {}) {
+  const snapshot = options.forceSnapshot === true
+    ? await SystemHealthSnapshot.refresh()
+    : await SystemHealthSnapshot.getFresh();
   if (!snapshot) return liveDatabaseHealth();
 
   return {
@@ -160,9 +162,9 @@ async function databaseHealth() {
   };
 }
 
-async function healthPayload(now = Date.now()) {
+async function healthPayload(now = Date.now(), options = {}) {
   const [database, icd] = await Promise.all([
-    databaseHealth(),
+    databaseHealth(options),
     IcdHealth.loadHealth(IcdPublicSource, now),
   ]);
 
@@ -291,7 +293,8 @@ module.exports = async function handler(req, res) {
 
   try {
     if (String(req.query?.pediatricMasterExport || '') === '1') return await pediatricMasterExport(req, res);
-    return res.status(200).json(await healthPayload());
+    const forceSnapshot = String(req.query?.refresh || '') === '1';
+    return res.status(200).json(await healthPayload(Date.now(), { forceSnapshot }));
   } catch (error) {
     if (String(req.query?.pediatricMasterExport || '') === '1') {
       console.error('[pediatric-master-export]', error);
