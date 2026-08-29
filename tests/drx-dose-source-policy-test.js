@@ -90,6 +90,21 @@ const hpra = Policy.rankCandidate({
 assert.equal(hpra.tier.key, 'EU_NATIONAL');
 assert.equal(hpra.publicationEligible, true);
 
+const zva = Policy.rankCandidate({
+  url:'https://www.zva.gov.lv/zvais/zalu-registrs/attachments/smpc/299094',
+  documentType:'SmPC',
+  documentDate:'2019-01',
+  productSpecific:true,
+  productMatch:true,
+  hasDoseSection:true,
+});
+assert.equal(zva.tier.key, 'EU_NATIONAL');
+assert.equal(zva.publicationEligible, true);
+assert.equal(
+  Policy.sourceTierForUrl('https://dati.zva.gov.lv/zalu-registrs/lv').key,
+  'EU_NATIONAL'
+);
+
 const kosovo = Policy.rankCandidate({
   url:'https://akppm.rks-gov.net/example',
   documentType:'PRODUCT_REGISTER',
