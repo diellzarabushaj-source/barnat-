@@ -1,6 +1,6 @@
 {
   "schemaVersion": "drx-qa-coverage-contract-v1",
-  "status": "adjustment_and_provenance_qa_hardened_repository_live_ci_blocked",
+  "status": "critical_release_suite_and_provenance_qa_hardened_repository_live_ci_blocked",
   "qaLayers": [
     "unit",
     "contract",
@@ -24,7 +24,11 @@
     "adjustment_provenance",
     "required_adjustment_completeness",
     "review_evidence_ready",
-    "runtime_fail_closed_cases"
+    "runtime_fail_closed_cases",
+    "archive_ci_hash_verified",
+    "archive_evidence_materialized",
+    "renal_adjustment_live_verified",
+    "hepatic_adjustment_live_verified"
   ],
   "releaseGate": [
     "all_critical_tests_green",
@@ -33,7 +37,10 @@
     "desktop_mobile_smoke_pass",
     "golden_adjustment_cases_green",
     "required_adjustment_fail_closed_cases_green",
-    "provenance_contract_tests_green"
+    "provenance_contract_tests_green",
+    "critical_release_suite_coverage_green",
+    "archive_ci_evidence_complete",
+    "archive_evidence_materialized_before_import"
   ],
-  "next": "run full CI/browser matrix and live V3 integration after gateway recovery; do not infer green status from repository-only syntax/contracts"
+  "next": "run the expanded test:drx-release suite and full desktop/mobile CI; CI archive evidence is 25/25 but must be materialized into a repo/DB-readable gate before normalization/import"
 }
