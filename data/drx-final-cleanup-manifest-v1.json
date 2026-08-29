@@ -1,6 +1,9 @@
 {
   "schemaVersion": "drx-final-cleanup-manifest-v1",
-  "status": "ready_but_no_destructive_cleanup_until_cutover",
+  "updatedAt": "2026-08-29T03:50:28.232Z",
+  "status": "gated_known_legacy_consumers_present",
+  "publicationAllowed": false,
+  "destructiveCleanupAllowed": false,
   "legacyRuntime": [
     "dose_rules_v2",
     "dose_products_v2",
@@ -9,15 +12,93 @@
     "dose_sources_v2",
     "dosage_regimens"
   ],
+  "knownConsumers": [
+    {
+      "file": "lib/dose-product-fast-path-handler.js",
+      "legacy": [
+        "dose_products_v2",
+        "dose_rule_products_v2",
+        "dose_rules_v2",
+        "dose_indications_v2",
+        "dose_sources_v2"
+      ],
+      "replacement": "V3 RPC / V3 reader",
+      "removalGate": "DRX_DOSE_V3_STRICT green in production and rollback tested"
+    },
+    {
+      "file": "lib/dose-calculator-handler.js",
+      "legacy": [
+        "dose_products_v2",
+        "dose_rule_products_v2",
+        "dose_rules_v2",
+        "dose_indications_v2",
+        "dose_sources_v2"
+      ],
+      "replacement": "targeted V3 product fast path; full legacy catalog can be retired after UI/API parity",
+      "removalGate": "registry calculator no longer requests compatibility catalog"
+    },
+    {
+      "file": "lib/dosage-card-handler.js",
+      "legacy": [
+        "dosage_regimens"
+      ],
+      "replacement": "V3 published dose-card projection/RPC",
+      "removalGate": "adult+pediatric card parity verified"
+    },
+    {
+      "file": "lib/pediatric-dosage-handler-core.js",
+      "legacy": [
+        "dosage_regimens"
+      ],
+      "replacement": "sourced pediatric V3 rules + shared dose-core adapter",
+      "removalGate": "typed pediatric legacy migration and golden cases complete"
+    },
+    {
+      "file": "lib/prescription-dosage-handler.js",
+      "legacy": [
+        "dosage_regimens"
+      ],
+      "replacement": "V3 published product/rule lookup",
+      "removalGate": "prescription dosage context parity and smoke tests complete"
+    }
+  ],
+  "alreadyIndependent": [
+    "lib/dose-v3-product-reader.js uses dose_products_v3, not dose_products_v2",
+    "public.medindex_dose_product_fast_path_v3 uses only V3 tables",
+    "dose-core.js is shared deterministic runtime"
+  ],
   "protectedUntil": [
     "v3_applied",
-    "batch1_reviewed",
+    "batch1_and_batch2_reviewed",
     "batch2_archive_hashes_25",
+    "v3_product_shell_backfilled_and_verified",
     "v3_api_parity_verified",
     "frontend_v3_smoke_green",
+    "dosage_card_v3_parity_verified",
+    "pediatric_v3_parity_verified",
+    "prescription_v3_parity_verified",
     "rollback_tested",
-    "zero_known_consumers"
+    "zero_known_legacy_consumers",
+    "production_soak_complete"
   ],
-  "action": "retain_legacy_read_path_as_compatibility_fallback",
-  "publicationAllowed": false
+  "migrationOrder": [
+    "apply_additive_v3_shadow_schema",
+    "archive_and_backfill_hash_backed_sources",
+    "backfill_dose_products_v3_and_exact_bindings",
+    "publish_reviewed_shadow_rules_only",
+    "enable_v3_reads_with_v2_fallback",
+    "verify_one_rpc_api_parity_and_performance",
+    "enable_v3_rpc_strict",
+    "enable_v3_strict_for_targeted_calculator",
+    "migrate_or_retire_full_v2_calculator_catalog",
+    "migrate_dosage_card_handler",
+    "migrate_pediatric_dosage_handler",
+    "migrate_prescription_dosage_handler",
+    "disable_legacy_writes",
+    "prove_zero_legacy_consumers",
+    "test_rollback",
+    "production_soak",
+    "only_then_remove_legacy_tables_or_wrappers"
+  ],
+  "action": "retain_legacy_read_paths_as_explicit_compatibility_fallbacks_until_every_removal_gate_is evidenced"
 }
