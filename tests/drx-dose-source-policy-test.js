@@ -53,6 +53,28 @@ assert.equal(
   'EU_NATIONAL'
 );
 
+const basg = Policy.rankCandidate({
+  url:'https://medikamente.basg.gv.at/documents/example.pdf',
+  documentType:'SmPC',
+  documentDate:'2022-07',
+  productSpecific:true,
+  productMatch:true,
+  hasDoseSection:true,
+});
+assert.equal(basg.tier.key, 'EU_NATIONAL');
+assert.equal(basg.publicationEligible, true);
+
+const hpra = Policy.rankCandidate({
+  url:'https://assets.hpra.ie/products/Human/example.pdf',
+  documentType:'SmPC',
+  documentDate:'2026-06-02',
+  productSpecific:true,
+  productMatch:true,
+  hasDoseSection:true,
+});
+assert.equal(hpra.tier.key, 'EU_NATIONAL');
+assert.equal(hpra.publicationEligible, true);
+
 const kosovo = Policy.rankCandidate({
   url:'https://akppm.rks-gov.net/example',
   documentType:'PRODUCT_REGISTER',
