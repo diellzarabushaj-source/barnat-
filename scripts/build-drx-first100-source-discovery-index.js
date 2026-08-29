@@ -2,7 +2,17 @@
 const fs=require('node:fs');const path=require('node:path');
 const ROOT=path.resolve(__dirname,'..');
 const read=p=>JSON.parse(fs.readFileSync(path.join(ROOT,p),'utf8'));
-const WAVE_FILES=['a','b','c'].map(x=>'data/drx-first100-source-discovery-wave-'+x+'-v1.json');
+const WAVE_FILES=['a','b','c','d','e','f','g'].map(x=>'data/drx-first100-source-discovery-wave-'+x+'-v1.json');
+
+function validAuthorityUrl(row){
+  const tier=String(row?.sourceTier||'');
+  const url=String(row?.url||'');
+  if(tier==='EMC') return /^https:\/\/www\.medicines\.org\.uk\/emc\//.test(url);
+  if(tier==='AEMPS_CIMA') return /^https:\/\/cima\.aemps\.es\/cima\/dochtml\/ft\//.test(url);
+  if(tier==='EMA') return /^https:\/\/(?:www\.)?ema\.europa\.eu\//.test(url);
+  if(tier==='EU_OTHER') return /^https:\/\//.test(url);
+  return false;
+}
 
 function build(){
  const queue=read('data/drx-first100-source-discovery-queue-v1.json');
@@ -19,8 +29,7 @@ function build(){
      if(!queueKeys.has(row.canonicalKey)) issues.push({canonicalKey:row.canonicalKey,issue:'not_in_first100_queue'});
      if(reviewKeys.has(row.canonicalKey)&&row.status.startsWith('verified_')) issues.push({canonicalKey:row.canonicalKey,issue:'canonical_review_bypassed'});
      if(row.status.startsWith('verified_')){
-       if(row.sourceTier!=='EMC') issues.push({canonicalKey:row.canonicalKey,issue:'unexpected_tier'});
-       if(!/^https:\/\/www\.medicines\.org\.uk\/emc\//.test(row.url||'')) issues.push({canonicalKey:row.canonicalKey,issue:'invalid_emc_url'});
+       if(!validAuthorityUrl(row)) issues.push({canonicalKey:row.canonicalKey,issue:'invalid_authority_url',sourceTier:row.sourceTier,url:row.url});
        if(row.section41Present!==true||row.section42Present!==true) issues.push({canonicalKey:row.canonicalKey,issue:'sections_not_verified'});
      }
      rows.push({...row,wave:path.basename(file)});
@@ -42,6 +51,8 @@ function build(){
    canonicalReviewRequired:quality.canonicalReviewRequired,
    sourceDiscoveryEligible:eligibleTotal,
    verifiedProductSpecific:verified.length,
+   verifiedCanonicalSubstances:new Set(verified.map(x=>x.canonicalKey)).size,
+   sourceAuthorityCounts:verified.reduce((acc,row)=>{acc[row.sourceTier]=(acc[row.sourceTier]||0)+1;return acc;},{}),
    productSelectionRequired:selection.length,
    eligibleRemaining:Math.max(0,eligibleTotal-verified.length),
    issueCount:issues.length,
@@ -61,4 +72,4 @@ if(require.main===module){
  console.log(JSON.stringify({verified:x.verifiedProductSpecific,selection:x.productSelectionRequired,remaining:x.eligibleRemaining,issues:x.issueCount},null,2));
  if(x.issueCount) process.exitCode=1;
 }
-module.exports={build,WAVE_FILES};
+module.exports={build,WAVE_FILES,validAuthorityUrl};
