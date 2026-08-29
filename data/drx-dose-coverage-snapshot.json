@@ -1,0 +1,40 @@
+{
+  "schemaVersion": "drx-dose-coverage-snapshot-v1",
+  "generatedAt": "2026-08-29T04:35:00+02:00",
+  "denominatorState": {
+    "canonicalSubstances": null,
+    "canonicalProducts": null,
+    "liveDatabaseAvailable": false,
+    "reason": "Supabase SQL gateway unavailable; global percentages remain null rather than using stale denominators."
+  },
+  "discovery": {
+    "mappedSubstances": 1,
+    "sourceCandidates": 4,
+    "archiveReadySources": 4,
+    "publicationReadySources": 2,
+    "publicationReadyPercentOfMappedCandidates": 50
+  },
+  "pilots": {
+    "files": [
+      "drx-pilot-ibuprofen-v1.json"
+    ],
+    "substances": 1,
+    "ruleCandidates": 3,
+    "boundRules": 0,
+    "publishedRules": 0,
+    "publicationEnabledPilots": 0,
+    "bindingPercent": 0,
+    "publicationPercent": 0
+  },
+  "global": {
+    "sourcedPercent": null,
+    "parsedPercent": null,
+    "verifiedPercent": null,
+    "publishedPercent": null
+  },
+  "safety": {
+    "failClosed": true,
+    "globalCoverageUnknownIsNotZero": true,
+    "noStaleDatabaseDenominator": true
+  }
+}
