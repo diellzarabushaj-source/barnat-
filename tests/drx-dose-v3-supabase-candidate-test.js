@@ -6,8 +6,9 @@ const sql=fs.readFileSync(path.join(__dirname,'..','supabase','drx-dose-v3-addit
 
 const tables=[
 'dose_source_snapshots_v3','dose_source_sections_v3','dose_indication_concepts_v3',
-'dose_indication_terms_v3','dose_rules_v3','dose_rule_products_v3',
-'dose_legacy_comparisons_v3','dose_review_queue_v3','dose_publication_events_v3'
+'dose_indication_terms_v3','dose_rules_v3','dose_renal_adjustments_v3',
+'dose_hepatic_adjustments_v3','dose_rule_products_v3','dose_legacy_comparisons_v3',
+'dose_review_queue_v3','dose_publication_events_v3'
 ];
 for(const t of tables){
   assert.match(sql,new RegExp('create table if not exists public\\.'+t));
@@ -24,6 +25,11 @@ assert.doesNotMatch(sql,/alter\s+table\s+public\.dosage_regimens/i);
 assert.match(sql,/references public\.substance_concepts_v1\(concept_id\)/);
 assert.match(sql,/references public\.drugs\(id\)/);
 assert.match(sql,/source_snapshot_id text not null references public\.dose_source_snapshots_v3/);
+assert.match(sql,/dose_renal_adjustments_v3_measure_check/);
+assert.match(sql,/dose_hepatic_adjustments_v3_measure_check/);
+assert.match(sql,/reviewer_id uuid/);
+assert.match(sql,/decision_reason text/);
+assert.match(sql,/source_version text/);
 
 // Clinical publication must stay fail-closed and provenance-backed.
 assert.match(sql,/editorial_status = 'published'/);
@@ -40,9 +46,12 @@ assert.match(sql,/grant select on table public\.dose_rule_products_v3 to anon, a
 assert.doesNotMatch(sql,/grant\s+(?:insert|update|delete|truncate|references|trigger|all(?:\s+privileges)?)\b[\s\S]*?\bto\s+(?:anon|authenticated)\b/i);
 assert.doesNotMatch(sql,/create\s+policy[\s\S]*?for\s+(?:insert|update|delete|all)\s+to\s+(?:anon|authenticated)\b/i);
 
-// No privileged helper/view may silently bypass RLS in this candidate.
+// The one-read RPC is allowed only as SECURITY INVOKER and must remain least-privilege.
 assert.doesNotMatch(sql,/\bsecurity\s+definer\b/i);
-assert.doesNotMatch(sql,/\bcreate\s+(?:or\s+replace\s+)?function\b/i);
+assert.match(sql,/create or replace function public\.medindex_dose_product_fast_path_v3/);
+assert.match(sql,/language sql[\s\S]*?stable[\s\S]*?security invoker/);
+assert.match(sql,/revoke all on function public\.medindex_dose_product_fast_path_v3\(text, uuid\) from public/);
+assert.match(sql,/grant execute on function public\.medindex_dose_product_fast_path_v3\(text, uuid\) to anon, authenticated/);
 assert.doesNotMatch(sql,/\bcreate\s+(?:or\s+replace\s+)?view\b/i);
 
 // Client-visible rows remain constrained to published concepts/rules and verified bindings.
