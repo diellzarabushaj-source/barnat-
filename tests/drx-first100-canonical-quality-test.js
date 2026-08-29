@@ -8,10 +8,12 @@ assert.ok(Audit.auditName('Amylase + Lipase + Panceatin + Total proteases').flag
 assert.ok(Audit.auditName('Calcium chloride + Clorur calium + Clorur natrium').flags.includes('TYPO_CLORUR'));
 assert.ok(Audit.auditName('Aqueous extract triticum vulgare + Phenoxyethanol').flags.includes('KNOWN_TRITICUM_PHENOXYETHANOL_EXCIPIENT_MISCLASSIFICATION'));
 assert.equal(Audit.auditName('Aqueous extract triticum vulgare + Phenoxyethanol').canonicalReviewRequired,true);
+assert.ok(Audit.auditName('Benzydamine + Chlorhexidine').flags.includes('GENERIC_CHLORHEXIDINE_SALT_CANONICAL_DUPLICATE'));
+assert.ok(Audit.auditName('Betamethasone dipropionate + Gentamicin + Salicylic acid').flags.includes('ATC_COMBINATION_CONFLATION_D07XC01'));
 const r=Audit.build();
 assert.equal(r.total,100);
-assert.ok(r.canonicalReviewRequired>0);
-assert.ok(r.sourceDiscoveryEligible>0);
+assert.equal(r.canonicalReviewRequired,16);
+assert.equal(r.sourceDiscoveryEligible,84);
 assert.equal(r.canonicalReviewRequired+r.sourceDiscoveryEligible,100);
 assert.equal(r.publicationAllowed,false);
 console.log('DRx first-100 canonical quality audit passed.');
