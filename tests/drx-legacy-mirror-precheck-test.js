@@ -1,0 +1,16 @@
+'use strict';
+const assert=require('node:assert/strict');
+const fs=require('node:fs');
+const path=require('node:path');
+const x=JSON.parse(fs.readFileSync(path.join(__dirname,'..','data','drx-batch1-2-legacy-mirror-precheck-v1.json'),'utf8'));
+assert.equal(x.totalSubstances,35);
+assert.equal(x.presentSubstances,2);
+assert.equal(x.missingSubstances,33);
+assert.equal(x.totalMirrorRules,3);
+assert.equal(x.totalMirrorBindings,4);
+assert.equal(x.liveSupabaseComparisonComplete,false);
+assert.equal(x.publicationAllowed,false);
+assert.ok(x.rows.find(r=>r.canonicalKey==='paracetamol'&&r.ruleCount===2&&r.bindingCount===2));
+assert.ok(x.rows.find(r=>r.canonicalKey==='pantoprazole'&&r.ruleCount===1&&r.bindingCount===2));
+assert.ok(x.rows.filter(r=>r.legacyMirrorStatus==='missing').every(r=>r.liveDbCompared===false));
+console.log('DRx 35-pilot legacy mirror precheck passed.');
