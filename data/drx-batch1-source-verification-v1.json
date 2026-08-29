@@ -1,12 +1,12 @@
 {
   "schemaVersion": "drx-batch1-source-verification-v1",
-  "updatedAt": "2026-08-29T05:00:00+02:00",
+  "updatedAt": "2026-08-29T05:10:00+02:00",
   "publicationAllowed": false,
   "purpose": "Repository-side Phase 15 progress while Supabase SQL/MCP gateway is unavailable. Verifies that the 10-substance Batch 1 source set resolves to authoritative SmPC pages before structured extraction, exact DRx product binding, legacy comparison and clinical review.",
   "verificationPolicy": {
     "authoritativeFirst": true,
     "sourceTier": "EMC",
-    "clinicalDoseExtractionStatus": "not_performed_in_this_manifest",
+    "clinicalDoseExtractionStatus": "representative_rule_candidates_extracted_for_10_of_10",
     "liveProductBindingStatus": "blocked_by_supabase_gateway"
   },
   "substances": [
@@ -16,7 +16,9 @@
       "sourceKey": "emc-7020-smpc",
       "url": "https://www.medicines.org.uk/emc/product/7020/smpc",
       "status": "already_pilot_verified",
-      "next": "exact DRx product binding, legacy comparison, confidence and safety review"
+      "next": "exact DRx product binding + legacy comparison + confidence/safety + clinical review",
+      "representativePilotFile": "drx-pilot-ibuprofen-v1.json",
+      "representativeExtractionStatus": "complete_in_review_unbound"
     },
     {
       "canonicalKey": "paracetamol",
@@ -26,7 +28,9 @@
       "status": "verified_live",
       "lastUpdatedOnSource": "2025-10-24",
       "section42Present": true,
-      "next": "archive snapshot and parse sections 4.1-4.9"
+      "next": "exact DRx product binding + legacy comparison + confidence/safety + clinical review",
+      "representativePilotFile": "drx-pilot-paracetamol-v1.json",
+      "representativeExtractionStatus": "complete_in_review_unbound"
     },
     {
       "canonicalKey": "amoxicillin",
@@ -35,7 +39,9 @@
       "url": "https://www.medicines.org.uk/emc/product/10638/smpc",
       "status": "verified_live",
       "section42Present": true,
-      "next": "archive snapshot and parse sections 4.1-4.9"
+      "next": "exact DRx product binding + legacy comparison + confidence/safety + clinical review",
+      "representativePilotFile": "drx-pilot-amoxicillin-v1.json",
+      "representativeExtractionStatus": "complete_in_review_unbound"
     },
     {
       "canonicalKey": "amoxicillin-clavulanic-acid",
@@ -45,7 +51,9 @@
       "status": "verified_live",
       "section42Present": true,
       "combination": true,
-      "next": "archive snapshot, parse, then apply explicit component dose basis"
+      "next": "exact DRx product binding + legacy comparison + confidence/safety + clinical review",
+      "representativePilotFile": "drx-pilot-amoxicillin-clavulanic-acid-v1.json",
+      "representativeExtractionStatus": "complete_in_review_unbound"
     },
     {
       "canonicalKey": "azithromycin",
@@ -54,7 +62,9 @@
       "url": "https://www.medicines.org.uk/emc/product/6541/smpc",
       "status": "verified_live",
       "section42Present": true,
-      "next": "archive snapshot and parse sections 4.1-4.9"
+      "next": "exact DRx product binding + legacy comparison + confidence/safety + clinical review",
+      "representativePilotFile": "drx-pilot-azithromycin-v1.json",
+      "representativeExtractionStatus": "complete_in_review_unbound"
     },
     {
       "canonicalKey": "metformin",
@@ -63,7 +73,9 @@
       "url": "https://www.medicines.org.uk/emc/product/100082/smpc",
       "status": "verified_live",
       "section42Present": true,
-      "next": "archive snapshot and parse sections 4.1-4.9"
+      "next": "exact DRx product binding + legacy comparison + confidence/safety + clinical review",
+      "representativePilotFile": "drx-pilot-metformin-v1.json",
+      "representativeExtractionStatus": "complete_in_review_unbound"
     },
     {
       "canonicalKey": "enalapril",
@@ -72,7 +84,9 @@
       "url": "https://www.medicines.org.uk/emc/product/2672/smpc",
       "status": "verified_live",
       "section42Present": true,
-      "next": "archive snapshot and parse sections 4.1-4.9"
+      "next": "exact DRx product binding + legacy comparison + confidence/safety + clinical review",
+      "representativePilotFile": "drx-pilot-enalapril-v1.json",
+      "representativeExtractionStatus": "complete_in_review_unbound"
     },
     {
       "canonicalKey": "omeprazole",
@@ -81,7 +95,9 @@
       "url": "https://www.medicines.org.uk/emc/product/4895/smpc",
       "status": "verified_live",
       "section42Present": true,
-      "next": "archive snapshot and parse sections 4.1-4.9"
+      "next": "exact DRx product binding + legacy comparison + confidence/safety + clinical review",
+      "representativePilotFile": "drx-pilot-omeprazole-v1.json",
+      "representativeExtractionStatus": "complete_in_review_unbound"
     },
     {
       "canonicalKey": "salbutamol",
@@ -90,7 +106,9 @@
       "url": "https://www.medicines.org.uk/emc/product/6339/smpc",
       "status": "verified_live",
       "section42Present": true,
-      "next": "archive snapshot and parse sections 4.1-4.9"
+      "next": "exact DRx product binding + legacy comparison + confidence/safety + clinical review",
+      "representativePilotFile": "drx-pilot-salbutamol-v1.json",
+      "representativeExtractionStatus": "complete_in_review_unbound"
     },
     {
       "canonicalKey": "cefuroxime",
@@ -100,7 +118,9 @@
       "status": "verified_live_via_search_fallback",
       "lastUpdatedOnSource": "2025-08-19",
       "section42Present": true,
-      "next": "archive snapshot and parse sections 4.1-4.9"
+      "next": "exact DRx product binding + legacy comparison + confidence/safety + clinical review",
+      "representativePilotFile": "drx-pilot-cefuroxime-v1.json",
+      "representativeExtractionStatus": "complete_in_review_unbound"
     }
   ],
   "summary": {
@@ -110,6 +130,8 @@
     "pilotAlreadyVerified": 1,
     "readyForRepositorySideArchiveAndParse": 10,
     "readyForLiveProductBinding": 0,
-    "publicationAllowed": false
+    "publicationAllowed": false,
+    "representativePilotManifests": 10,
+    "representativeRuleCandidates": 12
   }
 }
