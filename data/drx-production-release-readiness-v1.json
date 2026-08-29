@@ -1,6 +1,6 @@
 {
   "schemaVersion": "drx-production-release-readiness-v1",
-  "checkedAt": "2026-08-29T03:47:46.027Z",
+  "checkedAt": "2026-08-29T03:52:27.958Z",
   "releaseReady": false,
   "publicationAllowed": false,
   "blockers": [
@@ -11,8 +11,6 @@
     "legacy_comparison_not_live",
     "clinical_review_not_complete",
     "no_published_v3_rules",
-    "first100_canonical_provenance_not_ready",
-    "first100_production_queue_not_ready",
     "drx_safety_ci_not_observed",
     "full_ci_not_green",
     "desktop_smoke_not_green",
@@ -27,8 +25,14 @@
     "cacheOffline": "implemented_indexeddb_etag",
     "frontend": "shared_core_fast_flow_ready",
     "automatedQa": "dedicated_gate_configured_not_observed",
-    "coverage": "implemented_repo_evidence",
-    "cleanup": "gated_no_destructive_changes",
+    "coverage": "implemented_evidence_driven_dashboard",
+    "cleanup": "gated_known_legacy_consumers_present",
     "productionRelease": "blocked"
+  },
+  "architecture": {
+    "v3TableCount": 12,
+    "v3SelfContainedProductShell": true,
+    "v2ProductShellDependency": false,
+    "oneRpcFastPath": true
   }
 }
