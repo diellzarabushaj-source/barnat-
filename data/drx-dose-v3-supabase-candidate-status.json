@@ -1,6 +1,6 @@
 {
   "schemaVersion": "drx-dose-v3-supabase-candidate-status-v1",
-  "updatedAt": "2026-08-29T11:56:27.875Z",
+  "updatedAt": "2026-08-29T12:18:34.862Z",
   "projectId": "ftuchtmolddhhsdcwnqe",
   "projectHealth": "ACTIVE_HEALTHY",
   "postgresVersion": "17.6.1.155",
@@ -31,14 +31,14 @@
       "dose_indication_concepts_v3",
       "dose_products_v3",
       "dose_rules_v3",
+      "dose_renal_adjustments_v3",
+      "dose_hepatic_adjustments_v3",
       "dose_rule_products_v3"
     ],
     "serviceOnlyTables": [
       "dose_source_snapshots_v3",
       "dose_source_sections_v3",
       "dose_indication_terms_v3",
-      "dose_renal_adjustments_v3",
-      "dose_hepatic_adjustments_v3",
       "dose_legacy_comparisons_v3",
       "dose_publication_events_v3"
     ],
@@ -63,7 +63,10 @@
     "preexistingShadowSchemaFailsClosed": true,
     "sourceSectionShaPinned": true,
     "runtimeProvenanceRevalidation": true,
-    "publishedProvenanceMutationLocks": true
+    "publishedProvenanceMutationLocks": true,
+    "verifiedAdjustmentReadRls": true,
+    "adjustmentSourceSectionShaPinned": true,
+    "runtimeAdjustmentProvenanceRevalidation": true
   },
   "applyGate": [
     "Supabase changelog/docs reviewed for relevant breaking changes",
@@ -88,12 +91,15 @@
     "runtime RPC revalidates product/rule source snapshot tier/key/version/date and exact section hash",
     "verified/published source snapshots and sections are mutation-locked",
     "run supabase/drx-dose-v3-publication-gate-smoke.sql after structural smoke; transaction must end in ROLLBACK",
-    "negative and positive DB publication-gate cases pass before any real V3 import"
+    "negative and positive DB publication-gate cases pass before any real V3 import",
+    "renal/hepatic verified rows require exact source_section_sha256 and source snapshot/evidence identity",
+    "renal/hepatic client read is RLS-limited to verified rows linked to published parent rules",
+    "runtime RPC revalidates renal/hepatic snapshot tier/key/version/date and exact section hash"
   ],
   "publicationAllowed": false,
   "selfContainedV3ProductShell": true,
   "v2ProductShellDependency": false,
-  "candidateGitBlobSha": "f9da36c149283267d3b1d8f96cc147907819c066",
+  "candidateGitBlobSha": "9e6d595be89f9b8f0d322f9d1c6b6df430d76b49",
   "repositoryStaticAudit": {
     "candidateSelfContained": true,
     "additiveOnly": true,
@@ -101,7 +107,7 @@
     "directClientWriteGrants": 0,
     "publishedClientReadTables": 4,
     "publicationTriggerPresent": true,
-    "status": "STATIC_PROVENANCE_HARDENED_NOT_LIVE_APPLIED",
+    "status": "STATIC_RENAL_HEPATIC_RUNTIME_HARDENED_NOT_LIVE_APPLIED",
     "productPublicationTriggerPresent": true,
     "rulePublicationTriggerPresent": true,
     "insertPublicationBypassClosed": true,
@@ -110,7 +116,10 @@
     "partialSchemaPreflightPresent": true,
     "sourceSectionHashPinned": true,
     "runtimeSnapshotAndSectionRevalidation": true,
-    "publishedProvenanceMutationLocks": true
+    "publishedProvenanceMutationLocks": true,
+    "verifiedAdjustmentReadRls": true,
+    "adjustmentSourceSectionHashPinned": true,
+    "runtimeAdjustmentProvenanceRevalidation": true
   },
   "rollback": {
     "prepared": true,
