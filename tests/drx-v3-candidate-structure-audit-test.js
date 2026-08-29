@@ -91,6 +91,12 @@ assert.match(sql, /dose_rules_v3_section_sha_check/);
 assert.match(sql, /sec\.section_sha256 = r\.source_section_sha256/);
 assert.match(sql, /dose_source_snapshots_v3_version_check/);
 assert.match(sql, /dose_rules_v3_published_safety_check/);
+assert.match(sql, /dose_renal_adjustments_v3_section_sha_check/);
+assert.match(sql, /dose_hepatic_adjustments_v3_section_sha_check/);
+assert.match(sql, /dose_renal_adjustments_v3_verified_read/);
+assert.match(sql, /dose_hepatic_adjustments_v3_verified_read/);
+assert.match(sql, /renal_adjustments_json as \(/);
+assert.match(sql, /hepatic_adjustments_json as \(/);
 assert.match(sql, /dose_rule_products_v3_unique_binding unique \(rule_id, product_id\)/);
 
 assert.match(sql, /security invoker[\s\S]*public\.medindex_dose_product_fast_path_v3|public\.medindex_dose_product_fast_path_v3[\s\S]*security invoker/);
