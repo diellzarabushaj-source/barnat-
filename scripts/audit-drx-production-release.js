@@ -14,7 +14,8 @@ function audit(){
  const blockers=[];
 
  if(v3.applied!==true) blockers.push('supabase_v3_not_applied');
- if((tracker.currentExecution.archiveHashVerifiedCount||0)<25) blockers.push('batch2_archive_hashes_incomplete');
+ if((tracker.currentExecution.archiveCiSectionHashVerifiedCount||0)<25) blockers.push('batch2_archive_ci_hashes_incomplete');
+ if((tracker.currentExecution.archiveHashVerifiedCount||0)<25) blockers.push('batch2_archive_evidence_not_materialized');
  if((matrix.normalizationReady||0)<25) blockers.push('batch2_normalization_not_ready');
  if((tracker.currentExecution.liveBoundRules||0)<=0) blockers.push('exact_product_binding_not_live');
  if((tracker.currentExecution.legacyComparedRules||0)<=0) blockers.push('legacy_comparison_not_live');
