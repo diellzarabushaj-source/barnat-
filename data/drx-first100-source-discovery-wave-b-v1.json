@@ -1,9 +1,9 @@
 {
   "schemaVersion": "drx-first100-source-discovery-wave-b-v1",
-  "generatedAt": "2026-08-30T03:30:00+02:00",
+  "generatedAt": "2026-08-30T03:35:00+02:00",
   "sourcePolicy": "data/drx-dose-source-policy-v1.json",
   "publicationAllowed": false,
-  "verifiedProductSpecificCount": 11,
+  "verifiedProductSpecificCount": 12,
   "rows": [
     {
       "canonicalKey": "budesonide",
@@ -215,6 +215,26 @@
         "emergency_hyperkalaemia_context",
         "serum_calcium_monitoring",
         "pediatric_age_dose_table",
+        "clinical_review_required"
+      ],
+      "publicationAllowed": false
+    },
+    {
+      "canonicalKey": "clomiphene",
+      "canonicalName": "Clomiphene",
+      "status": "verified_product_specific_alias_match",
+      "sourceTier": "EMC",
+      "sourceKey": "emc-15080-smpc",
+      "url": "https://www.medicines.org.uk/emc/product/15080/smpc",
+      "productName": "Clomifene 50mg Tablets",
+      "documentDate": "2024-06-26",
+      "section41Present": true,
+      "section42Present": true,
+      "reviewFlags": [
+        "reviewed_clomiphene_clomifene_alias",
+        "fertility_specialist_context",
+        "cycle_limited_therapy",
+        "pregnancy_exclusion",
         "clinical_review_required"
       ],
       "publicationAllowed": false
