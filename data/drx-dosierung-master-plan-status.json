@@ -1,6 +1,6 @@
 {
   "schemaVersion": "drx-dosierung-master-plan-status-v1",
-  "updatedAt": "2026-08-29T11:56:33.300Z",
+  "updatedAt": "2026-08-29T12:04:56.250Z",
   "officialPlan": "DRx Dosierung phases 0-32",
   "databaseBlocker": {
     "active": true,
@@ -289,9 +289,12 @@
         "10 DRx pilot manifests (ibuprofen + 9)",
         "data/drx-batch1-source-verification-v1.json",
         "12 representative rule candidates",
-        "required_inputs parity verified for 9 newly normalized pilots"
+        "required_inputs parity verified for 9 newly normalized pilots",
+        "V3 provenance parity hardened: archive -> extraction -> normalization -> validator -> publication gate -> runtime readers",
+        "Batch 1 V2 schema-gap manifest now includes source_section_sha256",
+        "no live readiness counts promoted without hash-backed archive evidence"
       ],
-      "next": "exact live DRx product binding + legacy dosage_regimens comparison + confidence/safety + clinical review when Supabase data plane returns"
+      "next": "live pilot remains blocked by Supabase SQL gateway; once recovered, persist exact snapshot + section 4.2 hash before binding/legacy/safety/review"
     },
     {
       "id": 16,
@@ -331,9 +334,14 @@
         "scripts/verify-drx-batch2-archive.js",
         "tests/drx-batch2-archive-verifier-test.js",
         "archive env wiring fixed: DRX_ARCHIVE_DIR is now consumed by extraction CLI",
-        "raw archive bytes are SHA-256 rehashed before artifact acceptance"
+        "raw archive bytes are SHA-256 rehashed before artifact acceptance",
+        "lib/dose-source-archive.js computes per-section SHA-256",
+        "scripts/build-drx-batch2-extraction-index.js propagates section41Sha256/section42Sha256",
+        "scripts/build-drx-batch2-normalization-index.js requires valid sourceSectionSha256 before extractionReady",
+        "lib/dose-rule-normalizer.js requires source snapshot/evidence identity + sourceSectionSha256 for verified/published rules",
+        "V3 multi-read and RPC readers fail closed on missing/invalid section provenance"
       ],
-      "next": "obtain a successful 25/25 hash-backed archive artifact run; GitHub Actions run creation is currently unobserved, so normalization/publication remain closed"
+      "next": "obtain real 25/25 archive snapshots with raw SHA-256 + extracted 4.2 SHA-256; normalizationReady stays 0 until observed"
     },
     {
       "id": 17,
