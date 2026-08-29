@@ -1,0 +1,3 @@
+Phase 9 stable CI snapshot
+Base main: 57effcc91458afc65b1ae66d2921c224df2ac78b
+Includes canonical Data API mocks, Phase 7 parity fix, and network-isolation guard.
