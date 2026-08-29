@@ -59,8 +59,11 @@ assert.equal(drugSearch.buildDetailPath({ id:'not-a-uuid' }), null);
 
 const search = drugSearch.buildSearchPath('paracetamol');
 assert.ok(search);
-assert.match(decodeURIComponent(search.path), /global_search_text=ilike\.\*paracetamol\*/);
-assert.match(decodeURIComponent(search.path), /limit=20/);
+assert.equal(search.path, 'rpc/medindex_search_drugs_v2');
+assert.equal(search.method, 'POST');
+assert.deepEqual(search.body, { p_query:'paracetamol', p_limit:20 });
+assert.equal(drugSearch.buildSearchPath('1').body.p_query, '1', 'Exact registry lookup must allow one-digit registry numbers.');
+assert.equal(drugSearch.buildSearchPath('x'), null, 'Single non-numeric search terms must stay blocked.');
 
 assert.match(gatewaySource, /supabase-data-api\.js/);
 assert.match(gatewaySource, /X-MedIndex-Data-Source/);
@@ -68,10 +71,13 @@ assert.match(gatewaySource, /supabase/i);
 assert.doesNotMatch(gatewaySource, /neonRequest|neon-data-api|getPublishedDrugs|fetchPaged\('drugs'/);
 assert.doesNotMatch(gatewaySource, /SELECT\s+\*/i);
 assert.doesNotMatch(gatewaySource, /CREATE\s+TABLE|ALTER\s+TABLE|DROP\s+TABLE|migration/i);
-assert.doesNotMatch(gatewaySource, /method\s*:\s*['"](?:POST|PATCH|PUT|DELETE)['"]/i);
+assert.doesNotMatch(gatewaySource, /method\s*:\s*['"](?:PATCH|PUT|DELETE)['"]/i);
+assert.match(gatewaySource, /path:'rpc\/medindex_search_drugs_v2'/, 'Search must use the ranked read-only RPC.');
+assert.match(gatewaySource, /method:'POST'/, 'PostgREST RPC invocation is a read-only POST transport.');
+assert.doesNotMatch(gatewaySource, /privileged\s*:\s*true/, 'Ranked search RPC must use the publishable role so RLS remains active.');
 
 assert.match(supabaseSource, /\/rest\/v1/);
 assert.match(supabaseSource, /MEDINDEX_SUPABASE_PUBLISHABLE_KEY/);
 assert.doesNotMatch(supabaseSource, /neon/i);
 
-console.log('Registry v2 Supabase paging, detail, indexed search and read-only contracts passed.');
+console.log('Registry v2 Supabase paging, detail, ranked RPC search and read-only contracts passed.');
