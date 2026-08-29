@@ -305,6 +305,10 @@
     {
       "version": "20260829011529",
       "name": "phase4_targeted_incremental_resolver"
+    },
+    {
+      "version": "20260829011924",
+      "name": "phase4_resolution_review_reason_guard"
     }
   ]
 }
