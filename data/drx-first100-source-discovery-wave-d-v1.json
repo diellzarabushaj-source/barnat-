@@ -1,0 +1,218 @@
+{
+  "schemaVersion": "drx-first100-source-discovery-wave-d-v1",
+  "generatedAt": "2026-08-29T03:59:34.405Z",
+  "sourcePolicy": "data/drx-dose-source-policy-v1.json",
+  "verificationMethod": "live_official_product_specific_smpc",
+  "publicationAllowed": false,
+  "verifiedProductSpecificCount": 10,
+  "productSelectionRequiredCount": 0,
+  "rows": [
+    {
+      "canonicalKey": "betamethasonevalerate",
+      "canonicalName": "Betamethasone valerate",
+      "status": "verified_product_specific",
+      "sourceTier": "EMC",
+      "sourceKey": "emc-102491-smpc",
+      "url": "https://www.medicines.org.uk/emc/product/102491/smpc",
+      "productName": "Betamethasone Valerate 0.1%w/w Cream",
+      "documentDate": "2026-08-04",
+      "section41Present": true,
+      "section42Present": true,
+      "reviewFlags": [
+        "potent_topical_corticosteroid",
+        "cream_formulation_specific",
+        "cutaneous_route",
+        "age_over_1_year",
+        "up_to_4_weeks_then_step_down"
+      ],
+      "publicationAllowed": false
+    },
+    {
+      "canonicalKey": "betamethasonevaleratefusidicacid",
+      "canonicalName": "Betamethasone valerate + Fusidic acid",
+      "status": "verified_product_specific",
+      "sourceTier": "EMC",
+      "sourceKey": "emc-983-smpc",
+      "url": "https://www.medicines.org.uk/emc/product/983/smpc",
+      "productName": "Fucibet Cream",
+      "documentDate": "2025-01-21",
+      "section41Present": true,
+      "section42Present": true,
+      "reviewFlags": [
+        "fixed_topical_combination",
+        "infected_dermatoses",
+        "antimicrobial_stewardship",
+        "usually_max_2_weeks",
+        "twice_daily",
+        "clinical_review_required"
+      ],
+      "publicationAllowed": false
+    },
+    {
+      "canonicalKey": "bismuthsubcitratemetronidazoletetracycline",
+      "canonicalName": "Bismuth subcitrate + Metronidazole + Tetracycline",
+      "status": "verified_product_specific",
+      "sourceTier": "EMC",
+      "sourceKey": "emc-15622-smpc",
+      "url": "https://www.medicines.org.uk/emc/product/15622/smpc",
+      "productName": "Pylera 140 mg/125 mg/125 mg capsules",
+      "documentDate": "2025-06-23",
+      "section41Present": true,
+      "section42Present": true,
+      "reviewFlags": [
+        "triple_antimicrobial_combination",
+        "h_pylori_with_omeprazole",
+        "three_capsules_four_times_daily",
+        "ten_day_course",
+        "renal_hepatic_contraindication",
+        "pediatric_contraindication",
+        "clinical_review_required"
+      ],
+      "publicationAllowed": false
+    },
+    {
+      "canonicalKey": "calciumcarbonatecholecalciferol",
+      "canonicalName": "Calcium carbonate + Cholecalciferol",
+      "status": "verified_product_specific",
+      "sourceTier": "EMC",
+      "sourceKey": "emc-3747-smpc",
+      "url": "https://www.medicines.org.uk/emc/product/3747/smpc",
+      "productName": "CALCEOS 500mg/400IU Chewable Tablets",
+      "documentDate": "2026-06-22",
+      "section41Present": true,
+      "section42Present": true,
+      "reviewFlags": [
+        "fixed_calcium_vitamin_d_combination",
+        "iu_unit",
+        "adult_deficiency_or_osteoporosis_context",
+        "renal_function_review",
+        "product_strength_specific"
+      ],
+      "publicationAllowed": false
+    },
+    {
+      "canonicalKey": "calciumcarbonatemagnesiumcarbonate",
+      "canonicalName": "Calcium carbonate + Magnesium carbonate",
+      "status": "verified_product_specific",
+      "sourceTier": "EMC",
+      "sourceKey": "emc-13861-smpc",
+      "url": "https://www.medicines.org.uk/emc/product/13861/smpc",
+      "productName": "Rennie Sugar Free",
+      "documentDate": "2022-07-13",
+      "section41Present": true,
+      "section42Present": true,
+      "reviewFlags": [
+        "fixed_antacid_combination",
+        "age_12_plus",
+        "prn_use",
+        "max_10_tablets_per_day",
+        "severe_renal_impairment_contraindication"
+      ],
+      "publicationAllowed": false
+    },
+    {
+      "canonicalKey": "calciumgluconate",
+      "canonicalName": "Calcium gluconate",
+      "status": "verified_product_specific",
+      "sourceTier": "EMC",
+      "sourceKey": "emc-6264-smpc",
+      "url": "https://www.medicines.org.uk/emc/product/6264/smpc",
+      "productName": "Calcium Gluconate 10% solution for injection/infusion BP",
+      "documentDate": "2023-06-27",
+      "section41Present": true,
+      "section42Present": true,
+      "reviewFlags": [
+        "parenteral_high_risk",
+        "acute_hypocalcaemia",
+        "infusion_or_injection_route",
+        "dose_and_rate_monitoring",
+        "electrolyte_context",
+        "clinical_review_required"
+      ],
+      "publicationAllowed": false
+    },
+    {
+      "canonicalKey": "chloramphenicol",
+      "canonicalName": "Chloramphenicol",
+      "status": "verified_product_specific",
+      "sourceTier": "EMC",
+      "sourceKey": "emc-14433-smpc",
+      "url": "https://www.medicines.org.uk/emc/product/14433/smpc",
+      "productName": "Chloramphenicol 1 g Powder for Solution for Injection",
+      "documentDate": "2023-01-06",
+      "section41Present": true,
+      "section42Present": true,
+      "reviewFlags": [
+        "systemic_antimicrobial",
+        "serious_infections_only",
+        "official_antimicrobial_guidance",
+        "age_weight_branching",
+        "toxicity_monitoring",
+        "do_not_generalize_to_eye_products",
+        "clinical_review_required"
+      ],
+      "publicationAllowed": false
+    },
+    {
+      "canonicalKey": "clobetasolpropionate",
+      "canonicalName": "Clobetasol propionate",
+      "status": "verified_product_specific",
+      "sourceTier": "EMC",
+      "sourceKey": "emc-101904-smpc",
+      "url": "https://www.medicines.org.uk/emc/product/101904/smpc",
+      "productName": "Clobetasol propionate 500 micrograms/g shampoo",
+      "documentDate": "2026-06-29",
+      "section41Present": true,
+      "section42Present": true,
+      "reviewFlags": [
+        "very_potent_topical_corticosteroid",
+        "shampoo_formulation_specific",
+        "scalp_psoriasis",
+        "short_term_use",
+        "do_not_generalize_to_cream_or_ointment"
+      ],
+      "publicationAllowed": false
+    },
+    {
+      "canonicalKey": "clomiphene",
+      "canonicalName": "Clomiphene",
+      "status": "verified_product_specific_alias_match",
+      "sourceTier": "EMC",
+      "sourceKey": "emc-15080-smpc",
+      "url": "https://www.medicines.org.uk/emc/product/15080/smpc",
+      "productName": "Clomifene 50mg Tablets",
+      "documentDate": "2024-06-26",
+      "section41Present": true,
+      "section42Present": true,
+      "reviewFlags": [
+        "reviewed_spelling_alias_clomiphene_to_clomifene",
+        "fertility_specialist_context",
+        "adult_women_only",
+        "cycle_specific_regimen",
+        "ovulation_monitoring",
+        "clinical_review_required"
+      ],
+      "publicationAllowed": false
+    },
+    {
+      "canonicalKey": "clotrimazole",
+      "canonicalName": "Clotrimazole",
+      "status": "verified_product_specific",
+      "sourceTier": "EMC",
+      "sourceKey": "emc-102509-smpc",
+      "url": "https://www.medicines.org.uk/emc/product/102509/smpc",
+      "productName": "Clotrimazole Cream 1%",
+      "documentDate": "2026-08-07",
+      "section41Present": true,
+      "section42Present": true,
+      "reviewFlags": [
+        "topical_cream_only",
+        "dermatophyte_and_candida_skin_indications",
+        "application_frequency",
+        "duration_by_indication",
+        "do_not_generalize_to_vaginal_products"
+      ],
+      "publicationAllowed": false
+    }
+  ]
+}
