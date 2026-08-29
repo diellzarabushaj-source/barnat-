@@ -7,7 +7,7 @@ const path = require('node:path');
 const ROOT = path.resolve(__dirname, '..');
 const read = rel => fs.readFileSync(path.join(ROOT, rel), 'utf8');
 const normalize = source => source
-  .replace(/\n\/\/ Canonical Supabase maintenance script\. Legacy Neon-named file is retained for compatibility\.\n/, '\n')
+  .replace(/\n\/\/ Canonical Supabase maintenance script\. Legacy Neon-named file is retained for compatibility\.\n\n/, '\n')
   .trim();
 
 const pairs = [
