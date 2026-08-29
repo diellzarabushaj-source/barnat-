@@ -1,6 +1,6 @@
 {
   "schemaVersion": "drx-dosierung-master-plan-status-v1",
-  "updatedAt": "2026-08-29T11:35:42.600Z",
+  "updatedAt": "2026-08-29T11:46:19.382Z",
   "officialPlan": "DRx Dosierung phases 0-32",
   "databaseBlocker": {
     "active": true,
@@ -255,15 +255,19 @@
     {
       "id": 14,
       "name": "Supabase V3",
-      "status": "BLOCKED_DB_GATEWAY_CANDIDATE_READY",
+      "status": "BLOCKED_DB_GATEWAY_CANDIDATE_HARDENED",
       "evidence": [
         "V2 preserved",
         "identified additive V3 gaps from ibuprofen pilot",
         "supabase/drx-dose-v3-additive-candidate.sql",
         "tests/drx-dose-v3-supabase-candidate-test.js",
-        "data/drx-dose-v3-supabase-candidate-status.json"
+        "data/drx-dose-v3-supabase-candidate-status.json",
+        "2026-08-29 Phase 14 read-only recheck: SELECT 1 -> connection timeout",
+        "2026-08-29 Phase 14 read-only recheck: list_migrations -> connection timeout",
+        "Supabase project status remains ACTIVE_HEALTHY while Postgres logs remain readable",
+        "V3 candidate hardened: 12/12 RLS, PUBLIC/anon/authenticated fail-closed grants, insert+update publication guards, source-tier gate, persisted SmPC 4.2 artifact gate, partial-shadow-schema preflight"
       ],
-      "next": "when SQL gateway recovers: baseline tables/types -> apply_migration -> security/performance advisors -> smoke queries"
+      "next": "do not retry/write while gateway is timing out; when read-only SQL recovers: SELECT 1 -> list_migrations -> baseline table/type audit -> security/performance advisors -> parse/apply candidate -> smoke -> rollback evidence"
     },
     {
       "id": 15,
@@ -563,7 +567,7 @@
     "publicationReady": 0,
     "reviewPacketsReady": 25,
     "supabaseProjectHealth": "ACTIVE_HEALTHY",
-    "supabaseSqlGateway": "timeout_after_list_migrations_recheck_with_temp_disk_exhaustion_log",
+    "supabaseSqlGateway": "connection_timeout_select1_and_migrations_recheck",
     "v3CandidateReady": true,
     "v3Applied": false,
     "releaseGateImplemented": true,
