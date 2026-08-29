@@ -1,6 +1,6 @@
 {
   "schemaVersion": "drx-dosierung-master-plan-status-v1",
-  "updatedAt": "2026-08-29T04:03:21.150Z",
+  "updatedAt": "2026-08-29T04:06:29.309Z",
   "officialPlan": "DRx Dosierung phases 0-32",
   "databaseBlocker": {
     "active": true,
@@ -47,7 +47,7 @@
     {
       "id": 3,
       "name": "Source Discovery",
-      "status": "IN_PROGRESS_FIRST100_54_PRODUCT_SOURCES_VERIFIED",
+      "status": "IN_PROGRESS_FIRST100_60_VERIFIED_2_PENDING_25_UNCOVERED",
       "evidence": [
         "data/drx-dose-source-map-v1.json",
         "ibuprofen pilot with official eMC oral+IV SmPCs",
@@ -66,9 +66,13 @@
         "first-100 source discovery verified product total: 47",
         "data/drx-first100-source-discovery-wave-e-v1.json",
         "7 additional live eMC product-specific SmPCs verified in wave E",
-        "first-100 source discovery verified product total: 54"
+        "first-100 source discovery verified product total: 54",
+        "data/drx-first100-source-discovery-wave-f-v1.json",
+        "6 additional AEMPS/CIMA product-specific fichas verified in wave F",
+        "EMA Exforge HCT official source found; PDF section visual verification pending because EMA returned 429",
+        "first-100 verified product-specific source total: 60"
       ],
-      "next": "continue exact official source discovery for remaining 32 eligible rows; keep EMA PDF section checks pending when screenshots cannot be obtained"
+      "next": "continue exact official source discovery for remaining 25 eligible rows; resolve Exforge HCT section verification and alteplase product selection separately"
     },
     {
       "id": 4,
@@ -497,7 +501,7 @@
     "first100ProductionEligibleRows": 0,
     "first100ProductionDiscoveryAllowed": false,
     "first100SourceDiscoveryEligible": 87,
-    "first100VerifiedProductSources": 54,
+    "first100VerifiedProductSources": 60,
     "first100ProductSelectionRequired": 1,
     "legacyMirrorPrecheck": {
       "present": 2,
@@ -506,6 +510,8 @@
       "bindings": 4,
       "liveCompared": false
     },
-    "first100SourceDiscoveryRemaining": 32
+    "first100SourceDiscoveryRemaining": 25,
+    "first100SourceSectionVerificationPending": 1,
+    "first100ProductSelectionPending": 1
   }
 }
