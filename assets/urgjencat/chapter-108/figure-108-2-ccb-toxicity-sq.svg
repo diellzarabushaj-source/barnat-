@@ -1,44 +1,17 @@
-<svg xmlns="http://www.w3.org/2000/svg" width="1000" height="1050" viewBox="0 0 1000 1050">
-<rect width="100%" height="100%" fill="white"/>
-<defs><marker id="arr" markerWidth="9" markerHeight="9" refX="8" refY="4.5" orient="auto"><path d="M0,0 L9,4.5 L0,9 z" fill="#555"/></marker></defs>
-<text x="500" y="15.6" font-family="DejaVu Sans,Arial" font-size="21" font-weight="700" text-anchor="middle" fill="#111">Algoritmi i trajtimit të toksicitetit të rëndë</text>
-<text x="500" y="40.4" font-family="DejaVu Sans,Arial" font-size="21" font-weight="700" text-anchor="middle" fill="#111">nga bllokuesit e kanaleve të kalciumit</text>
-<rect x="220" y="70" width="560" height="100" rx="6" fill="#eadff0" stroke="#9a78a9" stroke-width="1.5"/>
-<text x="500.0" y="105.0" font-family="DejaVu Sans,Arial" font-size="17" font-weight="400" text-anchor="middle" fill="#111">Kalcium glukonat ose kalcium klorid 10 mL 10%</text>
-<text x="500.0" y="125.1" font-family="DejaVu Sans,Arial" font-size="17" font-weight="400" text-anchor="middle" fill="#111">(0.15 mL/kg) IV gjatë 5 min*</text>
-<text x="500.0" y="145.2" font-family="DejaVu Sans,Arial" font-size="17" font-weight="400" text-anchor="middle" fill="#111">Mund të përsëritet deri 3 herë nëse s'ka përgjigje</text>
-<line x1="500" y1="170" x2="500" y2="220" stroke="#555" stroke-width="2" marker-end="url(#arr)"/>
-<rect x="240" y="220" width="520" height="80" rx="6" fill="#eadff0" stroke="#9a78a9" stroke-width="1.5"/>
-<text x="500.0" y="254.8" font-family="DejaVu Sans,Arial" font-size="18" font-weight="400" text-anchor="middle" fill="#111">Epinefrinë ose norepinefrinë</text>
-<text x="500.0" y="276.0" font-family="DejaVu Sans,Arial" font-size="18" font-weight="400" text-anchor="middle" fill="#111">1–5 µg/min (titro sipas përgjigjes)</text>
-<line x1="500" y1="300" x2="500" y2="340" stroke="#555" stroke-width="2"/>
-<line x1="300" y1="340" x2="700" y2="340" stroke="#555" stroke-width="2"/>
-<line x1="300" y1="340" x2="300" y2="375" stroke="#555" stroke-width="2" marker-end="url(#arr)"/>
-<line x1="700" y1="340" x2="700" y2="375" stroke="#555" stroke-width="2" marker-end="url(#arr)"/>
-<rect x="90" y="375" width="420" height="155" rx="6" fill="#e4f1e6" stroke="#6c9a74" stroke-width="1.5"/>
-<text x="300.0" y="427.5" font-family="DejaVu Sans,Arial" font-size="17" font-weight="400" text-anchor="middle" fill="#111">Glukagon 3–10 mg (0.03–0.05 mg/kg)</text>
-<text x="300.0" y="447.6" font-family="DejaVu Sans,Arial" font-size="17" font-weight="400" text-anchor="middle" fill="#111">bolus IV; mund të përsëritet çdo 10 min;</text>
-<text x="300.0" y="467.6" font-family="DejaVu Sans,Arial" font-size="17" font-weight="400" text-anchor="middle" fill="#111">konsidero infuzion IV 1–5 mg/h</text>
-<text x="300.0" y="487.7" font-family="DejaVu Sans,Arial" font-size="17" font-weight="400" text-anchor="middle" fill="#111">(0.02–0.07 mg/kg/h)</text>
-<rect x="540" y="375" width="400" height="185" rx="6" fill="#f6e7df" stroke="#ca8565" stroke-width="1.5"/>
-<text x="740.0" y="434.5" font-family="DejaVu Sans,Arial" font-size="16" font-weight="400" text-anchor="middle" fill="#111">Nëse glukoza &lt;200 mg/dL:</text>
-<text x="740.0" y="453.4" font-family="DejaVu Sans,Arial" font-size="16" font-weight="400" text-anchor="middle" fill="#111">50 mL dekstrozë 50% IV; insulinë e rregullt</text>
-<text x="740.0" y="472.3" font-family="DejaVu Sans,Arial" font-size="16" font-weight="400" text-anchor="middle" fill="#111">1 U/kg bolus IV; pastaj infuzion insulinë</text>
-<text x="740.0" y="491.2" font-family="DejaVu Sans,Arial" font-size="16" font-weight="400" text-anchor="middle" fill="#111">0.5–1.0 U/kg/h + D10W 200 mL/h</text>
-<text x="740.0" y="510.1" font-family="DejaVu Sans,Arial" font-size="16" font-weight="400" text-anchor="middle" fill="#111">(5 mL/kg/h)</text>
-<line x1="740" y1="560" x2="740" y2="610" stroke="#555" stroke-width="2" marker-end="url(#arr)"/>
-<rect x="540" y="610" width="400" height="120" rx="6" fill="#f6e7df" stroke="#ca8565" stroke-width="1.5"/>
-<text x="740.0" y="655.0" font-family="DejaVu Sans,Arial" font-size="17" font-weight="400" text-anchor="middle" fill="#111">Emulsion lipidik (Intralipid®) 20%</text>
-<text x="740.0" y="675.1" font-family="DejaVu Sans,Arial" font-size="17" font-weight="400" text-anchor="middle" fill="#111">1.5 mL/kg bolus IV gjatë 2–3 min;</text>
-<text x="740.0" y="695.2" font-family="DejaVu Sans,Arial" font-size="17" font-weight="400" text-anchor="middle" fill="#111">pastaj infuzion 0.5 mL/kg/min</text>
-<line x1="740" y1="730" x2="740" y2="775" stroke="#555" stroke-width="2" marker-end="url(#arr)"/>
-<rect x="575" y="775" width="330" height="85" rx="6" fill="#f6e7df" stroke="#ca8565" stroke-width="1.5"/>
-<text x="740.0" y="812.3" font-family="DejaVu Sans,Arial" font-size="18" font-weight="400" text-anchor="middle" fill="#111">Atropinë ose pacing për</text>
-<text x="740.0" y="833.5" font-family="DejaVu Sans,Arial" font-size="18" font-weight="400" text-anchor="middle" fill="#111">bradikardi simptomatike</text>
-<line x1="740" y1="860" x2="740" y2="905" stroke="#555" stroke-width="2" marker-end="url(#arr)"/>
-<rect x="585" y="905" width="310" height="80" rx="6" fill="#f6e7df" stroke="#ca8565" stroke-width="1.5"/>
-<text x="740.0" y="940.1" font-family="DejaVu Sans,Arial" font-size="17" font-weight="400" text-anchor="middle" fill="#111">Mbështetje ekstrakorporale</text>
-<text x="740.0" y="960.1" font-family="DejaVu Sans,Arial" font-size="17" font-weight="400" text-anchor="middle" fill="#111">e presionit si rescue</text>
-<text x="55" y="1011.7" font-family="DejaVu Sans,Arial" font-size="14" font-weight="400" text-anchor="start" fill="#111">*Kalcium kloridi jep rreth 3× më shumë kalcium elementar se glukonati;</text>
-<text x="55" y="1028.3" font-family="DejaVu Sans,Arial" font-size="14" font-weight="400" text-anchor="start" fill="#111">burimi kërkon kujdes në toksicitetin nga digoksina.</text>
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="1220" viewBox="0 0 1200 1220">
+<defs><marker id="a" markerWidth="10" markerHeight="10" refX="8" refY="3" orient="auto"><path d="M0,0 L0,6 L9,3 z" fill="#222"/></marker><style>.b{fill:#fff;stroke:#444;stroke-width:2;rx:10}.h{fill:#f3eef9}.o{fill:#fff0e8}.g{fill:#edf7ef}.t{font: 28px Arial,sans-serif;fill:#111}.s{font: 23px Arial,sans-serif;fill:#111}.c{text-anchor:middle;dominant-baseline:middle}.l{stroke:#222;stroke-width:3;fill:none;marker-end:url(#a)}</style></defs>
+<rect width="1200" height="1220" fill="white"/>
+<text x="600" y="40" class="t c" font-weight="700">Algoritmi i toksicitetit të rëndë nga bllokuesit e kanaleve të kalciumit</text>
+<rect x="280" y="85" width="640" height="115" class="b h"/><text x="600" y="120" class="s c">Glukonat ose klorur kalciumi 10 mL të solucionit 10%</text><text x="600" y="155" class="s c">(0.15 mL/kg) IV gjatë 5 min</text><text x="600" y="188" class="s c">Mund të përsëritet deri 3 herë nëse nuk ka përgjigje</text>
+<path d="M600 200 V250" class="l"/>
+<rect x="280" y="250" width="640" height="90" class="b h"/><text x="600" y="282" class="s c">Epinefrinë ose norepinefrinë</text><text x="600" y="315" class="s c">1–5 µg/min, titro sipas përgjigjes</text>
+<path d="M600 340 V390" class="l"/><path d="M600 390 H330 V430" class="l"/><path d="M600 390 H870 V430" class="l"/>
+<rect x="100" y="430" width="460" height="175" class="b g"/><text x="330" y="465" class="s c">Glukagon 3–10 mg (0.03–0.05 mg/kg) IV bolus</text><text x="330" y="500" class="s c">Mund të përsëritet çdo 10 min</text><text x="330" y="535" class="s c">Konsidero infuzion IV 1–5 mg/h</text><text x="330" y="570" class="s c">(0.02–0.07 mg/kg/h)</text>
+<rect x="640" y="430" width="460" height="215" class="b o"/><text x="870" y="465" class="s c">Nëse glukoza serike &lt;200 mg/dL:</text><text x="870" y="500" class="s c">dekstrozë 50% 50 mL IV</text><text x="870" y="535" class="s c">+ insulinë e rregullt 1 U/kg IV bolus</text><text x="870" y="570" class="s c">pastaj 0.5–1 U/kg/h</text><text x="870" y="605" class="s c">dhe D10W 200 mL/h (5 mL/kg/h)</text>
+<path d="M870 645 V700" class="l"/>
+<rect x="650" y="700" width="440" height="150" class="b o"/><text x="870" y="735" class="s c">Emulsion lipidik 20%</text><text x="870" y="770" class="s c">1.5 mL/kg IV bolus gjatë 2–3 min</text><text x="870" y="805" class="s c">pastaj infuzion 0.5 mL/kg/min</text>
+<path d="M870 850 V900" class="l"/>
+<rect x="680" y="900" width="380" height="105" class="b o"/><text x="870" y="935" class="s c">Atropinë ose stimulim kardiak</text><text x="870" y="970" class="s c">për bradikardi simptomatike</text>
+<path d="M870 1005 V1045" class="l"/>
+<rect x="680" y="1045" width="380" height="110" class="b o"/><text x="870" y="1080" class="s c">Mbështetje ekstrakorporale</text><text x="870" y="1115" class="s c">e presionit të gjakut si terapi shpëtuese</text>
 </svg>

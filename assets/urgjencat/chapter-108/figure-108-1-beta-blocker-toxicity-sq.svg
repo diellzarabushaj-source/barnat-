@@ -1,47 +1,19 @@
-<svg xmlns="http://www.w3.org/2000/svg" width="1100" height="760" viewBox="0 0 1100 760">
-<rect width="100%" height="100%" fill="white"/>
-<defs><marker id="arr" markerWidth="9" markerHeight="9" refX="8" refY="4.5" orient="auto"><path d="M0,0 L9,4.5 L0,9 z" fill="#555"/></marker></defs>
-<text x="550" y="35.0" font-family="DejaVu Sans,Arial" font-size="28" font-weight="700" text-anchor="middle" fill="#111">Menaxhimi i toksicitetit nga β-bllokuesit</text>
-<rect x="440" y="65" width="220" height="60" rx="6" fill="#eadff0" stroke="#9a78a9" stroke-width="1.5"/>
-<text x="550.0" y="101.0" font-family="DejaVu Sans,Arial" font-size="20" font-weight="700" text-anchor="middle" fill="#111">Hipotension</text>
-<line x1="550" y1="125" x2="550" y2="165" stroke="#555" stroke-width="2" marker-end="url(#arr)"/>
-<rect x="250" y="165" width="600" height="75" rx="6" fill="#eadff0" stroke="#9a78a9" stroke-width="1.5"/>
-<text x="550.0" y="197.6" font-family="DejaVu Sans,Arial" font-size="17" font-weight="400" text-anchor="middle" fill="#111">Vlerësimi</text>
-<text x="550.0" y="217.6" font-family="DejaVu Sans,Arial" font-size="17" font-weight="400" text-anchor="middle" fill="#111">(ECG, ekokardiografi ose kateter i arteries pulmonare)</text>
-<line x1="550" y1="240" x2="550" y2="280" stroke="#555" stroke-width="2"/>
-<line x1="150" y1="280" x2="950" y2="280" stroke="#555" stroke-width="2"/>
-<line x1="175" y1="280" x2="175" y2="320" stroke="#555" stroke-width="2" marker-end="url(#arr)"/>
-<line x1="420" y1="280" x2="420" y2="320" stroke="#555" stroke-width="2" marker-end="url(#arr)"/>
-<line x1="675" y1="280" x2="675" y2="320" stroke="#555" stroke-width="2" marker-end="url(#arr)"/>
-<line x1="920" y1="280" x2="920" y2="320" stroke="#555" stroke-width="2" marker-end="url(#arr)"/>
-<rect x="70" y="320" width="210" height="70" rx="6" fill="#f6e7df" stroke="#ca8565" stroke-width="1.5"/>
-<text x="175.0" y="360.4" font-family="DejaVu Sans,Arial" font-size="18" font-weight="400" text-anchor="middle" fill="#111">QRS &gt;120 ms</text>
-<rect x="310" y="320" width="220" height="70" rx="6" fill="#f6e7df" stroke="#ca8565" stroke-width="1.5"/>
-<text x="420.0" y="349.8" font-family="DejaVu Sans,Arial" font-size="18" font-weight="400" text-anchor="middle" fill="#111">Kontraktilitet</text>
-<text x="420.0" y="371.0" font-family="DejaVu Sans,Arial" font-size="18" font-weight="400" text-anchor="middle" fill="#111">i ulur</text>
-<rect x="565" y="320" width="220" height="70" rx="6" fill="#f6e7df" stroke="#ca8565" stroke-width="1.5"/>
-<text x="675.0" y="360.4" font-family="DejaVu Sans,Arial" font-size="18" font-weight="400" text-anchor="middle" fill="#111">SVR e ulur</text>
-<rect x="810" y="320" width="220" height="70" rx="6" fill="#f6e7df" stroke="#ca8565" stroke-width="1.5"/>
-<text x="920.0" y="360.4" font-family="DejaVu Sans,Arial" font-size="18" font-weight="400" text-anchor="middle" fill="#111">Bradikardi</text>
-<line x1="175" y1="390" x2="175" y2="440" stroke="#555" stroke-width="2" marker-end="url(#arr)"/>
-<line x1="420" y1="390" x2="420" y2="440" stroke="#555" stroke-width="2" marker-end="url(#arr)"/>
-<line x1="675" y1="390" x2="675" y2="440" stroke="#555" stroke-width="2" marker-end="url(#arr)"/>
-<line x1="920" y1="390" x2="920" y2="440" stroke="#555" stroke-width="2" marker-end="url(#arr)"/>
-<rect x="70" y="440" width="210" height="85" rx="6" fill="#e4f1e6" stroke="#6c9a74" stroke-width="1.5"/>
-<text x="175.0" y="477.0" font-family="DejaVu Sans,Arial" font-size="19" font-weight="400" text-anchor="middle" fill="#111">Bikarbonat</text>
-<text x="175.0" y="499.4" font-family="DejaVu Sans,Arial" font-size="19" font-weight="400" text-anchor="middle" fill="#111">natriumi</text>
-<rect x="300" y="440" width="240" height="145" rx="6" fill="#e4f1e6" stroke="#6c9a74" stroke-width="1.5"/>
-<text x="420.0" y="487.5" font-family="DejaVu Sans,Arial" font-size="17" font-weight="400" text-anchor="middle" fill="#111">Glukagon</text>
-<text x="420.0" y="507.6" font-family="DejaVu Sans,Arial" font-size="17" font-weight="400" text-anchor="middle" fill="#111">Insulinë në dozë të lartë</text>
-<text x="420.0" y="527.6" font-family="DejaVu Sans,Arial" font-size="17" font-weight="400" text-anchor="middle" fill="#111">Agjentë adrenergjikë</text>
-<text x="420.0" y="547.7" font-family="DejaVu Sans,Arial" font-size="17" font-weight="400" text-anchor="middle" fill="#111">Kripëra kalciumi</text>
-<rect x="565" y="440" width="220" height="85" rx="6" fill="#e4f1e6" stroke="#6c9a74" stroke-width="1.5"/>
-<text x="675.0" y="488.2" font-family="DejaVu Sans,Arial" font-size="19" font-weight="400" text-anchor="middle" fill="#111">Vazopresorë</text>
-<rect x="800" y="440" width="240" height="145" rx="6" fill="#e4f1e6" stroke="#6c9a74" stroke-width="1.5"/>
-<text x="920.0" y="496.7" font-family="DejaVu Sans,Arial" font-size="18" font-weight="400" text-anchor="middle" fill="#111">Glukagon</text>
-<text x="920.0" y="517.9" font-family="DejaVu Sans,Arial" font-size="18" font-weight="400" text-anchor="middle" fill="#111">Agjent3« adrenergjikë</text>
-<text x="920.0" y="539.1" font-family="DejaVu Sans,Arial" font-size="18" font-weight="400" text-anchor="middle" fill="#111">Pacing kardiak</text>
-<text x="550" y="635.6" font-family="DejaVu Sans,Arial" font-size="16" font-weight="400" text-anchor="middle" fill="#111">Figura 108-1. Strategjitë e menaxhimit në toksicitetin nga β-bllokuesit.</text>
-<text x="550" y="654.4" font-family="DejaVu Sans,Arial" font-size="16" font-weight="400" text-anchor="middle" fill="#111">Funksioni kardiak vlerësohet me ECG dhe ekokardiografi dhe/ose kateter të arteries pulmonare.</text>
-<text x="60" y="705.0" font-family="DejaVu Sans,Arial" font-size="15" font-weight="400" text-anchor="start" fill="#111">SVR = rezistenca vaskulare sistemike.</text>
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="760" viewBox="0 0 1200 760">
+<defs><marker id="a" markerWidth="10" markerHeight="10" refX="8" refY="3" orient="auto"><path d="M0,0 L0,6 L9,3 z" fill="#222"/></marker><style>.b{fill:#fff;stroke:#444;stroke-width:2;rx:10}.h{fill:#f3eef9}.o{fill:#fff0e8}.g{fill:#edf7ef}.t{font: 28px Arial,sans-serif;fill:#111}.s{font: 24px Arial,sans-serif;fill:#111}.c{text-anchor:middle;dominant-baseline:middle}.l{stroke:#222;stroke-width:3;fill:none;marker-end:url(#a)}</style></defs>
+<rect width="1200" height="760" fill="white"/>
+<text x="600" y="40" class="t c" font-weight="700">Menaxhimi i toksicitetit nga β-bllokuesit</text>
+<rect x="470" y="80" width="260" height="70" class="b h"/><text x="600" y="115" class="t c">Hipotension</text>
+<path d="M600 150 V205" class="l"/>
+<rect x="260" y="205" width="680" height="90" class="b h"/><text x="600" y="235" class="s c">Vlerësim</text><text x="600" y="270" class="s c">ECG, ekokardiografi ose kateter i arteries pulmonare</text>
+<path d="M600 295 V340" class="l"/><path d="M600 340 H155 V390" class="l"/><path d="M600 340 H450 V390" class="l"/><path d="M600 340 H750 V390" class="l"/><path d="M600 340 H1045 V390" class="l"/>
+<rect x="40" y="390" width="230" height="85" class="b o"/><text x="155" y="432" class="s c">QRS &gt;120 ms</text>
+<rect x="335" y="390" width="230" height="85" class="b o"/><text x="450" y="420" class="s c">Kontraktilitet</text><text x="450" y="452" class="s c">i ulur</text>
+<rect x="635" y="390" width="230" height="85" class="b o"/><text x="750" y="420" class="s c">SVR</text><text x="750" y="452" class="s c">e ulur</text>
+<rect x="930" y="390" width="230" height="85" class="b o"/><text x="1045" y="432" class="s c">Bradikardi</text>
+<path d="M155 475 V535" class="l"/><path d="M450 475 V535" class="l"/><path d="M750 475 V535" class="l"/><path d="M1045 475 V535" class="l"/>
+<rect x="40" y="535" width="230" height="105" class="b g"/><text x="155" y="587" class="s c">Bikarbonat</text><text x="155" y="617" class="s c">natriumi</text>
+<rect x="320" y="535" width="260" height="165" class="b g"/><text x="450" y="565" class="s c">Glukagon</text><text x="450" y="600" class="s c">Insulinë me dozë të lartë</text><text x="450" y="635" class="s c">Agjentë adrenergjikë</text><text x="450" y="670" class="s c">Kripëra kalciumi</text>
+<rect x="635" y="535" width="230" height="105" class="b g"/><text x="750" y="587" class="s c">Vazopresorë</text>
+<rect x="915" y="535" width="260" height="165" class="b g"/><text x="1045" y="565" class="s c">Glukagon</text><text x="1045" y="600" class="s c">Agjentë adrenergjikë</text><text x="1045" y="635" class="s c">Stimulim kardiak</text>
+<text x="600" y="735" class="s c">SVR = rezistenca vaskulare sistemike</text>
 </svg>
