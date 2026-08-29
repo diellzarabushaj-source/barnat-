@@ -1,0 +1,47 @@
+name: DRx Batch 2 Source Archive
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [main]
+    paths:
+      - 'scripts/build-drx-batch2-extraction-index.js'
+      - 'lib/dose-source-archive.js'
+      - 'lib/smpc-parser.js'
+      - 'data/drx-dose-batch2-v1.json'
+      - '.github/workflows/drx-batch2-source-archive.yml'
+
+permissions:
+  contents: read
+
+jobs:
+  archive:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+
+      - name: Archive and parse Batch 2 sources
+        env:
+          DRX_ARCHIVE_DIR: artifacts/drx-batch2-raw
+        run: |
+          mkdir -p "$DRX_ARCHIVE_DIR"
+          node scripts/build-drx-batch2-extraction-index.js
+
+      - name: Verify extraction index
+        run: |
+          node -e "const x=require('./data/drx-batch2-extraction-index-v1.json'); if(!x.complete || x.extractedCount!==25 || x.failedCount!==0) process.exit(1)"
+
+      - name: Upload source archive
+        uses: actions/upload-artifact@v4
+        with:
+          name: drx-batch2-source-archive
+          path: |
+            artifacts/drx-batch2-raw/**
+            data/drx-batch2-extraction-index-v1.json
+          if-no-files-found: error
+          retention-days: 90
