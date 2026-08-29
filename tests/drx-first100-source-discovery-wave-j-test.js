@@ -1,0 +1,34 @@
+'use strict';
+const assert=require('node:assert/strict');
+const fs=require('node:fs');const path=require('node:path');
+const Policy=require('../lib/dose-source-policy.js');
+const ROOT=path.resolve(__dirname,'..');
+const read=p=>JSON.parse(fs.readFileSync(path.join(ROOT,p),'utf8'));
+const wave=read('data/drx-first100-source-discovery-wave-j-v1.json');
+const quality=read('data/drx-first100-canonical-quality-audit-v1.json');
+const decisions=read('data/drx-first100-canonical-review-decisions-v1.json');
+const prior=['a','b','c','d','e','f','g','h','i'].flatMap(l=>read('data/drx-first100-source-discovery-wave-'+l+'-v1.json').rows);
+assert.equal(wave.verifiedProductSpecificCount,2);
+assert.equal(wave.rows.length,2);
+assert.equal(wave.publicationAllowed,false);
+const priorKeys=new Set(prior.map(x=>x.canonicalKey));
+const eligible=new Set(quality.rows.filter(x=>x.sourceDiscoveryEligible).map(x=>x.canonicalKey));
+const resolved=new Set(decisions.decisions.filter(x=>x.sourceDiscoveryEligible&&x.resolvedCanonicalKey).map(x=>x.resolvedCanonicalKey));
+for(const row of wave.rows){
+ assert.equal(priorKeys.has(row.canonicalKey),false,row.canonicalKey+': duplicate prior wave');
+ assert.ok(eligible.has(row.canonicalKey)||resolved.has(row.canonicalKey),row.canonicalKey+': not effective eligible');
+ assert.equal(Policy.sourceTierForUrl(row.url).key,row.sourceTier);
+ assert.equal(row.section41Present,true);
+ assert.equal(row.section42Present,true);
+ assert.equal(row.publicationAllowed,false);
+}
+const pancreatin=wave.rows.find(x=>x.canonicalKey==='pancreatin');
+assert.ok(pancreatin);
+assert.equal(pancreatin.sourceTier,'EMC');
+assert.match(pancreatin.productName,/Creon 25000/);
+const dentinox=wave.rows.find(x=>x.canonicalKey==='chamomiletincturelauromacrogollidocaine');
+assert.ok(dentinox);
+assert.equal(dentinox.sourceTier,'EU_NATIONAL');
+assert.match(dentinox.productName,/Dentinox/i);
+assert.equal(dentinox.currentRegistryCrosscheck.atcCode,'A01AD11');
+console.log('DRx first-100 official source discovery wave J contract passed.');
