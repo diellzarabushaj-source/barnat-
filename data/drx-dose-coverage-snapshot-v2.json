@@ -1,6 +1,6 @@
 {
   "schemaVersion": "drx-dose-coverage-snapshot-v2",
-  "generatedAt": "2026-08-29T23:45:00+02:00",
+  "generatedAt": "2026-08-30T00:05:00+02:00",
   "publicationAllowed": false,
   "counts": {
     "batch1Substances": 10,
@@ -13,7 +13,9 @@
     "clinicallyReviewed": 0,
     "published": 0,
     "liveWebEvidenceStructured": 25,
-    "batch2ArchiveSnapshots": 0
+    "batch2ArchiveSnapshots": 0,
+    "openClinicalReviewQueue": 25,
+    "highPriorityClinicalReviewQueue": 21
   },
   "gates": {
     "supabaseLiveAvailable": false,
@@ -25,7 +27,9 @@
     "batch2LiveWebEvidenceWave3": true,
     "batch2LiveWebEvidenceWave4": true,
     "batch2LiveWebEvidenceWave5": true,
-    "batch2LiveWebEvidenceComplete": true
+    "batch2LiveWebEvidenceComplete": true,
+    "archiveWorkflowConfigured": true,
+    "archiveWorkflowRunObserved": false
   },
-  "next": "archive all 25 official source documents and record SHA-256 evidence before increasing extracted or normalized coverage"
+  "next": "run the archive workflow and record 25 hash-backed snapshots before raising extracted or normalized counts"
 }
