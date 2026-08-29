@@ -63,6 +63,7 @@ async function extractOne(item, options = {}) {
     archiveFiles:archiveFiles ? {
       rawPath:path.relative(ROOT, archiveFiles.rawPath),
       metaPath:path.relative(ROOT, archiveFiles.metaPath),
+      sectionsPath:path.relative(ROOT, archiveFiles.sectionsPath),
     } : null,
   };
 }

@@ -80,6 +80,7 @@ function verifyArchive(options = {}) {
   const seenHash = new Set();
   const referencedRaw = new Set();
   const referencedMeta = new Set();
+  const referencedSections = new Set();
 
   for (const row of rows) {
     const key = String(row?.canonicalKey || 'unknown');
@@ -157,17 +158,62 @@ function verifyArchive(options = {}) {
     if (meta.parser?.doseSectionPresent !== true) errors.push(`${prefix}:meta_section_4_2_missing`);
     if (meta.sectionSha256?.['4.1'] !== row.section41Sha256) errors.push(`${prefix}:meta_section_4_1_hash_mismatch`);
     if (meta.sectionSha256?.['4.2'] !== row.section42Sha256) errors.push(`${prefix}:meta_section_4_2_hash_mismatch`);
+
+    // The section payload is what the database load actually reads, so it is
+    // checked against the raw document rather than trusted. Verifying the
+    // metadata hashes alone would leave the file the loader consumes unchecked.
+    const sectionsPath = resolveArchiveReference(
+      repoRoot, archiveRoot, row?.archiveFiles?.sectionsPath, `${prefix}:sections`, errors
+    );
+    if (!sectionsPath) continue;
+    referencedSections.add(sectionsPath);
+    if (!fs.existsSync(sectionsPath)) {
+      errors.push(`${prefix}:sections_missing`);
+      continue;
+    }
+    const payload = parseJsonFile(sectionsPath, `${prefix}:sections`, errors);
+    if (!payload) continue;
+    if (payload.schemaVersion !== 'drx-dose-section-payload-v1') errors.push(`${prefix}:sections_schema_mismatch`);
+    if (payload.snapshotId !== row.snapshotId) errors.push(`${prefix}:sections_snapshot_id_mismatch`);
+    if (payload.rawSha256 !== row.rawSha256) errors.push(`${prefix}:sections_raw_hash_mismatch`);
+
+    // Text equality, not just hash equality: rehash the payload's own text and
+    // require it to reproduce the hash derived from the raw document. This is
+    // what makes the loaded rows provably the archived document's text.
+    for (const [code, expectedHash, reparsedText] of [
+      ['4.1', row.section41Sha256, reparsed41],
+      ['4.2', row.section42Sha256, reparsed42],
+    ]) {
+      const text = String(payload.sections?.[code]?.text || '');
+      if (!text) {
+        errors.push(`${prefix}:sections_${code.replace('.', '_')}_missing`);
+        continue;
+      }
+      if (sha256(Buffer.from(text, 'utf8')) !== expectedHash) {
+        errors.push(`${prefix}:sections_${code.replace('.', '_')}_hash_mismatch`);
+      }
+      if (text !== reparsedText) {
+        errors.push(`${prefix}:sections_${code.replace('.', '_')}_text_mismatch`);
+      }
+    }
   }
 
   const files = walkFiles(archiveRoot);
   const rawFiles = files.filter(file => file.endsWith('.raw'));
-  const metaFiles = files.filter(file => file.endsWith('.json'));
+  // Section payloads also end in .json, so they must be split out before the
+  // metadata count is taken - otherwise every payload reads as an unreferenced
+  // metadata file and the archive fails verification for existing.
+  const sectionFiles = files.filter(file => file.endsWith('.sections.json'));
+  const metaFiles = files.filter(file => file.endsWith('.json') && !file.endsWith('.sections.json'));
   if (rawFiles.length !== expectedCount) errors.push('archive:raw_file_count_mismatch');
   if (metaFiles.length !== expectedCount) errors.push('archive:meta_file_count_mismatch');
+  if (sectionFiles.length !== expectedCount) errors.push('archive:sections_file_count_mismatch');
   if (referencedRaw.size !== expectedCount) errors.push('archive:referenced_raw_count_mismatch');
   if (referencedMeta.size !== expectedCount) errors.push('archive:referenced_meta_count_mismatch');
+  if (referencedSections.size !== expectedCount) errors.push('archive:referenced_sections_count_mismatch');
   for (const file of rawFiles) if (!referencedRaw.has(file)) errors.push('archive:unreferenced_raw_file');
   for (const file of metaFiles) if (!referencedMeta.has(file)) errors.push('archive:unreferenced_meta_file');
+  for (const file of sectionFiles) if (!referencedSections.has(file)) errors.push('archive:unreferenced_sections_file');
 
   return {
     valid:errors.length === 0,

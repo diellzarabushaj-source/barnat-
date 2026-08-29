@@ -139,28 +139,44 @@ function sha256(text) {
 
 // Section text lives in the archive directory the fetch wrote, keyed by the
 // metadata file each snapshot produced.
+// Section text comes from the payload the archive job writes next to the raw
+// document. Reading it rather than re-parsing the raw HTML keeps the parser out
+// of the only job that holds the Supabase key.
+//
+// This used to read the metadata file, which does not carry section text at
+// all: lib/dose-source-archive.js strips it before writing. The loop therefore
+// iterated an empty object, contributed no clinical sections, and the run still
+// reported ok - it wrote section 2 alone, because that one value was carried
+// separately at the top level. Production ended up with the salt basis on one
+// snapshot and the dosing basis on another.
 function readSections(row) {
-  const metaPath = row.archiveFiles?.metaPath ? path.resolve(ROOT, row.archiveFiles.metaPath) : null;
-  if (!metaPath || !fs.existsSync(metaPath)) {
-    fail(`${row.canonicalKey}: archive metadata missing; cannot ingest section text without it.`);
+  const where = row.canonicalKey || row.sourceKey || '(unknown)';
+  const sectionsPath = row.archiveFiles?.sectionsPath
+    ? path.resolve(ROOT, row.archiveFiles.sectionsPath) : null;
+  if (!sectionsPath || !fs.existsSync(sectionsPath)) {
+    fail(`${where}: archive section payload missing; cannot ingest section text without it. Re-run the archive job so it writes one.`);
   }
-  const meta = JSON.parse(fs.readFileSync(metaPath, 'utf8'));
-  const sections = meta.sections || meta.parsed?.sections || {};
-  const composition = meta.composition || null;
+  const payload = JSON.parse(fs.readFileSync(sectionsPath, 'utf8'));
+  if (payload.schemaVersion !== 'drx-dose-section-payload-v1') {
+    fail(`${where}: unexpected section payload schemaVersion: ${payload.schemaVersion}`);
+  }
+  if (payload.snapshotId !== row.snapshotId) {
+    fail(`${where}: section payload is for snapshot ${payload.snapshotId}, not ${row.snapshotId}.`);
+  }
+
   const out = [];
-  for (const [code, section] of Object.entries(sections)) {
+  for (const [code, section] of Object.entries(payload.sections || {})) {
     if (!ALLOWED_SECTION_CODES.has(code)) continue;
     const text = String(section?.text || '');
     if (!text.trim()) continue;
     out.push({ code, key: section.key || code, heading: section.heading || null, text });
   }
-  if (composition && String(composition.text || '').trim()) {
-    out.push({
-      code: composition.code,
-      key: composition.key,
-      heading: composition.heading || null,
-      text: String(composition.text),
-    });
+
+  // A snapshot that yields no dosing section is not a partial success. 4.2 is
+  // the section every dose rule must cite, so loading provenance without it
+  // would leave rows that look complete and can never support a rule.
+  if (!out.some(section => section.code === '4.2')) {
+    fail(`${where}: section payload carries no 4.2, so this snapshot cannot support a dose rule. Refusing a partial load.`);
   }
   return out;
 }

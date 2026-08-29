@@ -43,6 +43,19 @@ function makeRow(key, body, date) {
     sourceDocument:{ documentDate:date, productName:key },
     parser:{ indicationsSectionPresent:true, doseSectionPresent:true },
   }, null, 2));
+  // The payload the database load reads. The verifier checks it against the
+  // raw document, so the fixture has to produce a real one.
+  const sectionsPath = path.join(archive, `emc-${key}-${rawSha256.slice(0, 20)}.sections.json`);
+  fs.writeFileSync(sectionsPath, JSON.stringify({
+    schemaVersion:'drx-dose-section-payload-v1',
+    snapshotId:rawSha256,
+    rawSha256,
+    parserVersion:parsed.schemaVersion,
+    sections:{
+      '4.1':{ code:'4.1', key:'indications', heading:null, text:parsed.sections['4.1'].text, sha256:section41Sha256 },
+      '4.2':{ code:'4.2', key:'posology', heading:null, text:parsed.sections['4.2'].text, sha256:section42Sha256 },
+    },
+  }, null, 2));
   return {
     canonicalKey:key,
     sourceKey:`emc-${key}-smpc`,
@@ -62,6 +75,7 @@ function makeRow(key, body, date) {
     archiveFiles:{
       rawPath:path.relative(root, rawPath),
       metaPath:path.relative(root, metaPath),
+      sectionsPath:path.relative(root, sectionsPath),
     },
   };
 }
@@ -118,6 +132,38 @@ try {
   assert.equal(sectionTampered.valid, false);
   assert.ok(sectionTampered.errors.includes('row:alpha:raw_hash_mismatch'));
   assert.ok(sectionTampered.errors.includes('row:alpha:section_4_2_hash_mismatch'));
+
+  // The payload is the file the database load actually reads, so text edited
+  // there - with the raw document left untouched - must be caught. Verifying
+  // only the raw and the metadata would let doctored text reach production
+  // while every hash in the index still matched.
+  const betaSections = path.resolve(root, rows[1].archiveFiles.sectionsPath);
+  const betaPayload = JSON.parse(fs.readFileSync(betaSections, 'utf8'));
+  betaPayload.sections['4.2'].text = 'Take as much as you like.';
+  fs.writeFileSync(betaSections, JSON.stringify(betaPayload, null, 2));
+  const payloadTampered = Verifier.verifyArchive({
+    index,
+    archiveDirectory:path.relative(root, archive),
+    expectedCount:2,
+    repoRoot:root,
+  });
+  assert.equal(payloadTampered.valid, false);
+  assert.ok(payloadTampered.errors.includes('row:beta:sections_4_2_hash_mismatch'),
+    'payload text that does not hash to the archived section hash must be rejected.');
+  assert.ok(payloadTampered.errors.includes('row:beta:sections_4_2_text_mismatch'),
+    'payload text must equal the text reparsed from the raw document.');
+
+  // A payload that goes missing must fail rather than pass quietly, since a
+  // silently absent payload is what let a partial load report success.
+  fs.rmSync(betaSections);
+  const payloadMissing = Verifier.verifyArchive({
+    index,
+    archiveDirectory:path.relative(root, archive),
+    expectedCount:2,
+    repoRoot:root,
+  });
+  assert.equal(payloadMissing.valid, false);
+  assert.ok(payloadMissing.errors.includes('row:beta:sections_missing'));
 
   const envPath = Extraction._test.archiveDirectoryFromEnvironment({
     DRX_ARCHIVE_DIR:'artifacts/drx-batch2-raw',

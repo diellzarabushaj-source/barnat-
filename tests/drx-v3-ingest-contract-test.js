@@ -35,6 +35,24 @@ for (const forbidden of [
     `the ingester must not touch ${forbidden}; it writes provenance, not clinical data.`);
 }
 
+// Section text must come from the archive job's section payload. It used to be
+// read from the metadata file, which lib/dose-source-archive.js strips of
+// section text before writing - so the loop ran over an empty object, no
+// clinical section was ever sent, and the run still reported ok. Section 2 was
+// written alone because it travelled separately at the top level, leaving the
+// salt basis and the dosing basis on different snapshots in production.
+assert.match(source, /archiveFiles\?\.sectionsPath/,
+  'the ingester must read the section payload, not the text-free metadata file.');
+assert.ok(!/meta\.parsed\?\.sections/.test(source),
+  'the metadata file carries no section text; reading it silently loads nothing.');
+assert.match(source, /drx-dose-section-payload-v1/,
+  'the payload schemaVersion must be checked, so a shape change fails loudly.');
+
+// A snapshot with no 4.2 cannot support a dose rule, so loading it is a partial
+// load dressed as a success - the exact failure this model exists to prevent.
+assert.match(source, /Refusing a partial load/,
+  'a payload without section 4.2 must fail rather than load provenance that can never carry a rule.');
+
 // It must rehash what it writes rather than trusting the index it was handed.
 assert.match(source, /does not match the archived text/,
   'the ingester must reject an index hash that disagrees with the text.');
