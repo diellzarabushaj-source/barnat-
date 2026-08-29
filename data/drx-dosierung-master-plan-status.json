@@ -1,6 +1,6 @@
 {
   "schemaVersion": "drx-dosierung-master-plan-status-v1",
-  "updatedAt": "2026-08-29T03:23:53.289Z",
+  "updatedAt": "2026-08-30T00:30:00+02:00",
   "officialPlan": "DRx Dosierung phases 0-32",
   "databaseBlocker": {
     "active": true,
@@ -184,7 +184,7 @@
     {
       "id": 16,
       "name": "Batch 2",
-      "status": "IN_PROGRESS_25_OF_25_LIVE_WEB_EVIDENCE_HASH_ARCHIVE_PENDING",
+      "status": "IN_PROGRESS_25_STRUCTURED_0_NORMALIZATION_READY",
       "evidence": [
         "data/drx-dose-batch2-v1.json",
         "data/drx-dose-source-map-v1.json",
@@ -212,9 +212,12 @@
         "25/25 live SmPC metadata synchronized across manifest/source map/waves",
         "scripts/audit-drx-phase16-consistency.js (v2 parity audit)",
         "25/25 manifest↔source-map↔wave parity audit: 0 mismatches",
-        "Aspirin eMC source version corrected to 2026-08-27"
+        "Aspirin eMC source version corrected to 2026-08-27",
+        "data/drx-batch2-readiness-matrix-v1.json",
+        "data/drx-batch2-review-packets-v1.json",
+        "scripts/audit-drx-batch2-prepublication.js"
       ],
-      "next": "obtain 25/25 raw SHA-256 archive snapshots; then structure section 4.2 rules, run safety/confidence, exact live product binding, legacy comparison and clinical review"
+      "next": "obtain 25 hash-backed archive snapshots; then promote only hash-backed review-cleared rows to normalization"
     },
     {
       "id": 17,
@@ -279,25 +282,28 @@
     {
       "id": 23,
       "name": "Clinical Review Queue",
-      "status": "FOUNDATION_COMPLETE_BATCH2_QUEUE_MATERIALIZED",
+      "status": "BATCH2_REVIEW_PACKETS_READY",
       "evidence": [
         "review statuses exist",
         "data/drx-clinical-review-queue-policy-v1.json",
         "data/drx-batch2-clinical-review-queue-v1.json",
-        "scripts/build-drx-batch2-review-queue.js"
+        "scripts/build-drx-batch2-review-queue.js",
+        "data/drx-batch2-review-packets-v1.json",
+        "scripts/build-drx-batch2-review-packets.js"
       ],
-      "next": "process high-priority reviews after hash-backed archive and exact product binding evidence exist"
+      "next": "resolve 25 clinical review packets after archive and exact product evidence become available"
     },
     {
       "id": 24,
       "name": "Publication Gate",
-      "status": "FOUNDATION_COMPLETE_REPO",
+      "status": "FOUNDATION_COMPLETE_PREPUBLICATION_AUDIT_ACTIVE",
       "evidence": [
         "20260829002018_harden_dose_rule_publication_gate.sql",
         "published-only runtime",
-        "data/drx-publication-gate-v3-policy.json"
+        "data/drx-publication-gate-v3-policy.json",
+        "scripts/audit-drx-batch2-prepublication.js"
       ],
-      "next": "enforce V3 publication conditions in database/runtime"
+      "next": "keep publishable count at zero until archive, binding, safety and review gates pass"
     },
     {
       "id": 25,
@@ -381,7 +387,7 @@
   ],
   "currentExecution": {
     "phase": 16,
-    "objective": "Batch 2 has 25/25 live structured web evidence and 25/25 synchronized source metadata with zero parity mismatches. Completion remains fail-closed until 25/25 raw SHA-256 archive snapshots and all downstream clinical gates pass.",
+    "objective": "Batch 2 has 25 structured candidates, 25 clinical review packets and a fail-closed prepublication audit. Normalization-ready remains 0 until hash-backed archive evidence exists.",
     "pilot": "batch2-25",
     "repositoryBatch1Substances": 10,
     "repositoryBatch2Substances": 25,
@@ -401,6 +407,10 @@
     "archiveWorkflowRunObserved": false,
     "batch2SourceMetadataVerified": 25,
     "batch2ParityMismatchCount": 0,
-    "archiveHashVerifiedCount": 0
+    "archiveHashVerifiedCount": 0,
+    "structuredCandidateReady": 25,
+    "normalizationReady": 0,
+    "publicationReady": 0,
+    "reviewPacketsReady": 25
   }
 }
