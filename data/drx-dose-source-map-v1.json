@@ -452,6 +452,859 @@
           "status": "discovered"
         }
       ]
+    },
+    "amlodipine": {
+      "canonicalName": "Amlodipine",
+      "canonicalKey": "amlodipine",
+      "canonicalIdentityStatus": "pending_live_check",
+      "discoveryStatus": "batch2_official_source_discovered",
+      "preferredSourceTier": "EMC",
+      "candidates": [
+        {
+          "sourceKey": "emc-4717-smpc",
+          "url": "https://www.medicines.org.uk/emc/product/4717/smpc",
+          "tier": "EMC",
+          "documentType": "SmPC",
+          "documentDate": null,
+          "hasDoseSection": true,
+          "sectionsExpected": [
+            "4.1",
+            "4.2",
+            "4.3",
+            "4.4",
+            "4.5",
+            "4.6",
+            "4.7",
+            "4.8",
+            "4.9"
+          ],
+          "productSpecific": true,
+          "substanceMatch": true,
+          "productMatch": false,
+          "status": "discovered_requires_document_version",
+          "discoveredAt": "2026-08-29"
+        }
+      ]
+    },
+    "atorvastatin": {
+      "canonicalName": "Atorvastatin",
+      "canonicalKey": "atorvastatin",
+      "canonicalIdentityStatus": "pending_live_check",
+      "discoveryStatus": "batch2_official_source_discovered",
+      "preferredSourceTier": "EMC",
+      "candidates": [
+        {
+          "sourceKey": "emc-13385-smpc",
+          "url": "https://www.medicines.org.uk/emc/product/13385/smpc",
+          "tier": "EMC",
+          "documentType": "SmPC",
+          "documentDate": null,
+          "hasDoseSection": true,
+          "sectionsExpected": [
+            "4.1",
+            "4.2",
+            "4.3",
+            "4.4",
+            "4.5",
+            "4.6",
+            "4.7",
+            "4.8",
+            "4.9"
+          ],
+          "productSpecific": true,
+          "substanceMatch": true,
+          "productMatch": false,
+          "status": "discovered_requires_document_version",
+          "discoveredAt": "2026-08-29"
+        }
+      ]
+    },
+    "bisoprolol": {
+      "canonicalName": "Bisoprolol",
+      "canonicalKey": "bisoprolol",
+      "canonicalIdentityStatus": "pending_live_check",
+      "discoveryStatus": "batch2_official_source_discovered",
+      "preferredSourceTier": "EMC",
+      "candidates": [
+        {
+          "sourceKey": "emc-101897-smpc",
+          "url": "https://www.medicines.org.uk/emc/product/101897/smpc",
+          "tier": "EMC",
+          "documentType": "SmPC",
+          "documentDate": null,
+          "hasDoseSection": true,
+          "sectionsExpected": [
+            "4.1",
+            "4.2",
+            "4.3",
+            "4.4",
+            "4.5",
+            "4.6",
+            "4.7",
+            "4.8",
+            "4.9"
+          ],
+          "productSpecific": true,
+          "substanceMatch": true,
+          "productMatch": false,
+          "status": "discovered_requires_document_version",
+          "discoveredAt": "2026-08-29"
+        }
+      ]
+    },
+    "losartan": {
+      "canonicalName": "Losartan",
+      "canonicalKey": "losartan",
+      "canonicalIdentityStatus": "pending_live_check",
+      "discoveryStatus": "batch2_official_source_discovered",
+      "preferredSourceTier": "EMC",
+      "candidates": [
+        {
+          "sourceKey": "emc-651-smpc",
+          "url": "https://www.medicines.org.uk/emc/product/651/smpc",
+          "tier": "EMC",
+          "documentType": "SmPC",
+          "documentDate": null,
+          "hasDoseSection": true,
+          "sectionsExpected": [
+            "4.1",
+            "4.2",
+            "4.3",
+            "4.4",
+            "4.5",
+            "4.6",
+            "4.7",
+            "4.8",
+            "4.9"
+          ],
+          "productSpecific": true,
+          "substanceMatch": true,
+          "productMatch": false,
+          "status": "discovered_requires_document_version",
+          "discoveredAt": "2026-08-29"
+        }
+      ]
+    },
+    "pantoprazole": {
+      "canonicalName": "Pantoprazole",
+      "canonicalKey": "pantoprazole",
+      "canonicalIdentityStatus": "pending_live_check",
+      "discoveryStatus": "batch2_official_source_discovered",
+      "preferredSourceTier": "EMC",
+      "candidates": [
+        {
+          "sourceKey": "emc-14644-smpc",
+          "url": "https://www.medicines.org.uk/emc/product/14644/smpc",
+          "tier": "EMC",
+          "documentType": "SmPC",
+          "documentDate": null,
+          "hasDoseSection": true,
+          "sectionsExpected": [
+            "4.1",
+            "4.2",
+            "4.3",
+            "4.4",
+            "4.5",
+            "4.6",
+            "4.7",
+            "4.8",
+            "4.9"
+          ],
+          "productSpecific": true,
+          "substanceMatch": true,
+          "productMatch": false,
+          "status": "discovered_requires_document_version",
+          "discoveredAt": "2026-08-29"
+        }
+      ]
+    },
+    "ciprofloxacin": {
+      "canonicalName": "Ciprofloxacin",
+      "canonicalKey": "ciprofloxacin",
+      "canonicalIdentityStatus": "pending_live_check",
+      "discoveryStatus": "batch2_official_source_discovered",
+      "preferredSourceTier": "EMC",
+      "candidates": [
+        {
+          "sourceKey": "emc-4341-smpc",
+          "url": "https://www.medicines.org.uk/emc/product/4341/smpc",
+          "tier": "EMC",
+          "documentType": "SmPC",
+          "documentDate": null,
+          "hasDoseSection": true,
+          "sectionsExpected": [
+            "4.1",
+            "4.2",
+            "4.3",
+            "4.4",
+            "4.5",
+            "4.6",
+            "4.7",
+            "4.8",
+            "4.9"
+          ],
+          "productSpecific": true,
+          "substanceMatch": true,
+          "productMatch": false,
+          "status": "discovered_requires_document_version",
+          "discoveredAt": "2026-08-29"
+        }
+      ]
+    },
+    "furosemide": {
+      "canonicalName": "Furosemide",
+      "canonicalKey": "furosemide",
+      "canonicalIdentityStatus": "pending_live_check",
+      "discoveryStatus": "batch2_official_source_discovered",
+      "preferredSourceTier": "EMC",
+      "candidates": [
+        {
+          "sourceKey": "emc-102194-smpc",
+          "url": "https://www.medicines.org.uk/emc/product/102194/smpc",
+          "tier": "EMC",
+          "documentType": "SmPC",
+          "documentDate": null,
+          "hasDoseSection": true,
+          "sectionsExpected": [
+            "4.1",
+            "4.2",
+            "4.3",
+            "4.4",
+            "4.5",
+            "4.6",
+            "4.7",
+            "4.8",
+            "4.9"
+          ],
+          "productSpecific": true,
+          "substanceMatch": true,
+          "productMatch": false,
+          "status": "discovered_requires_document_version",
+          "discoveredAt": "2026-08-29"
+        }
+      ]
+    },
+    "prednisolone": {
+      "canonicalName": "Prednisolone",
+      "canonicalKey": "prednisolone",
+      "canonicalIdentityStatus": "pending_live_check",
+      "discoveryStatus": "batch2_official_source_discovered",
+      "preferredSourceTier": "EMC",
+      "candidates": [
+        {
+          "sourceKey": "emc-102342-smpc",
+          "url": "https://www.medicines.org.uk/emc/product/102342/smpc",
+          "tier": "EMC",
+          "documentType": "SmPC",
+          "documentDate": null,
+          "hasDoseSection": true,
+          "sectionsExpected": [
+            "4.1",
+            "4.2",
+            "4.3",
+            "4.4",
+            "4.5",
+            "4.6",
+            "4.7",
+            "4.8",
+            "4.9"
+          ],
+          "productSpecific": true,
+          "substanceMatch": true,
+          "productMatch": false,
+          "status": "discovered_requires_document_version",
+          "discoveredAt": "2026-08-29"
+        }
+      ]
+    },
+    "dexamethasone": {
+      "canonicalName": "Dexamethasone",
+      "canonicalKey": "dexamethasone",
+      "canonicalIdentityStatus": "pending_live_check",
+      "discoveryStatus": "batch2_official_source_discovered",
+      "preferredSourceTier": "EMC",
+      "candidates": [
+        {
+          "sourceKey": "emc-816-smpc",
+          "url": "https://www.medicines.org.uk/emc/product/816/smpc",
+          "tier": "EMC",
+          "documentType": "SmPC",
+          "documentDate": null,
+          "hasDoseSection": true,
+          "sectionsExpected": [
+            "4.1",
+            "4.2",
+            "4.3",
+            "4.4",
+            "4.5",
+            "4.6",
+            "4.7",
+            "4.8",
+            "4.9"
+          ],
+          "productSpecific": true,
+          "substanceMatch": true,
+          "productMatch": false,
+          "status": "discovered_requires_document_version",
+          "discoveredAt": "2026-08-29"
+        }
+      ]
+    },
+    "cetirizine": {
+      "canonicalName": "Cetirizine",
+      "canonicalKey": "cetirizine",
+      "canonicalIdentityStatus": "pending_live_check",
+      "discoveryStatus": "batch2_official_source_discovered",
+      "preferredSourceTier": "EMC",
+      "candidates": [
+        {
+          "sourceKey": "emc-100094-smpc",
+          "url": "https://www.medicines.org.uk/emc/product/100094/smpc",
+          "tier": "EMC",
+          "documentType": "SmPC",
+          "documentDate": null,
+          "hasDoseSection": true,
+          "sectionsExpected": [
+            "4.1",
+            "4.2",
+            "4.3",
+            "4.4",
+            "4.5",
+            "4.6",
+            "4.7",
+            "4.8",
+            "4.9"
+          ],
+          "productSpecific": true,
+          "substanceMatch": true,
+          "productMatch": false,
+          "status": "discovered_requires_document_version",
+          "discoveredAt": "2026-08-29"
+        }
+      ]
+    },
+    "levothyroxine": {
+      "canonicalName": "Levothyroxine",
+      "canonicalKey": "levothyroxine",
+      "canonicalIdentityStatus": "pending_live_check",
+      "discoveryStatus": "batch2_official_source_discovered",
+      "preferredSourceTier": "EMC",
+      "candidates": [
+        {
+          "sourceKey": "emc-12780-smpc",
+          "url": "https://www.medicines.org.uk/emc/product/12780/smpc",
+          "tier": "EMC",
+          "documentType": "SmPC",
+          "documentDate": null,
+          "hasDoseSection": true,
+          "sectionsExpected": [
+            "4.1",
+            "4.2",
+            "4.3",
+            "4.4",
+            "4.5",
+            "4.6",
+            "4.7",
+            "4.8",
+            "4.9"
+          ],
+          "productSpecific": true,
+          "substanceMatch": true,
+          "productMatch": false,
+          "status": "discovered_requires_document_version",
+          "discoveredAt": "2026-08-29"
+        }
+      ]
+    },
+    "ondansetron": {
+      "canonicalName": "Ondansetron",
+      "canonicalKey": "ondansetron",
+      "canonicalIdentityStatus": "pending_live_check",
+      "discoveryStatus": "batch2_official_source_discovered",
+      "preferredSourceTier": "EMC",
+      "candidates": [
+        {
+          "sourceKey": "emc-5222-smpc",
+          "url": "https://www.medicines.org.uk/emc/product/5222/smpc",
+          "tier": "EMC",
+          "documentType": "SmPC",
+          "documentDate": null,
+          "hasDoseSection": true,
+          "sectionsExpected": [
+            "4.1",
+            "4.2",
+            "4.3",
+            "4.4",
+            "4.5",
+            "4.6",
+            "4.7",
+            "4.8",
+            "4.9"
+          ],
+          "productSpecific": true,
+          "substanceMatch": true,
+          "productMatch": false,
+          "status": "discovered_requires_document_version",
+          "discoveredAt": "2026-08-29"
+        }
+      ]
+    },
+    "carvedilol": {
+      "canonicalName": "Carvedilol",
+      "canonicalKey": "carvedilol",
+      "canonicalIdentityStatus": "pending_live_check",
+      "discoveryStatus": "batch2_official_source_discovered",
+      "preferredSourceTier": "EMC",
+      "candidates": [
+        {
+          "sourceKey": "emc-3105-smpc",
+          "url": "https://www.medicines.org.uk/emc/product/3105/smpc",
+          "tier": "EMC",
+          "documentType": "SmPC",
+          "documentDate": null,
+          "hasDoseSection": true,
+          "sectionsExpected": [
+            "4.1",
+            "4.2",
+            "4.3",
+            "4.4",
+            "4.5",
+            "4.6",
+            "4.7",
+            "4.8",
+            "4.9"
+          ],
+          "productSpecific": true,
+          "substanceMatch": true,
+          "productMatch": false,
+          "status": "discovered_requires_document_version",
+          "discoveredAt": "2026-08-29"
+        }
+      ]
+    },
+    "tramadol": {
+      "canonicalName": "Tramadol",
+      "canonicalKey": "tramadol",
+      "canonicalIdentityStatus": "pending_live_check",
+      "discoveryStatus": "batch2_official_source_discovered",
+      "preferredSourceTier": "EMC",
+      "candidates": [
+        {
+          "sourceKey": "emc-7123-smpc",
+          "url": "https://www.medicines.org.uk/emc/product/7123/smpc",
+          "tier": "EMC",
+          "documentType": "SmPC",
+          "documentDate": null,
+          "hasDoseSection": true,
+          "sectionsExpected": [
+            "4.1",
+            "4.2",
+            "4.3",
+            "4.4",
+            "4.5",
+            "4.6",
+            "4.7",
+            "4.8",
+            "4.9"
+          ],
+          "productSpecific": true,
+          "substanceMatch": true,
+          "productMatch": false,
+          "status": "discovered_requires_document_version",
+          "discoveredAt": "2026-08-29"
+        }
+      ]
+    },
+    "aspirin": {
+      "canonicalName": "Aspirin",
+      "canonicalKey": "aspirin",
+      "canonicalIdentityStatus": "pending_live_check",
+      "discoveryStatus": "batch2_official_source_discovered",
+      "preferredSourceTier": "EMC",
+      "candidates": [
+        {
+          "sourceKey": "emc-102206-smpc",
+          "url": "https://www.medicines.org.uk/emc/product/102206/smpc",
+          "tier": "EMC",
+          "documentType": "SmPC",
+          "documentDate": null,
+          "hasDoseSection": true,
+          "sectionsExpected": [
+            "4.1",
+            "4.2",
+            "4.3",
+            "4.4",
+            "4.5",
+            "4.6",
+            "4.7",
+            "4.8",
+            "4.9"
+          ],
+          "productSpecific": true,
+          "substanceMatch": true,
+          "productMatch": false,
+          "status": "discovered_requires_document_version",
+          "discoveredAt": "2026-08-29"
+        }
+      ]
+    },
+    "ramipril": {
+      "canonicalName": "Ramipril",
+      "canonicalKey": "ramipril",
+      "canonicalIdentityStatus": "pending_live_check",
+      "discoveryStatus": "batch2_official_source_discovered",
+      "preferredSourceTier": "EMC",
+      "candidates": [
+        {
+          "sourceKey": "emc-10153-smpc",
+          "url": "https://www.medicines.org.uk/emc/product/10153/smpc",
+          "tier": "EMC",
+          "documentType": "SmPC",
+          "documentDate": null,
+          "hasDoseSection": true,
+          "sectionsExpected": [
+            "4.1",
+            "4.2",
+            "4.3",
+            "4.4",
+            "4.5",
+            "4.6",
+            "4.7",
+            "4.8",
+            "4.9"
+          ],
+          "productSpecific": true,
+          "substanceMatch": true,
+          "productMatch": false,
+          "status": "discovered_requires_document_version",
+          "discoveredAt": "2026-08-29"
+        }
+      ]
+    },
+    "clopidogrel": {
+      "canonicalName": "Clopidogrel",
+      "canonicalKey": "clopidogrel",
+      "canonicalIdentityStatus": "pending_live_check",
+      "discoveryStatus": "batch2_official_source_discovered",
+      "preferredSourceTier": "EMC",
+      "candidates": [
+        {
+          "sourceKey": "emc-15846-smpc",
+          "url": "https://www.medicines.org.uk/emc/product/15846/smpc",
+          "tier": "EMC",
+          "documentType": "SmPC",
+          "documentDate": null,
+          "hasDoseSection": true,
+          "sectionsExpected": [
+            "4.1",
+            "4.2",
+            "4.3",
+            "4.4",
+            "4.5",
+            "4.6",
+            "4.7",
+            "4.8",
+            "4.9"
+          ],
+          "productSpecific": true,
+          "substanceMatch": true,
+          "productMatch": false,
+          "status": "discovered_requires_document_version",
+          "discoveredAt": "2026-08-29"
+        }
+      ]
+    },
+    "naproxen": {
+      "canonicalName": "Naproxen",
+      "canonicalKey": "naproxen",
+      "canonicalIdentityStatus": "pending_live_check",
+      "discoveryStatus": "batch2_official_source_discovered",
+      "preferredSourceTier": "EMC",
+      "candidates": [
+        {
+          "sourceKey": "emc-101275-smpc",
+          "url": "https://www.medicines.org.uk/emc/product/101275/smpc",
+          "tier": "EMC",
+          "documentType": "SmPC",
+          "documentDate": null,
+          "hasDoseSection": true,
+          "sectionsExpected": [
+            "4.1",
+            "4.2",
+            "4.3",
+            "4.4",
+            "4.5",
+            "4.6",
+            "4.7",
+            "4.8",
+            "4.9"
+          ],
+          "productSpecific": true,
+          "substanceMatch": true,
+          "productMatch": false,
+          "status": "discovered_requires_document_version",
+          "discoveredAt": "2026-08-29"
+        }
+      ]
+    },
+    "spironolactone": {
+      "canonicalName": "Spironolactone",
+      "canonicalKey": "spironolactone",
+      "canonicalIdentityStatus": "pending_live_check",
+      "discoveryStatus": "batch2_official_source_discovered",
+      "preferredSourceTier": "EMC",
+      "candidates": [
+        {
+          "sourceKey": "emc-12015-smpc",
+          "url": "https://www.medicines.org.uk/emc/product/12015/smpc",
+          "tier": "EMC",
+          "documentType": "SmPC",
+          "productName": "Spironolactone 12.5 mg Film-coated Tablets",
+          "formulation": "film-coated tablet",
+          "route": "PO",
+          "strength": "12.5 mg",
+          "documentDate": "2025-10-23",
+          "hasDoseSection": true,
+          "sectionsExpected": [
+            "4.1",
+            "4.2",
+            "4.3",
+            "4.4",
+            "4.5",
+            "4.6",
+            "4.7",
+            "4.8",
+            "4.9"
+          ],
+          "productSpecific": true,
+          "substanceMatch": true,
+          "productMatch": false,
+          "status": "discovered",
+          "discoveredAt": "2026-08-29"
+        }
+      ]
+    },
+    "diclofenac": {
+      "canonicalName": "Diclofenac",
+      "canonicalKey": "diclofenac",
+      "canonicalIdentityStatus": "pending_live_check",
+      "discoveryStatus": "batch2_official_source_discovered",
+      "preferredSourceTier": "EMC",
+      "candidates": [
+        {
+          "sourceKey": "emc-2662-smpc",
+          "url": "https://www.medicines.org.uk/emc/product/2662/smpc",
+          "tier": "EMC",
+          "documentType": "SmPC",
+          "productName": "Diclofenac sodium Dexcel XL 100 mg prolonged-release tablets",
+          "formulation": "prolonged-release tablet",
+          "route": "PO",
+          "strength": "100 mg",
+          "documentDate": "2026-05-01",
+          "hasDoseSection": true,
+          "sectionsExpected": [
+            "4.1",
+            "4.2",
+            "4.3",
+            "4.4",
+            "4.5",
+            "4.6",
+            "4.7",
+            "4.8",
+            "4.9"
+          ],
+          "productSpecific": true,
+          "substanceMatch": true,
+          "productMatch": false,
+          "status": "discovered",
+          "discoveredAt": "2026-08-29"
+        }
+      ]
+    },
+    "doxycycline": {
+      "canonicalName": "Doxycycline",
+      "canonicalKey": "doxycycline",
+      "canonicalIdentityStatus": "pending_live_check",
+      "discoveryStatus": "batch2_official_source_discovered",
+      "preferredSourceTier": "EMC",
+      "candidates": [
+        {
+          "sourceKey": "emc-13082-smpc",
+          "url": "https://www.medicines.org.uk/emc/product/13082/smpc",
+          "tier": "EMC",
+          "documentType": "SmPC",
+          "productName": "Doxycycline 100 mg Capsules",
+          "formulation": "hard capsule",
+          "route": "PO",
+          "strength": "100 mg",
+          "documentDate": "2026-03-24",
+          "hasDoseSection": true,
+          "sectionsExpected": [
+            "4.1",
+            "4.2",
+            "4.3",
+            "4.4",
+            "4.5",
+            "4.6",
+            "4.7",
+            "4.8",
+            "4.9"
+          ],
+          "productSpecific": true,
+          "substanceMatch": true,
+          "productMatch": false,
+          "status": "discovered",
+          "discoveredAt": "2026-08-29"
+        }
+      ]
+    },
+    "cefalexin": {
+      "canonicalName": "Cefalexin",
+      "canonicalKey": "cefalexin",
+      "canonicalIdentityStatus": "pending_live_check",
+      "discoveryStatus": "batch2_official_source_discovered",
+      "preferredSourceTier": "EMC",
+      "candidates": [
+        {
+          "sourceKey": "emc-9140-smpc",
+          "url": "https://www.medicines.org.uk/emc/product/9140/smpc",
+          "tier": "EMC",
+          "documentType": "SmPC",
+          "productName": "Cefalexin 250 mg Capsules",
+          "formulation": "capsule",
+          "route": "PO",
+          "strength": "250 mg",
+          "documentDate": "2025-06-06",
+          "hasDoseSection": true,
+          "sectionsExpected": [
+            "4.1",
+            "4.2",
+            "4.3",
+            "4.4",
+            "4.5",
+            "4.6",
+            "4.7",
+            "4.8",
+            "4.9"
+          ],
+          "productSpecific": true,
+          "substanceMatch": true,
+          "productMatch": false,
+          "status": "discovered",
+          "discoveredAt": "2026-08-29"
+        }
+      ]
+    },
+    "metronidazole": {
+      "canonicalName": "Metronidazole",
+      "canonicalKey": "metronidazole",
+      "canonicalIdentityStatus": "pending_live_check",
+      "discoveryStatus": "batch2_official_source_discovered",
+      "preferredSourceTier": "EMC",
+      "candidates": [
+        {
+          "sourceKey": "emc-14660-smpc",
+          "url": "https://www.medicines.org.uk/emc/product/14660/smpc",
+          "tier": "EMC",
+          "documentType": "SmPC",
+          "productName": "Metronidazole 500 mg Film-Coated Tablets",
+          "formulation": "film-coated tablet",
+          "route": "PO",
+          "strength": "500 mg",
+          "documentDate": "2026-07-27",
+          "hasDoseSection": true,
+          "sectionsExpected": [
+            "4.1",
+            "4.2",
+            "4.3",
+            "4.4",
+            "4.5",
+            "4.6",
+            "4.7",
+            "4.8",
+            "4.9"
+          ],
+          "productSpecific": true,
+          "substanceMatch": true,
+          "productMatch": false,
+          "status": "discovered",
+          "discoveredAt": "2026-08-29"
+        }
+      ]
+    },
+    "gliclazide": {
+      "canonicalName": "Gliclazide",
+      "canonicalKey": "gliclazide",
+      "canonicalIdentityStatus": "pending_live_check",
+      "discoveryStatus": "batch2_official_source_discovered",
+      "preferredSourceTier": "EMC",
+      "candidates": [
+        {
+          "sourceKey": "emc-13135-smpc",
+          "url": "https://www.medicines.org.uk/emc/product/13135/smpc",
+          "tier": "EMC",
+          "documentType": "SmPC",
+          "productName": "Gliclazide 40 mg Tablets",
+          "formulation": "tablet",
+          "route": "PO",
+          "strength": "40 mg",
+          "documentDate": "2025-08-28",
+          "hasDoseSection": true,
+          "sectionsExpected": [
+            "4.1",
+            "4.2",
+            "4.3",
+            "4.4",
+            "4.5",
+            "4.6",
+            "4.7",
+            "4.8",
+            "4.9"
+          ],
+          "productSpecific": true,
+          "substanceMatch": true,
+          "productMatch": false,
+          "status": "discovered",
+          "discoveredAt": "2026-08-29"
+        }
+      ]
+    },
+    "loratadine": {
+      "canonicalName": "Loratadine",
+      "canonicalKey": "loratadine",
+      "canonicalIdentityStatus": "pending_live_check",
+      "discoveryStatus": "batch2_official_source_discovered",
+      "preferredSourceTier": "EMC",
+      "candidates": [
+        {
+          "sourceKey": "emc-8911-smpc",
+          "url": "https://www.medicines.org.uk/emc/product/8911/smpc",
+          "tier": "EMC",
+          "documentType": "SmPC",
+          "productName": "Loratadine 10 mg Tablets",
+          "formulation": "tablet",
+          "route": "PO",
+          "strength": "10 mg",
+          "documentDate": "2024-01-24",
+          "hasDoseSection": true,
+          "sectionsExpected": [
+            "4.1",
+            "4.2",
+            "4.3",
+            "4.4",
+            "4.5",
+            "4.6",
+            "4.7",
+            "4.8",
+            "4.9"
+          ],
+          "productSpecific": true,
+          "substanceMatch": true,
+          "productMatch": false,
+          "status": "discovered",
+          "discoveredAt": "2026-08-29"
+        }
+      ]
     }
   }
 }
