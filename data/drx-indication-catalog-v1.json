@@ -1,0 +1,72 @@
+{
+  "schemaVersion": "drx-indication-catalog-v1",
+  "updatedAt": "2026-08-29",
+  "policy": {
+    "fuzzyAutoMerge": false,
+    "requireVerifiedIcdForPublication": true,
+    "exactAliasOnlyForAutoMatch": true
+  },
+  "indications": [
+    {
+      "indicationKey": "pain-mild-moderate",
+      "canonicalName": "Mild to moderate pain",
+      "synonyms": [
+        "mild to moderate pain",
+        "pain",
+        "dolor leve a moderado",
+        "dolor moderado"
+      ],
+      "icd10": [],
+      "icdStatus": "needs_review",
+      "sourceScope": "ibuprofen-pilot"
+    },
+    {
+      "indicationKey": "fever",
+      "canonicalName": "Fever",
+      "synonyms": [
+        "fever",
+        "fiebre",
+        "febrile states"
+      ],
+      "icd10": [],
+      "icdStatus": "needs_review",
+      "sourceScope": "ibuprofen-pilot"
+    },
+    {
+      "indicationKey": "primary-dysmenorrhoea",
+      "canonicalName": "Primary dysmenorrhoea",
+      "synonyms": [
+        "primary dysmenorrhoea",
+        "primary dysmenorrhea",
+        "dysmenorrhoea",
+        "dysmenorrhea"
+      ],
+      "icd10": [],
+      "icdStatus": "needs_review",
+      "sourceScope": "ibuprofen-pilot"
+    },
+    {
+      "indicationKey": "rheumatoid-arthritis",
+      "canonicalName": "Rheumatoid arthritis",
+      "synonyms": [
+        "rheumatoid arthritis",
+        "artritis reumatoide"
+      ],
+      "icd10": [],
+      "icdStatus": "needs_review",
+      "sourceScope": "ibuprofen-pilot"
+    },
+    {
+      "indicationKey": "osteoarthritis",
+      "canonicalName": "Osteoarthritis",
+      "synonyms": [
+        "osteoarthritis",
+        "osteoarthrosis",
+        "artrosis"
+      ],
+      "icd10": [],
+      "icdStatus": "needs_review",
+      "sourceScope": "ibuprofen-pilot"
+    }
+  ]
+}
