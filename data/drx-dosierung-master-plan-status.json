@@ -1,6 +1,6 @@
 {
   "schemaVersion": "drx-dosierung-master-plan-status-v1",
-  "updatedAt": "2026-08-29T12:04:56.250Z",
+  "updatedAt": "2026-08-29T12:06:46.414Z",
   "officialPlan": "DRx Dosierung phases 0-32",
   "databaseBlocker": {
     "active": true,
@@ -339,9 +339,11 @@
         "scripts/build-drx-batch2-extraction-index.js propagates section41Sha256/section42Sha256",
         "scripts/build-drx-batch2-normalization-index.js requires valid sourceSectionSha256 before extractionReady",
         "lib/dose-rule-normalizer.js requires source snapshot/evidence identity + sourceSectionSha256 for verified/published rules",
-        "V3 multi-read and RPC readers fail closed on missing/invalid section provenance"
+        "V3 multi-read and RPC readers fail closed on missing/invalid section provenance",
+        "scripts/verify-drx-batch2-archive.js reparses raw archived bytes and independently recomputes section 4.1/4.2 SHA-256",
+        "archive verifier rejects raw/section/meta hash mismatch instead of trusting extraction metadata"
       ],
-      "next": "obtain real 25/25 archive snapshots with raw SHA-256 + extracted 4.2 SHA-256; normalizationReady stays 0 until observed"
+      "next": "CI archive run still unobserved; require 25/25 raw SHA + independently rehashed section42 SHA before normalizationReady can increase above 0"
     },
     {
       "id": 17,
