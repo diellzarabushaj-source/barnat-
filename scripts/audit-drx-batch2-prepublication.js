@@ -11,6 +11,7 @@ function audit(){
   const issues=[];
 
   if(gate.failClosed!==true) issues.push('publication_gate_not_fail_closed');
+  if(gate.bulkImporterMayPublish!==false) issues.push('bulk_importer_may_publish');
   if(matrix.total!==25) issues.push('batch2_total_not_25');
   if(matrix.publicationReady!==0) issues.push('unexpected_publication_ready_rows');
   if(matrix.normalizationReady!==0) issues.push('unexpected_normalization_ready_rows');
@@ -19,7 +20,21 @@ function audit(){
   if(matrix.blockedByProductBinding!==25) issues.push('binding_block_not_25');
   if(matrix.blockedBySafety!==25) issues.push('safety_block_not_25');
 
-  const required=['product_binding_exact','safety_validation_passed','no_open_clinical_review'];
+  const required=[
+    'publication_eligible_source_tier',
+    'source_snapshot_sha256_present',
+    'source_snapshot_equals_evidence_hash',
+    'source_section_is_4_2',
+    'source_section_sha256_present',
+    'source_section_hash_matches_persisted_artifact',
+    'product_binding_exact',
+    'required_renal_adjustments_verified_if_required',
+    'required_hepatic_adjustments_verified_if_required',
+    'legacy_comparison_clean',
+    'safety_validation_passed',
+    'reviewer_audit_complete',
+    'no_open_clinical_review'
+  ];
   for(const item of required) if(!gate.publishWhenAll.includes(item)) issues.push('publication_gate_missing:'+item);
 
   return {
