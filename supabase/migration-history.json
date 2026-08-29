@@ -309,6 +309,10 @@
     {
       "version": "20260829011924",
       "name": "phase4_resolution_review_reason_guard"
+    },
+    {
+      "version": "20260829012500",
+      "name": "phase5_system_health_snapshot"
     }
   ]
 }
