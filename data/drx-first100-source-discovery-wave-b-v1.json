@@ -1,9 +1,9 @@
 {
   "schemaVersion": "drx-first100-source-discovery-wave-b-v1",
-  "generatedAt": "2026-08-30T03:05:00+02:00",
+  "generatedAt": "2026-08-30T03:30:00+02:00",
   "sourcePolicy": "data/drx-dose-source-policy-v1.json",
   "publicationAllowed": false,
-  "verifiedProductSpecificCount": 12,
+  "verifiedProductSpecificCount": 11,
   "rows": [
     {
       "canonicalKey": "budesonide",
@@ -196,24 +196,6 @@
         "duration_limit",
         "formulation_specific",
         "clinical_review_required"
-      ],
-      "publicationAllowed": false
-    },
-    {
-      "canonicalKey": "cyanocobalamin",
-      "canonicalName": "Cyanocobalamin",
-      "status": "verified_product_specific",
-      "sourceTier": "EMC",
-      "sourceKey": "emc-15102-smpc",
-      "url": "https://www.medicines.org.uk/emc/product/15102/smpc",
-      "productName": "Cyanocobalamin 50 micrograms Film-coated Tablets",
-      "documentDate": null,
-      "section41Present": true,
-      "section42Present": true,
-      "reviewFlags": [
-        "indication_specific_dosing",
-        "oral_vs_parenteral_context",
-        "pernicious_anaemia_route_review"
       ],
       "publicationAllowed": false
     },
