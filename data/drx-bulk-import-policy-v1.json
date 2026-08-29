@@ -1,6 +1,6 @@
 {
   "schemaVersion": "drx-bulk-import-policy-v1",
-  "status": "foundation_complete_repository",
+  "status": "foundation_hardened_repository",
   "publicationAllowed": false,
   "batchSizes": [
     100,
@@ -8,10 +8,16 @@
     500
   ],
   "prerequisites": [
+    "production_canonical_provenance_verified",
     "canonical_identity_resolved",
-    "authoritative_source_mapped",
+    "authoritative_or_explicit_manual_review_source_mapped",
+    "raw_snapshot_sha256_verified",
     "section_4_1_and_4_2_extracted",
+    "section_4_1_sha256_verified",
+    "section_4_2_sha256_verified",
+    "raw_reparse_section_hash_parity_verified",
     "normalized_rule_valid",
+    "exact_live_product_binding_resolved",
     "no_unresolved_schema_gap"
   ],
   "batchGate": {
@@ -20,15 +26,64 @@
     "stopOnSourceFetchError": true,
     "stopOnParserError": true,
     "stopOnNormalizationError": true,
-    "stopOnSafetyConflict": true
+    "stopOnSafetyConflict": true,
+    "stopOnRawHashMismatch": true,
+    "stopOnSectionHashMismatch": true,
+    "stopOnCanonicalProvenanceMismatch": true,
+    "stopOnProductBindingMismatch": true,
+    "forbidPartialBatchPromotion": true
   },
   "checkpoints": [
+    "canonical_export_hash",
     "source_archive",
+    "raw_and_section_hash_verification",
     "parse_index",
     "normalized_rules",
-    "binding_queue",
+    "exact_product_binding",
+    "draft_v3_persistence",
     "review_queue"
   ],
-  "rollback": "each batch must be independently replayable and removable before publication",
-  "next": "generate first 100-substance candidate batch only after Batch 2 extraction/review proves stable"
+  "rollback": {
+    "scope": "one_batch_only",
+    "requireBatchIdentity": true,
+    "requireReplayableInputs": true,
+    "forbidCascade": true,
+    "forbidLegacyMutation": true,
+    "publicationMustRemainClosed": true
+  },
+  "next": "after Phase 14 gateway recovery and Phase 15-16 live proof: import 100 -> verify hashes/bindings/smoke -> 250 -> verify -> 500 -> remainder; never bulk-publish",
+  "sourceArchiveGate": {
+    "requireHttpsFinalUrl": true,
+    "requireRawSnapshotSha256": true,
+    "requireSnapshotIdEqualsRawSha256": true,
+    "requireSection41Sha256": true,
+    "requireSection42Sha256": true,
+    "requireRawReparseSectionHashParity": true,
+    "requireMetadataHashParity": true,
+    "requireDocumentVersionOrDate": true,
+    "publicationAllowed": false
+  },
+  "draftRulePersistenceGate": {
+    "requireProductionCanonicalExportHash": true,
+    "requireLiveSubstanceConceptId": true,
+    "requireCanonicalIdentityResolved": true,
+    "requireIndicationIdentity": true,
+    "requireNormalizedRuleValid": true,
+    "requireSourceSnapshotSha256": true,
+    "requireSourceSection42Sha256": true,
+    "requireSnapshotEvidenceHashIdentity": true,
+    "requireExactLiveProductBinding": true,
+    "requireSafetyValidationBeforePromotion": true,
+    "initialEditorialStatus": "draft_or_in_review",
+    "forbidPublishedInsert": true
+  },
+  "publicationGate": {
+    "delegatedToPhase24": true,
+    "bulkImporterMayPublish": false,
+    "requireClinicalReview": true,
+    "requireSafetyPassed": true,
+    "requireLegacyComparisonClean": true,
+    "requireVerifiedProductBinding": true,
+    "requireDbPublicationTrigger": true
+  }
 }
