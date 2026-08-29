@@ -38,6 +38,7 @@ assert.match(cima.publicationBlockedReason, /document_version_or_date/);
 for (const gap of [
   'times_per_day_range',
   'source_snapshot_id',
+  'source_section_sha256',
   'source_evidence_hash',
   'required_inputs',
   'dose_basis_component_concept_id',
