@@ -20,7 +20,7 @@ const completeRule = {
   route:'PO',
   sourceKey:'official',
   sourceSection:'4.2',
-  sourceSnapshotId:'snapshot-1',
+  sourceSnapshotId:'b'.repeat(64),
   sourceEvidenceHash:'a'.repeat(64),
   editorialStatus:'published',
   verifiedBy:'reviewer',
@@ -30,6 +30,7 @@ const completeRule = {
 const approved = Gate.evaluate({
   rule:completeRule,
   sourceDecision:{ allowed:true, reason:'authoritative_source_complete', candidate:{ tier:{ key:'EMC' } } },
+  sourceDocumentDate:'2026-08-27',
   extractionDecision:{ allowed:true, reason:'required_smpc_sections_present' },
   indicationDecision:{ allowed:true, reason:'indication_verified', verifiedIcdCodes:['R50.9'] },
   binding:{ valid:true, errors:[], productKey:'p1' },
@@ -49,6 +50,7 @@ assert.equal(approved.evidence.sourceSection, '4.2');
 const noReview = Gate.evaluate({
   rule:completeRule,
   sourceDecision:{ allowed:true, candidate:{ tier:{ key:'EMC' } } },
+  sourceDocumentDate:'2026-08-27',
   extractionDecision:{ allowed:true },
   indicationDecision:{ allowed:true },
   binding:{ valid:true, errors:[], productKey:'p1' },
@@ -68,6 +70,7 @@ assert.ok(noReview.blockers.includes('review:not_approved'));
 const conflict = Gate.evaluate({
   rule:completeRule,
   sourceDecision:{ allowed:true, candidate:{ tier:{ key:'EMC' } } },
+  sourceDocumentDate:'2026-08-27',
   extractionDecision:{ allowed:true },
   indicationDecision:{ allowed:true },
   binding:{ valid:true, errors:[], productKey:'p1' },
@@ -82,5 +85,23 @@ const conflict = Gate.evaluate({
 assert.equal(conflict.allowed, false);
 assert.ok(conflict.blockers.includes('legacy:conflict'));
 assert.ok(conflict.blockers.includes('confidence:source_conflict'));
+
+const noSourceVersion = Gate.evaluate({
+  rule:completeRule,
+  sourceDecision:{ allowed:true, candidate:{ tier:{ key:'EMC' } } },
+  extractionDecision:{ allowed:true },
+  indicationDecision:{ allowed:true },
+  binding:{ valid:true, errors:[], productKey:'p1' },
+  combinationBasis:{ valid:true },
+  legacyComparison:{ status:'exact' },
+  confidence:{ score:0.97, reviewClass:'auto_reviewable', hardBlockers:[] },
+  safetyValidation:{ publishable:true, blockers:[], warnings:[] },
+  verifiedBy:'reviewer',
+  verifiedAt:'2026-08-29T00:00:00Z',
+  reviewStatus:'approved',
+  openReviewReasons:[],
+});
+assert.equal(noSourceVersion.allowed, false);
+assert.ok(noSourceVersion.blockers.includes('source:version_or_date_missing'));
 
 console.log('DRx publication gate contract passed.');
