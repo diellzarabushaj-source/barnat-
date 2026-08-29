@@ -1,32 +1,48 @@
 {
   "schemaVersion": "drx-api-fast-path-contract-v1",
-  "status": "foundation_complete_repository",
+  "status": "v3_one_rpc_ready_repository_not_live",
   "request": {
-    "required": [
-      "product_id"
+    "endpoint": "/api/dosage?view=product-rules",
+    "selectorRule": "exactly_one_selector",
+    "supportedSelectors": [
+      "productKey",
+      "drugId",
+      "registryNumber_v2_compatibility_only"
     ],
-    "optional": [
-      "indication_id",
-      "age_months",
-      "weight_kg",
-      "renal",
-      "hepatic"
-    ]
+    "preferredV3Selectors": [
+      "productKey",
+      "drugId"
+    ],
+    "patientInputs": "not_sent_to_catalog_fast_path; calculation uses shared dose-core client/server adapters after rule retrieval"
   },
   "response": {
     "required": [
-      "product_id",
-      "rule_version",
-      "rules",
-      "etag"
+      "schemaVersion",
+      "product",
+      "meta"
     ],
+    "productRequired": [
+      "productKey",
+      "rules"
+    ],
+    "metaRequired": [
+      "failClosed",
+      "publishedOnly",
+      "officialVerifiedOnly",
+      "runtimeModel"
+    ],
+    "etag": "HTTP ETag on authenticated product-scoped response",
     "maxPayloadIntent": "tiny_product_scoped_payload"
   },
   "guarantees": [
     "product_scoped_only",
     "published_rules_only",
     "deterministic_order",
-    "no_legacy_bulk_payload"
+    "no_legacy_bulk_payload",
+    "one_http_request_per_product",
+    "v3_one_db_rpc_target",
+    "hash_backed_source_only_in_v3",
+    "source_version_or_date_required_in_v3_rpc"
   ],
   "failClosedOn": [
     "unknown_product",
@@ -34,5 +50,13 @@
     "missing_required_input",
     "conflicting_verified_rules"
   ],
-  "next": "wire to V3 persistence and benchmark after Supabase gateway returns"
+  "next": "apply V3 candidate after live baseline verification; benchmark one-RPC path; enable DRX_DOSE_V3_READS, then RPC strict, then V3 strict only after parity",
+  "v3": {
+    "rpc": "public.medindex_dose_product_fast_path_v3",
+    "targetDbReads": 1,
+    "rolloutFallback": "v3 multi-read only while RPC is absent and DRX_DOSE_V3_RPC_STRICT is disabled",
+    "strictFlag": "DRX_DOSE_V3_RPC_STRICT",
+    "readFlag": "DRX_DOSE_V3_READS",
+    "cutoverFlag": "DRX_DOSE_V3_STRICT"
+  }
 }
