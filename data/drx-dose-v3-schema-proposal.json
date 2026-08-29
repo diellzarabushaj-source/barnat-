@@ -438,5 +438,7 @@
       "rollback_tested",
       "zero_known_legacy_consumers"
     ]
-  }
+  },
+  "tableCount": 12,
+  "publicationAllowed": false
 }
