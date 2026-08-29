@@ -15,7 +15,7 @@ assert.deepEqual(x.dispositionCounts,{dedupeExistingCanonical:3,replaceWithClean
 const beta=x.decisions.find(d=>d.canonicalKey==='betamethasonedipropionateequivalntbetamethasone');
 assert.equal(beta.decision,'resolved_equivalence_not_combination');
 assert.equal(beta.resolvedCanonicalKey,'betamethasonedipropionate');
-assert.ok(x.resolutionNotes.some(note=>/already present/.test(note)));
+assert.ok(x.resolutionNotes.some(note=>/already[- ]existing/.test(note)));
 assert.ok(beta.evidence.some(e=>/medicines\.org\.uk/.test(e.url)));
 const amlo=x.decisions.find(d=>d.canonicalKey==='amlodipinebesilate2ramipril');
 assert.equal(amlo.decision,'resolved_typo_and_salt_equivalence_not_extra_component');
