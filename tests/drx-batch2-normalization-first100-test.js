@@ -46,7 +46,7 @@ const invalidRule = Normalization.validateStructuredRule({
 });
 assert.equal(invalidRule.valid, false);
 assert.ok(invalidRule.errors.includes('times_per_day_missing'));
-assert.ok(invalidRule.errors.includes('source_snapshot_missing'));
+assert.ok(invalidRule.errors.includes('source_snapshot_missing_or_invalid'));
 assert.ok(invalidRule.errors.includes('source_evidence_hash_missing_or_invalid'));
 
 const canonical = Array.from({length:140}, (_, i) => ({
