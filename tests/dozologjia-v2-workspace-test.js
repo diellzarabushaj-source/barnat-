@@ -93,4 +93,29 @@ assert.match(worker, /\/dozologjia-v2\.css/);
 assert.match(worker, /\/dozologjia-v2\.js/);
 assert.doesNotMatch(worker, /['"]\/dozologjia\.js['"]/);
 
+/* Provenienca: klienti nuk guxon ta ulë pragun që serveri e mban.
+   `lib/dose-calculator-handler.js` e pranon një burim vetëm si https; blloku i
+   burimit në faqe duhet ta zbatojë të njëjtin prag, dhe vula «Verifikuar» nuk
+   qëndron pa një burim që e mban. */
+assert.match(
+  client,
+  /function safeExternalUrl\(value\)\s*\{[\s\S]*?url\.protocol === 'https:'/,
+  'Only https may count as a linked clinical source, matching the server rule.'
+);
+assert.doesNotMatch(
+  client,
+  /\['http:', 'https:'\]\.includes\(url\.protocol\)/,
+  'Plain http must not qualify as clinical provenance.'
+);
+assert.match(
+  client,
+  /const verified = url \? formatDate\(source\?\.verifiedAt\) : '';/,
+  'The verified stamp must depend on the source that backs it.'
+);
+assert.match(
+  client,
+  /Burimi klinik nuk është i regjistruar me URL\./,
+  'A source without a URL must say so rather than render as linked provenance.'
+);
+
 console.log('Dozologjia V3 Stripe workbench, resilient client state and server-calculated safety contract passed.');

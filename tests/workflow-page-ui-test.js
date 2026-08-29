@@ -35,17 +35,12 @@ for (const [page, html] of Object.entries(pages)) {
   .forEach(id => assert.match(pages.recovery, new RegExp(`id=["']${id}["']`)));
 
 assert.match(pages.dozologjia, /class="dosage-control-panel"/);
-assert.match(pages.dozologjia, /dozologjia-simple-workflow-style-loader\.js\?v=20260801-1/);
 assert.match(pages.recetat, /recetat-style-loader\.js\?v=20260801-1/);
 assert.ok(pages.recetat.indexOf('tailadmin-professional.js') < pages.recetat.indexOf('recetat-style-loader.js'));
 assert.match(pages.login, /class="login-shell auth-page"/);
 assert.match(pages.recovery, /class="login-shell auth-page recovery-page"/);
 
 const dosageCss = [
-  'dozologjia-verified-cards.css',
-  'dozologjia-simple-workflow.css',
-  'dozologjia-safety-enhancements.css',
-  'dozologjia-clinical-readiness.css',
 ].map(read).join('\n');
 const prescriptionCss = [read('recetat.css'), read('recetat-audit.css'), read('signature-templates.css')].join('\n');
 const authCss = read('login.css');
@@ -55,15 +50,13 @@ for (const [surface, css] of Object.entries({ dosage:dosageCss, prescription:pre
   assert.doesNotMatch(css, /url\(\s*["']?https?:\/\//i, `${surface} must not load remote CSS assets`);
 }
 
-assert.match(read('dozologjia-simple-workflow.css'), /\.dosage-populations\s*\{\s*order:2;/);
-assert.match(read('dozologjia-simple-workflow.css'), /html\.medindex-tailadmin\[data-mi-page="dozologjia"\]/);
 assert.match(read('recetat.css'), /@media \(min-width:1200px\)/);
 assert.match(read('recetat.css'), /grid-template-columns:minmax\(0,1\.08fr\) minmax\(360px,\.92fr\) !important/);
 assert.match(read('recetat.css'), /html\.medindex-tailadmin\[data-mi-page="recetat"\]/);
 assert.match(authCss, /html\[data-theme="dark"\]/);
 assert.match(authCss, /\.recovery-page/);
 
-['dozologjia-card-style-loader.js','dozologjia-simple-workflow-style-loader.js','recetat-style-loader.js']
+['recetat-style-loader.js']
   .forEach(file => execFileSync(process.execPath, ['--check', path.join(ROOT, file)], { stdio:'pipe' }));
 
 console.log('Workflow page UI tests passed.');

@@ -129,10 +129,14 @@
     return new Intl.DateTimeFormat('sq-AL', { year:'numeric', month:'short', day:'2-digit' }).format(date);
   }
 
+  /* Vetëm https vlen si burim klinik, njësoj si `validHttps` te
+     `lib/dose-calculator-handler.js`. Serveri e heq tashmë çdo burim jo-https
+     para se ta kthejë; klienti nuk guxon ta ulë atë prag për rrugët e tjera
+     që përfundojnë në të njëjtin bllok burimi. */
   function safeExternalUrl(value) {
     try {
       const url = new URL(String(value || ''));
-      return ['http:', 'https:'].includes(url.protocol) ? url.href : '';
+      return url.protocol === 'https:' ? url.href : '';
     } catch {
       return '';
     }
@@ -415,7 +419,10 @@
     } else {
       block.append('Burimi klinik nuk është i regjistruar me URL.');
     }
-    const verified = formatDate(source?.verifiedAt);
+    /* Vula «Verifikuar» varet nga burimi që e mban. Pa një URL https të
+       lidhur, data e verifikimit nuk provohet dot nga faqja, prandaj nuk
+       shfaqet — një datë pa burim lexohet si siguri që nuk ekziston. */
+    const verified = url ? formatDate(source?.verifiedAt) : '';
     if (verified) block.append(` · Verifikuar: ${verified}`);
     return block;
   }

@@ -16,7 +16,6 @@ const readme = read('README.md');
 const auth = read('auth-client.js');
 const shell = read('tailadmin-shell-core.js');
 const nameDisplay = read('name-display.js');
-const dosagePage = read('dozologjia.js');
 const prescriptionHtml = read('recetat.html');
 const prescription = read('recetat.js');
 const polish = read('app-polish.css');
@@ -94,13 +93,6 @@ assert.doesNotMatch(shell, /Burime të kontrolluara/, 'The shell must not claim 
 assert.match(shell, /Të dhëna klinike/, 'The shell needs a neutral clinical-data label');
 // Dozologjia is pediatric-only and selection-driven, so test the safety behavior
 // rather than stale wording and summary variables from the previous page.
-assert.match(dosagePage, /pa burim të lidhur/i, 'Dosage cards must expose missing provenance');
-assert.match(dosagePage, /function linkedSources\(card, regimen\)/, 'Provenance must be derived from linked sources');
-assert.match(dosagePage, /const sources = linkedSources\(card, regimen\);/, 'Source chips must read from linkedSources');
-assert.match(dosagePage, /const urls = new Set\([^\n]*sourceUrls[^\n]*https[^\n]*\)/, 'Only https sources may count as linked provenance');
-assert.doesNotMatch(dosagePage, /kartel(?:a|at) (?:e )?verifikuara|dataset-in e verifikuar/i, 'Dosage UI must not claim the dataset as a whole is verified');
-assert.match(dosagePage, /regimenVerified\(regimen\) \? 'SKEMË E VERIFIKUAR' : 'PA KALKULIM AUTOMATIK'/, 'The verified chip must stay conditional on regimenVerified');
-assert.match(dosagePage, /function regimenVerified\(regimen\)\s*\{\s*return[^\n]*'VERIFIKUAR'[^\n]*https[^\n]*;/, 'regimenVerified must require both a VERIFIKUAR status and an https source');
 assert.doesNotMatch(shell, /Skema të verifikuara/, 'Dosage page subtitle must stay source-neutral');
 assert.ok(
   prescriptionHtml.indexOf('class="rx-primary" id="rxFormatLocal"') < prescriptionHtml.indexOf('id="rxGenerate"'),

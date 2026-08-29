@@ -273,6 +273,10 @@
     {
       "version": "20260828222548",
       "name": "add_prescription_chapters_and_folder_metadata"
+    },
+    {
+      "version": "20260829002018",
+      "name": "harden_dose_rule_publication_gate"
     }
   ]
 }

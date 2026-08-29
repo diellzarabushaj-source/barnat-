@@ -33,7 +33,7 @@ const jsFiles = [
   'app-stability.js', 'sw.js', 'tailadmin-shell.js', 'tailadmin-shell-legacy.js',
   'mobile-experience.js', 'auth-client.js', 'offline-runtime.js', 'app.js',
   'theme-preload.js', 'recetat-safe-print.js', 'classification-redirect.js',
-  'icd.js', 'analizat.js', 'dozologjia.js', 'dozologjia-deep-audit.js',
+  'icd.js', 'analizat.js',
   'protokollet.js', 'recetat.js', 'registry-dose-modal-accessibility.js',
 ];
 for (const file of jsFiles) {
@@ -80,7 +80,7 @@ assert.match(worker, /CACHE_EPOCH = RELEASE_ID/, 'service-worker cache epoch mus
 assert.match(worker, /CACHE_NAMESPACE = `\$\{VERSION\}-\$\{RELEASE_ID\}`/, 'service-worker cache namespace must be release-specific');
 [
   'app-runtime.js', 'theme-preload.js', 'recetat-safe-print.js',
-  'dozologjia-deep-audit.js', 'dozologjia-clinical-readiness.css',
+
   'analizat-tailwind-cards-v2.css', 'icd-tailadmin-cards-v2.css',
 ].forEach(asset => assert.ok(worker.includes(asset), `sw.js: ${asset} is missing from the offline shell`));
 assert.doesNotMatch(worker, /app-parts\/part-0[1-4]\.txt|app-parts\/core-tail\.txt/, 'source fragments must not be served as offline runtime assets');

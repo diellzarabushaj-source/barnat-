@@ -16,7 +16,7 @@ const requiredFiles = [
   'app-parts/part-01.txt','app-parts/part-02.txt','app-parts/part-03.txt','app-parts/part-04.txt','app-parts/core-tail.txt',
   'middleware.ts','lib/auth.mjs','lib/auth-edge.mjs','lib/gemini-prescription.js','api/auth.js','api/registry.js','api/drug-search.js',
   'api/gemini-prescription-secure.js','api/dosage.js','api/protocol-document.js',
-  'dosage-engine.js','dozologjia.js','protokollet.js','clinical-reference.css','clinical-density.css','clinical-dialog.js','data/protocols.json',
+  'dosage-engine.js','protokollet.js','clinical-reference.css','clinical-density.css','clinical-dialog.js','data/protocols.json',
   'data/registry-quality.js','icd-data.js','vercel.json','robots.txt','scripts/build-static-runtime.js',
 ];
 
@@ -52,7 +52,7 @@ async function main() {
   assert.ok(vercel.rewrites.some(item => item.source === '/api/gemini-prescription' && item.destination === '/api/gemini-prescription-secure'));
   [
     'app.js','app-runtime.js','login.js','theme-preload.js','auth-client.js','app-stability.js','tailadmin-shell.js','main-navigation-extension.js',
-    'medical-icons.js','section-icons.js','prescription-format-core.js','recetat.js','recetat-safe-print.js','dosage-engine.js','dozologjia.js','protokollet.js','clinical-dialog.js','classification-icons.js',
+    'medical-icons.js','section-icons.js','prescription-format-core.js','recetat.js','recetat-safe-print.js','dosage-engine.js','protokollet.js','clinical-dialog.js','classification-icons.js',
     'api/auth.js','api/registry.js','api/drug-search.js','api/gemini-prescription-secure.js',
     'api/dosage.js','api/protocol-document.js','scripts/sync-protocols.js','scripts/build-static-runtime.js','data/registry-quality.js',
     'classification-registry-bridge.js','classification-v3.js','classification-audit-view.js','classification-info-v3.js',

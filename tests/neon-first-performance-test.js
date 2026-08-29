@@ -58,7 +58,7 @@ assert.doesNotMatch(privateSet, /'\/api\/icd'/, 'ICD query route must not use th
 assert.match(migrationWorker, /importScripts\('\/sw\.js\?v=/, 'legacy worker must migrate to the canonical worker');
 assert.doesNotMatch(migrationWorker, /QUERY_DATA_PATHS|PRIVATE_DATA_PATHS/, 'legacy worker must not keep a second Neon cache policy');
 
-for (const browserFile of ['analizat.js', 'icd.js', 'dozologjia.js', 'app.js']) {
+for (const browserFile of ['analizat.js', 'icd.js', 'app.js']) {
   const source = read(browserFile);
   assert.doesNotMatch(source, /apirest\.c-2\.us-west-2\.aws\.neon\.tech|MEDINDEX_NEON_DATA_API_URL|VERCEL_OIDC_TOKEN/, `${browserFile} exposes Neon connection details`);
 }
