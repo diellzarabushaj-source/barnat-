@@ -1,0 +1,29 @@
+name: DRx First100 Source Safety
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'data/drx-first100-source-discovery-wave-*-v1.json'
+      - 'tests/drx-first100-source-discovery-*-test.js'
+      - '.github/workflows/drx-first100-source-safety.yml'
+  pull_request:
+    paths:
+      - 'data/drx-first100-source-discovery-wave-*-v1.json'
+      - 'tests/drx-first100-source-discovery-*-test.js'
+      - '.github/workflows/drx-first100-source-safety.yml'
+
+permissions:
+  contents: read
+
+jobs:
+  fail-closed-source-contract:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Validate all first-100 source waves
+        run: node tests/drx-first100-source-discovery-all-waves-test.js
