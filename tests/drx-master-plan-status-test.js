@@ -40,6 +40,14 @@ for (const artifact of [
 assert.equal(tracker.phases.find(p => p.id === 14).status, 'BLOCKED_DB_GATEWAY');
 assert.equal(tracker.phases.find(p => p.id === 15).status, 'IN_PROGRESS');
 assert.equal(tracker.currentExecution.phase, 15);
+assert.equal(tracker.currentExecution.pilot, 'batch1-10');
+assert.equal(tracker.currentExecution.repositoryBatch1Substances, 10);
+assert.equal(tracker.currentExecution.representativeRuleCandidates, 12);
+assert.equal(tracker.currentExecution.liveBoundRules, 0);
 assert.equal(tracker.currentExecution.publicationAllowed, false);
+
+const batch1 = readJson('data/drx-dose-batch1-v1.json');
+assert.equal(batch1.substances.length, 10);
+assert.equal(batch1.publicationAllowed, false);
 
 console.log('DRx master plan status contract passed.');
