@@ -123,9 +123,10 @@
     "hepatic_adjustment_required",
     "cardiac_adjustment_required",
     "source_snapshot_id",
+    "source_section_sha256",
     "source_evidence_hash",
     "required_inputs",
     "dose_basis_component_concept_id"
   ],
-  "nextGate": "bind to exact DRx products after live Supabase access returns; then compare to legacy dosage_regimens and run confidence/safety gates"
+  "nextGate": "after live Supabase recovery: persist exact raw snapshot + pinned SmPC 4.2 section SHA-256, bind to exact DRx products, compare legacy dosage_regimens, then confidence/safety/clinical review"
 }
