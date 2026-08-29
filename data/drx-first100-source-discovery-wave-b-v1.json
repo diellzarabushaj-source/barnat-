@@ -1,0 +1,241 @@
+{
+  "schemaVersion": "drx-first100-source-discovery-wave-b-v1",
+  "generatedAt": "2026-08-30T03:05:00+02:00",
+  "sourcePolicy": "data/drx-dose-source-policy-v1.json",
+  "publicationAllowed": false,
+  "verifiedProductSpecificCount": 12,
+  "rows": [
+    {
+      "canonicalKey": "budesonide",
+      "canonicalName": "Budesonide",
+      "status": "verified_product_specific",
+      "sourceTier": "EMC",
+      "sourceKey": "emc-9715-smpc",
+      "url": "https://www.medicines.org.uk/emc/product/9715/smpc",
+      "productName": "Budelin Novolizer 200 micrograms per actuation inhalation powder",
+      "documentDate": null,
+      "section41Present": true,
+      "section42Present": true,
+      "reviewFlags": [
+        "device_specific",
+        "inhaled_route",
+        "age_band_dosing",
+        "not_acute_relief"
+      ],
+      "publicationAllowed": false
+    },
+    {
+      "canonicalKey": "cabergoline",
+      "canonicalName": "Cabergoline",
+      "status": "verified_product_specific",
+      "sourceTier": "EMC",
+      "sourceKey": "emc-101124-smpc",
+      "url": "https://www.medicines.org.uk/emc/product/101124/smpc",
+      "productName": "Cabergoline 0.5mg tablets",
+      "documentDate": "2025-07-01",
+      "section41Present": true,
+      "section42Present": true,
+      "reviewFlags": [
+        "multiple_indication_rules",
+        "titration_required",
+        "prolactin_monitoring",
+        "cardiac_valve_monitoring",
+        "hepatic_review",
+        "clinical_review_required"
+      ],
+      "publicationAllowed": false
+    },
+    {
+      "canonicalKey": "candesartancilexetil",
+      "canonicalName": "Candesartan cilexetil",
+      "status": "verified_product_specific",
+      "sourceTier": "EMC",
+      "sourceKey": "emc-14555-smpc",
+      "url": "https://www.medicines.org.uk/emc/product/14555/smpc",
+      "productName": "Candesartan cilexetil 8 mg tablets",
+      "documentDate": "2023-02-02",
+      "section41Present": true,
+      "section42Present": true,
+      "reviewFlags": [
+        "multiple_indication_rules",
+        "renal_adjustment_required",
+        "hepatic_adjustment_required",
+        "pediatric_age_weight_branching",
+        "potassium_creatinine_monitoring",
+        "clinical_review_required"
+      ],
+      "publicationAllowed": false
+    },
+    {
+      "canonicalKey": "cholecalciferol",
+      "canonicalName": "Cholecalciferol",
+      "status": "verified_product_specific_alias_match",
+      "sourceTier": "EMC",
+      "sourceKey": "emc-14391-smpc",
+      "url": "https://www.medicines.org.uk/emc/product/14391/smpc",
+      "productName": "Colecalciferol 800 IU Capsules, Soft",
+      "documentDate": "2026-04-19",
+      "section41Present": true,
+      "section42Present": true,
+      "reviewFlags": [
+        "reviewed_alias_cholecalciferol_to_colecalciferol",
+        "indication_serum_level_context",
+        "renal_severity_gate",
+        "pediatric_age_gate"
+      ],
+      "publicationAllowed": false
+    },
+    {
+      "canonicalKey": "cilostazol",
+      "canonicalName": "Cilostazol",
+      "status": "verified_product_specific",
+      "sourceTier": "EMC",
+      "sourceKey": "emc-2609-smpc",
+      "url": "https://www.medicines.org.uk/emc/product/2609/smpc",
+      "productName": "Cilostazol 100 mg tablets",
+      "documentDate": "2026-05-08",
+      "section41Present": true,
+      "section42Present": true,
+      "reviewFlags": [
+        "second_line_context",
+        "three_month_reassessment",
+        "cardiovascular_risk_review",
+        "clinical_review_required"
+      ],
+      "publicationAllowed": false
+    },
+    {
+      "canonicalKey": "clindamycin",
+      "canonicalName": "Clindamycin",
+      "status": "verified_product_specific",
+      "sourceTier": "EMC",
+      "sourceKey": "emc-10644-smpc",
+      "url": "https://www.medicines.org.uk/emc/product/10644/smpc",
+      "productName": "Clindamycin 150 mg Capsules, Hard",
+      "documentDate": "2026-07-09",
+      "section41Present": true,
+      "section42Present": true,
+      "reviewFlags": [
+        "antimicrobial_guidance_required",
+        "infection_severity_branching",
+        "pediatric_weight_review",
+        "clinical_review_required"
+      ],
+      "publicationAllowed": false
+    },
+    {
+      "canonicalKey": "chloramphenicol",
+      "canonicalName": "Chloramphenicol",
+      "status": "verified_product_specific",
+      "sourceTier": "EMC",
+      "sourceKey": "emc-12893-smpc",
+      "url": "https://www.medicines.org.uk/emc/product/12893/smpc",
+      "productName": "Chloramphenicol Capsules BP 250 mg",
+      "documentDate": "2025-02-04",
+      "section41Present": true,
+      "section42Present": true,
+      "reviewFlags": [
+        "high_risk_antimicrobial",
+        "life_threatening_infection_scope",
+        "monitoring_required",
+        "clinical_review_required"
+      ],
+      "publicationAllowed": false
+    },
+    {
+      "canonicalKey": "clotrimazole",
+      "canonicalName": "Clotrimazole",
+      "status": "verified_product_specific",
+      "sourceTier": "EMC",
+      "sourceKey": "emc-11464-smpc",
+      "url": "https://www.medicines.org.uk/emc/product/11464/smpc",
+      "productName": "Clotrimazole 500mg Vaginal Tablet",
+      "documentDate": "2023-01-25",
+      "section41Present": true,
+      "section42Present": true,
+      "reviewFlags": [
+        "vaginal_route_specific",
+        "single_dose_product_specific",
+        "do_not_generalize_to_topical_forms"
+      ],
+      "publicationAllowed": false
+    },
+    {
+      "canonicalKey": "benzoylperoxide",
+      "canonicalName": "Benzoyl peroxide",
+      "status": "verified_product_specific",
+      "sourceTier": "EMC",
+      "sourceKey": "emc-11257-smpc",
+      "url": "https://www.medicines.org.uk/emc/product/11257/smpc",
+      "productName": "Acnecide Face Wash 5% w/w Gel",
+      "documentDate": "2026-03-30",
+      "section41Present": true,
+      "section42Present": true,
+      "reviewFlags": [
+        "topical_route_specific",
+        "wash_contact_time",
+        "age_gate_12_plus",
+        "formulation_specific"
+      ],
+      "publicationAllowed": false
+    },
+    {
+      "canonicalKey": "clobetasolpropionate",
+      "canonicalName": "Clobetasol propionate",
+      "status": "verified_product_specific",
+      "sourceTier": "EMC",
+      "sourceKey": "emc-101904-smpc",
+      "url": "https://www.medicines.org.uk/emc/product/101904/smpc",
+      "productName": "Clobetasol propionate 500 micrograms/g shampoo",
+      "documentDate": "2026-06-29",
+      "section41Present": true,
+      "section42Present": true,
+      "reviewFlags": [
+        "very_potent_topical_corticosteroid",
+        "scalp_psoriasis_only",
+        "duration_limit",
+        "formulation_specific",
+        "clinical_review_required"
+      ],
+      "publicationAllowed": false
+    },
+    {
+      "canonicalKey": "cyanocobalamin",
+      "canonicalName": "Cyanocobalamin",
+      "status": "verified_product_specific",
+      "sourceTier": "EMC",
+      "sourceKey": "emc-15102-smpc",
+      "url": "https://www.medicines.org.uk/emc/product/15102/smpc",
+      "productName": "Cyanocobalamin 50 micrograms Film-coated Tablets",
+      "documentDate": null,
+      "section41Present": true,
+      "section42Present": true,
+      "reviewFlags": [
+        "indication_specific_dosing",
+        "oral_vs_parenteral_context",
+        "pernicious_anaemia_route_review"
+      ],
+      "publicationAllowed": false
+    },
+    {
+      "canonicalKey": "calciumgluconate",
+      "canonicalName": "Calcium gluconate",
+      "status": "verified_product_specific",
+      "sourceTier": "EMC",
+      "sourceKey": "emc-15226-smpc",
+      "url": "https://www.medicines.org.uk/emc/product/15226/smpc",
+      "productName": "Calcium Gluconate 10% w/v Injection BP",
+      "documentDate": null,
+      "section41Present": true,
+      "section42Present": true,
+      "reviewFlags": [
+        "parenteral_high_risk",
+        "emergency_hyperkalaemia_context",
+        "serum_calcium_monitoring",
+        "pediatric_age_dose_table",
+        "clinical_review_required"
+      ],
+      "publicationAllowed": false
+    }
+  ]
+}
