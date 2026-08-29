@@ -1,6 +1,6 @@
 {
   "schemaVersion": "drx-dosierung-master-plan-status-v1",
-  "updatedAt": "2026-08-30T02:05:00+02:00",
+  "updatedAt": "2026-08-30T02:55:00+02:00",
   "officialPlan": "DRx Dosierung phases 0-32",
   "databaseBlocker": {
     "active": true,
@@ -22,14 +22,16 @@
     {
       "id": 1,
       "name": "Canonical Substances",
-      "status": "IMPLEMENTED_NEEDS_LIVE_VERIFY",
+      "status": "IMPLEMENTED_REPO_WITH_BULK_QUALITY_GATE",
       "evidence": [
         "substance_concepts_v1",
         "substance_terms_v1",
         "product_ingredients_v1",
-        "product_ingredient_resolution_v1"
+        "product_ingredient_resolution_v1",
+        "data/drx-first100-canonical-quality-audit-v1.json",
+        "reviewed alias exclusion: aspirin→acetylsalicylic acid"
       ],
-      "next": "fresh production coverage recount"
+      "next": "resolve 13 first-100 canonical review rows and continue alias-aware canonicalization"
     },
     {
       "id": 2,
@@ -45,14 +47,16 @@
     {
       "id": 3,
       "name": "Source Discovery",
-      "status": "IN_PROGRESS",
+      "status": "IN_PROGRESS_FIRST100_15_PRODUCT_SOURCES_VERIFIED",
       "evidence": [
         "data/drx-dose-source-map-v1.json",
         "ibuprofen pilot with official eMC oral+IV SmPCs",
         "data/drx-batch1-source-verification-v1.json",
-        "10-substance Batch 1 source map"
+        "10-substance Batch 1 source map",
+        "data/drx-first100-source-discovery-wave-a-v1.json",
+        "15 first-100 product-specific eMC SmPCs verified"
       ],
-      "next": "expand discovery beyond Batch 1 from canonical substance list after Batch 1 live validation"
+      "next": "continue authoritative source discovery waves for the remaining source-eligible first-100 rows"
     },
     {
       "id": 4,
@@ -130,12 +134,14 @@
     {
       "id": 11,
       "name": "Legacy Comparison",
-      "status": "FOUNDATION_COMPLETE",
+      "status": "OFFLINE_MIRROR_PRECHECK_COMPLETE_LIVE_PENDING",
       "evidence": [
         "lib/dose-legacy-comparator.js",
-        "existing dosage_regimens dataset"
+        "existing dosage_regimens dataset",
+        "data/drx-batch1-2-legacy-mirror-precheck-v1.json",
+        "tests/drx-legacy-mirror-precheck-test.js"
       ],
-      "next": "run comparator against live legacy rows product-by-product"
+      "next": "live Supabase comparator remains mandatory; mirror precheck: 2/35 present, 33/35 absent"
     },
     {
       "id": 12,
@@ -229,7 +235,7 @@
     {
       "id": 17,
       "name": "Bulk Import",
-      "status": "LIVE_EXPORT_GATE_IMPLEMENTED_WAITING_SUPABASE",
+      "status": "FIRST100_QUEUE_QUALITY_GATED_SOURCE_DISCOVERY_ACTIVE",
       "evidence": [
         "data/drx-bulk-import-policy-v1.json",
         "scripts/build-drx-first100-discovery-queue.js",
@@ -245,9 +251,11 @@
         "scripts/audit-drx-first100-production-provenance.js",
         "tests/drx-first100-production-provenance-test.js",
         "data/drx-first100-production-provenance-audit-v1.json",
-        "registry-derived first-100 classified audit-only: 13 canonical-review flags, 87/100 discovery-eligible, 0 production-eligible without Supabase export provenance"
+        "registry-derived first-100 classified audit-only: 13 canonical-review flags, 87/100 discovery-eligible, 0 production-eligible without Supabase export provenance",
+        "data/drx-first100-canonical-quality-audit-v1.json",
+        "data/drx-first100-source-discovery-wave-a-v1.json"
       ],
-      "next": "do not promote the Google Sheet registry queue; resolve 13 canonical-quality flags and obtain a hash-bound canonical Supabase export with at least 100 clean uncovered rows"
+      "next": "complete source discovery for 87 eligible rows; resolve 13 canonical-review rows before archive/import"
     },
     {
       "id": 18,
@@ -475,6 +483,16 @@
     "first100CanonicalReviewRequired": 13,
     "first100RegistryDiscoveryEligible": 87,
     "first100ProductionEligibleRows": 0,
-    "first100ProductionDiscoveryAllowed": false
+    "first100ProductionDiscoveryAllowed": false,
+    "first100SourceDiscoveryEligible": 87,
+    "first100VerifiedProductSources": 15,
+    "first100ProductSelectionRequired": 1,
+    "legacyMirrorPrecheck": {
+      "present": 2,
+      "missing": 33,
+      "rules": 3,
+      "bindings": 4,
+      "liveCompared": false
+    }
   }
 }
