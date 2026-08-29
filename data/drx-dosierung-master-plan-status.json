@@ -1,6 +1,6 @@
 {
   "schemaVersion": "drx-dosierung-master-plan-status-v1",
-  "updatedAt": "2026-08-29T12:33:36.201Z",
+  "updatedAt": "2026-08-29T12:35:46.598Z",
   "officialPlan": "DRx Dosierung phases 0-32",
   "databaseBlocker": {
     "active": true,
@@ -522,14 +522,19 @@
     {
       "id": 25,
       "name": "API Fast Path",
-      "status": "IMPLEMENTED_REPO_V3_GATE_READY",
+      "status": "ONE_RPC_PROVENANCE_AND_ADJUSTMENT_HARDENED_REPO_LIVE_BENCHMARK_BLOCKED",
       "evidence": [
         "targeted dosage API routes",
         "data/drx-api-fast-path-contract-v1.json",
         "lib/dose-v3-runtime-gate.js",
-        "tests/drx-dose-v3-runtime-gate-test.js"
+        "tests/drx-dose-v3-runtime-gate-test.js",
+        "public.medindex_dose_product_fast_path_v3 is one-RPC SECURITY INVOKER target",
+        "lib/dose-v3-product-rpc-reader.js validates rule + nested renal/hepatic provenance and required adjustment arrays",
+        "lib/dose-v3-runtime-gate.js revalidates snapshot=evidence + exact 4.2 hash + nested adjustment provenance",
+        "lib/dose-v3-fast-path-adapter.js now routes only through hardened reader; stale duplicate DB implementation removed",
+        "data/drx-api-fast-path-contract-v1.json hardened for adjustment provenance"
       ],
-      "next": "activate V3 fast path only after V3 schema + published bindings exist"
+      "next": "after V3 live apply: benchmark one-RPC path, validate payload parity, then enable reads -> RPC strict -> V3 strict"
     },
     {
       "id": 26,
@@ -551,25 +556,34 @@
     {
       "id": 27,
       "name": "Cache / Offline",
-      "status": "IMPLEMENTED_RUNTIME_CACHE",
+      "status": "PROVENANCE_BOUND_CACHE_HARDENED_REPO_LIVE_ETAG_VALIDATION_BLOCKED",
       "evidence": [
         "ETag/cache patterns exist",
         "data/drx-dose-cache-policy-v1.json",
-        "registry-dose-calculator.js"
+        "registry-dose-calculator.js",
+        "registry-dose-calculator.js persistent/offline cache accepts only V3 hash-backed payloads",
+        "cache-v1 rows are invalidated by drx-dose-product-cache-v2 schema",
+        "offline cache stores failClosed/publishedOnly/officialVerifiedOnly meta + provenance signature",
+        "cache signature includes rule version, snapshot hash, exact 4.2 hash and renal/hepatic adjustment evidence",
+        "data/drx-dose-cache-policy-v1.json hardened for source/adjustment invalidation"
       ],
-      "next": "retain ETag + memory + IndexedDB; invalidate on V3 version/source changes"
+      "next": "after live V3: verify ETag + provenance signature invalidation on source/rule/adjustment updates; keep offline max age 24h"
     },
     {
       "id": 28,
       "name": "Frontend",
-      "status": "IMPLEMENTED_FAST_FLOW_REPO",
+      "status": "FAIL_CLOSED_FRONTEND_CONTRACT_HARDENED_LIVE_CLINICAL_INPUTS_BLOCKED",
       "evidence": [
         "registry dose calculator UI",
         "data/drx-frontend-flow-contract-v1.json",
         "registry-dose-calculator.js",
-        "registry-dose-calculator-fast-ui.js"
+        "registry-dose-calculator-fast-ui.js",
+        "data/drx-frontend-flow-contract-v1.json separates currently supported age/weight/height from planned renal/hepatic structured inputs",
+        "unsupported renal/hepatic clinical inputs stay blocked instead of inferred",
+        "required adjustment evidence missing => rule hidden/blocked",
+        "frontend cache/runtime preserve source + adjustment provenance"
       ],
-      "next": "switch product payload to V3 after release gate; current fast UX preserved"
+      "next": "after live verified renal/hepatic rows: add one structured clinical measure at a time with golden cases; do not infer CrCl from eGFR or Child-Pugh from prose"
     },
     {
       "id": 29,
