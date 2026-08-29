@@ -115,7 +115,7 @@ assert.ok(tracker.currentExecution.releaseBlockers.includes('batch2_archive_evid
 
 assert.equal(tracker.currentExecution.activeCriticalPhase, 14);
 assert.equal(tracker.currentExecution.repositoryImplementationThroughPhase, 32);
-assert.equal(tracker.phases.find(p => p.id === 14).status, 'BLOCKED_DB_GATEWAY_CANDIDATE_HARDENED');
+assert.equal(tracker.phases.find(p => p.id === 14).status, 'APPLIED_LIVE_SHADOW_SCHEMA_FAIL_CLOSED');
 assert.equal(tracker.phases.find(p => p.id === 15).status, 'IN_PROGRESS');
 assert.match(tracker.phases.find(p => p.id === 16).status, /^IN_PROGRESS/);
 assert.equal(tracker.phases.find(p => p.id === 17).status, 'FIRST100_87_OF_87_REPOSITORY_SOURCE_DISCOVERY_COMPLETE_PRODUCTION_PROVENANCE_BLOCKED');
@@ -127,7 +127,21 @@ assert.equal(tracker.currentExecution.mappedSources, 35);
 assert.equal(tracker.currentExecution.archiveHashVerifiedCount, 0);
 assert.equal(tracker.currentExecution.normalizationReady, 0);
 assert.equal(tracker.currentExecution.liveBoundRules, 0);
-assert.equal(tracker.currentExecution.v3Applied, false);
+// V3 is applied live. It is a shadow schema: present, fail-closed and empty.
+assert.equal(tracker.currentExecution.v3Applied, true);
+const v3 = tracker.currentExecution.v3LiveVerification;
+assert.equal(v3.tables, 12);
+assert.equal(v3.rlsEnabledTables, v3.tables, 'every V3 table must have RLS enabled.');
+assert.equal(v3.clientWriteGrants, 0, 'clients must never hold write grants on V3.');
+assert.equal(v3.securityAdvisorErrors, 0);
+assert.equal(v3.totalPublicTables, v3.totalRlsEnabledTables);
+for (const [check, result] of Object.entries(v3.failClosedSmoke)) {
+  assert.equal(result, true, 'fail-closed smoke must hold: ' + check);
+}
+assert.equal(v3.v2Untouched.drugs, 4015);
+assert.equal(v3.v2Untouched.dosageRegimens, 8104);
+assert.equal(v3.contentAfterApply.publishedRules, 0, 'applying schema must publish nothing.');
+assert.ok(!tracker.currentExecution.releaseBlockers.includes('supabase_v3_not_applied'));
 assert.equal(tracker.currentExecution.releaseReady, false);
 assert.equal(tracker.currentExecution.first100ProductionDiscoveryAllowed, false);
 assert.equal(tracker.currentExecution.first100VerifiedProductSources, 87);

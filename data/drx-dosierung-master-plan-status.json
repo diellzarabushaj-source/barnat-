@@ -1,6 +1,6 @@
 {
   "schemaVersion": "drx-dosierung-master-plan-status-v1",
-  "updatedAt": "2026-08-29T13:02:00.000Z",
+  "updatedAt": "2026-08-29T13:21:52.000Z",
   "officialPlan": "DRx Dosierung phases 0-32",
   "databaseBlocker": {
     "active": false,
@@ -292,7 +292,7 @@
     {
       "id": 14,
       "name": "Supabase V3",
-      "status": "BLOCKED_DB_GATEWAY_CANDIDATE_HARDENED",
+      "status": "APPLIED_LIVE_SHADOW_SCHEMA_FAIL_CLOSED",
       "evidence": [
         "V2 preserved",
         "identified additive V3 gaps from ibuprofen pilot",
@@ -315,7 +315,7 @@
         "tests/drx-dose-v3-publication-gate-smoke-contract-test.js",
         "transactional smoke covers negative source/section/binding/provenance cases + one positive publish/RPC case and always ROLLBACKs"
       ],
-      "next": "when gateway recovers: SELECT 1 -> list_migrations -> baseline/types -> security/performance advisors -> apply candidate -> structural smoke -> transactional publication smoke -> controlled rollback test"
+      "next": "Load Batch 1/2 provenance into the V3 shadow tables, then run binding, legacy comparison and clinical review before any publication."
     },
     {
       "id": 15,
@@ -702,11 +702,10 @@
     "supabaseProjectHealth": "ACTIVE_HEALTHY",
     "supabaseSqlGateway": "live",
     "v3CandidateReady": true,
-    "v3Applied": false,
+    "v3Applied": true,
     "releaseGateImplemented": true,
     "releaseReady": false,
     "releaseBlockers": [
-      "supabase_v3_not_applied",
       "batch2_archive_evidence_not_materialized",
       "batch2_normalization_not_ready",
       "exact_product_binding_not_live",
@@ -780,7 +779,7 @@
     "renalAdjustmentLiveVerified": 0,
     "hepaticAdjustmentLiveVerified": 0,
     "supabaseLiveVerifiedAt": "2026-08-29T12:41:00.000Z",
-    "liveRlsCoverage": "51/51",
+    "liveRlsCoverage": "63/63",
     "liveSecurityAdvisorErrors": 0,
     "migrationDrift": {
       "liveCount": 78,
@@ -802,6 +801,41 @@
         "leakedClientGrants": 0,
         "securityAdvisorErrors": 0,
         "note": "Row counts identical to the pre-apply baseline; RLS stayed at 100% coverage. One INFO advisor (rls_enabled_no_policy) is intentional: the snapshot table is server-only, so no policy means deny-all for clients while service_role bypasses RLS."
+      }
+    },
+    "v3AppliedAt": "2026-08-29T13:18:00.000Z",
+    "v3LiveVerification": {
+      "migrationName": "drx_dose_v3_additive_shadow_schema",
+      "tables": 12,
+      "rlsEnabledTables": 12,
+      "policies": 6,
+      "triggers": 4,
+      "privateGuardFunctions": 4,
+      "fastPathRpc": 1,
+      "clientWriteGrants": 0,
+      "totalPublicTables": 63,
+      "totalRlsEnabledTables": 63,
+      "securityAdvisorErrors": 0,
+      "serverOnlyTablesWithoutPolicy": 7,
+      "serverOnlyPolicyNote": "RLS enabled with no policy is the intended deny-all for tables that grant nothing to anon/authenticated. Only the six client-readable V3 tables carry published/verified read policies.",
+      "failClosedSmoke": {
+        "noSelectorReturnsNull": true,
+        "bothSelectorsReturnNull": true,
+        "unknownProductReturnsNull": true,
+        "blankProductKeyReturnsNull": true,
+        "publishedProductWithoutProvenanceRejected": true,
+        "danglingSnapshotReferenceRejected": true,
+        "snapshotHashIdentityEnforced": true
+      },
+      "v2Untouched": {
+        "drugs": 4015,
+        "dosageRegimens": 8104
+      },
+      "contentAfterApply": {
+        "snapshots": 0,
+        "products": 0,
+        "rules": 0,
+        "publishedRules": 0
       }
     }
   },
