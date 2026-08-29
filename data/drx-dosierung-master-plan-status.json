@@ -241,9 +241,13 @@
         "scripts/build-drx-first100-from-canonical-export.js",
         "tests/drx-phase17-canonical-export-gate-test.js",
         "hash-bound Supabase export envelope gate",
-        "35/35 Batch 1+2 exclusion contract verified locally"
+        "35/35 Batch 1+2 exclusion contract verified locally",
+        "scripts/audit-drx-first100-production-provenance.js",
+        "tests/drx-first100-production-provenance-test.js",
+        "data/drx-first100-production-provenance-audit-v1.json",
+        "registry-derived first-100 classified audit-only: 13 canonical-review flags, 87/100 discovery-eligible, 0 production-eligible without Supabase export provenance"
       ],
-      "next": "when Supabase data plane returns: export exact canonical relation with project/source/timestamp metadata and snapshotSha256; then generate deterministic first-100 with no fallback data"
+      "next": "do not promote the Google Sheet registry queue; resolve 13 canonical-quality flags and obtain a hash-bound canonical Supabase export with at least 100 clean uncovered rows"
     },
     {
       "id": 18,
@@ -465,6 +469,12 @@
     "vercelBuildBlocker": "build-rate-limit",
     "phase16ArchiveVerifierImplemented": true,
     "phase17LiveExportGateImplemented": true,
-    "phase17LiveExportVerified": false
+    "phase17LiveExportVerified": false,
+    "first100RegistryFallbackRows": 100,
+    "first100RegistryFallbackOnly": true,
+    "first100CanonicalReviewRequired": 13,
+    "first100RegistryDiscoveryEligible": 87,
+    "first100ProductionEligibleRows": 0,
+    "first100ProductionDiscoveryAllowed": false
   }
 }
