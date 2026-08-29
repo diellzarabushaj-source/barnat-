@@ -4,6 +4,7 @@ const { neonRequest, exactCount } = require('../lib/neon-data-api');
 const SyncOutbox = require('../lib/sync-outbox.js');
 const IcdPublicSource = require('../lib/icd-public-source.js');
 const IcdHealth = require('../lib/icd-health-audit.js');
+const SystemHealthSnapshot = require('../lib/system-health-snapshot.js');
 
 const CURRENT_DOSAGE_SPREADSHEET_ID = '1T7XsfkXLQfEomFL4DmXoA8PheiR6s3Qmu36hTqklOMo';
 const REQUIRED_DOSAGE_SHEETS = Object.freeze(['KARTELA_BARNAVE', 'DOZA_TE_RRITUR', 'DOZA_PEDIATRIKE']);
@@ -106,8 +107,8 @@ function publicSource(source, now = Date.now()) {
   };
 }
 
-async function healthPayload(now = Date.now()) {
-  const [drugs, dosageRegimens, icdCodes, labTests, rawSources, editorEvents, recentRuns, outbox, icd] = await Promise.all([
+async function liveDatabaseHealth() {
+  const [drugs, dosageRegimens, icdCodes, labTests, rawSources, editorEvents, recentRuns, outbox] = await Promise.all([
     tableCount('drugs'),
     tableCount('dosage_regimens'),
     tableCount('icd_codes'),
@@ -116,8 +117,62 @@ async function healthPayload(now = Date.now()) {
     list('audit_logs?select=id,entity_type,entity_id,action,changed_by,changed_at&source=eq.clinical_editor&order=changed_at.desc&limit=8'),
     list('sync_runs?select=source_type,target_scope,status,rows_read,rows_inserted,rows_updated,rows_skipped,error_summary,started_at,completed_at&order=started_at.desc&limit=5'),
     SyncOutbox.stats(),
+  ]);
+
+  return {
+    source:'live-fallback',
+    snapshotVersion:0,
+    refreshedAt:null,
+    refreshDurationMs:null,
+    dirtyRevision:null,
+    refreshedRevision:null,
+    counts:{ drugs, dosageRegimens, icdCodes, labTests },
+    rawSources,
+    editorEvents,
+    recentRuns,
+    outbox,
+  };
+}
+
+async function databaseHealth() {
+  const snapshot = await SystemHealthSnapshot.getFresh();
+  if (!snapshot) return liveDatabaseHealth();
+
+  return {
+    source:snapshot.source || 'snapshot',
+    snapshotVersion:snapshot.snapshotVersion || 1,
+    refreshedAt:snapshot.refreshedAt || null,
+    refreshDurationMs:Number(snapshot.refreshDurationMs) || 0,
+    dirtyRevision:Number(snapshot.dirtyRevision) || 0,
+    refreshedRevision:Number(snapshot.refreshedRevision) || 0,
+    counts:{
+      drugs:Number(snapshot.counts?.drugs) || 0,
+      dosageRegimens:Number(snapshot.counts?.dosageRegimens) || 0,
+      icdCodes:Number(snapshot.counts?.icdCodes) || 0,
+      labTests:Number(snapshot.counts?.labTests) || 0,
+    },
+    rawSources:Array.isArray(snapshot.syncSources) ? snapshot.syncSources : [],
+    editorEvents:Array.isArray(snapshot.editorEvents) ? snapshot.editorEvents : [],
+    recentRuns:Array.isArray(snapshot.recentRuns) ? snapshot.recentRuns : [],
+    outbox:snapshot.outbox && typeof snapshot.outbox === 'object'
+      ? snapshot.outbox
+      : { available:false, counts:{}, pending:0, deadLetter:0, lastAppliedAt:null, lastError:null },
+  };
+}
+
+async function healthPayload(now = Date.now()) {
+  const [database, icd] = await Promise.all([
+    databaseHealth(),
     IcdHealth.loadHealth(IcdPublicSource, now),
   ]);
+
+  const {
+    counts,
+    rawSources,
+    editorEvents,
+    recentRuns,
+    outbox,
+  } = database;
 
   const sources = rawSources.map(source => publicSource(source, now));
   const dosageSources = REQUIRED_DOSAGE_SHEETS.map(sheetName =>
@@ -142,9 +197,20 @@ async function healthPayload(now = Date.now()) {
     connected:true,
     provider:'supabase',
     project:'MedIndex',
-    statusVersion:4,
+    statusVersion:5,
     overall:platformState,
-    counts:{ drugs, dosageRegimens, icdCodes, labTests },
+    counts,
+    databaseSnapshot:{
+      source:database.source,
+      version:database.snapshotVersion,
+      refreshedAt:database.refreshedAt,
+      refreshDurationMs:database.refreshDurationMs,
+      dirtyRevision:database.dirtyRevision,
+      refreshedRevision:database.refreshedRevision,
+      current:database.dirtyRevision === null
+        || database.refreshedRevision === null
+        || database.dirtyRevision <= database.refreshedRevision,
+    },
     synchronization:{
       state:dosageState,
       currentSpreadsheetId:CURRENT_DOSAGE_SPREADSHEET_ID,
@@ -246,6 +312,8 @@ module.exports._test = {
   overallState,
   publicSource,
   healthPayload,
+  databaseHealth,
+  liveDatabaseHealth,
   CURRENT_DOSAGE_SPREADSHEET_ID,
   REQUIRED_DOSAGE_SHEETS,
   STALE_AFTER_MS,
