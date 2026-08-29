@@ -1,0 +1,108 @@
+{
+  "schemaVersion": "drx-batch2-live-evidence-wave5-v1",
+  "createdAt": "2026-08-29T23:35:00+02:00",
+  "status": "live_web_verified_archive_hash_pending",
+  "publicationAllowed": false,
+  "sourceCount": 5,
+  "archiveSnapshotCount": 0,
+  "normalizedRuleCount": 0,
+  "sources": [
+    {
+      "canonicalKey": "doxycycline",
+      "sourceKey": "emc-13082-smpc",
+      "url": "https://www.medicines.org.uk/emc/product/13082/smpc",
+      "documentDate": "2026-03-24",
+      "productName": "Doxycycline 100 mg Capsules",
+      "section41Present": true,
+      "section42Present": true,
+      "archiveHashStatus": "pending",
+      "normalizationStatus": "blocked_antimicrobial_review",
+      "reviewFlags": [
+        "official_antimicrobial_guidance_required",
+        "indication_specific_duration",
+        "pediatric_age_weight_branching",
+        "malaria_resistance_context",
+        "clinical_review_required"
+      ]
+    },
+    {
+      "canonicalKey": "cefalexin",
+      "sourceKey": "emc-9140-smpc",
+      "url": "https://www.medicines.org.uk/emc/product/9140/smpc",
+      "documentDate": "2025-06-06",
+      "productName": "Cefalexin 250 mg Capsules",
+      "section41Present": true,
+      "section42Present": true,
+      "archiveHashStatus": "pending",
+      "normalizationStatus": "blocked_antimicrobial_and_renal_review",
+      "reviewFlags": [
+        "susceptibility_context_required",
+        "indication_specific_regimens",
+        "renal_adjustment_review",
+        "pediatric_weight_rules",
+        "clinical_review_required"
+      ]
+    },
+    {
+      "canonicalKey": "metronidazole",
+      "sourceKey": "emc-14660-smpc",
+      "url": "https://www.medicines.org.uk/emc/product/14660/smpc",
+      "documentDate": "2026-07-27",
+      "productName": "Metronidazole 500 mg Film-Coated Tablets",
+      "section41Present": true,
+      "section42Present": true,
+      "archiveHashStatus": "pending",
+      "normalizationStatus": "blocked_antimicrobial_and_hepatic_review",
+      "reviewFlags": [
+        "many_indication_specific_regimens",
+        "h_pylori_combination_context",
+        "hepatic_impairment_review",
+        "pediatric_age_weight_branching",
+        "clinical_review_required"
+      ]
+    },
+    {
+      "canonicalKey": "gliclazide",
+      "sourceKey": "emc-13135-smpc",
+      "url": "https://www.medicines.org.uk/emc/product/13135/smpc",
+      "documentDate": "2025-08-28",
+      "productName": "Gliclazide 40 mg Tablets",
+      "section41Present": true,
+      "section42Present": true,
+      "archiveHashStatus": "pending",
+      "normalizationStatus": "blocked_glucose_monitoring_review",
+      "reviewFlags": [
+        "glucose_monitoring_required",
+        "hypoglycaemia_risk",
+        "meal_timing_context",
+        "titration_required",
+        "clinical_review_required"
+      ]
+    },
+    {
+      "canonicalKey": "loratadine",
+      "sourceKey": "emc-8911-smpc",
+      "url": "https://www.medicines.org.uk/emc/product/8911/smpc",
+      "documentDate": "2024-01-24",
+      "productName": "Loratadine 10 mg Tablets",
+      "section41Present": true,
+      "section42Present": true,
+      "archiveHashStatus": "pending",
+      "normalizationStatus": "pending_age_weight_hepatic_review",
+      "reviewFlags": [
+        "pediatric_age_and_weight_gate",
+        "alternative_formulation_for_small_children",
+        "hepatic_impairment_review",
+        "clinical_review_required"
+      ]
+    }
+  ],
+  "completionGate": {
+    "liveWebEvidenceComplete": true,
+    "archiveHashesComplete": false,
+    "exactProductBindingComplete": false,
+    "normalizedRulesComplete": false,
+    "safetyValidationComplete": false,
+    "clinicalReviewComplete": false
+  }
+}
