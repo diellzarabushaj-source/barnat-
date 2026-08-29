@@ -80,8 +80,14 @@ for (const { fileName, label } of waveFiles) {
       assert.ok(row.sourceTier, `${row.canonicalKey}: sourceTier missing`);
       assert.ok(row.sourceKey, `${row.canonicalKey}: sourceKey missing`);
       assert.ok(/^https:\/\//.test(row.url || ''), `${row.canonicalKey}: official source URL missing`);
-      assert.equal(row.section41Present, true, `${row.canonicalKey}: SmPC 4.1 not verified`);
-      assert.equal(row.section42Present, true, `${row.canonicalKey}: SmPC 4.2 not verified`);
+      if (row.sourceTier === 'NON_EU_REGULATOR') {
+        assert.equal(row.officialIdentityPresent, true, `${row.canonicalKey}: non-EU regulator identity not verified`);
+        assert.equal(row.doseEvidencePresent, true, `${row.canonicalKey}: non-EU dose evidence missing`);
+        assert.ok((row.reviewFlags || []).includes('manual_publication_review_required'), `${row.canonicalKey}: manual publication review flag missing`);
+      } else {
+        assert.equal(row.section41Present, true, `${row.canonicalKey}: SmPC 4.1 not verified`);
+        assert.equal(row.section42Present, true, `${row.canonicalKey}: SmPC 4.2 not verified`);
+      }
     }
   }
 }
