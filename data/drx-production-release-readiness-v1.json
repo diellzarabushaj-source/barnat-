@@ -1,0 +1,25 @@
+{
+  "schemaVersion": "drx-production-release-readiness-v1",
+  "checkedAt": "2026-08-30T01:15:00+02:00",
+  "releaseReady": false,
+  "publicationAllowed": false,
+  "blockers": [
+    "supabase_v3_not_applied",
+    "batch2_archive_hashes_incomplete",
+    "batch2_normalization_not_ready",
+    "exact_product_binding_not_live",
+    "legacy_comparison_not_live",
+    "clinical_review_not_complete",
+    "no_published_v3_rules"
+  ],
+  "phases": {
+    "apiFastPath": "implemented_v2_v3_gate_ready",
+    "doseCore": "implemented_shared_core",
+    "cacheOffline": "implemented_indexeddb_etag",
+    "frontend": "implemented_fast_flow_v2_v3_ready",
+    "automatedQa": "implemented_contracts_and_golden_cases",
+    "coverage": "implemented_repo_evidence",
+    "cleanup": "gated_no_destructive_changes",
+    "productionRelease": "blocked"
+  }
+}
