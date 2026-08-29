@@ -1,0 +1,110 @@
+{
+  "schemaVersion": "drx-batch2-live-evidence-wave3-v1",
+  "createdAt": "2026-08-29T23:10:00+02:00",
+  "status": "live_web_verified_archive_hash_pending",
+  "publicationAllowed": false,
+  "sourceCount": 5,
+  "archiveSnapshotCount": 0,
+  "normalizedRuleCount": 0,
+  "sources": [
+    {
+      "canonicalKey": "levothyroxine",
+      "sourceKey": "emc-12780-smpc",
+      "url": "https://www.medicines.org.uk/emc/product/12780/smpc",
+      "documentDate": "2025-07-08",
+      "productName": "Levothyroxine 50 microgram tablets",
+      "section41Present": true,
+      "section42Present": true,
+      "archiveHashStatus": "pending",
+      "normalizationStatus": "blocked_monitoring_and_titration_review",
+      "reviewFlags": [
+        "tsH_or_t4_monitoring_required",
+        "age_and_cardiac_status_branching",
+        "pediatric_bsa_and_weight_rules",
+        "product_specific_switching_relevant",
+        "clinical_review_required"
+      ]
+    },
+    {
+      "canonicalKey": "ondansetron",
+      "sourceKey": "emc-5222-smpc",
+      "url": "https://www.medicines.org.uk/emc/product/5222/smpc",
+      "documentDate": "2026-01-09",
+      "productName": "Ondansetron 4 mg film-coated tablets",
+      "section41Present": true,
+      "section42Present": true,
+      "archiveHashStatus": "pending",
+      "normalizationStatus": "blocked_indication_route_review",
+      "reviewFlags": [
+        "cinv_rinv_regimen_complexity",
+        "ponv_route_specificity",
+        "hepatic_adjustment_review",
+        "pediatric_age_and_route_branching",
+        "clinical_review_required"
+      ]
+    },
+    {
+      "canonicalKey": "carvedilol",
+      "sourceKey": "emc-3105-smpc",
+      "url": "https://www.medicines.org.uk/emc/product/3105/smpc",
+      "documentDate": "2026-07-08",
+      "productName": "Carvedilol 25 mg film-coated tablets",
+      "section41Present": true,
+      "section42Present": true,
+      "archiveHashStatus": "pending",
+      "normalizationStatus": "blocked_titration_monitoring_review",
+      "reviewFlags": [
+        "heart_failure_titration_required",
+        "weight_dependent_maximum_in_chf",
+        "monitor_before_each_titration",
+        "multiple_indication_rules",
+        "clinical_review_required"
+      ]
+    },
+    {
+      "canonicalKey": "tramadol",
+      "sourceKey": "emc-7123-smpc",
+      "url": "https://www.medicines.org.uk/emc/product/7123/smpc",
+      "documentDate": "2025-10-27",
+      "productName": "Tramadol 50 mg capsules, hard",
+      "section41Present": true,
+      "section42Present": true,
+      "archiveHashStatus": "pending",
+      "normalizationStatus": "blocked_high_risk_opioid_review",
+      "reviewFlags": [
+        "high_risk_opioid",
+        "dependence_withdrawal_plan_required",
+        "max_daily_dose_required",
+        "renal_hepatic_interval_review",
+        "age_restriction",
+        "clinical_review_required"
+      ]
+    },
+    {
+      "canonicalKey": "aspirin",
+      "sourceKey": "emc-102206-smpc",
+      "url": "https://www.medicines.org.uk/emc/product/102206/smpc",
+      "documentDate": "2026-06-02",
+      "productName": "Aspirin 75 mg tablets",
+      "section41Present": true,
+      "section42Present": true,
+      "archiveHashStatus": "pending",
+      "normalizationStatus": "blocked_indication_and_age_review",
+      "reviewFlags": [
+        "indication_specific_ranges",
+        "acute_mi_loading_then_maintenance",
+        "pediatric_under16_restriction",
+        "bleeding_risk_context",
+        "clinical_review_required"
+      ]
+    }
+  ],
+  "completionGate": {
+    "liveWebEvidenceComplete": true,
+    "archiveHashesComplete": false,
+    "exactProductBindingComplete": false,
+    "normalizedRulesComplete": false,
+    "safetyValidationComplete": false,
+    "clinicalReviewComplete": false
+  }
+}
