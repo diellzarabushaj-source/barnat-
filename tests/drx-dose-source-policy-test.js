@@ -105,6 +105,21 @@ assert.equal(
   'EU_NATIONAL'
 );
 
+const suklCz = Policy.rankCandidate({
+  url:'https://prehledy.sukl.cz/prehled_leciv.html',
+  documentType:'SmPC',
+  documentDate:'2026-08-29',
+  productSpecific:true,
+  productMatch:true,
+  hasDoseSection:true,
+});
+assert.equal(suklCz.tier.key, 'EU_NATIONAL');
+assert.equal(suklCz.publicationEligible, true);
+assert.equal(
+  Policy.sourceTierForUrl('https://www.sukl.cz/example').key,
+  'EU_NATIONAL'
+);
+
 const kosovo = Policy.rankCandidate({
   url:'https://akppm.rks-gov.net/example',
   documentType:'PRODUCT_REGISTER',
