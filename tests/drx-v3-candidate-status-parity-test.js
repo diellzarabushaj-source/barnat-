@@ -38,13 +38,19 @@ assert.equal(status.candidateGitBlobSha, gitBlobSha(sql));
 assert.equal(status.security.rlsTableCount, 12);
 assert.equal(status.repositoryStaticAudit.rlsCoverage, '12/12');
 assert.equal(status.repositoryStaticAudit.directClientWriteGrants, 0);
-assert.equal(status.repositoryStaticAudit.status, 'STATIC_HARDENED_NOT_LIVE_APPLIED');
+assert.equal(status.repositoryStaticAudit.status, 'STATIC_PROVENANCE_HARDENED_NOT_LIVE_APPLIED');
 assert.equal(status.security.tablePublicRoleRevoked, true);
 assert.equal(status.security.productPublicationTrigger, true);
 assert.equal(status.security.rulePublicationTrigger, true);
 assert.equal(status.security.insertPublicationGuard, true);
 assert.equal(status.security.ruleSourceSection42ArtifactRequired, true);
 assert.equal(status.security.preexistingShadowSchemaFailsClosed, true);
+assert.equal(status.security.sourceSectionShaPinned, true);
+assert.equal(status.security.runtimeProvenanceRevalidation, true);
+assert.equal(status.security.publishedProvenanceMutationLocks, true);
+assert.equal(status.repositoryStaticAudit.sourceSectionHashPinned, true);
+assert.equal(status.repositoryStaticAudit.runtimeSnapshotAndSectionRevalidation, true);
+assert.equal(status.repositoryStaticAudit.publishedProvenanceMutationLocks, true);
 
 const publishedRead = proposal.tables
   .filter(table => table.exposure === 'published_read_only')
