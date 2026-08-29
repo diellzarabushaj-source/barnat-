@@ -1,6 +1,6 @@
 {
   "schemaVersion": "drx-dosierung-master-plan-status-v1",
-  "updatedAt": "2026-08-29T12:37:06.857Z",
+  "updatedAt": "2026-08-29T12:43:08.567Z",
   "officialPlan": "DRx Dosierung phases 0-32",
   "databaseBlocker": {
     "active": true,
@@ -588,7 +588,7 @@
     {
       "id": 29,
       "name": "Automated QA",
-      "status": "GOLDEN_ADJUSTMENT_QA_HARDENED_REPO_FULL_CI_LIVE_BLOCKED",
+      "status": "CRITICAL_RELEASE_SUITE_EXPANDED_REPO_FULL_CI_LIVE_BLOCKED",
       "evidence": [
         "dose tests and Playwright specs",
         "data/drx-qa-coverage-contract-v1.json",
@@ -596,14 +596,16 @@
         "data/drx-dose-golden-cases-v1.json",
         "data/drx-dose-golden-cases-v1.json includes renal reduction, missing structured input, contraindication, and dual renal+hepatic dose-change manual-review cases",
         "tests/drx-dose-golden-cases-test.js executes adjustment-aware runtime golden cases",
-        "data/drx-qa-coverage-contract-v1.json tracks provenance/adjustment/reviewer evidence"
+        "data/drx-qa-coverage-contract-v1.json tracks provenance/adjustment/reviewer evidence",
+        "tests/drx-release-suite-coverage-test.js",
+        "test:drx-release now includes candidate parity, golden cases, coverage, archive verifier, archive hashing/extraction/normalization and master-plan consistency"
       ],
-      "next": "execute complete unit/contract/golden + desktop/mobile Playwright matrix; live V3 integration cases remain blocked by Phase14"
+      "next": "execute expanded test:drx-release plus desktop/mobile Playwright matrix; live V3 integration remains blocked by Phase14"
     },
     {
       "id": 30,
       "name": "Coverage Dashboard",
-      "status": "HONEST_PROVENANCE_COVERAGE_METRICS_HARDENED_REPO_LIVE_METRICS_BLOCKED",
+      "status": "CI_VS_MATERIALIZED_COVERAGE_SEPARATED_REPO_LIVE_METRICS_BLOCKED",
       "evidence": [
         "health/dashboard foundations",
         "data/drx-qa-coverage-contract-v1.json",
@@ -613,9 +615,11 @@
         "data/drx-production-release-readiness-v1.json",
         "coverage v2 reports reviewEvidenceReady, renalAdjustmentLiveVerified and hepaticAdjustmentLiveVerified separately",
         "coverage architecture reports adjustment-aware runtime, provenance-bound cache and required-adjustment DB/runtime gates",
-        "live renal/hepatic counts remain zero until observed from V3"
+        "live renal/hepatic counts remain zero until observed from V3",
+        "coverage now separates batch2ArchiveCiVerified=25 from batch2ArchiveSnapshots=0",
+        "archiveWorkflowRunObserved=true and archiveCiEvidenceComplete=true do not promote archiveEvidenceMaterialized"
       ],
-      "next": "materialize live V3 dashboard metrics only after gateway recovery; repository coverage must not promote unobserved live counts"
+      "next": "materialize CI archive artifact into a repo/DB-readable evidence gate; keep persisted/import counts at zero until then"
     },
     {
       "id": 31,
@@ -676,15 +680,14 @@
     "releaseReady": false,
     "releaseBlockers": [
       "supabase_v3_not_applied",
-      "batch2_archive_hashes_incomplete",
+      "batch2_archive_evidence_not_materialized",
       "batch2_normalization_not_ready",
       "exact_product_binding_not_live",
       "legacy_comparison_not_live",
       "clinical_review_not_complete",
       "no_published_v3_rules",
       "vercel_build_rate_limit",
-      "supabase_data_plane_down",
-      "archive_sources_network_denied"
+      "supabase_data_plane_down"
     ],
     "first100QueueMaterialized": 100,
     "first100CoveredExcluded": 35,
@@ -763,11 +766,11 @@
     ],
     "allowedReference": "api.github.com returns HTTP 200 through the same proxy, so this is per-host policy rather than a broken proxy.",
     "blocks": [
-      "batch2_archive_hashes_incomplete",
+      "batch2_archive_evidence_not_materialized",
       "batch2_normalization_not_ready"
     ],
-    "rule": "Do not fabricate or hand-author archive artifacts to satisfy the hash gate. Batch 2 stays 0 normalization-ready until 25/25 real archive artifacts are fetched and independently rehashed.",
+    "rule": "Do not fabricate archive artifacts. GitHub Actions verified 25/25 raw and section hashes; normalization/import stay blocked until that CI artifact is materialized into a repo/DB-readable evidence gate.",
     "operatorCheck": "Allow the EMA/eMC/AEMPS hosts in the environment network policy (or run the archive workflow from an environment that already permits them), then rerun the archive workflow and verifier.",
-    "ciExemption": "GitHub Actions runners are not behind this workspace egress policy: run 8 of drx-batch2-source-archive fetched and hash-verified 25/25 sources on 2026-08-29. The blocker is therefore workspace-scoped, and the remaining gap is that CI evidence is not fed back into a repo-readable gate."
+    "ciExemption": "GitHub Actions run 33251672706 fetched and hash-verified 25/25 sources. Workspace egress remains denied, but release is now blocked on evidence materialization rather than source-fetch completeness."
   }
 }
