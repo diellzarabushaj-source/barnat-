@@ -1,6 +1,6 @@
 {
   "schemaVersion": "drx-dosierung-master-plan-status-v1",
-  "updatedAt": "2026-08-29T06:08:00+02:00",
+  "updatedAt": "2026-08-29T06:20:00+02:00",
   "officialPlan": "DRx Dosierung phases 0-32",
   "databaseBlocker": {
     "active": true,
@@ -184,7 +184,7 @@
     {
       "id": 16,
       "name": "Batch 2",
-      "status": "IN_PROGRESS_SOURCE_SET_COMPLETE",
+      "status": "IN_PROGRESS_HARDENED_REPO",
       "evidence": [
         "data/drx-dose-batch2-v1.json",
         "data/drx-dose-source-map-v1.json",
@@ -192,9 +192,11 @@
         "tests/drx-batch2-extraction-pipeline-test.js",
         "25/25 authoritative Batch 2 sources mapped",
         "scripts/build-drx-batch2-normalization-index.js",
-        "tests/drx-batch2-normalization-first100-test.js"
+        "tests/drx-batch2-normalization-first100-test.js",
+        "scripts/audit-drx-phase16-consistency.js",
+        "tests/drx-phase16-consistency-audit-test.js"
       ],
-      "next": "run live archive/parse for 25 sources; only then structure and validate dose candidates"
+      "next": "obtain 25/25 live archived SmPC snapshots, parse 4.1-4.9, structure dose candidates, normalize, validate safety, then clinical review"
     },
     {
       "id": 17,
@@ -203,9 +205,10 @@
       "evidence": [
         "data/drx-bulk-import-policy-v1.json",
         "scripts/build-drx-first100-discovery-queue.js",
-        "tests/drx-batch2-normalization-first100-test.js"
+        "tests/drx-batch2-normalization-first100-test.js",
+        "data/drx-canonical-substance-export-contract-v1.json"
       ],
-      "next": "generate deterministic first-100 queue from live canonical substance export after excluding 35 covered substances"
+      "next": "resolve exact canonical Supabase export, exclude Batch 1+2, generate deterministic first-100 discovery queue"
     },
     {
       "id": 18,
@@ -358,7 +361,7 @@
   ],
   "currentExecution": {
     "phase": 16,
-    "objective": "Batch 2 has 25/25 mapped authoritative sources, a bounded archive/parse pipeline, a fail-closed normalization gate, and an evidence-based coverage snapshot. Next: execute live extraction for all 25, then structure dose candidates. First-100 discovery is prepared but must derive from the real canonical export.",
+    "objective": "Phase 16 is hardened repository-side with source-map consistency audit, extraction pipeline, normalization gate and evidence coverage. Completion still requires 25/25 live snapshots and structured normalized rules. Phase 17 first-100 is gated on a real canonical Supabase export.",
     "pilot": "batch2-25",
     "repositoryBatch1Substances": 10,
     "repositoryBatch2Substances": 25,
