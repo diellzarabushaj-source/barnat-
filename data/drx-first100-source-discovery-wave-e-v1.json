@@ -1,0 +1,158 @@
+{
+  "schemaVersion": "drx-first100-source-discovery-wave-e-v1",
+  "generatedAt": "2026-08-29T04:02:56.713Z",
+  "sourcePolicy": "data/drx-dose-source-policy-v1.json",
+  "verificationMethod": "live_emc_product_specific_smpc",
+  "publicationAllowed": false,
+  "verifiedProductSpecificCount": 7,
+  "productSelectionRequiredCount": 0,
+  "rows": [
+    {
+      "canonicalKey": "alginatepotassiumbicarbonate",
+      "canonicalName": "Alginate + Potassium bicarbonate",
+      "status": "verified_product_specific_component_normalization_review",
+      "sourceTier": "EMC",
+      "sourceKey": "emc-6187-smpc",
+      "url": "https://www.medicines.org.uk/emc/product/6187/smpc",
+      "productName": "Gaviscon Advance Aniseed Oral Suspension",
+      "documentDate": "2025-02-25",
+      "section41Present": true,
+      "section42Present": true,
+      "reviewFlags": [
+        "canonical_alginate_to_sodium_alginate_component_review",
+        "fixed_combination",
+        "oral_suspension_specific",
+        "age_12_plus",
+        "reflux_indication",
+        "sodium_potassium_load_context"
+      ],
+      "publicationAllowed": false
+    },
+    {
+      "canonicalKey": "amlodipineperindopril",
+      "canonicalName": "Amlodipine + Perindopril",
+      "status": "verified_product_specific",
+      "sourceTier": "EMC",
+      "sourceKey": "emc-15443-smpc",
+      "url": "https://www.medicines.org.uk/emc/product/15443/smpc",
+      "productName": "Perindopril/Amlodipine 4 mg/10 mg tablets",
+      "documentDate": "2024-01-25",
+      "section41Present": true,
+      "section42Present": true,
+      "reviewFlags": [
+        "fixed_combination",
+        "substitution_therapy_not_initial",
+        "individual_component_titration",
+        "crcl_60_threshold",
+        "hepatic_caution",
+        "adult_only"
+      ],
+      "publicationAllowed": false
+    },
+    {
+      "canonicalKey": "ascorbicacidironferrous",
+      "canonicalName": "Ascorbic acid + Iron ferrous",
+      "status": "verified_product_specific_component_normalization_review",
+      "sourceTier": "EMC",
+      "sourceKey": "emc-102245-smpc",
+      "url": "https://www.medicines.org.uk/emc/product/102245/smpc",
+      "productName": "Ferrograd C Tablets",
+      "documentDate": "2026-06-11",
+      "section41Present": true,
+      "section42Present": true,
+      "reviewFlags": [
+        "ferrous_sulfate_and_sodium_ascorbate_salt_normalization",
+        "prolonged_release_formulation",
+        "age_12_plus",
+        "iron_overdose_high_risk",
+        "tablet_must_be_swallowed_whole"
+      ],
+      "publicationAllowed": false
+    },
+    {
+      "canonicalKey": "benzoylperoxide",
+      "canonicalName": "Benzoyl peroxide",
+      "status": "verified_product_specific",
+      "sourceTier": "EMC",
+      "sourceKey": "emc-11257-smpc",
+      "url": "https://www.medicines.org.uk/emc/product/11257/smpc",
+      "productName": "Acnecide Face Wash 5% w/w Gel",
+      "documentDate": "2026-03-30",
+      "section41Present": true,
+      "section42Present": true,
+      "reviewFlags": [
+        "topical_wash_formulation_specific",
+        "mild_facial_acne",
+        "age_12_plus",
+        "application_frequency_titration",
+        "do_not_generalize_to_leave_on_gel"
+      ],
+      "publicationAllowed": false
+    },
+    {
+      "canonicalKey": "calciumchloridepotassiumchloridesodiumchloride",
+      "canonicalName": "Calcium chloride + Potassium chloride + Sodium chloride",
+      "status": "verified_product_specific_salt_hydrate_review",
+      "sourceTier": "EMC",
+      "sourceKey": "emc-1865-smpc",
+      "url": "https://www.medicines.org.uk/emc/product/1865/smpc",
+      "productName": "Ringer's Solution for Infusion",
+      "documentDate": "2025-03-11",
+      "section41Present": true,
+      "section42Present": true,
+      "reviewFlags": [
+        "calcium_chloride_dihydrate_normalization",
+        "parenteral_high_risk",
+        "fluid_electrolyte_monitoring",
+        "rate_and_volume_patient_specific",
+        "ceftriaxone_calcium_neonate_contraindication",
+        "renal_cardiac_context",
+        "clinical_review_required"
+      ],
+      "publicationAllowed": false
+    },
+    {
+      "canonicalKey": "calciumchloridepotassiumchloridesodiumchloridesodiumlactate",
+      "canonicalName": "Calcium chloride + Potassium chloride + Sodium chloride + Sodium lactate",
+      "status": "verified_product_specific_salt_hydrate_review",
+      "sourceTier": "EMC",
+      "sourceKey": "emc-1812-smpc",
+      "url": "https://www.medicines.org.uk/emc/product/1812/smpc",
+      "productName": "Compound Sodium Lactate Solution for Infusion BP",
+      "documentDate": "2025-11-26",
+      "section41Present": true,
+      "section42Present": true,
+      "reviewFlags": [
+        "hartmann_ringer_lactate",
+        "calcium_chloride_dihydrate_normalization",
+        "parenteral_high_risk",
+        "adult_and_pediatric_weight_based_volume",
+        "fluid_electrolyte_acid_base_monitoring",
+        "ceftriaxone_calcium_neonate_contraindication",
+        "clinical_review_required"
+      ],
+      "publicationAllowed": false
+    },
+    {
+      "canonicalKey": "cinchocainehydrocortisone",
+      "canonicalName": "Cinchocaine + Hydrocortisone",
+      "status": "verified_product_specific",
+      "sourceTier": "EMC",
+      "sourceKey": "emc-1599-smpc",
+      "url": "https://www.medicines.org.uk/emc/product/1599/smpc",
+      "productName": "Uniroid-HC Suppositories",
+      "documentDate": "2025-06-13",
+      "section41Present": true,
+      "section42Present": true,
+      "reviewFlags": [
+        "fixed_rectal_combination",
+        "internal_haemorrhoids_short_term",
+        "seven_day_limit",
+        "rectal_route_specific",
+        "under_12_not_recommended_without_doctor",
+        "topical_steroid_context"
+      ],
+      "publicationAllowed": false
+    }
+  ]
+}
