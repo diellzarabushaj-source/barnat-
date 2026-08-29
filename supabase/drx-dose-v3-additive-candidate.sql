@@ -356,7 +356,10 @@ create table if not exists public.dose_renal_adjustments_v3 (
   source_key text not null,
   source_snapshot_id text not null references public.dose_source_snapshots_v3(snapshot_id) on delete restrict,
   source_section text not null default '4.2',
+  source_section_sha256 text,
   source_evidence_hash text not null,
+  source_document_version text,
+  source_document_date date,
   review_status text not null default 'draft',
   verified_by text,
   verified_at timestamptz,
@@ -367,6 +370,7 @@ create table if not exists public.dose_renal_adjustments_v3 (
   constraint dose_renal_adjustments_v3_action_check
     check (dose_action in ('no_adjustment','reduce_dose','extend_interval','avoid','contraindicated','specialist_review')),
   constraint dose_renal_adjustments_v3_section_check check (source_section = '4.2'),
+  constraint dose_renal_adjustments_v3_section_sha_check check (source_section_sha256 is null or source_section_sha256 ~ '^[0-9a-f]{64}$'),
   constraint dose_renal_adjustments_v3_hash_check check (source_evidence_hash ~ '^[0-9a-f]{64}$'),
   constraint dose_renal_adjustments_v3_identity_check check (source_snapshot_id = source_evidence_hash),
   constraint dose_renal_adjustments_v3_range_check
@@ -377,7 +381,10 @@ create table if not exists public.dose_renal_adjustments_v3 (
     review_status <> 'verified'
     or (
       source_snapshot_id ~ '^[0-9a-f]{64}$'
+      and source_section_sha256 ~ '^[0-9a-f]{64}$'
       and source_evidence_hash ~ '^[0-9a-f]{64}$'
+      and source_snapshot_id = source_evidence_hash
+      and (source_document_version is not null or source_document_date is not null)
       and verified_by is not null
       and btrim(verified_by) <> ''
       and verified_at is not null
@@ -412,7 +419,10 @@ create table if not exists public.dose_hepatic_adjustments_v3 (
   source_key text not null,
   source_snapshot_id text not null references public.dose_source_snapshots_v3(snapshot_id) on delete restrict,
   source_section text not null default '4.2',
+  source_section_sha256 text,
   source_evidence_hash text not null,
+  source_document_version text,
+  source_document_date date,
   review_status text not null default 'draft',
   verified_by text,
   verified_at timestamptz,
@@ -424,6 +434,7 @@ create table if not exists public.dose_hepatic_adjustments_v3 (
     check (dose_action in ('no_adjustment','reduce_dose','extend_interval','avoid','contraindicated','specialist_review')),
   constraint dose_hepatic_adjustments_v3_class_check check (cardinality(severity_or_class) >= 1),
   constraint dose_hepatic_adjustments_v3_section_check check (source_section = '4.2'),
+  constraint dose_hepatic_adjustments_v3_section_sha_check check (source_section_sha256 is null or source_section_sha256 ~ '^[0-9a-f]{64}$'),
   constraint dose_hepatic_adjustments_v3_hash_check check (source_evidence_hash ~ '^[0-9a-f]{64}$'),
   constraint dose_hepatic_adjustments_v3_identity_check check (source_snapshot_id = source_evidence_hash),
   constraint dose_hepatic_adjustments_v3_review_check
@@ -432,7 +443,10 @@ create table if not exists public.dose_hepatic_adjustments_v3 (
     review_status <> 'verified'
     or (
       source_snapshot_id ~ '^[0-9a-f]{64}$'
+      and source_section_sha256 ~ '^[0-9a-f]{64}$'
       and source_evidence_hash ~ '^[0-9a-f]{64}$'
+      and source_snapshot_id = source_evidence_hash
+      and (source_document_version is not null or source_document_date is not null)
       and verified_by is not null
       and btrim(verified_by) <> ''
       and verified_at is not null
@@ -610,6 +624,14 @@ begin
     select 1 from public.dose_rules_v3 r
     where r.source_snapshot_id = old.snapshot_id
       and r.editorial_status in ('verified','published')
+  ) or exists (
+    select 1 from public.dose_renal_adjustments_v3 a
+    where a.source_snapshot_id = old.snapshot_id
+      and a.review_status = 'verified'
+  ) or exists (
+    select 1 from public.dose_hepatic_adjustments_v3 a
+    where a.source_snapshot_id = old.snapshot_id
+      and a.review_status = 'verified'
   ) then
     raise exception 'DRX_V3_PROVENANCE_LOCKED: source snapshot backs verified/published clinical data';
   end if;
@@ -640,6 +662,18 @@ begin
       and r.source_section = old.section_code
       and r.source_section_sha256 = old.section_sha256
       and r.editorial_status in ('verified','published')
+  ) or exists (
+    select 1 from public.dose_renal_adjustments_v3 a
+    where a.source_snapshot_id = old.snapshot_id
+      and a.source_section = old.section_code
+      and a.source_section_sha256 = old.section_sha256
+      and a.review_status = 'verified'
+  ) or exists (
+    select 1 from public.dose_hepatic_adjustments_v3 a
+    where a.source_snapshot_id = old.snapshot_id
+      and a.source_section = old.section_code
+      and a.source_section_sha256 = old.section_sha256
+      and a.review_status = 'verified'
   ) then
     raise exception 'DRX_V3_PROVENANCE_LOCKED: source section backs verified/published clinical data';
   end if;
@@ -907,6 +941,8 @@ from public, anon, authenticated;
 grant select on table public.dose_indication_concepts_v3 to anon, authenticated;
 grant select on table public.dose_products_v3 to anon, authenticated;
 grant select on table public.dose_rules_v3 to anon, authenticated;
+grant select on table public.dose_renal_adjustments_v3 to anon, authenticated;
+grant select on table public.dose_hepatic_adjustments_v3 to anon, authenticated;
 grant select on table public.dose_rule_products_v3 to anon, authenticated;
 
 drop policy if exists dose_indication_concepts_v3_published_read
@@ -929,6 +965,34 @@ create policy dose_rules_v3_published_read
   on public.dose_rules_v3
   for select to anon, authenticated
   using (editorial_status = 'published');
+
+drop policy if exists dose_renal_adjustments_v3_verified_read
+  on public.dose_renal_adjustments_v3;
+create policy dose_renal_adjustments_v3_verified_read
+  on public.dose_renal_adjustments_v3
+  for select to anon, authenticated
+  using (
+    review_status = 'verified'
+    and exists (
+      select 1 from public.dose_rules_v3 r
+      where r.rule_id = dose_renal_adjustments_v3.rule_id
+        and r.editorial_status = 'published'
+    )
+  );
+
+drop policy if exists dose_hepatic_adjustments_v3_verified_read
+  on public.dose_hepatic_adjustments_v3;
+create policy dose_hepatic_adjustments_v3_verified_read
+  on public.dose_hepatic_adjustments_v3
+  for select to anon, authenticated
+  using (
+    review_status = 'verified'
+    and exists (
+      select 1 from public.dose_rules_v3 r
+      where r.rule_id = dose_hepatic_adjustments_v3.rule_id
+        and r.editorial_status = 'published'
+    )
+  );
 
 drop policy if exists dose_rule_products_v3_published_read
   on public.dose_rule_products_v3;
@@ -1024,6 +1088,106 @@ as $$
       and r.source_snapshot_id = r.source_evidence_hash
       and (r.source_document_version is not null or r.source_document_date is not null)
   ),
+  renal_adjustment_rows as (
+    select a.*
+    from rule_rows r
+    join public.dose_renal_adjustments_v3 a
+      on a.rule_id = r.rule_id
+     and a.review_status = 'verified'
+    join public.dose_source_snapshots_v3 s
+      on s.snapshot_id = a.source_snapshot_id
+     and s.source_key = a.source_key
+     and s.source_tier in ('EMA','EMC','AEMPS_CIMA','EU_NATIONAL','KOSOVO_AKPPM')
+     and (a.source_document_version is null or s.document_version is not distinct from a.source_document_version)
+     and (a.source_document_date is null or s.document_date is not distinct from a.source_document_date)
+    join public.dose_source_sections_v3 sec
+      on sec.snapshot_id = a.source_snapshot_id
+     and sec.section_code = '4.2'
+     and sec.extraction_status = 'extracted'
+     and sec.section_sha256 = a.source_section_sha256
+    where a.source_snapshot_id = a.source_evidence_hash
+      and a.source_section = '4.2'
+  ),
+  renal_adjustments_json as (
+    select rule_id, jsonb_agg(
+      jsonb_build_object(
+        'adjustmentId', adjustment_id,
+        'measureType', measure_type,
+        'minValue', min_value,
+        'maxValue', max_value,
+        'acceptedValues', accepted_values,
+        'minInclusive', min_inclusive,
+        'maxInclusive', max_inclusive,
+        'doseAction', dose_action,
+        'doseFactor', dose_factor,
+        'replacementDoseMin', replacement_dose_min,
+        'replacementDoseMax', replacement_dose_max,
+        'intervalMinHours', interval_min_hours,
+        'intervalMaxHours', interval_max_hours,
+        'source', jsonb_build_object(
+          'sourceKey', source_key,
+          'snapshotId', source_snapshot_id,
+          'section', source_section,
+          'sectionSha256', source_section_sha256,
+          'evidenceHash', source_evidence_hash,
+          'documentVersion', source_document_version,
+          'documentDate', source_document_date,
+          'official', true
+        )
+      )
+      order by measure_type, min_value nulls first, max_value nulls last, adjustment_id
+    ) as adjustments
+    from renal_adjustment_rows
+    group by rule_id
+  ),
+  hepatic_adjustment_rows as (
+    select a.*
+    from rule_rows r
+    join public.dose_hepatic_adjustments_v3 a
+      on a.rule_id = r.rule_id
+     and a.review_status = 'verified'
+    join public.dose_source_snapshots_v3 s
+      on s.snapshot_id = a.source_snapshot_id
+     and s.source_key = a.source_key
+     and s.source_tier in ('EMA','EMC','AEMPS_CIMA','EU_NATIONAL','KOSOVO_AKPPM')
+     and (a.source_document_version is null or s.document_version is not distinct from a.source_document_version)
+     and (a.source_document_date is null or s.document_date is not distinct from a.source_document_date)
+    join public.dose_source_sections_v3 sec
+      on sec.snapshot_id = a.source_snapshot_id
+     and sec.section_code = '4.2'
+     and sec.extraction_status = 'extracted'
+     and sec.section_sha256 = a.source_section_sha256
+    where a.source_snapshot_id = a.source_evidence_hash
+      and a.source_section = '4.2'
+  ),
+  hepatic_adjustments_json as (
+    select rule_id, jsonb_agg(
+      jsonb_build_object(
+        'adjustmentId', adjustment_id,
+        'measureType', measure_type,
+        'severityOrClass', severity_or_class,
+        'doseAction', dose_action,
+        'doseFactor', dose_factor,
+        'replacementDoseMin', replacement_dose_min,
+        'replacementDoseMax', replacement_dose_max,
+        'intervalMinHours', interval_min_hours,
+        'intervalMaxHours', interval_max_hours,
+        'source', jsonb_build_object(
+          'sourceKey', source_key,
+          'snapshotId', source_snapshot_id,
+          'section', source_section,
+          'sectionSha256', source_section_sha256,
+          'evidenceHash', source_evidence_hash,
+          'documentVersion', source_document_version,
+          'documentDate', source_document_date,
+          'official', true
+        )
+      )
+      order by measure_type, adjustment_id
+    ) as adjustments
+    from hepatic_adjustment_rows
+    group by rule_id
+  ),
   rules_json as (
     select jsonb_agg(
       jsonb_build_object(
@@ -1061,6 +1225,8 @@ as $$
         'prn', r.prn,
         'renalAdjustmentRequired', r.renal_adjustment_required,
         'hepaticAdjustmentRequired', r.hepatic_adjustment_required,
+        'renalAdjustments', coalesce(raj.adjustments, '[]'::jsonb),
+        'hepaticAdjustments', coalesce(haj.adjustments, '[]'::jsonb),
         'cardiacAdjustmentRequired', r.cardiac_adjustment_required,
         'specialistOnly', r.specialist_only,
         'outOfRangeAction', r.out_of_range_action,
@@ -1088,6 +1254,8 @@ as $$
       order by r.indication_name, r.rule_key
     ) as rules
     from rule_rows r
+    left join renal_adjustments_json raj on raj.rule_id = r.rule_id
+    left join hepatic_adjustments_json haj on haj.rule_id = r.rule_id
   )
   select case
     when p.product_id is null or coalesce(jsonb_array_length(r.rules), 0) = 0 then null
