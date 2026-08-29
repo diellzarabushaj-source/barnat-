@@ -1,6 +1,6 @@
 {
   "schemaVersion": "drx-dosierung-master-plan-status-v1",
-  "updatedAt": "2026-08-30T00:55:00+02:00",
+  "updatedAt": "2026-08-30T01:15:00+02:00",
   "officialPlan": "DRx Dosierung phases 0-32",
   "databaseBlocker": {
     "active": true,
@@ -311,86 +311,101 @@
     {
       "id": 25,
       "name": "API Fast Path",
-      "status": "FOUNDATION_COMPLETE_REPO",
+      "status": "IMPLEMENTED_REPO_V3_GATE_READY",
       "evidence": [
         "targeted dosage API routes",
-        "data/drx-api-fast-path-contract-v1.json"
+        "data/drx-api-fast-path-contract-v1.json",
+        "lib/dose-v3-runtime-gate.js",
+        "tests/drx-dose-v3-runtime-gate-test.js"
       ],
-      "next": "bind product-scoped endpoint to V3"
+      "next": "activate V3 fast path only after V3 schema + published bindings exist"
     },
     {
       "id": 26,
       "name": "Dose Core Engine",
-      "status": "FOUNDATION_COMPLETE_REPO",
+      "status": "IMPLEMENTED_SHARED_CORE",
       "evidence": [
         "dosage-engine.js and calculators",
-        "data/drx-dose-core-contract-v1.json"
+        "data/drx-dose-core-contract-v1.json",
+        "dose-core.js",
+        "tests/drx-dose-core-test.js"
       ],
-      "next": "consolidate runtime calculators behind shared deterministic core"
+      "next": "keep frontend/backend on dose-core and expand only with sourced renal/hepatic rule objects"
     },
     {
       "id": 27,
       "name": "Cache / Offline",
-      "status": "FOUNDATION_COMPLETE_REPO",
+      "status": "IMPLEMENTED_RUNTIME_CACHE",
       "evidence": [
         "ETag/cache patterns exist",
-        "data/drx-dose-cache-policy-v1.json"
+        "data/drx-dose-cache-policy-v1.json",
+        "registry-dose-calculator.js"
       ],
-      "next": "activate versioned cache after V3 API"
+      "next": "retain ETag + memory + IndexedDB; invalidate on V3 version/source changes"
     },
     {
       "id": 28,
       "name": "Frontend",
-      "status": "FOUNDATION_COMPLETE_REPO",
+      "status": "IMPLEMENTED_FAST_FLOW_REPO",
       "evidence": [
         "registry dose calculator UI",
-        "data/drx-frontend-flow-contract-v1.json"
+        "data/drx-frontend-flow-contract-v1.json",
+        "registry-dose-calculator.js",
+        "registry-dose-calculator-fast-ui.js"
       ],
-      "next": "bind final product-indication-input-dose flow after backend stabilization"
+      "next": "switch product payload to V3 after release gate; current fast UX preserved"
     },
     {
       "id": 29,
       "name": "Automated QA",
-      "status": "FOUNDATION_COMPLETE_REPO",
+      "status": "IMPLEMENTED_QA_GATE_REPO",
       "evidence": [
         "dose tests and Playwright specs",
-        "data/drx-qa-coverage-contract-v1.json"
+        "data/drx-qa-coverage-contract-v1.json",
+        "tests/drx-production-release-readiness-test.js",
+        "data/drx-dose-golden-cases-v1.json"
       ],
-      "next": "run sourced golden and browser cases after V3 rules exist"
+      "next": "run full CI/golden/browser suite after live V3 persistence and before cutover"
     },
     {
       "id": 30,
       "name": "Coverage Dashboard",
-      "status": "FOUNDATION_COMPLETE_REPO",
+      "status": "IMPLEMENTED_EVIDENCE_DASHBOARD",
       "evidence": [
         "health/dashboard foundations",
         "data/drx-qa-coverage-contract-v1.json",
         "scripts/build-drx-dose-coverage-v2.js",
         "tests/drx-dose-coverage-v2-test.js",
-        "data/drx-dose-coverage-snapshot-v2.json"
+        "data/drx-dose-coverage-snapshot-v2.json",
+        "data/drx-production-release-readiness-v1.json"
       ],
-      "next": "replace repository counts with live V3 counts when Supabase data plane returns"
+      "next": "replace repo snapshot with live V3 counts after gateway recovery"
     },
     {
       "id": 31,
       "name": "Final Cleanup",
-      "status": "PENDING",
+      "status": "CLEANUP_GATED_READY",
       "evidence": [
-        "legacy wrappers retained intentionally"
+        "legacy wrappers retained intentionally",
+        "data/drx-final-cleanup-manifest-v1.json"
       ],
-      "next": "remove only after zero consumers and parity"
+      "next": "remove legacy only after zero consumers + parity + rollback test"
     },
     {
       "id": 32,
       "name": "Production Release",
-      "status": "PENDING",
-      "evidence": [],
-      "next": "desktop/mobile + CI green + successful deploy"
+      "status": "RELEASE_GATE_IMPLEMENTED_BLOCKED",
+      "evidence": [
+        "scripts/audit-drx-production-release.js",
+        "tests/drx-production-release-readiness-test.js",
+        "data/drx-production-release-readiness-v1.json"
+      ],
+      "next": "clear all production blockers, require CI/browser/deploy green, then release"
     }
   ],
   "currentExecution": {
-    "phase": 16,
-    "objective": "Phase 14 V3 Supabase candidate is now prepared fail-closed and additive, but not applied because SQL/advisor/migration-list operations time out while project health and Postgres logs remain healthy.",
+    "phase": 32,
+    "objective": "All phases 25-32 now have concrete repo-side implementation/gates. Production remains fail-closed on live V3/archive/binding/legacy/review publication blockers.",
     "pilot": "batch2-25",
     "repositoryBatch1Substances": 10,
     "repositoryBatch2Substances": 25,
@@ -418,6 +433,17 @@
     "supabaseProjectHealth": "ACTIVE_HEALTHY",
     "supabaseSqlGateway": "timeout",
     "v3CandidateReady": true,
-    "v3Applied": false
+    "v3Applied": false,
+    "releaseGateImplemented": true,
+    "releaseReady": false,
+    "releaseBlockers": [
+      "supabase_v3_not_applied",
+      "batch2_archive_hashes_incomplete",
+      "batch2_normalization_not_ready",
+      "exact_product_binding_not_live",
+      "legacy_comparison_not_live",
+      "clinical_review_not_complete",
+      "no_published_v3_rules"
+    ]
   }
 }
