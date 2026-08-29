@@ -1,6 +1,6 @@
 {
   "schemaVersion": "drx-dosierung-master-plan-status-v1",
-  "updatedAt": "2026-08-29T11:54:42.981Z",
+  "updatedAt": "2026-08-29T11:56:33.300Z",
   "officialPlan": "DRx Dosierung phases 0-32",
   "databaseBlocker": {
     "active": true,
@@ -273,9 +273,12 @@
         "rollback is V3-only, no CASCADE, no private schema drop, no V2/legacy table touch",
         "V3 rules pin exact source_section_sha256 for verified/published provenance",
         "runtime RPC revalidates source snapshot tier/key/version/date and exact SmPC section hash",
-        "verified/published source snapshots and sections are mutation-locked"
+        "verified/published source snapshots and sections are mutation-locked",
+        "supabase/drx-dose-v3-publication-gate-smoke.sql",
+        "tests/drx-dose-v3-publication-gate-smoke-contract-test.js",
+        "transactional smoke covers negative source/section/binding/provenance cases + one positive publish/RPC case and always ROLLBACKs"
       ],
-      "next": "gateway recovery gate unchanged: SELECT 1 -> list_migrations -> baseline/types -> advisors -> candidate apply -> structural smoke -> transactional publication smoke -> controlled rollback test"
+      "next": "when gateway recovers: SELECT 1 -> list_migrations -> baseline/types -> security/performance advisors -> apply candidate -> structural smoke -> transactional publication smoke -> controlled rollback test"
     },
     {
       "id": 15,
@@ -446,9 +449,11 @@
         "data/drx-publication-gate-v3-policy.json",
         "scripts/audit-drx-batch2-prepublication.js",
         "supabase/drx-dose-v3-additive-candidate.sql DB publication trigger",
-        "tests/drx-dose-v3-db-publication-gate-test.js"
+        "tests/drx-dose-v3-db-publication-gate-test.js",
+        "supabase/drx-dose-v3-publication-gate-smoke.sql",
+        "transactional negative/positive DB publication test prepared; not executed because V3 is not live"
       ],
-      "next": "apply V3 candidate when SQL gateway returns; verify DB-level publication trigger with negative/positive smoke cases"
+      "next": "after V3 live apply, run transactional publication smoke; keep publication closed until all negative/positive cases and clinical review gates pass"
     },
     {
       "id": 25,
