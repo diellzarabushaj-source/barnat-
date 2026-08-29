@@ -1,0 +1,170 @@
+{
+  "schemaVersion": "drx-first100-source-discovery-wave-f-v1",
+  "generatedAt": "2026-08-29T04:06:02.666Z",
+  "sourcePolicy": "data/drx-dose-source-policy-v1.json",
+  "verificationMethod": "live_aemps_cima_html_plus_ema_official_crosscheck",
+  "publicationAllowed": false,
+  "verifiedProductSpecificCount": 6,
+  "sectionsPendingCount": 1,
+  "productSelectionRequiredCount": 0,
+  "rows": [
+    {
+      "canonicalKey": "acidacetylsalicylicatorvastatinramipril",
+      "canonicalName": "Acid acetylsalicylic + Atorvastatin + Ramipril",
+      "status": "verified_product_specific_component_name_review",
+      "sourceTier": "AEMPS_CIMA",
+      "sourceKey": "cima-78575-ft",
+      "url": "https://cima.aemps.es/cima/dochtml/ft/78575/FichaTecnica_78575.html",
+      "productName": "Trinomia 100 mg/20 mg/5 mg cápsulas duras",
+      "documentDate": "2023-03",
+      "documentDatePrecision": "month",
+      "section41Present": true,
+      "section42Present": true,
+      "reviewFlags": [
+        "canonical_acid_acetylsalicylic_to_acetylsalicylic_acid_review",
+        "triple_fixed_combination",
+        "secondary_cardiovascular_prevention",
+        "substitution_therapy",
+        "antiplatelet_statins_ace_inhibitor_interactions",
+        "renal_function_and_electrolyte_monitoring",
+        "clinical_review_required"
+      ],
+      "publicationAllowed": false
+    },
+    {
+      "canonicalKey": "amlodipineatorvastatin",
+      "canonicalName": "Amlodipine + Atorvastatin",
+      "status": "verified_product_specific",
+      "sourceTier": "AEMPS_CIMA",
+      "sourceKey": "cima-67326-ft",
+      "url": "https://cima.aemps.es/cima/dochtml/ft/67326/FichaTecnica_67326.html",
+      "productName": "Caduet 10 mg/10 mg comprimidos recubiertos con película",
+      "documentDate": "2026-01",
+      "documentDatePrecision": "month",
+      "section41Present": true,
+      "section42Present": true,
+      "reviewFlags": [
+        "fixed_combination",
+        "cardiovascular_risk_prevention_context",
+        "once_daily",
+        "amlodipine_titration_context",
+        "atorvastatin_interaction_review",
+        "product_strength_specific"
+      ],
+      "publicationAllowed": false
+    },
+    {
+      "canonicalKey": "candesartancilexetilhydrochlorothiazide",
+      "canonicalName": "Candesartan cilexetil + Hydrochlorothiazide",
+      "status": "verified_product_specific",
+      "sourceTier": "AEMPS_CIMA",
+      "sourceKey": "cima-63209-ft",
+      "url": "https://cima.aemps.es/cima/dochtml/ft/63209/FichaTecnica_63209.html",
+      "productName": "Atacand Plus 16 mg/12,5 mg comprimidos",
+      "documentDate": "2025-01",
+      "documentDatePrecision": "month",
+      "section41Present": true,
+      "section42Present": true,
+      "reviewFlags": [
+        "fixed_combination",
+        "adult_primary_hypertension",
+        "not_controlled_on_monotherapy",
+        "individual_component_titration_recommended",
+        "renal_function_electrolyte_monitoring",
+        "hydrochlorothiazide_skin_cancer_context"
+      ],
+      "publicationAllowed": false
+    },
+    {
+      "canonicalKey": "choriogonadotropinalfa",
+      "canonicalName": "Choriogonadotropin alfa",
+      "status": "verified_product_specific_ema_version_crosscheck",
+      "sourceTier": "AEMPS_CIMA",
+      "sourceKey": "cima-100165007-ft",
+      "url": "https://cima.aemps.es/cima/dochtml/ft/100165007/FT_100165007.html",
+      "productName": "Ovitrelle 250 microgramos/0,5 ml solución inyectable en jeringa precargada",
+      "documentDate": "2025-05-23",
+      "documentDatePrecision": "day",
+      "documentDateSource": "EMA Product Information last-updated date; sections 4.1/4.2 verified on official CIMA HTML",
+      "versionCrosscheckUrl": "https://www.ema.europa.eu/en/medicines/human/EPAR/ovitrelle",
+      "section41Present": true,
+      "section42Present": true,
+      "reviewFlags": [
+        "fertility_specialist_supervision",
+        "single_250_microgram_dose_context",
+        "subcutaneous_route",
+        "ovarian_hyperstimulation_risk",
+        "pregnancy_excluded",
+        "clinical_review_required"
+      ],
+      "publicationAllowed": false
+    },
+    {
+      "canonicalKey": "amlodipinecandesartancilexetil",
+      "canonicalName": "Amlodipine + Candesartan cilexetil",
+      "status": "verified_product_specific",
+      "sourceTier": "AEMPS_CIMA",
+      "sourceKey": "cima-84728-ft",
+      "url": "https://cima.aemps.es/cima/dochtml/ft/84728/FT_84728.html",
+      "productName": "Kandoset 16 mg/10 mg comprimidos",
+      "documentDate": "2025-06",
+      "documentDatePrecision": "month",
+      "section41Present": true,
+      "section42Present": true,
+      "reviewFlags": [
+        "fixed_combination",
+        "adult_essential_hypertension",
+        "substitution_therapy_not_initial",
+        "one_tablet_daily",
+        "renal_function_review",
+        "hepatic_impairment_review",
+        "pediatric_not_established"
+      ],
+      "publicationAllowed": false
+    },
+    {
+      "canonicalKey": "amlodipineindapamideperindopril",
+      "canonicalName": "Amlodipine + Indapamide + Perindopril",
+      "status": "verified_product_specific_component_order_review",
+      "sourceTier": "AEMPS_CIMA",
+      "sourceKey": "cima-90226-ft",
+      "url": "https://cima.aemps.es/cima/dochtml/ft/90226/FT_90226.html",
+      "productName": "Perindopril/Amlodipino/Indapamida Krka 7 mg/5 mg/2,5 mg comprimidos EFG",
+      "documentDate": "2025-01",
+      "documentDatePrecision": "month",
+      "section41Present": true,
+      "section42Present": true,
+      "reviewFlags": [
+        "canonical_component_order_differs_from_product_name",
+        "triple_fixed_combination",
+        "adult_essential_hypertension",
+        "substitution_therapy_not_initial",
+        "one_tablet_once_daily_before_breakfast",
+        "crcl_below_30_contraindication",
+        "creatinine_and_potassium_monitoring",
+        "clinical_review_required"
+      ],
+      "publicationAllowed": false
+    },
+    {
+      "canonicalKey": "amlodipinehydrochlorothiazidevalsartan",
+      "canonicalName": "Amlodipine + Hydrochlorothiazide + Valsartan",
+      "status": "official_source_found_sections_visual_verification_pending",
+      "sourceTier": "EMA",
+      "sourceKey": "ema-exforge-hct-epar",
+      "url": "https://www.ema.europa.eu/en/medicines/human/EPAR/exforge-hct",
+      "productName": "Exforge HCT",
+      "documentDate": "2026-02-06",
+      "documentDatePrecision": "day",
+      "section41Present": null,
+      "section42Present": null,
+      "reviewFlags": [
+        "triple_fixed_combination",
+        "ema_product_information_current",
+        "product_information_pdf_429_visual_verification_pending",
+        "do_not_normalize_until_sections_verified"
+      ],
+      "publicationAllowed": false
+    }
+  ]
+}
