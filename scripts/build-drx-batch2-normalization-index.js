@@ -8,6 +8,10 @@ const ROOT = path.resolve(__dirname, '..');
 const INPUT = path.join(ROOT, 'data/drx-batch2-extraction-index-v1.json');
 const OUTPUT = path.join(ROOT, 'data/drx-batch2-normalization-index-v1.json');
 
+function validSha256(value) {
+  return /^[0-9a-f]{64}$/i.test(String(value || ''));
+}
+
 function candidateFromExtraction(row) {
   return {
     canonicalKey:row.canonicalKey,
@@ -15,7 +19,13 @@ function candidateFromExtraction(row) {
     sourceSnapshotId:row.snapshotId,
     sourceEvidenceHash:row.rawSha256,
     sourceSection:'4.2',
-    extractionReady:Boolean(row.section41Present && row.section42Present && row.extractionGate?.allowed),
+    sourceSectionSha256:row.section42Sha256 || row.sectionSha256?.['4.2'] || null,
+    extractionReady:Boolean(
+      row.section41Present
+      && row.section42Present
+      && row.extractionGate?.allowed
+      && validSha256(row.section42Sha256 || row.sectionSha256?.['4.2'])
+    ),
     normalizationStatus:'requires_structured_dose_candidate',
     publicationAllowed:false,
   };
@@ -75,4 +85,4 @@ if (require.main === module) {
   }
 }
 
-module.exports = { candidateFromExtraction, build, validateStructuredRule, INPUT, OUTPUT };
+module.exports = { candidateFromExtraction, build, validateStructuredRule, INPUT, OUTPUT, _test:{ validSha256 } };
