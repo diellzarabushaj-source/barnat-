@@ -8,7 +8,7 @@ const ROOT = path.resolve(__dirname, '..');
 const read = rel => fs.readFileSync(path.join(ROOT, rel), 'utf8');
 
 const snapshot = read('lib/system-health-snapshot.js');
-const dataApi = read('lib/neon-data-api.js');
+const dataApi = read('lib/medindex-data-api.js');
 const endpoint = read('api/neon-status.js');
 const client = read('system-health.js');
 const editor = read('lib/clinical-editor.js');
