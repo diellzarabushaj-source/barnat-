@@ -46,9 +46,14 @@ for (const table of tables) {
 }
 
 assert.equal(
+  occurrences('create or replace function private.drx_enforce_product_publication_v3()'),
+  1,
+  'Product publication guard must exist exactly once.'
+);
+assert.equal(
   occurrences('create or replace function private.drx_enforce_rule_publication_v3()'),
   1,
-  'Publication guard must exist exactly once.'
+  'Rule publication guard must exist exactly once.'
 );
 assert.equal(
   occurrences('create or replace function public.medindex_dose_product_fast_path_v3('),
@@ -63,6 +68,10 @@ assert.doesNotMatch(sql, /\balter\s+table\s+public\.dosage_regimens\b/i);
 assert.doesNotMatch(sql, /\bdrop\s+table\b/i);
 assert.doesNotMatch(sql, /\btruncate\b/i);
 assert.doesNotMatch(sql, /\bdelete\s+from\b/i);
+assert.match(sql, /DRX_V3_PREEXISTING_SHADOW_SCHEMA/);
+assert.match(sql, /dose_source_snapshots_v3_https_check/);
+assert.match(sql, /create trigger dose_products_v3_publication_guard[\s\S]*before insert or update/);
+assert.match(sql, /create trigger dose_rules_v3_publication_guard[\s\S]*before insert or update/);
 
 assert.match(sql, /constraint dose_products_v3_source_identity_check[\s\S]*source_snapshot_id = source_evidence_hash/);
 assert.match(sql, /constraint dose_rules_v3_source_identity_check[\s\S]*source_snapshot_id = source_evidence_hash/);

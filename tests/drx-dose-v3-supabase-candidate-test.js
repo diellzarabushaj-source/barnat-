@@ -35,6 +35,16 @@ assert.match(sql,/reviewer_id uuid/);
 assert.match(sql,/decision_reason text/);
 assert.match(sql,/source_version text/);
 
+// A partial/stale shadow schema must never be silently reused.
+assert.match(sql,/DRX_V3_PREEXISTING_SHADOW_SCHEMA/);
+assert.match(sql,/to_regclass\(expected_table\.regclass_name\)/);
+assert.match(sql,/existing_v3_tables <> 0/);
+
+// Source snapshots themselves must be constrained to HTTPS and known source tiers.
+assert.match(sql,/dose_source_snapshots_v3_https_check/);
+assert.match(sql,/source_url ~ '\^https:\/\/' and final_url ~ '\^https:\/\/'/);
+assert.match(sql,/dose_source_snapshots_v3_tier_check/);
+
 // Clinical publication must stay fail-closed and provenance-backed.
 assert.match(sql,/editorial_status = 'published'/);
 assert.match(sql,/binding_status = 'verified'/);
@@ -44,12 +54,22 @@ assert.match(sql,/source_evidence_hash ~ '\^\[0-9a-f\]\{64\}\$'/);
 
 // Supabase public-schema least privilege: revoke defaults first, then expose SELECT only.
 assert.match(sql,/revoke all privileges on table/);
+assert.match(sql,/from public, anon, authenticated/);
 assert.match(sql,/grant select on table public\.dose_indication_concepts_v3 to anon, authenticated/);
 assert.match(sql,/grant select on table public\.dose_products_v3 to anon, authenticated/);
 assert.match(sql,/grant select on table public\.dose_rules_v3 to anon, authenticated/);
 assert.match(sql,/grant select on table public\.dose_rule_products_v3 to anon, authenticated/);
 assert.doesNotMatch(sql,/grant\s+(?:insert|update|delete|truncate|references|trigger|all(?:\s+privileges)?)\b[\s\S]*?\bto\s+(?:anon|authenticated)\b/i);
 assert.doesNotMatch(sql,/create\s+policy[\s\S]*?for\s+(?:insert|update|delete|all)\s+to\s+(?:anon|authenticated)\b/i);
+
+// Product/rule publication guards must cover INSERT as well as UPDATE and remain invoker-safe.
+assert.match(sql,/create or replace function private\.drx_enforce_product_publication_v3\(\)/);
+assert.match(sql,/create trigger dose_products_v3_publication_guard[\s\S]*?before insert or update/);
+assert.match(sql,/create trigger dose_rules_v3_publication_guard[\s\S]*?before insert or update/);
+assert.match(sql,/source tier is not publication eligible/);
+assert.match(sql,/verified SmPC section 4\.2 artifact missing/);
+assert.match(sql,/section_code = '4\.2'[\s\S]*?extraction_status = 'extracted'/);
+assert.match(sql,/snapshot_source_key is distinct from new\.source_key/);
 
 // The one-read RPC is allowed only as SECURITY INVOKER and must remain least-privilege.
 assert.doesNotMatch(sql,/\bsecurity\s+definer\b/i);
