@@ -1,7 +1,7 @@
 {
   "schemaVersion": "drx-dose-batch2-v1",
-  "updatedAt": "2026-08-29T05:20:00+02:00",
-  "status": "source_discovery_complete_repository_side",
+  "updatedAt": "2026-08-29T05:35:00+02:00",
+  "status": "source_set_complete_repository_side",
   "publicationAllowed": false,
   "targetCount": 25,
   "substances": [
@@ -134,51 +134,93 @@
     {
       "canonicalKey": "spironolactone",
       "canonicalName": "Spironolactone",
-      "sourceKey": "emc-1619-smpc",
-      "url": "https://www.medicines.org.uk/emc/product/1619/smpc",
-      "status": "verified_live"
+      "sourceKey": "emc-12015-smpc",
+      "url": "https://www.medicines.org.uk/emc/product/12015/smpc",
+      "status": "verified_live",
+      "documentDate": "2025-10-23",
+      "productName": "Spironolactone 12.5 mg Film-coated Tablets",
+      "formulation": "film-coated tablet",
+      "route": "PO",
+      "strength": "12.5 mg",
+      "section42Present": true
     },
     {
       "canonicalKey": "diclofenac",
       "canonicalName": "Diclofenac",
-      "sourceKey": "emc-2661-smpc",
-      "url": "https://www.medicines.org.uk/emc/product/2661/smpc",
-      "status": "verified_live"
+      "sourceKey": "emc-2662-smpc",
+      "url": "https://www.medicines.org.uk/emc/product/2662/smpc",
+      "status": "verified_live",
+      "documentDate": "2026-05-01",
+      "productName": "Diclofenac sodium Dexcel XL 100 mg prolonged-release tablets",
+      "formulation": "prolonged-release tablet",
+      "route": "PO",
+      "strength": "100 mg",
+      "section42Present": true
     },
     {
       "canonicalKey": "doxycycline",
       "canonicalName": "Doxycycline",
       "sourceKey": "emc-13082-smpc",
       "url": "https://www.medicines.org.uk/emc/product/13082/smpc",
-      "status": "verified_live"
+      "status": "verified_live",
+      "documentDate": "2026-03-24",
+      "productName": "Doxycycline 100 mg Capsules",
+      "formulation": "hard capsule",
+      "route": "PO",
+      "strength": "100 mg",
+      "section42Present": true
     },
     {
       "canonicalKey": "cefalexin",
       "canonicalName": "Cefalexin",
-      "sourceKey": "emc-554-smpc",
-      "url": "https://www.medicines.org.uk/emc/product/554/smpc",
-      "status": "verified_live"
+      "sourceKey": "emc-9140-smpc",
+      "url": "https://www.medicines.org.uk/emc/product/9140/smpc",
+      "status": "verified_live",
+      "documentDate": "2025-06-06",
+      "productName": "Cefalexin 250 mg Capsules",
+      "formulation": "capsule",
+      "route": "PO",
+      "strength": "250 mg",
+      "section42Present": true
     },
     {
       "canonicalKey": "metronidazole",
       "canonicalName": "Metronidazole",
-      "sourceKey": "emc-12817-smpc",
-      "url": "https://www.medicines.org.uk/emc/product/12817/smpc",
-      "status": "verified_live"
+      "sourceKey": "emc-14660-smpc",
+      "url": "https://www.medicines.org.uk/emc/product/14660/smpc",
+      "status": "verified_live",
+      "documentDate": "2026-07-27",
+      "productName": "Metronidazole 500 mg Film-Coated Tablets",
+      "formulation": "film-coated tablet",
+      "route": "PO",
+      "strength": "500 mg",
+      "section42Present": true
     },
     {
       "canonicalKey": "gliclazide",
       "canonicalName": "Gliclazide",
-      "sourceKey": "emc-13676-smpc",
-      "url": "https://www.medicines.org.uk/emc/product/13676/smpc",
-      "status": "verified_live"
+      "sourceKey": "emc-13135-smpc",
+      "url": "https://www.medicines.org.uk/emc/product/13135/smpc",
+      "status": "verified_live",
+      "documentDate": "2025-08-28",
+      "productName": "Gliclazide 40 mg Tablets",
+      "formulation": "tablet",
+      "route": "PO",
+      "strength": "40 mg",
+      "section42Present": true
     },
     {
       "canonicalKey": "loratadine",
       "canonicalName": "Loratadine",
       "sourceKey": "emc-8911-smpc",
       "url": "https://www.medicines.org.uk/emc/product/8911/smpc",
-      "status": "verified_live"
+      "status": "verified_live",
+      "documentDate": "2024-01-24",
+      "productName": "Loratadine 10 mg Tablets",
+      "formulation": "tablet",
+      "route": "PO",
+      "strength": "10 mg",
+      "section42Present": true
     }
   ],
   "gates": {
@@ -194,6 +236,7 @@
   "blockers": [
     "Supabase SQL/MCP database gateway unavailable",
     "all Batch 2 rows require structured SmPC extraction and normalization before clinical review",
-    "Batch 2 structured SmPC extraction and normalization still required before clinical review"
+    "Batch 2 structured SmPC extraction and normalization still required before clinical review",
+    "18 Batch 2 sources still require document date/version capture in the canonical source map before publication readiness"
   ]
 }
