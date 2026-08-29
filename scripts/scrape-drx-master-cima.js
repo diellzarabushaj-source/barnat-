@@ -284,6 +284,9 @@ async function main(){
     const s2=sections?.['2']||'';
     const s41=sections?.['4.1']||'';
     const s42=sections?.['4.2']||'';
+    if(status==='EXACT_ATC_STRENGTH_FORM' && (!s41 || !s42)){
+      status='EXACT_MATCH_PROVENANCE_REVIEW';
+    }
     matchedDone++;
     if(matchedDone%50===0 || matchedDone===targets.length) console.log('Matched',matchedDone,'/',targets.length);
     await sleep(30);
@@ -332,6 +335,28 @@ async function main(){
     rows
   };
   fs.writeFileSync(OUTPUT,JSON.stringify(out,null,2)+'\n');
+  const chunkSize=400;
+  for(let start=0; start<rows.length; start+=chunkSize){
+    const compact=rows.slice(start,start+chunkSize).map(r=>({
+      dedupeKey:r.dedupeKey,
+      matchStatus:r.matchStatus,
+      matchScore:r.matchScore,
+      nregistro:r.nregistro,
+      cimaProductName:r.cimaProductName,
+      sourceUrl:r.sourceUrl,
+      section2Sha256:r.section2Sha256,
+      section41Sha256:r.section41Sha256,
+      section42Sha256:r.section42Sha256,
+      error:r.error
+    }));
+    const idx=String(Math.floor(start/chunkSize)+1).padStart(2,'0');
+    fs.writeFileSync(path.join(ROOT,'data',`drx-master-cima-sheet-chunk-${idx}.json`),JSON.stringify({
+      schemaVersion:'drx-master-cima-sheet-chunk-v1',
+      generatedAt:out.generatedAt,
+      startRow:start,
+      rows:compact
+    },null,2)+'\n');
+  }
   console.log(JSON.stringify({ok:true,rows:rows.length,counts},null,2));
 }
 main().catch(err=>{console.error(err);process.exit(1);});
