@@ -104,18 +104,32 @@ function buildDiscoveryQueue(canonicalSubstances, alreadyCovered = [], limit = 1
 }
 
 function buildDiscoveryBatch(canonicalSubstances, alreadyCovered = [], limit = 100) {
-  const queue = buildDiscoveryQueue(canonicalSubstances, alreadyCovered, limit);
-  const canonicalCount = normalizeCanonicalRows(canonicalSubstances).length;
+  const take = normalizedLimit(limit);
+  if (!Array.isArray(alreadyCovered)) throw new TypeError('alreadyCovered must be an array');
+
+  const canonical = normalizeCanonicalRows(canonicalSubstances);
   const coveredKeys = new Set(alreadyCovered.map(stableKey).filter(Boolean));
-  const coveredCanonicalCount = Array.from(coveredKeys).filter(Boolean).length;
+  const excludedCanonicalCount = canonical.filter(item => coveredKeys.has(item.canonicalKey)).length;
+  const queue = canonical
+    .filter(item => !coveredKeys.has(item.canonicalKey))
+    .slice(0, take)
+    .map((item,index) => ({
+      ordinal:index + 1,
+      ...item,
+      status:'source_discovery_pending',
+      preferredSourceOrder:['EMA','EMC','AEMPS_CIMA','EU_OTHER','KOSOVO','MEDIATELY_CROSSCHECK','FALLBACK'],
+      publicationAllowed:false,
+    }));
 
   return {
     schemaVersion:'drx-source-discovery-batch-v1',
-    requestedCount:normalizedLimit(limit),
-    canonicalCount,
-    coveredInputCount:coveredCanonicalCount,
+    requestedCount:take,
+    canonicalCount:canonical.length,
+    coveredInputCount:coveredKeys.size,
+    excludedCanonicalCount,
+    uncoveredAvailableCount:canonical.length - excludedCanonicalCount,
     queuedCount:queue.length,
-    complete:queue.length === normalizedLimit(limit),
+    complete:queue.length === take,
     publicationAllowed:false,
     queue,
   };
