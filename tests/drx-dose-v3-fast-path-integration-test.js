@@ -13,6 +13,8 @@ assert.equal(typeof Gate.chooseRuntime,'function');
 assert.equal(Reader._test.inIds(['a','b','a']),'in.(a,b)');
 assert.match(Reader._test.pathFor('dose_rules_v3','rule_id',{editorial_status:'eq.published'},5),/^dose_rules_v3\?/);
 assert.match(Reader._test.pathFor('dose_products_v3','product_id',{editorial_status:'eq.published'},1),/^dose_products_v3\?/);
+assert.match(Reader._test.pathFor('dose_renal_adjustments_v3','adjustment_id',{review_status:'eq.verified'},5),/^dose_renal_adjustments_v3\?/);
+assert.match(Reader._test.pathFor('dose_hepatic_adjustments_v3','adjustment_id',{review_status:'eq.verified'},5),/^dose_hepatic_adjustments_v3\?/);
 assert.equal(Reader._test.productSourceValid({
   source_snapshot_id:'a'.repeat(64),
   source_evidence_hash:'a'.repeat(64),
