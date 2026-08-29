@@ -1,6 +1,6 @@
 {
   "schemaVersion": "drx-dosierung-master-plan-status-v1",
-  "updatedAt": "2026-08-29T05:00:00+02:00",
+  "updatedAt": "2026-08-29T05:12:00+02:00",
   "officialPlan": "DRx Dosierung phases 0-32",
   "databaseBlocker": {
     "active": true,
@@ -49,9 +49,10 @@
       "evidence": [
         "data/drx-dose-source-map-v1.json",
         "ibuprofen pilot with official eMC oral+IV SmPCs",
-        "data/drx-batch1-source-verification-v1.json"
+        "data/drx-batch1-source-verification-v1.json",
+        "10-substance Batch 1 source map"
       ],
-      "next": "archive and parse the verified Batch 1 authoritative source set; then expand discovery from canonical substance list"
+      "next": "expand discovery beyond Batch 1 from canonical substance list after Batch 1 live validation"
     },
     {
       "id": 4,
@@ -172,11 +173,13 @@
       "name": "Batch 1 Pilot",
       "status": "IN_PROGRESS",
       "evidence": [
-        "data/drx-pilot-ibuprofen-v1.json",
-        "multi-authority source map for ibuprofen",
-        "data/drx-batch1-source-verification-v1.json"
+        "data/drx-dose-batch1-v1.json",
+        "10 DRx pilot manifests (ibuprofen + 9)",
+        "data/drx-batch1-source-verification-v1.json",
+        "12 representative rule candidates",
+        "required_inputs parity verified for 9 newly normalized pilots"
       ],
-      "next": "archive + parse the 9 non-ibuprofen Batch 1 sources while live product binding/legacy comparison wait for Supabase gateway"
+      "next": "exact live DRx product binding + legacy dosage_regimens comparison + confidence/safety + clinical review when Supabase data plane returns"
     },
     {
       "id": 16,
@@ -325,8 +328,11 @@
   ],
   "currentExecution": {
     "phase": 15,
-    "objective": "Batch 1 authoritative source set is now verified for 10 substances. Continue archive/parse/normalize repository-side; exact DRx product binding, legacy comparison and additive V3 persistence remain blocked by the Supabase SQL gateway. Publication remains disabled.",
-    "pilot": "ibuprofen",
+    "objective": "Batch 1 repository work is 10/10 substances with 12 representative fail-closed rule candidates. Next required gate is live exact product binding and legacy comparison; publication remains disabled.",
+    "pilot": "batch1-10",
+    "repositoryBatch1Substances": 10,
+    "representativeRuleCandidates": 12,
+    "liveBoundRules": 0,
     "publicationAllowed": false
   }
 }
