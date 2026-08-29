@@ -465,7 +465,7 @@
           "url": "https://www.medicines.org.uk/emc/product/4717/smpc",
           "tier": "EMC",
           "documentType": "SmPC",
-          "documentDate": null,
+          "documentDate": "2026-04-20",
           "hasDoseSection": true,
           "sectionsExpected": [
             "4.1",
@@ -481,8 +481,15 @@
           "productSpecific": true,
           "substanceMatch": true,
           "productMatch": false,
-          "status": "discovered_requires_document_version",
-          "discoveredAt": "2026-08-29"
+          "status": "discovered_live_metadata_verified",
+          "discoveredAt": "2026-08-29",
+          "productName": "Amlodipine 5 mg tablets",
+          "formulation": "tablet",
+          "route": "PO",
+          "strength": "5 mg",
+          "section41Present": true,
+          "section42Present": true,
+          "liveMetadataVerified": true
         }
       ]
     },
@@ -498,7 +505,7 @@
           "url": "https://www.medicines.org.uk/emc/product/13385/smpc",
           "tier": "EMC",
           "documentType": "SmPC",
-          "documentDate": null,
+          "documentDate": "2025-08-26",
           "hasDoseSection": true,
           "sectionsExpected": [
             "4.1",
@@ -514,8 +521,15 @@
           "productSpecific": true,
           "substanceMatch": true,
           "productMatch": false,
-          "status": "discovered_requires_document_version",
-          "discoveredAt": "2026-08-29"
+          "status": "discovered_live_metadata_verified",
+          "discoveredAt": "2026-08-29",
+          "productName": "Atorvastatin 80 mg film-coated tablets",
+          "formulation": "film-coated tablet",
+          "route": "PO",
+          "strength": "80 mg",
+          "section41Present": true,
+          "section42Present": true,
+          "liveMetadataVerified": true
         }
       ]
     },
@@ -531,7 +545,7 @@
           "url": "https://www.medicines.org.uk/emc/product/101897/smpc",
           "tier": "EMC",
           "documentType": "SmPC",
-          "documentDate": null,
+          "documentDate": "2026-02-06",
           "hasDoseSection": true,
           "sectionsExpected": [
             "4.1",
@@ -547,8 +561,15 @@
           "productSpecific": true,
           "substanceMatch": true,
           "productMatch": false,
-          "status": "discovered_requires_document_version",
-          "discoveredAt": "2026-08-29"
+          "status": "discovered_live_metadata_verified",
+          "discoveredAt": "2026-08-29",
+          "productName": "Bisoprolol 10 mg film-coated Tablets",
+          "formulation": "film-coated tablet",
+          "route": "PO",
+          "strength": "10 mg",
+          "section41Present": true,
+          "section42Present": true,
+          "liveMetadataVerified": true
         }
       ]
     },
@@ -564,7 +585,7 @@
           "url": "https://www.medicines.org.uk/emc/product/651/smpc",
           "tier": "EMC",
           "documentType": "SmPC",
-          "documentDate": null,
+          "documentDate": "2026-01-26",
           "hasDoseSection": true,
           "sectionsExpected": [
             "4.1",
@@ -580,8 +601,15 @@
           "productSpecific": true,
           "substanceMatch": true,
           "productMatch": false,
-          "status": "discovered_requires_document_version",
-          "discoveredAt": "2026-08-29"
+          "status": "discovered_live_metadata_verified",
+          "discoveredAt": "2026-08-29",
+          "productName": "Losartan potassium 12.5 mg film-coated tablets",
+          "formulation": "film-coated tablet",
+          "route": "PO",
+          "strength": "12.5 mg",
+          "section41Present": true,
+          "section42Present": true,
+          "liveMetadataVerified": true
         }
       ]
     },
@@ -597,7 +625,7 @@
           "url": "https://www.medicines.org.uk/emc/product/14644/smpc",
           "tier": "EMC",
           "documentType": "SmPC",
-          "documentDate": null,
+          "documentDate": "2026-02-26",
           "hasDoseSection": true,
           "sectionsExpected": [
             "4.1",
@@ -613,8 +641,15 @@
           "productSpecific": true,
           "substanceMatch": true,
           "productMatch": false,
-          "status": "discovered_requires_document_version",
-          "discoveredAt": "2026-08-29"
+          "status": "discovered_live_metadata_verified",
+          "discoveredAt": "2026-08-29",
+          "productName": "Pantoprazole 40 mg gastro-resistant tablets",
+          "formulation": "gastro-resistant tablet",
+          "route": "PO",
+          "strength": "40 mg",
+          "section41Present": true,
+          "section42Present": true,
+          "liveMetadataVerified": true
         }
       ]
     },
@@ -630,7 +665,7 @@
           "url": "https://www.medicines.org.uk/emc/product/4341/smpc",
           "tier": "EMC",
           "documentType": "SmPC",
-          "documentDate": null,
+          "documentDate": "2026-05-14",
           "hasDoseSection": true,
           "sectionsExpected": [
             "4.1",
@@ -646,8 +681,15 @@
           "productSpecific": true,
           "substanceMatch": true,
           "productMatch": false,
-          "status": "discovered_requires_document_version",
-          "discoveredAt": "2026-08-29"
+          "status": "discovered_live_metadata_verified",
+          "discoveredAt": "2026-08-29",
+          "productName": "Ciprofloxacin 250 mg film-coated tablets",
+          "formulation": "film-coated tablet",
+          "route": "PO",
+          "strength": "250 mg",
+          "section41Present": true,
+          "section42Present": true,
+          "liveMetadataVerified": true
         }
       ]
     },
@@ -663,7 +705,7 @@
           "url": "https://www.medicines.org.uk/emc/product/102194/smpc",
           "tier": "EMC",
           "documentType": "SmPC",
-          "documentDate": null,
+          "documentDate": "2026-06-12",
           "hasDoseSection": true,
           "sectionsExpected": [
             "4.1",
@@ -679,8 +721,15 @@
           "productSpecific": true,
           "substanceMatch": true,
           "productMatch": false,
-          "status": "discovered_requires_document_version",
-          "discoveredAt": "2026-08-29"
+          "status": "discovered_live_metadata_verified",
+          "discoveredAt": "2026-08-29",
+          "productName": "Furosemide 10 mg/ml solution for injection/infusion",
+          "formulation": "solution for injection/infusion",
+          "route": "IV/IM",
+          "strength": "10 mg/mL",
+          "section41Present": true,
+          "section42Present": true,
+          "liveMetadataVerified": true
         }
       ]
     },
@@ -696,7 +745,7 @@
           "url": "https://www.medicines.org.uk/emc/product/102342/smpc",
           "tier": "EMC",
           "documentType": "SmPC",
-          "documentDate": null,
+          "documentDate": "2026-06-19",
           "hasDoseSection": true,
           "sectionsExpected": [
             "4.1",
@@ -712,8 +761,15 @@
           "productSpecific": true,
           "substanceMatch": true,
           "productMatch": false,
-          "status": "discovered_requires_document_version",
-          "discoveredAt": "2026-08-29"
+          "status": "discovered_live_metadata_verified",
+          "discoveredAt": "2026-08-29",
+          "productName": "Prednisolone 5 mg soluble tablets",
+          "formulation": "soluble tablet",
+          "route": "PO",
+          "strength": "5 mg",
+          "section41Present": true,
+          "section42Present": true,
+          "liveMetadataVerified": true
         }
       ]
     },
@@ -729,7 +785,7 @@
           "url": "https://www.medicines.org.uk/emc/product/816/smpc",
           "tier": "EMC",
           "documentType": "SmPC",
-          "documentDate": null,
+          "documentDate": "2025-01-21",
           "hasDoseSection": true,
           "sectionsExpected": [
             "4.1",
@@ -745,8 +801,15 @@
           "productSpecific": true,
           "substanceMatch": true,
           "productMatch": false,
-          "status": "discovered_requires_document_version",
-          "discoveredAt": "2026-08-29"
+          "status": "discovered_live_metadata_verified",
+          "discoveredAt": "2026-08-29",
+          "productName": "Dexamethasone 2 mg soluble tablets",
+          "formulation": "soluble tablet",
+          "route": "PO",
+          "strength": "2 mg",
+          "section41Present": true,
+          "section42Present": true,
+          "liveMetadataVerified": true
         }
       ]
     },
@@ -762,7 +825,7 @@
           "url": "https://www.medicines.org.uk/emc/product/100094/smpc",
           "tier": "EMC",
           "documentType": "SmPC",
-          "documentDate": null,
+          "documentDate": "2026-06-29",
           "hasDoseSection": true,
           "sectionsExpected": [
             "4.1",
@@ -778,8 +841,15 @@
           "productSpecific": true,
           "substanceMatch": true,
           "productMatch": false,
-          "status": "discovered_requires_document_version",
-          "discoveredAt": "2026-08-29"
+          "status": "discovered_live_metadata_verified",
+          "discoveredAt": "2026-08-29",
+          "productName": "Cetirizine Dihydrochloride 10 mg Film-Coated Tablets",
+          "formulation": "film-coated tablet",
+          "route": "PO",
+          "strength": "10 mg",
+          "section41Present": true,
+          "section42Present": true,
+          "liveMetadataVerified": true
         }
       ]
     },
@@ -795,7 +865,7 @@
           "url": "https://www.medicines.org.uk/emc/product/12780/smpc",
           "tier": "EMC",
           "documentType": "SmPC",
-          "documentDate": null,
+          "documentDate": "2025-07-08",
           "hasDoseSection": true,
           "sectionsExpected": [
             "4.1",
@@ -811,8 +881,15 @@
           "productSpecific": true,
           "substanceMatch": true,
           "productMatch": false,
-          "status": "discovered_requires_document_version",
-          "discoveredAt": "2026-08-29"
+          "status": "discovered_live_metadata_verified",
+          "discoveredAt": "2026-08-29",
+          "productName": "Levothyroxine 50 microgram tablets",
+          "formulation": "tablet",
+          "route": "PO",
+          "strength": "50 micrograms",
+          "section41Present": true,
+          "section42Present": true,
+          "liveMetadataVerified": true
         }
       ]
     },
@@ -828,7 +905,7 @@
           "url": "https://www.medicines.org.uk/emc/product/5222/smpc",
           "tier": "EMC",
           "documentType": "SmPC",
-          "documentDate": null,
+          "documentDate": "2026-01-09",
           "hasDoseSection": true,
           "sectionsExpected": [
             "4.1",
@@ -844,8 +921,15 @@
           "productSpecific": true,
           "substanceMatch": true,
           "productMatch": false,
-          "status": "discovered_requires_document_version",
-          "discoveredAt": "2026-08-29"
+          "status": "discovered_live_metadata_verified",
+          "discoveredAt": "2026-08-29",
+          "productName": "Ondansetron 4 mg film-coated tablets",
+          "formulation": "film-coated tablet",
+          "route": "PO",
+          "strength": "4 mg",
+          "section41Present": true,
+          "section42Present": true,
+          "liveMetadataVerified": true
         }
       ]
     },
@@ -861,7 +945,7 @@
           "url": "https://www.medicines.org.uk/emc/product/3105/smpc",
           "tier": "EMC",
           "documentType": "SmPC",
-          "documentDate": null,
+          "documentDate": "2026-07-08",
           "hasDoseSection": true,
           "sectionsExpected": [
             "4.1",
@@ -877,8 +961,15 @@
           "productSpecific": true,
           "substanceMatch": true,
           "productMatch": false,
-          "status": "discovered_requires_document_version",
-          "discoveredAt": "2026-08-29"
+          "status": "discovered_live_metadata_verified",
+          "discoveredAt": "2026-08-29",
+          "productName": "Carvedilol 25 mg film-coated tablets",
+          "formulation": "film-coated tablet",
+          "route": "PO",
+          "strength": "25 mg",
+          "section41Present": true,
+          "section42Present": true,
+          "liveMetadataVerified": true
         }
       ]
     },
@@ -894,7 +985,7 @@
           "url": "https://www.medicines.org.uk/emc/product/7123/smpc",
           "tier": "EMC",
           "documentType": "SmPC",
-          "documentDate": null,
+          "documentDate": "2025-10-27",
           "hasDoseSection": true,
           "sectionsExpected": [
             "4.1",
@@ -910,8 +1001,15 @@
           "productSpecific": true,
           "substanceMatch": true,
           "productMatch": false,
-          "status": "discovered_requires_document_version",
-          "discoveredAt": "2026-08-29"
+          "status": "discovered_live_metadata_verified",
+          "discoveredAt": "2026-08-29",
+          "productName": "Tramadol 50 mg capsules, hard",
+          "formulation": "hard capsule",
+          "route": "PO",
+          "strength": "50 mg",
+          "section41Present": true,
+          "section42Present": true,
+          "liveMetadataVerified": true
         }
       ]
     },
@@ -927,7 +1025,7 @@
           "url": "https://www.medicines.org.uk/emc/product/102206/smpc",
           "tier": "EMC",
           "documentType": "SmPC",
-          "documentDate": null,
+          "documentDate": "2026-08-27",
           "hasDoseSection": true,
           "sectionsExpected": [
             "4.1",
@@ -943,8 +1041,15 @@
           "productSpecific": true,
           "substanceMatch": true,
           "productMatch": false,
-          "status": "discovered_requires_document_version",
-          "discoveredAt": "2026-08-29"
+          "status": "discovered_live_metadata_verified",
+          "discoveredAt": "2026-08-29",
+          "productName": "Aspirin 75 mg tablets",
+          "formulation": "tablet",
+          "route": "PO",
+          "strength": "75 mg",
+          "section41Present": true,
+          "section42Present": true,
+          "liveMetadataVerified": true
         }
       ]
     },
@@ -960,7 +1065,7 @@
           "url": "https://www.medicines.org.uk/emc/product/10153/smpc",
           "tier": "EMC",
           "documentType": "SmPC",
-          "documentDate": null,
+          "documentDate": "2024-12-14",
           "hasDoseSection": true,
           "sectionsExpected": [
             "4.1",
@@ -976,8 +1081,15 @@
           "productSpecific": true,
           "substanceMatch": true,
           "productMatch": false,
-          "status": "discovered_requires_document_version",
-          "discoveredAt": "2026-08-29"
+          "status": "discovered_live_metadata_verified",
+          "discoveredAt": "2026-08-29",
+          "productName": "Ramipril 5 mg tablets",
+          "formulation": "tablet",
+          "route": "PO",
+          "strength": "5 mg",
+          "section41Present": true,
+          "section42Present": true,
+          "liveMetadataVerified": true
         }
       ]
     },
@@ -993,7 +1105,7 @@
           "url": "https://www.medicines.org.uk/emc/product/15846/smpc",
           "tier": "EMC",
           "documentType": "SmPC",
-          "documentDate": null,
+          "documentDate": "2024-07-24",
           "hasDoseSection": true,
           "sectionsExpected": [
             "4.1",
@@ -1009,8 +1121,15 @@
           "productSpecific": true,
           "substanceMatch": true,
           "productMatch": false,
-          "status": "discovered_requires_document_version",
-          "discoveredAt": "2026-08-29"
+          "status": "discovered_live_metadata_verified",
+          "discoveredAt": "2026-08-29",
+          "productName": "Clopidogrel 75 mg film-coated tablets",
+          "formulation": "film-coated tablet",
+          "route": "PO",
+          "strength": "75 mg",
+          "section41Present": true,
+          "section42Present": true,
+          "liveMetadataVerified": true
         }
       ]
     },
@@ -1026,7 +1145,7 @@
           "url": "https://www.medicines.org.uk/emc/product/101275/smpc",
           "tier": "EMC",
           "documentType": "SmPC",
-          "documentDate": null,
+          "documentDate": "2026-06-05",
           "hasDoseSection": true,
           "sectionsExpected": [
             "4.1",
@@ -1042,8 +1161,15 @@
           "productSpecific": true,
           "substanceMatch": true,
           "productMatch": false,
-          "status": "discovered_requires_document_version",
-          "discoveredAt": "2026-08-29"
+          "status": "discovered_live_metadata_verified",
+          "discoveredAt": "2026-08-29",
+          "productName": "Naproxen 500 mg Tablets",
+          "formulation": "tablet",
+          "route": "PO",
+          "strength": "500 mg",
+          "section41Present": true,
+          "section42Present": true,
+          "liveMetadataVerified": true
         }
       ]
     },
@@ -1079,8 +1205,11 @@
           "productSpecific": true,
           "substanceMatch": true,
           "productMatch": false,
-          "status": "discovered",
-          "discoveredAt": "2026-08-29"
+          "status": "discovered_live_metadata_verified",
+          "discoveredAt": "2026-08-29",
+          "section41Present": true,
+          "section42Present": true,
+          "liveMetadataVerified": true
         }
       ]
     },
@@ -1116,8 +1245,11 @@
           "productSpecific": true,
           "substanceMatch": true,
           "productMatch": false,
-          "status": "discovered",
-          "discoveredAt": "2026-08-29"
+          "status": "discovered_live_metadata_verified",
+          "discoveredAt": "2026-08-29",
+          "section41Present": true,
+          "section42Present": true,
+          "liveMetadataVerified": true
         }
       ]
     },
@@ -1153,8 +1285,11 @@
           "productSpecific": true,
           "substanceMatch": true,
           "productMatch": false,
-          "status": "discovered",
-          "discoveredAt": "2026-08-29"
+          "status": "discovered_live_metadata_verified",
+          "discoveredAt": "2026-08-29",
+          "section41Present": true,
+          "section42Present": true,
+          "liveMetadataVerified": true
         }
       ]
     },
@@ -1190,8 +1325,11 @@
           "productSpecific": true,
           "substanceMatch": true,
           "productMatch": false,
-          "status": "discovered",
-          "discoveredAt": "2026-08-29"
+          "status": "discovered_live_metadata_verified",
+          "discoveredAt": "2026-08-29",
+          "section41Present": true,
+          "section42Present": true,
+          "liveMetadataVerified": true
         }
       ]
     },
@@ -1227,8 +1365,11 @@
           "productSpecific": true,
           "substanceMatch": true,
           "productMatch": false,
-          "status": "discovered",
-          "discoveredAt": "2026-08-29"
+          "status": "discovered_live_metadata_verified",
+          "discoveredAt": "2026-08-29",
+          "section41Present": true,
+          "section42Present": true,
+          "liveMetadataVerified": true
         }
       ]
     },
@@ -1264,8 +1405,11 @@
           "productSpecific": true,
           "substanceMatch": true,
           "productMatch": false,
-          "status": "discovered",
-          "discoveredAt": "2026-08-29"
+          "status": "discovered_live_metadata_verified",
+          "discoveredAt": "2026-08-29",
+          "section41Present": true,
+          "section42Present": true,
+          "liveMetadataVerified": true
         }
       ]
     },
@@ -1301,10 +1445,22 @@
           "productSpecific": true,
           "substanceMatch": true,
           "productMatch": false,
-          "status": "discovered",
-          "discoveredAt": "2026-08-29"
+          "status": "discovered_live_metadata_verified",
+          "discoveredAt": "2026-08-29",
+          "section41Present": true,
+          "section42Present": true,
+          "liveMetadataVerified": true
         }
       ]
     }
+  },
+  "batch2LiveMetadata": {
+    "sourceCount": 25,
+    "matchedSourceCount": 25,
+    "documentDateCount": 25,
+    "section41VerifiedCount": 25,
+    "section42VerifiedCount": 25,
+    "archiveHashVerifiedCount": 0,
+    "publicationAllowed": false
   }
 }
