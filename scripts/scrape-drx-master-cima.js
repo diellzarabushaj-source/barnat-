@@ -167,14 +167,33 @@ async function fetchMedicinesByIngredient(name){
   const payload=await fetchJson(u);
   return extractList(payload);
 }
-function scoreCandidate(target,c){
+function extractAtcCodes(c){
+  const values=[];
+  const push=v=>{
+    if(v===null||v===undefined) return;
+    if(typeof v==='string'){
+      const matches=v.toUpperCase().match(/[A-Z][0-9]{2}[A-Z]{2}[0-9]{2}/g)||[];
+      for(const m of matches) values.push(m);
+      return;
+    }
+    if(Array.isArray(v)){ for(const x of v) push(x); return; }
+    if(typeof v==='object'){
+      for(const k of ['codigo','code','atc','atcCode','codAtc','nombre']) if(v[k]) push(v[k]);
+    }
+  };
+  push(c?.atcs);
+  push(c?.atc);
+  push(c?.codigoATC);
+  return [...new Set(values)];
+}
+function scoreCandidate(target,c,options={}){
   const tSig=strengthSignature(target.strength);
   const cSig=strengthSignature(c?.dosis||'');
   const strengthExact=Boolean(tSig && cSig && tSig===cSig);
   const f=formCompatible(target.pharmaceuticalForm,c?.formaFarmaceutica?.nombre||c?.formaFarmaceuticaSimplificada?.nombre||'');
   const atc=firstAtc(target.atcCode);
-  const candidateAtcs=(c?.atcs||[]).map(x=>String(x?.codigo||'').toUpperCase());
-  const atcExact=Boolean(atc && candidateAtcs.includes(atc));
+  const candidateAtcs=extractAtcCodes(c);
+  const atcExact=Boolean(atc && (candidateAtcs.includes(atc) || options.atcQueryMatched===true));
   const targetN=ingredientCount(target.activeSubstance);
   const candN=Array.isArray(c?.principiosActivos)?c.principiosActivos.length:0;
   const ingredientsCompatible=!targetN||!candN||targetN===candN;
@@ -185,7 +204,7 @@ function scoreCandidate(target,c){
   if(c?.comerc===true) score+=1;
   if(hasTechnicalDoc(c)) score+=1;
   if(ingredientsCompatible) score+=1;
-  return {score,strengthExact,formExact:f.exact,formCompatible:f.compatible||f.exact,atcExact,ingredientsCompatible,targetStrengthSignature:tSig,candidateStrengthSignature:cSig,targetFormFamily:formFamily(target.pharmaceuticalForm),candidateFormFamily:formFamily(c?.formaFarmaceutica?.nombre||c?.formaFarmaceuticaSimplificada?.nombre||'')};
+  return {score,strengthExact,formExact:f.exact,formCompatible:f.compatible||f.exact,atcExact,atcEvidence: candidateAtcs.includes(atc)?'DETAIL_ATC':'QUERY_FILTER',candidateAtcs,ingredientsCompatible,targetStrengthSignature:tSig,candidateStrengthSignature:cSig,targetFormFamily:formFamily(target.pharmaceuticalForm),candidateFormFamily:formFamily(c?.formaFarmaceutica?.nombre||c?.formaFarmaceuticaSimplificada?.nombre||'')};
 }
 function matchStatus(meta){
   if(meta.atcExact && meta.strengthExact && meta.formExact) return 'EXACT_ATC_STRENGTH_FORM';
@@ -249,9 +268,9 @@ async function main(){
       try{candidates=await fetchMedicinesByIngredient(target.activeSubstance);searchMode='ACTIVE_INGREDIENT_FALLBACK';}
       catch{}
     }
-    const ranked=candidates.map(c=>({candidate:c,meta:scoreCandidate(target,c)})).sort((a,b)=>b.meta.score-a.meta.score);
+    const ranked=candidates.map(c=>({candidate:c,meta:scoreCandidate(target,c,{atcQueryMatched:searchMode==='ATC' && Boolean(atc)})})).sort((a,b)=>b.meta.score-a.meta.score);
     const best=ranked[0]||null;
-    const status=best?matchStatus(best.meta):'NO_MATCH';
+    let status=best?matchStatus(best.meta):'NO_MATCH';
     let detail=null,sections=null,error=null;
     if(best?.candidate?.nregistro && best.meta.score>=9){
       try{
@@ -259,6 +278,8 @@ async function main(){
         sections=await getSections(String(best.candidate.nregistro));
       }catch(err){error=String(err?.message||err);}
     }
+    const finalMeta=best ? scoreCandidate(target,detail||best.candidate,{atcQueryMatched:searchMode==='ATC' && Boolean(atc)}) : null;
+    status=finalMeta?matchStatus(finalMeta):'NO_MATCH';
     const doc=techDoc(detail||best?.candidate||{});
     const s2=sections?.['2']||'';
     const s41=sections?.['4.1']||'';
@@ -275,7 +296,7 @@ async function main(){
       marketProductCount:target.marketProductCount,
       searchMode,
       matchStatus:status,
-      matchScore:best?.meta?.score||0,
+      matchScore:finalMeta?.score||best?.meta?.score||0,
       nregistro:String((detail||best?.candidate)?.nregistro||''),
       cimaProductName:String((detail||best?.candidate)?.nombre||''),
       cimaDose:String((detail||best?.candidate)?.dosis||''),
@@ -288,7 +309,7 @@ async function main(){
       section2Present:Boolean(s2),section41Present:Boolean(s41),section42Present:Boolean(s42),
       section2Sha256:s2?sha256(s2):null,section41Sha256:s41?sha256(s41):null,section42Sha256:s42?sha256(s42):null,
       section2Characters:s2.length,section41Characters:s41.length,section42Characters:s42.length,
-      matching:best?.meta||null,
+      matching:finalMeta||best?.meta||null,
       error,
       publicationAllowed:false
     };
