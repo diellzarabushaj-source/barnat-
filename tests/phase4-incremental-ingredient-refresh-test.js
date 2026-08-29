@@ -9,11 +9,13 @@ const read = rel => fs.readFileSync(path.join(ROOT, rel), 'utf8');
 
 const m1 = read('supabase/migrations/20260829011139_phase4_incremental_ingredient_refresh.sql');
 const m2 = read('supabase/migrations/20260829011529_phase4_targeted_incremental_resolver.sql');
+const m3 = read('supabase/migrations/20260829011924_phase4_resolution_review_reason_guard.sql');
 const manifest = JSON.parse(read('supabase/migration-history.json'));
 
 for (const [version, name] of [
   ['20260829011139','phase4_incremental_ingredient_refresh'],
   ['20260829011529','phase4_targeted_incremental_resolver'],
+  ['20260829011924','phase4_resolution_review_reason_guard'],
 ]) {
   assert.ok(
     manifest.migrations.some(item => String(item.version) === version && item.name === name),
@@ -38,6 +40,14 @@ assert.match(m2, /r\.depth\s*<\s*32/i);
 assert.match(m2, /not a\.canonical_key\s*=\s*any\(r\.path\)/i);
 assert.match(m2, /revoke all on function private\.medindex_resolve_substance_key_v1\(text\)[\s\S]*from public, anon, authenticated/i);
 
+assert.match(m3, /create or replace function private\.medindex_ensure_resolution_review_reason_v1\(\)/i);
+assert.match(m3, /create trigger product_ingredient_resolution_review_reason_guard/i);
+assert.match(m3, /new\.resolution_status\s*=\s*'NEEDS_REVIEW'/i);
+assert.match(m3, /cardinality\(new\.reason_codes\)\s*=\s*0/i);
+assert.match(m3, /'NO_CANONICAL_ROOT'/i);
+assert.match(m3, /private\.medindex_resolve_substance_key_v1\(substance_key\)/i);
+assert.match(m3, /revoke all on function private\.medindex_ensure_resolution_review_reason_v1\(\)[\s\S]*from public, anon, authenticated/i);
+
 const finalStart = m2.indexOf('create or replace function public.medindex_refresh_product_ingredients_for_drugs_v1');
 assert(finalStart >= 0, 'Final Phase 4 incremental function is missing');
 const finalSql = m2.slice(finalStart);
@@ -60,7 +70,7 @@ assert.match(finalSql, /security definer/i);
 assert.match(finalSql, /set search_path = pg_catalog, public, private/i);
 assert.match(finalSql, /grant execute on function public\.medindex_refresh_product_ingredients_for_drugs_v1\(uuid\[\]\)[\s\S]*to service_role/i);
 
-for (const sql of [m1, m2]) {
+for (const sql of [m1, m2, m3]) {
   assert.doesNotMatch(sql, /drop function\s+public\.medindex_refresh_product_ingredients_v1\s*\(/i);
   assert.doesNotMatch(sql, /create or replace function\s+public\.medindex_refresh_product_ingredients_v1\s*\(\s*\)/i);
   assert.doesNotMatch(sql, /update\s+public\.drugs\b/i);
