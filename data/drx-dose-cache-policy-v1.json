@@ -1,11 +1,15 @@
 {
   "schemaVersion": "drx-dose-cache-policy-v1",
-  "status": "foundation_complete_repository",
+  "status": "provenance_aware_offline_foundation_repository_not_live",
   "cacheKey": [
     "product_id",
+    "product_version",
     "rule_version",
     "indication_id",
-    "input_signature"
+    "input_signature",
+    "source_snapshot_id",
+    "source_section_sha256",
+    "adjustment_evidence_signature"
   ],
   "layers": [
     "memory",
@@ -13,11 +17,22 @@
     "HTTP_ETag"
   ],
   "invalidation": [
+    "product_version_change",
     "rule_version_change",
     "publication_status_change",
-    "source_version_change"
+    "source_version_change",
+    "source_snapshot_hash_change",
+    "source_section_4_2_hash_change",
+    "renal_or_hepatic_adjustment_change",
+    "adjustment_review_status_change"
   ],
-  "offlineRule": "serve_only_previously_verified_published_payloads",
-  "safetyRule": "never_cache_draft_or_in_review_rules_as_public",
-  "next": "activate only after V3 API rule versioning is live"
+  "offlineRule": "serve_only_previously_verified_published_fail_closed_payloads_with_matching_cached_provenance_signature",
+  "safetyRule": "never_cache_or_restore draft/in_review/unverified-adjustment payloads as public",
+  "next": "activate after live V3 ETag/provenance signature parity; invalidate cache on source/adjustment evidence changes",
+  "offlineMaxAgeHours": 24,
+  "offlineRequiredMeta": [
+    "failClosed=true",
+    "publishedOnly=true",
+    "officialVerifiedOnly=true"
+  ]
 }
