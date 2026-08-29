@@ -50,7 +50,9 @@ jobs:
       - uses: actions/upload-artifact@v4
         with:
           name: drx-master-cima-scrape
-          path: data/drx-master-cima-scrape-v1.json
+          path: |
+            data/drx-master-cima-scrape-v1.json
+            data/drx-master-cima-sheet-chunk-*.json
           retention-days: 30
 
   materialize:
@@ -85,7 +87,7 @@ jobs:
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add data/drx-master-cima-scrape-v1.json
+          git add data/drx-master-cima-scrape-v1.json data/drx-master-cima-sheet-chunk-*.json
           if git diff --cached --quiet; then
             echo "No scrape summary change."
             exit 0
