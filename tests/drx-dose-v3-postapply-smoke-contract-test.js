@@ -22,6 +22,8 @@ assert.match(sql,/grantee = 'PUBLIC'[\s\S]*privilege_type = 'SELECT'/);
 assert.match(sql,/p\.prosecdef is true/);
 assert.match(sql,/dose_products_v3_publication_guard/);
 assert.match(sql,/dose_rules_v3_publication_guard/);
+assert.ok(sql.includes("'dose_renal_adjustments_v3'"));
+assert.ok(sql.includes("'dose_hepatic_adjustments_v3'"));
 assert.match(sql,/dose_source_snapshots_v3_provenance_lock/);
 assert.match(sql,/dose_source_sections_v3_provenance_lock/);
 assert.match(sql,/drx_lock_source_snapshot_v3/);
