@@ -28,6 +28,7 @@ declare
   bad_nonpublished_select integer;
   bad_function_security integer;
   bad_trigger_count integer;
+  bad_provenance_trigger_count integer;
   nonempty_table_count integer;
   rpc_probe jsonb;
 begin
@@ -107,6 +108,8 @@ begin
       (n.nspname = 'public' and p.proname = 'medindex_dose_product_fast_path_v3')
       or
       (n.nspname = 'private' and p.proname in (
+        'drx_lock_source_snapshot_v3',
+        'drx_lock_source_section_v3',
         'drx_enforce_product_publication_v3',
         'drx_enforce_rule_publication_v3'
       ))
@@ -133,6 +136,24 @@ begin
   if bad_trigger_count <> 2 then
     raise exception 'DRX_V3_SMOKE_FAILED: expected 2 publication triggers, found %',
       bad_trigger_count;
+  end if;
+
+  select count(*)::integer
+    into bad_provenance_trigger_count
+  from pg_catalog.pg_trigger t
+  join pg_catalog.pg_class c on c.oid = t.tgrelid
+  join pg_catalog.pg_namespace n on n.oid = c.relnamespace
+  where n.nspname = 'public'
+    and (
+      (c.relname = 'dose_source_snapshots_v3' and t.tgname = 'dose_source_snapshots_v3_provenance_lock')
+      or
+      (c.relname = 'dose_source_sections_v3' and t.tgname = 'dose_source_sections_v3_provenance_lock')
+    )
+    and not t.tgisinternal;
+
+  if bad_provenance_trigger_count <> 2 then
+    raise exception 'DRX_V3_SMOKE_FAILED: expected 2 provenance lock triggers, found %',
+      bad_provenance_trigger_count;
   end if;
 
   select
