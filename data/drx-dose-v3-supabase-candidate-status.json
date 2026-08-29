@@ -6,12 +6,13 @@
   "postgresVersion": "17.6.1.155",
   "candidateFile": "supabase/drx-dose-v3-additive-candidate.sql",
   "applied": false,
-  "reasonNotApplied": "Supabase SQL/advisor/list-migrations path is failing with Connection terminated due to connection timeout; baseline cannot be safely verified.",
+  "reasonNotApplied": "Supabase SQL gateway timed out on the initial live-state check and the single permitted recheck; production baseline, migration history, advisors, and post-migration smoke tests therefore remain unverified.",
   "legacyTablesModified": false,
   "tableCount": 12,
   "security": {
     "rlsOnAllV3Tables": true,
-    "anonAuthenticatedDefaultAccess": "revoked",
+    "rlsTableCount": 12,
+    "anonAuthenticatedDefaultAccess": "revoked before selective read grants",
     "publishedReadOnlyTables": [
       "dose_indication_concepts_v3",
       "dose_products_v3",
@@ -25,14 +26,14 @@
       "dose_renal_adjustments_v3",
       "dose_hepatic_adjustments_v3",
       "dose_legacy_comparisons_v3",
-      "dose_review_queue_v3",
       "dose_publication_events_v3"
     ],
-    "securityDefinerFunctions": [],
-    "securityInvokerFunctions": [
-      "private.drx_enforce_rule_publication_v3",
-      "public.medindex_dose_product_fast_path_v3"
-    ]
+    "adminOnlyTables": [
+      "dose_review_queue_v3"
+    ],
+    "securityDefinerFunctions": 0,
+    "publicRpcSecurity": "invoker",
+    "publicRpc": "public.medindex_dose_product_fast_path_v3(text, uuid)"
   },
   "applyGate": [
     "Supabase changelog/docs reviewed for relevant breaking changes",
@@ -49,5 +50,15 @@
   ],
   "publicationAllowed": false,
   "selfContainedV3ProductShell": true,
-  "v2ProductShellDependency": false
+  "v2ProductShellDependency": false,
+  "candidateGitBlobSha": "8c213f04821e4e00016b56b4f86168ea3a4558d9",
+  "repositoryStaticAudit": {
+    "candidateSelfContained": true,
+    "additiveOnly": true,
+    "rlsCoverage": "12/12",
+    "directClientWriteGrants": 0,
+    "publishedClientReadTables": 4,
+    "publicationTriggerPresent": true,
+    "status": "STATIC_VERIFIED_NOT_LIVE_APPLIED"
+  }
 }
