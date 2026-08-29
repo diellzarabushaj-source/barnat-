@@ -1,6 +1,6 @@
 {
   "schemaVersion": "drx-dose-v3-supabase-candidate-status-v1",
-  "updatedAt": "2026-08-30T00:50:00+02:00",
+  "updatedAt": "2026-08-29T03:48:58.952Z",
   "projectId": "ftuchtmolddhhsdcwnqe",
   "projectHealth": "ACTIVE_HEALTHY",
   "postgresVersion": "17.6.1.155",
@@ -8,12 +8,13 @@
   "applied": false,
   "reasonNotApplied": "Supabase SQL/advisor/list-migrations path is failing with Connection terminated due to connection timeout; baseline cannot be safely verified.",
   "legacyTablesModified": false,
-  "tableCount": 9,
+  "tableCount": 12,
   "security": {
     "rlsOnAllV3Tables": true,
     "anonAuthenticatedDefaultAccess": "revoked",
     "publishedReadOnlyTables": [
       "dose_indication_concepts_v3",
+      "dose_products_v3",
       "dose_rules_v3",
       "dose_rule_products_v3"
     ],
@@ -21,20 +22,32 @@
       "dose_source_snapshots_v3",
       "dose_source_sections_v3",
       "dose_indication_terms_v3",
+      "dose_renal_adjustments_v3",
+      "dose_hepatic_adjustments_v3",
       "dose_legacy_comparisons_v3",
       "dose_review_queue_v3",
       "dose_publication_events_v3"
+    ],
+    "securityDefinerFunctions": [],
+    "securityInvokerFunctions": [
+      "private.drx_enforce_rule_publication_v3",
+      "public.medindex_dose_product_fast_path_v3"
     ]
   },
   "applyGate": [
+    "Supabase changelog/docs reviewed for relevant breaking changes",
     "execute_sql select 1 succeeds",
-    "list_tables verifies referenced PK types",
+    "list_tables verifies drugs.id and substance_concepts_v1.concept_id types",
     "list_migrations succeeds",
-    "candidate reviewed against current production schema",
-    "apply_migration succeeds",
+    "candidate SQL parses in a disposable transaction/branch",
     "security advisors pass or findings resolved",
     "performance advisors pass or findings resolved",
-    "post-migration smoke queries pass"
+    "negative publication-gate smoke cases pass",
+    "positive shadow publication case passes",
+    "one-RPC product fast path returns only published/verified data",
+    "rollback procedure tested before runtime cutover"
   ],
-  "publicationAllowed": false
+  "publicationAllowed": false,
+  "selfContainedV3ProductShell": true,
+  "v2ProductShellDependency": false
 }
