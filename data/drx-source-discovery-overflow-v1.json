@@ -1,0 +1,26 @@
+{
+  "schemaVersion": "drx-source-discovery-overflow-v1",
+  "generatedAt": "2026-08-30T03:30:00+02:00",
+  "reason": "Evidence was gathered while Cyanocobalamin was in the first-100 before reviewed alias exclusion shifted the deterministic queue.",
+  "publicationAllowed": false,
+  "rows": [
+    {
+      "canonicalKey": "cyanocobalamin",
+      "canonicalName": "Cyanocobalamin",
+      "status": "verified_product_specific",
+      "sourceTier": "EMC",
+      "sourceKey": "emc-15102-smpc",
+      "url": "https://www.medicines.org.uk/emc/product/15102/smpc",
+      "productName": "Cyanocobalamin 50 micrograms Film-coated Tablets",
+      "documentDate": null,
+      "section41Present": true,
+      "section42Present": true,
+      "reviewFlags": [
+        "indication_specific_dosing",
+        "oral_vs_parenteral_context",
+        "pernicious_anaemia_route_review"
+      ],
+      "publicationAllowed": false
+    }
+  ]
+}
