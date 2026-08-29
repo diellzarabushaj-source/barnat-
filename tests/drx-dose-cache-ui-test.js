@@ -21,7 +21,14 @@ assert.match(source, /function ruleRequiredInputs\(rule\)/);
 assert.match(source, /required\.has\('weight_kg'\)/);
 assert.match(source, /function unsupportedRequiredInputs\(rule\)/);
 assert.match(source, /Kjo skemë kërkon të dhëna shtesë klinike/);
-assert.match(source, /const supported = new Set\(\['age_months','weight_kg'\]\)/);
+assert.match(source, /const supported = new Set\(\['age_months','weight_kg','height_cm'\]\)/);
+assert.match(source, /SHARED_CORE_SRC = '\/dose-core\.js\?v=drx-dose-core-v1'/);
+assert.match(source, /function ensureSharedDoseCore\(\)/);
+assert.match(source, /window\.DRxDoseCore\?\.calculate/);
+assert.match(source, /function ruleNeedsHeight\(rule\)/);
+assert.match(source, /required\.has\('height_cm'\)/);
+assert.match(source, /data-dose-height/);
+assert.match(source, /const \[product\] = await Promise\.all\(\[loadFastProduct\(key\), ensureSharedDoseCore\(\)\]\)/);
 
 const normalizer = fs.readFileSync(path.join(ROOT, 'lib', 'dose-rule-normalizer.js'), 'utf8');
 const core = fs.readFileSync(path.join(ROOT, 'dose-core.js'), 'utf8');
