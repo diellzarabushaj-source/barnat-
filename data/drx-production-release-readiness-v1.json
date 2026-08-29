@@ -1,6 +1,6 @@
 {
   "schemaVersion": "drx-production-release-readiness-v1",
-  "checkedAt": "2026-08-30T01:15:00+02:00",
+  "checkedAt": "2026-08-29T03:47:46.027Z",
   "releaseReady": false,
   "publicationAllowed": false,
   "blockers": [
@@ -10,14 +10,23 @@
     "exact_product_binding_not_live",
     "legacy_comparison_not_live",
     "clinical_review_not_complete",
-    "no_published_v3_rules"
+    "no_published_v3_rules",
+    "first100_canonical_provenance_not_ready",
+    "first100_production_queue_not_ready",
+    "drx_safety_ci_not_observed",
+    "full_ci_not_green",
+    "desktop_smoke_not_green",
+    "mobile_smoke_not_green",
+    "vercel_deploy_not_green",
+    "rollback_not_tested",
+    "legacy_consumers_not_zero"
   ],
   "phases": {
-    "apiFastPath": "implemented_v2_v3_gate_ready",
-    "doseCore": "implemented_shared_core",
+    "apiFastPath": "v3_one_rpc_ready_not_live",
+    "doseCore": "shared_core_runtime_hardened",
     "cacheOffline": "implemented_indexeddb_etag",
-    "frontend": "implemented_fast_flow_v2_v3_ready",
-    "automatedQa": "implemented_contracts_and_golden_cases",
+    "frontend": "shared_core_fast_flow_ready",
+    "automatedQa": "dedicated_gate_configured_not_observed",
     "coverage": "implemented_repo_evidence",
     "cleanup": "gated_no_destructive_changes",
     "productionRelease": "blocked"
