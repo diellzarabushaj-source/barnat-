@@ -1,0 +1,17 @@
+'use strict';
+const assert=require('node:assert/strict');
+const fs=require('node:fs');
+const path=require('node:path');
+const x=JSON.parse(fs.readFileSync(path.join(__dirname,'..','data','drx-first100-source-discovery-wave-a-v1.json'),'utf8'));
+assert.equal(x.verifiedProductSpecificCount,15);
+assert.equal(x.productSelectionRequiredCount,1);
+assert.equal(x.publicationAllowed,false);
+const verified=x.rows.filter(r=>r.status.startsWith('verified_product_specific'));
+assert.equal(verified.length,15);
+assert.ok(verified.every(r=>r.sourceTier==='EMC'&&/^https:\/\/www\.medicines\.org\.uk\/emc\//.test(r.url)));
+assert.ok(verified.every(r=>r.section41Present===true&&r.section42Present===true));
+assert.ok(x.rows.find(r=>r.canonicalKey==='acenocoumarol').reviewFlags.includes('high_risk_anticoagulant'));
+assert.ok(x.rows.find(r=>r.canonicalKey==='amiodarone').reviewFlags.includes('high_risk_antiarrhythmic'));
+assert.equal(x.rows.find(r=>r.canonicalKey==='alteplase').status,'product_selection_required');
+assert.equal(x.rows.find(r=>r.canonicalKey==='alteplase').publicationAllowed,false);
+console.log('DRx first-100 source discovery wave A passed.');
