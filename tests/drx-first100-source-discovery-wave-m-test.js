@@ -35,7 +35,7 @@ assert.equal(faktu.registrationNumber, '23/0126/87-CS');
 assert.equal(faktu.documentDate, '2024-05');
 assert.equal(faktu.atcCode, 'C05AD04');
 assert.match(faktu.productName, /FAKTU čapíky/);
-assert.match(faktu.url, /sukl\\.sk/);
+assert.match(faktu.url, /sukl\.sk/);
 assert.ok(faktu.reviewFlags.includes('rectal_route_specific'));
 assert.ok(faktu.reviewFlags.includes('clinical_review_required'));
 
