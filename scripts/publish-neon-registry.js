@@ -1,6 +1,6 @@
 'use strict';
 
-const { neonRequest, exactCount } = require('../lib/neon-data-api.js');
+const { neonRequest, exactCount } = require('../lib/medindex-data-api.js');
 const SystemHealthSnapshot = require('../lib/system-health-snapshot.js');
 
 const MINIMUM_REGISTRY_ROWS = 3500;
