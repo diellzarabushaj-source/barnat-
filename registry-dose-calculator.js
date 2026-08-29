@@ -142,6 +142,77 @@
   }
 
 
+  function provenanceSourceValid(source) {
+    const snapshot = clean(source?.snapshotId);
+    const sectionHash = clean(source?.sectionSha256);
+    const evidenceHash = clean(source?.evidenceHash);
+    return /^[0-9a-f]{64}$/i.test(snapshot)
+      && /^[0-9a-f]{64}$/i.test(sectionHash)
+      && /^[0-9a-f]{64}$/i.test(evidenceHash)
+      && snapshot.toLowerCase() === evidenceHash.toLowerCase()
+      && clean(source?.section) === '4.2'
+      && Boolean(source?.documentVersion || source?.documentDate)
+      && source?.official === true;
+  }
+
+  function ruleProvenanceValid(rule) {
+    const renal = Array.isArray(rule?.renalAdjustments) ? rule.renalAdjustments : [];
+    const hepatic = Array.isArray(rule?.hepaticAdjustments) ? rule.hepaticAdjustments : [];
+    return provenanceSourceValid(rule?.source)
+      && renal.every(item => provenanceSourceValid(item?.source))
+      && hepatic.every(item => provenanceSourceValid(item?.source))
+      && (rule?.renalAdjustmentRequired !== true || renal.length > 0)
+      && (rule?.hepaticAdjustmentRequired !== true || hepatic.length > 0);
+  }
+
+  function productProvenanceValid(product) {
+    return Boolean(product?.productKey
+      && Array.isArray(product?.rules)
+      && product.rules.length > 0
+      && product.rules.every(ruleProvenanceValid));
+  }
+
+  function productProvenanceSignature(product) {
+    if (!productProvenanceValid(product)) return '';
+    const rows = product.rules.map(rule => ({
+      ruleKey:clean(rule.ruleKey),
+      versionNo:Number(rule.versionNo) || 1,
+      source:[
+        clean(rule.source?.snapshotId),
+        clean(rule.source?.sectionSha256),
+        clean(rule.source?.evidenceHash),
+        clean(rule.source?.documentVersion || rule.source?.documentDate),
+      ],
+      renal:(rule.renalAdjustments || []).map(item => [
+        clean(item.adjustmentId),
+        clean(item.source?.snapshotId),
+        clean(item.source?.sectionSha256),
+        clean(item.source?.evidenceHash),
+        clean(item.source?.documentVersion || item.source?.documentDate),
+      ]),
+      hepatic:(rule.hepaticAdjustments || []).map(item => [
+        clean(item.adjustmentId),
+        clean(item.source?.snapshotId),
+        clean(item.source?.sectionSha256),
+        clean(item.source?.evidenceHash),
+        clean(item.source?.documentVersion || item.source?.documentDate),
+      ]),
+    })).sort((a,b) => a.ruleKey.localeCompare(b.ruleKey, 'en'));
+    return JSON.stringify({
+      productKey:clean(product.productKey),
+      versionNo:Number(product.versionNo) || 1,
+      rules:rows,
+    });
+  }
+
+  function v3PayloadCacheEligible(payload) {
+    return Boolean(payload?.schemaVersion === 'dose-product-fast-path-v3'
+      && payload?.meta?.failClosed === true
+      && payload?.meta?.publishedOnly === true
+      && payload?.meta?.officialVerifiedOnly === true
+      && productProvenanceValid(payload?.product));
+  }
+
   function doseCacheDb() {
     if (!('indexedDB' in window)) return Promise.resolve(null);
     return new Promise(resolve => {
@@ -177,12 +248,22 @@
     return row;
   }
 
-  async function storeCachedProduct(productKey, product, etag) {
+  async function storeCachedProduct(productKey, payload, etag) {
     const key = clean(productKey);
-    if (!key || !product?.productKey || !Array.isArray(product.rules)) return;
+    if (!key || !v3PayloadCacheEligible(payload)) return;
+    const product = payload.product;
+    const provenanceSignature = productProvenanceSignature(product);
+    if (!provenanceSignature) return;
     const row = {
       productKey:key,
-      schemaVersion:'drx-dose-product-cache-v1',
+      schemaVersion:'drx-dose-product-cache-v2',
+      payloadSchemaVersion:payload.schemaVersion,
+      meta:{
+        failClosed:true,
+        publishedOnly:true,
+        officialVerifiedOnly:true,
+      },
+      provenanceSignature,
       product,
       etag:clean(etag),
       cachedAt:Date.now(),
@@ -204,9 +285,14 @@
 
   function cacheFresh(row) {
     return Boolean(row
-      && row.schemaVersion === 'drx-dose-product-cache-v1'
-      && row.product?.productKey
-      && Array.isArray(row.product?.rules)
+      && row.schemaVersion === 'drx-dose-product-cache-v2'
+      && row.payloadSchemaVersion === 'dose-product-fast-path-v3'
+      && row.meta?.failClosed === true
+      && row.meta?.publishedOnly === true
+      && row.meta?.officialVerifiedOnly === true
+      && productProvenanceValid(row.product)
+      && clean(row.provenanceSignature)
+      && row.provenanceSignature === productProvenanceSignature(row.product)
       && Number.isFinite(row.cachedAt)
       && Date.now() - row.cachedAt <= OFFLINE_MAX_AGE_MS);
   }
@@ -237,7 +323,10 @@
           || !Array.isArray(payload.product.rules)) {
         throw new Error('Kontrata fast-path e dozës nuk është e vlefshme.');
       }
-      await storeCachedProduct(key, payload.product, response.headers.get('etag') || '');
+      if (payload.schemaVersion === 'dose-product-fast-path-v3' && !v3PayloadCacheEligible(payload)) {
+        throw new Error('V3 payload nuk ka provenance të plotë për cache/runtime.');
+      }
+      await storeCachedProduct(key, payload, response.headers.get('etag') || '');
       return { ...payload.product, __doseCacheState:'network' };
     } catch (error) {
       if (cacheFresh(cached)) {
@@ -958,7 +1047,7 @@
       num, within, needsWeightMethod, needsBsaMethod, canonicalUnit, convertDoseUnit,
       administrationsPerDay, ageMatchesRule, preferredUnique, renderPlainLanguageTemplate,
       computeDose, frequencyText, durationText, ruleCoversPediatric, ruleCoversAdult,
-      productGroup, cacheFresh, ruleRequiredInputs, ruleNeedsWeight, ruleNeedsHeight, unsupportedRequiredInputs, ensureSharedDoseCore,
+      productGroup, cacheFresh, provenanceSourceValid, ruleProvenanceValid, productProvenanceValid, productProvenanceSignature, v3PayloadCacheEligible, ruleRequiredInputs, ruleNeedsWeight, ruleNeedsHeight, unsupportedRequiredInputs, ensureSharedDoseCore,
     }),
   };
 })();
