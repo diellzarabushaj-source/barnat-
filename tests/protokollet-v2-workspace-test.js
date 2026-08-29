@@ -68,7 +68,10 @@ assert.match(js, />Hap protokollin</);
 assert.match(js, /protocolVisibleCount/);
 assert.match(js, /protocolCurrentCount/);
 assert.match(js, /Burime zyrtare/);
-assert.match(js, /protocol-prescription-handoff/i);
+assert.match(js, /medindexPrescriptionProtocolDraft/);
+assert.match(js, /Vazhdo te Recetat/);
+assert.match(js, /sessionStorage\.setItem\(TRANSFER_KEY/);
+assert.match(js, /recetat\.html\?from=protocol/);
 assert.doesNotThrow(() => new Function(js));
 
 assert.equal(manifest.schemaVersion, 1);
