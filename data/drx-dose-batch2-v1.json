@@ -1,0 +1,199 @@
+{
+  "schemaVersion": "drx-dose-batch2-v1",
+  "updatedAt": "2026-08-29T05:20:00+02:00",
+  "status": "in_progress_repository_side",
+  "publicationAllowed": false,
+  "targetCount": 25,
+  "substances": [
+    {
+      "canonicalKey": "amlodipine",
+      "canonicalName": "Amlodipine",
+      "sourceKey": "emc-4717-smpc",
+      "url": "https://www.medicines.org.uk/emc/product/4717/smpc",
+      "status": "verified_live"
+    },
+    {
+      "canonicalKey": "atorvastatin",
+      "canonicalName": "Atorvastatin",
+      "sourceKey": "emc-13385-smpc",
+      "url": "https://www.medicines.org.uk/emc/product/13385/smpc",
+      "status": "verified_live"
+    },
+    {
+      "canonicalKey": "bisoprolol",
+      "canonicalName": "Bisoprolol",
+      "sourceKey": "emc-101897-smpc",
+      "url": "https://www.medicines.org.uk/emc/product/101897/smpc",
+      "status": "verified_live"
+    },
+    {
+      "canonicalKey": "losartan",
+      "canonicalName": "Losartan",
+      "sourceKey": "emc-651-smpc",
+      "url": "https://www.medicines.org.uk/emc/product/651/smpc",
+      "status": "verified_live"
+    },
+    {
+      "canonicalKey": "pantoprazole",
+      "canonicalName": "Pantoprazole",
+      "sourceKey": "emc-14644-smpc",
+      "url": "https://www.medicines.org.uk/emc/product/14644/smpc",
+      "status": "verified_live"
+    },
+    {
+      "canonicalKey": "ciprofloxacin",
+      "canonicalName": "Ciprofloxacin",
+      "sourceKey": "emc-4341-smpc",
+      "url": "https://www.medicines.org.uk/emc/product/4341/smpc",
+      "status": "verified_live"
+    },
+    {
+      "canonicalKey": "furosemide",
+      "canonicalName": "Furosemide",
+      "sourceKey": "emc-102194-smpc",
+      "url": "https://www.medicines.org.uk/emc/product/102194/smpc",
+      "status": "verified_live"
+    },
+    {
+      "canonicalKey": "prednisolone",
+      "canonicalName": "Prednisolone",
+      "sourceKey": "emc-102342-smpc",
+      "url": "https://www.medicines.org.uk/emc/product/102342/smpc",
+      "status": "verified_live"
+    },
+    {
+      "canonicalKey": "dexamethasone",
+      "canonicalName": "Dexamethasone",
+      "sourceKey": "emc-816-smpc",
+      "url": "https://www.medicines.org.uk/emc/product/816/smpc",
+      "status": "verified_live"
+    },
+    {
+      "canonicalKey": "cetirizine",
+      "canonicalName": "Cetirizine",
+      "sourceKey": "emc-100094-smpc",
+      "url": "https://www.medicines.org.uk/emc/product/100094/smpc",
+      "status": "verified_live"
+    },
+    {
+      "canonicalKey": "levothyroxine",
+      "canonicalName": "Levothyroxine",
+      "sourceKey": "emc-12780-smpc",
+      "url": "https://www.medicines.org.uk/emc/product/12780/smpc",
+      "status": "verified_live"
+    },
+    {
+      "canonicalKey": "ondansetron",
+      "canonicalName": "Ondansetron",
+      "sourceKey": "emc-5222-smpc",
+      "url": "https://www.medicines.org.uk/emc/product/5222/smpc",
+      "status": "verified_live"
+    },
+    {
+      "canonicalKey": "carvedilol",
+      "canonicalName": "Carvedilol",
+      "sourceKey": "emc-3105-smpc",
+      "url": "https://www.medicines.org.uk/emc/product/3105/smpc",
+      "status": "verified_live"
+    },
+    {
+      "canonicalKey": "tramadol",
+      "canonicalName": "Tramadol",
+      "sourceKey": "emc-7123-smpc",
+      "url": "https://www.medicines.org.uk/emc/product/7123/smpc",
+      "status": "verified_live"
+    },
+    {
+      "canonicalKey": "aspirin",
+      "canonicalName": "Aspirin",
+      "sourceKey": "emc-102206-smpc",
+      "url": "https://www.medicines.org.uk/emc/product/102206/smpc",
+      "status": "verified_live"
+    },
+    {
+      "canonicalKey": "ramipril",
+      "canonicalName": "Ramipril",
+      "sourceKey": "emc-10153-smpc",
+      "url": "https://www.medicines.org.uk/emc/product/10153/smpc",
+      "status": "verified_live"
+    },
+    {
+      "canonicalKey": "clopidogrel",
+      "canonicalName": "Clopidogrel",
+      "sourceKey": "emc-15846-smpc",
+      "url": "https://www.medicines.org.uk/emc/product/15846/smpc",
+      "status": "verified_live"
+    },
+    {
+      "canonicalKey": "naproxen",
+      "canonicalName": "Naproxen",
+      "sourceKey": "emc-101275-smpc",
+      "url": "https://www.medicines.org.uk/emc/product/101275/smpc",
+      "status": "verified_live"
+    },
+    {
+      "canonicalKey": "spironolactone",
+      "canonicalName": "Spironolactone",
+      "sourceKey": null,
+      "url": null,
+      "status": "pending_source_verification"
+    },
+    {
+      "canonicalKey": "diclofenac",
+      "canonicalName": "Diclofenac",
+      "sourceKey": null,
+      "url": null,
+      "status": "pending_source_verification"
+    },
+    {
+      "canonicalKey": "doxycycline",
+      "canonicalName": "Doxycycline",
+      "sourceKey": null,
+      "url": null,
+      "status": "pending_source_verification"
+    },
+    {
+      "canonicalKey": "cefalexin",
+      "canonicalName": "Cefalexin",
+      "sourceKey": null,
+      "url": null,
+      "status": "pending_source_verification"
+    },
+    {
+      "canonicalKey": "metronidazole",
+      "canonicalName": "Metronidazole",
+      "sourceKey": null,
+      "url": null,
+      "status": "pending_source_verification"
+    },
+    {
+      "canonicalKey": "gliclazide",
+      "canonicalName": "Gliclazide",
+      "sourceKey": null,
+      "url": null,
+      "status": "pending_source_verification"
+    },
+    {
+      "canonicalKey": "loratadine",
+      "canonicalName": "Loratadine",
+      "sourceKey": null,
+      "url": null,
+      "status": "pending_source_verification"
+    }
+  ],
+  "gates": {
+    "candidateSetComplete": true,
+    "authoritativeSourceVerifiedCount": 18,
+    "authoritativeSourcePendingCount": 7,
+    "structuredExtractionComplete": false,
+    "normalizationComplete": false,
+    "exactLiveProductBindingComplete": false,
+    "clinicalReviewComplete": false,
+    "productionPersistenceComplete": false
+  },
+  "blockers": [
+    "Supabase SQL/MCP database gateway unavailable",
+    "7 Batch 2 authoritative source pages still require verification",
+    "all Batch 2 rows require structured SmPC extraction and normalization before clinical review"
+  ]
+}
