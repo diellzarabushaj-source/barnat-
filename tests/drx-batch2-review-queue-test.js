@@ -1,0 +1,16 @@
+'use strict';
+const assert=require('node:assert/strict');
+const Queue=require('../scripts/build-drx-batch2-review-queue.js');
+const q=Queue.build();
+assert.equal(q.schemaVersion,'drx-batch2-clinical-review-queue-v1');
+assert.equal(q.total,25);
+assert.equal(q.open,25);
+assert.equal(q.publicationAllowed,false);
+assert.ok(q.highPriority>0);
+assert.ok(q.rows.every(x=>x.status==='open'));
+assert.ok(q.rows.every(x=>x.publicationAllowed===false));
+assert.ok(q.rows.every(x=>x.archiveHashStatus==='pending'));
+assert.ok(q.rows.some(x=>x.canonicalKey==='ciprofloxacin'&&x.priority==='high'));
+assert.ok(q.rows.some(x=>x.canonicalKey==='tramadol'&&x.priority==='high'));
+assert.ok(q.rows.some(x=>x.canonicalKey==='spironolactone'&&x.priority==='high'));
+console.log('DRx Batch 2 clinical review queue contract passed.');
