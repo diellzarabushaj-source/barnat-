@@ -281,6 +281,14 @@
     {
       "version": "20260829002859",
       "name": "phase1_public_read_hardening"
+    },
+    {
+      "version": "20260829003649",
+      "name": "phase1_publication_and_default_grant_hardening"
+    },
+    {
+      "version": "20260829003744",
+      "name": "phase1_default_maintain_hardening"
     }
   ]
 }
