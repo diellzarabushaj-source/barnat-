@@ -34,6 +34,31 @@ assert.equal(Reader._test.sourceValid({
   source_evidence_hash:'a'.repeat(64),
   source_document_date:'2026-08-27'
 }),false);
+assert.equal(
+  [
+    {
+      rule_id:'r1',
+      indication_id:'i1',
+      renal_adjustment_required:true,
+      hepatic_adjustment_required:false,
+      source_snapshot_id:'a'.repeat(64),
+      source_section:'4.2',
+      source_section_sha256:'b'.repeat(64),
+      source_evidence_hash:'a'.repeat(64),
+      source_document_date:'2026-08-27'
+    }
+  ].filter(rule => {
+    const renalMap=new Map();
+    const hepaticMap=new Map();
+    const indicationMap=new Map([['i1',{}]]);
+    const key=Reader._test.clean(rule.rule_id);
+    return Reader._test.sourceValid(rule)
+      && indicationMap.has(Reader._test.clean(rule.indication_id))
+      && (rule.renal_adjustment_required !== true || (renalMap.get(key)||[]).length>0)
+      && (rule.hepatic_adjustment_required !== true || (hepaticMap.get(key)||[]).length>0);
+  }).length,
+  0
+);
 
 const fallback=Gate.chooseRuntime({v3Enabled:true,v3Available:false,v2Available:true,strictV3:false});
 assert.equal(fallback.runtime,'v2');
