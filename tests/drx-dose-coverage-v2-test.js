@@ -17,6 +17,9 @@ assert.equal(snapshot.counts.published, 0);
 assert.equal(snapshot.counts.liveWebEvidenceStructured, 25);
 assert.equal(snapshot.counts.batch2SourceMetadataVerified, 25);
 assert.equal(snapshot.counts.batch2ArchiveSnapshots, 0);
+assert.equal(snapshot.counts.reviewEvidenceReady, 0);
+assert.equal(snapshot.counts.renalAdjustmentLiveVerified, 0);
+assert.equal(snapshot.counts.hepaticAdjustmentLiveVerified, 0);
 assert.equal(snapshot.counts.first100QueueMaterialized, 100);
 assert.equal(snapshot.counts.first100CanonicalReviewRequired, 16);
 assert.equal(snapshot.counts.first100SourceDiscoveryEligible, 87);
@@ -38,6 +41,8 @@ assert.equal(
   observation.vercelDeploymentGreen === true,
   'Coverage must expose the commit-bound Vercel observation.'
 );
+assert.equal(snapshot.gates.reviewEvidenceComplete, false);
+assert.equal(snapshot.gates.renalHepaticLiveValidationObserved, false);
 assert.equal(snapshot.gates.rollbackTested, false);
 assert.equal(snapshot.gates.publicationBlocked, true);
 console.log('DRx coverage v2 contract passed.');
