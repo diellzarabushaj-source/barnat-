@@ -1,6 +1,6 @@
 {
   "schemaVersion": "drx-dosierung-master-plan-status-v1",
-  "updatedAt": "2026-08-29T11:47:57.189Z",
+  "updatedAt": "2026-08-29T11:54:42.981Z",
   "officialPlan": "DRx Dosierung phases 0-32",
   "databaseBlocker": {
     "active": true,
@@ -270,9 +270,12 @@
         "tests/drx-dose-v3-postapply-smoke-contract-test.js",
         "supabase/drx-dose-v3-rollback.sql",
         "tests/drx-dose-v3-rollback-contract-test.js",
-        "rollback is V3-only, no CASCADE, no private schema drop, no V2/legacy table touch"
+        "rollback is V3-only, no CASCADE, no private schema drop, no V2/legacy table touch",
+        "V3 rules pin exact source_section_sha256 for verified/published provenance",
+        "runtime RPC revalidates source snapshot tier/key/version/date and exact SmPC section hash",
+        "verified/published source snapshots and sections are mutation-locked"
       ],
-      "next": "gateway recovery gate unchanged: SELECT 1 -> list_migrations -> baseline/types -> advisors -> candidate apply -> read-only post-apply smoke -> controlled rollback test; no DB write before prerequisites pass"
+      "next": "gateway recovery gate unchanged: SELECT 1 -> list_migrations -> baseline/types -> advisors -> candidate apply -> structural smoke -> transactional publication smoke -> controlled rollback test"
     },
     {
       "id": 15,
