@@ -1,0 +1,67 @@
+{
+  "schemaVersion": "drx-dose-pilot-v1",
+  "pilotKey": "cefuroxime",
+  "updatedAt": "2026-08-29",
+  "status": "in_review_unbound",
+  "publicationAllowed": false,
+  "ruleScope": "representative_not_exhaustive",
+  "canonicalSubstance": {
+    "key": "cefuroxime",
+    "name": "Cefuroxime"
+  },
+  "sourceSet": [
+    {
+      "sourceKey": "emc-9423-smpc",
+      "url": "https://www.medicines.org.uk/emc/product/9423/smpc",
+      "tier": "EMC",
+      "documentDate": "2025-08-19",
+      "section": "4.2",
+      "formulation": "powder for solution for injection or infusion",
+      "strength": "1.5 g",
+      "section42Verified": true
+    }
+  ],
+  "extractedRuleCandidates": [
+    {
+      "candidateKey": "emc-9423-cap-40kg-plus",
+      "ruleKey": "cefuroxime|community-acquired-pneumonia|40kg-plus|iv-im",
+      "sourceKey": "emc-9423-smpc",
+      "sourceSection": "4.2",
+      "indicationKey": "community-acquired-pneumonia",
+      "indicationTerms": [
+        "community acquired pneumonia"
+      ],
+      "patientGroup": "pediatric_and_adult",
+      "calculationMethod": "fixed_dose",
+      "doseMinValue": 750,
+      "doseMaxValue": 750,
+      "doseUnit": "mg",
+      "frequencyMode": "interval",
+      "intervalMinHours": 8,
+      "intervalMaxHours": 8,
+      "durationMode": "manual",
+      "minWeightKg": 40,
+      "route": "IV/IM",
+      "prn": false,
+      "renalAdjustmentRequired": true,
+      "requiredInputs": [
+        "weight_kg",
+        "renal_function"
+      ],
+      "bindingStatus": "unbound",
+      "editorialStatus": "in_review",
+      "reviewReason": "renal adjustment table must be evaluated before calculator use in impaired renal function"
+    }
+  ],
+  "sourceReconciliation": {
+    "status": "single_authoritative_source",
+    "autoMerge": false
+  },
+  "v2SchemaGaps": [
+    "source_snapshot_id",
+    "source_evidence_hash",
+    "required_inputs",
+    "renal_crcl_band_adjustment"
+  ],
+  "nextGate": "bind exact parenteral cefuroxime products and attach CrCl adjustment layer before publication"
+}
