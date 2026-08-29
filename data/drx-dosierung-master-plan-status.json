@@ -1,6 +1,6 @@
 {
   "schemaVersion": "drx-dosierung-master-plan-status-v1",
-  "updatedAt": "2026-08-29T12:45:05.837Z",
+  "updatedAt": "2026-08-29T12:46:06.118Z",
   "officialPlan": "DRx Dosierung phases 0-32",
   "databaseBlocker": {
     "active": true,
@@ -598,9 +598,10 @@
         "tests/drx-dose-golden-cases-test.js executes adjustment-aware runtime golden cases",
         "data/drx-qa-coverage-contract-v1.json tracks provenance/adjustment/reviewer evidence",
         "tests/drx-release-suite-coverage-test.js",
-        "test:drx-release now includes candidate parity, golden cases, coverage, archive verifier, archive hashing/extraction/normalization and master-plan consistency"
+        "test:drx-release now includes candidate parity, golden cases, coverage, archive verifier, archive hashing/extraction/normalization and master-plan consistency",
+        "commit-bound check on 3d6b2f482bc6bccf7470080ffccf52feca176d07: zero GitHub Actions workflow runs"
       ],
-      "next": "execute expanded test:drx-release plus desktop/mobile Playwright matrix; live V3 integration remains blocked by Phase14"
+      "next": "GitHub Actions evidence is still unobserved for current main; run expanded release suite/Playwright in CI before green"
     },
     {
       "id": 30,
@@ -643,9 +644,11 @@
         "tests/drx-production-release-readiness-test.js",
         "data/drx-production-release-readiness-v1.json",
         "production release audit now invokes executable legacy consumer scan",
-        "test:drx-release includes legacy-consumer audit and critical provenance/archive/golden/coverage contracts"
+        "test:drx-release includes legacy-consumer audit and critical provenance/archive/golden/coverage contracts",
+        "current main commit-bound CI observation: zero workflow runs",
+        "current main Vercel status: failure build-rate-limit"
       ],
-      "next": "clear live DB/materialization/review/CI/browser/deploy/rollback/legacy-consumer blockers; no release on repository-only evidence"
+      "next": "obtain green commit-bound CI + desktop/mobile smoke + Vercel deploy, then live rollback/legacy-zero evidence; release stays blocked"
     }
   ],
   "currentExecution": {
@@ -692,7 +695,9 @@
       "clinical_review_not_complete",
       "no_published_v3_rules",
       "vercel_build_rate_limit",
-      "supabase_data_plane_down"
+      "supabase_data_plane_down",
+      "drx_safety_ci_not_observed",
+      "full_ci_not_green"
     ],
     "first100QueueMaterialized": 100,
     "first100CoveredExcluded": 35,
