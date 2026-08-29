@@ -8,7 +8,7 @@ create schema if not exists private;
 revoke all on schema private from public;
 
 -- One-shot shadow-schema preflight: never silently inherit a partial/stale V3.
-do $
+do $preflight$
 declare
   existing_v3_tables integer;
 begin
@@ -35,7 +35,7 @@ begin
       existing_v3_tables;
   end if;
 end
-$;
+$preflight$;
 
 create table if not exists public.dose_source_snapshots_v3 (
   snapshot_id text primary key,

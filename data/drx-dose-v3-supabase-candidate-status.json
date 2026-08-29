@@ -106,7 +106,7 @@
   "publicationAllowed": false,
   "selfContainedV3ProductShell": true,
   "v2ProductShellDependency": false,
-  "candidateGitBlobSha": "175241f6d18e83855edba12fcb3e46b5c84c81e6",
+  "candidateGitBlobSha": "c9e61d3dc0c802d120ccda4d9afe060ffea2a461",
   "repositoryStaticAudit": {
     "candidateSelfContained": true,
     "additiveOnly": true,
@@ -178,5 +178,11 @@
       "renal-required rule publishes only after a verified exact-section renal adjustment is inserted",
       "one-RPC fast path returns the verified renal adjustment with pinned sectionSha256"
     ]
+  },
+  "preflightDefectFixed": {
+    "fixedAt": "2026-08-29T13:10:00.000Z",
+    "defect": "The preflight DO block was dollar-quoted with a single $ instead of $$ (do $ ... $;), which Postgres rejects with 42601 syntax error at or near \"$\". The block is the first statement in the candidate, so every apply attempt would have failed before creating anything.",
+    "fix": "Quoted the block with the named tag $preflight$, matching the $body$ tags used elsewhere in the file.",
+    "verifiedAgainstLive": true
   }
 }
