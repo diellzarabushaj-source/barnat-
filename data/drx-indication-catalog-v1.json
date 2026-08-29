@@ -67,6 +67,73 @@
       "icd10": [],
       "icdStatus": "needs_review",
       "sourceScope": "ibuprofen-pilot"
+    },
+    {
+      "indicationKey": "community-acquired-pneumonia",
+      "canonicalName": "Community-acquired pneumonia",
+      "synonyms": [
+        "community acquired pneumonia",
+        "community-acquired pneumonia"
+      ],
+      "icd10": [],
+      "icdStatus": "needs_review",
+      "sourceScope": "batch1-pilot"
+    },
+    {
+      "indicationKey": "chlamydial-urethritis-cervicitis",
+      "canonicalName": "Chlamydial urethritis/cervicitis",
+      "synonyms": [
+        "urethritis and cervicitis caused by Chlamydia trachomatis",
+        "chlamydial urethritis",
+        "chlamydial cervicitis"
+      ],
+      "icd10": [],
+      "icdStatus": "needs_review",
+      "sourceScope": "batch1-pilot"
+    },
+    {
+      "indicationKey": "type-2-diabetes",
+      "canonicalName": "Type 2 diabetes mellitus",
+      "synonyms": [
+        "type 2 diabetes mellitus",
+        "type 2 diabetes"
+      ],
+      "icd10": [],
+      "icdStatus": "needs_review",
+      "sourceScope": "batch1-pilot"
+    },
+    {
+      "indicationKey": "hypertension",
+      "canonicalName": "Hypertension",
+      "synonyms": [
+        "hypertension",
+        "mild hypertension"
+      ],
+      "icd10": [],
+      "icdStatus": "needs_review",
+      "sourceScope": "batch1-pilot"
+    },
+    {
+      "indicationKey": "duodenal-ulcer",
+      "canonicalName": "Duodenal ulcer",
+      "synonyms": [
+        "active duodenal ulcer",
+        "duodenal ulcer"
+      ],
+      "icd10": [],
+      "icdStatus": "needs_review",
+      "sourceScope": "batch1-pilot"
+    },
+    {
+      "indicationKey": "acute-bronchospasm",
+      "canonicalName": "Acute bronchospasm",
+      "synonyms": [
+        "relief of acute bronchospasm",
+        "acute bronchospasm"
+      ],
+      "icd10": [],
+      "icdStatus": "needs_review",
+      "sourceScope": "batch1-pilot"
     }
   ]
 }
