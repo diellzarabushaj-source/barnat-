@@ -9,13 +9,12 @@ const REGISTRY_MAX_PAGE_SIZE = 50;
 const MAX_QUERY = 160;
 const MAX_RESULTS = 20;
 const SEARCH_LIMIT = 20;
-const ATC_COUNTS_PAGE_SIZE = 250;
-const ATC_COUNTS_MAX_ROWS = 6000;
+const ATC_COUNTS_VIEW = 'medindex_atc_counts_v1';
+const ATC_COUNTS_ROW_LIMIT = 500;
 const ATC_COUNTS_CACHE_TTL_MS = 30 * 60 * 1000;
 const ATC_COUNTS_REVISION_CHECK_MS = 60 * 1000;
-// phase6-atc-counts-neon-v2 is retained only as a compatibility marker.
-// The bounded ATC projection below is served by Supabase.
-const ATC_COUNTS_RUNTIME = 'phase6-atc-counts-neon-v2';
+// Phase 2: one shallow aggregate read replaces paged full-registry ATC projection reads.
+const ATC_COUNTS_RUNTIME = 'phase2-shallow-atc-counts-v1';
 let atcCountsCache = null;
 let atcCountsRevisionCheckedAt = 0;
 
@@ -95,25 +94,48 @@ function countAtcRows(rows = []) {
   };
 }
 
-async function fetchAtcCountRowsFromSupabase() {
-  const rows = [];
-  for (let offset = 0; offset < ATC_COUNTS_MAX_ROWS; offset += ATC_COUNTS_PAGE_SIZE) {
-    const params = new URLSearchParams();
-    params.set('select', 'registry_number,atc_code');
-    params.set('is_published', 'eq.true');
-    params.set('editorial_status', 'eq.published');
-    params.set('order', 'registry_number.asc');
-    params.set('limit', String(ATC_COUNTS_PAGE_SIZE));
-    params.set('offset', String(offset));
-    const { data } = await supabaseRequest(`drugs?${params.toString()}`, {
-      timeoutMs:5000,
-      label:'Supabase ATC count projection',
-    });
-    if (!Array.isArray(data)) throw new Error('Supabase ATC projection did not return a list.');
-    rows.push(...data);
-    if (data.length < ATC_COUNTS_PAGE_SIZE) return rows;
+function countAtcAggregateRows(rows = []) {
+  const counts = Object.create(null);
+  const groupCounts = Object.create(null);
+  let classifiedTotal = 0;
+  let unclassifiedTotal = 0;
+  for (const row of Array.isArray(rows) ? rows : []) {
+    const category = clean(row?.category_code).toUpperCase();
+    const count = Number(row?.product_count);
+    if (!Number.isFinite(count) || count < 0) continue;
+    if (category === 'UNCLASSIFIED') {
+      unclassifiedTotal += count;
+      continue;
+    }
+    if (!/^[A-Z]\d{2}$/.test(category)) continue;
+    counts[category] = (counts[category] || 0) + count;
+    const group = category.charAt(0);
+    groupCounts[group] = (groupCounts[group] || 0) + count;
+    classifiedTotal += count;
   }
-  throw new Error(`ATC projection exceeded the hard cap of ${ATC_COUNTS_MAX_ROWS} rows.`);
+  return {
+    total:classifiedTotal + unclassifiedTotal,
+    classifiedTotal,
+    unclassifiedTotal,
+    counts,
+    groupCounts,
+  };
+}
+
+async function fetchAtcCountRowsFromSupabase() {
+  const params = new URLSearchParams();
+  params.set('select', 'category_code,product_count');
+  params.set('order', 'category_code.asc');
+  params.set('limit', String(ATC_COUNTS_ROW_LIMIT));
+  const { data } = await supabaseRequest(`${ATC_COUNTS_VIEW}?${params.toString()}`, {
+    timeoutMs:5000,
+    label:'Supabase shallow ATC counts',
+  });
+  if (!Array.isArray(data)) throw new Error('Supabase ATC counts did not return a list.');
+  if (data.length >= ATC_COUNTS_ROW_LIMIT) {
+    throw new Error(`ATC aggregate exceeded the hard cap of ${ATC_COUNTS_ROW_LIMIT} rows.`);
+  }
+  return data;
 }
 
 // Legacy exported name kept for callers/tests; transport is Supabase.
@@ -148,7 +170,7 @@ async function supabaseAtcCounts() {
     try { registryVersion = await currentAtcRegistryRevision(); }
     catch { registryVersion = ''; }
     const rows = await fetchAtcCountRowsFromSupabase();
-    const summary = countAtcRows(rows);
+    const summary = countAtcAggregateRows(rows);
     const value = {
       ...summary,
       registryVersion,
@@ -250,19 +272,21 @@ handler.REGISTRY_DEFAULT_PAGE_SIZE=REGISTRY_DEFAULT_PAGE_SIZE;
 handler.REGISTRY_MAX_PAGE_SIZE=REGISTRY_MAX_PAGE_SIZE;
 handler.atcCategoryCode = atcCategoryCode;
 handler.countAtcRows = countAtcRows;
+handler.countAtcAggregateRows = countAtcAggregateRows;
 handler.fetchAtcCountRowsFromNeon = fetchAtcCountRowsFromNeon;
 handler.neonAtcCounts = neonAtcCounts;
-handler.ATC_COUNTS_PAGE_SIZE = ATC_COUNTS_PAGE_SIZE;
-handler.ATC_COUNTS_MAX_ROWS = ATC_COUNTS_MAX_ROWS;
+handler.ATC_COUNTS_VIEW = ATC_COUNTS_VIEW;
+handler.ATC_COUNTS_ROW_LIMIT = ATC_COUNTS_ROW_LIMIT;
 handler.ATC_COUNTS_CACHE_TTL_MS = ATC_COUNTS_CACHE_TTL_MS;
 handler.ATC_COUNTS_REVISION_CHECK_MS = ATC_COUNTS_REVISION_CHECK_MS;
 handler.REGISTRY_DETAIL_SELECT=DETAIL_SELECT;
 module.exports=handler;
 module.exports.atcCategoryCode = atcCategoryCode;
 module.exports.countAtcRows = countAtcRows;
+module.exports.countAtcAggregateRows = countAtcAggregateRows;
 module.exports.fetchAtcCountRowsFromNeon = fetchAtcCountRowsFromNeon;
 module.exports.neonAtcCounts = neonAtcCounts;
-module.exports.ATC_COUNTS_PAGE_SIZE = ATC_COUNTS_PAGE_SIZE;
-module.exports.ATC_COUNTS_MAX_ROWS = ATC_COUNTS_MAX_ROWS;
+module.exports.ATC_COUNTS_VIEW = ATC_COUNTS_VIEW;
+module.exports.ATC_COUNTS_ROW_LIMIT = ATC_COUNTS_ROW_LIMIT;
 module.exports.ATC_COUNTS_CACHE_TTL_MS = ATC_COUNTS_CACHE_TTL_MS;
 module.exports.ATC_COUNTS_REVISION_CHECK_MS = ATC_COUNTS_REVISION_CHECK_MS;
