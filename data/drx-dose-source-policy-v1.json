@@ -125,6 +125,24 @@
       "autoPublishEligible": true
     },
     {
+      "rank": 60,
+      "key": "NON_EU_REGULATOR",
+      "label": "Non-EU national medicines regulator",
+      "authority": "regulator",
+      "jurisdiction": "non-EU-national",
+      "domains": [
+        "invima.gov.co",
+        "www.invima.gov.co",
+        "webservice.invima.gov.co"
+      ],
+      "acceptedDocumentTypes": [
+        "PRODUCT_REGISTER",
+        "OFFICIAL_NOTICE",
+        "REGULATORY_RESOLUTION"
+      ],
+      "autoPublishEligible": false
+    },
+    {
       "rank": 80,
       "key": "MEDIATELY",
       "label": "Mediately",
@@ -172,7 +190,8 @@
       "combination_basis_ambiguous",
       "high_risk",
       "off_label",
-      "no_authoritative_source"
+      "no_authoritative_source",
+      "non_eu_regulator"
     ]
   }
 }
