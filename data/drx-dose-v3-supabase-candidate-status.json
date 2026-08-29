@@ -1,6 +1,6 @@
 {
   "schemaVersion": "drx-dose-v3-supabase-candidate-status-v1",
-  "updatedAt": "2026-08-29T11:53:03.434Z",
+  "updatedAt": "2026-08-29T11:54:37.374Z",
   "projectId": "ftuchtmolddhhsdcwnqe",
   "projectHealth": "ACTIVE_HEALTHY",
   "postgresVersion": "17.6.1.155",
@@ -132,7 +132,9 @@
       "no SECURITY DEFINER on V3 functions",
       "two publication triggers present",
       "fresh shadow tables empty",
-      "selector-less RPC fails closed to NULL"
+      "selector-less RPC fails closed to NULL",
+      "two provenance mutation-lock triggers present",
+      "V3 functions are SECURITY INVOKER"
     ]
   }
 }
