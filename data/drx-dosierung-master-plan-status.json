@@ -1,6 +1,6 @@
 {
   "schemaVersion": "drx-dosierung-master-plan-status-v1",
-  "updatedAt": "2026-08-29T04:06:29.309Z",
+  "updatedAt": "2026-08-29T07:08:18.285Z",
   "officialPlan": "DRx Dosierung phases 0-32",
   "databaseBlocker": {
     "active": true,
@@ -47,7 +47,7 @@
     {
       "id": 3,
       "name": "Source Discovery",
-      "status": "IN_PROGRESS_FIRST100_60_VERIFIED_2_PENDING_25_UNCOVERED",
+      "status": "IN_PROGRESS_FIRST100_65_PRODUCT_SOURCES_VERIFIED",
       "evidence": [
         "data/drx-dose-source-map-v1.json",
         "ibuprofen pilot with official eMC oral+IV SmPCs",
@@ -70,9 +70,13 @@
         "data/drx-first100-source-discovery-wave-f-v1.json",
         "6 additional AEMPS/CIMA product-specific fichas verified in wave F",
         "EMA Exforge HCT official source found; PDF section visual verification pending because EMA returned 429",
-        "first-100 verified product-specific source total: 60"
+        "first-100 verified product-specific source total: 60",
+        "data/drx-first100-source-discovery-wave-g-v1.json",
+        "Wave F Exforge HCT pending resolved using CIMA Dafiro HCT sections + EMA version cross-check",
+        "Wave G: Roasax, Eulitop Retard, Diprogenta, Celestoderm",
+        "first-100 verified product-specific source total: 65"
       ],
-      "next": "continue exact official source discovery for remaining 25 eligible rows; resolve Exforge HCT section verification and alteplase product selection separately"
+      "next": "continue exact official source discovery for remaining 21 eligible rows; keep alteplase product selection separate and 13 canonical-review rows blocked"
     },
     {
       "id": 4,
@@ -501,7 +505,7 @@
     "first100ProductionEligibleRows": 0,
     "first100ProductionDiscoveryAllowed": false,
     "first100SourceDiscoveryEligible": 87,
-    "first100VerifiedProductSources": 60,
+    "first100VerifiedProductSources": 65,
     "first100ProductSelectionRequired": 1,
     "legacyMirrorPrecheck": {
       "present": 2,
@@ -510,8 +514,8 @@
       "bindings": 4,
       "liveCompared": false
     },
-    "first100SourceDiscoveryRemaining": 25,
-    "first100SourceSectionVerificationPending": 1,
+    "first100SourceDiscoveryRemaining": 21,
+    "first100SourceSectionVerificationPending": 0,
     "first100ProductSelectionPending": 1
   }
 }
