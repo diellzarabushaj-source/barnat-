@@ -1,6 +1,6 @@
 {
   "schemaVersion": "drx-dose-batch2-v1",
-  "updatedAt": "2026-08-29T22:30:00+02:00",
+  "updatedAt": "2026-08-29T22:45:00+02:00",
   "status": "source_set_complete_repository_side",
   "publicationAllowed": false,
   "targetCount": 25,
@@ -80,35 +80,70 @@
       "canonicalName": "Ciprofloxacin",
       "sourceKey": "emc-4341-smpc",
       "url": "https://www.medicines.org.uk/emc/product/4341/smpc",
-      "status": "verified_live"
+      "status": "verified_live",
+      "documentDate": "2026-05-14",
+      "productName": "Ciprofloxacin 250 mg film-coated tablets",
+      "formulation": "film-coated tablet",
+      "route": "PO",
+      "strength": "250 mg",
+      "section41Present": true,
+      "section42Present": true
     },
     {
       "canonicalKey": "furosemide",
       "canonicalName": "Furosemide",
       "sourceKey": "emc-102194-smpc",
       "url": "https://www.medicines.org.uk/emc/product/102194/smpc",
-      "status": "verified_live"
+      "status": "verified_live",
+      "documentDate": "2026-06-12",
+      "productName": "Furosemide 10 mg/ml solution for injection/infusion",
+      "formulation": "solution for injection/infusion",
+      "route": "IV/IM",
+      "strength": "10 mg/mL",
+      "section41Present": true,
+      "section42Present": true
     },
     {
       "canonicalKey": "prednisolone",
       "canonicalName": "Prednisolone",
       "sourceKey": "emc-102342-smpc",
       "url": "https://www.medicines.org.uk/emc/product/102342/smpc",
-      "status": "verified_live"
+      "status": "verified_live",
+      "documentDate": "2026-06-19",
+      "productName": "Prednisolone 5 mg soluble tablets",
+      "formulation": "soluble tablet",
+      "route": "PO",
+      "strength": "5 mg",
+      "section41Present": true,
+      "section42Present": true
     },
     {
       "canonicalKey": "dexamethasone",
       "canonicalName": "Dexamethasone",
       "sourceKey": "emc-816-smpc",
       "url": "https://www.medicines.org.uk/emc/product/816/smpc",
-      "status": "verified_live"
+      "status": "verified_live",
+      "documentDate": "2025-01-21",
+      "productName": "Dexamethasone 2 mg soluble tablets",
+      "formulation": "soluble tablet",
+      "route": "PO",
+      "strength": "2 mg",
+      "section41Present": true,
+      "section42Present": true
     },
     {
       "canonicalKey": "cetirizine",
       "canonicalName": "Cetirizine",
       "sourceKey": "emc-100094-smpc",
       "url": "https://www.medicines.org.uk/emc/product/100094/smpc",
-      "status": "verified_live"
+      "status": "verified_live",
+      "documentDate": "2026-06-29",
+      "productName": "Cetirizine Dihydrochloride 10 mg Film-Coated Tablets",
+      "formulation": "film-coated tablet",
+      "route": "PO",
+      "strength": "10 mg",
+      "section41Present": true,
+      "section42Present": true
     },
     {
       "canonicalKey": "levothyroxine",
@@ -267,7 +302,7 @@
     "exactLiveProductBindingComplete": false,
     "clinicalReviewComplete": false,
     "productionPersistenceComplete": false,
-    "liveWebEvidenceStructuredCount": 5,
+    "liveWebEvidenceStructuredCount": 10,
     "archiveHashVerifiedCount": 0
   },
   "blockers": [
@@ -276,6 +311,9 @@
     "Batch 2 structured SmPC extraction and normalization still required before clinical review",
     "18 Batch 2 sources still require document date/version capture in the canonical source map before publication readiness",
     "Wave 1 has live web-verified section evidence but archive SHA-256 snapshots are still pending",
-    "Bisoprolol source requires clinical review because section 4.2 contains chronic heart failure titration while section 4.1 lists hypertension and angina"
+    "Bisoprolol source requires clinical review because section 4.2 contains chronic heart failure titration while section 4.1 lists hypertension and angina",
+    "Wave 2 adds high-complexity antimicrobial, parenteral and corticosteroid rules that require specialist safety review before normalization",
+    "Ciprofloxacin rules require indication, resistance/guidance, renal function and pediatric weight-aware branching",
+    "Cetirizine renal adjustment source wording requires careful renal-model mapping before publication"
   ]
 }
