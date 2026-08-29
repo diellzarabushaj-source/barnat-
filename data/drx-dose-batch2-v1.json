@@ -1,6 +1,6 @@
 {
   "schemaVersion": "drx-dose-batch2-v1",
-  "updatedAt": "2026-08-29T23:35:00+02:00",
+  "updatedAt": "2026-08-29T03:20:47.813Z",
   "status": "source_set_complete_repository_side",
   "publicationAllowed": false,
   "targetCount": 25,
@@ -207,7 +207,7 @@
       "sourceKey": "emc-102206-smpc",
       "url": "https://www.medicines.org.uk/emc/product/102206/smpc",
       "status": "verified_live",
-      "documentDate": "2026-06-02",
+      "documentDate": "2026-08-27",
       "productName": "Aspirin 75 mg tablets",
       "formulation": "tablet",
       "route": "PO",
