@@ -1,6 +1,6 @@
 {
   "schemaVersion": "drx-hepatic-adjustment-model-v1",
-  "status": "foundation_complete_repository",
+  "status": "provenance_hardened_repository",
   "publicationAllowed": false,
   "supportedMeasures": [
     "Child_Pugh_class",
@@ -17,7 +17,12 @@
     "dose_action",
     "source_key",
     "source_section",
-    "review_status"
+    "source_section_sha256",
+    "source_snapshot_id",
+    "source_evidence_hash",
+    "review_status",
+    "verified_by",
+    "verified_at"
   ],
   "doseActions": [
     "no_adjustment",
@@ -30,7 +35,10 @@
   "safetyRules": [
     "do_not_map_textual_impairment_to_child_pugh_without_explicit_source",
     "do_not_publish_without_source",
-    "conflicting_rules_require_manual_review"
+    "conflicting_rules_require_manual_review",
+    "source_snapshot_must_equal_source_evidence_hash",
+    "exact_smpc_4_2_section_sha256_required",
+    "verified_adjustment_requires_reviewer_identity_and_timestamp"
   ],
-  "next": "populate only from explicit SmPC hepatic dosing statements"
+  "next": "persist only exact SmPC 4.2 hash-pinned hepatic rows; never infer Child-Pugh class from textual impairment"
 }
