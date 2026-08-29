@@ -1,8 +1,8 @@
 {
   "schemaVersion": "drx-first100-source-discovery-index-v1",
-  "generatedAt": "2026-08-29T10:16:27.485Z",
+  "generatedAt": "2026-08-29T10:28:09.814Z",
   "first100Count": 100,
-  "canonicalReviewRequired": 13,
+  "canonicalReviewRequired": 14,
   "sourceDiscoveryEligible": 89,
   "verifiedProductSpecific": 78,
   "verifiedCanonicalSubstances": 78,
