@@ -1,6 +1,6 @@
 {
   "schemaVersion": "drx-dosierung-master-plan-status-v1",
-  "updatedAt": "2026-08-29T06:20:00+02:00",
+  "updatedAt": "2026-08-29T22:55:00+02:00",
   "officialPlan": "DRx Dosierung phases 0-32",
   "databaseBlocker": {
     "active": true,
@@ -184,7 +184,7 @@
     {
       "id": 16,
       "name": "Batch 2",
-      "status": "IN_PROGRESS_HARDENED_REPO",
+      "status": "IN_PROGRESS_10_OF_25_LIVE_WEB_EVIDENCE",
       "evidence": [
         "data/drx-dose-batch2-v1.json",
         "data/drx-dose-source-map-v1.json",
@@ -194,9 +194,13 @@
         "scripts/build-drx-batch2-normalization-index.js",
         "tests/drx-batch2-normalization-first100-test.js",
         "scripts/audit-drx-phase16-consistency.js",
-        "tests/drx-phase16-consistency-audit-test.js"
+        "tests/drx-phase16-consistency-audit-test.js",
+        "data/drx-batch2-live-evidence-wave1-v1.json",
+        "data/drx-batch2-live-evidence-wave2-v1.json",
+        "tests/drx-batch2-live-evidence-wave1-test.js",
+        "tests/drx-batch2-live-evidence-wave2-test.js"
       ],
-      "next": "obtain 25/25 live archived SmPC snapshots, parse 4.1-4.9, structure dose candidates, normalize, validate safety, then clinical review"
+      "next": "continue live evidence waves 3-5, then obtain archive hashes for all 25 and normalize only review-cleared rules"
     },
     {
       "id": 17,
@@ -361,7 +365,7 @@
   ],
   "currentExecution": {
     "phase": 16,
-    "objective": "Phase 16 is hardened repository-side with source-map consistency audit, extraction pipeline, normalization gate and evidence coverage. Completion still requires 25/25 live snapshots and structured normalized rules. Phase 17 first-100 is gated on a real canonical Supabase export.",
+    "objective": "Batch 2 now has live structured web evidence for 10/25 sources. Archive SHA-256 snapshots remain 0/25, so extracted/normalized coverage is not advanced. Continue waves 3-5 and preserve high-risk/review blockers.",
     "pilot": "batch2-25",
     "repositoryBatch1Substances": 10,
     "repositoryBatch2Substances": 25,
@@ -373,6 +377,7 @@
     "legacyComparedRules": 0,
     "clinicallyReviewedRules": 0,
     "publishedRules": 0,
-    "publicationAllowed": false
+    "publicationAllowed": false,
+    "webEvidenceStructuredSources": 10
   }
 }
