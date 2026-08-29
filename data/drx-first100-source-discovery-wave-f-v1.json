@@ -4,8 +4,8 @@
   "sourcePolicy": "data/drx-dose-source-policy-v1.json",
   "verificationMethod": "live_aemps_cima_html_plus_ema_official_crosscheck",
   "publicationAllowed": false,
-  "verifiedProductSpecificCount": 6,
-  "sectionsPendingCount": 1,
+  "verifiedProductSpecificCount": 7,
+  "sectionsPendingCount": 0,
   "productSelectionRequiredCount": 0,
   "rows": [
     {
@@ -149,20 +149,26 @@
     {
       "canonicalKey": "amlodipinehydrochlorothiazidevalsartan",
       "canonicalName": "Amlodipine + Hydrochlorothiazide + Valsartan",
-      "status": "official_source_found_sections_visual_verification_pending",
-      "sourceTier": "EMA",
-      "sourceKey": "ema-exforge-hct-epar",
-      "url": "https://www.ema.europa.eu/en/medicines/human/EPAR/exforge-hct",
-      "productName": "Exforge HCT",
+      "status": "verified_product_specific_ema_version_crosscheck",
+      "sourceTier": "AEMPS_CIMA",
+      "sourceKey": "cima-09574026-ft",
+      "url": "https://cima.aemps.es/cima/dochtml/ft/09574026/FT_09574026.html",
+      "productName": "Dafiro HCT 5 mg/160 mg/25 mg comprimidos recubiertos con película",
       "documentDate": "2026-02-06",
       "documentDatePrecision": "day",
-      "section41Present": null,
-      "section42Present": null,
+      "documentDateSource": "EMA Exforge HCT Product Information update date; sections 4.1/4.2 verified on official CIMA Dafiro HCT HTML for the same active combination",
+      "versionCrosscheckUrl": "https://www.ema.europa.eu/en/medicines/human/EPAR/exforge-hct",
+      "section41Present": true,
+      "section42Present": true,
       "reviewFlags": [
         "triple_fixed_combination",
-        "ema_product_information_current",
-        "product_information_pdf_429_visual_verification_pending",
-        "do_not_normalize_until_sections_verified"
+        "adult_essential_hypertension",
+        "substitution_therapy_not_initial",
+        "one_tablet_once_daily",
+        "stable_component_doses_required",
+        "renal_electrolyte_monitoring",
+        "hydrochlorothiazide_safety_context",
+        "clinical_review_required"
       ],
       "publicationAllowed": false
     }
