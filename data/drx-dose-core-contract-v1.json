@@ -1,0 +1,34 @@
+{
+  "schemaVersion": "drx-dose-core-contract-v1",
+  "status": "foundation_complete_repository",
+  "deterministic": true,
+  "supportedMethods": [
+    "fixed_dose",
+    "dose_per_kg",
+    "dose_per_kg_per_day",
+    "dose_per_m2",
+    "continuous_rate"
+  ],
+  "outputs": [
+    "single_dose",
+    "daily_dose",
+    "frequency",
+    "interval",
+    "max_daily_dose",
+    "volume_ml",
+    "warnings"
+  ],
+  "invariants": [
+    "same_inputs_same_output",
+    "never_exceed_explicit_max",
+    "never_invent_missing_frequency",
+    "unit_normalization_required",
+    "fail_closed_on_ambiguous_rule"
+  ],
+  "compatibility": [
+    "frontend",
+    "backend",
+    "golden_case_tests"
+  ],
+  "next": "consolidate existing calculators behind this shared contract"
+}
