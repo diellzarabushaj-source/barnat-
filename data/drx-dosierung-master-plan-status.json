@@ -1,6 +1,6 @@
 {
   "schemaVersion": "drx-dosierung-master-plan-status-v1",
-  "updatedAt": "2026-08-29T23:45:00+02:00",
+  "updatedAt": "2026-08-30T00:05:00+02:00",
   "officialPlan": "DRx Dosierung phases 0-32",
   "databaseBlocker": {
     "active": true,
@@ -184,7 +184,7 @@
     {
       "id": 16,
       "name": "Batch 2",
-      "status": "IN_PROGRESS_25_OF_25_LIVE_WEB_EVIDENCE",
+      "status": "IN_PROGRESS_25_OF_25_EVIDENCE_REVIEW_QUEUE_READY",
       "evidence": [
         "data/drx-dose-batch2-v1.json",
         "data/drx-dose-source-map-v1.json",
@@ -204,9 +204,13 @@
         "data/drx-batch2-live-evidence-wave4-v1.json",
         "tests/drx-batch2-live-evidence-wave4-test.js",
         "data/drx-batch2-live-evidence-wave5-v1.json",
-        "tests/drx-batch2-live-evidence-wave5-test.js"
+        "tests/drx-batch2-live-evidence-wave5-test.js",
+        ".github/workflows/drx-batch2-source-archive.yml",
+        "tests/drx-batch2-archive-workflow-test.js",
+        "data/drx-batch2-clinical-review-queue-v1.json",
+        "tests/drx-batch2-review-queue-test.js"
       ],
-      "next": "obtain hash-backed archive snapshots 25/25, then structure normalized rules only for review-cleared product-specific indications"
+      "next": "run source-archive workflow to obtain 25 hash-backed snapshots, then normalize only rules that pass the 25-item clinical review queue"
     },
     {
       "id": 17,
@@ -271,12 +275,14 @@
     {
       "id": 23,
       "name": "Clinical Review Queue",
-      "status": "FOUNDATION_COMPLETE_REPO",
+      "status": "FOUNDATION_COMPLETE_BATCH2_QUEUE_MATERIALIZED",
       "evidence": [
         "review statuses exist",
-        "data/drx-clinical-review-queue-policy-v1.json"
+        "data/drx-clinical-review-queue-policy-v1.json",
+        "data/drx-batch2-clinical-review-queue-v1.json",
+        "scripts/build-drx-batch2-review-queue.js"
       ],
-      "next": "persist centralized review queue when database access returns"
+      "next": "process high-priority reviews after hash-backed archive and exact product binding evidence exist"
     },
     {
       "id": 24,
@@ -371,7 +377,7 @@
   ],
   "currentExecution": {
     "phase": 16,
-    "objective": "Batch 2 has 25/25 live structured web evidence. Completion is intentionally blocked until 25/25 hash-backed archive snapshots, normalization, product binding, safety validation and clinical review are complete.",
+    "objective": "Batch 2 live evidence is 25/25 and the clinical review queue is materialized (21 high priority). GitHub archive workflow is ready but no workflow run was observed from connector-originated commits; hash-backed archive remains 0/25.",
     "pilot": "batch2-25",
     "repositoryBatch1Substances": 10,
     "repositoryBatch2Substances": 25,
@@ -384,6 +390,10 @@
     "clinicallyReviewedRules": 0,
     "publishedRules": 0,
     "publicationAllowed": false,
-    "webEvidenceStructuredSources": 25
+    "webEvidenceStructuredSources": 25,
+    "reviewQueueItems": 25,
+    "highPriorityReviewItems": 21,
+    "archiveWorkflowReady": true,
+    "archiveWorkflowRunObserved": false
   }
 }
