@@ -62,4 +62,26 @@ assert.equal(queue[99].canonicalKey, 'drug-135');
 assert.ok(queue.every(x => x.status === 'source_discovery_pending'));
 assert.ok(queue.every(x => x.publicationAllowed === false));
 
+const supabaseRows = [
+  {canonical_key:'zeta',canonical_name:'Zeta',concept_id:'c-z'},
+  {canonical_key:'alpha',canonical_name:'Alpha',concept_id:'c-a'},
+  {canonical_key:'beta',canonical_name:'Beta',concept_id:'c-b'},
+  {canonical_key:'alpha',canonical_name:'Alpha duplicate',concept_id:'c-a-duplicate'},
+];
+const supabaseQueue = Queue.buildDiscoveryQueue(supabaseRows, ['beta'], 2);
+assert.deepEqual(supabaseQueue.map(x => x.canonicalKey), ['alpha','zeta']);
+assert.equal(supabaseQueue[0].conceptId, 'c-a');
+assert.equal(supabaseQueue[0].canonicalName, 'Alpha');
+
+const batch = Queue.buildDiscoveryBatch(supabaseRows, [{canonical_key:'beta'}], 2);
+assert.equal(batch.requestedCount, 2);
+assert.equal(batch.canonicalCount, 3);
+assert.equal(batch.queuedCount, 2);
+assert.equal(batch.complete, true);
+assert.equal(batch.publicationAllowed, false);
+
+assert.throws(() => Queue.buildDiscoveryQueue(supabaseRows, [], 0), /between 1 and 500/);
+assert.throws(() => Queue.buildDiscoveryQueue(supabaseRows, [], 501), /between 1 and 500/);
+assert.throws(() => Queue.buildDiscoveryQueue(supabaseRows, 'beta', 2), /alreadyCovered must be an array/);
+
 console.log('DRx Batch 2 normalization and first-100 discovery queue contracts passed.');
