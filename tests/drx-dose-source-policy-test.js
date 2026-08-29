@@ -53,6 +53,21 @@ assert.equal(
   'EU_NATIONAL'
 );
 
+const romania = Policy.rankCandidate({
+  url:'https://www.anm.ro/_/_RCP/RCP_12345_30.08.19.pdf',
+  documentType:'SmPC',
+  documentDate:'2019-08-30',
+  productSpecific:true,
+  productMatch:true,
+  hasDoseSection:true,
+});
+assert.equal(romania.tier.key, 'EU_NATIONAL');
+assert.equal(romania.publicationEligible, true);
+assert.equal(
+  Policy.sourceTierForUrl('https://nomenclator.anm.ro/medicamente').key,
+  'EU_NATIONAL'
+);
+
 const basg = Policy.rankCandidate({
   url:'https://medikamente.basg.gv.at/documents/example.pdf',
   documentType:'SmPC',
