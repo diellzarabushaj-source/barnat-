@@ -1,0 +1,30 @@
+{
+  "schemaVersion": "drx-adult-core-v1",
+  "status": "foundation_complete_repository",
+  "publicationAllowed": false,
+  "methods": [
+    "fixed_dose",
+    "dose_per_kg_per_dose",
+    "dose_per_kg_per_day",
+    "dose_per_m2_per_dose",
+    "dose_per_m2_per_day"
+  ],
+  "modifiers": [
+    "indication",
+    "route",
+    "formulation",
+    "renal_function",
+    "hepatic_function",
+    "age",
+    "weight"
+  ],
+  "safeguards": [
+    "indication_specific_rule_required",
+    "route_specific_rule_required",
+    "formulation_specific_limits_enforced",
+    "max_single_and_daily_dose_enforced",
+    "renal_or_hepatic_gate_blocks_when_required_input_missing",
+    "no_generic_merge_of_product_specific_smpc_rules"
+  ],
+  "next": "rebase existing adult calculator on sourced normalized V3 rules"
+}
