@@ -1,0 +1,67 @@
+{
+  "schemaVersion": "drx-dose-pilot-v1",
+  "pilotKey": "paracetamol",
+  "updatedAt": "2026-08-29",
+  "status": "in_review_unbound",
+  "publicationAllowed": false,
+  "ruleScope": "representative_not_exhaustive",
+  "canonicalSubstance": {
+    "key": "paracetamol",
+    "name": "Paracetamol"
+  },
+  "sourceSet": [
+    {
+      "sourceKey": "emc-101491-smpc",
+      "url": "https://www.medicines.org.uk/emc/product/101491/smpc",
+      "tier": "EMC",
+      "documentDate": "2025-10-24",
+      "section": "4.2",
+      "formulation": "tablet",
+      "strength": "500 mg",
+      "section42Verified": true
+    }
+  ],
+  "extractedRuleCandidates": [
+    {
+      "candidateKey": "emc-101491-pain-10-12y",
+      "ruleKey": "paracetamol|pain-mild-moderate|10-12y|po|500mg",
+      "sourceKey": "emc-101491-smpc",
+      "sourceSection": "4.2",
+      "indicationKey": "pain-mild-moderate",
+      "indicationTerms": [
+        "mild to moderate pain"
+      ],
+      "patientGroup": "pediatric_only",
+      "calculationMethod": "age_band_fixed",
+      "doseMinValue": 500,
+      "doseMaxValue": 500,
+      "doseUnit": "mg",
+      "frequencyMode": "interval",
+      "intervalMinHours": 4,
+      "intervalMaxHours": 6,
+      "maxDoses24h": 4,
+      "maxDailyDoseMg": 2000,
+      "durationMode": "review_after",
+      "reviewAfterDays": 3,
+      "minAgeMonths": 120,
+      "maxAgeMonths": 143,
+      "route": "PO",
+      "prn": true,
+      "requiredInputs": [
+        "age_months"
+      ],
+      "bindingStatus": "unbound",
+      "editorialStatus": "in_review"
+    }
+  ],
+  "sourceReconciliation": {
+    "status": "single_authoritative_source",
+    "autoMerge": false
+  },
+  "v2SchemaGaps": [
+    "source_snapshot_id",
+    "source_evidence_hash",
+    "required_inputs"
+  ],
+  "nextGate": "bind to exact DRx paracetamol products; compare legacy regimen; verify indication/ICD and source snapshot before review"
+}
