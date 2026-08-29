@@ -1,0 +1,13 @@
+'use strict';
+const assert=require('node:assert/strict');
+const fs=require('node:fs');
+const path=require('node:path');
+const yml=fs.readFileSync(path.join(__dirname,'..','.github','workflows','drx-batch2-source-archive.yml'),'utf8');
+assert.match(yml,/workflow_dispatch:/);
+assert.match(yml,/DRX_ARCHIVE_DIR/);
+assert.match(yml,/build-drx-batch2-extraction-index\.js/);
+assert.match(yml,/x\.extractedCount!==25/);
+assert.match(yml,/x\.failedCount!==0/);
+assert.match(yml,/actions\/upload-artifact@v4/);
+assert.match(yml,/retention-days: 90/);
+console.log('DRx Batch 2 archive workflow contract passed.');
