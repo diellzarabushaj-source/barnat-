@@ -1,0 +1,60 @@
+{
+  "schemaVersion": "drx-first100-source-discovery-wave-q-v1",
+  "generatedAt": "2026-08-29T10:45:30.291Z",
+  "sourcePolicy": "data/drx-dose-source-policy-v1.json",
+  "verificationMethod": "current_fachinfo_professional_smpc_sections_4_1_4_2_with_product_authorisation_identity",
+  "publicationAllowed": false,
+  "verifiedProductSpecificCount": 1,
+  "sectionsPendingCount": 0,
+  "productSelectionRequiredCount": 0,
+  "rows": [
+    {
+      "canonicalKey": "clotrimazolehexamidinediisetionateprednisolone",
+      "canonicalName": "Clotrimazole + Hexamidine diisetionate + Prednisolone",
+      "status": "verified_product_specific_review_required",
+      "sourceTier": "FACHINFO_DE",
+      "authority": "Fachinfo-Service / Rote Liste Service GmbH",
+      "sourceKey": "fachinfo-015058-imazol-comp-2024-06",
+      "url": "https://www.fachinfo.de/fi/pdf/015058/imazol-r-comp-creme",
+      "productRegistryUrl": "https://www.fachinfo.de/fi/pdf/015058/imazol-r-comp-creme",
+      "productName": "Imazol® comp. Creme",
+      "registrationNumber": "49824.00.00",
+      "atcCode": "D01AC01 / D07AA03",
+      "documentDate": "2024-06",
+      "documentDatePrecision": "month",
+      "section41Present": true,
+      "section42Present": true,
+      "currentRegistryCrosscheck": {
+        "checkedDate": "2026-08-29",
+        "activeSubstances": [
+          "clotrimazole",
+          "prednisolone acetate",
+          "hexamidine diisethionate"
+        ],
+        "strengths": [
+          "10 mg/g",
+          "5 mg/g",
+          "2.5 mg/g"
+        ],
+        "route": "cutaneous",
+        "marketingAuthorisationHolder": "Laboratoires Bailleul S.A.",
+        "fachinfoUpdateListing": "2024-07-23"
+      },
+      "dosingCrosscheck": {
+        "population": "adults, adolescents and children from 1 month",
+        "frequency": "twice daily",
+        "usualMaximumDuration": "1 week"
+      },
+      "reviewFlags": [
+        "fixed_combination",
+        "topical_corticosteroid",
+        "pediatric_from_one_month",
+        "maximum_duration_one_week",
+        "professional_product_information_not_regulator",
+        "manual_publication_review_required",
+        "clinical_review_required"
+      ],
+      "publicationAllowed": false
+    }
+  ]
+}
