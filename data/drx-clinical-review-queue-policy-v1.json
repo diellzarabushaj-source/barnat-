@@ -1,6 +1,6 @@
 {
   "schemaVersion": "drx-clinical-review-queue-policy-v1",
-  "status": "foundation_complete_repository",
+  "status": "provenance_hardened_repository",
   "queueReasons": [
     "source_conflict",
     "high_risk_drug",
@@ -9,7 +9,12 @@
     "missing_required_input",
     "ambiguous_indication",
     "dose_basis_unclear",
-    "renal_or_hepatic_complexity"
+    "renal_or_hepatic_complexity",
+    "provenance_hash_mismatch",
+    "required_adjustment_missing",
+    "reviewer_audit_missing",
+    "high_risk_manual_review",
+    "product_binding_conflict"
   ],
   "priorities": [
     "critical",
@@ -22,13 +27,22 @@
     "rejected",
     "superseded"
   ],
-  "publicationRule": "only_verified_complete_sourced_rules_may_progress_to_publication_gate",
+  "publicationRule": "only reviewer-audited, exact-product-bound, hash-pinned, adjustment-complete, safety-passed rules with no open review may progress to DB publication gate",
   "requiredAuditFields": [
     "reviewer_id",
     "reviewed_at",
     "decision",
     "decision_reason",
-    "source_version"
+    "source_key",
+    "source_snapshot_id",
+    "source_section",
+    "source_section_sha256",
+    "source_version_or_date",
+    "exact_product_key",
+    "legacy_comparison_status",
+    "safety_validation_status"
   ],
-  "next": "persist queue table/view in additive V3 when database gateway returns"
+  "next": "persist review queue in additive V3 after gateway recovery; require exact snapshot/4.2 hash + product/binding/safety/legacy evidence before resolved state",
+  "failClosed": true,
+  "highRiskRule": "high-risk rules always require an explicit resolved manual review with reviewer_id, reviewed_at and decision_reason"
 }
