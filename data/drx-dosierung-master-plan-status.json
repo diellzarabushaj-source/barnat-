@@ -1,6 +1,6 @@
 {
   "schemaVersion": "drx-dosierung-master-plan-status-v1",
-  "updatedAt": "2026-08-29T22:07:59.000Z",
+  "updatedAt": "2026-08-29T22:15:53.000Z",
   "officialPlan": "DRx Dosierung phases 0-32",
   "databaseBlocker": {
     "active": false,
@@ -846,8 +846,8 @@
     "archiveAttestationPresent": true,
     "archiveAttestationPath": "data/drx-batch2-archive-attestation-v1.json",
     "archiveAttestationContract": "CI-only: scripts/build-drx-batch2-archive-attestation.js refuses to write outside GitHub Actions, and a local dry run marks itself non-authoritative so the gate rejects it. The attestation carries source identity, raw sha256 and section 4.1/4.2 sha256 only - never document text.",
-    "archiveAttestationRunId": 33277781016,
-    "archiveAttestationRowsDigest": "bd33304d5cfab630be72720a1783bc7cfbe30a67be2f55d1d3a81352c9ba00ad"
+    "archiveAttestationRunId": 33278112070,
+    "archiveAttestationRowsDigest": "3f8b2a40727f0dce9985d5eb943f00b4fe87a4fee1d8dd02b4de2ad554098b70"
   },
   "sourceNetworkBlocker": {
     "active": true,
