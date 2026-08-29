@@ -11,6 +11,17 @@ const OUTPUT_PATH = path.join(ROOT, 'data/drx-batch2-extraction-index-v1.json');
 
 const batch = JSON.parse(fs.readFileSync(BATCH_PATH, 'utf8'));
 
+function sleep(ms) {
+  return new Promise(resolve => setTimeout(resolve, Math.max(0, Number(ms) || 0)));
+}
+
+function isRetryable(error) {
+  const status = Number(error?.status || 0);
+  if (status === 429 || status >= 500) return true;
+  if (error?.code === 'DOSE_SOURCE_FETCH_FAILED') return status === 0 || status === 429 || status >= 500;
+  return /fetch failed|network|socket|timeout|ECONNRESET|ENOTFOUND|EAI_AGAIN/i.test(String(error?.message || ''));
+}
+
 async function extractOne(item, options = {}) {
   const snapshot = await Archive.fetchSourceSnapshot(item.url, {
     authoritativeOnly:true,
@@ -30,6 +41,8 @@ async function extractOne(item, options = {}) {
     fetchedAt:snapshot.fetchedAt,
     etag:snapshot.etag || null,
     lastModified:snapshot.lastModified || null,
+    documentDate:snapshot.sourceDocument?.documentDate || null,
+    productName:snapshot.sourceDocument?.productName || null,
     contentLength:snapshot.contentLength,
     rawSha256:snapshot.rawSha256,
     snapshotId:snapshot.snapshotId,
@@ -43,17 +56,38 @@ async function extractOne(item, options = {}) {
   };
 }
 
+async function extractWithRetry(item, options = {}) {
+  const maxAttempts = Math.max(1, Number(options.maxAttempts) || 3);
+  const baseDelayMs = Math.max(0, Number(options.retryBaseDelayMs) || 750);
+  let lastError = null;
+
+  for (let attempt = 1; attempt <= maxAttempts; attempt += 1) {
+    try {
+      const row = await extractOne(item, options);
+      return { ...row, fetchAttempt:attempt };
+    } catch (error) {
+      lastError = error;
+      if (attempt >= maxAttempts || !isRetryable(error)) break;
+      await sleep(baseDelayMs * attempt);
+    }
+  }
+  throw lastError;
+}
+
 async function build(options = {}) {
   const rows = [];
   const errors = [];
+  const interRequestDelayMs = Math.max(0, Number(options.interRequestDelayMs) || 350);
 
-  for (const item of batch.substances) {
+  for (let index = 0; index < batch.substances.length; index += 1) {
+    const item = batch.substances[index];
+    if (index > 0 && interRequestDelayMs > 0) await sleep(interRequestDelayMs);
     if (!item.url || !item.sourceKey) {
       errors.push({ canonicalKey:item.canonicalKey, error:'source_missing' });
       continue;
     }
     try {
-      rows.push(await extractOne(item, options));
+      rows.push(await extractWithRetry(item, options));
     } catch (error) {
       errors.push({
         canonicalKey:item.canonicalKey,
@@ -102,4 +136,4 @@ if (require.main === module) {
   });
 }
 
-module.exports = { extractOne, build, OUTPUT_PATH };
+module.exports = { extractOne, extractWithRetry, build, OUTPUT_PATH, _test:{ sleep, isRetryable } };
