@@ -25,7 +25,7 @@ const fixed = Dose.validateRule({
   editorialStatus:'published',
 });
 assert.equal(fixed.valid, true);
-assert.deepEqual(fixed.rule.requiredInputs, []);
+assert.deepEqual(fixed.rule.requiredInputs, ['age_months']);
 assert.equal(Dose.publicationDecision(fixed.rule).allowed, true);
 
 const perKg = Dose.validateRule({
