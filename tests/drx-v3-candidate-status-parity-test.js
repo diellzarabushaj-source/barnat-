@@ -38,7 +38,7 @@ assert.equal(status.candidateGitBlobSha, gitBlobSha(sql));
 assert.equal(status.security.rlsTableCount, 12);
 assert.equal(status.repositoryStaticAudit.rlsCoverage, '12/12');
 assert.equal(status.repositoryStaticAudit.directClientWriteGrants, 0);
-assert.equal(status.repositoryStaticAudit.status, 'STATIC_RENAL_HEPATIC_RUNTIME_HARDENED_NOT_LIVE_APPLIED');
+assert.equal(status.repositoryStaticAudit.status, 'STATIC_ADJUSTMENT_REQUIRED_FAIL_CLOSED_NOT_LIVE_APPLIED');
 assert.equal(status.security.tablePublicRoleRevoked, true);
 assert.equal(status.security.productPublicationTrigger, true);
 assert.equal(status.security.rulePublicationTrigger, true);
@@ -57,6 +57,13 @@ assert.equal(status.security.runtimeAdjustmentProvenanceRevalidation, true);
 assert.equal(status.repositoryStaticAudit.verifiedAdjustmentReadRls, true);
 assert.equal(status.repositoryStaticAudit.adjustmentSourceSectionHashPinned, true);
 assert.equal(status.repositoryStaticAudit.runtimeAdjustmentProvenanceRevalidation, true);
+assert.equal(status.security.adjustmentRequiredPublicationGate, true);
+assert.equal(status.security.adjustmentRequiredRuntimeGate, true);
+assert.equal(status.security.adjustmentRlsProvenanceRevalidation, true);
+assert.equal(status.repositoryStaticAudit.adjustmentRequiredPublicationGate, true);
+assert.equal(status.repositoryStaticAudit.adjustmentRequiredRuntimeGate, true);
+assert.equal(status.repositoryStaticAudit.adjustmentRlsProvenanceRevalidation, true);
+assert.equal(status.repositoryStaticAudit.publishedClientReadTables, 6);
 
 const publishedRead = proposal.tables
   .filter(table => table.exposure === 'published_read_only')
