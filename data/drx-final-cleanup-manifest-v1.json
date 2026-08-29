@@ -1,0 +1,23 @@
+{
+  "schemaVersion": "drx-final-cleanup-manifest-v1",
+  "status": "ready_but_no_destructive_cleanup_until_cutover",
+  "legacyRuntime": [
+    "dose_rules_v2",
+    "dose_products_v2",
+    "dose_rule_products_v2",
+    "dose_indications_v2",
+    "dose_sources_v2",
+    "dosage_regimens"
+  ],
+  "protectedUntil": [
+    "v3_applied",
+    "batch1_reviewed",
+    "batch2_archive_hashes_25",
+    "v3_api_parity_verified",
+    "frontend_v3_smoke_green",
+    "rollback_tested",
+    "zero_known_consumers"
+  ],
+  "action": "retain_legacy_read_path_as_compatibility_fallback",
+  "publicationAllowed": false
+}
