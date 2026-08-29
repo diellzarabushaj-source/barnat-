@@ -1,12 +1,12 @@
 {
   "schemaVersion": "drx-dosierung-master-plan-status-v1",
-  "updatedAt": "2026-08-29T07:16:10.610Z",
+  "updatedAt": "2026-08-29T07:50:00.000Z",
   "officialPlan": "DRx Dosierung phases 0-32",
   "databaseBlocker": {
     "active": true,
     "system": "Supabase SQL/MCP database gateway",
-    "symptom": "2026-08-29 run: list_migrations timed out; single permitted execute_sql health recheck also timed out while project remained ACTIVE_HEALTHY",
-    "rule": "Do not bypass live database verification. No migration/DDL/data write/RLS mutation after the failed recheck; continue repository-safe work only and keep publication closed."
+    "symptom": "2026-08-29 run: migration-history read timed out; single permitted SELECT 1 health recheck also timed out while project remained ACTIVE_HEALTHY",
+    "rule": "No further SQL retries in this run. No migration, DDL, data write, RLS or publication-state mutation; continue repository-safe work only."
   },
   "phases": [
     {
@@ -49,43 +49,18 @@
     {
       "id": 3,
       "name": "Source Discovery",
-      "status": "IN_PROGRESS_FIRST100_68_VERIFIED_EFFECTIVE_88",
+      "status": "IN_PROGRESS_FIRST100_72_VERIFIED_EFFECTIVE_88",
       "evidence": [
         "data/drx-dose-source-map-v1.json",
-        "ibuprofen pilot with official eMC oral+IV SmPCs",
-        "data/drx-batch1-source-verification-v1.json",
-        "10-substance Batch 1 source map",
-        "data/drx-first100-source-discovery-wave-a-v1.json",
-        "15 first-100 product-specific eMC SmPCs verified",
-        "data/drx-first100-source-discovery-wave-b-v1.json",
-        "14 additional live eMC product-specific SmPCs verified in wave B",
-        "first-100 source discovery verified product total: 29",
-        "data/drx-first100-source-discovery-wave-c-v1.json",
-        "8 additional live eMC product-specific SmPCs verified in wave C",
-        "first-100 source discovery verified product total: 37",
-        "data/drx-first100-source-discovery-wave-d-v1.json",
-        "10 additional live product-specific SmPCs verified in wave D",
-        "first-100 source discovery verified product total: 47",
-        "data/drx-first100-source-discovery-wave-e-v1.json",
-        "7 additional live eMC product-specific SmPCs verified in wave E",
-        "first-100 source discovery verified product total: 54",
-        "data/drx-first100-source-discovery-wave-f-v1.json",
-        "6 additional AEMPS/CIMA product-specific fichas verified in wave F",
-        "EMA Exforge HCT official source found; PDF section visual verification pending because EMA returned 429",
-        "first-100 verified product-specific source total: 60",
-        "data/drx-first100-source-discovery-wave-g-v1.json",
-        "Wave F Exforge HCT pending resolved using CIMA Dafiro HCT sections + EMA version cross-check",
-        "Wave G: Roasax, Eulitop Retard, Diprogenta, Celestoderm",
-        "first-100 verified product-specific source total: 65",
-        "data/drx-first100-source-discovery-wave-h-v1.json",
-        "AEMPS/CIMA 82689 verified product-specific source for canonical Amlodipine + Ramipril after canonical typo/salt-equivalence resolution",
-        "first-100 verified product-specific source total: 62",
-        "Wave H EU national regulators: Baneocin, LisAm, Pepcid Duo",
         "data/drx-first100-canonical-review-decisions-v1.json",
-        "canonical review: 2 resolved, 11 pending; effective unique source-discovery denominator 88",
-        "first-100 verified product-specific source total: 68"
+        "data/drx-first100-source-discovery-wave-a-v1.json through data/drx-first100-source-discovery-wave-j-v1.json",
+        "data/drx-first100-source-discovery-index-v1.json",
+        "A-J aggregate: 72 verified product-specific sources, 0 section-verification pending, 1 product-selection-required, 15 exact source lookups remaining",
+        "Wave H and Wave I EU-national regulator sources preserved",
+        "Wave J restores AEMPS/CIMA product-specific evidence for resolved canonical Amlodipine + Ramipril",
+        "verified source rows require source-policy authority resolution, SmPC sections 4.1 and 4.2, and publicationAllowed=false"
       ],
-      "next": "source-discover 19 remaining exact targets (including resolved amlodipine+ramipril); resolve alteplase product selection separately; keep 11 unresolved canonical-review rows blocked"
+      "next": "continue exact official source discovery for 15 source lookups; resolve the single product-selection-required row separately; keep 11 canonical-review rows fail-closed until authoritative resolution"
     },
     {
       "id": 4,
@@ -284,7 +259,7 @@
         "data/drx-first100-canonical-quality-audit-v1.json",
         "data/drx-first100-source-discovery-wave-a-v1.json"
       ],
-      "next": "complete source discovery for 87 eligible rows; resolve 13 canonical-review rows before archive/import"
+      "next": "continue source discovery against 88 effective eligible canonical targets; 11 canonical-review decisions remain pending and production discovery stays blocked until live Supabase export provenance is verified"
     },
     {
       "id": 18,
@@ -513,8 +488,8 @@
     "first100RegistryDiscoveryEligible": 87,
     "first100ProductionEligibleRows": 0,
     "first100ProductionDiscoveryAllowed": false,
-    "first100SourceDiscoveryEligible": 87,
-    "first100VerifiedProductSources": 68,
+    "first100SourceDiscoveryEligible": 88,
+    "first100VerifiedProductSources": 72,
     "first100ProductSelectionRequired": 1,
     "legacyMirrorPrecheck": {
       "present": 2,
@@ -523,11 +498,12 @@
       "bindings": 4,
       "liveCompared": false
     },
-    "first100SourceDiscoveryRemaining": 19,
+    "first100SourceDiscoveryRemaining": 16,
     "first100SourceSectionVerificationPending": 0,
     "first100ProductSelectionPending": 1,
     "first100CanonicalReviewResolved": 2,
     "first100CanonicalReviewPending": 11,
-    "first100EffectiveSourceDiscoveryEligible": 88
+    "first100EffectiveSourceDiscoveryEligible": 88,
+    "first100SourceLookupRemaining": 15
   }
 }
