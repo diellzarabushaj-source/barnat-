@@ -1,0 +1,50 @@
+{
+  "schemaVersion": "drx-first100-source-discovery-wave-l-v1",
+  "generatedAt": "2026-08-29T10:13:07.905Z",
+  "sourcePolicy": "data/drx-dose-source-policy-v1.json",
+  "verificationMethod": "live_ogyei_product_registry_plus_current_smpc_section_crosscheck",
+  "publicationAllowed": false,
+  "verifiedProductSpecificCount": 1,
+  "sectionsPendingCount": 0,
+  "productSelectionRequiredCount": 0,
+  "rows": [
+    {
+      "canonicalKey": "chloropyramine",
+      "canonicalName": "Chloropyramine",
+      "status": "verified_product_specific",
+      "sourceTier": "EU_NATIONAL",
+      "authority": "Hungarian official medicines database (OGYÉI/NNGYK)",
+      "sourceKey": "ogyei-ogyi-t-03044-01-smpc",
+      "url": "https://ogyei.gov.hu/drug_database&action=show_details&item=17339",
+      "productRegistryUrl": "https://ogyei.gov.hu/drug_database&action=show_details&item=17339",
+      "productName": "SUPRASTIN tabletta",
+      "registrationNumber": "OGYI-T-03044/01",
+      "atcCode": "R06AC03",
+      "documentDate": "2023-12-19",
+      "documentDatePrecision": "day",
+      "section41Present": true,
+      "section42Present": true,
+      "currentRegistryCrosscheck": {
+        "checkedDate": "2026-08-29",
+        "activeSubstance": "chloropyramine",
+        "strength": "25 mg",
+        "marketingAuthorisationHolder": "Egis Gyógyszergyár Zrt.",
+        "officialRegistryStatus": "TK"
+      },
+      "sectionTextCrosscheck": {
+        "source": "current SmPC text mirror linked to original OGYÉI document",
+        "url": "https://cdn.patikaradar.hu/alkalmazasi_eloiras/4a213a61-ef84-49ac-8dff-e61fff1620bc-17339.html",
+        "revisionDate": "2023-12-19"
+      },
+      "reviewFlags": [
+        "first_generation_sedating_antihistamine",
+        "pediatric_weight_based_max_2_mg_per_kg",
+        "anaphylaxis_adjuvant_not_monotherapy",
+        "renal_adjustment_review",
+        "hepatic_adjustment_review",
+        "clinical_review_required"
+      ],
+      "publicationAllowed": false
+    }
+  ]
+}
