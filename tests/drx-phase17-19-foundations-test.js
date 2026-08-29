@@ -17,6 +17,16 @@ assert.equal(bulk.batchGate.stopOnParserError, true);
 assert.equal(bulk.batchGate.stopOnNormalizationError, true);
 assert.equal(bulk.batchGate.stopOnSafetyConflict, true);
 
+const canonicalExport = read('data/drx-canonical-substance-export-contract-v1.json');
+assert.equal(canonicalExport.status, 'LIVE_EXPORT_GATE_IMPLEMENTED_WAITING_SUPABASE');
+assert.equal(canonicalExport.publicationAllowed, false);
+assert.equal(canonicalExport.exportGate.requireProjectIdMatch, true);
+assert.equal(canonicalExport.exportGate.requireSupabaseSourceEnvelope, true);
+assert.equal(canonicalExport.exportGate.requireHashBoundEnvelope, true);
+assert.equal(canonicalExport.exportGate.rejectDuplicateCanonicalKey, true);
+assert.equal(canonicalExport.exportGate.requireAllBatch1And2KeysPresent, true);
+assert.equal(canonicalExport.exportGate.noFallbackCanonicalRows, true);
+
 const pediatric = read('data/drx-pediatric-core-v1.json');
 assert.equal(pediatric.status, 'foundation_complete_repository');
 assert.equal(pediatric.publicationAllowed, false);
