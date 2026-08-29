@@ -1,6 +1,6 @@
 {
   "schemaVersion": "drx-dosierung-master-plan-status-v1",
-  "updatedAt": "2026-08-29T07:05:00.000Z",
+  "updatedAt": "2026-08-29T07:16:10.610Z",
   "officialPlan": "DRx Dosierung phases 0-32",
   "databaseBlocker": {
     "active": true,
@@ -49,7 +49,7 @@
     {
       "id": 3,
       "name": "Source Discovery",
-      "status": "IN_PROGRESS_FIRST100_62_VERIFIED_2_PENDING_25_UNCOVERED",
+      "status": "IN_PROGRESS_FIRST100_68_VERIFIED_EFFECTIVE_88",
       "evidence": [
         "data/drx-dose-source-map-v1.json",
         "ibuprofen pilot with official eMC oral+IV SmPCs",
@@ -79,9 +79,13 @@
         "first-100 verified product-specific source total: 65",
         "data/drx-first100-source-discovery-wave-h-v1.json",
         "AEMPS/CIMA 82689 verified product-specific source for canonical Amlodipine + Ramipril after canonical typo/salt-equivalence resolution",
-        "first-100 verified product-specific source total: 62"
+        "first-100 verified product-specific source total: 62",
+        "Wave H EU national regulators: Baneocin, LisAm, Pepcid Duo",
+        "data/drx-first100-canonical-review-decisions-v1.json",
+        "canonical review: 2 resolved, 11 pending; effective unique source-discovery denominator 88",
+        "first-100 verified product-specific source total: 68"
       ],
-      "next": "continue exact official source discovery for remaining 25 eligible rows; resolve Exforge HCT section verification and alteplase product selection separately"
+      "next": "source-discover 19 remaining exact targets (including resolved amlodipine+ramipril); resolve alteplase product selection separately; keep 11 unresolved canonical-review rows blocked"
     },
     {
       "id": 4,
@@ -510,7 +514,7 @@
     "first100ProductionEligibleRows": 0,
     "first100ProductionDiscoveryAllowed": false,
     "first100SourceDiscoveryEligible": 87,
-    "first100VerifiedProductSources": 62,
+    "first100VerifiedProductSources": 68,
     "first100ProductSelectionRequired": 1,
     "legacyMirrorPrecheck": {
       "present": 2,
@@ -519,11 +523,11 @@
       "bindings": 4,
       "liveCompared": false
     },
-    "first100SourceDiscoveryRemaining": 25,
+    "first100SourceDiscoveryRemaining": 19,
     "first100SourceSectionVerificationPending": 0,
     "first100ProductSelectionPending": 1,
     "first100CanonicalReviewResolved": 2,
     "first100CanonicalReviewPending": 11,
-    "first100EffectiveSourceDiscoveryEligible": 89
+    "first100EffectiveSourceDiscoveryEligible": 88
   }
 }
