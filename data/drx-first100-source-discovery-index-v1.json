@@ -1,21 +1,21 @@
 {
   "schemaVersion": "drx-first100-source-discovery-index-v1",
-  "generatedAt": "2026-08-29T10:48:36.921Z",
+  "generatedAt": "2026-08-29T10:52:17.604Z",
   "first100Count": 100,
   "canonicalReviewRequired": 14,
   "sourceDiscoveryEligible": 89,
-  "verifiedProductSpecific": 83,
-  "verifiedCanonicalSubstances": 83,
+  "verifiedProductSpecific": 84,
+  "verifiedCanonicalSubstances": 84,
   "sourceAuthorityCounts": {
     "EMC": 55,
     "AEMPS_CIMA": 12,
     "EU_NATIONAL": 14,
-    "KOSOVO_AKPPM": 1,
+    "KOSOVO_AKPPM": 2,
     "FACHINFO_DE": 1
   },
   "productSelectionRequired": 1,
-  "eligibleRemaining": 6,
-  "sourceLookupRemaining": 5,
+  "eligibleRemaining": 5,
+  "sourceLookupRemaining": 4,
   "issueCount": 0,
   "complete": false,
   "repositoryComplete": false,
@@ -2059,6 +2059,56 @@
       ],
       "publicationAllowed": false,
       "wave": "drx-first100-source-discovery-wave-r-v1.json"
+    },
+    {
+      "canonicalKey": "aescinessentialphospholipidsheparin",
+      "canonicalName": "Aescin + Essential phospholipids + Heparin",
+      "status": "verified_product_specific_review_required",
+      "sourceTier": "KOSOVO_AKPPM",
+      "authority": "Kosovo Medicines Agency (AKPPM)",
+      "sourceKey": "akppm-venosan-rma-2478-plus-bosnalijek-smpc-2024-12-26",
+      "url": "https://akppm.rks-gov.net/CMS/Medias/Lista%20zyrtare%20e%20cmimeve%20te%20produkteve%20medicinale.pdf",
+      "productRegistryUrl": "https://akppm.rks-gov.net/CMS/Medias/Lista%20zyrtare%20e%20cmimeve%20te%20produkteve%20medicinale.pdf",
+      "productName": "VENOSAN gel",
+      "registrationNumber": "RMA-2478/15/09/2021",
+      "atcCode": "C05BA53",
+      "documentDate": "2024-12-26",
+      "documentDatePrecision": "day",
+      "section41Present": true,
+      "section42Present": true,
+      "currentRegistryCrosscheck": {
+        "checkedDate": "2026-08-29",
+        "activeSubstances": [
+          "aescin",
+          "essential phospholipids",
+          "heparin sodium"
+        ],
+        "strengths": [
+          "10 mg/g",
+          "10 mg/g",
+          "100 IU/g"
+        ],
+        "dosageForm": "gel",
+        "pack": "40 g",
+        "manufacturer": "Bosnalijek d.d., Bosnia and Herzegovina",
+        "kosovoEvidenceType": "official AKPPM medicinal-product price-list artifact"
+      },
+      "sectionTextCrosscheck": {
+        "source": "Bosnalijek current product SmPC",
+        "url": "https://www.bosnalijek.ba/venosan-gel-40-g-10-mg---10mg---100i-j--g",
+        "smpcRevisionDate": "2024-12-26",
+        "doseFinding": "adults and children over 12 years: thin layer 2 to 3 times daily; use longer than 15 days requires medical review"
+      },
+      "reviewFlags": [
+        "fixed_combination",
+        "topical_route_specific",
+        "mah_smpc_crosscheck_non_regulator",
+        "current_kosovo_authorisation_status_not_independently_reverified_after_price_list_expiry",
+        "manual_publication_review_required",
+        "clinical_review_required"
+      ],
+      "publicationAllowed": false,
+      "wave": "drx-first100-source-discovery-wave-s-v1.json"
     }
   ]
 }
