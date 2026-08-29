@@ -25,6 +25,8 @@ assert.match(sql,/no verified product binding/);
 assert.match(sql,/legacy comparison incomplete or conflicting/);
 assert.match(sql,/clinical review remains open/);
 assert.match(sql,/specialist rule requires resolved manual review/);
+assert.match(sql,/renal adjustment required but no verified provenance-valid renal adjustment exists/);
+assert.match(sql,/hepatic adjustment required but no verified provenance-valid hepatic adjustment exists/);
 
 assert.match(sql,/revoke all on function private\.drx_enforce_product_publication_v3\(\)[\s\S]*from public, anon, authenticated/);
 assert.match(sql,/revoke all on function private\.drx_enforce_rule_publication_v3\(\)[\s\S]*from public, anon, authenticated/);
