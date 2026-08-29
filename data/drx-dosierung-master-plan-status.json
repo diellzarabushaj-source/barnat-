@@ -1,6 +1,6 @@
 {
   "schemaVersion": "drx-dosierung-master-plan-status-v1",
-  "updatedAt": "2026-08-29T10:16:27.485Z",
+  "updatedAt": "2026-08-29T10:28:27.165Z",
   "officialPlan": "DRx Dosierung phases 0-32",
   "databaseBlocker": {
     "active": true,
@@ -25,7 +25,7 @@
     {
       "id": 1,
       "name": "Canonical Substances",
-      "status": "IMPLEMENTED_REPO_CANONICAL_REVIEW_13_RESOLVED",
+      "status": "IMPLEMENTED_REPO_CANONICAL_REVIEW_14_RESOLVED",
       "evidence": [
         "substance_concepts_v1",
         "substance_terms_v1",
@@ -35,9 +35,11 @@
         "reviewed alias exclusion: aspirin→acetylsalicylic acid",
         "data/drx-first100-canonical-review-decisions-v1.json",
         "AEMPS/CIMA 82689: 'Amlodipine besilate2 + Ramipril' resolved to Amlodipine + Ramipril; salt-equivalence/product sections 4.1/4.2 verified",
-        "canonical review: 13/13 decisions resolved repository-side",
+        "canonical review: 14/14 decisions resolved repository-side",
         "effective unique source-discovery denominator: 89",
-        "Pancreatin resolved from imported amylase/lipase/panceatin/protease expression"
+        "Pancreatin resolved from imported amylase/lipase/panceatin/protease expression",
+        "FITOSTIMOLINE correction: imported 'Triticum vulgare + phenoxyethanol' source term resolved to Triticum vulgare aqueous extract; phenoxyethanol retained as source/excipient provenance",
+        "AIFA-derived RCP evidence places 2-phenoxyethanol in section 6.1 excipients"
       ],
       "next": "canonical first-100 review is resolved repository-side; verify all resolved identities against the live Supabase canonical relation when the SQL gateway returns"
     },
@@ -542,7 +544,7 @@
     "phase17LiveExportVerified": false,
     "first100RegistryFallbackRows": 100,
     "first100RegistryFallbackOnly": true,
-    "first100CanonicalReviewRequired": 13,
+    "first100CanonicalReviewRequired": 14,
     "first100RegistryDiscoveryEligible": 87,
     "first100ProductionEligibleRows": 0,
     "first100ProductionDiscoveryAllowed": false,
@@ -559,7 +561,7 @@
     "first100SourceDiscoveryRemaining": 10,
     "first100SourceSectionVerificationPending": 0,
     "first100ProductSelectionPending": 1,
-    "first100CanonicalReviewResolved": 13,
+    "first100CanonicalReviewResolved": 14,
     "first100CanonicalReviewPending": 0,
     "first100EffectiveSourceDiscoveryEligible": 89,
     "first100SourceLookupRemaining": 10
