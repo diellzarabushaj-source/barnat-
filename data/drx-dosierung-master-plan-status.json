@@ -1,12 +1,15 @@
 {
   "schemaVersion": "drx-dosierung-master-plan-status-v1",
-  "updatedAt": "2026-08-29T07:40:00Z",
+  "updatedAt": "2026-08-29T09:53:17Z",
   "officialPlan": "DRx Dosierung phases 0-32",
   "databaseBlocker": {
     "active": true,
     "system": "Supabase SQL/MCP database gateway",
-    "symptom": "2026-08-29 run: list_migrations timed out; single permitted execute_sql health recheck also timed out while project remained ACTIVE_HEALTHY",
-    "rule": "Do not bypass live database verification. No migration/DDL/data write/RLS mutation after the failed recheck; continue repository-safe work only and keep publication closed."
+    "symptom": "2026-08-29 09:53Z run: list_migrations still timed out while the project remained ACTIVE_HEALTHY",
+    "likelyCauseEvidence": "Postgres logs contain 'could not write to file base/pgsql_tmp/...: No space left on device' at 2026-08-29T00:56:31.371Z; later migration statements are visible through 01:19Z, so recovery is incomplete or intermittent rather than safely verified.",
+    "officialTroubleshooting": "https://supabase.com/docs/guides/troubleshooting/failed-to-run-sql-query-connection-terminated-due-to-connection-timeout",
+    "rule": "Do not bypass live database verification. No migration/DDL/data write/RLS mutation after the failed recheck; continue repository-safe work only and keep publication closed.",
+    "operatorCheck": "Inspect Database Reports plus disk/compute pressure in Supabase; recover the data plane before rerunning baseline, migration history, advisors, and V3 smoke checks."
   },
   "phases": [
     {
@@ -475,6 +478,8 @@
   ],
   "currentExecution": {
     "phase": 32,
+    "activeCriticalPhase": 14,
+    "repositoryImplementationThroughPhase": 32,
     "objective": "All phases 25-32 now have concrete repo-side implementation/gates. Production remains fail-closed on live V3/archive/binding/legacy/review publication blockers.",
     "pilot": "batch2-25",
     "repositoryBatch1Substances": 10,
@@ -501,7 +506,7 @@
     "publicationReady": 0,
     "reviewPacketsReady": 25,
     "supabaseProjectHealth": "ACTIVE_HEALTHY",
-    "supabaseSqlGateway": "timeout_after_single_recheck",
+    "supabaseSqlGateway": "timeout_after_list_migrations_recheck_with_temp_disk_exhaustion_log",
     "v3CandidateReady": true,
     "v3Applied": false,
     "releaseGateImplemented": true,

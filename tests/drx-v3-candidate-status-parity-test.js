@@ -24,6 +24,10 @@ const proposalTables = proposal.tables.map(table => table.name);
 
 assert.equal(status.applied, false);
 assert.equal(status.publicationAllowed, false);
+assert.equal(status.databaseGatewayEvidence.listMigrations, 'CONNECTION_TIMEOUT');
+assert.equal(status.databaseGatewayEvidence.ddlAttemptedByThisRun, false);
+assert.equal(status.databaseGatewayEvidence.migrationAppliedByThisRun, false);
+assert.match(status.databaseGatewayEvidence.postgresLogError, /No space left on device/);
 assert.equal(status.tableCount, 12);
 assert.equal(proposal.tableCount, 12);
 assert.equal(sqlTables.length, 12);
