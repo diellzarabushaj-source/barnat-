@@ -49,20 +49,50 @@ concept as (
   left join public.substance_concepts_v1 c on c.canonical_key = b.ckey
 ),
 linked as (
-  select co.ckey, co.strength, co.concept_id, d.id as drug_id, d.strength as drug_strength
+  select co.ckey, co.strength, co.concept_id, d.id as drug_id, d.strength as drug_strength,
+    -- Strength equality alone is not enough to bind. Every Batch 2 SmPC in the
+    -- bindable set is an oral solid, and section 4.2 of an oral label states an
+    -- oral regimen, so a registry product at the same strength by a different
+    -- route is a different medicine for dosing purposes. Pantoprazole is the
+    -- live case: the registry carries 40 mg as a lyophilisate and a powder for
+    -- solution for injection alongside the 40 mg oral tablets, and matching on
+    -- strength alone would have bound oral 4.2 dosing to an IV product.
+    --
+    -- Modified release is classified separately for the same reason in the
+    -- other direction: 100 mg prolonged-release once daily and 50 mg immediate
+    -- release three times daily are not interchangeable regimens. No product in
+    -- the current bindable set falls here, and the class exists so that stays
+    -- checked rather than assumed.
+    case
+      when lower(d.pharmaceutical_form) ~ '(injection|infusion|lyophilisate|powder for solution|parenteral|ampoule|vial)'
+        then 'parenteral'
+      when lower(d.pharmaceutical_form) ~ '(prolonged|modified|sustained|extended)[- ]release'
+        then 'modified_release'
+      when lower(d.pharmaceutical_form) ~ '(tablet|capsule|granule|powder for oral|syrup|suspension|solution for oral)'
+        then 'oral_solid'
+      else 'other'
+    end as form_class
   from concept co
   left join public.product_ingredients_v1 pi on pi.concept_id = co.concept_id
   left join public.drugs d on d.id = pi.source_drug_id
+),
+matched as (
+  select *,
+    (replace(replace(lower(drug_strength), ' ', ''), 'micrograms', 'mcg')
+       = replace(replace(lower(strength), ' ', ''), 'micrograms', 'mcg')) as strength_matches
+  from linked
 )
 select
   ckey,
   strength as smpc_strength,
   (concept_id is not null) as concept_found,
   count(drug_id) as kosovo_products,
-  count(drug_id) filter (
-    where replace(replace(lower(drug_strength), ' ', ''), 'micrograms', 'mcg')
-        = replace(replace(lower(strength), ' ', ''), 'micrograms', 'mcg')
-  ) as exact_strength_products
-from linked
+  count(drug_id) filter (where strength_matches) as exact_strength_products,
+  -- The figure binding may actually use.
+  count(drug_id) filter (where strength_matches and form_class = 'oral_solid')
+    as bindable_products,
+  count(drug_id) filter (where strength_matches and form_class <> 'oral_solid')
+    as route_excluded_products
+from matched
 group by ckey, strength, concept_id
-order by exact_strength_products desc, ckey;
+order by bindable_products desc, ckey;

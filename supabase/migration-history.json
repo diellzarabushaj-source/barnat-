@@ -329,6 +329,10 @@
     {
       "version": "20260829213000",
       "name": "drx_v3_allow_composition_section"
+    },
+    {
+      "version": "20260829222500",
+      "name": "drx_v3_snapshot_insert_grant"
     }
   ]
 }

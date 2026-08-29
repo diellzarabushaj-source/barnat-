@@ -1,0 +1,22 @@
+-- Allow the CI ingestion role to insert source snapshots.
+--
+-- drx_v3_service_ingestion_grants gave service_role select on
+-- dose_source_snapshots_v3 and insert on dose_source_sections_v3. That split
+-- made sense while snapshots were loaded by hand and only section text came
+-- from CI, but scripts/ingest-drx-v3-sections.js now writes both, and a
+-- section cannot be inserted before the snapshot it points at exists: the
+-- first request of the first credentialed run failed with
+--
+--   42501 permission denied for table dose_source_snapshots_v3
+--
+-- Insert only. Update and delete are deliberately withheld, and the
+-- dose_source_snapshots_v3_provenance_lock trigger already rejects both for
+-- every role, so recorded provenance stays append-only: a snapshot can be
+-- added but never rewritten or removed.
+--
+-- This does not widen what the key can publish. dose_products_v3,
+-- dose_rules_v3, dose_rule_products_v3, the renal and hepatic adjustment
+-- tables and dose_publication_events_v3 grant service_role nothing, so every
+-- dosing gate stays out of reach of the CI key.
+
+grant insert on table public.dose_source_snapshots_v3 to service_role;
