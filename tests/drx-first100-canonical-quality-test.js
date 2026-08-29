@@ -1,0 +1,15 @@
+'use strict';
+const assert=require('node:assert/strict');
+const Audit=require('../scripts/audit-drx-first100-canonical-quality.js');
+assert.equal(Audit.auditName('Acarbose').sourceDiscoveryEligible,true);
+assert.equal(Audit.auditName('2h20 + Potassium chloride + Sodium chloride').canonicalReviewRequired,true);
+assert.ok(Audit.auditName('Amlodipine besilate2 + Ramipril').flags.includes('TYPO_BESILATE2'));
+assert.ok(Audit.auditName('Amylase + Lipase + Panceatin + Total proteases').flags.includes('TYPO_PANCEATIN'));
+assert.ok(Audit.auditName('Calcium chloride + Clorur calium + Clorur natrium').flags.includes('TYPO_CLORUR'));
+const r=Audit.build();
+assert.equal(r.total,100);
+assert.ok(r.canonicalReviewRequired>0);
+assert.ok(r.sourceDiscoveryEligible>0);
+assert.equal(r.canonicalReviewRequired+r.sourceDiscoveryEligible,100);
+assert.equal(r.publicationAllowed,false);
+console.log('DRx first-100 canonical quality audit passed.');
