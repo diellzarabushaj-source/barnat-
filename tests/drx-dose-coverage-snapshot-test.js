@@ -15,7 +15,13 @@ assert.equal(snapshot.global.sourcedPercent, null);
 assert.equal(snapshot.global.publishedPercent, null);
 assert.equal(snapshot.safety.failClosed, true);
 assert.equal(snapshot.safety.globalCoverageUnknownIsNotZero, true);
+assert.equal(snapshot.discovery.mappedSubstances, 10);
+assert.equal(snapshot.discovery.sourceCandidates, 13);
+assert.equal(snapshot.discovery.publicationReadySources, 11);
+assert.equal(snapshot.pilots.substances, 10);
+assert.equal(snapshot.pilots.ruleCandidates, 12);
 assert.equal(snapshot.pilots.publicationEnabledPilots, 0);
+assert.equal(snapshot.pilots.boundRules, 0);
 assert.equal(snapshot.pilots.publishedRules, 0);
 
 assert.match(source, /globalCoverageUnknownIsNotZero:true/);
