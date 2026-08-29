@@ -85,6 +85,51 @@ for (const [label, env] of [
   assert.match(rejected.out, /must be https/, `${label}: credentials must have been found.`);
 }
 
+// The base URL is pasted by hand into a secret, and both the bare origin and
+// the full REST base are natural things to paste. Appending /rest/v1 to a value
+// that already ends in it yields /rest/v1/rest/v1/..., which PostgREST rejects
+// with PGRST125 - an error that names neither the URL nor the setting. That is
+// exactly how the first credentialed run failed, so pin the normalisation.
+function normalized(input) {
+  return execFileSync(process.execPath, [SCRIPT, `--normalize-check=${input}`], {
+    encoding: 'utf8',
+  }).trim();
+}
+
+const ORIGIN = 'https://example.supabase.co';
+for (const variant of [
+  ORIGIN,
+  `${ORIGIN}/`,
+  `${ORIGIN}//`,
+  `${ORIGIN}/rest`,
+  `${ORIGIN}/rest/v1`,
+  `${ORIGIN}/rest/v1/`,
+  `${ORIGIN}/REST/V1`,
+  `  ${ORIGIN}/rest/v1  `,
+]) {
+  assert.equal(normalized(variant), ORIGIN,
+    `"${variant}" must normalise to the bare origin, or the request path doubles up.`);
+}
+
+// Normalisation must not eat a path that merely contains the segment.
+assert.equal(normalized(`${ORIGIN}/rest/v1/dose_source_sections_v3`),
+  `${ORIGIN}/rest/v1/dose_source_sections_v3`,
+  'only a trailing /rest/v1 is redundant; anything after it is a real path.');
+
+// A stray path that normalisation cannot safely strip must be named, not
+// silently prepended to /rest/v1/... where it becomes another bare PGRST125.
+const strayPath = run({
+  ...BLANK, SUPABASE_URL: 'https://example.supabase.co/api/v2', SUPABASE_SECRET_KEY: 'present',
+});
+assert.equal(strayPath.code, 1, 'a URL with a leftover path must fail rather than build a bad request path.');
+assert.match(strayPath.out, /leftover path \\"\/api\/v2\\"/,
+  'the failure must quote the leftover path, since that is the part to delete from the secret.');
+
+// A failing request must name the path it asked for. The host is the masked
+// secret and is useless in a log; the path is the half that was wrong.
+assert.match(source, /for path \$\{requestPath\}/,
+  'an ingest failure must report the request path so PGRST125 is diagnosable.');
+
 // The workflow must keep the service key away from the job that parses
 // untrusted documents.
 const workflow = fs.readFileSync(

@@ -44,11 +44,32 @@ const archiveDir = path.resolve(arg('archive') || process.env.DRX_ARCHIVE_DIR ||
 // bare SUPABASE_* names in different places, and a job that only understood one
 // of them would look like a missing credential when the value was simply
 // spelled the other way.
-const url = String(
+//
+// Normalise the base: the value is pasted by a human into a secret, and both
+// the bare project origin and the full REST base are natural things to paste.
+// Appending /rest/v1 to a value that already ends in it produces
+// /rest/v1/rest/v1/... , which PostgREST rejects with PGRST125 rather than a
+// recognisable "wrong URL" error - which is exactly how this first failed.
+function normalizeSupabaseUrl(raw) {
+  return String(raw || '')
+    .trim()
+    .replace(/\/+$/, '')
+    .replace(/\/rest(?:\/v1)?$/i, '')
+    .replace(/\/+$/, '');
+}
+
+// Pure-function probe, so the normalisation above is testable without a
+// network call or a real key.
+const normalizeProbe = arg('normalize-check');
+if (normalizeProbe !== null) {
+  console.log(normalizeSupabaseUrl(normalizeProbe));
+  process.exit(0);
+}
+
+const url = normalizeSupabaseUrl(
   process.env.MEDINDEX_SUPABASE_URL
   || process.env.SUPABASE_URL
-  || ''
-).trim().replace(/\/+$/, '');
+);
 const key = String(
   process.env.MEDINDEX_SUPABASE_SECRET_KEY
   || process.env.SUPABASE_SECRET_KEY
@@ -77,6 +98,21 @@ if (!dryRun && !credentialsConfigured) {
     toEnable: 'Add the URL and the service role key as GitHub Actions repository secrets. Vercel environment variables are not enough: GitHub Actions cannot read them, so a value set only in Vercel leaves this job with nothing. drx_v3_service_ingestion_grants limits that key to insert and update on the two provenance tables.',
   }, null, 2));
   process.exit(0);
+}
+// Anything left in the path after normalisation would be prepended to
+// /rest/v1/... and produce PGRST125 again, so say so here where the message can
+// name the leftover rather than letting PostgREST answer with a code that
+// mentions neither the URL nor the setting it came from.
+if (!dryRun && credentialsConfigured) {
+  let leftover = null;
+  try {
+    leftover = new URL(url).pathname.replace(/\/+$/, '');
+  } catch {
+    fail(`The configured Supabase URL is not a valid URL. Check whichever of MEDINDEX_SUPABASE_URL or SUPABASE_URL is set.`);
+  }
+  if (leftover) {
+    fail(`The configured Supabase URL has a leftover path "${leftover}". The value must be the project origin, e.g. https://<project-ref>.supabase.co, with no path after it. A trailing /rest or /rest/v1 is removed automatically; anything else is ambiguous and would be prepended to /rest/v1/...`);
+  }
 }
 if (!dryRun && !url.startsWith('https://')) {
   // Do not name one variable here: the value may have arrived under any of the
@@ -197,7 +233,8 @@ if (dryRun) {
 }
 
 async function post(table, rows, conflictTarget) {
-  const response = await fetch(`${url}/rest/v1/${table}?on_conflict=${conflictTarget}`, {
+  const requestPath = `/rest/v1/${table}?on_conflict=${conflictTarget}`;
+  const response = await fetch(`${url}${requestPath}`, {
     method: 'POST',
     headers: {
       apikey: key,
@@ -209,7 +246,9 @@ async function post(table, rows, conflictTarget) {
   });
   if (!response.ok) {
     const body = await response.text();
-    fail(`${table} ingest failed (${response.status}): ${body.slice(0, 500)}`);
+    // Name the path, never the host: the host is the masked secret, and the
+    // path is the half that is actually wrong when PostgREST answers PGRST125.
+    fail(`${table} ingest failed (${response.status}) for path ${requestPath}: ${body.slice(0, 500)}`);
   }
 }
 
