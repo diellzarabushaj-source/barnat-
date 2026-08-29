@@ -1,0 +1,163 @@
+{
+  "version": "phase6-index-rationalization-v1",
+  "generatedAt": "2026-08-29",
+  "policy": {
+    "destructiveDropAllowed": false,
+    "reason": "Supabase SQL/pg_stat gateway unavailable; no DROP until pg_stat_user_indexes + pg_stat_statements + EXPLAIN + size + FK coverage are re-measured.",
+    "requiredEvidence": [
+      "pg_stat_user_indexes",
+      "pg_stat_statements",
+      "EXPLAIN (ANALYZE, BUFFERS)",
+      "pg_relation_size",
+      "foreign-key supporting-index coverage",
+      "runtime query-shape audit"
+    ]
+  },
+  "indexes": [
+    {
+      "name": "drugs_published_active_substance_registry_idx",
+      "status": "KEEP",
+      "reason": "Registry API exposes sort=substance; partial index matches published registry ordering."
+    },
+    {
+      "name": "drugs_published_strength_registry_idx",
+      "status": "KEEP",
+      "reason": "Registry API exposes sort=strength; partial index matches published registry ordering."
+    },
+    {
+      "name": "user_notes_drug_idx",
+      "status": "KEEP",
+      "reason": "Supporting index for user_notes.drug_id -> drugs.id FK; preserve zero-missing-FK-index target."
+    },
+    {
+      "name": "user_notes_user_live_updated_idx",
+      "status": "KEEP",
+      "reason": "Exact native-note runtime shape: user_id + deleted_at IS NULL + updated_at DESC."
+    },
+    {
+      "name": "verification_documents_reviewed_by_idx",
+      "status": "KEEP",
+      "reason": "Created explicitly as the verification FK supporting index; rare admin use is not evidence for removal."
+    },
+    {
+      "name": "profiles_status_created_idx",
+      "status": "KEEP",
+      "reason": "Approval queue index; low-frequency administrative path is intentionally retained."
+    },
+    {
+      "name": "drugs_search_idx",
+      "status": "DROP_CANDIDATE",
+      "reason": "Legacy tsvector GIN; Phase 3 ranked search uses medindex_search_drugs_v2 + global_search_text trigram path."
+    },
+    {
+      "name": "sync_outbox_entity_idx",
+      "status": "DROP_CANDIDATE",
+      "reason": "No current runtime query filters payload->>'registryNumber'; outbox runtime targets id/delivery state."
+    },
+    {
+      "name": "sync_outbox_processing_idx",
+      "status": "DROP_CANDIDATE",
+      "reason": "Current pull query uses destination+spreadsheet+sheet+status and id order; stale processing timeout is filtered in JS."
+    },
+    {
+      "name": "drive_sheet_rows_hash_idx",
+      "status": "DROP_CANDIDATE",
+      "reason": "Current sync writes source_hash but does not query by it."
+    },
+    {
+      "name": "drive_sheet_rows_payload_gin_idx",
+      "status": "DROP_CANDIDATE",
+      "reason": "No current JSON containment/query-path against mirror payload."
+    },
+    {
+      "name": "drive_sheet_rows_source_row_idx",
+      "status": "DROP_CANDIDATE",
+      "reason": "Current mirror upsert/delete uses unique (source_id,row_key); no current read/order by source_id,row_number found."
+    },
+    {
+      "name": "dose_indications_v2_group_idx",
+      "status": "DEFER",
+      "reason": "Current safety catalog bulk-reads active+published rows, but clinical targeting semantics may need this after query-shape optimization."
+    },
+    {
+      "name": "dose_indications_v2_substance_idx",
+      "status": "DEFER",
+      "reason": "Current catalog is bulk-read; retain until targeted-dose redesign is benchmarked."
+    },
+    {
+      "name": "dose_products_v2_group_idx",
+      "status": "DEFER",
+      "reason": "Current catalog is bulk-read; retain until targeted-dose redesign is benchmarked."
+    },
+    {
+      "name": "dose_products_v2_substance_idx",
+      "status": "DEFER",
+      "reason": "Current catalog is bulk-read; retain until targeted-dose redesign is benchmarked."
+    },
+    {
+      "name": "dose_safety_v2_product_idx",
+      "status": "DEFER",
+      "reason": "Clinically meaningful product targeting even though current handler filters in memory; no blind drop."
+    },
+    {
+      "name": "dose_safety_v2_substance_idx",
+      "status": "DEFER",
+      "reason": "Clinically meaningful fallback targeting by substance/route/severity; no blind drop."
+    },
+    {
+      "name": "icd_search_idx",
+      "status": "DEFER",
+      "reason": "Legacy FTS appears cold, but ICD search/navigation has multiple engines; require SQL stats and full code-path proof."
+    },
+    {
+      "name": "icd_hierarchy_nodes_block_idx",
+      "status": "DEFER",
+      "reason": "Hierarchy navigation index; current snapshot reader is broad but other tree/audit paths may rely on block lookup."
+    },
+    {
+      "name": "icd_hierarchy_nodes_chapter_idx",
+      "status": "DEFER",
+      "reason": "Hierarchy navigation index; retain until SQL/view dependency audit is available."
+    },
+    {
+      "name": "icd_hierarchy_nodes_code_idx",
+      "status": "DEFER",
+      "reason": "Direct code lookup is clinically important even if recent API sample is quiet."
+    },
+    {
+      "name": "icd_hierarchy_nodes_level_idx",
+      "status": "DEFER",
+      "reason": "Hierarchy build/audit index; retain until measured."
+    },
+    {
+      "name": "icd_hierarchy_nodes_parent_idx",
+      "status": "DEFER",
+      "reason": "Parent-child traversal index; retain until measured."
+    },
+    {
+      "name": "indications_lookup_idx",
+      "status": "DEFER",
+      "reason": "Drug indication lookup is clinical detail data; require pg_stat/EXPLAIN before removal."
+    },
+    {
+      "name": "lab_search_idx",
+      "status": "DEFER",
+      "reason": "Legacy FTS candidate, but lab search path needs full dependency/stat proof."
+    },
+    {
+      "name": "medindex_core_substance_idx",
+      "status": "DEFER",
+      "reason": "Reverse canonical-substance mapping can be maintenance-critical; require measured dependency proof."
+    },
+    {
+      "name": "user_prescriptions_user_chapter_updated_idx",
+      "status": "DEFER",
+      "reason": "Current library sync fetches by user_id, but chapter workspace is a product feature; require chapter-query stats before removal."
+    },
+    {
+      "name": "user_drugs_user_active_idx",
+      "status": "DEFER",
+      "reason": "Current sync includes tombstones, but other personal registry paths may request live rows only."
+    }
+  ]
+}
