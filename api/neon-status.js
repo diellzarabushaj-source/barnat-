@@ -1,6 +1,6 @@
 'use strict';
 
-const { neonRequest, exactCount } = require('../lib/neon-data-api');
+const { neonRequest, exactCount } = require('../lib/medindex-data-api');
 const SyncOutbox = require('../lib/sync-outbox.js');
 const IcdPublicSource = require('../lib/icd-public-source.js');
 const IcdHealth = require('../lib/icd-health-audit.js');
