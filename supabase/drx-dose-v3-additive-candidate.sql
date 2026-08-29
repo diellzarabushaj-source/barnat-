@@ -7,6 +7,36 @@
 create schema if not exists private;
 revoke all on schema private from public;
 
+-- One-shot shadow-schema preflight: never silently inherit a partial/stale V3.
+do $
+declare
+  existing_v3_tables integer;
+begin
+  select count(*)::integer
+    into existing_v3_tables
+  from unnest(array[
+    'public.dose_source_snapshots_v3',
+    'public.dose_source_sections_v3',
+    'public.dose_indication_concepts_v3',
+    'public.dose_indication_terms_v3',
+    'public.dose_products_v3',
+    'public.dose_rules_v3',
+    'public.dose_renal_adjustments_v3',
+    'public.dose_hepatic_adjustments_v3',
+    'public.dose_rule_products_v3',
+    'public.dose_legacy_comparisons_v3',
+    'public.dose_review_queue_v3',
+    'public.dose_publication_events_v3'
+  ]) as expected_table(regclass_name)
+  where to_regclass(expected_table.regclass_name) is not null;
+
+  if existing_v3_tables <> 0 then
+    raise exception 'DRX_V3_PREEXISTING_SHADOW_SCHEMA: % expected V3 tables already exist; audit/rollback before applying candidate',
+      existing_v3_tables;
+  end if;
+end
+$;
+
 create table if not exists public.dose_source_snapshots_v3 (
   snapshot_id text primary key,
   source_key text not null,
