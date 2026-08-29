@@ -1,11 +1,11 @@
 {
   "schemaVersion": "drx-production-release-readiness-v1",
-  "checkedAt": "2026-08-29T10:03:33.101Z",
+  "checkedAt": "2026-08-29T12:43:01.018Z",
   "releaseReady": false,
   "publicationAllowed": false,
   "blockers": [
     "supabase_v3_not_applied",
-    "batch2_archive_hashes_incomplete",
+    "batch2_archive_evidence_not_materialized",
     "batch2_normalization_not_ready",
     "exact_product_binding_not_live",
     "legacy_comparison_not_live",
