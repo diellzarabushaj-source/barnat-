@@ -97,6 +97,10 @@ assert.match(sql, /dose_renal_adjustments_v3_verified_read/);
 assert.match(sql, /dose_hepatic_adjustments_v3_verified_read/);
 assert.match(sql, /renal_adjustments_json as \(/);
 assert.match(sql, /hepatic_adjustments_json as \(/);
+assert.match(sql, /renal adjustment required but no verified provenance-valid renal adjustment exists/);
+assert.match(sql, /hepatic adjustment required but no verified provenance-valid hepatic adjustment exists/);
+assert.match(sql, /r\.renal_adjustment_required is not true or raj\.adjustments is not null/);
+assert.match(sql, /r\.hepatic_adjustment_required is not true or haj\.adjustments is not null/);
 assert.match(sql, /dose_rule_products_v3_unique_binding unique \(rule_id, product_id\)/);
 
 assert.match(sql, /security invoker[\s\S]*public\.medindex_dose_product_fast_path_v3|public\.medindex_dose_product_fast_path_v3[\s\S]*security invoker/);
