@@ -1,9 +1,9 @@
 {
   "schemaVersion": "drx-first100-canonical-quality-audit-v1",
-  "generatedAt": "2026-08-30T02:38:00+02:00",
+  "generatedAt": "2026-08-29T10:27:47.338Z",
   "total": 100,
-  "canonicalReviewRequired": 13,
-  "sourceDiscoveryEligible": 87,
+  "canonicalReviewRequired": 14,
+  "sourceDiscoveryEligible": 86,
   "combinations": 56,
   "reviewedCoveredAliasExclusions": 3,
   "publicationAllowed": false,
@@ -1046,11 +1046,13 @@
         "FALLBACK"
       ],
       "publicationAllowed": false,
-      "flags": [],
+      "flags": [
+        "KNOWN_TRITICUM_PHENOXYETHANOL_EXCIPIENT_MISCLASSIFICATION"
+      ],
       "componentCount": 2,
       "combination": true,
-      "canonicalReviewRequired": false,
-      "sourceDiscoveryEligible": true
+      "canonicalReviewRequired": true,
+      "sourceDiscoveryEligible": false
     },
     {
       "ordinal": 42,

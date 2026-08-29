@@ -6,6 +6,8 @@ assert.equal(Audit.auditName('2h20 + Potassium chloride + Sodium chloride').cano
 assert.ok(Audit.auditName('Amlodipine besilate2 + Ramipril').flags.includes('TYPO_BESILATE2'));
 assert.ok(Audit.auditName('Amylase + Lipase + Panceatin + Total proteases').flags.includes('TYPO_PANCEATIN'));
 assert.ok(Audit.auditName('Calcium chloride + Clorur calium + Clorur natrium').flags.includes('TYPO_CLORUR'));
+assert.ok(Audit.auditName('Aqueous extract triticum vulgare + Phenoxyethanol').flags.includes('KNOWN_TRITICUM_PHENOXYETHANOL_EXCIPIENT_MISCLASSIFICATION'));
+assert.equal(Audit.auditName('Aqueous extract triticum vulgare + Phenoxyethanol').canonicalReviewRequired,true);
 const r=Audit.build();
 assert.equal(r.total,100);
 assert.ok(r.canonicalReviewRequired>0);
