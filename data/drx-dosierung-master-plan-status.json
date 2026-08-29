@@ -1,6 +1,6 @@
 {
   "schemaVersion": "drx-dosierung-master-plan-status-v1",
-  "updatedAt": "2026-08-29T12:25:33.000Z",
+  "updatedAt": "2026-08-29T12:28:11.005Z",
   "officialPlan": "DRx Dosierung phases 0-32",
   "databaseBlocker": {
     "active": true,
@@ -484,21 +484,25 @@
     {
       "id": 23,
       "name": "Clinical Review Queue",
-      "status": "BATCH2_REVIEW_PACKETS_READY",
+      "status": "REVIEW_AUDIT_CONTRACT_HARDENED_25_PENDING_LIVE_EVIDENCE",
       "evidence": [
         "review statuses exist",
         "data/drx-clinical-review-queue-policy-v1.json",
         "data/drx-batch2-clinical-review-queue-v1.json",
         "scripts/build-drx-batch2-review-queue.js",
         "data/drx-batch2-review-packets-v1.json",
-        "scripts/build-drx-batch2-review-packets.js"
+        "scripts/build-drx-batch2-review-packets.js",
+        "data/drx-clinical-review-queue-policy-v1.json requires reviewer_id/reviewed_at/decision_reason + exact source snapshot/section hash + product/safety/legacy evidence",
+        "data/drx-batch2-clinical-review-queue-v1.json: 25/25 open with sourceSnapshotId/sourceSectionSha256 pending",
+        "data/drx-batch2-review-packets-v1.json: 25/25 reviewEvidenceReady=false; no reviewer identity assigned",
+        "scripts/build-drx-batch2-review-packets.js pins review packet contract to snapshot + exact SmPC 4.2 hash and reviewer audit"
       ],
-      "next": "resolve 25 clinical review packets after archive and exact product evidence become available"
+      "next": "after archive/live binding evidence: fill snapshot + 4.2 hash + product/legacy/safety/adjustment evidence, then resolve by explicit reviewer_id/time/reason; 25/25 remain pending"
     },
     {
       "id": 24,
       "name": "Publication Gate",
-      "status": "DB_AND_APP_GATE_READY_NOT_APPLIED",
+      "status": "APP_DB_POLICY_HARDENED_TRANSACTIONAL_SMOKE_READY_NOT_APPLIED",
       "evidence": [
         "20260829002018_harden_dose_rule_publication_gate.sql",
         "published-only runtime",
@@ -507,9 +511,13 @@
         "supabase/drx-dose-v3-additive-candidate.sql DB publication trigger",
         "tests/drx-dose-v3-db-publication-gate-test.js",
         "supabase/drx-dose-v3-publication-gate-smoke.sql",
-        "transactional negative/positive DB publication test prepared; not executed because V3 is not live"
+        "transactional negative/positive DB publication test prepared; not executed because V3 is not live",
+        "data/drx-publication-gate-v3-policy.json requires source snapshot/evidence identity + exact 4.2 hash + required renal/hepatic adjustment completeness + reviewer audit",
+        "bulkImporterMayPublish=false",
+        "scripts/audit-drx-batch2-prepublication.js audits complete V3 publication policy",
+        "transactional smoke proves renal-required rule blocks until verified provenance-valid adjustment exists"
       ],
-      "next": "after V3 live apply, run transactional publication smoke; keep publication closed until all negative/positive cases and clinical review gates pass"
+      "next": "after V3 live apply: run structural + transactional publication smoke; no real publication until reviewer audit, binding, legacy, safety and required adjustment gates all pass"
     },
     {
       "id": 25,
