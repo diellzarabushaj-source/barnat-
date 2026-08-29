@@ -14,7 +14,7 @@ function validAuthorityUrl(row){
   return Boolean(
     resolved
     && resolved.key===expected
-    && ['EMA','EMC','FACHINFO_DE','AEMPS_CIMA','EU_NATIONAL','KOSOVO_AKPPM'].includes(resolved.key)
+    && ['EMA','EMC','FACHINFO_DE','AEMPS_CIMA','EU_NATIONAL','KOSOVO_AKPPM','NON_EU_REGULATOR'].includes(resolved.key)
   );
 }
 
@@ -43,7 +43,14 @@ function build(){
      if(resolvedOriginals.has(row.canonicalKey)&&row.status.startsWith('verified_')) issues.push({canonicalKey:row.canonicalKey,issue:'canonical_resolution_not_applied',resolvedCanonicalKey:resolvedOriginals.get(row.canonicalKey)});
      if(row.status.startsWith('verified_')){
        if(!validAuthorityUrl(row)) issues.push({canonicalKey:row.canonicalKey,issue:'invalid_authority_url',sourceTier:row.sourceTier,url:row.url});
-       if(row.section41Present!==true||row.section42Present!==true) issues.push({canonicalKey:row.canonicalKey,issue:'sections_not_verified'});
+       if(row.sourceTier==='NON_EU_REGULATOR'){
+         const flags=new Set(row.reviewFlags||[]);
+         if(row.officialIdentityPresent!==true) issues.push({canonicalKey:row.canonicalKey,issue:'non_eu_official_identity_not_verified'});
+         if(row.doseEvidencePresent!==true) issues.push({canonicalKey:row.canonicalKey,issue:'non_eu_dose_evidence_missing'});
+         if(row.publicationAllowed!==false||!flags.has('manual_publication_review_required')) issues.push({canonicalKey:row.canonicalKey,issue:'non_eu_publication_gate_not_closed'});
+       }else if(row.section41Present!==true||row.section42Present!==true){
+         issues.push({canonicalKey:row.canonicalKey,issue:'sections_not_verified'});
+       }
      }
      rows.push({...row,wave:path.basename(file)});
    }
