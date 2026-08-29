@@ -2,6 +2,7 @@
 
 const assert = require('node:assert/strict');
 const Coverage = require('../scripts/build-drx-dose-coverage-v2.js');
+const observation = require('../data/drx-release-observation-v1.json');
 
 const snapshot = Coverage.build();
 assert.equal(snapshot.schemaVersion, 'drx-dose-coverage-snapshot-v2');
@@ -32,7 +33,11 @@ assert.equal(snapshot.architecture.v3SelfContainedProductShell, true);
 assert.equal(snapshot.architecture.v2ProductShellDependency, false);
 assert.equal(snapshot.gates.drxSafetyWorkflowConfigured, true);
 assert.equal(snapshot.gates.drxSafetyWorkflowRunObserved, false);
-assert.equal(snapshot.gates.vercelDeploymentGreen, false);
+assert.equal(
+  snapshot.gates.vercelDeploymentGreen,
+  observation.vercelDeploymentGreen === true,
+  'Coverage must expose the commit-bound Vercel observation.'
+);
 assert.equal(snapshot.gates.rollbackTested, false);
 assert.equal(snapshot.gates.publicationBlocked, true);
 console.log('DRx coverage v2 contract passed.');

@@ -1,6 +1,7 @@
 'use strict';
 const assert=require('node:assert/strict');
 const Audit=require('../scripts/audit-drx-production-release.js');
+const observation=require('../data/drx-release-observation-v1.json');
 const r=Audit.audit();
 assert.equal(r.schemaVersion,'drx-production-release-readiness-v1');
 assert.equal(r.releaseReady,false);
@@ -17,7 +18,11 @@ assert.ok(r.blockers.includes('drx_safety_ci_not_observed'));
 assert.ok(r.blockers.includes('full_ci_not_green'));
 assert.ok(r.blockers.includes('desktop_smoke_not_green'));
 assert.ok(r.blockers.includes('mobile_smoke_not_green'));
-assert.ok(r.blockers.includes('vercel_deploy_not_green'));
+assert.equal(
+  r.blockers.includes('vercel_deploy_not_green'),
+  observation.vercelDeploymentGreen!==true,
+  'Vercel blocker must follow the recorded, commit-bound deployment observation.'
+);
 assert.ok(r.blockers.includes('rollback_not_tested'));
 assert.ok(r.blockers.includes('legacy_consumers_not_zero'));
 console.log('DRx final release gate correctly remains fail-closed.');

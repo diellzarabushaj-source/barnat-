@@ -1,6 +1,6 @@
 {
   "schemaVersion": "drx-dose-coverage-snapshot-v2",
-  "generatedAt": "2026-08-29T07:21:09.198Z",
+  "generatedAt": "2026-08-29T09:43:23.360Z",
   "publicationAllowed": false,
   "counts": {
     "batch1Substances": 10,
@@ -23,13 +23,13 @@
     "reviewPacketsReady": 25,
     "first100QueueMaterialized": 100,
     "first100CanonicalReviewRequired": 13,
-    "first100SourceDiscoveryEligible": 87,
-    "first100VerifiedProductSources": 73,
-    "first100ProductionEligibleRows": 0,
-    "first100SourceDiscoveryRemaining": 14,
+    "first100SourceDiscoveryEligible": 89,
+    "first100EffectiveSourceDiscoveryEligible": 89,
+    "first100VerifiedProductSources": 75,
+    "first100SourceDiscoveryRemaining": 13,
     "first100SourceSectionVerificationPending": 0,
     "first100ProductSelectionPending": 1,
-    "first100EffectiveSourceDiscoveryEligible": 88
+    "first100ProductionEligibleRows": 0
   },
   "batch2ProgressPct": {
     "structuredEvidence": 100,
@@ -39,6 +39,11 @@
     "clinicalReview": 0,
     "publicationReady": 0,
     "published": 0
+  },
+  "first100ProgressPct": {
+    "verifiedProductSources": 84.3,
+    "discoveryRemaining": 14.6,
+    "canonicalReviewBlocked": 13
   },
   "architecture": {
     "v3CandidateReady": true,
@@ -62,15 +67,10 @@
     "fullCiGreen": false,
     "desktopSmokeGreen": false,
     "mobileSmokeGreen": false,
-    "vercelDeploymentGreen": false,
+    "vercelDeploymentGreen": true,
     "rollbackTested": false,
     "zeroKnownLegacyConsumers": false,
     "publicationBlocked": true
   },
-  "next": "Promote counts only from persisted evidence; archive, binding, review, CI, smoke, deploy and rollback gates remain fail-closed until observed.",
-  "first100ProgressPct": {
-    "verifiedProductSources": 83,
-    "discoveryRemaining": 15.9,
-    "canonicalReviewBlocked": 11
-  }
+  "next": "Promote counts only from persisted evidence; archive, binding, review, CI, smoke, deploy and rollback gates remain fail-closed until observed."
 }
