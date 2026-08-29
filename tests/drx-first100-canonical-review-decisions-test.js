@@ -1,0 +1,17 @@
+'use strict';
+const assert=require('node:assert/strict');
+const fs=require('node:fs');const path=require('node:path');
+const x=JSON.parse(fs.readFileSync(path.join(__dirname,'..','data','drx-first100-canonical-review-decisions-v1.json'),'utf8'));
+assert.equal(x.total,13);
+assert.equal(x.resolved,1);
+assert.equal(x.pending,12);
+assert.equal(x.effectiveSourceDiscoveryEligible,88);
+assert.equal(x.publicationAllowed,false);
+const beta=x.decisions.find(d=>d.canonicalKey==='betamethasonedipropionateequivalntbetamethasone');
+assert.equal(beta.decision,'resolved_equivalence_not_combination');
+assert.equal(beta.resolvedCanonicalKey,'betamethasonedipropionate');
+assert.ok(beta.evidence.some(e=>/medicines\.org\.uk/.test(e.url)));
+const amlo=x.decisions.find(d=>d.canonicalKey==='amlodipinebesilate2ramipril');
+assert.equal(amlo.decision,'candidate_typo_fix_pending_exact_product_source');
+assert.equal(amlo.sourceDiscoveryEligible,false);
+console.log('DRx first-100 canonical review decisions passed.');
