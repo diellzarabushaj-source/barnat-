@@ -1,19 +1,19 @@
 {
   "schemaVersion": "drx-first100-source-discovery-index-v1",
-  "generatedAt": "2026-08-29T07:38:00Z",
+  "generatedAt": "2026-08-29T10:03:32.959Z",
   "first100Count": 100,
   "canonicalReviewRequired": 13,
   "sourceDiscoveryEligible": 89,
-  "verifiedProductSpecific": 75,
-  "verifiedCanonicalSubstances": 75,
+  "verifiedProductSpecific": 76,
+  "verifiedCanonicalSubstances": 76,
   "sourceAuthorityCounts": {
     "EMC": 55,
     "AEMPS_CIMA": 12,
-    "EU_NATIONAL": 8
+    "EU_NATIONAL": 9
   },
   "productSelectionRequired": 1,
-  "eligibleRemaining": 14,
-  "sourceLookupRemaining": 13,
+  "eligibleRemaining": 13,
+  "sourceLookupRemaining": 12,
   "issueCount": 0,
   "complete": false,
   "repositoryComplete": false,
@@ -1711,6 +1711,41 @@
       ],
       "publicationAllowed": false,
       "wave": "drx-first100-source-discovery-wave-j-v1.json"
+    },
+    {
+      "canonicalKey": "aethacizine",
+      "canonicalName": "Aethacizine",
+      "status": "verified_product_specific",
+      "sourceTier": "EU_NATIONAL",
+      "authority": "Latvian State Agency of Medicines (ZVA)",
+      "sourceKey": "zva-98-0371-smpc",
+      "url": "https://dati.zva.gov.lv/zalu-registrs/info/98-0371/smpc",
+      "productRegistryUrl": "https://dati.zva.gov.lv/zalu-registrs/info/98-0371",
+      "productName": "Etacizīns 50 mg apvalkotās tabletes",
+      "registrationNumber": "98-0371",
+      "atcCode": "C01BC",
+      "documentDate": "2024-10-03",
+      "documentDatePrecision": "day",
+      "section41Present": true,
+      "section42Present": true,
+      "currentRegistryCrosscheck": {
+        "checkedDate": "2026-08-29",
+        "activeSubstance": "Aethacizinum",
+        "strength": "50 mg",
+        "prescriptionStatus": "Rx",
+        "availablePack": "98-0371-01 N50"
+      },
+      "reviewFlags": [
+        "high_risk_class_ic_antiarrhythmic",
+        "individual_dose_adjustment",
+        "adult_only",
+        "elderly_lower_starting_dose",
+        "hepatic_impairment_review",
+        "specialist_monitoring_required",
+        "clinical_review_required"
+      ],
+      "publicationAllowed": false,
+      "wave": "drx-first100-source-discovery-wave-k-v1.json"
     }
   ]
 }

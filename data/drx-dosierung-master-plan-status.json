@@ -1,6 +1,6 @@
 {
   "schemaVersion": "drx-dosierung-master-plan-status-v1",
-  "updatedAt": "2026-08-29T09:53:17Z",
+  "updatedAt": "2026-08-29T10:01:18Z",
   "officialPlan": "DRx Dosierung phases 0-32",
   "databaseBlocker": {
     "active": true,
@@ -55,7 +55,7 @@
     {
       "id": 3,
       "name": "Source Discovery",
-      "status": "IN_PROGRESS_FIRST100_75_VERIFIED_EFFECTIVE_89",
+      "status": "IN_PROGRESS_FIRST100_76_VERIFIED_EFFECTIVE_89",
       "evidence": [
         "data/drx-dose-source-map-v1.json",
         "ibuprofen pilot with official eMC oral+IV SmPCs",
@@ -98,9 +98,12 @@
         "source-discovery denominator after canonical review: 89",
         "data/drx-first100-source-discovery-wave-j-v1.json",
         "Wave J: Pancreatin (Creon/eMC) + Dentinox (ANMDMR RCP/current nomenclator)",
-        "first-100 verified product-specific source total: 75"
+        "first-100 verified product-specific source total: 75",
+        "data/drx-first100-source-discovery-wave-k-v1.json",
+        "Wave K: Etacizīns 50 mg (Aethacizine), live ZVA registry + 2024-10-03 SmPC sections 4.1/4.2",
+        "first-100 verified product-specific source total: 76"
       ],
-      "next": "source-discover 13 remaining exact targets; resolve Alteplase product selection separately; keep publication fail-closed"
+      "next": "source-discover 12 remaining exact targets; resolve Alteplase product selection separately; keep publication fail-closed"
     },
     {
       "id": 4,
@@ -279,7 +282,7 @@
     {
       "id": 17,
       "name": "Bulk Import",
-      "status": "FIRST100_75_OF_89_SOURCE_DISCOVERY_PRODUCTION_PROVENANCE_BLOCKED",
+      "status": "FIRST100_76_OF_89_SOURCE_DISCOVERY_PRODUCTION_PROVENANCE_BLOCKED",
       "evidence": [
         "data/drx-bulk-import-policy-v1.json",
         "scripts/build-drx-first100-discovery-queue.js",
@@ -301,9 +304,10 @@
         "data/drx-first100-source-discovery-index-v1.json",
         "73/89 effective canonical targets have product-specific authoritative sources",
         "productionDiscoveryAllowed=false until Supabase canonical export provenance passes",
-        "75/89 effective canonical targets have product-specific authoritative sources"
+        "75/89 effective canonical targets have product-specific authoritative sources",
+        "76/89 effective canonical targets have product-specific authoritative sources"
       ],
-      "next": "complete 13 remaining source lookups + 1 Alteplase product selection; production import still requires hash-bound Supabase canonical export provenance"
+      "next": "complete 12 remaining source lookups + 1 Alteplase product selection; production import still requires hash-bound Supabase canonical export provenance"
     },
     {
       "id": 18,
@@ -535,7 +539,7 @@
     "first100ProductionEligibleRows": 0,
     "first100ProductionDiscoveryAllowed": false,
     "first100SourceDiscoveryEligible": 89,
-    "first100VerifiedProductSources": 75,
+    "first100VerifiedProductSources": 76,
     "first100ProductSelectionRequired": 1,
     "legacyMirrorPrecheck": {
       "present": 2,
@@ -544,12 +548,12 @@
       "bindings": 4,
       "liveCompared": false
     },
-    "first100SourceDiscoveryRemaining": 13,
+    "first100SourceDiscoveryRemaining": 12,
     "first100SourceSectionVerificationPending": 0,
     "first100ProductSelectionPending": 1,
     "first100CanonicalReviewResolved": 13,
     "first100CanonicalReviewPending": 0,
     "first100EffectiveSourceDiscoveryEligible": 89,
-    "first100SourceLookupRemaining": 13
+    "first100SourceLookupRemaining": 12
   }
 }
