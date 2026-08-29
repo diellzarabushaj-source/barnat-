@@ -1,0 +1,96 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1250" height="1150" viewBox="0 0 1250 1150">
+<rect width="100%" height="100%" fill="white"/>
+<defs><marker id="arr" markerWidth="9" markerHeight="9" refX="8" refY="4.5" orient="auto"><path d="M0,0 L9,4.5 L0,9 z" fill="#555"/></marker></defs>
+<text x="625" y="35.0" font-family="DejaVu Sans,Arial" font-size="27" font-weight="700" text-anchor="middle" fill="#111">Algoritmi i menaxhimit klinik pas gëlltitjes së hekurit</text>
+<rect x="535" y="65" width="180" height="55" rx="6" fill="#f6e7df" stroke="#ca8565" stroke-width="1.5"/>
+<text x="625.0" y="97.9" font-family="DejaVu Sans,Arial" font-size="18" font-weight="700" text-anchor="middle" fill="#111">Hekur i gëlltitur</text>
+<line x1="625" y1="120" x2="625" y2="155" stroke="#555" stroke-width="2"/>
+<line x1="225" y1="155" x2="1030" y2="155" stroke="#555" stroke-width="2"/>
+<line x1="225" y1="155" x2="225" y2="190" stroke="#555" stroke-width="2" marker-end="url(#arr)"/>
+<line x1="625" y1="155" x2="625" y2="190" stroke="#555" stroke-width="2" marker-end="url(#arr)"/>
+<line x1="1030" y1="155" x2="1030" y2="190" stroke="#555" stroke-width="2" marker-end="url(#arr)"/>
+<rect x="120" y="190" width="210" height="65" rx="6" fill="#eadff0" stroke="#9a78a9" stroke-width="1.5"/>
+<text x="225.0" y="227.9" font-family="DejaVu Sans,Arial" font-size="18" font-weight="400" text-anchor="middle" fill="#111">Asimptomatik</text>
+<rect x="515" y="190" width="220" height="75" rx="6" fill="#f6e7df" stroke="#ca8565" stroke-width="1.5"/>
+<text x="625.0" y="222.3" font-family="DejaVu Sans,Arial" font-size="18" font-weight="400" text-anchor="middle" fill="#111">Vetëm simptoma</text>
+<text x="625.0" y="243.5" font-family="DejaVu Sans,Arial" font-size="18" font-weight="400" text-anchor="middle" fill="#111">GI</text>
+<rect x="915" y="190" width="230" height="75" rx="6" fill="#e4f1e6" stroke="#6c9a74" stroke-width="1.5"/>
+<text x="1030.0" y="232.9" font-family="DejaVu Sans,Arial" font-size="18" font-weight="400" text-anchor="middle" fill="#111">Toksicitet sistemik</text>
+<line x1="225" y1="255" x2="225" y2="300" stroke="#555" stroke-width="2" marker-end="url(#arr)"/>
+<rect x="120" y="300" width="210" height="65" rx="6" fill="#eadff0" stroke="#9a78a9" stroke-width="1.5"/>
+<text x="225.0" y="337.6" font-family="DejaVu Sans,Arial" font-size="17" font-weight="400" text-anchor="middle" fill="#111">Sasia e gëlltitur</text>
+<line x1="225" y1="365" x2="225" y2="400" stroke="#555" stroke-width="2"/>
+<line x1="80" y1="400" x2="405" y2="400" stroke="#555" stroke-width="2"/>
+<text x="120" y="390.0" font-family="DejaVu Sans,Arial" font-size="14" font-weight="700" text-anchor="middle" fill="#111">&lt;20 mg/kg</text>
+<text x="330" y="390.0" font-family="DejaVu Sans,Arial" font-size="14" font-weight="700" text-anchor="middle" fill="#111">&gt;60 mg/kg</text>
+<line x1="120" y1="400" x2="120" y2="815" stroke="#555" stroke-width="2" marker-end="url(#arr)"/>
+<line x1="330" y1="400" x2="625" y2="440" stroke="#555" stroke-width="2" marker-end="url(#arr)"/>
+<text x="225" y="421.7" font-family="DejaVu Sans,Arial" font-size="14" font-weight="400" text-anchor="middle" fill="#111">20–60 mg/kg</text>
+<text x="225" y="438.3" font-family="DejaVu Sans,Arial" font-size="14" font-weight="400" text-anchor="middle" fill="#111">ose e panjohur</text>
+<line x1="225" y1="435" x2="225" y2="475" stroke="#555" stroke-width="2" marker-end="url(#arr)"/>
+<rect x="85" y="475" width="280" height="120" rx="6" fill="#eadff0" stroke="#9a78a9" stroke-width="1.5"/>
+<text x="225.0" y="530.4" font-family="DejaVu Sans,Arial" font-size="16" font-weight="400" text-anchor="middle" fill="#111">Konsidero radiografi abdominale</text>
+<text x="225.0" y="549.2" font-family="DejaVu Sans,Arial" font-size="16" font-weight="400" text-anchor="middle" fill="#111">Konsidero dekontaminim GI</text>
+<line x1="625" y1="265" x2="625" y2="430" stroke="#555" stroke-width="2" marker-end="url(#arr)"/>
+<rect x="455" y="430" width="340" height="155" rx="6" fill="#f6e7df" stroke="#ca8565" stroke-width="1.5"/>
+<text x="625.0" y="474.5" font-family="DejaVu Sans,Arial" font-size="16" font-weight="400" text-anchor="middle" fill="#111">Reanimim me volum</text>
+<text x="625.0" y="493.4" font-family="DejaVu Sans,Arial" font-size="16" font-weight="400" text-anchor="middle" fill="#111">Vlerëso statusin acid-bazë</text>
+<text x="625.0" y="512.3" font-family="DejaVu Sans,Arial" font-size="16" font-weight="400" text-anchor="middle" fill="#111">Bëj radiografi abdominale</text>
+<text x="625.0" y="531.2" font-family="DejaVu Sans,Arial" font-size="16" font-weight="400" text-anchor="middle" fill="#111">Konsidero dekontaminim GI</text>
+<text x="625.0" y="550.1" font-family="DejaVu Sans,Arial" font-size="16" font-weight="400" text-anchor="middle" fill="#111">Konsidero antiemetikë</text>
+<line x1="625" y1="585" x2="625" y2="630" stroke="#555" stroke-width="2" marker-end="url(#arr)"/>
+<rect x="520" y="630" width="210" height="85" rx="6" fill="#f6e7df" stroke="#ca8565" stroke-width="1.5"/>
+<text x="625.0" y="667.6" font-family="DejaVu Sans,Arial" font-size="17" font-weight="400" text-anchor="middle" fill="#111">Merr Fe serik</text>
+<text x="625.0" y="687.6" font-family="DejaVu Sans,Arial" font-size="17" font-weight="400" text-anchor="middle" fill="#111">4 h pas gëlltitjes</text>
+<line x1="225" y1="595" x2="225" y2="650" stroke="#555" stroke-width="2" marker-end="url(#arr)"/>
+<rect x="65" y="650" width="320" height="110" rx="6" fill="#f6e7df" stroke="#ca8565" stroke-width="1.5"/>
+<text x="225.0" y="700.6" font-family="DejaVu Sans,Arial" font-size="15" font-weight="400" text-anchor="middle" fill="#111">&lt;500 µg/dL ose i padisponueshëm DHE</text>
+<text x="225.0" y="718.4" font-family="DejaVu Sans,Arial" font-size="15" font-weight="400" text-anchor="middle" fill="#111">status acid-bazë normal</text>
+<line x1="520" y1="672" x2="385" y2="705" stroke="#555" stroke-width="2" marker-end="url(#arr)"/>
+<line x1="730" y1="672" x2="855" y2="705" stroke="#555" stroke-width="2" marker-end="url(#arr)"/>
+<rect x="780" y="650" width="300" height="125" rx="6" fill="#f6e7df" stroke="#ca8565" stroke-width="1.5"/>
+<text x="930.0" y="698.4" font-family="DejaVu Sans,Arial" font-size="16" font-weight="400" text-anchor="middle" fill="#111">&gt;500 µg/dL</text>
+<text x="930.0" y="717.3" font-family="DejaVu Sans,Arial" font-size="16" font-weight="400" text-anchor="middle" fill="#111">Acidozë metabolike</text>
+<text x="930.0" y="736.2" font-family="DejaVu Sans,Arial" font-size="16" font-weight="400" text-anchor="middle" fill="#111">Simptomat vazhdojnë ose zhvillohen</text>
+<line x1="225" y1="760" x2="225" y2="815" stroke="#555" stroke-width="2" marker-end="url(#arr)"/>
+<rect x="125" y="815" width="200" height="90" rx="6" fill="#eadff0" stroke="#9a78a9" stroke-width="1.5"/>
+<text x="225.0" y="855.1" font-family="DejaVu Sans,Arial" font-size="17" font-weight="400" text-anchor="middle" fill="#111">Asimptomatik</text>
+<text x="225.0" y="875.1" font-family="DejaVu Sans,Arial" font-size="17" font-weight="400" text-anchor="middle" fill="#111">6 h pas gëlltitjes</text>
+<line x1="225" y1="905" x2="225" y2="955" stroke="#555" stroke-width="2" marker-end="url(#arr)"/>
+<rect x="145" y="955" width="160" height="60" rx="6" fill="#eadff0" stroke="#9a78a9" stroke-width="1.5"/>
+<text x="225.0" y="990.4" font-family="DejaVu Sans,Arial" font-size="18" font-weight="700" text-anchor="middle" fill="#111">Dalje</text>
+<line x1="1030" y1="265" x2="1030" y2="330" stroke="#555" stroke-width="2" marker-end="url(#arr)"/>
+<rect x="870" y="330" width="320" height="190" rx="6" fill="#e4f1e6" stroke="#6c9a74" stroke-width="1.5"/>
+<text x="1030.0" y="376.4" font-family="DejaVu Sans,Arial" font-size="15" font-weight="400" text-anchor="middle" fill="#111">Stabilizo pacientin</text>
+<text x="1030.0" y="394.1" font-family="DejaVu Sans,Arial" font-size="15" font-weight="400" text-anchor="middle" fill="#111">Reanimim me volum</text>
+<text x="1030.0" y="411.8" font-family="DejaVu Sans,Arial" font-size="15" font-weight="400" text-anchor="middle" fill="#111">Vlerëso statusin acid-bazë</text>
+<text x="1030.0" y="429.5" font-family="DejaVu Sans,Arial" font-size="15" font-weight="400" text-anchor="middle" fill="#111">Merr Fe serik</text>
+<text x="1030.0" y="447.2" font-family="DejaVu Sans,Arial" font-size="15" font-weight="400" text-anchor="middle" fill="#111">Bëj radiografi abdominale</text>
+<text x="1030.0" y="464.9" font-family="DejaVu Sans,Arial" font-size="15" font-weight="400" text-anchor="middle" fill="#111">Konsidero dekontaminim GI</text>
+<text x="1030.0" y="482.6" font-family="DejaVu Sans,Arial" font-size="15" font-weight="400" text-anchor="middle" fill="#111">Konsidero antiemetikë</text>
+<line x1="1030" y1="520" x2="1030" y2="800" stroke="#555" stroke-width="2" marker-end="url(#arr)"/>
+<line x1="930" y1="775" x2="930" y2="800" stroke="#555" stroke-width="2" marker-end="url(#arr)"/>
+<rect x="865" y="800" width="330" height="80" rx="6" fill="#e4f1e6" stroke="#6c9a74" stroke-width="1.5"/>
+<text x="1030.0" y="834.8" font-family="DejaVu Sans,Arial" font-size="18" font-weight="400" text-anchor="middle" fill="#111">Merr urinën bazale</text>
+<text x="1030.0" y="856.0" font-family="DejaVu Sans,Arial" font-size="18" font-weight="400" text-anchor="middle" fill="#111">Fillo deferoxamine IV</text>
+<line x1="1030" y1="880" x2="1030" y2="925" stroke="#555" stroke-width="2" marker-end="url(#arr)"/>
+<rect x="940" y="925" width="180" height="65" rx="6" fill="#e4f1e6" stroke="#6c9a74" stroke-width="1.5"/>
+<text x="1030.0" y="962.6" font-family="DejaVu Sans,Arial" font-size="17" font-weight="400" text-anchor="middle" fill="#111">Urina e ngjyrosur?</text>
+<line x1="940" y1="958" x2="800" y2="958" stroke="#555" stroke-width="2" marker-end="url(#arr)"/>
+<text x="875" y="945.0" font-family="DejaVu Sans,Arial" font-size="14" font-weight="700" text-anchor="middle" fill="#111">Jo</text>
+<rect x="675" y="920" width="180" height="75" rx="6" fill="#e4f1e6" stroke="#6c9a74" stroke-width="1.5"/>
+<text x="765.0" y="952.6" font-family="DejaVu Sans,Arial" font-size="17" font-weight="400" text-anchor="middle" fill="#111">Klinikisht</text>
+<text x="765.0" y="972.6" font-family="DejaVu Sans,Arial" font-size="17" font-weight="400" text-anchor="middle" fill="#111">stabil?</text>
+<line x1="1030" y1="990" x2="1030" y2="1040" stroke="#555" stroke-width="2" marker-end="url(#arr)"/>
+<text x="1050" y="1018.0" font-family="DejaVu Sans,Arial" font-size="14" font-weight="700" text-anchor="middle" fill="#111">Po</text>
+<rect x="895" y="1040" width="300" height="75" rx="6" fill="#e4f1e6" stroke="#6c9a74" stroke-width="1.5"/>
+<text x="1045.0" y="1072.6" font-family="DejaVu Sans,Arial" font-size="17" font-weight="400" text-anchor="middle" fill="#111">Vazhdo deferoxamine</text>
+<text x="1045.0" y="1092.6" font-family="DejaVu Sans,Arial" font-size="17" font-weight="400" text-anchor="middle" fill="#111">dhe kujdesin mbështetës</text>
+<line x1="675" y1="958" x2="520" y2="1035" stroke="#555" stroke-width="2" marker-end="url(#arr)"/>
+<text x="600" y="1008.0" font-family="DejaVu Sans,Arial" font-size="14" font-weight="700" text-anchor="middle" fill="#111">Po</text>
+<rect x="360" y="1035" width="230" height="65" rx="6" fill="#e4f1e6" stroke="#6c9a74" stroke-width="1.5"/>
+<text x="475.0" y="1072.6" font-family="DejaVu Sans,Arial" font-size="17" font-weight="400" text-anchor="middle" fill="#111">Ndalo deferoxamine</text>
+<line x1="765" y1="995" x2="895" y2="1070" stroke="#555" stroke-width="2" marker-end="url(#arr)"/>
+<text x="825" y="1018.0" font-family="DejaVu Sans,Arial" font-size="14" font-weight="700" text-anchor="middle" fill="#111">Jo</text>
+<text x="625" y="1130.0" font-family="DejaVu Sans,Arial" font-size="15" font-weight="400" text-anchor="middle" fill="#111">Figura 110-1. Algoritmi i burimit, i rikrijuar dhe përkthyer në shqip.</text>
+</svg>
