@@ -3,6 +3,9 @@
 const assert = require('node:assert/strict');
 const Gate = require('../lib/dose-publication-gate.js');
 
+const HASH = 'a'.repeat(64);
+const SECTION_HASH = 'b'.repeat(64);
+
 const completeRule = {
   ruleKey:'r1',
   indicationKey:'fever',
@@ -20,8 +23,9 @@ const completeRule = {
   route:'PO',
   sourceKey:'official',
   sourceSection:'4.2',
-  sourceSnapshotId:'b'.repeat(64),
-  sourceEvidenceHash:'a'.repeat(64),
+  sourceSnapshotId:HASH,
+  sourceSectionSha256:SECTION_HASH,
+  sourceEvidenceHash:HASH,
   editorialStatus:'published',
   verifiedBy:'reviewer',
   verifiedAt:'2026-08-29T00:00:00Z',
@@ -46,6 +50,45 @@ const approved = Gate.evaluate({
 assert.equal(approved.allowed, true);
 assert.equal(approved.decision, 'publish');
 assert.equal(approved.evidence.sourceSection, '4.2');
+assert.equal(approved.evidence.sourceSectionSha256, SECTION_HASH);
+
+const mismatchedProvenance = Gate.evaluate({
+  rule:{...completeRule,sourceEvidenceHash:'c'.repeat(64)},
+  sourceDecision:{ allowed:true, reason:'authoritative_source_complete', candidate:{ tier:{ key:'EMC' } } },
+  sourceDocumentDate:'2026-08-27',
+  extractionDecision:{ allowed:true },
+  indicationDecision:{ allowed:true },
+  binding:{ valid:true, errors:[], productKey:'p1' },
+  combinationBasis:{ valid:true },
+  legacyComparison:{ status:'exact', conflicts:[], missingFields:[] },
+  confidence:{ score:0.97, reviewClass:'auto_reviewable', hardBlockers:[] },
+  safetyValidation:{ publishable:true, blockers:[], warnings:[] },
+  verifiedBy:'reviewer',
+  verifiedAt:'2026-08-29T00:00:00Z',
+  reviewStatus:'approved',
+  openReviewReasons:[],
+});
+assert.equal(mismatchedProvenance.allowed,false);
+assert.ok(mismatchedProvenance.blockers.includes('rule:source_snapshot_evidence_hash_mismatch'));
+
+const missingSectionHash = Gate.evaluate({
+  rule:{...completeRule,sourceSectionSha256:''},
+  sourceDecision:{ allowed:true, reason:'authoritative_source_complete', candidate:{ tier:{ key:'EMC' } } },
+  sourceDocumentDate:'2026-08-27',
+  extractionDecision:{ allowed:true },
+  indicationDecision:{ allowed:true },
+  binding:{ valid:true, errors:[], productKey:'p1' },
+  combinationBasis:{ valid:true },
+  legacyComparison:{ status:'exact', conflicts:[], missingFields:[] },
+  confidence:{ score:0.97, reviewClass:'auto_reviewable', hardBlockers:[] },
+  safetyValidation:{ publishable:true, blockers:[], warnings:[] },
+  verifiedBy:'reviewer',
+  verifiedAt:'2026-08-29T00:00:00Z',
+  reviewStatus:'approved',
+  openReviewReasons:[],
+});
+assert.equal(missingSectionHash.allowed,false);
+assert.ok(missingSectionHash.blockers.includes('rule:source_section_sha256_missing_or_invalid'));
 
 const noReview = Gate.evaluate({
   rule:completeRule,
