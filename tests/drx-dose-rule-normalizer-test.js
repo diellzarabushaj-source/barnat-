@@ -20,7 +20,7 @@ const fixed = Dose.validateRule({
   route:'PO',
   sourceKey:'emc-7020-smpc',
   sourceSection:'4.2',
-  sourceSnapshotId:'snapshot-1',
+  sourceSnapshotId:HASH,
   sourceEvidenceHash:HASH,
   editorialStatus:'published',
 });
@@ -103,7 +103,7 @@ const noProvenance = Dose.validateRule({
   sourceSection:'4.2',
   editorialStatus:'published',
 });
-assert.ok(noProvenance.errors.includes('source_snapshot_missing'));
+assert.ok(noProvenance.errors.includes('source_snapshot_missing_or_invalid'));
 assert.ok(noProvenance.errors.includes('source_evidence_hash_missing_or_invalid'));
 
 const manual = Dose.publicationDecision({
@@ -115,7 +115,7 @@ const manual = Dose.publicationDecision({
   durationMode:'manual',
   sourceKey:'official',
   sourceSection:'4.2',
-  sourceSnapshotId:'snapshot',
+  sourceSnapshotId:HASH,
   sourceEvidenceHash:HASH,
   editorialStatus:'published',
   specialistOnly:true,
