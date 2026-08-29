@@ -1,7 +1,7 @@
 {
   "schemaVersion": "drx-batch2-clinical-review-queue-v1",
-  "generatedAt": "2026-08-29T23:58:00+02:00",
-  "status": "open",
+  "generatedAt": "2026-08-29T12:27:49.533Z",
+  "status": "open_provenance_pending",
   "publicationAllowed": false,
   "total": 25,
   "open": 25,
@@ -30,7 +30,16 @@
       "normalizationStatus": "blocked_indication_loading_and_bleeding_risk_review",
       "exactProductBindingComplete": false,
       "safetyValidationComplete": false,
-      "publicationAllowed": false
+      "publicationAllowed": false,
+      "legacyComparisonComplete": false,
+      "requiredAdjustmentEvidenceComplete": false,
+      "sourceSnapshotId": null,
+      "sourceSection": "4.2",
+      "sourceSectionSha256": null,
+      "reviewerId": null,
+      "reviewedAt": null,
+      "decision": null,
+      "decisionReason": null
     },
     {
       "reviewKey": "batch2:bisoprolol",
@@ -50,7 +59,16 @@
       "normalizationStatus": "blocked_clinical_review",
       "exactProductBindingComplete": false,
       "safetyValidationComplete": false,
-      "publicationAllowed": false
+      "publicationAllowed": false,
+      "legacyComparisonComplete": false,
+      "requiredAdjustmentEvidenceComplete": false,
+      "sourceSnapshotId": null,
+      "sourceSection": "4.2",
+      "sourceSectionSha256": null,
+      "reviewerId": null,
+      "reviewedAt": null,
+      "decision": null,
+      "decisionReason": null
     },
     {
       "reviewKey": "batch2:carvedilol",
@@ -72,7 +90,16 @@
       "normalizationStatus": "blocked_titration_monitoring_and_product_binding_review",
       "exactProductBindingComplete": false,
       "safetyValidationComplete": false,
-      "publicationAllowed": false
+      "publicationAllowed": false,
+      "legacyComparisonComplete": false,
+      "requiredAdjustmentEvidenceComplete": false,
+      "sourceSnapshotId": null,
+      "sourceSection": "4.2",
+      "sourceSectionSha256": null,
+      "reviewerId": null,
+      "reviewedAt": null,
+      "decision": null,
+      "decisionReason": null
     },
     {
       "reviewKey": "batch2:cefalexin",
@@ -93,7 +120,16 @@
       "normalizationStatus": "blocked_antimicrobial_and_renal_review",
       "exactProductBindingComplete": false,
       "safetyValidationComplete": false,
-      "publicationAllowed": false
+      "publicationAllowed": false,
+      "legacyComparisonComplete": false,
+      "requiredAdjustmentEvidenceComplete": false,
+      "sourceSnapshotId": null,
+      "sourceSection": "4.2",
+      "sourceSectionSha256": null,
+      "reviewerId": null,
+      "reviewedAt": null,
+      "decision": null,
+      "decisionReason": null
     },
     {
       "reviewKey": "batch2:cetirizine",
@@ -114,7 +150,16 @@
       "normalizationStatus": "pending_renal_model_review",
       "exactProductBindingComplete": false,
       "safetyValidationComplete": false,
-      "publicationAllowed": false
+      "publicationAllowed": false,
+      "legacyComparisonComplete": false,
+      "requiredAdjustmentEvidenceComplete": false,
+      "sourceSnapshotId": null,
+      "sourceSection": "4.2",
+      "sourceSectionSha256": null,
+      "reviewerId": null,
+      "reviewedAt": null,
+      "decision": null,
+      "decisionReason": null
     },
     {
       "reviewKey": "batch2:ciprofloxacin",
@@ -137,7 +182,16 @@
       "normalizationStatus": "blocked_high_complexity_review",
       "exactProductBindingComplete": false,
       "safetyValidationComplete": false,
-      "publicationAllowed": false
+      "publicationAllowed": false,
+      "legacyComparisonComplete": false,
+      "requiredAdjustmentEvidenceComplete": false,
+      "sourceSnapshotId": null,
+      "sourceSection": "4.2",
+      "sourceSectionSha256": null,
+      "reviewerId": null,
+      "reviewedAt": null,
+      "decision": null,
+      "decisionReason": null
     },
     {
       "reviewKey": "batch2:clopidogrel",
@@ -158,7 +212,16 @@
       "normalizationStatus": "blocked_acs_and_bleeding_review",
       "exactProductBindingComplete": false,
       "safetyValidationComplete": false,
-      "publicationAllowed": false
+      "publicationAllowed": false,
+      "legacyComparisonComplete": false,
+      "requiredAdjustmentEvidenceComplete": false,
+      "sourceSnapshotId": null,
+      "sourceSection": "4.2",
+      "sourceSectionSha256": null,
+      "reviewerId": null,
+      "reviewedAt": null,
+      "decision": null,
+      "decisionReason": null
     },
     {
       "reviewKey": "batch2:dexamethasone",
@@ -180,7 +243,16 @@
       "normalizationStatus": "blocked_complexity_review",
       "exactProductBindingComplete": false,
       "safetyValidationComplete": false,
-      "publicationAllowed": false
+      "publicationAllowed": false,
+      "legacyComparisonComplete": false,
+      "requiredAdjustmentEvidenceComplete": false,
+      "sourceSnapshotId": null,
+      "sourceSection": "4.2",
+      "sourceSectionSha256": null,
+      "reviewerId": null,
+      "reviewedAt": null,
+      "decision": null,
+      "decisionReason": null
     },
     {
       "reviewKey": "batch2:diclofenac",
@@ -201,7 +273,16 @@
       "normalizationStatus": "blocked_formulation_specific_nsaid_review",
       "exactProductBindingComplete": false,
       "safetyValidationComplete": false,
-      "publicationAllowed": false
+      "publicationAllowed": false,
+      "legacyComparisonComplete": false,
+      "requiredAdjustmentEvidenceComplete": false,
+      "sourceSnapshotId": null,
+      "sourceSection": "4.2",
+      "sourceSectionSha256": null,
+      "reviewerId": null,
+      "reviewedAt": null,
+      "decision": null,
+      "decisionReason": null
     },
     {
       "reviewKey": "batch2:doxycycline",
@@ -222,7 +303,16 @@
       "normalizationStatus": "blocked_antimicrobial_review",
       "exactProductBindingComplete": false,
       "safetyValidationComplete": false,
-      "publicationAllowed": false
+      "publicationAllowed": false,
+      "legacyComparisonComplete": false,
+      "requiredAdjustmentEvidenceComplete": false,
+      "sourceSnapshotId": null,
+      "sourceSection": "4.2",
+      "sourceSectionSha256": null,
+      "reviewerId": null,
+      "reviewedAt": null,
+      "decision": null,
+      "decisionReason": null
     },
     {
       "reviewKey": "batch2:furosemide",
@@ -243,7 +333,16 @@
       "normalizationStatus": "blocked_high_risk_review",
       "exactProductBindingComplete": false,
       "safetyValidationComplete": false,
-      "publicationAllowed": false
+      "publicationAllowed": false,
+      "legacyComparisonComplete": false,
+      "requiredAdjustmentEvidenceComplete": false,
+      "sourceSnapshotId": null,
+      "sourceSection": "4.2",
+      "sourceSectionSha256": null,
+      "reviewerId": null,
+      "reviewedAt": null,
+      "decision": null,
+      "decisionReason": null
     },
     {
       "reviewKey": "batch2:gliclazide",
@@ -264,7 +363,16 @@
       "normalizationStatus": "blocked_glucose_monitoring_review",
       "exactProductBindingComplete": false,
       "safetyValidationComplete": false,
-      "publicationAllowed": false
+      "publicationAllowed": false,
+      "legacyComparisonComplete": false,
+      "requiredAdjustmentEvidenceComplete": false,
+      "sourceSnapshotId": null,
+      "sourceSection": "4.2",
+      "sourceSectionSha256": null,
+      "reviewerId": null,
+      "reviewedAt": null,
+      "decision": null,
+      "decisionReason": null
     },
     {
       "reviewKey": "batch2:levothyroxine",
@@ -285,7 +393,16 @@
       "normalizationStatus": "blocked_monitoring_and_titration_review",
       "exactProductBindingComplete": false,
       "safetyValidationComplete": false,
-      "publicationAllowed": false
+      "publicationAllowed": false,
+      "legacyComparisonComplete": false,
+      "requiredAdjustmentEvidenceComplete": false,
+      "sourceSnapshotId": null,
+      "sourceSection": "4.2",
+      "sourceSectionSha256": null,
+      "reviewerId": null,
+      "reviewedAt": null,
+      "decision": null,
+      "decisionReason": null
     },
     {
       "reviewKey": "batch2:loratadine",
@@ -305,7 +422,16 @@
       "normalizationStatus": "pending_age_weight_hepatic_review",
       "exactProductBindingComplete": false,
       "safetyValidationComplete": false,
-      "publicationAllowed": false
+      "publicationAllowed": false,
+      "legacyComparisonComplete": false,
+      "requiredAdjustmentEvidenceComplete": false,
+      "sourceSnapshotId": null,
+      "sourceSection": "4.2",
+      "sourceSectionSha256": null,
+      "reviewerId": null,
+      "reviewedAt": null,
+      "decision": null,
+      "decisionReason": null
     },
     {
       "reviewKey": "batch2:metronidazole",
@@ -326,7 +452,16 @@
       "normalizationStatus": "blocked_antimicrobial_and_hepatic_review",
       "exactProductBindingComplete": false,
       "safetyValidationComplete": false,
-      "publicationAllowed": false
+      "publicationAllowed": false,
+      "legacyComparisonComplete": false,
+      "requiredAdjustmentEvidenceComplete": false,
+      "sourceSnapshotId": null,
+      "sourceSection": "4.2",
+      "sourceSectionSha256": null,
+      "reviewerId": null,
+      "reviewedAt": null,
+      "decision": null,
+      "decisionReason": null
     },
     {
       "reviewKey": "batch2:naproxen",
@@ -347,7 +482,16 @@
       "normalizationStatus": "blocked_nsaid_risk_review",
       "exactProductBindingComplete": false,
       "safetyValidationComplete": false,
-      "publicationAllowed": false
+      "publicationAllowed": false,
+      "legacyComparisonComplete": false,
+      "requiredAdjustmentEvidenceComplete": false,
+      "sourceSnapshotId": null,
+      "sourceSection": "4.2",
+      "sourceSectionSha256": null,
+      "reviewerId": null,
+      "reviewedAt": null,
+      "decision": null,
+      "decisionReason": null
     },
     {
       "reviewKey": "batch2:ondansetron",
@@ -369,7 +513,16 @@
       "normalizationStatus": "blocked_indication_route_and_hepatic_review",
       "exactProductBindingComplete": false,
       "safetyValidationComplete": false,
-      "publicationAllowed": false
+      "publicationAllowed": false,
+      "legacyComparisonComplete": false,
+      "requiredAdjustmentEvidenceComplete": false,
+      "sourceSnapshotId": null,
+      "sourceSection": "4.2",
+      "sourceSectionSha256": null,
+      "reviewerId": null,
+      "reviewedAt": null,
+      "decision": null,
+      "decisionReason": null
     },
     {
       "reviewKey": "batch2:prednisolone",
@@ -390,7 +543,16 @@
       "normalizationStatus": "blocked_complexity_review",
       "exactProductBindingComplete": false,
       "safetyValidationComplete": false,
-      "publicationAllowed": false
+      "publicationAllowed": false,
+      "legacyComparisonComplete": false,
+      "requiredAdjustmentEvidenceComplete": false,
+      "sourceSnapshotId": null,
+      "sourceSection": "4.2",
+      "sourceSectionSha256": null,
+      "reviewerId": null,
+      "reviewedAt": null,
+      "decision": null,
+      "decisionReason": null
     },
     {
       "reviewKey": "batch2:ramipril",
@@ -412,7 +574,16 @@
       "normalizationStatus": "blocked_titration_and_monitoring_review",
       "exactProductBindingComplete": false,
       "safetyValidationComplete": false,
-      "publicationAllowed": false
+      "publicationAllowed": false,
+      "legacyComparisonComplete": false,
+      "requiredAdjustmentEvidenceComplete": false,
+      "sourceSnapshotId": null,
+      "sourceSection": "4.2",
+      "sourceSectionSha256": null,
+      "reviewerId": null,
+      "reviewedAt": null,
+      "decision": null,
+      "decisionReason": null
     },
     {
       "reviewKey": "batch2:spironolactone",
@@ -433,7 +604,16 @@
       "normalizationStatus": "blocked_renal_potassium_monitoring_review",
       "exactProductBindingComplete": false,
       "safetyValidationComplete": false,
-      "publicationAllowed": false
+      "publicationAllowed": false,
+      "legacyComparisonComplete": false,
+      "requiredAdjustmentEvidenceComplete": false,
+      "sourceSnapshotId": null,
+      "sourceSection": "4.2",
+      "sourceSectionSha256": null,
+      "reviewerId": null,
+      "reviewedAt": null,
+      "decision": null,
+      "decisionReason": null
     },
     {
       "reviewKey": "batch2:tramadol",
@@ -455,7 +635,16 @@
       "normalizationStatus": "blocked_high_risk_opioid_review",
       "exactProductBindingComplete": false,
       "safetyValidationComplete": false,
-      "publicationAllowed": false
+      "publicationAllowed": false,
+      "legacyComparisonComplete": false,
+      "requiredAdjustmentEvidenceComplete": false,
+      "sourceSnapshotId": null,
+      "sourceSection": "4.2",
+      "sourceSectionSha256": null,
+      "reviewerId": null,
+      "reviewedAt": null,
+      "decision": null,
+      "decisionReason": null
     },
     {
       "reviewKey": "batch2:losartan",
@@ -474,7 +663,16 @@
       "normalizationStatus": "pending_archive_and_structuring",
       "exactProductBindingComplete": false,
       "safetyValidationComplete": false,
-      "publicationAllowed": false
+      "publicationAllowed": false,
+      "legacyComparisonComplete": false,
+      "requiredAdjustmentEvidenceComplete": false,
+      "sourceSnapshotId": null,
+      "sourceSection": "4.2",
+      "sourceSectionSha256": null,
+      "reviewerId": null,
+      "reviewedAt": null,
+      "decision": null,
+      "decisionReason": null
     },
     {
       "reviewKey": "batch2:amlodipine",
@@ -492,7 +690,16 @@
       "normalizationStatus": "pending_archive_and_structuring",
       "exactProductBindingComplete": false,
       "safetyValidationComplete": false,
-      "publicationAllowed": false
+      "publicationAllowed": false,
+      "legacyComparisonComplete": false,
+      "requiredAdjustmentEvidenceComplete": false,
+      "sourceSnapshotId": null,
+      "sourceSection": "4.2",
+      "sourceSectionSha256": null,
+      "reviewerId": null,
+      "reviewedAt": null,
+      "decision": null,
+      "decisionReason": null
     },
     {
       "reviewKey": "batch2:atorvastatin",
@@ -511,7 +718,16 @@
       "normalizationStatus": "pending_archive_and_structuring",
       "exactProductBindingComplete": false,
       "safetyValidationComplete": false,
-      "publicationAllowed": false
+      "publicationAllowed": false,
+      "legacyComparisonComplete": false,
+      "requiredAdjustmentEvidenceComplete": false,
+      "sourceSnapshotId": null,
+      "sourceSection": "4.2",
+      "sourceSectionSha256": null,
+      "reviewerId": null,
+      "reviewedAt": null,
+      "decision": null,
+      "decisionReason": null
     },
     {
       "reviewKey": "batch2:pantoprazole",
@@ -531,7 +747,17 @@
       "normalizationStatus": "pending_archive_and_structuring",
       "exactProductBindingComplete": false,
       "safetyValidationComplete": false,
-      "publicationAllowed": false
+      "publicationAllowed": false,
+      "legacyComparisonComplete": false,
+      "requiredAdjustmentEvidenceComplete": false,
+      "sourceSnapshotId": null,
+      "sourceSection": "4.2",
+      "sourceSectionSha256": null,
+      "reviewerId": null,
+      "reviewedAt": null,
+      "decision": null,
+      "decisionReason": null
     }
-  ]
+  ],
+  "reviewEvidenceReady": 0
 }
