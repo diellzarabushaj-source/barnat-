@@ -1,0 +1,36 @@
+{
+  "schemaVersion": "drx-hepatic-adjustment-model-v1",
+  "status": "foundation_complete_repository",
+  "publicationAllowed": false,
+  "supportedMeasures": [
+    "Child_Pugh_class",
+    "hepatic_impairment_textual"
+  ],
+  "childPughClasses": [
+    "A",
+    "B",
+    "C"
+  ],
+  "requiredFields": [
+    "measure_type",
+    "severity_or_class",
+    "dose_action",
+    "source_key",
+    "source_section",
+    "review_status"
+  ],
+  "doseActions": [
+    "no_adjustment",
+    "reduce_dose",
+    "extend_interval",
+    "avoid",
+    "contraindicated",
+    "specialist_review"
+  ],
+  "safetyRules": [
+    "do_not_map_textual_impairment_to_child_pugh_without_explicit_source",
+    "do_not_publish_without_source",
+    "conflicting_rules_require_manual_review"
+  ],
+  "next": "populate only from explicit SmPC hepatic dosing statements"
+}
