@@ -1,6 +1,6 @@
 {
   "schemaVersion": "drx-dose-v3-supabase-candidate-status-v1",
-  "updatedAt": "2026-08-29T11:46:19.382Z",
+  "updatedAt": "2026-08-29T11:47:52.669Z",
   "projectId": "ftuchtmolddhhsdcwnqe",
   "projectHealth": "ACTIVE_HEALTHY",
   "postgresVersion": "17.6.1.155",
@@ -78,7 +78,9 @@
     "negative INSERT-directly-as-published product case is blocked",
     "negative INSERT-directly-as-published rule case is blocked",
     "non-publication source tier is blocked at product/rule publication",
-    "missing or non-extracted SmPC 4.2 artifact blocks rule publication"
+    "missing or non-extracted SmPC 4.2 artifact blocks rule publication",
+    "run supabase/drx-dose-v3-postapply-smoke.sql immediately after apply",
+    "run supabase/drx-dose-v3-rollback.sql in a controlled rollback test before runtime cutover"
   ],
   "publicationAllowed": false,
   "selfContainedV3ProductShell": true,
@@ -98,5 +100,30 @@
     "sourceTierPublicationGatePresent": true,
     "section42ArtifactGatePresent": true,
     "partialSchemaPreflightPresent": true
+  },
+  "rollback": {
+    "prepared": true,
+    "executed": false,
+    "file": "supabase/drx-dose-v3-rollback.sql",
+    "cascadeUsed": false,
+    "dropsPrivateSchema": false,
+    "legacyTablesTouched": false
+  },
+  "postApplySmoke": {
+    "prepared": true,
+    "executed": false,
+    "file": "supabase/drx-dose-v3-postapply-smoke.sql",
+    "readOnly": true,
+    "verifies": [
+      "12 expected V3 tables exist",
+      "RLS enabled on 12/12",
+      "no PUBLIC/anon/authenticated write grants",
+      "no PUBLIC SELECT grants",
+      "no client SELECT on service/admin tables",
+      "no SECURITY DEFINER on V3 functions",
+      "two publication triggers present",
+      "fresh shadow tables empty",
+      "selector-less RPC fails closed to NULL"
+    ]
   }
 }
