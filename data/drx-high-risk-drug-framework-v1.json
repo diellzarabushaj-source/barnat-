@@ -1,0 +1,31 @@
+{
+  "schemaVersion": "drx-high-risk-drug-framework-v1",
+  "status": "foundation_complete_repository",
+  "publicationAllowed": false,
+  "classes": [
+    "insulin",
+    "vancomycin",
+    "aminoglycosides",
+    "oncology",
+    "anticoagulants",
+    "antiarrhythmics",
+    "critical_care"
+  ],
+  "mandatoryControls": [
+    "manual_clinical_review",
+    "source_provenance",
+    "max_dose_check",
+    "unit_check",
+    "route_check",
+    "patient_specific_inputs",
+    "no_auto_publish"
+  ],
+  "optionalControls": [
+    "therapeutic_drug_monitoring",
+    "lab_dependency",
+    "infusion_rate",
+    "body_surface_area",
+    "adjusted_body_weight"
+  ],
+  "next": "implement class-specific calculators only after sourced rules and clinical review"
+}
