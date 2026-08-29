@@ -27,7 +27,11 @@ for(const table of tables){
   assert.equal(executable.split(statement).length-1,1,table+' must be dropped exactly once');
 }
 
+assert.match(executable,/drop trigger if exists dose_source_snapshots_v3_provenance_lock[\s\S]*on public\.dose_source_snapshots_v3/);
+assert.match(executable,/drop trigger if exists dose_source_sections_v3_provenance_lock[\s\S]*on public\.dose_source_sections_v3/);
 assert.match(executable,/drop function if exists public\.medindex_dose_product_fast_path_v3\(text, uuid\)/);
+assert.match(executable,/drop function if exists private\.drx_lock_source_snapshot_v3\(\)/);
+assert.match(executable,/drop function if exists private\.drx_lock_source_section_v3\(\)/);
 assert.match(executable,/drop function if exists private\.drx_enforce_product_publication_v3\(\)/);
 assert.match(executable,/drop function if exists private\.drx_enforce_rule_publication_v3\(\)/);
 
