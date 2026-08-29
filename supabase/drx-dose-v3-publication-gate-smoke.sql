@@ -119,14 +119,15 @@ begin
     end if;
   end;
 
-  -- Positive rule path: draft -> verified binding -> clean legacy comparison -> publish.
+  -- Positive rule path: renal-required draft -> binding/comparison -> publication must
+  -- first fail without a verified renal adjustment, then succeed after exact provenance is added.
   insert into public.dose_rules_v3
     (rule_key,substance_concept_id,indication_id,patient_group,calculation_method,dose_min_value,dose_max_value,dose_unit,
-     frequency_mode,duration_mode,source_key,source_snapshot_id,source_section,source_section_sha256,source_evidence_hash,
+     frequency_mode,duration_mode,renal_adjustment_required,source_key,source_snapshot_id,source_section,source_section_sha256,source_evidence_hash,
      source_document_date,safety_validation_status,safety_validator_version,safety_validated_at,editorial_status,verified_by,verified_at)
   values
     ('drx-smoke-positive-rule',v_substance_concept_id,v_indication_id,'adult_only','fixed_dose',1,1,'mg',
-     'single','none','drx-smoke-good',v_good_snapshot,'4.2',v_good_section_sha,v_good_snapshot,
+     'single','none',true,'drx-smoke-good',v_good_snapshot,'4.2',v_good_section_sha,v_good_snapshot,
      date '2026-08-29','passed','drx-smoke',now(),'draft','drx-smoke',now())
   returning rule_id into v_rule_id;
 
@@ -139,6 +140,24 @@ begin
     (rule_id,product_id,comparison_status)
   values
     (v_rule_id,v_product_id,'not_applicable');
+
+  begin
+    update public.dose_rules_v3
+    set editorial_status='published'
+    where rule_id=v_rule_id;
+    raise exception 'DRX_V3_PUBLICATION_SMOKE_FAILED: renal-required rule unexpectedly published without adjustment';
+  exception when others then
+    if position('renal adjustment required but no verified provenance-valid renal adjustment exists' in sqlerrm)=0 then
+      raise;
+    end if;
+  end;
+
+  insert into public.dose_renal_adjustments_v3
+    (rule_id,measure_type,min_value,max_value,dose_action,source_key,source_snapshot_id,source_section,source_section_sha256,
+     source_evidence_hash,source_document_date,review_status,verified_by,verified_at)
+  values
+    (v_rule_id,'CrCl_mL_min',0,29,'specialist_review','drx-smoke-good',v_good_snapshot,'4.2',v_good_section_sha,
+     v_good_snapshot,date '2026-08-29','verified','drx-smoke',now());
 
   update public.dose_rules_v3
   set editorial_status='published'
@@ -168,6 +187,14 @@ begin
 
   if v_rpc->'product'->'rules'->0->'source'->>'sectionSha256' <> v_good_section_sha then
     raise exception 'DRX_V3_PUBLICATION_SMOKE_FAILED: RPC section hash provenance mismatch';
+  end if;
+
+  if coalesce(jsonb_array_length(v_rpc->'product'->'rules'->0->'renalAdjustments'),0) <> 1 then
+    raise exception 'DRX_V3_PUBLICATION_SMOKE_FAILED: RPC did not return the verified renal adjustment';
+  end if;
+
+  if v_rpc->'product'->'rules'->0->'renalAdjustments'->0->'source'->>'sectionSha256' <> v_good_section_sha then
+    raise exception 'DRX_V3_PUBLICATION_SMOKE_FAILED: renal adjustment section hash provenance mismatch';
   end if;
 
   -- Negative 4: once published provenance is referenced, snapshot/section mutations are locked.
