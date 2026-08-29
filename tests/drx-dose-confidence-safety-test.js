@@ -6,6 +6,8 @@ const Confidence = require('../lib/dose-confidence-engine.js');
 const Safety = require('../lib/dose-safety-validator.js');
 const Dose = require('../lib/dose-rule-normalizer.js');
 
+const HASH = 'a'.repeat(64);
+
 const baseRule = {
   ruleKey:'r1',
   indicationKey:'pain',
@@ -57,8 +59,8 @@ assert.ok(weak.hardBlockers.includes('non_authoritative_source'));
 
 const validation = Dose.validateRule({
   ...baseRule,
-  sourceSnapshotId:'snapshot',
-  sourceEvidenceHash:'a'.repeat(64),
+  sourceSnapshotId:HASH,
+  sourceEvidenceHash:HASH,
   editorialStatus:'published',
 });
 assert.equal(validation.valid, true);
