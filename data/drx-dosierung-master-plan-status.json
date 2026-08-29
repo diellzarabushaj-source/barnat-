@@ -1,15 +1,33 @@
 {
   "schemaVersion": "drx-dosierung-master-plan-status-v1",
-  "updatedAt": "2026-08-29T12:23:48.460Z",
+  "updatedAt": "2026-08-29T12:25:33.000Z",
   "officialPlan": "DRx Dosierung phases 0-32",
   "databaseBlocker": {
     "active": true,
     "system": "Supabase SQL/MCP database gateway",
-    "symptom": "2026-08-29T10:13:07.905Z recheck: list_migrations and SELECT 1 both failed with \"Connection terminated due to connection timeout\" while the project remained ACTIVE_HEALTHY; Postgres logs remained readable.",
-    "likelyCauseEvidence": "Postgres logs contain 'could not write to file base/pgsql_tmp/...: No space left on device' at 2026-08-29T00:56:31.371Z; later migration statements are visible through 01:19Z, so recovery is incomplete or intermittent rather than safely verified.",
+    "symptom": "2026-08-29T12:18Z recheck: SELECT 1, list_migrations and get_advisors all failed with \"Connection terminated due to connection timeout\" while the project still reported ACTIVE_HEALTHY. Log-stream triage shows this is a sustained data-plane outage, not an intermittent gateway blip.",
+    "likelyCauseEvidence": "Postgres logs contain 'could not write to file base/pgsql_tmp/...: No space left on device' at 2026-08-29T00:56:31.371Z. Every database-backed log source then went silent and has stayed silent: postgres_logs last 01:23:42Z, pgbouncer_logs 01:23:29Z, postgrest_logs 01:19:25Z, storage_logs 01:20:39Z, supavisor_logs 01:51:24Z. Meanwhile edge_logs stayed live through 12:16:50Z, so the control plane and edge proxy are healthy while the database compute is wedged.",
     "officialTroubleshooting": "https://supabase.com/docs/guides/troubleshooting/failed-to-run-sql-query-connection-terminated-due-to-connection-timeout",
     "rule": "Do not bypass live database verification. No migration/DDL/data write/RLS mutation after the failed recheck; continue repository-safe work only and keep publication closed.",
-    "operatorCheck": "Inspect Database Reports plus disk/compute pressure in Supabase; recover the data plane before rerunning baseline, migration history, advisors, and V3 smoke checks."
+    "operatorCheck": "Recover the data plane in the Supabase dashboard before any live step: inspect Database Reports for disk usage, expand disk or restart/resize compute to clear the disk-full condition, then rerun baseline, migration history, advisors and the V3 smoke checks. A pause/restore cycle must not be attempted while the disk is still full.",
+    "dataPlaneOutage": {
+      "observedAt": "2026-08-29T12:18:00.000Z",
+      "diskFullAt": "2026-08-29T00:56:31.371Z",
+      "lastDatabasePlaneLog": "2026-08-29T01:52:39.406Z",
+      "lastEdgeLog": "2026-08-29T12:16:50.706Z",
+      "silentForApproxHours": 10.4,
+      "silentSources": [
+        "postgres_logs",
+        "pgbouncer_logs",
+        "postgrest_logs",
+        "storage_logs",
+        "supavisor_logs"
+      ],
+      "liveSources": [
+        "edge_logs"
+      ],
+      "interpretation": "Database compute has not served or logged since ~01:52Z. Retrying SQL from this session cannot clear it."
+    }
   },
   "phases": [
     {
@@ -618,7 +636,7 @@
     "publicationReady": 0,
     "reviewPacketsReady": 25,
     "supabaseProjectHealth": "ACTIVE_HEALTHY",
-    "supabaseSqlGateway": "connection_timeout_select1_and_migrations_recheck",
+    "supabaseSqlGateway": "connection_timeout_data_plane_silent_since_0152z",
     "v3CandidateReady": true,
     "v3Applied": false,
     "releaseGateImplemented": true,
@@ -631,7 +649,9 @@
       "legacy_comparison_not_live",
       "clinical_review_not_complete",
       "no_published_v3_rules",
-      "vercel_build_rate_limit"
+      "vercel_build_rate_limit",
+      "supabase_data_plane_down",
+      "archive_sources_network_denied"
     ],
     "first100QueueMaterialized": 100,
     "first100CoveredExcluded": 35,
@@ -662,6 +682,26 @@
     "first100CanonicalReviewResolved": 16,
     "first100CanonicalReviewPending": 0,
     "first100EffectiveSourceDiscoveryEligible": 87,
-    "first100SourceLookupRemaining": 0
+    "first100SourceLookupRemaining": 0,
+    "supabaseDataPlaneDown": true,
+    "archiveBlockedByNetworkPolicy": true
+  },
+  "sourceNetworkBlocker": {
+    "active": true,
+    "system": "Session egress network policy (agent proxy)",
+    "symptom": "2026-08-29T12:19Z: CONNECT to the regulatory SmPC hosts is refused with HTTP 403 (policy denial) by the egress gateway, so no real archive artifact can be fetched in this environment.",
+    "deniedHosts": [
+      "www.ema.europa.eu:443",
+      "www.medicines.org.uk:443",
+      "cima.aemps.es:443",
+      "ftuchtmolddhhsdcwnqe.supabase.co:443"
+    ],
+    "allowedReference": "api.github.com returns HTTP 200 through the same proxy, so this is per-host policy rather than a broken proxy.",
+    "blocks": [
+      "batch2_archive_hashes_incomplete",
+      "batch2_normalization_not_ready"
+    ],
+    "rule": "Do not fabricate or hand-author archive artifacts to satisfy the hash gate. Batch 2 stays 0 normalization-ready until 25/25 real archive artifacts are fetched and independently rehashed.",
+    "operatorCheck": "Allow the EMA/eMC/AEMPS hosts in the environment network policy (or run the archive workflow from an environment that already permits them), then rerun the archive workflow and verifier."
   }
 }

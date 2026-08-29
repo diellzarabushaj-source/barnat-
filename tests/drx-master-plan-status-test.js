@@ -39,6 +39,32 @@ for (const artifact of [
 
 assert.equal(tracker.databaseBlocker.active, true);
 assert.match(tracker.databaseBlocker.likelyCauseEvidence, /No space left on device/);
+assert.match(tracker.databaseBlocker.likelyCauseEvidence, /edge_logs stayed live/);
+
+const outage = tracker.databaseBlocker.dataPlaneOutage;
+assert.equal(typeof outage, 'object');
+assert.ok(Array.isArray(outage.silentSources) && outage.silentSources.length >= 5);
+assert.ok(outage.silentSources.includes('postgres_logs'));
+assert.ok(outage.silentSources.includes('postgrest_logs'));
+assert.deepEqual(outage.liveSources, ['edge_logs']);
+assert.ok(new Date(outage.lastEdgeLog) > new Date(outage.lastDatabasePlaneLog),
+  'edge plane must outlive the database plane for the outage diagnosis to hold.');
+
+// Batch 2 archive work is blocked by egress policy, not by missing repo code.
+// This gate exists so nobody "fixes" the hash gap with hand-authored artifacts.
+const network = tracker.sourceNetworkBlocker;
+assert.equal(network.active, true);
+assert.ok(network.deniedHosts.includes('www.ema.europa.eu:443'));
+assert.ok(network.deniedHosts.includes('www.medicines.org.uk:443'));
+assert.ok(network.deniedHosts.includes('cima.aemps.es:443'));
+assert.match(network.rule, /Do not fabricate/);
+assert.ok(network.blocks.includes('batch2_archive_hashes_incomplete'));
+assert.equal(tracker.currentExecution.archiveBlockedByNetworkPolicy, true);
+assert.equal(tracker.currentExecution.supabaseDataPlaneDown, true);
+assert.equal(tracker.currentExecution.archiveWorkflowRunObserved, false);
+assert.ok(tracker.currentExecution.releaseBlockers.includes('supabase_data_plane_down'));
+assert.ok(tracker.currentExecution.releaseBlockers.includes('archive_sources_network_denied'));
+
 assert.equal(tracker.currentExecution.activeCriticalPhase, 14);
 assert.equal(tracker.currentExecution.repositoryImplementationThroughPhase, 32);
 assert.equal(tracker.phases.find(p => p.id === 14).status, 'BLOCKED_DB_GATEWAY_CANDIDATE_HARDENED');
