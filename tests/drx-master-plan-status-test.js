@@ -41,7 +41,7 @@ assert.equal(tracker.databaseBlocker.active, true);
 assert.match(tracker.databaseBlocker.likelyCauseEvidence, /No space left on device/);
 assert.equal(tracker.currentExecution.activeCriticalPhase, 14);
 assert.equal(tracker.currentExecution.repositoryImplementationThroughPhase, 32);
-assert.equal(tracker.phases.find(p => p.id === 14).status, 'BLOCKED_DB_GATEWAY_CANDIDATE_READY');
+assert.equal(tracker.phases.find(p => p.id === 14).status, 'BLOCKED_DB_GATEWAY_CANDIDATE_HARDENED');
 assert.equal(tracker.phases.find(p => p.id === 15).status, 'IN_PROGRESS');
 assert.match(tracker.phases.find(p => p.id === 16).status, /^IN_PROGRESS/);
 assert.equal(tracker.phases.find(p => p.id === 17).status, 'FIRST100_87_OF_87_REPOSITORY_SOURCE_DISCOVERY_COMPLETE_PRODUCTION_PROVENANCE_BLOCKED');
