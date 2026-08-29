@@ -1,32 +1,97 @@
 'use strict';
 
+const MAX_BATCH_SIZE = 500;
+
 function clean(value) {
-  return String(value || '').trim();
+  return String(value ?? '').normalize('NFC').trim();
+}
+
+function rawCanonicalKey(item) {
+  if (typeof item === 'string' || typeof item === 'number') return item;
+  if (!item || typeof item !== 'object') return '';
+  return item.canonicalKey
+    ?? item.canonical_key
+    ?? item.key
+    ?? item.name
+    ?? item.canonicalName
+    ?? item.canonical_name
+    ?? '';
 }
 
 function stableKey(item) {
-  return clean(item.canonicalKey || item.key || item.name || item.canonicalName).toLowerCase();
+  return clean(rawCanonicalKey(item)).toLowerCase();
 }
 
-function buildDiscoveryQueue(canonicalSubstances, alreadyCovered, limit = 100) {
-  if (!Array.isArray(canonicalSubstances)) throw new TypeError('canonicalSubstances must be an array');
-  const covered = new Set((alreadyCovered || []).map(stableKey).filter(Boolean));
-  const seen = new Set();
+function canonicalName(item) {
+  if (typeof item === 'string' || typeof item === 'number') return clean(item);
+  if (!item || typeof item !== 'object') return '';
+  return clean(
+    item.canonicalName
+    ?? item.canonical_name
+    ?? item.name
+    ?? item.label
+    ?? item.canonicalKey
+    ?? item.canonical_key
+    ?? item.key
+    ?? ''
+  );
+}
 
-  return canonicalSubstances
-    .map(item => ({
+function conceptId(item) {
+  if (!item || typeof item !== 'object') return null;
+  const value = item.conceptId ?? item.concept_id ?? item.id ?? null;
+  return value === null || value === undefined || clean(value) === '' ? null : value;
+}
+
+function compareStable(a, b) {
+  if (a.canonicalKey < b.canonicalKey) return -1;
+  if (a.canonicalKey > b.canonicalKey) return 1;
+  const aConcept = clean(a.conceptId);
+  const bConcept = clean(b.conceptId);
+  if (aConcept < bConcept) return -1;
+  if (aConcept > bConcept) return 1;
+  return 0;
+}
+
+function normalizedLimit(limit) {
+  const value = Number(limit);
+  if (!Number.isInteger(value) || value < 1 || value > MAX_BATCH_SIZE) {
+    throw new RangeError(`limit must be an integer between 1 and ${MAX_BATCH_SIZE}`);
+  }
+  return value;
+}
+
+function normalizeCanonicalRows(canonicalSubstances) {
+  if (!Array.isArray(canonicalSubstances)) throw new TypeError('canonicalSubstances must be an array');
+
+  const seen = new Set();
+  const rows = [];
+
+  for (const item of canonicalSubstances) {
+    const row = {
       canonicalKey:stableKey(item),
-      canonicalName:clean(item.canonicalName || item.name || item.label || item.canonicalKey || item.key),
-      conceptId:item.conceptId || item.id || null,
-    }))
-    .filter(item => item.canonicalKey && item.canonicalName)
-    .filter(item => {
-      if (covered.has(item.canonicalKey) || seen.has(item.canonicalKey)) return false;
-      seen.add(item.canonicalKey);
-      return true;
-    })
-    .sort((a,b) => a.canonicalKey.localeCompare(b.canonicalKey))
-    .slice(0, limit)
+      canonicalName:canonicalName(item),
+      conceptId:conceptId(item),
+    };
+    if (!row.canonicalKey || !row.canonicalName) continue;
+    if (seen.has(row.canonicalKey)) continue;
+    seen.add(row.canonicalKey);
+    rows.push(row);
+  }
+
+  return rows.sort(compareStable);
+}
+
+function buildDiscoveryQueue(canonicalSubstances, alreadyCovered = [], limit = 100) {
+  const take = normalizedLimit(limit);
+  if (!Array.isArray(alreadyCovered)) throw new TypeError('alreadyCovered must be an array');
+
+  const covered = new Set(alreadyCovered.map(stableKey).filter(Boolean));
+  const canonical = normalizeCanonicalRows(canonicalSubstances);
+
+  return canonical
+    .filter(item => !covered.has(item.canonicalKey))
+    .slice(0, take)
     .map((item,index) => ({
       ordinal:index + 1,
       ...item,
@@ -36,4 +101,28 @@ function buildDiscoveryQueue(canonicalSubstances, alreadyCovered, limit = 100) {
     }));
 }
 
-module.exports = { buildDiscoveryQueue };
+function buildDiscoveryBatch(canonicalSubstances, alreadyCovered = [], limit = 100) {
+  const queue = buildDiscoveryQueue(canonicalSubstances, alreadyCovered, limit);
+  const canonicalCount = normalizeCanonicalRows(canonicalSubstances).length;
+  const coveredKeys = new Set(alreadyCovered.map(stableKey).filter(Boolean));
+  const coveredCanonicalCount = Array.from(coveredKeys).filter(Boolean).length;
+
+  return {
+    schemaVersion:'drx-source-discovery-batch-v1',
+    requestedCount:normalizedLimit(limit),
+    canonicalCount,
+    coveredInputCount:coveredCanonicalCount,
+    queuedCount:queue.length,
+    complete:queue.length === normalizedLimit(limit),
+    publicationAllowed:false,
+    queue,
+  };
+}
+
+module.exports = {
+  MAX_BATCH_SIZE,
+  buildDiscoveryQueue,
+  buildDiscoveryBatch,
+  normalizeCanonicalRows,
+  _test:{ clean, stableKey, canonicalName, conceptId, compareStable, normalizedLimit },
+};
