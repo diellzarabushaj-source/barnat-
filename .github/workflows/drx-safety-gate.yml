@@ -1,0 +1,90 @@
+name: DRx Dosierung Safety Gate
+
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - main
+    paths:
+      - "dose-core.js"
+      - "lib/dose-*.js"
+      - "registry-dose-calculator.js"
+      - "data/drx-*.json"
+      - "scripts/audit-drx-*.js"
+      - "scripts/build-drx-*.js"
+      - "scripts/sql/drx-*.sql"
+      - "supabase/drx-dose-v3-additive-candidate.sql"
+      - "tests/drx-*.js"
+      - "package.json"
+      - ".github/workflows/drx-safety-gate.yml"
+  pull_request:
+    paths:
+      - "dose-core.js"
+      - "lib/dose-*.js"
+      - "registry-dose-calculator.js"
+      - "data/drx-*.json"
+      - "scripts/audit-drx-*.js"
+      - "scripts/build-drx-*.js"
+      - "scripts/sql/drx-*.sql"
+      - "supabase/drx-dose-v3-additive-candidate.sql"
+      - "tests/drx-*.js"
+      - "package.json"
+
+permissions:
+  contents: read
+
+concurrency:
+  group: drx-dosierung-safety-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  safety:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Node 24
+        uses: actions/setup-node@v4
+        with:
+          node-version: 24
+
+      - name: Enable pnpm
+        run: corepack enable
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Syntax gate
+        run: |
+          node --check dose-core.js
+          node --check registry-dose-calculator.js
+          node --check lib/dose-adjustment-engine.js
+          node --check lib/dose-publication-gate.js
+          node --check lib/dose-v3-product-reader.js
+          node --check lib/dose-v3-product-rpc-reader.js
+          node --check scripts/audit-drx-production-release.js
+
+      - name: DRx clinical contracts
+        run: pnpm run test:drx-release
+
+      - name: Phase 16 evidence parity
+        run: |
+          node scripts/audit-drx-phase16-consistency.js
+          node scripts/audit-drx-batch2-prepublication.js
+
+      - name: Refresh fail-closed release evidence
+        run: node scripts/audit-drx-production-release.js
+
+      - name: Upload release evidence
+        uses: actions/upload-artifact@v4
+        with:
+          name: drx-release-evidence
+          path: |
+            data/drx-production-release-readiness-v1.json
+            data/drx-dose-coverage-snapshot-v2.json
+            data/drx-batch2-readiness-matrix-v1.json
+          if-no-files-found: error
+          retention-days: 30
