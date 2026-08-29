@@ -55,6 +55,7 @@ function build(){
    sourceAuthorityCounts:verified.reduce((acc,row)=>{acc[row.sourceTier]=(acc[row.sourceTier]||0)+1;return acc;},{}),
    productSelectionRequired:selection.length,
    eligibleRemaining:Math.max(0,eligibleTotal-verified.length),
+   sourceLookupRemaining:Math.max(0,eligibleTotal-verified.length-selection.length),
    issueCount:issues.length,
    complete:repositoryComplete,
    repositoryComplete,
