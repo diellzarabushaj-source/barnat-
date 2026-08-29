@@ -4,6 +4,8 @@ const assert = require('node:assert/strict');
 const Adjust = require('../lib/dose-adjustment-engine.js');
 
 const hash = 'c'.repeat(64);
+const sectionHash = 'd'.repeat(64);
+const verifiedAt = '2026-08-29T12:00:00Z';
 
 const renalRows = [
   {
@@ -15,9 +17,12 @@ const renalRows = [
     interval_max_hours:12,
     source_key:'emc-x',
     source_section:'4.2',
+    source_section_sha256:sectionHash,
     source_snapshot_id:hash,
     source_evidence_hash:hash,
     review_status:'verified',
+    verified_by:'drx-reviewer',
+    verified_at:verifiedAt,
   },
   {
     measure_type:'CrCl_mL_min',
@@ -25,9 +30,12 @@ const renalRows = [
     dose_action:'no_adjustment',
     source_key:'emc-x',
     source_section:'4.2',
+    source_section_sha256:sectionHash,
     source_snapshot_id:hash,
     source_evidence_hash:hash,
     review_status:'verified',
+    verified_by:'drx-reviewer',
+    verified_at:verifiedAt,
   },
 ];
 
@@ -56,9 +64,12 @@ const hepatic = Adjust.selectAdjustment([
     dose_action:'specialist_review',
     source_key:'emc-y',
     source_section:'4.2',
+    source_section_sha256:sectionHash,
     source_snapshot_id:hash,
     source_evidence_hash:hash,
     review_status:'verified',
+    verified_by:'drx-reviewer',
+    verified_at:verifiedAt,
   },
 ], {childPughClass:'C'});
 assert.equal(hepatic.status,'blocked');
@@ -70,10 +81,43 @@ const invalid = Adjust.selectAdjustment([
     dose_action:'reduce_dose',
     source_key:'emc-z',
     source_section:'4.2',
+    source_section_sha256:'',
     review_status:'verified',
   },
 ], {eGfrMlMin173m2:25});
 assert.equal(invalid.status,'blocked');
 assert.equal(invalid.reason,'invalid_adjustment_rows');
+
+const provenanceMismatch = Adjust.validateAdjustmentRow({
+  measure_type:'CrCl_mL_min',
+  min_value:10,
+  max_value:20,
+  dose_action:'no_adjustment',
+  source_key:'emc-mismatch',
+  source_section:'4.2',
+  source_section_sha256:sectionHash,
+  source_snapshot_id:'a'.repeat(64),
+  source_evidence_hash:'b'.repeat(64),
+  review_status:'verified',
+  verified_by:'drx-reviewer',
+  verified_at:verifiedAt,
+});
+assert.equal(provenanceMismatch.valid,false);
+assert.ok(provenanceMismatch.errors.includes('source_snapshot_evidence_hash_mismatch'));
+
+const missingReviewer = Adjust.validateAdjustmentRow({
+  measure_type:'Child_Pugh_class',
+  accepted_values:['B'],
+  dose_action:'specialist_review',
+  source_key:'emc-review',
+  source_section:'4.2',
+  source_section_sha256:sectionHash,
+  source_snapshot_id:hash,
+  source_evidence_hash:hash,
+  review_status:'verified',
+});
+assert.equal(missingReviewer.valid,false);
+assert.ok(missingReviewer.errors.includes('verified_by_missing'));
+assert.ok(missingReviewer.errors.includes('verified_at_missing'));
 
 console.log('DRx renal/hepatic adjustment engine contracts passed.');
