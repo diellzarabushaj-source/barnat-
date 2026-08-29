@@ -1,19 +1,20 @@
 {
   "schemaVersion": "drx-first100-source-discovery-index-v1",
-  "generatedAt": "2026-08-29T10:38:56.378Z",
+  "generatedAt": "2026-08-29T10:43:20.549Z",
   "first100Count": 100,
   "canonicalReviewRequired": 14,
   "sourceDiscoveryEligible": 89,
-  "verifiedProductSpecific": 80,
-  "verifiedCanonicalSubstances": 80,
+  "verifiedProductSpecific": 81,
+  "verifiedCanonicalSubstances": 81,
   "sourceAuthorityCounts": {
     "EMC": 55,
     "AEMPS_CIMA": 12,
-    "EU_NATIONAL": 13
+    "EU_NATIONAL": 13,
+    "FACHINFO_DE": 1
   },
   "productSelectionRequired": 1,
-  "eligibleRemaining": 9,
-  "sourceLookupRemaining": 8,
+  "eligibleRemaining": 8,
+  "sourceLookupRemaining": 7,
   "issueCount": 0,
   "complete": false,
   "repositoryComplete": false,
@@ -1915,6 +1916,50 @@
       ],
       "publicationAllowed": false,
       "wave": "drx-first100-source-discovery-wave-o-v1.json"
+    },
+    {
+      "canonicalKey": "clotrimazolehexamidinediisetionateprednisolone",
+      "canonicalName": "Clotrimazole + Hexamidine diisetionate + Prednisolone",
+      "status": "verified_product_specific_review_required",
+      "sourceTier": "FACHINFO_DE",
+      "authority": "Fachinfo-Service / Rote Liste Service GmbH",
+      "sourceKey": "fachinfo-015058-imazol-comp-2024-06",
+      "url": "https://www.fachinfo.de/fi/pdf/015058/imazol-r-comp-creme",
+      "productRegistryUrl": "https://www.fachinfo.de/fi/pdf/015058/imazol-r-comp-creme",
+      "productName": "Imazol® comp. Creme",
+      "registrationNumber": "49824.00.00",
+      "atcCode": "D01AC01 / D07AA03",
+      "documentDate": "2024-06",
+      "documentDatePrecision": "month",
+      "section41Present": true,
+      "section42Present": true,
+      "currentRegistryCrosscheck": {
+        "checkedDate": "2026-08-29",
+        "activeSubstances": [
+          "clotrimazole",
+          "prednisolone acetate",
+          "hexamidine diisethionate"
+        ],
+        "strengths": [
+          "10 mg/g",
+          "5 mg/g",
+          "2.5 mg/g"
+        ],
+        "route": "cutaneous",
+        "marketingAuthorisationHolder": "Laboratoires Bailleul S.A.",
+        "fachinfoUpdateListing": "2024-07-23"
+      },
+      "reviewFlags": [
+        "fixed_combination",
+        "topical_corticosteroid",
+        "pediatric_from_one_month",
+        "maximum_duration_one_week",
+        "professional_product_information_not_regulator",
+        "manual_publication_review_required",
+        "clinical_review_required"
+      ],
+      "publicationAllowed": false,
+      "wave": "drx-first100-source-discovery-wave-p-v1.json"
     }
   ]
 }
