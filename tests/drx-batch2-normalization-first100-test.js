@@ -57,8 +57,8 @@ const canonical = Array.from({length:140}, (_, i) => ({
 const covered = canonical.slice(0,35);
 const queue = Queue.buildDiscoveryQueue(canonical, covered, 100);
 assert.equal(queue.length, 100);
-assert.equal(queue[0].canonicalKey, 'drug-036');
-assert.equal(queue[99].canonicalKey, 'drug-135');
+assert.equal(queue[0].canonicalKey, 'drug036');
+assert.equal(queue[99].canonicalKey, 'drug135');
 assert.ok(queue.every(x => x.status === 'source_discovery_pending'));
 assert.ok(queue.every(x => x.publicationAllowed === false));
 
@@ -70,6 +70,7 @@ const supabaseRows = [
 ];
 const supabaseQueue = Queue.buildDiscoveryQueue(supabaseRows, ['beta'], 2);
 assert.deepEqual(supabaseQueue.map(x => x.canonicalKey), ['alpha','zeta']);
+assert.equal(Queue._test.stableKey({key:'amoxicillin-clavulanic-acid'}),'amoxicillinclavulanicacid');
 assert.equal(supabaseQueue[0].conceptId, 'c-a');
 assert.equal(supabaseQueue[0].canonicalName, 'Alpha');
 
