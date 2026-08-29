@@ -1,17 +1,33 @@
 {
   "schemaVersion": "drx-first100-source-discovery-queue-v1",
-  "generatedAt": "2026-08-30T02:00:00+02:00",
+  "generatedAt": "2026-08-30T02:35:00+02:00",
   "ordering": "canonical_key_ascending_then_source_row",
   "source": {
     "kind": "google_sheet_registry_source",
     "spreadsheetId": "10wjwyPhFLIwNMAGF296K_lxnUi0mSZEoW-UGiAA9QEs",
     "spreadsheetTitle": "Lista e Substancave Aktive sipas ATC — Regjistri 2025",
     "sheetName": "Lista aktive ATC",
-    "readRange": "A4:E400",
-    "note": "Registry-derived substance list; source states duplicates/salt-hydration variants/dosage forms/clear spelling errors were normalized before this queue."
+    "readRange": "A4:E430",
+    "note": "Registry-derived substance list; aliases are excluded only through reviewed evidence-backed mappings."
   },
   "coveredBatch1And2Count": 35,
+  "reviewedCoveredAliasCount": 3,
+  "reviewedCoveredAliases": {
+    "acetylsalicylicacid": {
+      "coveredCanonicalKey": "aspirin",
+      "evidence": "Batch 2 aspirin SmPC eMC 102206 identifies acetylsalicylic acid as the active ingredient"
+    },
+    "coamoxiclav": {
+      "coveredCanonicalKey": "amoxicillinclavulanicacid",
+      "evidence": "Batch 1 co-amoxiclav source/product terminology"
+    },
+    "amoxicillinclavulanicacid": {
+      "coveredCanonicalKey": "amoxicillinclavulanicacid",
+      "evidence": "Batch 1 canonical combination"
+    }
+  },
   "coveredKeys": [
+    "acetylsalicylicacid",
     "amlodipine",
     "amoxicillin",
     "amoxicillinclavulanicacid",
@@ -25,6 +41,7 @@
     "cetirizine",
     "ciprofloxacin",
     "clopidogrel",
+    "coamoxiclav",
     "dexamethasone",
     "diclofenac",
     "doxycycline",
@@ -48,7 +65,7 @@
     "spironolactone",
     "tramadol"
   ],
-  "scannedUniqueSubstances": 396,
+  "scannedUniqueSubstances": 426,
   "queuedCount": 100,
   "complete": true,
   "publicationAllowed": false,
@@ -115,26 +132,6 @@
     },
     {
       "ordinal": 4,
-      "sourceRow": 120,
-      "atcGroup": "B",
-      "atcDescription": "Gjaku dhe organet gjakformuese",
-      "atcCodes": "B01AC06",
-      "canonicalName": "Acetylsalicylic acid",
-      "canonicalKey": "acetylsalicylicacid",
-      "status": "source_discovery_pending",
-      "preferredSourceOrder": [
-        "EMA",
-        "EMC",
-        "AEMPS_CIMA",
-        "EU_OTHER",
-        "KOSOVO",
-        "MEDIATELY_CROSSCHECK",
-        "FALLBACK"
-      ],
-      "publicationAllowed": false
-    },
-    {
-      "ordinal": 5,
       "sourceRow": 293,
       "atcGroup": "C",
       "atcDescription": "Sistemi kardiovaskular",
@@ -154,7 +151,7 @@
       "publicationAllowed": false
     },
     {
-      "ordinal": 6,
+      "ordinal": 5,
       "sourceRow": 327,
       "atcGroup": "D / J / S",
       "atcDescription": "Dermatologjikë / Antiinfektivë për përdorim sistemik / Organet shqisore",
@@ -174,7 +171,7 @@
       "publicationAllowed": false
     },
     {
-      "ordinal": 7,
+      "ordinal": 6,
       "sourceRow": 294,
       "atcGroup": "C",
       "atcDescription": "Sistemi kardiovaskular",
@@ -194,7 +191,7 @@
       "publicationAllowed": false
     },
     {
-      "ordinal": 8,
+      "ordinal": 7,
       "sourceRow": 317,
       "atcGroup": "D",
       "atcDescription": "Dermatologjikë",
@@ -214,7 +211,7 @@
       "publicationAllowed": false
     },
     {
-      "ordinal": 9,
+      "ordinal": 8,
       "sourceRow": 365,
       "atcGroup": "D",
       "atcDescription": "Dermatologjikë",
@@ -234,7 +231,7 @@
       "publicationAllowed": false
     },
     {
-      "ordinal": 10,
+      "ordinal": 9,
       "sourceRow": 364,
       "atcGroup": "D",
       "atcDescription": "Dermatologjikë",
@@ -254,7 +251,7 @@
       "publicationAllowed": false
     },
     {
-      "ordinal": 11,
+      "ordinal": 10,
       "sourceRow": 200,
       "atcGroup": "C",
       "atcDescription": "Sistemi kardiovaskular",
@@ -274,7 +271,7 @@
       "publicationAllowed": false
     },
     {
-      "ordinal": 12,
+      "ordinal": 11,
       "sourceRow": 225,
       "atcGroup": "C",
       "atcDescription": "Sistemi kardiovaskular",
@@ -294,7 +291,7 @@
       "publicationAllowed": false
     },
     {
-      "ordinal": 13,
+      "ordinal": 12,
       "sourceRow": 186,
       "atcGroup": "C",
       "atcDescription": "Sistemi kardiovaskular",
@@ -314,7 +311,7 @@
       "publicationAllowed": false
     },
     {
-      "ordinal": 14,
+      "ordinal": 13,
       "sourceRow": 167,
       "atcGroup": "B",
       "atcDescription": "Gjaku dhe organet gjakformuese",
@@ -334,7 +331,7 @@
       "publicationAllowed": false
     },
     {
-      "ordinal": 15,
+      "ordinal": 14,
       "sourceRow": 168,
       "atcGroup": "B",
       "atcDescription": "Gjaku dhe organet gjakformuese",
@@ -354,7 +351,7 @@
       "publicationAllowed": false
     },
     {
-      "ordinal": 16,
+      "ordinal": 15,
       "sourceRow": 169,
       "atcGroup": "B",
       "atcDescription": "Gjaku dhe organet gjakformuese",
@@ -374,7 +371,7 @@
       "publicationAllowed": false
     },
     {
-      "ordinal": 17,
+      "ordinal": 16,
       "sourceRow": 170,
       "atcGroup": "B",
       "atcDescription": "Gjaku dhe organet gjakformuese",
@@ -394,7 +391,7 @@
       "publicationAllowed": false
     },
     {
-      "ordinal": 18,
+      "ordinal": 17,
       "sourceRow": 334,
       "atcGroup": "D",
       "atcDescription": "Dermatologjikë",
@@ -414,13 +411,33 @@
       "publicationAllowed": false
     },
     {
-      "ordinal": 19,
+      "ordinal": 18,
       "sourceRow": 89,
       "atcGroup": "A",
       "atcDescription": "Trakti alimentar dhe metabolizmi",
       "atcCodes": "A11AA03",
       "canonicalName": "Alfa tocopheryl + Ascorbic acid + Cholecalciferol concentrate + Copper pentahydrated + Cyanocobalamin mannitol + Ferrous + Folic acid + Hydrogen + Magnesium lactate + Manganese + Molybdate + Nicotinamide + Pantothenate + Pyridoxine + Riboflavin + Thiamine + Vitamin concentrate synthetic oily + Zinc heptahydrate",
       "canonicalKey": "alfatocopherylascorbicacidcholecalciferolconcentratecopperpentahydratedcyanocobalaminmannitolferrousfolicacidhydrogenmagnesiumlactatemanganesemolybdatenicotinamidepantothenatepyridoxineriboflavinthiaminevitaminconcentratesyntheticoilyzincheptahydrate",
+      "status": "source_discovery_pending",
+      "preferredSourceOrder": [
+        "EMA",
+        "EMC",
+        "AEMPS_CIMA",
+        "EU_OTHER",
+        "KOSOVO",
+        "MEDIATELY_CROSSCHECK",
+        "FALLBACK"
+      ],
+      "publicationAllowed": false
+    },
+    {
+      "ordinal": 19,
+      "sourceRow": 419,
+      "atcGroup": "G",
+      "atcDescription": "Sistemi gjenitourinar dhe hormonet seksuale",
+      "atcCodes": "G04CA01",
+      "canonicalName": "Alfuzosin",
+      "canonicalKey": "alfuzosin",
       "status": "source_discovery_pending",
       "preferredSourceOrder": [
         "EMA",
@@ -1855,6 +1872,26 @@
     },
     {
       "ordinal": 91,
+      "sourceRow": 408,
+      "atcGroup": "G",
+      "atcDescription": "Sistemi gjenitourinar dhe hormonet seksuale",
+      "atcCodes": "G03GA08",
+      "canonicalName": "Choriogonadotropin alfa",
+      "canonicalKey": "choriogonadotropinalfa",
+      "status": "source_discovery_pending",
+      "preferredSourceOrder": [
+        "EMA",
+        "EMC",
+        "AEMPS_CIMA",
+        "EU_OTHER",
+        "KOSOVO",
+        "MEDIATELY_CROSSCHECK",
+        "FALLBACK"
+      ],
+      "publicationAllowed": false
+    },
+    {
+      "ordinal": 92,
       "sourceRow": 124,
       "atcGroup": "B",
       "atcDescription": "Gjaku dhe organet gjakformuese",
@@ -1874,7 +1911,7 @@
       "publicationAllowed": false
     },
     {
-      "ordinal": 92,
+      "ordinal": 93,
       "sourceRow": 218,
       "atcGroup": "C",
       "atcDescription": "Sistemi kardiovaskular",
@@ -1894,7 +1931,7 @@
       "publicationAllowed": false
     },
     {
-      "ordinal": 93,
+      "ordinal": 94,
       "sourceRow": 221,
       "atcGroup": "C",
       "atcDescription": "Sistemi kardiovaskular",
@@ -1914,7 +1951,7 @@
       "publicationAllowed": false
     },
     {
-      "ordinal": 94,
+      "ordinal": 95,
       "sourceRow": 368,
       "atcGroup": "D / G / J",
       "atcDescription": "Dermatologjikë / Sistemi gjenitourinar dhe hormonet seksuale / Antiinfektivë për përdorim sistemik",
@@ -1934,7 +1971,7 @@
       "publicationAllowed": false
     },
     {
-      "ordinal": 95,
+      "ordinal": 96,
       "sourceRow": 342,
       "atcGroup": "D",
       "atcDescription": "Dermatologjikë",
@@ -1954,7 +1991,27 @@
       "publicationAllowed": false
     },
     {
-      "ordinal": 96,
+      "ordinal": 97,
+      "sourceRow": 409,
+      "atcGroup": "G",
+      "atcDescription": "Sistemi gjenitourinar dhe hormonet seksuale",
+      "atcCodes": "G03GB02",
+      "canonicalName": "Clomiphene",
+      "canonicalKey": "clomiphene",
+      "status": "source_discovery_pending",
+      "preferredSourceOrder": [
+        "EMA",
+        "EMC",
+        "AEMPS_CIMA",
+        "EU_OTHER",
+        "KOSOVO",
+        "MEDIATELY_CROSSCHECK",
+        "FALLBACK"
+      ],
+      "publicationAllowed": false
+    },
+    {
+      "ordinal": 98,
       "sourceRow": 295,
       "atcGroup": "D / G",
       "atcDescription": "Dermatologjikë / Sistemi gjenitourinar dhe hormonet seksuale",
@@ -1974,7 +2031,7 @@
       "publicationAllowed": false
     },
     {
-      "ordinal": 97,
+      "ordinal": 99,
       "sourceRow": 332,
       "atcGroup": "D",
       "atcDescription": "Dermatologjikë",
@@ -1994,53 +2051,13 @@
       "publicationAllowed": false
     },
     {
-      "ordinal": 98,
+      "ordinal": 100,
       "sourceRow": 378,
       "atcGroup": "G",
       "atcDescription": "Sistemi gjenitourinar dhe hormonet seksuale",
       "atcCodes": "G01AF20",
       "canonicalName": "Clotrimazole + Metronidazole",
       "canonicalKey": "clotrimazolemetronidazole",
-      "status": "source_discovery_pending",
-      "preferredSourceOrder": [
-        "EMA",
-        "EMC",
-        "AEMPS_CIMA",
-        "EU_OTHER",
-        "KOSOVO",
-        "MEDIATELY_CROSSCHECK",
-        "FALLBACK"
-      ],
-      "publicationAllowed": false
-    },
-    {
-      "ordinal": 99,
-      "sourceRow": 155,
-      "atcGroup": "B",
-      "atcDescription": "Gjaku dhe organet gjakformuese",
-      "atcCodes": "B03AE10",
-      "canonicalName": "Copper + Ironas ferrous + Manganese",
-      "canonicalKey": "copperironasferrousmanganese",
-      "status": "source_discovery_pending",
-      "preferredSourceOrder": [
-        "EMA",
-        "EMC",
-        "AEMPS_CIMA",
-        "EU_OTHER",
-        "KOSOVO",
-        "MEDIATELY_CROSSCHECK",
-        "FALLBACK"
-      ],
-      "publicationAllowed": false
-    },
-    {
-      "ordinal": 100,
-      "sourceRow": 156,
-      "atcGroup": "B",
-      "atcDescription": "Gjaku dhe organet gjakformuese",
-      "atcCodes": "B03BA01",
-      "canonicalName": "Cyanocobalamin",
-      "canonicalKey": "cyanocobalamin",
       "status": "source_discovery_pending",
       "preferredSourceOrder": [
         "EMA",
