@@ -1,6 +1,6 @@
 {
   "schemaVersion": "drx-high-risk-drug-framework-v1",
-  "status": "foundation_complete_repository",
+  "status": "source_anchored_foundation_complete_repository",
   "publicationAllowed": false,
   "classes": [
     "insulin",
@@ -18,7 +18,12 @@
     "unit_check",
     "route_check",
     "patient_specific_inputs",
-    "no_auto_publish"
+    "no_auto_publish",
+    "exact_source_snapshot_sha256",
+    "source_document_date_or_version",
+    "exact_product_binding",
+    "clinical_context_complete",
+    "reviewer_identity_and_timestamp"
   ],
   "optionalControls": [
     "therapeutic_drug_monitoring",
@@ -27,5 +32,120 @@
     "body_surface_area",
     "adjusted_body_weight"
   ],
-  "next": "implement class-specific calculators only after sourced rules and clinical review"
+  "next": "persist source-anchored class controls in V3 review/safety layers; high-risk remains manual-review-only even when deterministic calculations are available",
+  "classControls": {
+    "insulin": {
+      "sourceKey": "emc-2376-smpc",
+      "url": "https://www.medicines.org.uk/emc/product/2376/smpc",
+      "documentDate": "2026-05-14",
+      "representativeProduct": "Lantus 100 units/ml solution for injection in a cartridge",
+      "mandatory": [
+        "units_not_mg",
+        "individualized_dose",
+        "same_time_daily_for_this_product",
+        "renal_function_context",
+        "hepatic_function_context",
+        "hypoglycaemia_safety",
+        "manual_clinical_review"
+      ],
+      "autoCalculation": "blocked_without_product_specific_insulin_rule"
+    },
+    "vancomycin": {
+      "sourceKey": "emc-15736-smpc",
+      "url": "https://www.medicines.org.uk/emc/product/15736/smpc",
+      "documentDate": "2026-03-27",
+      "representativeProduct": "Vancomycin 500 mg powder for concentrate for solution for infusion",
+      "mandatory": [
+        "total_body_weight",
+        "renal_function",
+        "therapeutic_drug_monitoring",
+        "route_specificity",
+        "infusion_rate",
+        "infection_specific_duration",
+        "official_antimicrobial_guidance",
+        "manual_clinical_review"
+      ],
+      "autoCalculation": "blocked_until_tdm_and_renal_context_resolved"
+    },
+    "aminoglycosides": {
+      "sourceKey": "emc-12877-smpc",
+      "url": "https://www.medicines.org.uk/emc/product/12877/smpc",
+      "documentDate": "2025-10-16",
+      "representativeProduct": "Gentamicin 40 mg/ml solution for injection/infusion",
+      "mandatory": [
+        "weight_basis",
+        "renal_function",
+        "serum_level_monitoring",
+        "ototoxicity_monitoring",
+        "route_specificity",
+        "adjusted_body_weight_when_source_requires",
+        "manual_clinical_review"
+      ],
+      "autoCalculation": "blocked_when_serum_concentrations_cannot_be_monitored"
+    },
+    "oncology": {
+      "sourceKey": "emc-6756-smpc",
+      "url": "https://www.medicines.org.uk/emc/product/6756/smpc",
+      "documentDate": "2026-07-13",
+      "representativeProduct": "Methotrexate 100 mg/ml Injection",
+      "mandatory": [
+        "exact_indication_and_protocol",
+        "route_and_concentration",
+        "bsa_or_weight_when_applicable",
+        "renal_function",
+        "interaction_and_rescue_context_when_applicable",
+        "specialist_protocol_review",
+        "manual_clinical_review"
+      ],
+      "autoCalculation": "never_generalize_across_oncology_protocols"
+    },
+    "anticoagulants": {
+      "sourceKey": "emc-102013-smpc",
+      "url": "https://www.medicines.org.uk/emc/product/102013/smpc",
+      "documentDate": "2026-04-09",
+      "representativeProduct": "Clexane pre-filled syringes",
+      "mandatory": [
+        "indication_specific_regimen",
+        "weight",
+        "age_branching_where_applicable",
+        "CrCl_not_eGFR_inference",
+        "bleeding_risk",
+        "route",
+        "renal_adjustment",
+        "manual_clinical_review"
+      ],
+      "autoCalculation": "blocked_without_exact_indication_age_renal_and_weight_context"
+    },
+    "antiarrhythmics": {
+      "sourceKey": "emc-3453-smpc",
+      "url": "https://www.medicines.org.uk/emc/product/3453/smpc",
+      "documentDate": "2025-09-02",
+      "representativeProduct": "Amiodarone 30 mg/ml solution for injection/infusion",
+      "mandatory": [
+        "hospital_or_specialist_supervision",
+        "cardiac_monitoring",
+        "route",
+        "weight",
+        "infusion_rate",
+        "max_24h_context",
+        "manual_clinical_review"
+      ],
+      "autoCalculation": "specialist_only"
+    },
+    "critical_care": {
+      "sourceKey": "emc-102170-smpc",
+      "url": "https://www.medicines.org.uk/emc/product/102170/smpc",
+      "documentDate": "2026-05-13",
+      "representativeProduct": "Noradrenaline 0.16 mg/ml solution for infusion",
+      "mandatory": [
+        "continuous_hemodynamic_monitoring",
+        "controlled_infusion_pump",
+        "concentration_specific_rule",
+        "route",
+        "titration_target",
+        "manual_clinical_review"
+      ],
+      "autoCalculation": "specialist_only_continuous_titration"
+    }
+  }
 }
