@@ -1,10 +1,10 @@
 {
   "schemaVersion": "drx-first100-source-discovery-wave-g-v1",
-  "generatedAt": "2026-08-29T04:36:00.000Z",
+  "generatedAt": "2026-08-29T07:07:31.080Z",
   "sourcePolicy": "data/drx-dose-source-policy-v1.json",
   "verificationMethod": "live_aemps_cima_html_product_specific_smpc",
   "publicationAllowed": false,
-  "verifiedProductSpecificCount": 1,
+  "verifiedProductSpecificCount": 4,
   "sectionsPendingCount": 0,
   "productSelectionRequiredCount": 0,
   "rows": [
@@ -28,6 +28,74 @@
         "stable_monocomponent_doses_required",
         "renal_hepatic_review",
         "product_strength_specific",
+        "clinical_review_required"
+      ],
+      "publicationAllowed": false
+    },
+    {
+      "canonicalKey": "bezafibrate",
+      "canonicalName": "Bezafibrate",
+      "status": "verified_product_specific",
+      "sourceTier": "AEMPS_CIMA",
+      "sourceKey": "cima-57150-ft",
+      "url": "https://cima.aemps.es/cima/dochtml/ft/57150/FT_57150.html",
+      "productName": "Eulitop Retard 400 mg comprimidos de liberación prolongada",
+      "documentDate": "2023-04",
+      "documentDatePrecision": "month",
+      "section41Present": true,
+      "section42Present": true,
+      "reviewFlags": [
+        "prolonged_release_formulation_specific",
+        "hypertriglyceridemia_or_mixed_hyperlipidemia_context",
+        "creatinine_clearance_60_threshold",
+        "renal_adjustment_requires_200mg_formulation",
+        "dialysis_contraindication",
+        "lipid_monitoring_required"
+      ],
+      "publicationAllowed": false
+    },
+    {
+      "canonicalKey": "betamethasonedipropionategentamicin",
+      "canonicalName": "Betamethasone dipropionate + Gentamicin",
+      "status": "verified_product_specific",
+      "sourceTier": "AEMPS_CIMA",
+      "sourceKey": "cima-53541-ft",
+      "url": "https://cima.aemps.es/cima/dochtml/ft/53541/FT_53541.html",
+      "productName": "Diprogenta 0,5 mg/g + 1 mg/g crema",
+      "documentDate": "2017-09",
+      "documentDatePrecision": "month",
+      "section41Present": true,
+      "section42Present": true,
+      "reviewFlags": [
+        "fixed_topical_corticosteroid_antibiotic",
+        "cutaneous_route_specific",
+        "infected_steroid_responsive_dermatoses",
+        "official_antibacterial_guidance_required",
+        "age_12_plus",
+        "short_course_and_absorption_review",
+        "clinical_review_required"
+      ],
+      "publicationAllowed": false
+    },
+    {
+      "canonicalKey": "betamethasonevalerategentamicin",
+      "canonicalName": "Betamethasone valerate + Gentamicin",
+      "status": "verified_product_specific",
+      "sourceTier": "AEMPS_CIMA",
+      "sourceKey": "cima-42399-ft",
+      "url": "https://cima.aemps.es/cima/dochtml/ft/42399/FT_42399.html",
+      "productName": "Celestoderm 1 mg/g + 1 mg/g crema",
+      "documentDate": "2017-09",
+      "documentDatePrecision": "month",
+      "section41Present": true,
+      "section42Present": true,
+      "reviewFlags": [
+        "fixed_topical_corticosteroid_antibiotic",
+        "cutaneous_route_specific",
+        "infected_steroid_responsive_dermatoses",
+        "official_antibacterial_guidance_required",
+        "age_over_12",
+        "twice_daily",
         "clinical_review_required"
       ],
       "publicationAllowed": false
