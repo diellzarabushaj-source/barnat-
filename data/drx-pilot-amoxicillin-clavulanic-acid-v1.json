@@ -1,0 +1,77 @@
+{
+  "schemaVersion": "drx-dose-pilot-v1",
+  "pilotKey": "amoxicillin-clavulanic-acid",
+  "updatedAt": "2026-08-29",
+  "status": "in_review_unbound",
+  "publicationAllowed": false,
+  "ruleScope": "representative_not_exhaustive",
+  "canonicalSubstance": {
+    "key": "amoxicillin-clavulanic-acid",
+    "name": "Amoxicillin / clavulanic acid"
+  },
+  "sourceSet": [
+    {
+      "sourceKey": "emc-4347-smpc",
+      "url": "https://www.medicines.org.uk/emc/product/4347/smpc",
+      "tier": "EMC",
+      "documentDate": "2026-01-20",
+      "section": "4.2",
+      "formulation": "film-coated tablet",
+      "strength": "500 mg/125 mg",
+      "section42Verified": true
+    }
+  ],
+  "extractedRuleCandidates": [
+    {
+      "candidateKey": "emc-4347-cap-40kg-plus",
+      "ruleKey": "amoxicillin-clavulanate|community-acquired-pneumonia|40kg-plus|po|500-125",
+      "sourceKey": "emc-4347-smpc",
+      "sourceSection": "4.2",
+      "indicationKey": "community-acquired-pneumonia",
+      "indicationTerms": [
+        "community acquired pneumonia"
+      ],
+      "patientGroup": "pediatric_and_adult",
+      "calculationMethod": "fixed_dose",
+      "doseMinValue": 500,
+      "doseMaxValue": 500,
+      "doseUnit": "mg",
+      "doseBasis": "amoxicillin_component",
+      "frequencyMode": "times_per_day",
+      "timesPerDay": 3,
+      "durationMode": "manual",
+      "minWeightKg": 40,
+      "route": "PO",
+      "prn": false,
+      "renalAdjustmentRequired": true,
+      "requiredInputs": [
+        "weight_kg",
+        "renal_function"
+      ],
+      "bindingStatus": "unbound",
+      "editorialStatus": "in_review",
+      "combination": true,
+      "companionComponents": [
+        {
+          "canonicalKey": "clavulanic-acid",
+          "doseValue": 125,
+          "doseUnit": "mg"
+        }
+      ],
+      "doseBasisComponentConceptId": null,
+      "reviewReason": "combination dose basis concept ID must be resolved from live canonical ingredients before binding"
+    }
+  ],
+  "sourceReconciliation": {
+    "status": "combination_basis_requires_live_identity",
+    "autoMerge": false
+  },
+  "v2SchemaGaps": [
+    "source_snapshot_id",
+    "source_evidence_hash",
+    "required_inputs",
+    "dose_basis_component_concept_id",
+    "combination_companion_component"
+  ],
+  "nextGate": "resolve exact amoxicillin component concept ID, bind exact 500/125 products, then compare legacy regimen"
+}
