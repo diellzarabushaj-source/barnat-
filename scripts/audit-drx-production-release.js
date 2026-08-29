@@ -2,6 +2,7 @@
 const fs=require('node:fs');
 const path=require('node:path');
 const ROOT=path.resolve(__dirname,'..');
+const Legacy=require('../scripts/audit-drx-legacy-consumers.js');
 const read=p=>JSON.parse(fs.readFileSync(path.join(ROOT,p),'utf8'));
 
 function audit(){
@@ -11,6 +12,7 @@ function audit(){
  const matrix=read('data/drx-batch2-readiness-matrix-v1.json');
  const observation=read('data/drx-release-observation-v1.json');
  const first100=read('data/drx-first100-production-provenance-audit-v1.json');
+ const legacyAudit=Legacy.audit();
  const blockers=[];
 
  if(v3.applied!==true) blockers.push('supabase_v3_not_applied');
@@ -30,7 +32,8 @@ function audit(){
  if(observation.mobileSmokeGreen!==true) blockers.push('mobile_smoke_not_green');
  if(observation.vercelDeploymentGreen!==true) blockers.push('vercel_deploy_not_green');
  if(observation.rollbackTested!==true) blockers.push('rollback_not_tested');
- if(observation.zeroKnownLegacyConsumers!==true) blockers.push('legacy_consumers_not_zero');
+ if(legacyAudit.zeroKnownLegacyConsumers!==true) blockers.push('legacy_consumers_not_zero');
+ else if(observation.zeroKnownLegacyConsumers!==true) blockers.push('legacy_zero_not_observed');
  if(coverage?.gates?.publicationBlocked!==true && blockers.length) blockers.push('coverage_gate_inconsistent');
 
  return {
