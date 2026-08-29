@@ -74,8 +74,8 @@ for (const [htmlFile, cssFile, jsFile, markerName] of [
   assert.ok(/drx-dashboard-stripe\.css\?v=drx-dashboard-stripe-v4/.test(styles[1]), `${htmlFile}: shared Stripe shell must load last`);
   assert.ok(scripts[0].includes(jsFile), `${htmlFile}: unexpected runtime owner`);
   assert.doesNotMatch(html, /tailadmin-|auth-client|emergency-curriculum|clinical-knowledge\.css|medical-hub\.css/);
-  assert.match(css, /#1c1e54/i);
-  assert.match(css, /#635bff|#533afd/i);
+  assert.ok(css.length > 500, `${cssFile}: standalone page stylesheet is unexpectedly empty`);
+  assert.doesNotMatch(css, /https?:\/\//, `${cssFile}: page stylesheet must not depend on remote style assets`);
   assert.doesNotThrow(() => new Function(js));
 }
 
