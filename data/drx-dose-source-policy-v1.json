@@ -1,0 +1,148 @@
+{
+  "schemaVersion": "drx-dose-source-policy-v1",
+  "updatedAt": "2026-08-29",
+  "principles": {
+    "authoritativeFirst": true,
+    "productSpecificPreferred": true,
+    "smpcSection42PrimaryForDose": true,
+    "crossCheckNeverPublishesByItself": true,
+    "fallbackNeverAutoPublishes": true
+  },
+  "tiers": [
+    {
+      "rank": 10,
+      "key": "EMA",
+      "label": "European Medicines Agency",
+      "authority": "regulator",
+      "jurisdiction": "EU-central",
+      "domains": [
+        "ema.europa.eu"
+      ],
+      "acceptedDocumentTypes": [
+        "SmPC",
+        "EPAR_PRODUCT_INFORMATION"
+      ],
+      "autoPublishEligible": true
+    },
+    {
+      "rank": 20,
+      "key": "EMC",
+      "label": "electronic medicines compendium",
+      "authority": "regulated-product-information",
+      "jurisdiction": "UK",
+      "domains": [
+        "medicines.org.uk"
+      ],
+      "acceptedDocumentTypes": [
+        "SmPC"
+      ],
+      "autoPublishEligible": true
+    },
+    {
+      "rank": 30,
+      "key": "AEMPS_CIMA",
+      "label": "AEMPS CIMA",
+      "authority": "regulator",
+      "jurisdiction": "ES",
+      "domains": [
+        "cima.aemps.es",
+        "aemps.gob.es",
+        "www.aemps.gob.es"
+      ],
+      "acceptedDocumentTypes": [
+        "FICHA_TECNICA",
+        "SmPC"
+      ],
+      "autoPublishEligible": true
+    },
+    {
+      "rank": 40,
+      "key": "EU_NATIONAL",
+      "label": "Other EU/EEA national regulator",
+      "authority": "regulator",
+      "jurisdiction": "EU-national",
+      "domains": [
+        "mhra.gov.uk",
+        "gov.uk",
+        "hpra.ie",
+        "bfarm.de",
+        "pharmnet.bund.de",
+        "ansm.sante.fr",
+        "fimea.fi",
+        "lakemedelsverket.se",
+        "cbg-meb.nl"
+      ],
+      "acceptedDocumentTypes": [
+        "SmPC",
+        "PRODUCT_INFORMATION"
+      ],
+      "autoPublishEligible": true
+    },
+    {
+      "rank": 50,
+      "key": "KOSOVO_AKPPM",
+      "label": "Kosovo Medicines Agency (AKPPM)",
+      "authority": "regulator",
+      "jurisdiction": "XK",
+      "domains": [
+        "akppm.rks-gov.net"
+      ],
+      "acceptedDocumentTypes": [
+        "PRODUCT_REGISTER",
+        "SmPC",
+        "OFFICIAL_NOTICE"
+      ],
+      "autoPublishEligible": true
+    },
+    {
+      "rank": 80,
+      "key": "MEDIATELY",
+      "label": "Mediately",
+      "authority": "cross-check",
+      "jurisdiction": "multi",
+      "domains": [
+        "mediately.co",
+        "mediately.com"
+      ],
+      "acceptedDocumentTypes": [
+        "DRUG_MONOGRAPH"
+      ],
+      "autoPublishEligible": false
+    },
+    {
+      "rank": 100,
+      "key": "FALLBACK",
+      "label": "Manual/fallback source",
+      "authority": "fallback",
+      "jurisdiction": "other",
+      "domains": [],
+      "acceptedDocumentTypes": [
+        "GUIDELINE",
+        "FORMULARY",
+        "OTHER"
+      ],
+      "autoPublishEligible": false
+    }
+  ],
+  "publication": {
+    "minimumAuthority": [
+      "EMA",
+      "EMC",
+      "AEMPS_CIMA",
+      "EU_NATIONAL",
+      "KOSOVO_AKPPM"
+    ],
+    "requireHttps": true,
+    "requireSourceUrl": true,
+    "requireDocumentVersionOrDate": true,
+    "requireDoseSection": true,
+    "requireProductOrSubstanceMatch": true,
+    "manualReviewWhen": [
+      "source_conflict",
+      "combination_basis_ambiguous",
+      "high_risk",
+      "off_label",
+      "no_authoritative_source"
+    ]
+  }
+}
