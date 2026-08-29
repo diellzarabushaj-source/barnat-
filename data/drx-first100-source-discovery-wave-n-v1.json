@@ -1,0 +1,59 @@
+{
+  "schemaVersion": "drx-first100-source-discovery-wave-n-v1",
+  "generatedAt": "2026-08-29T10:31:29.681Z",
+  "sourcePolicy": "data/drx-dose-source-policy-v1.json",
+  "verificationMethod": "current_anmdmr_nomenclator_plus_official_rcp_sections_4_1_4_2",
+  "publicationAllowed": false,
+  "verifiedProductSpecificCount": 1,
+  "sectionsPendingCount": 0,
+  "productSelectionRequiredCount": 0,
+  "rows": [
+    {
+      "canonicalKey": "benzocainehydrocortisonetetracycline",
+      "canonicalName": "Benzocaine + Hydrocortisone + Tetracycline",
+      "status": "verified_product_specific",
+      "sourceTier": "EU_NATIONAL",
+      "authority": "Romanian National Agency for Medicines and Medical Devices (ANMDMR)",
+      "sourceKey": "anm-13384-2020-rcp",
+      "url": "https://www.anm.ro/_/_RCP/RCP_13384_10.08.20.pdf",
+      "productRegistryUrl": "https://nomenclator.anm.ro/medicamente?direction=asc%2F1000&order=dci&page=655",
+      "productName": "Hemorzon 20 mg/10 mg/8,3 mg supozitoare",
+      "registrationNumber": "13384/2020/01-02-03",
+      "atcCode": "C05AA01",
+      "documentDate": "2020-08-10",
+      "documentDatePrecision": "day",
+      "section41Present": true,
+      "section42Present": true,
+      "currentRegistryCrosscheck": {
+        "checkedDate": "2026-08-29",
+        "nomenclatorUpdated": "2026-08-26",
+        "activeSubstances": [
+          "tetracycline hydrochloride",
+          "hydrocortisone acetate",
+          "benzocaine"
+        ],
+        "strengths": [
+          "20 mg",
+          "10 mg",
+          "8.3 mg"
+        ],
+        "route": "rectal",
+        "marketingAuthorisationHolder": "ANTIBIOTICE S.A. - ROMANIA",
+        "cimCodes": [
+          "W56319001",
+          "W56319002",
+          "W56319003"
+        ]
+      },
+      "reviewFlags": [
+        "fixed_combination",
+        "rectal_route_specific",
+        "short_duration",
+        "children_not_recommended",
+        "local_corticosteroid_antibiotic_combination",
+        "clinical_review_required"
+      ],
+      "publicationAllowed": false
+    }
+  ]
+}
