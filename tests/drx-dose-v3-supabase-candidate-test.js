@@ -6,7 +6,7 @@ const sql=fs.readFileSync(path.join(__dirname,'..','supabase','drx-dose-v3-addit
 
 const tables=[
 'dose_source_snapshots_v3','dose_source_sections_v3','dose_indication_concepts_v3',
-'dose_indication_terms_v3','dose_rules_v3','dose_renal_adjustments_v3',
+'dose_indication_terms_v3','dose_products_v3','dose_rules_v3','dose_renal_adjustments_v3',
 'dose_hepatic_adjustments_v3','dose_rule_products_v3','dose_legacy_comparisons_v3',
 'dose_review_queue_v3','dose_publication_events_v3'
 ];
@@ -22,9 +22,13 @@ assert.doesNotMatch(sql,/\btruncate\b/i);
 assert.doesNotMatch(sql,/\bdelete\s+from\b/i);
 assert.doesNotMatch(sql,/alter\s+table\s+public\.dose_rules_v2/i);
 assert.doesNotMatch(sql,/alter\s+table\s+public\.dosage_regimens/i);
+assert.doesNotMatch(sql,/from public\.dose_products_v2/i);
+assert.doesNotMatch(sql,/join public\.dose_products_v2/i);
 assert.match(sql,/references public\.substance_concepts_v1\(concept_id\)/);
 assert.match(sql,/references public\.drugs\(id\)/);
 assert.match(sql,/source_snapshot_id text not null references public\.dose_source_snapshots_v3/);
+assert.match(sql,/create table if not exists public\.dose_products_v3/);
+assert.match(sql,/product_id uuid not null references public\.dose_products_v3\(product_id\)/);
 assert.match(sql,/dose_renal_adjustments_v3_measure_check/);
 assert.match(sql,/dose_hepatic_adjustments_v3_measure_check/);
 assert.match(sql,/reviewer_id uuid/);
@@ -41,6 +45,7 @@ assert.match(sql,/source_evidence_hash ~ '\^\[0-9a-f\]\{64\}\$'/);
 // Supabase public-schema least privilege: revoke defaults first, then expose SELECT only.
 assert.match(sql,/revoke all privileges on table/);
 assert.match(sql,/grant select on table public\.dose_indication_concepts_v3 to anon, authenticated/);
+assert.match(sql,/grant select on table public\.dose_products_v3 to anon, authenticated/);
 assert.match(sql,/grant select on table public\.dose_rules_v3 to anon, authenticated/);
 assert.match(sql,/grant select on table public\.dose_rule_products_v3 to anon, authenticated/);
 assert.doesNotMatch(sql,/grant\s+(?:insert|update|delete|truncate|references|trigger|all(?:\s+privileges)?)\b[\s\S]*?\bto\s+(?:anon|authenticated)\b/i);
@@ -56,6 +61,7 @@ assert.doesNotMatch(sql,/\bcreate\s+(?:or\s+replace\s+)?view\b/i);
 
 // Client-visible rows remain constrained to published concepts/rules and verified bindings.
 assert.match(sql,/create policy dose_indication_concepts_v3_published_read[\s\S]*?using \(editorial_status = 'published'\)/);
+assert.match(sql,/create policy dose_products_v3_published_read[\s\S]*?using \(editorial_status = 'published'\)/);
 assert.match(sql,/create policy dose_rules_v3_published_read[\s\S]*?using \(editorial_status = 'published'\)/);
 assert.match(sql,/create policy dose_rule_products_v3_published_read[\s\S]*?binding_status = 'verified'[\s\S]*?r\.editorial_status = 'published'/);
 
