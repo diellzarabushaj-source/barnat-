@@ -36,6 +36,23 @@ assert.doesNotMatch(archiveJob, /git push/,
 assert.match(archiveJob, /permissions:\s*\n\s*contents: read/,
   'the archive job must pin read-only permissions.');
 
+// The Supabase service key must never be held by the job that fetches and
+// parses untrusted external documents, for the same reason a writable token
+// must not be: an exploited parser would gain write access to production data.
+const ingestJob = jobs.find(block => block.startsWith('ingest:'));
+assert.ok(ingestJob, 'workflow must define a separate ingest job.');
+assert.doesNotMatch(archiveJob, /MEDINDEX_SUPABASE/,
+  'the archive job must never hold Supabase credentials.');
+assert.doesNotMatch(attestJob, /MEDINDEX_SUPABASE/,
+  'the attest job does not write to Supabase and must not hold its credentials.');
+assert.match(ingestJob, /MEDINDEX_SUPABASE_SECRET_KEY/,
+  'the ingest job is the only job that may hold the service key.');
+assert.match(ingestJob, /permissions:\s*\n\s*contents: read/,
+  'ingest writes to Supabase, not the repository, so it stays read-only on git.');
+assert.match(ingestJob, /needs: archive/);
+assert.doesNotMatch(ingestJob, /build-drx-batch2-extraction-index\.js/,
+  'the credentialed job must not run the fetching/parsing script.');
+
 assert.match(attestJob, /needs: archive/,
   'attestation must run only after a successful archive.');
 assert.match(attestJob, /permissions:\s*\n\s*contents: write/,

@@ -1,6 +1,6 @@
 {
   "schemaVersion": "drx-snapshot-identity-instability-v1",
-  "observedAt": "2026-08-29T21:55:00.000Z",
+  "observedAt": "2026-08-29T21:53:16.000Z",
   "severity": "foundational",
   "finding": "snapshot_id is a fetch identity, not a document identity. dose_source_snapshots_v3 enforces check (snapshot_id = raw_sha256), so every archive run mints a new identity for the same unchanged document. Two runs of the same 25 eMC sources four hours apart produced 25 different snapshot ids while the extracted clinical content was byte-identical.",
   "evidence": {
@@ -11,15 +11,23 @@
     "contentLengthIdentical": 25,
     "section41HashStable": 25,
     "section42HashStable": 25,
-    "worked": "Same byte length, same document date, different raw hash, identical extracted sections. The eMC HTML carries per-request volatile bytes of constant length - a nonce, token or timestamp - which the raw hash captures and the section hashes do not.",
+    "worked": "Same byte length, same document date, a different raw hash on every run, and identical extracted sections throughout. Three runs produced three snapshot ids for one unchanged document while its section 4.2 hash never moved. The eMC HTML carries per-request volatile bytes of constant length - a nonce, token or timestamp - which the raw hash captures and the section hashes do not.",
     "example": {
       "canonicalKey": "diclofenac",
-      "snapshotIdRunA": "446826fb66295c443bbef21854f8f9b712a2a5251954ff1b014a9e28dc014979",
-      "snapshotIdRunB": "184fd12528454199630b045f02bb95a867e5d0c9a2bae8f46ac3458ea6732c43",
       "contentLengthBothRuns": 92390,
       "documentDateBothRuns": "2026-05-01",
-      "section42BothRuns": "9775131c8d96c7aeaa370b9e78e72f8dca14993051b6ceb1f4faa8fcafcd33be"
-    }
+      "section42BothRuns": "9775131c8d96c7aeaa370b9e78e72f8dca14993051b6ceb1f4faa8fcafcd33be",
+      "snapshotIdsObserved": [
+        "446826fb66295c443bbef21854f8f9b712a2a5251954ff1b014a9e28dc014979",
+        "184fd12528454199630b045f02bb95a867e5d0c9a2bae8f46ac3458ea6732c43",
+        "d2a71a7c8b2d0908ea30a17a626c783a8527de9bcc54aade00f6695f0e337bb8"
+      ]
+    },
+    "runsObserved": [
+      33255362080,
+      33276714564,
+      33277025852
+    ]
   },
   "alreadyBroken": "The 25 snapshots loaded into dose_source_snapshots_v3 came from run 33255362080. The committed attestation is now from run 33276714564, so the database and the attestation reference different ids for the same 25 documents after a single rerun.",
   "whyItMattersNow": "dose_products_v3.source_snapshot_id and dose_rules_v3.source_snapshot_id are foreign keys onto snapshot_id, and both carry check (source_snapshot_id = source_evidence_hash). Once a rule is verified or published, the provenance lock trigger makes the snapshot row immutable and undeletable. Binding before this is fixed would pin clinical rules to identities that the next archive run invalidates, and the lock would then make them hard to clean up.",
@@ -27,5 +35,6 @@
   "doNot": "Do not work around this by refetching less often, or by reusing a stale snapshot id that no longer matches the bytes. Both hide the mismatch rather than removing it.",
   "decisionRequired": "Whether snapshot identity should become content-derived rather than raw-byte-derived is an architectural change to the V3 provenance model: it means relaxing check (snapshot_id = raw_sha256) and choosing a stable basis, with raw_sha256 retained as fetch evidence. That is not a change to make silently, so it is recorded here for a decision rather than applied.",
   "blocksBinding": true,
-  "publicationAllowed": false
+  "publicationAllowed": false,
+  "selfDemonstrating": "This was found because gates in this repository kept expiring. A salt equivalence proposal pinned to a snapshot id was invalidated twice by reruns that changed nothing clinical. Both gates are now anchored on the section hash instead."
 }

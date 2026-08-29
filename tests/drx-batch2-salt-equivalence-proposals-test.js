@@ -39,16 +39,17 @@ for (const p of proposals.proposals) {
   assert.ok(p.quote && p.quote.trim() !== '', `${p.sourceKey}: needs the quote it relies on.`);
   assert.ok(p.canonicalKey && p.canonicalKey !== p.sourceKey,
     `${p.sourceKey}: a mapping must point at a different key.`);
-  // Anchor on the section hash, not the snapshot id. snapshot_id changes on
+  // Anchor on the section hash, never the snapshot id. snapshot_id changes on
   // every fetch even when the document does not, so pinning a proposal to it
-  // would expire the proposal for no clinical reason. See
+  // expires the proposal for a non-clinical reason - which happened twice
+  // before this was changed. See
   // data/drx-snapshot-identity-instability-v1.json.
   const attestedRow = attestation.rows.find(r => r.canonicalKey === p.sourceKey);
   assert.ok(attestedRow, `${p.sourceKey}: not present in the archive attestation.`);
   assert.equal(p.quotedFromSectionSha256, attestedRow.section42Sha256,
     `${p.sourceKey}: the quoted section hash must match the attestation.`);
-  assert.ok(attestedSnapshots.has(p.snapshotId),
-    `${p.sourceKey}: snapshot ${p.snapshotId} is not in the archive attestation.`);
+  assert.equal(p.snapshotId, undefined,
+    `${p.sourceKey}: proposals must not pin a snapshot id, which is fetch-derived.`);
   // The quote has to actually name the target salt, otherwise it proves nothing.
   const saltWords = p.canonicalKey.replace(p.sourceKey, '');
   assert.match(p.quote.toLowerCase().replace(/\s+/g, ''),

@@ -103,6 +103,7 @@ jobs:
         run: node tests/drx-batch2-archive-attestation-test.js
 
       - name: Commit attestation
+        id: commit
         run: |
           git config user.name 'github-actions[bot]'
           git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
@@ -120,3 +121,37 @@ jobs:
             sleep $((2 ** attempt))
           done
           exit 1
+
+  # Section text cannot travel through the repository: dose_source_sections_v3
+  # requires section_text, and the attestation carries hashes only. This job
+  # moves the text straight from the archive run into Supabase.
+  #
+  # Separate from archive for the same reason attest is: the Supabase service
+  # key must never be held by the job that fetches and parses untrusted
+  # external documents. This job makes no network requests to those sources and
+  # runs no parser - it reads what archive already produced.
+  ingest:
+    needs: archive
+    if: github.ref == 'refs/heads/main'
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    permissions:
+      contents: read
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+
+      - name: Download source archive
+        uses: actions/download-artifact@v4
+        with:
+          name: drx-batch2-source-archive
+
+      - name: Ingest provenance into V3
+        env:
+          MEDINDEX_SUPABASE_URL: ${{ secrets.MEDINDEX_SUPABASE_URL }}
+          MEDINDEX_SUPABASE_SECRET_KEY: ${{ secrets.MEDINDEX_SUPABASE_SECRET_KEY }}
+          DRX_ARCHIVE_DIR: artifacts/drx-batch2-raw
+        run: node scripts/ingest-drx-v3-sections.js

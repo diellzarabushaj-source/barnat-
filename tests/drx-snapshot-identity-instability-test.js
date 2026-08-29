@@ -41,21 +41,29 @@ assert.equal(e.contentLengthIdentical, e.comparedRows,
   'identical length with a different hash is what shows the change is volatile wrapper bytes.');
 assert.notEqual(e.runA, e.runB);
 
-// The worked example must actually demonstrate the claim rather than assert it.
+// The worked example must demonstrate the claim rather than assert it: one
+// document, several distinct identities, one unchanging content hash.
 const x = e.example;
-assert.notEqual(x.snapshotIdRunA, x.snapshotIdRunB,
-  'the example must show identity changing.');
+assert.ok(Array.isArray(x.snapshotIdsObserved) && x.snapshotIdsObserved.length >= 2,
+  'the example must show identity changing across runs.');
+assert.equal(new Set(x.snapshotIdsObserved).size, x.snapshotIdsObserved.length,
+  'every observed identity must be distinct, or there is no instability.');
+assert.ok(e.runsObserved.length >= x.snapshotIdsObserved.length,
+  'each observed identity must come from its own run.');
 assert.match(x.section42BothRuns, /^[0-9a-f]{64}$/);
 assert.ok(x.contentLengthBothRuns > 0);
 
-// The example's stable section hash must match what the current attestation
-// carries, so the finding cannot drift away from the evidence it cites.
+// Anchor the finding on the stable hash, never on a snapshot id. Pinning an id
+// here would make this gate expire on the next archive run for no reason -
+// which is the very failure the finding describes.
 const attested = attestation.rows.find(r => r.canonicalKey === x.canonicalKey);
 assert.ok(attested, `${x.canonicalKey} must be present in the attestation.`);
 assert.equal(attested.section42Sha256, x.section42BothRuns,
-  'the cited stable hash must match the live attestation.');
-assert.equal(attested.snapshotId, x.snapshotIdRunB,
-  'the attestation should carry the newer snapshot id.');
+  'the cited stable hash must still match the live attestation.');
+assert.ok(!x.snapshotIdsObserved.includes(attested.snapshotId)
+  || x.snapshotIdsObserved.indexOf(attested.snapshotId) === x.snapshotIdsObserved.length - 1,
+  'if the current id is listed it must be the most recent one.');
+assert.match(finding.selfDemonstrating, /kept expiring/);
 
 // The database was loaded from the older run, so the divergence is real and
 // must stay recorded until identity is fixed.
