@@ -1,0 +1,2019 @@
+{
+  "schemaVersion": "drx-first100-source-discovery-queue-v1",
+  "generatedAt": "2026-08-30T01:45:00+02:00",
+  "source": {
+    "kind": "google_sheet_registry_source",
+    "spreadsheetId": "10wjwyPhFLIwNMAGF296K_lxnUi0mSZEoW-UGiAA9QEs",
+    "spreadsheetTitle": "Lista e Substancave Aktive sipas ATC — Regjistri 2025",
+    "sheetName": "Lista aktive ATC",
+    "readRange": "A4:E400",
+    "note": "Registry-derived substance list; source states duplicates/salt-hydration variants/dosage forms/clear spelling errors were normalized before this queue."
+  },
+  "coveredBatch1And2Count": 26,
+  "scannedUniqueSubstances": 396,
+  "queuedCount": 100,
+  "complete": true,
+  "publicationAllowed": false,
+  "queue": [
+    {
+      "ordinal": 1,
+      "sourceRow": 1,
+      "atcGroup": "A / D / G",
+      "atcDescription": "Trakti alimentar dhe metabolizmi / Dermatologjikë / Sistemi gjenitourinar dhe hormonet seksuale",
+      "atcCodes": "A01AB09, A07AC01, D01AC02, G01AF04",
+      "canonicalName": "Miconazole",
+      "canonicalKey": "miconazole",
+      "status": "source_discovery_pending",
+      "preferredSourceOrder": [
+        "EMA",
+        "EMC",
+        "AEMPS_CIMA",
+        "EU_OTHER",
+        "KOSOVO",
+        "MEDIATELY_CROSSCHECK",
+        "FALLBACK"
+      ],
+      "publicationAllowed": false
+    },
+    {
+      "ordinal": 2,
+      "sourceRow": 2,
+      "atcGroup": "A / J",
+      "atcDescription": "Trakti alimentar dhe metabolizmi / Antiinfektivë për përdorim sistemik",
+      "atcCodes": "A01AB11, J01XE, J01XE03",
+      "canonicalName": "Furazidin",
+      "canonicalKey": "furazidin",
+      "status": "source_discovery_pending",
+      "preferredSourceOrder": [
+        "EMA",
+        "EMC",
+        "AEMPS_CIMA",
+        "EU_OTHER",
+        "KOSOVO",
+        "MEDIATELY_CROSSCHECK",
+        "FALLBACK"
+      ],
+      "publicationAllowed": false
+    },
+    {
+      "ordinal": 3,
+      "sourceRow": 3,
+      "atcGroup": "A",
+      "atcDescription": "Trakti alimentar dhe metabolizmi",
+      "atcCodes": "A01AB12",
+      "canonicalName": "Hexetidine",
+      "canonicalKey": "hexetidine",
+      "status": "source_discovery_pending",
+      "preferredSourceOrder": [
+        "EMA",
+        "EMC",
+        "AEMPS_CIMA",
+        "EU_OTHER",
+        "KOSOVO",
+        "MEDIATELY_CROSSCHECK",
+        "FALLBACK"
+      ],
+      "publicationAllowed": false
+    },
+    {
+      "ordinal": 4,
+      "sourceRow": 5,
+      "atcGroup": "A / R",
+      "atcDescription": "Trakti alimentar dhe metabolizmi / Sistemi respirator",
+      "atcCodes": "A01AD02, R02AA20",
+      "canonicalName": "Benzydamine",
+      "canonicalKey": "benzydamine",
+      "status": "source_discovery_pending",
+      "preferredSourceOrder": [
+        "EMA",
+        "EMC",
+        "AEMPS_CIMA",
+        "EU_OTHER",
+        "KOSOVO",
+        "MEDIATELY_CROSSCHECK",
+        "FALLBACK"
+      ],
+      "publicationAllowed": false
+    },
+    {
+      "ordinal": 5,
+      "sourceRow": 6,
+      "atcGroup": "A",
+      "atcDescription": "Trakti alimentar dhe metabolizmi",
+      "atcCodes": "A01AD02, A01AD11",
+      "canonicalName": "Benzydamine + Chlorhexidine",
+      "canonicalKey": "benzydaminechlorhexidine",
+      "status": "source_discovery_pending",
+      "preferredSourceOrder": [
+        "EMA",
+        "EMC",
+        "AEMPS_CIMA",
+        "EU_OTHER",
+        "KOSOVO",
+        "MEDIATELY_CROSSCHECK",
+        "FALLBACK"
+      ],
+      "publicationAllowed": false
+    },
+    {
+      "ordinal": 6,
+      "sourceRow": 7,
+      "atcGroup": "A",
+      "atcDescription": "Trakti alimentar dhe metabolizmi",
+      "atcCodes": "A01AD11",
+      "canonicalName": "Chamomile tincture + Lauromacrogol + Lidocaine",
+      "canonicalKey": "chamomiletincturelauromacrogollidocaine",
+      "status": "source_discovery_pending",
+      "preferredSourceOrder": [
+        "EMA",
+        "EMC",
+        "AEMPS_CIMA",
+        "EU_OTHER",
+        "KOSOVO",
+        "MEDIATELY_CROSSCHECK",
+        "FALLBACK"
+      ],
+      "publicationAllowed": false
+    },
+    {
+      "ordinal": 7,
+      "sourceRow": 8,
+      "atcGroup": "A / M",
+      "atcDescription": "Trakti alimentar dhe metabolizmi / Sistemi muskuloskeletal",
+      "atcCodes": "A01AD11, M01AE03, M02AA10",
+      "canonicalName": "Ketoprofen",
+      "canonicalKey": "ketoprofen",
+      "status": "source_discovery_pending",
+      "preferredSourceOrder": [
+        "EMA",
+        "EMC",
+        "AEMPS_CIMA",
+        "EU_OTHER",
+        "KOSOVO",
+        "MEDIATELY_CROSSCHECK",
+        "FALLBACK"
+      ],
+      "publicationAllowed": false
+    },
+    {
+      "ordinal": 8,
+      "sourceRow": 9,
+      "atcGroup": "A",
+      "atcDescription": "Trakti alimentar dhe metabolizmi",
+      "atcCodes": "A02AD01",
+      "canonicalName": "Calcium carbonate + Magnesium carbonate",
+      "canonicalKey": "calciumcarbonatemagnesiumcarbonate",
+      "status": "source_discovery_pending",
+      "preferredSourceOrder": [
+        "EMA",
+        "EMC",
+        "AEMPS_CIMA",
+        "EU_OTHER",
+        "KOSOVO",
+        "MEDIATELY_CROSSCHECK",
+        "FALLBACK"
+      ],
+      "publicationAllowed": false
+    },
+    {
+      "ordinal": 9,
+      "sourceRow": 10,
+      "atcGroup": "A",
+      "atcDescription": "Trakti alimentar dhe metabolizmi",
+      "atcCodes": "A02AD04",
+      "canonicalName": "Hydrotalcite",
+      "canonicalKey": "hydrotalcite",
+      "status": "source_discovery_pending",
+      "preferredSourceOrder": [
+        "EMA",
+        "EMC",
+        "AEMPS_CIMA",
+        "EU_OTHER",
+        "KOSOVO",
+        "MEDIATELY_CROSSCHECK",
+        "FALLBACK"
+      ],
+      "publicationAllowed": false
+    },
+    {
+      "ordinal": 10,
+      "sourceRow": 11,
+      "atcGroup": "A",
+      "atcDescription": "Trakti alimentar dhe metabolizmi",
+      "atcCodes": "A02AX",
+      "canonicalName": "Alginate + Calcium carbonate + Magnesium carbonate",
+      "canonicalKey": "alginatecalciumcarbonatemagnesiumcarbonate",
+      "status": "source_discovery_pending",
+      "preferredSourceOrder": [
+        "EMA",
+        "EMC",
+        "AEMPS_CIMA",
+        "EU_OTHER",
+        "KOSOVO",
+        "MEDIATELY_CROSSCHECK",
+        "FALLBACK"
+      ],
+      "publicationAllowed": false
+    },
+    {
+      "ordinal": 11,
+      "sourceRow": 12,
+      "atcGroup": "A",
+      "atcDescription": "Trakti alimentar dhe metabolizmi",
+      "atcCodes": "A02BA03",
+      "canonicalName": "Famotidine",
+      "canonicalKey": "famotidine",
+      "status": "source_discovery_pending",
+      "preferredSourceOrder": [
+        "EMA",
+        "EMC",
+        "AEMPS_CIMA",
+        "EU_OTHER",
+        "KOSOVO",
+        "MEDIATELY_CROSSCHECK",
+        "FALLBACK"
+      ],
+      "publicationAllowed": false
+    },
+    {
+      "ordinal": 12,
+      "sourceRow": 13,
+      "atcGroup": "A",
+      "atcDescription": "Trakti alimentar dhe metabolizmi",
+      "atcCodes": "A02BA53",
+      "canonicalName": "Calcium carbonate + Famotidine + Magnesium hydroxide",
+      "canonicalKey": "calciumcarbonatefamotidinemagnesiumhydroxide",
+      "status": "source_discovery_pending",
+      "preferredSourceOrder": [
+        "EMA",
+        "EMC",
+        "AEMPS_CIMA",
+        "EU_OTHER",
+        "KOSOVO",
+        "MEDIATELY_CROSSCHECK",
+        "FALLBACK"
+      ],
+      "publicationAllowed": false
+    },
+    {
+      "ordinal": 13,
+      "sourceRow": 14,
+      "atcGroup": "A",
+      "atcDescription": "Trakti alimentar dhe metabolizmi",
+      "atcCodes": "A02BC01",
+      "canonicalName": "Omeprazole",
+      "canonicalKey": "omeprazole",
+      "status": "source_discovery_pending",
+      "preferredSourceOrder": [
+        "EMA",
+        "EMC",
+        "AEMPS_CIMA",
+        "EU_OTHER",
+        "KOSOVO",
+        "MEDIATELY_CROSSCHECK",
+        "FALLBACK"
+      ],
+      "publicationAllowed": false
+    },
+    {
+      "ordinal": 14,
+      "sourceRow": 16,
+      "atcGroup": "A",
+      "atcDescription": "Trakti alimentar dhe metabolizmi",
+      "atcCodes": "A02BC02",
+      "canonicalName": "Pantoprazole + Sodium carbonate",
+      "canonicalKey": "pantoprazolesodiumcarbonate",
+      "status": "source_discovery_pending",
+      "preferredSourceOrder": [
+        "EMA",
+        "EMC",
+        "AEMPS_CIMA",
+        "EU_OTHER",
+        "KOSOVO",
+        "MEDIATELY_CROSSCHECK",
+        "FALLBACK"
+      ],
+      "publicationAllowed": false
+    },
+    {
+      "ordinal": 15,
+      "sourceRow": 17,
+      "atcGroup": "A",
+      "atcDescription": "Trakti alimentar dhe metabolizmi",
+      "atcCodes": "A02BC03",
+      "canonicalName": "Lansoprazole",
+      "canonicalKey": "lansoprazole",
+      "status": "source_discovery_pending",
+      "preferredSourceOrder": [
+        "EMA",
+        "EMC",
+        "AEMPS_CIMA",
+        "EU_OTHER",
+        "KOSOVO",
+        "MEDIATELY_CROSSCHECK",
+        "FALLBACK"
+      ],
+      "publicationAllowed": false
+    },
+    {
+      "ordinal": 16,
+      "sourceRow": 18,
+      "atcGroup": "A",
+      "atcDescription": "Trakti alimentar dhe metabolizmi",
+      "atcCodes": "A02BC04",
+      "canonicalName": "Rabeprazole",
+      "canonicalKey": "rabeprazole",
+      "status": "source_discovery_pending",
+      "preferredSourceOrder": [
+        "EMA",
+        "EMC",
+        "AEMPS_CIMA",
+        "EU_OTHER",
+        "KOSOVO",
+        "MEDIATELY_CROSSCHECK",
+        "FALLBACK"
+      ],
+      "publicationAllowed": false
+    },
+    {
+      "ordinal": 17,
+      "sourceRow": 19,
+      "atcGroup": "A",
+      "atcDescription": "Trakti alimentar dhe metabolizmi",
+      "atcCodes": "A02BC05",
+      "canonicalName": "Esomeprazole",
+      "canonicalKey": "esomeprazole",
+      "status": "source_discovery_pending",
+      "preferredSourceOrder": [
+        "EMA",
+        "EMC",
+        "AEMPS_CIMA",
+        "EU_OTHER",
+        "KOSOVO",
+        "MEDIATELY_CROSSCHECK",
+        "FALLBACK"
+      ],
+      "publicationAllowed": false
+    },
+    {
+      "ordinal": 18,
+      "sourceRow": 20,
+      "atcGroup": "A",
+      "atcDescription": "Trakti alimentar dhe metabolizmi",
+      "atcCodes": "A02BC05",
+      "canonicalName": "Esomeprazole + Sugar spheres",
+      "canonicalKey": "esomeprazolesugarspheres",
+      "status": "source_discovery_pending",
+      "preferredSourceOrder": [
+        "EMA",
+        "EMC",
+        "AEMPS_CIMA",
+        "EU_OTHER",
+        "KOSOVO",
+        "MEDIATELY_CROSSCHECK",
+        "FALLBACK"
+      ],
+      "publicationAllowed": false
+    },
+    {
+      "ordinal": 19,
+      "sourceRow": 21,
+      "atcGroup": "A",
+      "atcDescription": "Trakti alimentar dhe metabolizmi",
+      "atcCodes": "A02BD08",
+      "canonicalName": "Bismuth subcitrate + Metronidazole + Tetracycline",
+      "canonicalKey": "bismuthsubcitratemetronidazoletetracycline",
+      "status": "source_discovery_pending",
+      "preferredSourceOrder": [
+        "EMA",
+        "EMC",
+        "AEMPS_CIMA",
+        "EU_OTHER",
+        "KOSOVO",
+        "MEDIATELY_CROSSCHECK",
+        "FALLBACK"
+      ],
+      "publicationAllowed": false
+    },
+    {
+      "ordinal": 20,
+      "sourceRow": 22,
+      "atcGroup": "A",
+      "atcDescription": "Trakti alimentar dhe metabolizmi",
+      "atcCodes": "A02BX02",
+      "canonicalName": "Sucralfate",
+      "canonicalKey": "sucralfate",
+      "status": "source_discovery_pending",
+      "preferredSourceOrder": [
+        "EMA",
+        "EMC",
+        "AEMPS_CIMA",
+        "EU_OTHER",
+        "KOSOVO",
+        "MEDIATELY_CROSSCHECK",
+        "FALLBACK"
+      ],
+      "publicationAllowed": false
+    },
+    {
+      "ordinal": 21,
+      "sourceRow": 23,
+      "atcGroup": "A",
+      "atcDescription": "Trakti alimentar dhe metabolizmi",
+      "atcCodes": "A02BX13",
+      "canonicalName": "Alginate + Potassium bicarbonate",
+      "canonicalKey": "alginatepotassiumbicarbonate",
+      "status": "source_discovery_pending",
+      "preferredSourceOrder": [
+        "EMA",
+        "EMC",
+        "AEMPS_CIMA",
+        "EU_OTHER",
+        "KOSOVO",
+        "MEDIATELY_CROSSCHECK",
+        "FALLBACK"
+      ],
+      "publicationAllowed": false
+    },
+    {
+      "ordinal": 22,
+      "sourceRow": 24,
+      "atcGroup": "A",
+      "atcDescription": "Trakti alimentar dhe metabolizmi",
+      "atcCodes": "A03AA05",
+      "canonicalName": "Trimebutine",
+      "canonicalKey": "trimebutine",
+      "status": "source_discovery_pending",
+      "preferredSourceOrder": [
+        "EMA",
+        "EMC",
+        "AEMPS_CIMA",
+        "EU_OTHER",
+        "KOSOVO",
+        "MEDIATELY_CROSSCHECK",
+        "FALLBACK"
+      ],
+      "publicationAllowed": false
+    },
+    {
+      "ordinal": 23,
+      "sourceRow": 25,
+      "atcGroup": "A / R",
+      "atcDescription": "Trakti alimentar dhe metabolizmi / Sistemi respirator",
+      "atcCodes": "A03AB02, R03BB06",
+      "canonicalName": "Glycopyrronium",
+      "canonicalKey": "glycopyrronium",
+      "status": "source_discovery_pending",
+      "preferredSourceOrder": [
+        "EMA",
+        "EMC",
+        "AEMPS_CIMA",
+        "EU_OTHER",
+        "KOSOVO",
+        "MEDIATELY_CROSSCHECK",
+        "FALLBACK"
+      ],
+      "publicationAllowed": false
+    },
+    {
+      "ordinal": 24,
+      "sourceRow": 26,
+      "atcGroup": "A",
+      "atcDescription": "Trakti alimentar dhe metabolizmi",
+      "atcCodes": "A03AB03",
+      "canonicalName": "Oxyphenonium",
+      "canonicalKey": "oxyphenonium",
+      "status": "source_discovery_pending",
+      "preferredSourceOrder": [
+        "EMA",
+        "EMC",
+        "AEMPS_CIMA",
+        "EU_OTHER",
+        "KOSOVO",
+        "MEDIATELY_CROSSCHECK",
+        "FALLBACK"
+      ],
+      "publicationAllowed": false
+    },
+    {
+      "ordinal": 25,
+      "sourceRow": 27,
+      "atcGroup": "A",
+      "atcDescription": "Trakti alimentar dhe metabolizmi",
+      "atcCodes": "A03AB06",
+      "canonicalName": "Otilonium",
+      "canonicalKey": "otilonium",
+      "status": "source_discovery_pending",
+      "preferredSourceOrder": [
+        "EMA",
+        "EMC",
+        "AEMPS_CIMA",
+        "EU_OTHER",
+        "KOSOVO",
+        "MEDIATELY_CROSSCHECK",
+        "FALLBACK"
+      ],
+      "publicationAllowed": false
+    },
+    {
+      "ordinal": 26,
+      "sourceRow": 28,
+      "atcGroup": "A",
+      "atcDescription": "Trakti alimentar dhe metabolizmi",
+      "atcCodes": "A03AD02",
+      "canonicalName": "Drotaverine",
+      "canonicalKey": "drotaverine",
+      "status": "source_discovery_pending",
+      "preferredSourceOrder": [
+        "EMA",
+        "EMC",
+        "AEMPS_CIMA",
+        "EU_OTHER",
+        "KOSOVO",
+        "MEDIATELY_CROSSCHECK",
+        "FALLBACK"
+      ],
+      "publicationAllowed": false
+    },
+    {
+      "ordinal": 27,
+      "sourceRow": 29,
+      "atcGroup": "A",
+      "atcDescription": "Trakti alimentar dhe metabolizmi",
+      "atcCodes": "A03AX12",
+      "canonicalName": "Phloroglucinol",
+      "canonicalKey": "phloroglucinol",
+      "status": "source_discovery_pending",
+      "preferredSourceOrder": [
+        "EMA",
+        "EMC",
+        "AEMPS_CIMA",
+        "EU_OTHER",
+        "KOSOVO",
+        "MEDIATELY_CROSSCHECK",
+        "FALLBACK"
+      ],
+      "publicationAllowed": false
+    },
+    {
+      "ordinal": 28,
+      "sourceRow": 30,
+      "atcGroup": "A",
+      "atcDescription": "Trakti alimentar dhe metabolizmi",
+      "atcCodes": "A03AX13",
+      "canonicalName": "Simeticone",
+      "canonicalKey": "simeticone",
+      "status": "source_discovery_pending",
+      "preferredSourceOrder": [
+        "EMA",
+        "EMC",
+        "AEMPS_CIMA",
+        "EU_OTHER",
+        "KOSOVO",
+        "MEDIATELY_CROSSCHECK",
+        "FALLBACK"
+      ],
+      "publicationAllowed": false
+    },
+    {
+      "ordinal": 29,
+      "sourceRow": 31,
+      "atcGroup": "A",
+      "atcDescription": "Trakti alimentar dhe metabolizmi",
+      "atcCodes": "A03AX58",
+      "canonicalName": "Alverine + Simethicone",
+      "canonicalKey": "alverinesimethicone",
+      "status": "source_discovery_pending",
+      "preferredSourceOrder": [
+        "EMA",
+        "EMC",
+        "AEMPS_CIMA",
+        "EU_OTHER",
+        "KOSOVO",
+        "MEDIATELY_CROSSCHECK",
+        "FALLBACK"
+      ],
+      "publicationAllowed": false
+    },
+    {
+      "ordinal": 30,
+      "sourceRow": 32,
+      "atcGroup": "A / S",
+      "atcDescription": "Trakti alimentar dhe metabolizmi / Organet shqisore",
+      "atcCodes": "A03BA01, S01FA01",
+      "canonicalName": "Atropine",
+      "canonicalKey": "atropine",
+      "status": "source_discovery_pending",
+      "preferredSourceOrder": [
+        "EMA",
+        "EMC",
+        "AEMPS_CIMA",
+        "EU_OTHER",
+        "KOSOVO",
+        "MEDIATELY_CROSSCHECK",
+        "FALLBACK"
+      ],
+      "publicationAllowed": false
+    },
+    {
+      "ordinal": 31,
+      "sourceRow": 33,
+      "atcGroup": "A",
+      "atcDescription": "Trakti alimentar dhe metabolizmi",
+      "atcCodes": "A03BB01",
+      "canonicalName": "Hyoscine butylbromide",
+      "canonicalKey": "hyoscinebutylbromide",
+      "status": "source_discovery_pending",
+      "preferredSourceOrder": [
+        "EMA",
+        "EMC",
+        "AEMPS_CIMA",
+        "EU_OTHER",
+        "KOSOVO",
+        "MEDIATELY_CROSSCHECK",
+        "FALLBACK"
+      ],
+      "publicationAllowed": false
+    },
+    {
+      "ordinal": 32,
+      "sourceRow": 34,
+      "atcGroup": "A",
+      "atcDescription": "Trakti alimentar dhe metabolizmi",
+      "atcCodes": "A03BB01",
+      "canonicalName": "Hyoscine butylbromide + Pregelatinized starch",
+      "canonicalKey": "hyoscinebutylbromidepregelatinizedstarch",
+      "status": "source_discovery_pending",
+      "preferredSourceOrder": [
+        "EMA",
+        "EMC",
+        "AEMPS_CIMA",
+        "EU_OTHER",
+        "KOSOVO",
+        "MEDIATELY_CROSSCHECK",
+        "FALLBACK"
+      ],
+      "publicationAllowed": false
+    },
+    {
+      "ordinal": 33,
+      "sourceRow": 35,
+      "atcGroup": "A",
+      "atcDescription": "Trakti alimentar dhe metabolizmi",
+      "atcCodes": "A03DB04",
+      "canonicalName": "Hyoscine butylbromide + Paracetamol",
+      "canonicalKey": "hyoscinebutylbromideparacetamol",
+      "status": "source_discovery_pending",
+      "preferredSourceOrder": [
+        "EMA",
+        "EMC",
+        "AEMPS_CIMA",
+        "EU_OTHER",
+        "KOSOVO",
+        "MEDIATELY_CROSSCHECK",
+        "FALLBACK"
+      ],
+      "publicationAllowed": false
+    },
+    {
+      "ordinal": 34,
+      "sourceRow": 36,
+      "atcGroup": "A",
+      "atcDescription": "Trakti alimentar dhe metabolizmi",
+      "atcCodes": "A03FA01",
+      "canonicalName": "Metoclopramide",
+      "canonicalKey": "metoclopramide",
+      "status": "source_discovery_pending",
+      "preferredSourceOrder": [
+        "EMA",
+        "EMC",
+        "AEMPS_CIMA",
+        "EU_OTHER",
+        "KOSOVO",
+        "MEDIATELY_CROSSCHECK",
+        "FALLBACK"
+      ],
+      "publicationAllowed": false
+    },
+    {
+      "ordinal": 35,
+      "sourceRow": 37,
+      "atcGroup": "A",
+      "atcDescription": "Trakti alimentar dhe metabolizmi",
+      "atcCodes": "A03FA03",
+      "canonicalName": "Domperidone",
+      "canonicalKey": "domperidone",
+      "status": "source_discovery_pending",
+      "preferredSourceOrder": [
+        "EMA",
+        "EMC",
+        "AEMPS_CIMA",
+        "EU_OTHER",
+        "KOSOVO",
+        "MEDIATELY_CROSSCHECK",
+        "FALLBACK"
+      ],
+      "publicationAllowed": false
+    },
+    {
+      "ordinal": 36,
+      "sourceRow": 38,
+      "atcGroup": "A",
+      "atcDescription": "Trakti alimentar dhe metabolizmi",
+      "atcCodes": "A03FA07",
+      "canonicalName": "Itopride",
+      "canonicalKey": "itopride",
+      "status": "source_discovery_pending",
+      "preferredSourceOrder": [
+        "EMA",
+        "EMC",
+        "AEMPS_CIMA",
+        "EU_OTHER",
+        "KOSOVO",
+        "MEDIATELY_CROSSCHECK",
+        "FALLBACK"
+      ],
+      "publicationAllowed": false
+    },
+    {
+      "ordinal": 37,
+      "sourceRow": 40,
+      "atcGroup": "A",
+      "atcDescription": "Trakti alimentar dhe metabolizmi",
+      "atcCodes": "A04AA02",
+      "canonicalName": "Granisetron",
+      "canonicalKey": "granisetron",
+      "status": "source_discovery_pending",
+      "preferredSourceOrder": [
+        "EMA",
+        "EMC",
+        "AEMPS_CIMA",
+        "EU_OTHER",
+        "KOSOVO",
+        "MEDIATELY_CROSSCHECK",
+        "FALLBACK"
+      ],
+      "publicationAllowed": false
+    },
+    {
+      "ordinal": 38,
+      "sourceRow": 41,
+      "atcGroup": "A",
+      "atcDescription": "Trakti alimentar dhe metabolizmi",
+      "atcCodes": "A04AA05",
+      "canonicalName": "Palonosetron",
+      "canonicalKey": "palonosetron",
+      "status": "source_discovery_pending",
+      "preferredSourceOrder": [
+        "EMA",
+        "EMC",
+        "AEMPS_CIMA",
+        "EU_OTHER",
+        "KOSOVO",
+        "MEDIATELY_CROSSCHECK",
+        "FALLBACK"
+      ],
+      "publicationAllowed": false
+    },
+    {
+      "ordinal": 39,
+      "sourceRow": 42,
+      "atcGroup": "A",
+      "atcDescription": "Trakti alimentar dhe metabolizmi",
+      "atcCodes": "A04AD12",
+      "canonicalName": "Aprepitant",
+      "canonicalKey": "aprepitant",
+      "status": "source_discovery_pending",
+      "preferredSourceOrder": [
+        "EMA",
+        "EMC",
+        "AEMPS_CIMA",
+        "EU_OTHER",
+        "KOSOVO",
+        "MEDIATELY_CROSSCHECK",
+        "FALLBACK"
+      ],
+      "publicationAllowed": false
+    },
+    {
+      "ordinal": 40,
+      "sourceRow": 43,
+      "atcGroup": "A",
+      "atcDescription": "Trakti alimentar dhe metabolizmi",
+      "atcCodes": "A05AA02",
+      "canonicalName": "Ursodeoxycholic acid",
+      "canonicalKey": "ursodeoxycholicacid",
+      "status": "source_discovery_pending",
+      "preferredSourceOrder": [
+        "EMA",
+        "EMC",
+        "AEMPS_CIMA",
+        "EU_OTHER",
+        "KOSOVO",
+        "MEDIATELY_CROSSCHECK",
+        "FALLBACK"
+      ],
+      "publicationAllowed": false
+    },
+    {
+      "ordinal": 41,
+      "sourceRow": 44,
+      "atcGroup": "A",
+      "atcDescription": "Trakti alimentar dhe metabolizmi",
+      "atcCodes": "A05BA",
+      "canonicalName": "Liver therapy",
+      "canonicalKey": "livertherapy",
+      "status": "source_discovery_pending",
+      "preferredSourceOrder": [
+        "EMA",
+        "EMC",
+        "AEMPS_CIMA",
+        "EU_OTHER",
+        "KOSOVO",
+        "MEDIATELY_CROSSCHECK",
+        "FALLBACK"
+      ],
+      "publicationAllowed": false
+    },
+    {
+      "ordinal": 42,
+      "sourceRow": 45,
+      "atcGroup": "A",
+      "atcDescription": "Trakti alimentar dhe metabolizmi",
+      "atcCodes": "A05BA03",
+      "canonicalName": "Dry extract silybum marianum gaertner fructus",
+      "canonicalKey": "dryextractsilybummarianumgaertnerfructus",
+      "status": "source_discovery_pending",
+      "preferredSourceOrder": [
+        "EMA",
+        "EMC",
+        "AEMPS_CIMA",
+        "EU_OTHER",
+        "KOSOVO",
+        "MEDIATELY_CROSSCHECK",
+        "FALLBACK"
+      ],
+      "publicationAllowed": false
+    },
+    {
+      "ordinal": 43,
+      "sourceRow": 46,
+      "atcGroup": "A",
+      "atcDescription": "Trakti alimentar dhe metabolizmi",
+      "atcCodes": "A05BA03",
+      "canonicalName": "Silimarina",
+      "canonicalKey": "silimarina",
+      "status": "source_discovery_pending",
+      "preferredSourceOrder": [
+        "EMA",
+        "EMC",
+        "AEMPS_CIMA",
+        "EU_OTHER",
+        "KOSOVO",
+        "MEDIATELY_CROSSCHECK",
+        "FALLBACK"
+      ],
+      "publicationAllowed": false
+    },
+    {
+      "ordinal": 44,
+      "sourceRow": 47,
+      "atcGroup": "A",
+      "atcDescription": "Trakti alimentar dhe metabolizmi",
+      "atcCodes": "A06AB02",
+      "canonicalName": "Bisacodyl",
+      "canonicalKey": "bisacodyl",
+      "status": "source_discovery_pending",
+      "preferredSourceOrder": [
+        "EMA",
+        "EMC",
+        "AEMPS_CIMA",
+        "EU_OTHER",
+        "KOSOVO",
+        "MEDIATELY_CROSSCHECK",
+        "FALLBACK"
+      ],
+      "publicationAllowed": false
+    },
+    {
+      "ordinal": 45,
+      "sourceRow": 48,
+      "atcGroup": "A",
+      "atcDescription": "Trakti alimentar dhe metabolizmi",
+      "atcCodes": "A06AB06",
+      "canonicalName": "Senna leaf macerate",
+      "canonicalKey": "sennaleafmacerate",
+      "status": "source_discovery_pending",
+      "preferredSourceOrder": [
+        "EMA",
+        "EMC",
+        "AEMPS_CIMA",
+        "EU_OTHER",
+        "KOSOVO",
+        "MEDIATELY_CROSSCHECK",
+        "FALLBACK"
+      ],
+      "publicationAllowed": false
+    },
+    {
+      "ordinal": 46,
+      "sourceRow": 49,
+      "atcGroup": "A",
+      "atcDescription": "Trakti alimentar dhe metabolizmi",
+      "atcCodes": "A06AB08",
+      "canonicalName": "Picosulfate",
+      "canonicalKey": "picosulfate",
+      "status": "source_discovery_pending",
+      "preferredSourceOrder": [
+        "EMA",
+        "EMC",
+        "AEMPS_CIMA",
+        "EU_OTHER",
+        "KOSOVO",
+        "MEDIATELY_CROSSCHECK",
+        "FALLBACK"
+      ],
+      "publicationAllowed": false
+    },
+    {
+      "ordinal": 47,
+      "sourceRow": 50,
+      "atcGroup": "A",
+      "atcDescription": "Trakti alimentar dhe metabolizmi",
+      "atcCodes": "A06AD11",
+      "canonicalName": "Lactulose",
+      "canonicalKey": "lactulose",
+      "status": "source_discovery_pending",
+      "preferredSourceOrder": [
+        "EMA",
+        "EMC",
+        "AEMPS_CIMA",
+        "EU_OTHER",
+        "KOSOVO",
+        "MEDIATELY_CROSSCHECK",
+        "FALLBACK"
+      ],
+      "publicationAllowed": false
+    },
+    {
+      "ordinal": 48,
+      "sourceRow": 51,
+      "atcGroup": "A",
+      "atcDescription": "Trakti alimentar dhe metabolizmi",
+      "atcCodes": "A06AD65",
+      "canonicalName": "Macrogol combinations",
+      "canonicalKey": "macrogolcombinations",
+      "status": "source_discovery_pending",
+      "preferredSourceOrder": [
+        "EMA",
+        "EMC",
+        "AEMPS_CIMA",
+        "EU_OTHER",
+        "KOSOVO",
+        "MEDIATELY_CROSSCHECK",
+        "FALLBACK"
+      ],
+      "publicationAllowed": false
+    },
+    {
+      "ordinal": 49,
+      "sourceRow": 52,
+      "atcGroup": "A",
+      "atcDescription": "Trakti alimentar dhe metabolizmi",
+      "atcCodes": "A06AG04, A06AX01",
+      "canonicalName": "Glycerol",
+      "canonicalKey": "glycerol",
+      "status": "source_discovery_pending",
+      "preferredSourceOrder": [
+        "EMA",
+        "EMC",
+        "AEMPS_CIMA",
+        "EU_OTHER",
+        "KOSOVO",
+        "MEDIATELY_CROSSCHECK",
+        "FALLBACK"
+      ],
+      "publicationAllowed": false
+    },
+    {
+      "ordinal": 50,
+      "sourceRow": 53,
+      "atcGroup": "A",
+      "atcDescription": "Trakti alimentar dhe metabolizmi",
+      "atcCodes": "A06AX05",
+      "canonicalName": "Prucalopride",
+      "canonicalKey": "prucalopride",
+      "status": "source_discovery_pending",
+      "preferredSourceOrder": [
+        "EMA",
+        "EMC",
+        "AEMPS_CIMA",
+        "EU_OTHER",
+        "KOSOVO",
+        "MEDIATELY_CROSSCHECK",
+        "FALLBACK"
+      ],
+      "publicationAllowed": false
+    },
+    {
+      "ordinal": 51,
+      "sourceRow": 54,
+      "atcGroup": "A / G",
+      "atcDescription": "Trakti alimentar dhe metabolizmi / Sistemi gjenitourinar dhe hormonet seksuale",
+      "atcCodes": "A07AA02, G01AA01",
+      "canonicalName": "Nystatin",
+      "canonicalKey": "nystatin",
+      "status": "source_discovery_pending",
+      "preferredSourceOrder": [
+        "EMA",
+        "EMC",
+        "AEMPS_CIMA",
+        "EU_OTHER",
+        "KOSOVO",
+        "MEDIATELY_CROSSCHECK",
+        "FALLBACK"
+      ],
+      "publicationAllowed": false
+    },
+    {
+      "ordinal": 52,
+      "sourceRow": 55,
+      "atcGroup": "A",
+      "atcDescription": "Trakti alimentar dhe metabolizmi",
+      "atcCodes": "A07AA11",
+      "canonicalName": "Rifaximin",
+      "canonicalKey": "rifaximin",
+      "status": "source_discovery_pending",
+      "preferredSourceOrder": [
+        "EMA",
+        "EMC",
+        "AEMPS_CIMA",
+        "EU_OTHER",
+        "KOSOVO",
+        "MEDIATELY_CROSSCHECK",
+        "FALLBACK"
+      ],
+      "publicationAllowed": false
+    },
+    {
+      "ordinal": 53,
+      "sourceRow": 56,
+      "atcGroup": "A",
+      "atcDescription": "Trakti alimentar dhe metabolizmi",
+      "atcCodes": "A07AX03",
+      "canonicalName": "Nifuroxazide",
+      "canonicalKey": "nifuroxazide",
+      "status": "source_discovery_pending",
+      "preferredSourceOrder": [
+        "EMA",
+        "EMC",
+        "AEMPS_CIMA",
+        "EU_OTHER",
+        "KOSOVO",
+        "MEDIATELY_CROSSCHECK",
+        "FALLBACK"
+      ],
+      "publicationAllowed": false
+    },
+    {
+      "ordinal": 54,
+      "sourceRow": 57,
+      "atcGroup": "A",
+      "atcDescription": "Trakti alimentar dhe metabolizmi",
+      "atcCodes": "A07BC05",
+      "canonicalName": "Diosmectite",
+      "canonicalKey": "diosmectite",
+      "status": "source_discovery_pending",
+      "preferredSourceOrder": [
+        "EMA",
+        "EMC",
+        "AEMPS_CIMA",
+        "EU_OTHER",
+        "KOSOVO",
+        "MEDIATELY_CROSSCHECK",
+        "FALLBACK"
+      ],
+      "publicationAllowed": false
+    },
+    {
+      "ordinal": 55,
+      "sourceRow": 58,
+      "atcGroup": "A",
+      "atcDescription": "Trakti alimentar dhe metabolizmi",
+      "atcCodes": "A07DA03",
+      "canonicalName": "Loperamide",
+      "canonicalKey": "loperamide",
+      "status": "source_discovery_pending",
+      "preferredSourceOrder": [
+        "EMA",
+        "EMC",
+        "AEMPS_CIMA",
+        "EU_OTHER",
+        "KOSOVO",
+        "MEDIATELY_CROSSCHECK",
+        "FALLBACK"
+      ],
+      "publicationAllowed": false
+    },
+    {
+      "ordinal": 56,
+      "sourceRow": 59,
+      "atcGroup": "A",
+      "atcDescription": "Trakti alimentar dhe metabolizmi",
+      "atcCodes": "A07EC01",
+      "canonicalName": "Sulfasalazine",
+      "canonicalKey": "sulfasalazine",
+      "status": "source_discovery_pending",
+      "preferredSourceOrder": [
+        "EMA",
+        "EMC",
+        "AEMPS_CIMA",
+        "EU_OTHER",
+        "KOSOVO",
+        "MEDIATELY_CROSSCHECK",
+        "FALLBACK"
+      ],
+      "publicationAllowed": false
+    },
+    {
+      "ordinal": 57,
+      "sourceRow": 60,
+      "atcGroup": "A",
+      "atcDescription": "Trakti alimentar dhe metabolizmi",
+      "atcCodes": "A07EC02",
+      "canonicalName": "Mesalazine",
+      "canonicalKey": "mesalazine",
+      "status": "source_discovery_pending",
+      "preferredSourceOrder": [
+        "EMA",
+        "EMC",
+        "AEMPS_CIMA",
+        "EU_OTHER",
+        "KOSOVO",
+        "MEDIATELY_CROSSCHECK",
+        "FALLBACK"
+      ],
+      "publicationAllowed": false
+    },
+    {
+      "ordinal": 58,
+      "sourceRow": 61,
+      "atcGroup": "A",
+      "atcDescription": "Trakti alimentar dhe metabolizmi",
+      "atcCodes": "A07FA02",
+      "canonicalName": "Saccharomyces cerevisiae hansen cbs",
+      "canonicalKey": "saccharomycescerevisiaehansencbs",
+      "status": "source_discovery_pending",
+      "preferredSourceOrder": [
+        "EMA",
+        "EMC",
+        "AEMPS_CIMA",
+        "EU_OTHER",
+        "KOSOVO",
+        "MEDIATELY_CROSSCHECK",
+        "FALLBACK"
+      ],
+      "publicationAllowed": false
+    },
+    {
+      "ordinal": 59,
+      "sourceRow": 62,
+      "atcGroup": "A",
+      "atcDescription": "Trakti alimentar dhe metabolizmi",
+      "atcCodes": "A07XA04",
+      "canonicalName": "Racecadotril",
+      "canonicalKey": "racecadotril",
+      "status": "source_discovery_pending",
+      "preferredSourceOrder": [
+        "EMA",
+        "EMC",
+        "AEMPS_CIMA",
+        "EU_OTHER",
+        "KOSOVO",
+        "MEDIATELY_CROSSCHECK",
+        "FALLBACK"
+      ],
+      "publicationAllowed": false
+    },
+    {
+      "ordinal": 60,
+      "sourceRow": 63,
+      "atcGroup": "A",
+      "atcDescription": "Trakti alimentar dhe metabolizmi",
+      "atcCodes": "A08AB01",
+      "canonicalName": "Orlistat",
+      "canonicalKey": "orlistat",
+      "status": "source_discovery_pending",
+      "preferredSourceOrder": [
+        "EMA",
+        "EMC",
+        "AEMPS_CIMA",
+        "EU_OTHER",
+        "KOSOVO",
+        "MEDIATELY_CROSSCHECK",
+        "FALLBACK"
+      ],
+      "publicationAllowed": false
+    },
+    {
+      "ordinal": 61,
+      "sourceRow": 64,
+      "atcGroup": "A",
+      "atcDescription": "Trakti alimentar dhe metabolizmi",
+      "atcCodes": "A09AA02",
+      "canonicalName": "Amylase + Lipase + Panceatin + Total proteases",
+      "canonicalKey": "amylaselipasepanceatintotalproteases",
+      "status": "source_discovery_pending",
+      "preferredSourceOrder": [
+        "EMA",
+        "EMC",
+        "AEMPS_CIMA",
+        "EU_OTHER",
+        "KOSOVO",
+        "MEDIATELY_CROSSCHECK",
+        "FALLBACK"
+      ],
+      "publicationAllowed": false
+    },
+    {
+      "ordinal": 62,
+      "sourceRow": 65,
+      "atcGroup": "A",
+      "atcDescription": "Trakti alimentar dhe metabolizmi",
+      "atcCodes": "A09AA02",
+      "canonicalName": "Panceatin",
+      "canonicalKey": "panceatin",
+      "status": "source_discovery_pending",
+      "preferredSourceOrder": [
+        "EMA",
+        "EMC",
+        "AEMPS_CIMA",
+        "EU_OTHER",
+        "KOSOVO",
+        "MEDIATELY_CROSSCHECK",
+        "FALLBACK"
+      ],
+      "publicationAllowed": false
+    },
+    {
+      "ordinal": 63,
+      "sourceRow": 66,
+      "atcGroup": "A",
+      "atcDescription": "Trakti alimentar dhe metabolizmi",
+      "atcCodes": "A10AB05, A10AD05",
+      "canonicalName": "Insulin aspart",
+      "canonicalKey": "insulinaspart",
+      "status": "source_discovery_pending",
+      "preferredSourceOrder": [
+        "EMA",
+        "EMC",
+        "AEMPS_CIMA",
+        "EU_OTHER",
+        "KOSOVO",
+        "MEDIATELY_CROSSCHECK",
+        "FALLBACK"
+      ],
+      "publicationAllowed": false
+    },
+    {
+      "ordinal": 64,
+      "sourceRow": 67,
+      "atcGroup": "A",
+      "atcDescription": "Trakti alimentar dhe metabolizmi",
+      "atcCodes": "A10AB06",
+      "canonicalName": "Insulin glulisine",
+      "canonicalKey": "insulinglulisine",
+      "status": "source_discovery_pending",
+      "preferredSourceOrder": [
+        "EMA",
+        "EMC",
+        "AEMPS_CIMA",
+        "EU_OTHER",
+        "KOSOVO",
+        "MEDIATELY_CROSSCHECK",
+        "FALLBACK"
+      ],
+      "publicationAllowed": false
+    },
+    {
+      "ordinal": 65,
+      "sourceRow": 68,
+      "atcGroup": "A",
+      "atcDescription": "Trakti alimentar dhe metabolizmi",
+      "atcCodes": "A10AD06",
+      "canonicalName": "Insulin aspart + Insulin degludec",
+      "canonicalKey": "insulinaspartinsulindegludec",
+      "status": "source_discovery_pending",
+      "preferredSourceOrder": [
+        "EMA",
+        "EMC",
+        "AEMPS_CIMA",
+        "EU_OTHER",
+        "KOSOVO",
+        "MEDIATELY_CROSSCHECK",
+        "FALLBACK"
+      ],
+      "publicationAllowed": false
+    },
+    {
+      "ordinal": 66,
+      "sourceRow": 69,
+      "atcGroup": "A",
+      "atcDescription": "Trakti alimentar dhe metabolizmi",
+      "atcCodes": "A10AE04",
+      "canonicalName": "Insulin glargine",
+      "canonicalKey": "insulinglargine",
+      "status": "source_discovery_pending",
+      "preferredSourceOrder": [
+        "EMA",
+        "EMC",
+        "AEMPS_CIMA",
+        "EU_OTHER",
+        "KOSOVO",
+        "MEDIATELY_CROSSCHECK",
+        "FALLBACK"
+      ],
+      "publicationAllowed": false
+    },
+    {
+      "ordinal": 67,
+      "sourceRow": 70,
+      "atcGroup": "A",
+      "atcDescription": "Trakti alimentar dhe metabolizmi",
+      "atcCodes": "A10AE05",
+      "canonicalName": "Insulin detemir",
+      "canonicalKey": "insulindetemir",
+      "status": "source_discovery_pending",
+      "preferredSourceOrder": [
+        "EMA",
+        "EMC",
+        "AEMPS_CIMA",
+        "EU_OTHER",
+        "KOSOVO",
+        "MEDIATELY_CROSSCHECK",
+        "FALLBACK"
+      ],
+      "publicationAllowed": false
+    },
+    {
+      "ordinal": 68,
+      "sourceRow": 71,
+      "atcGroup": "A",
+      "atcDescription": "Trakti alimentar dhe metabolizmi",
+      "atcCodes": "A10AE06",
+      "canonicalName": "Insulin degludec",
+      "canonicalKey": "insulindegludec",
+      "status": "source_discovery_pending",
+      "preferredSourceOrder": [
+        "EMA",
+        "EMC",
+        "AEMPS_CIMA",
+        "EU_OTHER",
+        "KOSOVO",
+        "MEDIATELY_CROSSCHECK",
+        "FALLBACK"
+      ],
+      "publicationAllowed": false
+    },
+    {
+      "ordinal": 69,
+      "sourceRow": 72,
+      "atcGroup": "A",
+      "atcDescription": "Trakti alimentar dhe metabolizmi",
+      "atcCodes": "A10BA02",
+      "canonicalName": "Metformin",
+      "canonicalKey": "metformin",
+      "status": "source_discovery_pending",
+      "preferredSourceOrder": [
+        "EMA",
+        "EMC",
+        "AEMPS_CIMA",
+        "EU_OTHER",
+        "KOSOVO",
+        "MEDIATELY_CROSSCHECK",
+        "FALLBACK"
+      ],
+      "publicationAllowed": false
+    },
+    {
+      "ordinal": 70,
+      "sourceRow": 73,
+      "atcGroup": "A",
+      "atcDescription": "Trakti alimentar dhe metabolizmi",
+      "atcCodes": "A10BB01",
+      "canonicalName": "Glibenclamide",
+      "canonicalKey": "glibenclamide",
+      "status": "source_discovery_pending",
+      "preferredSourceOrder": [
+        "EMA",
+        "EMC",
+        "AEMPS_CIMA",
+        "EU_OTHER",
+        "KOSOVO",
+        "MEDIATELY_CROSSCHECK",
+        "FALLBACK"
+      ],
+      "publicationAllowed": false
+    },
+    {
+      "ordinal": 71,
+      "sourceRow": 75,
+      "atcGroup": "A",
+      "atcDescription": "Trakti alimentar dhe metabolizmi",
+      "atcCodes": "A10BB12",
+      "canonicalName": "Glimepiride",
+      "canonicalKey": "glimepiride",
+      "status": "source_discovery_pending",
+      "preferredSourceOrder": [
+        "EMA",
+        "EMC",
+        "AEMPS_CIMA",
+        "EU_OTHER",
+        "KOSOVO",
+        "MEDIATELY_CROSSCHECK",
+        "FALLBACK"
+      ],
+      "publicationAllowed": false
+    },
+    {
+      "ordinal": 72,
+      "sourceRow": 76,
+      "atcGroup": "A",
+      "atcDescription": "Trakti alimentar dhe metabolizmi",
+      "atcCodes": "A10BD07",
+      "canonicalName": "Metformin + Sitagliptin",
+      "canonicalKey": "metforminsitagliptin",
+      "status": "source_discovery_pending",
+      "preferredSourceOrder": [
+        "EMA",
+        "EMC",
+        "AEMPS_CIMA",
+        "EU_OTHER",
+        "KOSOVO",
+        "MEDIATELY_CROSSCHECK",
+        "FALLBACK"
+      ],
+      "publicationAllowed": false
+    },
+    {
+      "ordinal": 73,
+      "sourceRow": 77,
+      "atcGroup": "A",
+      "atcDescription": "Trakti alimentar dhe metabolizmi",
+      "atcCodes": "A10BD08",
+      "canonicalName": "Metformin + Vildagliptin",
+      "canonicalKey": "metforminvildagliptin",
+      "status": "source_discovery_pending",
+      "preferredSourceOrder": [
+        "EMA",
+        "EMC",
+        "AEMPS_CIMA",
+        "EU_OTHER",
+        "KOSOVO",
+        "MEDIATELY_CROSSCHECK",
+        "FALLBACK"
+      ],
+      "publicationAllowed": false
+    },
+    {
+      "ordinal": 74,
+      "sourceRow": 78,
+      "atcGroup": "A",
+      "atcDescription": "Trakti alimentar dhe metabolizmi",
+      "atcCodes": "A10BD19",
+      "canonicalName": "Empagliflozin + Linagliptin",
+      "canonicalKey": "empagliflozinlinagliptin",
+      "status": "source_discovery_pending",
+      "preferredSourceOrder": [
+        "EMA",
+        "EMC",
+        "AEMPS_CIMA",
+        "EU_OTHER",
+        "KOSOVO",
+        "MEDIATELY_CROSSCHECK",
+        "FALLBACK"
+      ],
+      "publicationAllowed": false
+    },
+    {
+      "ordinal": 75,
+      "sourceRow": 79,
+      "atcGroup": "A",
+      "atcDescription": "Trakti alimentar dhe metabolizmi",
+      "atcCodes": "A10BD20",
+      "canonicalName": "Empagliflozin + Metformin",
+      "canonicalKey": "empagliflozinmetformin",
+      "status": "source_discovery_pending",
+      "preferredSourceOrder": [
+        "EMA",
+        "EMC",
+        "AEMPS_CIMA",
+        "EU_OTHER",
+        "KOSOVO",
+        "MEDIATELY_CROSSCHECK",
+        "FALLBACK"
+      ],
+      "publicationAllowed": false
+    },
+    {
+      "ordinal": 76,
+      "sourceRow": 80,
+      "atcGroup": "A",
+      "atcDescription": "Trakti alimentar dhe metabolizmi",
+      "atcCodes": "A10BF01",
+      "canonicalName": "Acarbose",
+      "canonicalKey": "acarbose",
+      "status": "source_discovery_pending",
+      "preferredSourceOrder": [
+        "EMA",
+        "EMC",
+        "AEMPS_CIMA",
+        "EU_OTHER",
+        "KOSOVO",
+        "MEDIATELY_CROSSCHECK",
+        "FALLBACK"
+      ],
+      "publicationAllowed": false
+    },
+    {
+      "ordinal": 77,
+      "sourceRow": 81,
+      "atcGroup": "A",
+      "atcDescription": "Trakti alimentar dhe metabolizmi",
+      "atcCodes": "A10BG03",
+      "canonicalName": "Pioglitazone",
+      "canonicalKey": "pioglitazone",
+      "status": "source_discovery_pending",
+      "preferredSourceOrder": [
+        "EMA",
+        "EMC",
+        "AEMPS_CIMA",
+        "EU_OTHER",
+        "KOSOVO",
+        "MEDIATELY_CROSSCHECK",
+        "FALLBACK"
+      ],
+      "publicationAllowed": false
+    },
+    {
+      "ordinal": 78,
+      "sourceRow": 82,
+      "atcGroup": "A",
+      "atcDescription": "Trakti alimentar dhe metabolizmi",
+      "atcCodes": "A10BH01",
+      "canonicalName": "Sitagliptin",
+      "canonicalKey": "sitagliptin",
+      "status": "source_discovery_pending",
+      "preferredSourceOrder": [
+        "EMA",
+        "EMC",
+        "AEMPS_CIMA",
+        "EU_OTHER",
+        "KOSOVO",
+        "MEDIATELY_CROSSCHECK",
+        "FALLBACK"
+      ],
+      "publicationAllowed": false
+    },
+    {
+      "ordinal": 79,
+      "sourceRow": 83,
+      "atcGroup": "A",
+      "atcDescription": "Trakti alimentar dhe metabolizmi",
+      "atcCodes": "A10BH02",
+      "canonicalName": "Vildagliptin",
+      "canonicalKey": "vildagliptin",
+      "status": "source_discovery_pending",
+      "preferredSourceOrder": [
+        "EMA",
+        "EMC",
+        "AEMPS_CIMA",
+        "EU_OTHER",
+        "KOSOVO",
+        "MEDIATELY_CROSSCHECK",
+        "FALLBACK"
+      ],
+      "publicationAllowed": false
+    },
+    {
+      "ordinal": 80,
+      "sourceRow": 84,
+      "atcGroup": "A",
+      "atcDescription": "Trakti alimentar dhe metabolizmi",
+      "atcCodes": "A10BJ06",
+      "canonicalName": "Semaglutide",
+      "canonicalKey": "semaglutide",
+      "status": "source_discovery_pending",
+      "preferredSourceOrder": [
+        "EMA",
+        "EMC",
+        "AEMPS_CIMA",
+        "EU_OTHER",
+        "KOSOVO",
+        "MEDIATELY_CROSSCHECK",
+        "FALLBACK"
+      ],
+      "publicationAllowed": false
+    },
+    {
+      "ordinal": 81,
+      "sourceRow": 85,
+      "atcGroup": "A",
+      "atcDescription": "Trakti alimentar dhe metabolizmi",
+      "atcCodes": "A10BK01",
+      "canonicalName": "Dapagliflozin",
+      "canonicalKey": "dapagliflozin",
+      "status": "source_discovery_pending",
+      "preferredSourceOrder": [
+        "EMA",
+        "EMC",
+        "AEMPS_CIMA",
+        "EU_OTHER",
+        "KOSOVO",
+        "MEDIATELY_CROSSCHECK",
+        "FALLBACK"
+      ],
+      "publicationAllowed": false
+    },
+    {
+      "ordinal": 82,
+      "sourceRow": 86,
+      "atcGroup": "A",
+      "atcDescription": "Trakti alimentar dhe metabolizmi",
+      "atcCodes": "A10BK03, A10BX12",
+      "canonicalName": "Empagliflozin",
+      "canonicalKey": "empagliflozin",
+      "status": "source_discovery_pending",
+      "preferredSourceOrder": [
+        "EMA",
+        "EMC",
+        "AEMPS_CIMA",
+        "EU_OTHER",
+        "KOSOVO",
+        "MEDIATELY_CROSSCHECK",
+        "FALLBACK"
+      ],
+      "publicationAllowed": false
+    },
+    {
+      "ordinal": 83,
+      "sourceRow": 87,
+      "atcGroup": "A",
+      "atcDescription": "Trakti alimentar dhe metabolizmi",
+      "atcCodes": "A10BX02",
+      "canonicalName": "Repaglinide",
+      "canonicalKey": "repaglinide",
+      "status": "source_discovery_pending",
+      "preferredSourceOrder": [
+        "EMA",
+        "EMC",
+        "AEMPS_CIMA",
+        "EU_OTHER",
+        "KOSOVO",
+        "MEDIATELY_CROSSCHECK",
+        "FALLBACK"
+      ],
+      "publicationAllowed": false
+    },
+    {
+      "ordinal": 84,
+      "sourceRow": 88,
+      "atcGroup": "A",
+      "atcDescription": "Trakti alimentar dhe metabolizmi",
+      "atcCodes": "A10BX16",
+      "canonicalName": "Tirzepatide",
+      "canonicalKey": "tirzepatide",
+      "status": "source_discovery_pending",
+      "preferredSourceOrder": [
+        "EMA",
+        "EMC",
+        "AEMPS_CIMA",
+        "EU_OTHER",
+        "KOSOVO",
+        "MEDIATELY_CROSSCHECK",
+        "FALLBACK"
+      ],
+      "publicationAllowed": false
+    },
+    {
+      "ordinal": 85,
+      "sourceRow": 89,
+      "atcGroup": "A",
+      "atcDescription": "Trakti alimentar dhe metabolizmi",
+      "atcCodes": "A11AA03",
+      "canonicalName": "Alfa tocopheryl + Ascorbic acid + Cholecalciferol concentrate + Copper pentahydrated + Cyanocobalamin mannitol + Ferrous + Folic acid + Hydrogen + Magnesium lactate + Manganese + Molybdate + Nicotinamide + Pantothenate + Pyridoxine + Riboflavin + Thiamine + Vitamin concentrate synthetic oily + Zinc heptahydrate",
+      "canonicalKey": "alfatocopherylascorbicacidcholecalciferolconcentratecopperpentahydratedcyanocobalaminmannitolferrousfolicacidhydrogenmagnesiumlactatemanganesemolybdatenicotinamidepantothenatepyridoxineriboflavinthiaminevitaminconcentratesyntheticoilyzincheptahydrate",
+      "status": "source_discovery_pending",
+      "preferredSourceOrder": [
+        "EMA",
+        "EMC",
+        "AEMPS_CIMA",
+        "EU_OTHER",
+        "KOSOVO",
+        "MEDIATELY_CROSSCHECK",
+        "FALLBACK"
+      ],
+      "publicationAllowed": false
+    },
+    {
+      "ordinal": 86,
+      "sourceRow": 90,
+      "atcGroup": "A",
+      "atcDescription": "Trakti alimentar dhe metabolizmi",
+      "atcCodes": "A11AA03, A11GA01",
+      "canonicalName": "Vitamin",
+      "canonicalKey": "vitamin",
+      "status": "source_discovery_pending",
+      "preferredSourceOrder": [
+        "EMA",
+        "EMC",
+        "AEMPS_CIMA",
+        "EU_OTHER",
+        "KOSOVO",
+        "MEDIATELY_CROSSCHECK",
+        "FALLBACK"
+      ],
+      "publicationAllowed": false
+    },
+    {
+      "ordinal": 87,
+      "sourceRow": 91,
+      "atcGroup": "A",
+      "atcDescription": "Trakti alimentar dhe metabolizmi",
+      "atcCodes": "A11BA, A11EA",
+      "canonicalName": "Nicotinamide + Panthenol + Pyridoxine + Riboflavin + Thiamine",
+      "canonicalKey": "nicotinamidepanthenolpyridoxineriboflavinthiamine",
+      "status": "source_discovery_pending",
+      "preferredSourceOrder": [
+        "EMA",
+        "EMC",
+        "AEMPS_CIMA",
+        "EU_OTHER",
+        "KOSOVO",
+        "MEDIATELY_CROSSCHECK",
+        "FALLBACK"
+      ],
+      "publicationAllowed": false
+    },
+    {
+      "ordinal": 88,
+      "sourceRow": 92,
+      "atcGroup": "A",
+      "atcDescription": "Trakti alimentar dhe metabolizmi",
+      "atcCodes": "A11CC04",
+      "canonicalName": "Calcitriol",
+      "canonicalKey": "calcitriol",
+      "status": "source_discovery_pending",
+      "preferredSourceOrder": [
+        "EMA",
+        "EMC",
+        "AEMPS_CIMA",
+        "EU_OTHER",
+        "KOSOVO",
+        "MEDIATELY_CROSSCHECK",
+        "FALLBACK"
+      ],
+      "publicationAllowed": false
+    },
+    {
+      "ordinal": 89,
+      "sourceRow": 93,
+      "atcGroup": "A",
+      "atcDescription": "Trakti alimentar dhe metabolizmi",
+      "atcCodes": "A11CC05",
+      "canonicalName": "Cholecalciferol",
+      "canonicalKey": "cholecalciferol",
+      "status": "source_discovery_pending",
+      "preferredSourceOrder": [
+        "EMA",
+        "EMC",
+        "AEMPS_CIMA",
+        "EU_OTHER",
+        "KOSOVO",
+        "MEDIATELY_CROSSCHECK",
+        "FALLBACK"
+      ],
+      "publicationAllowed": false
+    },
+    {
+      "ordinal": 90,
+      "sourceRow": 94,
+      "atcGroup": "A",
+      "atcDescription": "Trakti alimentar dhe metabolizmi",
+      "atcCodes": "A11DA01",
+      "canonicalName": "Thiamine",
+      "canonicalKey": "thiamine",
+      "status": "source_discovery_pending",
+      "preferredSourceOrder": [
+        "EMA",
+        "EMC",
+        "AEMPS_CIMA",
+        "EU_OTHER",
+        "KOSOVO",
+        "MEDIATELY_CROSSCHECK",
+        "FALLBACK"
+      ],
+      "publicationAllowed": false
+    },
+    {
+      "ordinal": 91,
+      "sourceRow": 95,
+      "atcGroup": "A",
+      "atcDescription": "Trakti alimentar dhe metabolizmi",
+      "atcCodes": "A11DB",
+      "canonicalName": "Cyanocobalamin + Lidocaine + Pyridoxine + Thiamine mononitrate",
+      "canonicalKey": "cyanocobalaminlidocainepyridoxinethiaminemononitrate",
+      "status": "source_discovery_pending",
+      "preferredSourceOrder": [
+        "EMA",
+        "EMC",
+        "AEMPS_CIMA",
+        "EU_OTHER",
+        "KOSOVO",
+        "MEDIATELY_CROSSCHECK",
+        "FALLBACK"
+      ],
+      "publicationAllowed": false
+    },
+    {
+      "ordinal": 92,
+      "sourceRow": 96,
+      "atcGroup": "A",
+      "atcDescription": "Trakti alimentar dhe metabolizmi",
+      "atcCodes": "A11DB",
+      "canonicalName": "Cyanocobalamin + Pyridoxine + Thiamine",
+      "canonicalKey": "cyanocobalaminpyridoxinethiamine",
+      "status": "source_discovery_pending",
+      "preferredSourceOrder": [
+        "EMA",
+        "EMC",
+        "AEMPS_CIMA",
+        "EU_OTHER",
+        "KOSOVO",
+        "MEDIATELY_CROSSCHECK",
+        "FALLBACK"
+      ],
+      "publicationAllowed": false
+    },
+    {
+      "ordinal": 93,
+      "sourceRow": 97,
+      "atcGroup": "A",
+      "atcDescription": "Trakti alimentar dhe metabolizmi",
+      "atcCodes": "A11EA",
+      "canonicalName": "Cyanocobalamin + Nicotinamide + Pantothenate + Pyridoxine + Riboflavin + Thiamine",
+      "canonicalKey": "cyanocobalaminnicotinamidepantothenatepyridoxineriboflavinthiamine",
+      "status": "source_discovery_pending",
+      "preferredSourceOrder": [
+        "EMA",
+        "EMC",
+        "AEMPS_CIMA",
+        "EU_OTHER",
+        "KOSOVO",
+        "MEDIATELY_CROSSCHECK",
+        "FALLBACK"
+      ],
+      "publicationAllowed": false
+    },
+    {
+      "ordinal": 94,
+      "sourceRow": 98,
+      "atcGroup": "A",
+      "atcDescription": "Trakti alimentar dhe metabolizmi",
+      "atcCodes": "A11EA",
+      "canonicalName": "Nicotinamide + Pantothenate + Vitamin b1 + Vitamin b2 + Vitamin b6",
+      "canonicalKey": "nicotinamidepantothenatevitaminb1vitaminb2vitaminb6",
+      "status": "source_discovery_pending",
+      "preferredSourceOrder": [
+        "EMA",
+        "EMC",
+        "AEMPS_CIMA",
+        "EU_OTHER",
+        "KOSOVO",
+        "MEDIATELY_CROSSCHECK",
+        "FALLBACK"
+      ],
+      "publicationAllowed": false
+    },
+    {
+      "ordinal": 95,
+      "sourceRow": 99,
+      "atcGroup": "A",
+      "atcDescription": "Trakti alimentar dhe metabolizmi",
+      "atcCodes": "A11EA",
+      "canonicalName": "Vitamins",
+      "canonicalKey": "vitamins",
+      "status": "source_discovery_pending",
+      "preferredSourceOrder": [
+        "EMA",
+        "EMC",
+        "AEMPS_CIMA",
+        "EU_OTHER",
+        "KOSOVO",
+        "MEDIATELY_CROSSCHECK",
+        "FALLBACK"
+      ],
+      "publicationAllowed": false
+    },
+    {
+      "ordinal": 96,
+      "sourceRow": 100,
+      "atcGroup": "A",
+      "atcDescription": "Trakti alimentar dhe metabolizmi",
+      "atcCodes": "A11EX",
+      "canonicalName": "Microcrystalline cellulose + Nicotinamide + Pyridoxine + Riboflavin + Thia ime",
+      "canonicalKey": "microcrystallinecellulosenicotinamidepyridoxineriboflavinthiaime",
+      "status": "source_discovery_pending",
+      "preferredSourceOrder": [
+        "EMA",
+        "EMC",
+        "AEMPS_CIMA",
+        "EU_OTHER",
+        "KOSOVO",
+        "MEDIATELY_CROSSCHECK",
+        "FALLBACK"
+      ],
+      "publicationAllowed": false
+    },
+    {
+      "ordinal": 97,
+      "sourceRow": 101,
+      "atcGroup": "A",
+      "atcDescription": "Trakti alimentar dhe metabolizmi",
+      "atcCodes": "A11GA01",
+      "canonicalName": "Ascorbic acid",
+      "canonicalKey": "ascorbicacid",
+      "status": "source_discovery_pending",
+      "preferredSourceOrder": [
+        "EMA",
+        "EMC",
+        "AEMPS_CIMA",
+        "EU_OTHER",
+        "KOSOVO",
+        "MEDIATELY_CROSSCHECK",
+        "FALLBACK"
+      ],
+      "publicationAllowed": false
+    },
+    {
+      "ordinal": 98,
+      "sourceRow": 102,
+      "atcGroup": "A",
+      "atcDescription": "Trakti alimentar dhe metabolizmi",
+      "atcCodes": "A11HA02",
+      "canonicalName": "Pyridoxine",
+      "canonicalKey": "pyridoxine",
+      "status": "source_discovery_pending",
+      "preferredSourceOrder": [
+        "EMA",
+        "EMC",
+        "AEMPS_CIMA",
+        "EU_OTHER",
+        "KOSOVO",
+        "MEDIATELY_CROSSCHECK",
+        "FALLBACK"
+      ],
+      "publicationAllowed": false
+    },
+    {
+      "ordinal": 99,
+      "sourceRow": 103,
+      "atcGroup": "A / B",
+      "atcDescription": "Trakti alimentar dhe metabolizmi / Gjaku dhe organet gjakformuese",
+      "atcCodes": "A12AA03, A12AA20, B05BB01",
+      "canonicalName": "Calcium gluconate",
+      "canonicalKey": "calciumgluconate",
+      "status": "source_discovery_pending",
+      "preferredSourceOrder": [
+        "EMA",
+        "EMC",
+        "AEMPS_CIMA",
+        "EU_OTHER",
+        "KOSOVO",
+        "MEDIATELY_CROSSCHECK",
+        "FALLBACK"
+      ],
+      "publicationAllowed": false
+    },
+    {
+      "ordinal": 100,
+      "sourceRow": 104,
+      "atcGroup": "A",
+      "atcDescription": "Trakti alimentar dhe metabolizmi",
+      "atcCodes": "A12AX",
+      "canonicalName": "Calcium carbonate + Cholecalciferol",
+      "canonicalKey": "calciumcarbonatecholecalciferol",
+      "status": "source_discovery_pending",
+      "preferredSourceOrder": [
+        "EMA",
+        "EMC",
+        "AEMPS_CIMA",
+        "EU_OTHER",
+        "KOSOVO",
+        "MEDIATELY_CROSSCHECK",
+        "FALLBACK"
+      ],
+      "publicationAllowed": false
+    }
+  ]
+}
