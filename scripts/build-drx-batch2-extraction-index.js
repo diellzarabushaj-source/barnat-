@@ -56,6 +56,9 @@ async function extractOne(item, options = {}) {
     clinicalSectionCoverage:snapshot.parser.clinicalSectionCoverage,
     section41Present:snapshot.parser.indicationsSectionPresent,
     section42Present:snapshot.parser.doseSectionPresent,
+    sectionSha256:snapshot.sectionSha256 || {},
+    section41Sha256:snapshot.sectionSha256?.['4.1'] || null,
+    section42Sha256:snapshot.sectionSha256?.['4.2'] || null,
     extractionGate:gate,
     archiveFiles:archiveFiles ? {
       rawPath:path.relative(ROOT, archiveFiles.rawPath),
