@@ -14,7 +14,7 @@ const canonicalMocks = [];
 for (const rel of testFiles) {
   const source = fs.readFileSync(path.join(ROOT, rel), 'utf8');
 
-  if (/require\.cache\s*\[/.test(source)) {
+  if (/require\.cache\s*\[[^\]]+\]\s*=/.test(source)) {
     if (/require\.resolve\([^\n]*neon-data-api\.js/.test(source)) badCacheMocks.push(rel);
     if (/require\.resolve\([^\n]*medindex-data-api\.js/.test(source)) canonicalMocks.push(rel);
   }
