@@ -10,7 +10,7 @@ on:
 
 concurrency:
   group: drx-master-cima-scrape
-  cancel-in-progress: false
+  cancel-in-progress: true
 
 jobs:
   scrape:
