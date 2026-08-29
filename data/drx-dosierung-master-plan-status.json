@@ -1,6 +1,6 @@
 {
   "schemaVersion": "drx-dosierung-master-plan-status-v1",
-  "updatedAt": "2026-08-29T04:31:00+02:00",
+  "updatedAt": "2026-08-29T05:00:00+02:00",
   "officialPlan": "DRx Dosierung phases 0-32",
   "databaseBlocker": {
     "active": true,
@@ -48,9 +48,10 @@
       "status": "IN_PROGRESS",
       "evidence": [
         "data/drx-dose-source-map-v1.json",
-        "ibuprofen pilot with official eMC oral+IV SmPCs"
+        "ibuprofen pilot with official eMC oral+IV SmPCs",
+        "data/drx-batch1-source-verification-v1.json"
       ],
-      "next": "expand source map from canonical substance list; authoritative source first"
+      "next": "archive and parse the verified Batch 1 authoritative source set; then expand discovery from canonical substance list"
     },
     {
       "id": 4,
@@ -172,9 +173,10 @@
       "status": "IN_PROGRESS",
       "evidence": [
         "data/drx-pilot-ibuprofen-v1.json",
-        "multi-authority source map for ibuprofen"
+        "multi-authority source map for ibuprofen",
+        "data/drx-batch1-source-verification-v1.json"
       ],
-      "next": "exact product binding + legacy comparison + review; then add 9 more pilot substances"
+      "next": "archive + parse the 9 non-ibuprofen Batch 1 sources while live product binding/legacy comparison wait for Supabase gateway"
     },
     {
       "id": 16,
@@ -323,7 +325,7 @@
   ],
   "currentExecution": {
     "phase": 15,
-    "objective": "Complete ibuprofen end-to-end without publication, then expand Batch 1 to 10 substances. Phase 14 production persistence remains blocked only by the Supabase SQL gateway.",
+    "objective": "Batch 1 authoritative source set is now verified for 10 substances. Continue archive/parse/normalize repository-side; exact DRx product binding, legacy comparison and additive V3 persistence remain blocked by the Supabase SQL gateway. Publication remains disabled.",
     "pilot": "ibuprofen",
     "publicationAllowed": false
   }
