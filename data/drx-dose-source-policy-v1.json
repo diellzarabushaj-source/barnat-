@@ -77,7 +77,9 @@
         "medikamente.basg.gv.at",
         "anm.ro",
         "nomenclator.anm.ro",
-        "www.anm.ro"
+        "www.anm.ro",
+        "halmed.hr",
+        "sukl.sk"
       ],
       "acceptedDocumentTypes": [
         "SmPC",
