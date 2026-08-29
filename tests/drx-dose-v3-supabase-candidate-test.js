@@ -35,8 +35,8 @@ assert.match(sql,/dose_renal_adjustments_v3_section_sha_check/);
 assert.match(sql,/dose_hepatic_adjustments_v3_section_sha_check/);
 assert.match(sql,/grant select on table public\.dose_renal_adjustments_v3 to anon, authenticated/);
 assert.match(sql,/grant select on table public\.dose_hepatic_adjustments_v3 to anon, authenticated/);
-assert.match(sql,/create policy dose_renal_adjustments_v3_verified_read[\s\S]*review_status = 'verified'[\s\S]*r\.editorial_status = 'published'/);
-assert.match(sql,/create policy dose_hepatic_adjustments_v3_verified_read[\s\S]*review_status = 'verified'[\s\S]*r\.editorial_status = 'published'/);
+assert.match(sql,/create policy dose_renal_adjustments_v3_verified_read[\s\S]*review_status = 'verified'[\s\S]*source_snapshot_id = source_evidence_hash[\s\S]*s\.source_tier in \('EMA','EMC','AEMPS_CIMA','EU_NATIONAL','KOSOVO_AKPPM'\)[\s\S]*sec\.section_sha256 = dose_renal_adjustments_v3\.source_section_sha256/);
+assert.match(sql,/create policy dose_hepatic_adjustments_v3_verified_read[\s\S]*review_status = 'verified'[\s\S]*source_snapshot_id = source_evidence_hash[\s\S]*s\.source_tier in \('EMA','EMC','AEMPS_CIMA','EU_NATIONAL','KOSOVO_AKPPM'\)[\s\S]*sec\.section_sha256 = dose_hepatic_adjustments_v3\.source_section_sha256/);
 assert.match(sql,/reviewer_id uuid/);
 assert.match(sql,/decision_reason text/);
 assert.match(sql,/source_version text/);
@@ -85,6 +85,8 @@ assert.match(sql,/create trigger dose_rules_v3_publication_guard[\s\S]*?before i
 assert.match(sql,/source tier is not publication eligible/);
 assert.match(sql,/verified SmPC section 4\.2 artifact missing/);
 assert.match(sql,/source section hash does not match persisted artifact/);
+assert.match(sql,/renal adjustment required but no verified provenance-valid renal adjustment exists/);
+assert.match(sql,/hepatic adjustment required but no verified provenance-valid hepatic adjustment exists/);
 assert.match(sql,/section_code = '4\.2'[\s\S]*?extraction_status = 'extracted'/);
 assert.match(sql,/snapshot_source_key is distinct from new\.source_key/);
 
