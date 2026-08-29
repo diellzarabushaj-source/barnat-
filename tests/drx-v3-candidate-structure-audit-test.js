@@ -46,6 +46,16 @@ for (const table of tables) {
 }
 
 assert.equal(
+  occurrences('create or replace function private.drx_lock_source_snapshot_v3()'),
+  1,
+  'Snapshot provenance lock must exist exactly once.'
+);
+assert.equal(
+  occurrences('create or replace function private.drx_lock_source_section_v3()'),
+  1,
+  'Section provenance lock must exist exactly once.'
+);
+assert.equal(
   occurrences('create or replace function private.drx_enforce_product_publication_v3()'),
   1,
   'Product publication guard must exist exactly once.'
@@ -70,11 +80,15 @@ assert.doesNotMatch(sql, /\btruncate\b/i);
 assert.doesNotMatch(sql, /\bdelete\s+from\b/i);
 assert.match(sql, /DRX_V3_PREEXISTING_SHADOW_SCHEMA/);
 assert.match(sql, /dose_source_snapshots_v3_https_check/);
+assert.match(sql, /create trigger dose_source_snapshots_v3_provenance_lock[\s\S]*before update or delete/);
+assert.match(sql, /create trigger dose_source_sections_v3_provenance_lock[\s\S]*before update or delete/);
 assert.match(sql, /create trigger dose_products_v3_publication_guard[\s\S]*before insert or update/);
 assert.match(sql, /create trigger dose_rules_v3_publication_guard[\s\S]*before insert or update/);
 
 assert.match(sql, /constraint dose_products_v3_source_identity_check[\s\S]*source_snapshot_id = source_evidence_hash/);
 assert.match(sql, /constraint dose_rules_v3_source_identity_check[\s\S]*source_snapshot_id = source_evidence_hash/);
+assert.match(sql, /dose_rules_v3_section_sha_check/);
+assert.match(sql, /sec\.section_sha256 = r\.source_section_sha256/);
 assert.match(sql, /dose_source_snapshots_v3_version_check/);
 assert.match(sql, /dose_rules_v3_published_safety_check/);
 assert.match(sql, /dose_rule_products_v3_unique_binding unique \(rule_id, product_id\)/);
