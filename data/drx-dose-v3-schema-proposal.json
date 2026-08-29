@@ -1,7 +1,7 @@
 {
   "schemaVersion": "drx-dose-v3-schema-proposal-v1",
   "updatedAt": "2026-08-29",
-  "status": "proposal_only_not_applied",
+  "status": "proposal_hardened_not_applied",
   "principles": [
     "additive_only",
     "preserve_v2",
@@ -9,7 +9,10 @@
     "publication_fail_closed",
     "authored_rules_require_source_evidence",
     "combination_basis_explicit",
-    "review_decisions_auditable"
+    "review_decisions_auditable",
+    "runtime_schema_enum_parity",
+    "renal_measure_no_inference",
+    "hepatic_measure_no_inference"
   ],
   "tables": [
     {
@@ -168,6 +171,89 @@
         "updated_at": "timestamptz not null default now()"
       },
       "exposure": "published_read_only",
+      "rls": true,
+      "allowedRuntimeEnums": {
+        "frequency_mode": [
+          "interval",
+          "times_per_day",
+          "prn",
+          "single",
+          "continuous",
+          "manual"
+        ],
+        "duration_mode": [
+          "none",
+          "fixed_days",
+          "range_days",
+          "review_after",
+          "manual"
+        ]
+      }
+    },
+    {
+      "name": "dose_renal_adjustments_v3",
+      "purpose": "Source-anchored exact renal adjustments without CrCl/eGFR inference.",
+      "primaryKey": [
+        "adjustment_id"
+      ],
+      "foreignKeys": {
+        "rule_id": "dose_rules_v3.rule_id",
+        "source_snapshot_id": "dose_source_snapshots_v3.snapshot_id"
+      },
+      "columns": {
+        "adjustment_id": "uuid",
+        "rule_id": "uuid not null",
+        "measure_type": "CrCl_mL_min | eGFR_mL_min_1_73m2 | dialysis_status",
+        "min_value": "numeric",
+        "max_value": "numeric",
+        "accepted_values": "text[]",
+        "dose_action": "no_adjustment | reduce_dose | extend_interval | avoid | contraindicated | specialist_review",
+        "dose_factor": "numeric",
+        "replacement_dose_min": "numeric",
+        "replacement_dose_max": "numeric",
+        "interval_min_hours": "numeric",
+        "interval_max_hours": "numeric",
+        "source_key": "text not null",
+        "source_snapshot_id": "text not null",
+        "source_section": "4.2",
+        "source_evidence_hash": "sha256 text",
+        "review_status": "draft | in_review | verified | rejected | retired",
+        "verified_by": "text",
+        "verified_at": "timestamptz"
+      },
+      "exposure": "service_only",
+      "rls": true
+    },
+    {
+      "name": "dose_hepatic_adjustments_v3",
+      "purpose": "Source-anchored hepatic adjustments that never infer Child-Pugh from textual impairment.",
+      "primaryKey": [
+        "adjustment_id"
+      ],
+      "foreignKeys": {
+        "rule_id": "dose_rules_v3.rule_id",
+        "source_snapshot_id": "dose_source_snapshots_v3.snapshot_id"
+      },
+      "columns": {
+        "adjustment_id": "uuid",
+        "rule_id": "uuid not null",
+        "measure_type": "Child_Pugh_class | hepatic_impairment_textual",
+        "severity_or_class": "text[] not null",
+        "dose_action": "no_adjustment | reduce_dose | extend_interval | avoid | contraindicated | specialist_review",
+        "dose_factor": "numeric",
+        "replacement_dose_min": "numeric",
+        "replacement_dose_max": "numeric",
+        "interval_min_hours": "numeric",
+        "interval_max_hours": "numeric",
+        "source_key": "text not null",
+        "source_snapshot_id": "text not null",
+        "source_section": "4.2",
+        "source_evidence_hash": "sha256 text",
+        "review_status": "draft | in_review | verified | rejected | retired",
+        "verified_by": "text",
+        "verified_at": "timestamptz"
+      },
+      "exposure": "service_only",
       "rls": true
     },
     {
@@ -230,10 +316,22 @@
         "decision": "text",
         "decision_notes": "text",
         "opened_at": "timestamptz not null default now()",
-        "decided_at": "timestamptz"
+        "decided_at": "timestamptz",
+        "reviewer_id": "uuid",
+        "source_version": "text",
+        "decision_reason": "text",
+        "reviewed_at": "timestamptz"
       },
       "exposure": "admin_only",
-      "rls": true
+      "rls": true,
+      "requiredResolutionAudit": [
+        "reviewer_id",
+        "reviewed_at",
+        "decision",
+        "decision_reason",
+        "source_version",
+        "decided_at"
+      ]
     },
     {
       "name": "dose_publication_events_v3",
