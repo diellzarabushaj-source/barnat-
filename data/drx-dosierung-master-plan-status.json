@@ -1,6 +1,6 @@
 {
   "schemaVersion": "drx-dosierung-master-plan-status-v1",
-  "updatedAt": "2026-08-29T11:46:19.382Z",
+  "updatedAt": "2026-08-29T11:47:57.189Z",
   "officialPlan": "DRx Dosierung phases 0-32",
   "databaseBlocker": {
     "active": true,
@@ -265,9 +265,14 @@
         "2026-08-29 Phase 14 read-only recheck: SELECT 1 -> connection timeout",
         "2026-08-29 Phase 14 read-only recheck: list_migrations -> connection timeout",
         "Supabase project status remains ACTIVE_HEALTHY while Postgres logs remain readable",
-        "V3 candidate hardened: 12/12 RLS, PUBLIC/anon/authenticated fail-closed grants, insert+update publication guards, source-tier gate, persisted SmPC 4.2 artifact gate, partial-shadow-schema preflight"
+        "V3 candidate hardened: 12/12 RLS, PUBLIC/anon/authenticated fail-closed grants, insert+update publication guards, source-tier gate, persisted SmPC 4.2 artifact gate, partial-shadow-schema preflight",
+        "supabase/drx-dose-v3-postapply-smoke.sql",
+        "tests/drx-dose-v3-postapply-smoke-contract-test.js",
+        "supabase/drx-dose-v3-rollback.sql",
+        "tests/drx-dose-v3-rollback-contract-test.js",
+        "rollback is V3-only, no CASCADE, no private schema drop, no V2/legacy table touch"
       ],
-      "next": "do not retry/write while gateway is timing out; when read-only SQL recovers: SELECT 1 -> list_migrations -> baseline table/type audit -> security/performance advisors -> parse/apply candidate -> smoke -> rollback evidence"
+      "next": "gateway recovery gate unchanged: SELECT 1 -> list_migrations -> baseline/types -> advisors -> candidate apply -> read-only post-apply smoke -> controlled rollback test; no DB write before prerequisites pass"
     },
     {
       "id": 15,
