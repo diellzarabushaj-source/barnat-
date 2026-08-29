@@ -60,6 +60,7 @@ assert.ok(weak.hardBlockers.includes('non_authoritative_source'));
 const validation = Dose.validateRule({
   ...baseRule,
   sourceSnapshotId:HASH,
+  sourceSectionSha256:'b'.repeat(64),
   sourceEvidenceHash:HASH,
   editorialStatus:'published',
 });
