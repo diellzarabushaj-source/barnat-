@@ -7,6 +7,8 @@ assert.equal(r.releaseReady,false);
 assert.equal(r.publicationAllowed,false);
 assert.ok(r.blockers.includes('supabase_v3_not_applied'));
 assert.ok(r.blockers.includes('batch2_archive_hashes_incomplete'));
+assert.ok(r.blockers.includes('first100_canonical_provenance_not_ready'));
+assert.ok(r.blockers.includes('first100_production_queue_not_ready'));
 assert.equal(r.phases.apiFastPath,'v3_one_rpc_ready_not_live');
 assert.equal(r.phases.doseCore,'shared_core_runtime_hardened');
 assert.equal(r.phases.cacheOffline,'implemented_indexeddb_etag');
