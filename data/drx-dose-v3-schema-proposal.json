@@ -4,50 +4,45 @@
   "status": "proposal_hardened_not_applied",
   "principles": [
     "additive_only",
-    "preserve_v2",
-    "raw_source_immutable_by_hash",
+    "preserve_v2_until_cutover",
+    "v3_self_contained_product_shell",
+    "raw_source_immutable_by_sha256",
+    "source_snapshot_equals_evidence_hash",
+    "source_version_or_date_required",
     "publication_fail_closed",
-    "authored_rules_require_source_evidence",
-    "combination_basis_explicit",
-    "review_decisions_auditable",
     "runtime_schema_enum_parity",
+    "combination_basis_explicit",
     "renal_measure_no_inference",
-    "hepatic_measure_no_inference"
+    "hepatic_measure_no_inference",
+    "review_decisions_auditable",
+    "one_rpc_product_fast_path"
   ],
   "tables": [
     {
       "name": "dose_source_snapshots_v3",
-      "purpose": "Immutable archive metadata for authoritative source snapshots.",
+      "purpose": "Immutable authoritative source archive metadata.",
       "primaryKey": [
         "snapshot_id"
       ],
+      "exposure": "service_only",
+      "rls": true,
       "columns": {
-        "snapshot_id": "text sha256 hex",
-        "source_key": "text not null",
-        "source_url": "text not null",
-        "final_url": "text not null",
-        "source_tier": "text not null",
-        "authority": "text not null",
-        "jurisdiction": "text",
-        "document_type": "text",
+        "snapshot_id": "sha256 text",
+        "source_key": "text",
+        "source_url": "text",
+        "final_url": "text",
+        "source_tier": "text",
+        "authority": "text",
         "document_version": "text",
         "document_date": "date",
-        "fetched_at": "timestamptz not null",
-        "content_type": "text",
-        "content_length": "bigint",
-        "raw_sha256": "text not null unique",
-        "etag": "text",
-        "last_modified": "text",
-        "parser_version": "text",
-        "archive_locator": "text",
-        "created_at": "timestamptz not null default now()"
-      },
-      "exposure": "service_only",
-      "rls": true
+        "fetched_at": "timestamptz",
+        "raw_sha256": "sha256 text unique",
+        "archive_locator": "text"
+      }
     },
     {
       "name": "dose_source_sections_v3",
-      "purpose": "Structured §4.x extraction with provenance anchored to one immutable snapshot.",
+      "purpose": "Structured SmPC 4.1-4.9 extraction anchored to immutable snapshots.",
       "primaryKey": [
         "snapshot_id",
         "section_code"
@@ -55,81 +50,126 @@
       "foreignKeys": {
         "snapshot_id": "dose_source_snapshots_v3.snapshot_id"
       },
-      "columns": {
-        "snapshot_id": "text not null",
-        "section_code": "text not null",
-        "section_key": "text not null",
-        "heading": "text",
-        "section_text": "text not null",
-        "section_sha256": "text not null",
-        "extracted_json": "jsonb not null default '{}'",
-        "parser_version": "text not null",
-        "extraction_status": "text not null",
-        "created_at": "timestamptz not null default now()"
-      },
       "exposure": "service_only",
-      "rls": true
+      "rls": true,
+      "columns": {
+        "snapshot_id": "text",
+        "section_code": "text",
+        "section_text": "text",
+        "section_sha256": "sha256 text",
+        "extracted_json": "jsonb",
+        "parser_version": "text",
+        "extraction_status": "text"
+      }
     },
     {
       "name": "dose_indication_concepts_v3",
-      "purpose": "Canonical indication identity separate from source wording.",
+      "purpose": "Canonical indication identities and verified ICD-10 mappings.",
       "primaryKey": [
         "indication_id"
       ],
+      "exposure": "published_read_only",
+      "rls": true,
       "columns": {
         "indication_id": "uuid",
-        "indication_key": "text not null unique",
-        "canonical_name": "text not null",
-        "icd10_codes": "text[] not null default '{}'",
-        "icd_verification_status": "text not null",
-        "editorial_status": "text not null",
-        "created_at": "timestamptz not null default now()",
-        "updated_at": "timestamptz not null default now()"
-      },
-      "exposure": "published_read_only",
-      "rls": true
+        "indication_key": "text unique",
+        "canonical_name": "text",
+        "icd10_codes": "text[]",
+        "icd_verification_status": "text",
+        "editorial_status": "text"
+      }
     },
     {
       "name": "dose_indication_terms_v3",
-      "purpose": "Exact reviewed aliases from source documents.",
+      "purpose": "Exact source terms, aliases and translations.",
       "primaryKey": [
         "term_key"
       ],
       "foreignKeys": {
-        "indication_id": "dose_indication_concepts_v3.indication_id"
-      },
-      "columns": {
-        "term_key": "text",
-        "indication_id": "uuid not null",
-        "term": "text not null",
-        "language": "text",
-        "term_type": "text not null",
-        "source_snapshot_id": "text",
-        "verified_at": "timestamptz",
-        "created_at": "timestamptz not null default now()"
+        "indication_id": "dose_indication_concepts_v3.indication_id",
+        "source_snapshot_id": "dose_source_snapshots_v3.snapshot_id"
       },
       "exposure": "service_only",
-      "rls": true
+      "rls": true,
+      "columns": {
+        "term_key": "text",
+        "indication_id": "uuid",
+        "term": "text",
+        "language": "text",
+        "term_type": "text",
+        "source_snapshot_id": "text",
+        "verified_at": "timestamptz"
+      }
+    },
+    {
+      "name": "dose_products_v3",
+      "purpose": "Self-contained exact DRx product/concentration shell with immutable provenance; replaces V2 product-shell dependency after cutover.",
+      "primaryKey": [
+        "product_id"
+      ],
+      "foreignKeys": {
+        "drug_id": "drugs.id",
+        "source_snapshot_id": "dose_source_snapshots_v3.snapshot_id"
+      },
+      "exposure": "published_read_only",
+      "rls": true,
+      "columns": {
+        "product_id": "uuid",
+        "drug_id": "uuid unique",
+        "product_key": "text unique",
+        "registry_number": "text",
+        "pdid": "text",
+        "trade_name": "text",
+        "active_substance": "text",
+        "atc_code": "text",
+        "pharmaceutical_form": "text",
+        "route": "text",
+        "patient_group": "text",
+        "numerator_value": "numeric",
+        "numerator_unit": "text",
+        "denominator_value": "numeric",
+        "denominator_unit": "text",
+        "tablet_split_denominator": "numeric",
+        "is_scored": "boolean",
+        "measurable_increment_ml": "numeric",
+        "rounding_mode": "text",
+        "source_key": "text",
+        "source_snapshot_id": "sha256 text",
+        "source_evidence_hash": "sha256 text",
+        "source_document_version": "text",
+        "source_document_date": "date",
+        "editorial_status": "text",
+        "verified_by": "text",
+        "verified_at": "timestamptz",
+        "version_no": "integer"
+      }
     },
     {
       "name": "dose_rules_v3",
-      "purpose": "Normalized deterministic dose rules with immutable source evidence.",
+      "purpose": "Normalized deterministic dose rules with immutable provenance and safety status.",
       "primaryKey": [
         "rule_id"
       ],
+      "foreignKeys": {
+        "substance_concept_id": "substance_concepts_v1.concept_id",
+        "indication_id": "dose_indication_concepts_v3.indication_id",
+        "source_snapshot_id": "dose_source_snapshots_v3.snapshot_id"
+      },
+      "exposure": "published_read_only",
+      "rls": true,
       "columns": {
         "rule_id": "uuid",
-        "rule_key": "text not null unique",
-        "substance_concept_id": "uuid not null",
-        "indication_id": "uuid not null",
-        "patient_group": "text not null",
-        "calculation_method": "text not null",
+        "rule_key": "text unique",
+        "substance_concept_id": "uuid",
+        "indication_id": "uuid",
+        "patient_group": "text",
+        "calculation_method": "text",
         "dose_min_value": "numeric",
         "dose_max_value": "numeric",
         "dose_unit": "text",
         "dose_basis": "text",
         "weight_basis": "text",
-        "frequency_mode": "text not null",
+        "frequency_mode": "text",
         "interval_min_hours": "numeric",
         "interval_max_hours": "numeric",
         "times_per_day": "numeric",
@@ -138,7 +178,7 @@
         "max_single_dose_mg": "numeric",
         "max_daily_dose_mg": "numeric",
         "max_doses_24h": "numeric",
-        "duration_mode": "text not null",
+        "duration_mode": "text",
         "duration_min_days": "numeric",
         "duration_max_days": "numeric",
         "review_after_days": "numeric",
@@ -148,30 +188,31 @@
         "max_weight_kg": "numeric",
         "route": "text",
         "pharmaceutical_form": "text",
-        "prn": "boolean not null default false",
-        "renal_adjustment_required": "boolean not null default false",
-        "hepatic_adjustment_required": "boolean not null default false",
-        "cardiac_adjustment_required": "boolean not null default false",
-        "specialist_only": "boolean not null default false",
-        "out_of_range_action": "text not null default 'block'",
-        "required_inputs": "text[] not null default '{}'",
-        "dose_basis_mode": "text not null default 'single_active'",
+        "prn": "boolean",
+        "renal_adjustment_required": "boolean",
+        "hepatic_adjustment_required": "boolean",
+        "cardiac_adjustment_required": "boolean",
+        "specialist_only": "boolean",
+        "out_of_range_action": "text",
+        "required_inputs": "text[]",
+        "dose_basis_mode": "text",
         "dose_basis_component_concept_id": "uuid",
-        "source_key": "text not null",
-        "source_snapshot_id": "text not null",
-        "source_section": "text not null default '4.2'",
-        "source_evidence_hash": "text not null",
+        "source_key": "text",
+        "source_snapshot_id": "sha256 text",
+        "source_section": "4.2",
+        "source_evidence_hash": "sha256 text",
+        "source_document_version": "text",
+        "source_document_date": "date",
         "confidence_score": "numeric",
         "review_class": "text",
-        "editorial_status": "text not null default 'draft'",
+        "safety_validation_status": "text",
+        "safety_validator_version": "text",
+        "safety_validated_at": "timestamptz",
+        "editorial_status": "text",
         "verified_by": "text",
         "verified_at": "timestamptz",
-        "version_no": "integer not null default 1",
-        "created_at": "timestamptz not null default now()",
-        "updated_at": "timestamptz not null default now()"
+        "version_no": "integer"
       },
-      "exposure": "published_read_only",
-      "rls": true,
       "allowedRuntimeEnums": {
         "frequency_mode": [
           "interval",
@@ -200,33 +241,31 @@
         "rule_id": "dose_rules_v3.rule_id",
         "source_snapshot_id": "dose_source_snapshots_v3.snapshot_id"
       },
+      "exposure": "service_only",
+      "rls": true,
       "columns": {
         "adjustment_id": "uuid",
-        "rule_id": "uuid not null",
-        "measure_type": "CrCl_mL_min | eGFR_mL_min_1_73m2 | dialysis_status",
+        "rule_id": "uuid",
+        "measure_type": "CrCl | eGFR | dialysis",
         "min_value": "numeric",
         "max_value": "numeric",
         "accepted_values": "text[]",
-        "dose_action": "no_adjustment | reduce_dose | extend_interval | avoid | contraindicated | specialist_review",
+        "dose_action": "text",
         "dose_factor": "numeric",
         "replacement_dose_min": "numeric",
         "replacement_dose_max": "numeric",
         "interval_min_hours": "numeric",
         "interval_max_hours": "numeric",
-        "source_key": "text not null",
-        "source_snapshot_id": "text not null",
-        "source_section": "4.2",
+        "source_snapshot_id": "sha256 text",
         "source_evidence_hash": "sha256 text",
-        "review_status": "draft | in_review | verified | rejected | retired",
+        "review_status": "text",
         "verified_by": "text",
         "verified_at": "timestamptz"
-      },
-      "exposure": "service_only",
-      "rls": true
+      }
     },
     {
       "name": "dose_hepatic_adjustments_v3",
-      "purpose": "Source-anchored hepatic adjustments that never infer Child-Pugh from textual impairment.",
+      "purpose": "Source-anchored hepatic adjustments without inferring Child-Pugh from prose.",
       "primaryKey": [
         "adjustment_id"
       ],
@@ -234,96 +273,105 @@
         "rule_id": "dose_rules_v3.rule_id",
         "source_snapshot_id": "dose_source_snapshots_v3.snapshot_id"
       },
+      "exposure": "service_only",
+      "rls": true,
       "columns": {
         "adjustment_id": "uuid",
-        "rule_id": "uuid not null",
+        "rule_id": "uuid",
         "measure_type": "Child_Pugh_class | hepatic_impairment_textual",
-        "severity_or_class": "text[] not null",
-        "dose_action": "no_adjustment | reduce_dose | extend_interval | avoid | contraindicated | specialist_review",
+        "severity_or_class": "text[]",
+        "dose_action": "text",
         "dose_factor": "numeric",
         "replacement_dose_min": "numeric",
         "replacement_dose_max": "numeric",
         "interval_min_hours": "numeric",
         "interval_max_hours": "numeric",
-        "source_key": "text not null",
-        "source_snapshot_id": "text not null",
-        "source_section": "4.2",
+        "source_snapshot_id": "sha256 text",
         "source_evidence_hash": "sha256 text",
-        "review_status": "draft | in_review | verified | rejected | retired",
+        "review_status": "text",
         "verified_by": "text",
         "verified_at": "timestamptz"
-      },
-      "exposure": "service_only",
-      "rls": true
+      }
     },
     {
       "name": "dose_rule_products_v3",
-      "purpose": "Exact product bindings between sourced rules and DRx registry products.",
+      "purpose": "Exact verified rule-to-V3-product bindings.",
       "primaryKey": [
         "binding_id"
       ],
-      "columns": {
-        "binding_id": "uuid",
-        "rule_id": "uuid not null",
-        "drug_id": "uuid not null",
-        "product_key": "text",
-        "match_method": "text not null",
-        "preferred": "boolean not null default false",
-        "conversion_enabled": "boolean not null default false",
-        "tablet_split_allowed": "boolean not null default false",
-        "rounding_increment_value": "numeric",
-        "rounding_increment_unit": "text",
-        "binding_status": "text not null",
-        "verified_at": "timestamptz",
-        "created_at": "timestamptz not null default now()"
+      "foreignKeys": {
+        "rule_id": "dose_rules_v3.rule_id",
+        "product_id": "dose_products_v3.product_id"
       },
       "exposure": "published_read_only",
-      "rls": true
+      "rls": true,
+      "columns": {
+        "binding_id": "uuid",
+        "rule_id": "uuid",
+        "product_id": "uuid",
+        "match_method": "text",
+        "preferred": "boolean",
+        "conversion_enabled": "boolean",
+        "tablet_split_allowed": "boolean",
+        "rounding_increment_value": "numeric",
+        "rounding_increment_unit": "text",
+        "binding_status": "text",
+        "verified_by": "text",
+        "verified_at": "timestamptz"
+      }
     },
     {
       "name": "dose_legacy_comparisons_v3",
-      "purpose": "Auditable exact/conflict/missing comparison against legacy dosage_regimens.",
+      "purpose": "Auditable exact/compatible/conflict/missing comparison against legacy dosage_regimens.",
       "primaryKey": [
         "comparison_id"
       ],
-      "columns": {
-        "comparison_id": "uuid",
-        "rule_id": "uuid not null",
-        "drug_id": "uuid",
-        "legacy_regimen_id": "uuid",
-        "comparison_status": "text not null",
-        "conflicts": "jsonb not null default '[]'",
-        "missing_fields": "text[] not null default '{}'",
-        "compared_at": "timestamptz not null default now()"
+      "foreignKeys": {
+        "rule_id": "dose_rules_v3.rule_id",
+        "product_id": "dose_products_v3.product_id"
       },
       "exposure": "service_only",
-      "rls": true
+      "rls": true,
+      "columns": {
+        "comparison_id": "uuid",
+        "rule_id": "uuid",
+        "product_id": "uuid",
+        "legacy_regimen_id": "uuid",
+        "comparison_status": "text",
+        "conflicts": "jsonb",
+        "missing_fields": "text[]",
+        "compared_at": "timestamptz"
+      }
     },
     {
       "name": "dose_review_queue_v3",
-      "purpose": "Conflict/high-risk/manual-review work queue.",
+      "purpose": "Conflict/high-risk/manual-review queue with complete reviewer audit trail.",
       "primaryKey": [
         "review_id"
       ],
-      "columns": {
-        "review_id": "uuid",
-        "rule_id": "uuid not null",
-        "drug_id": "uuid",
-        "priority": "integer not null",
-        "review_reason_codes": "text[] not null",
-        "review_status": "text not null default 'open'",
-        "assigned_to": "uuid",
-        "decision": "text",
-        "decision_notes": "text",
-        "opened_at": "timestamptz not null default now()",
-        "decided_at": "timestamptz",
-        "reviewer_id": "uuid",
-        "source_version": "text",
-        "decision_reason": "text",
-        "reviewed_at": "timestamptz"
+      "foreignKeys": {
+        "rule_id": "dose_rules_v3.rule_id",
+        "product_id": "dose_products_v3.product_id"
       },
       "exposure": "admin_only",
       "rls": true,
+      "columns": {
+        "review_id": "uuid",
+        "rule_id": "uuid",
+        "product_id": "uuid",
+        "priority": "integer",
+        "review_reason_codes": "text[]",
+        "review_status": "text",
+        "assigned_to": "uuid",
+        "reviewer_id": "uuid",
+        "source_version": "text",
+        "decision": "text",
+        "decision_reason": "text",
+        "decision_notes": "text",
+        "opened_at": "timestamptz",
+        "reviewed_at": "timestamptz",
+        "decided_at": "timestamptz"
+      },
       "requiredResolutionAudit": [
         "reviewer_id",
         "reviewed_at",
@@ -335,34 +383,60 @@
     },
     {
       "name": "dose_publication_events_v3",
-      "purpose": "Immutable audit log for every publication decision.",
+      "purpose": "Immutable audit log for publication decisions.",
       "primaryKey": [
         "event_id"
       ],
-      "columns": {
-        "event_id": "uuid",
-        "rule_id": "uuid not null",
-        "drug_id": "uuid",
-        "from_status": "text",
-        "to_status": "text not null",
-        "gate_version": "text not null",
-        "gate_result": "jsonb not null",
-        "actor_user_id": "uuid",
-        "created_at": "timestamptz not null default now()"
+      "foreignKeys": {
+        "rule_id": "dose_rules_v3.rule_id",
+        "product_id": "dose_products_v3.product_id"
       },
       "exposure": "service_only",
-      "rls": true
+      "rls": true,
+      "columns": {
+        "event_id": "uuid",
+        "rule_id": "uuid",
+        "product_id": "uuid",
+        "from_status": "text",
+        "to_status": "text",
+        "gate_version": "text",
+        "gate_result": "jsonb",
+        "actor_user_id": "uuid",
+        "created_at": "timestamptz"
+      }
+    }
+  ],
+  "functions": [
+    {
+      "name": "private.drx_enforce_rule_publication_v3",
+      "security": "invoker",
+      "purpose": "DB-level safety/binding/legacy/review publication transition guard",
+      "publicExecute": false
+    },
+    {
+      "name": "public.medindex_dose_product_fast_path_v3",
+      "security": "invoker",
+      "purpose": "One-DB-call published product/rule fast path",
+      "publicExecuteRoles": [
+        "anon",
+        "authenticated"
+      ]
     }
   ],
   "compatibility": {
     "v2RuntimeUnchangedUntilCutover": true,
     "initialWriteMode": "v3_shadow_only",
+    "v3RuntimeIndependentOfDoseProductsV2": true,
     "publicationCutoverRequires": [
-      "batch1_10_substances_reviewed",
+      "archive_hashes_complete",
+      "product_bindings_verified",
       "legacy_comparison_complete_for_bound_products",
+      "clinical_review_complete",
       "zero_fail_closed_gate_violations",
       "api_parity_verified",
-      "rollback_tested"
+      "desktop_mobile_smoke_green",
+      "rollback_tested",
+      "zero_known_legacy_consumers"
     ]
   }
 }
