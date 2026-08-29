@@ -42,6 +42,21 @@ function build(){
      if(reviewKeys.has(row.canonicalKey)&&row.status.startsWith('verified_')) issues.push({canonicalKey:row.canonicalKey,issue:'canonical_review_bypassed'});
      if(resolvedOriginals.has(row.canonicalKey)&&row.status.startsWith('verified_')) issues.push({canonicalKey:row.canonicalKey,issue:'canonical_resolution_not_applied',resolvedCanonicalKey:resolvedOriginals.get(row.canonicalKey)});
      if(row.status.startsWith('verified_')){
+       if(row.status==='verified_product_family_selection'){
+         const variants=Array.isArray(row.selectionVariants)?row.selectionVariants:[];
+         if(row.selectionRequiredAtRuntime!==true) issues.push({canonicalKey:row.canonicalKey,issue:'family_selection_missing_runtime_gate'});
+         if(row.defaultProduct!==null) issues.push({canonicalKey:row.canonicalKey,issue:'family_selection_default_product_forbidden'});
+         if(row.failClosedOnAmbiguousSelection!==true) issues.push({canonicalKey:row.canonicalKey,issue:'family_selection_not_fail_closed'});
+         if(variants.length<2) issues.push({canonicalKey:row.canonicalKey,issue:'family_selection_variants_missing'});
+         const variantKeys=new Set();
+         for(const variant of variants){
+           if(variantKeys.has(variant.selectionKey)) issues.push({canonicalKey:row.canonicalKey,issue:'family_selection_duplicate_variant',selectionKey:variant.selectionKey});
+           variantKeys.add(variant.selectionKey);
+           if(!validAuthorityUrl(variant)) issues.push({canonicalKey:row.canonicalKey,issue:'family_selection_invalid_authority_url',selectionKey:variant.selectionKey,url:variant.url});
+           if(variant.section41Present!==true||variant.section42Present!==true) issues.push({canonicalKey:row.canonicalKey,issue:'family_selection_sections_not_verified',selectionKey:variant.selectionKey});
+           if(!Array.isArray(variant.indicationKeys)||variant.indicationKeys.length===0) issues.push({canonicalKey:row.canonicalKey,issue:'family_selection_indication_missing',selectionKey:variant.selectionKey});
+         }
+       }
        if(!validAuthorityUrl(row)) issues.push({canonicalKey:row.canonicalKey,issue:'invalid_authority_url',sourceTier:row.sourceTier,url:row.url});
        if(row.sourceTier==='NON_EU_REGULATOR'){
          const flags=new Set(row.reviewFlags||[]);
