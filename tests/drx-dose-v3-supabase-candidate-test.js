@@ -55,8 +55,8 @@ assert.doesNotMatch(sql,/create\s+policy[\s\S]*?for\s+(?:insert|update|delete|al
 assert.doesNotMatch(sql,/\bsecurity\s+definer\b/i);
 assert.match(sql,/create or replace function public\.medindex_dose_product_fast_path_v3/);
 assert.match(sql,/language sql[\s\S]*?stable[\s\S]*?security invoker/);
-assert.match(sql,/revoke all on function public\.medindex_dose_product_fast_path_v3\(text, uuid\) from public/);
-assert.match(sql,/grant execute on function public\.medindex_dose_product_fast_path_v3\(text, uuid\) to anon, authenticated/);
+assert.match(sql,/revoke\s+all\s+on\s+function\s+public\.medindex_dose_product_fast_path_v3\(text,\s*uuid\)\s+from\s+public/i);
+assert.match(sql,/grant\s+execute\s+on\s+function\s+public\.medindex_dose_product_fast_path_v3\(text,\s*uuid\)\s+to\s+anon,\s*authenticated/i);
 assert.doesNotMatch(sql,/\bcreate\s+(?:or\s+replace\s+)?view\b/i);
 
 // Client-visible rows remain constrained to published concepts/rules and verified bindings.
