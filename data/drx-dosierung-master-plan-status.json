@@ -1,6 +1,6 @@
 {
   "schemaVersion": "drx-dosierung-master-plan-status-v1",
-  "updatedAt": "2026-08-29T04:30:00+02:00",
+  "updatedAt": "2026-08-29T04:31:00+02:00",
   "officialPlan": "DRx Dosierung phases 0-32",
   "databaseBlocker": {
     "active": true,
@@ -75,97 +75,106 @@
     {
       "id": 6,
       "name": "Indication Normalization",
-      "status": "PARTIAL_EXISTING",
+      "status": "FOUNDATION_COMPLETE",
       "evidence": [
-        "dose_indications_v2",
-        "icd_codes",
-        "legacy drug_indications"
+        "data/drx-indication-catalog-v1.json",
+        "lib/indication-normalizer.js",
+        "tests/drx-indication-normalizer-test.js"
       ],
-      "next": "define canonical indication identity and synonym/ICD mapping contract"
+      "next": "verify ICD mappings against live ICD dataset before publication"
     },
     {
       "id": 7,
       "name": "Dose Normalization",
-      "status": "PARTIAL_EXISTING",
+      "status": "FOUNDATION_COMPLETE",
       "evidence": [
-        "dose_rules_v2",
-        "dosage_regimens"
+        "lib/dose-rule-normalizer.js",
+        "tests/drx-dose-rule-normalizer-test.js"
       ],
-      "next": "map parser output to deterministic normalized rule schema"
+      "next": "feed only SmPC-derived structured rules through the normalizer"
     },
     {
       "id": 8,
       "name": "Dynamic Inputs",
-      "status": "PARTIAL_EXISTING",
+      "status": "COMPLETE_RUNTIME_FOUNDATION",
       "evidence": [
-        "dose calculator and pediatric handlers"
+        "lib/dose-rule-normalizer.js",
+        "lib/dose-calculator-handler.js",
+        "tests/drx-dose-required-inputs-api-test.js"
       ],
-      "next": "derive required_inputs from normalized rule semantics"
+      "next": "persist required_inputs in additive V3 model and keep runtime derivation as compatibility fallback"
     },
     {
       "id": 9,
       "name": "Product Binding",
-      "status": "PARTIAL_EXISTING",
+      "status": "FOUNDATION_COMPLETE",
       "evidence": [
-        "dose_products_v2",
-        "dose_rule_products_v2",
-        "product_ingredients_v1"
+        "lib/dose-product-binding.js",
+        "tests/drx-dose-product-binding-test.js"
       ],
-      "next": "bind canonical substance/formulation/route rules to all registry products"
+      "next": "bind pilot rules to exact live DRx product identities after Supabase access returns"
     },
     {
       "id": 10,
       "name": "Combination Drugs",
-      "status": "PARTIAL_EXISTING",
+      "status": "FOUNDATION_COMPLETE",
       "evidence": [
-        "RESOLVED_MULTI ingredient resolution"
+        "lib/dose-combination-basis.js",
+        "tests/drx-dose-product-binding-test.js",
+        "product_ingredients_v1 RESOLVED_MULTI architecture"
       ],
-      "next": "add explicit dose_basis_component semantics"
+      "next": "persist explicit dose_basis_mode/component for combination products"
     },
     {
       "id": 11,
       "name": "Legacy Comparison",
-      "status": "PENDING_FORMAL",
+      "status": "FOUNDATION_COMPLETE",
       "evidence": [
-        "dosage_regimens legacy dataset exists"
+        "lib/dose-legacy-comparator.js",
+        "existing dosage_regimens dataset"
       ],
-      "next": "build exact/conflict/missing comparator"
+      "next": "run comparator against live legacy rows product-by-product"
     },
     {
       "id": 12,
       "name": "Confidence Engine",
-      "status": "PENDING_FORMAL",
-      "evidence": [],
-      "next": "score authority, identity, formulation, indication, extraction and match"
+      "status": "FOUNDATION_COMPLETE_NEEDS_CALIBRATION",
+      "evidence": [
+        "lib/dose-confidence-engine.js",
+        "tests/drx-dose-confidence-safety-test.js"
+      ],
+      "next": "calibrate thresholds on Batch 1 reviewed outcomes before auto-review use"
     },
     {
       "id": 13,
       "name": "Safety Validation",
-      "status": "PARTIAL_EXISTING",
+      "status": "FOUNDATION_COMPLETE",
       "evidence": [
-        "dose_safety_v2",
-        "publication constraints",
-        "fail-closed runtime"
+        "lib/dose-safety-validator.js",
+        "tests/drx-dose-confidence-safety-test.js",
+        "existing dose_safety_v2 publication guards"
       ],
-      "next": "formalize cross-rule contradiction and max-dose validator"
+      "next": "run contradiction and max-dose validation on live pilot bundles"
     },
     {
       "id": 14,
       "name": "Supabase V3",
-      "status": "PENDING",
+      "status": "BLOCKED_DB_GATEWAY",
       "evidence": [
-        "V2 tables preserved"
+        "V2 preserved",
+        "identified additive V3 gaps from ibuprofen pilot"
       ],
-      "next": "add only missing V3 persistence after phases 3-13 contracts stabilize"
+      "next": "apply additive V3 persistence only after Supabase SQL gateway returns and baseline is re-verified"
     },
     {
       "id": 15,
       "name": "Batch 1 Pilot",
-      "status": "PENDING",
+      "status": "IN_PROGRESS",
       "evidence": [
-        "ibuprofen source discovery started"
+        "data/drx-pilot-ibuprofen-v1.json",
+        "multi-authority source map for ibuprofen"
       ],
-      "next": "select and complete 10 canonical substances end-to-end"
+      "next": "exact product binding + legacy comparison + review; then add 9 more pilot substances"
     },
     {
       "id": 16,
@@ -313,8 +322,9 @@
     }
   ],
   "currentExecution": {
-    "phase": 3,
-    "objective": "Expand authoritative source discovery, then archive and parse; do not auto-publish clinical dose rules yet.",
-    "pilot": "ibuprofen"
+    "phase": 15,
+    "objective": "Complete ibuprofen end-to-end without publication, then expand Batch 1 to 10 substances. Phase 14 production persistence remains blocked only by the Supabase SQL gateway.",
+    "pilot": "ibuprofen",
+    "publicationAllowed": false
   }
 }
