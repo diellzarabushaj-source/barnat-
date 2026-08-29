@@ -117,7 +117,7 @@ security definer
 set search_path = pg_catalog, public, private
 as $$
 declare
-  started_at timestamptz := clock_timestamp();
+  fn_started_at timestamptz := clock_timestamp();
   target_revision bigint;
   counts_payload jsonb;
   sources_payload jsonb;
@@ -253,7 +253,7 @@ begin
 
   refreshed_at_value := clock_timestamp();
   duration_ms := round(
-    (extract(epoch from (refreshed_at_value - started_at)) * 1000)::numeric,
+    (extract(epoch from (refreshed_at_value - fn_started_at)) * 1000)::numeric,
     3
   );
 
