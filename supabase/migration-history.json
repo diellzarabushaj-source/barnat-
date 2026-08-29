@@ -297,6 +297,14 @@
     {
       "version": "20260829010508",
       "name": "phase3_ranked_registry_search_v2"
+    },
+    {
+      "version": "20260829011139",
+      "name": "phase4_incremental_ingredient_refresh"
+    },
+    {
+      "version": "20260829011529",
+      "name": "phase4_targeted_incremental_resolver"
     }
   ]
 }
