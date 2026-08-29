@@ -1,0 +1,34 @@
+{
+  "schemaVersion": "drx-first100-production-provenance-audit-v1",
+  "generatedAt": "2026-08-29T03:44:17.110Z",
+  "productionEligible": false,
+  "productionDiscoveryAllowed": false,
+  "publicationAllowed": false,
+  "reasons": [
+    "canonical_supabase_project_not_verified",
+    "canonical_supabase_relation_not_verified",
+    "canonical_export_hash_not_verified",
+    "canonical_export_timestamp_not_verified",
+    "canonical_quality_review_unresolved",
+    "fewer_than_100_quality_eligible_rows"
+  ],
+  "metrics": {
+    "queuedRows": 100,
+    "uniqueCanonicalKeys": 100,
+    "qualityRows": 100,
+    "canonicalReviewRequired": 13,
+    "sourceDiscoveryEligible": 87,
+    "supabaseProjectVerified": false,
+    "exportHashVerified": false,
+    "productionEligibleRows": 0
+  },
+  "source": {
+    "kind": "google_sheet_registry_source",
+    "spreadsheetId": "10wjwyPhFLIwNMAGF296K_lxnUi0mSZEoW-UGiAA9QEs",
+    "spreadsheetTitle": "Lista e Substancave Aktive sipas ATC — Regjistri 2025",
+    "sheetName": "Lista aktive ATC",
+    "readRange": "A4:E400",
+    "note": "Registry-derived substance list; source states duplicates/salt-hydration variants/dosage forms/clear spelling errors were normalized before this queue."
+  },
+  "sourceExportEvidence": {}
+}
