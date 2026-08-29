@@ -1,0 +1,320 @@
+{
+  "schemaVersion": "drx-dosierung-master-plan-status-v1",
+  "updatedAt": "2026-08-29T04:30:00+02:00",
+  "officialPlan": "DRx Dosierung phases 0-32",
+  "databaseBlocker": {
+    "active": true,
+    "system": "Supabase SQL/MCP database gateway",
+    "symptom": "Connection terminated due to connection timeout",
+    "rule": "Do not retry destructively; continue repository-side work and recheck on the next scheduled continuation."
+  },
+  "phases": [
+    {
+      "id": 0,
+      "name": "Baseline & Backup",
+      "status": "IMPLEMENTED_NEEDS_LIVE_VERIFY",
+      "evidence": [
+        "prior production counts/invariants",
+        "migration parity previously verified"
+      ],
+      "next": "refresh live counts and rollback snapshot when SQL gateway returns"
+    },
+    {
+      "id": 1,
+      "name": "Canonical Substances",
+      "status": "IMPLEMENTED_NEEDS_LIVE_VERIFY",
+      "evidence": [
+        "substance_concepts_v1",
+        "substance_terms_v1",
+        "product_ingredients_v1",
+        "product_ingredient_resolution_v1"
+      ],
+      "next": "fresh production coverage recount"
+    },
+    {
+      "id": 2,
+      "name": "Source Hierarchy",
+      "status": "COMPLETE_REPO",
+      "evidence": [
+        "data/drx-dose-source-policy-v1.json",
+        "lib/dose-source-policy.js",
+        "tests/drx-dose-source-policy-test.js"
+      ],
+      "next": "keep source policy versioned"
+    },
+    {
+      "id": 3,
+      "name": "Source Discovery",
+      "status": "IN_PROGRESS",
+      "evidence": [
+        "data/drx-dose-source-map-v1.json",
+        "ibuprofen pilot with official eMC oral+IV SmPCs"
+      ],
+      "next": "expand source map from canonical substance list; authoritative source first"
+    },
+    {
+      "id": 4,
+      "name": "Scraper / Importer",
+      "status": "FOUNDATION_COMPLETE",
+      "evidence": [
+        "lib/dose-source-archive.js",
+        "tests/drx-dose-source-archive-test.js"
+      ],
+      "next": "run bounded snapshots for discovered authoritative sources and persist archive once storage target is available"
+    },
+    {
+      "id": 5,
+      "name": "SmPC Parser",
+      "status": "FOUNDATION_COMPLETE",
+      "evidence": [
+        "lib/smpc-parser.js",
+        "tests/drx-smpc-parser-test.js"
+      ],
+      "next": "parse archived sources and measure section 4.1-4.9 coverage"
+    },
+    {
+      "id": 6,
+      "name": "Indication Normalization",
+      "status": "PARTIAL_EXISTING",
+      "evidence": [
+        "dose_indications_v2",
+        "icd_codes",
+        "legacy drug_indications"
+      ],
+      "next": "define canonical indication identity and synonym/ICD mapping contract"
+    },
+    {
+      "id": 7,
+      "name": "Dose Normalization",
+      "status": "PARTIAL_EXISTING",
+      "evidence": [
+        "dose_rules_v2",
+        "dosage_regimens"
+      ],
+      "next": "map parser output to deterministic normalized rule schema"
+    },
+    {
+      "id": 8,
+      "name": "Dynamic Inputs",
+      "status": "PARTIAL_EXISTING",
+      "evidence": [
+        "dose calculator and pediatric handlers"
+      ],
+      "next": "derive required_inputs from normalized rule semantics"
+    },
+    {
+      "id": 9,
+      "name": "Product Binding",
+      "status": "PARTIAL_EXISTING",
+      "evidence": [
+        "dose_products_v2",
+        "dose_rule_products_v2",
+        "product_ingredients_v1"
+      ],
+      "next": "bind canonical substance/formulation/route rules to all registry products"
+    },
+    {
+      "id": 10,
+      "name": "Combination Drugs",
+      "status": "PARTIAL_EXISTING",
+      "evidence": [
+        "RESOLVED_MULTI ingredient resolution"
+      ],
+      "next": "add explicit dose_basis_component semantics"
+    },
+    {
+      "id": 11,
+      "name": "Legacy Comparison",
+      "status": "PENDING_FORMAL",
+      "evidence": [
+        "dosage_regimens legacy dataset exists"
+      ],
+      "next": "build exact/conflict/missing comparator"
+    },
+    {
+      "id": 12,
+      "name": "Confidence Engine",
+      "status": "PENDING_FORMAL",
+      "evidence": [],
+      "next": "score authority, identity, formulation, indication, extraction and match"
+    },
+    {
+      "id": 13,
+      "name": "Safety Validation",
+      "status": "PARTIAL_EXISTING",
+      "evidence": [
+        "dose_safety_v2",
+        "publication constraints",
+        "fail-closed runtime"
+      ],
+      "next": "formalize cross-rule contradiction and max-dose validator"
+    },
+    {
+      "id": 14,
+      "name": "Supabase V3",
+      "status": "PENDING",
+      "evidence": [
+        "V2 tables preserved"
+      ],
+      "next": "add only missing V3 persistence after phases 3-13 contracts stabilize"
+    },
+    {
+      "id": 15,
+      "name": "Batch 1 Pilot",
+      "status": "PENDING",
+      "evidence": [
+        "ibuprofen source discovery started"
+      ],
+      "next": "select and complete 10 canonical substances end-to-end"
+    },
+    {
+      "id": 16,
+      "name": "Batch 2",
+      "status": "PENDING",
+      "evidence": [],
+      "next": "25-50 substances"
+    },
+    {
+      "id": 17,
+      "name": "Bulk Import",
+      "status": "PENDING",
+      "evidence": [],
+      "next": "100 -> 250 -> 500 -> remainder"
+    },
+    {
+      "id": 18,
+      "name": "Pediatric Core",
+      "status": "PARTIAL_EXISTING",
+      "evidence": [
+        "pediatric dosage handlers/calculator"
+      ],
+      "next": "rebase on new normalized sourced rules"
+    },
+    {
+      "id": 19,
+      "name": "Adult Core",
+      "status": "PARTIAL_EXISTING",
+      "evidence": [
+        "adult dosage handlers"
+      ],
+      "next": "rebase on new normalized sourced rules"
+    },
+    {
+      "id": 20,
+      "name": "Renal",
+      "status": "PENDING_FORMAL",
+      "evidence": [
+        "renal gates exist in some dose rules"
+      ],
+      "next": "formal CrCl/eGFR/dialysis adjustment model"
+    },
+    {
+      "id": 21,
+      "name": "Hepatic",
+      "status": "PENDING_FORMAL",
+      "evidence": [],
+      "next": "formal Child-Pugh/hepatic adjustment model"
+    },
+    {
+      "id": 22,
+      "name": "High-risk Drugs",
+      "status": "PENDING",
+      "evidence": [],
+      "next": "specialist rule framework"
+    },
+    {
+      "id": 23,
+      "name": "Clinical Review Queue",
+      "status": "PENDING_FORMAL",
+      "evidence": [
+        "review statuses exist"
+      ],
+      "next": "central conflict/high-risk review queue"
+    },
+    {
+      "id": 24,
+      "name": "Publication Gate",
+      "status": "PARTIAL_EXISTING",
+      "evidence": [
+        "20260829002018_harden_dose_rule_publication_gate.sql",
+        "published-only runtime"
+      ],
+      "next": "extend gate to provenance/completeness/confidence V3"
+    },
+    {
+      "id": 25,
+      "name": "API Fast Path",
+      "status": "PARTIAL_EXISTING",
+      "evidence": [
+        "targeted dosage API routes"
+      ],
+      "next": "1 product -> tiny rule payload from V3"
+    },
+    {
+      "id": 26,
+      "name": "Dose Core Engine",
+      "status": "PARTIAL_EXISTING",
+      "evidence": [
+        "dosage-engine.js and calculators"
+      ],
+      "next": "consolidate deterministic shared engine"
+    },
+    {
+      "id": 27,
+      "name": "Cache / Offline",
+      "status": "PARTIAL_EXISTING",
+      "evidence": [
+        "ETag/cache patterns exist"
+      ],
+      "next": "versioned dose cache only after V3 API"
+    },
+    {
+      "id": 28,
+      "name": "Frontend",
+      "status": "PARTIAL_EXISTING",
+      "evidence": [
+        "registry dose calculator UI"
+      ],
+      "next": "final Bar -> Indikacion -> inputs -> Doza flow after backend stabilizes"
+    },
+    {
+      "id": 29,
+      "name": "Automated QA",
+      "status": "PARTIAL_EXISTING",
+      "evidence": [
+        "dose tests and Playwright specs"
+      ],
+      "next": "golden clinical cases tied to sourced V3 rules"
+    },
+    {
+      "id": 30,
+      "name": "Coverage Dashboard",
+      "status": "PENDING_FORMAL",
+      "evidence": [
+        "health/dashboard foundations"
+      ],
+      "next": "live sourced/parsed/verified/published coverage"
+    },
+    {
+      "id": 31,
+      "name": "Final Cleanup",
+      "status": "PENDING",
+      "evidence": [
+        "legacy wrappers retained intentionally"
+      ],
+      "next": "remove only after zero consumers and parity"
+    },
+    {
+      "id": 32,
+      "name": "Production Release",
+      "status": "PENDING",
+      "evidence": [],
+      "next": "desktop/mobile + CI green + successful deploy"
+    }
+  ],
+  "currentExecution": {
+    "phase": 3,
+    "objective": "Expand authoritative source discovery, then archive and parse; do not auto-publish clinical dose rules yet.",
+    "pilot": "ibuprofen"
+  }
+}
