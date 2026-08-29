@@ -1,6 +1,6 @@
 {
   "schemaVersion": "drx-dosierung-master-plan-status-v1",
-  "updatedAt": "2026-08-29T10:31:46.391Z",
+  "updatedAt": "2026-08-29T10:38:56.378Z",
   "officialPlan": "DRx Dosierung phases 0-32",
   "databaseBlocker": {
     "active": true,
@@ -57,7 +57,7 @@
     {
       "id": 3,
       "name": "Source Discovery",
-      "status": "IN_PROGRESS_FIRST100_79_VERIFIED_EFFECTIVE_89",
+      "status": "IN_PROGRESS_FIRST100_80_VERIFIED_EFFECTIVE_89",
       "evidence": [
         "data/drx-dose-source-map-v1.json",
         "ibuprofen pilot with official eMC oral+IV SmPCs",
@@ -112,9 +112,12 @@
         "first-100 verified product-specific source total: 78",
         "data/drx-first100-source-discovery-wave-n-v1.json",
         "Wave N: Hemorzon 20 mg/10 mg/8,3 mg suppositories, current ANMDMR nomenclator + official RCP 13384/2020 sections 4.1/4.2",
-        "first-100 verified product-specific source total: 79"
+        "first-100 verified product-specific source total: 79",
+        "data/drx-first100-source-discovery-wave-o-v1.json",
+        "Wave O: FITOSTIMOLINE 15% (Triticum vulgare aqueous extract), AIFA product identity + current RCP cross-check sections 4.1/4.2",
+        "first-100 verified product-specific source total: 80"
       ],
-      "next": "source-discover 9 remaining exact targets; resolve Alteplase product selection separately; keep publication fail-closed"
+      "next": "source-discover 8 remaining exact targets; resolve Alteplase product selection separately; keep publication fail-closed"
     },
     {
       "id": 4,
@@ -293,7 +296,7 @@
     {
       "id": 17,
       "name": "Bulk Import",
-      "status": "FIRST100_79_OF_89_SOURCE_DISCOVERY_PRODUCTION_PROVENANCE_BLOCKED",
+      "status": "FIRST100_80_OF_89_SOURCE_DISCOVERY_PRODUCTION_PROVENANCE_BLOCKED",
       "evidence": [
         "data/drx-bulk-import-policy-v1.json",
         "scripts/build-drx-first100-discovery-queue.js",
@@ -319,9 +322,10 @@
         "76/89 effective canonical targets have product-specific authoritative sources",
         "77/89 effective canonical targets have product-specific authoritative sources",
         "78/89 effective canonical targets have product-specific authoritative sources",
-        "79/89 effective canonical targets have product-specific authoritative sources"
+        "79/89 effective canonical targets have product-specific authoritative sources",
+        "80/89 effective canonical targets have product-specific authoritative sources"
       ],
-      "next": "complete 9 remaining source lookups + 1 Alteplase product selection; production import still requires hash-bound Supabase canonical export provenance"
+      "next": "complete 8 remaining source lookups + 1 Alteplase product selection; production import still requires hash-bound Supabase canonical export provenance"
     },
     {
       "id": 18,
@@ -553,7 +557,7 @@
     "first100ProductionEligibleRows": 0,
     "first100ProductionDiscoveryAllowed": false,
     "first100SourceDiscoveryEligible": 89,
-    "first100VerifiedProductSources": 79,
+    "first100VerifiedProductSources": 80,
     "first100ProductSelectionRequired": 1,
     "legacyMirrorPrecheck": {
       "present": 2,
@@ -562,12 +566,12 @@
       "bindings": 4,
       "liveCompared": false
     },
-    "first100SourceDiscoveryRemaining": 9,
+    "first100SourceDiscoveryRemaining": 8,
     "first100SourceSectionVerificationPending": 0,
     "first100ProductSelectionPending": 1,
     "first100CanonicalReviewResolved": 14,
     "first100CanonicalReviewPending": 0,
     "first100EffectiveSourceDiscoveryEligible": 89,
-    "first100SourceLookupRemaining": 9
+    "first100SourceLookupRemaining": 8
   }
 }
