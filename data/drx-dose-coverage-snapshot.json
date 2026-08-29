@@ -1,6 +1,6 @@
 {
   "schemaVersion": "drx-dose-coverage-snapshot-v1",
-  "generatedAt": "2026-08-29T04:35:00+02:00",
+  "generatedAt": "2026-08-29T05:10:00+02:00",
   "denominatorState": {
     "canonicalSubstances": null,
     "canonicalProducts": null,
@@ -8,18 +8,27 @@
     "reason": "Supabase SQL gateway unavailable; global percentages remain null rather than using stale denominators."
   },
   "discovery": {
-    "mappedSubstances": 1,
-    "sourceCandidates": 4,
-    "archiveReadySources": 4,
-    "publicationReadySources": 2,
-    "publicationReadyPercentOfMappedCandidates": 50
+    "mappedSubstances": 10,
+    "sourceCandidates": 13,
+    "archiveReadySources": 13,
+    "publicationReadySources": 11,
+    "publicationReadyPercentOfMappedCandidates": 84.62
   },
   "pilots": {
     "files": [
-      "drx-pilot-ibuprofen-v1.json"
+      "drx-pilot-amoxicillin-clavulanic-acid-v1.json",
+      "drx-pilot-amoxicillin-v1.json",
+      "drx-pilot-azithromycin-v1.json",
+      "drx-pilot-cefuroxime-v1.json",
+      "drx-pilot-enalapril-v1.json",
+      "drx-pilot-ibuprofen-v1.json",
+      "drx-pilot-metformin-v1.json",
+      "drx-pilot-omeprazole-v1.json",
+      "drx-pilot-paracetamol-v1.json",
+      "drx-pilot-salbutamol-v1.json"
     ],
-    "substances": 1,
-    "ruleCandidates": 3,
+    "substances": 10,
+    "ruleCandidates": 12,
     "boundRules": 0,
     "publishedRules": 0,
     "publicationEnabledPilots": 0,
