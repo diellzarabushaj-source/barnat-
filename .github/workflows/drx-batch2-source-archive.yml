@@ -6,6 +6,7 @@ on:
     branches: [main]
     paths:
       - 'scripts/build-drx-batch2-extraction-index.js'
+      - 'scripts/build-drx-batch2-archive-attestation.js'
       - 'scripts/verify-drx-batch2-archive.js'
       - 'lib/dose-source-archive.js'
       - 'lib/smpc-parser.js'
@@ -13,6 +14,8 @@ on:
       - 'tests/drx-batch2-archive-verifier-test.js'
       - '.github/workflows/drx-batch2-source-archive.yml'
 
+# Read-only by default. Only the attest job widens this, and it never touches
+# the network or parses fetched documents.
 permissions:
   contents: read
 
@@ -21,9 +24,14 @@ concurrency:
   cancel-in-progress: false
 
 jobs:
+  # Fetches and parses untrusted external regulatory documents. It must never
+  # hold a token that can write to the repository: if the parser were exploited
+  # by a malicious document, a writable token would let it push code.
   archive:
     runs-on: ubuntu-latest
     timeout-minutes: 20
+    permissions:
+      contents: read
     env:
       DRX_ARCHIVE_DIR: artifacts/drx-batch2-raw
     steps:
@@ -59,3 +67,56 @@ jobs:
             data/drx-batch2-extraction-index-v1.json
           if-no-files-found: error
           retention-days: 90
+
+  # The artifact above expires in 90 days and no repository gate can read it.
+  # This job distils that run into a committable attestation: source identity,
+  # raw sha256 and section 4.1/4.2 sha256 only, never document text.
+  #
+  # It is deliberately separate from archive so that write access is held only
+  # by a job that makes no network requests and parses no fetched documents -
+  # it reads one index file and validates every field before writing.
+  attest:
+    needs: archive
+    if: github.ref == 'refs/heads/main'
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: main
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+
+      - name: Download source archive
+        uses: actions/download-artifact@v4
+        with:
+          name: drx-batch2-source-archive
+
+      - name: Build archive attestation
+        run: node scripts/build-drx-batch2-archive-attestation.js
+
+      - name: Verify attestation gate
+        run: node tests/drx-batch2-archive-attestation-test.js
+
+      - name: Commit attestation
+        run: |
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add data/drx-batch2-archive-attestation-v1.json data/drx-dosierung-master-plan-status.json
+          if git diff --cached --quiet; then
+            echo 'Attestation unchanged; nothing to commit.'
+            exit 0
+          fi
+          git commit -m "chore(drx): materialize Batch 2 archive attestation from run ${GITHUB_RUN_ID}"
+          # The attestation is not in this workflow's trigger paths, so this
+          # push cannot retrigger the archive run.
+          for attempt in 1 2 3 4; do
+            git pull --rebase origin main && git push origin HEAD:main && exit 0
+            echo "push attempt ${attempt} failed; retrying"
+            sleep $((2 ** attempt))
+          done
+          exit 1
