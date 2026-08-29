@@ -1,6 +1,6 @@
 {
   "schemaVersion": "drx-dose-v3-supabase-candidate-status-v1",
-  "updatedAt": "2026-08-29T12:21:57.305Z",
+  "updatedAt": "2026-08-29T12:23:48.459Z",
   "projectId": "ftuchtmolddhhsdcwnqe",
   "projectHealth": "ACTIVE_HEALTHY",
   "postgresVersion": "17.6.1.155",
@@ -168,12 +168,15 @@
       "rule without persisted extracted SmPC 4.2 blocked",
       "rule without verified exact product binding blocked",
       "published source section mutation blocked",
-      "published source snapshot mutation blocked"
+      "published source snapshot mutation blocked",
+      "renal-required rule publication blocked when no verified provenance-valid renal adjustment exists"
     ],
     "positiveCases": [
       "official-tier product publication succeeds",
       "draft rule with verified binding + clean legacy comparison + passed safety gate publishes",
-      "one-RPC fast path returns exactly one published rule with pinned sectionSha256"
+      "one-RPC fast path returns exactly one published rule with pinned sectionSha256",
+      "renal-required rule publishes only after a verified exact-section renal adjustment is inserted",
+      "one-RPC fast path returns the verified renal adjustment with pinned sectionSha256"
     ]
   }
 }
