@@ -10,6 +10,7 @@ function audit(){
  const v3=read('data/drx-dose-v3-supabase-candidate-status.json');
  const matrix=read('data/drx-batch2-readiness-matrix-v1.json');
  const observation=read('data/drx-release-observation-v1.json');
+ const first100=read('data/drx-first100-production-provenance-audit-v1.json');
  const blockers=[];
 
  if(v3.applied!==true) blockers.push('supabase_v3_not_applied');
@@ -19,6 +20,8 @@ function audit(){
  if((tracker.currentExecution.legacyComparedRules||0)<=0) blockers.push('legacy_comparison_not_live');
  if((tracker.currentExecution.clinicallyReviewedRules||0)<=0) blockers.push('clinical_review_not_complete');
  if((tracker.currentExecution.publishedRules||0)<=0) blockers.push('no_published_v3_rules');
+ if(first100.productionEligible!==true) blockers.push('first100_canonical_provenance_not_ready');
+ if((first100?.metrics?.productionEligibleRows||0)<100) blockers.push('first100_production_queue_not_ready');
  if(observation.drxSafetyWorkflowRunObserved!==true) blockers.push('drx_safety_ci_not_observed');
  else if(observation.drxSafetyWorkflowGreen!==true) blockers.push('drx_safety_ci_not_green');
  if(observation.fullCiGreen!==true) blockers.push('full_ci_not_green');
