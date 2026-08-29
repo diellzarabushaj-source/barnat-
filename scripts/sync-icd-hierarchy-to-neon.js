@@ -4,7 +4,7 @@ const crypto = require('node:crypto');
 const IcdPublicSource = require('../lib/icd-public-source.js');
 const FullIcd = require('../lib/icd-full-hierarchy.js');
 const HierarchyValidation = require('../lib/icd-hierarchy-validation.js');
-const { neonRequest, dataOf } = require('../lib/neon-data-api.js');
+const { neonRequest, dataOf } = require('../lib/medindex-data-api.js');
 
 const REVISION_TABLE = 'icd_hierarchy_revisions';
 const NODES_TABLE = 'icd_hierarchy_nodes';
