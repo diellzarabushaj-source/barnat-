@@ -1,9 +1,9 @@
 {
   "schemaVersion": "drx-dosierung-master-plan-status-v1",
-  "updatedAt": "2026-08-29T12:46:06.118Z",
+  "updatedAt": "2026-08-29T12:46:24.000Z",
   "officialPlan": "DRx Dosierung phases 0-32",
   "databaseBlocker": {
-    "active": true,
+    "active": false,
     "system": "Supabase SQL/MCP database gateway",
     "symptom": "2026-08-29T12:18Z recheck: SELECT 1, list_migrations and get_advisors all failed with \"Connection terminated due to connection timeout\" while the project still reported ACTIVE_HEALTHY. Log-stream triage shows this is a sustained data-plane outage, not an intermittent gateway blip.",
     "likelyCauseEvidence": "Postgres logs contain 'could not write to file base/pgsql_tmp/...: No space left on device' at 2026-08-29T00:56:31.371Z. Every database-backed log source then went silent and has stayed silent: postgres_logs last 01:23:42Z, pgbouncer_logs 01:23:29Z, postgrest_logs 01:19:25Z, storage_logs 01:20:39Z, supavisor_logs 01:51:24Z. Meanwhile edge_logs stayed live through 12:16:50Z, so the control plane and edge proxy are healthy while the database compute is wedged.",
@@ -27,6 +27,25 @@
         "edge_logs"
       ],
       "interpretation": "Database compute has not served or logged since ~01:52Z. Retrying SQL from this session cannot clear it."
+    },
+    "resolvedAt": "2026-08-29T12:40:00.000Z",
+    "resolution": "Operator restarted the project from the dashboard. Postgres cleared base/pgsql_tmp on startup and the data plane returned: SELECT 1, list_migrations and get_advisors all succeed again, and postgres/pgbouncer/postgrest/auth/storage logs resumed at ~12:38-12:41Z. No plan upgrade and no disk expansion were needed; on the Free plan neither is available.",
+    "rootCauseConfirmed": "Transient temp-file exhaustion, not a data-size quota. Live baseline after recovery: database 61.3 MB against the 500 MB Free quota (12%), WAL 112 MB, default_transaction_read_only=off. The project was never in billing read-only mode; a large query spilled into base/pgsql_tmp and filled the 1 GB disk.",
+    "liveBaseline": {
+      "capturedAt": "2026-08-29T12:41:00.000Z",
+      "databaseSizeMb": 61.3,
+      "freePlanQuotaMb": 500,
+      "quotaUsedPercent": 12.3,
+      "walSizeMb": 112,
+      "readOnlyMode": "off",
+      "publicTables": 50,
+      "rlsEnabledTables": 50,
+      "securityDefinerFunctionsPublic": 6,
+      "liveMigrations": 77,
+      "repositoryMigrations": 78,
+      "securityAdvisors": [
+        "auth_leaked_password_protection(WARN)"
+      ]
     }
   },
   "phases": [
@@ -681,7 +700,7 @@
     "publicationReady": 0,
     "reviewPacketsReady": 25,
     "supabaseProjectHealth": "ACTIVE_HEALTHY",
-    "supabaseSqlGateway": "connection_timeout_data_plane_silent_since_0152z",
+    "supabaseSqlGateway": "live",
     "v3CandidateReady": true,
     "v3Applied": false,
     "releaseGateImplemented": true,
@@ -695,9 +714,7 @@
       "clinical_review_not_complete",
       "no_published_v3_rules",
       "vercel_build_rate_limit",
-      "supabase_data_plane_down",
-      "drx_safety_ci_not_observed",
-      "full_ci_not_green"
+  "updatedAt": "2026-08-29T12:46:24.000Z",
     ],
     "first100QueueMaterialized": 100,
     "first100CoveredExcluded": 35,
@@ -729,7 +746,7 @@
     "first100CanonicalReviewPending": 0,
     "first100EffectiveSourceDiscoveryEligible": 87,
     "first100SourceLookupRemaining": 0,
-    "supabaseDataPlaneDown": true,
+    "supabaseDataPlaneDown": false,
     "archiveBlockedByNetworkPolicy": true,
     "archiveCiEvidence": {
       "workflow": ".github/workflows/drx-batch2-source-archive.yml",
@@ -762,7 +779,19 @@
     "archiveEvidenceLocation": "ci_artifact_only_not_committed",
     "archiveCiSectionHashVerifiedCount": 25,
     "renalAdjustmentLiveVerified": 0,
-    "hepaticAdjustmentLiveVerified": 0
+    "hepaticAdjustmentLiveVerified": 0,
+    "supabaseLiveVerifiedAt": "2026-08-29T12:41:00.000Z",
+    "liveRlsCoverage": "50/50",
+    "liveSecurityAdvisorErrors": 0,
+    "migrationDrift": {
+      "liveCount": 77,
+      "repositoryCount": 78,
+      "missingLive": [
+        "20260829012500_phase5_system_health_snapshot"
+      ],
+      "cause": "in_flight_when_disk_filled",
+      "mustReapplyBeforeV3": true
+    }
   },
   "sourceNetworkBlocker": {
     "active": true,

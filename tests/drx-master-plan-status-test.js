@@ -37,7 +37,29 @@ for (const artifact of [
   assert.equal(exists(artifact), true, artifact + ' must exist.');
 }
 
-assert.equal(tracker.databaseBlocker.active, true);
+// The data plane was recovered by an operator restart on 2026-08-29.
+// The disk-full evidence stays as the historical root cause.
+assert.equal(tracker.databaseBlocker.active, false);
+assert.match(tracker.databaseBlocker.resolution, /restarted the project/);
+assert.match(tracker.databaseBlocker.rootCauseConfirmed, /not a data-size quota/);
+
+const baseline = tracker.databaseBlocker.liveBaseline;
+assert.ok(baseline.databaseSizeMb < baseline.freePlanQuotaMb,
+  'live database must sit under the Free plan quota.');
+assert.equal(baseline.readOnlyMode, 'off');
+assert.equal(baseline.publicTables, baseline.rlsEnabledTables,
+  'every public table must keep RLS enabled.');
+assert.equal(tracker.currentExecution.supabaseSqlGateway, 'live');
+assert.equal(tracker.currentExecution.supabaseDataPlaneDown, false);
+assert.equal(tracker.currentExecution.liveRlsCoverage, '50/50');
+assert.equal(tracker.currentExecution.liveSecurityAdvisorErrors, 0);
+assert.ok(!tracker.currentExecution.releaseBlockers.includes('supabase_data_plane_down'));
+
+// Live is behind the repository by the migration that was in flight at the crash.
+const drift = tracker.currentExecution.migrationDrift;
+assert.equal(drift.repositoryCount - drift.liveCount, drift.missingLive.length);
+assert.equal(drift.mustReapplyBeforeV3, true);
+assert.ok(tracker.currentExecution.releaseBlockers.includes('migration_drift_phase5_missing'));
 assert.match(tracker.databaseBlocker.likelyCauseEvidence, /No space left on device/);
 assert.match(tracker.databaseBlocker.likelyCauseEvidence, /edge_logs stayed live/);
 
@@ -60,7 +82,6 @@ assert.ok(network.deniedHosts.includes('cima.aemps.es:443'));
 assert.match(network.rule, /Do not fabricate/);
 assert.ok(network.blocks.includes('batch2_archive_hashes_incomplete'));
 assert.equal(tracker.currentExecution.archiveBlockedByNetworkPolicy, true);
-assert.equal(tracker.currentExecution.supabaseDataPlaneDown, true);
 // A real archive run has been observed in CI, where egress is permitted.
 // Repo-side hash count stays 0 because those artifacts are not committed.
 assert.equal(tracker.currentExecution.archiveWorkflowRunObserved, true);
@@ -74,7 +95,6 @@ assert.equal(ciEvidence.verification.sectionHashVerifiedCount, 25);
 assert.equal(ciEvidence.verification.publicationAllowed, false);
 assert.ok(ciEvidence.runUrl.startsWith('https://github.com/'));
 assert.match(tracker.sourceNetworkBlocker.ciExemption, /not behind this workspace egress policy/);
-assert.ok(tracker.currentExecution.releaseBlockers.includes('supabase_data_plane_down'));
 assert.ok(tracker.currentExecution.releaseBlockers.includes('archive_sources_network_denied'));
 
 assert.equal(tracker.currentExecution.activeCriticalPhase, 14);
