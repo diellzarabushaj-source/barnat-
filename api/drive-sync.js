@@ -238,7 +238,7 @@ async function pullEditorUpdates(res, payload, source) {
 }
 
 module.exports = async function handler(req, res) {
-  if (req.method !== 'POST') return DriveNeonSync.handle(req, res);
+  if (req.method !== 'POST') return DriveSupabaseSync.handle(req, res);
   try {
     const payload = parseBody(req);
     if (clean(payload.action) === 'bootstrap_secret') return bootstrapSecret(req, res, payload);
@@ -272,7 +272,7 @@ module.exports = async function handler(req, res) {
     req.body = canonicalPayload(payload);
     try {
       await setCurrentSourceStatus(payload, 'syncing');
-      const result = await DriveNeonSync.handle(req, res);
+      const result = await DriveSupabaseSync.handle(req, res);
       const successful = Number(res.statusCode || 200) >= 200 && Number(res.statusCode || 200) < 300;
       await setCurrentSourceStatus(payload, successful ? 'synced' : 'failed', successful ? null : 'Sinkronizimi u refuzua nga API-ja.');
       await SystemHealthSnapshot.refreshBestEffort('drive-sync-complete');
