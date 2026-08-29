@@ -1,0 +1,67 @@
+{
+  "schemaVersion": "drx-dose-pilot-v1",
+  "pilotKey": "metformin",
+  "updatedAt": "2026-08-29",
+  "status": "in_review_unbound",
+  "publicationAllowed": false,
+  "ruleScope": "representative_not_exhaustive",
+  "canonicalSubstance": {
+    "key": "metformin",
+    "name": "Metformin"
+  },
+  "sourceSet": [
+    {
+      "sourceKey": "emc-100082-smpc",
+      "url": "https://www.medicines.org.uk/emc/product/100082/smpc",
+      "tier": "EMC",
+      "documentDate": "2025-09-08",
+      "section": "4.2",
+      "formulation": "film-coated tablet",
+      "strength": "1000 mg",
+      "section42Verified": true
+    }
+  ],
+  "extractedRuleCandidates": [
+    {
+      "candidateKey": "emc-100082-t2dm-adult-start",
+      "ruleKey": "metformin|type-2-diabetes|adult|po|start",
+      "sourceKey": "emc-100082-smpc",
+      "sourceSection": "4.2",
+      "indicationKey": "type-2-diabetes",
+      "indicationTerms": [
+        "type 2 diabetes mellitus"
+      ],
+      "patientGroup": "adult_only",
+      "calculationMethod": "manual_only",
+      "doseMinValue": 500,
+      "doseMaxValue": 850,
+      "doseUnit": "mg",
+      "frequencyMode": "manual",
+      "durationMode": "manual",
+      "route": "PO",
+      "prn": false,
+      "renalAdjustmentRequired": true,
+      "specialistOnly": false,
+      "requiredInputs": [
+        "age_months",
+        "renal_function",
+        "manual_clinical_review"
+      ],
+      "bindingStatus": "unbound",
+      "editorialStatus": "in_review",
+      "reviewReason": "source gives 2-3 times daily plus GFR-dependent maxima; current deterministic model must not collapse that range before V3 renal support"
+    }
+  ],
+  "sourceReconciliation": {
+    "status": "renal_and_frequency_range_requires_v3",
+    "autoMerge": false
+  },
+  "v2SchemaGaps": [
+    "source_snapshot_id",
+    "source_evidence_hash",
+    "required_inputs",
+    "times_per_day_range",
+    "gfr_band_adjustment"
+  ],
+  "nextGate": "formalize GFR bands and times-per-day range before deterministic publication"
+}
