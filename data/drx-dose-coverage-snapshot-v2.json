@@ -1,6 +1,6 @@
 {
   "schemaVersion": "drx-dose-coverage-snapshot-v2",
-  "generatedAt": "2026-08-29T09:43:23.360Z",
+  "generatedAt": "2026-08-29T09:46:57.693Z",
   "publicationAllowed": false,
   "counts": {
     "batch1Substances": 10,
@@ -67,7 +67,7 @@
     "fullCiGreen": false,
     "desktopSmokeGreen": false,
     "mobileSmokeGreen": false,
-    "vercelDeploymentGreen": true,
+    "vercelDeploymentGreen": false,
     "rollbackTested": false,
     "zeroKnownLegacyConsumers": false,
     "publicationBlocked": true
