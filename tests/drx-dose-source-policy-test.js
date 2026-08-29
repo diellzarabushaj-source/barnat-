@@ -38,6 +38,21 @@ const cima = Policy.rankCandidate({
 });
 assert.equal(cima.tier.key, 'AEMPS_CIMA');
 
+const hungary = Policy.rankCandidate({
+  url:'https://ogyei.gov.hu/gyogyszeradatbazis&action=show_details&item=22259',
+  documentType:'PRODUCT_INFORMATION',
+  documentDate:'2026-02-12',
+  productSpecific:true,
+  productMatch:true,
+  hasDoseSection:true,
+});
+assert.equal(hungary.tier.key, 'EU_NATIONAL');
+assert.equal(hungary.publicationEligible, true);
+assert.equal(
+  Policy.sourceTierForUrl('https://nngyk.gov.hu/example').key,
+  'EU_NATIONAL'
+);
+
 const kosovo = Policy.rankCandidate({
   url:'https://akppm.rks-gov.net/example',
   documentType:'PRODUCT_REGISTER',
