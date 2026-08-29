@@ -1,6 +1,6 @@
 {
   "schemaVersion": "drx-dose-coverage-snapshot-v2",
-  "generatedAt": "2026-08-29T11:35:42.600Z",
+  "generatedAt": "2026-08-29T12:37:06.857Z",
   "publicationAllowed": false,
   "counts": {
     "batch1Substances": 10,
@@ -29,7 +29,10 @@
     "first100SourceDiscoveryRemaining": 0,
     "first100SourceSectionVerificationPending": 0,
     "first100ProductSelectionPending": 0,
-    "first100ProductionEligibleRows": 0
+    "first100ProductionEligibleRows": 0,
+    "reviewEvidenceReady": 0,
+    "renalAdjustmentLiveVerified": 0,
+    "hepaticAdjustmentLiveVerified": 0
   },
   "batch2ProgressPct": {
     "structuredEvidence": 100,
@@ -52,7 +55,11 @@
     "v3SelfContainedProductShell": true,
     "v2ProductShellDependency": false,
     "oneRpcFastPathConfigured": true,
-    "sharedDoseCoreConfigured": true
+    "sharedDoseCoreConfigured": true,
+    "adjustmentAwareDoseRuntimeConfigured": true,
+    "provenanceBoundOfflineCacheConfigured": true,
+    "requiredAdjustmentPublicationGateConfigured": true,
+    "requiredAdjustmentRuntimeGateConfigured": true
   },
   "gates": {
     "supabaseLiveAvailable": false,
@@ -70,7 +77,9 @@
     "vercelDeploymentGreen": false,
     "rollbackTested": false,
     "zeroKnownLegacyConsumers": false,
-    "publicationBlocked": true
+    "publicationBlocked": true,
+    "reviewEvidenceComplete": false,
+    "renalHepaticLiveValidationObserved": false
   },
   "next": "Promote counts only from persisted evidence; archive, binding, review, CI, smoke, deploy and rollback gates remain fail-closed until observed."
 }
