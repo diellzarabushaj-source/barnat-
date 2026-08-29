@@ -1,0 +1,53 @@
+{
+  "schemaVersion": "drx-first100-source-discovery-wave-o-v1",
+  "generatedAt": "2026-08-29T10:38:34.678Z",
+  "sourcePolicy": "data/drx-dose-source-policy-v1.json",
+  "verificationMethod": "official_aifa_product_identity_plus_current_mediately_rcp_sections_4_1_4_2",
+  "publicationAllowed": false,
+  "verifiedProductSpecificCount": 1,
+  "sectionsPendingCount": 0,
+  "productSelectionRequiredCount": 0,
+  "rows": [
+    {
+      "canonicalKey": "triticumvulgare",
+      "canonicalName": "Triticum vulgare aqueous extract",
+      "status": "verified_product_specific",
+      "sourceTier": "EU_NATIONAL",
+      "authority": "Italian Medicines Agency (AIFA)",
+      "sourceKey": "aifa-fitostimoline-renewal-2020-plus-rcp-2024-01-12",
+      "url": "https://www.aifa.gov.it/documents/20142/1159780/Esiti_CTS_13-14-15-20-26_maggio_2020_AVPM.pdf",
+      "productRegistryUrl": "https://www.aifa.gov.it/documents/20142/1159780/Esiti_CTS_13-14-15-20-26_maggio_2020_AVPM.pdf",
+      "productName": "FITOSTIMOLINE 15% crema / garze impregnate",
+      "registrationNumber": "AIC 009115027 / 009115039",
+      "atcCode": "D03AX",
+      "documentDate": "2024-01-12",
+      "documentDatePrecision": "day",
+      "section41Present": true,
+      "section42Present": true,
+      "currentRegistryCrosscheck": {
+        "checkedDate": "2026-08-29",
+        "officialAifaFinding": "Fitostimoline (estratto acquoso di Triticum vulgare) listed for renewal without label modification",
+        "marketingAuthorisationHolder": "Farmaceutici Damor S.p.A.",
+        "formulations": [
+          "15% cream",
+          "15% impregnated gauze"
+        ]
+      },
+      "sectionTextCrosscheck": {
+        "source": "Mediately Italy RCP",
+        "url": "https://mediately.co/it/drugs/ESDf9QDGFfiClUrhuPjieYPNNKz/fitostimoline-15-crema-dermatologica",
+        "lastRcpUpdate": "2024-01-12",
+        "identityFinding": "Triticum vulgare whole plant aqueous extract is the active substance",
+        "doseFinding": "RCP contains sections 4.1 and 4.2 for topical cream/gauze dosing"
+      },
+      "reviewFlags": [
+        "topical_route_specific",
+        "formulation_specific",
+        "non_systemic_dose",
+        "rcp_crosscheck_non_authoritative",
+        "clinical_review_required"
+      ],
+      "publicationAllowed": false
+    }
+  ]
+}
