@@ -1,0 +1,94 @@
+name: DRx Master CIMA Enrichment
+
+on:
+  workflow_dispatch:
+  push:
+    paths:
+      - 'data/drx-master-registry-combos-v1.json'
+      - 'scripts/scrape-drx-master-cima.js'
+      - '.github/workflows/drx-master-cima-scrape.yml'
+
+concurrency:
+  group: drx-master-cima-scrape
+  cancel-in-progress: false
+
+jobs:
+  scrape:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    timeout-minutes: 45
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '24'
+
+      - name: Validate scraper syntax
+        run: node --check scripts/scrape-drx-master-cima.js
+
+      - name: Scrape AEMPS CIMA
+        run: node scripts/scrape-drx-master-cima.js
+
+      - name: Verify fail-closed summary
+        run: |
+          node - <<'NODE'
+          const fs=require('fs');
+          const p='data/drx-master-cima-scrape-v1.json';
+          const x=JSON.parse(fs.readFileSync(p,'utf8'));
+          if(x.schemaVersion!=='drx-master-cima-scrape-v1') throw new Error('wrong schema');
+          if(!Array.isArray(x.rows)||x.rows.length===0) throw new Error('empty result');
+          if(x.rows.some(r=>r.publicationAllowed!==false)) throw new Error('scrape must remain fail-closed');
+          if(x.policy?.crossStrengthBinding!==false) throw new Error('cross-strength binding must stay disabled');
+          if(x.policy?.saltsAutoCollapsed!==false) throw new Error('salt collapsing must stay disabled');
+          const bad=x.rows.filter(r=>r.matchStatus==='EXACT_ATC_STRENGTH_FORM' && (!r.nregistro || !r.section41Sha256 || !r.section42Sha256));
+          if(bad.length) throw new Error('exact matches missing provenance: '+bad.length);
+          console.log(JSON.stringify({rows:x.rows.length,counts:x.counts},null,2));
+          NODE
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: drx-master-cima-scrape
+          path: data/drx-master-cima-scrape-v1.json
+          retention-days: 30
+
+  materialize:
+    needs: scrape
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: main
+
+      - uses: actions/download-artifact@v4
+        with:
+          name: drx-master-cima-scrape
+          path: data
+
+      - name: Refuse document text in committed artifact
+        run: |
+          node - <<'NODE'
+          const fs=require('fs');
+          const p='data/drx-master-cima-scrape-v1.json';
+          const raw=fs.readFileSync(p,'utf8');
+          for(const forbidden of ['section2Text','section41Text','section42Text','section_text']){
+            if(raw.includes('"'+forbidden+'"')) throw new Error('document text field must not be committed: '+forbidden);
+          }
+          const x=JSON.parse(raw);
+          if(x.rows.some(r=>r.publicationAllowed!==false)) throw new Error('publication must remain closed');
+          NODE
+
+      - name: Commit reproducible summary
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add data/drx-master-cima-scrape-v1.json
+          if git diff --cached --quiet; then
+            echo "No scrape summary change."
+            exit 0
+          fi
+          git commit -m "chore(drx): materialize CIMA master enrichment"
+          git push origin HEAD:main
