@@ -216,14 +216,14 @@
                   : 'Kontrollo kartat e mësipërme për burimin që kërkon ndërhyrje.';
   }
 
-  async function load() {
+  async function load(forceSnapshot = false) {
     clearTimeout(timer);
     controller?.abort();
     controller = new AbortController();
     elements.refresh.disabled = true;
     elements.refresh.textContent = 'Duke kontrolluar…';
     try {
-      const response = await fetch('/api/neon-status', {
+      const response = await fetch(forceSnapshot ? '/api/neon-status?refresh=1' : '/api/neon-status', {
         credentials:'same-origin', cache:'no-store', signal:controller.signal,
         headers:{ Accept:'application/json' },
       });
@@ -248,7 +248,7 @@
     }
   }
 
-  elements.refresh?.addEventListener('click', load);
+  elements.refresh?.addEventListener('click', () => load(true));
   document.addEventListener('visibilitychange', () => {
     if (document.hidden) clearTimeout(timer);
     else load();
