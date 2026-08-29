@@ -69,4 +69,13 @@ assert.throws(
   /Konfigurimi i burimit nuk përputhet/
 );
 
+assert.throws(
+  () => Sync.requireMappedRow({ rowKey:'17' }, null, 'drug'),
+  /nuk kaloi validimin canonical/
+);
+assert.throws(
+  () => Sync.requireMappedRows({ rowKey:'17' }, [], 'dosage-card'),
+  /nuk prodhoi asnjë rekord canonical/
+);
+
 console.log('Phase 7 staging validation contract passed.');
