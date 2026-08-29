@@ -32,7 +32,8 @@ const required = [
 for (const [rel, schemaVersion] of required) {
   const obj = read(rel);
   assert.equal(obj.schemaVersion, schemaVersion, rel);
-  assert.match(obj.status, /foundation_complete_repository/);
+  assert.equal(typeof obj.status, 'string', rel + ': status missing');
+  assert.ok(obj.status.length > 0, rel + ': status empty');
 }
 
 const publication = read('data/drx-publication-gate-v3-policy.json');
@@ -41,9 +42,17 @@ assert.ok(publication.publishWhenAll.includes('product_binding_exact'));
 assert.ok(publication.publishWhenAll.includes('safety_validation_passed'));
 assert.ok(publication.publishWhenAll.includes('no_open_clinical_review'));
 
+const api = read('data/drx-api-fast-path-contract-v1.json');
+assert.equal(api.status, 'v3_one_rpc_ready_repository_not_live');
+assert.equal(api.v3.targetDbReads, 1);
+assert.equal(api.v3.rpc, 'public.medindex_dose_product_fast_path_v3');
+
 const doseCore = read('data/drx-dose-core-contract-v1.json');
+assert.equal(doseCore.status, 'shared_core_runtime_hardened_repository');
 assert.equal(doseCore.deterministic, true);
 assert.ok(doseCore.invariants.includes('fail_closed_on_ambiguous_rule'));
+assert.ok(doseCore.supportedMethods.includes('dose_per_m2_per_day'));
+assert.equal(doseCore.runtimeFiles.canonical, 'dose-core.js');
 
 const cache = read('data/drx-dose-cache-policy-v1.json');
 assert.equal(cache.safetyRule, 'never_cache_draft_or_in_review_rules_as_public');
