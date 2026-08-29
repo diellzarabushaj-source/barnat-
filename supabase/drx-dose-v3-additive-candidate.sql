@@ -236,6 +236,7 @@ create table if not exists public.dose_rules_v3 (
   source_key text not null,
   source_snapshot_id text not null references public.dose_source_snapshots_v3(snapshot_id) on delete restrict,
   source_section text not null default '4.2',
+  source_section_sha256 text,
   source_evidence_hash text not null,
   source_document_version text,
   source_document_date date,
@@ -253,6 +254,8 @@ create table if not exists public.dose_rules_v3 (
 
   constraint dose_rules_v3_rule_key_check check (btrim(rule_key) <> ''),
   constraint dose_rules_v3_source_section_check check (source_section = '4.2'),
+  constraint dose_rules_v3_section_sha_check
+    check (source_section_sha256 is null or source_section_sha256 ~ '^[0-9a-f]{64}$'),
   constraint dose_rules_v3_source_hash_check check (source_evidence_hash ~ '^[0-9a-f]{64}$'),
   constraint dose_rules_v3_source_identity_check check (source_snapshot_id = source_evidence_hash),
   constraint dose_rules_v3_version_check check (version_no >= 1),
@@ -316,6 +319,7 @@ create table if not exists public.dose_rules_v3 (
     editorial_status not in ('verified','published')
     or (
       source_snapshot_id ~ '^[0-9a-f]{64}$'
+      and source_section_sha256 ~ '^[0-9a-f]{64}$'
       and source_evidence_hash ~ '^[0-9a-f]{64}$'
       and source_snapshot_id = source_evidence_hash
       and (source_document_version is not null or source_document_date is not null)
@@ -589,6 +593,70 @@ create index if not exists dose_review_queue_v3_open_idx
 create index if not exists dose_publication_events_v3_rule_idx
   on public.dose_publication_events_v3(rule_id, created_at desc);
 
+-- Provenance mutation locks: once a snapshot/section backs verified or published
+-- clinical data, it becomes immutable. Draft-only provenance can still be reparsed/repaired.
+create or replace function private.drx_lock_source_snapshot_v3()
+returns trigger
+language plpgsql
+security invoker
+set search_path = pg_catalog, public, private
+as $body$
+begin
+  if exists (
+    select 1 from public.dose_products_v3 p
+    where p.source_snapshot_id = old.snapshot_id
+      and p.editorial_status in ('verified','published')
+  ) or exists (
+    select 1 from public.dose_rules_v3 r
+    where r.source_snapshot_id = old.snapshot_id
+      and r.editorial_status in ('verified','published')
+  ) then
+    raise exception 'DRX_V3_PROVENANCE_LOCKED: source snapshot backs verified/published clinical data';
+  end if;
+  if tg_op = 'DELETE' then return old; end if;
+  return new;
+end
+$body$;
+
+revoke all on function private.drx_lock_source_snapshot_v3()
+from public, anon, authenticated;
+
+drop trigger if exists dose_source_snapshots_v3_provenance_lock
+on public.dose_source_snapshots_v3;
+create trigger dose_source_snapshots_v3_provenance_lock
+before update or delete on public.dose_source_snapshots_v3
+for each row execute function private.drx_lock_source_snapshot_v3();
+
+create or replace function private.drx_lock_source_section_v3()
+returns trigger
+language plpgsql
+security invoker
+set search_path = pg_catalog, public, private
+as $body$
+begin
+  if exists (
+    select 1 from public.dose_rules_v3 r
+    where r.source_snapshot_id = old.snapshot_id
+      and r.source_section = old.section_code
+      and r.source_section_sha256 = old.section_sha256
+      and r.editorial_status in ('verified','published')
+  ) then
+    raise exception 'DRX_V3_PROVENANCE_LOCKED: source section backs verified/published clinical data';
+  end if;
+  if tg_op = 'DELETE' then return old; end if;
+  return new;
+end
+$body$;
+
+revoke all on function private.drx_lock_source_section_v3()
+from public, anon, authenticated;
+
+drop trigger if exists dose_source_sections_v3_provenance_lock
+on public.dose_source_sections_v3;
+create trigger dose_source_sections_v3_provenance_lock
+before update or delete on public.dose_source_sections_v3
+for each row execute function private.drx_lock_source_section_v3();
+
 -- Database publication transition gates.
 -- Products may be published only from source tiers allowed by the DRx publication policy.
 create or replace function private.drx_enforce_product_publication_v3()
@@ -672,7 +740,7 @@ declare
   snapshot_source_key text;
   snapshot_version text;
   snapshot_date date;
-  source_section_verified boolean;
+  persisted_section_sha256 text;
 begin
   if new.editorial_status <> 'published' then
     return new;
@@ -719,17 +787,20 @@ begin
     raise exception 'DRX_V3_PUBLICATION_BLOCKED: source date does not match snapshot';
   end if;
 
-  select exists (
-    select 1
-    from public.dose_source_sections_v3 s
-    where s.snapshot_id = new.source_snapshot_id
-      and s.section_code = '4.2'
-      and s.extraction_status = 'extracted'
-      and s.section_sha256 ~ '^[0-9a-f]{64}$'
-  ) into source_section_verified;
+  select s.section_sha256
+    into persisted_section_sha256
+  from public.dose_source_sections_v3 s
+  where s.snapshot_id = new.source_snapshot_id
+    and s.section_code = '4.2'
+    and s.extraction_status = 'extracted'
+    and s.section_sha256 ~ '^[0-9a-f]{64}$';
 
-  if source_section_verified is distinct from true then
+  if not found then
     raise exception 'DRX_V3_PUBLICATION_BLOCKED: verified SmPC section 4.2 artifact missing';
+  end if;
+
+  if new.source_section_sha256 is distinct from persisted_section_sha256 then
+    raise exception 'DRX_V3_PUBLICATION_BLOCKED: source section hash does not match persisted artifact';
   end if;
 
   select count(*)::integer
@@ -905,6 +976,12 @@ as $$
         (s.product_key is not null and p.product_key = s.product_key)
         or (s.drug_id is not null and p.drug_id = s.drug_id)
       )
+    join public.dose_source_snapshots_v3 ps
+      on ps.snapshot_id = p.source_snapshot_id
+     and ps.source_key = p.source_key
+     and ps.source_tier in ('EMA','EMC','AEMPS_CIMA','EU_NATIONAL','KOSOVO_AKPPM')
+     and (p.source_document_version is null or ps.document_version is not distinct from p.source_document_version)
+     and (p.source_document_date is null or ps.document_date is not distinct from p.source_document_date)
     where p.editorial_status = 'published'
     limit 1
   ),
@@ -929,8 +1006,20 @@ as $$
     join public.dose_indication_concepts_v3 i
       on i.indication_id = r.indication_id
      and i.editorial_status = 'published'
+    join public.dose_source_snapshots_v3 rs
+      on rs.snapshot_id = r.source_snapshot_id
+     and rs.source_key = r.source_key
+     and rs.source_tier in ('EMA','EMC','AEMPS_CIMA','EU_NATIONAL','KOSOVO_AKPPM')
+     and (r.source_document_version is null or rs.document_version is not distinct from r.source_document_version)
+     and (r.source_document_date is null or rs.document_date is not distinct from r.source_document_date)
+    join public.dose_source_sections_v3 sec
+      on sec.snapshot_id = r.source_snapshot_id
+     and sec.section_code = '4.2'
+     and sec.extraction_status = 'extracted'
+     and sec.section_sha256 = r.source_section_sha256
     where r.source_section = '4.2'
       and r.source_snapshot_id ~ '^[0-9a-f]{64}$'
+      and r.source_section_sha256 ~ '^[0-9a-f]{64}$'
       and r.source_evidence_hash ~ '^[0-9a-f]{64}$'
       and r.source_snapshot_id = r.source_evidence_hash
       and (r.source_document_version is not null or r.source_document_date is not null)
@@ -989,6 +1078,7 @@ as $$
           'sourceKey', r.source_key,
           'snapshotId', r.source_snapshot_id,
           'section', r.source_section,
+          'sectionSha256', r.source_section_sha256,
           'evidenceHash', r.source_evidence_hash,
           'documentVersion', r.source_document_version,
           'documentDate', r.source_document_date,
