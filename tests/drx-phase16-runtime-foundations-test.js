@@ -12,8 +12,8 @@ assert.equal(batch2.schemaVersion, 'drx-dose-batch2-v1');
 assert.equal(batch2.publicationAllowed, false);
 assert.equal(batch2.targetCount, 25);
 assert.equal(batch2.substances.length, 25);
-assert.equal(batch2.gates.authoritativeSourceVerifiedCount, 18);
-assert.equal(batch2.gates.authoritativeSourcePendingCount, 7);
+assert.equal(batch2.gates.authoritativeSourceVerifiedCount, 25);
+assert.equal(batch2.gates.authoritativeSourcePendingCount, 0);
 assert.equal(batch2.gates.exactLiveProductBindingComplete, false);
 
 const required = [
