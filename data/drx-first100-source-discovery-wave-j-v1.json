@@ -1,0 +1,68 @@
+{
+  "schemaVersion": "drx-first100-source-discovery-wave-j-v1",
+  "generatedAt": "2026-08-29T07:35:00Z",
+  "sourcePolicy": "data/drx-dose-source-policy-v1.json",
+  "verificationMethod": "live_emc_html_plus_anmdmr_rcp_visual_and_current_registry",
+  "publicationAllowed": false,
+  "verifiedProductSpecificCount": 2,
+  "sectionsPendingCount": 0,
+  "productSelectionRequiredCount": 0,
+  "rows": [
+    {
+      "canonicalKey": "pancreatin",
+      "canonicalName": "Pancreatin",
+      "resolvedFromCanonicalKey": "amylaselipasepanceatintotalproteases",
+      "status": "verified_product_specific_canonical_expression_resolved",
+      "sourceTier": "EMC",
+      "authority": "electronic Medicines Compendium",
+      "sourceKey": "emc-1168-smpc",
+      "url": "https://www.medicines.org.uk/emc/product/1168/smpc",
+      "productName": "Creon 25000 Capsules / Pancreatin Viatris 25000 Capsules",
+      "documentDate": "2026-07",
+      "documentDatePrecision": "month",
+      "section41Present": true,
+      "section42Present": true,
+      "reviewFlags": [
+        "canonical_enzyme_activity_expression_resolved_to_pancreatin",
+        "pancreatic_exocrine_insufficiency",
+        "enzyme_activity_units_not_mass_only",
+        "meal_linked_dosing",
+        "individual_titration_required",
+        "product_strength_specific",
+        "clinical_review_required"
+      ],
+      "publicationAllowed": false
+    },
+    {
+      "canonicalKey": "chamomiletincturelauromacrogollidocaine",
+      "canonicalName": "Chamomile tincture + Lauromacrogol + Lidocaine",
+      "status": "verified_product_specific_component_normalization_review",
+      "sourceTier": "EU_NATIONAL",
+      "authority": "ANMDMR Romania",
+      "sourceKey": "anmdmr-rcp-12309",
+      "url": "https://www.anm.ro/_/_RCP/RCP_12309_29.08.19.pdf",
+      "productName": "Dentinox – Gel 10 g gel gingival",
+      "documentDate": "2025-11",
+      "documentDatePrecision": "month",
+      "section41Present": true,
+      "section42Present": true,
+      "currentRegistryCrosscheck": {
+        "authority": "ANMDMR Nomenclator",
+        "checkedDate": "2026-08-29",
+        "product": "DENTINOX - GEL 10 g",
+        "atcCode": "A01AD11",
+        "cim": "W01462001"
+      },
+      "reviewFlags": [
+        "matricaria_chamomilla_tincture_name_normalization",
+        "lidocaine_hydrochloride_monohydrate_normalization",
+        "lauromacrogol_400_normalization",
+        "gingival_product_specific",
+        "primary_dentition_teething_context",
+        "pediatric_local_application",
+        "clinical_review_required"
+      ],
+      "publicationAllowed": false
+    }
+  ]
+}
