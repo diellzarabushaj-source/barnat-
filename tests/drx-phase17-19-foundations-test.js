@@ -44,19 +44,35 @@ assert.equal(canonicalExport.exportGate.rejectDuplicateCanonicalKey, true);
 assert.equal(canonicalExport.exportGate.requireAllBatch1And2KeysPresent, true);
 assert.equal(canonicalExport.exportGate.noFallbackCanonicalRows, true);
 
+// Provenance safeguards both cores must carry once hardened, so a verified rule
+// can never outrun the exact source section it was read from.
+const PROVENANCE_SAFEGUARDS = [
+  'verified_rule_requires_snapshot_evidence_hash_identity',
+  'verified_rule_requires_exact_smpc_4_2_sha256',
+  'renal_hepatic_adjustments_must_be_separately_hash_pinned',
+];
+
 const pediatric = read('data/drx-pediatric-core-v1.json');
-assert.equal(pediatric.status, 'foundation_complete_repository');
+assert.equal(pediatric.status, 'provenance_hardened_repository');
 assert.equal(pediatric.publicationAllowed, false);
 assert.ok(pediatric.methods.includes('dose_per_kg_per_dose'));
 assert.ok(pediatric.methods.includes('dose_per_m2_per_day'));
 assert.ok(pediatric.safeguards.includes('max_dose_enforced'));
 assert.ok(pediatric.safeguards.includes('no_publication_without_product_specific_concentration'));
+assert.ok(pediatric.safeguards.includes('missing_required_patient_input_blocks_calculation'));
+for (const safeguard of PROVENANCE_SAFEGUARDS) {
+  assert.ok(pediatric.safeguards.includes(safeguard), 'pediatric core must keep ' + safeguard);
+}
 
 const adult = read('data/drx-adult-core-v1.json');
-assert.equal(adult.status, 'foundation_complete_repository');
+assert.equal(adult.status, 'provenance_hardened_repository');
 assert.equal(adult.publicationAllowed, false);
 assert.ok(adult.modifiers.includes('renal_function'));
 assert.ok(adult.modifiers.includes('hepatic_function'));
 assert.ok(adult.safeguards.includes('no_generic_merge_of_product_specific_smpc_rules'));
+assert.ok(adult.safeguards.includes('missing_required_modifier_blocks_calculation'));
+for (const safeguard of PROVENANCE_SAFEGUARDS) {
+  assert.ok(adult.safeguards.includes(safeguard), 'adult core must keep ' + safeguard);
+}
 
 console.log('DRx phases 17-19 foundation contracts passed.');
