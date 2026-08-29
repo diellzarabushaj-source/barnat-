@@ -1,6 +1,7 @@
 'use strict';
 
 const { neonRequest, exactCount } = require('../lib/neon-data-api.js');
+const SystemHealthSnapshot = require('../lib/system-health-snapshot.js');
 
 const MINIMUM_REGISTRY_ROWS = 3500;
 
@@ -38,6 +39,7 @@ async function publishRegistry() {
   if (!Number.isFinite(published) || published < MINIMUM_REGISTRY_ROWS) {
     throw new Error(`Supabase registry publication verification failed: ${published ?? 'unknown'} published rows.`);
   }
+  await SystemHealthSnapshot.refreshBestEffort('registry-publish');
   console.log(`MedIndex Supabase registry publication completed: ${published} published rows.`);
 }
 
