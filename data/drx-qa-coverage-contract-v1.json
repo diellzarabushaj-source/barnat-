@@ -1,0 +1,30 @@
+{
+  "schemaVersion": "drx-qa-coverage-contract-v1",
+  "status": "foundation_complete_repository",
+  "qaLayers": [
+    "unit",
+    "contract",
+    "golden_clinical_cases",
+    "integration",
+    "playwright_desktop",
+    "playwright_mobile"
+  ],
+  "coverageMetrics": [
+    "canonical_substances",
+    "sources_discovered",
+    "sources_archived",
+    "sections_parsed",
+    "rules_normalized",
+    "products_bound",
+    "legacy_compared",
+    "verified",
+    "published"
+  ],
+  "releaseGate": [
+    "all_critical_tests_green",
+    "zero_publishable_conflicts",
+    "coverage_snapshot_generated",
+    "desktop_mobile_smoke_pass"
+  ],
+  "next": "materialize live dashboard metrics from V3 tables"
+}
