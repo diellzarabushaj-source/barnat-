@@ -41,8 +41,29 @@ const archiveDir = path.resolve(arg('archive') || process.env.DRX_ARCHIVE_DIR ||
 
 const url = String(process.env.MEDINDEX_SUPABASE_URL || '').replace(/\/+$/, '');
 const key = String(process.env.MEDINDEX_SUPABASE_SECRET_KEY || '');
-if (!dryRun && (!url || !key)) {
-  fail('MEDINDEX_SUPABASE_URL and MEDINDEX_SUPABASE_SECRET_KEY are required. This script only runs where the service key is available.');
+
+// Distinguish "not configured" from "configured and broken". A repository
+// without the service key cannot ingest, and failing the archive run for that
+// would paint every future run red over a missing setting - which trains people
+// to ignore the colour. Skip loudly instead, and keep failing hard on anything
+// that is a real error.
+//
+// Skipping is never silent: the reason is printed and the exit is reported as a
+// skip, because an unrecorded load is exactly how the section rows already in
+// production ended up unreproducible.
+const credentialsConfigured = Boolean(url && key);
+if (!dryRun && !credentialsConfigured) {
+  console.log(JSON.stringify({
+    ok: true,
+    skipped: true,
+    reason: 'MEDINDEX_SUPABASE_URL and MEDINDEX_SUPABASE_SECRET_KEY are not configured for this repository, so provenance cannot be ingested.',
+    effect: 'dose_source_sections_v3 will not receive section 2, and the blocked base-to-salt mappings stay unproven.',
+    toEnable: 'Add both repository secrets. The key must be the Supabase service role key, which drx_v3_service_ingestion_grants grants insert and update on the two provenance tables only.',
+  }, null, 2));
+  process.exit(0);
+}
+if (!dryRun && (!url.startsWith('https://'))) {
+  fail('MEDINDEX_SUPABASE_URL must be an https URL.');
 }
 
 if (!fs.existsSync(indexPath)) fail(`extraction index not found: ${indexPath}`);
