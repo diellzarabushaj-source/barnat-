@@ -1,0 +1,138 @@
+{
+  "schemaVersion": "drx-first100-canonical-review-decisions-v1",
+  "generatedAt": "2026-08-30T03:50:00+02:00",
+  "total": 13,
+  "resolved": 1,
+  "pending": 12,
+  "effectiveSourceDiscoveryEligible": 88,
+  "publicationAllowed": false,
+  "decisions": [
+    {
+      "canonicalKey": "2h20potassiumchloridesodiumchloride",
+      "sourceName": "2h20 + Potassium chloride + Sodium chloride",
+      "decision": "source_expression_reconstruction_required",
+      "confidence": "insufficient_for_auto_resolution",
+      "evidence": [],
+      "sourceDiscoveryEligible": false,
+      "publicationAllowed": false
+    },
+    {
+      "canonicalKey": "alaninearginineasparticacidcalciumchloridedihydrogenglucoseglutamicacidglycinehistidineisoleucineleucinelysinemethioninephenylalaninepotassiumacetateprolineserinesodiumacetatesodiumchloridesodiumhydroxidesoyabeanoiltetrahydratethreoninetriglyceridesmediumchaintryptophanvalinezinc",
+      "sourceName": "Alanine + Arginine + Aspartic acid + Calcium chloride + Dihydrogen + Glucose + Glutamic acid + Glycine + Histidine + Isoleucine + Leucine + Lysine + Methionine + Phenylalanine + Potassium acetate + Proline + Serine + Sodium acetate + Sodium chloride + Sodium hydroxide + Soya bean oil + Tetrahydrate + Threonine + Triglycerides medium chain + Tryptophan + Valine + Zinc",
+      "decision": "source_expression_reconstruction_required",
+      "confidence": "insufficient_for_auto_resolution",
+      "evidence": [],
+      "sourceDiscoveryEligible": false,
+      "publicationAllowed": false
+    },
+    {
+      "canonicalKey": "alaninearginineasparticacidcalciumchlorideglucoseglutamicacidglycerolmonoglycineheptahydratehistidineisoleucineleucinelysinemethioninephenylalaninepotassiumchlorideprolineserinesodiumacetatesoyabeanoilthreoninetryptophantyrosinevaline",
+      "sourceName": "Alanine + Arginine + Aspartic acid + Calcium chloride + Glucose + Glutamic acid + Glycerol mono + Glycine + Heptahydrate + Histidine + Isoleucine + Leucine + Lysine + Methionine + Phenylalanine + Potassium chloride + Proline + Serine + Sodium acetate + Soyabean oil + Threonine + Tryptophan + Tyrosine + Valine",
+      "decision": "source_expression_reconstruction_required",
+      "confidence": "insufficient_for_auto_resolution",
+      "evidence": [],
+      "sourceDiscoveryEligible": false,
+      "publicationAllowed": false
+    },
+    {
+      "canonicalKey": "alaninearginineasparticaciddodecahydrateglutamicacidglycinehexahydratehistidineisoleucineleucinelysinemethioninephenylalaninepotassiumacetateprolineserinesodiumacetatesodiumhydroxidethreoninetryptophantyrosinevaline",
+      "sourceName": "Alanine + Arginine + Aspartic acid + Dodecahydrate + Glutamic acid + Glycine + Hexahydrate + Histidine + Isoleucine + Leucine + Lysine + Methionine + Phenylalanine + Potassium acetate + Proline + Serine + Sodium acetate + Sodium hydroxide + Threonine + Tryptophan + Tyrosine + Valine",
+      "decision": "source_expression_reconstruction_required",
+      "confidence": "insufficient_for_auto_resolution",
+      "evidence": [],
+      "sourceDiscoveryEligible": false,
+      "publicationAllowed": false
+    },
+    {
+      "canonicalKey": "alanineargininecalciumchlorideglucoseglutamicacidglycinehistidineequisoleucineleucinelysineequtomethioninephenylalaninepotassiumacetateprolineserinesodiumacetatesodiumchloridesodiumhydroxidetetrahydratethreoninetryptophanvaline",
+      "sourceName": "Alanine + Arginine + Calcium chloride + Glucose + Glutamic acid + Glycine + Histidine equ + Isoleucine + Leucine + Lysine equto + Methionine + Phenylalanine + Potassium acetate + Proline + Serine + Sodium acetate + Sodium chloride + Sodium hydroxide + Tetrahydrate + Threonine + Tryptophan + Valine",
+      "decision": "source_expression_reconstruction_required",
+      "confidence": "insufficient_for_auto_resolution",
+      "evidence": [],
+      "sourceDiscoveryEligible": false,
+      "publicationAllowed": false
+    },
+    {
+      "canonicalKey": "alfatocopherylascorbicacidcholecalciferolconcentratecopperpentahydratedcyanocobalaminmannitolferrousfolicacidhydrogenmagnesiumlactatemanganesemolybdatenicotinamidepantothenatepyridoxineriboflavinthiaminevitaminconcentratesyntheticoilyzincheptahydrate",
+      "sourceName": "Alfa tocopheryl + Ascorbic acid + Cholecalciferol concentrate + Copper pentahydrated + Cyanocobalamin mannitol + Ferrous + Folic acid + Hydrogen + Magnesium lactate + Manganese + Molybdate + Nicotinamide + Pantothenate + Pyridoxine + Riboflavin + Thiamine + Vitamin concentrate synthetic oily + Zinc heptahydrate",
+      "decision": "source_expression_reconstruction_required",
+      "confidence": "insufficient_for_auto_resolution",
+      "evidence": [],
+      "sourceDiscoveryEligible": false,
+      "publicationAllowed": false
+    },
+    {
+      "canonicalKey": "aminoacids",
+      "sourceName": "Aminoacids",
+      "decision": "generic_or_group_label_requires_product_resolution",
+      "confidence": "insufficient_for_auto_resolution",
+      "evidence": [],
+      "sourceDiscoveryEligible": false,
+      "publicationAllowed": false
+    },
+    {
+      "canonicalKey": "amlodipinebesilate2ramipril",
+      "sourceName": "Amlodipine besilate2 + Ramipril",
+      "decision": "candidate_typo_fix_pending_exact_product_source",
+      "proposedCanonicalKey": "amlodipineramipril",
+      "proposedCanonicalName": "Amlodipine + Ramipril",
+      "confidence": "medium",
+      "evidence": [],
+      "sourceDiscoveryEligible": false,
+      "publicationAllowed": false
+    },
+    {
+      "canonicalKey": "amylaselipasepanceatintotalproteases",
+      "sourceName": "Amylase + Lipase + Panceatin + Total proteases",
+      "decision": "source_expression_reconstruction_required",
+      "confidence": "insufficient_for_auto_resolution",
+      "evidence": [],
+      "sourceDiscoveryEligible": false,
+      "publicationAllowed": false
+    },
+    {
+      "canonicalKey": "betamethasonedipropionateequivalntbetamethasone",
+      "sourceName": "Betamethasone dipropionate + Equivalnt betamethasone",
+      "decision": "resolved_equivalence_not_combination",
+      "resolvedCanonicalKey": "betamethasonedipropionate",
+      "resolvedCanonicalName": "Betamethasone dipropionate",
+      "confidence": "high",
+      "evidence": [
+        {
+          "authority": "eMC",
+          "url": "https://www.medicines.org.uk/emc/product/6405/smpc",
+          "finding": "Official product composition expresses betamethasone dipropionate as equivalent to betamethasone; this is potency/equivalence wording, not a second active ingredient."
+        }
+      ],
+      "sourceDiscoveryEligible": true,
+      "publicationAllowed": false
+    },
+    {
+      "canonicalKey": "calcipotriolcombinations",
+      "sourceName": "Calcipotriol combinations",
+      "decision": "generic_or_group_label_requires_product_resolution",
+      "confidence": "insufficient_for_auto_resolution",
+      "evidence": [],
+      "sourceDiscoveryEligible": false,
+      "publicationAllowed": false
+    },
+    {
+      "canonicalKey": "calciumchlorideclorurcaliumclorurnatrium",
+      "sourceName": "Calcium chloride + Clorur calium + Clorur natrium",
+      "decision": "source_expression_reconstruction_required",
+      "confidence": "insufficient_for_auto_resolution",
+      "evidence": [],
+      "sourceDiscoveryEligible": false,
+      "publicationAllowed": false
+    },
+    {
+      "canonicalKey": "calciumchlorideglucoseappropriatehexahydratesodiumchloridesodiumlactate",
+      "sourceName": "Calcium chloride + Glucose appropriate + Hexahydrate + Sodium chloride + Sodium lactate",
+      "decision": "source_expression_reconstruction_required",
+      "confidence": "insufficient_for_auto_resolution",
+      "evidence": [],
+      "sourceDiscoveryEligible": false,
+      "publicationAllowed": false
+    }
+  ]
+}
