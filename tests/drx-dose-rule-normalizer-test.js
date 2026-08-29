@@ -4,6 +4,7 @@ const assert = require('node:assert/strict');
 const Dose = require('../lib/dose-rule-normalizer.js');
 
 const HASH = 'a'.repeat(64);
+const SECTION_HASH = 'b'.repeat(64);
 
 const fixed = Dose.validateRule({
   ruleKey:'ibuprofen-pain-adult',
@@ -21,6 +22,7 @@ const fixed = Dose.validateRule({
   sourceKey:'emc-7020-smpc',
   sourceSection:'4.2',
   sourceSnapshotId:HASH,
+  sourceSectionSha256:SECTION_HASH,
   sourceEvidenceHash:HASH,
   editorialStatus:'published',
 });
@@ -104,7 +106,26 @@ const noProvenance = Dose.validateRule({
   editorialStatus:'published',
 });
 assert.ok(noProvenance.errors.includes('source_snapshot_missing_or_invalid'));
+assert.ok(noProvenance.errors.includes('source_section_sha256_missing_or_invalid'));
 assert.ok(noProvenance.errors.includes('source_evidence_hash_missing_or_invalid'));
+
+const mismatch = Dose.validateRule({
+  ruleKey:'mismatch',
+  indicationKey:'pain',
+  patientGroup:'adult_only',
+  calculationMethod:'fixed_dose',
+  doseMinValue:200,
+  doseUnit:'mg',
+  frequencyMode:'single',
+  durationMode:'none',
+  sourceKey:'official',
+  sourceSection:'4.2',
+  sourceSnapshotId:'a'.repeat(64),
+  sourceSectionSha256:SECTION_HASH,
+  sourceEvidenceHash:'c'.repeat(64),
+  editorialStatus:'published',
+});
+assert.ok(mismatch.errors.includes('source_snapshot_evidence_hash_mismatch'));
 
 const manual = Dose.publicationDecision({
   ruleKey:'manual',
@@ -116,6 +137,7 @@ const manual = Dose.publicationDecision({
   sourceKey:'official',
   sourceSection:'4.2',
   sourceSnapshotId:HASH,
+  sourceSectionSha256:SECTION_HASH,
   sourceEvidenceHash:HASH,
   editorialStatus:'published',
   specialistOnly:true,
