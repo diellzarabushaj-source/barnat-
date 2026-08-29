@@ -41,7 +41,7 @@
       "canonicalName",
       "conceptId"
     ],
-    "canonicalKeyNormalization": "Unicode NFC + trim + lowercase",
+    "canonicalKeyNormalization": "exact parity with public.medindex_normalize_substance_term_v1: lowercase + trim + remove every non-[a-z0-9] character",
     "deterministicOrdering": "code-point canonicalKey ASC, then conceptId ASC",
     "maxBatchSize": 500,
     "supportedBatchSizes": [
@@ -49,6 +49,7 @@
       250,
       500
     ],
-    "alreadyCoveredAcceptedShape": "objects using canonical_key/canonicalKey or literal canonical-key strings"
+    "alreadyCoveredAcceptedShape": "objects using canonical_key/canonicalKey or literal canonical-key strings",
+    "normalizationSource": "supabase/migrations/20260827130837_p1_clinical_substance_identity_foundation.sql"
   }
 }
