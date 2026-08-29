@@ -128,7 +128,9 @@
     "test:drx-bulk-discovery": "node tests/drx-bulk-discovery-batches-test.js",
     "test:drx-v3-rpc": "node tests/drx-dose-v3-rpc-reader-test.js",
     "test:drx-phase16-live-status": "node tests/drx-phase16-live-status-test.js",
-    "test:drx-release": "node tests/drx-dose-rule-normalizer-test.js && node tests/drx-dose-adjustment-engine-test.js && node tests/drx-dose-publication-gate-test.js && node tests/drx-dose-v3-supabase-candidate-test.js && node tests/drx-dose-v3-rpc-reader-test.js && node tests/drx-dose-v3-fast-path-integration-test.js && node tests/drx-dose-core-test.js && node tests/drx-dose-cache-ui-test.js && node tests/drx-bulk-discovery-batches-test.js && node tests/drx-phase16-consistency-audit-test.js && node tests/drx-batch2-prepublication-review-packets-test.js && node tests/drx-production-release-readiness-test.js"
+    "test:drx-release": "node tests/drx-dose-rule-normalizer-test.js && node tests/drx-dose-adjustment-engine-test.js && node tests/drx-dose-publication-gate-test.js && node tests/drx-dose-v3-supabase-candidate-test.js && node tests/drx-dose-v3-rpc-reader-test.js && node tests/drx-dose-v3-fast-path-integration-test.js && node tests/drx-dose-core-test.js && node tests/drx-dose-cache-ui-test.js && node tests/drx-bulk-discovery-batches-test.js && node tests/drx-phase16-consistency-audit-test.js && node tests/drx-batch2-prepublication-review-packets-test.js && node tests/drx-production-release-readiness-test.js",
+    "test:drx-first100-production-provenance": "node tests/drx-first100-production-provenance-test.js",
+    "audit:drx-first100-production": "node scripts/audit-drx-first100-production-provenance.js --require-production"
   },
   "dependencies": {
     "@vercel/blob": "^2.3.0",
