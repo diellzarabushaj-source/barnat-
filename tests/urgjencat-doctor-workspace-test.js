@@ -63,10 +63,10 @@ assert.match(js, /sidebar-taxonomy-v3/);
 assert.match(js, /medindex-brand-runtime\.js/);
 assert.match(js, /MedIndexProfile/);
 assert.match(js, /medindex:auth-ready/);
-const indexQuery = js.match(/const QUERY = \`([\\s\\S]*?)\`;/)?.[1] || '';
+const indexQuery = js.match(/const QUERY = \`([\s\S]*?)\`;/)?.[1] || '';
 assert.ok(indexQuery, 'Urgjencat initial Sanity query must be extractable');
 assert.doesNotMatch(indexQuery, /imageDataUrl|imageDataChunks|asset->/, 'Initial Urgjencat query must not preload heavy figure media');
-assert.match(js, /FIGURE_DETAIL_QUERY[\\s\\S]*imageDataUrl[\\s\\S]*imageDataChunks/, 'Heavy figure media must load only through the detail query');
+assert.match(js, /FIGURE_DETAIL_QUERY[\s\S]*imageDataUrl[\s\S]*imageDataChunks/, 'Heavy figure media must load only through the detail query');
 assert.doesNotThrow(() => new Function(js));
 
 assert.match(css, /Urgjencat V2 — one document, one command bar/);
