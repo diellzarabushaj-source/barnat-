@@ -14,6 +14,15 @@ assert.match(source, /indexedDB\.open\(DOSE_CACHE_DB, 1\)/);
 assert.match(source, /If-None-Match/);
 assert.match(source, /response\.status === 304/);
 assert.match(source, /OFFLINE_MAX_AGE_MS = 24 \* 60 \* 60 \* 1000/);
+assert.match(source, /schemaVersion:'drx-dose-product-cache-v2'/);
+assert.match(source, /payloadSchemaVersion:payload\.schemaVersion/);
+assert.match(source, /function provenanceSourceValid\(source\)/);
+assert.match(source, /function ruleProvenanceValid\(rule\)/);
+assert.match(source, /function productProvenanceSignature\(product\)/);
+assert.match(source, /function v3PayloadCacheEligible\(payload\)/);
+assert.match(source, /row\.provenanceSignature === productProvenanceSignature\(row\.product\)/);
+assert.match(source, /payload\.schemaVersion === 'dose-product-fast-path-v3'/);
+assert.match(source, /V3 payload nuk ka provenance të plotë/);
 assert.match(source, /__doseCacheState:'offline-cache'/);
 assert.match(source, /void openProductByKey\(button\.dataset\.doseProductKey\)/);
 
