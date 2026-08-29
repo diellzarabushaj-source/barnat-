@@ -128,8 +128,15 @@ async function build(options = {}) {
   return output;
 }
 
+function archiveDirectoryFromEnvironment(env = process.env) {
+  const configured = String(env?.DRX_ARCHIVE_DIR || '').trim();
+  if (!configured) return null;
+  return path.resolve(ROOT, configured);
+}
+
 if (require.main === module) {
-  build().then(output => {
+  const archiveDirectory = archiveDirectoryFromEnvironment();
+  build({ archiveDirectory:archiveDirectory || undefined }).then(output => {
     console.log(JSON.stringify({
       schemaVersion:output.schemaVersion,
       targetCount:output.targetCount,
@@ -144,4 +151,4 @@ if (require.main === module) {
   });
 }
 
-module.exports = { extractOne, extractWithRetry, build, OUTPUT_PATH, _test:{ sleep, isRetryable } };
+module.exports = { extractOne, extractWithRetry, build, OUTPUT_PATH, _test:{ sleep, isRetryable, archiveDirectoryFromEnvironment } };

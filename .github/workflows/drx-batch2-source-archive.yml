@@ -6,9 +6,11 @@ on:
     branches: [main]
     paths:
       - 'scripts/build-drx-batch2-extraction-index.js'
+      - 'scripts/verify-drx-batch2-archive.js'
       - 'lib/dose-source-archive.js'
       - 'lib/smpc-parser.js'
       - 'data/drx-dose-batch2-v1.json'
+      - 'tests/drx-batch2-archive-verifier-test.js'
       - '.github/workflows/drx-batch2-source-archive.yml'
 
 permissions:
@@ -18,6 +20,8 @@ jobs:
   archive:
     runs-on: ubuntu-latest
     timeout-minutes: 20
+    env:
+      DRX_ARCHIVE_DIR: artifacts/drx-batch2-raw
     steps:
       - uses: actions/checkout@v4
 
@@ -25,16 +29,22 @@ jobs:
         with:
           node-version: '22'
 
+      - name: Verify archive contracts
+        run: |
+          node tests/drx-batch2-archive-verifier-test.js
+          node tests/drx-batch2-archive-workflow-test.js
+
       - name: Archive and parse Batch 2 sources
-        env:
-          DRX_ARCHIVE_DIR: artifacts/drx-batch2-raw
         run: |
           mkdir -p "$DRX_ARCHIVE_DIR"
           node scripts/build-drx-batch2-extraction-index.js
 
-      - name: Verify extraction index
+      - name: Verify hash-backed archive
         run: |
-          node -e "const x=require('./data/drx-batch2-extraction-index-v1.json'); if(!x.complete || x.extractedCount!==25 || x.failedCount!==0) process.exit(1)"
+          node scripts/verify-drx-batch2-archive.js \
+            --index=data/drx-batch2-extraction-index-v1.json \
+            --archive="$DRX_ARCHIVE_DIR" \
+            --expected=25
 
       - name: Upload source archive
         uses: actions/upload-artifact@v4
