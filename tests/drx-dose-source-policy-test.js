@@ -158,6 +158,19 @@ const kosovo = Policy.rankCandidate({
 });
 assert.equal(kosovo.tier.key, 'KOSOVO_AKPPM');
 
+const invima = Policy.rankCandidate({
+  url:'https://webservice.invima.gov.co/registros/pdf/16393702_2023024275.pdf',
+  documentType:'REGULATORY_RESOLUTION',
+  documentDate:'2023-06-05',
+  productSpecific:true,
+  productMatch:true,
+  hasDoseSection:false,
+});
+assert.equal(invima.tier.key, 'NON_EU_REGULATOR');
+assert.equal(invima.accepted, true);
+assert.equal(invima.publicationEligible, false);
+assert.equal(Policy.publicationDecision(invima).allowed, false);
+
 const mediately = Policy.rankCandidate({
   url:'https://mediately.co/drugs/example',
   documentType:'DRUG_MONOGRAPH',
