@@ -1,0 +1,31 @@
+{
+  "schemaVersion": "drx-v3-persistence-envelope-contract-v1",
+  "updatedAt": "2026-08-29",
+  "status": "repository_gate_ready_live_ids_and_hashes_required",
+  "publicationAllowed": false,
+  "purpose": "Build only draft/in-review V3 persistence envelopes after production canonical provenance, independently verified archive hashes and exact live product binding are present.",
+  "requiredEvidence": [
+    "production_canonical_provenance_verified",
+    "live_substance_concept_id",
+    "live_indication_id",
+    "live_drug_id",
+    "exact_live_product_binding",
+    "snapshot_id_equals_raw_sha256",
+    "section_4_1_sha256_verified",
+    "section_4_2_sha256_verified",
+    "archive_raw_reparse_verified",
+    "normalized_rule_valid"
+  ],
+  "forbidden": [
+    "published_editorial_status_from_bulk_import",
+    "substance_only_product_binding",
+    "fallback_canonical_snapshot_as_production_truth",
+    "unverified_section_hash",
+    "partial_batch_promotion"
+  ],
+  "outputEditorialStatus": [
+    "draft",
+    "in_review"
+  ],
+  "next": "feed live Phase 15/16 evidence into the gate after Supabase SQL gateway recovery; persist only envelopes with ready=true"
+}
