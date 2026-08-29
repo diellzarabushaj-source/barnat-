@@ -1,6 +1,6 @@
 {
   "schemaVersion": "drx-dosierung-master-plan-status-v1",
-  "updatedAt": "2026-08-29T12:06:46.414Z",
+  "updatedAt": "2026-08-29T12:09:11.371Z",
   "officialPlan": "DRx Dosierung phases 0-32",
   "databaseBlocker": {
     "active": true,
@@ -292,9 +292,12 @@
         "required_inputs parity verified for 9 newly normalized pilots",
         "V3 provenance parity hardened: archive -> extraction -> normalization -> validator -> publication gate -> runtime readers",
         "Batch 1 V2 schema-gap manifest now includes source_section_sha256",
-        "no live readiness counts promoted without hash-backed archive evidence"
+        "no live readiness counts promoted without hash-backed archive evidence",
+        "lib/dose-v3-persistence-envelope.js",
+        "tests/drx-dose-v3-persistence-envelope-test.js",
+        "data/drx-v3-persistence-envelope-contract-v1.json"
       ],
-      "next": "live pilot remains blocked by Supabase SQL gateway; once recovered, persist exact snapshot + section 4.2 hash before binding/legacy/safety/review"
+      "next": "after Supabase recovery: obtain live concept/indication/drug IDs, persist only ready=true draft/in-review envelopes, then exact legacy/safety/review checks"
     },
     {
       "id": 16,
@@ -341,9 +344,12 @@
         "lib/dose-rule-normalizer.js requires source snapshot/evidence identity + sourceSectionSha256 for verified/published rules",
         "V3 multi-read and RPC readers fail closed on missing/invalid section provenance",
         "scripts/verify-drx-batch2-archive.js reparses raw archived bytes and independently recomputes section 4.1/4.2 SHA-256",
-        "archive verifier rejects raw/section/meta hash mismatch instead of trusting extraction metadata"
+        "archive verifier rejects raw/section/meta hash mismatch instead of trusting extraction metadata",
+        "lib/dose-v3-persistence-envelope.js",
+        "tests/drx-dose-v3-persistence-envelope-test.js",
+        "data/drx-v3-persistence-envelope-contract-v1.json"
       ],
-      "next": "CI archive run still unobserved; require 25/25 raw SHA + independently rehashed section42 SHA before normalizationReady can increase above 0"
+      "next": "25/25 archive raw+section hash evidence remains prerequisite; then build ready=true envelopes only after exact live bindings"
     },
     {
       "id": 17,
@@ -383,9 +389,14 @@
         "85/89 effective canonical targets have product-specific sources meeting discovery policy",
         "86/89 effective canonical targets have product-specific sources meeting discovery policy",
         "86/87 effective canonical targets source-verified after final canonical dedupe",
-        "87/87 effective canonical targets source-verified; Alteplase product-family selection resolved fail-closed"
+        "87/87 effective canonical targets source-verified; Alteplase product-family selection resolved fail-closed",
+        "lib/dose-v3-persistence-envelope.js",
+        "tests/drx-dose-v3-persistence-envelope-test.js",
+        "data/drx-v3-persistence-envelope-contract-v1.json",
+        "bulk import policy split into sourceArchiveGate, draftRulePersistenceGate and Phase24 publicationGate",
+        "bulk importer is forbidden from creating published rows"
       ],
-      "next": "production import remains blocked until hash-bound Supabase canonical export provenance passes; do not publish or bulk-import from fallback snapshot"
+      "next": "Phase 14 + live canonical provenance remain blockers; after Phase15-16 proof, run 100 -> 250 -> 500 using ready=true draft persistence envelopes only"
     },
     {
       "id": 18,
