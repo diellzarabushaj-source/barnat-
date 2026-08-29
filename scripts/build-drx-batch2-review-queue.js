@@ -42,7 +42,16 @@ function build() {
         archiveHashStatus:source.archiveHashStatus,
         normalizationStatus:source.normalizationStatus,
         exactProductBindingComplete:false,
+        legacyComparisonComplete:false,
         safetyValidationComplete:false,
+        requiredAdjustmentEvidenceComplete:false,
+        sourceSnapshotId:null,
+        sourceSection:'4.2',
+        sourceSectionSha256:null,
+        reviewerId:null,
+        reviewedAt:null,
+        decision:null,
+        decisionReason:null,
         publicationAllowed:false
       });
     }
