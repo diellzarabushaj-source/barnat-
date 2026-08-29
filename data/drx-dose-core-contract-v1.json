@@ -1,34 +1,49 @@
 {
   "schemaVersion": "drx-dose-core-contract-v1",
-  "status": "foundation_complete_repository",
+  "status": "shared_core_runtime_hardened_repository",
   "deterministic": true,
   "supportedMethods": [
     "fixed_dose",
-    "dose_per_kg",
+    "fixed_volume",
+    "dose_per_kg_per_dose",
     "dose_per_kg_per_day",
-    "dose_per_m2",
-    "continuous_rate"
+    "dose_per_m2_per_dose",
+    "dose_per_m2_per_day",
+    "age_band_fixed",
+    "manual_only"
   ],
   "outputs": [
-    "single_dose",
-    "daily_dose",
-    "frequency",
-    "interval",
-    "max_daily_dose",
-    "volume_ml",
-    "warnings"
+    "outcome",
+    "requiredInputs",
+    "perDose",
+    "daily",
+    "schedule",
+    "bsaM2",
+    "practicalMeasure",
+    "cappedBy"
   ],
   "invariants": [
     "same_inputs_same_output",
     "never_exceed_explicit_max",
     "never_invent_missing_frequency",
     "unit_normalization_required",
-    "fail_closed_on_ambiguous_rule"
+    "fail_closed_on_ambiguous_rule",
+    "fixed_per_day_requires_explicit_times_per_day_for_per_dose",
+    "max_daily_to_per_dose_cap_uses_only_explicit_max_doses_24h",
+    "renal_hepatic_cardiac_adjustments_never_inferred_inside_base_core",
+    "manual_or_specialist_rules_do_not_auto_calculate"
   ],
   "compatibility": [
     "frontend",
     "backend",
     "golden_case_tests"
   ],
-  "next": "consolidate existing calculators behind this shared contract"
+  "next": "load shared core before registry calculation; delegate V3/registry math to it; retain pediatric legacy adapter only until sourced V3 rules replace typed pediatric fields",
+  "runtimeFiles": {
+    "canonical": "dose-core.js",
+    "serverAdapter": "lib/dose-core.js",
+    "adjustmentEngine": "lib/dose-adjustment-engine.js",
+    "frontendTarget": "registry-dose-calculator.js delegates to DRxDoseCore",
+    "pediatricLegacy": "legacy typed pediatric adapter retained until V3 migration; not a second V3 source of truth"
+  }
 }
