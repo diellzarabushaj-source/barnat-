@@ -6,6 +6,7 @@ const { exchangeGoogleIdToken, SupabaseBootstrapError } = require('../lib/supaba
 const SupabaseAuth = require('../lib/supabase-auth.js');
 const SupabasePassword = require('../lib/supabase-password-auth.js');
 const UserStore = require('../lib/user-store.js');
+const UserIdentity = require('../lib/user-identity.js');
 const UserLibrary = require('../lib/user-library.js');
 const ProfileAvatar = require('../lib/profile-avatar.js');
 const UserUiPreferences = require('../lib/user-ui-preferences.js');
@@ -208,12 +209,13 @@ async function pendingEnrollment(res, canonicalIdentity) {
 async function approvedSupabaseUser(canonicalIdentity, hints = {}) {
   SupabaseAuth.assertActive(canonicalIdentity);
 
-  const legacyUserId = String(canonicalIdentity.profile?.legacyUserId || '').trim();
-  if (canonicalIdentity.email === UserStore.OWNER_EMAIL && !legacyUserId) {
+  const identity = UserIdentity.canonicalIdentity(canonicalIdentity);
+  const legacyUserId = identity.legacyStorageUid;
+  if (canonicalIdentity.email === UserStore.OWNER_EMAIL && !identity.bridged) {
     throw cutoverError('LEGACY_OWNER_MAPPING_MISSING', 'Lidhja e sigurt me të dhënat ekzistuese të pronarit mungon.');
   }
   const user = await ensureLoginUser({
-    id:legacyUserId || canonicalIdentity.id,
+    id:identity.storageUid,
     sub:hints.sub,
     email:canonicalIdentity.email,
     name:hints.name,
