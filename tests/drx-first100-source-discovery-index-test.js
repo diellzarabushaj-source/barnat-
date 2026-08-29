@@ -1,0 +1,15 @@
+'use strict';
+const assert=require('node:assert/strict');
+const Index=require('../scripts/build-drx-first100-source-discovery-index.js');
+const x=Index.build();
+assert.equal(x.first100Count,100);
+assert.equal(x.canonicalReviewRequired,13);
+assert.equal(x.sourceDiscoveryEligible,87);
+assert.equal(x.verifiedProductSpecific,35);
+assert.equal(x.productSelectionRequired,1);
+assert.equal(x.eligibleRemaining,52);
+assert.equal(x.issueCount,0);
+assert.equal(x.complete,false);
+assert.equal(x.publicationAllowed,false);
+assert.equal(new Set(x.rows.map(r=>r.canonicalKey)).size,x.rows.length);
+console.log('DRx first-100 source discovery aggregate index passed.');
