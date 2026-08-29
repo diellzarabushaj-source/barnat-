@@ -36,7 +36,18 @@ create table if not exists public.dose_source_snapshots_v3 (
   constraint dose_source_snapshots_v3_length_check
     check (content_length is null or content_length >= 0),
   constraint dose_source_snapshots_v3_version_check
-    check (document_version is not null or document_date is not null)
+    check (document_version is not null or document_date is not null),
+  constraint dose_source_snapshots_v3_source_key_check
+    check (btrim(source_key) <> ''),
+  constraint dose_source_snapshots_v3_authority_check
+    check (btrim(authority) <> ''),
+  constraint dose_source_snapshots_v3_https_check
+    check (source_url ~ '^https://' and final_url ~ '^https://'),
+  constraint dose_source_snapshots_v3_tier_check
+    check (source_tier in (
+      'EMA','EMC','FACHINFO_DE','AEMPS_CIMA','EU_NATIONAL',
+      'KOSOVO_AKPPM','NON_EU_REGULATOR','MEDIATELY','FALLBACK'
+    ))
 );
 
 create table if not exists public.dose_source_sections_v3 (
@@ -548,7 +559,75 @@ create index if not exists dose_review_queue_v3_open_idx
 create index if not exists dose_publication_events_v3_rule_idx
   on public.dose_publication_events_v3(rule_id, created_at desc);
 
--- Database publication transition gate.
+-- Database publication transition gates.
+-- Products may be published only from source tiers allowed by the DRx publication policy.
+create or replace function private.drx_enforce_product_publication_v3()
+returns trigger
+language plpgsql
+security invoker
+set search_path = pg_catalog, public, private
+as $$
+declare
+  snapshot_tier text;
+  snapshot_source_key text;
+  snapshot_version text;
+  snapshot_date date;
+begin
+  if new.editorial_status <> 'published' then
+    return new;
+  end if;
+
+  if tg_op = 'UPDATE' then
+    if old.editorial_status = 'published' then
+      return new;
+    end if;
+  end if;
+
+  select s.source_tier, s.source_key, s.document_version, s.document_date
+    into snapshot_tier, snapshot_source_key, snapshot_version, snapshot_date
+  from public.dose_source_snapshots_v3 s
+  where s.snapshot_id = new.source_snapshot_id;
+
+  if not found then
+    raise exception 'DRX_V3_PRODUCT_PUBLICATION_BLOCKED: source snapshot missing';
+  end if;
+
+  if snapshot_tier not in ('EMA','EMC','AEMPS_CIMA','EU_NATIONAL','KOSOVO_AKPPM') then
+    raise exception 'DRX_V3_PRODUCT_PUBLICATION_BLOCKED: source tier is not publication eligible';
+  end if;
+
+  if snapshot_source_key is distinct from new.source_key then
+    raise exception 'DRX_V3_PRODUCT_PUBLICATION_BLOCKED: source key does not match snapshot';
+  end if;
+
+  if new.source_document_version is not null
+     and snapshot_version is distinct from new.source_document_version then
+    raise exception 'DRX_V3_PRODUCT_PUBLICATION_BLOCKED: source version does not match snapshot';
+  end if;
+
+  if new.source_document_date is not null
+     and snapshot_date is distinct from new.source_document_date then
+    raise exception 'DRX_V3_PRODUCT_PUBLICATION_BLOCKED: source date does not match snapshot';
+  end if;
+
+  return new;
+end
+$$;
+
+revoke all on function private.drx_enforce_product_publication_v3()
+from public, anon, authenticated;
+
+drop trigger if exists dose_products_v3_publication_guard
+on public.dose_products_v3;
+
+create trigger dose_products_v3_publication_guard
+before insert or update
+on public.dose_products_v3
+for each row
+execute function private.drx_enforce_product_publication_v3();
+
+-- Rules require an official publication-eligible snapshot and a persisted, successfully
+-- extracted SmPC section 4.2, in addition to binding/legacy/review/safety gates.
 create or replace function private.drx_enforce_rule_publication_v3()
 returns trigger
 language plpgsql
@@ -559,10 +638,20 @@ declare
   verified_binding_count integer;
   clean_comparison_count integer;
   unresolved_review_count integer;
+  snapshot_tier text;
+  snapshot_source_key text;
+  snapshot_version text;
+  snapshot_date date;
+  source_section_verified boolean;
 begin
-  if new.editorial_status <> 'published'
-     or old.editorial_status = 'published' then
+  if new.editorial_status <> 'published' then
     return new;
+  end if;
+
+  if tg_op = 'UPDATE' then
+    if old.editorial_status = 'published' then
+      return new;
+    end if;
   end if;
 
   if new.safety_validation_status <> 'passed' then
@@ -571,6 +660,46 @@ begin
 
   if new.source_document_version is null and new.source_document_date is null then
     raise exception 'DRX_V3_PUBLICATION_BLOCKED: source version/date missing';
+  end if;
+
+  select s.source_tier, s.source_key, s.document_version, s.document_date
+    into snapshot_tier, snapshot_source_key, snapshot_version, snapshot_date
+  from public.dose_source_snapshots_v3 s
+  where s.snapshot_id = new.source_snapshot_id;
+
+  if not found then
+    raise exception 'DRX_V3_PUBLICATION_BLOCKED: source snapshot missing';
+  end if;
+
+  if snapshot_tier not in ('EMA','EMC','AEMPS_CIMA','EU_NATIONAL','KOSOVO_AKPPM') then
+    raise exception 'DRX_V3_PUBLICATION_BLOCKED: source tier is not publication eligible';
+  end if;
+
+  if snapshot_source_key is distinct from new.source_key then
+    raise exception 'DRX_V3_PUBLICATION_BLOCKED: source key does not match snapshot';
+  end if;
+
+  if new.source_document_version is not null
+     and snapshot_version is distinct from new.source_document_version then
+    raise exception 'DRX_V3_PUBLICATION_BLOCKED: source version does not match snapshot';
+  end if;
+
+  if new.source_document_date is not null
+     and snapshot_date is distinct from new.source_document_date then
+    raise exception 'DRX_V3_PUBLICATION_BLOCKED: source date does not match snapshot';
+  end if;
+
+  select exists (
+    select 1
+    from public.dose_source_sections_v3 s
+    where s.snapshot_id = new.source_snapshot_id
+      and s.section_code = '4.2'
+      and s.extraction_status = 'extracted'
+      and s.section_sha256 ~ '^[0-9a-f]{64}$'
+  ) into source_section_verified;
+
+  if source_section_verified is distinct from true then
+    raise exception 'DRX_V3_PUBLICATION_BLOCKED: verified SmPC section 4.2 artifact missing';
   end if;
 
   select count(*)::integer
@@ -638,7 +767,7 @@ drop trigger if exists dose_rules_v3_publication_guard
 on public.dose_rules_v3;
 
 create trigger dose_rules_v3_publication_guard
-before update of editorial_status
+before insert or update
 on public.dose_rules_v3
 for each row
 execute function private.drx_enforce_rule_publication_v3();
@@ -671,7 +800,7 @@ revoke all privileges on table
   public.dose_legacy_comparisons_v3,
   public.dose_review_queue_v3,
   public.dose_publication_events_v3
-from anon, authenticated;
+from public, anon, authenticated;
 
 -- Public application reads: published concepts/products/rules and verified bindings only.
 grant select on table public.dose_indication_concepts_v3 to anon, authenticated;
