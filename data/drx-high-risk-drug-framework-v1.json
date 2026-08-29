@@ -1,6 +1,6 @@
 {
   "schemaVersion": "drx-high-risk-drug-framework-v1",
-  "status": "source_anchored_foundation_complete_repository",
+  "status": "source_and_section_hash_anchored_foundation_repository",
   "publicationAllowed": false,
   "classes": [
     "insulin",
@@ -23,7 +23,11 @@
     "source_document_date_or_version",
     "exact_product_binding",
     "clinical_context_complete",
-    "reviewer_identity_and_timestamp"
+    "reviewer_identity_and_timestamp",
+    "exact_smpc_section_4_2_sha256",
+    "source_snapshot_equals_evidence_hash",
+    "verified_adjustment_reviewer_audit",
+    "runtime_provenance_revalidation"
   ],
   "optionalControls": [
     "therapeutic_drug_monitoring",
@@ -32,7 +36,7 @@
     "body_surface_area",
     "adjusted_body_weight"
   ],
-  "next": "persist source-anchored class controls in V3 review/safety layers; high-risk remains manual-review-only even when deterministic calculations are available",
+  "next": "persist high-risk controls only on exact product-specific V3 rules with pinned snapshot + SmPC 4.2 hash; all classes remain manual-review-only",
   "classControls": {
     "insulin": {
       "sourceKey": "emc-2376-smpc",
