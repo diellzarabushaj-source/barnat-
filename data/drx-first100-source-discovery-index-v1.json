@@ -1,20 +1,20 @@
 {
   "schemaVersion": "drx-first100-source-discovery-index-v1",
-  "generatedAt": "2026-08-29T10:42:19.665Z",
+  "generatedAt": "2026-08-29T10:45:31.048Z",
   "first100Count": 100,
   "canonicalReviewRequired": 14,
   "sourceDiscoveryEligible": 89,
-  "verifiedProductSpecific": 81,
-  "verifiedCanonicalSubstances": 81,
+  "verifiedProductSpecific": 82,
+  "verifiedCanonicalSubstances": 82,
   "sourceAuthorityCounts": {
     "EMC": 55,
     "AEMPS_CIMA": 12,
     "EU_NATIONAL": 13,
-    "KOSOVO_AKPPM": 1
+    "KOSOVO_AKPPM": 2
   },
   "productSelectionRequired": 1,
-  "eligibleRemaining": 8,
-  "sourceLookupRemaining": 7,
+  "eligibleRemaining": 7,
+  "sourceLookupRemaining": 6,
   "issueCount": 0,
   "complete": false,
   "repositoryComplete": false,
@@ -1960,6 +1960,57 @@
       ],
       "publicationAllowed": false,
       "wave": "drx-first100-source-discovery-wave-p-v1.json"
+    },
+    {
+      "canonicalKey": "clotrimazolehexamidinediisetionateprednisolone",
+      "canonicalName": "Clotrimazole + Hexamidine diisetionate + Prednisolone",
+      "status": "verified_product_specific",
+      "sourceTier": "KOSOVO_AKPPM",
+      "authority": "Kosovo Medicines Agency (AKPPM)",
+      "sourceKey": "akppm-imazol-comp-ma-0323-2023-plus-pil-2024-06",
+      "url": "https://akppm.rks-gov.net/CMS/Medias/Lista%20zyrtare%20e%20cmimeve%20te%20produkteve%20medicinale.pdf",
+      "productRegistryUrl": "https://akppm.rks-gov.net/CMS/Medias/Lista%20zyrtare%20e%20cmimeve%20te%20produkteve%20medicinale.pdf",
+      "productName": "Imazol Comp. Creme",
+      "registrationNumber": "MA-0323/06/10/2023",
+      "atcCode": "D07AA03",
+      "documentDate": "2024-06",
+      "documentDatePrecision": "month",
+      "section41Present": true,
+      "section42Present": true,
+      "currentRegistryCrosscheck": {
+        "checkedDate": "2026-08-29",
+        "activeSubstances": [
+          "clotrimazole",
+          "prednisolone acetate",
+          "hexamidine diisetionate"
+        ],
+        "strengths": [
+          "10 mg/g",
+          "5 mg/g",
+          "2.5 mg/g"
+        ],
+        "dosageForm": "cream",
+        "pack": "20 g tube",
+        "marketingAuthorisationHolder": "Laboratoires Bailleul S.A., Luxembourg",
+        "manufacturer": "Thepenier Pharma & Cosmetics, France"
+      },
+      "sectionTextCrosscheck": {
+        "source": "Laboratoires Bailleul patient information service",
+        "url": "https://www.patienteninfo-service.de/a-z-liste/i/imazol-comp-creme",
+        "leafletRevision": "2024-06",
+        "indicationFinding": "fungal skin infections with accompanying bacterial infection and inflammatory skin changes",
+        "doseFinding": "apply twice daily morning and evening; inflammatory phase usually no longer than one week"
+      },
+      "reviewFlags": [
+        "topical_route_specific",
+        "fixed_combination",
+        "corticosteroid_duration_limit",
+        "pediatric_large_area_caution",
+        "patient_leaflet_crosscheck",
+        "clinical_review_required"
+      ],
+      "publicationAllowed": false,
+      "wave": "drx-first100-source-discovery-wave-q-v1.json"
     }
   ]
 }
