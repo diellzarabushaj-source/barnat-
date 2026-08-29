@@ -1,6 +1,6 @@
 {
   "schemaVersion": "drx-dosierung-master-plan-status-v1",
-  "updatedAt": "2026-08-29T03:59:58.180Z",
+  "updatedAt": "2026-08-29T04:03:21.150Z",
   "officialPlan": "DRx Dosierung phases 0-32",
   "databaseBlocker": {
     "active": true,
@@ -47,7 +47,7 @@
     {
       "id": 3,
       "name": "Source Discovery",
-      "status": "IN_PROGRESS_FIRST100_47_PRODUCT_SOURCES_VERIFIED",
+      "status": "IN_PROGRESS_FIRST100_54_PRODUCT_SOURCES_VERIFIED",
       "evidence": [
         "data/drx-dose-source-map-v1.json",
         "ibuprofen pilot with official eMC oral+IV SmPCs",
@@ -63,9 +63,12 @@
         "first-100 source discovery verified product total: 37",
         "data/drx-first100-source-discovery-wave-d-v1.json",
         "10 additional live product-specific SmPCs verified in wave D",
-        "first-100 source discovery verified product total: 47"
+        "first-100 source discovery verified product total: 47",
+        "data/drx-first100-source-discovery-wave-e-v1.json",
+        "7 additional live eMC product-specific SmPCs verified in wave E",
+        "first-100 source discovery verified product total: 54"
       ],
-      "next": "continue exact official source discovery for remaining 39 eligible rows; do not source-discover 13 canonical-review rows"
+      "next": "continue exact official source discovery for remaining 32 eligible rows; keep EMA PDF section checks pending when screenshots cannot be obtained"
     },
     {
       "id": 4,
@@ -494,7 +497,7 @@
     "first100ProductionEligibleRows": 0,
     "first100ProductionDiscoveryAllowed": false,
     "first100SourceDiscoveryEligible": 87,
-    "first100VerifiedProductSources": 47,
+    "first100VerifiedProductSources": 54,
     "first100ProductSelectionRequired": 1,
     "legacyMirrorPrecheck": {
       "present": 2,
@@ -503,6 +506,6 @@
       "bindings": 4,
       "liveCompared": false
     },
-    "first100SourceDiscoveryRemaining": 39
+    "first100SourceDiscoveryRemaining": 32
   }
 }
