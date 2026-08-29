@@ -71,7 +71,7 @@
           "formulation": "film-coated tablet",
           "route": "PO",
           "strength": "400 mg",
-          "documentDate": "2026-08-28",
+          "documentDate": null,
           "hasDoseSection": true,
           "sectionsExpected": [
             "4.1",
@@ -87,7 +87,9 @@
           "productSpecific": true,
           "substanceMatch": true,
           "productMatch": true,
-          "status": "discovered_cross_check"
+          "status": "discovered_requires_document_version",
+          "documentVersion": null,
+          "discoveredAt": "2026-08-29"
         },
         {
           "sourceKey": "cima-82808-ft",
@@ -98,7 +100,7 @@
           "formulation": "solution for infusion",
           "route": "IV",
           "strength": "400 mg/100 mL",
-          "documentDate": "2026-08-29",
+          "documentDate": null,
           "hasDoseSection": true,
           "sectionsExpected": [
             "4.1",
@@ -114,7 +116,9 @@
           "productSpecific": true,
           "substanceMatch": true,
           "productMatch": true,
-          "status": "discovered_cross_check"
+          "status": "discovered_requires_document_version",
+          "documentVersion": null,
+          "discoveredAt": "2026-08-29"
         }
       ],
       "legacyDraft": {
