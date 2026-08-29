@@ -6,7 +6,8 @@
     "drugsRows": 4015,
     "substanceConcepts": 1111,
     "productIngredients": 4704,
-    "query": "sql/drx-batch2-binding-feasibility.sql"
+    "query": "sql/drx-batch2-binding-feasibility.sql",
+    "routeMeasuredAt": "2026-08-29T22:22:00.000Z"
   },
   "finding": "Batch 2 source discovery selected UK eMC SmPCs on document quality alone, without checking that the strength each SmPC describes is actually dispensed in Kosovo. Only 12 of 25 substances have a Kosovo product at the SmPC's exact strength, so exact product binding cannot be completed for the remaining 13 no matter how good the extraction is.",
   "rule": "Never bind a rule derived from one strength to a product of a different strength. dose_products_v3 carries numerator_value/denominator_value and the dose engine calculates from them, so a cross-strength binding produces a wrong dose rather than a missing one.",
@@ -16,80 +17,107 @@
     "bindable": 12,
     "blocked": 13,
     "blockedByCanonicalKey": 4,
-    "blockedByStrengthAbsent": 9
+    "blockedByStrengthAbsent": 9,
+    "exactStrengthProducts": 34,
+    "bindableProducts": 32,
+    "routeExcludedProducts": 2
   },
   "bindable": [
     {
       "canonicalKey": "ramipril",
       "smpcStrength": "5 mg",
       "kosovoProducts": 22,
-      "exactStrengthProducts": 5
+      "exactStrengthProducts": 5,
+      "bindableProducts": 5,
+      "routeExcludedProducts": 0
     },
     {
       "canonicalKey": "carvedilol",
       "smpcStrength": "25 mg",
       "kosovoProducts": 13,
-      "exactStrengthProducts": 4
+      "exactStrengthProducts": 4,
+      "bindableProducts": 4,
+      "routeExcludedProducts": 0
     },
     {
       "canonicalKey": "loratadine",
       "smpcStrength": "10 mg",
       "kosovoProducts": 8,
-      "exactStrengthProducts": 4
+      "exactStrengthProducts": 4,
+      "bindableProducts": 4,
+      "routeExcludedProducts": 0
     },
     {
       "canonicalKey": "metronidazole",
       "smpcStrength": "500 mg",
       "kosovoProducts": 26,
-      "exactStrengthProducts": 4
+      "exactStrengthProducts": 4,
+      "bindableProducts": 4,
+      "routeExcludedProducts": 0
     },
     {
       "canonicalKey": "pantoprazole",
       "smpcStrength": "40 mg",
       "kosovoProducts": 5,
-      "exactStrengthProducts": 4
+      "exactStrengthProducts": 4,
+      "bindableProducts": 2,
+      "routeExcludedProducts": 2
     },
     {
       "canonicalKey": "clopidogrel",
       "smpcStrength": "75 mg",
       "kosovoProducts": 3,
-      "exactStrengthProducts": 3
+      "exactStrengthProducts": 3,
+      "bindableProducts": 3,
+      "routeExcludedProducts": 0
     },
     {
       "canonicalKey": "naproxen",
       "smpcStrength": "500 mg",
       "kosovoProducts": 4,
-      "exactStrengthProducts": 3
+      "exactStrengthProducts": 3,
+      "bindableProducts": 3,
+      "routeExcludedProducts": 0
     },
     {
       "canonicalKey": "prednisolone",
       "smpcStrength": "5 mg",
       "kosovoProducts": 6,
-      "exactStrengthProducts": 3
+      "exactStrengthProducts": 3,
+      "bindableProducts": 3,
+      "routeExcludedProducts": 0
     },
     {
       "canonicalKey": "amlodipine",
       "smpcStrength": "5 mg",
       "kosovoProducts": 13,
-      "exactStrengthProducts": 1
+      "exactStrengthProducts": 1,
+      "bindableProducts": 1,
+      "routeExcludedProducts": 0
     },
     {
       "canonicalKey": "aspirin",
       "smpcStrength": "75 mg",
       "kosovoProducts": 1,
-      "exactStrengthProducts": 1
+      "exactStrengthProducts": 1,
+      "bindableProducts": 1,
+      "routeExcludedProducts": 0
     },
     {
       "canonicalKey": "cefalexin",
       "smpcStrength": "250 mg",
       "kosovoProducts": 2,
-      "exactStrengthProducts": 1
+      "exactStrengthProducts": 1,
+      "bindableProducts": 1,
+      "routeExcludedProducts": 0
     },
     {
       "canonicalKey": "doxycycline",
       "smpcStrength": "100 mg",
       "kosovoProducts": 1,
-      "exactStrengthProducts": 1
+      "exactStrengthProducts": 1,
+      "bindableProducts": 1,
+      "routeExcludedProducts": 0
     }
   ],
   "blocked": [
@@ -186,5 +214,6 @@
     }
   ],
   "next": "Three fixes, not one. (1) diclofenac is source-proven and needs only a clinical sign-off on the prepared equivalence proposal. (2) bisoprolol, cetirizine and levothyroxine are blocked on archiving SmPC section 2, which requires changing the parser and the section_code constraint together. (3) The nine strength blocks need source discovery rerun against strengths the Kosovo registry actually carries; no equivalence work reaches them. Binding stays empty for all thirteen until their own fix lands.",
-  "saltEvidenceFinding": "Only one of the four canonical-key blocks can be closed with archived evidence. The salt and strength basis is declared in SmPC section 2, and the pipeline cannot reach it: lib/smpc-parser.js parses 4.1-4.9 only, and dose_source_sections_v3 constrains section_code to ^4\\.[1-9]$ so section 2 could not be stored even if parsed. Proposals recorded in data/drx-batch2-salt-equivalence-proposals-v1.json."
+  "saltEvidenceFinding": "Only one of the four canonical-key blocks can be closed with archived evidence. The salt and strength basis is declared in SmPC section 2, and the pipeline cannot reach it: lib/smpc-parser.js parses 4.1-4.9 only, and dose_source_sections_v3 constrains section_code to ^4\\.[1-9]$ so section 2 could not be stored even if parsed. Proposals recorded in data/drx-batch2-salt-equivalence-proposals-v1.json.",
+  "routeRule": "Never bind a rule derived from an oral SmPC to a product of another route, and never across release profiles. Section 4.2 of an oral label states an oral regimen, so a registry product at the same strength given intravenously is a different medicine for dosing purposes; a prolonged-release regimen is likewise not interchangeable with an immediate-release one. Measured live, 34 exact-strength matches are 32 route-compatible and 2 route-excluded, both pantoprazole 40 mg parenteral forms that strength-only matching would have bound to oral 4.2 dosing."
 }
