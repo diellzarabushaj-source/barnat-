@@ -1,6 +1,6 @@
 {
   "schemaVersion": "drx-dosierung-master-plan-status-v1",
-  "updatedAt": "2026-08-29T12:28:11.005Z",
+  "updatedAt": "2026-08-29T12:30:13.000Z",
   "officialPlan": "DRx Dosierung phases 0-32",
   "databaseBlocker": {
     "active": true,
@@ -635,7 +635,7 @@
     "reviewQueueItems": 25,
     "highPriorityReviewItems": 21,
     "archiveWorkflowReady": true,
-    "archiveWorkflowRunObserved": false,
+    "archiveWorkflowRunObserved": true,
     "batch2SourceMetadataVerified": 25,
     "batch2ParityMismatchCount": 0,
     "archiveHashVerifiedCount": 0,
@@ -692,7 +692,37 @@
     "first100EffectiveSourceDiscoveryEligible": 87,
     "first100SourceLookupRemaining": 0,
     "supabaseDataPlaneDown": true,
-    "archiveBlockedByNetworkPolicy": true
+    "archiveBlockedByNetworkPolicy": true,
+    "archiveCiEvidence": {
+      "workflow": ".github/workflows/drx-batch2-source-archive.yml",
+      "runId": 33251672706,
+      "runNumber": 8,
+      "runUrl": "https://github.com/diellzarabushaj-source/barnat-/actions/runs/33251672706",
+      "headSha": "cc157788ef421b414dce9ef00d2dece9d41242ec",
+      "completedAt": "2026-08-29T12:09:45Z",
+      "conclusion": "success",
+      "extraction": {
+        "targetCount": 25,
+        "extractedCount": 25,
+        "failedCount": 0,
+        "complete": true
+      },
+      "verification": {
+        "expectedCount": 25,
+        "rowCount": 25,
+        "uniqueHashes": 25,
+        "sectionHashVerifiedCount": 25,
+        "rawFiles": 25,
+        "metadataFiles": 25,
+        "publicationAllowed": false
+      },
+      "artifactId": 9714588796,
+      "artifactBytes": 1067063,
+      "artifactRetentionDays": 90,
+      "note": "Fetches are real: build-drx-batch2-extraction-index.js calls Archive.fetchSourceSnapshot, which issues an HTTPS GET via globalThis.fetch against a policy-validated authoritative tier URL. CI egress permits the EMA/eMC/AEMPS hosts that this workspace is denied."
+    },
+    "archiveEvidenceLocation": "ci_artifact_only_not_committed",
+    "archiveCiSectionHashVerifiedCount": 25
   },
   "sourceNetworkBlocker": {
     "active": true,
@@ -710,6 +740,7 @@
       "batch2_normalization_not_ready"
     ],
     "rule": "Do not fabricate or hand-author archive artifacts to satisfy the hash gate. Batch 2 stays 0 normalization-ready until 25/25 real archive artifacts are fetched and independently rehashed.",
-    "operatorCheck": "Allow the EMA/eMC/AEMPS hosts in the environment network policy (or run the archive workflow from an environment that already permits them), then rerun the archive workflow and verifier."
+    "operatorCheck": "Allow the EMA/eMC/AEMPS hosts in the environment network policy (or run the archive workflow from an environment that already permits them), then rerun the archive workflow and verifier.",
+    "ciExemption": "GitHub Actions runners are not behind this workspace egress policy: run 8 of drx-batch2-source-archive fetched and hash-verified 25/25 sources on 2026-08-29. The blocker is therefore workspace-scoped, and the remaining gap is that CI evidence is not fed back into a repo-readable gate."
   }
 }
