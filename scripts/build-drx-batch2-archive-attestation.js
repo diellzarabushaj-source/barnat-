@@ -77,6 +77,15 @@ for (const row of index.rows) {
     fail(`${where}: finalUrl must be https.`);
   }
 
+  // Section 2 carries the salt and strength basis. It is deliberately optional:
+  // it is not needed to publish a dose, and demanding it would turn a parser
+  // miss on an unusual label layout into a failed archive run. Carrying it as
+  // null instead makes a miss countable rather than invisible.
+  const section2 = row.sectionSha256?.['2'] || null;
+  if (section2 !== null && !SHA256_RE.test(String(section2))) {
+    fail(`${where}: section 2 hash is present but is not a sha256 digest.`);
+  }
+
   rows.push({
     canonicalKey: row.canonicalKey,
     canonicalName: row.canonicalName,
@@ -90,11 +99,14 @@ for (const row of index.rows) {
     contentLength: row.contentLength,
     snapshotId: row.snapshotId,
     rawSha256: row.rawSha256,
+    section2Sha256: section2,
     section41Sha256: row.section41Sha256,
     section42Sha256: row.section42Sha256,
     parserSchemaVersion: row.parserSchemaVersion,
   });
 }
+
+const section2Count = rows.filter(r => r.section2Sha256).length;
 
 const uniqueRaw = new Set(rows.map(r => r.rawSha256));
 if (uniqueRaw.size !== rows.length) {
@@ -153,6 +165,11 @@ const attestation = {
     uniqueRawSha256: uniqueRaw.size,
     section41HashCount: rows.length,
     section42HashCount: rows.length,
+    // Reported rather than required: section 2 proves salt basis, it does not
+    // gate publication. A shortfall here names how many labels the composition
+    // parser could not read.
+    section2HashCount: section2Count,
+    section2Missing: rows.length - section2Count,
   },
   rowsDigest,
   // Evidence only. Applying this never publishes anything on its own: rules
@@ -163,7 +180,10 @@ const attestation = {
 };
 
 if (dryRun && !inCi) {
-  console.log(JSON.stringify({ ok: true, dryRun: true, rows: rows.length, rowsDigest }, null, 2));
+  console.log(JSON.stringify({
+    ok: true, dryRun: true, rows: rows.length, rowsDigest,
+    section2HashCount: section2Count,
+  }, null, 2));
   process.exit(0);
 }
 
@@ -191,6 +211,8 @@ console.log(JSON.stringify({
   output: path.relative(ROOT, outputPath),
   rows: rows.length,
   rowsDigest,
+  section2HashCount: section2Count,
+  section2Missing: rows.length - section2Count,
   runUrl: ci.runUrl || null,
   trackerUpdated,
 }, null, 2));

@@ -1,10 +1,10 @@
 {
   "schemaVersion": "drx-batch2-salt-equivalence-proposals-v1",
-  "preparedAt": "2026-08-29T21:37:01.000Z",
+  "preparedAt": "2026-08-29T21:48:07.000Z",
   "status": "PROPOSED_AWAITING_CLINICAL_REVIEW",
   "targetTable": "public.substance_equivalence_reviewed_v1",
   "rule": "These are proposals, not decisions. substance_equivalence_reviewed_v1 records who decided and on what evidence, so nothing here may be inserted under a review identifier until a person actually reviews it. A base-to-salt mapping asserts that the strength on the label means the same quantity in both, which is a dosing claim.",
-  "evidenceBasis": "Archived SmPC sections in dose_source_sections_v3, hash-pinned to the CI attestation. A proposal is only 'source_proven' when the archived section names the salt itself.",
+  "evidenceBasis": "Archived SmPC sections in dose_source_sections_v3. A proposal is only source_proven when the archived section names the salt itself, and it is anchored on the section sha256 rather than the snapshot id, because snapshot identity is not stable across fetches.",
   "proposals": [
     {
       "sourceKey": "diclofenac",
@@ -12,7 +12,7 @@
       "confidence": "source_proven",
       "quote": "Adults: One 100 mg diclofenac sodium prolonged-release tablet daily",
       "quotedFrom": "section 4.2",
-      "snapshotId": "446826fb66295c443bbef21854f8f9b712a2a5251954ff1b014a9e28dc014979",
+      "snapshotId": "184fd12528454199630b045f02bb95a867e5d0c9a2bae8f46ac3458ea6732c43",
       "evidenceUrls": [
         "https://www.medicines.org.uk/emc/product/2662/smpc"
       ],
@@ -21,7 +21,9 @@
         "pharmaceuticalForm": "Prolonged-release tablet",
         "products": 6
       },
-      "note": "Strength, salt and release form all match, and the salt is named by the archived section rather than inferred. The form check matters here: the same 100 mg also exists as suppository, modified-release and gastro-resistant products, and a prolonged-release rule must not bind to those."
+      "note": "Strength, salt and release form all match, and the salt is named by the archived section rather than inferred. The form check matters here: the same 100 mg also exists as suppository, modified-release and gastro-resistant products, and a prolonged-release rule must not bind to those.",
+      "quotedFromSectionSha256": "9775131c8d96c7aeaa370b9e78e72f8dca14993051b6ceb1f4faa8fcafcd33be",
+      "snapshotIdNote": "Traceability only. snapshot_id changes on every fetch (see data/drx-snapshot-identity-instability-v1.json); quotedFromSectionSha256 is the stable anchor."
     }
   ],
   "blockedProposals": [

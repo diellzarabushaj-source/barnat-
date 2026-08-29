@@ -86,10 +86,19 @@ assert.equal(attestation.rows.length, EXPECTED_ROWS);
 assert.equal(attestation.totals.rows, EXPECTED_ROWS);
 
 const rawDigests = new Set();
+let section2Rows = 0;
 for (const row of attestation.rows) {
   const where = row.canonicalKey || row.sourceKey || '(unknown row)';
   for (const field of ['rawSha256', 'snapshotId', 'section41Sha256', 'section42Sha256']) {
     assert.match(String(row[field] || ''), SHA256_RE, `${where}: ${field} must be a sha256 digest.`);
+  }
+  // Section 2 proves salt basis but does not gate publication, so it is
+  // optional. When present it must still be a real digest - a placeholder
+  // would be worse than an absence, because it would look like evidence.
+  if (row.section2Sha256 !== null && row.section2Sha256 !== undefined) {
+    assert.match(String(row.section2Sha256), SHA256_RE,
+      `${where}: section2Sha256 is present but is not a sha256 digest.`);
+    section2Rows += 1;
   }
   assert.equal(row.snapshotId, row.rawSha256, `${where}: snapshotId must equal rawSha256.`);
   assert.ok(String(row.finalUrl || '').startsWith('https://'), `${where}: finalUrl must be https.`);
@@ -99,6 +108,16 @@ for (const row of attestation.rows) {
 assert.equal(rawDigests.size, EXPECTED_ROWS, 'every archived source must hash distinctly.');
 assert.equal(attestation.totals.uniqueRawSha256, EXPECTED_ROWS);
 assert.equal(attestation.totals.section42HashCount, EXPECTED_ROWS);
+
+// The section 2 tally must match the rows rather than being asserted on its
+// own, so a miss cannot be hidden by editing a counter. Attestations produced
+// before section 2 was carried simply have no tally.
+if (attestation.totals.section2HashCount !== undefined) {
+  assert.equal(attestation.totals.section2HashCount, section2Rows,
+    'section2HashCount must equal the number of rows carrying a section 2 hash.');
+  assert.equal(attestation.totals.section2Missing, EXPECTED_ROWS - section2Rows,
+    'section2Missing must be the remainder, so a parser shortfall stays visible.');
+}
 
 // Recomputing the digest catches edits made to the rows after CI wrote them.
 const recomputed = crypto.createHash('sha256')
