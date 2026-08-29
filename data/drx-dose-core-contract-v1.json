@@ -1,6 +1,6 @@
 {
   "schemaVersion": "drx-dose-core-contract-v1",
-  "status": "shared_core_runtime_hardened_repository",
+  "status": "adjustment_aware_shared_core_runtime_hardened_repository",
   "deterministic": true,
   "supportedMethods": [
     "fixed_dose",
@@ -31,19 +31,26 @@
     "fixed_per_day_requires_explicit_times_per_day_for_per_dose",
     "max_daily_to_per_dose_cap_uses_only_explicit_max_doses_24h",
     "renal_hepatic_cardiac_adjustments_never_inferred_inside_base_core",
-    "manual_or_specialist_rules_do_not_auto_calculate"
+    "manual_or_specialist_rules_do_not_auto_calculate",
+    "required_renal_or_hepatic_adjustment_must_have_exact_verified_match_before_base_calculation",
+    "avoid_contraindicated_specialist_review_adjustments_never_auto_calculate",
+    "two_simultaneous_dose_changing_renal_hepatic_adjustments_require_manual_review",
+    "one_dose_changing_adjustment_may_apply_only_when_other_required_domain_is_no_adjustment",
+    "invalid_adjustment_provenance_blocks_calculation"
   ],
   "compatibility": [
     "frontend",
     "backend",
     "golden_case_tests"
   ],
-  "next": "load shared core before registry calculation; delegate V3/registry math to it; retain pediatric legacy adapter only until sourced V3 rules replace typed pediatric fields",
+  "next": "after live V3 rows exist, route V3 published rules through adjustment-aware runtime; preserve base dose-core as deterministic math layer",
   "runtimeFiles": {
     "canonical": "dose-core.js",
     "serverAdapter": "lib/dose-core.js",
     "adjustmentEngine": "lib/dose-adjustment-engine.js",
     "frontendTarget": "registry-dose-calculator.js delegates to DRxDoseCore",
-    "pediatricLegacy": "legacy typed pediatric adapter retained until V3 migration; not a second V3 source of truth"
-  }
+    "pediatricLegacy": "legacy typed pediatric adapter retained until V3 migration; not a second V3 source of truth",
+    "adjustmentAwareOrchestrator": "lib/dose-runtime-engine.js"
+  },
+  "updatedAt": "2026-08-29T12:33:36.201Z"
 }
