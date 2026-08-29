@@ -8,7 +8,8 @@ const { execFileSync } = require('node:child_process');
 
 const root = path.resolve(__dirname, '..');
 const read = file => fs.readFileSync(path.join(root, file), 'utf8');
-const syncPath = path.join(root, 'lib', 'drive-neon-sync.js');
+const syncPath = path.join(root, 'lib', 'drive-supabase-sync.js');
+const legacySyncPath = path.join(root, 'lib', 'drive-neon-sync.js');
 const apiPath = path.join(root, 'api', 'drive-sync.js');
 const appsScriptPath = path.join(root, 'google-apps-script', 'medindex-drive-neon-sync.gs');
 const standalonePath = path.join(root, 'google-apps-script', 'medindex-current-sync-standalone.gs');
@@ -32,13 +33,15 @@ try {
   fs.rmSync(tempDirectory, { recursive:true, force:true });
 }
 
-const source = read('lib/drive-neon-sync.js');
+const source = read('lib/drive-supabase-sync.js');
+const legacySource = read('lib/drive-neon-sync.js');
 const api = read('api/drive-sync.js');
 const appsScript = read('google-apps-script/medindex-drive-neon-sync.gs');
 const standalone = read('google-apps-script/medindex-current-sync-standalone.gs');
 const bootstrap = read('google-apps-script/medindex-secret-bootstrap.gs');
 const envExample = read('.env.example');
-const Sync = require('../lib/drive-neon-sync.js');
+const Sync = require('../lib/drive-supabase-sync.js');
+const LegacySync = require('../lib/drive-neon-sync.js');
 
 assert.equal(Object.keys(Sync.SOURCE_CONFIGS).length, 9);
 assert.ok(Sync.SOURCE_CONFIGS['1T7XsfkXLQfEomFL4DmXoA8PheiR6s3Qmu36hTqklOMo|KARTELA_BARNAVE']);
@@ -186,4 +189,4 @@ assert.equal(icd.code, 'R51');
 assert.equal(icd.title_sq, 'Dhimbje koke');
 assert.deepEqual(icd.tags, ['kokë', 'dhimbje']);
 
-console.log('Google Drive to Neon incremental sync and bootstrap security contract passed.');
+console.log('Google Drive to Supabase incremental sync and bootstrap security contract passed.');
