@@ -1,0 +1,62 @@
+{
+  "schemaVersion": "drx-dose-pilot-v1",
+  "pilotKey": "omeprazole",
+  "updatedAt": "2026-08-29",
+  "status": "in_review_unbound",
+  "publicationAllowed": false,
+  "ruleScope": "representative_not_exhaustive",
+  "canonicalSubstance": {
+    "key": "omeprazole",
+    "name": "Omeprazole"
+  },
+  "sourceSet": [
+    {
+      "sourceKey": "emc-4895-smpc",
+      "url": "https://www.medicines.org.uk/emc/product/4895/smpc",
+      "tier": "EMC",
+      "documentDate": "2024-07-25",
+      "section": "4.2",
+      "formulation": "gastro-resistant capsule",
+      "strength": "20 mg",
+      "section42Verified": true
+    }
+  ],
+  "extractedRuleCandidates": [
+    {
+      "candidateKey": "emc-4895-duodenal-ulcer-adult",
+      "ruleKey": "omeprazole|duodenal-ulcer|adult|po|20mg",
+      "sourceKey": "emc-4895-smpc",
+      "sourceSection": "4.2",
+      "indicationKey": "duodenal-ulcer",
+      "indicationTerms": [
+        "active duodenal ulcer"
+      ],
+      "patientGroup": "adult_only",
+      "calculationMethod": "fixed_dose",
+      "doseMinValue": 20,
+      "doseMaxValue": 20,
+      "doseUnit": "mg",
+      "frequencyMode": "times_per_day",
+      "timesPerDay": 1,
+      "durationMode": "fixed_days",
+      "durationMinDays": 14,
+      "route": "PO",
+      "prn": false,
+      "requiredInputs": [
+        "age_months"
+      ],
+      "bindingStatus": "unbound",
+      "editorialStatus": "in_review"
+    }
+  ],
+  "sourceReconciliation": {
+    "status": "single_authoritative_source",
+    "autoMerge": false
+  },
+  "v2SchemaGaps": [
+    "source_snapshot_id",
+    "source_evidence_hash",
+    "required_inputs"
+  ],
+  "nextGate": "bind exact 20 mg gastro-resistant products and compare legacy indication-specific regimen"
+}
