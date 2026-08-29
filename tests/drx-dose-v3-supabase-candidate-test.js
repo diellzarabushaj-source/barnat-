@@ -31,6 +31,12 @@ assert.match(sql,/create table if not exists public\.dose_products_v3/);
 assert.match(sql,/product_id uuid not null references public\.dose_products_v3\(product_id\)/);
 assert.match(sql,/dose_renal_adjustments_v3_measure_check/);
 assert.match(sql,/dose_hepatic_adjustments_v3_measure_check/);
+assert.match(sql,/dose_renal_adjustments_v3_section_sha_check/);
+assert.match(sql,/dose_hepatic_adjustments_v3_section_sha_check/);
+assert.match(sql,/grant select on table public\.dose_renal_adjustments_v3 to anon, authenticated/);
+assert.match(sql,/grant select on table public\.dose_hepatic_adjustments_v3 to anon, authenticated/);
+assert.match(sql,/create policy dose_renal_adjustments_v3_verified_read[\s\S]*review_status = 'verified'[\s\S]*r\.editorial_status = 'published'/);
+assert.match(sql,/create policy dose_hepatic_adjustments_v3_verified_read[\s\S]*review_status = 'verified'[\s\S]*r\.editorial_status = 'published'/);
 assert.match(sql,/reviewer_id uuid/);
 assert.match(sql,/decision_reason text/);
 assert.match(sql,/source_version text/);
@@ -87,6 +93,10 @@ assert.match(sql,/join public\.dose_source_snapshots_v3 ps[\s\S]*?ps\.source_tie
 assert.match(sql,/join public\.dose_source_snapshots_v3 rs/);
 assert.match(sql,/join public\.dose_source_sections_v3 sec[\s\S]*?sec\.section_sha256 = r\.source_section_sha256/);
 assert.match(sql,/'sectionSha256', r\.source_section_sha256/);
+assert.match(sql,/renal_adjustments_json as \(/);
+assert.match(sql,/hepatic_adjustments_json as \(/);
+assert.match(sql,/'renalAdjustments', coalesce\(raj\.adjustments/);
+assert.match(sql,/'hepaticAdjustments', coalesce\(haj\.adjustments/);
 
 // The one-read RPC is allowed only as SECURITY INVOKER and must remain least-privilege.
 assert.doesNotMatch(sql,/\bsecurity\s+definer\b/i);
