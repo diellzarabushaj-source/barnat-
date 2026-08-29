@@ -1,0 +1,127 @@
+{
+  "schemaVersion": "drx-dose-golden-cases-v1",
+  "updatedAt": "2026-08-29",
+  "cases": [
+    {
+      "id": "math-fixed-400",
+      "type": "engine_math",
+      "rule": {
+        "ruleKey": "math-fixed",
+        "calculationMethod": "fixed_dose",
+        "doseMinValue": 400,
+        "doseMaxValue": 400,
+        "doseUnit": "mg",
+        "frequencyMode": "single"
+      },
+      "patient": {},
+      "expected": {
+        "outcome": "calculated",
+        "perDose": {
+          "min": 400,
+          "max": 400
+        }
+      }
+    },
+    {
+      "id": "math-kg-range-cap",
+      "type": "engine_math",
+      "rule": {
+        "ruleKey": "math-kg",
+        "calculationMethod": "dose_per_kg_per_dose",
+        "doseMinValue": 5,
+        "doseMaxValue": 10,
+        "doseUnit": "mg/kg",
+        "frequencyMode": "times_per_day",
+        "timesPerDay": 4,
+        "maxSingleDoseMg": 400,
+        "maxDailyDoseMg": 1200
+      },
+      "patient": {
+        "weightKg": 50
+      },
+      "expected": {
+        "outcome": "range",
+        "perDose": {
+          "min": 250,
+          "max": 400
+        },
+        "daily": {
+          "min": 1000,
+          "max": 1200
+        }
+      }
+    },
+    {
+      "id": "math-kg-day-no-frequency",
+      "type": "engine_math",
+      "rule": {
+        "ruleKey": "math-kg-day",
+        "calculationMethod": "dose_per_kg_per_day",
+        "doseMinValue": 20,
+        "doseMaxValue": 40,
+        "doseUnit": "mg/kg/day",
+        "frequencyMode": "manual"
+      },
+      "patient": {
+        "weightKg": 30
+      },
+      "expected": {
+        "outcome": "daily-only",
+        "daily": {
+          "min": 600,
+          "max": 1200
+        },
+        "perDose": null
+      }
+    },
+    {
+      "id": "math-bsa",
+      "type": "engine_math",
+      "rule": {
+        "ruleKey": "math-bsa",
+        "calculationMethod": "dose_per_m2_per_dose",
+        "doseMinValue": 100,
+        "doseMaxValue": 100,
+        "doseUnit": "mg/m2",
+        "frequencyMode": "single"
+      },
+      "patient": {
+        "weightKg": 60,
+        "heightCm": 165
+      },
+      "expected": {
+        "outcome": "calculated",
+        "bsaMin": 1.6,
+        "bsaMax": 1.7
+      }
+    },
+    {
+      "id": "safety-renal-hold",
+      "type": "engine_safety",
+      "rule": {
+        "ruleKey": "renal-hold",
+        "calculationMethod": "fixed_dose",
+        "doseMinValue": 100,
+        "doseMaxValue": 100,
+        "doseUnit": "mg",
+        "frequencyMode": "single",
+        "renalAdjustmentRequired": true
+      },
+      "patient": {
+        "renalFunction": "known"
+      },
+      "expected": {
+        "outcome": "manual-review"
+      }
+    },
+    {
+      "id": "pilot-ibuprofen-publication-hold",
+      "type": "publication_hold",
+      "pilotFile": "drx-pilot-ibuprofen-v1.json",
+      "expected": {
+        "publicationAllowed": false,
+        "bindingStatus": "unbound"
+      }
+    }
+  ]
+}
