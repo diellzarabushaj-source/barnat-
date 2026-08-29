@@ -1,6 +1,6 @@
 {
   "schemaVersion": "drx-dose-coverage-snapshot-v2",
-  "generatedAt": "2026-08-29T07:09:10.517Z",
+  "generatedAt": "2026-08-29T07:21:09.198Z",
   "publicationAllowed": false,
   "counts": {
     "batch1Substances": 10,
@@ -24,11 +24,12 @@
     "first100QueueMaterialized": 100,
     "first100CanonicalReviewRequired": 13,
     "first100SourceDiscoveryEligible": 87,
-    "first100VerifiedProductSources": 65,
+    "first100VerifiedProductSources": 73,
     "first100ProductionEligibleRows": 0,
-    "first100SourceDiscoveryRemaining": 21,
+    "first100SourceDiscoveryRemaining": 14,
     "first100SourceSectionVerificationPending": 0,
-    "first100ProductSelectionPending": 1
+    "first100ProductSelectionPending": 1,
+    "first100EffectiveSourceDiscoveryEligible": 88
   },
   "batch2ProgressPct": {
     "structuredEvidence": 100,
@@ -68,8 +69,8 @@
   },
   "next": "Promote counts only from persisted evidence; archive, binding, review, CI, smoke, deploy and rollback gates remain fail-closed until observed.",
   "first100ProgressPct": {
-    "verifiedProductSources": 74.7,
-    "discoveryRemaining": 24.1,
-    "canonicalReviewBlocked": 13
+    "verifiedProductSources": 83,
+    "discoveryRemaining": 15.9,
+    "canonicalReviewBlocked": 11
   }
 }
