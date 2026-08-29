@@ -1,6 +1,6 @@
 {
   "schemaVersion": "drx-first100-source-discovery-queue-v1",
-  "generatedAt": "2026-08-30T01:45:00+02:00",
+  "generatedAt": "2026-08-30T01:52:00+02:00",
   "source": {
     "kind": "google_sheet_registry_source",
     "spreadsheetId": "10wjwyPhFLIwNMAGF296K_lxnUi0mSZEoW-UGiAA9QEs",
@@ -9,7 +9,44 @@
     "readRange": "A4:E400",
     "note": "Registry-derived substance list; source states duplicates/salt-hydration variants/dosage forms/clear spelling errors were normalized before this queue."
   },
-  "coveredBatch1And2Count": 26,
+  "coveredBatch1And2Count": 35,
+  "coveredKeys": [
+    "amlodipine",
+    "amoxicillin",
+    "amoxicillinclavulanicacid",
+    "aspirin",
+    "atorvastatin",
+    "azithromycin",
+    "bisoprolol",
+    "carvedilol",
+    "cefalexin",
+    "cefuroxime",
+    "cetirizine",
+    "ciprofloxacin",
+    "clopidogrel",
+    "dexamethasone",
+    "diclofenac",
+    "doxycycline",
+    "enalapril",
+    "furosemide",
+    "gliclazide",
+    "ibuprofen",
+    "levothyroxine",
+    "loratadine",
+    "losartan",
+    "metformin",
+    "metronidazole",
+    "naproxen",
+    "omeprazole",
+    "ondansetron",
+    "pantoprazole",
+    "paracetamol",
+    "prednisolone",
+    "ramipril",
+    "salbutamol",
+    "spironolactone",
+    "tramadol"
+  ],
   "scannedUniqueSubstances": 396,
   "queuedCount": 100,
   "complete": true,
@@ -257,26 +294,6 @@
     },
     {
       "ordinal": 13,
-      "sourceRow": 14,
-      "atcGroup": "A",
-      "atcDescription": "Trakti alimentar dhe metabolizmi",
-      "atcCodes": "A02BC01",
-      "canonicalName": "Omeprazole",
-      "canonicalKey": "omeprazole",
-      "status": "source_discovery_pending",
-      "preferredSourceOrder": [
-        "EMA",
-        "EMC",
-        "AEMPS_CIMA",
-        "EU_OTHER",
-        "KOSOVO",
-        "MEDIATELY_CROSSCHECK",
-        "FALLBACK"
-      ],
-      "publicationAllowed": false
-    },
-    {
-      "ordinal": 14,
       "sourceRow": 16,
       "atcGroup": "A",
       "atcDescription": "Trakti alimentar dhe metabolizmi",
@@ -296,7 +313,7 @@
       "publicationAllowed": false
     },
     {
-      "ordinal": 15,
+      "ordinal": 14,
       "sourceRow": 17,
       "atcGroup": "A",
       "atcDescription": "Trakti alimentar dhe metabolizmi",
@@ -316,7 +333,7 @@
       "publicationAllowed": false
     },
     {
-      "ordinal": 16,
+      "ordinal": 15,
       "sourceRow": 18,
       "atcGroup": "A",
       "atcDescription": "Trakti alimentar dhe metabolizmi",
@@ -336,7 +353,7 @@
       "publicationAllowed": false
     },
     {
-      "ordinal": 17,
+      "ordinal": 16,
       "sourceRow": 19,
       "atcGroup": "A",
       "atcDescription": "Trakti alimentar dhe metabolizmi",
@@ -356,7 +373,7 @@
       "publicationAllowed": false
     },
     {
-      "ordinal": 18,
+      "ordinal": 17,
       "sourceRow": 20,
       "atcGroup": "A",
       "atcDescription": "Trakti alimentar dhe metabolizmi",
@@ -376,7 +393,7 @@
       "publicationAllowed": false
     },
     {
-      "ordinal": 19,
+      "ordinal": 18,
       "sourceRow": 21,
       "atcGroup": "A",
       "atcDescription": "Trakti alimentar dhe metabolizmi",
@@ -396,7 +413,7 @@
       "publicationAllowed": false
     },
     {
-      "ordinal": 20,
+      "ordinal": 19,
       "sourceRow": 22,
       "atcGroup": "A",
       "atcDescription": "Trakti alimentar dhe metabolizmi",
@@ -416,7 +433,7 @@
       "publicationAllowed": false
     },
     {
-      "ordinal": 21,
+      "ordinal": 20,
       "sourceRow": 23,
       "atcGroup": "A",
       "atcDescription": "Trakti alimentar dhe metabolizmi",
@@ -436,7 +453,7 @@
       "publicationAllowed": false
     },
     {
-      "ordinal": 22,
+      "ordinal": 21,
       "sourceRow": 24,
       "atcGroup": "A",
       "atcDescription": "Trakti alimentar dhe metabolizmi",
@@ -456,7 +473,7 @@
       "publicationAllowed": false
     },
     {
-      "ordinal": 23,
+      "ordinal": 22,
       "sourceRow": 25,
       "atcGroup": "A / R",
       "atcDescription": "Trakti alimentar dhe metabolizmi / Sistemi respirator",
@@ -476,7 +493,7 @@
       "publicationAllowed": false
     },
     {
-      "ordinal": 24,
+      "ordinal": 23,
       "sourceRow": 26,
       "atcGroup": "A",
       "atcDescription": "Trakti alimentar dhe metabolizmi",
@@ -496,7 +513,7 @@
       "publicationAllowed": false
     },
     {
-      "ordinal": 25,
+      "ordinal": 24,
       "sourceRow": 27,
       "atcGroup": "A",
       "atcDescription": "Trakti alimentar dhe metabolizmi",
@@ -516,7 +533,7 @@
       "publicationAllowed": false
     },
     {
-      "ordinal": 26,
+      "ordinal": 25,
       "sourceRow": 28,
       "atcGroup": "A",
       "atcDescription": "Trakti alimentar dhe metabolizmi",
@@ -536,7 +553,7 @@
       "publicationAllowed": false
     },
     {
-      "ordinal": 27,
+      "ordinal": 26,
       "sourceRow": 29,
       "atcGroup": "A",
       "atcDescription": "Trakti alimentar dhe metabolizmi",
@@ -556,7 +573,7 @@
       "publicationAllowed": false
     },
     {
-      "ordinal": 28,
+      "ordinal": 27,
       "sourceRow": 30,
       "atcGroup": "A",
       "atcDescription": "Trakti alimentar dhe metabolizmi",
@@ -576,7 +593,7 @@
       "publicationAllowed": false
     },
     {
-      "ordinal": 29,
+      "ordinal": 28,
       "sourceRow": 31,
       "atcGroup": "A",
       "atcDescription": "Trakti alimentar dhe metabolizmi",
@@ -596,7 +613,7 @@
       "publicationAllowed": false
     },
     {
-      "ordinal": 30,
+      "ordinal": 29,
       "sourceRow": 32,
       "atcGroup": "A / S",
       "atcDescription": "Trakti alimentar dhe metabolizmi / Organet shqisore",
@@ -616,7 +633,7 @@
       "publicationAllowed": false
     },
     {
-      "ordinal": 31,
+      "ordinal": 30,
       "sourceRow": 33,
       "atcGroup": "A",
       "atcDescription": "Trakti alimentar dhe metabolizmi",
@@ -636,7 +653,7 @@
       "publicationAllowed": false
     },
     {
-      "ordinal": 32,
+      "ordinal": 31,
       "sourceRow": 34,
       "atcGroup": "A",
       "atcDescription": "Trakti alimentar dhe metabolizmi",
@@ -656,7 +673,7 @@
       "publicationAllowed": false
     },
     {
-      "ordinal": 33,
+      "ordinal": 32,
       "sourceRow": 35,
       "atcGroup": "A",
       "atcDescription": "Trakti alimentar dhe metabolizmi",
@@ -676,7 +693,7 @@
       "publicationAllowed": false
     },
     {
-      "ordinal": 34,
+      "ordinal": 33,
       "sourceRow": 36,
       "atcGroup": "A",
       "atcDescription": "Trakti alimentar dhe metabolizmi",
@@ -696,7 +713,7 @@
       "publicationAllowed": false
     },
     {
-      "ordinal": 35,
+      "ordinal": 34,
       "sourceRow": 37,
       "atcGroup": "A",
       "atcDescription": "Trakti alimentar dhe metabolizmi",
@@ -716,7 +733,7 @@
       "publicationAllowed": false
     },
     {
-      "ordinal": 36,
+      "ordinal": 35,
       "sourceRow": 38,
       "atcGroup": "A",
       "atcDescription": "Trakti alimentar dhe metabolizmi",
@@ -736,7 +753,7 @@
       "publicationAllowed": false
     },
     {
-      "ordinal": 37,
+      "ordinal": 36,
       "sourceRow": 40,
       "atcGroup": "A",
       "atcDescription": "Trakti alimentar dhe metabolizmi",
@@ -756,7 +773,7 @@
       "publicationAllowed": false
     },
     {
-      "ordinal": 38,
+      "ordinal": 37,
       "sourceRow": 41,
       "atcGroup": "A",
       "atcDescription": "Trakti alimentar dhe metabolizmi",
@@ -776,7 +793,7 @@
       "publicationAllowed": false
     },
     {
-      "ordinal": 39,
+      "ordinal": 38,
       "sourceRow": 42,
       "atcGroup": "A",
       "atcDescription": "Trakti alimentar dhe metabolizmi",
@@ -796,7 +813,7 @@
       "publicationAllowed": false
     },
     {
-      "ordinal": 40,
+      "ordinal": 39,
       "sourceRow": 43,
       "atcGroup": "A",
       "atcDescription": "Trakti alimentar dhe metabolizmi",
@@ -816,7 +833,7 @@
       "publicationAllowed": false
     },
     {
-      "ordinal": 41,
+      "ordinal": 40,
       "sourceRow": 44,
       "atcGroup": "A",
       "atcDescription": "Trakti alimentar dhe metabolizmi",
@@ -836,7 +853,7 @@
       "publicationAllowed": false
     },
     {
-      "ordinal": 42,
+      "ordinal": 41,
       "sourceRow": 45,
       "atcGroup": "A",
       "atcDescription": "Trakti alimentar dhe metabolizmi",
@@ -856,7 +873,7 @@
       "publicationAllowed": false
     },
     {
-      "ordinal": 43,
+      "ordinal": 42,
       "sourceRow": 46,
       "atcGroup": "A",
       "atcDescription": "Trakti alimentar dhe metabolizmi",
@@ -876,7 +893,7 @@
       "publicationAllowed": false
     },
     {
-      "ordinal": 44,
+      "ordinal": 43,
       "sourceRow": 47,
       "atcGroup": "A",
       "atcDescription": "Trakti alimentar dhe metabolizmi",
@@ -896,7 +913,7 @@
       "publicationAllowed": false
     },
     {
-      "ordinal": 45,
+      "ordinal": 44,
       "sourceRow": 48,
       "atcGroup": "A",
       "atcDescription": "Trakti alimentar dhe metabolizmi",
@@ -916,7 +933,7 @@
       "publicationAllowed": false
     },
     {
-      "ordinal": 46,
+      "ordinal": 45,
       "sourceRow": 49,
       "atcGroup": "A",
       "atcDescription": "Trakti alimentar dhe metabolizmi",
@@ -936,7 +953,7 @@
       "publicationAllowed": false
     },
     {
-      "ordinal": 47,
+      "ordinal": 46,
       "sourceRow": 50,
       "atcGroup": "A",
       "atcDescription": "Trakti alimentar dhe metabolizmi",
@@ -956,7 +973,7 @@
       "publicationAllowed": false
     },
     {
-      "ordinal": 48,
+      "ordinal": 47,
       "sourceRow": 51,
       "atcGroup": "A",
       "atcDescription": "Trakti alimentar dhe metabolizmi",
@@ -976,7 +993,7 @@
       "publicationAllowed": false
     },
     {
-      "ordinal": 49,
+      "ordinal": 48,
       "sourceRow": 52,
       "atcGroup": "A",
       "atcDescription": "Trakti alimentar dhe metabolizmi",
@@ -996,7 +1013,7 @@
       "publicationAllowed": false
     },
     {
-      "ordinal": 50,
+      "ordinal": 49,
       "sourceRow": 53,
       "atcGroup": "A",
       "atcDescription": "Trakti alimentar dhe metabolizmi",
@@ -1016,7 +1033,7 @@
       "publicationAllowed": false
     },
     {
-      "ordinal": 51,
+      "ordinal": 50,
       "sourceRow": 54,
       "atcGroup": "A / G",
       "atcDescription": "Trakti alimentar dhe metabolizmi / Sistemi gjenitourinar dhe hormonet seksuale",
@@ -1036,7 +1053,7 @@
       "publicationAllowed": false
     },
     {
-      "ordinal": 52,
+      "ordinal": 51,
       "sourceRow": 55,
       "atcGroup": "A",
       "atcDescription": "Trakti alimentar dhe metabolizmi",
@@ -1056,7 +1073,7 @@
       "publicationAllowed": false
     },
     {
-      "ordinal": 53,
+      "ordinal": 52,
       "sourceRow": 56,
       "atcGroup": "A",
       "atcDescription": "Trakti alimentar dhe metabolizmi",
@@ -1076,7 +1093,7 @@
       "publicationAllowed": false
     },
     {
-      "ordinal": 54,
+      "ordinal": 53,
       "sourceRow": 57,
       "atcGroup": "A",
       "atcDescription": "Trakti alimentar dhe metabolizmi",
@@ -1096,7 +1113,7 @@
       "publicationAllowed": false
     },
     {
-      "ordinal": 55,
+      "ordinal": 54,
       "sourceRow": 58,
       "atcGroup": "A",
       "atcDescription": "Trakti alimentar dhe metabolizmi",
@@ -1116,7 +1133,7 @@
       "publicationAllowed": false
     },
     {
-      "ordinal": 56,
+      "ordinal": 55,
       "sourceRow": 59,
       "atcGroup": "A",
       "atcDescription": "Trakti alimentar dhe metabolizmi",
@@ -1136,7 +1153,7 @@
       "publicationAllowed": false
     },
     {
-      "ordinal": 57,
+      "ordinal": 56,
       "sourceRow": 60,
       "atcGroup": "A",
       "atcDescription": "Trakti alimentar dhe metabolizmi",
@@ -1156,7 +1173,7 @@
       "publicationAllowed": false
     },
     {
-      "ordinal": 58,
+      "ordinal": 57,
       "sourceRow": 61,
       "atcGroup": "A",
       "atcDescription": "Trakti alimentar dhe metabolizmi",
@@ -1176,7 +1193,7 @@
       "publicationAllowed": false
     },
     {
-      "ordinal": 59,
+      "ordinal": 58,
       "sourceRow": 62,
       "atcGroup": "A",
       "atcDescription": "Trakti alimentar dhe metabolizmi",
@@ -1196,7 +1213,7 @@
       "publicationAllowed": false
     },
     {
-      "ordinal": 60,
+      "ordinal": 59,
       "sourceRow": 63,
       "atcGroup": "A",
       "atcDescription": "Trakti alimentar dhe metabolizmi",
@@ -1216,7 +1233,7 @@
       "publicationAllowed": false
     },
     {
-      "ordinal": 61,
+      "ordinal": 60,
       "sourceRow": 64,
       "atcGroup": "A",
       "atcDescription": "Trakti alimentar dhe metabolizmi",
@@ -1236,7 +1253,7 @@
       "publicationAllowed": false
     },
     {
-      "ordinal": 62,
+      "ordinal": 61,
       "sourceRow": 65,
       "atcGroup": "A",
       "atcDescription": "Trakti alimentar dhe metabolizmi",
@@ -1256,7 +1273,7 @@
       "publicationAllowed": false
     },
     {
-      "ordinal": 63,
+      "ordinal": 62,
       "sourceRow": 66,
       "atcGroup": "A",
       "atcDescription": "Trakti alimentar dhe metabolizmi",
@@ -1276,7 +1293,7 @@
       "publicationAllowed": false
     },
     {
-      "ordinal": 64,
+      "ordinal": 63,
       "sourceRow": 67,
       "atcGroup": "A",
       "atcDescription": "Trakti alimentar dhe metabolizmi",
@@ -1296,7 +1313,7 @@
       "publicationAllowed": false
     },
     {
-      "ordinal": 65,
+      "ordinal": 64,
       "sourceRow": 68,
       "atcGroup": "A",
       "atcDescription": "Trakti alimentar dhe metabolizmi",
@@ -1316,7 +1333,7 @@
       "publicationAllowed": false
     },
     {
-      "ordinal": 66,
+      "ordinal": 65,
       "sourceRow": 69,
       "atcGroup": "A",
       "atcDescription": "Trakti alimentar dhe metabolizmi",
@@ -1336,7 +1353,7 @@
       "publicationAllowed": false
     },
     {
-      "ordinal": 67,
+      "ordinal": 66,
       "sourceRow": 70,
       "atcGroup": "A",
       "atcDescription": "Trakti alimentar dhe metabolizmi",
@@ -1356,7 +1373,7 @@
       "publicationAllowed": false
     },
     {
-      "ordinal": 68,
+      "ordinal": 67,
       "sourceRow": 71,
       "atcGroup": "A",
       "atcDescription": "Trakti alimentar dhe metabolizmi",
@@ -1376,27 +1393,7 @@
       "publicationAllowed": false
     },
     {
-      "ordinal": 69,
-      "sourceRow": 72,
-      "atcGroup": "A",
-      "atcDescription": "Trakti alimentar dhe metabolizmi",
-      "atcCodes": "A10BA02",
-      "canonicalName": "Metformin",
-      "canonicalKey": "metformin",
-      "status": "source_discovery_pending",
-      "preferredSourceOrder": [
-        "EMA",
-        "EMC",
-        "AEMPS_CIMA",
-        "EU_OTHER",
-        "KOSOVO",
-        "MEDIATELY_CROSSCHECK",
-        "FALLBACK"
-      ],
-      "publicationAllowed": false
-    },
-    {
-      "ordinal": 70,
+      "ordinal": 68,
       "sourceRow": 73,
       "atcGroup": "A",
       "atcDescription": "Trakti alimentar dhe metabolizmi",
@@ -1416,7 +1413,7 @@
       "publicationAllowed": false
     },
     {
-      "ordinal": 71,
+      "ordinal": 69,
       "sourceRow": 75,
       "atcGroup": "A",
       "atcDescription": "Trakti alimentar dhe metabolizmi",
@@ -1436,7 +1433,7 @@
       "publicationAllowed": false
     },
     {
-      "ordinal": 72,
+      "ordinal": 70,
       "sourceRow": 76,
       "atcGroup": "A",
       "atcDescription": "Trakti alimentar dhe metabolizmi",
@@ -1456,7 +1453,7 @@
       "publicationAllowed": false
     },
     {
-      "ordinal": 73,
+      "ordinal": 71,
       "sourceRow": 77,
       "atcGroup": "A",
       "atcDescription": "Trakti alimentar dhe metabolizmi",
@@ -1476,7 +1473,7 @@
       "publicationAllowed": false
     },
     {
-      "ordinal": 74,
+      "ordinal": 72,
       "sourceRow": 78,
       "atcGroup": "A",
       "atcDescription": "Trakti alimentar dhe metabolizmi",
@@ -1496,7 +1493,7 @@
       "publicationAllowed": false
     },
     {
-      "ordinal": 75,
+      "ordinal": 73,
       "sourceRow": 79,
       "atcGroup": "A",
       "atcDescription": "Trakti alimentar dhe metabolizmi",
@@ -1516,7 +1513,7 @@
       "publicationAllowed": false
     },
     {
-      "ordinal": 76,
+      "ordinal": 74,
       "sourceRow": 80,
       "atcGroup": "A",
       "atcDescription": "Trakti alimentar dhe metabolizmi",
@@ -1536,7 +1533,7 @@
       "publicationAllowed": false
     },
     {
-      "ordinal": 77,
+      "ordinal": 75,
       "sourceRow": 81,
       "atcGroup": "A",
       "atcDescription": "Trakti alimentar dhe metabolizmi",
@@ -1556,7 +1553,7 @@
       "publicationAllowed": false
     },
     {
-      "ordinal": 78,
+      "ordinal": 76,
       "sourceRow": 82,
       "atcGroup": "A",
       "atcDescription": "Trakti alimentar dhe metabolizmi",
@@ -1576,7 +1573,7 @@
       "publicationAllowed": false
     },
     {
-      "ordinal": 79,
+      "ordinal": 77,
       "sourceRow": 83,
       "atcGroup": "A",
       "atcDescription": "Trakti alimentar dhe metabolizmi",
@@ -1596,7 +1593,7 @@
       "publicationAllowed": false
     },
     {
-      "ordinal": 80,
+      "ordinal": 78,
       "sourceRow": 84,
       "atcGroup": "A",
       "atcDescription": "Trakti alimentar dhe metabolizmi",
@@ -1616,7 +1613,7 @@
       "publicationAllowed": false
     },
     {
-      "ordinal": 81,
+      "ordinal": 79,
       "sourceRow": 85,
       "atcGroup": "A",
       "atcDescription": "Trakti alimentar dhe metabolizmi",
@@ -1636,7 +1633,7 @@
       "publicationAllowed": false
     },
     {
-      "ordinal": 82,
+      "ordinal": 80,
       "sourceRow": 86,
       "atcGroup": "A",
       "atcDescription": "Trakti alimentar dhe metabolizmi",
@@ -1656,7 +1653,7 @@
       "publicationAllowed": false
     },
     {
-      "ordinal": 83,
+      "ordinal": 81,
       "sourceRow": 87,
       "atcGroup": "A",
       "atcDescription": "Trakti alimentar dhe metabolizmi",
@@ -1676,7 +1673,7 @@
       "publicationAllowed": false
     },
     {
-      "ordinal": 84,
+      "ordinal": 82,
       "sourceRow": 88,
       "atcGroup": "A",
       "atcDescription": "Trakti alimentar dhe metabolizmi",
@@ -1696,7 +1693,7 @@
       "publicationAllowed": false
     },
     {
-      "ordinal": 85,
+      "ordinal": 83,
       "sourceRow": 89,
       "atcGroup": "A",
       "atcDescription": "Trakti alimentar dhe metabolizmi",
@@ -1716,7 +1713,7 @@
       "publicationAllowed": false
     },
     {
-      "ordinal": 86,
+      "ordinal": 84,
       "sourceRow": 90,
       "atcGroup": "A",
       "atcDescription": "Trakti alimentar dhe metabolizmi",
@@ -1736,7 +1733,7 @@
       "publicationAllowed": false
     },
     {
-      "ordinal": 87,
+      "ordinal": 85,
       "sourceRow": 91,
       "atcGroup": "A",
       "atcDescription": "Trakti alimentar dhe metabolizmi",
@@ -1756,7 +1753,7 @@
       "publicationAllowed": false
     },
     {
-      "ordinal": 88,
+      "ordinal": 86,
       "sourceRow": 92,
       "atcGroup": "A",
       "atcDescription": "Trakti alimentar dhe metabolizmi",
@@ -1776,7 +1773,7 @@
       "publicationAllowed": false
     },
     {
-      "ordinal": 89,
+      "ordinal": 87,
       "sourceRow": 93,
       "atcGroup": "A",
       "atcDescription": "Trakti alimentar dhe metabolizmi",
@@ -1796,7 +1793,7 @@
       "publicationAllowed": false
     },
     {
-      "ordinal": 90,
+      "ordinal": 88,
       "sourceRow": 94,
       "atcGroup": "A",
       "atcDescription": "Trakti alimentar dhe metabolizmi",
@@ -1816,7 +1813,7 @@
       "publicationAllowed": false
     },
     {
-      "ordinal": 91,
+      "ordinal": 89,
       "sourceRow": 95,
       "atcGroup": "A",
       "atcDescription": "Trakti alimentar dhe metabolizmi",
@@ -1836,7 +1833,7 @@
       "publicationAllowed": false
     },
     {
-      "ordinal": 92,
+      "ordinal": 90,
       "sourceRow": 96,
       "atcGroup": "A",
       "atcDescription": "Trakti alimentar dhe metabolizmi",
@@ -1856,7 +1853,7 @@
       "publicationAllowed": false
     },
     {
-      "ordinal": 93,
+      "ordinal": 91,
       "sourceRow": 97,
       "atcGroup": "A",
       "atcDescription": "Trakti alimentar dhe metabolizmi",
@@ -1876,7 +1873,7 @@
       "publicationAllowed": false
     },
     {
-      "ordinal": 94,
+      "ordinal": 92,
       "sourceRow": 98,
       "atcGroup": "A",
       "atcDescription": "Trakti alimentar dhe metabolizmi",
@@ -1896,7 +1893,7 @@
       "publicationAllowed": false
     },
     {
-      "ordinal": 95,
+      "ordinal": 93,
       "sourceRow": 99,
       "atcGroup": "A",
       "atcDescription": "Trakti alimentar dhe metabolizmi",
@@ -1916,7 +1913,7 @@
       "publicationAllowed": false
     },
     {
-      "ordinal": 96,
+      "ordinal": 94,
       "sourceRow": 100,
       "atcGroup": "A",
       "atcDescription": "Trakti alimentar dhe metabolizmi",
@@ -1936,7 +1933,7 @@
       "publicationAllowed": false
     },
     {
-      "ordinal": 97,
+      "ordinal": 95,
       "sourceRow": 101,
       "atcGroup": "A",
       "atcDescription": "Trakti alimentar dhe metabolizmi",
@@ -1956,7 +1953,7 @@
       "publicationAllowed": false
     },
     {
-      "ordinal": 98,
+      "ordinal": 96,
       "sourceRow": 102,
       "atcGroup": "A",
       "atcDescription": "Trakti alimentar dhe metabolizmi",
@@ -1976,7 +1973,7 @@
       "publicationAllowed": false
     },
     {
-      "ordinal": 99,
+      "ordinal": 97,
       "sourceRow": 103,
       "atcGroup": "A / B",
       "atcDescription": "Trakti alimentar dhe metabolizmi / Gjaku dhe organet gjakformuese",
@@ -1996,13 +1993,53 @@
       "publicationAllowed": false
     },
     {
-      "ordinal": 100,
+      "ordinal": 98,
       "sourceRow": 104,
       "atcGroup": "A",
       "atcDescription": "Trakti alimentar dhe metabolizmi",
       "atcCodes": "A12AX",
       "canonicalName": "Calcium carbonate + Cholecalciferol",
       "canonicalKey": "calciumcarbonatecholecalciferol",
+      "status": "source_discovery_pending",
+      "preferredSourceOrder": [
+        "EMA",
+        "EMC",
+        "AEMPS_CIMA",
+        "EU_OTHER",
+        "KOSOVO",
+        "MEDIATELY_CROSSCHECK",
+        "FALLBACK"
+      ],
+      "publicationAllowed": false
+    },
+    {
+      "ordinal": 99,
+      "sourceRow": 105,
+      "atcGroup": "A / B",
+      "atcDescription": "Trakti alimentar dhe metabolizmi / Gjaku dhe organet gjakformuese",
+      "atcCodes": "A12BA01, B05XA01",
+      "canonicalName": "Potassium chloride",
+      "canonicalKey": "potassiumchloride",
+      "status": "source_discovery_pending",
+      "preferredSourceOrder": [
+        "EMA",
+        "EMC",
+        "AEMPS_CIMA",
+        "EU_OTHER",
+        "KOSOVO",
+        "MEDIATELY_CROSSCHECK",
+        "FALLBACK"
+      ],
+      "publicationAllowed": false
+    },
+    {
+      "ordinal": 100,
+      "sourceRow": 106,
+      "atcGroup": "A",
+      "atcDescription": "Trakti alimentar dhe metabolizmi",
+      "atcCodes": "A12CC02",
+      "canonicalName": "Magnesium sulfate",
+      "canonicalKey": "magnesiumsulfate",
       "status": "source_discovery_pending",
       "preferredSourceOrder": [
         "EMA",
