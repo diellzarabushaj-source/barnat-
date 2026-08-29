@@ -21,6 +21,7 @@ function build() {
   const release = readJson('data/drx-release-observation-v1.json');
   const batch2Extraction = optional('data/drx-batch2-extraction-index-v1.json');
   const batch2Normalization = optional('data/drx-batch2-normalization-index-v1.json');
+  const reviewPackets = optional('data/drx-batch2-review-packets-v1.json');
 
   const execution = tracker.currentExecution || {};
   const mapped = batch1.substances.length + batch2.substances.length;
@@ -39,6 +40,9 @@ function build() {
   const legacyCompared = Number(execution.legacyComparedRules || 0);
   const clinicallyReviewed = Number(execution.clinicallyReviewedRules || 0);
   const published = Number(execution.publishedRules || 0);
+  const reviewEvidenceReady = Number(reviewPackets?.reviewEvidenceReady || 0);
+  const renalAdjustmentLiveVerified = Number(execution.renalAdjustmentLiveVerified || 0);
+  const hepaticAdjustmentLiveVerified = Number(execution.hepaticAdjustmentLiveVerified || 0);
 
   return {
     schemaVersion:'drx-dose-coverage-snapshot-v2',
@@ -63,6 +67,9 @@ function build() {
       normalizationReady,
       publicationReady,
       reviewPacketsReady:Number(execution.reviewPacketsReady || 0),
+      reviewEvidenceReady,
+      renalAdjustmentLiveVerified,
+      hepaticAdjustmentLiveVerified,
       first100QueueMaterialized:Number(execution.first100QueueMaterialized || 0),
       first100CanonicalReviewRequired:Number(execution.first100CanonicalReviewRequired || 0),
       first100SourceDiscoveryEligible:Number(execution.first100SourceDiscoveryEligible || 0),
@@ -94,7 +101,11 @@ function build() {
       v3SelfContainedProductShell:v3.selfContainedV3ProductShell === true,
       v2ProductShellDependency:v3.v2ProductShellDependency === true,
       oneRpcFastPathConfigured:true,
-      sharedDoseCoreConfigured:true
+      sharedDoseCoreConfigured:true,
+      adjustmentAwareDoseRuntimeConfigured:true,
+      provenanceBoundOfflineCacheConfigured:true,
+      requiredAdjustmentPublicationGateConfigured:v3.security?.adjustmentRequiredPublicationGate === true,
+      requiredAdjustmentRuntimeGateConfigured:v3.security?.adjustmentRequiredRuntimeGate === true
     },
     gates:{
       supabaseLiveAvailable:execution.supabaseSqlGateway === 'available',
@@ -112,6 +123,8 @@ function build() {
       vercelDeploymentGreen:release.vercelDeploymentGreen === true,
       rollbackTested:release.rollbackTested === true,
       zeroKnownLegacyConsumers:release.zeroKnownLegacyConsumers === true,
+      reviewEvidenceComplete:reviewEvidenceReady === batch2Total,
+      renalHepaticLiveValidationObserved:(renalAdjustmentLiveVerified + hepaticAdjustmentLiveVerified) > 0,
       publicationBlocked:true
     },
     next:'Promote counts only from persisted evidence; archive, binding, review, CI, smoke, deploy and rollback gates remain fail-closed until observed.'
