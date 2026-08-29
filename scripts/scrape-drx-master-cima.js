@@ -14,6 +14,19 @@ const limitArg = process.argv.find(x => x.startsWith('--limit='));
 const LIMIT = limitArg ? Math.max(1, Number(limitArg.slice(8)) || 1) : Infinity;
 
 function sleep(ms){ return new Promise(resolve => setTimeout(resolve, ms)); }
+async function mapLimit(items, limit, worker){
+  const out=new Array(items.length);
+  let cursor=0;
+  const runners=Array.from({length:Math.min(limit,items.length)},async()=>{
+    while(true){
+      const index=cursor++;
+      if(index>=items.length) return;
+      out[index]=await worker(items[index],index);
+    }
+  });
+  await Promise.all(runners);
+  return out;
+}
 function sha256(text){ return crypto.createHash('sha256').update(String(text || ''), 'utf8').digest('hex'); }
 function stripDiacritics(s){ return String(s || '').normalize('NFKD').replace(/[\u0300-\u036f]/g, ''); }
 function key(s){ return stripDiacritics(s).toLowerCase().replace(/[^a-z0-9]+/g, ''); }
@@ -217,13 +230,14 @@ async function main(){
     if(atc && !byAtc.has(atc)) byAtc.set(atc,null);
   }
   let atcDone=0;
-  for(const atc of byAtc.keys()){
+  const atcKeys=[...byAtc.keys()];
+  await mapLimit(atcKeys,6,async atc=>{
     try{ byAtc.set(atc,await fetchMedicinesByAtc(atc)); }
     catch(err){ byAtc.set(atc,{error:String(err?.message||err),items:[]}); }
     atcDone++;
-    if(atcDone%25===0) console.log('CIMA ATC cache',atcDone,'/',byAtc.size);
-    await sleep(80);
-  }
+    if(atcDone%25===0 || atcDone===atcKeys.length) console.log('CIMA ATC cache',atcDone,'/',atcKeys.length);
+    await sleep(30);
+  });
 
   const rows=[]; let i=0;
   for(const target of targets){
