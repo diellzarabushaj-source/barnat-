@@ -19,7 +19,7 @@ require.cache[apiPath].exports = {
           drugId:'11111111-1111-4111-8111-111111111111',
           rules:[{
             ruleKey:'r1',
-            source:{snapshotId:hash,evidenceHash:hash,section:'4.2'}
+            source:{snapshotId:hash,evidenceHash:hash,section:'4.2',documentDate:'2026-08-27'}
           }]
         },
         meta:{failClosed:true,publishedOnly:true,officialVerifiedOnly:true}
