@@ -5,6 +5,7 @@ const fs = require('node:fs');
 
 const migration1 = fs.readFileSync('supabase/migrations/20260830142544_drx_phase2_immutable_registry_ledger.sql','utf8');
 const migration2 = fs.readFileSync('supabase/migrations/20260830143037_drx_phase2_correction_matching_guard.sql','utf8');
+const migration3 = fs.readFileSync('supabase/migrations/20260830144344_drx_phase2_chunked_correction_ingestion.sql','utf8');
 const bootstrap = fs.readFileSync('scripts/drx-phase2-bootstrap.js','utf8');
 const sync = fs.readFileSync('scripts/sync-supabase-from-sheets.js','utf8');
 const workflow = fs.readFileSync('.github/workflows/drx-phase2-bootstrap.yml','utf8');
@@ -25,9 +26,16 @@ assert.match(migration2,/least\(length\(ctrade\),length\(dtrade\)\)>=6/);
 assert.match(migration2,/field_match and atc_match/);
 assert.match(migration2,/v_top_count<>1/);
 
+assert.match(migration3,/drx_registry_begin_correction_import_v1/);
+assert.match(migration3,/drx_registry_append_corrections_v1/);
+assert.match(migration3,/drx_registry_finalize_correction_import_v1/);
+assert.match(migration3,/jsonb_array_length\(p_rows\)>25/);
+assert.match(migration3,/service_role/);
+
 assert.match(bootstrap,/EXPECTED_REGISTRY_ROWS = 4006/);
 assert.match(bootstrap,/EXPECTED_CORRECTIONS = 107/);
 assert.match(bootstrap,/EXPECTED_TOTAL_DRUGS = 4015/);
+assert.match(bootstrap,/drx_registry_append_corrections_v1/);
 assert.match(bootstrap,/correctionsWithEvidence/);
 assert.match(bootstrap,/reconstructionDiffsZero/);
 assert.match(bootstrap,/anomaliesExpected/);

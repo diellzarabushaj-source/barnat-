@@ -12,6 +12,7 @@ on:
       - ".github/workflows/drx-phase2-bootstrap.yml"
       - "supabase/migrations/20260830142544_drx_phase2_immutable_registry_ledger.sql"
       - "supabase/migrations/20260830143037_drx_phase2_correction_matching_guard.sql"
+      - "supabase/migrations/20260830144344_drx_phase2_chunked_correction_ingestion.sql"
 
 permissions:
   contents: read

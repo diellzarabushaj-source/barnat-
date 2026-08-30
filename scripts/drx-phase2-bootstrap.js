@@ -171,13 +171,42 @@ async function main() {
   const correctionDigest = crypto.createHash('sha256')
     .update(JSON.stringify(correctionSourceRows))
     .digest('hex');
-  const correctionImport = await rpc('drx_registry_import_corrections_v1', {
+  const correctionBatchId = await rpc('drx_registry_begin_correction_import_v1', {
     p_source_ref:CORRECTIONS_SOURCE_REF,
     p_source_revision:corrections.lastModified,
     p_source_sha256:correctionDigest,
     p_source_row_count:correctionSourceRows.length,
-    p_rows:correctionSourceRows,
   });
+  if (!correctionBatchId) throw new Error('Correction batch id is missing.');
+
+  let correctionImport = null;
+  try {
+    correctionImport = await rpc('drx_registry_finalize_correction_import_v1', {
+      p_batch_id:correctionBatchId,
+    });
+  } catch (error) {
+    if (!/incomplete/i.test(String(error?.message || error))) throw error;
+  }
+
+  if (Number(correctionImport?.preserved_row_count) !== EXPECTED_CORRECTIONS
+      || Number(correctionImport?.corrections) !== EXPECTED_CORRECTIONS
+      || correctionImport?.status !== 'FINALIZED') {
+    for (let index = 0; index < correctionSourceRows.length; index += 10) {
+      await rpc('drx_registry_append_corrections_v1', {
+        p_batch_id:correctionBatchId,
+        p_rows:correctionSourceRows.slice(index, index + 10),
+      });
+    }
+    correctionImport = await rpc('drx_registry_finalize_correction_import_v1', {
+      p_batch_id:correctionBatchId,
+    });
+  }
+
+  if (Number(correctionImport?.preserved_row_count) !== EXPECTED_CORRECTIONS
+      || Number(correctionImport?.corrections) !== EXPECTED_CORRECTIONS
+      || correctionImport?.status !== 'FINALIZED') {
+    throw new Error(`Correction finalize gate failed: ${JSON.stringify(correctionImport)}`);
+  }
 
   const applied = await rpc('drx_registry_apply_corrections_v1', {});
   const status = await rpc('drx_registry_phase2_status_v1', {});
