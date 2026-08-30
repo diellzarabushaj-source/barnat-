@@ -23,6 +23,31 @@ function cleanUrl(v){return String(v||'').replace(/&amp;/g,'&').trim();}
 function field(o,...ks){for(const k of ks)if(o&&o[k]!==undefined&&o[k]!==null&&String(o[k]).trim()!=='')return o[k];return'';}
 function overlap(a,b){const A=words(a),B=words(b);if(!A.size||!B.size)return 0;let n=0;for(const x of A)if(B.has(x))n++;return n/Math.max(A.size,B.size);}
 function substanceCount(v){return String(v||'').split(/\s*;\s*|\s*\+\s*/).filter(Boolean).length;}
+function ingredientList(v){
+  return String(v||'').split(/\s*;\s*|\s*\+\s*/).map(x=>norm(x)).filter(Boolean);
+}
+function ingredientCompatible(target,source){
+  const a=ingredientList(target),b=ingredientList(source);
+  if(!a.length||!b.length||a.length!==b.length)return false;
+  const used=new Set();
+  for(const x of a){
+    let found=-1;
+    for(let i=0;i<b.length;i++){
+      if(used.has(i))continue;
+      const y=b[i];
+      const ok=x===y || (Math.min(x.length,y.length)>=6 && (x.includes(y)||y.includes(x)));
+      if(ok){found=i;break;}
+    }
+    if(found<0)return false;
+    used.add(found);
+  }
+  return true;
+}
+function sectionEvidenceSane(s2,s41,s42){
+  return String(s2||'').trim().length>=80 &&
+         String(s41||'').trim().length>=80 &&
+         String(s42||'').trim().length>=200;
+}
 function scoreMedicine(t,m){
   const ta=String(t.canonicalSubstance||''), ma=String(field(m,'active_substance','international_non_proprietary_name_common_name')||'');
   const nt=norm(ta), nm=norm(ma); const tatc=firstAtc(t.atcCode), matc=firstAtc(field(m,'atc_code_human'));
@@ -34,7 +59,7 @@ function scoreMedicine(t,m){
   if(tatc&&matc&&tatc===matc)score+=7;
   if(String(field(m,'category')).toLowerCase().includes('human'))score+=1;
   if(substanceCount(ta)===substanceCount(ma))score+=1;
-  return {score,exactSub,containsSub,overlap:ov,targetAtc:tatc,emaAtc:matc,emaSubstance:ma};
+  return {score,exactSub,containsSub,overlap:ov,targetAtc:tatc,emaAtc:matc,emaSubstance:ma,ingredientCompatible:ingredientCompatible(ta,ma)};
 }
 function formFamily(v){
   const s=ascii(v).toLowerCase(); const has=(...xs)=>xs.some(x=>s.includes(x));
@@ -129,9 +154,10 @@ async function main(){
          const s2=comp?.text||'',s41=clinical.sections?.['4.1']?.text||'',s42=clinical.sections?.['4.2']?.text||'';
          const strengthOk=strengthEvidence(t.strength,t.pharmaceuticalForm,[s2,text.slice(0,25000)].join('\n'));
          const formOk=formEvidence(t.pharmaceuticalForm,text.slice(0,25000));
-         const activeOk=c.meta.exactSub||c.meta.containsSub||(c.meta.overlap>=0.6&&c.meta.targetAtc&&c.meta.targetAtc===c.meta.emaAtc);
-         const exact=Boolean(activeOk&&strengthOk&&formOk&&s2&&s41&&s42);
-         const result={matchStatus:exact?'EXACT_EMA_PI':'EMA_PI_REVIEW',emaProductNumber:String(field(c.m,'ema_product_number')||''),medicineName:String(field(c.m,'name_of_medicine')||''),activeSubstance:String(field(c.m,'active_substance')||''),atcCode:String(field(c.m,'atc_code_human')||''),medicineUrl:String(field(c.m,'medicine_url')||''),documentUrl:raw.url,documentName:String(field(d,'name')||''),documentUpdated:String(field(d,'last_updated_date')||''),medicineScore:c.meta.score,activeEvidence:activeOk,strengthEvidence:strengthOk,formEvidence:formOk,section2Sha256:s2?sha256(s2):null,section41Sha256:s41?sha256(s41):null,section42Sha256:s42?sha256(s42):null,section2Characters:s2.length,section41Characters:s41.length,section42Characters:s42.length};
+         const activeOk=Boolean(c.meta.ingredientCompatible && (c.meta.exactSub||c.meta.containsSub||(c.meta.overlap>=0.6&&c.meta.targetAtc&&c.meta.targetAtc===c.meta.emaAtc)));
+         const sectionSane=sectionEvidenceSane(s2,s41,s42);
+         const exact=Boolean(activeOk&&strengthOk&&formOk&&sectionSane);
+         const result={matchStatus:exact?'EXACT_EMA_PI':'EMA_PI_REVIEW',emaProductNumber:String(field(c.m,'ema_product_number')||''),medicineName:String(field(c.m,'name_of_medicine')||''),activeSubstance:String(field(c.m,'active_substance')||''),atcCode:String(field(c.m,'atc_code_human')||''),medicineUrl:String(field(c.m,'medicine_url')||''),documentUrl:raw.url,documentName:String(field(d,'name')||''),documentUpdated:String(field(d,'last_updated_date')||''),medicineScore:c.meta.score,activeEvidence:activeOk,ingredientEvidence:c.meta.ingredientCompatible,strengthEvidence:strengthOk,formEvidence:formOk,sectionEvidenceSane:sectionSane,section2Sha256:s2?sha256(s2):null,section41Sha256:s41?sha256(s41):null,section42Sha256:s42?sha256(s42):null,section2Characters:s2.length,section41Characters:s41.length,section42Characters:s42.length};
          attempts.push(result);if(!best||exact||result.medicineScore>best.medicineScore)best=result;if(exact)break;
        }catch(e){attempts.push({matchStatus:'EMA_FETCH_REVIEW',documentUrl:url,error:String(e?.message||e),medicineScore:c.meta.score});}
      }
