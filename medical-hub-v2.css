@@ -1469,3 +1469,116 @@ body{overflow-x:hidden}
   .ck-rx-line-copy>strong{font-size:15.5px}
   .ck-rx-line-details>span{font-size:12px}
 }
+
+
+/* Source-faithful book Rx blocks — preserve numbering, OR alternatives and line order */
+.ck-book-rx{
+  overflow:hidden;
+  border:1px solid #d8e3df;
+  border-radius:13px;
+  background:#fff;
+  box-shadow:0 1px 2px rgba(10,37,64,.03);
+}
+.ck-book-rx-head{
+  display:flex;
+  align-items:center;
+  gap:12px;
+  padding:15px 18px;
+  border-bottom:1px solid #e5ece9;
+  background:#fbfdfc;
+}
+.ck-book-rx-head>span{
+  width:40px;
+  height:30px;
+  display:grid;
+  place-items:center;
+  border-radius:7px;
+  background:#e8f7f1;
+  color:#0b7c65;
+  font-size:12px;
+  font-weight:700;
+}
+.ck-book-rx-head>strong{
+  color:#263d54;
+  font-size:17px;
+  font-weight:650;
+  letter-spacing:.01em;
+}
+.ck-book-rx-body{
+  display:grid;
+}
+.ck-book-rx-group{
+  display:grid;
+  grid-template-columns:28px minmax(0,1fr);
+  gap:10px;
+  padding:16px 18px;
+}
+.ck-book-rx-group + .ck-book-rx-group{
+  border-top:1px solid #edf1ef;
+}
+.ck-book-rx-number{
+  color:#334e68;
+  font-size:15px;
+  font-weight:650;
+  line-height:1.45;
+}
+.ck-book-rx-copy{
+  min-width:0;
+  display:grid;
+  gap:8px;
+}
+.ck-book-rx-copy>strong{
+  color:#263d54;
+  font-size:15.5px;
+  line-height:1.45;
+  font-weight:650;
+}
+.ck-book-rx-lines{
+  display:grid;
+  gap:6px;
+}
+.ck-book-rx-line{
+  position:relative;
+  padding-left:18px;
+  color:#34475c;
+  font-size:15px;
+  line-height:1.6;
+}
+.ck-book-rx-line::before{
+  content:"↳";
+  position:absolute;
+  left:0;
+  top:0;
+  color:#809188;
+  font-weight:600;
+}
+.ck-book-rx-line.is-or{
+  padding-left:28px;
+  font-weight:600;
+}
+.ck-book-rx-line.is-or::before{
+  content:"OR";
+  width:22px;
+  color:#0d7a67;
+  font-size:11px;
+  font-weight:700;
+  letter-spacing:.03em;
+}
+.ck-book-rx-note{
+  display:block;
+  padding:10px 12px;
+  border-radius:8px;
+  background:#fff9ef;
+  color:#7b5e1a;
+  font-size:13px;
+  line-height:1.55;
+}
+.ck-book-rx .ck-inline-bold{
+  font-weight:700;
+}
+@media(max-width:760px){
+  .ck-book-rx-head{padding:14px}
+  .ck-book-rx-head>strong{font-size:15.5px}
+  .ck-book-rx-group{grid-template-columns:24px minmax(0,1fr);padding:14px}
+  .ck-book-rx-line{font-size:14.5px}
+}
