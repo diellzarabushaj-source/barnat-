@@ -21,6 +21,9 @@ on:
       - "supabase/migrations/20260830204339_drx_phase8s_exact_smpc_findings.sql"
       - "supabase/migrations/20260830204847_drx_phase8t_clinical_finding_review_control.sql"
       - "supabase/migrations/20260830205514_drx_phase8v_clinical_finding_snapshot_index.sql"
+      - "supabase/migrations/20260830210058_drx_phase8w_pilot_clinical_provenance_bridge.sql"
+      - "supabase/drx-phase8w-pilot-clinical-provenance-bridge-rollback.sql"
+      - "tests/drx-phase8-pilot-clinical-provenance-bridge-test.js"
       - "supabase/drx-phase8s-exact-smpc-findings-rollback.sql"
       - "supabase/drx-phase8t-clinical-finding-review-control-rollback.sql"
       - "supabase/drx-phase8v-clinical-finding-snapshot-index-rollback.sql"
@@ -57,6 +60,8 @@ jobs:
         run: node tests/drx-phase8-pilot-build-preflight-test.js
       - name: Static Phase 8 clinical finding review control
         run: node tests/drx-phase8-clinical-finding-review-control-test.js
+      - name: Static Phase 8 pilot clinical provenance bridge
+        run: node tests/drx-phase8-pilot-clinical-provenance-bridge-test.js
       - name: Static Phase 8 performance probe contract
         run: node tests/drx-phase8-performance-probe-test.js
       - name: Static Phase 8 exit audit contract

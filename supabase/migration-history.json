@@ -505,6 +505,10 @@
     {
       "name": "drx_phase8v_clinical_finding_snapshot_index",
       "version": "20260830205514"
+    },
+    {
+      "name": "drx_phase8w_pilot_clinical_provenance_bridge",
+      "version": "20260830210058"
     }
   ]
 }
