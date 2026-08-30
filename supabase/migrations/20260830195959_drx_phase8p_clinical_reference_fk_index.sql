@@ -1,0 +1,2 @@
+create index if not exists drx_phase8_clinical_reference_discovery_idx
+  on drx_dose.phase8_pilot_clinical_references_v1(exact_discovery_id);

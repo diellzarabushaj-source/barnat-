@@ -15,11 +15,14 @@ on:
       - "supabase/migrations/20260830192720_drx_phase8m_clinical_reference_pipeline.sql"
       - "supabase/migrations/20260830192855_drx_phase8n_exact_product_identity_review.sql"
       - "supabase/migrations/20260830195641_drx_phase8o_clinical_review_control.sql"
+      - "supabase/migrations/20260830195959_drx_phase8p_clinical_reference_fk_index.sql"
       - "supabase/drx-phase8m-clinical-reference-rollback.sql"
       - "supabase/drx-phase8n-exact-product-review-rollback.sql"
       - "supabase/drx-phase8o-clinical-review-control-rollback.sql"
+      - "supabase/drx-phase8p-clinical-reference-fk-index-rollback.sql"
       - "scripts/drx-phase8-clinical-review-status.js"
       - "tests/drx-phase8-clinical-review-control-test.js"
+      - "tests/drx-phase8-clinical-reference-index-test.js"
       - ".github/workflows/drx-phase8-pilot-clinical-reference.yml"
 
 permissions:
@@ -48,6 +51,7 @@ jobs:
           node tests/drx-dose-source-archive-test.js
           node tests/drx-phase8-pilot-clinical-reference-test.js
           node tests/drx-phase8-clinical-review-control-test.js
+          node tests/drx-phase8-clinical-reference-index-test.js
 
       - name: Fetch, hash and parse two authoritative SmPC references
         run: node scripts/build-drx-phase8-pilot-clinical-extraction.js

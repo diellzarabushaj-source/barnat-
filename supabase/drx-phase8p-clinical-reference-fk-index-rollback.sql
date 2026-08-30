@@ -1,0 +1,1 @@
+drop index if exists drx_dose.drx_phase8_clinical_reference_discovery_idx;
