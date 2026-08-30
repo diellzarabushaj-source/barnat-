@@ -1,0 +1,54 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="1500" viewBox="0 0 1200 1500">
+<rect width="1200" height="1500" fill="white"/>
+<style>
+.t{font-family:Arial,sans-serif;fill:#111}.h{font-size:34px;font-weight:700}.s{font-size:20px}.b{font-size:22px;font-weight:700}
+.l{stroke:#222;stroke-width:2}.n{stroke:#d99724;stroke-width:7;fill:none;stroke-linecap:round}
+.v{fill:#f7e6bf;stroke:#d99724;stroke-width:2}.cord{stroke:#d99724;stroke-width:10;fill:none}
+</style>
+<text class="t h" x="45" y="58">Niveli i palcës kurrizore</text>
+<text class="t s" x="45" y="94">Rikrijim në shqip i Figurës 161-1: nivelet neurologjike dhe funksionet motorike kryesore.</text>
+<path class="cord" d="M930 145 C955 210 945 300 930 390 C915 490 920 590 940 700 C960 820 960 950 930 1080 C905 1190 905 1320 920 1410"/>
+<rect class="v" x="895" y="145" width="70" height="20" rx="8"/><text class="t s" x="975" y="162">C1</text>
+<rect class="v" x="895" y="169" width="70" height="20" rx="8"/><text class="t s" x="975" y="186">C2</text>
+<rect class="v" x="895" y="193" width="70" height="20" rx="8"/><text class="t s" x="975" y="210">C3</text>
+<rect class="v" x="895" y="217" width="70" height="20" rx="8"/><text class="t s" x="975" y="234">C4</text>
+<rect class="v" x="895" y="241" width="70" height="20" rx="8"/><text class="t s" x="975" y="258">C5</text>
+<rect class="v" x="895" y="265" width="70" height="20" rx="8"/><text class="t s" x="975" y="282">C6</text>
+<rect class="v" x="895" y="289" width="70" height="20" rx="8"/><text class="t s" x="975" y="306">C7</text>
+<rect class="v" x="895" y="335" width="70" height="20" rx="8"/><text class="t s" x="975" y="352">T1</text>
+<rect class="v" x="895" y="380" width="70" height="20" rx="8"/><text class="t s" x="975" y="397">T2</text>
+<rect class="v" x="895" y="425" width="70" height="20" rx="8"/><text class="t s" x="975" y="442">T3</text>
+<rect class="v" x="895" y="470" width="70" height="20" rx="8"/><text class="t s" x="975" y="487">T4</text>
+<rect class="v" x="895" y="515" width="70" height="20" rx="8"/><text class="t s" x="975" y="532">T5</text>
+<rect class="v" x="895" y="560" width="70" height="20" rx="8"/><text class="t s" x="975" y="577">T6</text>
+<rect class="v" x="895" y="605" width="70" height="20" rx="8"/><text class="t s" x="975" y="622">T7</text>
+<rect class="v" x="895" y="650" width="70" height="20" rx="8"/><text class="t s" x="975" y="667">T8</text>
+<rect class="v" x="895" y="695" width="70" height="20" rx="8"/><text class="t s" x="975" y="712">T9</text>
+<rect class="v" x="895" y="740" width="70" height="20" rx="8"/><text class="t s" x="975" y="757">T10</text>
+<rect class="v" x="895" y="785" width="70" height="20" rx="8"/><text class="t s" x="975" y="802">T11</text>
+<rect class="v" x="895" y="830" width="70" height="20" rx="8"/><text class="t s" x="975" y="847">T12</text>
+<rect class="v" x="895" y="890" width="70" height="20" rx="8"/><text class="t s" x="975" y="907">L1</text>
+<rect class="v" x="895" y="948" width="70" height="20" rx="8"/><text class="t s" x="975" y="965">L2</text>
+<rect class="v" x="895" y="1006" width="70" height="20" rx="8"/><text class="t s" x="975" y="1023">L3</text>
+<rect class="v" x="895" y="1064" width="70" height="20" rx="8"/><text class="t s" x="975" y="1081">L4</text>
+<rect class="v" x="895" y="1122" width="70" height="20" rx="8"/><text class="t s" x="975" y="1139">L5</text>
+<rect class="v" x="895" y="1190" width="70" height="20" rx="8"/><text class="t s" x="975" y="1207">S1</text>
+<rect class="v" x="895" y="1228" width="70" height="20" rx="8"/><text class="t s" x="975" y="1245">S2</text>
+<rect class="v" x="895" y="1266" width="70" height="20" rx="8"/><text class="t s" x="975" y="1283">S3</text>
+<rect class="v" x="895" y="1304" width="70" height="20" rx="8"/><text class="t s" x="975" y="1321">S4</text>
+<rect class="v" x="895" y="1342" width="70" height="20" rx="8"/><text class="t s" x="975" y="1359">S5</text>
+<rect class="v" x="895" y="1390" width="70" height="20" rx="8"/><text class="t s" x="975" y="1407">Co</text>
+<line class="l" x1="700" y1="205" x2="890" y2="205"/><text class="t b" x="50" y="197">C5–C6</text><text class="t s" x="170" y="197">Deltoidi / bicepsi</text><text class="t s" x="170" y="225" fill="#444">Abduksioni i krahut • fleksioni i bërrylit</text>
+<line class="l" x1="700" y1="285" x2="890" y2="285"/><text class="t b" x="50" y="277">C6–C7</text><text class="t s" x="170" y="277">Ekstensori radial i karpit</text><text class="t s" x="170" y="305" fill="#444">Ekstensioni i kyçit të dorës</text>
+<line class="l" x1="700" y1="360" x2="890" y2="360"/><text class="t b" x="50" y="352">C7–C8</text><text class="t s" x="170" y="352">Tricepsi</text><text class="t s" x="170" y="380" fill="#444">Ekstensioni i bërrylit</text>
+<line class="l" x1="700" y1="445" x2="890" y2="445"/><text class="t b" x="50" y="437">C8–T1</text><text class="t s" x="170" y="437">Muskujt intrinsikë të dorës</text><text class="t s" x="170" y="465" fill="#444">Abduksioni i gishtave • kapja me dorë</text>
+<line class="l" x1="700" y1="575" x2="890" y2="575"/><text class="t b" x="50" y="567">T2–T7</text><text class="t s" x="170" y="567">Muskujt e kraharorit</text>
+<line class="l" x1="700" y1="705" x2="890" y2="705"/><text class="t b" x="50" y="697">T9–T12</text><text class="t s" x="170" y="697">Muskujt abdominalë</text>
+<line class="l" x1="700" y1="865" x2="890" y2="865"/><text class="t b" x="50" y="857">L1–L3</text><text class="t s" x="170" y="857">Iliopsoas</text><text class="t s" x="170" y="885" fill="#444">Fleksioni i ijes</text>
+<line class="l" x1="700" y1="950" x2="890" y2="950"/><text class="t b" x="50" y="942">L2–L4</text><text class="t s" x="170" y="942">Kuadricepsi</text><text class="t s" x="170" y="970" fill="#444">Ekstensioni i gjurit</text>
+<line class="l" x1="700" y1="1035" x2="890" y2="1035"/><text class="t b" x="50" y="1027">L4–S2</text><text class="t s" x="170" y="1027">Muskujt posteriorë të kofshës</text><text class="t s" x="170" y="1055" fill="#444">Fleksioni i gjurit</text>
+<line class="l" x1="700" y1="1120" x2="890" y2="1120"/><text class="t b" x="50" y="1112">L4–L5</text><text class="t s" x="170" y="1112">Tibialis anterior</text><text class="t s" x="170" y="1140" fill="#444">Dorsifleksioni i kyçit të këmbës</text>
+<line class="l" x1="700" y1="1205" x2="890" y2="1205"/><text class="t b" x="50" y="1197">L5–S1</text><text class="t s" x="170" y="1197">Extensor hallucis longus</text><text class="t s" x="170" y="1225" fill="#444">Ekstensioni i gishtit të madh</text>
+<line class="l" x1="700" y1="1290" x2="890" y2="1290"/><text class="t b" x="50" y="1282">S1–S2</text><text class="t s" x="170" y="1282">Gastrocnemius</text><text class="t s" x="170" y="1310" fill="#444">Fleksioni plantar</text>
+<line class="l" x1="700" y1="1375" x2="890" y2="1375"/><text class="t b" x="50" y="1367">S2–S4</text><text class="t s" x="170" y="1367">Fshikëza / sfinkteri anal</text><text class="t s" x="170" y="1395" fill="#444">Toni rektal vullnetar</text>
+<text class="t s" x="45" y="1465">Niveli neurologjik përcaktohet me ekzaminim të hollësishëm motorik dhe sensor.</text></svg>
