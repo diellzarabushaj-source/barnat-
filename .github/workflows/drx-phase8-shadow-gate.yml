@@ -27,6 +27,8 @@ on:
       - "supabase/migrations/20260830213550_drx_phase8zb_reviewed_shadow_exit_gate.sql"
       - "supabase/migrations/20260830213647_drx_phase8zc_cover_pilot_foreign_keys.sql"
       - "supabase/migrations/20260830213708_drx_phase8zd_cover_pilot_release_fk.sql"
+      - "supabase/migrations/20260830214025_drx_phase8ze_restore_fast_path_service_grant.sql"
+      - "supabase/drx-phase8ze-restore-fast-path-service-grant-rollback.sql"
       - "supabase/drx-phase8z-pilot-publication-scaffolding-rollback.sql"
       - "supabase/drx-phase8za-reviewed-v3-pilot-materialization-rollback.sql"
       - "supabase/drx-phase8zb-reviewed-shadow-exit-gate-rollback.sql"

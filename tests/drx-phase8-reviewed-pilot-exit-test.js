@@ -8,6 +8,7 @@ const material=fs.readFileSync('supabase/migrations/20260830213349_drx_phase8za_
 const shadow=fs.readFileSync('supabase/migrations/20260830213550_drx_phase8zb_reviewed_shadow_exit_gate.sql','utf8');
 const fk=fs.readFileSync('supabase/migrations/20260830213647_drx_phase8zc_cover_pilot_foreign_keys.sql','utf8');
 const releaseFk=fs.readFileSync('supabase/migrations/20260830213708_drx_phase8zd_cover_pilot_release_fk.sql','utf8');
+const fastGrant=fs.readFileSync('supabase/migrations/20260830214025_drx_phase8ze_restore_fast_path_service_grant.sql','utf8');
 const history=JSON.parse(fs.readFileSync('supabase/migration-history.json','utf8'));
 
 assert.match(scaffold,/min_weight_inclusive boolean not null default true/i);
@@ -57,13 +58,16 @@ for(const token of [
  'drx_phase8_shadow_classification_drug_idx'
 ]) assert.ok(fk.includes(token),token+' missing');
 assert.match(releaseFk,/drx_phase8_variant_override_release_idx/);
+assert.match(fastGrant,/revoke all[\s\S]*from public,anon,authenticated/i);
+assert.match(fastGrant,/grant execute[\s\S]*to service_role/i);
 
 for(const [version,name] of [
  ['20260830213146','drx_phase8z_pilot_publication_scaffolding'],
  ['20260830213349','drx_phase8za_reviewed_v3_pilot_materialization'],
  ['20260830213550','drx_phase8zb_reviewed_shadow_exit_gate'],
  ['20260830213647','drx_phase8zc_cover_pilot_foreign_keys'],
- ['20260830213708','drx_phase8zd_cover_pilot_release_fk']
+ ['20260830213708','drx_phase8zd_cover_pilot_release_fk'],
+ ['20260830214025','drx_phase8ze_restore_fast_path_service_grant']
 ]){
   assert.ok(history.migrations.some(m=>m.version===version && m.name===name),version+' missing');
 }
@@ -73,7 +77,8 @@ for(const file of [
  'supabase/drx-phase8za-reviewed-v3-pilot-materialization-rollback.sql',
  'supabase/drx-phase8zb-reviewed-shadow-exit-gate-rollback.sql',
  'supabase/drx-phase8zc-cover-pilot-foreign-keys-rollback.sql',
- 'supabase/drx-phase8zd-cover-pilot-release-fk-rollback.sql'
+ 'supabase/drx-phase8zd-cover-pilot-release-fk-rollback.sql',
+ 'supabase/drx-phase8ze-restore-fast-path-service-grant-rollback.sql'
 ]){
   const sql=fs.readFileSync(file,'utf8');
   assert.doesNotMatch(sql,/\bcascade\b/i);
