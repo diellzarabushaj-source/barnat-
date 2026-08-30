@@ -509,6 +509,18 @@
     {
       "name": "drx_phase8w_pilot_clinical_provenance_bridge",
       "version": "20260830210058"
+    },
+    {
+      "version": "20260830210940",
+      "name": "drx_phase8x_clinical_reference_finality_guard"
+    },
+    {
+      "version": "20260830211016",
+      "name": "drx_phase8y_clinical_provenance_refresh"
+    },
+    {
+      "version": "20260830211052",
+      "name": "drx_phase8x_provenance_scope_repair"
     }
   ]
 }

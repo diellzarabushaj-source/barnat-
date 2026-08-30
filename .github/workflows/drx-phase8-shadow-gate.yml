@@ -22,6 +22,13 @@ on:
       - "supabase/migrations/20260830204847_drx_phase8t_clinical_finding_review_control.sql"
       - "supabase/migrations/20260830205514_drx_phase8v_clinical_finding_snapshot_index.sql"
       - "supabase/migrations/20260830210058_drx_phase8w_pilot_clinical_provenance_bridge.sql"
+      - "supabase/migrations/20260830210940_drx_phase8x_clinical_reference_finality_guard.sql"
+      - "supabase/migrations/20260830211016_drx_phase8y_clinical_provenance_refresh.sql"
+      - "supabase/migrations/20260830211052_drx_phase8x_provenance_scope_repair.sql"
+      - "supabase/drx-phase8x-clinical-reference-finality-guard-rollback.sql"
+      - "supabase/drx-phase8y-clinical-provenance-refresh-rollback.sql"
+      - "supabase/drx-phase8x-provenance-scope-repair-rollback.sql"
+      - "tests/drx-phase8-live-migration-reconciliation-test.js"
       - "supabase/drx-phase8w-pilot-clinical-provenance-bridge-rollback.sql"
       - "tests/drx-phase8-pilot-clinical-provenance-bridge-test.js"
       - "supabase/drx-phase8s-exact-smpc-findings-rollback.sql"
@@ -62,6 +69,8 @@ jobs:
         run: node tests/drx-phase8-clinical-finding-review-control-test.js
       - name: Static Phase 8 pilot clinical provenance bridge
         run: node tests/drx-phase8-pilot-clinical-provenance-bridge-test.js
+      - name: Static Phase 8 live migration reconciliation
+        run: node tests/drx-phase8-live-migration-reconciliation-test.js
       - name: Static Phase 8 performance probe contract
         run: node tests/drx-phase8-performance-probe-test.js
       - name: Static Phase 8 exit audit contract

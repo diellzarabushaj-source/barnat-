@@ -14,6 +14,7 @@ async function rpc(name,body={}) {
 async function main() {
   const status = await rpc('drx_phase8_status_v1');
   const captureStatus = await rpc('drx_phase8_capture_status_v1');
+  const phase6Status = await rpc('drx_phase6_status_v1');
   const preflight = await rpc('drx_phase8_pilot_build_preflight_v1');
 
   // Phase-wide invariants: V2 stays served and Phase 8 never enables cutover.
@@ -25,7 +26,8 @@ async function main() {
   assert.equal(status.v3_cutover_enabled,false);
   assert.equal(status.publication_allowed,false);
   assert.equal(status.implementation_gate_pass,true);
-  assert.equal(status.unique_source_identities,25);
+  assert.equal(phase6Status.gate_pass,true);
+  assert.equal(status.unique_source_identities,phase6Status.clinical_source_keys);
   assert.equal(status.unresolved_source_identities,0);
   assert.equal(status.v3_product_candidates,status.review_product_source_bindings);
   assert.ok(status.strongest_review_candidates > 0);
@@ -119,6 +121,7 @@ async function main() {
     source:'public.drx_phase8_status_v1',
     status,
     captureStatus,
+    phase6Status,
     preflight,
     shadow_search_result_count:search.length,
     shadow_search_limit:50
