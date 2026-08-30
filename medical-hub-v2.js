@@ -327,12 +327,15 @@
     const credit = clean(figure?.credit);
     return `
       <figure class="ck-figure">
-        <img src="${esc(url)}" alt="${esc(alt)}" loading="lazy" decoding="async">
+        <a class="ck-figure-media" href="${esc(url)}" target="_blank" rel="noopener noreferrer" title="Hap figurën në rezolucion të plotë">
+          <img src="${esc(url)}" alt="${esc(alt)}" loading="lazy" decoding="async" referrerpolicy="no-referrer">
+          <span class="ck-figure-zoom" aria-hidden="true">↗</span>
+        </a>
         ${caption || credit || sourceUrl ? `
           <figcaption>
             ${caption ? `<strong>${esc(caption)}</strong>` : ''}
             ${credit ? `<span>${esc(credit)}</span>` : ''}
-            ${sourceUrl ? `<a href="${esc(sourceUrl)}" target="_blank" rel="noopener noreferrer">Burimi ↗</a>` : ''}
+            ${sourceUrl ? `<a href="${esc(sourceUrl)}" target="_blank" rel="noopener noreferrer">Burimi / licenca ↗</a>` : ''}
           </figcaption>
         ` : ''}
       </figure>`;
