@@ -162,7 +162,35 @@ async function main(){
       schemaVersion:'drx-master-official-enrichment-v1',generatedAt:new Date().toISOString(),startRow:start,rows:clean.slice(start,start+75)
     },null,2)+'\n');
   }
-  fs.writeFileSync(path.join(OUTDIR,'summary.json'),JSON.stringify({schemaVersion:'drx-master-official-enrichment-summary-v1',generatedAt:new Date().toISOString(),targets:targets.length,counts},null,2)+'\n');
-  console.log(JSON.stringify({ok:true,targets:targets.length,counts},null,2));
+  const generatedAt=new Date().toISOString();
+  const promotions=clean.filter(r=>r.status==='EXACT_OFFICIAL_SOURCE').map(r=>({
+    dedupeKey:r.dedupeKey,
+    status:r.status,
+    sourceUrl:r.sourceUrl||'',
+    sourceTier:r.sourceTier||'',
+    productName:r.productName||'',
+    documentDate:r.documentDate||null,
+    section2Hash:r.section2Hash||null,
+    section41Hash:r.section41Hash||null,
+    section42Hash:r.section42Hash||null,
+    exactEligible:r.exactEligible===true
+  }));
+  const textIndex=clean.filter(r=>r.mode==='CIMA_EXACT_TEXT').map(r=>({
+    dedupeKey:r.dedupeKey,
+    status:r.status,
+    sourceUrl:r.sourceUrl||'',
+    sourceTier:r.sourceTier||'',
+    section2Hash:r.section2Hash||null,
+    section41Hash:r.section41Hash||null,
+    section42Hash:r.section42Hash||null
+  }));
+  fs.writeFileSync(path.join(OUTDIR,'promotions.json'),JSON.stringify({
+    schemaVersion:'drx-master-official-promotions-v1',generatedAt,rows:promotions
+  },null,2)+'\n');
+  fs.writeFileSync(path.join(OUTDIR,'text-index.json'),JSON.stringify({
+    schemaVersion:'drx-master-official-text-index-v1',generatedAt,rows:textIndex
+  },null,2)+'\n');
+  fs.writeFileSync(path.join(OUTDIR,'summary.json'),JSON.stringify({schemaVersion:'drx-master-official-enrichment-summary-v1',generatedAt,targets:targets.length,counts},null,2)+'\n');
+  console.log(JSON.stringify({ok:true,targets:targets.length,counts,promotions:promotions.length,textIndex:textIndex.length},null,2));
 }
 main().catch(e=>{console.error(e);process.exit(1);});
