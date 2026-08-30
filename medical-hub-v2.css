@@ -774,3 +774,44 @@ body{overflow-x:hidden}
   .ck-master-section-side{grid-column:2;justify-content:flex-start}
   .ck-master-bullets li{grid-template-columns:1fr;gap:3px}
 }
+
+
+/* Preserve source emphasis from textbook */
+.ck-inline-bold{font-weight:700;color:#263d54}
+.ck-inline-mark{
+  padding:0 .18em;
+  border-radius:3px;
+  background:#fff2b8;
+  color:#34475c;
+  box-decoration-break:clone;
+  -webkit-box-decoration-break:clone;
+}
+.ck-step.is-source-highlight{
+  border-color:#cfe0ee;
+  background:linear-gradient(180deg,#f7fbfe 0%,#ffffff 100%);
+}
+.ck-step.is-source-highlight .ck-step-title{
+  margin:-2px -2px 7px;
+  padding:7px 9px;
+  border-radius:7px;
+  background:#dfeef8;
+}
+.ck-step.is-source-note{
+  border-color:#d5e7d3;
+  background:#f8fcf7;
+}
+.ck-step.is-source-note .ck-step-title strong{color:#3f6f43}
+.ck-step.is-source-warning{
+  border-color:#efd5cf;
+  background:#fff9f7;
+}
+.ck-step.is-source-warning .ck-step-title strong{color:#9b3b2e}
+.ck-step.is-source-table{
+  border-color:#dfe4ea;
+  background:#fbfcfd;
+}
+.ck-step.is-source-table .ck-step-copy>p{
+  font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;
+  white-space:normal;
+  line-height:1.65;
+}
