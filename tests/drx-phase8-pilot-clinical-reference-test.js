@@ -28,7 +28,7 @@ const sample={
   rawSha256:'a'.repeat(64),
   sourceDocument:{documentDate:'2026-01-14',productName:'Augmentin Duo 400/57 powder for oral suspension'},
   composition:{text:'5 ml contains 400 mg amoxicillin and 57 mg clavulanic acid'},
-  parser:{
+  parsed:{
     indicationsSectionPresent:true,
     doseSectionPresent:true,
     sections:{
