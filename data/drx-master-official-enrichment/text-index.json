@@ -1,0 +1,3138 @@
+{
+  "schemaVersion": "drx-master-official-text-index-v1",
+  "generatedAt": "2026-08-30T11:40:20.826Z",
+  "rows": [
+    {
+      "dedupeKey": "acetylsalicylicacid|100mg|gastroresistanttablet",
+      "status": "SOURCE_TEXT_READY",
+      "sourceUrl": "https://cima.aemps.es/cima/dochtml/ft/76287/FT_76287.html",
+      "sourceTier": "AEMPS_CIMA",
+      "section2Hash": "7768e25f8288a76514bf4aa784f62ee1f0648c6e0de42d61d16db99441c95af2",
+      "section41Hash": "5f2ca6bacb43f92aabfbee87dc4db4cc69e913f76e15144e43375be452d15803",
+      "section42Hash": "b0f60527ae569e3a2669c28f4372be5e0e2865f7b3e44ef0e1087da109390184"
+    },
+    {
+      "dedupeKey": "aciclovir|50mg|cream",
+      "status": "SOURCE_TEXT_READY",
+      "sourceUrl": "https://cima.aemps.es/cima/dochtml/ft/62127/FT_62127.html",
+      "sourceTier": "AEMPS_CIMA",
+      "section2Hash": "a78910e54c6a9907d4eeb40fa254d264b74d76575f378bd3a6ab8da06481815c",
+      "section41Hash": "a3a0e2875d65db44b542f1d6f34bd0f504424a25bee891f171787aa43e755444",
+      "section42Hash": "bd4d41272a4370f3a3cacdbfefc6340504f12726150c440d3cc3aa8f37d9b054"
+    },
+    {
+      "dedupeKey": "acidumacetylsalicylicum|75mg|gastroresistanttablet",
+      "status": "SOURCE_TEXT_READY",
+      "sourceUrl": "https://cima.aemps.es/cima/dochtml/ft/78184/FT_78184.html",
+      "sourceTier": "AEMPS_CIMA",
+      "section2Hash": "9677f6db9f125f00ec968718ea3a5b1354518b8d14ebc4a9931e69fa8c8a475e",
+      "section41Hash": "5204baf27c1bd47ebdbd9f12218dca528affa70a8f07b2c04d84da35ff5030ba",
+      "section42Hash": "70f1dd25ea736b7215ddcab17c087ff4a694a922f971ce80422e9cf749c2a7fa"
+    },
+    {
+      "dedupeKey": "almotriptanasalmotriptanmalate|12.5mg|filmcoatedtablet",
+      "status": "SOURCE_TEXT_READY",
+      "sourceUrl": "https://cima.aemps.es/cima/dochtml/ft/78686/FT_78686.html",
+      "sourceTier": "AEMPS_CIMA",
+      "section2Hash": "a80968503cac793f25cbc2c8693133ec77ce23042103647ae5f20f6cd1e68242",
+      "section41Hash": "76a4cdbfebdd73df50dac3238fcbbbe52c9c1daa8bbbc342bbaabc9ecf81f572",
+      "section42Hash": "b6c754901f766f977a246a5ef96efdae547e64f25010617d0da5e402a7e0f5d0"
+    },
+    {
+      "dedupeKey": "amiodaronehydrochlorid|50mg/1ml|concentrateforsolutionforinjectioninfusion",
+      "status": "SOURCE_TEXT_READY",
+      "sourceUrl": "https://cima.aemps.es/cima/dochtml/ft/54723/FT_54723.html",
+      "sourceTier": "AEMPS_CIMA",
+      "section2Hash": "01f31f64008dd3134e7a715475f6854fb0d06785593f051ed0991689eb8d0af4",
+      "section41Hash": "90e872c0c4cdb2d5d17f5ad0204d927d9e8621bd19d83e7daa4a3678d66807e8",
+      "section42Hash": "500cd8f305193606c372db539ed3cbddfb791779b1be176473cb503794cb5736"
+    },
+    {
+      "dedupeKey": "amlodipinebesilate|10mg|tablet",
+      "status": "SOURCE_TEXT_READY",
+      "sourceUrl": "https://cima.aemps.es/cima/dochtml/ft/65461/FT_65461.html",
+      "sourceTier": "AEMPS_CIMA",
+      "section2Hash": "1d4b9ec93ce96026dd927cbe1b78aa58d45485c3f1c7000aaec9fe78da29daa9",
+      "section41Hash": "719d4c22f5009726441e91e28abd51e5982fe14b7750d00369acf4527871e5a6",
+      "section42Hash": "e510e08857c9731e132a512d7b9e3204a1805b82fc5b9e985c34075a56fa9330"
+    },
+    {
+      "dedupeKey": "amlodipinebesilate|5mg|tablet",
+      "status": "SOURCE_TEXT_READY",
+      "sourceUrl": "https://cima.aemps.es/cima/dochtml/ft/65460/FT_65460.html",
+      "sourceTier": "AEMPS_CIMA",
+      "section2Hash": "1d4b9ec93ce96026dd927cbe1b78aa58d45485c3f1c7000aaec9fe78da29daa9",
+      "section41Hash": "719d4c22f5009726441e91e28abd51e5982fe14b7750d00369acf4527871e5a6",
+      "section42Hash": "e510e08857c9731e132a512d7b9e3204a1805b82fc5b9e985c34075a56fa9330"
+    },
+    {
+      "dedupeKey": "amlodipinebesilatevalsartan|10mg+160mg|filmcoatedtablet",
+      "status": "SOURCE_TEXT_READY",
+      "sourceUrl": "https://cima.aemps.es/cima/dochtml/ft/86130/FT_86130.html",
+      "sourceTier": "AEMPS_CIMA",
+      "section2Hash": "5559afd4adc29fd8d2ca0e04e9a70d87f5574bb713ab28629cf67494a92e2128",
+      "section41Hash": "93be7d03ecdde34736c75140235a7efe5fe88e8ff646e19d31fe5dec5cd0cfa5",
+      "section42Hash": "5dbca3d1165654d3d51594cd24b6cf791cdc30bf82267ffadcc2d5c3afdd1dd9"
+    },
+    {
+      "dedupeKey": "amlodipinebesilatevalsartan|5mg+160mg|filmcoatedtablet",
+      "status": "SOURCE_TEXT_READY",
+      "sourceUrl": "https://cima.aemps.es/cima/dochtml/ft/86131/FT_86131.html",
+      "sourceTier": "AEMPS_CIMA",
+      "section2Hash": "5559afd4adc29fd8d2ca0e04e9a70d87f5574bb713ab28629cf67494a92e2128",
+      "section41Hash": "93be7d03ecdde34736c75140235a7efe5fe88e8ff646e19d31fe5dec5cd0cfa5",
+      "section42Hash": "5dbca3d1165654d3d51594cd24b6cf791cdc30bf82267ffadcc2d5c3afdd1dd9"
+    },
+    {
+      "dedupeKey": "amlodipinebesilatevalsartan|5mg+80mg|filmcoatedtablet",
+      "status": "SOURCE_TEXT_READY",
+      "sourceUrl": "https://cima.aemps.es/cima/dochtml/ft/86132/FT_86132.html",
+      "sourceTier": "AEMPS_CIMA",
+      "section2Hash": "5559afd4adc29fd8d2ca0e04e9a70d87f5574bb713ab28629cf67494a92e2128",
+      "section41Hash": "93be7d03ecdde34736c75140235a7efe5fe88e8ff646e19d31fe5dec5cd0cfa5",
+      "section42Hash": "5dbca3d1165654d3d51594cd24b6cf791cdc30bf82267ffadcc2d5c3afdd1dd9"
+    },
+    {
+      "dedupeKey": "amlodipinebesilatevalsartanhydrochlorothiazide|10mg+160mg+12.5mg|filmcoatedtablet",
+      "status": "SOURCE_TEXT_READY",
+      "sourceUrl": "https://cima.aemps.es/cima/dochtml/ft/85175/FT_85175.html",
+      "sourceTier": "AEMPS_CIMA",
+      "section2Hash": "4e891019aa26dc1d47763958e7d8497b3724714f0e231ffc3b2a8019b895ad9a",
+      "section41Hash": "b3589bb9533c98e38c0fe597864741a3e8441433e788f4395c5ff8c88685f6f7",
+      "section42Hash": "ae48a29f2c69099f12430800eb29c6cf07e392d7383054a37a8ff704314078df"
+    },
+    {
+      "dedupeKey": "amlodipinebesilatevalsartanhydrochlorothiazide|5mg+160mg+12.5mg|filmcoatedtablet",
+      "status": "SOURCE_TEXT_READY",
+      "sourceUrl": "https://cima.aemps.es/cima/dochtml/ft/85178/FT_85178.html",
+      "sourceTier": "AEMPS_CIMA",
+      "section2Hash": "4e891019aa26dc1d47763958e7d8497b3724714f0e231ffc3b2a8019b895ad9a",
+      "section41Hash": "b3589bb9533c98e38c0fe597864741a3e8441433e788f4395c5ff8c88685f6f7",
+      "section42Hash": "ae48a29f2c69099f12430800eb29c6cf07e392d7383054a37a8ff704314078df"
+    },
+    {
+      "dedupeKey": "amlodipinebesilatevalsartanhydrochlorothiazide|5mg+160mg+25mg|filmcoatedtablet",
+      "status": "SOURCE_TEXT_READY",
+      "sourceUrl": "https://cima.aemps.es/cima/dochtml/ft/85179/FT_85179.html",
+      "sourceTier": "AEMPS_CIMA",
+      "section2Hash": "4e891019aa26dc1d47763958e7d8497b3724714f0e231ffc3b2a8019b895ad9a",
+      "section41Hash": "b3589bb9533c98e38c0fe597864741a3e8441433e788f4395c5ff8c88685f6f7",
+      "section42Hash": "ae48a29f2c69099f12430800eb29c6cf07e392d7383054a37a8ff704314078df"
+    },
+    {
+      "dedupeKey": "amlodipinemaleate|10mg|tablet",
+      "status": "SOURCE_TEXT_READY",
+      "sourceUrl": "https://cima.aemps.es/cima/dochtml/ft/65461/FT_65461.html",
+      "sourceTier": "AEMPS_CIMA",
+      "section2Hash": "1d4b9ec93ce96026dd927cbe1b78aa58d45485c3f1c7000aaec9fe78da29daa9",
+      "section41Hash": "719d4c22f5009726441e91e28abd51e5982fe14b7750d00369acf4527871e5a6",
+      "section42Hash": "e510e08857c9731e132a512d7b9e3204a1805b82fc5b9e985c34075a56fa9330"
+    },
+    {
+      "dedupeKey": "amlodipinemaleate|5mg|tablet",
+      "status": "SOURCE_TEXT_READY",
+      "sourceUrl": "https://cima.aemps.es/cima/dochtml/ft/65460/FT_65460.html",
+      "sourceTier": "AEMPS_CIMA",
+      "section2Hash": "1d4b9ec93ce96026dd927cbe1b78aa58d45485c3f1c7000aaec9fe78da29daa9",
+      "section41Hash": "719d4c22f5009726441e91e28abd51e5982fe14b7750d00369acf4527871e5a6",
+      "section42Hash": "e510e08857c9731e132a512d7b9e3204a1805b82fc5b9e985c34075a56fa9330"
+    },
+    {
+      "dedupeKey": "amlodipinemesilatemonohydrate|10mg|tablet",
+      "status": "SOURCE_TEXT_READY",
+      "sourceUrl": "https://cima.aemps.es/cima/dochtml/ft/65461/FT_65461.html",
+      "sourceTier": "AEMPS_CIMA",
+      "section2Hash": "1d4b9ec93ce96026dd927cbe1b78aa58d45485c3f1c7000aaec9fe78da29daa9",
+      "section41Hash": "719d4c22f5009726441e91e28abd51e5982fe14b7750d00369acf4527871e5a6",
+      "section42Hash": "e510e08857c9731e132a512d7b9e3204a1805b82fc5b9e985c34075a56fa9330"
+    },
+    {
+      "dedupeKey": "amlodipinemesilatemonohydrate|5mg|tablet",
+      "status": "SOURCE_TEXT_READY",
+      "sourceUrl": "https://cima.aemps.es/cima/dochtml/ft/65460/FT_65460.html",
+      "sourceTier": "AEMPS_CIMA",
+      "section2Hash": "1d4b9ec93ce96026dd927cbe1b78aa58d45485c3f1c7000aaec9fe78da29daa9",
+      "section41Hash": "719d4c22f5009726441e91e28abd51e5982fe14b7750d00369acf4527871e5a6",
+      "section42Hash": "e510e08857c9731e132a512d7b9e3204a1805b82fc5b9e985c34075a56fa9330"
+    },
+    {
+      "dedupeKey": "amlodipinemesilatemonyhydrate|10mg|tablet",
+      "status": "SOURCE_TEXT_READY",
+      "sourceUrl": "https://cima.aemps.es/cima/dochtml/ft/65461/FT_65461.html",
+      "sourceTier": "AEMPS_CIMA",
+      "section2Hash": "1d4b9ec93ce96026dd927cbe1b78aa58d45485c3f1c7000aaec9fe78da29daa9",
+      "section41Hash": "719d4c22f5009726441e91e28abd51e5982fe14b7750d00369acf4527871e5a6",
+      "section42Hash": "e510e08857c9731e132a512d7b9e3204a1805b82fc5b9e985c34075a56fa9330"
+    },
+    {
+      "dedupeKey": "amoxicillin|500mg|capsulehard",
+      "status": "SOURCE_TEXT_READY",
+      "sourceUrl": "https://cima.aemps.es/cima/dochtml/ft/62586/FT_62586.html",
+      "sourceTier": "AEMPS_CIMA",
+      "section2Hash": "893266a7720001a7dca5dedc1021a30287051e67042df36ee5ee6896bb5fc712",
+      "section41Hash": "c146cdaf8fa7afe0fb64c99ea345cb3cc358e75cc4ae51e4208e31d843081864",
+      "section42Hash": "dae2afc16274553d2de857d601f64f2a33243bdee6a6a512dc5f2c7cc46543f9"
+    },
+    {
+      "dedupeKey": "amoxicillin|875mg+125mg|filmcoatedtablet",
+      "status": "SOURCE_TEXT_READY",
+      "sourceUrl": "https://cima.aemps.es/cima/dochtml/ft/67892/FT_67892.html",
+      "sourceTier": "AEMPS_CIMA",
+      "section2Hash": "856aa5b60958edd55665f259efa0e509201b9ce24c618627da15ddda2ca4cda9",
+      "section41Hash": "1c9c643d597c2b108033f471dd13b346ac31c602fd0886c8239fcf0fc5026738",
+      "section42Hash": "c952f74f8d36a8422efda5e9d4c510ca9637e4e05feef3943068cc52b00c1550"
+    },
+    {
+      "dedupeKey": "amoxicillinandclavulanatepotassium|1000mg|filmcoatedtablet",
+      "status": "SOURCE_TEXT_READY",
+      "sourceUrl": "https://cima.aemps.es/cima/dochtml/ft/80066/FT_80066.html",
+      "sourceTier": "AEMPS_CIMA",
+      "section2Hash": "511c698c58b23d9dba6bcf476076fe22636f90881167b81400c8fc4d8bd5ba44",
+      "section41Hash": "397fce186c797b82fd36a6773df5e365107f4d29fbea260452eda84e26e57198",
+      "section42Hash": "9a9586e56620210fc40fb5ff5e05d2fe8887ad78b70c4f88446c2340015eb163"
+    },
+    {
+      "dedupeKey": "amoxicillinclavulanicacid|(250mg+62.5mg)/5ml|powderfororalsuspension",
+      "status": "SOURCE_TEXT_READY",
+      "sourceUrl": "https://cima.aemps.es/cima/dochtml/ft/62800/FT_62800.html",
+      "sourceTier": "AEMPS_CIMA",
+      "section2Hash": "b3989564280c3fcb7536776a4b5b6d511b13d282f77275651672bc9c1a4ff5aa",
+      "section41Hash": "0be8b188fb3ed33cca5cd18cc17f2a7faae8afe286d9a9de38997dc944bcdb10",
+      "section42Hash": "f581d048fb87c63da3f4f1084335c0f6222e7016fdea022550d84d00f3c7dbcc"
+    },
+    {
+      "dedupeKey": "amoxicillintrihydrateequivalenttoamoxicillincompacted|875mg+125mg|filmcoatedtablet",
+      "status": "SOURCE_TEXT_READY",
+      "sourceUrl": "https://cima.aemps.es/cima/dochtml/ft/67892/FT_67892.html",
+      "sourceTier": "AEMPS_CIMA",
+      "section2Hash": "856aa5b60958edd55665f259efa0e509201b9ce24c618627da15ddda2ca4cda9",
+      "section41Hash": "1c9c643d597c2b108033f471dd13b346ac31c602fd0886c8239fcf0fc5026738",
+      "section42Hash": "c952f74f8d36a8422efda5e9d4c510ca9637e4e05feef3943068cc52b00c1550"
+    },
+    {
+      "dedupeKey": "anastrozole|1mg|filmcoatedtablet",
+      "status": "SOURCE_TEXT_INCOMPLETE",
+      "sourceUrl": "https://cima.aemps.es/cima/dochtml/ft/69480/FT_69480.html",
+      "sourceTier": "AEMPS_CIMA",
+      "section2Hash": "4f6c10a336764d6bf10150ef55d20aec657fad4312eb022c8adc38ae41a34bf9",
+      "section41Hash": "e56cd7981db8433717fd2e625d3389be0917e012f4205e197c77e312bb1a4ca5",
+      "section42Hash": null
+    },
+    {
+      "dedupeKey": "aprepitantaprepitant|125mg/80mg|capsulehard",
+      "status": "SOURCE_TEXT_READY",
+      "sourceUrl": "https://cima.aemps.es/cima/dochtml/ft/84781/FT_84781.html",
+      "sourceTier": "AEMPS_CIMA",
+      "section2Hash": "517af1433c8002eb48399e03089e3b65b9d9d9e84077e53477b9adb7b03c08bc",
+      "section41Hash": "5950392c22dfc94c127e8011622f2db6430e544562cc3e2099b5ccfcddd317bc",
+      "section42Hash": "536770da2989b1bf24230c362383d6f48c3d4a910265f73fc3fef203b2ac065a"
+    },
+    {
+      "dedupeKey": "aripriprazole|15mg|tablet",
+      "status": "SOURCE_TEXT_READY",
+      "sourceUrl": "https://cima.aemps.es/cima/dochtml/ft/79318/FT_79318.html",
+      "sourceTier": "AEMPS_CIMA",
+      "section2Hash": "57a0841256b7436217b8965dcfa16f8a963b9f1fe5ea7291a44cc9020eb8fa62",
+      "section41Hash": "991a4811d40fa2c195f0d5813d989669914a20c65e88377a9a1fc626f9a6e23c",
+      "section42Hash": "eec703de013f7a0e93598d5212ad30512806d8ae04d6e9ff4de2d9ac1ad97ce7"
+    },
+    {
+      "dedupeKey": "atezolizumab|1200mg/20ml|concentrateforsolutionforinfusion",
+      "status": "SOURCE_TEXT_READY",
+      "sourceUrl": "https://cima.aemps.es/cima/dochtml/ft/1171220001/FT_1171220001.html",
+      "sourceTier": "AEMPS_CIMA",
+      "section2Hash": "e7b6f40cfefbd32041b99bebeabf7aec4aa39e0db20c2afb80afc7b5c4962d97",
+      "section41Hash": "1b129d4b4ea72f07f89ef6f29208f78c8df0c6d285ed096925444b97db741a0f",
+      "section42Hash": "fab2dd73f0716d8122145899fcc7857f6ec6609fd9f27d17a38d7a024773b305"
+    },
+    {
+      "dedupeKey": "atezolizumab|840mg/14ml|concentrateforsolutionforinfusion",
+      "status": "SOURCE_TEXT_READY",
+      "sourceUrl": "https://cima.aemps.es/cima/dochtml/ft/1171220001/FT_1171220001.html",
+      "sourceTier": "AEMPS_CIMA",
+      "section2Hash": "e7b6f40cfefbd32041b99bebeabf7aec4aa39e0db20c2afb80afc7b5c4962d97",
+      "section41Hash": "1b129d4b4ea72f07f89ef6f29208f78c8df0c6d285ed096925444b97db741a0f",
+      "section42Hash": "fab2dd73f0716d8122145899fcc7857f6ec6609fd9f27d17a38d7a024773b305"
+    },
+    {
+      "dedupeKey": "atorvastatin|10mg|filmcoatedtablet",
+      "status": "SOURCE_TEXT_INCOMPLETE",
+      "sourceUrl": "https://cima.aemps.es/cima/dochtml/ft/69534/FT_69534.html",
+      "sourceTier": "AEMPS_CIMA",
+      "section2Hash": "e805f3a6495917041ebe0f0c882ad2298b40b77c95647ec34a1474a1426e061f",
+      "section41Hash": "f56fc9f1b5c9decade78b1dc4330842deff3238c16a5164a3898e49e508fb5f2",
+      "section42Hash": null
+    },
+    {
+      "dedupeKey": "atorvastatin|20mg|filmcoatedtablet",
+      "status": "SOURCE_TEXT_INCOMPLETE",
+      "sourceUrl": "https://cima.aemps.es/cima/dochtml/ft/69536/FT_69536.html",
+      "sourceTier": "AEMPS_CIMA",
+      "section2Hash": "e805f3a6495917041ebe0f0c882ad2298b40b77c95647ec34a1474a1426e061f",
+      "section41Hash": "f56fc9f1b5c9decade78b1dc4330842deff3238c16a5164a3898e49e508fb5f2",
+      "section42Hash": null
+    },
+    {
+      "dedupeKey": "atorvastatincalciumequivalentto10mgatorvastatin|10mg|filmcoatedtablet",
+      "status": "SOURCE_TEXT_INCOMPLETE",
+      "sourceUrl": "https://cima.aemps.es/cima/dochtml/ft/69534/FT_69534.html",
+      "sourceTier": "AEMPS_CIMA",
+      "section2Hash": "e805f3a6495917041ebe0f0c882ad2298b40b77c95647ec34a1474a1426e061f",
+      "section41Hash": "f56fc9f1b5c9decade78b1dc4330842deff3238c16a5164a3898e49e508fb5f2",
+      "section42Hash": null
+    },
+    {
+      "dedupeKey": "atropinesulfate|0.5%|eyedropssolution",
+      "status": "SOURCE_TEXT_READY",
+      "sourceUrl": "https://cima.aemps.es/cima/dochtml/ft/45046/FT_45046.html",
+      "sourceTier": "AEMPS_CIMA",
+      "section2Hash": "322f39193fcfa03b47d3dec869f1b7ce6fe65f3f17dfd64e6a9493ef4cbf85cf",
+      "section41Hash": "40ad7ad7d4a1e9be04a7853b09578160469d00060e8774acaeff32bdae987be0",
+      "section42Hash": "21d4d5ca9a4618d70e13ed6511113fee714238a009daa59821211beae2548d2f"
+    },
+    {
+      "dedupeKey": "atropinesulfate|1%|eyedropssolution",
+      "status": "SOURCE_TEXT_READY",
+      "sourceUrl": "https://cima.aemps.es/cima/dochtml/ft/39474/FT_39474.html",
+      "sourceTier": "AEMPS_CIMA",
+      "section2Hash": "322f39193fcfa03b47d3dec869f1b7ce6fe65f3f17dfd64e6a9493ef4cbf85cf",
+      "section41Hash": "40ad7ad7d4a1e9be04a7853b09578160469d00060e8774acaeff32bdae987be0",
+      "section42Hash": "8461aaf3d741a4bcb2db5e0fa854251f85205bf817926a869b2eed3e6103a683"
+    },
+    {
+      "dedupeKey": "azithromycin|200mg/5ml|granulesfororalsuspension",
+      "status": "SOURCE_TEXT_READY",
+      "sourceUrl": "https://cima.aemps.es/cima/dochtml/ft/71180/FT_71180.html",
+      "sourceTier": "AEMPS_CIMA",
+      "section2Hash": "41583c50163915aa39f96afe1723227168d19c98f193e7c7338d948a20291573",
+      "section41Hash": "3cdf745f3d74e9a1acb8363808b37285e494c0c5531cde898c9c09c23acec995",
+      "section42Hash": "6553967c00cda5493119b36110b11111917293fbbe2d44f2b0ad5e2bf37fae84"
+    },
+    {
+      "dedupeKey": "azithromycin|250mg|capsulehard",
+      "status": "SOURCE_TEXT_INCOMPLETE",
+      "sourceUrl": "https://cima.aemps.es/cima/dochtml/ft/59616/FT_59616.html",
+      "sourceTier": "AEMPS_CIMA",
+      "section2Hash": "dee035afebefb6f5dcac78df4e3b2c34aad5b41d0818c063b01457c2dcc31281",
+      "section41Hash": "3478b6e1a39a8084d59790e6279100dd93f4eac33ba9cf3501a906fa3996e472",
+      "section42Hash": null
+    },
+    {
+      "dedupeKey": "azithromycin|500mg|filmcoatedtablet",
+      "status": "SOURCE_TEXT_INCOMPLETE",
+      "sourceUrl": "https://cima.aemps.es/cima/dochtml/ft/65600/FT_65600.html",
+      "sourceTier": "AEMPS_CIMA",
+      "section2Hash": "687d0d087db0520db4121aeae583f46285e9ea0fc534f7fe497eaaea2d25643e",
+      "section41Hash": "35f7c1ac118fc8ece69554bc6410d0bb5bf002ae09c0da17e18e561c0ccf5a71",
+      "section42Hash": null
+    },
+    {
+      "dedupeKey": "azithromycindihydrate|500mg|filmcoatedtablet",
+      "status": "SOURCE_TEXT_INCOMPLETE",
+      "sourceUrl": "https://cima.aemps.es/cima/dochtml/ft/65600/FT_65600.html",
+      "sourceTier": "AEMPS_CIMA",
+      "section2Hash": "687d0d087db0520db4121aeae583f46285e9ea0fc534f7fe497eaaea2d25643e",
+      "section41Hash": "35f7c1ac118fc8ece69554bc6410d0bb5bf002ae09c0da17e18e561c0ccf5a71",
+      "section42Hash": null
+    },
+    {
+      "dedupeKey": "azithromycininndihydrate|500mg|filmcoatedtablet",
+      "status": "SOURCE_TEXT_INCOMPLETE",
+      "sourceUrl": "https://cima.aemps.es/cima/dochtml/ft/65600/FT_65600.html",
+      "sourceTier": "AEMPS_CIMA",
+      "section2Hash": "687d0d087db0520db4121aeae583f46285e9ea0fc534f7fe497eaaea2d25643e",
+      "section41Hash": "35f7c1ac118fc8ece69554bc6410d0bb5bf002ae09c0da17e18e561c0ccf5a71",
+      "section42Hash": null
+    },
+    {
+      "dedupeKey": "azithromycinmonohydrate|500mg|filmcoatedtablet",
+      "status": "SOURCE_TEXT_INCOMPLETE",
+      "sourceUrl": "https://cima.aemps.es/cima/dochtml/ft/65600/FT_65600.html",
+      "sourceTier": "AEMPS_CIMA",
+      "section2Hash": "687d0d087db0520db4121aeae583f46285e9ea0fc534f7fe497eaaea2d25643e",
+      "section41Hash": "35f7c1ac118fc8ece69554bc6410d0bb5bf002ae09c0da17e18e561c0ccf5a71",
+      "section42Hash": null
+    },
+    {
+      "dedupeKey": "betamethasonedipropionate|0.05%|ointment",
+      "status": "SOURCE_TEXT_READY",
+      "sourceUrl": "https://cima.aemps.es/cima/dochtml/ft/55041/FT_55041.html",
+      "sourceTier": "AEMPS_CIMA",
+      "section2Hash": "be5356bfb57cfa3cd6fd573d43146f41db539a44d33bd05374c45eb06a1b92a4",
+      "section41Hash": "7a8c1a282de9a5db9286fa429603f606adea781994116618317673f3dbb81108",
+      "section42Hash": "a262f926b2f7598042149b5af24902db13388b4b32a22eeeb8a133a9f32cf7bf"
+    },
+    {
+      "dedupeKey": "bicalutamide|50mg|filmcoatedtablet",
+      "status": "SOURCE_TEXT_INCOMPLETE",
+      "sourceUrl": "https://cima.aemps.es/cima/dochtml/ft/68818/FT_68818.html",
+      "sourceTier": "AEMPS_CIMA",
+      "section2Hash": "924d29048b08a1230d42eb495ce6a26b235c8e228dbfcc6aece382f4c4017141",
+      "section41Hash": "bad79fdb90bc2b8a55de3715bc5bb8219cfc07dae0b437d5b56eb1fe12fc8dee",
+      "section42Hash": null
+    },
+    {
+      "dedupeKey": "bisoprololfumarate|10mg|tablet",
+      "status": "SOURCE_TEXT_READY",
+      "sourceUrl": "https://cima.aemps.es/cima/dochtml/ft/78905/FT_78905.html",
+      "sourceTier": "AEMPS_CIMA",
+      "section2Hash": "5f1138c5f136e15829cda29a527928b0393e3cd630722cc2407722a1220e8e32",
+      "section41Hash": "1f9418c72bc95208f074996b02302c8b7367bea57bdd82a6b559c2c2322437c0",
+      "section42Hash": "78835b24cc6874218eee82201b8cbf5dec36bd0d159ec827d9a8bffd02034a01"
+    },
+    {
+      "dedupeKey": "bisoprololfumarate|5mg|tablet",
+      "status": "SOURCE_TEXT_READY",
+      "sourceUrl": "https://cima.aemps.es/cima/dochtml/ft/87952/FT_87952.html",
+      "sourceTier": "AEMPS_CIMA",
+      "section2Hash": "4ec34d432d321f56c61ab3b7358cb23132f21f0af3d5ca2fdcd7894bb7aee77e",
+      "section41Hash": "1f9418c72bc95208f074996b02302c8b7367bea57bdd82a6b559c2c2322437c0",
+      "section42Hash": "03d52260790602da1b2edc9110a5ed2e5e14970a3f70362d80481058dbb20382"
+    },
+    {
+      "dedupeKey": "bortezomib|3.5mg|powderforsolutionforinjection",
+      "status": "SOURCE_TEXT_READY",
+      "sourceUrl": "https://cima.aemps.es/cima/dochtml/ft/83444/FT_83444.html",
+      "sourceTier": "AEMPS_CIMA",
+      "section2Hash": "ccad01547ef37b0ba255e93cbc784b4b9309e456efa120f35ac45c6648e7949d",
+      "section41Hash": "23e8482a985a17bd6f9e178a27af884ce0b3150bcc81bda615102395e656a969",
+      "section42Hash": "ecbefe76cecd1a924d0d9389401c84553ba1d5f6628506f2c905af9d0b926dc4"
+    },
+    {
+      "dedupeKey": "budesonide|0.5mg/1ml|nebulisersuspension",
+      "status": "SOURCE_TEXT_INCOMPLETE",
+      "sourceUrl": "https://cima.aemps.es/cima/dochtml/ft/66942/FT_66942.html",
+      "sourceTier": "AEMPS_CIMA",
+      "section2Hash": "c5f02277ec0f062f382b25fad19ee3152a715a6a2b119d253937c0358554f631",
+      "section41Hash": "dce44929c60809f3b9ebb0e90b2b87a4194b1577d818c45e3a9550fb19439840",
+      "section42Hash": null
+    },
+    {
+      "dedupeKey": "bupivacainehydrochloride|20mg/4ml|solutionforinjection",
+      "status": "SOURCE_TEXT_READY",
+      "sourceUrl": "https://cima.aemps.es/cima/dochtml/ft/62163/FT_62163.html",
+      "sourceTier": "AEMPS_CIMA",
+      "section2Hash": "eb759e3019ab2c2bbe14cd25c4c0b29be75578ca2f7c6fe9749ee8a44321606c",
+      "section41Hash": "d98282582106e4b669545d99ba1abbf89824c810aa833412f342799bd0792753",
+      "section42Hash": "b38b5891c2f08a1823693a37bbd26b24148878401a4fa16db841aeb15ab83222"
+    },
+    {
+      "dedupeKey": "cabazitaxel|10mg/ml|concentrateforsolutionforinfusion",
+      "status": "SOURCE_TEXT_READY",
+      "sourceUrl": "https://cima.aemps.es/cima/dochtml/ft/85714/FT_85714.html",
+      "sourceTier": "AEMPS_CIMA",
+      "section2Hash": "8c1df3d5140b38b4de924fd6d771fba56a2f5213d97a7cb4cd978df10b90d18b",
+      "section41Hash": "fcc0321b9e276f5281c8dd614835e7cfa3bc3551ffeea03ce68eb6cc69168713",
+      "section42Hash": "0a70adccb3a6ccc1865e72c07670deb9a82c528518e93267187ecb119e5541a2"
+    },
+    {
+      "dedupeKey": "cabergoline|0.5mg|tablet",
+      "status": "SOURCE_TEXT_READY",
+      "sourceUrl": "https://cima.aemps.es/cima/dochtml/ft/60867/FT_60867.html",
+      "sourceTier": "AEMPS_CIMA",
+      "section2Hash": "2bb6a8b28a98e414f3aa89844145afdd627a2d04a62ac44985b3db2b142a62c9",
+      "section41Hash": "c5501af5ff6620f714183141ca965a184f8bcc5a789992f6b35b23cbbb16f503",
+      "section42Hash": "98bb2f597057e062cf214ceba3d07c36dca1cf5d125f7821571f4f7ee919eb63"
+    },
+    {
+      "dedupeKey": "candesartancilexetilhydrochlorothiazide|16mg/12.5mg|tablet",
+      "status": "SOURCE_TEXT_INCOMPLETE",
+      "sourceUrl": "https://cima.aemps.es/cima/dochtml/ft/77092/FT_77092.html",
+      "sourceTier": "AEMPS_CIMA",
+      "section2Hash": "6aaf49c904748c73def5238abc98b5fadc6aa5e1cf526844cbb585fb283f32dc",
+      "section41Hash": "84d8afbb8c519b2bf48a51762ac3ee5b2881788fba4de40d764f5fad27505d40",
+      "section42Hash": null
+    },
+    {
+      "dedupeKey": "candesartancilexetilhydrochlorothiazide|8mg/12.5mg|tablet",
+      "status": "SOURCE_TEXT_INCOMPLETE",
+      "sourceUrl": "https://cima.aemps.es/cima/dochtml/ft/77095/FT_77095.html",
+      "sourceTier": "AEMPS_CIMA",
+      "section2Hash": "5d10845e838aa3ce642212f0b8d87552ab3a767aae904be14c0b693db2e2f59e",
+      "section41Hash": "84d8afbb8c519b2bf48a51762ac3ee5b2881788fba4de40d764f5fad27505d40",
+      "section42Hash": null
+    },
+    {
+      "dedupeKey": "captopril|50mg|tablet",
+      "status": "SOURCE_TEXT_READY",
+      "sourceUrl": "https://cima.aemps.es/cima/dochtml/ft/62305/FT_62305.html",
+      "sourceTier": "AEMPS_CIMA",
+      "section2Hash": "2ac8299a269b00d95600f10a5c463f54ca15921d038cabd24fc69715f8190c20",
+      "section41Hash": "56862336339194dc5ecea8acb3fe606b15c8ec6d8ff0a03509d7962743a43e1b",
+      "section42Hash": "34268d39f8390878f1f248816f65029c4baa881c459db0d8eebf9a3e44d828f7"
+    },
+    {
+      "dedupeKey": "carbocysteinemonohydratelysinesaltequaltoscmcls|2.7g|granulesfororalsolution",
+      "status": "SOURCE_TEXT_INCOMPLETE",
+      "sourceUrl": "https://cima.aemps.es/cima/dochtml/ft/79149/FT_79149.html",
+      "sourceTier": "AEMPS_CIMA",
+      "section2Hash": "fba354f8c212ca6e75c41883b2fe4ce85b8d64a252150f4307b9e2eef4184122",
+      "section41Hash": "85f697b25d8d622933ad50f98966d5b0bd22677c52c07076502a18580c9ee3fe",
+      "section42Hash": null
+    },
+    {
+      "dedupeKey": "carboplatin|10mg/1ml|concentrateforsolutionforinfusion",
+      "status": "SOURCE_TEXT_READY",
+      "sourceUrl": "https://cima.aemps.es/cima/dochtml/ft/62123/FT_62123.html",
+      "sourceTier": "AEMPS_CIMA",
+      "section2Hash": "8b13c278ba76a11692f2be9db2ec0eceb6ebc36ed564554ccc391deb6972e237",
+      "section41Hash": "9f13411aa6a9018920193487571c342c4c697e7120b5312146b99aaabc1b7cf1",
+      "section42Hash": "bdf4d2803b4772b44c06874bf45a80a333a49f782e7ceddd267556f33136d47b"
+    },
+    {
+      "dedupeKey": "cariprazinehydrochloride|1.5mg|capsulehard",
+      "status": "SOURCE_TEXT_READY",
+      "sourceUrl": "https://cima.aemps.es/cima/dochtml/ft/1171209001/FT_1171209001.html",
+      "sourceTier": "AEMPS_CIMA",
+      "section2Hash": "9c58a862455180980c85e69a9fda007d57e220e2d13e88e5408e4290815f37d8",
+      "section41Hash": "e6286f6e7c9e93c276fa28cae9a36f2077e68fa1d1c1f2e0b09c8837a39b1196",
+      "section42Hash": "f553187990f8ff34cb4a8f83a428dd594ea5cb593b57e57258bec8ddf800ab2c"
+    },
+    {
+      "dedupeKey": "cariprazinehydrochloride|3mg|capsulehard",
+      "status": "SOURCE_TEXT_READY",
+      "sourceUrl": "https://cima.aemps.es/cima/dochtml/ft/1171209011/FT_1171209011.html",
+      "sourceTier": "AEMPS_CIMA",
+      "section2Hash": "e307ee52b5ca357a69df8e00cd5d0e46fa69235bc37b28a5711de482d991e30e",
+      "section41Hash": "e6286f6e7c9e93c276fa28cae9a36f2077e68fa1d1c1f2e0b09c8837a39b1196",
+      "section42Hash": "9cb8e80ba8fabcd4ff33ebb453559365326b13988af293a4b63175d0bd3d4052"
+    },
+    {
+      "dedupeKey": "cariprazinehydrochloride|4.5mg|capsulehard",
+      "status": "SOURCE_TEXT_READY",
+      "sourceUrl": "https://cima.aemps.es/cima/dochtml/ft/1171209021/FT_1171209021.html",
+      "sourceTier": "AEMPS_CIMA",
+      "section2Hash": "e307ee52b5ca357a69df8e00cd5d0e46fa69235bc37b28a5711de482d991e30e",
+      "section41Hash": "e6286f6e7c9e93c276fa28cae9a36f2077e68fa1d1c1f2e0b09c8837a39b1196",
+      "section42Hash": "9cb8e80ba8fabcd4ff33ebb453559365326b13988af293a4b63175d0bd3d4052"
+    },
+    {
+      "dedupeKey": "cariprazinehydrochloride|6mg|capsulehard",
+      "status": "SOURCE_TEXT_READY",
+      "sourceUrl": "https://cima.aemps.es/cima/dochtml/ft/1171209029/FT_1171209029.html",
+      "sourceTier": "AEMPS_CIMA",
+      "section2Hash": "e307ee52b5ca357a69df8e00cd5d0e46fa69235bc37b28a5711de482d991e30e",
+      "section41Hash": "e6286f6e7c9e93c276fa28cae9a36f2077e68fa1d1c1f2e0b09c8837a39b1196",
+      "section42Hash": "9cb8e80ba8fabcd4ff33ebb453559365326b13988af293a4b63175d0bd3d4052"
+    },
+    {
+      "dedupeKey": "cefazolinsodium|1g|powderforsolutionforinjection",
+      "status": "SOURCE_TEXT_READY",
+      "sourceUrl": "https://cima.aemps.es/cima/dochtml/ft/64848/FT_64848.html",
+      "sourceTier": "AEMPS_CIMA",
+      "section2Hash": "b4b00ae77ae5be557200eb677dff2d809f357f520732786b995edc4089b34c3e",
+      "section41Hash": "3a488c5a431fbfce2659b0d466770cf9db5955fecd226c43ce06063ac0229cef",
+      "section42Hash": "c219c12e02e25286685d606b8dca8b621a1ad9313dda7a214a641cd6eb7a72f3"
+    },
+    {
+      "dedupeKey": "cefazolinsodium|2g|powderforsolutionforinjectionorinfusion",
+      "status": "SOURCE_TEXT_READY",
+      "sourceUrl": "https://cima.aemps.es/cima/dochtml/ft/86542/FT_86542.html",
+      "sourceTier": "AEMPS_CIMA",
+      "section2Hash": "55c9697caa4fadb38721993169ccf971ba12077b8d48759917db91c4db0e52e1",
+      "section41Hash": "b4f4d822d2f532de27aa0b24e814d342c8c86c3975024153adef2de8b669f7c9",
+      "section42Hash": "4cc6dc404afe08dabd9755797ae92cb4b434c2e0df919251e6cd7d47b5292bd2"
+    },
+    {
+      "dedupeKey": "cefiximetrihydrate|100mg/5ml|powderfororalsuspension",
+      "status": "SOURCE_TEXT_INCOMPLETE",
+      "sourceUrl": "https://cima.aemps.es/cima/dochtml/ft/59733/FT_59733.html",
+      "sourceTier": "AEMPS_CIMA",
+      "section2Hash": null,
+      "section41Hash": "441796c0bda5555684361e0d871fd09829fff34443c451975aea0c448dac4818",
+      "section42Hash": null
+    },
+    {
+      "dedupeKey": "cefiximetrihydrate|400mg|filmcoatedtablet",
+      "status": "SOURCE_TEXT_READY",
+      "sourceUrl": "https://cima.aemps.es/cima/dochtml/ft/90332/FT_90332.html",
+      "sourceTier": "AEMPS_CIMA",
+      "section2Hash": "84218b0af179d069e03a7e03aa1edad1c42608c2aed3a9b23caf62fa4499b134",
+      "section41Hash": "360fe56093b941699f7a2fd167a6b7b5dfc600d05906d60da2899e362528b6c3",
+      "section42Hash": "8ef7e607553fc0632eceb8137ccc00e7b34098d836e7ec8dc146018e62e3d96e"
+    },
+    {
+      "dedupeKey": "ceftriaxonedisodium|1g|powderforsolutionforinjectionorinfusion",
+      "status": "SOURCE_TEXT_READY",
+      "sourceUrl": "https://cima.aemps.es/cima/dochtml/ft/62635/FT_62635.html",
+      "sourceTier": "AEMPS_CIMA",
+      "section2Hash": "1e8cb1b1aafb8d5bc63b968e95756dc416ffcba4c60206d0d22fa62a82b78750",
+      "section41Hash": "79c3b68641826243aaf81d370c8c7bfb0985600d18a1381b2495d5e12c11df31",
+      "section42Hash": "bd369cf1fdd2bdff397ec17328f6fcfdb3fa59bf4c3beeed622af2063a87aeff"
+    },
+    {
+      "dedupeKey": "ceftriaxonedisodium|2g|powderforsolutionforinfusion",
+      "status": "SOURCE_TEXT_INCOMPLETE",
+      "sourceUrl": "https://cima.aemps.es/cima/dochtml/ft/64539/FT_64539.html",
+      "sourceTier": "AEMPS_CIMA",
+      "section2Hash": "a02d5e40e6a88e56c880c0118ddd0754c9fc52464be7c3a0471074cc5ea19b72",
+      "section41Hash": "3b58c4d66c4f1b3df4560b0d31b2edaed3cf3a2bf43760c98b8822f8c3364e0d",
+      "section42Hash": null
+    },
+    {
+      "dedupeKey": "ceftriaxonesodium|1g|powderandsolventforsolutionforinjection",
+      "status": "SOURCE_TEXT_READY",
+      "sourceUrl": "https://cima.aemps.es/cima/dochtml/ft/62635/FT_62635.html",
+      "sourceTier": "AEMPS_CIMA",
+      "section2Hash": "1e8cb1b1aafb8d5bc63b968e95756dc416ffcba4c60206d0d22fa62a82b78750",
+      "section41Hash": "79c3b68641826243aaf81d370c8c7bfb0985600d18a1381b2495d5e12c11df31",
+      "section42Hash": "bd369cf1fdd2bdff397ec17328f6fcfdb3fa59bf4c3beeed622af2063a87aeff"
+    },
+    {
+      "dedupeKey": "ceftriaxonesodium|1g|powderforsolutionforinjection",
+      "status": "SOURCE_TEXT_READY",
+      "sourceUrl": "https://cima.aemps.es/cima/dochtml/ft/62635/FT_62635.html",
+      "sourceTier": "AEMPS_CIMA",
+      "section2Hash": "1e8cb1b1aafb8d5bc63b968e95756dc416ffcba4c60206d0d22fa62a82b78750",
+      "section41Hash": "79c3b68641826243aaf81d370c8c7bfb0985600d18a1381b2495d5e12c11df31",
+      "section42Hash": "bd369cf1fdd2bdff397ec17328f6fcfdb3fa59bf4c3beeed622af2063a87aeff"
+    },
+    {
+      "dedupeKey": "cefuroximeacetil|500mg|filmcoatedtablet",
+      "status": "SOURCE_TEXT_INCOMPLETE",
+      "sourceUrl": "https://cima.aemps.es/cima/dochtml/ft/72261/FT_72261.html",
+      "sourceTier": "AEMPS_CIMA",
+      "section2Hash": "df74e41d4d6a38b6696ca660c1747db3bbc7a2d9cdf1b7f457dd89c8a9f8cbaa",
+      "section41Hash": "f7009357d8680bd665b0cd30258477f45622cd16e8c816a573aba80e8c4d4e6f",
+      "section42Hash": null
+    },
+    {
+      "dedupeKey": "cetirizine|10mg|filmcoatedtablet",
+      "status": "SOURCE_TEXT_READY",
+      "sourceUrl": "https://cima.aemps.es/cima/dochtml/ft/58499/FT_58499.html",
+      "sourceTier": "AEMPS_CIMA",
+      "section2Hash": "a37304fd050981c0ebcd2b04d188d163d900cd60ced78a465f9afd5f6db4cc99",
+      "section41Hash": "7580e98f5e243ff9febbd4b97298d538db348ff67d22f04b18b3c6cffe9eeb37",
+      "section42Hash": "bbfdcbdcf087bfa99ad808afec208f7c49aa1b392652d065716f7ce883de318d"
+    },
+    {
+      "dedupeKey": "cetrariaislandicatallusextractumspissum|6mg/ml|syrup",
+      "status": "SOURCE_TEXT_INCOMPLETE",
+      "sourceUrl": "https://cima.aemps.es/cima/dochtml/ft/61382/FT_61382.html",
+      "sourceTier": "AEMPS_CIMA",
+      "section2Hash": "dc3a3f31ed7206027cf161af15cf6dd3425ab085f9138212bd3197e46595d6cb",
+      "section41Hash": "d649a2d4c4732a0f9702bac0003f403262ba513aa51d67978705ac1ec861a04a",
+      "section42Hash": null
+    },
+    {
+      "dedupeKey": "cholecalciferol|25000iu/2.5ml|oralsolution",
+      "status": "SOURCE_TEXT_READY",
+      "sourceUrl": "https://cima.aemps.es/cima/dochtml/ft/84796/FT_84796.html",
+      "sourceTier": "AEMPS_CIMA",
+      "section2Hash": "3d071fd02897c5b418d3a9c49c20bf9534553d903576becd62118008e40c52c8",
+      "section41Hash": "5f13c470eaf8f0a41e2438367aea0ba6a52c05f65377feee0fd24d84cd65850d",
+      "section42Hash": "6c50cfadfdafbe9892e64e8602f89110c306968b5380c408d577eea82090a1a9"
+    },
+    {
+      "dedupeKey": "cholecalciferol|50000i.u/5.0ml|oralsolution",
+      "status": "SOURCE_TEXT_READY",
+      "sourceUrl": "https://cima.aemps.es/cima/dochtml/ft/86196/FT_86196.html",
+      "sourceTier": "AEMPS_CIMA",
+      "section2Hash": "06183a8399d62dd1a885ea8492aae33cbc299cff4925065dc0018743ff5aca26",
+      "section41Hash": "4ca81168c60302989919fd98936c2af49ab6ac25d725a57000c58cfe863de0da",
+      "section42Hash": "4543c14441833731be1141eaaeb66196b3cc63000bd13f94c29a441a17300b2b"
+    },
+    {
+      "dedupeKey": "ciprofloxacin|500mg|filmcoatedtablet",
+      "status": "SOURCE_TEXT_READY",
+      "sourceUrl": "https://cima.aemps.es/cima/dochtml/ft/62300/FT_62300.html",
+      "sourceTier": "AEMPS_CIMA",
+      "section2Hash": "f47dda99712531be136ce0a8b49029ff6063c371ca5c77f5ab1ba7972d60e637",
+      "section41Hash": "37ed0b11d219263bf214eef7c0cfe18790c7f4c8d3cc15071d55724a1da9ebc3",
+      "section42Hash": "8be2722064bf9ae7d7499109b62046a803c8c3428e4d5ed4665d7958b6c91f7f"
+    },
+    {
+      "dedupeKey": "ciprofloxacinhydrochloride|500mg|filmcoatedtablet",
+      "status": "SOURCE_TEXT_READY",
+      "sourceUrl": "https://cima.aemps.es/cima/dochtml/ft/62300/FT_62300.html",
+      "sourceTier": "AEMPS_CIMA",
+      "section2Hash": "f47dda99712531be136ce0a8b49029ff6063c371ca5c77f5ab1ba7972d60e637",
+      "section41Hash": "37ed0b11d219263bf214eef7c0cfe18790c7f4c8d3cc15071d55724a1da9ebc3",
+      "section42Hash": "8be2722064bf9ae7d7499109b62046a803c8c3428e4d5ed4665d7958b6c91f7f"
+    },
+    {
+      "dedupeKey": "ciprofloxacinhydrochloride1h2o|500mg|filmcoatedtablet",
+      "status": "SOURCE_TEXT_READY",
+      "sourceUrl": "https://cima.aemps.es/cima/dochtml/ft/62300/FT_62300.html",
+      "sourceTier": "AEMPS_CIMA",
+      "section2Hash": "f47dda99712531be136ce0a8b49029ff6063c371ca5c77f5ab1ba7972d60e637",
+      "section41Hash": "37ed0b11d219263bf214eef7c0cfe18790c7f4c8d3cc15071d55724a1da9ebc3",
+      "section42Hash": "8be2722064bf9ae7d7499109b62046a803c8c3428e4d5ed4665d7958b6c91f7f"
+    },
+    {
+      "dedupeKey": "ciprofloxacinhydrochloridemonohydrate|500mg|filmcoatedtablet",
+      "status": "SOURCE_TEXT_READY",
+      "sourceUrl": "https://cima.aemps.es/cima/dochtml/ft/62300/FT_62300.html",
+      "sourceTier": "AEMPS_CIMA",
+      "section2Hash": "f47dda99712531be136ce0a8b49029ff6063c371ca5c77f5ab1ba7972d60e637",
+      "section41Hash": "37ed0b11d219263bf214eef7c0cfe18790c7f4c8d3cc15071d55724a1da9ebc3",
+      "section42Hash": "8be2722064bf9ae7d7499109b62046a803c8c3428e4d5ed4665d7958b6c91f7f"
+    },
+    {
+      "dedupeKey": "ciprofloxacinhydrochloridemonohydrate|750mg|coatedtablet",
+      "status": "SOURCE_TEXT_INCOMPLETE",
+      "sourceUrl": "https://cima.aemps.es/cima/dochtml/ft/62766/FT_62766.html",
+      "sourceTier": "AEMPS_CIMA",
+      "section2Hash": "2757a70b9c97df2135126688841d3390553e5f6b57267b94d3fd50f973632465",
+      "section41Hash": "d2e404d5e79340b0cfcd703ebdd87f99e3baa712cac1a6bd850f23e608624437",
+      "section42Hash": null
+    },
+    {
+      "dedupeKey": "cisatracuriumbesilat|2mg/ml|solutionforinjectioninfusion",
+      "status": "SOURCE_TEXT_READY",
+      "sourceUrl": "https://cima.aemps.es/cima/dochtml/ft/76000/FT_76000.html",
+      "sourceTier": "AEMPS_CIMA",
+      "section2Hash": "36ef6d22e002d0c559358db93141dc7fe4efc0d4d9cc50b9bf6a8afcc19e1251",
+      "section41Hash": "f44a91753e2cc0aa27d5bc73be1bd70ea9ffa1d3210f4842c9779cdb635710d8",
+      "section42Hash": "df36f8b30ee1e433724b3b8e208be4b8e8c4d0142bd47573931786d40990ecae"
+    },
+    {
+      "dedupeKey": "citalopramhydrobromide|20mg|filmcoatedtablet",
+      "status": "SOURCE_TEXT_INCOMPLETE",
+      "sourceUrl": "https://cima.aemps.es/cima/dochtml/ft/66483/FT_66483.html",
+      "sourceTier": "AEMPS_CIMA",
+      "section2Hash": "e5943d375cbca1ea414bf4a7d0bc44db4a6444e67a39387b729f993810c34eb6",
+      "section41Hash": "815ecbb53a75610b3d1b0dde096ec974bf4732f7966df2be6a7a1437c92a8ada",
+      "section42Hash": null
+    },
+    {
+      "dedupeKey": "clarithromycin|500mg|filmcoatedtablet",
+      "status": "SOURCE_TEXT_INCOMPLETE",
+      "sourceUrl": "https://cima.aemps.es/cima/dochtml/ft/67639/FT_67639.html",
+      "sourceTier": "AEMPS_CIMA",
+      "section2Hash": "57879b9a28d502286b130ba3e418760f6e35cca6665021b953287d71abfbf731",
+      "section41Hash": "e59afa73f93806ef37e70646d4c0caf13bca4a05acc7e87580eb7e3b2ea944ac",
+      "section42Hash": null
+    },
+    {
+      "dedupeKey": "clindamycinhydrochloride|10mg/1ml|cutaneoussolution",
+      "status": "SOURCE_TEXT_READY",
+      "sourceUrl": "https://cima.aemps.es/cima/dochtml/ft/60361/FT_60361.html",
+      "sourceTier": "AEMPS_CIMA",
+      "section2Hash": "b5629a2bd48f9b1dc6954980f932524b89fae6345903c8061b1ee678293bfce9",
+      "section41Hash": "108d9f84f5336ce51d49b4fe81e2c83a28ea216de1f8954bbe6e9d09387adcdd",
+      "section42Hash": "974979864bad01156bb66ccdc6be056d2f1308961afe27ff9b0d9d2748912fec"
+    },
+    {
+      "dedupeKey": "clopidogrelbesiltae|75mg|filmcoatedtablet",
+      "status": "SOURCE_TEXT_READY",
+      "sourceUrl": "https://cima.aemps.es/cima/dochtml/ft/71622/FT_71622.html",
+      "sourceTier": "AEMPS_CIMA",
+      "section2Hash": "d8c17d30a47f30750239ab0175ee22a646b9f46da8a8a3af8b98a77947ea4699",
+      "section41Hash": "cdd90725cf16eb8c39bbc63df13a0b7ca0f1737a880c298ff46c1e1aa4f612d6",
+      "section42Hash": "ff418ede276e1b510049f967ead576d1bdce4403b9a556def8061c7c019991a4"
+    },
+    {
+      "dedupeKey": "clopidogrelhydrogensulphate75mgclopidogrel|75mg|filmcoatedtablet",
+      "status": "SOURCE_TEXT_READY",
+      "sourceUrl": "https://cima.aemps.es/cima/dochtml/ft/71622/FT_71622.html",
+      "sourceTier": "AEMPS_CIMA",
+      "section2Hash": "d8c17d30a47f30750239ab0175ee22a646b9f46da8a8a3af8b98a77947ea4699",
+      "section41Hash": "cdd90725cf16eb8c39bbc63df13a0b7ca0f1737a880c298ff46c1e1aa4f612d6",
+      "section42Hash": "ff418ede276e1b510049f967ead576d1bdce4403b9a556def8061c7c019991a4"
+    },
+    {
+      "dedupeKey": "clotrimazole|1%|cream",
+      "status": "SOURCE_TEXT_INCOMPLETE",
+      "sourceUrl": "https://cima.aemps.es/cima/dochtml/ft/69680/FT_69680.html",
+      "sourceTier": "AEMPS_CIMA",
+      "section2Hash": null,
+      "section41Hash": "4592ea4fd28d748df597894ec996afdbe7eeaf2cf0ee6876e491c2b644d5c69d",
+      "section42Hash": null
+    },
+    {
+      "dedupeKey": "clotrimazole|1%|cutaneoussolution",
+      "status": "SOURCE_TEXT_INCOMPLETE",
+      "sourceUrl": "https://cima.aemps.es/cima/dochtml/ft/52625/FT_52625.html",
+      "sourceTier": "AEMPS_CIMA",
+      "section2Hash": "93f7ed3fd085af17f7f2b088bb55fe7133050a956afe515bdb2eee1a7d2c64ac",
+      "section41Hash": "924ca8462d3b389cd32fe8fb1f25e273ce953a3ea9d3e5a655faa5175ed52fcb",
+      "section42Hash": null
+    },
+    {
+      "dedupeKey": "clotrimazole|10mg/1g|cream",
+      "status": "SOURCE_TEXT_INCOMPLETE",
+      "sourceUrl": "https://cima.aemps.es/cima/dochtml/ft/69680/FT_69680.html",
+      "sourceTier": "AEMPS_CIMA",
+      "section2Hash": null,
+      "section41Hash": "4592ea4fd28d748df597894ec996afdbe7eeaf2cf0ee6876e491c2b644d5c69d",
+      "section42Hash": null
+    },
+    {
+      "dedupeKey": "clotrimazole|2%|vaginalcream",
+      "status": "SOURCE_TEXT_INCOMPLETE",
+      "sourceUrl": "https://cima.aemps.es/cima/dochtml/ft/62220/FT_62220.html",
+      "sourceTier": "AEMPS_CIMA",
+      "section2Hash": "c9e39dd173bbfad83185c3b946618fdd1e4802c79f5be0b57cddcc75efb4370e",
+      "section41Hash": "21746633fcd091c29d42179e1f1aa56554046f914cb2b77f870639ea6fe42179",
+      "section42Hash": null
+    },
+    {
+      "dedupeKey": "desloratadine|5mg|filmcoatedtablet",
+      "status": "SOURCE_TEXT_READY",
+      "sourceUrl": "https://cima.aemps.es/cima/dochtml/ft/111739003/FT_111739003.html",
+      "sourceTier": "AEMPS_CIMA",
+      "section2Hash": "93f1f04d4989066d2f14eceee0a42f976e3c2a20c5758054deaf00d3cfa5e7eb",
+      "section41Hash": "73f64d15d2403616aee01c50b9b93d5e4a3389960b7b31f018488003c72afd5b",
+      "section42Hash": "c1b4173442c2d22a3eee77704854fd1d01b8590da63e9e9a0b7caf6cc6712378"
+    },
+    {
+      "dedupeKey": "desloratidine|5mg|orodispersibletablet",
+      "status": "SOURCE_TEXT_READY",
+      "sourceUrl": "https://cima.aemps.es/cima/dochtml/ft/77984/FT_77984.html",
+      "sourceTier": "AEMPS_CIMA",
+      "section2Hash": "bde05422ef6a8a753dce39ac01abc4b89feb3fe347adba952b4d86f428505160",
+      "section41Hash": "c6899d29e380e1fbf5a9786eda54f41fdb060bb1cfa4cd860a383f9e41edda5b",
+      "section42Hash": "92a5147595bfcc5073cc5a76737a94b926757f728f43c776281bb114b4346ff4"
+    },
+    {
+      "dedupeKey": "desmopressineacetate|0.2mg|tablet",
+      "status": "SOURCE_TEXT_READY",
+      "sourceUrl": "https://cima.aemps.es/cima/dochtml/ft/65910/FT_65910.html",
+      "sourceTier": "AEMPS_CIMA",
+      "section2Hash": "5ef4e28f61903112d4bc191030dc3abcb0c0971cce49ca7d83662515317b691b",
+      "section41Hash": "cecd7b80b8bbb6ced44c9e8a5c9102e368efb437ad1655827f5c53331e49f673",
+      "section42Hash": "d51ae5af32f2e495ada8573dcb7033f202431596dff4043190c195c60c0a3784"
+    },
+    {
+      "dedupeKey": "dexamethasone|8mg|tablet",
+      "status": "SOURCE_TEXT_READY",
+      "sourceUrl": "https://cima.aemps.es/cima/dochtml/ft/86123/FT_86123.html",
+      "sourceTier": "AEMPS_CIMA",
+      "section2Hash": "d5d8855a84edcf064dc024fec39eb54e35308a67bb1ac434fff956f58e31e72b",
+      "section41Hash": "78724f94c27780fa1349397b350d283a2be9923d63e9d0519a6dd668340e02c5",
+      "section42Hash": "b8bbea7e10e3ade1a53fa1caf19006c5e924a7fda8ef62ee5f086250aa6df508"
+    },
+    {
+      "dedupeKey": "dexamethasonephosphate|4mg/ml|solutionforinjection",
+      "status": "SOURCE_TEXT_READY",
+      "sourceUrl": "https://cima.aemps.es/cima/dochtml/ft/86438/FT_86438.html",
+      "sourceTier": "AEMPS_CIMA",
+      "section2Hash": "b0079d1410f1e04c78a3693f96ce902056cc00eebe174387f74f1e1299ef09cf",
+      "section41Hash": "e18b6406e93ac2c07c473892c4729e4c05f52d32aad45aa7afd2ee1e1832ac80",
+      "section42Hash": "f489fd5e40c5bb2d83f93c26594663570d25587b1a1c92fb60cf0ca4b478e5e5"
+    },
+    {
+      "dedupeKey": "dexamethasonesodiummphosphate|4mg/1ml|solutionforinjection",
+      "status": "SOURCE_TEXT_READY",
+      "sourceUrl": "https://cima.aemps.es/cima/dochtml/ft/86438/FT_86438.html",
+      "sourceTier": "AEMPS_CIMA",
+      "section2Hash": "b0079d1410f1e04c78a3693f96ce902056cc00eebe174387f74f1e1299ef09cf",
+      "section41Hash": "e18b6406e93ac2c07c473892c4729e4c05f52d32aad45aa7afd2ee1e1832ac80",
+      "section42Hash": "f489fd5e40c5bb2d83f93c26594663570d25587b1a1c92fb60cf0ca4b478e5e5"
+    },
+    {
+      "dedupeKey": "dexamethasonesodiumphosphate|0.15%|eyedropssolution",
+      "status": "SOURCE_TEXT_READY",
+      "sourceUrl": "https://cima.aemps.es/cima/dochtml/ft/84548/FT_84548.html",
+      "sourceTier": "AEMPS_CIMA",
+      "section2Hash": "091c3be7236402530e37ab85dbf7ba1bb3f5892f1747acad88b858d53ba7223e",
+      "section41Hash": "0b95786a62ee83ac8648b0ee92a98b228e753dfe399ce0b994b6e3765751d64e",
+      "section42Hash": "fc9cf2983a856f8554a31cec9182ffb6e8b2facd604a2d6b5aa92b1cfa5f72cc"
+    },
+    {
+      "dedupeKey": "dexamethasonesodiumphosphate|1mg/1ml|eyedropssolution",
+      "status": "SOURCE_TEXT_READY",
+      "sourceUrl": "https://cima.aemps.es/cima/dochtml/ft/40602/FT_40602.html",
+      "sourceTier": "AEMPS_CIMA",
+      "section2Hash": "6a34bbde918ceb6770dd3efd2ccaae516d172775b4b84ba555162807a8f4f13d",
+      "section41Hash": "9a36c457002fd4ebd3e9c65e9ff0cd7f5e457b6d7a47d78b8d9c575388525aa4",
+      "section42Hash": "429eefd758b77a76081fdf3cb62b32b7bb71446cf36f604963423df117003cfb"
+    },
+    {
+      "dedupeKey": "dexamethasonesodiumphosphate|4mg/ml|solutionforinjection",
+      "status": "SOURCE_TEXT_READY",
+      "sourceUrl": "https://cima.aemps.es/cima/dochtml/ft/86438/FT_86438.html",
+      "sourceTier": "AEMPS_CIMA",
+      "section2Hash": "b0079d1410f1e04c78a3693f96ce902056cc00eebe174387f74f1e1299ef09cf",
+      "section41Hash": "e18b6406e93ac2c07c473892c4729e4c05f52d32aad45aa7afd2ee1e1832ac80",
+      "section42Hash": "f489fd5e40c5bb2d83f93c26594663570d25587b1a1c92fb60cf0ca4b478e5e5"
+    },
+    {
+      "dedupeKey": "dexamethasonesodiumphosphate|4mg/ml|solutionforinjectioninfusion",
+      "status": "SOURCE_TEXT_READY",
+      "sourceUrl": "https://cima.aemps.es/cima/dochtml/ft/86438/FT_86438.html",
+      "sourceTier": "AEMPS_CIMA",
+      "section2Hash": "b0079d1410f1e04c78a3693f96ce902056cc00eebe174387f74f1e1299ef09cf",
+      "section41Hash": "e18b6406e93ac2c07c473892c4729e4c05f52d32aad45aa7afd2ee1e1832ac80",
+      "section42Hash": "f489fd5e40c5bb2d83f93c26594663570d25587b1a1c92fb60cf0ca4b478e5e5"
+    },
+    {
+      "dedupeKey": "dexketoprofentrometamol|12.5mg/g|gel",
+      "status": "SOURCE_TEXT_INCOMPLETE",
+      "sourceUrl": "https://cima.aemps.es/cima/dochtml/ft/61404/FT_61404.html",
+      "sourceTier": "AEMPS_CIMA",
+      "section2Hash": null,
+      "section41Hash": "e49c46fdd07963ad2eea455934165d8a51476f69f9b83adccce415fe554e8cac",
+      "section42Hash": null
+    },
+    {
+      "dedupeKey": "diazepam|10mg|tablet",
+      "status": "SOURCE_TEXT_INCOMPLETE",
+      "sourceUrl": "https://cima.aemps.es/cima/dochtml/ft/80699/FT_80699.html",
+      "sourceTier": "AEMPS_CIMA",
+      "section2Hash": "a61741b49e4d2e6e05f011e1e9bc2e8a07356a8926d5927a2b02a83e846c730e",
+      "section41Hash": "32bd08578b7ff840c072fd50b009d888c953517c5244055ae1560a20b4cf22cb",
+      "section42Hash": null
+    },
+    {
+      "dedupeKey": "diazepam|2mg|tablet",
+      "status": "SOURCE_TEXT_READY",
+      "sourceUrl": "https://cima.aemps.es/cima/dochtml/ft/82224/FT_82224.html",
+      "sourceTier": "AEMPS_CIMA",
+      "section2Hash": "65cddd111641f43bc4d6c2f60419c5a08ac728d5c920cb500a90f875566bacd2",
+      "section41Hash": "54a0a469e9d766367873426421abbac6a4e8ace094a54536044e38f00798f811",
+      "section42Hash": "369f6dd5b1bc74740aaa8230722b1986239202d4cbd8dda3af807462bbefc72b"
+    },
+    {
+      "dedupeKey": "diazepam|5mg|coatedtablet",
+      "status": "SOURCE_TEXT_INCOMPLETE",
+      "sourceUrl": "https://cima.aemps.es/cima/dochtml/ft/80698/FT_80698.html",
+      "sourceTier": "AEMPS_CIMA",
+      "section2Hash": "a61741b49e4d2e6e05f011e1e9bc2e8a07356a8926d5927a2b02a83e846c730e",
+      "section41Hash": "32bd08578b7ff840c072fd50b009d888c953517c5244055ae1560a20b4cf22cb",
+      "section42Hash": null
+    },
+    {
+      "dedupeKey": "diazepam|5mg|tablet",
+      "status": "SOURCE_TEXT_INCOMPLETE",
+      "sourceUrl": "https://cima.aemps.es/cima/dochtml/ft/80698/FT_80698.html",
+      "sourceTier": "AEMPS_CIMA",
+      "section2Hash": "a61741b49e4d2e6e05f011e1e9bc2e8a07356a8926d5927a2b02a83e846c730e",
+      "section41Hash": "32bd08578b7ff840c072fd50b009d888c953517c5244055ae1560a20b4cf22cb",
+      "section42Hash": null
+    },
+    {
+      "dedupeKey": "diclofenacsodium|0.1%|eyedropssolution",
+      "status": "SOURCE_TEXT_INCOMPLETE",
+      "sourceUrl": "https://cima.aemps.es/cima/dochtml/ft/69475/FT_69475.html",
+      "sourceTier": "AEMPS_CIMA",
+      "section2Hash": "256b24147567e86208d0be43b68cc5120b993c40cde35fe6334fbab52ca41653",
+      "section41Hash": "39af4bd90456fdd3b22003a195269233cf09d0becb0134d0b18a85d862374d02",
+      "section42Hash": null
+    },
+    {
+      "dedupeKey": "diclofenacsodium|100mg|suppository",
+      "status": "SOURCE_TEXT_INCOMPLETE",
+      "sourceUrl": "https://cima.aemps.es/cima/dochtml/ft/55004/FT_55004.html",
+      "sourceTier": "AEMPS_CIMA",
+      "section2Hash": "b2c1b6a4e4de294af3e226ffc09aaa77bf6478947d2bce39c54b28b48248567b",
+      "section41Hash": "da18ed3074b9f26f8028df753165334ab9b2c7d55ce8dd72dbe78c481be8320c",
+      "section42Hash": null
+    },
+    {
+      "dedupeKey": "diclofenacsodium|10mg/1g|gel",
+      "status": "SOURCE_TEXT_READY",
+      "sourceUrl": "https://cima.aemps.es/cima/dochtml/ft/74347/FT_74347.html",
+      "sourceTier": "AEMPS_CIMA",
+      "section2Hash": "046105793e2f562b214d28a52ad6f4f05339d6be46c4fc75f9306430600120ff",
+      "section41Hash": "72921f242403689f7a51361f193451f6baa7995a71f84f2b8318f39a6f37e257",
+      "section42Hash": "54081508a752ae1c649f33f44e851f92c83f1a2eb91038618fe8376b9cc5dce9"
+    },
+    {
+      "dedupeKey": "diclofenacsodium|25mg/ml|solutionforinjection",
+      "status": "SOURCE_TEXT_READY",
+      "sourceUrl": "https://cima.aemps.es/cima/dochtml/ft/89081/FT_89081.html",
+      "sourceTier": "AEMPS_CIMA",
+      "section2Hash": "d5c5f8664c75887749e6b29260978342dfbe351211b58b126c4ddf60135f1f2a",
+      "section41Hash": "1c1073499091e0e58ccb88acb18bd6dbb0c3e9774d83103227ff0ba6e20d96a2",
+      "section42Hash": "bf34294297bbbcc2fd29f25786274b45fe9f5a25fd32324877f7be4abb1feb6a"
+    },
+    {
+      "dedupeKey": "diclofenacsodium|75mg/3ml|solutionforinjection",
+      "status": "SOURCE_TEXT_READY",
+      "sourceUrl": "https://cima.aemps.es/cima/dochtml/ft/89081/FT_89081.html",
+      "sourceTier": "AEMPS_CIMA",
+      "section2Hash": "d5c5f8664c75887749e6b29260978342dfbe351211b58b126c4ddf60135f1f2a",
+      "section41Hash": "1c1073499091e0e58ccb88acb18bd6dbb0c3e9774d83103227ff0ba6e20d96a2",
+      "section42Hash": "bf34294297bbbcc2fd29f25786274b45fe9f5a25fd32324877f7be4abb1feb6a"
+    },
+    {
+      "dedupeKey": "diclofenacspdium|100mg|suppository",
+      "status": "SOURCE_TEXT_INCOMPLETE",
+      "sourceUrl": "https://cima.aemps.es/cima/dochtml/ft/55004/FT_55004.html",
+      "sourceTier": "AEMPS_CIMA",
+      "section2Hash": "b2c1b6a4e4de294af3e226ffc09aaa77bf6478947d2bce39c54b28b48248567b",
+      "section41Hash": "da18ed3074b9f26f8028df753165334ab9b2c7d55ce8dd72dbe78c481be8320c",
+      "section42Hash": null
+    },
+    {
+      "dedupeKey": "dimenhydrinate|50mg|tablet",
+      "status": "SOURCE_TEXT_INCOMPLETE",
+      "sourceUrl": "https://cima.aemps.es/cima/dochtml/ft/60839/FT_60839.html",
+      "sourceTier": "AEMPS_CIMA",
+      "section2Hash": "d38b7b0c50d13c5c6ba44b51ff8823896d05bc31af54af984e67db4e27ee05a8",
+      "section41Hash": "fe1a812f4b50d0fbbc22622860b57ba7545dc2d98f9346bf7770aca45807438c",
+      "section42Hash": null
+    },
+    {
+      "dedupeKey": "diosmin|1000mg|filmcoatedtablet",
+      "status": "SOURCE_TEXT_READY",
+      "sourceUrl": "https://cima.aemps.es/cima/dochtml/ft/86537/FT_86537.html",
+      "sourceTier": "AEMPS_CIMA",
+      "section2Hash": "d5e691be553fa3ff6385af6a6ff16060503980b4e65e741f366f4e87a56d338c",
+      "section41Hash": "d95c8b56296ab126b2c666b2a03a510c7a5266ddfde36264e14bfa07b03d2eb2",
+      "section42Hash": "7b82aa97729d63fc65f3a9e237acfe84d43d826b3c4a39f2a2d6a097f4ad7c70"
+    },
+    {
+      "dedupeKey": "domperidone|10mg|tablet",
+      "status": "SOURCE_TEXT_READY",
+      "sourceUrl": "https://cima.aemps.es/cima/dochtml/ft/67523/FT_67523.html",
+      "sourceTier": "AEMPS_CIMA",
+      "section2Hash": "77d19c0fa31504e809e585f5535644388672d08d962ede78edcdc3c38f29ba0c",
+      "section41Hash": "6ca3ace7033a2f9502ab5efda205abf00d570290eab2ae10742c72df70bb33e8",
+      "section42Hash": "8fca5250ec58c8937bb4721016d81ec7ebaa5f2c4dcc46b1acf1472f26bc7b0a"
+    },
+    {
+      "dedupeKey": "dornasealfa|2.5mg/2.5ml|nebulisersolution",
+      "status": "SOURCE_TEXT_INCOMPLETE",
+      "sourceUrl": "https://cima.aemps.es/cima/dochtml/ft/60326/FT_60326.html",
+      "sourceTier": "AEMPS_CIMA",
+      "section2Hash": "a0234e77ad9b682d78ead46dc2f5a46fdbef7212112423ca135c0813f1eb5e7c",
+      "section41Hash": "8cf918043a11c4c566f2cc872085354ceae6ab11844b4adf2f24530a188e3d57",
+      "section42Hash": null
+    },
+    {
+      "dedupeKey": "doxazosinmesylate|2mg|tablet",
+      "status": "SOURCE_TEXT_READY",
+      "sourceUrl": "https://cima.aemps.es/cima/dochtml/ft/63067/FT_63067.html",
+      "sourceTier": "AEMPS_CIMA",
+      "section2Hash": "190671beb9038c33a1e4ea97dc960e1bee123ed422889ff62a94777f1bcedd84",
+      "section41Hash": "e6582d3e7c3058dcc37e2139910916df2056480ae53868d8cf2346eed3dbec91",
+      "section42Hash": "9c1c0563b8cff9d0eb47e315bb86b5afcf2b8cac4f3e8d9e43dd4e3ed9ed5a00"
+    },
+    {
+      "dedupeKey": "doxazosinmesylate|4mg|tablet",
+      "status": "SOURCE_TEXT_READY",
+      "sourceUrl": "https://cima.aemps.es/cima/dochtml/ft/63068/FT_63068.html",
+      "sourceTier": "AEMPS_CIMA",
+      "section2Hash": "190671beb9038c33a1e4ea97dc960e1bee123ed422889ff62a94777f1bcedd84",
+      "section41Hash": "e6582d3e7c3058dcc37e2139910916df2056480ae53868d8cf2346eed3dbec91",
+      "section42Hash": "9c1c0563b8cff9d0eb47e315bb86b5afcf2b8cac4f3e8d9e43dd4e3ed9ed5a00"
+    },
+    {
+      "dedupeKey": "doxycycline|100mg|capsulehard",
+      "status": "SOURCE_TEXT_READY",
+      "sourceUrl": "https://cima.aemps.es/cima/dochtml/ft/46406/FT_46406.html",
+      "sourceTier": "AEMPS_CIMA",
+      "section2Hash": "82ca44a7369fbdcab5574a3cc6fede9d4cc5e40d31d2090ab42e8de574d78a52",
+      "section41Hash": "7e29df69a6256e7ab4c7de2a54131025c8f82ce51c8c977b8daa20109cb8eea2",
+      "section42Hash": "11f2c59ed89216519b0597b0577bec4871fd7feaced4167754394e1eafea25b9"
+    },
+    {
+      "dedupeKey": "doxycyclinebasisunderdoxycyclinehyclate|100mg|coatedtablet",
+      "status": "SOURCE_TEXT_INCOMPLETE",
+      "sourceUrl": "https://cima.aemps.es/cima/dochtml/ft/50404/FT_50404.html",
+      "sourceTier": "AEMPS_CIMA",
+      "section2Hash": "5ec07d6a106544060c754682eda3b1d13e291dca63fa1476b15827be11d9d2f5",
+      "section41Hash": "79358a339c72f840184858746e8f3f1d640e660da5866a603eb5d21a3c6cfb5d",
+      "section42Hash": null
+    },
+    {
+      "dedupeKey": "dutasteridetamsulosinehydrochloride|0.5mg+0.4mg|capsulehard",
+      "status": "SOURCE_TEXT_READY",
+      "sourceUrl": "https://cima.aemps.es/cima/dochtml/ft/72275/FT_72275.html",
+      "sourceTier": "AEMPS_CIMA",
+      "section2Hash": "66d977213129e8d74609a1cd6e7b3b9ec1883897d72bdd00d8e0d3e408d46342",
+      "section41Hash": "8fef371a4bdd6bbbae0703f761782847e4ce91c6752b6f6b70130c9a6f816d60",
+      "section42Hash": "1c663775f013b4b22bbe99fcf6c8bd322bc033da9858aaea14a031f2ded8adc3"
+    },
+    {
+      "dedupeKey": "dutasteridetamsulosinhydrochloride|0.5mg+0.4mg|capsulehard",
+      "status": "SOURCE_TEXT_READY",
+      "sourceUrl": "https://cima.aemps.es/cima/dochtml/ft/72275/FT_72275.html",
+      "sourceTier": "AEMPS_CIMA",
+      "section2Hash": "66d977213129e8d74609a1cd6e7b3b9ec1883897d72bdd00d8e0d3e408d46342",
+      "section41Hash": "8fef371a4bdd6bbbae0703f761782847e4ce91c6752b6f6b70130c9a6f816d60",
+      "section42Hash": "1c663775f013b4b22bbe99fcf6c8bd322bc033da9858aaea14a031f2ded8adc3"
+    },
+    {
+      "dedupeKey": "emicizumab|105mg/0.7ml|solutionforinjection",
+      "status": "SOURCE_TEXT_READY",
+      "sourceUrl": "https://cima.aemps.es/cima/dochtml/ft/1181271002/FT_1181271002.html",
+      "sourceTier": "AEMPS_CIMA",
+      "section2Hash": "9d0f58c05fe00eac026f413a71cb38b54050e966c7cbe2a0d55ffade16964176",
+      "section41Hash": "f9a044e4a30bff4d6c535ce916e959358744e8d5db36bdfe4a83ea5b0db99463",
+      "section42Hash": "ebc855eed8eeb2141c42e298cd52477abfcdefbdaabe571c294b2e5e9cda8994"
+    },
+    {
+      "dedupeKey": "emicizumab|150mg/1ml|solutionforinjection",
+      "status": "SOURCE_TEXT_READY",
+      "sourceUrl": "https://cima.aemps.es/cima/dochtml/ft/1181271002/FT_1181271002.html",
+      "sourceTier": "AEMPS_CIMA",
+      "section2Hash": "9d0f58c05fe00eac026f413a71cb38b54050e966c7cbe2a0d55ffade16964176",
+      "section41Hash": "f9a044e4a30bff4d6c535ce916e959358744e8d5db36bdfe4a83ea5b0db99463",
+      "section42Hash": "ebc855eed8eeb2141c42e298cd52477abfcdefbdaabe571c294b2e5e9cda8994"
+    },
+    {
+      "dedupeKey": "emicizumab|30mg/1ml|solutionforinjection",
+      "status": "SOURCE_TEXT_READY",
+      "sourceUrl": "https://cima.aemps.es/cima/dochtml/ft/1181271001/FT_1181271001.html",
+      "sourceTier": "AEMPS_CIMA",
+      "section2Hash": "9d0f58c05fe00eac026f413a71cb38b54050e966c7cbe2a0d55ffade16964176",
+      "section41Hash": "f9a044e4a30bff4d6c535ce916e959358744e8d5db36bdfe4a83ea5b0db99463",
+      "section42Hash": "ebc855eed8eeb2141c42e298cd52477abfcdefbdaabe571c294b2e5e9cda8994"
+    },
+    {
+      "dedupeKey": "emicizumab|60mg/0.4ml|solutionforinjection",
+      "status": "SOURCE_TEXT_READY",
+      "sourceUrl": "https://cima.aemps.es/cima/dochtml/ft/1181271002/FT_1181271002.html",
+      "sourceTier": "AEMPS_CIMA",
+      "section2Hash": "9d0f58c05fe00eac026f413a71cb38b54050e966c7cbe2a0d55ffade16964176",
+      "section41Hash": "f9a044e4a30bff4d6c535ce916e959358744e8d5db36bdfe4a83ea5b0db99463",
+      "section42Hash": "ebc855eed8eeb2141c42e298cd52477abfcdefbdaabe571c294b2e5e9cda8994"
+    },
+    {
+      "dedupeKey": "enalaprilmaleate|10mg|tablet",
+      "status": "SOURCE_TEXT_INCOMPLETE",
+      "sourceUrl": "https://cima.aemps.es/cima/dochtml/ft/73300/FT_73300.html",
+      "sourceTier": "AEMPS_CIMA",
+      "section2Hash": "9e2747b730ba9bd0f39031dfab1b8c2656d415d02283e6e9d60a87c645c4867e",
+      "section41Hash": "84a4617aaf64cff4df1ca70039bf070a8ba1b61aa160c020c048cf422461f3eb",
+      "section42Hash": null
+    },
+    {
+      "dedupeKey": "enalaprilmaleate|20mg|tablet",
+      "status": "SOURCE_TEXT_INCOMPLETE",
+      "sourceUrl": "https://cima.aemps.es/cima/dochtml/ft/63355/FT_63355.html",
+      "sourceTier": "AEMPS_CIMA",
+      "section2Hash": "9e2747b730ba9bd0f39031dfab1b8c2656d415d02283e6e9d60a87c645c4867e",
+      "section41Hash": "84a4617aaf64cff4df1ca70039bf070a8ba1b61aa160c020c048cf422461f3eb",
+      "section42Hash": null
+    },
+    {
+      "dedupeKey": "enalaprilmaleate|5mg|tablet",
+      "status": "SOURCE_TEXT_INCOMPLETE",
+      "sourceUrl": "https://cima.aemps.es/cima/dochtml/ft/63377/FT_63377.html",
+      "sourceTier": "AEMPS_CIMA",
+      "section2Hash": "9e2747b730ba9bd0f39031dfab1b8c2656d415d02283e6e9d60a87c645c4867e",
+      "section41Hash": "84a4617aaf64cff4df1ca70039bf070a8ba1b61aa160c020c048cf422461f3eb",
+      "section42Hash": null
+    },
+    {
+      "dedupeKey": "ephedrinehydrochloride|30mg/1ml|solutionforinjection",
+      "status": "SOURCE_TEXT_READY",
+      "sourceUrl": "https://cima.aemps.es/cima/dochtml/ft/90454/FT_90454.html",
+      "sourceTier": "AEMPS_CIMA",
+      "section2Hash": "fca9a1d36bd1c4613d8cb1e33bb73f97394a4bbafeadfd43b59ba7d0b4e2e4f6",
+      "section41Hash": "3a18307516f92933e73507b968ac2c6a2f06b61cb11174701f28d05834a7af87",
+      "section42Hash": "8d7cef62831935b4c1452962cb378f60b8d734ce37446439cd29bd2a359bfc3e"
+    },
+    {
+      "dedupeKey": "eplerenone|25mg|filmcoatedtablet",
+      "status": "SOURCE_TEXT_READY",
+      "sourceUrl": "https://cima.aemps.es/cima/dochtml/ft/66756/FT_66756.html",
+      "sourceTier": "AEMPS_CIMA",
+      "section2Hash": "59a5513ebbccf866cc424f7f2ec72dc6791c7a1f3bdf40ba3d9bdc0f989d7447",
+      "section41Hash": "d7ba962142fb6baa5e8d0ff26cb20048c83b59e0a92a517443bf1181ef90e98b",
+      "section42Hash": "2c15afb5a2a19859590fe32601d1e2d5d1b7f84e68d0e18485282a63463c8c45"
+    },
+    {
+      "dedupeKey": "eplerenone|50mg|filmcoatedtablet",
+      "status": "SOURCE_TEXT_READY",
+      "sourceUrl": "https://cima.aemps.es/cima/dochtml/ft/66757/FT_66757.html",
+      "sourceTier": "AEMPS_CIMA",
+      "section2Hash": "59a5513ebbccf866cc424f7f2ec72dc6791c7a1f3bdf40ba3d9bdc0f989d7447",
+      "section41Hash": "d7ba962142fb6baa5e8d0ff26cb20048c83b59e0a92a517443bf1181ef90e98b",
+      "section42Hash": "2c15afb5a2a19859590fe32601d1e2d5d1b7f84e68d0e18485282a63463c8c45"
+    },
+    {
+      "dedupeKey": "epoetinbeta|2000ui/0.3ml|solutionforinjection",
+      "status": "SOURCE_TEXT_READY",
+      "sourceUrl": "https://cima.aemps.es/cima/dochtml/ft/07410006/FT_07410006.html",
+      "sourceTier": "AEMPS_CIMA",
+      "section2Hash": "d380ab40da4cd1b3065fc5259ff228b25f7ec9f7c7f9a47b4b366462089adf25",
+      "section41Hash": "35bfc8f922e6c8cd3d10fddf634d9b986014ce4ecda7410a07900623c349dfce",
+      "section42Hash": "f18d0f858dcb1d63a223b5ef22e7b00135d08006a19b53a07bce3f0afac4e4ee"
+    },
+    {
+      "dedupeKey": "epoetinbeta|30000ui/0.6ml|solutionforinjection",
+      "status": "SOURCE_TEXT_READY",
+      "sourceUrl": "https://cima.aemps.es/cima/dochtml/ft/07410012/FT_07410012.html",
+      "sourceTier": "AEMPS_CIMA",
+      "section2Hash": "d380ab40da4cd1b3065fc5259ff228b25f7ec9f7c7f9a47b4b366462089adf25",
+      "section41Hash": "35bfc8f922e6c8cd3d10fddf634d9b986014ce4ecda7410a07900623c349dfce",
+      "section42Hash": "f18d0f858dcb1d63a223b5ef22e7b00135d08006a19b53a07bce3f0afac4e4ee"
+    },
+    {
+      "dedupeKey": "escitalopramoxalate|10mg|filmcoatedtablet",
+      "status": "SOURCE_TEXT_INCOMPLETE",
+      "sourceUrl": "https://cima.aemps.es/cima/dochtml/ft/71430/FT_71430.html",
+      "sourceTier": "AEMPS_CIMA",
+      "section2Hash": "7a476ceb7ce67bb3da7e51f9cdea127de2bf2904428ca8c74c33954f9b121cde",
+      "section41Hash": "cb2e31ea0010dae7aeab9964b987449b0efbbe7603ab7ff9b6dd5e918a657456",
+      "section42Hash": null
+    },
+    {
+      "dedupeKey": "escitalopramoxalate|5mg|filmcoatedtablet",
+      "status": "SOURCE_TEXT_INCOMPLETE",
+      "sourceUrl": "https://cima.aemps.es/cima/dochtml/ft/71428/FT_71428.html",
+      "sourceTier": "AEMPS_CIMA",
+      "section2Hash": "7a476ceb7ce67bb3da7e51f9cdea127de2bf2904428ca8c74c33954f9b121cde",
+      "section41Hash": "22b560a6fe83204322e6e10c9973a94f0ca864f913bf0671a8d6bb51ed7ee728",
+      "section42Hash": null
+    },
+    {
+      "dedupeKey": "esomeprazolemagnesium|40mg|gastroresistantcapsulehard",
+      "status": "SOURCE_TEXT_READY",
+      "sourceUrl": "https://cima.aemps.es/cima/dochtml/ft/63944/FT_63944.html",
+      "sourceTier": "AEMPS_CIMA",
+      "section2Hash": "4999fd8be6d9ff1bf5a13ea8dca96642be5d06c60de6d0d828d76adaf76c6b6e",
+      "section41Hash": "973010a24953601e50bb64fbfa09a6fc41354b9834adfe462f0bc29052d4fcaf",
+      "section42Hash": "11a3fc65bda137a8bf1155797a25f968e869a53cd6705df4e0905e656d366a2e"
+    },
+    {
+      "dedupeKey": "esomeprazolemagnesiumsugarspheres|20mg|gastroresistantcapsulehard",
+      "status": "SOURCE_TEXT_READY",
+      "sourceUrl": "https://cima.aemps.es/cima/dochtml/ft/63940/FT_63940.html",
+      "sourceTier": "AEMPS_CIMA",
+      "section2Hash": "4999fd8be6d9ff1bf5a13ea8dca96642be5d06c60de6d0d828d76adaf76c6b6e",
+      "section41Hash": "973010a24953601e50bb64fbfa09a6fc41354b9834adfe462f0bc29052d4fcaf",
+      "section42Hash": "11a3fc65bda137a8bf1155797a25f968e869a53cd6705df4e0905e656d366a2e"
+    },
+    {
+      "dedupeKey": "etoposide|20mg/1ml|concentrateforsolutionforinfusion",
+      "status": "SOURCE_TEXT_READY",
+      "sourceUrl": "https://cima.aemps.es/cima/dochtml/ft/63625/FT_63625.html",
+      "sourceTier": "AEMPS_CIMA",
+      "section2Hash": "d73f1c63082d7cce1cb3ba5d8a6b62611e340bd6e8ad5a4e7e603ef4e2b8a36b",
+      "section41Hash": "3ecdbf21a88e12a623d8b66db07e55b25683534ddb567e9399defb13ae979649",
+      "section42Hash": "d6c30d17f8845310c895f8e583de882098e7329b7708f5210b18b0e4fcc5bd8e"
+    },
+    {
+      "dedupeKey": "everolimus|10mg|tablet",
+      "status": "SOURCE_TEXT_READY",
+      "sourceUrl": "https://cima.aemps.es/cima/dochtml/ft/09538004/FT_09538004.html",
+      "sourceTier": "AEMPS_CIMA",
+      "section2Hash": "2eddf21eb08bfdcd4b3bb52dca90bb7433322846818f9941350e0abc897a088d",
+      "section41Hash": "417833d5473d83a907f4b75f3e58345280c646eac5200855f0d036b4b91e8b14",
+      "section42Hash": "8fb4b0593f68e367e256e7cc76d71250641d6aa1fc197ce35bc0afdc5005a63a"
+    },
+    {
+      "dedupeKey": "ezetimibesimvastatin|10mg+20mg|tablet",
+      "status": "SOURCE_TEXT_READY",
+      "sourceUrl": "https://cima.aemps.es/cima/dochtml/ft/82799/FT_82799.html",
+      "sourceTier": "AEMPS_CIMA",
+      "section2Hash": "26d4d10daecb5cd382b93ab555f7e1534a04d4d5ac835b2265e51088f26865ce",
+      "section41Hash": "01b1b279c660465b847998007c6279615cfcbe425fcda95885b7d51236894655",
+      "section42Hash": "ee7feceef3a41db2628545947877a1960873e07e155d3ce354593f4704538776"
+    },
+    {
+      "dedupeKey": "ezetimibesimvastatin|10mg+40mg|tablet",
+      "status": "SOURCE_TEXT_READY",
+      "sourceUrl": "https://cima.aemps.es/cima/dochtml/ft/82800/FT_82800.html",
+      "sourceTier": "AEMPS_CIMA",
+      "section2Hash": "563ec225b1a7d8c9c28353933baabf62e136a07fb00eb435a0fe55f20156c83a",
+      "section41Hash": "01b1b279c660465b847998007c6279615cfcbe425fcda95885b7d51236894655",
+      "section42Hash": "ee7feceef3a41db2628545947877a1960873e07e155d3ce354593f4704538776"
+    },
+    {
+      "dedupeKey": "faricimab|120mg/1ml|solutionforinjection",
+      "status": "SOURCE_TEXT_READY",
+      "sourceUrl": "https://cima.aemps.es/cima/dochtml/ft/1221683001/FT_1221683001.html",
+      "sourceTier": "AEMPS_CIMA",
+      "section2Hash": "253cfe12649e5222244bff0776c05ef21db789e74ea7a90ee69b6a85af0fa26e",
+      "section41Hash": "4201993733ffd06f4d49ea212598ae533a905e0acdb7a62b96e5187158f0ca25",
+      "section42Hash": "0f1569b72a2bbf78e79afabd133608c3c9c8f5c4fb54afe262e160f3281449e5"
+    },
+    {
+      "dedupeKey": "fenofibrate|200mg|capsulesoft",
+      "status": "SOURCE_TEXT_READY",
+      "sourceUrl": "https://cima.aemps.es/cima/dochtml/ft/69368/FT_69368.html",
+      "sourceTier": "AEMPS_CIMA",
+      "section2Hash": "6fca1d4b9f709744bcbec56683ef8f8cb9893a2bd25573aeacb08c132b1ec8d0",
+      "section41Hash": "ce06d9842cb480c2d0a9b024ca926d38b76dad19cccd33ad4c034f36cdf32d28",
+      "section42Hash": "6c6882a8ced92d8adcffae9db67a2eba59b044300afb2f5b17fd93f1a4ade060"
+    },
+    {
+      "dedupeKey": "fentanylascitrate|0.005%|solutionforinjection",
+      "status": "SOURCE_TEXT_READY",
+      "sourceUrl": "https://cima.aemps.es/cima/dochtml/ft/41764/FT_41764.html",
+      "sourceTier": "AEMPS_CIMA",
+      "section2Hash": "5b7eeab0c15e47a92a79951dd39778ffc2b1f877308f67600861089902d2434e",
+      "section41Hash": "85e4841c9370470d22a843ace6e34f24f2cc3975b89c51d407884afaaa3d013c",
+      "section42Hash": "129d02dc9f9af522d86e5a253320fab82535eb23b35623aded0a62ee85e6721b"
+    },
+    {
+      "dedupeKey": "ferimannitolovoalbumineq40mgferricfe|300mgferrimannitolovoalbumin(equivalentto40mgferriciron)|granulesfororalsolution",
+      "status": "SOURCE_TEXT_READY",
+      "sourceUrl": "https://cima.aemps.es/cima/dochtml/ft/59098/FT_59098.html",
+      "sourceTier": "AEMPS_CIMA",
+      "section2Hash": "42a953d1b5ff764125597683fc16ee6a05edf97a78d569fb1f55b3dfb41bfe83",
+      "section41Hash": "5047c359621f1facd77e84e426d10ec2c1ffe514ad1b03aa1a7bc4ac2d355b65",
+      "section42Hash": "99d62d30ea23639eb7ccd2a9f8484bff51d4242658f2492775e9b44d89c8b806"
+    },
+    {
+      "dedupeKey": "finasteride|5mg|filmcoatedtablet",
+      "status": "SOURCE_TEXT_INCOMPLETE",
+      "sourceUrl": "https://cima.aemps.es/cima/dochtml/ft/67857/FT_67857.html",
+      "sourceTier": "AEMPS_CIMA",
+      "section2Hash": "27636164e311a10548ea86a49f26aeb7ebf73ee4a8a9f188e2cc9666fba843cb",
+      "section41Hash": "46986dda8abb44dc16d15e608d248d5cd27e5287f87220e14df1a2b9e420ac3e",
+      "section42Hash": null
+    },
+    {
+      "dedupeKey": "flucinoloneacetonide|0.25mg/1g|gel",
+      "status": "SOURCE_TEXT_READY",
+      "sourceUrl": "https://cima.aemps.es/cima/dochtml/ft/50031/FT_50031.html",
+      "sourceTier": "AEMPS_CIMA",
+      "section2Hash": "037d0391663069d1534befd79d0ad5e9afea94f5aa40ff00b31ac8d65acf1cd3",
+      "section41Hash": "b086e12210f65b0c05114358684b3319eb70ea5c493835437828161a85478f3f",
+      "section42Hash": "0cb3260aa5d01f3d5fee3d16185a590f4c6834a1a9b637590463bd3d21bd613d"
+    },
+    {
+      "dedupeKey": "fluticasonepropionate|50mcg|nasalspray",
+      "status": "SOURCE_TEXT_INCOMPLETE",
+      "sourceUrl": "https://cima.aemps.es/cima/dochtml/ft/60483/FT_60483.html",
+      "sourceTier": "AEMPS_CIMA",
+      "section2Hash": "0da7e7d7cf8b99239b1c1d878130d85d1d16a7ded71b9d0291351134a9d3593c",
+      "section41Hash": "e22b4d6e9f133aaa2851b13671b4fe1ee5b2ac3ae3b6e023cc16ff03c0095174",
+      "section42Hash": null
+    },
+    {
+      "dedupeKey": "furosemide|20mg/2ml|solutionforinjection",
+      "status": "SOURCE_TEXT_INCOMPLETE",
+      "sourceUrl": "https://cima.aemps.es/cima/dochtml/ft/62168/FT_62168.html",
+      "sourceTier": "AEMPS_CIMA",
+      "section2Hash": "12773659ae9d7b5748bbb8294006e1e40d410cc6b0a36d20bfb6f9a3f9440e12",
+      "section41Hash": "7604d2fb13ccfba2e2714a4ce0a8c4001326f7bb219b4238281e45414a4c5bcb",
+      "section42Hash": null
+    },
+    {
+      "dedupeKey": "fusidicacid|2%|ointment",
+      "status": "SOURCE_TEXT_READY",
+      "sourceUrl": "https://cima.aemps.es/cima/dochtml/ft/44460/FT_44460.html",
+      "sourceTier": "AEMPS_CIMA",
+      "section2Hash": "197056899950e06824e5a736ae92bbe04a90d2233c5c8c2fc5e237e0f806c3f3",
+      "section41Hash": "eb5896db4ea0d9e23183e820b09040c93b72393396e0ddf1f0abe03e082a09be",
+      "section42Hash": "21b4fc6513aecbf30eb7eeb85f3de67f5d830b432b9615e8d09fd1c6e4d8ac8e"
+    },
+    {
+      "dedupeKey": "fusidicacidashemihydrate|2%|ointment",
+      "status": "SOURCE_TEXT_READY",
+      "sourceUrl": "https://cima.aemps.es/cima/dochtml/ft/44460/FT_44460.html",
+      "sourceTier": "AEMPS_CIMA",
+      "section2Hash": "197056899950e06824e5a736ae92bbe04a90d2233c5c8c2fc5e237e0f806c3f3",
+      "section41Hash": "eb5896db4ea0d9e23183e820b09040c93b72393396e0ddf1f0abe03e082a09be",
+      "section42Hash": "21b4fc6513aecbf30eb7eeb85f3de67f5d830b432b9615e8d09fd1c6e4d8ac8e"
+    },
+    {
+      "dedupeKey": "fusidicacidashemihydrate|2%(20mg/g)|cream",
+      "status": "SOURCE_TEXT_READY",
+      "sourceUrl": "https://cima.aemps.es/cima/dochtml/ft/58016/FT_58016.html",
+      "sourceTier": "AEMPS_CIMA",
+      "section2Hash": "502ba43298235157b9ab115023381a6e50f3b6594ec6dd737df29b90d921d20f",
+      "section41Hash": "59f1f58b3dd40b21ac786e93b21353adc2ccf5f411d7096908382cc128228d33",
+      "section42Hash": "e633f0152785432fe5d07263456eef4c39b512dc4382ad870338ff1a96ba4cad"
+    },
+    {
+      "dedupeKey": "gentamicinintheformofgentamicinsulphate|80mg/2ml|solutionforinjection",
+      "status": "SOURCE_TEXT_READY",
+      "sourceUrl": "https://cima.aemps.es/cima/dochtml/ft/51885/FT_51885.html",
+      "sourceTier": "AEMPS_CIMA",
+      "section2Hash": "441e40f64d9238716878a0def8ca23b85405744c8ac6373dd17d660d286bf3d9",
+      "section41Hash": "49ee77342239fc6913f89077d6fd7f3c745cfb0f03d2d053e80a332823171398",
+      "section42Hash": "f4eedc3019e60d086ed4ba7a03da715aa18e3f9fa8eb1909e32e80f12b078e2d"
+    },
+    {
+      "dedupeKey": "gentamicinsulfate|80mg/2ml|solutionforinjection",
+      "status": "SOURCE_TEXT_READY",
+      "sourceUrl": "https://cima.aemps.es/cima/dochtml/ft/51885/FT_51885.html",
+      "sourceTier": "AEMPS_CIMA",
+      "section2Hash": "441e40f64d9238716878a0def8ca23b85405744c8ac6373dd17d660d286bf3d9",
+      "section41Hash": "49ee77342239fc6913f89077d6fd7f3c745cfb0f03d2d053e80a332823171398",
+      "section42Hash": "f4eedc3019e60d086ed4ba7a03da715aa18e3f9fa8eb1909e32e80f12b078e2d"
+    },
+    {
+      "dedupeKey": "gentamicinsulfatebetamethasonevalerate|1mg/g+1mg/g|cream",
+      "status": "SOURCE_TEXT_INCOMPLETE",
+      "sourceUrl": "https://cima.aemps.es/cima/dochtml/ft/42399/FT_42399.html",
+      "sourceTier": "AEMPS_CIMA",
+      "section2Hash": null,
+      "section41Hash": "d7c13fab4aeb7d20acfc8b4d8e2869c716a24abfb383767ed1f0b02a62ab5b36",
+      "section42Hash": null
+    },
+    {
+      "dedupeKey": "gentamycinesulphate|80mg/2ml|solutionforinjection",
+      "status": "SOURCE_TEXT_READY",
+      "sourceUrl": "https://cima.aemps.es/cima/dochtml/ft/51885/FT_51885.html",
+      "sourceTier": "AEMPS_CIMA",
+      "section2Hash": "441e40f64d9238716878a0def8ca23b85405744c8ac6373dd17d660d286bf3d9",
+      "section41Hash": "49ee77342239fc6913f89077d6fd7f3c745cfb0f03d2d053e80a332823171398",
+      "section42Hash": "f4eedc3019e60d086ed4ba7a03da715aa18e3f9fa8eb1909e32e80f12b078e2d"
+    },
+    {
+      "dedupeKey": "ginkgobilobaefoliiextractumsiccum|80mg|capsulehard",
+      "status": "SOURCE_TEXT_READY",
+      "sourceUrl": "https://cima.aemps.es/cima/dochtml/ft/74474/FT_74474.html",
+      "sourceTier": "AEMPS_CIMA",
+      "section2Hash": "0bd719d1e46cad3ad0de2bb8f4a007e1e54db214959d5025a069398e85857f68",
+      "section41Hash": "64326b870cd41117467f926e0f45e2373b2262d3ed979264340acd1ac10740ae",
+      "section42Hash": "023b518e8415ae7f37fb6f47278383c01f0e259daf910e1a3a00dd982ea0af96"
+    },
+    {
+      "dedupeKey": "glimepiride|2mg|tablet",
+      "status": "SOURCE_TEXT_INCOMPLETE",
+      "sourceUrl": "https://cima.aemps.es/cima/dochtml/ft/67512/FT_67512.html",
+      "sourceTier": "AEMPS_CIMA",
+      "section2Hash": "41f149d693839e03189cf8c0e25b38d1b19b187af23c9255825d80483df17cf3",
+      "section41Hash": "07321a385f275d0e8c216f05bf6e8d994df46cbd1fff8df3f1f4b0d6dc683d68",
+      "section42Hash": null
+    },
+    {
+      "dedupeKey": "haloperidol|0.2%|oraldropssolution",
+      "status": "SOURCE_TEXT_READY",
+      "sourceUrl": "https://cima.aemps.es/cima/dochtml/ft/33488/FT_33488.html",
+      "sourceTier": "AEMPS_CIMA",
+      "section2Hash": "989fe42877df4bdf4ef21ab8831aba8a4d7949f8f11da6edfa68673e2f926ce0",
+      "section41Hash": "69b39ced58fca82c446ef94eb05fd786d52a074f7e06afe619098bcbd997e523",
+      "section42Hash": "ece8bc49aea26abb49440cdd4aa381c77355679c36eda208ebfe045bd38ec245"
+    },
+    {
+      "dedupeKey": "humanalbumin|200g/l|solutionforinfusion",
+      "status": "SOURCE_TEXT_READY",
+      "sourceUrl": "https://cima.aemps.es/cima/dochtml/ft/71446/FT_71446.html",
+      "sourceTier": "AEMPS_CIMA",
+      "section2Hash": "14e79615910fcdac7cc884f406095dfbc238e64cad60e26ed1f9079c5850250e",
+      "section41Hash": "5425e8f273b3241d6677d0d50923824ccaf8fd9cd9b948057895915e58014353",
+      "section42Hash": "4ab5ae3791cd305f3440e45c5bbffbe5351091cd88a655bf7db8d58c51badca7"
+    },
+    {
+      "dedupeKey": "humanplasmaproteinscontainingatleast90ofhumanimmunoglobulinswithantibodiesagainserythrocytesrhod|300mcg/2ml|powderandsolventforsolutionforinjection",
+      "status": "SOURCE_TEXT_INCOMPLETE",
+      "sourceUrl": "https://cima.aemps.es/cima/dochtml/ft/69377/FT_69377.html",
+      "sourceTier": "AEMPS_CIMA",
+      "section2Hash": null,
+      "section41Hash": "9595a42754f4ea1554e11f428b6e18d9de8c67fbb3dccb77a7759ea5c200edbe",
+      "section42Hash": null
+    },
+    {
+      "dedupeKey": "hydrochlorothiazide|50mg|tablet",
+      "status": "SOURCE_TEXT_READY",
+      "sourceUrl": "https://cima.aemps.es/cima/dochtml/ft/90834/FT_90834.html",
+      "sourceTier": "AEMPS_CIMA",
+      "section2Hash": "e342dec72cef146d9bda110ae98ba0300a5243a4a9c57bc008784eb930b75e8e",
+      "section41Hash": "4d89b635dbe19631b7d3a44cf4f4f03ffbdbb64b02a457b20230fab36fb1fa4e",
+      "section42Hash": "c551df0edb7858579af6cde65dd5ce6d5bc142efc5efc49804897bfb0f07f97f"
+    },
+    {
+      "dedupeKey": "hydrochlorthiazidevalsartan|160mg+12.5mg|filmcoatedtablet",
+      "status": "SOURCE_TEXT_INCOMPLETE",
+      "sourceUrl": "https://cima.aemps.es/cima/dochtml/ft/65794/FT_65794.html",
+      "sourceTier": "AEMPS_CIMA",
+      "section2Hash": "9cd20433e2edf9391eeca9f7d7911d6e0cfc232333a1d91b0ae291a6c93e7f58",
+      "section41Hash": "f0c2c7a1512d969f1fe1ec995f2ecd1ff2a945683aa853176f8f5fe68a5533ef",
+      "section42Hash": null
+    },
+    {
+      "dedupeKey": "hydrochlorthiazidevalsartan|80mg+12.5mg|filmcoatedtablet",
+      "status": "SOURCE_TEXT_INCOMPLETE",
+      "sourceUrl": "https://cima.aemps.es/cima/dochtml/ft/62206/FT_62206.html",
+      "sourceTier": "AEMPS_CIMA",
+      "section2Hash": "9cd20433e2edf9391eeca9f7d7911d6e0cfc232333a1d91b0ae291a6c93e7f58",
+      "section41Hash": "f0c2c7a1512d969f1fe1ec995f2ecd1ff2a945683aa853176f8f5fe68a5533ef",
+      "section42Hash": null
+    },
+    {
+      "dedupeKey": "hyoscinebutylbromide|20mg/ml|solutionforinjection",
+      "status": "SOURCE_TEXT_INCOMPLETE",
+      "sourceUrl": "https://cima.aemps.es/cima/dochtml/ft/18220/FT_18220.html",
+      "sourceTier": "AEMPS_CIMA",
+      "section2Hash": "16527590826258bf2aa0eee30a219ea7b3780efb736efb145abf97f48b156e67",
+      "section41Hash": "fe7822f1c454e10668231acf343be753732c9722bb1aecc3c75ac4cf20921842",
+      "section42Hash": null
+    },
+    {
+      "dedupeKey": "ibandronicacid|150mg|filmcoatedtablet",
+      "status": "SOURCE_TEXT_READY",
+      "sourceUrl": "https://cima.aemps.es/cima/dochtml/ft/74407/FT_74407.html",
+      "sourceTier": "AEMPS_CIMA",
+      "section2Hash": "15a79f27aa9f2f32c80ff643fe9a075167de57529358fa79588b50f39e064dd0",
+      "section41Hash": "0c633909d38c1b9c53fdbb34b76e2c775d0fad4f796f2029a9562c2485f56442",
+      "section42Hash": "3c1cea53e250744929a923dc64f7a01d3cf74508ef86f0d682c52e6b0633e5f1"
+    },
+    {
+      "dedupeKey": "ibuprofen|400mg|capsulesoft",
+      "status": "SOURCE_TEXT_READY",
+      "sourceUrl": "https://cima.aemps.es/cima/dochtml/ft/88372/FT_88372.html",
+      "sourceTier": "AEMPS_CIMA",
+      "section2Hash": "e79a226e81e220a042f78dc685be2cf45ffbfb9d1e679b59d3037192bcb4bd22",
+      "section41Hash": "c1b2f998be02425fad16cc7a7cee258adbdd8bf85ed283bd130ff4344087217f",
+      "section42Hash": "79061309a7c427ac9256a358cc332ebbb04ebc4ee4e5d1f2aedf96022f94d50a"
+    },
+    {
+      "dedupeKey": "ibuprofen|400mg|filmcoatedtablet",
+      "status": "SOURCE_TEXT_READY",
+      "sourceUrl": "https://cima.aemps.es/cima/dochtml/ft/88314/FT_88314.html",
+      "sourceTier": "AEMPS_CIMA",
+      "section2Hash": "903a6c944eed7a86ddf8a77ccc184c63c65c2d8b46294c768ac1c953c0388ca7",
+      "section41Hash": "6eb594d3588746110a14a7f260490f96a815ea5bc1402a055ab5e5dbc00f0755",
+      "section42Hash": "1140259d3f0c186c1ec0162273ad13c5f99fb15b0f6134e08a974ecf72e46a11"
+    },
+    {
+      "dedupeKey": "ibuprofen|600mg|granulesfororalsolution",
+      "status": "SOURCE_TEXT_READY",
+      "sourceUrl": "https://cima.aemps.es/cima/dochtml/ft/68222/FT_68222.html",
+      "sourceTier": "AEMPS_CIMA",
+      "section2Hash": "8f78eb003a2fa2acd6a064984fb1e7a6d1d84fe4496114dd71fd56e7685d6555",
+      "section41Hash": "38c91fd5f9a5c223de03118a025bba43bcf4c3c57accc03d2bed5a5e741b3ced",
+      "section42Hash": "223165c3ab449e6bfbf1a69ad5c7356878e240e2653005390e651b2c9432215d"
+    },
+    {
+      "dedupeKey": "ibuprofenasibuprofendci90ibuprofendci90itisintheformofgranulawiththeexcipientsbelowstarchpregelatinizednfpovidone|600mg|filmcoatedtablet",
+      "status": "SOURCE_TEXT_INCOMPLETE",
+      "sourceUrl": "https://cima.aemps.es/cima/dochtml/ft/70039/FT_70039.html",
+      "sourceTier": "AEMPS_CIMA",
+      "section2Hash": "1dd415ccc3f13cb9ad8ab407bb32bc554de0e5fb08699c167535dee061810516",
+      "section41Hash": "27a25703f91f3c17f1f9df6cafd0be4cb580cec9ce9c31a3d1e02ef15cc7a99a",
+      "section42Hash": null
+    },
+    {
+      "dedupeKey": "ibuprofenibuprofenum|100mg/5ml|oralsuspension",
+      "status": "SOURCE_TEXT_INCOMPLETE",
+      "sourceUrl": "https://cima.aemps.es/cima/dochtml/ft/80295/FT_80295.html",
+      "sourceTier": "AEMPS_CIMA",
+      "section2Hash": "383cb3ba8f979420f9bf1c248210ab8b866a34f8e29a8f86005643f7bed92c7e",
+      "section41Hash": "36588bc1e9202dffb4d86f8c80c862a4fc7ff4a33f2b9a0e68e5837308a61064",
+      "section42Hash": null
+    },
+    {
+      "dedupeKey": "ibuprofenum|200mg/5ml|oralsuspension",
+      "status": "SOURCE_TEXT_READY",
+      "sourceUrl": "https://cima.aemps.es/cima/dochtml/ft/81974/FT_81974.html",
+      "sourceTier": "AEMPS_CIMA",
+      "section2Hash": "1b64a7dd86ea1760992ee01b539c446ff9c438482aa1aed9e0b6b36c6ad437ea",
+      "section41Hash": "a2b66b5600d5f89aa3c8876d623d04d0f407b8ce68880c8f2560e24778d04752",
+      "section42Hash": "6fd88fd172fbe2e9c315dbd7336bc49c924f3bb41744d84756502ba353787827"
+    },
+    {
+      "dedupeKey": "imatinib|100mg|filmcoatedtablet",
+      "status": "SOURCE_TEXT_READY",
+      "sourceUrl": "https://cima.aemps.es/cima/dochtml/ft/01198008/FT_01198008.html",
+      "sourceTier": "AEMPS_CIMA",
+      "section2Hash": "395fb07d8db4b6dbf0f7541a24ed2063e594acc78bf8e4c00c80198499067ac5",
+      "section41Hash": "e0b52617680586c8e134c321682b06c8e41ff0e460e99a80609882f048c381f8",
+      "section42Hash": "60d52ca4a237c4cd82ff4b82e99caa3abfab5634298faf6da82655862b228436"
+    },
+    {
+      "dedupeKey": "imatinib|400mg|filmcoatedtablet",
+      "status": "SOURCE_TEXT_READY",
+      "sourceUrl": "https://cima.aemps.es/cima/dochtml/ft/01198010/FT_01198010.html",
+      "sourceTier": "AEMPS_CIMA",
+      "section2Hash": "395fb07d8db4b6dbf0f7541a24ed2063e594acc78bf8e4c00c80198499067ac5",
+      "section41Hash": "e0b52617680586c8e134c321682b06c8e41ff0e460e99a80609882f048c381f8",
+      "section42Hash": "60d52ca4a237c4cd82ff4b82e99caa3abfab5634298faf6da82655862b228436"
+    },
+    {
+      "dedupeKey": "imipenemmonohydratesodiumcilastatin|500mg+500mg|powderforsolutionforinfusion",
+      "status": "SOURCE_TEXT_READY",
+      "sourceUrl": "https://cima.aemps.es/cima/dochtml/ft/72637/FT_72637.html",
+      "sourceTier": "AEMPS_CIMA",
+      "section2Hash": "74da7167e23756193b255e6c7a8af69a996793bab94e18ac23953332b63d0c4e",
+      "section41Hash": "acaf735d48df220a573c936041a12b12f726eaaf6f8c2eaf1d69e1e3e83d9f0d",
+      "section42Hash": "b490bd92a16241b40badc151953d22d4c2f19c11fea3131386f25c475c56d5eb"
+    },
+    {
+      "dedupeKey": "indapamide|1.5mg|prolongedreleasetablet",
+      "status": "SOURCE_TEXT_READY",
+      "sourceUrl": "https://cima.aemps.es/cima/dochtml/ft/70059/FT_70059.html",
+      "sourceTier": "AEMPS_CIMA",
+      "section2Hash": "bc210beeba1a127137b2b8a8bc0139930810f7f6898fca6d95335c0ddb0ece5e",
+      "section41Hash": "8f1fc7a87cd565f2f7687a6642ed1974c9c2696471cd0394187a5ce4ff9d296b",
+      "section42Hash": "efaccad4372d264ebba36ffc2f3bdafd4d3e5256f1805c0af0000e5dda792f53"
+    },
+    {
+      "dedupeKey": "indometacin|100mg|suppository",
+      "status": "SOURCE_TEXT_READY",
+      "sourceUrl": "https://cima.aemps.es/cima/dochtml/ft/45894/FT_45894.html",
+      "sourceTier": "AEMPS_CIMA",
+      "section2Hash": "eb1b2f418175d440610ea6c4e27de727a36a5887c1a284d89e3a066fe8346b64",
+      "section41Hash": "eca4e5cafc81dcf4fb2f97cac92e34d09f5b9f661f823ca02e6dd8f2cbb08c16",
+      "section42Hash": "184aae0cec746b08d753c97f1bdd059c2cdc8c3bd8f8e22697273483e63020ab"
+    },
+    {
+      "dedupeKey": "indometacin|25mg|capsulehard",
+      "status": "SOURCE_TEXT_READY",
+      "sourceUrl": "https://cima.aemps.es/cima/dochtml/ft/42582/FT_42582.html",
+      "sourceTier": "AEMPS_CIMA",
+      "section2Hash": "d38c0791dc7e5806c97c05e626f70e6b1c5a949ce31ce76435496db0bd0453fb",
+      "section41Hash": "7ba248f38cc809b22054b442f0da2d4b5e4e47a47fbcacab705326a355433e31",
+      "section42Hash": "dbbc152ba390ba0bfaf4ee68ec56df5dc36d49f67bdce21b45dd14f61c11cdf2"
+    },
+    {
+      "dedupeKey": "indometacin|50mg|suppository",
+      "status": "SOURCE_TEXT_READY",
+      "sourceUrl": "https://cima.aemps.es/cima/dochtml/ft/43857/FT_43857.html",
+      "sourceTier": "AEMPS_CIMA",
+      "section2Hash": "014ca2132ca5d04fa93c605b0bf109e72753513185f98ad886ae7d5c6b44b2b8",
+      "section41Hash": "7ba248f38cc809b22054b442f0da2d4b5e4e47a47fbcacab705326a355433e31",
+      "section42Hash": "5df412505dc6db476365cc938281e6a6ec979ad206727cb85fb012b3623486cc"
+    },
+    {
+      "dedupeKey": "iodixanol|320mg/1ml|solutionforinjection",
+      "status": "SOURCE_TEXT_INCOMPLETE",
+      "sourceUrl": "https://cima.aemps.es/cima/dochtml/ft/60637/FT_60637.html",
+      "sourceTier": "AEMPS_CIMA",
+      "section2Hash": "cdb4ee2aea69cc6a83331bbe96dc2caa9a299d21329efb0336fc02a82e1839a8",
+      "section41Hash": "50acaf6e39c94fb124ee24bf62a25758969143f2a43d30d3db94d5d7d7b0b16b",
+      "section42Hash": null
+    },
+    {
+      "dedupeKey": "iohexol|350mg/1ml|solutionforinjection",
+      "status": "SOURCE_TEXT_INCOMPLETE",
+      "sourceUrl": "https://cima.aemps.es/cima/dochtml/ft/62019/FT_62019.html",
+      "sourceTier": "AEMPS_CIMA",
+      "section2Hash": "cdb4ee2aea69cc6a83331bbe96dc2caa9a299d21329efb0336fc02a82e1839a8",
+      "section41Hash": "23ee2b7c0bfaeba022aff0f8943701eedfded91b67b30853a20882e9588c422a",
+      "section42Hash": null
+    },
+    {
+      "dedupeKey": "irbesartanhydrochlorotazide|150mg+12.5mg|filmcoatedtablet",
+      "status": "SOURCE_TEXT_READY",
+      "sourceUrl": "https://cima.aemps.es/cima/dochtml/ft/98086012/FT_98086012.html",
+      "sourceTier": "AEMPS_CIMA",
+      "section2Hash": "051e6c8d56cdc09589480b29c7845baa7c907b159fcd546535eec9ee14240a4b",
+      "section41Hash": "55f5dbcb440f5ff5a25d636899a710538745f5377b4b4d69ef7737a218af5388",
+      "section42Hash": "98dd391c2ed71a4e2df622da701f168bfd58b886569f37802ab7a50f50a12089"
+    },
+    {
+      "dedupeKey": "irbesartanhydrochlorothiazide|150mg+12.5mg|filmcoatedtablet",
+      "status": "SOURCE_TEXT_READY",
+      "sourceUrl": "https://cima.aemps.es/cima/dochtml/ft/98086012/FT_98086012.html",
+      "sourceTier": "AEMPS_CIMA",
+      "section2Hash": "051e6c8d56cdc09589480b29c7845baa7c907b159fcd546535eec9ee14240a4b",
+      "section41Hash": "55f5dbcb440f5ff5a25d636899a710538745f5377b4b4d69ef7737a218af5388",
+      "section42Hash": "98dd391c2ed71a4e2df622da701f168bfd58b886569f37802ab7a50f50a12089"
+    },
+    {
+      "dedupeKey": "irbesartanhydrochlorthiazide|300mg+12.5mg|filmcoatedtablet",
+      "status": "SOURCE_TEXT_READY",
+      "sourceUrl": "https://cima.aemps.es/cima/dochtml/ft/98086017/FT_98086017.html",
+      "sourceTier": "AEMPS_CIMA",
+      "section2Hash": "6a9d74d100cd45c3112fc15a2e9f2563006098c09185ae9806d1d4b7e32a1146",
+      "section41Hash": "55f5dbcb440f5ff5a25d636899a710538745f5377b4b4d69ef7737a218af5388",
+      "section42Hash": "cb86b29524bee4c1b53a06a5e6783ad7efa1004ef720323fee8f193572f21088"
+    },
+    {
+      "dedupeKey": "irbesartanhydroclotiazide|150mg+12.5mg|tablet",
+      "status": "SOURCE_TEXT_READY",
+      "sourceUrl": "https://cima.aemps.es/cima/dochtml/ft/72357/FT_72357.html",
+      "sourceTier": "AEMPS_CIMA",
+      "section2Hash": "d4e429b1d7322dd95710d2110ec7b2c76a5bfc35d0d8fd5bed169ef43f25f06c",
+      "section41Hash": "af550fea4ae67384d11c916d589b40476567b3e3835c062e36f93e19ad82a932",
+      "section42Hash": "4274e339582a4c218991d85c9c30ed89dacaa6c826908e1680d5b54deae08e79"
+    },
+    {
+      "dedupeKey": "isosorbidemonohidrate|20mg|tablet",
+      "status": "SOURCE_TEXT_READY",
+      "sourceUrl": "https://cima.aemps.es/cima/dochtml/ft/63396/FT_63396.html",
+      "sourceTier": "AEMPS_CIMA",
+      "section2Hash": "b14d9eab06181ff75c45ea474d59a2c19f4cd5b5f12a2fdc262acc58e51c65f2",
+      "section41Hash": "5f73f56192e78d6ab94f4ecdea3dc9c7b933cc285ba6537ee047924380e5715a",
+      "section42Hash": "57dc65cd579f7d25b1c762f7f18d1079ad4e820dabc3f4d9b63e3e77d860df01"
+    },
+    {
+      "dedupeKey": "ivy10dryexctracthederahelixl|7mg/1ml|syrup",
+      "status": "SOURCE_TEXT_READY",
+      "sourceUrl": "https://cima.aemps.es/cima/dochtml/ft/84734/FT_84734.html",
+      "sourceTier": "AEMPS_CIMA",
+      "section2Hash": "7262a78985b3d0319e6ca885caecbfd3ba2d4a9f0a7c565ec2380c395bf59f68",
+      "section41Hash": "5f17856b07a83f6f950cef177e5dc7cd796e079138e9e79164b9ab2bef3fcb5c",
+      "section42Hash": "80f7a8ea53ba5f2e98196a6f4b7f770c1edcd68b7ef64e757448c50418a9a4ad"
+    },
+    {
+      "dedupeKey": "ivyleafdryextractethanolic30mm5751|7mg/ml|syrup",
+      "status": "SOURCE_TEXT_READY",
+      "sourceUrl": "https://cima.aemps.es/cima/dochtml/ft/84734/FT_84734.html",
+      "sourceTier": "AEMPS_CIMA",
+      "section2Hash": "7262a78985b3d0319e6ca885caecbfd3ba2d4a9f0a7c565ec2380c395bf59f68",
+      "section41Hash": "5f17856b07a83f6f950cef177e5dc7cd796e079138e9e79164b9ab2bef3fcb5c",
+      "section42Hash": "80f7a8ea53ba5f2e98196a6f4b7f770c1edcd68b7ef64e757448c50418a9a4ad"
+    },
+    {
+      "dedupeKey": "ketoconazole|2%|cream",
+      "status": "SOURCE_TEXT_READY",
+      "sourceUrl": "https://cima.aemps.es/cima/dochtml/ft/57595/FT_57595.html",
+      "sourceTier": "AEMPS_CIMA",
+      "section2Hash": "e165eb32b49b4c6c09353e168cc75df4c078ecd9ac0adcdde82243ca5b6337a3",
+      "section41Hash": "84d97c123188501276a54f60ce2a8cfe6ff8b0b6f96750896a4ac6170a9d14c6",
+      "section42Hash": "c67ebb360786eec500b97d45b2404fcadb99369aa958b51ab06b4904eae60a04"
+    },
+    {
+      "dedupeKey": "ketoprofen|50mg|capsulehard",
+      "status": "SOURCE_TEXT_READY",
+      "sourceUrl": "https://cima.aemps.es/cima/dochtml/ft/54445/FT_54445.html",
+      "sourceTier": "AEMPS_CIMA",
+      "section2Hash": "412b35bcb1bb1104a30fe0a9df5275e922e12575ed5f516412085909c43ad88f",
+      "section41Hash": "7d7e73fde3d01705f3d6a840988c206f4b44a850589b716bc7c55ae69c1d6ebd",
+      "section42Hash": "c6fba35f278f6564a256502b7744635a65b3edf8c0c598ed31c05791a804e321"
+    },
+    {
+      "dedupeKey": "ketorolactrimethamine|30mg/1ml|solutionforinjection",
+      "status": "SOURCE_TEXT_READY",
+      "sourceUrl": "https://cima.aemps.es/cima/dochtml/ft/70102/FT_70102.html",
+      "sourceTier": "AEMPS_CIMA",
+      "section2Hash": "5c778f0586e497d6e0ceb1b4c8aff7b1ff917f6eea03c70ea640aeeeb690863f",
+      "section41Hash": "efb6e534d9490ef2419994903d9894dc24ddf346451ad7d7c9e925688c4662fb",
+      "section42Hash": "edf50fe52e7afc208f7ca0770af29bb20e5998fc8a8edc11044cf0667e7dc76e"
+    },
+    {
+      "dedupeKey": "ketorolacumtrometamol|10mg|filmcoatedtablet",
+      "status": "SOURCE_TEXT_READY",
+      "sourceUrl": "https://cima.aemps.es/cima/dochtml/ft/70105/FT_70105.html",
+      "sourceTier": "AEMPS_CIMA",
+      "section2Hash": "265fbe66419de963d4cde64d9f2e7b001891df6954cbcac7d72e9c994430217c",
+      "section41Hash": "c91d4cef81cbe77a1ec1e5033b5fae862d36b91c8cfcbe51f979942e93848ae8",
+      "section42Hash": "5f4819d4149bc1de029b54c4036c86205f46cf79af9e48bd81f9a9b3829a2f6f"
+    },
+    {
+      "dedupeKey": "labetalolhydrochloride|5mg/ml|solutionforinjection",
+      "status": "SOURCE_TEXT_READY",
+      "sourceUrl": "https://cima.aemps.es/cima/dochtml/ft/89082/FT_89082.html",
+      "sourceTier": "AEMPS_CIMA",
+      "section2Hash": "00060a1db289bad8a2877993196bdd3f590ced8a2c692e61cc1e0cbdb9a02acd",
+      "section41Hash": "e118f20b5442e49b854d3268b849e65812aef3dd14bcf072298561bcf27a1f10",
+      "section42Hash": "da3072eb6ffd7db963bc58ae052b6e8168445e66bf436b93ba75c7e602cc80e9"
+    },
+    {
+      "dedupeKey": "lactuloseliquid|667mg|oralsolution",
+      "status": "SOURCE_TEXT_READY",
+      "sourceUrl": "https://cima.aemps.es/cima/dochtml/ft/46197/FT_46197.html",
+      "sourceTier": "AEMPS_CIMA",
+      "section2Hash": "98f12fdd2987607f2ab2204e0bb6a5e3ae81949f0cffae09d65323a044b3a7b9",
+      "section41Hash": "f8996786552f6414ac3eddc05cbb6872341952cbf9533401aa47698d92146f4f",
+      "section42Hash": "3dd28f6333cd752fbb5e7db5175a1bfb249d935e769a1bec0b3118f515946aa8"
+    },
+    {
+      "dedupeKey": "lamotrigine|100mg|dispersibletablet",
+      "status": "SOURCE_TEXT_READY",
+      "sourceUrl": "https://cima.aemps.es/cima/dochtml/ft/64462/FT_64462.html",
+      "sourceTier": "AEMPS_CIMA",
+      "section2Hash": "553a7d14b6d94e58a1c79ca709d79da99e9fb8a924aae49e7b0d059ef77dd3a6",
+      "section41Hash": "f18572f518b9bace6a9675aab4785b4071e245c1ee5f12fc08e4c1b807dea64c",
+      "section42Hash": "25a1e37382f298abf72604e65a0bdb1c994c999c862a00b18f2268e64dfed822"
+    },
+    {
+      "dedupeKey": "lamotrigine|25mg|dispersibletablet",
+      "status": "SOURCE_TEXT_READY",
+      "sourceUrl": "https://cima.aemps.es/cima/dochtml/ft/63747/FT_63747.html",
+      "sourceTier": "AEMPS_CIMA",
+      "section2Hash": "553a7d14b6d94e58a1c79ca709d79da99e9fb8a924aae49e7b0d059ef77dd3a6",
+      "section41Hash": "f18572f518b9bace6a9675aab4785b4071e245c1ee5f12fc08e4c1b807dea64c",
+      "section42Hash": "d2debee4ec354965faf8b10a183141878946c2e245b96f705d0f212a7b2707f7"
+    },
+    {
+      "dedupeKey": "lamotrigine|50mg|dispersibletablet",
+      "status": "SOURCE_TEXT_READY",
+      "sourceUrl": "https://cima.aemps.es/cima/dochtml/ft/64464/FT_64464.html",
+      "sourceTier": "AEMPS_CIMA",
+      "section2Hash": "553a7d14b6d94e58a1c79ca709d79da99e9fb8a924aae49e7b0d059ef77dd3a6",
+      "section41Hash": "f18572f518b9bace6a9675aab4785b4071e245c1ee5f12fc08e4c1b807dea64c",
+      "section42Hash": "dbfc55bae57d849070046d997b3429c44f542ad307af18bfbf9a1aa045cd26ef"
+    },
+    {
+      "dedupeKey": "lamotrigine|5mg|dispersibletablet",
+      "status": "SOURCE_TEXT_READY",
+      "sourceUrl": "https://cima.aemps.es/cima/dochtml/ft/63747/FT_63747.html",
+      "sourceTier": "AEMPS_CIMA",
+      "section2Hash": "553a7d14b6d94e58a1c79ca709d79da99e9fb8a924aae49e7b0d059ef77dd3a6",
+      "section41Hash": "f18572f518b9bace6a9675aab4785b4071e245c1ee5f12fc08e4c1b807dea64c",
+      "section42Hash": "d2debee4ec354965faf8b10a183141878946c2e245b96f705d0f212a7b2707f7"
+    },
+    {
+      "dedupeKey": "lansoprazole|15mg|capsulehard",
+      "status": "SOURCE_TEXT_READY",
+      "sourceUrl": "https://cima.aemps.es/cima/dochtml/ft/66146/FT_66146.html",
+      "sourceTier": "AEMPS_CIMA",
+      "section2Hash": "e9070132a5bee7851d2416b23fed7022da343c8987cd2835e66f357b1468d0f7",
+      "section41Hash": "bad37d8ad835ac2bf0b7bc44f2f1c6fff1fd41efe1966ba19a3280f11023d53e",
+      "section42Hash": "4d7c59c0824d13c209d3f1b856a9d6d126de33ba392c24953506428339b0da0c"
+    },
+    {
+      "dedupeKey": "lansoprazole|30mg|capsulehard",
+      "status": "SOURCE_TEXT_READY",
+      "sourceUrl": "https://cima.aemps.es/cima/dochtml/ft/66145/FT_66145.html",
+      "sourceTier": "AEMPS_CIMA",
+      "section2Hash": "e9070132a5bee7851d2416b23fed7022da343c8987cd2835e66f357b1468d0f7",
+      "section41Hash": "bad37d8ad835ac2bf0b7bc44f2f1c6fff1fd41efe1966ba19a3280f11023d53e",
+      "section42Hash": "4d7c59c0824d13c209d3f1b856a9d6d126de33ba392c24953506428339b0da0c"
+    },
+    {
+      "dedupeKey": "lercanidipinehcihemihydrateequivalentto10mglercanidipinehci|10mg|filmcoatedtablet",
+      "status": "SOURCE_TEXT_READY",
+      "sourceUrl": "https://cima.aemps.es/cima/dochtml/ft/71633/FT_71633.html",
+      "sourceTier": "AEMPS_CIMA",
+      "section2Hash": "9f615e29b3d6c3bf48a4641b143e19cb3d9e20ed9dadc1387aa9bdf7b174a23f",
+      "section41Hash": "f0f6c5ce6fef39c374122426877a5c63e2a08505f05d9897e6d096bd4ccc0632",
+      "section42Hash": "a8013d81415528aa1801ee105d33174d8eea741a5b2d5ad3a402d31c7e36e417"
+    },
+    {
+      "dedupeKey": "levetiracetam|100mg/1ml|oralsolution",
+      "status": "SOURCE_TEXT_READY",
+      "sourceUrl": "https://cima.aemps.es/cima/dochtml/ft/76440/FT_76440.html",
+      "sourceTier": "AEMPS_CIMA",
+      "section2Hash": "e2c6f144738b1b5d2d5e4f3c853bce83cf6fd022e35950f164268a8bdf61a99d",
+      "section41Hash": "c64f19021f626da58a13081167d6a8fdda058fc208ecfdb2fe84da0c56449b7e",
+      "section42Hash": "7410425c2f93432bbdba500fa855f393d9a5a577d3c223c459723d25814dcda9"
+    },
+    {
+      "dedupeKey": "levoceterizinedihydrochloride|5mg|filmcoatedtablet",
+      "status": "SOURCE_TEXT_READY",
+      "sourceUrl": "https://cima.aemps.es/cima/dochtml/ft/73181/FT_73181.html",
+      "sourceTier": "AEMPS_CIMA",
+      "section2Hash": "c5bd388d6fa5462ff644f3b634bf5177ca9a5cf9f7eb53d3f30ba91daa50e2bd",
+      "section41Hash": "816466ab16e40b38c7a6738ea5fee65bd269be7e0bab1f9599683beee45d115c",
+      "section42Hash": "1299c0a4c0e8bfd08351d7f86419139195488b8e0c35075dd02cc1d2dfd2abe3"
+    },
+    {
+      "dedupeKey": "levocetirizine|5mg|filmcoatedtablet",
+      "status": "SOURCE_TEXT_READY",
+      "sourceUrl": "https://cima.aemps.es/cima/dochtml/ft/73181/FT_73181.html",
+      "sourceTier": "AEMPS_CIMA",
+      "section2Hash": "c5bd388d6fa5462ff644f3b634bf5177ca9a5cf9f7eb53d3f30ba91daa50e2bd",
+      "section41Hash": "816466ab16e40b38c7a6738ea5fee65bd269be7e0bab1f9599683beee45d115c",
+      "section42Hash": "1299c0a4c0e8bfd08351d7f86419139195488b8e0c35075dd02cc1d2dfd2abe3"
+    },
+    {
+      "dedupeKey": "levodropropizine|30mg/5ml|syrup",
+      "status": "SOURCE_TEXT_INCOMPLETE",
+      "sourceUrl": "https://cima.aemps.es/cima/dochtml/ft/61382/FT_61382.html",
+      "sourceTier": "AEMPS_CIMA",
+      "section2Hash": "dc3a3f31ed7206027cf161af15cf6dd3425ab085f9138212bd3197e46595d6cb",
+      "section41Hash": "d649a2d4c4732a0f9702bac0003f403262ba513aa51d67978705ac1ec861a04a",
+      "section42Hash": null
+    },
+    {
+      "dedupeKey": "levofloxacinehemihydrate|500mg|filmcoatedtablet",
+      "status": "SOURCE_TEXT_READY",
+      "sourceUrl": "https://cima.aemps.es/cima/dochtml/ft/75614/FT_75614.html",
+      "sourceTier": "AEMPS_CIMA",
+      "section2Hash": "42d86c15f9e7bc97aec897f3e12df979236974e7918130c58cd5ea45bc69284f",
+      "section41Hash": "6340af4a036866c8e2c6e3678756110bf4a0bbb7edd7102a82c153ddf70aa6f1",
+      "section42Hash": "0f8f665e7ba8ee31e7807ed8560b81991b6a7d731e76dabf23d5c3e938a1598e"
+    },
+    {
+      "dedupeKey": "levofloxasinhemihydrate|500mg|filmcoatedtablet",
+      "status": "SOURCE_TEXT_READY",
+      "sourceUrl": "https://cima.aemps.es/cima/dochtml/ft/75614/FT_75614.html",
+      "sourceTier": "AEMPS_CIMA",
+      "section2Hash": "42d86c15f9e7bc97aec897f3e12df979236974e7918130c58cd5ea45bc69284f",
+      "section41Hash": "6340af4a036866c8e2c6e3678756110bf4a0bbb7edd7102a82c153ddf70aa6f1",
+      "section42Hash": "0f8f665e7ba8ee31e7807ed8560b81991b6a7d731e76dabf23d5c3e938a1598e"
+    },
+    {
+      "dedupeKey": "levofloxasinhemihydrate|750mg|filmcoatedtablet",
+      "status": "SOURCE_TEXT_READY",
+      "sourceUrl": "https://cima.aemps.es/cima/dochtml/ft/90054/FT_90054.html",
+      "sourceTier": "AEMPS_CIMA",
+      "section2Hash": "725c34b23dfbf567903fb49a757110043fff5d8813af82d3e1809cb9369debe2",
+      "section41Hash": "f0b2343d17124f395061d49d72611c3e31c557fe03648b261f5c2cf9731d8ad5",
+      "section42Hash": "0e7f9b86bbcab2fe09738697c685d9a0c071e1b539c56d935acb5a26b75d387e"
+    },
+    {
+      "dedupeKey": "levonorgestrel|1.5mg|tablet",
+      "status": "SOURCE_TEXT_READY",
+      "sourceUrl": "https://cima.aemps.es/cima/dochtml/ft/78873/FT_78873.html",
+      "sourceTier": "AEMPS_CIMA",
+      "section2Hash": "e0963af720debd7af8d3210f4ce3cce0cef4788cd175e15fcdeacd07daff9c01",
+      "section41Hash": "638e99ae483f1d7d1da68bda5aa6956ae8e09ce5e04df4297f8384bc20ad750b",
+      "section42Hash": "50374d2c5f259af594eafbcfd58da0dcbdf5d248bb5990287d8069f6d4459427"
+    },
+    {
+      "dedupeKey": "levosulpiride|25mg|tablet",
+      "status": "SOURCE_TEXT_READY",
+      "sourceUrl": "https://cima.aemps.es/cima/dochtml/ft/63715/FT_63715.html",
+      "sourceTier": "AEMPS_CIMA",
+      "section2Hash": "4fc7731a4ca93a2080bff2240bfe894a3e2ca9c9959504a46d72a466ba3d8755",
+      "section41Hash": "603981fd306ce8801577cb72c4f349909c86324b879dd81c372786803cf9262f",
+      "section42Hash": "3a2ae10b106c8f628607b2a97b0ba48bc5867f14e0145272b14a7781fab7a194"
+    },
+    {
+      "dedupeKey": "lidocainehydrochloride|20mg/1g|gel",
+      "status": "SOURCE_TEXT_READY",
+      "sourceUrl": "https://cima.aemps.es/cima/dochtml/ft/79538/FT_79538.html",
+      "sourceTier": "AEMPS_CIMA",
+      "section2Hash": "b43666d6325898d1a4cd7e9121708cb2ceb25a8a6d417bbf48e53e41da5fc757",
+      "section41Hash": "8f46f02d7998c03afc073a2870d1a2ab578c617262aed6a7b93b4c5abdf4a678",
+      "section42Hash": "e9b60d7f1c60e18fde23d7b68f22aecfa300d300b722bd8da87a14d19bb5f2f0"
+    },
+    {
+      "dedupeKey": "linezolid|600mg|filmcoatedtablet",
+      "status": "SOURCE_TEXT_READY",
+      "sourceUrl": "https://cima.aemps.es/cima/dochtml/ft/79231/FT_79231.html",
+      "sourceTier": "AEMPS_CIMA",
+      "section2Hash": "c61a4eb0b0a534c86a959ba093e8a9e496d380b8ca0bf0e28993ab2a8216ce6b",
+      "section41Hash": "5bae3e59a39db2f1d1d107cf671cdb24cf6cfcd22f9404895995f14445bb8926",
+      "section42Hash": "ce9176ec681f544fdcf25cc36c77207c8054e804d164481d5c3847aa68d0dd3e"
+    },
+    {
+      "dedupeKey": "lisinoprildihydrate|20mg|tablet",
+      "status": "SOURCE_TEXT_INCOMPLETE",
+      "sourceUrl": "https://cima.aemps.es/cima/dochtml/ft/64562/FT_64562.html",
+      "sourceTier": "AEMPS_CIMA",
+      "section2Hash": "183c163eaafdd3a48eedb2ec58ddd0c487b016532c3d43ab77bf98e3fa4aa770",
+      "section41Hash": "7453566d926f5062475e25cf4f2ae8eaded11c0f592269f47fb88534c6989659",
+      "section42Hash": null
+    },
+    {
+      "dedupeKey": "lisinoprildihydratecorrespondingto20mglisinoprilhydrochlorotiazide|20mg+12.5mg|tablet",
+      "status": "SOURCE_TEXT_READY",
+      "sourceUrl": "https://cima.aemps.es/cima/dochtml/ft/66477/FT_66477.html",
+      "sourceTier": "AEMPS_CIMA",
+      "section2Hash": "d15ec4601e5bc3214605b1981651f11c584044cefdf80240a272daeea6ddfcfb",
+      "section41Hash": "cc7f0ab7408a6d5eaac0a61335f2a7a4522a91fe9ad9e774bb57bda3b5feb23d",
+      "section42Hash": "800be27b489384f88db8aff9d8766889c74f31be85fb8905ec6cf6a569c077dc"
+    },
+    {
+      "dedupeKey": "lisinoprildihydratehydrochlorothiazide|20mg/12.5mg|tablet",
+      "status": "SOURCE_TEXT_READY",
+      "sourceUrl": "https://cima.aemps.es/cima/dochtml/ft/76944/FT_76944.html",
+      "sourceTier": "AEMPS_CIMA",
+      "section2Hash": "b4da179980f28bc57e349dc67740cf7a15d970f22dd93b340e9bf2e97247d103",
+      "section41Hash": "d5b88f7afd2f913b6dbc6efc12886aaf722740b28dd426a688af183013409cde",
+      "section42Hash": "cb1a304779c1c02094b848534aeeae32c78f5b3755eb6acdf2ab6c56d485b6ec"
+    },
+    {
+      "dedupeKey": "loperamidehydrochloride|2mg|capsulehard",
+      "status": "SOURCE_TEXT_INCOMPLETE",
+      "sourceUrl": "https://cima.aemps.es/cima/dochtml/ft/67219/FT_67219.html",
+      "sourceTier": "AEMPS_CIMA",
+      "section2Hash": "94f58334d614263be7c1e206e15d1734677f24fe1f5d51c5e0ca1989bddadc31",
+      "section41Hash": "b6dbc6b48fb06e7030c14bef8b4bccec902e17dba424059780bbc7a86f5c7f2a",
+      "section42Hash": null
+    },
+    {
+      "dedupeKey": "loratadin|5mg/5ml|syrup",
+      "status": "SOURCE_TEXT_READY",
+      "sourceUrl": "https://cima.aemps.es/cima/dochtml/ft/64243/FT_64243.html",
+      "sourceTier": "AEMPS_CIMA",
+      "section2Hash": "d11844997587ee98968c325c18be1df6e8973f11bc51cd2b1470786c48a5663b",
+      "section41Hash": "4df35dc9d3d96f20f540fff1563cf44a9de18315acf6b930075b5d573a72d42a",
+      "section42Hash": "c5937284381c2408ffe0836b13303ac2c4977785d548a89e4e06525376f284fc"
+    },
+    {
+      "dedupeKey": "loratadine|10mg|tablet",
+      "status": "SOURCE_TEXT_INCOMPLETE",
+      "sourceUrl": "https://cima.aemps.es/cima/dochtml/ft/58518/FT_58518.html",
+      "sourceTier": "AEMPS_CIMA",
+      "section2Hash": "92ec2a0ddd552e2765f0bee64b540caab1ff86e0695a669ec5e647ab685112b4",
+      "section41Hash": "e39723a1379fc270d8d70a6c918ce24094d4fc9c48938b4a1f582611f5a6f70f",
+      "section42Hash": null
+    },
+    {
+      "dedupeKey": "lorazepam|1mg|tablet",
+      "status": "SOURCE_TEXT_READY",
+      "sourceUrl": "https://cima.aemps.es/cima/dochtml/ft/68477/FT_68477.html",
+      "sourceTier": "AEMPS_CIMA",
+      "section2Hash": "4208aabfe1498077a6171a651d4e97d0d8b6d991b8f6e16515667b9b04440ccf",
+      "section41Hash": "af780d07620b507d1f42756dd05653b5acf7d4c13a5081d34192c4a37faeaf06",
+      "section42Hash": "fd6ff6fd96c1c5e2bc03dd06aecf5843df2c9844b3e8080802f4a751e70ddd26"
+    },
+    {
+      "dedupeKey": "losartanpotassium|100mg|filmcoatedtablet",
+      "status": "SOURCE_TEXT_INCOMPLETE",
+      "sourceUrl": "https://cima.aemps.es/cima/dochtml/ft/64971/FT_64971.html",
+      "sourceTier": "AEMPS_CIMA",
+      "section2Hash": "3d44e0f4c136a101e95aa3cde259c3375fa3f098cb3263f367afe9c342674bbe",
+      "section41Hash": "c3ac31f243762bafb6712e1e7a35b31103d5ccf1435ec79e43e8695de2f3070d",
+      "section42Hash": null
+    },
+    {
+      "dedupeKey": "losartanpotassium|25mg|filmcoatedtablet",
+      "status": "SOURCE_TEXT_READY",
+      "sourceUrl": "https://cima.aemps.es/cima/dochtml/ft/67911/FT_67911.html",
+      "sourceTier": "AEMPS_CIMA",
+      "section2Hash": "8a9f2fae4657732cf3bffbe4e9c31b02b4dbdb877ae66dec36a8a3a6cbb3e542",
+      "section41Hash": "b987cfd4ea462efcd8d99c1adb8fbd74c92500dad760f0e30af1b405c2861466",
+      "section42Hash": "21b77ecca5319dbe19e421bae38631e2043a2c3042d3c500d690508859981921"
+    },
+    {
+      "dedupeKey": "losartanpotassium|50mg|filmcoatedtablet",
+      "status": "SOURCE_TEXT_INCOMPLETE",
+      "sourceUrl": "https://cima.aemps.es/cima/dochtml/ft/60913/FT_60913.html",
+      "sourceTier": "AEMPS_CIMA",
+      "section2Hash": "3d44e0f4c136a101e95aa3cde259c3375fa3f098cb3263f367afe9c342674bbe",
+      "section41Hash": "c3ac31f243762bafb6712e1e7a35b31103d5ccf1435ec79e43e8695de2f3070d",
+      "section42Hash": null
+    },
+    {
+      "dedupeKey": "losartanpotassiumhydrochlorotiazide|100mg/25mg|filmcoatedtablet",
+      "status": "SOURCE_TEXT_INCOMPLETE",
+      "sourceUrl": "https://cima.aemps.es/cima/dochtml/ft/63473/FT_63473.html",
+      "sourceTier": "AEMPS_CIMA",
+      "section2Hash": null,
+      "section41Hash": "b9a724b3780a59adc20b6471e6c0ca22612c165c20837dc49ddd8f3e73ed5f19",
+      "section42Hash": null
+    },
+    {
+      "dedupeKey": "losartanpotassiumhydrochlorthiazide|50mg+12.5mg|filmcoatedtablet",
+      "status": "SOURCE_TEXT_INCOMPLETE",
+      "sourceUrl": "https://cima.aemps.es/cima/dochtml/ft/61600/FT_61600.html",
+      "sourceTier": "AEMPS_CIMA",
+      "section2Hash": "a1645b271da5838f14cf50a86a072b3f4d84d9ae921c1bf5021f49ef79b66202",
+      "section41Hash": "32499eedc0a2217264872b94b69f829e64b36912950e155a38da259c6df5fd58",
+      "section42Hash": null
+    },
+    {
+      "dedupeKey": "menotrophinhumanmenopausalgonadotrophinhmg|75iu|powderandsolventforsolutionforinjection",
+      "status": "SOURCE_TEXT_INCOMPLETE",
+      "sourceUrl": "https://cima.aemps.es/cima/dochtml/ft/55890/FT_55890.html",
+      "sourceTier": "AEMPS_CIMA",
+      "section2Hash": "e85b71b4072e0599285c5525e9d945f2e033e2c3741cc03130564ce5c33fb3b5",
+      "section41Hash": "7a7d76e36f40cfe4c3d76e095c97b463616930b5671f17add31af60df13ee5db",
+      "section42Hash": null
+    },
+    {
+      "dedupeKey": "meropenemtrihydrate|1000mg|powderforsolutionforinjectionorinfusion",
+      "status": "SOURCE_TEXT_READY",
+      "sourceUrl": "https://cima.aemps.es/cima/dochtml/ft/74304/FT_74304.html",
+      "sourceTier": "AEMPS_CIMA",
+      "section2Hash": "1e262315eb65a6e2b8182126779a6c0a9f6b689cc4318122b75baf29fa64bc89",
+      "section41Hash": "81af71943e81cfe9890d98efb60525b4b59a25550d9a0bfa767a3210e0898425",
+      "section42Hash": "993bde624505751fa993787c19da0b9aaede42e46832fba3ace940ae87726baa"
+    },
+    {
+      "dedupeKey": "meropenemtrihydrate|500mg|powderforsolutionforinjectionorinfusion",
+      "status": "SOURCE_TEXT_READY",
+      "sourceUrl": "https://cima.aemps.es/cima/dochtml/ft/83989/FT_83989.html",
+      "sourceTier": "AEMPS_CIMA",
+      "section2Hash": "da822be5626b677605b175b3f130c6affe4b723ab1bea255dca3a934d24e6dd5",
+      "section41Hash": "e5e495e2257b8071a6263c3477b32b33d6589060690e3f62b0dd7e4d9e2ce244",
+      "section42Hash": "faac661e469fe93d039a279a73630f576e3b67b2fa0afcaaaad11fef22a2f9bf"
+    },
+    {
+      "dedupeKey": "metforminhclvildagliptin|1000mg+50mg|filmcoatedtablet",
+      "status": "SOURCE_TEXT_READY",
+      "sourceUrl": "https://cima.aemps.es/cima/dochtml/ft/07425009/FT_07425009.html",
+      "sourceTier": "AEMPS_CIMA",
+      "section2Hash": "26a1f28dcb3248c53ba9dec59d3c0f8f012dcd9132cc1ffc71ca640236076d53",
+      "section41Hash": "7a7401a4258212f723bcf12e32d7997ea23425c18a4f8cf65b0a147b8fc67778",
+      "section42Hash": "de2cc7e74646fa65181d044aa85c29e18e6feb503e469b5a969294b69479a9e6"
+    },
+    {
+      "dedupeKey": "metforminhclvildagliptin|850mg+50mg|filmcoatedtablet",
+      "status": "SOURCE_TEXT_READY",
+      "sourceUrl": "https://cima.aemps.es/cima/dochtml/ft/07425003/FT_07425003.html",
+      "sourceTier": "AEMPS_CIMA",
+      "section2Hash": "26a1f28dcb3248c53ba9dec59d3c0f8f012dcd9132cc1ffc71ca640236076d53",
+      "section41Hash": "7a7401a4258212f723bcf12e32d7997ea23425c18a4f8cf65b0a147b8fc67778",
+      "section42Hash": "de2cc7e74646fa65181d044aa85c29e18e6feb503e469b5a969294b69479a9e6"
+    },
+    {
+      "dedupeKey": "metforminhydrochloride|1000mg|filmcoatedtablet",
+      "status": "SOURCE_TEXT_READY",
+      "sourceUrl": "https://cima.aemps.es/cima/dochtml/ft/82700/FT_82700.html",
+      "sourceTier": "AEMPS_CIMA",
+      "section2Hash": "e962cdf2bd1f0ccdbb6d827153a61ab8190e1e8c00eb9af4a887897d6ca13f3d",
+      "section41Hash": "cae23f32fa719ea4405483d0daaf5d18c797296588166ce2184d344f3406a0bf",
+      "section42Hash": "3671b788aae9f10a94c02a7ac2060cd4e7a5e841c455a038dd274c8b3de9e54e"
+    },
+    {
+      "dedupeKey": "metforminhydrochloride|850mg|filmcoatedtablet",
+      "status": "SOURCE_TEXT_INCOMPLETE",
+      "sourceUrl": "https://cima.aemps.es/cima/dochtml/ft/55211/FT_55211.html",
+      "sourceTier": "AEMPS_CIMA",
+      "section2Hash": "759cab6bb3bebbdfdd83942ee546e901f77ae851b869a0cbb4987f707df8ebe2",
+      "section41Hash": "e6a687db0825be9fbacb78dfd4a8bfcd9f506cd677a6b192b35d19f2a8e46b89",
+      "section42Hash": null
+    },
+    {
+      "dedupeKey": "methoxypolyethyleneglycolepoetinbeta|100mcg/0.3ml|solutionforinjection",
+      "status": "SOURCE_TEXT_READY",
+      "sourceUrl": "https://cima.aemps.es/cima/dochtml/ft/07400010/FT_07400010.html",
+      "sourceTier": "AEMPS_CIMA",
+      "section2Hash": "11a28d0012df69bc5a6c3a22c3c448c9b721b1a5dd777e25ca8d5e4a065a229e",
+      "section41Hash": "0581bde2d1c1ca05805e2acfb8188fae13eac97ff91c7dd5059982f315a00690",
+      "section42Hash": "097aa34a59b3f73b93de9ec5c9a5cc62b03c1b089d8a95fb3f8c8ad8ed7e1d4f"
+    },
+    {
+      "dedupeKey": "methylprednisolone|16mg|tablet",
+      "status": "SOURCE_TEXT_READY",
+      "sourceUrl": "https://cima.aemps.es/cima/dochtml/ft/59123/FT_59123.html",
+      "sourceTier": "AEMPS_CIMA",
+      "section2Hash": "165595e42938c824e05924b8f58ec10320c42b80251e3858a85ea67a8d31c94a",
+      "section41Hash": "a105f2d59b81e0edfbd63ffe27508ceb1613b2a2837eb16b67db4bf9a63d0f01",
+      "section42Hash": "bf720432383aec9d69a40380379ba982b7a8e283f0043935709128370062f343"
+    },
+    {
+      "dedupeKey": "methylprednisolone|20mg|powderforsolutionforinjectionorinfusion",
+      "status": "SOURCE_TEXT_INCOMPLETE",
+      "sourceUrl": "https://cima.aemps.es/cima/dochtml/ft/71864/FT_71864.html",
+      "sourceTier": "AEMPS_CIMA",
+      "section2Hash": "7c8aef8f2037724e07c4109d20b9ef3097120b1ce468e7dd5e3c45e23100ad58",
+      "section41Hash": "d98f7900725a2ce1a2d75f3ab6e8ab9030926fa7984c01b579f2306db7c69b63",
+      "section42Hash": null
+    },
+    {
+      "dedupeKey": "methylprednisolone|40mg|powderforsolutionforinjectionorinfusion",
+      "status": "SOURCE_TEXT_INCOMPLETE",
+      "sourceUrl": "https://cima.aemps.es/cima/dochtml/ft/71866/FT_71866.html",
+      "sourceTier": "AEMPS_CIMA",
+      "section2Hash": "7c8aef8f2037724e07c4109d20b9ef3097120b1ce468e7dd5e3c45e23100ad58",
+      "section41Hash": "d98f7900725a2ce1a2d75f3ab6e8ab9030926fa7984c01b579f2306db7c69b63",
+      "section42Hash": null
+    },
+    {
+      "dedupeKey": "methylprednisolone|4mg|tablet",
+      "status": "SOURCE_TEXT_READY",
+      "sourceUrl": "https://cima.aemps.es/cima/dochtml/ft/32729/FT_32729.html",
+      "sourceTier": "AEMPS_CIMA",
+      "section2Hash": "165595e42938c824e05924b8f58ec10320c42b80251e3858a85ea67a8d31c94a",
+      "section41Hash": "a105f2d59b81e0edfbd63ffe27508ceb1613b2a2837eb16b67db4bf9a63d0f01",
+      "section42Hash": "bf720432383aec9d69a40380379ba982b7a8e283f0043935709128370062f343"
+    },
+    {
+      "dedupeKey": "metronidazole|500mg/100ml|solutionforinfusion",
+      "status": "SOURCE_TEXT_READY",
+      "sourceUrl": "https://cima.aemps.es/cima/dochtml/ft/68091/FT_68091.html",
+      "sourceTier": "AEMPS_CIMA",
+      "section2Hash": "cda80d2347319a60f97fa9e01962c0495fe888bc4ab3470db0de8fabf1afdb41",
+      "section41Hash": "64542825e102e328400395e59ad29661d249afff66ea32bd3cb7d674adf66a9e",
+      "section42Hash": "f3c1b330e0096da6eb295a2afb9d103eea237aface7ed9d35d3913a00dfa5f3e"
+    },
+    {
+      "dedupeKey": "minoxidil|5%|cutaneousspraysolution",
+      "status": "SOURCE_TEXT_INCOMPLETE",
+      "sourceUrl": "https://cima.aemps.es/cima/dochtml/ft/66953/FT_66953.html",
+      "sourceTier": "AEMPS_CIMA",
+      "section2Hash": "57819c14688371ff08f07aa7e3ec8bc55bebdbd2df0ce8949e054a6bf1145a8d",
+      "section41Hash": "73fd4355e1917e3ed2a34e74c65d4981f4cf4c44b9c1aea14b1e635283433221",
+      "section42Hash": null
+    },
+    {
+      "dedupeKey": "montelukastsodium|10mg|filmcoatedtablet",
+      "status": "SOURCE_TEXT_READY",
+      "sourceUrl": "https://cima.aemps.es/cima/dochtml/ft/75831/FT_75831.html",
+      "sourceTier": "AEMPS_CIMA",
+      "section2Hash": "2d5b007c8b2687986ea038e37f28121adee3027bdbcad7c5967ee33e46149323",
+      "section41Hash": "f2b397d11379cf3a991b88b12825b3fc007aef52d85a34cefe10c72da15a3dfb",
+      "section42Hash": "f1f3bb9a36b4e0ce32cd71d38b34005535bb564cdd8142bcbb3eae4fd1d78e9c"
+    },
+    {
+      "dedupeKey": "moxifloxacinhcl|400mg|filmcoatedtablet",
+      "status": "SOURCE_TEXT_INCOMPLETE",
+      "sourceUrl": "https://cima.aemps.es/cima/dochtml/ft/77662/FT_77662.html",
+      "sourceTier": "AEMPS_CIMA",
+      "section2Hash": "00c0fb9d693e372f5e2d1b33f7d77714d5cc7b29bb7f1436b935d7f2604d98af",
+      "section41Hash": "3dee9d080adfb6c9ef734752163068078fa48fa2187dfb9b734cd8cbe6b915a7",
+      "section42Hash": null
+    },
+    {
+      "dedupeKey": "nebivololhydrochloride|5mg|tablet",
+      "status": "SOURCE_TEXT_INCOMPLETE",
+      "sourceUrl": "https://cima.aemps.es/cima/dochtml/ft/71283/FT_71283.html",
+      "sourceTier": "AEMPS_CIMA",
+      "section2Hash": "dade9456ae318571fdebc14831aa8230c8acff5f8157b8152695f943395dd14f",
+      "section41Hash": "4bcc86a655d38953ba24b9657519b77c8edaf6e45b811679183fc48897f60239",
+      "section42Hash": null
+    },
+    {
+      "dedupeKey": "nivolumab|10mg/ml|concentrateforsolutionforinfusion",
+      "status": "SOURCE_TEXT_READY",
+      "sourceUrl": "https://cima.aemps.es/cima/dochtml/ft/1151014001/FT_1151014001.html",
+      "sourceTier": "AEMPS_CIMA",
+      "section2Hash": "3511640b89a7446b4781b0488caaf012e59e3a5673ee32918f3e5e46dfebb788",
+      "section41Hash": "cc78b6fb73f72934e7a4a46678cd54ecc2e42b60e2d0d64d0d0dceca6c46807c",
+      "section42Hash": "9b1316f8893e6c0ba28dd612654c1927a14836eabad97262fdc3f23beedcd04f"
+    },
+    {
+      "dedupeKey": "ofloxacin|3mg/1ml|eyedropssolution",
+      "status": "SOURCE_TEXT_INCOMPLETE",
+      "sourceUrl": "https://cima.aemps.es/cima/dochtml/ft/62560/FT_62560.html",
+      "sourceTier": "AEMPS_CIMA",
+      "section2Hash": null,
+      "section41Hash": "d01113de7ba7619af4d82d31b8ac9bf2e4c63e76a275dc32906a0733434036a0",
+      "section42Hash": null
+    },
+    {
+      "dedupeKey": "olanzapine|10mg|tablet",
+      "status": "SOURCE_TEXT_READY",
+      "sourceUrl": "https://cima.aemps.es/cima/dochtml/ft/68830/FT_68830.html",
+      "sourceTier": "AEMPS_CIMA",
+      "section2Hash": "e245a0bbc7b394bed8cb63a7e003e7a4ff323c288c2e224969b7c8c45e1fe4d2",
+      "section41Hash": "2a47ec9983168238f2e3ee84661f224d66080992bd37febbf17d20ccb6a81367",
+      "section42Hash": "ec45d0ec4343afd34d677d55015e8e012f44f8dca483dcd66b770833a266d6af"
+    },
+    {
+      "dedupeKey": "olmesartanmedoxomilamlodipinehydrochlorothiazide|20mg+5mg+12.5mg|filmcoatedtablet",
+      "status": "SOURCE_TEXT_INCOMPLETE",
+      "sourceUrl": "https://cima.aemps.es/cima/dochtml/ft/73437/FT_73437.html",
+      "sourceTier": "AEMPS_CIMA",
+      "section2Hash": "ce844601419c8edfb1a4f50052189836cf269c50115e057194521ac9ee62b846",
+      "section41Hash": "36c338205904d23f034d73a2049066e8e50e853f13b46b9680fc63656d5266eb",
+      "section42Hash": null
+    },
+    {
+      "dedupeKey": "olmesartanmedoxomilamlodipinehydrochlorothiazide|40mg+10mg+25mg|filmcoatedtablet",
+      "status": "SOURCE_TEXT_INCOMPLETE",
+      "sourceUrl": "https://cima.aemps.es/cima/dochtml/ft/73439/FT_73439.html",
+      "sourceTier": "AEMPS_CIMA",
+      "section2Hash": "ce844601419c8edfb1a4f50052189836cf269c50115e057194521ac9ee62b846",
+      "section41Hash": "36c338205904d23f034d73a2049066e8e50e853f13b46b9680fc63656d5266eb",
+      "section42Hash": null
+    },
+    {
+      "dedupeKey": "olmesartanmedoxomilamlodipinehydrochlorothiazide|40mg+5mg+12.5mg|filmcoatedtablet",
+      "status": "SOURCE_TEXT_INCOMPLETE",
+      "sourceUrl": "https://cima.aemps.es/cima/dochtml/ft/73438/FT_73438.html",
+      "sourceTier": "AEMPS_CIMA",
+      "section2Hash": "ce844601419c8edfb1a4f50052189836cf269c50115e057194521ac9ee62b846",
+      "section41Hash": "36c338205904d23f034d73a2049066e8e50e853f13b46b9680fc63656d5266eb",
+      "section42Hash": null
+    },
+    {
+      "dedupeKey": "omeprazol|20mg|gastroresistantcapsulehard",
+      "status": "SOURCE_TEXT_READY",
+      "sourceUrl": "https://cima.aemps.es/cima/dochtml/ft/64004/FT_64004.html",
+      "sourceTier": "AEMPS_CIMA",
+      "section2Hash": "1b26f7afa30823549403c2c41d80ceea5e91fbc6d38cf8973e739b0ac7d3da0a",
+      "section41Hash": "cc78b770811d5782d1358801f21bb015061cad3100cac5cfa07feb812ffa297b",
+      "section42Hash": "833c3305b5b405370f19ad4f00a815d7f8b6adbf57ee8d700d39331ce9168657"
+    },
+    {
+      "dedupeKey": "omeprazole|20mg|gastroresistantcapsulehard",
+      "status": "SOURCE_TEXT_READY",
+      "sourceUrl": "https://cima.aemps.es/cima/dochtml/ft/64004/FT_64004.html",
+      "sourceTier": "AEMPS_CIMA",
+      "section2Hash": "1b26f7afa30823549403c2c41d80ceea5e91fbc6d38cf8973e739b0ac7d3da0a",
+      "section41Hash": "cc78b770811d5782d1358801f21bb015061cad3100cac5cfa07feb812ffa297b",
+      "section42Hash": "833c3305b5b405370f19ad4f00a815d7f8b6adbf57ee8d700d39331ce9168657"
+    },
+    {
+      "dedupeKey": "ondansetron|4mg/2ml|solutionforinjection",
+      "status": "SOURCE_TEXT_READY",
+      "sourceUrl": "https://cima.aemps.es/cima/dochtml/ft/72117/FT_72117.html",
+      "sourceTier": "AEMPS_CIMA",
+      "section2Hash": "7bca5d4d0728998780bca4191f7dd21b26dad6596a565392eab367b853ce0708",
+      "section41Hash": "2e4fb56af93f1ddd568744368af750ab160bae7b2ba09d555fc3f36c9b31c082",
+      "section42Hash": "2d76b1ff1cdce7264ac3bbddc736c418568662f462a617fdf3662fa036bc057e"
+    },
+    {
+      "dedupeKey": "ondansetron|4mg/2ml|solutionforinjectioninfusion",
+      "status": "SOURCE_TEXT_READY",
+      "sourceUrl": "https://cima.aemps.es/cima/dochtml/ft/72117/FT_72117.html",
+      "sourceTier": "AEMPS_CIMA",
+      "section2Hash": "7bca5d4d0728998780bca4191f7dd21b26dad6596a565392eab367b853ce0708",
+      "section41Hash": "2e4fb56af93f1ddd568744368af750ab160bae7b2ba09d555fc3f36c9b31c082",
+      "section42Hash": "2d76b1ff1cdce7264ac3bbddc736c418568662f462a617fdf3662fa036bc057e"
+    },
+    {
+      "dedupeKey": "oxaliplatin|5mg/1ml|concentrateforsolutionforinfusion",
+      "status": "SOURCE_TEXT_READY",
+      "sourceUrl": "https://cima.aemps.es/cima/dochtml/ft/72386/FT_72386.html",
+      "sourceTier": "AEMPS_CIMA",
+      "section2Hash": "b5a70585d765e20d00f6b4eca6f578e66fb6c1aab6eabefdacab368cc48cd13f",
+      "section41Hash": "943fde399dff41d7867e7da34afa000be64b12eefaab5cce69b3f11f4a9505b3",
+      "section42Hash": "2d2040ae33fcc3ff13d9b90e257256f225b845e31c008b4afc61c921388a5d99"
+    },
+    {
+      "dedupeKey": "oxycodonehydrochloride|20mg|prolongedreleasetablet",
+      "status": "SOURCE_TEXT_READY",
+      "sourceUrl": "https://cima.aemps.es/cima/dochtml/ft/70686/FT_70686.html",
+      "sourceTier": "AEMPS_CIMA",
+      "section2Hash": "d248323b53729bb9f64e3f2ea5e6a7e57985f7ffd09211ed0f0d570349243d53",
+      "section41Hash": "8442dd8e646e19eaf7f1502583d185a53c8fd471bb15974206d0fb17c1e29926",
+      "section42Hash": "21de10067898bbffbf136d5dbac2a0cfff212a3a033a20478fbc9d62f6000fa4"
+    },
+    {
+      "dedupeKey": "oxycodonehydrochloride|80mg|prolongedreleasetablet",
+      "status": "SOURCE_TEXT_READY",
+      "sourceUrl": "https://cima.aemps.es/cima/dochtml/ft/76867/FT_76867.html",
+      "sourceTier": "AEMPS_CIMA",
+      "section2Hash": "98589b83f10e12f4ed33d5703f9acdf27b95f27ae0736b7785b3112c74e2deb9",
+      "section41Hash": "8442dd8e646e19eaf7f1502583d185a53c8fd471bb15974206d0fb17c1e29926",
+      "section42Hash": "21de10067898bbffbf136d5dbac2a0cfff212a3a033a20478fbc9d62f6000fa4"
+    },
+    {
+      "dedupeKey": "oxymetazolinehydrochloride|0.25mg/ml|nasaldropssolution",
+      "status": "SOURCE_TEXT_READY",
+      "sourceUrl": "https://cima.aemps.es/cima/dochtml/ft/46065/FT_46065.html",
+      "sourceTier": "AEMPS_CIMA",
+      "section2Hash": "934800b14675f784bb66a4f4f35bbde8303ebe3658aeb8af0f6490d3e504cb86",
+      "section41Hash": "7b23780e7c5c875a6185ba1f92496f5eab580de59434a510868de8f1f0baf067",
+      "section42Hash": "b3e3cdebec3588ab550752e5c88660968f51a6445c7c9bc173f29d4c13b01ced"
+    },
+    {
+      "dedupeKey": "oxymetazolinehydrochloride|0.5mg/ml|nasalspraysolution",
+      "status": "SOURCE_TEXT_INCOMPLETE",
+      "sourceUrl": "https://cima.aemps.es/cima/dochtml/ft/59273/FT_59273.html",
+      "sourceTier": "AEMPS_CIMA",
+      "section2Hash": "957504b87e2285e11173fd10d8c5c1ccb126676acee6559b6ffe42395af7c952",
+      "section41Hash": "e8a2c567afe5e6e94c874de56649a4acc8e3142654daf3c6ac57d3891f02da5b",
+      "section42Hash": null
+    },
+    {
+      "dedupeKey": "paclitaxel|6mg/1ml|concentrateforsolutionforinfusion",
+      "status": "SOURCE_TEXT_READY",
+      "sourceUrl": "https://cima.aemps.es/cima/dochtml/ft/66311/FT_66311.html",
+      "sourceTier": "AEMPS_CIMA",
+      "section2Hash": "e51525574e20233d7c7dcced61707e3f161570db323b1e71d8104e849cf65665",
+      "section41Hash": "4ed5a725b96ae08d19234cdf34d31fed4dd9ac881aa7545f4f7f4ad3443c586b",
+      "section42Hash": "a8e6d1df215cdd95984caa7981ffe7e89ca717be6c89d7074b17ca00881a2f4e"
+    },
+    {
+      "dedupeKey": "pantoprazole|40mg|lyophilisateforsolutionforinjection",
+      "status": "SOURCE_TEXT_READY",
+      "sourceUrl": "https://cima.aemps.es/cima/dochtml/ft/62023/FT_62023.html",
+      "sourceTier": "AEMPS_CIMA",
+      "section2Hash": null,
+      "section41Hash": "876d4c9e697985e809a3a23e674659df6451742fbf40d094cdb4ec4152cdb9b0",
+      "section42Hash": "be3a952cb1c61edbd6f2e43999698808e854c44823c3f66ea685cb0c52d5a569"
+    },
+    {
+      "dedupeKey": "pantoprazolesodium|20mg|gastroresistanttablet",
+      "status": "SOURCE_TEXT_INCOMPLETE",
+      "sourceUrl": "https://cima.aemps.es/cima/dochtml/ft/74483/FT_74483.html",
+      "sourceTier": "AEMPS_CIMA",
+      "section2Hash": "fbb8b96737523aa0b848f3d943d88a393536b55d675757682ac5868adb7401bf",
+      "section41Hash": "4bde4a183691ff13d3c6114e6c8c6bea994911e81d65d3ffb43921d58a8d1471",
+      "section42Hash": null
+    },
+    {
+      "dedupeKey": "pantoprazolesodium|40mg|gastroresistanttablet",
+      "status": "SOURCE_TEXT_READY",
+      "sourceUrl": "https://cima.aemps.es/cima/dochtml/ft/68076/FT_68076.html",
+      "sourceTier": "AEMPS_CIMA",
+      "section2Hash": "bd0570f5af7fed8aa2071447f6f6be68fcf57ce745d0ee955d7777983774bdc5",
+      "section41Hash": "e8e1bf10f3407b6d7a3a706aeb017af87704bc642e646f67f1c5f4047efef8b9",
+      "section42Hash": "d082fd7fe13b4c92a54f85ac060b1af87e705ae687165a7a4370e2ebc45967b2"
+    },
+    {
+      "dedupeKey": "pantoprazolesodium|40mg|powderforsolutionforinjection",
+      "status": "SOURCE_TEXT_READY",
+      "sourceUrl": "https://cima.aemps.es/cima/dochtml/ft/62023/FT_62023.html",
+      "sourceTier": "AEMPS_CIMA",
+      "section2Hash": null,
+      "section41Hash": "876d4c9e697985e809a3a23e674659df6451742fbf40d094cdb4ec4152cdb9b0",
+      "section42Hash": "be3a952cb1c61edbd6f2e43999698808e854c44823c3f66ea685cb0c52d5a569"
+    },
+    {
+      "dedupeKey": "pantoprazolesodiumsesquihydrate|20mg|gastroresistanttablet",
+      "status": "SOURCE_TEXT_INCOMPLETE",
+      "sourceUrl": "https://cima.aemps.es/cima/dochtml/ft/74483/FT_74483.html",
+      "sourceTier": "AEMPS_CIMA",
+      "section2Hash": "fbb8b96737523aa0b848f3d943d88a393536b55d675757682ac5868adb7401bf",
+      "section41Hash": "4bde4a183691ff13d3c6114e6c8c6bea994911e81d65d3ffb43921d58a8d1471",
+      "section42Hash": null
+    },
+    {
+      "dedupeKey": "pantoprazolesodiumsesquihydrate|40mg|gastroresistanttablet",
+      "status": "SOURCE_TEXT_READY",
+      "sourceUrl": "https://cima.aemps.es/cima/dochtml/ft/68076/FT_68076.html",
+      "sourceTier": "AEMPS_CIMA",
+      "section2Hash": "bd0570f5af7fed8aa2071447f6f6be68fcf57ce745d0ee955d7777983774bdc5",
+      "section41Hash": "e8e1bf10f3407b6d7a3a706aeb017af87704bc642e646f67f1c5f4047efef8b9",
+      "section42Hash": "d082fd7fe13b4c92a54f85ac060b1af87e705ae687165a7a4370e2ebc45967b2"
+    },
+    {
+      "dedupeKey": "pantoprazolesodiumsesquihydrateequivalenttopantoprazole|40mg|gastroresistanttablet",
+      "status": "SOURCE_TEXT_READY",
+      "sourceUrl": "https://cima.aemps.es/cima/dochtml/ft/68076/FT_68076.html",
+      "sourceTier": "AEMPS_CIMA",
+      "section2Hash": "bd0570f5af7fed8aa2071447f6f6be68fcf57ce745d0ee955d7777983774bdc5",
+      "section41Hash": "e8e1bf10f3407b6d7a3a706aeb017af87704bc642e646f67f1c5f4047efef8b9",
+      "section42Hash": "d082fd7fe13b4c92a54f85ac060b1af87e705ae687165a7a4370e2ebc45967b2"
+    },
+    {
+      "dedupeKey": "pantoprazolesodiumsesquihydrateequivalenttopantoprazole40mg|40mg|gastroresistanttablet",
+      "status": "SOURCE_TEXT_READY",
+      "sourceUrl": "https://cima.aemps.es/cima/dochtml/ft/68076/FT_68076.html",
+      "sourceTier": "AEMPS_CIMA",
+      "section2Hash": "bd0570f5af7fed8aa2071447f6f6be68fcf57ce745d0ee955d7777983774bdc5",
+      "section41Hash": "e8e1bf10f3407b6d7a3a706aeb017af87704bc642e646f67f1c5f4047efef8b9",
+      "section42Hash": "d082fd7fe13b4c92a54f85ac060b1af87e705ae687165a7a4370e2ebc45967b2"
+    },
+    {
+      "dedupeKey": "pantoprazolesodiumsesquihydrateequivalenttopantoprazolemacrogol400|20mg|gastroresistanttablet",
+      "status": "SOURCE_TEXT_INCOMPLETE",
+      "sourceUrl": "https://cima.aemps.es/cima/dochtml/ft/74483/FT_74483.html",
+      "sourceTier": "AEMPS_CIMA",
+      "section2Hash": "fbb8b96737523aa0b848f3d943d88a393536b55d675757682ac5868adb7401bf",
+      "section41Hash": "4bde4a183691ff13d3c6114e6c8c6bea994911e81d65d3ffb43921d58a8d1471",
+      "section42Hash": null
+    },
+    {
+      "dedupeKey": "pantoprazolesodiumsesquihydratesodiumcarbonateanhydrous|40mg|gastroresistanttablet",
+      "status": "SOURCE_TEXT_READY",
+      "sourceUrl": "https://cima.aemps.es/cima/dochtml/ft/68076/FT_68076.html",
+      "sourceTier": "AEMPS_CIMA",
+      "section2Hash": "bd0570f5af7fed8aa2071447f6f6be68fcf57ce745d0ee955d7777983774bdc5",
+      "section41Hash": "e8e1bf10f3407b6d7a3a706aeb017af87704bc642e646f67f1c5f4047efef8b9",
+      "section42Hash": "d082fd7fe13b4c92a54f85ac060b1af87e705ae687165a7a4370e2ebc45967b2"
+    },
+    {
+      "dedupeKey": "pantoprazolesodiumsesquilhydrate|20mg|gastroresistanttablet",
+      "status": "SOURCE_TEXT_INCOMPLETE",
+      "sourceUrl": "https://cima.aemps.es/cima/dochtml/ft/74483/FT_74483.html",
+      "sourceTier": "AEMPS_CIMA",
+      "section2Hash": "fbb8b96737523aa0b848f3d943d88a393536b55d675757682ac5868adb7401bf",
+      "section41Hash": "4bde4a183691ff13d3c6114e6c8c6bea994911e81d65d3ffb43921d58a8d1471",
+      "section42Hash": null
+    },
+    {
+      "dedupeKey": "paracetamol|150mg|suppository",
+      "status": "SOURCE_TEXT_INCOMPLETE",
+      "sourceUrl": "https://cima.aemps.es/cima/dochtml/ft/45930/FT_45930.html",
+      "sourceTier": "AEMPS_CIMA",
+      "section2Hash": "2a72ddc5553088c7dedf2de33ea5a5dcb5fc4f795a054c2af82cd942b1fc0c5d",
+      "section41Hash": "18f6168c37643722dbff43e7e4acf66ff99d70bd7e1bbded63456c74625f1660",
+      "section42Hash": null
+    },
+    {
+      "dedupeKey": "paracetamol|300mg|suppository",
+      "status": "SOURCE_TEXT_INCOMPLETE",
+      "sourceUrl": "https://cima.aemps.es/cima/dochtml/ft/45929/FT_45929.html",
+      "sourceTier": "AEMPS_CIMA",
+      "section2Hash": "2a72ddc5553088c7dedf2de33ea5a5dcb5fc4f795a054c2af82cd942b1fc0c5d",
+      "section41Hash": "18f6168c37643722dbff43e7e4acf66ff99d70bd7e1bbded63456c74625f1660",
+      "section42Hash": null
+    },
+    {
+      "dedupeKey": "paracetamol|500mg|tablet",
+      "status": "SOURCE_TEXT_INCOMPLETE",
+      "sourceUrl": "https://cima.aemps.es/cima/dochtml/ft/56423/FT_56423.html",
+      "sourceTier": "AEMPS_CIMA",
+      "section2Hash": "7d676d310bc71b276e83426494220d8ddcde796dc7ede4bb335a0a9512a287a1",
+      "section41Hash": "b3a5dd3d58d45261b9995c57abd141bc94dc29fa4e178839a0bb90c1f822ee43",
+      "section42Hash": null
+    },
+    {
+      "dedupeKey": "pegfilgrastim|6mg|solutionforinjection",
+      "status": "SOURCE_TEXT_READY",
+      "sourceUrl": "https://cima.aemps.es/cima/dochtml/ft/02227004/FT_02227004.html",
+      "sourceTier": "AEMPS_CIMA",
+      "section2Hash": "302f711672d43195bc7e903fcf1128bde09f9253619bb40627d3fb92fa303975",
+      "section41Hash": "b3ecf472ec92203804ef8639cc898ff1042a72da568fbf8f61c6e577cc7727ad",
+      "section42Hash": "9e53ad85dffb7a9940b78773c8cbf74893db073aff16a0900cf07aafb0ea3d5a"
+    },
+    {
+      "dedupeKey": "perindoprilerbumineindapamide|4mg+1.25mg|tablet",
+      "status": "SOURCE_TEXT_READY",
+      "sourceUrl": "https://cima.aemps.es/cima/dochtml/ft/62407/FT_62407.html",
+      "sourceTier": "AEMPS_CIMA",
+      "section2Hash": "34df5ec5efc4e7eafb47a886e0fcc392e82abe4185939c01b52d116e163ecad3",
+      "section41Hash": "3871ae729534c127de216d5f3b3fe9d3f29a66253463deecb179b7dcd7eb3cc0",
+      "section42Hash": "2f3ba55ecef12dc9b6616ee24e3da0686303bd9c1c96268518b1d0324d38ff77"
+    },
+    {
+      "dedupeKey": "perindoprilterbutylamine|8mg|tablet",
+      "status": "SOURCE_TEXT_READY",
+      "sourceUrl": "https://cima.aemps.es/cima/dochtml/ft/72239/FT_72239.html",
+      "sourceTier": "AEMPS_CIMA",
+      "section2Hash": "7dce72698a13950fc345128e70d873146f092e190debd7b5d3a6f2d69cd2d4fe",
+      "section41Hash": "0c855706dc4d04828f96b41633e4d0a43f23579839ab1dbfe18a3f1df1cfc56c",
+      "section42Hash": "455077d1f0256661edcd0dac67fcbff90717791497b26dee136f7c935d9b4cb6"
+    },
+    {
+      "dedupeKey": "perindopriltertbutylamineindapamide|2mg+0.625mg|tablet",
+      "status": "SOURCE_TEXT_READY",
+      "sourceUrl": "https://cima.aemps.es/cima/dochtml/ft/77262/FT_77262.html",
+      "sourceTier": "AEMPS_CIMA",
+      "section2Hash": "f4f1cec0b71f9c92cdd8dac9b12546798e9366de7f0ae102b13307c83dea7839",
+      "section41Hash": "3d4a3dbad00f6e94c69681788f568ea2371a0b6dba384abb1ac1086a62e3c072",
+      "section42Hash": "60a2dac1305090d47242e3af33cbbaf7b1ce1bf73117cf053caca199bf15fab5"
+    },
+    {
+      "dedupeKey": "perindopriltertbutylamineindapamide|4mg+1.25mg|tablet",
+      "status": "SOURCE_TEXT_READY",
+      "sourceUrl": "https://cima.aemps.es/cima/dochtml/ft/62407/FT_62407.html",
+      "sourceTier": "AEMPS_CIMA",
+      "section2Hash": "34df5ec5efc4e7eafb47a886e0fcc392e82abe4185939c01b52d116e163ecad3",
+      "section41Hash": "3871ae729534c127de216d5f3b3fe9d3f29a66253463deecb179b7dcd7eb3cc0",
+      "section42Hash": "2f3ba55ecef12dc9b6616ee24e3da0686303bd9c1c96268518b1d0324d38ff77"
+    },
+    {
+      "dedupeKey": "pertuzumabtrastuzumab|1200mg+600mg|solutionforinjection",
+      "status": "SOURCE_TEXT_READY",
+      "sourceUrl": "https://cima.aemps.es/cima/dochtml/ft/1201497001/FT_1201497001.html",
+      "sourceTier": "AEMPS_CIMA",
+      "section2Hash": "cc72f8d38107f082c8268e686ce1d302c97cf17e7047ee5023af4e2a4a51d923",
+      "section41Hash": "40d746066c51b862e5e655612aedb2b3ce25bce2d25b3b09d2c87a6a9014362a",
+      "section42Hash": "44f48dc6702789645d921dea5cae2c15ebe0c648dd0784463b9ed67ccda1aaf0"
+    },
+    {
+      "dedupeKey": "pertuzumabtrastuzumab|600mg+600mg|solutionforinjection",
+      "status": "SOURCE_TEXT_READY",
+      "sourceUrl": "https://cima.aemps.es/cima/dochtml/ft/1201497002/FT_1201497002.html",
+      "sourceTier": "AEMPS_CIMA",
+      "section2Hash": "cc72f8d38107f082c8268e686ce1d302c97cf17e7047ee5023af4e2a4a51d923",
+      "section41Hash": "40d746066c51b862e5e655612aedb2b3ce25bce2d25b3b09d2c87a6a9014362a",
+      "section42Hash": "44f48dc6702789645d921dea5cae2c15ebe0c648dd0784463b9ed67ccda1aaf0"
+    },
+    {
+      "dedupeKey": "phenobarbital|15mg|tablet",
+      "status": "SOURCE_TEXT_READY",
+      "sourceUrl": "https://cima.aemps.es/cima/dochtml/ft/3275/FT_3275.html",
+      "sourceTier": "AEMPS_CIMA",
+      "section2Hash": "759b204aecd83056929592689dd9b56d00b3e6ded7a4473601d248330f818b5b",
+      "section41Hash": "a37f23864f94cb78eabe00ce3f145c2b653e4ece10a07bad452f7d121940b3d2",
+      "section42Hash": "e36e3b506ce9ff882bf844e86406994202532c0e2b26210272d215760934738d"
+    },
+    {
+      "dedupeKey": "phenobarbital|200mg/ml|solutionforinjection",
+      "status": "SOURCE_TEXT_READY",
+      "sourceUrl": "https://cima.aemps.es/cima/dochtml/ft/3905/FT_3905.html",
+      "sourceTier": "AEMPS_CIMA",
+      "section2Hash": "b80acc27d97022681b0719048f148e0916e6ed9ac3aded250b7021676eab095c",
+      "section41Hash": "a37f23864f94cb78eabe00ce3f145c2b653e4ece10a07bad452f7d121940b3d2",
+      "section42Hash": "9fcb5056384e7c951cb252a2db4327a543019843eccdba6b179b81dc1962175c"
+    },
+    {
+      "dedupeKey": "povidone|10%|cutaneoussolution",
+      "status": "SOURCE_TEXT_READY",
+      "sourceUrl": "https://cima.aemps.es/cima/dochtml/ft/67223/FT_67223.html",
+      "sourceTier": "AEMPS_CIMA",
+      "section2Hash": "dc08baf12a7290cbc1316c8935607f8b33326147170253372c2dd67dcf4d217a",
+      "section41Hash": "f76c5af6f2e6d2bfc37d5ee17924bf72db5d6f4bf8fe0349d52a32d525d45d21",
+      "section42Hash": "5be257e34c60db559bbddb819a3767885fa12462d0e197ca1f335d5cd17e1981"
+    },
+    {
+      "dedupeKey": "povidoniodine|10%|cutaneoussolution",
+      "status": "SOURCE_TEXT_READY",
+      "sourceUrl": "https://cima.aemps.es/cima/dochtml/ft/67223/FT_67223.html",
+      "sourceTier": "AEMPS_CIMA",
+      "section2Hash": "dc08baf12a7290cbc1316c8935607f8b33326147170253372c2dd67dcf4d217a",
+      "section41Hash": "f76c5af6f2e6d2bfc37d5ee17924bf72db5d6f4bf8fe0349d52a32d525d45d21",
+      "section42Hash": "5be257e34c60db559bbddb819a3767885fa12462d0e197ca1f335d5cd17e1981"
+    },
+    {
+      "dedupeKey": "protaminesulfate|10mg/ml|solutionforinjection",
+      "status": "SOURCE_TEXT_READY",
+      "sourceUrl": "https://cima.aemps.es/cima/dochtml/ft/86529/FT_86529.html",
+      "sourceTier": "AEMPS_CIMA",
+      "section2Hash": "fb349a11d779775d1c55a3a5179e27af17784cacfa7fceb94252764ae03e4661",
+      "section41Hash": "5be7a5124d84931038cf8d937b1ab1268540d0502d437c1189b942949565d48e",
+      "section42Hash": "b367e2a645ee3b9b012a9aa028d581ffbfc417a91c2a7bd662d4c7383f023cd6"
+    },
+    {
+      "dedupeKey": "rabeprazolesodium|20mg|gastroresistanttablet",
+      "status": "SOURCE_TEXT_READY",
+      "sourceUrl": "https://cima.aemps.es/cima/dochtml/ft/62462/FT_62462.html",
+      "sourceTier": "AEMPS_CIMA",
+      "section2Hash": "59b7a140ffe98258901e73cb55be9f7aad12541a3040f4721e74109feb20fae0",
+      "section41Hash": "53c85c583d36f996e8b71443d97a66a361de0453213ee728a60f0eebc0dcd346",
+      "section42Hash": "057664fc84756a5a952252842a3f0cb8dcdf502e23a6c696c9d7e9323d8f48ea"
+    },
+    {
+      "dedupeKey": "rabeprazolesodiummonohydrate|20mg|gastroresistanttablet",
+      "status": "SOURCE_TEXT_READY",
+      "sourceUrl": "https://cima.aemps.es/cima/dochtml/ft/62462/FT_62462.html",
+      "sourceTier": "AEMPS_CIMA",
+      "section2Hash": "59b7a140ffe98258901e73cb55be9f7aad12541a3040f4721e74109feb20fae0",
+      "section41Hash": "53c85c583d36f996e8b71443d97a66a361de0453213ee728a60f0eebc0dcd346",
+      "section42Hash": "057664fc84756a5a952252842a3f0cb8dcdf502e23a6c696c9d7e9323d8f48ea"
+    },
+    {
+      "dedupeKey": "ramiprilhydrochlorothiazide|2.5mg+12.5mg|tablet",
+      "status": "SOURCE_TEXT_READY",
+      "sourceUrl": "https://cima.aemps.es/cima/dochtml/ft/90450/FT_90450.html",
+      "sourceTier": "AEMPS_CIMA",
+      "section2Hash": "937af8605bb620b0f5776dcbf769c816a2e3227f524dfcf2f31ea880bc18ad9f",
+      "section41Hash": "773b1ecdd0f1694131eb4a6224f3229a04267d6f66955dd36fc49821880e442c",
+      "section42Hash": "20ea237a218b1deaa3b23ebfdcbc573194bfcb2737ff2c4b0c8baa9eaf517b62"
+    },
+    {
+      "dedupeKey": "risdiplam|0.75mg/1ml|powderfororalsolution",
+      "status": "SOURCE_TEXT_READY",
+      "sourceUrl": "https://cima.aemps.es/cima/dochtml/ft/1211531001/FT_1211531001.html",
+      "sourceTier": "AEMPS_CIMA",
+      "section2Hash": "26837b7273367667e5c34674836341c8fdbda71e27bc8e65780f879ac6661741",
+      "section41Hash": "14f95ff8dcc8ad2ed5f723f92928f3be600e3c84f38f77fcea74adfef6c29838",
+      "section42Hash": "2e9eccbfbd4e7a30840ba5aa779cba180daa3c756a7b5c2f501fd612fb7a9ff2"
+    },
+    {
+      "dedupeKey": "rivaroxaban|10mg|filmcoatedtablet",
+      "status": "SOURCE_TEXT_READY",
+      "sourceUrl": "https://cima.aemps.es/cima/dochtml/ft/88433/FT_88433.html",
+      "sourceTier": "AEMPS_CIMA",
+      "section2Hash": "ed04558caef41b5bec94993420d624b707f5f6b2dd04224773aa326aab144868",
+      "section41Hash": "627bf53f9709119d8d72276cc49e61438be6cb1ebc7596b49fb2b9c1bac2b2ff",
+      "section42Hash": "34c7729970ae8e4c32918fb950e4c1fb7e95d11a91f699edd2e9eb0342282456"
+    },
+    {
+      "dedupeKey": "rivaroxaban|15mg|filmcoatedtablet",
+      "status": "SOURCE_TEXT_READY",
+      "sourceUrl": "https://cima.aemps.es/cima/dochtml/ft/89321/FT_89321.html",
+      "sourceTier": "AEMPS_CIMA",
+      "section2Hash": "a4f51054c69d36341e1d28b26eddc3b08b09951dd7dbd6338c0e4013302d6031",
+      "section41Hash": "b2843361037204822c95bddcb936ce5ad76436c0d47e622ff95a55578d3ae684",
+      "section42Hash": "cfd15e008a69f3a9544acd4e40fd4fb09e6158445af05eb8cd74bfad76dbaa5b"
+    },
+    {
+      "dedupeKey": "rivaroxaban|20mg|filmcoatedtablet",
+      "status": "SOURCE_TEXT_READY",
+      "sourceUrl": "https://cima.aemps.es/cima/dochtml/ft/89322/FT_89322.html",
+      "sourceTier": "AEMPS_CIMA",
+      "section2Hash": "9f4ceec6e8e09abedb50f9a9b8991a0496e1457d3b1a236b61786cef3adbec5a",
+      "section41Hash": "3890506736f5991a879b0b9f26b14052d761363b2d97e9a2367f91dd99e606b6",
+      "section42Hash": "fa56eaf300fbaca4aedb2ec06eb9fb1ac9a0fb3a4dca1b2fc36124b90e973003"
+    },
+    {
+      "dedupeKey": "rosuvastatin|10mg|filmcoatedtablet",
+      "status": "SOURCE_TEXT_READY",
+      "sourceUrl": "https://cima.aemps.es/cima/dochtml/ft/82061/FT_82061.html",
+      "sourceTier": "AEMPS_CIMA",
+      "section2Hash": "d92bddd2bbe5f36782de3e887c3accd813cd143dc820a61542122c4fe3663c30",
+      "section41Hash": "029192a923fea43ec1397c81a24745a0573274841ef17c1605366e1578d8cb45",
+      "section42Hash": "8a5ef665558c9a8e34ee60179cb4f11438989ae07bdb114e5e72822e383fd820"
+    },
+    {
+      "dedupeKey": "rosuvastatin|20mg|filmcoatedtablet",
+      "status": "SOURCE_TEXT_READY",
+      "sourceUrl": "https://cima.aemps.es/cima/dochtml/ft/82062/FT_82062.html",
+      "sourceTier": "AEMPS_CIMA",
+      "section2Hash": "d92bddd2bbe5f36782de3e887c3accd813cd143dc820a61542122c4fe3663c30",
+      "section41Hash": "029192a923fea43ec1397c81a24745a0573274841ef17c1605366e1578d8cb45",
+      "section42Hash": "8a5ef665558c9a8e34ee60179cb4f11438989ae07bdb114e5e72822e383fd820"
+    },
+    {
+      "dedupeKey": "rosuvastatinaca|10mg|filmcoatedtablet",
+      "status": "SOURCE_TEXT_READY",
+      "sourceUrl": "https://cima.aemps.es/cima/dochtml/ft/82061/FT_82061.html",
+      "sourceTier": "AEMPS_CIMA",
+      "section2Hash": "d92bddd2bbe5f36782de3e887c3accd813cd143dc820a61542122c4fe3663c30",
+      "section41Hash": "029192a923fea43ec1397c81a24745a0573274841ef17c1605366e1578d8cb45",
+      "section42Hash": "8a5ef665558c9a8e34ee60179cb4f11438989ae07bdb114e5e72822e383fd820"
+    },
+    {
+      "dedupeKey": "rosuvastatinaca|20mg|filmcoatedtablet",
+      "status": "SOURCE_TEXT_READY",
+      "sourceUrl": "https://cima.aemps.es/cima/dochtml/ft/82062/FT_82062.html",
+      "sourceTier": "AEMPS_CIMA",
+      "section2Hash": "d92bddd2bbe5f36782de3e887c3accd813cd143dc820a61542122c4fe3663c30",
+      "section41Hash": "029192a923fea43ec1397c81a24745a0573274841ef17c1605366e1578d8cb45",
+      "section42Hash": "8a5ef665558c9a8e34ee60179cb4f11438989ae07bdb114e5e72822e383fd820"
+    },
+    {
+      "dedupeKey": "rosuvastatincalcium|10mg|filmcoatedtablet",
+      "status": "SOURCE_TEXT_READY",
+      "sourceUrl": "https://cima.aemps.es/cima/dochtml/ft/82061/FT_82061.html",
+      "sourceTier": "AEMPS_CIMA",
+      "section2Hash": "d92bddd2bbe5f36782de3e887c3accd813cd143dc820a61542122c4fe3663c30",
+      "section41Hash": "029192a923fea43ec1397c81a24745a0573274841ef17c1605366e1578d8cb45",
+      "section42Hash": "8a5ef665558c9a8e34ee60179cb4f11438989ae07bdb114e5e72822e383fd820"
+    },
+    {
+      "dedupeKey": "rosuvastatincalcium|20mg|filmcoatedtablet",
+      "status": "SOURCE_TEXT_READY",
+      "sourceUrl": "https://cima.aemps.es/cima/dochtml/ft/82062/FT_82062.html",
+      "sourceTier": "AEMPS_CIMA",
+      "section2Hash": "d92bddd2bbe5f36782de3e887c3accd813cd143dc820a61542122c4fe3663c30",
+      "section41Hash": "029192a923fea43ec1397c81a24745a0573274841ef17c1605366e1578d8cb45",
+      "section42Hash": "8a5ef665558c9a8e34ee60179cb4f11438989ae07bdb114e5e72822e383fd820"
+    },
+    {
+      "dedupeKey": "rosuvastatincalciumequivalenttorosuvastatin1000mg|10mg|filmcoatedtablet",
+      "status": "SOURCE_TEXT_READY",
+      "sourceUrl": "https://cima.aemps.es/cima/dochtml/ft/82061/FT_82061.html",
+      "sourceTier": "AEMPS_CIMA",
+      "section2Hash": "d92bddd2bbe5f36782de3e887c3accd813cd143dc820a61542122c4fe3663c30",
+      "section41Hash": "029192a923fea43ec1397c81a24745a0573274841ef17c1605366e1578d8cb45",
+      "section42Hash": "8a5ef665558c9a8e34ee60179cb4f11438989ae07bdb114e5e72822e383fd820"
+    },
+    {
+      "dedupeKey": "rosuvastatincalciumequivalenttorosuvastatin2000mg|20mg|filmcoatedtablet",
+      "status": "SOURCE_TEXT_READY",
+      "sourceUrl": "https://cima.aemps.es/cima/dochtml/ft/82062/FT_82062.html",
+      "sourceTier": "AEMPS_CIMA",
+      "section2Hash": "d92bddd2bbe5f36782de3e887c3accd813cd143dc820a61542122c4fe3663c30",
+      "section41Hash": "029192a923fea43ec1397c81a24745a0573274841ef17c1605366e1578d8cb45",
+      "section42Hash": "8a5ef665558c9a8e34ee60179cb4f11438989ae07bdb114e5e72822e383fd820"
+    },
+    {
+      "dedupeKey": "rosuvastatincalciumezetimibe|10mg+10mg|filmcoatedtablet",
+      "status": "SOURCE_TEXT_READY",
+      "sourceUrl": "https://cima.aemps.es/cima/dochtml/ft/85376/FT_85376.html",
+      "sourceTier": "AEMPS_CIMA",
+      "section2Hash": "2ea73cb2467f3767b59023107e7dc25a8eb156f40fcd2a4d2a1173b7a17391fd",
+      "section41Hash": "cdfccb58b5ecb60683cd2df07b769de685580ca1432591cd67d141bf3f6cfdc7",
+      "section42Hash": "68614b62a27398585ece7667f2fcc802cee3bf614c7fa59776132c468667f158"
+    },
+    {
+      "dedupeKey": "rosuvastatincalciumezetimibe|10mg+10mg|tablet",
+      "status": "SOURCE_TEXT_READY",
+      "sourceUrl": "https://cima.aemps.es/cima/dochtml/ft/90607/FT_90607.html",
+      "sourceTier": "AEMPS_CIMA",
+      "section2Hash": "bbea29a3856177a3ed38e1ee75654fd3d2f94be5e29ce965c978c7a9f0a190d1",
+      "section41Hash": "341dcd9b2998f7f7cd87ddf75afafb907079980105478dd64b86b203d25dc288",
+      "section42Hash": "2143a8ea58c08170279018b6073c4d53a0123070acdb855a00b511b54ed5fba2"
+    },
+    {
+      "dedupeKey": "rosuvastatincalciumezetimibe|20mg+10mg|filmcoatedtablet",
+      "status": "SOURCE_TEXT_READY",
+      "sourceUrl": "https://cima.aemps.es/cima/dochtml/ft/85377/FT_85377.html",
+      "sourceTier": "AEMPS_CIMA",
+      "section2Hash": "2ea73cb2467f3767b59023107e7dc25a8eb156f40fcd2a4d2a1173b7a17391fd",
+      "section41Hash": "cdfccb58b5ecb60683cd2df07b769de685580ca1432591cd67d141bf3f6cfdc7",
+      "section42Hash": "68614b62a27398585ece7667f2fcc802cee3bf614c7fa59776132c468667f158"
+    },
+    {
+      "dedupeKey": "rosuvastatincalciumezetimibe|20mg+10mg|tablet",
+      "status": "SOURCE_TEXT_READY",
+      "sourceUrl": "https://cima.aemps.es/cima/dochtml/ft/90606/FT_90606.html",
+      "sourceTier": "AEMPS_CIMA",
+      "section2Hash": "bbea29a3856177a3ed38e1ee75654fd3d2f94be5e29ce965c978c7a9f0a190d1",
+      "section41Hash": "341dcd9b2998f7f7cd87ddf75afafb907079980105478dd64b86b203d25dc288",
+      "section42Hash": "2143a8ea58c08170279018b6073c4d53a0123070acdb855a00b511b54ed5fba2"
+    },
+    {
+      "dedupeKey": "rosuvastincalcium|5mg|filmcoatedtablet",
+      "status": "SOURCE_TEXT_READY",
+      "sourceUrl": "https://cima.aemps.es/cima/dochtml/ft/82060/FT_82060.html",
+      "sourceTier": "AEMPS_CIMA",
+      "section2Hash": "d92bddd2bbe5f36782de3e887c3accd813cd143dc820a61542122c4fe3663c30",
+      "section41Hash": "029192a923fea43ec1397c81a24745a0573274841ef17c1605366e1578d8cb45",
+      "section42Hash": "8a5ef665558c9a8e34ee60179cb4f11438989ae07bdb114e5e72822e383fd820"
+    },
+    {
+      "dedupeKey": "salbutamolassulphate|5mg/1ml|nebulisersolution",
+      "status": "SOURCE_TEXT_INCOMPLETE",
+      "sourceUrl": "https://cima.aemps.es/cima/dochtml/ft/55147/FT_55147.html",
+      "sourceTier": "AEMPS_CIMA",
+      "section2Hash": "89672836ab03ba7ae9c8cae318605438540a755bcb11a22f31a7117d1349181a",
+      "section41Hash": "8a07dd0c0369826577c0eab9d4c90ed51312269844629a16a2a07fd336a724f9",
+      "section42Hash": null
+    },
+    {
+      "dedupeKey": "salbutamolsulfate|5mg/1ml|nebulisersolution",
+      "status": "SOURCE_TEXT_INCOMPLETE",
+      "sourceUrl": "https://cima.aemps.es/cima/dochtml/ft/55147/FT_55147.html",
+      "sourceTier": "AEMPS_CIMA",
+      "section2Hash": "89672836ab03ba7ae9c8cae318605438540a755bcb11a22f31a7117d1349181a",
+      "section41Hash": "8a07dd0c0369826577c0eab9d4c90ed51312269844629a16a2a07fd336a724f9",
+      "section42Hash": null
+    },
+    {
+      "dedupeKey": "salbutamolsulfatemicronized|5mg/ml|inhalationvapoursolution",
+      "status": "SOURCE_TEXT_INCOMPLETE",
+      "sourceUrl": "https://cima.aemps.es/cima/dochtml/ft/55147/FT_55147.html",
+      "sourceTier": "AEMPS_CIMA",
+      "section2Hash": "89672836ab03ba7ae9c8cae318605438540a755bcb11a22f31a7117d1349181a",
+      "section41Hash": "8a07dd0c0369826577c0eab9d4c90ed51312269844629a16a2a07fd336a724f9",
+      "section42Hash": null
+    },
+    {
+      "dedupeKey": "sertralinehydrochloride|100mg|filmcoatedtablet",
+      "status": "SOURCE_TEXT_READY",
+      "sourceUrl": "https://cima.aemps.es/cima/dochtml/ft/59718/FT_59718.html",
+      "sourceTier": "AEMPS_CIMA",
+      "section2Hash": "666b2a81e1bda3ed4449878c2ac027632edf656ae614ae4cb56015b65317c074",
+      "section41Hash": "a4d0a4e9effa2cdf2bc498e72f18a6994778789d82106896703a0f0d5ab30382",
+      "section42Hash": "a69ed5b8d318e9c15818a8cea179ede7158c589fdc2c4425da5f798df87b88e8"
+    },
+    {
+      "dedupeKey": "sertralinehydrochloride|50mg|filmcoatedtablet",
+      "status": "SOURCE_TEXT_READY",
+      "sourceUrl": "https://cima.aemps.es/cima/dochtml/ft/59717/FT_59717.html",
+      "sourceTier": "AEMPS_CIMA",
+      "section2Hash": "666b2a81e1bda3ed4449878c2ac027632edf656ae614ae4cb56015b65317c074",
+      "section41Hash": "a4d0a4e9effa2cdf2bc498e72f18a6994778789d82106896703a0f0d5ab30382",
+      "section42Hash": "a69ed5b8d318e9c15818a8cea179ede7158c589fdc2c4425da5f798df87b88e8"
+    },
+    {
+      "dedupeKey": "sevelamercarbonate|800mg|filmcoatedtablet",
+      "status": "SOURCE_TEXT_READY",
+      "sourceUrl": "https://cima.aemps.es/cima/dochtml/ft/78939/FT_78939.html",
+      "sourceTier": "AEMPS_CIMA",
+      "section2Hash": "606f23979fc2c8ad6cecd3086b7cffff984b5b46540d031ab9c0856ce89b600d",
+      "section41Hash": "410093d31216c37a782c41921968ddad60c576688aee77800e21f463999f0c74",
+      "section42Hash": "55f5c201f84fc9195879b83a389acc419768fd2c59592702776c02f2d3126a92"
+    },
+    {
+      "dedupeKey": "sildenafilcitrate|100mg|chewabletablet",
+      "status": "SOURCE_TEXT_INCOMPLETE",
+      "sourceUrl": "https://cima.aemps.es/cima/dochtml/ft/80086/FT_80086.html",
+      "sourceTier": "AEMPS_CIMA",
+      "section2Hash": "b433ae2432efc1333f93f6d9657e0c592e9b48fca2dabe11601f40799b239d82",
+      "section41Hash": "b260163f861879807b65cb3b9d3cea8872f90198813dc511c2479a617b6c0a52",
+      "section42Hash": null
+    },
+    {
+      "dedupeKey": "simvastatin|10mg|filmcoatedtablet",
+      "status": "SOURCE_TEXT_READY",
+      "sourceUrl": "https://cima.aemps.es/cima/dochtml/ft/70230/FT_70230.html",
+      "sourceTier": "AEMPS_CIMA",
+      "section2Hash": "aaee443e7c1f14a0ea3ee0d6dc23e61b9f00043787809526f481d315c324c4e2",
+      "section41Hash": "c29af204d43275f3beba29669b4ea6d9c06fe8d57b1883936bf43063ac43e58d",
+      "section42Hash": "a2ed5d073da37c3d4a59c3020fffb068b14770067247d3b18e9e4ff6d32ee0c5"
+    },
+    {
+      "dedupeKey": "simvastatin|20mg|filmcoatedtablet",
+      "status": "SOURCE_TEXT_READY",
+      "sourceUrl": "https://cima.aemps.es/cima/dochtml/ft/70234/FT_70234.html",
+      "sourceTier": "AEMPS_CIMA",
+      "section2Hash": "aaee443e7c1f14a0ea3ee0d6dc23e61b9f00043787809526f481d315c324c4e2",
+      "section41Hash": "c29af204d43275f3beba29669b4ea6d9c06fe8d57b1883936bf43063ac43e58d",
+      "section42Hash": "a2ed5d073da37c3d4a59c3020fffb068b14770067247d3b18e9e4ff6d32ee0c5"
+    },
+    {
+      "dedupeKey": "simvastatin|40mg|filmcoatedtablet",
+      "status": "SOURCE_TEXT_READY",
+      "sourceUrl": "https://cima.aemps.es/cima/dochtml/ft/70235/FT_70235.html",
+      "sourceTier": "AEMPS_CIMA",
+      "section2Hash": "aaee443e7c1f14a0ea3ee0d6dc23e61b9f00043787809526f481d315c324c4e2",
+      "section41Hash": "c29af204d43275f3beba29669b4ea6d9c06fe8d57b1883936bf43063ac43e58d",
+      "section42Hash": "a2ed5d073da37c3d4a59c3020fffb068b14770067247d3b18e9e4ff6d32ee0c5"
+    },
+    {
+      "dedupeKey": "sitagliptin|50mg|filmcoatedtablet",
+      "status": "SOURCE_TEXT_READY",
+      "sourceUrl": "https://cima.aemps.es/cima/dochtml/ft/07383008/FT_07383008.html",
+      "sourceTier": "AEMPS_CIMA",
+      "section2Hash": "52d24b2291654985185927a6f925dba7490adef11d41ea1914023a6462c49b64",
+      "section41Hash": "ecf199ef18ee4ddcc80cfaa6ef5815da47a445193eff9a0e33701de8f767fd80",
+      "section42Hash": "ed6dcd3896faca0f405e1a4ad3719cba2ad6c850d5983b31c3a38dbe12298bc0"
+    },
+    {
+      "dedupeKey": "sitagliptinmetforminhydrochloride|50mg+1000mg|filmcoatedtablet",
+      "status": "SOURCE_TEXT_READY",
+      "sourceUrl": "https://cima.aemps.es/cima/dochtml/ft/10620011/FT_10620011.html",
+      "sourceTier": "AEMPS_CIMA",
+      "section2Hash": "e6ccf8ae533c372e24740605c0eaa95e17ff19e83b21c92de7f5e5159365c6ae",
+      "section41Hash": "cbcfbdb5b4f605588d0b48cf21ebf08c954b8aa40e86715ea09d48bd995b7dd1",
+      "section42Hash": "b27fd1646a419985c7a32253abced4e4a62543969678be7492780471d16b0068"
+    },
+    {
+      "dedupeKey": "sitagliptinmetforminhydrochloride|50mg+850mg|filmcoatedtablet",
+      "status": "SOURCE_TEXT_READY",
+      "sourceUrl": "https://cima.aemps.es/cima/dochtml/ft/85949/FT_85949.html",
+      "sourceTier": "AEMPS_CIMA",
+      "section2Hash": "4c3e543613708152b6f4a3913f1cec25700cc42df9a8264252f8bca6ca963ca1",
+      "section41Hash": "618596033030062b04d3942292c9cb11939542140c8f352fe59cd96b77eb5515",
+      "section42Hash": "2b0de5001fdcb377e34b37d1c051e8aac56288f23d98a2d767fd320ead34115e"
+    },
+    {
+      "dedupeKey": "sodiumvalproat|300mg|prolongedreleasetablet",
+      "status": "SOURCE_TEXT_READY",
+      "sourceUrl": "https://cima.aemps.es/cima/dochtml/ft/84517/FT_84517.html",
+      "sourceTier": "AEMPS_CIMA",
+      "section2Hash": "39bfc8744ba0afe2ac72208932d7a0dc4ec824f89e67a715b11c5d05e42614b9",
+      "section41Hash": "04093da9b14fafa8e193ad23ad120c875cece04ceca745bf6e2d4331ac9c4f51",
+      "section42Hash": "2943c56689484ec3487dcad2304bd5d95870bfb78b36f5f2485e96d8bf864f4c"
+    },
+    {
+      "dedupeKey": "sodiumvalproat|500mg|prolongedreleasetablet",
+      "status": "SOURCE_TEXT_READY",
+      "sourceUrl": "https://cima.aemps.es/cima/dochtml/ft/84516/FT_84516.html",
+      "sourceTier": "AEMPS_CIMA",
+      "section2Hash": "39bfc8744ba0afe2ac72208932d7a0dc4ec824f89e67a715b11c5d05e42614b9",
+      "section41Hash": "04093da9b14fafa8e193ad23ad120c875cece04ceca745bf6e2d4331ac9c4f51",
+      "section42Hash": "2943c56689484ec3487dcad2304bd5d95870bfb78b36f5f2485e96d8bf864f4c"
+    },
+    {
+      "dedupeKey": "spironolactone|25mg|coatedtablet",
+      "status": "SOURCE_TEXT_READY",
+      "sourceUrl": "https://cima.aemps.es/cima/dochtml/ft/63835/FT_63835.html",
+      "sourceTier": "AEMPS_CIMA",
+      "section2Hash": "85ccd296e7b8f5f1c731abfe82cbe8225a453d436b03baf62d12804a226b2dbf",
+      "section41Hash": "aa00d386615d094ab78b11b9c8756cf29a2350f18fc9a784398ef1fad73ff639",
+      "section42Hash": "51d969cda12b5ce9f99353b4b1b4f1291d8003b736b7c745066baf87f44cdfaa"
+    },
+    {
+      "dedupeKey": "spironolakton|100mg|tablet",
+      "status": "SOURCE_TEXT_READY",
+      "sourceUrl": "https://cima.aemps.es/cima/dochtml/ft/63833/FT_63833.html",
+      "sourceTier": "AEMPS_CIMA",
+      "section2Hash": "85ccd296e7b8f5f1c731abfe82cbe8225a453d436b03baf62d12804a226b2dbf",
+      "section41Hash": "aa00d386615d094ab78b11b9c8756cf29a2350f18fc9a784398ef1fad73ff639",
+      "section42Hash": "51d969cda12b5ce9f99353b4b1b4f1291d8003b736b7c745066baf87f44cdfaa"
+    },
+    {
+      "dedupeKey": "spironolakton|25mg|tablet",
+      "status": "SOURCE_TEXT_READY",
+      "sourceUrl": "https://cima.aemps.es/cima/dochtml/ft/63835/FT_63835.html",
+      "sourceTier": "AEMPS_CIMA",
+      "section2Hash": "85ccd296e7b8f5f1c731abfe82cbe8225a453d436b03baf62d12804a226b2dbf",
+      "section41Hash": "aa00d386615d094ab78b11b9c8756cf29a2350f18fc9a784398ef1fad73ff639",
+      "section42Hash": "51d969cda12b5ce9f99353b4b1b4f1291d8003b736b7c745066baf87f44cdfaa"
+    },
+    {
+      "dedupeKey": "sumatriptanum|50mg|filmcoatedtablet",
+      "status": "SOURCE_TEXT_READY",
+      "sourceUrl": "https://cima.aemps.es/cima/dochtml/ft/66406/FT_66406.html",
+      "sourceTier": "AEMPS_CIMA",
+      "section2Hash": "de94a37ede0bb21b71e9224c7deb2fa9a55d1653838872c15b44b587b16dc2b8",
+      "section41Hash": "0cfb0066b3adb172f4fd4914eda80675c22c6f88dc3a4e399b4ed12b9cf031c1",
+      "section42Hash": "9a8cf9f58c6646f0dcacbbf3d8d51de63247be28e6eb78974e3f9daf3813c12e"
+    },
+    {
+      "dedupeKey": "tamsulosinahcl|0.4mg|modifiedreleasecapsulehard",
+      "status": "SOURCE_TEXT_READY",
+      "sourceUrl": "https://cima.aemps.es/cima/dochtml/ft/61426/FT_61426.html",
+      "sourceTier": "AEMPS_CIMA",
+      "section2Hash": "d11c4bc2e24930f22f1cddc3a2f945691dec021ef1d1383c1184aa0049e850bc",
+      "section41Hash": "63dc3360869ef7267c857f5214bec07d6eb9219b44589b9c17a24eb442036968",
+      "section42Hash": "857e3e9b8884bc1cf051a4400f533fb59c4949705a60b1e2f9806b44da20f3ca"
+    },
+    {
+      "dedupeKey": "tamsulosinhydrochloride|0.4mg|prolongedreleasetablet",
+      "status": "SOURCE_TEXT_READY",
+      "sourceUrl": "https://cima.aemps.es/cima/dochtml/ft/66678/FT_66678.html",
+      "sourceTier": "AEMPS_CIMA",
+      "section2Hash": "4876e174f338b24062d66231842dc49817af9450404f12f17c0da0f3d3efecdf",
+      "section41Hash": "63dc3360869ef7267c857f5214bec07d6eb9219b44589b9c17a24eb442036968",
+      "section42Hash": "d692f8434a6a315b828df636539f1ce4d61e619c8c809d8a18dee9e2376bd06f"
+    },
+    {
+      "dedupeKey": "tamsulosinhydrochloridedutasteride|0.4mg+0.5mg|capsulehard",
+      "status": "SOURCE_TEXT_READY",
+      "sourceUrl": "https://cima.aemps.es/cima/dochtml/ft/83630/FT_83630.html",
+      "sourceTier": "AEMPS_CIMA",
+      "section2Hash": "af8def3b7831ffb179e88c2d98e20f9a2d102016c105905d290805792923426d",
+      "section41Hash": "0eca603240fc95e4fac16aaa0de9d4656449d45cf53ceb214286ff07b77437e6",
+      "section42Hash": "62fa6d50ee2b8d6bf94fcb2800f6b33c755c4dbf33b0cb4a83308a7fea36818c"
+    },
+    {
+      "dedupeKey": "testosteroneenantate|250mg/1ml|solutionforinjection",
+      "status": "SOURCE_TEXT_INCOMPLETE",
+      "sourceUrl": "https://cima.aemps.es/cima/dochtml/ft/66470/FT_66470.html",
+      "sourceTier": "AEMPS_CIMA",
+      "section2Hash": "2aa092dff6daed50a341c5350620480b0edcee58477dcf83c1154182045e3f39",
+      "section41Hash": "39926cc4a39070e75f3a11944832bfa67c15545054017da9fdbba969e875e600",
+      "section42Hash": null
+    },
+    {
+      "dedupeKey": "tetryzolinehydrochloride|0.5mg/1ml|eyedropssolution",
+      "status": "SOURCE_TEXT_INCOMPLETE",
+      "sourceUrl": "https://cima.aemps.es/cima/dochtml/ft/77461/FT_77461.html",
+      "sourceTier": "AEMPS_CIMA",
+      "section2Hash": "fcc249d05cc37b787c5638dfe6a8e1aa5622e028ecf8fe1b949ee858b652d7e9",
+      "section41Hash": "4f4e7e93d743f69f6152e8b28ec29a8367d0d5ad9857579f6f0c9c694be92074",
+      "section42Hash": null
+    },
+    {
+      "dedupeKey": "ticagrelor|90mg|filmcoatedtablet",
+      "status": "SOURCE_TEXT_READY",
+      "sourceUrl": "https://cima.aemps.es/cima/dochtml/ft/10655004/FT_10655004.html",
+      "sourceTier": "AEMPS_CIMA",
+      "section2Hash": "b7b3ca5dde379bc266e28ed0a4248de71fc00886d4b18555e8cb5d51f2e87734",
+      "section41Hash": "38d35960739333fbca48f1ec690a6dfa1b84af03620bce09f1cf649d5031c460",
+      "section42Hash": "317acb7e9dd099ee97239a07de9ef52ff8e9a1fc88f10843c45f36ef14cff611"
+    },
+    {
+      "dedupeKey": "timolol|5mg|eyedropssolution",
+      "status": "SOURCE_TEXT_READY",
+      "sourceUrl": "https://cima.aemps.es/cima/dochtml/ft/55808/FT_55808.html",
+      "sourceTier": "AEMPS_CIMA",
+      "section2Hash": "d1a3c111398c5478a5d6b2a6df30e4f4aba9aec8fb13bb0c03aa871e43adb721",
+      "section41Hash": "48d63207ddb1b6461db93ee827dd439072064af40f55e0157f257d0d3b6e4ec0",
+      "section42Hash": "9667eeca1a1ec0a94abebd85f3b3ae157894c5453ec6a983e55b8b5172b93388"
+    },
+    {
+      "dedupeKey": "timololmaleate|0.25%|eyedropssolution",
+      "status": "SOURCE_TEXT_READY",
+      "sourceUrl": "https://cima.aemps.es/cima/dochtml/ft/55237/FT_55237.html",
+      "sourceTier": "AEMPS_CIMA",
+      "section2Hash": "67f53bc669a12a1eab404d1d5188f43e2431aeed731d8b95b1a86f9f4fa0d061",
+      "section41Hash": "2d5ed30cac1a260d0df4ccdbd125c8331b1830e65de939bbd5561b8719fd032b",
+      "section42Hash": "6b81950474a6e4ea51c403e942737e74b6daf0d043d9b976b8f7ad52ebdcf937"
+    },
+    {
+      "dedupeKey": "timololmaleate|5mg/1ml|eyedropssolution",
+      "status": "SOURCE_TEXT_READY",
+      "sourceUrl": "https://cima.aemps.es/cima/dochtml/ft/55808/FT_55808.html",
+      "sourceTier": "AEMPS_CIMA",
+      "section2Hash": "d1a3c111398c5478a5d6b2a6df30e4f4aba9aec8fb13bb0c03aa871e43adb721",
+      "section41Hash": "48d63207ddb1b6461db93ee827dd439072064af40f55e0157f257d0d3b6e4ec0",
+      "section42Hash": "9667eeca1a1ec0a94abebd85f3b3ae157894c5453ec6a983e55b8b5172b93388"
+    },
+    {
+      "dedupeKey": "tirofibanhydrochloridemonohydrate|12.5mg/50ml|concentrateforsolutionforinfusion",
+      "status": "SOURCE_TEXT_READY",
+      "sourceUrl": "https://cima.aemps.es/cima/dochtml/ft/62714/FT_62714.html",
+      "sourceTier": "AEMPS_CIMA",
+      "section2Hash": "4141a56c22fa19d776f7b091240081ae682befe5d2a4091a6bd3429b1407034b",
+      "section41Hash": "e671b44c4ca68107cd19b91afbc46ed25a15d51c64c4de258beb5a011e607013",
+      "section42Hash": "bcbfc11a3a39ed3e8640c772caf83b38db6bd16c48141c44a558cdecc3286c2e"
+    },
+    {
+      "dedupeKey": "tocilizumab|162mg|solutionforinjection",
+      "status": "SOURCE_TEXT_READY",
+      "sourceUrl": "https://cima.aemps.es/cima/dochtml/ft/1241896007/FT_1241896007.html",
+      "sourceTier": "AEMPS_CIMA",
+      "section2Hash": "b3ff018a741632c28a90a92bc0f56cb5ac259f8d58e911cd99c3d44e8b7bcd2d",
+      "section41Hash": "98f652515a1475719addb59e5d0bdf27720ffc0c65e17b0bc5e454be6610a756",
+      "section42Hash": "a0cf73d6ab31e92d05801e71cbd2a7982a628f0a3ee4db86f7699063461ae32f"
+    },
+    {
+      "dedupeKey": "torasemide|10mg|tablet",
+      "status": "SOURCE_TEXT_READY",
+      "sourceUrl": "https://cima.aemps.es/cima/dochtml/ft/66315/FT_66315.html",
+      "sourceTier": "AEMPS_CIMA",
+      "section2Hash": "874c0f9777c54bcb19748aa7c6ebb19c8d856963664f5d57c9ad21177b2ee940",
+      "section41Hash": "0760b497b3f02f12f1c2515ccb7a3c8a3a670d1c94f6cca19aedb7cd8f7f2264",
+      "section42Hash": "62bbb128b24e4541dae72a1cefce7727a05893cb07f4ddaf3c330316a12465f1"
+    },
+    {
+      "dedupeKey": "torasemide|5mg|tablet",
+      "status": "SOURCE_TEXT_READY",
+      "sourceUrl": "https://cima.aemps.es/cima/dochtml/ft/66314/FT_66314.html",
+      "sourceTier": "AEMPS_CIMA",
+      "section2Hash": "874c0f9777c54bcb19748aa7c6ebb19c8d856963664f5d57c9ad21177b2ee940",
+      "section41Hash": "0760b497b3f02f12f1c2515ccb7a3c8a3a670d1c94f6cca19aedb7cd8f7f2264",
+      "section42Hash": "62bbb128b24e4541dae72a1cefce7727a05893cb07f4ddaf3c330316a12465f1"
+    },
+    {
+      "dedupeKey": "tramadolhydrochloride|100mg/2ml|solutionforinjection",
+      "status": "SOURCE_TEXT_INCOMPLETE",
+      "sourceUrl": "https://cima.aemps.es/cima/dochtml/ft/59086/FT_59086.html",
+      "sourceTier": "AEMPS_CIMA",
+      "section2Hash": "e6032fc609c2bef0ccd7a9ae2565ffe7f4b93bd648a8632269a456baef6379ee",
+      "section41Hash": "0acee80df9eda06498c866df419104747c767655e1c69d486f78ed7604ea4442",
+      "section42Hash": null
+    },
+    {
+      "dedupeKey": "trastuzumab|600mg/5ml|solutionforinjection",
+      "status": "SOURCE_TEXT_READY",
+      "sourceUrl": "https://cima.aemps.es/cima/dochtml/ft/100145002/FT_100145002.html",
+      "sourceTier": "AEMPS_CIMA",
+      "section2Hash": "2dccdce6b2064568a404992c7d2e882342ac7992c39b3a3a74b07c4881ed4de1",
+      "section41Hash": "34c9ead06cb06b4524a6c82031120ca1895f17dfacdd5cc5361340b7a3096352",
+      "section42Hash": "0ec382955ae451d6086a48b9df7c20e617423d5eaec0b1b2dfd27fa076cc6826"
+    },
+    {
+      "dedupeKey": "trastuzumabemtansine|100mg|powderforconcentrateforsolutionforinfusion",
+      "status": "SOURCE_TEXT_READY",
+      "sourceUrl": "https://cima.aemps.es/cima/dochtml/ft/113885001/FT_113885001.html",
+      "sourceTier": "AEMPS_CIMA",
+      "section2Hash": "609baf55ebd3fa479f125013f390539b9bc3d6a98660c19356359409a8c0f664",
+      "section41Hash": "0aaad5df82de4d4feb96f79a28192f2bc516d9e4b149ee6cdcd5f5e4bae1887c",
+      "section42Hash": "5d0971febc0b93caa5d333e971ab5e80d49cfe43c2545ef0f527e3ae743a2126"
+    },
+    {
+      "dedupeKey": "trastuzumabemtasine|160mg|powderforconcentrateforsolutionforinfusion",
+      "status": "SOURCE_TEXT_READY",
+      "sourceUrl": "https://cima.aemps.es/cima/dochtml/ft/113885002/FT_113885002.html",
+      "sourceTier": "AEMPS_CIMA",
+      "section2Hash": "609baf55ebd3fa479f125013f390539b9bc3d6a98660c19356359409a8c0f664",
+      "section41Hash": "0aaad5df82de4d4feb96f79a28192f2bc516d9e4b149ee6cdcd5f5e4bae1887c",
+      "section42Hash": "5d0971febc0b93caa5d333e971ab5e80d49cfe43c2545ef0f527e3ae743a2126"
+    },
+    {
+      "dedupeKey": "triptorelineacetate|0.1mg|solutionforinjection",
+      "status": "SOURCE_TEXT_INCOMPLETE",
+      "sourceUrl": "https://cima.aemps.es/cima/dochtml/ft/62431/FT_62431.html",
+      "sourceTier": "AEMPS_CIMA",
+      "section2Hash": "0b6c23d2203afbddfce5ca810c1956af57aa6d994fc0c6393e9bf4a8095f79b0",
+      "section41Hash": "d3d4d42182a60a5c9efab18c11d7ca1c9604cf9e953b31cb07c096e7e8d13a73",
+      "section42Hash": null
+    },
+    {
+      "dedupeKey": "triptorelineasacetate|3.75mg|powderandsolventforsuspensionforinjection",
+      "status": "SOURCE_TEXT_READY",
+      "sourceUrl": "https://cima.aemps.es/cima/dochtml/ft/64530/FT_64530.html",
+      "sourceTier": "AEMPS_CIMA",
+      "section2Hash": "fef09e9e392c4c3f8d46048e46a546c4cdf4d7e3fea32ddb0f83d2a7b2523dad",
+      "section41Hash": "b83f64a230c148b536e3f96e624f8f30ee152fd9d140c86109cb64020ce11639",
+      "section42Hash": "20bc021d008987336d0b69d4163378441bf991fb07c5d4889ca734485a708aa9"
+    },
+    {
+      "dedupeKey": "valsartan|160mg|filmcoatedtablet",
+      "status": "SOURCE_TEXT_READY",
+      "sourceUrl": "https://cima.aemps.es/cima/dochtml/ft/64473/FT_64473.html",
+      "sourceTier": "AEMPS_CIMA",
+      "section2Hash": "2a3a50949d11f3e84d52e47d85254362737ddba98e401df87c38c44c89e19f55",
+      "section41Hash": "669abeab2819dd83ffb887705819a26622c4cca29e6f7d0567a34e084ca3277a",
+      "section42Hash": "cdb4ee2aea69cc6a83331bbe96dc2caa9a299d21329efb0336fc02a82e1839a8"
+    },
+    {
+      "dedupeKey": "valsartan|160mg+25mg|filmcoatedtablet",
+      "status": "SOURCE_TEXT_INCOMPLETE",
+      "sourceUrl": "https://cima.aemps.es/cima/dochtml/ft/66526/FT_66526.html",
+      "sourceTier": "AEMPS_CIMA",
+      "section2Hash": "9cd20433e2edf9391eeca9f7d7911d6e0cfc232333a1d91b0ae291a6c93e7f58",
+      "section41Hash": "f0c2c7a1512d969f1fe1ec995f2ecd1ff2a945683aa853176f8f5fe68a5533ef",
+      "section42Hash": null
+    },
+    {
+      "dedupeKey": "valsartanhydrochlortiazide|160mg+12.5mg|filmcoatedtablet",
+      "status": "SOURCE_TEXT_INCOMPLETE",
+      "sourceUrl": "https://cima.aemps.es/cima/dochtml/ft/65794/FT_65794.html",
+      "sourceTier": "AEMPS_CIMA",
+      "section2Hash": "9cd20433e2edf9391eeca9f7d7911d6e0cfc232333a1d91b0ae291a6c93e7f58",
+      "section41Hash": "f0c2c7a1512d969f1fe1ec995f2ecd1ff2a945683aa853176f8f5fe68a5533ef",
+      "section42Hash": null
+    },
+    {
+      "dedupeKey": "valstaranhydrochlorothiazide|320mg+12.5mg|filmcoatedtablet",
+      "status": "SOURCE_TEXT_INCOMPLETE",
+      "sourceUrl": "https://cima.aemps.es/cima/dochtml/ft/69930/FT_69930.html",
+      "sourceTier": "AEMPS_CIMA",
+      "section2Hash": "9cd20433e2edf9391eeca9f7d7911d6e0cfc232333a1d91b0ae291a6c93e7f58",
+      "section41Hash": "f0c2c7a1512d969f1fe1ec995f2ecd1ff2a945683aa853176f8f5fe68a5533ef",
+      "section42Hash": null
+    },
+    {
+      "dedupeKey": "valstaranhydrochlorothiazide|320mg+25mg|filmcoatedtablet",
+      "status": "SOURCE_TEXT_INCOMPLETE",
+      "sourceUrl": "https://cima.aemps.es/cima/dochtml/ft/69942/FT_69942.html",
+      "sourceTier": "AEMPS_CIMA",
+      "section2Hash": "9cd20433e2edf9391eeca9f7d7911d6e0cfc232333a1d91b0ae291a6c93e7f58",
+      "section41Hash": "f0c2c7a1512d969f1fe1ec995f2ecd1ff2a945683aa853176f8f5fe68a5533ef",
+      "section42Hash": null
+    },
+    {
+      "dedupeKey": "valstaranhydrochlorothiazide|80mg+12.5mg|filmcoatedtablet",
+      "status": "SOURCE_TEXT_INCOMPLETE",
+      "sourceUrl": "https://cima.aemps.es/cima/dochtml/ft/62206/FT_62206.html",
+      "sourceTier": "AEMPS_CIMA",
+      "section2Hash": "9cd20433e2edf9391eeca9f7d7911d6e0cfc232333a1d91b0ae291a6c93e7f58",
+      "section41Hash": "f0c2c7a1512d969f1fe1ec995f2ecd1ff2a945683aa853176f8f5fe68a5533ef",
+      "section42Hash": null
+    },
+    {
+      "dedupeKey": "venlafaxinehcl|75mg|tablet",
+      "status": "SOURCE_TEXT_READY",
+      "sourceUrl": "https://cima.aemps.es/cima/dochtml/ft/67542/FT_67542.html",
+      "sourceTier": "AEMPS_CIMA",
+      "section2Hash": "f361620f5f401e6f2419117d87a9b23206759fc37816c3dfbe6c34791d55da79",
+      "section41Hash": "f591a53bbe50bb5686a5fe1fc9679b0f93f671e23c4cabe365583544669f3362",
+      "section42Hash": "826a9dac99304dcfe2b9bfb0bf008af9b42b336216e3a01ae219311e0f30c795"
+    },
+    {
+      "dedupeKey": "verapamilhydrochlorid|240mg|prolongedreleasetablet",
+      "status": "SOURCE_TEXT_READY",
+      "sourceUrl": "https://cima.aemps.es/cima/dochtml/ft/58369/FT_58369.html",
+      "sourceTier": "AEMPS_CIMA",
+      "section2Hash": "10a05fde4f84daa2150a410da4b0a1172b40bbb38a2ceacaef09da05fd662bce",
+      "section41Hash": "a648a98b42ed574e284b43a54e168e6fdc910051a33801b40d78719ab9cabb2f",
+      "section42Hash": "e48a3f5e5dab7fb81ec891aba72dabec1a80ea5efde4909eedefe57f0cf8abb7"
+    },
+    {
+      "dedupeKey": "vildagliptinmetforminhydrochloride|50mg+850mg|tablet",
+      "status": "SOURCE_TEXT_READY",
+      "sourceUrl": "https://cima.aemps.es/cima/dochtml/ft/86039/FT_86039.html",
+      "sourceTier": "AEMPS_CIMA",
+      "section2Hash": "4e1289806768d902703655ac65176aea35cdba07db3cf83ae65b6496958c91d4",
+      "section41Hash": "648e27c1881dcb72992f1e3cca8549c65c6c4f91f14e2180296f6d865124f45a",
+      "section42Hash": "901f8101cd6abf30f650cdc76e29c5537f844e3388ae19a65acd00b6bf151b12"
+    },
+    {
+      "dedupeKey": "xylometazolinehcl|1mg/ml|nasalspraysolution",
+      "status": "SOURCE_TEXT_READY",
+      "sourceUrl": "https://cima.aemps.es/cima/dochtml/ft/34776/FT_34776.html",
+      "sourceTier": "AEMPS_CIMA",
+      "section2Hash": "8264c2e91bf289d4cfe4cade546adb8a9bc986b423f6eba0e3fa8439854616c3",
+      "section41Hash": "8fd06f38e2cc9c998ce30594324f4bc249cc364b08bd8fd59acc883f401d5002",
+      "section42Hash": "58467ea71ec9b419c5854e319b6e5d68628e435e9c2a458587cadb3ece6fbda7"
+    },
+    {
+      "dedupeKey": "zolendronicacidasmonohydrate|4mg/5ml|concentrateforsolutionforinfusion",
+      "status": "SOURCE_TEXT_READY",
+      "sourceUrl": "https://cima.aemps.es/cima/dochtml/ft/76294/FT_76294.html",
+      "sourceTier": "AEMPS_CIMA",
+      "section2Hash": "cd5f3ef801d026b9e9310490b55fd55b10a10d87f46c0f0a914ab8b2fd5fba55",
+      "section41Hash": "b14fec3676d69024e8495447884eeede41a34b4f6e00e6a1b3d5db8d2d249db1",
+      "section42Hash": "7dd14cc61c90b86c6e25a6f0cfc8dad332c096f9af56b19d1f1d4791186ce7d8"
+    },
+    {
+      "dedupeKey": "zolmitriptan|5mg|filmcoatedtablet",
+      "status": "SOURCE_TEXT_INCOMPLETE",
+      "sourceUrl": "https://cima.aemps.es/cima/dochtml/ft/75298/FT_75298.html",
+      "sourceTier": "AEMPS_CIMA",
+      "section2Hash": "72ad1a5b725bb8d6690baeddf56a6cdffd20960f95415cecd5793e90dbf3d50c",
+      "section41Hash": "6fe04e1b55a53193b90e71b2c01173061f9ff34ddc35db826ecbf9d0d9441349",
+      "section42Hash": null
+    }
+  ]
+}

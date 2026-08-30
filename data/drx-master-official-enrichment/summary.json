@@ -1,12 +1,12 @@
 {
   "schemaVersion": "drx-master-official-enrichment-summary-v1",
-  "generatedAt": "2026-08-30T11:30:56.769Z",
+  "generatedAt": "2026-08-30T11:40:20.826Z",
   "targets": 696,
   "counts": {
     "SOURCE_TEXT_READY": 254,
-    "OFFICIAL_SOURCE_REVIEW": 109,
-    "NO_VALIDATED_OFFICIAL_SOURCE": 166,
-    "EXACT_OFFICIAL_SOURCE": 73,
+    "OFFICIAL_SOURCE_REVIEW": 110,
+    "NO_VALIDATED_OFFICIAL_SOURCE": 171,
+    "EXACT_OFFICIAL_SOURCE": 67,
     "SOURCE_TEXT_INCOMPLETE": 94
   }
 }
