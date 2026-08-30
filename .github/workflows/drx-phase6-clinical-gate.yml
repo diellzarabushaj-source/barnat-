@@ -1,1 +1,52 @@
-name: DRx Phase 6 clinical gate\n\non:\n  workflow_dispatch:\n  push:\n    branches:\n      - main\n    paths:\n      - "supabase/migrations/20260830161215_drx_phase6a_regulatory_provenance_core.sql"\n      - "supabase/migrations/20260830161241_drx_phase6b_atc_variant_classification.sql"\n      - "supabase/migrations/20260830161329_drx_phase6c_indication_safety_gate.sql"\n      - "tests/drx-phase6-clinical-provenance-test.js"\n      - "scripts/drx-phase6-status.js"\n      - "docs/DRX-PHASE6-ROLLBACK.md"\n      - ".github/workflows/drx-phase6-clinical-gate.yml"\n\npermissions:\n  contents: read\n\nconcurrency:\n  group: drx-phase6-clinical-gate\n  cancel-in-progress: false\n\njobs:\n  gate:\n    runs-on: ubuntu-latest\n    timeout-minutes: 10\n    env:\n      MEDINDEX_SUPABASE_URL: https://ftuchtmolddhhsdcwnqe.supabase.co\n      SUPABASE_SECRET_KEY: ${{ secrets.SUPABASE_SECRET_KEY }}\n    steps:\n      - uses: actions/checkout@v4\n\n      - uses: actions/setup-node@v4\n        with:\n          node-version: "24"\n\n      - name: Static Phase 6 contract\n        run: node tests/drx-phase6-clinical-provenance-test.js\n\n      - name: Live Phase 6 gate\n        run: node scripts/drx-phase6-status.js\n\n      - name: Upload Phase 6 evidence\n        uses: actions/upload-artifact@v4\n        with:\n          name: drx-phase6-status-evidence\n          path: drx-phase6-status-evidence.json\n          if-no-files-found: error\n          retention-days: 30\n
+name: DRx Phase 6 clinical gate
+
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - main
+    paths:
+      - "supabase/migrations/20260830161215_drx_phase6a_regulatory_provenance_core.sql"
+      - "supabase/migrations/20260830161241_drx_phase6b_atc_variant_classification.sql"
+      - "supabase/migrations/20260830161329_drx_phase6c_indication_safety_gate.sql"
+      - "supabase/migrations/20260830162151_drx_phase6d_boundary_aware_source_identity_candidates.sql"
+      - "supabase/migrations/20260830164615_drx_phase6e_same_hash_source_identity_resolution.sql"
+      - "tests/drx-phase6-clinical-provenance-test.js"
+      - "scripts/drx-phase6-status.js"
+      - "docs/DRX-PHASE6-ROLLBACK.md"
+      - ".github/workflows/drx-phase6-clinical-gate.yml"
+
+permissions:
+  contents: read
+
+concurrency:
+  group: drx-phase6-clinical-gate
+  cancel-in-progress: false
+
+jobs:
+  gate:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    env:
+      MEDINDEX_SUPABASE_URL: https://ftuchtmolddhhsdcwnqe.supabase.co
+      SUPABASE_SECRET_KEY: ${{ secrets.SUPABASE_SECRET_KEY }}
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "24"
+
+      - name: Static Phase 6 contract
+        run: node tests/drx-phase6-clinical-provenance-test.js
+
+      - name: Live Phase 6 gate
+        run: node scripts/drx-phase6-status.js
+
+      - name: Upload Phase 6 evidence
+        uses: actions/upload-artifact@v4
+        with:
+          name: drx-phase6-status-evidence
+          path: drx-phase6-status-evidence.json
+          if-no-files-found: error
+          retention-days: 30

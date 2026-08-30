@@ -1,1 +1,48 @@
-name: DRx Phase 7 dosing gate\n\non:\n  workflow_dispatch:\n  push:\n    branches:\n      - main\n    paths:\n      - "supabase/migrations/20260830162033_drx_phase7a_dosing_evidence_publication_guards.sql"\n      - "tests/drx-phase7-dosing-gate-test.js"\n      - "scripts/drx-phase7-status.js"\n      - "docs/DRX-PHASE7-ROLLBACK.md"\n      - ".github/workflows/drx-phase7-dosing-gate.yml"\n\npermissions:\n  contents: read\n\nconcurrency:\n  group: drx-phase7-dosing-gate\n  cancel-in-progress: false\n\njobs:\n  gate:\n    runs-on: ubuntu-latest\n    timeout-minutes: 10\n    env:\n      MEDINDEX_SUPABASE_URL: https://ftuchtmolddhhsdcwnqe.supabase.co\n      SUPABASE_SECRET_KEY: ${{ secrets.SUPABASE_SECRET_KEY }}\n    steps:\n      - uses: actions/checkout@v4\n\n      - uses: actions/setup-node@v4\n        with:\n          node-version: "24"\n\n      - name: Static Phase 7 contract\n        run: node tests/drx-phase7-dosing-gate-test.js\n\n      - name: Live Phase 7 gate\n        run: node scripts/drx-phase7-status.js\n\n      - name: Upload Phase 7 evidence\n        uses: actions/upload-artifact@v4\n        with:\n          name: drx-phase7-status-evidence\n          path: drx-phase7-status-evidence.json\n          if-no-files-found: error\n          retention-days: 30\n
+name: DRx Phase 7 dosing gate
+
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - main
+    paths:
+      - "supabase/migrations/20260830162033_drx_phase7a_dosing_evidence_publication_guards.sql"
+      - "tests/drx-phase7-dosing-gate-test.js"
+      - "scripts/drx-phase7-status.js"
+      - "docs/DRX-PHASE7-ROLLBACK.md"
+      - ".github/workflows/drx-phase7-dosing-gate.yml"
+
+permissions:
+  contents: read
+
+concurrency:
+  group: drx-phase7-dosing-gate
+  cancel-in-progress: false
+
+jobs:
+  gate:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    env:
+      MEDINDEX_SUPABASE_URL: https://ftuchtmolddhhsdcwnqe.supabase.co
+      SUPABASE_SECRET_KEY: ${{ secrets.SUPABASE_SECRET_KEY }}
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "24"
+
+      - name: Static Phase 7 contract
+        run: node tests/drx-phase7-dosing-gate-test.js
+
+      - name: Live Phase 7 gate
+        run: node scripts/drx-phase7-status.js
+
+      - name: Upload Phase 7 evidence
+        uses: actions/upload-artifact@v4
+        with:
+          name: drx-phase7-status-evidence
+          path: drx-phase7-status-evidence.json
+          if-no-files-found: error
+          retention-days: 30
