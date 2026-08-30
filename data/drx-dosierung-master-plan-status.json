@@ -1,6 +1,6 @@
 {
   "schemaVersion": "drx-dosierung-master-plan-status-v1",
-  "updatedAt": "2026-08-30T12:58:00.000Z",
+  "updatedAt": "2026-08-30T13:41:08.000Z",
   "officialPlan": "DRx Dosierung phases 0-32",
   "databaseBlocker": {
     "active": false,
@@ -674,7 +674,7 @@
     "phase": 32,
     "activeCriticalPhase": 15,
     "repositoryImplementationThroughPhase": 32,
-    "objective": "Strict DRx V3 10-phase plan: Phase 1 baseline/security hardening implemented live; publication remains fail-closed and no clinical backfill/cutover is allowed.",
+    "objective": "Strict DRx V3 10-phase plan: Phase 1 exit gate complete. Phase 2 may start; publication remains fail-closed and no V3 strict cutover is allowed.",
     "pilot": "batch2-25",
     "repositoryBatch1Substances": 10,
     "repositoryBatch2Substances": 25,
@@ -863,7 +863,7 @@
     "archiveAttestationRunId": 33278751413,
     "archiveAttestationRowsDigest": "b3a5920ea1e1890c0926ccf43fcf82ecee3a12968d31c1d834cc68319f48df56",
     "phase1StrictPlan": {
-      "status": "IMPLEMENTED_LIVE_VERIFIED_BACKUP_RESTORE_GATE_PENDING",
+      "status": "COMPLETE",
       "phaseStartMainSha": "95fabc131ebef30b7a7714e9e9c1642cb5e5ce6c",
       "liveMigrations": 84,
       "repoMigrationsTarget": 84,
@@ -877,11 +877,18 @@
       "clientWriteGrantLeaks": 0,
       "publicationAllowed": false,
       "drxStageDecision": "KEEP_RLS_OFF_INTERNAL_SCHEMA; revoke client schema usage/object/default privileges",
-      "backupRestoreTest": "WORKFLOW_CONFIGURED_PENDING_RUN",
+      "backupRestoreTest": "PASS_EXTERNAL_LOGICAL_BACKUP_AND_DISPOSABLE_RESTORE",
       "googleCryptographicHash": "COMPLETE_4_OF_4_SHA256",
       "googleSnapshotGate": "PASS",
       "backupRestoreWorkflow": ".github/workflows/drx-phase1-backup-restore.yml",
-      "backupPayloadPolicy": "RUNNER_EPHEMERAL_ONLY_NO_DATABASE_PAYLOAD_UPLOADED"
+      "backupPayloadPolicy": "RUNNER_EPHEMERAL_ONLY_NO_DATABASE_PAYLOAD_UPLOADED",
+      "strictExitGate": true,
+      "completedAt": "2026-08-30T13:41:08.000Z",
+      "backupRestoreWorkflowRunId": 33314699827,
+      "backupRestoreArtifactId": 9733104215,
+      "backupRestoreArtifactDigest": "sha256:9bfa32604f63192e734c3317bd17ea55d8f5ff68ebf088ffa1c1047b5852c455",
+      "backupDumpFilesSha256": "PASS_5_OF_5",
+      "restoredCountsVerified": true
     }
   },
   "sourceNetworkBlocker": {

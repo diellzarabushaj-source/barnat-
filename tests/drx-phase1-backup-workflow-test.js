@@ -6,6 +6,7 @@ const path=require('node:path');
 const ROOT=path.resolve(__dirname,'..');
 const workflow=fs.readFileSync(path.join(ROOT,'.github/workflows/drx-phase1-backup-restore.yml'),'utf8');
 const baseline=require('../data/drx-phase1-baseline-v1.json');
+const evidence=require('../data/drx-phase1-backup-restore-evidence-v1.json');
 
 assert.match(workflow,/secrets\.SUPABASE_DB_URL/);
 assert.match(workflow,/supabase\/setup-cli@v1/);
@@ -31,5 +32,16 @@ for(const source of sources){
 }
 assert.equal(baseline.googleSnapshotGate.status,'PASS');
 assert.equal(baseline.publicationAllowed,false);
+assert.equal(baseline.backupAndRestore.gateStatus,'PASS');
+assert.equal(baseline.backupAndRestore.restoreVerified,true);
+assert.equal(baseline.phase1ExitGate.status,'PASS');
+assert.equal(evidence.status,'PASS');
+assert.equal(evidence.backupCreated,true);
+assert.equal(evidence.restoreVerified,true);
+assert.equal(evidence.restoredCounts.drugs,4015);
+assert.equal(evidence.restoredCounts.dosage_regimens,8104);
+assert.equal(evidence.restoredCounts.source_snapshots,100);
+assert.equal(evidence.restoredCounts.source_sections,575);
+assert.equal(evidence.publicationAllowed,false);
 
 console.log('DRx Phase 1 backup/restore workflow and Google snapshot hash contract passed.');

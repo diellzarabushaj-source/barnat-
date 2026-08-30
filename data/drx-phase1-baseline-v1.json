@@ -145,14 +145,39 @@
     "logicalFingerprintCaptured": true,
     "migrationHistoryCaptured": true,
     "sourceRevisionSnapshotsCaptured": true,
-    "fullPhysicalDataBackupExported": false,
-    "restoreTestExecuted": false,
-    "gateStatus": "WORKFLOW_CONFIGURED_PENDING_RUN",
-    "reason": "Workflow creates roles/schema/data/migration-history dumps in runner temp, restores application schema/data into a disposable local Supabase target, verifies critical row counts, uploads evidence JSON only, and discards database payload.",
+    "fullLogicalBackupExported": true,
+    "restoreTestExecuted": true,
+    "restoreVerified": true,
+    "gateStatus": "PASS",
     "workflow": ".github/workflows/drx-phase1-backup-restore.yml",
-    "workflowConfigured": true,
+    "workflowRunId": 33314699827,
+    "workflowRunAttempt": 1,
+    "workflowHeadSha": "1be17b1761dec7e01d4ba5dd7fdcd86f7d3ea37e",
+    "artifactId": 9733104215,
+    "artifactDigest": "sha256:9bfa32604f63192e734c3317bd17ea55d8f5ff68ebf088ffa1c1047b5852c455",
     "restoreTarget": "disposable local Supabase on GitHub Actions runner",
-    "databasePayloadUploaded": false
+    "databasePayloadUploaded": false,
+    "backupRetention": "runner_ephemeral_only_no_database_payload_uploaded",
+    "backupSha256": {
+      "data.sql": "1972d1f8db08c91e4025dc60e691f793d3a2cbf2bcd5a819b9ed05e413b718d4",
+      "history_data.sql": "c3b17620e4dd92ee4c7c3a6886e22745c1227c9e969dc83e6ca48eb2345ac1df",
+      "history_schema.sql": "ae56295c7e66a8b46ab50df6f00cf57f7866f2478a17fbe3910d9def39e836ab",
+      "roles.sql": "168a95a9c745af5ed4679751f90419ac9dc434240a213b03e32a06d5664c2308",
+      "schema.sql": "efcae1f2e66fb99c985fff14700f58220196fc5b7868509e06938fca5c9a75b9"
+    },
+    "restoredCounts": {
+      "drugs": 4015,
+      "dosage_regimens": 8104,
+      "stage_product_registry": 4015,
+      "stage_variant_master": 2674,
+      "stage_substance_master": 1351,
+      "source_snapshots": 100,
+      "source_sections": 575,
+      "v3_products": 0,
+      "v3_rules": 0,
+      "v3_bindings": 0,
+      "published_rules": 0
+    }
   },
   "publicationAllowed": false,
   "googleSnapshotGate": {
@@ -160,5 +185,16 @@
     "capturedAt": "2026-08-30T12:57:00.000Z",
     "algorithm": "SHA-256",
     "note": "Hashes identify the exact raw XLSX or exported XLSX bytes captured at the recorded Drive revision/current snapshot. Native Google Sheets export bytes are snapshot artifacts, not a canonical serialization guarantee."
+  },
+  "phase1ExitGate": {
+    "status": "PASS",
+    "completedAt": "2026-08-30T13:41:08Z",
+    "migrationsParity": "84/84",
+    "ci": "GREEN",
+    "rpcClientRoles": "PASS",
+    "clientWriteGrantLeaks": 0,
+    "googleSnapshotHashGate": "PASS_4_OF_4",
+    "backupRestoreGate": "PASS",
+    "publicationAllowed": false
   }
 }

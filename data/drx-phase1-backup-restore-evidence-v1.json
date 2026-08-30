@@ -1,0 +1,33 @@
+{
+  "schemaVersion": "drx-phase1-backup-restore-evidence-v1",
+  "status": "PASS",
+  "workflowRunId": 33314699827,
+  "artifactId": 9733104215,
+  "artifactDigest": "sha256:9bfa32604f63192e734c3317bd17ea55d8f5ff68ebf088ffa1c1047b5852c455",
+  "credentialAliasResolved": true,
+  "backupCreated": true,
+  "backupSha256": {
+    "data.sql": "1972d1f8db08c91e4025dc60e691f793d3a2cbf2bcd5a819b9ed05e413b718d4",
+    "history_data.sql": "c3b17620e4dd92ee4c7c3a6886e22745c1227c9e969dc83e6ca48eb2345ac1df",
+    "history_schema.sql": "ae56295c7e66a8b46ab50df6f00cf57f7866f2478a17fbe3910d9def39e836ab",
+    "roles.sql": "168a95a9c745af5ed4679751f90419ac9dc434240a213b03e32a06d5664c2308",
+    "schema.sql": "efcae1f2e66fb99c985fff14700f58220196fc5b7868509e06938fca5c9a75b9"
+  },
+  "restoreExecuted": true,
+  "restoreVerified": true,
+  "restoredCounts": {
+    "drugs": 4015,
+    "dosage_regimens": 8104,
+    "stage_product_registry": 4015,
+    "stage_variant_master": 2674,
+    "stage_substance_master": 1351,
+    "source_snapshots": 100,
+    "source_sections": 575,
+    "v3_products": 0,
+    "v3_rules": 0,
+    "v3_bindings": 0,
+    "published_rules": 0
+  },
+  "backupRetention": "runner_ephemeral_only_no_database_payload_uploaded",
+  "publicationAllowed": false
+}
