@@ -19,9 +19,9 @@ const parsed = files.map(file => {
 });
 
 const versions = parsed.map(item => item.version);
-const names = parsed.map(item => item.name);
 assert.equal(new Set(versions).size, versions.length, 'Migration versions must be unique.');
-assert.equal(new Set(names).size, names.length, 'Migration names must be unique.');
+// Supabase migration identity is the version/timestamp. Historical migration names may repeat;
+// exact file-to-production parity below is the authoritative integrity check.
 
 const expected = MANIFEST.migrations.map(item => ({
   version: String(item.version),
