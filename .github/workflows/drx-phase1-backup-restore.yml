@@ -71,12 +71,7 @@ jobs:
               key="DB_PASSWORD_${n}"
               value="${!key:-}"
               if [ -n "$value" ]; then
-                encoded_password="$(PASSWORD_VALUE="$value" python3 - <<'PY'
-import os
-from urllib.parse import quote
-print(quote(os.environ["PASSWORD_VALUE"], safe=""))
-PY
-)"
+                encoded_password="$(PASSWORD_VALUE="$value" python3 -c 'import os,urllib.parse; print(urllib.parse.quote(os.environ["PASSWORD_VALUE"], safe=""))')"
                 resolved_url="postgresql://postgres:${encoded_password}@db.${SUPABASE_PROJECT_REF}.supabase.co:5432/postgres?sslmode=require"
                 resolved_source="$key"
                 break
