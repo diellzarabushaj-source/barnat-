@@ -1,18 +1,55 @@
 {
-  "schemaVersion": "drx-frontend-flow-contract-v1",
-  "status": "provenance_aware_frontend_foundation_live_adjustment_inputs_blocked",
+  "schemaVersion": "drx-frontend-flow-contract-v2",
+  "phase": 9,
+  "status": "phase9_in_progress_drawer_and_personal_entities_live_v2_fallback_preserved",
   "flow": [
-    "product",
+    "substance",
+    "variant",
+    "population",
     "indication",
-    "required_inputs",
-    "dose_result"
+    "patient_inputs",
+    "dose",
+    "product",
+    "prescription"
   ],
   "labelsSq": [
-    "Bari",
+    "Substanca",
+    "Varianti",
+    "Popullata",
     "Indikacioni",
-    "Të dhënat e nevojshme",
-    "Doza"
+    "Të dhënat e pacientit",
+    "Doza",
+    "Produkti",
+    "Receta"
   ],
+  "drawerTabs": [
+    "Përmbledhje",
+    "Përdorimi",
+    "Dozimi",
+    "Siguria",
+    "Produktet",
+    "Shënime",
+    "Burime"
+  ],
+  "personalEntities": {
+    "supportedStorage": [
+      "substance",
+      "variant",
+      "product"
+    ],
+    "currentDrawerActions": [
+      "product"
+    ],
+    "ownerOnly": true,
+    "canonicalIdentityRequired": true,
+    "textNameAsIdentityForbidden": true
+  },
+  "runtime": {
+    "clinicalCalculation": "server_side_only",
+    "v2FallbackActive": true,
+    "v3StrictCutover": false,
+    "browserClinicalMathForbidden": true
+  },
   "dynamicInputs": [
     "age_months",
     "weight_kg",
@@ -20,17 +57,6 @@
     "hepatic",
     "body_surface_area"
   ],
-  "UXRules": [
-    "show_only_required_inputs",
-    "show_source_and_version",
-    "show_max_dose",
-    "show_review_warning_when_not_publishable",
-    "never_display_draft_as_final",
-    "never_auto_compute_renal_or_hepatic_adjustment_without_supported_structured_input",
-    "hide_rule_when_required_adjustment_evidence_is_missing",
-    "preserve_source_and_adjustment_provenance_in_runtime_payload"
-  ],
-  "next": "after live V3 adjustment rows validate: add structured renal/hepatic inputs one measure at a time; until then UI must show blocked/manual-review rather than infer",
   "currentlySupportedInputs": [
     "age_months",
     "weight_kg",
@@ -43,5 +69,19 @@
     "child_pugh_class",
     "hepatic_impairment_textual"
   ],
-  "unsupportedClinicalInputsFailClosed": true
+  "UXRules": [
+    "show_only_required_inputs",
+    "show_population_badge_only_from_explicit_server_data",
+    "show_source_status_and_version_when_provided",
+    "never_infer_missing_source_version",
+    "show_max_dose",
+    "show_review_warning_when_not_publishable",
+    "never_display_draft_as_final",
+    "never_auto_compute_renal_or_hepatic_adjustment_without_supported_structured_input",
+    "hide_rule_when_required_adjustment_evidence_is_missing",
+    "preserve_source_and_adjustment_provenance_in_runtime_payload",
+    "personal_notes_never_change_clinical_calculation"
+  ],
+  "unsupportedClinicalInputsFailClosed": true,
+  "next": "Expose canonical substance_concept_id and clinical_variant_id in the product API; then enable substance/variant personal actions and strict variant step without removing V2 fallback."
 }

@@ -496,3 +496,41 @@ input{caret-color:#533afd}
 @media(prefers-reduced-motion:reduce){
   *,*::before,*::after{scroll-behavior:auto!important;transition:none!important;animation:none!important}
 }
+
+
+/* DRx Phase 9C — clinical drawer foundation */
+.phase9-product-header{gap:18px;align-items:flex-start}
+.phase9-product-identity{min-width:0;flex:1}
+.phase9-product-actions{display:flex;align-items:center;gap:8px;flex-wrap:wrap;justify-content:flex-end}
+.phase9-context-badge{display:inline-flex;align-items:center;min-height:24px;padding:3px 9px;border:1px solid #d9e2ec;border-radius:999px;background:#f7fafc;color:#425466;font-size:11px;font-weight:700;letter-spacing:.01em}
+.phase9-context-badge[data-tone="population"]{background:#edf9f5;border-color:#ccece1;color:#08795b}
+.phase9-context-badge[data-tone="runtime"]{background:#f7f5ff;border-color:#e1dcff;color:#5b4db5}
+.phase9-favorite-button,.phase9-save-note,.phase9-delete-note{border:1px solid #d7e1e8;background:#fff;border-radius:9px;padding:8px 11px;font:inherit;font-size:12px;font-weight:700;cursor:pointer;color:#294052}
+.phase9-favorite-button.is-active{background:#fff9e8;border-color:#f0d889;color:#7c5d00}
+.phase9-favorite-button:disabled,.phase9-save-note:disabled,.phase9-delete-note:disabled{opacity:.55;cursor:wait}
+.phase9-clinical-flow{list-style:none;margin:14px 0 16px;padding:12px;display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:8px;border:1px solid #e4ebf0;border-radius:12px;background:#fbfcfd}
+.phase9-flow-step{min-width:0;display:flex;gap:8px;align-items:flex-start;padding:7px;border-radius:9px}
+.phase9-flow-dot{width:20px;height:20px;flex:0 0 20px;border-radius:50%;display:grid;place-items:center;font-size:11px;font-weight:800;background:#edf1f5;color:#718096}
+.phase9-flow-step.is-complete .phase9-flow-dot{background:#dff6ed;color:#08795b}
+.phase9-flow-copy{min-width:0;display:flex;flex-direction:column;gap:2px}
+.phase9-flow-copy strong{font-size:11px;color:#233746}
+.phase9-flow-copy small{font-size:10px;line-height:1.35;color:#7b8b98;overflow-wrap:anywhere}
+.phase9-tabs{display:flex;gap:4px;overflow-x:auto;padding:4px;margin:0 -4px 12px;scrollbar-width:thin}
+.phase9-tab-button{flex:0 0 auto;border:0;border-bottom:2px solid transparent;background:transparent;padding:8px 10px;color:#718096;font:inherit;font-size:12px;font-weight:700;cursor:pointer}
+.phase9-tab-button:hover{color:#334e5e}
+.phase9-tab-button.is-active{color:#08795b;border-bottom-color:#0b9a74}
+.phase9-tab-button:focus-visible{outline:2px solid #0b9a74;outline-offset:2px;border-radius:6px}
+.phase9-tab-panel{min-height:150px;padding:2px 0 4px}
+.phase9-tab-panel[hidden]{display:none}
+.phase9-tab-kicker{margin:0 0 12px;color:#6f8290;font-size:12px;line-height:1.5}
+.phase9-empty-tab,.phase9-inline-note{margin:12px 0;padding:11px 12px;border-radius:9px;background:#f7f9fb;color:#667b89;font-size:12px;line-height:1.5}
+.phase9-note-field{display:flex;flex-direction:column;gap:7px}
+.phase9-note-field>span{font-size:12px;font-weight:700;color:#334e5e}
+.phase9-note-editor{width:100%;min-height:116px;resize:vertical;border:1px solid #d6e1e8;border-radius:10px;padding:10px 11px;background:#fff;color:#223746;font:inherit;font-size:13px;line-height:1.5}
+.phase9-note-editor:focus{outline:2px solid rgba(11,154,116,.16);border-color:#0b9a74}
+.phase9-note-actions{display:flex;gap:8px;margin-top:9px}
+.phase9-save-note{background:#0b8f6d;color:#fff;border-color:#0b8f6d}
+.phase9-delete-note{color:#8a3f42}
+.phase9-personal-hint{display:block;margin-top:8px;color:#82919c;font-size:10px}
+@media(max-width:900px){.phase9-clinical-flow{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media(max-width:520px){.phase9-product-header{flex-direction:column}.phase9-product-actions{width:100%;justify-content:flex-start}.phase9-clinical-flow{grid-template-columns:1fr 1fr;padding:8px}.phase9-flow-step{padding:5px}.phase9-tabs{margin-inline:-8px;padding-inline:8px}}

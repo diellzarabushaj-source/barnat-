@@ -171,6 +171,8 @@
     calculationController:null,
     pendingCalculation:false,
     lastCopyText:'',
+    productTab:'summary',
+    renderedProductId:'',
   };
 
   const elements = {};
@@ -606,76 +608,364 @@
     return '';
   }
 
-  function renderProduct() {
-    const product = state.product;
-    const body = elements.productBody;
-    body.textContent = '';
-    elements.productEmpty.hidden = true;
-    body.hidden = false;
+  const PRODUCT_TABS = Object.freeze([
+    ['summary','Përmbledhje'],
+    ['use','Përdorimi'],
+    ['dose','Dozimi'],
+    ['safety','Siguria'],
+    ['products','Produktet'],
+    ['notes','Shënime'],
+    ['sources','Burime'],
+  ]);
 
-    const header = element('div', 'pediatric-product-header');
-    const identity = element('div');
-    const titleRow = element('div', 'pediatric-product-title-row');
-    titleRow.append(element('h2', 'pediatric-product-name', product.name || '(pa emër)'), readinessBadge(effectiveReadiness(product)));
+  function productEntityKey(product=state.product) {
+    return text(product?.drugId);
+  }
+
+  function phase9Personal() {
+    return window.DRxPhase9Personal || null;
+  }
+
+  function populationLabel(product) {
+    const raw=text(product?.useStatus);
+    if (!raw) return 'Popullata: sipas burimit';
+    const key=raw.toLowerCase().replace(/[\s-]+/g,'_');
+    const labels={
+      pediatric_only:'Vetëm pediatrik',
+      adult_only:'Vetëm të rritur',
+      pediatric_and_adult:'Pediatrik + të rritur',
+      adult_and_pediatric:'Pediatrik + të rritur',
+    };
+    return labels[key] || raw;
+  }
+
+  function phase9Badge(label,tone='') {
+    const badge=element('span','phase9-context-badge',label);
+    if(tone) badge.dataset.tone=tone;
+    return badge;
+  }
+
+  function phase9Flow(product) {
+    const list=element('ol','phase9-clinical-flow');
+    list.setAttribute('aria-label','Rrjedha klinike Phase 9');
+    const indication=text(product?.calculationRegimen?.indication || product?.regimen?.indication);
+    const steps=[
+      ['Substanca',Boolean(product?.substance),product?.substance || 'Mungon'],
+      ['Varianti',false,'V2 fallback — ID kanonik i variantit nuk ekspozohet ende'],
+      ['Popullata',Boolean(product?.useStatus),populationLabel(product)],
+      ['Indikacioni',Boolean(indication),indication || 'Kërkohet lidhje klinike'],
+      ['Inputet',Boolean(product?.calculable),product?.calculable ? 'Vetëm fushat e kërkuara' : 'Bllokuar nga porta klinike'],
+      ['Doza',state.calculation?.outcome==='CALCULATED',state.calculation?.outcome==='CALCULATED' ? 'Llogaritur server-side' : 'Pas inputeve'],
+      ['Produkti',Boolean(product?.drugId),product?.name || 'Mungon'],
+      ['Receta',state.calculation?.outcome==='CALCULATED',state.calculation?.outcome==='CALCULATED' ? 'Gati për kontekst' : 'Pas rezultatit'],
+    ];
+    for(const [label,complete,detail] of steps){
+      const item=element('li',`phase9-flow-step ${complete ? 'is-complete' : 'is-pending'}`);
+      item.append(element('span','phase9-flow-dot',complete ? '✓' : '·'));
+      const copy=element('span','phase9-flow-copy');
+      copy.append(element('strong',null,label),element('small',null,detail));
+      item.append(copy);
+      list.append(item);
+    }
+    return list;
+  }
+
+  function setProductTab(tab) {
+    if(!PRODUCT_TABS.some(([key])=>key===tab)) return;
+    state.productTab=tab;
+    for(const button of elements.productBody.querySelectorAll('[data-product-tab]')){
+      const active=button.dataset.productTab===tab;
+      button.classList.toggle('is-active',active);
+      button.setAttribute('aria-selected',active ? 'true' : 'false');
+      button.tabIndex=active ? 0 : -1;
+    }
+    for(const panel of elements.productBody.querySelectorAll('[data-product-panel]')){
+      panel.hidden=panel.dataset.productPanel!==tab;
+    }
+  }
+
+  function tabPanel(key) {
+    const panel=element('section','phase9-tab-panel');
+    panel.dataset.productPanel=key;
+    panel.id=`phase9-panel-${key}`;
+    panel.setAttribute('role','tabpanel');
+    return panel;
+  }
+
+  function appendBlockedState(panel,product) {
+    if(product.calculable) return;
+    const blocked=element('div','pediatric-not-calculable');
+    blocked.append(element('strong',null,'Llogaritja automatike është e bllokuar.'));
+    const reasons=element('ul','pediatric-reason-list');
+    for(const reason of product.reasons || []) reasons.append(element('li',null,reason));
+    if(!product.reasons?.length && product.missing?.length){
+      reasons.append(element('li',null,`Mungojnë fusha typed: ${product.missing.join(', ')}.`));
+    }
+    blocked.append(reasons);
+    panel.append(blocked);
+  }
+
+  function buildSummaryPanel(product) {
+    const panel=tabPanel('summary');
+    if(product.summary) panel.append(element('p','pediatric-product-summary',product.summary));
+    const regimen=product.regimen || {};
+    const facts=element('div','dosage-product-facts');
+    facts.append(
+      productFact('Indikacioni',product.calculationRegimen?.indication || regimen.indication || '—'),
+      productFact('Rruga',product.calculationRegimen?.route || regimen.route || '—'),
+      productFact('Baza',regimen.basis || '—'),
+      productFact('Orari',productSchedule(product) || 'Sipas burimit'),
+    );
+    panel.append(facts);
+    const context=calculationContext(product);
+    if(context) panel.append(context);
+    appendBlockedState(panel,product);
+    return panel;
+  }
+
+  function buildUsePanel(product) {
+    const panel=tabPanel('use');
+    const indication=text(product.calculationRegimen?.indication || product.regimen?.indication);
+    panel.append(element('p','phase9-tab-kicker','Përdorimi klinik i ekspozuar nga burimi'));
+    const facts=element('div','dosage-product-facts');
+    facts.append(
+      productFact('Popullata',populationLabel(product)),
+      productFact('Indikacioni',indication || '—'),
+      productFact('Statusi',READINESS_LABEL[effectiveReadiness(product)] || effectiveReadiness(product)),
+      productFact('Rruga',product.calculationRegimen?.route || product.regimen?.route || '—'),
+    );
+    panel.append(facts);
+    if(product.restriction) panel.append(element('p','pediatric-restriction',product.restriction));
+    const alternates=informationalRegimens(product);
+    if(alternates) panel.append(alternates);
+    return panel;
+  }
+
+  function buildDosePanel(product) {
+    const panel=tabPanel('dose');
+    panel.append(element('p','phase9-tab-kicker','Dozimi mbetet server-side; browser-i nuk llogarit formulën.'));
+    const context=calculationContext(product);
+    if(context) panel.append(context);
+    const regimen=product.regimen || {};
+    const facts=element('div','dosage-product-facts');
+    facts.append(
+      productFact('Baza',regimen.basis || '—'),
+      productFact('Orari',productSchedule(product) || 'Sipas burimit'),
+      productFact('Min. peshë',regimen.minWeightKg != null ? `${formatNumber(regimen.minWeightKg)} kg` : '—'),
+      productFact('Max. peshë',regimen.maxWeightKg != null ? `${formatNumber(regimen.maxWeightKg)} kg` : '—'),
+    );
+    panel.append(facts);
+    appendBlockedState(panel,product);
+    return panel;
+  }
+
+  function buildSafetyPanel(product) {
+    const panel=tabPanel('safety');
+    panel.append(element('p','phase9-tab-kicker','Vetëm paralajmërimet dhe kufizimet që kthen serveri.'));
+    let count=0;
+    if(product.restriction){
+      panel.append(element('p','pediatric-restriction',product.restriction));
+      count+=1;
+    }
+    for(const warning of product.warnings || []){
+      if(warning && warning!==product.restriction){
+        panel.append(element('p','pediatric-warning',warning));
+        count+=1;
+      }
+    }
+    if(!count) panel.append(element('p','phase9-empty-tab','Nuk ka paralajmërim shtesë të ekspozuar nga ky endpoint.'));
+    return panel;
+  }
+
+  function buildProductsPanel(product) {
+    const panel=tabPanel('products');
+    panel.append(element('p','phase9-tab-kicker','Produkti i zgjedhur · V2 fallback mbetet aktiv gjatë Fazës 9.'));
+    const facts=element('div','dosage-product-facts');
+    facts.append(
+      productFact('Produkti',product.name || '—'),
+      productFact('Substanca',product.substance || '—'),
+      productFact('Fortësia',product.strength || '—'),
+      productFact('Forma',product.form || '—'),
+      productFact('ATC',product.atcCode || '—'),
+      productFact('Regjistri',product.registryNumber ? `#${product.registryNumber}` : '—'),
+      productFact('PDID',product.pdid || '—'),
+      productFact('Identiteti',product.drugId || '—'),
+    );
+    panel.append(facts);
+    const note=element('p','phase9-inline-note',
+      'Substance/variant favorites aktivizohen vetëm kur API ekspozon ID-të kanonike; emri tekstual nuk përdoret si identitet.');
+    panel.append(note);
+    return panel;
+  }
+
+  function buildNotesPanel(product) {
+    const panel=tabPanel('notes');
+    const key=productEntityKey(product);
+    const personal=phase9Personal();
+    panel.append(element('p','phase9-tab-kicker','Shënim personal · owner-only · nuk hyn në llogaritjen klinike.'));
+    if(!key){
+      panel.append(element('p','phase9-empty-tab','Produkti nuk ka identitet të qëndrueshëm për shënim.'));
+      return panel;
+    }
+    const label=element('label','phase9-note-field');
+    label.append(element('span',null,'Shënimi yt'));
+    const area=element('textarea','phase9-note-editor');
+    area.dataset.phase9Note='product';
+    area.maxLength=2000;
+    area.rows=5;
+    area.placeholder='Shkruaj shënim personal për këtë produkt…';
+    try{ area.value=personal?.note('product',key) || ''; }catch{ area.value=''; }
+    label.append(area);
+    panel.append(label);
+    const actions=element('div','phase9-note-actions');
+    const save=element('button','phase9-save-note','Ruaj shënimin');
+    save.type='button';
+    save.dataset.action='save-product-note';
+    const remove=element('button','phase9-delete-note','Fshi');
+    remove.type='button';
+    remove.dataset.action='delete-product-note';
+    actions.append(save,remove);
+    panel.append(actions);
+    panel.append(element('small','phase9-personal-hint',
+      personal?.state?.().loaded ? 'Sinkronizuar me llogarinë aktive.' : 'Sinkronizimi aktivizohet pas verifikimit të sesionit.'));
+    return panel;
+  }
+
+  function buildSourcesPanel(product) {
+    const panel=tabPanel('sources');
+    panel.append(element('p','phase9-tab-kicker','Provenanca shfaqet; versioni dokumentar nuk inferohet nga klienti.'));
+    panel.append(sourceBlock(product.source));
+    const facts=element('div','dosage-product-facts');
+    facts.append(
+      productFact('Seksioni',product.source?.section || '—'),
+      productFact('Statusi',product.source?.verificationStatus || '—'),
+      productFact('Verifikuar',formatDate(product.source?.verifiedAt) || '—'),
+      productFact('Versioni',product.source?.documentVersion || 'Nuk ekspozohet nga V2 fallback'),
+    );
+    panel.append(facts);
+    return panel;
+  }
+
+  async function toggleProductFavorite(button) {
+    const product=state.product;
+    const key=productEntityKey(product);
+    const personal=phase9Personal();
+    if(!product || !key || !personal) return;
+    button.disabled=true;
+    try{
+      if(!personal.state().loaded) await personal.load();
+      await personal.toggleFavorite('product',key,{
+        label:product.name || '',
+        registryNumber:product.registryNumber || null,
+      });
+      renderProduct();
+      setStatus('Favoriti personal u sinkronizua.','success');
+    }catch(error){
+      button.disabled=false;
+      setStatus(error?.message || 'Favoriti nuk u ruajt.','error');
+    }
+  }
+
+  async function saveProductNote({remove=false}={}) {
+    const product=state.product;
+    const key=productEntityKey(product);
+    const personal=phase9Personal();
+    if(!product || !key || !personal) return;
+    const area=elements.productBody.querySelector('[data-phase9-note="product"]');
+    try{
+      if(!personal.state().loaded) await personal.load();
+      if(remove) await personal.deleteNote('product',key);
+      else await personal.saveNote('product',key,area?.value || '');
+      renderProduct();
+      setProductTab('notes');
+      setStatus(remove ? 'Shënimi personal u fshi.' : 'Shënimi personal u ruajt.','success');
+    }catch(error){
+      setStatus(error?.message || 'Shënimi nuk u sinkronizua.','error');
+    }
+  }
+
+  function renderProduct() {
+    const product=state.product;
+    const body=elements.productBody;
+    if(!product) return;
+    if(state.renderedProductId!==product.drugId){
+      state.renderedProductId=product.drugId || '';
+      state.productTab='summary';
+    }
+    body.textContent='';
+    elements.productEmpty.hidden=true;
+    body.hidden=false;
+
+    const header=element('div','pediatric-product-header phase9-product-header');
+    const identity=element('div','phase9-product-identity');
+    const titleRow=element('div','pediatric-product-title-row');
+    titleRow.append(element('h2','pediatric-product-name',product.name || '(pa emër)'),readinessBadge(effectiveReadiness(product)));
+    titleRow.append(phase9Badge(populationLabel(product),'population'));
+    titleRow.append(phase9Badge('V2 fallback','runtime'));
     identity.append(titleRow);
-    identity.append(element('p', 'pediatric-product-meta',
-      [product.substance, product.strength, product.form].filter(Boolean).join(' · ')));
-    const codes = element('div', 'pediatric-product-codes');
-    if (product.atcCode) codes.append(element('code', null, product.atcCode));
-    if (product.registryNumber) codes.append(element('span', null, `Reg. #${product.registryNumber}`));
-    if (product.pdid) codes.append(element('span', null, product.pdid));
+    identity.append(element('p','pediatric-product-meta',
+      [product.substance,product.strength,product.form].filter(Boolean).join(' · ')));
+    const codes=element('div','pediatric-product-codes');
+    if(product.atcCode) codes.append(element('code',null,product.atcCode));
+    if(product.registryNumber) codes.append(element('span',null,`Reg. #${product.registryNumber}`));
+    if(product.pdid) codes.append(element('span',null,product.pdid));
     identity.append(codes);
 
-    const back = element('button', 'pediatric-back-button', 'Mbyll detajin');
-    back.type = 'button';
-    back.dataset.action = 'close-product';
-    header.append(identity, back);
+    const actions=element('div','phase9-product-actions');
+    const favorite=element('button','phase9-favorite-button','☆ Favorit');
+    favorite.type='button';
+    favorite.dataset.action='toggle-product-favorite';
+    try{
+      const active=phase9Personal()?.isFavorite('product',productEntityKey(product));
+      if(active){
+        favorite.textContent='★ Favorit';
+        favorite.classList.add('is-active');
+        favorite.setAttribute('aria-pressed','true');
+      }else favorite.setAttribute('aria-pressed','false');
+    }catch{ favorite.setAttribute('aria-pressed','false'); }
+    const back=element('button','pediatric-back-button','Mbyll detajin');
+    back.type='button';
+    back.dataset.action='close-product';
+    actions.append(favorite,back);
+    header.append(identity,actions);
     body.append(header);
 
-    if (product.summary) body.append(element('p', 'pediatric-product-summary', product.summary));
+    body.append(phase9Flow(product));
 
-    const regimen = product.regimen || {};
-    const facts = element('div', 'dosage-product-facts');
-    facts.append(
-      productFact('Indikacioni', product.calculationRegimen?.indication || regimen.indication || '—'),
-      productFact('Rruga', product.calculationRegimen?.route || regimen.route || '—'),
-      productFact('Baza', regimen.basis || '—'),
-      productFact('Orari', productSchedule(product) || 'Sipas burimit'),
+    const tabs=element('div','phase9-tabs');
+    tabs.setAttribute('role','tablist');
+    tabs.setAttribute('aria-label','Detajet e barit');
+    for(const [key,label] of PRODUCT_TABS){
+      const button=element('button','phase9-tab-button',label);
+      button.type='button';
+      button.dataset.productTab=key;
+      button.setAttribute('role','tab');
+      button.setAttribute('aria-controls',`phase9-panel-${key}`);
+      tabs.append(button);
+    }
+    body.append(tabs);
+
+    const panels=element('div','phase9-panels');
+    panels.append(
+      buildSummaryPanel(product),
+      buildUsePanel(product),
+      buildDosePanel(product),
+      buildSafetyPanel(product),
+      buildProductsPanel(product),
+      buildNotesPanel(product),
+      buildSourcesPanel(product),
     );
-    body.append(facts);
+    body.append(panels);
+    setProductTab(state.productTab);
 
-    if (product.restriction) body.append(element('p', 'pediatric-restriction', product.restriction));
-    for (const warning of product.warnings || []) {
-      if (warning && warning !== product.restriction) body.append(element('p', 'pediatric-warning', warning));
-    }
-
-    const context = calculationContext(product);
-    if (context) body.append(context);
-
-    if (!product.calculable) {
-      const blocked = element('div', 'pediatric-not-calculable');
-      blocked.append(element('strong', null, 'Llogaritja automatike është e bllokuar.'));
-      const reasons = element('ul', 'pediatric-reason-list');
-      for (const reason of product.reasons || []) reasons.append(element('li', null, reason));
-      if (!product.reasons?.length && product.missing?.length) {
-        reasons.append(element('li', null, `Mungojnë fusha typed: ${product.missing.join(', ')}.`));
-      }
-      blocked.append(reasons);
-      body.append(blocked);
-    }
-
-    const alternates = informationalRegimens(product);
-    if (alternates) body.append(alternates);
-    body.append(sourceBlock(product.source));
-
-    if (product.calculable) {
+    if(product.calculable){
       applyPatientFields(product.requires);
-      const indication = product.calculationRegimen?.indication;
-      elements.hint.textContent = indication
+      const indication=product.calculationRegimen?.indication;
+      elements.hint.textContent=indication
         ? `Regjimi është lidhur me “${indication}”. Plotëso vetëm fushat e kërkuara.`
         : 'Plotëso vetëm fushat që kërkon formula e verifikuar.';
-      setStatus('Bari u hap. Plotëso parametrat e pacientit.', 'success');
-    } else {
+      setStatus('Bari u hap. Plotëso parametrat e pacientit.','success');
+    }else{
       disablePatientPanel('Ky regjim nuk kalon portat për llogaritje automatike.');
       setStatus('Bari u hap vetëm për informacion; kalkulatori mbetet i bllokuar.');
     }
@@ -1025,6 +1315,8 @@
     state.selectedDrugId = '';
     state.product = null;
     state.calculation = null;
+    state.productTab='summary';
+    state.renderedProductId='';
     elements.productBody.textContent = '';
     elements.productBody.hidden = true;
     elements.productEmpty.hidden = false;
@@ -1122,6 +1414,24 @@
     });
 
     elements.productBody.addEventListener('click', event => {
+      const tab=event.target.closest('[data-product-tab]');
+      if(tab){
+        setProductTab(tab.dataset.productTab);
+        return;
+      }
+      const favorite=event.target.closest('[data-action="toggle-product-favorite"]');
+      if(favorite){
+        void toggleProductFavorite(favorite);
+        return;
+      }
+      if(event.target.closest('[data-action="save-product-note"]')){
+        void saveProductNote();
+        return;
+      }
+      if(event.target.closest('[data-action="delete-product-note"]')){
+        void saveProductNote({remove:true});
+        return;
+      }
       if (event.target.closest('[data-action="close-product"]')) {
         clearSelectedProduct();
         return;
@@ -1150,6 +1460,8 @@
       }
     });
     elements.copy?.addEventListener('click', copyResult);
+    window.addEventListener('drx:phase9-personal-ready',()=>{ if(state.product) renderProduct(); });
+    window.addEventListener('drx:phase9-personal-changed',()=>{ if(state.product) renderProduct(); });
   }
 
   async function restoreFromUrl() {

@@ -16,6 +16,7 @@ on:
       - "dozologjia.html"
       - "dozologjia-v2.js"
       - "dozologjia-v2.css"
+      - "tests/drx-phase9-drawer-test.js"
       - "data/drx-frontend-flow-contract-v1.json"
       - ".github/workflows/drx-phase9-frontend-gate.yml"
 
@@ -39,3 +40,5 @@ jobs:
         run: node tests/user-notes-native-storage-test.js
       - name: Existing account isolation contract
         run: node tests/user-library-account-isolation-test.js
+      - name: Phase 9 clinical drawer
+        run: node tests/drx-phase9-drawer-test.js
