@@ -58,4 +58,5 @@ jobs:
             exit 0
           fi
           git commit -m "chore(drx): materialize secondary SmPC enrichment"
+          git pull --rebase origin main
           git push origin HEAD:main
